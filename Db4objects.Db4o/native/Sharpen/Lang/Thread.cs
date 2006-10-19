@@ -4,11 +4,11 @@ using System;
 
 namespace Sharpen.Lang
 {
-	public class Thread : Runnable
+	public class Thread : IRunnable
 	{
 		public const int MIN_PRIORITY = 0;
 
-		private Runnable _target;
+		private IRunnable _target;
 
 		private string _name;
 
@@ -23,7 +23,7 @@ namespace Sharpen.Lang
 			_target = this;
 		}
 
-		public Thread(Runnable target)
+		public Thread(IRunnable target)
 		{
 			this._target = target;
 		}

@@ -4,6 +4,6 @@ using System;
 
 namespace Sharpen.Lang {
 
-    public interface Cloneable {
+    public interface ICloneable {
     }
 }

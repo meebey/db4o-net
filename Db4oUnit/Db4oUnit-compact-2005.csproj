@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2D64B089-6BE4-426D-A4C5-5EF6E952DA76}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Db4oUnit_compact</RootNamespace>
+    <AssemblyName>Db4oUnit-compact</AssemblyName>
+    <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PlatformFamilyName>PocketPC</PlatformFamilyName>
+    <PlatformID>3C41C503-53EF-4c2a-8DD4-A8217CAD115E</PlatformID>
+    <OSVersion>4.20</OSVersion>
+    <DeployDirSuffix>Db4oUnit_compact</DeployDirSuffix>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FormFactorID>
+    </FormFactorID>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;$(PlatformFamilyName)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;$(PlatformFamilyName)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib"/>
+    <Reference Include="System"/>
+    <Reference Include="System.Data"/>
+    <Reference Include="System.Xml"/>
+  </ItemGroup>
+  <ItemGroup><Compile Include="Db4oUnit\ArrayAssert.cs"/><Compile Include="Db4oUnit\Assert.cs"/><Compile Include="Db4oUnit\AssertionException.cs"/><Compile Include="Db4oUnit\ICodeBlock.cs"/><Compile Include="Db4oUnit\ITest.cs"/><Compile Include="Db4oUnit\ITestCase.cs"/><Compile Include="Db4oUnit\ITestLifeCycle.cs"/><Compile Include="Db4oUnit\ITestSuiteBuilder.cs"/><Compile Include="Db4oUnit\NullTest.cs"/><Compile Include="Db4oUnit\NullTestSuiteBuilder.cs"/><Compile Include="Db4oUnit\Printable.cs"/><Compile Include="Db4oUnit\ReflectionTestSuiteBuilder.cs"/><Compile Include="Db4oUnit\SetupFailureException.cs"/><Compile Include="Db4oUnit\TearDownFailureException.cs"/><Compile Include="Db4oUnit\TestFailure.cs"/><Compile Include="Db4oUnit\TestFailureCollection.cs"/><Compile Include="Db4oUnit\TestMethod.cs"/><Compile Include="Db4oUnit\TestResult.cs"/><Compile Include="Db4oUnit\TestRunner.cs"/><Compile Include="Db4oUnit\TestSuite.cs"/><Compile Include="Db4oUnit\Tests\AllTests.cs"/><Compile Include="Db4oUnit\Tests\AssertTestCase.cs"/><Compile Include="Db4oUnit\Tests\FrameworkTestCase.cs"/><Compile Include="Db4oUnit\Tests\NonTestFixture.cs"/><Compile Include="Db4oUnit\Tests\ReinstantiatePerMethodTest.cs"/><Compile Include="Db4oUnit\Tests\RunsGreen.cs"/><Compile Include="Db4oUnit\Tests\RunsLifeCycle.cs"/><Compile Include="Db4oUnit\Tests\RunsRed.cs"/><Compile Include="Db4oUnit\Tests\TestLifeCycleTestCase.cs"/><Compile Include="Db4oUnit\UnitTestMain.cs"/><Compile Include="Properties\AssemblyInfo.cs"/><Compile Include="native\Db4oUnit\TestException.cs"/><Compile Include="native\Db4oUnit\TestPlatform.cs"/></ItemGroup>
+  <ItemGroup>
+    <None Include="src\Db4oUnit\.svn\dir-wcprops"/>
+    <None Include="src\Db4oUnit\.svn\empty-file"/>
+    <None Include="src\Db4oUnit\.svn\entries"/>
+    <None Include="src\Db4oUnit\.svn\format"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\ArrayAssert.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\Assert.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\AssertionException.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\CodeBlock.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\NullTest.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\NullTestSuiteBuilder.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\Printable.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\ReflectionTestSuiteBuilder.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\SetupFailureException.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TearDownFailureException.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\Test.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TestCase.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TestException.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TestFailure.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TestFailureCollection.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TestLifeCycle.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TestMethod.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TestPlatform.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TestResult.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TestRunner.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TestSuite.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\TestSuiteBuilder.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\prop-base\UnitTestMain.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\props\ArrayAssert.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\Assert.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\AssertionException.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\CodeBlock.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\NullTest.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\NullTestSuiteBuilder.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\Printable.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\ReflectionTestSuiteBuilder.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\SetupFailureException.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TearDownFailureException.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\Test.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TestCase.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TestException.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TestFailure.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TestFailureCollection.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TestLifeCycle.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TestMethod.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TestPlatform.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TestResult.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TestRunner.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TestSuite.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\TestSuiteBuilder.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\props\UnitTestMain.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\text-base\ArrayAssert.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\Assert.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\AssertionException.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\CodeBlock.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\NullTest.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\NullTestSuiteBuilder.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\Printable.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\ReflectionTestSuiteBuilder.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\SetupFailureException.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TearDownFailureException.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\Test.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TestCase.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TestException.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TestFailure.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TestFailureCollection.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TestLifeCycle.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TestMethod.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TestPlatform.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TestResult.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TestRunner.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TestSuite.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\TestSuiteBuilder.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\text-base\UnitTestMain.cs.svn-base"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\ArrayAssert.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\Assert.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\AssertionException.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\CodeBlock.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\NullTest.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\NullTestSuiteBuilder.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\Printable.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\ReflectionTestSuiteBuilder.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\SetupFailureException.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TearDownFailureException.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\Test.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TestCase.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TestException.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TestFailure.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TestFailureCollection.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TestLifeCycle.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TestMethod.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TestPlatform.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TestResult.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TestRunner.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TestSuite.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\TestSuiteBuilder.cs.svn-work"/>
+    <None Include="src\Db4oUnit\.svn\wcprops\UnitTestMain.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\dir-wcprops"/>
+    <None Include="src\Db4oUnit\tests\.svn\empty-file"/>
+    <None Include="src\Db4oUnit\tests\.svn\entries"/>
+    <None Include="src\Db4oUnit\tests\.svn\format"/>
+    <None Include="src\Db4oUnit\tests\.svn\prop-base\AllTests.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\prop-base\AssertTestCase.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\prop-base\FrameworkTestCase.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\prop-base\ReflectionTestSuiteBuilderTestCase.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\prop-base\RunsGreen.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\prop-base\RunsLifeCycle.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\prop-base\RunsRed.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\prop-base\TestLifeCycleTestCase.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\props\AllTests.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\props\AssertTestCase.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\props\FrameworkTestCase.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\props\ReflectionTestSuiteBuilderTestCase.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\props\RunsGreen.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\props\RunsLifeCycle.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\props\RunsRed.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\props\TestLifeCycleTestCase.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\text-base\AllTests.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\text-base\AssertTestCase.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\text-base\FrameworkTestCase.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\text-base\ReflectionTestSuiteBuilderTestCase.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\text-base\RunsGreen.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\text-base\RunsLifeCycle.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\text-base\RunsRed.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\text-base\TestLifeCycleTestCase.cs.svn-base"/>
+    <None Include="src\Db4oUnit\tests\.svn\wcprops\AllTests.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\wcprops\AssertTestCase.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\wcprops\FrameworkTestCase.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\wcprops\ReflectionTestSuiteBuilderTestCase.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\wcprops\RunsGreen.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\wcprops\RunsLifeCycle.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\wcprops\RunsRed.cs.svn-work"/>
+    <None Include="src\Db4oUnit\tests\.svn\wcprops\TestLifeCycleTestCase.cs.svn-work"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\Db4oUnit\.svn\README.txt"/>
+    <Content Include="src\Db4oUnit\tests\.svn\README.txt"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\Db4oUnit\.svn\tmp\prop-base\"/>
+    <Folder Include="src\Db4oUnit\.svn\tmp\props\"/>
+    <Folder Include="src\Db4oUnit\.svn\tmp\text-base\"/>
+    <Folder Include="src\Db4oUnit\.svn\tmp\wcprops\"/>
+    <Folder Include="src\Db4oUnit\tests\.svn\tmp\prop-base\"/>
+    <Folder Include="src\Db4oUnit\tests\.svn\tmp\props\"/>
+    <Folder Include="src\Db4oUnit\tests\.svn\tmp\text-base\"/>
+    <Folder Include="src\Db4oUnit\tests\.svn\tmp\wcprops\"/>
+  </ItemGroup>
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets"/>
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets"/>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
+        <HostingProcess disable="1"/>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
