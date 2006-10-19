@@ -2,6 +2,8 @@
 
 using System.Reflection;
 using System.Runtime.CompilerServices;
+
+#if CF_1_0 || CF_2_0
 [assembly: AssemblyTitle("db4o - database for objects")]
 [assembly: AssemblyDescription("db4o 5.7.001 .NET CompactFramework")]
 [assembly: AssemblyConfiguration(".NET CompactFramework")]
@@ -14,3 +16,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]
+#endif

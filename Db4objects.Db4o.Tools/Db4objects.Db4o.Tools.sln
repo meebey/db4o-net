@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "db4o-net-tools", "db4o-net-tools.csproj", "{D2031890-1FC8-4635-B580-BCA25DF895DE}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "db4o-net", "..\core\db4o-net.csproj", "{7A07E089-078C-433A-BD15-60763FE3B8F2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{D2031890-1FC8-4635-B580-BCA25DF895DE}.Debug.ActiveCfg = Debug|.NET
+		{D2031890-1FC8-4635-B580-BCA25DF895DE}.Debug.Build.0 = Debug|.NET
+		{D2031890-1FC8-4635-B580-BCA25DF895DE}.Release.ActiveCfg = Release|.NET
+		{D2031890-1FC8-4635-B580-BCA25DF895DE}.Release.Build.0 = Release|.NET
+		{7A07E089-078C-433A-BD15-60763FE3B8F2}.Debug.ActiveCfg = Debug|.NET
+		{7A07E089-078C-433A-BD15-60763FE3B8F2}.Debug.Build.0 = Debug|.NET
+		{7A07E089-078C-433A-BD15-60763FE3B8F2}.Release.ActiveCfg = Release|.NET
+		{7A07E089-078C-433A-BD15-60763FE3B8F2}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

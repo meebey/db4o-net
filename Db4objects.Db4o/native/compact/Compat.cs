@@ -91,7 +91,6 @@ namespace System
 	{
 	}
 }
-#endif
 
 namespace Db4objects.Db4o
 {
@@ -100,3 +99,4 @@ namespace Db4objects.Db4o
 	{
 	}
 }
+#endif
