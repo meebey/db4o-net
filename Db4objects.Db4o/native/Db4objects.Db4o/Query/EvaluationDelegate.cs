@@ -4,5 +4,5 @@ using System;
 
 namespace Db4objects.Db4o.Query
 {
-    public delegate void EvaluationDelegate(Candidate candidate);
+    public delegate void EvaluationDelegate(ICandidate candidate);
 }

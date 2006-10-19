@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Foundation
         AutoResetEvent waitEvent = new AutoResetEvent(false);
         AutoResetEvent closureEvent = new AutoResetEvent(false);
 
-        public Object Run(Closure4 closure4)
+        public Object Run(IClosure4 closure4)
         {
             EnterClosure();
             Object ret;

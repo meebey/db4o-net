@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Foundation {
             Monitor.Pulse(this);
         }
 
-        public Object Run(Closure4 closure) {
+        public Object Run(IClosure4 closure) {
             lock (this) {
                 return closure.Run();
             }

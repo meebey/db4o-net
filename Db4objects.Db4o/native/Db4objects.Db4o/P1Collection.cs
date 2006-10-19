@@ -5,7 +5,7 @@ using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o
 {
-	internal abstract class P1Collection : P1Object, Db4oCollection, Db4oTypeImpl
+	internal abstract class P1Collection : P1Object, IDb4oCollection, IDb4oTypeImpl
 	{
 		[Transient]
 		internal int i_activationDepth = -1;

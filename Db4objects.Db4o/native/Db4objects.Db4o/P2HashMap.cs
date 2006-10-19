@@ -8,7 +8,7 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o
 {
-	internal class P2HashMap : P1Collection, Db4oMap, TransactionListener
+	internal class P2HashMap : P1Collection, IDb4oMap, ITransactionListener
 	{
 		protected static float FILL = 0.6F;
 
@@ -378,10 +378,9 @@ namespace Db4objects.Db4o
 					i_entries = new P1HashElement[col.Size()];
 				}
 				int j = 0;
-				Iterator4 it = col.Iterator();
-				while (it.MoveNext())
+				foreach (object item in col)
 				{
-					i_entries[j++] = (P1HashElement)it.Current();
+					i_entries[j++] = (P1HashElement)item;
 				}
 				Store(2);
 			}

@@ -7,18 +7,18 @@ using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o {
 
-   internal class P2Collections : Db4oCollections {
+   internal class P2Collections : IDb4oCollections {
 
-      internal ExtObjectContainer i_stream;
+      internal IExtObjectContainer i_stream;
       
       internal P2Collections(Object a_stream) : base() {
-         i_stream = (ExtObjectContainer)a_stream;
+         i_stream = (IExtObjectContainer)a_stream;
       }
       
-      public Db4oList NewLinkedList() {
+      public IDb4oList NewLinkedList() {
           lock(i_stream.Lock()){
               if (Unobfuscated.CreateDb4oList(i_stream)){
-                  Db4oList l = new P2LinkedList();
+                  IDb4oList l = new P2LinkedList();
                   i_stream.Set(l);
                   return l;
               }
@@ -26,14 +26,14 @@ namespace Db4objects.Db4o {
           }
       }
       
-      public Db4oMap NewHashMap(int size) {
+      public IDb4oMap NewHashMap(int size) {
           lock(i_stream.Lock()){
               if (Unobfuscated.CreateDb4oList(i_stream)) return new P2HashMap(size);
               return null;
           }
       }
 
-       public Db4oMap NewIdentityHashMap(int size) {
+       public IDb4oMap NewIdentityHashMap(int size) {
            lock(i_stream.Lock()){
                if(Unobfuscated.CreateDb4oList(i_stream)){
                    P2HashMap m = new P2HashMap(size);

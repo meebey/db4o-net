@@ -8,9 +8,9 @@ using Db4objects.Db4o;
 namespace Db4objects.Db4o.Config {
 
 	/// <exclude />
-    public class TList : ObjectTranslator {
+    public class TList : IObjectTranslator {
 
-        public void OnActivate(ObjectContainer objectContainer, object obj, object members){
+        public void OnActivate(IObjectContainer objectContainer, object obj, object members){
             IList list = (IList)obj;
             list.Clear();
             if(members != null){
@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Config {
             }
         }
 
-        public Object OnStore(ObjectContainer objectContainer, object obj){
+        public Object OnStore(IObjectContainer objectContainer, object obj){
             IList list = (IList)obj;
             object[] elements = new object[list.Count];
             for(int i = 0; i < list.Count; i++){

@@ -1,14 +1,14 @@
 ﻿namespace Db4objects.Db4o.Reflect.Net
 {
-	public class NetReflector : Db4objects.Db4o.Reflect.Reflector
+	public class NetReflector : Db4objects.Db4o.Reflect.IReflector
 	{
 
-		private Db4objects.Db4o.Reflect.Reflector _parent;
+		private Db4objects.Db4o.Reflect.IReflector _parent;
 
-		private Db4objects.Db4o.Reflect.ReflectArray _array;
+		private Db4objects.Db4o.Reflect.IReflectArray _array;
 
 
-		public virtual Db4objects.Db4o.Reflect.ReflectArray Array()
+		public virtual Db4objects.Db4o.Reflect.IReflectArray Array()
 		{
 			if (_array == null)
 			{
@@ -27,12 +27,12 @@
 			return new NetReflector();
 		}
 
-		public virtual Db4objects.Db4o.Reflect.ReflectClass ForClass(System.Type clazz)
+		public virtual Db4objects.Db4o.Reflect.IReflectClass ForClass(System.Type clazz)
 		{
 			return new Db4objects.Db4o.Reflect.Net.NetClass(_parent, clazz);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.ReflectClass ForName(string className)
+		public virtual Db4objects.Db4o.Reflect.IReflectClass ForName(string className)
 		{
 			System.Type clazz = null;
 			try
@@ -47,7 +47,7 @@
 				: new Db4objects.Db4o.Reflect.Net.NetClass(_parent, clazz);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.ReflectClass ForObject(object a_object)
+		public virtual Db4objects.Db4o.Reflect.IReflectClass ForObject(object a_object)
 		{
 			if (a_object == null)
 			{
@@ -56,7 +56,7 @@
 			return _parent.ForClass(a_object.GetType());
 		}
 
-		public virtual bool IsCollection(Db4objects.Db4o.Reflect.ReflectClass candidate)
+		public virtual bool IsCollection(Db4objects.Db4o.Reflect.IReflectClass candidate)
 		{
 			if (candidate.IsArray())
 			{
@@ -75,14 +75,14 @@
 			return true;
 		}
 
-		public static Db4objects.Db4o.Reflect.ReflectClass[] ToMeta(
-			Db4objects.Db4o.Reflect.Reflector reflector,
+		public static Db4objects.Db4o.Reflect.IReflectClass[] ToMeta(
+			Db4objects.Db4o.Reflect.IReflector reflector,
 			System.Type[] clazz)
 		{
-			Db4objects.Db4o.Reflect.ReflectClass[] claxx = null;
+			Db4objects.Db4o.Reflect.IReflectClass[] claxx = null;
 			if (clazz != null)
 			{
-				claxx = new Db4objects.Db4o.Reflect.ReflectClass[clazz.Length];
+				claxx = new Db4objects.Db4o.Reflect.IReflectClass[clazz.Length];
 				for (int i = 0; i < clazz.Length; i++)
 				{
 					if (clazz[i] != null)
@@ -94,7 +94,7 @@
 			return claxx;
 		}
 
-		internal static System.Type[] ToNative(Db4objects.Db4o.Reflect.ReflectClass[] claxx)
+		internal static System.Type[] ToNative(Db4objects.Db4o.Reflect.IReflectClass[] claxx)
 		{
 			System.Type[] clazz = null;
 			if (claxx != null)
@@ -111,7 +111,7 @@
 			return clazz;
 		}
 
-		public virtual void SetParent(Reflector reflector)
+		public virtual void SetParent(IReflector reflector)
 		{
 			_parent = reflector;
 		}

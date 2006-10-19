@@ -5,6 +5,6 @@ using System.Collections;
 
 namespace Db4objects.Db4o.Types {
 
-   public interface Db4oMap : Db4oCollection, IDictionary {
+   public interface IDb4oMap : IDb4oCollection, IDictionary {
    }
 }

@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.Events.Impl
 {
 	internal class EventPlatform
 	{
-		public static void TriggerQueryEvent(QueryEventHandler e, Db4objects.Db4o.Query.Query q)
+		public static void TriggerQueryEvent(QueryEventHandler e, Db4objects.Db4o.Query.IQuery q)
 		{
 			if (null == e) return;
 			e(q, new QueryEventArgs(q));

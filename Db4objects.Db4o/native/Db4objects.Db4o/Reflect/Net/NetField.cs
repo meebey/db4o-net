@@ -1,13 +1,13 @@
 ﻿namespace Db4objects.Db4o.Reflect.Net
 {
 
-	public class NetField : Db4objects.Db4o.Reflect.ReflectField
+	public class NetField : Db4objects.Db4o.Reflect.IReflectField
 	{
-		private readonly Db4objects.Db4o.Reflect.Reflector reflector;
+		private readonly Db4objects.Db4o.Reflect.IReflector reflector;
 
 		private readonly System.Reflection.FieldInfo field;
 
-		public NetField(Db4objects.Db4o.Reflect.Reflector reflector, System.Reflection.FieldInfo field
+		public NetField(Db4objects.Db4o.Reflect.IReflector reflector, System.Reflection.FieldInfo field
 			)
 		{
 			this.reflector = reflector;
@@ -19,7 +19,7 @@
 			return field.Name;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.ReflectClass GetFieldType()
+		public virtual Db4objects.Db4o.Reflect.IReflectClass GetFieldType()
 		{
 			return reflector.ForClass(field.FieldType);
 		}

@@ -96,12 +96,12 @@ namespace Db4objects.Db4o
 			return true;
 		}
 
-		internal static Db4oCollections Collections(Object a_object)
+		internal static IDb4oCollections Collections(Object a_object)
 		{
 			return new P2Collections(a_object);
 		}
 
-		internal static Reflector CreateReflector(Object config)
+		internal static IReflector CreateReflector(Object config)
 		{
 			return new NetReflector();
 		}
@@ -133,16 +133,16 @@ namespace Db4objects.Db4o
 
 		internal static QConEvaluation EvaluationCreate(Transaction a_trans, Object example)
 		{
-			if (example is Evaluation || example is EvaluationDelegate)
+			if (example is IEvaluation || example is EvaluationDelegate)
 			{
 				return new QConEvaluation(a_trans, example);
 			}
 			return null;
 		}
 
-		internal static void EvaluationEvaluate(Object a_evaluation, Candidate a_candidate)
+		internal static void EvaluationEvaluate(Object a_evaluation, ICandidate a_candidate)
 		{
-			Evaluation eval = a_evaluation as Evaluation;
+			IEvaluation eval = a_evaluation as IEvaluation;
 			if (eval != null)
 			{
 				eval.Evaluate(a_candidate);
@@ -158,7 +158,7 @@ namespace Db4objects.Db4o
 			}
 		}
 
-	    internal static Config4Class ExtendConfiguration(ReflectClass clazz, Configuration config, Config4Class classConfig)
+	    internal static Config4Class ExtendConfiguration(IReflectClass clazz, IConfiguration config, Config4Class classConfig)
 		{
             Type t = GetNetType(clazz);
             if (t == null)
@@ -182,7 +182,7 @@ namespace Db4objects.Db4o
 			Array arr = obj as Array;
 			if (arr != null)
 			{
-				ReflectArray reflectArray = stream.Reflector().Array();
+				IReflectArray reflectArray = stream.Reflector().Array();
 
 				Object[] flat = new Object[arr.Length];
 
@@ -225,7 +225,7 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		internal static void ForEachCollectionElement(Object obj, Visitor4 visitor)
+		internal static void ForEachCollectionElement(Object obj, IVisitor4 visitor)
 		{
 			IEnumerator enumerator = GetCollectionEnumerator(obj, false);
 			if (enumerator != null)
@@ -389,7 +389,7 @@ namespace Db4objects.Db4o
 		{
 			if (config4class != null)
 			{
-				ObjectTranslator ot = config4class.GetTranslator();
+				IObjectTranslator ot = config4class.GetTranslator();
 				if (ot != null)
 				{
 					return ot is TList || ot is TDictionary || ot is TQueue || ot is TStack;
@@ -417,7 +417,7 @@ namespace Db4objects.Db4o
 			return false;
 		}
 
-		internal static bool IsValueType(ReflectClass claxx)
+		internal static bool IsValueType(IReflectClass claxx)
 		{
 			if (claxx == null)
 			{
@@ -473,14 +473,14 @@ namespace Db4objects.Db4o
 
 		internal static void PollReferenceQueue(Object stream, Object referenceQueue)
 		{
-			((YapReferenceQueue) referenceQueue).Poll((ExtObjectContainer) stream);
+			((YapReferenceQueue) referenceQueue).Poll((IExtObjectContainer) stream);
 		}
 
-		internal static void PostOpen(ObjectContainer objectContainer)
+		internal static void PostOpen(IObjectContainer objectContainer)
 		{
 		}
 
-		internal static void PreClose(ObjectContainer objectContainer)
+		internal static void PreClose(IObjectContainer objectContainer)
 		{
 		}
 
@@ -518,13 +518,13 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		public static bool StoreStaticFieldValues(Reflector reflector, ReflectClass clazz)
+		public static bool StoreStaticFieldValues(IReflector reflector, IReflectClass clazz)
 		{
 			return false;
 		}
 
 
-		private static void Translate(Config4Impl config, object obj, ObjectTranslator translator)
+		private static void Translate(Config4Impl config, object obj, IObjectTranslator translator)
 		{
 			try
 			{
@@ -584,7 +584,7 @@ namespace Db4objects.Db4o
 #endif
 		}
 
-		internal static bool IsTransient(ReflectClass clazz)
+		internal static bool IsTransient(IReflectClass clazz)
 		{
 			System.Type type = GetNetType(clazz);
 			if (null == type) return false;
@@ -592,7 +592,7 @@ namespace Db4objects.Db4o
 				|| type.IsSubclassOf(typeof(Delegate));
 		}
 
-        private static Type GetNetType(ReflectClass clazz)
+        private static Type GetNetType(IReflectClass clazz)
         {
 	        if (null == clazz)
 	        {
@@ -604,7 +604,7 @@ namespace Db4objects.Db4o
 	        {
 		        return netClass.GetNetType();
 	        }
-            ReflectClass claxx = clazz.GetDelegate();
+            IReflectClass claxx = clazz.GetDelegate();
             if(claxx == clazz)
             {
                 return null;

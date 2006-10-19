@@ -5,6 +5,6 @@ using System.Collections;
 
 namespace Db4objects.Db4o.Types {
 
-   public interface Db4oList : Db4oCollection, IList, IEnumerable {
+   public interface IDb4oList : IDb4oCollection, IList, IEnumerable {
    }
 }

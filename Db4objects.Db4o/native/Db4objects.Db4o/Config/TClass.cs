@@ -7,13 +7,13 @@ using Db4objects.Db4o;
 namespace Db4objects.Db4o.Config
 {
 	/// <exclude />
-	public class TClass : ObjectConstructor
+	public class TClass : IObjectConstructor
 	{
-		public void OnActivate(ObjectContainer objectContainer, object obj, object members)
+		public void OnActivate(IObjectContainer objectContainer, object obj, object members)
 		{
 		}
 
-		public Object OnInstantiate(ObjectContainer objectContainer, object obj)
+		public Object OnInstantiate(IObjectContainer objectContainer, object obj)
 		{
 			try
 			{
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Config
 			}
 		}
 
-		public Object OnStore(ObjectContainer objectContainer, object obj)
+		public Object OnStore(IObjectContainer objectContainer, object obj)
 		{
 			return ((Class)obj).GetName();
 		}

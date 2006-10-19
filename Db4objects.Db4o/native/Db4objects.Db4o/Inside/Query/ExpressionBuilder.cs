@@ -50,6 +50,6 @@ namespace Db4objects.Db4o.Inside.Query {
 		/// </summary>
 		/// <param name="method">A method</param>
 		/// <returns>An expression Tree</returns>
-		public abstract Expression FromMethod (MethodBase method);
+		public abstract IExpression FromMethod(MethodBase method);
 	}
 }

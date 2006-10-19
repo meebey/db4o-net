@@ -8,13 +8,13 @@ namespace Db4objects.Db4o.Config
 {
 
     /// <exclude />
-    public class TTransient : ObjectConstructor
+    public class TTransient : IObjectConstructor
     {
-        public void OnActivate(ObjectContainer objectContainer, object obj, object members)
+        public void OnActivate(IObjectContainer objectContainer, object obj, object members)
         {
         }
 
-        public object OnStore(ObjectContainer objectContainer, object obj)
+        public object OnStore(IObjectContainer objectContainer, object obj)
         {
             return null;
         }
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Config
             return typeof(object);
         }
 
-        public object OnInstantiate(ObjectContainer objectContainer, object storedObject)
+        public object OnInstantiate(IObjectContainer objectContainer, object storedObject)
         {
             return null;
         }

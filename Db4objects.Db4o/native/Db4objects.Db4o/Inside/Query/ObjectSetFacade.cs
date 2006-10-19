@@ -8,22 +8,22 @@ namespace Db4objects.Db4o.Inside.Query
 	/// List based objectSet implementation
 	/// </summary>
 	/// <exclude />
-	public class ObjectSetFacade : ExtObjectSet, System.Collections.IList
+	public class ObjectSetFacade : IExtObjectSet, System.Collections.IList
 	{
-		public readonly QueryResult _delegate;
+		public readonly StatefulQueryResult _delegate;
 
-        public ObjectSetFacade(QueryResult qr)
+        public ObjectSetFacade(IQueryResult qr)
 		{
-            _delegate = qr;
+            _delegate = new StatefulQueryResult(qr);
 		}
 
-		#region ObjectSet Members
+		#region IObjectSet Members
 		
 		public Object Get(int index) {
-            return _delegate.Get(ReverseIndex(_delegate, index));
+            return _delegate.Get(index);
         }
 
-		public void Sort(Db4objects.Db4o.Query.QueryComparator cmp)
+		public void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
 		{
 			throw new NotImplementedException();
 		}
@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Inside.Query
 			return _delegate.GetIDs();
 		}
 
-		public ExtObjectSet Ext() 
+		public IExtObjectSet Ext() 
 		{
 			return this;
 		}
@@ -63,12 +63,12 @@ namespace Db4objects.Db4o.Inside.Query
 			return _delegate.StreamLock();
 		}
     
-		private ObjectContainer ObjectContainer()
+		private IObjectContainer ObjectContainer()
 		{
 			return _delegate.ObjectContainer();
 		}
 
-		public QueryResult Delegate_()
+		public StatefulQueryResult Delegate_()
 		{
 			return _delegate;
 		}
@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.Inside.Query
 		{
 			get
 			{
-				return _delegate.Get(ReverseIndex(_delegate, index));
+				return _delegate.Get(index);
 			}
 			set
 			{
@@ -123,15 +123,7 @@ namespace Db4objects.Db4o.Inside.Query
 
 		public int IndexOf(object value)
 		{
-			lock (StreamLock())
-			{
-                int id = (int)ObjectContainer().Ext().GetID(value);
-				if(id <= 0)
-				{
-					return -1;
-				}
-				return ReverseIndex(_delegate, _delegate.IndexOf(id));
-			}
+			return _delegate.IndexOf(value);
 		}
 
 		public int Add(object value)
@@ -174,7 +166,7 @@ namespace Db4objects.Db4o.Inside.Query
                 int s = _delegate.Size();
                 while (i < s)
                 {
-                    array.SetValue(_delegate.Get(ReverseIndex(_delegate, i)), index + i);
+                    array.SetValue(_delegate.Get(i), index + i);
                     i++;
                 }
             }
@@ -194,10 +186,10 @@ namespace Db4objects.Db4o.Inside.Query
 
 		class ObjectSetImplEnumerator : System.Collections.IEnumerator
 		{
-			QueryResult _result;
+			StatefulQueryResult _result;
 			int _next = 0;
 			
-			public ObjectSetImplEnumerator(QueryResult result)
+			public ObjectSetImplEnumerator(StatefulQueryResult result)
 			{
 				_result = result;
 			}
@@ -211,7 +203,7 @@ namespace Db4objects.Db4o.Inside.Query
 			{
 				get
 				{
-					return _result.Get(ReverseIndex(_result, _next-1));
+					return _result.Get(_next-1);
 				}
 			}
 
@@ -231,11 +223,6 @@ namespace Db4objects.Db4o.Inside.Query
 			return new ObjectSetImplEnumerator(_delegate);
 		}
 		#endregion
-		
-		private static int ReverseIndex(QueryResult result, int idx) 
-		{
-        	return result.Size()-idx-1;
-    	}
 	}
 }
 

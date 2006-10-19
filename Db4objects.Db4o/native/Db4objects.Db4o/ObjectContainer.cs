@@ -3,18 +3,18 @@
 	/// <summary>the interface to a db4o database, stand-alone or client/server.</summary>
 	/// <remarks>
 	/// the interface to a db4o database, stand-alone or client/server.
-	/// <br /><br />The ObjectContainer interface provides methods
+	/// <br /><br />The IObjectContainer interface provides methods
 	/// to store, query and delete objects and to commit and rollback
 	/// transactions.<br /><br />
-	/// An ObjectContainer can either represent a stand-alone database
+	/// An IObjectContainer can either represent a stand-alone database
 	/// or a connection to a
 	/// <see cref="Db4objects.Db4o.Db4o.OpenServer">db4o server</see>
 	/// .
-	/// <br /><br />An ObjectContainer also represents a transaction. All work
+	/// <br /><br />An IObjectContainer also represents a transaction. All work
 	/// with db4o always is transactional. Both
-	/// <see cref="Db4objects.Db4o.ObjectContainer.Commit">Db4objects.Db4o.ObjectContainer.Commit</see>
+	/// <see cref="Db4objects.Db4o.IObjectContainer.Commit">Db4objects.Db4o.IObjectContainer.Commit</see>
 	/// and
-	/// <see cref="Db4objects.Db4o.ObjectContainer.Rollback">Db4objects.Db4o.ObjectContainer.Rollback</see>
+	/// <see cref="Db4objects.Db4o.IObjectContainer.Rollback">Db4objects.Db4o.IObjectContainer.Rollback</see>
 	/// start new transactions immediately. For working
 	/// against the same database with multiple transactions, open a db4o server
 	/// with
@@ -25,16 +25,16 @@
 	/// <see cref="Db4objects.Db4o.Db4o.OpenClient">over TCP</see>
 	/// .
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Ext.ExtObjectContainer">ExtObjectContainer for extended functionality.
+	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer">IExtObjectContainer for extended functionality.
 	/// 	</seealso>
-	public interface ObjectContainer : System.IDisposable
+	public interface IObjectContainer : System.IDisposable
 	{
 		/// <summary>activates all members on a stored object to the specified depth.</summary>
 		/// <remarks>
 		/// activates all members on a stored object to the specified depth.
 		/// <br /><br />
 		/// See
-		/// <see cref="Db4objects.Db4o.Config.Configuration.ActivationDepth">"Why activation"</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">"Why activation"</see>
 		/// for an explanation why activation is necessary.<br /><br />
 		/// The activate method activates a graph of persistent objects in memory.
 		/// Only deactivated objects in the graph will be touched: their
@@ -59,21 +59,21 @@
 		/// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnActivate">objectOnActivate</see>
 		/// which can be used for cascaded activation.<br /><br />
 		/// </remarks>
-		/// <seealso cref="Db4objects.Db4o.Config.Configuration.ActivationDepth">Why activation?</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?</seealso>
 		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
 		/// <param name="obj">the object to be activated.</param>
 		/// <param name="depth">
 		/// the member
-		/// <see cref="Db4objects.Db4o.Config.Configuration.ActivationDepth">depth</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">depth</see>
 		/// to which activate is to cascade.
 		/// </param>
 		void Activate(object obj, int depth);
 
-		/// <summary>closes this ObjectContainer.</summary>
+		/// <summary>closes this IObjectContainer.</summary>
 		/// <remarks>
-		/// closes this ObjectContainer.
+		/// closes this IObjectContainer.
 		/// <br /><br />A call to Close() automatically performs a
-		/// <see cref="Db4objects.Db4o.ObjectContainer.Commit">Commit()</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Commit">Commit()</see>
 		/// .
 		/// <br /><br />Note that every session opened with Db4o.OpenFile() requires one
 		/// Close()call, even if the same filename was used multiple times.<br /><br />
@@ -101,7 +101,7 @@
 		/// <br /><br /><b>Examples: ../com/db4o/samples/activate.</b><br /><br />
 		/// Calls to this method save memory.
 		/// The method has no effect, if the passed object is not stored in the
-		/// <code>ObjectContainer</code>.<br /><br />
+		/// <code>IObjectContainer</code>.<br /><br />
 		/// <code>Deactivate()</code> triggers the callback method
 		/// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnDeactivate">objectOnDeactivate</see>
 		/// .
@@ -111,11 +111,11 @@
 		/// in other places of the application.<br /><br />
 		/// </remarks>
 		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.Configuration.ActivationDepth">Why activation?</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?</seealso>
 		/// <param name="obj">the object to be deactivated.</param>
 		/// <param name="depth">
 		/// the member
-		/// <see cref="Db4objects.Db4o.Config.Configuration.ActivationDepth">depth</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">depth</see>
 		/// 
 		/// to which deactivate is to cascade.
 		/// </param>
@@ -134,10 +134,10 @@
 		/// <see cref="Db4objects.Db4o.Config.ObjectField.CascadeOnDelete">one of the member fields</see>
 		/// .
 		/// <br /><br />The method has no effect, if
-		/// the passed object is not stored in the <code>ObjectContainer</code>.
+		/// the passed object is not stored in the <code>IObjectContainer</code>.
 		/// <br /><br />A subsequent call to
 		/// <code>Set()</code> with the same object newly stores the object
-		/// to the <code>ObjectContainer</code>.<br /><br />
+		/// to the <code>IObjectContainer</code>.<br /><br />
 		/// <code>Delete()</code> triggers the callback method
 		/// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnDelete">objectOnDelete</see>
 		/// which can be also used for cascaded deletes.<br /><br />
@@ -149,49 +149,49 @@
 		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
 		/// <param name="obj">
 		/// the object to be deleted from the
-		/// <code>ObjectContainer</code>.<br />
+		/// <code>IObjectContainer</code>.<br />
 		/// </param>
 		void Delete(object obj);
 
-		/// <summary>returns an ObjectContainer with extended functionality.</summary>
+		/// <summary>returns an IObjectContainer with extended functionality.</summary>
 		/// <remarks>
-		/// returns an ObjectContainer with extended functionality.
-		/// <br /><br />Every ObjectContainer that db4o provides can be casted to
-		/// an ExtObjectContainer. This method is supplied for your convenience
+		/// returns an IObjectContainer with extended functionality.
+		/// <br /><br />Every IObjectContainer that db4o provides can be casted to
+		/// an IExtObjectContainer. This method is supplied for your convenience
 		/// to work without a cast.
-		/// <br /><br />The ObjectContainer functionality is split to two interfaces
+		/// <br /><br />The IObjectContainer functionality is split to two interfaces
 		/// to allow newcomers to focus on the essential methods.<br /><br />
 		/// </remarks>
-		/// <returns>this, casted to ExtObjectContainer</returns>
-		Db4objects.Db4o.Ext.ExtObjectContainer Ext();
+		/// <returns>this, casted to IExtObjectContainer</returns>
+		Db4objects.Db4o.Ext.IExtObjectContainer Ext();
 
 		/// <summary>Query-By-Example interface to retrieve objects.</summary>
 		/// <remarks>
 		/// Query-By-Example interface to retrieve objects.
 		/// <br /><br /><code>Get()</code> creates an
-		/// <see cref="Db4objects.Db4o.ObjectSet">ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">IObjectSet</see>
 		/// containing
-		/// all objects in the <code>ObjectContainer</code> that match the passed
+		/// all objects in the <code>IObjectContainer</code> that match the passed
 		/// template object.<br /><br />
 		/// Calling <code>Get(NULL)</code> returns all objects stored in the
-		/// <code>ObjectContainer</code>.<br /><br /><br />
-		/// <b>Query Evaluation</b>
+		/// <code>IObjectContainer</code>.<br /><br /><br />
+		/// <b>Query IEvaluation</b>
 		/// <br />All non-null members of the template object are compared against
 		/// all stored objects of the same class.
 		/// Primitive type members are ignored if they are 0 or false respectively.
 		/// <br /><br />Arrays and all supported <code>Collection</code> classes are
 		/// evaluated for containment. Differences in <code>length/Size()</code> are
 		/// ignored.
-		/// <br /><br />Consult the documentation of the Configuration package to
+		/// <br /><br />Consult the documentation of the IConfiguration package to
 		/// configure class-specific behaviour.<br /><br /><br />
 		/// <b>Returned Objects</b><br />
 		/// The objects returned in the
-		/// <see cref="Db4objects.Db4o.ObjectSet">ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">IObjectSet</see>
 		/// are instantiated
 		/// and activated to the preconfigured depth of 5. The
-		/// <see cref="Db4objects.Db4o.Config.Configuration.ActivationDepth">activation depth</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">activation depth</see>
 		/// may be configured
-		/// <see cref="Db4objects.Db4o.Config.Configuration.ActivationDepth">globally</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">globally</see>
 		/// or
 		/// <see cref="Db4objects.Db4o.Config.ObjectClass">individually for classes</see>
 		/// .
@@ -209,38 +209,38 @@
 		/// 	</param>
 		/// <returns>
 		/// 
-		/// <see cref="Db4objects.Db4o.ObjectSet">ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">IObjectSet</see>
 		/// containing all found objects.<br /><br />
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Config.Configuration.ActivationDepth">Why activation?</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?</seealso>
 		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
-		Db4objects.Db4o.ObjectSet Get(object template);
+		Db4objects.Db4o.IObjectSet Get(object template);
 
 		/// <summary>
 		/// creates a new SODA
-		/// <see cref="Db4objects.Db4o.Query.Query">Query</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery">IQuery</see>
 		/// .
 		/// <br /><br />
 		/// Use
-		/// <see cref="Db4objects.Db4o.ObjectContainer.Get">Get(Object template)</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Get">Get(Object template)</see>
 		/// for simple Query-By-Example.<br /><br />
-		/// <see cref="Db4objects.Db4o.ObjectContainer.Query">Native queries</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Query">Native queries</see>
 		/// are the recommended main db4o query
 		/// interface.
 		/// <br /><br />
 		/// </summary>
-		/// <returns>a new Query object</returns>
-		Db4objects.Db4o.Query.Query Query();
+		/// <returns>a new IQuery object</returns>
+		Db4objects.Db4o.Query.IQuery Query();
 
 		/// <summary>queries for all instances of a class.</summary>
 		/// <remarks>queries for all instances of a class.</remarks>
 		/// <param name="clazz">the class to query for.</param>
 		/// <returns>
 		/// the
-		/// <see cref="Db4objects.Db4o.ObjectSet">Db4objects.Db4o.ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// returned by the query.
 		/// </returns>
-		Db4objects.Db4o.ObjectSet Query(System.Type clazz);
+		Db4objects.Db4o.IObjectSet Query(System.Type clazz);
 
 		/// <summary>Native Query Interface.</summary>
 		/// <remarks>
@@ -281,7 +281,7 @@
 		/// <br />
 		/// <br />
 		/// <b>// Java JDK 1.1</b><br />
-		/// ObjectSet cats = db.Query(new CatOccam());<br />
+		/// IObjectSet cats = db.Query(new CatOccam());<br />
 		/// <br />
 		/// public static class CatOccam extends Predicate {<br />
 		/// &#160;&#160;&#160;public boolean Match(Cat cat) {<br />
@@ -324,20 +324,20 @@
 		/// </param>
 		/// <returns>
 		/// the
-		/// <see cref="Db4objects.Db4o.ObjectSet">Db4objects.Db4o.ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// returned by the query.
 		/// </returns>
-		Db4objects.Db4o.ObjectSet Query(Db4objects.Db4o.Query.Predicate predicate);
+		Db4objects.Db4o.IObjectSet Query(Db4objects.Db4o.Query.Predicate predicate);
 
 		/// <summary>Native Query Interface.</summary>
 		/// <remarks>
 		/// Native Query Interface. Queries as with
-		/// <see cref="M:Db4objects.Db4o.ObjectContainer.Query(Db4objects.Db4o.Query.Predicate)">Db4objects.Db4o.ObjectContainer.Query(Predicate)</see>
+		/// <see cref="M:Db4objects.Db4o.IObjectContainer.Query(Db4objects.Db4o.Query.Predicate)">Db4objects.Db4o.IObjectContainer.Query(Predicate)</see>
 		/// ,
 		/// but will sort the resulting
-		/// <see cref="Db4objects.Db4o.ObjectSet">Db4objects.Db4o.ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// according to the given
-		/// <see cref="Db4objects.Db4o.Query.QueryComparator">Db4objects.Db4o.Query.QueryComparator</see>
+		/// <see cref="Db4objects.Db4o.Query.IQueryComparator">Db4objects.Db4o.Query.IQueryComparator</see>
 		/// .
 		/// </remarks>
 		/// <param name="predicate">
@@ -347,24 +347,24 @@
 		/// </param>
 		/// <param name="comparator">
 		/// the
-		/// <see cref="Db4objects.Db4o.Query.QueryComparator">Db4objects.Db4o.Query.QueryComparator</see>
+		/// <see cref="Db4objects.Db4o.Query.IQueryComparator">Db4objects.Db4o.Query.IQueryComparator</see>
 		/// specifiying the sort order of the result
 		/// </param>
 		/// <returns>
 		/// the
-		/// <see cref="Db4objects.Db4o.ObjectSet">Db4objects.Db4o.ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// returned by the query.
 		/// </returns>
-		Db4objects.Db4o.ObjectSet Query(Db4objects.Db4o.Query.Predicate predicate, Db4objects.Db4o.Query.QueryComparator
+		Db4objects.Db4o.IObjectSet Query(Db4objects.Db4o.Query.Predicate predicate, Db4objects.Db4o.Query.IQueryComparator
 			 comparator);
 
 		/// <summary>Native Query Interface.</summary>
 		/// <remarks>
 		/// Native Query Interface. Queries as with
-		/// <see cref="M:Db4objects.Db4o.ObjectContainer.Query(Db4objects.Db4o.Query.Predicate)">Db4objects.Db4o.ObjectContainer.Query(Predicate)</see>
+		/// <see cref="M:Db4objects.Db4o.IObjectContainer.Query(Db4objects.Db4o.Query.Predicate)">Db4objects.Db4o.IObjectContainer.Query(Predicate)</see>
 		/// ,
 		/// but will sort the resulting
-		/// <see cref="Db4objects.Db4o.ObjectSet">Db4objects.Db4o.ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// according to the given
 		/// <see cref="System.Collections.IComparer">System.Collections.IComparer</see>
 		/// .
@@ -381,10 +381,10 @@
 		/// </param>
 		/// <returns>
 		/// the
-		/// <see cref="Db4objects.Db4o.ObjectSet">Db4objects.Db4o.ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// returned by the query.
 		/// </returns>
-		Db4objects.Db4o.ObjectSet Query(Db4objects.Db4o.Query.Predicate predicate, System.Collections.IComparer comparer);
+		Db4objects.Db4o.IObjectSet Query(Db4objects.Db4o.Query.Predicate predicate, System.Collections.IComparer comparer);
 
 		/// <summary>rolls back the running transaction.</summary>
 		/// <remarks>
@@ -393,7 +393,7 @@
 		/// a new transaction immedidately.
 		/// <br /><br />rollback will not restore modified objects in memory. They
 		/// can be refreshed from the database by calling
-		/// <see cref="Db4objects.Db4o.Ext.ExtObjectContainer.Refresh">Db4objects.Db4o.Ext.ExtObjectContainer.Refresh
+		/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Refresh">Db4objects.Db4o.Ext.IExtObjectContainer.Refresh
 		/// 	</see>
 		/// .
 		/// </remarks>
@@ -402,9 +402,9 @@
 		/// <summary>newly stores objects or updates stored objects.</summary>
 		/// <remarks>
 		/// newly stores objects or updates stored objects.
-		/// <br /><br />An object not yet stored in the <code>ObjectContainer</code> will be
+		/// <br /><br />An object not yet stored in the <code>IObjectContainer</code> will be
 		/// stored when it is passed to <code>Set()</code>. An object already stored
-		/// in the <code>ObjectContainer</code> will be updated.
+		/// in the <code>IObjectContainer</code> will be updated.
 		/// <br /><br /><b>Updates</b><br />
 		/// - will affect all simple type object members.<br />
 		/// - links to object members that are already stored will be updated.<br />
@@ -413,7 +413,7 @@
 		/// - object members that are already stored will <b>not</b> be updated
 		/// themselves.<br />Every object member needs to be updated individually with a
 		/// call to <code>Set()</code> unless a deep
-		/// <see cref="Db4objects.Db4o.Config.Configuration.UpdateDepth">global</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.UpdateDepth">global</see>
 		/// or
 		/// <see cref="Db4objects.Db4o.Config.ObjectClass.UpdateDepth">class-specific</see>
 		/// update depth was configured or cascaded updates were
@@ -432,9 +432,9 @@
 		/// might also be used for cascaded updates.<br /><br />
 		/// </remarks>
 		/// <param name="obj">the object to be stored or updated.</param>
-		/// <seealso cref="Db4objects.Db4o.Ext.ExtObjectContainer.Set">ExtObjectContainer#Set(object, depth)
+		/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.Set">IExtObjectContainer#Set(object, depth)
 		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.Configuration.UpdateDepth">Db4objects.Db4o.Config.Configuration.UpdateDepth
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.UpdateDepth">Db4objects.Db4o.Config.IConfiguration.UpdateDepth
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.Config.ObjectClass.UpdateDepth">Db4objects.Db4o.Config.ObjectClass.UpdateDepth
 		/// 	</seealso>
@@ -485,7 +485,7 @@
         /// <br />
         /// <br />
         /// <b>// Java JDK 1.1</b><br />
-        /// ObjectSet cats = db.Query(new CatOccam());<br />
+        /// IObjectSet cats = db.Query(new CatOccam());<br />
         /// <br />
         /// public static class CatOccam extends Predicate {<br />
         /// &#160;&#160;&#160;public boolean Match(Cat cat) {<br />
@@ -527,7 +527,7 @@
         /// </param>
         /// <returns>
         /// the
-        /// <see cref="Db4objects.Db4o.ObjectSet">Db4objects.Db4o.ObjectSet</see>
+        /// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
         /// returned by the query.
         /// </returns>
         System.Collections.Generic.IList<Extent> Query<Extent>(System.Predicate<Extent> match);
@@ -535,10 +535,10 @@
 		/// <summary>Native Query Interface.</summary>
 		/// <remarks>
 		/// Native Query Interface. Queries as with
-		/// <see cref="M:Db4objects.Db4o.ObjectContainer.Query(Db4objects.Db4o.Query.Predicate)">Db4objects.Db4o.ObjectContainer.Query(Predicate)</see>
+		/// <see cref="M:Db4objects.Db4o.IObjectContainer.Query(Db4objects.Db4o.Query.Predicate)">Db4objects.Db4o.IObjectContainer.Query(Predicate)</see>
 		/// ,
 		/// but will sort the resulting
-		/// <see cref="Db4objects.Db4o.ObjectSet">Db4objects.Db4o.ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// according to the given
 		/// <see cref="System.Collections.Generic.IComparer">System.Collections.Generic.IComparer</see>
 		/// .
@@ -555,7 +555,7 @@
 		/// </param>
 		/// <returns>
 		/// the
-		/// <see cref="Db4objects.Db4o.ObjectSet">Db4objects.Db4o.ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// returned by the query.
 		/// </returns>
 		System.Collections.Generic.IList<Extent> Query<Extent>(System.Predicate<Extent> match, System.Collections.Generic.IComparer<Extent> comparer);
@@ -563,10 +563,10 @@
 		/// <summary>Native Query Interface.</summary>
 		/// <remarks>
 		/// Native Query Interface. Queries as with
-		/// <see cref="M:Db4objects.Db4o.ObjectContainer.Query(Db4objects.Db4o.Query.Predicate)">Db4objects.Db4o.ObjectContainer.Query(Predicate)</see>
+		/// <see cref="M:Db4objects.Db4o.IObjectContainer.Query(Db4objects.Db4o.Query.Predicate)">Db4objects.Db4o.IObjectContainer.Query(Predicate)</see>
 		/// ,
 		/// but will sort the resulting
-		/// <see cref="Db4objects.Db4o.ObjectSet">Db4objects.Db4o.ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// according to the given
 		/// <see cref="System.Comparison">System.Comparison</see>
 		/// .
@@ -583,7 +583,7 @@
 		/// </param>
 		/// <returns>
 		/// the
-		/// <see cref="Db4objects.Db4o.ObjectSet">Db4objects.Db4o.ObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// returned by the query.
 		/// </returns>
 		System.Collections.Generic.IList<Extent> Query<Extent>(System.Predicate<Extent> match, System.Comparison<Extent> comparison);

@@ -2,20 +2,20 @@
 {
 
 	/// <remarks>Reflection implementation for Constructor to map to JDK reflection.</remarks>
-	public class NetConstructor : Db4objects.Db4o.Reflect.ReflectConstructor
+	public class NetConstructor : Db4objects.Db4o.Reflect.IReflectConstructor
 	{
-		private readonly Db4objects.Db4o.Reflect.Reflector reflector;
+		private readonly Db4objects.Db4o.Reflect.IReflector reflector;
 
 		private readonly System.Reflection.ConstructorInfo constructor;
 
-		public NetConstructor(Db4objects.Db4o.Reflect.Reflector reflector, System.Reflection.ConstructorInfo
+		public NetConstructor(Db4objects.Db4o.Reflect.IReflector reflector, System.Reflection.ConstructorInfo
 			 constructor)
 		{
 			this.reflector = reflector;
 			this.constructor = constructor;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.ReflectClass[] GetParameterTypes()
+		public virtual Db4objects.Db4o.Reflect.IReflectClass[] GetParameterTypes()
 		{
 			return Db4objects.Db4o.Reflect.Net.NetReflector.ToMeta(reflector, Sharpen.Runtime.GetParameterTypes(constructor));
 		}

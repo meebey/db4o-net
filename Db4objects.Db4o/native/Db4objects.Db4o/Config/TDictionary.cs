@@ -8,9 +8,9 @@ using Db4objects.Db4o;
 namespace Db4objects.Db4o.Config {
 
 	/// <exclude />
-    public class TDictionary : ObjectTranslator {
+    public class TDictionary : IObjectTranslator {
 
-        public void OnActivate(ObjectContainer objectContainer, object obj, object members){
+        public void OnActivate(IObjectContainer objectContainer, object obj, object members){
             IDictionary dict = (IDictionary)obj;
             dict.Clear();
             if(members != null){
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Config {
             }
         }
 
-        public Object OnStore(ObjectContainer objectContainer, object obj){
+        public Object OnStore(IObjectContainer objectContainer, object obj){
             IDictionary dict = (IDictionary)obj;
             Entry[] entries = new Entry[dict.Count];
             IDictionaryEnumerator e = dict.GetEnumerator();

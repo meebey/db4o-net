@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Config.Attributes
 	{
 		Type _type;
 		Config4Class _classConfig;
-		Configuration _config;
+		IConfiguration _config;
 
 		public Type Type
 		{
@@ -23,13 +23,13 @@ namespace Db4objects.Db4o.Config.Attributes
 			set { _classConfig = value; }
 		}
 
-		public Configuration Configuration
+		public IConfiguration IConfiguration
 		{
 			get { return _config; }
 			set { _config = value; }
 		}		
 
-		public ConfigurationIntrospector(Type type, Config4Class classConfig, Configuration config)
+		public ConfigurationIntrospector(Type type, Config4Class classConfig, IConfiguration config)
 		{
 			_type = type;
 			_classConfig = classConfig;

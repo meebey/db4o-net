@@ -3,8 +3,6 @@
 namespace Db4objects.Db4o.Inside.Query
 {
 	using System;
-	using System.IO;
-	using System.Configuration;
 	using System.Reflection;
 
 	public class ExpressionBuilderFactory

@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Inside.Query
         }
     }
 
-    internal class EvaluationDelegateWrapper : DelegateEnvelope, Evaluation
+    internal class EvaluationDelegateWrapper : DelegateEnvelope, IEvaluation
     {	
         public EvaluationDelegateWrapper()
         {
@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Inside.Query
             return (EvaluationDelegate)GetContent();
         }
 		
-        public void Evaluate(Candidate candidate)
+        public void Evaluate(ICandidate candidate)
         {
             // use starting _ for PascalCase conversion purposes
             EvaluationDelegate _evaluation = GetEvaluationDelegate();

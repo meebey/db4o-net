@@ -15,13 +15,13 @@ namespace Db4objects.Db4o {
             }
         }
 
-        internal void Poll(ExtObjectContainer objectContainer) {
+        internal void Poll(IExtObjectContainer objectContainer) {
             List4 remove = null;
             lock(this){
-                Iterator4 i = new Iterator4Impl(list);
+                System.Collections.IEnumerator i = new Iterator4Impl(list);
                 list = null;
                 while(i.MoveNext()){
-                    YapRef yapRef = (YapRef)i.Current();
+                    YapRef yapRef = (YapRef)i.Current;
                     if(yapRef.IsAlive){
                         list = new List4(list, yapRef);
                     }else{
@@ -29,9 +29,9 @@ namespace Db4objects.Db4o {
                     }
                 }
             }
-            Iterator4 j = new Iterator4Impl(remove);
+            System.Collections.IEnumerator j = new Iterator4Impl(remove);
             while(j.MoveNext() && (!objectContainer.IsClosed())){
-                objectContainer.Purge(j.Current());
+                objectContainer.Purge(j.Current);
             }
         }
     }

@@ -18,20 +18,20 @@ namespace Db4objects.Db4o.Config
 	/// - the persistent type will never be refactored<br />
 	/// - querying for type members is not necessary<br />
 	/// </summary>
-	public class TSerializable : ObjectConstructor
+	public class TSerializable : IObjectConstructor
 	{
-		public Object OnStore(ObjectContainer objectContainer, Object obj)
+		public Object OnStore(IObjectContainer objectContainer, Object obj)
 		{
 			MemoryStream memoryStream = new MemoryStream();
 			new BinaryFormatter().Serialize(memoryStream, obj);
 			return memoryStream.GetBuffer();
 		}
 
-		public void OnActivate(ObjectContainer objectContainer, Object obj, Object members)
+		public void OnActivate(IObjectContainer objectContainer, Object obj, Object members)
 		{
 		}
 
-		public Object OnInstantiate(ObjectContainer objectContainer, Object obj)
+		public Object OnInstantiate(IObjectContainer objectContainer, Object obj)
 		{
 			MemoryStream memoryStream = new MemoryStream((byte[])obj);
 			return new BinaryFormatter().Deserialize(memoryStream);

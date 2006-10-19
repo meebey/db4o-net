@@ -11,9 +11,9 @@ namespace Db4objects.Db4o.Inside.Query
     /// <exclude />
     public class GenericObjectSetFacade<T> : System.Collections.Generic.IList<T>
     {
-        public readonly QueryResult _delegate;
+        public readonly IQueryResult _delegate;
 
-        public GenericObjectSetFacade(QueryResult qr)
+        public GenericObjectSetFacade(IQueryResult qr)
         {
             _delegate = qr;
         }
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Inside.Query
         {
             lock (this.SyncRoot)
             {
-                int id = (int)_delegate.ObjectContainer().Ext().GetID(value);
+                int id = (int)_delegate.IObjectContainer().Ext().GetID(value);
                 if (id <= 0)
                 {
                     return -1;

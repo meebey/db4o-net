@@ -6,7 +6,7 @@ using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o
 {
-	internal class P2LinkedList : P1Collection, Db4oList
+	internal class P2LinkedList : P1Collection, IDb4oList
 	{
 		public P1ListElement i_first;
 

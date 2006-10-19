@@ -3,11 +3,11 @@
 namespace Db4objects.Db4o.Reflect.Net
 {
 	/// <remarks>Reflection implementation for Array to map to .NET reflection.</remarks>
-	public class NetArray : Db4objects.Db4o.Reflect.ReflectArray
+	public class NetArray : Db4objects.Db4o.Reflect.IReflectArray
 	{
-		private readonly Db4objects.Db4o.Reflect.Reflector _reflector;
+		private readonly Db4objects.Db4o.Reflect.IReflector _reflector;
 
-		internal NetArray(Db4objects.Db4o.Reflect.Reflector reflector)
+		internal NetArray(Db4objects.Db4o.Reflect.IReflector reflector)
 		{
 			_reflector = reflector;
 		}
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			return ((System.Array)onArray).GetValue(index);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.ReflectClass GetComponentType(Db4objects.Db4o.Reflect.ReflectClass
+		public virtual Db4objects.Db4o.Reflect.IReflectClass GetComponentType(Db4objects.Db4o.Reflect.IReflectClass
 			 a_class)
 		{
 			return a_class.GetComponentType();
@@ -83,13 +83,13 @@ namespace Db4objects.Db4o.Reflect.Net
 			return ((System.Array)array).GetLength(0);
 		}
 
-		public virtual bool IsNDimensional(Db4objects.Db4o.Reflect.ReflectClass a_class)
+		public virtual bool IsNDimensional(Db4objects.Db4o.Reflect.IReflectClass a_class)
 		{
 			Type type = GetNetType(a_class);
 			return GetArrayRank(type) > 1;
 		}
 
-		private static Type GetNetType(ReflectClass a_class)
+		private static Type GetNetType(IReflectClass a_class)
 		{
 			return ((NetClass)a_class).GetNetType();
 		}
@@ -103,13 +103,13 @@ namespace Db4objects.Db4o.Reflect.Net
 #endif
 		}
 
-		public virtual object NewInstance(Db4objects.Db4o.Reflect.ReflectClass componentType, int
+		public virtual object NewInstance(Db4objects.Db4o.Reflect.IReflectClass componentType, int
 			 length)
 		{
 			return System.Array.CreateInstance(GetNetType(componentType), length);
 		}
 
-		public virtual object NewInstance(Db4objects.Db4o.Reflect.ReflectClass componentType, int[]
+		public virtual object NewInstance(Db4objects.Db4o.Reflect.IReflectClass componentType, int[]
 			 dimensions)
 		{
 			return System.Array.CreateInstance(GetNetType(componentType), dimensions);

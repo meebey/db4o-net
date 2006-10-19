@@ -8,9 +8,9 @@ using Db4objects.Db4o;
 namespace Db4objects.Db4o.Config {
 
 	/// <exclude />
-    public class TStack : ObjectTranslator {
+    public class TStack : IObjectTranslator {
 
-        public void OnActivate(ObjectContainer objectContainer, object obj, object members){
+        public void OnActivate(IObjectContainer objectContainer, object obj, object members){
             Stack stack = (Stack)obj;
             if(members != null){
                 object[] elements = (object[]) members;
@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Config {
             }
         }
 
-        public Object OnStore(ObjectContainer objectContainer, object obj){
+        public Object OnStore(IObjectContainer objectContainer, object obj){
             Stack stack = (Stack)obj;
             int count = stack.Count;
             object[] elements = new object[count];

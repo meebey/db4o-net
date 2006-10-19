@@ -34,9 +34,9 @@ namespace Db4objects.Db4o.Inside.Query
 
 	public class NativeQueryHandler
 	{
-		private ObjectContainer _container;
+		private IObjectContainer _container;
 
-		private Db4oNQOptimizer _enhancer;
+		private IDb4oNQOptimizer _enhancer;
 
 		private ExpressionBuilder _builder;
 
@@ -44,21 +44,21 @@ namespace Db4objects.Db4o.Inside.Query
 
 		public event QueryOptimizationFailureHandler QueryOptimizationFailure;
 
-		public NativeQueryHandler(Db4objects.Db4o.ObjectContainer container)
+		public NativeQueryHandler(Db4objects.Db4o.IObjectContainer container)
 		{
 			_container = container;
 		}
 
-		public virtual Db4objects.Db4o.ObjectSet Execute(Db4objects.Db4o.Query.Predicate predicate, Db4objects.Db4o.Query.QueryComparator comparator)
+		public virtual Db4objects.Db4o.IObjectSet Execute(Db4objects.Db4o.Query.Predicate predicate, Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
-			Db4objects.Db4o.Query.Query q = ConfigureQuery(predicate);
+			Db4objects.Db4o.Query.IQuery q = ConfigureQuery(predicate);
 			q.SortBy(comparator);
 			return q.Execute();
 		}
 
 #if NET_2_0 || CF_2_0
 		public virtual System.Collections.Generic.IList<Extent> Execute<Extent>(System.Predicate<Extent> match,
-																				Db4objects.Db4o.Query.QueryComparator comparator)
+																				Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
 #if CF_2_0
 			return ExecuteUnoptimized<Extent>(QueryForExtent<Extent>(comparator), match);
@@ -81,19 +81,19 @@ namespace Db4objects.Db4o.Inside.Query
 		/// <param name="predicate"></param>
 		/// <param name="comparator"></param>
 		/// <returns></returns>
-		public System.Collections.Generic.IList<Extent> ExecuteMeta<Extent>(MetaDelegate<System.Predicate<Extent>> predicate, Db4objects.Db4o.Query.QueryComparator comparator)
+		public System.Collections.Generic.IList<Extent> ExecuteMeta<Extent>(MetaDelegate<System.Predicate<Extent>> predicate, Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
 			return ExecuteImpl<Extent>(predicate, predicate.Target, predicate.Method, predicate.Delegate, comparator);
 		}
 
-		public static System.Collections.Generic.IList<Extent> ExecuteInstrumentedStaticDelegateQuery<Extent>(ObjectContainer container,
+		public static System.Collections.Generic.IList<Extent> ExecuteInstrumentedStaticDelegateQuery<Extent>(IObjectContainer container,
 																					System.Predicate<Extent> predicate,
 																					RuntimeMethodHandle predicateMethodHandle)
 		{
 			return ExecuteInstrumentedDelegateQuery(container, null, predicate, predicateMethodHandle);
 		}
 
-		public static System.Collections.Generic.IList<Extent> ExecuteInstrumentedDelegateQuery<Extent>(ObjectContainer container,
+		public static System.Collections.Generic.IList<Extent> ExecuteInstrumentedDelegateQuery<Extent>(IObjectContainer container,
 																					object target,
 																					System.Predicate<Extent> predicate,
 																					RuntimeMethodHandle predicateMethodHandle)
@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.Inside.Query
 																		object matchTarget,
 																		System.Reflection.MethodBase matchMethod,
 																		System.Predicate<Extent> match,
-																		Db4objects.Db4o.Query.QueryComparator comparator)
+																		Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
 			Db4objects.Db4o.Query.Query q = QueryForExtent<Extent>(comparator);
 			try
@@ -138,7 +138,7 @@ namespace Db4objects.Db4o.Inside.Query
 			return WrapQueryResult<Extent>(q);
 		}
 
-		private Db4objects.Db4o.Query.Query QueryForExtent<Extent>(Db4objects.Db4o.Query.QueryComparator comparator)
+		private Db4objects.Db4o.Query.Query QueryForExtent<Extent>(Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
 			Db4objects.Db4o.Query.Query q = _container.Query();
 			q.Constrain(typeof(Extent));
@@ -148,15 +148,15 @@ namespace Db4objects.Db4o.Inside.Query
 
 		private static System.Collections.Generic.IList<Extent> WrapQueryResult<Extent>(Db4objects.Db4o.Query.Query q)
 		{
-			Db4objects.Db4o.Inside.Query.QueryResult qr = ((QQuery)q).GetQueryResult();
+			Db4objects.Db4o.Inside.Query.IQueryResult qr = ((QQuery)q).GetQueryResult();
 			return new Db4objects.Db4o.Inside.Query.GenericObjectSetFacade<Extent>(qr);
 		}
 #endif
 
-		private Db4objects.Db4o.Query.Query ConfigureQuery(Db4objects.Db4o.Query.Predicate predicate)
+		private Db4objects.Db4o.Query.IQuery ConfigureQuery(Db4objects.Db4o.Query.Predicate predicate)
 		{
-			Db4objects.Db4o.Query.Query q = _container.Query();
-			Db4oEnhancedFilter filter = predicate as Db4oEnhancedFilter;
+			Db4objects.Db4o.Query.IQuery q = _container.Query();
+			IDb4oEnhancedFilter filter = predicate as IDb4oEnhancedFilter;
 			if (null != filter)
 			{
 				filter.OptimizeQuery(q);
@@ -195,13 +195,13 @@ namespace Db4objects.Db4o.Inside.Query
 			return _container.Ext().Configure().OptimizeNativeQueries();
 		}
 
-		void OptimizeQuery(Db4objects.Db4o.Query.Query q, object predicate, System.Reflection.MethodBase filterMethod)
+		void OptimizeQuery(Db4objects.Db4o.Query.IQuery q, object predicate, System.Reflection.MethodBase filterMethod)
 		{
 			if (_builder == null)
 				_builder = ExpressionBuilderFactory.CreateExpressionBuilder();
 
 			// TODO: cache predicate expressions here
-			Expression expression = _builder.FromMethod(filterMethod);
+			IExpression expression = _builder.FromMethod(filterMethod);
 			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate);
 		}
 
@@ -219,14 +219,14 @@ namespace Db4objects.Db4o.Inside.Query
 	}
 
 #if NET_2_0 || CF_2_0
-	class GenericPredicateEvaluation<T> : DelegateEnvelope, Db4objects.Db4o.Query.Evaluation
+	class GenericPredicateEvaluation<T> : DelegateEnvelope, Db4objects.Db4o.Query.IEvaluation
 	{
 		public GenericPredicateEvaluation(System.Predicate<T> predicate)
 			: base(predicate)
 		{
 		}
 
-		public void Evaluate(Db4objects.Db4o.Query.Candidate candidate)
+		public void Evaluate(Db4objects.Db4o.Query.ICandidate candidate)
 		{
 			// use starting _ for PascalCase conversion purposes
 			System.Predicate<T> _predicate = (System.Predicate<T>)GetContent();

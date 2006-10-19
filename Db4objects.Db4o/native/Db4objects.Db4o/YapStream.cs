@@ -7,9 +7,9 @@
 	/// <summary>
 	/// </summary>
 	/// <exclude />
-	public abstract class YapStream : Db4objects.Db4o.YapStreamBase, ObjectContainer, ExtObjectContainer
+	public abstract class YapStream : Db4objects.Db4o.YapStreamBase, IObjectContainer, IExtObjectContainer
 	{
-		internal YapStream(Db4objects.Db4o.Config.Configuration config, Db4objects.Db4o.YapStream a_parent)
+		internal YapStream(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.YapStream a_parent)
 			: base(config, a_parent)
 		{
 		}
@@ -23,7 +23,7 @@
 
 		public abstract void Backup(string path);
 		
-		class ComparerAdaptor : Db4objects.Db4o.Query.QueryComparator
+		class ComparerAdaptor : Db4objects.Db4o.Query.IQueryComparator
 		{
 			private System.Collections.IComparer _comparer;
 
@@ -38,14 +38,14 @@
 			}
 		}
 
-		public ObjectSet Query(Db4objects.Db4o.Query.Predicate match, System.Collections.IComparer comparer)
+		public IObjectSet Query(Db4objects.Db4o.Query.Predicate match, System.Collections.IComparer comparer)
 		{
 			if (null == match) throw new ArgumentNullException("match");
 			return Query(match, new ComparerAdaptor(comparer));
 		}
 
 #if NET_2_0 || CF_2_0
-		class GenericComparerAdaptor<T> : Db4objects.Db4o.Query.QueryComparator
+		class GenericComparerAdaptor<T> : Db4objects.Db4o.Query.IQueryComparator
 		{
 			private System.Collections.Generic.IComparer<T> _comparer;
 
@@ -60,7 +60,7 @@
 			}
 		}
 
-		class GenericComparisonAdaptor<T> : DelegateEnvelope, Db4objects.Db4o.Query.QueryComparator
+		class GenericComparisonAdaptor<T> : DelegateEnvelope, Db4objects.Db4o.Query.IQueryComparator
 		{
 			public GenericComparisonAdaptor(System.Comparison<T> comparer)
 				: base(comparer)
@@ -83,7 +83,7 @@
 		public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match, System.Collections.Generic.IComparer<Extent> comparer)
 		{
 			if (null == match) throw new ArgumentNullException("match");
-			Db4objects.Db4o.Query.QueryComparator comparator = null != comparer
+			Db4objects.Db4o.Query.IQueryComparator comparator = null != comparer
 															? new GenericComparerAdaptor<Extent>(comparer)
 															: null;
 			return GetNativeQueryHandler().Execute(match, comparator);
@@ -92,7 +92,7 @@
 		public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match, System.Comparison<Extent> comparison)
 		{
 			if (null == match) throw new ArgumentNullException("match");
-			Db4objects.Db4o.Query.QueryComparator comparator = null != comparison
+			Db4objects.Db4o.Query.IQueryComparator comparator = null != comparison
 															? new GenericComparisonAdaptor<Extent>(comparison)
 															: null;
 			return GetNativeQueryHandler().Execute(match, comparator);
@@ -108,7 +108,7 @@
 			QQuery q = (QQuery)Query();
 			q.Constrain(extent);
 			if (null != comparer) q.SortBy(new GenericComparerAdaptor<ElementType>(comparer));
-			QueryResult qres = q.GetQueryResult();
+			IQueryResult qres = q.GetQueryResult();
 			return new Db4objects.Db4o.Inside.Query.GenericObjectSetFacade<ElementType>(qres);
 		}
 

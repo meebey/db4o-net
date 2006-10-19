@@ -8,9 +8,9 @@ using Db4objects.Db4o;
 namespace Db4objects.Db4o.Config
 {
 	/// <exclude />
-	public class TQueue : ObjectTranslator
+	public class TQueue : IObjectTranslator
 	{
-		public void OnActivate(ObjectContainer objectContainer, object obj, object members)
+		public void OnActivate(IObjectContainer objectContainer, object obj, object members)
 		{
 			Queue queue = (Queue)obj;
 			queue.Clear();
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Config
 			}
 		}
 
-		public Object OnStore(ObjectContainer objectContainer, object obj)
+		public Object OnStore(IObjectContainer objectContainer, object obj)
 		{
 			Queue queue = (Queue)obj;
 			int count = queue.Count;
