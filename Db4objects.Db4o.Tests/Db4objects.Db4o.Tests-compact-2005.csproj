@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3D12D013-86A3-4BA0-8462-0825EC066863}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>db4o-compact-test</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <OutputFileFolder>\Program Files\db4o-4.0-compact1-test</OutputFileFolder>
+    <RootNamespace>com.db4o.test</RootNamespace>
+    <StartupObject>com.db4o.Console</StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <FormFactorID>POCKET_PC_2003_PORTRAIT</FormFactorID>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PlatformID>3C41C503-53EF-4c2a-8DD4-A8217CAD115E</PlatformID>
+    <PlatformFamilyName>PocketPC</PlatformFamilyName>
+    <DeployDirSuffix>$(AssemblyName)</DeployDirSuffix>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>0</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DEBUG;CF_2_0</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>0</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <GenerateSerializationAssemblies>off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>0</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;CF_2_0</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <GenerateSerializationAssemblies>off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib">
+      <Name>MSCorLib</Name>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+      <Private>False</Private>
+    </Reference>
+    <ProjectReference Include="..\core\db4o-compact-2005.csproj">
+      <Name>db4o-compact-2005</Name>
+      <Project>{B653ADB1-F959-49E0-81CF-AD37D69CB011}</Project>
+      <Package>{20D4826A-C6FA-45DB-90F4-C717570B9F32}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\Db4oUnit.Extensions\Db4oUnit.Extensions-compact-2005.csproj">
+      <Project>{8A7D348A-8E5C-4339-A461-398B2E46C858}</Project>
+      <Name>Db4oUnit.Extensions-compact-2005</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Db4oUnit\Db4oUnit-compact-2005.csproj">
+      <Project>{2D64B089-6BE4-426D-A4C5-5EF6E952DA76}</Project>
+      <Name>Db4oUnit-compact-2005</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\tools\db4o-compact-tools-2005.csproj">
+      <Name>db4o-compact-tools-2005</Name>
+      <Project>{E5C01056-B6A2-466A-89A8-4D74B2EFB1D2}</Project>
+      <Package>{20D4826A-C6FA-45DB-90F4-C717570B9F32}</Package>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup><Compile Include="Db4objects.Db4o.Tests\Common\AllTests.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\AllTests.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\BackupStressItem.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\BackupStressIteration.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\BackupStressTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\CloseUnlocksFileTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\DatabaseUnicityTest.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\GetByUUIDTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\IndexCreateDropTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\MultiDeleteTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\NakedObjectTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\NonStaticConfigurationTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\ObjectVersionTest.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\ReAddCascadedDeleteTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\ServerRevokeAccessTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\SimplestPossibleItem.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\SimplestPossibleTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\SystemInfoTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Assorted\UUIDTestItem.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\AllTests.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\BTreeAddRemoveTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\BTreeAssert.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\BTreeFreeTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\BTreePointerTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\BTreeRangeTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\BTreeRollbackTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\BTreeSearchTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\BTreeSimpleTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\BTreeTestCaseBase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\ExpectingVisitor.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\FreespaceManagerForDebug.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\ISlotListener.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\SearcherLowestHighestTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Btree\SearcherTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\AllTests.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\ComplexFieldIndexItem.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\DoubleFieldIndexTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\FieldIndexItem.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\FieldIndexProcessorTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\FieldIndexProcessorTestCaseBase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\FieldIndexTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\FieldIndexTestCaseBase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\IHasFoo.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\IndexedNodeTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\NonIndexedFieldIndexItem.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Fieldindex\StringIndexTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\AllTests.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\ArrayIterator4TestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\BitMap4TestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\Collection4TestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\CompositeIterator4TestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\Hashtable4TestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\IntArrayListTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\IntArrays4.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\Iterable4AdaptorTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\IteratorAssert.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\IteratorsTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\SortedCollection4TestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Foundation\YapReaderTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Handlers\AllTests.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Handlers\YDoubleTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Handlers\YapStringTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Header\AllTests.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Header\ConfigurationSettingsTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Header\IdentityTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Header\OldHeaderTest.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Header\SimpleTimeStampIdTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Querying\AllTests.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Querying\IndexedQueriesTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Querying\MultiFieldIndexQueryTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Querying\ObjectSetTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Querying\OrderedQueryTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Sampledata\AtomData.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Sampledata\MoleculeData.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Types\AllTests.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Types\Arrays\AllTests.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Types\Arrays\ArrayNOrderTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Types\Arrays\ByteArrayTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Types\Arrays\NestedArraysTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Types\Arrays\SimpleStringArrayTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Types\Arrays\SimpleTypeArrayInUntypedVariableTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Types\Arrays\TypedArrayInObjectTestCase.cs"/><Compile Include="Db4objects.Db4o.Tests\Common\Types\Arrays\TypedDerivedArrayTestCase.cs"/><Compile Include="native\Db4objects.Db4o.Tests\AllTests.cs"/><Compile Include="native\Db4objects.Db4o.Tests\Util\IOServices.cs"/><Compile Include="native\Db4objects.Db4o.Tests\Util\WorkspaceServices.cs"/></ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\com\db4o\test\soda\test\"/>
+  </ItemGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
+        <HostingProcess disable="1"/>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets"/>
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets"/>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>
