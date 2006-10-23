@@ -37,10 +37,6 @@ namespace Db4objects.Db4o {
             if(type != null){
                 return type;
             }
-            Class clazz = obj as Class;
-            if(clazz != null){
-                return clazz.GetNetType();
-            }
             return obj.GetType();
         }
     }

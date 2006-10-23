@@ -1,4 +1,6 @@
-﻿namespace Db4objects.Db4o.Reflect.Net
+﻿using Sharpen.Lang;
+
+namespace Db4objects.Db4o.Reflect.Net
 {
 	public class NetReflector : Db4objects.Db4o.Reflect.IReflector
 	{
@@ -37,9 +39,9 @@
 			System.Type clazz = null;
 			try
 			{
-				clazz = Sharpen.Lang.Class.ForName(className).GetNetType();
+				clazz = TypeReference.FromString(className).Resolve();
 			}
-			catch (Sharpen.Lang.ClassNotFoundException)
+			catch (System.Exception)
 			{
 			}
 			return clazz == null

@@ -38,11 +38,6 @@ namespace Sharpen.Lang
 			return new Thread(System.Threading.Thread.CurrentThread);
 		}
 
-		public ClassLoader GetContextClassLoader()
-		{
-			return null;
-		}
-
 		public virtual void Run()
 		{
 		}

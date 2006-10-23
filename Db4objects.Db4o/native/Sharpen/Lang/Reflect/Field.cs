@@ -10,7 +10,6 @@ namespace Sharpen.Lang.Reflect
     {
         private FieldInfo _fieldInfo;
         private EventInfo _eventInfo;
-        private Class _fieldClass;
         private int _modifiers;
 
         private static IList _transientMarkers;
@@ -96,15 +95,6 @@ namespace Sharpen.Lang.Reflect
         public String GetName()
         {
             return _fieldInfo.Name;
-        }
-
-        public Class GetFieldType()
-        {
-            if (_fieldClass == null)
-            {
-            	_fieldClass = Class.GetClassForType(_fieldInfo.FieldType);
-            }
-            return _fieldClass;
         }
 
         public static void MarkTransient(string attributeName)

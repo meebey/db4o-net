@@ -1,4 +1,6 @@
-﻿namespace Db4objects.Db4o.Reflect.Net
+﻿using Sharpen.Lang;
+
+namespace Db4objects.Db4o.Reflect.Net
 {
 	/// <summary>Reflection implementation for Class to map to .NET reflection.</summary>
 	/// <remarks>Reflection implementation for Class to map to .NET reflection.</remarks>
@@ -11,8 +13,9 @@
 		private Db4objects.Db4o.Reflect.IReflectConstructor _constructor;
 
 		private object[] constructorParams;
+	    private string _name;
 
-		public NetClass(Db4objects.Db4o.Reflect.IReflector reflector, System.Type clazz)
+	    public NetClass(Db4objects.Db4o.Reflect.IReflector reflector, System.Type clazz)
 		{
 			_reflector = reflector;
 			_type = clazz;
@@ -85,7 +88,11 @@
 
 		public virtual string GetName()
 		{
-			return _type.Name;
+            if (_name == null)
+            {
+                _name = TypeReference.FromType(_type).GetUnversionedName();
+            }
+            return _name;
 		}
 
 		public virtual Db4objects.Db4o.Reflect.IReflectClass GetSuperclass()

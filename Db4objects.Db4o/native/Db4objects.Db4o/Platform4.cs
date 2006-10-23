@@ -58,6 +58,15 @@ namespace Db4objects.Db4o
 				oldAssemblies[i] = stringIO.Write(oldAssemblyNames[i]);
 			}
 		}
+	    
+	    internal static bool IsDb4oClass(string className)
+	    {
+	        if (className.StartsWith("Db4objects.Db4o.Tests"))
+	        {
+	            return false;
+	        }
+            return className.StartsWith("Db4objects.Db4o.Tests");
+	    }
 
 		internal static JDK Jdk()
 		{
@@ -265,7 +274,7 @@ namespace Db4objects.Db4o
 			Type t = obj as Type;
 			if (t != null)
 			{
-				return Class.GetClassForType(t);
+				return t;
 			}
 			return obj;
 		}
@@ -294,9 +303,8 @@ namespace Db4objects.Db4o
 				config.WeakReferenceCollectionInterval(0);
 			}
 
-			Translate(config, Class.GetClassForType(typeof(Class)).GetName(), new TClass());
-			Translate(config, Class.GetClassForType(typeof(Delegate)).GetName(), new TNull());
-			Translate(config, Class.GetClassForType(typeof(Type)).GetName(), new TType());
+			Translate(config, typeof(Delegate), new TNull());
+			Translate(config, typeof(Type), new TType());
 
 			if (IsMono())
 			{
@@ -334,12 +342,7 @@ namespace Db4objects.Db4o
 
 		public static Object GetTypeForClass(Object obj)
 		{
-			Class clazz = obj as Class;
-			if (clazz != null)
-			{
-				return clazz.GetNetType();
-			}
-			return obj;
+            return obj;
 		}
 
 		internal static Object GetYapRefObject(Object obj)
@@ -404,18 +407,6 @@ namespace Db4objects.Db4o
             }
             return socket.IsConnected();
         }
-
-		public static bool IsSimple(Class a_class)
-		{
-			for (int i1 = 0; i1 < SIMPLE_CLASSES.Length; i1++)
-			{
-				if (a_class == SIMPLE_CLASSES[i1])
-				{
-					return true;
-				}
-			}
-			return false;
-		}
 
 		internal static bool IsValueType(IReflectClass claxx)
 		{
@@ -625,18 +616,5 @@ namespace Db4objects.Db4o
 					new YapDateTime(stream),
 				};
 		}
-
-		private static Class[] SIMPLE_CLASSES = {
-		                                        	Class.GetClassForType(typeof(Int32)),
-		                                        	Class.GetClassForType(typeof(Int64)),
-		                                        	Class.GetClassForType(typeof(Single)),
-		                                        	Class.GetClassForType(typeof(Boolean)),
-		                                        	Class.GetClassForType(typeof(Double)),
-		                                        	Class.GetClassForType(typeof(Byte)),
-		                                        	Class.GetClassForType(typeof(Char)),
-		                                        	Class.GetClassForType(typeof(Int16)),
-		                                        	Class.GetClassForType(typeof(String)),
-		                                        	Class.GetClassForType(typeof(Date))
-		                                        };	
 	}
 }

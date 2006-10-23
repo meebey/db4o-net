@@ -262,7 +262,7 @@ namespace Db4oTools
 						classes[i] = null;
 					}
 				}
-				catch (ClassNotFoundException e)
+				catch (TypeLoadException e)
 				{
 					classes[i] = null;
 				}

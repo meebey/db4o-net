@@ -59,7 +59,7 @@ namespace Sharpen.Lang
 				}
 				catch (Exception ex)
 				{
-					throw new ClassNotFoundException(name, ex);
+					throw new TypeLoadException(name, ex);
 				}
 				return returnValue;
 			}
@@ -102,17 +102,6 @@ namespace Sharpen.Lang
 			return GetClassForType(_type.GetElementType());
 		}
 
-		public Constructor[] GetDeclaredConstructors()
-		{
-			ConstructorInfo[] constructorInfos = _type.GetConstructors(AllDeclaredMembers);
-			Constructor[] constructors = new Constructor[constructorInfos.Length];
-			for (int i = 0; i < constructorInfos.Length; i++)
-			{
-				constructors[i] = new Constructor(constructorInfos[i]);
-			}
-			return constructors;
-		}
-
 		public Field GetDeclaredField(String name)
 		{
 			return GetField(_type.GetField(name, AllDeclaredMembers | BindingFlags.Static));
@@ -129,22 +118,6 @@ namespace Sharpen.Lang
 			return fields;
 		}
 
-		public Method GetDeclaredMethod(String name, Class[] parameterTypes)
-		{
-			return GetMethod(_type.GetMethod(name, AllDeclaredMembers, null, GetTypes(parameterTypes), null));
-		}
-
-		public Method[] GetDeclaredMethods()
-		{
-			MethodInfo[] methodInfos = _type.GetMethods(AllDeclaredMembers);
-			Method[] methods = new Method[methodInfos.Length];
-			for (int i = 0; i < methodInfos.Length; i++)
-			{
-				methods[i] = new Method(methodInfos[i]);
-			}
-			return methods;
-		}
-
 		private Field GetField(FieldInfo fieldInfo)
 		{
 			if (fieldInfo == null)
@@ -159,32 +132,7 @@ namespace Sharpen.Lang
 			return GetField(_type.GetField(name));
 		}
 
-		public Method GetMethod(String name, Class[] parameterTypes)
-		{
-			return GetMethod(_type.GetMethod(name, GetTypes(parameterTypes)));
-		}
-
-		public Method[] GetMethods()
-		{
-			MethodInfo[] methods = _type.GetMethods();
-			Method[] result = new Method[methods.Length];
-			for (int i = 0; i < methods.Length; ++i)
-			{
-				result[i] = GetMethod(methods[i]);
-			}
-			return result;
-		}
-
-		private Method GetMethod(MethodInfo methodInfo)
-		{
-			if (methodInfo == null)
-			{
-				return null;
-			}
-			return new Method(methodInfo);
-		}
-
-		public int GetModifiers()
+	    public int GetModifiers()
 		{
 			int modifiers = 0;
 			if (_type.IsAbstract)
