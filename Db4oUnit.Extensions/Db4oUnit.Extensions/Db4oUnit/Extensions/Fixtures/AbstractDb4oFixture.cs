@@ -33,6 +33,11 @@ namespace Db4oUnit.Extensions.Fixtures
 			ResetConfig();
 		}
 
+		public virtual bool Accept(System.Type clazz)
+		{
+			return true;
+		}
+
 		protected abstract void DoClean();
 
 		protected virtual void ResetConfig()

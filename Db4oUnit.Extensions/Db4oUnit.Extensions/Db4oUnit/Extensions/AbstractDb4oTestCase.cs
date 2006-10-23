@@ -20,20 +20,35 @@ namespace Db4oUnit.Extensions
 			_fixture.Reopen();
 		}
 
-		public virtual void SetUp()
+		public void SetUp()
 		{
 			_fixture.Clean();
 			Configure(_fixture.Config());
 			_fixture.Open();
+			Db4oSetupBeforeStore();
 			Store();
 			_fixture.Close();
 			_fixture.Open();
+			Db4oSetupAfterStore();
 		}
 
-		public virtual void TearDown()
+		public void TearDown()
 		{
+			Db4oCustomTearDown();
 			_fixture.Close();
 			_fixture.Clean();
+		}
+
+		protected virtual void Db4oSetupBeforeStore()
+		{
+		}
+
+		protected virtual void Db4oSetupAfterStore()
+		{
+		}
+
+		protected virtual void Db4oCustomTearDown()
+		{
 		}
 
 		protected virtual void Configure(Db4objects.Db4o.Config.IConfiguration config)
@@ -170,6 +185,11 @@ namespace Db4oUnit.Extensions
 			Db4objects.Db4o.IObjectSet result = NewQuery(clazz).Execute();
 			Db4oUnit.Assert.AreEqual(1, result.Size());
 			return result.Next();
+		}
+
+		protected void Store(object obj)
+		{
+			Db().Set(obj);
 		}
 	}
 }

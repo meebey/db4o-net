@@ -2,6 +2,23 @@ namespace Db4oUnit.Extensions.Tests
 {
 	public class AllTests : Db4oUnit.ITestCase
 	{
+		private sealed class ExcludingInMemoryFixture : Db4oUnit.Extensions.Fixtures.Db4oInMemory
+		{
+			public ExcludingInMemoryFixture(AllTests _enclosing, Db4oUnit.Extensions.Fixtures.IConfigurationSource
+				 source) : base(source)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public override bool Accept(System.Type clazz)
+			{
+				return !typeof(Db4oUnit.Extensions.Fixtures.IOptOutFromTestFixture).IsAssignableFrom
+					(clazz);
+			}
+
+			private readonly AllTests _enclosing;
+		}
+
 		public static void Main(string[] args)
 		{
 			new Db4oUnit.TestRunner(typeof(Db4oUnit.Extensions.Tests.AllTests)).Run();
@@ -23,6 +40,17 @@ namespace Db4oUnit.Extensions.Tests
 				()), typeof(Db4oUnit.Extensions.Tests.MultipleDb4oTestCase)).Build(), 2, false);
 			Db4oUnit.Assert.AreEqual(2, Db4oUnit.Extensions.Tests.MultipleDb4oTestCase.ConfigureCalls
 				());
+		}
+
+		public virtual void TestSelectiveFixture()
+		{
+			Db4oUnit.Extensions.IDb4oFixture fixture = new Db4oUnit.Extensions.Tests.AllTests.ExcludingInMemoryFixture
+				(this, new Db4oUnit.Extensions.Fixtures.IndependentConfigurationSource());
+			Db4oUnit.TestSuite suite = new Db4oUnit.Extensions.Db4oTestSuiteBuilder(fixture, 
+				new System.Type[] { typeof(Db4oUnit.Extensions.Tests.AcceptedTestCase), typeof(Db4oUnit.Extensions.Tests.NotAcceptedTestCase)
+				 }).Build();
+			Db4oUnit.Assert.AreEqual(1, suite.GetTests().Length);
+			Db4oUnit.Tests.FrameworkTestCase.RunTestAndExpect(suite, 0);
 		}
 
 		private void AssertSimpleDb4o(Db4oUnit.Extensions.IDb4oFixture fixture)

@@ -25,6 +25,11 @@ namespace Db4oUnit.Extensions
 			_fixture = fixture;
 		}
 
+		protected override bool IsApplicable(System.Type clazz)
+		{
+			return _fixture.Accept(clazz);
+		}
+
 		protected override object NewInstance(System.Type clazz)
 		{
 			object instance = base.NewInstance(clazz);

@@ -11,13 +11,17 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public sealed override void Open()
 		{
+			Db4oUnit.Assert.IsNull(_db);
 			_db = CreateDatabase(Config()).Ext();
 		}
 
 		public override void Close()
 		{
-			_db.Close();
-			_db = null;
+			if (null != _db)
+			{
+				_db.Close();
+				_db = null;
+			}
 		}
 
 		public override Db4objects.Db4o.Ext.IExtObjectContainer Db()

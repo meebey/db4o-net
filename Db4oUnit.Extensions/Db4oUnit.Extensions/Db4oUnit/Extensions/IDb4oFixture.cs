@@ -13,5 +13,7 @@ namespace Db4oUnit.Extensions
 		Db4objects.Db4o.Ext.IExtObjectContainer Db();
 
 		Db4objects.Db4o.Config.IConfiguration Config();
+
+		bool Accept(System.Type clazz);
 	}
 }
