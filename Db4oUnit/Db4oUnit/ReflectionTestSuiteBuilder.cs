@@ -29,16 +29,26 @@ namespace Db4oUnit
 
 		protected virtual Db4oUnit.TestSuite FromClasses(System.Type[] classes)
 		{
-			Db4oUnit.TestSuite[] suites = new Db4oUnit.TestSuite[classes.Length];
+			System.Collections.ArrayList suites = new System.Collections.ArrayList(classes.Length
+				);
 			for (int i = 0; i < classes.Length; i++)
 			{
-				suites[i] = FromClass(classes[i]);
+				Db4oUnit.TestSuite suite = FromClass(classes[i]);
+				if (suite.GetTests().Length > 0)
+				{
+					suites.Add(suite);
+				}
 			}
-			return new Db4oUnit.TestSuite(suites);
+			return new Db4oUnit.TestSuite(ToTestArray(suites));
 		}
 
 		protected virtual Db4oUnit.TestSuite FromClass(System.Type clazz)
 		{
+			if (!IsApplicable(clazz))
+			{
+				Db4oUnit.TestPlatform.EmitWarning("IGNORED: " + clazz.FullName);
+				return new Db4oUnit.TestSuite(new Db4oUnit.ITest[0]);
+			}
 			if (typeof(Db4oUnit.ITestSuiteBuilder).IsAssignableFrom(clazz))
 			{
 				return ((Db4oUnit.ITestSuiteBuilder)NewInstance(clazz)).Build();
@@ -50,10 +60,15 @@ namespace Db4oUnit
 			}
 			if (!(typeof(Db4oUnit.ITestCase).IsAssignableFrom(clazz)))
 			{
-				throw new System.ArgumentException("" + clazz + " is not marked as " + typeof(Db4oUnit.ITestCase
-					));
+				throw new System.ArgumentException("" + clazz + " is not marked as " + typeof(Db4oUnit.ITestCase)
+					);
 			}
 			return FromMethods(clazz);
+		}
+
+		protected virtual bool IsApplicable(System.Type clazz)
+		{
+			return clazz != null;
 		}
 
 		private Db4oUnit.TestSuite FromMethods(System.Type clazz)
@@ -71,7 +86,7 @@ namespace Db4oUnit
 				}
 				tests.Add(CreateTest(instance, method));
 			}
-			return new Db4oUnit.TestSuite(clazz.FullName, ToArray(tests));
+			return new Db4oUnit.TestSuite(clazz.FullName, ToTestArray(tests));
 		}
 
 		private void EmitWarningOnIgnoredTestMethod(object subject, System.Reflection.MethodInfo
@@ -101,7 +116,7 @@ namespace Db4oUnit
 			return s.ToUpper().StartsWith(prefix.ToUpper());
 		}
 
-		private static Db4oUnit.ITest[] ToArray(System.Collections.ArrayList tests)
+		private static Db4oUnit.ITest[] ToTestArray(System.Collections.ArrayList tests)
 		{
 			Db4oUnit.ITest[] array = new Db4oUnit.ITest[tests.Count];
 			tests.CopyTo(array);
