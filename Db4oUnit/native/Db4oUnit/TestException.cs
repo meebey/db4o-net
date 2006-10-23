@@ -10,5 +10,11 @@ namespace Db4oUnit
 		{
 			return this.InnerException;
 		}
+		
+		override public string ToString()
+		{
+			if (null != this.InnerException) return this.InnerException.ToString();
+			return base.ToString();
+		}
 	}
 }
