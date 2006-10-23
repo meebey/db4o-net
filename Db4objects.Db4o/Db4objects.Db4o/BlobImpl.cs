@@ -11,7 +11,7 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public class BlobImpl : Db4objects.Db4o.Types.IBlob, Sharpen.Lang.ICloneable, Db4objects.Db4o.IDb4oTypeImpl
 	{
-		internal const int COPYBUFFER_LENGTH = 4096;
+		public const int COPYBUFFER_LENGTH = 4096;
 
 		public string fileName;
 
@@ -21,7 +21,7 @@ namespace Db4objects.Db4o
 		private Sharpen.IO.File i_file;
 
 		[Db4objects.Db4o.Transient]
-		private Db4objects.Db4o.MsgBlob i_getStatusFrom;
+		private Db4objects.Db4o.IBlobStatus i_getStatusFrom;
 
 		public int i_length;
 
@@ -90,12 +90,12 @@ namespace Db4objects.Db4o
 			return bi;
 		}
 
-		internal virtual Sharpen.IO.FileInputStream GetClientInputStream()
+		public virtual Sharpen.IO.FileInputStream GetClientInputStream()
 		{
 			return new Sharpen.IO.FileInputStream(i_file);
 		}
 
-		internal virtual Sharpen.IO.FileOutputStream GetClientOutputStream()
+		public virtual Sharpen.IO.FileOutputStream GetClientOutputStream()
 		{
 			return new Sharpen.IO.FileOutputStream(i_file);
 		}
@@ -105,7 +105,7 @@ namespace Db4objects.Db4o
 			return fileName;
 		}
 
-		internal virtual int GetLength()
+		public virtual int GetLength()
 		{
 			return i_length;
 		}
@@ -126,7 +126,7 @@ namespace Db4objects.Db4o
 			return i_status;
 		}
 
-		internal virtual void GetStatusFrom(Db4objects.Db4o.MsgBlob from)
+		public virtual void GetStatusFrom(Db4objects.Db4o.IBlobStatus from)
 		{
 			i_getStatusFrom = from;
 		}
@@ -148,17 +148,7 @@ namespace Db4objects.Db4o
 			if (i_stream.IsClient())
 			{
 				i_file = file;
-				Db4objects.Db4o.MsgBlob msg = null;
-				lock (i_stream.Lock())
-				{
-					i_stream.Set(this);
-					int id = (int)i_stream.GetID(this);
-					msg = (Db4objects.Db4o.MsgBlob)Db4objects.Db4o.Msg.WRITE_BLOB.GetWriterForInt(i_trans
-						, id);
-					msg._blob = this;
-					i_status = Db4objects.Db4o.Ext.Status.QUEUED;
-				}
-				((Db4objects.Db4o.YapClient)i_stream).ProcessBlobMessage(msg);
+				((Db4objects.Db4o.IBlobTransport)i_stream).ReadBlobFrom(i_trans, this, file);
 			}
 			else
 			{
@@ -194,8 +184,7 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		internal virtual Sharpen.IO.File ServerFile(string promptName, bool writeToServer
-			)
+		public virtual Sharpen.IO.File ServerFile(string promptName, bool writeToServer)
 		{
 			lock (i_stream.i_lock)
 			{
@@ -262,7 +251,7 @@ namespace Db4objects.Db4o
 			return path;
 		}
 
-		internal virtual void SetStatus(double status)
+		public virtual void SetStatus(double status)
 		{
 			i_status = status;
 		}
@@ -288,11 +277,8 @@ namespace Db4objects.Db4o
 			if (i_stream.IsClient())
 			{
 				i_file = file;
-				Db4objects.Db4o.MsgBlob msg = (Db4objects.Db4o.MsgBlob)Db4objects.Db4o.Msg.READ_BLOB
-					.GetWriterForInt(i_trans, (int)i_stream.GetID(this));
-				msg._blob = this;
 				i_status = Db4objects.Db4o.Ext.Status.QUEUED;
-				((Db4objects.Db4o.YapClient)i_stream).ProcessBlobMessage(msg);
+				((Db4objects.Db4o.IBlobTransport)i_stream).WriteBlobTo(i_trans, this, file);
 			}
 			else
 			{

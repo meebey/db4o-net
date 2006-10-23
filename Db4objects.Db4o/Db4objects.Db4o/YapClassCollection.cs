@@ -28,7 +28,7 @@ namespace Db4objects.Db4o
 			_classInits = new Db4objects.Db4o.PendingClassInits(_systemTransaction);
 		}
 
-		internal void AddYapClass(Db4objects.Db4o.YapClass yapClass)
+		public void AddYapClass(Db4objects.Db4o.YapClass yapClass)
 		{
 			Stream().SetDirtyInSystemTransaction(this);
 			i_classes.Add(yapClass);
@@ -424,8 +424,8 @@ namespace Db4objects.Db4o
 			private readonly Db4objects.Db4o.Foundation.Hashtable4 readAs;
 		}
 
-		internal Db4objects.Db4o.YapClass ReadYapClass(Db4objects.Db4o.YapClass yapClass, 
-			Db4objects.Db4o.Reflect.IReflectClass a_class)
+		public Db4objects.Db4o.YapClass ReadYapClass(Db4objects.Db4o.YapClass yapClass, Db4objects.Db4o.Reflect.IReflectClass
+			 a_class)
 		{
 			if (yapClass != null && !yapClass.StateUnread())
 			{
@@ -449,7 +449,7 @@ namespace Db4objects.Db4o
 			return yapClass;
 		}
 
-		internal void RefreshClasses()
+		public void RefreshClasses()
 		{
 			Db4objects.Db4o.YapClassCollection rereader = new Db4objects.Db4o.YapClassCollection
 				(_systemTransaction);

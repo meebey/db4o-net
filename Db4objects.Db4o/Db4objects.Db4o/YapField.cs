@@ -1091,7 +1091,7 @@ namespace Db4objects.Db4o
 		public virtual void DefragField(Db4objects.Db4o.Inside.Marshall.MarshallerFamily 
 			mf, Db4objects.Db4o.ReaderPair readers)
 		{
-			GetHandler().Defrag(mf, readers);
+			GetHandler().Defrag(mf, readers, true);
 		}
 	}
 }

@@ -27,7 +27,7 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		internal YapObject(int a_id)
+		public YapObject(int a_id)
 		{
 			i_id = a_id;
 		}
@@ -266,7 +266,7 @@ namespace Db4objects.Db4o
 			return a_object;
 		}
 
-		internal object ReadPrefetch(Db4objects.Db4o.YapStream a_stream, Db4objects.Db4o.YapWriter
+		public object ReadPrefetch(Db4objects.Db4o.YapStream a_stream, Db4objects.Db4o.YapWriter
 			 a_reader)
 		{
 			object readObject = null;

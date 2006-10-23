@@ -110,8 +110,8 @@ namespace Db4objects.Db4o
 				try
 				{
 					byte[] pwdbytes = new Db4objects.Db4o.YapStringIO().Write(fullpwd);
-					Db4objects.Db4o.YapReader encwriter = new Db4objects.Db4o.YapWriter(_stream.i_trans
-						, pwdbytes.Length + ENCRYPTION_PASSWORD_LENGTH);
+					Db4objects.Db4o.YapReader encwriter = new Db4objects.Db4o.YapWriter(_stream.GetTransaction
+						(), pwdbytes.Length + ENCRYPTION_PASSWORD_LENGTH);
 					encwriter.Append(pwdbytes);
 					encwriter.Append(new byte[ENCRYPTION_PASSWORD_LENGTH]);
 					_stream.i_handlers.Decrypt(encwriter);
@@ -261,8 +261,8 @@ namespace Db4objects.Db4o
 		{
 			TimerFileLock().CheckHeaderLock();
 			AddressChanged(_stream.GetSlot(LENGTH));
-			Db4objects.Db4o.YapWriter writer = _stream.GetWriter(_stream.i_trans, _address, LENGTH
-				);
+			Db4objects.Db4o.YapWriter writer = _stream.GetWriter(_stream.GetTransaction(), _address
+				, LENGTH);
 			Db4objects.Db4o.YInt.WriteInt(LENGTH, writer);
 			for (int i = 0; i < 2; i++)
 			{
@@ -292,8 +292,8 @@ namespace Db4objects.Db4o
 		private void WritePointer()
 		{
 			TimerFileLock().CheckHeaderLock();
-			Db4objects.Db4o.YapWriter writer = _stream.GetWriter(_stream.i_trans, 0, Db4objects.Db4o.YapConst
-				.ID_LENGTH);
+			Db4objects.Db4o.YapWriter writer = _stream.GetWriter(_stream.GetTransaction(), 0, 
+				Db4objects.Db4o.YapConst.ID_LENGTH);
 			writer.MoveForward(2);
 			Db4objects.Db4o.YInt.WriteInt(_address, writer);
 			writer.NoXByteCheck();

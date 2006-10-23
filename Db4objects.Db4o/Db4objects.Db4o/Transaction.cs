@@ -29,7 +29,7 @@ namespace Db4objects.Db4o
 		private readonly Db4objects.Db4o.Foundation.Collection4 _participants = new Db4objects.Db4o.Foundation.Collection4
 			();
 
-		internal Transaction(Db4objects.Db4o.YapStream a_stream, Db4objects.Db4o.Transaction
+		public Transaction(Db4objects.Db4o.YapStream a_stream, Db4objects.Db4o.Transaction
 			 a_parent)
 		{
 			i_stream = a_stream;
@@ -87,7 +87,7 @@ namespace Db4objects.Db4o
 			private readonly Db4objects.Db4o.YapReader writer;
 		}
 
-		internal virtual void BeginEndSet()
+		public virtual void BeginEndSet()
 		{
 			CheckSynchronization();
 			if (i_delete != null)
@@ -187,7 +187,7 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		internal virtual void Close(bool a_rollbackOnClose)
+		public virtual void Close(bool a_rollbackOnClose)
 		{
 			try
 			{
@@ -327,7 +327,7 @@ namespace Db4objects.Db4o
 			ClearAll();
 		}
 
-		internal virtual void CommitTransactionListeners()
+		protected virtual void CommitTransactionListeners()
 		{
 			CheckSynchronization();
 			if (i_transactionListeners != null)
@@ -380,7 +380,7 @@ namespace Db4objects.Db4o
 			private readonly int[] slotSetPointerCount;
 		}
 
-		internal virtual void Delete(Db4objects.Db4o.YapObject a_yo, int a_cascade)
+		public virtual void Delete(Db4objects.Db4o.YapObject a_yo, int a_cascade)
 		{
 			CheckSynchronization();
 			int id = a_yo.GetID();
@@ -399,7 +399,7 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		internal virtual void DontDelete(int classID, int a_id)
+		public virtual void DontDelete(int classID, int a_id)
 		{
 			CheckSynchronization();
 			Db4objects.Db4o.DeleteInfo info = (Db4objects.Db4o.DeleteInfo)Db4objects.Db4o.TreeInt
@@ -543,7 +543,7 @@ namespace Db4objects.Db4o
 			return new Db4objects.Db4o.Inside.Slots.Slot(address, length);
 		}
 
-		internal virtual bool IsDeleted(int a_id)
+		public virtual bool IsDeleted(int a_id)
 		{
 			CheckSynchronization();
 			Db4objects.Db4o.Inside.Slots.SlotChange slot = FindSlotChange(a_id);
@@ -558,7 +558,7 @@ namespace Db4objects.Db4o
 			return false;
 		}
 
-		internal virtual object[] ObjectAndYapObjectBySignature(long a_uuid, byte[] a_signature
+		public virtual object[] ObjectAndYapObjectBySignature(long a_uuid, byte[] a_signature
 			)
 		{
 			CheckSynchronization();
@@ -574,7 +574,7 @@ namespace Db4objects.Db4o
 			return (Db4objects.Db4o.Inside.Slots.SlotChange)slot.DuplicateOrThis();
 		}
 
-		internal virtual Db4objects.Db4o.Reflect.IReflector Reflector()
+		public virtual Db4objects.Db4o.Reflect.IReflector Reflector()
 		{
 			return Stream().Reflector();
 		}
@@ -638,7 +638,7 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		internal virtual void RollBackTransactionListeners()
+		protected virtual void RollBackTransactionListeners()
 		{
 			CheckSynchronization();
 			if (i_transactionListeners != null)
@@ -827,8 +827,8 @@ namespace Db4objects.Db4o
 			private readonly Transaction _enclosing;
 		}
 
-		internal virtual void WriteUpdateDeleteMembers(int a_id, Db4objects.Db4o.YapClass
-			 a_yc, int a_type, int a_cascade)
+		public virtual void WriteUpdateDeleteMembers(int a_id, Db4objects.Db4o.YapClass a_yc
+			, int a_type, int a_cascade)
 		{
 			CheckSynchronization();
 			if (Db4objects.Db4o.Foundation.Tree.Find(i_writtenUpdateDeletedMembers, new Db4objects.Db4o.TreeInt
@@ -894,6 +894,11 @@ namespace Db4objects.Db4o
 				return transaction;
 			}
 			return null;
+		}
+
+		public virtual Db4objects.Db4o.Transaction ParentTransaction()
+		{
+			return i_parentTransaction;
 		}
 	}
 }

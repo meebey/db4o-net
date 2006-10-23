@@ -21,7 +21,7 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		internal override void Initialize1(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Initialize1(Db4objects.Db4o.Config.IConfiguration config)
 		{
 			i_handlers = i_parent.i_handlers;
 			_classCollection = i_parent.ClassCollection();
@@ -139,7 +139,7 @@ namespace Db4objects.Db4o
 			return false;
 		}
 
-		internal override void Write(bool shuttingDown)
+		public override void Write(bool shuttingDown)
 		{
 			CheckNeededUpdates();
 			WriteDirty();

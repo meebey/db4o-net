@@ -29,7 +29,7 @@ namespace Db4objects.Db4o
 		private static Db4objects.Db4o.Sessions i_sessions = new Db4objects.Db4o.Sessions
 			();
 
-		internal static readonly object Lock = Initialize();
+		private static readonly object initializer = Initialize();
 
 		private static object Initialize()
 		{
@@ -120,9 +120,9 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.IObjectContainer OpenClient(Db4objects.Db4o.Config.IConfiguration
 			 config, string hostName, int port, string user, string password)
 		{
-			lock (Db4objects.Db4o.Db4o.Lock)
+			lock (Db4objects.Db4o.Inside.Global4.Lock)
 			{
-				return new Db4objects.Db4o.YapClient(config, new Db4objects.Db4o.Foundation.Network.YapSocketReal
+				return new Db4objects.Db4o.CS.YapClient(config, new Db4objects.Db4o.Foundation.Network.YapSocketReal
 					(hostName, port), user, password, true);
 			}
 		}
@@ -132,7 +132,7 @@ namespace Db4objects.Db4o
 		/// <see cref="Db4objects.Db4o.IObjectContainer">ObjectContainer</see>
 		/// on the specified database file for local use.
 		/// <br /><br />Subsidiary calls with the same database file name will return the same
-		/// <see cref="file">ObjectContainer</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer">ObjectContainer</see>
 		/// object.<br /><br />
 		/// Every call to <code>openFile()</code> requires a corresponding
 		/// <see cref="Db4objects.Db4o.IObjectContainer.Close">ObjectContainer.close</see>
@@ -161,7 +161,7 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.IObjectContainer OpenFile(Db4objects.Db4o.Config.IConfiguration
 			 config, string databaseFileName)
 		{
-			lock (Db4objects.Db4o.Db4o.Lock)
+			lock (Db4objects.Db4o.Inside.Global4.Lock)
 			{
 				return i_sessions.Open(config, databaseFileName);
 			}
@@ -170,7 +170,7 @@ namespace Db4objects.Db4o
 		protected static Db4objects.Db4o.IObjectContainer OpenMemoryFile1(Db4objects.Db4o.Config.IConfiguration
 			 config, Db4objects.Db4o.Ext.MemoryFile memoryFile)
 		{
-			lock (Db4objects.Db4o.Db4o.Lock)
+			lock (Db4objects.Db4o.Inside.Global4.Lock)
 			{
 				if (memoryFile == null)
 				{
@@ -232,7 +232,7 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.IObjectServer OpenServer(Db4objects.Db4o.Config.IConfiguration
 			 config, string databaseFileName, int port)
 		{
-			lock (Db4objects.Db4o.Db4o.Lock)
+			lock (Db4objects.Db4o.Inside.Global4.Lock)
 			{
 				Db4objects.Db4o.YapFile stream = (Db4objects.Db4o.YapFile)OpenFile(config, databaseFileName
 					);
@@ -242,7 +242,7 @@ namespace Db4objects.Db4o
 				}
 				lock (stream.Lock())
 				{
-					return new Db4objects.Db4o.YapServer(stream, port);
+					return new Db4objects.Db4o.CS.YapServer(stream, port);
 				}
 			}
 		}

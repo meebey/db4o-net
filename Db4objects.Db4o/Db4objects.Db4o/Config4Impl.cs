@@ -24,7 +24,7 @@ namespace Db4objects.Db4o
 			(null);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec BTREE_NODE_SIZE = new 
-			Db4objects.Db4o.Foundation.KeySpec(100);
+			Db4objects.Db4o.Foundation.KeySpec(4096);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec BTREE_CACHE_HEIGHT = new 
 			Db4objects.Db4o.Foundation.KeySpec(1);
@@ -162,7 +162,7 @@ namespace Db4objects.Db4o
 
 		private Db4objects.Db4o.YapStream i_stream;
 
-		internal int ActivationDepth()
+		public int ActivationDepth()
 		{
 			return _config.GetAsInt(ACTIVATION_DEPTH);
 		}
@@ -443,7 +443,7 @@ namespace Db4objects.Db4o
 			}
 			if (!reflector.HasTransaction() && i_stream != null)
 			{
-				reflector.SetTransaction(i_stream.i_systemTrans);
+				reflector.SetTransaction(i_stream.GetSystemTransaction());
 			}
 			return reflector;
 		}
@@ -799,12 +799,12 @@ namespace Db4objects.Db4o
 			return _config.GetAsBoolean(ENCRYPT);
 		}
 
-		internal Db4objects.Db4o.Foundation.Hashtable4 ExceptionalClasses()
+		public Db4objects.Db4o.Foundation.Hashtable4 ExceptionalClasses()
 		{
 			return (Db4objects.Db4o.Foundation.Hashtable4)_config.Get(EXCEPTIONAL_CLASSES);
 		}
 
-		internal bool ExceptionsOnNotStorable()
+		public bool ExceptionsOnNotStorable()
 		{
 			return _config.GetAsBoolean(EXCEPTIONS_ON_NOT_STORABLE);
 		}
@@ -834,7 +834,7 @@ namespace Db4objects.Db4o
 			return _config.GetAsBoolean(INTERN_STRINGS);
 		}
 
-		internal void IsServer(bool flag)
+		public void IsServer(bool flag)
 		{
 			_config.Put(IS_SERVER, flag);
 		}
@@ -854,7 +854,7 @@ namespace Db4objects.Db4o
 			return _config.GetAsInt(MESSAGE_LEVEL);
 		}
 
-		internal Db4objects.Db4o.Messaging.IMessageRecipient MessageRecipient()
+		public Db4objects.Db4o.Messaging.IMessageRecipient MessageRecipient()
 		{
 			return (Db4objects.Db4o.Messaging.IMessageRecipient)_config.Get(MESSAGE_RECIPIENT
 				);
@@ -910,7 +910,7 @@ namespace Db4objects.Db4o
 			return _config.GetAsInt(RESERVED_STORAGE_SPACE);
 		}
 
-		internal bool SingleThreadedClient()
+		public bool SingleThreadedClient()
 		{
 			return _config.GetAsBoolean(SINGLE_THREADED_CLIENT);
 		}
@@ -920,17 +920,17 @@ namespace Db4objects.Db4o
 			return _config.GetAsBoolean(TEST_CONSTRUCTORS);
 		}
 
-		internal int TimeoutClientSocket()
+		public int TimeoutClientSocket()
 		{
 			return _config.GetAsInt(TIMEOUT_CLIENT_SOCKET);
 		}
 
-		internal int TimeoutPingClients()
+		public int TimeoutPingClients()
 		{
 			return _config.GetAsInt(TIMEOUT_PING_CLIENTS);
 		}
 
-		internal int TimeoutServerSocket()
+		public int TimeoutServerSocket()
 		{
 			return _config.GetAsInt(TIMEOUT_SERVER_SOCKET);
 		}

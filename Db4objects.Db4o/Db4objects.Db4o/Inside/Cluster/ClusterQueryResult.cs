@@ -120,20 +120,40 @@ namespace Db4objects.Db4o.Inside.Cluster
 			return _cluster;
 		}
 
-		public virtual Db4objects.Db4o.IObjectContainer ObjectContainer()
+		public virtual Db4objects.Db4o.Ext.IExtObjectContainer ObjectContainer()
 		{
 			throw new System.NotSupportedException();
 		}
 
 		public virtual int IndexOf(int id)
 		{
-			Db4objects.Db4o.Inside.Exceptions4.NotSupported();
-			return 0;
+			throw new System.NotSupportedException();
 		}
 
 		public virtual void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
 		{
-			Db4objects.Db4o.Inside.Exceptions4.NotSupported();
+			throw new System.NotSupportedException();
+		}
+
+		public virtual void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)
+		{
+			throw new System.NotSupportedException();
+		}
+
+		public virtual void LoadFromQuery(Db4objects.Db4o.QQuery query)
+		{
+			throw new System.NotSupportedException();
+		}
+
+		public virtual void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
+			 iterator)
+		{
+			throw new System.NotSupportedException();
+		}
+
+		public virtual void LoadFromIdReader(Db4objects.Db4o.YapReader reader)
+		{
+			throw new System.NotSupportedException();
 		}
 	}
 }

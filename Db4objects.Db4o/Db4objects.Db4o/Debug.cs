@@ -27,19 +27,11 @@ namespace Db4objects.Db4o
 
 		public const bool fakeServer = false;
 
-		internal const bool messages = false;
+		public const bool messages = false;
 
 		public const bool nio = true;
 
 		public const bool lockFile = true;
-
-		internal static Db4objects.Db4o.YapFile serverStream;
-
-		internal static Db4objects.Db4o.YapClient clientStream;
-
-		internal static Db4objects.Db4o.Foundation.Queue4 clientMessageQueue;
-
-		internal static Db4objects.Db4o.Foundation.Lock4 clientMessageQueueLock;
 
 		public static void Expect(bool cond)
 		{

@@ -131,10 +131,5 @@ namespace Db4objects.Db4o.Inside.Classindex
 		{
 			_btreeIndex.DefragIndex(readers);
 		}
-
-		public override void DefragIndexNode(Db4objects.Db4o.ReaderPair readers)
-		{
-			_btreeIndex.DefragIndexNode(readers);
-		}
 	}
 }

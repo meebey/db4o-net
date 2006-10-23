@@ -136,9 +136,13 @@ namespace Db4objects.Db4o
 		}
 
 		public override void Defrag(Db4objects.Db4o.Inside.Marshall.MarshallerFamily mf, 
-			Db4objects.Db4o.ReaderPair readers)
+			Db4objects.Db4o.ReaderPair readers, bool redirect)
 		{
-			readers.IncrementOffset(LinkLength());
+			if (mf._untyped.UseNormalClassRead())
+			{
+				base.Defrag(mf, readers, redirect);
+			}
+			mf._untyped.Defrag(readers);
 		}
 	}
 }

@@ -34,7 +34,5 @@ namespace Db4objects.Db4o.Inside.Classindex
 		int Id();
 
 		void DefragIndex(Db4objects.Db4o.ReaderPair readers);
-
-		void DefragIndexNode(Db4objects.Db4o.ReaderPair readers);
 	}
 }

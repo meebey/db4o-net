@@ -74,12 +74,7 @@ namespace Db4objects.Db4o.Inside.Diagnostic
 
 		private bool IsDb4oClass(Db4objects.Db4o.YapClass yc)
 		{
-			string name = yc.GetName();
-			if (name.IndexOf("com.db4o.test") == 0)
-			{
-				return false;
-			}
-			return name.IndexOf("com.db4o.") == 0;
+			return Db4objects.Db4o.Platform4.IsDb4oClass(yc.GetName());
 		}
 
 		public virtual void LoadedFromClassIndex(Db4objects.Db4o.YapClass yc)

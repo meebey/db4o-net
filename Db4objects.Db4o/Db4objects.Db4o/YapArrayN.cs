@@ -70,6 +70,17 @@ namespace Db4objects.Db4o
 			return ret[0];
 		}
 
+		protected override int ReadElementsDefrag(Db4objects.Db4o.ReaderPair readers)
+		{
+			int elements = base.ReadElementsDefrag(readers);
+			int totalElements = 0;
+			for (int i = 0; i < elements; i++)
+			{
+				totalElements += readers.ReadInt();
+			}
+			return totalElements;
+		}
+
 		public sealed override void Read1Candidates(Db4objects.Db4o.Inside.Marshall.MarshallerFamily
 			 mf, Db4objects.Db4o.YapReader reader, Db4objects.Db4o.QCandidates candidates)
 		{

@@ -57,10 +57,10 @@ namespace Db4objects.Db4o.Inside.Query
 
 		internal virtual object StreamLock()
 		{
-			return _delegate.StreamLock();
+			return ObjectContainer().Lock();
 		}
 
-		internal virtual Db4objects.Db4o.IObjectContainer ObjectContainer()
+		internal virtual Db4objects.Db4o.Ext.IExtObjectContainer ObjectContainer()
 		{
 			return _delegate.ObjectContainer();
 		}
@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Inside.Query
 		{
 			lock (StreamLock())
 			{
-				int id = (int)ObjectContainer().Ext().GetID(a_object);
+				int id = (int)ObjectContainer().GetID(a_object);
 				if (id <= 0)
 				{
 					return -1;

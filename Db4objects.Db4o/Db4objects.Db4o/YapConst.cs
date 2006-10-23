@@ -93,11 +93,11 @@ namespace Db4objects.Db4o
 
 		public const int POINTER_LENGTH = (INT_LENGTH * 2) + ADDED_LENGTH;
 
-		internal const int MESSAGE_LENGTH = INT_LENGTH * 2 + 1;
+		public const int MESSAGE_LENGTH = INT_LENGTH * 2 + 1;
 
-		internal const byte SYSTEM_TRANS = (byte)'s';
+		public const byte SYSTEM_TRANS = (byte)'s';
 
-		internal const byte USER_TRANS = (byte)'u';
+		public const byte USER_TRANS = (byte)'u';
 
 		internal const byte XBYTE = (byte)'X';
 
@@ -173,7 +173,7 @@ namespace Db4objects.Db4o
 
 		internal static System.Type CLASS_TRANSIENTCLASS;
 
-		internal static readonly string EMBEDDED_CLIENT_USER = "embedded client";
+		public static readonly string EMBEDDED_CLIENT_USER = "embedded client";
 
 		internal const int CLEAN = 0;
 
@@ -207,42 +207,25 @@ namespace Db4objects.Db4o
 
 		public const int NEW = 1;
 
-		internal static readonly Db4objects.Db4o.YapStringIOUnicode stringIO = new Db4objects.Db4o.YapStringIOUnicode
+		public static readonly Db4objects.Db4o.YapStringIOUnicode stringIO = new Db4objects.Db4o.YapStringIOUnicode
 			();
 
 		private static object Init()
 		{
 			CLASS_OBJECT = new object().GetType();
-			CLASS_COMPARE = Db4oClass("config.Compare");
-			CLASS_DB4OTYPE = Db4oClass("types.Db4oType");
-			CLASS_DB4OTYPEIMPL = Db4oClass("Db4oTypeImpl");
-			CLASS_INTERNAL = Db4oClass("Internal4");
-			CLASS_UNVERSIONED = Db4oClass("types.Unversioned");
+			CLASS_COMPARE = typeof(Db4objects.Db4o.Config.ICompare);
+			CLASS_DB4OTYPE = typeof(Db4objects.Db4o.Types.IDb4oType);
+			CLASS_DB4OTYPEIMPL = typeof(Db4objects.Db4o.IDb4oTypeImpl);
+			CLASS_INTERNAL = typeof(Db4objects.Db4o.IInternal4);
+			CLASS_UNVERSIONED = typeof(Db4objects.Db4o.Types.IUnversioned);
 			CLASS_METACLASS = new Db4objects.Db4o.MetaClass().GetType();
 			CLASS_METAFIELD = new Db4objects.Db4o.MetaField().GetType();
 			CLASS_METAINDEX = new Db4objects.Db4o.MetaIndex().GetType();
-			CLASS_OBJECTCONTAINER = Db4oClass("ObjectContainer");
+			CLASS_OBJECTCONTAINER = typeof(Db4objects.Db4o.IObjectContainer);
 			CLASS_REPLICATIONRECORD = new Db4objects.Db4o.ReplicationRecord().GetType();
 			CLASS_STATICFIELD = new Db4objects.Db4o.StaticField().GetType();
 			CLASS_STATICCLASS = new Db4objects.Db4o.StaticClass().GetType();
-			CLASS_TRANSIENTCLASS = Db4oClass("types.TransientClass");
-			return null;
-		}
-
-		private static System.Type Db4oClass(string name)
-		{
-			return ClassForName("com.db4o." + name);
-		}
-
-		private static System.Type ClassForName(string name)
-		{
-			try
-			{
-				return System.Type.GetType(name);
-			}
-			catch (System.Exception e)
-			{
-			}
+			CLASS_TRANSIENTCLASS = typeof(Db4objects.Db4o.Types.ITransientClass);
 			return null;
 		}
 

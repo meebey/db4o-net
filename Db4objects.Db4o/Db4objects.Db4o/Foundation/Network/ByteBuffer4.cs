@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 			catch (System.IO.IOException iex)
 			{
-				throw iex;
+				throw;
 			}
 			catch (System.Exception bex)
 			{
@@ -123,7 +123,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 			catch (System.IO.IOException iex)
 			{
-				throw iex;
+				throw;
 			}
 			catch (System.Exception bex)
 			{

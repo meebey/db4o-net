@@ -319,32 +319,58 @@ namespace Db4objects.Db4o
 			 a_bytes, Db4objects.Db4o.Reflect.IReflectClass[] clazz)
 		{
 			int elements = a_bytes.ReadInt();
-			clazz[0] = i_handler.ClassReflector();
 			if (elements < 0)
 			{
-				if (elements != Db4objects.Db4o.YapConst.IGNORE_ID)
-				{
-					bool primitive = false;
-					Db4objects.Db4o.YapClass yc = a_trans.Stream().GetYapClass(-elements);
-					if (yc != null)
-					{
-						if (primitive)
-						{
-							clazz[0] = yc.PrimitiveClassReflector();
-						}
-						else
-						{
-							clazz[0] = yc.ClassReflector();
-						}
-					}
-				}
+				clazz[0] = ReflectClassFromElementsEntry(a_trans, elements);
 				elements = a_bytes.ReadInt();
+			}
+			else
+			{
+				clazz[0] = i_handler.ClassReflector();
 			}
 			if (Db4objects.Db4o.Debug.ExceedsMaximumArrayEntries(elements, i_isPrimitive))
 			{
 				return 0;
 			}
 			return elements;
+		}
+
+		protected int MapElementsEntry(int orig, Db4objects.Db4o.IIDMapping mapping)
+		{
+			if (orig >= 0 || orig == Db4objects.Db4o.YapConst.IGNORE_ID)
+			{
+				return orig;
+			}
+			bool primitive = !Db4objects.Db4o.Deploy.csharp && orig < Db4objects.Db4o.YapConst
+				.PRIMITIVE;
+			if (primitive)
+			{
+				orig -= Db4objects.Db4o.YapConst.PRIMITIVE;
+			}
+			int origID = -orig;
+			int mappedID = mapping.MappedID(origID);
+			int mapped = -mappedID;
+			if (primitive)
+			{
+				mapped += Db4objects.Db4o.YapConst.PRIMITIVE;
+			}
+			return mapped;
+		}
+
+		private Db4objects.Db4o.Reflect.IReflectClass ReflectClassFromElementsEntry(Db4objects.Db4o.Transaction
+			 a_trans, int elements)
+		{
+			if (elements != Db4objects.Db4o.YapConst.IGNORE_ID)
+			{
+				bool primitive = false;
+				int classID = -elements;
+				Db4objects.Db4o.YapClass yc = a_trans.Stream().GetYapClass(classID);
+				if (yc != null)
+				{
+					return (primitive ? yc.PrimitiveClassReflector() : yc.ClassReflector());
+				}
+			}
+			return i_handler.ClassReflector();
 		}
 
 		internal static object[] ToArray(Db4objects.Db4o.YapStream a_stream, object a_object
@@ -496,28 +522,33 @@ namespace Db4objects.Db4o
 		}
 
 		public sealed override void Defrag(Db4objects.Db4o.Inside.Marshall.MarshallerFamily
-			 mf, Db4objects.Db4o.ReaderPair readers)
+			 mf, Db4objects.Db4o.ReaderPair readers, bool redirect)
 		{
-			if (!i_isPrimitive)
+			if (!(i_handler.IsSecondClass() == Db4objects.Db4o.YapConst.YES))
 			{
 				mf._array.DefragIDs(this, readers);
 			}
 		}
 
-		public void Defrag1(Db4objects.Db4o.ReaderPair readers)
+		public virtual void Defrag1(Db4objects.Db4o.Inside.Marshall.MarshallerFamily mf, 
+			Db4objects.Db4o.ReaderPair readers)
 		{
-			int count = ElementCount(readers.SystemTrans(), readers);
-			for (int i = 0; i < count; i++)
+			int elements = ReadElementsDefrag(readers);
+			for (int i = 0; i < elements; i++)
 			{
-				try
-				{
-					readers.CopyID();
-				}
-				catch (Db4objects.Db4o.MappingNotFoundException exc)
-				{
-					System.Console.Out.WriteLine(exc);
-				}
+				i_handler.Defrag(mf, readers, true);
 			}
+		}
+
+		protected virtual int ReadElementsDefrag(Db4objects.Db4o.ReaderPair readers)
+		{
+			int elements = readers.Source().ReadInt();
+			readers.Target().WriteInt(MapElementsEntry(elements, readers.Mapping()));
+			if (elements < 0)
+			{
+				elements = readers.ReadInt();
+			}
+			return elements;
 		}
 
 		public override void DefragIndexEntry(Db4objects.Db4o.ReaderPair readers)

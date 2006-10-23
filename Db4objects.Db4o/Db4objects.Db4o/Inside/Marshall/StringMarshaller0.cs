@@ -45,5 +45,9 @@ namespace Db4objects.Db4o.Inside.Marshall
 		{
 			return reader.ReadEmbeddedObject(stream.GetTransaction());
 		}
+
+		public override void Defrag(Db4objects.Db4o.ISlotReader reader)
+		{
+		}
 	}
 }

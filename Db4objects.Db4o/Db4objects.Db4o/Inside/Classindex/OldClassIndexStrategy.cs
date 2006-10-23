@@ -357,9 +357,5 @@ namespace Db4objects.Db4o.Inside.Classindex
 		public override void DefragIndex(Db4objects.Db4o.ReaderPair readers)
 		{
 		}
-
-		public override void DefragIndexNode(Db4objects.Db4o.ReaderPair readers)
-		{
-		}
 	}
 }

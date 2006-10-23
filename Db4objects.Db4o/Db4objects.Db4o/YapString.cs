@@ -390,15 +390,21 @@ namespace Db4objects.Db4o
 
 		public override void DefragIndexEntry(Db4objects.Db4o.ReaderPair readers)
 		{
-			readers.CopyID();
+			readers.CopyID(false, true);
 			readers.IncrementIntSize();
 		}
 
 		public override void Defrag(Db4objects.Db4o.Inside.Marshall.MarshallerFamily mf, 
-			Db4objects.Db4o.ReaderPair readers)
+			Db4objects.Db4o.ReaderPair readers, bool redirect)
 		{
-			int linkLength = LinkLength();
-			readers.IncrementOffset(linkLength);
+			if (!redirect)
+			{
+				readers.IncrementOffset(LinkLength());
+			}
+			else
+			{
+				mf._string.Defrag(readers);
+			}
 		}
 	}
 }

@@ -120,7 +120,7 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		public virtual Sharpen.Lang.Reflect.Constructor SerializableConstructor(System.Type
+		public virtual System.Reflection.ConstructorInfo SerializableConstructor(System.Type
 			 clazz)
 		{
 			return null;

@@ -34,14 +34,14 @@ namespace Db4objects.Db4o.Inside.Marshall
 			_headerAttributes = ReadAttributes(_marshallerFamily, reader);
 		}
 
-		public static Db4objects.Db4o.Inside.Marshall.ObjectHeader Defrag(Db4objects.Db4o.YapClass
-			 yapClass, Db4objects.Db4o.ReaderPair readers)
+		public static Db4objects.Db4o.Inside.Marshall.ObjectHeader Defrag(Db4objects.Db4o.ReaderPair
+			 readers)
 		{
 			Db4objects.Db4o.YapReader source = readers.Source();
 			Db4objects.Db4o.YapReader target = readers.Target();
 			Db4objects.Db4o.Inside.Marshall.ObjectHeader header = new Db4objects.Db4o.Inside.Marshall.ObjectHeader
-				(null, yapClass, source);
-			int newID = readers.Mapping().MappedID(yapClass.GetID());
+				(readers.Context().SystemTrans().Stream(), null, source);
+			int newID = readers.Mapping().MappedID(header.YapClass().GetID());
 			header._marshallerFamily._object.WriteObjectClassID(target, newID);
 			header._marshallerFamily._object.SkipMarshallerInfo(target);
 			ReadAttributes(header._marshallerFamily, target);

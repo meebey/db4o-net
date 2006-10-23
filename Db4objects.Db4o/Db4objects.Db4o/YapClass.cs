@@ -78,7 +78,7 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		internal void AddFieldIndices(Db4objects.Db4o.YapWriter a_writer, Db4objects.Db4o.Inside.Slots.Slot
+		public void AddFieldIndices(Db4objects.Db4o.YapWriter a_writer, Db4objects.Db4o.Inside.Slots.Slot
 			 oldSlot)
 		{
 			if (HasIndex() || HasVirtualAttributes())
@@ -499,7 +499,7 @@ namespace Db4objects.Db4o
 			}
 			if (a_class == null)
 			{
-				if (a_name == null || a_name.IndexOf("com.db4o") != 0)
+				if (a_name == null || !Db4objects.Db4o.Platform4.IsDb4oClass(a_name))
 				{
 					if (errMessages)
 					{
@@ -866,54 +866,7 @@ namespace Db4objects.Db4o
 			{
 				return new long[0];
 			}
-			if (trans.Stream().IsClient())
-			{
-				return GetClientIDs(trans);
-			}
-			return GetIndexIDs(trans);
-		}
-
-		private long[] GetIndexIDs(Db4objects.Db4o.Transaction trans)
-		{
-			Db4objects.Db4o.Foundation.IntArrayList ids = new Db4objects.Db4o.Foundation.IntArrayList
-				();
-			_index.TraverseAll(trans, new _AnonymousInnerClass761(this, ids));
-			return ids.AsLong();
-		}
-
-		private sealed class _AnonymousInnerClass761 : Db4objects.Db4o.Foundation.IVisitor4
-		{
-			public _AnonymousInnerClass761(YapClass _enclosing, Db4objects.Db4o.Foundation.IntArrayList
-				 ids)
-			{
-				this._enclosing = _enclosing;
-				this.ids = ids;
-			}
-
-			public void Visit(object obj)
-			{
-				ids.Add(((int)obj));
-			}
-
-			private readonly YapClass _enclosing;
-
-			private readonly Db4objects.Db4o.Foundation.IntArrayList ids;
-		}
-
-		private long[] GetClientIDs(Db4objects.Db4o.Transaction trans)
-		{
-			Db4objects.Db4o.YapClient stream = (Db4objects.Db4o.YapClient)trans.Stream();
-			stream.WriteMsg(Db4objects.Db4o.Msg.GET_INTERNAL_IDS.GetWriterForInt(trans, GetID
-				()));
-			Db4objects.Db4o.YapReader reader = stream.ExpectedByteResponse(Db4objects.Db4o.Msg
-				.ID_LIST);
-			int size = reader.ReadInt();
-			long[] ids = new long[size];
-			for (int i = 0; i < size; i++)
-			{
-				ids[i] = reader.ReadInt();
-			}
-			return ids;
+			return trans.Stream().GetIDsForClass(trans, this);
 		}
 
 		public virtual bool HasIndex()
@@ -1058,13 +1011,13 @@ namespace Db4objects.Db4o
 		public virtual Db4objects.Db4o.YapField GetYapField(string name)
 		{
 			Db4objects.Db4o.YapField[] yf = new Db4objects.Db4o.YapField[1];
-			ForEachYapField(new _AnonymousInnerClass888(this, name, yf));
+			ForEachYapField(new _AnonymousInnerClass861(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _AnonymousInnerClass888 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass861 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass888(YapClass _enclosing, string name, Db4objects.Db4o.YapField[]
+			public _AnonymousInnerClass861(YapClass _enclosing, string name, Db4objects.Db4o.YapField[]
 				 yf)
 			{
 				this._enclosing = _enclosing;
@@ -1631,15 +1584,15 @@ namespace Db4objects.Db4o
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1365
+					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1338
 						(this, a_candidates, trans));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1365 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass1338 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass1365(YapClass _enclosing, Db4objects.Db4o.QCandidates 
+			public _AnonymousInnerClass1338(YapClass _enclosing, Db4objects.Db4o.QCandidates 
 				a_candidates, Db4objects.Db4o.Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -1696,7 +1649,7 @@ namespace Db4objects.Db4o
 			return null;
 		}
 
-		internal byte[] ReadName1(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapReader
+		public byte[] ReadName1(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapReader
 			 reader)
 		{
 			i_reader = reader;
@@ -2233,15 +2186,15 @@ namespace Db4objects.Db4o
 			return str;
 		}
 
-		public virtual void DefragObject(Db4objects.Db4o.ReaderPair readers)
+		public static void DefragObject(Db4objects.Db4o.ReaderPair readers)
 		{
 			Db4objects.Db4o.Inside.Marshall.ObjectHeader header = Db4objects.Db4o.Inside.Marshall.ObjectHeader
-				.Defrag(this, readers);
-			header._marshallerFamily._object.DefragFields(this, header, readers);
+				.Defrag(readers);
+			header._marshallerFamily._object.DefragFields(header.YapClass(), header, readers);
 		}
 
 		public virtual void Defrag(Db4objects.Db4o.Inside.Marshall.MarshallerFamily mf, Db4objects.Db4o.ReaderPair
-			 readers)
+			 readers, bool redirect)
 		{
 			readers.CopyID();
 			int restLength = (LinkLength() - Db4objects.Db4o.YapConst.INT_LENGTH);

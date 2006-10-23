@@ -107,8 +107,9 @@ namespace Db4objects.Db4o.Inside.Marshall
 		public override void DefragIDs(Db4objects.Db4o.YapArray arrayHandler, Db4objects.Db4o.ReaderPair
 			 readers)
 		{
-			readers.Offset(readers.ReadInt());
-			arrayHandler.Defrag1(readers);
+			int offset = readers.PreparePayloadRead();
+			arrayHandler.Defrag1(_family, readers);
+			readers.Offset(offset);
 		}
 	}
 }

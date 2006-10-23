@@ -45,8 +45,8 @@ namespace Db4objects.Db4o
 			i_address = a_address;
 		}
 
-		internal YapWriter(Db4objects.Db4o.YapWriter parent, Db4objects.Db4o.YapWriter[] 
-			previousRead, int previousCount)
+		public YapWriter(Db4objects.Db4o.YapWriter parent, Db4objects.Db4o.YapWriter[] previousRead
+			, int previousCount)
 		{
 			previousRead[previousCount++] = this;
 			int parentID = parent.ReadInt();
@@ -64,13 +64,13 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		internal void AddEmbedded(Db4objects.Db4o.YapWriter a_bytes)
+		public void AddEmbedded(Db4objects.Db4o.YapWriter a_bytes)
 		{
 			i_embedded = Db4objects.Db4o.Foundation.Tree.Add(i_embedded, new Db4objects.Db4o.TreeIntObject
 				(a_bytes.GetID(), a_bytes));
 		}
 
-		internal int AppendTo(Db4objects.Db4o.YapReader a_bytes, int a_id)
+		public int AppendTo(Db4objects.Db4o.YapReader a_bytes, int a_id)
 		{
 			a_id++;
 			a_bytes.WriteInt(i_length);
@@ -118,7 +118,7 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		internal int EmbeddedCount()
+		public int EmbeddedCount()
 		{
 			int[] count = { 0 };
 			ForEachEmbedded(new _AnonymousInnerClass121(this, count));
@@ -143,7 +143,7 @@ namespace Db4objects.Db4o
 			private readonly int[] count;
 		}
 
-		internal int EmbeddedLength()
+		public int EmbeddedLength()
 		{
 			int[] length = { 0 };
 			ForEachEmbedded(new _AnonymousInnerClass131(this, length));
@@ -268,7 +268,7 @@ namespace Db4objects.Db4o
 			Stream().ReadBytes(_buffer, i_address, _addressOffset, i_length);
 		}
 
-		internal bool Read(Db4objects.Db4o.Foundation.Network.IYapSocket sock)
+		public bool Read(Db4objects.Db4o.Foundation.Network.IYapSocket sock)
 		{
 			int offset = 0;
 			int length = i_length;
@@ -312,7 +312,7 @@ namespace Db4objects.Db4o
 			return bytes;
 		}
 
-		internal Db4objects.Db4o.YapWriter ReadYapBytes()
+		public Db4objects.Db4o.YapWriter ReadYapBytes()
 		{
 			int length = ReadInt();
 			if (length == 0)
@@ -325,7 +325,7 @@ namespace Db4objects.Db4o
 			return yb;
 		}
 
-		internal void RemoveFirstBytes(int aLength)
+		public void RemoveFirstBytes(int aLength)
 		{
 			i_length -= aLength;
 			byte[] temp = new byte[i_length];
@@ -338,7 +338,7 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		internal void Address(int a_address)
+		public void Address(int a_address)
 		{
 			i_address = a_address;
 		}
@@ -358,7 +358,7 @@ namespace Db4objects.Db4o
 			i_instantionDepth = a_depth;
 		}
 
-		internal void SetTransaction(Db4objects.Db4o.Transaction aTrans)
+		public void SetTransaction(Db4objects.Db4o.Transaction aTrans)
 		{
 			i_trans = aTrans;
 		}
@@ -373,7 +373,7 @@ namespace Db4objects.Db4o
 			i_trans.SlotDelete(i_id, i_address, i_length);
 		}
 
-		internal void Trim4(int a_offset, int a_length)
+		public void Trim4(int a_offset, int a_length)
 		{
 			byte[] temp = new byte[a_length];
 			System.Array.Copy(_buffer, a_offset, temp, 0, a_length);
@@ -387,7 +387,7 @@ namespace Db4objects.Db4o
 			_offset = 0;
 		}
 
-		internal void UseSlot(int a_adress, int a_length)
+		public void UseSlot(int a_adress, int a_length)
 		{
 			i_address = a_adress;
 			_offset = 0;
@@ -409,7 +409,7 @@ namespace Db4objects.Db4o
 			Write(File(), i_address, _addressOffset);
 		}
 
-		internal void WriteEmbedded()
+		public void WriteEmbedded()
 		{
 			Db4objects.Db4o.YapWriter finalThis = this;
 			ForEachEmbedded(new _AnonymousInnerClass327(this, finalThis));
@@ -498,7 +498,7 @@ namespace Db4objects.Db4o
 			toWriter._addressOffset = _addressOffset;
 		}
 
-		internal void WriteQueryResult(Db4objects.Db4o.Inside.Query.IQueryResult qr)
+		public void WriteQueryResult(Db4objects.Db4o.Inside.Query.IQueryResult qr)
 		{
 			int size = qr.Size();
 			WriteInt(size);

@@ -408,15 +408,15 @@ namespace Db4objects.Db4o.Reflect.Generic
 				{
 					case Db4objects.Db4o.YapHandlers.ANY_ID:
 					{
-						fieldClass = (Db4objects.Db4o.Reflect.Generic.GenericClass)ForClass(typeof(object
-							));
+						fieldClass = (Db4objects.Db4o.Reflect.Generic.GenericClass)ForClass(typeof(object)
+							);
 						break;
 					}
 
 					case Db4objects.Db4o.YapHandlers.ANY_ARRAY_ID:
 					{
-						fieldClass = ((Db4objects.Db4o.Reflect.Generic.GenericClass)ForClass(typeof(object
-							))).ArrayClass();
+						fieldClass = ((Db4objects.Db4o.Reflect.Generic.GenericClass)ForClass(typeof(object)
+							)).ArrayClass();
 						break;
 					}
 

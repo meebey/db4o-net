@@ -319,7 +319,7 @@ namespace Db4objects.Db4o
 		public abstract int LinkLength();
 
 		public void Defrag(Db4objects.Db4o.Inside.Marshall.MarshallerFamily mf, Db4objects.Db4o.ReaderPair
-			 readers)
+			 readers, bool redirect)
 		{
 			int linkLength = LinkLength();
 			readers.IncrementOffset(linkLength);

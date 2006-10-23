@@ -52,7 +52,7 @@ namespace Db4objects.Db4o
 
 		public readonly Db4objects.Db4o.Inside.Diagnostic.DiagnosticProcessor _diagnosticProcessor;
 
-		internal bool i_encrypt;
+		public bool i_encrypt;
 
 		internal byte[] i_encryptor;
 
@@ -74,7 +74,7 @@ namespace Db4objects.Db4o
 
 		internal Db4objects.Db4o.Reflect.IReflectClass ICLASS_OBJECTCONTAINER;
 
-		internal Db4objects.Db4o.Reflect.IReflectClass ICLASS_STATICCLASS;
+		public Db4objects.Db4o.Reflect.IReflectClass ICLASS_STATICCLASS;
 
 		internal Db4objects.Db4o.Reflect.IReflectClass ICLASS_STRING;
 

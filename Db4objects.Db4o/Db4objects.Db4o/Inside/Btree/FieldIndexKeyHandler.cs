@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Inside.Btree
 
 		public virtual void DefragIndexEntry(Db4objects.Db4o.ReaderPair readers)
 		{
-			readers.CopyID(true);
+			readers.CopyID(true, false);
 			_valueHandler.DefragIndexEntry(readers);
 		}
 	}

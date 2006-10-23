@@ -45,8 +45,6 @@ namespace Db4objects.Db4o.Inside.Classindex
 
 		public abstract void DefragIndex(Db4objects.Db4o.ReaderPair arg1);
 
-		public abstract void DefragIndexNode(Db4objects.Db4o.ReaderPair arg1);
-
 		public abstract void DefragReference(Db4objects.Db4o.YapClass arg1, Db4objects.Db4o.ReaderPair
 			 arg2, int arg3);
 

@@ -29,7 +29,7 @@ namespace Db4objects.Db4o
 				catch (Db4objects.Db4o.Ext.DatabaseFileLockedException e)
 				{
 					StopSession();
-					throw e;
+					throw;
 				}
 				Initialize3();
 			}
@@ -101,10 +101,10 @@ namespace Db4objects.Db4o
 			return (byte)i_file.BlockSize();
 		}
 
-		internal override bool Close2()
+		protected override bool Close2()
 		{
 			bool stopSession = true;
-			lock (Db4objects.Db4o.Db4o.Lock)
+			lock (Db4objects.Db4o.Inside.Global4.Lock)
 			{
 				stopSession = i_session.CloseInstance();
 				if (stopSession)
@@ -143,7 +143,7 @@ namespace Db4objects.Db4o
 			return stopSession;
 		}
 
-		internal override void Commit1()
+		public override void Commit1()
 		{
 			EnsureLastSlotWritten();
 			base.Commit1();
@@ -269,7 +269,7 @@ namespace Db4objects.Db4o
 					}
 					catch (Db4objects.Db4o.Ext.DatabaseFileLockedException de)
 					{
-						throw de;
+						throw;
 					}
 					catch (System.Exception e)
 					{
@@ -301,17 +301,17 @@ namespace Db4objects.Db4o
 				{
 					i_references.StopTimer();
 				}
-				throw exc;
+				throw;
 			}
 		}
 
-		internal override void ReadBytes(byte[] bytes, int address, int length)
+		public override void ReadBytes(byte[] bytes, int address, int length)
 		{
 			ReadBytes(bytes, address, 0, length);
 		}
 
-		internal override void ReadBytes(byte[] bytes, int address, int addressOffset, int
-			 length)
+		public override void ReadBytes(byte[] bytes, int address, int addressOffset, int 
+			length)
 		{
 			try
 			{

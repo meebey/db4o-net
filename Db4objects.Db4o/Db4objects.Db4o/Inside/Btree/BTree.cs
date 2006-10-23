@@ -485,7 +485,7 @@ namespace Db4objects.Db4o.Inside.Btree
 				{
 					throw exc[0];
 				}
-				throw e;
+				throw;
 			}
 		}
 

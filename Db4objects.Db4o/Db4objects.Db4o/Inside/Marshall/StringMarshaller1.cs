@@ -78,5 +78,11 @@ namespace Db4objects.Db4o.Inside.Marshall
 			}
 			return reader.ReadPayloadReader(payLoadOffSet, length);
 		}
+
+		public override void Defrag(Db4objects.Db4o.ISlotReader reader)
+		{
+			reader.IncrementIntSize();
+			reader.IncrementIntSize();
+		}
 	}
 }

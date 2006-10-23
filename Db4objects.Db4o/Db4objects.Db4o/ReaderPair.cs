@@ -48,9 +48,25 @@ namespace Db4objects.Db4o
 			IncrementOffset(times * Db4objects.Db4o.YapConst.INT_LENGTH);
 		}
 
-		public virtual int CopyID(bool flipNegative)
+		public virtual int CopyID()
+		{
+			return CopyID(false, false);
+		}
+
+		public virtual int CopyID(bool flipNegative, bool lenient)
 		{
 			int id = _source.ReadInt();
+			return InternalCopyID(flipNegative, lenient, id);
+		}
+
+		public virtual Db4objects.Db4o.MappedIDPair CopyIDAndRetrieveMapping()
+		{
+			int id = _source.ReadInt();
+			return new Db4objects.Db4o.MappedIDPair(id, InternalCopyID(false, false, id));
+		}
+
+		private int InternalCopyID(bool flipNegative, bool lenient, int id)
+		{
 			if (flipNegative && id < 0)
 			{
 				id = -id;
@@ -62,11 +78,6 @@ namespace Db4objects.Db4o
 			}
 			_target.WriteInt(mapped);
 			return mapped;
-		}
-
-		public virtual int CopyID()
-		{
-			return CopyID(false);
 		}
 
 		public virtual void ReadBegin(byte identifier)
@@ -136,10 +147,22 @@ namespace Db4objects.Db4o
 		public static void ProcessCopy(Db4objects.Db4o.IDefragContext context, int sourceID
 			, Db4objects.Db4o.ISlotCopyHandler command)
 		{
-			Db4objects.Db4o.YapReader sourceReader = context.SourceReaderByID(sourceID);
+			ProcessCopy(context, sourceID, command, false);
+		}
+
+		public static void ProcessCopy(Db4objects.Db4o.IDefragContext context, int sourceID
+			, Db4objects.Db4o.ISlotCopyHandler command, bool registerAddressMapping)
+		{
+			Db4objects.Db4o.YapReader sourceReader = (registerAddressMapping ? context.SourceWriterByID
+				(sourceID) : context.SourceReaderByID(sourceID));
 			int targetID = context.MappedID(sourceID);
 			int targetLength = sourceReader.GetLength();
 			int targetAddress = context.AllocateTargetSlot(targetLength);
+			if (registerAddressMapping)
+			{
+				int sourceAddress = ((Db4objects.Db4o.YapWriter)sourceReader).GetAddress();
+				context.MapIDs(sourceAddress, targetAddress);
+			}
 			Db4objects.Db4o.YapReader targetPointerReader = new Db4objects.Db4o.YapReader(Db4objects.Db4o.YapConst
 				.POINTER_LENGTH);
 			targetPointerReader.WriteInt(targetAddress);
@@ -187,6 +210,14 @@ namespace Db4objects.Db4o
 		{
 			_source.ReadEnd();
 			_target.ReadEnd();
+		}
+
+		public virtual int PreparePayloadRead()
+		{
+			int newPayLoadOffset = ReadInt();
+			int linkOffSet = Offset();
+			Offset(newPayLoadOffset);
+			return linkOffSet;
 		}
 	}
 }

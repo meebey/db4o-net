@@ -101,7 +101,7 @@ namespace Db4objects.Db4o
 			return _buffer[_offset++];
 		}
 
-		internal virtual byte[] ReadBytes(int a_length)
+		public virtual byte[] ReadBytes(int a_length)
 		{
 			byte[] bytes = new byte[a_length];
 			ReadBytes(bytes);

@@ -152,9 +152,9 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 		{
 			try
 			{
-				_value = System.Type.GetType(root.ClassName());
+				_value = Sharpen.Runtime.GetType(root.ClassName());
 			}
-			catch (Sharpen.Lang.ClassNotFoundException e)
+			catch (System.TypeLoadException e)
 			{
 				Sharpen.Runtime.PrintStackTrace(e);
 			}

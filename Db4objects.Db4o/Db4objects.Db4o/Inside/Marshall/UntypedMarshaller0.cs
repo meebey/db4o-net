@@ -94,5 +94,9 @@ namespace Db4objects.Db4o.Inside.Marshall
 			a_bytes.WriteInt(id);
 			return id;
 		}
+
+		public override void Defrag(Db4objects.Db4o.ReaderPair readers)
+		{
+		}
 	}
 }

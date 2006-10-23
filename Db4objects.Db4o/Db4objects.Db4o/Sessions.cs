@@ -4,7 +4,7 @@ namespace Db4objects.Db4o
 	{
 		internal virtual void ForEach(Db4objects.Db4o.Foundation.IVisitor4 visitor)
 		{
-			lock (Db4objects.Db4o.Db4o.Lock)
+			lock (Db4objects.Db4o.Inside.Global4.Lock)
 			{
 				System.Collections.IEnumerator i = GetEnumerator();
 				while (i.MoveNext())
@@ -17,7 +17,7 @@ namespace Db4objects.Db4o
 		internal virtual Db4objects.Db4o.IObjectContainer Open(Db4objects.Db4o.Config.IConfiguration
 			 config, string databaseFileName)
 		{
-			lock (Db4objects.Db4o.Db4o.Lock)
+			lock (Db4objects.Db4o.Inside.Global4.Lock)
 			{
 				Db4objects.Db4o.IObjectContainer oc = null;
 				Db4objects.Db4o.Session newSession = new Db4objects.Db4o.Session(databaseFileName
@@ -38,11 +38,11 @@ namespace Db4objects.Db4o
 				}
 				catch (Db4objects.Db4o.Ext.DatabaseFileLockedException e)
 				{
-					throw e;
+					throw;
 				}
 				catch (Db4objects.Db4o.Ext.ObjectNotStorableException e)
 				{
-					throw e;
+					throw;
 				}
 				catch (System.Exception t)
 				{
@@ -61,7 +61,7 @@ namespace Db4objects.Db4o
 
 		public override object Remove(object obj)
 		{
-			lock (Db4objects.Db4o.Db4o.Lock)
+			lock (Db4objects.Db4o.Inside.Global4.Lock)
 			{
 				return base.Remove(obj);
 			}

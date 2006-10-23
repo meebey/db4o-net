@@ -1,12 +1,12 @@
 namespace Db4objects.Db4o
 {
-	internal class DeleteInfo : Db4objects.Db4o.TreeInt
+	public class DeleteInfo : Db4objects.Db4o.TreeInt
 	{
-		internal bool _delete;
+		public bool _delete;
 
 		internal int _cascade;
 
-		internal Db4objects.Db4o.YapObject _reference;
+		public Db4objects.Db4o.YapObject _reference;
 
 		public DeleteInfo(int id, Db4objects.Db4o.YapObject reference, bool delete, int cascade
 			) : base(id)

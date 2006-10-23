@@ -90,6 +90,6 @@ namespace Db4objects.Db4o
 			 withIndirection);
 
 		void Defrag(Db4objects.Db4o.Inside.Marshall.MarshallerFamily mf, Db4objects.Db4o.ReaderPair
-			 readers);
+			 readers, bool redirect);
 	}
 }
