@@ -24,10 +24,20 @@ namespace Sharpen
 			Console.Error;
 #endif
 
-		public static object GetArrayValue(object parent, int index)
-		{
-			return ((System.Array)parent).GetValue(index);
-		}
+	    public static object GetArrayValue(object array, int i)
+	    {
+	        return ((Array)array).GetValue(i);
+	    }
+	    
+	    public static int GetArrayLength(object array)
+	    {
+            return ((Array) array).Length;
+	    }
+
+	    public static void SetArrayValue(object array, int index, object value)
+	    {
+	        ((Array)array).SetValue(value, index);
+	    }
 
 		private const BindingFlags DeclaredMemberFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 		
@@ -180,5 +190,5 @@ namespace Sharpen
         {
             return TypeReference.FromString(typeName).Resolve();
         }
-    }
+	}
 }

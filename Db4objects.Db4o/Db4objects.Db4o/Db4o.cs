@@ -41,7 +41,7 @@ namespace Db4objects.Db4o
 		/// 	</summary>
 		/// <remarks>prints the version name of this db4o version to <code>System.out</code>.
 		/// 	</remarks>
-		public static void Main(string args)
+		public static void Main(string[] args)
 		{
 			System.Console.Out.WriteLine(Version());
 		}

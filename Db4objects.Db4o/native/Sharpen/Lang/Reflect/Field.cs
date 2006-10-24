@@ -64,7 +64,7 @@ namespace Sharpen.Lang.Reflect
                 modifiers |= Modifier.STATIC;
             }
 
-            if (CheckForTransient(_fieldInfo.GetCustomAttributes(true)))
+            if (IsTransient(_fieldInfo))
             {
                 modifiers |= Modifier.TRANSIENT;
             }
@@ -78,7 +78,12 @@ namespace Sharpen.Lang.Reflect
             return modifiers;
         }
 
-		private bool CheckForTransient(object[] attributes)
+        public static bool IsTransient(FieldInfo field)
+        {
+            return CheckForTransient(field.GetCustomAttributes(true));
+        }
+
+        private static bool CheckForTransient(object[] attributes)
 		{
 			if (attributes == null) return false;
 

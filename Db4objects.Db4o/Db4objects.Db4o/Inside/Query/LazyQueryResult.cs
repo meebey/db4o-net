@@ -5,6 +5,8 @@ namespace Db4objects.Db4o.Inside.Query
 	{
 		private readonly Db4objects.Db4o.Transaction _transaction;
 
+		private System.Collections.IEnumerable _iterable;
+
 		public LazyQueryResult(Db4objects.Db4o.Transaction trans)
 		{
 			_transaction = trans;
@@ -22,12 +24,49 @@ namespace Db4objects.Db4o.Inside.Query
 
 		public virtual Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs()
 		{
-			throw new System.NotImplementedException();
+			if (_iterable == null)
+			{
+				throw new System.InvalidOperationException();
+			}
+			return new Db4objects.Db4o.Foundation.IntIterator4Adaptor(_iterable.GetEnumerator
+				());
 		}
 
 		public virtual void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)
 		{
-			throw new System.NotImplementedException();
+			Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy index = clazz.Index();
+			if (!(index is Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy))
+			{
+				throw new System.InvalidOperationException();
+			}
+			Db4objects.Db4o.Inside.Btree.BTree btree = ((Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy
+				)index).Btree();
+			_iterable = new _AnonymousInnerClass47(this, btree);
+		}
+
+		private sealed class _AnonymousInnerClass47 : System.Collections.IEnumerable
+		{
+			public _AnonymousInnerClass47(LazyQueryResult _enclosing, Db4objects.Db4o.Inside.Btree.BTree
+				 btree)
+			{
+				this._enclosing = _enclosing;
+				this.btree = btree;
+			}
+
+			public System.Collections.IEnumerator GetEnumerator()
+			{
+				return new Db4objects.Db4o.Inside.Btree.BTreeRangeSingle(this._enclosing.Transaction
+					(), btree, btree.FirstPointer(this._enclosing.Transaction()), null).Keys();
+			}
+
+			private readonly LazyQueryResult _enclosing;
+
+			private readonly Db4objects.Db4o.Inside.Btree.BTree btree;
+		}
+
+		public virtual Db4objects.Db4o.Transaction Transaction()
+		{
+			return _transaction;
 		}
 
 		public virtual void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
