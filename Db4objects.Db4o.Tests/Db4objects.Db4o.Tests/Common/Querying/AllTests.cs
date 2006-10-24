@@ -10,9 +10,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		protected override System.Type[] TestCases()
 		{
 			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Querying.IdListQueryResultTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Querying.IndexedQueriesTestCase), typeof(Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase), typeof(Db4objects.Db4o.Tests.Common.Querying.OrderedQueryTestCase)
-				 };
+				, typeof(Db4objects.Db4o.Tests.Common.Querying.IndexedQueriesTestCase), typeof(Db4objects.Db4o.Tests.Common.Querying.LazyQueryResultTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase), typeof(Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Querying.OrderedQueryTestCase) };
 		}
 	}
 }

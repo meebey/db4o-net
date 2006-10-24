@@ -40,6 +40,15 @@ namespace Db4oUnit.Extensions.Fixtures
 			}
 		}
 
+		public override bool Accept(System.Type clazz)
+		{
+			if ((typeof(Db4oUnit.Extensions.Fixtures.IOptOutCS).IsAssignableFrom(clazz)))
+			{
+				return false;
+			}
+			return true;
+		}
+
 		public override Db4objects.Db4o.Ext.IExtObjectContainer Db()
 		{
 			return _objectContainer;

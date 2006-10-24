@@ -8,7 +8,8 @@ namespace Db4objects.Db4o.Tests.Common
 				, typeof(Db4objects.Db4o.Tests.Common.Btree.AllTests), typeof(Db4objects.Db4o.Tests.Common.Fieldindex.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Foundation.AllTests), typeof(Db4objects.Db4o.Tests.Common.Handlers.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Header.AllTests), typeof(Db4objects.Db4o.Tests.Common.Querying.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Types.AllTests) };
+				, typeof(Db4objects.Db4o.Tests.Common.Soda.AllTests), typeof(Db4objects.Db4o.Tests.Common.Types.AllTests)
+				 };
 		}
 	}
 }

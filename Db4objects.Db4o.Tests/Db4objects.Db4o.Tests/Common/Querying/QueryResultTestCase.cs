@@ -1,7 +1,7 @@
 namespace Db4objects.Db4o.Tests.Common.Querying
 {
 	public abstract class QueryResultTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
-		, Db4oUnit.Extensions.Fixtures.IOptOutDefragSolo
+		, Db4oUnit.Extensions.Fixtures.IOptOutCS, Db4oUnit.Extensions.Fixtures.IOptOutDefragSolo
 	{
 		private static readonly int[] VALUES = new int[] { 1, 5, 6, 7, 9 };
 
@@ -15,12 +15,10 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public virtual void TestClassQuery()
 		{
-			Db4objects.Db4o.Query.IQuery query = NewItemQuery();
-			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = ExecuteQuery(query);
-			AssertIDs(queryResult, ids);
+			AssertIDs(ClassOnlyQuery(), ids);
 		}
 
-		public virtual void TestIndexedFieldQuery()
+		public virtual void _testIndexedFieldQuery()
 		{
 			Db4objects.Db4o.Query.IQuery query = NewItemQuery();
 			query.Descend("foo").Constrain(6).Smaller();
@@ -28,12 +26,25 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			AssertIDs(queryResult, new int[] { ids[0], ids[1] });
 		}
 
-		public virtual void TestNonIndexedFieldQuery()
+		public virtual void _testNonIndexedFieldQuery()
 		{
 			Db4objects.Db4o.Query.IQuery query = NewItemQuery();
 			query.Descend("bar").Constrain(6).Smaller();
 			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = ExecuteQuery(query);
 			AssertIDs(queryResult, new int[] { ids[0], ids[1] });
+		}
+
+		private Db4objects.Db4o.Inside.Query.IQueryResult ClassOnlyQuery()
+		{
+			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = NewQueryResult();
+			queryResult.LoadFromClassIndex(YapClass());
+			return queryResult;
+		}
+
+		private Db4objects.Db4o.YapClass YapClass()
+		{
+			return Stream().GetYapClass(Reflector().ForClass(typeof(Db4objects.Db4o.Tests.Common.Querying.QueryResultTestCase.Item)
+				), false);
 		}
 
 		private Db4objects.Db4o.Inside.Query.IQueryResult ExecuteQuery(Db4objects.Db4o.Query.IQuery
