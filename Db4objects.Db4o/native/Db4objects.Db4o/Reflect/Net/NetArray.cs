@@ -2,12 +2,66 @@
 
 namespace Db4objects.Db4o.Reflect.Net
 {
-	/// <remarks>Reflection implementation for Array to map to .NET reflection.</remarks>
-	public class NetArray : Db4objects.Db4o.Reflect.IReflectArray
+    public class NetArray : Db4objects.Db4o.Reflect.Core.AbstractReflectArray
+    {
+        public NetArray(IReflector reflector) : base(reflector)
+        {
+        }
+        
+        private static Type GetNetType(IReflectClass clazz)
+		{
+			return ((NetClass)clazz).GetNetType();
+		}
+        
+        public override object NewInstance(IReflectClass componentType, int[] dimensions)
+        {
+            Type type = GetNetType(componentType);
+            return UnfoldArrayCreation(GetArrayType(type, dimensions.Length - 1), dimensions, 0);
+        }
+
+        private object UnfoldArrayCreation(Type type, int[] dimensions, int dimensionIndex)
+        {   
+            int length = dimensions[dimensionIndex];
+            Array array = Array.CreateInstance(type, length);
+            if (dimensionIndex == dimensions.Length - 1)
+            {
+                return array;
+            }
+            for (int i=0; i<length; ++i)
+            {
+                object value = UnfoldArrayCreation(type.GetElementType(), dimensions, dimensionIndex + 1);
+                array.SetValue(value, i);
+            }
+            return array;
+        }
+
+        private System.Type GetArrayType(Type type, int dimensions)
+        {
+            Type arrayType = MakeArrayType(type);
+            for (int i=1; i<dimensions; ++i)
+            {
+                arrayType = MakeArrayType(arrayType);
+            }
+            return arrayType;
+        }
+
+        private Type MakeArrayType(Type type)
+        {
+            return type.MakeArrayType();
+        }
+
+        public override object NewInstance(IReflectClass componentType, int length)
+        {
+            return System.Array.CreateInstance(GetNetType(componentType), length);
+        }
+    }
+
+    /// <remarks>Reflection implementation for Array to map to .NET reflection.</remarks>
+	public class _NetArray : Db4objects.Db4o.Reflect.IReflectArray
 	{
 		private readonly Db4objects.Db4o.Reflect.IReflector _reflector;
 
-		internal NetArray(Db4objects.Db4o.Reflect.IReflector reflector)
+		internal _NetArray(Db4objects.Db4o.Reflect.IReflector reflector)
 		{
 			_reflector = reflector;
 		}
@@ -86,7 +140,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		public virtual bool IsNDimensional(Db4objects.Db4o.Reflect.IReflectClass a_class)
 		{
 			Type type = GetNetType(a_class);
-			return GetArrayRank(type) > 1;
+			return type.GetElementType().IsArray || GetArrayRank(type) > 1;
 		}
 
 		private static Type GetNetType(IReflectClass a_class)

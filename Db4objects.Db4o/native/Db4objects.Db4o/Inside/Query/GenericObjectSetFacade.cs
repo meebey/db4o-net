@@ -11,11 +11,11 @@ namespace Db4objects.Db4o.Inside.Query
     /// <exclude />
     public class GenericObjectSetFacade<T> : System.Collections.Generic.IList<T>
     {
-        public readonly IQueryResult _delegate;
+        public readonly StatefulQueryResult _delegate;
 
         public GenericObjectSetFacade(IQueryResult qr)
         {
-            _delegate = qr;
+            _delegate = new StatefulQueryResult(qr);
         }
 
         #region IList<T> Members
@@ -66,15 +66,7 @@ namespace Db4objects.Db4o.Inside.Query
 
         public int IndexOf(T value)
         {
-            lock (this.SyncRoot)
-            {
-                int id = (int)_delegate.IObjectContainer().Ext().GetID(value);
-                if (id <= 0)
-                {
-                    return -1;
-                }
-                return _delegate.IndexOf(id);
-            }
+            return _delegate.IndexOf(value);
         }
 
         public void Add(T value)

@@ -94,7 +94,7 @@ namespace Sharpen.Lang
 		{
             return _assemblyName == null
                 ? Type.GetType(SimpleName, true)
-                : ResolveAssembly().GetType(SimpleName);
+                : ResolveAssembly().GetType(SimpleName, true);
 		}
 
 		public override void AppendTypeName(StringBuilder builder)
@@ -225,7 +225,11 @@ namespace Sharpen.Lang
 
 		public override Type Resolve()
 		{
+#if NET_2_0
+            return _elementType.Resolve().MakeArrayType(_rank+1);
+#else
 			return Array.CreateInstance(_elementType.Resolve(), new int[_rank]).GetType();
+#endif
 		}
 
 		protected override void AppendQualifier(StringBuilder builder)

@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Inside.Query
 																		System.Predicate<Extent> match,
 																		Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
-			Db4objects.Db4o.Query.Query q = QueryForExtent<Extent>(comparator);
+			Db4objects.Db4o.Query.IQuery q = QueryForExtent<Extent>(comparator);
 			try
 			{
 				if (OptimizeNativeQueries())
@@ -131,22 +131,22 @@ namespace Db4objects.Db4o.Inside.Query
 			return ExecuteUnoptimized(q, match);
 		}
 
-		private System.Collections.Generic.IList<Extent> ExecuteUnoptimized<Extent>(Query q, Predicate<Extent> match)
+		private System.Collections.Generic.IList<Extent> ExecuteUnoptimized<Extent>(IQuery q, Predicate<Extent> match)
 		{
 			q.Constrain(new GenericPredicateEvaluation<Extent>(match));
 			OnQueryExecution(match, QueryExecutionKind.Unoptimized);
 			return WrapQueryResult<Extent>(q);
 		}
 
-		private Db4objects.Db4o.Query.Query QueryForExtent<Extent>(Db4objects.Db4o.Query.IQueryComparator comparator)
+		private Db4objects.Db4o.Query.IQuery QueryForExtent<Extent>(Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
-			Db4objects.Db4o.Query.Query q = _container.Query();
+			Db4objects.Db4o.Query.IQuery q = _container.Query();
 			q.Constrain(typeof(Extent));
 			q.SortBy(comparator);
 			return q;
 		}
 
-		private static System.Collections.Generic.IList<Extent> WrapQueryResult<Extent>(Db4objects.Db4o.Query.Query q)
+		private static System.Collections.Generic.IList<Extent> WrapQueryResult<Extent>(Db4objects.Db4o.Query.IQuery q)
 		{
 			Db4objects.Db4o.Inside.Query.IQueryResult qr = ((QQuery)q).GetQueryResult();
 			return new Db4objects.Db4o.Inside.Query.GenericObjectSetFacade<Extent>(qr);

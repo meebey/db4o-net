@@ -281,19 +281,12 @@ namespace Db4objects.Db4o
 
         internal static IEnumerator GetCollectionEnumerator(object obj, bool allowArray)
         {
-            IEnumerable enumerable = obj as IEnumerable;
-            if (enumerable != null)
-            {
-                if (obj as String == null)
-                {
-                    if (allowArray || obj as Array == null)
-                    {
-                        return enumerable.GetEnumerator();
-                    }
-                }
-            }
-            return null;
-        }
+			IEnumerable enumerable = obj as IEnumerable;
+			if (enumerable == null) return null;
+		    if (obj is string) return null;
+            if (!allowArray && obj is Array) return null;
+		    return enumerable.GetEnumerator();
+		}
 
         internal static void GetDefaultConfiguration(Config4Impl config)
         {
