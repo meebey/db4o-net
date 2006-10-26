@@ -52,7 +52,7 @@ namespace Sharpen.Lang
 				{
 					_thread.Name = _name;
 				}
-				catch (Exception ignored)
+				catch
 				{
 				}
 			}

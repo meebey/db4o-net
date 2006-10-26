@@ -516,7 +516,7 @@ namespace Db4objects.Db4o
             {
                 config.ObjectClass(obj).Translate(translator);
             }
-            catch (Exception ex)
+            catch
             {
                 // TODO: why the object is being logged instead of the error?
                 Unobfuscated.LogErr(config, 48, obj.ToString(), null);

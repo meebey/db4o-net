@@ -31,7 +31,7 @@
 			{
 				return constructor.Invoke(parameters);
 			}
-			catch (System.Exception e)
+			catch
 			{
 				return null;
 			}

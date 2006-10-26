@@ -51,7 +51,7 @@ namespace Sharpen.Lang
 					BindingFlags.Public |
 					BindingFlags.Static);
 			}
-			catch (Exception e)
+			catch
 			{
 			}
 			return null;

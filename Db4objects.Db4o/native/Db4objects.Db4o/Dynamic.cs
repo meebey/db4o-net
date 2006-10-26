@@ -12,10 +12,10 @@ namespace Db4objects.Db4o {
         public static object GetProperty(object obj, string prop){
             if(obj != null){
                 Type type = TypeForObject(obj);
-                try{
+                try {
                     PropertyInfo pi = type.GetProperty(prop, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
                     return pi.GetValue(obj,null);
-                }catch(Exception e){
+                } catch {
                 }
             }
             return null;
@@ -24,10 +24,10 @@ namespace Db4objects.Db4o {
         public static void SetProperty(object obj, string prop, object val){
             if(obj != null){
                 Type type = TypeForObject(obj);
-                try{
+                try {
                     PropertyInfo pi = type.GetProperty(prop, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
                     pi.SetValue(obj, val, null);
-                }catch(Exception e){
+                } catch {
                 }
             }
         }

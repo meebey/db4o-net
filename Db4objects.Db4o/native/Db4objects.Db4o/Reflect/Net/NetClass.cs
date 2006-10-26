@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			{
 				return new Db4objects.Db4o.Reflect.Net.NetField(_reflector, _type.GetField(name));
 			}
-			catch (System.Exception e)
+			catch
 			{
 				return null;
 			}
@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Reflect.Net
 				}
 				return new Db4objects.Db4o.Reflect.Net.NetMethod(_reflector, method);
 			}
-			catch (System.Exception e)
+			catch
 			{
 				return null;
 			}
@@ -154,7 +154,7 @@ namespace Db4objects.Db4o.Reflect.Net
 				}
 				return _constructor.NewInstance(constructorParams);
 			}
-			catch (System.Exception t)
+			catch
 			{
 			}
 			return null;
@@ -187,7 +187,7 @@ namespace Db4objects.Db4o.Reflect.Net
 							return true;
 						}
 					}
-					catch (System.Exception e)
+					catch
 					{
 					}
 				}

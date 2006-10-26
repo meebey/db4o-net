@@ -23,7 +23,7 @@
 			{
 				return method.Invoke(onObject, parameters);
 			}
-			catch (System.Exception e)
+			catch
 			{
 				return null;
 			}

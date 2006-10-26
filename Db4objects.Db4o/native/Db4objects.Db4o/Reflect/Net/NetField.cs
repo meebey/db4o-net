@@ -51,7 +51,7 @@
 			{
 				return field.GetValue(onObject);
 			}
-			catch (System.Exception e)
+			catch
 			{
 				return null;
 			}
@@ -63,7 +63,7 @@
 			{
 				field.SetValue(onObject, attribute);
 			}
-			catch (System.Exception e)
+			catch
 			{
 			}
 		}

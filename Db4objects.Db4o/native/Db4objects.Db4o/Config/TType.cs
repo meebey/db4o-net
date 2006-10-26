@@ -1,7 +1,6 @@
 ﻿/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o.Reflect.Net;
 using Sharpen.Lang;
 using Db4objects.Db4o;
 
@@ -16,7 +15,7 @@ namespace Db4objects.Db4o.Config {
         public Object OnInstantiate(IObjectContainer objectContainer, object obj) {
             try {
                 return TypeReference.FromString((string) obj).Resolve();
-            }  catch (Exception exception) { 
+            }  catch { 
                 return null;
             }
         }
@@ -25,7 +24,7 @@ namespace Db4objects.Db4o.Config {
             return TypeReference.FromType(obj.GetType()).GetUnversionedName();
         }
       
-        public System.Type StoredClass() {
+        public Type StoredClass() {
             return typeof(string);
         }
     }
