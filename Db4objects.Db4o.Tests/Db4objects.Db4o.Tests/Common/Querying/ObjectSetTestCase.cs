@@ -5,7 +5,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Querying.AllTests().RunSoloAndClientServer();
+			new Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase().RunSoloAndClientServer
+				();
 		}
 
 		public class Item

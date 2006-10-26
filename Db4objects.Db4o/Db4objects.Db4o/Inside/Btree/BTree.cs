@@ -609,5 +609,12 @@ namespace Db4objects.Db4o.Inside.Btree
 
 			private readonly Db4objects.Db4o.Foundation.Collection4 allNodeIDs;
 		}
+
+		public virtual Db4objects.Db4o.Inside.Btree.IBTreeRange AsRange(Db4objects.Db4o.Transaction
+			 trans)
+		{
+			return new Db4objects.Db4o.Inside.Btree.BTreeRangeSingle(trans, this, FirstPointer
+				(trans), null);
+		}
 	}
 }

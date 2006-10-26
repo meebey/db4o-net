@@ -65,5 +65,20 @@ namespace Db4objects.Db4o.Foundation
 		{
 			return IntIterator();
 		}
+
+		public virtual int Get(int index)
+		{
+			return i_content[index];
+		}
+
+		public virtual void Swap(int left, int right)
+		{
+			if (left != right)
+			{
+				int swap = i_content[left];
+				i_content[left] = i_content[right];
+				i_content[right] = swap;
+			}
+		}
 	}
 }

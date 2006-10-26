@@ -8,6 +8,30 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				).Run();
 		}
 
+		public virtual void TestNulls()
+		{
+			Db4objects.Db4o.Foundation.Collection4 c = new Db4objects.Db4o.Foundation.Collection4
+				();
+			c.Add("one");
+			AssertNotContainsNull(c);
+			c.Add(null);
+			AssertContainsNull(c);
+			AssertCollection(new string[] { "one", null }, c);
+			c.Prepend(null);
+			AssertCollection(new string[] { null, "one", null }, c);
+			c.Prepend("zero");
+			c.Add("two");
+			AssertCollection(new string[] { "zero", null, "one", null, "two" }, c);
+			AssertContainsNull(c);
+			c.Remove(null);
+			AssertCollection(new string[] { "zero", "one", null, "two" }, c);
+			c.Remove(null);
+			AssertNotContainsNull(c);
+			AssertCollection(new string[] { "zero", "one", "two" }, c);
+			c.Remove(null);
+			AssertCollection(new string[] { "zero", "one", "two" }, c);
+		}
+
 		public virtual void TestPrepend()
 		{
 			Db4objects.Db4o.Foundation.Collection4 c = new Db4objects.Db4o.Foundation.Collection4
@@ -37,12 +61,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Db4oUnit.Assert.IsTrue(i.MoveNext());
 			c.Add("3");
 			Db4oUnit.Assert.Expect(typeof(Db4objects.Db4o.Foundation.InvalidIteratorException)
-				, new _AnonymousInnerClass38(this, i));
+				, new _AnonymousInnerClass60(this, i));
 		}
 
-		private sealed class _AnonymousInnerClass38 : Db4oUnit.ICodeBlock
+		private sealed class _AnonymousInnerClass60 : Db4oUnit.ICodeBlock
 		{
-			public _AnonymousInnerClass38(Collection4TestCase _enclosing, System.Collections.IEnumerator
+			public _AnonymousInnerClass60(Collection4TestCase _enclosing, System.Collections.IEnumerator
 				 i)
 			{
 				this._enclosing = _enclosing;
@@ -83,6 +107,26 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		{
 			Db4oUnit.Assert.AreEqual(expected.Length, c.Size());
 			AssertIterator(expected, c.GetEnumerator());
+		}
+
+		private void AssertContainsNull(Db4objects.Db4o.Foundation.Collection4 c)
+		{
+			Db4oUnit.Assert.IsTrue(c.Contains(null));
+			Db4oUnit.Assert.IsNull(c.Get(null));
+			int size = c.Size();
+			c.Ensure(null);
+			Db4oUnit.Assert.AreEqual(size, c.Size());
+		}
+
+		private void AssertNotContainsNull(Db4objects.Db4o.Foundation.Collection4 c)
+		{
+			Db4oUnit.Assert.IsFalse(c.Contains(null));
+			Db4oUnit.Assert.IsNull(c.Get(null));
+			int size = c.Size();
+			c.Ensure(null);
+			Db4oUnit.Assert.AreEqual(size + 1, c.Size());
+			c.Remove(null);
+			Db4oUnit.Assert.AreEqual(size, c.Size());
 		}
 
 		public virtual void TestIterator()

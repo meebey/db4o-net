@@ -215,7 +215,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult result = ExecuteProcessor
 				(query);
-			Db4oUnit.Assert.IsNull(result.found);
+			Db4oUnit.Assert.AreSame(Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult
+				.NO_INDEX_FOUND, result);
 		}
 
 		public virtual void TestIndexSelection()
@@ -342,8 +343,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 					.FOUND_INDEX_BUT_NO_MATCH, result);
 				return;
 			}
-			Db4oUnit.Assert.IsNotNull(result.found);
-			AssertTreeInt(expectedIds, result.found);
+			AssertTreeInt(expectedIds, result.ToTreeInt());
 		}
 
 		private Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult ExecuteProcessor

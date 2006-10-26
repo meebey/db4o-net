@@ -197,12 +197,56 @@ namespace Db4objects.Db4o
 
 		internal void Execute()
 		{
-			bool foundIndex = ProcessFieldIndexes();
-			if (!foundIndex)
+			Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult result = ProcessFieldIndexes
+				();
+			if (result.FoundIndex())
+			{
+				i_root = result.ToQCandidate(this);
+			}
+			else
 			{
 				LoadFromClassIndex();
 			}
 			Evaluate();
+		}
+
+		public System.Collections.IEnumerator ExecuteLazy()
+		{
+			Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult result = ProcessFieldIndexes
+				();
+			if (result.NoMatch())
+			{
+				return Db4objects.Db4o.Foundation.Iterator4Impl.EMPTY;
+			}
+			System.Collections.IEnumerator idIterator = result.FoundIndex() ? result.IterateIDs
+				() : Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy.Iterate(i_yapClass
+				, i_trans);
+			return new _AnonymousInnerClass185(this, idIterator);
+		}
+
+		private sealed class _AnonymousInnerClass185 : Db4objects.Db4o.Foundation.MappingIterator
+		{
+			public _AnonymousInnerClass185(QCandidates _enclosing, System.Collections.IEnumerator
+				 baseArg1) : base(baseArg1)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			protected override object Map(object current)
+			{
+				int id = ((int)current);
+				Db4objects.Db4o.QCandidate candidate = new Db4objects.Db4o.QCandidate(this._enclosing
+					, null, id, true);
+				this._enclosing.i_root = candidate;
+				this._enclosing.Evaluate();
+				if (!candidate.Include())
+				{
+					return Db4objects.Db4o.Foundation.MappingIterator.SKIP;
+				}
+				return current;
+			}
+
+			private readonly QCandidates _enclosing;
 		}
 
 		public int ClassIndexEntryCount()
@@ -210,28 +254,14 @@ namespace Db4objects.Db4o
 			return i_yapClass.IndexEntryCount(i_trans);
 		}
 
-		private bool ProcessFieldIndexes()
+		private Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult ProcessFieldIndexes
+			()
 		{
 			if (i_constraints == null)
 			{
-				return false;
+				return Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult.NO_INDEX_FOUND;
 			}
-			Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessor processor = new Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessor
-				(this);
-			Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult result = processor.Run
-				();
-			if (result == Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult.FOUND_INDEX_BUT_NO_MATCH
-				)
-			{
-				return true;
-			}
-			if (result == Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult.NO_INDEX_FOUND
-				)
-			{
-				return false;
-			}
-			i_root = Db4objects.Db4o.TreeInt.ToQCandidate(result.found, this);
-			return true;
+			return new Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessor(this).Run();
 		}
 
 		internal void Evaluate()
@@ -277,13 +307,13 @@ namespace Db4objects.Db4o
 		internal bool IsEmpty()
 		{
 			bool[] ret = new bool[] { true };
-			Traverse(new _AnonymousInnerClass232(this, ret));
+			Traverse(new _AnonymousInnerClass253(this, ret));
 			return ret[0];
 		}
 
-		private sealed class _AnonymousInnerClass232 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass253 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass232(QCandidates _enclosing, bool[] ret)
+			public _AnonymousInnerClass253(QCandidates _enclosing, bool[] ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -307,14 +337,14 @@ namespace Db4objects.Db4o
 			if (i_root != null)
 			{
 				i_root.Traverse(a_host);
-				i_root = i_root.Filter(new _AnonymousInnerClass245(this));
+				i_root = i_root.Filter(new _AnonymousInnerClass266(this));
 			}
 			return i_root != null;
 		}
 
-		private sealed class _AnonymousInnerClass245 : Db4objects.Db4o.Foundation.IPredicate4
+		private sealed class _AnonymousInnerClass266 : Db4objects.Db4o.Foundation.IPredicate4
 		{
-			public _AnonymousInnerClass245(QCandidates _enclosing)
+			public _AnonymousInnerClass266(QCandidates _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -364,7 +394,7 @@ namespace Db4objects.Db4o
 			Db4objects.Db4o.QCandidates.TreeIntBuilder result = new Db4objects.Db4o.QCandidates.TreeIntBuilder
 				();
 			Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy index = i_yapClass.Index();
-			index.TraverseAll(i_trans, new _AnonymousInnerClass284(this, result));
+			index.TraverseAll(i_trans, new _AnonymousInnerClass305(this, result));
 			i_root = result.tree;
 			Db4objects.Db4o.Inside.Diagnostic.DiagnosticProcessor dp = i_trans.Stream().i_handlers
 				._diagnosticProcessor;
@@ -374,9 +404,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private sealed class _AnonymousInnerClass284 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass305 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass284(QCandidates _enclosing, Db4objects.Db4o.QCandidates.TreeIntBuilder
+			public _AnonymousInnerClass305(QCandidates _enclosing, Db4objects.Db4o.QCandidates.TreeIntBuilder
 				 result)
 			{
 				this._enclosing = _enclosing;

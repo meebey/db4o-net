@@ -1,8 +1,7 @@
 namespace Db4objects.Db4o.Inside.Query
 {
 	/// <exclude></exclude>
-	public class IdListQueryResult : Db4objects.Db4o.Foundation.IntArrayList, Db4objects.Db4o.Foundation.IVisitor4
-		, Db4objects.Db4o.Inside.Query.IQueryResult
+	public class IdListQueryResult : Db4objects.Db4o.Foundation.IVisitor4, Db4objects.Db4o.Inside.Query.IQueryResult
 	{
 		private readonly Db4objects.Db4o.Transaction _transaction;
 
@@ -10,58 +9,50 @@ namespace Db4objects.Db4o.Inside.Query
 
 		private bool _checkDuplicates;
 
-		public IdListQueryResult(Db4objects.Db4o.Transaction a_trans)
+		private readonly Db4objects.Db4o.Foundation.IntArrayList _ids;
+
+		protected IdListQueryResult(Db4objects.Db4o.Transaction trans, int initialSize)
 		{
-			_transaction = a_trans;
+			_ids = new Db4objects.Db4o.Foundation.IntArrayList(initialSize);
+			_transaction = trans;
 		}
 
-		protected IdListQueryResult(Db4objects.Db4o.Transaction trans, int initialSize) : 
-			base(initialSize)
+		public IdListQueryResult(Db4objects.Db4o.Transaction trans) : this(trans, 0)
 		{
-			_transaction = trans;
 		}
 
 		public virtual Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs()
 		{
-			return IntIterator();
+			return _ids.IntIterator();
 		}
 
-		private class QueryResultImplIterator : Db4objects.Db4o.Foundation.MappingIterator
+		public virtual System.Collections.IEnumerator GetEnumerator()
 		{
-			public QueryResultImplIterator(IdListQueryResult _enclosing, System.Collections.IEnumerator
-				 iterator) : base(iterator)
+			return new _AnonymousInnerClass39(this, _ids.GetEnumerator());
+		}
+
+		private sealed class _AnonymousInnerClass39 : Db4objects.Db4o.Foundation.MappingIterator
+		{
+			public _AnonymousInnerClass39(IdListQueryResult _enclosing, System.Collections.IEnumerator
+				 baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
-			}
-
-			public override bool MoveNext()
-			{
-				if (!base.MoveNext())
-				{
-					return false;
-				}
-				if (null == this.Current)
-				{
-					return this.MoveNext();
-				}
-				return true;
 			}
 
 			protected override object Map(object current)
 			{
 				lock (this._enclosing.StreamLock())
 				{
-					return this._enclosing.ActivatedObject(((int)current));
+					object obj = this._enclosing.ActivatedObject(((int)current));
+					if (obj == null)
+					{
+						return Db4objects.Db4o.Foundation.MappingIterator.SKIP;
+					}
+					return obj;
 				}
 			}
 
 			private readonly IdListQueryResult _enclosing;
-		}
-
-		public override System.Collections.IEnumerator GetEnumerator()
-		{
-			return new Db4objects.Db4o.Inside.Query.IdListQueryResult.QueryResultImplIterator
-				(this, base.GetEnumerator());
 		}
 
 		public object Activate(object obj)
@@ -71,7 +62,7 @@ namespace Db4objects.Db4o.Inside.Query
 			return obj;
 		}
 
-		private object ActivatedObject(int id)
+		public object ActivatedObject(int id)
 		{
 			Db4objects.Db4o.YapStream stream = Stream();
 			object ret = stream.GetActivatedObjectFromCache(_transaction, id);
@@ -90,7 +81,7 @@ namespace Db4objects.Db4o.Inside.Query
 				{
 					throw new System.IndexOutOfRangeException();
 				}
-				return ActivatedObject(i_content[index]);
+				return ActivatedObject(_ids.Get(index));
 			}
 		}
 
@@ -172,23 +163,18 @@ namespace Db4objects.Db4o.Inside.Query
 
 		private void Swap(int left, int right)
 		{
-			if (left != right)
-			{
-				int swap = i_content[left];
-				i_content[left] = i_content[right];
-				i_content[right] = swap;
-			}
+			_ids.Swap(left, right);
 		}
 
 		public virtual void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)
 		{
 			Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy index = clazz.Index();
-			index.TraverseAll(_transaction, new _AnonymousInnerClass170(this));
+			index.TraverseAll(_transaction, new _AnonymousInnerClass154(this));
 		}
 
-		private sealed class _AnonymousInnerClass170 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass154 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass170(IdListQueryResult _enclosing)
+			public _AnonymousInnerClass154(IdListQueryResult _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -221,15 +207,15 @@ namespace Db4objects.Db4o.Inside.Query
 						)))
 					{
 						Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy index = yapClass.Index();
-						index.TraverseAll(_transaction, new _AnonymousInnerClass193(this, duplicates));
+						index.TraverseAll(_transaction, new _AnonymousInnerClass177(this, duplicates));
 					}
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass193 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass177 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass193(IdListQueryResult _enclosing, Db4objects.Db4o.Foundation.Tree[]
+			public _AnonymousInnerClass177(IdListQueryResult _enclosing, Db4objects.Db4o.Foundation.Tree[]
 				 duplicates)
 			{
 				this._enclosing = _enclosing;
@@ -259,6 +245,21 @@ namespace Db4objects.Db4o.Inside.Query
 			{
 				Add(reader.ReadInt());
 			}
+		}
+
+		public virtual void Add(int id)
+		{
+			_ids.Add(id);
+		}
+
+		public virtual int IndexOf(int id)
+		{
+			return _ids.IndexOf(id);
+		}
+
+		public virtual int Size()
+		{
+			return _ids.Size();
 		}
 	}
 }

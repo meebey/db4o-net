@@ -215,6 +215,7 @@ namespace Db4objects.Db4o
 		public virtual int PreparePayloadRead()
 		{
 			int newPayLoadOffset = ReadInt();
+			ReadInt();
 			int linkOffSet = Offset();
 			Offset(newPayLoadOffset);
 			return linkOffSet;

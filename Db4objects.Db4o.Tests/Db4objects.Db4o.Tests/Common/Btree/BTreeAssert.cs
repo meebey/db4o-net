@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			(int[] keys)
 		{
 			return new Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor(Db4objects.Db4o.Tests.Common.Foundation.IntArrays4
-				.ToObjectArray(keys), true);
+				.ToObjectArray(keys), true, false);
 		}
 
 		public static void TraverseKeys(Db4objects.Db4o.Inside.Btree.IBTreeRange result, 

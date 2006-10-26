@@ -34,34 +34,33 @@ namespace Db4objects.Db4o.Inside.Query
 
 		public virtual void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)
 		{
-			Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy index = clazz.Index();
-			if (!(index is Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy))
-			{
-				throw new System.InvalidOperationException();
-			}
-			Db4objects.Db4o.Inside.Btree.BTree btree = ((Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy
-				)index).Btree();
-			_iterable = new _AnonymousInnerClass47(this, btree);
+			_iterable = new _AnonymousInnerClass42(this, clazz);
 		}
 
-		private sealed class _AnonymousInnerClass47 : System.Collections.IEnumerable
+		private sealed class _AnonymousInnerClass42 : System.Collections.IEnumerable
 		{
-			public _AnonymousInnerClass47(LazyQueryResult _enclosing, Db4objects.Db4o.Inside.Btree.BTree
-				 btree)
+			public _AnonymousInnerClass42(LazyQueryResult _enclosing, Db4objects.Db4o.YapClass
+				 clazz)
 			{
 				this._enclosing = _enclosing;
-				this.btree = btree;
+				this.clazz = clazz;
 			}
 
 			public System.Collections.IEnumerator GetEnumerator()
 			{
-				return new Db4objects.Db4o.Inside.Btree.BTreeRangeSingle(this._enclosing.Transaction
-					(), btree, btree.FirstPointer(this._enclosing.Transaction()), null).Keys();
+				return this._enclosing.ClassIndexIterator(clazz);
 			}
 
 			private readonly LazyQueryResult _enclosing;
 
-			private readonly Db4objects.Db4o.Inside.Btree.BTree btree;
+			private readonly Db4objects.Db4o.YapClass clazz;
+		}
+
+		public virtual System.Collections.IEnumerator ClassIndexIterator(Db4objects.Db4o.YapClass
+			 clazz)
+		{
+			return Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy.Iterate(clazz, Transaction
+				());
 		}
 
 		public virtual Db4objects.Db4o.Transaction Transaction()
@@ -70,9 +69,64 @@ namespace Db4objects.Db4o.Inside.Query
 		}
 
 		public virtual void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
-			 iterator)
+			 classCollectionIterator)
 		{
-			throw new System.NotImplementedException();
+			_iterable = new _AnonymousInnerClass58(this, classCollectionIterator);
+		}
+
+		private sealed class _AnonymousInnerClass58 : System.Collections.IEnumerable
+		{
+			public _AnonymousInnerClass58(LazyQueryResult _enclosing, Db4objects.Db4o.YapClassCollectionIterator
+				 classCollectionIterator)
+			{
+				this._enclosing = _enclosing;
+				this.classCollectionIterator = classCollectionIterator;
+			}
+
+			public System.Collections.IEnumerator GetEnumerator()
+			{
+				return new Db4objects.Db4o.Foundation.CompositeIterator4(new _AnonymousInnerClass61
+					(this, classCollectionIterator));
+			}
+
+			private sealed class _AnonymousInnerClass61 : Db4objects.Db4o.Foundation.MappingIterator
+			{
+				public _AnonymousInnerClass61(_AnonymousInnerClass58 _enclosing, Db4objects.Db4o.YapClassCollectionIterator
+					 baseArg1) : base(baseArg1)
+				{
+					this._enclosing = _enclosing;
+				}
+
+				protected override object Map(object current)
+				{
+					Db4objects.Db4o.YapClass yapClass = (Db4objects.Db4o.YapClass)current;
+					if (this._enclosing._enclosing.SkipClass(yapClass))
+					{
+						return Db4objects.Db4o.Foundation.MappingIterator.SKIP;
+					}
+					return this._enclosing._enclosing.ClassIndexIterator(yapClass);
+				}
+
+				private readonly _AnonymousInnerClass58 _enclosing;
+			}
+
+			private readonly LazyQueryResult _enclosing;
+
+			private readonly Db4objects.Db4o.YapClassCollectionIterator classCollectionIterator;
+		}
+
+		public virtual bool SkipClass(Db4objects.Db4o.YapClass yapClass)
+		{
+			if (yapClass.GetName() == null)
+			{
+				return true;
+			}
+			Db4objects.Db4o.Reflect.IReflectClass claxx = yapClass.ClassReflector();
+			if (Stream().i_handlers.ICLASS_INTERNAL.IsAssignableFrom(claxx))
+			{
+				return true;
+			}
+			return false;
 		}
 
 		public virtual void LoadFromIdReader(Db4objects.Db4o.YapReader reader)
@@ -82,7 +136,26 @@ namespace Db4objects.Db4o.Inside.Query
 
 		public virtual void LoadFromQuery(Db4objects.Db4o.QQuery query)
 		{
-			throw new System.NotImplementedException();
+			_iterable = new _AnonymousInnerClass91(this, query);
+		}
+
+		private sealed class _AnonymousInnerClass91 : System.Collections.IEnumerable
+		{
+			public _AnonymousInnerClass91(LazyQueryResult _enclosing, Db4objects.Db4o.QQuery 
+				query)
+			{
+				this._enclosing = _enclosing;
+				this.query = query;
+			}
+
+			public System.Collections.IEnumerator GetEnumerator()
+			{
+				return query.ExecuteLazy();
+			}
+
+			private readonly LazyQueryResult _enclosing;
+
+			private readonly Db4objects.Db4o.QQuery query;
 		}
 
 		public virtual Db4objects.Db4o.YapStream Stream()

@@ -7,6 +7,8 @@ namespace Db4objects.Db4o.Foundation
 
 		private object _current;
 
+		public static readonly object SKIP = new object();
+
 		public MappingIterator(System.Collections.IEnumerator iterator)
 		{
 			if (null == iterator)
@@ -27,6 +29,10 @@ namespace Db4objects.Db4o.Foundation
 				return false;
 			}
 			_current = Map(_iterator.Current);
+			if (_current == SKIP)
+			{
+				return MoveNext();
+			}
 			return true;
 		}
 

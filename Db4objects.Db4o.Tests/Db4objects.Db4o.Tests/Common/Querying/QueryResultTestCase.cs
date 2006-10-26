@@ -5,7 +5,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 	{
 		private static readonly int[] VALUES = new int[] { 1, 5, 6, 7, 9 };
 
-		private readonly int[] ids = new int[VALUES.Length];
+		private readonly int[] itemIds = new int[VALUES.Length];
+
+		private int idForGetAll;
 
 		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
 		{
@@ -15,23 +17,32 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public virtual void TestClassQuery()
 		{
-			AssertIDs(ClassOnlyQuery(), ids);
+			AssertIDs(ClassOnlyQuery(), itemIds);
 		}
 
-		public virtual void _testIndexedFieldQuery()
+		public virtual void TestGetAll()
+		{
+			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = NewQueryResult();
+			queryResult.LoadFromClassIndexes(Stream().ClassCollection().Iterator());
+			int[] ids = Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.Concat(itemIds, new 
+				int[] { idForGetAll });
+			AssertIDs(queryResult, ids, true);
+		}
+
+		public virtual void TestIndexedFieldQuery()
 		{
 			Db4objects.Db4o.Query.IQuery query = NewItemQuery();
 			query.Descend("foo").Constrain(6).Smaller();
 			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = ExecuteQuery(query);
-			AssertIDs(queryResult, new int[] { ids[0], ids[1] });
+			AssertIDs(queryResult, new int[] { itemIds[0], itemIds[1] });
 		}
 
-		public virtual void _testNonIndexedFieldQuery()
+		public virtual void TestNonIndexedFieldQuery()
 		{
 			Db4objects.Db4o.Query.IQuery query = NewItemQuery();
 			query.Descend("bar").Constrain(6).Smaller();
 			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = ExecuteQuery(query);
-			AssertIDs(queryResult, new int[] { ids[0], ids[1] });
+			AssertIDs(queryResult, new int[] { itemIds[0], itemIds[1] });
 		}
 
 		private Db4objects.Db4o.Inside.Query.IQueryResult ClassOnlyQuery()
@@ -58,8 +69,15 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		private void AssertIDs(Db4objects.Db4o.Inside.Query.IQueryResult queryResult, int[]
 			 expectedIDs)
 		{
+			AssertIDs(queryResult, expectedIDs, false);
+		}
+
+		private void AssertIDs(Db4objects.Db4o.Inside.Query.IQueryResult queryResult, int[]
+			 expectedIDs, bool ignoreUnexpected)
+		{
 			Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor expectingVisitor = new Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
-				(Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.ToObjectArray(expectedIDs));
+				(Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.ToObjectArray(expectedIDs), 
+				false, ignoreUnexpected);
 			Db4objects.Db4o.Foundation.IIntIterator4 i = queryResult.IterateIDs();
 			while (i.MoveNext())
 			{
@@ -77,6 +95,10 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		protected override void Store()
 		{
 			StoreItems(VALUES);
+			Db4objects.Db4o.Tests.Common.Querying.QueryResultTestCase.ItemForGetAll ifga = new 
+				Db4objects.Db4o.Tests.Common.Querying.QueryResultTestCase.ItemForGetAll();
+			Store(ifga);
+			idForGetAll = (int)Db().GetID(ifga);
 		}
 
 		protected virtual void StoreItems(int[] foos)
@@ -86,7 +108,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 				Db4objects.Db4o.Tests.Common.Querying.QueryResultTestCase.Item item = new Db4objects.Db4o.Tests.Common.Querying.QueryResultTestCase.Item
 					(foos[i]);
 				Store(item);
-				ids[i] = (int)Db().GetID(item);
+				itemIds[i] = (int)Db().GetID(item);
 			}
 		}
 
@@ -105,6 +127,10 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 				foo = foo_;
 				bar = foo;
 			}
+		}
+
+		public class ItemForGetAll
+		{
 		}
 
 		protected abstract Db4objects.Db4o.Inside.Query.IQueryResult NewQueryResult();

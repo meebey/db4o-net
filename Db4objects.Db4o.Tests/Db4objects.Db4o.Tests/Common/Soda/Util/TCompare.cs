@@ -4,27 +4,12 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 	{
 		public static bool IsEqual(object a_compare, object a_with)
 		{
-			return IsEqual(a_compare, a_with, null, null);
+			return IsEqual(a_compare, a_with, null, new System.Collections.Stack());
 		}
 
-		public static bool IsEqual(object a_compare, object a_with, string a_path, System.Collections.Stack
+		private static bool IsEqual(object a_compare, object a_with, string a_path, System.Collections.Stack
 			 a_stack)
 		{
-			if (a_path == null || a_path.Length < 1)
-			{
-				if (a_compare != null)
-				{
-					a_path = a_compare.GetType().FullName + ":";
-				}
-				else
-				{
-					if (a_with != null)
-					{
-						a_path = a_with.GetType().FullName + ":";
-					}
-				}
-			}
-			string path = a_path;
 			if (a_compare == null)
 			{
 				return a_with == null;
@@ -42,132 +27,41 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			{
 				return a_compare.Equals(a_with);
 			}
-			if (a_stack == null)
-			{
-				a_stack = new System.Collections.Stack();
-			}
 			if (a_stack.Contains(a_compare))
 			{
 				return true;
 			}
 			a_stack.Push(a_compare);
-			System.Reflection.FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(clazz);
+			if (a_compare.GetType().IsArray)
+			{
+				return AreArraysEqual(NormalizeNArray(a_compare), NormalizeNArray(a_with), a_path
+					, a_stack);
+			}
+			if (HasPublicConstructor(a_compare.GetType()))
+			{
+				return AreFieldsEqual(a_compare, a_with, a_path, a_stack);
+			}
+			return a_compare.Equals(a_with);
+		}
+
+		private static bool AreFieldsEqual(object a_compare, object a_with, string a_path
+			, System.Collections.Stack a_stack)
+		{
+			string path = GetPath(a_compare, a_with, a_path);
+			System.Reflection.FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(a_compare
+				.GetType());
 			for (int i = 0; i < fields.Length; i++)
 			{
-				if (Db4objects.Db4o.Tests.Db4oUnitPlatform.IsStoreableField(fields[i]))
+				System.Reflection.FieldInfo field = fields[i];
+				if (Db4objects.Db4o.Tests.Db4oUnitPlatform.IsStoreableField(field))
 				{
-					Db4objects.Db4o.Platform4.SetAccessible(fields[i]);
+					Db4objects.Db4o.Platform4.SetAccessible(field);
 					try
 					{
-						path = a_path + fields[i].Name + ":";
-						object compare = fields[i].GetValue(a_compare);
-						object with = fields[i].GetValue(a_with);
-						if (compare == null)
+						if (!IsFieldEqual(field, a_compare, a_with, path, a_stack))
 						{
-							if (with != null)
-							{
-								return false;
-							}
+							return false;
 						}
-						else
-						{
-							if (with == null)
-							{
-								return false;
-							}
-							else
-							{
-								if (compare.GetType().IsArray)
-								{
-									if (!with.GetType().IsArray)
-									{
-										return false;
-									}
-									else
-									{
-										compare = NormalizeNArray(compare);
-										with = NormalizeNArray(with);
-										int len = Sharpen.Runtime.GetArrayLength(compare);
-										if (len != Sharpen.Runtime.GetArrayLength(with))
-										{
-											return false;
-										}
-										else
-										{
-											for (int j = 0; j < len; j++)
-											{
-												object elementCompare = Sharpen.Runtime.GetArrayValue(compare, j);
-												object elementWith = Sharpen.Runtime.GetArrayValue(with, j);
-												if (!IsEqual(elementCompare, elementWith, path, a_stack))
-												{
-													return false;
-												}
-												else
-												{
-													if (elementCompare == null)
-													{
-														if (elementWith != null)
-														{
-															return false;
-														}
-													}
-													else
-													{
-														if (elementWith == null)
-														{
-															return false;
-														}
-														else
-														{
-															System.Type elementCompareClass = elementCompare.GetType();
-															if (elementCompareClass != elementWith.GetType())
-															{
-																return false;
-															}
-															if (HasPublicConstructor(elementCompareClass))
-															{
-																if (!IsEqual(elementCompare, elementWith, path, a_stack))
-																{
-																	return false;
-																}
-															}
-															else
-															{
-																if (!elementCompare.Equals(elementWith))
-																{
-																	return false;
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-								else
-								{
-									if (HasPublicConstructor(fields[i].GetType()))
-									{
-										if (!IsEqual(compare, with, path, a_stack))
-										{
-											return false;
-										}
-									}
-									else
-									{
-										if (!compare.Equals(with))
-										{
-											return false;
-										}
-									}
-								}
-							}
-						}
-					}
-					catch (System.MemberAccessException ex)
-					{
-						return true;
 					}
 					catch (System.Exception e)
 					{
@@ -178,6 +72,67 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 				}
 			}
 			return true;
+		}
+
+		private static bool IsFieldEqual(System.Reflection.FieldInfo field, object a_compare
+			, object a_with, string path, System.Collections.Stack a_stack)
+		{
+			object compare = GetFieldValue(field, a_compare);
+			object with = GetFieldValue(field, a_with);
+			return IsEqual(compare, with, path + field.Name + ":", a_stack);
+		}
+
+		private static object GetFieldValue(System.Reflection.FieldInfo field, object obj
+			)
+		{
+			try
+			{
+				return field.GetValue(obj);
+			}
+			catch (System.MemberAccessException ex)
+			{
+				return null;
+			}
+		}
+
+		private static bool AreArraysEqual(object compare, object with, string path, System.Collections.Stack
+			 a_stack)
+		{
+			int len = Sharpen.Runtime.GetArrayLength(compare);
+			if (len != Sharpen.Runtime.GetArrayLength(with))
+			{
+				return false;
+			}
+			else
+			{
+				for (int j = 0; j < len; j++)
+				{
+					object elementCompare = Sharpen.Runtime.GetArrayValue(compare, j);
+					object elementWith = Sharpen.Runtime.GetArrayValue(with, j);
+					if (!IsEqual(elementCompare, elementWith, path, a_stack))
+					{
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
+		private static string GetPath(object a_compare, object a_with, string a_path)
+		{
+			if (a_path != null && a_path.Length > 0)
+			{
+				return a_path;
+			}
+			if (a_compare != null)
+			{
+				return a_compare.GetType().FullName + ":";
+			}
+			if (a_with != null)
+			{
+				return a_with.GetType().FullName + ":";
+			}
+			return a_path;
 		}
 
 		internal static bool HasPublicConstructor(System.Type a_class)

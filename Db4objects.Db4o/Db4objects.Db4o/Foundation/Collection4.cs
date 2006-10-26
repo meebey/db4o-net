@@ -16,6 +16,8 @@ namespace Db4objects.Db4o.Foundation
 
 		public int _version;
 
+		private static readonly object NOT_FOUND = new object();
+
 		public Collection4()
 		{
 		}
@@ -39,14 +41,12 @@ namespace Db4objects.Db4o.Foundation
 		/// <param name="element"></param>
 		public void Add(object element)
 		{
-			AssertNotNull(element);
 			DoAdd(element);
 			Changed();
 		}
 
 		public void Prepend(object element)
 		{
-			AssertNotNull(element);
 			DoPrepend(element);
 			Changed();
 		}
@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public bool Contains(object element)
 		{
-			return Get(element) != null;
+			return GetInternal(element) != NOT_FOUND;
 		}
 
 		public virtual bool ContainsAll(System.Collections.IEnumerator iter)
@@ -155,17 +155,43 @@ namespace Db4objects.Db4o.Foundation
 		/// </summary>
 		public object Get(object element)
 		{
-			AssertNotNull(element);
+			object obj = GetInternal(element);
+			if (obj == NOT_FOUND)
+			{
+				return null;
+			}
+			return obj;
+		}
+
+		private object GetInternal(object element)
+		{
+			if (element == null)
+			{
+				return ContainsNull() ? null : NOT_FOUND;
+			}
 			System.Collections.IEnumerator i = InternalIterator();
 			while (i.MoveNext())
 			{
 				object current = i.Current;
-				if (current.Equals(element))
+				if (element.Equals(current))
 				{
 					return current;
 				}
 			}
-			return null;
+			return NOT_FOUND;
+		}
+
+		private bool ContainsNull()
+		{
+			System.Collections.IEnumerator i = InternalIterator();
+			while (i.MoveNext())
+			{
+				if (i.Current == null)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		public virtual object DeepClone(object newParent)
@@ -193,13 +219,13 @@ namespace Db4objects.Db4o.Foundation
 		/// <remarks>makes sure the passed object is in the Collection. equals() comparison.</remarks>
 		public object Ensure(object element)
 		{
-			object existing = Get(element);
-			if (existing != null)
+			object existing = GetInternal(element);
+			if (existing == NOT_FOUND)
 			{
-				return existing;
+				Add(element);
+				return element;
 			}
-			Add(element);
-			return element;
+			return existing;
 		}
 
 		/// <summary>
@@ -227,7 +253,7 @@ namespace Db4objects.Db4o.Foundation
 			Db4objects.Db4o.Foundation.List4 current = _first;
 			while (current != null)
 			{
-				if (current._element.Equals(a_object))
+				if (current.Holds(a_object))
 				{
 					_size--;
 					AdjustOnRemoval(previous, current);

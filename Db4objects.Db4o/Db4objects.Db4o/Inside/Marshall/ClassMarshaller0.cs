@@ -26,8 +26,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 
 		private Db4objects.Db4o.Inside.Btree.BTree Btree(Db4objects.Db4o.YapClass clazz)
 		{
-			return ((Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy)clazz.Index())
-				.Btree();
+			return Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy.Btree(clazz);
 		}
 
 		private int ValidIndexId(int indexID)

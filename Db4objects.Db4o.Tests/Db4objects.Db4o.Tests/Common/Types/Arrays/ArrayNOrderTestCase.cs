@@ -40,8 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 				, objArr));
 		}
 
-		/// <summary>Ignore this test on .net for now</summary>
-		public virtual void _Test()
+		public virtual void Test()
 		{
 			Db4objects.Db4o.Tests.Common.Types.Arrays.ArrayNOrderTestCase.Data data = (Db4objects.Db4o.Tests.Common.Types.Arrays.ArrayNOrderTestCase.Data
 				)RetrieveOnlyInstance(typeof(Db4objects.Db4o.Tests.Common.Types.Arrays.ArrayNOrderTestCase.Data)

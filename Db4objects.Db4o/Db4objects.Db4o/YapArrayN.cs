@@ -72,13 +72,13 @@ namespace Db4objects.Db4o
 
 		protected override int ReadElementsDefrag(Db4objects.Db4o.ReaderPair readers)
 		{
-			int elements = base.ReadElementsDefrag(readers);
-			int totalElements = 0;
-			for (int i = 0; i < elements; i++)
+			int numDimensions = base.ReadElementsDefrag(readers);
+			int[] dimensions = new int[numDimensions];
+			for (int i = 0; i < numDimensions; i++)
 			{
-				totalElements += readers.ReadInt();
+				dimensions[i] = readers.ReadInt();
 			}
-			return totalElements;
+			return ElementCount(dimensions);
 		}
 
 		public sealed override void Read1Candidates(Db4objects.Db4o.Inside.Marshall.MarshallerFamily

@@ -24,5 +24,14 @@ namespace Db4objects.Db4o.Foundation
 			_next = next;
 			_element = element;
 		}
+
+		internal bool Holds(object obj)
+		{
+			if (obj == null)
+			{
+				return _element == null;
+			}
+			return obj.Equals(_element);
+		}
 	}
 }

@@ -131,5 +131,22 @@ namespace Db4objects.Db4o.Inside.Classindex
 		{
 			_btreeIndex.DefragIndex(readers);
 		}
+
+		public static Db4objects.Db4o.Inside.Btree.BTree Btree(Db4objects.Db4o.YapClass clazz
+			)
+		{
+			Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy index = clazz.Index();
+			if (!(index is Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy))
+			{
+				throw new System.InvalidOperationException();
+			}
+			return ((Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy)index).Btree();
+		}
+
+		public static System.Collections.IEnumerator Iterate(Db4objects.Db4o.YapClass clazz
+			, Db4objects.Db4o.Transaction trans)
+		{
+			return Btree(clazz).AsRange(trans).Keys();
+		}
 	}
 }

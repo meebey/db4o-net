@@ -196,6 +196,11 @@ namespace Db4objects.Db4o
 
 		public virtual int OwnLength(object obj)
 		{
+			return OwnLength();
+		}
+
+		private int OwnLength()
+		{
 			return Db4objects.Db4o.YapConst.OBJECT_LENGTH + Db4objects.Db4o.YapConst.INT_LENGTH
 				 * 2;
 		}
@@ -527,6 +532,10 @@ namespace Db4objects.Db4o
 			if (!(i_handler.IsSecondClass() == Db4objects.Db4o.YapConst.YES))
 			{
 				mf._array.DefragIDs(this, readers);
+			}
+			else
+			{
+				readers.IncrementOffset(OwnLength());
 			}
 		}
 

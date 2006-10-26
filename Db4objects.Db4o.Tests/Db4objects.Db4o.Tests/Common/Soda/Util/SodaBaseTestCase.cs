@@ -2,6 +2,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 {
 	public abstract class SodaBaseTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
 	{
+		[Db4objects.Db4o.Transient]
 		protected object[] _array;
 
 		protected override void Db4oSetupBeforeStore()
@@ -18,16 +19,29 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			}
 		}
 
-		protected abstract object[] CreateData();
+		public abstract object[] CreateData();
 
 		protected virtual void Expect(Db4objects.Db4o.Query.IQuery query, int[] indices)
+		{
+			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.Expect(query, CollectCandidates
+				(indices), false);
+		}
+
+		protected virtual void ExpectOrdered(Db4objects.Db4o.Query.IQuery query, int[] indices
+			)
+		{
+			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOrdered(query, CollectCandidates
+				(indices));
+		}
+
+		private object[] CollectCandidates(int[] indices)
 		{
 			object[] data = new object[indices.Length];
 			for (int idx = 0; idx < indices.Length; idx++)
 			{
 				data[idx] = _array[indices[idx]];
 			}
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.Expect(query, data, false);
+			return data;
 		}
 	}
 }

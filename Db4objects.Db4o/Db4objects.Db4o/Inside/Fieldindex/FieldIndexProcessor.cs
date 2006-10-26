@@ -23,8 +23,7 @@ namespace Db4objects.Db4o.Inside.Fieldindex
 				{
 					return Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult.NO_INDEX_FOUND;
 				}
-				return new Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult(resolved.ToTreeInt
-					());
+				return new Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult(resolved);
 			}
 			return Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessorResult.FOUND_INDEX_BUT_NO_MATCH;
 		}
