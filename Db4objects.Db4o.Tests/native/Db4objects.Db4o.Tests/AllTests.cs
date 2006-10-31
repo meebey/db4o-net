@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests
 	    {
 	        return new Type[]
 	            {
-	                typeof(Db4objects.Db4o.Tests.Common.AllTests),
+//	                typeof(Db4objects.Db4o.Tests.Common.AllTests),
 	                typeof(Db4objects.Db4o.Tests.CLI1.AllTests),
 	                typeof(Db4objects.Db4o.Tests.CLI2.AllTests),
 	            };

@@ -9,11 +9,23 @@ namespace Db4objects.Db4o.Tests.CLI1
 			return new System.Type[]
 				{   
 					typeof(Inside.AllTests),
-					typeof(MDArrayTestCase),
+					typeof(CsAppDomains),
+					typeof(CsAssemblyVersionChange),
+					typeof(CsCascadeDeleteToStructs),
 					typeof(CsCollections),
+					typeof(CsCustomTransientAttribute),
+					typeof(CsDate),
+					typeof(CsDelegate),
+					typeof(CsDisposableTestCase),
+					typeof(CsEnum),
+					typeof(CsEvaluationDelegate),
+					typeof(CsImage),
+					typeof(CsMarshalByRef),
+					typeof(CsType),
 					typeof(CsStructs),
 					typeof(CsStructsRegression),
 				    typeof(CsValueTypesTestCase),
+					typeof(MDArrayTestCase),
 					typeof(ObjectSetAsListTestCase),
 				};
 		}
