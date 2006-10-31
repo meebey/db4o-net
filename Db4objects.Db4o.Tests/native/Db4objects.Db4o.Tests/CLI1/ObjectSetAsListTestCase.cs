@@ -90,11 +90,16 @@ namespace Db4objects.Db4o.Tests.CLI1
 			IList os = GetObjectSet();
 			Item[] items = new Item[2];
 			os.CopyTo(items, 0);
-			Assert.AreEqual(items[0], os[0]);
-			Assert.AreEqual(items[1], os[1]);
+		    AssertArray(os, items);
 		}
+	    
+	    private static void AssertArray(IList os, Item[] items)
+	    {
+	        Assert.AreEqual(items[0], os[0]);
+	        Assert.AreEqual(items[1], os[1]);
+	    }
 
-		private IObjectSet GetObjectSet()
+	    private IObjectSet GetObjectSet()
 		{
 			return Db().Get(typeof(Item));
 		}
