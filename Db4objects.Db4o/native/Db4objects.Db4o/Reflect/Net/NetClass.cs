@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 			try
 			{
-				return new Db4objects.Db4o.Reflect.Net.NetField(_reflector, _type.GetField(name));
+				return new Db4objects.Db4o.Reflect.Net.NetField(_reflector, Sharpen.Runtime.GetDeclaredField(_type, name));
 			}
 			catch
 			{
