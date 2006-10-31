@@ -7,7 +7,9 @@ namespace Db4objects.Db4o
 		public virtual void Run()
 		{
 			dontRemove = true;
-			System.Collections.IEnumerator i = GetEnumerator();
+			Db4objects.Db4o.Foundation.Collection4 copy = new Db4objects.Db4o.Foundation.Collection4
+				(this);
+			System.Collections.IEnumerator i = copy.GetEnumerator();
 			while (i.MoveNext())
 			{
 				((Db4objects.Db4o.YapStream)i.Current).FailedToShutDown();

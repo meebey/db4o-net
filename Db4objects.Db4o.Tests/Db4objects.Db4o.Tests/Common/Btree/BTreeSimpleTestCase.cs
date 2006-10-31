@@ -2,6 +2,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 {
 	public class BTreeSimpleTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutDefragSolo
 	{
+		protected const int BTREE_NODE_SIZE = 4;
+
 		internal int[] _keys = { 3, 234, 55, 87, 2, 1, 101, 59, 70, 300, 288 };
 
 		internal int[] _values;
@@ -40,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public virtual void TestIntKeys()
 		{
 			Db4objects.Db4o.Inside.Btree.BTree btree = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert
-				.CreateIntKeyBTree(Stream(), 0);
+				.CreateIntKeyBTree(Stream(), 0, BTREE_NODE_SIZE);
 			for (int i = 0; i < 5; i++)
 			{
 				btree = CycleIntKeys(btree);
@@ -70,7 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			int id = btree.GetID();
 			Reopen();
 			btree = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.CreateIntKeyBTree(Stream()
-				, id);
+				, id, BTREE_NODE_SIZE);
 			ExpectKeys(btree, _sortedKeys);
 			RemoveKeys(btree);
 			ExpectKeys(btree, _keysOnRemoval);
@@ -165,13 +167,13 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		private void ExpectValues(Db4objects.Db4o.Inside.Btree.BTree btree, int[] values)
 		{
 			int[] cursor = new int[] { 0 };
-			btree.TraverseValues(Trans(), new _AnonymousInnerClass219(this, values, cursor));
+			btree.TraverseValues(Trans(), new _AnonymousInnerClass221(this, values, cursor));
 			Db4oUnit.Assert.AreEqual(values.Length, cursor[0]);
 		}
 
-		private sealed class _AnonymousInnerClass219 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass221 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass219(BTreeSimpleTestCase _enclosing, int[] values, int[]
+			public _AnonymousInnerClass221(BTreeSimpleTestCase _enclosing, int[] values, int[]
 				 cursor)
 			{
 				this._enclosing = _enclosing;

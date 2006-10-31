@@ -490,7 +490,7 @@ namespace Db4objects.Db4o
 					subCandidate = _yapField.i_handler.ReadSubCandidate(_marshallerFamily, _bytes, candidateCollection
 						, false);
 				}
-				catch (System.Exception e)
+				catch
 				{
 					return null;
 				}
@@ -628,7 +628,7 @@ namespace Db4objects.Db4o
 					{
 						_member = _yapField.ReadQuery(GetTransaction(), _marshallerFamily, _bytes);
 					}
-					catch (Db4objects.Db4o.CorruptionException ce)
+					catch (Db4objects.Db4o.CorruptionException)
 					{
 						_member = null;
 					}

@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.CS.Messages
 					stream.ReadBytes(bytes._buffer, address, length);
 					GetWriter(bytes).Write(stream, sock);
 				}
-				catch (System.Exception e)
+				catch
 				{
 					Db4objects.Db4o.CS.Messages.Msg.NULL.Write(stream, sock);
 				}

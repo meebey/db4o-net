@@ -49,7 +49,7 @@ namespace Db4objects.Db4o
 					i_backupFile = ConfigImpl().IoAdapter().Open(path, true, i_file.GetLength());
 					i_backupFile.BlockSize(BlockSize());
 				}
-				catch (System.Exception e)
+				catch
 				{
 					i_backupFile = null;
 					Db4objects.Db4o.Inside.Exceptions4.ThrowRuntimeException(12, path);
@@ -76,7 +76,7 @@ namespace Db4objects.Db4o
 				{
 					Sharpen.Lang.Thread.Sleep(1);
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 			}
@@ -213,14 +213,14 @@ namespace Db4objects.Db4o
 			{
 				i_file.Close();
 			}
-			catch (System.Exception e)
+			catch
 			{
 			}
 			try
 			{
 				Db4objects.Db4o.Db4o.SessionStopped(i_session);
 			}
-			catch (System.Exception e)
+			catch
 			{
 			}
 			i_file = null;
@@ -232,7 +232,7 @@ namespace Db4objects.Db4o
 			{
 				return i_file.GetLength();
 			}
-			catch (System.Exception e)
+			catch
 			{
 				throw new System.Exception();
 			}
@@ -344,7 +344,7 @@ namespace Db4objects.Db4o
 					i_timerFile.Sync();
 				}
 			}
-			catch (System.Exception e)
+			catch
 			{
 			}
 		}

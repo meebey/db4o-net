@@ -124,7 +124,7 @@ namespace Db4objects.Db4o
 		public sealed override Db4objects.Db4o.Inside.Query.IQueryResult NewQueryResult(Db4objects.Db4o.Transaction
 			 trans)
 		{
-			return new Db4objects.Db4o.Inside.Query.IdListQueryResult(trans);
+			return new Db4objects.Db4o.Inside.Query.HybridQueryResult(trans);
 		}
 
 		public sealed override bool Delete5(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject

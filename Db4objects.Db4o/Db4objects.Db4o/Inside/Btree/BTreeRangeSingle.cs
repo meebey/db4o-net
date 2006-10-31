@@ -206,5 +206,14 @@ namespace Db4objects.Db4o.Inside.Btree
 			}
 			return rangeImpl;
 		}
+
+		public virtual Db4objects.Db4o.Inside.Btree.BTreePointer LastPointer()
+		{
+			if (_end == null)
+			{
+				return Btree().LastPointer(Transaction());
+			}
+			return _end.Previous();
+		}
 	}
 }

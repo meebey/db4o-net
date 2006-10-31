@@ -441,6 +441,17 @@ namespace Db4objects.Db4o.Inside.Btree
 			return _root.FirstPointer(trans);
 		}
 
+		public virtual Db4objects.Db4o.Inside.Btree.BTreePointer LastPointer(Db4objects.Db4o.Transaction
+			 trans)
+		{
+			EnsureActive(trans);
+			if (null == _root)
+			{
+				return null;
+			}
+			return _root.LastPointer(trans);
+		}
+
 		public virtual Db4objects.Db4o.Inside.Btree.BTree DebugLoadFully(Db4objects.Db4o.Transaction
 			 trans)
 		{
@@ -471,12 +482,12 @@ namespace Db4objects.Db4o.Inside.Btree
 
 		public virtual void DefragBTree(Db4objects.Db4o.IDefragContext context)
 		{
-			Db4objects.Db4o.ReaderPair.ProcessCopy(context, GetID(), new _AnonymousInnerClass380
+			Db4objects.Db4o.ReaderPair.ProcessCopy(context, GetID(), new _AnonymousInnerClass388
 				(this));
 			Db4objects.Db4o.CorruptionException[] exc = { null };
 			try
 			{
-				context.TraverseAllIndexSlots(this, new _AnonymousInnerClass387(this, context, exc
+				context.TraverseAllIndexSlots(this, new _AnonymousInnerClass395(this, context, exc
 					));
 			}
 			catch (System.Exception e)
@@ -489,9 +500,9 @@ namespace Db4objects.Db4o.Inside.Btree
 			}
 		}
 
-		private sealed class _AnonymousInnerClass380 : Db4objects.Db4o.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass388 : Db4objects.Db4o.ISlotCopyHandler
 		{
-			public _AnonymousInnerClass380(BTree _enclosing)
+			public _AnonymousInnerClass388(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -504,9 +515,9 @@ namespace Db4objects.Db4o.Inside.Btree
 			private readonly BTree _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass387 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass395 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass387(BTree _enclosing, Db4objects.Db4o.IDefragContext context
+			public _AnonymousInnerClass395(BTree _enclosing, Db4objects.Db4o.IDefragContext context
 				, Db4objects.Db4o.CorruptionException[] exc)
 			{
 				this._enclosing = _enclosing;
@@ -519,7 +530,7 @@ namespace Db4objects.Db4o.Inside.Btree
 				int id = ((int)obj);
 				try
 				{
-					Db4objects.Db4o.ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass391(this
+					Db4objects.Db4o.ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass399(this
 						));
 				}
 				catch (Db4objects.Db4o.CorruptionException e)
@@ -529,9 +540,9 @@ namespace Db4objects.Db4o.Inside.Btree
 				}
 			}
 
-			private sealed class _AnonymousInnerClass391 : Db4objects.Db4o.ISlotCopyHandler
+			private sealed class _AnonymousInnerClass399 : Db4objects.Db4o.ISlotCopyHandler
 			{
-				public _AnonymousInnerClass391(_AnonymousInnerClass387 _enclosing)
+				public _AnonymousInnerClass399(_AnonymousInnerClass395 _enclosing)
 				{
 					this._enclosing = _enclosing;
 				}
@@ -541,7 +552,7 @@ namespace Db4objects.Db4o.Inside.Btree
 					this._enclosing._enclosing.DefragIndexNode(readers);
 				}
 
-				private readonly _AnonymousInnerClass387 _enclosing;
+				private readonly _AnonymousInnerClass395 _enclosing;
 			}
 
 			private readonly BTree _enclosing;
@@ -587,13 +598,13 @@ namespace Db4objects.Db4o.Inside.Btree
 		{
 			Db4objects.Db4o.Foundation.Collection4 allNodeIDs = new Db4objects.Db4o.Foundation.Collection4
 				();
-			TraverseAllNodes(systemTrans, new _AnonymousInnerClass435(this, allNodeIDs));
+			TraverseAllNodes(systemTrans, new _AnonymousInnerClass443(this, allNodeIDs));
 			return allNodeIDs.GetEnumerator();
 		}
 
-		private sealed class _AnonymousInnerClass435 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass443 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass435(BTree _enclosing, Db4objects.Db4o.Foundation.Collection4
+			public _AnonymousInnerClass443(BTree _enclosing, Db4objects.Db4o.Foundation.Collection4
 				 allNodeIDs)
 			{
 				this._enclosing = _enclosing;

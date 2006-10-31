@@ -273,7 +273,7 @@ namespace Db4objects.Db4o.Inside.IX
 		public override string ToString()
 		{
 			return base.ToString();
-			Sharpen.Lang.StringBuffer sb = new Sharpen.Lang.StringBuffer();
+			System.Text.StringBuilder sb = new System.Text.StringBuilder();
 			sb.Append("IxField  " + Sharpen.Runtime.IdentityHashCode(this));
 			if (_globalIndexTransaction != null)
 			{

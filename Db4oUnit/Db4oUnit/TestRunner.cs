@@ -67,7 +67,7 @@ namespace Db4oUnit
 				result.Print(stdout);
 				stdout.Flush();
 			}
-			catch (System.IO.IOException e)
+			catch (System.IO.IOException)
 			{
 			}
 		}

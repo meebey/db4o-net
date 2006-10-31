@@ -20,7 +20,7 @@ namespace Db4objects.Db4o
 			{
 				((Sharpen.Util.Date)a_to).SetTime(((Sharpen.Util.Date)a_from).GetTime());
 			}
-			catch (System.Exception e)
+			catch
 			{
 			}
 		}

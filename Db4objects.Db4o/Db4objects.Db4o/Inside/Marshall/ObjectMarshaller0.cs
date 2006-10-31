@@ -188,7 +188,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 				{
 					field.Instantiate(this._enclosing._family, yapObject, onObject, writer);
 				}
-				catch (Db4objects.Db4o.CorruptionException e)
+				catch (Db4objects.Db4o.CorruptionException)
 				{
 					this.Cancel();
 				}
@@ -407,13 +407,6 @@ namespace Db4objects.Db4o.Inside.Marshall
 
 		public override void SkipMarshallerInfo(Db4objects.Db4o.YapReader reader)
 		{
-		}
-
-		public override void MapStringIDs(Db4objects.Db4o.YapClass yc, Db4objects.Db4o.Inside.Marshall.ObjectHeaderAttributes
-			 attributes, Db4objects.Db4o.YapReader reader, Db4objects.Db4o.IIDMapping mapping
-			, int sourceBaseID, int targetBaseID)
-		{
-			throw new System.NotImplementedException();
 		}
 	}
 }

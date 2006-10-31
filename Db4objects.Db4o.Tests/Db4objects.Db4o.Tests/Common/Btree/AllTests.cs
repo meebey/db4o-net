@@ -10,11 +10,11 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		protected override System.Type[] TestCases()
 		{
 			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeAddRemoveTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeFreeTestCase), typeof(Db4objects.Db4o.Tests.Common.Btree.BTreePointerTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeRangeTestCase), typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeRollbackTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeSearchTestCase), typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeSimpleTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Btree.SearcherLowestHighestTestCase), typeof(Db4objects.Db4o.Tests.Common.Btree.SearcherTestCase)
-				 };
+				, typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeNodeTestCase), typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeFreeTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Btree.BTreePointerTestCase), typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeRangeTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeRollbackTestCase), typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeSearchTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Btree.BTreeSimpleTestCase), typeof(Db4objects.Db4o.Tests.Common.Btree.SearcherLowestHighestTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Btree.SearcherTestCase) };
 		}
 	}
 }

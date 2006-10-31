@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 					Db4objects.Db4o.Platform4.SetAccessible(method);
 					return method;
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 				curclazz = curclazz.BaseType;
@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 					Db4objects.Db4o.Platform4.SetAccessible(field);
 					return field;
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 				curclazz = curclazz.BaseType;

@@ -175,7 +175,7 @@ namespace Db4objects.Db4o
 			{
 				return _reflectArray.Get(a_array, a_position);
 			}
-			catch (System.Exception e)
+			catch
 			{
 				return null;
 			}

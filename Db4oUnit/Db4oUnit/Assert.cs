@@ -151,14 +151,14 @@ namespace Db4oUnit
 		private static string FailureMessage(object expected, object actual, string customMessage
 			)
 		{
-			return FailureMessage(expected, actual, "", customMessage);
+			return FailureMessage(expected, actual, string.Empty, customMessage);
 		}
 
 		private static string FailureMessage(object expected, object actual, string cmpOper
 			, string customMessage)
 		{
-			return (customMessage == null ? "" : customMessage + ": ") + "Expected " + cmpOper
-				 + "'" + expected + "' but was '" + actual + "'";
+			return (customMessage == null ? string.Empty : customMessage + ": ") + "Expected "
+				 + cmpOper + "'" + expected + "' but was '" + actual + "'";
 		}
 
 		private static bool ObjectsAreEqual(object expected, object actual)

@@ -31,13 +31,13 @@ namespace Db4objects.Db4o.CS.Messages
 								return true;
 							}
 						}
-						catch (System.Exception t)
+						catch
 						{
 						}
 					}
 				}
 			}
-			catch (System.Exception th)
+			catch
 			{
 			}
 			Db4objects.Db4o.CS.Messages.Msg.FAILED.Write(stream, sock);

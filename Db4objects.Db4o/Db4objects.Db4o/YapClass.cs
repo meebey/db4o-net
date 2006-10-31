@@ -360,7 +360,7 @@ namespace Db4objects.Db4o
 				{
 					i_db4oType = (Db4objects.Db4o.IDb4oTypeImpl)claxx.NewInstance();
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 			}
@@ -473,7 +473,7 @@ namespace Db4objects.Db4o
 			{
 				claxx = a_stream.Reflector().ForName(a_name);
 			}
-			catch (System.Exception t)
+			catch
 			{
 				claxx = null;
 			}
@@ -675,6 +675,64 @@ namespace Db4objects.Db4o
 				count += i_ancestor.FieldCount();
 			}
 			return count;
+		}
+
+		private class YapFieldIterator : System.Collections.IEnumerator
+		{
+			private readonly Db4objects.Db4o.YapClass _initialClazz;
+
+			private Db4objects.Db4o.YapClass _curClazz;
+
+			private int _curIdx;
+
+			public YapFieldIterator(Db4objects.Db4o.YapClass clazz)
+			{
+				_initialClazz = clazz;
+				Reset();
+			}
+
+			public virtual object Current
+			{
+				get
+				{
+					return _curClazz.i_fields[_curIdx];
+				}
+			}
+
+			public virtual bool MoveNext()
+			{
+				if (_curClazz == null)
+				{
+					_curClazz = _initialClazz;
+					_curIdx = 0;
+				}
+				else
+				{
+					_curIdx++;
+				}
+				while (_curClazz != null && !IndexInRange())
+				{
+					_curClazz = _curClazz.i_ancestor;
+					_curIdx = 0;
+				}
+				return _curClazz != null && IndexInRange();
+			}
+
+			public virtual void Reset()
+			{
+				_curClazz = null;
+				_curIdx = -1;
+			}
+
+			private bool IndexInRange()
+			{
+				return _curIdx < _curClazz.i_fields.Length;
+			}
+		}
+
+		public virtual System.Collections.IEnumerator Fields()
+		{
+			return new Db4objects.Db4o.YapClass.YapFieldIterator(this);
 		}
 
 		internal Db4objects.Db4o.Inside.Marshall.MarshallerFamily FindOffset(Db4objects.Db4o.YapReader
@@ -1011,13 +1069,13 @@ namespace Db4objects.Db4o
 		public virtual Db4objects.Db4o.YapField GetYapField(string name)
 		{
 			Db4objects.Db4o.YapField[] yf = new Db4objects.Db4o.YapField[1];
-			ForEachYapField(new _AnonymousInnerClass861(this, name, yf));
+			ForEachYapField(new _AnonymousInnerClass904(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _AnonymousInnerClass861 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass904 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass861(YapClass _enclosing, string name, Db4objects.Db4o.YapField[]
+			public _AnonymousInnerClass904(YapClass _enclosing, string name, Db4objects.Db4o.YapField[]
 				 yf)
 			{
 				this._enclosing = _enclosing;
@@ -1185,13 +1243,13 @@ namespace Db4objects.Db4o
 					{
 						a_object = _reflector.NewInstance();
 					}
-					catch (System.MissingMethodException e)
+					catch (System.MissingMethodException)
 					{
 						stream.LogMsg(7, ClassReflector().GetName());
 						stream.Instantiating(false);
 						return null;
 					}
-					catch (System.Exception e)
+					catch
 					{
 						stream.Instantiating(false);
 						return null;
@@ -1300,13 +1358,13 @@ namespace Db4objects.Db4o
 				{
 					a_object = _reflector.NewInstance();
 				}
-				catch (System.MissingMethodException e)
+				catch (System.MissingMethodException)
 				{
 					stream.LogMsg(7, ClassReflector().GetName());
 					stream.Instantiating(false);
 					return null;
 				}
-				catch (System.Exception e)
+				catch
 				{
 					stream.Instantiating(false);
 					return null;
@@ -1400,7 +1458,7 @@ namespace Db4objects.Db4o
 			}
 			if (i_name == null)
 			{
-				return "";
+				return string.Empty;
 			}
 			return i_name;
 		}
@@ -1502,7 +1560,7 @@ namespace Db4objects.Db4o
 				stream.StillToActivate(ret, depth);
 				return ret;
 			}
-			catch (System.Exception e)
+			catch
 			{
 			}
 			return null;
@@ -1573,7 +1631,7 @@ namespace Db4objects.Db4o
 			{
 				id = a_bytes.ReadInt();
 			}
-			catch (System.Exception e)
+			catch
 			{
 			}
 			a_bytes._offset = offset;
@@ -1584,15 +1642,15 @@ namespace Db4objects.Db4o
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1338
+					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1381
 						(this, a_candidates, trans));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1338 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass1381 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass1338(YapClass _enclosing, Db4objects.Db4o.QCandidates 
+			public _AnonymousInnerClass1381(YapClass _enclosing, Db4objects.Db4o.QCandidates 
 				a_candidates, Db4objects.Db4o.Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -1996,7 +2054,7 @@ namespace Db4objects.Db4o
 												{
 													fields[i].Set(null, oldFields[j].value);
 												}
-												catch (System.Exception ex)
+												catch
 												{
 												}
 											}
@@ -2174,7 +2232,7 @@ namespace Db4objects.Db4o
 			, int maxDepth)
 		{
 			int length = ReadFieldCount(writer);
-			string str = "";
+			string str = string.Empty;
 			for (int i = 0; i < length; i++)
 			{
 				str += i_fields[i].ToString(mf, writer);

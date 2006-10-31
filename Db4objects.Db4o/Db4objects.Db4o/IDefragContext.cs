@@ -7,6 +7,10 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public interface IDefragContext : Db4objects.Db4o.IIDMapping
 	{
+		Db4objects.Db4o.YapReader SourceReaderByAddress(int address, int length);
+
+		Db4objects.Db4o.YapReader TargetReaderByAddress(int address, int length);
+
 		Db4objects.Db4o.YapReader SourceReaderByID(int sourceID);
 
 		int AllocateTargetSlot(int targetLength);
@@ -25,6 +29,8 @@ namespace Db4objects.Db4o
 
 		Db4objects.Db4o.YapWriter SourceWriterByID(int sourceID);
 
-		int LenientMappedID(int id);
+		int MappedID(int id, bool lenient);
+
+		void RegisterSeen(int id);
 	}
 }

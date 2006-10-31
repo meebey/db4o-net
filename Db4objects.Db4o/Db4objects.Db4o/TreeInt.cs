@@ -154,7 +154,7 @@ namespace Db4objects.Db4o
 
 		public override string ToString()
 		{
-			return "" + _key;
+			return string.Empty + _key;
 		}
 
 		protected override Db4objects.Db4o.Foundation.Tree ShallowCloneInternal(Db4objects.Db4o.Foundation.Tree
@@ -208,6 +208,11 @@ namespace Db4objects.Db4o
 			private readonly TreeInt _enclosing;
 
 			private readonly int[] length;
+		}
+
+		public override object Key()
+		{
+			return _key;
 		}
 	}
 }

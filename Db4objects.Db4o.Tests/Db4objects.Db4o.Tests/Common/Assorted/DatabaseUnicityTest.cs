@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				Db4objects.Db4o.Ext.Db4oDatabase d4b = (Db4objects.Db4o.Ext.Db4oDatabase)objectSet
 					.Next();
 				Db4oUnit.Assert.IsFalse(ht.ContainsKey(d4b.i_signature));
-				ht.Put(d4b.i_signature, "");
+				ht.Put(d4b.i_signature, string.Empty);
 			}
 			yapStream.ShowInternalClasses(false);
 			oc.Close();

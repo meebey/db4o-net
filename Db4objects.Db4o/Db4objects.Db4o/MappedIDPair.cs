@@ -7,10 +7,17 @@ namespace Db4objects.Db4o
 
 		private int _mapped;
 
-		public MappedIDPair(int orig, int mapped)
+		private bool _seen;
+
+		public MappedIDPair(int orig, int mapped) : this(orig, mapped, false)
+		{
+		}
+
+		public MappedIDPair(int orig, int mapped, bool seen)
 		{
 			_orig = orig;
 			_mapped = mapped;
+			_seen = seen;
 		}
 
 		public virtual int Orig()
@@ -21,6 +28,21 @@ namespace Db4objects.Db4o
 		public virtual int Mapped()
 		{
 			return _mapped;
+		}
+
+		public virtual bool Seen()
+		{
+			return _seen;
+		}
+
+		public virtual void Seen(bool seen)
+		{
+			_seen = seen;
+		}
+
+		public override string ToString()
+		{
+			return _orig + "->" + _mapped + "(" + _seen + ")";
 		}
 	}
 }

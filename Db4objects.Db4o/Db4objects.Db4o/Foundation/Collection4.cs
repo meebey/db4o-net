@@ -27,6 +27,11 @@ namespace Db4objects.Db4o.Foundation
 			AddAll(other);
 		}
 
+		public Collection4(System.Collections.IEnumerator iterator)
+		{
+			AddAll(iterator);
+		}
+
 		public virtual object SingleElement()
 		{
 			if (Size() != 1)
@@ -133,10 +138,6 @@ namespace Db4objects.Db4o.Foundation
 		/// <remarks>tests if the object is in the Collection. == comparison.</remarks>
 		public bool ContainsByIdentity(object element)
 		{
-			if (null == element)
-			{
-				return false;
-			}
 			System.Collections.IEnumerator i = InternalIterator();
 			while (i.MoveNext())
 			{
@@ -183,15 +184,7 @@ namespace Db4objects.Db4o.Foundation
 
 		private bool ContainsNull()
 		{
-			System.Collections.IEnumerator i = InternalIterator();
-			while (i.MoveNext())
-			{
-				if (i.Current == null)
-				{
-					return true;
-				}
-			}
-			return false;
+			return ContainsByIdentity(null);
 		}
 
 		public virtual object DeepClone(object newParent)
@@ -288,6 +281,11 @@ namespace Db4objects.Db4o.Foundation
 			return _size;
 		}
 
+		public bool IsEmpty()
+		{
+			return _size == 0;
+		}
+
 		/// <summary>This is a non reflection implementation for more speed.</summary>
 		/// <remarks>
 		/// This is a non reflection implementation for more speed. In contrast to
@@ -318,7 +316,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				return "[]";
 			}
-			Sharpen.Lang.StringBuffer sb = new Sharpen.Lang.StringBuffer();
+			System.Text.StringBuilder sb = new System.Text.StringBuilder();
 			sb.Append("[");
 			System.Collections.IEnumerator i = InternalIterator();
 			i.MoveNext();

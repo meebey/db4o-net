@@ -9,7 +9,7 @@ namespace Db4oUnit
 			{
 				Print(writer);
 			}
-			catch (System.IO.IOException e)
+			catch (System.IO.IOException)
 			{
 			}
 			return writer.ToString();

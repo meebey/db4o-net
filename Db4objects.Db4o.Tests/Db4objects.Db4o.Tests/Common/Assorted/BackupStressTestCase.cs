@@ -201,7 +201,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private string BackupFile(int count)
 		{
-			return "" + count + FILE;
+			return string.Empty + count + FILE;
 		}
 
 		private void Stdout(string @string)

@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.CS.Messages
 					{
 						stream.Delete1(GetTransaction(), obj, userCall);
 					}
-					catch (System.Exception e)
+					catch
 					{
 					}
 				}

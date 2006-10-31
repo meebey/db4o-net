@@ -599,6 +599,18 @@ namespace Db4objects.Db4o.Inside.Btree
 			return -1;
 		}
 
+		public virtual int LastKeyIndex(Db4objects.Db4o.Transaction trans)
+		{
+			for (int ix = _count - 1; ix >= 0; ix--)
+			{
+				if (IndexIsValid(trans, ix))
+				{
+					return ix;
+				}
+			}
+			return -1;
+		}
+
 		public virtual bool IndexIsValid(Db4objects.Db4o.Transaction trans, int index)
 		{
 			if (!CanWrite())
@@ -1105,6 +1117,31 @@ namespace Db4objects.Db4o.Inside.Btree
 				if (childFirstPointer != null)
 				{
 					return childFirstPointer;
+				}
+			}
+			return null;
+		}
+
+		public virtual Db4objects.Db4o.Inside.Btree.BTreePointer LastPointer(Db4objects.Db4o.Transaction
+			 trans)
+		{
+			Db4objects.Db4o.YapReader reader = PrepareRead(trans);
+			if (_isLeaf)
+			{
+				int index = LastKeyIndex(trans);
+				if (index == -1)
+				{
+					return null;
+				}
+				return new Db4objects.Db4o.Inside.Btree.BTreePointer(trans, reader, this, index);
+			}
+			for (int i = _count - 1; i >= 0; i--)
+			{
+				Db4objects.Db4o.Inside.Btree.BTreePointer childLastPointer = Child(reader, i).LastPointer
+					(trans);
+				if (childLastPointer != null)
+				{
+					return childLastPointer;
 				}
 			}
 			return null;

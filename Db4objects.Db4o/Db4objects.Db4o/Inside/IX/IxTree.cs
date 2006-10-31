@@ -211,5 +211,10 @@ namespace Db4objects.Db4o.Inside.IX
 			ixTree._nodes = _nodes;
 			return ixTree;
 		}
+
+		public override object Key()
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

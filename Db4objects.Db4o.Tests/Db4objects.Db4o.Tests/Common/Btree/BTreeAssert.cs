@@ -104,18 +104,18 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		}
 
 		public static Db4objects.Db4o.Inside.Btree.BTree CreateIntKeyBTree(Db4objects.Db4o.YapStream
-			 stream, int id)
+			 stream, int id, int nodeSize)
 		{
 			return new Db4objects.Db4o.Inside.Btree.BTree(stream.GetSystemTransaction(), id, 
-				new Db4objects.Db4o.YInt(stream), null, 4, stream.ConfigImpl().BTreeCacheHeight(
-				));
+				new Db4objects.Db4o.YInt(stream), null, nodeSize, stream.ConfigImpl().BTreeCacheHeight
+				());
 		}
 
 		public static Db4objects.Db4o.Inside.Btree.BTree CreateIntKeyBTree(Db4objects.Db4o.YapStream
-			 stream, int id, int treeCacheHeight)
+			 stream, int id, int treeCacheHeight, int nodeSize)
 		{
 			return new Db4objects.Db4o.Inside.Btree.BTree(stream.GetSystemTransaction(), id, 
-				new Db4objects.Db4o.YInt(stream), null, 4, treeCacheHeight);
+				new Db4objects.Db4o.YInt(stream), null, nodeSize, treeCacheHeight);
 		}
 
 		public static void AssertSingleElement(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.Inside.Btree.BTree

@@ -154,7 +154,7 @@ namespace Db4objects.Db4o
 					return new Db4objects.Db4o.QCandidate(candidates, obj, 0, true);
 				}
 			}
-			catch (Db4objects.Db4o.CorruptionException e)
+			catch (Db4objects.Db4o.CorruptionException)
 			{
 			}
 			return null;
@@ -166,7 +166,7 @@ namespace Db4objects.Db4o
 			{
 				return Read1(a_reader);
 			}
-			catch (Db4objects.Db4o.CorruptionException e)
+			catch (Db4objects.Db4o.CorruptionException)
 			{
 			}
 			return null;
@@ -332,7 +332,7 @@ namespace Db4objects.Db4o
 				Read1(readers.Source());
 				Read1(readers.Target());
 			}
-			catch (Db4objects.Db4o.CorruptionException exc)
+			catch (Db4objects.Db4o.CorruptionException)
 			{
 				Db4objects.Db4o.Inside.Exceptions4.VirtualException();
 			}

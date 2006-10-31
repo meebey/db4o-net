@@ -107,7 +107,7 @@ namespace Db4objects.Db4o.Header
 					}
 				}
 			}
-			catch (System.IO.IOException e)
+			catch (System.IO.IOException)
 			{
 			}
 		}

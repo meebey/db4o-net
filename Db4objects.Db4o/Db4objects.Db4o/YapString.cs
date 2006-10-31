@@ -85,7 +85,7 @@ namespace Db4objects.Db4o
 				return Db4objects.Db4o.Inside.Marshall.StringMarshaller.ReadShort(_stream, (Db4objects.Db4o.YapReader
 					)indexEntry);
 			}
-			catch (Db4objects.Db4o.CorruptionException e)
+			catch (Db4objects.Db4o.CorruptionException)
 			{
 			}
 			return null;
@@ -147,7 +147,7 @@ namespace Db4objects.Db4o
 					return new Db4objects.Db4o.QCandidate(candidates, obj, 0, true);
 				}
 			}
-			catch (Db4objects.Db4o.CorruptionException e)
+			catch (Db4objects.Db4o.CorruptionException)
 			{
 			}
 			return null;

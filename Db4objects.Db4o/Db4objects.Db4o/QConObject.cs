@@ -139,7 +139,7 @@ namespace Db4objects.Db4o
 			{
 				return a_candidate.Evaluate(this, i_evaluator);
 			}
-			catch (System.Exception e)
+			catch
 			{
 				return false;
 			}
@@ -288,7 +288,7 @@ namespace Db4objects.Db4o
 
 		internal override string LogObject()
 		{
-			return "";
+			return string.Empty;
 		}
 
 		internal override void Marshall()

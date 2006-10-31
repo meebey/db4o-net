@@ -60,8 +60,8 @@ namespace Db4oUnit
 			}
 			if (!(typeof(Db4oUnit.ITestCase).IsAssignableFrom(clazz)))
 			{
-				throw new System.ArgumentException("" + clazz + " is not marked as " + typeof(Db4oUnit.ITestCase)
-					);
+				throw new System.ArgumentException(string.Empty + clazz + " is not marked as " + 
+					typeof(Db4oUnit.ITestCase));
 			}
 			return FromMethods(clazz);
 		}

@@ -132,9 +132,5 @@ namespace Db4objects.Db4o.Inside.Marshall
 		public abstract void WriteObjectClassID(Db4objects.Db4o.YapReader reader, int id);
 
 		public abstract void SkipMarshallerInfo(Db4objects.Db4o.YapReader reader);
-
-		public abstract void MapStringIDs(Db4objects.Db4o.YapClass yc, Db4objects.Db4o.Inside.Marshall.ObjectHeaderAttributes
-			 attributes, Db4objects.Db4o.YapReader reader, Db4objects.Db4o.IIDMapping mapping
-			, int sourceBaseID, int targetBaseID);
 	}
 }

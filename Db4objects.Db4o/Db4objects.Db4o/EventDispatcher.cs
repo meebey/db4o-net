@@ -51,7 +51,7 @@ namespace Db4objects.Db4o
 						return ((bool)res);
 					}
 				}
-				catch (System.Exception t)
+				catch
 				{
 				}
 			}
@@ -100,7 +100,7 @@ namespace Db4objects.Db4o
 							dispatcher = new Db4objects.Db4o.EventDispatcher(methods);
 						}
 					}
-					catch (System.Exception t)
+					catch
 					{
 					}
 				}

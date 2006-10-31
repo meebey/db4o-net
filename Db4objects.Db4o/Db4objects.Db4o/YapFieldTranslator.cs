@@ -34,7 +34,7 @@ namespace Db4objects.Db4o
 			{
 				return i_translator.OnStore(a_trans.Stream(), a_OnObject);
 			}
-			catch (System.Exception t)
+			catch
 			{
 				return null;
 			}
@@ -67,7 +67,7 @@ namespace Db4objects.Db4o
 			{
 				i_translator.OnActivate(a_stream, a_onObject, toSet);
 			}
-			catch (System.Exception t)
+			catch
 			{
 			}
 		}

@@ -1,79 +1,31 @@
 namespace Db4objects.Db4o.Inside.Query
 {
 	/// <exclude></exclude>
-	public class IdListQueryResult : Db4objects.Db4o.Foundation.IVisitor4, Db4objects.Db4o.Inside.Query.IQueryResult
+	public class IdListQueryResult : Db4objects.Db4o.Inside.Query.AbstractQueryResult
+		, Db4objects.Db4o.Foundation.IVisitor4
 	{
-		private readonly Db4objects.Db4o.Transaction _transaction;
-
 		private Db4objects.Db4o.Foundation.Tree _candidates;
 
 		private bool _checkDuplicates;
 
 		private readonly Db4objects.Db4o.Foundation.IntArrayList _ids;
 
-		protected IdListQueryResult(Db4objects.Db4o.Transaction trans, int initialSize)
+		public IdListQueryResult(Db4objects.Db4o.Transaction trans, int initialSize) : 
+			base(trans)
 		{
 			_ids = new Db4objects.Db4o.Foundation.IntArrayList(initialSize);
-			_transaction = trans;
 		}
 
 		public IdListQueryResult(Db4objects.Db4o.Transaction trans) : this(trans, 0)
 		{
 		}
 
-		public virtual Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs()
+		public override Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs()
 		{
 			return _ids.IntIterator();
 		}
 
-		public virtual System.Collections.IEnumerator GetEnumerator()
-		{
-			return new _AnonymousInnerClass39(this, _ids.GetEnumerator());
-		}
-
-		private sealed class _AnonymousInnerClass39 : Db4objects.Db4o.Foundation.MappingIterator
-		{
-			public _AnonymousInnerClass39(IdListQueryResult _enclosing, System.Collections.IEnumerator
-				 baseArg1) : base(baseArg1)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			protected override object Map(object current)
-			{
-				lock (this._enclosing.StreamLock())
-				{
-					object obj = this._enclosing.ActivatedObject(((int)current));
-					if (obj == null)
-					{
-						return Db4objects.Db4o.Foundation.MappingIterator.SKIP;
-					}
-					return obj;
-				}
-			}
-
-			private readonly IdListQueryResult _enclosing;
-		}
-
-		public object Activate(object obj)
-		{
-			Db4objects.Db4o.YapStream stream = Stream();
-			stream.Activate1(_transaction, obj, stream.ConfigImpl().ActivationDepth());
-			return obj;
-		}
-
-		public object ActivatedObject(int id)
-		{
-			Db4objects.Db4o.YapStream stream = Stream();
-			object ret = stream.GetActivatedObjectFromCache(_transaction, id);
-			if (ret != null)
-			{
-				return ret;
-			}
-			return stream.ReadActivatedObjectNotInCache(_transaction, id);
-		}
-
-		public virtual object Get(int index)
+		public override object Get(int index)
 		{
 			lock (StreamLock())
 			{
@@ -113,24 +65,7 @@ namespace Db4objects.Db4o.Inside.Query
 			Add(a_key);
 		}
 
-		public virtual object StreamLock()
-		{
-			Db4objects.Db4o.YapStream stream = Stream();
-			stream.CheckClosed();
-			return stream.Lock();
-		}
-
-		public virtual Db4objects.Db4o.YapStream Stream()
-		{
-			return _transaction.Stream();
-		}
-
-		public virtual Db4objects.Db4o.Ext.IExtObjectContainer ObjectContainer()
-		{
-			return Stream();
-		}
-
-		public virtual void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
+		public override void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
 		{
 			Sort(cmp, 0, Size() - 1);
 		}
@@ -166,15 +101,15 @@ namespace Db4objects.Db4o.Inside.Query
 			_ids.Swap(left, right);
 		}
 
-		public virtual void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)
+		public override void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)
 		{
 			Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy index = clazz.Index();
-			index.TraverseAll(_transaction, new _AnonymousInnerClass154(this));
+			index.TraverseAll(_transaction, new _AnonymousInnerClass105(this));
 		}
 
-		private sealed class _AnonymousInnerClass154 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass105 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass154(IdListQueryResult _enclosing)
+			public _AnonymousInnerClass105(IdListQueryResult _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -187,12 +122,12 @@ namespace Db4objects.Db4o.Inside.Query
 			private readonly IdListQueryResult _enclosing;
 		}
 
-		public virtual void LoadFromQuery(Db4objects.Db4o.QQuery query)
+		public override void LoadFromQuery(Db4objects.Db4o.QQuery query)
 		{
 			query.ExecuteLocal(this);
 		}
 
-		public virtual void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
+		public override void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
 			 iter)
 		{
 			Db4objects.Db4o.Foundation.Tree[] duplicates = new Db4objects.Db4o.Foundation.Tree
@@ -207,15 +142,15 @@ namespace Db4objects.Db4o.Inside.Query
 						)))
 					{
 						Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy index = yapClass.Index();
-						index.TraverseAll(_transaction, new _AnonymousInnerClass177(this, duplicates));
+						index.TraverseAll(_transaction, new _AnonymousInnerClass128(this, duplicates));
 					}
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass177 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass128 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass177(IdListQueryResult _enclosing, Db4objects.Db4o.Foundation.Tree[]
+			public _AnonymousInnerClass128(IdListQueryResult _enclosing, Db4objects.Db4o.Foundation.Tree[]
 				 duplicates)
 			{
 				this._enclosing = _enclosing;
@@ -238,7 +173,7 @@ namespace Db4objects.Db4o.Inside.Query
 			private readonly Db4objects.Db4o.Foundation.Tree[] duplicates;
 		}
 
-		public virtual void LoadFromIdReader(Db4objects.Db4o.YapReader reader)
+		public override void LoadFromIdReader(Db4objects.Db4o.YapReader reader)
 		{
 			int size = reader.ReadInt();
 			for (int i = 0; i < size; i++)
@@ -252,12 +187,12 @@ namespace Db4objects.Db4o.Inside.Query
 			_ids.Add(id);
 		}
 
-		public virtual int IndexOf(int id)
+		public override int IndexOf(int id)
 		{
 			return _ids.IndexOf(id);
 		}
 
-		public virtual int Size()
+		public override int Size()
 		{
 			return _ids.Size();
 		}

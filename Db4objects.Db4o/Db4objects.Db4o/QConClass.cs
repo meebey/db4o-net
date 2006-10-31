@@ -85,7 +85,7 @@ namespace Db4objects.Db4o
 
 		internal override string LogObject()
 		{
-			return "";
+			return string.Empty;
 		}
 
 		internal override void Marshall()

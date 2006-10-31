@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.CS.Messages
 				{
 					ids = stream.GetYapClass(bytes.ReadInt()).GetIDs(GetTransaction());
 				}
-				catch (System.Exception e)
+				catch
 				{
 					ids = new long[0];
 				}

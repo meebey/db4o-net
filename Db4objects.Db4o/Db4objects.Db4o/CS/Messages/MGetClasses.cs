@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.CS.Messages
 				{
 					stream.ClassCollection().Write(GetTransaction());
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 			}

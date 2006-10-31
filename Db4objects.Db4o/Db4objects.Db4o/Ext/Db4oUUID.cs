@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Ext
 		public override string ToString()
 		{
 			return base.ToString();
-			string sig = "";
+			string sig = string.Empty;
 			for (int i = 0; i < signaturePart.Length; i++)
 			{
 				sig += signaturePart[i] + " ";

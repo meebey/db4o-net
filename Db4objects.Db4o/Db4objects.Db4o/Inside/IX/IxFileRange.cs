@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Inside.IX
 			return base.ToString();
 			Db4objects.Db4o.YapReader fileReader = new Db4objects.Db4o.YapReader(SlotLength()
 				);
-			Sharpen.Lang.StringBuffer sb = new Sharpen.Lang.StringBuffer();
+			System.Text.StringBuilder sb = new System.Text.StringBuilder();
 			sb.Append("IxFileRange");
 			VisitAll(new _AnonymousInnerClass59(this, sb));
 			return sb.ToString();
@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Inside.IX
 
 		private sealed class _AnonymousInnerClass59 : Db4objects.Db4o.Foundation.IIntObjectVisitor
 		{
-			public _AnonymousInnerClass59(IxFileRange _enclosing, Sharpen.Lang.StringBuffer sb
+			public _AnonymousInnerClass59(IxFileRange _enclosing, System.Text.StringBuilder sb
 				)
 			{
 				this._enclosing = _enclosing;
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Inside.IX
 
 			private readonly IxFileRange _enclosing;
 
-			private readonly Sharpen.Lang.StringBuffer sb;
+			private readonly System.Text.StringBuilder sb;
 		}
 
 		public override void Visit(object obj)

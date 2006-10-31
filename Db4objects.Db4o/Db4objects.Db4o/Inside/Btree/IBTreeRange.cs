@@ -37,5 +37,7 @@ namespace Db4objects.Db4o.Inside.Btree
 		bool IsEmpty();
 
 		void Accept(Db4objects.Db4o.Inside.Btree.IBTreeRangeVisitor visitor);
+
+		Db4objects.Db4o.Inside.Btree.BTreePointer LastPointer();
 	}
 }

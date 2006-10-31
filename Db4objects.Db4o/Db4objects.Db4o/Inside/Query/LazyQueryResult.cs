@@ -1,28 +1,25 @@
 namespace Db4objects.Db4o.Inside.Query
 {
 	/// <exclude></exclude>
-	public class LazyQueryResult : Db4objects.Db4o.Inside.Query.IQueryResult
+	public class LazyQueryResult : Db4objects.Db4o.Inside.Query.AbstractQueryResult
 	{
-		private readonly Db4objects.Db4o.Transaction _transaction;
-
 		private System.Collections.IEnumerable _iterable;
 
-		public LazyQueryResult(Db4objects.Db4o.Transaction trans)
+		public LazyQueryResult(Db4objects.Db4o.Transaction trans) : base(trans)
 		{
-			_transaction = trans;
 		}
 
-		public virtual object Get(int index)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public virtual int IndexOf(int id)
+		public override object Get(int index)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public virtual Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs()
+		public override int IndexOf(int id)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public override Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs()
 		{
 			if (_iterable == null)
 			{
@@ -32,14 +29,14 @@ namespace Db4objects.Db4o.Inside.Query
 				());
 		}
 
-		public virtual void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)
+		public override void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)
 		{
-			_iterable = new _AnonymousInnerClass42(this, clazz);
+			_iterable = new _AnonymousInnerClass39(this, clazz);
 		}
 
-		private sealed class _AnonymousInnerClass42 : System.Collections.IEnumerable
+		private sealed class _AnonymousInnerClass39 : System.Collections.IEnumerable
 		{
-			public _AnonymousInnerClass42(LazyQueryResult _enclosing, Db4objects.Db4o.YapClass
+			public _AnonymousInnerClass39(LazyQueryResult _enclosing, Db4objects.Db4o.YapClass
 				 clazz)
 			{
 				this._enclosing = _enclosing;
@@ -63,20 +60,15 @@ namespace Db4objects.Db4o.Inside.Query
 				());
 		}
 
-		public virtual Db4objects.Db4o.Transaction Transaction()
-		{
-			return _transaction;
-		}
-
-		public virtual void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
+		public override void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
 			 classCollectionIterator)
 		{
-			_iterable = new _AnonymousInnerClass58(this, classCollectionIterator);
+			_iterable = new _AnonymousInnerClass51(this, classCollectionIterator);
 		}
 
-		private sealed class _AnonymousInnerClass58 : System.Collections.IEnumerable
+		private sealed class _AnonymousInnerClass51 : System.Collections.IEnumerable
 		{
-			public _AnonymousInnerClass58(LazyQueryResult _enclosing, Db4objects.Db4o.YapClassCollectionIterator
+			public _AnonymousInnerClass51(LazyQueryResult _enclosing, Db4objects.Db4o.YapClassCollectionIterator
 				 classCollectionIterator)
 			{
 				this._enclosing = _enclosing;
@@ -85,13 +77,13 @@ namespace Db4objects.Db4o.Inside.Query
 
 			public System.Collections.IEnumerator GetEnumerator()
 			{
-				return new Db4objects.Db4o.Foundation.CompositeIterator4(new _AnonymousInnerClass61
+				return new Db4objects.Db4o.Foundation.CompositeIterator4(new _AnonymousInnerClass54
 					(this, classCollectionIterator));
 			}
 
-			private sealed class _AnonymousInnerClass61 : Db4objects.Db4o.Foundation.MappingIterator
+			private sealed class _AnonymousInnerClass54 : Db4objects.Db4o.Foundation.MappingIterator
 			{
-				public _AnonymousInnerClass61(_AnonymousInnerClass58 _enclosing, Db4objects.Db4o.YapClassCollectionIterator
+				public _AnonymousInnerClass54(_AnonymousInnerClass51 _enclosing, Db4objects.Db4o.YapClassCollectionIterator
 					 baseArg1) : base(baseArg1)
 				{
 					this._enclosing = _enclosing;
@@ -107,7 +99,7 @@ namespace Db4objects.Db4o.Inside.Query
 					return this._enclosing._enclosing.ClassIndexIterator(yapClass);
 				}
 
-				private readonly _AnonymousInnerClass58 _enclosing;
+				private readonly _AnonymousInnerClass51 _enclosing;
 			}
 
 			private readonly LazyQueryResult _enclosing;
@@ -129,19 +121,19 @@ namespace Db4objects.Db4o.Inside.Query
 			return false;
 		}
 
-		public virtual void LoadFromIdReader(Db4objects.Db4o.YapReader reader)
+		public override void LoadFromIdReader(Db4objects.Db4o.YapReader reader)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public virtual void LoadFromQuery(Db4objects.Db4o.QQuery query)
+		public override void LoadFromQuery(Db4objects.Db4o.QQuery query)
 		{
-			_iterable = new _AnonymousInnerClass91(this, query);
+			_iterable = new _AnonymousInnerClass84(this, query);
 		}
 
-		private sealed class _AnonymousInnerClass91 : System.Collections.IEnumerable
+		private sealed class _AnonymousInnerClass84 : System.Collections.IEnumerable
 		{
-			public _AnonymousInnerClass91(LazyQueryResult _enclosing, Db4objects.Db4o.QQuery 
+			public _AnonymousInnerClass84(LazyQueryResult _enclosing, Db4objects.Db4o.QQuery 
 				query)
 			{
 				this._enclosing = _enclosing;
@@ -158,29 +150,40 @@ namespace Db4objects.Db4o.Inside.Query
 			private readonly Db4objects.Db4o.QQuery query;
 		}
 
-		public virtual Db4objects.Db4o.YapStream Stream()
-		{
-			return _transaction.Stream();
-		}
-
-		public virtual Db4objects.Db4o.Ext.IExtObjectContainer ObjectContainer()
-		{
-			return Stream();
-		}
-
-		public virtual int Size()
+		public override int Size()
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public virtual void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
+		public override void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
 		{
 			throw new System.NotImplementedException();
 		}
 
-		public virtual System.Collections.IEnumerator GetEnumerator()
+		public override Db4objects.Db4o.Inside.Query.AbstractQueryResult SupportSize()
 		{
-			throw new System.NotImplementedException();
+			return ToIdTree();
+		}
+
+		public override Db4objects.Db4o.Inside.Query.AbstractQueryResult SupportSort()
+		{
+			return ToIdList();
+		}
+
+		public override Db4objects.Db4o.Inside.Query.AbstractQueryResult SupportElementAccess
+			()
+		{
+			return ToIdList();
+		}
+
+		protected override int KnownSize()
+		{
+			return 0;
+		}
+
+		public override Db4objects.Db4o.Inside.Query.AbstractQueryResult ToIdList()
+		{
+			return ToIdTree().ToIdList();
 		}
 	}
 }

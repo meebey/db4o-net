@@ -13,6 +13,6 @@ namespace Db4objects.Db4o
 		/// 	</exception>
 		int MappedID(int oldID);
 
-		void MapIDs(int oldID, int newID);
+		void MapIDs(int oldID, int newID, bool isClassID, bool seen);
 	}
 }

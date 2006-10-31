@@ -18,6 +18,19 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			Commit();
 		}
 
+		public virtual void TestLastPointer()
+		{
+			Db4objects.Db4o.Inside.Btree.BTreePointer pointer = _btree.LastPointer(Trans());
+			AssertPointerKey(9, pointer);
+		}
+
+		public virtual void TestPrevious()
+		{
+			Db4objects.Db4o.Inside.Btree.BTreePointer pointer = GetPointerForKey(3);
+			Db4objects.Db4o.Inside.Btree.BTreePointer previousPointer = pointer.Previous();
+			AssertPointerKey(2, previousPointer);
+		}
+
 		public virtual void TestNextOperatesInReadMode()
 		{
 			Db4objects.Db4o.Inside.Btree.BTreePointer pointer = _btree.FirstPointer(Trans());
@@ -69,7 +82,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		private Db4objects.Db4o.Inside.Btree.BTree NewBTreeWithNoNodeCaching()
 		{
 			return Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.CreateIntKeyBTree(Stream(), 
-				0, 0);
+				0, 0, BTREE_NODE_SIZE);
 		}
 	}
 }

@@ -30,5 +30,10 @@ namespace Db4objects.Db4o
 				((Db4objects.Db4o.TreeString)a_to)._key), Db4objects.Db4o.YapConst.stringIO.Write
 				(_key));
 		}
+
+		public override object Key()
+		{
+			return _key;
+		}
 	}
 }

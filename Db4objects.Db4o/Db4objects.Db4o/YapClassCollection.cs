@@ -548,7 +548,7 @@ namespace Db4objects.Db4o
 		public override string ToString()
 		{
 			return base.ToString();
-			string str = "";
+			string str = string.Empty;
 			System.Collections.IEnumerator i = i_classes.GetEnumerator();
 			while (i.MoveNext())
 			{

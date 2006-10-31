@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.CS.Messages
 						this._blob.SetStatus(Db4objects.Db4o.Ext.Status.ERROR);
 					}
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 			}
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.CS.Messages
 					Db4objects.Db4o.CS.Messages.Msg.OK.Write(stream, sock);
 				}
 			}
-			catch (System.Exception e)
+			catch
 			{
 				Db4objects.Db4o.CS.Messages.Msg.ERROR.Write(stream, sock);
 			}

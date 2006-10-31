@@ -156,7 +156,7 @@ namespace Db4objects.Db4o.Query
 				object ret = filterMethod.Invoke(this, new object[] { candidate });
 				return ((bool)ret);
 			}
-			catch (System.Exception e)
+			catch
 			{
 				return false;
 			}

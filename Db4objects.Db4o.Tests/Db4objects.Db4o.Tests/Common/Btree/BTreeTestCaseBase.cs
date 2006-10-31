@@ -2,6 +2,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 {
 	public abstract class BTreeTestCaseBase : Db4oUnit.Extensions.AbstractDb4oTestCase
 	{
+		protected const int BTREE_NODE_SIZE = 4;
+
 		protected Db4objects.Db4o.Inside.Btree.BTree _btree;
 
 		protected override void Db4oSetupAfterStore()
@@ -12,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		protected virtual Db4objects.Db4o.Inside.Btree.BTree NewBTree()
 		{
 			return Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.CreateIntKeyBTree(Stream(), 
-				0);
+				0, BTREE_NODE_SIZE);
 		}
 
 		protected virtual Db4objects.Db4o.Inside.Btree.IBTreeRange Range(int lower, int upper
@@ -114,6 +116,12 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		{
 			Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.AssertSingleElement(trans, _btree, 
 				element);
+		}
+
+		protected virtual void AssertPointerKey(int key, Db4objects.Db4o.Inside.Btree.BTreePointer
+			 pointer)
+		{
+			Db4oUnit.Assert.AreEqual(key, pointer.Key());
 		}
 	}
 }

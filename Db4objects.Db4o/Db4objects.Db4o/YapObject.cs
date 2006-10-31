@@ -92,7 +92,8 @@ namespace Db4objects.Db4o
 		{
 			if (stream.ConfigImpl().MessageLevel() > level)
 			{
-				stream.Message("" + GetID() + " " + @event + " " + i_yapClass.GetName());
+				stream.Message(string.Empty + GetID() + " " + @event + " " + i_yapClass.GetName()
+					);
 			}
 		}
 
@@ -935,12 +936,12 @@ namespace Db4objects.Db4o
 				}
 				else
 				{
-					string objToString = "";
+					string objToString = string.Empty;
 					try
 					{
 						objToString = obj.ToString();
 					}
-					catch (System.Exception e)
+					catch
 					{
 					}
 					Db4objects.Db4o.Reflect.IReflectClass claxx = GetYapClass().Reflector().ForObject
@@ -949,7 +950,7 @@ namespace Db4objects.Db4o
 				}
 				return str;
 			}
-			catch (System.Exception e)
+			catch
 			{
 			}
 			return "Exception in YapObject analyzer";

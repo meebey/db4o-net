@@ -41,5 +41,10 @@ namespace Db4objects.Db4o.Inside.Slots
 		{
 			return _address ^ _length;
 		}
+
+		public override string ToString()
+		{
+			return "[A:" + _address + ",L:" + _length + "]";
+		}
 	}
 }

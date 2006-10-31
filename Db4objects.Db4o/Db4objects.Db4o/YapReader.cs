@@ -168,7 +168,7 @@ namespace Db4objects.Db4o
 		{
 			try
 			{
-				string str = "";
+				string str = string.Empty;
 				for (int i = 0; i < _buffer.Length; i++)
 				{
 					if (i > 0)
@@ -186,7 +186,7 @@ namespace Db4objects.Db4o
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
 			}
-			return "";
+			return string.Empty;
 		}
 
 		public virtual void WriteBegin(byte a_identifier)

@@ -48,8 +48,8 @@ namespace Db4objects.Db4o
 		{
 			if (i_messages == null)
 			{
-				i_messages = new string[] { "", "blocksize should be between 1 and 127", "% close request"
-					, "% closed", "Exception opening %", "% opened O.K.", "Class %: Instantiation failed. \n Check custom ObjectConstructor code."
+				i_messages = new string[] { string.Empty, "blocksize should be between 1 and 127"
+					, "% close request", "% closed", "Exception opening %", "% opened O.K.", "Class %: Instantiation failed. \n Check custom ObjectConstructor code."
 					, "Class %: Instantiation failed.\n Add a constructor for use with db4o, ideally with zero arguments."
 					, "renaming %", "rename not possible. % already exists", "rename failed", "File close failed."
 					, "File % not available for readwrite access.", "File read access failed.", "File not found: % Creating new file"

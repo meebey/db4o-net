@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				Db().Set(new Db4objects.Db4o.Tests.Common.Assorted.NakedObjectTestCase.Item());
 				Db4oUnit.Assert.Fail("Naked objects can't be stored");
 			}
-			catch (Db4objects.Db4o.Ext.ObjectNotStorableException e)
+			catch (Db4objects.Db4o.Ext.ObjectNotStorableException)
 			{
 			}
 		}

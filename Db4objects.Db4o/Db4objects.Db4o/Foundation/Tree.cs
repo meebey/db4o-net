@@ -569,5 +569,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			throw new System.NotImplementedException();
 		}
+
+		public abstract object Key();
 	}
 }

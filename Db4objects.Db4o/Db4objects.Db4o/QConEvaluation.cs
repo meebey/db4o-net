@@ -75,7 +75,7 @@ namespace Db4objects.Db4o
 					DoNotInclude(candidate.GetRoot());
 				}
 			}
-			catch (System.Exception e)
+			catch
 			{
 				candidate.Include(false);
 				DoNotInclude(candidate.GetRoot());

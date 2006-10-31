@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.CS
 						message = Db4objects.Db4o.CS.Messages.Msg.ReadMessage(i_stream.GetTransaction(), 
 							i_socket);
 					}
-					catch (System.Exception exc)
+					catch
 					{
 						messageQueueLock.Run(new _AnonymousInnerClass47(this));
 						Close();
@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.CS
 						}
 					}
 				}
-				catch (System.Exception exc)
+				catch
 				{
 					Close();
 					return;

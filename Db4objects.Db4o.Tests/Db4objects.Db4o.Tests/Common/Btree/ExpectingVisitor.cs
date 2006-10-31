@@ -45,6 +45,10 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		{
 		}
 
+		public ExpectingVisitor() : this(new object[0])
+		{
+		}
+
 		public virtual void Visit(object obj)
 		{
 			if (_obeyOrder)

@@ -167,5 +167,10 @@ namespace Db4objects.Db4o.Inside.Btree
 		{
 			return new Db4objects.Db4o.Foundation.ArrayIterator4(_ranges);
 		}
+
+		public virtual Db4objects.Db4o.Inside.Btree.BTreePointer LastPointer()
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

@@ -17,8 +17,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				_date = date_;
 			}
 
-			public IndexCreateDropItem(int int_) : this(int_, int_ == 0 ? null : "" + int_, int_
-				 == 0 ? null : new Sharpen.Util.Date(int_))
+			public IndexCreateDropItem(int int_) : this(int_, int_ == 0 ? null : string.Empty
+				 + int_, int_ == 0 ? null : new Sharpen.Util.Date(int_))
 			{
 			}
 		}

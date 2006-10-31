@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
 			}
-			return "";
+			return string.Empty;
 		}
 
 		public virtual string ReadFromParentSlot(Db4objects.Db4o.YapStream stream, Db4objects.Db4o.YapReader
@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 				string str = io.Read(bytes, length);
 				return str;
 			}
-			return "";
+			return string.Empty;
 		}
 
 		public abstract Db4objects.Db4o.YapReader ReadSlotFromParentSlot(Db4objects.Db4o.YapStream

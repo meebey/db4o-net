@@ -551,7 +551,7 @@ namespace Db4objects.Db4o
 						ObjectOnDelete(yc, obj);
 						if (ConfigImpl().MessageLevel() > Db4objects.Db4o.YapConst.STATE)
 						{
-							Message("" + yo.GetID() + " delete " + yo.GetYapClass().GetName());
+							Message(string.Empty + yo.GetID() + " delete " + yo.GetYapClass().GetName());
 						}
 					}
 					yo.EndProcessing();
@@ -624,7 +624,7 @@ namespace Db4objects.Db4o
 				{
 					child = field[0].ReadQuery(trans, mf, reader);
 				}
-				catch (Db4objects.Db4o.CorruptionException e)
+				catch (Db4objects.Db4o.CorruptionException)
 				{
 				}
 			}
@@ -810,7 +810,7 @@ namespace Db4objects.Db4o
 			{
 				return GetByID2(ta, (int)id);
 			}
-			catch (System.Exception e)
+			catch
 			{
 				return null;
 			}
@@ -1969,7 +1969,8 @@ namespace Db4objects.Db4o
 					}
 					if (ConfigImpl().MessageLevel() > Db4objects.Db4o.YapConst.STATE)
 					{
-						Message("" + yapObject.GetID() + " new " + yapObject.GetYapClass().GetName());
+						Message(string.Empty + yapObject.GetID() + " new " + yapObject.GetYapClass().GetName
+							());
 					}
 					if (a_checkJustSet && CanUpdate())
 					{
@@ -2217,7 +2218,7 @@ namespace Db4objects.Db4o
 					return GetYapClass(claxx, false);
 				}
 			}
-			catch (System.Exception e)
+			catch
 			{
 			}
 			return null;

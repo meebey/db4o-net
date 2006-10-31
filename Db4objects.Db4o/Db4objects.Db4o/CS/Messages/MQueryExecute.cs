@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.CS.Messages
 				qr.LoadFromQuery(query);
 				return qr;
 			}
-			catch (System.Exception e)
+			catch
 			{
 				return stream.NewQueryResult(trans);
 			}

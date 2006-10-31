@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 			{
 				name = Db4objects.Db4o.Inside.Marshall.StringMarshaller.ReadShort(stream, reader);
 			}
-			catch (Db4objects.Db4o.CorruptionException ce)
+			catch (Db4objects.Db4o.CorruptionException)
 			{
 				return null;
 			}

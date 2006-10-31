@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.CS.Messages
 					{
 						bytes = stream.ReadWriterByID(GetTransaction(), id);
 					}
-					catch (System.Exception e)
+					catch
 					{
 						bytes = null;
 					}

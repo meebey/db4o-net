@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.CS.Messages
 			 sock)
 		{
 			int id = _payLoad.ReadInt();
-			string name = "";
+			string name = string.Empty;
 			Db4objects.Db4o.YapStream stream = GetStream();
 			lock (stream.i_lock)
 			{
@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.CS.Messages
 						name = yapClass.GetName();
 					}
 				}
-				catch (System.Exception t)
+				catch
 				{
 				}
 			}

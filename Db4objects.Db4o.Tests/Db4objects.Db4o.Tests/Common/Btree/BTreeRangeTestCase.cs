@@ -13,6 +13,22 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			Add(new int[] { 3, 7, 4, 9 });
 		}
 
+		public virtual void TestLastPointer()
+		{
+			AssertLastPointer(8, 7);
+			AssertLastPointer(11, 9);
+			AssertLastPointer(4, 3);
+		}
+
+		private void AssertLastPointer(int searchValue, int expectedValue)
+		{
+			Db4objects.Db4o.Inside.Btree.IBTreeRange single = Search(searchValue);
+			Db4objects.Db4o.Inside.Btree.IBTreeRange smallerRange = single.Smaller();
+			Db4objects.Db4o.Inside.Btree.BTreePointer lastPointer = smallerRange.LastPointer(
+				);
+			Db4oUnit.Assert.AreEqual(expectedValue, lastPointer.Key());
+		}
+
 		public virtual void TestSize()
 		{
 			AssertSize(4, Range(3, 9));

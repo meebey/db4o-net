@@ -170,7 +170,7 @@ namespace Db4objects.Db4o
 				translator = (Db4objects.Db4o.Config.IObjectTranslator)Config().Reflector().ForName
 					(translatorName).NewInstance();
 			}
-			catch (System.Exception t)
+			catch
 			{
 				Db4objects.Db4o.Messages.LogErr(Config(), 48, translatorName, null);
 				TranslateOnDemand(null);
@@ -276,7 +276,7 @@ namespace Db4objects.Db4o
 
 		public virtual void Rename(string newName)
 		{
-			Config().Rename(new Db4objects.Db4o.Rename("", GetName(), newName));
+			Config().Rename(new Db4objects.Db4o.Rename(string.Empty, GetName(), newName));
 			SetName(newName);
 		}
 

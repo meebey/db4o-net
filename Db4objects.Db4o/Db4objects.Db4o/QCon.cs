@@ -627,7 +627,7 @@ namespace Db4objects.Db4o
 
 		internal virtual string LogObject()
 		{
-			return "";
+			return string.Empty;
 		}
 
 		internal virtual void Marshall()
@@ -849,6 +849,23 @@ namespace Db4objects.Db4o
 		public virtual Db4objects.Db4o.QE Evaluator()
 		{
 			return i_evaluator;
+		}
+
+		public virtual bool RequiresSort()
+		{
+			if (i_orderID != 0)
+			{
+				return true;
+			}
+			System.Collections.IEnumerator i = IterateChildren();
+			while (i.MoveNext())
+			{
+				if (((Db4objects.Db4o.QCon)i.Current).RequiresSort())
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

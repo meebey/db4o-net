@@ -34,5 +34,10 @@ namespace Db4objects.Db4o
 			base.ShallowCloneInternal(order);
 			return order;
 		}
+
+		public override object Key()
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

@@ -409,7 +409,7 @@ namespace Db4objects.Db4o.CS
 						}
 					}
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 			}
@@ -645,7 +645,7 @@ namespace Db4objects.Db4o.CS
 				bytes.SetTransaction(a_ta);
 				return bytes;
 			}
-			catch (System.Exception e)
+			catch
 			{
 				return null;
 			}
@@ -820,7 +820,7 @@ namespace Db4objects.Db4o.CS
 				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.PING);
 				return ExpectedResponse(Db4objects.Db4o.CS.Messages.Msg.OK) != null;
 			}
-			catch (Db4objects.Db4o.Ext.Db4oException exc)
+			catch (Db4objects.Db4o.Ext.Db4oException)
 			{
 				return false;
 			}

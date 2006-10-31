@@ -118,7 +118,7 @@ namespace Db4objects.Db4o
 			{
 				return i_handler.ReadIndexEntry(mf, writer);
 			}
-			catch (Db4objects.Db4o.CorruptionException e)
+			catch (Db4objects.Db4o.CorruptionException)
 			{
 			}
 			return null;
@@ -236,7 +236,7 @@ namespace Db4objects.Db4o
 						i_handler.CascadeActivation(a_trans, cascadeTo, a_depth, a_activate);
 					}
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 			}
@@ -363,7 +363,7 @@ namespace Db4objects.Db4o
 					i_javaField.Set(a_onObject, null);
 				}
 			}
-			catch (System.Exception t)
+			catch
 			{
 			}
 		}
@@ -511,7 +511,7 @@ namespace Db4objects.Db4o
 				{
 					return i_javaField.Get(a_OnObject);
 				}
-				catch (System.Exception t)
+				catch
 				{
 				}
 			}
@@ -624,7 +624,7 @@ namespace Db4objects.Db4o
 			{
 				toSet = Read(mf, a_bytes);
 			}
-			catch (System.Exception e)
+			catch
 			{
 				throw new Db4objects.Db4o.CorruptionException();
 			}
@@ -923,7 +923,7 @@ namespace Db4objects.Db4o
 
 		public override string ToString()
 		{
-			Sharpen.Lang.StringBuffer sb = new Sharpen.Lang.StringBuffer();
+			System.Text.StringBuilder sb = new System.Text.StringBuilder();
 			if (i_yapClass != null)
 			{
 				sb.Append(i_yapClass.GetName());
@@ -948,7 +948,7 @@ namespace Db4objects.Db4o
 				{
 					obj = Read(mf, writer);
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 				if (obj == null)

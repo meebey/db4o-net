@@ -408,36 +408,42 @@ namespace Db4objects.Db4o
 		{
 			Db4objects.Db4o.QQueryBase.CreateCandidateCollectionResult r = CreateCandidateCollection
 				();
+			bool topLevel = r.topLevel;
+			Db4objects.Db4o.Foundation.Collection4 executionPath = topLevel ? null : FieldPathFromTop
+				();
 			System.Collections.IEnumerator candidateCollection = new Db4objects.Db4o.Foundation.Iterator4Impl
 				(r.candidateCollection);
-			Db4objects.Db4o.Foundation.MappingIterator executeCandidates = new _AnonymousInnerClass367
-				(this, candidateCollection);
+			Db4objects.Db4o.Foundation.MappingIterator executeCandidates = new _AnonymousInnerClass370
+				(this, executionPath, candidateCollection);
 			Db4objects.Db4o.Foundation.CompositeIterator4 executeAllCandidates = new Db4objects.Db4o.Foundation.CompositeIterator4
 				(executeCandidates);
-			Db4objects.Db4o.Foundation.MappingIterator checkDuplicates = new _AnonymousInnerClass375
+			Db4objects.Db4o.Foundation.MappingIterator checkDuplicates = new _AnonymousInnerClass378
 				(this, r, executeAllCandidates);
 			return checkDuplicates;
 		}
 
-		private sealed class _AnonymousInnerClass367 : Db4objects.Db4o.Foundation.MappingIterator
+		private sealed class _AnonymousInnerClass370 : Db4objects.Db4o.Foundation.MappingIterator
 		{
-			public _AnonymousInnerClass367(QQueryBase _enclosing, System.Collections.IEnumerator
-				 baseArg1) : base(baseArg1)
+			public _AnonymousInnerClass370(QQueryBase _enclosing, Db4objects.Db4o.Foundation.Collection4
+				 executionPath, System.Collections.IEnumerator baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
+				this.executionPath = executionPath;
 			}
 
 			protected override object Map(object current)
 			{
-				return ((Db4objects.Db4o.QCandidates)current).ExecuteLazy();
+				return ((Db4objects.Db4o.QCandidates)current).ExecuteLazy(executionPath);
 			}
 
 			private readonly QQueryBase _enclosing;
+
+			private readonly Db4objects.Db4o.Foundation.Collection4 executionPath;
 		}
 
-		private sealed class _AnonymousInnerClass375 : Db4objects.Db4o.Foundation.MappingIterator
+		private sealed class _AnonymousInnerClass378 : Db4objects.Db4o.Foundation.MappingIterator
 		{
-			public _AnonymousInnerClass375(QQueryBase _enclosing, Db4objects.Db4o.QQueryBase.CreateCandidateCollectionResult
+			public _AnonymousInnerClass378(QQueryBase _enclosing, Db4objects.Db4o.QQueryBase.CreateCandidateCollectionResult
 				 r, Db4objects.Db4o.Foundation.CompositeIterator4 baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
@@ -475,6 +481,8 @@ namespace Db4objects.Db4o
 			Db4objects.Db4o.Foundation.List4 candidateCollection = r.candidateCollection;
 			if (candidateCollection != null)
 			{
+				Db4objects.Db4o.Foundation.Collection4 executionPath = topLevel ? null : FieldPathFromTop
+					();
 				System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.Iterator4Impl(candidateCollection
 					);
 				while (i.MoveNext())
@@ -501,28 +509,22 @@ namespace Db4objects.Db4o
 					else
 					{
 						Db4objects.Db4o.QQueryBase q = this;
-						Db4objects.Db4o.Foundation.Collection4 fieldPath = new Db4objects.Db4o.Foundation.Collection4
-							();
-						while (q.i_parent != null)
-						{
-							fieldPath.Prepend(q.i_field);
-							q = q.i_parent;
-						}
-						candidates.Traverse(new _AnonymousInnerClass436(this, fieldPath, stream, result));
+						candidates.Traverse(new _AnonymousInnerClass437(this, executionPath, stream, result
+							));
 					}
 				}
 			}
 			Sort(result);
 		}
 
-		private sealed class _AnonymousInnerClass436 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass437 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass436(QQueryBase _enclosing, Db4objects.Db4o.Foundation.Collection4
-				 fieldPath, Db4objects.Db4o.YapStream stream, Db4objects.Db4o.Inside.Query.IdListQueryResult
+			public _AnonymousInnerClass437(QQueryBase _enclosing, Db4objects.Db4o.Foundation.Collection4
+				 executionPath, Db4objects.Db4o.YapStream stream, Db4objects.Db4o.Inside.Query.IdListQueryResult
 				 result)
 			{
 				this._enclosing = _enclosing;
-				this.fieldPath = fieldPath;
+				this.executionPath = executionPath;
 				this.stream = stream;
 				this.result = result;
 			}
@@ -534,27 +536,27 @@ namespace Db4objects.Db4o
 				{
 					Db4objects.Db4o.TreeInt ids = new Db4objects.Db4o.TreeInt(candidate._key);
 					Db4objects.Db4o.TreeInt[] idsNew = new Db4objects.Db4o.TreeInt[1];
-					System.Collections.IEnumerator itPath = fieldPath.GetEnumerator();
+					System.Collections.IEnumerator itPath = executionPath.GetEnumerator();
 					while (itPath.MoveNext())
 					{
 						idsNew[0] = null;
 						string fieldName = (string)(itPath.Current);
 						if (ids != null)
 						{
-							ids.Traverse(new _AnonymousInnerClass447(this, stream, idsNew, fieldName));
+							ids.Traverse(new _AnonymousInnerClass448(this, stream, idsNew, fieldName));
 						}
 						ids = idsNew[0];
 					}
 					if (ids != null)
 					{
-						ids.Traverse(new _AnonymousInnerClass467(this, result));
+						ids.Traverse(new _AnonymousInnerClass468(this, result));
 					}
 				}
 			}
 
-			private sealed class _AnonymousInnerClass447 : Db4objects.Db4o.Foundation.IVisitor4
+			private sealed class _AnonymousInnerClass448 : Db4objects.Db4o.Foundation.IVisitor4
 			{
-				public _AnonymousInnerClass447(_AnonymousInnerClass436 _enclosing, Db4objects.Db4o.YapStream
+				public _AnonymousInnerClass448(_AnonymousInnerClass437 _enclosing, Db4objects.Db4o.YapStream
 					 stream, Db4objects.Db4o.TreeInt[] idsNew, string fieldName)
 				{
 					this._enclosing = _enclosing;
@@ -577,7 +579,7 @@ namespace Db4objects.Db4o
 					}
 				}
 
-				private readonly _AnonymousInnerClass436 _enclosing;
+				private readonly _AnonymousInnerClass437 _enclosing;
 
 				private readonly Db4objects.Db4o.YapStream stream;
 
@@ -586,9 +588,9 @@ namespace Db4objects.Db4o
 				private readonly string fieldName;
 			}
 
-			private sealed class _AnonymousInnerClass467 : Db4objects.Db4o.Foundation.IVisitor4
+			private sealed class _AnonymousInnerClass468 : Db4objects.Db4o.Foundation.IVisitor4
 			{
-				public _AnonymousInnerClass467(_AnonymousInnerClass436 _enclosing, Db4objects.Db4o.Inside.Query.IdListQueryResult
+				public _AnonymousInnerClass468(_AnonymousInnerClass437 _enclosing, Db4objects.Db4o.Inside.Query.IdListQueryResult
 					 result)
 				{
 					this._enclosing = _enclosing;
@@ -600,18 +602,31 @@ namespace Db4objects.Db4o
 					result.AddKeyCheckDuplicates(((Db4objects.Db4o.TreeInt)treeInt)._key);
 				}
 
-				private readonly _AnonymousInnerClass436 _enclosing;
+				private readonly _AnonymousInnerClass437 _enclosing;
 
 				private readonly Db4objects.Db4o.Inside.Query.IdListQueryResult result;
 			}
 
 			private readonly QQueryBase _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.Collection4 fieldPath;
+			private readonly Db4objects.Db4o.Foundation.Collection4 executionPath;
 
 			private readonly Db4objects.Db4o.YapStream stream;
 
 			private readonly Db4objects.Db4o.Inside.Query.IdListQueryResult result;
+		}
+
+		private Db4objects.Db4o.Foundation.Collection4 FieldPathFromTop()
+		{
+			Db4objects.Db4o.QQueryBase q = this;
+			Db4objects.Db4o.Foundation.Collection4 fieldPath = new Db4objects.Db4o.Foundation.Collection4
+				();
+			while (q.i_parent != null)
+			{
+				fieldPath.Prepend(q.i_field);
+				q = q.i_parent;
+			}
+			return fieldPath;
 		}
 
 		private void LogConstraints()
@@ -783,6 +798,29 @@ namespace Db4objects.Db4o
 		private static Db4objects.Db4o.QQuery Cast(Db4objects.Db4o.QQueryBase obj)
 		{
 			return (Db4objects.Db4o.QQuery)obj;
+		}
+
+		public virtual bool RequiresSort()
+		{
+			if (_comparator != null)
+			{
+				return true;
+			}
+			System.Collections.IEnumerator i = IterateConstraints();
+			while (i.MoveNext())
+			{
+				Db4objects.Db4o.QCon qCon = (Db4objects.Db4o.QCon)i.Current;
+				if (qCon.RequiresSort())
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public virtual Db4objects.Db4o.Query.IQueryComparator Comparator()
+		{
+			return _comparator;
 		}
 	}
 }

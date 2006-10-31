@@ -23,8 +23,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				throw new System.InvalidOperationException();
 			}
-			return ((Db4objects.Db4o.Foundation.SortedCollection4.TreeObject)_tree).GetObject
-				();
+			return _tree.Key();
 		}
 
 		public virtual void AddAll(System.Collections.IEnumerator iterator)
@@ -37,13 +36,13 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Add(object element)
 		{
-			_tree = Db4objects.Db4o.Foundation.Tree.Add(_tree, new Db4objects.Db4o.Foundation.SortedCollection4.TreeObject
+			_tree = Db4objects.Db4o.Foundation.Tree.Add(_tree, new Db4objects.Db4o.Foundation.TreeObject
 				(element, _comparison));
 		}
 
 		public virtual void Remove(object element)
 		{
-			_tree = Db4objects.Db4o.Foundation.Tree.RemoveLike(_tree, new Db4objects.Db4o.Foundation.SortedCollection4.TreeObject
+			_tree = Db4objects.Db4o.Foundation.Tree.RemoveLike(_tree, new Db4objects.Db4o.Foundation.TreeObject
 				(element, _comparison));
 		}
 
@@ -66,8 +65,7 @@ namespace Db4objects.Db4o.Foundation
 
 			public void Visit(object obj)
 			{
-				array[this.i++] = ((Db4objects.Db4o.Foundation.SortedCollection4.TreeObject)obj).
-					GetObject();
+				array[this.i++] = ((Db4objects.Db4o.Foundation.TreeObject)obj).Key();
 			}
 
 			private readonly SortedCollection4 _enclosing;
@@ -78,31 +76,6 @@ namespace Db4objects.Db4o.Foundation
 		public virtual int Size()
 		{
 			return Db4objects.Db4o.Foundation.Tree.Size(_tree);
-		}
-
-		internal class TreeObject : Db4objects.Db4o.Foundation.Tree
-		{
-			private object _object;
-
-			private Db4objects.Db4o.Foundation.IComparison4 _function;
-
-			public TreeObject(object @object, Db4objects.Db4o.Foundation.IComparison4 function
-				)
-			{
-				_object = @object;
-				_function = function;
-			}
-
-			public override int Compare(Db4objects.Db4o.Foundation.Tree tree)
-			{
-				return _function.Compare(_object, ((Db4objects.Db4o.Foundation.SortedCollection4.TreeObject
-					)tree).GetObject());
-			}
-
-			public virtual object GetObject()
-			{
-				return _object;
-			}
 		}
 	}
 }

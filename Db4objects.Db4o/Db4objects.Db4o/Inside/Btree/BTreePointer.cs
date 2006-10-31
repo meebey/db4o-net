@@ -119,6 +119,35 @@ namespace Db4objects.Db4o.Inside.Btree
 				, newIndex);
 		}
 
+		public virtual Db4objects.Db4o.Inside.Btree.BTreePointer Previous()
+		{
+			int indexInMyNode = Index() - 1;
+			while (indexInMyNode >= 0)
+			{
+				if (Node().IndexIsValid(Transaction(), indexInMyNode))
+				{
+					return new Db4objects.Db4o.Inside.Btree.BTreePointer(Transaction(), NodeReader(), 
+						Node(), indexInMyNode);
+				}
+				indexInMyNode--;
+			}
+			int newIndex = -1;
+			Db4objects.Db4o.Inside.Btree.BTreeNode previousNode = Node();
+			Db4objects.Db4o.YapReader previousReader = null;
+			while (newIndex == -1)
+			{
+				previousNode = previousNode.PreviousNode();
+				if (previousNode == null)
+				{
+					return null;
+				}
+				previousReader = previousNode.PrepareRead(Transaction());
+				newIndex = previousNode.LastKeyIndex(Transaction());
+			}
+			return new Db4objects.Db4o.Inside.Btree.BTreePointer(Transaction(), previousReader
+				, previousNode, newIndex);
+		}
+
 		public override bool Equals(object obj)
 		{
 			if (this == obj)

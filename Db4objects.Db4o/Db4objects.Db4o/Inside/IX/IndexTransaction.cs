@@ -144,7 +144,7 @@ namespace Db4objects.Db4o.Inside.IX
 		public override string ToString()
 		{
 			return base.ToString();
-			Sharpen.Lang.StringBuffer sb = new Sharpen.Lang.StringBuffer();
+			System.Text.StringBuilder sb = new System.Text.StringBuilder();
 			sb.Append("IxFieldTransaction ");
 			sb.Append(Sharpen.Runtime.IdentityHashCode(this));
 			if (i_root == null)
@@ -160,7 +160,7 @@ namespace Db4objects.Db4o.Inside.IX
 
 		private sealed class _AnonymousInnerClass124 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass124(IndexTransaction _enclosing, Sharpen.Lang.StringBuffer
+			public _AnonymousInnerClass124(IndexTransaction _enclosing, System.Text.StringBuilder
 				 sb)
 			{
 				this._enclosing = _enclosing;
@@ -175,7 +175,7 @@ namespace Db4objects.Db4o.Inside.IX
 
 			private readonly IndexTransaction _enclosing;
 
-			private readonly Sharpen.Lang.StringBuffer sb;
+			private readonly System.Text.StringBuilder sb;
 		}
 	}
 }

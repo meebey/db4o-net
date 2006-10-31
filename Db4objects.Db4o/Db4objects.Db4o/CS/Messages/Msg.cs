@@ -171,7 +171,7 @@ namespace Db4objects.Db4o.CS.Messages
 				msg = (Db4objects.Db4o.CS.Messages.Msg)MemberwiseClone();
 				msg._trans = a_trans;
 			}
-			catch (Sharpen.Lang.CloneNotSupportedException e)
+			catch (Sharpen.Lang.CloneNotSupportedException)
 			{
 			}
 			return msg;
@@ -288,7 +288,7 @@ namespace Db4objects.Db4o.CS.Messages
 					sock.Write(PayLoad()._buffer);
 					sock.Flush();
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 			}

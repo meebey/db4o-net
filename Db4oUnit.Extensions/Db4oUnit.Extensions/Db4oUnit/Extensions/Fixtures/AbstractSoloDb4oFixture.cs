@@ -19,7 +19,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			if (null != _db)
 			{
-				_db.Close();
+				Db4oUnit.Assert.IsTrue(Db().Close());
 				_db = null;
 			}
 		}

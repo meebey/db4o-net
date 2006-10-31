@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 			{
 				return;
 			}
-			if (yapField.HasIndex() && !IdsAreLenient(yapField))
+			if (yapField.HasIndex())
 			{
 				Db4objects.Db4o.Inside.Btree.BTree index = yapField.GetIndex(readers.SystemTrans(
 					));
@@ -85,11 +85,6 @@ namespace Db4objects.Db4o.Inside.Marshall
 			{
 				readers.WriteInt(0);
 			}
-		}
-
-		private bool IdsAreLenient(Db4objects.Db4o.YapField yapField)
-		{
-			return (yapField.GetHandler() is Db4objects.Db4o.YapString);
 		}
 	}
 }

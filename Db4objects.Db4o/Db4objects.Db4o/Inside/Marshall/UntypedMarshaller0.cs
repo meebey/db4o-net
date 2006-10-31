@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 			{
 				id = a_bytes[0].ReadInt();
 			}
-			catch (System.Exception e)
+			catch
 			{
 			}
 			a_bytes[0]._offset = offset;

@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			{
 				return field.GetValue(obj);
 			}
-			catch (System.MemberAccessException ex)
+			catch (System.MemberAccessException)
 			{
 				return null;
 			}
@@ -143,7 +143,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 				{
 					return System.Activator.CreateInstance(a_class) != null;
 				}
-				catch (System.Exception t)
+				catch
 				{
 				}
 			}

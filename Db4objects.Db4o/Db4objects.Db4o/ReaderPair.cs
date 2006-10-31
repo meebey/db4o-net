@@ -71,7 +71,7 @@ namespace Db4objects.Db4o
 			{
 				id = -id;
 			}
-			int mapped = _mapping.MappedID(id);
+			int mapped = _mapping.MappedID(id, lenient);
 			if (flipNegative && id < 0)
 			{
 				mapped = -mapped;
@@ -147,11 +147,12 @@ namespace Db4objects.Db4o
 		public static void ProcessCopy(Db4objects.Db4o.IDefragContext context, int sourceID
 			, Db4objects.Db4o.ISlotCopyHandler command)
 		{
-			ProcessCopy(context, sourceID, command, false);
+			ProcessCopy(context, sourceID, command, false, false);
 		}
 
 		public static void ProcessCopy(Db4objects.Db4o.IDefragContext context, int sourceID
-			, Db4objects.Db4o.ISlotCopyHandler command, bool registerAddressMapping)
+			, Db4objects.Db4o.ISlotCopyHandler command, bool registerAddressMapping, bool registerSeen
+			)
 		{
 			Db4objects.Db4o.YapReader sourceReader = (registerAddressMapping ? context.SourceWriterByID
 				(sourceID) : context.SourceReaderByID(sourceID));
@@ -161,7 +162,7 @@ namespace Db4objects.Db4o
 			if (registerAddressMapping)
 			{
 				int sourceAddress = ((Db4objects.Db4o.YapWriter)sourceReader).GetAddress();
-				context.MapIDs(sourceAddress, targetAddress);
+				context.MapIDs(sourceAddress, targetAddress, false, false);
 			}
 			Db4objects.Db4o.YapReader targetPointerReader = new Db4objects.Db4o.YapReader(Db4objects.Db4o.YapConst
 				.POINTER_LENGTH);
@@ -172,6 +173,10 @@ namespace Db4objects.Db4o
 				context, context.SystemTrans());
 			command.ProcessCopy(readers);
 			context.TargetWriteBytes(readers, targetAddress);
+			if (registerSeen)
+			{
+				context.RegisterSeen(sourceID);
+			}
 		}
 
 		public virtual void Append(byte value)

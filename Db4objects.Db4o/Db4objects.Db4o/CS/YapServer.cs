@@ -33,9 +33,10 @@ namespace Db4objects.Db4o.CS
 					i_serverSocket = new Db4objects.Db4o.Foundation.Network.YapServerSocket(a_port);
 					i_serverSocket.SetSoTimeout(config.TimeoutServerSocket());
 				}
-				catch (System.IO.IOException e)
+				catch (System.IO.IOException)
 				{
-					Db4objects.Db4o.Inside.Exceptions4.ThrowRuntimeException(30, "" + a_port);
+					Db4objects.Db4o.Inside.Exceptions4.ThrowRuntimeException(30, string.Empty + a_port
+						);
 				}
 				new Sharpen.Lang.Thread(this).Start();
 				lock (this)
@@ -44,7 +45,7 @@ namespace Db4objects.Db4o.CS
 					{
 						Sharpen.Runtime.Wait(this, 1000);
 					}
-					catch (System.Exception e)
+					catch
 					{
 					}
 				}
@@ -97,7 +98,7 @@ namespace Db4objects.Db4o.CS
 						i_serverSocket.Close();
 					}
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 				i_serverSocket = null;
@@ -212,8 +213,8 @@ namespace Db4objects.Db4o.CS
 			try
 			{
 				Db4objects.Db4o.CS.YapClient client = new Db4objects.Db4o.CS.YapClient(config, OpenClientSocket
-					(), Db4objects.Db4o.YapConst.EMBEDDED_CLIENT_USER + (i_threadIDGen - 1), "", false
-					);
+					(), Db4objects.Db4o.YapConst.EMBEDDED_CLIENT_USER + (i_threadIDGen - 1), string.Empty
+					, false);
 				client.BlockSize(i_yapFile.BlockSize());
 				return client;
 			}
@@ -288,7 +289,7 @@ namespace Db4objects.Db4o.CS
 		public virtual void Run()
 		{
 			Sharpen.Lang.Thread.CurrentThread().SetName(i_name);
-			i_yapFile.LogMsg(31, "" + i_serverSocket.GetLocalPort());
+			i_yapFile.LogMsg(31, string.Empty + i_serverSocket.GetLocalPort());
 			lock (this)
 			{
 				Sharpen.Runtime.Notify(this);
@@ -305,7 +306,7 @@ namespace Db4objects.Db4o.CS
 					}
 					thread.Start();
 				}
-				catch (System.Exception e)
+				catch
 				{
 				}
 			}

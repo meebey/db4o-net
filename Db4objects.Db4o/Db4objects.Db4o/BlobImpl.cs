@@ -53,7 +53,7 @@ namespace Db4objects.Db4o
 				i_ext = Sharpen.Runtime.Substring(name, pos);
 				return Sharpen.Runtime.Substring(name, 0, pos);
 			}
-			i_ext = "";
+			i_ext = string.Empty;
 			return name;
 		}
 
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o
 				bi = (Db4objects.Db4o.BlobImpl)this.MemberwiseClone();
 				bi.SetTrans(a_trans);
 			}
-			catch (Sharpen.Lang.CloneNotSupportedException e)
+			catch (Sharpen.Lang.CloneNotSupportedException)
 			{
 				return null;
 			}

@@ -121,7 +121,7 @@ namespace Db4objects.Db4o
 				{
 					a_object = i_handler.Read(mf, a_bytes, true);
 				}
-				catch (Db4objects.Db4o.CorruptionException ce)
+				catch (Db4objects.Db4o.CorruptionException)
 				{
 					return null;
 				}
@@ -139,7 +139,7 @@ namespace Db4objects.Db4o
 			{
 				return i_handler.Read(mf, a_bytes, true);
 			}
-			catch (Db4objects.Db4o.CorruptionException ce)
+			catch (Db4objects.Db4o.CorruptionException)
 			{
 				return null;
 			}
@@ -154,7 +154,7 @@ namespace Db4objects.Db4o
 			{
 				obj = i_handler.Read(mf, a_bytes, true);
 			}
-			catch (Db4objects.Db4o.CorruptionException ce)
+			catch (Db4objects.Db4o.CorruptionException)
 			{
 			}
 			if (obj != null)
