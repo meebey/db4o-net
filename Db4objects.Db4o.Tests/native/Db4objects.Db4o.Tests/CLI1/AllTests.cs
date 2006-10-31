@@ -8,6 +8,12 @@ namespace Db4objects.Db4o.Tests.CLI1
 		{
 			return new System.Type[]
 				{   
+					typeof(Inside.AllTests),
+					typeof(MDArrayTestCase),
+					typeof(CsCollections),
+					typeof(CsStructs),
+					typeof(CsStructsRegression),
+				    typeof(CsValueTypesTestCase),
 					typeof(ObjectSetAsListTestCase),
 				};
 		}
