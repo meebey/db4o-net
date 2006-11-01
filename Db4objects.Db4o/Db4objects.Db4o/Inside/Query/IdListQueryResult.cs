@@ -10,8 +10,8 @@ namespace Db4objects.Db4o.Inside.Query
 
 		private readonly Db4objects.Db4o.Foundation.IntArrayList _ids;
 
-		public IdListQueryResult(Db4objects.Db4o.Transaction trans, int initialSize) : 
-			base(trans)
+		public IdListQueryResult(Db4objects.Db4o.Transaction trans, int initialSize) : base
+			(trans)
 		{
 			_ids = new Db4objects.Db4o.Foundation.IntArrayList(initialSize);
 		}

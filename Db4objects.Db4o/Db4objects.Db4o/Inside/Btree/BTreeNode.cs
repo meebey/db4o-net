@@ -1103,13 +1103,14 @@ namespace Db4objects.Db4o.Inside.Btree
 			Db4objects.Db4o.YapReader reader = PrepareRead(trans);
 			if (_isLeaf)
 			{
-				int index = FirstKeyIndex(trans);
-				if (index == -1)
-				{
-					return null;
-				}
-				return new Db4objects.Db4o.Inside.Btree.BTreePointer(trans, reader, this, index);
+				return LeafFirstPointer(trans, reader);
 			}
+			return BranchFirstPointer(trans, reader);
+		}
+
+		private Db4objects.Db4o.Inside.Btree.BTreePointer BranchFirstPointer(Db4objects.Db4o.Transaction
+			 trans, Db4objects.Db4o.YapReader reader)
+		{
 			for (int i = 0; i < _count; i++)
 			{
 				Db4objects.Db4o.Inside.Btree.BTreePointer childFirstPointer = Child(reader, i).FirstPointer
@@ -1122,19 +1123,31 @@ namespace Db4objects.Db4o.Inside.Btree
 			return null;
 		}
 
+		private Db4objects.Db4o.Inside.Btree.BTreePointer LeafFirstPointer(Db4objects.Db4o.Transaction
+			 trans, Db4objects.Db4o.YapReader reader)
+		{
+			int index = FirstKeyIndex(trans);
+			if (index == -1)
+			{
+				return null;
+			}
+			return new Db4objects.Db4o.Inside.Btree.BTreePointer(trans, reader, this, index);
+		}
+
 		public virtual Db4objects.Db4o.Inside.Btree.BTreePointer LastPointer(Db4objects.Db4o.Transaction
 			 trans)
 		{
 			Db4objects.Db4o.YapReader reader = PrepareRead(trans);
 			if (_isLeaf)
 			{
-				int index = LastKeyIndex(trans);
-				if (index == -1)
-				{
-					return null;
-				}
-				return new Db4objects.Db4o.Inside.Btree.BTreePointer(trans, reader, this, index);
+				return LeafLastPointer(trans, reader);
 			}
+			return BranchLastPointer(trans, reader);
+		}
+
+		private Db4objects.Db4o.Inside.Btree.BTreePointer BranchLastPointer(Db4objects.Db4o.Transaction
+			 trans, Db4objects.Db4o.YapReader reader)
+		{
 			for (int i = _count - 1; i >= 0; i--)
 			{
 				Db4objects.Db4o.Inside.Btree.BTreePointer childLastPointer = Child(reader, i).LastPointer
@@ -1145,6 +1158,17 @@ namespace Db4objects.Db4o.Inside.Btree
 				}
 			}
 			return null;
+		}
+
+		private Db4objects.Db4o.Inside.Btree.BTreePointer LeafLastPointer(Db4objects.Db4o.Transaction
+			 trans, Db4objects.Db4o.YapReader reader)
+		{
+			int index = LastKeyIndex(trans);
+			if (index == -1)
+			{
+				return null;
+			}
+			return new Db4objects.Db4o.Inside.Btree.BTreePointer(trans, reader, this, index);
 		}
 
 		internal virtual void Purge()

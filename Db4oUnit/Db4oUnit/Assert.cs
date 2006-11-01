@@ -46,7 +46,7 @@ namespace Db4oUnit
 
 		public static void IsNull(object reference)
 		{
-			IsNull(reference, "Expected reference to be null, but was " + reference);
+			IsNull(reference, FailureMessage("null", reference));
 		}
 
 		public static void IsNull(object reference, string message)

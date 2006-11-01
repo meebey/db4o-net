@@ -266,7 +266,7 @@ namespace Db4objects.Db4o.CS
 			return true;
 		}
 
-		internal override bool DetectSchemaChanges()
+		public override bool DetectSchemaChanges()
 		{
 			return false;
 		}
@@ -444,7 +444,7 @@ namespace Db4objects.Db4o.CS
 			return false;
 		}
 
-		internal override bool HasShutDownHook()
+		protected override bool HasShutDownHook()
 		{
 			return false;
 		}

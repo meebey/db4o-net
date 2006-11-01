@@ -21,6 +21,11 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			{
 				this.name = name;
 			}
+
+			public override string ToString()
+			{
+				return "Item(\"" + name + "\")";
+			}
 		}
 
 		protected override void Store()
@@ -37,6 +42,18 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			Db4objects.Db4o.IObjectSet os = QueryItems(trans1);
 			DeleteItemAndCommit(trans2, "foo");
 			AssertItems(new string[] { "bar", "baz" }, os);
+		}
+
+		public virtual void _testAccessOrder()
+		{
+			Db4objects.Db4o.IObjectSet result = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item)
+				).Execute();
+			for (int i = 0; i < result.Size(); ++i)
+			{
+				Db4oUnit.Assert.IsTrue(result.HasNext());
+				Db4oUnit.Assert.AreSame(result.Ext().Get(i), result.Next());
+			}
+			Db4oUnit.Assert.IsFalse(result.HasNext());
 		}
 
 		private void AssertItems(string[] expectedNames, Db4objects.Db4o.IObjectSet actual

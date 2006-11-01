@@ -1,4 +1,4 @@
-namespace Db4objects.Db4o
+namespace Db4objects.Db4o.Inside.Mapping
 {
 	/// <exclude></exclude>
 	public class MappedIDPair

@@ -11,8 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		public virtual void TestPushPop()
 		{
 			Db4objects.Db4o.Foundation.Stack4 stack = new Db4objects.Db4o.Foundation.Stack4();
-			Db4oUnit.Assert.IsNull(stack.Peek());
-			Db4oUnit.Assert.IsNull(stack.Pop());
+			AssertEmpty(stack);
 			stack.Push("a");
 			stack.Push("b");
 			stack.Push("c");
@@ -22,8 +21,33 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Db4oUnit.Assert.AreEqual("b", stack.Pop());
 			Db4oUnit.Assert.AreEqual("a", stack.Peek());
 			Db4oUnit.Assert.AreEqual("a", stack.Pop());
+			AssertEmpty(stack);
+		}
+
+		private void AssertEmpty(Db4objects.Db4o.Foundation.Stack4 stack)
+		{
 			Db4oUnit.Assert.IsNull(stack.Peek());
-			Db4oUnit.Assert.IsNull(stack.Pop());
+			Db4oUnit.Assert.Expect(typeof(System.InvalidOperationException), new _AnonymousInnerClass33
+				(this, stack));
+		}
+
+		private sealed class _AnonymousInnerClass33 : Db4oUnit.ICodeBlock
+		{
+			public _AnonymousInnerClass33(Stack4TestCase _enclosing, Db4objects.Db4o.Foundation.Stack4
+				 stack)
+			{
+				this._enclosing = _enclosing;
+				this.stack = stack;
+			}
+
+			public void Run()
+			{
+				stack.Pop();
+			}
+
+			private readonly Stack4TestCase _enclosing;
+
+			private readonly Db4objects.Db4o.Foundation.Stack4 stack;
 		}
 	}
 }

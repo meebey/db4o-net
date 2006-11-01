@@ -26,6 +26,11 @@ namespace Db4objects.Db4o.Tests.Common.Sampledata
 			this.name = name;
 		}
 
+		public override int GetHashCode()
+		{
+			return this.name != null ? this.name.GetHashCode() : 0;
+		}
+
 		public override bool Equals(object obj)
 		{
 			if (obj is Db4objects.Db4o.Tests.Common.Sampledata.AtomData)

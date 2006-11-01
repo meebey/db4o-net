@@ -10,8 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 
 		public virtual void Test()
 		{
-			System.IO.File.Delete(DB_FILE);
-			System.IO.File.Copy(ORIGINAL_FILE, DB_FILE);
+			Db4objects.Db4o.Tests.Util.File4.Copy(ORIGINAL_FILE, DB_FILE);
 			Db4objects.Db4o.Db4o.Configure().AllowVersionUpdates(true);
 			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4o.OpenFile(DB_FILE);
 			try

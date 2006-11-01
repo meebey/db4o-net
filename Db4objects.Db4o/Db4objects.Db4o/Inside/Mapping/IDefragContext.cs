@@ -1,11 +1,11 @@
-namespace Db4objects.Db4o
+namespace Db4objects.Db4o.Inside.Mapping
 {
 	/// <summary>Encapsulates services involving source and target database files during defragmenting.
 	/// 	</summary>
 	/// <remarks>Encapsulates services involving source and target database files during defragmenting.
 	/// 	</remarks>
 	/// <exclude></exclude>
-	public interface IDefragContext : Db4objects.Db4o.IIDMapping
+	public interface IDefragContext : Db4objects.Db4o.Inside.Mapping.IIDMapping
 	{
 		Db4objects.Db4o.YapReader SourceReaderByAddress(int address, int length);
 

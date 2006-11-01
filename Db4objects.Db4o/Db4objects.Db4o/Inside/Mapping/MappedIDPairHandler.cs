@@ -1,4 +1,4 @@
-namespace Db4objects.Db4o
+namespace Db4objects.Db4o.Inside.Mapping
 {
 	public class MappedIDPairHandler : Db4objects.Db4o.Inside.IX.IIndexable4
 	{
@@ -37,14 +37,15 @@ namespace Db4objects.Db4o
 			int origID = ReadID(reader);
 			int mappedID = ReadID(reader);
 			bool seen = ReadSeen(reader);
-			return new Db4objects.Db4o.MappedIDPair(origID, mappedID, seen);
+			return new Db4objects.Db4o.Inside.Mapping.MappedIDPair(origID, mappedID, seen);
 		}
 
 		public virtual void WriteIndexEntry(Db4objects.Db4o.YapReader reader, object obj)
 		{
-			Db4objects.Db4o.MappedIDPair mappedIDs = (Db4objects.Db4o.MappedIDPair)obj;
+			Db4objects.Db4o.Inside.Mapping.MappedIDPair mappedIDs = (Db4objects.Db4o.Inside.Mapping.MappedIDPair
+				)obj;
 			_origHandler.WriteIndexEntry(reader, mappedIDs.Orig());
-			_origHandler.WriteIndexEntry(reader, mappedIDs.Mapped());
+			_mappedHandler.WriteIndexEntry(reader, mappedIDs.Mapped());
 			_seenHandler.WriteIndexEntry(reader, (mappedIDs.Seen() ? true : false));
 		}
 
@@ -54,15 +55,16 @@ namespace Db4objects.Db4o
 			{
 				throw new System.ArgumentNullException();
 			}
-			Db4objects.Db4o.MappedIDPair mappedIDs = (Db4objects.Db4o.MappedIDPair)obj;
+			Db4objects.Db4o.Inside.Mapping.MappedIDPair mappedIDs = (Db4objects.Db4o.Inside.Mapping.MappedIDPair
+				)obj;
 			int result = _origHandler.CompareTo(mappedIDs.Orig());
 			return result;
 		}
 
 		public virtual object Current()
 		{
-			return new Db4objects.Db4o.MappedIDPair(_origHandler.CurrentInt(), _mappedHandler
-				.CurrentInt(), ((bool)_seenHandler.Current()));
+			return new Db4objects.Db4o.Inside.Mapping.MappedIDPair(_origHandler.CurrentInt(), 
+				_mappedHandler.CurrentInt(), ((bool)_seenHandler.Current()));
 		}
 
 		public virtual bool IsEqual(object obj)
@@ -82,7 +84,8 @@ namespace Db4objects.Db4o
 
 		public virtual Db4objects.Db4o.IYapComparable PrepareComparison(object obj)
 		{
-			Db4objects.Db4o.MappedIDPair mappedIDs = (Db4objects.Db4o.MappedIDPair)obj;
+			Db4objects.Db4o.Inside.Mapping.MappedIDPair mappedIDs = (Db4objects.Db4o.Inside.Mapping.MappedIDPair
+				)obj;
 			_origHandler.PrepareComparison(mappedIDs.Orig());
 			_mappedHandler.PrepareComparison(mappedIDs.Mapped());
 			_seenHandler.PrepareComparison((mappedIDs.Seen() ? true : false));

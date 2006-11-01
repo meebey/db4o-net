@@ -4,7 +4,7 @@ namespace Db4objects.Db4o.Tests.Common
 	{
 		protected override System.Type[] TestCases()
 		{
-			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Assorted.AllTests)
+			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Acid.AllTests), typeof(Db4objects.Db4o.Tests.Common.Assorted.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Btree.AllTests), typeof(Db4objects.Db4o.Tests.Common.Classindex.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Fieldindex.AllTests), typeof(Db4objects.Db4o.Tests.Common.Foundation.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Handlers.AllTests), typeof(Db4objects.Db4o.Tests.Common.Header.AllTests)

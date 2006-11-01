@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void Test()
 		{
-			System.IO.File.Delete(FILE);
+			Db4objects.Db4o.Tests.Util.File4.Delete(FILE);
 			Db4objects.Db4o.IObjectServer server = Db4objects.Db4o.Db4o.OpenServer(FILE, SERVER_PORT
 				);
 			try

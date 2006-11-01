@@ -1,4 +1,4 @@
-namespace Db4objects.Db4o
+namespace Db4objects.Db4o.Inside.Mapping
 {
 	/// <summary>A mapping from yap file source IDs/addresses to target IDs/addresses, used for defragmenting.
 	/// 	</summary>
@@ -9,7 +9,7 @@ namespace Db4objects.Db4o
 	{
 		/// <returns>a mapping for the given id. if it does refer to a system handler or the empty reference (0), returns the given id.
 		/// 	</returns>
-		/// <exception cref="Db4objects.Db4o.MappingNotFoundException">if the given id does not refer to a system handler or the empty reference (0) and if no mapping is found
+		/// <exception cref="Db4objects.Db4o.Inside.Mapping.MappingNotFoundException">if the given id does not refer to a system handler or the empty reference (0) and if no mapping is found
 		/// 	</exception>
 		int MappedID(int oldID);
 

@@ -89,7 +89,7 @@ namespace Db4objects.Db4o
 			return "Memory File";
 		}
 
-		internal override bool HasShutDownHook()
+		protected override bool HasShutDownHook()
 		{
 			return false;
 		}

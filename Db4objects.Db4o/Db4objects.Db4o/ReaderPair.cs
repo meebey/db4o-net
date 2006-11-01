@@ -7,11 +7,11 @@ namespace Db4objects.Db4o
 
 		private Db4objects.Db4o.YapReader _target;
 
-		private Db4objects.Db4o.IDefragContext _mapping;
+		private Db4objects.Db4o.Inside.Mapping.IDefragContext _mapping;
 
 		private Db4objects.Db4o.Transaction _systemTrans;
 
-		public ReaderPair(Db4objects.Db4o.YapReader source, Db4objects.Db4o.IDefragContext
+		public ReaderPair(Db4objects.Db4o.YapReader source, Db4objects.Db4o.Inside.Mapping.IDefragContext
 			 mapping, Db4objects.Db4o.Transaction systemTrans)
 		{
 			_source = source;
@@ -59,10 +59,12 @@ namespace Db4objects.Db4o
 			return InternalCopyID(flipNegative, lenient, id);
 		}
 
-		public virtual Db4objects.Db4o.MappedIDPair CopyIDAndRetrieveMapping()
+		public virtual Db4objects.Db4o.Inside.Mapping.MappedIDPair CopyIDAndRetrieveMapping
+			()
 		{
 			int id = _source.ReadInt();
-			return new Db4objects.Db4o.MappedIDPair(id, InternalCopyID(false, false, id));
+			return new Db4objects.Db4o.Inside.Mapping.MappedIDPair(id, InternalCopyID(false, 
+				false, id));
 		}
 
 		private int InternalCopyID(bool flipNegative, bool lenient, int id)
@@ -129,7 +131,7 @@ namespace Db4objects.Db4o
 			return _target;
 		}
 
-		public virtual Db4objects.Db4o.IIDMapping Mapping()
+		public virtual Db4objects.Db4o.Inside.Mapping.IIDMapping Mapping()
 		{
 			return _mapping;
 		}
@@ -139,20 +141,20 @@ namespace Db4objects.Db4o
 			return _systemTrans;
 		}
 
-		public virtual Db4objects.Db4o.IDefragContext Context()
+		public virtual Db4objects.Db4o.Inside.Mapping.IDefragContext Context()
 		{
 			return _mapping;
 		}
 
-		public static void ProcessCopy(Db4objects.Db4o.IDefragContext context, int sourceID
-			, Db4objects.Db4o.ISlotCopyHandler command)
+		public static void ProcessCopy(Db4objects.Db4o.Inside.Mapping.IDefragContext context
+			, int sourceID, Db4objects.Db4o.ISlotCopyHandler command)
 		{
 			ProcessCopy(context, sourceID, command, false, false);
 		}
 
-		public static void ProcessCopy(Db4objects.Db4o.IDefragContext context, int sourceID
-			, Db4objects.Db4o.ISlotCopyHandler command, bool registerAddressMapping, bool registerSeen
-			)
+		public static void ProcessCopy(Db4objects.Db4o.Inside.Mapping.IDefragContext context
+			, int sourceID, Db4objects.Db4o.ISlotCopyHandler command, bool registerAddressMapping
+			, bool registerSeen)
 		{
 			Db4objects.Db4o.YapReader sourceReader = (registerAddressMapping ? context.SourceWriterByID
 				(sourceID) : context.SourceReaderByID(sourceID));

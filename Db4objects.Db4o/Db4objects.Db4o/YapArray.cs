@@ -340,7 +340,8 @@ namespace Db4objects.Db4o
 			return elements;
 		}
 
-		protected int MapElementsEntry(int orig, Db4objects.Db4o.IIDMapping mapping)
+		protected int MapElementsEntry(int orig, Db4objects.Db4o.Inside.Mapping.IIDMapping
+			 mapping)
 		{
 			if (orig >= 0 || orig == Db4objects.Db4o.YapConst.IGNORE_ID)
 			{

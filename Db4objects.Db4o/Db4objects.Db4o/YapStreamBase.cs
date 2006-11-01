@@ -667,7 +667,7 @@ namespace Db4objects.Db4o
 			private readonly Db4objects.Db4o.YapField[] field;
 		}
 
-		internal virtual bool DetectSchemaChanges()
+		public virtual bool DetectSchemaChanges()
 		{
 			return ConfigImpl().DetectSchemaChanges();
 		}
@@ -1093,7 +1093,7 @@ namespace Db4objects.Db4o
 			return ConfigImpl().LockFile();
 		}
 
-		internal virtual bool HasShutDownHook()
+		protected virtual bool HasShutDownHook()
 		{
 			return ConfigImpl().AutomaticShutDown();
 		}

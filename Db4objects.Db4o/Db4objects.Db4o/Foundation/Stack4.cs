@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (_tail == null)
 			{
-				return null;
+				throw new System.InvalidOperationException();
 			}
 			object res = _tail._element;
 			_tail = _tail._next;
