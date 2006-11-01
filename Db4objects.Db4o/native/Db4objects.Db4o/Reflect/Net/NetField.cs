@@ -1,11 +1,15 @@
-﻿namespace Db4objects.Db4o.Reflect.Net
-{
+﻿using System.Collections;
+using System.Reflection;
 
+namespace Db4objects.Db4o.Reflect.Net
+{
 	public class NetField : Db4objects.Db4o.Reflect.IReflectField
 	{
 		private readonly Db4objects.Db4o.Reflect.IReflector reflector;
 
 		private readonly System.Reflection.FieldInfo field;
+
+        private static IList _transientMarkers;
 
 		public NetField(Db4objects.Db4o.Reflect.IReflector reflector, System.Reflection.FieldInfo field
 			)
@@ -36,13 +40,11 @@
 
 		public virtual bool IsTransient()
 		{
-			//return field.I
-			return false;
+            return IsTransient(field);
 		}
 
 		public virtual void SetAccessible()
-		{
-			Db4objects.Db4o.Platform4.SetAccessible(field);
+		{	
 		}
 
 		public virtual object Get(object onObject)
@@ -67,5 +69,38 @@
 			{
 			}
 		}
+
+        public static bool IsTransient(FieldInfo field)
+        {
+            if (field.IsNotSerialized) return true;
+            return CheckForTransient(field.GetCustomAttributes(true));
+        }
+
+        private static bool CheckForTransient(object[] attributes)
+        {   
+            if (attributes == null) return false;
+
+            foreach (object attribute in attributes)
+            {
+                string attributeName = attribute.ToString();
+                if ("Db4objects.Db4o.Transient" == attributeName) return true;
+                if (_transientMarkers == null) continue;
+                if (_transientMarkers.Contains(attributeName)) return true;
+            }
+            return false;
+        }
+
+        public static void MarkTransient(string attributeName)
+        {
+            if (_transientMarkers == null)
+            {
+                _transientMarkers = new ArrayList();
+            }
+            else if (_transientMarkers.Contains(attributeName))
+            {
+                return;
+            }
+            _transientMarkers.Add(attributeName);
+        }
 	}
 }

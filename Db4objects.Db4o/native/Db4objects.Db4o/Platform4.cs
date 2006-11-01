@@ -449,7 +449,7 @@ namespace Db4objects.Db4o
 
         internal static void MarkTransient(String marker)
         {
-            Field.MarkTransient(marker);
+            NetField.MarkTransient(marker);
         }
 
         internal static bool CallConstructor()

@@ -18,7 +18,6 @@ namespace Db4objects.Db4o.Tests.CLI1
 
             public bool flag = true;
 
-
             public Item()
             {
             }

@@ -101,59 +101,7 @@ namespace Sharpen.Lang
 		{
 			return GetClassForType(_type.GetElementType());
 		}
-
-		public Field GetDeclaredField(String name)
-		{
-			return GetField(_type.GetField(name, AllDeclaredMembers | BindingFlags.Static));
-		}
-
-		public Field[] GetDeclaredFields()
-		{
-			FieldInfo[] fieldInfos = _type.GetFields(AllDeclaredMembers | BindingFlags.Static);
-			Field[] fields = new Field[fieldInfos.Length];
-			for (int i = 0; i < fieldInfos.Length; i++)
-			{
-				fields[i] = GetField(fieldInfos[i]);
-			}
-			return fields;
-		}
-
-		private Field GetField(FieldInfo fieldInfo)
-		{
-			if (fieldInfo == null)
-			{
-				return null;
-			}
-			return new Field(fieldInfo, _type.GetEvent(fieldInfo.Name, AllDeclaredMembers));
-		}
-
-		public Field GetField(String name)
-		{
-			return GetField(_type.GetField(name));
-		}
-
-	    public int GetModifiers()
-		{
-			int modifiers = 0;
-			if (_type.IsAbstract)
-			{
-				modifiers |= Modifier.ABSTRACT;
-			}
-			if (_type.IsPublic || _type.IsNestedPublic)
-			{
-				modifiers |= Modifier.PUBLIC;
-			}
-			if (_type.IsNestedPrivate)
-			{
-				modifiers |= Modifier.PRIVATE;
-			}
-			if (_type.IsInterface)
-			{
-				modifiers |= Modifier.INTERFACE;
-			}
-			return modifiers;
-		}
-
+	    
 		public String GetName()
 		{
 			if (_name == null)

@@ -2,7 +2,7 @@
 
 using Cecil.FlowAnalysis.Impl.CodeStructure;
 
-namespace Db4oTools.NativeQueries
+namespace Db4objects.Db4o.Tools.NativeQueries
 {
 	using System;
 	using System.Collections;

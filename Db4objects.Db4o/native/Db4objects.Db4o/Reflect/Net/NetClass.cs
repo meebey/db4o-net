@@ -136,12 +136,14 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public virtual bool IsPrimitive()
 		{
-			return _type.IsPrimitive;
+			return _type.IsPrimitive
+			       || _type == typeof(System.DateTime)
+			       || _type == typeof(decimal);
 		}
 
 		public virtual bool IsSecondClass()
 		{
-			return IsPrimitive();
+			return IsPrimitive() || _type.IsValueType;
 		}
 
 		public virtual object NewInstance()
