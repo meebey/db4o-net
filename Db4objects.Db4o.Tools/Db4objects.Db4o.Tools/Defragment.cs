@@ -257,7 +257,7 @@ namespace Db4oTools
 					if (javaClass == null
 						|| javaClass == ObjectClass
 						|| IsSecondClass(javaClass)
-						|| Modifier.IsAbstract(javaClass.GetModifiers()))
+						|| javaClass.GetNetType().IsAbstract)
 					{
 						classes[i] = null;
 					}
