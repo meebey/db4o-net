@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2006   db4objects Inc.   http://www.db4o.com */
 
-namespace Db4objects.Db4o.Inside.Query {
+namespace Db4objects.Db4o.Inside.Query
+{
 
 	using System;
 	using System.Reflection;
@@ -11,11 +12,11 @@ namespace Db4objects.Db4o.Inside.Query {
 	/// This is the base class for tools capable
 	/// too create an expression tree from a method.
 	/// </summary>
-	public abstract class ExpressionBuilder {
+	public abstract class ExpressionBuilder
+	{
+		protected static ICachingStrategy _assemblyCachingStrategy = new SingleItemCachingStrategy();
 
-        protected static ICachingStrategy _assemblyCachingStrategy = new SingleItemCachingStrategy();
-
-        protected static ICachingStrategy _expressionCachingStrategy = new SingleItemCachingStrategy();
+		protected static ICachingStrategy _expressionCachingStrategy = new SingleItemCachingStrategy();
 
 		public static ICachingStrategy AssemblyCachingStrategy
 		{
@@ -31,19 +32,19 @@ namespace Db4objects.Db4o.Inside.Query {
 			}
 		}
 
-        public static ICachingStrategy ExpressionCachingStrategy
-        {
-            get
-            {
-                return _expressionCachingStrategy;
-            }
+		public static ICachingStrategy ExpressionCachingStrategy
+		{
+			get
+			{
+				return _expressionCachingStrategy;
+			}
 
-            set
-            {
-                if (null == value) throw new ArgumentNullException("ExpressionCachingStrategy");
-                _expressionCachingStrategy = value;
-            }
-        }
+			set
+			{
+				if (null == value) throw new ArgumentNullException("ExpressionCachingStrategy");
+				_expressionCachingStrategy = value;
+			}
+		}
 
 		/// <summary>
 		/// Create an expression tree from a method

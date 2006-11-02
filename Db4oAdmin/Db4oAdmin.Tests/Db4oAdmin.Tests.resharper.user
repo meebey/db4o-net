@@ -1,0 +1,51 @@
+<Configuration>
+  <CompletionStatisticsManager>
+    <ItemStatistics item="Qualified:@Db4objects.Db4o">
+      <Item value="Query" priority="0" />
+    </ItemStatistics>
+  </CompletionStatisticsManager>
+  <EditorManager>
+    <RecentFiles>
+      <File id="6F3BE659-0653-4982-94D6-F1D9D8887E09/f:SodaEmitterVisitor.cs" caret="6146" visual-x="0" visual-y="2674" />
+      <File id="4FA6645B-E14B-4F18-A2CC-C1925663EFCE/d:native/d:Db4objects.Db4o/d:Inside/d:Query/f:NativeQueryHandler.cs" caret="0" visual-x="0" visual-y="1554" />
+      <File id="4FA6645B-E14B-4F18-A2CC-C1925663EFCE/d:native/d:Db4objects.Db4o/d:Inside/d:Query/f:ExpressionBuilder.cs" caret="1374" visual-x="0" visual-y="0" />
+      <File id="4FA6645B-E14B-4F18-A2CC-C1925663EFCE/d:native/d:Db4objects.Db4o/d:Inside/d:Query/f:QueryExecutionHandler.cs" caret="258" visual-x="0" visual-y="14" />
+      <File id="4FA6645B-E14B-4F18-A2CC-C1925663EFCE/d:native/d:Db4objects.Db4o/d:Inside/d:Query/f:ExpressionBuilderFactory.cs" caret="164" visual-x="0" visual-y="0" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/d:Resources/f:CustomInstrumentationSubject.cs" caret="149" visual-x="0" visual-y="0" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/d:Resources/f:CFNQSubject.cs" caret="1404" visual-x="0" visual-y="728" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/f:CustomInstrumentationTestCase.cs" caret="1068" visual-x="176" visual-y="196" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/f:AbstractInstrumentationTestCase.cs" caret="558" visual-x="0" visual-y="224" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/f:AbstractCommandLineInstrumentationTestCase.cs" caret="149" visual-x="264" visual-y="0" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/d:Resources/f:PredicateSubject.cs" caret="5159" visual-x="0" visual-y="3906" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/d:Resources/f:UnoptimizablePredicateSubject.cs" caret="193" visual-x="0" visual-y="0" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/f:ILPatternTestCase.cs" caret="134" visual-x="0" visual-y="0" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/f:VerifyAssemblyTest.cs" caret="426" visual-x="0" visual-y="0" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/f:CompilationServices.cs" caret="1478" visual-x="0" visual-y="546" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/f:PredicateBuildTimeOptimizationTestCase.cs" caret="278" visual-x="0" visual-y="0" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/f:CFNQRuntimeOptimizationTestCase.cs" caret="431" visual-x="0" visual-y="0" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/f:UnoptimizablePredicatesTestCase.cs" caret="709" visual-x="0" visual-y="252" />
+      <File id="6F3BE659-0653-4982-94D6-F1D9D8887E09/f:QueryInvocationProcessor.cs" caret="6199" visual-x="0" visual-y="0" />
+      <File id="6F3BE659-0653-4982-94D6-F1D9D8887E09/f:PredicateOptimizer.cs" caret="3470" visual-x="0" visual-y="1666" />
+      <File id="69859DB2-4DE3-4DE4-A0BB-13861418378F/f:Program.cs" caret="439" visual-x="0" visual-y="0" />
+    </RecentFiles>
+  </EditorManager>
+  <FileStructureView>
+    <AutoScrollToSource>False</AutoScrollToSource>
+    <TrackCaretLocation>False</TrackCaretLocation>
+  </FileStructureView>
+  <NAntValidationSettings>
+    <NAntPath value="" />
+  </NAntValidationSettings>
+  <ReFormatCode>
+    <OptimizeUsings>False</OptimizeUsings>
+    <RemoveRedundantThis>False</RemoveRedundantThis>
+    <ShortenReferences>False</ShortenReferences>
+    <DecorateModifiers>False</DecorateModifiers>
+  </ReFormatCode>
+  <SharedSolutionDisabledTemplatesManager>
+    <DisabledTemplates />
+  </SharedSolutionDisabledTemplatesManager>
+  <UserSolutionDisabledTemplatesManager>
+    <DisabledTemplates />
+  </UserSolutionDisabledTemplatesManager>
+</Configuration>

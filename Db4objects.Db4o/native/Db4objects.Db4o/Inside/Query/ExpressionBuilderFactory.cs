@@ -3,13 +3,12 @@
 namespace Db4objects.Db4o.Inside.Query
 {
 	using System;
-	using System.Reflection;
 
 	public class ExpressionBuilderFactory
 	{
 		public static ExpressionBuilder CreateExpressionBuilder()
 		{
-			Type type = Type.GetType("Db4oTools.NativeQueries.QueryExpressionBuilder, Db4oTools", true);
+			Type type = Type.GetType("Db4objects.Db4o.Tools.NativeQueries.QueryExpressionBuilder, Db4objects.Db4o.Tools", true);
 			return (ExpressionBuilder)Activator.CreateInstance(type);
 		}
 	}

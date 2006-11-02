@@ -1,0 +1,81 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6F3BE659-0653-4982-94D6-F1D9D8887E09}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Db4oAdmin</RootNamespace>
+    <AssemblyName>Db4oAdmin</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbstractAssemblyInstrumentation.cs" />
+    <Compile Include="CFNQEnabler.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="IAssemblyInstrumentation.cs" />
+    <Compile Include="ILPattern.cs" />
+    <Compile Include="InstrumentationContext.cs" />
+    <Compile Include="InstrumentationPipeline.cs" />
+    <Compile Include="Mono.GetOptions\Mono.GetOptions.Useful\CommonCompilerOptions.cs" />
+    <Compile Include="Mono.GetOptions\Mono.GetOptions\ArgumentProcessorAttribute.cs" />
+    <Compile Include="Mono.GetOptions\Mono.GetOptions\KillOptionAttribute.cs" />
+    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionAttribute.cs" />
+    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionDetails.cs" />
+    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionList.cs" />
+    <Compile Include="Mono.GetOptions\Mono.GetOptions\Options.cs" />
+    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionsParsingMode.cs" />
+    <Compile Include="Mono.GetOptions\Mono\AboutAttribute.cs" />
+    <Compile Include="Mono.GetOptions\Mono\AdditionalInfoAttribute.cs" />
+    <Compile Include="Mono.GetOptions\Mono\AuthorAttribute.cs" />
+    <Compile Include="Mono.GetOptions\Mono\IsPartOfPackageAttribute.cs" />
+    <Compile Include="Mono.GetOptions\Mono\ReportBugsToAttribute.cs" />
+    <Compile Include="Mono.GetOptions\Mono\UsageComplementAttribute.cs" />
+    <Compile Include="PredicateOptimizer.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="ProgramOptions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryInvocationProcessor.cs" />
+    <Compile Include="SaveAssemblyInstrumentation.cs" />
+    <Compile Include="SodaEmitterVisitor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Db4objects.Db4o.Tools\Db4objects.Db4o.Tools-2005.csproj">
+      <Project>{1D28DD3C-4D59-4003-96C6-9CBB3BA68FA6}</Project>
+      <Name>Db4objects.Db4o.Tools-2005</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2005.csproj">
+      <Project>{4FA6645B-E14B-4F18-A2CC-C1925663EFCE}</Project>
+      <Name>Db4objects.Db4o-2005</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
