@@ -6,7 +6,8 @@ namespace Sharpen.Lang
 {
 	public class Thread : IRunnable
 	{
-		public const int MIN_PRIORITY = 0;
+		public const int MIN_PRIORITY = 1;
+		public const int MAX_PRIORITY = 10;
 
 		private IRunnable _target;
 
@@ -15,8 +16,6 @@ namespace Sharpen.Lang
 		private System.Threading.Thread _thread;
 
 		private bool _isDaemon;
-
-		static int idGenerator = 1;
 
 		public Thread()
 		{
@@ -70,7 +69,12 @@ namespace Sharpen.Lang
 
 		public void SetPriority(int priority)
 		{
-			// TODO: how ?
+			// java priority is between 1 and 10, ThreadPriority is between 0 and 5
+			if (priority < MIN_PRIORITY || priority > MAX_PRIORITY)
+				throw new ArgumentOutOfRangeException("priority", priority,
+					string.Format("Thread priority must be between {0} and {1}", MIN_PRIORITY, MAX_PRIORITY));
+
+			_thread.Priority = (System.Threading.ThreadPriority) (priority / 2);
 		}
 
 		public void SetPriority(System.Threading.ThreadPriority priority)
