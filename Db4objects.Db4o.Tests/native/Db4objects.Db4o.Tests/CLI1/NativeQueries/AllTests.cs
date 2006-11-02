@@ -9,6 +9,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 		{
 			return new Type[]
 			{
+				typeof(Cats.TestCatConsistency),
 				typeof(Cat),
 				typeof(ListElementByIdentity),
 				typeof(MultipleAssemblySupportTestCase),

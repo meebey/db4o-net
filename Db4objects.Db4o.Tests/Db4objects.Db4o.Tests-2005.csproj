@@ -291,6 +291,9 @@
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\NativeQueries\AbstractNativeQueriesTestCase.cs" />
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\NativeQueries\AllTests.cs" />
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\NativeQueries\Cat.cs" />
+    <Compile Include="native\Db4objects.Db4o.Tests\CLI1\NativeQueries\Cats\Animal.cs" />
+    <Compile Include="native\Db4objects.Db4o.Tests\CLI1\NativeQueries\Cats\Cat.cs" />
+    <Compile Include="native\Db4objects.Db4o.Tests\CLI1\NativeQueries\Cats\TestCatConsistency.cs" />
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\NativeQueries\ListElementByIdentity.cs" />
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\NativeQueries\MultipleAssemblySupportTestCase.cs" />
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\NativeQueries\NativeQueriesTestCase.cs" />

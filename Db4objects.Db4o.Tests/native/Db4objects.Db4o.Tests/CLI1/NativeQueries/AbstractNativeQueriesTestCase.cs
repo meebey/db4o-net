@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Reflection;
 using System.Text;
 using Db4objects.Db4o.Nativequery.Expr;
