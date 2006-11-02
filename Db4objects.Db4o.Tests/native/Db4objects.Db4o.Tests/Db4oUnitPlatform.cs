@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests
 	    {
 	        if (field.IsStatic) return false;
             if (NetField.IsTransient(field)) return false;
-	        if (field.Name.Contains("$")) return false;
+	        if (field.Name.IndexOf("$") != -1) return false;
 	        return true;
 	    }
 	}

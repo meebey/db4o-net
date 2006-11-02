@@ -60,7 +60,7 @@
 #if NET_2_0
 			return GetCSharpCompilerInfo().CreateProvider();
 #else
-			return (CodeDomProvider)j4o.lang.Class.ForName("Microsoft.CSharp.CSharpCodeProvider, System").NewInstance();
+			return (CodeDomProvider)Activator.CreateInstance(System.Type.GetType("Microsoft.CSharp.CSharpCodeProvider, System"));
 #endif
 		}
 

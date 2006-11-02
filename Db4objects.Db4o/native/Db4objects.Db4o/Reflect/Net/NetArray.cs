@@ -1,5 +1,4 @@
 ﻿using System;
-using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
@@ -51,7 +50,7 @@ namespace Db4objects.Db4o.Reflect.Net
 #if NET_2_0
             return type.MakeArrayType();
 #else
-			return ((ArrayTypeReference)Sharpen.Lang.TypeReference.FromType(type)).Resolve();
+            return type.Module.GetType(type.FullName + "[]");
 #endif
         }
 
