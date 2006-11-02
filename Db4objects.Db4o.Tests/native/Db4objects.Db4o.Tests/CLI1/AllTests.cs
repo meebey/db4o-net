@@ -8,6 +8,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 		{
 			return new System.Type[]
 				{
+					typeof(Events.EventRegistryTestCase),
 					typeof(Inside.AllTests),
 					typeof(NativeQueries.AllTests),
 					typeof(CsAppDomains),

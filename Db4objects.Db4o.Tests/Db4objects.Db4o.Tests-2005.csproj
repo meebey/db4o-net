@@ -284,6 +284,7 @@
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\CsStructsRegression.cs" />
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\CsType.cs" />
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\CsValueTypesTestCase.cs" />
+    <Compile Include="native\Db4objects.Db4o.Tests\CLI1\Events\EventRegistryTestCase.cs" />
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\Inside\AllTests.cs" />
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\Inside\Query\QueryExpressionBuilderTestCase.cs" />
     <Compile Include="native\Db4objects.Db4o.Tests\CLI1\MDArrayTestCase.cs" />
