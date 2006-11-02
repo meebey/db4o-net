@@ -7,8 +7,9 @@ namespace Db4objects.Db4o.Tests.CLI1
 		protected override Type[] TestCases()
 		{
 			return new System.Type[]
-				{   
+				{
 					typeof(Inside.AllTests),
+					typeof(NativeQueries.AllTests),
 					typeof(CsAppDomains),
 					typeof(CsAssemblyVersionChange),
 					typeof(CsCascadeDeleteToStructs),
@@ -24,7 +25,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(CsType),
 					typeof(CsStructs),
 					typeof(CsStructsRegression),
-				    typeof(CsValueTypesTestCase),
+					typeof(CsValueTypesTestCase),
 					typeof(MDArrayTestCase),
 					typeof(ObjectSetAsListTestCase),
 				};
