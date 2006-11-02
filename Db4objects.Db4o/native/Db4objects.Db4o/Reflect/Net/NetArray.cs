@@ -1,4 +1,5 @@
 ﻿using System;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
@@ -47,7 +48,11 @@ namespace Db4objects.Db4o.Reflect.Net
 
         private Type MakeArrayType(Type type)
         {
+#if NET_2_0
             return type.MakeArrayType();
+#else
+			return ((ArrayTypeReference)Sharpen.Lang.TypeReference.FromType(type)).Resolve();
+#endif
         }
 
         public override object NewInstance(IReflectClass componentType, int length)
