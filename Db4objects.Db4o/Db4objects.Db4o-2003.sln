@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o-2003", "Db4objects.Db4o-2003.csproj", "{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}.Debug.ActiveCfg = Debug|.NET
+		{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}.Debug.Build.0 = Debug|.NET
+		{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}.Release.ActiveCfg = Release|.NET
+		{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
