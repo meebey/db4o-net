@@ -4,6 +4,7 @@
 	using System;
 	using System.CodeDom.Compiler;
 	using System.IO;
+	using System.Reflection;
 	using System.Text;
 
 	/// <summary>
@@ -60,7 +61,8 @@
 #if NET_2_0
 			return GetCSharpCompilerInfo().CreateProvider();
 #else
-			return (CodeDomProvider)Activator.CreateInstance(System.Type.GetType("Microsoft.CSharp.CSharpCodeProvider, System"));
+			Type provider = typeof(System.Uri).Assembly.GetType("Microsoft.CSharp.CSharpCodeProvider");
+			return (CodeDomProvider)Activator.CreateInstance(provider);
 #endif
 		}
 
