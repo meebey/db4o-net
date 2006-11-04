@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductVersion>8.0.50727</ProductVersion>
@@ -81,32 +81,7 @@
       <Name>System.XML</Name>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\AbstractDb4oTestCase.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Db4oTestSuite.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Db4oTestSuiteBuilder.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\AbstractClientServerDb4oFixture.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\AbstractDb4oFixture.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\AbstractFileBasedDb4oFixture.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\AbstractSoloDb4oFixture.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\Db4oInMemory.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\Db4oMultiClient.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\Db4oSingleClient.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\Db4oSolo.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\GlobalConfigurationSource.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\IConfigurationSource.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\IOptOutCS.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\IOptOutDefragSolo.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\IOptOutFromTestFixture.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\IndependentConfigurationSource.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\IDb4oFixture.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\IDb4oTestCase.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Tests\AcceptedTestCase.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Tests\AllTests.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Tests\MultipleDb4oTestCase.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Tests\NotAcceptedTestCase.cs" />
-    <Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Tests\SimpleDb4oTestCase.cs" />
-  </ItemGroup>
+  <ItemGroup><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\AbstractDb4oTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Db4oTestSuite.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Db4oTestSuiteBuilder.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\AbstractClientServerDb4oFixture.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\AbstractDb4oFixture.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\AbstractFileBasedDb4oFixture.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\AbstractSoloDb4oFixture.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\Db4oInMemory.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\Db4oMultiClient.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\Db4oSingleClient.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\Db4oSolo.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\GlobalConfigurationSource.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\IConfigurationSource.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\IOptOutCS.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\IOptOutDefragSolo.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\IOptOutFromTestFixture.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Fixtures\IndependentConfigurationSource.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\IDb4oFixture.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\IDb4oTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Tests\AcceptedTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Tests\AllTests.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Tests\MultipleDb4oTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Tests\NotAcceptedTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Db4oUnit\Extensions\Tests\SimpleDb4oTestCase.cs"/></ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-2005.csproj">
       <Project>{4FA6645B-E14B-4F18-A2CC-C1925663EFCE}</Project>
@@ -117,7 +92,7 @@
       <Name>Db4oUnit-2005</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets"/>
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>

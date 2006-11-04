@@ -20,7 +20,7 @@
                 PostBuildEvent = ""
                 RootNamespace = "Db4objects.Db4o.Tests"
                 RunPostBuildEvent = "OnBuildSuccess"
-                StartupObject = "Db4objects.Db4o.Tests.Common.AllTests"
+                StartupObject = "Db4objects.Db4o.Tests.AllTests"
             >
                 <Config
                     Name = "Debug"
@@ -90,23 +90,23 @@
                     HintPath = "..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
                 />
                 <Reference
-                    Name = "db4o-net"
-                    Project = "{7A07E089-078C-433A-BD15-60763FE3B8F2}"
+                    Name = "Db4objects.Db4o-2003"
+                    Project = "{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "db4o-net-tools"
+                    Name = "Db4oUnit-2003"
+                    Project = "{E460565E-6F03-455D-9ACB-4DBAE0893595}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "Db4objects.Db4o.Tools-2003"
                     Project = "{1D28DD3C-4D59-4003-96C6-9CBB3BA68FA6}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "Db4oUnit"
-                    Project = "{3C9C954F-6427-40D7-872F-EDDA79708816}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "Db4oUnit.Extensions"
-                    Project = "{D020A0AF-C7E4-449D-BC53-ED37397A588F}"
+                    Name = "Db4oUnit.Extensions-2003"
+                    Project = "{1D085EA4-184C-4B2C-A7A6-E3377D369603}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
@@ -165,6 +165,11 @@
                 />
                 <File
                     RelPath = "Db4objects.Db4o.Tests\Common\Assorted\CloseUnlocksFileTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4objects.Db4o.Tests\Common\Assorted\ComparatorSortTestCase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -385,6 +390,11 @@
                 />
                 <File
                     RelPath = "Db4objects.Db4o.Tests\Common\Fieldindex\StringIndexTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4objects.Db4o.Tests\Common\Foundation\Algorithms4TestCase.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -1069,6 +1079,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\Events\EventRegistryTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "native\Db4objects.Db4o.Tests\CLI1\Inside\AllTests.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -1079,7 +1094,62 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\AbstractNativeQueriesTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\AllTests.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\Cat.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\ListElementByIdentity.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\MultipleAssemblySupportTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\NativeQueriesTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\OptimizationFailuresTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\Predicates.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\StringComparisonTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\Cats\Animal.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\Cats\Cat.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4objects.Db4o.Tests\CLI1\NativeQueries\Cats\TestCatConsistency.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
