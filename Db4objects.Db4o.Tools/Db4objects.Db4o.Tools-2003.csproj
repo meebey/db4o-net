@@ -80,8 +80,8 @@
                     HintPath = "..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
                 />
                 <Reference
-                    Name = "db4o-net"
-                    Project = "{7A07E089-078C-433A-BD15-60763FE3B8F2}"
+                    Name = "Db4objects.Db4o-2003"
+                    Project = "{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
