@@ -5,6 +5,7 @@ TESTS = Db4objects.Db4o.Tests
 TOOLS = Db4objects.Db4o.Tools
 UNIT = Db4oUnit
 UNIT_EXT = Db4oUnit.Extensions
+ADMIN = Db4oAdmin
 
 OUTDIR = ./bin
 
@@ -12,7 +13,7 @@ all: prebuild build postbuild
 
 prebuild:
 
-build: tests
+build: tests admin
 
 postbuild:
 
@@ -30,6 +31,9 @@ unit:
 
 core:
 	cd $(CORE) ; $(MAKE)
+
+admin: tools
+	cd $(ADMIN) ; $(MAKE)
 
 clean:
 	rm -rf $(OUTDIR)

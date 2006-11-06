@@ -10,6 +10,7 @@ TESTS = Db4objects.Db4o.Tests.exe
 TOOLS = Db4objects.Db4o.Tools.dll
 UNIT = Db4oUnit.dll
 UNIT_EXT = Db4oUnit.Extensions.dll
+ADMIN = Db4oAdmin.exe
 
 build: precompile compile postcompile
 
