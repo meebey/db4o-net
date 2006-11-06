@@ -14,6 +14,7 @@ UNIT_EXT = Db4oUnit.Extensions.dll
 build: precompile compile postcompile
 
 precompile:
+	[ -d $(OUTDIR) ] || mkdir $(OUTDIR)
 	find . -name "*.cs" > $(RESPONSE_FILE)
 
 compile:

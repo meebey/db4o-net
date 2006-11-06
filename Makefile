@@ -11,7 +11,6 @@ OUTDIR = ./bin
 all: prebuild build postbuild
 
 prebuild:
-	[ -d $(OUTDIR) ] || mkdir $(OUTDIR)
 
 build: tests
 
