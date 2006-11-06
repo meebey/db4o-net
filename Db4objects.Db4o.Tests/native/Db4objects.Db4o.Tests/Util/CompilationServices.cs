@@ -1,4 +1,4 @@
-﻿namespace Db4objects.Db4o.Tests.Util
+namespace Db4objects.Db4o.Tests.Util
 {
 #if !CF_1_0 && !CF_2_0
 	using System;
@@ -58,7 +58,7 @@
 
 		static CodeDomProvider GetCSharpCodeDomProvider()
 		{
-#if NET_2_0
+#if NET_2_0 && !MONO
 			return GetCSharpCompilerInfo().CreateProvider();
 #else
 			Type provider = typeof(System.Uri).Assembly.GetType("Microsoft.CSharp.CSharpCodeProvider");
@@ -68,7 +68,7 @@
 
 		static CompilerParameters CreateDefaultCompilerParameters()
 		{
-#if NET_2_0
+#if NET_2_0 && !MONO
 			return GetCSharpCompilerInfo().CreateDefaultCompilerParameters();
 #else
 			return new CompilerParameters();
