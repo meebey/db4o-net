@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 	/// <summary>
 	/// Tests the interaction of db4o with multiple AppDomains
 	/// </summary>
-	public class CsAppDomains : AbstractDb4oTestCase
+	public class CsAppDomains : AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutCS
 	{
 		// keep task objects alive to check for any identity problems
 		ArrayList _tasks = new ArrayList();
