@@ -12,7 +12,7 @@ namespace Db4oUnit
 
 		public static System.IO.TextWriter GetStdOut()
 		{
-			return System.Console.Out;
+			return System.Console.Error;
 		}
 		
 		public static void EmitWarning(string warning)
