@@ -6,12 +6,12 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>booclipse.core.booBuilder</name>
+			<name>monolipse.core.booBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>booclipse.core.booNature</nature>
+		<nature>monolipse.core.booNature</nature>
 	</natures>
 </projectDescription>
