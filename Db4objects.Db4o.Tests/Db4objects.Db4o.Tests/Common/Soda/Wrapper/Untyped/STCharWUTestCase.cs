@@ -1,5 +1,6 @@
 namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 {
+	[System.Serializable]
 	public class STCharWUTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
 	{
 		internal static readonly string DESCENDANT = "i_char";
@@ -111,13 +112,13 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			Db4objects.Db4o.Query.IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STCharWUTestCase
 				());
-			q.Constrain(new _AnonymousInnerClass102(this));
+			q.Constrain(new _AnonymousInnerClass104(this));
 			Expect(q, new int[] { 2, 3 });
 		}
 
-		private sealed class _AnonymousInnerClass102 : Db4objects.Db4o.Query.IEvaluation
+		private sealed class _AnonymousInnerClass104 : Db4objects.Db4o.Query.IEvaluation
 		{
-			public _AnonymousInnerClass102(STCharWUTestCase _enclosing)
+			public _AnonymousInnerClass104(STCharWUTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

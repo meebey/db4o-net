@@ -69,21 +69,18 @@ namespace Db4objects.Db4o.Inside.Cluster
 
 		public virtual Db4objects.Db4o.Query.IQuery OrderAscending()
 		{
-			Db4objects.Db4o.Inside.Exceptions4.NotSupported();
-			return this;
+			throw new System.NotSupportedException();
 		}
 
 		public virtual Db4objects.Db4o.Query.IQuery OrderDescending()
 		{
-			Db4objects.Db4o.Inside.Exceptions4.NotSupported();
-			return this;
+			throw new System.NotSupportedException();
 		}
 
 		public virtual Db4objects.Db4o.Query.IQuery SortBy(Db4objects.Db4o.Query.IQueryComparator
 			 comparator)
 		{
-			Db4objects.Db4o.Inside.Exceptions4.NotSupported();
-			return this;
+			throw new System.NotSupportedException();
 		}
 	}
 }

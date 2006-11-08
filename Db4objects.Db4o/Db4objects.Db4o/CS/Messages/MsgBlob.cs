@@ -24,11 +24,11 @@ namespace Db4objects.Db4o.CS.Messages
 		{
 			Db4objects.Db4o.BlobImpl blobImpl = null;
 			int id = _payLoad.ReadInt();
-			Db4objects.Db4o.YapStream stream = GetStream();
+			Db4objects.Db4o.YapStream stream = Stream();
 			lock (stream.i_lock)
 			{
-				blobImpl = (Db4objects.Db4o.BlobImpl)stream.GetByID1(GetTransaction(), id);
-				stream.Activate1(GetTransaction(), blobImpl, 3);
+				blobImpl = (Db4objects.Db4o.BlobImpl)stream.GetByID1(Transaction(), id);
+				stream.Activate1(Transaction(), blobImpl, 3);
 			}
 			return blobImpl;
 		}

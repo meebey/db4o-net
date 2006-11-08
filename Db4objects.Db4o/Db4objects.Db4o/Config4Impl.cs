@@ -85,6 +85,9 @@ namespace Db4objects.Db4o
 		private static readonly Db4objects.Db4o.Foundation.KeySpec IS_SERVER = new Db4objects.Db4o.Foundation.KeySpec
 			(false);
 
+		private static readonly Db4objects.Db4o.Foundation.KeySpec LAZY_QUERY_EVALUATION = 
+			new Db4objects.Db4o.Foundation.KeySpec(false);
+
 		private static readonly Db4objects.Db4o.Foundation.KeySpec LOCK_FILE = new Db4objects.Db4o.Foundation.KeySpec
 			(true);
 
@@ -291,7 +294,7 @@ namespace Db4objects.Db4o
 		internal System.IO.TextWriter ErrStream()
 		{
 			System.IO.TextWriter outStream = OutStreamOrNull();
-			return outStream == null ? System.Console.Error : outStream;
+			return outStream == null ? Sharpen.Runtime.Err : outStream;
 		}
 
 		public void ExceptionsOnNotStorable(bool flag)
@@ -359,7 +362,7 @@ namespace Db4objects.Db4o
 			_config.Put(MESSAGE_LEVEL, level);
 			if (OutStream() == null)
 			{
-				SetOut(System.Console.Out);
+				SetOut(Sharpen.Runtime.Out);
 			}
 		}
 
@@ -408,7 +411,7 @@ namespace Db4objects.Db4o
 		internal System.IO.TextWriter OutStream()
 		{
 			System.IO.TextWriter outStream = OutStreamOrNull();
-			return outStream == null ? System.Console.Out : outStream;
+			return outStream == null ? Sharpen.Runtime.Out : outStream;
 		}
 
 		public void Password(string pw)
@@ -466,7 +469,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_stream == null)
 			{
-				Db4objects.Db4o.Db4o.ForEachSession(new _AnonymousInnerClass412(this));
+				Db4objects.Db4o.Db4o.ForEachSession(new _AnonymousInnerClass410(this));
 			}
 			else
 			{
@@ -474,9 +477,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private sealed class _AnonymousInnerClass412 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass410 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass412(Config4Impl _enclosing)
+			public _AnonymousInnerClass410(Config4Impl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -523,7 +526,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_stream == null)
 			{
-				Db4objects.Db4o.Db4o.ForEachSession(new _AnonymousInnerClass451(this));
+				Db4objects.Db4o.Db4o.ForEachSession(new _AnonymousInnerClass449(this));
 			}
 			else
 			{
@@ -531,9 +534,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private sealed class _AnonymousInnerClass451 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass449 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass451(Config4Impl _enclosing)
+			public _AnonymousInnerClass449(Config4Impl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -953,6 +956,16 @@ namespace Db4objects.Db4o
 		internal Db4objects.Db4o.IO.IoAdapter IoAdapter()
 		{
 			return (Db4objects.Db4o.IO.IoAdapter)_config.Get(IOADAPTER);
+		}
+
+		public bool LazyQueryEvaluation()
+		{
+			return _config.GetAsBoolean(LAZY_QUERY_EVALUATION);
+		}
+
+		public void LazyQueryEvaluation(bool flag)
+		{
+			_config.Put(LAZY_QUERY_EVALUATION, flag);
 		}
 	}
 }

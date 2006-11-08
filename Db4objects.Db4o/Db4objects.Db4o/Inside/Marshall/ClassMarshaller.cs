@@ -135,7 +135,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 			int metaClassID = 0;
 			readers.WriteInt(metaClassID);
 			readers.CopyID();
-			readers.WriteInt(classIndexID);
+			readers.WriteInt(IndexIDForWriting(classIndexID));
 			readers.IncrementIntSize();
 			Db4objects.Db4o.YapField[] fields = yapClass.i_fields;
 			for (int fieldIdx = 0; fieldIdx < fields.Length; fieldIdx++)

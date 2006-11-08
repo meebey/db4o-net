@@ -1,6 +1,7 @@
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
 	public abstract class FieldIndexTestCaseBase : Db4oUnit.Extensions.AbstractDb4oTestCase
+		, Db4oUnit.Extensions.Fixtures.IOptOutCS
 	{
 		public FieldIndexTestCaseBase() : base()
 		{

@@ -79,13 +79,13 @@ namespace Db4objects.Db4o
 			a_bytes.Append(_buffer);
 			int[] newID = { a_id };
 			int myID = a_id;
-			ForEachEmbedded(new _AnonymousInnerClass96(this, a_bytes, myID, newID));
+			ForEachEmbedded(new _AnonymousInnerClass95(this, a_bytes, myID, newID));
 			return newID[0];
 		}
 
-		private sealed class _AnonymousInnerClass96 : Db4objects.Db4o.IVisitorYapBytes
+		private sealed class _AnonymousInnerClass95 : Db4objects.Db4o.IVisitorYapBytes
 		{
-			public _AnonymousInnerClass96(YapWriter _enclosing, Db4objects.Db4o.YapReader a_bytes
+			public _AnonymousInnerClass95(YapWriter _enclosing, Db4objects.Db4o.YapReader a_bytes
 				, int myID, int[] newID)
 			{
 				this._enclosing = _enclosing;
@@ -121,13 +121,13 @@ namespace Db4objects.Db4o
 		public int EmbeddedCount()
 		{
 			int[] count = { 0 };
-			ForEachEmbedded(new _AnonymousInnerClass121(this, count));
+			ForEachEmbedded(new _AnonymousInnerClass120(this, count));
 			return count[0];
 		}
 
-		private sealed class _AnonymousInnerClass121 : Db4objects.Db4o.IVisitorYapBytes
+		private sealed class _AnonymousInnerClass120 : Db4objects.Db4o.IVisitorYapBytes
 		{
-			public _AnonymousInnerClass121(YapWriter _enclosing, int[] count)
+			public _AnonymousInnerClass120(YapWriter _enclosing, int[] count)
 			{
 				this._enclosing = _enclosing;
 				this.count = count;
@@ -146,13 +146,13 @@ namespace Db4objects.Db4o
 		public int EmbeddedLength()
 		{
 			int[] length = { 0 };
-			ForEachEmbedded(new _AnonymousInnerClass131(this, length));
+			ForEachEmbedded(new _AnonymousInnerClass130(this, length));
 			return length[0];
 		}
 
-		private sealed class _AnonymousInnerClass131 : Db4objects.Db4o.IVisitorYapBytes
+		private sealed class _AnonymousInnerClass130 : Db4objects.Db4o.IVisitorYapBytes
 		{
-			public _AnonymousInnerClass131(YapWriter _enclosing, int[] length)
+			public _AnonymousInnerClass130(YapWriter _enclosing, int[] length)
 			{
 				this._enclosing = _enclosing;
 				this.length = length;
@@ -172,13 +172,13 @@ namespace Db4objects.Db4o
 		{
 			if (i_embedded != null)
 			{
-				i_embedded.Traverse(new _AnonymousInnerClass141(this, a_visitor));
+				i_embedded.Traverse(new _AnonymousInnerClass140(this, a_visitor));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass141 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass140 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass141(YapWriter _enclosing, Db4objects.Db4o.IVisitorYapBytes
+			public _AnonymousInnerClass140(YapWriter _enclosing, Db4objects.Db4o.IVisitorYapBytes
 				 a_visitor)
 			{
 				this._enclosing = _enclosing;
@@ -412,13 +412,13 @@ namespace Db4objects.Db4o
 		public void WriteEmbedded()
 		{
 			Db4objects.Db4o.YapWriter finalThis = this;
-			ForEachEmbedded(new _AnonymousInnerClass327(this, finalThis));
+			ForEachEmbedded(new _AnonymousInnerClass326(this, finalThis));
 			i_embedded = null;
 		}
 
-		private sealed class _AnonymousInnerClass327 : Db4objects.Db4o.IVisitorYapBytes
+		private sealed class _AnonymousInnerClass326 : Db4objects.Db4o.IVisitorYapBytes
 		{
-			public _AnonymousInnerClass327(YapWriter _enclosing, Db4objects.Db4o.YapWriter finalThis
+			public _AnonymousInnerClass326(YapWriter _enclosing, Db4objects.Db4o.YapWriter finalThis
 				)
 			{
 				this._enclosing = _enclosing;
@@ -498,21 +498,6 @@ namespace Db4objects.Db4o
 			toWriter._addressOffset = _addressOffset;
 		}
 
-		public void WriteQueryResult(Db4objects.Db4o.Inside.Query.IQueryResult qr)
-		{
-			int size = qr.Size();
-			WriteInt(size);
-			_offset += (size - 1) * Db4objects.Db4o.YapConst.ID_LENGTH;
-			int dec = Db4objects.Db4o.YapConst.ID_LENGTH * 2;
-			Db4objects.Db4o.Foundation.IIntIterator4 idIterator = qr.IterateIDs();
-			for (int i = 0; i < size; i++)
-			{
-				idIterator.MoveNext();
-				WriteInt(idIterator.CurrentInt());
-				_offset -= dec;
-			}
-		}
-
 		internal void WriteShortString(string a_string)
 		{
 			WriteShortString(i_trans, a_string);
@@ -542,6 +527,27 @@ namespace Db4objects.Db4o
 			{
 				SetID(Db4objects.Db4o.YapConst.IGNORE_ID);
 			}
+		}
+
+		public void WriteIDs(Db4objects.Db4o.Foundation.IIntIterator4 idIterator, int maxCount
+			)
+		{
+			int savedOffset = _offset;
+			WriteInt(0);
+			int actualCount = 0;
+			while (idIterator.MoveNext())
+			{
+				WriteInt(idIterator.CurrentInt());
+				actualCount++;
+				if (actualCount >= maxCount)
+				{
+					break;
+				}
+			}
+			int secondSavedOffset = _offset;
+			_offset = savedOffset;
+			WriteInt(actualCount);
+			_offset = secondSavedOffset;
 		}
 	}
 }

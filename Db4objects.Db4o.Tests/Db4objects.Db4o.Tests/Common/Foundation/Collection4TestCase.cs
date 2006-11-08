@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 			public void Run()
 			{
-				System.Console.Out.WriteLine(i.Current);
+				Sharpen.Runtime.Out.WriteLine(i.Current);
 			}
 
 			private readonly Collection4TestCase _enclosing;

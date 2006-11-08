@@ -1,5 +1,6 @@
 namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 {
+	[System.Serializable]
 	public class STIntegerWUTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
 	{
 		public object i_int;
@@ -152,13 +153,13 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			Db4objects.Db4o.Query.IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STIntegerWUTestCase
 				());
-			q.Constrain(new _AnonymousInnerClass135(this));
+			q.Constrain(new _AnonymousInnerClass137(this));
 			Expect(q, new int[] { 2, 3 });
 		}
 
-		private sealed class _AnonymousInnerClass135 : Db4objects.Db4o.Query.IEvaluation
+		private sealed class _AnonymousInnerClass137 : Db4objects.Db4o.Query.IEvaluation
 		{
-			public _AnonymousInnerClass135(STIntegerWUTestCase _enclosing)
+			public _AnonymousInnerClass137(STIntegerWUTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

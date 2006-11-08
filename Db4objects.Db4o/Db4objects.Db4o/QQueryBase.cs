@@ -25,8 +25,11 @@ namespace Db4objects.Db4o
 
 		public string i_field;
 
+		public bool _lazy;
+
 		public Db4objects.Db4o.Query.IQueryComparator _comparator;
 
+		[Db4objects.Db4o.Transient]
 		private readonly Db4objects.Db4o.QQuery _this;
 
 		protected QQueryBase()
@@ -267,7 +270,7 @@ namespace Db4objects.Db4o
 			{
 				run[0] = 0;
 				bool[] anyClassCollected = { false };
-				Stream().ClassCollection().AttachQueryNode(a_field, new _AnonymousInnerClass235(this
+				Stream().ClassCollection().AttachQueryNode(a_field, new _AnonymousInnerClass239(this
 					, anyClassCollected));
 			}
 			System.Collections.IEnumerator i = IterateConstraints();
@@ -281,9 +284,9 @@ namespace Db4objects.Db4o
 			return foundClass[0];
 		}
 
-		private sealed class _AnonymousInnerClass235 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass239 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass235(QQueryBase _enclosing, bool[] anyClassCollected)
+			public _AnonymousInnerClass239(QQueryBase _enclosing, bool[] anyClassCollected)
 			{
 				this._enclosing = _enclosing;
 				this.anyClassCollected = anyClassCollected;
@@ -413,18 +416,18 @@ namespace Db4objects.Db4o
 				();
 			System.Collections.IEnumerator candidateCollection = new Db4objects.Db4o.Foundation.Iterator4Impl
 				(r.candidateCollection);
-			Db4objects.Db4o.Foundation.MappingIterator executeCandidates = new _AnonymousInnerClass370
+			Db4objects.Db4o.Foundation.MappingIterator executeCandidates = new _AnonymousInnerClass374
 				(this, executionPath, candidateCollection);
 			Db4objects.Db4o.Foundation.CompositeIterator4 executeAllCandidates = new Db4objects.Db4o.Foundation.CompositeIterator4
 				(executeCandidates);
-			Db4objects.Db4o.Foundation.MappingIterator checkDuplicates = new _AnonymousInnerClass378
+			Db4objects.Db4o.Foundation.MappingIterator checkDuplicates = new _AnonymousInnerClass382
 				(this, r, executeAllCandidates);
 			return checkDuplicates;
 		}
 
-		private sealed class _AnonymousInnerClass370 : Db4objects.Db4o.Foundation.MappingIterator
+		private sealed class _AnonymousInnerClass374 : Db4objects.Db4o.Foundation.MappingIterator
 		{
-			public _AnonymousInnerClass370(QQueryBase _enclosing, Db4objects.Db4o.Foundation.Collection4
+			public _AnonymousInnerClass374(QQueryBase _enclosing, Db4objects.Db4o.Foundation.Collection4
 				 executionPath, System.Collections.IEnumerator baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
@@ -441,9 +444,9 @@ namespace Db4objects.Db4o
 			private readonly Db4objects.Db4o.Foundation.Collection4 executionPath;
 		}
 
-		private sealed class _AnonymousInnerClass378 : Db4objects.Db4o.Foundation.MappingIterator
+		private sealed class _AnonymousInnerClass382 : Db4objects.Db4o.Foundation.MappingIterator
 		{
-			public _AnonymousInnerClass378(QQueryBase _enclosing, Db4objects.Db4o.QQueryBase.CreateCandidateCollectionResult
+			public _AnonymousInnerClass382(QQueryBase _enclosing, Db4objects.Db4o.QQueryBase.CreateCandidateCollectionResult
 				 r, Db4objects.Db4o.Foundation.CompositeIterator4 baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
@@ -508,8 +511,7 @@ namespace Db4objects.Db4o
 					}
 					else
 					{
-						Db4objects.Db4o.QQueryBase q = this;
-						candidates.Traverse(new _AnonymousInnerClass437(this, executionPath, stream, result
+						candidates.Traverse(new _AnonymousInnerClass440(this, executionPath, stream, result
 							));
 					}
 				}
@@ -517,9 +519,9 @@ namespace Db4objects.Db4o
 			Sort(result);
 		}
 
-		private sealed class _AnonymousInnerClass437 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass440 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass437(QQueryBase _enclosing, Db4objects.Db4o.Foundation.Collection4
+			public _AnonymousInnerClass440(QQueryBase _enclosing, Db4objects.Db4o.Foundation.Collection4
 				 executionPath, Db4objects.Db4o.YapStream stream, Db4objects.Db4o.Inside.Query.IdListQueryResult
 				 result)
 			{
@@ -543,20 +545,20 @@ namespace Db4objects.Db4o
 						string fieldName = (string)(itPath.Current);
 						if (ids != null)
 						{
-							ids.Traverse(new _AnonymousInnerClass448(this, stream, idsNew, fieldName));
+							ids.Traverse(new _AnonymousInnerClass451(this, stream, idsNew, fieldName));
 						}
 						ids = idsNew[0];
 					}
 					if (ids != null)
 					{
-						ids.Traverse(new _AnonymousInnerClass468(this, result));
+						ids.Traverse(new _AnonymousInnerClass471(this, result));
 					}
 				}
 			}
 
-			private sealed class _AnonymousInnerClass448 : Db4objects.Db4o.Foundation.IVisitor4
+			private sealed class _AnonymousInnerClass451 : Db4objects.Db4o.Foundation.IVisitor4
 			{
-				public _AnonymousInnerClass448(_AnonymousInnerClass437 _enclosing, Db4objects.Db4o.YapStream
+				public _AnonymousInnerClass451(_AnonymousInnerClass440 _enclosing, Db4objects.Db4o.YapStream
 					 stream, Db4objects.Db4o.TreeInt[] idsNew, string fieldName)
 				{
 					this._enclosing = _enclosing;
@@ -579,7 +581,7 @@ namespace Db4objects.Db4o
 					}
 				}
 
-				private readonly _AnonymousInnerClass437 _enclosing;
+				private readonly _AnonymousInnerClass440 _enclosing;
 
 				private readonly Db4objects.Db4o.YapStream stream;
 
@@ -588,9 +590,9 @@ namespace Db4objects.Db4o
 				private readonly string fieldName;
 			}
 
-			private sealed class _AnonymousInnerClass468 : Db4objects.Db4o.Foundation.IVisitor4
+			private sealed class _AnonymousInnerClass471 : Db4objects.Db4o.Foundation.IVisitor4
 			{
-				public _AnonymousInnerClass468(_AnonymousInnerClass437 _enclosing, Db4objects.Db4o.Inside.Query.IdListQueryResult
+				public _AnonymousInnerClass471(_AnonymousInnerClass440 _enclosing, Db4objects.Db4o.Inside.Query.IdListQueryResult
 					 result)
 				{
 					this._enclosing = _enclosing;
@@ -602,7 +604,7 @@ namespace Db4objects.Db4o
 					result.AddKeyCheckDuplicates(((Db4objects.Db4o.TreeInt)treeInt)._key);
 				}
 
-				private readonly _AnonymousInnerClass437 _enclosing;
+				private readonly _AnonymousInnerClass440 _enclosing;
 
 				private readonly Db4objects.Db4o.Inside.Query.IdListQueryResult result;
 			}
@@ -821,6 +823,16 @@ namespace Db4objects.Db4o
 		public virtual Db4objects.Db4o.Query.IQueryComparator Comparator()
 		{
 			return _comparator;
+		}
+
+		public virtual bool IsLazy()
+		{
+			return _lazy;
+		}
+
+		public virtual void SetLazy(bool flag)
+		{
+			_lazy = flag;
 		}
 	}
 }

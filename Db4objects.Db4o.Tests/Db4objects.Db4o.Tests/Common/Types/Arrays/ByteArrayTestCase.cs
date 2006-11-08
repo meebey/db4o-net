@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 			while (os.HasNext())
 			{
 				Db4oUnit.Assert.AreEqual(ARRAY_LENGTH, ((Db4objects.Db4o.Tests.Common.Types.Arrays.ByteArrayTestCase.IIByteArrayHolder
-					)os.Next()).GetBytes().Length);
+					)os.Next()).GetBytes().Length, label);
 			}
 		}
 

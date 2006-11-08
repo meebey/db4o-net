@@ -2,15 +2,14 @@ namespace Db4objects.Db4o.CS.Messages
 {
 	public class MObjectByUuid : Db4objects.Db4o.CS.Messages.MsgD
 	{
-		public sealed override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
 			long uuid = ReadLong();
 			byte[] signature = ReadBytes();
 			int id = 0;
-			Db4objects.Db4o.YapStream stream = GetStream();
-			Db4objects.Db4o.Transaction trans = GetTransaction();
-			lock (stream.i_lock)
+			Db4objects.Db4o.Transaction trans = Transaction();
+			lock (StreamLock())
 			{
 				try
 				{
@@ -25,8 +24,8 @@ namespace Db4objects.Db4o.CS.Messages
 				{
 				}
 			}
-			Db4objects.Db4o.CS.Messages.Msg.OBJECT_BY_UUID.GetWriterForInt(trans, id).Write(stream
-				, sock);
+			serverThread.Write(Db4objects.Db4o.CS.Messages.Msg.OBJECT_BY_UUID.GetWriterForInt
+				(trans, id));
 			return true;
 		}
 	}

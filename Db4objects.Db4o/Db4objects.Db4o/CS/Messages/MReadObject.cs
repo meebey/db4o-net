@@ -2,16 +2,15 @@ namespace Db4objects.Db4o.CS.Messages
 {
 	public sealed class MReadObject : Db4objects.Db4o.CS.Messages.MsgD
 	{
-		public sealed override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
 			Db4objects.Db4o.YapWriter bytes = null;
-			Db4objects.Db4o.YapStream stream = GetStream();
-			lock (stream.i_lock)
+			lock (StreamLock())
 			{
 				try
 				{
-					bytes = stream.ReadWriterByID(this.GetTransaction(), this._payLoad.ReadInt());
+					bytes = Stream().ReadWriterByID(Transaction(), _payLoad.ReadInt());
 				}
 				catch
 				{
@@ -19,10 +18,10 @@ namespace Db4objects.Db4o.CS.Messages
 			}
 			if (bytes == null)
 			{
-				bytes = new Db4objects.Db4o.YapWriter(this.GetTransaction(), 0, 0);
+				bytes = new Db4objects.Db4o.YapWriter(Transaction(), 0, 0);
 			}
-			Db4objects.Db4o.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter(bytes).Write(stream, sock
-				);
+			serverThread.Write(Db4objects.Db4o.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter(bytes
+				));
 			return true;
 		}
 	}

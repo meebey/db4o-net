@@ -27,6 +27,7 @@ namespace Db4oUnit.Extensions
 			_fixture.Open();
 			Db4oSetupBeforeStore();
 			Store();
+			_fixture.Db().Commit();
 			_fixture.Close();
 			_fixture.Open();
 			Db4oSetupAfterStore();

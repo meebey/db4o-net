@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual Db4objects.Db4o.Foundation.IIntIterator4 IntIterator()
 		{
-			return new Db4objects.Db4o.Foundation.ReverseIntIterator4Impl(i_content, i_count);
+			return new Db4objects.Db4o.Foundation.IntIterator4Impl(i_content, i_count);
 		}
 
 		public virtual System.Collections.IEnumerator GetEnumerator()

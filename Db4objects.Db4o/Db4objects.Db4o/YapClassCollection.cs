@@ -9,7 +9,7 @@ namespace Db4objects.Db4o
 
 		private readonly Db4objects.Db4o.Transaction _systemTransaction;
 
-		protected Db4objects.Db4o.Foundation.Hashtable4 i_yapClassByBytes;
+		private Db4objects.Db4o.Foundation.Hashtable4 i_yapClassByBytes;
 
 		private Db4objects.Db4o.Foundation.Hashtable4 i_yapClassByClass;
 
@@ -277,7 +277,7 @@ namespace Db4objects.Db4o
 			return 0;
 		}
 
-		protected byte[] GetNameBytes(string name)
+		private byte[] GetNameBytes(string name)
 		{
 			return AsBytes(ResolveAlias(name));
 		}
@@ -567,7 +567,7 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		protected Db4objects.Db4o.YapStream Stream()
+		private Db4objects.Db4o.YapStream Stream()
 		{
 			return _systemTransaction.Stream();
 		}

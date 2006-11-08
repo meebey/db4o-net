@@ -8,11 +8,14 @@ namespace Db4objects.Db4o.Tests.CLI1
 		{
 			return new System.Type[]
 				{
+#if !CF_1_0 && !CF_2_0
+					typeof(CsAppDomains),
+					typeof(CsAssemblyVersionChange),
+					typeof(CsImage),
+#endif
 					typeof(Events.EventRegistryTestCase),
 					typeof(Inside.AllTests),
 					typeof(NativeQueries.AllTests),
-					typeof(CsAppDomains),
-					typeof(CsAssemblyVersionChange),
 					typeof(CsCascadeDeleteToStructs),
 					typeof(CsCollections),
 					typeof(CsCustomTransientAttribute),
@@ -21,7 +24,6 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(CsDisposableTestCase),
 					typeof(CsEnum),
 					typeof(CsEvaluationDelegate),
-					typeof(CsImage),
 					typeof(CsMarshalByRef),
 					typeof(CsType),
 					typeof(CsStructs),

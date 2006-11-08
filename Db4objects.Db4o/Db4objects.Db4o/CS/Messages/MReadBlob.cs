@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.CS.Messages
 			sock)
 		{
 			Db4objects.Db4o.CS.Messages.Msg message = Db4objects.Db4o.CS.Messages.Msg.ReadMessage
-				(GetTransaction(), sock);
+				(Transaction(), sock);
 			if (message.Equals(Db4objects.Db4o.CS.Messages.Msg.LENGTH))
 			{
 				try
@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.CS.Messages
 					_blob.GetStatusFrom(this);
 					_blob.SetStatus(Db4objects.Db4o.Ext.Status.PROCESSING);
 					Copy(sock, this._blob.GetClientOutputStream(), _length, true);
-					message = Db4objects.Db4o.CS.Messages.Msg.ReadMessage(GetTransaction(), sock);
+					message = Db4objects.Db4o.CS.Messages.Msg.ReadMessage(Transaction(), sock);
 					if (message.Equals(Db4objects.Db4o.CS.Messages.Msg.OK))
 					{
 						this._blob.SetStatus(Db4objects.Db4o.Ext.Status.COMPLETED);
@@ -39,20 +39,21 @@ namespace Db4objects.Db4o.CS.Messages
 			}
 		}
 
-		public override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		public override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
-			Db4objects.Db4o.YapStream stream = GetStream();
+			Db4objects.Db4o.YapStream stream = Stream();
 			try
 			{
 				Db4objects.Db4o.BlobImpl blobImpl = this.ServerGetBlobImpl();
 				if (blobImpl != null)
 				{
-					blobImpl.SetTrans(GetTransaction());
+					blobImpl.SetTrans(Transaction());
 					Sharpen.IO.File file = blobImpl.ServerFile(null, false);
 					int length = (int)file.Length();
-					Db4objects.Db4o.CS.Messages.Msg.LENGTH.GetWriterForInt(GetTransaction(), length).
-						Write(stream, sock);
+					Db4objects.Db4o.Foundation.Network.IYapSocket sock = serverThread.Socket();
+					Db4objects.Db4o.CS.Messages.Msg.LENGTH.GetWriterForInt(Transaction(), length).Write
+						(stream, sock);
 					Sharpen.IO.FileInputStream fin = new Sharpen.IO.FileInputStream(file);
 					Copy(fin, sock, false);
 					sock.Flush();
@@ -61,7 +62,7 @@ namespace Db4objects.Db4o.CS.Messages
 			}
 			catch
 			{
-				Db4objects.Db4o.CS.Messages.Msg.ERROR.Write(stream, sock);
+				serverThread.Write(Db4objects.Db4o.CS.Messages.Msg.ERROR);
 			}
 			return true;
 		}

@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{20D4826A-C6FA-45DB-90F4-C717570B9F32}") = "Db4objects.Db4o.Tools-CF-2003", "Db4objects.Db4o.Tools-CF-2003.csdproj", "{5C23E36F-399B-4312-AA6D-86829A85B46B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{20D4826A-C6FA-45DB-90F4-C717570B9F32}") = "Db4objects.Db4o-CF-2003", "..\Db4objects.Db4o\Db4objects.Db4o-CF-2003.csdproj", "{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{5C23E36F-399B-4312-AA6D-86829A85B46B}.Debug.ActiveCfg = Debug|Pocket PC
+		{5C23E36F-399B-4312-AA6D-86829A85B46B}.Debug.Build.0 = Debug|Pocket PC
+		{5C23E36F-399B-4312-AA6D-86829A85B46B}.Debug.Deploy.0 = Debug|Pocket PC
+		{5C23E36F-399B-4312-AA6D-86829A85B46B}.Release.ActiveCfg = Release|Pocket PC
+		{5C23E36F-399B-4312-AA6D-86829A85B46B}.Release.Build.0 = Release|Pocket PC
+		{5C23E36F-399B-4312-AA6D-86829A85B46B}.Release.Deploy.0 = Release|Pocket PC
+		{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}.Debug.ActiveCfg = Debug|Pocket PC
+		{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}.Debug.Build.0 = Debug|Pocket PC
+		{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}.Debug.Deploy.0 = Debug|Pocket PC
+		{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}.Release.ActiveCfg = Release|Pocket PC
+		{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}.Release.Build.0 = Release|Pocket PC
+		{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}.Release.Deploy.0 = Release|Pocket PC
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

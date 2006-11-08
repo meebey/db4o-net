@@ -11,8 +11,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void Test()
 		{
 			Db4objects.Db4o.Ext.IExtObjectContainer oc = this.Db();
-			string msg = oc is Db4objects.Db4o.CS.YapClient ? "running in C/S" : "Solo mode";
-			System.Console.Out.WriteLine(msg);
 			Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleItem @object = new Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleItem
 				("c1");
 			oc.Set(@object);

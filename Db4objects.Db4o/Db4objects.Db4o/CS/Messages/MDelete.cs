@@ -2,20 +2,20 @@ namespace Db4objects.Db4o.CS.Messages
 {
 	public sealed class MDelete : Db4objects.Db4o.CS.Messages.MsgD
 	{
-		public sealed override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
 			Db4objects.Db4o.YapReader bytes = this.GetByteLoad();
-			Db4objects.Db4o.YapStream stream = GetStream();
-			lock (stream.i_lock)
+			Db4objects.Db4o.YapStream stream = Stream();
+			lock (StreamLock())
 			{
-				object obj = stream.GetByID1(GetTransaction(), bytes.ReadInt());
+				object obj = stream.GetByID1(Transaction(), bytes.ReadInt());
 				bool userCall = bytes.ReadInt() == 1;
 				if (obj != null)
 				{
 					try
 					{
-						stream.Delete1(GetTransaction(), obj, userCall);
+						stream.Delete1(Transaction(), obj, userCall);
 					}
 					catch
 					{

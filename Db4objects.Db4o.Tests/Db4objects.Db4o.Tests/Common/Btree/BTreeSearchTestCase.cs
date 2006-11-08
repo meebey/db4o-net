@@ -1,6 +1,7 @@
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
 	public class BTreeSearchTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutDefragSolo
+		, Db4oUnit.Extensions.Fixtures.IOptOutCS
 	{
 		protected const int BTREE_NODE_SIZE = 4;
 

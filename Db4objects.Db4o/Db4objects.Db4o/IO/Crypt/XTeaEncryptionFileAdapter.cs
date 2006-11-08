@@ -162,10 +162,10 @@ namespace Db4objects.Db4o.IO.Crypt
 
 		private void Log(string msg, byte[] buf)
 		{
-			System.Console.Out.WriteLine("\n " + msg);
+			Sharpen.Runtime.Out.WriteLine("\n " + msg);
 			for (int idx = 0; idx < buf.Length; idx++)
 			{
-				System.Console.Out.Write(buf[idx] + " ");
+				Sharpen.Runtime.Out.Write(buf[idx] + " ");
 			}
 		}
 	}

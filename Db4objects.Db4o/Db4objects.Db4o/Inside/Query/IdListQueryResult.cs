@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Inside.Query
 
 		private bool _checkDuplicates;
 
-		private readonly Db4objects.Db4o.Foundation.IntArrayList _ids;
+		public readonly Db4objects.Db4o.Foundation.IntArrayList _ids;
 
 		public IdListQueryResult(Db4objects.Db4o.Transaction trans, int initialSize) : base
 			(trans)
@@ -29,12 +29,17 @@ namespace Db4objects.Db4o.Inside.Query
 		{
 			lock (StreamLock())
 			{
-				if (index < 0 || index >= Size())
-				{
-					throw new System.IndexOutOfRangeException();
-				}
-				return ActivatedObject(_ids.Get(index));
+				return ActivatedObject(GetId(index));
 			}
+		}
+
+		public override int GetId(int index)
+		{
+			if (index < 0 || index >= Size())
+			{
+				throw new System.IndexOutOfRangeException();
+			}
+			return _ids.Get(index);
 		}
 
 		public void CheckDuplicates()
@@ -67,49 +72,49 @@ namespace Db4objects.Db4o.Inside.Query
 
 		public override void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
 		{
-			Sort(cmp, 0, Size() - 1);
+			Db4objects.Db4o.Foundation.Algorithms4.Qsort(new _AnonymousInnerClass71(this, cmp
+				));
 		}
 
-		private void Sort(Db4objects.Db4o.Query.IQueryComparator cmp, int from, int to)
+		private sealed class _AnonymousInnerClass71 : Db4objects.Db4o.Foundation.IQuickSortable4
 		{
-			if (to - from < 1)
+			public _AnonymousInnerClass71(IdListQueryResult _enclosing, Db4objects.Db4o.Query.IQueryComparator
+				 cmp)
 			{
-				return;
+				this._enclosing = _enclosing;
+				this.cmp = cmp;
 			}
-			object pivot = Get(to);
-			int left = from;
-			int right = to;
-			while (left < right)
-			{
-				while (left < right && cmp.Compare(pivot, Get(left)) < 0)
-				{
-					left++;
-				}
-				while (left < right && cmp.Compare(pivot, Get(right)) >= 0)
-				{
-					right--;
-				}
-				Swap(left, right);
-			}
-			Swap(to, right);
-			Sort(cmp, from, right - 1);
-			Sort(cmp, right + 1, to);
-		}
 
-		private void Swap(int left, int right)
-		{
-			_ids.Swap(left, right);
+			public void Swap(int leftIndex, int rightIndex)
+			{
+				this._enclosing._ids.Swap(leftIndex, rightIndex);
+			}
+
+			public int Size()
+			{
+				return this._enclosing.Size();
+			}
+
+			public int Compare(int leftIndex, int rightIndex)
+			{
+				return cmp.Compare(this._enclosing.Get(leftIndex), this._enclosing.Get(rightIndex
+					));
+			}
+
+			private readonly IdListQueryResult _enclosing;
+
+			private readonly Db4objects.Db4o.Query.IQueryComparator cmp;
 		}
 
 		public override void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)
 		{
 			Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy index = clazz.Index();
-			index.TraverseAll(_transaction, new _AnonymousInnerClass105(this));
+			index.TraverseAll(_transaction, new _AnonymousInnerClass86(this));
 		}
 
-		private sealed class _AnonymousInnerClass105 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass86 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass105(IdListQueryResult _enclosing)
+			public _AnonymousInnerClass86(IdListQueryResult _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -142,15 +147,15 @@ namespace Db4objects.Db4o.Inside.Query
 						)))
 					{
 						Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy index = yapClass.Index();
-						index.TraverseAll(_transaction, new _AnonymousInnerClass128(this, duplicates));
+						index.TraverseAll(_transaction, new _AnonymousInnerClass109(this, duplicates));
 					}
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass128 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass109 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass128(IdListQueryResult _enclosing, Db4objects.Db4o.Foundation.Tree[]
+			public _AnonymousInnerClass109(IdListQueryResult _enclosing, Db4objects.Db4o.Foundation.Tree[]
 				 duplicates)
 			{
 				this._enclosing = _enclosing;

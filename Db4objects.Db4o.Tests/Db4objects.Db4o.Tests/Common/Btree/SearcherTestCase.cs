@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			for (int i = 0; i < searches.Length; i++)
 			{
 				int res = Search(evenValues, searches[i]);
-				System.Console.Out.WriteLine(res);
+				Sharpen.Runtime.Out.WriteLine(res);
 			}
 		}
 

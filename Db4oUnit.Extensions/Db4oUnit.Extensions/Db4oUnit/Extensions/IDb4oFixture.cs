@@ -2,6 +2,8 @@ namespace Db4oUnit.Extensions
 {
 	public interface IDb4oFixture
 	{
+		string GetLabel();
+
 		void Open();
 
 		void Close();

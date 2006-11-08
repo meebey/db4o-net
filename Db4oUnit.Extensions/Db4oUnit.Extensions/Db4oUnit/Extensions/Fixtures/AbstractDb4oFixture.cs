@@ -49,6 +49,8 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public abstract Db4objects.Db4o.Ext.IExtObjectContainer Db();
 
+		public abstract string GetLabel();
+
 		public abstract void Open();
 	}
 }

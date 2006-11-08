@@ -1,26 +1,27 @@
 namespace Db4objects.Db4o.CS.Messages
 {
-	public sealed class MGetAll : Db4objects.Db4o.CS.Messages.Msg
+	public sealed class MGetAll : Db4objects.Db4o.CS.Messages.MsgQuery
 	{
-		public sealed override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
-			WriteQueryResult(GetAll(), sock);
+			bool lazy = ReadBoolean();
+			WriteQueryResult(GetAll(lazy), serverThread, lazy);
 			return true;
 		}
 
-		private Db4objects.Db4o.Inside.Query.IQueryResult GetAll()
+		private Db4objects.Db4o.Inside.Query.AbstractQueryResult GetAll(bool lazy)
 		{
 			lock (StreamLock())
 			{
 				try
 				{
-					return GetStream().GetAll(GetTransaction());
+					return File().GetAll(Transaction(), lazy);
 				}
 				catch (System.Exception e)
 				{
 				}
-				return GetStream().NewQueryResult(GetTransaction());
+				return NewQueryResult(false);
 			}
 		}
 	}

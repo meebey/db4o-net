@@ -3,23 +3,13 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class Algorithms4
 	{
-		public interface IQuickSortable4
-		{
-			int Size();
-
-			int Compare(int leftIndex, int rightIndex);
-
-			void Swap(int leftIndex, int rightIndex);
-		}
-
-		public static void Qsort(Db4objects.Db4o.Foundation.Algorithms4.IQuickSortable4 sortable
-			)
+		public static void Qsort(Db4objects.Db4o.Foundation.IQuickSortable4 sortable)
 		{
 			Qsort(sortable, 0, sortable.Size() - 1);
 		}
 
-		private static void Qsort(Db4objects.Db4o.Foundation.Algorithms4.IQuickSortable4 
-			sortable, int from, int to)
+		public static void Qsort(Db4objects.Db4o.Foundation.IQuickSortable4 sortable, int
+			 from, int to)
 		{
 			if (to - from < 1)
 			{
@@ -30,11 +20,11 @@ namespace Db4objects.Db4o.Foundation
 			int right = to;
 			while (left < right)
 			{
-				while (left < right && sortable.Compare(pivot, left) < 0)
+				while (left < right && sortable.Compare(left, pivot) < 0)
 				{
 					left++;
 				}
-				while (left < right && sortable.Compare(pivot, right) >= 0)
+				while (left < right && sortable.Compare(right, pivot) >= 0)
 				{
 					right--;
 				}
@@ -45,8 +35,8 @@ namespace Db4objects.Db4o.Foundation
 			Qsort(sortable, right + 1, to);
 		}
 
-		private static void Swap(Db4objects.Db4o.Foundation.Algorithms4.IQuickSortable4 sortable
-			, int left, int right)
+		private static void Swap(Db4objects.Db4o.Foundation.IQuickSortable4 sortable, int
+			 left, int right)
 		{
 			if (left == right)
 			{

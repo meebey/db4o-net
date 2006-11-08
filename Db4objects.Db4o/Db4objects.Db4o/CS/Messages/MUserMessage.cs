@@ -2,17 +2,20 @@ namespace Db4objects.Db4o.CS.Messages
 {
 	public sealed class MUserMessage : Db4objects.Db4o.CS.Messages.MsgObject
 	{
-		public sealed override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
-			Db4objects.Db4o.YapStream stream = GetStream();
-			if (stream.ConfigImpl().MessageRecipient() != null)
+			if (MessageRecipient() != null)
 			{
-				this.Unmarshall();
-				stream.ConfigImpl().MessageRecipient().ProcessMessage(stream, stream.Unmarshall(_payLoad
-					));
+				Unmarshall();
+				MessageRecipient().ProcessMessage(Stream(), Stream().Unmarshall(_payLoad));
 			}
 			return true;
+		}
+
+		private Db4objects.Db4o.Messaging.IMessageRecipient MessageRecipient()
+		{
+			return Config().MessageRecipient();
 		}
 	}
 }

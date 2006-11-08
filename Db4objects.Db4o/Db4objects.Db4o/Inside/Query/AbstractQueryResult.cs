@@ -12,8 +12,7 @@ namespace Db4objects.Db4o.Inside.Query
 
 		public object Activate(object obj)
 		{
-			Db4objects.Db4o.YapStream stream = Stream();
-			stream.Activate1(_transaction, obj, stream.ConfigImpl().ActivationDepth());
+			Stream().Activate1(_transaction, obj, Config().ActivationDepth());
 			return obj;
 		}
 
@@ -52,12 +51,12 @@ namespace Db4objects.Db4o.Inside.Query
 
 		public virtual System.Collections.IEnumerator GetEnumerator()
 		{
-			return new _AnonymousInnerClass55(this, IterateIDs());
+			return new _AnonymousInnerClass54(this, IterateIDs());
 		}
 
-		private sealed class _AnonymousInnerClass55 : Db4objects.Db4o.Foundation.MappingIterator
+		private sealed class _AnonymousInnerClass54 : Db4objects.Db4o.Foundation.MappingIterator
 		{
-			public _AnonymousInnerClass55(AbstractQueryResult _enclosing, Db4objects.Db4o.Foundation.IIntIterator4
+			public _AnonymousInnerClass54(AbstractQueryResult _enclosing, Db4objects.Db4o.Foundation.IIntIterator4
 				 baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
@@ -121,20 +120,27 @@ namespace Db4objects.Db4o.Inside.Query
 			return new Db4objects.Db4o.Inside.Query.IdTreeQueryResult(Transaction(), this);
 		}
 
+		public abstract void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz);
+
+		public abstract void LoadFromQuery(Db4objects.Db4o.QQuery query);
+
+		public abstract void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
+			 iterator);
+
+		public abstract void LoadFromIdReader(Db4objects.Db4o.YapReader reader);
+
+		public virtual Db4objects.Db4o.Config4Impl Config()
+		{
+			return Stream().Config();
+		}
+
+		public abstract int GetId(int index);
+
 		public abstract object Get(int arg1);
 
 		public abstract int IndexOf(int arg1);
 
 		public abstract Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs();
-
-		public abstract void LoadFromClassIndex(Db4objects.Db4o.YapClass arg1);
-
-		public abstract void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
-			 arg1);
-
-		public abstract void LoadFromIdReader(Db4objects.Db4o.YapReader arg1);
-
-		public abstract void LoadFromQuery(Db4objects.Db4o.QQuery arg1);
 
 		public abstract int Size();
 

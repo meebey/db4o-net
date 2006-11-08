@@ -1,0 +1,286 @@
+<VisualStudioProject>
+    <ECSHARP
+        ProjectType = "Local"
+        ProductVersion = "7.10.3077"
+        SchemaVersion = "1.0"
+        ProjectGuid = "{998BD8EB-BE5D-43C0-9EDB-51D11591C8FE}"
+    >
+        <Build>
+            <Settings
+                ApplicationIcon = ""
+                AssemblyKeyContainerName = ""
+                AssemblyName = "Db4oUnit"
+                AssemblyOriginatorKeyFile = ""
+                DelaySign = "false"
+                OutputType = "Library"
+                OutputFileFolder = "\Program Files\Db4oUnit-CF-2003"
+                RootNamespace = "Db4oUnit"
+                StartupObject = ""
+            >
+                <Platform Name = "Pocket PC" />
+                <Config
+                    Name = "Debug|Pocket PC"
+                    AllowUnsafeBlocks = "false"
+                    BaseAddress = "0"
+                    CheckForOverflowUnderflow = "false"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "CF_1_0"
+                    DocumentationFile = ""
+                    DebugSymbols = "true"
+                    FileAlignment = "4096"
+                    IncrementalBuild = "false"
+                    Optimize = "false"
+                    OutputPath = "bin\Debug\"
+                    RegisterForComInterop = "false"
+                    RemoveIntegerChecks = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                />
+                <Config
+                    Name = "Release|Pocket PC"
+                    AllowUnsafeBlocks = "false"
+                    BaseAddress = "0"
+                    CheckForOverflowUnderflow = "false"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "CF_1_0"
+                    DocumentationFile = ""
+                    DebugSymbols = "false"
+                    FileAlignment = "4096"
+                    IncrementalBuild = "false"
+                    Optimize = "true"
+                    OutputPath = "bin\Release\"
+                    RegisterForComInterop = "false"
+                    RemoveIntegerChecks = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                />
+            </Settings>
+            <References>
+                <Reference
+                    Platform = "Pocket PC"
+                    Name = "MSCorLib"
+                    AssemblyName = "mscorlib"
+                    Private = "False"
+                />
+                <Reference
+                    Platform = "Pocket PC"
+                    Name = "System"
+                    AssemblyName = "System"
+                    Private = "False"
+                />
+                <Reference
+                    Platform = "Pocket PC"
+                    Name = "System.XML"
+                    AssemblyName = "System.Xml"
+                    Private = "False"
+                />
+                <Reference
+                    Platform = "Pocket PC-Designer"
+                    Name = "System.CF.Design"
+                    AssemblyName = "System.CF.Design"
+                    Private = "False"
+                />
+                <Reference
+                    Platform = "Pocket PC-Designer"
+                    Name = "System.CF.Design.UI"
+                    AssemblyName = "System.CF.Design.UI"
+                    Private = "False"
+                />
+                <Reference
+                    Platform = "Pocket PC-Designer"
+                    Name = "System.CF.Windows.Forms"
+                    AssemblyName = "System.CF.Windows.Forms"
+                    Private = "False"
+                />
+                <Reference
+                    Platform = "Pocket PC-Designer"
+                    Name = "System.CF.Drawing"
+                    AssemblyName = "System.CF.Drawing"
+                    Private = "False"
+                />
+                <Reference
+                    Platform = "Pocket PC-Designer"
+                    Name = "System"
+                    AssemblyName = "System"
+                    Private = "False"
+                />
+            </References>
+        </Build>
+        <Files>
+            <Include>
+                <File
+                    RelPath = "Db4oUnit\ArrayAssert.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\Assert.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\AssertionException.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\ICodeBlock.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\ITest.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\ITestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\ITestLifeCycle.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\ITestSuiteBuilder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\NullTest.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\NullTestSuiteBuilder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\Printable.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\ReflectionTestSuiteBuilder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\SetupFailureException.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\TearDownFailureException.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\TestFailure.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\TestFailureCollection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\TestMethod.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\TestResult.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\TestRunner.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\TestSuite.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\Tests\AllTests.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\Tests\AssertTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\Tests\FrameworkTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\Tests\ReflectionTestSuiteBuilderTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\Tests\ReinstantiatePerMethodTest.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\Tests\RunsGreen.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\Tests\RunsLifeCycle.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\Tests\RunsRed.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Db4oUnit\Tests\TestLifeCycleTestCase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <Folder RelPath = "Db4oUnit\Util\" />
+                <File
+                    RelPath = "native\Db4oUnit\TestException.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4oUnit\TestPlatform.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4oUnit\compact\SerializableAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "native\Db4oUnit\Util\StopWatch.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Properties\AssemblyInfo.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+            </Include>
+        </Files>
+    </ECSHARP>
+</VisualStudioProject>
+

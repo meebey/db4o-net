@@ -26,6 +26,11 @@ namespace Db4objects.Db4o.Inside.Query
 			throw new System.NotImplementedException();
 		}
 
+		public override int GetId(int index)
+		{
+			throw new System.NotImplementedException();
+		}
+
 		public override int IndexOf(int id)
 		{
 			throw new System.NotImplementedException();

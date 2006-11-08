@@ -75,6 +75,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 			field.Init(field.GetParentYapClass(), name);
 			field.Init(spec.HandlerID(), spec.IsPrimitive(), spec.IsArray(), spec.IsNArray());
 			field.LoadHandler(stream);
+			field.Alive();
 			return field;
 		}
 

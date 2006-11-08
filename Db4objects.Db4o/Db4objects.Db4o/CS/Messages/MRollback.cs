@@ -2,10 +2,10 @@ namespace Db4objects.Db4o.CS.Messages
 {
 	public sealed class MRollback : Db4objects.Db4o.CS.Messages.Msg
 	{
-		public sealed override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
-			this.GetTransaction().Rollback();
+			Transaction().Rollback();
 			return true;
 		}
 	}

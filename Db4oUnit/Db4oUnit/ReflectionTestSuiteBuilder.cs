@@ -46,7 +46,7 @@ namespace Db4oUnit
 		{
 			if (!IsApplicable(clazz))
 			{
-				Db4oUnit.TestPlatform.EmitWarning("IGNORED: " + clazz.FullName);
+				Db4oUnit.TestPlatform.EmitWarning("DISABLED: " + clazz.FullName);
 				return new Db4oUnit.TestSuite(new Db4oUnit.ITest[0]);
 			}
 			if (typeof(Db4oUnit.ITestSuiteBuilder).IsAssignableFrom(clazz))
@@ -96,8 +96,8 @@ namespace Db4oUnit
 			{
 				return;
 			}
-			Db4oUnit.TestPlatform.EmitWarning("IGNORED: " + Db4oUnit.TestMethod.CreateLabel(subject
-				, method));
+			Db4oUnit.TestPlatform.EmitWarning("IGNORED: " + CreateTest(subject, method).GetLabel
+				());
 		}
 
 		protected virtual bool IsTestMethod(System.Reflection.MethodInfo method)

@@ -122,7 +122,7 @@ namespace Db4objects.Db4o.CS
 			}
 			try
 			{
-				Db4objects.Db4o.CS.Messages.Msg.COMMIT_OK.Write(this, i_socket);
+				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.COMMIT_OK);
 				ExpectedResponse(Db4objects.Db4o.CS.Messages.Msg.OK);
 			}
 			catch (System.Exception e)
@@ -131,7 +131,7 @@ namespace Db4objects.Db4o.CS
 			}
 			try
 			{
-				Db4objects.Db4o.CS.Messages.Msg.CLOSE.Write(this, i_socket);
+				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.CLOSE);
 			}
 			catch (System.Exception e)
 			{
@@ -173,7 +173,7 @@ namespace Db4objects.Db4o.CS
 		internal virtual Db4objects.Db4o.Foundation.Network.IYapSocket CreateParalellSocket
 			()
 		{
-			Db4objects.Db4o.CS.Messages.Msg.GET_THREAD_ID.Write(this, i_socket);
+			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.GET_THREAD_ID);
 			int serverThreadID = ExpectedByteResponse(Db4objects.Db4o.CS.Messages.Msg.ID_LIST
 				).ReadInt();
 			Db4objects.Db4o.Foundation.Network.IYapSocket sock = i_socket.OpenParalellSocket(
@@ -198,10 +198,10 @@ namespace Db4objects.Db4o.CS
 			return sock;
 		}
 
-		public sealed override Db4objects.Db4o.Inside.Query.IQueryResult NewQueryResult(Db4objects.Db4o.Transaction
-			 a_ta)
+		public override Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult(Db4objects.Db4o.Transaction
+			 trans, bool lazy)
 		{
-			return new Db4objects.Db4o.CS.ClientQueryResult(a_ta);
+			throw new System.InvalidOperationException();
 		}
 
 		public sealed override Db4objects.Db4o.Transaction NewTransaction(Db4objects.Db4o.Transaction
@@ -298,13 +298,12 @@ namespace Db4objects.Db4o.CS
 			return null;
 		}
 
-		public override Db4objects.Db4o.Inside.Query.IQueryResult GetAll(Db4objects.Db4o.Transaction
-			 ta)
+		public override Db4objects.Db4o.Inside.Query.AbstractQueryResult GetAll(Db4objects.Db4o.Transaction
+			 trans)
 		{
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.GET_ALL);
-			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = NewQueryResult(ta);
-			ReadResult(queryResult);
-			return queryResult;
+			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.GET_ALL.GetWriterForBoolean(trans, Config
+				().LazyQueryEvaluation()));
+			return ReadQueryResult(trans);
 		}
 
 		/// <summary>may return null, if no message is returned.</summary>
@@ -657,11 +656,24 @@ namespace Db4objects.Db4o.CS
 			return ReadWriterByID(a_ta, a_id);
 		}
 
-		private void ReadResult(Db4objects.Db4o.Inside.Query.IQueryResult queryResult)
+		private Db4objects.Db4o.Inside.Query.AbstractQueryResult ReadQueryResult(Db4objects.Db4o.Transaction
+			 trans)
 		{
+			Db4objects.Db4o.Inside.Query.AbstractQueryResult queryResult = null;
 			Db4objects.Db4o.YapReader reader = ExpectedByteResponse(Db4objects.Db4o.CS.Messages.Msg
-				.ID_LIST);
+				.QUERY_RESULT);
+			int queryResultID = reader.ReadInt();
+			if (queryResultID > 0)
+			{
+				queryResult = new Db4objects.Db4o.CS.LazyClientQueryResult(trans, this, queryResultID
+					);
+			}
+			else
+			{
+				queryResult = new Db4objects.Db4o.Inside.Query.IdListQueryResult(trans);
+			}
 			queryResult.LoadFromIdReader(reader);
+			return queryResult;
 		}
 
 		internal virtual void ReadThis()
@@ -910,12 +922,11 @@ namespace Db4objects.Db4o.CS
 			 query)
 		{
 			Db4objects.Db4o.Transaction trans = query.GetTransaction();
-			Db4objects.Db4o.Inside.Query.IQueryResult result = NewQueryResult(trans);
+			query.SetLazy(Config().LazyQueryEvaluation());
 			query.Marshall();
 			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.QUERY_EXECUTE.GetWriter(Marshall(trans, 
 				query)));
-			ReadResult(result);
-			return result;
+			return ReadQueryResult(trans);
 		}
 	}
 }

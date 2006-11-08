@@ -812,10 +812,6 @@ namespace Db4objects.Db4o
 			{
 				return false;
 			}
-			if (!(i_stream is Db4objects.Db4o.YapFile))
-			{
-				return false;
-			}
 			return true;
 		}
 
@@ -1069,13 +1065,13 @@ namespace Db4objects.Db4o
 		public virtual Db4objects.Db4o.YapField GetYapField(string name)
 		{
 			Db4objects.Db4o.YapField[] yf = new Db4objects.Db4o.YapField[1];
-			ForEachYapField(new _AnonymousInnerClass904(this, name, yf));
+			ForEachYapField(new _AnonymousInnerClass901(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _AnonymousInnerClass904 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass901 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass904(YapClass _enclosing, string name, Db4objects.Db4o.YapField[]
+			public _AnonymousInnerClass901(YapClass _enclosing, string name, Db4objects.Db4o.YapField[]
 				 yf)
 			{
 				this._enclosing = _enclosing;
@@ -1642,15 +1638,15 @@ namespace Db4objects.Db4o
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1381
+					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1378
 						(this, a_candidates, trans));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1381 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass1378 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass1381(YapClass _enclosing, Db4objects.Db4o.QCandidates 
+			public _AnonymousInnerClass1378(YapClass _enclosing, Db4objects.Db4o.QCandidates 
 				a_candidates, Db4objects.Db4o.Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -2254,7 +2250,14 @@ namespace Db4objects.Db4o
 		public virtual void Defrag(Db4objects.Db4o.Inside.Marshall.MarshallerFamily mf, Db4objects.Db4o.ReaderPair
 			 readers, bool redirect)
 		{
-			readers.CopyID();
+			if (HasIndex())
+			{
+				readers.CopyID();
+			}
+			else
+			{
+				readers.CopyUnindexedID();
+			}
 			int restLength = (LinkLength() - Db4objects.Db4o.YapConst.INT_LENGTH);
 			readers.IncrementOffset(restLength);
 		}

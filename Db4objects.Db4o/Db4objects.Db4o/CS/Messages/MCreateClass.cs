@@ -2,10 +2,10 @@ namespace Db4objects.Db4o.CS.Messages
 {
 	public sealed class MCreateClass : Db4objects.Db4o.CS.Messages.MsgD
 	{
-		public sealed override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
-			Db4objects.Db4o.YapStream stream = GetStream();
+			Db4objects.Db4o.YapStream stream = Stream();
 			Db4objects.Db4o.Transaction trans = stream.GetSystemTransaction();
 			Db4objects.Db4o.YapWriter returnBytes = new Db4objects.Db4o.YapWriter(trans, 0);
 			try
@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.CS.Messages
 					());
 				if (claxx != null)
 				{
-					lock (stream.i_lock)
+					lock (StreamLock())
 					{
 						try
 						{
@@ -26,8 +26,8 @@ namespace Db4objects.Db4o.CS.Messages
 								yapClass.Write(trans);
 								trans.Commit();
 								returnBytes = stream.ReadWriterByID(trans, yapClass.GetID());
-								Db4objects.Db4o.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter(returnBytes).Write(stream
-									, sock);
+								serverThread.Write(Db4objects.Db4o.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter(returnBytes
+									));
 								return true;
 							}
 						}
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.CS.Messages
 			catch
 			{
 			}
-			Db4objects.Db4o.CS.Messages.Msg.FAILED.Write(stream, sock);
+			serverThread.Write(Db4objects.Db4o.CS.Messages.Msg.FAILED);
 			return true;
 		}
 	}

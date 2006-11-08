@@ -1,23 +1,34 @@
 namespace Db4oUnit
 {
+	using System;
+	using System.IO;
 	using System.Reflection;
 
 	public class TestPlatform
 	{
-		public static void PrintStackTrace(System.IO.TextWriter writer, System.Exception 
-			t)
+		// will be assigned from the outside on CF
+		public static TextWriter Out;
+
+#if !CF_1_0
+		static TestPlatform()
 		{
-			writer.Write(t);
+			Out = Console.Out;
+		}
+#endif
+
+		public static void PrintStackTrace(TextWriter writer, Exception e)
+		{
+			writer.Write(e);
 		}
 
-		public static System.IO.TextWriter GetStdOut()
+		public static TextWriter GetStdOut()
 		{
-			return System.Console.Error;
+			return Out;
 		}
 		
 		public static void EmitWarning(string warning)
 		{
-			System.Console.Error.WriteLine(warning);
+			Out.WriteLine(warning);
 		}		
 
 		public static bool IsStatic(MethodInfo method)

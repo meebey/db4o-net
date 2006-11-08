@@ -4,17 +4,39 @@ namespace Db4oUnit
 	/// <remarks>Reflection based db4ounit.Test implementation.</remarks>
 	public class TestMethod : Db4oUnit.ITest
 	{
-		public static string CreateLabel(object subject, System.Reflection.MethodInfo method
-			)
+		public interface ILabelProvider
 		{
-			return subject.GetType().FullName + "." + method.Name;
+			string GetLabel(Db4oUnit.TestMethod method);
 		}
 
-		private object _subject;
+		private sealed class _AnonymousInnerClass15 : Db4oUnit.TestMethod.ILabelProvider
+		{
+			public _AnonymousInnerClass15()
+			{
+			}
 
-		private System.Reflection.MethodInfo _method;
+			public string GetLabel(Db4oUnit.TestMethod method)
+			{
+				return method.GetSubject().GetType().FullName + "." + method.GetMethod().Name;
+			}
+		}
 
-		public TestMethod(object instance, System.Reflection.MethodInfo method)
+		public static Db4oUnit.TestMethod.ILabelProvider DEFAULT_LABEL_PROVIDER = new _AnonymousInnerClass15
+			();
+
+		private readonly object _subject;
+
+		private readonly System.Reflection.MethodInfo _method;
+
+		private readonly Db4oUnit.TestMethod.ILabelProvider _labelProvider;
+
+		public TestMethod(object instance, System.Reflection.MethodInfo method) : this(instance
+			, method, DEFAULT_LABEL_PROVIDER)
+		{
+		}
+
+		public TestMethod(object instance, System.Reflection.MethodInfo method, Db4oUnit.TestMethod.ILabelProvider
+			 labelProvider)
 		{
 			if (null == instance)
 			{
@@ -24,8 +46,13 @@ namespace Db4oUnit
 			{
 				throw new System.ArgumentException("method");
 			}
+			if (null == labelProvider)
+			{
+				throw new System.ArgumentException("labelProvider");
+			}
 			_subject = instance;
 			_method = method;
+			_labelProvider = labelProvider;
 		}
 
 		public virtual object GetSubject()
@@ -40,14 +67,14 @@ namespace Db4oUnit
 
 		public virtual string GetLabel()
 		{
-			return CreateLabel(_subject, _method);
+			return _labelProvider.GetLabel(this);
 		}
 
 		public virtual void Run(Db4oUnit.TestResult result)
 		{
-			result.TestStarted();
 			try
 			{
+				result.TestStarted(this);
 				SetUp();
 				Invoke();
 			}

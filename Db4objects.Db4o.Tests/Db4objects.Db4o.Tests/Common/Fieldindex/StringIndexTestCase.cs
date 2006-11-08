@@ -1,7 +1,7 @@
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
 	/// <exclude></exclude>
-	public class StringIndexTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class StringIndexTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutCS
 	{
 		public static void Main(string[] args)
 		{
@@ -124,12 +124,12 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 				Db());
 			Db4objects.Db4o.Inside.Freespace.FreespaceManagerRam fm = (Db4objects.Db4o.Inside.Freespace.FreespaceManagerRam
 				)file.FreespaceManager();
-			fm.TraverseFreeSlots(new _AnonymousInnerClass133(this, file));
+			fm.TraverseFreeSlots(new _AnonymousInnerClass134(this, file));
 		}
 
-		private sealed class _AnonymousInnerClass133 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass134 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass133(StringIndexTestCase _enclosing, Db4objects.Db4o.YapRandomAccessFile
+			public _AnonymousInnerClass134(StringIndexTestCase _enclosing, Db4objects.Db4o.YapRandomAccessFile
 				 file)
 			{
 				this._enclosing = _enclosing;

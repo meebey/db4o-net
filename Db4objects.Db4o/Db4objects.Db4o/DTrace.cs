@@ -220,5 +220,11 @@ namespace Db4objects.Db4o
 		private static void TurnAllOffExceptFor(Db4objects.Db4o.DTrace[] these)
 		{
 		}
+
+		public static void NoWarnings()
+		{
+			BreakOnEvent(0);
+			TrackEventsWithoutRange();
+		}
 	}
 }

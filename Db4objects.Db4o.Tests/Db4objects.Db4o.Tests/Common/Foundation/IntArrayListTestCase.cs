@@ -3,7 +3,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 	/// <exclude></exclude>
 	public class IntArrayListTestCase : Db4oUnit.ITestCase
 	{
-		public virtual void TestIteratorGoesBackwards()
+		public virtual void TestIteratorGoesForwards()
 		{
 			Db4objects.Db4o.Foundation.IntArrayList list = new Db4objects.Db4o.Foundation.IntArrayList
 				();
@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			list.Add(1);
 			AssertIterator(new int[] { 1 }, list.IntIterator());
 			list.Add(2);
-			AssertIterator(new int[] { 2, 1 }, list.IntIterator());
+			AssertIterator(new int[] { 1, 2 }, list.IntIterator());
 		}
 
 		private void AssertIterator(int[] expected, Db4objects.Db4o.Foundation.IIntIterator4

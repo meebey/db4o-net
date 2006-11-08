@@ -11,12 +11,12 @@ namespace Db4objects.Db4o
 			if (obj is Db4objects.Db4o.Order)
 			{
 				Db4objects.Db4o.Order other = (Db4objects.Db4o.Order)obj;
-				int res = i_major - other.i_major;
+				int res = other.i_major - i_major;
 				if (res != 0)
 				{
 					return res;
 				}
-				return i_minor - other.i_minor;
+				return other.i_minor - i_minor;
 			}
 			return 1;
 		}

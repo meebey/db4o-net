@@ -1,7 +1,7 @@
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class ReverseIntIterator4Impl : Db4objects.Db4o.Foundation.IIntIterator4
+	public class IntIterator4Impl : Db4objects.Db4o.Foundation.IIntIterator4
 	{
 		private readonly int _count;
 
@@ -9,11 +9,11 @@ namespace Db4objects.Db4o.Foundation
 
 		private int _current;
 
-		public ReverseIntIterator4Impl(int[] content, int count)
+		public IntIterator4Impl(int[] content, int count)
 		{
 			_content = content;
 			_count = count;
-			_current = count;
+			Reset();
 		}
 
 		public virtual int CurrentInt()
@@ -35,9 +35,9 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual bool MoveNext()
 		{
-			if (_current > 0)
+			if (_current < _count - 1)
 			{
-				--_current;
+				_current++;
 				return true;
 			}
 			_content = null;
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Reset()
 		{
-			_current = _count;
+			_current = -1;
 		}
 	}
 }

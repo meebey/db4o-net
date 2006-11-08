@@ -138,14 +138,14 @@ namespace Db4objects.Db4o
 								Db4objects.Db4o.Foundation.Tree[] pending = new Db4objects.Db4o.Foundation.Tree[1
 									];
 								bool[] innerRes = { isNot };
-								candidates.Traverse(new _AnonymousInnerClass171(this, innerRes, isNot, pending));
+								candidates.Traverse(new _AnonymousInnerClass167(this, innerRes, isNot, pending));
 								if (isNot)
 								{
 									qcon.Not();
 								}
 								if (pending[0] != null)
 								{
-									pending[0].Traverse(new _AnonymousInnerClass240(this));
+									pending[0].Traverse(new _AnonymousInnerClass236(this));
 								}
 								if (!innerRes[0])
 								{
@@ -202,9 +202,9 @@ namespace Db4objects.Db4o
 			return true;
 		}
 
-		private sealed class _AnonymousInnerClass171 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass167 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass171(QCandidate _enclosing, bool[] innerRes, bool isNot
+			public _AnonymousInnerClass167(QCandidate _enclosing, bool[] innerRes, bool isNot
 				, Db4objects.Db4o.Foundation.Tree[] pending)
 			{
 				this._enclosing = _enclosing;
@@ -222,13 +222,13 @@ namespace Db4objects.Db4o
 				}
 				if (cand._pendingJoins != null)
 				{
-					cand._pendingJoins.Traverse(new _AnonymousInnerClass184(this, pending));
+					cand._pendingJoins.Traverse(new _AnonymousInnerClass180(this, pending));
 				}
 			}
 
-			private sealed class _AnonymousInnerClass184 : Db4objects.Db4o.Foundation.IVisitor4
+			private sealed class _AnonymousInnerClass180 : Db4objects.Db4o.Foundation.IVisitor4
 			{
-				public _AnonymousInnerClass184(_AnonymousInnerClass171 _enclosing, Db4objects.Db4o.Foundation.Tree[]
+				public _AnonymousInnerClass180(_AnonymousInnerClass167 _enclosing, Db4objects.Db4o.Foundation.Tree[]
 					 pending)
 				{
 					this._enclosing = _enclosing;
@@ -254,7 +254,7 @@ namespace Db4objects.Db4o
 					}
 				}
 
-				private readonly _AnonymousInnerClass171 _enclosing;
+				private readonly _AnonymousInnerClass167 _enclosing;
 
 				private readonly Db4objects.Db4o.Foundation.Tree[] pending;
 			}
@@ -268,9 +268,9 @@ namespace Db4objects.Db4o
 			private readonly Db4objects.Db4o.Foundation.Tree[] pending;
 		}
 
-		private sealed class _AnonymousInnerClass240 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass236 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass240(QCandidate _enclosing)
+			public _AnonymousInnerClass236(QCandidate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

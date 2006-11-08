@@ -1,40 +1,42 @@
 namespace Db4objects.Db4o.CS.Messages
 {
-	public sealed class MQueryExecute : Db4objects.Db4o.CS.Messages.MsgObject
+	public sealed class MQueryExecute : Db4objects.Db4o.CS.Messages.MsgQuery
 	{
-		public override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		private bool _lazy = false;
+
+		public override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
 			Unmarshall();
-			WriteQueryResult(Execute(), sock);
+			WriteQueryResult(Execute(), serverThread, _lazy);
 			return true;
 		}
 
-		private Db4objects.Db4o.Inside.Query.IQueryResult Execute()
+		private Db4objects.Db4o.Inside.Query.AbstractQueryResult Execute()
 		{
 			lock (StreamLock())
 			{
-				Db4objects.Db4o.Transaction trans = GetTransaction();
-				Db4objects.Db4o.YapStream stream = GetStream();
-				Db4objects.Db4o.QQuery query = (Db4objects.Db4o.QQuery)stream.Unmarshall(_payLoad
+				Db4objects.Db4o.QQuery query = (Db4objects.Db4o.QQuery)Stream().Unmarshall(_payLoad
 					);
-				query.Unmarshall(trans);
-				return ExecuteFully(trans, stream, query);
+				query.Unmarshall(Transaction());
+				_lazy = query.IsLazy();
+				return ExecuteFully(query);
 			}
 		}
 
-		private Db4objects.Db4o.Inside.Query.IQueryResult ExecuteFully(Db4objects.Db4o.Transaction
-			 trans, Db4objects.Db4o.YapStream stream, Db4objects.Db4o.QQuery query)
+		private Db4objects.Db4o.Inside.Query.AbstractQueryResult ExecuteFully(Db4objects.Db4o.QQuery
+			 query)
 		{
 			try
 			{
-				Db4objects.Db4o.Inside.Query.IQueryResult qr = stream.NewQueryResult(trans);
+				Db4objects.Db4o.Inside.Query.AbstractQueryResult qr = NewQueryResult(query.IsLazy
+					());
 				qr.LoadFromQuery(query);
 				return qr;
 			}
 			catch
 			{
-				return stream.NewQueryResult(trans);
+				return NewQueryResult(false);
 			}
 		}
 	}

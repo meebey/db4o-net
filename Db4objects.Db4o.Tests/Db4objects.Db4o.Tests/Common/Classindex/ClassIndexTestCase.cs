@@ -1,6 +1,6 @@
 namespace Db4objects.Db4o.Tests.Common.Classindex
 {
-	public class ClassIndexTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class ClassIndexTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutCS
 	{
 		public class Item
 		{

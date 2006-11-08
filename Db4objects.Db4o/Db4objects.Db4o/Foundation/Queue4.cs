@@ -7,6 +7,51 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class Queue4
 	{
+		private sealed class Queue4Iterator : System.Collections.IEnumerator
+		{
+			private bool _active = false;
+
+			private Db4objects.Db4o.Foundation.List4 _current = null;
+
+			public object Current
+			{
+				get
+				{
+					return this._current._element;
+				}
+			}
+
+			public bool MoveNext()
+			{
+				if (!this._active)
+				{
+					this._current = this._enclosing._last;
+					this._active = true;
+				}
+				else
+				{
+					if (this._current != null)
+					{
+						this._current = this._current._next;
+					}
+				}
+				return this._current != null;
+			}
+
+			public void Reset()
+			{
+				this._current = null;
+				this._active = false;
+			}
+
+			internal Queue4Iterator(Queue4 _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			private readonly Queue4 _enclosing;
+		}
+
 		private Db4objects.Db4o.Foundation.List4 _first;
 
 		private Db4objects.Db4o.Foundation.List4 _last;
@@ -44,6 +89,11 @@ namespace Db4objects.Db4o.Foundation
 		public bool HasNext()
 		{
 			return _last != null;
+		}
+
+		public virtual System.Collections.IEnumerator Iterator()
+		{
+			return new Db4objects.Db4o.Foundation.Queue4.Queue4Iterator(this);
 		}
 	}
 }

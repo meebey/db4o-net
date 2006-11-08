@@ -25,5 +25,10 @@ namespace Db4oUnit.Extensions.Fixtures
 				throw new Db4oUnit.TestException(e);
 			}
 		}
+
+		public override string GetLabel()
+		{
+			return "C/S MULTI-CLIENT";
+		}
 	}
 }

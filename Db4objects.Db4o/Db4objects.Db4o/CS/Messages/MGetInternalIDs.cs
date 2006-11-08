@@ -2,17 +2,16 @@ namespace Db4objects.Db4o.CS.Messages
 {
 	public sealed class MGetInternalIDs : Db4objects.Db4o.CS.Messages.MsgD
 	{
-		public sealed override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
 			Db4objects.Db4o.YapReader bytes = this.GetByteLoad();
 			long[] ids;
-			Db4objects.Db4o.YapStream stream = GetStream();
-			lock (stream.i_lock)
+			lock (StreamLock())
 			{
 				try
 				{
-					ids = stream.GetYapClass(bytes.ReadInt()).GetIDs(GetTransaction());
+					ids = Stream().GetYapClass(bytes.ReadInt()).GetIDs(Transaction());
 				}
 				catch
 				{
@@ -21,15 +20,15 @@ namespace Db4objects.Db4o.CS.Messages
 			}
 			int size = ids.Length;
 			Db4objects.Db4o.CS.Messages.MsgD message = Db4objects.Db4o.CS.Messages.Msg.ID_LIST
-				.GetWriterForLength(GetTransaction(), Db4objects.Db4o.YapConst.ID_LENGTH * (size
-				 + 1));
+				.GetWriterForLength(Transaction(), Db4objects.Db4o.YapConst.ID_LENGTH * (size + 
+				1));
 			Db4objects.Db4o.YapReader writer = message.PayLoad();
 			writer.WriteInt(size);
 			for (int i = 0; i < size; i++)
 			{
 				writer.WriteInt((int)ids[i]);
 			}
-			message.Write(stream, sock);
+			serverThread.Write(message);
 			return true;
 		}
 	}

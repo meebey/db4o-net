@@ -17,5 +17,10 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			return Db4objects.Db4o.Db4o.OpenFile(config, GetAbsolutePath());
 		}
+
+		public override string GetLabel()
+		{
+			return "SOLO";
+		}
 	}
 }

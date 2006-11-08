@@ -2,20 +2,20 @@ namespace Db4objects.Db4o.CS.Messages
 {
 	public sealed class MSetSemaphore : Db4objects.Db4o.CS.Messages.MsgD
 	{
-		public sealed override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
 			int timeout = ReadInt();
 			string name = ReadString();
-			Db4objects.Db4o.YapFile stream = (Db4objects.Db4o.YapFile)GetStream();
-			bool res = stream.SetSemaphore(GetTransaction(), name, timeout);
+			Db4objects.Db4o.YapFile stream = (Db4objects.Db4o.YapFile)Stream();
+			bool res = stream.SetSemaphore(Transaction(), name, timeout);
 			if (res)
 			{
-				Db4objects.Db4o.CS.Messages.Msg.SUCCESS.Write(stream, sock);
+				serverThread.Write(Db4objects.Db4o.CS.Messages.Msg.SUCCESS);
 			}
 			else
 			{
-				Db4objects.Db4o.CS.Messages.Msg.FAILED.Write(stream, sock);
+				serverThread.Write(Db4objects.Db4o.CS.Messages.Msg.FAILED);
 			}
 			return true;
 		}

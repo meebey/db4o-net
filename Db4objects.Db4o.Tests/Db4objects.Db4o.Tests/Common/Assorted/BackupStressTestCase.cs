@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			if (!runOnOldJDK && IsOldJDK())
 			{
-				System.Console.Out.WriteLine("BackupStressTest is too slow for regression testing on Java JDKs < 1.4"
+				Sharpen.Runtime.Out.WriteLine("BackupStressTest is too slow for regression testing on Java JDKs < 1.4"
 					);
 				return;
 			}
@@ -180,7 +180,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				}
 				Stdout("Backup OK");
 			}
-			System.Console.Out.WriteLine("BackupStressTest " + _backups + " files OK.");
+			Sharpen.Runtime.Out.WriteLine("BackupStressTest " + _backups + " files OK.");
 			for (int i = 1; i <= _backups; i++)
 			{
 				DeleteFile(BackupFile(i));
@@ -208,7 +208,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			if (verbose)
 			{
-				System.Console.Out.WriteLine(@string);
+				Sharpen.Runtime.Out.WriteLine(@string);
 			}
 		}
 	}

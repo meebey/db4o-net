@@ -29,12 +29,9 @@ namespace Db4objects.Db4o
 		private static Db4objects.Db4o.Sessions i_sessions = new Db4objects.Db4o.Sessions
 			();
 
-		private static readonly object initializer = Initialize();
-
-		private static object Initialize()
+		static Db4o()
 		{
 			Db4objects.Db4o.Platform4.GetDefaultConfiguration(i_config);
-			return new object();
 		}
 
 		/// <summary>prints the version name of this db4o version to <code>System.out</code>.
@@ -43,7 +40,7 @@ namespace Db4objects.Db4o
 		/// 	</remarks>
 		public static void Main(string[] args)
 		{
-			System.Console.Out.WriteLine(Version());
+			Sharpen.Runtime.Out.WriteLine(Version());
 		}
 
 		/// <summary>

@@ -13,7 +13,7 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		public QQuery()
+		public QQuery() : base()
 		{
 		}
 	}

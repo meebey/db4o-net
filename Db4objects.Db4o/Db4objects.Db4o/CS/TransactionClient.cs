@@ -4,7 +4,7 @@ namespace Db4objects.Db4o.CS
 	{
 		private readonly Db4objects.Db4o.CS.YapClient i_client;
 
-		protected Db4objects.Db4o.Foundation.Tree i_yapObjectsToGc;
+		private Db4objects.Db4o.Foundation.Tree i_yapObjectsToGc;
 
 		internal TransactionClient(Db4objects.Db4o.CS.YapClient a_stream, Db4objects.Db4o.Transaction
 			 a_parent) : base(a_stream, a_parent)

@@ -2,12 +2,12 @@ namespace Db4objects.Db4o.CS.Messages
 {
 	public class MTaBeginEndSet : Db4objects.Db4o.CS.Messages.Msg
 	{
-		public sealed override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 @in)
+		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
-			lock (GetStream().i_lock)
+			lock (StreamLock())
 			{
-				GetTransaction().BeginEndSet();
+				Transaction().BeginEndSet();
 				return true;
 			}
 		}

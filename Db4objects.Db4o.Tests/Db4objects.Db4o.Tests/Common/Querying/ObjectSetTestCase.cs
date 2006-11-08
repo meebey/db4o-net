@@ -17,9 +17,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			{
 			}
 
-			public Item(string name)
+			public Item(string name_)
 			{
-				this.name = name;
+				name = name_;
 			}
 
 			public override string ToString()
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			AssertItems(new string[] { "bar", "baz" }, os);
 		}
 
-		public virtual void _testAccessOrder()
+		public virtual void TestAccessOrder()
 		{
 			Db4objects.Db4o.IObjectSet result = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item)
 				).Execute();

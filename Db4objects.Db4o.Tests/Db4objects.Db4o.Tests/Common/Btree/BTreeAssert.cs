@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 			public void Visit(object obj)
 			{
-				System.Console.Out.WriteLine(obj);
+				Sharpen.Runtime.Out.WriteLine(obj);
 			}
 		}
 

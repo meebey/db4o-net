@@ -2,10 +2,10 @@ namespace Db4objects.Db4o.CS.Messages
 {
 	internal sealed class MCommit : Db4objects.Db4o.CS.Messages.Msg
 	{
-		public sealed override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 @in)
+		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
-			GetTransaction().Commit();
+			Transaction().Commit();
 			return true;
 		}
 	}

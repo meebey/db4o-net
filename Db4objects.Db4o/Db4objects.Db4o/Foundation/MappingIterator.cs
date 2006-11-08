@@ -23,16 +23,16 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual bool MoveNext()
 		{
-			if (!_iterator.MoveNext())
+			do
 			{
-				_current = Db4objects.Db4o.Foundation.Iterators.NO_ELEMENT;
-				return false;
+				if (!_iterator.MoveNext())
+				{
+					_current = Db4objects.Db4o.Foundation.Iterators.NO_ELEMENT;
+					return false;
+				}
+				_current = Map(_iterator.Current);
 			}
-			_current = Map(_iterator.Current);
-			if (_current == SKIP)
-			{
-				return MoveNext();
-			}
+			while (_current == SKIP);
 			return true;
 		}
 

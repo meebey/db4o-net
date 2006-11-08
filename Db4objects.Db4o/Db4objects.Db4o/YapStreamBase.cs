@@ -365,8 +365,8 @@ namespace Db4objects.Db4o
 
 		public abstract int ConverterVersion();
 
-		public abstract Db4objects.Db4o.Inside.Query.IQueryResult NewQueryResult(Db4objects.Db4o.Transaction
-			 trans);
+		public abstract Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult(Db4objects.Db4o.Transaction
+			 trans, bool lazy);
 
 		protected virtual void CreateStringIO(byte encoding)
 		{
@@ -792,7 +792,7 @@ namespace Db4objects.Db4o
 			return ExecuteQuery((Db4objects.Db4o.QQuery)q);
 		}
 
-		public abstract Db4objects.Db4o.Inside.Query.IQueryResult GetAll(Db4objects.Db4o.Transaction
+		public abstract Db4objects.Db4o.Inside.Query.AbstractQueryResult GetAll(Db4objects.Db4o.Transaction
 			 ta);
 
 		public virtual object GetByID(long id)

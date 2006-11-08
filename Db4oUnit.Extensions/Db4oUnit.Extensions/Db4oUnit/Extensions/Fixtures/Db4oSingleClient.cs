@@ -40,9 +40,22 @@ namespace Db4oUnit.Extensions.Fixtures
 			}
 		}
 
+		/// <summary>
+		/// Does not accept a clazz which is assignable from OptOutCS, or not
+		/// assignable from Db4oTestCase.
+		/// </summary>
+		/// <remarks>
+		/// Does not accept a clazz which is assignable from OptOutCS, or not
+		/// assignable from Db4oTestCase.
+		/// </remarks>
+		/// <returns>
+		/// returns false if the clazz is assignable from OptOutCS, or not
+		/// assignable from Db4oTestCase. Otherwise, returns true.
+		/// </returns>
 		public override bool Accept(System.Type clazz)
 		{
-			if ((typeof(Db4oUnit.Extensions.Fixtures.IOptOutCS).IsAssignableFrom(clazz)))
+			if ((typeof(Db4oUnit.Extensions.Fixtures.IOptOutCS).IsAssignableFrom(clazz)) || !
+				typeof(Db4oUnit.Extensions.IDb4oTestCase).IsAssignableFrom(clazz))
 			{
 				return false;
 			}
@@ -52,6 +65,11 @@ namespace Db4oUnit.Extensions.Fixtures
 		public override Db4objects.Db4o.Ext.IExtObjectContainer Db()
 		{
 			return _objectContainer;
+		}
+
+		public override string GetLabel()
+		{
+			return "C/S SINGLE-CLIENT";
 		}
 	}
 }

@@ -19,10 +19,5 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays
 				, typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrIntegerWUONTestCase)
 				 };
 		}
-
-		internal static int Main(string[] args)
-		{
-			return new Db4objects.Db4o.Tests.Common.Soda.Arrays.AllTests().RunSolo();
-		}
 	}
 }

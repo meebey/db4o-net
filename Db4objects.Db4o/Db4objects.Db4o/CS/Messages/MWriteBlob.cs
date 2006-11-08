@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.CS.Messages
 			sock)
 		{
 			Db4objects.Db4o.CS.Messages.Msg message = Db4objects.Db4o.CS.Messages.Msg.ReadMessage
-				(GetTransaction(), sock);
+				(Transaction(), sock);
 			if (message.Equals(Db4objects.Db4o.CS.Messages.Msg.OK))
 			{
 				try
@@ -18,8 +18,8 @@ namespace Db4objects.Db4o.CS.Messages
 					Sharpen.IO.FileInputStream inBlob = this._blob.GetClientInputStream();
 					Copy(inBlob, sock, true);
 					sock.Flush();
-					Db4objects.Db4o.YapStream stream = GetStream();
-					message = Db4objects.Db4o.CS.Messages.Msg.ReadMessage(GetTransaction(), sock);
+					Db4objects.Db4o.YapStream stream = Stream();
+					message = Db4objects.Db4o.CS.Messages.Msg.ReadMessage(Transaction(), sock);
 					if (message.Equals(Db4objects.Db4o.CS.Messages.Msg.OK))
 					{
 						stream.Deactivate(_blob, int.MaxValue);
@@ -38,17 +38,18 @@ namespace Db4objects.Db4o.CS.Messages
 			}
 		}
 
-		public override bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
+		public override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
 			try
 			{
-				Db4objects.Db4o.YapStream stream = GetStream();
+				Db4objects.Db4o.YapStream stream = Stream();
 				Db4objects.Db4o.BlobImpl blobImpl = this.ServerGetBlobImpl();
 				if (blobImpl != null)
 				{
-					blobImpl.SetTrans(GetTransaction());
+					blobImpl.SetTrans(Transaction());
 					Sharpen.IO.File file = blobImpl.ServerFile(null, true);
+					Db4objects.Db4o.Foundation.Network.IYapSocket sock = serverThread.Socket();
 					Db4objects.Db4o.CS.Messages.Msg.OK.Write(stream, sock);
 					Sharpen.IO.FileOutputStream fout = new Sharpen.IO.FileOutputStream(file);
 					Copy(sock, fout, blobImpl.GetLength(), false);

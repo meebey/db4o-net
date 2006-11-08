@@ -1,6 +1,7 @@
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
 	public class BTreeSimpleTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutDefragSolo
+		, Db4oUnit.Extensions.Fixtures.IOptOutCS
 	{
 		protected const int BTREE_NODE_SIZE = 4;
 
@@ -167,13 +168,13 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		private void ExpectValues(Db4objects.Db4o.Inside.Btree.BTree btree, int[] values)
 		{
 			int[] cursor = new int[] { 0 };
-			btree.TraverseValues(Trans(), new _AnonymousInnerClass221(this, values, cursor));
+			btree.TraverseValues(Trans(), new _AnonymousInnerClass218(this, values, cursor));
 			Db4oUnit.Assert.AreEqual(values.Length, cursor[0]);
 		}
 
-		private sealed class _AnonymousInnerClass221 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass218 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass221(BTreeSimpleTestCase _enclosing, int[] values, int[]
+			public _AnonymousInnerClass218(BTreeSimpleTestCase _enclosing, int[] values, int[]
 				 cursor)
 			{
 				this._enclosing = _enclosing;

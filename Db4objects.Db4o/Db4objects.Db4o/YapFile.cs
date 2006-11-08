@@ -121,10 +121,20 @@ namespace Db4objects.Db4o
 				(this));
 		}
 
-		public sealed override Db4objects.Db4o.Inside.Query.IQueryResult NewQueryResult(Db4objects.Db4o.Transaction
+		public Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult(Db4objects.Db4o.Transaction
 			 trans)
 		{
-			return new Db4objects.Db4o.Inside.Query.HybridQueryResult(trans);
+			return NewQueryResult(trans, Config().LazyQueryEvaluation());
+		}
+
+		public sealed override Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult
+			(Db4objects.Db4o.Transaction trans, bool lazy)
+		{
+			if (lazy)
+			{
+				return new Db4objects.Db4o.Inside.Query.HybridQueryResult(trans);
+			}
+			return new Db4objects.Db4o.Inside.Query.IdListQueryResult(trans);
 		}
 
 		public sealed override bool Delete5(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject
@@ -186,14 +196,14 @@ namespace Db4objects.Db4o
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _AnonymousInnerClass201(this));
+				i_prefetchedIDs.Traverse(new _AnonymousInnerClass208(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _AnonymousInnerClass201 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass208 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass201(YapFile _enclosing)
+			public _AnonymousInnerClass208(YapFile _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -230,10 +240,17 @@ namespace Db4objects.Db4o
 			SetIdentity(Db4objects.Db4o.Ext.Db4oDatabase.Generate());
 		}
 
-		public override Db4objects.Db4o.Inside.Query.IQueryResult GetAll(Db4objects.Db4o.Transaction
-			 ta)
+		public override Db4objects.Db4o.Inside.Query.AbstractQueryResult GetAll(Db4objects.Db4o.Transaction
+			 trans)
 		{
-			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = NewQueryResult(ta);
+			return GetAll(trans, Config().LazyQueryEvaluation());
+		}
+
+		public virtual Db4objects.Db4o.Inside.Query.AbstractQueryResult GetAll(Db4objects.Db4o.Transaction
+			 trans, bool lazy)
+		{
+			Db4objects.Db4o.Inside.Query.AbstractQueryResult queryResult = NewQueryResult(trans
+				, lazy);
 			queryResult.LoadFromClassIndexes(ClassCollection().Iterator());
 			return queryResult;
 		}
@@ -543,16 +560,16 @@ namespace Db4objects.Db4o
 				Db4objects.Db4o.Foundation.Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass547(this, semaphores), ta
+					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass558(this, semaphores), ta
 						);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass547 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass558 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass547(YapFile _enclosing, Db4objects.Db4o.Foundation.Hashtable4
+			public _AnonymousInnerClass558(YapFile _enclosing, Db4objects.Db4o.Foundation.Hashtable4
 				 semaphores)
 			{
 				this._enclosing = _enclosing;
@@ -818,13 +835,13 @@ namespace Db4objects.Db4o
 		{
 			Db4objects.Db4o.Foundation.IntArrayList ids = new Db4objects.Db4o.Foundation.IntArrayList
 				();
-			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass774(this, ids));
+			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass785(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _AnonymousInnerClass774 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass785 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass774(YapFile _enclosing, Db4objects.Db4o.Foundation.IntArrayList
+			public _AnonymousInnerClass785(YapFile _enclosing, Db4objects.Db4o.Foundation.IntArrayList
 				 ids)
 			{
 				this._enclosing = _enclosing;
@@ -848,7 +865,8 @@ namespace Db4objects.Db4o
 			{
 				return null;
 			}
-			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = NewQueryResult(trans);
+			Db4objects.Db4o.Inside.Query.AbstractQueryResult queryResult = NewQueryResult(trans
+				);
 			queryResult.LoadFromClassIndex(clazz);
 			return queryResult;
 		}
@@ -856,8 +874,8 @@ namespace Db4objects.Db4o
 		public override Db4objects.Db4o.Inside.Query.IQueryResult ExecuteQuery(Db4objects.Db4o.QQuery
 			 query)
 		{
-			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = NewQueryResult(query.GetTransaction
-				());
+			Db4objects.Db4o.Inside.Query.AbstractQueryResult queryResult = NewQueryResult(query
+				.GetTransaction());
 			queryResult.LoadFromQuery(query);
 			return queryResult;
 		}

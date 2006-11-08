@@ -28,5 +28,10 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			_memoryFile = null;
 		}
+
+		public override string GetLabel()
+		{
+			return "IN-MEMORY";
+		}
 	}
 }

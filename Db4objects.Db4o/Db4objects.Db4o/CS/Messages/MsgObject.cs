@@ -7,9 +7,9 @@ namespace Db4objects.Db4o.CS.Messages
 
 		private const int LENGTH_FOR_FIRST = LENGTH_FOR_ALL;
 
-		internal int _id;
+		private int _id;
 
-		internal int _address;
+		private int _address;
 
 		internal virtual Db4objects.Db4o.CS.Messages.MsgD GetWriter(Db4objects.Db4o.YapWriter
 			 bytes, int[] prependInts)
@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.CS.Messages
 
 		public Db4objects.Db4o.YapWriter Unmarshall(int addLengthBeforeFirst)
 		{
-			_payLoad.SetTransaction(GetTransaction());
+			_payLoad.SetTransaction(Transaction());
 			int embeddedCount = _payLoad.ReadInt();
 			int length = _payLoad.ReadInt();
 			if (length == 0)

@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject>
-    <ECSHARP ProductVersion="7.10.3077" ProjectGuid="{E5C01056-B6A2-466A-89A8-4D74B2EFB1D2}" ProjectType="Local" SchemaVersion="1.0">
+    <ECSHARP ProductVersion="7.10.3077" ProjectGuid="{5C23E36F-399B-4312-AA6D-86829A85B46B}" ProjectType="Local" SchemaVersion="1.0">
         <Build>
-            <Settings ApplicationIcon="" AssemblyKeyContainerName="" AssemblyName="Db4oTools" AssemblyOriginatorKeyFile="" DelaySign="false" OutputFileFolder="\Program Files\db4o-4.0-compact1-tools" OutputType="Library" RootNamespace="Db4oTools" StartupObject="">
+            <Settings ApplicationIcon="" AssemblyKeyContainerName="" AssemblyName="Db4objects.Db4o.Tools" AssemblyOriginatorKeyFile="" DelaySign="false" OutputFileFolder="\Program Files\Db4objects.Db4o.Tools-CF-2003" OutputType="Library" RootNamespace="Db4objects.Db4o.Tools" StartupObject="">
                 <Platform Name="Pocket PC"/>
-                <Config AllowUnsafeBlocks="false" BaseAddress="0" CheckForOverflowUnderflow="false" ConfigurationOverrideFile="" DebugSymbols="true" DefineConstants="DEBUG;TRACE;CF_1_0" DocumentationFile="" FileAlignment="4096" IncrementalBuild="false" Name="Debug|Pocket PC" Optimize="false" OutputPath="bin\Debug\" RegisterForComInterop="false" RemoveIntegerChecks="false" TreatWarningsAsErrors="false" WarningLevel="4"/>
-                <Config AllowUnsafeBlocks="false" BaseAddress="0" CheckForOverflowUnderflow="false" ConfigurationOverrideFile="" DebugSymbols="false" DefineConstants="TRACE;CF_1_0" DocumentationFile="" FileAlignment="4096" IncrementalBuild="false" Name="Release|Pocket PC" Optimize="true" OutputPath="bin\Release\" RegisterForComInterop="false" RemoveIntegerChecks="false" TreatWarningsAsErrors="false" WarningLevel="4"/>
+                <Config AllowUnsafeBlocks="false" BaseAddress="0" CheckForOverflowUnderflow="false" ConfigurationOverrideFile="" DebugSymbols="true" DefineConstants="CF_1_0" DocumentationFile="" FileAlignment="4096" IncrementalBuild="false" Name="Debug|Pocket PC" Optimize="false" OutputPath="bin\Debug\" RegisterForComInterop="false" RemoveIntegerChecks="false" TreatWarningsAsErrors="false" WarningLevel="4"/>
+                <Config AllowUnsafeBlocks="false" BaseAddress="0" CheckForOverflowUnderflow="false" ConfigurationOverrideFile="" DebugSymbols="false" DefineConstants="CF_1_0" DocumentationFile="" FileAlignment="4096" IncrementalBuild="false" Name="Release|Pocket PC" Optimize="true" OutputPath="bin\Release\" RegisterForComInterop="false" RemoveIntegerChecks="false" TreatWarningsAsErrors="false" WarningLevel="4"/>
             </Settings>
             <References>
                 <Reference AssemblyName="mscorlib" Name="MSCorLib" Platform="Pocket PC" Private="False"/>
                 <Reference AssemblyName="System" Name="System" Platform="Pocket PC" Private="False"/>
                 <Reference AssemblyName="System.Xml" Name="System.XML" Platform="Pocket PC" Private="False"/>
-                <Reference AssemblyName="System.Data" Name="System.Data" Platform="Pocket PC" Private="False"/>
-                <Reference Name="db4o-compact" Package="{20D4826A-C6FA-45DB-90F4-C717570B9F32}" Platform="Pocket PC" Project="{B653ADB1-F959-49E0-81CF-AD37D69CB011}"/>
+                <Reference Name="Db4objects.Db4o-CF-2003" Package="{20D4826A-C6FA-45DB-90F4-C717570B9F32}" Platform="Pocket PC" Project="{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}"/>
                 <Reference AssemblyName="System.CF.Design" Name="System.CF.Design" Platform="Pocket PC-Designer" Private="False"/>
                 <Reference AssemblyName="System.CF.Design.UI" Name="System.CF.Design.UI" Platform="Pocket PC-Designer" Private="False"/>
                 <Reference AssemblyName="System.CF.Windows.Forms" Name="System.CF.Windows.Forms" Platform="Pocket PC-Designer" Private="False"/>

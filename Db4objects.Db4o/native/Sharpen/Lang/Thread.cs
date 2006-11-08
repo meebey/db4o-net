@@ -71,8 +71,14 @@ namespace Sharpen.Lang
 		{
 			// java priority is between 1 and 10, ThreadPriority is between 0 and 5
 			if (priority < MIN_PRIORITY || priority > MAX_PRIORITY)
-				throw new ArgumentOutOfRangeException("priority", priority,
-					string.Format("Thread priority must be between {0} and {1}", MIN_PRIORITY, MAX_PRIORITY));
+			{
+				string message = string.Format("Thread priority must be between {0} and {1}", MIN_PRIORITY, MAX_PRIORITY);
+#if !CF_1_0 && !CF_2_0
+				throw new ArgumentOutOfRangeException("priority", priority, message);
+#else
+				throw new ArgumentOutOfRangeException(message);
+#endif
+			}
 
 			_thread.Priority = (System.Threading.ThreadPriority) (priority / 2);
 		}
@@ -109,6 +115,5 @@ namespace Sharpen.Lang
 		{
 			_target.Run();
 		}
-
 	}
 }

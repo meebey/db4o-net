@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 					}
 					catch (System.Exception e)
 					{
-						System.Console.Error.WriteLine("TCompare failure executing path:" + path);
+						Sharpen.Runtime.Err.WriteLine("TCompare failure executing path:" + path);
 						Sharpen.Runtime.PrintStackTrace(e);
 						return false;
 					}

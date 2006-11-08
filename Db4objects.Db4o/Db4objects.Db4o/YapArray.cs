@@ -536,7 +536,7 @@ namespace Db4objects.Db4o
 			}
 			else
 			{
-				readers.IncrementOffset(OwnLength());
+				readers.IncrementOffset(LinkLength());
 			}
 		}
 

@@ -1,6 +1,6 @@
 namespace Db4objects.Db4o.CS
 {
-	internal sealed class YapServerThread : Sharpen.Lang.Thread
+	public sealed class YapServerThread : Sharpen.Lang.Thread
 	{
 		private string i_clientName;
 
@@ -27,6 +27,8 @@ namespace Db4objects.Db4o.CS
 		private Db4objects.Db4o.YapFile i_substituteStream;
 
 		private Db4objects.Db4o.Transaction i_substituteTrans;
+
+		private Db4objects.Db4o.Foundation.Hashtable4 _queryResults;
 
 		private Db4objects.Db4o.Config4Impl i_config;
 
@@ -64,7 +66,7 @@ namespace Db4objects.Db4o.CS
 			{
 				if (i_sendCloseMessage)
 				{
-					Db4objects.Db4o.CS.Messages.Msg.CLOSE.Write(i_mainStream, i_socket);
+					Write(Db4objects.Db4o.CS.Messages.Msg.CLOSE);
 				}
 			}
 			catch (System.Exception e)
@@ -163,7 +165,7 @@ namespace Db4objects.Db4o.CS
 					{
 						break;
 					}
-					Db4objects.Db4o.CS.Messages.Msg.PING.Write(GetStream(), i_socket);
+					Write(Db4objects.Db4o.CS.Messages.Msg.PING);
 					i_pingAttempts++;
 				}
 			}
@@ -195,7 +197,7 @@ namespace Db4objects.Db4o.CS
 					string userName = ((Db4objects.Db4o.CS.Messages.MsgD)message).ReadString();
 					string password = ((Db4objects.Db4o.CS.Messages.MsgD)message).ReadString();
 					i_mainStream.ShowInternalClasses(true);
-					Db4objects.Db4o.User found = (Db4objects.Db4o.User)i_server.GetUser(userName);
+					Db4objects.Db4o.User found = i_server.GetUser(userName);
 					i_mainStream.ShowInternalClasses(false);
 					if (found != null)
 					{
@@ -205,37 +207,43 @@ namespace Db4objects.Db4o.CS
 							i_mainStream.LogMsg(32, i_clientName);
 							int blockSize = i_mainStream.BlockSize();
 							int encrypt = i_mainStream.i_handlers.i_encrypt ? 1 : 0;
-							Db4objects.Db4o.CS.Messages.Msg.LOGIN_OK.GetWriterForInts(GetTransaction(), new int
-								[] { blockSize, encrypt }).Write(i_mainStream, i_socket);
+							Write(Db4objects.Db4o.CS.Messages.Msg.LOGIN_OK.GetWriterForInts(GetTransaction(), 
+								new int[] { blockSize, encrypt }));
 							i_loggedin = true;
 							SetName("db4o server socket for client " + i_clientName);
 						}
 						else
 						{
-							Db4objects.Db4o.CS.Messages.Msg.FAILED.Write(i_mainStream, i_socket);
+							Write(Db4objects.Db4o.CS.Messages.Msg.FAILED);
 							return false;
 						}
 					}
 					else
 					{
-						Db4objects.Db4o.CS.Messages.Msg.FAILED.Write(i_mainStream, i_socket);
+						Write(Db4objects.Db4o.CS.Messages.Msg.FAILED);
 						return false;
 					}
 				}
 				return true;
 			}
-			if (message.ProcessMessageAtServer(i_socket))
+			if (message.ProcessAtServer(this))
 			{
 				return true;
 			}
 			if (Db4objects.Db4o.CS.Messages.Msg.PING.Equals(message))
 			{
-				Db4objects.Db4o.CS.Messages.Msg.OK.Write(GetStream(), i_socket);
+				WriteOK();
+				return true;
+			}
+			if (Db4objects.Db4o.CS.Messages.Msg.OBJECTSET_FINALIZED.Equals(message))
+			{
+				int queryResultID = ((Db4objects.Db4o.CS.Messages.MsgD)message).ReadInt();
+				QueryResultFinalized(queryResultID);
 				return true;
 			}
 			if (Db4objects.Db4o.CS.Messages.Msg.CLOSE.Equals(message))
 			{
-				Db4objects.Db4o.CS.Messages.Msg.CLOSE.Write(GetStream(), i_socket);
+				Write(Db4objects.Db4o.CS.Messages.Msg.CLOSE);
 				GetTransaction().Commit();
 				i_sendCloseMessage = false;
 				GetStream().LogMsg(34, i_clientName);
@@ -253,8 +261,8 @@ namespace Db4objects.Db4o.CS
 				{
 					ver = GetStream().CurrentVersion();
 				}
-				Db4objects.Db4o.CS.Messages.Msg.ID_LIST.GetWriterForLong(GetTransaction(), ver).Write
-					(GetStream(), i_socket);
+				Write(Db4objects.Db4o.CS.Messages.Msg.ID_LIST.GetWriterForLong(GetTransaction(), 
+					ver));
 				return true;
 			}
 			if (Db4objects.Db4o.CS.Messages.Msg.RAISE_VERSION.Equals(message))
@@ -290,6 +298,33 @@ namespace Db4objects.Db4o.CS
 			return true;
 		}
 
+		private void WriteOK()
+		{
+			Write(Db4objects.Db4o.CS.Messages.Msg.OK);
+		}
+
+		private void QueryResultFinalized(int queryResultID)
+		{
+			_queryResults.Remove(queryResultID);
+		}
+
+		public void MapQueryResultToID(Db4objects.Db4o.CS.LazyClientObjectSetStub stub, int
+			 queryResultID)
+		{
+			if (_queryResults == null)
+			{
+				_queryResults = new Db4objects.Db4o.Foundation.Hashtable4();
+			}
+			_queryResults.Put(queryResultID, stub);
+		}
+
+		public Db4objects.Db4o.CS.LazyClientObjectSetStub QueryResultForID(int queryResultID
+			)
+		{
+			return (Db4objects.Db4o.CS.LazyClientObjectSetStub)_queryResults.Get(queryResultID
+				);
+		}
+
 		private void SwitchToFile(Db4objects.Db4o.CS.Messages.Msg message)
 		{
 			lock (i_mainStream.i_lock)
@@ -303,12 +338,12 @@ namespace Db4objects.Db4o.CS
 					i_substituteTrans = i_substituteStream.NewTransaction();
 					i_substituteStream.ConfigImpl().SetMessageRecipient(i_mainStream.ConfigImpl().MessageRecipient
 						());
-					Db4objects.Db4o.CS.Messages.Msg.OK.Write(GetStream(), i_socket);
+					WriteOK();
 				}
 				catch (System.Exception e)
 				{
 					CloseSubstituteStream();
-					Db4objects.Db4o.CS.Messages.Msg.ERROR.Write(GetStream(), i_socket);
+					Write(Db4objects.Db4o.CS.Messages.Msg.ERROR);
 				}
 			}
 		}
@@ -318,7 +353,7 @@ namespace Db4objects.Db4o.CS
 			lock (i_mainStream.i_lock)
 			{
 				CloseSubstituteStream();
-				Db4objects.Db4o.CS.Messages.Msg.OK.Write(GetStream(), i_socket);
+				WriteOK();
 			}
 		}
 
@@ -344,8 +379,18 @@ namespace Db4objects.Db4o.CS
 
 		private void RespondInt(int response)
 		{
-			Db4objects.Db4o.CS.Messages.Msg.ID_LIST.GetWriterForInt(GetTransaction(), response
-				).Write(GetStream(), i_socket);
+			Write(Db4objects.Db4o.CS.Messages.Msg.ID_LIST.GetWriterForInt(GetTransaction(), response
+				));
+		}
+
+		public void Write(Db4objects.Db4o.CS.Messages.Msg msg)
+		{
+			msg.Write(GetStream(), i_socket);
+		}
+
+		public Db4objects.Db4o.Foundation.Network.IYapSocket Socket()
+		{
+			return i_socket;
 		}
 	}
 }

@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.CS.Messages
 		public static readonly Db4objects.Db4o.CS.Messages.Msg FAILED = new Db4objects.Db4o.CS.Messages.Msg
 			("FAILED");
 
-		public static readonly Db4objects.Db4o.CS.Messages.Msg GET_ALL = new Db4objects.Db4o.CS.Messages.MGetAll
+		public static readonly Db4objects.Db4o.CS.Messages.MsgD GET_ALL = new Db4objects.Db4o.CS.Messages.MGetAll
 			();
 
 		public static readonly Db4objects.Db4o.CS.Messages.MsgD GET_CLASSES = new Db4objects.Db4o.CS.Messages.MGetClasses
@@ -77,6 +77,24 @@ namespace Db4objects.Db4o.CS.Messages
 		public static readonly Db4objects.Db4o.CS.Messages.MsgObject OBJECT_TO_CLIENT = new 
 			Db4objects.Db4o.CS.Messages.MsgObject();
 
+		public static readonly Db4objects.Db4o.CS.Messages.MsgD OBJECTSET_FETCH = new Db4objects.Db4o.CS.Messages.MObjectSetFetch
+			();
+
+		public static readonly Db4objects.Db4o.CS.Messages.MsgD OBJECTSET_FINALIZED = new 
+			Db4objects.Db4o.CS.Messages.MsgD("OBJECTSET_FINALIZED");
+
+		public static readonly Db4objects.Db4o.CS.Messages.MsgD OBJECTSET_GET_ID = new Db4objects.Db4o.CS.Messages.MObjectSetGetId
+			();
+
+		public static readonly Db4objects.Db4o.CS.Messages.MsgD OBJECTSET_INDEXOF = new Db4objects.Db4o.CS.Messages.MObjectSetIndexOf
+			();
+
+		public static readonly Db4objects.Db4o.CS.Messages.MsgD OBJECTSET_RESET = new Db4objects.Db4o.CS.Messages.MObjectSetReset
+			();
+
+		public static readonly Db4objects.Db4o.CS.Messages.MsgD OBJECTSET_SIZE = new Db4objects.Db4o.CS.Messages.MObjectSetSize
+			();
+
 		public static readonly Db4objects.Db4o.CS.Messages.Msg OK = new Db4objects.Db4o.CS.Messages.Msg
 			("OK");
 
@@ -88,6 +106,9 @@ namespace Db4objects.Db4o.CS.Messages
 
 		public static readonly Db4objects.Db4o.CS.Messages.MsgObject QUERY_EXECUTE = new 
 			Db4objects.Db4o.CS.Messages.MQueryExecute();
+
+		public static readonly Db4objects.Db4o.CS.Messages.MsgD QUERY_RESULT = new Db4objects.Db4o.CS.Messages.MsgD
+			("QUERY_RESULT");
 
 		public static readonly Db4objects.Db4o.CS.Messages.MsgD RAISE_VERSION = new Db4objects.Db4o.CS.Messages.MsgD
 			("RAISE_VERSION");
@@ -213,24 +234,35 @@ namespace Db4objects.Db4o.CS.Messages
 			return _name;
 		}
 
-		internal virtual Db4objects.Db4o.Transaction GetTransaction()
+		protected virtual Db4objects.Db4o.Transaction Transaction()
 		{
 			return _trans;
 		}
 
-		internal virtual Db4objects.Db4o.YapStream GetStream()
+		protected virtual Db4objects.Db4o.YapFile File()
 		{
-			return GetTransaction().Stream();
+			return (Db4objects.Db4o.YapFile)Stream();
+		}
+
+		protected virtual Db4objects.Db4o.YapStream Stream()
+		{
+			return Transaction().Stream();
 		}
 
 		protected virtual object StreamLock()
 		{
-			return GetStream().Lock();
+			return Stream().Lock();
+		}
+
+		protected virtual Db4objects.Db4o.Config4Impl Config()
+		{
+			return Stream().Config();
 		}
 
 		/// <summary>server side execution</summary>
-		public virtual bool ProcessMessageAtServer(Db4objects.Db4o.Foundation.Network.IYapSocket
-			 socket)
+		/// <param name="serverThread">TODO</param>
+		public virtual bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
+			)
 		{
 			return false;
 		}
@@ -296,22 +328,10 @@ namespace Db4objects.Db4o.CS.Messages
 
 		public virtual Db4objects.Db4o.YapWriter PayLoad()
 		{
-			Db4objects.Db4o.YapWriter writer = new Db4objects.Db4o.YapWriter(GetTransaction()
-				, Db4objects.Db4o.YapConst.MESSAGE_LENGTH);
+			Db4objects.Db4o.YapWriter writer = new Db4objects.Db4o.YapWriter(Transaction(), Db4objects.Db4o.YapConst
+				.MESSAGE_LENGTH);
 			writer.WriteInt(_msgID);
 			return writer;
-		}
-
-		internal void WriteQueryResult(Db4objects.Db4o.Inside.Query.IQueryResult qr, Db4objects.Db4o.Foundation.Network.IYapSocket
-			 sock)
-		{
-			Db4objects.Db4o.Transaction trans = GetTransaction();
-			int size = qr.Size();
-			Db4objects.Db4o.CS.Messages.MsgD message = ID_LIST.GetWriterForLength(trans, Db4objects.Db4o.YapConst
-				.ID_LENGTH * (size + 1));
-			Db4objects.Db4o.YapWriter writer = message.PayLoad();
-			writer.WriteQueryResult(qr);
-			message.Write(GetStream(), sock);
 		}
 	}
 }

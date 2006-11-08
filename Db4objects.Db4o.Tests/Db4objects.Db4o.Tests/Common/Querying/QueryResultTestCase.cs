@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public virtual void TestGetAll()
 		{
-			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = NewQueryResult();
+			Db4objects.Db4o.Inside.Query.AbstractQueryResult queryResult = NewQueryResult();
 			queryResult.LoadFromClassIndexes(Stream().ClassCollection().Iterator());
 			int[] ids = Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.Concat(itemIds, new 
 				int[] { idForGetAll });
@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		private Db4objects.Db4o.Inside.Query.IQueryResult ClassOnlyQuery()
 		{
-			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = NewQueryResult();
+			Db4objects.Db4o.Inside.Query.AbstractQueryResult queryResult = NewQueryResult();
 			queryResult.LoadFromClassIndex(YapClass());
 			return queryResult;
 		}
@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		private Db4objects.Db4o.Inside.Query.IQueryResult ExecuteQuery(Db4objects.Db4o.Query.IQuery
 			 query)
 		{
-			Db4objects.Db4o.Inside.Query.IQueryResult queryResult = NewQueryResult();
+			Db4objects.Db4o.Inside.Query.AbstractQueryResult queryResult = NewQueryResult();
 			queryResult.LoadFromQuery((Db4objects.Db4o.QQuery)query);
 			return queryResult;
 		}
@@ -133,6 +133,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		{
 		}
 
-		protected abstract Db4objects.Db4o.Inside.Query.IQueryResult NewQueryResult();
+		protected abstract Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult
+			();
 	}
 }

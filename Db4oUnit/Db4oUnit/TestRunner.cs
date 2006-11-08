@@ -2,7 +2,7 @@ namespace Db4oUnit
 {
 	public class TestRunner
 	{
-		internal Db4oUnit.ITestSuiteBuilder _suiteBuilder;
+		private Db4oUnit.ITestSuiteBuilder _suiteBuilder;
 
 		public TestRunner(Db4oUnit.TestSuite suite)
 		{
@@ -29,13 +29,20 @@ namespace Db4oUnit
 
 		public virtual int Run()
 		{
+			return Run(true);
+		}
+
+		private int Run(bool printLabels)
+		{
 			Db4oUnit.TestSuite suite = BuildTestSuite();
 			if (null == suite)
 			{
 				return 1;
 			}
-			Db4oUnit.TestResult result = new Db4oUnit.TestResult();
+			Db4oUnit.TestResult result = new Db4oUnit.TestResult(printLabels);
+			result.RunStarted();
 			suite.Run(result);
+			result.RunFinished();
 			Report(result);
 			return result.Failures().Size();
 		}

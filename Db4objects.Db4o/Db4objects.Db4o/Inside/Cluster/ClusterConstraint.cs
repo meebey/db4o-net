@@ -170,8 +170,7 @@ namespace Db4objects.Db4o.Inside.Cluster
 
 		public virtual object GetObject()
 		{
-			Db4objects.Db4o.Inside.Exceptions4.NotSupported();
-			return null;
+			throw new System.NotSupportedException();
 		}
 	}
 }

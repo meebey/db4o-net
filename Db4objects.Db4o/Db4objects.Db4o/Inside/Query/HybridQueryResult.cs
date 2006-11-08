@@ -5,16 +5,27 @@ namespace Db4objects.Db4o.Inside.Query
 	{
 		private Db4objects.Db4o.Inside.Query.AbstractQueryResult _delegate;
 
-		public HybridQueryResult(Db4objects.Db4o.Transaction transaction) : base(transaction
-			)
+		public HybridQueryResult(Db4objects.Db4o.Transaction transaction, Db4objects.Db4o.Inside.Query.AbstractQueryResult
+			 delegate_) : base(transaction)
 		{
-			_delegate = new Db4objects.Db4o.Inside.Query.LazyQueryResult(transaction);
+			_delegate = delegate_;
+		}
+
+		public HybridQueryResult(Db4objects.Db4o.Transaction transaction) : this(transaction
+			, new Db4objects.Db4o.Inside.Query.LazyQueryResult(transaction))
+		{
 		}
 
 		public override object Get(int index)
 		{
 			_delegate = _delegate.SupportElementAccess();
 			return _delegate.Get(index);
+		}
+
+		public override int GetId(int index)
+		{
+			_delegate = _delegate.SupportElementAccess();
+			return _delegate.GetId(index);
 		}
 
 		public override int IndexOf(int id)
@@ -26,6 +37,11 @@ namespace Db4objects.Db4o.Inside.Query
 		public override Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs()
 		{
 			return _delegate.IterateIDs();
+		}
+
+		public override System.Collections.IEnumerator GetEnumerator()
+		{
+			return _delegate.GetEnumerator();
 		}
 
 		public override void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)

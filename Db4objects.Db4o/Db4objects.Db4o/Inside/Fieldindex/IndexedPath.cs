@@ -56,8 +56,7 @@ namespace Db4objects.Db4o.Inside.Fieldindex
 
 		public override int ResultSize()
 		{
-			Db4objects.Db4o.Inside.Exceptions4.NotSupported();
-			return 0;
+			throw new System.NotSupportedException();
 		}
 	}
 }

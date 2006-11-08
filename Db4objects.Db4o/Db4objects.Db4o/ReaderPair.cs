@@ -48,6 +48,24 @@ namespace Db4objects.Db4o
 			IncrementOffset(times * Db4objects.Db4o.YapConst.INT_LENGTH);
 		}
 
+		public virtual int CopyUnindexedID()
+		{
+			int orig = _source.ReadInt();
+			int mapped = -1;
+			try
+			{
+				mapped = _mapping.MappedID(orig);
+			}
+			catch (Db4objects.Db4o.Inside.Mapping.MappingNotFoundException)
+			{
+				mapped = _mapping.AllocateTargetSlot(Db4objects.Db4o.YapConst.POINTER_LENGTH);
+				_mapping.MapIDs(orig, mapped, false, false);
+				_mapping.RegisterUnindexed(orig);
+			}
+			_target.WriteInt(mapped);
+			return mapped;
+		}
+
 		public virtual int CopyID()
 		{
 			return CopyID(false, false);

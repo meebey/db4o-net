@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Inside.Query
 
 		public virtual object Get(int index)
 		{
-			return _delegate.Get(ReverseIndex(index));
+			return _delegate.Get(index);
 		}
 
 		public virtual long[] GetIDs()
@@ -74,13 +74,8 @@ namespace Db4objects.Db4o.Inside.Query
 				{
 					return -1;
 				}
-				return ReverseIndex(_delegate.IndexOf(id));
+				return _delegate.IndexOf(id);
 			}
-		}
-
-		private int ReverseIndex(int idx)
-		{
-			return Size() - idx - 1;
 		}
 
 		public virtual System.Collections.IEnumerator IterateIDs()

@@ -485,6 +485,54 @@ namespace Db4objects.Db4o.Config
 		/// 	</seealso>
 		void MessageLevel(int level);
 
+		/// <summary>turns lazy query evaluation on and off.</summary>
+		/// <remarks>
+		/// turns lazy query evaluation on and off.
+		/// <br /><br />The db4o query processor can run in two modes:<br />
+		/// - <b>normal</b> mode<br />
+		/// - <b>lazy</b> mode<br /><br />
+		/// In <b>normal</b> mode, a query will be fully evaluated when
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// 	</see>
+		/// 
+		/// is called. The complete
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
+		/// of all matching IDs is
+		/// generated immediately.<br /><br />
+		/// In <b>lazy</b> mode, the
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// 	</see>
+		/// call will only create an Iterator
+		/// against the best index found. Further query processing will happen when the
+		/// user application iterates through the resulting
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
+		/// .<br /><br />
+		/// Advantages of using normal mode:<br />
+		/// - The
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
+		/// will be a snapshot of results at a given point in time.<br />
+		/// - Iterating through the entire resulting
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
+		/// will be slightly faster.<br /><br />
+		/// Advantages of using lazy mode:<br />
+		/// - The call to
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// 	</see>
+		/// will return very fast. First results can be
+		/// made available to the application before the query is fully processed.<br />
+		/// - A query will consume less memory because no intermediate ID representation has
+		/// to be created.<br /><br />
+		/// Some calls against a lazy
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
+		/// will require the query to be evaluated fully.
+		/// For instance
+		/// <see cref="Db4objects.Db4o.IObjectSet.Size">Db4objects.Db4o.IObjectSet.Size</see>
+		/// is such a costly call.
+		/// <br /><br />
+		/// In the default setting queries will be run evaluated in <b>normal</b> mode.
+		/// </remarks>
+		void LazyQueryEvaluation(bool flag);
+
 		/// <summary>can be used to turn the database file locking thread off.</summary>
 		/// <remarks>
 		/// can be used to turn the database file locking thread off.

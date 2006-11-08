@@ -9,11 +9,12 @@ namespace Db4objects.Db4o.CS
 
 		private int _prefetchRight;
 
-		private readonly Db4objects.Db4o.CS.ClientQueryResult _client;
+		private readonly Db4objects.Db4o.Inside.Query.AbstractQueryResult _client;
 
 		private readonly Db4objects.Db4o.Foundation.IIntIterator4 _ids;
 
-		public ClientQueryResultIterator(Db4objects.Db4o.CS.ClientQueryResult client)
+		public ClientQueryResultIterator(Db4objects.Db4o.Inside.Query.AbstractQueryResult
+			 client)
 		{
 			_client = client;
 			_ids = client.IterateIDs();
