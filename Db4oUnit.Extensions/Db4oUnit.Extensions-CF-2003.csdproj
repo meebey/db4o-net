@@ -11,8 +11,8 @@
                 <Reference AssemblyName="mscorlib" Name="MSCorLib" Platform="Pocket PC" Private="False"/>
                 <Reference AssemblyName="System" Name="System" Platform="Pocket PC" Private="False"/>
                 <Reference AssemblyName="System.Xml" Name="System.XML" Platform="Pocket PC" Private="False"/>
-                <Reference Name="Db4objects.Db4o-CF-2003" Package="{20D4826A-C6FA-45DB-90F4-C717570B9F32}" Platform="Pocket PC" Project="{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}"/>
                 <Reference Name="Db4oUnit-CF-2003" Package="{20D4826A-C6FA-45DB-90F4-C717570B9F32}" Platform="Pocket PC" Project="{998BD8EB-BE5D-43C0-9EDB-51D11591C8FE}"/>
+                <Reference Name="Db4objects.Db4o-CF-2003" Package="{20D4826A-C6FA-45DB-90F4-C717570B9F32}" Platform="Pocket PC" Project="{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}"/>
                 <Reference AssemblyName="System.CF.Design" Name="System.CF.Design" Platform="Pocket PC-Designer" Private="False"/>
                 <Reference AssemblyName="System.CF.Design.UI" Name="System.CF.Design.UI" Platform="Pocket PC-Designer" Private="False"/>
                 <Reference AssemblyName="System.CF.Windows.Forms" Name="System.CF.Windows.Forms" Platform="Pocket PC-Designer" Private="False"/>

@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -44,55 +45,21 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
+    <Reference Include="mscorlib"/>
+    <Reference Include="System"/>
+    <Reference Include="System.Xml"/>
   </ItemGroup>
+  <ItemGroup><Compile Include="Db4oUnit\ArrayAssert.cs"/><Compile Include="Db4oUnit\Assert.cs"/><Compile Include="Db4oUnit\AssertionException.cs"/><Compile Include="Db4oUnit\ICodeBlock.cs"/><Compile Include="Db4oUnit\ITest.cs"/><Compile Include="Db4oUnit\ITestCase.cs"/><Compile Include="Db4oUnit\ITestLifeCycle.cs"/><Compile Include="Db4oUnit\ITestSuiteBuilder.cs"/><Compile Include="Db4oUnit\NullTest.cs"/><Compile Include="Db4oUnit\NullTestSuiteBuilder.cs"/><Compile Include="Db4oUnit\Printable.cs"/><Compile Include="Db4oUnit\ReflectionTestSuiteBuilder.cs"/><Compile Include="Db4oUnit\SetupFailureException.cs"/><Compile Include="Db4oUnit\TearDownFailureException.cs"/><Compile Include="Db4oUnit\TestFailure.cs"/><Compile Include="Db4oUnit\TestFailureCollection.cs"/><Compile Include="Db4oUnit\TestMethod.cs"/><Compile Include="Db4oUnit\TestResult.cs"/><Compile Include="Db4oUnit\TestRunner.cs"/><Compile Include="Db4oUnit\TestSuite.cs"/><Compile Include="Db4oUnit\Tests\AllTests.cs"/><Compile Include="Db4oUnit\Tests\AssertTestCase.cs"/><Compile Include="Db4oUnit\Tests\FrameworkTestCase.cs"/><Compile Include="Db4oUnit\Tests\ReflectionTestSuiteBuilderTestCase.cs"/><Compile Include="Db4oUnit\Tests\ReinstantiatePerMethodTest.cs"/><Compile Include="Db4oUnit\Tests\RunsGreen.cs"/><Compile Include="Db4oUnit\Tests\RunsLifeCycle.cs"/><Compile Include="Db4oUnit\Tests\RunsRed.cs"/><Compile Include="Db4oUnit\Tests\TestLifeCycleTestCase.cs"/><Compile Include="Properties\AssemblyInfo.cs"/><Compile Include="native\Db4oUnit\TestException.cs"/><Compile Include="native\Db4oUnit\TestPlatform.cs"/><Compile Include="native\Db4oUnit\Util\StopWatch.cs"/><Compile Include="native\Db4oUnit\compact\SerializableAttribute.cs"/></ItemGroup>
   <ItemGroup>
-    <Compile Include="Db4oUnit\ArrayAssert.cs" />
-    <Compile Include="Db4oUnit\Assert.cs" />
-    <Compile Include="Db4oUnit\AssertionException.cs" />
-    <Compile Include="Db4oUnit\ICodeBlock.cs" />
-    <Compile Include="Db4oUnit\ITest.cs" />
-    <Compile Include="Db4oUnit\ITestCase.cs" />
-    <Compile Include="Db4oUnit\ITestLifeCycle.cs" />
-    <Compile Include="Db4oUnit\ITestSuiteBuilder.cs" />
-    <Compile Include="Db4oUnit\NullTest.cs" />
-    <Compile Include="Db4oUnit\NullTestSuiteBuilder.cs" />
-    <Compile Include="Db4oUnit\Printable.cs" />
-    <Compile Include="Db4oUnit\ReflectionTestSuiteBuilder.cs" />
-    <Compile Include="Db4oUnit\SetupFailureException.cs" />
-    <Compile Include="Db4oUnit\TearDownFailureException.cs" />
-    <Compile Include="Db4oUnit\TestFailure.cs" />
-    <Compile Include="Db4oUnit\TestFailureCollection.cs" />
-    <Compile Include="Db4oUnit\TestMethod.cs" />
-    <Compile Include="Db4oUnit\TestResult.cs" />
-    <Compile Include="Db4oUnit\TestRunner.cs" />
-    <Compile Include="Db4oUnit\TestSuite.cs" />
-    <Compile Include="Db4oUnit\Tests\AllTests.cs" />
-    <Compile Include="Db4oUnit\Tests\AssertTestCase.cs" />
-    <Compile Include="Db4oUnit\Tests\FrameworkTestCase.cs" />
-    <Compile Include="Db4oUnit\Tests\ReflectionTestSuiteBuilderTestCase.cs" />
-    <Compile Include="Db4oUnit\Tests\ReinstantiatePerMethodTest.cs" />
-    <Compile Include="Db4oUnit\Tests\RunsGreen.cs" />
-    <Compile Include="Db4oUnit\Tests\RunsLifeCycle.cs" />
-    <Compile Include="Db4oUnit\Tests\RunsRed.cs" />
-    <Compile Include="Db4oUnit\Tests\TestLifeCycleTestCase.cs" />
-    <Compile Include="native\Db4oUnit\compact\SerializableAttribute.cs" />
-    <Compile Include="native\Db4oUnit\TestException.cs" />
-    <Compile Include="native\Db4oUnit\TestPlatform.cs" />
-    <Compile Include="native\Db4oUnit\Util\StopWatch.cs" />
+    <Folder Include="Db4oUnit\Util\"/>
+    <Folder Include="Properties\"/>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Db4oUnit\Util\" />
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets" />
-  <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets"/>
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets"/>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
-        <HostingProcess disable="1" />
+        <HostingProcess disable="1"/>
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
