@@ -7,8 +7,9 @@ using Db4objects.Db4o;
 namespace Sharpen.IO
 {
 	public class File
-	{	
-		public static readonly char separator = Path.DirectorySeparatorChar;
+	{
+		public static readonly char separatorChar = Path.DirectorySeparatorChar;
+		public static readonly string separator = ""+Path.DirectorySeparatorChar;
 		
 		private string _path;
 
