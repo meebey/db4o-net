@@ -136,6 +136,7 @@ namespace Db4objects.Db4o.Tests {
         static int entry = 0;
 
         private void _menuItem2_Click(object sender, System.EventArgs e) {
+			Application.DoEvents();
             AllTests.Main(null);
         }
 
