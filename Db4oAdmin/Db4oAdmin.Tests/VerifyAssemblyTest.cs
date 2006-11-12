@@ -20,7 +20,7 @@ namespace Db4oAdmin.Tests
 
 		public void Run(TestResult result)
 		{
-			result.TestStarted(/*this*/);
+			result.TestStarted(this);
 			try
 			{
 				VerifyAssembly();

@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using com.db4o;
+
+using Db4objects.Db4o;
+using Db4objects.Db4o.Inside.Query;
 
 namespace Db4oShell.Example
 {
@@ -34,9 +36,10 @@ namespace Db4oShell.Example
 			string dataFile = GetDataFilePath();
 			if (File.Exists(dataFile)) File.Delete(dataFile);
 			
-			using (ObjectContainer container = Db4o.OpenFile(dataFile))
+			using (IObjectContainer container = Db4o.OpenFile(dataFile))
 			{
-				((YapStream)container).GetNativeQueryHandler().QueryExecution += new com.db4o.inside.query.QueryExecutionHandler(Program_QueryExecution);
+				((YapStream)container).GetNativeQueryHandler().QueryExecution += new 
+					QueryExecutionHandler(Program_QueryExecution);
 				container.Set(new Item("Foo"));
 				container.Set(new Item("Bar"));
 				
@@ -46,7 +49,7 @@ namespace Db4oShell.Example
 			};
 		}
 
-		static void Program_QueryExecution(object sender, com.db4o.inside.query.QueryExecutionEventArgs args)
+		static void Program_QueryExecution(object sender, QueryExecutionEventArgs args)
 		{
 			using (StreamWriter writer = File.AppendText(GetPersonalFilePath("CFNativeQueriesEnabler.Example.txt")))
 			{

@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6F3BE659-0653-4982-94D6-F1D9D8887E09}</ProjectGuid>
+    <ProjectGuid>{69859DB2-4DE3-4DE4-A0BB-13861418378F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Db4oAdmin</RootNamespace>
-    <AssemblyName>Db4oAdmin</AssemblyName>
+    <RootNamespace>Db4oAdmin.Tests</RootNamespace>
+    <AssemblyName>Db4oAdmin.Tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,45 +29,43 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractAssemblyInstrumentation.cs" />
-    <Compile Include="CFNQEnabler.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="IAssemblyInstrumentation.cs" />
-    <Compile Include="ILPattern.cs" />
-    <Compile Include="InstrumentationContext.cs" />
-    <Compile Include="InstrumentationPipeline.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions.Useful\CommonCompilerOptions.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\ArgumentProcessorAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\KillOptionAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionDetails.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionList.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\Options.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionsParsingMode.cs" />
-    <Compile Include="Mono.GetOptions\Mono\AboutAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono\AdditionalInfoAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono\AuthorAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono\IsPartOfPackageAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono\ReportBugsToAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono\UsageComplementAttribute.cs" />
-    <Compile Include="PredicateOptimizer.cs" />
+    <Compile Include="AbstractCommandLineInstrumentationTestCase.cs" />
+    <Compile Include="AbstractInstrumentationTestCase.cs" />
+    <Compile Include="CompilationServices.cs" />
+    <Compile Include="CustomInstrumentationTestCase.cs" />
+    <Compile Include="ILPatternTestCase.cs" />
+    <Compile Include="PredicateBuildTimeOptimizationTestCase.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="ProgramOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueryInvocationProcessor.cs" />
-    <Compile Include="SaveAssemblyInstrumentation.cs" />
-    <Compile Include="SodaEmitterVisitor.cs" />
+    <Compile Include="CFNQRuntimeOptimizationTestCase.cs" />
+    <EmbeddedResource Include="Resources\CFNQSubject.cs" />
+    <EmbeddedResource Include="Resources\PredicateSubject.cs" />
+    <EmbeddedResource Include="Resources\UnoptimizablePredicateSubject.cs" />
+    <EmbeddedResource Include="Resources\CustomInstrumentationSubject.cs" />
+    <Compile Include="ShellUtilities.cs" />
+    <Compile Include="UnoptimizablePredicatesTestCase.cs" />
+    <Compile Include="VerifyAssemblyTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Db4objects.Db4o.Tools\Db4objects.Db4o.Tools-2005.csproj">
-      <Project>{1D28DD3C-4D59-4003-96C6-9CBB3BA68FA6}</Project>
+      <Project>{7B23B089-806B-44C1-B4C4-D643ED8A9992}</Project>
       <Name>Db4objects.Db4o.Tools-2005</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2005.csproj">
       <Project>{4FA6645B-E14B-4F18-A2CC-C1925663EFCE}</Project>
       <Name>Db4objects.Db4o-2005</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Db4oUnit\Db4oUnit-2005.csproj">
+      <Project>{9ABAFC31-D29D-4000-B6A0-C24F0BB221F5}</Project>
+      <Name>Db4oUnit-2005</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Db4oAdmin\Db4oAdmin-2005.csproj">
+      <Project>{6F3BE659-0653-4982-94D6-F1D9D8887E09}</Project>
+      <Name>Db4oAdmin-2005</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
