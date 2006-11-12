@@ -133,8 +133,8 @@ namespace Db4objects.Db4o
         internal static long DoubleToLong(double a_double)
         {
 #if CF_1_0 || CF_2_0
-			// XXX: what to do here?
-			return 0;
+            byte[] bytes = BitConverter.GetBytes(a_double);
+            return BitConverter.ToInt64(bytes, 0);
 #else
             return BitConverter.DoubleToInt64Bits(a_double);
 #endif
@@ -430,8 +430,8 @@ namespace Db4objects.Db4o
         internal static double LongToDouble(long l)
         {
 #if CF_1_0 || CF_2_0
-			// XXX: what to do here?
-			return 0;
+            byte[] bytes = BitConverter.GetBytes(l);
+            return BitConverter.ToDouble(bytes, 0);
 #else
             return BitConverter.Int64BitsToDouble(l);
 #endif
