@@ -1,0 +1,45 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Tutorial-2003", "Db4objects.Db4o.Tutorial\Db4objects.Db4o.Tutorial-2003.csproj", "{92A074AA-758E-49C2-B859-4EF341C83966}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Tutorial.Chapters-2003", "Db4objects.Db4o.Tutorial.Chapters\Db4objects.Db4o.Tutorial.Chapters-2003.csproj", "{6C2653E0-FB4A-4A07-B56B-0DE5959D8616}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Tutorial.Console-2003", "Db4objects.Db4o.Tutorial.Console\Db4objects.Db4o.Tutorial.Console-2003.csproj", "{D18B49C8-2B26-422C-8D72-C92206C6F900}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o-2003", "..\Db4objects.Db4o\Db4objects.Db4o-2003.csproj", "{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{92A074AA-758E-49C2-B859-4EF341C83966}.Debug.ActiveCfg = Debug|.NET
+		{92A074AA-758E-49C2-B859-4EF341C83966}.Debug.Build.0 = Debug|.NET
+		{92A074AA-758E-49C2-B859-4EF341C83966}.Release.ActiveCfg = Release|.NET
+		{92A074AA-758E-49C2-B859-4EF341C83966}.Release.Build.0 = Release|.NET
+		{6C2653E0-FB4A-4A07-B56B-0DE5959D8616}.Debug.ActiveCfg = Debug|.NET
+		{6C2653E0-FB4A-4A07-B56B-0DE5959D8616}.Debug.Build.0 = Debug|.NET
+		{6C2653E0-FB4A-4A07-B56B-0DE5959D8616}.Release.ActiveCfg = Release|.NET
+		{6C2653E0-FB4A-4A07-B56B-0DE5959D8616}.Release.Build.0 = Release|.NET
+		{D18B49C8-2B26-422C-8D72-C92206C6F900}.Debug.ActiveCfg = Debug|.NET
+		{D18B49C8-2B26-422C-8D72-C92206C6F900}.Debug.Build.0 = Debug|.NET
+		{D18B49C8-2B26-422C-8D72-C92206C6F900}.Release.ActiveCfg = Release|.NET
+		{D18B49C8-2B26-422C-8D72-C92206C6F900}.Release.Build.0 = Release|.NET
+		{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}.Debug.ActiveCfg = Debug|.NET
+		{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}.Debug.Build.0 = Debug|.NET
+		{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}.Release.ActiveCfg = Release|.NET
+		{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
