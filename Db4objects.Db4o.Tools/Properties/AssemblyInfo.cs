@@ -4,11 +4,14 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("db4o - tools")]
-[assembly: AssemblyDescription("db4o tools 4.6.004 .NET")]
-[assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
 [assembly: AssemblyCopyright("db4o 2005")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]	
-[assembly: AssemblyVersion("5.7.001")]
+
+// attributes are automatically set by the build
+[assembly: AssemblyVersion("6.0.001")]
+[assembly: AssemblyKeyFile("")]
+[assembly: AssemblyConfiguration(".NET")]
+[assembly: AssemblyDescription("db4o 6.0.001 .NET")]
