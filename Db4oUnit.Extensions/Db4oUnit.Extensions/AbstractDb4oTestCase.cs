@@ -188,6 +188,44 @@ namespace Db4oUnit.Extensions
 			return result.Next();
 		}
 
+		protected virtual int CountOccurences(System.Type clazz)
+		{
+			Db4objects.Db4o.IObjectSet result = NewQuery(clazz).Execute();
+			return result.Size();
+		}
+
+		protected virtual void Foreach(System.Type clazz, Db4objects.Db4o.Foundation.IVisitor4
+			 visitor)
+		{
+			Db4objects.Db4o.Ext.IExtObjectContainer oc = Db();
+			oc.Deactivate(clazz, int.MaxValue);
+			Db4objects.Db4o.IObjectSet set = NewQuery(clazz).Execute();
+			while (set.HasNext())
+			{
+				visitor.Visit(set.Next());
+			}
+		}
+
+		protected virtual void DeleteAll(System.Type clazz)
+		{
+			Foreach(clazz, new _AnonymousInnerClass183(this));
+		}
+
+		private sealed class _AnonymousInnerClass183 : Db4objects.Db4o.Foundation.IVisitor4
+		{
+			public _AnonymousInnerClass183(AbstractDb4oTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Visit(object obj)
+			{
+				this._enclosing.Db().Delete(obj);
+			}
+
+			private readonly AbstractDb4oTestCase _enclosing;
+		}
+
 		protected void Store(object obj)
 		{
 			Db().Set(obj);
