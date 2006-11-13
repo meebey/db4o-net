@@ -3,17 +3,18 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-#if !CF_1_0 && !CF_2_0
 [assembly: AssemblyTitle("db4o - database for objects")]
-[assembly: AssemblyDescription("db4o 5.7.001 .NET")]
-[assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
 [assembly: AssemblyCopyright("db4o 2004 - 2006")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]	
-[assembly: AssemblyVersion("5.7.001")]
+[assembly: AssemblyCulture("")]
 [assembly: AssemblyDelaySign(false)]
-[assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]
-#endif
+
+// attributes are automatically set by the build
+[assembly: AssemblyVersion("6.0.001")]
+[assembly: AssemblyKeyFile("")]
+[assembly: AssemblyConfiguration(".NET")]
+[assembly: AssemblyDescription("db4o 6.0.001 .NET")]
+
