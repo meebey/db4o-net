@@ -1,17 +1,16 @@
 ﻿/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
-
-#if !CF_1_0 && !CF_2_0
-
 using System;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 
 using Sharpen.Lang;
 using Db4objects.Db4o.Config;
 
 namespace Db4objects.Db4o.Config
 {
+#if !CF_1_0 && !CF_2_0
+	using System.Runtime.Serialization;
+	using System.Runtime.Serialization.Formatters.Binary;
+
 	/// <summary>
 	/// translator for types that are marked with the Serializable attribute.
 	/// The Serializable translator is provided to allow persisting objects that
