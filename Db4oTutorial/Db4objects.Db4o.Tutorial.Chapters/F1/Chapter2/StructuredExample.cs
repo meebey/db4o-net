@@ -27,19 +27,19 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
 				UpdatePilotSingleSession(db);
 				UpdatePilotSeparateSessionsPart1(db);
 				db.Close();
-				db=Db4o.OpenFile(Util.YapFileName);
+				db=Db4oFactory.OpenFile(Util.YapFileName);
 				UpdatePilotSeparateSessionsPart2(db);
 				db.Close();
 				UpdatePilotSeparateSessionsImprovedPart1(db);
-				db=Db4o.OpenFile(Util.YapFileName);
+				db=Db4oFactory.OpenFile(Util.YapFileName);
 				UpdatePilotSeparateSessionsImprovedPart2(db);
 				db.Close();
-				db=Db4o.OpenFile(Util.YapFileName);
+				db=Db4oFactory.OpenFile(Util.YapFileName);
 				UpdatePilotSeparateSessionsImprovedPart3(db);
 				DeleteFlat(db);
 				db.Close();
 				DeleteDeepPart1(db);
-				db=Db4o.OpenFile(Util.YapFileName);
+				db=Db4oFactory.OpenFile(Util.YapFileName);
 				DeleteDeepPart2(db);
 				DeleteDeepRevisited(db);
 			}

@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 				UpdateCollection(db);
 				db.Close();
 				DeleteAllPart1();
-				db=Db4o.OpenFile(Util.YapFileName);
+				db=Db4oFactory.OpenFile(Util.YapFileName);
 				DeleteAllPart2(db);
 				RetrieveAllSensorReadouts(db);
 			}

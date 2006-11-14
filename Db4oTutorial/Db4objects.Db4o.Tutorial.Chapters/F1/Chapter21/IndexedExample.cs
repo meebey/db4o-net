@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter21
 	public class IndexedExample: Util {
 		
 		public static void noIndex() {
-    		IObjectContainer db=Db4o.OpenFile(Util.YapFileName);
+    		IObjectContainer db=Db4oFactory.OpenFile(Util.YapFileName);
 			try {
     			IQuery query = db.Query();
 				query.Constrain(typeof(Car));
@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter21
 	    
 		public static void fillUpDB(){
 			File.Delete(Util.YapFileName);
-			IObjectContainer db=Db4o.OpenFile(Util.YapFileName);
+			IObjectContainer db=Db4oFactory.OpenFile(Util.YapFileName);
 			try {
         		for (int i=0; i<10000;i++){
     				AddCar(db,i);
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter21
 		public static void pilotIndex() {
     		Db4oFactory.Configure().ObjectClass(typeof(Car)).ObjectField("_pilot").Indexed(true);
     		Db4oFactory.Configure().ObjectClass(typeof(Pilot)).ObjectField("_points").Indexed(false);
-			IObjectContainer db=Db4o.OpenFile(Util.YapFileName);
+			IObjectContainer db=Db4oFactory.OpenFile(Util.YapFileName);
 			try {
     			IQuery query = db.Query();
 				query.Constrain(typeof(Car));
@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter21
 		public static void pointsIndex() {
     		Db4oFactory.Configure().ObjectClass(typeof(Car)).ObjectField("_pilot").Indexed(false);
     		Db4oFactory.Configure().ObjectClass(typeof(Pilot)).ObjectField("_points").Indexed(true);
-			IObjectContainer db=Db4o.OpenFile(Util.YapFileName);
+			IObjectContainer db=Db4oFactory.OpenFile(Util.YapFileName);
 			try {
     			IQuery query = db.Query();
 				query.Constrain(typeof(Car));
@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter21
 		public static void fullIndex() {
     		Db4oFactory.Configure().ObjectClass(typeof(Car)).ObjectField("_pilot").Indexed(true);
     		Db4oFactory.Configure().ObjectClass(typeof(Pilot)).ObjectField("_points").Indexed(true);
-			IObjectContainer db=Db4o.OpenFile(Util.YapFileName);
+			IObjectContainer db=Db4oFactory.OpenFile(Util.YapFileName);
 			try {
     			IQuery query = db.Query();
 				query.Constrain(typeof(Car));
