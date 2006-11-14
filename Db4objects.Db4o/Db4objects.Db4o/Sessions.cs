@@ -46,14 +46,14 @@ namespace Db4objects.Db4o
 				}
 				catch (System.Exception t)
 				{
-					Db4objects.Db4o.Messages.LogErr(Db4objects.Db4o.Db4o.i_config, 4, databaseFileName
+					Db4objects.Db4o.Messages.LogErr(Db4objects.Db4o.Db4oFactory.i_config, 4, databaseFileName
 						, t);
 					return null;
 				}
 				newSession.i_stream = (Db4objects.Db4o.YapStream)oc;
 				Add(newSession);
 				Db4objects.Db4o.Platform4.PostOpen(oc);
-				Db4objects.Db4o.Messages.LogMsg(Db4objects.Db4o.Db4o.i_config, 5, databaseFileName
+				Db4objects.Db4o.Messages.LogMsg(Db4objects.Db4o.Db4oFactory.i_config, 5, databaseFileName
 					);
 				return oc;
 			}

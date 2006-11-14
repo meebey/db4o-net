@@ -121,7 +121,7 @@ namespace Db4objects.Db4o
 					}
 					base.Close2();
 					i_entryCounter--;
-					Db4objects.Db4o.Db4o.SessionStopped(i_session);
+					Db4objects.Db4o.Db4oFactory.SessionStopped(i_session);
 					lock (i_fileLock)
 					{
 						try
@@ -218,7 +218,7 @@ namespace Db4objects.Db4o
 			}
 			try
 			{
-				Db4objects.Db4o.Db4o.SessionStopped(i_session);
+				Db4objects.Db4o.Db4oFactory.SessionStopped(i_session);
 			}
 			catch
 			{

@@ -30,7 +30,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			base.Open();
 			try
 			{
-				_objectContainer = Db4objects.Db4o.Db4o.OpenClient(Config(), HOST, PORT, USERNAME
+				_objectContainer = Db4objects.Db4o.Db4oFactory.OpenClient(Config(), HOST, PORT, USERNAME
 					, PASSWORD).Ext();
 			}
 			catch (System.IO.IOException e)

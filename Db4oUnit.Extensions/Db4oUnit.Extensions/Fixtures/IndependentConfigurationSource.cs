@@ -4,7 +4,7 @@ namespace Db4oUnit.Extensions.Fixtures
 	{
 		public virtual Db4objects.Db4o.Config.IConfiguration Config()
 		{
-			return Db4objects.Db4o.Db4o.NewConfiguration();
+			return Db4objects.Db4o.Db4oFactory.NewConfiguration();
 		}
 	}
 }

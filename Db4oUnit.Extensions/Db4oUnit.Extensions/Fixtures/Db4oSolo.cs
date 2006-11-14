@@ -15,7 +15,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		protected override Db4objects.Db4o.IObjectContainer CreateDatabase(Db4objects.Db4o.Config.IConfiguration
 			 config)
 		{
-			return Db4objects.Db4o.Db4o.OpenFile(config, GetAbsolutePath());
+			return Db4objects.Db4o.Db4oFactory.OpenFile(config, GetAbsolutePath());
 		}
 
 		public override string GetLabel()

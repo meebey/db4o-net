@@ -28,7 +28,7 @@ namespace Db4objects.Db4o
 			{
 				if (header)
 				{
-					stream.WriteLine("[" + Db4objects.Db4o.Db4o.Version() + "   " + Db4objects.Db4o.YDate
+					stream.WriteLine("[" + Db4objects.Db4o.Db4oFactory.Version() + "   " + Db4objects.Db4o.YDate
 						.Now() + "] ");
 				}
 				stream.WriteLine(" " + msg);

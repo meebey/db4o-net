@@ -16,8 +16,8 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			try
 			{
-				return Db4objects.Db4o.Db4o.OpenClient(Config(), HOST, PORT, USERNAME, PASSWORD).
-					Ext();
+				return Db4objects.Db4o.Db4oFactory.OpenClient(Config(), HOST, PORT, USERNAME, PASSWORD
+					).Ext();
 			}
 			catch (System.IO.IOException e)
 			{

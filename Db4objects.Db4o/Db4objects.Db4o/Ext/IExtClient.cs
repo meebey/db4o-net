@@ -5,7 +5,7 @@ namespace Db4objects.Db4o.Ext
 	/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer">ExtObjectContainer</see>
 	/// interface.
 	/// <br /><br />Both
-	/// <see cref="Db4objects.Db4o.Db4o.OpenClient">Db4o.openClient()</see>
+	/// <see cref="Db4objects.Db4o.Db4oFactory.OpenClient">Db4o.openClient()</see>
 	/// methods always
 	/// return an <code>ExtClient</code> object so a cast is possible.<br /><br />
 	/// The ObjectContainer functionality is split into multiple interfaces to allow newcomers to

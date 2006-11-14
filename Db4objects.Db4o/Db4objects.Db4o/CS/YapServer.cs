@@ -204,7 +204,7 @@ namespace Db4objects.Db4o.CS
 
 		public virtual Db4objects.Db4o.IObjectContainer OpenClient()
 		{
-			return OpenClient(Db4objects.Db4o.Db4o.CloneConfiguration());
+			return OpenClient(Db4objects.Db4o.Db4oFactory.CloneConfiguration());
 		}
 
 		public virtual Db4objects.Db4o.IObjectContainer OpenClient(Db4objects.Db4o.Config.IConfiguration

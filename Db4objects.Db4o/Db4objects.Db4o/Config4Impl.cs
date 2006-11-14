@@ -474,7 +474,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_stream == null)
 			{
-				Db4objects.Db4o.Db4o.ForEachSession(new _AnonymousInnerClass412(this));
+				Db4objects.Db4o.Db4oFactory.ForEachSession(new _AnonymousInnerClass412(this));
 			}
 			else
 			{
@@ -531,7 +531,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_stream == null)
 			{
-				Db4objects.Db4o.Db4o.ForEachSession(new _AnonymousInnerClass451(this));
+				Db4objects.Db4o.Db4oFactory.ForEachSession(new _AnonymousInnerClass451(this));
 			}
 			else
 			{
@@ -580,11 +580,11 @@ namespace Db4objects.Db4o
 			_config.Put(OUTSTREAM, outStream);
 			if (i_stream != null)
 			{
-				i_stream.LogMsg(19, Db4objects.Db4o.Db4o.Version());
+				i_stream.LogMsg(19, Db4objects.Db4o.Db4oFactory.Version());
 			}
 			else
 			{
-				Db4objects.Db4o.Messages.LogMsg(Db4objects.Db4o.Db4o.i_config, 19, Db4objects.Db4o.Db4o
+				Db4objects.Db4o.Messages.LogMsg(Db4objects.Db4o.Db4oFactory.i_config, 19, Db4objects.Db4o.Db4oFactory
 					.Version());
 			}
 		}

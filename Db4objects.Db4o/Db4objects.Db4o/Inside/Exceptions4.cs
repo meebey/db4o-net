@@ -21,8 +21,8 @@ namespace Db4objects.Db4o.Inside
 		public static void ThrowRuntimeException(int code, string msg, System.Exception cause
 			)
 		{
-			Db4objects.Db4o.Messages.LogErr(Db4objects.Db4o.Db4o.Configure(), code, msg, cause
-				);
+			Db4objects.Db4o.Messages.LogErr(Db4objects.Db4o.Db4oFactory.Configure(), code, msg
+				, cause);
 			throw new Db4objects.Db4o.Ext.Db4oException(Db4objects.Db4o.Messages.Get(code, msg
 				));
 		}

@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.CS
 		{
 		}
 
-		public YapClient(string fakeServerFile) : this(Db4objects.Db4o.Db4o.CloneConfiguration
+		public YapClient(string fakeServerFile) : this(Db4objects.Db4o.Db4oFactory.CloneConfiguration
 			())
 		{
 			lock (Lock())
@@ -761,7 +761,7 @@ namespace Db4objects.Db4o.CS
 				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.SWITCH_TO_FILE.GetWriterForString(i_trans
 					, fileName));
 				ExpectedResponse(Db4objects.Db4o.CS.Messages.Msg.OK);
-				ReReadAll(Db4objects.Db4o.Db4o.CloneConfiguration());
+				ReReadAll(Db4objects.Db4o.Db4oFactory.CloneConfiguration());
 				switchedToFile = fileName;
 			}
 		}
@@ -773,7 +773,7 @@ namespace Db4objects.Db4o.CS
 				Commit();
 				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.SWITCH_TO_MAIN_FILE);
 				ExpectedResponse(Db4objects.Db4o.CS.Messages.Msg.OK);
-				ReReadAll(Db4objects.Db4o.Db4o.CloneConfiguration());
+				ReReadAll(Db4objects.Db4o.Db4oFactory.CloneConfiguration());
 				switchedToFile = null;
 			}
 		}

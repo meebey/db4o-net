@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Ext
 	/// or JVM failures.
 	/// <br /><br />
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Ext.ExtDb4o.OpenMemoryFile">Db4objects.Db4o.Ext.ExtDb4o.OpenMemoryFile
+	/// <seealso cref="Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile">Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile
 	/// 	</seealso>
 	public class MemoryFile
 	{
@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.Ext
 		/// configures the size the MemoryFile is to be enlarged by, if it grows
 		/// beyond the current size.
 		/// <br /><br />Call this method before passing the MemoryFile to
-		/// <see cref="Db4objects.Db4o.Ext.ExtDb4o.OpenMemoryFile">ExtDb4o#openMemoryFile(MemoryFile)
+		/// <see cref="Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile">ExtDb4o#openMemoryFile(MemoryFile)
 		/// 	</see>
 		/// .
 		/// <br /><br />
@@ -110,7 +110,7 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>
 		/// configures the initial size of the MemoryFile.
 		/// <br /><br />Call this method before passing the MemoryFile to
-		/// <see cref="Db4objects.Db4o.Ext.ExtDb4o.OpenMemoryFile">ExtDb4o#openMemoryFile(MemoryFile)
+		/// <see cref="Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile">ExtDb4o#openMemoryFile(MemoryFile)
 		/// 	</see>
 		/// .
 		/// <br /><br />

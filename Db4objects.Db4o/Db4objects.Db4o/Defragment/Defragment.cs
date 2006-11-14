@@ -165,8 +165,8 @@ namespace Db4objects.Db4o.Defragment
 		private static void SetIdentity(string targetFile, int targetIdentityID, int targetUuidIndexID
 			)
 		{
-			Db4objects.Db4o.YapFile targetDB = (Db4objects.Db4o.YapFile)Db4objects.Db4o.Db4o.
-				OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig.Db4oConfig(), targetFile);
+			Db4objects.Db4o.YapFile targetDB = (Db4objects.Db4o.YapFile)Db4objects.Db4o.Db4oFactory
+				.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig.Db4oConfig(), targetFile);
 			try
 			{
 				Db4objects.Db4o.Ext.Db4oDatabase identity = (Db4objects.Db4o.Ext.Db4oDatabase)targetDB

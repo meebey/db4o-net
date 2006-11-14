@@ -69,13 +69,13 @@ namespace Db4objects.Db4o.Defragment
 			, Db4objects.Db4o.Defragment.IDefragmentListener listener)
 		{
 			_listener = listener;
-			Db4objects.Db4o.Config.IConfiguration sourceConfig = Db4objects.Db4o.Db4o.NewConfiguration
-				();
+			Db4objects.Db4o.Config.IConfiguration sourceConfig = Db4objects.Db4o.Db4oFactory.
+				NewConfiguration();
 			sourceConfig.WeakReferences(false);
 			sourceConfig.FlushFileBuffers(false);
 			sourceConfig.ReadOnly(true);
-			_sourceDb = (Db4objects.Db4o.YapFile)Db4objects.Db4o.Db4o.OpenFile(sourceConfig, 
-				defragConfig.BackupPath()).Ext();
+			_sourceDb = (Db4objects.Db4o.YapFile)Db4objects.Db4o.Db4oFactory.OpenFile(sourceConfig
+				, defragConfig.BackupPath()).Ext();
 			_targetDb = FreshYapFile(defragConfig.OrigPath());
 			_mapping = defragConfig.Mapping();
 			_mapping.Open();
@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Defragment
 		internal static Db4objects.Db4o.YapFile FreshYapFile(string fileName)
 		{
 			new Sharpen.IO.File(fileName).Delete();
-			return (Db4objects.Db4o.YapFile)Db4objects.Db4o.Db4o.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig
+			return (Db4objects.Db4o.YapFile)Db4objects.Db4o.Db4oFactory.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig
 				.Db4oConfig(), fileName).Ext();
 		}
 

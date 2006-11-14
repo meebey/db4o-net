@@ -87,7 +87,7 @@ namespace Db4objects.Db4o
 		{
 			if (config == null)
 			{
-				config = Db4objects.Db4o.Db4o.Configure();
+				config = Db4objects.Db4o.Db4oFactory.Configure();
 			}
 			System.IO.TextWriter ps = ((Db4objects.Db4o.Config4Impl)config).ErrStream();
 			new Db4objects.Db4o.Message(msg, code, ps);
@@ -105,7 +105,7 @@ namespace Db4objects.Db4o
 			Db4objects.Db4o.Config4Impl c4i = (Db4objects.Db4o.Config4Impl)config;
 			if (c4i == null)
 			{
-				c4i = (Db4objects.Db4o.Config4Impl)Db4objects.Db4o.Db4o.Configure();
+				c4i = (Db4objects.Db4o.Config4Impl)Db4objects.Db4o.Db4oFactory.Configure();
 			}
 			if (c4i.MessageLevel() > Db4objects.Db4o.YapConst.NONE)
 			{

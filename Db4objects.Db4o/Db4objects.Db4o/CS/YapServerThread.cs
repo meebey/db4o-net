@@ -333,8 +333,8 @@ namespace Db4objects.Db4o.CS
 				try
 				{
 					CloseSubstituteStream();
-					i_substituteStream = (Db4objects.Db4o.YapFile)Db4objects.Db4o.Db4o.OpenFile(fileName
-						);
+					i_substituteStream = (Db4objects.Db4o.YapFile)Db4objects.Db4o.Db4oFactory.OpenFile
+						(fileName);
 					i_substituteTrans = i_substituteStream.NewTransaction();
 					i_substituteStream.ConfigImpl().SetMessageRecipient(i_mainStream.ConfigImpl().MessageRecipient
 						());

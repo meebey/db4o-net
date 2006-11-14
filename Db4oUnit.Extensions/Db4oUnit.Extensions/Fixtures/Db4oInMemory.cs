@@ -21,7 +21,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			{
 				_memoryFile = new Db4objects.Db4o.Ext.MemoryFile();
 			}
-			return Db4objects.Db4o.Ext.ExtDb4o.OpenMemoryFile(config, _memoryFile);
+			return Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile(config, _memoryFile);
 		}
 
 		protected override void DoClean()

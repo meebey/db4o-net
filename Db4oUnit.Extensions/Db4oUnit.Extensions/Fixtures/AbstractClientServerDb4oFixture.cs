@@ -37,8 +37,8 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public override void Open()
 		{
-			_server = Db4objects.Db4o.Db4o.OpenServer(Config(), _yap.GetAbsolutePath(), _port
-				);
+			_server = Db4objects.Db4o.Db4oFactory.OpenServer(Config(), _yap.GetAbsolutePath()
+				, _port);
 			_server.GrantAccess(USERNAME, PASSWORD);
 		}
 

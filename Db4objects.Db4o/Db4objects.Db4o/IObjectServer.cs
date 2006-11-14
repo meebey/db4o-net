@@ -4,14 +4,16 @@ namespace Db4objects.Db4o
 	/// <remarks>
 	/// the db4o server interface.
 	/// <br /><br />- db4o servers can be opened with
-	/// <see cref="Db4objects.Db4o.Db4o.OpenServer">Db4objects.Db4o.Db4o.OpenServer</see>
+	/// <see cref="Db4objects.Db4o.Db4oFactory.OpenServer">Db4objects.Db4o.Db4oFactory.OpenServer
+	/// 	</see>
 	/// .<br />
 	/// - Direct in-memory connections to servers can be made with
 	/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">Db4objects.Db4o.IObjectServer.OpenClient
 	/// 	</see>
 	/// <br />
 	/// - TCP connections are available through
-	/// <see cref="Db4objects.Db4o.Db4o.OpenClient">Db4objects.Db4o.Db4o.OpenClient</see>
+	/// <see cref="Db4objects.Db4o.Db4oFactory.OpenClient">Db4objects.Db4o.Db4oFactory.OpenClient
+	/// 	</see>
 	/// .
 	/// <br /><br />Before connecting clients over TCP, you have to
 	/// <see cref="Db4objects.Db4o.IObjectServer.GrantAccess">Db4objects.Db4o.IObjectServer.GrantAccess
@@ -19,7 +21,7 @@ namespace Db4objects.Db4o
 	/// to the username and password combination
 	/// that you want to use.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Db4o.OpenServer">Db4o.openServer</seealso>
+	/// <seealso cref="Db4objects.Db4o.Db4oFactory.OpenServer">Db4o.openServer</seealso>
 	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectServer">ExtObjectServer for extended functionality
 	/// 	</seealso>
 	public interface IObjectServer
@@ -62,7 +64,8 @@ namespace Db4objects.Db4o
 		/// as the server. Since an embedded client can use direct communication, without
 		/// an in-between socket connection, performance will be better than a client
 		/// opened with
-		/// <see cref="Db4objects.Db4o.Db4o.OpenClient">Db4objects.Db4o.Db4o.OpenClient</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenClient">Db4objects.Db4o.Db4oFactory.OpenClient
+		/// 	</see>
 		/// <br /><br />Every client has it's own transaction and uses it's own cache
 		/// for it's own version of all peristent objects.
 		/// </remarks>

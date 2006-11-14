@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Defragment
 
 		public static Db4objects.Db4o.Config.IConfiguration Db4oConfig()
 		{
-			Db4objects.Db4o.Config.IConfiguration config = Db4objects.Db4o.Db4o.NewConfiguration
+			Db4objects.Db4o.Config.IConfiguration config = Db4objects.Db4o.Db4oFactory.NewConfiguration
 				();
 			config.WeakReferences(false);
 			return config;
