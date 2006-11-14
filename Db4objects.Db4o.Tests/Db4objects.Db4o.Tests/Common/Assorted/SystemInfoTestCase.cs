@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		protected override void Db4oCustomTearDown()
 		{
-			Db4objects.Db4o.Db4o.Configure().Freespace().UseRamSystem();
+			Db4objects.Db4o.Db4oFactory.Configure().Freespace().UseRamSystem();
 		}
 
 		public virtual void TestDefaultFreespaceInfo()
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void TestIndexBasedFreespaceInfo()
 		{
-			Db4objects.Db4o.Db4o.Configure().Freespace().UseIndexSystem();
+			Db4objects.Db4o.Db4oFactory.Configure().Freespace().UseIndexSystem();
 			Reopen();
 			AssertFreespaceInfo(Db().SystemInfo());
 		}

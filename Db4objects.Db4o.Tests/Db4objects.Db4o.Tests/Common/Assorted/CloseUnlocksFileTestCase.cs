@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			Db4objects.Db4o.Foundation.IO.File4.Delete(FILE);
 			Db4oUnit.Assert.IsFalse(System.IO.File.Exists(FILE));
-			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4o.OpenFile(FILE);
+			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(FILE);
 			oc.Close();
 			Db4objects.Db4o.Foundation.IO.File4.Delete(FILE);
 			Db4oUnit.Assert.IsFalse(System.IO.File.Exists(FILE));

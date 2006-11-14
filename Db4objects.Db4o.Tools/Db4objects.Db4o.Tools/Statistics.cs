@@ -37,7 +37,7 @@ namespace Db4oTools {
             if (new Sharpen.IO.File(filename).Exists()) {
                 IObjectContainer con1 = null;
                 try { 
-                    con1 = Db4o.OpenFile(filename);
+                    con1 = Db4oFactory.OpenFile(filename);
                     PrintHeader("STATISTICS");
                     Console.WriteLine("File: " + filename);
                     PrintStats(con1, filename);

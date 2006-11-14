@@ -31,8 +31,8 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			CreateFile();
 			Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter adapterFactory = new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter
 				(new Db4objects.Db4o.IO.RandomAccessFileAdapter());
-			Db4objects.Db4o.Db4o.Configure().Io(adapterFactory);
-			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4o.OpenFile(FILE);
+			Db4objects.Db4o.Db4oFactory.Configure().Io(adapterFactory);
+			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(FILE);
 			Db4objects.Db4o.IObjectSet objectSet = oc.Get(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase
 				(null, "three"));
 			oc.Delete(objectSet.Next());
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				));
 			oc.Commit();
 			oc.Close();
-			Db4objects.Db4o.Db4o.Configure().Io(new Db4objects.Db4o.IO.RandomAccessFileAdapter
+			Db4objects.Db4o.Db4oFactory.Configure().Io(new Db4objects.Db4o.IO.RandomAccessFileAdapter
 				());
 			int count = adapterFactory.batch.WriteVersions(FILE);
 			CheckFiles("R", adapterFactory.batch.NumSyncs());
@@ -63,7 +63,8 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			for (int i = 1; i <= count; i++)
 			{
 				string fileName = FILE + infix + i;
-				Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4o.OpenFile(fileName);
+				Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(fileName
+					);
 				if (!StateBeforeCommit(oc))
 				{
 					Db4oUnit.Assert.IsTrue(StateAfterCommit(oc));
@@ -122,7 +123,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 
 		private void CreateFile()
 		{
-			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4o.OpenFile(FILE);
+			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(FILE);
 			for (int i = 0; i < 10; i++)
 			{
 				oc.Set(new Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleItem("delme"));

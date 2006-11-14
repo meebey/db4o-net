@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private void CreateFile(string fileName)
 		{
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4o.OpenFile(Db4objects.Db4o.Db4o
+			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(Db4objects.Db4o.Db4oFactory
 				.NewConfiguration(), fileName);
 			db.Set(new Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestCase.Data(42
 				));
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private void AssertDataClassKnown(bool expected)
 		{
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4o.OpenFile(Db4objects.Db4o.Db4o
+			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(Db4objects.Db4o.Db4oFactory
 				.NewConfiguration(), FILENAME);
 			try
 			{

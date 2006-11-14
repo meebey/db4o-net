@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Tests.Util
 				CompilerParameters parameters = CreateDefaultCompilerParameters();
 				parameters.IncludeDebugInformation = false;
 				parameters.OutputAssembly = assemblyFName;
-				parameters.ReferencedAssemblies.Add(typeof(Db4o).Module.FullyQualifiedName);
+				parameters.ReferencedAssemblies.Add(typeof(Db4oFactory).Module.FullyQualifiedName);
 				parameters.ReferencedAssemblies.Add(typeof(CompilationServices).Module.FullyQualifiedName);
 
 				ICodeCompiler compiler = provider.CreateCompiler();

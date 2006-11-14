@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 
         void CopyNecessaryAssembliesTo(string basePath)
         {
-            CopyToDir(typeof(Db4o).Assembly.Location, basePath);
+            CopyToDir(typeof(Db4oFactory).Assembly.Location, basePath);
             CopyToDir(typeof(Db4oUnit.Assert).Assembly.Location, basePath);
             CopyToDir(Assembly.GetExecutingAssembly().Location, basePath);
         }

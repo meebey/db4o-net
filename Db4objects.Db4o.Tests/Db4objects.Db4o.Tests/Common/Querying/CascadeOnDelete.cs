@@ -26,8 +26,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		{
 			DeleteAll(GetType());
 			DeleteAll(typeof(Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete.Item));
-			Db4objects.Db4o.Config.IObjectClass oc = Db4objects.Db4o.Db4o.Configure().ObjectClass
-				(typeof(Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete));
+			Db4objects.Db4o.Config.IObjectClass oc = Db4objects.Db4o.Db4oFactory.Configure().
+				ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete));
 			oc.CascadeOnDelete(cascadeOnDelete);
 			oc.CascadeOnUpdate(cascadeOnUpdate);
 			Reopen();

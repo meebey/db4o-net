@@ -17,10 +17,10 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestOpenWithNonStaticConfiguration()
 		{
 			new Sharpen.IO.File(FILENAME).Delete();
-			Db4objects.Db4o.Config.IConfiguration cfg = Db4objects.Db4o.Db4o.NewConfiguration
+			Db4objects.Db4o.Config.IConfiguration cfg = Db4objects.Db4o.Db4oFactory.NewConfiguration
 				();
 			cfg.ReadOnly(true);
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4o.OpenFile(cfg, FILENAME
+			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(cfg, FILENAME
 				);
 			try
 			{
@@ -31,8 +31,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			{
 				db.Close();
 			}
-			cfg = Db4objects.Db4o.Db4o.NewConfiguration();
-			db = Db4objects.Db4o.Db4o.OpenFile(cfg, FILENAME);
+			cfg = Db4objects.Db4o.Db4oFactory.NewConfiguration();
+			db = Db4objects.Db4o.Db4oFactory.OpenFile(cfg, FILENAME);
 			try
 			{
 				db.Set(new Db4objects.Db4o.Tests.Common.Assorted.NonStaticConfigurationTestCase.Data

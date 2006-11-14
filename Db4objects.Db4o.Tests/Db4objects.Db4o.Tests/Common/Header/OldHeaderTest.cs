@@ -17,8 +17,9 @@ namespace Db4objects.Db4o.Tests.Common.Header
 				return;
 			}
 			Db4objects.Db4o.Foundation.IO.File4.Copy(ORIGINAL_FILE, DB_FILE);
-			Db4objects.Db4o.Db4o.Configure().AllowVersionUpdates(true);
-			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4o.OpenFile(DB_FILE);
+			Db4objects.Db4o.Db4oFactory.Configure().AllowVersionUpdates(true);
+			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(DB_FILE
+				);
 			try
 			{
 				Db4oUnit.Assert.IsNotNull(oc);
@@ -26,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 			finally
 			{
 				oc.Close();
-				Db4objects.Db4o.Db4o.Configure().AllowVersionUpdates(false);
+				Db4objects.Db4o.Db4oFactory.Configure().AllowVersionUpdates(false);
 			}
 		}
 	}

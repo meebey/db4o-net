@@ -116,8 +116,8 @@ namespace Db4oTools
 					try
 					{
 						ConfigureDb4o();
-						IObjectContainer readFrom = Db4o.OpenFile(backupTest.GetAbsolutePath());
-						IObjectContainer writeTo = Db4o.OpenFile(file.GetAbsolutePath());
+						IObjectContainer readFrom = Db4oFactory.OpenFile(backupTest.GetAbsolutePath());
+						IObjectContainer writeTo = Db4oFactory.OpenFile(file.GetAbsolutePath());
 						writeTo.Ext().MigrateFrom(readFrom);
 						Migrate(readFrom, writeTo);
 						readFrom.Close();
@@ -163,18 +163,18 @@ namespace Db4oTools
 
 		private void ConfigureDb4o()
 		{
-			Db4o.Configure().ActivationDepth(0);
-			Db4o.Configure().Callbacks(false);
-			Db4o.Configure().ClassActivationDepthConfigurable(false);
-			Db4o.Configure().WeakReferences(false);
+			Db4oFactory.Configure().ActivationDepth(0);
+			Db4oFactory.Configure().Callbacks(false);
+			Db4oFactory.Configure().ClassActivationDepthConfigurable(false);
+			Db4oFactory.Configure().WeakReferences(false);
 		}
 
 		private void RestoreConfiguration()
 		{
-			Db4o.Configure().ActivationDepth(5);
-			Db4o.Configure().Callbacks(true);
-			Db4o.Configure().ClassActivationDepthConfigurable(true);
-			Db4o.Configure().WeakReferences(true);
+			Db4oFactory.Configure().ActivationDepth(5);
+			Db4oFactory.Configure().Callbacks(true);
+			Db4oFactory.Configure().ClassActivationDepthConfigurable(true);
+			Db4oFactory.Configure().WeakReferences(true);
 		}
 
 		private void Migrate(IObjectContainer origin, IObjectContainer destination)

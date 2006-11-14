@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private static Db4objects.Db4o.Config.IConfiguration Config()
 		{
-			Db4objects.Db4o.Config.IConfiguration config = Db4objects.Db4o.Db4o.NewConfiguration
+			Db4objects.Db4o.Config.IConfiguration config = Db4objects.Db4o.Db4oFactory.NewConfiguration
 				();
 			Db4objects.Db4o.Config.IObjectClass clazz = config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Defragment.Data)
 				);
@@ -48,8 +48,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		private static void CreateSource(string fileName)
 		{
 			DeleteFile(fileName);
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4o.OpenFile(Config(), fileName
-				);
+			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(Config
+				(), fileName);
 			Db4objects.Db4o.Tests.Common.Defragment.Data data = null;
 			for (int i = 0; i < NUM_ENTRIES; i++)
 			{
@@ -75,8 +75,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		{
 			try
 			{
-				Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4o.OpenFile(Config(), TARGETFILE
-					);
+				Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(Config
+					(), TARGETFILE);
 				Sharpen.Runtime.Out.WriteLine("IDENTITY: " + db.Ext().Identity());
 				try
 				{
