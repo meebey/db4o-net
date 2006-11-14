@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 		public static void Main(string[] args)
 		{
 			File.Delete(Util.YapFileName);            
-			IObjectContainer db = Db4o.OpenFile(Util.YapFileName);
+			IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
 			try
 			{
 				StoreFirstCar(db);
@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 				RetrieveCarQuery(db);
 				db.Close();
 				UpdateCarPart1();
-				db = Db4o.OpenFile(Util.YapFileName);
+				db = Db4oFactory.OpenFile(Util.YapFileName);
 				UpdateCarPart2(db);
 				UpdateCollection(db);
 				db.Close();
@@ -157,7 +157,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 
 		public static void UpdateCarPart1()
 		{
-			Db4o.Configure().ObjectClass(typeof(Car)).CascadeOnUpdate(true);
+			Db4oFactory.Configure().ObjectClass(typeof(Car)).CascadeOnUpdate(true);
 		}
         
 		public static void UpdateCarPart2(IObjectContainer db)
@@ -190,7 +190,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
         
 		public static void DeleteAllPart1()
 		{
-			Db4o.Configure().ObjectClass(typeof(Car)).CascadeOnDelete(true);
+			Db4oFactory.Configure().ObjectClass(typeof(Car)).CascadeOnDelete(true);
 		}
 
 		public static void DeleteAllPart2(IObjectContainer db)

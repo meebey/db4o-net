@@ -16,15 +16,15 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter6
         
         public static void TryStoreWithCallConstructors()
         {
-            Db4o.Configure().ExceptionsOnNotStorable(true);
-            Db4o.Configure().ObjectClass(typeof(CultureInfo))
+            Db4oFactory.Configure().ExceptionsOnNotStorable(true);
+            Db4oFactory.Configure().ObjectClass(typeof(CultureInfo))
                 .CallConstructor(true);
             TryStoreAndRetrieve();
         }
         
         public static void TryStoreWithoutCallConstructors()
         {
-            Db4o.Configure().ObjectClass(typeof(CultureInfo))
+            Db4oFactory.Configure().ObjectClass(typeof(CultureInfo))
                 .CallConstructor(false);
             // trying to store objects that hold onto
             // system resources can be pretty nasty
@@ -35,16 +35,16 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter6
         
         public static void StoreWithTranslator()
         {
-            Db4o.Configure().ObjectClass(typeof(CultureInfo))
+            Db4oFactory.Configure().ObjectClass(typeof(CultureInfo))
                 .Translate(new CultureInfoTranslator());
             TryStoreAndRetrieve();
-            Db4o.Configure().ObjectClass(typeof(CultureInfo))
+            Db4oFactory.Configure().ObjectClass(typeof(CultureInfo))
                 .Translate(null);
         }
         
         public static void TryStoreAndRetrieve()
         {
-            IObjectContainer db = Db4o.OpenFile(Util.YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
             try
             {
                 string[] champs = new string[] { "Ayrton Senna", "Nelson Piquet" };
@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter6
             {
                 db.Close();
             }
-            db = Db4o.OpenFile(Util.YapFileName);
+            db = Db4oFactory.OpenFile(Util.YapFileName);
             try
             {
                 IObjectSet result = db.Get(typeof(LocalizedItemList));

@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter1
     {
         public static void Main(string[] args)
         {
-            IObjectContainer db = Db4o.OpenFile(Util.YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
             try
             {
                 StoreFirstPilot(db);

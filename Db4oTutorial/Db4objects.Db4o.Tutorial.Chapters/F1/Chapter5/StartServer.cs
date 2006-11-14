@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
     /// StopServer. The StartServer instance is used as a MessageRecipient 
     /// and reacts to receiving an instance of a StopServer object.
     /// Note that all user classes need to be present on the server side
-    /// and that all possible Db4o.Configure() calls to alter the db4o
+    /// and that all possible Db4oFactory.Configure() calls to alter the db4o
     /// configuration need to be executed on the client and on the server.
     /// </summary>
     public class StartServer : ServerConfiguration, IMessageRecipient
@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         {
             lock(this)
             {
-                IObjectServer db4oServer = Db4o.OpenServer(FILE, PORT);
+                IObjectServer db4oServer = Db4oFactory.OpenServer(FILE, PORT);
                 db4oServer.GrantAccess(USER, PASS);
                 
                 // Using the messaging functionality to redirect all

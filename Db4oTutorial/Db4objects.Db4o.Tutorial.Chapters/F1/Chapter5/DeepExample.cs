@@ -9,24 +9,24 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         public static void Main(string[] args)
         {
             File.Delete(Util.YapFileName);
-            IObjectContainer db = Db4o.OpenFile(Util.YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
             try
             {
                 StoreCar(db);
                 db.Close();
                 SetCascadeOnUpdate();
-                db = Db4o.OpenFile(Util.YapFileName);
+                db = Db4oFactory.OpenFile(Util.YapFileName);
                 TakeManySnapshots(db);
                 db.Close();
-                db = Db4o.OpenFile(Util.YapFileName);
+                db = Db4oFactory.OpenFile(Util.YapFileName);
                 RetrieveAllSnapshots(db);
                 db.Close();
-                db = Db4o.OpenFile(Util.YapFileName);
+                db = Db4oFactory.OpenFile(Util.YapFileName);
                 RetrieveSnapshotsSequentially(db);
                 RetrieveSnapshotsSequentiallyImproved(db);
                 db.Close();
                 SetActivationDepth();
-                db = Db4o.OpenFile(Util.YapFileName);
+                db = Db4oFactory.OpenFile(Util.YapFileName);
                 RetrieveSnapshotsSequentially(db);
             }
             finally
@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         
         public static void SetCascadeOnUpdate()
         {
-            Db4o.Configure().ObjectClass(typeof(Car)).CascadeOnUpdate(true);
+            Db4oFactory.Configure().ObjectClass(typeof(Car)).CascadeOnUpdate(true);
         }
         
         public static void TakeManySnapshots(IObjectContainer db)
@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         
         public static void SetActivationDepth()
         {
-            Db4o.Configure().ObjectClass(typeof(TemperatureSensorReadout))
+            Db4oFactory.Configure().ObjectClass(typeof(TemperatureSensorReadout))
                 .CascadeOnActivate(true);
         }
         

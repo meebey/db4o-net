@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             try
             {
                 // connect to the server
-                IObjectContainer = Db4o.OpenClient(HOST, PORT, USER, PASS);
+                IObjectContainer = Db4oFactory.OpenClient(HOST, PORT, USER, PASS);
             }
             catch (Exception e)
             {

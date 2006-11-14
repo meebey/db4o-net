@@ -42,8 +42,8 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter21
 		}
 	  
 		public static void pilotIndex() {
-    		Db4o.Configure().ObjectClass(typeof(Car)).ObjectField("_pilot").Indexed(true);
-    		Db4o.Configure().ObjectClass(typeof(Pilot)).ObjectField("_points").Indexed(false);
+    		Db4oFactory.Configure().ObjectClass(typeof(Car)).ObjectField("_pilot").Indexed(true);
+    		Db4oFactory.Configure().ObjectClass(typeof(Pilot)).ObjectField("_points").Indexed(false);
 			IObjectContainer db=Db4o.OpenFile(Util.YapFileName);
 			try {
     			IQuery query = db.Query();
@@ -64,8 +64,8 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter21
 		}
 	   
 		public static void pointsIndex() {
-    		Db4o.Configure().ObjectClass(typeof(Car)).ObjectField("_pilot").Indexed(false);
-    		Db4o.Configure().ObjectClass(typeof(Pilot)).ObjectField("_points").Indexed(true);
+    		Db4oFactory.Configure().ObjectClass(typeof(Car)).ObjectField("_pilot").Indexed(false);
+    		Db4oFactory.Configure().ObjectClass(typeof(Pilot)).ObjectField("_points").Indexed(true);
 			IObjectContainer db=Db4o.OpenFile(Util.YapFileName);
 			try {
     			IQuery query = db.Query();
@@ -87,8 +87,8 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter21
 	    
 	    
 		public static void fullIndex() {
-    		Db4o.Configure().ObjectClass(typeof(Car)).ObjectField("_pilot").Indexed(true);
-    		Db4o.Configure().ObjectClass(typeof(Pilot)).ObjectField("_points").Indexed(true);
+    		Db4oFactory.Configure().ObjectClass(typeof(Car)).ObjectField("_pilot").Indexed(true);
+    		Db4oFactory.Configure().ObjectClass(typeof(Pilot)).ObjectField("_points").Indexed(true);
 			IObjectContainer db=Db4o.OpenFile(Util.YapFileName);
 			try {
     			IQuery query = db.Query();

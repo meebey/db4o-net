@@ -14,11 +14,11 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             {
                 StoreCarCommit(db);
                 db.Close();
-                db = Db4o.OpenFile(Util.YapFileName);
+                db = Db4oFactory.OpenFile(Util.YapFileName);
                 ListAllCars(db);
                 StoreCarRollback(db);
                 db.Close();
-                db = Db4o.OpenFile(Util.YapFileName);
+                db = Db4oFactory.OpenFile(Util.YapFileName);
                 ListAllCars(db);
                 CarSnapshotRollback(db);
                 CarSnapshotRollbackRefresh(db);

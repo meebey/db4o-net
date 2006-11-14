@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
 		{
 			File.Delete(Util.YapFileName);
             
-			IObjectContainer db = Db4o.OpenFile(Util.YapFileName);
+			IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
 			try
 			{
 				StoreFirstCar(db);
@@ -189,7 +189,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
         
 		public static void UpdatePilotSeparateSessionsImprovedPart1(IObjectContainer db)
 		{
-			Db4o.Configure().ObjectClass(typeof(Car))
+			Db4oFactory.Configure().ObjectClass(typeof(Car))
 				.CascadeOnUpdate(true);        
 		}
         
@@ -218,7 +218,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
         
 		public static void DeleteDeepPart1(IObjectContainer db)
 		{
-			Db4o.Configure().ObjectClass(typeof(Car))
+			Db4oFactory.Configure().ObjectClass(typeof(Car))
 				.CascadeOnDelete(true);
 		}
         

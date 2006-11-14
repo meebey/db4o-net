@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             File.Delete(Util.YapFileName);
             AccessLocalServer();
             File.Delete(Util.YapFileName);
-            IObjectContainer db = Db4o.OpenFile(Util.YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
             try
             {
                 SetFirstCar(db);
@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             }
             
             ConfigureDb4o();
-            IObjectServer server = Db4o.OpenServer(Util.YapFileName, 0);
+            IObjectServer server = Db4oFactory.OpenServer(Util.YapFileName, 0);
             try
             {
                 QueryLocalServer(server);
@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             }
             
             AccessRemoteServer();
-            server = Db4o.OpenServer(Util.YapFileName, ServerPort);
+            server = Db4oFactory.OpenServer(Util.YapFileName, ServerPort);
             server.GrantAccess(ServerUser, ServerPassword);
             try
             {
@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
     
         public static void AccessLocalServer()
         {
-            IObjectServer server = Db4o.OpenServer(Util.YapFileName, 0);
+            IObjectServer server = Db4oFactory.OpenServer(Util.YapFileName, 0);
             try
             {
                 IObjectContainer client = server.OpenClient();
@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         
         public static void ConfigureDb4o()
         {
-        	Db4o.Configure().ObjectClass(typeof(Car)).UpdateDepth(3);
+        	Db4oFactory.Configure().ObjectClass(typeof(Car)).UpdateDepth(3);
         }
     
         public static void DemonstrateLocalReadCommitted(IObjectServer server)
@@ -130,11 +130,11 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
     
         public static void AccessRemoteServer()
         {
-            IObjectServer server = Db4o.OpenServer(Util.YapFileName, ServerPort);
+            IObjectServer server = Db4oFactory.OpenServer(Util.YapFileName, ServerPort);
             server.GrantAccess(ServerUser, ServerPassword);
             try
             {
-                IObjectContainer client = Db4o.OpenClient("localhost", ServerPort, ServerUser, ServerPassword);
+                IObjectContainer client = Db4oFactory.OpenClient("localhost", ServerPort, ServerUser, ServerPassword);
                 // Do something with this client, or open more clients
                 client.Close();
             }
@@ -146,15 +146,15 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
     
         public static void QueryRemoteServer(int port, string user, string password)
         {
-            IObjectContainer client = Db4o.OpenClient("localhost", port, user, password);
+            IObjectContainer client = Db4oFactory.OpenClient("localhost", port, user, password);
             ListResult(client.Get(new Car(null)));
             client.Close();
         }
     
         public static void DemonstrateRemoteReadCommitted(int port, string user, string password)
         {
-            IObjectContainer client1 = Db4o.OpenClient("localhost", port, user, password);
-            IObjectContainer client2 = Db4o.OpenClient("localhost", port, user, password);
+            IObjectContainer client1 = Db4oFactory.OpenClient("localhost", port, user, password);
+            IObjectContainer client2 = Db4oFactory.OpenClient("localhost", port, user, password);
             Pilot pilot = new Pilot("Jenson Button", 97);
             IObjectSet result = client1.Get(new Car(null));
             Car car = (Car)result.Next();
@@ -171,8 +171,8 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
     
         public static void DemonstrateRemoteRollback(int port, string user, string password)
         {
-            IObjectContainer client1 = Db4o.OpenClient("localhost", port, user, password);
-            IObjectContainer client2 = Db4o.OpenClient("localhost", port, user, password);
+            IObjectContainer client1 = Db4oFactory.OpenClient("localhost", port, user, password);
+            IObjectContainer client2 = Db4oFactory.OpenClient("localhost", port, user, password);
             IObjectSet result = client1.Get(new Car(null));
             Car car = (Car)result.Next();
             car.Pilot = new Pilot("Someone else", 0);
