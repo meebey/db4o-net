@@ -1,8 +1,8 @@
 ﻿using System;
 
-#if !CF_1_0 && !CF_2_0
 namespace Db4objects.Db4o.Reflect.Net
 {
+#if !CF_1_0 && !CF_2_0
 	/// <summary>Constructs objects by using System.Runtime.Serialization.FormatterServices.GetUninitializedObject
 	/// and bypasses calls to user contructors this way. Not available on CompactFramework
 	/// </summary>
@@ -26,5 +26,6 @@ namespace Db4objects.Db4o.Reflect.Net
             return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(_type);
         }
 	}
-}
 #endif
+}
+

@@ -1,7 +1,6 @@
 /* Copyright (C) 2006   db4objects Inc.   http://www.db4o.com */
 
 #if CF_1_0 || CF_2_0
-
 namespace System
 {
 	public class SerializableAttribute : Attribute

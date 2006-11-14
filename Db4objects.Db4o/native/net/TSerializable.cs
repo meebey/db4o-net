@@ -44,5 +44,5 @@ namespace Db4objects.Db4o.Config
 		}
 
 	}
-}
 #endif
+}
