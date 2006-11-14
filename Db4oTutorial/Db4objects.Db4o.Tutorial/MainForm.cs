@@ -1,14 +1,7 @@
-/*
- * Created by SharpDevelop.
- * User: rodrigob
- * Date: 11/1/2004
- * Time: 1:54 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
 using System;
 using System.IO;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI;
 using Db4objects.Db4o.Tutorial.F1;
@@ -75,6 +68,34 @@ namespace Db4objects.Db4o.Tutorial
 		
 		public void RunExample(string typeName, string method)
 		{	
+			InternalRunExample(ToNewConventions(typeName), ToPascalCase(method));
+		}
+		
+		private string ToNewConventions(string typeName)
+		{
+			return ToPascalCaseNamespace(typeName.Replace("com.db4o", "Db4objects.Db4o.Tutorial"));
+		}
+		
+		private string ToPascalCaseNamespace(string name)
+		{
+			StringBuilder builder = new StringBuilder();
+			foreach (string part in name.Split('.'))
+			{
+				if (builder.Length > 0) builder.Append('.');
+				builder.Append(ToPascalCase(part));
+			}
+			return builder.ToString();
+		}
+		
+		private string ToPascalCase(string name)
+		{
+			return name.Length > 1
+				? name.Substring(0, 1).ToUpper() + name.Substring(1)
+				: name.ToUpper();
+		}
+		
+		private void InternalRunExample(string typeName, string method)
+		{
 			_outputView.WriteLine("[" + method + "]");
 			Cursor current = Cursor.Current;
 			Cursor.Current = Cursors.WaitCursor;
@@ -87,6 +108,7 @@ namespace Db4objects.Db4o.Tutorial
 			catch (Exception x)
 			{
 				_outputView.AppendText(x.ToString());
+				Console.Error.WriteLine(x);
 			}
 			finally
 			{

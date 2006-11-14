@@ -43,8 +43,8 @@
         
         void RunExample(string typeName, string method)
         {
-        	Type type = typeof(Util).Assembly.GetType(typeName);
-        	MethodInfo example = type.GetMethod(method, BindingFlags.IgnoreCase|BindingFlags.Static|BindingFlags.Public);
+        		Type type = typeof(Util).Assembly.GetType(typeName, true);
+			MethodInfo example = type.GetMethod(method, BindingFlags.IgnoreCase|BindingFlags.Static|BindingFlags.Public);
             
             bool found = false;
             foreach (Executor _e in _executors)
