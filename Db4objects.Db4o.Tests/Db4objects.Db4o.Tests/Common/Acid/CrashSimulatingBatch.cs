@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			int rcount = 0;
 			string lastFileName = file + "0";
 			string rightFileName = file + "R";
-			Db4objects.Db4o.Tests.Util.File4.Copy(lastFileName, rightFileName);
+			Db4objects.Db4o.Foundation.IO.File4.Copy(lastFileName, rightFileName);
 			System.Collections.IEnumerator syncIter = writes.GetEnumerator();
 			while (syncIter.MoveNext())
 			{
@@ -57,14 +57,14 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 					Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingWrite csw = (Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingWrite
 						)singleBackwardIter.Current;
 					string currentFileName = file + "W" + count;
-					Db4objects.Db4o.Tests.Util.File4.Copy(lastFileName, currentFileName);
+					Db4objects.Db4o.Foundation.IO.File4.Copy(lastFileName, currentFileName);
 					Sharpen.IO.RandomAccessFile raf = new Sharpen.IO.RandomAccessFile(currentFileName
 						, "rw");
 					csw.Write(raf);
 					raf.Close();
 					lastFileName = currentFileName;
 				}
-				Db4objects.Db4o.Tests.Util.File4.Copy(rightFileName, rightFileName + rcount);
+				Db4objects.Db4o.Foundation.IO.File4.Copy(rightFileName, rightFileName + rcount);
 				lastFileName = rightFileName;
 			}
 			return count;

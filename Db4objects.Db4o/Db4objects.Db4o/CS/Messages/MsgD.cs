@@ -53,20 +53,6 @@ namespace Db4objects.Db4o.CS.Messages
 			return GetWriterForLength(a_trans, 0);
 		}
 
-		public Db4objects.Db4o.CS.Messages.MsgD GetWriterForBoolean(Db4objects.Db4o.Transaction
-			 a_trans, bool val)
-		{
-			Db4objects.Db4o.CS.Messages.MsgD message = GetWriterForLength(a_trans, 1);
-			message.WriteBoolean(val);
-			return message;
-		}
-
-		private void WriteBoolean(bool val)
-		{
-			byte b = val ? (byte)1 : (byte)0;
-			_payLoad.Append(b);
-		}
-
 		public Db4objects.Db4o.CS.Messages.MsgD GetWriterForInts(Db4objects.Db4o.Transaction
 			 a_trans, int[] ints)
 		{

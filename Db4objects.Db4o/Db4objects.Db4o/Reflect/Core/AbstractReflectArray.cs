@@ -1,5 +1,6 @@
 namespace Db4objects.Db4o.Reflect.Core
 {
+	/// <exclude></exclude>
 	public abstract class AbstractReflectArray : Db4objects.Db4o.Reflect.IReflectArray
 	{
 		protected readonly Db4objects.Db4o.Reflect.IReflector _reflector;

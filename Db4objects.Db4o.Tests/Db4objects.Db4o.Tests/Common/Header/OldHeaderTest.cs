@@ -10,7 +10,13 @@ namespace Db4objects.Db4o.Tests.Common.Header
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Tests.Util.File4.Copy(ORIGINAL_FILE, DB_FILE);
+			if (!System.IO.File.Exists(ORIGINAL_FILE))
+			{
+				Db4oUnit.TestPlatform.EmitWarning(ORIGINAL_FILE + " does not exist. Can not run "
+					 + GetType().FullName);
+				return;
+			}
+			Db4objects.Db4o.Foundation.IO.File4.Copy(ORIGINAL_FILE, DB_FILE);
 			Db4objects.Db4o.Db4o.Configure().AllowVersionUpdates(true);
 			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4o.OpenFile(DB_FILE);
 			try

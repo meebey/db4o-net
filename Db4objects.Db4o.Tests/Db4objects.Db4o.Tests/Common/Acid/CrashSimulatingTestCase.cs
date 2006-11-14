@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Tests.Util.File4.Delete(FILE);
+			Db4objects.Db4o.Foundation.IO.File4.Delete(FILE);
 			System.IO.Directory.CreateDirectory(PATH);
 			CreateFile();
 			Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter adapterFactory = new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter
@@ -144,7 +144,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				oc.Delete(objectSet.Next());
 			}
 			oc.Close();
-			Db4objects.Db4o.Tests.Util.File4.Copy(FILE, FILE + "0");
+			Db4objects.Db4o.Foundation.IO.File4.Copy(FILE, FILE + "0");
 		}
 
 		public override string ToString()

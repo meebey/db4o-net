@@ -69,36 +69,15 @@ namespace Db4objects.Db4o.CS
 			return _size;
 		}
 
-		public override void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
-		{
-			throw new System.NotImplementedException();
-		}
-
 		~LazyClientQueryResult()
 		{
 			_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.OBJECTSET_FINALIZED.GetWriterForInt
 				(_transaction, _queryResultID));
 		}
 
-		public override void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)
-		{
-			throw new System.NotImplementedException();
-		}
-
-		public override void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
-			 iterator)
-		{
-			throw new System.NotImplementedException();
-		}
-
 		public override void LoadFromIdReader(Db4objects.Db4o.YapReader reader)
 		{
 			_iterator.LoadFromIdReader(reader, reader.ReadInt());
-		}
-
-		public override void LoadFromQuery(Db4objects.Db4o.QQuery query)
-		{
-			throw new System.NotImplementedException();
 		}
 
 		public virtual void Reset()

@@ -124,17 +124,18 @@ namespace Db4objects.Db4o
 		public Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult(Db4objects.Db4o.Transaction
 			 trans)
 		{
-			return NewQueryResult(trans, Config().LazyQueryEvaluation());
+			return NewQueryResult(trans, Config().QueryEvaluationMode());
 		}
 
 		public sealed override Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult
-			(Db4objects.Db4o.Transaction trans, bool lazy)
+			(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.Config.QueryEvaluationMode mode
+			)
 		{
-			if (lazy)
+			if (mode == Db4objects.Db4o.Config.QueryEvaluationMode.IMMEDIATE)
 			{
-				return new Db4objects.Db4o.Inside.Query.HybridQueryResult(trans);
+				return new Db4objects.Db4o.Inside.Query.IdListQueryResult(trans);
 			}
-			return new Db4objects.Db4o.Inside.Query.IdListQueryResult(trans);
+			return new Db4objects.Db4o.Inside.Query.HybridQueryResult(trans, mode);
 		}
 
 		public sealed override bool Delete5(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject
@@ -243,14 +244,14 @@ namespace Db4objects.Db4o
 		public override Db4objects.Db4o.Inside.Query.AbstractQueryResult GetAll(Db4objects.Db4o.Transaction
 			 trans)
 		{
-			return GetAll(trans, Config().LazyQueryEvaluation());
+			return GetAll(trans, Config().QueryEvaluationMode());
 		}
 
 		public virtual Db4objects.Db4o.Inside.Query.AbstractQueryResult GetAll(Db4objects.Db4o.Transaction
-			 trans, bool lazy)
+			 trans, Db4objects.Db4o.Config.QueryEvaluationMode mode)
 		{
 			Db4objects.Db4o.Inside.Query.AbstractQueryResult queryResult = NewQueryResult(trans
-				, lazy);
+				, mode);
 			queryResult.LoadFromClassIndexes(ClassCollection().Iterator());
 			return queryResult;
 		}

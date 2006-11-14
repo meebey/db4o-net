@@ -1,5 +1,6 @@
 namespace Db4objects.Db4o
 {
+	/// <exclude></exclude>
 	public sealed class YBoolean : Db4objects.Db4o.YapJavaClass
 	{
 		internal const int LENGTH = 1 + Db4objects.Db4o.YapConst.ADDED_LENGTH;

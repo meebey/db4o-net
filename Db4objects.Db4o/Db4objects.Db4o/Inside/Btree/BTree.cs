@@ -5,6 +5,9 @@ namespace Db4objects.Db4o.Inside.Btree
 	{
 		private const byte BTREE_VERSION = (byte)1;
 
+		private const int DEFRAGMENT_INCREMENT_OFFSET = 1 + Db4objects.Db4o.YapConst.INT_LENGTH
+			 * 2;
+
 		internal readonly Db4objects.Db4o.Inside.IX.IIndexable4 _keyHandler;
 
 		internal readonly Db4objects.Db4o.Inside.IX.IIndexable4 _valueHandler;
@@ -195,12 +198,12 @@ namespace Db4objects.Db4o.Inside.Btree
 			{
 				return;
 			}
-			_nodes.Traverse(new _AnonymousInnerClass193(this, setDirty, systemTransaction));
+			_nodes.Traverse(new _AnonymousInnerClass197(this, setDirty, systemTransaction));
 		}
 
-		private sealed class _AnonymousInnerClass193 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass197 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass193(BTree _enclosing, bool setDirty, Db4objects.Db4o.Transaction
+			public _AnonymousInnerClass197(BTree _enclosing, bool setDirty, Db4objects.Db4o.Transaction
 				 systemTransaction)
 			{
 				this._enclosing = _enclosing;
@@ -243,12 +246,12 @@ namespace Db4objects.Db4o.Inside.Btree
 				_root.HoldChildrenAsIDs();
 				AddNode(_root);
 			}
-			temp.Traverse(new _AnonymousInnerClass220(this));
+			temp.Traverse(new _AnonymousInnerClass224(this));
 		}
 
-		private sealed class _AnonymousInnerClass220 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass224 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass220(BTree _enclosing)
+			public _AnonymousInnerClass224(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -266,12 +269,12 @@ namespace Db4objects.Db4o.Inside.Btree
 		private void ProcessAllNodes()
 		{
 			_processing = new Db4objects.Db4o.Foundation.Queue4();
-			_nodes.Traverse(new _AnonymousInnerClass230(this));
+			_nodes.Traverse(new _AnonymousInnerClass234(this));
 		}
 
-		private sealed class _AnonymousInnerClass230 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass234 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass230(BTree _enclosing)
+			public _AnonymousInnerClass234(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -469,8 +472,7 @@ namespace Db4objects.Db4o.Inside.Btree
 
 		public virtual void DefragIndex(Db4objects.Db4o.ReaderPair readers)
 		{
-			readers.IncrementOffset(1);
-			readers.IncrementIntSize(2);
+			readers.IncrementOffset(DEFRAGMENT_INCREMENT_OFFSET);
 			readers.CopyID();
 		}
 

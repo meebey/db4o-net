@@ -1,7 +1,7 @@
 namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
-	public class ReaderPair : Db4objects.Db4o.ISlotReader
+	public sealed class ReaderPair : Db4objects.Db4o.ISlotReader
 	{
 		private Db4objects.Db4o.YapReader _source;
 
@@ -21,34 +21,29 @@ namespace Db4objects.Db4o
 			_systemTrans = systemTrans;
 		}
 
-		public virtual int Offset()
+		public int Offset()
 		{
 			return _source.Offset();
 		}
 
-		public virtual void Offset(int offset)
+		public void Offset(int offset)
 		{
 			_source.Offset(offset);
 			_target.Offset(offset);
 		}
 
-		public virtual void IncrementOffset(int numBytes)
+		public void IncrementOffset(int numBytes)
 		{
 			_source.IncrementOffset(numBytes);
 			_target.IncrementOffset(numBytes);
 		}
 
-		public virtual void IncrementIntSize()
+		public void IncrementIntSize()
 		{
-			IncrementIntSize(1);
+			IncrementOffset(Db4objects.Db4o.YapConst.INT_LENGTH);
 		}
 
-		public virtual void IncrementIntSize(int times)
-		{
-			IncrementOffset(times * Db4objects.Db4o.YapConst.INT_LENGTH);
-		}
-
-		public virtual int CopyUnindexedID()
+		public int CopyUnindexedID()
 		{
 			int orig = _source.ReadInt();
 			int mapped = -1;
@@ -59,26 +54,27 @@ namespace Db4objects.Db4o
 			catch (Db4objects.Db4o.Inside.Mapping.MappingNotFoundException)
 			{
 				mapped = _mapping.AllocateTargetSlot(Db4objects.Db4o.YapConst.POINTER_LENGTH);
-				_mapping.MapIDs(orig, mapped, false, false);
+				_mapping.MapIDs(orig, mapped, false);
 				_mapping.RegisterUnindexed(orig);
 			}
 			_target.WriteInt(mapped);
 			return mapped;
 		}
 
-		public virtual int CopyID()
+		public int CopyID()
 		{
-			return CopyID(false, false);
+			int mapped = _mapping.MappedID(_source.ReadInt(), false);
+			_target.WriteInt(mapped);
+			return mapped;
 		}
 
-		public virtual int CopyID(bool flipNegative, bool lenient)
+		public int CopyID(bool flipNegative, bool lenient)
 		{
 			int id = _source.ReadInt();
 			return InternalCopyID(flipNegative, lenient, id);
 		}
 
-		public virtual Db4objects.Db4o.Inside.Mapping.MappedIDPair CopyIDAndRetrieveMapping
-			()
+		public Db4objects.Db4o.Inside.Mapping.MappedIDPair CopyIDAndRetrieveMapping()
 		{
 			int id = _source.ReadInt();
 			return new Db4objects.Db4o.Inside.Mapping.MappedIDPair(id, InternalCopyID(false, 
@@ -100,38 +96,38 @@ namespace Db4objects.Db4o
 			return mapped;
 		}
 
-		public virtual void ReadBegin(byte identifier)
+		public void ReadBegin(byte identifier)
 		{
 			_source.ReadBegin(identifier);
 			_target.ReadBegin(identifier);
 		}
 
-		public virtual byte ReadByte()
+		public byte ReadByte()
 		{
 			byte value = _source.ReadByte();
 			_target.IncrementOffset(1);
 			return value;
 		}
 
-		public virtual int ReadInt()
+		public int ReadInt()
 		{
 			int value = _source.ReadInt();
 			_target.IncrementOffset(Db4objects.Db4o.YapConst.INT_LENGTH);
 			return value;
 		}
 
-		public virtual void WriteInt(int value)
+		public void WriteInt(int value)
 		{
 			_source.IncrementOffset(Db4objects.Db4o.YapConst.INT_LENGTH);
 			_target.WriteInt(value);
 		}
 
-		public virtual void Write(Db4objects.Db4o.YapFile file, int address)
+		public void Write(Db4objects.Db4o.YapFile file, int address)
 		{
 			file.WriteBytes(_target, address, 0);
 		}
 
-		public virtual string ReadShortString(Db4objects.Db4o.YapStringIO sio)
+		public string ReadShortString(Db4objects.Db4o.YapStringIO sio)
 		{
 			string value = Db4objects.Db4o.Inside.Marshall.StringMarshaller.ReadShort(sio, false
 				, _source);
@@ -139,27 +135,27 @@ namespace Db4objects.Db4o
 			return value;
 		}
 
-		public virtual Db4objects.Db4o.YapReader Source()
+		public Db4objects.Db4o.YapReader Source()
 		{
 			return _source;
 		}
 
-		public virtual Db4objects.Db4o.YapReader Target()
+		public Db4objects.Db4o.YapReader Target()
 		{
 			return _target;
 		}
 
-		public virtual Db4objects.Db4o.Inside.Mapping.IIDMapping Mapping()
+		public Db4objects.Db4o.Inside.Mapping.IIDMapping Mapping()
 		{
 			return _mapping;
 		}
 
-		public virtual Db4objects.Db4o.Transaction SystemTrans()
+		public Db4objects.Db4o.Transaction SystemTrans()
 		{
 			return _systemTrans;
 		}
 
-		public virtual Db4objects.Db4o.Inside.Mapping.IDefragContext Context()
+		public Db4objects.Db4o.Inside.Mapping.IDefragContext Context()
 		{
 			return _mapping;
 		}
@@ -167,12 +163,12 @@ namespace Db4objects.Db4o
 		public static void ProcessCopy(Db4objects.Db4o.Inside.Mapping.IDefragContext context
 			, int sourceID, Db4objects.Db4o.ISlotCopyHandler command)
 		{
-			ProcessCopy(context, sourceID, command, false, false);
+			ProcessCopy(context, sourceID, command, false);
 		}
 
 		public static void ProcessCopy(Db4objects.Db4o.Inside.Mapping.IDefragContext context
 			, int sourceID, Db4objects.Db4o.ISlotCopyHandler command, bool registerAddressMapping
-			, bool registerSeen)
+			)
 		{
 			Db4objects.Db4o.YapReader sourceReader = (registerAddressMapping ? context.SourceWriterByID
 				(sourceID) : context.SourceReaderByID(sourceID));
@@ -182,7 +178,7 @@ namespace Db4objects.Db4o
 			if (registerAddressMapping)
 			{
 				int sourceAddress = ((Db4objects.Db4o.YapWriter)sourceReader).GetAddress();
-				context.MapIDs(sourceAddress, targetAddress, false, false);
+				context.MapIDs(sourceAddress, targetAddress, false);
 			}
 			Db4objects.Db4o.YapReader targetPointerReader = new Db4objects.Db4o.YapReader(Db4objects.Db4o.YapConst
 				.POINTER_LENGTH);
@@ -193,51 +189,47 @@ namespace Db4objects.Db4o
 				context, context.SystemTrans());
 			command.ProcessCopy(readers);
 			context.TargetWriteBytes(readers, targetAddress);
-			if (registerSeen)
-			{
-				context.RegisterSeen(sourceID);
-			}
 		}
 
-		public virtual void Append(byte value)
+		public void Append(byte value)
 		{
 			_source.IncrementOffset(1);
 			_target.Append(value);
 		}
 
-		public virtual long ReadLong()
+		public long ReadLong()
 		{
 			long value = _source.ReadLong();
 			_target.IncrementOffset(Db4objects.Db4o.YapConst.LONG_LENGTH);
 			return value;
 		}
 
-		public virtual void WriteLong(long value)
+		public void WriteLong(long value)
 		{
 			_source.IncrementOffset(Db4objects.Db4o.YapConst.LONG_LENGTH);
 			_target.WriteLong(value);
 		}
 
-		public virtual Db4objects.Db4o.Foundation.BitMap4 ReadBitMap(int bitCount)
+		public Db4objects.Db4o.Foundation.BitMap4 ReadBitMap(int bitCount)
 		{
 			Db4objects.Db4o.Foundation.BitMap4 value = _source.ReadBitMap(bitCount);
 			_target.IncrementOffset(value.MarshalledLength());
 			return value;
 		}
 
-		public virtual void CopyBytes(byte[] target, int sourceOffset, int targetOffset, 
-			int length)
+		public void CopyBytes(byte[] target, int sourceOffset, int targetOffset, int length
+			)
 		{
 			_source.CopyBytes(target, sourceOffset, targetOffset, length);
 		}
 
-		public virtual void ReadEnd()
+		public void ReadEnd()
 		{
 			_source.ReadEnd();
 			_target.ReadEnd();
 		}
 
-		public virtual int PreparePayloadRead()
+		public int PreparePayloadRead()
 		{
 			int newPayLoadOffset = ReadInt();
 			ReadInt();

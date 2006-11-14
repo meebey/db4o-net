@@ -1,5 +1,6 @@
 namespace Db4objects.Db4o
 {
+	/// <exclude></exclude>
 	public interface ISlotReader
 	{
 		int Offset();

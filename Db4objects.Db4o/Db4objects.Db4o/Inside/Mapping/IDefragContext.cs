@@ -31,8 +31,6 @@ namespace Db4objects.Db4o.Inside.Mapping
 
 		int MappedID(int id, bool lenient);
 
-		void RegisterSeen(int id);
-
 		void RegisterUnindexed(int id);
 
 		System.Collections.IEnumerator UnindexedIDs();

@@ -34,10 +34,9 @@ namespace Db4objects.Db4o.Inside.Btree
 			AdjustCursor();
 		}
 
-		private void AdjustBounds(int cmp)
+		private void AdjustBounds()
 		{
-			_cmp = cmp;
-			if (cmp > 0)
+			if (_cmp > 0)
 			{
 				_upper = _cursor - 1;
 				if (_upper < _lower)
@@ -46,7 +45,7 @@ namespace Db4objects.Db4o.Inside.Btree
 				}
 				return;
 			}
-			if (cmp < 0)
+			if (_cmp < 0)
 			{
 				if (_lower == _cursor && _lower < _upper)
 				{
@@ -153,7 +152,8 @@ namespace Db4objects.Db4o.Inside.Btree
 
 		public virtual void ResultIs(int cmp)
 		{
-			AdjustBounds(cmp);
+			_cmp = cmp;
+			AdjustBounds();
 			AdjustCursor();
 		}
 

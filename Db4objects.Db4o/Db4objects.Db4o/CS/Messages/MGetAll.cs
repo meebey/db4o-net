@@ -5,23 +5,25 @@ namespace Db4objects.Db4o.CS.Messages
 		public sealed override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
 			)
 		{
-			bool lazy = ReadBoolean();
-			WriteQueryResult(GetAll(lazy), serverThread, lazy);
+			Db4objects.Db4o.Config.QueryEvaluationMode evaluationMode = Db4objects.Db4o.Config.QueryEvaluationMode
+				.FromInt(ReadInt());
+			WriteQueryResult(GetAll(evaluationMode), serverThread, evaluationMode);
 			return true;
 		}
 
-		private Db4objects.Db4o.Inside.Query.AbstractQueryResult GetAll(bool lazy)
+		private Db4objects.Db4o.Inside.Query.AbstractQueryResult GetAll(Db4objects.Db4o.Config.QueryEvaluationMode
+			 mode)
 		{
 			lock (StreamLock())
 			{
 				try
 				{
-					return File().GetAll(Transaction(), lazy);
+					return File().GetAll(Transaction(), mode);
 				}
 				catch (System.Exception e)
 				{
 				}
-				return NewQueryResult(false);
+				return NewQueryResult(mode);
 			}
 		}
 	}

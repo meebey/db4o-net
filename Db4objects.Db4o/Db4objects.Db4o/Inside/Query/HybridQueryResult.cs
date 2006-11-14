@@ -5,15 +5,24 @@ namespace Db4objects.Db4o.Inside.Query
 	{
 		private Db4objects.Db4o.Inside.Query.AbstractQueryResult _delegate;
 
-		public HybridQueryResult(Db4objects.Db4o.Transaction transaction, Db4objects.Db4o.Inside.Query.AbstractQueryResult
-			 delegate_) : base(transaction)
+		public HybridQueryResult(Db4objects.Db4o.Transaction transaction, Db4objects.Db4o.Config.QueryEvaluationMode
+			 mode) : base(transaction)
 		{
-			_delegate = delegate_;
+			_delegate = ForMode(transaction, mode);
 		}
 
-		public HybridQueryResult(Db4objects.Db4o.Transaction transaction) : this(transaction
-			, new Db4objects.Db4o.Inside.Query.LazyQueryResult(transaction))
+		private static Db4objects.Db4o.Inside.Query.AbstractQueryResult ForMode(Db4objects.Db4o.Transaction
+			 transaction, Db4objects.Db4o.Config.QueryEvaluationMode mode)
 		{
+			if (mode == Db4objects.Db4o.Config.QueryEvaluationMode.LAZY)
+			{
+				return new Db4objects.Db4o.Inside.Query.LazyQueryResult(transaction);
+			}
+			if (mode == Db4objects.Db4o.Config.QueryEvaluationMode.SNAPSHOT)
+			{
+				return new Db4objects.Db4o.Inside.Query.SnapShotQueryResult(transaction);
+			}
+			return new Db4objects.Db4o.Inside.Query.IdListQueryResult(transaction);
 		}
 
 		public override object Get(int index)

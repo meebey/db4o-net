@@ -19,6 +19,23 @@ namespace Db4objects.Db4o
 				new Db4objects.Db4o.TreeInt(value));
 		}
 
+		public static Db4objects.Db4o.Foundation.Tree AddAll(Db4objects.Db4o.Foundation.Tree
+			 tree, Db4objects.Db4o.Foundation.IIntIterator4 iter)
+		{
+			if (!iter.MoveNext())
+			{
+				return tree;
+			}
+			Db4objects.Db4o.TreeInt firstAdded = new Db4objects.Db4o.TreeInt(iter.CurrentInt(
+				));
+			tree = Db4objects.Db4o.Foundation.Tree.Add(tree, firstAdded);
+			while (iter.MoveNext())
+			{
+				tree = tree.Add(new Db4objects.Db4o.TreeInt(iter.CurrentInt()));
+			}
+			return tree;
+		}
+
 		public int _key;
 
 		public TreeInt(int a_key)
@@ -103,12 +120,12 @@ namespace Db4objects.Db4o
 				return;
 			}
 			a_writer.WriteInt(size);
-			a_tree.Traverse(new _AnonymousInnerClass83(a_writer));
+			a_tree.Traverse(new _AnonymousInnerClass95(a_writer));
 		}
 
-		private sealed class _AnonymousInnerClass83 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass95 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass83(Db4objects.Db4o.YapReader a_writer)
+			public _AnonymousInnerClass95(Db4objects.Db4o.YapReader a_writer)
 			{
 				this.a_writer = a_writer;
 			}
@@ -186,15 +203,15 @@ namespace Db4objects.Db4o
 			if (VariableLength())
 			{
 				int[] length = new int[] { Db4objects.Db4o.YapConst.INT_LENGTH };
-				Traverse(new _AnonymousInnerClass138(this, length));
+				Traverse(new _AnonymousInnerClass150(this, length));
 				return length[0];
 			}
 			return Db4objects.Db4o.YapConst.INT_LENGTH + (Size() * OwnLength());
 		}
 
-		private sealed class _AnonymousInnerClass138 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass150 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass138(TreeInt _enclosing, int[] length)
+			public _AnonymousInnerClass150(TreeInt _enclosing, int[] length)
 			{
 				this._enclosing = _enclosing;
 				this.length = length;

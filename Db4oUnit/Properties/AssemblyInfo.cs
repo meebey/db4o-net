@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCopyright("db4o 2005")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]	
-[assembly: AssemblyVersion("5.7.001")]
+[assembly: AssemblyVersion("6.0.001")]
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]

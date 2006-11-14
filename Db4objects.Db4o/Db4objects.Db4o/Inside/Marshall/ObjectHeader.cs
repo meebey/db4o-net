@@ -1,7 +1,7 @@
 namespace Db4objects.Db4o.Inside.Marshall
 {
 	/// <exclude></exclude>
-	public class ObjectHeader
+	public sealed class ObjectHeader
 	{
 		private readonly Db4objects.Db4o.YapClass _yapClass;
 
@@ -48,8 +48,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 			return header;
 		}
 
-		public virtual Db4objects.Db4o.Inside.Marshall.ObjectMarshaller ObjectMarshaller(
-			)
+		public Db4objects.Db4o.Inside.Marshall.ObjectMarshaller ObjectMarshaller()
 		{
 			return _marshallerFamily._object;
 		}
@@ -85,7 +84,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 			return (id < 0 ? -id : id);
 		}
 
-		public virtual Db4objects.Db4o.YapClass YapClass()
+		public Db4objects.Db4o.YapClass YapClass()
 		{
 			return _yapClass;
 		}

@@ -10,6 +10,11 @@ namespace Db4objects.Db4o.Foundation
 			_iterator = iterator;
 		}
 
+		public IntIterator4Adaptor(System.Collections.IEnumerable iterable) : this(iterable
+			.GetEnumerator())
+		{
+		}
+
 		public virtual int CurrentInt()
 		{
 			return ((int)Current);

@@ -2,13 +2,13 @@ namespace Db4objects.Db4o.CS.Messages
 {
 	public sealed class MQueryExecute : Db4objects.Db4o.CS.Messages.MsgQuery
 	{
-		private bool _lazy = false;
+		private Db4objects.Db4o.Config.QueryEvaluationMode _evaluationMode;
 
 		public override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
 			)
 		{
 			Unmarshall();
-			WriteQueryResult(Execute(), serverThread, _lazy);
+			WriteQueryResult(Execute(), serverThread, _evaluationMode);
 			return true;
 		}
 
@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.CS.Messages
 				Db4objects.Db4o.QQuery query = (Db4objects.Db4o.QQuery)Stream().Unmarshall(_payLoad
 					);
 				query.Unmarshall(Transaction());
-				_lazy = query.IsLazy();
+				_evaluationMode = query.EvaluationMode();
 				return ExecuteFully(query);
 			}
 		}
@@ -29,14 +29,14 @@ namespace Db4objects.Db4o.CS.Messages
 		{
 			try
 			{
-				Db4objects.Db4o.Inside.Query.AbstractQueryResult qr = NewQueryResult(query.IsLazy
+				Db4objects.Db4o.Inside.Query.AbstractQueryResult qr = NewQueryResult(query.EvaluationMode
 					());
 				qr.LoadFromQuery(query);
 				return qr;
 			}
 			catch
 			{
-				return NewQueryResult(false);
+				return NewQueryResult(query.EvaluationMode());
 			}
 		}
 	}

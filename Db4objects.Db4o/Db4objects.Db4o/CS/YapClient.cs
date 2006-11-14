@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.CS
 
 		protected override bool Close2()
 		{
-			if (_readerThread.IsClosed())
+			if (_readerThread == null || _readerThread.IsClosed())
 			{
 				return base.Close2();
 			}
@@ -199,7 +199,7 @@ namespace Db4objects.Db4o.CS
 		}
 
 		public override Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult(Db4objects.Db4o.Transaction
-			 trans, bool lazy)
+			 trans, Db4objects.Db4o.Config.QueryEvaluationMode mode)
 		{
 			throw new System.InvalidOperationException();
 		}
@@ -301,8 +301,8 @@ namespace Db4objects.Db4o.CS
 		public override Db4objects.Db4o.Inside.Query.AbstractQueryResult GetAll(Db4objects.Db4o.Transaction
 			 trans)
 		{
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.GET_ALL.GetWriterForBoolean(trans, Config
-				().LazyQueryEvaluation()));
+			int mode = Config().QueryEvaluationMode().AsInt();
+			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.GET_ALL.GetWriterForInt(trans, mode));
 			return ReadQueryResult(trans);
 		}
 
@@ -321,7 +321,7 @@ namespace Db4objects.Db4o.CS
 		{
 			try
 			{
-				return (Db4objects.Db4o.CS.Messages.Msg)messageQueueLock.Run(new _AnonymousInnerClass315
+				return (Db4objects.Db4o.CS.Messages.Msg)messageQueueLock.Run(new _AnonymousInnerClass316
 					(this));
 			}
 			catch (System.Exception ex)
@@ -331,9 +331,9 @@ namespace Db4objects.Db4o.CS
 			}
 		}
 
-		private sealed class _AnonymousInnerClass315 : Db4objects.Db4o.Foundation.IClosure4
+		private sealed class _AnonymousInnerClass316 : Db4objects.Db4o.Foundation.IClosure4
 		{
-			public _AnonymousInnerClass315(YapClient _enclosing)
+			public _AnonymousInnerClass316(YapClient _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -922,7 +922,7 @@ namespace Db4objects.Db4o.CS
 			 query)
 		{
 			Db4objects.Db4o.Transaction trans = query.GetTransaction();
-			query.SetLazy(Config().LazyQueryEvaluation());
+			query.EvaluationMode(Config().QueryEvaluationMode());
 			query.Marshall();
 			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.QUERY_EXECUTE.GetWriter(Marshall(trans, 
 				query)));

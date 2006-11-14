@@ -570,6 +570,11 @@ namespace Db4objects.Db4o
 			return i_yapClass.GetStream();
 		}
 
+		public virtual bool HasConfig()
+		{
+			return i_config != null;
+		}
+
 		public virtual bool HasIndex()
 		{
 			return _index != null;
@@ -584,6 +589,11 @@ namespace Db4objects.Db4o
 		{
 			i_yapClass = a_yapClass;
 			i_name = a_name;
+			InitIndex(a_yapClass, a_name);
+		}
+
+		internal void InitIndex(Db4objects.Db4o.YapClass a_yapClass, string a_name)
+		{
 			if (a_yapClass.i_config != null)
 			{
 				i_config = a_yapClass.i_config.ConfigField(a_name);
@@ -866,13 +876,13 @@ namespace Db4objects.Db4o
 			lock (stream.Lock())
 			{
 				Db4objects.Db4o.Transaction trans = stream.GetTransaction();
-				_index.TraverseKeys(trans, new _AnonymousInnerClass769(this, userVisitor, trans));
+				_index.TraverseKeys(trans, new _AnonymousInnerClass777(this, userVisitor, trans));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass769 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass777 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass769(YapField _enclosing, Db4objects.Db4o.Foundation.IVisitor4
+			public _AnonymousInnerClass777(YapField _enclosing, Db4objects.Db4o.Foundation.IVisitor4
 				 userVisitor, Db4objects.Db4o.Transaction trans)
 			{
 				this._enclosing = _enclosing;

@@ -366,7 +366,7 @@ namespace Db4objects.Db4o
 		public abstract int ConverterVersion();
 
 		public abstract Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult(Db4objects.Db4o.Transaction
-			 trans, bool lazy);
+			 trans, Db4objects.Db4o.Config.QueryEvaluationMode mode);
 
 		protected virtual void CreateStringIO(byte encoding)
 		{
@@ -598,7 +598,7 @@ namespace Db4objects.Db4o
 			}
 			Db4objects.Db4o.YapClass yc = yo.GetYapClass();
 			Db4objects.Db4o.YapField[] field = new Db4objects.Db4o.YapField[] { null };
-			yc.ForEachYapField(new _AnonymousInnerClass559(this, fieldName, field));
+			yc.ForEachYapField(new _AnonymousInnerClass558(this, fieldName, field));
 			if (field[0] == null)
 			{
 				return null;
@@ -641,9 +641,9 @@ namespace Db4objects.Db4o
 			return Descend1(trans, child, subPath);
 		}
 
-		private sealed class _AnonymousInnerClass559 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass558 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass559(YapStreamBase _enclosing, string fieldName, Db4objects.Db4o.YapField[]
+			public _AnonymousInnerClass558(YapStreamBase _enclosing, string fieldName, Db4objects.Db4o.YapField[]
 				 field)
 			{
 				this._enclosing = _enclosing;

@@ -1,5 +1,6 @@
 namespace Db4objects.Db4o
 {
+	/// <exclude></exclude>
 	public class DeleteInfo : Db4objects.Db4o.TreeInt
 	{
 		public bool _delete;

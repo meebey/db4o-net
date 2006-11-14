@@ -4,11 +4,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 	{
 		public static bool IsEqual(object a_compare, object a_with)
 		{
-			return IsEqual(a_compare, a_with, null, new System.Collections.Stack());
+			return IsEqual(a_compare, a_with, null, new System.Collections.ArrayList());
 		}
 
-		private static bool IsEqual(object a_compare, object a_with, string a_path, System.Collections.Stack
-			 a_stack)
+		private static bool IsEqual(object a_compare, object a_with, string a_path, System.Collections.IList
+			 a_list)
 		{
 			if (a_compare == null)
 			{
@@ -27,25 +27,25 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			{
 				return a_compare.Equals(a_with);
 			}
-			if (a_stack.Contains(a_compare))
+			if (a_list.Contains(a_compare))
 			{
 				return true;
 			}
-			a_stack.Push(a_compare);
+			a_list.Add(a_compare);
 			if (a_compare.GetType().IsArray)
 			{
 				return AreArraysEqual(NormalizeNArray(a_compare), NormalizeNArray(a_with), a_path
-					, a_stack);
+					, a_list);
 			}
 			if (HasPublicConstructor(a_compare.GetType()))
 			{
-				return AreFieldsEqual(a_compare, a_with, a_path, a_stack);
+				return AreFieldsEqual(a_compare, a_with, a_path, a_list);
 			}
 			return a_compare.Equals(a_with);
 		}
 
 		private static bool AreFieldsEqual(object a_compare, object a_with, string a_path
-			, System.Collections.Stack a_stack)
+			, System.Collections.IList a_list)
 		{
 			string path = GetPath(a_compare, a_with, a_path);
 			System.Reflection.FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(a_compare
@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 					Db4objects.Db4o.Platform4.SetAccessible(field);
 					try
 					{
-						if (!IsFieldEqual(field, a_compare, a_with, path, a_stack))
+						if (!IsFieldEqual(field, a_compare, a_with, path, a_list))
 						{
 							return false;
 						}
@@ -75,11 +75,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 		}
 
 		private static bool IsFieldEqual(System.Reflection.FieldInfo field, object a_compare
-			, object a_with, string path, System.Collections.Stack a_stack)
+			, object a_with, string path, System.Collections.IList a_list)
 		{
 			object compare = GetFieldValue(field, a_compare);
 			object with = GetFieldValue(field, a_with);
-			return IsEqual(compare, with, path + field.Name + ":", a_stack);
+			return IsEqual(compare, with, path + field.Name + ":", a_list);
 		}
 
 		private static object GetFieldValue(System.Reflection.FieldInfo field, object obj
@@ -95,8 +95,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			}
 		}
 
-		private static bool AreArraysEqual(object compare, object with, string path, System.Collections.Stack
-			 a_stack)
+		private static bool AreArraysEqual(object compare, object with, string path, System.Collections.IList
+			 a_list)
 		{
 			int len = Sharpen.Runtime.GetArrayLength(compare);
 			if (len != Sharpen.Runtime.GetArrayLength(with))
@@ -109,7 +109,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 				{
 					object elementCompare = Sharpen.Runtime.GetArrayValue(compare, j);
 					object elementWith = Sharpen.Runtime.GetArrayValue(with, j);
-					if (!IsEqual(elementCompare, elementWith, path, a_stack))
+					if (!IsEqual(elementCompare, elementWith, path, a_list))
 					{
 						return false;
 					}

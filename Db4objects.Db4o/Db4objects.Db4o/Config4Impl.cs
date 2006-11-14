@@ -4,6 +4,7 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public sealed class Config4Impl : Db4objects.Db4o.Config.IConfiguration, Db4objects.Db4o.Foundation.IDeepClone
 		, Db4objects.Db4o.Messaging.IMessageSender, Db4objects.Db4o.Config.IFreespaceConfiguration
+		, Db4objects.Db4o.Config.IQueryConfiguration
 	{
 		private Db4objects.Db4o.Foundation.KeySpecHashtable4 _config = new Db4objects.Db4o.Foundation.KeySpecHashtable4
 			(50);
@@ -79,14 +80,18 @@ namespace Db4objects.Db4o
 		private static readonly Db4objects.Db4o.Foundation.KeySpec GENERATE_VERSION_NUMBERS
 			 = new Db4objects.Db4o.Foundation.KeySpec(0);
 
+		private static readonly Db4objects.Db4o.Foundation.KeySpec INDEX_SNAPSHOTS = new 
+			Db4objects.Db4o.Foundation.KeySpec(false);
+
 		private static readonly Db4objects.Db4o.Foundation.KeySpec INTERN_STRINGS = new Db4objects.Db4o.Foundation.KeySpec
 			(false);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec IS_SERVER = new Db4objects.Db4o.Foundation.KeySpec
 			(false);
 
-		private static readonly Db4objects.Db4o.Foundation.KeySpec LAZY_QUERY_EVALUATION = 
-			new Db4objects.Db4o.Foundation.KeySpec(false);
+		private static readonly Db4objects.Db4o.Foundation.KeySpec QUERY_EVALUATION_MODE = 
+			new Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Config.QueryEvaluationMode
+			.IMMEDIATE);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec LOCK_FILE = new Db4objects.Db4o.Foundation.KeySpec
 			(true);
@@ -469,7 +474,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_stream == null)
 			{
-				Db4objects.Db4o.Db4o.ForEachSession(new _AnonymousInnerClass410(this));
+				Db4objects.Db4o.Db4o.ForEachSession(new _AnonymousInnerClass412(this));
 			}
 			else
 			{
@@ -477,9 +482,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private sealed class _AnonymousInnerClass410 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass412 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass410(Config4Impl _enclosing)
+			public _AnonymousInnerClass412(Config4Impl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -526,7 +531,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_stream == null)
 			{
-				Db4objects.Db4o.Db4o.ForEachSession(new _AnonymousInnerClass449(this));
+				Db4objects.Db4o.Db4o.ForEachSession(new _AnonymousInnerClass451(this));
 			}
 			else
 			{
@@ -534,9 +539,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private sealed class _AnonymousInnerClass449 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass451 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass449(Config4Impl _enclosing)
+			public _AnonymousInnerClass451(Config4Impl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -958,14 +963,20 @@ namespace Db4objects.Db4o
 			return (Db4objects.Db4o.IO.IoAdapter)_config.Get(IOADAPTER);
 		}
 
-		public bool LazyQueryEvaluation()
+		public Db4objects.Db4o.Config.IQueryConfiguration Queries()
 		{
-			return _config.GetAsBoolean(LAZY_QUERY_EVALUATION);
+			return this;
 		}
 
-		public void LazyQueryEvaluation(bool flag)
+		public void EvaluationMode(Db4objects.Db4o.Config.QueryEvaluationMode mode)
 		{
-			_config.Put(LAZY_QUERY_EVALUATION, flag);
+			_config.Put(QUERY_EVALUATION_MODE, mode);
+		}
+
+		public Db4objects.Db4o.Config.QueryEvaluationMode QueryEvaluationMode()
+		{
+			return (Db4objects.Db4o.Config.QueryEvaluationMode)_config.Get(QUERY_EVALUATION_MODE
+				);
 		}
 	}
 }

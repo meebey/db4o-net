@@ -214,5 +214,14 @@ namespace Db4oUnit
 			}
 			Fail(expected, actual, "not equal to ");
 		}
+
+		public static void AreNotEqual(object notExpected, object actual)
+		{
+			if (!ObjectsAreEqual(notExpected, actual))
+			{
+				return;
+			}
+			Fail("Expecting not '" + notExpected + "'");
+		}
 	}
 }

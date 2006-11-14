@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Inside.Btree
 	/// as needed with prepareRead() and prepareWrite().
 	/// </remarks>
 	/// <exclude></exclude>
-	public class BTreeNode : Db4objects.Db4o.YapMeta
+	public sealed class BTreeNode : Db4objects.Db4o.YapMeta
 	{
 		private const int COUNT_LEAF_AND_3_LINK_LENGTH = (Db4objects.Db4o.YapConst.INT_LENGTH
 			 * 4) + 1;
@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			secondChild.SetParentID(trans, GetID());
 		}
 
-		public virtual Db4objects.Db4o.Inside.Btree.BTree Btree()
+		public Db4objects.Db4o.Inside.Btree.BTree Btree()
 		{
 			return _btree;
 		}
@@ -88,8 +88,8 @@ namespace Db4objects.Db4o.Inside.Btree
 		/// the split node if this node is split
 		/// or this if the first key has changed
 		/// </returns>
-		public virtual Db4objects.Db4o.Inside.Btree.BTreeNode Add(Db4objects.Db4o.Transaction
-			 trans)
+		public Db4objects.Db4o.Inside.Btree.BTreeNode Add(Db4objects.Db4o.Transaction trans
+			)
 		{
 			Db4objects.Db4o.YapReader reader = PrepareRead(trans);
 			Db4objects.Db4o.Inside.Btree.Searcher s = Search(reader);
@@ -186,7 +186,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return patch != null && patch.IsRemove();
 		}
 
-		internal virtual Db4objects.Db4o.Inside.Btree.BTreeNodeSearchResult SearchLeaf(Db4objects.Db4o.Transaction
+		internal Db4objects.Db4o.Inside.Btree.BTreeNodeSearchResult SearchLeaf(Db4objects.Db4o.Transaction
 			 trans, Db4objects.Db4o.Inside.Btree.SearchTarget target)
 		{
 			Db4objects.Db4o.YapReader reader = PrepareRead(trans);
@@ -225,7 +225,7 @@ namespace Db4objects.Db4o.Inside.Btree
 		{
 			if (index >= 0)
 			{
-				if (!CompareInReadModeEquals(reader, index))
+				if (!CompareEquals(reader, index))
 				{
 					return null;
 				}
@@ -258,8 +258,12 @@ namespace Db4objects.Db4o.Inside.Btree
 			return CreateMatchingSearchResult(trans, reader, index);
 		}
 
-		private bool CompareInReadModeEquals(Db4objects.Db4o.YapReader reader, int index)
+		private bool CompareEquals(Db4objects.Db4o.YapReader reader, int index)
 		{
+			if (CanWrite())
+			{
+				return CompareInWriteMode(index) == 0;
+			}
 			return CompareInReadMode(reader, index) == 0;
 		}
 
@@ -270,12 +274,12 @@ namespace Db4objects.Db4o.Inside.Btree
 				(), this, index, true);
 		}
 
-		public virtual bool CanWrite()
+		public bool CanWrite()
 		{
 			return _keys != null;
 		}
 
-		internal virtual Db4objects.Db4o.Inside.Btree.BTreeNode Child(int index)
+		internal Db4objects.Db4o.Inside.Btree.BTreeNode Child(int index)
 		{
 			if (_children[index] is Db4objects.Db4o.Inside.Btree.BTreeNode)
 			{
@@ -284,8 +288,8 @@ namespace Db4objects.Db4o.Inside.Btree
 			return _btree.ProduceNode(((int)_children[index]));
 		}
 
-		internal virtual Db4objects.Db4o.Inside.Btree.BTreeNode Child(Db4objects.Db4o.YapReader
-			 reader, int index)
+		internal Db4objects.Db4o.Inside.Btree.BTreeNode Child(Db4objects.Db4o.YapReader reader
+			, int index)
 		{
 			if (ChildLoaded(index))
 			{
@@ -340,13 +344,12 @@ namespace Db4objects.Db4o.Inside.Btree
 			return ((Db4objects.Db4o.Inside.Btree.BTreeNode)_children[index]).CanWrite();
 		}
 
-		internal virtual void Commit(Db4objects.Db4o.Transaction trans)
+		internal void Commit(Db4objects.Db4o.Transaction trans)
 		{
 			CommitOrRollback(trans, true);
 		}
 
-		internal virtual void CommitOrRollback(Db4objects.Db4o.Transaction trans, bool isCommit
-			)
+		internal void CommitOrRollback(Db4objects.Db4o.Transaction trans, bool isCommit)
 		{
 			if (_dead)
 			{
@@ -450,7 +453,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			_btree.RemoveNode(this);
 		}
 
-		internal virtual void HoldChildrenAsIDs()
+		internal void HoldChildrenAsIDs()
 		{
 			if (_children == null)
 			{
@@ -537,19 +540,6 @@ namespace Db4objects.Db4o.Inside.Btree
 			return false;
 		}
 
-		private void Compare(Db4objects.Db4o.Inside.Btree.Searcher s, Db4objects.Db4o.YapReader
-			 reader)
-		{
-			if (CanWrite())
-			{
-				s.ResultIs(CompareInWriteMode(s.Cursor()));
-			}
-			else
-			{
-				s.ResultIs(CompareInReadMode(reader, s.Cursor()));
-			}
-		}
-
 		private int CompareInWriteMode(int index)
 		{
 			return KeyHandler().CompareTo(Key(index));
@@ -557,15 +547,11 @@ namespace Db4objects.Db4o.Inside.Btree
 
 		private int CompareInReadMode(Db4objects.Db4o.YapReader reader, int index)
 		{
-			if (CanWrite())
-			{
-				return CompareInWriteMode(index);
-			}
 			SeekKey(reader, index);
 			return KeyHandler().CompareTo(KeyHandler().ReadIndexEntry(reader));
 		}
 
-		public virtual int Count()
+		public int Count()
 		{
 			return _count;
 		}
@@ -587,7 +573,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return len;
 		}
 
-		public virtual int FirstKeyIndex(Db4objects.Db4o.Transaction trans)
+		public int FirstKeyIndex(Db4objects.Db4o.Transaction trans)
 		{
 			for (int ix = 0; ix < _count; ix++)
 			{
@@ -599,7 +585,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return -1;
 		}
 
-		public virtual int LastKeyIndex(Db4objects.Db4o.Transaction trans)
+		public int LastKeyIndex(Db4objects.Db4o.Transaction trans)
 		{
 			for (int ix = _count - 1; ix >= 0; ix--)
 			{
@@ -611,7 +597,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return -1;
 		}
 
-		public virtual bool IndexIsValid(Db4objects.Db4o.Transaction trans, int index)
+		public bool IndexIsValid(Db4objects.Db4o.Transaction trans, int index)
 		{
 			if (!CanWrite())
 			{
@@ -647,10 +633,6 @@ namespace Db4objects.Db4o.Inside.Btree
 
 		private void PrepareInsert(int pos)
 		{
-			if (pos < 0)
-			{
-				throw new System.ArgumentException("pos " + pos);
-			}
 			if (pos > LastIndex())
 			{
 				_count++;
@@ -687,7 +669,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			}
 		}
 
-		internal virtual object Key(int index)
+		internal object Key(int index)
 		{
 			Db4objects.Db4o.Inside.Btree.BTreePatch patch = KeyPatch(index);
 			if (patch == null)
@@ -697,8 +679,8 @@ namespace Db4objects.Db4o.Inside.Btree
 			return patch.GetObject();
 		}
 
-		internal virtual object Key(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapReader
-			 reader, int index)
+		internal object Key(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapReader 
+			reader, int index)
 		{
 			if (CanWrite())
 			{
@@ -708,7 +690,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return KeyHandler().ReadIndexEntry(reader);
 		}
 
-		internal virtual object Key(Db4objects.Db4o.Transaction trans, int index)
+		internal object Key(Db4objects.Db4o.Transaction trans, int index)
 		{
 			Db4objects.Db4o.Inside.Btree.BTreePatch patch = KeyPatch(index);
 			if (patch == null)
@@ -720,9 +702,10 @@ namespace Db4objects.Db4o.Inside.Btree
 
 		private Db4objects.Db4o.Inside.Btree.BTreePatch KeyPatch(int index)
 		{
-			if (_keys[index] is Db4objects.Db4o.Inside.Btree.BTreePatch)
+			object obj = _keys[index];
+			if (obj is Db4objects.Db4o.Inside.Btree.BTreePatch)
 			{
-				return (Db4objects.Db4o.Inside.Btree.BTreePatch)_keys[index];
+				return (Db4objects.Db4o.Inside.Btree.BTreePatch)obj;
 			}
 			return null;
 		}
@@ -730,10 +713,10 @@ namespace Db4objects.Db4o.Inside.Btree
 		private Db4objects.Db4o.Inside.Btree.BTreePatch KeyPatch(Db4objects.Db4o.Transaction
 			 trans, int index)
 		{
-			if (_keys[index] is Db4objects.Db4o.Inside.Btree.BTreePatch)
+			object obj = _keys[index];
+			if (obj is Db4objects.Db4o.Inside.Btree.BTreePatch)
 			{
-				return ((Db4objects.Db4o.Inside.Btree.BTreePatch)_keys[index]).ForTransaction(trans
-					);
+				return ((Db4objects.Db4o.Inside.Btree.BTreePatch)obj).ForTransaction(trans);
 			}
 			return null;
 		}
@@ -743,7 +726,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return _btree._keyHandler;
 		}
 
-		internal virtual void MarkAsCached(int height)
+		internal void MarkAsCached(int height)
 		{
 			_cached = true;
 			_btree.AddNode(this);
@@ -772,8 +755,7 @@ namespace Db4objects.Db4o.Inside.Btree
 				BRACKETS_BYTES;
 		}
 
-		internal virtual Db4objects.Db4o.YapReader PrepareRead(Db4objects.Db4o.Transaction
-			 trans)
+		internal Db4objects.Db4o.YapReader PrepareRead(Db4objects.Db4o.Transaction trans)
 		{
 			if (CanWrite())
 			{
@@ -795,7 +777,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return reader;
 		}
 
-		internal virtual void PrepareWrite(Db4objects.Db4o.Transaction trans)
+		internal void PrepareWrite(Db4objects.Db4o.Transaction trans)
 		{
 			if (_dead)
 			{
@@ -870,7 +852,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			}
 		}
 
-		public virtual void Remove(Db4objects.Db4o.Transaction trans, int index)
+		public void Remove(Db4objects.Db4o.Transaction trans, int index)
 		{
 			if (!_isLeaf)
 			{
@@ -961,7 +943,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			}
 		}
 
-		internal virtual void Rollback(Db4objects.Db4o.Transaction trans)
+		internal void Rollback(Db4objects.Db4o.Transaction trans)
 		{
 			CommitOrRollback(trans, false);
 		}
@@ -977,9 +959,19 @@ namespace Db4objects.Db4o.Inside.Btree
 		{
 			Db4objects.Db4o.Inside.Btree.Searcher s = new Db4objects.Db4o.Inside.Btree.Searcher
 				(target, _count);
-			while (s.Incomplete())
+			if (CanWrite())
 			{
-				Compare(s, reader);
+				while (s.Incomplete())
+				{
+					s.ResultIs(CompareInWriteMode(s.Cursor()));
+				}
+			}
+			else
+			{
+				while (s.Incomplete())
+				{
+					s.ResultIs(CompareInReadMode(reader, s.Cursor()));
+				}
 			}
 			return s;
 		}
@@ -1079,7 +1071,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			}
 		}
 
-		public virtual Db4objects.Db4o.Inside.Btree.BTreeNode PreviousNode()
+		public Db4objects.Db4o.Inside.Btree.BTreeNode PreviousNode()
 		{
 			if (_previousID == 0)
 			{
@@ -1088,7 +1080,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return _btree.ProduceNode(_previousID);
 		}
 
-		public virtual Db4objects.Db4o.Inside.Btree.BTreeNode NextNode()
+		public Db4objects.Db4o.Inside.Btree.BTreeNode NextNode()
 		{
 			if (_nextID == 0)
 			{
@@ -1097,7 +1089,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return _btree.ProduceNode(_nextID);
 		}
 
-		internal virtual Db4objects.Db4o.Inside.Btree.BTreePointer FirstPointer(Db4objects.Db4o.Transaction
+		internal Db4objects.Db4o.Inside.Btree.BTreePointer FirstPointer(Db4objects.Db4o.Transaction
 			 trans)
 		{
 			Db4objects.Db4o.YapReader reader = PrepareRead(trans);
@@ -1134,7 +1126,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return new Db4objects.Db4o.Inside.Btree.BTreePointer(trans, reader, this, index);
 		}
 
-		public virtual Db4objects.Db4o.Inside.Btree.BTreePointer LastPointer(Db4objects.Db4o.Transaction
+		public Db4objects.Db4o.Inside.Btree.BTreePointer LastPointer(Db4objects.Db4o.Transaction
 			 trans)
 		{
 			Db4objects.Db4o.YapReader reader = PrepareRead(trans);
@@ -1171,7 +1163,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return new Db4objects.Db4o.Inside.Btree.BTreePointer(trans, reader, this, index);
 		}
 
-		internal virtual void Purge()
+		internal void Purge()
 		{
 			if (_dead)
 			{
@@ -1220,7 +1212,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			SetStateDirty();
 		}
 
-		public virtual void TraverseKeys(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.Foundation.IVisitor4
+		public void TraverseKeys(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.Foundation.IVisitor4
 			 visitor)
 		{
 			Db4objects.Db4o.YapReader reader = PrepareRead(trans);
@@ -1244,7 +1236,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			}
 		}
 
-		public virtual void TraverseValues(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.Foundation.IVisitor4
+		public void TraverseValues(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.Foundation.IVisitor4
 			 visitor)
 		{
 			if (!HandlesValues())
@@ -1272,12 +1264,12 @@ namespace Db4objects.Db4o.Inside.Btree
 			}
 		}
 
-		internal virtual object Value(int index)
+		internal object Value(int index)
 		{
 			return _values[index];
 		}
 
-		internal virtual object Value(Db4objects.Db4o.YapReader reader, int index)
+		internal object Value(Db4objects.Db4o.YapReader reader, int index)
 		{
 			if (_values != null)
 			{
@@ -1396,7 +1388,7 @@ namespace Db4objects.Db4o.Inside.Btree
 			return str;
 		}
 
-		public virtual void DebugLoadFully(Db4objects.Db4o.Transaction trans)
+		public void DebugLoadFully(Db4objects.Db4o.Transaction trans)
 		{
 			PrepareWrite(trans);
 			if (_isLeaf)
@@ -1440,13 +1432,13 @@ namespace Db4objects.Db4o.Inside.Btree
 			}
 		}
 
-		public virtual bool IsLeaf()
+		public bool IsLeaf()
 		{
 			return _isLeaf;
 		}
 
 		/// <summary>This traversal goes over all nodes, not just leafs</summary>
-		internal virtual void TraverseAllNodes(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.Foundation.IVisitor4
+		internal void TraverseAllNodes(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.Foundation.IVisitor4
 			 command)
 		{
 			Db4objects.Db4o.YapReader reader = PrepareRead(trans);

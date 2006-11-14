@@ -7,11 +7,12 @@ namespace Db4objects.Db4o.CS.Messages
 		private static int nextID;
 
 		protected void WriteQueryResult(Db4objects.Db4o.Inside.Query.AbstractQueryResult 
-			queryResult, Db4objects.Db4o.CS.YapServerThread serverThread, bool lazy)
+			queryResult, Db4objects.Db4o.CS.YapServerThread serverThread, Db4objects.Db4o.Config.QueryEvaluationMode
+			 evaluationMode)
 		{
 			int queryResultId = 0;
 			int maxCount = 0;
-			if (lazy)
+			if (evaluationMode == Db4objects.Db4o.Config.QueryEvaluationMode.IMMEDIATE)
 			{
 				queryResultId = GenerateID();
 				maxCount = Config().PrefetchObjectCount();
@@ -53,9 +54,9 @@ namespace Db4objects.Db4o.CS.Messages
 		}
 
 		protected virtual Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult
-			(bool lazy)
+			(Db4objects.Db4o.Config.QueryEvaluationMode mode)
 		{
-			return Stream().NewQueryResult(Transaction(), lazy);
+			return Stream().NewQueryResult(Transaction(), mode);
 		}
 	}
 }

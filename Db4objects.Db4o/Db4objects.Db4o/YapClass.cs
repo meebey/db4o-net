@@ -1182,7 +1182,14 @@ namespace Db4objects.Db4o
 			}
 			for (int i = 0; i < i_fields.Length; i++)
 			{
-				i_fields[i].InitConfigOnUp(systemTrans);
+				Db4objects.Db4o.YapField curField = i_fields[i];
+				string fieldName = curField.GetName();
+				if (!curField.HasConfig() && extendedConfig != null && extendedConfig.ConfigField
+					(fieldName) != null)
+				{
+					curField.InitIndex(this, fieldName);
+				}
+				curField.InitConfigOnUp(systemTrans);
 			}
 		}
 
@@ -1638,15 +1645,15 @@ namespace Db4objects.Db4o
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1378
+					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1383
 						(this, a_candidates, trans));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1378 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass1383 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass1378(YapClass _enclosing, Db4objects.Db4o.QCandidates 
+			public _AnonymousInnerClass1383(YapClass _enclosing, Db4objects.Db4o.QCandidates 
 				a_candidates, Db4objects.Db4o.Transaction trans)
 			{
 				this._enclosing = _enclosing;

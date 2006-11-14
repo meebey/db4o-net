@@ -2,6 +2,9 @@ namespace Db4objects.Db4o.Inside.Marshall
 {
 	public class StringMarshaller1 : Db4objects.Db4o.Inside.Marshall.StringMarshaller
 	{
+		private const int DEFRAGMENT_INCREMENT_OFFSET = Db4objects.Db4o.YapConst.INT_LENGTH
+			 * 2;
+
 		public override bool InlinedStrings()
 		{
 			return true;
@@ -81,8 +84,7 @@ namespace Db4objects.Db4o.Inside.Marshall
 
 		public override void Defrag(Db4objects.Db4o.ISlotReader reader)
 		{
-			reader.IncrementIntSize();
-			reader.IncrementIntSize();
+			reader.IncrementOffset(DEFRAGMENT_INCREMENT_OFFSET);
 		}
 	}
 }
