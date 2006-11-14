@@ -1,5 +1,3 @@
-/* Copyright (C) 2005   db4objects Inc.   http://www.db4o.com */
-
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -17,4 +15,3 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyDescription("db4o 6.0.001 .NET")]
-
