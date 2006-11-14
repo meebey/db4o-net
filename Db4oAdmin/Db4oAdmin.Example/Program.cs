@@ -36,7 +36,7 @@ namespace Db4oShell.Example
 			string dataFile = GetDataFilePath();
 			if (File.Exists(dataFile)) File.Delete(dataFile);
 			
-			using (IObjectContainer container = Db4o.OpenFile(dataFile))
+			using (IObjectContainer container = Db4oFactory.OpenFile(dataFile))
 			{
 				((YapStream)container).GetNativeQueryHandler().QueryExecution += new 
 					QueryExecutionHandler(Program_QueryExecution);
