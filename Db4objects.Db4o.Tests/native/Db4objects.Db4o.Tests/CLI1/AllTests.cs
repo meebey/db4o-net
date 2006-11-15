@@ -29,6 +29,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(CsStructs),
 					typeof(CsStructsRegression),
 					typeof(CsValueTypesTestCase),
+					typeof(CultureInfoTestCase),
 					typeof(MDArrayTestCase),
 					typeof(ObjectSetAsListTestCase),
 				};
