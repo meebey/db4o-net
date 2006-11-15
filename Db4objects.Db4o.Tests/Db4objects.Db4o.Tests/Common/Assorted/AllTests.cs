@@ -18,9 +18,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.ReAddCascadedDeleteTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.MultiDeleteTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.NonStaticConfigurationTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Assorted.ServerRevokeAccessTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.SystemInfoTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Assorted.ObjectVersionTest), typeof(Db4objects.Db4o.Tests.Common.Assorted.YapClassTestCase)
-				 };
+				, typeof(Db4objects.Db4o.Tests.Common.Assorted.PersistTypeTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ServerRevokeAccessTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Assorted.SystemInfoTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ObjectVersionTest)
+				, typeof(Db4objects.Db4o.Tests.Common.Assorted.YapClassTestCase) };
 		}
 	}
 }
