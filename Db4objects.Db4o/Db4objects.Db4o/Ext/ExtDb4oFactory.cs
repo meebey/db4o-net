@@ -4,7 +4,7 @@ namespace Db4objects.Db4o.Ext
 	/// 	</summary>
 	/// <remarks>extended factory class with static methods to open special db4o sessions.
 	/// 	</remarks>
-	public sealed class ExtDb4oFactory : Db4objects.Db4o.Db4oFactory
+	public class ExtDb4oFactory : Db4objects.Db4o.Db4oFactory
 	{
 		/// <summary>
 		/// opens an
