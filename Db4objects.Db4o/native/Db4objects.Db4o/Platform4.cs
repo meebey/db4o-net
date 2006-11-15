@@ -2,8 +2,7 @@
 
 using System;
 using System.Collections;
-using System.IO;
-using System.Text;
+using System.Globalization;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Config.Attributes;
 using Db4objects.Db4o.Ext;
@@ -312,6 +311,7 @@ namespace Db4objects.Db4o
             Translate(config, new Hashtable(), new TDictionary());
             Translate(config, new Queue(), new TQueue());
             Translate(config, new Stack(), new TStack());
+			Translate(config, CultureInfo.InvariantCulture, new TCultureInfo());
 
             if (!IsCompact())
             {
