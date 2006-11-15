@@ -4,27 +4,38 @@ using System;
 using Sharpen.Lang;
 using Db4objects.Db4o;
 
-namespace Db4objects.Db4o.Config {
-
+namespace Db4objects.Db4o.Config
+{
 	/// <exclude />
-    public class TType : IObjectConstructor {
-		
-        public void OnActivate(IObjectContainer objectContainer, object obj, object members) {
+    public class TType : IObjectConstructor
+    {		
+        public void OnActivate(IObjectContainer objectContainer, object obj, object members)
+        {
         }
       
-        public Object OnInstantiate(IObjectContainer objectContainer, object obj) {
-            try {
-                return TypeReference.FromString((string) obj).Resolve();
-            }  catch { 
-                return null;
-            }
+        public Object OnInstantiate(IObjectContainer objectContainer, object obj)
+        {
+        	if (obj != null)
+        	{
+            	try
+	            {
+    	            return TypeReference.FromString((string) obj).Resolve();
+        	    }
+            	catch
+	            { 
+	            }
+			}
+			return null; 
         }
       
-        public Object OnStore(IObjectContainer objectContainer, object obj) {
-            return TypeReference.FromType(obj.GetType()).GetUnversionedName();
+        public Object OnStore(IObjectContainer objectContainer, object obj)
+        {
+        	if (obj == null) return null;
+            return TypeReference.FromType((Type)obj).GetUnversionedName();
         }
       
-        public Type StoredClass() {
+        public Type StoredClass()
+        {
             return typeof(string);
         }
     }
