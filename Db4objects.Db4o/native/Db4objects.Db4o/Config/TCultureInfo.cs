@@ -12,13 +12,13 @@ namespace Db4objects.Db4o.Config
 	{
 		public Object OnInstantiate(IObjectContainer store, object stored)
 		{
-			return CultureInfo.GetCultureInfo((int) stored);
+			return CultureInfo.CreateSpecificCulture((string)stored);
 		}
 
 		public Object OnStore(IObjectContainer store, object obj)
 		{
-			CultureInfo culture = (CultureInfo) obj;
-			return culture.LCID;
+			CultureInfo culture = (CultureInfo)obj;
+			return culture.Name;
 		}
 
 		public void OnActivate(IObjectContainer container, object applicationObject, object storedObject)
@@ -26,8 +26,8 @@ namespace Db4objects.Db4o.Config
 		}
 
 		public Type StoredClass()
-		{
-			return typeof(int);
+		{		
+			return typeof(string);
 		}
 	}
 }
