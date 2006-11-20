@@ -13,7 +13,10 @@ namespace Db4objects.Db4o.Reflect.Net
 		private Db4objects.Db4o.Reflect.IReflectConstructor _constructor;
 
 		private object[] constructorParams;
+		
 	    private string _name;
+	    
+	    private Db4objects.Db4o.Reflect.IReflectField[] _fields;
 
 	    public NetClass(Db4objects.Db4o.Reflect.IReflector reflector, System.Type clazz)
 		{
@@ -40,18 +43,24 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public virtual Db4objects.Db4o.Reflect.IReflectField GetDeclaredField(string name)
 		{
-			try
+			foreach (IReflectField field in GetDeclaredFields())
 			{
-				return new Db4objects.Db4o.Reflect.Net.NetField(_reflector, Sharpen.Runtime.GetDeclaredField(_type, name));
+				if (field.GetName() == name) return field;
 			}
-			catch
-			{
-				return null;
-			}
+			return null;
 		}
 
 		public virtual Db4objects.Db4o.Reflect.IReflectField[] GetDeclaredFields()
 		{
+			if (_fields == null)
+			{
+				_fields = CreateDeclaredFieldsArray();
+			}
+			return _fields;
+		}
+		
+		private Db4objects.Db4o.Reflect.IReflectField[] CreateDeclaredFieldsArray()
+		{	
 			System.Reflection.FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(_type);
 			Db4objects.Db4o.Reflect.IReflectField[] reflectors = new Db4objects.Db4o.Reflect.IReflectField[fields.Length];
 			for (int i = 0; i < reflectors.Length; i++)
@@ -201,7 +210,7 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public override string ToString()
 		{
-			return "CClass: " + _type;
+			return "NetClass(" + _type + ")";
 		}
 
 		public virtual void UseConstructor(
