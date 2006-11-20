@@ -64,7 +64,7 @@ namespace Db4objects.Db4o
             {
                 return false;
             }
-            return className.StartsWith("Db4objects.Db4o.Tests");
+            return className.StartsWith("Db4objects.Db4o");
         }
 
         internal static JDK Jdk()
@@ -409,8 +409,7 @@ namespace Db4objects.Db4o
             {
                 return false;
             }
-            claxx = claxx.GetDelegate();
-            NetClass netClass = claxx as NetClass;
+            NetClass netClass = claxx.GetDelegate() as NetClass;
             if (netClass == null)
             {
                 return false;
