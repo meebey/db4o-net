@@ -1,15 +1,14 @@
-﻿using Sharpen.Lang;
+﻿using System;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
 	public class NetReflector : Db4objects.Db4o.Reflect.IReflector
 	{
-
 		private Db4objects.Db4o.Reflect.IReflector _parent;
 
 		private Db4objects.Db4o.Reflect.IReflectArray _array;
-
-
+	    
 		public virtual Db4objects.Db4o.Reflect.IReflectArray Array()
 		{
 			if (_array == null)
@@ -29,24 +28,33 @@ namespace Db4objects.Db4o.Reflect.Net
 			return new NetReflector();
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass ForClass(System.Type clazz)
+		public virtual Db4objects.Db4o.Reflect.IReflectClass ForClass(System.Type forType)
 		{
-			return new Db4objects.Db4o.Reflect.Net.NetClass(_parent, clazz);
+		    return new Db4objects.Db4o.Reflect.Net.NetClass(_parent, GetUnderlyingType(forType));
 		}
+
+        private Type GetUnderlyingType(Type type)
+        {
+#if NET_2_0 || CF_2_0
+            Type underlyingType = Nullable.GetUnderlyingType(type);
+            if (underlyingType != null)
+            {
+                return underlyingType;
+            }
+#endif
+            return type;
+        }
 
 		public virtual Db4objects.Db4o.Reflect.IReflectClass ForName(string className)
 		{
-			System.Type clazz = null;
 			try
 			{
-				clazz = TypeReference.FromString(className).Resolve();
+				return ForClass(TypeReference.FromString(className).Resolve());
 			}
 			catch (System.Exception)
 			{
 			}
-			return clazz == null
-				? null
-				: new Db4objects.Db4o.Reflect.Net.NetClass(_parent, clazz);
+			return null;
 		}
 
 		public virtual Db4objects.Db4o.Reflect.IReflectClass ForObject(object a_object)
