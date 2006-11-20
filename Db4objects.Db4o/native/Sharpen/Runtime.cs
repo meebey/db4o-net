@@ -39,21 +39,23 @@ namespace Sharpen
 	        ((Array)array).SetValue(value, index);
 	    }
 
-		private const BindingFlags DeclaredMemberFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+		private const BindingFlags DeclaredMembers = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
+        private const BindingFlags DeclaredMembersIncludingStatic = DeclaredMembers | BindingFlags.Static;
 		
 		public static FieldInfo GetDeclaredField(Type type, string name)
 		{
-			return type.GetField(name, DeclaredMemberFlags);
+            return type.GetField(name, DeclaredMembersIncludingStatic);
 		}
 
 		public static FieldInfo[] GetDeclaredFields(Type type)
 		{
-			return type.GetFields(DeclaredMemberFlags);
+            return type.GetFields(DeclaredMembersIncludingStatic);
 		}
 		
 		public static MethodInfo GetDeclaredMethod(Type type, string name, Type[] parameterTypes)
 		{
-			return type.GetMethod(name, DeclaredMemberFlags, null, parameterTypes, null);
+			return type.GetMethod(name, DeclaredMembers, null, parameterTypes, null);
 		}
 
 		public static Type[] GetParameterTypes(MethodBase method)
