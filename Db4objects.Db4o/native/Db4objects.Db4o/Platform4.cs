@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Globalization;
+
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Config.Attributes;
 using Db4objects.Db4o.Ext;
@@ -13,10 +14,6 @@ using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Reflect.Net;
 using Db4objects.Db4o.Types;
-using Sharpen.IO;
-using Sharpen.Lang;
-using Sharpen.Lang.Reflect;
-using Sharpen.Util;
 
 namespace Db4objects.Db4o
 {
@@ -496,10 +493,10 @@ namespace Db4objects.Db4o
         {
             lock (typeof(Platform4))
             {
-                foreach (object stream in shutDownStreams)
-                {
-                    Unobfuscated.ShutDownHookCallback(stream);
-                }
+				for (int i = 0; i < shutDownStreams.Count; i++)
+				{
+					Unobfuscated.ShutDownHookCallback(shutDownStreams[i]);
+				}
             }
         }
 
@@ -571,7 +568,7 @@ namespace Db4objects.Db4o
 
         internal static bool IsTransient(IReflectClass clazz)
         {
-            System.Type type = GetNetType(clazz);
+            Type type = GetNetType(clazz);
             if (null == type) return false;
             return type.IsPointer
                 || type.IsSubclassOf(typeof(Delegate));
