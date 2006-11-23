@@ -7,11 +7,15 @@ UNIT = Db4oUnit
 UNIT_EXT = Db4oUnit.Extensions
 ADMIN = Db4oAdmin
 
+LIBS = Libs/net-2.0
+
 OUTDIR = ./bin
 
 all: prebuild build postbuild
 
 prebuild:
+	[ -d $(OUTDIR) ] || mkdir $(OUTDIR)
+	cp $(LIBS)/*.dll $(OUTDIR)
 
 build: tests admin
 

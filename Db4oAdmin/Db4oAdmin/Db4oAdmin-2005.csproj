@@ -28,6 +28,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Cecil.FlowAnalysis, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\net-2.0\Cecil.FlowAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.4.3.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\net-2.0\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.GetOptions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\net-2.0\Mono.GetOptions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -38,20 +50,6 @@
     <Compile Include="ILPattern.cs" />
     <Compile Include="InstrumentationContext.cs" />
     <Compile Include="InstrumentationPipeline.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions.Useful\CommonCompilerOptions.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\ArgumentProcessorAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\KillOptionAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionDetails.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionList.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\Options.cs" />
-    <Compile Include="Mono.GetOptions\Mono.GetOptions\OptionsParsingMode.cs" />
-    <Compile Include="Mono.GetOptions\Mono\AboutAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono\AdditionalInfoAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono\AuthorAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono\IsPartOfPackageAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono\ReportBugsToAttribute.cs" />
-    <Compile Include="Mono.GetOptions\Mono\UsageComplementAttribute.cs" />
     <Compile Include="PredicateOptimizer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgramOptions.cs" />
