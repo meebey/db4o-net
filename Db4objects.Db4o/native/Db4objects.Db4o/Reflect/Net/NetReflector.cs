@@ -49,7 +49,9 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 			try
 			{
-				return ForClass(TypeReference.FromString(className).Resolve());
+				Type type = TypeReference.FromString(className).Resolve();
+				if (type == null) return null;
+				return ForClass(type);
 			}
 			catch (System.Exception)
 			{

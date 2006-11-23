@@ -1,4 +1,5 @@
-﻿using Sharpen.Lang;
+﻿using System;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
@@ -161,7 +162,8 @@ namespace Db4objects.Db4o.Reflect.Net
 			{
 				if (_constructor == null)
 				{
-					return System.Activator.CreateInstance(_type);
+					if (CanCreate(_type)) return System.Activator.CreateInstance(_type);
+					return null;
 				}
 				return _constructor.NewInstance(constructorParams);
 			}
@@ -169,6 +171,11 @@ namespace Db4objects.Db4o.Reflect.Net
 			{
 			}
 			return null;
+		}
+
+		private static bool CanCreate(Type type)
+		{
+			return !type.IsAbstract && !type.IsInterface;
 		}
 
 		public virtual System.Type GetNetType()

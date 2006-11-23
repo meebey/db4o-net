@@ -90,11 +90,11 @@ namespace Sharpen.Lang
 			get { return _assemblyName; }
 		}
 
-		public override System.Type Resolve()
+		public override Type Resolve()
 		{
             return _assemblyName == null
-                ? Type.GetType(SimpleName, true)
-                : ResolveAssembly().GetType(SimpleName, true);
+                ? Type.GetType(SimpleName)
+                : ResolveAssembly().GetType(SimpleName);
 		}
 
 		public override void AppendTypeName(StringBuilder builder)
