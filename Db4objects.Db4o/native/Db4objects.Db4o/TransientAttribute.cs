@@ -2,8 +2,8 @@
 
 using System;
 
-namespace Db4objects.Db4o {
-
+namespace Db4objects.Db4o
+{
     /// <summary>
     /// Marks a field or event as transient.
     /// </summary>
@@ -15,9 +15,10 @@ namespace Db4objects.Db4o {
     /// </remarks>
     /// <exclude />
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Event)]
-    public class Transient : Attribute {
-        public Transient() {
+    public class TransientAttribute : Attribute
+	{
+        public TransientAttribute()
+		{
         }
     }
 }
-
