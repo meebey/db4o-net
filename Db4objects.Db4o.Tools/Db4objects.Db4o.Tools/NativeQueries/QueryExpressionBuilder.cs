@@ -1,6 +1,5 @@
 ﻿/* Copyright (C) 2004-2006   db4objects Inc.   http://www.db4o.com */
 
-using Cecil.FlowAnalysis.Impl.CodeStructure;
 
 namespace Db4objects.Db4o.Tools.NativeQueries
 {
@@ -722,7 +721,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 
 		private static TypeReference GetFieldType(FieldValue field)
 		{
-			return ((FieldReferenceExpression) field.Tag()).Field.FieldType;
+			return ((IFieldReferenceExpression) field.Tag()).Field.FieldType;
 		}
 
 		private void AdjustConstValue(TypeReference typeRef, ConstValue constValue)
