@@ -141,8 +141,8 @@ namespace Db4objects.Db4o.Inside.Query
 		public override void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
 			 iter)
 		{
-			Db4objects.Db4o.Foundation.Tree[] duplicates = new Db4objects.Db4o.Foundation.Tree
-				[1];
+			Db4objects.Db4o.Foundation.Tree.ByRef duplicates = new Db4objects.Db4o.Foundation.Tree.ByRef
+				();
 			while (iter.MoveNext())
 			{
 				Db4objects.Db4o.YapClass yapClass = iter.CurrentClass();
@@ -161,7 +161,7 @@ namespace Db4objects.Db4o.Inside.Query
 
 		private sealed class _AnonymousInnerClass114 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass114(IdListQueryResult _enclosing, Db4objects.Db4o.Foundation.Tree[]
+			public _AnonymousInnerClass114(IdListQueryResult _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
 				 duplicates)
 			{
 				this._enclosing = _enclosing;
@@ -172,7 +172,7 @@ namespace Db4objects.Db4o.Inside.Query
 			{
 				int id = ((int)obj);
 				Db4objects.Db4o.TreeInt newNode = new Db4objects.Db4o.TreeInt(id);
-				duplicates[0] = Db4objects.Db4o.Foundation.Tree.Add(duplicates[0], newNode);
+				duplicates.value = Db4objects.Db4o.Foundation.Tree.Add(duplicates.value, newNode);
 				if (newNode.Size() != 0)
 				{
 					this._enclosing.Add(id);
@@ -181,7 +181,7 @@ namespace Db4objects.Db4o.Inside.Query
 
 			private readonly IdListQueryResult _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.Tree[] duplicates;
+			private readonly Db4objects.Db4o.Foundation.Tree.ByRef duplicates;
 		}
 
 		public override void LoadFromIdReader(Db4objects.Db4o.YapReader reader)

@@ -3,6 +3,20 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public abstract class Tree : Db4objects.Db4o.Foundation.IShallowClone, Db4objects.Db4o.Foundation.IDeepClone
 	{
+		public sealed class ByRef
+		{
+			public ByRef()
+			{
+			}
+
+			public ByRef(Db4objects.Db4o.Foundation.Tree initialValue)
+			{
+				value = initialValue;
+			}
+
+			public Db4objects.Db4o.Foundation.Tree value;
+		}
+
 		public Db4objects.Db4o.Foundation.Tree _preceding;
 
 		public int _size = 1;

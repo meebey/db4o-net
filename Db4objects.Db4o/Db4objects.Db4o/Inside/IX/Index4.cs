@@ -197,9 +197,10 @@ namespace Db4objects.Db4o.Inside.IX
 						{
 							clonedTree = (Db4objects.Db4o.Foundation.Tree)clonedTree.DeepClone(ft);
 						}
-						Db4objects.Db4o.Foundation.Tree[] tree = { clonedTree };
+						Db4objects.Db4o.Foundation.Tree.ByRef tree = new Db4objects.Db4o.Foundation.Tree.ByRef
+							(clonedTree);
 						ft.GetRoot().TraverseFromLeaves((new _AnonymousInnerClass196(this, ft, tree)));
-						ft.SetRoot(tree[0]);
+						ft.SetRoot(tree.value);
 					}
 				}
 				DoFree(free);
@@ -217,7 +218,7 @@ namespace Db4objects.Db4o.Inside.IX
 		private sealed class _AnonymousInnerClass196 : Db4objects.Db4o.Foundation.IVisitor4
 		{
 			public _AnonymousInnerClass196(Index4 _enclosing, Db4objects.Db4o.Inside.IX.IndexTransaction
-				 ft, Db4objects.Db4o.Foundation.Tree[] tree)
+				 ft, Db4objects.Db4o.Foundation.Tree.ByRef tree)
 			{
 				this._enclosing = _enclosing;
 				this.ft = ft;
@@ -232,7 +233,7 @@ namespace Db4objects.Db4o.Inside.IX
 					if (!(ixTree is Db4objects.Db4o.Inside.IX.IxFileRange))
 					{
 						ixTree.BeginMerge();
-						tree[0] = Db4objects.Db4o.Foundation.Tree.Add(tree[0], ixTree);
+						tree.value = Db4objects.Db4o.Foundation.Tree.Add(tree.value, ixTree);
 					}
 				}
 			}
@@ -241,7 +242,7 @@ namespace Db4objects.Db4o.Inside.IX
 
 			private readonly Db4objects.Db4o.Inside.IX.IndexTransaction ft;
 
-			private readonly Db4objects.Db4o.Foundation.Tree[] tree;
+			private readonly Db4objects.Db4o.Foundation.Tree.ByRef tree;
 		}
 
 		private Db4objects.Db4o.Inside.IX.IxFileRange CreateGlobalFileRange()

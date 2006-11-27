@@ -135,17 +135,17 @@ namespace Db4objects.Db4o
 									qcon.RemoveNot();
 								}
 								candidates.Evaluate();
-								Db4objects.Db4o.Foundation.Tree[] pending = new Db4objects.Db4o.Foundation.Tree[1
-									];
+								Db4objects.Db4o.Foundation.Tree.ByRef pending = new Db4objects.Db4o.Foundation.Tree.ByRef
+									();
 								bool[] innerRes = { isNot };
 								candidates.Traverse(new _AnonymousInnerClass167(this, innerRes, isNot, pending));
 								if (isNot)
 								{
 									qcon.Not();
 								}
-								if (pending[0] != null)
+								if (pending.value != null)
 								{
-									pending[0].Traverse(new _AnonymousInnerClass236(this));
+									pending.value.Traverse(new _AnonymousInnerClass236(this));
 								}
 								if (!innerRes[0])
 								{
@@ -205,7 +205,7 @@ namespace Db4objects.Db4o
 		private sealed class _AnonymousInnerClass167 : Db4objects.Db4o.Foundation.IVisitor4
 		{
 			public _AnonymousInnerClass167(QCandidate _enclosing, bool[] innerRes, bool isNot
-				, Db4objects.Db4o.Foundation.Tree[] pending)
+				, Db4objects.Db4o.Foundation.Tree.ByRef pending)
 			{
 				this._enclosing = _enclosing;
 				this.innerRes = innerRes;
@@ -228,7 +228,7 @@ namespace Db4objects.Db4o
 
 			private sealed class _AnonymousInnerClass180 : Db4objects.Db4o.Foundation.IVisitor4
 			{
-				public _AnonymousInnerClass180(_AnonymousInnerClass167 _enclosing, Db4objects.Db4o.Foundation.Tree[]
+				public _AnonymousInnerClass180(_AnonymousInnerClass167 _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
 					 pending)
 				{
 					this._enclosing = _enclosing;
@@ -240,7 +240,7 @@ namespace Db4objects.Db4o
 					Db4objects.Db4o.QPending newPending = (Db4objects.Db4o.QPending)a_object;
 					newPending.ChangeConstraint();
 					Db4objects.Db4o.QPending oldPending = (Db4objects.Db4o.QPending)Db4objects.Db4o.Foundation.Tree
-						.Find(pending[0], newPending);
+						.Find(pending.value, newPending);
 					if (oldPending != null)
 					{
 						if (oldPending._result != newPending._result)
@@ -250,13 +250,13 @@ namespace Db4objects.Db4o
 					}
 					else
 					{
-						pending[0] = Db4objects.Db4o.Foundation.Tree.Add(pending[0], newPending);
+						pending.value = Db4objects.Db4o.Foundation.Tree.Add(pending.value, newPending);
 					}
 				}
 
 				private readonly _AnonymousInnerClass167 _enclosing;
 
-				private readonly Db4objects.Db4o.Foundation.Tree[] pending;
+				private readonly Db4objects.Db4o.Foundation.Tree.ByRef pending;
 			}
 
 			private readonly QCandidate _enclosing;
@@ -265,7 +265,7 @@ namespace Db4objects.Db4o
 
 			private readonly bool isNot;
 
-			private readonly Db4objects.Db4o.Foundation.Tree[] pending;
+			private readonly Db4objects.Db4o.Foundation.Tree.ByRef pending;
 		}
 
 		private sealed class _AnonymousInnerClass236 : Db4objects.Db4o.Foundation.IVisitor4

@@ -213,18 +213,18 @@ namespace Db4objects.Db4o.Inside.Classindex
 			{
 				return null;
 			}
-			Db4objects.Db4o.Foundation.Tree[] tree = new Db4objects.Db4o.Foundation.Tree[] { 
-				Db4objects.Db4o.Foundation.Tree.DeepClone(ci.GetRoot(), null) };
+			Db4objects.Db4o.Foundation.Tree.ByRef tree = new Db4objects.Db4o.Foundation.Tree.ByRef
+				(Db4objects.Db4o.Foundation.Tree.DeepClone(ci.GetRoot(), null));
 			Db4objects.Db4o.Inside.Classindex.OldClassIndexStrategy.TransactionState context = 
 				GetState(transaction);
 			context.TraverseAdded(new _AnonymousInnerClass151(this, tree));
 			context.TraverseRemoved(new _AnonymousInnerClass156(this, tree));
-			return tree[0];
+			return tree.value;
 		}
 
 		private sealed class _AnonymousInnerClass151 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass151(OldClassIndexStrategy _enclosing, Db4objects.Db4o.Foundation.Tree[]
+			public _AnonymousInnerClass151(OldClassIndexStrategy _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
 				 tree)
 			{
 				this._enclosing = _enclosing;
@@ -233,18 +233,18 @@ namespace Db4objects.Db4o.Inside.Classindex
 
 			public void Visit(object obj)
 			{
-				tree[0] = Db4objects.Db4o.Foundation.Tree.Add(tree[0], new Db4objects.Db4o.TreeInt
+				tree.value = Db4objects.Db4o.Foundation.Tree.Add(tree.value, new Db4objects.Db4o.TreeInt
 					(this._enclosing.IdFromValue(obj)));
 			}
 
 			private readonly OldClassIndexStrategy _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.Tree[] tree;
+			private readonly Db4objects.Db4o.Foundation.Tree.ByRef tree;
 		}
 
 		private sealed class _AnonymousInnerClass156 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass156(OldClassIndexStrategy _enclosing, Db4objects.Db4o.Foundation.Tree[]
+			public _AnonymousInnerClass156(OldClassIndexStrategy _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
 				 tree)
 			{
 				this._enclosing = _enclosing;
@@ -253,13 +253,13 @@ namespace Db4objects.Db4o.Inside.Classindex
 
 			public void Visit(object obj)
 			{
-				tree[0] = Db4objects.Db4o.Foundation.Tree.RemoveLike(tree[0], (Db4objects.Db4o.TreeInt
+				tree.value = Db4objects.Db4o.Foundation.Tree.RemoveLike(tree.value, (Db4objects.Db4o.TreeInt
 					)obj);
 			}
 
 			private readonly OldClassIndexStrategy _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.Tree[] tree;
+			private readonly Db4objects.Db4o.Foundation.Tree.ByRef tree;
 		}
 
 		protected override void InternalRemove(Db4objects.Db4o.Transaction transaction, int

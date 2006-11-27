@@ -9,11 +9,11 @@ namespace Db4oUnit
 
 		private readonly Db4oUnit.Util.StopWatch _watch = new Db4oUnit.Util.StopWatch();
 
-		private readonly bool _printLabels;
+		private readonly System.IO.TextWriter _stdout;
 
 		public TestResult(bool printLabels)
 		{
-			_printLabels = printLabels;
+			_stdout = printLabels ? Db4oUnit.TestPlatform.GetStdOut() : null;
 		}
 
 		public TestResult() : this(false)
@@ -23,9 +23,15 @@ namespace Db4oUnit
 		public virtual void TestStarted(Db4oUnit.ITest test)
 		{
 			++_testCount;
-			if (_printLabels)
+			PrintLabel(test.GetLabel());
+		}
+
+		private void PrintLabel(string label)
+		{
+			if (null != _stdout)
 			{
-				Db4oUnit.TestPlatform.GetStdOut().Write(test.GetLabel() + "\n");
+				_stdout.Write(label + "\n");
+				_stdout.Flush();
 			}
 		}
 
