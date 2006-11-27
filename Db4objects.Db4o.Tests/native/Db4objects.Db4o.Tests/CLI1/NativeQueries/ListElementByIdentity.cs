@@ -1,13 +1,14 @@
 ﻿using Db4objects.Db4o.Ext;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 #if NET_2_0
 using System.Collections.Generic;
 #endif
 
 namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 {
-	public class ListElementByIdentity : AbstractDb4oTestCase
+	public class ListElementByIdentity : AbstractDb4oTestCase, IOptOutCS
 	{
 #if NET_2_0
 		IList<LebiElement> _list;
