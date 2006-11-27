@@ -5,6 +5,12 @@
     <monolipse.core.internal.AssemblySourceReference-Remembrance>
       <path>/db4o.net/Db4objects.Db4o</path>
     </monolipse.core.internal.AssemblySourceReference-Remembrance>
+    <monolipse.core.internal.LocalAssemblyReference-Remembrance>
+      <path>/db4o.net/Libs/net-1.1/Mono.Cecil.dll</path>
+    </monolipse.core.internal.LocalAssemblyReference-Remembrance>
+    <monolipse.core.internal.LocalAssemblyReference-Remembrance>
+      <path>/db4o.net/Libs/net-1.1/Cecil.FlowAnalysis.dll</path>
+    </monolipse.core.internal.LocalAssemblyReference-Remembrance>
   </references>
   <outputFolder>/db4o.net/bin</outputFolder>
   <additionalOptions></additionalOptions>
