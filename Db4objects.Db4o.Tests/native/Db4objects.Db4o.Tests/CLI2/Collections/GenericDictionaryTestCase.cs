@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 	using Db4oUnit;
 	using Db4oUnit.Extensions;
 
-    public class GenericDictionary : AbstractDb4oTestCase
+    public class GenericDictionaryTestCase : AbstractDb4oTestCase
     {
         protected override void Store()
         {
