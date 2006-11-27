@@ -61,8 +61,7 @@ namespace Db4objects.Db4o
 			(false);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec EXCEPTIONAL_CLASSES = 
-			new Db4objects.Db4o.Foundation.KeySpec(new Db4objects.Db4o.Foundation.Hashtable4
-			(16));
+			new Db4objects.Db4o.Foundation.KeySpec(null);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec EXCEPTIONS_ON_NOT_STORABLE
 			 = new Db4objects.Db4o.Foundation.KeySpec(false);
@@ -80,9 +79,6 @@ namespace Db4objects.Db4o
 		private static readonly Db4objects.Db4o.Foundation.KeySpec GENERATE_VERSION_NUMBERS
 			 = new Db4objects.Db4o.Foundation.KeySpec(0);
 
-		private static readonly Db4objects.Db4o.Foundation.KeySpec INDEX_SNAPSHOTS = new 
-			Db4objects.Db4o.Foundation.KeySpec(false);
-
 		private static readonly Db4objects.Db4o.Foundation.KeySpec INTERN_STRINGS = new Db4objects.Db4o.Foundation.KeySpec
 			(false);
 
@@ -95,9 +91,6 @@ namespace Db4objects.Db4o
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec LOCK_FILE = new Db4objects.Db4o.Foundation.KeySpec
 			(true);
-
-		private static readonly Db4objects.Db4o.Foundation.KeySpec MESSAGE_LEVEL = new Db4objects.Db4o.Foundation.KeySpec
-			(Db4objects.Db4o.YapConst.NONE);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec MESSAGE_RECIPIENT = new 
 			Db4objects.Db4o.Foundation.KeySpec(null);
@@ -119,9 +112,6 @@ namespace Db4objects.Db4o
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec READ_AS = new Db4objects.Db4o.Foundation.KeySpec
 			(new Db4objects.Db4o.Foundation.Hashtable4(16));
-
-		private static readonly Db4objects.Db4o.Foundation.KeySpec READ_ONLY = new Db4objects.Db4o.Foundation.KeySpec
-			(false);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec CONFIGURED_REFLECTOR = 
 			new Db4objects.Db4o.Foundation.KeySpec(null);
@@ -169,6 +159,10 @@ namespace Db4objects.Db4o
 			(null);
 
 		private Db4objects.Db4o.YapStream i_stream;
+
+		private int _messageLevel;
+
+		private bool _readOnly;
 
 		public int ActivationDepth()
 		{
@@ -241,6 +235,8 @@ namespace Db4objects.Db4o
 			Db4objects.Db4o.Config4Impl ret = new Db4objects.Db4o.Config4Impl();
 			ret._config = (Db4objects.Db4o.Foundation.KeySpecHashtable4)_config.DeepClone(this
 				);
+			ret._messageLevel = _messageLevel;
+			ret._readOnly = _readOnly;
 			return ret;
 		}
 
@@ -364,7 +360,7 @@ namespace Db4objects.Db4o
 
 		public void MessageLevel(int level)
 		{
-			_config.Put(MESSAGE_LEVEL, level);
+			_messageLevel = level;
 			if (OutStream() == null)
 			{
 				SetOut(Sharpen.Runtime.Out);
@@ -428,7 +424,7 @@ namespace Db4objects.Db4o
 		public void ReadOnly(bool flag)
 		{
 			GlobalSettingOnly();
-			_config.Put(READ_ONLY, flag);
+			_readOnly = flag;
 		}
 
 		internal Db4objects.Db4o.Reflect.Generic.GenericReflector Reflector()
@@ -448,10 +444,6 @@ namespace Db4objects.Db4o
 					);
 				_config.Put(REFLECTOR, reflector);
 				configuredReflector.SetParent(reflector);
-			}
-			if (!reflector.HasTransaction() && i_stream != null)
-			{
-				reflector.SetTransaction(i_stream.GetSystemTransaction());
 			}
 			return reflector;
 		}
@@ -474,7 +466,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_stream == null)
 			{
-				Db4objects.Db4o.Db4oFactory.ForEachSession(new _AnonymousInnerClass412(this));
+				Db4objects.Db4o.Db4oFactory.ForEachSession(new _AnonymousInnerClass414(this));
 			}
 			else
 			{
@@ -482,9 +474,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private sealed class _AnonymousInnerClass412 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass414 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass412(Config4Impl _enclosing)
+			public _AnonymousInnerClass414(Config4Impl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -531,7 +523,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_stream == null)
 			{
-				Db4objects.Db4o.Db4oFactory.ForEachSession(new _AnonymousInnerClass451(this));
+				Db4objects.Db4o.Db4oFactory.ForEachSession(new _AnonymousInnerClass453(this));
 			}
 			else
 			{
@@ -539,9 +531,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private sealed class _AnonymousInnerClass451 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass453 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass451(Config4Impl _enclosing)
+			public _AnonymousInnerClass453(Config4Impl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -809,7 +801,14 @@ namespace Db4objects.Db4o
 
 		public Db4objects.Db4o.Foundation.Hashtable4 ExceptionalClasses()
 		{
-			return (Db4objects.Db4o.Foundation.Hashtable4)_config.Get(EXCEPTIONAL_CLASSES);
+			Db4objects.Db4o.Foundation.Hashtable4 exceptionalClasses = (Db4objects.Db4o.Foundation.Hashtable4
+				)_config.Get(EXCEPTIONAL_CLASSES);
+			if (exceptionalClasses == null)
+			{
+				exceptionalClasses = new Db4objects.Db4o.Foundation.Hashtable4(16);
+				_config.Put(EXCEPTIONAL_CLASSES, exceptionalClasses);
+			}
+			return exceptionalClasses;
 		}
 
 		public bool ExceptionsOnNotStorable()
@@ -859,7 +858,7 @@ namespace Db4objects.Db4o
 
 		internal int MessageLevel()
 		{
-			return _config.GetAsInt(MESSAGE_LEVEL);
+			return _messageLevel;
 		}
 
 		public Db4objects.Db4o.Messaging.IMessageRecipient MessageRecipient()
@@ -905,7 +904,7 @@ namespace Db4objects.Db4o
 
 		internal bool IsReadOnly()
 		{
-			return _config.GetAsBoolean(READ_ONLY);
+			return _readOnly;
 		}
 
 		internal Db4objects.Db4o.Foundation.Collection4 Rename()

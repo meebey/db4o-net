@@ -12,10 +12,10 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		public User(string name, string password)
+		public User(string name_, string password_)
 		{
-			this.name = name;
-			this.password = password;
+			name = name_;
+			password = password_;
 		}
 	}
 }

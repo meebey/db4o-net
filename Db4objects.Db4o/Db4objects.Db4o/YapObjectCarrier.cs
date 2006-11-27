@@ -17,10 +17,6 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		internal override void Initialize0b()
-		{
-		}
-
 		protected override void Initialize1(Db4objects.Db4o.Config.IConfiguration config)
 		{
 			i_handlers = i_parent.i_handlers;

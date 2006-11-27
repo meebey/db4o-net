@@ -14,12 +14,12 @@ namespace Db4objects.Db4o.CS.Messages
 			int maxCount = 0;
 			if (evaluationMode == Db4objects.Db4o.Config.QueryEvaluationMode.IMMEDIATE)
 			{
-				queryResultId = GenerateID();
-				maxCount = Config().PrefetchObjectCount();
+				maxCount = queryResult.Size();
 			}
 			else
 			{
-				maxCount = queryResult.Size();
+				queryResultId = GenerateID();
+				maxCount = Config().PrefetchObjectCount();
 			}
 			Db4objects.Db4o.CS.Messages.MsgD message = QUERY_RESULT.GetWriterForLength(Transaction
 				(), BufferLength(maxCount));

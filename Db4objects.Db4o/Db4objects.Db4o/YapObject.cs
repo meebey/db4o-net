@@ -1,15 +1,16 @@
 namespace Db4objects.Db4o
 {
+	/// <renameto>ObjectReference</renameto>
 	/// <exclude></exclude>
 	public class YapObject : Db4objects.Db4o.YapMeta, Db4objects.Db4o.Ext.IObjectInfo
 	{
-		private Db4objects.Db4o.YapClass i_yapClass;
+		private Db4objects.Db4o.YapClass _class;
 
-		internal object i_object;
+		private object _object;
 
-		internal Db4objects.Db4o.VirtualAttributes i_virtualAttributes;
+		private Db4objects.Db4o.VirtualAttributes _virtualAttributes;
 
-		protected Db4objects.Db4o.YapObject id_preceding;
+		private Db4objects.Db4o.YapObject id_preceding;
 
 		private Db4objects.Db4o.YapObject id_subsequent;
 
@@ -23,6 +24,8 @@ namespace Db4objects.Db4o
 
 		private int hc_code;
 
+		private int _lastTopLevelCallId;
+
 		public YapObject()
 		{
 		}
@@ -34,7 +37,7 @@ namespace Db4objects.Db4o
 
 		internal YapObject(Db4objects.Db4o.YapClass a_yapClass, int a_id)
 		{
-			i_yapClass = a_yapClass;
+			_class = a_yapClass;
 			i_id = a_id;
 		}
 
@@ -67,11 +70,11 @@ namespace Db4objects.Db4o
 						{
 							if (a_depth > 1)
 							{
-								if (i_yapClass.i_config != null)
+								if (_class.i_config != null)
 								{
-									a_depth = i_yapClass.i_config.AdjustActivationDepth(a_depth);
+									a_depth = _class.i_config.AdjustActivationDepth(a_depth);
 								}
-								i_yapClass.ActivateFields(ta, a_object, a_depth);
+								_class.ActivateFields(ta, a_object, a_depth);
 							}
 							return;
 						}
@@ -92,14 +95,13 @@ namespace Db4objects.Db4o
 		{
 			if (stream.ConfigImpl().MessageLevel() > level)
 			{
-				stream.Message(string.Empty + GetID() + " " + @event + " " + i_yapClass.GetName()
-					);
+				stream.Message(string.Empty + GetID() + " " + @event + " " + _class.GetName());
 			}
 		}
 
 		internal void AddToIDTree(Db4objects.Db4o.YapStream a_stream)
 		{
-			if (!(i_yapClass is Db4objects.Db4o.YapClassPrimitive))
+			if (!(_class is Db4objects.Db4o.YapClassPrimitive))
 			{
 				a_stream.IdTreeAdd(this);
 			}
@@ -111,7 +113,7 @@ namespace Db4objects.Db4o
 		{
 			if (BitIsTrue(Db4objects.Db4o.YapConst.CONTINUE))
 			{
-				if (!i_yapClass.StateOKAndAncestors())
+				if (!_class.StateOKAndAncestors())
 				{
 					return false;
 				}
@@ -119,12 +121,12 @@ namespace Db4objects.Db4o
 				Db4objects.Db4o.YapWriter writer = Db4objects.Db4o.Inside.Marshall.MarshallerFamily
 					.Current()._object.MarshallNew(a_trans, this, a_updateDepth);
 				Db4objects.Db4o.YapStream stream = a_trans.Stream();
-				stream.WriteNew(i_yapClass, writer);
-				object obj = GetObject();
+				stream.WriteNew(_class, writer);
+				object obj = _object;
 				ObjectOnNew(stream, obj);
-				if (!i_yapClass.IsPrimitive())
+				if (!_class.IsPrimitive())
 				{
-					i_object = stream.i_references.CreateYapRef(this, obj);
+					_object = stream.i_references.CreateYapRef(this, obj);
 				}
 				SetStateClean();
 				EndProcessing();
@@ -135,7 +137,7 @@ namespace Db4objects.Db4o
 		private void ObjectOnNew(Db4objects.Db4o.YapStream stream, object obj)
 		{
 			stream.Callbacks().ObjectOnNew(obj);
-			i_yapClass.DispatchEvent(stream, obj, Db4objects.Db4o.EventDispatcher.NEW);
+			_class.DispatchEvent(stream, obj, Db4objects.Db4o.EventDispatcher.NEW);
 		}
 
 		internal virtual void Deactivate(Db4objects.Db4o.Transaction a_trans, int a_depth
@@ -153,7 +155,7 @@ namespace Db4objects.Db4o
 					Db4objects.Db4o.YapStream stream = a_trans.Stream();
 					LogActivation(stream, "deactivate");
 					SetStateDeactivated();
-					i_yapClass.Deactivate(a_trans, obj, a_depth);
+					_class.Deactivate(a_trans, obj, a_depth);
 				}
 			}
 		}
@@ -167,18 +169,23 @@ namespace Db4objects.Db4o
 		{
 			if (Db4objects.Db4o.Platform4.HasWeakReferences())
 			{
-				return Db4objects.Db4o.Platform4.GetYapRefObject(i_object);
+				return Db4objects.Db4o.Platform4.GetYapRefObject(_object);
 			}
-			return i_object;
+			return _object;
+		}
+
+		public virtual object GetObjectReference()
+		{
+			return _object;
 		}
 
 		public virtual Db4objects.Db4o.YapStream GetStream()
 		{
-			if (i_yapClass == null)
+			if (_class == null)
 			{
 				return null;
 			}
-			return i_yapClass.GetStream();
+			return _class.GetStream();
 		}
 
 		public virtual Db4objects.Db4o.Transaction GetTrans()
@@ -213,12 +220,21 @@ namespace Db4objects.Db4o
 
 		public virtual Db4objects.Db4o.YapClass GetYapClass()
 		{
-			return i_yapClass;
+			return _class;
 		}
 
 		public override int OwnLength()
 		{
 			throw Db4objects.Db4o.Inside.Exceptions4.ShouldNeverBeCalled();
+		}
+
+		public virtual Db4objects.Db4o.VirtualAttributes ProduceVirtualAttributes()
+		{
+			if (_virtualAttributes == null)
+			{
+				_virtualAttributes = new Db4objects.Db4o.VirtualAttributes();
+			}
+			return _virtualAttributes;
 		}
 
 		internal object Read(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapWriter a_reader
@@ -235,8 +251,8 @@ namespace Db4objects.Db4o
 				{
 					Db4objects.Db4o.Inside.Marshall.ObjectHeader header = new Db4objects.Db4o.Inside.Marshall.ObjectHeader
 						(stream, a_reader);
-					i_yapClass = header.YapClass();
-					if (i_yapClass == null)
+					_class = header.YapClass();
+					if (_class == null)
 					{
 						return null;
 					}
@@ -252,14 +268,13 @@ namespace Db4objects.Db4o
 					a_reader.SetUpdateDepth(addToIDTree);
 					if (addToIDTree == Db4objects.Db4o.YapConst.TRANSIENT)
 					{
-						a_object = i_yapClass.InstantiateTransient(this, a_object, header._marshallerFamily
-							, header._headerAttributes, a_reader);
+						a_object = _class.InstantiateTransient(this, a_object, header._marshallerFamily, 
+							header._headerAttributes, a_reader);
 					}
 					else
 					{
-						a_object = i_yapClass.Instantiate(this, a_object, header._marshallerFamily, header
-							._headerAttributes, a_reader, addToIDTree == Db4objects.Db4o.YapConst.ADD_TO_ID_TREE
-							);
+						a_object = _class.Instantiate(this, a_object, header._marshallerFamily, header._headerAttributes
+							, a_reader, addToIDTree == Db4objects.Db4o.YapConst.ADD_TO_ID_TREE);
 					}
 				}
 				EndProcessing();
@@ -275,15 +290,14 @@ namespace Db4objects.Db4o
 			{
 				Db4objects.Db4o.Inside.Marshall.ObjectHeader header = new Db4objects.Db4o.Inside.Marshall.ObjectHeader
 					(a_stream, a_reader);
-				i_yapClass = header.YapClass();
-				if (i_yapClass == null)
+				_class = header.YapClass();
+				if (_class == null)
 				{
 					return null;
 				}
-				a_reader.SetInstantiationDepth(i_yapClass.ConfigOrAncestorConfig() == null ? 1 : 
-					0);
-				readObject = i_yapClass.Instantiate(this, GetObject(), header._marshallerFamily, 
-					header._headerAttributes, a_reader, true);
+				a_reader.SetInstantiationDepth(_class.ConfigOrAncestorConfig() == null ? 1 : 0);
+				readObject = _class.Instantiate(this, GetObject(), header._marshallerFamily, header
+					._headerAttributes, a_reader, true);
 				EndProcessing();
 			}
 			return readObject;
@@ -299,43 +313,58 @@ namespace Db4objects.Db4o
 		{
 			if (a_stream.i_references._weak)
 			{
-				if (i_object != null)
+				if (_object != null)
 				{
-					Db4objects.Db4o.Platform4.KillYapRef(i_object);
+					Db4objects.Db4o.Platform4.KillYapRef(_object);
 				}
-				i_object = Db4objects.Db4o.Platform4.CreateYapRef(a_stream.i_references._queue, this
+				_object = Db4objects.Db4o.Platform4.CreateYapRef(a_stream.i_references._queue, this
 					, a_object);
 			}
 			else
 			{
-				i_object = a_object;
+				_object = a_object;
 			}
 		}
 
 		public virtual void SetObject(object a_object)
 		{
-			i_object = a_object;
+			_object = a_object;
 		}
 
-		/// <summary>
-		/// return true for complex objects to instruct YapStream to add to lookup trees
-		/// and to perform delayed storage through call to continueset further up the stack.
-		/// </summary>
-		/// <remarks>
-		/// return true for complex objects to instruct YapStream to add to lookup trees
-		/// and to perform delayed storage through call to continueset further up the stack.
-		/// </remarks>
-		internal virtual bool Store(Db4objects.Db4o.Transaction a_trans, Db4objects.Db4o.YapClass
-			 a_yapClass, object a_object)
+		internal void Store(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapClass yapClass
+			, object obj)
 		{
-			i_object = a_object;
+			_object = obj;
+			_class = yapClass;
 			WriteObjectBegin();
-			Db4objects.Db4o.YapStream stream = a_trans.Stream();
-			i_yapClass = a_yapClass;
-			SetID(stream.NewUserObject());
+			SetID(trans.Stream().NewUserObject());
 			BeginProcessing();
 			BitTrue(Db4objects.Db4o.YapConst.CONTINUE);
-			return true;
+		}
+
+		public virtual void FlagForDelete(int callId)
+		{
+			_lastTopLevelCallId = -callId;
+		}
+
+		public virtual bool IsFlaggedForDelete()
+		{
+			return _lastTopLevelCallId < 0;
+		}
+
+		public virtual void FlagAsHandled(int callId)
+		{
+			_lastTopLevelCallId = callId;
+		}
+
+		public bool IsFlaggedAsHandled(int callID)
+		{
+			return _lastTopLevelCallId == callID;
+		}
+
+		public virtual Db4objects.Db4o.VirtualAttributes VirtualAttributes()
+		{
+			return _virtualAttributes;
 		}
 
 		public virtual Db4objects.Db4o.VirtualAttributes VirtualAttributes(Db4objects.Db4o.Transaction
@@ -343,32 +372,32 @@ namespace Db4objects.Db4o
 		{
 			if (a_trans == null)
 			{
-				return i_virtualAttributes;
+				return _virtualAttributes;
 			}
-			if (i_virtualAttributes == null)
+			if (_virtualAttributes == null)
 			{
-				if (i_yapClass.HasVirtualAttributes())
+				if (_class.HasVirtualAttributes())
 				{
-					i_virtualAttributes = new Db4objects.Db4o.VirtualAttributes();
-					i_yapClass.ReadVirtualAttributes(a_trans, this);
+					_virtualAttributes = new Db4objects.Db4o.VirtualAttributes();
+					_class.ReadVirtualAttributes(a_trans, this);
 				}
 			}
 			else
 			{
-				if (!i_virtualAttributes.SuppliesUUID())
+				if (!_virtualAttributes.SuppliesUUID())
 				{
-					if (i_yapClass.HasVirtualAttributes())
+					if (_class.HasVirtualAttributes())
 					{
-						i_yapClass.ReadVirtualAttributes(a_trans, this);
+						_class.ReadVirtualAttributes(a_trans, this);
 					}
 				}
 			}
-			return i_virtualAttributes;
+			return _virtualAttributes;
 		}
 
 		public virtual void SetVirtualAttributes(Db4objects.Db4o.VirtualAttributes at)
 		{
-			i_virtualAttributes = at;
+			_virtualAttributes = at;
 		}
 
 		public override void WriteThis(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapReader
@@ -392,8 +421,8 @@ namespace Db4objects.Db4o
 					}
 					LogEvent(a_trans.Stream(), "update", Db4objects.Db4o.YapConst.STATE);
 					SetStateClean();
-					a_trans.WriteUpdateDeleteMembers(GetID(), i_yapClass, a_trans.Stream().i_handlers
-						.ArrayType(obj), 0);
+					a_trans.WriteUpdateDeleteMembers(GetID(), _class, a_trans.Stream().i_handlers.ArrayType
+						(obj), 0);
 					Db4objects.Db4o.Inside.Marshall.MarshallerFamily.Current()._object.MarshallUpdate
 						(a_trans, a_updatedepth, this, obj);
 				}
@@ -406,8 +435,8 @@ namespace Db4objects.Db4o
 
 		private bool ObjectCanUpdate(Db4objects.Db4o.YapStream stream, object obj)
 		{
-			return stream.Callbacks().ObjectCanUpdate(obj) && i_yapClass.DispatchEvent(stream
-				, obj, Db4objects.Db4o.EventDispatcher.CAN_UPDATE);
+			return stream.Callbacks().ObjectCanUpdate(obj) && _class.DispatchEvent(stream, obj
+				, Db4objects.Db4o.EventDispatcher.CAN_UPDATE);
 		}
 
 		/// <summary>HCTREE ****</summary>
@@ -905,9 +934,9 @@ namespace Db4objects.Db4o
 			{
 				int id = GetID();
 				string str = "YapObject\nID=" + id;
-				if (i_yapClass != null)
+				if (_class != null)
 				{
-					Db4objects.Db4o.YapStream stream = i_yapClass.GetStream();
+					Db4objects.Db4o.YapStream stream = _class.GetStream();
 					if (stream != null && id > 0)
 					{
 						Db4objects.Db4o.YapWriter writer = stream.ReadWriterByID(stream.GetTransaction(), 
@@ -919,7 +948,7 @@ namespace Db4objects.Db4o
 						Db4objects.Db4o.Inside.Marshall.ObjectHeader oh = new Db4objects.Db4o.Inside.Marshall.ObjectHeader
 							(stream, writer);
 						Db4objects.Db4o.YapClass yc = oh.YapClass();
-						if (yc != i_yapClass)
+						if (yc != _class)
 						{
 							str += "\nYapClass corruption";
 						}

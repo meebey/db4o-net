@@ -110,7 +110,6 @@ namespace Db4objects.Db4o
 				if (stopSession)
 				{
 					FreePrefetchedPointers();
-					i_entryCounter++;
 					try
 					{
 						Write(true);
@@ -120,7 +119,6 @@ namespace Db4objects.Db4o
 						FatalException(t);
 					}
 					base.Close2();
-					i_entryCounter--;
 					Db4objects.Db4o.Db4oFactory.SessionStopped(i_session);
 					lock (i_fileLock)
 					{

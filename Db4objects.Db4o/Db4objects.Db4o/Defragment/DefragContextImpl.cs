@@ -69,8 +69,7 @@ namespace Db4objects.Db4o.Defragment
 			, Db4objects.Db4o.Defragment.IDefragmentListener listener)
 		{
 			_listener = listener;
-			Db4objects.Db4o.Config.IConfiguration sourceConfig = Db4objects.Db4o.Db4oFactory.
-				NewConfiguration();
+			Db4objects.Db4o.Config.IConfiguration sourceConfig = defragConfig.Db4oConfig();
 			sourceConfig.WeakReferences(false);
 			sourceConfig.FlushFileBuffers(false);
 			sourceConfig.ReadOnly(true);
@@ -85,7 +84,7 @@ namespace Db4objects.Db4o.Defragment
 		{
 			new Sharpen.IO.File(fileName).Delete();
 			return (Db4objects.Db4o.YapFile)Db4objects.Db4o.Db4oFactory.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig
-				.Db4oConfig(), fileName).Ext();
+				.VanillaDb4oConfig(), fileName).Ext();
 		}
 
 		public virtual int MappedID(int oldID, int defaultID)

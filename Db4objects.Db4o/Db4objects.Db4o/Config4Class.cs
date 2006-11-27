@@ -28,9 +28,6 @@ namespace Db4objects.Db4o
 		private static readonly Db4objects.Db4o.Foundation.KeySpec MAXIMUM_ACTIVATION_DEPTH
 			 = new Db4objects.Db4o.Foundation.KeySpec(0);
 
-		private static readonly Db4objects.Db4o.Foundation.KeySpec METACLASS = new Db4objects.Db4o.Foundation.KeySpec
-			(null);
-
 		private static readonly Db4objects.Db4o.Foundation.KeySpec MINIMUM_ACTIVATION_DEPTH
 			 = new Db4objects.Db4o.Foundation.KeySpec(0);
 
@@ -323,11 +320,6 @@ namespace Db4objects.Db4o
 		internal virtual void MaintainMetaClass(bool flag)
 		{
 			_config.Put(MAINTAIN_METACLASS, flag);
-		}
-
-		internal virtual Db4objects.Db4o.MetaClass MetaClass()
-		{
-			return (Db4objects.Db4o.MetaClass)_config.Get(METACLASS);
 		}
 
 		internal virtual bool StaticFieldValuesArePersisted()

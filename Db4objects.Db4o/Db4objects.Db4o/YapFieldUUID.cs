@@ -162,8 +162,9 @@ namespace Db4objects.Db4o
 			{
 				stream.Activate2(a_trans, db, 2);
 			}
-			a_yapObject.i_virtualAttributes.i_database = db;
-			a_yapObject.i_virtualAttributes.i_uuid = a_bytes.ReadLong();
+			Db4objects.Db4o.VirtualAttributes va = a_yapObject.VirtualAttributes();
+			va.i_database = db;
+			va.i_uuid = a_bytes.ReadLong();
 			stream.ShowInternalClasses(false);
 		}
 
@@ -179,7 +180,7 @@ namespace Db4objects.Db4o
 			Db4objects.Db4o.Transaction trans = a_bytes.GetTransaction();
 			bool indexEntry = a_new && stream.MaintainsIndices();
 			int dbID = 0;
-			Db4objects.Db4o.VirtualAttributes attr = a_yapObject.i_virtualAttributes;
+			Db4objects.Db4o.VirtualAttributes attr = a_yapObject.VirtualAttributes();
 			bool linkToDatabase = !a_migrating;
 			if (attr != null && attr.i_database == null)
 			{

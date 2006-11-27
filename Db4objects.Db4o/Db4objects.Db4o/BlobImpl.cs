@@ -8,6 +8,7 @@ namespace Db4objects.Db4o
 	/// Transfer of blobs to and from the db4o system,
 	/// if users use the Blob Db4oType.
 	/// </remarks>
+	/// <moveto>com.db4o.inside.blobs</moveto>
 	/// <exclude></exclude>
 	public class BlobImpl : Db4objects.Db4o.Types.IBlob, Sharpen.Lang.ICloneable, Db4objects.Db4o.IDb4oTypeImpl
 	{

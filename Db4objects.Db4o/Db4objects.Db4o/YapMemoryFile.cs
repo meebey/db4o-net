@@ -44,7 +44,6 @@ namespace Db4objects.Db4o
 
 		protected override bool Close2()
 		{
-			i_entryCounter++;
 			try
 			{
 				Write(true);
@@ -54,7 +53,6 @@ namespace Db4objects.Db4o
 				FatalException(t);
 			}
 			base.Close2();
-			i_entryCounter--;
 			if (i_closed == false)
 			{
 				byte[] temp = new byte[i_length];

@@ -53,5 +53,10 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			return _server;
 		}
+
+		public override Db4objects.Db4o.YapFile FileSession()
+		{
+			return (Db4objects.Db4o.YapFile)_server.Ext().ObjectContainer();
+		}
 	}
 }

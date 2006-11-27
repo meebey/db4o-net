@@ -258,7 +258,7 @@ namespace Db4objects.Db4o.CS
 				.ID_LIST)).ReadLong();
 		}
 
-		public sealed override bool Delete5(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject
+		public sealed override bool Delete4(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject
 			 yo, int a_cascade, bool userCall)
 		{
 			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.DELETE.GetWriterForInts(i_trans, new int
@@ -321,7 +321,7 @@ namespace Db4objects.Db4o.CS
 		{
 			try
 			{
-				return (Db4objects.Db4o.CS.Messages.Msg)messageQueueLock.Run(new _AnonymousInnerClass316
+				return (Db4objects.Db4o.CS.Messages.Msg)messageQueueLock.Run(new _AnonymousInnerClass314
 					(this));
 			}
 			catch (System.Exception ex)
@@ -331,9 +331,9 @@ namespace Db4objects.Db4o.CS
 			}
 		}
 
-		private sealed class _AnonymousInnerClass316 : Db4objects.Db4o.Foundation.IClosure4
+		private sealed class _AnonymousInnerClass314 : Db4objects.Db4o.Foundation.IClosure4
 		{
-			public _AnonymousInnerClass316(YapClient _enclosing)
+			public _AnonymousInnerClass314(YapClient _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -708,7 +708,6 @@ namespace Db4objects.Db4o.CS
 		private void ReReadAll(Db4objects.Db4o.Config.IConfiguration config)
 		{
 			remainingIDs = 0;
-			Initialize0();
 			Initialize1(config);
 			InitializeTransactions();
 			ReadThis();

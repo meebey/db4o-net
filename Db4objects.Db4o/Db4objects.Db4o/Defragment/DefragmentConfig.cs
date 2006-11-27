@@ -16,6 +16,8 @@ namespace Db4objects.Db4o.Defragment
 
 		private Db4objects.Db4o.Defragment.IContextIDMapping _mapping;
 
+		private Db4objects.Db4o.Config.IConfiguration _config;
+
 		private Db4objects.Db4o.Defragment.IStoredClassFilter _storedClassFilter = null;
 
 		private bool _forceBackupDelete = false;
@@ -74,6 +76,20 @@ namespace Db4objects.Db4o.Defragment
 			_forceBackupDelete = forceBackupDelete;
 		}
 
+		public virtual Db4objects.Db4o.Config.IConfiguration Db4oConfig()
+		{
+			if (_config == null)
+			{
+				_config = VanillaDb4oConfig();
+			}
+			return _config;
+		}
+
+		public virtual void Db4oConfig(Db4objects.Db4o.Config.IConfiguration config)
+		{
+			_config = config;
+		}
+
 		internal class NullFilter : Db4objects.Db4o.Defragment.IStoredClassFilter
 		{
 			public virtual bool Accept(Db4objects.Db4o.Ext.IStoredClass storedClass)
@@ -85,7 +101,7 @@ namespace Db4objects.Db4o.Defragment
 		private static readonly Db4objects.Db4o.Defragment.IStoredClassFilter NULLFILTER = 
 			new Db4objects.Db4o.Defragment.DefragmentConfig.NullFilter();
 
-		public static Db4objects.Db4o.Config.IConfiguration Db4oConfig()
+		public static Db4objects.Db4o.Config.IConfiguration VanillaDb4oConfig()
 		{
 			Db4objects.Db4o.Config.IConfiguration config = Db4objects.Db4o.Db4oFactory.NewConfiguration
 				();

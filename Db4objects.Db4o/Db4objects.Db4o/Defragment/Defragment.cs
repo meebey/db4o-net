@@ -145,14 +145,14 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.MoveNext())
 			{
 				int origID = ((int)unindexedIDs.Current);
-				Db4objects.Db4o.ReaderPair.ProcessCopy(context, origID, new _AnonymousInnerClass142
+				Db4objects.Db4o.ReaderPair.ProcessCopy(context, origID, new _AnonymousInnerClass141
 					(), true);
 			}
 		}
 
-		private sealed class _AnonymousInnerClass142 : Db4objects.Db4o.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass141 : Db4objects.Db4o.ISlotCopyHandler
 		{
-			public _AnonymousInnerClass142()
+			public _AnonymousInnerClass141()
 			{
 			}
 
@@ -166,7 +166,8 @@ namespace Db4objects.Db4o.Defragment
 			)
 		{
 			Db4objects.Db4o.YapFile targetDB = (Db4objects.Db4o.YapFile)Db4objects.Db4o.Db4oFactory
-				.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig.Db4oConfig(), targetFile);
+				.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig.VanillaDb4oConfig(), targetFile
+				);
 			try
 			{
 				Db4objects.Db4o.Ext.Db4oDatabase identity = (Db4objects.Db4o.Ext.Db4oDatabase)targetDB
@@ -248,13 +249,13 @@ namespace Db4objects.Db4o.Defragment
 			 command)
 		{
 			bool withStringIndex = WithFieldIndex(curClass);
-			context.TraverseAll(curClass, new _AnonymousInnerClass232(command, context, curClass
+			context.TraverseAll(curClass, new _AnonymousInnerClass231(command, context, curClass
 				, withStringIndex));
 		}
 
-		private sealed class _AnonymousInnerClass232 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass231 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass232(Db4objects.Db4o.Defragment.IPassCommand command, Db4objects.Db4o.Defragment.DefragContextImpl
+			public _AnonymousInnerClass231(Db4objects.Db4o.Defragment.IPassCommand command, Db4objects.Db4o.Defragment.DefragContextImpl
 				 context, Db4objects.Db4o.YapClass curClass, bool withStringIndex)
 			{
 				this.command = command;

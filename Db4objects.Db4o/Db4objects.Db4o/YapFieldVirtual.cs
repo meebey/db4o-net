@@ -65,10 +65,7 @@ namespace Db4objects.Db4o
 			 mf, Db4objects.Db4o.YapObject a_yapObject, object a_onObject, Db4objects.Db4o.YapWriter
 			 a_bytes)
 		{
-			if (a_yapObject.i_virtualAttributes == null)
-			{
-				a_yapObject.i_virtualAttributes = new Db4objects.Db4o.VirtualAttributes();
-			}
+			a_yapObject.ProduceVirtualAttributes();
 			Instantiate1(a_bytes.GetTransaction(), a_yapObject, a_bytes);
 		}
 
@@ -97,7 +94,7 @@ namespace Db4objects.Db4o
 				if (stream._replicationCallState == Db4objects.Db4o.YapConst.OLD)
 				{
 					migrating = true;
-					if (a_yapObject.i_virtualAttributes == null)
+					if (a_yapObject.VirtualAttributes() == null)
 					{
 						object obj = a_yapObject.GetObject();
 						Db4objects.Db4o.YapObject migrateYapObject = null;
@@ -110,15 +107,16 @@ namespace Db4objects.Db4o
 								migrateYapObject = mgc.Peer(stream).GetYapObject(obj);
 							}
 						}
-						if (migrateYapObject != null && migrateYapObject.i_virtualAttributes != null && migrateYapObject
-							.i_virtualAttributes.i_database != null)
+						if (migrateYapObject != null)
 						{
-							migrating = true;
-							a_yapObject.i_virtualAttributes = (Db4objects.Db4o.VirtualAttributes)migrateYapObject
-								.i_virtualAttributes.ShallowClone();
-							if (migrateYapObject.i_virtualAttributes.i_database != null)
+							Db4objects.Db4o.VirtualAttributes migrateAttributes = migrateYapObject.VirtualAttributes
+								();
+							if (migrateAttributes != null && migrateAttributes.i_database != null)
 							{
-								migrateYapObject.i_virtualAttributes.i_database.Bind(trans);
+								migrating = true;
+								a_yapObject.SetVirtualAttributes((Db4objects.Db4o.VirtualAttributes)migrateAttributes
+									.ShallowClone());
+								migrateAttributes.i_database.Bind(trans);
 							}
 						}
 					}
@@ -133,20 +131,16 @@ namespace Db4objects.Db4o
 					if (@ref != null)
 					{
 						migrating = true;
-						if (a_yapObject.i_virtualAttributes == null)
-						{
-							a_yapObject.i_virtualAttributes = new Db4objects.Db4o.VirtualAttributes();
-						}
-						Db4objects.Db4o.VirtualAttributes va = a_yapObject.i_virtualAttributes;
+						Db4objects.Db4o.VirtualAttributes va = a_yapObject.ProduceVirtualAttributes();
 						va.i_version = @ref.Version();
 						va.i_uuid = @ref.LongPart();
 						va.i_database = @ref.SignaturePart();
 					}
 				}
 			}
-			if (a_yapObject.i_virtualAttributes == null)
+			if (a_yapObject.VirtualAttributes() == null)
 			{
-				a_yapObject.i_virtualAttributes = new Db4objects.Db4o.VirtualAttributes();
+				a_yapObject.ProduceVirtualAttributes();
 				migrating = false;
 			}
 			Marshall1(a_yapObject, a_bytes, migrating, a_new);

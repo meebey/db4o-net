@@ -1,156 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject>
-    <ECSHARP
-        ProjectType = "Local"
-        ProductVersion = "7.10.3077"
-        SchemaVersion = "1.0"
-        ProjectGuid = "{5C23E36F-399B-4312-AA6D-86829A85B46B}"
-    >
+    <ECSHARP ProductVersion="7.10.3077" ProjectGuid="{5C23E36F-399B-4312-AA6D-86829A85B46B}" ProjectType="Local" SchemaVersion="1.0">
         <Build>
-            <Settings
-                ApplicationIcon = ""
-                AssemblyKeyContainerName = ""
-                AssemblyName = "Db4objects.Db4o.Tools"
-                AssemblyOriginatorKeyFile = ""
-                DelaySign = "false"
-                OutputType = "Library"
-                OutputFileFolder = "\Program Files\Db4objects.Db4o.Tools-CF-2003"
-                RootNamespace = "Db4objects.Db4o.Tools"
-                StartupObject = ""
-            >
-                <Platform Name = "Pocket PC" />
-                <Config
-                    Name = "Debug|Pocket PC"
-                    AllowUnsafeBlocks = "false"
-                    BaseAddress = "0"
-                    CheckForOverflowUnderflow = "false"
-                    ConfigurationOverrideFile = ""
-                    DefineConstants = "CF_1_0"
-                    DocumentationFile = ""
-                    DebugSymbols = "true"
-                    FileAlignment = "4096"
-                    IncrementalBuild = "false"
-                    Optimize = "false"
-                    OutputPath = "bin\Debug\"
-                    RegisterForComInterop = "false"
-                    RemoveIntegerChecks = "false"
-                    TreatWarningsAsErrors = "false"
-                    WarningLevel = "4"
-                />
-                <Config
-                    Name = "Release|Pocket PC"
-                    AllowUnsafeBlocks = "false"
-                    BaseAddress = "0"
-                    CheckForOverflowUnderflow = "false"
-                    ConfigurationOverrideFile = ""
-                    DefineConstants = "CF_1_0"
-                    DocumentationFile = ""
-                    DebugSymbols = "false"
-                    FileAlignment = "4096"
-                    IncrementalBuild = "false"
-                    Optimize = "true"
-                    OutputPath = "bin\Release\"
-                    RegisterForComInterop = "false"
-                    RemoveIntegerChecks = "false"
-                    TreatWarningsAsErrors = "false"
-                    WarningLevel = "4"
-                />
+            <Settings ApplicationIcon="" AssemblyKeyContainerName="" AssemblyName="Db4objects.Db4o.Tools" AssemblyOriginatorKeyFile="" DelaySign="false" OutputFileFolder="\Program Files\Db4objects.Db4o.Tools-CF-2003" OutputType="Library" RootNamespace="Db4objects.Db4o.Tools" StartupObject="">
+                <Platform Name="Pocket PC"/>
+                <Config AllowUnsafeBlocks="false" BaseAddress="0" CheckForOverflowUnderflow="false" ConfigurationOverrideFile="" DebugSymbols="true" DefineConstants="CF_1_0" DocumentationFile="" FileAlignment="4096" IncrementalBuild="false" Name="Debug|Pocket PC" Optimize="false" OutputPath="bin\Debug\" RegisterForComInterop="false" RemoveIntegerChecks="false" TreatWarningsAsErrors="false" WarningLevel="4"/>
+                <Config AllowUnsafeBlocks="false" BaseAddress="0" CheckForOverflowUnderflow="false" ConfigurationOverrideFile="" DebugSymbols="false" DefineConstants="CF_1_0" DocumentationFile="" FileAlignment="4096" IncrementalBuild="false" Name="Release|Pocket PC" Optimize="true" OutputPath="bin\Release\" RegisterForComInterop="false" RemoveIntegerChecks="false" TreatWarningsAsErrors="false" WarningLevel="4"/>
             </Settings>
             <References>
-                <Reference
-                    Platform = "Pocket PC"
-                    Name = "MSCorLib"
-                    AssemblyName = "mscorlib"
-                    Private = "False"
-                />
-                <Reference
-                    Platform = "Pocket PC"
-                    Name = "System"
-                    AssemblyName = "System"
-                    Private = "False"
-                />
-                <Reference
-                    Platform = "Pocket PC"
-                    Name = "System.XML"
-                    AssemblyName = "System.Xml"
-                    Private = "False"
-                />
-                <Reference
-                    Platform = "Pocket PC"
-                    Name = "Db4objects.Db4o-CF-2003"
-                    Project = "{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}"
-                    Package = "{20D4826A-C6FA-45DB-90F4-C717570B9F32}"
-                />
-                <Reference
-                    Platform = "Pocket PC"
-                    Name = "Cecil.FlowAnalysis"
-                    AssemblyName = "Cecil.FlowAnalysis"
-                />
-                <Reference
-                    Platform = "Pocket PC"
-                    Name = "Mono.Cecil"
-                    AssemblyName = "Mono.Cecil"
-                />
-                <Reference
-                    Platform = "Pocket PC-Designer"
-                    Name = "System.CF.Design"
-                    AssemblyName = "System.CF.Design"
-                    Private = "False"
-                />
-                <Reference
-                    Platform = "Pocket PC-Designer"
-                    Name = "System.CF.Design.UI"
-                    AssemblyName = "System.CF.Design.UI"
-                    Private = "False"
-                />
-                <Reference
-                    Platform = "Pocket PC-Designer"
-                    Name = "System.CF.Windows.Forms"
-                    AssemblyName = "System.CF.Windows.Forms"
-                    Private = "False"
-                />
-                <Reference
-                    Platform = "Pocket PC-Designer"
-                    Name = "System.CF.Drawing"
-                    AssemblyName = "System.CF.Drawing"
-                    Private = "False"
-                />
-                <Reference
-                    Platform = "Pocket PC-Designer"
-                    Name = "System"
-                    AssemblyName = "System"
-                    Private = "False"
-                />
+                <Reference AssemblyName="mscorlib" Name="MSCorLib" Platform="Pocket PC" Private="False"/>
+                <Reference AssemblyName="System" Name="System" Platform="Pocket PC" Private="False"/>
+                <Reference AssemblyName="System.Xml" Name="System.XML" Platform="Pocket PC" Private="False"/>
+                <Reference Name="Db4objects.Db4o-CF-2003" Package="{20D4826A-C6FA-45DB-90F4-C717570B9F32}" Platform="Pocket PC" Project="{9A7DBDE6-3B73-4A63-B3BB-01D989DC44EA}"/>
+                <Reference AssemblyName="Cecil.FlowAnalysis" Name="Cecil.FlowAnalysis" Platform="Pocket PC"/>
+                <Reference AssemblyName="Mono.Cecil" Name="Mono.Cecil" Platform="Pocket PC"/>
+                <Reference AssemblyName="System.CF.Design" Name="System.CF.Design" Platform="Pocket PC-Designer" Private="False"/>
+                <Reference AssemblyName="System.CF.Design.UI" Name="System.CF.Design.UI" Platform="Pocket PC-Designer" Private="False"/>
+                <Reference AssemblyName="System.CF.Windows.Forms" Name="System.CF.Windows.Forms" Platform="Pocket PC-Designer" Private="False"/>
+                <Reference AssemblyName="System.CF.Drawing" Name="System.CF.Drawing" Platform="Pocket PC-Designer" Private="False"/>
+                <Reference AssemblyName="System" Name="System" Platform="Pocket PC-Designer" Private="False"/>
             </References>
         </Build>
         <Files>
-            <Include>
-                <File
-                    RelPath = "Db4objects.Db4o.Tools\Defragment.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Db4objects.Db4o.Tools\Statistics.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Db4objects.Db4o.Tools\NativeQueries\QueryExpressionBuilder.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Db4objects.Db4o.Tools\NativeQueries\UnsupportedPredicateException.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Properties\AssemblyInfo.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-            </Include>
+            <Include><File BuildAction="Compile" RelPath="Db4objects.Db4o.Tools\Defragment.cs" SubType="Code"/><File BuildAction="Compile" RelPath="Db4objects.Db4o.Tools\NativeQueries\QueryExpressionBuilder.cs" SubType="Code"/><File BuildAction="Compile" RelPath="Db4objects.Db4o.Tools\NativeQueries\UnsupportedPredicateException.cs" SubType="Code"/><File BuildAction="Compile" RelPath="Db4objects.Db4o.Tools\Statistics.cs" SubType="Code"/><File BuildAction="Compile" RelPath="Properties\AssemblyInfo.cs" SubType="Code"/></Include>
         </Files>
     </ECSHARP>
 </VisualStudioProject>
-

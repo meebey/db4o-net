@@ -243,7 +243,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_objectID == 0)
 			{
-				i_objectID = i_trans.Stream().GetID1(i_trans, i_object);
+				i_objectID = i_trans.Stream().GetID1(i_object);
 				if (i_objectID == 0)
 				{
 					i_objectID = -1;

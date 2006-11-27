@@ -1,8 +1,23 @@
 namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
+	/// <renameto>com.db4o.inside.PersistentBase</renameto>
 	public abstract class YapMeta
 	{
+		/// <moveto>
+		/// new com.db4o.inside.Persistent interface
+		/// all four of the following abstract methods
+		/// </moveto>
+		public abstract byte GetIdentifier();
+
+		public abstract int OwnLength();
+
+		public abstract void ReadThis(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapReader
+			 reader);
+
+		public abstract void WriteThis(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapReader
+			 writer);
+
 		protected int i_id;
 
 		protected int i_state = 2;
@@ -56,8 +71,6 @@ namespace Db4objects.Db4o
 			return i_id;
 		}
 
-		public abstract byte GetIdentifier();
-
 		public bool IsActive()
 		{
 			return BitIsTrue(Db4objects.Db4o.YapConst.ACTIVE);
@@ -69,7 +82,7 @@ namespace Db4objects.Db4o
 				.CLEAN));
 		}
 
-		public virtual bool IsNew()
+		public bool IsNew()
 		{
 			return i_id == 0;
 		}
@@ -83,8 +96,6 @@ namespace Db4objects.Db4o
 		{
 			BitFalse(Db4objects.Db4o.YapConst.CACHED_DIRTY);
 		}
-
-		public abstract int OwnLength();
 
 		public virtual void Read(Db4objects.Db4o.Transaction trans)
 		{
@@ -105,9 +116,6 @@ namespace Db4objects.Db4o
 			{
 			}
 		}
-
-		public abstract void ReadThis(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapReader
-			 reader);
 
 		public virtual void SetID(int a_id)
 		{
@@ -188,8 +196,5 @@ namespace Db4objects.Db4o
 			Write(trans);
 			writer.WriteInt(GetID());
 		}
-
-		public abstract void WriteThis(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapReader
-			 writer);
 	}
 }

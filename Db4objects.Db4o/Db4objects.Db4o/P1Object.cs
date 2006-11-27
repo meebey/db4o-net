@@ -22,16 +22,17 @@ namespace Db4objects.Db4o
 
 		public virtual void Activate(object a_obj, int a_depth)
 		{
-			if (i_trans != null)
+			if (i_trans == null)
 			{
-				if (a_depth < 0)
-				{
-					i_trans.Stream().Activate1(i_trans, a_obj);
-				}
-				else
-				{
-					i_trans.Stream().Activate1(i_trans, a_obj, a_depth);
-				}
+				return;
+			}
+			if (a_depth < 0)
+			{
+				Stream().Activate1(i_trans, a_obj);
+			}
+			else
+			{
+				Stream().Activate1(i_trans, a_obj, a_depth);
 			}
 		}
 
@@ -52,21 +53,22 @@ namespace Db4objects.Db4o
 
 		public virtual void CheckActive()
 		{
-			if (i_trans != null)
+			if (i_trans == null)
 			{
+				return;
+			}
+			if (i_yapObject == null)
+			{
+				i_yapObject = Stream().GetYapObject(this);
 				if (i_yapObject == null)
 				{
-					i_yapObject = i_trans.Stream().GetYapObject(this);
-					if (i_yapObject == null)
-					{
-						i_trans.Stream().Set(this);
-						i_yapObject = i_trans.Stream().GetYapObject(this);
-					}
+					Stream().Set(this);
+					i_yapObject = Stream().GetYapObject(this);
 				}
-				if (ValidYapObject())
-				{
-					i_yapObject.Activate(i_trans, this, ActivationDepth(), false);
-				}
+			}
+			if (ValidYapObject())
+			{
+				i_yapObject.Activate(i_trans, this, ActivationDepth(), false);
 			}
 		}
 
@@ -85,16 +87,17 @@ namespace Db4objects.Db4o
 
 		internal virtual void Delete()
 		{
-			if (i_trans != null)
+			if (i_trans == null)
 			{
-				if (i_yapObject == null)
-				{
-					i_yapObject = i_trans.Stream().GetYapObject(this);
-				}
-				if (ValidYapObject())
-				{
-					i_trans.Stream().Delete3(i_trans, i_yapObject, this, 0, false);
-				}
+				return;
+			}
+			if (i_yapObject == null)
+			{
+				i_yapObject = Stream().GetYapObject(this);
+			}
+			if (ValidYapObject())
+			{
+				Stream().Delete2(i_trans, i_yapObject, this, 0, false);
 			}
 		}
 
@@ -102,7 +105,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_trans != null)
 			{
-				i_trans.Stream().Delete(a_obj);
+				Stream().Delete(a_obj);
 			}
 		}
 
@@ -112,7 +115,7 @@ namespace Db4objects.Db4o
 			{
 				return 0;
 			}
-			return i_trans.Stream().GetID(a_obj);
+			return Stream().GetID(a_obj);
 		}
 
 		protected virtual Db4objects.Db4o.Transaction GetTrans()
@@ -185,7 +188,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_trans != null)
 			{
-				i_trans.Stream().SetInternal(i_trans, a_obj, true);
+				Stream().SetInternal(i_trans, a_obj, true);
 			}
 		}
 
@@ -199,28 +202,29 @@ namespace Db4objects.Db4o
 		{
 			if (i_trans != null)
 			{
-				i_trans.Stream().CheckClosed();
-				return i_trans.Stream().Lock();
+				Stream().CheckClosed();
+				return Stream().Lock();
 			}
 			return this;
 		}
 
 		public virtual void Store(int a_depth)
 		{
-			if (i_trans != null)
+			if (i_trans == null)
 			{
+				return;
+			}
+			if (i_yapObject == null)
+			{
+				i_yapObject = i_trans.Stream().GetYapObject(this);
 				if (i_yapObject == null)
 				{
+					i_trans.Stream().SetInternal(i_trans, this, true);
 					i_yapObject = i_trans.Stream().GetYapObject(this);
-					if (i_yapObject == null)
-					{
-						i_trans.Stream().SetInternal(i_trans, this, true);
-						i_yapObject = i_trans.Stream().GetYapObject(this);
-						return;
-					}
+					return;
 				}
-				Update(a_depth);
 			}
+			Update(a_depth);
 		}
 
 		internal virtual void Update()
@@ -232,10 +236,18 @@ namespace Db4objects.Db4o
 		{
 			if (ValidYapObject())
 			{
-				i_trans.Stream().BeginEndSet(i_trans);
-				i_yapObject.WriteUpdate(i_trans, depth);
-				i_trans.Stream().CheckStillToSet();
-				i_trans.Stream().BeginEndSet(i_trans);
+				Stream().BeginEndSet(i_trans);
+				Stream().BeginTopLevelCall();
+				try
+				{
+					i_yapObject.WriteUpdate(i_trans, depth);
+					Stream().CheckStillToSet();
+					Stream().BeginEndSet(i_trans);
+				}
+				finally
+				{
+					Stream().EndTopLevelCall();
+				}
 			}
 		}
 
@@ -249,14 +261,19 @@ namespace Db4objects.Db4o
 			if (ValidYapObject())
 			{
 				i_yapObject.WriteUpdate(i_trans, depth);
-				i_trans.Stream().RememberJustSet(i_yapObject.GetID());
-				i_trans.Stream().CheckStillToSet();
+				Stream().FlagAsHandled(i_yapObject);
+				Stream().CheckStillToSet();
 			}
 		}
 
 		private bool ValidYapObject()
 		{
 			return (i_trans != null) && (i_yapObject != null) && (i_yapObject.GetID() > 0);
+		}
+
+		private Db4objects.Db4o.YapStream Stream()
+		{
+			return i_trans.Stream();
 		}
 	}
 }

@@ -671,12 +671,12 @@ namespace Db4objects.Db4o.Inside.Btree
 
 		internal object Key(int index)
 		{
-			Db4objects.Db4o.Inside.Btree.BTreePatch patch = KeyPatch(index);
-			if (patch == null)
+			object obj = _keys[index];
+			if (obj is Db4objects.Db4o.Inside.Btree.BTreePatch)
 			{
-				return _keys[index];
+				return ((Db4objects.Db4o.Inside.Btree.BTreePatch)obj).GetObject();
 			}
-			return patch.GetObject();
+			return obj;
 		}
 
 		internal object Key(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapReader 

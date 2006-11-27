@@ -51,6 +51,8 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.DTrace ADD_TO_CLASS_INDEX;
 
+		public static Db4objects.Db4o.DTrace BEGIN_TOP_LEVEL_CALL;
+
 		public static Db4objects.Db4o.DTrace BIND;
 
 		public static Db4objects.Db4o.DTrace BTREE_NODE_COMMIT_OR_ROLLBACK;
@@ -72,6 +74,8 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.DTrace DELETE;
 
 		public static Db4objects.Db4o.DTrace DONOTINCLUDE;
+
+		public static Db4objects.Db4o.DTrace END_TOP_LEVEL_CALL;
 
 		public static Db4objects.Db4o.DTrace EVALUATE_SELF;
 

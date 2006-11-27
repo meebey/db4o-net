@@ -23,7 +23,7 @@ namespace Db4objects.Db4o
 			_offset = offset;
 		}
 
-		public virtual void Append(byte a_byte)
+		public void Append(byte a_byte)
 		{
 			_buffer[_offset++] = a_byte;
 		}
@@ -193,24 +193,18 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		public virtual void WriteBitMap(Db4objects.Db4o.Foundation.BitMap4 nullBitMap)
+		public void WriteBitMap(Db4objects.Db4o.Foundation.BitMap4 nullBitMap)
 		{
 			nullBitMap.WriteTo(_buffer, _offset);
 			_offset += nullBitMap.MarshalledLength();
 		}
 
-		public virtual void WriteEncrypt(Db4objects.Db4o.YapFile file, int address, int addressOffset
+		public void WriteEncrypt(Db4objects.Db4o.YapFile file, int address, int addressOffset
 			)
 		{
 			file.i_handlers.Encrypt(this);
-			Write(file, address, addressOffset);
-			file.i_handlers.Decrypt(this);
-		}
-
-		public virtual void Write(Db4objects.Db4o.YapFile file, int address, int addressOffset
-			)
-		{
 			file.WriteBytes(this, address, addressOffset);
+			file.i_handlers.Decrypt(this);
 		}
 
 		public virtual void WriteEnd()

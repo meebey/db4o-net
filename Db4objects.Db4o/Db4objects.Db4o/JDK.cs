@@ -3,14 +3,14 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public class JDK
 	{
-		internal virtual Sharpen.Lang.Thread AddShutdownHook(Sharpen.Lang.IRunnable a_runnable
+		internal virtual Sharpen.Lang.Thread AddShutdownHook(Sharpen.Lang.IRunnable runnable
 			)
 		{
 			return null;
 		}
 
 		internal virtual Db4objects.Db4o.Types.IDb4oCollections Collections(Db4objects.Db4o.YapStream
-			 a_stream)
+			 session)
 		{
 			return null;
 		}
@@ -30,8 +30,8 @@ namespace Db4objects.Db4o
 			return obj;
 		}
 
-		internal virtual object CreateYapRef(object a_queue, Db4objects.Db4o.YapObject a_yapObject
-			, object a_object)
+		internal virtual object CreateYapRef(object queue, Db4objects.Db4o.YapObject @ref
+			, object obj)
 		{
 			return null;
 		}
@@ -49,8 +49,8 @@ namespace Db4objects.Db4o
 			return classConfig;
 		}
 
-		internal virtual void ForEachCollectionElement(object a_object, Db4objects.Db4o.Foundation.IVisitor4
-			 a_visitor)
+		internal virtual void ForEachCollectionElement(object obj, Db4objects.Db4o.Foundation.IVisitor4
+			 visitor)
 		{
 		}
 
@@ -64,13 +64,12 @@ namespace Db4objects.Db4o
 			return null;
 		}
 
-		internal virtual object GetYapRefObject(object a_object)
+		internal virtual object GetYapRefObject(object obj)
 		{
 			return null;
 		}
 
-		internal virtual bool IsCollectionTranslator(Db4objects.Db4o.Config4Class a_config
-			)
+		internal virtual bool IsCollectionTranslator(Db4objects.Db4o.Config4Class config)
 		{
 			return false;
 		}
@@ -106,8 +105,8 @@ namespace Db4objects.Db4o
 			return false;
 		}
 
-		internal virtual void PollReferenceQueue(Db4objects.Db4o.YapStream a_stream, object
-			 a_referenceQueue)
+		internal virtual void PollReferenceQueue(Db4objects.Db4o.YapStream session, object
+			 referenceQueue)
 		{
 		}
 
@@ -116,7 +115,7 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		internal virtual void RemoveShutdownHook(Sharpen.Lang.Thread a_thread)
+		internal virtual void RemoveShutdownHook(Sharpen.Lang.Thread thread)
 		{
 		}
 
@@ -132,7 +131,7 @@ namespace Db4objects.Db4o
 				);
 		}
 
-		internal virtual void SetAccessible(object a_accessible)
+		internal virtual void SetAccessible(object accessibleObject)
 		{
 		}
 

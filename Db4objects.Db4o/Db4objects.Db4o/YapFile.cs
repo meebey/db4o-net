@@ -56,8 +56,6 @@ namespace Db4objects.Db4o
 
 		public override void Commit1()
 		{
-			CheckClosed();
-			i_entryCounter++;
 			try
 			{
 				Write(false);
@@ -66,7 +64,6 @@ namespace Db4objects.Db4o
 			{
 				FatalException(t);
 			}
-			i_entryCounter--;
 		}
 
 		internal virtual void ConfigureNewFile()
@@ -117,7 +114,7 @@ namespace Db4objects.Db4o
 
 		public Db4objects.Db4o.Inside.Btree.BTree CreateBTreeClassIndex(int id)
 		{
-			return new Db4objects.Db4o.Inside.Btree.BTree(i_trans, id, new Db4objects.Db4o.YInt
+			return new Db4objects.Db4o.Inside.Btree.BTree(i_trans, id, new Db4objects.Db4o.PrimitiveIntHandler
 				(this));
 		}
 
@@ -138,7 +135,7 @@ namespace Db4objects.Db4o
 			return new Db4objects.Db4o.Inside.Query.HybridQueryResult(trans, mode);
 		}
 
-		public sealed override bool Delete5(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject
+		public sealed override bool Delete4(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject
 			 yo, int a_cascade, bool userCall)
 		{
 			int id = yo.GetID();
@@ -197,14 +194,14 @@ namespace Db4objects.Db4o
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _AnonymousInnerClass208(this));
+				i_prefetchedIDs.Traverse(new _AnonymousInnerClass205(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _AnonymousInnerClass208 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass205 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass208(YapFile _enclosing)
+			public _AnonymousInnerClass205(YapFile _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -238,7 +235,10 @@ namespace Db4objects.Db4o
 
 		public virtual void GenerateNewIdentity()
 		{
-			SetIdentity(Db4objects.Db4o.Ext.Db4oDatabase.Generate());
+			lock (i_lock)
+			{
+				SetIdentity(Db4objects.Db4o.Ext.Db4oDatabase.Generate());
+			}
 		}
 
 		public override Db4objects.Db4o.Inside.Query.AbstractQueryResult GetAll(Db4objects.Db4o.Transaction
@@ -561,16 +561,16 @@ namespace Db4objects.Db4o
 				Db4objects.Db4o.Foundation.Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass558(this, semaphores), ta
+					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass556(this, semaphores), ta
 						);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass558 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass556 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass558(YapFile _enclosing, Db4objects.Db4o.Foundation.Hashtable4
+			public _AnonymousInnerClass556(YapFile _enclosing, Db4objects.Db4o.Foundation.Hashtable4
 				 semaphores)
 			{
 				this._enclosing = _enclosing;
@@ -589,10 +589,7 @@ namespace Db4objects.Db4o
 
 		public sealed override void Rollback1()
 		{
-			CheckClosed();
-			i_entryCounter++;
 			GetTransaction().Rollback();
-			i_entryCounter--;
 		}
 
 		public sealed override void SetDirtyInSystemTransaction(Db4objects.Db4o.YapMeta a_object
@@ -836,13 +833,13 @@ namespace Db4objects.Db4o
 		{
 			Db4objects.Db4o.Foundation.IntArrayList ids = new Db4objects.Db4o.Foundation.IntArrayList
 				();
-			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass785(this, ids));
+			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass780(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _AnonymousInnerClass785 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass780 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass785(YapFile _enclosing, Db4objects.Db4o.Foundation.IntArrayList
+			public _AnonymousInnerClass780(YapFile _enclosing, Db4objects.Db4o.Foundation.IntArrayList
 				 ids)
 			{
 				this._enclosing = _enclosing;

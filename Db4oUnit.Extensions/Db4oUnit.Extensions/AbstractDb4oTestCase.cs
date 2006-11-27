@@ -129,6 +129,11 @@ namespace Db4oUnit.Extensions
 			return (Db4objects.Db4o.YapStream)Db();
 		}
 
+		protected virtual Db4objects.Db4o.YapFile FileSession()
+		{
+			return Fixture().FileSession();
+		}
+
 		protected virtual Db4objects.Db4o.Transaction Trans()
 		{
 			return Stream().GetTransaction();
@@ -208,12 +213,12 @@ namespace Db4oUnit.Extensions
 
 		protected virtual void DeleteAll(System.Type clazz)
 		{
-			Foreach(clazz, new _AnonymousInnerClass183(this));
+			Foreach(clazz, new _AnonymousInnerClass187(this));
 		}
 
-		private sealed class _AnonymousInnerClass183 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass187 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass183(AbstractDb4oTestCase _enclosing)
+			public _AnonymousInnerClass187(AbstractDb4oTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

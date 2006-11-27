@@ -1,6 +1,7 @@
 namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
+	/// <renameto>com.db4o.inside.Comparable4</renameto>
 	public interface IYapComparable
 	{
 		Db4objects.Db4o.IYapComparable PrepareComparison(object obj);

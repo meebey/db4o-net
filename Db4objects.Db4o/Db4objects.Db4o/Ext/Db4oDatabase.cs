@@ -138,20 +138,20 @@ namespace Db4objects.Db4o.Ext
 			{
 				stream.ShowInternalClasses(true);
 				stream.Set3(trans, this, 2, false);
-				int newID = stream.GetID1(trans, this);
+				int newID = stream.GetID1(this);
 				stream.ShowInternalClasses(false);
 				return newID;
 			}
 			if (stored == this)
 			{
-				return stream.GetID1(trans, this);
+				return stream.GetID1(this);
 			}
 			if (i_uuid == 0)
 			{
 				i_uuid = stored.i_uuid;
 			}
 			stream.ShowInternalClasses(true);
-			int id = stream.GetID1(trans, stored);
+			int id = stream.GetID1(stored);
 			stream.Bind(this, id);
 			stream.ShowInternalClasses(false);
 			return id;

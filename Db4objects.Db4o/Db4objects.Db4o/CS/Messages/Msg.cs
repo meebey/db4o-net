@@ -149,9 +149,6 @@ namespace Db4objects.Db4o.CS.Messages
 		public static readonly Db4objects.Db4o.CS.Messages.MsgD TA_DELETE = new Db4objects.Db4o.CS.Messages.MTaDelete
 			();
 
-		public static readonly Db4objects.Db4o.CS.Messages.MsgD TA_DONT_DELETE = new Db4objects.Db4o.CS.Messages.MTaDontDelete
-			();
-
 		public static readonly Db4objects.Db4o.CS.Messages.MsgD TA_IS_DELETED = new Db4objects.Db4o.CS.Messages.MTaIsDeleted
 			();
 

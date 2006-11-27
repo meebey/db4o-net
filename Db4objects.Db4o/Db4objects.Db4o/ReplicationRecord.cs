@@ -85,7 +85,7 @@ namespace Db4objects.Db4o
 			if (rrA != rrB)
 			{
 				peerB.ShowInternalClasses(true);
-				int id = peerB.GetID1(transB, rrB);
+				int id = peerB.GetID1(rrB);
 				peerB.Bind1(transB, rrA, id);
 				peerB.ShowInternalClasses(false);
 			}

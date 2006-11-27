@@ -5,12 +5,6 @@ namespace Db4objects.Db4o.Inside.Convert.Conversions
 	{
 		public const int VERSION = 6;
 
-		public override void Convert(Db4objects.Db4o.Inside.Convert.ConversionStage.ClassCollectionAvailableStage
-			 stage)
-		{
-			base.Convert(stage);
-		}
-
 		public override void Convert(Db4objects.Db4o.Inside.Convert.ConversionStage.SystemUpStage
 			 stage)
 		{

@@ -406,7 +406,7 @@ namespace Db4objects.Db4o
 
 		public void Write()
 		{
-			Write(File(), i_address, _addressOffset);
+			File().WriteBytes(this, i_address, _addressOffset);
 		}
 
 		public void WriteEmbedded()

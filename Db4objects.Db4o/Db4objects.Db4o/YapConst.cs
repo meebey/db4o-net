@@ -155,12 +155,6 @@ namespace Db4objects.Db4o
 
 		internal static System.Type CLASS_UNVERSIONED;
 
-		internal static System.Type CLASS_METACLASS;
-
-		internal static System.Type CLASS_METAFIELD;
-
-		internal static System.Type CLASS_METAINDEX;
-
 		public static System.Type CLASS_OBJECT;
 
 		internal static System.Type CLASS_OBJECTCONTAINER;
@@ -218,9 +212,6 @@ namespace Db4objects.Db4o
 			CLASS_DB4OTYPEIMPL = typeof(Db4objects.Db4o.IDb4oTypeImpl);
 			CLASS_INTERNAL = typeof(Db4objects.Db4o.IInternal4);
 			CLASS_UNVERSIONED = typeof(Db4objects.Db4o.Types.IUnversioned);
-			CLASS_METACLASS = new Db4objects.Db4o.MetaClass().GetType();
-			CLASS_METAFIELD = new Db4objects.Db4o.MetaField().GetType();
-			CLASS_METAINDEX = new Db4objects.Db4o.MetaIndex().GetType();
 			CLASS_OBJECTCONTAINER = typeof(Db4objects.Db4o.IObjectContainer);
 			CLASS_REPLICATIONRECORD = new Db4objects.Db4o.ReplicationRecord().GetType();
 			CLASS_STATICFIELD = new Db4objects.Db4o.StaticField().GetType();
@@ -229,8 +220,8 @@ namespace Db4objects.Db4o
 			return null;
 		}
 
-		internal static readonly System.Type[] ESSENTIAL_CLASSES = { CLASS_METAINDEX, CLASS_METAFIELD
-			, CLASS_METACLASS, CLASS_STATICFIELD, CLASS_STATICCLASS };
+		internal static readonly System.Type[] ESSENTIAL_CLASSES = { CLASS_STATICFIELD, CLASS_STATICCLASS
+			 };
 
 		public static readonly string VIRTUAL_FIELD_PREFIX = "v4o";
 

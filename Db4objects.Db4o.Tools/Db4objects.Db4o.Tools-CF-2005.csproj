@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -53,29 +53,23 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\compact-2.0\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
+    <Reference Include="mscorlib"/>
+    <Reference Include="System"/>
+    <Reference Include="System.Xml"/>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Db4objects.Db4o.Tools\Defragment.cs" />
-    <Compile Include="Db4objects.Db4o.Tools\NativeQueries\QueryExpressionBuilder.cs" />
-    <Compile Include="Db4objects.Db4o.Tools\NativeQueries\UnsupportedPredicateException.cs" />
-    <Compile Include="Db4objects.Db4o.Tools\Statistics.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
+  <ItemGroup><Compile Include="Db4objects.Db4o.Tools\Defragment.cs"/><Compile Include="Db4objects.Db4o.Tools\NativeQueries\QueryExpressionBuilder.cs"/><Compile Include="Db4objects.Db4o.Tools\NativeQueries\UnsupportedPredicateException.cs"/><Compile Include="Db4objects.Db4o.Tools\Statistics.cs"/><Compile Include="Properties\AssemblyInfo.cs"/></ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-CF-2005.csproj">
       <Project>{95FD1C64-F1A3-4C8A-B170-D518E899B2FE}</Project>
       <Name>Db4objects.Db4o-CF-2005</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets" />
-  <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets"/>
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets"/>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
-        <HostingProcess disable="1" />
+        <HostingProcess disable="1"/>
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>

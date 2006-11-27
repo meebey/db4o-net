@@ -24,24 +24,25 @@ namespace Db4objects.Db4o
 		internal override void Instantiate1(Db4objects.Db4o.Transaction a_trans, Db4objects.Db4o.YapObject
 			 a_yapObject, Db4objects.Db4o.YapReader a_bytes)
 		{
-			a_yapObject.i_virtualAttributes.i_version = a_bytes.ReadLong();
+			a_yapObject.VirtualAttributes().i_version = a_bytes.ReadLong();
 		}
 
 		internal override void Marshall1(Db4objects.Db4o.YapObject a_yapObject, Db4objects.Db4o.YapWriter
 			 a_bytes, bool a_migrating, bool a_new)
 		{
 			Db4objects.Db4o.YapStream stream = a_bytes.GetStream().i_parent;
+			Db4objects.Db4o.VirtualAttributes va = a_yapObject.VirtualAttributes();
 			if (!a_migrating)
 			{
-				a_yapObject.i_virtualAttributes.i_version = stream.GenerateTimeStampId();
+				va.i_version = stream.GenerateTimeStampId();
 			}
-			if (a_yapObject.i_virtualAttributes == null)
+			if (va == null)
 			{
 				a_bytes.WriteLong(0);
 			}
 			else
 			{
-				a_bytes.WriteLong(a_yapObject.i_virtualAttributes.i_version);
+				a_bytes.WriteLong(va.i_version);
 			}
 		}
 

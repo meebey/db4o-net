@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Inside.IX
 			SetSizeOwn();
 		}
 
-		public override Db4objects.Db4o.Foundation.Tree DeepClone(object a_param)
+		public override object DeepClone(object a_param)
 		{
 			Db4objects.Db4o.Inside.IX.IxTree tree = (Db4objects.Db4o.Inside.IX.IxTree)this.ShallowClone
 				();

@@ -12,6 +12,8 @@ namespace Db4oUnit.Extensions
 
 		void Clean();
 
+		Db4objects.Db4o.YapFile FileSession();
+
 		Db4objects.Db4o.Ext.IExtObjectContainer Db();
 
 		Db4objects.Db4o.Config.IConfiguration Config();

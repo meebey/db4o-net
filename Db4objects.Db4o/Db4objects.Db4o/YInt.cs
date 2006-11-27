@@ -72,7 +72,7 @@ namespace Db4objects.Db4o
 
 		private int i_compareTo;
 
-		private int Val(object obj)
+		protected int Val(object obj)
 		{
 			return ((int)obj);
 		}

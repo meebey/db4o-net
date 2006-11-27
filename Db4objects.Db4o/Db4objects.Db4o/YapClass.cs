@@ -99,16 +99,17 @@ namespace Db4objects.Db4o
 			}
 			if (a_stream.DetectSchemaChanges())
 			{
-				System.Collections.IEnumerator m;
-				bool found;
 				bool dirty = IsDirty();
-				Db4objects.Db4o.YapField field;
-				Db4objects.Db4o.ITypeHandler4 wrapper;
 				Db4objects.Db4o.Foundation.Collection4 members = new Db4objects.Db4o.Foundation.Collection4
 					();
 				if (null != i_fields)
 				{
 					members.AddAll(i_fields);
+					if (i_fields.Length == 1 && i_fields[0] is Db4objects.Db4o.YapFieldTranslator)
+					{
+						SetStateOK();
+						return;
+					}
 				}
 				if (GenerateVersionNumbers())
 				{
@@ -126,36 +127,7 @@ namespace Db4objects.Db4o
 						dirty = true;
 					}
 				}
-				Db4objects.Db4o.Reflect.IReflectField[] fields = ClassReflector().GetDeclaredFields
-					();
-				for (int i = 0; i < fields.Length; i++)
-				{
-					if (StoreField(fields[i]))
-					{
-						wrapper = a_stream.i_handlers.HandlerForClass(a_stream, fields[i].GetFieldType());
-						if (wrapper == null)
-						{
-							continue;
-						}
-						field = new Db4objects.Db4o.YapField(this, fields[i], wrapper);
-						found = false;
-						m = members.GetEnumerator();
-						while (m.MoveNext())
-						{
-							if (((Db4objects.Db4o.YapField)m.Current).Equals(field))
-							{
-								found = true;
-								break;
-							}
-						}
-						if (found)
-						{
-							continue;
-						}
-						dirty = true;
-						members.Add(field);
-					}
-				}
+				dirty = CollectReflectFields(a_stream, members) | dirty;
 				if (dirty)
 				{
 					i_stream.SetDirtyInSystemTransaction(this);
@@ -187,6 +159,45 @@ namespace Db4objects.Db4o
 				}
 			}
 			SetStateOK();
+		}
+
+		private bool CollectReflectFields(Db4objects.Db4o.YapStream stream, Db4objects.Db4o.Foundation.Collection4
+			 collectedFields)
+		{
+			bool dirty = false;
+			Db4objects.Db4o.Reflect.IReflectField[] fields = ClassReflector().GetDeclaredFields
+				();
+			for (int i = 0; i < fields.Length; i++)
+			{
+				if (StoreField(fields[i]))
+				{
+					Db4objects.Db4o.ITypeHandler4 wrapper = stream.i_handlers.HandlerForClass(stream, 
+						fields[i].GetFieldType());
+					if (wrapper == null)
+					{
+						continue;
+					}
+					Db4objects.Db4o.YapField field = new Db4objects.Db4o.YapField(this, fields[i], wrapper
+						);
+					bool found = false;
+					System.Collections.IEnumerator m = collectedFields.GetEnumerator();
+					while (m.MoveNext())
+					{
+						if (((Db4objects.Db4o.YapField)m.Current).Equals(field))
+						{
+							found = true;
+							break;
+						}
+					}
+					if (found)
+					{
+						continue;
+					}
+					dirty = true;
+					collectedFields.Add(field);
+				}
+			}
+			return dirty;
 		}
 
 		private bool AddTranslatorFields(Db4objects.Db4o.YapStream a_stream)
@@ -610,7 +621,7 @@ namespace Db4objects.Db4o
 				Db4objects.Db4o.YapObject yo = stream.GetYapObject(a_id);
 				if (yo != null)
 				{
-					a_bytes.GetStream().Delete3(a_bytes.GetTransaction(), yo, obj, cascade, false);
+					a_bytes.GetStream().Delete2(a_bytes.GetTransaction(), yo, obj, cascade, false);
 				}
 			}
 		}
@@ -655,11 +666,11 @@ namespace Db4objects.Db4o
 		public bool DispatchEvent(Db4objects.Db4o.YapStream stream, object obj, int message
 			)
 		{
-			if (_eventDispatcher != null && stream.DispatchsEvents())
+			if (_eventDispatcher == null || !stream.DispatchsEvents())
 			{
-				return _eventDispatcher.Dispatch(stream, obj, message);
+				return true;
 			}
-			return true;
+			return _eventDispatcher.Dispatch(stream, obj, message);
 		}
 
 		public bool Equals(Db4objects.Db4o.ITypeHandler4 a_dataType)
@@ -1065,13 +1076,13 @@ namespace Db4objects.Db4o
 		public virtual Db4objects.Db4o.YapField GetYapField(string name)
 		{
 			Db4objects.Db4o.YapField[] yf = new Db4objects.Db4o.YapField[1];
-			ForEachYapField(new _AnonymousInnerClass901(this, name, yf));
+			ForEachYapField(new _AnonymousInnerClass907(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _AnonymousInnerClass901 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass907 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass901(YapClass _enclosing, string name, Db4objects.Db4o.YapField[]
+			public _AnonymousInnerClass907(YapClass _enclosing, string name, Db4objects.Db4o.YapField[]
 				 yf)
 			{
 				this._enclosing = _enclosing;
@@ -1645,15 +1656,15 @@ namespace Db4objects.Db4o
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1383
+					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1389
 						(this, a_candidates, trans));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1383 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass1389 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass1383(YapClass _enclosing, Db4objects.Db4o.QCandidates 
+			public _AnonymousInnerClass1389(YapClass _enclosing, Db4objects.Db4o.QCandidates 
 				a_candidates, Db4objects.Db4o.Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -2037,7 +2048,7 @@ namespace Db4objects.Db4o
 										if (oldFields[j].value != null && value != null && oldFields[j].value.GetType() ==
 											 value.GetType())
 										{
-											long id = stream.GetID1(trans, oldFields[j].value);
+											long id = stream.GetID1(oldFields[j].value);
 											if (id > 0)
 											{
 												if (oldFields[j].value != value)

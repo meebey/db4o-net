@@ -69,13 +69,12 @@ namespace Db4objects.Db4o.IO.Crypt
 		/// <param name="res">Int array of length two which contains converted array bytes.</param>
 		private void Byte2int(byte[] bytes, int offset, int[] res)
 		{
-			res[0] = (int)((((int)bytes[offset] & unchecked((int)(0xff))) << 24) | (((int)bytes
-				[offset + 1] & unchecked((int)(0xff))) << 16) | (((int)bytes[offset + 2] & unchecked(
-				(int)(0xff))) << 8) | ((int)bytes[offset + 3] & unchecked((int)(0xff))));
-			res[1] = (int)((((int)bytes[offset + 4] & unchecked((int)(0xff))) << 24) | (((int
-				)bytes[offset + 5] & unchecked((int)(0xff))) << 16) | (((int)bytes[offset + 6] &
-				 unchecked((int)(0xff))) << 8) | ((int)bytes[offset + 7] & unchecked((int)(0xff)
-				)));
+			res[0] = (((bytes[offset] & unchecked((int)(0xff))) << 24) | ((bytes[offset + 1] 
+				& unchecked((int)(0xff))) << 16) | ((bytes[offset + 2] & unchecked((int)(0xff)))
+				 << 8) | (bytes[offset + 3] & unchecked((int)(0xff))));
+			res[1] = (((bytes[offset + 4] & unchecked((int)(0xff))) << 24) | ((bytes[offset +
+				 5] & unchecked((int)(0xff))) << 16) | ((bytes[offset + 6] & unchecked((int)(0xff
+				))) << 8) | (bytes[offset + 7] & unchecked((int)(0xff))));
 		}
 
 		/// <summary>

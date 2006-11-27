@@ -24,19 +24,13 @@ namespace Db4objects.Db4o
 
 		protected Db4objects.Db4o.Config4Impl i_config;
 
-		protected int i_entryCounter;
+		private int _stackDepth;
 
 		private Db4objects.Db4o.YapObject i_hcTree;
 
 		private Db4objects.Db4o.YapObject i_idTree;
 
-		private Db4objects.Db4o.Foundation.Tree[] i_justActivated;
-
-		private Db4objects.Db4o.Foundation.Tree[] i_justDeactivated;
-
 		private Db4objects.Db4o.Foundation.Tree i_justPeeked;
-
-		private Db4objects.Db4o.Foundation.Tree i_justSet;
 
 		public readonly object i_lock;
 
@@ -76,13 +70,17 @@ namespace Db4objects.Db4o
 		protected readonly Db4objects.Db4o.Foundation.PersistentTimeStampIdGenerator _timeStampIdGenerator
 			 = new Db4objects.Db4o.Foundation.PersistentTimeStampIdGenerator();
 
+		private int _topLevelCallId = 1;
+
+		private Db4objects.Db4o.Foundation.IntIdGenerator _topLevelCallIdGenerator = new 
+			Db4objects.Db4o.Foundation.IntIdGenerator();
+
 		protected YapStreamBase(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.YapStream
 			 a_parent)
 		{
 			_this = Cast(this);
 			i_parent = a_parent == null ? _this : a_parent;
 			i_lock = a_parent == null ? new object() : a_parent.i_lock;
-			Initialize0();
 			InitializeTransactions();
 			Initialize1(config);
 		}
@@ -103,31 +101,21 @@ namespace Db4objects.Db4o
 		public void Activate1(Db4objects.Db4o.Transaction ta, object a_activate, int a_depth
 			)
 		{
-			ta = CheckTransaction(ta);
-			BeginEndActivation();
-			Activate2(ta, a_activate, a_depth);
-			BeginEndActivation();
-		}
-
-		internal void BeginEndActivation()
-		{
-			i_justActivated[0] = null;
+			Activate2(CheckTransaction(ta), a_activate, a_depth);
 		}
 
 		internal void BeginEndSet(Db4objects.Db4o.Transaction ta)
 		{
-			i_justSet = null;
 			if (ta != null)
 			{
 				ta.BeginEndSet();
 			}
 		}
 
-		/// <summary>internal call interface, does not reset i_justActivated</summary>
 		internal void Activate2(Db4objects.Db4o.Transaction ta, object a_activate, int a_depth
 			)
 		{
-			i_entryCounter++;
+			BeginTopLevelCall();
 			try
 			{
 				StillToActivate(a_activate, a_depth);
@@ -137,7 +125,10 @@ namespace Db4objects.Db4o
 			{
 				FatalException(t);
 			}
-			i_entryCounter--;
+			finally
+			{
+				EndTopLevelCall();
+			}
 		}
 
 		internal void Activate3CheckStill(Db4objects.Db4o.Transaction ta)
@@ -347,7 +338,15 @@ namespace Db4objects.Db4o
 		{
 			lock (i_lock)
 			{
-				Commit1();
+				BeginTopLevelCall();
+				try
+				{
+					Commit1();
+				}
+				finally
+				{
+					EndTopLevelCall();
+				}
 			}
 		}
 
@@ -427,28 +426,23 @@ namespace Db4objects.Db4o
 		{
 			lock (i_lock)
 			{
-				Deactivate1(a_deactivate, a_depth);
+				BeginTopLevelCall();
+				try
+				{
+					Deactivate1(a_deactivate, a_depth);
+				}
+				catch (System.Exception t)
+				{
+					FatalException(t);
+				}
+				finally
+				{
+					EndTopLevelCall();
+				}
 			}
 		}
 
-		internal void Deactivate1(object a_deactivate, int a_depth)
-		{
-			CheckClosed();
-			i_entryCounter++;
-			try
-			{
-				i_justDeactivated[0] = null;
-				Deactivate2(a_deactivate, a_depth);
-				i_justDeactivated[0] = null;
-			}
-			catch (System.Exception t)
-			{
-				FatalException(t);
-			}
-			i_entryCounter--;
-		}
-
-		private void Deactivate2(object a_activate, int a_depth)
+		private void Deactivate1(object a_activate, int a_depth)
 		{
 			StillToDeactivate(a_activate, a_depth, true);
 			while (i_stillToDeactivate != null)
@@ -471,92 +465,92 @@ namespace Db4objects.Db4o
 			Delete(null, a_object);
 		}
 
-		public virtual void Delete(Db4objects.Db4o.Transaction trans, object a_object)
+		public virtual void Delete(Db4objects.Db4o.Transaction trans, object obj)
 		{
 			lock (i_lock)
 			{
-				Db4objects.Db4o.Transaction ta = Delete1(trans, a_object, true);
-				ta.BeginEndSet();
+				trans = CheckTransaction(trans);
+				Delete1(trans, obj, true);
+				trans.BeginEndSet();
 			}
 		}
 
-		public Db4objects.Db4o.Transaction Delete1(Db4objects.Db4o.Transaction ta, object
-			 a_object, bool userCall)
+		public void Delete1(Db4objects.Db4o.Transaction trans, object obj, bool userCall)
 		{
-			ta = CheckTransaction(ta);
-			if (a_object != null)
-			{
-				i_entryCounter++;
-				try
-				{
-					Delete2(ta, a_object, userCall);
-				}
-				catch (System.Exception t)
-				{
-					FatalException(t);
-				}
-				i_entryCounter--;
-			}
-			return ta;
-		}
-
-		private void Delete2(Db4objects.Db4o.Transaction ta, object a_object, bool userCall
-			)
-		{
-			Db4objects.Db4o.YapObject yo = GetYapObject(a_object);
-			if (yo != null)
-			{
-				Delete3(ta, yo, a_object, 0, userCall);
-			}
-		}
-
-		internal void Delete3(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject yo
-			, object a_object, int a_cascade, bool userCall)
-		{
-			if (BreakDeleteForEnum(yo, userCall))
+			if (obj == null)
 			{
 				return;
 			}
-			if (a_object is Db4objects.Db4o.Types.ISecondClass)
+			Db4objects.Db4o.YapObject @ref = GetYapObject(obj);
+			if (@ref == null)
 			{
-				Delete4(ta, yo, a_cascade, userCall);
+				return;
 			}
-			else
+			try
 			{
-				ta.Delete(yo, a_cascade);
+				Delete2(trans, @ref, obj, 0, userCall);
+			}
+			catch (System.Exception t)
+			{
+				FatalException(t);
 			}
 		}
 
-		internal void Delete4(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject yo
-			, int a_cascade, bool userCall)
+		internal void Delete2(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapObject
+			 @ref, object obj, int cascade, bool userCall)
 		{
-			if (yo != null)
+			if (BreakDeleteForEnum(@ref, userCall))
 			{
-				if (yo.BeginProcessing())
+				return;
+			}
+			if (obj is Db4objects.Db4o.Types.ISecondClass)
+			{
+				if (!FlagForDelete(@ref))
 				{
-					if (BreakDeleteForEnum(yo, userCall))
-					{
-						return;
-					}
-					Db4objects.Db4o.YapClass yc = yo.GetYapClass();
-					object obj = yo.GetObject();
-					yo.EndProcessing();
-					if (!ObjectCanDelete(yc, obj))
-					{
-						return;
-					}
-					yo.BeginProcessing();
-					if (Delete5(ta, yo, a_cascade, userCall))
-					{
-						ObjectOnDelete(yc, obj);
-						if (ConfigImpl().MessageLevel() > Db4objects.Db4o.YapConst.STATE)
-						{
-							Message(string.Empty + yo.GetID() + " delete " + yo.GetYapClass().GetName());
-						}
-					}
-					yo.EndProcessing();
+					return;
+				}
+				Delete3(trans, @ref, cascade, userCall);
+				return;
+			}
+			trans.Delete(@ref, cascade);
+		}
+
+		internal void Delete3(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapObject
+			 @ref, int cascade, bool userCall)
+		{
+			if (@ref == null || !@ref.BeginProcessing())
+			{
+				return;
+			}
+			if (BreakDeleteForEnum(@ref, userCall))
+			{
+				return;
+			}
+			if (!@ref.IsFlaggedForDelete())
+			{
+				return;
+			}
+			Db4objects.Db4o.YapClass yc = @ref.GetYapClass();
+			object obj = @ref.GetObject();
+			@ref.EndProcessing();
+			if (!ObjectCanDelete(yc, obj))
+			{
+				return;
+			}
+			if (!@ref.IsFlaggedForDelete())
+			{
+				return;
+			}
+			@ref.BeginProcessing();
+			if (Delete4(trans, @ref, cascade, userCall))
+			{
+				ObjectOnDelete(yc, obj);
+				if (ConfigImpl().MessageLevel() > Db4objects.Db4o.YapConst.STATE)
+				{
+					Message(string.Empty + @ref.GetID() + " delete " + @ref.GetYapClass().GetName());
 				}
 			}
+			@ref.EndProcessing();
 		}
 
 		private bool ObjectCanDelete(Db4objects.Db4o.YapClass yc, object obj)
@@ -571,7 +565,7 @@ namespace Db4objects.Db4o
 			yc.DispatchEvent(_this, obj, Db4objects.Db4o.EventDispatcher.DELETE);
 		}
 
-		public abstract bool Delete5(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject
+		public abstract bool Delete4(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject
 			 yapObject, int a_cascade, bool userCall);
 
 		public virtual object Descend(object obj, string[] path)
@@ -598,7 +592,7 @@ namespace Db4objects.Db4o
 			}
 			Db4objects.Db4o.YapClass yc = yo.GetYapClass();
 			Db4objects.Db4o.YapField[] field = new Db4objects.Db4o.YapField[] { null };
-			yc.ForEachYapField(new _AnonymousInnerClass558(this, fieldName, field));
+			yc.ForEachYapField(new _AnonymousInnerClass553(this, fieldName, field));
 			if (field[0] == null)
 			{
 				return null;
@@ -641,9 +635,9 @@ namespace Db4objects.Db4o
 			return Descend1(trans, child, subPath);
 		}
 
-		private sealed class _AnonymousInnerClass558 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass553 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass558(YapStreamBase _enclosing, string fieldName, Db4objects.Db4o.YapField[]
+			public _AnonymousInnerClass553(YapStreamBase _enclosing, string fieldName, Db4objects.Db4o.YapField[]
 				 field)
 			{
 				this._enclosing = _enclosing;
@@ -696,22 +690,27 @@ namespace Db4objects.Db4o
 		{
 			lock (Db4objects.Db4o.Inside.Global4.Lock)
 			{
-				if (_classCollection != null)
+				if (_classCollection == null)
 				{
-					if (i_entryCounter == 0)
+					return;
+				}
+				if (i_amDuringFatalExit)
+				{
+					return;
+				}
+				if (_stackDepth == 0)
+				{
+					Db4objects.Db4o.Messages.LogErr(ConfigImpl(), 50, ToString(), null);
+					while (!Close())
 					{
-						Db4objects.Db4o.Messages.LogErr(ConfigImpl(), 50, ToString(), null);
-						while (!Close())
-						{
-						}
 					}
-					else
+				}
+				else
+				{
+					EmergencyClose();
+					if (_stackDepth > 0)
 					{
-						EmergencyClose();
-						if (i_entryCounter > 0)
-						{
-							Db4objects.Db4o.Messages.LogErr(ConfigImpl(), 24, null, null);
-						}
+						Db4objects.Db4o.Messages.LogErr(ConfigImpl(), 24, null, null);
 					}
 				}
 			}
@@ -765,7 +764,6 @@ namespace Db4objects.Db4o
 		{
 			ta = CheckTransaction(ta);
 			Db4objects.Db4o.Inside.Query.IQueryResult res = null;
-			i_entryCounter++;
 			try
 			{
 				res = Get2(ta, template);
@@ -775,7 +773,6 @@ namespace Db4objects.Db4o
 				Db4objects.Db4o.Inside.Exceptions4.CatchAllExceptDb4oException(t);
 				FatalException(t);
 			}
-			i_entryCounter--;
 			return new Db4objects.Db4o.Inside.Query.ObjectSetFacade(res);
 		}
 
@@ -852,7 +849,7 @@ namespace Db4objects.Db4o
 			)
 		{
 			object obj = null;
-			BeginEndActivation();
+			BeginTopLevelCall();
 			try
 			{
 				obj = new Db4objects.Db4o.YapObject(id).Read(ta, null, null, ConfigImpl().ActivationDepth
@@ -861,8 +858,11 @@ namespace Db4objects.Db4o
 			catch (System.Exception t)
 			{
 			}
+			finally
+			{
+				EndTopLevelCall();
+			}
 			Activate3CheckStill(ta);
-			BeginEndActivation();
 			return obj;
 		}
 
@@ -881,22 +881,22 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		public virtual long GetID(object a_object)
+		public virtual long GetID(object obj)
 		{
 			lock (i_lock)
 			{
-				return GetID1(null, a_object);
+				return GetID1(obj);
 			}
 		}
 
-		public int GetID1(Db4objects.Db4o.Transaction ta, object a_object)
+		public int GetID1(object obj)
 		{
 			CheckClosed();
-			if (a_object == null)
+			if (obj == null)
 			{
 				return 0;
 			}
-			Db4objects.Db4o.YapObject yo = i_hcTree.Hc_find(a_object);
+			Db4objects.Db4o.YapObject yo = GetYapObject(obj);
 			if (yo != null)
 			{
 				return yo.GetID();
@@ -1098,36 +1098,14 @@ namespace Db4objects.Db4o
 			return ConfigImpl().AutomaticShutDown();
 		}
 
-		internal void HcTreeAdd(Db4objects.Db4o.YapObject a_yo)
+		internal void HcTreeAdd(Db4objects.Db4o.YapObject @ref)
 		{
-			i_hcTree = i_hcTree.Hc_add(a_yo);
-		}
-
-		internal void HcTreeRemove(Db4objects.Db4o.YapObject a_yo)
-		{
-			i_hcTree = i_hcTree.Hc_remove(a_yo);
+			i_hcTree = i_hcTree.Hc_add(@ref);
 		}
 
 		internal void IdTreeAdd(Db4objects.Db4o.YapObject a_yo)
 		{
 			i_idTree = i_idTree.Id_add(a_yo);
-		}
-
-		internal void IdTreeRemove(int a_id)
-		{
-			i_idTree = i_idTree.Id_remove(a_id);
-		}
-
-		protected virtual void Initialize0()
-		{
-			Initialize0b();
-			i_stillToSet = null;
-			i_justActivated = new Db4objects.Db4o.Foundation.Tree[1];
-		}
-
-		internal virtual void Initialize0b()
-		{
-			i_justDeactivated = new Db4objects.Db4o.Foundation.Tree[1];
 		}
 
 		protected virtual void Initialize1(Db4objects.Db4o.Config.IConfiguration config)
@@ -1155,6 +1133,7 @@ namespace Db4objects.Db4o
 		{
 			Db4objects.Db4o.Config4Impl impl = ((Db4objects.Db4o.Config4Impl)config);
 			impl.Stream(_this);
+			impl.Reflector().SetTransaction(GetSystemTransaction());
 			return impl;
 		}
 
@@ -1399,25 +1378,29 @@ namespace Db4objects.Db4o
 
 		public abstract int NewUserObject();
 
-		public virtual object PeekPersisted(object a_object, int a_depth, bool a_committed
-			)
+		public virtual object PeekPersisted(object obj, int depth, bool committed)
 		{
 			lock (i_lock)
 			{
-				CheckClosed();
-				i_entryCounter++;
-				i_justPeeked = null;
-				Db4objects.Db4o.Transaction ta = a_committed ? i_systemTrans : CheckTransaction(null
-					);
-				object cloned = null;
-				Db4objects.Db4o.YapObject yo = GetYapObject(a_object);
-				if (yo != null)
+				BeginTopLevelCall();
+				try
 				{
-					cloned = PeekPersisted1(ta, yo.GetID(), a_depth);
+					i_justPeeked = null;
+					Db4objects.Db4o.Transaction ta = committed ? i_systemTrans : CheckTransaction(null
+						);
+					object cloned = null;
+					Db4objects.Db4o.YapObject yo = GetYapObject(obj);
+					if (yo != null)
+					{
+						cloned = PeekPersisted1(ta, yo.GetID(), depth);
+					}
+					i_justPeeked = null;
+					return cloned;
 				}
-				i_justPeeked = null;
-				i_entryCounter--;
-				return cloned;
+				finally
+				{
+					EndTopLevelCall();
+				}
 			}
 		}
 
@@ -1473,24 +1456,19 @@ namespace Db4objects.Db4o
 
 		internal void Purge1(object obj)
 		{
-			if (obj != null)
+			if (obj == null || i_hcTree == null)
 			{
-				if (i_hcTree != null)
-				{
-					Db4objects.Db4o.YapObject yo = null;
-					if (obj is Db4objects.Db4o.YapObject)
-					{
-						yo = (Db4objects.Db4o.YapObject)obj;
-					}
-					else
-					{
-						yo = i_hcTree.Hc_find(obj);
-					}
-					if (yo != null)
-					{
-						RemoveReference(yo);
-					}
-				}
+				return;
+			}
+			if (obj is Db4objects.Db4o.YapObject)
+			{
+				RemoveReference((Db4objects.Db4o.YapObject)obj);
+				return;
+			}
+			Db4objects.Db4o.YapObject @ref = GetYapObject(obj);
+			if (@ref != null)
+			{
+				RemoveReference(@ref);
 			}
 		}
 
@@ -1533,11 +1511,7 @@ namespace Db4objects.Db4o
 
 		public Db4objects.Db4o.Query.IQuery Query(Db4objects.Db4o.Transaction ta)
 		{
-			i_entryCounter++;
-			Db4objects.Db4o.Query.IQuery q = new Db4objects.Db4o.QQuery(CheckTransaction(ta), 
-				null, null);
-			i_entryCounter--;
-			return q;
+			return new Db4objects.Db4o.QQuery(CheckTransaction(ta), null, null);
 		}
 
 		public abstract void RaiseVersion(long a_minimumVersion);
@@ -1618,16 +1592,23 @@ namespace Db4objects.Db4o
 
 		public abstract void ReleaseSemaphore(string name);
 
-		internal virtual void RememberJustSet(int id)
+		internal virtual void FlagAsHandled(Db4objects.Db4o.YapObject @ref)
 		{
-			if (i_justSet == null)
+			@ref.FlagAsHandled(_topLevelCallId);
+		}
+
+		internal virtual bool FlagForDelete(Db4objects.Db4o.YapObject @ref)
+		{
+			if (@ref == null)
 			{
-				i_justSet = new Db4objects.Db4o.TreeInt(id);
+				return false;
 			}
-			else
+			if (HandledInCurrentTopLevelCall(@ref))
 			{
-				i_justSet = i_justSet.Add(new Db4objects.Db4o.TreeInt(id));
+				return false;
 			}
+			@ref.FlagForDelete(_topLevelCallId);
+			return true;
 		}
 
 		public abstract void ReleaseSemaphores(Db4objects.Db4o.Transaction ta);
@@ -1725,15 +1706,16 @@ namespace Db4objects.Db4o
 				return 0;
 			}
 			Db4objects.Db4o.YapObject reference = GetYapObject(obj);
-			if (reference != null)
+			if (reference != null && HandledInCurrentTopLevelCall(reference))
 			{
-				int id = reference.GetID();
-				if (id > 0 && (Db4objects.Db4o.TreeInt.Find(i_justSet, id) != null))
-				{
-					return id;
-				}
+				return reference.GetID();
 			}
 			return i_handlers.i_replication.TryToHandle(_this, obj);
+		}
+
+		public bool HandledInCurrentTopLevelCall(Db4objects.Db4o.YapObject @ref)
+		{
+			return @ref.IsFlaggedAsHandled(_topLevelCallId);
 		}
 
 		internal virtual void Reserve(int byteCount)
@@ -1759,84 +1741,85 @@ namespace Db4objects.Db4o
 			Set(a_object, Db4objects.Db4o.YapConst.UNSPECIFIED);
 		}
 
-		public void Set(Db4objects.Db4o.Transaction trans, object a_object)
+		public void Set(Db4objects.Db4o.Transaction trans, object obj)
 		{
-			Set(trans, a_object, Db4objects.Db4o.YapConst.UNSPECIFIED);
+			Set(trans, obj, Db4objects.Db4o.YapConst.UNSPECIFIED);
 		}
 
-		public void Set(object a_object, int a_depth)
+		public void Set(object obj, int depth)
 		{
-			Set(i_trans, a_object, a_depth);
+			Set(i_trans, obj, depth);
 		}
 
-		public virtual void Set(Db4objects.Db4o.Transaction trans, object a_object, int a_depth
-			)
+		public virtual void Set(Db4objects.Db4o.Transaction trans, object obj, int depth)
 		{
 			lock (i_lock)
 			{
 				CheckClosed();
 				BeginEndSet(trans);
-				SetInternal(trans, a_object, a_depth, true);
+				SetInternal(trans, obj, depth, true);
 				BeginEndSet(trans);
 			}
 		}
 
-		public int SetInternal(Db4objects.Db4o.Transaction ta, object a_object, bool a_checkJustSet
+		public int SetInternal(Db4objects.Db4o.Transaction trans, object obj, bool checkJustSet
 			)
 		{
-			return SetInternal(ta, a_object, Db4objects.Db4o.YapConst.UNSPECIFIED, a_checkJustSet
+			return SetInternal(trans, obj, Db4objects.Db4o.YapConst.UNSPECIFIED, checkJustSet
 				);
 		}
 
-		public int SetInternal(Db4objects.Db4o.Transaction ta, object a_object, int a_depth
-			, bool a_checkJustSet)
+		public int SetInternal(Db4objects.Db4o.Transaction trans, object obj, int depth, 
+			bool checkJustSet)
 		{
-			int id = OldReplicationHandles(a_object);
-			if (id != 0)
+			BeginTopLevelCall();
+			try
 			{
-				if (id < 0)
+				int id = OldReplicationHandles(obj);
+				if (id != 0)
 				{
-					return 0;
+					if (id < 0)
+					{
+						return 0;
+					}
+					return id;
 				}
-				return id;
+				return SetAfterReplication(trans, obj, depth, checkJustSet);
 			}
-			return SetAfterReplication(ta, a_object, a_depth, a_checkJustSet);
+			finally
+			{
+				EndTopLevelCall();
+			}
 		}
 
-		internal int SetAfterReplication(Db4objects.Db4o.Transaction ta, object obj, int 
-			depth, bool checkJust)
+		internal int SetAfterReplication(Db4objects.Db4o.Transaction trans, object obj, int
+			 depth, bool checkJust)
 		{
 			if (obj is Db4objects.Db4o.Types.IDb4oType)
 			{
-				Db4objects.Db4o.Types.IDb4oType db4oType = Db4oTypeStored(ta, obj);
+				Db4objects.Db4o.Types.IDb4oType db4oType = Db4oTypeStored(trans, obj);
 				if (db4oType != null)
 				{
-					return GetID1(ta, db4oType);
+					return GetID1(db4oType);
 				}
 			}
-			int id;
-			i_entryCounter++;
 			try
 			{
-				id = Set2(ta, obj, depth, checkJust);
+				return Set2(trans, obj, depth, checkJust);
 			}
 			catch (Db4objects.Db4o.Ext.ObjectNotStorableException e)
 			{
-				i_entryCounter--;
 				throw;
 			}
 			catch (Db4objects.Db4o.Ext.Db4oException exc)
 			{
-				id = 0;
 				throw;
 			}
 			catch (System.Exception t)
 			{
-				id = 0;
 				FatalException(t);
+				return 0;
 			}
-			i_entryCounter--;
-			return id;
 		}
 
 		public void SetByNewReplication(Db4objects.Db4o.Inside.Replication.IDb4oReplicationReferenceProvider
@@ -1852,10 +1835,10 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private int Set2(Db4objects.Db4o.Transaction ta, object obj, int depth, bool checkJust
+		private int Set2(Db4objects.Db4o.Transaction trans, object obj, int depth, bool checkJust
 			)
 		{
-			int id = Set3(ta, obj, depth, checkJust);
+			int id = Set3(trans, obj, depth, checkJust);
 			if (StackIsSmall())
 			{
 				CheckStillToSet();
@@ -1875,14 +1858,14 @@ namespace Db4objects.Db4o
 				{
 					int updateDepth = (int)i.Current;
 					i.MoveNext();
-					Db4objects.Db4o.YapObject yo = (Db4objects.Db4o.YapObject)i.Current;
+					Db4objects.Db4o.YapObject @ref = (Db4objects.Db4o.YapObject)i.Current;
 					i.MoveNext();
 					Db4objects.Db4o.Transaction trans = (Db4objects.Db4o.Transaction)i.Current;
-					if (!yo.ContinueSet(trans, updateDepth))
+					if (!@ref.ContinueSet(trans, updateDepth))
 					{
 						postponedStillToSet = new Db4objects.Db4o.Foundation.List4(postponedStillToSet, trans
 							);
-						postponedStillToSet = new Db4objects.Db4o.Foundation.List4(postponedStillToSet, yo
+						postponedStillToSet = new Db4objects.Db4o.Foundation.List4(postponedStillToSet, @ref
 							);
 						postponedStillToSet = new Db4objects.Db4o.Foundation.List4(postponedStillToSet, updateDepth
 							);
@@ -1909,25 +1892,25 @@ namespace Db4objects.Db4o
 			throw new Db4objects.Db4o.Ext.ObjectNotStorableException(obj.ToString());
 		}
 
-		public int Set3(Db4objects.Db4o.Transaction a_trans, object a_object, int a_updateDepth
-			, bool a_checkJustSet)
+		public int Set3(Db4objects.Db4o.Transaction trans, object obj, int updateDepth, bool
+			 checkJustSet)
 		{
-			if (a_object == null || (a_object is Db4objects.Db4o.Types.ITransientClass))
+			if (obj == null || (obj is Db4objects.Db4o.Types.ITransientClass))
 			{
 				return 0;
 			}
-			if (a_object is Db4objects.Db4o.IDb4oTypeImpl)
+			if (obj is Db4objects.Db4o.IDb4oTypeImpl)
 			{
-				((Db4objects.Db4o.IDb4oTypeImpl)a_object).StoredTo(a_trans);
+				((Db4objects.Db4o.IDb4oTypeImpl)obj).StoredTo(trans);
 			}
 			Db4objects.Db4o.YapClass yc = null;
-			Db4objects.Db4o.YapObject yapObject = i_hcTree.Hc_find(a_object);
-			if (yapObject == null)
+			Db4objects.Db4o.YapObject @ref = GetYapObject(obj);
+			if (@ref == null)
 			{
-				Db4objects.Db4o.Reflect.IReflectClass claxx = Reflector().ForObject(a_object);
+				Db4objects.Db4o.Reflect.IReflectClass claxx = Reflector().ForObject(obj);
 				if (claxx == null)
 				{
-					NotStorable(claxx, a_object);
+					NotStorable(claxx, obj);
 					return 0;
 				}
 				yc = GetActiveYapClass(claxx);
@@ -1936,94 +1919,67 @@ namespace Db4objects.Db4o
 					yc = GetYapClass(claxx, true);
 					if (yc == null)
 					{
-						NotStorable(claxx, a_object);
+						NotStorable(claxx, obj);
 						return 0;
 					}
-					yapObject = i_hcTree.Hc_find(a_object);
+					@ref = GetYapObject(obj);
 				}
 			}
 			else
 			{
-				yc = yapObject.GetYapClass();
+				yc = @ref.GetYapClass();
 			}
 			if (IsPlainObjectOrPrimitive(yc))
 			{
-				NotStorable(yc.ClassReflector(), a_object);
+				NotStorable(yc.ClassReflector(), obj);
 				return 0;
 			}
-			bool dontDelete = true;
-			if (yapObject == null)
+			if (@ref == null)
 			{
-				if (!ObjectCanNew(yc, a_object))
+				if (!ObjectCanNew(yc, obj))
 				{
 					return 0;
 				}
-				yapObject = new Db4objects.Db4o.YapObject(0);
-				if (yapObject.Store(a_trans, yc, a_object))
+				@ref = new Db4objects.Db4o.YapObject();
+				@ref.Store(trans, yc, obj);
+				IdTreeAdd(@ref);
+				HcTreeAdd(@ref);
+				if (obj is Db4objects.Db4o.IDb4oTypeImpl)
 				{
-					IdTreeAdd(yapObject);
-					HcTreeAdd(yapObject);
-					if (a_object is Db4objects.Db4o.IDb4oTypeImpl)
-					{
-						((Db4objects.Db4o.IDb4oTypeImpl)a_object).SetTrans(a_trans);
-					}
-					if (ConfigImpl().MessageLevel() > Db4objects.Db4o.YapConst.STATE)
-					{
-						Message(string.Empty + yapObject.GetID() + " new " + yapObject.GetYapClass().GetName
-							());
-					}
-					if (a_checkJustSet && CanUpdate())
-					{
-						if (!yapObject.GetYapClass().IsPrimitive())
-						{
-							RememberJustSet(yapObject.GetID());
-							a_checkJustSet = false;
-						}
-					}
-					StillToSet(a_trans, yapObject, a_updateDepth);
+					((Db4objects.Db4o.IDb4oTypeImpl)obj).SetTrans(trans);
 				}
+				if (ConfigImpl().MessageLevel() > Db4objects.Db4o.YapConst.STATE)
+				{
+					Message(string.Empty + @ref.GetID() + " new " + @ref.GetYapClass().GetName());
+				}
+				FlagAsHandled(@ref);
+				StillToSet(trans, @ref, updateDepth);
 			}
 			else
 			{
 				if (CanUpdate())
 				{
-					int oid = yapObject.GetID();
-					if (a_checkJustSet)
+					if (checkJustSet)
 					{
-						if (oid > 0 && (Db4objects.Db4o.TreeInt.Find(i_justSet, oid) != null))
+						if ((!@ref.IsNew()) && HandledInCurrentTopLevelCall(@ref))
 						{
-							return oid;
+							return @ref.GetID();
 						}
 					}
-					bool doUpdate = (a_updateDepth == Db4objects.Db4o.YapConst.UNSPECIFIED) || (a_updateDepth
-						 > 0);
-					if (doUpdate)
+					if (UpdateDepthSufficient(updateDepth))
 					{
-						dontDelete = false;
-						a_trans.DontDelete(yapObject.GetYapClass().GetID(), oid);
-						if (a_checkJustSet)
-						{
-							a_checkJustSet = false;
-							RememberJustSet(oid);
-						}
-						yapObject.WriteUpdate(a_trans, a_updateDepth);
+						FlagAsHandled(@ref);
+						@ref.WriteUpdate(trans, updateDepth);
 					}
 				}
 			}
 			CheckNeededUpdates();
-			int id = yapObject.GetID();
-			if (a_checkJustSet && CanUpdate())
-			{
-				if (!yapObject.GetYapClass().IsPrimitive())
-				{
-					RememberJustSet(id);
-				}
-			}
-			if (dontDelete)
-			{
-				a_trans.DontDelete(yapObject.GetYapClass().GetID(), id);
-			}
-			return id;
+			return @ref.GetID();
+		}
+
+		private bool UpdateDepthSufficient(int updateDepth)
+		{
+			return (updateDepth == Db4objects.Db4o.YapConst.UNSPECIFIED) || (updateDepth > 0);
 		}
 
 		private bool IsPlainObjectOrPrimitive(Db4objects.Db4o.YapClass yc)
@@ -2082,7 +2038,7 @@ namespace Db4objects.Db4o
 
 		private bool StackIsSmall()
 		{
-			return i_entryCounter < Db4objects.Db4o.YapConst.MAX_STACK_DEPTH;
+			return _stackDepth < Db4objects.Db4o.YapConst.MAX_STACK_DEPTH;
 		}
 
 		internal virtual bool StateMessages()
@@ -2099,79 +2055,67 @@ namespace Db4objects.Db4o
 		/// This allows deactivating objects before queries are called.
 		/// </remarks>
 		internal Db4objects.Db4o.Foundation.List4 StillTo1(Db4objects.Db4o.Foundation.List4
-			 a_still, Db4objects.Db4o.Foundation.Tree[] a_just, object a_object, int a_depth
-			, bool a_forceUnknownDeactivate)
+			 still, object obj, int depth, bool forceUnknownDeactivate)
 		{
-			if (a_object == null || a_depth <= 0)
+			if (obj == null || depth <= 0)
 			{
-				return a_still;
+				return still;
 			}
-			Db4objects.Db4o.YapObject yapObject = i_hcTree.Hc_find(a_object);
-			if (yapObject != null)
+			Db4objects.Db4o.YapObject @ref = GetYapObject(obj);
+			if (@ref != null)
 			{
-				int id = yapObject.GetID();
-				if (a_just[0] != null)
+				if (HandledInCurrentTopLevelCall(@ref))
 				{
-					if (((Db4objects.Db4o.TreeInt)a_just[0]).Find(id) != null)
-					{
-						return a_still;
-					}
-					a_just[0] = a_just[0].Add(new Db4objects.Db4o.TreeInt(id));
+					return still;
 				}
-				else
-				{
-					a_just[0] = new Db4objects.Db4o.TreeInt(id);
-				}
+				FlagAsHandled(@ref);
 				return new Db4objects.Db4o.Foundation.List4(new Db4objects.Db4o.Foundation.List4(
-					a_still, a_depth), yapObject);
+					still, depth), @ref);
 			}
-			Db4objects.Db4o.Reflect.IReflectClass clazz = Reflector().ForObject(a_object);
+			Db4objects.Db4o.Reflect.IReflectClass clazz = Reflector().ForObject(obj);
 			if (clazz.IsArray())
 			{
 				if (!clazz.GetComponentType().IsPrimitive())
 				{
-					object[] arr = Db4objects.Db4o.YapArray.ToArray(_this, a_object);
+					object[] arr = Db4objects.Db4o.YapArray.ToArray(_this, obj);
 					for (int i = 0; i < arr.Length; i++)
 					{
-						a_still = StillTo1(a_still, a_just, arr[i], a_depth, a_forceUnknownDeactivate);
+						still = StillTo1(still, arr[i], depth, forceUnknownDeactivate);
 					}
 				}
 			}
 			else
 			{
-				if (a_object is Db4objects.Db4o.Config.Entry)
+				if (obj is Db4objects.Db4o.Config.Entry)
 				{
-					a_still = StillTo1(a_still, a_just, ((Db4objects.Db4o.Config.Entry)a_object).key, 
-						a_depth, false);
-					a_still = StillTo1(a_still, a_just, ((Db4objects.Db4o.Config.Entry)a_object).value
-						, a_depth, false);
+					still = StillTo1(still, ((Db4objects.Db4o.Config.Entry)obj).key, depth, false);
+					still = StillTo1(still, ((Db4objects.Db4o.Config.Entry)obj).value, depth, false);
 				}
 				else
 				{
-					if (a_forceUnknownDeactivate)
+					if (forceUnknownDeactivate)
 					{
-						Db4objects.Db4o.YapClass yc = GetYapClass(Reflector().ForObject(a_object), false);
+						Db4objects.Db4o.YapClass yc = GetYapClass(Reflector().ForObject(obj), false);
 						if (yc != null)
 						{
-							yc.Deactivate(i_trans, a_object, a_depth);
+							yc.Deactivate(i_trans, obj, depth);
 						}
 					}
 				}
 			}
-			return a_still;
+			return still;
 		}
 
 		internal virtual void StillToActivate(object a_object, int a_depth)
 		{
-			i_stillToActivate = StillTo1(i_stillToActivate, i_justActivated, a_object, a_depth
-				, false);
+			i_stillToActivate = StillTo1(i_stillToActivate, a_object, a_depth, false);
 		}
 
 		internal virtual void StillToDeactivate(object a_object, int a_depth, bool a_forceUnknownDeactivate
 			)
 		{
-			i_stillToDeactivate = StillTo1(i_stillToDeactivate, i_justDeactivated, a_object, 
-				a_depth, a_forceUnknownDeactivate);
+			i_stillToDeactivate = StillTo1(i_stillToDeactivate, a_object, a_depth, a_forceUnknownDeactivate
+				);
 		}
 
 		internal virtual void StillToSet(Db4objects.Db4o.Transaction a_trans, Db4objects.Db4o.YapObject
@@ -2204,24 +2148,13 @@ namespace Db4objects.Db4o
 			lock (i_lock)
 			{
 				CheckClosed();
-				return StoredClass1(clazz);
-			}
-		}
-
-		internal virtual Db4objects.Db4o.YapClass StoredClass1(object clazz)
-		{
-			try
-			{
 				Db4objects.Db4o.Reflect.IReflectClass claxx = ConfigImpl().ReflectorFor(clazz);
-				if (claxx != null)
+				if (claxx == null)
 				{
-					return GetYapClass(claxx, false);
+					return null;
 				}
+				return GetYapClass(claxx, false);
 			}
-			catch
-			{
-			}
-			return null;
 		}
 
 		public virtual Db4objects.Db4o.Ext.IStoredClass[] StoredClasses()
@@ -2239,6 +2172,47 @@ namespace Db4objects.Db4o
 		}
 
 		public abstract Db4objects.Db4o.Ext.ISystemInfo SystemInfo();
+
+		public void BeginTopLevelCall()
+		{
+			CheckClosed();
+			GenerateCallIDOnTopLevel();
+			_stackDepth++;
+		}
+
+		public void EndTopLevelCall()
+		{
+			_stackDepth--;
+			GenerateCallIDOnTopLevel();
+		}
+
+		private void GenerateCallIDOnTopLevel()
+		{
+			if (_stackDepth == 0)
+			{
+				_topLevelCallId = _topLevelCallIdGenerator.Next();
+			}
+		}
+
+		public virtual int StackDepth()
+		{
+			return _stackDepth;
+		}
+
+		public virtual void StackDepth(int depth)
+		{
+			_stackDepth = depth;
+		}
+
+		public virtual int TopLevelCallId()
+		{
+			return _topLevelCallId;
+		}
+
+		public virtual void TopLevelCallId(int id)
+		{
+			_topLevelCallId = id;
+		}
 
 		public virtual object Unmarshall(Db4objects.Db4o.YapWriter yapBytes)
 		{
@@ -2280,17 +2254,12 @@ namespace Db4objects.Db4o
 		public abstract void WriteUpdate(Db4objects.Db4o.YapClass a_yapClass, Db4objects.Db4o.YapWriter
 			 a_bytes);
 
-		public void RemoveReference(Db4objects.Db4o.YapObject yo)
+		public void RemoveReference(Db4objects.Db4o.YapObject @ref)
 		{
-			HcTreeRemove(yo);
-			IdTreeRemove(yo.GetID());
-			if (i_justActivated != null && i_justActivated[0] != null)
-			{
-				i_justActivated[0] = i_justActivated[0].RemoveLike(new Db4objects.Db4o.TreeInt(yo
-					.GetID()));
-			}
-			yo.SetID(-1);
-			Db4objects.Db4o.Platform4.KillYapRef(yo.i_object);
+			i_hcTree = i_hcTree.Hc_remove(@ref);
+			i_idTree = i_idTree.Id_remove(@ref.GetID());
+			@ref.SetID(-1);
+			Db4objects.Db4o.Platform4.KillYapRef(@ref.GetObjectReference());
 		}
 
 		private static Db4objects.Db4o.YapStream Cast(Db4objects.Db4o.YapStreamBase obj)

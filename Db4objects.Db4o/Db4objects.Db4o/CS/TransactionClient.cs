@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.CS
 			public void Visit(object a_object)
 			{
 				Db4objects.Db4o.DeleteInfo info = (Db4objects.Db4o.DeleteInfo)a_object;
-				if (info._delete && info._reference != null)
+				if (info._reference != null)
 				{
 					this._enclosing.i_yapObjectsToGc = Db4objects.Db4o.Foundation.Tree.Add(this._enclosing
 						.i_yapObjectsToGc, new Db4objects.Db4o.TreeIntObject(info._key, info._reference)
@@ -77,13 +77,6 @@ namespace Db4objects.Db4o.CS
 			base.Delete(a_yo, a_cascade);
 			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.TA_DELETE.GetWriterForInts(this
 				, new int[] { a_yo.GetID(), a_cascade }));
-		}
-
-		public override void DontDelete(int classID, int a_id)
-		{
-			base.DontDelete(classID, a_id);
-			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.TA_DONT_DELETE.GetWriterForInts
-				(this, new int[] { classID, a_id }));
 		}
 
 		public override bool IsDeleted(int a_id)

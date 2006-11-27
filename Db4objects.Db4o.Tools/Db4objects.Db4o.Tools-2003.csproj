@@ -1,130 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject>
-    <CSHARP
-        ProjectType = "Local"
-        ProductVersion = "7.10.3077"
-        SchemaVersion = "2.0"
-        ProjectGuid = "{1D28DD3C-4D59-4003-96C6-9CBB3BA68FA6}"
-    >
+    <CSHARP ProductVersion="7.10.3077" ProjectGuid="{1D28DD3C-4D59-4003-96C6-9CBB3BA68FA6}" ProjectType="Local" SchemaVersion="2.0">
         <Build>
-            <Settings
-                ApplicationIcon = ""
-                AssemblyKeyContainerName = ""
-                AssemblyName = "Db4objects.Db4o.Tools"
-                AssemblyOriginatorKeyFile = ""
-                DefaultClientScript = "JScript"
-                DefaultHTMLPageLayout = "Grid"
-                DefaultTargetSchema = "IE50"
-                DelaySign = "false"
-                OutputType = "Library"
-                PreBuildEvent = ""
-                PostBuildEvent = ""
-                RootNamespace = "Db4objects.Db4o.Tools"
-                RunPostBuildEvent = "OnBuildSuccess"
-                StartupObject = ""
-            >
-                <Config
-                    Name = "Debug"
-                    AllowUnsafeBlocks = "false"
-                    BaseAddress = "285212672"
-                    CheckForOverflowUnderflow = "false"
-                    ConfigurationOverrideFile = ""
-                    DefineConstants = "DEBUG;TRACE;NET"
-                    DocumentationFile = ""
-                    DebugSymbols = "true"
-                    FileAlignment = "4096"
-                    IncrementalBuild = "false"
-                    NoStdLib = "false"
-                    NoWarn = ""
-                    Optimize = "false"
-                    OutputPath = "bin\Debug\"
-                    RegisterForComInterop = "false"
-                    RemoveIntegerChecks = "false"
-                    TreatWarningsAsErrors = "false"
-                    WarningLevel = "0"
-                />
-                <Config
-                    Name = "Release"
-                    AllowUnsafeBlocks = "false"
-                    BaseAddress = "285212672"
-                    CheckForOverflowUnderflow = "false"
-                    ConfigurationOverrideFile = ""
-                    DefineConstants = "TRACE;NET"
-                    DocumentationFile = ""
-                    DebugSymbols = "false"
-                    FileAlignment = "4096"
-                    IncrementalBuild = "false"
-                    NoStdLib = "false"
-                    NoWarn = ""
-                    Optimize = "true"
-                    OutputPath = "bin\Release\"
-                    RegisterForComInterop = "false"
-                    RemoveIntegerChecks = "false"
-                    TreatWarningsAsErrors = "false"
-                    WarningLevel = "4"
-                />
+            <Settings ApplicationIcon="" AssemblyKeyContainerName="" AssemblyName="Db4objects.Db4o.Tools" AssemblyOriginatorKeyFile="" DefaultClientScript="JScript" DefaultHTMLPageLayout="Grid" DefaultTargetSchema="IE50" DelaySign="false" OutputType="Library" PostBuildEvent="" PreBuildEvent="" RootNamespace="Db4objects.Db4o.Tools" RunPostBuildEvent="OnBuildSuccess" StartupObject="">
+                <Config AllowUnsafeBlocks="false" BaseAddress="285212672" CheckForOverflowUnderflow="false" ConfigurationOverrideFile="" DebugSymbols="true" DefineConstants="DEBUG;TRACE;NET" DocumentationFile="" FileAlignment="4096" IncrementalBuild="false" Name="Debug" NoStdLib="false" NoWarn="" Optimize="false" OutputPath="bin\Debug\" RegisterForComInterop="false" RemoveIntegerChecks="false" TreatWarningsAsErrors="false" WarningLevel="0"/>
+                <Config AllowUnsafeBlocks="false" BaseAddress="285212672" CheckForOverflowUnderflow="false" ConfigurationOverrideFile="" DebugSymbols="false" DefineConstants="TRACE;NET" DocumentationFile="" FileAlignment="4096" IncrementalBuild="false" Name="Release" NoStdLib="false" NoWarn="" Optimize="true" OutputPath="bin\Release\" RegisterForComInterop="false" RemoveIntegerChecks="false" TreatWarningsAsErrors="false" WarningLevel="4"/>
             </Settings>
             <References>
-                <Reference
-                    Name = "System"
-                    AssemblyName = "System"
-                    HintPath = "..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.dll"
-                />
-                <Reference
-                    Name = "System.Data"
-                    AssemblyName = "System.Data"
-                    HintPath = "..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Data.dll"
-                />
-                <Reference
-                    Name = "System.XML"
-                    AssemblyName = "System.Xml"
-                    HintPath = "..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
-                />
-                <Reference
-                    Name = "Db4objects.Db4o-2003"
-                    Project = "{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "Mono.Cecil"
-                    AssemblyName = "Mono.Cecil"
-                    HintPath = "..\Libs\net-1.1\Mono.Cecil.dll"
-                />
-                <Reference
-                    Name = "Cecil.FlowAnalysis"
-                    AssemblyName = "Cecil.FlowAnalysis"
-                    HintPath = "..\Libs\net-1.1\Cecil.FlowAnalysis.dll"
-                />
+                <Reference AssemblyName="System" HintPath="..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.dll" Name="System"/>
+                <Reference AssemblyName="System.Data" HintPath="..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Data.dll" Name="System.Data"/>
+                <Reference AssemblyName="System.Xml" HintPath="..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll" Name="System.XML"/>
+                <Reference Name="Db4objects.Db4o-2003" Package="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" Project="{31BEB0C5-4BCC-4E74-B16E-74F09ACB1C14}"/>
+                <Reference AssemblyName="Mono.Cecil" HintPath="..\Libs\net-1.1\Mono.Cecil.dll" Name="Mono.Cecil"/>
+                <Reference AssemblyName="Cecil.FlowAnalysis" HintPath="..\Libs\net-1.1\Cecil.FlowAnalysis.dll" Name="Cecil.FlowAnalysis"/>
             </References>
         </Build>
         <Files>
-            <Include>
-                <File
-                    RelPath = "Db4objects.Db4o.Tools\Defragment.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Db4objects.Db4o.Tools\Statistics.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Db4objects.Db4o.Tools\NativeQueries\QueryExpressionBuilder.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Db4objects.Db4o.Tools\NativeQueries\UnsupportedPredicateException.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Properties\AssemblyInfo.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-            </Include>
+            <Include><File BuildAction="Compile" RelPath="Db4objects.Db4o.Tools\Defragment.cs" SubType="Code"/><File BuildAction="Compile" RelPath="Db4objects.Db4o.Tools\NativeQueries\QueryExpressionBuilder.cs" SubType="Code"/><File BuildAction="Compile" RelPath="Db4objects.Db4o.Tools\NativeQueries\UnsupportedPredicateException.cs" SubType="Code"/><File BuildAction="Compile" RelPath="Db4objects.Db4o.Tools\Statistics.cs" SubType="Code"/><File BuildAction="Compile" RelPath="Properties\AssemblyInfo.cs" SubType="Code"/></Include>
         </Files>
     </CSHARP>
 </VisualStudioProject>
-

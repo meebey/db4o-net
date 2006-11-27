@@ -195,7 +195,7 @@ namespace Db4objects.Db4o.Inside.IX
 						Db4objects.Db4o.Foundation.Tree clonedTree = newFileRange;
 						if (clonedTree != null)
 						{
-							clonedTree = clonedTree.DeepClone(ft);
+							clonedTree = (Db4objects.Db4o.Foundation.Tree)clonedTree.DeepClone(ft);
 						}
 						Db4objects.Db4o.Foundation.Tree[] tree = { clonedTree };
 						ft.GetRoot().TraverseFromLeaves((new _AnonymousInnerClass196(this, ft, tree)));

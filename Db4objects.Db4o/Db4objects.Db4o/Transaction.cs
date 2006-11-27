@@ -89,28 +89,23 @@ namespace Db4objects.Db4o
 
 		public virtual void BeginEndSet()
 		{
-			CheckSynchronization();
-			if (i_delete != null)
+			if (i_delete == null)
 			{
-				bool[] foundOne = { false };
-				Db4objects.Db4o.Transaction finalThis = this;
-				do
-				{
-					foundOne[0] = false;
-					Db4objects.Db4o.Foundation.Tree delete = i_delete;
-					i_delete = null;
-					delete.Traverse(new _AnonymousInnerClass91(this));
-					delete.Traverse(new _AnonymousInnerClass101(this, foundOne, finalThis));
-				}
-				while (foundOne[0]);
+				i_writtenUpdateDeletedMembers = null;
+				return;
 			}
-			i_delete = null;
+			while (i_delete != null)
+			{
+				Db4objects.Db4o.Foundation.Tree delete = i_delete;
+				i_delete = null;
+				delete.Traverse(new _AnonymousInnerClass92(this));
+			}
 			i_writtenUpdateDeletedMembers = null;
 		}
 
-		private sealed class _AnonymousInnerClass91 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass92 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass91(Transaction _enclosing)
+			public _AnonymousInnerClass92(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -118,55 +113,24 @@ namespace Db4objects.Db4o
 			public void Visit(object a_object)
 			{
 				Db4objects.Db4o.DeleteInfo info = (Db4objects.Db4o.DeleteInfo)a_object;
-				if (!info._delete)
+				object obj = null;
+				if (info._reference != null)
 				{
-					this._enclosing.i_delete = Db4objects.Db4o.Foundation.Tree.Add(this._enclosing.i_delete
-						, new Db4objects.Db4o.DeleteInfo(info._key, null, false, info._cascade));
+					obj = info._reference.GetObject();
 				}
+				if (obj == null)
+				{
+					object[] arr = this._enclosing.Stream().GetObjectAndYapObjectByID(this._enclosing
+						, info._key);
+					obj = arr[0];
+					info._reference = (Db4objects.Db4o.YapObject)arr[1];
+					info._reference.FlagForDelete(this._enclosing.Stream().TopLevelCallId());
+				}
+				this._enclosing.Stream().Delete3(this._enclosing, info._reference, info._cascade, 
+					false);
 			}
 
 			private readonly Transaction _enclosing;
-		}
-
-		private sealed class _AnonymousInnerClass101 : Db4objects.Db4o.Foundation.IVisitor4
-		{
-			public _AnonymousInnerClass101(Transaction _enclosing, bool[] foundOne, Db4objects.Db4o.Transaction
-				 finalThis)
-			{
-				this._enclosing = _enclosing;
-				this.foundOne = foundOne;
-				this.finalThis = finalThis;
-			}
-
-			public void Visit(object a_object)
-			{
-				Db4objects.Db4o.DeleteInfo info = (Db4objects.Db4o.DeleteInfo)a_object;
-				if (info._delete)
-				{
-					foundOne[0] = true;
-					object obj = null;
-					if (info._reference != null)
-					{
-						obj = info._reference.GetObject();
-					}
-					if (obj == null)
-					{
-						object[] arr = finalThis.Stream().GetObjectAndYapObjectByID(finalThis, info._key);
-						obj = arr[0];
-						info._reference = (Db4objects.Db4o.YapObject)arr[1];
-					}
-					this._enclosing.Stream().Delete4(finalThis, info._reference, info._cascade, false
-						);
-				}
-				this._enclosing.i_delete = Db4objects.Db4o.Foundation.Tree.Add(this._enclosing.i_delete
-					, new Db4objects.Db4o.DeleteInfo(info._key, null, false, info._cascade));
-			}
-
-			private readonly Transaction _enclosing;
-
-			private readonly bool[] foundOne;
-
-			private readonly Db4objects.Db4o.Transaction finalThis;
 		}
 
 		private void ClearAll()
@@ -352,14 +316,14 @@ namespace Db4objects.Db4o
 			int[] slotSetPointerCount = { count };
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass310(this, slotSetPointerCount));
+				_slotChanges.Traverse(new _AnonymousInnerClass295(this, slotSetPointerCount));
 			}
 			return slotSetPointerCount[0];
 		}
 
-		private sealed class _AnonymousInnerClass310 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass295 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass310(Transaction _enclosing, int[] slotSetPointerCount)
+			public _AnonymousInnerClass295(Transaction _enclosing, int[] slotSetPointerCount)
 			{
 				this._enclosing = _enclosing;
 				this.slotSetPointerCount = slotSetPointerCount;
@@ -380,52 +344,41 @@ namespace Db4objects.Db4o
 			private readonly int[] slotSetPointerCount;
 		}
 
-		public virtual void Delete(Db4objects.Db4o.YapObject a_yo, int a_cascade)
+		public virtual void Delete(Db4objects.Db4o.YapObject @ref, int cascade)
 		{
 			CheckSynchronization();
-			int id = a_yo.GetID();
+			if (!i_stream.FlagForDelete(@ref))
+			{
+				return;
+			}
+			int id = @ref.GetID();
+			if (IsDeleted(id))
+			{
+				return;
+			}
 			Db4objects.Db4o.DeleteInfo info = (Db4objects.Db4o.DeleteInfo)Db4objects.Db4o.TreeInt
 				.Find(i_delete, id);
 			if (info == null)
 			{
-				info = new Db4objects.Db4o.DeleteInfo(id, a_yo, true, a_cascade);
+				info = new Db4objects.Db4o.DeleteInfo(id, @ref, cascade);
 				i_delete = Db4objects.Db4o.Foundation.Tree.Add(i_delete, info);
 				return;
 			}
-			info._reference = a_yo;
-			if (a_cascade > info._cascade)
+			info._reference = @ref;
+			if (cascade > info._cascade)
 			{
-				info._cascade = a_cascade;
+				info._cascade = cascade;
 			}
 		}
 
-		public virtual void DontDelete(int classID, int a_id)
+		public virtual void DontDelete(int a_id)
 		{
-			CheckSynchronization();
-			Db4objects.Db4o.DeleteInfo info = (Db4objects.Db4o.DeleteInfo)Db4objects.Db4o.TreeInt
-				.Find(i_delete, a_id);
-			if (info == null)
-			{
-				i_delete = Db4objects.Db4o.Foundation.Tree.Add(i_delete, new Db4objects.Db4o.DeleteInfo
-					(a_id, null, false, 0));
-			}
-			else
-			{
-				info._delete = false;
-			}
-			Db4objects.Db4o.YapClass yc = Stream().GetYapClass(classID);
-			DontDeleteAllAncestors(yc, a_id);
-		}
-
-		internal virtual void DontDeleteAllAncestors(Db4objects.Db4o.YapClass yapClass, int
-			 objectID)
-		{
-			if (yapClass == null)
+			if (i_delete == null)
 			{
 				return;
 			}
-			yapClass.Index().DontDelete(this, objectID);
-			DontDeleteAllAncestors(yapClass.i_ancestor, objectID);
+			i_delete = Db4objects.Db4o.TreeInt.RemoveLike((Db4objects.Db4o.TreeInt)i_delete, 
+				a_id);
 		}
 
 		internal virtual void DontRemoveFromClassIndex(int a_yapClassID, int a_id)
@@ -459,13 +412,13 @@ namespace Db4objects.Db4o
 			}
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass393(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass374(this));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass393 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass374 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass393(Transaction _enclosing)
+			public _AnonymousInnerClass374(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -596,13 +549,13 @@ namespace Db4objects.Db4o
 		{
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass512(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass493(this));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass512 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass493 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass512(Transaction _enclosing)
+			public _AnonymousInnerClass493(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -806,15 +759,15 @@ namespace Db4objects.Db4o
 			}
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass714(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass695(this));
 				ret = true;
 			}
 			return ret;
 		}
 
-		private sealed class _AnonymousInnerClass714 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass695 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass714(Transaction _enclosing)
+			public _AnonymousInnerClass695(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -864,7 +817,7 @@ namespace Db4objects.Db4o
 			SlotFreeOnCommit(a_id, objectBytes.GetAddress(), objectBytes.GetLength());
 		}
 
-		public virtual Db4objects.Db4o.YapStream Stream()
+		public Db4objects.Db4o.YapStream Stream()
 		{
 			return i_stream;
 		}

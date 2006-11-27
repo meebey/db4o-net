@@ -1,7 +1,7 @@
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public abstract class Tree : Db4objects.Db4o.Foundation.IShallowClone
+	public abstract class Tree : Db4objects.Db4o.Foundation.IShallowClone, Db4objects.Db4o.Foundation.IDeepClone
 	{
 		public Db4objects.Db4o.Foundation.Tree _preceding;
 
@@ -188,7 +188,8 @@ namespace Db4objects.Db4o.Foundation
 			{
 				return null;
 			}
-			Db4objects.Db4o.Foundation.Tree newNode = a_tree.DeepClone(a_param);
+			Db4objects.Db4o.Foundation.Tree newNode = (Db4objects.Db4o.Foundation.Tree)a_tree
+				.DeepClone(a_param);
 			newNode._size = a_tree._size;
 			newNode._preceding = Db4objects.Db4o.Foundation.Tree.DeepClone(a_tree._preceding, 
 				a_param);
@@ -197,9 +198,9 @@ namespace Db4objects.Db4o.Foundation
 			return newNode;
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Tree DeepClone(object a_param)
+		public virtual object DeepClone(object a_param)
 		{
-			return (Db4objects.Db4o.Foundation.Tree)this.ShallowClone();
+			return ShallowClone();
 		}
 
 		public virtual bool Duplicates()

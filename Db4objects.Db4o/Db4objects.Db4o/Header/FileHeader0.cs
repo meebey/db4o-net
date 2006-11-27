@@ -83,8 +83,7 @@ namespace Db4objects.Db4o.Header
 			file.ShowInternalClasses(true);
 			_bootRecord = new Db4objects.Db4o.PBootRecord();
 			file.SetInternal(file.GetSystemTransaction(), _bootRecord, false);
-			_configBlock._bootRecordID = file.GetID1(file.GetSystemTransaction(), _bootRecord
-				);
+			_configBlock._bootRecordID = file.GetID1(_bootRecord);
 			WriteVariablePart(file, 1);
 			file.ShowInternalClasses(false);
 		}

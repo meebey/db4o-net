@@ -135,23 +135,23 @@ namespace Db4objects.Db4o.Inside.Cluster
 			throw new System.NotSupportedException();
 		}
 
-		public virtual void LoadFromClassIndex(Db4objects.Db4o.YapClass clazz)
+		public virtual void LoadFromClassIndex(Db4objects.Db4o.YapClass c)
 		{
 			throw new System.NotSupportedException();
 		}
 
-		public virtual void LoadFromQuery(Db4objects.Db4o.QQuery query)
+		public virtual void LoadFromQuery(Db4objects.Db4o.QQuery q)
 		{
 			throw new System.NotSupportedException();
 		}
 
 		public virtual void LoadFromClassIndexes(Db4objects.Db4o.YapClassCollectionIterator
-			 iterator)
+			 i)
 		{
 			throw new System.NotSupportedException();
 		}
 
-		public virtual void LoadFromIdReader(Db4objects.Db4o.YapReader reader)
+		public virtual void LoadFromIdReader(Db4objects.Db4o.YapReader r)
 		{
 			throw new System.NotSupportedException();
 		}

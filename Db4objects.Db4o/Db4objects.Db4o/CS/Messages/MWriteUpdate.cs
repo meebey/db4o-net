@@ -12,8 +12,9 @@ namespace Db4objects.Db4o.CS.Messages
 			{
 				Db4objects.Db4o.YapClass yc = stream.GetYapClass(yapClassId);
 				_payLoad.WriteEmbedded();
-				Db4objects.Db4o.Inside.Slots.Slot oldSlot = _trans.GetCommittedSlotOfID(_payLoad.
-					GetID());
+				int id = _payLoad.GetID();
+				Transaction().DontDelete(id);
+				Db4objects.Db4o.Inside.Slots.Slot oldSlot = _trans.GetCommittedSlotOfID(id);
 				stream.GetSlotForUpdate(_payLoad);
 				yc.AddFieldIndices(_payLoad, oldSlot);
 				_payLoad.WriteEncrypt();

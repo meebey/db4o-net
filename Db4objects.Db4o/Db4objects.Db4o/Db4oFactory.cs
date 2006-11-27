@@ -72,7 +72,9 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.Config.IConfiguration NewConfiguration()
 		{
-			return new Db4objects.Db4o.Config4Impl();
+			Db4objects.Db4o.Config4Impl config = new Db4objects.Db4o.Config4Impl();
+			Db4objects.Db4o.Platform4.GetDefaultConfiguration(config);
+			return config;
 		}
 
 		public static Db4objects.Db4o.Config.IConfiguration CloneConfiguration()

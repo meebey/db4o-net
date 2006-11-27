@@ -43,6 +43,9 @@ namespace Db4objects.Db4o
 			if (methods[eventID] != null)
 			{
 				object[] parameters = new object[] { stream };
+				int stackDepth = stream.StackDepth();
+				int topLevelCallId = stream.TopLevelCallId();
+				stream.StackDepth(0);
 				try
 				{
 					object res = methods[eventID].Invoke(obj, parameters);
@@ -53,6 +56,11 @@ namespace Db4objects.Db4o
 				}
 				catch
 				{
+				}
+				finally
+				{
+					stream.StackDepth(stackDepth);
+					stream.TopLevelCallId(topLevelCallId);
 				}
 			}
 			return true;
@@ -94,10 +102,13 @@ namespace Db4objects.Db4o
 						{
 							method = classReflector.GetMethod(ToPascalCase(events[i]), parameterClasses);
 						}
-						methods[i] = method;
-						if (dispatcher == null)
+						if (method != null)
 						{
-							dispatcher = new Db4objects.Db4o.EventDispatcher(methods);
+							methods[i] = method;
+							if (dispatcher == null)
+							{
+								dispatcher = new Db4objects.Db4o.EventDispatcher(methods);
+							}
 						}
 					}
 					catch
