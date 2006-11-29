@@ -12,10 +12,10 @@ namespace Db4objects.Db4o
 	{
 		protected static float FILL = 0.6F;
 
-		[Transient]
+		[NonSerialized]
 		protected int i_changes;
 
-		[Transient]
+		[NonSerialized]
 		protected bool i_dontStoreOnDeactivate;
 
 		public P1HashElement[] i_entries;
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o
 		public int i_size;
 		public int i_type;  // 0 == default hash, 1 == ID hash
 
-		[Transient]
+		[NonSerialized]
 		internal P1HashElement[] i_table;
 
 		public int i_tableSize;

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Inside.Query
         System.Type _type;
         string _method;
 
-        [Transient]
+        [NonSerialized]
         Delegate _content;
 
         public DelegateEnvelope()

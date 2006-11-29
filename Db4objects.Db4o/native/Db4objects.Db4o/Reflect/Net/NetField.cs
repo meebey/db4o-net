@@ -73,6 +73,8 @@ namespace Db4objects.Db4o.Reflect.Net
         public static bool IsTransient(FieldInfo field)
         {
             if (field.IsNotSerialized) return true;
+            if (field.IsDefined(typeof(TransientAttribute), true)) return true;
+            if (_transientMarkers == null) return false;
             return CheckForTransient(field.GetCustomAttributes(true));
         }
 
@@ -83,8 +85,6 @@ namespace Db4objects.Db4o.Reflect.Net
             foreach (object attribute in attributes)
             {
                 string attributeName = attribute.ToString();
-                if ("Db4objects.Db4o.TransientAttribute" == attributeName) return true;
-                if (_transientMarkers == null) continue;
                 if (_transientMarkers.Contains(attributeName)) return true;
             }
             return false;

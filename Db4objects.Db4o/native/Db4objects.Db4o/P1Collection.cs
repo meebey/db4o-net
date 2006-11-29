@@ -1,5 +1,6 @@
 ﻿/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4objects.Db4o.Types;
 
@@ -7,10 +8,10 @@ namespace Db4objects.Db4o
 {
 	internal abstract class P1Collection : P1Object, IDb4oCollection, IDb4oTypeImpl
 	{
-		[Transient]
+		[NonSerialized]
 		internal int i_activationDepth = -1;
 
-		[Transient]
+		[NonSerialized]
 		internal bool i_deleteRemoved;
 
 		internal P1Collection()

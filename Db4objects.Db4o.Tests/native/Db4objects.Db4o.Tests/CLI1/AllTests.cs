@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(CsValueTypesTestCase),
 					typeof(CultureInfoTestCase),
 					typeof(MDArrayTestCase),
+					typeof(NonSerializedAttributeTestCase),
 					typeof(ObjectSetAsListTestCase),
 				};
 		}
