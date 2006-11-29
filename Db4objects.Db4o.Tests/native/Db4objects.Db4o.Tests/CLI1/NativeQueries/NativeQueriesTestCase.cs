@@ -9,8 +9,8 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 		private Data _c1;
 		private Data _c2;
 
-		public void Test()
-		{
+        protected override void Db4oSetupAfterStore()
+        {
 			_a = new Data(1, "Aa", null, DateTime.Today.AddDays(5), Priority.High);
 			_b = new Data(2, "Bb", _a, DateTime.Today.AddDays(10), Priority.High);
 			_c1 = new Data(3 ,"Cc",_b, DateTime.Today.AddDays(15), Priority.Low);
@@ -20,29 +20,33 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			Store(_b);
 			Store(_c1);
 			Store(_c2);
+		}
+	    
+	    public void TestReturnTrue()
+	    {
+	        AssertNQResult(new ReturnTruePredicate(), _a, _b, _c1, _c2);
+	    }
 
-//		}
-//
-//		public void TestDescendRightSideField()
-//		{
+		public void TestDescendRightSideField()
+		{
 			AssertNQResult(new DescendRightSideField(), _b);
-//		}
-//
-//		public void TestRightSideField()
-//		{
+		}
+
+		public void TestRightSideField()
+		{
 			AssertNQResult(new RightSideField(), _b);
-//		}
-//
-//		public void TestEnumPredicate()
-//		{	
+		}
+
+		public void TestEnumPredicate()
+		{	
 			AssertNQResult(new WithPriority(Priority.Low), _c1, _c2);
 			AssertNQResult(new WithPriority(Priority.Normal));
 			AssertNQResult(new WithPriority(Priority.High), _a, _b);
 			AssertNQResult(new WithPriority(Priority.Any), _a, _b, _c1, _c2);
-//		}
-//
-//		public void TestDateRange()
-//		{
+		}
+
+		public void TestDateRange()
+		{
 			AssertNQResult(new DateRange(DateTime.Now, DateTime.Now.AddDays(1)));
 			AssertNQResult(new DateRange(DateTime.Now, DateTime.Now.AddDays(6)), _a);
 			AssertNQResult(new DateRange(DateTime.Now.AddDays(4), DateTime.Now.AddDays(6)), _a);
@@ -50,56 +54,56 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			AssertNQResult(new DateRange(DateTime.Now.AddDays(4), DateTime.Now.AddDays(30)), _a, _b, _c1, _c2);
 			AssertNQResult(new DateRange(DateTime.Now.AddDays(14), DateTime.Now.AddDays(21)), _c1, _c2);
 			AssertNQResult(new DateRange(DateTime.Now.AddDays(19), DateTime.Now.AddDays(30)), _c2);
-//		}
-//
-//		public void TestNestedAnd()
-//		{
+		}
+
+		public void TestNestedAnd()
+		{
 			AssertNQResult(new NestedAnd(), _c1);
-//		}
-//
-//		public void TestIdDisjunction()
-//		{
+		}
+
+		public void TestIdDisjunction()
+		{
 			AssertNQResult(new IdDisjunction(), _a, _c1, _c2);
-//		}
-//
-//		public void TestNestedOr() 
-//		{
+		}
+
+		public void TestNestedOr() 
+		{
 			AssertNQResult(new NestedOr(), _a, _b);
-//		}
-//
-//		public void TestHasPreviousWithPrevious()
-//		{
+		}
+
+		public void TestHasPreviousWithPrevious()
+		{
 			AssertNQResult(new HasPreviousWithPrevious(), _c1);
-//		}
-//
-//		public void TestFieldGetterHasPreviousWithName()
-//		{
+		}
+
+		public void TestFieldGetterHasPreviousWithName()
+		{
 			AssertNQResult(new FieldGetterHasPreviousWithName("Aa"), _b);
 			AssertNQResult(new FieldGetterHasPreviousWithName("Bb"), _c1);
 			AssertNQResult(new FieldGetterHasPreviousWithName("Cc"));
-//		}
-//
-//		public void TestGetterGetterHasPreviousWithName()
-//		{
+		}
+
+		public void TestGetterGetterHasPreviousWithName()
+		{
 			AssertNQResult(new GetterGetterHasPreviousWithName("Aa"), _b);
 			AssertNQResult(new GetterGetterHasPreviousWithName("Bb"), _c1);
 			AssertNQResult(new GetterGetterHasPreviousWithName("Cc"));
-//		}
-//
-//		public void TestGetterHasPreviousWithName()
-//		{
+		}
+
+		public void TestGetterHasPreviousWithName()
+		{
 			AssertNQResult(new GetterHasPreviousWithName("Aa"), _b);
 			AssertNQResult(new GetterHasPreviousWithName("Bb"), _c1);
 			AssertNQResult(new GetterHasPreviousWithName("Cc"));
-//		}
-//
-//		public void TestIdGreaterAndNameEqual()
-//		{
+		}
+
+		public void TestIdGreaterAndNameEqual()
+		{
 			AssertNQResult(new IdGreaterAndNameEqual(), _c1, _c2);
-//		}
-//
-//		public void TestIdRange()
-//		{
+		}
+
+		public void TestIdRange()
+		{
 			AssertNQResult(new IdValidRange(), _b);
 			AssertNQResult(new IdInvalidRange());
 			AssertNQResult(new IdRange(1, 2), _a, _b);
@@ -109,144 +113,144 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			AssertNQResult(new IdRange(0, 1), _a);
 			AssertNQResult(new IdRange(4, 5));
 			AssertNQResult(new IdRange(-1, 0));
-//		}
-//
-//		public void TestPreviousIdGreaterOrEqual()
-//		{
+		}
+
+		public void TestPreviousIdGreaterOrEqual()
+		{
 			AssertNQResult(new PreviousIdGreaterOrEqual(1), _b, _c1);
 			AssertNQResult(new PreviousIdGreaterOrEqual(2), _c1);
 			AssertNQResult(new PreviousIdGreaterOrEqual(3));
-//		}
-//
-//		public void TestHasPreviousWithName()
-//		{
+		}
+
+		public void TestHasPreviousWithName()
+		{
 			AssertNQResult(new HasPreviousWithName("Aa"), _b);
 			AssertNQResult(new HasPreviousWithName("Bb"), _c1);
 			AssertNQResult(new HasPreviousWithName("Cc"));
-//		}
-//
-//		public void TestPredicateFieldIdGreaterOrEqualThan()
-//		{
+		}
+
+		public void TestPredicateFieldIdGreaterOrEqualThan()
+		{
 			AssertNQResult(new IdGreaterOrEqualThan(2), _b, _c1, _c2);
 			AssertNQResult(new IdGreaterOrEqualThan(3), _c1, _c2);
 			AssertNQResult(new IdGreaterOrEqualThan(4));
 			AssertNQResult(new IdGreaterOrEqualThan(1), _a, _b, _c1, _c2);
-//		}
-//
-//		public void TestPredicateFieldNameEqualsTo()
-//		{
+		}
+
+		public void TestPredicateFieldNameEqualsTo()
+		{
 			AssertNQResult(new NameEqualsTo("Bb"), _b);
 			AssertNQResult(new NameEqualsTo("Cc"), _c1, _c2);
 			AssertNQResult(new NameEqualsTo("None"));
-//		}
-//
-//		public void TestPredicateFieldNameOrId()
-//		{
+		}
+
+		public void TestPredicateFieldNameOrId()
+		{
 			AssertNQResult(new NameOrId("Bb", 3), _b, _c1, _c2);
 			AssertNQResult(new NameOrId("Aa", 2), _a, _b);
 			AssertNQResult(new NameOrId("None", -1));
-//		}
-//
-//		public void TestNotIntFieldEqual()
-//		{
+		}
+
+		public void TestNotIntFieldEqual()
+		{
 			AssertNQResult(new NotIntFieldEqual(), _b, _c1, _c2);
-//		}
-//
-//		public void TestNotIntGetterGreater()
-//		{
+		}
+
+		public void TestNotIntGetterGreater()
+		{
 			AssertNQResult(new NotIntGetterGreater(), _a, _b);
-//		}
-//
-//		public void TestNotStringGetterEqual()
-//		{
+		}
+
+		public void TestNotStringGetterEqual()
+		{
 			AssertNQResult(new NotStringGetterEqual(), _a, _b);
-//		}
-//
-//		public void TestCandidateNestedMethodInvocation()
-//		{
+		}
+
+		public void TestCandidateNestedMethodInvocation()
+		{
 			AssertNQResult(new CandidateNestedMethodInvocation(), _b, _c1);
-//		}
-//	
-//		public void TestIntGetterEqual()
-//		{
+		}
+	
+		public void TestIntGetterEqual()
+		{
 			AssertNQResult(new IntGetterEqual(), _b);
-//		}
-//
-//		public void TestIntGetterLessThan()
-//		{
+		}
+
+		public void TestIntGetterLessThan()
+		{
 			AssertNQResult(new IntGetterLessThan(), _a);
-//		}
-//
-//		public void TestIntGetterLessThanOrEqual()
-//		{
+		}
+
+		public void TestIntGetterLessThanOrEqual()
+		{
 			AssertNQResult(new IntGetterLessThanOrEqual(), _a, _b);
-//		}
-//
-//		public void TestIntGetterGreaterThan()
-//		{
+		}
+
+		public void TestIntGetterGreaterThan()
+		{
 			AssertNQResult(new IntGetterGreaterThan(), _c1, _c2);
-//		}
-//
-//		public void TestIntGetterGreaterThanOrEqual()
-//		{
+		}
+
+		public void TestIntGetterGreaterThanOrEqual()
+		{
 			AssertNQResult(new IntGetterGreaterThanOrEqual(), _b, _c1, _c2);
-//		}
-//
-//		public void TestStringGetterEqual()
-//		{
+		}
+
+		public void TestStringGetterEqual()
+		{
 			AssertNQResult(new StringGetterEqual(), _c1, _c2);
-//		}
-//
-//		public void TestConstStringField()
-//		{
+		}
+
+		public void TestConstStringField()
+		{
 			AssertNQResult(new ConstStringFieldPredicate(), _c1, _c2);
 			AssertNQResult(new ConstStringFieldPredicateEmpty());
-//		}
-//
-//		public void TestConstStringFieldOr()
-//		{
+		}
+
+		public void TestConstStringFieldOr()
+		{
 			AssertNQResult(new ConstStringFieldOrPredicate(), _a, _b);
 			AssertNQResult(new ConstStringFieldOrPredicateEmpty());
-//		}
-//
-//		public void TestConstIntField()
-//		{
+		}
+
+		public void TestConstIntField()
+		{
 			AssertNQResult(new ConstIntFieldPredicate1(), _a);
 			AssertNQResult(new ConstIntFieldPredicate2(), _b);
-//		}
-//
-//		public void TestConstIntFieldOr()
-//		{
+		}
+
+		public void TestConstIntFieldOr()
+		{
 			AssertNQResult(new ConstIntFieldOrPredicate(), _a, _b);
-//		}
-//
-//		public void TestIntFieldLessThanConst()
-//		{
+		}
+
+		public void TestIntFieldLessThanConst()
+		{
 			AssertNQResult(new IntFieldLessThanConst(), _a);
-//		}
-//
-//		public void TestIntFieldGreaterThanConst()
-//		{
+		}
+
+		public void TestIntFieldGreaterThanConst()
+		{
 			AssertNQResult(new IntFieldGreaterThanConst(), _c1, _c2);
-//		}
-//
-//		public void TestIntFieldLessThanOrEqualConst()
-//		{
+		}
+
+		public void TestIntFieldLessThanOrEqualConst()
+		{
 			AssertNQResult(new IntFieldLessThanOrEqualConst(), _a, _b);
-//		}
-//
-//		public void TestIntFieldGreaterThanOrEqualConst()
-//		{
+		}
+
+		public void TestIntFieldGreaterThanOrEqualConst()
+		{
 			AssertNQResult(new IntFieldGreaterThanOrEqualConst(), _b, _c1, _c2);
-//		}
-//
-//		public void TestIntGetterNotEqual()
-//		{
+		}
+
+		public void TestIntGetterNotEqual()
+		{
 			AssertNQResult(new IntGetterNotEqual(), _a, _c1, _c2);
-//		}
-//
-//		public void TestConstStringFieldNotEqual()
-//		{
+		}
+
+		public void TestConstStringFieldNotEqual()
+		{
 			AssertNQResult(new ConstStringFieldNotEqual(), _a, _b);
 		}
 

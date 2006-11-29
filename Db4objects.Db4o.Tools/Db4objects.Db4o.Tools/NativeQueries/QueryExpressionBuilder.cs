@@ -255,10 +255,29 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 
 			public NQExpression Expression
 			{
-				get { return (NQExpression)_current; }
+				get
+				{
+				    ConstValue value = _current as ConstValue;
+				    if (null != value)
+				    {
+                        return ToNQExpression(value);
+				    }
+				    return (NQExpression)_current;
+				}
 			}
 
-			private bool InsideCandidate
+		    private NQExpression ToNQExpression(ConstValue value)
+		    {
+                if (IsTrue(value.Value())) return BoolConstExpression.TRUE;
+		        return BoolConstExpression.FALSE;
+		    }
+
+		    private bool IsTrue(object o)
+		    {
+                return (o as IConvertible).ToBoolean(null);
+		    }
+
+		    private bool InsideCandidate
 			{
 				get { return _insideCandidate > 0; }
 			}

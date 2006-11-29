@@ -67,6 +67,14 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 				id, name, previous == null ? "null" : previous.id.ToString());
 		}
 	}
+    
+    class ReturnTruePredicate
+    {
+        public bool Match(Data candidate)
+        {
+            return true;
+        }
+    }
 
 	class RightSideField
 	{
