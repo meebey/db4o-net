@@ -18,21 +18,21 @@ namespace Db4objects.Db4o
 
 		public string i_ext;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private Sharpen.IO.File i_file;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private Db4objects.Db4o.IBlobStatus i_getStatusFrom;
 
 		public int i_length;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private double i_status = Db4objects.Db4o.Ext.Status.UNUSED;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private Db4objects.Db4o.YapStream i_stream;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private Db4objects.Db4o.Transaction i_trans;
 
 		public virtual int AdjustReadDepth(int a_depth)

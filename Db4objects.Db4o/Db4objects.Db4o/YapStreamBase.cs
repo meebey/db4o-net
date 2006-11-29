@@ -512,7 +512,7 @@ namespace Db4objects.Db4o
 				Delete3(trans, @ref, cascade, userCall);
 				return;
 			}
-			trans.Delete(@ref, cascade);
+			trans.Delete(@ref, @ref.GetID(), cascade);
 		}
 
 		internal void Delete3(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapObject

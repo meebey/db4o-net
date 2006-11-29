@@ -9,7 +9,7 @@ namespace Db4objects.Db4o
 		internal static readonly Db4objects.Db4o.IDGenerator idGenerator = new Db4objects.Db4o.IDGenerator
 			();
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		internal Db4objects.Db4o.QCandidates i_candidates;
 
 		public Db4objects.Db4o.Foundation.Collection4 i_childrenCandidates;
@@ -28,7 +28,7 @@ namespace Db4objects.Db4o
 
 		public bool i_removed = false;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		internal Db4objects.Db4o.Transaction i_trans;
 
 		public QCon()

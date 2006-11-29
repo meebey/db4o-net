@@ -114,7 +114,7 @@ namespace Db4objects.Db4o
 
 		public Db4objects.Db4o.Inside.Btree.BTree CreateBTreeClassIndex(int id)
 		{
-			return new Db4objects.Db4o.Inside.Btree.BTree(i_trans, id, new Db4objects.Db4o.PrimitiveIntHandler
+			return new Db4objects.Db4o.Inside.Btree.BTree(i_trans, id, new Db4objects.Db4o.IDHandler
 				(this));
 		}
 

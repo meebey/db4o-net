@@ -72,11 +72,15 @@ namespace Db4objects.Db4o.CS
 			private readonly TransactionClient _enclosing;
 		}
 
-		public override void Delete(Db4objects.Db4o.YapObject a_yo, int a_cascade)
+		public override bool Delete(Db4objects.Db4o.YapObject @ref, int id, int cascade)
 		{
-			base.Delete(a_yo, a_cascade);
+			if (!base.Delete(@ref, id, cascade))
+			{
+				return false;
+			}
 			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.TA_DELETE.GetWriterForInts(this
-				, new int[] { a_yo.GetID(), a_cascade }));
+				, new int[] { id, cascade }));
+			return true;
 		}
 
 		public override bool IsDeleted(int a_id)

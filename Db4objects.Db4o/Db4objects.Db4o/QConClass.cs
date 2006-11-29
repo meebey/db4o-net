@@ -4,7 +4,7 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public class QConClass : Db4objects.Db4o.QConObject
 	{
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private Db4objects.Db4o.Reflect.IReflectClass _claxx;
 
 		public string _className;

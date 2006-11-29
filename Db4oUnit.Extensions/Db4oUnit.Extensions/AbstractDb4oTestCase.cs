@@ -2,7 +2,7 @@ namespace Db4oUnit.Extensions
 {
 	public class AbstractDb4oTestCase : Db4oUnit.Extensions.IDb4oTestCase
 	{
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private Db4oUnit.Extensions.IDb4oFixture _fixture;
 
 		public virtual void Fixture(Db4oUnit.Extensions.IDb4oFixture fixture)

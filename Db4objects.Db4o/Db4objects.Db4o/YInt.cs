@@ -119,7 +119,7 @@ namespace Db4objects.Db4o
 
 		public override void DefragIndexEntry(Db4objects.Db4o.ReaderPair readers)
 		{
-			readers.CopyID();
+			readers.IncrementIntSize();
 		}
 	}
 }

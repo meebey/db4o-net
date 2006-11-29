@@ -3,7 +3,7 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public class QConEvaluation : Db4objects.Db4o.QCon
 	{
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private object i_evaluation;
 
 		public byte[] i_marshalledEvaluation;

@@ -2,7 +2,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 {
 	public abstract class SodaBaseTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
 	{
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		protected object[] _array;
 
 		protected override void Db4oSetupBeforeStore()

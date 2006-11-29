@@ -10,8 +10,7 @@ namespace Db4objects.Db4o.CS.Messages
 			Db4objects.Db4o.Transaction trans = Transaction();
 			lock (StreamLock())
 			{
-				object[] arr = Stream().GetObjectAndYapObjectByID(trans, id);
-				trans.Delete((Db4objects.Db4o.YapObject)arr[1], cascade);
+				trans.Delete(null, id, cascade);
 				return true;
 			}
 		}

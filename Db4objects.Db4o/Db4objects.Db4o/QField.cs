@@ -3,12 +3,12 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public class QField : Db4objects.Db4o.Foundation.IVisitor4, Db4objects.Db4o.Types.IUnversioned
 	{
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		internal Db4objects.Db4o.Transaction i_trans;
 
 		public string i_name;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		internal Db4objects.Db4o.YapField i_yapField;
 
 		public int i_yapClassID;

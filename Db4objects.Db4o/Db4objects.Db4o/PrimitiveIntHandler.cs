@@ -5,7 +5,7 @@ namespace Db4objects.Db4o
 	/// and by doing the comparison with a substraction
 	/// </summary>
 	/// <exclude></exclude>
-	public sealed class PrimitiveIntHandler : Db4objects.Db4o.YInt
+	public class PrimitiveIntHandler : Db4objects.Db4o.YInt
 	{
 		public PrimitiveIntHandler(Db4objects.Db4o.YapStream stream) : base(stream)
 		{

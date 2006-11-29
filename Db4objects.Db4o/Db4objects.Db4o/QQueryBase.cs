@@ -11,11 +11,11 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public abstract class QQueryBase : Db4objects.Db4o.Types.IUnversioned
 	{
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private static readonly Db4objects.Db4o.IDGenerator i_orderingGenerator = new Db4objects.Db4o.IDGenerator
 			();
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		internal Db4objects.Db4o.Transaction i_trans;
 
 		public Db4objects.Db4o.Foundation.Collection4 i_constraints = new Db4objects.Db4o.Foundation.Collection4
@@ -25,14 +25,14 @@ namespace Db4objects.Db4o
 
 		public string i_field;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private Db4objects.Db4o.Config.QueryEvaluationMode _evaluationMode;
 
 		public int _evaluationModeAsInt;
 
 		public Db4objects.Db4o.Query.IQueryComparator _comparator;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private readonly Db4objects.Db4o.QQuery _this;
 
 		protected QQueryBase()

@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Query
 
 		private System.Type _extentType;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private System.Reflection.MethodInfo cachedFilterMethod = null;
 
 		public Predicate() : this(null)

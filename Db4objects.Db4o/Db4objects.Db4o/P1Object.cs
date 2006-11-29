@@ -5,10 +5,10 @@ namespace Db4objects.Db4o
 	/// <persistent></persistent>
 	public class P1Object : Db4objects.Db4o.IDb4oTypeImpl
 	{
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private Db4objects.Db4o.Transaction i_trans;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private Db4objects.Db4o.YapObject i_yapObject;
 
 		public P1Object()

@@ -8,22 +8,22 @@ namespace Db4objects.Db4o
 
 		public int i_objectID;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		internal Db4objects.Db4o.YapClass i_yapClass;
 
 		public int i_yapClassID;
 
 		public Db4objects.Db4o.QField i_field;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		internal Db4objects.Db4o.IYapComparable i_comparator;
 
 		public Db4objects.Db4o.Config.IObjectAttribute i_attributeProvider;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private bool i_selfComparison = false;
 
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private bool i_loadedFromIndex;
 
 		public QConObject()

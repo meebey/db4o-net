@@ -344,17 +344,19 @@ namespace Db4objects.Db4o
 			private readonly int[] slotSetPointerCount;
 		}
 
-		public virtual void Delete(Db4objects.Db4o.YapObject @ref, int cascade)
+		public virtual bool Delete(Db4objects.Db4o.YapObject @ref, int id, int cascade)
 		{
 			CheckSynchronization();
-			if (!i_stream.FlagForDelete(@ref))
+			if (@ref != null)
 			{
-				return;
+				if (!i_stream.FlagForDelete(@ref))
+				{
+					return false;
+				}
 			}
-			int id = @ref.GetID();
-			if (IsDeleted(id))
+			if (SlotChangeIsFlaggedDeleted(id))
 			{
-				return;
+				return false;
 			}
 			Db4objects.Db4o.DeleteInfo info = (Db4objects.Db4o.DeleteInfo)Db4objects.Db4o.TreeInt
 				.Find(i_delete, id);
@@ -362,13 +364,14 @@ namespace Db4objects.Db4o
 			{
 				info = new Db4objects.Db4o.DeleteInfo(id, @ref, cascade);
 				i_delete = Db4objects.Db4o.Foundation.Tree.Add(i_delete, info);
-				return;
+				return true;
 			}
 			info._reference = @ref;
 			if (cascade > info._cascade)
 			{
 				info._cascade = cascade;
 			}
+			return true;
 		}
 
 		public virtual void DontDelete(int a_id)
@@ -412,13 +415,13 @@ namespace Db4objects.Db4o
 			}
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass374(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass376(this));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass374 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass376 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass374(Transaction _enclosing)
+			public _AnonymousInnerClass376(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -496,19 +499,23 @@ namespace Db4objects.Db4o
 			return new Db4objects.Db4o.Inside.Slots.Slot(address, length);
 		}
 
-		public virtual bool IsDeleted(int a_id)
+		private bool SlotChangeIsFlaggedDeleted(int id)
 		{
-			CheckSynchronization();
-			Db4objects.Db4o.Inside.Slots.SlotChange slot = FindSlotChange(a_id);
+			Db4objects.Db4o.Inside.Slots.SlotChange slot = FindSlotChange(id);
 			if (slot != null)
 			{
 				return slot.IsDeleted();
 			}
 			if (i_parentTransaction != null)
 			{
-				return i_parentTransaction.IsDeleted(a_id);
+				return i_parentTransaction.SlotChangeIsFlaggedDeleted(id);
 			}
 			return false;
+		}
+
+		public virtual bool IsDeleted(int id)
+		{
+			return SlotChangeIsFlaggedDeleted(id);
 		}
 
 		public virtual object[] ObjectAndYapObjectBySignature(long a_uuid, byte[] a_signature
@@ -549,13 +556,13 @@ namespace Db4objects.Db4o
 		{
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass493(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass498(this));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass493 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass498 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass493(Transaction _enclosing)
+			public _AnonymousInnerClass498(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -759,15 +766,15 @@ namespace Db4objects.Db4o
 			}
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass695(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass700(this));
 				ret = true;
 			}
 			return ret;
 		}
 
-		private sealed class _AnonymousInnerClass695 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass700 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass695(Transaction _enclosing)
+			public _AnonymousInnerClass700(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

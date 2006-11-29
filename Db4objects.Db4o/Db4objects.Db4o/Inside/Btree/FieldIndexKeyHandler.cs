@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Inside.Btree
 		public FieldIndexKeyHandler(Db4objects.Db4o.YapStream stream, Db4objects.Db4o.Inside.IX.IIndexable4
 			 delegate_)
 		{
-			_parentIdHandler = new Db4objects.Db4o.YInt(stream);
+			_parentIdHandler = new Db4objects.Db4o.IDHandler(stream);
 			_valueHandler = delegate_;
 		}
 
@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Inside.Btree
 
 		public virtual void DefragIndexEntry(Db4objects.Db4o.ReaderPair readers)
 		{
-			readers.CopyID(true, false);
+			_parentIdHandler.DefragIndexEntry(readers);
 			_valueHandler.DefragIndexEntry(readers);
 		}
 	}

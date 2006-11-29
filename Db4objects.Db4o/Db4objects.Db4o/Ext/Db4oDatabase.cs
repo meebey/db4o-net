@@ -27,11 +27,11 @@ namespace Db4objects.Db4o.Ext
 
 		/// <summary>cached ObjectContainer for getting the own ID.</summary>
 		/// <remarks>cached ObjectContainer for getting the own ID.</remarks>
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private Db4objects.Db4o.YapStream i_stream;
 
 		/// <summary>cached ID, only valid in combination with i_objectContainer</summary>
-		[Db4objects.Db4o.Transient]
+		[System.NonSerialized]
 		private int i_id;
 
 		public Db4oDatabase()
