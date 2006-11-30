@@ -29,6 +29,9 @@ namespace Db4objects.Db4o.CS.Messages
 		public static readonly Db4objects.Db4o.CS.Messages.MsgD CREATE_CLASS = new Db4objects.Db4o.CS.Messages.MCreateClass
 			();
 
+		public static readonly Db4objects.Db4o.CS.Messages.MsgObject CLASS_META = new Db4objects.Db4o.CS.Messages.MClassMeta
+			();
+
 		public static readonly Db4objects.Db4o.CS.Messages.Msg CURRENT_VERSION = new Db4objects.Db4o.CS.Messages.Msg
 			("VERSION");
 
@@ -104,6 +107,9 @@ namespace Db4objects.Db4o.CS.Messages
 		public static readonly Db4objects.Db4o.CS.Messages.MsgD PREFETCH_IDS = new Db4objects.Db4o.CS.Messages.MPrefetchIDs
 			();
 
+		public static readonly Db4objects.Db4o.CS.Messages.Msg PROCESS_DELETES = new Db4objects.Db4o.CS.Messages.MProcessDeletes
+			();
+
 		public static readonly Db4objects.Db4o.CS.Messages.MsgObject QUERY_EXECUTE = new 
 			Db4objects.Db4o.CS.Messages.MQueryExecute();
 
@@ -142,9 +148,6 @@ namespace Db4objects.Db4o.CS.Messages
 
 		public static readonly Db4objects.Db4o.CS.Messages.Msg SWITCH_TO_MAIN_FILE = new 
 			Db4objects.Db4o.CS.Messages.Msg("SWITCH_M");
-
-		public static readonly Db4objects.Db4o.CS.Messages.Msg TA_BEGIN_END_SET = new Db4objects.Db4o.CS.Messages.MTaBeginEndSet
-			();
 
 		public static readonly Db4objects.Db4o.CS.Messages.MsgD TA_DELETE = new Db4objects.Db4o.CS.Messages.MTaDelete
 			();

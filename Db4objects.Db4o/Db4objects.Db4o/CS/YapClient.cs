@@ -222,6 +222,11 @@ namespace Db4objects.Db4o.CS
 			}
 			if (resp.Equals(Db4objects.Db4o.CS.Messages.Msg.FAILED))
 			{
+				SendClassMeta(a_class);
+				resp = GetResponse();
+			}
+			if (resp.Equals(Db4objects.Db4o.CS.Messages.Msg.FAILED))
+			{
 				if (ConfigImpl().ExceptionsOnNotStorable())
 				{
 					throw new Db4objects.Db4o.Ext.ObjectNotStorableException(a_class);
@@ -249,6 +254,22 @@ namespace Db4objects.Db4o.CS
 			ClassCollection().AddYapClass(a_yapClass);
 			ClassCollection().ReadYapClass(a_yapClass, a_class);
 			return true;
+		}
+
+		private void SendClassMeta(Db4objects.Db4o.Reflect.IReflectClass reflectClass)
+		{
+			try
+			{
+				string name = reflectClass.GetName();
+				System.Type claxx = Sharpen.Runtime.GetType(name);
+				Db4objects.Db4o.CS.ClassMeta classMeta = _classMetaHelper.GetClassMeta(claxx);
+				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.CLASS_META.GetWriter(Marshall(i_systemTrans
+					, classMeta)));
+			}
+			catch (System.TypeLoadException e)
+			{
+				Sharpen.Runtime.PrintStackTrace(e);
+			}
 		}
 
 		public override long CurrentVersion()
@@ -321,7 +342,7 @@ namespace Db4objects.Db4o.CS
 		{
 			try
 			{
-				return (Db4objects.Db4o.CS.Messages.Msg)messageQueueLock.Run(new _AnonymousInnerClass314
+				return (Db4objects.Db4o.CS.Messages.Msg)messageQueueLock.Run(new _AnonymousInnerClass333
 					(this));
 			}
 			catch (System.Exception ex)
@@ -331,9 +352,9 @@ namespace Db4objects.Db4o.CS
 			}
 		}
 
-		private sealed class _AnonymousInnerClass314 : Db4objects.Db4o.Foundation.IClosure4
+		private sealed class _AnonymousInnerClass333 : Db4objects.Db4o.Foundation.IClosure4
 		{
-			public _AnonymousInnerClass314(YapClient _enclosing)
+			public _AnonymousInnerClass333(YapClient _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

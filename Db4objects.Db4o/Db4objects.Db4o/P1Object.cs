@@ -236,17 +236,15 @@ namespace Db4objects.Db4o
 		{
 			if (ValidYapObject())
 			{
-				Stream().BeginEndSet(i_trans);
-				Stream().BeginTopLevelCall();
+				Stream().BeginTopLevelSet();
 				try
 				{
 					i_yapObject.WriteUpdate(i_trans, depth);
 					Stream().CheckStillToSet();
-					Stream().BeginEndSet(i_trans);
 				}
 				finally
 				{
-					Stream().EndTopLevelCall();
+					Stream().EndTopLevelSet(i_trans);
 				}
 			}
 		}

@@ -3,6 +3,7 @@ namespace Db4objects.Db4o
 	/// <summary>public for .NET conversion reasons.</summary>
 	/// <remarks>public for .NET conversion reasons.</remarks>
 	/// <exclude></exclude>
+	/// <renameto>Buffer</renameto>
 	public class YapReader : Db4objects.Db4o.ISlotReader
 	{
 		public byte[] _buffer;

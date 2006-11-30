@@ -12,52 +12,20 @@ namespace Db4objects.Db4o.CS
 			i_client = a_stream;
 		}
 
-		public override void BeginEndSet()
-		{
-			if (i_delete != null)
-			{
-				i_delete.Traverse(new _AnonymousInnerClass22(this));
-			}
-			i_delete = null;
-			i_writtenUpdateDeletedMembers = null;
-			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.TA_BEGIN_END_SET);
-		}
-
-		private sealed class _AnonymousInnerClass22 : Db4objects.Db4o.Foundation.IVisitor4
-		{
-			public _AnonymousInnerClass22(TransactionClient _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public void Visit(object a_object)
-			{
-				Db4objects.Db4o.DeleteInfo info = (Db4objects.Db4o.DeleteInfo)a_object;
-				if (info._reference != null)
-				{
-					this._enclosing.i_yapObjectsToGc = Db4objects.Db4o.Foundation.Tree.Add(this._enclosing
-						.i_yapObjectsToGc, new Db4objects.Db4o.TreeIntObject(info._key, info._reference)
-						);
-				}
-			}
-
-			private readonly TransactionClient _enclosing;
-		}
-
 		public override void Commit()
 		{
 			CommitTransactionListeners();
 			if (i_yapObjectsToGc != null)
 			{
-				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass39(this));
+				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass23(this));
 			}
 			i_yapObjectsToGc = null;
 			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.COMMIT);
 		}
 
-		private sealed class _AnonymousInnerClass39 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass23 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass39(TransactionClient _enclosing)
+			public _AnonymousInnerClass23(TransactionClient _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -110,6 +78,38 @@ namespace Db4objects.Db4o.CS
 				return Stream().GetObjectAndYapObjectByID(this, id);
 			}
 			return new object[2];
+		}
+
+		public override void ProcessDeletes()
+		{
+			if (i_delete != null)
+			{
+				i_delete.Traverse(new _AnonymousInnerClass72(this));
+			}
+			i_delete = null;
+			i_writtenUpdateDeletedMembers = null;
+			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.PROCESS_DELETES);
+		}
+
+		private sealed class _AnonymousInnerClass72 : Db4objects.Db4o.Foundation.IVisitor4
+		{
+			public _AnonymousInnerClass72(TransactionClient _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Visit(object a_object)
+			{
+				Db4objects.Db4o.DeleteInfo info = (Db4objects.Db4o.DeleteInfo)a_object;
+				if (info._reference != null)
+				{
+					this._enclosing.i_yapObjectsToGc = Db4objects.Db4o.Foundation.Tree.Add(this._enclosing
+						.i_yapObjectsToGc, new Db4objects.Db4o.TreeIntObject(info._key, info._reference)
+						);
+				}
+			}
+
+			private readonly TransactionClient _enclosing;
 		}
 
 		public override void Rollback()

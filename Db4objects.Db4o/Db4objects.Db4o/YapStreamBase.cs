@@ -22,6 +22,9 @@ namespace Db4objects.Db4o
 
 		protected Db4objects.Db4o.YapClassCollection _classCollection;
 
+		protected Db4objects.Db4o.CS.ClassMetaHelper _classMetaHelper = new Db4objects.Db4o.CS.ClassMetaHelper
+			();
+
 		protected Db4objects.Db4o.Config4Impl i_config;
 
 		private int _stackDepth;
@@ -102,14 +105,6 @@ namespace Db4objects.Db4o
 			)
 		{
 			Activate2(CheckTransaction(ta), a_activate, a_depth);
-		}
-
-		internal void BeginEndSet(Db4objects.Db4o.Transaction ta)
-		{
-			if (ta != null)
-			{
-				ta.BeginEndSet();
-			}
 		}
 
 		internal void Activate2(Db4objects.Db4o.Transaction ta, object a_activate, int a_depth
@@ -471,7 +466,7 @@ namespace Db4objects.Db4o
 			{
 				trans = CheckTransaction(trans);
 				Delete1(trans, obj, true);
-				trans.BeginEndSet();
+				trans.ProcessDeletes();
 			}
 		}
 
@@ -592,7 +587,7 @@ namespace Db4objects.Db4o
 			}
 			Db4objects.Db4o.YapClass yc = yo.GetYapClass();
 			Db4objects.Db4o.YapField[] field = new Db4objects.Db4o.YapField[] { null };
-			yc.ForEachYapField(new _AnonymousInnerClass553(this, fieldName, field));
+			yc.ForEachYapField(new _AnonymousInnerClass571(this, fieldName, field));
 			if (field[0] == null)
 			{
 				return null;
@@ -635,9 +630,9 @@ namespace Db4objects.Db4o
 			return Descend1(trans, child, subPath);
 		}
 
-		private sealed class _AnonymousInnerClass553 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass571 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass553(YapStreamBase _enclosing, string fieldName, Db4objects.Db4o.YapField[]
+			public _AnonymousInnerClass571(YapStreamBase _enclosing, string fieldName, Db4objects.Db4o.YapField[]
 				 field)
 			{
 				this._enclosing = _enclosing;
@@ -1755,10 +1750,7 @@ namespace Db4objects.Db4o
 		{
 			lock (i_lock)
 			{
-				CheckClosed();
-				BeginEndSet(trans);
 				SetInternal(trans, obj, depth, true);
-				BeginEndSet(trans);
 			}
 		}
 
@@ -1772,7 +1764,7 @@ namespace Db4objects.Db4o
 		public int SetInternal(Db4objects.Db4o.Transaction trans, object obj, int depth, 
 			bool checkJustSet)
 		{
-			BeginTopLevelCall();
+			BeginTopLevelSet();
 			try
 			{
 				int id = OldReplicationHandles(obj);
@@ -1788,7 +1780,7 @@ namespace Db4objects.Db4o
 			}
 			finally
 			{
-				EndTopLevelCall();
+				EndTopLevelSet(trans);
 			}
 		}
 
@@ -2180,10 +2172,24 @@ namespace Db4objects.Db4o
 			_stackDepth++;
 		}
 
+		public void BeginTopLevelSet()
+		{
+			BeginTopLevelCall();
+		}
+
 		public void EndTopLevelCall()
 		{
 			_stackDepth--;
 			GenerateCallIDOnTopLevel();
+		}
+
+		public void EndTopLevelSet(Db4objects.Db4o.Transaction trans)
+		{
+			EndTopLevelCall();
+			if (_stackDepth == 0)
+			{
+				trans.ProcessDeletes();
+			}
 		}
 
 		private void GenerateCallIDOnTopLevel()
@@ -2294,6 +2300,11 @@ namespace Db4objects.Db4o
 		public virtual Db4objects.Db4o.YapClassCollection ClassCollection()
 		{
 			return _classCollection;
+		}
+
+		public virtual Db4objects.Db4o.CS.ClassMetaHelper GetClassMetaHelper()
+		{
+			return _classMetaHelper;
 		}
 
 		public abstract long[] GetIDsForClass(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapClass

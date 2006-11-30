@@ -64,13 +64,13 @@ namespace Db4objects.Db4o
 			{
 				i_parentTransaction.AppendSlotChanges(writer);
 			}
-			Db4objects.Db4o.Foundation.Tree.Traverse(_slotChanges, new _AnonymousInnerClass72
+			Db4objects.Db4o.Foundation.Tree.Traverse(_slotChanges, new _AnonymousInnerClass70
 				(this, writer));
 		}
 
-		private sealed class _AnonymousInnerClass72 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass70 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass72(Transaction _enclosing, Db4objects.Db4o.YapReader writer
+			public _AnonymousInnerClass70(Transaction _enclosing, Db4objects.Db4o.YapReader writer
 				)
 			{
 				this._enclosing = _enclosing;
@@ -85,52 +85,6 @@ namespace Db4objects.Db4o
 			private readonly Transaction _enclosing;
 
 			private readonly Db4objects.Db4o.YapReader writer;
-		}
-
-		public virtual void BeginEndSet()
-		{
-			if (i_delete == null)
-			{
-				i_writtenUpdateDeletedMembers = null;
-				return;
-			}
-			while (i_delete != null)
-			{
-				Db4objects.Db4o.Foundation.Tree delete = i_delete;
-				i_delete = null;
-				delete.Traverse(new _AnonymousInnerClass92(this));
-			}
-			i_writtenUpdateDeletedMembers = null;
-		}
-
-		private sealed class _AnonymousInnerClass92 : Db4objects.Db4o.Foundation.IVisitor4
-		{
-			public _AnonymousInnerClass92(Transaction _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public void Visit(object a_object)
-			{
-				Db4objects.Db4o.DeleteInfo info = (Db4objects.Db4o.DeleteInfo)a_object;
-				object obj = null;
-				if (info._reference != null)
-				{
-					obj = info._reference.GetObject();
-				}
-				if (obj == null)
-				{
-					object[] arr = this._enclosing.Stream().GetObjectAndYapObjectByID(this._enclosing
-						, info._key);
-					obj = arr[0];
-					info._reference = (Db4objects.Db4o.YapObject)arr[1];
-					info._reference.FlagForDelete(this._enclosing.Stream().TopLevelCallId());
-				}
-				this._enclosing.Stream().Delete3(this._enclosing, info._reference, info._cascade, 
-					false);
-			}
-
-			private readonly Transaction _enclosing;
 		}
 
 		private void ClearAll()
@@ -188,7 +142,6 @@ namespace Db4objects.Db4o
 
 		private void CommitExceptForFreespace()
 		{
-			Commit1BeginEndSet();
 			Commit2Listeners();
 			Commit3Stream();
 			Commit4FieldIndexes();
@@ -197,15 +150,6 @@ namespace Db4objects.Db4o
 			Commit6WriteChanges();
 			FreeOnCommit();
 			Commit7ClearAll();
-		}
-
-		private void Commit1BeginEndSet()
-		{
-			if (i_parentTransaction != null)
-			{
-				i_parentTransaction.Commit1BeginEndSet();
-			}
-			BeginEndSet();
 		}
 
 		private void Commit2Listeners()
@@ -316,14 +260,14 @@ namespace Db4objects.Db4o
 			int[] slotSetPointerCount = { count };
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass295(this, slotSetPointerCount));
+				_slotChanges.Traverse(new _AnonymousInnerClass243(this, slotSetPointerCount));
 			}
 			return slotSetPointerCount[0];
 		}
 
-		private sealed class _AnonymousInnerClass295 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass243 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass295(Transaction _enclosing, int[] slotSetPointerCount)
+			public _AnonymousInnerClass243(Transaction _enclosing, int[] slotSetPointerCount)
 			{
 				this._enclosing = _enclosing;
 				this.slotSetPointerCount = slotSetPointerCount;
@@ -415,13 +359,13 @@ namespace Db4objects.Db4o
 			}
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass376(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass324(this));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass376 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass324 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass376(Transaction _enclosing)
+			public _AnonymousInnerClass324(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -526,6 +470,52 @@ namespace Db4objects.Db4o
 				);
 		}
 
+		public virtual void ProcessDeletes()
+		{
+			if (i_delete == null)
+			{
+				i_writtenUpdateDeletedMembers = null;
+				return;
+			}
+			while (i_delete != null)
+			{
+				Db4objects.Db4o.Foundation.Tree delete = i_delete;
+				i_delete = null;
+				delete.Traverse(new _AnonymousInnerClass425(this));
+			}
+			i_writtenUpdateDeletedMembers = null;
+		}
+
+		private sealed class _AnonymousInnerClass425 : Db4objects.Db4o.Foundation.IVisitor4
+		{
+			public _AnonymousInnerClass425(Transaction _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Visit(object a_object)
+			{
+				Db4objects.Db4o.DeleteInfo info = (Db4objects.Db4o.DeleteInfo)a_object;
+				object obj = null;
+				if (info._reference != null)
+				{
+					obj = info._reference.GetObject();
+				}
+				if (obj == null)
+				{
+					object[] arr = this._enclosing.Stream().GetObjectAndYapObjectByID(this._enclosing
+						, info._key);
+					obj = arr[0];
+					info._reference = (Db4objects.Db4o.YapObject)arr[1];
+					info._reference.FlagForDelete(this._enclosing.Stream().TopLevelCallId());
+				}
+				this._enclosing.Stream().Delete3(this._enclosing, info._reference, info._cascade, 
+					false);
+			}
+
+			private readonly Transaction _enclosing;
+		}
+
 		private Db4objects.Db4o.Inside.Slots.SlotChange ProduceSlotChange(int id)
 		{
 			Db4objects.Db4o.Inside.Slots.SlotChange slot = new Db4objects.Db4o.Inside.Slots.SlotChange
@@ -543,7 +533,6 @@ namespace Db4objects.Db4o
 		{
 			lock (Stream().i_lock)
 			{
-				BeginEndSet();
 				RollbackParticipants();
 				RollbackFieldIndexes();
 				RollbackSlotChanges();
@@ -556,13 +545,13 @@ namespace Db4objects.Db4o
 		{
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass498(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass482(this));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass498 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass482 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass498(Transaction _enclosing)
+			public _AnonymousInnerClass482(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -766,15 +755,15 @@ namespace Db4objects.Db4o
 			}
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass700(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass684(this));
 				ret = true;
 			}
 			return ret;
 		}
 
-		private sealed class _AnonymousInnerClass700 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass684 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass700(Transaction _enclosing)
+			public _AnonymousInnerClass684(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
