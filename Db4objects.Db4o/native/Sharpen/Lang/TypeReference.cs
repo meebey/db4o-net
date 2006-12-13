@@ -226,13 +226,15 @@ namespace Sharpen.Lang
 		public override Type Resolve()
 		{
 #if NET_2_0
-            return _elementType.Resolve().MakeArrayType(_rank+1);
+		    Type elementType = _elementType.Resolve();
+            if (_rank == 1) return elementType.MakeArrayType();
+		    return elementType.MakeArrayType(_rank);
 #else
 			return Array.CreateInstance(_elementType.Resolve(), new int[_rank]).GetType();
 #endif
 		}
 
-		protected override void AppendQualifier(StringBuilder builder)
+	    protected override void AppendQualifier(StringBuilder builder)
 		{
 			builder.Append('[');
 			for (int i = 1; i < _rank; ++i)

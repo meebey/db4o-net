@@ -8,6 +8,7 @@ namespace Db4objects.Db4o.Tests.CLI2
 			    {
 			    	typeof(Db4objects.Db4o.Tests.CLI2.Assorted.AllTests),
 			        typeof(Db4objects.Db4o.Tests.CLI2.Collections.AllTests),
+                    typeof(Db4objects.Db4o.Tests.CLI2.Regression.AllTests),
 			    };
 		}
 	}

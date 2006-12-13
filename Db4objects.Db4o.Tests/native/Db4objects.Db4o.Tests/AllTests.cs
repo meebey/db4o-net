@@ -8,6 +8,7 @@ namespace Db4objects.Db4o.Tests
 		public static int Main(string[] args)
 		{
 			return new AllTests().RunSolo();
+//            return new AllTests().RunClientServer();
 //			return new AllTests().RunSoloAndClientServer();
 		}
 		
@@ -18,6 +19,7 @@ namespace Db4objects.Db4o.Tests
 					typeof(Db4objects.Db4o.Tests.Common.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI1.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI2.AllTests),
+                    typeof(Db4objects.Db4o.Tests.SharpenLang.AllTests),
 				};
 		}
 	}
