@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Regression
             Store(new Item(new string[] {"foo", "bar"}));
         }
 
-        public void Test()
+        public void _Test()
         {
             Item item = (Item) RetrieveOnlyInstance(typeof(Item));
             Assert.IsNotNull(item.items);
