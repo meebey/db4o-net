@@ -60,7 +60,9 @@ namespace Db4objects.Db4o.Tests.SharpenLang
 			TypeReference voidPointer = TypeReference.FromString("System.Void*");
 			Assert.AreEqual("System.Void", voidPointer.SimpleName);
 			Assert.IsTrue(voidPointer is PointerTypeReference);
-			Assert.AreEqual(Type.GetType("System.Void*", true), voidPointer.Resolve());
+#if !CF_1_0
+            Assert.AreEqual(Type.GetType("System.Void*", true), voidPointer.Resolve());
+#endif
         }
 
         public void TestNestedType()
@@ -121,15 +123,22 @@ namespace Db4objects.Db4o.Tests.SharpenLang
             TypeReference typeName = TypeReference.FromType(type);
             Assert.AreEqual(type, typeName.Resolve(), type.FullName);
         }
-
-		public void TestJaggedArray()
-		{
+        
+        public void TestJagged2DArray() 
+        {
             EnsureRoundtrip(typeof(byte[][]));
-            
-#if !MONO
-            EnsureRoundtrip(typeof(byte[][][,]));
+        }
+
+#if (MONO || CF_1_0)
+        public void _TestJaggedXDArray() { 
+#else
+		public void TestJaggedXDArray() 
+        {
 #endif
-		}
+            EnsureRoundtrip(typeof(byte[][][,]));
+        }
+
+
 
 #if NET_2_0
         class NestedGeneric<Key, Value>
