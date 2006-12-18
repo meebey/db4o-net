@@ -94,10 +94,15 @@ namespace Db4objects.Db4o.Reflect.Net
 
             foreach (object attribute in attributes)
             {
-                string attributeName = attribute.ToString();
+                string attributeName = attribute.GetType().FullName;
                 if (_transientMarkers.Contains(attributeName)) return true;
             }
             return false;
+        }
+
+        public static void MarkTransient(System.Type attributeType)
+        {
+            MarkTransient(attributeType.FullName);
         }
 
         public static void MarkTransient(string attributeName)
@@ -112,5 +117,10 @@ namespace Db4objects.Db4o.Reflect.Net
             }
             _transientMarkers.Add(attributeName);
         }
+
+	    public static void ResetTransientMarkers()
+	    {
+            _transientMarkers = null;
+	    }
 	}
 }

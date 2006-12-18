@@ -16,6 +16,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(Events.EventRegistryTestCase),
 					typeof(Inside.AllTests),
 					typeof(NativeQueries.AllTests),
+                    typeof(Reflect.Net.AllTests),
 					typeof(CsCascadeDeleteToStructs),
 					typeof(CsCollections),
 					typeof(CsCustomTransientAttribute),
