@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			return orig;
 		}
 		
-		public ReflectClass IndexType()
+		public Db4objects.Db4o.Reflect.IReflectClass IndexType()
 		{
 			return GetFieldType();
 		}
