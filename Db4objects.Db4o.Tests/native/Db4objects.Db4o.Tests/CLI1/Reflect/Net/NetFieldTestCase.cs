@@ -37,12 +37,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 
         public void SetUp()
         {
-            NetField.MarkTransient(typeof(CustomTransientAttribute));
+			NetField.ResetTransientMarkers();
         }
 
         public void TearDown()
         {
-            NetField.ResetTransientMarkers();
         }
 
 		public void TestIsTransientRefusesRawFields()
@@ -62,6 +61,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 		
 		public void TestIsTransientUnderstandsCustomTransient()
 		{
+			AssertIsNotTransient("CustomTransientField");
+			AssertIsNotTransient("FieldWithCustomAttribute");
+			
+            NetField.MarkTransient(typeof(CustomTransientAttribute));
+			
 			AssertIsTransient("CustomTransientField");
 			AssertIsNotTransient("FieldWithCustomAttribute");
 		}
