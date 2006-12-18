@@ -69,6 +69,16 @@ namespace Db4objects.Db4o.Reflect.Net
 			{
 			}
 		}
+		
+		public object IndexEntry(object orig)
+		{
+			return orig;
+		}
+		
+		public ReflectClass IndexType()
+		{
+			return GetFieldType();
+		}
 
         public static bool IsTransient(FieldInfo field)
         {

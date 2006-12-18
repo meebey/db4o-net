@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		    return new Db4objects.Db4o.Reflect.Net.NetClass(_parent, GetUnderlyingType(forType));
 		}
 
-        private Type GetUnderlyingType(Type type)
+        private static Type GetUnderlyingType(Type type)
         {
 #if NET_2_0 || CF_2_0
             Type underlyingType = Nullable.GetUnderlyingType(type);

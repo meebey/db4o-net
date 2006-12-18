@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Reflect.Net
             return UnfoldArrayCreation(GetArrayType(type, dimensions.Length - 1), dimensions, 0);
         }
 
-        private object UnfoldArrayCreation(Type type, int[] dimensions, int dimensionIndex)
+        private static object UnfoldArrayCreation(Type type, int[] dimensions, int dimensionIndex)
         {   
             int length = dimensions[dimensionIndex];
             Array array = Array.CreateInstance(type, length);
@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Reflect.Net
             return array;
         }
 
-        private System.Type GetArrayType(Type type, int dimensions)
+        private static System.Type GetArrayType(Type type, int dimensions)
         {
             Type arrayType = MakeArrayType(type);
             for (int i=1; i<dimensions; ++i)
@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Reflect.Net
             return arrayType;
         }
 
-        private Type MakeArrayType(Type type)
+        private static Type MakeArrayType(Type type)
         {
 #if NET_2_0
             return type.MakeArrayType();
