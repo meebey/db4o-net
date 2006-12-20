@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Config
 	{
 		public Object OnInstantiate(IObjectContainer store, object stored)
 		{
-			return CultureInfo.CreateSpecificCulture((string)stored);
+			return new CultureInfo((string)stored);
 		}
 
 		public Object OnStore(IObjectContainer store, object obj)
