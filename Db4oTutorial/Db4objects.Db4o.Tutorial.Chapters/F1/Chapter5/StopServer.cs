@@ -32,14 +32,14 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             
             if (IObjectContainer != null)
             {
-                // get the messageSender for the IObjectContainer 
+                // get the messageSender for the IObjectContainer
                 IMessageSender messageSender = IObjectContainer.Ext()
-                    .Configure().GetMessageSender();
+                    .Configure().ClientServer().GetMessageSender();
 
                 // send an instance of a StopServer object
                 messageSender.Send(new StopServer());
                 
-                // close the IObjectContainer 
+                // close the IObjectContainer
                 IObjectContainer.Close();
             }
         }

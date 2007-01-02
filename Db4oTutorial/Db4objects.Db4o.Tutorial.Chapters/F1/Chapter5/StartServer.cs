@@ -6,10 +6,10 @@ using Db4objects.Db4o.Messaging;
 namespace Db4objects.Db4o.Tutorial.F1.Chapter5
 {
     /// <summary>
-    /// starts a db4o server with the settings from ServerConfiguration. 
+    /// starts a db4o server with the settings from ServerConfiguration.
     /// This is a typical setup for a long running server.
     /// The Server may be stopped from a remote location by running
-    /// StopServer. The StartServer instance is used as a MessageRecipient 
+    /// StopServer. The StartServer instance is used as a MessageRecipient
     /// and reacts to receiving an instance of a StopServer object.
     /// Note that all user classes need to be present on the server side
     /// and that all possible Db4oFactory.Configure() calls to alter the db4o
@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         public static void Main(string[] arguments)
         {
             new StartServer().RunServer();
-        } 
+        }
 
         /// <summary>
         /// opens the IObjectServer, and waits forever until Close() is called
@@ -44,13 +44,13 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
                 
                 // Using the messaging functionality to redirect all
                 // messages to this.processMessage
-                db4oServer.Ext().Configure().SetMessageRecipient(this);
+                db4oServer.Ext().Configure().ClientServer().SetMessageRecipient(this);
                 try
                 {
                     if (! stop)
                     {
                         // wait forever for Notify() from Close()
-                        Monitor.Wait(this);   
+                        Monitor.Wait(this);
                     }
                 }
                 catch (Exception e)
