@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.CS.Messages
 		public override bool ProcessAtServer(Db4objects.Db4o.CS.YapServerThread serverThread
 			)
 		{
-			Unmarshall();
+			Unmarshall(_payLoad._offset);
 			WriteQueryResult(Execute(), serverThread, _evaluationMode);
 			return true;
 		}

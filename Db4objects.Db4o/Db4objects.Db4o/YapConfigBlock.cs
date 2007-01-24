@@ -146,7 +146,8 @@ namespace Db4objects.Db4o
 			int oldLength = reader.ReadInt();
 			if (oldLength > LENGTH || oldLength < MINIMUM_LENGTH)
 			{
-				Db4objects.Db4o.Inside.Exceptions4.ThrowRuntimeException(17);
+				Db4objects.Db4o.Inside.Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Messages
+					.INCOMPATIBLE_FORMAT);
 			}
 			if (oldLength != LENGTH)
 			{
@@ -157,7 +158,7 @@ namespace Db4objects.Db4o
 					{
 						Db4objects.Db4o.Platform4.RemoveShutDownHook(_stream, _stream.i_lock);
 					}
-					Db4objects.Db4o.Inside.Exceptions4.ThrowRuntimeException(65);
+					throw new Db4objects.Db4o.Ext.OldFormatException();
 				}
 			}
 			reader.ReadLong();

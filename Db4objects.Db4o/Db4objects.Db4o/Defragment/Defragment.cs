@@ -13,16 +13,22 @@ namespace Db4objects.Db4o.Defragment
 	/// exception and no action will be taken.<br /><br />
 	/// For more detailed configuration of the defragmentation process, provide a
 	/// DefragmentConfig instance:<br /><br />
-	/// <code>DefragmentConfig config=new DefragmentConfig("sample.yap","sample.bap","sample.map");<br />
+	/// <code>DefragmentConfig config=new DefragmentConfig("sample.yap","sample.bap",new BTreeIDMapping("sample.map"));<br />
 	/// config.forceBackupDelete(true);<br />
-	/// config.yapClassFilter(new AvailableClassFilter());<br />
+	/// config.storedClassFilter(new AvailableClassFilter());<br />
+	/// config.db4oConfig(db4oConfig);<br />
 	/// Defragment.defrag(config);</code><br /><br />
 	/// This will move the file to "sample.bap", then create a defragmented version
-	/// of this file in the original position, using a temporary file "sample.map".
+	/// of this file in the original position, using a temporary file "sample.map" for BTree mapping.
 	/// If the backup file already exists, it will be deleted. The defragmentation
 	/// process will skip all classes that have instances stored within the yap file,
 	/// but that are not available on the class path (through the current
-	/// classloader).
+	/// classloader). Custom db4o configuration options are read from the
+	/// <see cref="Db4objects.Db4o.Config.IConfiguration">Configuration</see>
+	/// passed as db4oConfig.
+	/// <strong>Note:</strong> For some specific, non-default configuration settings like
+	/// UUID generation, etc., you <strong>must</strong> pass an appropriate db4o configuration,
+	/// just like you'd use it within your application for normal database operation.
 	/// </remarks>
 	public class Defragment
 	{
@@ -121,10 +127,10 @@ namespace Db4objects.Db4o.Defragment
 				SecondPass(context, config);
 				DefragUnindexed(context);
 				newClassCollectionID = context.MappedID(context.SourceClassCollectionID());
+				context.TargetClassCollectionID(newClassCollectionID);
 				int sourceIdentityID = context.DatabaseIdentityID(Db4objects.Db4o.Defragment.DefragContextImpl
 					.SOURCEDB);
-				targetIdentityID = context.MappedID(sourceIdentityID);
-				context.TargetClassCollectionID(newClassCollectionID);
+				targetIdentityID = context.MappedID(sourceIdentityID, 0);
 				targetUuidIndexID = context.MappedID(context.SourceUuidIndexID(), 0);
 			}
 			catch (Db4objects.Db4o.CorruptionException exc)
@@ -135,7 +141,15 @@ namespace Db4objects.Db4o.Defragment
 			{
 				context.Close();
 			}
-			SetIdentity(config.OrigPath(), targetIdentityID, targetUuidIndexID);
+			if (targetIdentityID > 0)
+			{
+				SetIdentity(config.OrigPath(), targetIdentityID, targetUuidIndexID);
+			}
+			else
+			{
+				listener.NotifyDefragmentInfo(new Db4objects.Db4o.Defragment.DefragmentInfo("No database identity found in original file."
+					));
+			}
 		}
 
 		private static void DefragUnindexed(Db4objects.Db4o.Defragment.DefragContextImpl 
@@ -145,14 +159,14 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.MoveNext())
 			{
 				int origID = ((int)unindexedIDs.Current);
-				Db4objects.Db4o.ReaderPair.ProcessCopy(context, origID, new _AnonymousInnerClass141
+				Db4objects.Db4o.ReaderPair.ProcessCopy(context, origID, new _AnonymousInnerClass152
 					(), true);
 			}
 		}
 
-		private sealed class _AnonymousInnerClass141 : Db4objects.Db4o.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass152 : Db4objects.Db4o.ISlotCopyHandler
 		{
-			public _AnonymousInnerClass141()
+			public _AnonymousInnerClass152()
 			{
 			}
 
@@ -249,13 +263,13 @@ namespace Db4objects.Db4o.Defragment
 			 command)
 		{
 			bool withStringIndex = WithFieldIndex(curClass);
-			context.TraverseAll(curClass, new _AnonymousInnerClass231(command, context, curClass
+			context.TraverseAll(curClass, new _AnonymousInnerClass242(command, context, curClass
 				, withStringIndex));
 		}
 
-		private sealed class _AnonymousInnerClass231 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass242 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass231(Db4objects.Db4o.Defragment.IPassCommand command, Db4objects.Db4o.Defragment.DefragContextImpl
+			public _AnonymousInnerClass242(Db4objects.Db4o.Defragment.IPassCommand command, Db4objects.Db4o.Defragment.DefragContextImpl
 				 context, Db4objects.Db4o.YapClass curClass, bool withStringIndex)
 			{
 				this.command = command;

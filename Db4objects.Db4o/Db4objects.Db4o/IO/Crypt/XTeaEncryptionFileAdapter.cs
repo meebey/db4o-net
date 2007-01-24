@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.IO.Crypt
 			_xtea.Decrypt(pb);
 			System.Array.Copy(pb, prePad, bytes, 0, length);
 			Seek(origPos + length);
-			return readResult;
+			return length;
 		}
 
 		/// <summary>implement to set the read/write pointer in the file</summary>

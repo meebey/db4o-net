@@ -33,7 +33,7 @@ namespace Db4objects.Db4o
 
 		internal override bool Evaluate(Db4objects.Db4o.QCandidate a_candidate)
 		{
-			if (a_candidate.ClassReflector() == null)
+			if (!a_candidate.FieldIsAvailable())
 			{
 				VisitOnNull(a_candidate.GetRoot());
 			}
@@ -98,7 +98,7 @@ namespace Db4objects.Db4o
 			bool mayMorph = true;
 			if (claxx != null)
 			{
-				Db4objects.Db4o.YapClass yc = i_trans.Stream().GetYapClass(claxx, true);
+				Db4objects.Db4o.YapClass yc = i_trans.Stream().ProduceYapClass(claxx);
 				if (yc != null)
 				{
 					System.Collections.IEnumerator i = IterateChildren();

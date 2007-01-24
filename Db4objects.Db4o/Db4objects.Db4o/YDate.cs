@@ -50,9 +50,20 @@ namespace Db4objects.Db4o
 			return null;
 		}
 
+		public override object Read(Db4objects.Db4o.Inside.Marshall.MarshallerFamily mf, 
+			Db4objects.Db4o.YapWriter writer, bool redirect)
+		{
+			return mf._primitive.ReadDate(writer);
+		}
+
 		internal override object Read1(Db4objects.Db4o.YapReader a_bytes)
 		{
-			return new Sharpen.Util.Date(ReadLong(a_bytes));
+			return PrimitiveMarshaller().ReadDate(a_bytes);
+		}
+
+		private Db4objects.Db4o.Inside.Marshall.PrimitiveMarshaller PrimitiveMarshaller()
+		{
+			return Db4objects.Db4o.Inside.Marshall.MarshallerFamily.Current()._primitive;
 		}
 
 		public override void Write(object a_object, Db4objects.Db4o.YapReader a_bytes)

@@ -78,5 +78,10 @@ namespace Db4objects.Db4o.Inside.Marshall
 		{
 			_indexID = indexID;
 		}
+
+		public override string ToString()
+		{
+			return "RawFieldSpec(" + Name() + ")";
+		}
 	}
 }

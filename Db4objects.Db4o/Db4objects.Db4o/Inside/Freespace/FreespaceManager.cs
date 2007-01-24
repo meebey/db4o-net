@@ -36,20 +36,22 @@ namespace Db4objects.Db4o.Inside.Freespace
 			return CreateNew(file, file.SystemData().FreespaceSystem());
 		}
 
+		public abstract void OnNew(Db4objects.Db4o.YapFile file);
+
 		public static Db4objects.Db4o.Inside.Freespace.FreespaceManager CreateNew(Db4objects.Db4o.YapFile
 			 file, byte systemType)
 		{
 			systemType = CheckType(systemType);
 			switch (systemType)
 			{
-				case FM_LEGACY_RAM:				case FM_RAM:
+				case FM_IX:
 				{
-					return new Db4objects.Db4o.Inside.Freespace.FreespaceManagerRam(file);
+					return new Db4objects.Db4o.Inside.Freespace.FreespaceManagerIx(file);
 				}
 
 				default:
 				{
-					return new Db4objects.Db4o.Inside.Freespace.FreespaceManagerIx(file);
+					return new Db4objects.Db4o.Inside.Freespace.FreespaceManagerRam(file);
 					break;
 				}
 			}
@@ -121,17 +123,13 @@ namespace Db4objects.Db4o.Inside.Freespace
 				 configuredSystem);
 		}
 
-		public virtual Db4objects.Db4o.Inside.Freespace.FreespaceManager Migrate(Db4objects.Db4o.YapFile
-			 file, byte toSystemType)
+		public static void Migrate(Db4objects.Db4o.Inside.Freespace.FreespaceManager oldFM
+			, Db4objects.Db4o.Inside.Freespace.FreespaceManager newFM)
 		{
-			Db4objects.Db4o.Inside.Freespace.FreespaceManager newFM = CreateNew(file, toSystemType
-				);
-			newFM.Start(file.NewFreespaceSlot(toSystemType));
-			Migrate(newFM);
-			FreeSelf();
+			oldFM.Migrate(newFM);
+			oldFM.FreeSelf();
 			newFM.BeginCommit();
 			newFM.EndCommit();
-			return newFM;
 		}
 	}
 }

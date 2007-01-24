@@ -218,6 +218,10 @@ namespace Db4objects.Db4o.Inside.Freespace
 			private readonly Db4objects.Db4o.Inside.Freespace.FreespaceManager newFM;
 		}
 
+		public override void OnNew(Db4objects.Db4o.YapFile file)
+		{
+		}
+
 		public override void Read(int freeSlotsID)
 		{
 			if (freeSlotsID <= 0)
@@ -240,16 +244,16 @@ namespace Db4objects.Db4o.Inside.Freespace
 				();
 			if (_freeBySize != null)
 			{
-				_freeBySize.Traverse(new _AnonymousInnerClass210(this, addressTree));
+				_freeBySize.Traverse(new _AnonymousInnerClass214(this, addressTree));
 			}
 			_freeByAddress = addressTree.value;
 			_file.Free(freeSlotsID, Db4objects.Db4o.YapConst.POINTER_LENGTH);
 			_file.Free(reader.GetAddress(), reader.GetLength());
 		}
 
-		private sealed class _AnonymousInnerClass210 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass214 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass210(FreespaceManagerRam _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
+			public _AnonymousInnerClass214(FreespaceManagerRam _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
 				 addressTree)
 			{
 				this._enclosing = _enclosing;

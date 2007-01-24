@@ -123,8 +123,8 @@ namespace Db4objects.Db4o
 			{
 				return Db4objects.Db4o.Null.INSTANCE;
 			}
-			Db4objects.Db4o.YapClass yc = i_trans.Stream().GetYapClass(i_trans.Reflector().ForObject
-				(obj), true);
+			Db4objects.Db4o.YapClass yc = i_trans.Stream().ProduceYapClass(i_trans.Reflector(
+				).ForObject(obj));
 			Db4objects.Db4o.YapField yf = yc.GetYapField(i_name);
 			if (yf != null)
 			{
@@ -145,6 +145,15 @@ namespace Db4objects.Db4o
 		public virtual void Visit(object obj)
 		{
 			((Db4objects.Db4o.QCandidate)obj).UseField(this);
+		}
+
+		public override string ToString()
+		{
+			if (i_yapField != null)
+			{
+				return "QField " + i_yapField.ToString();
+			}
+			return base.ToString();
 		}
 	}
 }

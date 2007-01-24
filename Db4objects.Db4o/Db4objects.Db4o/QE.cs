@@ -44,7 +44,12 @@ namespace Db4objects.Db4o
 
 		public override bool Equals(object obj)
 		{
-			return obj.GetType() == this.GetType();
+			return obj != null && obj.GetType() == this.GetType();
+		}
+
+		public override int GetHashCode()
+		{
+			return GetType().GetHashCode();
 		}
 
 		internal virtual bool Not(bool res)

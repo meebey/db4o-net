@@ -8,9 +8,10 @@ namespace Db4objects.Db4o.CS
 		private Db4objects.Db4o.Foundation.Hashtable4 _genericClassTable = new Db4objects.Db4o.Foundation.Hashtable4
 			();
 
-		public virtual Db4objects.Db4o.CS.ClassMeta GetClassMeta(System.Type claxx)
+		public virtual Db4objects.Db4o.CS.ClassMeta GetClassMeta(Db4objects.Db4o.Reflect.IReflectClass
+			 claxx)
 		{
-			string className = claxx.FullName;
+			string className = claxx.GetName();
 			if (IsSystemClass(className))
 			{
 				return Db4objects.Db4o.CS.ClassMeta.NewSystemClass(className);
@@ -23,36 +24,42 @@ namespace Db4objects.Db4o.CS
 			return NewUserClassMeta(claxx);
 		}
 
-		private Db4objects.Db4o.CS.ClassMeta NewUserClassMeta(System.Type claxx)
+		private Db4objects.Db4o.CS.ClassMeta NewUserClassMeta(Db4objects.Db4o.Reflect.IReflectClass
+			 claxx)
 		{
 			Db4objects.Db4o.CS.ClassMeta classMeta = Db4objects.Db4o.CS.ClassMeta.NewUserClass
-				(claxx.FullName);
+				(claxx.GetName());
 			classMeta.SetSuperClass(MapSuperclass(claxx));
-			RegisterClassMeta(claxx.FullName, classMeta);
-			classMeta.SetFields(MapFields(Sharpen.Runtime.GetDeclaredFields(claxx)));
+			RegisterClassMeta(claxx.GetName(), classMeta);
+			classMeta.SetFields(MapFields(claxx.GetDeclaredFields()));
 			return classMeta;
 		}
 
-		private Db4objects.Db4o.CS.ClassMeta MapSuperclass(System.Type claxx)
+		private Db4objects.Db4o.CS.ClassMeta MapSuperclass(Db4objects.Db4o.Reflect.IReflectClass
+			 claxx)
 		{
-			System.Type superClass = claxx.BaseType;
-			if (superClass != null && superClass != typeof(object))
+			Db4objects.Db4o.Reflect.IReflectClass superClass = claxx.GetSuperclass();
+			if (superClass != null)
 			{
 				return GetClassMeta(superClass);
 			}
 			return null;
 		}
 
-		private Db4objects.Db4o.CS.FieldMeta[] MapFields(System.Reflection.FieldInfo[] fields
-			)
+		private Db4objects.Db4o.CS.FieldMeta[] MapFields(Db4objects.Db4o.Reflect.IReflectField[]
+			 fields)
 		{
 			Db4objects.Db4o.CS.FieldMeta[] fieldsMeta = new Db4objects.Db4o.CS.FieldMeta[fields
 				.Length];
 			for (int i = 0; i < fields.Length; ++i)
 			{
-				System.Reflection.FieldInfo field = fields[i];
-				fieldsMeta[i] = new Db4objects.Db4o.CS.FieldMeta(field.Name, GetClassMeta(field.GetType
-					()));
+				Db4objects.Db4o.Reflect.IReflectField field = fields[i];
+				bool isArray = field.GetFieldType().IsArray();
+				Db4objects.Db4o.Reflect.IReflectClass fieldClass = isArray ? field.GetFieldType()
+					.GetComponentType() : field.GetFieldType();
+				bool isPrimitive = fieldClass.IsPrimitive();
+				fieldsMeta[i] = new Db4objects.Db4o.CS.FieldMeta(field.GetName(), GetClassMeta(fieldClass
+					), isPrimitive, isArray, false);
 			}
 			return fieldsMeta;
 		}
@@ -94,7 +101,6 @@ namespace Db4objects.Db4o.CS
 			if (superClassMeta != null)
 			{
 				genericSuperClass = ClassMetaToGenericClass(reflector, superClassMeta);
-				RegisterGenericClass(superClassMeta.GetClassName(), genericSuperClass);
 			}
 			genericClass = new Db4objects.Db4o.Reflect.Generic.GenericClass(reflector, null, 
 				className, genericSuperClass);
@@ -109,7 +115,7 @@ namespace Db4objects.Db4o.CS
 				Db4objects.Db4o.Reflect.Generic.GenericClass genericFieldClass = ClassMetaToGenericClass
 					(reflector, fieldClassMeta);
 				genericFields[i] = new Db4objects.Db4o.Reflect.Generic.GenericField(fieldName, genericFieldClass
-					, false, false, false);
+					, fields[i]._isPrimitive, fields[i]._isArray, fields[i]._isNArray);
 			}
 			genericClass.InitFields(genericFields);
 			return genericClass;

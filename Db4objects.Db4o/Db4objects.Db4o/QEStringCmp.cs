@@ -29,7 +29,7 @@ namespace Db4objects.Db4o
 				}
 				return CompareStrings(candidate, constraint);
 			}
-			return a_constraint.i_object.Equals(null);
+			return a_constraint.i_object == null;
 		}
 
 		public override bool SupportsIndex()

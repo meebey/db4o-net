@@ -173,6 +173,9 @@ namespace Db4objects.Db4o.CS.Messages
 		public static readonly Db4objects.Db4o.CS.Messages.MsgD WRITE_UPDATE_DELETE_MEMBERS
 			 = new Db4objects.Db4o.CS.Messages.MWriteUpdateDeleteMembers();
 
+		public static readonly Db4objects.Db4o.CS.Messages.MWriteBatchedMessages WRITE_BATCHED_MESSAGES
+			 = new Db4objects.Db4o.CS.Messages.MWriteBatchedMessages();
+
 		internal Msg()
 		{
 			_msgID = _idGenerator++;
@@ -182,6 +185,11 @@ namespace Db4objects.Db4o.CS.Messages
 		internal Msg(string aName) : this()
 		{
 			_name = aName;
+		}
+
+		public static Db4objects.Db4o.CS.Messages.Msg GetMessage(int id)
+		{
+			return _messages[id];
 		}
 
 		public Db4objects.Db4o.CS.Messages.Msg Clone(Db4objects.Db4o.Transaction a_trans)
@@ -209,6 +217,11 @@ namespace Db4objects.Db4o.CS.Messages
 				return false;
 			}
 			return _msgID == ((Db4objects.Db4o.CS.Messages.Msg)obj)._msgID;
+		}
+
+		public override int GetHashCode()
+		{
+			return _msgID;
 		}
 
 		internal virtual void FakePayLoad(Db4objects.Db4o.Transaction a_trans)

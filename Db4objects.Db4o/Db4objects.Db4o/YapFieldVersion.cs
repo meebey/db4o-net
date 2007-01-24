@@ -1,6 +1,7 @@
 namespace Db4objects.Db4o
 {
-	internal class YapFieldVersion : Db4objects.Db4o.YapFieldVirtual
+	/// <exclude></exclude>
+	public class YapFieldVersion : Db4objects.Db4o.YapFieldVirtual
 	{
 		internal YapFieldVersion(Db4objects.Db4o.YapStream stream) : base()
 		{

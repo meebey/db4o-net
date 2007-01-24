@@ -1,5 +1,9 @@
 namespace Db4objects.Db4o
 {
+	/// <summary>
+	/// TODO: refactor for symmetric inheritance - don't inherit from YapField and override,
+	/// instead extract an abstract superclass from YapField and let both YapField and this class implement
+	/// </summary>
 	/// <exclude></exclude>
 	public abstract class YapFieldVirtual : Db4objects.Db4o.YapField
 	{
@@ -165,6 +169,17 @@ namespace Db4objects.Db4o
 		public override bool IsVirtual()
 		{
 			return true;
+		}
+
+		protected override object IndexEntryFor(object indexEntry)
+		{
+			return indexEntry;
+		}
+
+		protected override Db4objects.Db4o.Inside.IX.IIndexable4 IndexHandler(Db4objects.Db4o.YapStream
+			 stream)
+		{
+			return i_handler;
 		}
 	}
 }

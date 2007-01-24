@@ -22,7 +22,7 @@ namespace Db4objects.Db4o
 
 		public Db4objects.Db4o.Foundation.Collection4 i_joins;
 
-		public int i_orderID = 0;
+		private int i_orderID = 0;
 
 		public Db4objects.Db4o.QCon i_parent;
 
@@ -81,7 +81,7 @@ namespace Db4objects.Db4o
 
 		internal virtual void ApplyOrdering()
 		{
-			if (i_orderID != 0)
+			if (HasOrdering())
 			{
 				Db4objects.Db4o.QCon root = GetRoot();
 				root.i_candidates.ApplyOrdering(i_candidates.i_ordered, i_orderID);
@@ -723,6 +723,11 @@ namespace Db4objects.Db4o
 			i_orderID = a_ordering;
 		}
 
+		public virtual int Ordering()
+		{
+			return i_orderID;
+		}
+
 		internal virtual void SetParent(Db4objects.Db4o.QCon a_newParent)
 		{
 			i_parent = a_newParent;
@@ -853,7 +858,7 @@ namespace Db4objects.Db4o
 
 		public virtual bool RequiresSort()
 		{
-			if (i_orderID != 0)
+			if (HasOrdering())
 			{
 				return true;
 			}
@@ -866,6 +871,11 @@ namespace Db4objects.Db4o
 				}
 			}
 			return false;
+		}
+
+		protected virtual bool HasOrdering()
+		{
+			return i_orderID != 0;
 		}
 	}
 }

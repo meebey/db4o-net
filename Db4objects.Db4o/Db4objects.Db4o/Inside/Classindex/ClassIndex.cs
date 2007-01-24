@@ -44,7 +44,8 @@ namespace Db4objects.Db4o.Inside.Classindex
 			{
 				return Db4objects.Db4o.Foundation.Tree.Size(i_root);
 			}
-			Db4objects.Db4o.Inside.Slots.Slot slot = ta.GetCurrentSlotOfID(GetID());
+			Db4objects.Db4o.Inside.Slots.Slot slot = ((Db4objects.Db4o.YapFileTransaction)ta)
+				.GetCurrentSlotOfID(GetID());
 			int length = Db4objects.Db4o.YapConst.INT_LENGTH;
 			Db4objects.Db4o.YapReader reader = new Db4objects.Db4o.YapReader(length);
 			reader.ReadEncrypt(ta.Stream(), slot._address);

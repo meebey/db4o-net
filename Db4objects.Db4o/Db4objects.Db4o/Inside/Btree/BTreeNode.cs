@@ -439,6 +439,11 @@ namespace Db4objects.Db4o.Inside.Btree
 			return GetID() == other.GetID();
 		}
 
+		public override int GetHashCode()
+		{
+			return GetID();
+		}
+
 		private void Free(Db4objects.Db4o.Transaction trans)
 		{
 			_dead = true;
@@ -723,7 +728,7 @@ namespace Db4objects.Db4o.Inside.Btree
 
 		private Db4objects.Db4o.Inside.IX.IIndexable4 KeyHandler()
 		{
-			return _btree._keyHandler;
+			return _btree.KeyHandler();
 		}
 
 		internal void MarkAsCached(int height)

@@ -12,13 +12,13 @@ namespace Db4objects.Db4o.CS
 			return new Db4objects.Db4o.CS.ClassMeta(className, false);
 		}
 
-		private string _className;
+		public string _className;
 
-		private bool _isSystemClass;
+		public bool _isSystemClass;
 
-		private Db4objects.Db4o.CS.ClassMeta _superClass;
+		public Db4objects.Db4o.CS.ClassMeta _superClass;
 
-		private Db4objects.Db4o.CS.FieldMeta[] _fields;
+		public Db4objects.Db4o.CS.FieldMeta[] _fields;
 
 		public ClassMeta()
 		{

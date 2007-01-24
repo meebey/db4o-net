@@ -15,17 +15,28 @@ namespace Db4objects.Db4o.CS
 		public override void Commit()
 		{
 			CommitTransactionListeners();
-			if (i_yapObjectsToGc != null)
-			{
-				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass23(this));
-			}
-			i_yapObjectsToGc = null;
-			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.COMMIT);
+			ClearAll();
+			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.COMMIT, true);
 		}
 
-		private sealed class _AnonymousInnerClass23 : Db4objects.Db4o.Foundation.IVisitor4
+		protected override void ClearAll()
 		{
-			public _AnonymousInnerClass23(TransactionClient _enclosing)
+			RemoveYapObjectReferences();
+			base.ClearAll();
+		}
+
+		private void RemoveYapObjectReferences()
+		{
+			if (i_yapObjectsToGc != null)
+			{
+				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass33(this));
+			}
+			i_yapObjectsToGc = null;
+		}
+
+		private sealed class _AnonymousInnerClass33 : Db4objects.Db4o.Foundation.IVisitor4
+		{
+			public _AnonymousInnerClass33(TransactionClient _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -46,15 +57,17 @@ namespace Db4objects.Db4o.CS
 			{
 				return false;
 			}
-			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.TA_DELETE.GetWriterForInts(this
-				, new int[] { id, cascade }));
+			Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.TA_DELETE.
+				GetWriterForInts(this, new int[] { id, cascade });
+			i_client.WriteMsg(msg, false);
 			return true;
 		}
 
 		public override bool IsDeleted(int a_id)
 		{
-			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.TA_IS_DELETED.GetWriterForInt(this
-				, a_id));
+			Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.TA_IS_DELETED
+				.GetWriterForInt(this, a_id);
+			i_client.WriteMsg(msg, true);
 			int res = i_client.ExpectedByteResponse(Db4objects.Db4o.CS.Messages.Msg.TA_IS_DELETED
 				).ReadInt();
 			return res == 1;
@@ -84,16 +97,16 @@ namespace Db4objects.Db4o.CS
 		{
 			if (i_delete != null)
 			{
-				i_delete.Traverse(new _AnonymousInnerClass72(this));
+				i_delete.Traverse(new _AnonymousInnerClass82(this));
 			}
 			i_delete = null;
 			i_writtenUpdateDeletedMembers = null;
-			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.PROCESS_DELETES);
+			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.PROCESS_DELETES, false);
 		}
 
-		private sealed class _AnonymousInnerClass72 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass82 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass72(TransactionClient _enclosing)
+			public _AnonymousInnerClass82(TransactionClient _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -116,13 +129,19 @@ namespace Db4objects.Db4o.CS
 		{
 			i_yapObjectsToGc = null;
 			RollBackTransactionListeners();
+			ClearAll();
 		}
 
 		public override void WriteUpdateDeleteMembers(int a_id, Db4objects.Db4o.YapClass 
 			a_yc, int a_type, int a_cascade)
 		{
-			i_client.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.WRITE_UPDATE_DELETE_MEMBERS.GetWriterForInts
-				(this, new int[] { a_id, a_yc.GetID(), a_type, a_cascade }));
+			Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.WRITE_UPDATE_DELETE_MEMBERS
+				.GetWriterForInts(this, new int[] { a_id, a_yc.GetID(), a_type, a_cascade });
+			i_client.WriteMsg(msg, false);
+		}
+
+		public override void SetPointer(int a_id, int a_address, int a_length)
+		{
 		}
 	}
 }

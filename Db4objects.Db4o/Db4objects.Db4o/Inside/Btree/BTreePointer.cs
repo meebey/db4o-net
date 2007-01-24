@@ -167,6 +167,11 @@ namespace Db4objects.Db4o.Inside.Btree
 			return Node().Equals(other.Node());
 		}
 
+		public override int GetHashCode()
+		{
+			return Node().GetHashCode();
+		}
+
 		public override string ToString()
 		{
 			return "BTreePointer(index=" + Index() + ", node=" + Node() + ")";

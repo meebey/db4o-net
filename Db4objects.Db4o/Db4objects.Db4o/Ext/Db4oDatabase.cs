@@ -73,6 +73,11 @@ namespace Db4objects.Db4o.Ext
 				);
 		}
 
+		public override int GetHashCode()
+		{
+			return i_signature.GetHashCode();
+		}
+
 		/// <summary>gets the db4o ID, and may cache it for performance reasons.</summary>
 		/// <remarks>gets the db4o ID, and may cache it for performance reasons.</remarks>
 		/// <returns>the db4o ID for the ObjectContainer</returns>

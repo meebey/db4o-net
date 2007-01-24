@@ -20,9 +20,30 @@ namespace Db4objects.Db4o
 			return i_openCount < 0;
 		}
 
-		public override bool Equals(object a_object)
+		/// <summary>Will raise an exception if argument class doesn't match this class - violates equals() contract in favor of failing fast.
+		/// 	</summary>
+		/// <remarks>Will raise an exception if argument class doesn't match this class - violates equals() contract in favor of failing fast.
+		/// 	</remarks>
+		public override bool Equals(object obj)
 		{
-			return i_fileName.Equals(((Db4objects.Db4o.Session)a_object).i_fileName);
+			if (this == obj)
+			{
+				return true;
+			}
+			if (null == obj)
+			{
+				return false;
+			}
+			if (GetType() != obj.GetType())
+			{
+				Db4objects.Db4o.Inside.Exceptions4.ShouldNeverHappen();
+			}
+			return i_fileName.Equals(((Db4objects.Db4o.Session)obj).i_fileName);
+		}
+
+		public override int GetHashCode()
+		{
+			return i_fileName.GetHashCode();
 		}
 
 		internal string FileName()

@@ -4,7 +4,7 @@ namespace Db4objects.Db4o.Defragment
 	/// <remarks>Base class for defragment ID mappings.</remarks>
 	/// <seealso cref="Db4objects.Db4o.Defragment.Defragment">Db4objects.Db4o.Defragment.Defragment
 	/// 	</seealso>
-	internal abstract class AbstractContextIDMapping : Db4objects.Db4o.Defragment.IContextIDMapping
+	public abstract class AbstractContextIDMapping : Db4objects.Db4o.Defragment.IContextIDMapping
 	{
 		private Db4objects.Db4o.Foundation.Hashtable4 _classIDs = new Db4objects.Db4o.Foundation.Hashtable4
 			();

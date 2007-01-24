@@ -44,6 +44,10 @@ namespace Db4objects.Db4o
 				{
 					throw;
 				}
+				catch (Db4objects.Db4o.Ext.Db4oException e)
+				{
+					throw;
+				}
 				catch (System.Exception t)
 				{
 					Db4objects.Db4o.Messages.LogErr(Db4objects.Db4o.Db4oFactory.i_config, 4, databaseFileName

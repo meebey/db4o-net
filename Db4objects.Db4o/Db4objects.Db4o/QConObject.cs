@@ -54,20 +54,20 @@ namespace Db4objects.Db4o
 			}
 			else
 			{
-				i_yapClass = a_trans.Stream().GetYapClass(a_trans.Reflector().ForObject(a_object)
-					, true);
+				i_yapClass = a_trans.Stream().ProduceYapClass(a_trans.Reflector().ForObject(a_object
+					));
 				if (i_yapClass != null)
 				{
 					i_object = i_yapClass.GetComparableObject(a_object);
 					if (a_object != i_object)
 					{
 						i_attributeProvider = i_yapClass.i_config.QueryAttributeProvider();
-						i_yapClass = a_trans.Stream().GetYapClass(a_trans.Reflector().ForObject(i_object)
-							, true);
+						i_yapClass = a_trans.Stream().ProduceYapClass(a_trans.Reflector().ForObject(i_object
+							));
 					}
 					if (i_yapClass != null)
 					{
-						i_yapClass.CollectConstraints(a_trans, this, i_object, new _AnonymousInnerClass83
+						i_yapClass.CollectConstraints(a_trans, this, i_object, new _AnonymousInnerClass82
 							(this));
 					}
 					else
@@ -82,9 +82,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private sealed class _AnonymousInnerClass83 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass82 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass83(QConObject _enclosing)
+			public _AnonymousInnerClass82(QConObject _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -180,13 +180,6 @@ namespace Db4objects.Db4o
 				{
 					if (!i_evaluator.Identity())
 					{
-						if (i_yapClass == i_candidates.i_yapClass)
-						{
-							if (i_evaluator.IsDefault() && (!HasJoins()))
-							{
-								return;
-							}
-						}
 						i_selfComparison = true;
 					}
 					i_comparator = i_yapClass.PrepareComparison(i_object);
@@ -208,7 +201,7 @@ namespace Db4objects.Db4o
 		internal override void EvaluateSimpleExec(Db4objects.Db4o.QCandidates a_candidates
 			)
 		{
-			if (i_orderID != 0 || !i_loadedFromIndex)
+			if (HasOrdering() || !i_loadedFromIndex)
 			{
 				if (i_field.IsSimple() || IsNullConstraint())
 				{
@@ -416,7 +409,7 @@ namespace Db4objects.Db4o
 			{
 				res = Evaluate(qc);
 			}
-			if (i_orderID != 0 && res)
+			if (HasOrdering() && res && qc.FieldIsAvailable())
 			{
 				object cmp = qc.Value();
 				if (cmp != null && i_field != null)

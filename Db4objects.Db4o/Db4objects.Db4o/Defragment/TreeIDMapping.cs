@@ -4,7 +4,7 @@ namespace Db4objects.Db4o.Defragment
 	/// <remarks>In-memory mapping for IDs during a defragmentation run.</remarks>
 	/// <seealso cref="Db4objects.Db4o.Defragment.Defragment">Db4objects.Db4o.Defragment.Defragment
 	/// 	</seealso>
-	internal class TreeIDMapping : Db4objects.Db4o.Defragment.AbstractContextIDMapping
+	public class TreeIDMapping : Db4objects.Db4o.Defragment.AbstractContextIDMapping
 	{
 		private Db4objects.Db4o.Foundation.Tree _tree;
 

@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.CS.Messages
 		{
 			int yapClassId = _payLoad.ReadInt();
 			Db4objects.Db4o.YapFile stream = (Db4objects.Db4o.YapFile)Stream();
-			Unmarshall(Db4objects.Db4o.YapConst.INT_LENGTH);
+			Unmarshall(_payLoad._offset);
 			lock (StreamLock())
 			{
 				Db4objects.Db4o.YapClass yc = yapClassId == 0 ? null : stream.GetYapClass(yapClassId

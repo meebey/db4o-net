@@ -4,7 +4,7 @@ namespace Db4objects.Db4o.Defragment
 	/// <remarks>BTree mapping for IDs during a defragmentation run.</remarks>
 	/// <seealso cref="Db4objects.Db4o.Defragment.Defragment">Db4objects.Db4o.Defragment.Defragment
 	/// 	</seealso>
-	internal class BTreeIDMapping : Db4objects.Db4o.Defragment.AbstractContextIDMapping
+	public class BTreeIDMapping : Db4objects.Db4o.Defragment.AbstractContextIDMapping
 	{
 		private string _fileName;
 

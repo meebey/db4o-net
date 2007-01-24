@@ -18,7 +18,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			while (allSlotIDs.MoveNext())
 			{
 				int slotID = (int)allSlotIDs.Current;
-				Db4objects.Db4o.Inside.Slots.Slot slot = Trans().GetCurrentSlotOfID(slotID);
+				Db4objects.Db4o.Inside.Slots.Slot slot = FileTransaction().GetCurrentSlotOfID(slotID
+					);
 				allSlots.Add(slot);
 			}
 			Db4objects.Db4o.YapFile yapFile = (Db4objects.Db4o.YapFile)Stream();
@@ -48,6 +49,11 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			private readonly BTreeFreeTestCase _enclosing;
 
 			private readonly Db4objects.Db4o.Foundation.Collection4 freedSlots;
+		}
+
+		private Db4objects.Db4o.YapFileTransaction FileTransaction()
+		{
+			return ((Db4objects.Db4o.YapFileTransaction)Trans());
 		}
 	}
 }

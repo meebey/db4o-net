@@ -21,7 +21,7 @@ namespace Db4objects.Db4o
 		{
 			if (claxx != null)
 			{
-				i_yapClass = a_trans.Stream().GetYapClass(claxx, true);
+				i_yapClass = a_trans.Stream().ProduceYapClass(claxx);
 				if (claxx.Equals(a_trans.Stream().i_handlers.ICLASS_OBJECT))
 				{
 					i_yapClass = (Db4objects.Db4o.YapClass)((Db4objects.Db4o.YapClassPrimitive)i_yapClass
@@ -53,19 +53,6 @@ namespace Db4objects.Db4o
 
 		internal override void EvaluateSelf()
 		{
-			if (i_evaluator.IsDefault())
-			{
-				if (i_orderID == 0 && !HasJoins())
-				{
-					if (i_yapClass != null && i_candidates.i_yapClass != null)
-					{
-						if (i_yapClass.GetHigherHierarchy(i_candidates.i_yapClass) == i_yapClass)
-						{
-							return;
-						}
-					}
-				}
-			}
 			i_candidates.Filter(this);
 		}
 

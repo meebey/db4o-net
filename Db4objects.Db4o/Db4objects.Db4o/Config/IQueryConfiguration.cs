@@ -112,15 +112,15 @@ namespace Db4objects.Db4o.Config
 		/// 	</see>
 		/// class to this method:<br />
 		/// -
-		/// <see cref="com.db4o.config.QueryEvaluationMode.IMMEDIATE">com.db4o.config.QueryEvaluationMode.IMMEDIATE
+		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode.IMMEDIATE">Db4objects.Db4o.Config.QueryEvaluationMode.IMMEDIATE
 		/// 	</see>
 		/// <br />
 		/// -
-		/// <see cref="com.db4o.config.QueryEvaluationMode.SNAPSHOT">com.db4o.config.QueryEvaluationMode.SNAPSHOT
+		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode.SNAPSHOT">Db4objects.Db4o.Config.QueryEvaluationMode.SNAPSHOT
 		/// 	</see>
 		/// <br />
 		/// -
-		/// <see cref="com.db4o.config.QueryEvaluationMode.LAZY">com.db4o.config.QueryEvaluationMode.LAZY
+		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode.LAZY">Db4objects.Db4o.Config.QueryEvaluationMode.LAZY
 		/// 	</see>
 		/// </remarks>
 		void EvaluationMode(Db4objects.Db4o.Config.QueryEvaluationMode mode);

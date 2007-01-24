@@ -12,18 +12,18 @@ namespace Db4objects.Db4o
 
 		public void Set(bool a_bit)
 		{
-			i_value = i_value * 2;
+			i_value <<= 1;
 			if (a_bit)
 			{
-				i_value++;
+				i_value |= 1;
 			}
 		}
 
 		public bool Get()
 		{
-			double cmp = (double)i_value / 2;
-			i_value = i_value / 2;
-			return (cmp != i_value);
+			bool ret = ((i_value & 1) != 0);
+			i_value >>= 1;
+			return ret;
 		}
 
 		public byte GetByte()

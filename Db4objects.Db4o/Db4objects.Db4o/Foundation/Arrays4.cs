@@ -38,5 +38,21 @@ namespace Db4objects.Db4o.Foundation
 			}
 			return true;
 		}
+
+		public static bool ContainsInstanceOf(object[] array, System.Type klass)
+		{
+			if (array == null)
+			{
+				return false;
+			}
+			for (int i = 0; i < array.Length; ++i)
+			{
+				if (klass.IsInstanceOfType(array[i]))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 }

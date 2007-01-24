@@ -230,6 +230,12 @@ namespace Db4objects.Db4o.CS
 			{
 				return true;
 			}
+			ProcessSpecialMsg(message);
+			return true;
+		}
+
+		public bool ProcessSpecialMsg(Db4objects.Db4o.CS.Messages.Msg message)
+		{
 			if (Db4objects.Db4o.CS.Messages.Msg.PING.Equals(message))
 			{
 				WriteOK();

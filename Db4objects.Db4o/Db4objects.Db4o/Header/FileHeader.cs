@@ -24,7 +24,8 @@ namespace Db4objects.Db4o.Header
 			Db4objects.Db4o.Header.FileHeader header = DetectFileHeader(file, reader);
 			if (header == null)
 			{
-				Db4objects.Db4o.Inside.Exceptions4.ThrowRuntimeException(17);
+				Db4objects.Db4o.Inside.Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Messages
+					.INCOMPATIBLE_FORMAT);
 			}
 			else
 			{

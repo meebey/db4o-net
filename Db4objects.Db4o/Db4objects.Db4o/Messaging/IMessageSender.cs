@@ -10,13 +10,13 @@ namespace Db4objects.Db4o.Messaging
 	/// use the messaging feature. It is also used to stop the server
 	/// in ../com/db4o/samples/clientserver/StopServer.java<br /><br />
 	/// <b>See Also:</b><br />
-	/// <see cref="Db4objects.Db4o.Config.IConfiguration.GetMessageSender">Db4objects.Db4o.Config.IConfiguration.GetMessageSender
+	/// <see cref="com.db4o.config.Configuration#getMessageSender()">com.db4o.config.Configuration#getMessageSender()
 	/// 	</see>
 	/// ,<br />
 	/// <see cref="Db4objects.Db4o.Messaging.IMessageRecipient">Db4objects.Db4o.Messaging.IMessageRecipient
 	/// 	</see>
 	/// ,<br />
-	/// <see cref="Db4objects.Db4o.Config.IConfiguration.SetMessageRecipient">Db4objects.Db4o.Config.IConfiguration.SetMessageRecipient
+	/// <see cref="com.db4o.config.Configuration#setMessageRecipient(MessageRecipient)">com.db4o.config.Configuration#setMessageRecipient(MessageRecipient)
 	/// 	</see>
 	/// </remarks>
 	public interface IMessageSender

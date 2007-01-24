@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			Db4objects.Db4o.Reflect.IReflectClass claxx = Stream().Reflector().ForObject(new 
 				Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem());
-			Db4objects.Db4o.YapClass yc = Stream().GetYapClass(claxx, false);
+			Db4objects.Db4o.YapClass yc = Stream().GetYapClass(claxx);
 			Db4objects.Db4o.YapField yf = yc.GetYapField("foo");
 			return yf;
 		}

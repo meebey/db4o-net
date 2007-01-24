@@ -28,6 +28,12 @@ namespace Db4objects.Db4o
 		{
 		}
 
+		public override Db4objects.Db4o.Transaction NewTransaction(Db4objects.Db4o.Transaction
+			 parentTransaction)
+		{
+			return new Db4objects.Db4o.YapFileTransaction(this, parentTransaction);
+		}
+
 		public virtual Db4objects.Db4o.Inside.Freespace.FreespaceManager FreespaceManager
 			()
 		{
@@ -80,6 +86,7 @@ namespace Db4objects.Db4o
 			InitNewClassCollection();
 			InitializeEssentialClasses();
 			_fileHeader.InitNew(this);
+			_freespaceManager.OnNew(this);
 			_freespaceManager.Start(_systemData.FreespaceAddress());
 			if (Db4objects.Db4o.Debug.freespace && Db4objects.Db4o.Debug.freespaceChecker)
 			{
@@ -194,14 +201,14 @@ namespace Db4objects.Db4o
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _AnonymousInnerClass205(this));
+				i_prefetchedIDs.Traverse(new _AnonymousInnerClass210(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _AnonymousInnerClass205 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass210 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass205(YapFile _enclosing)
+			public _AnonymousInnerClass210(YapFile _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -429,6 +436,19 @@ namespace Db4objects.Db4o
 			return (Db4objects.Db4o.YapWriter)ReadReaderOrWriterByID(a_ta, a_id, false);
 		}
 
+		public override Db4objects.Db4o.YapWriter[] ReadWritersByIDs(Db4objects.Db4o.Transaction
+			 a_ta, int[] ids)
+		{
+			Db4objects.Db4o.YapWriter[] yapWriters = new Db4objects.Db4o.YapWriter[ids.Length
+				];
+			for (int i = 0; i < ids.Length; ++i)
+			{
+				yapWriters[i] = (Db4objects.Db4o.YapWriter)ReadReaderOrWriterByID(a_ta, ids[i], false
+					);
+			}
+			return yapWriters;
+		}
+
 		public override Db4objects.Db4o.YapReader ReadReaderByID(Db4objects.Db4o.Transaction
 			 a_ta, int a_id)
 		{
@@ -444,7 +464,8 @@ namespace Db4objects.Db4o
 			}
 			try
 			{
-				Db4objects.Db4o.Inside.Slots.Slot slot = a_ta.GetCurrentSlotOfID(a_id);
+				Db4objects.Db4o.Inside.Slots.Slot slot = ((Db4objects.Db4o.YapFileTransaction)a_ta
+					).GetCurrentSlotOfID(a_id);
 				if (slot == null)
 				{
 					return null;
@@ -472,6 +493,11 @@ namespace Db4objects.Db4o
 			return null;
 		}
 
+		protected override bool DoFinalize()
+		{
+			return _fileHeader != null;
+		}
+
 		internal virtual void ReadThis()
 		{
 			NewSystemData(Db4objects.Db4o.Inside.Freespace.FreespaceManager.FM_LEGACY_RAM);
@@ -482,20 +508,25 @@ namespace Db4objects.Db4o
 			ClassCollection().Read(i_systemTrans);
 			Db4objects.Db4o.Inside.Convert.Converter.Convert(new Db4objects.Db4o.Inside.Convert.ConversionStage.ClassCollectionAvailableStage
 				(this));
+			ReadHeaderVariablePart();
 			_freespaceManager = Db4objects.Db4o.Inside.Freespace.FreespaceManager.CreateNew(this
 				, _systemData.FreespaceSystem());
 			_freespaceManager.Read(_systemData.FreespaceID());
 			_freespaceManager.Start(_systemData.FreespaceAddress());
-			ReadHeaderVariablePart();
 			if (_freespaceManager.RequiresMigration(ConfigImpl().FreespaceSystem(), _systemData
 				.FreespaceSystem()))
 			{
-				_freespaceManager = _freespaceManager.Migrate(this, ConfigImpl().FreespaceSystem(
-					));
+				Db4objects.Db4o.Inside.Freespace.FreespaceManager oldFreespaceManager = _freespaceManager;
+				_freespaceManager = Db4objects.Db4o.Inside.Freespace.FreespaceManager.CreateNew(this
+					, _systemData.FreespaceSystem());
+				_freespaceManager.Start(NewFreespaceSlot(_systemData.FreespaceSystem()));
+				Db4objects.Db4o.Inside.Freespace.FreespaceManager.Migrate(oldFreespaceManager, _freespaceManager
+					);
 				_fileHeader.WriteVariablePart(this, 1);
 			}
 			WriteHeader(false);
-			Db4objects.Db4o.Transaction trans = _fileHeader.InterruptedTransaction();
+			Db4objects.Db4o.YapFileTransaction trans = (Db4objects.Db4o.YapFileTransaction)_fileHeader
+				.InterruptedTransaction();
 			if (trans != null)
 			{
 				if (!ConfigImpl().CommitRecoveryDisabled())
@@ -561,16 +592,16 @@ namespace Db4objects.Db4o
 				Db4objects.Db4o.Foundation.Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass556(this, semaphores), ta
+					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass574(this, semaphores), ta
 						);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass556 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass574 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass556(YapFile _enclosing, Db4objects.Db4o.Foundation.Hashtable4
+			public _AnonymousInnerClass574(YapFile _enclosing, Db4objects.Db4o.Foundation.Hashtable4
 				 semaphores)
 			{
 				this._enclosing = _enclosing;
@@ -611,14 +642,11 @@ namespace Db4objects.Db4o
 			{
 				throw new System.ArgumentNullException();
 			}
-			if (i_semaphores == null)
+			lock (i_lock)
 			{
-				lock (i_lock)
+				if (i_semaphores == null)
 				{
-					if (i_semaphores == null)
-					{
-						i_semaphores = new Db4objects.Db4o.Foundation.Hashtable4(10);
-					}
+					i_semaphores = new Db4objects.Db4o.Foundation.Hashtable4(10);
 				}
 			}
 			lock (i_semaphores)
@@ -833,13 +861,13 @@ namespace Db4objects.Db4o
 		{
 			Db4objects.Db4o.Foundation.IntArrayList ids = new Db4objects.Db4o.Foundation.IntArrayList
 				();
-			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass780(this, ids));
+			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass796(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _AnonymousInnerClass780 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass796 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass780(YapFile _enclosing, Db4objects.Db4o.Foundation.IntArrayList
+			public _AnonymousInnerClass796(YapFile _enclosing, Db4objects.Db4o.Foundation.IntArrayList
 				 ids)
 			{
 				this._enclosing = _enclosing;

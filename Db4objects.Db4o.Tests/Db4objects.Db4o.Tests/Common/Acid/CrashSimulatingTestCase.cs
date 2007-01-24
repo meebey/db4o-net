@@ -28,6 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		{
 			Db4objects.Db4o.Foundation.IO.File4.Delete(FILE);
 			System.IO.Directory.CreateDirectory(PATH);
+			Db4objects.Db4o.Db4oFactory.Configure().BTreeNodeSize(4);
 			CreateFile();
 			Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter adapterFactory = new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter
 				(new Db4objects.Db4o.IO.RandomAccessFileAdapter());
@@ -48,6 +49,24 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				));
 			oc.Set(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase(null, "nine"
 				));
+			oc.Set(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase(null, "10"));
+			oc.Set(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase(null, "11"));
+			oc.Set(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase(null, "12"));
+			oc.Set(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase(null, "13"));
+			oc.Set(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase(null, "14"));
+			oc.Commit();
+			Db4objects.Db4o.Query.IQuery q = oc.Query();
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase));
+			objectSet = q.Execute();
+			while (objectSet.HasNext())
+			{
+				Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase cst = (Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase
+					)objectSet.Next();
+				if (!(cst._name.Equals("10") || cst._name.Equals("13")))
+				{
+					oc.Delete(cst);
+				}
+			}
 			oc.Commit();
 			oc.Close();
 			Db4objects.Db4o.Db4oFactory.Configure().Io(new Db4objects.Db4o.IO.RandomAccessFileAdapter
@@ -67,7 +86,10 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 					);
 				if (!StateBeforeCommit(oc))
 				{
-					Db4oUnit.Assert.IsTrue(StateAfterCommit(oc));
+					if (!StateAfterFirstCommit(oc))
+					{
+						Db4oUnit.Assert.IsTrue(StateAfterSecondCommit(oc));
+					}
 				}
 				oc.Close();
 			}
@@ -78,10 +100,15 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			return Expect(oc, new string[] { "one", "two", "three" });
 		}
 
-		private bool StateAfterCommit(Db4objects.Db4o.IObjectContainer oc)
+		private bool StateAfterFirstCommit(Db4objects.Db4o.IObjectContainer oc)
 		{
 			return Expect(oc, new string[] { "one", "two", "four", "five", "six", "seven", "eight"
-				, "nine" });
+				, "nine", "10", "11", "12", "13", "14" });
+		}
+
+		private bool StateAfterSecondCommit(Db4objects.Db4o.IObjectContainer oc)
+		{
+			return Expect(oc, new string[] { "10", "13" });
 		}
 
 		private bool Expect(Db4objects.Db4o.IObjectContainer oc, string[] names)

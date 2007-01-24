@@ -131,13 +131,13 @@ namespace Db4objects.Db4o
 
 		public const int LOCK_TIME_INTERVAL = 1000;
 
-		internal static readonly int SERVER_SOCKET_TIMEOUT = Db4objects.Db4o.Debug.longTimeOuts
-			 ? 1000000 : 5000;
+		internal const int SERVER_SOCKET_TIMEOUT = Db4objects.Db4o.Debug.longTimeOuts ? 1000000
+			 : 5000;
 
 		internal const int CLIENT_SOCKET_TIMEOUT = 300000;
 
-		internal static readonly int CONNECTION_TIMEOUT = Db4objects.Db4o.Debug.longTimeOuts
-			 ? 1000000 : 180000;
+		internal const int CONNECTION_TIMEOUT = Db4objects.Db4o.Debug.longTimeOuts ? 1000000
+			 : 180000;
 
 		public const int MAXIMUM_BLOCK_SIZE = 70000000;
 
@@ -155,7 +155,7 @@ namespace Db4objects.Db4o
 
 		internal static System.Type CLASS_UNVERSIONED;
 
-		public static System.Type CLASS_OBJECT;
+		internal static System.Type CLASS_OBJECT;
 
 		internal static System.Type CLASS_OBJECTCONTAINER;
 
@@ -225,6 +225,6 @@ namespace Db4objects.Db4o
 
 		public static readonly string VIRTUAL_FIELD_PREFIX = "v4o";
 
-		public const int MAX_STACK_DEPTH = 100;
+		public const int MAX_STACK_DEPTH = 20;
 	}
 }

@@ -3,10 +3,10 @@ namespace Db4objects.Db4o.Tests.Common.Header
 	public class OldHeaderTest : Db4oUnit.ITestCase
 	{
 		private static readonly string ORIGINAL_FILE = Db4objects.Db4o.Tests.Util.WorkspaceServices
-			.WorkspacePath("db4oj.tests/test/db4oVersions/db4o_5.5.2");
+			.WorkspaceTestFilePath("db4oVersions/db4o_5.5.2");
 
 		private static readonly string DB_FILE = Db4objects.Db4o.Tests.Util.WorkspaceServices
-			.WorkspacePath("db4oj.tests/test/db4oVersions/db4o_5.5.2.yap");
+			.WorkspaceTestFilePath("db4oVersions/db4o_5.5.2.yap");
 
 		public virtual void Test()
 		{

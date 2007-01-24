@@ -41,7 +41,7 @@ namespace Db4objects.Db4o
 			return Db4objects.Db4o.YapConst.INT_LENGTH + Db4objects.Db4o.YapConst.ID_LENGTH;
 		}
 
-		public Db4objects.Db4o.Reflect.IReflectClass PrimitiveClassReflector()
+		public virtual Db4objects.Db4o.Reflect.IReflectClass PrimitiveClassReflector()
 		{
 			return null;
 		}

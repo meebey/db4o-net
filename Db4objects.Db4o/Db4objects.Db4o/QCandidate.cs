@@ -80,7 +80,7 @@ namespace Db4objects.Db4o
 			{
 				_member = ((Db4objects.Db4o.Config.ICompare)_member).Compare();
 				Db4objects.Db4o.YapFile stream = GetStream();
-				_yapClass = stream.GetYapClass(stream.Reflector().ForObject(_member), false);
+				_yapClass = stream.GetYapClass(stream.Reflector().ForObject(_member));
 				_key = (int)stream.GetID(_member);
 				SetBytes(stream.ReadReaderByID(GetTransaction(), _key));
 			}
@@ -138,14 +138,14 @@ namespace Db4objects.Db4o
 								Db4objects.Db4o.Foundation.Tree.ByRef pending = new Db4objects.Db4o.Foundation.Tree.ByRef
 									();
 								bool[] innerRes = { isNot };
-								candidates.Traverse(new _AnonymousInnerClass167(this, innerRes, isNot, pending));
+								candidates.Traverse(new _AnonymousInnerClass166(this, innerRes, isNot, pending));
 								if (isNot)
 								{
 									qcon.Not();
 								}
 								if (pending.value != null)
 								{
-									pending.value.Traverse(new _AnonymousInnerClass236(this));
+									pending.value.Traverse(new _AnonymousInnerClass235(this));
 								}
 								if (!innerRes[0])
 								{
@@ -202,9 +202,9 @@ namespace Db4objects.Db4o
 			return true;
 		}
 
-		private sealed class _AnonymousInnerClass167 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass166 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass167(QCandidate _enclosing, bool[] innerRes, bool isNot
+			public _AnonymousInnerClass166(QCandidate _enclosing, bool[] innerRes, bool isNot
 				, Db4objects.Db4o.Foundation.Tree.ByRef pending)
 			{
 				this._enclosing = _enclosing;
@@ -222,13 +222,13 @@ namespace Db4objects.Db4o
 				}
 				if (cand._pendingJoins != null)
 				{
-					cand._pendingJoins.Traverse(new _AnonymousInnerClass180(this, pending));
+					cand._pendingJoins.Traverse(new _AnonymousInnerClass179(this, pending));
 				}
 			}
 
-			private sealed class _AnonymousInnerClass180 : Db4objects.Db4o.Foundation.IVisitor4
+			private sealed class _AnonymousInnerClass179 : Db4objects.Db4o.Foundation.IVisitor4
 			{
-				public _AnonymousInnerClass180(_AnonymousInnerClass167 _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
+				public _AnonymousInnerClass179(_AnonymousInnerClass166 _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
 					 pending)
 				{
 					this._enclosing = _enclosing;
@@ -254,7 +254,7 @@ namespace Db4objects.Db4o
 					}
 				}
 
-				private readonly _AnonymousInnerClass167 _enclosing;
+				private readonly _AnonymousInnerClass166 _enclosing;
 
 				private readonly Db4objects.Db4o.Foundation.Tree.ByRef pending;
 			}
@@ -268,9 +268,9 @@ namespace Db4objects.Db4o
 			private readonly Db4objects.Db4o.Foundation.Tree.ByRef pending;
 		}
 
-		private sealed class _AnonymousInnerClass236 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass235 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass236(QCandidate _enclosing)
+			public _AnonymousInnerClass235(QCandidate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -340,6 +340,11 @@ namespace Db4objects.Db4o
 				return null;
 			}
 			return _yapClass.ClassReflector();
+		}
+
+		internal virtual bool FieldIsAvailable()
+		{
+			return ClassReflector() != null;
 		}
 
 		public virtual Db4objects.Db4o.IObjectContainer ObjectContainer()
@@ -424,13 +429,13 @@ namespace Db4objects.Db4o
 				Db4objects.Db4o.YapClass yc = null;
 				if (_bytes != null)
 				{
-					yc = a_stream.GetYapClass(a_stream.Reflector().ForObject(a_constraint), true);
+					yc = a_stream.ProduceYapClass(a_stream.Reflector().ForObject(a_constraint));
 				}
 				else
 				{
 					if (_member != null)
 					{
-						yc = a_stream.GetYapClass(a_stream.Reflector().ForObject(_member), false);
+						yc = a_stream.GetYapClass(a_stream.Reflector().ForObject(_member));
 					}
 				}
 				if (yc != null)

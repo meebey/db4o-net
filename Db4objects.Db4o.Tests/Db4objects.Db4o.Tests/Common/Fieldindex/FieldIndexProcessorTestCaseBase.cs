@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		private Db4objects.Db4o.YapClass GetYapClass(System.Type clazz)
 		{
-			return Stream().GetYapClass(GetReflectClass(clazz), false);
+			return Stream().GetYapClass(GetReflectClass(clazz));
 		}
 
 		private Db4objects.Db4o.Reflect.IReflectClass GetReflectClass(System.Type clazz)

@@ -9,8 +9,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		protected override System.Type[] TestCases()
 		{
-			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Assorted.BackupStressTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Assorted.CanUpdateFalseRefreshTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ChangeIdentity)
+			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Assorted.BackupStressTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.CanUpdateFalseRefreshTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReaddTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ChangeIdentity)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.CloseUnlocksFileTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ComparatorSortTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.DatabaseUnicityTest), typeof(Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.GetByUUIDTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.GetSingleSimpleArrayTestCase)
@@ -20,7 +21,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.PersistTypeTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ServerRevokeAccessTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.SystemInfoTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ObjectVersionTest)
-				, typeof(Db4objects.Db4o.Tests.Common.Assorted.YapClassTestCase) };
+				, typeof(Db4objects.Db4o.Tests.Common.Assorted.YapHandlersTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.YapClassTestCase)
+				 };
 		}
 	}
 }

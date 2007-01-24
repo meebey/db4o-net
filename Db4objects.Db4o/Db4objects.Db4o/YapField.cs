@@ -44,9 +44,8 @@ namespace Db4objects.Db4o
 		}
 
 		internal YapField(Db4objects.Db4o.YapClass a_yapClass, Db4objects.Db4o.Config.IObjectTranslator
-			 a_translator)
+			 a_translator) : this(a_yapClass)
 		{
-			i_yapClass = a_yapClass;
 			Init(a_yapClass, a_translator.GetType().FullName);
 			i_state = AVAILABLE;
 			Db4objects.Db4o.YapStream stream = GetStream();
@@ -55,7 +54,7 @@ namespace Db4objects.Db4o
 		}
 
 		internal YapField(Db4objects.Db4o.YapClass a_yapClass, Db4objects.Db4o.Reflect.IReflectField
-			 a_field, Db4objects.Db4o.ITypeHandler4 a_handler)
+			 a_field, Db4objects.Db4o.ITypeHandler4 a_handler) : this(a_yapClass)
 		{
 			Init(a_yapClass, a_field.GetName());
 			i_javaField = a_field;
@@ -102,8 +101,20 @@ namespace Db4objects.Db4o
 			{
 				return;
 			}
-			index.Add(trans, new Db4objects.Db4o.Inside.Btree.FieldIndexKey(parentID, indexEntry
-				));
+			index.Add(trans, CreateFieldIndexKey(parentID, indexEntry));
+		}
+
+		private Db4objects.Db4o.Inside.Btree.FieldIndexKey CreateFieldIndexKey(int parentID
+			, object indexEntry)
+		{
+			object convertedIndexEntry = IndexEntryFor(indexEntry);
+			return new Db4objects.Db4o.Inside.Btree.FieldIndexKey(parentID, convertedIndexEntry
+				);
+		}
+
+		protected virtual object IndexEntryFor(object indexEntry)
+		{
+			return i_javaField.IndexEntry(indexEntry);
 		}
 
 		public virtual bool CanUseNullBitmap()
@@ -135,8 +146,7 @@ namespace Db4objects.Db4o
 			{
 				return;
 			}
-			_index.Remove(trans, new Db4objects.Db4o.Inside.Btree.FieldIndexKey(parentID, indexEntry
-				));
+			_index.Remove(trans, CreateFieldIndexKey(parentID, indexEntry));
 		}
 
 		public virtual bool Alive()
@@ -436,6 +446,11 @@ namespace Db4objects.Db4o
 					) && yapField.i_name.Equals(i_name);
 			}
 			return false;
+		}
+
+		public override int GetHashCode()
+		{
+			return i_name.GetHashCode();
 		}
 
 		public virtual object Get(object a_onObject)
@@ -876,13 +891,13 @@ namespace Db4objects.Db4o
 			lock (stream.Lock())
 			{
 				Db4objects.Db4o.Transaction trans = stream.GetTransaction();
-				_index.TraverseKeys(trans, new _AnonymousInnerClass777(this, userVisitor, trans));
+				_index.TraverseKeys(trans, new _AnonymousInnerClass791(this, userVisitor, trans));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass777 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass791 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass777(YapField _enclosing, Db4objects.Db4o.Foundation.IVisitor4
+			public _AnonymousInnerClass791(YapField _enclosing, Db4objects.Db4o.Foundation.IVisitor4
 				 userVisitor, Db4objects.Db4o.Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -991,11 +1006,30 @@ namespace Db4objects.Db4o
 			_index = NewBTree(systemTrans, id);
 		}
 
-		protected virtual Db4objects.Db4o.Inside.Btree.BTree NewBTree(Db4objects.Db4o.Transaction
+		protected Db4objects.Db4o.Inside.Btree.BTree NewBTree(Db4objects.Db4o.Transaction
 			 systemTrans, int id)
 		{
+			Db4objects.Db4o.YapStream stream = systemTrans.Stream();
+			Db4objects.Db4o.Inside.IX.IIndexable4 indexHandler = IndexHandler(stream);
+			if (indexHandler == null)
+			{
+				return null;
+			}
 			return new Db4objects.Db4o.Inside.Btree.BTree(systemTrans, id, new Db4objects.Db4o.Inside.Btree.FieldIndexKeyHandler
-				(systemTrans.Stream(), i_handler));
+				(stream, indexHandler));
+		}
+
+		protected virtual Db4objects.Db4o.Inside.IX.IIndexable4 IndexHandler(Db4objects.Db4o.YapStream
+			 stream)
+		{
+			Db4objects.Db4o.Reflect.IReflectClass indexType = null;
+			if (i_javaField != null)
+			{
+				indexType = i_javaField.IndexType();
+			}
+			Db4objects.Db4o.Inside.IX.IIndexable4 indexHandler = stream.i_handlers.HandlerForClass
+				(stream, indexType);
+			return indexHandler;
 		}
 
 		public virtual Db4objects.Db4o.Inside.Btree.BTree GetIndex(Db4objects.Db4o.Transaction
@@ -1038,10 +1072,10 @@ namespace Db4objects.Db4o
 		}
 
 		private Db4objects.Db4o.Inside.Btree.BTreeNodeSearchResult SearchBound(Db4objects.Db4o.Transaction
-			 transaction, int bound, object keyPart)
+			 transaction, int parentID, object keyPart)
 		{
-			return GetIndex(transaction).SearchLeaf(transaction, new Db4objects.Db4o.Inside.Btree.FieldIndexKey
-				(bound, keyPart), Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST);
+			return GetIndex(transaction).SearchLeaf(transaction, CreateFieldIndexKey(parentID
+				, keyPart), Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST);
 		}
 
 		public virtual bool RebuildIndexForClass(Db4objects.Db4o.YapFile stream, Db4objects.Db4o.YapClass

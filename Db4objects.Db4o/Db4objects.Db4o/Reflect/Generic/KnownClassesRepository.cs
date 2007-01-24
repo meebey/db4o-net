@@ -1,0 +1,220 @@
+namespace Db4objects.Db4o.Reflect.Generic
+{
+	public class KnownClassesRepository
+	{
+		private Db4objects.Db4o.YapStream _stream;
+
+		private Db4objects.Db4o.Transaction _trans;
+
+		private Db4objects.Db4o.Reflect.Generic.IReflectClassBuilder _builder;
+
+		private readonly Db4objects.Db4o.Foundation.Hashtable4 _classByName = new Db4objects.Db4o.Foundation.Hashtable4
+			();
+
+		private readonly Db4objects.Db4o.Foundation.Hashtable4 _classByID = new Db4objects.Db4o.Foundation.Hashtable4
+			();
+
+		private Db4objects.Db4o.Foundation.Collection4 _pendingClasses = new Db4objects.Db4o.Foundation.Collection4
+			();
+
+		private readonly Db4objects.Db4o.Foundation.Collection4 _classes = new Db4objects.Db4o.Foundation.Collection4
+			();
+
+		public KnownClassesRepository(Db4objects.Db4o.Reflect.Generic.IReflectClassBuilder
+			 builder)
+		{
+			_builder = builder;
+		}
+
+		public virtual void SetTransaction(Db4objects.Db4o.Transaction trans)
+		{
+			if (trans != null)
+			{
+				_trans = trans;
+				_stream = trans.Stream();
+			}
+		}
+
+		public virtual void Register(Db4objects.Db4o.Reflect.IReflectClass clazz)
+		{
+			_classByName.Put(clazz.GetName(), clazz);
+			_classes.Add(clazz);
+		}
+
+		public virtual Db4objects.Db4o.Reflect.IReflectClass ForID(int id)
+		{
+			if (_stream.Handlers().IsSystemHandler(id))
+			{
+				return _stream.HandlerByID(id).ClassReflector();
+			}
+			EnsureClassAvailability(id);
+			return LookupByID(id);
+		}
+
+		public virtual Db4objects.Db4o.Reflect.IReflectClass ForName(string className)
+		{
+			Db4objects.Db4o.Reflect.IReflectClass clazz = (Db4objects.Db4o.Reflect.IReflectClass
+				)_classByName.Get(className);
+			if (clazz != null)
+			{
+				return clazz;
+			}
+			if (_stream == null)
+			{
+				return null;
+			}
+			if (_stream.ClassCollection() != null)
+			{
+				int classID = _stream.ClassCollection().GetYapClassID(className);
+				if (classID > 0)
+				{
+					clazz = EnsureClassInitialised(classID);
+					_classByName.Put(className, clazz);
+					return clazz;
+				}
+			}
+			return null;
+		}
+
+		private void ReadAll()
+		{
+			for (System.Collections.IEnumerator idIter = _stream.ClassCollection().Ids(); idIter
+				.MoveNext(); )
+			{
+				EnsureClassAvailability(((int)idIter.Current));
+			}
+			for (System.Collections.IEnumerator idIter = _stream.ClassCollection().Ids(); idIter
+				.MoveNext(); )
+			{
+				EnsureClassRead(((int)idIter.Current));
+			}
+		}
+
+		private Db4objects.Db4o.Reflect.IReflectClass EnsureClassAvailability(int id)
+		{
+			if (id == 0)
+			{
+				return null;
+			}
+			Db4objects.Db4o.Reflect.IReflectClass ret = (Db4objects.Db4o.Reflect.IReflectClass
+				)_classByID.Get(id);
+			if (ret != null)
+			{
+				return ret;
+			}
+			Db4objects.Db4o.YapReader classreader = _stream.ReadWriterByID(_trans, id);
+			Db4objects.Db4o.Inside.Marshall.ClassMarshaller marshaller = MarshallerFamily()._class;
+			Db4objects.Db4o.Inside.Marshall.RawClassSpec spec = marshaller.ReadSpec(_trans, classreader
+				);
+			string className = spec.Name();
+			ret = (Db4objects.Db4o.Reflect.IReflectClass)_classByName.Get(className);
+			if (ret != null)
+			{
+				_classByID.Put(id, ret);
+				_pendingClasses.Add(id);
+				return ret;
+			}
+			ret = _builder.CreateClass(className, EnsureClassAvailability(spec.SuperClassID()
+				), spec.NumFields());
+			_classByID.Put(id, ret);
+			_pendingClasses.Add(id);
+			return ret;
+		}
+
+		private void EnsureClassRead(int id)
+		{
+			Db4objects.Db4o.Reflect.IReflectClass clazz = LookupByID(id);
+			Db4objects.Db4o.YapReader classreader = _stream.ReadWriterByID(_trans, id);
+			Db4objects.Db4o.Inside.Marshall.ClassMarshaller classMarshaller = MarshallerFamily
+				()._class;
+			Db4objects.Db4o.Inside.Marshall.RawClassSpec classInfo = classMarshaller.ReadSpec
+				(_trans, classreader);
+			string className = classInfo.Name();
+			if (_classByName.Get(className) != null)
+			{
+				return;
+			}
+			_classByName.Put(className, clazz);
+			_classes.Add(clazz);
+			int numFields = classInfo.NumFields();
+			Db4objects.Db4o.Reflect.IReflectField[] fields = _builder.FieldArray(numFields);
+			Db4objects.Db4o.Inside.Marshall.IFieldMarshaller fieldMarshaller = MarshallerFamily
+				()._field;
+			for (int i = 0; i < numFields; i++)
+			{
+				Db4objects.Db4o.Inside.Marshall.RawFieldSpec fieldInfo = fieldMarshaller.ReadSpec
+					(_stream, classreader);
+				string fieldName = fieldInfo.Name();
+				int handlerID = fieldInfo.HandlerID();
+				Db4objects.Db4o.Reflect.IReflectClass fieldClass = null;
+				switch (handlerID)
+				{
+					case Db4objects.Db4o.YapHandlers.ANY_ID:
+					{
+						fieldClass = _stream.Reflector().ForClass(typeof(object));
+						break;
+					}
+
+					case Db4objects.Db4o.YapHandlers.ANY_ARRAY_ID:
+					{
+						fieldClass = _builder.ArrayClass(_stream.Reflector().ForClass(typeof(object)));
+						break;
+					}
+
+					default:
+					{
+						fieldClass = ForID(handlerID);
+						fieldClass = _stream.Reflector().ForName(fieldClass.GetName());
+						break;
+					}
+				}
+				fields[i] = _builder.CreateField(clazz, fieldName, fieldClass, fieldInfo.IsVirtual
+					(), fieldInfo.IsPrimitive(), fieldInfo.IsArray(), fieldInfo.IsNArray());
+			}
+			_builder.InitFields(clazz, fields);
+		}
+
+		private Db4objects.Db4o.Inside.Marshall.MarshallerFamily MarshallerFamily()
+		{
+			return Db4objects.Db4o.Inside.Marshall.MarshallerFamily.ForConverterVersion(_stream
+				.ConverterVersion());
+		}
+
+		private Db4objects.Db4o.Reflect.IReflectClass EnsureClassInitialised(int id)
+		{
+			Db4objects.Db4o.Reflect.IReflectClass ret = EnsureClassAvailability(id);
+			while (_pendingClasses.Size() > 0)
+			{
+				Db4objects.Db4o.Foundation.Collection4 pending = _pendingClasses;
+				_pendingClasses = new Db4objects.Db4o.Foundation.Collection4();
+				System.Collections.IEnumerator i = pending.GetEnumerator();
+				while (i.MoveNext())
+				{
+					EnsureClassRead(((int)i.Current));
+				}
+			}
+			return ret;
+		}
+
+		public virtual System.Collections.IEnumerator Classes()
+		{
+			ReadAll();
+			return _classes.GetEnumerator();
+		}
+
+		public virtual void Register(int id, Db4objects.Db4o.Reflect.IReflectClass clazz)
+		{
+			_classByID.Put(id, clazz);
+		}
+
+		public virtual Db4objects.Db4o.Reflect.IReflectClass LookupByID(int id)
+		{
+			return (Db4objects.Db4o.Reflect.IReflectClass)_classByID.Get(id);
+		}
+
+		public virtual Db4objects.Db4o.Reflect.IReflectClass LookupByName(string name)
+		{
+			return (Db4objects.Db4o.Reflect.IReflectClass)_classByName.Get(name);
+		}
+	}
+}

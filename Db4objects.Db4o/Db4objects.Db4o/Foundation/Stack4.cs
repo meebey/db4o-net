@@ -29,5 +29,10 @@ namespace Db4objects.Db4o.Foundation
 			_tail = _tail._next;
 			return res;
 		}
+
+		public virtual bool IsEmpty()
+		{
+			return _tail == null;
+		}
 	}
 }

@@ -71,5 +71,16 @@ namespace Db4objects.Db4o
 			{
 			}
 		}
+
+		protected override object IndexEntryFor(object indexEntry)
+		{
+			return indexEntry;
+		}
+
+		protected override Db4objects.Db4o.Inside.IX.IIndexable4 IndexHandler(Db4objects.Db4o.YapStream
+			 stream)
+		{
+			return i_handler;
+		}
 	}
 }

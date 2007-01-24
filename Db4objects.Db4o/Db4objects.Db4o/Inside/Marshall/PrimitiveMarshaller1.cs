@@ -19,5 +19,10 @@ namespace Db4objects.Db4o.Inside.Marshall
 			}
 			return 0;
 		}
+
+		public override Sharpen.Util.Date ReadDate(Db4objects.Db4o.YapReader bytes)
+		{
+			return new Sharpen.Util.Date(Db4objects.Db4o.YLong.ReadLong(bytes));
+		}
 	}
 }

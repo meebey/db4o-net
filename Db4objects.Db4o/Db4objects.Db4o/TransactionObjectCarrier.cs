@@ -1,7 +1,7 @@
 namespace Db4objects.Db4o
 {
 	/// <summary>TODO: Check if all time-consuming stuff is overridden!</summary>
-	internal class TransactionObjectCarrier : Db4objects.Db4o.Transaction
+	internal class TransactionObjectCarrier : Db4objects.Db4o.YapFileTransaction
 	{
 		internal TransactionObjectCarrier(Db4objects.Db4o.YapStream a_stream, Db4objects.Db4o.Transaction
 			 a_parent) : base(a_stream, a_parent)

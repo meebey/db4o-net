@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				(new Db4objects.Db4o.Foundation.ArrayIterator4(new string[] { "_id", "_name", "_age"
 				 }));
 			Db4objects.Db4o.YapClass clazz = Stream().GetYapClass(Reflector().ForClass(typeof(Db4objects.Db4o.Tests.Common.Assorted.YapClassTestCase.SubClazz)
-				), false);
+				));
 			System.Collections.IEnumerator fieldIter = clazz.Fields();
 			while (fieldIter.MoveNext())
 			{

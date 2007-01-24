@@ -201,6 +201,11 @@ namespace Db4objects.Db4o.Inside.Freespace
 			private readonly Db4objects.Db4o.Foundation.IIntObjectVisitor addToNewFM;
 		}
 
+		public override void OnNew(Db4objects.Db4o.YapFile file)
+		{
+			file.EnsureFreespaceSlot();
+		}
+
 		public override void Read(int freespaceID)
 		{
 		}

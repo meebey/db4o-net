@@ -26,11 +26,6 @@ namespace Db4objects.Db4o
 			return null;
 		}
 
-		public override bool Equals(object obj)
-		{
-			return obj == null;
-		}
-
 		public virtual bool IsEqual(object obj)
 		{
 			return obj == null;

@@ -35,6 +35,8 @@ namespace Db4objects.Db4o
 
 		private bool _unversioned;
 
+		private int i_lastID;
+
 		internal virtual bool IsInternal()
 		{
 			return _internal;
@@ -45,8 +47,6 @@ namespace Db4objects.Db4o
 		{
 			return new Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy(this);
 		}
-
-		private int i_lastID;
 
 		internal YapClass(Db4objects.Db4o.YapStream stream, Db4objects.Db4o.Reflect.IReflectClass
 			 reflector)
@@ -115,7 +115,7 @@ namespace Db4objects.Db4o
 				{
 					if (!HasVersionField())
 					{
-						members.Add(a_stream.i_handlers.i_indexes.i_fieldVersion);
+						members.Add(a_stream.GetVersionIndex());
 						dirty = true;
 					}
 				}
@@ -123,7 +123,7 @@ namespace Db4objects.Db4o
 				{
 					if (!HasUUIDField())
 					{
-						members.Add(a_stream.i_handlers.i_indexes.i_fieldUUID);
+						members.Add(a_stream.GetUUIDIndex());
 						dirty = true;
 					}
 				}
@@ -226,11 +226,11 @@ namespace Db4objects.Db4o
 			i_fields[0] = new Db4objects.Db4o.YapFieldTranslator(this, ot);
 			if (versions || uuids)
 			{
-				i_fields[1] = a_stream.i_handlers.i_indexes.i_fieldVersion;
+				i_fields[1] = a_stream.GetVersionIndex();
 			}
 			if (uuids)
 			{
-				i_fields[2] = a_stream.i_handlers.i_indexes.i_fieldUUID;
+				i_fields[2] = a_stream.GetUUIDIndex();
 			}
 			SetStateOK();
 			return true;
@@ -790,7 +790,11 @@ namespace Db4objects.Db4o
 			{
 				throw new Db4objects.Db4o.Ext.ObjectNotStorableException(obj.ToString());
 			}
-			return trans.Stream().GetYapClass(reflectClass, allowCreation);
+			if (allowCreation)
+			{
+				return trans.Stream().ProduceYapClass(reflectClass);
+			}
+			return trans.Stream().GetYapClass(reflectClass);
 		}
 
 		public virtual bool GenerateUUIDs()
@@ -954,17 +958,8 @@ namespace Db4objects.Db4o
 			{
 				return true;
 			}
-			if (i_fields != null)
-			{
-				for (int i = 0; i < i_fields.Length; i++)
-				{
-					if (i_fields[i] is Db4objects.Db4o.YapFieldUUID)
-					{
-						return true;
-					}
-				}
-			}
-			return false;
+			return Db4objects.Db4o.Foundation.Arrays4.ContainsInstanceOf(i_fields, typeof(Db4objects.Db4o.YapFieldUUID)
+				);
 		}
 
 		private bool AncestorHasVersionField()
@@ -982,17 +977,8 @@ namespace Db4objects.Db4o
 			{
 				return true;
 			}
-			if (i_fields != null)
-			{
-				for (int i = 0; i < i_fields.Length; i++)
-				{
-					if (i_fields[i] is Db4objects.Db4o.YapFieldVersion)
-					{
-						return true;
-					}
-				}
-			}
-			return false;
+			return Db4objects.Db4o.Foundation.Arrays4.ContainsInstanceOf(i_fields, typeof(Db4objects.Db4o.YapFieldVersion)
+				);
 		}
 
 		public virtual Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy Index()
@@ -1076,13 +1062,13 @@ namespace Db4objects.Db4o
 		public virtual Db4objects.Db4o.YapField GetYapField(string name)
 		{
 			Db4objects.Db4o.YapField[] yf = new Db4objects.Db4o.YapField[1];
-			ForEachYapField(new _AnonymousInnerClass907(this, name, yf));
+			ForEachYapField(new _AnonymousInnerClass897(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _AnonymousInnerClass907 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass897 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass907(YapClass _enclosing, string name, Db4objects.Db4o.YapField[]
+			public _AnonymousInnerClass897(YapClass _enclosing, string name, Db4objects.Db4o.YapField[]
 				 yf)
 			{
 				this._enclosing = _enclosing;
@@ -1474,7 +1460,7 @@ namespace Db4objects.Db4o
 			{
 				return string.Empty;
 			}
-			return i_name;
+			return i_stream.ConfigImpl().ResolveAliasRuntimeName(i_name);
 		}
 
 		internal bool CallConstructor()
@@ -1656,15 +1642,15 @@ namespace Db4objects.Db4o
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1389
+					Db4objects.Db4o.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1379
 						(this, a_candidates, trans));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1389 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass1379 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass1389(YapClass _enclosing, Db4objects.Db4o.QCandidates 
+			public _AnonymousInnerClass1379(YapClass _enclosing, Db4objects.Db4o.QCandidates 
 				a_candidates, Db4objects.Db4o.Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -1714,16 +1700,16 @@ namespace Db4objects.Db4o
 		internal virtual byte[] ReadName(Db4objects.Db4o.Transaction a_trans)
 		{
 			i_reader = a_trans.Stream().ReadReaderByID(a_trans, GetID());
-			if (i_reader != null)
-			{
-				return ReadName1(a_trans, i_reader);
-			}
-			return null;
+			return ReadName1(a_trans, i_reader);
 		}
 
 		public byte[] ReadName1(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapReader
 			 reader)
 		{
+			if (reader == null)
+			{
+				return null;
+			}
 			i_reader = reader;
 			try
 			{
@@ -1785,7 +1771,8 @@ namespace Db4objects.Db4o
 			{
 				if (i_nameBytes != null)
 				{
-					i_name = a_stream.StringIO().Read(i_nameBytes);
+					string name = a_stream.StringIO().Read(i_nameBytes);
+					i_name = a_stream.ConfigImpl().ResolveAliasStoredName(name);
 				}
 			}
 			else
@@ -1845,7 +1832,7 @@ namespace Db4objects.Db4o
 			throw Db4objects.Db4o.Inside.Exceptions4.VirtualException();
 		}
 
-		internal virtual void Refresh()
+		public virtual void Refresh()
 		{
 			if (!StateUnread())
 			{
@@ -1984,7 +1971,7 @@ namespace Db4objects.Db4o
 			lock (i_stream.i_lock)
 			{
 				Db4objects.Db4o.YapClass yc = i_stream.GetYapClass(i_stream.ConfigImpl().ReflectorFor
-					(a_type), false);
+					(a_type));
 				if (i_fields != null)
 				{
 					for (int i = 0; i < i_fields.Length; i++)
@@ -2114,13 +2101,17 @@ namespace Db4objects.Db4o
 
 		public override string ToString()
 		{
-			if (i_name == null && i_nameBytes != null)
+			if (i_name != null)
 			{
-				Db4objects.Db4o.YapStringIO stringIO = i_stream == null ? Db4objects.Db4o.YapConst
-					.stringIO : i_stream.StringIO();
-				return stringIO.Read(i_nameBytes);
+				return i_name;
 			}
-			return i_name;
+			if (i_nameBytes == null)
+			{
+				return "*CLASS NAME UNKNOWN*";
+			}
+			Db4objects.Db4o.YapStringIO stringIO = i_stream == null ? Db4objects.Db4o.YapConst
+				.stringIO : i_stream.StringIO();
+			return stringIO.Read(i_nameBytes);
 		}
 
 		public virtual bool WriteArray(object array, Db4objects.Db4o.YapReader reader)

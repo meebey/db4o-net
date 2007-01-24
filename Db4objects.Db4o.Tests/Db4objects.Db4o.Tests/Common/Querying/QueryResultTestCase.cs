@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		private Db4objects.Db4o.YapClass YapClass()
 		{
 			return Stream().GetYapClass(Reflector().ForClass(typeof(Db4objects.Db4o.Tests.Common.Querying.QueryResultTestCase.Item)
-				), false);
+				));
 		}
 
 		private Db4objects.Db4o.Inside.Query.IQueryResult ExecuteQuery(Db4objects.Db4o.Query.IQuery

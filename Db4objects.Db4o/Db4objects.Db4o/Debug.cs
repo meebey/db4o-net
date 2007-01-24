@@ -9,7 +9,7 @@ namespace Db4objects.Db4o
 
 		public const bool atHome = false;
 
-		public static bool longTimeOuts = false;
+		public const bool longTimeOuts = false;
 
 		public const bool freespace = Db4objects.Db4o.Deploy.debug ? true : false;
 

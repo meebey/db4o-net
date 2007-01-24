@@ -62,10 +62,6 @@ namespace Db4objects.Db4o.CS
 						Close();
 						return;
 					}
-					if (i_stream == null)
-					{
-						return;
-					}
 					if (Db4objects.Db4o.CS.Messages.Msg.PING.Equals(message))
 					{
 						i_stream.WriteMsg(Db4objects.Db4o.CS.Messages.Msg.OK);
@@ -75,16 +71,12 @@ namespace Db4objects.Db4o.CS
 						if (Db4objects.Db4o.CS.Messages.Msg.CLOSE.Equals(message))
 						{
 							i_stream.LogMsg(35, i_stream.ToString());
-							if (i_stream == null)
-							{
-								return;
-							}
 							i_stream = null;
 							i_socket = null;
 						}
 						else
 						{
-							messageQueueLock.Run(new _AnonymousInnerClass83(this, message));
+							messageQueueLock.Run(new _AnonymousInnerClass77(this, message));
 						}
 					}
 				}
@@ -114,9 +106,9 @@ namespace Db4objects.Db4o.CS
 			private readonly YapClientThread _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass83 : Db4objects.Db4o.Foundation.IClosure4
+		private sealed class _AnonymousInnerClass77 : Db4objects.Db4o.Foundation.IClosure4
 		{
-			public _AnonymousInnerClass83(YapClientThread _enclosing, Db4objects.Db4o.CS.Messages.Msg
+			public _AnonymousInnerClass77(YapClientThread _enclosing, Db4objects.Db4o.CS.Messages.Msg
 				 message)
 			{
 				this._enclosing = _enclosing;

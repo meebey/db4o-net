@@ -10,6 +10,8 @@ namespace Db4objects.Db4o.Inside.Marshall
 			 yapClassPrimitive, object obj, bool topLevel, Db4objects.Db4o.YapWriter parentWriter
 			, bool withIndirection, bool restoreLinkOffset);
 
+		public abstract Sharpen.Util.Date ReadDate(Db4objects.Db4o.YapReader bytes);
+
 		protected int ObjectLength(Db4objects.Db4o.ITypeHandler4 handler)
 		{
 			return handler.LinkLength() + Db4objects.Db4o.YapConst.OBJECT_LENGTH + Db4objects.Db4o.YapConst

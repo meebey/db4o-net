@@ -93,11 +93,6 @@ namespace Db4objects.Db4o.CS.Messages
 			return _payLoad;
 		}
 
-		public virtual void PayLoad(Db4objects.Db4o.YapWriter writer)
-		{
-			_payLoad = writer;
-		}
-
 		public virtual int GetId()
 		{
 			return _id;

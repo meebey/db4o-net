@@ -27,11 +27,18 @@ namespace Db4objects.Db4o.Config
 			_runtimeType = runtimeType;
 		}
 
-		/// <summary>checking if both names are equal.</summary>
-		/// <remarks>checking if both names are equal.</remarks>
-		public virtual string Resolve(string runtimeType)
+		/// <summary>returns the stored type name if the alias was written for the passed runtime type name
+		/// 	</summary>
+		public virtual string ResolveRuntimeName(string runtimeTypeName)
 		{
-			return _runtimeType.Equals(runtimeType) ? _storedType : null;
+			return _runtimeType.Equals(runtimeTypeName) ? _storedType : null;
+		}
+
+		/// <summary>returns the runtime type name if the alias was written for the passed stored type name
+		/// 	</summary>
+		public virtual string ResolveStoredName(string storedTypeName)
+		{
+			return _storedType.Equals(storedTypeName) ? _runtimeType : null;
 		}
 	}
 }

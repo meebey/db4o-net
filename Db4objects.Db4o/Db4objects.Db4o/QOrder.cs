@@ -18,13 +18,13 @@ namespace Db4objects.Db4o
 		{
 			if (_constraint.i_comparator.IsSmaller(_candidate.Value()))
 			{
-				return _constraint.i_orderID;
+				return _constraint.Ordering();
 			}
 			if (_constraint.i_comparator.IsEqual(_candidate.Value()))
 			{
 				return 0;
 			}
-			return -_constraint.i_orderID;
+			return -_constraint.Ordering();
 		}
 
 		public override object ShallowClone()

@@ -430,11 +430,6 @@ namespace Db4objects.Db4o.Config
 		/// </param>
 		void GenerateVersionNumbers(int setting);
 
-		/// <summary>returns the MessageSender for this Configuration context.</summary>
-		/// <remarks>returns the MessageSender for this Configuration context.</remarks>
-		/// <returns>MessageSender</returns>
-		Db4objects.Db4o.Messaging.IMessageSender GetMessageSender();
-
 		/// <summary>Configures db4o to call intern() on strings upon retrieval.</summary>
 		/// <remarks>Configures db4o to call intern() on strings upon retrieval.</remarks>
 		/// <param name="doIntern">intern strings on retrieval if true, don't otherwise</param>
@@ -582,15 +577,6 @@ namespace Db4objects.Db4o.Config
 		/// </deprecated>
 		void Password(string pass);
 
-		/// <summary>Sets the number of IDs to be prefetched for an ObjectSet in C/S mode</summary>
-		/// <param name="prefetchIDCount">The number of IDs to be prefetched</param>
-		void PrefetchIDCount(int prefetchIDCount);
-
-		/// <summary>Sets the number of objects to be prefetched for an ObjectSet in C/S mode
-		/// 	</summary>
-		/// <param name="prefetchObjectCount">The number of objects to be prefetched</param>
-		void PrefetchObjectCount(int prefetchObjectCount);
-
 		/// <summary>returns the Query configuration interface.</summary>
 		/// <remarks>returns the Query configuration interface.</remarks>
 		Db4objects.Db4o.Config.IQueryConfiguration Queries();
@@ -689,15 +675,6 @@ namespace Db4objects.Db4o.Config
 		/// <deprecated>use reflectWith(new JdkReflector(classLoader)) instead</deprecated>
 		void SetClassLoader(object classLoader);
 
-		/// <summary>sets the MessageRecipient to receive Client Server messages.</summary>
-		/// <remarks>
-		/// sets the MessageRecipient to receive Client Server messages.
-		/// <br /><br />
-		/// </remarks>
-		/// <param name="messageRecipient">the MessageRecipient to be used</param>
-		void SetMessageRecipient(Db4objects.Db4o.Messaging.IMessageRecipient messageRecipient
-			);
-
 		/// <summary>
 		/// Assigns a
 		/// <see cref="System.IO.TextWriter">PrintStream</see>
@@ -716,24 +693,6 @@ namespace Db4objects.Db4o.Config
 		void SetOut(System.IO.TextWriter outStream);
 
 		/// <summary>
-		/// configures the client messaging system to be single threaded
-		/// or multithreaded.
-		/// </summary>
-		/// <remarks>
-		/// configures the client messaging system to be single threaded
-		/// or multithreaded.
-		/// <br /><br />Recommended settings:<br />
-		/// - <code>true</code> for low ressource systems.<br />
-		/// - <code>false</code> for best asynchronous performance and fast
-		/// GUI response.
-		/// <br /><br />Default value:<br />
-		/// - .NET Compactframework: <code>true</code><br />
-		/// - all other plaforms: <code>false</code><br /><br />
-		/// </remarks>
-		/// <param name="flag">the desired setting</param>
-		void SingleThreadedClient(bool flag);
-
-		/// <summary>
 		/// tuning feature: configures whether db4o should try to instantiate one instance
 		/// of each persistent class on system startup.
 		/// </summary>
@@ -747,49 +706,6 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <param name="flag">the desired setting</param>
 		void TestConstructors(bool flag);
-
-		/// <summary>
-		/// configures the time a client waits for a message
-		/// response from the server.
-		/// </summary>
-		/// <remarks>
-		/// configures the time a client waits for a message
-		/// response from the server.
-		/// <br /><br />Default value: 300000ms (5 minutes)<br /><br />
-		/// </remarks>
-		/// <param name="milliseconds">time in milliseconds</param>
-		void TimeoutClientSocket(int milliseconds);
-
-		/// <summary>configures the timeout of the serverside socket.</summary>
-		/// <remarks>
-		/// configures the timeout of the serverside socket.
-		/// <br /><br />All server connection threads jump out of the
-		/// socket read statement on a regular interval to check
-		/// if the server was shut down. Use this method to configure
-		/// the duration of the interval.<br /><br />
-		/// Default value: 5000ms (5 seconds)<br /><br />
-		/// </remarks>
-		/// <param name="milliseconds">time in milliseconds</param>
-		void TimeoutServerSocket(int milliseconds);
-
-		/// <summary>
-		/// configures the delay time after which the server starts pinging
-		/// connected clients to check the connection.
-		/// </summary>
-		/// <remarks>
-		/// configures the delay time after which the server starts pinging
-		/// connected clients to check the connection.
-		/// <br /><br />If no client messages are received by the server for the
-		/// configured interval, the server sends a "PING" message to the
-		/// client and wait's for an "OK" response. After 5 unsuccessful
-		/// attempts, the client connection is closed.
-		/// <br /><br />This value may need to be increased for single-threaded
-		/// clients, since they can't respond instantaneously.
-		/// <br /><br />Default value: 180000ms (3 minutes)<br /><br />
-		/// </remarks>
-		/// <param name="milliseconds">time in milliseconds</param>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.SingleThreadedClient"></seealso>
-		void TimeoutPingClients(int milliseconds);
 
 		/// <summary>configures the storage format of Strings.</summary>
 		/// <remarks>
@@ -858,5 +774,9 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <param name="milliseconds">the time in milliseconds</param>
 		void WeakReferenceCollectionInterval(int milliseconds);
+
+		/// <summary>returns the freespace configuration interface.</summary>
+		/// <remarks>returns the freespace configuration interface.</remarks>
+		Db4objects.Db4o.Config.IClientServerConfiguration ClientServer();
 	}
 }

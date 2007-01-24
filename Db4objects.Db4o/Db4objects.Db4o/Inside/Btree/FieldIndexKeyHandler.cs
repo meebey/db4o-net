@@ -56,6 +56,11 @@ namespace Db4objects.Db4o.Inside.Btree
 			_valueHandler.WriteIndexEntry(writer, composite.Value());
 		}
 
+		public virtual Db4objects.Db4o.Inside.IX.IIndexable4 ValueHandler()
+		{
+			return _valueHandler;
+		}
+
 		public virtual Db4objects.Db4o.IYapComparable PrepareComparison(object obj)
 		{
 			Db4objects.Db4o.Inside.Btree.FieldIndexKey composite = (Db4objects.Db4o.Inside.Btree.FieldIndexKey

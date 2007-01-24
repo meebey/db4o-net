@@ -25,8 +25,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return false;
 			}
-			return IsAssignableFrom(((Db4objects.Db4o.Reflect.Generic.GenericObject)candidate
-				)._class);
+			return IsAssignableFrom(((Db4objects.Db4o.Reflect.Generic.GenericArray)candidate)
+				._clazz);
 		}
 
 		public override bool Equals(object obj)

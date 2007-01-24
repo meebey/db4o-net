@@ -196,11 +196,10 @@ namespace Db4objects.Db4o
 			int id = a_yapObject.GetID();
 			RemoveReference(a_yapObject);
 			a_yapObject = new Db4objects.Db4o.YapObject(GetYapClass(Reflector().ForObject(obj
-				), false), id);
+				)), id);
 			a_yapObject.SetObjectWeak(_this, obj);
 			a_yapObject.SetStateDirty();
-			IdTreeAdd(a_yapObject);
-			HcTreeAdd(a_yapObject);
+			AddToReferenceSystem(a_yapObject);
 		}
 
 		public virtual byte BlockSize()
@@ -373,11 +372,8 @@ namespace Db4objects.Db4o
 			i_trans = NewTransaction();
 		}
 
-		public virtual Db4objects.Db4o.Transaction NewTransaction(Db4objects.Db4o.Transaction
-			 parentTransaction)
-		{
-			return new Db4objects.Db4o.Transaction(_this, parentTransaction);
-		}
+		public abstract Db4objects.Db4o.Transaction NewTransaction(Db4objects.Db4o.Transaction
+			 parentTransaction);
 
 		public virtual Db4objects.Db4o.Transaction NewTransaction()
 		{
@@ -519,20 +515,18 @@ namespace Db4objects.Db4o
 			}
 			if (BreakDeleteForEnum(@ref, userCall))
 			{
+				@ref.EndProcessing();
 				return;
 			}
 			if (!@ref.IsFlaggedForDelete())
 			{
+				@ref.EndProcessing();
 				return;
 			}
 			Db4objects.Db4o.YapClass yc = @ref.GetYapClass();
 			object obj = @ref.GetObject();
 			@ref.EndProcessing();
 			if (!ObjectCanDelete(yc, obj))
-			{
-				return;
-			}
-			if (!@ref.IsFlaggedForDelete())
 			{
 				return;
 			}
@@ -587,7 +581,7 @@ namespace Db4objects.Db4o
 			}
 			Db4objects.Db4o.YapClass yc = yo.GetYapClass();
 			Db4objects.Db4o.YapField[] field = new Db4objects.Db4o.YapField[] { null };
-			yc.ForEachYapField(new _AnonymousInnerClass571(this, fieldName, field));
+			yc.ForEachYapField(new _AnonymousInnerClass565(this, fieldName, field));
 			if (field[0] == null)
 			{
 				return null;
@@ -630,9 +624,9 @@ namespace Db4objects.Db4o
 			return Descend1(trans, child, subPath);
 		}
 
-		private sealed class _AnonymousInnerClass571 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass565 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass571(YapStreamBase _enclosing, string fieldName, Db4objects.Db4o.YapField[]
+			public _AnonymousInnerClass565(YapStreamBase _enclosing, string fieldName, Db4objects.Db4o.YapField[]
 				 field)
 			{
 				this._enclosing = _enclosing;
@@ -968,23 +962,33 @@ namespace Db4objects.Db4o
 		}
 
 		public Db4objects.Db4o.YapClass GetYapClass(Db4objects.Db4o.Reflect.IReflectClass
-			 a_class, bool a_create)
+			 claxx)
 		{
-			if (a_class == null)
+			if (CantGetYapClass(claxx))
 			{
 				return null;
 			}
-			if ((!ShowInternalClasses()) && i_handlers.ICLASS_INTERNAL.IsAssignableFrom(a_class
-				))
-			{
-				return null;
-			}
-			Db4objects.Db4o.YapClass yc = i_handlers.GetYapClassStatic(a_class);
+			Db4objects.Db4o.YapClass yc = i_handlers.GetYapClassStatic(claxx);
 			if (yc != null)
 			{
 				return yc;
 			}
-			return _classCollection.GetYapClass(a_class, a_create);
+			return _classCollection.GetYapClass(claxx);
+		}
+
+		public Db4objects.Db4o.YapClass ProduceYapClass(Db4objects.Db4o.Reflect.IReflectClass
+			 claxx)
+		{
+			if (CantGetYapClass(claxx))
+			{
+				return null;
+			}
+			Db4objects.Db4o.YapClass yc = i_handlers.GetYapClassStatic(claxx);
+			if (yc != null)
+			{
+				return yc;
+			}
+			return _classCollection.ProduceYapClass(claxx);
 		}
 
 		/// <summary>
@@ -1004,37 +1008,46 @@ namespace Db4objects.Db4o
 		/// is not done on purpose
 		/// </remarks>
 		internal Db4objects.Db4o.YapClass GetActiveYapClass(Db4objects.Db4o.Reflect.IReflectClass
-			 a_class)
+			 claxx)
 		{
-			if (a_class == null)
+			if (CantGetYapClass(claxx))
 			{
 				return null;
 			}
-			if ((!ShowInternalClasses()) && i_handlers.ICLASS_INTERNAL.IsAssignableFrom(a_class
-				))
-			{
-				return null;
-			}
-			Db4objects.Db4o.YapClass yc = i_handlers.GetYapClassStatic(a_class);
+			Db4objects.Db4o.YapClass yc = i_handlers.GetYapClassStatic(claxx);
 			if (yc != null)
 			{
 				return yc;
 			}
-			return _classCollection.GetActiveYapClass(a_class);
+			return _classCollection.GetActiveYapClass(claxx);
 		}
 
-		public virtual Db4objects.Db4o.YapClass GetYapClass(int a_id)
+		private bool CantGetYapClass(Db4objects.Db4o.Reflect.IReflectClass claxx)
 		{
-			if (a_id == 0)
+			if (claxx == null)
+			{
+				return true;
+			}
+			if ((!ShowInternalClasses()) && i_handlers.ICLASS_INTERNAL.IsAssignableFrom(claxx
+				))
+			{
+				return true;
+			}
+			return false;
+		}
+
+		public virtual Db4objects.Db4o.YapClass GetYapClass(int id)
+		{
+			if (id == 0)
 			{
 				return null;
 			}
-			Db4objects.Db4o.YapClass yc = i_handlers.GetYapClassStatic(a_id);
+			Db4objects.Db4o.YapClass yc = i_handlers.GetYapClassStatic(id);
 			if (yc != null)
 			{
 				return yc;
 			}
-			return _classCollection.GetYapClass(a_id);
+			return _classCollection.GetYapClass(id);
 		}
 
 		public virtual object ObjectForIDFromCache(int id)
@@ -1170,8 +1183,8 @@ namespace Db4objects.Db4o
 		{
 			for (int i = 0; i < Db4objects.Db4o.YapConst.ESSENTIAL_CLASSES.Length; i++)
 			{
-				GetYapClass(Reflector().ForClass(Db4objects.Db4o.YapConst.ESSENTIAL_CLASSES[i]), 
-					true);
+				ProduceYapClass(Reflector().ForClass(Db4objects.Db4o.YapConst.ESSENTIAL_CLASSES[i
+					]));
 			}
 		}
 
@@ -1320,7 +1333,7 @@ namespace Db4objects.Db4o
 			Db4objects.Db4o.Ext.MemoryFile memoryFile = new Db4objects.Db4o.Ext.MemoryFile();
 			memoryFile.SetInitialSize(223);
 			memoryFile.SetIncrementSizeBy(300);
-			GetYapClass(Reflector().ForObject(obj), true);
+			ProduceYapClass(Reflector().ForObject(obj));
 			Db4objects.Db4o.YapObjectCarrier carrier = new Db4objects.Db4o.YapObjectCarrier(Config
 				(), _this, memoryFile);
 			carrier.i_showInternalClasses = i_showInternalClasses;
@@ -1545,6 +1558,9 @@ namespace Db4objects.Db4o
 
 		public abstract Db4objects.Db4o.YapReader ReadReaderByID(Db4objects.Db4o.Transaction
 			 a_ta, int a_id);
+
+		public abstract Db4objects.Db4o.YapWriter[] ReadWritersByIDs(Db4objects.Db4o.Transaction
+			 a_ta, int[] ids);
 
 		private void Reboot()
 		{
@@ -1908,7 +1924,7 @@ namespace Db4objects.Db4o
 				yc = GetActiveYapClass(claxx);
 				if (yc == null)
 				{
-					yc = GetYapClass(claxx, true);
+					yc = ProduceYapClass(claxx);
 					if (yc == null)
 					{
 						NotStorable(claxx, obj);
@@ -1934,8 +1950,7 @@ namespace Db4objects.Db4o
 				}
 				@ref = new Db4objects.Db4o.YapObject();
 				@ref.Store(trans, yc, obj);
-				IdTreeAdd(@ref);
-				HcTreeAdd(@ref);
+				AddToReferenceSystem(@ref);
 				if (obj is Db4objects.Db4o.IDb4oTypeImpl)
 				{
 					((Db4objects.Db4o.IDb4oTypeImpl)obj).SetTrans(trans);
@@ -1967,6 +1982,12 @@ namespace Db4objects.Db4o
 			}
 			CheckNeededUpdates();
 			return @ref.GetID();
+		}
+
+		private void AddToReferenceSystem(Db4objects.Db4o.YapObject @ref)
+		{
+			IdTreeAdd(@ref);
+			HcTreeAdd(@ref);
 		}
 
 		private bool UpdateDepthSufficient(int updateDepth)
@@ -2087,7 +2108,7 @@ namespace Db4objects.Db4o
 				{
 					if (forceUnknownDeactivate)
 					{
-						Db4objects.Db4o.YapClass yc = GetYapClass(Reflector().ForObject(obj), false);
+						Db4objects.Db4o.YapClass yc = GetYapClass(Reflector().ForObject(obj));
 						if (yc != null)
 						{
 							yc.Deactivate(i_trans, obj, depth);
@@ -2145,7 +2166,7 @@ namespace Db4objects.Db4o
 				{
 					return null;
 				}
-				return GetYapClass(claxx, false);
+				return GetYapClass(claxx);
 			}
 		}
 
@@ -2292,9 +2313,14 @@ namespace Db4objects.Db4o
 			return i_config;
 		}
 
-		public virtual Db4objects.Db4o.YapFieldUUID GetFieldUUID()
+		public virtual Db4objects.Db4o.YapFieldUUID GetUUIDIndex()
 		{
 			return i_handlers.i_indexes.i_fieldUUID;
+		}
+
+		public virtual Db4objects.Db4o.YapFieldVersion GetVersionIndex()
+		{
+			return i_handlers.i_indexes.i_fieldVersion;
 		}
 
 		public virtual Db4objects.Db4o.YapClassCollection ClassCollection()

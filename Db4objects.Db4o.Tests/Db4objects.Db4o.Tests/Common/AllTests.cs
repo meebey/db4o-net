@@ -9,9 +9,11 @@ namespace Db4objects.Db4o.Tests.Common
 				, typeof(Db4objects.Db4o.Tests.Common.Config.AllTests), typeof(Db4objects.Db4o.Tests.Common.Defragment.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Fieldindex.AllTests), typeof(Db4objects.Db4o.Tests.Common.Foundation.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Handlers.AllTests), typeof(Db4objects.Db4o.Tests.Common.Header.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Interfaces.AllTests), typeof(Db4objects.Db4o.Tests.Common.Reflect.AllTests)
+				, typeof(Db4objects.Db4o.Tests.Common.Interfaces.AllTests), typeof(Db4objects.Db4o.Tests.Common.IO.AllTests)
+				, typeof(Db4objects.Db4o.Tests.Common.Reflect.AllTests), typeof(Db4objects.Db4o.Tests.Common.Regression.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Querying.AllTests), typeof(Db4objects.Db4o.Tests.Common.Soda.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Types.AllTests) };
+				, typeof(Db4objects.Db4o.Tests.Common.Stored.AllTests), typeof(Db4objects.Db4o.Tests.Common.Types.AllTests)
+				 };
 		}
 	}
 }

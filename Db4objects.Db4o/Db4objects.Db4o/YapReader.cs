@@ -224,7 +224,7 @@ namespace Db4objects.Db4o
 			b[--o] = (byte)a_int;
 			b[--o] = (byte)(a_int >>= 8);
 			b[--o] = (byte)(a_int >>= 8);
-			b[--o] = (byte)(a_int >>= 8);
+			b[--o] = (byte)(a_int >> 8);
 		}
 
 		public virtual void WriteIDOf(Db4objects.Db4o.Transaction trans, object obj)

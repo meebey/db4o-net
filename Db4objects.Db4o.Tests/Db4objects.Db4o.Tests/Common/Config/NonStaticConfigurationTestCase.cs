@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				();
 			Db4objects.Db4o.Config.IObjectClass objectConfig = config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Config.NonStaticConfigurationTestCase.Data)
 				);
-			objectConfig.Translate(new Db4objects.Db4o.Config.TSerializable());
+			objectConfig.Translate(new Db4objects.Db4o.Config.TNull());
 			Db4objects.Db4o.Config.IConfiguration otherConfig = Db4objects.Db4o.Db4oFactory.NewConfiguration
 				();
 			Db4oUnit.Assert.AreNotSame(config, otherConfig);

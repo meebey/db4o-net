@@ -15,6 +15,11 @@ namespace Db4oUnit.Extensions
 			return _fixture;
 		}
 
+		public virtual bool IsClientServer()
+		{
+			return Fixture() is Db4oUnit.Extensions.Fixtures.AbstractClientServerDb4oFixture;
+		}
+
 		protected virtual void Reopen()
 		{
 			_fixture.Reopen();
@@ -213,12 +218,12 @@ namespace Db4oUnit.Extensions
 
 		protected virtual void DeleteAll(System.Type clazz)
 		{
-			Foreach(clazz, new _AnonymousInnerClass187(this));
+			Foreach(clazz, new _AnonymousInnerClass191(this));
 		}
 
-		private sealed class _AnonymousInnerClass187 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass191 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass187(AbstractDb4oTestCase _enclosing)
+			public _AnonymousInnerClass191(AbstractDb4oTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -234,6 +239,12 @@ namespace Db4oUnit.Extensions
 		protected void Store(object obj)
 		{
 			Db().Set(obj);
+		}
+
+		protected virtual Db4objects.Db4o.Reflect.IReflectClass ReflectClass(System.Type 
+			clazz)
+		{
+			return Reflector().ForClass(clazz);
 		}
 	}
 }

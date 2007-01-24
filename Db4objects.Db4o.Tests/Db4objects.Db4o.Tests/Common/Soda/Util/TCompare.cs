@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			return IsEqual(a_compare, a_with, null, new System.Collections.ArrayList());
 		}
 
-		private static bool IsEqual(object a_compare, object a_with, string a_path, System.Collections.IList
+		private static bool IsEqual(object a_compare, object a_with, string a_path, System.Collections.ArrayList
 			 a_list)
 		{
 			if (a_compare == null)
@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 		}
 
 		private static bool AreFieldsEqual(object a_compare, object a_with, string a_path
-			, System.Collections.IList a_list)
+			, System.Collections.ArrayList a_list)
 		{
 			string path = GetPath(a_compare, a_with, a_path);
 			System.Reflection.FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(a_compare
@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 		}
 
 		private static bool IsFieldEqual(System.Reflection.FieldInfo field, object a_compare
-			, object a_with, string path, System.Collections.IList a_list)
+			, object a_with, string path, System.Collections.ArrayList a_list)
 		{
 			object compare = GetFieldValue(field, a_compare);
 			object with = GetFieldValue(field, a_with);
@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			}
 		}
 
-		private static bool AreArraysEqual(object compare, object with, string path, System.Collections.IList
+		private static bool AreArraysEqual(object compare, object with, string path, System.Collections.ArrayList
 			 a_list)
 		{
 			int len = Sharpen.Runtime.GetArrayLength(compare);

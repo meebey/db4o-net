@@ -51,6 +51,10 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		{
 		}
 
+		public override void OnNew(Db4objects.Db4o.YapFile file)
+		{
+		}
+
 		public override void Read(int freeSlotsID)
 		{
 		}

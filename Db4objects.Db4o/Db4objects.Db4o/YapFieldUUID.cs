@@ -117,8 +117,8 @@ namespace Db4objects.Db4o
 			 yapClass, int objectId)
 		{
 			Db4objects.Db4o.YapFieldUUID.DatabaseIdentityIDAndUUID data = ReadDatabaseIdentityIDAndUUID
-				(stream, yapClass, stream.GetSystemTransaction().GetCurrentSlotOfID(objectId), true
-				);
+				(stream, yapClass, ((Db4objects.Db4o.YapFileTransaction)stream.GetSystemTransaction
+				()).GetCurrentSlotOfID(objectId), true);
 			if (null == data)
 			{
 				return;

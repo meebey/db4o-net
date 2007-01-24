@@ -35,10 +35,17 @@ namespace Db4objects.Db4o.Config
 		}
 
 		/// <summary>resolving is done through simple pattern matching</summary>
-		public virtual string Resolve(string runtimeType)
+		public virtual string ResolveRuntimeName(string runtimeTypeName)
 		{
-			string match = _runtimePattern.Matches(runtimeType);
+			string match = _runtimePattern.Matches(runtimeTypeName);
 			return match != null ? _storedPattern.Inject(match) : null;
+		}
+
+		/// <summary>resolving is done through simple pattern matching</summary>
+		public virtual string ResolveStoredName(string storedTypeName)
+		{
+			string match = _storedPattern.Matches(storedTypeName);
+			return match != null ? _runtimePattern.Inject(match) : null;
 		}
 
 		internal class WildcardPattern

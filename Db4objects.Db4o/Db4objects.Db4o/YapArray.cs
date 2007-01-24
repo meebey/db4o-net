@@ -104,22 +104,6 @@ namespace Db4objects.Db4o
 			{
 				return;
 			}
-			if (address > 0)
-			{
-				Db4objects.Db4o.Transaction trans = a_bytes.GetTransaction();
-				Db4objects.Db4o.YapReader bytes = a_bytes.GetStream().ReadWriterByAddress(trans, 
-					address, length);
-				if (bytes != null)
-				{
-					for (int i = ElementCount(trans, bytes); i > 0; i--)
-					{
-						int id = bytes.ReadInt();
-						Db4objects.Db4o.Inside.Slots.Slot slot = trans.GetCurrentSlotOfID(id);
-						a_classPrimitive.Free(trans, id, slot._address, slot._length);
-					}
-				}
-				trans.SlotFreeOnCommit(address, address, length);
-			}
 		}
 
 		public virtual int ElementCount(Db4objects.Db4o.Transaction a_trans, Db4objects.Db4o.ISlotReader
@@ -209,6 +193,11 @@ namespace Db4objects.Db4o
 			 obj)
 		{
 			PrepareComparison(obj);
+		}
+
+		public override Db4objects.Db4o.Reflect.IReflectClass PrimitiveClassReflector()
+		{
+			return i_handler.PrimitiveClassReflector();
 		}
 
 		public sealed override object Read(Db4objects.Db4o.Inside.Marshall.MarshallerFamily
@@ -416,7 +405,7 @@ namespace Db4objects.Db4o
 			{
 				claxx = stream.i_handlers.HandlerForClass(stream, claxx).ClassReflector();
 			}
-			Db4objects.Db4o.YapClass yc = stream.GetYapClass(claxx, true);
+			Db4objects.Db4o.YapClass yc = stream.ProduceYapClass(claxx);
 			if (yc != null)
 			{
 				yapClassID = yc.GetID();

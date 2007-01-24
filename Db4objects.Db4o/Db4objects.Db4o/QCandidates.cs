@@ -535,7 +535,7 @@ namespace Db4objects.Db4o
 				Db4objects.Db4o.QField qf = a_constraint.GetField();
 				if (qf != null)
 				{
-					if (i_field.i_name != qf.i_name)
+					if (i_field.i_name != null && !i_field.i_name.Equals(qf.i_name))
 					{
 						return false;
 					}

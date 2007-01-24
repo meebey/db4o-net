@@ -4,7 +4,7 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public sealed class Config4Impl : Db4objects.Db4o.Config.IConfiguration, Db4objects.Db4o.Foundation.IDeepClone
 		, Db4objects.Db4o.Messaging.IMessageSender, Db4objects.Db4o.Config.IFreespaceConfiguration
-		, Db4objects.Db4o.Config.IQueryConfiguration
+		, Db4objects.Db4o.Config.IQueryConfiguration, Db4objects.Db4o.Config.IClientServerConfiguration
 	{
 		private Db4objects.Db4o.Foundation.KeySpecHashtable4 _config = new Db4objects.Db4o.Foundation.KeySpecHashtable4
 			(50);
@@ -78,9 +78,6 @@ namespace Db4objects.Db4o
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec GENERATE_VERSION_NUMBERS
 			 = new Db4objects.Db4o.Foundation.KeySpec(0);
-
-		private static readonly Db4objects.Db4o.Foundation.KeySpec INTERN_STRINGS = new Db4objects.Db4o.Foundation.KeySpec
-			(false);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec IS_SERVER = new Db4objects.Db4o.Foundation.KeySpec
 			(false);
@@ -158,7 +155,15 @@ namespace Db4objects.Db4o
 		private static readonly Db4objects.Db4o.Foundation.KeySpec ALIASES = new Db4objects.Db4o.Foundation.KeySpec
 			(null);
 
+		private static readonly Db4objects.Db4o.Foundation.KeySpec BATCH_MESSAGES = new Db4objects.Db4o.Foundation.KeySpec
+			(false);
+
+		private static readonly Db4objects.Db4o.Foundation.KeySpec MAX_BATCH_QUEUE_SIZE = 
+			new Db4objects.Db4o.Foundation.KeySpec(int.MaxValue);
+
 		private Db4objects.Db4o.YapStream i_stream;
+
+		private bool _internStrings;
 
 		private int _messageLevel;
 
@@ -235,6 +240,7 @@ namespace Db4objects.Db4o
 			Db4objects.Db4o.Config4Impl ret = new Db4objects.Db4o.Config4Impl();
 			ret._config = (Db4objects.Db4o.Foundation.KeySpecHashtable4)_config.DeepClone(this
 				);
+			ret._internStrings = _internStrings;
 			ret._messageLevel = _messageLevel;
 			ret._readOnly = _readOnly;
 			return ret;
@@ -339,7 +345,7 @@ namespace Db4objects.Db4o
 
 		public void InternStrings(bool doIntern)
 		{
-			_config.Put(INTERN_STRINGS, doIntern);
+			_internStrings = doIntern;
 		}
 
 		public void Io(Db4objects.Db4o.IO.IoAdapter adapter)
@@ -466,7 +472,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_stream == null)
 			{
-				Db4objects.Db4o.Db4oFactory.ForEachSession(new _AnonymousInnerClass414(this));
+				Db4objects.Db4o.Db4oFactory.ForEachSession(new _AnonymousInnerClass417(this));
 			}
 			else
 			{
@@ -474,9 +480,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private sealed class _AnonymousInnerClass414 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass417 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass414(Config4Impl _enclosing)
+			public _AnonymousInnerClass417(Config4Impl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -523,7 +529,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_stream == null)
 			{
-				Db4objects.Db4o.Db4oFactory.ForEachSession(new _AnonymousInnerClass453(this));
+				Db4objects.Db4o.Db4oFactory.ForEachSession(new _AnonymousInnerClass456(this));
 			}
 			else
 			{
@@ -531,9 +537,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private sealed class _AnonymousInnerClass453 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass456 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass453(Config4Impl _enclosing)
+			public _AnonymousInnerClass456(Config4Impl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -674,7 +680,7 @@ namespace Db4objects.Db4o
 			Aliases().Remove(alias);
 		}
 
-		public string ResolveAlias(string runtimeType)
+		public string ResolveAliasRuntimeName(string runtimeType)
 		{
 			Db4objects.Db4o.Foundation.Collection4 configuredAliases = Aliases();
 			if (null == configuredAliases)
@@ -684,13 +690,34 @@ namespace Db4objects.Db4o
 			System.Collections.IEnumerator i = configuredAliases.GetEnumerator();
 			while (i.MoveNext())
 			{
-				string resolved = ((Db4objects.Db4o.Config.IAlias)i.Current).Resolve(runtimeType);
+				string resolved = ((Db4objects.Db4o.Config.IAlias)i.Current).ResolveRuntimeName(runtimeType
+					);
 				if (null != resolved)
 				{
 					return resolved;
 				}
 			}
 			return runtimeType;
+		}
+
+		public string ResolveAliasStoredName(string storedType)
+		{
+			Db4objects.Db4o.Foundation.Collection4 configuredAliases = Aliases();
+			if (null == configuredAliases)
+			{
+				return storedType;
+			}
+			System.Collections.IEnumerator i = configuredAliases.GetEnumerator();
+			while (i.MoveNext())
+			{
+				string resolved = ((Db4objects.Db4o.Config.IAlias)i.Current).ResolveStoredName(storedType
+					);
+				if (null != resolved)
+				{
+					return resolved;
+				}
+			}
+			return storedType;
 		}
 
 		internal Db4objects.Db4o.Reflect.IReflectClass ReflectorFor(object clazz)
@@ -838,7 +865,7 @@ namespace Db4objects.Db4o
 
 		public bool InternStrings()
 		{
-			return _config.GetAsBoolean(INTERN_STRINGS);
+			return _internStrings;
 		}
 
 		public void IsServer(bool flag)
@@ -976,6 +1003,31 @@ namespace Db4objects.Db4o
 		{
 			return (Db4objects.Db4o.Config.QueryEvaluationMode)_config.Get(QUERY_EVALUATION_MODE
 				);
+		}
+
+		public Db4objects.Db4o.Config.IClientServerConfiguration ClientServer()
+		{
+			return this;
+		}
+
+		public void BatchMessages(bool flag)
+		{
+			_config.Put(BATCH_MESSAGES, flag);
+		}
+
+		public bool BatchMessages()
+		{
+			return _config.GetAsBoolean(BATCH_MESSAGES);
+		}
+
+		public void MaxBatchQueueSize(int maxSize)
+		{
+			_config.Put(MAX_BATCH_QUEUE_SIZE, maxSize);
+		}
+
+		public int MaxBatchQueueSize()
+		{
+			return _config.GetAsInt(MAX_BATCH_QUEUE_SIZE);
 		}
 	}
 }

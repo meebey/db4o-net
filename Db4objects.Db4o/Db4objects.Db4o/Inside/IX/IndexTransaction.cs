@@ -20,9 +20,30 @@ namespace Db4objects.Db4o.Inside.IX
 			i_index = a_index;
 		}
 
+		/// <summary>Will raise an exception if argument class doesn't match this class - violates equals() contract in favor of failing fast.
+		/// 	</summary>
+		/// <remarks>Will raise an exception if argument class doesn't match this class - violates equals() contract in favor of failing fast.
+		/// 	</remarks>
 		public override bool Equals(object obj)
 		{
+			if (this == obj)
+			{
+				return true;
+			}
+			if (null == obj)
+			{
+				return false;
+			}
+			if (GetType() != obj.GetType())
+			{
+				Db4objects.Db4o.Inside.Exceptions4.ShouldNeverHappen();
+			}
 			return i_trans == ((Db4objects.Db4o.Inside.IX.IndexTransaction)obj).i_trans;
+		}
+
+		public override int GetHashCode()
+		{
+			return i_trans.GetHashCode();
 		}
 
 		public virtual void Add(int id, object value)
@@ -114,13 +135,13 @@ namespace Db4objects.Db4o.Inside.IX
 				return 0;
 			}
 			int[] leaves = { 0 };
-			i_root.Traverse(new _AnonymousInnerClass102(this, leaves));
+			i_root.Traverse(new _AnonymousInnerClass119(this, leaves));
 			return leaves[0];
 		}
 
-		private sealed class _AnonymousInnerClass102 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass119 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass102(IndexTransaction _enclosing, int[] leaves)
+			public _AnonymousInnerClass119(IndexTransaction _enclosing, int[] leaves)
 			{
 				this._enclosing = _enclosing;
 				this.leaves = leaves;
@@ -153,14 +174,14 @@ namespace Db4objects.Db4o.Inside.IX
 			}
 			else
 			{
-				i_root.Traverse(new _AnonymousInnerClass124(this, sb));
+				i_root.Traverse(new _AnonymousInnerClass141(this, sb));
 			}
 			return sb.ToString();
 		}
 
-		private sealed class _AnonymousInnerClass124 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass141 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass124(IndexTransaction _enclosing, System.Text.StringBuilder
+			public _AnonymousInnerClass141(IndexTransaction _enclosing, System.Text.StringBuilder
 				 sb)
 			{
 				this._enclosing = _enclosing;

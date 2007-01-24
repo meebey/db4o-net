@@ -151,11 +151,11 @@ namespace Db4objects.Db4o
 				i_classByClass.Put(i_platformTypes[i].ClassReflector(), i_yapClasses[idx]);
 			}
 			i_anyArray = new Db4objects.Db4o.YapClassPrimitive(a_stream, new Db4objects.Db4o.YapArray
-				(_masterStream, i_handlers[ANY_INDEX], false));
+				(_masterStream, AnyObject(), false));
 			i_anyArray.SetID(ANY_ARRAY_ID);
 			i_yapClasses[ANY_ARRAY_ID - 1] = i_anyArray;
 			i_anyArrayN = new Db4objects.Db4o.YapClassPrimitive(a_stream, new Db4objects.Db4o.YapArrayN
-				(_masterStream, i_handlers[ANY_INDEX], false));
+				(_masterStream, AnyObject(), false));
 			i_anyArrayN.SetID(ANY_ARRAY_N_ID);
 			i_yapClasses[ANY_ARRAY_N_ID - 1] = i_anyArrayN;
 		}
@@ -363,16 +363,8 @@ namespace Db4objects.Db4o
 			return null;
 		}
 
-		/// <summary>
-		/// Can't return ANY class for interfaces, since that would kill the
-		/// translators built into the architecture.
-		/// </summary>
-		/// <remarks>
-		/// Can't return ANY class for interfaces, since that would kill the
-		/// translators built into the architecture.
-		/// </remarks>
-		internal Db4objects.Db4o.ITypeHandler4 HandlerForClass(Db4objects.Db4o.YapStream 
-			a_stream, Db4objects.Db4o.Reflect.IReflectClass a_class)
+		public Db4objects.Db4o.ITypeHandler4 HandlerForClass(Db4objects.Db4o.YapStream a_stream
+			, Db4objects.Db4o.Reflect.IReflectClass a_class)
 		{
 			if (a_class == null)
 			{
@@ -387,7 +379,12 @@ namespace Db4objects.Db4o
 			{
 				return ((Db4objects.Db4o.YapClassPrimitive)yc).i_handler;
 			}
-			return a_stream.GetYapClass(a_class, true);
+			return a_stream.ProduceYapClass(a_class);
+		}
+
+		private Db4objects.Db4o.ITypeHandler4 AnyObject()
+		{
+			return i_handlers[ANY_INDEX];
 		}
 
 		private void InitClassReflectors(Db4objects.Db4o.Reflect.Generic.GenericReflector

@@ -7,29 +7,35 @@ namespace Db4objects.Db4o.CS.Messages
 		{
 			Db4objects.Db4o.YapStream stream = Stream();
 			Unmarshall();
-			Db4objects.Db4o.CS.ClassMeta classMeta = (Db4objects.Db4o.CS.ClassMeta)Stream().Unmarshall
-				(_payLoad);
-			Db4objects.Db4o.Reflect.Generic.GenericClass genericClass = stream.GetClassMetaHelper
-				().ClassMetaToGenericClass(Stream().Reflector(), classMeta);
-			if (genericClass != null)
+			try
 			{
-				lock (StreamLock())
+				Db4objects.Db4o.CS.ClassMeta classMeta = (Db4objects.Db4o.CS.ClassMeta)Stream().Unmarshall
+					(_payLoad);
+				Db4objects.Db4o.Reflect.Generic.GenericClass genericClass = stream.GetClassMetaHelper
+					().ClassMetaToGenericClass(Stream().Reflector(), classMeta);
+				if (genericClass != null)
 				{
-					Db4objects.Db4o.Transaction trans = stream.GetSystemTransaction();
-					Db4objects.Db4o.YapWriter returnBytes = new Db4objects.Db4o.YapWriter(trans, 0);
-					Db4objects.Db4o.YapClass yapClass = stream.GetYapClass(genericClass, true);
-					if (yapClass != null)
+					lock (StreamLock())
 					{
-						stream.CheckStillToSet();
-						yapClass.SetStateDirty();
-						yapClass.Write(trans);
-						trans.Commit();
-						returnBytes = stream.ReadWriterByID(trans, yapClass.GetID());
-						serverThread.Write(Db4objects.Db4o.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter(returnBytes
-							));
-						return true;
+						Db4objects.Db4o.Transaction trans = stream.GetSystemTransaction();
+						Db4objects.Db4o.YapClass yapClass = stream.ProduceYapClass(genericClass);
+						if (yapClass != null)
+						{
+							stream.CheckStillToSet();
+							yapClass.SetStateDirty();
+							yapClass.Write(trans);
+							trans.Commit();
+							Db4objects.Db4o.YapWriter returnBytes = stream.ReadWriterByID(trans, yapClass.GetID
+								());
+							serverThread.Write(Db4objects.Db4o.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter(returnBytes
+								));
+							return true;
+						}
 					}
 				}
+			}
+			catch (System.Exception e)
+			{
 			}
 			serverThread.Write(Db4objects.Db4o.CS.Messages.Msg.FAILED);
 			return true;

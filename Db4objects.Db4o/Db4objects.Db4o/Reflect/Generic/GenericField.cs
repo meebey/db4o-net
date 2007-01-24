@@ -90,5 +90,15 @@ namespace Db4objects.Db4o.Reflect.Generic
 		{
 			_index = index;
 		}
+
+		public virtual object IndexEntry(object orig)
+		{
+			return orig;
+		}
+
+		public virtual Db4objects.Db4o.Reflect.IReflectClass IndexType()
+		{
+			return GetFieldType();
+		}
 	}
 }

@@ -40,42 +40,68 @@ namespace Db4objects.Db4o.Defragment
 			_mapping = mapping;
 		}
 
+		/// <returns>The path to the file to be defragmented.</returns>
 		public virtual string OrigPath()
 		{
 			return _origPath;
 		}
 
+		/// <returns>The path to the backup of the original file.</returns>
 		public virtual string BackupPath()
 		{
 			return _backupPath;
 		}
 
+		/// <returns>The intermediate mapping used internally. For internal use only.</returns>
 		public virtual Db4objects.Db4o.Defragment.IContextIDMapping Mapping()
 		{
 			return _mapping;
 		}
 
+		/// <returns>
+		/// The
+		/// <see cref="Db4objects.Db4o.Defragment.IStoredClassFilter">Db4objects.Db4o.Defragment.IStoredClassFilter
+		/// 	</see>
+		/// used to select stored class extents to
+		/// be included into the defragmented file.
+		/// </returns>
 		public virtual Db4objects.Db4o.Defragment.IStoredClassFilter StoredClassFilter()
 		{
 			return (_storedClassFilter == null ? NULLFILTER : _storedClassFilter);
 		}
 
+		/// <param name="storedClassFilter">
+		/// The
+		/// <see cref="Db4objects.Db4o.Defragment.IStoredClassFilter">Db4objects.Db4o.Defragment.IStoredClassFilter
+		/// 	</see>
+		/// used to select stored class extents to
+		/// be included into the defragmented file.
+		/// </param>
 		public virtual void StoredClassFilter(Db4objects.Db4o.Defragment.IStoredClassFilter
 			 storedClassFilter)
 		{
 			_storedClassFilter = storedClassFilter;
 		}
 
+		/// <returns>true, if an existing backup file should be deleted, false otherwise.</returns>
 		public virtual bool ForceBackupDelete()
 		{
 			return _forceBackupDelete;
 		}
 
+		/// <param name="forceBackupDelete">true, if an existing backup file should be deleted, false otherwise.
+		/// 	</param>
 		public virtual void ForceBackupDelete(bool forceBackupDelete)
 		{
 			_forceBackupDelete = forceBackupDelete;
 		}
 
+		/// <returns>
+		/// The db4o
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Configuration</see>
+		/// to be applied
+		/// during the defragment process.
+		/// </returns>
 		public virtual Db4objects.Db4o.Config.IConfiguration Db4oConfig()
 		{
 			if (_config == null)
@@ -85,12 +111,18 @@ namespace Db4objects.Db4o.Defragment
 			return _config;
 		}
 
+		/// <param name="config">
+		/// The db4o
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Configuration</see>
+		/// to be applied
+		/// during the defragment process.
+		/// </param>
 		public virtual void Db4oConfig(Db4objects.Db4o.Config.IConfiguration config)
 		{
 			_config = config;
 		}
 
-		internal class NullFilter : Db4objects.Db4o.Defragment.IStoredClassFilter
+		private class NullFilter : Db4objects.Db4o.Defragment.IStoredClassFilter
 		{
 			public virtual bool Accept(Db4objects.Db4o.Ext.IStoredClass storedClass)
 			{

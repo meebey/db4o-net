@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Inside.Convert.Conversions
 
 		private void RebuildUUIDIndex(Db4objects.Db4o.YapFile file)
 		{
-			Db4objects.Db4o.YapFieldUUID uuid = file.GetFieldUUID();
+			Db4objects.Db4o.YapFieldUUID uuid = file.GetUUIDIndex();
 			Db4objects.Db4o.YapClassCollectionIterator i = file.ClassCollection().Iterator();
 			while (i.MoveNext())
 			{

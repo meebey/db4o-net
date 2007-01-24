@@ -314,7 +314,12 @@ namespace Db4objects.Db4o
 			try
 			{
 				i_file.BlockSeek(address, addressOffset);
-				i_file.Read(bytes, length);
+				int bytesRead = i_file.Read(bytes, length);
+				if (bytesRead != length)
+				{
+					Db4objects.Db4o.Inside.Exceptions4.ThrowRuntimeException(68, address + "/" + addressOffset
+						, null, false);
+				}
 			}
 			catch (System.IO.IOException ioex)
 			{

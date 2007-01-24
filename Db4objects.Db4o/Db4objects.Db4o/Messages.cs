@@ -3,11 +3,15 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public sealed class Messages
 	{
+		public const int INCOMPATIBLE_FORMAT = 17;
+
 		public const int CLOSED_OR_OPEN_FAILED = 20;
 
 		public const int FATAL_MSG_ID = 44;
 
 		public const int NOT_IMPLEMENTED = 49;
+
+		public const int OLD_DATABASE_FORMAT = 65;
 
 		public const int ONLY_FOR_INDEXED_FIELDS = 66;
 
@@ -78,7 +82,7 @@ namespace Db4objects.Db4o
 					, "By convention a Predicate needs the following method: public boolean match(ExtentClass extent){}"
 					, "Old database file format detected. To allow automatic updates call Db4o.configure().allowVersionUpdates(true)."
 					, "This functionality is only available for indexed fields.", "This functionality is not supported for db4o clients in Client/Server mode."
-					 };
+					, "Invalid address: %" };
 			}
 		}
 

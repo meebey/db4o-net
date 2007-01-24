@@ -36,6 +36,11 @@ namespace Db4objects.Db4o.CS
 
 		private int _blockSize = 1;
 
+		private Db4objects.Db4o.Foundation.Collection4 _batchedMessages = new Db4objects.Db4o.Foundation.Collection4
+			();
+
+		private int _batchedQueueLength = Db4objects.Db4o.YapConst.INT_LENGTH;
+
 		private YapClient(Db4objects.Db4o.Config.IConfiguration config) : base(config, null
 			)
 		{
@@ -122,7 +127,7 @@ namespace Db4objects.Db4o.CS
 			}
 			try
 			{
-				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.COMMIT_OK);
+				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.COMMIT_OK, true);
 				ExpectedResponse(Db4objects.Db4o.CS.Messages.Msg.OK);
 			}
 			catch (System.Exception e)
@@ -131,7 +136,7 @@ namespace Db4objects.Db4o.CS
 			}
 			try
 			{
-				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.CLOSE);
+				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.CLOSE, true);
 			}
 			catch (System.Exception e)
 			{
@@ -173,7 +178,7 @@ namespace Db4objects.Db4o.CS
 		internal virtual Db4objects.Db4o.Foundation.Network.IYapSocket CreateParalellSocket
 			()
 		{
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.GET_THREAD_ID);
+			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.GET_THREAD_ID, true);
 			int serverThreadID = ExpectedByteResponse(Db4objects.Db4o.CS.Messages.Msg.ID_LIST
 				).ReadInt();
 			Db4objects.Db4o.Foundation.Network.IYapSocket sock = i_socket.OpenParalellSocket(
@@ -214,7 +219,7 @@ namespace Db4objects.Db4o.CS
 			 a_class, Db4objects.Db4o.YapClass a_superYapClass)
 		{
 			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.CREATE_CLASS.GetWriterForString(i_systemTrans
-				, a_class.GetName()));
+				, a_class.GetName()), true);
 			Db4objects.Db4o.CS.Messages.Msg resp = GetResponse();
 			if (resp == null)
 			{
@@ -258,23 +263,15 @@ namespace Db4objects.Db4o.CS
 
 		private void SendClassMeta(Db4objects.Db4o.Reflect.IReflectClass reflectClass)
 		{
-			try
-			{
-				string name = reflectClass.GetName();
-				System.Type claxx = Sharpen.Runtime.GetType(name);
-				Db4objects.Db4o.CS.ClassMeta classMeta = _classMetaHelper.GetClassMeta(claxx);
-				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.CLASS_META.GetWriter(Marshall(i_systemTrans
-					, classMeta)));
-			}
-			catch (System.TypeLoadException e)
-			{
-				Sharpen.Runtime.PrintStackTrace(e);
-			}
+			Db4objects.Db4o.CS.ClassMeta classMeta = _classMetaHelper.GetClassMeta(reflectClass
+				);
+			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.CLASS_META.GetWriter(Marshall(i_systemTrans
+				, classMeta)), true);
 		}
 
 		public override long CurrentVersion()
 		{
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.CURRENT_VERSION);
+			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.CURRENT_VERSION, true);
 			return ((Db4objects.Db4o.CS.Messages.MsgD)ExpectedResponse(Db4objects.Db4o.CS.Messages.Msg
 				.ID_LIST)).ReadLong();
 		}
@@ -282,8 +279,9 @@ namespace Db4objects.Db4o.CS
 		public sealed override bool Delete4(Db4objects.Db4o.Transaction ta, Db4objects.Db4o.YapObject
 			 yo, int a_cascade, bool userCall)
 		{
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.DELETE.GetWriterForInts(i_trans, new int
-				[] { yo.GetID(), userCall ? 1 : 0 }));
+			Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.DELETE.GetWriterForInts
+				(i_trans, new int[] { yo.GetID(), userCall ? 1 : 0 });
+			WriteMsg(msg, false);
 			return true;
 		}
 
@@ -323,7 +321,9 @@ namespace Db4objects.Db4o.CS
 			 trans)
 		{
 			int mode = Config().QueryEvaluationMode().AsInt();
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.GET_ALL.GetWriterForInt(trans, mode));
+			Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.GET_ALL.GetWriterForInt
+				(trans, mode);
+			WriteMsg(msg, true);
 			return ReadQueryResult(trans);
 		}
 
@@ -410,7 +410,7 @@ namespace Db4objects.Db4o.CS
 						(i_trans, i_socket);
 					if (Db4objects.Db4o.CS.Messages.Msg.PING.Equals(message))
 					{
-						WriteMsg(Db4objects.Db4o.CS.Messages.Msg.OK);
+						WriteMsg(Db4objects.Db4o.CS.Messages.Msg.OK, true);
 					}
 					else
 					{
@@ -438,13 +438,18 @@ namespace Db4objects.Db4o.CS
 
 		public override Db4objects.Db4o.YapClass GetYapClass(int a_id)
 		{
+			if (a_id == 0)
+			{
+				return null;
+			}
 			Db4objects.Db4o.YapClass yc = base.GetYapClass(a_id);
 			if (yc != null)
 			{
 				return yc;
 			}
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.CLASS_NAME_FOR_ID.GetWriterForInt(i_systemTrans
-				, a_id));
+			Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.CLASS_NAME_FOR_ID
+				.GetWriterForInt(i_systemTrans, a_id);
+			WriteMsg(msg, true);
 			Db4objects.Db4o.CS.Messages.MsgD message = (Db4objects.Db4o.CS.Messages.MsgD)ExpectedResponse
 				(Db4objects.Db4o.CS.Messages.Msg.CLASS_NAME_FOR_ID);
 			string className = message.ReadString();
@@ -453,7 +458,7 @@ namespace Db4objects.Db4o.CS
 				Db4objects.Db4o.Reflect.IReflectClass claxx = Reflector().ForName(className);
 				if (claxx != null)
 				{
-					return GetYapClass(claxx, true);
+					return ProduceYapClass(claxx);
 				}
 			}
 			return null;
@@ -473,7 +478,7 @@ namespace Db4objects.Db4o.CS
 		{
 			if (i_db == null)
 			{
-				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.IDENTITY);
+				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.IDENTITY, true);
 				Db4objects.Db4o.YapReader reader = ExpectedByteResponse(Db4objects.Db4o.CS.Messages.Msg
 					.ID_LIST);
 				ShowInternalClasses(true);
@@ -530,8 +535,9 @@ namespace Db4objects.Db4o.CS
 			Db4objects.Db4o.YapReader reader = null;
 			if (remainingIDs < 1)
 			{
-				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.PREFETCH_IDS.GetWriterForInt(i_trans, prefetchIDCount
-					));
+				Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.PREFETCH_IDS
+					.GetWriterForInt(i_trans, prefetchIDCount);
+				WriteMsg(msg, true);
 				reader = ExpectedByteResponse(Db4objects.Db4o.CS.Messages.Msg.ID_LIST);
 				for (int i = prefetchIDCount - 1; i >= 0; i--)
 				{
@@ -575,8 +581,9 @@ namespace Db4objects.Db4o.CS
 			}
 			if (toGet > 0)
 			{
-				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray
-					(i_trans, idsToGet, toGet));
+				Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.READ_MULTIPLE_OBJECTS
+					.GetWriterForIntArray(i_trans, idsToGet, toGet);
+				WriteMsg(msg, true);
 				Db4objects.Db4o.CS.Messages.MsgD message = (Db4objects.Db4o.CS.Messages.MsgD)ExpectedResponse
 					(Db4objects.Db4o.CS.Messages.Msg.READ_MULTIPLE_OBJECTS);
 				int embeddedMessageCount = message.ReadInt();
@@ -626,7 +633,7 @@ namespace Db4objects.Db4o.CS
 		public override void RaiseVersion(long a_minimumVersion)
 		{
 			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.RAISE_VERSION.GetWriterForLong(i_trans, 
-				a_minimumVersion));
+				a_minimumVersion), true);
 		}
 
 		public override void ReadBytes(byte[] bytes, int address, int addressOffset, int 
@@ -637,8 +644,9 @@ namespace Db4objects.Db4o.CS
 
 		public override void ReadBytes(byte[] a_bytes, int a_address, int a_length)
 		{
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.READ_BYTES.GetWriterForInts(i_trans, new 
-				int[] { a_address, a_length }));
+			Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.READ_BYTES
+				.GetWriterForInts(i_trans, new int[] { a_address, a_length });
+			WriteMsg(msg, true);
 			Db4objects.Db4o.YapReader reader = ExpectedByteResponse(Db4objects.Db4o.CS.Messages.Msg
 				.READ_BYTES);
 			System.Array.Copy(reader._buffer, 0, a_bytes, 0, a_length);
@@ -655,7 +663,9 @@ namespace Db4objects.Db4o.CS
 		{
 			try
 			{
-				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.READ_OBJECT.GetWriterForInt(a_ta, a_id));
+				Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.READ_OBJECT
+					.GetWriterForInt(a_ta, a_id);
+				WriteMsg(msg, true);
 				Db4objects.Db4o.YapWriter bytes = ((Db4objects.Db4o.CS.Messages.MsgObject)ExpectedResponse
 					(Db4objects.Db4o.CS.Messages.Msg.OBJECT_TO_CLIENT)).Unmarshall();
 				if (bytes == null)
@@ -669,6 +679,38 @@ namespace Db4objects.Db4o.CS
 			{
 				return null;
 			}
+		}
+
+		public sealed override Db4objects.Db4o.YapWriter[] ReadWritersByIDs(Db4objects.Db4o.Transaction
+			 a_ta, int[] ids)
+		{
+			try
+			{
+				Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.READ_MULTIPLE_OBJECTS
+					.GetWriterForIntArray(a_ta, ids, ids.Length);
+				WriteMsg(msg, true);
+				Db4objects.Db4o.CS.Messages.MsgD message = (Db4objects.Db4o.CS.Messages.MsgD)ExpectedResponse
+					(Db4objects.Db4o.CS.Messages.Msg.READ_MULTIPLE_OBJECTS);
+				int count = message.ReadInt();
+				Db4objects.Db4o.YapWriter[] yapWriters = new Db4objects.Db4o.YapWriter[count];
+				for (int i = 0; i < count; i++)
+				{
+					Db4objects.Db4o.CS.Messages.MsgObject mso = (Db4objects.Db4o.CS.Messages.MsgObject
+						)Db4objects.Db4o.CS.Messages.Msg.OBJECT_TO_CLIENT.Clone(GetTransaction());
+					mso.PayLoad(message.PayLoad().ReadYapBytes());
+					if (mso.PayLoad() != null)
+					{
+						mso.PayLoad().IncrementOffset(Db4objects.Db4o.YapConst.MESSAGE_LENGTH);
+						yapWriters[i] = mso.Unmarshall(Db4objects.Db4o.YapConst.MESSAGE_LENGTH);
+						yapWriters[i].SetTransaction(a_ta);
+					}
+				}
+				return yapWriters;
+			}
+			catch (System.Exception e)
+			{
+			}
+			return null;
 		}
 
 		public sealed override Db4objects.Db4o.YapReader ReadReaderByID(Db4objects.Db4o.Transaction
@@ -691,7 +733,7 @@ namespace Db4objects.Db4o.CS
 			}
 			else
 			{
-				queryResult = new Db4objects.Db4o.Inside.Query.IdListQueryResult(trans);
+				queryResult = new Db4objects.Db4o.CS.ClientQueryResult(trans);
 			}
 			queryResult.LoadFromIdReader(reader);
 			return queryResult;
@@ -699,7 +741,8 @@ namespace Db4objects.Db4o.CS
 
 		internal virtual void ReadThis()
 		{
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.GET_CLASSES.GetWriter(i_systemTrans));
+			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.GET_CLASSES.GetWriter(i_systemTrans), true
+				);
 			Db4objects.Db4o.YapReader bytes = ExpectedByteResponse(Db4objects.Db4o.CS.Messages.Msg
 				.GET_CLASSES);
 			ClassCollection().SetID(bytes.ReadInt());
@@ -718,7 +761,7 @@ namespace Db4objects.Db4o.CS
 					throw new System.ArgumentNullException();
 				}
 				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.RELEASE_SEMAPHORE.GetWriterForString(i_trans
-					, name));
+					, name), true);
 			}
 		}
 
@@ -736,7 +779,11 @@ namespace Db4objects.Db4o.CS
 
 		public sealed override void Rollback1()
 		{
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.ROLLBACK);
+			if (i_config.BatchMessages())
+			{
+				ClearBatchedObjects();
+			}
+			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.ROLLBACK, true);
 			i_trans.Rollback();
 		}
 
@@ -747,7 +794,7 @@ namespace Db4objects.Db4o.CS
 				if (obj != null)
 				{
 					WriteMsg(Db4objects.Db4o.CS.Messages.Msg.USER_MESSAGE.GetWriter(Marshall(i_trans, 
-						obj)));
+						obj)), true);
 				}
 			}
 		}
@@ -766,8 +813,9 @@ namespace Db4objects.Db4o.CS
 				{
 					throw new System.ArgumentNullException();
 				}
-				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.SET_SEMAPHORE.GetWriterForIntString(i_trans
-					, timeout, name));
+				Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.SET_SEMAPHORE
+					.GetWriterForIntString(i_trans, timeout, name);
+				WriteMsg(msg, true);
 				Db4objects.Db4o.CS.Messages.Msg message = GetResponse();
 				return (message.Equals(Db4objects.Db4o.CS.Messages.Msg.SUCCESS));
 			}
@@ -778,8 +826,9 @@ namespace Db4objects.Db4o.CS
 			lock (i_lock)
 			{
 				Commit();
-				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.SWITCH_TO_FILE.GetWriterForString(i_trans
-					, fileName));
+				Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.SWITCH_TO_FILE
+					.GetWriterForString(i_trans, fileName);
+				WriteMsg(msg, true);
 				ExpectedResponse(Db4objects.Db4o.CS.Messages.Msg.OK);
 				ReReadAll(Db4objects.Db4o.Db4oFactory.CloneConfiguration());
 				switchedToFile = fileName;
@@ -791,7 +840,7 @@ namespace Db4objects.Db4o.CS
 			lock (i_lock)
 			{
 				Commit();
-				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.SWITCH_TO_MAIN_FILE);
+				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.SWITCH_TO_MAIN_FILE, true);
 				ExpectedResponse(Db4objects.Db4o.CS.Messages.Msg.OK);
 				ReReadAll(Db4objects.Db4o.Db4oFactory.CloneConfiguration());
 				switchedToFile = null;
@@ -827,11 +876,35 @@ namespace Db4objects.Db4o.CS
 			a_message.Write(this, i_socket);
 		}
 
+		internal void WriteMsg(Db4objects.Db4o.CS.Messages.Msg a_message, bool flush)
+		{
+			if (i_config.BatchMessages())
+			{
+				if (flush && _batchedMessages.IsEmpty())
+				{
+					WriteMsg(a_message);
+				}
+				else
+				{
+					AddToBatch(a_message);
+					if (flush || _batchedQueueLength > i_config.MaxBatchQueueSize())
+					{
+						WriteBatchedMessages();
+					}
+				}
+			}
+			else
+			{
+				WriteMsg(a_message);
+			}
+		}
+
 		public sealed override void WriteNew(Db4objects.Db4o.YapClass a_yapClass, Db4objects.Db4o.YapWriter
 			 aWriter)
 		{
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.WRITE_NEW.GetWriter(a_yapClass, aWriter)
-				);
+			Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.WRITE_NEW.
+				GetWriter(a_yapClass, aWriter);
+			WriteMsg(msg, false);
 		}
 
 		public sealed override void WriteTransactionPointer(int a_address)
@@ -841,15 +914,16 @@ namespace Db4objects.Db4o.CS
 		public sealed override void WriteUpdate(Db4objects.Db4o.YapClass a_yapClass, Db4objects.Db4o.YapWriter
 			 a_bytes)
 		{
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.WRITE_UPDATE.GetWriter(a_yapClass, a_bytes
-				));
+			Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.WRITE_UPDATE
+				.GetWriter(a_yapClass, a_bytes);
+			WriteMsg(msg, false);
 		}
 
 		public virtual bool IsAlive()
 		{
 			try
 			{
-				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.PING);
+				WriteMsg(Db4objects.Db4o.CS.Messages.Msg.PING, true);
 				return ExpectedResponse(Db4objects.Db4o.CS.Messages.Msg.OK) != null;
 			}
 			catch (Db4objects.Db4o.Ext.Db4oException)
@@ -912,8 +986,9 @@ namespace Db4objects.Db4o.CS
 		public override long[] GetIDsForClass(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapClass
 			 clazz)
 		{
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.GET_INTERNAL_IDS.GetWriterForInt(trans, 
-				clazz.GetID()));
+			Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.GET_INTERNAL_IDS
+				.GetWriterForInt(trans, clazz.GetID());
+			WriteMsg(msg, true);
 			Db4objects.Db4o.YapReader reader = ExpectedByteResponse(Db4objects.Db4o.CS.Messages.Msg
 				.ID_LIST);
 			int size = reader.ReadInt();
@@ -944,9 +1019,51 @@ namespace Db4objects.Db4o.CS
 			Db4objects.Db4o.Transaction trans = query.GetTransaction();
 			query.EvaluationMode(Config().QueryEvaluationMode());
 			query.Marshall();
-			WriteMsg(Db4objects.Db4o.CS.Messages.Msg.QUERY_EXECUTE.GetWriter(Marshall(trans, 
-				query)));
+			Db4objects.Db4o.CS.Messages.MsgD msg = Db4objects.Db4o.CS.Messages.Msg.QUERY_EXECUTE
+				.GetWriter(Marshall(trans, query));
+			WriteMsg(msg, true);
 			return ReadQueryResult(trans);
+		}
+
+		public void WriteBatchedMessages()
+		{
+			if (_batchedMessages.IsEmpty())
+			{
+				return;
+			}
+			Db4objects.Db4o.CS.Messages.Msg msg;
+			Db4objects.Db4o.CS.Messages.MsgD multibytes = Db4objects.Db4o.CS.Messages.Msg.WRITE_BATCHED_MESSAGES
+				.GetWriterForLength(GetTransaction(), _batchedQueueLength);
+			multibytes.WriteInt(_batchedMessages.Size());
+			System.Collections.IEnumerator iter = _batchedMessages.GetEnumerator();
+			while (iter.MoveNext())
+			{
+				msg = (Db4objects.Db4o.CS.Messages.Msg)iter.Current;
+				if (msg == null)
+				{
+					multibytes.WriteInt(0);
+				}
+				else
+				{
+					multibytes.WriteInt(msg.PayLoad().GetLength());
+					multibytes.PayLoad().Append(msg.PayLoad()._buffer);
+				}
+			}
+			WriteMsg(multibytes);
+			ClearBatchedObjects();
+		}
+
+		public void AddToBatch(Db4objects.Db4o.CS.Messages.Msg msg)
+		{
+			_batchedMessages.Add(msg);
+			_batchedQueueLength += Db4objects.Db4o.YapConst.INT_LENGTH + msg.PayLoad().GetLength
+				();
+		}
+
+		private void ClearBatchedObjects()
+		{
+			_batchedMessages.Clear();
+			_batchedQueueLength = Db4objects.Db4o.YapConst.INT_LENGTH;
 		}
 	}
 }

@@ -290,7 +290,12 @@ namespace Db4objects.Db4o.Defragment
 			 selector)
 		{
 			Db4objects.Db4o.YapFile db = selector.Db(this);
-			return db.Identity().GetID(selector.Transaction(this));
+			Db4objects.Db4o.Ext.Db4oDatabase identity = db.Identity();
+			if (identity == null)
+			{
+				return 0;
+			}
+			return identity.GetID(selector.Transaction(this));
 		}
 
 		private Db4objects.Db4o.Inside.Classindex.IClassIndexStrategy ClassIndex(Db4objects.Db4o.YapClass
@@ -334,7 +339,7 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return null;
 			}
-			return _sourceDb.GetFieldUUID().GetIndex(SystemTrans());
+			return _sourceDb.GetUUIDIndex().GetIndex(SystemTrans());
 		}
 
 		public virtual void TargetUuidIndexID(int id)

@@ -27,6 +27,11 @@ namespace Db4objects.Db4o.CS.Messages
 			return _payLoad;
 		}
 
+		public virtual void PayLoad(Db4objects.Db4o.YapWriter writer)
+		{
+			_payLoad = writer;
+		}
+
 		public Db4objects.Db4o.CS.Messages.MsgD GetWriterForLength(Db4objects.Db4o.Transaction
 			 a_trans, int length)
 		{
@@ -169,7 +174,7 @@ namespace Db4objects.Db4o.CS.Messages
 			_payLoad.Append(aBytes);
 		}
 
-		internal void WriteInt(int aInt)
+		public void WriteInt(int aInt)
 		{
 			_payLoad.WriteInt(aInt);
 		}

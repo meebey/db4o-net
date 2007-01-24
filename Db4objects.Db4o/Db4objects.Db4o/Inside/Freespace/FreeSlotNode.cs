@@ -3,7 +3,7 @@ namespace Db4objects.Db4o.Inside.Freespace
 	/// <exclude></exclude>
 	public sealed class FreeSlotNode : Db4objects.Db4o.TreeInt
 	{
-		public static int sizeLimit;
+		internal static int sizeLimit;
 
 		internal Db4objects.Db4o.Inside.Freespace.FreeSlotNode _peer;
 

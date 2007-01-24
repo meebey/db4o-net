@@ -14,6 +14,8 @@ namespace Db4objects.Db4o.CS
 
 		private Db4objects.Db4o.YapFile i_yapFile;
 
+		private readonly object _lock = new object();
+
 		public YapServer(Db4objects.Db4o.YapFile a_yapFile, int a_port)
 		{
 			a_yapFile.SetServer(true);
@@ -23,8 +25,8 @@ namespace Db4objects.Db4o.CS
 				();
 			config.Callbacks(false);
 			config.IsServer(true);
-			a_yapFile.GetYapClass(a_yapFile.i_handlers.ICLASS_STATICCLASS, true);
-			config.ExceptionalClasses().ForEachValue(new _AnonymousInnerClass38(this, a_yapFile
+			a_yapFile.ProduceYapClass(a_yapFile.i_handlers.ICLASS_STATICCLASS);
+			config.ExceptionalClasses().ForEachValue(new _AnonymousInnerClass40(this, a_yapFile
 				));
 			if (a_port > 0)
 			{
@@ -39,11 +41,11 @@ namespace Db4objects.Db4o.CS
 						);
 				}
 				new Sharpen.Lang.Thread(this).Start();
-				lock (this)
+				lock (_lock)
 				{
 					try
 					{
-						Sharpen.Runtime.Wait(this, 1000);
+						Sharpen.Runtime.Wait(_lock, 1000);
 					}
 					catch
 					{
@@ -52,9 +54,9 @@ namespace Db4objects.Db4o.CS
 			}
 		}
 
-		private sealed class _AnonymousInnerClass38 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass40 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass38(YapServer _enclosing, Db4objects.Db4o.YapFile a_yapFile
+			public _AnonymousInnerClass40(YapServer _enclosing, Db4objects.Db4o.YapFile a_yapFile
 				)
 			{
 				this._enclosing = _enclosing;
@@ -63,8 +65,8 @@ namespace Db4objects.Db4o.CS
 
 			public void Visit(object a_object)
 			{
-				a_yapFile.GetYapClass(a_yapFile.Reflector().ForName(((Db4objects.Db4o.Config4Class
-					)a_object).GetName()), true);
+				a_yapFile.ProduceYapClass(a_yapFile.Reflector().ForName(((Db4objects.Db4o.Config4Class
+					)a_object).GetName()));
 			}
 
 			private readonly YapServer _enclosing;
@@ -290,9 +292,9 @@ namespace Db4objects.Db4o.CS
 		{
 			Sharpen.Lang.Thread.CurrentThread().SetName(i_name);
 			i_yapFile.LogMsg(31, string.Empty + i_serverSocket.GetLocalPort());
-			lock (this)
+			lock (_lock)
 			{
-				Sharpen.Runtime.Notify(this);
+				Sharpen.Runtime.NotifyAll(_lock);
 			}
 			while (i_serverSocket != null)
 			{

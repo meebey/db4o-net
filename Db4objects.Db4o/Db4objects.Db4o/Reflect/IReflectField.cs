@@ -24,5 +24,9 @@ namespace Db4objects.Db4o.Reflect
 		void Set(object onObject, object value);
 
 		void SetAccessible();
+
+		Db4objects.Db4o.Reflect.IReflectClass IndexType();
+
+		object IndexEntry(object orig);
 	}
 }
