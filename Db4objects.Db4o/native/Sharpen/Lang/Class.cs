@@ -18,8 +18,6 @@ namespace Sharpen.Lang
 				typeof (DateTime), typeof (Decimal)
 		};
 
-		private const BindingFlags AllDeclaredMembers = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
-
 		private Type _type;
 		private String _name;
 		private bool _primitive;

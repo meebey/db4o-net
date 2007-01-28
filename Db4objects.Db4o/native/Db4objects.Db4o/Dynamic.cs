@@ -2,18 +2,19 @@
 
 using System;
 using System.Reflection;
-using Sharpen.Lang;
 
 namespace Db4objects.Db4o {
 
 	/// <exclude />
     public class Dynamic {
 
+		private const BindingFlags AllMembers = BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+
         public static object GetProperty(object obj, string prop){
             if(obj != null){
                 Type type = TypeForObject(obj);
                 try {
-                    PropertyInfo pi = type.GetProperty(prop, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                    PropertyInfo pi = type.GetProperty(prop, AllMembers);
                     return pi.GetValue(obj,null);
                 } catch {
                 }
@@ -25,7 +26,7 @@ namespace Db4objects.Db4o {
             if(obj != null){
                 Type type = TypeForObject(obj);
                 try {
-                    PropertyInfo pi = type.GetProperty(prop, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                    PropertyInfo pi = type.GetProperty(prop, AllMembers);
                     pi.SetValue(obj, val, null);
                 } catch {
                 }

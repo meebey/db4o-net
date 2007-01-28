@@ -194,20 +194,17 @@ namespace Db4objects.Db4o.Reflect.Net
 			if (flag)
 			{
 				IReflectConstructor constructor = new SerializationConstructor(GetNetType());
-				if (constructor != null)
+				try
 				{
-					try
+					object o = constructor.NewInstance(null);
+					if (o != null)
 					{
-						object o = constructor.NewInstance(null);
-						if (o != null)
-						{
-							UseConstructor(constructor, null);
-							return true;
-						}
+						UseConstructor(constructor, null);
+						return true;
 					}
-					catch
-					{
-					}
+				}
+				catch
+				{
 				}
 			}
 #endif

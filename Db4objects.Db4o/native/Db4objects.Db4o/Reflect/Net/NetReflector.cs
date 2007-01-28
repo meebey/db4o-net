@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Reflect.Net
 				if (type == null) return null;
 				return ForClass(type);
 			}
-			catch (System.Exception)
+			catch
 			{
 			}
 			return null;
