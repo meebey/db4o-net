@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 			Db().Set(b);
 		}
 
-		public void TestImage()
+		public void _TestImage()
 		{
 			Bitmap b = (Bitmap) RetrieveOnlyInstance(typeof (Bitmap));
 			Assert.IsNotNull(b);
