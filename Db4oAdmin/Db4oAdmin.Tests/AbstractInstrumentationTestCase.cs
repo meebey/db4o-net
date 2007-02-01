@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Inside;
 using Db4objects.Db4o.Inside.Query;
 using Db4oUnit;
 
@@ -151,7 +152,7 @@ namespace Db4oAdmin.Tests
 		{
 			if (File.Exists(DatabaseFile)) File.Delete(DatabaseFile);
 			IObjectContainer container = Db4oFactory.OpenFile(DatabaseFile);
-			NativeQueryHandler handler = ((YapStream)container).GetNativeQueryHandler();
+			NativeQueryHandler handler = ((ObjectContainerBase)container).GetNativeQueryHandler();
 			handler.QueryExecution += OnQueryExecution;
 			handler.QueryOptimizationFailure += OnQueryOptimizationFailure;
 			return container;
