@@ -2,11 +2,11 @@
 
 using System;
 
-namespace Db4objects.Db4o
+namespace Db4objects.Db4o.Inside
 {
 	abstract internal class YapTypeIntegral : YapTypeAbstract
 	{
-		public YapTypeIntegral(Db4objects.Db4o.YapStream stream)
+		public YapTypeIntegral(Db4objects.Db4o.Inside.ObjectContainerBase stream)
 			: base(stream)
 		{
 		}

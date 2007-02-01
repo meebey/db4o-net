@@ -1,13 +1,14 @@
 ﻿/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 
 using System;
-using Sharpen.Lang;
 
-namespace Db4objects.Db4o {
-
+namespace Db4objects.Db4o.Inside
+{
     abstract internal class YapTypeStruct : YapTypeAbstract {
 
-        public YapTypeStruct(Db4objects.Db4o.YapStream stream) : base(stream) {
+		public YapTypeStruct(Db4objects.Db4o.Inside.ObjectContainerBase stream)
+			: base(stream)
+		{
         }
 
         public override bool IsEqual(Object compare, Object with){

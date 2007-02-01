@@ -1,4 +1,4 @@
-﻿namespace Db4objects.Db4o
+﻿namespace Db4objects.Db4o.Inside
 {
 	using System;
 	using Db4objects.Db4o.Inside.Query;
@@ -7,9 +7,9 @@
 	/// <summary>
 	/// </summary>
 	/// <exclude />
-	public abstract class YapStream : Db4objects.Db4o.YapStreamBase, IObjectContainer, IExtObjectContainer
+	public abstract class ObjectContainerBase : Db4objects.Db4o.Inside.PartialObjectContainer, IObjectContainer, IExtObjectContainer
 	{
-		internal YapStream(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.YapStream a_parent)
+		internal ObjectContainerBase(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.Inside.ObjectContainerBase a_parent)
 			: base(config, a_parent)
 		{
 		}

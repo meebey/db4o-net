@@ -8,6 +8,7 @@ namespace Db4oTools {
 
 	using Db4objects.Db4o;
 	using Db4objects.Db4o.Ext;
+	using Db4objects.Db4o.Inside;
 	using Db4objects.Db4o.Foundation;
 
     /**

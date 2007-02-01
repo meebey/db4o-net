@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using Db4objects.Db4o.Types;
+using Db4objects.Db4o.Inside;
 
 namespace Db4objects.Db4o
 {

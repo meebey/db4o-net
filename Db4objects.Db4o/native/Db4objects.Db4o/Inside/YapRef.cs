@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Db4objects.Db4o 
+namespace Db4objects.Db4o.Inside
 {
 	internal class YapRef : WeakReference
 	{

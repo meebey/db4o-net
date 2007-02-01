@@ -2,12 +2,13 @@
 
 using System;
 
-namespace Db4objects.Db4o
+namespace Db4objects.Db4o.Inside
 {
 	internal class YapUShort : YapTypeIntegral
 	{
-
-        public YapUShort(Db4objects.Db4o.YapStream stream) : base(stream) {
+		public YapUShort(Db4objects.Db4o.Inside.ObjectContainerBase stream)
+			: base(stream)
+		{
         }
 
         public override int Compare(Object o1, Object o2){

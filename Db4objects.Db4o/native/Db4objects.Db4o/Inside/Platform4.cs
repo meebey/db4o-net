@@ -15,7 +15,7 @@ using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Reflect.Net;
 using Db4objects.Db4o.Types;
 
-namespace Db4objects.Db4o
+namespace Db4objects.Db4o.Inside
 {
     /// <exclude />
     public class Platform4
@@ -28,7 +28,7 @@ namespace Db4objects.Db4o
 
         private static byte[][] oldAssemblies;
 
-        public static object[] CollectionToArray(YapStream stream, object obj)
+		public static object[] CollectionToArray(ObjectContainerBase stream, object obj)
         {
             Collection4 col = FlattenCollection(stream, obj);
             object[] ret = new object[col.Size()];
@@ -175,14 +175,14 @@ namespace Db4objects.Db4o
             return a.ClassConfiguration;
         }
 
-        internal static Collection4 FlattenCollection(YapStream stream, Object obj)
+		internal static Collection4 FlattenCollection(ObjectContainerBase stream, Object obj)
         {
             Collection4 collection41 = new Collection4();
             FlattenCollection1(stream, obj, collection41);
             return collection41;
         }
 
-        internal static void FlattenCollection1(YapStream stream, Object obj, Collection4 collection4)
+		internal static void FlattenCollection1(ObjectContainerBase stream, Object obj, Collection4 collection4)
         {
             Array arr = obj as Array;
             if (arr != null)
@@ -370,7 +370,7 @@ namespace Db4objects.Db4o
             Type t = obj.GetType();
             if (t.IsEnum)
             {
-                if (Convert.ToInt32(obj) == 0)
+                if (System.Convert.ToInt32(obj) == 0)
                 {
                     return true;
                 }
@@ -594,7 +594,7 @@ namespace Db4objects.Db4o
             return GetNetType(claxx);
         }
 
-        internal static YapTypeAbstract[] Types(YapStream stream)
+		internal static YapTypeAbstract[] Types(ObjectContainerBase stream)
         {
             return new YapTypeAbstract[]
 				{

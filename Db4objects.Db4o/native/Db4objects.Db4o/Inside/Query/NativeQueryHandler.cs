@@ -98,7 +98,7 @@ namespace Db4objects.Db4o.Inside.Query
 																					System.Predicate<Extent> predicate,
 																					RuntimeMethodHandle predicateMethodHandle)
 		{
-			return ((YapStream)container).GetNativeQueryHandler().ExecuteMeta(
+			return ((ObjectContainerBase)container).GetNativeQueryHandler().ExecuteMeta(
 				new MetaDelegate<Predicate<Extent>>(
 					target,
 					predicate,
@@ -181,7 +181,7 @@ namespace Db4objects.Db4o.Inside.Query
 			}
 			if (OptimizeNativeQueries())
 			{
-				DiagnosticProcessor dp = ((YapStream)_container).i_handlers._diagnosticProcessor;
+				DiagnosticProcessor dp = ((ObjectContainerBase)_container).i_handlers._diagnosticProcessor;
 				if (dp.Enabled()) dp.NativeQueryUnoptimized(predicate);
 
 			}

@@ -2,11 +2,13 @@
 
 using System;
 
-namespace Db4objects.Db4o {
+namespace Db4objects.Db4o.Inside {
 
     internal class YapDateTime : YapTypeStruct {
 
-        public YapDateTime(Db4objects.Db4o.YapStream stream) : base(stream) {
+		public YapDateTime(Db4objects.Db4o.Inside.ObjectContainerBase stream)
+			: base(stream)
+		{
         }
 
         public override int Compare(object o1, object o2){

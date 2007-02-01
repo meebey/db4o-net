@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Inside;
 using Db4objects.Db4o.Inside.Query;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit.Extensions;
@@ -110,7 +111,7 @@ public class InnerAuthorNamePredicate : Predicate
 		
 		private static NativeQueryHandler GetNativeQueryHandler(IObjectContainer container)
 		{
-			return ((YapStream)container).GetNativeQueryHandler();
+			return ((ObjectContainerBase)container).GetNativeQueryHandler();
 		}
 
 		private static Assembly EmitAssemblyAndLoad(string assemblyName, string code)

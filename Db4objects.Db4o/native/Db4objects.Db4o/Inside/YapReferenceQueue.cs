@@ -3,8 +3,8 @@
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 
-namespace Db4objects.Db4o {
-
+namespace Db4objects.Db4o.Inside
+{
     internal class YapReferenceQueue{
 
         private List4 list;
