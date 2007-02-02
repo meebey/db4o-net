@@ -1,15 +1,15 @@
-﻿/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2004 - 2007   db4objects Inc.   http://www.db4o.com */
 
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 
-namespace Db4objects.Db4o.Inside
+namespace Db4objects.Db4o.Inside.Handlers
 {
-    internal class YapReferenceQueue{
-
+    internal class WeakReferenceHandlerQueue
+	{
         private List4 list;
 
-        internal void Add(YapRef reference) {
+        internal void Add(WeakReferenceHandler reference) {
             lock(this){
                 list = new List4(list, reference);
             }
@@ -21,11 +21,11 @@ namespace Db4objects.Db4o.Inside
                 System.Collections.IEnumerator i = new Iterator4Impl(list);
                 list = null;
                 while(i.MoveNext()){
-                    YapRef yapRef = (YapRef)i.Current;
-                    if(yapRef.IsAlive){
-                        list = new List4(list, yapRef);
+					WeakReferenceHandler refHandler = (WeakReferenceHandler)i.Current;
+                    if(refHandler.IsAlive){
+                        list = new List4(list, refHandler);
                     }else{
-                        remove = new List4(remove, yapRef.yapObject);
+                        remove = new List4(remove, refHandler.ObjectReference);
                     }
                 }
             }

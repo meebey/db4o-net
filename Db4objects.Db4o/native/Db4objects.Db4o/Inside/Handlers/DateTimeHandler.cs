@@ -1,13 +1,13 @@
-﻿/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
+﻿/* Copyright (C) 2004 - 2007   db4objects Inc.   http://www.db4o.com */
 
 using System;
 
-namespace Db4objects.Db4o.Inside {
+namespace Db4objects.Db4o.Inside.Handlers
+{
+    public class DateTimeHandler : StructHandler {
 
-    internal class YapDateTime : YapTypeStruct {
-
-		public YapDateTime(Db4objects.Db4o.Inside.ObjectContainerBase stream)
-			: base(stream)
+		public DateTimeHandler(ObjectContainerBase containerBase)
+			: base(containerBase)
 		{
         }
 

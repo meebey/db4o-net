@@ -1,13 +1,13 @@
-﻿/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
+﻿/* Copyright (C) 2004 - 2007   db4objects Inc.   http://www.db4o.com */
 
 using System;
 
-namespace Db4objects.Db4o.Inside
+namespace Db4objects.Db4o.Inside.Handlers
 {
-	internal class YapUShort : YapTypeIntegral
+	public class UShortHandler : IntegralTypeHandler
 	{
-		public YapUShort(Db4objects.Db4o.Inside.ObjectContainerBase stream)
-			: base(stream)
+		public UShortHandler(ObjectContainerBase containerBase)
+			: base(containerBase)
 		{
         }
 

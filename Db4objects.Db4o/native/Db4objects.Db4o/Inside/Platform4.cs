@@ -8,6 +8,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Config.Attributes;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Inside.Handlers;
 using Db4objects.Db4o.Inside.Query;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
@@ -113,7 +114,7 @@ namespace Db4objects.Db4o.Inside
 
         internal static Object CreateReferenceQueue()
         {
-            return new YapReferenceQueue();
+            return new WeakReferenceHandlerQueue();
         }
 
         public static Object CreateWeakReference(Object obj)
@@ -123,7 +124,7 @@ namespace Db4objects.Db4o.Inside
 
         internal static Object CreateYapRef(Object referenceQueue, Object yapObject, Object obj)
         {
-            return new YapRef(referenceQueue, yapObject, obj);
+            return new WeakReferenceHandler(referenceQueue, yapObject, obj);
         }
 
         internal static long DoubleToLong(double a_double)
@@ -337,10 +338,10 @@ namespace Db4objects.Db4o.Inside
 
         internal static Object GetYapRefObject(Object obj)
         {
-            YapRef yapRef = obj as YapRef;
-            if (yapRef != null)
+			WeakReferenceHandler refHandler = obj as WeakReferenceHandler;
+			if (refHandler != null)
             {
-                return yapRef.Get();
+				return refHandler.Get();
             }
             return obj;
         }
@@ -416,10 +417,10 @@ namespace Db4objects.Db4o.Inside
 
         internal static void KillYapRef(Object obj)
         {
-            YapRef yr = obj as YapRef;
+			WeakReferenceHandler yr = obj as WeakReferenceHandler;
             if (yr != null)
             {
-                yr.yapObject = null;
+                yr.ObjectReference = null;
             }
         }
 
@@ -455,7 +456,7 @@ namespace Db4objects.Db4o.Inside
 
         internal static void PollReferenceQueue(Object stream, Object referenceQueue)
         {
-            ((YapReferenceQueue)referenceQueue).Poll((IExtObjectContainer)stream);
+            ((WeakReferenceHandlerQueue)referenceQueue).Poll((IExtObjectContainer)stream);
         }
 
         internal static void PostOpen(IObjectContainer objectContainer)
@@ -594,17 +595,17 @@ namespace Db4objects.Db4o.Inside
             return GetNetType(claxx);
         }
 
-		internal static YapTypeAbstract[] Types(ObjectContainerBase stream)
+		internal static NetTypeHandler[] Types(ObjectContainerBase stream)
         {
-            return new YapTypeAbstract[]
+			return new NetTypeHandler[]
 				{
-					new YapDouble(stream),
-					new YapSByte(stream),
-					new YapDecimal(stream),
-					new YapUInt(stream),
-					new YapULong(stream),
-					new YapUShort(stream),
-					new YapDateTime(stream),
+					new DoubleHandler(stream),
+					new SByteHandler(stream),
+					new DecimalHandler(stream),
+					new UIntHandler(stream),
+					new ULongHandler(stream),
+					new UShortHandler(stream),
+					new DateTimeHandler(stream),
 				};
         }
 
