@@ -10,6 +10,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Inside.Handlers;
 using Db4objects.Db4o.Inside.Query;
+using Db4objects.Db4o.Inside.Query.Processor;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
@@ -47,7 +48,7 @@ namespace Db4objects.Db4o.Inside
             {
                 shortAssemblyName = fullAssemblyName.Substring(0, pos);
             }
-            YapStringIO stringIO = new YapStringIOUnicode();
+           	LatinStringIO stringIO = new UnicodeStringIO();
             assembly = stringIO.Write(shortAssemblyName);
             oldAssemblies = new byte[oldAssemblyNames.Length][];
             for (int i = 0; i < oldAssemblyNames.Length; i++)

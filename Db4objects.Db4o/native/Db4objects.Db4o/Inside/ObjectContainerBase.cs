@@ -2,6 +2,8 @@
 {
 	using System;
 	using Db4objects.Db4o.Inside.Query;
+	using Db4objects.Db4o.Inside.Query.Result;
+	using Db4objects.Db4o.Inside.Query.Processor;
 	using Db4objects.Db4o.Ext;
 
 	/// <summary>

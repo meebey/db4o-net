@@ -3,6 +3,8 @@ using System;
 using Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Nativequery.Optimization;
 using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Inside.Query.Result;
+using Db4objects.Db4o.Inside.Query.Processor;
 using Db4objects.Db4o.Inside.Diagnostic;
 
 namespace Db4objects.Db4o.Inside.Query
@@ -148,8 +150,8 @@ namespace Db4objects.Db4o.Inside.Query
 
 		private static System.Collections.Generic.IList<Extent> WrapQueryResult<Extent>(Db4objects.Db4o.Query.IQuery q)
 		{
-			Db4objects.Db4o.Inside.Query.IQueryResult qr = ((QQuery)q).GetQueryResult();
-			return new Db4objects.Db4o.Inside.Query.GenericObjectSetFacade<Extent>(qr);
+			IQueryResult qr = ((QQuery)q).GetQueryResult();
+			return new GenericObjectSetFacade<Extent>(qr);
 		}
 #endif
 
