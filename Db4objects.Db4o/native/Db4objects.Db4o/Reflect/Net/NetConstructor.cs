@@ -22,7 +22,7 @@
 
 		public virtual void SetAccessible()
 		{
-			Db4objects.Db4o.Inside.Platform4.SetAccessible(constructor);
+			Db4objects.Db4o.Internal.Platform4.SetAccessible(constructor);
 		}
 
 		public virtual object NewInstance(object[] parameters)

@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections;
-using Db4objects.Db4o.Inside;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Types;
 using Db4objects.Db4o.Foundation;
 

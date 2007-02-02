@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Reflection;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Inside;
-using Db4objects.Db4o.Inside.Query;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit.Extensions;
 using Db4oUnit;

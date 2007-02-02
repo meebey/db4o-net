@@ -2,7 +2,7 @@
 
 using Db4objects.Db4o.Events;
 
-namespace Db4objects.Db4o.Events.Impl
+namespace Db4objects.Db4o.Internal.Events
 {
 	internal class EventPlatform
 	{

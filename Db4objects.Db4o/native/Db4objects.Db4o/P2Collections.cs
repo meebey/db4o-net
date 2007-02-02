@@ -3,7 +3,7 @@
 using System;
 using Sharpen.Lang;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Inside;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o {

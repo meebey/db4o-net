@@ -3,7 +3,7 @@
 using System;
 using System.Reflection;
 
-using Db4objects.Db4o.Inside;
+using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Config.Attributes
 {
