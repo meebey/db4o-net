@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 	using Db4objects.Db4o.Nativequery.Expr.Cmp;
 	using Db4objects.Db4o.Nativequery.Expr.Cmp.Field;
 	using NQExpression = Db4objects.Db4o.Nativequery.Expr.IExpression;
-	using Db4objects.Db4o.Inside.Query;
+	using Db4objects.Db4o.Internal.Query;
 
 	/// <summary>
 	/// Build a Db4objects.Db4o.Nativequery.Expr tree out of
