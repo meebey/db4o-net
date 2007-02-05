@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 
 using Db4objects.Db4o;
-using Db4objects.Db4o.Inside;
-using Db4objects.Db4o.Inside.Query;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query;
 
 namespace Db4oShell.Example
 {

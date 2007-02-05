@@ -1,5 +1,5 @@
 /* Copyright (C) 2004 - 2006  db4objects Inc.   http://www.db4o.com */
-using Db4objects.Db4o.Inside.Query;
+using Db4objects.Db4o.Internal.Query;
 
 namespace Db4oAdmin.Tests
 {

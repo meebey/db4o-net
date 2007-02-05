@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using Db4objects.Db4o.Inside.Query;
+using Db4objects.Db4o.Internal.Query;
 using Db4oUnit;
 
 namespace Db4oAdmin.Tests

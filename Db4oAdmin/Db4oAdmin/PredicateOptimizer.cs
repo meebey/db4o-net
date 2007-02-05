@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using Cecil.FlowAnalysis.CecilUtilities;
-using Db4objects.Db4o.Inside.Query;
+using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tools.NativeQueries;
