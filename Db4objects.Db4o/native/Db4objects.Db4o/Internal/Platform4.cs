@@ -600,7 +600,7 @@ namespace Db4objects.Db4o.Internal
         {
 			return new NetTypeHandler[]
 				{
-					new DoubleHandler(stream),
+					//new DoubleHandler(stream),
 					new SByteHandler(stream),
 					new DecimalHandler(stream),
 					new UIntHandler(stream),
