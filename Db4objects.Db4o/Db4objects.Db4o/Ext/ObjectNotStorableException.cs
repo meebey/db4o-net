@@ -14,8 +14,8 @@ namespace Db4objects.Db4o.Ext
 	public class ObjectNotStorableException : System.Exception
 	{
 		public ObjectNotStorableException(Db4objects.Db4o.Reflect.IReflectClass a_class) : 
-			base(Db4objects.Db4o.Messages.Get(a_class.IsPrimitive() ? 59 : 45, a_class.GetName
-			()))
+			base(Db4objects.Db4o.Internal.Messages.Get(a_class.IsPrimitive() ? 59 : 45, a_class
+			.GetName()))
 		{
 		}
 

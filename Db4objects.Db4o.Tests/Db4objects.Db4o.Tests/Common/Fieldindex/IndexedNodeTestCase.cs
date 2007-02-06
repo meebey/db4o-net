@@ -43,10 +43,10 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			Db4objects.Db4o.Query.IQuery query = CreateComplexItemQuery();
 			query.Descend("child").Descend("foo").Constrain(3);
 			query.Descend("bar").Constrain(2);
-			Db4objects.Db4o.Inside.Fieldindex.IIndexedNode index = SelectBestIndex(query);
+			Db4objects.Db4o.Internal.Fieldindex.IIndexedNode index = SelectBestIndex(query);
 			AssertComplexItemIndex("foo", index);
 			Db4oUnit.Assert.IsFalse(index.IsResolved());
-			Db4objects.Db4o.Inside.Fieldindex.IIndexedNode result = index.Resolve();
+			Db4objects.Db4o.Internal.Fieldindex.IIndexedNode result = index.Resolve();
 			Db4oUnit.Assert.IsNotNull(result);
 			AssertComplexItemIndex("child", result);
 			Db4oUnit.Assert.IsTrue(result.IsResolved());
@@ -58,10 +58,10 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			Db4objects.Db4o.Query.IQuery query = CreateComplexItemQuery();
 			query.Descend("child").Descend("child").Descend("foo").Constrain(3);
-			Db4objects.Db4o.Inside.Fieldindex.IIndexedNode index = SelectBestIndex(query);
+			Db4objects.Db4o.Internal.Fieldindex.IIndexedNode index = SelectBestIndex(query);
 			AssertComplexItemIndex("foo", index);
 			Db4oUnit.Assert.IsFalse(index.IsResolved());
-			Db4objects.Db4o.Inside.Fieldindex.IIndexedNode result = index.Resolve();
+			Db4objects.Db4o.Internal.Fieldindex.IIndexedNode result = index.Resolve();
 			Db4oUnit.Assert.IsNotNull(result);
 			AssertComplexItemIndex("child", result);
 			Db4oUnit.Assert.IsFalse(result.IsResolved());
@@ -71,8 +71,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			AssertComplexItems(new int[] { 7 }, result.ToTreeInt());
 		}
 
-		private void AssertComplexItems(int[] expectedFoos, Db4objects.Db4o.TreeInt found
-			)
+		private void AssertComplexItems(int[] expectedFoos, Db4objects.Db4o.Internal.TreeInt
+			 found)
 		{
 			Db4oUnit.Assert.IsNotNull(found);
 			AssertTreeInt(MapToObjectIds(CreateComplexItemQuery(), expectedFoos), found);
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			System.Collections.IEnumerator nodes = CreateProcessor(query).CollectIndexedNodes
 				();
 			Db4oUnit.Assert.IsTrue(nodes.MoveNext());
-			Db4objects.Db4o.Inside.Fieldindex.OrIndexedLeaf node = (Db4objects.Db4o.Inside.Fieldindex.OrIndexedLeaf
+			Db4objects.Db4o.Internal.Fieldindex.OrIndexedLeaf node = (Db4objects.Db4o.Internal.Fieldindex.OrIndexedLeaf
 				)nodes.Current;
 			Db4oUnit.Assert.IsNotNull(node);
 			Db4oUnit.Assert.IsFalse(nodes.MoveNext());

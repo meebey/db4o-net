@@ -51,10 +51,11 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private Db4objects.Db4o.Foundation.Tree CreateTree(int[] values)
 		{
-			Db4objects.Db4o.Foundation.Tree tree = new Db4objects.Db4o.TreeInt(values[0]);
+			Db4objects.Db4o.Foundation.Tree tree = new Db4objects.Db4o.Internal.TreeInt(values
+				[0]);
 			for (int i = 1; i < values.Length; i++)
 			{
-				tree = tree.Add(new Db4objects.Db4o.TreeInt(values[i]));
+				tree = tree.Add(new Db4objects.Db4o.Internal.TreeInt(values[i]));
 			}
 			return tree;
 		}

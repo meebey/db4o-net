@@ -56,8 +56,8 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			Db4objects.Db4o.Config.IConfiguration otherConfig = Db4objects.Db4o.Db4oFactory.NewConfiguration
 				();
 			Db4oUnit.Assert.AreNotSame(config, otherConfig);
-			Db4objects.Db4o.Config4Class otherObjectConfig = (Db4objects.Db4o.Config4Class)otherConfig
-				.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Config.NonStaticConfigurationTestCase.Data)
+			Db4objects.Db4o.Internal.Config4Class otherObjectConfig = (Db4objects.Db4o.Internal.Config4Class
+				)otherConfig.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Config.NonStaticConfigurationTestCase.Data)
 				);
 			Db4oUnit.Assert.AreNotSame(objectConfig, otherObjectConfig);
 			Db4oUnit.Assert.IsNull(otherObjectConfig.GetTranslator());

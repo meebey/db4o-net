@@ -5,15 +5,15 @@ namespace Db4objects.Db4o.Defragment
 	/// <exclude></exclude>
 	internal interface IPassCommand
 	{
-		void ProcessObjectSlot(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.YapClass
+		void ProcessObjectSlot(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Internal.ClassMetadata
 			 yapClass, int id, bool registerAddresses);
 
-		void ProcessClass(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.YapClass
+		void ProcessClass(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Internal.ClassMetadata
 			 yapClass, int id, int classIndexID);
 
 		void ProcessClassCollection(Db4objects.Db4o.Defragment.DefragContextImpl context);
 
-		void ProcessBTree(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Inside.Btree.BTree
+		void ProcessBTree(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Internal.Btree.BTree
 			 btree);
 
 		void Flush(Db4objects.Db4o.Defragment.DefragContextImpl context);

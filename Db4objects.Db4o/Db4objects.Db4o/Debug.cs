@@ -11,9 +11,9 @@ namespace Db4objects.Db4o
 
 		public const bool longTimeOuts = false;
 
-		public const bool freespace = Db4objects.Db4o.Deploy.debug ? true : false;
+		public const bool freespace = Db4objects.Db4o.Deploy.debug;
 
-		public const bool xbytes = freespace ? true : false;
+		public const bool xbytes = freespace;
 
 		public const bool freespaceChecker = false;
 
@@ -47,7 +47,7 @@ namespace Db4objects.Db4o
 
 		public static bool ExceedsMaximumBlockSize(int a_length)
 		{
-			if (a_length > Db4objects.Db4o.YapConst.MAXIMUM_BLOCK_SIZE)
+			if (a_length > Db4objects.Db4o.Internal.Const4.MAXIMUM_BLOCK_SIZE)
 			{
 				return true;
 			}
@@ -56,8 +56,8 @@ namespace Db4objects.Db4o
 
 		public static bool ExceedsMaximumArrayEntries(int a_entries, bool a_primitive)
 		{
-			if (a_entries > (a_primitive ? Db4objects.Db4o.YapConst.MAXIMUM_ARRAY_ENTRIES_PRIMITIVE
-				 : Db4objects.Db4o.YapConst.MAXIMUM_ARRAY_ENTRIES))
+			if (a_entries > (a_primitive ? Db4objects.Db4o.Internal.Const4.MAXIMUM_ARRAY_ENTRIES_PRIMITIVE
+				 : Db4objects.Db4o.Internal.Const4.MAXIMUM_ARRAY_ENTRIES))
 			{
 				return true;
 			}

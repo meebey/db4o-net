@@ -19,31 +19,32 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void TestLastKeyIndex()
 		{
-			Db4objects.Db4o.Inside.Btree.BTreeNode node = Node(3);
+			Db4objects.Db4o.Internal.Btree.BTreeNode node = Node(3);
 			Db4oUnit.Assert.AreEqual(1, node.LastKeyIndex(Trans()));
-			Db4objects.Db4o.Transaction trans = NewTransaction();
+			Db4objects.Db4o.Internal.Transaction trans = NewTransaction();
 			_btree.Add(trans, 5);
 			Db4oUnit.Assert.AreEqual(1, node.LastKeyIndex(Trans()));
 			_btree.Commit(trans);
 			Db4oUnit.Assert.AreEqual(2, node.LastKeyIndex(Trans()));
 		}
 
-		private Db4objects.Db4o.Inside.Btree.BTreeNode Node(int value)
+		private Db4objects.Db4o.Internal.Btree.BTreeNode Node(int value)
 		{
-			Db4objects.Db4o.Inside.Btree.IBTreeRange range = Search(value);
+			Db4objects.Db4o.Internal.Btree.IBTreeRange range = Search(value);
 			System.Collections.IEnumerator i = range.Pointers();
 			i.MoveNext();
-			Db4objects.Db4o.Inside.Btree.BTreePointer firstPointer = (Db4objects.Db4o.Inside.Btree.BTreePointer
+			Db4objects.Db4o.Internal.Btree.BTreePointer firstPointer = (Db4objects.Db4o.Internal.Btree.BTreePointer
 				)i.Current;
-			Db4objects.Db4o.Inside.Btree.BTreeNode node = firstPointer.Node();
+			Db4objects.Db4o.Internal.Btree.BTreeNode node = firstPointer.Node();
 			node.DebugLoadFully(SystemTrans());
 			return node;
 		}
 
 		public virtual void TestLastPointer()
 		{
-			Db4objects.Db4o.Inside.Btree.BTreeNode node = Node(3);
-			Db4objects.Db4o.Inside.Btree.BTreePointer lastPointer = node.LastPointer(Trans());
+			Db4objects.Db4o.Internal.Btree.BTreeNode node = Node(3);
+			Db4objects.Db4o.Internal.Btree.BTreePointer lastPointer = node.LastPointer(Trans(
+				));
 			AssertPointerKey(4, lastPointer);
 		}
 	}

@@ -7,10 +7,10 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			new Db4objects.Db4o.Tests.Common.Querying.LazyQueryResultTestCase().RunSolo();
 		}
 
-		protected override Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult
+		protected override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult NewQueryResult
 			()
 		{
-			return new Db4objects.Db4o.Inside.Query.LazyQueryResult(Trans());
+			return new Db4objects.Db4o.Internal.Query.Result.LazyQueryResult(Trans());
 		}
 	}
 }

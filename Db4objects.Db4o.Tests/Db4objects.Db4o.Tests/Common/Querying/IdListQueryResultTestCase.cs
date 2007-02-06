@@ -7,10 +7,10 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			new Db4objects.Db4o.Tests.Common.Querying.IdListQueryResultTestCase().RunSolo();
 		}
 
-		protected override Db4objects.Db4o.Inside.Query.AbstractQueryResult NewQueryResult
+		protected override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult NewQueryResult
 			()
 		{
-			return new Db4objects.Db4o.Inside.Query.IdListQueryResult(Trans());
+			return new Db4objects.Db4o.Internal.Query.Result.IdListQueryResult(Trans());
 		}
 	}
 }

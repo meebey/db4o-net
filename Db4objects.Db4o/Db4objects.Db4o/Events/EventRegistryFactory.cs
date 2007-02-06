@@ -23,15 +23,16 @@ namespace Db4objects.Db4o.Events
 			{
 				throw new System.ArgumentNullException("container");
 			}
-			Db4objects.Db4o.YapStream stream = ((Db4objects.Db4o.YapStream)container);
-			Db4objects.Db4o.Inside.Callbacks.ICallbacks callbacks = stream.Callbacks();
+			Db4objects.Db4o.Internal.ObjectContainerBase stream = ((Db4objects.Db4o.Internal.ObjectContainerBase
+				)container);
+			Db4objects.Db4o.Internal.Callbacks.ICallbacks callbacks = stream.Callbacks();
 			if (callbacks is Db4objects.Db4o.Events.IEventRegistry)
 			{
 				return (Db4objects.Db4o.Events.IEventRegistry)callbacks;
 			}
-			if (callbacks is Db4objects.Db4o.Inside.Callbacks.NullCallbacks)
+			if (callbacks is Db4objects.Db4o.Internal.Callbacks.NullCallbacks)
 			{
-				Db4objects.Db4o.Events.Impl.EventRegistryImpl impl = new Db4objects.Db4o.Events.Impl.EventRegistryImpl
+				Db4objects.Db4o.Internal.Events.EventRegistryImpl impl = new Db4objects.Db4o.Internal.Events.EventRegistryImpl
 					();
 				stream.Callbacks(impl);
 				return impl;

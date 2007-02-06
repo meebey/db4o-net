@@ -5,7 +5,8 @@ namespace Db4objects.Db4o.Ext
 	[System.Serializable]
 	public class OldFormatException : Db4objects.Db4o.Ext.Db4oException
 	{
-		public OldFormatException() : base(Db4objects.Db4o.Messages.OLD_DATABASE_FORMAT)
+		public OldFormatException() : base(Db4objects.Db4o.Internal.Messages.OLD_DATABASE_FORMAT
+			)
 		{
 		}
 	}

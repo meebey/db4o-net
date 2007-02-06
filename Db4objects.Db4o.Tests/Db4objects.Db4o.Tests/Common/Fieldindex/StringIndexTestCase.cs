@@ -71,8 +71,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestCancelRemovalRollbackForMultipleTransactions()
 		{
-			Db4objects.Db4o.Transaction trans1 = NewTransaction();
-			Db4objects.Db4o.Transaction trans2 = NewTransaction();
+			Db4objects.Db4o.Internal.Transaction trans1 = NewTransaction();
+			Db4objects.Db4o.Internal.Transaction trans2 = NewTransaction();
 			PrepareCancelRemoval(trans1, "original");
 			AssertExists(trans2, "original");
 			trans1.Rollback();
@@ -95,8 +95,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			AssertExists("original");
 		}
 
-		private void PrepareCancelRemoval(Db4objects.Db4o.Transaction transaction, string
-			 itemName)
+		private void PrepareCancelRemoval(Db4objects.Db4o.Internal.Transaction transaction
+			, string itemName)
 		{
 			Add(itemName);
 			Db().Commit();
@@ -108,8 +108,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestCancelRemovalForMultipleTransactions()
 		{
-			Db4objects.Db4o.Transaction trans1 = NewTransaction();
-			Db4objects.Db4o.Transaction trans2 = NewTransaction();
+			Db4objects.Db4o.Internal.Transaction trans1 = NewTransaction();
+			Db4objects.Db4o.Internal.Transaction trans2 = NewTransaction();
 			PrepareCancelRemoval(trans1, "original");
 			Rename(trans2, "original", "updated");
 			trans1.Commit();
@@ -120,16 +120,16 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		private void GrafittiFreeSpace()
 		{
-			Db4objects.Db4o.YapRandomAccessFile file = ((Db4objects.Db4o.YapRandomAccessFile)
-				Db());
-			Db4objects.Db4o.Inside.Freespace.FreespaceManagerRam fm = (Db4objects.Db4o.Inside.Freespace.FreespaceManagerRam
+			Db4objects.Db4o.Internal.IoAdaptedObjectContainer file = ((Db4objects.Db4o.Internal.IoAdaptedObjectContainer
+				)Db());
+			Db4objects.Db4o.Internal.Freespace.FreespaceManagerRam fm = (Db4objects.Db4o.Internal.Freespace.FreespaceManagerRam
 				)file.FreespaceManager();
-			fm.TraverseFreeSlots(new _AnonymousInnerClass134(this, file));
+			fm.TraverseFreeSlots(new _AnonymousInnerClass135(this, file));
 		}
 
-		private sealed class _AnonymousInnerClass134 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass135 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass134(StringIndexTestCase _enclosing, Db4objects.Db4o.YapRandomAccessFile
+			public _AnonymousInnerClass135(StringIndexTestCase _enclosing, Db4objects.Db4o.Internal.IoAdaptedObjectContainer
 				 file)
 			{
 				this._enclosing = _enclosing;
@@ -138,13 +138,13 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 			public void Visit(object obj)
 			{
-				Db4objects.Db4o.Inside.Slots.Slot slot = (Db4objects.Db4o.Inside.Slots.Slot)obj;
+				Db4objects.Db4o.Internal.Slots.Slot slot = (Db4objects.Db4o.Internal.Slots.Slot)obj;
 				file.WriteXBytes(slot.GetAddress(), slot.GetLength());
 			}
 
 			private readonly StringIndexTestCase _enclosing;
 
-			private readonly Db4objects.Db4o.YapRandomAccessFile file;
+			private readonly Db4objects.Db4o.Internal.IoAdaptedObjectContainer file;
 		}
 
 		public virtual void TestDeletingAndReaddingMember()
@@ -169,20 +169,21 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			Add(Trans(), itemName);
 		}
 
-		private void Add(Db4objects.Db4o.Transaction transaction, string itemName)
+		private void Add(Db4objects.Db4o.Internal.Transaction transaction, string itemName
+			)
 		{
 			Stream().Set(transaction, new Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item
 				(itemName));
 		}
 
-		private void AssertExists(Db4objects.Db4o.Transaction transaction, string itemName
-			)
+		private void AssertExists(Db4objects.Db4o.Internal.Transaction transaction, string
+			 itemName)
 		{
 			Db4oUnit.Assert.IsNotNull(Query(transaction, itemName));
 		}
 
-		private void Rename(Db4objects.Db4o.Transaction transaction, string from, string 
-			to)
+		private void Rename(Db4objects.Db4o.Internal.Transaction transaction, string from
+			, string to)
 		{
 			Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item item = Query(transaction
 				, from);
@@ -202,7 +203,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			return Query(Trans(), name);
 		}
 
-		private Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item Query(Db4objects.Db4o.Transaction
+		private Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item Query(Db4objects.Db4o.Internal.Transaction
 			 transaction, string name)
 		{
 			Db4objects.Db4o.IObjectSet objectSet = NewQuery(transaction, name).Execute();
@@ -214,8 +215,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 				.Next();
 		}
 
-		private Db4objects.Db4o.Query.IQuery NewQuery(Db4objects.Db4o.Transaction transaction
-			, string itemName)
+		private Db4objects.Db4o.Query.IQuery NewQuery(Db4objects.Db4o.Internal.Transaction
+			 transaction, string itemName)
 		{
 			Db4objects.Db4o.Query.IQuery query = Stream().Query(transaction);
 			query.Constrain(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item)

@@ -37,8 +37,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public virtual void TestObjectsCantBeSeenAfterDelete()
 		{
-			Db4objects.Db4o.Transaction trans1 = NewTransaction();
-			Db4objects.Db4o.Transaction trans2 = NewTransaction();
+			Db4objects.Db4o.Internal.Transaction trans1 = NewTransaction();
+			Db4objects.Db4o.Internal.Transaction trans2 = NewTransaction();
 			Db4objects.Db4o.IObjectSet os = QueryItems(trans1);
 			DeleteItemAndCommit(trans2, "foo");
 			AssertItems(new string[] { "bar", "baz" }, os);
@@ -68,13 +68,14 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			Db4oUnit.Assert.IsFalse(actual.HasNext());
 		}
 
-		private void DeleteItemAndCommit(Db4objects.Db4o.Transaction trans, string name)
+		private void DeleteItemAndCommit(Db4objects.Db4o.Internal.Transaction trans, string
+			 name)
 		{
 			Stream().Delete(trans, QueryItem(trans, name));
 			trans.Commit();
 		}
 
-		private Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item QueryItem(Db4objects.Db4o.Transaction
+		private Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item QueryItem(Db4objects.Db4o.Internal.Transaction
 			 trans, string name)
 		{
 			Db4objects.Db4o.Query.IQuery q = NewQuery(trans, typeof(Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item)
@@ -84,7 +85,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 				Next();
 		}
 
-		private Db4objects.Db4o.IObjectSet QueryItems(Db4objects.Db4o.Transaction trans)
+		private Db4objects.Db4o.IObjectSet QueryItems(Db4objects.Db4o.Internal.Transaction
+			 trans)
 		{
 			Db4objects.Db4o.Query.IQuery q = NewQuery(trans, typeof(Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item)
 				);

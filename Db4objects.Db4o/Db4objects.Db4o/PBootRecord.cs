@@ -12,7 +12,7 @@ namespace Db4objects.Db4o
 	/// </remarks>
 	/// <exclude></exclude>
 	/// <persistent></persistent>
-	public class PBootRecord : Db4objects.Db4o.P1Object, Db4objects.Db4o.IDb4oTypeImpl
+	public class PBootRecord : Db4objects.Db4o.P1Object, Db4objects.Db4o.Internal.IDb4oTypeImpl
 		, Db4objects.Db4o.IInternal4
 	{
 		public Db4objects.Db4o.Ext.Db4oDatabase i_db;
@@ -31,9 +31,9 @@ namespace Db4objects.Db4o
 			return i_uuidMetaIndex;
 		}
 
-		public virtual void Write(Db4objects.Db4o.YapFile file)
+		public virtual void Write(Db4objects.Db4o.Internal.LocalObjectContainer file)
 		{
-			Db4objects.Db4o.Inside.SystemData systemData = file.SystemData();
+			Db4objects.Db4o.Internal.SystemData systemData = file.SystemData();
 			i_versionGenerator = systemData.LastTimeStampID();
 			i_db = systemData.Identity();
 			file.ShowInternalClasses(true);

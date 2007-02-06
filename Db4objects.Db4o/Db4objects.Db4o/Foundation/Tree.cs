@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.Foundation
 				}
 				else
 				{
-					a_new.IsDuplicateOf(this);
+					a_new.OnAttemptToAddDuplicate(this);
 				}
 			}
 			return this;
@@ -100,23 +100,31 @@ namespace Db4objects.Db4o.Foundation
 
 		/// <summary>
 		/// On adding a node to a tree, if it already exists, and if
-		/// Tree#duplicates() returns false, #isDuplicateOf() will be
-		/// called.
+		/// Tree#duplicates() returns false, #onAttemptToAddDuplicate()
+		/// will be called and the existing node will be stored in
+		/// this._preceding.
 		/// </summary>
 		/// <remarks>
 		/// On adding a node to a tree, if it already exists, and if
-		/// Tree#duplicates() returns false, #isDuplicateOf() will be
-		/// called. The added node can then be asked for the node that
-		/// prevails in the tree using #duplicateOrThis(). This mechanism
-		/// allows doing find() and add() in one run.
+		/// Tree#duplicates() returns false, #onAttemptToAddDuplicate()
+		/// will be called and the existing node will be stored in
+		/// this._preceding.
+		/// This node node can then be asked for the node that prevails
+		/// in the tree on adding, using the #addedOrExisting() method.
+		/// This mechanism allows doing find() and add() in one run.
 		/// </remarks>
-		public virtual Db4objects.Db4o.Foundation.Tree DuplicateOrThis()
+		public virtual Db4objects.Db4o.Foundation.Tree AddedOrExisting()
 		{
-			if (_size == 0)
+			if (WasAddedToTree())
 			{
-				return _preceding;
+				return this;
 			}
-			return this;
+			return _preceding;
+		}
+
+		public virtual bool WasAddedToTree()
+		{
+			return _size != 0;
 		}
 
 		public Db4objects.Db4o.Foundation.Tree Balance()
@@ -332,7 +340,8 @@ namespace Db4objects.Db4o.Foundation
 			return _preceding.First();
 		}
 
-		public virtual void IsDuplicateOf(Db4objects.Db4o.Foundation.Tree a_tree)
+		public virtual void OnAttemptToAddDuplicate(Db4objects.Db4o.Foundation.Tree a_tree
+			)
 		{
 			_size = 0;
 			_preceding = a_tree;

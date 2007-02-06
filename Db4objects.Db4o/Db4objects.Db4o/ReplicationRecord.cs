@@ -34,20 +34,20 @@ namespace Db4objects.Db4o
 			_version = version;
 		}
 
-		public virtual void Store(Db4objects.Db4o.YapStream stream)
+		public virtual void Store(Db4objects.Db4o.Internal.ObjectContainerBase stream)
 		{
 			stream.ShowInternalClasses(true);
-			Db4objects.Db4o.Transaction ta = stream.CheckTransaction(null);
+			Db4objects.Db4o.Internal.Transaction ta = stream.CheckTransaction(null);
 			stream.SetAfterReplication(ta, this, 1, false);
 			stream.Commit();
 			stream.ShowInternalClasses(false);
 		}
 
-		public static Db4objects.Db4o.ReplicationRecord BeginReplication(Db4objects.Db4o.Transaction
-			 transA, Db4objects.Db4o.Transaction transB)
+		public static Db4objects.Db4o.ReplicationRecord BeginReplication(Db4objects.Db4o.Internal.Transaction
+			 transA, Db4objects.Db4o.Internal.Transaction transB)
 		{
-			Db4objects.Db4o.YapStream peerA = transA.Stream();
-			Db4objects.Db4o.YapStream peerB = transB.Stream();
+			Db4objects.Db4o.Internal.ObjectContainerBase peerA = transA.Stream();
+			Db4objects.Db4o.Internal.ObjectContainerBase peerB = transB.Stream();
 			Db4objects.Db4o.Ext.Db4oDatabase dbA = peerA.Identity();
 			Db4objects.Db4o.Ext.Db4oDatabase dbB = peerB.Identity();
 			dbB.Bind(transA);
@@ -92,14 +92,14 @@ namespace Db4objects.Db4o
 			return rrA;
 		}
 
-		public static Db4objects.Db4o.ReplicationRecord QueryForReplicationRecord(Db4objects.Db4o.YapStream
+		public static Db4objects.Db4o.ReplicationRecord QueryForReplicationRecord(Db4objects.Db4o.Internal.ObjectContainerBase
 			 stream, Db4objects.Db4o.Ext.Db4oDatabase younger, Db4objects.Db4o.Ext.Db4oDatabase
 			 older)
 		{
 			Db4objects.Db4o.ReplicationRecord res = null;
 			stream.ShowInternalClasses(true);
 			Db4objects.Db4o.Query.IQuery q = stream.Query();
-			q.Constrain(Db4objects.Db4o.YapConst.CLASS_REPLICATIONRECORD);
+			q.Constrain(Db4objects.Db4o.Internal.Const4.CLASS_REPLICATIONRECORD);
 			q.Descend("_youngerPeer").Constrain(younger).Identity();
 			q.Descend("_olderPeer").Constrain(older).Identity();
 			Db4objects.Db4o.IObjectSet objectSet = q.Execute();

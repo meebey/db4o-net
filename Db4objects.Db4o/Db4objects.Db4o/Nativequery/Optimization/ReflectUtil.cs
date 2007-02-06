@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 				{
 					System.Reflection.MethodInfo method = Sharpen.Runtime.GetDeclaredMethod(curclazz, 
 						methodName, paramTypes);
-					Db4objects.Db4o.Platform4.SetAccessible(method);
+					Db4objects.Db4o.Internal.Platform4.SetAccessible(method);
 					return method;
 				}
 				catch
@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 				{
 					System.Reflection.FieldInfo field = Sharpen.Runtime.GetDeclaredField(curclazz, name
 						);
-					Db4objects.Db4o.Platform4.SetAccessible(field);
+					Db4objects.Db4o.Internal.Platform4.SetAccessible(field);
 					return field;
 				}
 				catch

@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			return CreateQuery(Trans(), clazz);
 		}
 
-		protected virtual Db4objects.Db4o.Query.IQuery CreateQuery(Db4objects.Db4o.Transaction
+		protected virtual Db4objects.Db4o.Query.IQuery CreateQuery(Db4objects.Db4o.Internal.Transaction
 			 trans, System.Type clazz)
 		{
 			Db4objects.Db4o.Query.IQuery q = CreateQuery(trans);
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			return q;
 		}
 
-		protected virtual Db4objects.Db4o.Query.IQuery CreateItemQuery(Db4objects.Db4o.Transaction
+		protected virtual Db4objects.Db4o.Query.IQuery CreateItemQuery(Db4objects.Db4o.Internal.Transaction
 			 trans)
 		{
 			Db4objects.Db4o.Query.IQuery q = CreateQuery(trans);
@@ -57,8 +57,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			return q;
 		}
 
-		private Db4objects.Db4o.Query.IQuery CreateQuery(Db4objects.Db4o.Transaction trans
-			)
+		private Db4objects.Db4o.Query.IQuery CreateQuery(Db4objects.Db4o.Internal.Transaction
+			 trans)
 		{
 			return Stream().Query(trans);
 		}

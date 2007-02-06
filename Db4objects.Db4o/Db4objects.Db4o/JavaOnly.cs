@@ -12,15 +12,15 @@ namespace Db4objects.Db4o
 			return false;
 		}
 
-		internal static bool IsCollectionTranslator(Db4objects.Db4o.Config4Class a_config
-			)
+		internal static bool IsCollectionTranslator(Db4objects.Db4o.Internal.Config4Class
+			 a_config)
 		{
 			return false;
 		}
 
-		public static Db4objects.Db4o.JDK Jdk()
+		public static Db4objects.Db4o.Internal.JDK Jdk()
 		{
-			return new Db4objects.Db4o.JDK();
+			return new Db4objects.Db4o.Internal.JDK();
 		}
 
 		public static void Link()

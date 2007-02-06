@@ -10,12 +10,12 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 				Add(count + i + 1);
 			}
 			int smallest = count + 1;
-			Db4objects.Db4o.Transaction trans = NewTransaction();
+			Db4objects.Db4o.Internal.Transaction trans = NewTransaction();
 			for (int i = 0; i < count; i++)
 			{
 				Add(trans, i);
 			}
-			Db4objects.Db4o.Inside.Btree.BTreePointer firstPointer = _btree.FirstPointer(Trans
+			Db4objects.Db4o.Internal.Btree.BTreePointer firstPointer = _btree.FirstPointer(Trans
 				());
 			AssertPointerKey(smallest, firstPointer);
 		}
@@ -36,9 +36,9 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			int[] keys = new int[] { 3, 4, 7, 9 };
 			Add(keys);
 			Remove(4);
-			Db4objects.Db4o.Inside.Btree.IBTreeRange result = Search(4);
+			Db4objects.Db4o.Internal.Btree.IBTreeRange result = Search(4);
 			Db4oUnit.Assert.IsTrue(result.IsEmpty());
-			Db4objects.Db4o.Inside.Btree.IBTreeRange range = result.Greater();
+			Db4objects.Db4o.Internal.Btree.IBTreeRange range = result.Greater();
 			Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.AssertRange(new int[] { 7, 9 }, range
 				);
 		}
@@ -58,8 +58,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			int element = 1;
 			Add(element);
 			Commit();
-			Db4objects.Db4o.Transaction trans1 = NewTransaction();
-			Db4objects.Db4o.Transaction trans2 = NewTransaction();
+			Db4objects.Db4o.Internal.Transaction trans1 = NewTransaction();
+			Db4objects.Db4o.Internal.Transaction trans2 = NewTransaction();
 			Remove(trans1, element);
 			AssertSingleElement(trans2, element);
 			Add(trans1, element);

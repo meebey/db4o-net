@@ -15,16 +15,17 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return classID;
 			}
-			Db4objects.Db4o.TreeIntObject res = (Db4objects.Db4o.TreeIntObject)Db4objects.Db4o.TreeInt
-				.Find(_tree, oldID);
+			Db4objects.Db4o.Internal.TreeIntObject res = (Db4objects.Db4o.Internal.TreeIntObject
+				)Db4objects.Db4o.Internal.TreeInt.Find(_tree, oldID);
 			if (res != null)
 			{
 				return ((int)res._object);
 			}
 			if (lenient)
 			{
-				Db4objects.Db4o.TreeIntObject nextSmaller = (Db4objects.Db4o.TreeIntObject)Db4objects.Db4o.Foundation.Tree
-					.FindSmaller(_tree, new Db4objects.Db4o.TreeInt(oldID));
+				Db4objects.Db4o.Internal.TreeIntObject nextSmaller = (Db4objects.Db4o.Internal.TreeIntObject
+					)Db4objects.Db4o.Foundation.Tree.FindSmaller(_tree, new Db4objects.Db4o.Internal.TreeInt
+					(oldID));
 				if (nextSmaller != null)
 				{
 					int baseOldID = nextSmaller._key;
@@ -45,7 +46,7 @@ namespace Db4objects.Db4o.Defragment
 
 		protected override void MapNonClassIDs(int origID, int mappedID)
 		{
-			_tree = Db4objects.Db4o.Foundation.Tree.Add(_tree, new Db4objects.Db4o.TreeIntObject
+			_tree = Db4objects.Db4o.Foundation.Tree.Add(_tree, new Db4objects.Db4o.Internal.TreeIntObject
 				(origID, mappedID));
 		}
 	}

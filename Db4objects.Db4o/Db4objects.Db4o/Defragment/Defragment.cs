@@ -159,29 +159,29 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.MoveNext())
 			{
 				int origID = ((int)unindexedIDs.Current);
-				Db4objects.Db4o.ReaderPair.ProcessCopy(context, origID, new _AnonymousInnerClass152
+				Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, origID, new _AnonymousInnerClass154
 					(), true);
 			}
 		}
 
-		private sealed class _AnonymousInnerClass152 : Db4objects.Db4o.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass154 : Db4objects.Db4o.Internal.ISlotCopyHandler
 		{
-			public _AnonymousInnerClass152()
+			public _AnonymousInnerClass154()
 			{
 			}
 
-			public void ProcessCopy(Db4objects.Db4o.ReaderPair readers)
+			public void ProcessCopy(Db4objects.Db4o.Internal.ReaderPair readers)
 			{
-				Db4objects.Db4o.YapClass.DefragObject(readers);
+				Db4objects.Db4o.Internal.ClassMetadata.DefragObject(readers);
 			}
 		}
 
 		private static void SetIdentity(string targetFile, int targetIdentityID, int targetUuidIndexID
 			)
 		{
-			Db4objects.Db4o.YapFile targetDB = (Db4objects.Db4o.YapFile)Db4objects.Db4o.Db4oFactory
-				.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig.VanillaDb4oConfig(), targetFile
-				);
+			Db4objects.Db4o.Internal.LocalObjectContainer targetDB = (Db4objects.Db4o.Internal.LocalObjectContainer
+				)Db4objects.Db4o.Db4oFactory.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig
+				.VanillaDb4oConfig(), targetFile);
 			try
 			{
 				Db4objects.Db4o.Ext.Db4oDatabase identity = (Db4objects.Db4o.Ext.Db4oDatabase)targetDB
@@ -204,7 +204,8 @@ namespace Db4objects.Db4o.Defragment
 		private static void SecondPass(Db4objects.Db4o.Defragment.DefragContextImpl context
 			, Db4objects.Db4o.Defragment.DefragmentConfig config)
 		{
-			Pass(context, config, new Db4objects.Db4o.Defragment.SecondPassCommand());
+			Pass(context, config, new Db4objects.Db4o.Defragment.SecondPassCommand(config.ObjectCommitFrequency
+				()));
 		}
 
 		private static void Pass(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Defragment.DefragmentConfig
@@ -215,15 +216,20 @@ namespace Db4objects.Db4o.Defragment
 				.SOURCEDB);
 			for (int classIdx = 0; classIdx < classes.Length; classIdx++)
 			{
-				Db4objects.Db4o.YapClass yapClass = (Db4objects.Db4o.YapClass)classes[classIdx];
+				Db4objects.Db4o.Internal.ClassMetadata yapClass = (Db4objects.Db4o.Internal.ClassMetadata
+					)classes[classIdx];
 				if (!config.StoredClassFilter().Accept(yapClass))
 				{
 					continue;
 				}
 				ProcessYapClass(context, yapClass, command);
 				command.Flush(context);
+				if (config.ObjectCommitFrequency() > 0)
+				{
+					context.TargetCommit();
+				}
 			}
-			Db4objects.Db4o.Inside.Btree.BTree uuidIndex = context.SourceUuidIndex();
+			Db4objects.Db4o.Internal.Btree.BTree uuidIndex = context.SourceUuidIndex();
 			if (uuidIndex != null)
 			{
 				command.ProcessBTree(context, uuidIndex);
@@ -233,7 +239,7 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		private static void ProcessYapClass(Db4objects.Db4o.Defragment.DefragContextImpl 
-			context, Db4objects.Db4o.YapClass curClass, Db4objects.Db4o.Defragment.IPassCommand
+			context, Db4objects.Db4o.Internal.ClassMetadata curClass, Db4objects.Db4o.Defragment.IPassCommand
 			 command)
 		{
 			ProcessClassIndex(context, curClass, command);
@@ -244,9 +250,10 @@ namespace Db4objects.Db4o.Defragment
 			ProcessYapClassAndFieldIndices(context, curClass, command);
 		}
 
-		private static bool ParentHasIndex(Db4objects.Db4o.YapClass curClass)
+		private static bool ParentHasIndex(Db4objects.Db4o.Internal.ClassMetadata curClass
+			)
 		{
-			Db4objects.Db4o.YapClass parentClass = curClass.i_ancestor;
+			Db4objects.Db4o.Internal.ClassMetadata parentClass = curClass.i_ancestor;
 			while (parentClass != null)
 			{
 				if (parentClass.HasIndex())
@@ -259,18 +266,18 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		private static void ProcessObjectsForYapClass(Db4objects.Db4o.Defragment.DefragContextImpl
-			 context, Db4objects.Db4o.YapClass curClass, Db4objects.Db4o.Defragment.IPassCommand
+			 context, Db4objects.Db4o.Internal.ClassMetadata curClass, Db4objects.Db4o.Defragment.IPassCommand
 			 command)
 		{
 			bool withStringIndex = WithFieldIndex(curClass);
-			context.TraverseAll(curClass, new _AnonymousInnerClass242(command, context, curClass
+			context.TraverseAll(curClass, new _AnonymousInnerClass247(command, context, curClass
 				, withStringIndex));
 		}
 
-		private sealed class _AnonymousInnerClass242 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass247 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass242(Db4objects.Db4o.Defragment.IPassCommand command, Db4objects.Db4o.Defragment.DefragContextImpl
-				 context, Db4objects.Db4o.YapClass curClass, bool withStringIndex)
+			public _AnonymousInnerClass247(Db4objects.Db4o.Defragment.IPassCommand command, Db4objects.Db4o.Defragment.DefragContextImpl
+				 context, Db4objects.Db4o.Internal.ClassMetadata curClass, bool withStringIndex)
 			{
 				this.command = command;
 				this.context = context;
@@ -295,18 +302,20 @@ namespace Db4objects.Db4o.Defragment
 
 			private readonly Db4objects.Db4o.Defragment.DefragContextImpl context;
 
-			private readonly Db4objects.Db4o.YapClass curClass;
+			private readonly Db4objects.Db4o.Internal.ClassMetadata curClass;
 
 			private readonly bool withStringIndex;
 		}
 
-		private static bool WithFieldIndex(Db4objects.Db4o.YapClass clazz)
+		private static bool WithFieldIndex(Db4objects.Db4o.Internal.ClassMetadata clazz)
 		{
 			System.Collections.IEnumerator fieldIter = clazz.Fields();
 			while (fieldIter.MoveNext())
 			{
-				Db4objects.Db4o.YapField curField = (Db4objects.Db4o.YapField)fieldIter.Current;
-				if (curField.HasIndex() && (curField.GetHandler() is Db4objects.Db4o.YapString))
+				Db4objects.Db4o.Internal.FieldMetadata curField = (Db4objects.Db4o.Internal.FieldMetadata
+					)fieldIter.Current;
+				if (curField.HasIndex() && (curField.GetHandler() is Db4objects.Db4o.Internal.Handlers.StringHandler
+					))
 				{
 					return true;
 				}
@@ -315,7 +324,7 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		private static void ProcessYapClassAndFieldIndices(Db4objects.Db4o.Defragment.DefragContextImpl
-			 context, Db4objects.Db4o.YapClass curClass, Db4objects.Db4o.Defragment.IPassCommand
+			 context, Db4objects.Db4o.Internal.ClassMetadata curClass, Db4objects.Db4o.Defragment.IPassCommand
 			 command)
 		{
 			int sourceClassIndexID = 0;
@@ -329,14 +338,14 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		private static void ProcessClassIndex(Db4objects.Db4o.Defragment.DefragContextImpl
-			 context, Db4objects.Db4o.YapClass curClass, Db4objects.Db4o.Defragment.IPassCommand
+			 context, Db4objects.Db4o.Internal.ClassMetadata curClass, Db4objects.Db4o.Defragment.IPassCommand
 			 command)
 		{
 			if (curClass.HasIndex())
 			{
-				Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy indexStrategy = (Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy
+				Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy indexStrategy = (Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy
 					)curClass.Index();
-				Db4objects.Db4o.Inside.Btree.BTree btree = indexStrategy.Btree();
+				Db4objects.Db4o.Internal.Btree.BTree btree = indexStrategy.Btree();
 				command.ProcessBTree(context, btree);
 			}
 		}

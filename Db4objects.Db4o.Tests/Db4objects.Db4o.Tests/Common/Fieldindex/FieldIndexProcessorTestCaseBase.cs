@@ -23,44 +23,46 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 				);
 		}
 
-		protected virtual Db4objects.Db4o.Inside.Fieldindex.IIndexedNode SelectBestIndex(
-			Db4objects.Db4o.Query.IQuery query)
+		protected virtual Db4objects.Db4o.Internal.Fieldindex.IIndexedNode SelectBestIndex
+			(Db4objects.Db4o.Query.IQuery query)
 		{
-			Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessor processor = CreateProcessor
+			Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessor processor = CreateProcessor
 				(query);
 			return processor.SelectBestIndex();
 		}
 
-		protected virtual Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessor CreateProcessor
+		protected virtual Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessor CreateProcessor
 			(Db4objects.Db4o.Query.IQuery query)
 		{
-			Db4objects.Db4o.QCandidates candidates = GetQCandidates(query);
-			return new Db4objects.Db4o.Inside.Fieldindex.FieldIndexProcessor(candidates);
+			Db4objects.Db4o.Internal.Query.Processor.QCandidates candidates = GetQCandidates(
+				query);
+			return new Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessor(candidates);
 		}
 
-		private Db4objects.Db4o.QCandidates GetQCandidates(Db4objects.Db4o.Query.IQuery query
-			)
+		private Db4objects.Db4o.Internal.Query.Processor.QCandidates GetQCandidates(Db4objects.Db4o.Query.IQuery
+			 query)
 		{
-			Db4objects.Db4o.QQueryBase.CreateCandidateCollectionResult result = ((Db4objects.Db4o.QQuery
-				)query).CreateCandidateCollection();
-			Db4objects.Db4o.QCandidates candidates = (Db4objects.Db4o.QCandidates)result.candidateCollection
-				._element;
+			Db4objects.Db4o.Internal.Query.Processor.QQueryBase.CreateCandidateCollectionResult
+				 result = ((Db4objects.Db4o.Internal.Query.Processor.QQuery)query).CreateCandidateCollection
+				();
+			Db4objects.Db4o.Internal.Query.Processor.QCandidates candidates = (Db4objects.Db4o.Internal.Query.Processor.QCandidates
+				)result.candidateCollection._element;
 			return candidates;
 		}
 
-		protected virtual void AssertComplexItemIndex(string expectedFieldIndex, Db4objects.Db4o.Inside.Fieldindex.IIndexedNode
+		protected virtual void AssertComplexItemIndex(string expectedFieldIndex, Db4objects.Db4o.Internal.Fieldindex.IIndexedNode
 			 node)
 		{
 			Db4oUnit.Assert.AreSame(ComplexItemIndex(expectedFieldIndex), node.GetIndex());
 		}
 
-		protected virtual Db4objects.Db4o.Inside.Btree.BTree FieldIndexBTree(System.Type 
-			clazz, string fieldName)
+		protected virtual Db4objects.Db4o.Internal.Btree.BTree FieldIndexBTree(System.Type
+			 clazz, string fieldName)
 		{
 			return GetYapClass(clazz).GetYapField(fieldName).GetIndex(null);
 		}
 
-		private Db4objects.Db4o.YapClass GetYapClass(System.Type clazz)
+		private Db4objects.Db4o.Internal.ClassMetadata GetYapClass(System.Type clazz)
 		{
 			return Stream().GetYapClass(GetReflectClass(clazz));
 		}
@@ -70,14 +72,14 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			return Stream().Reflector().ForClass(clazz);
 		}
 
-		protected virtual Db4objects.Db4o.Inside.Btree.BTree ClassIndexBTree(System.Type 
-			clazz)
+		protected virtual Db4objects.Db4o.Internal.Btree.BTree ClassIndexBTree(System.Type
+			 clazz)
 		{
-			return ((Db4objects.Db4o.Inside.Classindex.BTreeClassIndexStrategy)GetYapClass(clazz
-				).Index()).Btree();
+			return ((Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy)GetYapClass(
+				clazz).Index()).Btree();
 		}
 
-		private Db4objects.Db4o.Inside.Btree.BTree ComplexItemIndex(string fieldName)
+		private Db4objects.Db4o.Internal.Btree.BTree ComplexItemIndex(string fieldName)
 		{
 			return FieldIndexBTree(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.ComplexFieldIndexItem)
 				, fieldName);
@@ -134,18 +136,18 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			}
 		}
 
-		protected virtual void AssertTreeInt(int[] expectedValues, Db4objects.Db4o.TreeInt
+		protected virtual void AssertTreeInt(int[] expectedValues, Db4objects.Db4o.Internal.TreeInt
 			 treeInt)
 		{
 			Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor visitor = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert
 				.CreateExpectingVisitor(expectedValues);
-			treeInt.Traverse(new _AnonymousInnerClass118(this, visitor));
+			treeInt.Traverse(new _AnonymousInnerClass120(this, visitor));
 			visitor.AssertExpectations();
 		}
 
-		private sealed class _AnonymousInnerClass118 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass120 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass118(FieldIndexProcessorTestCaseBase _enclosing, Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
+			public _AnonymousInnerClass120(FieldIndexProcessorTestCaseBase _enclosing, Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
 				 visitor)
 			{
 				this._enclosing = _enclosing;
@@ -154,7 +156,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 			public void Visit(object obj)
 			{
-				visitor.Visit(((Db4objects.Db4o.TreeInt)obj)._key);
+				visitor.Visit(((Db4objects.Db4o.Internal.TreeInt)obj)._key);
 			}
 
 			private readonly FieldIndexProcessorTestCaseBase _enclosing;

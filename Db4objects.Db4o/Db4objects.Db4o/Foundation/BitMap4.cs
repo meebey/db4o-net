@@ -15,6 +15,11 @@ namespace Db4objects.Db4o.Foundation
 			System.Array.Copy(buffer, pos, _bits, 0, _bits.Length);
 		}
 
+		public BitMap4(byte singleByte)
+		{
+			_bits = new byte[] { singleByte };
+		}
+
 		public bool IsTrue(int bit)
 		{
 			return (((_bits[ArrayOffset(bit)]) >> (ByteOffset(bit) & 0x1f)) & 1) != 0;
@@ -28,6 +33,18 @@ namespace Db4objects.Db4o.Foundation
 		public void SetFalse(int bit)
 		{
 			_bits[ArrayOffset(bit)] &= (byte)~BitMask(bit);
+		}
+
+		public void Set(int bit, bool val)
+		{
+			if (val)
+			{
+				SetTrue(bit);
+			}
+			else
+			{
+				SetFalse(bit);
+			}
 		}
 
 		public void SetTrue(int bit)
@@ -58,6 +75,11 @@ namespace Db4objects.Db4o.Foundation
 		private int ByteCount(int numBits)
 		{
 			return (numBits + 7) / 8;
+		}
+
+		public byte GetByte(int index)
+		{
+			return _bits[index];
 		}
 	}
 }

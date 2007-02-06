@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		private void CycleIntKeys(int[] values)
 		{
-			Db4objects.Db4o.Inside.Btree.BTree btree = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert
+			Db4objects.Db4o.Internal.Btree.BTree btree = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert
 				.CreateIntKeyBTree(Stream(), 0, BTREE_NODE_SIZE);
 			for (int i = 0; i < 5; i++)
 			{
@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			}
 		}
 
-		private Db4objects.Db4o.Inside.Btree.BTree CycleIntKeys(Db4objects.Db4o.Inside.Btree.BTree
+		private Db4objects.Db4o.Internal.Btree.BTree CycleIntKeys(Db4objects.Db4o.Internal.Btree.BTree
 			 btree, int[] values)
 		{
 			for (int i = 0; i < values.Length; i++)
@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			return btree;
 		}
 
-		private void ExpectKeysSearch(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.Inside.Btree.BTree
+		private void ExpectKeysSearch(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Btree.BTree
 			 btree, int[] keys)
 		{
 			int lastValue = int.MinValue;
@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 					Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor expectingVisitor = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert
 						.CreateExpectingVisitor(keys[i], Db4objects.Db4o.Tests.Common.Foundation.IntArrays4
 						.Occurences(keys, keys[i]));
-					Db4objects.Db4o.Inside.Btree.IBTreeRange range = btree.Search(trans, keys[i]);
+					Db4objects.Db4o.Internal.Btree.IBTreeRange range = btree.Search(trans, keys[i]);
 					Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.TraverseKeys(range, expectingVisitor
 						);
 					expectingVisitor.AssertExpectations();

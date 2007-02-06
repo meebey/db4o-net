@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Cluster
 				{
 					queries[i] = _objectContainers[i].Query();
 				}
-				return new Db4objects.Db4o.Inside.Cluster.ClusterQuery(this, queries);
+				return new Db4objects.Db4o.Internal.Cluster.ClusterQuery(this, queries);
 			}
 		}
 

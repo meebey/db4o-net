@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 
 		private void GenerateNewIdentity()
 		{
-			((Db4objects.Db4o.YapFile)Db()).GenerateNewIdentity();
+			((Db4objects.Db4o.Internal.LocalObjectContainer)Db()).GenerateNewIdentity();
 		}
 	}
 }

@@ -43,12 +43,12 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestAccessingBTree()
 		{
-			Db4objects.Db4o.Inside.Btree.BTree bTree = YapField().GetIndex(Trans());
+			Db4objects.Db4o.Internal.Btree.BTree bTree = YapField().GetIndex(Trans());
 			Db4oUnit.Assert.IsNotNull(bTree);
 			ExpectKeysSearch(bTree, FOOS);
 		}
 
-		private void ExpectKeysSearch(Db4objects.Db4o.Inside.Btree.BTree btree, int[] values
+		private void ExpectKeysSearch(Db4objects.Db4o.Internal.Btree.BTree btree, int[] values
 			)
 		{
 			int lastValue = int.MinValue;
@@ -59,9 +59,9 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 					Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor expectingVisitor = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert
 						.CreateExpectingVisitor(values[i], Db4objects.Db4o.Tests.Common.Foundation.IntArrays4
 						.Occurences(values, values[i]));
-					Db4objects.Db4o.Inside.Btree.IBTreeRange range = FieldIndexKeySearch(Trans(), btree
+					Db4objects.Db4o.Internal.Btree.IBTreeRange range = FieldIndexKeySearch(Trans(), btree
 						, values[i]);
-					Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.TraverseKeys(range, new _AnonymousInnerClass63
+					Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.TraverseKeys(range, new _AnonymousInnerClass64
 						(this, expectingVisitor));
 					expectingVisitor.AssertExpectations();
 					lastValue = values[i];
@@ -69,9 +69,9 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			}
 		}
 
-		private sealed class _AnonymousInnerClass63 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass64 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass63(FieldIndexTestCase _enclosing, Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
+			public _AnonymousInnerClass64(FieldIndexTestCase _enclosing, Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
 				 expectingVisitor)
 			{
 				this._enclosing = _enclosing;
@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 			public void Visit(object obj)
 			{
-				Db4objects.Db4o.Inside.Btree.FieldIndexKey fik = (Db4objects.Db4o.Inside.Btree.FieldIndexKey
+				Db4objects.Db4o.Internal.Btree.FieldIndexKey fik = (Db4objects.Db4o.Internal.Btree.FieldIndexKey
 					)obj;
 				expectingVisitor.Visit(fik.Value());
 			}
@@ -90,29 +90,29 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			private readonly Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor expectingVisitor;
 		}
 
-		private Db4objects.Db4o.Inside.Btree.FieldIndexKey FieldIndexKey(int integerPart, 
-			object composite)
+		private Db4objects.Db4o.Internal.Btree.FieldIndexKey FieldIndexKey(int integerPart
+			, object composite)
 		{
-			return new Db4objects.Db4o.Inside.Btree.FieldIndexKey(integerPart, composite);
+			return new Db4objects.Db4o.Internal.Btree.FieldIndexKey(integerPart, composite);
 		}
 
-		private Db4objects.Db4o.Inside.Btree.IBTreeRange FieldIndexKeySearch(Db4objects.Db4o.Transaction
-			 trans, Db4objects.Db4o.Inside.Btree.BTree btree, object key)
+		private Db4objects.Db4o.Internal.Btree.IBTreeRange FieldIndexKeySearch(Db4objects.Db4o.Internal.Transaction
+			 trans, Db4objects.Db4o.Internal.Btree.BTree btree, object key)
 		{
-			Db4objects.Db4o.Inside.Btree.BTreeNodeSearchResult start = btree.SearchLeaf(trans
-				, FieldIndexKey(0, key), Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST);
-			Db4objects.Db4o.Inside.Btree.BTreeNodeSearchResult end = btree.SearchLeaf(trans, 
-				FieldIndexKey(int.MaxValue, key), Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST
-				);
+			Db4objects.Db4o.Internal.Btree.BTreeNodeSearchResult start = btree.SearchLeaf(trans
+				, FieldIndexKey(0, key), Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST);
+			Db4objects.Db4o.Internal.Btree.BTreeNodeSearchResult end = btree.SearchLeaf(trans
+				, FieldIndexKey(int.MaxValue, key), Db4objects.Db4o.Internal.Btree.SearchTarget.
+				LOWEST);
 			return start.CreateIncludingRange(end);
 		}
 
-		private Db4objects.Db4o.YapField YapField()
+		private Db4objects.Db4o.Internal.FieldMetadata YapField()
 		{
 			Db4objects.Db4o.Reflect.IReflectClass claxx = Stream().Reflector().ForObject(new 
 				Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem());
-			Db4objects.Db4o.YapClass yc = Stream().GetYapClass(claxx);
-			Db4objects.Db4o.YapField yf = yc.GetYapField("foo");
+			Db4objects.Db4o.Internal.ClassMetadata yc = Stream().GetYapClass(claxx);
+			Db4objects.Db4o.Internal.FieldMetadata yf = yc.GetYapField("foo");
 			return yf;
 		}
 	}

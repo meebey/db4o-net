@@ -176,18 +176,18 @@ namespace Db4objects.Db4o.Foundation.Network
 		{
 			while (Available() == 0)
 			{
+				if (i_closed)
+				{
+					throw new System.IO.IOException(Db4objects.Db4o.Internal.Messages.Get(35));
+				}
 				try
 				{
 					i_lock.Snooze(i_timeout);
 				}
 				catch
 				{
-					throw new System.IO.IOException(Db4objects.Db4o.Messages.Get(55));
+					throw new System.IO.IOException(Db4objects.Db4o.Internal.Messages.Get(55));
 				}
-			}
-			if (i_closed)
-			{
-				throw new System.IO.IOException(Db4objects.Db4o.Messages.Get(35));
 			}
 		}
 
@@ -200,16 +200,16 @@ namespace Db4objects.Db4o.Foundation.Network
 		{
 			try
 			{
-				i_lock.Run(new _AnonymousInnerClass138(this, len, bytes, off));
+				i_lock.Run(new _AnonymousInnerClass137(this, len, bytes, off));
 			}
 			catch
 			{
 			}
 		}
 
-		private sealed class _AnonymousInnerClass138 : Db4objects.Db4o.Foundation.IClosure4
+		private sealed class _AnonymousInnerClass137 : Db4objects.Db4o.Foundation.IClosure4
 		{
-			public _AnonymousInnerClass138(ByteBuffer4 _enclosing, int len, byte[] bytes, int
+			public _AnonymousInnerClass137(ByteBuffer4 _enclosing, int len, byte[] bytes, int
 				 off)
 			{
 				this._enclosing = _enclosing;
@@ -241,16 +241,16 @@ namespace Db4objects.Db4o.Foundation.Network
 		{
 			try
 			{
-				i_lock.Run(new _AnonymousInnerClass156(this, i));
+				i_lock.Run(new _AnonymousInnerClass155(this, i));
 			}
 			catch
 			{
 			}
 		}
 
-		private sealed class _AnonymousInnerClass156 : Db4objects.Db4o.Foundation.IClosure4
+		private sealed class _AnonymousInnerClass155 : Db4objects.Db4o.Foundation.IClosure4
 		{
-			public _AnonymousInnerClass156(ByteBuffer4 _enclosing, int i)
+			public _AnonymousInnerClass155(ByteBuffer4 _enclosing, int i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;

@@ -3,13 +3,13 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public class ReplicationImpl : Db4objects.Db4o.Replication.IReplicationProcess
 	{
-		internal readonly Db4objects.Db4o.YapStream _peerA;
+		internal readonly Db4objects.Db4o.Internal.ObjectContainerBase _peerA;
 
-		internal readonly Db4objects.Db4o.Transaction _transA;
+		internal readonly Db4objects.Db4o.Internal.Transaction _transA;
 
-		internal readonly Db4objects.Db4o.YapStream _peerB;
+		internal readonly Db4objects.Db4o.Internal.ObjectContainerBase _peerB;
 
-		internal readonly Db4objects.Db4o.Transaction _transB;
+		internal readonly Db4objects.Db4o.Internal.Transaction _transB;
 
 		internal readonly Db4objects.Db4o.Replication.IReplicationConflictHandler _conflictHandler;
 
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o
 
 		private const int CHECK_CONFLICT = -99;
 
-		public ReplicationImpl(Db4objects.Db4o.YapStream peerA, Db4objects.Db4o.IObjectContainer
+		public ReplicationImpl(Db4objects.Db4o.Internal.ObjectContainerBase peerA, Db4objects.Db4o.IObjectContainer
 			 peerB, Db4objects.Db4o.Replication.IReplicationConflictHandler conflictHandler)
 		{
 			if (conflictHandler == null)
@@ -38,32 +38,33 @@ namespace Db4objects.Db4o
 				{
 					_peerA = peerA;
 					_transA = peerA.CheckTransaction(null);
-					_peerB = (Db4objects.Db4o.YapStream)peerB;
+					_peerB = (Db4objects.Db4o.Internal.ObjectContainerBase)peerB;
 					_transB = _peerB.CheckTransaction(null);
-					Db4objects.Db4o.Inside.Replication.MigrationConnection mgc = new Db4objects.Db4o.Inside.Replication.MigrationConnection
+					Db4objects.Db4o.Internal.Replication.MigrationConnection mgc = new Db4objects.Db4o.Internal.Replication.MigrationConnection
 						(_peerA, _peerB);
-					_peerA.i_handlers.i_migration = mgc;
-					_peerA.i_handlers.i_replication = this;
-					_peerA._replicationCallState = Db4objects.Db4o.YapConst.OLD;
-					_peerB.i_handlers.i_migration = mgc;
-					_peerB.i_handlers.i_replication = this;
-					_peerB._replicationCallState = Db4objects.Db4o.YapConst.OLD;
+					_peerA.i_handlers.MigrationConnection(mgc);
+					_peerA.i_handlers.Replication(this);
+					_peerA.ReplicationCallState(Db4objects.Db4o.Internal.Const4.OLD);
+					_peerB.i_handlers.MigrationConnection(mgc);
+					_peerB.i_handlers.Replication(this);
+					_peerB.ReplicationCallState(Db4objects.Db4o.Internal.Const4.OLD);
 					_conflictHandler = conflictHandler;
 					_record = Db4objects.Db4o.ReplicationRecord.BeginReplication(_transA, _transB);
 				}
 			}
 		}
 
-		private int BindAndSet(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.YapStream
-			 peer, Db4objects.Db4o.YapObject @ref, object sourceObject)
+		private int BindAndSet(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.ObjectContainerBase
+			 peer, Db4objects.Db4o.Internal.ObjectReference @ref, object sourceObject)
 		{
-			if (sourceObject is Db4objects.Db4o.IDb4oTypeImpl)
+			if (sourceObject is Db4objects.Db4o.Internal.IDb4oTypeImpl)
 			{
-				Db4objects.Db4o.IDb4oTypeImpl db4oType = (Db4objects.Db4o.IDb4oTypeImpl)sourceObject;
+				Db4objects.Db4o.Internal.IDb4oTypeImpl db4oType = (Db4objects.Db4o.Internal.IDb4oTypeImpl
+					)sourceObject;
 				if (!db4oType.CanBind())
 				{
-					Db4objects.Db4o.IDb4oTypeImpl targetObject = (Db4objects.Db4o.IDb4oTypeImpl)@ref.
-						GetObject();
+					Db4objects.Db4o.Internal.IDb4oTypeImpl targetObject = (Db4objects.Db4o.Internal.IDb4oTypeImpl
+						)@ref.GetObject();
 					targetObject.ReplicateFrom(sourceObject);
 					return @ref.GetID();
 				}
@@ -102,16 +103,16 @@ namespace Db4objects.Db4o
 
 		private void EndReplication()
 		{
-			_peerA._replicationCallState = Db4objects.Db4o.YapConst.NONE;
-			_peerA.i_handlers.i_migration = null;
-			_peerA.i_handlers.i_replication = null;
-			_peerA._replicationCallState = Db4objects.Db4o.YapConst.NONE;
-			_peerB.i_handlers.i_migration = null;
-			_peerB.i_handlers.i_replication = null;
+			_peerA.ReplicationCallState(Db4objects.Db4o.Internal.Const4.NONE);
+			_peerA.i_handlers.MigrationConnection(null);
+			_peerA.i_handlers.Replication(null);
+			_peerA.ReplicationCallState(Db4objects.Db4o.Internal.Const4.NONE);
+			_peerB.i_handlers.MigrationConnection(null);
+			_peerB.i_handlers.Replication(null);
 		}
 
-		private int IdInCaller(Db4objects.Db4o.YapStream caller, Db4objects.Db4o.YapObject
-			 referenceA, Db4objects.Db4o.YapObject referenceB)
+		private int IdInCaller(Db4objects.Db4o.Internal.ObjectContainerBase caller, Db4objects.Db4o.Internal.ObjectReference
+			 referenceA, Db4objects.Db4o.Internal.ObjectReference referenceB)
 		{
 			return (caller == _peerA) ? referenceA.GetID() : referenceB.GetID();
 		}
@@ -159,7 +160,7 @@ namespace Db4objects.Db4o
 
 		public virtual void Replicate(object obj)
 		{
-			Db4objects.Db4o.YapStream stream = _peerB;
+			Db4objects.Db4o.Internal.ObjectContainerBase stream = _peerB;
 			if (_peerB.IsStored(obj))
 			{
 				if (!_peerA.IsStored(obj))
@@ -190,17 +191,17 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private void ShareBinding(Db4objects.Db4o.YapObject sourceReference, Db4objects.Db4o.YapObject
-			 referenceA, object objectA, Db4objects.Db4o.YapObject referenceB, object objectB
-			)
+		private void ShareBinding(Db4objects.Db4o.Internal.ObjectReference sourceReference
+			, Db4objects.Db4o.Internal.ObjectReference referenceA, object objectA, Db4objects.Db4o.Internal.ObjectReference
+			 referenceB, object objectB)
 		{
 			if (sourceReference == null)
 			{
 				return;
 			}
-			if (objectA is Db4objects.Db4o.IDb4oTypeImpl)
+			if (objectA is Db4objects.Db4o.Internal.IDb4oTypeImpl)
 			{
-				if (!((Db4objects.Db4o.IDb4oTypeImpl)objectA).CanBind())
+				if (!((Db4objects.Db4o.Internal.IDb4oTypeImpl)objectA).CanBind())
 				{
 					return;
 				}
@@ -247,11 +248,12 @@ namespace Db4objects.Db4o
 		/// if #set() should stop processing because of a direction
 		/// setting.
 		/// </returns>
-		internal virtual int TryToHandle(Db4objects.Db4o.YapStream caller, object obj)
+		public virtual int TryToHandle(Db4objects.Db4o.Internal.ObjectContainerBase caller
+			, object obj)
 		{
 			int notProcessed = 0;
-			Db4objects.Db4o.YapStream other = null;
-			Db4objects.Db4o.YapObject sourceReference = null;
+			Db4objects.Db4o.Internal.ObjectContainerBase other = null;
+			Db4objects.Db4o.Internal.ObjectReference sourceReference = null;
 			if (caller == _peerA)
 			{
 				other = _peerB;
@@ -272,10 +274,10 @@ namespace Db4objects.Db4o
 			{
 				object objectA = obj;
 				object objectB = obj;
-				Db4objects.Db4o.YapObject referenceA = _peerA.GetYapObject(obj);
-				Db4objects.Db4o.YapObject referenceB = _peerB.GetYapObject(obj);
-				Db4objects.Db4o.VirtualAttributes attA = null;
-				Db4objects.Db4o.VirtualAttributes attB = null;
+				Db4objects.Db4o.Internal.ObjectReference referenceA = _peerA.GetYapObject(obj);
+				Db4objects.Db4o.Internal.ObjectReference referenceB = _peerB.GetYapObject(obj);
+				Db4objects.Db4o.Internal.VirtualAttributes attA = null;
+				Db4objects.Db4o.Internal.VirtualAttributes attB = null;
 				if (referenceA == null)
 				{
 					if (referenceB == null)
@@ -294,7 +296,7 @@ namespace Db4objects.Db4o
 					{
 						return notProcessed;
 					}
-					referenceA = (Db4objects.Db4o.YapObject)arr[1];
+					referenceA = (Db4objects.Db4o.Internal.ObjectReference)arr[1];
 					objectA = arr[0];
 					attA = referenceA.VirtualAttributes(_transA);
 				}
@@ -314,7 +316,7 @@ namespace Db4objects.Db4o
 						{
 							return notProcessed;
 						}
-						referenceB = (Db4objects.Db4o.YapObject)arr[1];
+						referenceB = (Db4objects.Db4o.Internal.ObjectReference)arr[1];
 						objectB = arr[0];
 					}
 					attB = referenceB.VirtualAttributes(_transB);

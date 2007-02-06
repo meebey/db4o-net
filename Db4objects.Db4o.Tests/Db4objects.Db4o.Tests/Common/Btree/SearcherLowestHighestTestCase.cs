@@ -2,7 +2,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 {
 	public class SearcherLowestHighestTestCase : Db4oUnit.ITestCase, Db4oUnit.ITestLifeCycle
 	{
-		private Db4objects.Db4o.Inside.Btree.Searcher _searcher;
+		private Db4objects.Db4o.Internal.Btree.Searcher _searcher;
 
 		private const int SEARCH_FOR = 9;
 
@@ -28,9 +28,9 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		private static readonly int[][] NO_MATCH_VALUES = new int[][] { NO_MATCH_EVEN, NO_MATCH_ODD
 			 };
 
-		private static readonly Db4objects.Db4o.Inside.Btree.SearchTarget[] ALL_TARGETS = 
-			new Db4objects.Db4o.Inside.Btree.SearchTarget[] { Db4objects.Db4o.Inside.Btree.SearchTarget
-			.LOWEST, Db4objects.Db4o.Inside.Btree.SearchTarget.ANY, Db4objects.Db4o.Inside.Btree.SearchTarget
+		private static readonly Db4objects.Db4o.Internal.Btree.SearchTarget[] ALL_TARGETS
+			 = new Db4objects.Db4o.Internal.Btree.SearchTarget[] { Db4objects.Db4o.Internal.Btree.SearchTarget
+			.LOWEST, Db4objects.Db4o.Internal.Btree.SearchTarget.ANY, Db4objects.Db4o.Internal.Btree.SearchTarget
 			.HIGHEST };
 
 		public virtual void TestMatch()
@@ -39,11 +39,11 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			{
 				int[] values = MATCH_VALUES[i];
 				int lo = LowMatch(values);
-				Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST);
+				Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST);
 				Db4oUnit.Assert.AreEqual(lo, _searcher.Cursor());
 				Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
 				int hi = HighMatch(values);
-				Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.HIGHEST);
+				Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.HIGHEST);
 				Db4oUnit.Assert.AreEqual(hi, _searcher.Cursor());
 				Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
 			}
@@ -55,11 +55,11 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			{
 				int[] values = NO_MATCH_VALUES[i];
 				int lo = LowMatch(values);
-				Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST);
+				Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST);
 				Db4oUnit.Assert.AreEqual(lo, _searcher.Cursor());
 				Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
 				int hi = HighMatch(values);
-				Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.HIGHEST);
+				Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.HIGHEST);
 				Db4oUnit.Assert.AreEqual(hi, _searcher.Cursor());
 				Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
 			}
@@ -120,16 +120,16 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public virtual void TestTwoValuesMatch()
 		{
 			int[] values = new int[] { 9, 9 };
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST);
 			Db4oUnit.Assert.AreEqual(0, _searcher.Cursor());
 			Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.ANY);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.ANY);
 			Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.HIGHEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.HIGHEST);
 			Db4oUnit.Assert.AreEqual(1, _searcher.Cursor());
 			Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
@@ -139,17 +139,17 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public virtual void TestTwoValuesLowMatch()
 		{
 			int[] values = new int[] { 9, 10 };
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST);
 			Db4oUnit.Assert.AreEqual(0, _searcher.Cursor());
 			Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.ANY);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.ANY);
 			Db4oUnit.Assert.AreEqual(0, _searcher.Cursor());
 			Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.HIGHEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.HIGHEST);
 			Db4oUnit.Assert.AreEqual(0, _searcher.Cursor());
 			Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
@@ -159,17 +159,17 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public virtual void TestTwoValuesHighMatch()
 		{
 			int[] values = new int[] { 6, 9 };
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST);
 			Db4oUnit.Assert.AreEqual(1, _searcher.Cursor());
 			Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.ANY);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.ANY);
 			Db4oUnit.Assert.AreEqual(1, _searcher.Cursor());
 			Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.HIGHEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.HIGHEST);
 			Db4oUnit.Assert.AreEqual(1, _searcher.Cursor());
 			Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
@@ -179,17 +179,17 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public virtual void TestTwoValuesInBetween()
 		{
 			int[] values = new int[] { 8, 10 };
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST);
 			Db4oUnit.Assert.AreEqual(0, _searcher.Cursor());
 			Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.ANY);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.ANY);
 			Db4oUnit.Assert.AreEqual(0, _searcher.Cursor());
 			Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.HIGHEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.HIGHEST);
 			Db4oUnit.Assert.AreEqual(0, _searcher.Cursor());
 			Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
@@ -199,17 +199,17 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public virtual void TestTwoValuesLower()
 		{
 			int[] values = new int[] { 7, 8 };
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST);
 			Db4oUnit.Assert.AreEqual(1, _searcher.Cursor());
 			Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsTrue(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.ANY);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.ANY);
 			Db4oUnit.Assert.AreEqual(1, _searcher.Cursor());
 			Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsTrue(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.HIGHEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.HIGHEST);
 			Db4oUnit.Assert.AreEqual(1, _searcher.Cursor());
 			Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
@@ -219,27 +219,27 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public virtual void TestTwoValuesHigher()
 		{
 			int[] values = new int[] { 10, 11 };
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.LOWEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST);
 			Db4oUnit.Assert.AreEqual(0, _searcher.Cursor());
 			Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsTrue(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.ANY);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.ANY);
 			Db4oUnit.Assert.AreEqual(0, _searcher.Cursor());
 			Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsTrue(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
-			Search(values, Db4objects.Db4o.Inside.Btree.SearchTarget.HIGHEST);
+			Search(values, Db4objects.Db4o.Internal.Btree.SearchTarget.HIGHEST);
 			Db4oUnit.Assert.AreEqual(0, _searcher.Cursor());
 			Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
 			Db4oUnit.Assert.IsTrue(_searcher.BeforeFirst());
 			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
 		}
 
-		private int Search(int[] values, Db4objects.Db4o.Inside.Btree.SearchTarget target
+		private int Search(int[] values, Db4objects.Db4o.Internal.Btree.SearchTarget target
 			)
 		{
-			_searcher = new Db4objects.Db4o.Inside.Btree.Searcher(target, values.Length);
+			_searcher = new Db4objects.Db4o.Internal.Btree.Searcher(target, values.Length);
 			while (_searcher.Incomplete())
 			{
 				_searcher.ResultIs(values[_searcher.Cursor()] - SEARCH_FOR);

@@ -92,12 +92,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void StartBackupThread()
 		{
-			new Sharpen.Lang.Thread(new _AnonymousInnerClass91(this)).Start();
+			new Sharpen.Lang.Thread(new _AnonymousInnerClass92(this)).Start();
 		}
 
-		private sealed class _AnonymousInnerClass91 : Sharpen.Lang.IRunnable
+		private sealed class _AnonymousInnerClass92 : Sharpen.Lang.IRunnable
 		{
-			public _AnonymousInnerClass91(BackupStressTestCase _enclosing)
+			public _AnonymousInnerClass92(BackupStressTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -195,7 +195,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private bool IsOldJDK()
 		{
-			Db4objects.Db4o.YapStream stream = (Db4objects.Db4o.YapStream)_objectContainer;
+			Db4objects.Db4o.Internal.ObjectContainerBase stream = (Db4objects.Db4o.Internal.ObjectContainerBase
+				)_objectContainer;
 			return stream.NeedsLockFileThread();
 		}
 

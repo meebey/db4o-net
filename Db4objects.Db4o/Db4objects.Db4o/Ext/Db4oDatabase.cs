@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>cached ObjectContainer for getting the own ID.</summary>
 		/// <remarks>cached ObjectContainer for getting the own ID.</remarks>
 		[System.NonSerialized]
-		private Db4objects.Db4o.YapStream i_stream;
+		private Db4objects.Db4o.Internal.ObjectContainerBase i_stream;
 
 		/// <summary>cached ID, only valid in combination with i_objectContainer</summary>
 		[System.NonSerialized]
@@ -48,8 +48,8 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>generates a new Db4oDatabase object with a unique signature.</remarks>
 		public static Db4objects.Db4o.Ext.Db4oDatabase Generate()
 		{
-			return new Db4objects.Db4o.Ext.Db4oDatabase(Db4objects.Db4o.Unobfuscated.GenerateSignature
-				(), Sharpen.Runtime.CurrentTimeMillis());
+			return new Db4objects.Db4o.Ext.Db4oDatabase(Db4objects.Db4o.Internal.Unobfuscated
+				.GenerateSignature(), Sharpen.Runtime.CurrentTimeMillis());
 		}
 
 		/// <summary>comparison by signature.</summary>
@@ -81,9 +81,9 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>gets the db4o ID, and may cache it for performance reasons.</summary>
 		/// <remarks>gets the db4o ID, and may cache it for performance reasons.</remarks>
 		/// <returns>the db4o ID for the ObjectContainer</returns>
-		public virtual int GetID(Db4objects.Db4o.Transaction trans)
+		public virtual int GetID(Db4objects.Db4o.Internal.Transaction trans)
 		{
-			Db4objects.Db4o.YapStream stream = trans.Stream();
+			Db4objects.Db4o.Internal.ObjectContainerBase stream = trans.Stream();
 			if (stream != i_stream)
 			{
 				i_stream = stream;
@@ -134,9 +134,9 @@ namespace Db4objects.Db4o.Ext
 
 		/// <summary>make sure this Db4oDatabase is stored.</summary>
 		/// <remarks>make sure this Db4oDatabase is stored. Return the ID.</remarks>
-		public virtual int Bind(Db4objects.Db4o.Transaction trans)
+		public virtual int Bind(Db4objects.Db4o.Internal.Transaction trans)
 		{
-			Db4objects.Db4o.YapStream stream = trans.Stream();
+			Db4objects.Db4o.Internal.ObjectContainerBase stream = trans.Stream();
 			Db4objects.Db4o.Ext.Db4oDatabase stored = (Db4objects.Db4o.Ext.Db4oDatabase)stream
 				.Db4oTypeStored(trans, this);
 			if (stored == null)
@@ -163,7 +163,7 @@ namespace Db4objects.Db4o.Ext
 		}
 
 		/// <summary>find a Db4oDatabase with the same signature as this one</summary>
-		public virtual Db4objects.Db4o.Ext.Db4oDatabase Query(Db4objects.Db4o.Transaction
+		public virtual Db4objects.Db4o.Ext.Db4oDatabase Query(Db4objects.Db4o.Internal.Transaction
 			 trans)
 		{
 			if (i_uuid > 0)
@@ -177,10 +177,10 @@ namespace Db4objects.Db4o.Ext
 			return Query(trans, false);
 		}
 
-		private Db4objects.Db4o.Ext.Db4oDatabase Query(Db4objects.Db4o.Transaction trans, 
-			bool constrainByUUID)
+		private Db4objects.Db4o.Ext.Db4oDatabase Query(Db4objects.Db4o.Internal.Transaction
+			 trans, bool constrainByUUID)
 		{
-			Db4objects.Db4o.YapStream stream = trans.Stream();
+			Db4objects.Db4o.Internal.ObjectContainerBase stream = trans.Stream();
 			Db4objects.Db4o.Query.IQuery q = stream.Query(trans);
 			q.Constrain(GetType());
 			if (constrainByUUID)

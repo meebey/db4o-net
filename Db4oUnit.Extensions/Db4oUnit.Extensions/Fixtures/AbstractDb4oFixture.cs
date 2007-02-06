@@ -49,7 +49,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public abstract Db4objects.Db4o.Ext.IExtObjectContainer Db();
 
-		public abstract Db4objects.Db4o.YapFile FileSession();
+		public abstract Db4objects.Db4o.Internal.LocalObjectContainer FileSession();
 
 		public abstract string GetLabel();
 

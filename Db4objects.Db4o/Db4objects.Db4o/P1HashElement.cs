@@ -14,7 +14,7 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		public P1HashElement(Db4objects.Db4o.Transaction a_trans, Db4objects.Db4o.P1ListElement
+		public P1HashElement(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.P1ListElement
 			 a_next, object a_key, int a_hashCode, object a_object) : base(a_trans, a_next, 
 			a_object)
 		{
@@ -32,7 +32,7 @@ namespace Db4objects.Db4o
 			CheckActive();
 			if (a_depth < 0)
 			{
-				Db4objects.Db4o.Transaction trans = GetTrans();
+				Db4objects.Db4o.Internal.Transaction trans = GetTrans();
 				if (trans != null)
 				{
 					if (trans.Stream().ConfigImpl().ActivationDepth() < 1)

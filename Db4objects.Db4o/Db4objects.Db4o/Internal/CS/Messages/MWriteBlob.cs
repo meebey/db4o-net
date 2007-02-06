@@ -1,0 +1,66 @@
+namespace Db4objects.Db4o.Internal.CS.Messages
+{
+	public class MWriteBlob : Db4objects.Db4o.Internal.CS.Messages.MsgBlob
+	{
+		public override void ProcessClient(Db4objects.Db4o.Foundation.Network.ISocket4 sock
+			)
+		{
+			Db4objects.Db4o.Internal.CS.Messages.Msg message = Db4objects.Db4o.Internal.CS.Messages.Msg
+				.ReadMessage(Transaction(), sock);
+			if (message.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.OK))
+			{
+				try
+				{
+					_currentByte = 0;
+					_length = this._blob.GetLength();
+					_blob.GetStatusFrom(this);
+					_blob.SetStatus(Db4objects.Db4o.Ext.Status.PROCESSING);
+					Sharpen.IO.FileInputStream inBlob = this._blob.GetClientInputStream();
+					Copy(inBlob, sock, true);
+					sock.Flush();
+					Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
+					message = Db4objects.Db4o.Internal.CS.Messages.Msg.ReadMessage(Transaction(), sock
+						);
+					if (message.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.OK))
+					{
+						stream.Deactivate(_blob, int.MaxValue);
+						stream.Activate(_blob, int.MaxValue);
+						this._blob.SetStatus(Db4objects.Db4o.Ext.Status.COMPLETED);
+					}
+					else
+					{
+						this._blob.SetStatus(Db4objects.Db4o.Ext.Status.ERROR);
+					}
+				}
+				catch (System.Exception e)
+				{
+					Sharpen.Runtime.PrintStackTrace(e);
+				}
+			}
+		}
+
+		public override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
+			 serverThread)
+		{
+			try
+			{
+				Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
+				Db4objects.Db4o.Internal.BlobImpl blobImpl = this.ServerGetBlobImpl();
+				if (blobImpl != null)
+				{
+					blobImpl.SetTrans(Transaction());
+					Sharpen.IO.File file = blobImpl.ServerFile(null, true);
+					Db4objects.Db4o.Foundation.Network.ISocket4 sock = serverThread.Socket();
+					Db4objects.Db4o.Internal.CS.Messages.Msg.OK.Write(stream, sock);
+					Sharpen.IO.FileOutputStream fout = new Sharpen.IO.FileOutputStream(file);
+					Copy(sock, fout, blobImpl.GetLength(), false);
+					Db4objects.Db4o.Internal.CS.Messages.Msg.OK.Write(stream, sock);
+				}
+			}
+			catch
+			{
+			}
+			return true;
+		}
+	}
+}

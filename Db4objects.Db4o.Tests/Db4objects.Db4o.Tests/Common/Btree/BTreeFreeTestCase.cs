@@ -18,11 +18,12 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			while (allSlotIDs.MoveNext())
 			{
 				int slotID = (int)allSlotIDs.Current;
-				Db4objects.Db4o.Inside.Slots.Slot slot = FileTransaction().GetCurrentSlotOfID(slotID
+				Db4objects.Db4o.Internal.Slots.Slot slot = FileTransaction().GetCurrentSlotOfID(slotID
 					);
 				allSlots.Add(slot);
 			}
-			Db4objects.Db4o.YapFile yapFile = (Db4objects.Db4o.YapFile)Stream();
+			Db4objects.Db4o.Internal.LocalObjectContainer yapFile = (Db4objects.Db4o.Internal.LocalObjectContainer
+				)Stream();
 			Db4objects.Db4o.Foundation.Collection4 freedSlots = new Db4objects.Db4o.Foundation.Collection4
 				();
 			yapFile.InstallDebugFreespaceManager(new Db4objects.Db4o.Tests.Common.Btree.FreespaceManagerForDebug
@@ -41,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 				this.freedSlots = freedSlots;
 			}
 
-			public void OnFree(Db4objects.Db4o.Inside.Slots.Slot slot)
+			public void OnFree(Db4objects.Db4o.Internal.Slots.Slot slot)
 			{
 				freedSlots.Add(slot);
 			}
@@ -51,9 +52,9 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			private readonly Db4objects.Db4o.Foundation.Collection4 freedSlots;
 		}
 
-		private Db4objects.Db4o.YapFileTransaction FileTransaction()
+		private Db4objects.Db4o.Internal.LocalTransaction FileTransaction()
 		{
-			return ((Db4objects.Db4o.YapFileTransaction)Trans());
+			return ((Db4objects.Db4o.Internal.LocalTransaction)Trans());
 		}
 	}
 }

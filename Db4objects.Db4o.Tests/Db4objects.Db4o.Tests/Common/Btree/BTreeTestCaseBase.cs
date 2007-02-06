@@ -5,28 +5,28 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 	{
 		protected const int BTREE_NODE_SIZE = 4;
 
-		protected Db4objects.Db4o.Inside.Btree.BTree _btree;
+		protected Db4objects.Db4o.Internal.Btree.BTree _btree;
 
 		protected override void Db4oSetupAfterStore()
 		{
 			_btree = NewBTree();
 		}
 
-		protected virtual Db4objects.Db4o.Inside.Btree.BTree NewBTree()
+		protected virtual Db4objects.Db4o.Internal.Btree.BTree NewBTree()
 		{
 			return Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.CreateIntKeyBTree(Stream(), 
 				0, BTREE_NODE_SIZE);
 		}
 
-		protected virtual Db4objects.Db4o.Inside.Btree.IBTreeRange Range(int lower, int upper
-			)
+		protected virtual Db4objects.Db4o.Internal.Btree.IBTreeRange Range(int lower, int
+			 upper)
 		{
-			Db4objects.Db4o.Inside.Btree.IBTreeRange lowerRange = Search(lower);
-			Db4objects.Db4o.Inside.Btree.IBTreeRange upperRange = Search(upper);
+			Db4objects.Db4o.Internal.Btree.IBTreeRange lowerRange = Search(lower);
+			Db4objects.Db4o.Internal.Btree.IBTreeRange upperRange = Search(upper);
 			return lowerRange.ExtendToLastOf(upperRange);
 		}
 
-		protected virtual Db4objects.Db4o.Inside.Btree.IBTreeRange Search(int key)
+		protected virtual Db4objects.Db4o.Internal.Btree.IBTreeRange Search(int key)
 		{
 			return Search(Trans(), key);
 		}
@@ -39,13 +39,13 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			}
 		}
 
-		protected virtual Db4objects.Db4o.Inside.Btree.IBTreeRange Search(Db4objects.Db4o.Transaction
+		protected virtual Db4objects.Db4o.Internal.Btree.IBTreeRange Search(Db4objects.Db4o.Internal.Transaction
 			 trans, int key)
 		{
 			return _btree.Search(trans, key);
 		}
 
-		protected virtual void Commit(Db4objects.Db4o.Transaction trans)
+		protected virtual void Commit(Db4objects.Db4o.Internal.Transaction trans)
 		{
 			_btree.Commit(trans);
 		}
@@ -55,8 +55,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			Commit(Trans());
 		}
 
-		protected virtual void Remove(Db4objects.Db4o.Transaction transaction, int[] keys
-			)
+		protected virtual void Remove(Db4objects.Db4o.Internal.Transaction transaction, int[]
+			 keys)
 		{
 			for (int i = 0; i < keys.Length; i++)
 			{
@@ -64,7 +64,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			}
 		}
 
-		protected virtual void Add(Db4objects.Db4o.Transaction transaction, int[] keys)
+		protected virtual void Add(Db4objects.Db4o.Internal.Transaction transaction, int[]
+			 keys)
 		{
 			for (int i = 0; i < keys.Length; i++)
 			{
@@ -72,12 +73,14 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			}
 		}
 
-		protected virtual void AssertEmpty(Db4objects.Db4o.Transaction transaction)
+		protected virtual void AssertEmpty(Db4objects.Db4o.Internal.Transaction transaction
+			)
 		{
 			Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.AssertEmpty(transaction, _btree);
 		}
 
-		protected virtual void Add(Db4objects.Db4o.Transaction transaction, int element)
+		protected virtual void Add(Db4objects.Db4o.Internal.Transaction transaction, int 
+			element)
 		{
 			_btree.Add(transaction, element);
 		}
@@ -87,7 +90,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			Remove(Trans(), element);
 		}
 
-		protected virtual void Remove(Db4objects.Db4o.Transaction trans, int element)
+		protected virtual void Remove(Db4objects.Db4o.Internal.Transaction trans, int element
+			)
 		{
 			_btree.Remove(trans, element);
 		}
@@ -112,14 +116,14 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			AssertSingleElement(Trans(), element);
 		}
 
-		protected virtual void AssertSingleElement(Db4objects.Db4o.Transaction trans, int
-			 element)
+		protected virtual void AssertSingleElement(Db4objects.Db4o.Internal.Transaction trans
+			, int element)
 		{
 			Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.AssertSingleElement(trans, _btree, 
 				element);
 		}
 
-		protected virtual void AssertPointerKey(int key, Db4objects.Db4o.Inside.Btree.BTreePointer
+		protected virtual void AssertPointerKey(int key, Db4objects.Db4o.Internal.Btree.BTreePointer
 			 pointer)
 		{
 			Db4oUnit.Assert.AreEqual(key, pointer.Key());

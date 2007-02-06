@@ -12,7 +12,7 @@ namespace Db4oUnit.Extensions
 
 		void Clean();
 
-		Db4objects.Db4o.YapFile FileSession();
+		Db4objects.Db4o.Internal.LocalObjectContainer FileSession();
 
 		Db4objects.Db4o.Ext.IExtObjectContainer Db();
 

@@ -14,20 +14,29 @@ namespace Db4objects.Db4o.Defragment
 	/// <exclude></exclude>
 	internal sealed class SecondPassCommand : Db4objects.Db4o.Defragment.IPassCommand
 	{
-		public void ProcessClass(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.YapClass
+		private readonly int _objectCommitFrequency;
+
+		private int _objectCount = 0;
+
+		public SecondPassCommand(int objectCommitFrequency)
+		{
+			_objectCommitFrequency = objectCommitFrequency;
+		}
+
+		public void ProcessClass(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Internal.ClassMetadata
 			 yapClass, int id, int classIndexID)
 		{
 			if (context.MappedID(id, -1) == -1)
 			{
 				Sharpen.Runtime.Err.WriteLine("MAPPING NOT FOUND: " + id);
 			}
-			Db4objects.Db4o.ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass22(this
-				, yapClass, classIndexID));
+			Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass32
+				(this, yapClass, classIndexID));
 		}
 
-		private sealed class _AnonymousInnerClass22 : Db4objects.Db4o.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass32 : Db4objects.Db4o.Internal.ISlotCopyHandler
 		{
-			public _AnonymousInnerClass22(SecondPassCommand _enclosing, Db4objects.Db4o.YapClass
+			public _AnonymousInnerClass32(SecondPassCommand _enclosing, Db4objects.Db4o.Internal.ClassMetadata
 				 yapClass, int classIndexID)
 			{
 				this._enclosing = _enclosing;
@@ -35,63 +44,77 @@ namespace Db4objects.Db4o.Defragment
 				this.classIndexID = classIndexID;
 			}
 
-			public void ProcessCopy(Db4objects.Db4o.ReaderPair readers)
+			public void ProcessCopy(Db4objects.Db4o.Internal.ReaderPair readers)
 			{
 				yapClass.DefragClass(readers, classIndexID);
 			}
 
 			private readonly SecondPassCommand _enclosing;
 
-			private readonly Db4objects.Db4o.YapClass yapClass;
+			private readonly Db4objects.Db4o.Internal.ClassMetadata yapClass;
 
 			private readonly int classIndexID;
 		}
 
 		public void ProcessObjectSlot(Db4objects.Db4o.Defragment.DefragContextImpl context
-			, Db4objects.Db4o.YapClass yapClass, int id, bool registerAddresses)
+			, Db4objects.Db4o.Internal.ClassMetadata yapClass, int id, bool registerAddresses
+			)
 		{
-			Db4objects.Db4o.ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass30(this
-				), registerAddresses);
+			Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass40
+				(this, context), registerAddresses);
 		}
 
-		private sealed class _AnonymousInnerClass30 : Db4objects.Db4o.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass40 : Db4objects.Db4o.Internal.ISlotCopyHandler
 		{
-			public _AnonymousInnerClass30(SecondPassCommand _enclosing)
+			public _AnonymousInnerClass40(SecondPassCommand _enclosing, Db4objects.Db4o.Defragment.DefragContextImpl
+				 context)
 			{
 				this._enclosing = _enclosing;
+				this.context = context;
 			}
 
-			public void ProcessCopy(Db4objects.Db4o.ReaderPair readers)
+			public void ProcessCopy(Db4objects.Db4o.Internal.ReaderPair readers)
 			{
-				Db4objects.Db4o.YapClass.DefragObject(readers);
+				Db4objects.Db4o.Internal.ClassMetadata.DefragObject(readers);
+				if (this._enclosing._objectCommitFrequency > 0)
+				{
+					this._enclosing._objectCount++;
+					if (this._enclosing._objectCount == this._enclosing._objectCommitFrequency)
+					{
+						context.TargetCommit();
+						this._enclosing._objectCount = 0;
+					}
+				}
 			}
 
 			private readonly SecondPassCommand _enclosing;
+
+			private readonly Db4objects.Db4o.Defragment.DefragContextImpl context;
 		}
 
 		public void ProcessClassCollection(Db4objects.Db4o.Defragment.DefragContextImpl context
 			)
 		{
-			Db4objects.Db4o.ReaderPair.ProcessCopy(context, context.SourceClassCollectionID()
-				, new _AnonymousInnerClass38(this));
+			Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, context.SourceClassCollectionID
+				(), new _AnonymousInnerClass55(this));
 		}
 
-		private sealed class _AnonymousInnerClass38 : Db4objects.Db4o.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass55 : Db4objects.Db4o.Internal.ISlotCopyHandler
 		{
-			public _AnonymousInnerClass38(SecondPassCommand _enclosing)
+			public _AnonymousInnerClass55(SecondPassCommand _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
-			public void ProcessCopy(Db4objects.Db4o.ReaderPair readers)
+			public void ProcessCopy(Db4objects.Db4o.Internal.ReaderPair readers)
 			{
-				Db4objects.Db4o.YapClassCollection.Defrag(readers);
+				Db4objects.Db4o.Internal.ClassMetadataRepository.Defrag(readers);
 			}
 
 			private readonly SecondPassCommand _enclosing;
 		}
 
-		public void ProcessBTree(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Inside.Btree.BTree
+		public void ProcessBTree(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Internal.Btree.BTree
 			 btree)
 		{
 			btree.DefragBTree(context);

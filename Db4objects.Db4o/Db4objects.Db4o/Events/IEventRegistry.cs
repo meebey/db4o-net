@@ -1,11 +1,13 @@
 namespace Db4objects.Db4o.Events
 {
-	public delegate void QueryEventHandler(object sender, QueryEventArgs args);
-
-	public delegate void CancellableObjectEventHandler(object sender, CancellableObjectEventArgs
+	public delegate void QueryEventHandler(object sender, Db4objects.Db4o.Events.QueryEventArgs
 		 args);
 
-	public delegate void ObjectEventHandler(object sender, ObjectEventArgs args);
+	public delegate void CancellableObjectEventHandler(object sender, Db4objects.Db4o.Events.CancellableObjectEventArgs
+		 args);
+
+	public delegate void ObjectEventHandler(object sender, Db4objects.Db4o.Events.ObjectEventArgs
+		 args);
 
 	/// <summary>
 	/// Provides a way to register event handlers for specific
@@ -23,7 +25,7 @@ namespace Db4objects.Db4o.Events
 		/// .
 		/// </summary>
 		/// <returns></returns>
-		event QueryEventHandler QueryStarted;
+		event Db4objects.Db4o.Events.QueryEventHandler QueryStarted;
 
 		/// <summary>
 		/// Receives
@@ -32,7 +34,7 @@ namespace Db4objects.Db4o.Events
 		/// .
 		/// </summary>
 		/// <returns></returns>
-		event QueryEventHandler QueryFinished;
+		event Db4objects.Db4o.Events.QueryEventHandler QueryFinished;
 
 		/// <summary>
 		/// Receives
@@ -41,7 +43,7 @@ namespace Db4objects.Db4o.Events
 		/// .
 		/// </summary>
 		/// <returns></returns>
-		event CancellableObjectEventHandler Creating;
+		event Db4objects.Db4o.Events.CancellableObjectEventHandler Creating;
 
 		/// <summary>
 		/// Receives
@@ -50,7 +52,7 @@ namespace Db4objects.Db4o.Events
 		/// .
 		/// </summary>
 		/// <returns></returns>
-		event CancellableObjectEventHandler Activating;
+		event Db4objects.Db4o.Events.CancellableObjectEventHandler Activating;
 
 		/// <summary>
 		/// Receives
@@ -58,7 +60,7 @@ namespace Db4objects.Db4o.Events
 		/// 	</see>
 		/// </summary>
 		/// <returns></returns>
-		event CancellableObjectEventHandler Updating;
+		event Db4objects.Db4o.Events.CancellableObjectEventHandler Updating;
 
 		/// <summary>
 		/// Receives
@@ -66,7 +68,7 @@ namespace Db4objects.Db4o.Events
 		/// 	</see>
 		/// </summary>
 		/// <returns></returns>
-		event CancellableObjectEventHandler Deleting;
+		event Db4objects.Db4o.Events.CancellableObjectEventHandler Deleting;
 
 		/// <summary>
 		/// Receives
@@ -74,7 +76,7 @@ namespace Db4objects.Db4o.Events
 		/// 	</see>
 		/// </summary>
 		/// <returns></returns>
-		event CancellableObjectEventHandler Deactivating;
+		event Db4objects.Db4o.Events.CancellableObjectEventHandler Deactivating;
 
 		/// <summary>
 		/// Receives
@@ -83,7 +85,7 @@ namespace Db4objects.Db4o.Events
 		/// .
 		/// </summary>
 		/// <returns></returns>
-		event ObjectEventHandler Activated;
+		event Db4objects.Db4o.Events.ObjectEventHandler Activated;
 
 		/// <summary>
 		/// Receives
@@ -92,7 +94,7 @@ namespace Db4objects.Db4o.Events
 		/// .
 		/// </summary>
 		/// <returns></returns>
-		event ObjectEventHandler Created;
+		event Db4objects.Db4o.Events.ObjectEventHandler Created;
 
 		/// <summary>
 		/// Receives
@@ -100,7 +102,7 @@ namespace Db4objects.Db4o.Events
 		/// 	</see>
 		/// </summary>
 		/// <returns></returns>
-		event ObjectEventHandler Updated;
+		event Db4objects.Db4o.Events.ObjectEventHandler Updated;
 
 		/// <summary>
 		/// Receives
@@ -108,7 +110,7 @@ namespace Db4objects.Db4o.Events
 		/// 	</see>
 		/// </summary>
 		/// <returns></returns>
-		event ObjectEventHandler Deleted;
+		event Db4objects.Db4o.Events.ObjectEventHandler Deleted;
 
 		/// <summary>
 		/// Receives
@@ -116,6 +118,6 @@ namespace Db4objects.Db4o.Events
 		/// 	</see>
 		/// </summary>
 		/// <returns></returns>
-		event ObjectEventHandler Deactivated;
+		event Db4objects.Db4o.Events.ObjectEventHandler Deactivated;
 	}
 }

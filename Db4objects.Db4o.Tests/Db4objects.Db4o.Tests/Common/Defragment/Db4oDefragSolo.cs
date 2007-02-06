@@ -16,13 +16,15 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				try
 				{
 					string backupFile = GetAbsolutePath() + ".defrag.backup";
+					Db4objects.Db4o.Defragment.IContextIDMapping mapping = new Db4objects.Db4o.Defragment.TreeIDMapping
+						();
 					Db4objects.Db4o.Defragment.DefragmentConfig defragConfig = new Db4objects.Db4o.Defragment.DefragmentConfig
-						(GetAbsolutePath(), backupFile);
+						(GetAbsolutePath(), backupFile, mapping);
 					defragConfig.ForceBackupDelete(true);
 					Db4objects.Db4o.Config.IConfiguration clonedConfig = (Db4objects.Db4o.Config.IConfiguration
 						)((Db4objects.Db4o.Foundation.IDeepClone)config).DeepClone(null);
 					defragConfig.Db4oConfig(clonedConfig);
-					Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig, new _AnonymousInnerClass29
+					Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig, new _AnonymousInnerClass32
 						(this));
 				}
 				catch (System.IO.IOException e)
@@ -33,9 +35,9 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			return base.CreateDatabase(config);
 		}
 
-		private sealed class _AnonymousInnerClass29 : Db4objects.Db4o.Defragment.IDefragmentListener
+		private sealed class _AnonymousInnerClass32 : Db4objects.Db4o.Defragment.IDefragmentListener
 		{
-			public _AnonymousInnerClass29(Db4oDefragSolo _enclosing)
+			public _AnonymousInnerClass32(Db4oDefragSolo _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

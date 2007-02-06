@@ -7,7 +7,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			Db4objects.Db4o.Foundation.Hashtable4 ht = new Db4objects.Db4o.Foundation.Hashtable4
 				();
 			Db4objects.Db4o.Ext.IExtObjectContainer oc = Db();
-			Db4objects.Db4o.YapStream yapStream = ((Db4objects.Db4o.YapStream)oc);
+			Db4objects.Db4o.Internal.ObjectContainerBase yapStream = ((Db4objects.Db4o.Internal.ObjectContainerBase
+				)oc);
 			yapStream.ShowInternalClasses(true);
 			Db4objects.Db4o.Query.IQuery q = Db().Query();
 			q.Constrain(typeof(Db4objects.Db4o.Ext.Db4oDatabase));

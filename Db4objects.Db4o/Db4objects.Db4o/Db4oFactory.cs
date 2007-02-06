@@ -28,15 +28,12 @@ namespace Db4objects.Db4o
 	/// 	</seealso>
 	public class Db4oFactory
 	{
-		internal static readonly Db4objects.Db4o.Config4Impl i_config = new Db4objects.Db4o.Config4Impl
-			();
-
-		private static Db4objects.Db4o.Sessions i_sessions = new Db4objects.Db4o.Sessions
+		internal static readonly Db4objects.Db4o.Internal.Config4Impl i_config = new Db4objects.Db4o.Internal.Config4Impl
 			();
 
 		static Db4oFactory()
 		{
-			Db4objects.Db4o.Platform4.GetDefaultConfiguration(i_config);
+			Db4objects.Db4o.Internal.Platform4.GetDefaultConfiguration(i_config);
 		}
 
 		/// <summary>prints the version name of this db4o version to <code>System.out</code>.
@@ -79,8 +76,9 @@ namespace Db4objects.Db4o
 		/// 	</returns>
 		public static Db4objects.Db4o.Config.IConfiguration NewConfiguration()
 		{
-			Db4objects.Db4o.Config4Impl config = new Db4objects.Db4o.Config4Impl();
-			Db4objects.Db4o.Platform4.GetDefaultConfiguration(config);
+			Db4objects.Db4o.Internal.Config4Impl config = new Db4objects.Db4o.Internal.Config4Impl
+				();
+			Db4objects.Db4o.Internal.Platform4.GetDefaultConfiguration(config);
 			return config;
 		}
 
@@ -95,8 +93,8 @@ namespace Db4objects.Db4o
 		/// </returns>
 		public static Db4objects.Db4o.Config.IConfiguration CloneConfiguration()
 		{
-			return (Db4objects.Db4o.Config4Impl)((Db4objects.Db4o.Foundation.IDeepClone)Db4objects.Db4o.Db4oFactory
-				.Configure()).DeepClone(null);
+			return (Db4objects.Db4o.Internal.Config4Impl)((Db4objects.Db4o.Foundation.IDeepClone
+				)Db4objects.Db4o.Db4oFactory.Configure()).DeepClone(null);
 		}
 
 		/// <summary>
@@ -185,9 +183,9 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.IObjectContainer OpenClient(Db4objects.Db4o.Config.IConfiguration
 			 config, string hostName, int port, string user, string password)
 		{
-			lock (Db4objects.Db4o.Inside.Global4.Lock)
+			lock (Db4objects.Db4o.Internal.Global4.Lock)
 			{
-				return new Db4objects.Db4o.CS.YapClient(config, new Db4objects.Db4o.Foundation.Network.YapSocketReal
+				return new Db4objects.Db4o.Internal.CS.ClientObjectContainer(config, new Db4objects.Db4o.Foundation.Network.NetworkSocket
 					(hostName, port), user, password, true);
 			}
 		}
@@ -266,16 +264,16 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.IObjectContainer OpenFile(Db4objects.Db4o.Config.IConfiguration
 			 config, string databaseFileName)
 		{
-			lock (Db4objects.Db4o.Inside.Global4.Lock)
+			lock (Db4objects.Db4o.Internal.Global4.Lock)
 			{
-				return i_sessions.Open(config, databaseFileName);
+				return Db4objects.Db4o.Internal.Sessions.Open(config, databaseFileName);
 			}
 		}
 
 		protected static Db4objects.Db4o.IObjectContainer OpenMemoryFile1(Db4objects.Db4o.Config.IConfiguration
 			 config, Db4objects.Db4o.Ext.MemoryFile memoryFile)
 		{
-			lock (Db4objects.Db4o.Inside.Global4.Lock)
+			lock (Db4objects.Db4o.Internal.Global4.Lock)
 			{
 				if (memoryFile == null)
 				{
@@ -284,15 +282,15 @@ namespace Db4objects.Db4o
 				Db4objects.Db4o.IObjectContainer oc = null;
 				try
 				{
-					oc = new Db4objects.Db4o.YapMemoryFile(config, memoryFile);
+					oc = new Db4objects.Db4o.Internal.InMemoryObjectContainer(config, memoryFile);
 				}
 				catch (System.Exception t)
 				{
-					Db4objects.Db4o.Messages.LogErr(i_config, 4, "Memory File", t);
+					Db4objects.Db4o.Internal.Messages.LogErr(i_config, 4, "Memory File", t);
 					return null;
 				}
-				Db4objects.Db4o.Platform4.PostOpen(oc);
-				Db4objects.Db4o.Messages.LogMsg(i_config, 5, "Memory File");
+				Db4objects.Db4o.Internal.Platform4.PostOpen(oc);
+				Db4objects.Db4o.Internal.Messages.LogMsg(i_config, 5, "Memory File");
 				return oc;
 			}
 		}
@@ -382,17 +380,17 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.IObjectServer OpenServer(Db4objects.Db4o.Config.IConfiguration
 			 config, string databaseFileName, int port)
 		{
-			lock (Db4objects.Db4o.Inside.Global4.Lock)
+			lock (Db4objects.Db4o.Internal.Global4.Lock)
 			{
-				Db4objects.Db4o.YapFile stream = (Db4objects.Db4o.YapFile)OpenFile(config, databaseFileName
-					);
+				Db4objects.Db4o.Internal.LocalObjectContainer stream = (Db4objects.Db4o.Internal.LocalObjectContainer
+					)OpenFile(config, databaseFileName);
 				if (stream == null)
 				{
 					return null;
 				}
 				lock (stream.Lock())
 				{
-					return new Db4objects.Db4o.CS.YapServer(stream, port);
+					return new Db4objects.Db4o.Internal.CS.ObjectServerImpl(stream, port);
 				}
 			}
 		}
@@ -400,16 +398,6 @@ namespace Db4objects.Db4o
 		internal static Db4objects.Db4o.Reflect.IReflector Reflector()
 		{
 			return i_config.Reflector();
-		}
-
-		internal static void ForEachSession(Db4objects.Db4o.Foundation.IVisitor4 visitor)
-		{
-			i_sessions.ForEach(visitor);
-		}
-
-		internal static void SessionStopped(Db4objects.Db4o.Session a_session)
-		{
-			i_sessions.Remove(a_session);
 		}
 
 		/// <summary>returns the version name of the used db4o version.</summary>

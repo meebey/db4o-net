@@ -9,8 +9,8 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 
 		protected override System.Type[] TestCases()
 		{
-			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Classindex.ClassIndexTestCase)
-				 };
+			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Classindex.ClassIndexOffTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Classindex.ClassIndexTestCase) };
 		}
 	}
 }

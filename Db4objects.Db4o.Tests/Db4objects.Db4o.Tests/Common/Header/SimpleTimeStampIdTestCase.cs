@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 
 		private long CurrentVersion()
 		{
-			return ((Db4objects.Db4o.YapFile)Db()).CurrentVersion();
+			return ((Db4objects.Db4o.Internal.LocalObjectContainer)Db()).CurrentVersion();
 		}
 	}
 }

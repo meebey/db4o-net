@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void TestIntKeys()
 		{
-			Db4objects.Db4o.Inside.Btree.BTree btree = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert
+			Db4objects.Db4o.Internal.Btree.BTree btree = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert
 				.CreateIntKeyBTree(Stream(), 0, BTREE_NODE_SIZE);
 			for (int i = 0; i < 5; i++)
 			{
@@ -52,14 +52,14 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void TestIntKeysIntValues()
 		{
-			Db4objects.Db4o.Inside.Btree.BTree btree = CreateIntKeyValueBTree(0);
+			Db4objects.Db4o.Internal.Btree.BTree btree = CreateIntKeyValueBTree(0);
 			for (int i = 0; i < 5; i++)
 			{
 				btree = CycleIntKeysIntValues(btree);
 			}
 		}
 
-		private Db4objects.Db4o.Inside.Btree.BTree CycleIntKeys(Db4objects.Db4o.Inside.Btree.BTree
+		private Db4objects.Db4o.Internal.Btree.BTree CycleIntKeys(Db4objects.Db4o.Internal.Btree.BTree
 			 btree)
 		{
 			AddKeys(btree);
@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			return btree;
 		}
 
-		private Db4objects.Db4o.Inside.Btree.BTree CycleIntKeysIntValues(Db4objects.Db4o.Inside.Btree.BTree
+		private Db4objects.Db4o.Internal.Btree.BTree CycleIntKeysIntValues(Db4objects.Db4o.Internal.Btree.BTree
 			 btree)
 		{
 			AddKeysValues(btree);
@@ -141,40 +141,41 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			return btree;
 		}
 
-		private void RemoveKeys(Db4objects.Db4o.Inside.Btree.BTree btree)
+		private void RemoveKeys(Db4objects.Db4o.Internal.Btree.BTree btree)
 		{
 			btree.Remove(Trans(), 3);
 			btree.Remove(Trans(), 101);
 		}
 
-		private void AddKeys(Db4objects.Db4o.Inside.Btree.BTree btree)
+		private void AddKeys(Db4objects.Db4o.Internal.Btree.BTree btree)
 		{
-			Db4objects.Db4o.Transaction trans = Trans();
+			Db4objects.Db4o.Internal.Transaction trans = Trans();
 			for (int i = 0; i < _keys.Length; i++)
 			{
 				btree.Add(trans, _keys[i]);
 			}
 		}
 
-		private void AddKeysValues(Db4objects.Db4o.Inside.Btree.BTree btree)
+		private void AddKeysValues(Db4objects.Db4o.Internal.Btree.BTree btree)
 		{
-			Db4objects.Db4o.Transaction trans = Trans();
+			Db4objects.Db4o.Internal.Transaction trans = Trans();
 			for (int i = 0; i < _keys.Length; i++)
 			{
 				btree.Add(trans, _keys[i], _values[i]);
 			}
 		}
 
-		private void ExpectValues(Db4objects.Db4o.Inside.Btree.BTree btree, int[] values)
+		private void ExpectValues(Db4objects.Db4o.Internal.Btree.BTree btree, int[] values
+			)
 		{
 			int[] cursor = new int[] { 0 };
-			btree.TraverseValues(Trans(), new _AnonymousInnerClass218(this, values, cursor));
+			btree.TraverseValues(Trans(), new _AnonymousInnerClass219(this, values, cursor));
 			Db4oUnit.Assert.AreEqual(values.Length, cursor[0]);
 		}
 
-		private sealed class _AnonymousInnerClass218 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass219 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass218(BTreeSimpleTestCase _enclosing, int[] values, int[]
+			public _AnonymousInnerClass219(BTreeSimpleTestCase _enclosing, int[] values, int[]
 				 cursor)
 			{
 				this._enclosing = _enclosing;
@@ -195,14 +196,14 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			private readonly int[] cursor;
 		}
 
-		private Db4objects.Db4o.Inside.Btree.BTree CreateIntKeyValueBTree(int id)
+		private Db4objects.Db4o.Internal.Btree.BTree CreateIntKeyValueBTree(int id)
 		{
-			return new Db4objects.Db4o.Inside.Btree.BTree(Stream().GetSystemTransaction(), id
-				, new Db4objects.Db4o.YInt(Stream()), new Db4objects.Db4o.YInt(Stream()), 7, Stream
-				().ConfigImpl().BTreeCacheHeight());
+			return new Db4objects.Db4o.Internal.Btree.BTree(Stream().GetSystemTransaction(), 
+				id, new Db4objects.Db4o.Internal.Handlers.IntHandler(Stream()), new Db4objects.Db4o.Internal.Handlers.IntHandler
+				(Stream()), 7, Stream().ConfigImpl().BTreeCacheHeight());
 		}
 
-		private void ExpectKeys(Db4objects.Db4o.Inside.Btree.BTree btree, int[] keys)
+		private void ExpectKeys(Db4objects.Db4o.Internal.Btree.BTree btree, int[] keys)
 		{
 			Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.AssertKeys(Trans(), btree, keys);
 		}

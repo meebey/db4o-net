@@ -32,9 +32,9 @@ namespace Db4oUnit.Extensions.Fixtures
 		protected abstract Db4objects.Db4o.IObjectContainer CreateDatabase(Db4objects.Db4o.Config.IConfiguration
 			 config);
 
-		public override Db4objects.Db4o.YapFile FileSession()
+		public override Db4objects.Db4o.Internal.LocalObjectContainer FileSession()
 		{
-			return (Db4objects.Db4o.YapFile)_db;
+			return (Db4objects.Db4o.Internal.LocalObjectContainer)_db;
 		}
 	}
 }

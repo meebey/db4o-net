@@ -2,9 +2,9 @@ namespace Db4objects.Db4o.Reflect.Generic
 {
 	public class KnownClassesRepository
 	{
-		private Db4objects.Db4o.YapStream _stream;
+		private Db4objects.Db4o.Internal.ObjectContainerBase _stream;
 
-		private Db4objects.Db4o.Transaction _trans;
+		private Db4objects.Db4o.Internal.Transaction _trans;
 
 		private Db4objects.Db4o.Reflect.Generic.IReflectClassBuilder _builder;
 
@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_builder = builder;
 		}
 
-		public virtual void SetTransaction(Db4objects.Db4o.Transaction trans)
+		public virtual void SetTransaction(Db4objects.Db4o.Internal.Transaction trans)
 		{
 			if (trans != null)
 			{
@@ -102,10 +102,11 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return ret;
 			}
-			Db4objects.Db4o.YapReader classreader = _stream.ReadWriterByID(_trans, id);
-			Db4objects.Db4o.Inside.Marshall.ClassMarshaller marshaller = MarshallerFamily()._class;
-			Db4objects.Db4o.Inside.Marshall.RawClassSpec spec = marshaller.ReadSpec(_trans, classreader
-				);
+			Db4objects.Db4o.Internal.Buffer classreader = _stream.ReadWriterByID(_trans, id);
+			Db4objects.Db4o.Internal.Marshall.ClassMarshaller marshaller = MarshallerFamily()
+				._class;
+			Db4objects.Db4o.Internal.Marshall.RawClassSpec spec = marshaller.ReadSpec(_trans, 
+				classreader);
 			string className = spec.Name();
 			ret = (Db4objects.Db4o.Reflect.IReflectClass)_classByName.Get(className);
 			if (ret != null)
@@ -124,10 +125,10 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private void EnsureClassRead(int id)
 		{
 			Db4objects.Db4o.Reflect.IReflectClass clazz = LookupByID(id);
-			Db4objects.Db4o.YapReader classreader = _stream.ReadWriterByID(_trans, id);
-			Db4objects.Db4o.Inside.Marshall.ClassMarshaller classMarshaller = MarshallerFamily
+			Db4objects.Db4o.Internal.Buffer classreader = _stream.ReadWriterByID(_trans, id);
+			Db4objects.Db4o.Internal.Marshall.ClassMarshaller classMarshaller = MarshallerFamily
 				()._class;
-			Db4objects.Db4o.Inside.Marshall.RawClassSpec classInfo = classMarshaller.ReadSpec
+			Db4objects.Db4o.Internal.Marshall.RawClassSpec classInfo = classMarshaller.ReadSpec
 				(_trans, classreader);
 			string className = classInfo.Name();
 			if (_classByName.Get(className) != null)
@@ -138,24 +139,24 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_classes.Add(clazz);
 			int numFields = classInfo.NumFields();
 			Db4objects.Db4o.Reflect.IReflectField[] fields = _builder.FieldArray(numFields);
-			Db4objects.Db4o.Inside.Marshall.IFieldMarshaller fieldMarshaller = MarshallerFamily
+			Db4objects.Db4o.Internal.Marshall.IFieldMarshaller fieldMarshaller = MarshallerFamily
 				()._field;
 			for (int i = 0; i < numFields; i++)
 			{
-				Db4objects.Db4o.Inside.Marshall.RawFieldSpec fieldInfo = fieldMarshaller.ReadSpec
+				Db4objects.Db4o.Internal.Marshall.RawFieldSpec fieldInfo = fieldMarshaller.ReadSpec
 					(_stream, classreader);
 				string fieldName = fieldInfo.Name();
 				int handlerID = fieldInfo.HandlerID();
 				Db4objects.Db4o.Reflect.IReflectClass fieldClass = null;
 				switch (handlerID)
 				{
-					case Db4objects.Db4o.YapHandlers.ANY_ID:
+					case Db4objects.Db4o.Internal.HandlerRegistry.ANY_ID:
 					{
 						fieldClass = _stream.Reflector().ForClass(typeof(object));
 						break;
 					}
 
-					case Db4objects.Db4o.YapHandlers.ANY_ARRAY_ID:
+					case Db4objects.Db4o.Internal.HandlerRegistry.ANY_ARRAY_ID:
 					{
 						fieldClass = _builder.ArrayClass(_stream.Reflector().ForClass(typeof(object)));
 						break;
@@ -174,9 +175,9 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_builder.InitFields(clazz, fields);
 		}
 
-		private Db4objects.Db4o.Inside.Marshall.MarshallerFamily MarshallerFamily()
+		private Db4objects.Db4o.Internal.Marshall.MarshallerFamily MarshallerFamily()
 		{
-			return Db4objects.Db4o.Inside.Marshall.MarshallerFamily.ForConverterVersion(_stream
+			return Db4objects.Db4o.Internal.Marshall.MarshallerFamily.ForConverterVersion(_stream
 				.ConverterVersion());
 		}
 

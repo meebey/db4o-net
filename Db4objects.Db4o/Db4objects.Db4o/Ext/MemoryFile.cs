@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Ext
 	{
 		private byte[] i_bytes;
 
-		private const int INITIAL_SIZE_AND_INC = 10000;
+		private const int INITIAL_SIZE_AND_INC = 1024 * 64;
 
 		private int i_initialSize = INITIAL_SIZE_AND_INC;
 

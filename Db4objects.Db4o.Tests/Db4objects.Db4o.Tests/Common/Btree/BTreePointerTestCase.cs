@@ -20,40 +20,41 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void TestLastPointer()
 		{
-			Db4objects.Db4o.Inside.Btree.BTreePointer pointer = _btree.LastPointer(Trans());
+			Db4objects.Db4o.Internal.Btree.BTreePointer pointer = _btree.LastPointer(Trans());
 			AssertPointerKey(9, pointer);
 		}
 
 		public virtual void TestPrevious()
 		{
-			Db4objects.Db4o.Inside.Btree.BTreePointer pointer = GetPointerForKey(3);
-			Db4objects.Db4o.Inside.Btree.BTreePointer previousPointer = pointer.Previous();
+			Db4objects.Db4o.Internal.Btree.BTreePointer pointer = GetPointerForKey(3);
+			Db4objects.Db4o.Internal.Btree.BTreePointer previousPointer = pointer.Previous();
 			AssertPointerKey(2, previousPointer);
 		}
 
 		public virtual void TestNextOperatesInReadMode()
 		{
-			Db4objects.Db4o.Inside.Btree.BTreePointer pointer = _btree.FirstPointer(Trans());
+			Db4objects.Db4o.Internal.Btree.BTreePointer pointer = _btree.FirstPointer(Trans()
+				);
 			AssertReadModePointerIteration(keys, pointer);
 		}
 
 		public virtual void TestSearchOperatesInReadMode()
 		{
-			Db4objects.Db4o.Inside.Btree.BTreePointer pointer = GetPointerForKey(3);
+			Db4objects.Db4o.Internal.Btree.BTreePointer pointer = GetPointerForKey(3);
 			AssertReadModePointerIteration(new int[] { 3, 4, 7, 9 }, pointer);
 		}
 
-		private Db4objects.Db4o.Inside.Btree.BTreePointer GetPointerForKey(int key)
+		private Db4objects.Db4o.Internal.Btree.BTreePointer GetPointerForKey(int key)
 		{
-			Db4objects.Db4o.Inside.Btree.IBTreeRange range = Search(key);
+			Db4objects.Db4o.Internal.Btree.IBTreeRange range = Search(key);
 			System.Collections.IEnumerator pointers = range.Pointers();
 			Db4oUnit.Assert.IsTrue(pointers.MoveNext());
-			Db4objects.Db4o.Inside.Btree.BTreePointer pointer = (Db4objects.Db4o.Inside.Btree.BTreePointer
+			Db4objects.Db4o.Internal.Btree.BTreePointer pointer = (Db4objects.Db4o.Internal.Btree.BTreePointer
 				)pointers.Current;
 			return pointer;
 		}
 
-		private void AssertReadModePointerIteration(int[] expectedKeys, Db4objects.Db4o.Inside.Btree.BTreePointer
+		private void AssertReadModePointerIteration(int[] expectedKeys, Db4objects.Db4o.Internal.Btree.BTreePointer
 			 pointer)
 		{
 			object[] expected = Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.ToObjectArray
@@ -69,17 +70,17 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			}
 		}
 
-		private void AssertInReadMode(Db4objects.Db4o.Inside.Btree.BTreeNode node)
+		private void AssertInReadMode(Db4objects.Db4o.Internal.Btree.BTreeNode node)
 		{
 			Db4oUnit.Assert.IsFalse(node.CanWrite());
 		}
 
-		protected override Db4objects.Db4o.Inside.Btree.BTree NewBTree()
+		protected override Db4objects.Db4o.Internal.Btree.BTree NewBTree()
 		{
 			return NewBTreeWithNoNodeCaching();
 		}
 
-		private Db4objects.Db4o.Inside.Btree.BTree NewBTreeWithNoNodeCaching()
+		private Db4objects.Db4o.Internal.Btree.BTree NewBTreeWithNoNodeCaching()
 		{
 			return Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.CreateIntKeyBTree(Stream(), 
 				0, 0, BTREE_NODE_SIZE);

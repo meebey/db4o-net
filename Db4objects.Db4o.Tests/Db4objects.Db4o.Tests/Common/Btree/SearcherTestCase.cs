@@ -2,7 +2,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 {
 	public class SearcherTestCase : Db4oUnit.ITestCase, Db4oUnit.ITestLifeCycle
 	{
-		private Db4objects.Db4o.Inside.Btree.Searcher _searcher;
+		private Db4objects.Db4o.Internal.Btree.Searcher _searcher;
 
 		private const int FIRST = 4;
 
@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void TestEmptySet()
 		{
-			_searcher = new Db4objects.Db4o.Inside.Btree.Searcher(Db4objects.Db4o.Inside.Btree.SearchTarget
+			_searcher = new Db4objects.Db4o.Internal.Btree.Searcher(Db4objects.Db4o.Internal.Btree.SearchTarget
 				.ANY, 0);
 			if (_searcher.Incomplete())
 			{
@@ -158,7 +158,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		private int Search(int[] values, int value)
 		{
-			_searcher = new Db4objects.Db4o.Inside.Btree.Searcher(Db4objects.Db4o.Inside.Btree.SearchTarget
+			_searcher = new Db4objects.Db4o.Internal.Btree.Searcher(Db4objects.Db4o.Internal.Btree.SearchTarget
 				.ANY, values.Length);
 			while (_searcher.Incomplete())
 			{

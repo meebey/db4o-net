@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.IO
 			}
 			if (lockFile)
 			{
-				Db4objects.Db4o.Platform4.LockFile(_delegate);
+				Db4objects.Db4o.Internal.Platform4.LockFile(_delegate);
 			}
 		}
 
@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.IO
 		{
 			try
 			{
-				Db4objects.Db4o.Platform4.UnlockFile(_delegate);
+				Db4objects.Db4o.Internal.Platform4.UnlockFile(_delegate);
 			}
 			catch
 			{

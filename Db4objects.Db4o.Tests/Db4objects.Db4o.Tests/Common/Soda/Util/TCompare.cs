@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			{
 				return false;
 			}
-			if (Db4objects.Db4o.Platform4.IsSimple(clazz))
+			if (Db4objects.Db4o.Internal.Platform4.IsSimple(clazz))
 			{
 				return a_compare.Equals(a_with);
 			}
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 				System.Reflection.FieldInfo field = fields[i];
 				if (Db4objects.Db4o.Tests.Db4oUnitPlatform.IsStoreableField(field))
 				{
-					Db4objects.Db4o.Platform4.SetAccessible(field);
+					Db4objects.Db4o.Internal.Platform4.SetAccessible(field);
 					try
 					{
 						if (!IsFieldEqual(field, a_compare, a_with, path, a_list))

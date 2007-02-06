@@ -5,7 +5,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void Test()
 		{
 			byte[] oldSignature = Db().Identity().GetSignature();
-			((Db4objects.Db4o.YapFile)Db()).GenerateNewIdentity();
+			((Db4objects.Db4o.Internal.LocalObjectContainer)Db()).GenerateNewIdentity();
 			Reopen();
 			Db4oUnit.ArrayAssert.AreNotEqual(oldSignature, Db().Identity().GetSignature());
 		}

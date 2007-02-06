@@ -27,8 +27,8 @@ namespace Db4objects.Db4o.Ext
 			_cause = cause;
 		}
 
-		public Db4oException(int messageConstant) : this(Db4objects.Db4o.Messages.Get(messageConstant
-			))
+		public Db4oException(int messageConstant) : this(Db4objects.Db4o.Internal.Messages
+			.Get(messageConstant))
 		{
 		}
 

@@ -152,7 +152,7 @@ namespace Db4objects.Db4o.Query
 			try
 			{
 				System.Reflection.MethodInfo filterMethod = GetFilterMethod();
-				Db4objects.Db4o.Platform4.SetAccessible(filterMethod);
+				Db4objects.Db4o.Internal.Platform4.SetAccessible(filterMethod);
 				object ret = filterMethod.Invoke(this, new object[] { candidate });
 				return ((bool)ret);
 			}

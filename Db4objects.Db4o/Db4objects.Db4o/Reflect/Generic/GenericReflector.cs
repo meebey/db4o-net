@@ -18,11 +18,11 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private readonly Db4objects.Db4o.Foundation.Hashtable4 _classByClass = new Db4objects.Db4o.Foundation.Hashtable4
 			();
 
-		private Db4objects.Db4o.Transaction _trans;
+		private Db4objects.Db4o.Internal.Transaction _trans;
 
-		private Db4objects.Db4o.YapStream _stream;
+		private Db4objects.Db4o.Internal.ObjectContainerBase _stream;
 
-		public GenericReflector(Db4objects.Db4o.Transaction trans, Db4objects.Db4o.Reflect.IReflector
+		public GenericReflector(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Reflect.IReflector
 			 delegateReflector)
 		{
 			_repository = new Db4objects.Db4o.Reflect.Generic.KnownClassesRepository(new Db4objects.Db4o.Reflect.Generic.GenericClassBuilder
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return myClone;
 		}
 
-		internal virtual Db4objects.Db4o.YapStream GetStream()
+		internal virtual Db4objects.Db4o.Internal.ObjectContainerBase GetStream()
 		{
 			return _stream;
 		}
@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _trans != null;
 		}
 
-		public virtual void SetTransaction(Db4objects.Db4o.Transaction trans)
+		public virtual void SetTransaction(Db4objects.Db4o.Internal.Transaction trans)
 		{
 			if (trans != null)
 			{

@@ -22,6 +22,8 @@ namespace Db4objects.Db4o.Defragment
 
 		private bool _forceBackupDelete = false;
 
+		private int _objectCommitFrequency;
+
 		public DefragmentConfig(string origPath) : this(origPath, origPath + "." + BACKUP_SUFFIX
 			)
 		{
@@ -120,6 +122,16 @@ namespace Db4objects.Db4o.Defragment
 		public virtual void Db4oConfig(Db4objects.Db4o.Config.IConfiguration config)
 		{
 			_config = config;
+		}
+
+		public virtual int ObjectCommitFrequency()
+		{
+			return _objectCommitFrequency;
+		}
+
+		public virtual void ObjectCommitFrequency(int objectCommitFrequency)
+		{
+			_objectCommitFrequency = objectCommitFrequency;
 		}
 
 		private class NullFilter : Db4objects.Db4o.Defragment.IStoredClassFilter

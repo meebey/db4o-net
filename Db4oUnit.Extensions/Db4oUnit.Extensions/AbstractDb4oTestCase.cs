@@ -129,27 +129,27 @@ namespace Db4oUnit.Extensions
 				());
 		}
 
-		protected virtual Db4objects.Db4o.YapStream Stream()
+		protected virtual Db4objects.Db4o.Internal.ObjectContainerBase Stream()
 		{
-			return (Db4objects.Db4o.YapStream)Db();
+			return (Db4objects.Db4o.Internal.ObjectContainerBase)Db();
 		}
 
-		protected virtual Db4objects.Db4o.YapFile FileSession()
+		protected virtual Db4objects.Db4o.Internal.LocalObjectContainer FileSession()
 		{
 			return Fixture().FileSession();
 		}
 
-		protected virtual Db4objects.Db4o.Transaction Trans()
+		protected virtual Db4objects.Db4o.Internal.Transaction Trans()
 		{
 			return Stream().GetTransaction();
 		}
 
-		protected virtual Db4objects.Db4o.Transaction SystemTrans()
+		protected virtual Db4objects.Db4o.Internal.Transaction SystemTrans()
 		{
 			return Stream().GetSystemTransaction();
 		}
 
-		protected virtual Db4objects.Db4o.Query.IQuery NewQuery(Db4objects.Db4o.Transaction
+		protected virtual Db4objects.Db4o.Query.IQuery NewQuery(Db4objects.Db4o.Internal.Transaction
 			 transaction, System.Type clazz)
 		{
 			Db4objects.Db4o.Query.IQuery query = NewQuery(transaction);
@@ -157,7 +157,7 @@ namespace Db4oUnit.Extensions
 			return query;
 		}
 
-		protected virtual Db4objects.Db4o.Query.IQuery NewQuery(Db4objects.Db4o.Transaction
+		protected virtual Db4objects.Db4o.Query.IQuery NewQuery(Db4objects.Db4o.Internal.Transaction
 			 transaction)
 		{
 			return Stream().Query(transaction);
@@ -179,7 +179,7 @@ namespace Db4oUnit.Extensions
 			config.ObjectClass(clazz).ObjectField(fieldName).Indexed(true);
 		}
 
-		protected virtual Db4objects.Db4o.Transaction NewTransaction()
+		protected virtual Db4objects.Db4o.Internal.Transaction NewTransaction()
 		{
 			return Stream().NewTransaction();
 		}
@@ -218,12 +218,12 @@ namespace Db4oUnit.Extensions
 
 		protected virtual void DeleteAll(System.Type clazz)
 		{
-			Foreach(clazz, new _AnonymousInnerClass191(this));
+			Foreach(clazz, new _AnonymousInnerClass192(this));
 		}
 
-		private sealed class _AnonymousInnerClass191 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass192 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass191(AbstractDb4oTestCase _enclosing)
+			public _AnonymousInnerClass192(AbstractDb4oTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
