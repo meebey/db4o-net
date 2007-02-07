@@ -23,21 +23,25 @@ namespace Db4oUnit
 		public virtual void TestStarted(Db4oUnit.ITest test)
 		{
 			++_testCount;
-			PrintLabel(test.GetLabel());
-		}
-
-		private void PrintLabel(string label)
-		{
-			if (null != _stdout)
-			{
-				_stdout.Write(label + "\n");
-				_stdout.Flush();
-			}
+			Print(test.GetLabel());
 		}
 
 		public virtual void TestFailed(Db4oUnit.ITest test, System.Exception failure)
 		{
+			PrintFailure(failure);
 			_failures.Add(new Db4oUnit.TestFailure(test, failure));
+		}
+
+		private void PrintFailure(System.Exception failure)
+		{
+			if (failure == null)
+			{
+				Print("\t!");
+			}
+			else
+			{
+				Print("\t! " + failure.Message);
+			}
 		}
 
 		public virtual bool Green()
@@ -80,6 +84,21 @@ namespace Db4oUnit
 		public virtual void RunFinished()
 		{
 			_watch.Stop();
+		}
+
+		private void Print(string message)
+		{
+			if (null != _stdout)
+			{
+				try
+				{
+					_stdout.Write(message + "\n");
+					_stdout.Flush();
+				}
+				catch (System.IO.IOException)
+				{
+				}
+			}
 		}
 	}
 }

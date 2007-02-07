@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			for (int i = 0; i < fields.Length; i++)
 			{
 				System.Reflection.FieldInfo field = fields[i];
-				if (Db4objects.Db4o.Tests.Db4oUnitPlatform.IsStoreableField(field))
+				if (Db4oUnit.Extensions.Db4oUnitPlatform.IsStoreableField(field))
 				{
 					Db4objects.Db4o.Internal.Platform4.SetAccessible(field);
 					try
