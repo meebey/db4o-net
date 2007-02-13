@@ -59,5 +59,10 @@ namespace Db4oUnit.Extensions.Fixtures
 			return (Db4objects.Db4o.Internal.LocalObjectContainer)_server.Ext().ObjectContainer
 				();
 		}
+
+		public override void Defragment()
+		{
+			Defragment(FILE);
+		}
 	}
 }

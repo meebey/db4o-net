@@ -1,9 +1,6 @@
 namespace Db4objects.Db4o.Internal
 {
-	/// <summary>public for .NET conversion reasons.</summary>
-	/// <remarks>public for .NET conversion reasons.</remarks>
 	/// <exclude></exclude>
-	/// <renameto>Buffer</renameto>
 	public class Buffer : Db4objects.Db4o.Internal.ISlotReader
 	{
 		public byte[] _buffer;

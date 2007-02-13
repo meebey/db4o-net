@@ -20,9 +20,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.MultiDeleteTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.PersistTypeTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ServerRevokeAccessTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Assorted.SystemInfoTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ObjectVersionTest)
-				, typeof(Db4objects.Db4o.Tests.Common.Assorted.HandlerRegistryTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ClassMetadataTestCase)
-				 };
+				, typeof(Db4objects.Db4o.Tests.Common.Assorted.SystemInfoTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Assorted.ObjectVersionTest), typeof(Db4objects.Db4o.Tests.Common.Assorted.HandlerRegistryTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Assorted.ClassMetadataTestCase) };
 		}
 	}
 }

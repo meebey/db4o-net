@@ -246,5 +246,12 @@ namespace Db4oUnit.Extensions
 		{
 			return Reflector().ForClass(clazz);
 		}
+
+		protected virtual void Defragment()
+		{
+			Fixture().Close();
+			Fixture().Defragment();
+			Fixture().Open();
+		}
 	}
 }

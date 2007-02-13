@@ -4,13 +4,13 @@ namespace Db4objects.Db4o.Internal
 	{
 		private readonly Db4objects.Db4o.Config.IObjectTranslator i_translator;
 
-		internal TranslatedFieldMetadata(Db4objects.Db4o.Internal.ClassMetadata a_yapClass
-			, Db4objects.Db4o.Config.IObjectTranslator a_translator) : base(a_yapClass, a_translator
+		internal TranslatedFieldMetadata(Db4objects.Db4o.Internal.ClassMetadata containingClass
+			, Db4objects.Db4o.Config.IObjectTranslator translator) : base(containingClass, translator
 			)
 		{
-			i_translator = a_translator;
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = a_yapClass.GetStream();
-			Configure(stream.Reflector().ForClass(a_translator.StoredClass()), false);
+			i_translator = translator;
+			Db4objects.Db4o.Internal.ObjectContainerBase stream = containingClass.GetStream();
+			Configure(stream.Reflector().ForClass(translator.StoredClass()), false);
 		}
 
 		public override bool CanUseNullBitmap()

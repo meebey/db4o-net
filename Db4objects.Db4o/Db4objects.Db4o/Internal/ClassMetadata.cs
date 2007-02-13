@@ -125,15 +125,15 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal virtual void AddMembers(Db4objects.Db4o.Internal.ObjectContainerBase a_stream
+		internal virtual void AddMembers(Db4objects.Db4o.Internal.ObjectContainerBase ocb
 			)
 		{
 			BitTrue(Db4objects.Db4o.Internal.Const4.CHECKED_CHANGES);
-			if (AddTranslatorFields(a_stream))
+			if (InstallTranslator(ocb) || InstallMarshaller(ocb))
 			{
 				return;
 			}
-			if (a_stream.DetectSchemaChanges())
+			if (ocb.DetectSchemaChanges())
 			{
 				bool dirty = IsDirty();
 				Db4objects.Db4o.Foundation.Collection4 members = new Db4objects.Db4o.Foundation.Collection4
@@ -152,7 +152,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					if (!HasVersionField())
 					{
-						members.Add(a_stream.GetVersionIndex());
+						members.Add(ocb.GetVersionIndex());
 						dirty = true;
 					}
 				}
@@ -160,11 +160,11 @@ namespace Db4objects.Db4o.Internal
 				{
 					if (!HasUUIDField())
 					{
-						members.Add(a_stream.GetUUIDIndex());
+						members.Add(ocb.GetUUIDIndex());
 						dirty = true;
 					}
 				}
-				dirty = CollectReflectFields(a_stream, members) | dirty;
+				dirty = CollectReflectFields(ocb, members) | dirty;
 				if (dirty)
 				{
 					i_stream.SetDirtyInSystemTransaction(this);
@@ -238,8 +238,19 @@ namespace Db4objects.Db4o.Internal
 			return dirty;
 		}
 
-		private bool AddTranslatorFields(Db4objects.Db4o.Internal.ObjectContainerBase a_stream
-			)
+		private bool InstallMarshaller(Db4objects.Db4o.Internal.ObjectContainerBase ocb)
+		{
+			Db4objects.Db4o.Config.IObjectMarshaller om = GetMarshaller();
+			if (om == null)
+			{
+				return false;
+			}
+			InstallCustomFieldMetadata(ocb, new Db4objects.Db4o.Internal.CustomMarshallerFieldMetadata
+				(this, om));
+			return true;
+		}
+
+		private bool InstallTranslator(Db4objects.Db4o.Internal.ObjectContainerBase ocb)
 		{
 			Db4objects.Db4o.Config.IObjectTranslator ot = GetTranslator();
 			if (ot == null)
@@ -250,6 +261,14 @@ namespace Db4objects.Db4o.Internal
 			{
 				i_stream.SetDirtyInSystemTransaction(this);
 			}
+			InstallCustomFieldMetadata(ocb, new Db4objects.Db4o.Internal.TranslatedFieldMetadata
+				(this, ot));
+			return true;
+		}
+
+		private void InstallCustomFieldMetadata(Db4objects.Db4o.Internal.ObjectContainerBase
+			 ocb, Db4objects.Db4o.Internal.FieldMetadata customFieldMetadata)
+		{
 			int fieldCount = 1;
 			bool versions = GenerateVersionNumbers() && !AncestorHasVersionField();
 			bool uuids = GenerateUUIDs() && !AncestorHasUUIDField();
@@ -262,22 +281,26 @@ namespace Db4objects.Db4o.Internal
 				fieldCount = 3;
 			}
 			i_fields = new Db4objects.Db4o.Internal.FieldMetadata[fieldCount];
-			i_fields[0] = new Db4objects.Db4o.Internal.TranslatedFieldMetadata(this, ot);
+			i_fields[0] = customFieldMetadata;
 			if (versions || uuids)
 			{
-				i_fields[1] = a_stream.GetVersionIndex();
+				i_fields[1] = ocb.GetVersionIndex();
 			}
 			if (uuids)
 			{
-				i_fields[2] = a_stream.GetUUIDIndex();
+				i_fields[2] = ocb.GetUUIDIndex();
 			}
 			SetStateOK();
-			return true;
 		}
 
 		private Db4objects.Db4o.Config.IObjectTranslator GetTranslator()
 		{
 			return i_config == null ? null : i_config.GetTranslator();
+		}
+
+		private Db4objects.Db4o.Config.IObjectMarshaller GetMarshaller()
+		{
+			return i_config == null ? null : i_config.GetMarshaller();
 		}
 
 		private bool IsNewTranslator(Db4objects.Db4o.Config.IObjectTranslator ot)
@@ -1119,13 +1142,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			Db4objects.Db4o.Internal.FieldMetadata[] yf = new Db4objects.Db4o.Internal.FieldMetadata
 				[1];
-			ForEachYapField(new _AnonymousInnerClass928(this, name, yf));
+			ForEachYapField(new _AnonymousInnerClass947(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _AnonymousInnerClass928 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass947 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass928(ClassMetadata _enclosing, string name, Db4objects.Db4o.Internal.FieldMetadata[]
+			public _AnonymousInnerClass947(ClassMetadata _enclosing, string name, Db4objects.Db4o.Internal.FieldMetadata[]
 				 yf)
 			{
 				this._enclosing = _enclosing;
@@ -1721,15 +1744,15 @@ namespace Db4objects.Db4o.Internal
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Db4objects.Db4o.Internal.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1412
+					Db4objects.Db4o.Internal.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1431
 						(this, a_candidates, trans));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1412 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass1431 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass1412(ClassMetadata _enclosing, Db4objects.Db4o.Internal.Query.Processor.QCandidates
+			public _AnonymousInnerClass1431(ClassMetadata _enclosing, Db4objects.Db4o.Internal.Query.Processor.QCandidates
 				 a_candidates, Db4objects.Db4o.Internal.Transaction trans)
 			{
 				this._enclosing = _enclosing;

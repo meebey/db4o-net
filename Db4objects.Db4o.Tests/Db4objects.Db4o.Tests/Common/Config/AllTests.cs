@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		protected override System.Type[] TestCases()
 		{
 			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Config.NonStaticConfigurationTestCase)
-				 };
+				, typeof(Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase) };
 		}
 	}
 }

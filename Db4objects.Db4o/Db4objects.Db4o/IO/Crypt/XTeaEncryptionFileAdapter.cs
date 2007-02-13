@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.IO.Crypt
 			{
 				Seek(_pos - prePad);
 			}
-			int readResult = _adapter.Read(pb);
+			_adapter.Read(pb);
 			_xtea.Decrypt(pb);
 			System.Array.Copy(pb, prePad, bytes, 0, length);
 			Seek(origPos + length);

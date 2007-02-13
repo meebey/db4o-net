@@ -1,6 +1,7 @@
-namespace Db4objects.Db4o.Internal.Query.Processor
+namespace Db4objects.Db4o.Internal
 {
-	internal class NullFieldMetadata : Db4objects.Db4o.Internal.FieldMetadata
+	/// <exclude></exclude>
+	public class NullFieldMetadata : Db4objects.Db4o.Internal.FieldMetadata
 	{
 		public NullFieldMetadata() : base(null)
 		{

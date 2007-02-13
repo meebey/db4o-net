@@ -144,14 +144,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								Db4objects.Db4o.Foundation.Tree.ByRef pending = new Db4objects.Db4o.Foundation.Tree.ByRef
 									();
 								bool[] innerRes = { isNot };
-								candidates.Traverse(new _AnonymousInnerClass170(this, innerRes, isNot, pending));
+								candidates.Traverse(new _AnonymousInnerClass169(this, innerRes, isNot, pending));
 								if (isNot)
 								{
 									qcon.Not();
 								}
 								if (pending.value != null)
 								{
-									pending.value.Traverse(new _AnonymousInnerClass239(this));
+									pending.value.Traverse(new _AnonymousInnerClass238(this));
 								}
 								if (!innerRes[0])
 								{
@@ -170,8 +170,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 			}
-			if (_yapField == null || _yapField is Db4objects.Db4o.Internal.Query.Processor.NullFieldMetadata
-				)
+			if (_yapField == null || _yapField is Db4objects.Db4o.Internal.NullFieldMetadata)
 			{
 				return false;
 			}
@@ -211,9 +210,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _AnonymousInnerClass170 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass169 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass170(QCandidate _enclosing, bool[] innerRes, bool isNot
+			public _AnonymousInnerClass169(QCandidate _enclosing, bool[] innerRes, bool isNot
 				, Db4objects.Db4o.Foundation.Tree.ByRef pending)
 			{
 				this._enclosing = _enclosing;
@@ -232,13 +231,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (cand._pendingJoins != null)
 				{
-					cand._pendingJoins.Traverse(new _AnonymousInnerClass183(this, pending));
+					cand._pendingJoins.Traverse(new _AnonymousInnerClass182(this, pending));
 				}
 			}
 
-			private sealed class _AnonymousInnerClass183 : Db4objects.Db4o.Foundation.IVisitor4
+			private sealed class _AnonymousInnerClass182 : Db4objects.Db4o.Foundation.IVisitor4
 			{
-				public _AnonymousInnerClass183(_AnonymousInnerClass170 _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
+				public _AnonymousInnerClass182(_AnonymousInnerClass169 _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
 					 pending)
 				{
 					this._enclosing = _enclosing;
@@ -265,7 +264,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 
-				private readonly _AnonymousInnerClass170 _enclosing;
+				private readonly _AnonymousInnerClass169 _enclosing;
 
 				private readonly Db4objects.Db4o.Foundation.Tree.ByRef pending;
 			}
@@ -279,9 +278,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly Db4objects.Db4o.Foundation.Tree.ByRef pending;
 		}
 
-		private sealed class _AnonymousInnerClass239 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass238 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass239(QCandidate _enclosing)
+			public _AnonymousInnerClass238(QCandidate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -624,7 +623,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				else
 				{
-					_yapField = new Db4objects.Db4o.Internal.Query.Processor.NullFieldMetadata();
+					_yapField = new Db4objects.Db4o.Internal.NullFieldMetadata();
 				}
 			}
 		}

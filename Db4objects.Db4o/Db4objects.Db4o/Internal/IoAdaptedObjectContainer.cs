@@ -333,8 +333,45 @@ namespace Db4objects.Db4o.Internal
 			lock (i_lock)
 			{
 				int address = GetSlot(byteCount);
-				WriteBytes(new Db4objects.Db4o.Internal.Buffer(byteCount), address, 0);
+				ZeroReservedStorage(address, byteCount);
 				Free(address, byteCount);
+			}
+		}
+
+		private void ZeroReservedStorage(int address, int length)
+		{
+			if (ConfigImpl().IsReadOnly())
+			{
+				return;
+			}
+			try
+			{
+				ZeroFile(i_file, address, length);
+				ZeroFile(i_backupFile, address, length);
+			}
+			catch (System.IO.IOException e)
+			{
+				Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(16, e);
+			}
+		}
+
+		private void ZeroFile(Db4objects.Db4o.IO.IoAdapter io, int address, int length)
+		{
+			if (io == null)
+			{
+				return;
+			}
+			byte[] zeroBytes = new byte[1024];
+			int left = length;
+			io.BlockSeek(address, 0);
+			while (left > zeroBytes.Length)
+			{
+				io.Write(zeroBytes, zeroBytes.Length);
+				left -= zeroBytes.Length;
+			}
+			if (left > 0)
+			{
+				io.Write(zeroBytes, left);
 			}
 		}
 
@@ -367,7 +404,7 @@ namespace Db4objects.Db4o.Internal
 					return false;
 				}
 				i_timerFile.BlockSeek(address, offset);
-				Db4objects.Db4o.Internal.Handlers.LongHandler.WriteLong(time, i_timerBytes);
+				Db4objects.Db4o.Foundation.PrimitiveCodec.WriteLong(i_timerBytes, time);
 				i_timerFile.Write(i_timerBytes);
 				if (i_file == null)
 				{

@@ -176,6 +176,41 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		void Indexed(bool flag);
 
+		/// <summary>registers a custom marshaller for this class.</summary>
+		/// <remarks>
+		/// registers a custom marshaller for this class.
+		/// <br /><br />
+		/// Custom marshallers can be used for tuning the performance to store
+		/// and read objects. Instead of letting db4o do all the marshalling
+		/// by detecting the fields on a class and by using reflection, a
+		/// custom
+		/// <see cref="Db4objects.Db4o.Config.IObjectMarshaller">ObjectMarshaller</see>
+		/// allows the
+		/// application developer to write the logic how the fields of an
+		/// object are converted to a byte[] and back.
+		/// <br /><br />Downside:<br />
+		/// - Indexes and querying can not be used.
+		/// <br /><br />Upsides:<br />
+		/// - Not all fields need to be stored.<br />
+		/// - Reflection does not need to be called.<br />
+		/// <br /><br />As an alternative to using a custom marshallers you may
+		/// want to consider writing an
+		/// <see cref="Db4objects.Db4o.Config.IObjectTranslator">ObjectTranslator</see>
+		/// or your own
+		/// <see cref="Db4objects.Db4o.Reflect.IReflector">Reflector</see>
+		/// .
+		/// <br /><br />The use of an
+		/// <see cref="Db4objects.Db4o.Config.IObjectMarshaller">ObjectMarshaller</see>
+		/// is not
+		/// compatible with the use of an
+		/// <see cref="Db4objects.Db4o.Config.IObjectTranslator">ObjectTranslator</see>
+		/// .<br /><br />
+		/// </remarks>
+		/// <param name="marshaller">to be used for this class</param>
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectMarshaller">Db4objects.Db4o.Config.IObjectMarshaller
+		/// 	</seealso>
+		void MarshallWith(Db4objects.Db4o.Config.IObjectMarshaller marshaller);
+
 		/// <summary>sets the maximum activation depth to the desired value.</summary>
 		/// <remarks>
 		/// sets the maximum activation depth to the desired value.
@@ -286,6 +321,12 @@ namespace Db4objects.Db4o.Config
 		/// Preinstalled translators are documented in the sourcecode of
 		/// com.db4o.samples.translators.Default.java#defaultConfiguration().
 		/// <br /><br />Example translators can also be found in this folder.<br /><br />
+		/// <br /><br />The use of an
+		/// <see cref="Db4objects.Db4o.Config.IObjectTranslator">ObjectTranslator</see>
+		/// is not
+		/// compatible with the use of an
+		/// <see cref="Db4objects.Db4o.Config.IObjectMarshaller">ObjectMarshaller</see>
+		/// .<br /><br />
 		/// </remarks>
 		/// <param name="translator">
 		/// this may be an

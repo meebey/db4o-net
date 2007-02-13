@@ -69,7 +69,10 @@ namespace Db4objects.Db4o.Defragment
 			, Db4objects.Db4o.Defragment.IDefragmentListener listener)
 		{
 			_listener = listener;
-			Db4objects.Db4o.Config.IConfiguration sourceConfig = defragConfig.Db4oConfig();
+			Db4objects.Db4o.Internal.Config4Impl originalConfig = (Db4objects.Db4o.Internal.Config4Impl
+				)defragConfig.Db4oConfig();
+			Db4objects.Db4o.Config.IConfiguration sourceConfig = (Db4objects.Db4o.Config.IConfiguration
+				)originalConfig.DeepClone(null);
 			sourceConfig.WeakReferences(false);
 			sourceConfig.FlushFileBuffers(false);
 			sourceConfig.ReadOnly(true);

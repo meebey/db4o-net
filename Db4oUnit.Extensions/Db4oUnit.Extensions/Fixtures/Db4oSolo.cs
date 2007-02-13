@@ -2,13 +2,15 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oSolo : Db4oUnit.Extensions.Fixtures.AbstractFileBasedDb4oFixture
 	{
+		private static readonly string FILE = "db4oSoloTest.yap";
+
 		public Db4oSolo() : this(new Db4oUnit.Extensions.Fixtures.IndependentConfigurationSource
 			())
 		{
 		}
 
 		public Db4oSolo(Db4oUnit.Extensions.Fixtures.IConfigurationSource configSource) : 
-			base(configSource, "db4oSoloTest.yap")
+			base(configSource, FILE)
 		{
 		}
 
@@ -21,6 +23,11 @@ namespace Db4oUnit.Extensions.Fixtures
 		public override string GetLabel()
 		{
 			return "SOLO";
+		}
+
+		public override void Defragment()
+		{
+			Defragment(FILE);
 		}
 	}
 }

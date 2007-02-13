@@ -107,11 +107,27 @@ namespace Db4objects.Db4o.Reflect.Generic
 				)_repository.LookupByName(clazz.GetName());
 			if (claxx == null)
 			{
-				string name = clazz.GetName();
-				claxx = new Db4objects.Db4o.Reflect.Generic.GenericClass(this, clazz, name, null);
+				claxx = GenericClass(clazz);
 				_repository.Register(claxx);
 			}
 			return claxx;
+		}
+
+		private Db4objects.Db4o.Reflect.Generic.GenericClass GenericClass(Db4objects.Db4o.Reflect.IReflectClass
+			 clazz)
+		{
+			Db4objects.Db4o.Reflect.Generic.GenericClass ret;
+			string name = clazz.GetName();
+			if (name.Equals(typeof(Db4objects.Db4o.Reflect.Generic.GenericArray).FullName))
+			{
+				ret = new Db4objects.Db4o.Reflect.Generic.GenericArrayClass(this, clazz, name, null
+					);
+			}
+			else
+			{
+				ret = new Db4objects.Db4o.Reflect.Generic.GenericClass(this, clazz, name, null);
+			}
+			return ret;
 		}
 
 		public virtual Db4objects.Db4o.Reflect.IReflectClass ForClass(System.Type clazz)
@@ -226,14 +242,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 			 clazz)
 		{
 			Db4objects.Db4o.Reflect.IReflectClass collectionClass = ForClass(clazz);
-			Db4objects.Db4o.Reflect.IReflectClassPredicate predicate = new _AnonymousInnerClass209
+			Db4objects.Db4o.Reflect.IReflectClassPredicate predicate = new _AnonymousInnerClass220
 				(this, collectionClass);
 			return predicate;
 		}
 
-		private sealed class _AnonymousInnerClass209 : Db4objects.Db4o.Reflect.IReflectClassPredicate
+		private sealed class _AnonymousInnerClass220 : Db4objects.Db4o.Reflect.IReflectClassPredicate
 		{
-			public _AnonymousInnerClass209(GenericReflector _enclosing, Db4objects.Db4o.Reflect.IReflectClass
+			public _AnonymousInnerClass220(GenericReflector _enclosing, Db4objects.Db4o.Reflect.IReflectClass
 				 collectionClass)
 			{
 				this._enclosing = _enclosing;

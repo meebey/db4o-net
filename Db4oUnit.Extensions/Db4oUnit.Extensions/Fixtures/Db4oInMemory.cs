@@ -33,5 +33,9 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			return "IN-MEMORY";
 		}
+
+		public override void Defragment()
+		{
+		}
 	}
 }

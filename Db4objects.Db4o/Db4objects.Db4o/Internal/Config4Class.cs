@@ -28,6 +28,9 @@ namespace Db4objects.Db4o.Internal
 		private static readonly Db4objects.Db4o.Foundation.KeySpec MAINTAIN_METACLASS = new 
 			Db4objects.Db4o.Foundation.KeySpec(true);
 
+		private static readonly Db4objects.Db4o.Foundation.KeySpec MARSHALLER = new Db4objects.Db4o.Foundation.KeySpec
+			(null);
+
 		private static readonly Db4objects.Db4o.Foundation.KeySpec MAXIMUM_ACTIVATION_DEPTH
 			 = new Db4objects.Db4o.Foundation.KeySpec(0);
 
@@ -196,6 +199,17 @@ namespace Db4objects.Db4o.Internal
 		internal virtual bool Instantiates()
 		{
 			return GetTranslator() is Db4objects.Db4o.Config.IObjectConstructor;
+		}
+
+		public virtual void MarshallWith(Db4objects.Db4o.Config.IObjectMarshaller marshaller
+			)
+		{
+			_config.Put(MARSHALLER, marshaller);
+		}
+
+		internal virtual Db4objects.Db4o.Config.IObjectMarshaller GetMarshaller()
+		{
+			return (Db4objects.Db4o.Config.IObjectMarshaller)_config.Get(MARSHALLER);
 		}
 
 		public virtual void MaximumActivationDepth(int depth)

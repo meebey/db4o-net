@@ -53,6 +53,14 @@ namespace Db4objects.Db4o.Internal
 				(a_translator.StoredClass()));
 		}
 
+		internal FieldMetadata(Db4objects.Db4o.Internal.ClassMetadata containingClass, Db4objects.Db4o.Config.IObjectMarshaller
+			 marshaller) : this(containingClass)
+		{
+			Init(containingClass, marshaller.GetType().FullName);
+			i_state = AVAILABLE;
+			i_handler = GetStream().i_handlers.UntypedHandler();
+		}
+
 		internal FieldMetadata(Db4objects.Db4o.Internal.ClassMetadata a_yapClass, Db4objects.Db4o.Reflect.IReflectField
 			 a_field, Db4objects.Db4o.Internal.ITypeHandler4 a_handler) : this(a_yapClass)
 		{
@@ -604,9 +612,9 @@ namespace Db4objects.Db4o.Internal
 			return _index != null;
 		}
 
-		public void IncrementOffset(Db4objects.Db4o.Internal.Buffer a_bytes)
+		public void IncrementOffset(Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			a_bytes.IncrementOffset(LinkLength());
+			buffer.IncrementOffset(LinkLength());
 		}
 
 		public void Init(Db4objects.Db4o.Internal.ClassMetadata a_yapClass, string a_name
@@ -647,18 +655,18 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public virtual void Instantiate(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.ObjectReference a_yapObject, object a_onObject, Db4objects.Db4o.Internal.StatefulBuffer
-			 a_bytes)
+			 mf, Db4objects.Db4o.Internal.ObjectReference @ref, object onObject, Db4objects.Db4o.Internal.StatefulBuffer
+			 buffer)
 		{
 			if (!Alive())
 			{
-				IncrementOffset(a_bytes);
+				IncrementOffset(buffer);
 				return;
 			}
 			object toSet = null;
 			try
 			{
-				toSet = Read(mf, a_bytes);
+				toSet = Read(mf, buffer);
 			}
 			catch
 			{
@@ -668,11 +676,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (toSet != null)
 				{
-					((Db4objects.Db4o.Internal.IDb4oTypeImpl)toSet).SetTrans(a_bytes.GetTransaction()
-						);
+					((Db4objects.Db4o.Internal.IDb4oTypeImpl)toSet).SetTrans(buffer.GetTransaction());
 				}
 			}
-			Set(a_onObject, toSet);
+			Set(onObject, toSet);
 		}
 
 		public virtual bool IsArray()
@@ -869,7 +876,7 @@ namespace Db4objects.Db4o.Internal
 			i_arrayPosition = a_index;
 		}
 
-		public void Set(object onObject, object obj)
+		public virtual void Set(object onObject, object obj)
 		{
 			try
 			{
@@ -906,13 +913,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				Db4objects.Db4o.Internal.Transaction trans = stream.GetTransaction();
-				_index.TraverseKeys(trans, new _AnonymousInnerClass794(this, userVisitor, trans));
+				_index.TraverseKeys(trans, new _AnonymousInnerClass801(this, userVisitor, trans));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass794 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass801 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass794(FieldMetadata _enclosing, Db4objects.Db4o.Foundation.IVisitor4
+			public _AnonymousInnerClass801(FieldMetadata _enclosing, Db4objects.Db4o.Foundation.IVisitor4
 				 userVisitor, Db4objects.Db4o.Internal.Transaction trans)
 			{
 				this._enclosing = _enclosing;

@@ -46,40 +46,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ReadLong(a_bytes);
 		}
 
-		public static long ReadLong(Db4objects.Db4o.Internal.Buffer a_bytes)
+		public static long ReadLong(Db4objects.Db4o.Internal.Buffer bytes)
 		{
-			long l_return = 0;
-			for (int i = 0; i < Db4objects.Db4o.Internal.Const4.LONG_BYTES; i++)
-			{
-				l_return = (l_return << 8) + (a_bytes._buffer[a_bytes._offset++] & unchecked((int
-					)(0xff)));
-			}
-			return l_return;
+			long ret = 0;
+			ret = Db4objects.Db4o.Foundation.PrimitiveCodec.ReadLong(bytes._buffer, bytes._offset
+				);
+			IncrementOffset(bytes);
+			return ret;
 		}
 
-		public override void Write(object a_object, Db4objects.Db4o.Internal.Buffer a_bytes
-			)
+		public override void Write(object obj, Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			WriteLong(((long)a_object), a_bytes);
+			WriteLong(((long)obj), buffer);
 		}
 
-		public static void WriteLong(long a_long, Db4objects.Db4o.Internal.Buffer a_bytes
-			)
+		public static void WriteLong(long val, Db4objects.Db4o.Internal.Buffer bytes)
 		{
-			for (int i = 0; i < Db4objects.Db4o.Internal.Const4.LONG_BYTES; i++)
-			{
-				a_bytes._buffer[a_bytes._offset++] = (byte)(a_long >> ((Db4objects.Db4o.Internal.Const4
-					.LONG_BYTES - 1 - i) * 8));
-			}
+			Db4objects.Db4o.Foundation.PrimitiveCodec.WriteLong(bytes._buffer, bytes._offset, 
+				val);
+			IncrementOffset(bytes);
 		}
 
-		public static void WriteLong(long a_long, byte[] bytes)
+		private static void IncrementOffset(Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			for (int i = 0; i < Db4objects.Db4o.Internal.Const4.LONG_BYTES; i++)
-			{
-				bytes[i] = (byte)(a_long >> ((Db4objects.Db4o.Internal.Const4.LONG_BYTES - 1 - i)
-					 * 8));
-			}
+			buffer.IncrementOffset(Db4objects.Db4o.Internal.Const4.LONG_BYTES);
 		}
 
 		private long i_compareTo;
