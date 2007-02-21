@@ -45,6 +45,11 @@ namespace Sharpen.IO
 			return System.IO.File.Exists(_path) || Directory.Exists(_path);
 		}
 
+		public string GetCanonicalPath()
+		{
+			return _path;
+		}
+
 		public string GetAbsolutePath()
 		{
 			return _path;
