@@ -12,6 +12,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 {
 	public class ImageTestCase : AbstractDb4oTestCase
 	{
+#if !CF_1_0
 		public class ImageTranslator : IObjectConstructor
 		{
 			public object OnInstantiate(IObjectContainer container, object obj)
@@ -64,5 +65,6 @@ namespace Db4objects.Db4o.Tests.CLI1
 			Assert.AreEqual(width, b.Width);
 			Assert.AreEqual(height, b.Height);
 		}
+#endif
 	}
 }
