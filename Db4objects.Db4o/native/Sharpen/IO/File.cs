@@ -1,8 +1,6 @@
 ﻿/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 
-using System;
 using System.IO;
-using Db4objects.Db4o;
 
 namespace Sharpen.IO
 {
@@ -47,12 +45,12 @@ namespace Sharpen.IO
 
 		public string GetCanonicalPath()
 		{
-			return _path;
+			return Path.GetFullPath(_path);
 		}
 
 		public string GetAbsolutePath()
 		{
-			return _path;
+			return Path.GetFullPath(_path);
 		}
 
 		public string GetName()
