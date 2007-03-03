@@ -13,6 +13,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 	{
 		public int? intValue = null;
 		public DateTime? dateValue = null;
+		public double?[] doubleArrayValue = null;
 
 		public NullableContainer(int value)
 		{
@@ -23,6 +24,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 		{
 			dateValue = value;
 		}
+
+		public NullableContainer(double?[] values)
+		{
+			doubleArrayValue = values;
+		}
 	}
 #endif
 
@@ -30,11 +36,13 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 	{
 #if NET_2_0 || CF_2_0
 		static readonly DateTime TheDate = new DateTime(1983, 3, 7);
+		static readonly double?[] Doubles = new double?[] {1, 1.2, null, 4, 0};
 
 		protected override void Store()
 		{
 			Db().Set(new NullableContainer(42));
 			Db().Set(new NullableContainer(TheDate));
+			Db().Set(new NullableContainer(Doubles));
 		}
 
 		public void TestGlobalQuery()
@@ -43,10 +51,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			query.Constrain(typeof(NullableContainer));
 
 			IObjectSet os = query.Execute();
-			Assert.AreEqual(2, os.Size());
+			Assert.AreEqual(3, os.Size());
 
 			bool foundInt = false;
 			bool foundDate = false;
+			bool foundDoubleArray = false;
 			while (os.HasNext())
 			{
 				NullableContainer item = (NullableContainer)os.Next();
@@ -56,16 +65,38 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 					Assert.IsFalse(item.dateValue.HasValue);
 					foundInt = true;
 				}
-				else
+				else if (item.dateValue.HasValue)
 				{
 					Assert.AreEqual(TheDate, item.dateValue.Value);
 					Assert.IsFalse(item.intValue.HasValue);
 					foundDate = true;
 				}
+#if 0
+				else
+				{
+					Assert.IsTrue(AreEqual(Doubles, item.doubleArrayValue));
+					foundDoubleArray = true;
+				}
+#endif
 			}
 
 			Assert.IsTrue(foundInt);
 			Assert.IsTrue(foundDate);
+			Assert.IsTrue(foundDoubleArray);
+		}
+
+		private static bool AreEqual(double?[] expected, double?[] values)
+		{
+			if (expected == values) return true;
+			if (expected == null || values == null) return false;
+
+			for (int i = 0; i < expected.Length; i++)
+			{
+				if (expected[i] != values[i]) return false;
+			}
+
+			return true;
+
 		}
 
 		public void TestDateQuery()
