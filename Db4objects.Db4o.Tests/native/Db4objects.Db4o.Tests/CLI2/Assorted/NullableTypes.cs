@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 					Assert.IsFalse(item.intValue.HasValue);
 					foundDate = true;
 				}
-#if 0
+#if false
 				else
 				{
 					Assert.IsTrue(AreEqual(Doubles, item.doubleArrayValue));
