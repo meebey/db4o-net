@@ -1,5 +1,6 @@
 ﻿using System;
-using Sharpen.Lang;
+
+using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
@@ -49,7 +50,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 			try
 			{
-				Type type = TypeReference.FromString(className).Resolve();
+				Type type = ReflectPlatform.ForName(className);
 				if (type == null) return null;
 				return ForClass(type);
 			}
