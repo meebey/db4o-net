@@ -25,5 +25,11 @@ namespace Db4objects.Db4o.Internal.Events
 			if (null == e) return;
 			e(o, new ObjectEventArgs(o));
 		}
+		
+		public static void TriggerCommitEvent(CommitEventHandler e, Db4objects.Db4o.Ext.IObjectInfo[] added)
+		{
+			if (null == e) return;
+			e(null, new CommitEventArgs(added));
+		}
 	}
 }
