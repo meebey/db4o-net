@@ -14,6 +14,8 @@ namespace Db4objects.Db4o.Defragment
 
 		private string _backupPath;
 
+		private string _tempPath;
+
 		private Db4objects.Db4o.Defragment.IContextIDMapping _mapping;
 
 		private Db4objects.Db4o.Config.IConfiguration _config;
@@ -129,9 +131,39 @@ namespace Db4objects.Db4o.Defragment
 			return _objectCommitFrequency;
 		}
 
+		/// <param name="objectCommitFrequency">
+		/// The number of processed object (slots) that should trigger an
+		/// intermediate commit of the target file. Default: 0, meaning: never.
+		/// </param>
 		public virtual void ObjectCommitFrequency(int objectCommitFrequency)
 		{
 			_objectCommitFrequency = objectCommitFrequency;
+		}
+
+		/// <summary>
+		/// Instruct the defragment process to upgrade the source file to the current db4o
+		/// version prior to defragmenting it.
+		/// </summary>
+		/// <remarks>
+		/// Instruct the defragment process to upgrade the source file to the current db4o
+		/// version prior to defragmenting it. Use this option if your source file has been created
+		/// with an older db4o version than the one you are using.
+		/// </remarks>
+		/// <param name="tempPath">The location for an intermediate, upgraded version of the source file.
+		/// 	</param>
+		public virtual void UpgradeFile(string tempPath)
+		{
+			_tempPath = tempPath;
+		}
+
+		public virtual bool FileNeedsUpgrade()
+		{
+			return _tempPath != null;
+		}
+
+		public virtual string TempPath()
+		{
+			return (_tempPath != null ? _tempPath : _backupPath);
 		}
 
 		private class NullFilter : Db4objects.Db4o.Defragment.IStoredClassFilter

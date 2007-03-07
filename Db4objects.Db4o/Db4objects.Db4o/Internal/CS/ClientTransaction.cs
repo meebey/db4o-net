@@ -74,8 +74,8 @@ namespace Db4objects.Db4o.Internal.CS
 			return res == 1;
 		}
 
-		public override object[] ObjectAndYapObjectBySignature(long a_uuid, byte[] a_signature
-			)
+		public sealed override Db4objects.Db4o.Internal.HardObjectReference GetHardReferenceBySignature
+			(long a_uuid, byte[] a_signature)
 		{
 			int messageLength = Db4objects.Db4o.Internal.Const4.LONG_LENGTH + Db4objects.Db4o.Internal.Const4
 				.INT_LENGTH + a_signature.Length;
@@ -89,9 +89,9 @@ namespace Db4objects.Db4o.Internal.CS
 			int id = message.ReadInt();
 			if (id > 0)
 			{
-				return Stream().GetObjectAndYapObjectByID(this, id);
+				return Stream().GetHardObjectReferenceById(this, id);
 			}
-			return new object[2];
+			return Db4objects.Db4o.Internal.HardObjectReference.INVALID;
 		}
 
 		public override void ProcessDeletes()

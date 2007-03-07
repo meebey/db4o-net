@@ -39,6 +39,19 @@ namespace Db4objects.Db4o.Config
 		/// <param name="byteCount">Slots with this size or smaller will be lost.</param>
 		void DiscardSmallerThan(int byteCount);
 
+		/// <summary>
+		/// Configure a way to overwrite freed space in the database file with custom
+		/// (for example: random) bytes.
+		/// </summary>
+		/// <remarks>
+		/// Configure a way to overwrite freed space in the database file with custom
+		/// (for example: random) bytes. Will slow down I/O operation.
+		/// The value of this setting may be cached internally and can thus not be
+		/// reliably set after an object container has been opened.
+		/// </remarks>
+		/// <param name="freespaceFiller">The freespace overwriting callback to use</param>
+		void FreespaceFiller(Db4objects.Db4o.Config.IFreespaceFiller freespaceFiller);
+
 		/// <summary>configures db4o to use an index-based freespace system.</summary>
 		/// <remarks>
 		/// configures db4o to use an index-based freespace system.

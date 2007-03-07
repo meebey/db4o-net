@@ -183,11 +183,8 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.IObjectContainer OpenClient(Db4objects.Db4o.Config.IConfiguration
 			 config, string hostName, int port, string user, string password)
 		{
-			lock (Db4objects.Db4o.Internal.Global4.Lock)
-			{
-				return new Db4objects.Db4o.Internal.CS.ClientObjectContainer(config, new Db4objects.Db4o.Foundation.Network.NetworkSocket
-					(hostName, port), user, password, true);
-			}
+			return new Db4objects.Db4o.Internal.CS.ClientObjectContainer(config, new Db4objects.Db4o.Foundation.Network.NetworkSocket
+				(hostName, port), user, password, true);
 		}
 
 		/// <summary>
@@ -201,11 +198,13 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="Db4objects.Db4o.IObjectContainer">ObjectContainer</see>
 		/// on the specified database file for local use.
-		/// <br /><br />Subsidiary calls with the same database file name will return the same
+		/// <br /><br />A database file can only be opened once, subsequent attempts to open
+		/// another
 		/// <see cref="Db4objects.Db4o.IObjectContainer">ObjectContainer</see>
-		/// object.<br /><br />
-		/// Every call to <code>openFile()</code> requires a corresponding
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Close">ObjectContainer.close</see>
+		/// against the same file will result in
+		/// a
+		/// <see cref="Db4objects.Db4o.Ext.DatabaseFileLockedException">DatabaseFileLockedException
+		/// 	</see>
 		/// .<br /><br />
 		/// Database files can only be accessed for readwrite access from one process
 		/// (one Java VM) at one time. All versions except for db4o mobile edition use an
@@ -232,11 +231,13 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="Db4objects.Db4o.IObjectContainer">ObjectContainer</see>
 		/// on the specified database file for local use.
-		/// <br /><br />Subsidiary calls with the same database file name will return the same
+		/// <br /><br />A database file can only be opened once, subsequent attempts to open
+		/// another
 		/// <see cref="Db4objects.Db4o.IObjectContainer">ObjectContainer</see>
-		/// object.<br /><br />
-		/// Every call to <code>openFile()</code> requires a corresponding
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Close">ObjectContainer.close</see>
+		/// against the same file will result in
+		/// a
+		/// <see cref="Db4objects.Db4o.Ext.DatabaseFileLockedException">DatabaseFileLockedException
+		/// 	</see>
 		/// .<br /><br />
 		/// Database files can only be accessed for readwrite access from one process
 		/// (one Java VM) at one time. All versions except for db4o mobile edition use an
@@ -264,35 +265,22 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.IObjectContainer OpenFile(Db4objects.Db4o.Config.IConfiguration
 			 config, string databaseFileName)
 		{
-			lock (Db4objects.Db4o.Internal.Global4.Lock)
-			{
-				return Db4objects.Db4o.Internal.Sessions.Open(config, databaseFileName);
-			}
+			return Db4objects.Db4o.Internal.ObjectContainerFactory.OpenObjectContainer(config
+				, databaseFileName);
 		}
 
 		protected static Db4objects.Db4o.IObjectContainer OpenMemoryFile1(Db4objects.Db4o.Config.IConfiguration
 			 config, Db4objects.Db4o.Ext.MemoryFile memoryFile)
 		{
-			lock (Db4objects.Db4o.Internal.Global4.Lock)
+			if (memoryFile == null)
 			{
-				if (memoryFile == null)
-				{
-					memoryFile = new Db4objects.Db4o.Ext.MemoryFile();
-				}
-				Db4objects.Db4o.IObjectContainer oc = null;
-				try
-				{
-					oc = new Db4objects.Db4o.Internal.InMemoryObjectContainer(config, memoryFile);
-				}
-				catch (System.Exception t)
-				{
-					Db4objects.Db4o.Internal.Messages.LogErr(i_config, 4, "Memory File", t);
-					return null;
-				}
-				Db4objects.Db4o.Internal.Platform4.PostOpen(oc);
-				Db4objects.Db4o.Internal.Messages.LogMsg(i_config, 5, "Memory File");
-				return oc;
+				memoryFile = new Db4objects.Db4o.Ext.MemoryFile();
 			}
+			Db4objects.Db4o.IObjectContainer oc = new Db4objects.Db4o.Internal.InMemoryObjectContainer
+				(config, memoryFile);
+			Db4objects.Db4o.Internal.Platform4.PostOpen(oc);
+			Db4objects.Db4o.Internal.Messages.LogMsg(i_config, 5, "Memory File");
+			return oc;
 		}
 
 		/// <summary>
@@ -380,18 +368,15 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.IObjectServer OpenServer(Db4objects.Db4o.Config.IConfiguration
 			 config, string databaseFileName, int port)
 		{
-			lock (Db4objects.Db4o.Internal.Global4.Lock)
+			Db4objects.Db4o.Internal.LocalObjectContainer stream = (Db4objects.Db4o.Internal.LocalObjectContainer
+				)OpenFile(config, databaseFileName);
+			if (stream == null)
 			{
-				Db4objects.Db4o.Internal.LocalObjectContainer stream = (Db4objects.Db4o.Internal.LocalObjectContainer
-					)OpenFile(config, databaseFileName);
-				if (stream == null)
-				{
-					return null;
-				}
-				lock (stream.Lock())
-				{
-					return new Db4objects.Db4o.Internal.CS.ObjectServerImpl(stream, port);
-				}
+				return null;
+			}
+			lock (stream.Lock())
+			{
+				return new Db4objects.Db4o.Internal.CS.ObjectServerImpl(stream, port);
 			}
 		}
 

@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public sealed class ConfigBlock
 	{
-		private readonly Db4objects.Db4o.Internal.LocalObjectContainer _stream;
+		private readonly Db4objects.Db4o.Internal.LocalObjectContainer _container;
 
 		private readonly Db4objects.Db4o.Internal.Fileheader.TimerFileLock _timerFileLock;
 
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Internal
 		private ConfigBlock(Db4objects.Db4o.Internal.LocalObjectContainer stream, bool isNew
 			, int address)
 		{
-			_stream = stream;
+			_container = stream;
 			_timerFileLock = Db4objects.Db4o.Internal.Fileheader.TimerFileLock.ForFile(stream
 				);
 			TimerFileLock().WriteHeaderLock();
@@ -98,25 +98,20 @@ namespace Db4objects.Db4o.Internal
 			return _transactionToCommit;
 		}
 
-		private bool LockFile()
-		{
-			return _stream.NeedsLockFileThread();
-		}
-
 		private byte[] PasswordToken()
 		{
 			byte[] pwdtoken = new byte[ENCRYPTION_PASSWORD_LENGTH];
-			string fullpwd = _stream.ConfigImpl().Password();
-			if (_stream.ConfigImpl().Encrypt() && fullpwd != null)
+			string fullpwd = _container.ConfigImpl().Password();
+			if (_container.ConfigImpl().Encrypt() && fullpwd != null)
 			{
 				try
 				{
 					byte[] pwdbytes = new Db4objects.Db4o.Internal.LatinStringIO().Write(fullpwd);
 					Db4objects.Db4o.Internal.Buffer encwriter = new Db4objects.Db4o.Internal.StatefulBuffer
-						(_stream.GetTransaction(), pwdbytes.Length + ENCRYPTION_PASSWORD_LENGTH);
+						(_container.GetTransaction(), pwdbytes.Length + ENCRYPTION_PASSWORD_LENGTH);
 					encwriter.Append(pwdbytes);
 					encwriter.Append(new byte[ENCRYPTION_PASSWORD_LENGTH]);
-					_stream.i_handlers.Decrypt(encwriter);
+					_container.i_handlers.Decrypt(encwriter);
 					System.Array.Copy(encwriter._buffer, 0, pwdtoken, 0, ENCRYPTION_PASSWORD_LENGTH);
 				}
 				catch (System.Exception exc)
@@ -129,18 +124,18 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Internal.SystemData SystemData()
 		{
-			return _stream.SystemData();
+			return _container.SystemData();
 		}
 
 		private void Read(int address)
 		{
 			AddressChanged(address);
 			TimerFileLock().WriteOpenTime();
-			Db4objects.Db4o.Internal.StatefulBuffer reader = _stream.GetWriter(_stream.GetSystemTransaction
-				(), _address, LENGTH);
+			Db4objects.Db4o.Internal.StatefulBuffer reader = _container.GetWriter(_container.
+				GetSystemTransaction(), _address, LENGTH);
 			try
 			{
-				_stream.ReadBytes(reader._buffer, _address, LENGTH);
+				_container.ReadBytes(reader._buffer, _address, LENGTH);
 			}
 			catch
 			{
@@ -153,12 +148,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (oldLength != LENGTH)
 			{
-				if (!_stream.ConfigImpl().IsReadOnly() && !_stream.ConfigImpl().AllowVersionUpdates
+				if (!_container.ConfigImpl().IsReadOnly() && !_container.ConfigImpl().AllowVersionUpdates
 					())
 				{
-					if (_stream.ConfigImpl().AutomaticShutDown())
+					if (_container.ConfigImpl().AutomaticShutDown())
 					{
-						Db4objects.Db4o.Internal.Platform4.RemoveShutDownHook(_stream, _stream.i_lock);
+						Db4objects.Db4o.Internal.Platform4.RemoveShutDownHook(_container, _container.i_lock
+							);
 					}
 					throw new Db4objects.Db4o.Ext.OldFormatException();
 				}
@@ -168,8 +164,8 @@ namespace Db4objects.Db4o.Internal
 			SystemData().StringEncoding(reader.ReadByte());
 			if (oldLength > TRANSACTION_OFFSET)
 			{
-				_transactionToCommit = Db4objects.Db4o.Internal.Transaction.ReadInterruptedTransaction
-					(_stream, reader);
+				_transactionToCommit = Db4objects.Db4o.Internal.LocalTransaction.ReadInterruptedTransaction
+					(_container, reader);
 			}
 			if (oldLength > BOOTRECORD_OFFSET)
 			{
@@ -193,7 +189,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				if (!nonZeroByte)
 				{
-					_stream.i_handlers.OldEncryptionOff();
+					_container.i_handlers.OldEncryptionOff();
 				}
 				else
 				{
@@ -202,7 +198,7 @@ namespace Db4objects.Db4o.Internal
 					{
 						if (storedpwd[idx] != encpassword[idx])
 						{
-							_stream.FatalException(54);
+							_container.FatalException(54);
 						}
 					}
 				}
@@ -227,31 +223,17 @@ namespace Db4objects.Db4o.Internal
 					SystemData().UuidIndexId(uuidIndexId);
 				}
 			}
-			_stream.EnsureFreespaceSlot();
-			if (LockFile() && (lastAccessTime != 0))
+			_container.EnsureFreespaceSlot();
+			if (Db4objects.Db4o.Internal.Fileheader.FileHeader.LockedByOtherSession(_container
+				, lastAccessTime))
 			{
-				_stream.LogMsg(28, null);
-				long waitTime = Db4objects.Db4o.Internal.Const4.LOCK_TIME_INTERVAL * 5;
-				long currentTime = Sharpen.Runtime.CurrentTimeMillis();
-				while (Sharpen.Runtime.CurrentTimeMillis() < currentTime + waitTime)
-				{
-					Db4objects.Db4o.Foundation.Cool.SleepIgnoringInterruption(waitTime);
-				}
-				reader = _stream.GetWriter(_stream.GetSystemTransaction(), _address, Db4objects.Db4o.Internal.Const4
-					.LONG_LENGTH * 2);
-				reader.MoveForward(OPEN_TIME_OFFSET);
-				reader.Read();
-				reader.ReadLong();
-				long currentAccessTime = reader.ReadLong();
-				if ((currentAccessTime > lastAccessTime))
-				{
-					throw new Db4objects.Db4o.Ext.DatabaseFileLockedException();
-				}
+				Db4objects.Db4o.Internal.Fileheader.FileHeader.CheckIfOtherSessionAlive(_container
+					, _address, OPEN_TIME_OFFSET, lastAccessTime);
 			}
-			if (LockFile())
+			if (_container.NeedsLockFileThread())
 			{
 				Db4objects.Db4o.Foundation.Cool.SleepIgnoringInterruption(100);
-				_stream.SyncFiles();
+				_container.SyncFiles();
 				TimerFileLock().CheckOpenTime();
 			}
 			if (oldLength < LENGTH)
@@ -263,9 +245,9 @@ namespace Db4objects.Db4o.Internal
 		public void Write()
 		{
 			TimerFileLock().CheckHeaderLock();
-			AddressChanged(_stream.GetSlot(LENGTH));
-			Db4objects.Db4o.Internal.StatefulBuffer writer = _stream.GetWriter(_stream.GetTransaction
-				(), _address, LENGTH);
+			AddressChanged(_container.GetSlot(LENGTH));
+			Db4objects.Db4o.Internal.StatefulBuffer writer = _container.GetWriter(_container.
+				GetTransaction(), _address, LENGTH);
 			Db4objects.Db4o.Internal.Handlers.IntHandler.WriteInt(LENGTH, writer);
 			for (int i = 0; i < 2; i++)
 			{
@@ -278,7 +260,7 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Internal.Handlers.IntHandler.WriteInt(0, writer);
 			writer.Append(PasswordToken());
 			writer.Append(SystemData().FreespaceSystem());
-			_stream.EnsureFreespaceSlot();
+			_container.EnsureFreespaceSlot();
 			Db4objects.Db4o.Internal.Handlers.IntHandler.WriteInt(SystemData().FreespaceAddress
 				(), writer);
 			Db4objects.Db4o.Internal.Handlers.IntHandler.WriteInt(SystemData().ConverterVersion
@@ -298,8 +280,8 @@ namespace Db4objects.Db4o.Internal
 		private void WritePointer()
 		{
 			TimerFileLock().CheckHeaderLock();
-			Db4objects.Db4o.Internal.StatefulBuffer writer = _stream.GetWriter(_stream.GetTransaction
-				(), 0, Db4objects.Db4o.Internal.Const4.ID_LENGTH);
+			Db4objects.Db4o.Internal.StatefulBuffer writer = _container.GetWriter(_container.
+				GetTransaction(), 0, Db4objects.Db4o.Internal.Const4.ID_LENGTH);
 			writer.MoveForward(2);
 			Db4objects.Db4o.Internal.Handlers.IntHandler.WriteInt(_address, writer);
 			writer.NoXByteCheck();

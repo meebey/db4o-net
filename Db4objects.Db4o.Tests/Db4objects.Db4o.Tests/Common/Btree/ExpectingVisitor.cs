@@ -31,7 +31,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public ExpectingVisitor(object[] results, bool obeyOrder, bool ignoreUnexpected)
 		{
-			_expected = results;
+			_expected = new object[results.Length];
+			System.Array.Copy(results, 0, _expected, 0, results.Length);
 			_obeyOrder = obeyOrder;
 			_ignoreUnexpected = ignoreUnexpected;
 		}

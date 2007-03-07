@@ -38,6 +38,7 @@ namespace Db4objects.Db4o.Internal.CS
 			, Db4objects.Db4o.Internal.LocalObjectContainer aStream, Db4objects.Db4o.Foundation.Network.ISocket4
 			 aSocket, int aThreadID, bool loggedIn)
 		{
+			SetDaemon(true);
 			i_loggedin = loggedIn;
 			i_lastClientMessage = Sharpen.Runtime.CurrentTimeMillis();
 			i_server = aServer;
@@ -61,7 +62,22 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public void Close()
 		{
-			CloseSubstituteStream();
+			lock (this)
+			{
+				if (IsClosed())
+				{
+					return;
+				}
+				CloseSubstituteStream();
+				SendCloseMessage();
+				RollbackMainTransaction();
+				CloseSocket();
+				RemoveFromServer();
+			}
+		}
+
+		private void SendCloseMessage()
+		{
 			try
 			{
 				if (i_sendCloseMessage)
@@ -72,10 +88,29 @@ namespace Db4objects.Db4o.Internal.CS
 			catch (System.Exception e)
 			{
 			}
+		}
+
+		private void RollbackMainTransaction()
+		{
 			if (i_mainStream != null && i_mainTrans != null)
 			{
 				i_mainTrans.Close(i_rollbackOnClose);
 			}
+		}
+
+		private void RemoveFromServer()
+		{
+			try
+			{
+				i_server.RemoveThread(this);
+			}
+			catch (System.Exception e)
+			{
+			}
+		}
+
+		private void CloseSocket()
+		{
 			try
 			{
 				i_socket.Close();
@@ -84,13 +119,11 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 			}
 			i_socket = null;
-			try
-			{
-				i_server.RemoveThread(this);
-			}
-			catch (System.Exception e)
-			{
-			}
+		}
+
+		private bool IsClosed()
+		{
+			return i_socket == null;
 		}
 
 		private void CloseSubstituteStream()
@@ -198,9 +231,7 @@ namespace Db4objects.Db4o.Internal.CS
 						();
 					string password = ((Db4objects.Db4o.Internal.CS.Messages.MsgD)message).ReadString
 						();
-					i_mainStream.ShowInternalClasses(true);
 					Db4objects.Db4o.User found = i_server.GetUser(userName);
-					i_mainStream.ShowInternalClasses(false);
 					if (found != null)
 					{
 						if (found.password.Equals(password))

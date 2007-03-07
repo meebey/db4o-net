@@ -80,11 +80,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			return Node().Key(Transaction(), NodeReader(), Index());
 		}
 
-		public object Value()
-		{
-			return Node().Value(NodeReader(), Index());
-		}
-
 		private Db4objects.Db4o.Internal.Buffer NodeReader()
 		{
 			return _nodeReader;

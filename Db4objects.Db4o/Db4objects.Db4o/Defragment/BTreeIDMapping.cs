@@ -102,8 +102,8 @@ namespace Db4objects.Db4o.Defragment
 			Db4objects.Db4o.Internal.IX.IIndexable4 handler = new Db4objects.Db4o.Internal.Mapping.MappedIDPairHandler
 				(_mappingDb);
 			_idTree = (_treeSpec == null ? new Db4objects.Db4o.Internal.Btree.BTree(Trans(), 
-				0, handler) : new Db4objects.Db4o.Internal.Btree.BTree(Trans(), 0, handler, null
-				, _treeSpec.NodeSize(), _treeSpec.CacheHeight()));
+				0, handler) : new Db4objects.Db4o.Internal.Btree.BTree(Trans(), 0, handler, _treeSpec
+				.NodeSize(), _treeSpec.CacheHeight()));
 		}
 
 		public override void Close()

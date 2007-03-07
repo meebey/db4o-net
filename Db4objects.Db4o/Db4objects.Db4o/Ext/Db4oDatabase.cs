@@ -141,11 +141,7 @@ namespace Db4objects.Db4o.Ext
 				.Db4oTypeStored(trans, this);
 			if (stored == null)
 			{
-				stream.ShowInternalClasses(true);
-				stream.Set3(trans, this, 2, false);
-				int newID = stream.GetID1(this);
-				stream.ShowInternalClasses(false);
-				return newID;
+				return StoreAndGetId(trans);
 			}
 			if (stored == this)
 			{
@@ -156,10 +152,31 @@ namespace Db4objects.Db4o.Ext
 				i_uuid = stored.i_uuid;
 			}
 			stream.ShowInternalClasses(true);
-			int id = stream.GetID1(stored);
-			stream.Bind(this, id);
-			stream.ShowInternalClasses(false);
-			return id;
+			try
+			{
+				int id = stream.GetID1(stored);
+				stream.Bind(this, id);
+				return id;
+			}
+			finally
+			{
+				stream.ShowInternalClasses(false);
+			}
+		}
+
+		private int StoreAndGetId(Db4objects.Db4o.Internal.Transaction trans)
+		{
+			Db4objects.Db4o.Internal.ObjectContainerBase stream = trans.Stream();
+			stream.ShowInternalClasses(true);
+			try
+			{
+				stream.Set3(trans, this, 2, false);
+				return stream.GetID1(this);
+			}
+			finally
+			{
+				stream.ShowInternalClasses(false);
+			}
 		}
 
 		/// <summary>find a Db4oDatabase with the same signature as this one</summary>

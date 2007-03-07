@@ -274,8 +274,10 @@ namespace Db4objects.Db4o
 			{
 				object objectA = obj;
 				object objectB = obj;
-				Db4objects.Db4o.Internal.ObjectReference referenceA = _peerA.GetYapObject(obj);
-				Db4objects.Db4o.Internal.ObjectReference referenceB = _peerB.GetYapObject(obj);
+				Db4objects.Db4o.Internal.ObjectReference referenceA = _peerA.ReferenceForObject(obj
+					);
+				Db4objects.Db4o.Internal.ObjectReference referenceB = _peerB.ReferenceForObject(obj
+					);
 				Db4objects.Db4o.Internal.VirtualAttributes attA = null;
 				Db4objects.Db4o.Internal.VirtualAttributes attB = null;
 				if (referenceA == null)
@@ -290,14 +292,14 @@ namespace Db4objects.Db4o
 					{
 						return notProcessed;
 					}
-					object[] arr = _transA.ObjectAndYapObjectBySignature(attB.i_uuid, attB.i_database
-						.i_signature);
-					if (arr[0] == null)
+					Db4objects.Db4o.Internal.HardObjectReference hardRef = _transA.GetHardReferenceBySignature
+						(attB.i_uuid, attB.i_database.i_signature);
+					if (hardRef._object == null)
 					{
 						return notProcessed;
 					}
-					referenceA = (Db4objects.Db4o.Internal.ObjectReference)arr[1];
-					objectA = arr[0];
+					referenceA = hardRef._reference;
+					objectA = hardRef._object;
 					attA = referenceA.VirtualAttributes(_transA);
 				}
 				else
@@ -310,14 +312,14 @@ namespace Db4objects.Db4o
 					if (referenceB == null)
 					{
 						sourceReference = referenceA;
-						object[] arr = _transB.ObjectAndYapObjectBySignature(attA.i_uuid, attA.i_database
-							.i_signature);
-						if (arr[0] == null)
+						Db4objects.Db4o.Internal.HardObjectReference hardRef = _transB.GetHardReferenceBySignature
+							(attA.i_uuid, attA.i_database.i_signature);
+						if (hardRef._object == null)
 						{
 							return notProcessed;
 						}
-						referenceB = (Db4objects.Db4o.Internal.ObjectReference)arr[1];
-						objectB = arr[0];
+						referenceB = hardRef._reference;
+						objectB = hardRef._object;
 					}
 					attB = referenceB.VirtualAttributes(_transB);
 				}

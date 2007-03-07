@@ -70,5 +70,23 @@ namespace Db4objects.Db4o
 		/// for it's own version of all peristent objects.
 		/// </remarks>
 		Db4objects.Db4o.IObjectContainer OpenClient();
+
+		/// <summary>
+		/// See
+		/// <see>openClient()</see>
+		/// </summary>
+		/// <param name="config">
+		/// a custom
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Configuration</see>
+		/// instance to be obtained via
+		/// <see cref="Db4objects.Db4o.Db4oFactory.NewConfiguration">Db4objects.Db4o.Db4oFactory.NewConfiguration
+		/// 	</see>
+		/// </param>
+		/// <returns>
+		/// an open
+		/// <see cref="Db4objects.Db4o.IObjectContainer">ObjectContainer</see>
+		/// </returns>
+		Db4objects.Db4o.IObjectContainer OpenClient(Db4objects.Db4o.Config.IConfiguration
+			 config);
 	}
 }

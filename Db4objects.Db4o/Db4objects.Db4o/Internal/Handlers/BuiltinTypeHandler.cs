@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract bool IndexNullHandling();
 
-		public abstract int IsSecondClass();
+		public abstract Db4objects.Db4o.Foundation.TernaryBool IsSecondClass();
 
 		public abstract void PrepareComparison(Db4objects.Db4o.Internal.Transaction arg1, 
 			object arg2);

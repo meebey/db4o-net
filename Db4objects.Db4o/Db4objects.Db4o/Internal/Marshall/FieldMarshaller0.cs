@@ -33,13 +33,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			if (name.IndexOf(Db4objects.Db4o.Internal.Const4.VIRTUAL_FIELD_PREFIX) == 0)
 			{
-				Db4objects.Db4o.Internal.VirtualFieldMetadata[] virtuals = stream.i_handlers.i_virtualFields;
-				for (int i = 0; i < virtuals.Length; i++)
+				if (stream.i_handlers.VirtualFieldByName(name) != null)
 				{
-					if (name.Equals(virtuals[i].GetName()))
-					{
-						return new Db4objects.Db4o.Internal.Marshall.RawFieldSpec(name);
-					}
+					return new Db4objects.Db4o.Internal.Marshall.RawFieldSpec(name);
 				}
 			}
 			int handlerID = reader.ReadInt();
@@ -67,14 +63,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			string name = spec.Name();
 			if (spec.IsVirtual())
 			{
-				Db4objects.Db4o.Internal.VirtualFieldMetadata[] virtuals = stream.i_handlers.i_virtualFields;
-				for (int i = 0; i < virtuals.Length; i++)
-				{
-					if (name.Equals(virtuals[i].GetName()))
-					{
-						return virtuals[i];
-					}
-				}
+				return stream.i_handlers.VirtualFieldByName(name);
 			}
 			field.Init(field.GetParentYapClass(), name);
 			field.Init(spec.HandlerID(), spec.IsPrimitive(), spec.IsArray(), spec.IsNArray());

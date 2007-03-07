@@ -15,11 +15,6 @@ namespace Db4objects.Db4o.Internal.Btree
 		public abstract object Commit(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Btree.BTree
 			 btree);
 
-		public virtual bool IsRemove()
-		{
-			return false;
-		}
-
 		public abstract Db4objects.Db4o.Internal.Btree.BTreePatch ForTransaction(Db4objects.Db4o.Internal.Transaction
 			 trans);
 
@@ -27,6 +22,23 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			return _object;
 		}
+
+		public virtual bool IsAdd()
+		{
+			return false;
+		}
+
+		public virtual bool IsCancelledRemoval()
+		{
+			return false;
+		}
+
+		public virtual bool IsRemove()
+		{
+			return false;
+		}
+
+		public abstract object Key(Db4objects.Db4o.Internal.Transaction trans);
 
 		public abstract object Rollback(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Btree.BTree
 			 btree);
@@ -39,12 +51,5 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			return _object.ToString();
 		}
-
-		public virtual bool IsAdd()
-		{
-			return false;
-		}
-
-		public abstract object Key(Db4objects.Db4o.Internal.Transaction trans);
 	}
 }

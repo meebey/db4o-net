@@ -43,12 +43,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 				)fields);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass ArrayClass(Db4objects.Db4o.Reflect.IReflectClass
-			 clazz)
-		{
-			return ((Db4objects.Db4o.Reflect.Generic.GenericClass)clazz).ArrayClass();
-		}
-
 		public virtual Db4objects.Db4o.Reflect.IReflectField[] FieldArray(int length)
 		{
 			return new Db4objects.Db4o.Reflect.Generic.GenericField[length];

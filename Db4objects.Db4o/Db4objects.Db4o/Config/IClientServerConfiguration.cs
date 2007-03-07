@@ -1,5 +1,7 @@
 namespace Db4objects.Db4o.Config
 {
+	/// <summary>Client/Server configuration interface.</summary>
+	/// <remarks>Client/Server configuration interface.</remarks>
 	public interface IClientServerConfiguration
 	{
 		/// <summary>Sets the number of IDs to be prefetched for an ObjectSet in C/S mode</summary>

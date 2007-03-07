@@ -85,13 +85,13 @@ namespace Db4objects.Db4o.Internal
 			a_bytes.Append(_buffer);
 			int[] newID = { a_id };
 			int myID = a_id;
-			ForEachEmbedded(new _AnonymousInnerClass100(this, a_bytes, myID, newID));
+			ForEachEmbedded(new _AnonymousInnerClass101(this, a_bytes, myID, newID));
 			return newID[0];
 		}
 
-		private sealed class _AnonymousInnerClass100 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
+		private sealed class _AnonymousInnerClass101 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
 		{
-			public _AnonymousInnerClass100(StatefulBuffer _enclosing, Db4objects.Db4o.Internal.Buffer
+			public _AnonymousInnerClass101(StatefulBuffer _enclosing, Db4objects.Db4o.Internal.Buffer
 				 a_bytes, int myID, int[] newID)
 			{
 				this._enclosing = _enclosing;
@@ -127,13 +127,13 @@ namespace Db4objects.Db4o.Internal
 		public int EmbeddedCount()
 		{
 			int[] count = { 0 };
-			ForEachEmbedded(new _AnonymousInnerClass125(this, count));
+			ForEachEmbedded(new _AnonymousInnerClass126(this, count));
 			return count[0];
 		}
 
-		private sealed class _AnonymousInnerClass125 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
+		private sealed class _AnonymousInnerClass126 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
 		{
-			public _AnonymousInnerClass125(StatefulBuffer _enclosing, int[] count)
+			public _AnonymousInnerClass126(StatefulBuffer _enclosing, int[] count)
 			{
 				this._enclosing = _enclosing;
 				this.count = count;
@@ -152,13 +152,13 @@ namespace Db4objects.Db4o.Internal
 		public int EmbeddedLength()
 		{
 			int[] length = { 0 };
-			ForEachEmbedded(new _AnonymousInnerClass135(this, length));
+			ForEachEmbedded(new _AnonymousInnerClass136(this, length));
 			return length[0];
 		}
 
-		private sealed class _AnonymousInnerClass135 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
+		private sealed class _AnonymousInnerClass136 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
 		{
-			public _AnonymousInnerClass135(StatefulBuffer _enclosing, int[] length)
+			public _AnonymousInnerClass136(StatefulBuffer _enclosing, int[] length)
 			{
 				this._enclosing = _enclosing;
 				this.length = length;
@@ -179,13 +179,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_embedded != null)
 			{
-				i_embedded.Traverse(new _AnonymousInnerClass145(this, a_visitor));
+				i_embedded.Traverse(new _AnonymousInnerClass146(this, a_visitor));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass145 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass146 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass145(StatefulBuffer _enclosing, Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
+			public _AnonymousInnerClass146(StatefulBuffer _enclosing, Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
 				 a_visitor)
 			{
 				this._enclosing = _enclosing;
@@ -421,13 +421,13 @@ namespace Db4objects.Db4o.Internal
 		public void WriteEmbedded()
 		{
 			Db4objects.Db4o.Internal.StatefulBuffer finalThis = this;
-			ForEachEmbedded(new _AnonymousInnerClass331(this, finalThis));
+			ForEachEmbedded(new _AnonymousInnerClass332(this, finalThis));
 			i_embedded = null;
 		}
 
-		private sealed class _AnonymousInnerClass331 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
+		private sealed class _AnonymousInnerClass332 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
 		{
-			public _AnonymousInnerClass331(StatefulBuffer _enclosing, Db4objects.Db4o.Internal.StatefulBuffer
+			public _AnonymousInnerClass332(StatefulBuffer _enclosing, Db4objects.Db4o.Internal.StatefulBuffer
 				 finalThis)
 			{
 				this._enclosing = _enclosing;

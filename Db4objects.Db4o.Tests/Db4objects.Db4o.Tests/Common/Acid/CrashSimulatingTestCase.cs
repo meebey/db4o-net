@@ -6,11 +6,6 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 
 		public Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase _next;
 
-		private static readonly string PATH = System.IO.Path.Combine(System.IO.Path.GetTempPath
-			(), "crashSimulate");
-
-		private static readonly string FILE = System.IO.Path.Combine(PATH, "cs");
-
 		internal const bool LOG = false;
 
 		public CrashSimulatingTestCase()
@@ -24,16 +19,35 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			_name = name;
 		}
 
+		private bool HasLockFileThread()
+		{
+			if (!Db4objects.Db4o.Internal.Platform4.HasLockFileThread())
+			{
+				return false;
+			}
+			return !Db4objects.Db4o.Internal.Platform4.HasNio();
+		}
+
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Foundation.IO.File4.Delete(FILE);
-			System.IO.Directory.CreateDirectory(PATH);
+			if (HasLockFileThread())
+			{
+				Sharpen.Runtime.Out.WriteLine("CrashSimulatingTestCase is ignored on platforms with lock file thread."
+					);
+				return;
+			}
+			string path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "crashSimulate"
+				);
+			string fileName = System.IO.Path.Combine(path, "cs");
+			Db4objects.Db4o.Foundation.IO.File4.Delete(fileName);
+			System.IO.Directory.CreateDirectory(path);
 			Db4objects.Db4o.Db4oFactory.Configure().BTreeNodeSize(4);
-			CreateFile();
+			CreateFile(fileName);
 			Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter adapterFactory = new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter
 				(new Db4objects.Db4o.IO.RandomAccessFileAdapter());
 			Db4objects.Db4o.Db4oFactory.Configure().Io(adapterFactory);
-			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(FILE);
+			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(fileName
+				);
 			Db4objects.Db4o.IObjectSet objectSet = oc.Get(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase
 				(null, "three"));
 			oc.Delete(objectSet.Next());
@@ -71,18 +85,18 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			oc.Close();
 			Db4objects.Db4o.Db4oFactory.Configure().Io(new Db4objects.Db4o.IO.RandomAccessFileAdapter
 				());
-			int count = adapterFactory.batch.WriteVersions(FILE);
-			CheckFiles("R", adapterFactory.batch.NumSyncs());
-			CheckFiles("W", count);
+			int count = adapterFactory.batch.WriteVersions(fileName);
+			CheckFiles(fileName, "R", adapterFactory.batch.NumSyncs());
+			CheckFiles(fileName, "W", count);
 			Sharpen.Runtime.Out.WriteLine("Total versions: " + count);
 		}
 
-		private void CheckFiles(string infix, int count)
+		private void CheckFiles(string fileName, string infix, int count)
 		{
 			for (int i = 1; i <= count; i++)
 			{
-				string fileName = FILE + infix + i;
-				Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(fileName
+				string versionedFileName = fileName + infix + i;
+				Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(versionedFileName
 					);
 				if (!StateBeforeCommit(oc))
 				{
@@ -148,9 +162,10 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			return true;
 		}
 
-		private void CreateFile()
+		private void CreateFile(string fileName)
 		{
-			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(FILE);
+			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(fileName
+				);
 			for (int i = 0; i < 10; i++)
 			{
 				oc.Set(new Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleItem("delme"));
@@ -172,7 +187,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				oc.Delete(objectSet.Next());
 			}
 			oc.Close();
-			Db4objects.Db4o.Foundation.IO.File4.Copy(FILE, FILE + "0");
+			Db4objects.Db4o.Foundation.IO.File4.Copy(fileName, fileName + "0");
 		}
 
 		public override string ToString()

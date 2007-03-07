@@ -103,11 +103,12 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal void AddToIDTree(Db4objects.Db4o.Internal.ObjectContainerBase a_stream)
+		internal void AddExistingReferenceToIdTree(Db4objects.Db4o.Internal.ObjectContainerBase
+			 a_stream)
 		{
 			if (!(_class is Db4objects.Db4o.Internal.PrimitiveFieldHandler))
 			{
-				a_stream.IdTreeAdd(this);
+				a_stream.ReferenceSystem().AddExistingReferenceToIdTree(this);
 			}
 		}
 
@@ -265,7 +266,7 @@ namespace Db4objects.Db4o.Internal
 					}
 					if (checkIDTree)
 					{
-						object objectInCacheFromClassCreation = stream.ObjectForIDFromCache(GetID());
+						object objectInCacheFromClassCreation = stream.ObjectForIdFromCache(GetID());
 						if (objectInCacheFromClassCreation != null)
 						{
 							return objectInCacheFromClassCreation;
@@ -344,7 +345,9 @@ namespace Db4objects.Db4o.Internal
 			_object = obj;
 			_class = yapClass;
 			WriteObjectBegin();
-			SetID(trans.Stream().NewUserObject());
+			int id = trans.Stream().NewUserObject();
+			trans.SlotFreePointerOnRollback(id);
+			SetID(id);
 			BeginProcessing();
 			BitTrue(Db4objects.Db4o.Internal.Const4.CONTINUE);
 		}
@@ -367,6 +370,16 @@ namespace Db4objects.Db4o.Internal
 		public bool IsFlaggedAsHandled(int callID)
 		{
 			return _lastTopLevelCallId == callID;
+		}
+
+		public bool IsValid()
+		{
+			return IsValidId(GetID()) && GetObject() != null;
+		}
+
+		public static bool IsValidId(int id)
+		{
+			return id > 0;
 		}
 
 		public virtual Db4objects.Db4o.Internal.VirtualAttributes VirtualAttributes()
@@ -452,21 +465,20 @@ namespace Db4objects.Db4o.Internal
 		public virtual Db4objects.Db4o.Internal.ObjectReference Hc_add(Db4objects.Db4o.Internal.ObjectReference
 			 a_add)
 		{
-			object obj = a_add.GetObject();
-			if (obj != null)
+			if (a_add.GetObject() == null)
 			{
-				a_add.Hc_init(obj);
-				return Hc_add1(a_add);
+				return this;
 			}
-			return this;
+			a_add.Hc_init();
+			return Hc_add1(a_add);
 		}
 
-		public virtual void Hc_init(object obj)
+		public virtual void Hc_init()
 		{
 			hc_preceding = null;
 			hc_subsequent = null;
 			hc_size = 1;
-			hc_code = Hc_getCode(obj);
+			hc_code = Hc_getCode(GetObject());
 		}
 
 		private Db4objects.Db4o.Internal.ObjectReference Hc_add1(Db4objects.Db4o.Internal.ObjectReference
@@ -701,11 +713,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				hc_preceding.Hc_traverse(visitor);
 			}
-			visitor.Visit(this);
 			if (hc_subsequent != null)
 			{
 				hc_subsequent.Hc_traverse(visitor);
 			}
+			visitor.Visit(this);
 		}
 
 		private Db4objects.Db4o.Internal.ObjectReference Hc_remove()

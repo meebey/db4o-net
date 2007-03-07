@@ -136,6 +136,8 @@ namespace Db4objects.Db4o.Internal
 
 		public const int CLIENT_SOCKET_TIMEOUT = 300000;
 
+		public const int CLIENT_EMBEDDED_TIMEOUT = 3000;
+
 		public const int CONNECTION_TIMEOUT = Db4objects.Db4o.Debug.longTimeOuts ? 1000000
 			 : 180000;
 
@@ -186,16 +188,6 @@ namespace Db4objects.Db4o.Internal
 		public const int DEAD = 7;
 
 		public const int READING = 8;
-
-		public const int UNCHECKED = 0;
-
-		public const int NO = -1;
-
-		public const int YES = 1;
-
-		public const int DEFAULT = 0;
-
-		public const int UNKNOWN = 0;
 
 		public const int OLD = -1;
 

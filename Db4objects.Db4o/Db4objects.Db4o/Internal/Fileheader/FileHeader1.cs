@@ -55,6 +55,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private void NewTimerFileLock(Db4objects.Db4o.Internal.LocalObjectContainer file)
 		{
 			_timerFileLock = Db4objects.Db4o.Internal.Fileheader.TimerFileLock.ForFile(file);
+			_timerFileLock.SetAddresses(0, OPEN_TIME_OFFSET, ACCESS_TIME_OFFSET);
 		}
 
 		public override Db4objects.Db4o.Internal.Transaction InterruptedTransaction()
@@ -71,13 +72,28 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			 file, Db4objects.Db4o.Internal.Buffer reader)
 		{
 			CommonTasksForNewAndRead(file);
+			CheckThreadFileLock(file, reader);
 			reader.Seek(TRANSACTION_POINTER_OFFSET);
-			_interruptedTransaction = Db4objects.Db4o.Internal.Transaction.ReadInterruptedTransaction
+			_interruptedTransaction = Db4objects.Db4o.Internal.LocalTransaction.ReadInterruptedTransaction
 				(file, reader);
 			file.BlockSizeReadFromFile(reader.ReadInt());
 			ReadClassCollectionAndFreeSpace(file, reader);
 			_variablePart = new Db4objects.Db4o.Internal.Fileheader.FileHeaderVariablePart1(reader
 				.ReadInt(), file.SystemData());
+		}
+
+		private void CheckThreadFileLock(Db4objects.Db4o.Internal.LocalObjectContainer container
+			, Db4objects.Db4o.Internal.Buffer reader)
+		{
+			reader.Seek(OPEN_TIME_OFFSET);
+			long lastOpenTime = reader.ReadLong();
+			long lastAccessTime = reader.ReadLong();
+			if (Db4objects.Db4o.Internal.Fileheader.FileHeader.LockedByOtherSession(container
+				, lastAccessTime))
+			{
+				Db4objects.Db4o.Internal.Fileheader.FileHeader.CheckIfOtherSessionAlive(container
+					, 0, OPEN_TIME_OFFSET, lastAccessTime);
+			}
 		}
 
 		private void CommonTasksForNewAndRead(Db4objects.Db4o.Internal.LocalObjectContainer
@@ -94,8 +110,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		}
 
 		public override void WriteFixedPart(Db4objects.Db4o.Internal.LocalObjectContainer
-			 file, bool shuttingDown, Db4objects.Db4o.Internal.StatefulBuffer writer, int blockSize
-			, int freespaceID)
+			 file, bool startFileLockingThread, bool shuttingDown, Db4objects.Db4o.Internal.StatefulBuffer
+			 writer, int blockSize, int freespaceID)
 		{
 			writer.Append(SIGNATURE);
 			writer.Append(VERSION);
@@ -110,6 +126,16 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			writer.WriteInt(_variablePart.GetID());
 			writer.NoXByteCheck();
 			writer.Write();
+			if (startFileLockingThread)
+			{
+				try
+				{
+					_timerFileLock.Start();
+				}
+				catch (System.IO.IOException)
+				{
+				}
+			}
 		}
 
 		public override void WriteTransactionPointer(Db4objects.Db4o.Internal.Transaction

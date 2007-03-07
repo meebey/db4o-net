@@ -54,5 +54,11 @@ namespace Db4objects.Db4o.Internal.Callbacks
 		public virtual void ObjectOnDeactivate(object obj)
 		{
 		}
+
+		public virtual void CommitOnStarted(Db4objects.Db4o.Ext.IObjectInfoCollection added
+			, Db4objects.Db4o.Ext.IObjectInfoCollection deleted, Db4objects.Db4o.Ext.IObjectInfoCollection
+			 updated)
+		{
+		}
 	}
 }

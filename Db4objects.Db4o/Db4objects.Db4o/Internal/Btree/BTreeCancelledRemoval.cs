@@ -20,6 +20,11 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 		}
 
+		public override bool IsCancelledRemoval()
+		{
+			return true;
+		}
+
 		public override string ToString()
 		{
 			return "(u) " + base.ToString();

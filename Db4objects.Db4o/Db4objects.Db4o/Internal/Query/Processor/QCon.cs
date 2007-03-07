@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public Db4objects.Db4o.Foundation.Collection4 i_joins;
 
-		private int i_orderID = 0;
+		public int i_orderID = 0;
 
 		public Db4objects.Db4o.Internal.Query.Processor.QCon i_parent;
 
@@ -559,7 +559,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_joins == null)
 			{
-				return Db4objects.Db4o.Foundation.Iterator4Impl.EMPTY;
+				return Db4objects.Db4o.Foundation.Iterators.EMPTY_ITERATOR;
 			}
 			return i_joins.GetEnumerator();
 		}
@@ -568,7 +568,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (_children == null)
 			{
-				return Db4objects.Db4o.Foundation.Iterator4Impl.EMPTY;
+				return Db4objects.Db4o.Foundation.Iterators.EMPTY_ITERATOR;
 			}
 			return new Db4objects.Db4o.Foundation.Iterator4Impl(_children);
 		}

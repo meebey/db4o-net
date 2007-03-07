@@ -14,13 +14,10 @@ namespace Db4objects.Db4o.Internal.CS
 			 client, Db4objects.Db4o.Foundation.Network.ISocket4 a_socket, Db4objects.Db4o.Foundation.Queue4
 			 messageQueue_, Db4objects.Db4o.Foundation.Lock4 messageQueueLock_)
 		{
-			lock (this)
-			{
-				i_stream = client;
-				messageQueue = messageQueue_;
-				i_socket = a_socket;
-				messageQueueLock = messageQueueLock_;
-			}
+			i_stream = client;
+			messageQueue = messageQueue_;
+			i_socket = a_socket;
+			messageQueueLock = messageQueueLock_;
 		}
 
 		internal virtual bool IsClosed()
@@ -58,7 +55,7 @@ namespace Db4objects.Db4o.Internal.CS
 					}
 					catch
 					{
-						messageQueueLock.Run(new _AnonymousInnerClass47(this));
+						messageQueueLock.Run(new _AnonymousInnerClass44(this));
 						Close();
 						return;
 					}
@@ -76,7 +73,7 @@ namespace Db4objects.Db4o.Internal.CS
 						}
 						else
 						{
-							messageQueueLock.Run(new _AnonymousInnerClass77(this, message));
+							messageQueueLock.Run(new _AnonymousInnerClass74(this, message));
 						}
 					}
 				}
@@ -88,9 +85,9 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		private sealed class _AnonymousInnerClass47 : Db4objects.Db4o.Foundation.IClosure4
+		private sealed class _AnonymousInnerClass44 : Db4objects.Db4o.Foundation.IClosure4
 		{
-			public _AnonymousInnerClass47(ClientMessageDispatcher _enclosing)
+			public _AnonymousInnerClass44(ClientMessageDispatcher _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -106,9 +103,9 @@ namespace Db4objects.Db4o.Internal.CS
 			private readonly ClientMessageDispatcher _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass77 : Db4objects.Db4o.Foundation.IClosure4
+		private sealed class _AnonymousInnerClass74 : Db4objects.Db4o.Foundation.IClosure4
 		{
-			public _AnonymousInnerClass77(ClientMessageDispatcher _enclosing, Db4objects.Db4o.Internal.CS.Messages.Msg
+			public _AnonymousInnerClass74(ClientMessageDispatcher _enclosing, Db4objects.Db4o.Internal.CS.Messages.Msg
 				 message)
 			{
 				this._enclosing = _enclosing;

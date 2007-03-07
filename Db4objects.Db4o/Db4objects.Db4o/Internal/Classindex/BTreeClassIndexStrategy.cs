@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			public void Visit(object obj)
 			{
 				int id = ((int)obj);
-				Db4objects.Db4o.Internal.ObjectReference yo = stream.GetYapObject(id);
+				Db4objects.Db4o.Internal.ObjectReference yo = stream.ReferenceForId(id);
 				if (yo != null)
 				{
 					stream.RemoveReference(yo);

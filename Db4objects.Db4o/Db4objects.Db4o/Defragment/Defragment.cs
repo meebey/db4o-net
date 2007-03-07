@@ -116,6 +116,10 @@ namespace Db4objects.Db4o.Defragment
 				backupFile.Delete();
 			}
 			System.IO.File.Move(config.OrigPath(), config.BackupPath());
+			if (config.FileNeedsUpgrade())
+			{
+				UpgradeFile(config);
+			}
 			Db4objects.Db4o.Defragment.DefragContextImpl context = new Db4objects.Db4o.Defragment.DefragContextImpl
 				(config, listener);
 			int newClassCollectionID = 0;
@@ -152,6 +156,18 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
+		private static void UpgradeFile(Db4objects.Db4o.Defragment.DefragmentConfig config
+			)
+		{
+			Db4objects.Db4o.Foundation.IO.File4.Copy(config.BackupPath(), config.TempPath());
+			Db4objects.Db4o.Config.IConfiguration db4oConfig = (Db4objects.Db4o.Config.IConfiguration
+				)((Db4objects.Db4o.Internal.Config4Impl)config.Db4oConfig()).DeepClone(null);
+			db4oConfig.AllowVersionUpdates(true);
+			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(db4oConfig
+				, config.TempPath());
+			db.Close();
+		}
+
 		private static void DefragUnindexed(Db4objects.Db4o.Defragment.DefragContextImpl 
 			context)
 		{
@@ -159,14 +175,14 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.MoveNext())
 			{
 				int origID = ((int)unindexedIDs.Current);
-				Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, origID, new _AnonymousInnerClass154
+				Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, origID, new _AnonymousInnerClass168
 					(), true);
 			}
 		}
 
-		private sealed class _AnonymousInnerClass154 : Db4objects.Db4o.Internal.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass168 : Db4objects.Db4o.Internal.ISlotCopyHandler
 		{
-			public _AnonymousInnerClass154()
+			public _AnonymousInnerClass168()
 			{
 			}
 
@@ -270,13 +286,13 @@ namespace Db4objects.Db4o.Defragment
 			 command)
 		{
 			bool withStringIndex = WithFieldIndex(curClass);
-			context.TraverseAll(curClass, new _AnonymousInnerClass247(command, context, curClass
+			context.TraverseAll(curClass, new _AnonymousInnerClass261(command, context, curClass
 				, withStringIndex));
 		}
 
-		private sealed class _AnonymousInnerClass247 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass261 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass247(Db4objects.Db4o.Defragment.IPassCommand command, Db4objects.Db4o.Defragment.DefragContextImpl
+			public _AnonymousInnerClass261(Db4objects.Db4o.Defragment.IPassCommand command, Db4objects.Db4o.Defragment.DefragContextImpl
 				 context, Db4objects.Db4o.Internal.ClassMetadata curClass, bool withStringIndex)
 			{
 				this.command = command;

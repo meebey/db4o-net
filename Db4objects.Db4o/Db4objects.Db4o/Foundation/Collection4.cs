@@ -7,14 +7,14 @@ namespace Db4objects.Db4o.Foundation
 		, Db4objects.Db4o.Types.IUnversioned
 	{
 		/// <summary>first element of the linked list</summary>
-		public Db4objects.Db4o.Foundation.List4 _first;
+		private Db4objects.Db4o.Foundation.List4 _first;
 
-		public Db4objects.Db4o.Foundation.List4 _last;
+		private Db4objects.Db4o.Foundation.List4 _last;
 
 		/// <summary>number of elements collected</summary>
-		public int _size;
+		private int _size;
 
-		public int _version;
+		private int _version;
 
 		private static readonly object NOT_FOUND = new object();
 
@@ -232,8 +232,8 @@ namespace Db4objects.Db4o.Foundation
 		/// <returns></returns>
 		public System.Collections.IEnumerator GetEnumerator()
 		{
-			return _first == null ? Db4objects.Db4o.Foundation.Iterator4Impl.EMPTY : new Db4objects.Db4o.Foundation.Collection4Iterator
-				(this, _first);
+			return _first == null ? Db4objects.Db4o.Foundation.Iterators.EMPTY_ITERATOR : new 
+				Db4objects.Db4o.Foundation.Collection4Iterator(this, _first);
 		}
 
 		/// <summary>

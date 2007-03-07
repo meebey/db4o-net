@@ -176,5 +176,26 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 				)).Or(q.Descend("h2").Descend("h3").Descend("foo3").Constrain("str3"));
 			Expect(q, new int[] { 1, 3, 4, 5 });
 		}
+
+		public virtual void TestDeleteAll()
+		{
+			Db4objects.Db4o.Ext.IExtObjectContainer oc = Fixture().Db();
+			Db4objects.Db4o.IObjectSet os = oc.Get(null);
+			while (os.HasNext())
+			{
+				oc.Delete(os.Next());
+			}
+			Db().Commit();
+			Fixture().Reopen();
+			oc = Fixture().Db();
+			os = oc.Get(null);
+			Db4oUnit.Assert.AreEqual(0, os.Size());
+		}
+
+		public static void Main(string[] arguments)
+		{
+			new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase().RunSolo
+				();
+		}
 	}
 }

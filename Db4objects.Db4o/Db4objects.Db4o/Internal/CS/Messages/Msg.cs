@@ -282,6 +282,13 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return false;
 		}
 
+		public virtual bool WriteFailedMessage(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
+			 serverThread)
+		{
+			serverThread.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.FAILED);
+			return true;
+		}
+
 		public static Db4objects.Db4o.Internal.CS.Messages.Msg ReadMessage(Db4objects.Db4o.Internal.Transaction
 			 a_trans, Db4objects.Db4o.Foundation.Network.ISocket4 sock)
 		{
@@ -328,6 +335,14 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public void Write(Db4objects.Db4o.Internal.ObjectContainerBase stream, Db4objects.Db4o.Foundation.Network.ISocket4
 			 sock)
 		{
+			if (null == stream)
+			{
+				throw new System.ArgumentNullException();
+			}
+			if (null == sock)
+			{
+				throw new System.ArgumentNullException();
+			}
 			lock (sock)
 			{
 				try

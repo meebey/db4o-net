@@ -67,6 +67,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			if (!trans.Stream().IsClient())
 			{
 				address = trans.i_file.GetSlot(length);
+				trans.SlotFreeOnRollback(id, address, length);
 			}
 			trans.SetPointer(id, address, length);
 			return CreateWriterForUpdate(trans, updateDepth, id, address, length);

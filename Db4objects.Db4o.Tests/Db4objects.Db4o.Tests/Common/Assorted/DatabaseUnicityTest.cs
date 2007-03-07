@@ -21,7 +21,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				ht.Put(d4b.i_signature, string.Empty);
 			}
 			yapStream.ShowInternalClasses(false);
-			oc.Close();
 		}
 	}
 }

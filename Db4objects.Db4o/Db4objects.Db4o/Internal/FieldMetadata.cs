@@ -368,29 +368,23 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			try
+			bool isEnumClass = i_yapClass.IsEnum();
+			if (i_isPrimitive && !i_isArray)
 			{
-				bool isEnumClass = i_yapClass.IsEnum();
-				if (i_isPrimitive && !i_isArray)
-				{
-					if (!isEnumClass)
-					{
-						i_javaField.Set(a_onObject, ((Db4objects.Db4o.Internal.Handlers.PrimitiveHandler)
-							i_handler).PrimitiveNull());
-					}
-					return;
-				}
-				if (a_depth > 0)
-				{
-					CascadeActivation(a_trans, a_onObject, a_depth, false);
-				}
 				if (!isEnumClass)
 				{
-					i_javaField.Set(a_onObject, null);
+					i_javaField.Set(a_onObject, ((Db4objects.Db4o.Internal.Handlers.PrimitiveHandler)
+						i_handler).PrimitiveNull());
 				}
+				return;
 			}
-			catch
+			if (a_depth > 0)
 			{
+				CascadeActivation(a_trans, a_onObject, a_depth, false);
+			}
+			if (!isEnumClass)
+			{
+				i_javaField.Set(a_onObject, null);
 			}
 		}
 
@@ -406,8 +400,8 @@ namespace Db4objects.Db4o.Internal
 			bool dotnetValueType = false;
 			dotnetValueType = Db4objects.Db4o.Internal.Platform4.IsValueType(i_handler.ClassReflector
 				());
-			if ((i_config != null && i_config.CascadeOnDelete() == Db4objects.Db4o.Internal.Const4
-				.YES) || dotnetValueType)
+			if ((i_config != null && i_config.CascadeOnDelete().DefiniteYes()) || dotnetValueType
+				)
 			{
 				int preserveCascade = a_bytes.CascadeDeletes();
 				a_bytes.SetCascadeDeletes(1);
@@ -416,8 +410,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				if (i_config != null && i_config.CascadeOnDelete() == Db4objects.Db4o.Internal.Const4
-					.NO)
+				if (i_config != null && i_config.CascadeOnDelete().DefiniteNo())
 				{
 					int preserveCascade = a_bytes.CascadeDeletes();
 					a_bytes.SetCascadeDeletes(0);
@@ -480,7 +473,8 @@ namespace Db4objects.Db4o.Internal
 					lock (stream.i_lock)
 					{
 						stream.CheckClosed();
-						Db4objects.Db4o.Internal.ObjectReference yo = stream.GetYapObject(a_onObject);
+						Db4objects.Db4o.Internal.ObjectReference yo = stream.ReferenceForObject(a_onObject
+							);
 						if (yo != null)
 						{
 							int id = yo.GetID();
@@ -539,13 +533,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (Alive())
 			{
-				try
-				{
-					return i_javaField.Get(a_OnObject);
-				}
-				catch
-				{
-				}
+				return i_javaField.Get(a_OnObject);
 			}
 			return null;
 		}
@@ -554,29 +542,20 @@ namespace Db4objects.Db4o.Internal
 		/// dirty hack for com.db4o.types some of them need to be set automatically
 		/// TODO: Derive from YapField for Db4oTypes
 		/// </summary>
-		public virtual object GetOrCreate(Db4objects.Db4o.Internal.Transaction a_trans, object
-			 a_OnObject)
+		public virtual object GetOrCreate(Db4objects.Db4o.Internal.Transaction trans, object
+			 onObject)
 		{
-			if (Alive())
+			if (!Alive())
 			{
-				try
-				{
-					object obj = i_javaField.Get(a_OnObject);
-					if (i_db4oType != null)
-					{
-						if (obj == null)
-						{
-							obj = i_db4oType.CreateDefault(a_trans);
-							i_javaField.Set(a_OnObject, obj);
-						}
-					}
-					return obj;
-				}
-				catch (System.Exception t)
-				{
-				}
+				return null;
 			}
-			return null;
+			object obj = i_javaField.Get(onObject);
+			if (i_db4oType != null && obj == null)
+			{
+				obj = i_db4oType.CreateDefault(trans);
+				i_javaField.Set(onObject, obj);
+			}
+			return obj;
 		}
 
 		public virtual Db4objects.Db4o.Internal.ClassMetadata GetParentYapClass()
@@ -729,7 +708,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			try
 			{
-				Db4objects.Db4o.Internal.ObjectContainerBase stream = i_yapClass.GetStream();
 				Db4objects.Db4o.Reflect.IReflectClass claxx = i_yapClass.ClassReflector();
 				if (claxx == null)
 				{
@@ -741,11 +719,16 @@ namespace Db4objects.Db4o.Internal
 					return null;
 				}
 				i_javaField.SetAccessible();
+				Db4objects.Db4o.Internal.ObjectContainerBase stream = i_yapClass.GetStream();
 				stream.ShowInternalClasses(true);
-				Db4objects.Db4o.Internal.ITypeHandler4 handler = stream.i_handlers.HandlerForClass
-					(stream, i_javaField.GetFieldType());
-				stream.ShowInternalClasses(false);
-				return handler;
+				try
+				{
+					return stream.i_handlers.HandlerForClass(stream, i_javaField.GetFieldType());
+				}
+				finally
+				{
+					stream.ShowInternalClasses(false);
+				}
 			}
 			catch (System.Exception e)
 			{
@@ -758,9 +741,8 @@ namespace Db4objects.Db4o.Internal
 			 writer, Db4objects.Db4o.Internal.Config4Class config, bool isNew)
 		{
 			object indexEntry = null;
-			if (obj != null && ((config != null && (config.CascadeOnUpdate() == Db4objects.Db4o.Internal.Const4
-				.YES)) || (i_config != null && (i_config.CascadeOnUpdate() == Db4objects.Db4o.Internal.Const4
-				.YES))))
+			if (obj != null && ((config != null && (config.CascadeOnUpdate().DefiniteYes())) 
+				|| (i_config != null && (i_config.CascadeOnUpdate().DefiniteYes()))))
 			{
 				int min = 1;
 				if (i_yapClass.IsCollection(obj))
@@ -878,13 +860,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Set(object onObject, object obj)
 		{
-			try
+			if (null == i_javaField)
 			{
-				i_javaField.Set(onObject, obj);
+				return;
 			}
-			catch (System.Exception t)
-			{
-			}
+			i_javaField.Set(onObject, obj);
 		}
 
 		internal virtual void SetName(string a_name)
@@ -913,13 +893,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				Db4objects.Db4o.Internal.Transaction trans = stream.GetTransaction();
-				_index.TraverseKeys(trans, new _AnonymousInnerClass801(this, userVisitor, trans));
+				_index.TraverseKeys(trans, new _AnonymousInnerClass784(this, userVisitor, trans));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass801 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass784 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass801(FieldMetadata _enclosing, Db4objects.Db4o.Foundation.IVisitor4
+			public _AnonymousInnerClass784(FieldMetadata _enclosing, Db4objects.Db4o.Foundation.IVisitor4
 				 userVisitor, Db4objects.Db4o.Internal.Transaction trans)
 			{
 				this._enclosing = _enclosing;

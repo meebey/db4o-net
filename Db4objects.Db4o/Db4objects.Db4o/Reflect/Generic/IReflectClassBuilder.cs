@@ -12,9 +12,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 		void InitFields(Db4objects.Db4o.Reflect.IReflectClass clazz, Db4objects.Db4o.Reflect.IReflectField[]
 			 fields);
 
-		Db4objects.Db4o.Reflect.IReflectClass ArrayClass(Db4objects.Db4o.Reflect.IReflectClass
-			 clazz);
-
 		Db4objects.Db4o.Reflect.IReflectField[] FieldArray(int length);
 	}
 }

@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal
 			(null);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec BTREE_NODE_SIZE = new 
-			Db4objects.Db4o.Foundation.KeySpec(4096);
+			Db4objects.Db4o.Foundation.KeySpec(119);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec BTREE_CACHE_HEIGHT = new 
 			Db4objects.Db4o.Foundation.KeySpec(1);
@@ -34,7 +34,8 @@ namespace Db4objects.Db4o.Internal
 			(true);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec CALL_CONSTRUCTORS = new 
-			Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Internal.Const4.DEFAULT);
+			Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED
+			);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec CLASS_ACTIVATION_DEPTH_CONFIGURABLE
 			 = new Db4objects.Db4o.Foundation.KeySpec(true);
@@ -69,15 +70,19 @@ namespace Db4objects.Db4o.Internal
 		private static readonly Db4objects.Db4o.Foundation.KeySpec FLUSH_FILE_BUFFERS = new 
 			Db4objects.Db4o.Foundation.KeySpec(true);
 
+		private static readonly Db4objects.Db4o.Foundation.KeySpec FREESPACE_FILLER = new 
+			Db4objects.Db4o.Foundation.KeySpec(null);
+
 		private static readonly Db4objects.Db4o.Foundation.KeySpec FREESPACE_SYSTEM = new 
 			Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Internal.Freespace.FreespaceManager
 			.FM_DEFAULT);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec GENERATE_UUIDS = new Db4objects.Db4o.Foundation.KeySpec
-			(0);
+			(Db4objects.Db4o.Config.ConfigScope.INDIVIDUALLY);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec GENERATE_VERSION_NUMBERS
-			 = new Db4objects.Db4o.Foundation.KeySpec(0);
+			 = new Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Config.ConfigScope.INDIVIDUALLY
+			);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec IS_SERVER = new Db4objects.Db4o.Foundation.KeySpec
 			(false);
@@ -100,6 +105,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec PASSWORD = new Db4objects.Db4o.Foundation.KeySpec
 			((string)null);
+
+		private static readonly Db4objects.Db4o.Foundation.KeySpec CLIENT_QUERY_RESULT_ITERATOR_FACTORY
+			 = new Db4objects.Db4o.Foundation.KeySpec(null);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec PREFETCH_ID_COUNT = new 
 			Db4objects.Db4o.Foundation.KeySpec(10);
@@ -219,8 +227,8 @@ namespace Db4objects.Db4o.Internal
 
 		public void CallConstructors(bool flag)
 		{
-			_config.Put(CALL_CONSTRUCTORS, (flag ? Db4objects.Db4o.Internal.Const4.YES : Db4objects.Db4o.Internal.Const4
-				.NO));
+			_config.Put(CALL_CONSTRUCTORS, Db4objects.Db4o.Foundation.TernaryBool.ForBoolean(
+				flag));
 		}
 
 		public void ClassActivationDepthConfigurable(bool turnOn)
@@ -320,14 +328,47 @@ namespace Db4objects.Db4o.Internal
 			return this;
 		}
 
-		public void GenerateUUIDs(int setting)
+		public void FreespaceFiller(Db4objects.Db4o.Config.IFreespaceFiller freespaceFiller
+			)
 		{
-			_config.Put(GENERATE_UUIDS, setting);
+			_config.Put(FREESPACE_FILLER, freespaceFiller);
 		}
 
+		public Db4objects.Db4o.Config.IFreespaceFiller FreespaceFiller()
+		{
+			return (Db4objects.Db4o.Config.IFreespaceFiller)_config.Get(FREESPACE_FILLER);
+		}
+
+		/// <deprecated>
+		/// Use
+		/// <see cref="Db4objects.Db4o.Internal.Config4Impl.GenerateUUIDs">Db4objects.Db4o.Internal.Config4Impl.GenerateUUIDs
+		/// 	</see>
+		/// instead.
+		/// </deprecated>
+		public void GenerateUUIDs(int setting)
+		{
+			GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope.ForID(setting));
+		}
+
+		public void GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope scope)
+		{
+			_config.Put(GENERATE_UUIDS, scope);
+		}
+
+		/// <deprecated>
+		/// Use
+		/// <see cref="Db4objects.Db4o.Internal.Config4Impl.GenerateVersionNumbers">Db4objects.Db4o.Internal.Config4Impl.GenerateVersionNumbers
+		/// 	</see>
+		/// instead.
+		/// </deprecated>
 		public void GenerateVersionNumbers(int setting)
 		{
-			_config.Put(GENERATE_VERSION_NUMBERS, setting);
+			GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope.ForID(setting));
+		}
+
+		public void GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope scope)
+		{
+			_config.Put(GENERATE_VERSION_NUMBERS, scope);
 		}
 
 		public Db4objects.Db4o.Messaging.IMessageSender GetMessageSender()
@@ -430,7 +471,6 @@ namespace Db4objects.Db4o.Internal
 
 		public void ReadOnly(bool flag)
 		{
-			GlobalSettingOnly();
 			_readOnly = flag;
 		}
 
@@ -472,35 +512,10 @@ namespace Db4objects.Db4o.Internal
 
 		public void RefreshClasses()
 		{
-			if (i_stream == null)
-			{
-				Db4objects.Db4o.Internal.Sessions.ForEachSession(new _AnonymousInnerClass418(this
-					));
-			}
-			else
+			if (i_stream != null)
 			{
 				i_stream.RefreshClasses();
 			}
-		}
-
-		private sealed class _AnonymousInnerClass418 : Db4objects.Db4o.Foundation.IVisitor4
-		{
-			public _AnonymousInnerClass418(Config4Impl _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public void Visit(object obj)
-			{
-				Db4objects.Db4o.Internal.ObjectContainerBase ys = ((Db4objects.Db4o.Internal.Session
-					)obj).i_stream;
-				if (!ys.IsClosed())
-				{
-					ys.RefreshClasses();
-				}
-			}
-
-			private readonly Config4Impl _enclosing;
 		}
 
 		internal void Rename(Db4objects.Db4o.Rename a_rename)
@@ -531,35 +546,10 @@ namespace Db4objects.Db4o.Internal
 		/// <summary>The ConfigImpl also is our messageSender</summary>
 		public void Send(object obj)
 		{
-			if (i_stream == null)
-			{
-				Db4objects.Db4o.Internal.Sessions.ForEachSession(new _AnonymousInnerClass457(this
-					));
-			}
-			else
+			if (i_stream != null)
 			{
 				i_stream.Send(obj);
 			}
-		}
-
-		private sealed class _AnonymousInnerClass457 : Db4objects.Db4o.Foundation.IVisitor4
-		{
-			public _AnonymousInnerClass457(Config4Impl _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public void Visit(object session)
-			{
-				Db4objects.Db4o.Internal.ObjectContainerBase ys = ((Db4objects.Db4o.Internal.Session
-					)session).i_stream;
-				if (!ys.IsClosed())
-				{
-					ys.Send(session);
-				}
-			}
-
-			private readonly Config4Impl _enclosing;
 		}
 
 		public void SetBlobPath(string path)
@@ -780,9 +770,9 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsBoolean(CALLBACKS);
 		}
 
-		internal int CallConstructors()
+		internal Db4objects.Db4o.Foundation.TernaryBool CallConstructors()
 		{
-			return _config.GetAsInt(CALL_CONSTRUCTORS);
+			return _config.GetAsTernaryBool(CALL_CONSTRUCTORS);
 		}
 
 		internal bool ClassActivationDepthConfigurable()
@@ -860,14 +850,14 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsByte(FREESPACE_SYSTEM);
 		}
 
-		public int GenerateUUIDs()
+		public Db4objects.Db4o.Config.ConfigScope GenerateUUIDs()
 		{
-			return _config.GetAsInt(GENERATE_UUIDS);
+			return (Db4objects.Db4o.Config.ConfigScope)_config.Get(GENERATE_UUIDS);
 		}
 
-		public int GenerateVersionNumbers()
+		public Db4objects.Db4o.Config.ConfigScope GenerateVersionNumbers()
 		{
-			return _config.GetAsInt(GENERATE_VERSION_NUMBERS);
+			return (Db4objects.Db4o.Config.ConfigScope)_config.Get(GENERATE_VERSION_NUMBERS);
 		}
 
 		public bool InternStrings()
@@ -936,7 +926,7 @@ namespace Db4objects.Db4o.Internal
 			return (Db4objects.Db4o.Foundation.Hashtable4)_config.Get(READ_AS);
 		}
 
-		internal bool IsReadOnly()
+		public bool IsReadOnly()
 		{
 			return _readOnly;
 		}
@@ -1009,6 +999,19 @@ namespace Db4objects.Db4o.Internal
 		public Db4objects.Db4o.Config.QueryEvaluationMode QueryEvaluationMode()
 		{
 			return (Db4objects.Db4o.Config.QueryEvaluationMode)_config.Get(QUERY_EVALUATION_MODE
+				);
+		}
+
+		public void QueryResultIteratorFactory(Db4objects.Db4o.Internal.CS.IQueryResultIteratorFactory
+			 factory)
+		{
+			_config.Put(CLIENT_QUERY_RESULT_ITERATOR_FACTORY, factory);
+		}
+
+		public Db4objects.Db4o.Internal.CS.IQueryResultIteratorFactory QueryResultIteratorFactory
+			()
+		{
+			return (Db4objects.Db4o.Internal.CS.IQueryResultIteratorFactory)_config.Get(CLIENT_QUERY_RESULT_ITERATOR_FACTORY
 				);
 		}
 

@@ -5,8 +5,9 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 		protected override System.Type[] TestCases()
 		{
 			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STBooleanTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STByteTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Soda.CollectionIndexedJoinTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STBooleanTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase), 
+				typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STByteTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STCharTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STCharWUTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STDoubleTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STDoubleWUTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STETH1TestCase)

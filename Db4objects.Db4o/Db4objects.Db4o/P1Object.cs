@@ -59,11 +59,11 @@ namespace Db4objects.Db4o
 			}
 			if (i_yapObject == null)
 			{
-				i_yapObject = Stream().GetYapObject(this);
+				i_yapObject = Stream().ReferenceForObject(this);
 				if (i_yapObject == null)
 				{
 					Stream().Set(this);
-					i_yapObject = Stream().GetYapObject(this);
+					i_yapObject = Stream().ReferenceForObject(this);
 				}
 			}
 			if (ValidYapObject())
@@ -93,7 +93,7 @@ namespace Db4objects.Db4o
 			}
 			if (i_yapObject == null)
 			{
-				i_yapObject = Stream().GetYapObject(this);
+				i_yapObject = Stream().ReferenceForObject(this);
 			}
 			if (ValidYapObject())
 			{
@@ -217,11 +217,11 @@ namespace Db4objects.Db4o
 			}
 			if (i_yapObject == null)
 			{
-				i_yapObject = i_trans.Stream().GetYapObject(this);
+				i_yapObject = i_trans.Stream().ReferenceForObject(this);
 				if (i_yapObject == null)
 				{
 					i_trans.Stream().SetInternal(i_trans, this, true);
-					i_yapObject = i_trans.Stream().GetYapObject(this);
+					i_yapObject = i_trans.Stream().ReferenceForObject(this);
 					return;
 				}
 			}

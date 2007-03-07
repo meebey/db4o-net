@@ -312,11 +312,26 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 				join.i_constraint2);
 			if (join.IsOr())
 			{
-				return new Db4objects.Db4o.Internal.Fieldindex.OrIndexedLeaf(join.i_constraint1, 
-					c1, c2);
+				return new Db4objects.Db4o.Internal.Fieldindex.OrIndexedLeaf(FindLeafForJoin(join
+					), c1, c2);
 			}
 			return new Db4objects.Db4o.Internal.Fieldindex.AndIndexedLeaf(join.i_constraint1, 
 				c1, c2);
+		}
+
+		private Db4objects.Db4o.Internal.Query.Processor.QCon FindLeafForJoin(Db4objects.Db4o.Internal.Query.Processor.QConJoin
+			 join)
+		{
+			if (join.i_constraint1 is Db4objects.Db4o.Internal.Query.Processor.QConObject)
+			{
+				return join.i_constraint1;
+			}
+			Db4objects.Db4o.Internal.Query.Processor.QCon con = join.i_constraint2;
+			if (con is Db4objects.Db4o.Internal.Query.Processor.QConObject)
+			{
+				return con;
+			}
+			return FindLeafForJoin((Db4objects.Db4o.Internal.Query.Processor.QConJoin)con);
 		}
 
 		private Db4objects.Db4o.Internal.Fieldindex.IIndexedNodeWithRange NodeForConstraint

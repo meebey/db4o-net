@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Foundation.KeySpec(true);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec INDEXED = new Db4objects.Db4o.Foundation.KeySpec
-			(Db4objects.Db4o.Internal.Const4.DEFAULT);
+			(Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED);
 
 		protected Config4Field(Db4objects.Db4o.Internal.Config4Class a_class, Db4objects.Db4o.Foundation.KeySpecHashtable4
 			 config) : base(config)
@@ -71,8 +71,9 @@ namespace Db4objects.Db4o.Internal
 			}
 			Db4objects.Db4o.Internal.LocalObjectContainer stream = (Db4objects.Db4o.Internal.LocalObjectContainer
 				)anyStream;
-			int indexedFlag = _config.GetAsInt(INDEXED);
-			if (indexedFlag == Db4objects.Db4o.Internal.Const4.NO)
+			Db4objects.Db4o.Foundation.TernaryBool indexedFlag = _config.GetAsTernaryBool(INDEXED
+				);
+			if (indexedFlag.DefiniteNo())
 			{
 				yapField.DropIndex(systemTrans);
 				return;
@@ -81,7 +82,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (indexedFlag != Db4objects.Db4o.Internal.Const4.YES)
+			if (!indexedFlag.DefiniteYes())
 			{
 				return;
 			}

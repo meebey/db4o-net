@@ -1,31 +1,12 @@
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
 	/// <exclude></exclude>
-	public class StringIndexTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutCS
+	public class StringIndexTestCase : Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase
+		, Db4oUnit.Extensions.Fixtures.IOptOutCS
 	{
 		public static void Main(string[] args)
 		{
 			new Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase().RunSolo();
-		}
-
-		public class Item
-		{
-			public string name;
-
-			public Item()
-			{
-			}
-
-			public Item(string name_)
-			{
-				name = name_;
-			}
-		}
-
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
-		{
-			IndexField(config, typeof(Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item)
-				, "name");
 		}
 
 		public virtual void TestNotEquals()
@@ -34,29 +15,10 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			Add("bar");
 			Add("baz");
 			Add(null);
-			Db4objects.Db4o.Query.IQuery query = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item)
+			Db4objects.Db4o.Query.IQuery query = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item)
 				);
 			query.Descend("name").Constrain("bar").Not();
 			AssertItems(new string[] { "foo", "baz", null }, query.Execute());
-		}
-
-		private void AssertItems(string[] expected, Db4objects.Db4o.IObjectSet result)
-		{
-			Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor expectingVisitor = new Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
-				(ToObjectArray(expected));
-			while (result.HasNext())
-			{
-				expectingVisitor.Visit(((Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item
-					)result.Next()).name);
-			}
-			expectingVisitor.AssertExpectations();
-		}
-
-		private object[] ToObjectArray(string[] source)
-		{
-			object[] array = new object[source.Length];
-			System.Array.Copy(source, 0, array, 0, source.Length);
-			return array;
 		}
 
 		public virtual void TestCancelRemovalRollback()
@@ -118,35 +80,6 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			AssertExists("original");
 		}
 
-		private void GrafittiFreeSpace()
-		{
-			Db4objects.Db4o.Internal.IoAdaptedObjectContainer file = ((Db4objects.Db4o.Internal.IoAdaptedObjectContainer
-				)Db());
-			Db4objects.Db4o.Internal.Freespace.FreespaceManagerRam fm = (Db4objects.Db4o.Internal.Freespace.FreespaceManagerRam
-				)file.FreespaceManager();
-			fm.TraverseFreeSlots(new _AnonymousInnerClass135(this, file));
-		}
-
-		private sealed class _AnonymousInnerClass135 : Db4objects.Db4o.Foundation.IVisitor4
-		{
-			public _AnonymousInnerClass135(StringIndexTestCase _enclosing, Db4objects.Db4o.Internal.IoAdaptedObjectContainer
-				 file)
-			{
-				this._enclosing = _enclosing;
-				this.file = file;
-			}
-
-			public void Visit(object obj)
-			{
-				Db4objects.Db4o.Internal.Slots.Slot slot = (Db4objects.Db4o.Internal.Slots.Slot)obj;
-				file.WriteXBytes(slot.GetAddress(), slot.GetLength());
-			}
-
-			private readonly StringIndexTestCase _enclosing;
-
-			private readonly Db4objects.Db4o.Internal.IoAdaptedObjectContainer file;
-		}
-
 		public virtual void TestDeletingAndReaddingMember()
 		{
 			Add("original");
@@ -157,72 +90,6 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			Reopen();
 			AssertExists("updated");
 			Db4oUnit.Assert.IsNull(Query("original"));
-		}
-
-		private void AssertExists(string itemName)
-		{
-			AssertExists(Trans(), itemName);
-		}
-
-		private void Add(string itemName)
-		{
-			Add(Trans(), itemName);
-		}
-
-		private void Add(Db4objects.Db4o.Internal.Transaction transaction, string itemName
-			)
-		{
-			Stream().Set(transaction, new Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item
-				(itemName));
-		}
-
-		private void AssertExists(Db4objects.Db4o.Internal.Transaction transaction, string
-			 itemName)
-		{
-			Db4oUnit.Assert.IsNotNull(Query(transaction, itemName));
-		}
-
-		private void Rename(Db4objects.Db4o.Internal.Transaction transaction, string from
-			, string to)
-		{
-			Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item item = Query(transaction
-				, from);
-			Db4oUnit.Assert.IsNotNull(item);
-			item.name = to;
-			Stream().Set(transaction, item);
-		}
-
-		private void Rename(string from, string to)
-		{
-			Rename(Trans(), from, to);
-		}
-
-		private Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item Query(string
-			 name)
-		{
-			return Query(Trans(), name);
-		}
-
-		private Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item Query(Db4objects.Db4o.Internal.Transaction
-			 transaction, string name)
-		{
-			Db4objects.Db4o.IObjectSet objectSet = NewQuery(transaction, name).Execute();
-			if (!objectSet.HasNext())
-			{
-				return null;
-			}
-			return (Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item)objectSet
-				.Next();
-		}
-
-		private Db4objects.Db4o.Query.IQuery NewQuery(Db4objects.Db4o.Internal.Transaction
-			 transaction, string itemName)
-		{
-			Db4objects.Db4o.Query.IQuery query = Stream().Query(transaction);
-			query.Constrain(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase.Item)
-				);
-			query.Descend("name").Constrain(itemName);
-			return query;
 		}
 	}
 }

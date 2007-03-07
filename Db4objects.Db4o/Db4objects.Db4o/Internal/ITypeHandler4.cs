@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal
 
 		bool IndexNullHandling();
 
-		int IsSecondClass();
+		Db4objects.Db4o.Foundation.TernaryBool IsSecondClass();
 
 		/// <summary>
 		/// The length calculation is different, depending from where we

@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		internal virtual void LockFile(object file)
+		internal virtual void LockFile(string path, object file)
 		{
 			lock (this)
 			{
@@ -142,7 +142,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		internal virtual void UnlockFile(object file)
+		internal virtual void UnlockFile(string path, object file)
 		{
 			lock (this)
 			{

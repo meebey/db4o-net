@@ -95,25 +95,19 @@ namespace Db4objects.Db4o.Internal
 					[COUNT];
 				for (int i = COUNT - 1; i >= 0; i--)
 				{
-					try
+					Db4objects.Db4o.Reflect.IReflectMethod method = classReflector.GetMethod(events[i
+						], parameterClasses);
+					if (null == method)
 					{
-						Db4objects.Db4o.Reflect.IReflectMethod method = classReflector.GetMethod(events[i
-							], parameterClasses);
-						if (null == method)
-						{
-							method = classReflector.GetMethod(ToPascalCase(events[i]), parameterClasses);
-						}
-						if (method != null)
-						{
-							methods[i] = method;
-							if (dispatcher == null)
-							{
-								dispatcher = new Db4objects.Db4o.Internal.EventDispatcher(methods);
-							}
-						}
+						method = classReflector.GetMethod(ToPascalCase(events[i]), parameterClasses);
 					}
-					catch
+					if (method != null)
 					{
+						methods[i] = method;
+						if (dispatcher == null)
+						{
+							dispatcher = new Db4objects.Db4o.Internal.EventDispatcher(methods);
+						}
 					}
 				}
 			}

@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			{
 				int id = this._enclosing.IdFromValue(a_object);
 				Db4objects.Db4o.Internal.ObjectContainerBase stream = transaction.Stream();
-				Db4objects.Db4o.Internal.ObjectReference yo = stream.GetYapObject(id);
+				Db4objects.Db4o.Internal.ObjectReference yo = stream.ReferenceForId(id);
 				if (yo != null)
 				{
 					stream.RemoveReference(yo);

@@ -6,13 +6,16 @@ namespace Db4objects.Db4o.Internal
 		protected Db4objects.Db4o.Foundation.KeySpecHashtable4 _config;
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec CASCADE_ON_ACTIVATE = 
-			new Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Internal.Const4.DEFAULT);
+			new Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED
+			);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec CASCADE_ON_DELETE = new 
-			Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Internal.Const4.DEFAULT);
+			Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED
+			);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec CASCADE_ON_UPDATE = new 
-			Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Internal.Const4.DEFAULT);
+			Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED
+			);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec NAME = new Db4objects.Db4o.Foundation.KeySpec
 			(null);
@@ -45,28 +48,34 @@ namespace Db4objects.Db4o.Internal
 		protected virtual void PutThreeValued(Db4objects.Db4o.Foundation.KeySpec spec, bool
 			 flag)
 		{
-			_config.Put(spec, flag ? Db4objects.Db4o.Internal.Const4.YES : Db4objects.Db4o.Internal.Const4
-				.NO);
+			_config.Put(spec, Db4objects.Db4o.Foundation.TernaryBool.ForBoolean(flag));
 		}
 
-		public virtual int CascadeOnActivate()
+		protected virtual void PutThreeValuedInt(Db4objects.Db4o.Foundation.KeySpec spec, 
+			bool flag)
+		{
+			_config.Put(spec, flag ? 1 : -1);
+		}
+
+		public virtual Db4objects.Db4o.Foundation.TernaryBool CascadeOnActivate()
 		{
 			return Cascade(CASCADE_ON_ACTIVATE);
 		}
 
-		public virtual int CascadeOnDelete()
+		public virtual Db4objects.Db4o.Foundation.TernaryBool CascadeOnDelete()
 		{
 			return Cascade(CASCADE_ON_DELETE);
 		}
 
-		public virtual int CascadeOnUpdate()
+		public virtual Db4objects.Db4o.Foundation.TernaryBool CascadeOnUpdate()
 		{
 			return Cascade(CASCADE_ON_UPDATE);
 		}
 
-		private int Cascade(Db4objects.Db4o.Foundation.KeySpec spec)
+		private Db4objects.Db4o.Foundation.TernaryBool Cascade(Db4objects.Db4o.Foundation.KeySpec
+			 spec)
 		{
-			return _config.GetAsInt(spec);
+			return _config.GetAsTernaryBool(spec);
 		}
 
 		internal abstract string ClassName();

@@ -95,11 +95,16 @@ namespace Db4oUnit
 
 		public static void AreEqual(double expected, double actual)
 		{
+			AreEqual(expected, actual, null);
+		}
+
+		public static void AreEqual(double expected, double actual, string message)
+		{
 			if (expected == actual)
 			{
 				return;
 			}
-			Fail(FailureMessage(expected, actual));
+			Fail(FailureMessage(expected, actual, message));
 		}
 
 		public static void AreEqual(long expected, long actual)

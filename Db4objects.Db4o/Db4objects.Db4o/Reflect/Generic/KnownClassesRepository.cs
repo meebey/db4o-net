@@ -2,6 +2,26 @@ namespace Db4objects.Db4o.Reflect.Generic
 {
 	public class KnownClassesRepository
 	{
+		private static readonly Db4objects.Db4o.Foundation.Hashtable4 PRIMITIVES;
+
+		static KnownClassesRepository()
+		{
+			PRIMITIVES = new Db4objects.Db4o.Foundation.Hashtable4();
+			RegisterPrimitive(typeof(bool), typeof(bool));
+			RegisterPrimitive(typeof(byte), typeof(byte));
+			RegisterPrimitive(typeof(short), typeof(short));
+			RegisterPrimitive(typeof(char), typeof(char));
+			RegisterPrimitive(typeof(int), typeof(int));
+			RegisterPrimitive(typeof(long), typeof(long));
+			RegisterPrimitive(typeof(float), typeof(float));
+			RegisterPrimitive(typeof(double), typeof(double));
+		}
+
+		private static void RegisterPrimitive(System.Type wrapper, System.Type primitive)
+		{
+			PRIMITIVES.Put(wrapper.FullName, primitive);
+		}
+
 		private Db4objects.Db4o.Internal.ObjectContainerBase _stream;
 
 		private Db4objects.Db4o.Internal.Transaction _trans;
@@ -146,33 +166,55 @@ namespace Db4objects.Db4o.Reflect.Generic
 				Db4objects.Db4o.Internal.Marshall.RawFieldSpec fieldInfo = fieldMarshaller.ReadSpec
 					(_stream, classreader);
 				string fieldName = fieldInfo.Name();
-				int handlerID = fieldInfo.HandlerID();
-				Db4objects.Db4o.Reflect.IReflectClass fieldClass = null;
-				switch (handlerID)
-				{
-					case Db4objects.Db4o.Internal.HandlerRegistry.ANY_ID:
-					{
-						fieldClass = _stream.Reflector().ForClass(typeof(object));
-						break;
-					}
-
-					case Db4objects.Db4o.Internal.HandlerRegistry.ANY_ARRAY_ID:
-					{
-						fieldClass = _builder.ArrayClass(_stream.Reflector().ForClass(typeof(object)));
-						break;
-					}
-
-					default:
-					{
-						fieldClass = ForID(handlerID);
-						fieldClass = _stream.Reflector().ForName(fieldClass.GetName());
-						break;
-					}
-				}
+				Db4objects.Db4o.Reflect.IReflectClass fieldClass = ReflectClassForFieldSpec(fieldInfo
+					);
 				fields[i] = _builder.CreateField(clazz, fieldName, fieldClass, fieldInfo.IsVirtual
 					(), fieldInfo.IsPrimitive(), fieldInfo.IsArray(), fieldInfo.IsNArray());
 			}
 			_builder.InitFields(clazz, fields);
+		}
+
+		private Db4objects.Db4o.Reflect.IReflectClass ReflectClassForFieldSpec(Db4objects.Db4o.Internal.Marshall.RawFieldSpec
+			 fieldInfo)
+		{
+			if (fieldInfo.IsVirtual())
+			{
+				Db4objects.Db4o.Internal.VirtualFieldMetadata fieldMeta = _stream.Handlers().VirtualFieldByName
+					(fieldInfo.Name());
+				return fieldMeta.GetHandler().ClassReflector();
+			}
+			int handlerID = fieldInfo.HandlerID();
+			Db4objects.Db4o.Reflect.IReflectClass fieldClass = null;
+			switch (handlerID)
+			{
+				case Db4objects.Db4o.Internal.HandlerRegistry.ANY_ID:
+				{
+					fieldClass = _stream.Reflector().ForClass(typeof(object));
+					break;
+				}
+
+				case Db4objects.Db4o.Internal.HandlerRegistry.ANY_ARRAY_ID:
+				{
+					fieldClass = ArrayClass(_stream.Reflector().ForClass(typeof(object)));
+					break;
+				}
+
+				default:
+				{
+					fieldClass = ForID(handlerID);
+					fieldClass = _stream.Reflector().ForName(fieldClass.GetName());
+					if (fieldInfo.IsPrimitive())
+					{
+						fieldClass = PrimitiveClass(fieldClass);
+					}
+					if (fieldInfo.IsArray())
+					{
+						fieldClass = ArrayClass(fieldClass);
+					}
+					break;
+				}
+			}
+			return fieldClass;
 		}
 
 		private Db4objects.Db4o.Internal.Marshall.MarshallerFamily MarshallerFamily()
@@ -216,6 +258,24 @@ namespace Db4objects.Db4o.Reflect.Generic
 		public virtual Db4objects.Db4o.Reflect.IReflectClass LookupByName(string name)
 		{
 			return (Db4objects.Db4o.Reflect.IReflectClass)_classByName.Get(name);
+		}
+
+		private Db4objects.Db4o.Reflect.IReflectClass ArrayClass(Db4objects.Db4o.Reflect.IReflectClass
+			 clazz)
+		{
+			object proto = clazz.Reflector().Array().NewInstance(clazz, 0);
+			return clazz.Reflector().ForObject(proto);
+		}
+
+		private Db4objects.Db4o.Reflect.IReflectClass PrimitiveClass(Db4objects.Db4o.Reflect.IReflectClass
+			 baseClass)
+		{
+			System.Type primitive = (System.Type)PRIMITIVES.Get(baseClass.GetName());
+			if (primitive != null)
+			{
+				return baseClass.Reflector().ForClass(primitive);
+			}
+			return baseClass;
 		}
 	}
 }

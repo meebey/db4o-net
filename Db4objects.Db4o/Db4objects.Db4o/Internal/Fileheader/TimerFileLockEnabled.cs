@@ -3,13 +3,19 @@ namespace Db4objects.Db4o.Internal.Fileheader
 	/// <exclude></exclude>
 	public class TimerFileLockEnabled : Db4objects.Db4o.Internal.Fileheader.TimerFileLock
 	{
-		private readonly Db4objects.Db4o.Internal.LocalObjectContainer _file;
+		private readonly Db4objects.Db4o.IO.IoAdapter _timerFile;
+
+		private readonly object _timerLock;
+
+		private byte[] _longBytes = new byte[Db4objects.Db4o.Internal.Const4.LONG_LENGTH];
+
+		private byte[] _intBytes = new byte[Db4objects.Db4o.Internal.Const4.INT_LENGTH];
 
 		private int _headerLockOffset = 2 + Db4objects.Db4o.Internal.Const4.INT_LENGTH;
 
 		private readonly long _opentime;
 
-		private int _baseAddress;
+		private int _baseAddress = -1;
 
 		private int _openTimeOffset;
 
@@ -17,58 +23,50 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private bool _closed = false;
 
-		public TimerFileLockEnabled(Db4objects.Db4o.Internal.LocalObjectContainer file)
+		public TimerFileLockEnabled(Db4objects.Db4o.Internal.IoAdaptedObjectContainer file
+			)
 		{
-			_file = file;
+			_timerLock = file.Lock();
+			_timerFile = file.TimerFile();
 			_opentime = UniqueOpenTime();
 		}
 
 		public override void CheckHeaderLock()
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer reader = HeaderLockIO();
-			reader.Read();
-			if (reader.ReadInt() != (int)_opentime)
+			try
 			{
-				throw new Db4objects.Db4o.Ext.DatabaseFileLockedException();
+				if (((int)_opentime) == ReadInt(0, _headerLockOffset))
+				{
+					WriteHeaderLock();
+					return;
+				}
 			}
-			WriteHeaderLock();
+			catch (System.IO.IOException)
+			{
+			}
+			throw new Db4objects.Db4o.Ext.DatabaseFileLockedException();
 		}
 
 		public override void CheckOpenTime()
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer reader = OpenTimeIO();
-			if (reader == null)
+			try
 			{
-				return;
+				if (_opentime == ReadLong(_baseAddress, _openTimeOffset))
+				{
+					WriteOpenTime();
+					return;
+				}
 			}
-			reader.Read();
-			if (reader.ReadLong() != _opentime)
+			catch (System.IO.IOException)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(22);
 			}
-			WriteOpenTime();
+			throw new Db4objects.Db4o.Ext.DatabaseFileLockedException();
 		}
 
 		public override void Close()
 		{
 			WriteAccessTime(true);
 			_closed = true;
-		}
-
-		private Db4objects.Db4o.Internal.StatefulBuffer GetWriter(int address, int offset
-			, int length)
-		{
-			Db4objects.Db4o.Internal.StatefulBuffer writer = _file.GetWriter(_file.GetTransaction
-				(), address, length);
-			writer.MoveForward(offset);
-			return writer;
-		}
-
-		private Db4objects.Db4o.Internal.StatefulBuffer HeaderLockIO()
-		{
-			Db4objects.Db4o.Internal.StatefulBuffer writer = GetWriter(0, _headerLockOffset, 
-				Db4objects.Db4o.Internal.Const4.INT_LENGTH);
-			return writer;
 		}
 
 		public override bool LockFile()
@@ -79,17 +77,6 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override long OpenTime()
 		{
 			return _opentime;
-		}
-
-		private Db4objects.Db4o.Internal.StatefulBuffer OpenTimeIO()
-		{
-			if (_baseAddress == 0)
-			{
-				return null;
-			}
-			Db4objects.Db4o.Internal.StatefulBuffer writer = GetWriter(_baseAddress, _openTimeOffset
-				, Db4objects.Db4o.Internal.Const4.LONG_LENGTH);
-			return writer;
 		}
 
 		public override void Run()
@@ -124,7 +111,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override void Start()
 		{
 			WriteAccessTime(false);
-			_file.SyncFiles();
+			_timerFile.Sync();
 			CheckOpenTime();
 			new Sharpen.Lang.Thread(this).Start();
 		}
@@ -136,30 +123,106 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private bool WriteAccessTime(bool closing)
 		{
-			if (_baseAddress < 1)
+			if (NoAddressSet())
 			{
 				return true;
 			}
 			long time = closing ? 0 : Sharpen.Runtime.CurrentTimeMillis();
-			return _file.WriteAccessTime(_baseAddress, _accessTimeOffset, time);
+			bool ret = WriteLong(_baseAddress, _accessTimeOffset, time);
+			Sync();
+			return ret;
+		}
+
+		private bool NoAddressSet()
+		{
+			return _baseAddress < 0;
 		}
 
 		public override void WriteHeaderLock()
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer writer = HeaderLockIO();
-			writer.WriteInt((int)_opentime);
-			writer.Write();
+			try
+			{
+				WriteInt(0, _headerLockOffset, (int)_opentime);
+				Sync();
+			}
+			catch (System.IO.IOException)
+			{
+			}
 		}
 
 		public override void WriteOpenTime()
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer writer = OpenTimeIO();
-			if (writer == null)
+			try
 			{
-				return;
+				WriteLong(_baseAddress, _openTimeOffset, _opentime);
+				Sync();
 			}
-			writer.WriteLong(_opentime);
-			writer.Write();
+			catch (System.IO.IOException)
+			{
+			}
+		}
+
+		private bool WriteLong(int address, int offset, long time)
+		{
+			lock (_timerLock)
+			{
+				if (_timerFile == null)
+				{
+					return false;
+				}
+				_timerFile.BlockSeek(address, offset);
+				Db4objects.Db4o.Foundation.PrimitiveCodec.WriteLong(_longBytes, time);
+				_timerFile.Write(_longBytes);
+				return true;
+			}
+		}
+
+		private long ReadLong(int address, int offset)
+		{
+			lock (_timerLock)
+			{
+				if (_timerFile == null)
+				{
+					return 0;
+				}
+				_timerFile.BlockSeek(address, offset);
+				_timerFile.Read(_longBytes);
+				return Db4objects.Db4o.Foundation.PrimitiveCodec.ReadLong(_longBytes, 0);
+			}
+		}
+
+		private bool WriteInt(int address, int offset, int time)
+		{
+			lock (_timerLock)
+			{
+				if (_timerFile == null)
+				{
+					return false;
+				}
+				_timerFile.BlockSeek(address, offset);
+				Db4objects.Db4o.Foundation.PrimitiveCodec.WriteInt(_intBytes, 0, time);
+				_timerFile.Write(_intBytes);
+				return true;
+			}
+		}
+
+		private long ReadInt(int address, int offset)
+		{
+			lock (_timerLock)
+			{
+				if (_timerFile == null)
+				{
+					return 0;
+				}
+				_timerFile.BlockSeek(address, offset);
+				_timerFile.Read(_longBytes);
+				return Db4objects.Db4o.Foundation.PrimitiveCodec.ReadInt(_longBytes, 0);
+			}
+		}
+
+		private void Sync()
+		{
+			_timerFile.Sync();
 		}
 	}
 }

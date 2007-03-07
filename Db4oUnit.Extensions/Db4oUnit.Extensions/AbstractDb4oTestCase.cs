@@ -102,6 +102,17 @@ namespace Db4oUnit.Extensions
 			return RunClientServer(true);
 		}
 
+		public virtual int RunEmbeddedClientServer()
+		{
+			return RunEmbeddedClientServer(true);
+		}
+
+		private int RunEmbeddedClientServer(bool independentConfig)
+		{
+			return new Db4oUnit.TestRunner(EmbeddedClientServerSuite(independentConfig)).Run(
+				);
+		}
+
 		public virtual int RunClientServer(bool independentConfig)
 		{
 			return new Db4oUnit.TestRunner(ClientServerSuite(independentConfig)).Run();
@@ -121,6 +132,13 @@ namespace Db4oUnit.Extensions
 				(ConfigSource(independentConfig)), TestCases());
 		}
 
+		private Db4oUnit.Extensions.Db4oTestSuiteBuilder EmbeddedClientServerSuite(bool independentConfig
+			)
+		{
+			return new Db4oUnit.Extensions.Db4oTestSuiteBuilder(new Db4oUnit.Extensions.Fixtures.Db4oSingleClient
+				(ConfigSource(independentConfig), 0), TestCases());
+		}
+
 		private Db4oUnit.Extensions.Fixtures.IConfigurationSource ConfigSource(bool independentConfig
 			)
 		{
@@ -134,7 +152,7 @@ namespace Db4oUnit.Extensions
 			return (Db4objects.Db4o.Internal.ObjectContainerBase)Db();
 		}
 
-		protected virtual Db4objects.Db4o.Internal.LocalObjectContainer FileSession()
+		public virtual Db4objects.Db4o.Internal.LocalObjectContainer FileSession()
 		{
 			return Fixture().FileSession();
 		}
@@ -218,12 +236,12 @@ namespace Db4oUnit.Extensions
 
 		protected virtual void DeleteAll(System.Type clazz)
 		{
-			Foreach(clazz, new _AnonymousInnerClass192(this));
+			Foreach(clazz, new _AnonymousInnerClass206(this));
 		}
 
-		private sealed class _AnonymousInnerClass192 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass206 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass192(AbstractDb4oTestCase _enclosing)
+			public _AnonymousInnerClass206(AbstractDb4oTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

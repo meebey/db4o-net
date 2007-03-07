@@ -7,6 +7,8 @@ namespace Db4objects.Db4o.Internal
 
 		public const int CLOSED_OR_OPEN_FAILED = 20;
 
+		public const int FAILED_TO_SHUTDOWN = 28;
+
 		public const int FATAL_MSG_ID = 44;
 
 		public const int NOT_IMPLEMENTED = 49;
@@ -16,6 +18,10 @@ namespace Db4objects.Db4o.Internal
 		public const int ONLY_FOR_INDEXED_FIELDS = 66;
 
 		public const int CLIENT_SERVER_UNSUPPORTED = 67;
+
+		public const int COULD_NOT_OPEN_PORT = 30;
+
+		public const int SERVER_LISTENING_ON_PORT = 31;
 
 		private static string[] i_messages;
 
@@ -82,7 +88,7 @@ namespace Db4objects.Db4o.Internal
 					, "By convention a Predicate needs the following method: public boolean match(ExtentClass extent){}"
 					, "Old database file format detected. To allow automatic updates call Db4o.configure().allowVersionUpdates(true)."
 					, "This functionality is only available for indexed fields.", "This functionality is not supported for db4o clients in Client/Server mode."
-					, "Invalid address: %" };
+					, "Invalid address: %", "Maximum file size reached" };
 			}
 		}
 

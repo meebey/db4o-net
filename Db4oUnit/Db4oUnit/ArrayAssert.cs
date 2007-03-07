@@ -24,8 +24,13 @@ namespace Db4oUnit
 			Db4oUnit.Assert.AreEqual(expected.Length, actual.Length);
 			for (int i = 0; i < expected.Length; i++)
 			{
-				Db4oUnit.Assert.AreEqual(expected[i], actual[i]);
+				Db4oUnit.Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
 			}
+		}
+
+		private static string IndexMessage(int i)
+		{
+			return "expected[" + i + "]";
 		}
 
 		public static void AreEqual(byte[] expected, byte[] actual)
@@ -41,7 +46,7 @@ namespace Db4oUnit
 			Db4oUnit.Assert.AreEqual(expected.Length, actual.Length);
 			for (int i = 0; i < expected.Length; i++)
 			{
-				Db4oUnit.Assert.AreEqual(expected[i], actual[i]);
+				Db4oUnit.Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
 			}
 		}
 
@@ -71,7 +76,7 @@ namespace Db4oUnit
 			Db4oUnit.Assert.AreEqual(expected.Length, actual.Length);
 			for (int i = 0; i < expected.Length; i++)
 			{
-				Db4oUnit.Assert.AreEqual(expected[i], actual[i]);
+				Db4oUnit.Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
 			}
 		}
 
@@ -88,7 +93,7 @@ namespace Db4oUnit
 			Db4oUnit.Assert.AreEqual(expected.Length, actual.Length);
 			for (int i = 0; i < expected.Length; i++)
 			{
-				Db4oUnit.Assert.AreEqual(expected[i], actual[i]);
+				Db4oUnit.Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
 			}
 		}
 

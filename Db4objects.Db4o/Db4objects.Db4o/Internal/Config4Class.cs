@@ -7,7 +7,8 @@ namespace Db4objects.Db4o.Internal
 		private readonly Db4objects.Db4o.Internal.Config4Impl _configImpl;
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec CALL_CONSTRUCTOR = new 
-			Db4objects.Db4o.Foundation.KeySpec(0);
+			Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED
+			);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec CLASS_INDEXED = new Db4objects.Db4o.Foundation.KeySpec
 			(true);
@@ -16,10 +17,10 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Foundation.KeySpec(null);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec GENERATE_UUIDS = new Db4objects.Db4o.Foundation.KeySpec
-			(0);
+			(false);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec GENERATE_VERSION_NUMBERS
-			 = new Db4objects.Db4o.Foundation.KeySpec(0);
+			 = new Db4objects.Db4o.Foundation.KeySpec(false);
 
 		/// <summary>
 		/// We are running into cyclic dependancies on reading the PBootRecord
@@ -73,12 +74,12 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual int AdjustActivationDepth(int depth)
 		{
-			int cascadeOnActivate = CascadeOnActivate();
-			if (cascadeOnActivate == Db4objects.Db4o.Internal.Const4.YES && depth < 2)
+			Db4objects.Db4o.Foundation.TernaryBool cascadeOnActivate = CascadeOnActivate();
+			if (cascadeOnActivate.DefiniteYes() && depth < 2)
 			{
 				depth = 2;
 			}
-			if (cascadeOnActivate == Db4objects.Db4o.Internal.Const4.NO && depth > 1)
+			if (cascadeOnActivate.DefiniteNo() && depth > 1)
 			{
 				depth = 1;
 			}
@@ -144,12 +145,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void GenerateUUIDs(bool setting)
 		{
-			PutThreeValued(GENERATE_UUIDS, setting);
+			_config.Put(GENERATE_UUIDS, setting);
 		}
 
 		public virtual void GenerateVersionNumbers(bool setting)
 		{
-			PutThreeValued(GENERATE_VERSION_NUMBERS, setting);
+			_config.Put(GENERATE_VERSION_NUMBERS, setting);
 		}
 
 		public virtual Db4objects.Db4o.Config.IObjectTranslator GetTranslator()
@@ -167,16 +168,35 @@ namespace Db4objects.Db4o.Internal
 			}
 			try
 			{
-				translator = (Db4objects.Db4o.Config.IObjectTranslator)Config().Reflector().ForName
-					(translatorName).NewInstance();
+				translator = NewTranslatorFromReflector(translatorName);
 			}
 			catch
 			{
-				Db4objects.Db4o.Internal.Messages.LogErr(Config(), 48, translatorName, null);
-				TranslateOnDemand(null);
+				try
+				{
+					translator = NewTranslatorFromPlatform(translatorName);
+				}
+				catch (System.Exception e)
+				{
+					throw new Db4objects.Db4o.Ext.Db4oException(e);
+				}
 			}
 			Translate(translator);
 			return translator;
+		}
+
+		private Db4objects.Db4o.Config.IObjectTranslator NewTranslatorFromPlatform(string
+			 translatorName)
+		{
+			return (Db4objects.Db4o.Config.IObjectTranslator)System.Activator.CreateInstance(
+				Db4objects.Db4o.Internal.ReflectPlatform.ForName(translatorName));
+		}
+
+		private Db4objects.Db4o.Config.IObjectTranslator NewTranslatorFromReflector(string
+			 translatorName)
+		{
+			return (Db4objects.Db4o.Config.IObjectTranslator)Config().Reflector().ForName(translatorName
+				).NewInstance();
 		}
 
 		public virtual void Indexed(bool flag)
@@ -232,13 +252,13 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsInt(MINIMUM_ACTIVATION_DEPTH);
 		}
 
-		public virtual int CallConstructor()
+		public virtual Db4objects.Db4o.Foundation.TernaryBool CallConstructor()
 		{
 			if (_config.Get(TRANSLATOR) != null)
 			{
-				return Db4objects.Db4o.Internal.Const4.YES;
+				return Db4objects.Db4o.Foundation.TernaryBool.YES;
 			}
-			return _config.GetAsInt(CALL_CONSTRUCTOR);
+			return _config.GetAsTernaryBool(CALL_CONSTRUCTOR);
 		}
 
 		private Db4objects.Db4o.Foundation.Hashtable4 ExceptionalFieldsOrNull()
@@ -341,14 +361,14 @@ namespace Db4objects.Db4o.Internal
 			return _configImpl;
 		}
 
-		internal virtual int GenerateUUIDs()
+		internal virtual bool GenerateUUIDs()
 		{
-			return _config.GetAsInt(GENERATE_UUIDS);
+			return _config.GetAsBoolean(GENERATE_UUIDS);
 		}
 
-		internal virtual int GenerateVersionNumbers()
+		internal virtual bool GenerateVersionNumbers()
 		{
-			return _config.GetAsInt(GENERATE_VERSION_NUMBERS);
+			return _config.GetAsBoolean(GENERATE_VERSION_NUMBERS);
 		}
 
 		internal virtual void MaintainMetaClass(bool flag)

@@ -4,6 +4,8 @@ namespace Db4objects.Db4o.IO
 	/// <remarks>IO adapter for random access files.</remarks>
 	public class RandomAccessFileAdapter : Db4objects.Db4o.IO.IoAdapter
 	{
+		private string _path;
+
 		private Sharpen.IO.RandomAccessFile _delegate;
 
 		public RandomAccessFileAdapter()
@@ -12,7 +14,8 @@ namespace Db4objects.Db4o.IO
 
 		protected RandomAccessFileAdapter(string path, bool lockFile, long initialLength)
 		{
-			_delegate = new Sharpen.IO.RandomAccessFile(path, "rw");
+			_path = new Sharpen.IO.File(path).GetCanonicalPath();
+			_delegate = new Sharpen.IO.RandomAccessFile(_path, "rw");
 			if (initialLength > 0)
 			{
 				_delegate.Seek(initialLength - 1);
@@ -20,7 +23,15 @@ namespace Db4objects.Db4o.IO
 			}
 			if (lockFile)
 			{
-				Db4objects.Db4o.Internal.Platform4.LockFile(_delegate);
+				try
+				{
+					Db4objects.Db4o.Internal.Platform4.LockFile(_path, _delegate);
+				}
+				catch (Db4objects.Db4o.Ext.DatabaseFileLockedException e)
+				{
+					_delegate.Close();
+					throw;
+				}
 			}
 		}
 
@@ -28,7 +39,7 @@ namespace Db4objects.Db4o.IO
 		{
 			try
 			{
-				Db4objects.Db4o.Internal.Platform4.UnlockFile(_delegate);
+				Db4objects.Db4o.Internal.Platform4.UnlockFile(_path, _delegate);
 			}
 			catch
 			{

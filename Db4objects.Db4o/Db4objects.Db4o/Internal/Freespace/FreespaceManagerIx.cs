@@ -12,9 +12,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private Db4objects.Db4o.Foundation.Collection4 _xBytes;
 
+		private readonly bool _overwriteDeletedSlots;
+
 		internal FreespaceManagerIx(Db4objects.Db4o.Internal.LocalObjectContainer file) : 
 			base(file)
 		{
+			_overwriteDeletedSlots = Db4objects.Db4o.Debug.xbytes || file.Config().FreespaceFiller
+				() != null;
 		}
 
 		private void Add(int address, int length)
@@ -42,16 +46,34 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
+			if (_overwriteDeletedSlots)
+			{
+				_xBytes = new Db4objects.Db4o.Foundation.Collection4();
+			}
 			_addressIx._index.CommitFreeSpace(_lengthIx._index);
 			Db4objects.Db4o.Internal.StatefulBuffer writer = new Db4objects.Db4o.Internal.StatefulBuffer
 				(_file.GetSystemTransaction(), _slotAddress, SlotLength());
 			_addressIx._index._metaIndex.Write(writer);
 			_lengthIx._index._metaIndex.Write(writer);
+			if (_overwriteDeletedSlots)
+			{
+				writer.SetID(Db4objects.Db4o.Internal.Const4.IGNORE_ID);
+			}
 			if (_file.ConfigImpl().FlushFileBuffers())
 			{
 				_file.SyncFiles();
 			}
 			writer.WriteEncrypt();
+			if (_overwriteDeletedSlots)
+			{
+				System.Collections.IEnumerator i = _xBytes.GetEnumerator();
+				_xBytes = null;
+				while (i.MoveNext())
+				{
+					int[] addressLength = (int[])i.Current;
+					OverwriteDeletedSlots(addressLength[0], addressLength[1]);
+				}
+			}
 		}
 
 		public override int EntryCount()
@@ -96,6 +118,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 				}
 			}
 			Add(address, length);
+			if (_overwriteDeletedSlots)
+			{
+				OverwriteDeletedSlots(freedAddress, freedLength);
+			}
 		}
 
 		public override void FreeSelf()
@@ -157,15 +183,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			Db4objects.Db4o.Foundation.IIntObjectVisitor addToNewFM = new _AnonymousInnerClass190
+			Db4objects.Db4o.Foundation.IIntObjectVisitor addToNewFM = new _AnonymousInnerClass193
 				(this, newFM);
-			Db4objects.Db4o.Foundation.Tree.Traverse(_addressIx._indexTrans.GetRoot(), new _AnonymousInnerClass195
+			Db4objects.Db4o.Foundation.Tree.Traverse(_addressIx._indexTrans.GetRoot(), new _AnonymousInnerClass198
 				(this, addToNewFM));
 		}
 
-		private sealed class _AnonymousInnerClass190 : Db4objects.Db4o.Foundation.IIntObjectVisitor
+		private sealed class _AnonymousInnerClass193 : Db4objects.Db4o.Foundation.IIntObjectVisitor
 		{
-			public _AnonymousInnerClass190(FreespaceManagerIx _enclosing, Db4objects.Db4o.Internal.Freespace.FreespaceManager
+			public _AnonymousInnerClass193(FreespaceManagerIx _enclosing, Db4objects.Db4o.Internal.Freespace.FreespaceManager
 				 newFM)
 			{
 				this._enclosing = _enclosing;
@@ -182,9 +208,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly Db4objects.Db4o.Internal.Freespace.FreespaceManager newFM;
 		}
 
-		private sealed class _AnonymousInnerClass195 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass198 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass195(FreespaceManagerIx _enclosing, Db4objects.Db4o.Foundation.IIntObjectVisitor
+			public _AnonymousInnerClass198(FreespaceManagerIx _enclosing, Db4objects.Db4o.Foundation.IIntObjectVisitor
 				 addToNewFM)
 			{
 				this._enclosing = _enclosing;
@@ -253,8 +279,20 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return 0;
 		}
 
-		private void WriteXBytes(int address, int length)
+		private void OverwriteDeletedSlots(int address, int length)
 		{
+			if (_overwriteDeletedSlots)
+			{
+				if (_xBytes == null)
+				{
+					length = length * BlockSize();
+					_file.OverwriteDeletedBytes(address, length);
+				}
+				else
+				{
+					_xBytes.Add(new int[] { address, length });
+				}
+			}
 		}
 	}
 }

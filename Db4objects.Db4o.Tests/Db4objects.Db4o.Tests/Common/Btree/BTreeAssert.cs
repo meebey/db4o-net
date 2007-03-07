@@ -60,12 +60,12 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public static void DumpKeys(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Btree.BTree
 			 tree)
 		{
-			tree.TraverseKeys(trans, new _AnonymousInnerClass51());
+			tree.TraverseKeys(trans, new _AnonymousInnerClass50());
 		}
 
-		private sealed class _AnonymousInnerClass51 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass50 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass51()
+			public _AnonymousInnerClass50()
 			{
 			}
 
@@ -107,15 +107,15 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			 stream, int id, int nodeSize)
 		{
 			return new Db4objects.Db4o.Internal.Btree.BTree(stream.GetSystemTransaction(), id
-				, new Db4objects.Db4o.Internal.Handlers.IntHandler(stream), null, nodeSize, stream
-				.ConfigImpl().BTreeCacheHeight());
+				, new Db4objects.Db4o.Internal.Handlers.IntHandler(stream), nodeSize, stream.ConfigImpl
+				().BTreeCacheHeight());
 		}
 
 		public static Db4objects.Db4o.Internal.Btree.BTree CreateIntKeyBTree(Db4objects.Db4o.Internal.ObjectContainerBase
 			 stream, int id, int treeCacheHeight, int nodeSize)
 		{
 			return new Db4objects.Db4o.Internal.Btree.BTree(stream.GetSystemTransaction(), id
-				, new Db4objects.Db4o.Internal.Handlers.IntHandler(stream), null, nodeSize, treeCacheHeight
+				, new Db4objects.Db4o.Internal.Handlers.IntHandler(stream), nodeSize, treeCacheHeight
 				);
 		}
 

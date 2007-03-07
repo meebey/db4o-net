@@ -33,9 +33,6 @@ namespace Db4objects.Db4o.Internal.Btree
 		/// <summary>Can contain BTreeNode or Integer for ID of BTreeNode</summary>
 		private object[] _children;
 
-		/// <summary>Only used for leafs</summary>
-		private object[] _values;
-
 		private int _parentID;
 
 		private int _previousID;
@@ -56,7 +53,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			_count = count;
 			_isLeaf = isLeaf;
 			PrepareArrays();
-			SetStateDirty();
 		}
 
 		public BTreeNode(int id, Db4objects.Db4o.Internal.Btree.BTree btree)
@@ -107,10 +103,6 @@ namespace Db4objects.Db4o.Internal.Btree
 				}
 				PrepareInsert(s.Cursor());
 				_keys[s.Cursor()] = NewAddPatch(trans);
-				if (HandlesValues())
-				{
-					_values[s.Cursor()] = ValueHandler().Current();
-				}
 			}
 			else
 			{
@@ -130,7 +122,7 @@ namespace Db4objects.Db4o.Internal.Btree
 					_children[splitCursor] = childNodeOrSplit;
 				}
 			}
-			if (_count >= _btree.NodeSize())
+			if (MustSplit())
 			{
 				return Split(trans);
 			}
@@ -139,6 +131,11 @@ namespace Db4objects.Db4o.Internal.Btree
 				return this;
 			}
 			return null;
+		}
+
+		private bool MustSplit()
+		{
+			return _count >= _btree.NodeSize();
 		}
 
 		private Db4objects.Db4o.Internal.Btree.BTreeAdd NewAddPatch(Db4objects.Db4o.Internal.Transaction
@@ -368,9 +365,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				return;
 			}
 			object keyZero = _keys[0];
-			bool vals = HandlesValues();
 			object[] tempKeys = new object[_btree.NodeSize()];
-			object[] tempValues = vals ? new object[_btree.NodeSize()] : null;
 			int count = 0;
 			for (int i = 0; i < _count; i++)
 			{
@@ -383,20 +378,16 @@ namespace Db4objects.Db4o.Internal.Btree
 				if (key != Db4objects.Db4o.Foundation.No4.INSTANCE)
 				{
 					tempKeys[count] = key;
-					if (vals)
-					{
-						tempValues[count] = _values[i];
-					}
 					count++;
 				}
 			}
 			_keys = tempKeys;
-			_values = tempValues;
 			_count = count;
 			if (FreeIfEmpty(trans))
 			{
 				return;
 			}
+			SetStateDirty();
 			if (_keys[0] != keyZero)
 			{
 				TellParentAboutChangedKey(trans);
@@ -497,7 +488,6 @@ namespace Db4objects.Db4o.Internal.Btree
 					if (_count == 0)
 					{
 						_isLeaf = true;
-						PrepareValues();
 					}
 					return;
 				}
@@ -568,14 +558,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		private int EntryLength()
 		{
 			int len = KeyHandler().LinkLength();
-			if (_isLeaf)
-			{
-				if (HandlesValues())
-				{
-					len += ValueHandler().LinkLength();
-				}
-			}
-			else
+			if (!_isLeaf)
 			{
 				len += Db4objects.Db4o.Internal.Const4.ID_LENGTH;
 			}
@@ -635,11 +618,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			return Db4objects.Db4o.Internal.Const4.BTREE_NODE;
 		}
 
-		private bool HandlesValues()
-		{
-			return _btree._valueHandler != Db4objects.Db4o.Internal.Null.INSTANCE;
-		}
-
 		private void PrepareInsert(int pos)
 		{
 			if (pos > LastIndex())
@@ -649,10 +627,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			int len = _count - pos;
 			System.Array.Copy(_keys, pos, _keys, pos + 1, len);
-			if (_values != null)
-			{
-				System.Array.Copy(_values, pos, _values, pos + 1, len);
-			}
 			if (_children != null)
 			{
 				System.Array.Copy(_children, pos, _children, pos + 1, len);
@@ -666,11 +640,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			_count--;
 			System.Array.Copy(_keys, pos + 1, _keys, pos, len);
 			_keys[_count] = null;
-			if (_values != null)
-			{
-				System.Array.Copy(_values, pos + 1, _values, pos, len);
-				_values[_count] = null;
-			}
 			if (_children != null)
 			{
 				System.Array.Copy(_children, pos + 1, _children, pos, len);
@@ -810,21 +779,9 @@ namespace Db4objects.Db4o.Internal.Btree
 				return;
 			}
 			_keys = new object[_btree.NodeSize()];
-			if (_isLeaf)
-			{
-				PrepareValues();
-			}
-			else
+			if (!_isLeaf)
 			{
 				_children = new object[_btree.NodeSize()];
-			}
-		}
-
-		private void PrepareValues()
-		{
-			if (HandlesValues())
-			{
-				_values = new object[_btree.NodeSize()];
 			}
 		}
 
@@ -844,20 +801,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			ReadNodeHeader(reader);
 			PrepareArrays();
 			bool isInner = !_isLeaf;
-			bool vals = HandlesValues() && _isLeaf;
 			for (int i = 0; i < _count; i++)
 			{
 				_keys[i] = KeyHandler().ReadIndexEntry(reader);
-				if (vals)
+				if (isInner)
 				{
-					_values[i] = ValueHandler().ReadIndexEntry(reader);
-				}
-				else
-				{
-					if (isInner)
-					{
-						_children[i] = reader.ReadInt();
-					}
+					_children[i] = reader.ReadInt();
 				}
 			}
 		}
@@ -883,6 +832,15 @@ namespace Db4objects.Db4o.Internal.Btree
 				if (transPatch.IsAdd())
 				{
 					CancelAdding(trans, index);
+					return;
+				}
+				if (transPatch.IsCancelledRemoval())
+				{
+					Db4objects.Db4o.Internal.Btree.BTreeRemove removePatch = NewRemovePatch(trans, transPatch
+						.GetObject());
+					_keys[index] = ((Db4objects.Db4o.Internal.Btree.BTreeUpdate)patch).ReplacePatch(transPatch
+						, removePatch);
+					KeyChanged(trans, index);
 					return;
 				}
 			}
@@ -939,11 +897,17 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _count - 1;
 		}
 
-		private Db4objects.Db4o.Internal.Btree.BTreeUpdate NewRemovePatch(Db4objects.Db4o.Internal.Transaction
+		private Db4objects.Db4o.Internal.Btree.BTreeRemove NewRemovePatch(Db4objects.Db4o.Internal.Transaction
 			 trans)
 		{
+			return NewRemovePatch(trans, CurrentKey());
+		}
+
+		private Db4objects.Db4o.Internal.Btree.BTreeRemove NewRemovePatch(Db4objects.Db4o.Internal.Transaction
+			 trans, object key)
+		{
 			_btree.SizeChanged(trans, -1);
-			return new Db4objects.Db4o.Internal.Btree.BTreeRemove(trans, CurrentKey());
+			return new Db4objects.Db4o.Internal.Btree.BTreeRemove(trans, key);
 		}
 
 		private void KeyChanged(Db4objects.Db4o.Internal.Transaction trans, int index)
@@ -1003,18 +967,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			reader._offset = SLOT_LEADING_LENGTH + (EntryLength() * ix);
 		}
 
-		private void SeekValue(Db4objects.Db4o.Internal.Buffer reader, int ix)
-		{
-			if (HandlesValues())
-			{
-				SeekAfterKey(reader, ix);
-			}
-			else
-			{
-				SeekKey(reader, ix);
-			}
-		}
-
 		private Db4objects.Db4o.Internal.Btree.BTreeNode Split(Db4objects.Db4o.Internal.Transaction
 			 trans)
 		{
@@ -1025,16 +977,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			for (int i = _btree._halfNodeSize; i < _keys.Length; i++)
 			{
 				_keys[i] = null;
-			}
-			if (_values != null)
-			{
-				res._values = new object[_btree.NodeSize()];
-				System.Array.Copy(_values, _btree._halfNodeSize, res._values, 0, _btree._halfNodeSize
-					);
-				for (int i = _btree._halfNodeSize; i < _values.Length; i++)
-				{
-					_values[i] = null;
-				}
 			}
 			if (_children != null)
 			{
@@ -1181,7 +1123,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			if (_dead)
 			{
 				_keys = null;
-				_values = null;
 				_children = null;
 				return;
 			}
@@ -1208,21 +1149,18 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			PrepareWrite(trans);
 			_parentID = id;
-			SetStateDirty();
 		}
 
 		private void SetPreviousID(Db4objects.Db4o.Internal.Transaction trans, int id)
 		{
 			PrepareWrite(trans);
 			_previousID = id;
-			SetStateDirty();
 		}
 
 		private void SetNextID(Db4objects.Db4o.Internal.Transaction trans, int id)
 		{
 			PrepareWrite(trans);
 			_nextID = id;
-			SetStateDirty();
 		}
 
 		public void TraverseKeys(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Foundation.IVisitor4
@@ -1249,54 +1187,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		public void TraverseValues(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Foundation.IVisitor4
-			 visitor)
-		{
-			if (!HandlesValues())
-			{
-				TraverseKeys(trans, visitor);
-				return;
-			}
-			Db4objects.Db4o.Internal.Buffer reader = PrepareRead(trans);
-			if (_isLeaf)
-			{
-				for (int i = 0; i < _count; i++)
-				{
-					if (Key(trans, reader, i) != Db4objects.Db4o.Foundation.No4.INSTANCE)
-					{
-						visitor.Visit(Value(reader, i));
-					}
-				}
-			}
-			else
-			{
-				for (int i = 0; i < _count; i++)
-				{
-					Child(reader, i).TraverseValues(trans, visitor);
-				}
-			}
-		}
-
-		internal object Value(int index)
-		{
-			return _values[index];
-		}
-
-		internal object Value(Db4objects.Db4o.Internal.Buffer reader, int index)
-		{
-			if (_values != null)
-			{
-				return _values[index];
-			}
-			SeekValue(reader, index);
-			return ValueHandler().ReadIndexEntry(reader);
-		}
-
-		private Db4objects.Db4o.Internal.IX.IIndexable4 ValueHandler()
-		{
-			return _btree._valueHandler;
-		}
-
 		public override bool WriteObjectBegin()
 		{
 			if (_dead)
@@ -1318,7 +1208,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			a_writer.IncrementOffset(COUNT_LEAF_AND_3_LINK_LENGTH);
 			if (_isLeaf)
 			{
-				bool vals = HandlesValues();
 				for (int i = 0; i < _count; i++)
 				{
 					object obj = Key(trans, i);
@@ -1326,10 +1215,6 @@ namespace Db4objects.Db4o.Internal.Btree
 					{
 						count++;
 						KeyHandler().WriteIndexEntry(a_writer, obj);
-						if (vals)
-						{
-							ValueHandler().WriteIndexEntry(a_writer, _values[i]);
-						}
 					}
 				}
 			}
@@ -1419,28 +1304,20 @@ namespace Db4objects.Db4o.Internal.Btree
 		}
 
 		public static void DefragIndex(Db4objects.Db4o.Internal.ReaderPair readers, Db4objects.Db4o.Internal.IX.IIndexable4
-			 keyHandler, Db4objects.Db4o.Internal.IX.IIndexable4 valueHandler)
+			 keyHandler)
 		{
 			int count = readers.ReadInt();
 			byte leafByte = readers.ReadByte();
 			bool isLeaf = (leafByte == 1);
-			bool handlesValues = (valueHandler != null) && isLeaf;
 			readers.CopyID();
 			readers.CopyID();
 			readers.CopyID();
 			for (int i = 0; i < count; i++)
 			{
 				keyHandler.DefragIndexEntry(readers);
-				if (handlesValues)
+				if (!isLeaf)
 				{
-					valueHandler.DefragIndexEntry(readers);
-				}
-				else
-				{
-					if (!isLeaf)
-					{
-						readers.CopyID();
-					}
+					readers.CopyID();
 				}
 			}
 		}

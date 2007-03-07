@@ -179,9 +179,9 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		public override int IsSecondClass()
+		public override Db4objects.Db4o.Foundation.TernaryBool IsSecondClass()
 		{
-			return Db4objects.Db4o.Internal.Const4.UNKNOWN;
+			return Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED;
 		}
 
 		public override bool IsStrongTyped()

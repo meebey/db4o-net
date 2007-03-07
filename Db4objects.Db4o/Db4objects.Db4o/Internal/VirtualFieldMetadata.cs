@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.Internal
 							migrateYapObject = mgc.ReferenceFor(obj);
 							if (migrateYapObject == null)
 							{
-								migrateYapObject = mgc.Peer(stream).GetYapObject(obj);
+								migrateYapObject = mgc.Peer(stream).ReferenceForObject(obj);
 							}
 						}
 						if (migrateYapObject != null)

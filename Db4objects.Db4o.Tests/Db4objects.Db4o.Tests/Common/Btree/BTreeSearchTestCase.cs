@@ -12,11 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void Test()
 		{
-			CycleIntKeys(new int[] { 3, 5, 5, 5, 7, 10, 11, 12, 12, 14 });
-			CycleIntKeys(new int[] { 3, 5, 5, 5, 5, 7, 10, 11, 12, 12, 14 });
-			CycleIntKeys(new int[] { 3, 5, 5, 5, 5, 5, 7, 10, 11, 12, 12, 14 });
-			CycleIntKeys(new int[] { 3, 3, 5, 5, 5, 7, 10, 11, 12, 12, 14, 14 });
-			CycleIntKeys(new int[] { 3, 3, 3, 5, 5, 5, 7, 10, 11, 12, 12, 14, 14, 14 });
+			CycleIntKeys(new int[] { 3, 5, 7, 10, 11, 12, 14, 15, 17, 20, 21, 25 });
 		}
 
 		private void CycleIntKeys(int[] values)

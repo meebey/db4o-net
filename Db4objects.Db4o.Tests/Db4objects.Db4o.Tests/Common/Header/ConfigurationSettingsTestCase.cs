@@ -7,15 +7,18 @@ namespace Db4objects.Db4o.Tests.Common.Header
 		{
 			Fixture().Config().GenerateUUIDs(0);
 			Reopen();
-			Db4oUnit.Assert.AreEqual(0, GenerateUUIDs());
+			Db4oUnit.Assert.AreEqual(Db4objects.Db4o.Config.ConfigScope.GLOBALLY, GenerateUUIDs
+				());
 			Db().Configure().GenerateUUIDs(-1);
-			Db4oUnit.Assert.AreEqual(-1, GenerateUUIDs());
+			Db4oUnit.Assert.AreEqual(Db4objects.Db4o.Config.ConfigScope.DISABLED, GenerateUUIDs
+				());
 			Fixture().Config().GenerateUUIDs(0);
 			Reopen();
-			Db4oUnit.Assert.AreEqual(0, GenerateUUIDs());
+			Db4oUnit.Assert.AreEqual(Db4objects.Db4o.Config.ConfigScope.GLOBALLY, GenerateUUIDs
+				());
 		}
 
-		private int GenerateUUIDs()
+		private Db4objects.Db4o.Config.ConfigScope GenerateUUIDs()
 		{
 			return ((Db4objects.Db4o.Internal.LocalObjectContainer)Db()).Config().GenerateUUIDs
 				();

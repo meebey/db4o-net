@@ -27,6 +27,8 @@ namespace Db4objects.Db4o.Internal.Events
 
 		protected Db4objects.Db4o.Events.ObjectEventHandler _deactivated;
 
+		protected Db4objects.Db4o.Events.CommitEventHandler _committing;
+
 		public virtual void OnQueryFinished(Db4objects.Db4o.Query.IQuery query)
 		{
 			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerQueryEvent(_queryFinished, query
@@ -93,6 +95,14 @@ namespace Db4objects.Db4o.Internal.Events
 		{
 			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerObjectEvent(_deactivated, obj
 				);
+		}
+
+		public virtual void CommitOnStarted(Db4objects.Db4o.Ext.IObjectInfoCollection added
+			, Db4objects.Db4o.Ext.IObjectInfoCollection deleted, Db4objects.Db4o.Ext.IObjectInfoCollection
+			 updated)
+		{
+			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerCommitEvent(_committing, added
+				, deleted, updated);
 		}
 
 		public virtual event Db4objects.Db4o.Events.QueryEventHandler QueryFinished
@@ -260,6 +270,20 @@ namespace Db4objects.Db4o.Internal.Events
 			{
 				_deactivated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Remove(
 					_deactivated, value);
+			}
+		}
+
+		public virtual event Db4objects.Db4o.Events.CommitEventHandler Committing
+		{
+			add
+			{
+				_committing = (Db4objects.Db4o.Events.CommitEventHandler)System.Delegate.Combine(
+					_committing, value);
+			}
+			remove
+			{
+				_committing = (Db4objects.Db4o.Events.CommitEventHandler)System.Delegate.Remove(_committing
+					, value);
 			}
 		}
 	}

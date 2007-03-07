@@ -53,11 +53,10 @@ namespace Db4objects.Db4o.Internal
 			_blockEndAddress = BlocksFor(address);
 		}
 
-		protected override bool Close2()
+		protected override void Close2()
 		{
-			bool ret = base.Close2();
+			base.Close2();
 			i_dirty = null;
-			return ret;
 		}
 
 		public override void Commit1()
@@ -66,9 +65,9 @@ namespace Db4objects.Db4o.Internal
 			{
 				Write(false);
 			}
-			catch (System.Exception t)
+			catch (System.Exception e)
 			{
-				FatalException(t);
+				FatalException(e);
 			}
 		}
 
@@ -201,14 +200,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _AnonymousInnerClass212(this));
+				i_prefetchedIDs.Traverse(new _AnonymousInnerClass211(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _AnonymousInnerClass212 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass211 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass212(LocalObjectContainer _enclosing)
+			public _AnonymousInnerClass211(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -320,16 +319,33 @@ namespace Db4objects.Db4o.Internal
 			int blocksNeeded = BlocksFor(bytes);
 			if (Db4objects.Db4o.Debug.xbytes && Db4objects.Db4o.Deploy.overwrite)
 			{
-				DebugWriteXBytes(_blockEndAddress, blocksNeeded * BlockSize());
+				OverwriteDeletedBytes(_blockEndAddress, blocksNeeded * BlockSize());
 			}
 			return AppendBlocks(blocksNeeded);
 		}
 
 		protected virtual int AppendBlocks(int blockCount)
 		{
-			int blockedAddress = _blockEndAddress;
-			_blockEndAddress += blockCount;
-			return blockedAddress;
+			int blockedStartAddress = _blockEndAddress;
+			int blockedEndAddress = _blockEndAddress + blockCount;
+			CheckBlockedAddress(blockedEndAddress);
+			_blockEndAddress = blockedEndAddress;
+			return blockedStartAddress;
+		}
+
+		private void CheckBlockedAddress(int blockedAddress)
+		{
+			if (blockedAddress < 0)
+			{
+				Rollback1();
+				SwitchToReadOnlyMode();
+				Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(69);
+			}
+		}
+
+		private void SwitchToReadOnlyMode()
+		{
+			i_config.ReadOnly(true);
 		}
 
 		internal virtual void EnsureLastSlotWritten()
@@ -525,7 +541,7 @@ namespace Db4objects.Db4o.Internal
 					_freespaceManager);
 				_fileHeader.WriteVariablePart(this, 1);
 			}
-			WriteHeader(false);
+			WriteHeader(true, false);
 			Db4objects.Db4o.Internal.LocalTransaction trans = (Db4objects.Db4o.Internal.LocalTransaction
 				)_fileHeader.InterruptedTransaction();
 			if (trans != null)
@@ -594,16 +610,16 @@ namespace Db4objects.Db4o.Internal
 				Db4objects.Db4o.Foundation.Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass576(this, semaphores), ta
+					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass589(this, semaphores), ta
 						);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass576 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass589 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass576(LocalObjectContainer _enclosing, Db4objects.Db4o.Foundation.Hashtable4
+			public _AnonymousInnerClass589(LocalObjectContainer _enclosing, Db4objects.Db4o.Foundation.Hashtable4
 				 semaphores)
 			{
 				this._enclosing = _enclosing;
@@ -704,14 +720,16 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Write(bool shuttingDown)
 		{
+			if (i_config.IsReadOnly())
+			{
+				return;
+			}
 			i_trans.Commit();
 			if (shuttingDown)
 			{
-				WriteHeader(shuttingDown);
+				WriteHeader(false, true);
 			}
 		}
-
-		public abstract bool WriteAccessTime(int address, int offset, long time);
 
 		public abstract void WriteBytes(Db4objects.Db4o.Internal.Buffer a_Bytes, int address
 			, int addressOffset);
@@ -760,7 +778,7 @@ namespace Db4objects.Db4o.Internal
 			a_parent._offset = offsetBackup;
 		}
 
-		internal virtual void WriteHeader(bool shuttingDown)
+		internal virtual void WriteHeader(bool startFileLockingThread, bool shuttingDown)
 		{
 			int freespaceID = _freespaceManager.Write(shuttingDown);
 			if (shuttingDown)
@@ -773,7 +791,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			Db4objects.Db4o.Internal.StatefulBuffer writer = GetWriter(i_systemTrans, 0, _fileHeader
 				.Length());
-			_fileHeader.WriteFixedPart(this, shuttingDown, writer, BlockSize(), freespaceID);
+			_fileHeader.WriteFixedPart(this, startFileLockingThread, shuttingDown, writer, BlockSize
+				(), freespaceID);
 			if (shuttingDown)
 			{
 				EnsureLastSlotWritten();
@@ -795,19 +814,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public abstract void DebugWriteXBytes(int a_address, int a_length);
-
-		internal virtual Db4objects.Db4o.Internal.Buffer XBytes(int a_address, int a_length
-			)
-		{
-			Db4objects.Db4o.Internal.Buffer bytes = GetWriter(i_systemTrans, a_address, a_length
-				);
-			for (int i = 0; i < a_length; i++)
-			{
-				bytes.Append(Db4objects.Db4o.Internal.Const4.XBYTE);
-			}
-			return bytes;
-		}
+		public abstract void OverwriteDeletedBytes(int a_address, int a_length);
 
 		public sealed override void WriteTransactionPointer(int address)
 		{
@@ -866,13 +873,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			Db4objects.Db4o.Foundation.IntArrayList ids = new Db4objects.Db4o.Foundation.IntArrayList
 				();
-			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass798(this, ids));
+			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass804(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _AnonymousInnerClass798 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass804 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass798(LocalObjectContainer _enclosing, Db4objects.Db4o.Foundation.IntArrayList
+			public _AnonymousInnerClass804(LocalObjectContainer _enclosing, Db4objects.Db4o.Foundation.IntArrayList
 				 ids)
 			{
 				this._enclosing = _enclosing;

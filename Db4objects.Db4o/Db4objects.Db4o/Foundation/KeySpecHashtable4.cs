@@ -46,6 +46,12 @@ namespace Db4objects.Db4o.Foundation
 			return ((int)Get(spec));
 		}
 
+		public virtual Db4objects.Db4o.Foundation.TernaryBool GetAsTernaryBool(Db4objects.Db4o.Foundation.KeySpec
+			 spec)
+		{
+			return (Db4objects.Db4o.Foundation.TernaryBool)Get(spec);
+		}
+
 		public virtual string GetAsString(Db4objects.Db4o.Foundation.KeySpec spec)
 		{
 			return (string)Get(spec);

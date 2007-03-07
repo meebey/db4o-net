@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		internal override void SlotFreeOnRollback(int a_id, int a_address, int a_length)
+		public override void SlotFreeOnRollback(int a_id, int a_address, int a_length)
 		{
 		}
 
@@ -34,6 +34,10 @@ namespace Db4objects.Db4o.Internal
 
 		internal override void SlotFreePointerOnCommit(int a_id, int a_address, int a_length
 			)
+		{
+		}
+
+		public override void SlotFreePointerOnCommit(int a_id)
 		{
 		}
 

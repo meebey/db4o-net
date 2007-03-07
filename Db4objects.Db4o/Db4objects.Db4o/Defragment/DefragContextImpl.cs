@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Defragment
 			sourceConfig.FlushFileBuffers(false);
 			sourceConfig.ReadOnly(true);
 			_sourceDb = (Db4objects.Db4o.Internal.LocalObjectContainer)Db4objects.Db4o.Db4oFactory
-				.OpenFile(sourceConfig, defragConfig.BackupPath()).Ext();
+				.OpenFile(sourceConfig, defragConfig.TempPath()).Ext();
 			_targetDb = FreshYapFile(defragConfig.OrigPath());
 			_mapping = defragConfig.Mapping();
 			_mapping.Open();
@@ -209,8 +209,14 @@ namespace Db4objects.Db4o.Defragment
 		{
 			Db4objects.Db4o.Internal.LocalObjectContainer db = selector.Db(this);
 			db.ShowInternalClasses(true);
-			Db4objects.Db4o.Ext.IStoredClass[] classes = db.StoredClasses();
-			return classes;
+			try
+			{
+				return db.StoredClasses();
+			}
+			finally
+			{
+				db.ShowInternalClasses(false);
+			}
 		}
 
 		public virtual Db4objects.Db4o.Internal.LatinStringIO StringIO()

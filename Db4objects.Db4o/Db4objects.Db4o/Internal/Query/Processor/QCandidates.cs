@@ -282,7 +282,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (result.NoMatch())
 			{
-				return Db4objects.Db4o.Foundation.Iterator4Impl.EMPTY;
+				return Db4objects.Db4o.Foundation.Iterators.EMPTY_ITERATOR;
 			}
 			if (result.FoundIndex())
 			{
@@ -290,7 +290,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			if (i_yapClass.IsPrimitive())
 			{
-				return Db4objects.Db4o.Foundation.Iterator4Impl.EMPTY;
+				return Db4objects.Db4o.Foundation.Iterators.EMPTY_ITERATOR;
 			}
 			return Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy.Iterate(i_yapClass
 				, i_trans);
@@ -477,7 +477,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_constraints == null)
 			{
-				return Db4objects.Db4o.Foundation.Iterator4Impl.EMPTY;
+				return Db4objects.Db4o.Foundation.Iterators.EMPTY_ITERATOR;
 			}
 			return new Db4objects.Db4o.Foundation.Iterator4Impl(i_constraints);
 		}

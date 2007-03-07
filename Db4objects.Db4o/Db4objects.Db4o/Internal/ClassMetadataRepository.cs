@@ -347,12 +347,18 @@ namespace Db4objects.Db4o.Internal
 		{
 			i_yapClassCreationDepth++;
 			systemTrans.Stream().ShowInternalClasses(true);
-			System.Collections.IEnumerator i = i_classes.GetEnumerator();
-			while (i.MoveNext())
+			try
 			{
-				((Db4objects.Db4o.Internal.ClassMetadata)i.Current).InitOnUp(systemTrans);
+				System.Collections.IEnumerator i = i_classes.GetEnumerator();
+				while (i.MoveNext())
+				{
+					((Db4objects.Db4o.Internal.ClassMetadata)i.Current).InitOnUp(systemTrans);
+				}
 			}
-			systemTrans.Stream().ShowInternalClasses(false);
+			finally
+			{
+				systemTrans.Stream().ShowInternalClasses(false);
+			}
 			i_yapClassCreationDepth--;
 			InitYapClassesOnUp();
 		}
@@ -445,7 +451,10 @@ namespace Db4objects.Db4o.Internal
 				i_classes.Add(yapClass);
 				i_yapClassByID.Put(ids[i], yapClass);
 				byte[] name = yapClass.ReadName1(a_trans, yapWriters[i]);
-				i_yapClassByBytes.Put(name, yapClass);
+				if (name != null)
+				{
+					i_yapClassByBytes.Put(name, yapClass);
+				}
 			}
 			ApplyReadAs();
 		}
@@ -458,12 +467,12 @@ namespace Db4objects.Db4o.Internal
 		private void ApplyReadAs()
 		{
 			Db4objects.Db4o.Foundation.Hashtable4 readAs = Stream().ConfigImpl().ReadAs();
-			readAs.ForEachKey(new _AnonymousInnerClass383(this, readAs));
+			readAs.ForEachKey(new _AnonymousInnerClass388(this, readAs));
 		}
 
-		private sealed class _AnonymousInnerClass383 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass388 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass383(ClassMetadataRepository _enclosing, Db4objects.Db4o.Foundation.Hashtable4
+			public _AnonymousInnerClass388(ClassMetadataRepository _enclosing, Db4objects.Db4o.Foundation.Hashtable4
 				 readAs)
 			{
 				this._enclosing = _enclosing;

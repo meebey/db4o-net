@@ -103,6 +103,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 				("od"));
 			q.Descend("str").Constraints().StartsWith(true);
 			Expect(q, new int[] {  });
+			q = NewQuery();
+			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
+				("dodo"));
+			q.Descend("str").Constraints().StartsWith(true);
+			Expect(q, new int[] {  });
 		}
 
 		public virtual void TestEndsWith()
@@ -124,6 +129,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 			q.Descend("str").Constraints().EndsWith(false);
 			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
 				("dod"));
+			q = NewQuery();
+			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
+				("dodo"));
+			q.Descend("str").Constraints().EndsWith(false);
+			Expect(q, new int[] {  });
 		}
 
 		public virtual void TestNotLike()
@@ -219,14 +229,14 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 			Db4objects.Db4o.Query.IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
 				(null));
-			q.Constrain(new _AnonymousInnerClass179(this));
+			q.Constrain(new _AnonymousInnerClass187(this));
 			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
 				("dod"));
 		}
 
-		private sealed class _AnonymousInnerClass179 : Db4objects.Db4o.Query.IEvaluation
+		private sealed class _AnonymousInnerClass187 : Db4objects.Db4o.Query.IEvaluation
 		{
-			public _AnonymousInnerClass179(STStringTestCase _enclosing)
+			public _AnonymousInnerClass187(STStringTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -246,14 +256,14 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 			Db4objects.Db4o.Query.IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase)
 				);
-			q.Constrain(new _AnonymousInnerClass191(this));
+			q.Constrain(new _AnonymousInnerClass199(this));
 			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
 				("dod"));
 		}
 
-		private sealed class _AnonymousInnerClass191 : Db4objects.Db4o.Query.IEvaluation
+		private sealed class _AnonymousInnerClass199 : Db4objects.Db4o.Query.IEvaluation
 		{
-			public _AnonymousInnerClass191(STStringTestCase _enclosing)
+			public _AnonymousInnerClass199(STStringTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

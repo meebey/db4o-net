@@ -17,9 +17,9 @@ namespace Db4objects.Db4o.Internal
 			{
 				Open();
 			}
-			catch (System.Exception e)
+			catch (System.IO.IOException e)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(22, e);
+				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
 			}
 			Initialize3();
 		}
@@ -38,16 +38,9 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		protected override bool Close2()
+		protected override void Close2()
 		{
-			try
-			{
-				Write(true);
-			}
-			catch (System.Exception t)
-			{
-				FatalException(t);
-			}
+			Write(true);
 			base.Close2();
 			if (!_closed)
 			{
@@ -56,7 +49,6 @@ namespace Db4objects.Db4o.Internal
 				_memoryFile.SetBytes(temp);
 			}
 			_closed = true;
-			return true;
 		}
 
 		public override void Copy(int oldAddress, int oldAddressOffset, int newAddress, int
@@ -103,7 +95,7 @@ namespace Db4objects.Db4o.Internal
 				_memoryFile.SetBytes(new byte[_memoryFile.GetInitialSize()]);
 				ConfigureNewFile();
 				Write(false);
-				WriteHeader(false);
+				WriteHeader(false, false);
 			}
 			else
 			{
@@ -132,11 +124,6 @@ namespace Db4objects.Db4o.Internal
 
 		public override void SyncFiles()
 		{
-		}
-
-		public override bool WriteAccessTime(int address, int offset, long time)
-		{
-			return true;
 		}
 
 		public override void WriteBytes(Db4objects.Db4o.Internal.Buffer bytes, int address
@@ -172,7 +159,7 @@ namespace Db4objects.Db4o.Internal
 			bytes = null;
 		}
 
-		public override void DebugWriteXBytes(int a_address, int a_length)
+		public override void OverwriteDeletedBytes(int a_address, int a_length)
 		{
 		}
 	}
