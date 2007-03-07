@@ -3,7 +3,7 @@
 using System;
 using System.Collections;
 using System.Globalization;
-
+using System.IO;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Config.Attributes;
 using Db4objects.Db4o.Ext;
@@ -16,6 +16,7 @@ using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Reflect.Net;
 using Db4objects.Db4o.Types;
+using Sharpen.IO;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -437,7 +438,17 @@ namespace Db4objects.Db4o.Internal
 
         internal static void LockFile(string path, object file)
         {
-            // do nothing. C# RAF is locked automatically upon opening
+#if !CF_1_0 && !CF_2_0
+            try
+            {
+                FileStream stream = ((RandomAccessFile) file).Stream;
+                stream.Lock(0, 1);
+            }
+            catch (IOException x)
+            {
+                throw new DatabaseFileLockedException();
+            }
+#endif
         }
 
         internal static void UnlockFile(string path, object file)
