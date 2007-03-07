@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2006   db4objects Inc.   http://www.db4o.com */
 
 using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o.Internal.Events
 {
@@ -26,10 +27,10 @@ namespace Db4objects.Db4o.Internal.Events
 			e(o, new ObjectEventArgs(o));
 		}
 		
-		public static void TriggerCommitEvent(CommitEventHandler e, Db4objects.Db4o.Ext.IObjectInfo[] added)
+		public static void TriggerCommitEvent(CommitEventHandler e, IObjectInfoCollection added, IObjectInfoCollection deleted, IObjectInfoCollection updated)
 		{
 			if (null == e) return;
-			e(null, new CommitEventArgs(added));
+			e(null, new CommitEventArgs(added, deleted, updated));
 		}
 	}
 }
