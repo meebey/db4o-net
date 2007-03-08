@@ -519,18 +519,10 @@ namespace Db4objects.Db4o.Internal
         }
 
 
-        private static void Translate(Config4Impl config, object obj, IObjectTranslator translator)
-        {
-            try
-            {
-                config.ObjectClass(obj).Translate(translator);
-            }
-            catch
-            {
-                // TODO: why the object is being logged instead of the error?
-                Unobfuscated.LogErr(config, 48, obj.ToString(), null);
-            }
-        }
+		private static void Translate(Config4Impl config, object obj, IObjectTranslator translator)
+		{
+			config.ObjectClass(obj).Translate(translator);
+		}
 
         internal static byte[] UpdateClassName(byte[] bytes)
         {
