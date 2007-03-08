@@ -32,5 +32,10 @@ namespace Db4objects.Db4o.Internal.Events
 			if (null == e) return;
 			e(null, new CommitEventArgs(added, deleted, updated));
 		}
+		
+		public static bool HasListeners(System.Delegate e)
+		{
+			return null != e;
+		}
 	}
 }
