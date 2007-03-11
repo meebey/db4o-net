@@ -120,7 +120,7 @@ namespace Db4objects.Db4o.Internal.Query
         {
             get
             {
-                return _delegate.StreamLock();
+                return _delegate.Lock();
             }
         }
 
