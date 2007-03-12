@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Config.Attributes;
 using Db4objects.Db4o.Ext;
@@ -23,13 +24,19 @@ namespace Db4objects.Db4o.Internal
     /// <exclude />
     public class Platform4
     {
-        private static String[] oldAssemblyNames;
+        private static readonly string[] OldAssemblyNames = new String[] { "db4o", "db4o-4.0-net1", "db4o-4.0-compact1" };
 
-        private static byte[] assembly;
+        private static readonly string[][] NamespaceRenamings = new string[][]
+                {
+                    new string[] { "com.db4o.ext", "Db4objects.Db4o.Ext"},
+                    new string[] { "com.db4o.inside", "Db4objects.Db4o.Internal"},
+//                    new string[] { "com.db4o", "Db4objects.Db4o"}, 
+                };
+
 
         private static ArrayList shutDownStreams;
 
-        private static byte[][] oldAssemblies;
+        private static readonly byte[][] oldAssemblies;
 
 		public static object[] CollectionToArray(ObjectContainerBase stream, object obj)
         {
@@ -40,21 +47,12 @@ namespace Db4objects.Db4o.Internal
         }
 
         static Platform4()
-        {
-            oldAssemblyNames = new String[] { "db4o", "db4o-4.0-net1", "db4o-4.0-compact1" };
-            String fullAssemblyName = typeof(Platform4).Assembly.GetName().ToString();
-            String shortAssemblyName = fullAssemblyName;
-            int pos = fullAssemblyName.IndexOf(",");
-            if (pos > 0)
+        {   
+            LatinStringIO stringIO = new UnicodeStringIO();
+            oldAssemblies = new byte[OldAssemblyNames.Length][];
+            for (int i = 0; i < OldAssemblyNames.Length; i++)
             {
-                shortAssemblyName = fullAssemblyName.Substring(0, pos);
-            }
-           	LatinStringIO stringIO = new UnicodeStringIO();
-            assembly = stringIO.Write(shortAssemblyName);
-            oldAssemblies = new byte[oldAssemblyNames.Length][];
-            for (int i = 0; i < oldAssemblyNames.Length; i++)
-            {
-                oldAssemblies[i] = stringIO.Write(oldAssemblyNames[i]);
+                oldAssemblies[i] = stringIO.Write(OldAssemblyNames[i]);
             }
         }
 
@@ -526,7 +524,7 @@ namespace Db4objects.Db4o.Internal
 
         internal static byte[] UpdateClassName(byte[] bytes)
         {
-            for (int i = 0; i < oldAssemblyNames.Length; i++)
+            for (int i = 0; i < OldAssemblyNames.Length; i++)
             {
                 int j = oldAssemblies[i].Length - 1;
                 for (int k = bytes.Length - 1; k >= 0; k--)
@@ -538,15 +536,30 @@ namespace Db4objects.Db4o.Internal
                     j--;
                     if (j < 0)
                     {
-                        int keep = bytes.Length - oldAssemblies[i].Length;
-                        byte[] result = new byte[keep + assembly.Length];
-                        Array.Copy(bytes, 0, result, 0, keep);
-                        Array.Copy(assembly, 0, result, keep, assembly.Length);
-                        return result;
+                        return UpdateInternalClassName(bytes);
                     }
                 }
             }
             return bytes;
+        }
+
+        private static byte[] UpdateInternalClassName(byte[] bytes)
+        {
+            StringBuilder typeNameBuffer = new StringBuilder();
+            UnicodeStringIO io = new UnicodeStringIO();
+            typeNameBuffer.Append(io.Read(bytes).Split(',')[0]);
+            foreach (string[] renaming in NamespaceRenamings)
+            {
+                typeNameBuffer.Replace(renaming[0], renaming[1]);
+            }
+            typeNameBuffer.Append(", ");
+            typeNameBuffer.Append(GetCurrentAssemblyName());
+            return io.Write(typeNameBuffer.ToString());
+        }
+
+        private static string GetCurrentAssemblyName()
+        {
+            return typeof(Platform4).Assembly.GetName().Name;
         }
 
         public static Object WeakReferenceTarget(Object weakRef)

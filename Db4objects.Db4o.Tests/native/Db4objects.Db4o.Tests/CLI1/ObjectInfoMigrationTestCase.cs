@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 {
     public class ObjectInfoMigrationTestCase : ITestCase
     {
-        public void _Test52UuidAndVersion()
+        public void Test52UuidAndVersion()
         {
             string originalFile = WorkspaceServices.WorkspaceTestFilePath("net/db4o52.db4o");
             string fname = Path.GetTempFileName();
