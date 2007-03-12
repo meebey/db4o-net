@@ -32,7 +32,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 		public override object[] CreateData()
 		{
 			Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STRUH1TestCase[] objects
-				 = { new Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STRUH1TestCase
+				 = new Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STRUH1TestCase
+				[] { new Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STRUH1TestCase
 				(), new Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STRUH1TestCase
 				("str1"), new Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STRUH1TestCase
 				(new Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STRUH2()), new Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STRUH1TestCase

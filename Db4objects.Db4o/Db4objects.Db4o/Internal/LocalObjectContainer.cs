@@ -168,7 +168,7 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract long FileLength();
 
-		internal abstract string FileName();
+		public abstract string FileName();
 
 		public virtual void Free(Db4objects.Db4o.Internal.Slots.Slot slot)
 		{
@@ -828,7 +828,7 @@ namespace Db4objects.Db4o.Internal
 			int length = forWriter.GetLength();
 			int address = GetSlot(length);
 			forWriter.Address(address);
-			trans.SlotFreeOnRollbackSetPointer(id, address, length);
+			trans.ProduceUpdateSlotChange(id, address, length);
 		}
 
 		public sealed override void WriteUpdate(Db4objects.Db4o.Internal.ClassMetadata a_yapClass

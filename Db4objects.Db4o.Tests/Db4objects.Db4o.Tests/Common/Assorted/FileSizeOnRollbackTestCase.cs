@@ -1,7 +1,6 @@
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
 	public class FileSizeOnRollbackTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
-		, Db4oUnit.Extensions.Fixtures.IOptOutCS
 	{
 		public static void Main(string[] args)
 		{
@@ -50,12 +49,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private int FileSize()
 		{
-			Db4oUnit.Extensions.Fixtures.AbstractFileBasedDb4oFixture fixture = (Db4oUnit.Extensions.Fixtures.AbstractFileBasedDb4oFixture
-				)Fixture();
+			Db4objects.Db4o.Internal.LocalObjectContainer localContainer = Fixture().FileSession
+				();
 			Db4objects.Db4o.Internal.IoAdaptedObjectContainer container = (Db4objects.Db4o.Internal.IoAdaptedObjectContainer
-				)Fixture().Db();
+				)localContainer;
 			container.SyncFiles();
-			long length = new Sharpen.IO.File(fixture.GetAbsolutePath()).Length();
+			long length = new Sharpen.IO.File(container.FileName()).Length();
 			return (int)length;
 		}
 	}

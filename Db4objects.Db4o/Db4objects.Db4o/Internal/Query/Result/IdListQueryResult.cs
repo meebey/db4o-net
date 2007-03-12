@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public override object Get(int index)
 		{
-			lock (StreamLock())
+			lock (Lock())
 			{
 				return ActivatedObject(GetId(index));
 			}

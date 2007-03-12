@@ -5,21 +5,22 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 	{
 		protected const int BTREE_NODE_SIZE = 4;
 
-		internal int[] _keys = { 3, 234, 55, 87, 2, 1, 101, 59, 70, 300, 288 };
+		internal int[] _keys = new int[] { 3, 234, 55, 87, 2, 1, 101, 59, 70, 300, 288 };
 
 		internal int[] _values;
 
-		internal int[] _sortedKeys = { 1, 2, 3, 55, 59, 70, 87, 101, 234, 288, 300 };
+		internal int[] _sortedKeys = new int[] { 1, 2, 3, 55, 59, 70, 87, 101, 234, 288, 
+			300 };
 
 		internal int[] _sortedValues;
 
-		internal int[] _keysOnRemoval = { 1, 2, 55, 59, 70, 87, 234, 288, 300 };
+		internal int[] _keysOnRemoval = new int[] { 1, 2, 55, 59, 70, 87, 234, 288, 300 };
 
 		internal int[] _valuesOnRemoval;
 
-		internal int[] _one = { 1 };
+		internal int[] _one = new int[] { 1 };
 
-		internal int[] _none = {  };
+		internal int[] _none = new int[] {  };
 
 		public BTreeSimpleTestCase() : base()
 		{

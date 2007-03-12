@@ -96,7 +96,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			Db4objects.Db4o.Internal.Query.Processor.QCon qcon = this;
 			Db4objects.Db4o.Internal.ClassMetadata yc = GetYapClass();
-			bool[] foundField = { false };
+			bool[] foundField = new bool[] { false };
 			ForEachChildField(a_field, new _AnonymousInnerClass108(this, foundField, query));
 			if (foundField[0])
 			{
@@ -105,8 +105,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			Db4objects.Db4o.Internal.Query.Processor.QField qf = null;
 			if (yc == null || yc.HoldsAnyClass())
 			{
-				int[] count = { 0 };
-				Db4objects.Db4o.Internal.FieldMetadata[] yfs = { null };
+				int[] count = new int[] { 0 };
+				Db4objects.Db4o.Internal.FieldMetadata[] yfs = new Db4objects.Db4o.Internal.FieldMetadata
+					[] { null };
 				i_trans.Stream().ClassCollection().AttachQueryNode(a_field, new _AnonymousInnerClass126
 					(this, yfs, count));
 				if (count[0] == 0)
@@ -331,6 +332,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				qcon.SetCandidates(i_candidates);
 				qcon.EvaluateSimpleExec(i_candidates);
 				qcon.ApplyOrdering();
+				i_candidates.ClearOrdering();
 			}
 			i_candidates.SetCurrentConstraint(null);
 		}

@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal override void Marshall()
 		{
 			base.Marshall();
-			int[] id = { 0 };
+			int[] id = new int[] { 0 };
 			i_marshalledEvaluation = i_trans.Stream().Marshall(Db4objects.Db4o.Internal.Platform4
 				.WrapEvaluation(i_evaluation), id);
 			i_marshalledID = id[0];

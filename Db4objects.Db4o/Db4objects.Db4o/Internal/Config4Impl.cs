@@ -745,7 +745,7 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsBoolean(AUTOMATIC_SHUTDOWN);
 		}
 
-		internal byte BlockSize()
+		public byte BlockSize()
 		{
 			return _config.GetAsByte(BLOCKSIZE);
 		}

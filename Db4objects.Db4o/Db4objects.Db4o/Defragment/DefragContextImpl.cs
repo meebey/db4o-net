@@ -78,18 +78,18 @@ namespace Db4objects.Db4o.Defragment
 			sourceConfig.ReadOnly(true);
 			_sourceDb = (Db4objects.Db4o.Internal.LocalObjectContainer)Db4objects.Db4o.Db4oFactory
 				.OpenFile(sourceConfig, defragConfig.TempPath()).Ext();
-			_targetDb = FreshYapFile(defragConfig.OrigPath());
+			_targetDb = FreshYapFile(defragConfig.OrigPath(), defragConfig.BlockSize());
 			_mapping = defragConfig.Mapping();
 			_mapping.Open();
 		}
 
 		internal static Db4objects.Db4o.Internal.LocalObjectContainer FreshYapFile(string
-			 fileName)
+			 fileName, int blockSize)
 		{
 			new Sharpen.IO.File(fileName).Delete();
 			return (Db4objects.Db4o.Internal.LocalObjectContainer)Db4objects.Db4o.Db4oFactory
-				.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig.VanillaDb4oConfig(), fileName
-				).Ext();
+				.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig.VanillaDb4oConfig(blockSize
+				), fileName).Ext();
 		}
 
 		public virtual int MappedID(int oldID, int defaultID)
@@ -386,6 +386,11 @@ namespace Db4objects.Db4o.Defragment
 			int address = reader.ReadInt();
 			int length = reader.ReadInt();
 			return new Db4objects.Db4o.Internal.Slots.Slot(address, length);
+		}
+
+		public virtual int BlockSize()
+		{
+			return _sourceDb.Config().BlockSize();
 		}
 	}
 }

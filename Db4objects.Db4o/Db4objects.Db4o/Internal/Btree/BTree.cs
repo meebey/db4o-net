@@ -462,7 +462,8 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, GetID(), new _AnonymousInnerClass377
 				(this));
-			Db4objects.Db4o.CorruptionException[] exc = { null };
+			Db4objects.Db4o.CorruptionException[] exc = new Db4objects.Db4o.CorruptionException
+				[] { null };
 			try
 			{
 				context.TraverseAllIndexSlots(this, new _AnonymousInnerClass384(this, context, exc

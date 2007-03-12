@@ -3,8 +3,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 	/// <exclude></exclude>
 	public class FileHeader1 : Db4objects.Db4o.Internal.Fileheader.FileHeader
 	{
-		private static readonly byte[] SIGNATURE = { (byte)'d', (byte)'b', (byte)'4', (byte
-			)'o' };
+		private static readonly byte[] SIGNATURE = new byte[] { (byte)'d', (byte)'b', (byte
+			)'4', (byte)'o' };
 
 		private static byte VERSION = 1;
 

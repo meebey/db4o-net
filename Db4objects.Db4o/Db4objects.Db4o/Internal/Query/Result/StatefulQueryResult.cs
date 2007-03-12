@@ -16,49 +16,70 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public virtual object Get(int index)
 		{
-			return _delegate.Get(index);
+			lock (Lock())
+			{
+				return _delegate.Get(index);
+			}
 		}
 
 		public virtual long[] GetIDs()
 		{
-			long[] ids = new long[Size()];
-			int i = 0;
-			Db4objects.Db4o.Foundation.IIntIterator4 iterator = _delegate.IterateIDs();
-			while (iterator.MoveNext())
+			lock (Lock())
 			{
-				ids[i++] = iterator.CurrentInt();
+				long[] ids = new long[Size()];
+				int i = 0;
+				Db4objects.Db4o.Foundation.IIntIterator4 iterator = _delegate.IterateIDs();
+				while (iterator.MoveNext())
+				{
+					ids[i++] = iterator.CurrentInt();
+				}
+				return ids;
 			}
-			return ids;
 		}
 
 		public virtual bool HasNext()
 		{
-			return _iterable.HasNext();
+			lock (Lock())
+			{
+				return _iterable.HasNext();
+			}
 		}
 
 		public virtual object Next()
 		{
-			return _iterable.Next();
+			lock (Lock())
+			{
+				return _iterable.Next();
+			}
 		}
 
 		public virtual void Reset()
 		{
-			_iterable.Reset();
+			lock (Lock())
+			{
+				_iterable.Reset();
+			}
 		}
 
 		public virtual int Size()
 		{
-			return _delegate.Size();
+			lock (Lock())
+			{
+				return _delegate.Size();
+			}
 		}
 
 		public virtual void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
 		{
-			_delegate.Sort(cmp);
+			lock (Lock())
+			{
+				_delegate.Sort(cmp);
+			}
 		}
 
-		internal virtual object StreamLock()
+		public virtual object Lock()
 		{
-			return ObjectContainer().Lock();
+			return _delegate.Lock();
 		}
 
 		internal virtual Db4objects.Db4o.Ext.IExtObjectContainer ObjectContainer()
@@ -68,7 +89,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public virtual int IndexOf(object a_object)
 		{
-			lock (StreamLock())
+			lock (Lock())
 			{
 				int id = (int)ObjectContainer().GetID(a_object);
 				if (id <= 0)
@@ -81,12 +102,18 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public virtual System.Collections.IEnumerator IterateIDs()
 		{
-			return _delegate.IterateIDs();
+			lock (Lock())
+			{
+				return _delegate.IterateIDs();
+			}
 		}
 
 		public virtual System.Collections.IEnumerator Iterator()
 		{
-			return _delegate.GetEnumerator();
+			lock (Lock())
+			{
+				return _delegate.GetEnumerator();
+			}
 		}
 	}
 }

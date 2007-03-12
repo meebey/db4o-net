@@ -16,5 +16,14 @@ namespace Db4objects.Db4o.Internal
 			_reference = @ref;
 			_object = obj;
 		}
+
+		public static Db4objects.Db4o.Internal.HardObjectReference PeekPersisted(Db4objects.Db4o.Internal.Transaction
+			 trans, int id, int depth)
+		{
+			Db4objects.Db4o.Internal.ObjectReference @ref = new Db4objects.Db4o.Internal.ObjectReference
+				(id);
+			object obj = @ref.PeekPersisted(trans, depth);
+			return new Db4objects.Db4o.Internal.HardObjectReference(@ref, obj);
+		}
 	}
 }

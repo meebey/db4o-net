@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private object StreamLock()
 		{
-			return _client.StreamLock();
+			return _client.Lock();
 		}
 
 		public virtual void Reset()

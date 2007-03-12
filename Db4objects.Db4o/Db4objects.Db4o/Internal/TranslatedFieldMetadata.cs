@@ -31,14 +31,7 @@ namespace Db4objects.Db4o.Internal
 		public override object GetOn(Db4objects.Db4o.Internal.Transaction a_trans, object
 			 a_OnObject)
 		{
-			try
-			{
-				return i_translator.OnStore(a_trans.Stream(), a_OnObject);
-			}
-			catch
-			{
-				return null;
-			}
+			return i_translator.OnStore(a_trans.Stream(), a_OnObject);
 		}
 
 		public override object GetOrCreate(Db4objects.Db4o.Internal.Transaction a_trans, 
@@ -64,13 +57,7 @@ namespace Db4objects.Db4o.Internal
 		private void SetOn(Db4objects.Db4o.Internal.ObjectContainerBase a_stream, object 
 			a_onObject, object toSet)
 		{
-			try
-			{
-				i_translator.OnActivate(a_stream, a_onObject, toSet);
-			}
-			catch
-			{
-			}
+			i_translator.OnActivate(a_stream, a_onObject, toSet);
 		}
 
 		protected override object IndexEntryFor(object indexEntry)

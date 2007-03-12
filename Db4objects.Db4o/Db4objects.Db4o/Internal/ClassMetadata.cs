@@ -1603,7 +1603,7 @@ namespace Db4objects.Db4o.Internal
 				Db4objects.Db4o.Internal.ObjectContainerBase stream = trans.Stream();
 				if (a_bytes.GetUpdateDepth() == Db4objects.Db4o.Internal.Const4.TRANSIENT)
 				{
-					return stream.PeekPersisted1(trans, id, depth);
+					return stream.PeekPersisted(trans, id, depth);
 				}
 				if (IsValueType())
 				{
@@ -1625,8 +1625,8 @@ namespace Db4objects.Db4o.Internal
 							return yo.GetObject();
 						}
 					}
-					return new Db4objects.Db4o.Internal.ObjectReference(id).Read(trans, null, null, depth
-						, Db4objects.Db4o.Internal.Const4.ADD_TO_ID_TREE, false);
+					return new Db4objects.Db4o.Internal.ObjectReference(id).Read(trans, depth, Db4objects.Db4o.Internal.Const4
+						.ADD_TO_ID_TREE, false);
 				}
 				object ret = stream.GetByID2(trans, id);
 				if (ret is Db4objects.Db4o.Internal.IDb4oTypeImpl)
@@ -1721,15 +1721,15 @@ namespace Db4objects.Db4o.Internal
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Db4objects.Db4o.Internal.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1412
+					Db4objects.Db4o.Internal.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1406
 						(this, a_candidates, trans));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1412 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass1406 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass1412(ClassMetadata _enclosing, Db4objects.Db4o.Internal.Query.Processor.QCandidates
+			public _AnonymousInnerClass1406(ClassMetadata _enclosing, Db4objects.Db4o.Internal.Query.Processor.QCandidates
 				 a_candidates, Db4objects.Db4o.Internal.Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -2121,7 +2121,7 @@ namespace Db4objects.Db4o.Internal
 			stream.Activate1(trans, sc, 4);
 			Db4objects.Db4o.StaticField[] existingFields = sc.fields;
 			System.Collections.IEnumerator staticFields = Db4objects.Db4o.Foundation.Iterators
-				.Map(StaticReflectFields(), new _AnonymousInnerClass1737(this, existingFields, trans
+				.Map(StaticReflectFields(), new _AnonymousInnerClass1731(this, existingFields, trans
 				));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2130,9 +2130,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1737 : Db4objects.Db4o.Foundation.IFunction4
+		private sealed class _AnonymousInnerClass1731 : Db4objects.Db4o.Foundation.IFunction4
 		{
-			public _AnonymousInnerClass1737(ClassMetadata _enclosing, Db4objects.Db4o.StaticField[]
+			public _AnonymousInnerClass1731(ClassMetadata _enclosing, Db4objects.Db4o.StaticField[]
 				 existingFields, Db4objects.Db4o.Internal.Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -2174,13 +2174,13 @@ namespace Db4objects.Db4o.Internal
 
 		private System.Collections.IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Db4objects.Db4o.Foundation.Iterators.Map(StaticReflectFields(), new _AnonymousInnerClass1765
+			return Db4objects.Db4o.Foundation.Iterators.Map(StaticReflectFields(), new _AnonymousInnerClass1759
 				(this));
 		}
 
-		private sealed class _AnonymousInnerClass1765 : Db4objects.Db4o.Foundation.IFunction4
+		private sealed class _AnonymousInnerClass1759 : Db4objects.Db4o.Foundation.IFunction4
 		{
-			public _AnonymousInnerClass1765(ClassMetadata _enclosing)
+			public _AnonymousInnerClass1759(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2228,13 +2228,13 @@ namespace Db4objects.Db4o.Internal
 
 		private System.Collections.IEnumerator StaticReflectFields()
 		{
-			return Db4objects.Db4o.Foundation.Iterators.Filter(ReflectFields(), new _AnonymousInnerClass1795
+			return Db4objects.Db4o.Foundation.Iterators.Filter(ReflectFields(), new _AnonymousInnerClass1789
 				(this));
 		}
 
-		private sealed class _AnonymousInnerClass1795 : Db4objects.Db4o.Foundation.IPredicate4
+		private sealed class _AnonymousInnerClass1789 : Db4objects.Db4o.Foundation.IPredicate4
 		{
-			public _AnonymousInnerClass1795(ClassMetadata _enclosing)
+			public _AnonymousInnerClass1789(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

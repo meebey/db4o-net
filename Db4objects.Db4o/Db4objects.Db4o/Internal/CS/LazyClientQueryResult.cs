@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override object Get(int index)
 		{
-			lock (StreamLock())
+			lock (Lock())
 			{
 				return ActivatedObject(GetId(index));
 			}

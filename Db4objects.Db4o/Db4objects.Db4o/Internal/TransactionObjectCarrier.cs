@@ -20,8 +20,8 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		internal override void SlotFreeOnRollbackSetPointer(int a_id, int a_address, int 
-			a_length)
+		internal override void ProduceUpdateSlotChange(int a_id, int a_address, int a_length
+			)
 		{
 			SetPointer(a_id, a_address, a_length);
 		}

@@ -43,7 +43,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 tree, Db4objects.Db4o.Internal.ClassMetadata yc, Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes
 			 attributes, Db4objects.Db4o.Internal.StatefulBuffer writer, string name)
 		{
-			Db4objects.Db4o.Internal.TreeInt[] ret = { tree };
+			Db4objects.Db4o.Internal.TreeInt[] ret = new Db4objects.Db4o.Internal.TreeInt[] { 
+				tree };
 			Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand command = 
 				new _AnonymousInnerClass25(this, name, ret, writer);
 			TraverseFields(yc, writer, attributes, command);
@@ -119,7 +120,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 attributes, Db4objects.Db4o.Internal.Buffer writer, Db4objects.Db4o.Internal.FieldMetadata
 			 field)
 		{
-			bool[] ret = { false };
+			bool[] ret = new bool[] { false };
 			Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand command = 
 				new _AnonymousInnerClass49(this, field, ret, writer);
 			TraverseFields(yc, writer, attributes, command);

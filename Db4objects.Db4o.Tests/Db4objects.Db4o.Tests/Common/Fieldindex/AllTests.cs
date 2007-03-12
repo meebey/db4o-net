@@ -9,10 +9,10 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		protected override System.Type[] TestCases()
 		{
-			System.Type[] fieldBased = { typeof(Db4objects.Db4o.Tests.Common.Fieldindex.IndexedNodeTestCase)
+			System.Type[] fieldBased = new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Fieldindex.IndexedNodeTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexTestCase), typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexProcessorTestCase)
 				 };
-			System.Type[] neutral = { typeof(Db4objects.Db4o.Tests.Common.Fieldindex.DoubleFieldIndexTestCase)
+			System.Type[] neutral = new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Fieldindex.DoubleFieldIndexTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase), typeof(Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexCorruptionTestCase)
 				 };
 			System.Type[] tests = neutral;

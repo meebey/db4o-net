@@ -93,8 +93,18 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return;
 			}
-			int pointerAddress = context.AllocateTargetSlot(_ids.Size() * Db4objects.Db4o.Internal.Const4
-				.POINTER_LENGTH);
+			int blockSize = context.BlockSize();
+			int blockLength = System.Math.Max(Db4objects.Db4o.Internal.Const4.POINTER_LENGTH, 
+				blockSize);
+			bool overlapping = (Db4objects.Db4o.Internal.Const4.POINTER_LENGTH % blockSize > 
+				0);
+			int blocksPerPointer = Db4objects.Db4o.Internal.Const4.POINTER_LENGTH / blockSize;
+			if (overlapping)
+			{
+				blocksPerPointer++;
+			}
+			int batchSize = _ids.Size() * blockLength;
+			int pointerAddress = context.AllocateTargetSlot(batchSize);
 			System.Collections.IEnumerator idIter = new Db4objects.Db4o.Foundation.TreeKeyIterator
 				(_ids);
 			while (idIter.MoveNext())
@@ -107,7 +117,7 @@ namespace Db4objects.Db4o.Defragment
 					isClassID = true;
 				}
 				context.MapIDs(objectID, pointerAddress, isClassID);
-				pointerAddress += Db4objects.Db4o.Internal.Const4.POINTER_LENGTH;
+				pointerAddress += blocksPerPointer;
 			}
 			_ids = null;
 		}

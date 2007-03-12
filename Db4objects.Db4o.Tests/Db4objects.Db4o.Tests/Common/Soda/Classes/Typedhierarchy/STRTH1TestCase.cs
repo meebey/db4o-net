@@ -32,10 +32,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 		public override object[] CreateData()
 		{
 			Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase[] objects
-				 = { new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
-				(), new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase(
-				"str1"), new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
-				(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2()), new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
+				 = new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase[]
+				 { new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase()
+				, new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase("str1"
+				), new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase(new 
+				Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2()), new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
 				(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2("str2")), new 
 				Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2
 				(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH3("str3"))), 

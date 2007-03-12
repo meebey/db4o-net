@@ -121,5 +121,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			return _config.GetAsBoolean(QUERY_EVALUATION);
 		}
+
+		public virtual void UniqueIndex(bool flag)
+		{
+			if (flag)
+			{
+				Indexed(true);
+			}
+		}
 	}
 }

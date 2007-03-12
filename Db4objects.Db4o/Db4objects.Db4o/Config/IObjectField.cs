@@ -127,5 +127,11 @@ namespace Db4objects.Db4o.Config
 		/// <param name="flag">specify <code>false</code> to ignore this field during query evaluation.
 		/// 	</param>
 		void QueryEvaluation(bool flag);
+
+		/// <summary>configures creation of a unique index.</summary>
+		/// <remarks>configures creation of a unique index.</remarks>
+		/// <param name="flag">specify <code>true</code> to create a uniquw index on this field.
+		/// 	</param>
+		void UniqueIndex(bool flag);
 	}
 }

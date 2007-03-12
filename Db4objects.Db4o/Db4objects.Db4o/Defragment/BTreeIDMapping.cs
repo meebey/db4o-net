@@ -98,7 +98,8 @@ namespace Db4objects.Db4o.Defragment
 
 		public override void Open()
 		{
-			_mappingDb = Db4objects.Db4o.Defragment.DefragContextImpl.FreshYapFile(_fileName);
+			_mappingDb = Db4objects.Db4o.Defragment.DefragContextImpl.FreshYapFile(_fileName, 
+				1);
 			Db4objects.Db4o.Internal.IX.IIndexable4 handler = new Db4objects.Db4o.Internal.Mapping.MappedIDPairHandler
 				(_mappingDb);
 			_idTree = (_treeSpec == null ? new Db4objects.Db4o.Internal.Btree.BTree(Trans(), 

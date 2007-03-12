@@ -14,15 +14,19 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				Db4objects.Db4o.Internal.ClassMetadata yc = yapClassId == 0 ? null : stream.GetYapClass
 					(yapClassId);
 				_payLoad.WriteEmbedded();
-				stream.PrefetchedIDConsumed(_payLoad.GetID());
-				_payLoad.Address(stream.GetSlot(_payLoad.GetLength()));
+				int id = _payLoad.GetID();
+				int length = _payLoad.GetLength();
+				stream.PrefetchedIDConsumed(id);
+				Transaction().SlotFreePointerOnRollback(id);
+				int address = stream.GetSlot(length);
+				_payLoad.Address(address);
+				Transaction().SlotFreeOnRollback(id, address, length);
 				if (yc != null)
 				{
 					yc.AddFieldIndices(_payLoad, null);
 				}
 				stream.WriteNew(yc, _payLoad);
-				Transaction().WritePointer(_payLoad.GetID(), _payLoad.GetAddress(), _payLoad.GetLength
-					());
+				Transaction().WritePointer(id, address, length);
 			}
 			return true;
 		}

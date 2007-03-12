@@ -212,8 +212,8 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		public static readonly System.Type[] ESSENTIAL_CLASSES = { CLASS_STATICFIELD, CLASS_STATICCLASS
-			 };
+		public static readonly System.Type[] ESSENTIAL_CLASSES = new System.Type[] { CLASS_STATICFIELD
+			, CLASS_STATICCLASS };
 
 		public static readonly string VIRTUAL_FIELD_PREFIX = "v4o";
 

@@ -117,6 +117,11 @@ namespace Db4objects.Db4o.Internal.Slots
 			return IsSetPointer() && (_newSlot._address == 0);
 		}
 
+		public virtual bool IsNew()
+		{
+			return IsFreePointerOnRollback();
+		}
+
 		private bool IsFreeOnCommit()
 		{
 			return IsBitSet(FREE_ON_COMMIT_BIT);
@@ -137,11 +142,6 @@ namespace Db4objects.Db4o.Internal.Slots
 		/// FIXME:	Check where pointers should be freed on commit.
 		/// This should be triggered in this class.
 		/// </remarks>
-		private bool IsFreePointerOnCommit()
-		{
-			return IsBitSet(FREE_POINTER_ON_COMMIT_BIT);
-		}
-
 		public bool IsFreePointerOnRollback()
 		{
 			return IsBitSet(FREE_POINTER_ON_ROLLBACK_BIT);

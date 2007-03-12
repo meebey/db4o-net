@@ -60,5 +60,10 @@ namespace Db4objects.Db4o.Internal.Callbacks
 			 updated)
 		{
 		}
+
+		public virtual bool CaresAboutCommit()
+		{
+			return false;
+		}
 	}
 }

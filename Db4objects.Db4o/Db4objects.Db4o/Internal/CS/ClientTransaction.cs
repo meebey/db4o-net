@@ -101,7 +101,6 @@ namespace Db4objects.Db4o.Internal.CS
 				i_delete.Traverse(new _AnonymousInnerClass82(this));
 			}
 			i_delete = null;
-			i_writtenUpdateDeletedMembers = null;
 			i_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.PROCESS_DELETES, false
 				);
 		}

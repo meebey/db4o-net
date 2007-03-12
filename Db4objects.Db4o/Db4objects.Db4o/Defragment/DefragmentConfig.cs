@@ -110,7 +110,7 @@ namespace Db4objects.Db4o.Defragment
 		{
 			if (_config == null)
 			{
-				_config = VanillaDb4oConfig();
+				_config = VanillaDb4oConfig(1);
 			}
 			return _config;
 		}
@@ -166,6 +166,11 @@ namespace Db4objects.Db4o.Defragment
 			return (_tempPath != null ? _tempPath : _backupPath);
 		}
 
+		public virtual int BlockSize()
+		{
+			return ((Db4objects.Db4o.Internal.Config4Impl)Db4oConfig()).BlockSize();
+		}
+
 		private class NullFilter : Db4objects.Db4o.Defragment.IStoredClassFilter
 		{
 			public virtual bool Accept(Db4objects.Db4o.Ext.IStoredClass storedClass)
@@ -177,11 +182,13 @@ namespace Db4objects.Db4o.Defragment
 		private static readonly Db4objects.Db4o.Defragment.IStoredClassFilter NULLFILTER = 
 			new Db4objects.Db4o.Defragment.DefragmentConfig.NullFilter();
 
-		public static Db4objects.Db4o.Config.IConfiguration VanillaDb4oConfig()
+		public static Db4objects.Db4o.Config.IConfiguration VanillaDb4oConfig(int blockSize
+			)
 		{
 			Db4objects.Db4o.Config.IConfiguration config = Db4objects.Db4o.Db4oFactory.NewConfiguration
 				();
 			config.WeakReferences(false);
+			config.BlockSize(blockSize);
 			return config;
 		}
 	}

@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Internal
 			a_bytes.WriteInt(i_id);
 			a_bytes.WriteInt(i_address);
 			a_bytes.Append(_buffer);
-			int[] newID = { a_id };
+			int[] newID = new int[] { a_id };
 			int myID = a_id;
 			ForEachEmbedded(new _AnonymousInnerClass101(this, a_bytes, myID, newID));
 			return newID[0];
@@ -126,7 +126,7 @@ namespace Db4objects.Db4o.Internal
 
 		public int EmbeddedCount()
 		{
-			int[] count = { 0 };
+			int[] count = new int[] { 0 };
 			ForEachEmbedded(new _AnonymousInnerClass126(this, count));
 			return count[0];
 		}
@@ -151,7 +151,7 @@ namespace Db4objects.Db4o.Internal
 
 		public int EmbeddedLength()
 		{
-			int[] length = { 0 };
+			int[] length = new int[] { 0 };
 			ForEachEmbedded(new _AnonymousInnerClass136(this, length));
 			return length[0];
 		}

@@ -134,7 +134,7 @@ namespace Db4objects.Db4o.Internal.IX
 			{
 				return 0;
 			}
-			int[] leaves = { 0 };
+			int[] leaves = new int[] { 0 };
 			i_root.Traverse(new _AnonymousInnerClass118(this, leaves));
 			return leaves[0];
 		}

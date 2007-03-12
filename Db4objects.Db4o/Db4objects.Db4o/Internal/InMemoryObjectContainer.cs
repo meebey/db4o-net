@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Internal
 			return _length;
 		}
 
-		internal override string FileName()
+		public override string FileName()
 		{
 			return "Memory File";
 		}

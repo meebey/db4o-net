@@ -3,8 +3,8 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 	public class TypedDerivedArrayTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
 	{
 		private static readonly Db4objects.Db4o.Tests.Common.Sampledata.MoleculeData[] ARRAY
-			 = { new Db4objects.Db4o.Tests.Common.Sampledata.MoleculeData("TypedDerivedArray"
-			) };
+			 = new Db4objects.Db4o.Tests.Common.Sampledata.MoleculeData[] { new Db4objects.Db4o.Tests.Common.Sampledata.MoleculeData
+			("TypedDerivedArray") };
 
 		public class Data
 		{

@@ -3,7 +3,8 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 	public class TypedArrayInObjectTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
 	{
 		private static readonly Db4objects.Db4o.Tests.Common.Sampledata.AtomData[] ARRAY = 
-			{ new Db4objects.Db4o.Tests.Common.Sampledata.AtomData("TypedArrayInObject") };
+			new Db4objects.Db4o.Tests.Common.Sampledata.AtomData[] { new Db4objects.Db4o.Tests.Common.Sampledata.AtomData
+			("TypedArrayInObject") };
 
 		public class Data
 		{

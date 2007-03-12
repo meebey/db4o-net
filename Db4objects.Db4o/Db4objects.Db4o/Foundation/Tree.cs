@@ -595,5 +595,10 @@ namespace Db4objects.Db4o.Foundation
 		}
 
 		public abstract object Key();
+
+		public virtual object Root()
+		{
+			return this;
+		}
 	}
 }

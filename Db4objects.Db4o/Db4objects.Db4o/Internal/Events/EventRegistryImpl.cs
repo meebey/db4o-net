@@ -286,5 +286,10 @@ namespace Db4objects.Db4o.Internal.Events
 					, value);
 			}
 		}
+
+		public virtual bool CaresAboutCommit()
+		{
+			return Db4objects.Db4o.Internal.Events.EventPlatform.HasListeners(_committing);
+		}
 	}
 }

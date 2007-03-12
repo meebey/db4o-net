@@ -312,22 +312,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public override string ToString()
 		{
-			if (_size == 0)
-			{
-				return "[]";
-			}
-			System.Text.StringBuilder sb = new System.Text.StringBuilder();
-			sb.Append("[");
-			System.Collections.IEnumerator i = InternalIterator();
-			i.MoveNext();
-			sb.Append(i.Current);
-			while (i.MoveNext())
-			{
-				sb.Append(", ");
-				sb.Append(i.Current);
-			}
-			sb.Append("]");
-			return sb.ToString();
+			return Db4objects.Db4o.Foundation.Iterators.ToString(InternalIterator());
 		}
 
 		private void Changed()

@@ -769,7 +769,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal virtual Db4objects.Db4o.Internal.Query.ObjectSetFacade Get1(Db4objects.Db4o.Internal.Transaction
+		private Db4objects.Db4o.Internal.Query.ObjectSetFacade Get1(Db4objects.Db4o.Internal.Transaction
 			 ta, object template)
 		{
 			ta = CheckTransaction(ta);
@@ -834,8 +834,8 @@ namespace Db4objects.Db4o.Internal
 				}
 				try
 				{
-					return new Db4objects.Db4o.Internal.ObjectReference(a_id).Read(ta, null, null, 0, 
-						Db4objects.Db4o.Internal.Const4.ADD_TO_ID_TREE, true);
+					return new Db4objects.Db4o.Internal.ObjectReference(a_id).Read(ta, 0, Db4objects.Db4o.Internal.Const4
+						.ADD_TO_ID_TREE, true);
 				}
 				catch (System.Exception t)
 				{
@@ -863,11 +863,8 @@ namespace Db4objects.Db4o.Internal
 			BeginTopLevelCall();
 			try
 			{
-				obj = new Db4objects.Db4o.Internal.ObjectReference(id).Read(ta, null, null, ConfigImpl
-					().ActivationDepth(), Db4objects.Db4o.Internal.Const4.ADD_TO_ID_TREE, true);
-			}
-			catch (System.Exception t)
-			{
+				obj = new Db4objects.Db4o.Internal.ObjectReference(id).Read(ta, ConfigImpl().ActivationDepth
+					(), Db4objects.Db4o.Internal.Const4.ADD_TO_ID_TREE, true);
 			}
 			finally
 			{
@@ -923,6 +920,12 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		public Db4objects.Db4o.Internal.HardObjectReference GetHardObjectReferenceById(int
+			 id)
+		{
+			return GetHardObjectReferenceById(GetTransaction(), id);
+		}
+
 		public Db4objects.Db4o.Internal.HardObjectReference GetHardObjectReferenceById(Db4objects.Db4o.Internal.Transaction
 			 trans, int id)
 		{
@@ -941,8 +944,8 @@ namespace Db4objects.Db4o.Internal
 				RemoveReference(@ref);
 			}
 			@ref = new Db4objects.Db4o.Internal.ObjectReference(id);
-			object readObject = @ref.Read(trans, null, null, 0, Db4objects.Db4o.Internal.Const4
-				.ADD_TO_ID_TREE, true);
+			object readObject = @ref.Read(trans, 0, Db4objects.Db4o.Internal.Const4.ADD_TO_ID_TREE
+				, true);
 			if (readObject == null)
 			{
 				return Db4objects.Db4o.Internal.HardObjectReference.INVALID;
@@ -1319,7 +1322,7 @@ namespace Db4objects.Db4o.Internal
 		protected virtual Db4objects.Db4o.Internal.StatefulBuffer Marshall(Db4objects.Db4o.Internal.Transaction
 			 ta, object obj)
 		{
-			int[] id = { 0 };
+			int[] id = new int[] { 0 };
 			byte[] bytes = Marshall(obj, id);
 			Db4objects.Db4o.Internal.StatefulBuffer yapBytes = new Db4objects.Db4o.Internal.StatefulBuffer
 				(ta, bytes.Length);
@@ -1401,7 +1404,7 @@ namespace Db4objects.Db4o.Internal
 					Db4objects.Db4o.Internal.ObjectReference yo = ReferenceForObject(obj);
 					if (yo != null)
 					{
-						cloned = PeekPersisted1(ta, yo.GetID(), depth);
+						cloned = PeekPersisted(ta, yo.GetID(), depth);
 					}
 					i_justPeeked = null;
 					return cloned;
@@ -1413,20 +1416,20 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal virtual object PeekPersisted1(Db4objects.Db4o.Internal.Transaction a_ta, 
-			int a_id, int a_depth)
+		public object PeekPersisted(Db4objects.Db4o.Internal.Transaction trans, int id, int
+			 depth)
 		{
-			if (a_depth < 0)
+			if (depth < 0)
 			{
 				return null;
 			}
-			Db4objects.Db4o.Internal.TreeInt ti = new Db4objects.Db4o.Internal.TreeInt(a_id);
+			Db4objects.Db4o.Internal.TreeInt ti = new Db4objects.Db4o.Internal.TreeInt(id);
 			Db4objects.Db4o.Internal.TreeIntObject tio = (Db4objects.Db4o.Internal.TreeIntObject
 				)Db4objects.Db4o.Foundation.Tree.Find(i_justPeeked, ti);
 			if (tio == null)
 			{
-				return new Db4objects.Db4o.Internal.ObjectReference(a_id).Read(a_ta, null, null, 
-					a_depth, Db4objects.Db4o.Internal.Const4.TRANSIENT, false);
+				return new Db4objects.Db4o.Internal.ObjectReference(id).PeekPersisted(trans, depth
+					);
 			}
 			return tio._object;
 		}
@@ -1654,58 +1657,51 @@ namespace Db4objects.Db4o.Internal
 		protected virtual bool Rename1(Db4objects.Db4o.Internal.Config4Impl config)
 		{
 			bool renamedOne = false;
-			try
+			System.Collections.IEnumerator i = config.Rename().GetEnumerator();
+			while (i.MoveNext())
 			{
-				System.Collections.IEnumerator i = config.Rename().GetEnumerator();
-				while (i.MoveNext())
+				Db4objects.Db4o.Rename ren = (Db4objects.Db4o.Rename)i.Current;
+				if (Get(ren).Size() == 0)
 				{
-					Db4objects.Db4o.Rename ren = (Db4objects.Db4o.Rename)i.Current;
-					if (Get(ren).Size() == 0)
+					bool renamed = false;
+					bool isField = ren.rClass.Length > 0;
+					Db4objects.Db4o.Internal.ClassMetadata yapClass = _classCollection.GetYapClass(isField
+						 ? ren.rClass : ren.rFrom);
+					if (yapClass != null)
 					{
-						bool renamed = false;
-						bool isField = ren.rClass.Length > 0;
-						Db4objects.Db4o.Internal.ClassMetadata yapClass = _classCollection.GetYapClass(isField
-							 ? ren.rClass : ren.rFrom);
-						if (yapClass != null)
+						if (isField)
 						{
-							if (isField)
+							renamed = yapClass.RenameField(ren.rFrom, ren.rTo);
+						}
+						else
+						{
+							Db4objects.Db4o.Internal.ClassMetadata existing = _classCollection.GetYapClass(ren
+								.rTo);
+							if (existing == null)
 							{
-								renamed = yapClass.RenameField(ren.rFrom, ren.rTo);
+								yapClass.SetName(ren.rTo);
+								renamed = true;
 							}
 							else
 							{
-								Db4objects.Db4o.Internal.ClassMetadata existing = _classCollection.GetYapClass(ren
-									.rTo);
-								if (existing == null)
-								{
-									yapClass.SetName(ren.rTo);
-									renamed = true;
-								}
-								else
-								{
-									LogMsg(9, "class " + ren.rTo);
-								}
+								LogMsg(9, "class " + ren.rTo);
 							}
-						}
-						if (renamed)
-						{
-							renamedOne = true;
-							SetDirtyInSystemTransaction(yapClass);
-							LogMsg(8, ren.rFrom + " to " + ren.rTo);
-							Db4objects.Db4o.IObjectSet backren = Get(new Db4objects.Db4o.Rename(ren.rClass, null
-								, ren.rFrom));
-							while (backren.HasNext())
-							{
-								Delete(backren.Next());
-							}
-							Set(ren);
 						}
 					}
+					if (renamed)
+					{
+						renamedOne = true;
+						SetDirtyInSystemTransaction(yapClass);
+						LogMsg(8, ren.rFrom + " to " + ren.rTo);
+						Db4objects.Db4o.IObjectSet backren = Get(new Db4objects.Db4o.Rename(ren.rClass, null
+							, ren.rFrom));
+						while (backren.HasNext())
+						{
+							Delete(backren.Next());
+						}
+						Set(ren);
+					}
 				}
-			}
-			catch (System.Exception t)
-			{
-				Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl(), 10, null, t);
 			}
 			return renamedOne;
 		}

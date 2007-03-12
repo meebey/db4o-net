@@ -3,8 +3,8 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public sealed class EventDispatcher
 	{
-		private static readonly string[] events = { "objectCanDelete", "objectOnDelete", 
-			"objectOnActivate", "objectOnDeactivate", "objectOnNew", "objectOnUpdate", "objectCanActivate"
+		private static readonly string[] events = new string[] { "objectCanDelete", "objectOnDelete"
+			, "objectOnActivate", "objectOnDeactivate", "objectOnNew", "objectOnUpdate", "objectCanActivate"
 			, "objectCanDeactivate", "objectCanNew", "objectCanUpdate" };
 
 		internal const int CAN_DELETE = 0;
@@ -89,8 +89,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (count > 0)
 			{
-				Db4objects.Db4o.Reflect.IReflectClass[] parameterClasses = { a_stream.i_handlers.
-					ICLASS_OBJECTCONTAINER };
+				Db4objects.Db4o.Reflect.IReflectClass[] parameterClasses = new Db4objects.Db4o.Reflect.IReflectClass
+					[] { a_stream.i_handlers.ICLASS_OBJECTCONTAINER };
 				Db4objects.Db4o.Reflect.IReflectMethod[] methods = new Db4objects.Db4o.Reflect.IReflectMethod
 					[COUNT];
 				for (int i = COUNT - 1; i >= 0; i--)

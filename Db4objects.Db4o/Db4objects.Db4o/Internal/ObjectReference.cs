@@ -171,6 +171,11 @@ namespace Db4objects.Db4o.Internal
 			return Db4objects.Db4o.Internal.Const4.YAPOBJECT;
 		}
 
+		public virtual long GetInternalID()
+		{
+			return GetID();
+		}
+
 		public virtual object GetObject()
 		{
 			if (Db4objects.Db4o.Internal.Platform4.HasWeakReferences())
@@ -242,6 +247,18 @@ namespace Db4objects.Db4o.Internal
 				_virtualAttributes = new Db4objects.Db4o.Internal.VirtualAttributes();
 			}
 			return _virtualAttributes;
+		}
+
+		internal object PeekPersisted(Db4objects.Db4o.Internal.Transaction trans, int depth
+			)
+		{
+			return Read(trans, depth, Db4objects.Db4o.Internal.Const4.TRANSIENT, false);
+		}
+
+		internal object Read(Db4objects.Db4o.Internal.Transaction trans, int instantiationDepth
+			, int addToIDTree, bool checkIDTree)
+		{
+			return Read(trans, null, null, instantiationDepth, addToIDTree, checkIDTree);
 		}
 
 		internal object Read(Db4objects.Db4o.Internal.Transaction ta, Db4objects.Db4o.Internal.StatefulBuffer

@@ -97,6 +97,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual int CompareTo(object a_object)
 		{
+			if (a_object is Db4objects.Db4o.Internal.Query.Processor.Order)
+			{
+				return -((Db4objects.Db4o.Internal.Query.Processor.Order)a_object).CompareTo(this
+					);
+			}
 			return _key - ((Db4objects.Db4o.Internal.TreeInt)a_object)._key;
 		}
 
@@ -112,7 +117,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				Db4objects.Db4o.Internal.ITypeHandler4 handler = _yapField.GetHandler();
 				if (handler != null)
 				{
-					Db4objects.Db4o.Internal.Buffer[] arrayBytes = { _bytes };
+					Db4objects.Db4o.Internal.Buffer[] arrayBytes = new Db4objects.Db4o.Internal.Buffer
+						[] { _bytes };
 					Db4objects.Db4o.Internal.ITypeHandler4 arrayHandler = handler.ReadArrayHandler(GetTransaction
 						(), _marshallerFamily, arrayBytes);
 					if (arrayHandler != null)
@@ -143,15 +149,15 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								candidates.Evaluate();
 								Db4objects.Db4o.Foundation.Tree.ByRef pending = new Db4objects.Db4o.Foundation.Tree.ByRef
 									();
-								bool[] innerRes = { isNot };
-								candidates.Traverse(new _AnonymousInnerClass169(this, innerRes, isNot, pending));
+								bool[] innerRes = new bool[] { isNot };
+								candidates.Traverse(new _AnonymousInnerClass172(this, innerRes, isNot, pending));
 								if (isNot)
 								{
 									qcon.Not();
 								}
 								if (pending.value != null)
 								{
-									pending.value.Traverse(new _AnonymousInnerClass238(this));
+									pending.value.Traverse(new _AnonymousInnerClass241(this));
 								}
 								if (!innerRes[0])
 								{
@@ -210,9 +216,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _AnonymousInnerClass169 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass172 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass169(QCandidate _enclosing, bool[] innerRes, bool isNot
+			public _AnonymousInnerClass172(QCandidate _enclosing, bool[] innerRes, bool isNot
 				, Db4objects.Db4o.Foundation.Tree.ByRef pending)
 			{
 				this._enclosing = _enclosing;
@@ -231,13 +237,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (cand._pendingJoins != null)
 				{
-					cand._pendingJoins.Traverse(new _AnonymousInnerClass182(this, pending));
+					cand._pendingJoins.Traverse(new _AnonymousInnerClass185(this, pending));
 				}
 			}
 
-			private sealed class _AnonymousInnerClass182 : Db4objects.Db4o.Foundation.IVisitor4
+			private sealed class _AnonymousInnerClass185 : Db4objects.Db4o.Foundation.IVisitor4
 			{
-				public _AnonymousInnerClass182(_AnonymousInnerClass169 _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
+				public _AnonymousInnerClass185(_AnonymousInnerClass172 _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
 					 pending)
 				{
 					this._enclosing = _enclosing;
@@ -264,7 +270,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 
-				private readonly _AnonymousInnerClass169 _enclosing;
+				private readonly _AnonymousInnerClass172 _enclosing;
 
 				private readonly Db4objects.Db4o.Foundation.Tree.ByRef pending;
 			}
@@ -278,9 +284,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly Db4objects.Db4o.Foundation.Tree.ByRef pending;
 		}
 
-		private sealed class _AnonymousInnerClass238 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass241 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass238(QCandidate _enclosing)
+			public _AnonymousInnerClass241(QCandidate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -399,7 +405,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual void HintOrder(int a_order, bool a_major)
 		{
-			_order = new Db4objects.Db4o.Internal.Query.Processor.Order();
+			if (_order == this)
+			{
+				_order = new Db4objects.Db4o.Internal.Query.Processor.Order();
+			}
 			_order.HintOrder(a_order, a_major);
 		}
 

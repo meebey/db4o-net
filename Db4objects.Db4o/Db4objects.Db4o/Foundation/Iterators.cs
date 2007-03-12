@@ -56,6 +56,11 @@ namespace Db4objects.Db4o.Foundation
 			return new Db4objects.Db4o.Foundation.FilteredIterator(iterator, predicate);
 		}
 
+		public static System.Collections.IEnumerator Iterate(object[] array)
+		{
+			return new Db4objects.Db4o.Foundation.ArrayIterator4(array);
+		}
+
 		public static int Size(System.Collections.IEnumerable iterable)
 		{
 			return Size(iterable.GetEnumerator());
@@ -69,6 +74,24 @@ namespace Db4objects.Db4o.Foundation
 				++count;
 			}
 			return count;
+		}
+
+		public static string ToString(System.Collections.IEnumerator i)
+		{
+			if (!i.MoveNext())
+			{
+				return "[]";
+			}
+			System.Text.StringBuilder sb = new System.Text.StringBuilder();
+			sb.Append("[");
+			sb.Append(i.Current);
+			while (i.MoveNext())
+			{
+				sb.Append(", ");
+				sb.Append(i.Current);
+			}
+			sb.Append("]");
+			return sb.ToString();
 		}
 	}
 }

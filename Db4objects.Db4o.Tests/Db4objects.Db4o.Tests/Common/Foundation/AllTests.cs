@@ -11,8 +11,8 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				, typeof(Db4objects.Db4o.Tests.Common.Foundation.IntArrayListTestCase), typeof(Db4objects.Db4o.Tests.Common.Foundation.Iterable4AdaptorTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Foundation.IteratorsTestCase), typeof(Db4objects.Db4o.Tests.Common.Foundation.Queue4TestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Foundation.SortedCollection4TestCase), typeof(Db4objects.Db4o.Tests.Common.Foundation.Stack4TestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Foundation.TreeKeyIteratorTestCase), typeof(Db4objects.Db4o.Tests.Common.Foundation.BufferTestCase)
-				 }).Build();
+				, typeof(Db4objects.Db4o.Tests.Common.Foundation.TreeKeyIteratorTestCase), typeof(Db4objects.Db4o.Tests.Common.Foundation.TreeNodeIteratorTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Foundation.BufferTestCase) }).Build();
 		}
 
 		public static void Main(string[] args)

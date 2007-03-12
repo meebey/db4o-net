@@ -10,6 +10,10 @@ namespace Db4objects.Db4o.Ext
 	/// </remarks>
 	public interface IObjectInfo
 	{
+		/// <summary>returns the internal db4o ID.</summary>
+		/// <remarks>returns the internal db4o ID.</remarks>
+		long GetInternalID();
+
 		/// <summary>returns the object that is referenced.</summary>
 		/// <remarks>
 		/// returns the object that is referenced.

@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
-		public virtual object StreamLock()
+		public virtual object Lock()
 		{
 			return _cluster;
 		}

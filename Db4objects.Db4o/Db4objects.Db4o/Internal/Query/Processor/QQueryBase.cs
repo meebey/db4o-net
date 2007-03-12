@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				Db4objects.Db4o.Internal.Query.Processor.QCon existingConstraint = (Db4objects.Db4o.Internal.Query.Processor.QCon
 					)j.Current;
-				bool[] removeExisting = { false };
+				bool[] removeExisting = new bool[] { false };
 				if (!onlyForPaths || (existingConstraint is Db4objects.Db4o.Internal.Query.Processor.QConPath
 					))
 				{
@@ -163,7 +163,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				Db4objects.Db4o.Internal.Query.Processor.QCon existingConstraint = (Db4objects.Db4o.Internal.Query.Processor.QConObject
 					)constraintsIterator.Current;
-				bool[] removeExisting = { false };
+				bool[] removeExisting = new bool[] { false };
 				Db4objects.Db4o.Internal.Query.Processor.QCon newConstraint = existingConstraint.
 					ShareParentForClass(claxx, removeExisting);
 				if (newConstraint != null)
@@ -255,7 +255,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				Db4objects.Db4o.Internal.Query.Processor.QQuery query = new Db4objects.Db4o.Internal.Query.Processor.QQuery
 					(i_trans, _this, a_field);
-				int[] run = { 1 };
+				int[] run = new int[] { 1 };
 				if (!Descend1(query, a_field, run))
 				{
 					if (run[0] == 1)
@@ -274,11 +274,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		private bool Descend1(Db4objects.Db4o.Internal.Query.Processor.QQuery query, string
 			 a_field, int[] run)
 		{
-			bool[] foundClass = { false };
+			bool[] foundClass = new bool[] { false };
 			if (run[0] == 2 || i_constraints.Size() == 0)
 			{
 				run[0] = 0;
-				bool[] anyClassCollected = { false };
+				bool[] anyClassCollected = new bool[] { false };
 				Stream().ClassCollection().AttachQueryNode(a_field, new _AnonymousInnerClass246(this
 					, anyClassCollected));
 			}

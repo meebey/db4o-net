@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal Db4objects.Db4o.Foundation.Tree i_ordered;
 
-		private int i_orderID;
+		private int _majorOrderingID;
 
 		private Db4objects.Db4o.Internal.IDGenerator _idGenerator;
 
@@ -84,29 +84,30 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			i_ordered = Db4objects.Db4o.Foundation.Tree.Add(i_ordered, a_order);
 		}
 
-		internal void ApplyOrdering(Db4objects.Db4o.Foundation.Tree a_ordered, int a_orderID
-			)
+		internal void ApplyOrdering(Db4objects.Db4o.Foundation.Tree orderedCandidates, int
+			 orderingID)
 		{
-			if (a_ordered == null || i_root == null)
+			if (orderedCandidates == null || i_root == null)
 			{
 				return;
 			}
-			if (a_orderID > 0)
+			int absoluteOrderingID = System.Math.Abs(orderingID);
+			bool major = TreatOrderingIDAsMajor(absoluteOrderingID);
+			if (major && !IsUnordered())
 			{
-				a_orderID = -a_orderID;
+				SwapMajorOrderToMinor();
 			}
-			bool major = (a_orderID - i_orderID) < 0;
+			HintNewOrder(orderedCandidates, major);
+			i_root = RecreateTreeFromCandidates();
 			if (major)
 			{
-				i_orderID = a_orderID;
+				_majorOrderingID = absoluteOrderingID;
 			}
-			int[] placement = { 0 };
-			i_root.Traverse(new _AnonymousInnerClass112(this, major, placement));
-			placement[0] = 1;
-			a_ordered.Traverse(new _AnonymousInnerClass121(this, placement, major));
-			Db4objects.Db4o.Foundation.Collection4 col = new Db4objects.Db4o.Foundation.Collection4
-				();
-			i_root.Traverse(new _AnonymousInnerClass132(this, col));
+		}
+
+		private Db4objects.Db4o.Foundation.Tree RecreateTreeFromCandidates()
+		{
+			Db4objects.Db4o.Foundation.Collection4 col = CollectCandidates();
 			Db4objects.Db4o.Foundation.Tree newTree = null;
 			System.Collections.IEnumerator i = col.GetEnumerator();
 			while (i.MoveNext())
@@ -118,63 +119,20 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				candidate._size = 1;
 				newTree = Db4objects.Db4o.Foundation.Tree.Add(newTree, candidate);
 			}
-			i_root = newTree;
+			return newTree;
 		}
 
-		private sealed class _AnonymousInnerClass112 : Db4objects.Db4o.Foundation.IVisitor4
+		private Db4objects.Db4o.Foundation.Collection4 CollectCandidates()
 		{
-			public _AnonymousInnerClass112(QCandidates _enclosing, bool major, int[] placement
-				)
-			{
-				this._enclosing = _enclosing;
-				this.major = major;
-				this.placement = placement;
-			}
-
-			public void Visit(object a_object)
-			{
-				((Db4objects.Db4o.Internal.Query.Processor.QCandidate)a_object).HintOrder(0, major
-					);
-				((Db4objects.Db4o.Internal.Query.Processor.QCandidate)a_object).HintOrder(placement
-					[0]++, !major);
-			}
-
-			private readonly QCandidates _enclosing;
-
-			private readonly bool major;
-
-			private readonly int[] placement;
+			Db4objects.Db4o.Foundation.Collection4 col = new Db4objects.Db4o.Foundation.Collection4
+				();
+			i_root.Traverse(new _AnonymousInnerClass137(this, col));
+			return col;
 		}
 
-		private sealed class _AnonymousInnerClass121 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass137 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass121(QCandidates _enclosing, int[] placement, bool major
-				)
-			{
-				this._enclosing = _enclosing;
-				this.placement = placement;
-				this.major = major;
-			}
-
-			public void Visit(object a_object)
-			{
-				Db4objects.Db4o.Internal.Query.Processor.QOrder qo = (Db4objects.Db4o.Internal.Query.Processor.QOrder
-					)a_object;
-				Db4objects.Db4o.Internal.Query.Processor.QCandidate candidate = qo._candidate.GetRoot
-					();
-				candidate.HintOrder(placement[0]++, major);
-			}
-
-			private readonly QCandidates _enclosing;
-
-			private readonly int[] placement;
-
-			private readonly bool major;
-		}
-
-		private sealed class _AnonymousInnerClass132 : Db4objects.Db4o.Foundation.IVisitor4
-		{
-			public _AnonymousInnerClass132(QCandidates _enclosing, Db4objects.Db4o.Foundation.Collection4
+			public _AnonymousInnerClass137(QCandidates _enclosing, Db4objects.Db4o.Foundation.Collection4
 				 col)
 			{
 				this._enclosing = _enclosing;
@@ -191,6 +149,89 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly QCandidates _enclosing;
 
 			private readonly Db4objects.Db4o.Foundation.Collection4 col;
+		}
+
+		private void HintNewOrder(Db4objects.Db4o.Foundation.Tree orderedCandidates, bool
+			 major)
+		{
+			int[] currentOrder = new int[] { 0 };
+			Db4objects.Db4o.Internal.Query.Processor.QOrder[] lastOrder = new Db4objects.Db4o.Internal.Query.Processor.QOrder
+				[] { null };
+			orderedCandidates.Traverse(new _AnonymousInnerClass150(this, lastOrder, currentOrder
+				, major));
+		}
+
+		private sealed class _AnonymousInnerClass150 : Db4objects.Db4o.Foundation.IVisitor4
+		{
+			public _AnonymousInnerClass150(QCandidates _enclosing, Db4objects.Db4o.Internal.Query.Processor.QOrder[]
+				 lastOrder, int[] currentOrder, bool major)
+			{
+				this._enclosing = _enclosing;
+				this.lastOrder = lastOrder;
+				this.currentOrder = currentOrder;
+				this.major = major;
+			}
+
+			public void Visit(object a_object)
+			{
+				Db4objects.Db4o.Internal.Query.Processor.QOrder qo = (Db4objects.Db4o.Internal.Query.Processor.QOrder
+					)a_object;
+				if (!qo.IsEqual(lastOrder[0]))
+				{
+					currentOrder[0]++;
+				}
+				Db4objects.Db4o.Internal.Query.Processor.QCandidate candidate = qo._candidate.GetRoot
+					();
+				candidate.HintOrder(currentOrder[0], major);
+				lastOrder[0] = qo;
+			}
+
+			private readonly QCandidates _enclosing;
+
+			private readonly Db4objects.Db4o.Internal.Query.Processor.QOrder[] lastOrder;
+
+			private readonly int[] currentOrder;
+
+			private readonly bool major;
+		}
+
+		private void SwapMajorOrderToMinor()
+		{
+			i_root.Traverse(new _AnonymousInnerClass164(this));
+		}
+
+		private sealed class _AnonymousInnerClass164 : Db4objects.Db4o.Foundation.IVisitor4
+		{
+			public _AnonymousInnerClass164(QCandidates _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Visit(object obj)
+			{
+				Db4objects.Db4o.Internal.Query.Processor.QCandidate candidate = (Db4objects.Db4o.Internal.Query.Processor.QCandidate
+					)obj;
+				Db4objects.Db4o.Internal.Query.Processor.Order order = (Db4objects.Db4o.Internal.Query.Processor.Order
+					)candidate._order;
+				order.SwapMajorToMinor();
+			}
+
+			private readonly QCandidates _enclosing;
+		}
+
+		private bool TreatOrderingIDAsMajor(int absoluteOrderingID)
+		{
+			return (IsUnordered()) || (IsMoreRelevantOrderingID(absoluteOrderingID));
+		}
+
+		private bool IsUnordered()
+		{
+			return _majorOrderingID == 0;
+		}
+
+		private bool IsMoreRelevantOrderingID(int absoluteOrderingID)
+		{
+			return absoluteOrderingID < _majorOrderingID;
 		}
 
 		internal void Collect(Db4objects.Db4o.Internal.Query.Processor.QCandidates a_candidates
@@ -239,12 +280,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		private System.Collections.IEnumerator SingleObjectSodaProcessor(System.Collections.IEnumerator
 			 indexIterator)
 		{
-			return new _AnonymousInnerClass185(this, indexIterator);
+			return new _AnonymousInnerClass217(this, indexIterator);
 		}
 
-		private sealed class _AnonymousInnerClass185 : Db4objects.Db4o.Foundation.MappingIterator
+		private sealed class _AnonymousInnerClass217 : Db4objects.Db4o.Foundation.MappingIterator
 		{
-			public _AnonymousInnerClass185(QCandidates _enclosing, System.Collections.IEnumerator
+			public _AnonymousInnerClass217(QCandidates _enclosing, System.Collections.IEnumerator
 				 baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
@@ -310,16 +351,16 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			while (executionPathIterator.MoveNext())
 			{
 				string fieldName = (string)executionPathIterator.Current;
-				System.Collections.IEnumerator mapIdToFieldIdsIterator = new _AnonymousInnerClass231
+				System.Collections.IEnumerator mapIdToFieldIdsIterator = new _AnonymousInnerClass263
 					(this, fieldName, res);
 				res = new Db4objects.Db4o.Foundation.CompositeIterator4(mapIdToFieldIdsIterator);
 			}
 			return res;
 		}
 
-		private sealed class _AnonymousInnerClass231 : Db4objects.Db4o.Foundation.MappingIterator
+		private sealed class _AnonymousInnerClass263 : Db4objects.Db4o.Foundation.MappingIterator
 		{
-			public _AnonymousInnerClass231(QCandidates _enclosing, string fieldName, System.Collections.IEnumerator
+			public _AnonymousInnerClass263(QCandidates _enclosing, string fieldName, System.Collections.IEnumerator
 				 baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
@@ -414,13 +455,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal bool IsEmpty()
 		{
 			bool[] ret = new bool[] { true };
-			Traverse(new _AnonymousInnerClass316(this, ret));
+			Traverse(new _AnonymousInnerClass348(this, ret));
 			return ret[0];
 		}
 
-		private sealed class _AnonymousInnerClass316 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass348 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass316(QCandidates _enclosing, bool[] ret)
+			public _AnonymousInnerClass348(QCandidates _enclosing, bool[] ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -444,14 +485,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			if (i_root != null)
 			{
 				i_root.Traverse(a_host);
-				i_root = i_root.Filter(new _AnonymousInnerClass329(this));
+				i_root = i_root.Filter(new _AnonymousInnerClass361(this));
 			}
 			return i_root != null;
 		}
 
-		private sealed class _AnonymousInnerClass329 : Db4objects.Db4o.Foundation.IPredicate4
+		private sealed class _AnonymousInnerClass361 : Db4objects.Db4o.Foundation.IPredicate4
 		{
-			public _AnonymousInnerClass329(QCandidates _enclosing)
+			public _AnonymousInnerClass361(QCandidates _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -503,7 +544,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				Db4objects.Db4o.Internal.Query.Processor.QCandidates.TreeIntBuilder();
 			Db4objects.Db4o.Internal.Classindex.IClassIndexStrategy index = i_yapClass.Index(
 				);
-			index.TraverseAll(i_trans, new _AnonymousInnerClass368(this, result));
+			index.TraverseAll(i_trans, new _AnonymousInnerClass399(this, result));
 			i_root = result.tree;
 			Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor dp = i_trans.Stream().i_handlers
 				._diagnosticProcessor;
@@ -513,9 +554,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		private sealed class _AnonymousInnerClass368 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass399 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass368(QCandidates _enclosing, Db4objects.Db4o.Internal.Query.Processor.QCandidates.TreeIntBuilder
+			public _AnonymousInnerClass399(QCandidates _enclosing, Db4objects.Db4o.Internal.Query.Processor.QCandidates.TreeIntBuilder
 				 result)
 			{
 				this._enclosing = _enclosing;
@@ -595,6 +636,40 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				((Db4objects.Db4o.Internal.Query.Processor.QCon)i.Current).VisitOnNull(parent.GetRoot
 					());
 			}
+		}
+
+		public override string ToString()
+		{
+			System.Text.StringBuilder sb = new System.Text.StringBuilder();
+			i_root.Traverse(new _AnonymousInnerClass469(this, sb));
+			return sb.ToString();
+		}
+
+		private sealed class _AnonymousInnerClass469 : Db4objects.Db4o.Foundation.IVisitor4
+		{
+			public _AnonymousInnerClass469(QCandidates _enclosing, System.Text.StringBuilder 
+				sb)
+			{
+				this._enclosing = _enclosing;
+				this.sb = sb;
+			}
+
+			public void Visit(object obj)
+			{
+				Db4objects.Db4o.Internal.Query.Processor.QCandidate candidate = (Db4objects.Db4o.Internal.Query.Processor.QCandidate
+					)obj;
+				sb.Append(" ");
+				sb.Append(candidate._key);
+			}
+
+			private readonly QCandidates _enclosing;
+
+			private readonly System.Text.StringBuilder sb;
+		}
+
+		public void ClearOrdering()
+		{
+			i_ordered = null;
 		}
 	}
 }

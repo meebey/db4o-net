@@ -147,7 +147,8 @@ namespace Db4objects.Db4o.Defragment
 			}
 			if (targetIdentityID > 0)
 			{
-				SetIdentity(config.OrigPath(), targetIdentityID, targetUuidIndexID);
+				SetIdentity(config.OrigPath(), targetIdentityID, targetUuidIndexID, config.BlockSize
+					());
 			}
 			else
 			{
@@ -193,11 +194,11 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		private static void SetIdentity(string targetFile, int targetIdentityID, int targetUuidIndexID
-			)
+			, int blockSize)
 		{
 			Db4objects.Db4o.Internal.LocalObjectContainer targetDB = (Db4objects.Db4o.Internal.LocalObjectContainer
 				)Db4objects.Db4o.Db4oFactory.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig
-				.VanillaDb4oConfig(), targetFile);
+				.VanillaDb4oConfig(blockSize), targetFile);
 			try
 			{
 				Db4objects.Db4o.Ext.Db4oDatabase identity = (Db4objects.Db4o.Ext.Db4oDatabase)targetDB

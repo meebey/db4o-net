@@ -17,8 +17,6 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Foundation.List4 i_transactionListeners;
 
-		protected Db4objects.Db4o.Foundation.Tree i_writtenUpdateDeletedMembers;
-
 		private readonly Db4objects.Db4o.Foundation.Collection4 _participants = new Db4objects.Db4o.Foundation.Collection4
 			();
 
@@ -146,6 +144,11 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public abstract bool IsDeleted(int id);
+
+		protected virtual bool IsSystemTransaction()
+		{
+			return i_parentTransaction == null;
+		}
 
 		public virtual bool Delete(Db4objects.Db4o.Internal.ObjectReference @ref, int id, 
 			int cascade)
@@ -280,7 +283,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		internal virtual void SlotFreeOnRollbackSetPointer(int a_id, int a_address, int a_length
+		internal virtual void ProduceUpdateSlotChange(int a_id, int a_address, int a_length
 			)
 		{
 		}
