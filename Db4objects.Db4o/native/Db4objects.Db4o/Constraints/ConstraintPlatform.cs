@@ -10,24 +10,24 @@ namespace Db4objects.Db4o.Constraints
 		class CommitEventAdapter
 		{
 			private ObjectContainerBase _container;
-			private IConstraint _constraint;
+			private ICommitHandler _handler;
 
-			public CommitEventAdapter(ObjectContainerBase container, IConstraint constraint)
+			public CommitEventAdapter(ObjectContainerBase container, ICommitHandler handler)
 			{
 				_container = container;
-				_constraint = constraint;
+				_handler = handler;
 			}
 
-			public void Check(object sender, CommitEventArgs cea)
+			public void Handle(object sender, CommitEventArgs cea)
 			{
-				_constraint.Check(_container, cea);
+				_handler.Handle(_container, cea);
 			}
 		}
 
-		public static void AddCommittingConstraint(ObjectContainerBase container, IConstraint constraint)
+		public static void AddCommittingHandler(ObjectContainerBase container, ICommitHandler handler)
 		{
 			EventRegistryFactory.ForObjectContainer(container).Committing +=
-				new CommitEventHandler(new CommitEventAdapter(container, constraint).Check);
+				new CommitEventHandler(new CommitEventAdapter(container, handler).Handle);
 		}
 	}
 }
