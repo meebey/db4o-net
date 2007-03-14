@@ -27,10 +27,10 @@ namespace Db4objects.Db4o.Internal.Events
 			e(o, new ObjectEventArgs(o));
 		}
 		
-		public static void TriggerCommitEvent(CommitEventHandler e, IObjectInfoCollection added, IObjectInfoCollection deleted, IObjectInfoCollection updated)
+		public static void TriggerCommitEvent(CommitEventHandler e, object transaction, IObjectInfoCollection added, IObjectInfoCollection deleted, IObjectInfoCollection updated)
 		{
 			if (null == e) return;
-			e(null, new CommitEventArgs(added, deleted, updated));
+			e(null, new CommitEventArgs(transaction, added, deleted, updated));
 		}
 		
 		public static bool HasListeners(System.Delegate e)
