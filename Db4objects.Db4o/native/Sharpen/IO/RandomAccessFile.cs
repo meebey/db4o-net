@@ -24,7 +24,7 @@ namespace Sharpen.IO
             }
             catch (IOException x)
             {
-                throw new DatabaseFileLockedException(x);
+                throw new DatabaseFileLockedException(file,x);
             }
         }
 
