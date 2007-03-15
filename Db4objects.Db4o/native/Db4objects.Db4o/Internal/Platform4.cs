@@ -444,7 +444,7 @@ namespace Db4objects.Db4o.Internal
             }
             catch (IOException x)
             {
-                throw new DatabaseFileLockedException();
+                throw new DatabaseFileLockedException(path,x);
             }
 #endif
         }
