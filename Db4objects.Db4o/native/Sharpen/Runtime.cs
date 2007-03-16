@@ -10,21 +10,31 @@ namespace Sharpen
 {
 	public class Runtime 
 	{
-		public static TextWriter Out =
+		public static TextWriter Out
+		{
+			get
+			{
 #if CF_1_0
-			CompactFramework1Console.Out;
+				return CompactFramework1Console.Out;
 #else
-			Console.Out;
+				return Console.Out;
 #endif
+			}
+		}
 
-		public static TextWriter Err =
+		public static TextWriter Err
+		{
+			get
+			{
 #if CF_1_0
-			CompactFramework1Console.Error;
+				return CompactFramework1Console.Error;
 #else
-			Console.Error;
+				return Console.Error;
 #endif
+			}
+		}
 
-	    public static object GetArrayValue(object array, int i)
+		public static object GetArrayValue(object array, int i)
 	    {
 	        return ((Array)array).GetValue(i);
 	    }
