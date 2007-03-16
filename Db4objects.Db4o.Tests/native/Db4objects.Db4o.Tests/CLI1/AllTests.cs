@@ -35,7 +35,8 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(MDArrayTestCase),
 					typeof(NonSerializedAttributeTestCase),
 					typeof(ObjectSetAsListTestCase),
-                    typeof(ObjectInfoMigrationTestCase),
+					typeof(ObjectInfoMigrationTestCase),
+					typeof(ShutdownMultipleContainer),
 				};
 		}
 	}
