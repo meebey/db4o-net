@@ -504,9 +504,9 @@ namespace Db4objects.Db4o.Internal
         {
             lock (typeof(Platform4))
             {
-				for (int i = 0; i < shutDownStreams.Count; i++)
+				while (shutDownStreams.Count > 0)
 				{
-					Unobfuscated.ShutDownHookCallback(shutDownStreams[i]);
+					Unobfuscated.ShutDownHookCallback(shutDownStreams[0]); // this will remove the stream for the list
 				}
             }
         }
