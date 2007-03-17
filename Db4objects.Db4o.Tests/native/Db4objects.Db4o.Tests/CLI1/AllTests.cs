@@ -12,6 +12,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(CsAppDomains),
 					typeof(CsAssemblyVersionChange),
 					typeof(CsImage),
+					typeof(ShutdownMultipleContainer),
 #endif
 					typeof(Events.EventRegistryTestCase),
 					typeof(Inside.AllTests),
@@ -36,7 +37,6 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(NonSerializedAttributeTestCase),
 					typeof(ObjectSetAsListTestCase),
 					typeof(ObjectInfoMigrationTestCase),
-					typeof(ShutdownMultipleContainer),
 				};
 		}
 	}
