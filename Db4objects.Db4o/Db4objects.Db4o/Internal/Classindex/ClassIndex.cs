@@ -3,14 +3,14 @@ namespace Db4objects.Db4o.Internal.Classindex
 	/// <summary>representation to collect and hold all IDs of one class</summary>
 	public class ClassIndex : Db4objects.Db4o.Internal.PersistentBase, Db4objects.Db4o.Internal.IReadWriteable
 	{
-		private readonly Db4objects.Db4o.Internal.ClassMetadata _yapClass;
+		private readonly Db4objects.Db4o.Internal.ClassMetadata _clazz;
 
 		/// <summary>contains TreeInt with object IDs</summary>
 		private Db4objects.Db4o.Internal.TreeInt i_root;
 
 		internal ClassIndex(Db4objects.Db4o.Internal.ClassMetadata yapClass)
 		{
-			_yapClass = yapClass;
+			_clazz = yapClass;
 		}
 
 		public virtual void Add(int a_id)
@@ -49,7 +49,14 @@ namespace Db4objects.Db4o.Internal.Classindex
 			int length = Db4objects.Db4o.Internal.Const4.INT_LENGTH;
 			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(length
 				);
-			reader.ReadEncrypt(ta.Stream(), slot._address);
+			try
+			{
+				reader.ReadEncrypt(ta.Stream(), slot._address);
+			}
+			catch (System.IO.IOException exc)
+			{
+				throw new Db4objects.Db4o.Internal.ClassIndexException(exc, _clazz);
+			}
 			return reader.ReadInt();
 		}
 
@@ -105,7 +112,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 		public override string ToString()
 		{
 			return base.ToString();
-			return _yapClass + " index";
+			return _clazz + " index";
 		}
 	}
 }

@@ -66,6 +66,17 @@ namespace Db4objects.Db4o.Config
 		/// 	</seealso>
 		void ActivationDepth(int depth);
 
+		/// <summary>
+		/// adds ConfigurationItems to be applied when
+		/// an ObjectContainer or ObjectServer is opened.
+		/// </summary>
+		/// <remarks>
+		/// adds ConfigurationItems to be applied when
+		/// an ObjectContainer or ObjectServer is opened.
+		/// </remarks>
+		/// <param name="configurationItem">the ConfigurationItem</param>
+		void Add(Db4objects.Db4o.Config.IConfigurationItem configurationItem);
+
 		/// <summary>adds a new Alias for a class, namespace or package.</summary>
 		/// <remarks>
 		/// adds a new Alias for a class, namespace or package.

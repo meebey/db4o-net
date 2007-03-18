@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				((Sharpen.Util.Date)a_to).SetTime(((Sharpen.Util.Date)a_from).GetTime());
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 		}

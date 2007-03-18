@@ -7,8 +7,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			lock (StreamLock())
 			{
-				Transaction().WriteUpdateDeleteMembers(ReadInt(), Stream().GetYapClass(ReadInt())
-					, ReadInt(), ReadInt());
+				Transaction().WriteUpdateDeleteMembers(ReadInt(), Stream().ClassMetadataForId(ReadInt
+					()), ReadInt(), ReadInt());
 			}
 			return true;
 		}

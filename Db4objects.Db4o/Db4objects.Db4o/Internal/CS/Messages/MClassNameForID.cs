@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			string name = string.Empty;
 			lock (StreamLock())
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yapClass = Stream().GetYapClass(id);
+				Db4objects.Db4o.Internal.ClassMetadata yapClass = Stream().ClassMetadataForId(id);
 				if (yapClass != null)
 				{
 					name = yapClass.GetName();

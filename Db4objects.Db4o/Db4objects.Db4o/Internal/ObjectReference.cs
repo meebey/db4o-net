@@ -1012,7 +1012,7 @@ namespace Db4objects.Db4o.Internal
 					{
 						objToString = obj.ToString();
 					}
-					catch
+					catch (System.Exception)
 					{
 					}
 					Db4objects.Db4o.Reflect.IReflectClass claxx = GetYapClass().Reflector().ForObject
@@ -1021,7 +1021,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				return str;
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 			return "Exception in YapObject analyzer";

@@ -27,6 +27,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		public override void Close()
 		{
 			_objectContainer.Close();
+			_objectContainer = null;
 			base.Close();
 		}
 

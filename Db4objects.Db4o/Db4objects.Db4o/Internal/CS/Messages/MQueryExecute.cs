@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			lock (StreamLock())
 			{
 				Db4objects.Db4o.Internal.Query.Processor.QQuery query = (Db4objects.Db4o.Internal.Query.Processor.QQuery
-					)Stream().Unmarshall(_payLoad);
+					)ReadObjectFromPayLoad();
 				query.Unmarshall(Transaction());
 				_evaluationMode = query.EvaluationMode();
 				return ExecuteFully(query);
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				qr.LoadFromQuery(query);
 				return qr;
 			}
-			catch
+			catch (System.Exception)
 			{
 				return NewQueryResult(query.EvaluationMode());
 			}

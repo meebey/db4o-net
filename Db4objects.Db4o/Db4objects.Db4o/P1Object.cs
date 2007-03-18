@@ -179,7 +179,7 @@ namespace Db4objects.Db4o
 			i_trans = a_trans;
 		}
 
-		public virtual void SetYapObject(Db4objects.Db4o.Internal.ObjectReference a_yapObject
+		public virtual void SetObjectReference(Db4objects.Db4o.Internal.ObjectReference a_yapObject
 			)
 		{
 			i_yapObject = a_yapObject;
@@ -242,6 +242,7 @@ namespace Db4objects.Db4o
 				{
 					i_yapObject.WriteUpdate(i_trans, depth);
 					Stream().CheckStillToSet();
+					Stream().CompleteTopLevelSet();
 				}
 				finally
 				{

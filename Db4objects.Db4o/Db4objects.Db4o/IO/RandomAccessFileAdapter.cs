@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.IO
 			{
 				Db4objects.Db4o.Internal.Platform4.UnlockFile(_path, _delegate);
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 			_delegate.Close();

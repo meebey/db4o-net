@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				_singleThreaded = ConfigImpl().SingleThreadedClient();
 				throw new System.Exception("This constructor is for Debug.fakeServer use only.");
-				Initialize3();
+				InitializePostOpen();
 				Db4objects.Db4o.Internal.Platform4.PostOpen(this);
 			}
 		}
@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Internal.CS
 				}
 				LogMsg(36, ToString());
 				ReadThis();
-				Initialize3();
+				InitializePostOpen();
 				Db4objects.Db4o.Internal.Platform4.PostOpen(this);
 			}
 		}
@@ -123,13 +123,12 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (_readerThread == null || _readerThread.IsClosed())
 			{
-				base.Close2();
+				ShutdownObjectContainer();
 				return;
 			}
 			try
 			{
-				WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.COMMIT_OK, true);
-				ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.OK);
+				Commit1();
 			}
 			catch (System.Exception e)
 			{
@@ -162,7 +161,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				Db4objects.Db4o.Internal.Exceptions4.CatchAllExceptDb4oException(e);
 			}
-			base.Close2();
+			ShutdownObjectContainer();
 		}
 
 		public sealed override void Commit1()
@@ -215,7 +214,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return new Db4objects.Db4o.Internal.CS.ClientTransaction(this, parentTransaction);
 		}
 
-		public override bool CreateYapClass(Db4objects.Db4o.Internal.ClassMetadata a_yapClass
+		public override bool CreateClassMetadata(Db4objects.Db4o.Internal.ClassMetadata a_yapClass
 			, Db4objects.Db4o.Reflect.IReflectClass a_class, Db4objects.Db4o.Internal.ClassMetadata
 			 a_superYapClass)
 		{
@@ -251,7 +250,7 @@ namespace Db4objects.Db4o.Internal.CS
 				return false;
 			}
 			bytes.SetTransaction(GetSystemTransaction());
-			if (!base.CreateYapClass(a_yapClass, a_class, a_superYapClass))
+			if (!base.CreateClassMetadata(a_yapClass, a_class, a_superYapClass))
 			{
 				return false;
 			}
@@ -266,8 +265,8 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			Db4objects.Db4o.Internal.CS.ClassInfo classMeta = _classMetaHelper.GetClassMeta(reflectClass
 				);
-			WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.CLASS_META.GetWriter(Marshall(i_systemTrans
-				, classMeta)), true);
+			WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.CLASS_META.GetWriter(Db4objects.Db4o.Internal.Serializer
+				.Marshall(i_systemTrans, classMeta)), true);
 		}
 
 		public override long CurrentVersion()
@@ -343,7 +342,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			try
 			{
-				return (Db4objects.Db4o.Internal.CS.Messages.Msg)messageQueueLock.Run(new _AnonymousInnerClass334
+				return (Db4objects.Db4o.Internal.CS.Messages.Msg)messageQueueLock.Run(new _AnonymousInnerClass333
 					(this));
 			}
 			catch (System.Exception ex)
@@ -353,9 +352,9 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		private sealed class _AnonymousInnerClass334 : Db4objects.Db4o.Foundation.IClosure4
+		private sealed class _AnonymousInnerClass333 : Db4objects.Db4o.Foundation.IClosure4
 		{
-			public _AnonymousInnerClass334(ClientObjectContainer _enclosing)
+			public _AnonymousInnerClass333(ClientObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -430,20 +429,21 @@ namespace Db4objects.Db4o.Internal.CS
 						}
 					}
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 			}
 			return null;
 		}
 
-		public override Db4objects.Db4o.Internal.ClassMetadata GetYapClass(int a_id)
+		public override Db4objects.Db4o.Internal.ClassMetadata ClassMetadataForId(int a_id
+			)
 		{
 			if (a_id == 0)
 			{
 				return null;
 			}
-			Db4objects.Db4o.Internal.ClassMetadata yc = base.GetYapClass(a_id);
+			Db4objects.Db4o.Internal.ClassMetadata yc = base.ClassMetadataForId(a_id);
 			if (yc != null)
 			{
 				return yc;
@@ -459,7 +459,7 @@ namespace Db4objects.Db4o.Internal.CS
 				Db4objects.Db4o.Reflect.IReflectClass claxx = Reflector().ForName(className);
 				if (claxx != null)
 				{
-					return ProduceYapClass(claxx);
+					return ProduceClassMetadata(claxx);
 				}
 			}
 			return null;
@@ -620,7 +620,7 @@ namespace Db4objects.Db4o.Internal.CS
 				bytes.SetTransaction(a_ta);
 				return bytes;
 			}
-			catch
+			catch (System.Exception)
 			{
 				return null;
 			}
@@ -741,8 +741,8 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				if (obj != null)
 				{
-					WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.USER_MESSAGE.GetWriter(Marshall
-						(i_trans, obj)), true);
+					WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.USER_MESSAGE.GetWriter(Db4objects.Db4o.Internal.Serializer
+						.Marshall(i_trans, obj)), true);
 				}
 			}
 		}
@@ -805,7 +805,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return "Client Connection " + userName;
 		}
 
-		public override void Write(bool shuttingDown)
+		public override void Shutdown()
 		{
 		}
 
@@ -971,7 +971,8 @@ namespace Db4objects.Db4o.Internal.CS
 			query.EvaluationMode(Config().QueryEvaluationMode());
 			query.Marshall();
 			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.QUERY_EXECUTE.GetWriter(Marshall(trans, query));
+				.QUERY_EXECUTE.GetWriter(Db4objects.Db4o.Internal.Serializer.Marshall(trans, query
+				));
 			WriteMsg(msg, true);
 			return ReadQueryResult(trans);
 		}
@@ -1027,6 +1028,10 @@ namespace Db4objects.Db4o.Internal.CS
 		private bool IsEmbeddedClient()
 		{
 			return i_socket is Db4objects.Db4o.Foundation.Network.LoopbackSocket;
+		}
+
+		protected override void ShutdownDataStorage()
+		{
 		}
 	}
 }

@@ -77,6 +77,7 @@ namespace Db4objects.Db4o.Internal
 		/// <param name="a_stream"></param>
 		/// <param name="a_address"></param>
 		/// <exception cref="Db4objects.Db4o.IO.UncheckedIOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Read(Db4objects.Db4o.Internal.ObjectContainerBase stream, int
 			 address, int addressOffset)
 		{
@@ -117,7 +118,7 @@ namespace Db4objects.Db4o.Internal
 		public Db4objects.Db4o.Internal.Buffer ReadEmbeddedObject(Db4objects.Db4o.Internal.Transaction
 			 trans)
 		{
-			return trans.Stream().ReadReaderByAddress(ReadInt(), ReadInt());
+			return trans.Stream().BufferByAddress(ReadInt(), ReadInt());
 		}
 
 		public virtual void ReadEncrypt(Db4objects.Db4o.Internal.ObjectContainerBase stream

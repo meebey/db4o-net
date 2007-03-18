@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void Commit3Stream()
 		{
-			Stream().CheckNeededUpdates();
+			Stream().ProcessPendingClassUpdates();
 			Stream().WriteDirty();
 			Stream().ClassCollection().Write(Stream().GetSystemTransaction());
 		}
@@ -93,13 +93,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass104(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass106(this));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass104 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass106 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass104(LocalTransaction _enclosing)
+			public _AnonymousInnerClass106(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -159,15 +159,15 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass160(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass162(this));
 				ret = true;
 			}
 			return ret;
 		}
 
-		private sealed class _AnonymousInnerClass160 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass162 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass160(LocalTransaction _enclosing)
+			public _AnonymousInnerClass162(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -265,15 +265,37 @@ namespace Db4objects.Db4o.Internal
 				i_file.ReadBytes(_pointerBuffer, id, Db4objects.Db4o.Internal.Const4.POINTER_LENGTH
 					);
 			}
-			catch
+			catch (System.IO.IOException exc)
 			{
-				return null;
+				throw new Db4objects.Db4o.Internal.SlotRetrievalException(exc, id);
+			}
+			catch (System.Exception exc)
+			{
+				throw new Db4objects.Db4o.Internal.SlotRetrievalException(exc, id);
 			}
 			int address = (_pointerBuffer[3] & 255) | (_pointerBuffer[2] & 255) << 8 | (_pointerBuffer
 				[1] & 255) << 16 | _pointerBuffer[0] << 24;
 			int length = (_pointerBuffer[7] & 255) | (_pointerBuffer[6] & 255) << 8 | (_pointerBuffer
 				[5] & 255) << 16 | _pointerBuffer[4] << 24;
 			return new Db4objects.Db4o.Internal.Slots.Slot(address, length);
+		}
+
+		private Db4objects.Db4o.Internal.Slots.Slot DebugReadCommittedSlotOfID(int id)
+		{
+			try
+			{
+				i_pointerIo.UseSlot(id);
+				i_pointerIo.Read();
+				i_pointerIo.ReadBegin(Db4objects.Db4o.Internal.Const4.YAPPOINTER);
+				int debugAddress = i_pointerIo.ReadInt();
+				int debugLength = i_pointerIo.ReadInt();
+				i_pointerIo.ReadEnd();
+				return new Db4objects.Db4o.Internal.Slots.Slot(debugAddress, debugLength);
+			}
+			catch (System.IO.IOException exc)
+			{
+				throw new Db4objects.Db4o.Internal.SlotRetrievalException(exc, id);
+			}
 		}
 
 		public override void SetPointer(int a_id, int a_address, int a_length)
@@ -306,14 +328,14 @@ namespace Db4objects.Db4o.Internal
 			int[] slotSetPointerCount = new int[] { count };
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass297(this, slotSetPointerCount));
+				_slotChanges.Traverse(new _AnonymousInnerClass311(this, slotSetPointerCount));
 			}
 			return slotSetPointerCount[0];
 		}
 
-		private sealed class _AnonymousInnerClass297 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass311 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass297(LocalTransaction _enclosing, int[] slotSetPointerCount
+			public _AnonymousInnerClass311(LocalTransaction _enclosing, int[] slotSetPointerCount
 				)
 			{
 				this._enclosing = _enclosing;
@@ -375,13 +397,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass339(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass353(this));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass339 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass353 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass339(LocalTransaction _enclosing)
+			public _AnonymousInnerClass353(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -401,13 +423,13 @@ namespace Db4objects.Db4o.Internal
 			{
 				ParentLocalTransaction().AppendSlotChanges(writer);
 			}
-			Db4objects.Db4o.Foundation.Tree.Traverse(_slotChanges, new _AnonymousInnerClass353
+			Db4objects.Db4o.Foundation.Tree.Traverse(_slotChanges, new _AnonymousInnerClass367
 				(this, writer));
 		}
 
-		private sealed class _AnonymousInnerClass353 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass367 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass353(LocalTransaction _enclosing, Db4objects.Db4o.Internal.Buffer
+			public _AnonymousInnerClass367(LocalTransaction _enclosing, Db4objects.Db4o.Internal.Buffer
 				 writer)
 			{
 				this._enclosing = _enclosing;
@@ -520,14 +542,14 @@ namespace Db4objects.Db4o.Internal
 			{
 				Db4objects.Db4o.Foundation.Tree delete = i_delete;
 				i_delete = null;
-				delete.Traverse(new _AnonymousInnerClass477(this));
+				delete.Traverse(new _AnonymousInnerClass491(this));
 			}
 			_writtenUpdateDeletedMembers = null;
 		}
 
-		private sealed class _AnonymousInnerClass477 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass491 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass477(LocalTransaction _enclosing)
+			public _AnonymousInnerClass491(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -612,7 +634,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			Db4objects.Db4o.Ext.IObjectInfoCollection[] collections = PartitionSlotChangesInAddedDeletedUpdated
 				();
-			callbacks.CommitOnStarted(collections[0], collections[1], collections[2]);
+			callbacks.CommitOnStarted(this, collections[0], collections[1], collections[2]);
 		}
 
 		private sealed class ObjectInfoCollectionImpl : Db4objects.Db4o.Ext.IObjectInfoCollection
@@ -648,16 +670,16 @@ namespace Db4objects.Db4o.Internal
 				();
 			Db4objects.Db4o.Foundation.Collection4 updated = new Db4objects.Db4o.Foundation.Collection4
 				();
-			_slotChanges.Traverse(new _AnonymousInnerClass588(this, deleted, added, updated));
+			_slotChanges.Traverse(new _AnonymousInnerClass602(this, deleted, added, updated));
 			return new Db4objects.Db4o.Ext.IObjectInfoCollection[] { new Db4objects.Db4o.Internal.LocalTransaction.ObjectInfoCollectionImpl
 				(added), new Db4objects.Db4o.Internal.LocalTransaction.ObjectInfoCollectionImpl(
 				deleted), new Db4objects.Db4o.Internal.LocalTransaction.ObjectInfoCollectionImpl
 				(updated) };
 		}
 
-		private sealed class _AnonymousInnerClass588 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass602 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass588(LocalTransaction _enclosing, Db4objects.Db4o.Foundation.Collection4
+			public _AnonymousInnerClass602(LocalTransaction _enclosing, Db4objects.Db4o.Foundation.Collection4
 				 deleted, Db4objects.Db4o.Foundation.Collection4 added, Db4objects.Db4o.Foundation.Collection4
 				 updated)
 			{

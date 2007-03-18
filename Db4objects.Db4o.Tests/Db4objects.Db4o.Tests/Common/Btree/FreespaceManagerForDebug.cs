@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			return FM_DEBUG;
 		}
 
-		public override int Write(bool shuttingDown)
+		public override int Shutdown()
 		{
 			return 0;
 		}

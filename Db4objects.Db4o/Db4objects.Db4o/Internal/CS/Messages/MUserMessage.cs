@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			if (MessageRecipient() != null)
 			{
 				Unmarshall();
-				MessageRecipient().ProcessMessage(Stream(), Stream().Unmarshall(_payLoad));
+				MessageRecipient().ProcessMessage(Stream(), ReadObjectFromPayLoad());
 			}
 			return true;
 		}

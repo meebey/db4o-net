@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			try
 			{
 				Db4objects.Db4o.Internal.CS.ClassInfo classMeta = (Db4objects.Db4o.Internal.CS.ClassInfo
-					)Stream().Unmarshall(_payLoad);
+					)ReadObjectFromPayLoad();
 				Db4objects.Db4o.Reflect.Generic.GenericClass genericClass = stream.GetClassMetaHelper
 					().ClassMetaToGenericClass(Stream().Reflector(), classMeta);
 				if (genericClass != null)
@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					lock (StreamLock())
 					{
 						Db4objects.Db4o.Internal.Transaction trans = stream.GetSystemTransaction();
-						Db4objects.Db4o.Internal.ClassMetadata yapClass = stream.ProduceYapClass(genericClass
+						Db4objects.Db4o.Internal.ClassMetadata yapClass = stream.ProduceClassMetadata(genericClass
 							);
 						if (yapClass != null)
 						{

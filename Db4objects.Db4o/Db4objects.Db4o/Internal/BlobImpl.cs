@@ -296,7 +296,7 @@ namespace Db4objects.Db4o.Internal
 			return this;
 		}
 
-		public virtual void SetYapObject(Db4objects.Db4o.Internal.ObjectReference a_yapObject
+		public virtual void SetObjectReference(Db4objects.Db4o.Internal.ObjectReference a_yapObject
 			)
 		{
 		}

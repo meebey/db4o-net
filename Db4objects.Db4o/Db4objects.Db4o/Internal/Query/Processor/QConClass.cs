@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (claxx != null)
 			{
-				i_yapClass = a_trans.Stream().ProduceYapClass(claxx);
+				i_yapClass = a_trans.Stream().ProduceClassMetadata(claxx);
 				if (claxx.Equals(a_trans.Stream().i_handlers.ICLASS_OBJECT))
 				{
 					i_yapClass = (Db4objects.Db4o.Internal.ClassMetadata)((Db4objects.Db4o.Internal.PrimitiveFieldHandler

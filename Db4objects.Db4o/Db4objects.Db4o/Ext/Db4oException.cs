@@ -3,12 +3,12 @@ namespace Db4objects.Db4o.Ext
 	/// <summary>
 	/// db4o exception wrapper: Exceptions occurring during internal processing
 	/// will be proliferated to the client calling code encapsulated in an exception
-	/// of rhis type.
+	/// of this type.
 	/// </summary>
 	/// <remarks>
 	/// db4o exception wrapper: Exceptions occurring during internal processing
 	/// will be proliferated to the client calling code encapsulated in an exception
-	/// of rhis type. The original exception, if any, is available through
+	/// of this type. The original exception, if any, is available through
 	/// <see cref="Db4oException#cause()">Db4oException#cause()</see>
 	/// .
 	/// </remarks>

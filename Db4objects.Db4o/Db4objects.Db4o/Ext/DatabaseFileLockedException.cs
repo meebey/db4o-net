@@ -13,13 +13,27 @@ namespace Db4objects.Db4o.Ext
 	[System.Serializable]
 	public class DatabaseFileLockedException : System.Exception
 	{
-		public DatabaseFileLockedException()
+		private string _databaseDescription;
+
+		public DatabaseFileLockedException(string databaseDescription) : this(databaseDescription
+			, null)
 		{
 		}
 
-		public DatabaseFileLockedException(System.Exception cause) : base(cause.Message, 
-			cause)
+		public DatabaseFileLockedException(string databaseDescription, System.Exception cause
+			) : base(Message(databaseDescription), cause)
 		{
+			_databaseDescription = databaseDescription;
+		}
+
+		public virtual string DatabaseDescription()
+		{
+			return _databaseDescription;
+		}
+
+		private static string Message(string databaseDescription)
+		{
+			return "Database locked: '" + databaseDescription + "'";
 		}
 	}
 }

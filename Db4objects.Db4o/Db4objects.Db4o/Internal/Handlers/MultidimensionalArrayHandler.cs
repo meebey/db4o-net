@@ -179,7 +179,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return _reflectArray.Get(a_array, a_position);
 			}
-			catch
+			catch (System.Exception)
 			{
 				return null;
 			}

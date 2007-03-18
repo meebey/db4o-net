@@ -16,7 +16,23 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			CommitTransactionListeners();
 			ClearAll();
-			i_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.COMMIT, true);
+			if (IsSystemTransaction())
+			{
+				i_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.COMMIT_SYSTEMTRANS, true
+					);
+			}
+			else
+			{
+				i_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.COMMIT, true);
+				Db4objects.Db4o.Internal.CS.Messages.MCommitResponse message = (Db4objects.Db4o.Internal.CS.Messages.MCommitResponse
+					)i_client.ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.COMMIT_RESPONSE
+					);
+				Db4objects.Db4o.Ext.Db4oException exc = message.ReadException();
+				if (exc != null)
+				{
+					throw exc;
+				}
+			}
 		}
 
 		protected override void ClearAll()
@@ -29,14 +45,14 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (i_yapObjectsToGc != null)
 			{
-				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass33(this));
+				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass43(this));
 			}
 			i_yapObjectsToGc = null;
 		}
 
-		private sealed class _AnonymousInnerClass33 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass43 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass33(ClientTransaction _enclosing)
+			public _AnonymousInnerClass43(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -98,16 +114,16 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (i_delete != null)
 			{
-				i_delete.Traverse(new _AnonymousInnerClass82(this));
+				i_delete.Traverse(new _AnonymousInnerClass92(this));
 			}
 			i_delete = null;
 			i_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.PROCESS_DELETES, false
 				);
 		}
 
-		private sealed class _AnonymousInnerClass82 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass92 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass82(ClientTransaction _enclosing)
+			public _AnonymousInnerClass92(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

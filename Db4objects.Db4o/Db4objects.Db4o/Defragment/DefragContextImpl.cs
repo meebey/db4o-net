@@ -178,7 +178,7 @@ namespace Db4objects.Db4o.Defragment
 		public virtual Db4objects.Db4o.Internal.Buffer ReaderByAddress(Db4objects.Db4o.Defragment.DefragContextImpl.DbSelector
 			 selector, int address, int length)
 		{
-			return selector.Db(this).ReadReaderByAddress(address, length);
+			return selector.Db(this).BufferByAddress(address, length);
 		}
 
 		public virtual Db4objects.Db4o.Internal.StatefulBuffer TargetWriterByAddress(int 
@@ -365,7 +365,7 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual Db4objects.Db4o.Internal.ClassMetadata YapClass(int id)
 		{
-			return _sourceDb.GetYapClass(id);
+			return _sourceDb.ClassMetadataForId(id);
 		}
 
 		public virtual void RegisterUnindexed(int id)

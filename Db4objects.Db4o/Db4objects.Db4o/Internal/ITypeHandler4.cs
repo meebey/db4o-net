@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal
 
 		int GetTypeID();
 
-		Db4objects.Db4o.Internal.ClassMetadata GetYapClass(Db4objects.Db4o.Internal.ObjectContainerBase
+		Db4objects.Db4o.Internal.ClassMetadata GetClassMetadata(Db4objects.Db4o.Internal.ObjectContainerBase
 			 a_stream);
 
 		/// <summary>performance optimized read (only used for byte[] so far)</summary>

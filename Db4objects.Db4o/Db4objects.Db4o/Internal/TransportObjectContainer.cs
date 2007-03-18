@@ -11,10 +11,11 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class TransportObjectContainer : Db4objects.Db4o.Internal.InMemoryObjectContainer
 	{
-		internal TransportObjectContainer(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.Internal.ObjectContainerBase
-			 a_callingStream, Db4objects.Db4o.Ext.MemoryFile memoryFile) : base(config, a_callingStream
+		public TransportObjectContainer(Db4objects.Db4o.Internal.ObjectContainerBase serviceProvider
+			, Db4objects.Db4o.Ext.MemoryFile memoryFile) : base(serviceProvider.Config(), serviceProvider
 			, memoryFile)
 		{
+			i_showInternalClasses = serviceProvider.i_showInternalClasses;
 		}
 
 		protected override void Initialize1(Db4objects.Db4o.Config.IConfiguration config)
@@ -34,7 +35,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		internal override void Initialize4NObjectCarrier()
+		protected override void InitializePostOpenExcludingTransportObjectContainer()
 		{
 		}
 
@@ -47,6 +48,11 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
+		public override Db4objects.Db4o.Internal.ClassMetadata ClassMetadataForId(int id)
+		{
+			return i_parent.ClassMetadataForId(id);
+		}
+
 		internal override void ConfigureNewFile()
 		{
 		}
@@ -56,14 +62,13 @@ namespace Db4objects.Db4o.Internal
 			return Db4objects.Db4o.Internal.Convert.Converter.VERSION;
 		}
 
-		public override bool Close()
+		protected override void DropReferences()
 		{
-			lock (i_lock)
-			{
-				Close1();
-				i_config = null;
-			}
-			return true;
+			i_config = null;
+		}
+
+		protected override void HandleExceptionOnClose(System.Exception exc)
+		{
 		}
 
 		public sealed override Db4objects.Db4o.Internal.Transaction NewTransaction(Db4objects.Db4o.Internal.Transaction
@@ -132,9 +137,9 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override void Write(bool shuttingDown)
+		public override void Shutdown()
 		{
-			CheckNeededUpdates();
+			ProcessPendingClassUpdates();
 			WriteDirty();
 			GetTransaction().Commit();
 		}

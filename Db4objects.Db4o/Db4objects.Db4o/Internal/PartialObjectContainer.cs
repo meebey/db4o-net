@@ -18,8 +18,6 @@ namespace Db4objects.Db4o.Internal
 		, Db4objects.Db4o.IInternal4, Db4objects.Db4o.Internal.IObjectContainerSpec
 	#endif
 	{
-		private bool i_amDuringFatalExit = false;
-
 		protected Db4objects.Db4o.Internal.ClassMetadataRepository _classCollection;
 
 		protected Db4objects.Db4o.Internal.CS.ClassInfoHelper _classMetaHelper = new Db4objects.Db4o.Internal.CS.ClassInfoHelper
@@ -35,7 +33,7 @@ namespace Db4objects.Db4o.Internal
 
 		public readonly object i_lock;
 
-		private Db4objects.Db4o.Foundation.List4 i_needsUpdate;
+		private Db4objects.Db4o.Foundation.List4 _pendingClassUpdates;
 
 		internal readonly Db4objects.Db4o.Internal.ObjectContainerBase i_parent;
 
@@ -76,6 +74,8 @@ namespace Db4objects.Db4o.Internal
 		private Db4objects.Db4o.Foundation.IntIdGenerator _topLevelCallIdGenerator = new 
 			Db4objects.Db4o.Foundation.IntIdGenerator();
 
+		private bool _topLevelCallCompleted;
+
 		protected PartialObjectContainer(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.Internal.ObjectContainerBase
 			 a_parent)
 		{
@@ -113,10 +113,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				StillToActivate(a_activate, a_depth);
 				Activate3CheckStill(ta);
-			}
-			catch (System.Exception t)
-			{
-				FatalException(t);
+				CompleteTopLevelCall();
 			}
 			finally
 			{
@@ -194,8 +191,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			int id = @ref.GetID();
 			RemoveReference(@ref);
-			@ref = new Db4objects.Db4o.Internal.ObjectReference(GetYapClass(Reflector().ForObject
-				(obj)), id);
+			@ref = new Db4objects.Db4o.Internal.ObjectReference(ClassMetadataForReflectClass(
+				Reflector().ForObject(obj)), id);
 			@ref.SetObjectWeak(_this, obj);
 			@ref.SetStateDirty();
 			_referenceSystem.AddExistingReference(@ref);
@@ -246,21 +243,22 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal void CheckNeededUpdates()
+		internal void ProcessPendingClassUpdates()
 		{
-			if (i_needsUpdate != null)
+			if (_pendingClassUpdates == null)
 			{
-				System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.Iterator4Impl(i_needsUpdate
-					);
-				while (i.MoveNext())
-				{
-					Db4objects.Db4o.Internal.ClassMetadata yapClass = (Db4objects.Db4o.Internal.ClassMetadata
-						)i.Current;
-					yapClass.SetStateDirty();
-					yapClass.Write(i_systemTrans);
-				}
-				i_needsUpdate = null;
+				return;
 			}
+			System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.Iterator4Impl(_pendingClassUpdates
+				);
+			while (i.MoveNext())
+			{
+				Db4objects.Db4o.Internal.ClassMetadata yapClass = (Db4objects.Db4o.Internal.ClassMetadata
+					)i.Current;
+				yapClass.SetStateDirty();
+				yapClass.Write(i_systemTrans);
+			}
+			_pendingClassUpdates = null;
 		}
 
 		public Db4objects.Db4o.Internal.Transaction CheckTransaction(Db4objects.Db4o.Internal.Transaction
@@ -274,7 +272,7 @@ namespace Db4objects.Db4o.Internal
 			return GetTransaction();
 		}
 
-		public virtual bool Close()
+		public bool Close()
 		{
 			lock (i_lock)
 			{
@@ -284,20 +282,25 @@ namespace Db4objects.Db4o.Internal
 				}
 				catch (System.Exception e)
 				{
-					FatalException(e);
+					HandleExceptionOnClose(e);
 				}
 				return true;
 			}
 		}
 
-		internal void Close1()
+		protected virtual void HandleExceptionOnClose(System.Exception exc)
+		{
+			FatalException(exc);
+		}
+
+		private void Close1()
 		{
 			if (_classCollection == null)
 			{
 				return;
 			}
 			Db4objects.Db4o.Internal.Platform4.PreClose(_this);
-			CheckNeededUpdates();
+			ProcessPendingClassUpdates();
 			if (StateMessages())
 			{
 				LogMsg(2, ToString());
@@ -305,16 +308,19 @@ namespace Db4objects.Db4o.Internal
 			Close2();
 		}
 
-		protected virtual void Close2()
+		protected abstract void Close2();
+
+		protected void ShutdownObjectContainer()
 		{
-			StopSession();
-			i_systemTrans = null;
-			i_trans = null;
-			if (StateMessages())
+			LogMsg(3, ToString());
+			lock (i_lock)
 			{
-				LogMsg(3, ToString());
+				StopSession();
+				ShutdownDataStorage();
 			}
 		}
+
+		protected abstract void ShutdownDataStorage();
 
 		public virtual Db4objects.Db4o.Types.IDb4oCollections Collections()
 		{
@@ -341,6 +347,12 @@ namespace Db4objects.Db4o.Internal
 				{
 					Commit1();
 					_referenceSystem.Commit();
+					CompleteTopLevelCall();
+				}
+				catch (Db4objects.Db4o.Ext.Db4oException e)
+				{
+					CompleteTopLevelCall();
+					throw;
 				}
 				finally
 				{
@@ -388,11 +400,11 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract long CurrentVersion();
 
-		public virtual bool CreateYapClass(Db4objects.Db4o.Internal.ClassMetadata a_yapClass
-			, Db4objects.Db4o.Reflect.IReflectClass a_class, Db4objects.Db4o.Internal.ClassMetadata
-			 a_superYapClass)
+		public virtual bool CreateClassMetadata(Db4objects.Db4o.Internal.ClassMetadata classMeta
+			, Db4objects.Db4o.Reflect.IReflectClass clazz, Db4objects.Db4o.Internal.ClassMetadata
+			 superClassMeta)
 		{
-			return a_yapClass.Init(_this, a_superYapClass, a_class);
+			return classMeta.Init(_this, superClassMeta, clazz);
 		}
 
 		/// <summary>allows special handling for all Db4oType objects.</summary>
@@ -433,10 +445,7 @@ namespace Db4objects.Db4o.Internal
 				try
 				{
 					Deactivate1(a_deactivate, a_depth);
-				}
-				catch (System.Exception t)
-				{
-					FatalException(t);
+					CompleteTopLevelCall();
 				}
 				finally
 				{
@@ -466,8 +475,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Delete(object a_object)
 		{
-			GenerateCallIDOnTopLevel();
-			Delete(null, a_object);
+			lock (i_lock)
+			{
+				GenerateCallIDOnTopLevel();
+				Delete(null, a_object);
+			}
 		}
 
 		public virtual void Delete(Db4objects.Db4o.Internal.Transaction trans, object obj
@@ -499,11 +511,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			try
 			{
+				BeginTopLevelCall();
 				Delete2(trans, @ref, obj, 0, userCall);
+				CompleteTopLevelCall();
 			}
-			catch (System.Exception t)
+			finally
 			{
-				FatalException(t);
+				EndTopLevelCall();
 			}
 		}
 
@@ -604,7 +618,7 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Internal.ClassMetadata yc = yo.GetYapClass();
 			Db4objects.Db4o.Internal.FieldMetadata[] field = new Db4objects.Db4o.Internal.FieldMetadata
 				[] { null };
-			yc.ForEachYapField(new _AnonymousInnerClass552(this, fieldName, field));
+			yc.ForEachFieldMetadata(new _AnonymousInnerClass594(this, fieldName, field));
 			if (field[0] == null)
 			{
 				return null;
@@ -647,9 +661,9 @@ namespace Db4objects.Db4o.Internal
 			return Descend1(trans, child, subPath);
 		}
 
-		private sealed class _AnonymousInnerClass552 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass594 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass552(PartialObjectContainer _enclosing, string fieldName
+			public _AnonymousInnerClass594(PartialObjectContainer _enclosing, string fieldName
 				, Db4objects.Db4o.Internal.FieldMetadata[] field)
 			{
 				this._enclosing = _enclosing;
@@ -689,36 +703,25 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		internal virtual void EmergencyClose()
-		{
-			StopSession();
-		}
-
 		public virtual Db4objects.Db4o.Ext.IExtObjectContainer Ext()
 		{
 			return _this;
 		}
 
-		internal virtual void FailedToShutDown()
+		internal void ShutdownHook()
 		{
-			if (_classCollection == null)
-			{
-				return;
-			}
-			if (i_amDuringFatalExit)
+			if (IsClosed())
 			{
 				return;
 			}
 			if (_stackDepth == 0)
 			{
 				Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl(), 50, ToString(), null);
-				while (!Close())
-				{
-				}
+				Close();
 			}
 			else
 			{
-				EmergencyClose();
+				ShutdownObjectContainer();
 				if (_stackDepth > 0)
 				{
 					Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl(), 24, null, null);
@@ -731,19 +734,18 @@ namespace Db4objects.Db4o.Internal
 			FatalException(null, msgID);
 		}
 
-		internal virtual void FatalException(System.Exception t)
+		internal void FatalException(System.Exception t)
 		{
 			FatalException(t, Db4objects.Db4o.Internal.Messages.FATAL_MSG_ID);
 		}
 
-		internal virtual void FatalException(System.Exception t, int msgID)
+		internal void FatalException(System.Exception t, int msgID)
 		{
-			if (!i_amDuringFatalExit)
+			Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl(), (msgID == Db4objects.Db4o.Internal.Messages
+				.FATAL_MSG_ID ? 18 : msgID), null, t);
+			if (!IsClosed())
 			{
-				i_amDuringFatalExit = true;
-				EmergencyClose();
-				Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl(), (msgID == Db4objects.Db4o.Internal.Messages
-					.FATAL_MSG_ID ? 18 : msgID), null, t);
+				ShutdownObjectContainer();
 			}
 			throw new System.Exception(Db4objects.Db4o.Internal.Messages.Get(msgID));
 		}
@@ -752,7 +754,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DoFinalize() && (ConfigImpl() == null || ConfigImpl().AutomaticShutDown()))
 			{
-				FailedToShutDown();
+				ShutdownHook();
 			}
 		}
 
@@ -776,12 +778,17 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Internal.Query.Result.IQueryResult res = null;
 			try
 			{
+				BeginTopLevelCall();
 				res = Get2(ta, template);
+				CompleteTopLevelCall();
 			}
-			catch (System.Exception t)
+			catch (Db4objects.Db4o.Ext.Db4oException e)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.CatchAllExceptDb4oException(t);
-				FatalException(t);
+				CompleteTopLevelCall();
+			}
+			finally
+			{
+				EndTopLevelCall();
 			}
 			return new Db4objects.Db4o.Internal.Query.ObjectSetFacade(res);
 		}
@@ -804,6 +811,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object GetByID(long id)
 		{
+			if (id <= 0)
+			{
+				throw new System.ArgumentException("id must be greater than 0");
+			}
 			lock (i_lock)
 			{
 				return GetByID1(null, id);
@@ -813,35 +824,28 @@ namespace Db4objects.Db4o.Internal
 		public object GetByID1(Db4objects.Db4o.Internal.Transaction ta, long id)
 		{
 			ta = CheckTransaction(ta);
+			BeginTopLevelCall();
 			try
 			{
-				return GetByID2(ta, (int)id);
+				object obj = GetByID2(ta, (int)id);
+				CompleteTopLevelCall();
+				return obj;
 			}
-			catch
+			finally
 			{
-				return null;
+				EndTopLevelCall();
 			}
 		}
 
-		internal object GetByID2(Db4objects.Db4o.Internal.Transaction ta, int a_id)
+		internal object GetByID2(Db4objects.Db4o.Internal.Transaction ta, int id)
 		{
-			if (a_id > 0)
+			object obj = ObjectForIdFromCache(id);
+			if (obj != null)
 			{
-				object obj = ObjectForIdFromCache(a_id);
-				if (obj != null)
-				{
-					return obj;
-				}
-				try
-				{
-					return new Db4objects.Db4o.Internal.ObjectReference(a_id).Read(ta, 0, Db4objects.Db4o.Internal.Const4
-						.ADD_TO_ID_TREE, true);
-				}
-				catch (System.Exception t)
-				{
-				}
+				return obj;
 			}
-			return null;
+			return new Db4objects.Db4o.Internal.ObjectReference(id).Read(ta, 0, Db4objects.Db4o.Internal.Const4
+				.ADD_TO_ID_TREE, true);
 		}
 
 		public object GetActivatedObjectFromCache(Db4objects.Db4o.Internal.Transaction ta
@@ -865,6 +869,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				obj = new Db4objects.Db4o.Internal.ObjectReference(id).Read(ta, ConfigImpl().ActivationDepth
 					(), Db4objects.Db4o.Internal.Const4.ADD_TO_ID_TREE, true);
+				CompleteTopLevelCall();
 			}
 			finally
 			{
@@ -977,7 +982,7 @@ namespace Db4objects.Db4o.Internal
 			return i_trans;
 		}
 
-		public Db4objects.Db4o.Internal.ClassMetadata GetYapClass(Db4objects.Db4o.Reflect.IReflectClass
+		public Db4objects.Db4o.Internal.ClassMetadata ClassMetadataForReflectClass(Db4objects.Db4o.Reflect.IReflectClass
 			 claxx)
 		{
 			if (CantGetClassMetadata(claxx))
@@ -989,10 +994,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				return yc;
 			}
-			return _classCollection.GetYapClass(claxx);
+			return _classCollection.ClassMetadataForReflectClass(claxx);
 		}
 
-		public Db4objects.Db4o.Internal.ClassMetadata ProduceYapClass(Db4objects.Db4o.Reflect.IReflectClass
+		public Db4objects.Db4o.Internal.ClassMetadata ProduceClassMetadata(Db4objects.Db4o.Reflect.IReflectClass
 			 claxx)
 		{
 			if (CantGetClassMetadata(claxx))
@@ -1004,7 +1009,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return yc;
 			}
-			return _classCollection.ProduceYapClass(claxx);
+			return _classCollection.ProduceClassMetadata(claxx);
 		}
 
 		/// <summary>
@@ -1023,7 +1028,7 @@ namespace Db4objects.Db4o.Internal
 		/// In this call we only return active YapClasses, initialization
 		/// is not done on purpose
 		/// </remarks>
-		internal Db4objects.Db4o.Internal.ClassMetadata GetActiveYapClass(Db4objects.Db4o.Reflect.IReflectClass
+		internal Db4objects.Db4o.Internal.ClassMetadata GetActiveClassMetadata(Db4objects.Db4o.Reflect.IReflectClass
 			 claxx)
 		{
 			if (CantGetClassMetadata(claxx))
@@ -1052,7 +1057,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public virtual Db4objects.Db4o.Internal.ClassMetadata GetYapClass(int id)
+		public virtual Db4objects.Db4o.Internal.ClassMetadata ClassMetadataForId(int id)
 		{
 			if (id == 0)
 			{
@@ -1163,14 +1168,14 @@ namespace Db4objects.Db4o.Internal
 			i_references.StartTimer();
 		}
 
-		protected virtual void Initialize3()
+		protected void InitializePostOpen()
 		{
 			i_showInternalClasses = 100000;
-			Initialize4NObjectCarrier();
+			InitializePostOpenExcludingTransportObjectContainer();
 			i_showInternalClasses = 0;
 		}
 
-		internal virtual void Initialize4NObjectCarrier()
+		protected virtual void InitializePostOpenExcludingTransportObjectContainer()
 		{
 			InitializeEssentialClasses();
 			Rename(ConfigImpl());
@@ -1179,6 +1184,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				i_systemTrans.Commit();
 			}
+			ConfigImpl().ApplyConfigurationItems(_this);
 		}
 
 		internal virtual void InitializeEssentialClasses()
@@ -1186,7 +1192,7 @@ namespace Db4objects.Db4o.Internal
 			for (int i = 0; i < Db4objects.Db4o.Internal.Const4.ESSENTIAL_CLASSES.Length; i++
 				)
 			{
-				ProduceYapClass(Reflector().ForClass(Db4objects.Db4o.Internal.Const4.ESSENTIAL_CLASSES
+				ProduceClassMetadata(Reflector().ForClass(Db4objects.Db4o.Internal.Const4.ESSENTIAL_CLASSES
 					[i]));
 			}
 		}
@@ -1301,7 +1307,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return i_handlers.GetHandler(id);
 			}
-			return GetYapClass(id);
+			return ClassMetadataForId(id);
 		}
 
 		public virtual object Lock()
@@ -1317,33 +1323,6 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool MaintainsIndices()
 		{
 			return true;
-		}
-
-		protected virtual Db4objects.Db4o.Internal.StatefulBuffer Marshall(Db4objects.Db4o.Internal.Transaction
-			 ta, object obj)
-		{
-			int[] id = new int[] { 0 };
-			byte[] bytes = Marshall(obj, id);
-			Db4objects.Db4o.Internal.StatefulBuffer yapBytes = new Db4objects.Db4o.Internal.StatefulBuffer
-				(ta, bytes.Length);
-			yapBytes.Append(bytes);
-			yapBytes.UseSlot(id[0], 0, bytes.Length);
-			return yapBytes;
-		}
-
-		public virtual byte[] Marshall(object obj, int[] id)
-		{
-			Db4objects.Db4o.Ext.MemoryFile memoryFile = new Db4objects.Db4o.Ext.MemoryFile();
-			memoryFile.SetInitialSize(223);
-			memoryFile.SetIncrementSizeBy(300);
-			ProduceYapClass(Reflector().ForObject(obj));
-			Db4objects.Db4o.Internal.TransportObjectContainer carrier = new Db4objects.Db4o.Internal.TransportObjectContainer
-				(Config(), _this, memoryFile);
-			carrier.i_showInternalClasses = i_showInternalClasses;
-			carrier.Set(obj);
-			id[0] = (int)carrier.GetID(obj);
-			carrier.Close();
-			return memoryFile.GetBytes();
 		}
 
 		internal virtual void Message(string msg)
@@ -1380,7 +1359,8 @@ namespace Db4objects.Db4o.Internal
 
 		public void NeedsUpdate(Db4objects.Db4o.Internal.ClassMetadata a_yapClass)
 		{
-			i_needsUpdate = new Db4objects.Db4o.Foundation.List4(i_needsUpdate, a_yapClass);
+			_pendingClassUpdates = new Db4objects.Db4o.Foundation.List4(_pendingClassUpdates, 
+				a_yapClass);
 		}
 
 		public virtual long GenerateTimeStampId()
@@ -1407,6 +1387,7 @@ namespace Db4objects.Db4o.Internal
 						cloned = PeekPersisted(ta, yo.GetID(), depth);
 					}
 					i_justPeeked = null;
+					CompleteTopLevelCall();
 					return cloned;
 				}
 				finally
@@ -1536,31 +1517,32 @@ namespace Db4objects.Db4o.Internal
 		public abstract void ReadBytes(byte[] bytes, int address, int addressOffset, int 
 			length);
 
-		public Db4objects.Db4o.Internal.Buffer ReadReaderByAddress(int a_address, int a_length
-			)
+		public Db4objects.Db4o.Internal.Buffer BufferByAddress(int address, int length)
 		{
-			if (a_address > 0)
+			CheckAddress(address);
+			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(length
+				);
+			ReadBytes(reader._buffer, address, length);
+			i_handlers.Decrypt(reader);
+			return reader;
+		}
+
+		private void CheckAddress(int address)
+		{
+			if (address <= 0)
 			{
-				Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(a_length
-					);
-				ReadBytes(reader._buffer, a_address, a_length);
-				i_handlers.Decrypt(reader);
-				return reader;
+				throw new System.ArgumentException("Invalid address offset: " + address);
 			}
-			return null;
 		}
 
 		public Db4objects.Db4o.Internal.StatefulBuffer ReadWriterByAddress(Db4objects.Db4o.Internal.Transaction
 			 a_trans, int address, int length)
 		{
-			if (address > 0)
-			{
-				Db4objects.Db4o.Internal.StatefulBuffer reader = GetWriter(a_trans, address, length
-					);
-				reader.ReadEncrypt(_this, address);
-				return reader;
-			}
-			return null;
+			CheckAddress(address);
+			Db4objects.Db4o.Internal.StatefulBuffer reader = GetWriter(a_trans, address, length
+				);
+			reader.ReadEncrypt(_this, address);
+			return reader;
 		}
 
 		public abstract Db4objects.Db4o.Internal.StatefulBuffer ReadWriterByID(Db4objects.Db4o.Internal.Transaction
@@ -1809,7 +1791,9 @@ namespace Db4objects.Db4o.Internal
 					}
 					return id;
 				}
-				return SetAfterReplication(trans, obj, depth, checkJustSet);
+				id = SetAfterReplication(trans, obj, depth, checkJustSet);
+				CompleteTopLevelSet();
+				return id;
 			}
 			finally
 			{
@@ -1839,11 +1823,6 @@ namespace Db4objects.Db4o.Internal
 			catch (Db4objects.Db4o.Ext.Db4oException exc)
 			{
 				throw;
-			}
-			catch (System.Exception t)
-			{
-				FatalException(t);
-				return 0;
 			}
 		}
 
@@ -1940,10 +1919,10 @@ namespace Db4objects.Db4o.Internal
 					NotStorable(claxx, obj);
 					return 0;
 				}
-				yc = GetActiveYapClass(claxx);
+				yc = GetActiveClassMetadata(claxx);
 				if (yc == null)
 				{
-					yc = ProduceYapClass(claxx);
+					yc = ProduceClassMetadata(claxx);
 					if (yc == null)
 					{
 						NotStorable(claxx, obj);
@@ -1999,7 +1978,7 @@ namespace Db4objects.Db4o.Internal
 					}
 				}
 			}
-			CheckNeededUpdates();
+			ProcessPendingClassUpdates();
 			return @ref.GetID();
 		}
 
@@ -2124,8 +2103,8 @@ namespace Db4objects.Db4o.Internal
 				{
 					if (forceUnknownDeactivate)
 					{
-						Db4objects.Db4o.Internal.ClassMetadata yc = GetYapClass(Reflector().ForObject(obj
-							));
+						Db4objects.Db4o.Internal.ClassMetadata yc = ClassMetadataForReflectClass(Reflector
+							().ForObject(obj));
 						if (yc != null)
 						{
 							yc.Deactivate(i_trans, obj, depth);
@@ -2171,6 +2150,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			_classCollection = null;
 			i_references.StopTimer();
+			i_systemTrans = null;
+			i_trans = null;
 		}
 
 		public virtual Db4objects.Db4o.Ext.IStoredClass StoredClass(object clazz)
@@ -2178,12 +2159,13 @@ namespace Db4objects.Db4o.Internal
 			lock (i_lock)
 			{
 				CheckClosed();
-				Db4objects.Db4o.Reflect.IReflectClass claxx = ConfigImpl().ReflectorFor(clazz);
+				Db4objects.Db4o.Reflect.IReflectClass claxx = Db4objects.Db4o.Reflect.ReflectorUtils
+					.ReflectClassFor(Reflector(), clazz);
 				if (claxx == null)
 				{
 					return null;
 				}
-				return GetYapClass(claxx);
+				return ClassMetadataForReflectClass(claxx);
 			}
 		}
 
@@ -2203,11 +2185,12 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract Db4objects.Db4o.Ext.ISystemInfo SystemInfo();
 
-		public void BeginTopLevelCall()
+		private void BeginTopLevelCall()
 		{
 			CheckClosed();
 			GenerateCallIDOnTopLevel();
 			_stackDepth++;
+			_topLevelCallCompleted = false;
 		}
 
 		public void BeginTopLevelSet()
@@ -2215,10 +2198,24 @@ namespace Db4objects.Db4o.Internal
 			BeginTopLevelCall();
 		}
 
-		public void EndTopLevelCall()
+		private void CompleteTopLevelCall()
+		{
+			_topLevelCallCompleted = true;
+		}
+
+		public void CompleteTopLevelSet()
+		{
+			CompleteTopLevelCall();
+		}
+
+		private void EndTopLevelCall()
 		{
 			_stackDepth--;
 			GenerateCallIDOnTopLevel();
+			if (!_topLevelCallCompleted)
+			{
+				ShutdownObjectContainer();
+			}
 		}
 
 		public void EndTopLevelSet(Db4objects.Db4o.Internal.Transaction trans)
@@ -2258,24 +2255,6 @@ namespace Db4objects.Db4o.Internal
 			_topLevelCallId = id;
 		}
 
-		public virtual object Unmarshall(Db4objects.Db4o.Internal.StatefulBuffer yapBytes
-			)
-		{
-			return Unmarshall(yapBytes._buffer, yapBytes.GetID());
-		}
-
-		public virtual object Unmarshall(byte[] bytes, int id)
-		{
-			Db4objects.Db4o.Ext.MemoryFile memoryFile = new Db4objects.Db4o.Ext.MemoryFile(bytes
-				);
-			Db4objects.Db4o.Internal.TransportObjectContainer carrier = new Db4objects.Db4o.Internal.TransportObjectContainer
-				(Configure(), _this, memoryFile);
-			object obj = carrier.GetByID(id);
-			carrier.Activate(obj, int.MaxValue);
-			carrier.Close();
-			return obj;
-		}
-
 		public virtual long Version()
 		{
 			lock (i_lock)
@@ -2284,7 +2263,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public abstract void Write(bool shuttingDown);
+		public abstract void Shutdown();
 
 		public abstract void WriteDirty();
 

@@ -5,14 +5,20 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 	{
 		public virtual void Test()
 		{
+			if (Db4objects.Db4o.Tests.Util.WorkspaceServices.WorkspaceRoot == null)
+			{
+				Sharpen.Runtime.Err.WriteLine("Build environment not available. Skipping test case..."
+					);
+				return;
+			}
 			Db4objects.Db4o.Db4oFactory.Configure().AllowVersionUpdates(false);
-			Db4oUnit.Assert.Expect(typeof(Db4objects.Db4o.Ext.OldFormatException), new _AnonymousInnerClass20
+			Db4oUnit.Assert.Expect(typeof(Db4objects.Db4o.Ext.OldFormatException), new _AnonymousInnerClass24
 				(this));
 		}
 
-		private sealed class _AnonymousInnerClass20 : Db4oUnit.ICodeBlock
+		private sealed class _AnonymousInnerClass24 : Db4oUnit.ICodeBlock
 		{
-			public _AnonymousInnerClass20(COR234TestCase _enclosing)
+			public _AnonymousInnerClass24(COR234TestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

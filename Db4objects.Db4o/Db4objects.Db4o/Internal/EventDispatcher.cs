@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Internal
 						return ((bool)res);
 					}
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 				finally

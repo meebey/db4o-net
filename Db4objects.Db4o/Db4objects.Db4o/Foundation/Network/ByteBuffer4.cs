@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			{
 				throw;
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 			return -1;
@@ -125,7 +125,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			{
 				throw;
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 			return -1;
@@ -184,7 +184,7 @@ namespace Db4objects.Db4o.Foundation.Network
 				{
 					i_lock.Snooze(i_timeout);
 				}
-				catch
+				catch (System.Exception)
 				{
 					throw new System.IO.IOException(Db4objects.Db4o.Internal.Messages.Get(55));
 				}
@@ -202,7 +202,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			{
 				i_lock.Run(new _AnonymousInnerClass139(this, len, bytes, off));
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 		}
@@ -243,7 +243,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			{
 				i_lock.Run(new _AnonymousInnerClass158(this, i));
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 		}

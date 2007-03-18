@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal
 					StopSession();
 					throw;
 				}
-				Initialize3();
+				InitializePostOpen();
 			}
 		}
 
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Internal
 					_backupFile = ConfigImpl().IoAdapter().Open(path, true, _file.GetLength());
 					_backupFile.BlockSize(BlockSize());
 				}
-				catch
+				catch (System.Exception)
 				{
 					_backupFile = null;
 					Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(12, path);
@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					Sharpen.Lang.Thread.Sleep(1);
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 			}
@@ -102,26 +102,66 @@ namespace Db4objects.Db4o.Internal
 			return (byte)_file.BlockSize();
 		}
 
-		protected override void Close2()
+		protected override void FreeInternalResources()
 		{
 			FreePrefetchedPointers();
-			Write(true);
-			base.Close2();
+		}
+
+		protected override void ShutdownDataStorage()
+		{
 			lock (_fileLock)
 			{
-				try
-				{
-					_file.Close();
-					_file = null;
-					_fileHeader.Close();
-					CloseTimerFile();
-				}
-				catch (System.Exception e)
-				{
-					_file = null;
-					Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(11, e);
-				}
+				CloseDatabaseFile();
+				CloseFileHeader();
+				CloseTimerFile();
+			}
+		}
+
+		private void CloseDatabaseFile()
+		{
+			try
+			{
+				_file.Close();
+			}
+			catch (System.IO.IOException)
+			{
+			}
+			finally
+			{
 				_file = null;
+			}
+		}
+
+		private void CloseFileHeader()
+		{
+			try
+			{
+				_fileHeader.Close();
+			}
+			catch (System.IO.IOException)
+			{
+			}
+			finally
+			{
+				_fileHeader = null;
+			}
+		}
+
+		private void CloseTimerFile()
+		{
+			try
+			{
+				if (_timerFile != null)
+				{
+					_timerFile.Close();
+				}
+			}
+			catch (System.IO.IOException)
+			{
+			}
+			finally
+			{
+				_timerFile = null;
 			}
 		}
 
@@ -188,26 +228,13 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal override void EmergencyClose()
-		{
-			base.EmergencyClose();
-			try
-			{
-				_file.Close();
-			}
-			catch
-			{
-			}
-			_file = null;
-		}
-
 		public override long FileLength()
 		{
 			try
 			{
 				return _file.GetLength();
 			}
-			catch
+			catch (System.Exception)
 			{
 				throw new System.Exception();
 			}
@@ -257,7 +284,7 @@ namespace Db4objects.Db4o.Internal
 						{
 							Reserve(ConfigImpl().ReservedStorageSpace());
 						}
-						Write(false);
+						CommitTransaction();
 						WriteHeader(true, false);
 					}
 					else
@@ -366,7 +393,7 @@ namespace Db4objects.Db4o.Internal
 					_timerFile.Sync();
 				}
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 		}
@@ -374,16 +401,6 @@ namespace Db4objects.Db4o.Internal
 		private bool NeedsTimerFile()
 		{
 			return NeedsLockFileThread() && Db4objects.Db4o.Debug.lockFile;
-		}
-
-		private void CloseTimerFile()
-		{
-			if (_timerFile == null)
-			{
-				return;
-			}
-			_timerFile.Close();
-			_timerFile = null;
 		}
 
 		public override void WriteBytes(Db4objects.Db4o.Internal.Buffer bytes, int address

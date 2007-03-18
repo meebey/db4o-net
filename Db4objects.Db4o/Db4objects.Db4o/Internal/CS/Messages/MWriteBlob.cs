@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					Db4objects.Db4o.Internal.CS.Messages.Msg.OK.Write(stream, sock);
 				}
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 			return true;

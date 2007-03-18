@@ -15,8 +15,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			if (reader.CascadeDeletes() > 0 && arrayHandler.i_handler is Db4objects.Db4o.Internal.ClassMetadata
 				)
 			{
-				Db4objects.Db4o.Internal.StatefulBuffer bytes = reader.GetStream().ReadWriterByAddress
-					(trans, address, length);
+				Db4objects.Db4o.Internal.StatefulBuffer bytes;
+				try
+				{
+					bytes = reader.GetStream().ReadWriterByAddress(trans, address, length);
+				}
+				catch (System.IO.IOException e)
+				{
+					throw new Db4objects.Db4o.IO.UncheckedIOException(e);
+				}
 				if (bytes != null)
 				{
 					bytes.SetCascadeDeletes(reader.CascadeDeletes());
@@ -59,7 +66,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override object Read(Db4objects.Db4o.Internal.Handlers.ArrayHandler arrayHandler
 			, Db4objects.Db4o.Internal.StatefulBuffer a_bytes)
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer bytes = a_bytes.ReadEmbeddedObject();
+			Db4objects.Db4o.Internal.StatefulBuffer bytes = null;
+			try
+			{
+				bytes = a_bytes.ReadEmbeddedObject();
+			}
+			catch (System.IO.IOException e)
+			{
+				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
+			}
 			if (bytes == null)
 			{
 				return null;
@@ -71,8 +86,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 arrayHandler, Db4objects.Db4o.Internal.Buffer reader, Db4objects.Db4o.Internal.Query.Processor.QCandidates
 			 candidates)
 		{
-			Db4objects.Db4o.Internal.Buffer bytes = reader.ReadEmbeddedObject(candidates.i_trans
-				);
+			Db4objects.Db4o.Internal.Buffer bytes = null;
+			try
+			{
+				bytes = reader.ReadEmbeddedObject(candidates.i_trans);
+			}
+			catch (System.IO.IOException e)
+			{
+				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
+			}
 			if (bytes == null)
 			{
 				return;
@@ -89,7 +111,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 arrayHandler, Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
 			 reader)
 		{
-			Db4objects.Db4o.Internal.Buffer bytes = reader.ReadEmbeddedObject(trans);
+			Db4objects.Db4o.Internal.Buffer bytes = null;
+			try
+			{
+				bytes = reader.ReadEmbeddedObject(trans);
+			}
+			catch (System.IO.IOException e)
+			{
+				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
+			}
 			if (bytes == null)
 			{
 				return null;
@@ -101,7 +131,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		protected override Db4objects.Db4o.Internal.Buffer PrepareIDReader(Db4objects.Db4o.Internal.Transaction
 			 trans, Db4objects.Db4o.Internal.Buffer reader)
 		{
-			return reader.ReadEmbeddedObject(trans);
+			try
+			{
+				return reader.ReadEmbeddedObject(trans);
+			}
+			catch (System.IO.IOException e)
+			{
+				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
+			}
 		}
 
 		public override void DefragIDs(Db4objects.Db4o.Internal.Handlers.ArrayHandler arrayHandler

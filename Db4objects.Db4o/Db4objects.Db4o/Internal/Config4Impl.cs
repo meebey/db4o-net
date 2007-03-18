@@ -37,6 +37,9 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED
 			);
 
+		private static readonly Db4objects.Db4o.Foundation.KeySpec CONFIGURATION_ITEMS = 
+			new Db4objects.Db4o.Foundation.KeySpec(null);
+
 		private static readonly Db4objects.Db4o.Foundation.KeySpec CLASS_ACTIVATION_DEPTH_CONFIGURABLE
 			 = new Db4objects.Db4o.Foundation.KeySpec(true);
 
@@ -187,9 +190,57 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(ACTIVATION_DEPTH, depth);
 		}
 
+		public void Add(Db4objects.Db4o.Config.IConfigurationItem item)
+		{
+			Db4objects.Db4o.Foundation.Hashtable4 items = ConfigurationItems();
+			if (items == null)
+			{
+				items = new Db4objects.Db4o.Foundation.Hashtable4(16);
+				_config.Put(CONFIGURATION_ITEMS, items);
+			}
+			items.Put(item, item);
+		}
+
 		public void AllowVersionUpdates(bool flag)
 		{
 			_config.Put(ALLOW_VERSION_UPDATES, flag);
+		}
+
+		private Db4objects.Db4o.Foundation.Hashtable4 ConfigurationItems()
+		{
+			return (Db4objects.Db4o.Foundation.Hashtable4)_config.Get(CONFIGURATION_ITEMS);
+		}
+
+		public void ApplyConfigurationItems(Db4objects.Db4o.Internal.ObjectContainerBase 
+			container)
+		{
+			Db4objects.Db4o.Foundation.Hashtable4 items = ConfigurationItems();
+			if (items == null)
+			{
+				return;
+			}
+			items.ForEachValue(new _AnonymousInnerClass180(this, container));
+		}
+
+		private sealed class _AnonymousInnerClass180 : Db4objects.Db4o.Foundation.IVisitor4
+		{
+			public _AnonymousInnerClass180(Config4Impl _enclosing, Db4objects.Db4o.Internal.ObjectContainerBase
+				 container)
+			{
+				this._enclosing = _enclosing;
+				this.container = container;
+			}
+
+			public void Visit(object obj)
+			{
+				Db4objects.Db4o.Config.IConfigurationItem item = (Db4objects.Db4o.Config.IConfigurationItem
+					)obj;
+				item.Apply(container);
+			}
+
+			private readonly Config4Impl _enclosing;
+
+			private readonly Db4objects.Db4o.Internal.ObjectContainerBase container;
 		}
 
 		public void AutomaticShutDown(bool flag)
@@ -719,20 +770,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal Db4objects.Db4o.Reflect.IReflectClass ReflectorFor(object clazz)
 		{
-			clazz = Db4objects.Db4o.Internal.Platform4.GetClassForType(clazz);
-			if (clazz is Db4objects.Db4o.Reflect.IReflectClass)
-			{
-				return (Db4objects.Db4o.Reflect.IReflectClass)clazz;
-			}
-			if (clazz is System.Type)
-			{
-				return Reflector().ForClass((System.Type)clazz);
-			}
-			if (clazz is string)
-			{
-				return Reflector().ForName((string)clazz);
-			}
-			return Reflector().ForObject(clazz);
+			return Db4objects.Db4o.Reflect.ReflectorUtils.ReflectClassFor(Reflector(), clazz);
 		}
 
 		public bool AllowVersionUpdates()

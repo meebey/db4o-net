@@ -48,10 +48,15 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal override void Marshall()
 		{
 			base.Marshall();
-			int[] id = new int[] { 0 };
-			i_marshalledEvaluation = i_trans.Stream().Marshall(Db4objects.Db4o.Internal.Platform4
-				.WrapEvaluation(i_evaluation), id);
-			i_marshalledID = id[0];
+			MarshallUsingDb4oFormat();
+		}
+
+		private void MarshallUsingDb4oFormat()
+		{
+			Db4objects.Db4o.Internal.SerializedGraph serialized = Db4objects.Db4o.Internal.Serializer
+				.Marshall(Container(), i_evaluation);
+			i_marshalledEvaluation = serialized._bytes;
+			i_marshalledID = serialized._id;
 		}
 
 		internal override void Unmarshall(Db4objects.Db4o.Internal.Transaction a_trans)
@@ -59,8 +64,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			if (i_trans == null)
 			{
 				base.Unmarshall(a_trans);
-				i_evaluation = i_trans.Stream().Unmarshall(i_marshalledEvaluation, i_marshalledID
-					);
+				i_evaluation = Db4objects.Db4o.Internal.Serializer.Unmarshall(Container(), i_marshalledEvaluation
+					, i_marshalledID);
 			}
 		}
 
@@ -76,7 +81,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					DoNotInclude(candidate.GetRoot());
 				}
 			}
-			catch
+			catch (System.Exception)
 			{
 				candidate.Include(false);
 				DoNotInclude(candidate.GetRoot());

@@ -26,8 +26,9 @@ namespace Db4objects.Db4o.Internal.Callbacks
 
 		void OnQueryFinished(Db4objects.Db4o.Query.IQuery query);
 
-		void CommitOnStarted(Db4objects.Db4o.Ext.IObjectInfoCollection added, Db4objects.Db4o.Ext.IObjectInfoCollection
-			 deleted, Db4objects.Db4o.Ext.IObjectInfoCollection updated);
+		void CommitOnStarted(object transaction, Db4objects.Db4o.Ext.IObjectInfoCollection
+			 added, Db4objects.Db4o.Ext.IObjectInfoCollection deleted, Db4objects.Db4o.Ext.IObjectInfoCollection
+			 updated);
 
 		bool CaresAboutCommit();
 	}

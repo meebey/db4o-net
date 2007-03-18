@@ -4,19 +4,19 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public interface IDb4oTypeImpl : Db4objects.Db4o.ITransactionAware
 	{
-		int AdjustReadDepth(int a_depth);
+		int AdjustReadDepth(int depth);
 
 		bool CanBind();
 
-		object CreateDefault(Db4objects.Db4o.Internal.Transaction a_trans);
+		object CreateDefault(Db4objects.Db4o.Internal.Transaction trans);
 
 		bool HasClassIndex();
 
 		void ReplicateFrom(object obj);
 
-		void SetYapObject(Db4objects.Db4o.Internal.ObjectReference a_yapObject);
+		void SetObjectReference(Db4objects.Db4o.Internal.ObjectReference @ref);
 
-		object StoredTo(Db4objects.Db4o.Internal.Transaction a_trans);
+		object StoredTo(Db4objects.Db4o.Internal.Transaction trans);
 
 		void PreDeactivate();
 	}

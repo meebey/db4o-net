@@ -49,6 +49,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return a_child;
 		}
 
+		public virtual Db4objects.Db4o.Internal.ObjectContainerBase Container()
+		{
+			return Transaction().Stream();
+		}
+
 		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
 		{
 			return i_trans;
@@ -97,7 +102,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			Db4objects.Db4o.Internal.Query.Processor.QCon qcon = this;
 			Db4objects.Db4o.Internal.ClassMetadata yc = GetYapClass();
 			bool[] foundField = new bool[] { false };
-			ForEachChildField(a_field, new _AnonymousInnerClass108(this, foundField, query));
+			ForEachChildField(a_field, new _AnonymousInnerClass112(this, foundField, query));
 			if (foundField[0])
 			{
 				return true;
@@ -108,7 +113,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				int[] count = new int[] { 0 };
 				Db4objects.Db4o.Internal.FieldMetadata[] yfs = new Db4objects.Db4o.Internal.FieldMetadata
 					[] { null };
-				i_trans.Stream().ClassCollection().AttachQueryNode(a_field, new _AnonymousInnerClass126
+				i_trans.Stream().ClassCollection().AttachQueryNode(a_field, new _AnonymousInnerClass130
 					(this, yfs, count));
 				if (count[0] == 0)
 				{
@@ -131,7 +136,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					i_trans.Stream().i_handlers._diagnosticProcessor.DescendIntoTranslator(yc, a_field
 						);
 				}
-				Db4objects.Db4o.Internal.FieldMetadata yf = yc.GetYapField(a_field);
+				Db4objects.Db4o.Internal.FieldMetadata yf = yc.FieldMetadataForName(a_field);
 				if (yf != null)
 				{
 					qf = yf.QField(i_trans);
@@ -149,9 +154,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _AnonymousInnerClass108 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass112 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass108(QCon _enclosing, bool[] foundField, Db4objects.Db4o.Internal.Query.Processor.QQuery
+			public _AnonymousInnerClass112(QCon _enclosing, bool[] foundField, Db4objects.Db4o.Internal.Query.Processor.QQuery
 				 query)
 			{
 				this._enclosing = _enclosing;
@@ -172,9 +177,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly Db4objects.Db4o.Internal.Query.Processor.QQuery query;
 		}
 
-		private sealed class _AnonymousInnerClass126 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass130 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass126(QCon _enclosing, Db4objects.Db4o.Internal.FieldMetadata[]
+			public _AnonymousInnerClass130(QCon _enclosing, Db4objects.Db4o.Internal.FieldMetadata[]
 				 yfs, int[] count)
 			{
 				this._enclosing = _enclosing;

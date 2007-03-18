@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 						this._blob.SetStatus(Db4objects.Db4o.Ext.Status.ERROR);
 					}
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 			}
@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					Db4objects.Db4o.Internal.CS.Messages.Msg.OK.Write(stream, sock);
 				}
 			}
-			catch
+			catch (System.Exception)
 			{
 				serverThread.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.ERROR);
 			}

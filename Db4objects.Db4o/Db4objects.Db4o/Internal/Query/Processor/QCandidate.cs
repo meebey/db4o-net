@@ -83,7 +83,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				_member = ((Db4objects.Db4o.Config.ICompare)_member).Compare();
 				Db4objects.Db4o.Internal.LocalObjectContainer stream = GetStream();
-				_yapClass = stream.GetYapClass(stream.Reflector().ForObject(_member));
+				_yapClass = stream.ClassMetadataForReflectClass(stream.Reflector().ForObject(_member
+					));
 				_key = (int)stream.GetID(_member);
 				SetBytes(stream.ReadReaderByID(GetTransaction(), _key));
 			}
@@ -451,13 +452,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				Db4objects.Db4o.Internal.ClassMetadata yc = null;
 				if (_bytes != null)
 				{
-					yc = a_stream.ProduceYapClass(a_stream.Reflector().ForObject(a_constraint));
+					yc = a_stream.ProduceClassMetadata(a_stream.Reflector().ForObject(a_constraint));
 				}
 				else
 				{
 					if (_member != null)
 					{
-						yc = a_stream.GetYapClass(a_stream.Reflector().ForObject(_member));
+						yc = a_stream.ClassMetadataForReflectClass(a_stream.Reflector().ForObject(_member
+							));
 					}
 				}
 				if (yc != null)
@@ -518,7 +520,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					subCandidate = _yapField.GetHandler().ReadSubCandidate(_marshallerFamily, _bytes, 
 						candidateCollection, false);
 				}
-				catch
+				catch (System.Exception)
 				{
 					return null;
 				}

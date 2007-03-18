@@ -62,7 +62,8 @@ namespace Db4objects.Db4o.Internal
 				Db4objects.Db4o.Internal.ClassMetadata yc = i.CurrentClass();
 				if (!yc.IsInternal())
 				{
-					yc.ForEachYapField(new _AnonymousInnerClass67(this, fieldName, a_visitor, yc));
+					yc.ForEachFieldMetadata(new _AnonymousInnerClass67(this, fieldName, a_visitor, yc
+						));
 				}
 			}
 		}
@@ -115,9 +116,9 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Internal.ClassMetadata superYapClass = null;
 			if (superClass != null && !superClass.Equals(Stream().i_handlers.ICLASS_OBJECT))
 			{
-				superYapClass = ProduceYapClass(superClass);
+				superYapClass = ProduceClassMetadata(superClass);
 			}
-			bool ret = Stream().CreateYapClass(a_yapClass, a_class, superYapClass);
+			bool ret = Stream().CreateClassMetadata(a_yapClass, a_class, superYapClass);
 			i_yapClassCreationDepth--;
 			InitYapClassesOnUp();
 			return ret;
@@ -171,7 +172,7 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Internal.ClassMetadataIterator i = Iterator();
 			while (i.MoveNext())
 			{
-				if (i.CurrentClass().GetYapField(a_field) != null)
+				if (i.CurrentClass().FieldMetadataForName(a_field) != null)
 				{
 					return true;
 				}
@@ -233,7 +234,7 @@ namespace Db4objects.Db4o.Internal
 			return (Db4objects.Db4o.Internal.ClassMetadata)i_yapClassByClass.Get(a_class);
 		}
 
-		internal Db4objects.Db4o.Internal.ClassMetadata GetYapClass(Db4objects.Db4o.Reflect.IReflectClass
+		internal Db4objects.Db4o.Internal.ClassMetadata ClassMetadataForReflectClass(Db4objects.Db4o.Reflect.IReflectClass
 			 a_class)
 		{
 			Db4objects.Db4o.Internal.ClassMetadata yapClass = (Db4objects.Db4o.Internal.ClassMetadata
@@ -248,10 +249,11 @@ namespace Db4objects.Db4o.Internal
 			return yapClass;
 		}
 
-		internal Db4objects.Db4o.Internal.ClassMetadata ProduceYapClass(Db4objects.Db4o.Reflect.IReflectClass
+		internal Db4objects.Db4o.Internal.ClassMetadata ProduceClassMetadata(Db4objects.Db4o.Reflect.IReflectClass
 			 a_class)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata yapClass = GetYapClass(a_class);
+			Db4objects.Db4o.Internal.ClassMetadata yapClass = ClassMetadataForReflectClass(a_class
+				);
 			if (yapClass != null)
 			{
 				return yapClass;

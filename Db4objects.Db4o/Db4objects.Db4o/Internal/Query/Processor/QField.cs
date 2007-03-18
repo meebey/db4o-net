@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return i_yapField;
 			}
-			Db4objects.Db4o.Internal.FieldMetadata yf = yc.GetYapField(i_name);
+			Db4objects.Db4o.Internal.FieldMetadata yf = yc.FieldMetadataForName(i_name);
 			if (yf != null)
 			{
 				yf.Alive();
@@ -124,9 +124,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return Db4objects.Db4o.Internal.Null.INSTANCE;
 			}
-			Db4objects.Db4o.Internal.ClassMetadata yc = i_trans.Stream().ProduceYapClass(i_trans
-				.Reflector().ForObject(obj));
-			Db4objects.Db4o.Internal.FieldMetadata yf = yc.GetYapField(i_name);
+			Db4objects.Db4o.Internal.ClassMetadata yc = i_trans.Stream().ProduceClassMetadata
+				(i_trans.Reflector().ForObject(obj));
+			Db4objects.Db4o.Internal.FieldMetadata yf = yc.FieldMetadataForName(i_name);
 			if (yf != null)
 			{
 				return yf.PrepareComparison(obj);
@@ -138,7 +138,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_yapClassID != 0)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = a_trans.Stream().GetYapClass(i_yapClassID
+				Db4objects.Db4o.Internal.ClassMetadata yc = a_trans.Stream().ClassMetadataForId(i_yapClassID
 					);
 				i_yapField = yc.i_fields[i_index];
 			}

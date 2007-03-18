@@ -12,12 +12,26 @@ namespace Db4objects.Db4o.Events
 
 		private readonly Db4objects.Db4o.Ext.IObjectInfoCollection _updated;
 
-		public CommitEventArgs(Db4objects.Db4o.Ext.IObjectInfoCollection added, Db4objects.Db4o.Ext.IObjectInfoCollection
-			 deleted, Db4objects.Db4o.Ext.IObjectInfoCollection updated)
+		private readonly object _transaction;
+
+		public CommitEventArgs(object transaction, Db4objects.Db4o.Ext.IObjectInfoCollection
+			 added, Db4objects.Db4o.Ext.IObjectInfoCollection deleted, Db4objects.Db4o.Ext.IObjectInfoCollection
+			 updated)
 		{
+			_transaction = transaction;
 			_added = added;
 			_deleted = deleted;
 			_updated = updated;
+		}
+
+		/// <summary>The transaction being committed.</summary>
+		/// <remarks>The transaction being committed.</remarks>
+		public virtual object Transaction
+		{
+			get
+			{
+				return _transaction;
+			}
 		}
 
 		/// <summary>Returns a iteration</summary>

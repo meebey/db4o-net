@@ -55,16 +55,16 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			else
 			{
-				i_yapClass = a_trans.Stream().ProduceYapClass(a_trans.Reflector().ForObject(a_object
-					));
+				i_yapClass = a_trans.Stream().ProduceClassMetadata(a_trans.Reflector().ForObject(
+					a_object));
 				if (i_yapClass != null)
 				{
 					i_object = i_yapClass.GetComparableObject(a_object);
 					if (a_object != i_object)
 					{
 						i_attributeProvider = i_yapClass.Config().QueryAttributeProvider();
-						i_yapClass = a_trans.Stream().ProduceYapClass(a_trans.Reflector().ForObject(i_object
-							));
+						i_yapClass = a_trans.Stream().ProduceClassMetadata(a_trans.Reflector().ForObject(
+							i_object));
 					}
 					if (i_yapClass != null)
 					{
@@ -141,7 +141,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return a_candidate.Evaluate(this, i_evaluator);
 			}
-			catch
+			catch (System.Exception)
 			{
 				return false;
 			}
@@ -380,13 +380,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (i_yapClassID != 0)
 				{
-					i_yapClass = a_trans.Stream().GetYapClass(i_yapClassID);
+					i_yapClass = a_trans.Stream().ClassMetadataForId(i_yapClassID);
 				}
 				if (i_field != null)
 				{
 					i_field.Unmarshall(a_trans);
 				}
-				if (i_objectID != 0)
+				if (i_objectID > 0)
 				{
 					object obj = a_trans.Stream().GetByID(i_objectID);
 					if (obj != null)

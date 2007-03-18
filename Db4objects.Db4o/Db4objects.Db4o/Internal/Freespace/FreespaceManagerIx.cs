@@ -183,15 +183,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			Db4objects.Db4o.Foundation.IIntObjectVisitor addToNewFM = new _AnonymousInnerClass193
+			Db4objects.Db4o.Foundation.IIntObjectVisitor addToNewFM = new _AnonymousInnerClass195
 				(this, newFM);
-			Db4objects.Db4o.Foundation.Tree.Traverse(_addressIx._indexTrans.GetRoot(), new _AnonymousInnerClass198
+			Db4objects.Db4o.Foundation.Tree.Traverse(_addressIx._indexTrans.GetRoot(), new _AnonymousInnerClass200
 				(this, addToNewFM));
 		}
 
-		private sealed class _AnonymousInnerClass193 : Db4objects.Db4o.Foundation.IIntObjectVisitor
+		private sealed class _AnonymousInnerClass195 : Db4objects.Db4o.Foundation.IIntObjectVisitor
 		{
-			public _AnonymousInnerClass193(FreespaceManagerIx _enclosing, Db4objects.Db4o.Internal.Freespace.FreespaceManager
+			public _AnonymousInnerClass195(FreespaceManagerIx _enclosing, Db4objects.Db4o.Internal.Freespace.FreespaceManager
 				 newFM)
 			{
 				this._enclosing = _enclosing;
@@ -208,9 +208,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly Db4objects.Db4o.Internal.Freespace.FreespaceManager newFM;
 		}
 
-		private sealed class _AnonymousInnerClass198 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass200 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass198(FreespaceManagerIx _enclosing, Db4objects.Db4o.Foundation.IIntObjectVisitor
+			public _AnonymousInnerClass200(FreespaceManagerIx _enclosing, Db4objects.Db4o.Foundation.IIntObjectVisitor
 				 addToNewFM)
 			{
 				this._enclosing = _enclosing;
@@ -274,7 +274,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return FM_IX;
 		}
 
-		public override int Write(bool shuttingDown)
+		public override int Shutdown()
 		{
 			return 0;
 		}

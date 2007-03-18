@@ -69,10 +69,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return a_in;
 		}
 
-		public override object Read(Db4objects.Db4o.Internal.Buffer a_reader)
+		public override object Read(Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			int size = a_reader.ReadInt();
-			int address = a_reader.ReadInt();
+			int size = buffer.ReadInt();
+			int address = buffer.ReadInt();
 			if (size > sizeLimit)
 			{
 				Db4objects.Db4o.Internal.Freespace.FreeSlotNode node = new Db4objects.Db4o.Internal.Freespace.FreeSlotNode
@@ -81,6 +81,39 @@ namespace Db4objects.Db4o.Internal.Freespace
 				return node;
 			}
 			return null;
+		}
+
+		private void DebugCheckBuffer(Db4objects.Db4o.Internal.Buffer buffer, Db4objects.Db4o.Internal.Freespace.FreeSlotNode
+			 node)
+		{
+			if (!(buffer is Db4objects.Db4o.Internal.StatefulBuffer))
+			{
+				return;
+			}
+			Db4objects.Db4o.Internal.Transaction trans = ((Db4objects.Db4o.Internal.StatefulBuffer
+				)buffer).GetTransaction();
+			if (!(trans.Stream() is Db4objects.Db4o.Internal.IoAdaptedObjectContainer))
+			{
+				return;
+			}
+			Db4objects.Db4o.Internal.StatefulBuffer checker = trans.Stream().GetWriter(trans, 
+				node._peer._key, node._key);
+			try
+			{
+				checker.Read();
+				for (int i = 0; i < node._key; i++)
+				{
+					if (checker.ReadByte() != (byte)'X')
+					{
+						Sharpen.Runtime.Out.WriteLine("!!! Free space corruption at:" + node._peer._key);
+						break;
+					}
+				}
+			}
+			catch (System.IO.IOException e)
+			{
+				Sharpen.Runtime.PrintStackTrace(e);
+			}
 		}
 
 		public sealed override void Write(Db4objects.Db4o.Internal.Buffer a_writer)

@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				{
 					bytes = Stream().ReadWriterByID(Transaction(), _payLoad.ReadInt());
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 			}

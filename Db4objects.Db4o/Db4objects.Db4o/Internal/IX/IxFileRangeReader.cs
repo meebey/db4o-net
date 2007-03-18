@@ -39,7 +39,15 @@ namespace Db4objects.Db4o.Internal.IX
 			Db4objects.Db4o.Internal.Transaction trans = fileRange.Trans();
 			while (true)
 			{
-				_reader.Read(yf, _baseAddress, _baseAddressOffset + _addressOffset);
+				int offset = _baseAddressOffset + _addressOffset;
+				try
+				{
+					_reader.Read(yf, _baseAddress, offset);
+				}
+				catch (System.IO.IOException e)
+				{
+					throw new Db4objects.Db4o.Internal.IX.IxException(e, _baseAddress, offset);
+				}
 				_reader._offset = 0;
 				int cmp = Compare(trans);
 				if (cmp == 0)
@@ -155,7 +163,15 @@ namespace Db4objects.Db4o.Internal.IX
 			int res = 0;
 			while (true)
 			{
-				_reader.Read(yf, _baseAddress, _baseAddressOffset + _addressOffset);
+				int offset = _baseAddressOffset + _addressOffset;
+				try
+				{
+					_reader.Read(yf, _baseAddress, offset);
+				}
+				catch (System.IO.IOException e)
+				{
+					throw new Db4objects.Db4o.Internal.IX.IxException(e, _baseAddress, offset);
+				}
 				_reader._offset = 0;
 				int cmp = Compare(trans);
 				if (cmp > 0)
@@ -206,7 +222,15 @@ namespace Db4objects.Db4o.Internal.IX
 			AdjustCursor();
 			while (true)
 			{
-				_reader.Read(yf, _baseAddress, _baseAddressOffset + _addressOffset);
+				int offset = _baseAddressOffset + _addressOffset;
+				try
+				{
+					_reader.Read(yf, _baseAddress, offset);
+				}
+				catch (System.IO.IOException e)
+				{
+					throw new Db4objects.Db4o.Internal.IX.IxException(e, _baseAddress, offset);
+				}
 				_reader._offset = 0;
 				int cmp = Compare(trans);
 				if (cmp == 0)
@@ -237,7 +261,15 @@ namespace Db4objects.Db4o.Internal.IX
 			AdjustCursor();
 			while (true)
 			{
-				_reader.Read(yf, _baseAddress, _baseAddressOffset + _addressOffset);
+				int offset = _baseAddressOffset + _addressOffset;
+				try
+				{
+					_reader.Read(yf, _baseAddress, offset);
+				}
+				catch (System.IO.IOException e)
+				{
+					throw new Db4objects.Db4o.Internal.IX.IxException(e, _baseAddress, offset);
+				}
 				_reader._offset = 0;
 				int cmp = Compare(trans);
 				if (cmp == 0)

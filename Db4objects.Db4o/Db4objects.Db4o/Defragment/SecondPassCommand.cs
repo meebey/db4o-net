@@ -30,13 +30,13 @@ namespace Db4objects.Db4o.Defragment
 			{
 				Sharpen.Runtime.Err.WriteLine("MAPPING NOT FOUND: " + id);
 			}
-			Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass32
+			Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass34
 				(this, yapClass, classIndexID));
 		}
 
-		private sealed class _AnonymousInnerClass32 : Db4objects.Db4o.Internal.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass34 : Db4objects.Db4o.Internal.ISlotCopyHandler
 		{
-			public _AnonymousInnerClass32(SecondPassCommand _enclosing, Db4objects.Db4o.Internal.ClassMetadata
+			public _AnonymousInnerClass34(SecondPassCommand _enclosing, Db4objects.Db4o.Internal.ClassMetadata
 				 yapClass, int classIndexID)
 			{
 				this._enclosing = _enclosing;
@@ -60,13 +60,13 @@ namespace Db4objects.Db4o.Defragment
 			, Db4objects.Db4o.Internal.ClassMetadata yapClass, int id, bool registerAddresses
 			)
 		{
-			Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass40
+			Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass42
 				(this, context), registerAddresses);
 		}
 
-		private sealed class _AnonymousInnerClass40 : Db4objects.Db4o.Internal.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass42 : Db4objects.Db4o.Internal.ISlotCopyHandler
 		{
-			public _AnonymousInnerClass40(SecondPassCommand _enclosing, Db4objects.Db4o.Defragment.DefragContextImpl
+			public _AnonymousInnerClass42(SecondPassCommand _enclosing, Db4objects.Db4o.Defragment.DefragContextImpl
 				 context)
 			{
 				this._enclosing = _enclosing;
@@ -96,12 +96,12 @@ namespace Db4objects.Db4o.Defragment
 			)
 		{
 			Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, context.SourceClassCollectionID
-				(), new _AnonymousInnerClass55(this));
+				(), new _AnonymousInnerClass57(this));
 		}
 
-		private sealed class _AnonymousInnerClass55 : Db4objects.Db4o.Internal.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass57 : Db4objects.Db4o.Internal.ISlotCopyHandler
 		{
-			public _AnonymousInnerClass55(SecondPassCommand _enclosing)
+			public _AnonymousInnerClass57(SecondPassCommand _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -833,7 +833,7 @@ namespace Db4objects.Db4o.Internal
 			return oh._marshallerFamily;
 		}
 
-		internal virtual void ForEachYapField(Db4objects.Db4o.Foundation.IVisitor4 visitor
+		internal virtual void ForEachFieldMetadata(Db4objects.Db4o.Foundation.IVisitor4 visitor
 			)
 		{
 			if (i_fields != null)
@@ -845,7 +845,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (i_ancestor != null)
 			{
-				i_ancestor.ForEachYapField(visitor);
+				i_ancestor.ForEachFieldMetadata(visitor);
 			}
 		}
 
@@ -860,9 +860,9 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (allowCreation)
 			{
-				return trans.Stream().ProduceYapClass(reflectClass);
+				return trans.Stream().ProduceClassMetadata(reflectClass);
 			}
-			return trans.Stream().GetYapClass(reflectClass);
+			return trans.Stream().ClassMetadataForReflectClass(reflectClass);
 		}
 
 		public virtual bool GenerateUUIDs()
@@ -1110,23 +1110,24 @@ namespace Db4objects.Db4o.Internal
 			return Db4objects.Db4o.Internal.Const4.TYPE_CLASS;
 		}
 
-		public virtual Db4objects.Db4o.Internal.ClassMetadata GetYapClass(Db4objects.Db4o.Internal.ObjectContainerBase
+		public virtual Db4objects.Db4o.Internal.ClassMetadata GetClassMetadata(Db4objects.Db4o.Internal.ObjectContainerBase
 			 a_stream)
 		{
 			return this;
 		}
 
-		public virtual Db4objects.Db4o.Internal.FieldMetadata GetYapField(string name)
+		public virtual Db4objects.Db4o.Internal.FieldMetadata FieldMetadataForName(string
+			 name)
 		{
 			Db4objects.Db4o.Internal.FieldMetadata[] yf = new Db4objects.Db4o.Internal.FieldMetadata
 				[1];
-			ForEachYapField(new _AnonymousInnerClass927(this, name, yf));
+			ForEachFieldMetadata(new _AnonymousInnerClass929(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _AnonymousInnerClass927 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass929 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass927(ClassMetadata _enclosing, string name, Db4objects.Db4o.Internal.FieldMetadata[]
+			public _AnonymousInnerClass929(ClassMetadata _enclosing, string name, Db4objects.Db4o.Internal.FieldMetadata[]
 				 yf)
 			{
 				this._enclosing = _enclosing;
@@ -1161,7 +1162,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return true;
 			}
-			return GetYapField(a_field) != null;
+			return FieldMetadataForName(a_field) != null;
 		}
 
 		internal virtual bool HasVirtualAttributes()
@@ -1275,7 +1276,7 @@ namespace Db4objects.Db4o.Internal
 					return null;
 				}
 				ShareTransaction(obj, buffer.GetTransaction());
-				ShareYapObject(obj, @ref);
+				ShareObjectReference(obj, @ref);
 				@ref.SetObjectWeak(stream, obj);
 				stream.ReferenceSystem().AddExistingReferenceToObjectTree(@ref);
 			}
@@ -1356,7 +1357,7 @@ namespace Db4objects.Db4o.Internal
 				stream.LogMsg(7, ClassReflector().GetName());
 				return null;
 			}
-			catch
+			catch (System.Exception)
 			{
 				return null;
 			}
@@ -1404,12 +1405,12 @@ namespace Db4objects.Db4o.Internal
 				.YES);
 		}
 
-		private void ShareYapObject(object obj, Db4objects.Db4o.Internal.ObjectReference 
-			yapObj)
+		private void ShareObjectReference(object obj, Db4objects.Db4o.Internal.ObjectReference
+			 @ref)
 		{
 			if (obj is Db4objects.Db4o.Internal.IDb4oTypeImpl)
 			{
-				((Db4objects.Db4o.Internal.IDb4oTypeImpl)obj).SetYapObject(yapObj);
+				((Db4objects.Db4o.Internal.IDb4oTypeImpl)obj).SetObjectReference(@ref);
 			}
 		}
 
@@ -1636,7 +1637,7 @@ namespace Db4objects.Db4o.Internal
 				stream.StillToActivate(ret, depth);
 				return ret;
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 			return null;
@@ -1710,7 +1711,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				id = a_bytes.ReadInt();
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 			a_bytes._offset = offset;
@@ -1721,15 +1722,15 @@ namespace Db4objects.Db4o.Internal
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Db4objects.Db4o.Internal.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1406
+					Db4objects.Db4o.Internal.Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1408
 						(this, a_candidates, trans));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1406 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass1408 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass1406(ClassMetadata _enclosing, Db4objects.Db4o.Internal.Query.Processor.QCandidates
+			public _AnonymousInnerClass1408(ClassMetadata _enclosing, Db4objects.Db4o.Internal.Query.Processor.QCandidates
 				 a_candidates, Db4objects.Db4o.Internal.Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -2057,8 +2058,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (i_stream.i_lock)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = i_stream.GetYapClass(i_stream.ConfigImpl
-					().ReflectorFor(a_type));
+				Db4objects.Db4o.Internal.ClassMetadata yc = i_stream.ClassMetadataForReflectClass
+					(Db4objects.Db4o.Reflect.ReflectorUtils.ReflectClassFor(Reflector(), a_type));
 				if (i_fields != null)
 				{
 					for (int i = 0; i < i_fields.Length; i++)
@@ -2121,7 +2122,7 @@ namespace Db4objects.Db4o.Internal
 			stream.Activate1(trans, sc, 4);
 			Db4objects.Db4o.StaticField[] existingFields = sc.fields;
 			System.Collections.IEnumerator staticFields = Db4objects.Db4o.Foundation.Iterators
-				.Map(StaticReflectFields(), new _AnonymousInnerClass1731(this, existingFields, trans
+				.Map(StaticReflectFields(), new _AnonymousInnerClass1733(this, existingFields, trans
 				));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2130,9 +2131,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1731 : Db4objects.Db4o.Foundation.IFunction4
+		private sealed class _AnonymousInnerClass1733 : Db4objects.Db4o.Foundation.IFunction4
 		{
-			public _AnonymousInnerClass1731(ClassMetadata _enclosing, Db4objects.Db4o.StaticField[]
+			public _AnonymousInnerClass1733(ClassMetadata _enclosing, Db4objects.Db4o.StaticField[]
 				 existingFields, Db4objects.Db4o.Internal.Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -2174,13 +2175,13 @@ namespace Db4objects.Db4o.Internal
 
 		private System.Collections.IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Db4objects.Db4o.Foundation.Iterators.Map(StaticReflectFields(), new _AnonymousInnerClass1759
+			return Db4objects.Db4o.Foundation.Iterators.Map(StaticReflectFields(), new _AnonymousInnerClass1761
 				(this));
 		}
 
-		private sealed class _AnonymousInnerClass1759 : Db4objects.Db4o.Foundation.IFunction4
+		private sealed class _AnonymousInnerClass1761 : Db4objects.Db4o.Foundation.IFunction4
 		{
-			public _AnonymousInnerClass1759(ClassMetadata _enclosing)
+			public _AnonymousInnerClass1761(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2228,13 +2229,13 @@ namespace Db4objects.Db4o.Internal
 
 		private System.Collections.IEnumerator StaticReflectFields()
 		{
-			return Db4objects.Db4o.Foundation.Iterators.Filter(ReflectFields(), new _AnonymousInnerClass1789
+			return Db4objects.Db4o.Foundation.Iterators.Filter(ReflectFields(), new _AnonymousInnerClass1791
 				(this));
 		}
 
-		private sealed class _AnonymousInnerClass1789 : Db4objects.Db4o.Foundation.IPredicate4
+		private sealed class _AnonymousInnerClass1791 : Db4objects.Db4o.Foundation.IPredicate4
 		{
-			public _AnonymousInnerClass1789(ClassMetadata _enclosing)
+			public _AnonymousInnerClass1791(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2279,7 +2280,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					reflectField.Set(null, existingField.value);
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 				return;

@@ -48,8 +48,9 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 
 		private void AssertIndex(object[] expected)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata clazz = Stream().GetYapClass(Reflector().ForClass
-				(typeof(Db4objects.Db4o.Tests.Common.Classindex.ClassIndexTestCase.Item)));
+			Db4objects.Db4o.Internal.ClassMetadata clazz = Stream().ClassMetadataForReflectClass
+				(Reflector().ForClass(typeof(Db4objects.Db4o.Tests.Common.Classindex.ClassIndexTestCase.Item)
+				));
 			Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor visitor = new Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
 				(expected);
 			Db4objects.Db4o.Internal.Classindex.IClassIndexStrategy index = clazz.Index();

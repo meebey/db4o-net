@@ -32,16 +32,24 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			_payLoad = writer;
 		}
 
+		public Db4objects.Db4o.Internal.CS.Messages.MsgD GetWriterForByte(Db4objects.Db4o.Internal.Transaction
+			 trans, byte b)
+		{
+			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = GetWriterForLength(trans, 1);
+			msg._payLoad.Append(b);
+			return msg;
+		}
+
 		public Db4objects.Db4o.Internal.CS.Messages.MsgD GetWriterForLength(Db4objects.Db4o.Internal.Transaction
-			 a_trans, int length)
+			 trans, int length)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.MsgD message = (Db4objects.Db4o.Internal.CS.Messages.MsgD
-				)Clone(a_trans);
-			message._payLoad = new Db4objects.Db4o.Internal.StatefulBuffer(a_trans, length + 
-				Db4objects.Db4o.Internal.Const4.MESSAGE_LENGTH);
+				)Clone(trans);
+			message._payLoad = new Db4objects.Db4o.Internal.StatefulBuffer(trans, length + Db4objects.Db4o.Internal.Const4
+				.MESSAGE_LENGTH);
 			message.WriteInt(_msgID);
 			message.WriteInt(length);
-			if (a_trans.ParentTransaction() == null)
+			if (trans.ParentTransaction() == null)
 			{
 				message._payLoad.Append(Db4objects.Db4o.Internal.Const4.SYSTEM_TRANS);
 			}
@@ -53,15 +61,15 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		}
 
 		public Db4objects.Db4o.Internal.CS.Messages.MsgD GetWriter(Db4objects.Db4o.Internal.Transaction
-			 a_trans)
+			 trans)
 		{
-			return GetWriterForLength(a_trans, 0);
+			return GetWriterForLength(trans, 0);
 		}
 
 		public Db4objects.Db4o.Internal.CS.Messages.MsgD GetWriterForInts(Db4objects.Db4o.Internal.Transaction
-			 a_trans, int[] ints)
+			 trans, int[] ints)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.MsgD message = GetWriterForLength(a_trans, Db4objects.Db4o.Internal.Const4
+			Db4objects.Db4o.Internal.CS.Messages.MsgD message = GetWriterForLength(trans, Db4objects.Db4o.Internal.Const4
 				.INT_LENGTH * ints.Length);
 			for (int i = 0; i < ints.Length; i++)
 			{
@@ -149,6 +157,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return _payLoad.ReadByte() != 0;
 		}
 
+		public virtual object ReadObjectFromPayLoad()
+		{
+			return Db4objects.Db4o.Internal.Serializer.Unmarshall(Stream(), _payLoad);
+		}
+
 		internal sealed override Db4objects.Db4o.Internal.CS.Messages.Msg ReadPayLoad(Db4objects.Db4o.Internal.Transaction
 			 a_trans, Db4objects.Db4o.Foundation.Network.ISocket4 sock, Db4objects.Db4o.Internal.Buffer
 			 reader)
@@ -157,8 +170,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			a_trans = CheckParentTransaction(a_trans, reader);
 			Db4objects.Db4o.Internal.CS.Messages.MsgD command = (Db4objects.Db4o.Internal.CS.Messages.MsgD
 				)Clone(a_trans);
-			command._payLoad = new Db4objects.Db4o.Internal.StatefulBuffer(a_trans, length);
-			command._payLoad.Read(sock);
+			command._payLoad = ReadMessageBuffer(a_trans, sock, length);
 			return command;
 		}
 

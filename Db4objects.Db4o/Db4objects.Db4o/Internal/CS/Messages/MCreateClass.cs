@@ -17,7 +17,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				try
 				{
-					Db4objects.Db4o.Internal.ClassMetadata yapClass = stream.ProduceYapClass(claxx);
+					Db4objects.Db4o.Internal.ClassMetadata yapClass = stream.ProduceClassMetadata(claxx
+						);
 					if (yapClass == null)
 					{
 						return WriteFailedMessage(serverThread);

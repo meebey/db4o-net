@@ -52,7 +52,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return Read(stream, reader);
 			}
-			return Read(stream, ReadSlotFromParentSlot(stream, reader));
+			try
+			{
+				return Read(stream, ReadSlotFromParentSlot(stream, reader));
+			}
+			catch (System.IO.IOException e)
+			{
+				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
+			}
 		}
 
 		public abstract Db4objects.Db4o.Internal.Buffer ReadIndexEntry(Db4objects.Db4o.Internal.StatefulBuffer

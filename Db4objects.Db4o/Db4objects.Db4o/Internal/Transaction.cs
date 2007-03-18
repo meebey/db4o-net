@@ -190,7 +190,7 @@ namespace Db4objects.Db4o.Internal
 		internal virtual void DontRemoveFromClassIndex(int a_yapClassID, int a_id)
 		{
 			CheckSynchronization();
-			Db4objects.Db4o.Internal.ClassMetadata yapClass = Stream().GetYapClass(a_yapClassID
+			Db4objects.Db4o.Internal.ClassMetadata yapClass = Stream().ClassMetadataForId(a_yapClassID
 				);
 			yapClass.Index().Add(this, a_id);
 		}

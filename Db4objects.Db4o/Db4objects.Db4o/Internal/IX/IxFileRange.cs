@@ -60,13 +60,13 @@ namespace Db4objects.Db4o.Internal.IX
 				SlotLength());
 			System.Text.StringBuilder sb = new System.Text.StringBuilder();
 			sb.Append("IxFileRange");
-			VisitAll(new _AnonymousInnerClass59(this, sb));
+			VisitAll(new _AnonymousInnerClass67(this, sb));
 			return sb.ToString();
 		}
 
-		private sealed class _AnonymousInnerClass59 : Db4objects.Db4o.Foundation.IIntObjectVisitor
+		private sealed class _AnonymousInnerClass67 : Db4objects.Db4o.Foundation.IIntObjectVisitor
 		{
-			public _AnonymousInnerClass59(IxFileRange _enclosing, System.Text.StringBuilder sb
+			public _AnonymousInnerClass67(IxFileRange _enclosing, System.Text.StringBuilder sb
 				)
 			{
 				this._enclosing = _enclosing;
@@ -104,8 +104,15 @@ namespace Db4objects.Db4o.Internal.IX
 			{
 				Db4objects.Db4o.Internal.Buffer fileReader = new Db4objects.Db4o.Internal.Buffer(
 					count * frr._slotLength);
-				fileReader.Read(Stream(), _address, _addressOffset + (lowerUpper[0] * frr._slotLength
-					));
+				int offset = _addressOffset + (lowerUpper[0] * frr._slotLength);
+				try
+				{
+					fileReader.Read(Stream(), _address, offset);
+				}
+				catch (System.IO.IOException e)
+				{
+					throw new Db4objects.Db4o.Internal.IX.IxException(e, _address, offset);
+				}
 				for (int i = lowerUpper[0]; i <= lowerUpper[1]; i++)
 				{
 					fileReader.IncrementOffset(frr._linkLegth);
@@ -136,7 +143,14 @@ namespace Db4objects.Db4o.Internal.IX
 			for (int i = 0; i < _entries; i++)
 			{
 				int address = _address + (i * SlotLength());
-				fileReader.Read(yf, address, _addressOffset);
+				try
+				{
+					fileReader.Read(yf, address, _addressOffset);
+				}
+				catch (System.IO.IOException e)
+				{
+					throw new Db4objects.Db4o.Internal.IX.IxException(e, address, _addressOffset);
+				}
 				fileReader._offset = 0;
 				object obj = Handler().ComparableObject(transaction, Handler().ReadIndexEntry(fileReader
 					));
@@ -178,7 +192,14 @@ namespace Db4objects.Db4o.Internal.IX
 			Db4objects.Db4o.Internal.IX.IxFileRangeReader frr = Reader();
 			Db4objects.Db4o.Internal.Buffer fileReader = new Db4objects.Db4o.Internal.Buffer(
 				frr._slotLength);
-			fileReader.Read(Stream(), _address, _addressOffset + (index * frr._slotLength));
+			try
+			{
+				fileReader.Read(Stream(), _address, _addressOffset + (index * frr._slotLength));
+			}
+			catch (System.IO.IOException e)
+			{
+				throw new Db4objects.Db4o.Internal.IX.IxException(e, _address, _addressOffset);
+			}
 			int val = fileReader.ReadInt();
 			int parentID = fileReader.ReadInt();
 			visitor.Visit(parentID, val);

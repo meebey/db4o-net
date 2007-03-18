@@ -144,10 +144,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_handler.GetTypeID();
 		}
 
-		public override Db4objects.Db4o.Internal.ClassMetadata GetYapClass(Db4objects.Db4o.Internal.ObjectContainerBase
+		public override Db4objects.Db4o.Internal.ClassMetadata GetClassMetadata(Db4objects.Db4o.Internal.ObjectContainerBase
 			 a_stream)
 		{
-			return i_handler.GetYapClass(a_stream);
+			return i_handler.GetClassMetadata(a_stream);
 		}
 
 		public virtual byte Identifier()
@@ -369,7 +369,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				bool primitive = false;
 				int classID = -elements;
-				Db4objects.Db4o.Internal.ClassMetadata yc = a_trans.Stream().GetYapClass(classID);
+				Db4objects.Db4o.Internal.ClassMetadata yc = a_trans.Stream().ClassMetadataForId(classID
+					);
 				if (yc != null)
 				{
 					return (primitive ? yc.PrimitiveClassReflector() : yc.ClassReflector());
@@ -417,7 +418,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				claxx = stream.i_handlers.HandlerForClass(stream, claxx).ClassReflector();
 			}
-			Db4objects.Db4o.Internal.ClassMetadata yc = stream.ProduceYapClass(claxx);
+			Db4objects.Db4o.Internal.ClassMetadata yc = stream.ProduceClassMetadata(claxx);
 			if (yc != null)
 			{
 				yapClassID = yc.GetID();

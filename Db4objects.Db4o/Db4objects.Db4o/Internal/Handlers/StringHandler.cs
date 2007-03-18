@@ -38,7 +38,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return a_object;
 			}
 			Db4objects.Db4o.Internal.Slots.Slot s = (Db4objects.Db4o.Internal.Slots.Slot)a_object;
-			return a_trans.Stream().ReadReaderByAddress(s._address, s._length);
+			try
+			{
+				return a_trans.Stream().BufferByAddress(s._address, s._length);
+			}
+			catch (System.IO.IOException e)
+			{
+				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
+			}
 		}
 
 		public override void DeleteEmbedded(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
@@ -67,7 +74,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Db4objects.Db4o.Internal.Const4.YAPSTRING;
 		}
 
-		public override Db4objects.Db4o.Internal.ClassMetadata GetYapClass(Db4objects.Db4o.Internal.ObjectContainerBase
+		public override Db4objects.Db4o.Internal.ClassMetadata GetClassMetadata(Db4objects.Db4o.Internal.ObjectContainerBase
 			 a_stream)
 		{
 			return a_stream.i_handlers.PrimitiveClassById(GetID());
@@ -160,7 +167,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override object ReadIndexEntry(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
 			 mf, Db4objects.Db4o.Internal.StatefulBuffer a_writer)
 		{
-			return mf._string.ReadIndexEntry(a_writer);
+			try
+			{
+				return mf._string.ReadIndexEntry(a_writer);
+			}
+			catch (System.IO.IOException e)
+			{
+				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
+			}
 		}
 
 		/// <summary>This readIndexEntry method reads from the actual index in the file.</summary>
@@ -192,8 +206,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return mf._string.Read(a_trans.Stream(), a_reader);
 			}
-			Db4objects.Db4o.Internal.Buffer reader = mf._string.ReadSlotFromParentSlot(a_trans
-				.Stream(), a_reader);
+			Db4objects.Db4o.Internal.Buffer reader;
+			try
+			{
+				reader = mf._string.ReadSlotFromParentSlot(a_trans.Stream(), a_reader);
+			}
+			catch (System.IO.IOException e)
+			{
+				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
+			}
 			if (a_toArray)
 			{
 				if (reader != null)
@@ -282,7 +303,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (obj is Db4objects.Db4o.Internal.Slots.Slot)
 			{
 				Db4objects.Db4o.Internal.Slots.Slot s = (Db4objects.Db4o.Internal.Slots.Slot)obj;
-				return _stream.ReadReaderByAddress(s._address, s._length);
+				try
+				{
+					return _stream.BufferByAddress(s._address, s._length);
+				}
+				catch (System.IO.IOException e)
+				{
+					throw new Db4objects.Db4o.IO.UncheckedIOException(e);
+				}
 			}
 			return null;
 		}

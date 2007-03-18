@@ -97,12 +97,12 @@ namespace Db4objects.Db4o.Internal.Events
 				);
 		}
 
-		public virtual void CommitOnStarted(Db4objects.Db4o.Ext.IObjectInfoCollection added
-			, Db4objects.Db4o.Ext.IObjectInfoCollection deleted, Db4objects.Db4o.Ext.IObjectInfoCollection
+		public virtual void CommitOnStarted(object transaction, Db4objects.Db4o.Ext.IObjectInfoCollection
+			 added, Db4objects.Db4o.Ext.IObjectInfoCollection deleted, Db4objects.Db4o.Ext.IObjectInfoCollection
 			 updated)
 		{
-			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerCommitEvent(_committing, added
-				, deleted, updated);
+			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerCommitEvent(_committing, transaction
+				, added, deleted, updated);
 		}
 
 		public virtual event Db4objects.Db4o.Events.QueryEventHandler QueryFinished

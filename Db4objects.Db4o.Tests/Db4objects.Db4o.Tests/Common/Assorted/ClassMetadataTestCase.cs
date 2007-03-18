@@ -24,8 +24,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			Db4objects.Db4o.Foundation.Collection4 expectedNames = new Db4objects.Db4o.Foundation.Collection4
 				(new Db4objects.Db4o.Foundation.ArrayIterator4(new string[] { "_id", "_name", "_age"
 				 }));
-			Db4objects.Db4o.Internal.ClassMetadata clazz = Stream().GetYapClass(Reflector().ForClass
-				(typeof(Db4objects.Db4o.Tests.Common.Assorted.ClassMetadataTestCase.SubClazz)));
+			Db4objects.Db4o.Internal.ClassMetadata clazz = Stream().ClassMetadataForReflectClass
+				(Reflector().ForClass(typeof(Db4objects.Db4o.Tests.Common.Assorted.ClassMetadataTestCase.SubClazz)
+				));
 			System.Collections.IEnumerator fieldIter = clazz.Fields();
 			while (fieldIter.MoveNext())
 			{

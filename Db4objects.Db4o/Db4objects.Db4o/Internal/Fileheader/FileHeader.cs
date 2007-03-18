@@ -154,7 +154,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			long currentAccessTime = reader.ReadLong();
 			if ((currentAccessTime > lastAccessTime))
 			{
-				throw new Db4objects.Db4o.Ext.DatabaseFileLockedException();
+				throw new Db4objects.Db4o.Ext.DatabaseFileLockedException(container.ToString());
 			}
 		}
 	}

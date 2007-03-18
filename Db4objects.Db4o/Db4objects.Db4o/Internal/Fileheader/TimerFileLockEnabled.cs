@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			catch (System.IO.IOException)
 			{
 			}
-			throw new Db4objects.Db4o.Ext.DatabaseFileLockedException();
+			throw new Db4objects.Db4o.Ext.DatabaseFileLockedException(_timerFile.ToString());
 		}
 
 		public override void CheckOpenTime()
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			catch (System.IO.IOException)
 			{
 			}
-			throw new Db4objects.Db4o.Ext.DatabaseFileLockedException();
+			throw new Db4objects.Db4o.Ext.DatabaseFileLockedException(_timerFile.ToString());
 		}
 
 		public override void Close()

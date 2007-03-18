@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				Sharpen.Lang.Thread.Sleep(millis);
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 		}

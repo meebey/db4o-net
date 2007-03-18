@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			Unmarshall(_payLoad._offset);
 			lock (StreamLock())
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = stream.GetYapClass(yapClassId);
+				Db4objects.Db4o.Internal.ClassMetadata yc = stream.ClassMetadataForId(yapClassId);
 				_payLoad.WriteEmbedded();
 				int id = _payLoad.GetID();
 				Transaction().DontDelete(id);

@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
 			}
-			Initialize3();
+			InitializePostOpen();
 		}
 
 		public InMemoryObjectContainer(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.Ext.MemoryFile
@@ -38,10 +38,12 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		protected override void Close2()
+		protected override void FreeInternalResources()
 		{
-			Write(true);
-			base.Close2();
+		}
+
+		protected override void ShutdownDataStorage()
+		{
 			if (!_closed)
 			{
 				byte[] temp = new byte[_length];
@@ -49,6 +51,11 @@ namespace Db4objects.Db4o.Internal
 				_memoryFile.SetBytes(temp);
 			}
 			_closed = true;
+			DropReferences();
+		}
+
+		protected virtual void DropReferences()
+		{
 		}
 
 		public override void Copy(int oldAddress, int oldAddressOffset, int newAddress, int
@@ -59,12 +66,6 @@ namespace Db4objects.Db4o.Internal
 			byte[] bytes = _memoryFile.GetBytes();
 			System.Array.Copy(bytes, oldAddress + oldAddressOffset, bytes, fullNewAddress, length
 				);
-		}
-
-		internal override void EmergencyClose()
-		{
-			base.EmergencyClose();
-			_closed = true;
 		}
 
 		public override long FileLength()
@@ -94,7 +95,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				_memoryFile.SetBytes(new byte[_memoryFile.GetInitialSize()]);
 				ConfigureNewFile();
-				Write(false);
+				CommitTransaction();
 				WriteHeader(false, false);
 			}
 			else

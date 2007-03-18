@@ -59,12 +59,12 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		protected virtual Db4objects.Db4o.Internal.Btree.BTree FieldIndexBTree(System.Type
 			 clazz, string fieldName)
 		{
-			return GetYapClass(clazz).GetYapField(fieldName).GetIndex(null);
+			return GetYapClass(clazz).FieldMetadataForName(fieldName).GetIndex(null);
 		}
 
 		private Db4objects.Db4o.Internal.ClassMetadata GetYapClass(System.Type clazz)
 		{
-			return Stream().GetYapClass(GetReflectClass(clazz));
+			return Stream().ClassMetadataForReflectClass(GetReflectClass(clazz));
 		}
 
 		private Db4objects.Db4o.Reflect.IReflectClass GetReflectClass(System.Type clazz)

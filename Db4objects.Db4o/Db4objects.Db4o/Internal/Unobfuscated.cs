@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal static void ShutDownHookCallback(object a_stream)
 		{
-			((Db4objects.Db4o.Internal.ObjectContainerBase)a_stream).FailedToShutDown();
+			((Db4objects.Db4o.Internal.ObjectContainerBase)a_stream).ShutdownHook();
 		}
 	}
 }

@@ -3,6 +3,8 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public abstract class LocalObjectContainer : Db4objects.Db4o.Internal.ObjectContainerBase
 	{
+		private const int DEFAULT_FREESPACE_ID = 0;
+
 		protected Db4objects.Db4o.Internal.Fileheader.FileHeader _fileHeader;
 
 		private Db4objects.Db4o.Foundation.Collection4 i_dirty;
@@ -53,22 +55,19 @@ namespace Db4objects.Db4o.Internal
 			_blockEndAddress = BlocksFor(address);
 		}
 
-		protected override void Close2()
+		protected sealed override void Close2()
 		{
-			base.Close2();
-			i_dirty = null;
+			FreeInternalResources();
+			CommitTransaction();
+			Shutdown();
+			ShutdownObjectContainer();
 		}
+
+		protected abstract void FreeInternalResources();
 
 		public override void Commit1()
 		{
-			try
-			{
-				Write(false);
-			}
-			catch (System.Exception e)
-			{
-				FatalException(e);
-			}
+			CommitTransaction();
 		}
 
 		internal virtual void ConfigureNewFile()
@@ -200,14 +199,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _AnonymousInnerClass211(this));
+				i_prefetchedIDs.Traverse(new _AnonymousInnerClass213(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _AnonymousInnerClass211 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass213 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass211(LocalObjectContainer _enclosing)
+			public _AnonymousInnerClass213(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -610,16 +609,16 @@ namespace Db4objects.Db4o.Internal
 				Db4objects.Db4o.Foundation.Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass589(this, semaphores), ta
+					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass591(this, semaphores), ta
 						);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass589 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass591 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass589(LocalObjectContainer _enclosing, Db4objects.Db4o.Foundation.Hashtable4
+			public _AnonymousInnerClass591(LocalObjectContainer _enclosing, Db4objects.Db4o.Foundation.Hashtable4
 				 semaphores)
 			{
 				this._enclosing = _enclosing;
@@ -718,17 +717,22 @@ namespace Db4objects.Db4o.Internal
 			return FileName();
 		}
 
-		public override void Write(bool shuttingDown)
+		public override void Shutdown()
+		{
+			if (i_config.IsReadOnly())
+			{
+				return;
+			}
+			WriteHeader(false, true);
+		}
+
+		public virtual void CommitTransaction()
 		{
 			if (i_config.IsReadOnly())
 			{
 				return;
 			}
 			i_trans.Commit();
-			if (shuttingDown)
-			{
-				WriteHeader(false, true);
-			}
 		}
 
 		public abstract void WriteBytes(Db4objects.Db4o.Internal.Buffer a_Bytes, int address
@@ -780,14 +784,15 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void WriteHeader(bool startFileLockingThread, bool shuttingDown)
 		{
-			int freespaceID = _freespaceManager.Write(shuttingDown);
+			int freespaceID = DEFAULT_FREESPACE_ID;
 			if (shuttingDown)
 			{
+				freespaceID = _freespaceManager.Shutdown();
 				_freespaceManager = null;
 			}
 			if (Db4objects.Db4o.Debug.freespace && Db4objects.Db4o.Debug.freespaceChecker)
 			{
-				freespaceID = _fmChecker.Write(shuttingDown);
+				freespaceID = _fmChecker.Shutdown();
 			}
 			Db4objects.Db4o.Internal.StatefulBuffer writer = GetWriter(i_systemTrans, 0, _fileHeader
 				.Length());
@@ -873,13 +878,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			Db4objects.Db4o.Foundation.IntArrayList ids = new Db4objects.Db4o.Foundation.IntArrayList
 				();
-			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass804(this, ids));
+			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass810(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _AnonymousInnerClass804 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass810 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass804(LocalObjectContainer _enclosing, Db4objects.Db4o.Foundation.IntArrayList
+			public _AnonymousInnerClass810(LocalObjectContainer _enclosing, Db4objects.Db4o.Foundation.IntArrayList
 				 ids)
 			{
 				this._enclosing = _enclosing;

@@ -288,12 +288,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return _file.GetSystemTransaction();
 		}
 
-		public override int Write(bool shuttingDown)
+		public override int Shutdown()
 		{
-			if (!shuttingDown)
-			{
-				return 0;
-			}
 			int freeBySizeID = 0;
 			int length = Db4objects.Db4o.Internal.TreeInt.ByteCount((Db4objects.Db4o.Internal.TreeInt
 				)_freeBySize);

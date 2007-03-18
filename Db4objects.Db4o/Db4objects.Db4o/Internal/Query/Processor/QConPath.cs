@@ -100,8 +100,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			bool mayMorph = true;
 			if (claxx != null)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = i_trans.Stream().ProduceYapClass(claxx
-					);
+				Db4objects.Db4o.Internal.ClassMetadata yc = i_trans.Stream().ProduceClassMetadata
+					(claxx);
 				if (yc != null)
 				{
 					System.Collections.IEnumerator i = IterateChildren();

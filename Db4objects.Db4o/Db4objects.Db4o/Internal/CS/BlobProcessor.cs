@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal.CS
 							{
 								socket.Close();
 							}
-							catch
+							catch (System.Exception)
 							{
 							}
 						}

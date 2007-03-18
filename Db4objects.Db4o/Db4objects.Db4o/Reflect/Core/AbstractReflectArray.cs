@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Reflect.Core
 					dim[i] = GetLength(arr);
 					arr = Get(arr, 0);
 				}
-				catch
+				catch (System.Exception)
 				{
 					return dim;
 				}
@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.Reflect.Core
 			{
 				return Get(onArray, index);
 			}
-			catch
+			catch (System.Exception)
 			{
 				return null;
 			}
@@ -107,7 +107,7 @@ namespace Db4objects.Db4o.Reflect.Core
 				{
 					Sharpen.Runtime.SetArrayValue(onArray, index, element);
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 			}

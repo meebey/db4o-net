@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		private Db4objects.Db4o.Internal.ClassMetadata YapClass()
 		{
-			return Stream().GetYapClass(Reflector().ForClass(typeof(Db4objects.Db4o.Tests.Common.Querying.QueryResultTestCase.Item)
+			return Stream().ClassMetadataForReflectClass(Reflector().ForClass(typeof(Db4objects.Db4o.Tests.Common.Querying.QueryResultTestCase.Item)
 				));
 		}
 

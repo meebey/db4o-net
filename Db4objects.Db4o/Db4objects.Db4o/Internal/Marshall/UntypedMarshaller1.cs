@@ -17,8 +17,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 				int linkOffset = reader._offset;
 				reader._offset = payLoadOffset;
 				int yapClassID = reader.ReadInt();
-				Db4objects.Db4o.Internal.ClassMetadata yc = reader.GetStream().GetYapClass(yapClassID
-					);
+				Db4objects.Db4o.Internal.ClassMetadata yc = reader.GetStream().ClassMetadataForId
+					(yapClassID);
 				if (yc != null)
 				{
 					yc.DeleteEmbedded(_family, reader);
@@ -38,8 +38,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			int linkOffSet = reader._offset;
 			reader._offset = payLoadOffSet;
 			int yapClassID = reader.ReadInt();
-			Db4objects.Db4o.Internal.ClassMetadata yc = reader.GetStream().GetYapClass(yapClassID
-				);
+			Db4objects.Db4o.Internal.ClassMetadata yc = reader.GetStream().ClassMetadataForId
+				(yapClassID);
 			if (yc != null)
 			{
 				ret = yc.Read(_family, reader, true);
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			int linkOffSet = reader._offset;
 			reader._offset = payLoadOffSet;
 			int yapClassID = reader.ReadInt();
-			Db4objects.Db4o.Internal.ClassMetadata yc = trans.Stream().GetYapClass(yapClassID
+			Db4objects.Db4o.Internal.ClassMetadata yc = trans.Stream().ClassMetadataForId(yapClassID
 				);
 			if (yc != null)
 			{
@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			Db4objects.Db4o.Internal.ITypeHandler4 ret = null;
 			reader[0]._offset = payLoadOffSet;
 			int yapClassID = reader[0].ReadInt();
-			Db4objects.Db4o.Internal.ClassMetadata yc = trans.Stream().GetYapClass(yapClassID
+			Db4objects.Db4o.Internal.ClassMetadata yc = trans.Stream().ClassMetadataForId(yapClassID
 				);
 			if (yc != null)
 			{
@@ -103,7 +103,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			int linkOffSet = reader._offset;
 			reader._offset = payLoadOffSet;
 			int yapClassID = reader.ReadInt();
-			Db4objects.Db4o.Internal.ClassMetadata yc = candidates.i_trans.Stream().GetYapClass
+			Db4objects.Db4o.Internal.ClassMetadata yc = candidates.i_trans.Stream().ClassMetadataForId
 				(yapClassID);
 			if (yc != null)
 			{

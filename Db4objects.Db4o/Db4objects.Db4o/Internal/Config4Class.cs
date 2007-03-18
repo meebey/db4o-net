@@ -170,7 +170,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				translator = NewTranslatorFromReflector(translatorName);
 			}
-			catch
+			catch (System.Exception)
 			{
 				try
 				{

@@ -255,7 +255,7 @@ namespace Db4objects.Db4o.Internal
 						i_handler.CascadeActivation(a_trans, cascadeTo, a_depth, a_activate);
 					}
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 			}
@@ -515,7 +515,7 @@ namespace Db4objects.Db4o.Internal
 		public virtual Db4objects.Db4o.Internal.ClassMetadata GetFieldYapClass(Db4objects.Db4o.Internal.ObjectContainerBase
 			 a_stream)
 		{
-			return i_handler.GetYapClass(a_stream);
+			return i_handler.GetClassMetadata(a_stream);
 		}
 
 		public virtual Db4objects.Db4o.Internal.ITypeHandler4 GetHandler()
@@ -647,7 +647,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				toSet = Read(mf, buffer);
 			}
-			catch
+			catch (System.Exception)
 			{
 				throw new Db4objects.Db4o.CorruptionException();
 			}
@@ -977,7 +977,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					obj = Read(mf, writer);
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 				if (obj == null)

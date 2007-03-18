@@ -23,8 +23,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg COMMIT = new Db4objects.Db4o.Internal.CS.Messages.MCommit
 			();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg COMMIT_OK = new Db4objects.Db4o.Internal.CS.Messages.MCommitOK
-			();
+		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD COMMIT_RESPONSE = 
+			new Db4objects.Db4o.Internal.CS.Messages.MCommitResponse();
+
+		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg COMMIT_SYSTEMTRANS
+			 = new Db4objects.Db4o.Internal.CS.Messages.MCommitSystemTransaction();
 
 		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD CREATE_CLASS = new 
 			Db4objects.Db4o.Internal.CS.Messages.MCreateClass();
@@ -289,17 +292,42 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return true;
 		}
 
-		public static Db4objects.Db4o.Internal.CS.Messages.Msg ReadMessage(Db4objects.Db4o.Internal.Transaction
-			 a_trans, Db4objects.Db4o.Foundation.Network.ISocket4 sock)
+		protected static Db4objects.Db4o.Internal.StatefulBuffer ReadMessageBuffer(Db4objects.Db4o.Internal.Transaction
+			 trans, Db4objects.Db4o.Foundation.Network.ISocket4 sock)
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer reader = new Db4objects.Db4o.Internal.StatefulBuffer
-				(a_trans, Db4objects.Db4o.Internal.Const4.MESSAGE_LENGTH);
-			if (!reader.Read(sock))
+			return ReadMessageBuffer(trans, sock, Db4objects.Db4o.Internal.Const4.MESSAGE_LENGTH
+				);
+		}
+
+		protected static Db4objects.Db4o.Internal.StatefulBuffer ReadMessageBuffer(Db4objects.Db4o.Internal.Transaction
+			 trans, Db4objects.Db4o.Foundation.Network.ISocket4 sock, int length)
+		{
+			Db4objects.Db4o.Internal.StatefulBuffer buffer = new Db4objects.Db4o.Internal.StatefulBuffer
+				(trans, length);
+			int offset = 0;
+			while (length > 0)
+			{
+				int read = sock.Read(buffer._buffer, offset, length);
+				if (read < 0)
+				{
+					return null;
+				}
+				offset += read;
+				length -= read;
+			}
+			return buffer;
+		}
+
+		public static Db4objects.Db4o.Internal.CS.Messages.Msg ReadMessage(Db4objects.Db4o.Internal.Transaction
+			 trans, Db4objects.Db4o.Foundation.Network.ISocket4 sock)
+		{
+			Db4objects.Db4o.Internal.StatefulBuffer reader = ReadMessageBuffer(trans, sock);
+			if (null == reader)
 			{
 				return null;
 			}
 			Db4objects.Db4o.Internal.CS.Messages.Msg message = _messages[reader.ReadInt()].ReadPayLoad
-				(a_trans, sock, reader);
+				(trans, sock, reader);
 			return message;
 		}
 
@@ -307,8 +335,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			 a_trans, Db4objects.Db4o.Foundation.Network.ISocket4 sock, Db4objects.Db4o.Internal.Buffer
 			 reader)
 		{
-			a_trans = CheckParentTransaction(a_trans, reader);
-			return Clone(a_trans);
+			return Clone(CheckParentTransaction(a_trans, reader));
 		}
 
 		protected virtual Db4objects.Db4o.Internal.Transaction CheckParentTransaction(Db4objects.Db4o.Internal.Transaction
@@ -350,7 +377,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					sock.Write(PayLoad()._buffer);
 					sock.Flush();
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 			}

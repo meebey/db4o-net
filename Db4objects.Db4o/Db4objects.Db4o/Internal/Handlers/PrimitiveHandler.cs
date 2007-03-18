@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Db4objects.Db4o.Internal.Const4.TYPE_SIMPLE;
 		}
 
-		public virtual Db4objects.Db4o.Internal.ClassMetadata GetYapClass(Db4objects.Db4o.Internal.ObjectContainerBase
+		public virtual Db4objects.Db4o.Internal.ClassMetadata GetClassMetadata(Db4objects.Db4o.Internal.ObjectContainerBase
 			 a_stream)
 		{
 			return a_stream.i_handlers.PrimitiveClassById(GetID());

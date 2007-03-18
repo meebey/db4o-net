@@ -43,9 +43,9 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		private Db4objects.Db4o.Internal.Btree.BTree Btree()
 		{
-			Db4objects.Db4o.Internal.ClassMetadata clazz = Stream().GetYapClass(Reflector().ForClass
-				(typeof(Db4objects.Db4o.Tests.Common.Btree.DebugBTreeNodeMarshalledLength.Item))
-				);
+			Db4objects.Db4o.Internal.ClassMetadata clazz = Stream().ClassMetadataForReflectClass
+				(Reflector().ForClass(typeof(Db4objects.Db4o.Tests.Common.Btree.DebugBTreeNodeMarshalledLength.Item)
+				));
 			Db4objects.Db4o.Internal.Classindex.IClassIndexStrategy index = clazz.Index();
 			return ((Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy)index).Btree
 				();

@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.BackupStressTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.CanUpdateFalseRefreshTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReaddTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ChangeIdentity)
+				, typeof(Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ChangeIdentity)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.ClassMetadataTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.CloseUnlocksFileTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.ComparatorSortTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.DatabaseUnicityTest)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.FileSizeOnRollbackTestCase)

@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Internal.CS
 				{
 					Sharpen.Runtime.Wait(_startupLock, 1000);
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 			}
@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void EnsureLoadStaticClass()
 		{
-			_container.ProduceYapClass(_container.i_handlers.ICLASS_STATICCLASS);
+			_container.ProduceClassMetadata(_container.i_handlers.ICLASS_STATICCLASS);
 		}
 
 		private void EnsureLoadConfiguredClasses()
@@ -104,8 +104,8 @@ namespace Db4objects.Db4o.Internal.CS
 
 			public void Visit(object a_object)
 			{
-				this._enclosing._container.ProduceYapClass(this._enclosing._container.Reflector()
-					.ForName(((Db4objects.Db4o.Internal.Config4Class)a_object).GetName()));
+				this._enclosing._container.ProduceClassMetadata(this._enclosing._container.Reflector
+					().ForName(((Db4objects.Db4o.Internal.Config4Class)a_object).GetName()));
 			}
 
 			private readonly ObjectServerImpl _enclosing;
@@ -188,7 +188,7 @@ namespace Db4objects.Db4o.Internal.CS
 					_serverSocket.Close();
 				}
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 			_serverSocket = null;
@@ -388,7 +388,7 @@ namespace Db4objects.Db4o.Internal.CS
 					AddThread(thread);
 					thread.Start();
 				}
-				catch
+				catch (System.Exception)
 				{
 				}
 			}

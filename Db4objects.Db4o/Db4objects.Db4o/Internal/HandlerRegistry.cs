@@ -371,7 +371,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return ((Db4objects.Db4o.Internal.PrimitiveFieldHandler)yc).i_handler;
 			}
-			return a_stream.ProduceYapClass(a_class);
+			return a_stream.ProduceClassMetadata(a_class);
 		}
 
 		public Db4objects.Db4o.Internal.ITypeHandler4 UntypedHandler()

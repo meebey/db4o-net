@@ -13,9 +13,85 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		private static object Init()
+		private static void Init()
 		{
-			return null;
+			ADD_TO_CLASS_INDEX = new Db4objects.Db4o.DTrace(true, true, "add to class index tree"
+				, true);
+			BEGIN_TOP_LEVEL_CALL = new Db4objects.Db4o.DTrace(true, true, "begin top level call"
+				, true);
+			BIND = new Db4objects.Db4o.DTrace(true, true, "bind", true);
+			BTREE_NODE_REMOVE = new Db4objects.Db4o.DTrace(true, true, "btreenode remove", true
+				);
+			BTREE_NODE_COMMIT_OR_ROLLBACK = new Db4objects.Db4o.DTrace(true, true, "btreenode commit or rollback"
+				, true);
+			CANDIDATE_READ = new Db4objects.Db4o.DTrace(true, true, "candidate read", true);
+			CLOSE = new Db4objects.Db4o.DTrace(true, true, "close", true);
+			COLLECT_CHILDREN = new Db4objects.Db4o.DTrace(true, true, "collect children", true
+				);
+			COMMIT = new Db4objects.Db4o.DTrace(false, false, "commit", true);
+			CONTINUESET = new Db4objects.Db4o.DTrace(true, true, "continueset", true);
+			CREATE_CANDIDATE = new Db4objects.Db4o.DTrace(true, true, "create candidate", true
+				);
+			DELETE = new Db4objects.Db4o.DTrace(true, true, "delete", true);
+			DONOTINCLUDE = new Db4objects.Db4o.DTrace(true, true, "donotinclude", true);
+			END_TOP_LEVEL_CALL = new Db4objects.Db4o.DTrace(true, true, "end top level call", 
+				true);
+			EVALUATE_SELF = new Db4objects.Db4o.DTrace(true, true, "evaluate self", true);
+			FREE = new Db4objects.Db4o.DTrace(true, true, "free", true);
+			FILE_FREE = new Db4objects.Db4o.DTrace(true, true, "fileFree", true);
+			FREE_RAM = new Db4objects.Db4o.DTrace(true, true, "freeRAM", true);
+			FREE_ON_COMMIT = new Db4objects.Db4o.DTrace(true, true, "trans freeOnCommit", true
+				);
+			FREE_ON_ROLLBACK = new Db4objects.Db4o.DTrace(true, true, "trans freeOnRollback", 
+				true);
+			GET_SLOT = new Db4objects.Db4o.DTrace(true, true, "getSlot", true);
+			GET_FREESPACE = new Db4objects.Db4o.DTrace(true, true, "getFreespace", true);
+			GET_FREESPACE_RAM = new Db4objects.Db4o.DTrace(true, true, "getFreespaceRam", true
+				);
+			GET_YAPOBJECT = new Db4objects.Db4o.DTrace(true, true, "get yapObject", true);
+			ID_TREE_ADD = new Db4objects.Db4o.DTrace(true, true, "id tree add", true);
+			ID_TREE_REMOVE = new Db4objects.Db4o.DTrace(true, true, "id tree remove", true);
+			IO_COPY = new Db4objects.Db4o.DTrace(true, true, "io copy", true);
+			JUST_SET = new Db4objects.Db4o.DTrace(true, true, "just set", true);
+			NEW_INSTANCE = new Db4objects.Db4o.DTrace(true, true, "newInstance", true);
+			PRODUCE_SLOT_CHANGE = new Db4objects.Db4o.DTrace(true, true, "produce slot change"
+				, true);
+			QUERY_PROCESS = new Db4objects.Db4o.DTrace(true, true, "query process", true);
+			READ_ARRAY_WRAPPER = new Db4objects.Db4o.DTrace(true, true, "read array wrapper", 
+				true);
+			READ_BYTES = new Db4objects.Db4o.DTrace(true, true, "readBytes", true);
+			READ_ID = new Db4objects.Db4o.DTrace(true, true, "read ID", true);
+			READ_SLOT = new Db4objects.Db4o.DTrace(true, true, "read slot", true);
+			REFERENCE_REMOVED = new Db4objects.Db4o.DTrace(true, true, "reference removed", true
+				);
+			REGULAR_SEEK = new Db4objects.Db4o.DTrace(true, true, "regular seek", true);
+			REMOVE_FROM_CLASS_INDEX = new Db4objects.Db4o.DTrace(true, true, "trans removeFromClassIndexTree"
+				, true);
+			REREAD_OLD_UUID = new Db4objects.Db4o.DTrace(true, true, "reread old uuid", true);
+			SLOT_SET_POINTER = new Db4objects.Db4o.DTrace(true, true, "slot set pointer", true
+				);
+			SLOT_DELETE = new Db4objects.Db4o.DTrace(true, true, "slot delete", true);
+			SLOT_FREE_ON_COMMIT = new Db4objects.Db4o.DTrace(true, true, "slot free on commit"
+				, true);
+			SLOT_FREE_ON_ROLLBACK_ID = new Db4objects.Db4o.DTrace(true, true, "slot free on rollback id"
+				, true);
+			SLOT_FREE_ON_ROLLBACK_ADDRESS = new Db4objects.Db4o.DTrace(true, true, "slot free on rollback address"
+				, true);
+			TRANS_COMMIT = new Db4objects.Db4o.DTrace(false, false, "trans commit", false);
+			TRANS_DELETE = new Db4objects.Db4o.DTrace(true, true, "trans delete", true);
+			TRANS_DONT_DELETE = new Db4objects.Db4o.DTrace(true, true, "trans dontDelete", true
+				);
+			TRANS_FLUSH = new Db4objects.Db4o.DTrace(true, true, "trans flush", true);
+			YAPMETA_WRITE = new Db4objects.Db4o.DTrace(true, true, "yapmeta write", true);
+			YAPCLASS_BY_ID = new Db4objects.Db4o.DTrace(true, true, "yapclass by id", true);
+			YAPCLASS_INIT = new Db4objects.Db4o.DTrace(true, true, "yapclass init", true);
+			YAPMETA_SET_ID = new Db4objects.Db4o.DTrace(true, true, "yapmeta setid", true);
+			WRITE_BYTES = new Db4objects.Db4o.DTrace(true, true, "writeBytes", true);
+			WRITE_POINTER = new Db4objects.Db4o.DTrace(true, true, "write pointer", true);
+			WRITE_UPDATE_DELETE_MEMBERS = new Db4objects.Db4o.DTrace(true, true, "trans writeUpdateDeleteMembers"
+				, true);
+			WRITE_XBYTES = new Db4objects.Db4o.DTrace(true, true, "writeXBytes", true);
+			Configure();
 		}
 
 		private static void TrackEventsWithoutRange()
@@ -161,7 +237,10 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.DTrace WRITE_UPDATE_DELETE_MEMBERS;
 
-		public static readonly object forInit = Init();
+		static DTrace()
+		{
+			Init();
+		}
 
 		private static Db4objects.Db4o.DTrace all;
 

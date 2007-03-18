@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			, Db4objects.Db4o.Internal.Buffer reader)
 		{
 			reader.Seek(OPEN_TIME_OFFSET);
-			long lastOpenTime = reader.ReadLong();
+			reader.ReadLong();
 			long lastAccessTime = reader.ReadLong();
 			if (Db4objects.Db4o.Internal.Fileheader.FileHeader.LockedByOtherSession(container
 				, lastAccessTime))

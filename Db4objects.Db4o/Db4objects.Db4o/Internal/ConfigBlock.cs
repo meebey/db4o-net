@@ -137,7 +137,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				_container.ReadBytes(reader._buffer, _address, LENGTH);
 			}
-			catch
+			catch (System.Exception)
 			{
 			}
 			int oldLength = reader.ReadInt();

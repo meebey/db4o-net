@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public abstract byte SystemType();
 
-		public abstract int Write(bool shuttingDown);
+		public abstract int Shutdown();
 
 		public virtual bool RequiresMigration(byte configuredSystem, byte readSystem)
 		{

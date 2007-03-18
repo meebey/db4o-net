@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			int classID = reader.ReadInt();
 			_marshallerFamily = ReadMarshallerFamily(reader, classID);
 			classID = NormalizeID(classID);
-			_yapClass = (yc != null ? yc : stream.GetYapClass(classID));
+			_yapClass = (yc != null ? yc : stream.ClassMetadataForId(classID));
 			_headerAttributes = ReadAttributes(_marshallerFamily, reader);
 		}
 

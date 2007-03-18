@@ -313,6 +313,10 @@ namespace Db4objects.Db4o.Defragment
 				{
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
+				catch (System.IO.IOException e)
+				{
+					Sharpen.Runtime.PrintStackTrace(e);
+				}
 			}
 
 			private readonly Db4objects.Db4o.Defragment.IPassCommand command;

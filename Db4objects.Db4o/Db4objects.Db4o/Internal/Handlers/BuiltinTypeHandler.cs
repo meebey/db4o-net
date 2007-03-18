@@ -104,12 +104,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract bool Equals(Db4objects.Db4o.Internal.ITypeHandler4 arg1);
 
+		public abstract Db4objects.Db4o.Internal.ClassMetadata GetClassMetadata(Db4objects.Db4o.Internal.ObjectContainerBase
+			 arg1);
+
 		public abstract int GetID();
 
 		public abstract int GetTypeID();
-
-		public abstract Db4objects.Db4o.Internal.ClassMetadata GetYapClass(Db4objects.Db4o.Internal.ObjectContainerBase
-			 arg1);
 
 		public abstract object IndexEntryToObject(Db4objects.Db4o.Internal.Transaction arg1
 			, object arg2);

@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal
 			System.Collections.IEnumerator i = copy.GetEnumerator();
 			while (i.MoveNext())
 			{
-				((Db4objects.Db4o.Internal.ObjectContainerBase)i.Current).FailedToShutDown();
+				((Db4objects.Db4o.Internal.ObjectContainerBase)i.Current).ShutdownHook();
 			}
 		}
 	}
