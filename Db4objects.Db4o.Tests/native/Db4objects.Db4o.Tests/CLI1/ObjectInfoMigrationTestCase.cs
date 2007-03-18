@@ -31,6 +31,12 @@ namespace Db4objects.Db4o.Tests.CLI1
         public void Test52UuidAndVersion()
         {
             string originalFile = WorkspaceServices.WorkspaceTestFilePath("net/db4o52.db4o");
+            if (null == originalFile)
+            {
+                System.Console.Error.WriteLine("Build environment not available. Skipping test case...");
+                return;
+            }
+            
             string fname = Path.GetTempFileName();
             File.Copy(originalFile, fname, true);
 
