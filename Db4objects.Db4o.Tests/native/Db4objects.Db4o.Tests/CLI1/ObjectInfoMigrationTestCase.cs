@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Tests.CLI1
             string originalFile = WorkspaceServices.WorkspaceTestFilePath("net/db4o52.db4o");
             if (null == originalFile)
             {
-                System.Console.Error.WriteLine("Build environment not available. Skipping test case...");
+                System.Console.WriteLine("Build environment not available. Skipping test case...");
                 return;
             }
             

@@ -3,7 +3,7 @@
 #if CF_1_0 || CF_2_0
 namespace System
 {
-	public class SerializableAttribute : Attribute
+	class SerializableAttribute : Attribute
 	{
 	}
 }
