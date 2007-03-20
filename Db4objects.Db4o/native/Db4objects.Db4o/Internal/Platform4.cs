@@ -36,6 +36,8 @@ namespace Db4objects.Db4o.Internal
 
         private static ArrayList shutDownStreams;
 
+		private static object _lock = new object();
+
         private static readonly byte[][] oldAssemblies;
 
 		public static object[] CollectionToArray(ObjectContainerBase stream, object obj)
@@ -70,20 +72,20 @@ namespace Db4objects.Db4o.Internal
             throw new NotSupportedException();
         }
 
-        internal static void AddShutDownHook(Object stream, Object streamLock)
+        internal static void AddShutDownHook(PartialObjectContainer container)
         {
-            lock (typeof(Platform4))
+            lock (_lock)
             {
                 if (shutDownStreams == null)
                 {
                     shutDownStreams = new ArrayList();
 #if !CF_1_0 && !CF_2_0
-                    EventHandler handler = new EventHandler(OnShutDown);
-                    AppDomain.CurrentDomain.ProcessExit += handler;
-                    AppDomain.CurrentDomain.DomainUnload += handler;
+					EventHandler handler = new EventHandler(OnShutDown);
+					AppDomain.CurrentDomain.ProcessExit += handler;
+					AppDomain.CurrentDomain.DomainUnload += handler;
 #endif
                 }
-                shutDownStreams.Add(stream);
+                shutDownStreams.Add(container);
             }
         }
 
@@ -484,13 +486,13 @@ namespace Db4objects.Db4o.Internal
                 3);
         }
 
-        internal static void RemoveShutDownHook(Object yapStream, Object streamLock)
+        internal static void RemoveShutDownHook(PartialObjectContainer container)
         {
-            lock (typeof(Platform4))
+            lock (_lock)
             {
-                if (shutDownStreams != null && shutDownStreams.Contains(yapStream))
+                if (shutDownStreams != null)
                 {
-                    shutDownStreams.Remove(yapStream);
+                    shutDownStreams.Remove(container);
                 }
             }
         }
@@ -502,20 +504,19 @@ namespace Db4objects.Db4o.Internal
 
         private static void OnShutDown(object sender, EventArgs args)
         {
-            lock (typeof(Platform4))
-            {
-				while (shutDownStreams.Count > 0)
+			lock (_lock)
+			{
+				foreach (ObjectContainerBase container in shutDownStreams.ToArray())
 				{
-					Unobfuscated.ShutDownHookCallback(shutDownStreams[0]); // this will remove the stream for the list
-				}
-            }
+					container.ShutdownHook(); // this will remove the stream for the list
+				}				
+			}
         }
 
         public static bool StoreStaticFieldValues(IReflector reflector, IReflectClass clazz)
         {
             return false;
         }
-
 
 		private static void Translate(Config4Impl config, object obj, IObjectTranslator translator)
 		{
