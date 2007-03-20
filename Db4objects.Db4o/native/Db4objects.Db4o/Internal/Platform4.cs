@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal
                 {
                     new string[] { "com.db4o.ext", "Db4objects.Db4o.Ext"},
                     new string[] { "com.db4o.inside", "Db4objects.Db4o.Internal"},
-//                    new string[] { "com.db4o", "Db4objects.Db4o"}, 
+                    new string[] { "com.db4o", "Db4objects.Db4o"}, 
                 };
 
 
