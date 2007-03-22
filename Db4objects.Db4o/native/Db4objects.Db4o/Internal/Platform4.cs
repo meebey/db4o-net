@@ -590,7 +590,7 @@ namespace Db4objects.Db4o.Internal
             Type type = GetNetType(clazz);
             if (null == type) return false;
             return type.IsPointer
-                || typeof(Delegate).IsAssignableFrom(type);
+                || type.IsSubclassOf(typeof(Delegate));
         }
 
         private static Type GetNetType(IReflectClass clazz)
