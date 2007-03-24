@@ -62,7 +62,9 @@ namespace Db4objects.Db4o.Tests.CLI1
         {
             if (null == OriginalTestFile)
             {
+#if !CF_1_0
                 System.Console.Error.WriteLine("Build environment not available. Skipping test case...");
+#endif
                 return;
             }
 
@@ -163,7 +165,9 @@ namespace Db4objects.Db4o.Tests.CLI1
                 Db4o52Regression.Item newItem = new Db4o52Regression.Item("New " + i);
                 _container.Set(newItem);
                 WriteItemString(writer, newItem);
+#if !CF_1_0
                 WriteItemString(Console.Out, newItem);
+#endif
             }
             return writer.ToString().Trim();
         }
