@@ -165,7 +165,7 @@ namespace Db4objects.Db4o.Tests.CLI1
                 Db4o52Regression.Item newItem = new Db4o52Regression.Item("New " + i);
                 _container.Set(newItem);
                 WriteItemString(writer, newItem);
-#if !CF_1_0
+#if ! (CF_1_0 || CF_2_0)
                 WriteItemString(Console.Out, newItem);
 #endif
             }
