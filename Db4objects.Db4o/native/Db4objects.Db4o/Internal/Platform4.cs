@@ -300,6 +300,9 @@ namespace Db4objects.Db4o.Internal
 
             if (IsMono())
             {
+#if !CF_1_0 && !CF_2_0
+				Translate(config, new Exception(), new TSerializable());
+#endif
                 Translate(config, "System.MonoType, mscorlib", new TType());
             }
             else
