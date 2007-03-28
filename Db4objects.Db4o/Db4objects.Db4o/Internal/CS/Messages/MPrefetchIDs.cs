@@ -1,9 +1,8 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MPrefetchIDs : Db4objects.Db4o.Internal.CS.Messages.MsgD
+	public sealed class MPrefetchIDs : Db4objects.Db4o.Internal.CS.Messages.MsgD, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			int prefetchIDCount = ReadInt();
 			Db4objects.Db4o.Internal.CS.Messages.MsgD reply = Db4objects.Db4o.Internal.CS.Messages.Msg
@@ -17,7 +16,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 						());
 				}
 			}
-			serverThread.Write(reply);
+			Write(reply);
 			return true;
 		}
 	}

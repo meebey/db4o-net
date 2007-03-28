@@ -1,9 +1,8 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MRollback : Db4objects.Db4o.Internal.CS.Messages.Msg
+	public sealed class MRollback : Db4objects.Db4o.Internal.CS.Messages.Msg, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			Transaction().Rollback();
 			return true;

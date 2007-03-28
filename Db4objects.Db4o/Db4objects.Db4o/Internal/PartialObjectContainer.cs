@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Foundation.List4 i_stillToSet;
 
-		protected Db4objects.Db4o.Internal.Transaction i_systemTrans;
+		private Db4objects.Db4o.Internal.Transaction i_systemTrans;
 
 		protected Db4objects.Db4o.Internal.Transaction i_trans;
 
@@ -647,6 +647,9 @@ namespace Db4objects.Db4o.Internal
 				catch (Db4objects.Db4o.CorruptionException)
 				{
 				}
+				catch (System.IO.IOException)
+				{
+				}
 			}
 			if (path.Length == 1)
 			{
@@ -714,7 +717,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (_stackDepth == 0)
+			if (AllOperationsCompleted())
 			{
 				Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl(), 50, ToString(), null);
 				Close();
@@ -722,11 +725,21 @@ namespace Db4objects.Db4o.Internal
 			else
 			{
 				ShutdownObjectContainer();
-				if (_stackDepth > 0)
+				if (OperationIsProcessing())
 				{
 					Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl(), 24, null, null);
 				}
 			}
+		}
+
+		private bool OperationIsProcessing()
+		{
+			return _stackDepth > 0;
+		}
+
+		private bool AllOperationsCompleted()
+		{
+			return _stackDepth == 0;
 		}
 
 		internal virtual void FatalException(int msgID)
@@ -750,12 +763,9 @@ namespace Db4objects.Db4o.Internal
 			throw new System.Exception(Db4objects.Db4o.Internal.Messages.Get(msgID));
 		}
 
-		~PartialObjectContainer()
+		private bool ConfiguredForAutomaticShutDown()
 		{
-			if (DoFinalize() && (ConfigImpl() == null || ConfigImpl().AutomaticShutDown()))
-			{
-				ShutdownHook();
-			}
+			return (ConfigImpl() == null || ConfigImpl().AutomaticShutDown());
 		}
 
 		internal virtual void Gc()
@@ -785,6 +795,7 @@ namespace Db4objects.Db4o.Internal
 			catch (Db4objects.Db4o.Ext.Db4oException e)
 			{
 				CompleteTopLevelCall();
+				throw;
 			}
 			finally
 			{
@@ -972,7 +983,7 @@ namespace Db4objects.Db4o.Internal
 			return new Db4objects.Db4o.Internal.StatefulBuffer(a_trans, a_address, a_length);
 		}
 
-		public Db4objects.Db4o.Internal.Transaction GetSystemTransaction()
+		public Db4objects.Db4o.Internal.Transaction SystemTransaction()
 		{
 			return i_systemTrans;
 		}
@@ -1136,7 +1147,7 @@ namespace Db4objects.Db4o.Internal
 			i_references = new Db4objects.Db4o.Internal.WeakReferenceCollector(_this);
 			if (HasShutDownHook())
 			{
-				Db4objects.Db4o.Internal.Platform4.AddShutDownHook(this, i_lock);
+				Db4objects.Db4o.Internal.Platform4.AddShutDownHook(this);
 			}
 			i_handlers.InitEncryption(ConfigImpl());
 			Initialize2();
@@ -1149,7 +1160,7 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Internal.Config4Impl impl = ((Db4objects.Db4o.Internal.Config4Impl
 				)config);
 			impl.Stream(_this);
-			impl.Reflector().SetTransaction(GetSystemTransaction());
+			impl.Reflector().SetTransaction(SystemTransaction());
 			return impl;
 		}
 
@@ -1247,7 +1258,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public virtual bool IsClosed()
+		public bool IsClosed()
 		{
 			lock (i_lock)
 			{
@@ -1785,6 +1796,7 @@ namespace Db4objects.Db4o.Internal
 				int id = OldReplicationHandles(obj);
 				if (id != 0)
 				{
+					CompleteTopLevelSet();
 					if (id < 0)
 					{
 						return 0;
@@ -2146,7 +2158,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (HasShutDownHook())
 			{
-				Db4objects.Db4o.Internal.Platform4.RemoveShutDownHook(this, i_lock);
+				Db4objects.Db4o.Internal.Platform4.RemoveShutDownHook(this);
 			}
 			_classCollection = null;
 			i_references.StopTimer();
@@ -2189,8 +2201,11 @@ namespace Db4objects.Db4o.Internal
 		{
 			CheckClosed();
 			GenerateCallIDOnTopLevel();
+			if (_stackDepth == 0)
+			{
+				_topLevelCallCompleted = false;
+			}
 			_stackDepth++;
-			_topLevelCallCompleted = false;
 		}
 
 		public void BeginTopLevelSet()
@@ -2200,7 +2215,10 @@ namespace Db4objects.Db4o.Internal
 
 		private void CompleteTopLevelCall()
 		{
-			_topLevelCallCompleted = true;
+			if (_stackDepth == 1)
+			{
+				_topLevelCallCompleted = true;
+			}
 		}
 
 		public void CompleteTopLevelSet()
@@ -2212,16 +2230,19 @@ namespace Db4objects.Db4o.Internal
 		{
 			_stackDepth--;
 			GenerateCallIDOnTopLevel();
-			if (!_topLevelCallCompleted)
+			if (_stackDepth == 0)
 			{
-				ShutdownObjectContainer();
+				if (!_topLevelCallCompleted)
+				{
+					ShutdownObjectContainer();
+				}
 			}
 		}
 
 		public void EndTopLevelSet(Db4objects.Db4o.Internal.Transaction trans)
 		{
 			EndTopLevelCall();
-			if (_stackDepth == 0)
+			if (_stackDepth == 0 && _topLevelCallCompleted)
 			{
 				trans.ProcessDeletes();
 			}

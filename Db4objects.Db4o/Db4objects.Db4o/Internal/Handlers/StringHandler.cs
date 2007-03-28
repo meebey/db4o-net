@@ -26,26 +26,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return _stream.i_handlers.ICLASS_STRING;
 		}
 
-		public override object ComparableObject(Db4objects.Db4o.Internal.Transaction a_trans
-			, object a_object)
+		public override object ComparableObject(Db4objects.Db4o.Internal.Transaction trans
+			, object obj)
 		{
-			if (a_object == null)
-			{
-				return null;
-			}
-			if (a_object is Db4objects.Db4o.Internal.Buffer)
-			{
-				return a_object;
-			}
-			Db4objects.Db4o.Internal.Slots.Slot s = (Db4objects.Db4o.Internal.Slots.Slot)a_object;
-			try
-			{
-				return a_trans.Stream().BufferByAddress(s._address, s._length);
-			}
-			catch (System.IO.IOException e)
-			{
-				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
-			}
+			return Val(obj, trans.Stream());
 		}
 
 		public override void DeleteEmbedded(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
@@ -156,6 +140,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			catch (Db4objects.Db4o.CorruptionException)
 			{
 			}
+			catch (System.IO.IOException)
+			{
+			}
 			return null;
 		}
 
@@ -164,17 +151,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// This readIndexEntry method reads from the parent slot.
 		/// TODO: Consider renaming methods in Indexable4 and Typhandler4 to make direction clear.
 		/// </remarks>
+		/// <exception cref="System.IO.IOException"></exception>
 		public override object ReadIndexEntry(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
 			 mf, Db4objects.Db4o.Internal.StatefulBuffer a_writer)
 		{
-			try
-			{
-				return mf._string.ReadIndexEntry(a_writer);
-			}
-			catch (System.IO.IOException e)
-			{
-				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
-			}
+			return mf._string.ReadIndexEntry(a_writer);
 		}
 
 		/// <summary>This readIndexEntry method reads from the actual index in the file.</summary>
@@ -206,21 +187,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return mf._string.Read(a_trans.Stream(), a_reader);
 			}
-			Db4objects.Db4o.Internal.Buffer reader;
-			try
-			{
-				reader = mf._string.ReadSlotFromParentSlot(a_trans.Stream(), a_reader);
-			}
-			catch (System.IO.IOException e)
-			{
-				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
-			}
+			Db4objects.Db4o.Internal.Buffer reader = mf._string.ReadSlotFromParentSlot(a_trans
+				.Stream(), a_reader);
 			if (a_toArray)
 			{
-				if (reader != null)
-				{
-					return mf._string.ReadFromOwnSlot(a_trans.Stream(), reader);
-				}
+				return mf._string.ReadFromOwnSlot(a_trans.Stream(), reader);
 			}
 			return reader;
 		}
@@ -291,6 +262,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private Db4objects.Db4o.Internal.Buffer Val(object obj)
 		{
+			return Val(obj, _stream);
+		}
+
+		private Db4objects.Db4o.Internal.Buffer Val(object obj, Db4objects.Db4o.Internal.ObjectContainerBase
+			 oc)
+		{
 			if (obj is Db4objects.Db4o.Internal.Buffer)
 			{
 				return (Db4objects.Db4o.Internal.Buffer)obj;
@@ -305,11 +282,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 				Db4objects.Db4o.Internal.Slots.Slot s = (Db4objects.Db4o.Internal.Slots.Slot)obj;
 				try
 				{
-					return _stream.BufferByAddress(s._address, s._length);
+					return oc.BufferByAddress(s._address, s._length);
 				}
 				catch (System.IO.IOException e)
 				{
-					throw new Db4objects.Db4o.IO.UncheckedIOException(e);
+					throw new Db4objects.Db4o.Internal.IX.ComparableConversionException(s, e);
 				}
 			}
 			return null;

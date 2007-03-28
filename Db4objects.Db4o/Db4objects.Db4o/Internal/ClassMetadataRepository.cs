@@ -279,7 +279,7 @@ namespace Db4objects.Db4o.Internal
 			int id = yapClass.GetID();
 			if (id == 0)
 			{
-				yapClass.Write(Stream().GetSystemTransaction());
+				yapClass.Write(Stream().SystemTransaction());
 				id = yapClass.GetID();
 			}
 			if (i_yapClassByID.Get(id) == null)
@@ -537,7 +537,7 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Internal.ClassMetadataRepository rereader = new Db4objects.Db4o.Internal.ClassMetadataRepository
 				(_systemTransaction);
 			rereader.i_id = i_id;
-			rereader.Read(Stream().GetSystemTransaction());
+			rereader.Read(Stream().SystemTransaction());
 			System.Collections.IEnumerator i = rereader.i_classes.GetEnumerator();
 			while (i.MoveNext())
 			{
@@ -654,7 +654,12 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Internal.SystemData SystemData()
 		{
-			return _systemTransaction.i_file.SystemData();
+			return LocalSystemTransaction().File().SystemData();
+		}
+
+		private Db4objects.Db4o.Internal.LocalTransaction LocalSystemTransaction()
+		{
+			return ((Db4objects.Db4o.Internal.LocalTransaction)_systemTransaction);
 		}
 	}
 }

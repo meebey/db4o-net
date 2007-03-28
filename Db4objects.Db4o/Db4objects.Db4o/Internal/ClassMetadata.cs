@@ -400,7 +400,7 @@ namespace Db4objects.Db4o.Internal
 						AddMembers(i_stream);
 						if (!i_stream.IsClient())
 						{
-							Write(i_stream.GetSystemTransaction());
+							Write(i_stream.SystemTransaction());
 						}
 					}
 				}
@@ -1839,7 +1839,7 @@ namespace Db4objects.Db4o.Internal
 				SetStateOK();
 				i_name = newName;
 				SetStateDirty();
-				Write(i_stream.GetSystemTransaction());
+				Write(i_stream.SystemTransaction());
 				i_state = tempState;
 			}
 			else

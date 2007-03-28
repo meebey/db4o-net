@@ -41,12 +41,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_primitive;
 		}
 
-		internal override object Read1(Db4objects.Db4o.Internal.Buffer a_bytes)
+		public override object Read(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf
+			, Db4objects.Db4o.Internal.StatefulBuffer writer, bool redirect)
 		{
-			return a_bytes.ReadInt();
+			return mf._primitive.ReadInteger(writer);
 		}
 
-		public static int ReadInt(Db4objects.Db4o.Internal.Buffer a_bytes)
+		internal override object Read1(Db4objects.Db4o.Internal.Buffer a_bytes)
 		{
 			return a_bytes.ReadInt();
 		}

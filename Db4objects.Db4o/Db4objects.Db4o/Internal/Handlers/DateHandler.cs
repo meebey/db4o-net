@@ -62,12 +62,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return PrimitiveMarshaller().ReadDate(a_bytes);
 		}
 
-		private Db4objects.Db4o.Internal.Marshall.PrimitiveMarshaller PrimitiveMarshaller
-			()
-		{
-			return Db4objects.Db4o.Internal.Marshall.MarshallerFamily.Current()._primitive;
-		}
-
 		public override void Write(object a_object, Db4objects.Db4o.Internal.Buffer a_bytes
 			)
 		{

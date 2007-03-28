@@ -283,9 +283,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return FM_RAM;
 		}
 
-		private Db4objects.Db4o.Internal.Transaction Trans()
+		private Db4objects.Db4o.Internal.LocalTransaction Trans()
 		{
-			return _file.GetSystemTransaction();
+			return (Db4objects.Db4o.Internal.LocalTransaction)_file.SystemTransaction();
 		}
 
 		public override int Shutdown()

@@ -25,8 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.PersistTypeTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.PreventMultipleOpenTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.ReAddCascadedDeleteTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.ReferenceSystemTestCase)
 				, typeof(Db4objects.Db4o.Tests.Common.Assorted.RollbackTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Assorted.ServerRevokeAccessTestCase), typeof(Db4objects.Db4o.Tests.Common.Assorted.SystemInfoTestCase)
-				 };
+				, typeof(Db4objects.Db4o.Tests.Common.Assorted.SystemInfoTestCase) };
 		}
 	}
 }

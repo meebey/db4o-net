@@ -1,12 +1,12 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MReadBlob : Db4objects.Db4o.Internal.CS.Messages.MsgBlob
+	public class MReadBlob : Db4objects.Db4o.Internal.CS.Messages.MsgBlob, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
 		public override void ProcessClient(Db4objects.Db4o.Foundation.Network.ISocket4 sock
 			)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.Msg message = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.ReadMessage(Transaction(), sock);
+				.ReadMessage(MessageDispatcher(), Transaction(), sock);
 			if (message.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.LENGTH))
 			{
 				try
@@ -16,8 +16,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					_blob.GetStatusFrom(this);
 					_blob.SetStatus(Db4objects.Db4o.Ext.Status.PROCESSING);
 					Copy(sock, this._blob.GetClientOutputStream(), _length, true);
-					message = Db4objects.Db4o.Internal.CS.Messages.Msg.ReadMessage(Transaction(), sock
-						);
+					message = Db4objects.Db4o.Internal.CS.Messages.Msg.ReadMessage(MessageDispatcher(
+						), Transaction(), sock);
 					if (message.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.OK))
 					{
 						this._blob.SetStatus(Db4objects.Db4o.Ext.Status.COMPLETED);
@@ -40,8 +40,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			}
 		}
 
-		public override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public virtual bool ProcessAtServer()
 		{
 			Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
 			try
@@ -52,7 +51,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					blobImpl.SetTrans(Transaction());
 					Sharpen.IO.File file = blobImpl.ServerFile(null, false);
 					int length = (int)file.Length();
-					Db4objects.Db4o.Foundation.Network.ISocket4 sock = serverThread.Socket();
+					Db4objects.Db4o.Foundation.Network.ISocket4 sock = ServerMessageDispatcher().Socket
+						();
 					Db4objects.Db4o.Internal.CS.Messages.Msg.LENGTH.GetWriterForInt(Transaction(), length
 						).Write(stream, sock);
 					Sharpen.IO.FileInputStream fin = new Sharpen.IO.FileInputStream(file);
@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			}
 			catch (System.Exception)
 			{
-				serverThread.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.ERROR);
+				Write(Db4objects.Db4o.Internal.CS.Messages.Msg.ERROR);
 			}
 			return true;
 		}

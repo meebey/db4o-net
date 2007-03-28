@@ -1,12 +1,12 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MWriteBlob : Db4objects.Db4o.Internal.CS.Messages.MsgBlob
+	public class MWriteBlob : Db4objects.Db4o.Internal.CS.Messages.MsgBlob, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
 		public override void ProcessClient(Db4objects.Db4o.Foundation.Network.ISocket4 sock
 			)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.Msg message = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.ReadMessage(Transaction(), sock);
+				.ReadMessage(MessageDispatcher(), Transaction(), sock);
 			if (message.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.OK))
 			{
 				try
@@ -19,8 +19,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					Copy(inBlob, sock, true);
 					sock.Flush();
 					Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
-					message = Db4objects.Db4o.Internal.CS.Messages.Msg.ReadMessage(Transaction(), sock
-						);
+					message = Db4objects.Db4o.Internal.CS.Messages.Msg.ReadMessage(MessageDispatcher(
+						), Transaction(), sock);
 					if (message.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.OK))
 					{
 						stream.Deactivate(_blob, int.MaxValue);
@@ -39,8 +39,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			}
 		}
 
-		public override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public virtual bool ProcessAtServer()
 		{
 			try
 			{
@@ -50,7 +49,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				{
 					blobImpl.SetTrans(Transaction());
 					Sharpen.IO.File file = blobImpl.ServerFile(null, true);
-					Db4objects.Db4o.Foundation.Network.ISocket4 sock = serverThread.Socket();
+					Db4objects.Db4o.Foundation.Network.ISocket4 sock = ServerMessageDispatcher().Socket
+						();
 					Db4objects.Db4o.Internal.CS.Messages.Msg.OK.Write(stream, sock);
 					Sharpen.IO.FileOutputStream fout = new Sharpen.IO.FileOutputStream(file);
 					Copy(sock, fout, blobImpl.GetLength(), false);

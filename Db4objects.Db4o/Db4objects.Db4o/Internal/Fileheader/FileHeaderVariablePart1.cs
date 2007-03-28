@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			_systemData.ConverterVersion(reader.ReadInt());
 			_systemData.FreespaceSystem(reader.ReadByte());
 			_systemData.FreespaceAddress(reader.ReadInt());
-			ReadIdentity(trans, reader.ReadInt());
+			ReadIdentity((Db4objects.Db4o.Internal.LocalTransaction)trans, reader.ReadInt());
 			_systemData.LastTimeStampID(reader.ReadLong());
 			_systemData.UuidIndexId(reader.ReadInt());
 		}
@@ -52,10 +52,10 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			writer.WriteInt(_systemData.UuidIndexId());
 		}
 
-		private void ReadIdentity(Db4objects.Db4o.Internal.Transaction trans, int identityID
+		private void ReadIdentity(Db4objects.Db4o.Internal.LocalTransaction trans, int identityID
 			)
 		{
-			Db4objects.Db4o.Internal.LocalObjectContainer file = trans.i_file;
+			Db4objects.Db4o.Internal.LocalObjectContainer file = trans.File();
 			Db4objects.Db4o.Ext.Db4oDatabase identity = (Db4objects.Db4o.Ext.Db4oDatabase)file
 				.GetByID1(trans, identityID);
 			file.Activate1(trans, identity, 2);

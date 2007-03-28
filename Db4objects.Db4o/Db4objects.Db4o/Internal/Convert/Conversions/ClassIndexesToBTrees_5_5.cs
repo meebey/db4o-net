@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 		public virtual void Convert(Db4objects.Db4o.Internal.LocalObjectContainer yapFile
 			, int classIndexId, Db4objects.Db4o.Internal.Btree.BTree bTree)
 		{
-			Db4objects.Db4o.Internal.Transaction trans = yapFile.GetSystemTransaction();
+			Db4objects.Db4o.Internal.Transaction trans = yapFile.SystemTransaction();
 			Db4objects.Db4o.Internal.Buffer reader = yapFile.ReadReaderByID(trans, classIndexId
 				);
 			if (reader == null)

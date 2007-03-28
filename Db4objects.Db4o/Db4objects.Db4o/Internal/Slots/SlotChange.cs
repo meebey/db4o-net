@@ -209,7 +209,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			}
 		}
 
-		public virtual void WritePointer(Db4objects.Db4o.Internal.Transaction trans)
+		public void WritePointer(Db4objects.Db4o.Internal.LocalTransaction trans)
 		{
 			if (IsSetPointer())
 			{

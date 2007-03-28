@@ -1,9 +1,8 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MClassMeta : Db4objects.Db4o.Internal.CS.Messages.MsgObject
+	public class MClassMeta : Db4objects.Db4o.Internal.CS.Messages.MsgObject, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public virtual bool ProcessAtServer()
 		{
 			Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
 			Unmarshall();
@@ -17,7 +16,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				{
 					lock (StreamLock())
 					{
-						Db4objects.Db4o.Internal.Transaction trans = stream.GetSystemTransaction();
+						Db4objects.Db4o.Internal.Transaction trans = stream.SystemTransaction();
 						Db4objects.Db4o.Internal.ClassMetadata yapClass = stream.ProduceClassMetadata(genericClass
 							);
 						if (yapClass != null)
@@ -28,8 +27,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 							trans.Commit();
 							Db4objects.Db4o.Internal.StatefulBuffer returnBytes = stream.ReadWriterByID(trans
 								, yapClass.GetID());
-							serverThread.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter
-								(returnBytes));
+							Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter(returnBytes
+								));
 							return true;
 						}
 					}
@@ -38,7 +37,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			catch (System.Exception e)
 			{
 			}
-			serverThread.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.FAILED);
+			Write(Db4objects.Db4o.Internal.CS.Messages.Msg.FAILED);
 			return true;
 		}
 	}

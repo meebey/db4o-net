@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Internal
 
 		private int i_arrayPosition;
 
-		protected string i_name;
+		private string i_name;
 
 		private bool i_isArray;
 
@@ -88,7 +88,18 @@ namespace Db4objects.Db4o.Internal
 				writer.IncrementOffset(LinkLength());
 				return;
 			}
-			AddIndexEntry(writer, ReadIndexEntry(mf, writer));
+			try
+			{
+				AddIndexEntry(writer, ReadIndexEntry(mf, writer));
+			}
+			catch (Db4objects.Db4o.CorruptionException exc)
+			{
+				throw new Db4objects.Db4o.Internal.FieldIndexException(exc, this);
+			}
+			catch (System.IO.IOException exc)
+			{
+				throw new Db4objects.Db4o.Internal.FieldIndexException(exc, this);
+			}
 		}
 
 		protected virtual void AddIndexEntry(Db4objects.Db4o.Internal.StatefulBuffer a_bytes
@@ -133,14 +144,7 @@ namespace Db4objects.Db4o.Internal
 		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
 			 mf, Db4objects.Db4o.Internal.StatefulBuffer writer)
 		{
-			try
-			{
-				return i_handler.ReadIndexEntry(mf, writer);
-			}
-			catch (Db4objects.Db4o.CorruptionException)
-			{
-			}
-			return null;
+			return i_handler.ReadIndexEntry(mf, writer);
 		}
 
 		public virtual void RemoveIndexEntry(Db4objects.Db4o.Internal.Transaction trans, 
@@ -396,7 +400,18 @@ namespace Db4objects.Db4o.Internal
 				IncrementOffset(a_bytes);
 				return;
 			}
-			RemoveIndexEntry(mf, a_bytes);
+			try
+			{
+				RemoveIndexEntry(mf, a_bytes);
+			}
+			catch (Db4objects.Db4o.CorruptionException exc)
+			{
+				throw new Db4objects.Db4o.Internal.FieldIndexException(exc, this);
+			}
+			catch (System.IO.IOException exc)
+			{
+				throw new Db4objects.Db4o.Internal.FieldIndexException(exc, this);
+			}
 			bool dotnetValueType = false;
 			dotnetValueType = Db4objects.Db4o.Internal.Platform4.IsValueType(i_handler.ClassReflector
 				());
@@ -432,14 +447,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			int offset = a_bytes._offset;
-			object obj = null;
-			try
-			{
-				obj = i_handler.ReadIndexEntry(mf, a_bytes);
-			}
-			catch (Db4objects.Db4o.CorruptionException e)
-			{
-			}
+			object obj = i_handler.ReadIndexEntry(mf, a_bytes);
 			RemoveIndexEntry(a_bytes.GetTransaction(), a_bytes.GetID(), obj);
 			a_bytes._offset = offset;
 		}
@@ -495,6 +503,9 @@ namespace Db4objects.Db4o.Internal
 											return Read(oh._marshallerFamily, writer);
 										}
 										catch (Db4objects.Db4o.CorruptionException e)
+										{
+										}
+										catch (System.IO.IOException exc)
 										{
 										}
 									}
@@ -642,15 +653,7 @@ namespace Db4objects.Db4o.Internal
 				IncrementOffset(buffer);
 				return;
 			}
-			object toSet = null;
-			try
-			{
-				toSet = Read(mf, buffer);
-			}
-			catch (System.Exception)
-			{
-				throw new Db4objects.Db4o.CorruptionException();
-			}
+			object toSet = Read(mf, buffer);
 			if (i_db4oType != null)
 			{
 				if (toSet != null)
@@ -845,7 +848,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				i_name = newName;
 				i_yapClass.SetStateDirty();
-				i_yapClass.Write(stream.GetSystemTransaction());
+				i_yapClass.Write(stream.SystemTransaction());
 			}
 			else
 			{
@@ -893,13 +896,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				Db4objects.Db4o.Internal.Transaction trans = stream.GetTransaction();
-				_index.TraverseKeys(trans, new _AnonymousInnerClass784(this, userVisitor, trans));
+				_index.TraverseKeys(trans, new _AnonymousInnerClass788(this, userVisitor, trans));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass784 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass788 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass784(FieldMetadata _enclosing, Db4objects.Db4o.Foundation.IVisitor4
+			public _AnonymousInnerClass788(FieldMetadata _enclosing, Db4objects.Db4o.Foundation.IVisitor4
 				 userVisitor, Db4objects.Db4o.Internal.Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -1097,7 +1100,7 @@ namespace Db4objects.Db4o.Internal
 		protected virtual void RebuildIndexForObject(Db4objects.Db4o.Internal.LocalObjectContainer
 			 stream, Db4objects.Db4o.Internal.ClassMetadata yapClass, int objectId)
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer writer = stream.ReadWriterByID(stream.GetSystemTransaction
+			Db4objects.Db4o.Internal.StatefulBuffer writer = stream.ReadWriterByID(stream.SystemTransaction
 				(), objectId);
 			if (writer != null)
 			{
@@ -1111,7 +1114,7 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Internal.Marshall.ObjectHeader oh = new Db4objects.Db4o.Internal.Marshall.ObjectHeader
 				(stream, writer);
 			object obj = ReadIndexEntryForRebuild(writer, oh);
-			AddIndexEntry(stream.GetSystemTransaction(), objectId, obj);
+			AddIndexEntry(stream.SystemTransaction(), objectId, obj);
 		}
 
 		private object ReadIndexEntryForRebuild(Db4objects.Db4o.Internal.StatefulBuffer writer

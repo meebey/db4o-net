@@ -11,10 +11,10 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private int i_threadIDGen = 1;
 
-		private readonly Db4objects.Db4o.Foundation.Collection4 _threads = new Db4objects.Db4o.Foundation.Collection4
+		private readonly Db4objects.Db4o.Foundation.Collection4 _dispatchers = new Db4objects.Db4o.Foundation.Collection4
 			();
 
-		private Db4objects.Db4o.Internal.LocalObjectContainer _container;
+		internal Db4objects.Db4o.Internal.LocalObjectContainer _container;
 
 		private readonly object _startupLock = new object();
 
@@ -157,12 +157,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void CloseMessageDispatchers()
 		{
-			System.Collections.IEnumerator i = IterateThreads();
+			System.Collections.IEnumerator i = IterateDispatchers();
 			while (i.MoveNext())
 			{
 				try
 				{
-					((Db4objects.Db4o.Internal.CS.ServerMessageDispatcher)i.Current).Close();
+					((Db4objects.Db4o.Internal.CS.IServerMessageDispatcher)i.Current).Close();
 				}
 				catch (System.Exception e)
 				{
@@ -171,11 +171,11 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		private System.Collections.IEnumerator IterateThreads()
+		public virtual System.Collections.IEnumerator IterateDispatchers()
 		{
-			lock (_threads)
+			lock (_dispatchers)
 			{
-				return new Db4objects.Db4o.Foundation.Collection4(_threads).GetEnumerator();
+				return new Db4objects.Db4o.Foundation.Collection4(_dispatchers).GetEnumerator();
 			}
 		}
 
@@ -204,15 +204,15 @@ namespace Db4objects.Db4o.Internal.CS
 			return this;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.CS.ServerMessageDispatcher FindThread(int
-			 a_threadID)
+		internal virtual Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl FindThread
+			(int a_threadID)
 		{
-			lock (_threads)
+			lock (_dispatchers)
 			{
-				System.Collections.IEnumerator i = _threads.GetEnumerator();
+				System.Collections.IEnumerator i = _dispatchers.GetEnumerator();
 				while (i.MoveNext())
 				{
-					Db4objects.Db4o.Internal.CS.ServerMessageDispatcher serverThread = (Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
+					Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl serverThread = (Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl
 						)i.Current;
 					if (serverThread.i_threadID == a_threadID)
 					{
@@ -255,7 +255,7 @@ namespace Db4objects.Db4o.Internal.CS
 			_container.Set(existing);
 		}
 
-		internal virtual Db4objects.Db4o.User GetUser(string userName)
+		public virtual Db4objects.Db4o.User GetUser(string userName)
 		{
 			Db4objects.Db4o.IObjectSet result = QueryUsers(userName);
 			if (!result.HasNext())
@@ -320,10 +320,10 @@ namespace Db4objects.Db4o.Internal.CS
 				(this, timeout, clientFake);
 			try
 			{
-				Db4objects.Db4o.Internal.CS.ServerMessageDispatcher thread = new Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
+				Db4objects.Db4o.Internal.CS.IServerMessageDispatcher messageDispatcher = new Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl
 					(this, _container, serverFake, NewThreadId(), true);
-				AddThread(thread);
-				thread.Start();
+				AddServerMessageDispatcher(messageDispatcher);
+				messageDispatcher.StartDispatcher();
 				return clientFake;
 			}
 			catch (System.Exception e)
@@ -333,12 +333,12 @@ namespace Db4objects.Db4o.Internal.CS
 			return null;
 		}
 
-		internal virtual void RemoveThread(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
+		internal virtual void RemoveThread(Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl
 			 aThread)
 		{
-			lock (_threads)
+			lock (_dispatchers)
 			{
-				_threads.Remove(aThread);
+				_dispatchers.Remove(aThread);
 			}
 		}
 
@@ -383,10 +383,10 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				try
 				{
-					Db4objects.Db4o.Internal.CS.ServerMessageDispatcher thread = new Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
+					Db4objects.Db4o.Internal.CS.IServerMessageDispatcher messageDispatcher = new Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl
 						(this, _container, _serverSocket.Accept(), NewThreadId(), false);
-					AddThread(thread);
-					thread.Start();
+					AddServerMessageDispatcher(messageDispatcher);
+					messageDispatcher.StartDispatcher();
 				}
 				catch (System.Exception)
 				{
@@ -413,12 +413,12 @@ namespace Db4objects.Db4o.Internal.CS
 			return i_threadIDGen++;
 		}
 
-		private void AddThread(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher thread
-			)
+		private void AddServerMessageDispatcher(Db4objects.Db4o.Internal.CS.IServerMessageDispatcher
+			 thread)
 		{
-			lock (_threads)
+			lock (_dispatchers)
 			{
-				_threads.Add(thread);
+				_dispatchers.Add(thread);
 			}
 		}
 	}

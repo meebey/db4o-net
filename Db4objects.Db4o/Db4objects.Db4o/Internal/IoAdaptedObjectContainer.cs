@@ -266,7 +266,7 @@ namespace Db4objects.Db4o.Internal
 						_file = ioAdapter.Open(FileName(), lockFile, 0);
 						if (NeedsTimerFile())
 						{
-							_timerFile = ioAdapter.Open(FileName(), false, 0);
+							_timerFile = ioAdapter.DelegatedIoAdapter().Open(FileName(), false, 0);
 						}
 					}
 					catch (Db4objects.Db4o.Ext.DatabaseFileLockedException de)
@@ -315,24 +315,17 @@ namespace Db4objects.Db4o.Internal
 		public override void ReadBytes(byte[] bytes, int address, int addressOffset, int 
 			length)
 		{
-			try
-			{
-				_file.BlockSeek(address, addressOffset);
-				int bytesRead = _file.Read(bytes, length);
-				AssertRead(bytesRead, length);
-			}
-			catch (System.IO.IOException ioex)
-			{
-				throw new Db4objects.Db4o.IO.UncheckedIOException(ioex);
-			}
+			_file.BlockSeek(address, addressOffset);
+			int bytesRead = _file.Read(bytes, length);
+			AssertRead(bytesRead, length);
 		}
 
 		private void AssertRead(int bytesRead, int expected)
 		{
 			if (bytesRead != expected)
 			{
-				throw new Db4objects.Db4o.IO.UncheckedIOException("expected = " + expected + ", read = "
-					 + bytesRead);
+				throw new System.IO.IOException("expected read bytes = " + expected + ", but read = "
+					 + bytesRead + "bytes");
 			}
 		}
 

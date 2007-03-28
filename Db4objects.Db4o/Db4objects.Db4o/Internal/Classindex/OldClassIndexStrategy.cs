@@ -203,7 +203,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 					context = new Db4objects.Db4o.Internal.Classindex.OldClassIndexStrategy.TransactionState
 						();
 					_perTransaction.Put(transaction, context);
-					transaction.Enlist(this);
+					((Db4objects.Db4o.Internal.LocalTransaction)transaction).Enlist(this);
 				}
 				return context;
 			}

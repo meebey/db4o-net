@@ -22,8 +22,35 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public override Sharpen.Util.Date ReadDate(Db4objects.Db4o.Internal.Buffer bytes)
 		{
-			return new Sharpen.Util.Date(Db4objects.Db4o.Internal.Handlers.LongHandler.ReadLong
-				(bytes));
+			return new Sharpen.Util.Date(bytes.ReadLong());
+		}
+
+		public override object ReadInteger(Db4objects.Db4o.Internal.Buffer bytes)
+		{
+			return bytes.ReadInt();
+		}
+
+		public override object ReadFloat(Db4objects.Db4o.Internal.Buffer bytes)
+		{
+			return Db4objects.Db4o.Internal.Marshall.PrimitiveMarshaller0.UnmarshallFloat(bytes
+				);
+		}
+
+		public override object ReadDouble(Db4objects.Db4o.Internal.Buffer buffer)
+		{
+			return Db4objects.Db4o.Internal.Marshall.PrimitiveMarshaller0.UnmarshalDouble(buffer
+				);
+		}
+
+		public override object ReadLong(Db4objects.Db4o.Internal.Buffer buffer)
+		{
+			return buffer.ReadLong();
+		}
+
+		public override object ReadShort(Db4objects.Db4o.Internal.Buffer buffer)
+		{
+			return Db4objects.Db4o.Internal.Marshall.PrimitiveMarshaller0.UnmarshallShort(buffer
+				);
 		}
 	}
 }

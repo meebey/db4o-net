@@ -13,14 +13,7 @@ namespace Db4objects.Db4o.Internal
 			 parent, Db4objects.Db4o.Ext.MemoryFile memoryFile) : base(config, parent)
 		{
 			_memoryFile = memoryFile;
-			try
-			{
-				Open();
-			}
-			catch (System.IO.IOException e)
-			{
-				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
-			}
+			Open();
 			InitializePostOpen();
 		}
 

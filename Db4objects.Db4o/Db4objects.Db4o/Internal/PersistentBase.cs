@@ -92,11 +92,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				Db4objects.Db4o.Internal.Buffer reader = trans.Stream().ReadReaderByID(trans, GetID
 					());
-				if (reader != null)
-				{
-					ReadThis(trans, reader);
-					SetStateOnRead(reader);
-				}
+				ReadThis(trans, reader);
+				SetStateOnRead(reader);
 			}
 			finally
 			{

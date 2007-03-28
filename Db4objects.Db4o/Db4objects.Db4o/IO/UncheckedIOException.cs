@@ -1,7 +1,8 @@
 namespace Db4objects.Db4o.IO
 {
+	/// <exclude></exclude>
 	[System.Serializable]
-	public class UncheckedIOException : Db4objects.Db4o.Foundation.Db4oRuntimeException
+	public class UncheckedIOException : System.Exception
 	{
 		public UncheckedIOException() : base()
 		{
@@ -16,7 +17,7 @@ namespace Db4objects.Db4o.IO
 		{
 		}
 
-		public UncheckedIOException(System.Exception cause) : base(cause)
+		public UncheckedIOException(System.Exception cause) : base(cause.Message, cause)
 		{
 		}
 	}

@@ -164,7 +164,7 @@ namespace Db4oUnit.Extensions
 
 		protected virtual Db4objects.Db4o.Internal.Transaction SystemTrans()
 		{
-			return Stream().GetSystemTransaction();
+			return Stream().SystemTransaction();
 		}
 
 		protected virtual Db4objects.Db4o.Query.IQuery NewQuery(Db4objects.Db4o.Internal.Transaction

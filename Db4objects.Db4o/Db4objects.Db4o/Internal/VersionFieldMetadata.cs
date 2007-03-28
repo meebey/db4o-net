@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.Internal
 		internal VersionFieldMetadata(Db4objects.Db4o.Internal.ObjectContainerBase stream
 			) : base()
 		{
-			i_name = Db4objects.Db4o.Ext.VirtualField.VERSION;
+			SetName(Db4objects.Db4o.Ext.VirtualField.VERSION);
 			i_handler = new Db4objects.Db4o.Internal.Handlers.LongHandler(stream);
 		}
 

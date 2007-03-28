@@ -276,11 +276,19 @@ namespace Db4objects.Db4o
 			{
 				memoryFile = new Db4objects.Db4o.Ext.MemoryFile();
 			}
-			Db4objects.Db4o.IObjectContainer oc = new Db4objects.Db4o.Internal.InMemoryObjectContainer
-				(config, memoryFile);
-			Db4objects.Db4o.Internal.Platform4.PostOpen(oc);
-			Db4objects.Db4o.Internal.Messages.LogMsg(i_config, 5, "Memory File");
-			return oc;
+			try
+			{
+				Db4objects.Db4o.IObjectContainer oc = new Db4objects.Db4o.Internal.InMemoryObjectContainer
+					(config, memoryFile);
+				Db4objects.Db4o.Internal.Platform4.PostOpen(oc);
+				Db4objects.Db4o.Internal.Messages.LogMsg(i_config, 5, "Memory File");
+				return oc;
+			}
+			catch (System.IO.IOException)
+			{
+				Db4objects.Db4o.Internal.Exceptions4.ShouldNeverHappen();
+				return null;
+			}
 		}
 
 		/// <summary>

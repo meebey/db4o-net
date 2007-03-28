@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			if (spec.IndexID() != 0)
 			{
-				actualField.InitIndex(stream.GetSystemTransaction(), spec.IndexID());
+				actualField.InitIndex(stream.SystemTransaction(), spec.IndexID());
 			}
 			return actualField;
 		}

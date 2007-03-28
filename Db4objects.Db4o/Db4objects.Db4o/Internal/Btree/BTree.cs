@@ -283,7 +283,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		private void EnsureDirty(Db4objects.Db4o.Internal.Transaction trans)
 		{
 			EnsureActive(trans);
-			trans.Enlist(this);
+			((Db4objects.Db4o.Internal.LocalTransaction)trans).Enlist(this);
 			SetStateDirty();
 		}
 

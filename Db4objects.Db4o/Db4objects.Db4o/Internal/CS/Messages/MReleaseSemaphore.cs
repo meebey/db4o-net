@@ -1,9 +1,9 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	public sealed class MReleaseSemaphore : Db4objects.Db4o.Internal.CS.Messages.MsgD
+		, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			string name = ReadString();
 			((Db4objects.Db4o.Internal.LocalObjectContainer)Stream()).ReleaseSemaphore(Transaction

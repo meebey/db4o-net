@@ -22,14 +22,14 @@ namespace Db4objects.Db4o.Internal.Callbacks
 
 		void ObjectOnDeactivate(object obj);
 
-		void OnQueryStarted(Db4objects.Db4o.Query.IQuery query);
+		void QueryOnStarted(Db4objects.Db4o.Query.IQuery query);
 
-		void OnQueryFinished(Db4objects.Db4o.Query.IQuery query);
+		void QueryOnFinished(Db4objects.Db4o.Query.IQuery query);
+
+		bool CaresAboutCommit();
 
 		void CommitOnStarted(object transaction, Db4objects.Db4o.Ext.IObjectInfoCollection
 			 added, Db4objects.Db4o.Ext.IObjectInfoCollection deleted, Db4objects.Db4o.Ext.IObjectInfoCollection
 			 updated);
-
-		bool CaresAboutCommit();
 	}
 }

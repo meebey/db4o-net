@@ -132,7 +132,7 @@ namespace Db4objects.Db4o.Internal
 			AddressChanged(address);
 			TimerFileLock().WriteOpenTime();
 			Db4objects.Db4o.Internal.StatefulBuffer reader = _container.GetWriter(_container.
-				GetSystemTransaction(), _address, LENGTH);
+				SystemTransaction(), _address, LENGTH);
 			try
 			{
 				_container.ReadBytes(reader._buffer, _address, LENGTH);
@@ -153,8 +153,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					if (_container.ConfigImpl().AutomaticShutDown())
 					{
-						Db4objects.Db4o.Internal.Platform4.RemoveShutDownHook(_container, _container.i_lock
-							);
+						Db4objects.Db4o.Internal.Platform4.RemoveShutDownHook(_container);
 					}
 					throw new Db4objects.Db4o.Ext.OldFormatException();
 				}
@@ -227,8 +226,8 @@ namespace Db4objects.Db4o.Internal
 			if (Db4objects.Db4o.Internal.Fileheader.FileHeader.LockedByOtherSession(_container
 				, lastAccessTime))
 			{
-				Db4objects.Db4o.Internal.Fileheader.FileHeader.CheckIfOtherSessionAlive(_container
-					, _address, OPEN_TIME_OFFSET, lastAccessTime);
+				_timerFileLock.CheckIfOtherSessionAlive(_container, _address, ACCESS_TIME_OFFSET, 
+					lastAccessTime);
 			}
 			if (_container.NeedsLockFileThread())
 			{
@@ -269,6 +268,7 @@ namespace Db4objects.Db4o.Internal
 				writer);
 			writer.Write();
 			WritePointer();
+			_container.SyncFiles();
 		}
 
 		private void AddressChanged(int address)

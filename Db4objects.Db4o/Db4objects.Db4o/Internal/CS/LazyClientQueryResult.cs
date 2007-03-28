@@ -43,8 +43,8 @@ namespace Db4objects.Db4o.Internal.CS
 		private int AskServer(Db4objects.Db4o.Internal.CS.Messages.MsgD message, int param
 			)
 		{
-			_client.WriteMsg(message.GetWriterForInts(_transaction, new int[] { _queryResultID
-				, param }));
+			_client.Write(message.GetWriterForInts(_transaction, new int[] { _queryResultID, 
+				param }));
 			return ((Db4objects.Db4o.Internal.CS.Messages.MsgD)_client.ExpectedResponse(message
 				)).ReadInt();
 		}
@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (_size == SIZE_NOT_SET)
 			{
-				_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECTSET_SIZE.GetWriterForInt
+				_client.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECTSET_SIZE.GetWriterForInt
 					(_transaction, _queryResultID));
 				_size = ((Db4objects.Db4o.Internal.CS.Messages.MsgD)_client.ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
 					.OBJECTSET_SIZE)).ReadInt();
@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		~LazyClientQueryResult()
 		{
-			_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECTSET_FINALIZED.GetWriterForInt
+			_client.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECTSET_FINALIZED.GetWriterForInt
 				(_transaction, _queryResultID));
 		}
 
@@ -85,13 +85,13 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public virtual void Reset()
 		{
-			_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECTSET_RESET.GetWriterForInt
+			_client.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECTSET_RESET.GetWriterForInt
 				(_transaction, _queryResultID));
 		}
 
 		public virtual void FetchIDs(int batchSize)
 		{
-			_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECTSET_FETCH.GetWriterForInts
+			_client.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECTSET_FETCH.GetWriterForInts
 				(_transaction, new int[] { _queryResultID, batchSize }));
 			Db4objects.Db4o.Internal.Buffer reader = _client.ExpectedByteResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
 				.ID_LIST);

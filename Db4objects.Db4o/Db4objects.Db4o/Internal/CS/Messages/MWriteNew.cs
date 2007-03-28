@@ -1,9 +1,8 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MWriteNew : Db4objects.Db4o.Internal.CS.Messages.MsgObject
+	public sealed class MWriteNew : Db4objects.Db4o.Internal.CS.Messages.MsgObject, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			int yapClassId = _payLoad.ReadInt();
 			Db4objects.Db4o.Internal.LocalObjectContainer stream = (Db4objects.Db4o.Internal.LocalObjectContainer
@@ -26,7 +25,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					yc.AddFieldIndices(_payLoad, null);
 				}
 				stream.WriteNew(yc, _payLoad);
-				Transaction().WritePointer(id, address, length);
+				ServerTransaction().WritePointer(id, address, length);
 			}
 			return true;
 		}

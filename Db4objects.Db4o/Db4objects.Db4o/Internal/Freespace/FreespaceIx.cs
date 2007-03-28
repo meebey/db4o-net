@@ -13,8 +13,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 		internal FreespaceIx(Db4objects.Db4o.Internal.LocalObjectContainer file, Db4objects.Db4o.MetaIndex
 			 metaIndex)
 		{
-			_index = new Db4objects.Db4o.Internal.IX.Index4(file.GetSystemTransaction(), new 
-				Db4objects.Db4o.Internal.Handlers.IntHandler(file), metaIndex, false);
+			_index = new Db4objects.Db4o.Internal.IX.Index4(file.GetLocalSystemTransaction(), 
+				new Db4objects.Db4o.Internal.Handlers.IntHandler(file), metaIndex, false);
 			_indexTrans = _index.GlobalIndexTransaction();
 		}
 

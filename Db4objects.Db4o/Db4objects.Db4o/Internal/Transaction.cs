@@ -3,32 +3,21 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public abstract class Transaction
 	{
-		public Db4objects.Db4o.Foundation.Tree i_delete;
+		protected Db4objects.Db4o.Foundation.Tree i_delete;
 
 		private Db4objects.Db4o.Foundation.List4 i_dirtyFieldIndexes;
 
-		public readonly Db4objects.Db4o.Internal.LocalObjectContainer i_file;
+		protected readonly Db4objects.Db4o.Internal.Transaction _systemTransaction;
 
-		internal readonly Db4objects.Db4o.Internal.Transaction i_parentTransaction;
-
-		protected readonly Db4objects.Db4o.Internal.StatefulBuffer i_pointerIo;
-
-		private readonly Db4objects.Db4o.Internal.ObjectContainerBase i_stream;
+		private readonly Db4objects.Db4o.Internal.ObjectContainerBase _container;
 
 		private Db4objects.Db4o.Foundation.List4 i_transactionListeners;
 
-		private readonly Db4objects.Db4o.Foundation.Collection4 _participants = new Db4objects.Db4o.Foundation.Collection4
-			();
-
-		public Transaction(Db4objects.Db4o.Internal.ObjectContainerBase a_stream, Db4objects.Db4o.Internal.Transaction
-			 a_parent)
+		public Transaction(Db4objects.Db4o.Internal.ObjectContainerBase container, Db4objects.Db4o.Internal.Transaction
+			 systemTransaction)
 		{
-			i_stream = a_stream;
-			i_file = (a_stream is Db4objects.Db4o.Internal.LocalObjectContainer) ? (Db4objects.Db4o.Internal.LocalObjectContainer
-				)a_stream : null;
-			i_parentTransaction = a_parent;
-			i_pointerIo = new Db4objects.Db4o.Internal.StatefulBuffer(this, Db4objects.Db4o.Internal.Const4
-				.POINTER_LENGTH);
+			_container = container;
+			_systemTransaction = systemTransaction;
 		}
 
 		public virtual void AddDirtyFieldIndex(Db4objects.Db4o.Internal.IX.IndexTransaction
@@ -49,23 +38,14 @@ namespace Db4objects.Db4o.Internal
 				, a_listener);
 		}
 
-		protected virtual void ClearAll()
+		protected void ClearAll()
 		{
+			Clear();
 			i_dirtyFieldIndexes = null;
 			i_transactionListeners = null;
-			DisposeParticipants();
-			_participants.Clear();
 		}
 
-		private void DisposeParticipants()
-		{
-			System.Collections.IEnumerator iterator = _participants.GetEnumerator();
-			while (iterator.MoveNext())
-			{
-				((Db4objects.Db4o.Internal.ITransactionParticipant)iterator.Current).Dispose(this
-					);
-			}
-		}
+		protected abstract void Clear();
 
 		public virtual void Close(bool a_rollbackOnClose)
 		{
@@ -98,24 +78,11 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		protected virtual void CommitParticipants()
-		{
-			if (i_parentTransaction != null)
-			{
-				i_parentTransaction.CommitParticipants();
-			}
-			System.Collections.IEnumerator iterator = _participants.GetEnumerator();
-			while (iterator.MoveNext())
-			{
-				((Db4objects.Db4o.Internal.ITransactionParticipant)iterator.Current).Commit(this);
-			}
-		}
-
 		protected virtual void Commit4FieldIndexes()
 		{
-			if (i_parentTransaction != null)
+			if (_systemTransaction != null)
 			{
-				i_parentTransaction.Commit4FieldIndexes();
+				_systemTransaction.Commit4FieldIndexes();
 			}
 			if (i_dirtyFieldIndexes != null)
 			{
@@ -147,7 +114,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual bool IsSystemTransaction()
 		{
-			return i_parentTransaction == null;
+			return _systemTransaction == null;
 		}
 
 		public virtual bool Delete(Db4objects.Db4o.Internal.ObjectReference @ref, int id, 
@@ -156,7 +123,7 @@ namespace Db4objects.Db4o.Internal
 			CheckSynchronization();
 			if (@ref != null)
 			{
-				if (!i_stream.FlagForDelete(@ref))
+				if (!_container.FlagForDelete(@ref))
 				{
 					return false;
 				}
@@ -210,23 +177,9 @@ namespace Db4objects.Db4o.Internal
 			return Stream().Reflector();
 		}
 
-		public virtual void Rollback()
-		{
-			lock (Stream().i_lock)
-			{
-				RollbackParticipants();
-				RollbackFieldIndexes();
-				RollbackSlotChanges();
-				RollBackTransactionListeners();
-				ClearAll();
-			}
-		}
+		public abstract void Rollback();
 
-		protected virtual void RollbackSlotChanges()
-		{
-		}
-
-		private void RollbackFieldIndexes()
+		protected virtual void RollbackFieldIndexes()
 		{
 			if (i_dirtyFieldIndexes != null)
 			{
@@ -236,16 +189,6 @@ namespace Db4objects.Db4o.Internal
 				{
 					((Db4objects.Db4o.Internal.IX.IndexTransaction)i.Current).Rollback();
 				}
-			}
-		}
-
-		private void RollbackParticipants()
-		{
-			System.Collections.IEnumerator iterator = _participants.GetEnumerator();
-			while (iterator.MoveNext())
-			{
-				((Db4objects.Db4o.Internal.ITransactionParticipant)iterator.Current).Rollback(this
-					);
 			}
 		}
 
@@ -308,9 +251,9 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual Db4objects.Db4o.Internal.Transaction SystemTransaction()
 		{
-			if (i_parentTransaction != null)
+			if (_systemTransaction != null)
 			{
-				return i_parentTransaction;
+				return _systemTransaction;
 			}
 			return this;
 		}
@@ -320,44 +263,17 @@ namespace Db4objects.Db4o.Internal
 			return Stream().ToString();
 		}
 
-		public virtual void WritePointer(int a_id, int a_address, int a_length)
-		{
-			CheckSynchronization();
-			i_pointerIo.UseSlot(a_id);
-			i_pointerIo.WriteInt(a_address);
-			i_pointerIo.WriteInt(a_length);
-			if (Db4objects.Db4o.Debug.xbytes && Db4objects.Db4o.Deploy.overwrite)
-			{
-				i_pointerIo.SetID(Db4objects.Db4o.Internal.Const4.IGNORE_ID);
-			}
-			i_pointerIo.Write();
-		}
-
 		public abstract void WriteUpdateDeleteMembers(int id, Db4objects.Db4o.Internal.ClassMetadata
 			 clazz, int typeInfo, int cascade);
 
 		public Db4objects.Db4o.Internal.ObjectContainerBase Stream()
 		{
-			return i_stream;
-		}
-
-		public virtual void Enlist(Db4objects.Db4o.Internal.ITransactionParticipant participant
-			)
-		{
-			if (null == participant)
-			{
-				throw new System.ArgumentNullException("participant");
-			}
-			CheckSynchronization();
-			if (!_participants.ContainsByIdentity(participant))
-			{
-				_participants.Add(participant);
-			}
+			return _container;
 		}
 
 		public virtual Db4objects.Db4o.Internal.Transaction ParentTransaction()
 		{
-			return i_parentTransaction;
+			return _systemTransaction;
 		}
 	}
 }

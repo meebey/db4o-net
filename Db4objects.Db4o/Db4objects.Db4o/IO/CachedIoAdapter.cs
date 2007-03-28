@@ -114,23 +114,25 @@ namespace Db4objects.Db4o.IO
 		public override int Read(byte[] buffer, int length)
 		{
 			long startAddress = _position;
-			long endAddress = startAddress + length;
 			Db4objects.Db4o.IO.CachedIoAdapter.Page page;
-			int readLength;
+			int readBytes;
+			int bytesToRead = length;
 			int bufferOffset = 0;
-			while (startAddress < endAddress)
+			while (bytesToRead > 0)
 			{
 				page = GetPage(startAddress, true);
-				readLength = (int)(_pageSize - startAddress % _pageSize);
-				readLength = System.Math.Min(buffer.Length - bufferOffset, readLength);
-				readLength = System.Math.Min(length, readLength);
-				page.Read(buffer, bufferOffset, startAddress, readLength);
+				readBytes = page.Read(buffer, bufferOffset, startAddress, bytesToRead);
 				MovePageToHead(page);
-				startAddress += readLength;
-				bufferOffset += readLength;
+				if (readBytes == 0)
+				{
+					break;
+				}
+				bytesToRead -= readBytes;
+				startAddress += readBytes;
+				bufferOffset += readBytes;
 			}
-			_position = endAddress;
-			return length;
+			_position = startAddress + bufferOffset;
+			return bufferOffset;
 		}
 
 		/// <summary>Writes the buffer to cache using pages</summary>
@@ -139,24 +141,23 @@ namespace Db4objects.Db4o.IO
 		public override void Write(byte[] buffer, int length)
 		{
 			long startAddress = _position;
-			long endAddress = startAddress + length;
 			Db4objects.Db4o.IO.CachedIoAdapter.Page page = null;
-			int writtenLength;
+			int writtenBytes;
+			int bytesToWrite = length;
 			int bufferOffset = 0;
-			while (startAddress < endAddress)
+			while (bytesToWrite > 0)
 			{
-				writtenLength = (int)(_pageSize - startAddress % _pageSize);
-				writtenLength = System.Math.Min(writtenLength, length);
-				writtenLength = System.Math.Min(buffer.Length - bufferOffset, writtenLength);
-				bool load = writtenLength != _pageSize;
-				page = GetPage(startAddress, load);
-				page.Write(buffer, bufferOffset, startAddress, writtenLength);
+				bool loadFromDisk = (length < _pageSize) || (startAddress % _pageSize != 0);
+				page = GetPage(startAddress, loadFromDisk);
+				writtenBytes = page.Write(buffer, bufferOffset, startAddress, bytesToWrite);
 				MovePageToHead(page);
-				startAddress += writtenLength;
-				bufferOffset += writtenLength;
+				bytesToWrite -= writtenBytes;
+				startAddress += writtenBytes;
+				bufferOffset += writtenBytes;
 			}
+			long endAddress = startAddress + length;
 			_position = endAddress;
-			_fileLength = System.Math.Max(page.startPosition + _pageSize, _fileLength);
+			_fileLength = System.Math.Max(endAddress, _fileLength);
 		}
 
 		/// <summary>Flushes cache to a physical storage</summary>
@@ -179,27 +180,40 @@ namespace Db4objects.Db4o.IO
 			_io.Close();
 		}
 
-		private Db4objects.Db4o.IO.CachedIoAdapter.Page GetPage(long startAddress, bool load
+		public override Db4objects.Db4o.IO.IoAdapter DelegatedIoAdapter()
+		{
+			return _io.DelegatedIoAdapter();
+		}
+
+		private Db4objects.Db4o.IO.CachedIoAdapter.Page GetPage(long startAddress, bool loadFromDisk
 			)
 		{
 			Db4objects.Db4o.IO.CachedIoAdapter.Page page;
 			page = GetPageFromCache(startAddress);
-			if (page == null)
+			if (page != null)
 			{
-				page = GetFreePage();
-				if (load)
-				{
-					LoadPage(page, startAddress);
-				}
-				else
-				{
-					page.startPosition = startAddress;
-				}
+				return page;
+			}
+			page = GetFreePageFromCache();
+			if (loadFromDisk)
+			{
+				GetPageFromDisk(page, startAddress);
+			}
+			else
+			{
+				ResetPageAddress(page, startAddress);
 			}
 			return page;
 		}
 
-		private Db4objects.Db4o.IO.CachedIoAdapter.Page GetFreePage()
+		private void ResetPageAddress(Db4objects.Db4o.IO.CachedIoAdapter.Page page, long 
+			startAddress)
+		{
+			page.StartAddress(startAddress);
+			page.EndAddress(startAddress);
+		}
+
+		private Db4objects.Db4o.IO.CachedIoAdapter.Page GetFreePageFromCache()
 		{
 			if (!_tail.IsFree())
 			{
@@ -238,19 +252,27 @@ namespace Db4objects.Db4o.IO
 			{
 				return;
 			}
-			IoSeek(page.startPosition);
+			IoSeek(page.StartAddress());
 			WritePage(page);
 			return;
 		}
 
-		private void LoadPage(Db4objects.Db4o.IO.CachedIoAdapter.Page page, long pos)
+		private void GetPageFromDisk(Db4objects.Db4o.IO.CachedIoAdapter.Page page, long pos
+			)
 		{
-			page.startPosition = pos - pos % _pageSize;
-			IoSeek(page.startPosition);
+			long startAddress = pos - pos % _pageSize;
+			page.StartAddress(startAddress);
+			IoSeek(page._startAddress);
 			int readCount = _io.Read(page.buffer);
-			if (readCount > 0)
+			long endAddress = startAddress + readCount;
+			if (readCount >= 0)
 			{
-				_filePointer += readCount;
+				_filePointer = endAddress;
+				page.EndAddress(endAddress);
+			}
+			else
+			{
+				page.EndAddress(page._startAddress);
 			}
 		}
 
@@ -283,8 +305,8 @@ namespace Db4objects.Db4o.IO
 
 		private void WritePage(Db4objects.Db4o.IO.CachedIoAdapter.Page page)
 		{
-			_io.Write(page.buffer);
-			_filePointer += _pageSize;
+			_io.Write(page.buffer, page.Size());
+			_filePointer = page.EndAddress();
 			page.dirty = false;
 		}
 
@@ -293,8 +315,7 @@ namespace Db4objects.Db4o.IO
 		public override void Seek(long pos)
 		{
 			_position = pos;
-			long endAddress = pos - pos % _pageSize + _pageSize;
-			_fileLength = System.Math.Max(_fileLength, endAddress);
+			_fileLength = System.Math.Max(_fileLength, pos);
 		}
 
 		private void IoSeek(long pos)
@@ -308,13 +329,15 @@ namespace Db4objects.Db4o.IO
 
 		private class Page
 		{
-			public byte[] buffer;
+			internal byte[] buffer;
 
-			public long startPosition = -1;
+			internal long _startAddress = -1;
 
-			public int size;
+			internal long _endAddress;
 
-			public bool dirty;
+			internal int bufferSize;
+
+			internal bool dirty;
 
 			internal Db4objects.Db4o.IO.CachedIoAdapter.Page prev;
 
@@ -322,38 +345,74 @@ namespace Db4objects.Db4o.IO
 
 			public Page(int size)
 			{
-				buffer = new byte[size];
-				this.size = size;
+				bufferSize = size;
+				buffer = new byte[bufferSize];
 			}
 
-			public virtual void Read(byte[] @out, int outOffset, long startPosition, int length
-				)
+			internal virtual long EndAddress()
 			{
-				int bufferOffset = (int)(startPosition - this.startPosition);
-				System.Array.Copy(buffer, bufferOffset, @out, outOffset, length);
+				return _endAddress;
 			}
 
-			public virtual void Write(byte[] data, int dataOffset, long startPosition, int length
+			internal virtual void StartAddress(long address)
+			{
+				_startAddress = address;
+			}
+
+			internal virtual long StartAddress()
+			{
+				return _startAddress;
+			}
+
+			internal virtual void EndAddress(long address)
+			{
+				_endAddress = address;
+			}
+
+			internal virtual int Size()
+			{
+				return (int)(_endAddress - _startAddress);
+			}
+
+			internal virtual int Read(byte[] @out, int outOffset, long startAddress, int length
 				)
 			{
-				int bufferOffset = (int)(startPosition - this.startPosition);
-				System.Array.Copy(data, dataOffset, buffer, bufferOffset, length);
+				int bufferOffset = (int)(startAddress - _startAddress);
+				int pageAvailbeDataSize = (int)(_endAddress - startAddress);
+				int readBytes = System.Math.Min(pageAvailbeDataSize, length);
+				System.Array.Copy(buffer, bufferOffset, @out, outOffset, readBytes);
+				return readBytes;
+			}
+
+			internal virtual int Write(byte[] data, int dataOffset, long startAddress, int length
+				)
+			{
+				int bufferOffset = (int)(startAddress - _startAddress);
+				int pageAvailabeBufferSize = (int)(bufferSize - bufferOffset);
+				int writtenBytes = System.Math.Min(pageAvailabeBufferSize, length);
+				System.Array.Copy(data, dataOffset, buffer, bufferOffset, writtenBytes);
+				long endAddress = startAddress + writtenBytes;
+				if (endAddress > _endAddress)
+				{
+					_endAddress = endAddress;
+				}
 				dirty = true;
+				return writtenBytes;
 			}
 
-			public virtual bool Contains(long address)
+			internal virtual bool Contains(long address)
 			{
-				if (startPosition != -1 && address >= startPosition && address < startPosition + 
-					size)
+				if (_startAddress != -1 && address >= _startAddress && address < _startAddress + 
+					bufferSize)
 				{
 					return true;
 				}
 				return false;
 			}
 
-			public virtual bool IsFree()
+			internal virtual bool IsFree()
 			{
-				return startPosition == -1;
+				return _startAddress == -1;
 			}
 		}
 	}

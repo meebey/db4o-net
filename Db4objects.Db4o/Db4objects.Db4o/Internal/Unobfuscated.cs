@@ -3,7 +3,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class Unobfuscated
 	{
-		internal static object random;
+		private static readonly Sharpen.Util.Random _random = new Sharpen.Util.Random();
 
 		public static bool CreateDb4oList(object a_stream)
 		{
@@ -29,17 +29,7 @@ namespace Db4objects.Db4o.Internal
 
 		public static long RandomLong()
 		{
-			return Sharpen.Runtime.CurrentTimeMillis();
-			if (random == null)
-			{
-				random = new Sharpen.Util.Random();
-			}
-			return ((Sharpen.Util.Random)random).NextLong();
-		}
-
-		internal static void ShutDownHookCallback(object a_stream)
-		{
-			((Db4objects.Db4o.Internal.ObjectContainerBase)a_stream).ShutdownHook();
+			return _random.NextLong();
 		}
 	}
 }

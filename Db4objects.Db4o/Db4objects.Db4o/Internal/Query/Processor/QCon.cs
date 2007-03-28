@@ -242,8 +242,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					return;
 				}
 			}
-			i_candidates = new Db4objects.Db4o.Internal.Query.Processor.QCandidates(i_trans, 
-				GetYapClass(), GetField());
+			i_candidates = new Db4objects.Db4o.Internal.Query.Processor.QCandidates((Db4objects.Db4o.Internal.LocalTransaction
+				)i_trans, GetYapClass(), GetField());
 			i_candidates.AddConstraint(this);
 			a_candidateCollection.Add(i_candidates);
 		}

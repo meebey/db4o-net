@@ -49,16 +49,16 @@ namespace Db4objects.Db4o.Internal.CS
 					.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(container.GetTransaction(), idsToGet
 					, toGet);
 				container.WriteMsg(msg, true);
-				Db4objects.Db4o.Internal.CS.Messages.MsgD message = (Db4objects.Db4o.Internal.CS.Messages.MsgD
+				Db4objects.Db4o.Internal.CS.Messages.MsgD response = (Db4objects.Db4o.Internal.CS.Messages.MsgD
 					)container.ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.READ_MULTIPLE_OBJECTS
 					);
-				int embeddedMessageCount = message.ReadInt();
+				int embeddedMessageCount = response.ReadInt();
 				for (int i = 0; i < embeddedMessageCount; i++)
 				{
 					Db4objects.Db4o.Internal.CS.Messages.MsgObject mso = (Db4objects.Db4o.Internal.CS.Messages.MsgObject
-						)Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT.Clone(container.GetTransaction
-						());
-					mso.PayLoad(message.PayLoad().ReadYapBytes());
+						)Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT.PublicClone();
+					mso.SetTransaction(container.GetTransaction());
+					mso.PayLoad(response.PayLoad().ReadYapBytes());
 					if (mso.PayLoad() != null)
 					{
 						mso.PayLoad().IncrementOffset(Db4objects.Db4o.Internal.Const4.MESSAGE_LENGTH);

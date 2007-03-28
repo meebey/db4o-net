@@ -127,5 +127,10 @@ namespace Db4objects.Db4o.IO
 		{
 			return _blockSize;
 		}
+
+		public virtual Db4objects.Db4o.IO.IoAdapter DelegatedIoAdapter()
+		{
+			return this;
+		}
 	}
 }

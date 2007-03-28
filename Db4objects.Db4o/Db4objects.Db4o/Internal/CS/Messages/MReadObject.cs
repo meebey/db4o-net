@@ -1,9 +1,8 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MReadObject : Db4objects.Db4o.Internal.CS.Messages.MsgD
+	public sealed class MReadObject : Db4objects.Db4o.Internal.CS.Messages.MsgD, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			Db4objects.Db4o.Internal.StatefulBuffer bytes = null;
 			lock (StreamLock())
@@ -20,8 +19,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				bytes = new Db4objects.Db4o.Internal.StatefulBuffer(Transaction(), 0, 0);
 			}
-			serverThread.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter
-				(bytes));
+			Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter(bytes));
 			return true;
 		}
 	}

@@ -240,7 +240,7 @@ namespace Db4objects.Db4o.Internal
 
 		public Db4objects.Db4o.Internal.LocalObjectContainer File()
 		{
-			return i_trans.i_file;
+			return ((Db4objects.Db4o.Internal.LocalTransaction)i_trans).File();
 		}
 
 		public Db4objects.Db4o.Internal.Transaction GetTransaction()

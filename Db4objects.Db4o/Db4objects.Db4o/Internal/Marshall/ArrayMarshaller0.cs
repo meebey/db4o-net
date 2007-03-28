@@ -66,19 +66,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override object Read(Db4objects.Db4o.Internal.Handlers.ArrayHandler arrayHandler
 			, Db4objects.Db4o.Internal.StatefulBuffer a_bytes)
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer bytes = null;
-			try
-			{
-				bytes = a_bytes.ReadEmbeddedObject();
-			}
-			catch (System.IO.IOException e)
-			{
-				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
-			}
-			if (bytes == null)
-			{
-				return null;
-			}
+			Db4objects.Db4o.Internal.StatefulBuffer bytes = a_bytes.ReadEmbeddedObject();
 			return arrayHandler.Read1(_family, bytes);
 		}
 
@@ -111,21 +99,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 arrayHandler, Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
 			 reader)
 		{
-			Db4objects.Db4o.Internal.Buffer bytes = null;
-			try
-			{
-				bytes = reader.ReadEmbeddedObject(trans);
-			}
-			catch (System.IO.IOException e)
-			{
-				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
-			}
-			if (bytes == null)
-			{
-				return null;
-			}
-			object array = arrayHandler.Read1Query(trans, _family, bytes);
-			return array;
+			Db4objects.Db4o.Internal.Buffer bytes = reader.ReadEmbeddedObject(trans);
+			return arrayHandler.Read1Query(trans, _family, bytes);
 		}
 
 		protected override Db4objects.Db4o.Internal.Buffer PrepareIDReader(Db4objects.Db4o.Internal.Transaction

@@ -1,6 +1,6 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MReadBytes : Db4objects.Db4o.Internal.CS.Messages.MsgD
+	public sealed class MReadBytes : Db4objects.Db4o.Internal.CS.Messages.MsgD, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
 		public sealed override Db4objects.Db4o.Internal.Buffer GetByteLoad()
 		{
@@ -21,8 +21,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return message;
 		}
 
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			int address = ReadInt();
 			int length = ReadInt();
@@ -33,11 +32,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				try
 				{
 					Stream().ReadBytes(bytes._buffer, address, length);
-					serverThread.Write(GetWriter(bytes));
+					Write(GetWriter(bytes));
 				}
 				catch (System.Exception)
 				{
-					serverThread.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.NULL);
+					Write(Db4objects.Db4o.Internal.CS.Messages.Msg.NULL);
 				}
 			}
 			return true;

@@ -114,7 +114,7 @@ namespace Db4objects.Db4o.Defragment
 
 		private Db4objects.Db4o.Internal.Transaction Trans()
 		{
-			return _mappingDb.GetSystemTransaction();
+			return _mappingDb.SystemTransaction();
 		}
 
 		private class BTreeSpec

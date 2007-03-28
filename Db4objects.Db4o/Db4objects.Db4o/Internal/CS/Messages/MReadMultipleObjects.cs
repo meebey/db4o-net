@@ -1,9 +1,9 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	public sealed class MReadMultipleObjects : Db4objects.Db4o.Internal.CS.Messages.MsgD
+		, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			int size = ReadInt();
 			Db4objects.Db4o.Internal.CS.Messages.MsgD[] ret = new Db4objects.Db4o.Internal.CS.Messages.MsgD
@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					multibytes._payLoad.Append(ret[i]._payLoad._buffer);
 				}
 			}
-			serverThread.Write(multibytes);
+			Write(multibytes);
 			return true;
 		}
 	}

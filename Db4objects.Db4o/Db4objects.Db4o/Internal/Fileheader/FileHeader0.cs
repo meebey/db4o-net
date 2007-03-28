@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			file.ShowInternalClasses(true);
 			try
 			{
-				return file.GetByID1(file.GetSystemTransaction(), _configBlock._bootRecordID);
+				return file.GetByID1(file.SystemTransaction(), _configBlock._bootRecordID);
 			}
 			finally
 			{
@@ -96,7 +96,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			try
 			{
 				_bootRecord = new Db4objects.Db4o.PBootRecord();
-				file.SetInternal(file.GetSystemTransaction(), _bootRecord, false);
+				file.SetInternal(file.SystemTransaction(), _bootRecord, false);
 				_configBlock._bootRecordID = file.GetID1(_bootRecord);
 				WriteVariablePart(file, 1);
 			}
@@ -143,6 +143,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				writer.SetID(Db4objects.Db4o.Internal.Const4.IGNORE_ID);
 			}
 			writer.Write();
+			file.SyncFiles();
 		}
 
 		public override void WriteVariablePart(Db4objects.Db4o.Internal.LocalObjectContainer

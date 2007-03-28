@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Internal
 		internal UUIDFieldMetadata(Db4objects.Db4o.Internal.ObjectContainerBase stream) : 
 			base()
 		{
-			i_name = Db4objects.Db4o.Internal.Const4.VIRTUAL_FIELD_PREFIX + "uuid";
+			SetName(Db4objects.Db4o.Internal.Const4.VIRTUAL_FIELD_PREFIX + "uuid");
 			i_handler = new Db4objects.Db4o.Internal.Handlers.LongHandler(stream);
 		}
 
@@ -128,13 +128,13 @@ namespace Db4objects.Db4o.Internal
 			try
 			{
 				Db4objects.Db4o.Internal.UUIDFieldMetadata.DatabaseIdentityIDAndUUID data = ReadDatabaseIdentityIDAndUUID
-					(stream, yapClass, ((Db4objects.Db4o.Internal.LocalTransaction)stream.GetSystemTransaction
+					(stream, yapClass, ((Db4objects.Db4o.Internal.LocalTransaction)stream.SystemTransaction
 					()).GetCurrentSlotOfID(objectId), true);
 				if (null == data)
 				{
 					return;
 				}
-				AddIndexEntry(stream.GetSystemTransaction(), objectId, data.uuid);
+				AddIndexEntry(stream.GetLocalSystemTransaction(), objectId, data.uuid);
 			}
 			catch (Db4objects.Db4o.Internal.SlotRetrievalException exc)
 			{

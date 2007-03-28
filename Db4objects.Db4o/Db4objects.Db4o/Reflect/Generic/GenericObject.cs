@@ -26,6 +26,9 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_values[index] = value;
 		}
 
+		/// <param name="index"></param>
+		/// <returns>the value of the field at index, based on the fields obtained GenericClass.getDeclaredFields
+		/// 	</returns>
 		public virtual object Get(int index)
 		{
 			EnsureValuesInitialized();
@@ -39,6 +42,11 @@ namespace Db4objects.Db4o.Reflect.Generic
 				return base.ToString();
 			}
 			return _class.ToString(this);
+		}
+
+		public virtual Db4objects.Db4o.Reflect.Generic.GenericClass GetGenericClass()
+		{
+			return _class;
 		}
 	}
 }

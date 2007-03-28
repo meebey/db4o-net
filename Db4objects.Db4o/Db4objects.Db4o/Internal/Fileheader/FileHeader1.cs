@@ -85,14 +85,13 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private void CheckThreadFileLock(Db4objects.Db4o.Internal.LocalObjectContainer container
 			, Db4objects.Db4o.Internal.Buffer reader)
 		{
-			reader.Seek(OPEN_TIME_OFFSET);
-			reader.ReadLong();
+			reader.Seek(ACCESS_TIME_OFFSET);
 			long lastAccessTime = reader.ReadLong();
 			if (Db4objects.Db4o.Internal.Fileheader.FileHeader.LockedByOtherSession(container
 				, lastAccessTime))
 			{
-				Db4objects.Db4o.Internal.Fileheader.FileHeader.CheckIfOtherSessionAlive(container
-					, 0, OPEN_TIME_OFFSET, lastAccessTime);
+				_timerFileLock.CheckIfOtherSessionAlive(container, 0, ACCESS_TIME_OFFSET, lastAccessTime
+					);
 			}
 		}
 
@@ -106,7 +105,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override void ReadVariablePart(Db4objects.Db4o.Internal.LocalObjectContainer
 			 file)
 		{
-			_variablePart.Read(file.GetSystemTransaction());
+			_variablePart.Read(file.SystemTransaction());
 		}
 
 		public override void WriteFixedPart(Db4objects.Db4o.Internal.LocalObjectContainer
@@ -126,6 +125,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			writer.WriteInt(_variablePart.GetID());
 			writer.NoXByteCheck();
 			writer.Write();
+			file.SyncFiles();
 			if (startFileLockingThread)
 			{
 				try
@@ -149,7 +149,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			 file, int part)
 		{
 			_variablePart.SetStateDirty();
-			_variablePart.Write(file.GetSystemTransaction());
+			_variablePart.Write(file.SystemTransaction());
 		}
 	}
 }

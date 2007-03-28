@@ -264,7 +264,8 @@ namespace Db4objects.Db4o.Internal
 		internal int GetPointerSlot()
 		{
 			int id = GetSlot(Db4objects.Db4o.Internal.Const4.POINTER_LENGTH);
-			i_systemTrans.WritePointer(id, 0, 0);
+			((Db4objects.Db4o.Internal.LocalTransaction)SystemTransaction()).WritePointer(id, 
+				0, 0);
 			if (i_handlers.IsSystemHandler(id))
 			{
 				return GetPointerSlot();
@@ -351,7 +352,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_blockEndAddress > BlocksFor(FileLength()))
 			{
-				Db4objects.Db4o.Internal.StatefulBuffer writer = GetWriter(i_systemTrans, _blockEndAddress
+				Db4objects.Db4o.Internal.StatefulBuffer writer = GetWriter(SystemTransaction(), _blockEndAddress
 					 - 1, BlockSize());
 				writer.Write();
 			}
@@ -521,7 +522,7 @@ namespace Db4objects.Db4o.Internal
 			_fileHeader = Db4objects.Db4o.Internal.Fileheader.FileHeader.ReadFixedPart(this);
 			CreateStringIO(_systemData.StringEncoding());
 			ClassCollection().SetID(_systemData.ClassCollectionID());
-			ClassCollection().Read(i_systemTrans);
+			ClassCollection().Read(SystemTransaction());
 			Db4objects.Db4o.Internal.Convert.Converter.Convert(new Db4objects.Db4o.Internal.Convert.ConversionStage.ClassCollectionAvailableStage
 				(this));
 			ReadHeaderVariablePart();
@@ -751,7 +752,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Db4objects.Db4o.Internal.PersistentBase dirty = (Db4objects.Db4o.Internal.PersistentBase
 					)i.Current;
-				dirty.Write(i_systemTrans);
+				dirty.Write(SystemTransaction());
 				dirty.NotCachedDirty();
 			}
 			i_dirty.Clear();
@@ -794,8 +795,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				freespaceID = _fmChecker.Shutdown();
 			}
-			Db4objects.Db4o.Internal.StatefulBuffer writer = GetWriter(i_systemTrans, 0, _fileHeader
-				.Length());
+			Db4objects.Db4o.Internal.StatefulBuffer writer = GetWriter(SystemTransaction(), 0
+				, _fileHeader.Length());
 			_fileHeader.WriteFixedPart(this, startFileLockingThread, shuttingDown, writer, BlockSize
 				(), freespaceID);
 			if (shuttingDown)
@@ -823,7 +824,7 @@ namespace Db4objects.Db4o.Internal
 
 		public sealed override void WriteTransactionPointer(int address)
 		{
-			_fileHeader.WriteTransactionPointer(GetSystemTransaction(), address);
+			_fileHeader.WriteTransactionPointer(SystemTransaction(), address);
 		}
 
 		public void GetSlotForUpdate(Db4objects.Db4o.Internal.StatefulBuffer forWriter)
@@ -922,6 +923,12 @@ namespace Db4objects.Db4o.Internal
 				(query.GetTransaction());
 			queryResult.LoadFromQuery(query);
 			return queryResult;
+		}
+
+		public virtual Db4objects.Db4o.Internal.LocalTransaction GetLocalSystemTransaction
+			()
+		{
+			return (Db4objects.Db4o.Internal.LocalTransaction)SystemTransaction();
 		}
 	}
 }

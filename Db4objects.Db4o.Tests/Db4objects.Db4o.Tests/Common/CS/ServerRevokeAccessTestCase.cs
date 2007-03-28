@@ -1,4 +1,4 @@
-namespace Db4objects.Db4o.Tests.Common.Assorted
+namespace Db4objects.Db4o.Tests.Common.CS
 {
 	public class ServerRevokeAccessTestCase : Db4oUnit.ITestCase
 	{
@@ -46,9 +46,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 			public void Run()
 			{
-				Db4objects.Db4o.Db4oFactory.OpenClient(Db4objects.Db4o.Tests.Common.Assorted.ServerRevokeAccessTestCase
-					.SERVER_HOSTNAME, Db4objects.Db4o.Tests.Common.Assorted.ServerRevokeAccessTestCase
-					.SERVER_PORT, user, password);
+				Db4objects.Db4o.Db4oFactory.OpenClient(Db4objects.Db4o.Tests.Common.CS.ServerRevokeAccessTestCase
+					.SERVER_HOSTNAME, Db4objects.Db4o.Tests.Common.CS.ServerRevokeAccessTestCase.SERVER_PORT
+					, user, password);
 			}
 
 			private readonly ServerRevokeAccessTestCase _enclosing;

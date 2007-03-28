@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// <exclude></exclude>
 	public sealed class QCandidates : Db4objects.Db4o.Foundation.IVisitor4
 	{
-		public readonly Db4objects.Db4o.Internal.Transaction i_trans;
+		public readonly Db4objects.Db4o.Internal.LocalTransaction i_trans;
 
 		public Db4objects.Db4o.Foundation.Tree i_root;
 
@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private Db4objects.Db4o.Internal.IDGenerator _idGenerator;
 
-		internal QCandidates(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Internal.ClassMetadata
+		internal QCandidates(Db4objects.Db4o.Internal.LocalTransaction a_trans, Db4objects.Db4o.Internal.ClassMetadata
 			 a_yapClass, Db4objects.Db4o.Internal.Query.Processor.QField a_field)
 		{
 			i_trans = a_trans;

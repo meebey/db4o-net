@@ -52,8 +52,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		public override bool Accept(System.Type clazz)
 		{
-			return !typeof(Db4oUnit.Extensions.Fixtures.IOptOutDefragSolo).IsAssignableFrom(clazz
-				);
+			return base.Accept(clazz) && !typeof(Db4oUnit.Extensions.Fixtures.IOptOutDefragSolo)
+				.IsAssignableFrom(clazz);
 		}
 	}
 }

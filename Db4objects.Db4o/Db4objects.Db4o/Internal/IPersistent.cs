@@ -3,10 +3,6 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public interface IPersistent
 	{
-		/// <moveto>
-		/// new com.db4o.internal.Persistent interface
-		/// all four of the following abstract methods
-		/// </moveto>
 		byte GetIdentifier();
 
 		int OwnLength();

@@ -35,9 +35,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_primitive;
 		}
 
+		public override object Read(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf
+			, Db4objects.Db4o.Internal.StatefulBuffer writer, bool redirect)
+		{
+			return mf._primitive.ReadFloat(writer);
+		}
+
 		internal override object Read1(Db4objects.Db4o.Internal.Buffer a_bytes)
 		{
-			return Sharpen.Runtime.IntBitsToFloat(a_bytes.ReadInt());
+			return PrimitiveMarshaller().ReadFloat(a_bytes);
 		}
 
 		public override void Write(object a_object, Db4objects.Db4o.Internal.Buffer a_bytes

@@ -48,18 +48,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual string ReadFromParentSlot(Db4objects.Db4o.Internal.ObjectContainerBase
 			 stream, Db4objects.Db4o.Internal.Buffer reader, bool redirect)
 		{
-			if (!redirect)
-			{
-				return Read(stream, reader);
-			}
-			try
+			if (redirect)
 			{
 				return Read(stream, ReadSlotFromParentSlot(stream, reader));
 			}
-			catch (System.IO.IOException e)
-			{
-				throw new Db4objects.Db4o.IO.UncheckedIOException(e);
-			}
+			return Read(stream, reader);
 		}
 
 		public abstract Db4objects.Db4o.Internal.Buffer ReadIndexEntry(Db4objects.Db4o.Internal.StatefulBuffer

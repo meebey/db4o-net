@@ -106,17 +106,16 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public static Db4objects.Db4o.Internal.Btree.BTree CreateIntKeyBTree(Db4objects.Db4o.Internal.ObjectContainerBase
 			 stream, int id, int nodeSize)
 		{
-			return new Db4objects.Db4o.Internal.Btree.BTree(stream.GetSystemTransaction(), id
-				, new Db4objects.Db4o.Internal.Handlers.IntHandler(stream), nodeSize, stream.ConfigImpl
+			return new Db4objects.Db4o.Internal.Btree.BTree(stream.SystemTransaction(), id, new 
+				Db4objects.Db4o.Internal.Handlers.IntHandler(stream), nodeSize, stream.ConfigImpl
 				().BTreeCacheHeight());
 		}
 
 		public static Db4objects.Db4o.Internal.Btree.BTree CreateIntKeyBTree(Db4objects.Db4o.Internal.ObjectContainerBase
 			 stream, int id, int treeCacheHeight, int nodeSize)
 		{
-			return new Db4objects.Db4o.Internal.Btree.BTree(stream.GetSystemTransaction(), id
-				, new Db4objects.Db4o.Internal.Handlers.IntHandler(stream), nodeSize, treeCacheHeight
-				);
+			return new Db4objects.Db4o.Internal.Btree.BTree(stream.SystemTransaction(), id, new 
+				Db4objects.Db4o.Internal.Handlers.IntHandler(stream), nodeSize, treeCacheHeight);
 		}
 
 		public static void AssertSingleElement(Db4objects.Db4o.Internal.Transaction trans

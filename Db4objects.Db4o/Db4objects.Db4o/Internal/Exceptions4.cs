@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Internal
 			throw new System.Exception();
 		}
 
-		public static System.Exception ShouldNeverHappen()
+		public static void ShouldNeverHappen()
 		{
 			throw new System.Exception();
 		}

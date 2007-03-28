@@ -21,12 +21,20 @@ namespace Db4objects.Db4o.Internal
 			memoryFile.SetInitialSize(223);
 			memoryFile.SetIncrementSizeBy(300);
 			serviceProvider.ProduceClassMetadata(serviceProvider.Reflector().ForObject(obj));
-			Db4objects.Db4o.Internal.TransportObjectContainer carrier = new Db4objects.Db4o.Internal.TransportObjectContainer
-				(serviceProvider, memoryFile);
-			carrier.Set(obj);
-			int id = (int)carrier.GetID(obj);
-			carrier.Close();
-			return new Db4objects.Db4o.Internal.SerializedGraph(id, memoryFile.GetBytes());
+			try
+			{
+				Db4objects.Db4o.Internal.TransportObjectContainer carrier = new Db4objects.Db4o.Internal.TransportObjectContainer
+					(serviceProvider, memoryFile);
+				carrier.Set(obj);
+				int id = (int)carrier.GetID(obj);
+				carrier.Close();
+				return new Db4objects.Db4o.Internal.SerializedGraph(id, memoryFile.GetBytes());
+			}
+			catch (System.IO.IOException)
+			{
+				Db4objects.Db4o.Internal.Exceptions4.ShouldNeverHappen();
+				return null;
+			}
 		}
 
 		public static object Unmarshall(Db4objects.Db4o.Internal.ObjectContainerBase serviceProvider
@@ -44,14 +52,26 @@ namespace Db4objects.Db4o.Internal
 		public static object Unmarshall(Db4objects.Db4o.Internal.ObjectContainerBase serviceProvider
 			, byte[] bytes, int id)
 		{
+			if (id <= 0)
+			{
+				return null;
+			}
 			Db4objects.Db4o.Ext.MemoryFile memoryFile = new Db4objects.Db4o.Ext.MemoryFile(bytes
 				);
-			Db4objects.Db4o.Internal.TransportObjectContainer carrier = new Db4objects.Db4o.Internal.TransportObjectContainer
-				(serviceProvider, memoryFile);
-			object obj = carrier.GetByID(id);
-			carrier.Activate(obj, int.MaxValue);
-			carrier.Close();
-			return obj;
+			try
+			{
+				Db4objects.Db4o.Internal.TransportObjectContainer carrier = new Db4objects.Db4o.Internal.TransportObjectContainer
+					(serviceProvider, memoryFile);
+				object obj = carrier.GetByID(id);
+				carrier.Activate(obj, int.MaxValue);
+				carrier.Close();
+				return obj;
+			}
+			catch (System.IO.IOException)
+			{
+				Db4objects.Db4o.Internal.Exceptions4.ShouldNeverHappen();
+				return null;
+			}
 		}
 	}
 }

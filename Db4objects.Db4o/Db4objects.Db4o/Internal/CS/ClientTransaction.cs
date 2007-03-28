@@ -35,24 +35,23 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		protected override void ClearAll()
+		protected override void Clear()
 		{
 			RemoveYapObjectReferences();
-			base.ClearAll();
 		}
 
 		private void RemoveYapObjectReferences()
 		{
 			if (i_yapObjectsToGc != null)
 			{
-				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass43(this));
+				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass42(this));
 			}
 			i_yapObjectsToGc = null;
 		}
 
-		private sealed class _AnonymousInnerClass43 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass42 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass43(ClientTransaction _enclosing)
+			public _AnonymousInnerClass42(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -99,7 +98,7 @@ namespace Db4objects.Db4o.Internal.CS
 				.OBJECT_BY_UUID.GetWriterForLength(this, messageLength);
 			message.WriteLong(a_uuid);
 			message.WriteBytes(a_signature);
-			i_client.WriteMsg(message);
+			i_client.Write(message);
 			message = (Db4objects.Db4o.Internal.CS.Messages.MsgD)i_client.ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
 				.OBJECT_BY_UUID);
 			int id = message.ReadInt();
@@ -114,16 +113,16 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (i_delete != null)
 			{
-				i_delete.Traverse(new _AnonymousInnerClass92(this));
+				i_delete.Traverse(new _AnonymousInnerClass91(this));
 			}
 			i_delete = null;
 			i_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.PROCESS_DELETES, false
 				);
 		}
 
-		private sealed class _AnonymousInnerClass92 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass91 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass92(ClientTransaction _enclosing)
+			public _AnonymousInnerClass91(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

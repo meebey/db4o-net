@@ -1,14 +1,14 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	public sealed class MQueryExecute : Db4objects.Db4o.Internal.CS.Messages.MsgQuery
+		, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
 		private Db4objects.Db4o.Config.QueryEvaluationMode _evaluationMode;
 
-		public override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			Unmarshall(_payLoad._offset);
-			WriteQueryResult(Execute(), serverThread, _evaluationMode);
+			WriteQueryResult(Execute(), _evaluationMode);
 			return true;
 		}
 

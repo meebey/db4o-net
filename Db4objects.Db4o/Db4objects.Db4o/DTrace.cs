@@ -15,6 +15,7 @@ namespace Db4objects.Db4o
 
 		private static void Init()
 		{
+			return;
 			ADD_TO_CLASS_INDEX = new Db4objects.Db4o.DTrace(true, true, "add to class index tree"
 				, true);
 			BEGIN_TOP_LEVEL_CALL = new Db4objects.Db4o.DTrace(true, true, "begin top level call"

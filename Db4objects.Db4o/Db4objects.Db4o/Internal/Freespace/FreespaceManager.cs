@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			 file, int address)
 		{
 			Db4objects.Db4o.Internal.StatefulBuffer writer = new Db4objects.Db4o.Internal.StatefulBuffer
-				(file.GetSystemTransaction(), address, SlotLength());
+				(file.SystemTransaction(), address, SlotLength());
 			for (int i = 0; i < INTS_IN_SLOT; i++)
 			{
 				writer.WriteInt(0);

@@ -161,7 +161,8 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Foundation.KeySpec(true);
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec IOADAPTER = new Db4objects.Db4o.Foundation.KeySpec
-			(new Db4objects.Db4o.IO.RandomAccessFileAdapter());
+			(new Db4objects.Db4o.IO.CachedIoAdapter(new Db4objects.Db4o.IO.RandomAccessFileAdapter
+			()));
 
 		private static readonly Db4objects.Db4o.Foundation.KeySpec ALIASES = new Db4objects.Db4o.Foundation.KeySpec
 			(null);

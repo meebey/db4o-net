@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.IX
 
 		internal readonly bool _nullHandling;
 
-		public Index4(Db4objects.Db4o.Internal.Transaction systemTrans, Db4objects.Db4o.Internal.IX.IIndexable4
+		public Index4(Db4objects.Db4o.Internal.LocalTransaction systemTrans, Db4objects.Db4o.Internal.IX.IIndexable4
 			 handler, Db4objects.Db4o.MetaIndex metaIndex, bool nullHandling)
 		{
 			_metaIndex = metaIndex;
@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Internal.IX
 		}
 
 		public virtual Db4objects.Db4o.Internal.IX.IndexTransaction DirtyIndexTransaction
-			(Db4objects.Db4o.Internal.Transaction a_trans)
+			(Db4objects.Db4o.Internal.LocalTransaction a_trans)
 		{
 			Db4objects.Db4o.Internal.IX.IndexTransaction ift = new Db4objects.Db4o.Internal.IX.IndexTransaction
 				(a_trans, this);
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal.IX
 			return _globalIndexTransaction;
 		}
 
-		public virtual Db4objects.Db4o.Internal.IX.IndexTransaction IndexTransactionFor(Db4objects.Db4o.Internal.Transaction
+		public virtual Db4objects.Db4o.Internal.IX.IndexTransaction IndexTransactionFor(Db4objects.Db4o.Internal.LocalTransaction
 			 a_trans)
 		{
 			if (_indexTransactions != null)
@@ -298,14 +298,14 @@ namespace Db4objects.Db4o.Internal.IX
 			return sb.ToString();
 		}
 
-		private Db4objects.Db4o.Internal.Transaction Trans()
+		private Db4objects.Db4o.Internal.LocalTransaction Trans()
 		{
 			return _globalIndexTransaction.i_trans;
 		}
 
 		private Db4objects.Db4o.Internal.LocalObjectContainer File()
 		{
-			return Trans().i_file;
+			return Trans().File();
 		}
 
 		private int GetSlot(int length)

@@ -1,5 +1,6 @@
 namespace Db4objects.Db4o.Reflect.Generic
 {
+	/// <exclude></exclude>
 	public class GenericClassBuilder : Db4objects.Db4o.Reflect.Generic.IReflectClassBuilder
 	{
 		private Db4objects.Db4o.Reflect.Generic.GenericReflector _reflector;

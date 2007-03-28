@@ -51,7 +51,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 			try
 			{
-				if (_opentime == ReadLong(_baseAddress, _openTimeOffset))
+				long readOpenTime = ReadLong(_baseAddress, _openTimeOffset);
+				if (_opentime == readOpenTime)
 				{
 					WriteOpenTime();
 					return;
@@ -61,6 +62,26 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			{
 			}
 			throw new Db4objects.Db4o.Ext.DatabaseFileLockedException(_timerFile.ToString());
+		}
+
+		public override void CheckIfOtherSessionAlive(Db4objects.Db4o.Internal.LocalObjectContainer
+			 container, int address, int offset, long lastAccessTime)
+		{
+			if (_timerFile == null)
+			{
+				return;
+			}
+			long waitTime = Db4objects.Db4o.Internal.Const4.LOCK_TIME_INTERVAL * 5;
+			long currentTime = Sharpen.Runtime.CurrentTimeMillis();
+			while (Sharpen.Runtime.CurrentTimeMillis() < currentTime + waitTime)
+			{
+				Db4objects.Db4o.Foundation.Cool.SleepIgnoringInterruption(waitTime);
+			}
+			long currentAccessTime = ReadLong(address, offset);
+			if ((currentAccessTime > lastAccessTime))
+			{
+				throw new Db4objects.Db4o.Ext.DatabaseFileLockedException(container.ToString());
+			}
 		}
 
 		public override void Close()

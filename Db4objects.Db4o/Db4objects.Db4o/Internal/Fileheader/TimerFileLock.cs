@@ -33,6 +33,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public abstract void Close();
 
+		public abstract void CheckIfOtherSessionAlive(Db4objects.Db4o.Internal.LocalObjectContainer
+			 container, int address, int offset, long lastAccessTime);
+
 		public abstract void Run();
 	}
 }

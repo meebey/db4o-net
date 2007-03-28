@@ -1,16 +1,15 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MObjectSetGetId : Db4objects.Db4o.Internal.CS.Messages.MObjectSet
+	public class MObjectSetGetId : Db4objects.Db4o.Internal.CS.Messages.MObjectSet, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public virtual bool ProcessAtServer()
 		{
 			Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult queryResult = QueryResult
-				(serverThread, ReadInt());
+				(ReadInt());
 			int id = queryResult.GetId(ReadInt());
-			serverThread.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECTSET_GET_ID.GetWriterForInt
-				(Transaction(), id));
+			Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECTSET_GET_ID.GetWriterForInt(Transaction
+				(), id));
 			return true;
 		}
 	}

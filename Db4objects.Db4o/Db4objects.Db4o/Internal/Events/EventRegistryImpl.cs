@@ -29,13 +29,13 @@ namespace Db4objects.Db4o.Internal.Events
 
 		protected Db4objects.Db4o.Events.CommitEventHandler _committing;
 
-		public virtual void OnQueryFinished(Db4objects.Db4o.Query.IQuery query)
+		public virtual void QueryOnFinished(Db4objects.Db4o.Query.IQuery query)
 		{
 			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerQueryEvent(_queryFinished, query
 				);
 		}
 
-		public virtual void OnQueryStarted(Db4objects.Db4o.Query.IQuery query)
+		public virtual void QueryOnStarted(Db4objects.Db4o.Query.IQuery query)
 		{
 			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerQueryEvent(_queryStarted, query
 				);

@@ -340,9 +340,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public virtual Db4objects.Db4o.IObjectSet Execute()
 		{
 			Db4objects.Db4o.Internal.Callbacks.ICallbacks callbacks = Stream().Callbacks();
-			callbacks.OnQueryStarted(Cast(this));
+			callbacks.QueryOnStarted(Cast(this));
 			Db4objects.Db4o.Internal.Query.Result.IQueryResult qresult = GetQueryResult();
-			callbacks.OnQueryFinished(Cast(this));
+			callbacks.QueryOnFinished(Cast(this));
 			return new Db4objects.Db4o.Internal.Query.ObjectSetFacade(qresult);
 		}
 
@@ -731,7 +731,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 			}
 			Db4objects.Db4o.Internal.Query.Processor.QCandidates candidates = new Db4objects.Db4o.Internal.Query.Processor.QCandidates
-				(i_trans, qcon.GetYapClass(), null);
+				((Db4objects.Db4o.Internal.LocalTransaction)i_trans, qcon.GetYapClass(), null);
 			candidates.AddConstraint(qcon);
 			return new Db4objects.Db4o.Foundation.List4(candidateCollection, candidates);
 		}

@@ -750,8 +750,8 @@ namespace Db4objects.Db4o.Internal.Btree
 				_btree.AddToProcessing(this);
 				return null;
 			}
-			Db4objects.Db4o.Internal.Buffer reader = trans.i_file.ReadReaderByID(trans.SystemTransaction
-				(), GetID());
+			Db4objects.Db4o.Internal.Buffer reader = ((Db4objects.Db4o.Internal.LocalTransaction
+				)trans).File().ReadReaderByID(trans.SystemTransaction(), GetID());
 			ReadNodeHeader(reader);
 			return reader;
 		}

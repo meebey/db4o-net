@@ -7,8 +7,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		private static int nextID;
 
 		protected void WriteQueryResult(Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult
-			 queryResult, Db4objects.Db4o.Internal.CS.ServerMessageDispatcher serverThread, 
-			Db4objects.Db4o.Config.QueryEvaluationMode evaluationMode)
+			 queryResult, Db4objects.Db4o.Config.QueryEvaluationMode evaluationMode)
 		{
 			int queryResultId = 0;
 			int maxCount = 0;
@@ -29,10 +28,12 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			writer.WriteIDs(idIterator, maxCount);
 			if (queryResultId > 0)
 			{
+				Db4objects.Db4o.Internal.CS.IServerMessageDispatcher serverThread = ServerMessageDispatcher
+					();
 				serverThread.MapQueryResultToID(new Db4objects.Db4o.Internal.CS.LazyClientObjectSetStub
 					(queryResult, idIterator), queryResultId);
 			}
-			serverThread.Write(message);
+			Write(message);
 		}
 
 		private int BufferLength(int maxCount)

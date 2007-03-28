@@ -1,9 +1,9 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MGetInternalIDs : Db4objects.Db4o.Internal.CS.Messages.MsgD
+	public sealed class MGetInternalIDs : Db4objects.Db4o.Internal.CS.Messages.MsgD, 
+		Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			Db4objects.Db4o.Internal.Buffer bytes = this.GetByteLoad();
 			long[] ids;
@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				writer.WriteInt((int)ids[i]);
 			}
-			serverThread.Write(message);
+			Write(message);
 			return true;
 		}
 	}

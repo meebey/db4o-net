@@ -131,9 +131,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		public virtual object Read(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf, 
-			Db4objects.Db4o.Internal.StatefulBuffer writer, bool redirect)
+			Db4objects.Db4o.Internal.StatefulBuffer buffer, bool redirect)
 		{
-			return Read1(writer);
+			return Read1(buffer);
 		}
 
 		internal abstract object Read1(Db4objects.Db4o.Internal.Buffer reader);
@@ -343,6 +343,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				Db4objects.Db4o.Internal.Exceptions4.VirtualException();
 			}
+		}
+
+		protected virtual Db4objects.Db4o.Internal.Marshall.PrimitiveMarshaller PrimitiveMarshaller
+			()
+		{
+			return Db4objects.Db4o.Internal.Marshall.MarshallerFamily.Current()._primitive;
 		}
 
 		public abstract int GetID();

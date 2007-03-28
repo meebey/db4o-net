@@ -43,8 +43,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			{
 				items[i] = (Db4objects.Db4o.Tests.Common.Assorted.LazyObjectReferenceTestCase.Item
 					)Db().GetByID(ids[i]);
-				infos[i] = new Db4objects.Db4o.Internal.LazyObjectReference(Stream(), (int)ids[i]
-					);
+				infos[i] = new Db4objects.Db4o.Internal.LazyObjectReference(Trans(), (int)ids[i]);
 			}
 			AssertInfosAreConsistent(ids, infos);
 			for (int i = 0; i < items.Length; i++)

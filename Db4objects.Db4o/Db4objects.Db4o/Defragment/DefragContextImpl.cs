@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Defragment
 			internal virtual Db4objects.Db4o.Internal.Transaction Transaction(Db4objects.Db4o.Defragment.DefragContextImpl
 				 context)
 			{
-				return Db(context).GetSystemTransaction();
+				return Db(context).SystemTransaction();
 			}
 		}
 

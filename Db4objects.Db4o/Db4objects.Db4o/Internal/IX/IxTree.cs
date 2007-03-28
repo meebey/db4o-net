@@ -127,10 +127,10 @@ namespace Db4objects.Db4o.Internal.IX
 
 		internal Db4objects.Db4o.Internal.LocalObjectContainer Stream()
 		{
-			return Trans().i_file;
+			return Trans().File();
 		}
 
-		internal Db4objects.Db4o.Internal.Transaction Trans()
+		internal Db4objects.Db4o.Internal.LocalTransaction Trans()
 		{
 			return _fieldTransaction.i_trans;
 		}

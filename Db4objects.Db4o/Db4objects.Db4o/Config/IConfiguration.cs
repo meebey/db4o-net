@@ -349,6 +349,11 @@ namespace Db4objects.Db4o.Config
 		/// you need to supply a password to seed the encryption mechanism.<br /><br />
 		/// db4o database files keep their encryption format after creation.<br /><br />
 		/// </remarks>
+		/// <deprecated>
+		/// use a custom encrypting
+		/// <see cref="Db4objects.Db4o.IO.IoAdapter">Db4objects.Db4o.IO.IoAdapter</see>
+		/// instead
+		/// </deprecated>
 		/// <param name="flag">
 		/// true for turning encryption on, false for turning encryption
 		/// off.
@@ -472,9 +477,10 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="Db4objects.Db4o.IO.IoAdapter">Db4objects.Db4o.IO.IoAdapter</see>
 		/// to
 		/// write your own. Possible usecases could be improved performance
-		/// with a native library, mirrored write to two files or
-		/// read-on-write fail-safety control.<br /><br />Sample IoAdapters
-		/// are supplied with the distribution as source code.
+		/// with a native library, mirrored write to two files, encryption or
+		/// read-on-write fail-safety control.<br /><br />An example of a custom
+		/// io adapter can be found in xtea_db4o community project:<br />
+		/// http://developer.db4o.com/ProjectSpaces/view.aspx/XTEA
 		/// </remarks>
 		/// <param name="adapter">- the IoAdapter</param>
 		void Io(Db4objects.Db4o.IO.IoAdapter adapter);
@@ -599,6 +605,11 @@ namespace Db4objects.Db4o.Config
 		/// is used to seed the encryption mechanism, which makes it impossible
 		/// to read the database file without knowing the password.<br /><br />
 		/// </remarks>
+		/// <deprecated>
+		/// use a custom encrypting
+		/// <see cref="Db4objects.Db4o.IO.IoAdapter">Db4objects.Db4o.IO.IoAdapter</see>
+		/// instead
+		/// </deprecated>
 		/// <param name="pass">the password to be used.</param>
 		void Password(string pass);
 

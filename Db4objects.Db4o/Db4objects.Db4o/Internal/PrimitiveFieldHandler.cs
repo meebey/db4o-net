@@ -128,6 +128,10 @@ namespace Db4objects.Db4o.Internal
 				{
 					return null;
 				}
+				catch (System.IO.IOException)
+				{
+					return null;
+				}
 				a_yapObject.SetObjectWeak(a_bytes.GetStream(), a_object);
 			}
 			a_yapObject.SetStateClean();
@@ -147,6 +151,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
+			catch (System.IO.IOException)
+			{
+				return null;
+			}
 		}
 
 		internal override void InstantiateFields(Db4objects.Db4o.Internal.ObjectReference
@@ -160,6 +168,9 @@ namespace Db4objects.Db4o.Internal
 				obj = i_handler.Read(mf, a_bytes, true);
 			}
 			catch (Db4objects.Db4o.CorruptionException)
+			{
+			}
+			catch (System.IO.IOException)
 			{
 			}
 			if (obj != null)

@@ -64,9 +64,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			int id = yo.GetID();
 			int address = -1;
-			if (!trans.Stream().IsClient())
+			if (trans is Db4objects.Db4o.Internal.LocalTransaction)
 			{
-				address = trans.i_file.GetSlot(length);
+				address = ((Db4objects.Db4o.Internal.LocalTransaction)trans).File().GetSlot(length
+					);
 				trans.SlotFreeOnRollback(id, address, length);
 			}
 			trans.SetPointer(id, address, length);

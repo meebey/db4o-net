@@ -151,14 +151,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								Db4objects.Db4o.Foundation.Tree.ByRef pending = new Db4objects.Db4o.Foundation.Tree.ByRef
 									();
 								bool[] innerRes = new bool[] { isNot };
-								candidates.Traverse(new _AnonymousInnerClass172(this, innerRes, isNot, pending));
+								candidates.Traverse(new _AnonymousInnerClass174(this, innerRes, isNot, pending));
 								if (isNot)
 								{
 									qcon.Not();
 								}
 								if (pending.value != null)
 								{
-									pending.value.Traverse(new _AnonymousInnerClass241(this));
+									pending.value.Traverse(new _AnonymousInnerClass243(this));
 								}
 								if (!innerRes[0])
 								{
@@ -217,9 +217,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _AnonymousInnerClass172 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass174 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass172(QCandidate _enclosing, bool[] innerRes, bool isNot
+			public _AnonymousInnerClass174(QCandidate _enclosing, bool[] innerRes, bool isNot
 				, Db4objects.Db4o.Foundation.Tree.ByRef pending)
 			{
 				this._enclosing = _enclosing;
@@ -238,13 +238,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (cand._pendingJoins != null)
 				{
-					cand._pendingJoins.Traverse(new _AnonymousInnerClass185(this, pending));
+					cand._pendingJoins.Traverse(new _AnonymousInnerClass187(this, pending));
 				}
 			}
 
-			private sealed class _AnonymousInnerClass185 : Db4objects.Db4o.Foundation.IVisitor4
+			private sealed class _AnonymousInnerClass187 : Db4objects.Db4o.Foundation.IVisitor4
 			{
-				public _AnonymousInnerClass185(_AnonymousInnerClass172 _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
+				public _AnonymousInnerClass187(_AnonymousInnerClass174 _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
 					 pending)
 				{
 					this._enclosing = _enclosing;
@@ -271,7 +271,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 
-				private readonly _AnonymousInnerClass172 _enclosing;
+				private readonly _AnonymousInnerClass174 _enclosing;
 
 				private readonly Db4objects.Db4o.Foundation.Tree.ByRef pending;
 			}
@@ -285,9 +285,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly Db4objects.Db4o.Foundation.Tree.ByRef pending;
 		}
 
-		private sealed class _AnonymousInnerClass241 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass243 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _AnonymousInnerClass241(QCandidate _enclosing)
+			public _AnonymousInnerClass243(QCandidate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -391,10 +391,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private Db4objects.Db4o.Internal.LocalObjectContainer GetStream()
 		{
-			return GetTransaction().i_file;
+			return GetTransaction().File();
 		}
 
-		private Db4objects.Db4o.Internal.Transaction GetTransaction()
+		private Db4objects.Db4o.Internal.LocalTransaction GetTransaction()
 		{
 			return _candidates.i_trans;
 		}
@@ -660,6 +660,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						_member = _yapField.ReadQuery(GetTransaction(), _marshallerFamily, _bytes);
 					}
 					catch (Db4objects.Db4o.CorruptionException)
+					{
+						_member = null;
+					}
+					catch (System.IO.IOException)
 					{
 						_member = null;
 					}

@@ -7,13 +7,13 @@ namespace Db4objects.Db4o.Internal.IX
 	{
 		internal readonly Db4objects.Db4o.Internal.IX.Index4 i_index;
 
-		internal readonly Db4objects.Db4o.Internal.Transaction i_trans;
+		internal readonly Db4objects.Db4o.Internal.LocalTransaction i_trans;
 
 		internal int i_version;
 
 		private Db4objects.Db4o.Foundation.Tree i_root;
 
-		internal IndexTransaction(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Internal.IX.Index4
+		internal IndexTransaction(Db4objects.Db4o.Internal.LocalTransaction a_trans, Db4objects.Db4o.Internal.IX.Index4
 			 a_index)
 		{
 			i_trans = a_trans;

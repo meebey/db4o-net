@@ -36,9 +36,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return DEFAULT_VALUE;
 		}
 
-		internal override object Read1(Db4objects.Db4o.Internal.Buffer a_bytes)
+		public override object Read(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf
+			, Db4objects.Db4o.Internal.StatefulBuffer buffer, bool redirect)
 		{
-			return Db4objects.Db4o.Internal.Platform4.LongToDouble(ReadLong(a_bytes));
+			return mf._primitive.ReadDouble(buffer);
+		}
+
+		internal override object Read1(Db4objects.Db4o.Internal.Buffer buffer)
+		{
+			return PrimitiveMarshaller().ReadDouble(buffer);
 		}
 
 		public override void Write(object a_object, Db4objects.Db4o.Internal.Buffer a_bytes

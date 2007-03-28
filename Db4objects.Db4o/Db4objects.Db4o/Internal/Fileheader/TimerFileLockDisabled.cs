@@ -45,5 +45,10 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override void WriteOpenTime()
 		{
 		}
+
+		public override void CheckIfOtherSessionAlive(Db4objects.Db4o.Internal.LocalObjectContainer
+			 container, int address, int offset, long lastAccessTime)
+		{
+		}
 	}
 }

@@ -1,10 +1,10 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MCommitSystemTransaction : Db4objects.Db4o.Internal.CS.Messages.Msg
+	public class MCommitSystemTransaction : Db4objects.Db4o.Internal.CS.Messages.Msg, 
+		Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			Transaction().SystemTransaction().Commit();
 			return true;

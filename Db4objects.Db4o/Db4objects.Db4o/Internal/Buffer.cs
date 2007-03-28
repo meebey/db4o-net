@@ -76,7 +76,6 @@ namespace Db4objects.Db4o.Internal
 		/// <summary>non-encrypted read, used for indexes</summary>
 		/// <param name="a_stream"></param>
 		/// <param name="a_address"></param>
-		/// <exception cref="Db4objects.Db4o.IO.UncheckedIOException"></exception>
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Read(Db4objects.Db4o.Internal.ObjectContainerBase stream, int
 			 address, int addressOffset)
@@ -148,7 +147,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual long ReadLong()
 		{
-			return Db4objects.Db4o.Internal.Handlers.LongHandler.ReadLong(this);
+			long ret = 0;
+			ret = Db4objects.Db4o.Foundation.PrimitiveCodec.ReadLong(this._buffer, this._offset
+				);
+			this.IncrementOffset(Db4objects.Db4o.Internal.Const4.LONG_BYTES);
+			return ret;
 		}
 
 		public virtual Db4objects.Db4o.Internal.Buffer ReadPayloadReader(int offset, int 

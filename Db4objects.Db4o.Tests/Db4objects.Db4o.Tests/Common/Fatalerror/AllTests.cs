@@ -9,8 +9,8 @@ namespace Db4objects.Db4o.Tests.Common.Fatalerror
 
 		protected override System.Type[] TestCases()
 		{
-			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Fatalerror.NativeQueryTestCase)
-				 };
+			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Fatalerror.FatalExceptionInNestedCallTestCase)
+				, typeof(Db4objects.Db4o.Tests.Common.Fatalerror.NativeQueryTestCase) };
 		}
 	}
 }

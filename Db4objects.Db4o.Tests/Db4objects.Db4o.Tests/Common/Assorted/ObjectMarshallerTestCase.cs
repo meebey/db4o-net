@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			Db4oUnit.Assert.IsTrue(marshaller.writeCalled);
 		}
 
-		public virtual void Test()
+		public virtual void TestReadWrite()
 		{
 			Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item item = AssertRetrieve
 				();
@@ -102,6 +102,16 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AssertRetrieve();
 		}
 
+		public virtual void TestQueryByExample()
+		{
+			Db4objects.Db4o.IObjectSet os = Db().Get(new Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item
+				());
+			Db4oUnit.Assert.AreEqual(1, os.Size());
+			Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item item = (Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item
+				)os.Next();
+			AssertItem(item);
+		}
+
 		private Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item AssertRetrieve
 			()
 		{
@@ -109,10 +119,16 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item item = (Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item
 				)RetrieveOnlyInstance(typeof(Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item)
 				);
+			AssertItem(item);
+			return item;
+		}
+
+		private void AssertItem(Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item
+			 item)
+		{
 			Db4oUnit.Assert.AreEqual(int.MaxValue, item._one);
 			Db4oUnit.Assert.AreEqual(long.MaxValue, item._two);
 			Db4oUnit.Assert.AreEqual(1, item._three);
-			return item;
 		}
 	}
 }

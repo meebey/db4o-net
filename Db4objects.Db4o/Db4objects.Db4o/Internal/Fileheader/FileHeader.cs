@@ -134,28 +134,5 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 			return container.NeedsLockFileThread() && (lastAccessTime != 0);
 		}
-
-		public static void CheckIfOtherSessionAlive(Db4objects.Db4o.Internal.LocalObjectContainer
-			 container, int address, int offset, long lastAccessTime)
-		{
-			Db4objects.Db4o.Internal.StatefulBuffer reader;
-			container.LogMsg(Db4objects.Db4o.Internal.Messages.FAILED_TO_SHUTDOWN, null);
-			long waitTime = Db4objects.Db4o.Internal.Const4.LOCK_TIME_INTERVAL * 5;
-			long currentTime = Sharpen.Runtime.CurrentTimeMillis();
-			while (Sharpen.Runtime.CurrentTimeMillis() < currentTime + waitTime)
-			{
-				Db4objects.Db4o.Foundation.Cool.SleepIgnoringInterruption(waitTime);
-			}
-			reader = container.GetWriter(container.GetSystemTransaction(), address, Db4objects.Db4o.Internal.Const4
-				.LONG_LENGTH * 2);
-			reader.MoveForward(offset);
-			reader.Read();
-			reader.ReadLong();
-			long currentAccessTime = reader.ReadLong();
-			if ((currentAccessTime > lastAccessTime))
-			{
-				throw new Db4objects.Db4o.Ext.DatabaseFileLockedException(container.ToString());
-			}
-		}
 	}
 }

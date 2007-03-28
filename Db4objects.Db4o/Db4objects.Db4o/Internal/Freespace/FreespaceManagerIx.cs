@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 			_addressIx._index.CommitFreeSpace(_lengthIx._index);
 			Db4objects.Db4o.Internal.StatefulBuffer writer = new Db4objects.Db4o.Internal.StatefulBuffer
-				(_file.GetSystemTransaction(), _slotAddress, SlotLength());
+				(_file.SystemTransaction(), _slotAddress, SlotLength());
 			_addressIx._index._metaIndex.Write(writer);
 			_lengthIx._index._metaIndex.Write(writer);
 			if (_overwriteDeletedSlots)

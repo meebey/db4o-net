@@ -1,9 +1,8 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MObjectByUuid : Db4objects.Db4o.Internal.CS.Messages.MsgD
+	public class MObjectByUuid : Db4objects.Db4o.Internal.CS.Messages.MsgD, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			long uuid = ReadLong();
 			byte[] signature = ReadBytes();
@@ -24,8 +23,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				{
 				}
 			}
-			serverThread.Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_BY_UUID.GetWriterForInt
-				(trans, id));
+			Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_BY_UUID.GetWriterForInt(trans
+				, id));
 			return true;
 		}
 	}

@@ -44,7 +44,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			 trans, int length)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.MsgD message = (Db4objects.Db4o.Internal.CS.Messages.MsgD
-				)Clone(trans);
+				)PublicClone();
+			message.SetTransaction(trans);
 			message._payLoad = new Db4objects.Db4o.Internal.StatefulBuffer(trans, length + Db4objects.Db4o.Internal.Const4
 				.MESSAGE_LENGTH);
 			message.WriteInt(_msgID);
@@ -162,14 +163,16 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return Db4objects.Db4o.Internal.Serializer.Unmarshall(Stream(), _payLoad);
 		}
 
-		internal sealed override Db4objects.Db4o.Internal.CS.Messages.Msg ReadPayLoad(Db4objects.Db4o.Internal.Transaction
-			 a_trans, Db4objects.Db4o.Foundation.Network.ISocket4 sock, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		internal sealed override Db4objects.Db4o.Internal.CS.Messages.Msg ReadPayLoad(Db4objects.Db4o.Internal.CS.Messages.IMessageDispatcher
+			 messageDispatcher, Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Foundation.Network.ISocket4
+			 sock, Db4objects.Db4o.Internal.Buffer reader)
 		{
 			int length = reader.ReadInt();
 			a_trans = CheckParentTransaction(a_trans, reader);
 			Db4objects.Db4o.Internal.CS.Messages.MsgD command = (Db4objects.Db4o.Internal.CS.Messages.MsgD
-				)Clone(a_trans);
+				)PublicClone();
+			command.SetTransaction(a_trans);
+			command.SetMessageDispatcher(messageDispatcher);
 			command._payLoad = ReadMessageBuffer(a_trans, sock, length);
 			return command;
 		}

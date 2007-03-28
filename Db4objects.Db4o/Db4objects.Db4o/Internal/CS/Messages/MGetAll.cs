@@ -1,13 +1,12 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MGetAll : Db4objects.Db4o.Internal.CS.Messages.MsgQuery
+	public sealed class MGetAll : Db4objects.Db4o.Internal.CS.Messages.MsgQuery, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			Db4objects.Db4o.Config.QueryEvaluationMode evaluationMode = Db4objects.Db4o.Config.QueryEvaluationMode
 				.FromInt(ReadInt());
-			WriteQueryResult(GetAll(evaluationMode), serverThread, evaluationMode);
+			WriteQueryResult(GetAll(evaluationMode), evaluationMode);
 			return true;
 		}
 

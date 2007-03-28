@@ -4,8 +4,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 	{
 		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
 		{
-			config.GenerateUUIDs(int.MaxValue);
-			config.GenerateVersionNumbers(int.MaxValue);
+			config.GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope.GLOBALLY);
+			config.GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope.GLOBALLY);
 		}
 
 		public virtual void Test()

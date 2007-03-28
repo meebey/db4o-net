@@ -35,6 +35,12 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
+		public override object GetOn(Db4objects.Db4o.Internal.Transaction a_trans, object
+			 obj)
+		{
+			return obj;
+		}
+
 		public override object GetOrCreate(Db4objects.Db4o.Internal.Transaction trans, object
 			 onObject)
 		{

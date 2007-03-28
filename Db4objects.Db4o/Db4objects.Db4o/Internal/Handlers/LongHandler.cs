@@ -41,18 +41,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_primitive;
 		}
 
-		internal override object Read1(Db4objects.Db4o.Internal.Buffer a_bytes)
+		public override object Read(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf
+			, Db4objects.Db4o.Internal.StatefulBuffer buffer, bool redirect)
 		{
-			return ReadLong(a_bytes);
+			return mf._primitive.ReadLong(buffer);
 		}
 
-		public static long ReadLong(Db4objects.Db4o.Internal.Buffer bytes)
+		internal override object Read1(Db4objects.Db4o.Internal.Buffer a_bytes)
 		{
-			long ret = 0;
-			ret = Db4objects.Db4o.Foundation.PrimitiveCodec.ReadLong(bytes._buffer, bytes._offset
-				);
-			IncrementOffset(bytes);
-			return ret;
+			return a_bytes.ReadLong();
 		}
 
 		public override void Write(object obj, Db4objects.Db4o.Internal.Buffer buffer)

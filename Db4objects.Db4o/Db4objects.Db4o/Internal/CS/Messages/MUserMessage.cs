@@ -1,9 +1,9 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	public sealed class MUserMessage : Db4objects.Db4o.Internal.CS.Messages.MsgObject
+		, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			if (MessageRecipient() != null)
 			{

@@ -1,12 +1,11 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MObjectSetReset : Db4objects.Db4o.Internal.CS.Messages.MObjectSet
+	public class MObjectSetReset : Db4objects.Db4o.Internal.CS.Messages.MObjectSet, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public virtual bool ProcessAtServer()
 		{
-			Stub(serverThread, ReadInt()).Reset();
+			Stub(ReadInt()).Reset();
 			return true;
 		}
 	}

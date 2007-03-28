@@ -1,7 +1,7 @@
 namespace Db4objects.Db4o.Tests.Common
 {
-	/// <summary>Carl testing commit notifications yet again.</summary>
-	/// <remarks>Carl testing commit notifications yet again.</remarks>
+	/// <summary>Carl testing commit notifications yet again and again.</summary>
+	/// <remarks>Carl testing commit notifications yet again and again.</remarks>
 	public class AllTests : Db4oUnit.Extensions.Db4oTestSuite
 	{
 		protected override System.Type[] TestCases()
@@ -9,7 +9,8 @@ namespace Db4objects.Db4o.Tests.Common
 			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Acid.AllTests), typeof(Db4objects.Db4o.Tests.Common.Assorted.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Btree.AllTests), typeof(Db4objects.Db4o.Tests.Common.Classindex.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Config.AllTests), typeof(Db4objects.Db4o.Tests.Common.Constraints.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Defragment.AllTests), typeof(Db4objects.Db4o.Tests.Common.Fieldindex.AllTests)
+				, typeof(Db4objects.Db4o.Tests.Common.CS.AllTests), typeof(Db4objects.Db4o.Tests.Common.Defragment.AllTests)
+				, typeof(Db4objects.Db4o.Tests.Common.Ext.AllTests), typeof(Db4objects.Db4o.Tests.Common.Fieldindex.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Fatalerror.AllTests), typeof(Db4objects.Db4o.Tests.Common.Foundation.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Handlers.AllTests), typeof(Db4objects.Db4o.Tests.Common.Header.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Interfaces.AllTests), typeof(Db4objects.Db4o.Tests.Common.IO.AllTests)

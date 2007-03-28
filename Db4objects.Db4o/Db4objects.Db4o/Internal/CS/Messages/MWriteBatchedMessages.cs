@@ -1,9 +1,8 @@
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MWriteBatchedMessages : Db4objects.Db4o.Internal.CS.Messages.MsgD
+	public class MWriteBatchedMessages : Db4objects.Db4o.Internal.CS.Messages.MsgD, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
 	{
-		public sealed override bool ProcessAtServer(Db4objects.Db4o.Internal.CS.ServerMessageDispatcher
-			 serverThread)
+		public bool ProcessAtServer()
 		{
 			int count = ReadInt();
 			Db4objects.Db4o.Internal.Transaction ta = Transaction();
@@ -13,7 +12,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				int messageId = writer.ReadInt();
 				Db4objects.Db4o.Internal.CS.Messages.Msg message = Db4objects.Db4o.Internal.CS.Messages.Msg
 					.GetMessage(messageId);
-				Db4objects.Db4o.Internal.CS.Messages.Msg clonedMessage = message.Clone(ta);
+				Db4objects.Db4o.Internal.CS.Messages.Msg clonedMessage = message.PublicClone();
+				clonedMessage.SetTransaction(ta);
 				if (clonedMessage is Db4objects.Db4o.Internal.CS.Messages.MsgD)
 				{
 					Db4objects.Db4o.Internal.CS.Messages.MsgD mso = (Db4objects.Db4o.Internal.CS.Messages.MsgD
@@ -24,15 +24,13 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 						mso.PayLoad().IncrementOffset(Db4objects.Db4o.Internal.Const4.MESSAGE_LENGTH - Db4objects.Db4o.Internal.Const4
 							.INT_LENGTH);
 						mso.PayLoad().SetTransaction(ta);
-						mso.ProcessAtServer(serverThread);
+						((Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage)mso).ProcessAtServer();
 					}
 				}
 				else
 				{
-					if (!clonedMessage.ProcessAtServer(serverThread))
-					{
-						serverThread.ProcessSpecialMsg(clonedMessage);
-					}
+					((Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage)clonedMessage).ProcessAtServer
+						();
 				}
 			}
 			return true;

@@ -17,8 +17,10 @@ namespace Db4objects.Db4o.Reflect
 	/// </remarks>
 	public interface IReflector : Db4objects.Db4o.Foundation.IDeepClone
 	{
-		/// <summary>returns an IArray object, the equivalent to java.lang.reflect.Array.</summary>
-		/// <remarks>returns an IArray object, the equivalent to java.lang.reflect.Array.</remarks>
+		/// <summary>returns an ReflectArray object, the equivalent to java.lang.reflect.Array.
+		/// 	</summary>
+		/// <remarks>returns an ReflectArray object, the equivalent to java.lang.reflect.Array.
+		/// 	</remarks>
 		Db4objects.Db4o.Reflect.IReflectArray Array();
 
 		/// <summary>specifiy whether parameterized Constructors are supported.</summary>
@@ -30,17 +32,19 @@ namespace Db4objects.Db4o.Reflect
 		/// </remarks>
 		bool ConstructorCallsSupported();
 
-		/// <summary>returns an IClass for a Class</summary>
+		/// <summary>returns an ReflectClass for a Class</summary>
 		Db4objects.Db4o.Reflect.IReflectClass ForClass(System.Type clazz);
 
 		/// <summary>
-		/// returns an IClass class reflector for a class name or null
+		/// returns an ReflectClass class reflector for a class name or null
 		/// if no such class is found
 		/// </summary>
 		Db4objects.Db4o.Reflect.IReflectClass ForName(string className);
 
-		/// <summary>returns an IClass for an object or null if the passed object is null.</summary>
-		/// <remarks>returns an IClass for an object or null if the passed object is null.</remarks>
+		/// <summary>returns an ReflectClass for an object or null if the passed object is null.
+		/// 	</summary>
+		/// <remarks>returns an ReflectClass for an object or null if the passed object is null.
+		/// 	</remarks>
 		Db4objects.Db4o.Reflect.IReflectClass ForObject(object a_object);
 
 		bool IsCollection(Db4objects.Db4o.Reflect.IReflectClass claxx);
