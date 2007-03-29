@@ -118,7 +118,17 @@ namespace Sharpen
 		{
 			str.CopyTo(start, destination, 0, end-start);
 		}
-		
+
+		public static byte[] GetBytesForString(string str)
+		{
+			return System.Text.Encoding.Default.GetBytes(str);
+		}
+
+		public static string GetStringForBytes(byte[] bytes, int index, int length)
+		{
+			return System.Text.Encoding.Default.GetString(bytes, index, length);
+		}
+
 		public static string GetStringValueOf(object value) 
 		{
 			return null == value
