@@ -7,7 +7,7 @@ using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Foundation
 {
-	public class SimpleTimer
+	public sealed class SimpleTimer
 	{
 		private readonly Timer _timer;
 
