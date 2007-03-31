@@ -19,18 +19,27 @@ namespace Db4objects.Db4o.Foundation
         public Object Run(IClosure4 closure4)
         {
             EnterClosure();
-            Object ret;
             try
             {
-                ret = closure4.Run();
+                return closure4.Run();
             }
-            catch (Exception e)
+            finally
             {
                 AwakeClosure();
-                throw;
             }
-            AwakeClosure();
-            return ret;
+        }
+        
+        public Object Run(ISafeClosure4 closure4)
+        {
+        	EnterClosure();
+            try
+            {
+                return closure4.Run();
+            }
+            finally
+            {
+                AwakeClosure();
+            }
         }
 
         public void Snooze(long l)
