@@ -19,9 +19,11 @@
 
 		public virtual object Invoke(object onObject, object[] parameters)
 		{
-			try{
+			try
+			{
 				return method.Invoke(onObject, parameters);
-			}catch(System.Reflection.TargetInvocationException e)
+			}
+			catch (System.Reflection.TargetInvocationException e)
 			{
 				throw new Db4objects.Db4o.Internal.ReflectException(e.InnerException);
 			}
