@@ -19,13 +19,10 @@
 
 		public virtual object Invoke(object onObject, object[] parameters)
 		{
-			try
-			{
-				return method.Invoke(onObject, parameters);
-			}
-			catch
-			{
-				return null;
+			try{
+			return method.Invoke(onObject, parameters);
+			}catch(System.Reflection.TargetInvocationException e) {
+				throw e.InnerException;
 			}
 		}
 	}
