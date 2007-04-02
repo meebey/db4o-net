@@ -20,9 +20,10 @@
 		public virtual object Invoke(object onObject, object[] parameters)
 		{
 			try{
-			return method.Invoke(onObject, parameters);
-			}catch(System.Reflection.TargetInvocationException e) {
-				throw e.InnerException;
+				return method.Invoke(onObject, parameters);
+			}catch(System.Reflection.TargetInvocationException e)
+			{
+				throw new Db4objects.Db4o.Internal.ReflectException(e.InnerException);
 			}
 		}
 	}
