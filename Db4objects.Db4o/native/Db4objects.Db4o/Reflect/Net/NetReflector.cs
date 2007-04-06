@@ -75,12 +75,12 @@ namespace Db4objects.Db4o.Reflect.Net
 			{
 				return false;
 			}
-			if (typeof(System.Collections.ICollection).IsAssignableFrom(
-				((Db4objects.Db4o.Reflect.Net.NetClass)candidate).GetNetType()))
-			{
-				return true;
-			}
-			return false;
+		    NetClass netClass = candidate as NetClass;
+            if (null == netClass)
+            {
+                return false;
+            }
+		    return typeof(System.Collections.ICollection).IsAssignableFrom(netClass.GetNetType());
 		}
 
 		public virtual bool MethodCallsSupported()

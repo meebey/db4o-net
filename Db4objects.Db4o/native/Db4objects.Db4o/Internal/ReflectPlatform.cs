@@ -31,5 +31,10 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 		}
+
+	    public static string FullyQualifiedName(Type type)
+	    {
+	        return TypeReference.FromType(type).GetUnversionedName();
+	    }
 	}
 }

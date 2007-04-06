@@ -8,6 +8,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 		{
 			return new System.Type[]
 				{
+                    typeof(Aliases.AllTests),
 #if !CF_1_0 && !CF_2_0
 					typeof(CsAppDomains),
 					typeof(CsAssemblyVersionChange),
@@ -38,7 +39,6 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(ObjectInfoMigration52TestCase),
                     typeof(ObjectInfoMigration57TestCase),
 					typeof(ObjectSetAsListTestCase),
-                    typeof(TypeAliasesTestCase),
 				};
 		}
 	}
