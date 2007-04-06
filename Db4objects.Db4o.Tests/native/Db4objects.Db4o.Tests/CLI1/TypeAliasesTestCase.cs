@@ -60,19 +60,17 @@ namespace Db4objects.Db4o.Tests.CLI1
 	public class TypeAliasesTestCase : AbstractDb4oTestCase
 	{
 		public void TestTypeAlias()
-		{	
-			IObjectContainer container = Db();
-
-			container.Set(new Person1("Homer Simpson"));
-			container.Set(new Person1("John Cleese"));
+		{
+		    Db().Set(new Person1("Homer Simpson"));
+			Db().Set(new Person1("John Cleese"));
 
 			Reopen();
-			container.Ext().Configure().AddAlias(
+			Db().Ext().Configure().AddAlias(
 				// Person1 instances should be read as Person2 objects
 				new TypeAlias(
 				GetTypeName(typeof(Person1)),
 				GetTypeName(typeof(Person2))));
-			AssertData(container);
+			AssertData(Db());
 		}
 
 	    private string GetTypeName(Type type)
@@ -134,11 +132,16 @@ namespace Db4objects.Db4o.Tests.CLI1
 		{
 			File.Delete(GetJavaDataFile());
 			GenerateClassFile();
-			string stdout = IOServices.Exec("java", "-cp ." + Path.PathSeparator + WorkspaceServices.Db4ojarPath(), "com.db4o.test.aliases.Program", Quote(GetJavaDataFile()));
+			string stdout = IOServices.Exec("java", "-cp " + Quote(JavaTempPath()) + Path.PathSeparator + WorkspaceServices.Db4ojarPath(), "com.db4o.test.aliases.Program", Quote(GetJavaDataFile()));
 			Console.WriteLine(stdout);
 		}
 
-		private void GenerateClassFile()
+	    private static string JavaTempPath()
+	    {
+	        return IOServices.BuildTempPath("aliases");
+	    }
+
+	    private void GenerateClassFile()
 		{
 			String code = @"
 package com.db4o.test.aliases;
@@ -155,7 +158,7 @@ class Person2 {
 public class Program {
 	public static void main(String[] args) {
 		String fname = args[0];
-		IObjectContainer container = Db4o.openFile(fname);
+		ObjectContainer container = Db4o.openFile(fname);
 		container.set(new Person2(""Homer Simpson""));
 		container.set(new Person2(""John Cleese""));
 		container.close();
@@ -163,7 +166,9 @@ public class Program {
 	}
 }";
 
-			string srcFile = IOServices.BuildTempPath("com/db4o/test/aliases/Program.java");
+	        string tempPath = JavaTempPath();
+            if (Directory.Exists(tempPath)) Directory.Delete(tempPath, true);
+			string srcFile = Path.Combine(tempPath, "com/db4o/test/aliases/Program.java");
 			IOServices.WriteFile(srcFile, code);
 			string stdout = IOServices.Exec(WorkspaceServices.JavacPath(), "-classpath " + WorkspaceServices.Db4ojarPath(), Quote(srcFile));
 			Console.WriteLine(stdout);
