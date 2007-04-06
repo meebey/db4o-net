@@ -1,8 +1,16 @@
+using System.IO;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS.Messages;
+using Sharpen.IO;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public abstract class MsgBlob : Db4objects.Db4o.Internal.CS.Messages.MsgD, Db4objects.Db4o.IBlobStatus
+	public abstract class MsgBlob : MsgD, IBlobStatus
 	{
-		public Db4objects.Db4o.Internal.BlobImpl _blob;
+		public BlobImpl _blob;
 
 		internal int _currentByte;
 
@@ -14,31 +22,29 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				return (double)_currentByte / (double)_length;
 			}
-			return Db4objects.Db4o.Ext.Status.ERROR;
+			return Status.ERROR;
 		}
 
-		public abstract void ProcessClient(Db4objects.Db4o.Foundation.Network.ISocket4 sock
-			);
+		public abstract void ProcessClient(ISocket4 sock);
 
-		internal virtual Db4objects.Db4o.Internal.BlobImpl ServerGetBlobImpl()
+		internal virtual BlobImpl ServerGetBlobImpl()
 		{
-			Db4objects.Db4o.Internal.BlobImpl blobImpl = null;
+			BlobImpl blobImpl = null;
 			int id = _payLoad.ReadInt();
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
+			ObjectContainerBase stream = Stream();
 			lock (stream.i_lock)
 			{
-				blobImpl = (Db4objects.Db4o.Internal.BlobImpl)stream.GetByID1(Transaction(), id);
+				blobImpl = (BlobImpl)stream.GetByID1(Transaction(), id);
 				stream.Activate1(Transaction(), blobImpl, 3);
 			}
 			return blobImpl;
 		}
 
-		protected virtual void Copy(Db4objects.Db4o.Foundation.Network.ISocket4 sock, Sharpen.IO.OutputStream
-			 rawout, int length, bool update)
+		protected virtual void Copy(ISocket4 sock, OutputStream rawout, int length, bool 
+			update)
 		{
-			Sharpen.IO.BufferedOutputStream @out = new Sharpen.IO.BufferedOutputStream(rawout
-				);
-			byte[] buffer = new byte[Db4objects.Db4o.Internal.BlobImpl.COPYBUFFER_LENGTH];
+			BufferedOutputStream @out = new BufferedOutputStream(rawout);
+			byte[] buffer = new byte[BlobImpl.COPYBUFFER_LENGTH];
 			int totalread = 0;
 			while (totalread < length)
 			{
@@ -47,7 +53,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				int curread = sock.Read(buffer, 0, readsize);
 				if (curread < 0)
 				{
-					throw new System.IO.IOException();
+					throw new IOException();
 				}
 				@out.Write(buffer, 0, curread);
 				totalread += curread;
@@ -60,11 +66,10 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			@out.Close();
 		}
 
-		protected virtual void Copy(Sharpen.IO.InputStream rawin, Db4objects.Db4o.Foundation.Network.ISocket4
-			 sock, bool update)
+		protected virtual void Copy(InputStream rawin, ISocket4 sock, bool update)
 		{
-			Sharpen.IO.BufferedInputStream @in = new Sharpen.IO.BufferedInputStream(rawin);
-			byte[] buffer = new byte[Db4objects.Db4o.Internal.BlobImpl.COPYBUFFER_LENGTH];
+			BufferedInputStream @in = new BufferedInputStream(rawin);
+			byte[] buffer = new byte[BlobImpl.COPYBUFFER_LENGTH];
 			int bytesread = -1;
 			while ((bytesread = rawin.Read(buffer)) >= 0)
 			{

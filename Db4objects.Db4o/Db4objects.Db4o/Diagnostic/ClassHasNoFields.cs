@@ -1,8 +1,10 @@
+using Db4objects.Db4o.Diagnostic;
+
 namespace Db4objects.Db4o.Diagnostic
 {
 	/// <summary>Diagnostic, if class has no fields.</summary>
 	/// <remarks>Diagnostic, if class has no fields.</remarks>
-	public class ClassHasNoFields : Db4objects.Db4o.Diagnostic.DiagnosticBase
+	public class ClassHasNoFields : DiagnosticBase
 	{
 		private readonly string _className;
 

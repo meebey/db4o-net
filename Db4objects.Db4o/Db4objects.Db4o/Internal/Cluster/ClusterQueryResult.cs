@@ -1,21 +1,33 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Cluster;
+using Db4objects.Db4o.Internal.Query;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Query.Result;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Cluster
 {
 	/// <exclude></exclude>
-	public class ClusterQueryResult : Db4objects.Db4o.Internal.Query.Result.IQueryResult
+	public class ClusterQueryResult : IQueryResult
 	{
 		private readonly Db4objects.Db4o.Cluster.Cluster _cluster;
 
-		private readonly Db4objects.Db4o.IObjectSet[] _objectSets;
+		private readonly IObjectSet[] _objectSets;
 
 		private readonly int[] _sizes;
 
 		private readonly int _size;
 
-		public ClusterQueryResult(Db4objects.Db4o.Cluster.Cluster cluster, Db4objects.Db4o.Query.IQuery[]
-			 queries)
+		public ClusterQueryResult(Db4objects.Db4o.Cluster.Cluster cluster, IQuery[] queries
+			)
 		{
 			_cluster = cluster;
-			_objectSets = new Db4objects.Db4o.IObjectSet[queries.Length];
+			_objectSets = new IObjectSet[queries.Length];
 			_sizes = new int[queries.Length];
 			int size = 0;
 			for (int i = 0; i < queries.Length; i++)
@@ -27,13 +39,13 @@ namespace Db4objects.Db4o.Internal.Cluster
 			_size = size;
 		}
 
-		private sealed class ClusterQueryResultIntIterator : Db4objects.Db4o.Foundation.IIntIterator4
+		private sealed class ClusterQueryResultIntIterator : IIntIterator4
 		{
-			private readonly Db4objects.Db4o.Foundation.CompositeIterator4 _delegate;
+			private readonly CompositeIterator4 _delegate;
 
-			public ClusterQueryResultIntIterator(System.Collections.IEnumerator[] iterators)
+			public ClusterQueryResultIntIterator(IEnumerator[] iterators)
 			{
-				_delegate = new Db4objects.Db4o.Foundation.CompositeIterator4(iterators);
+				_delegate = new CompositeIterator4(iterators);
 			}
 
 			public bool MoveNext()
@@ -56,39 +68,33 @@ namespace Db4objects.Db4o.Internal.Cluster
 
 			public int CurrentInt()
 			{
-				return ((Db4objects.Db4o.Foundation.IIntIterator4)_delegate.CurrentIterator()).CurrentInt
-					();
+				return ((IIntIterator4)_delegate.CurrentIterator()).CurrentInt();
 			}
 		}
 
-		public virtual Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs()
+		public virtual IIntIterator4 IterateIDs()
 		{
 			lock (_cluster)
 			{
-				System.Collections.IEnumerator[] iterators = new System.Collections.IEnumerator[_objectSets
-					.Length];
+				IEnumerator[] iterators = new IEnumerator[_objectSets.Length];
 				for (int i = 0; i < _objectSets.Length; i++)
 				{
-					iterators[i] = ((Db4objects.Db4o.Internal.Query.ObjectSetFacade)_objectSets[i])._delegate
-						.IterateIDs();
+					iterators[i] = ((ObjectSetFacade)_objectSets[i])._delegate.IterateIDs();
 				}
-				return new Db4objects.Db4o.Internal.Cluster.ClusterQueryResult.ClusterQueryResultIntIterator
-					(iterators);
+				return new ClusterQueryResult.ClusterQueryResultIntIterator(iterators);
 			}
 		}
 
-		public virtual System.Collections.IEnumerator GetEnumerator()
+		public virtual IEnumerator GetEnumerator()
 		{
 			lock (_cluster)
 			{
-				System.Collections.IEnumerator[] iterators = new System.Collections.IEnumerator[_objectSets
-					.Length];
+				IEnumerator[] iterators = new IEnumerator[_objectSets.Length];
 				for (int i = 0; i < _objectSets.Length; i++)
 				{
-					iterators[i] = ((Db4objects.Db4o.Internal.Query.ObjectSetFacade)_objectSets[i])._delegate
-						.Iterator();
+					iterators[i] = ((ObjectSetFacade)_objectSets[i])._delegate.Iterator();
 				}
-				return new Db4objects.Db4o.Foundation.CompositeIterator4(iterators);
+				return new CompositeIterator4(iterators);
 			}
 		}
 
@@ -103,7 +109,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			{
 				if (index < 0 || index >= Size())
 				{
-					throw new System.IndexOutOfRangeException();
+					throw new IndexOutOfRangeException();
 				}
 				int i = 0;
 				while (index >= _sizes[i])
@@ -111,8 +117,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 					index -= _sizes[i];
 					i++;
 				}
-				return ((Db4objects.Db4o.Internal.Query.ObjectSetFacade)_objectSets[i]).Get(index
-					);
+				return ((ObjectSetFacade)_objectSets[i]).Get(index);
 			}
 		}
 
@@ -121,41 +126,39 @@ namespace Db4objects.Db4o.Internal.Cluster
 			return _cluster;
 		}
 
-		public virtual Db4objects.Db4o.Ext.IExtObjectContainer ObjectContainer()
+		public virtual IExtObjectContainer ObjectContainer()
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 
 		public virtual int IndexOf(int id)
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 
-		public virtual void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
+		public virtual void Sort(IQueryComparator cmp)
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 
-		public virtual void LoadFromClassIndex(Db4objects.Db4o.Internal.ClassMetadata c)
+		public virtual void LoadFromClassIndex(ClassMetadata c)
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 
-		public virtual void LoadFromQuery(Db4objects.Db4o.Internal.Query.Processor.QQuery
-			 q)
+		public virtual void LoadFromQuery(QQuery q)
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 
-		public virtual void LoadFromClassIndexes(Db4objects.Db4o.Internal.ClassMetadataIterator
-			 i)
+		public virtual void LoadFromClassIndexes(ClassMetadataIterator i)
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 
 		public virtual void LoadFromIdReader(Db4objects.Db4o.Internal.Buffer r)
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 	}
 }

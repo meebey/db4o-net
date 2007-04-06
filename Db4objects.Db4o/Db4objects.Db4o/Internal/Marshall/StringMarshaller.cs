@@ -1,24 +1,27 @@
+using System;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Marshall;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	public abstract class StringMarshaller
 	{
 		public abstract bool InlinedStrings();
 
-		public abstract void CalculateLengths(Db4objects.Db4o.Internal.Transaction trans, 
-			Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes header, bool topLevel, 
-			object obj, bool withIndirection);
+		public abstract void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
+			, bool topLevel, object obj, bool withIndirection);
 
 		protected int LinkLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.INT_LENGTH + Db4objects.Db4o.Internal.Const4
-				.ID_LENGTH;
+			return Const4.INT_LENGTH + Const4.ID_LENGTH;
 		}
 
-		public abstract object WriteNew(object a_object, bool topLevel, Db4objects.Db4o.Internal.StatefulBuffer
-			 a_bytes, bool redirect);
+		public abstract object WriteNew(object a_object, bool topLevel, StatefulBuffer a_bytes
+			, bool redirect);
 
-		public string Read(Db4objects.Db4o.Internal.ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public string Read(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer reader
+			)
 		{
 			if (reader == null)
 			{
@@ -28,16 +31,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return ret;
 		}
 
-		public virtual string ReadFromOwnSlot(Db4objects.Db4o.Internal.ObjectContainerBase
-			 stream, Db4objects.Db4o.Internal.Buffer reader)
+		public virtual string ReadFromOwnSlot(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
+			 reader)
 		{
 			try
 			{
 				return Read(stream, reader);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				if (Db4objects.Db4o.Deploy.debug || Db4objects.Db4o.Debug.atHome)
+				if (Deploy.debug || Debug.atHome)
 				{
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
@@ -45,8 +48,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return string.Empty;
 		}
 
-		public virtual string ReadFromParentSlot(Db4objects.Db4o.Internal.ObjectContainerBase
-			 stream, Db4objects.Db4o.Internal.Buffer reader, bool redirect)
+		public virtual string ReadFromParentSlot(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
+			 reader, bool redirect)
 		{
 			if (redirect)
 			{
@@ -55,22 +58,22 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return Read(stream, reader);
 		}
 
-		public abstract Db4objects.Db4o.Internal.Buffer ReadIndexEntry(Db4objects.Db4o.Internal.StatefulBuffer
-			 parentSlot);
+		public abstract Db4objects.Db4o.Internal.Buffer ReadIndexEntry(StatefulBuffer parentSlot
+			);
 
-		public static string ReadShort(Db4objects.Db4o.Internal.ObjectContainerBase stream
-			, Db4objects.Db4o.Internal.Buffer bytes)
+		public static string ReadShort(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
+			 bytes)
 		{
 			return ReadShort(stream.StringIO(), stream.ConfigImpl().InternStrings(), bytes);
 		}
 
-		public static string ReadShort(Db4objects.Db4o.Internal.LatinStringIO io, bool internStrings
-			, Db4objects.Db4o.Internal.Buffer bytes)
+		public static string ReadShort(LatinStringIO io, bool internStrings, Db4objects.Db4o.Internal.Buffer
+			 bytes)
 		{
 			int length = bytes.ReadInt();
-			if (length > Db4objects.Db4o.Internal.Const4.MAXIMUM_BLOCK_SIZE)
+			if (length > Const4.MAXIMUM_BLOCK_SIZE)
 			{
-				throw new Db4objects.Db4o.CorruptionException();
+				throw new CorruptionException();
 			}
 			if (length > 0)
 			{
@@ -80,11 +83,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return string.Empty;
 		}
 
-		public abstract Db4objects.Db4o.Internal.Buffer ReadSlotFromParentSlot(Db4objects.Db4o.Internal.ObjectContainerBase
+		public abstract Db4objects.Db4o.Internal.Buffer ReadSlotFromParentSlot(ObjectContainerBase
 			 stream, Db4objects.Db4o.Internal.Buffer reader);
 
-		public static Db4objects.Db4o.Internal.Buffer WriteShort(Db4objects.Db4o.Internal.ObjectContainerBase
-			 stream, string str)
+		public static Db4objects.Db4o.Internal.Buffer WriteShort(ObjectContainerBase stream
+			, string str)
 		{
 			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(stream
 				.StringIO().Length(str));
@@ -92,14 +95,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return reader;
 		}
 
-		public static void WriteShort(Db4objects.Db4o.Internal.ObjectContainerBase stream
-			, string str, Db4objects.Db4o.Internal.Buffer reader)
+		public static void WriteShort(ObjectContainerBase stream, string str, Db4objects.Db4o.Internal.Buffer
+			 reader)
 		{
 			int length = str.Length;
 			reader.WriteInt(length);
 			stream.StringIO().Write(reader, str);
 		}
 
-		public abstract void Defrag(Db4objects.Db4o.Internal.ISlotReader reader);
+		public abstract void Defrag(ISlotReader reader);
 	}
 }

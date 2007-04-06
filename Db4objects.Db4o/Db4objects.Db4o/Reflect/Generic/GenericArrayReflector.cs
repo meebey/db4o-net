@@ -1,12 +1,14 @@
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Generic;
+
 namespace Db4objects.Db4o.Reflect.Generic
 {
 	/// <exclude></exclude>
-	public class GenericArrayReflector : Db4objects.Db4o.Reflect.IReflectArray
+	public class GenericArrayReflector : IReflectArray
 	{
-		private readonly Db4objects.Db4o.Reflect.IReflectArray _delegate;
+		private readonly IReflectArray _delegate;
 
-		public GenericArrayReflector(Db4objects.Db4o.Reflect.Generic.GenericReflector reflector
-			)
+		public GenericArrayReflector(GenericReflector reflector)
 		{
 			_delegate = reflector.GetDelegate().Array();
 		}
@@ -25,18 +27,17 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual object Get(object onArray, int index)
 		{
-			if (onArray is Db4objects.Db4o.Reflect.Generic.GenericArray)
+			if (onArray is GenericArray)
 			{
-				return ((Db4objects.Db4o.Reflect.Generic.GenericArray)onArray)._data[index];
+				return ((GenericArray)onArray)._data[index];
 			}
 			return _delegate.Get(onArray, index);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass GetComponentType(Db4objects.Db4o.Reflect.IReflectClass
-			 claxx)
+		public virtual IReflectClass GetComponentType(IReflectClass claxx)
 		{
 			claxx = claxx.GetDelegate();
-			if (claxx is Db4objects.Db4o.Reflect.Generic.GenericClass)
+			if (claxx is GenericClass)
 			{
 				return claxx;
 			}
@@ -45,45 +46,42 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual int GetLength(object array)
 		{
-			if (array is Db4objects.Db4o.Reflect.Generic.GenericArray)
+			if (array is GenericArray)
 			{
-				return ((Db4objects.Db4o.Reflect.Generic.GenericArray)array).GetLength();
+				return ((GenericArray)array).GetLength();
 			}
 			return _delegate.GetLength(array);
 		}
 
-		public virtual bool IsNDimensional(Db4objects.Db4o.Reflect.IReflectClass a_class)
+		public virtual bool IsNDimensional(IReflectClass a_class)
 		{
-			if (a_class is Db4objects.Db4o.Reflect.Generic.GenericArrayClass)
+			if (a_class is GenericArrayClass)
 			{
 				return false;
 			}
 			return _delegate.IsNDimensional(a_class.GetDelegate());
 		}
 
-		public virtual object NewInstance(Db4objects.Db4o.Reflect.IReflectClass componentType
-			, int length)
+		public virtual object NewInstance(IReflectClass componentType, int length)
 		{
 			componentType = componentType.GetDelegate();
-			if (componentType is Db4objects.Db4o.Reflect.Generic.GenericClass)
+			if (componentType is GenericClass)
 			{
-				return new Db4objects.Db4o.Reflect.Generic.GenericArray(((Db4objects.Db4o.Reflect.Generic.GenericClass
-					)componentType).ArrayClass(), length);
+				return new GenericArray(((GenericClass)componentType).ArrayClass(), length);
 			}
 			return _delegate.NewInstance(componentType, length);
 		}
 
-		public virtual object NewInstance(Db4objects.Db4o.Reflect.IReflectClass componentType
-			, int[] dimensions)
+		public virtual object NewInstance(IReflectClass componentType, int[] dimensions)
 		{
 			return _delegate.NewInstance(componentType.GetDelegate(), dimensions);
 		}
 
 		public virtual void Set(object onArray, int index, object element)
 		{
-			if (onArray is Db4objects.Db4o.Reflect.Generic.GenericArray)
+			if (onArray is GenericArray)
 			{
-				((Db4objects.Db4o.Reflect.Generic.GenericArray)onArray)._data[index] = element;
+				((GenericArray)onArray)._data[index] = element;
 				return;
 			}
 			_delegate.Set(onArray, index, element);

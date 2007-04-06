@@ -1,3 +1,6 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>the internal representation of a field on a stored class.</summary>
@@ -24,7 +27,7 @@ namespace Db4objects.Db4o.Ext
 		/// <br /><br />For array fields this method will return the type of the array.
 		/// Use {link #isArray()} to detect arrays.
 		/// </remarks>
-		Db4objects.Db4o.Reflect.IReflectClass GetStoredType();
+		IReflectClass GetStoredType();
 
 		/// <summary>returns true if the field is an array.</summary>
 		/// <remarks>returns true if the field is an array.</remarks>
@@ -53,7 +56,7 @@ namespace Db4objects.Db4o.Ext
 		/// deactivated objects will be passed to the visitor.
 		/// </remarks>
 		/// <param name="visitor">the visitor to be called with each index value.</param>
-		void TraverseValues(Db4objects.Db4o.Foundation.IVisitor4 visitor);
+		void TraverseValues(IVisitor4 visitor);
 
 		/// <summary>Returns whether this field has an index or not.</summary>
 		/// <remarks>Returns whether this field has an index or not.</remarks>

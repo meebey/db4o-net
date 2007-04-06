@@ -1,3 +1,16 @@
+using System.Collections;
+using System.Security;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Diagnostic;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Replication;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Generic;
+using Db4objects.Db4o.Types;
+using Sharpen;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude>
@@ -10,10 +23,9 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public sealed class HandlerRegistry
 	{
-		private readonly Db4objects.Db4o.Internal.ObjectContainerBase _masterStream;
+		private readonly ObjectContainerBase _masterStream;
 
-		private static readonly Db4objects.Db4o.Internal.IDb4oTypeImpl[] i_db4oTypes = new 
-			Db4objects.Db4o.Internal.IDb4oTypeImpl[] { new Db4objects.Db4o.Internal.BlobImpl
+		private static readonly IDb4oTypeImpl[] i_db4oTypes = new IDb4oTypeImpl[] { new BlobImpl
 			() };
 
 		public const int ANY_ARRAY_ID = 12;
@@ -22,43 +34,42 @@ namespace Db4objects.Db4o.Internal
 
 		private const int CLASSCOUNT = 11;
 
-		private Db4objects.Db4o.Internal.ClassMetadata i_anyArray;
+		private ClassMetadata i_anyArray;
 
-		private Db4objects.Db4o.Internal.ClassMetadata i_anyArrayN;
+		private ClassMetadata i_anyArrayN;
 
-		public readonly Db4objects.Db4o.Internal.Handlers.StringHandler i_stringHandler;
+		public readonly StringHandler i_stringHandler;
 
-		private Db4objects.Db4o.Internal.ITypeHandler4[] i_handlers;
+		private ITypeHandler4[] i_handlers;
 
 		private int i_maxTypeID = ANY_ARRAY_N_ID + 1;
 
-		private Db4objects.Db4o.Internal.Handlers.NetTypeHandler[] i_platformTypes;
+		private NetTypeHandler[] i_platformTypes;
 
 		private const int PRIMITIVECOUNT = 8;
 
-		internal Db4objects.Db4o.Internal.ClassMetadata[] i_yapClasses;
+		internal ClassMetadata[] i_yapClasses;
 
 		private const int ANY_INDEX = 10;
 
 		public const int ANY_ID = 11;
 
-		private readonly Db4objects.Db4o.Internal.VirtualFieldMetadata[] _virtualFields = 
-			new Db4objects.Db4o.Internal.VirtualFieldMetadata[2];
+		private readonly VirtualFieldMetadata[] _virtualFields = new VirtualFieldMetadata
+			[2];
 
-		private readonly Db4objects.Db4o.Foundation.Hashtable4 i_classByClass = new Db4objects.Db4o.Foundation.Hashtable4
-			(32);
+		private readonly Hashtable4 i_classByClass = new Hashtable4(32);
 
-		internal Db4objects.Db4o.Types.IDb4oCollections i_collections;
+		internal IDb4oCollections i_collections;
 
-		internal Db4objects.Db4o.Internal.SharedIndexedFields i_indexes;
+		internal SharedIndexedFields i_indexes;
 
-		internal Db4objects.Db4o.ReplicationImpl i_replication;
+		internal ReplicationImpl i_replication;
 
 		internal Db4objects.Db4o.Internal.Replication.MigrationConnection i_migration;
 
-		internal Db4objects.Db4o.Internal.Replication.IDb4oReplicationReferenceProvider _replicationReferenceProvider;
+		internal IDb4oReplicationReferenceProvider _replicationReferenceProvider;
 
-		public readonly Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor _diagnosticProcessor;
+		public readonly DiagnosticProcessor _diagnosticProcessor;
 
 		public bool i_encrypt;
 
@@ -66,49 +77,47 @@ namespace Db4objects.Db4o.Internal
 
 		internal int i_lastEncryptorByte;
 
-		internal readonly Db4objects.Db4o.Reflect.Generic.GenericReflector _reflector;
+		internal readonly GenericReflector _reflector;
 
-		public Db4objects.Db4o.Reflect.IReflectClass ICLASS_COMPARE;
+		public IReflectClass ICLASS_COMPARE;
 
-		internal Db4objects.Db4o.Reflect.IReflectClass ICLASS_DB4OTYPE;
+		internal IReflectClass ICLASS_DB4OTYPE;
 
-		internal Db4objects.Db4o.Reflect.IReflectClass ICLASS_DB4OTYPEIMPL;
+		internal IReflectClass ICLASS_DB4OTYPEIMPL;
 
-		public Db4objects.Db4o.Reflect.IReflectClass ICLASS_INTERNAL;
+		public IReflectClass ICLASS_INTERNAL;
 
-		internal Db4objects.Db4o.Reflect.IReflectClass ICLASS_UNVERSIONED;
+		internal IReflectClass ICLASS_UNVERSIONED;
 
-		public Db4objects.Db4o.Reflect.IReflectClass ICLASS_OBJECT;
+		public IReflectClass ICLASS_OBJECT;
 
-		internal Db4objects.Db4o.Reflect.IReflectClass ICLASS_OBJECTCONTAINER;
+		internal IReflectClass ICLASS_OBJECTCONTAINER;
 
-		public Db4objects.Db4o.Reflect.IReflectClass ICLASS_STATICCLASS;
+		public IReflectClass ICLASS_STATICCLASS;
 
-		public Db4objects.Db4o.Reflect.IReflectClass ICLASS_STRING;
+		public IReflectClass ICLASS_STRING;
 
-		internal Db4objects.Db4o.Reflect.IReflectClass ICLASS_TRANSIENTCLASS;
+		internal IReflectClass ICLASS_TRANSIENTCLASS;
 
-		internal HandlerRegistry(Db4objects.Db4o.Internal.ObjectContainerBase a_stream, byte
-			 stringEncoding, Db4objects.Db4o.Reflect.Generic.GenericReflector reflector)
+		internal HandlerRegistry(ObjectContainerBase a_stream, byte stringEncoding, GenericReflector
+			 reflector)
 		{
 			_masterStream = a_stream;
 			a_stream.i_handlers = this;
 			_reflector = reflector;
 			_diagnosticProcessor = a_stream.ConfigImpl().DiagnosticProcessor();
 			InitClassReflectors(reflector);
-			i_indexes = new Db4objects.Db4o.Internal.SharedIndexedFields(a_stream);
+			i_indexes = new SharedIndexedFields(a_stream);
 			_virtualFields[0] = i_indexes.i_fieldVersion;
 			_virtualFields[1] = i_indexes.i_fieldUUID;
-			i_stringHandler = new Db4objects.Db4o.Internal.Handlers.StringHandler(a_stream, Db4objects.Db4o.Internal.LatinStringIO
-				.ForEncoding(stringEncoding));
-			i_handlers = new Db4objects.Db4o.Internal.ITypeHandler4[] { new Db4objects.Db4o.Internal.Handlers.IntHandler
-				(a_stream), new Db4objects.Db4o.Internal.Handlers.LongHandler(a_stream), new Db4objects.Db4o.Internal.Handlers.FloatHandler
-				(a_stream), new Db4objects.Db4o.Internal.Handlers.BooleanHandler(a_stream), new 
-				Db4objects.Db4o.Internal.Handlers.DoubleHandler(a_stream), new Db4objects.Db4o.Internal.Handlers.ByteHandler
-				(a_stream), new Db4objects.Db4o.Internal.Handlers.CharHandler(a_stream), new Db4objects.Db4o.Internal.Handlers.ShortHandler
-				(a_stream), i_stringHandler, new Db4objects.Db4o.Internal.Handlers.DateHandler(a_stream
-				), new Db4objects.Db4o.Internal.UntypedFieldHandler(a_stream) };
-			i_platformTypes = Db4objects.Db4o.Internal.Platform4.Types(a_stream);
+			i_stringHandler = new StringHandler(a_stream, LatinStringIO.ForEncoding(stringEncoding
+				));
+			i_handlers = new ITypeHandler4[] { new IntHandler(a_stream), new LongHandler(a_stream
+				), new FloatHandler(a_stream), new BooleanHandler(a_stream), new DoubleHandler(a_stream
+				), new ByteHandler(a_stream), new CharHandler(a_stream), new ShortHandler(a_stream
+				), i_stringHandler, new DateHandler(a_stream), new UntypedFieldHandler(a_stream)
+				 };
+			i_platformTypes = Platform4.Types(a_stream);
 			if (i_platformTypes.Length > 0)
 			{
 				for (int i = 0; i < i_platformTypes.Length; i++)
@@ -119,8 +128,8 @@ namespace Db4objects.Db4o.Internal
 						i_maxTypeID = i_platformTypes[i].GetID();
 					}
 				}
-				Db4objects.Db4o.Internal.ITypeHandler4[] temp = i_handlers;
-				i_handlers = new Db4objects.Db4o.Internal.ITypeHandler4[i_maxTypeID];
+				ITypeHandler4[] temp = i_handlers;
+				i_handlers = new ITypeHandler4[i_maxTypeID];
 				System.Array.Copy(temp, 0, i_handlers, 0, temp.Length);
 				for (int i = 0; i < i_platformTypes.Length; i++)
 				{
@@ -128,12 +137,11 @@ namespace Db4objects.Db4o.Internal
 					i_handlers[idx] = i_platformTypes[i];
 				}
 			}
-			i_yapClasses = new Db4objects.Db4o.Internal.ClassMetadata[i_maxTypeID + 1];
+			i_yapClasses = new ClassMetadata[i_maxTypeID + 1];
 			for (int i = 0; i < CLASSCOUNT; i++)
 			{
 				int id = i + 1;
-				i_yapClasses[i] = new Db4objects.Db4o.Internal.PrimitiveFieldHandler(a_stream, i_handlers
-					[i]);
+				i_yapClasses[i] = new PrimitiveFieldHandler(a_stream, i_handlers[i]);
 				i_yapClasses[i].SetID(id);
 				i_classByClass.Put(i_handlers[i].ClassReflector(), i_yapClasses[i]);
 				if (i < ANY_INDEX)
@@ -146,13 +154,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				int id = i_platformTypes[i].GetID();
 				int idx = id - 1;
-				Db4objects.Db4o.Reflect.Generic.IGenericConverter converter = (i_platformTypes[i]
-					 is Db4objects.Db4o.Reflect.Generic.IGenericConverter) ? (Db4objects.Db4o.Reflect.Generic.IGenericConverter
+				IGenericConverter converter = (i_platformTypes[i] is IGenericConverter) ? (IGenericConverter
 					)i_platformTypes[i] : null;
 				reflector.RegisterPrimitiveClass(id, i_platformTypes[i].GetName(), converter);
 				i_handlers[idx] = i_platformTypes[i];
-				i_yapClasses[idx] = new Db4objects.Db4o.Internal.PrimitiveFieldHandler(a_stream, 
-					i_platformTypes[i]);
+				i_yapClasses[idx] = new PrimitiveFieldHandler(a_stream, i_platformTypes[i]);
 				i_yapClasses[idx].SetID(id);
 				if (id > i_maxTypeID)
 				{
@@ -160,11 +166,11 @@ namespace Db4objects.Db4o.Internal
 				}
 				i_classByClass.Put(i_platformTypes[i].ClassReflector(), i_yapClasses[idx]);
 			}
-			i_anyArray = new Db4objects.Db4o.Internal.PrimitiveFieldHandler(a_stream, new Db4objects.Db4o.Internal.Handlers.ArrayHandler
-				(_masterStream, UntypedHandler(), false));
+			i_anyArray = new PrimitiveFieldHandler(a_stream, new ArrayHandler(_masterStream, 
+				UntypedHandler(), false));
 			i_anyArray.SetID(ANY_ARRAY_ID);
 			i_yapClasses[ANY_ARRAY_ID - 1] = i_anyArray;
-			i_anyArrayN = new Db4objects.Db4o.Internal.PrimitiveFieldHandler(a_stream, new Db4objects.Db4o.Internal.Handlers.MultidimensionalArrayHandler
+			i_anyArrayN = new PrimitiveFieldHandler(a_stream, new MultidimensionalArrayHandler
 				(_masterStream, UntypedHandler(), false));
 			i_anyArrayN.SetID(ANY_ARRAY_N_ID);
 			i_yapClasses[ANY_ARRAY_N_ID - 1] = i_anyArrayN;
@@ -172,21 +178,19 @@ namespace Db4objects.Db4o.Internal
 
 		internal int ArrayType(object a_object)
 		{
-			Db4objects.Db4o.Reflect.IReflectClass claxx = _masterStream.Reflector().ForObject
-				(a_object);
+			IReflectClass claxx = _masterStream.Reflector().ForObject(a_object);
 			if (!claxx.IsArray())
 			{
 				return 0;
 			}
 			if (_masterStream.Reflector().Array().IsNDimensional(claxx))
 			{
-				return Db4objects.Db4o.Internal.Const4.TYPE_NARRAY;
+				return Const4.TYPE_NARRAY;
 			}
-			return Db4objects.Db4o.Internal.Const4.TYPE_ARRAY;
+			return Const4.TYPE_ARRAY;
 		}
 
-		internal bool CreateConstructor(Db4objects.Db4o.Reflect.IReflectClass claxx, bool
-			 skipConstructor)
+		internal bool CreateConstructor(IReflectClass claxx, bool skipConstructor)
 		{
 			if (claxx == null)
 			{
@@ -196,7 +200,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return true;
 			}
-			if (!Db4objects.Db4o.Internal.Platform4.CallConstructor())
+			if (!Platform4.CallConstructor())
 			{
 				if (claxx.SkipConstructor(skipConstructor))
 				{
@@ -213,29 +217,24 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_masterStream.Reflector().ConstructorCallsSupported())
 			{
-				Db4objects.Db4o.Foundation.Tree sortedConstructors = SortConstructorsByParamsCount
-					(claxx);
+				Tree sortedConstructors = SortConstructorsByParamsCount(claxx);
 				return FindConstructor(claxx, sortedConstructors);
 			}
 			return false;
 		}
 
-		private bool FindConstructor(Db4objects.Db4o.Reflect.IReflectClass claxx, Db4objects.Db4o.Foundation.Tree
-			 sortedConstructors)
+		private bool FindConstructor(IReflectClass claxx, Tree sortedConstructors)
 		{
 			if (sortedConstructors == null)
 			{
 				return false;
 			}
-			System.Collections.IEnumerator iter = new Db4objects.Db4o.Foundation.TreeNodeIterator
-				(sortedConstructors);
+			IEnumerator iter = new TreeNodeIterator(sortedConstructors);
 			while (iter.MoveNext())
 			{
 				object obj = iter.Current;
-				Db4objects.Db4o.Reflect.IReflectConstructor constructor = (Db4objects.Db4o.Reflect.IReflectConstructor
-					)((Db4objects.Db4o.Internal.TreeIntObject)obj)._object;
-				Db4objects.Db4o.Reflect.IReflectClass[] paramTypes = constructor.GetParameterTypes
-					();
+				IReflectConstructor constructor = (IReflectConstructor)((TreeIntObject)obj)._object;
+				IReflectClass[] paramTypes = constructor.GetParameterTypes();
 				object[] @params = new object[paramTypes.Length];
 				for (int j = 0; j < @params.Length; j++)
 				{
@@ -251,36 +250,32 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		private object NullValue(Db4objects.Db4o.Reflect.IReflectClass clazz)
+		private object NullValue(IReflectClass clazz)
 		{
 			for (int k = 0; k < PRIMITIVECOUNT; k++)
 			{
 				if (clazz.Equals(i_handlers[k].PrimitiveClassReflector()))
 				{
-					return ((Db4objects.Db4o.Internal.Handlers.PrimitiveHandler)i_handlers[k]).PrimitiveNull
-						();
+					return ((PrimitiveHandler)i_handlers[k]).PrimitiveNull();
 				}
 			}
 			return null;
 		}
 
-		private Db4objects.Db4o.Foundation.Tree SortConstructorsByParamsCount(Db4objects.Db4o.Reflect.IReflectClass
-			 claxx)
+		private Tree SortConstructorsByParamsCount(IReflectClass claxx)
 		{
-			Db4objects.Db4o.Reflect.IReflectConstructor[] constructors = claxx.GetDeclaredConstructors
-				();
-			Db4objects.Db4o.Foundation.Tree sortedConstructors = null;
+			IReflectConstructor[] constructors = claxx.GetDeclaredConstructors();
+			Tree sortedConstructors = null;
 			for (int i = 0; i < constructors.Length; i++)
 			{
 				try
 				{
 					constructors[i].SetAccessible();
 					int parameterCount = constructors[i].GetParameterTypes().Length;
-					sortedConstructors = Db4objects.Db4o.Foundation.Tree.Add(sortedConstructors, new 
-						Db4objects.Db4o.Internal.TreeIntObject(i + constructors.Length * parameterCount, 
-						constructors[i]));
+					sortedConstructors = Tree.Add(sortedConstructors, new TreeIntObject(i + constructors
+						.Length * parameterCount, constructors[i]));
 				}
-				catch (System.Security.SecurityException e)
+				catch (SecurityException e)
 				{
 				}
 			}
@@ -337,13 +332,13 @@ namespace Db4objects.Db4o.Internal
 			_masterStream.ConfigImpl().OldEncryptionOff();
 		}
 
-		internal Db4objects.Db4o.Internal.ITypeHandler4 GetHandler(int a_index)
+		internal ITypeHandler4 GetHandler(int a_index)
 		{
 			return i_handlers[a_index - 1];
 		}
 
-		internal Db4objects.Db4o.Internal.ITypeHandler4 HandlerForClass(Db4objects.Db4o.Reflect.IReflectClass
-			 a_class, Db4objects.Db4o.Reflect.IReflectClass[] a_Supported)
+		internal ITypeHandler4 HandlerForClass(IReflectClass a_class, IReflectClass[] a_Supported
+			)
 		{
 			for (int i = 0; i < a_Supported.Length; i++)
 			{
@@ -355,8 +350,8 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		public Db4objects.Db4o.Internal.ITypeHandler4 HandlerForClass(Db4objects.Db4o.Internal.ObjectContainerBase
-			 a_stream, Db4objects.Db4o.Reflect.IReflectClass a_class)
+		public ITypeHandler4 HandlerForClass(ObjectContainerBase a_stream, IReflectClass 
+			a_class)
 		{
 			if (a_class == null)
 			{
@@ -366,44 +361,35 @@ namespace Db4objects.Db4o.Internal
 			{
 				return HandlerForClass(a_stream, a_class.GetComponentType());
 			}
-			Db4objects.Db4o.Internal.ClassMetadata yc = GetYapClassStatic(a_class);
+			ClassMetadata yc = GetYapClassStatic(a_class);
 			if (yc != null)
 			{
-				return ((Db4objects.Db4o.Internal.PrimitiveFieldHandler)yc).i_handler;
+				return ((PrimitiveFieldHandler)yc).i_handler;
 			}
 			return a_stream.ProduceClassMetadata(a_class);
 		}
 
-		public Db4objects.Db4o.Internal.ITypeHandler4 UntypedHandler()
+		public ITypeHandler4 UntypedHandler()
 		{
 			return i_handlers[ANY_INDEX];
 		}
 
-		private void InitClassReflectors(Db4objects.Db4o.Reflect.Generic.GenericReflector
-			 reflector)
+		private void InitClassReflectors(GenericReflector reflector)
 		{
-			ICLASS_COMPARE = reflector.ForClass(Db4objects.Db4o.Internal.Const4.CLASS_COMPARE
-				);
-			ICLASS_DB4OTYPE = reflector.ForClass(Db4objects.Db4o.Internal.Const4.CLASS_DB4OTYPE
-				);
-			ICLASS_DB4OTYPEIMPL = reflector.ForClass(Db4objects.Db4o.Internal.Const4.CLASS_DB4OTYPEIMPL
-				);
-			ICLASS_INTERNAL = reflector.ForClass(Db4objects.Db4o.Internal.Const4.CLASS_INTERNAL
-				);
-			ICLASS_UNVERSIONED = reflector.ForClass(Db4objects.Db4o.Internal.Const4.CLASS_UNVERSIONED
-				);
-			ICLASS_OBJECT = reflector.ForClass(Db4objects.Db4o.Internal.Const4.CLASS_OBJECT);
-			ICLASS_OBJECTCONTAINER = reflector.ForClass(Db4objects.Db4o.Internal.Const4.CLASS_OBJECTCONTAINER
-				);
-			ICLASS_STATICCLASS = reflector.ForClass(Db4objects.Db4o.Internal.Const4.CLASS_STATICCLASS
-				);
+			ICLASS_COMPARE = reflector.ForClass(Const4.CLASS_COMPARE);
+			ICLASS_DB4OTYPE = reflector.ForClass(Const4.CLASS_DB4OTYPE);
+			ICLASS_DB4OTYPEIMPL = reflector.ForClass(Const4.CLASS_DB4OTYPEIMPL);
+			ICLASS_INTERNAL = reflector.ForClass(Const4.CLASS_INTERNAL);
+			ICLASS_UNVERSIONED = reflector.ForClass(Const4.CLASS_UNVERSIONED);
+			ICLASS_OBJECT = reflector.ForClass(Const4.CLASS_OBJECT);
+			ICLASS_OBJECTCONTAINER = reflector.ForClass(Const4.CLASS_OBJECTCONTAINER);
+			ICLASS_STATICCLASS = reflector.ForClass(Const4.CLASS_STATICCLASS);
 			ICLASS_STRING = reflector.ForClass(typeof(string));
-			ICLASS_TRANSIENTCLASS = reflector.ForClass(Db4objects.Db4o.Internal.Const4.CLASS_TRANSIENTCLASS
-				);
-			Db4objects.Db4o.Internal.Platform4.RegisterCollections(reflector);
+			ICLASS_TRANSIENTCLASS = reflector.ForClass(Const4.CLASS_TRANSIENTCLASS);
+			Platform4.RegisterCollections(reflector);
 		}
 
-		internal void InitEncryption(Db4objects.Db4o.Internal.Config4Impl a_config)
+		internal void InitEncryption(Config4Impl a_config)
 		{
 			if (a_config.Encrypt() && a_config.Password() != null && a_config.Password().Length
 				 > 0)
@@ -421,8 +407,7 @@ namespace Db4objects.Db4o.Internal
 			OldEncryptionOff();
 		}
 
-		internal static Db4objects.Db4o.Internal.IDb4oTypeImpl GetDb4oType(Db4objects.Db4o.Reflect.IReflectClass
-			 clazz)
+		internal static IDb4oTypeImpl GetDb4oType(IReflectClass clazz)
 		{
 			for (int i = 0; i < i_db4oTypes.Length; i++)
 			{
@@ -434,7 +419,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		public Db4objects.Db4o.Internal.ClassMetadata GetYapClassStatic(int a_id)
+		public ClassMetadata GetYapClassStatic(int a_id)
 		{
 			if (a_id > 0 && a_id <= i_maxTypeID)
 			{
@@ -443,8 +428,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		internal Db4objects.Db4o.Internal.ClassMetadata GetYapClassStatic(Db4objects.Db4o.Reflect.IReflectClass
-			 a_class)
+		internal ClassMetadata GetYapClassStatic(IReflectClass a_class)
 		{
 			if (a_class == null)
 			{
@@ -458,20 +442,19 @@ namespace Db4objects.Db4o.Internal
 				}
 				return i_anyArray;
 			}
-			return (Db4objects.Db4o.Internal.ClassMetadata)i_classByClass.Get(a_class);
+			return (ClassMetadata)i_classByClass.Get(a_class);
 		}
 
 		public bool IsSecondClass(object a_object)
 		{
 			if (a_object != null)
 			{
-				Db4objects.Db4o.Reflect.IReflectClass claxx = _masterStream.Reflector().ForObject
-					(a_object);
+				IReflectClass claxx = _masterStream.Reflector().ForObject(a_object);
 				if (i_classByClass.Get(claxx) != null)
 				{
 					return true;
 				}
-				return Db4objects.Db4o.Internal.Platform4.IsValueType(claxx);
+				return Platform4.IsValueType(claxx);
 			}
 			return false;
 		}
@@ -493,23 +476,22 @@ namespace Db4objects.Db4o.Internal
 			return i_migration;
 		}
 
-		public void Replication(Db4objects.Db4o.ReplicationImpl impl)
+		public void Replication(ReplicationImpl impl)
 		{
 			i_replication = impl;
 		}
 
-		public Db4objects.Db4o.ReplicationImpl Replication()
+		public ReplicationImpl Replication()
 		{
 			return i_replication;
 		}
 
-		public Db4objects.Db4o.Internal.ClassMetadata PrimitiveClassById(int id)
+		public ClassMetadata PrimitiveClassById(int id)
 		{
 			return i_yapClasses[id - 1];
 		}
 
-		public Db4objects.Db4o.Internal.VirtualFieldMetadata VirtualFieldByName(string name
-			)
+		public VirtualFieldMetadata VirtualFieldByName(string name)
 		{
 			for (int i = 0; i < _virtualFields.Length; i++)
 			{

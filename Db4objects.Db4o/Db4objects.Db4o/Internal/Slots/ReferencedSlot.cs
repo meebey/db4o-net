@@ -1,7 +1,10 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal.Slots
 {
 	/// <exclude></exclude>
-	public class ReferencedSlot : Db4objects.Db4o.Internal.TreeInt
+	public class ReferencedSlot : TreeInt
 	{
 		private Db4objects.Db4o.Internal.Slots.Slot _slot;
 
@@ -25,8 +28,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			_slot = slot;
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Tree Free(Db4objects.Db4o.Internal.LocalObjectContainer
-			 file, Db4objects.Db4o.Foundation.Tree treeRoot, Db4objects.Db4o.Internal.Slots.Slot
+		public virtual Tree Free(LocalObjectContainer file, Tree treeRoot, Db4objects.Db4o.Internal.Slots.Slot
 			 slot)
 		{
 			file.Free(_slot._address, _slot._length);

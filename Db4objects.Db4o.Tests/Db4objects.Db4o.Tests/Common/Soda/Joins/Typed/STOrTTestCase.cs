@@ -1,6 +1,9 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 {
-	public class STOrTTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STOrTTestCase : SodaBaseTestCase
 	{
 		public int orInt;
 
@@ -33,34 +36,34 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 
 		public virtual void TestSmallerGreater()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase());
-			Db4objects.Db4o.Query.IQuery sub = q.Descend("orInt");
+			IQuery sub = q.Descend("orInt");
 			sub.Constrain(30000).Greater().Or(sub.Constrain(5).Smaller());
 			Expect(q, new int[] { 0, 4 });
 		}
 
 		public virtual void TestGreaterGreater()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase());
-			Db4objects.Db4o.Query.IQuery sub = q.Descend("orInt");
+			IQuery sub = q.Descend("orInt");
 			sub.Constrain(30000).Greater().Or(sub.Constrain(5).Greater());
 			Expect(q, new int[] { 2, 3, 4 });
 		}
 
 		public virtual void TestGreaterEquals()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase());
-			Db4objects.Db4o.Query.IQuery sub = q.Descend("orInt");
+			IQuery sub = q.Descend("orInt");
 			sub.Constrain(1000).Greater().Or(sub.Constrain(0));
 			Expect(q, new int[] { 0, 3, 4 });
 		}
 
 		public virtual void TestEqualsNull()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(1000, 
 				null));
 			q.Descend("orInt").Constraints().Or(q.Descend("orString").Constrain(null));
@@ -69,7 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 
 		public virtual void TestAndOrAnd()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(0, null
 				));
 			(q.Descend("orInt").Constrain(5).And(q.Descend("orString").Constrain(null))).Or(q
@@ -79,18 +82,18 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 
 		public virtual void TestOrAndOr()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(0, null
 				));
 			(q.Descend("orInt").Constrain(5).Or(q.Descend("orString").Constrain(null))).And(q
 				.Descend("orInt").Constrain(int.MaxValue - 1).Or(q.Descend("orString").Constrain
 				("joho")));
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, _array[4]);
+			SodaTestUtil.ExpectOne(q, _array[4]);
 		}
 
 		public virtual void TestOrOrAnd()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(0, null
 				));
 			(q.Descend("orInt").Constrain(int.MaxValue - 1).Or(q.Descend("orString").Constrain
@@ -101,7 +104,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 
 		public virtual void TestMultiOrAnd()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(0, null
 				));
 			((q.Descend("orInt").Constrain(int.MaxValue - 1).Or(q.Descend("orString").Constrain
@@ -114,34 +117,34 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 
 		public virtual void TestNotSmallerGreater()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase());
-			Db4objects.Db4o.Query.IQuery sub = q.Descend("orInt");
+			IQuery sub = q.Descend("orInt");
 			(sub.Constrain(30000).Greater().Or(sub.Constrain(5).Smaller())).Not();
 			Expect(q, new int[] { 1, 2, 3 });
 		}
 
 		public virtual void TestNotGreaterGreater()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase());
-			Db4objects.Db4o.Query.IQuery sub = q.Descend("orInt");
+			IQuery sub = q.Descend("orInt");
 			(sub.Constrain(30000).Greater().Or(sub.Constrain(5).Greater())).Not();
 			Expect(q, new int[] { 0, 1 });
 		}
 
 		public virtual void TestNotGreaterEquals()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase());
-			Db4objects.Db4o.Query.IQuery sub = q.Descend("orInt");
+			IQuery sub = q.Descend("orInt");
 			(sub.Constrain(1000).Greater().Or(sub.Constrain(0))).Not();
 			Expect(q, new int[] { 1, 2 });
 		}
 
 		public virtual void TestNotEqualsNull()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(1000, 
 				null));
 			(q.Descend("orInt").Constraints().Or(q.Descend("orString").Constrain(null))).Not(
@@ -151,7 +154,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 
 		public virtual void TestNotAndOrAnd()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(0, null
 				));
 			(q.Descend("orInt").Constrain(5).And(q.Descend("orString").Constrain(null))).Or(q
@@ -162,7 +165,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 
 		public virtual void TestNotOrAndOr()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(0, null
 				));
 			(q.Descend("orInt").Constrain(5).Or(q.Descend("orString").Constrain(null))).And(q
@@ -173,7 +176,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 
 		public virtual void TestNotOrOrAnd()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(0, null
 				));
 			(q.Descend("orInt").Constrain(int.MaxValue - 1).Or(q.Descend("orString").Constrain
@@ -184,7 +187,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 
 		public virtual void TestNotMultiOrAnd()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(0, null
 				));
 			((q.Descend("orInt").Constrain(int.MaxValue - 1).Or(q.Descend("orString").Constrain
@@ -197,7 +200,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 
 		public virtual void TestOrNotAndOr()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(0, null
 				));
 			(q.Descend("orInt").Constrain(int.MaxValue - 1).Or(q.Descend("orString").Constrain
@@ -208,7 +211,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 
 		public virtual void TestAndNotAndAnd()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase(0, null
 				));
 			(q.Descend("orInt").Constrain(int.MaxValue - 1).And(q.Descend("orString").Constrain

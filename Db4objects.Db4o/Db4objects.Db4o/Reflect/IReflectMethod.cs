@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Reflect
 {
 	/// <summary>representation for java.lang.reflect.Method.</summary>
@@ -5,12 +7,11 @@ namespace Db4objects.Db4o.Reflect
 	/// representation for java.lang.reflect.Method.
 	/// <br /><br />See the respective documentation in the JDK API.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Reflect.IReflector">Db4objects.Db4o.Reflect.IReflector
-	/// 	</seealso>
+	/// <seealso cref="IReflector">IReflector</seealso>
 	public interface IReflectMethod
 	{
 		object Invoke(object onObject, object[] parameters);
 
-		Db4objects.Db4o.Reflect.IReflectClass GetReturnType();
+		IReflectClass GetReturnType();
 	}
 }

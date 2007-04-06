@@ -1,3 +1,6 @@
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Messaging;
+
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>Client/Server configuration interface.</summary>
@@ -22,13 +25,12 @@ namespace Db4objects.Db4o.Config
 		/// <br />
 		/// </remarks>
 		/// <param name="messageRecipient">the MessageRecipient to be used</param>
-		void SetMessageRecipient(Db4objects.Db4o.Messaging.IMessageRecipient messageRecipient
-			);
+		void SetMessageRecipient(IMessageRecipient messageRecipient);
 
 		/// <summary>returns the MessageSender for this Configuration context.</summary>
 		/// <remarks>returns the MessageSender for this Configuration context.</remarks>
 		/// <returns>MessageSender</returns>
-		Db4objects.Db4o.Messaging.IMessageSender GetMessageSender();
+		IMessageSender GetMessageSender();
 
 		/// <summary>
 		/// configures the time a client waits for a message response from the
@@ -78,8 +80,8 @@ namespace Db4objects.Db4o.Config
 		/// <br />
 		/// </remarks>
 		/// <param name="milliseconds">time in milliseconds</param>
-		/// <seealso cref="Db4objects.Db4o.Config.IClientServerConfiguration.SingleThreadedClient
-		/// 	">Db4objects.Db4o.Config.IClientServerConfiguration.SingleThreadedClient</seealso>
+		/// <seealso cref="IClientServerConfiguration.SingleThreadedClient">IClientServerConfiguration.SingleThreadedClient
+		/// 	</seealso>
 		void TimeoutPingClients(int milliseconds);
 
 		/// <summary>

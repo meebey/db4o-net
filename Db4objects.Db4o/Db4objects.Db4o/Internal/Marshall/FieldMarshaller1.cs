@@ -1,16 +1,19 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Marshall;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class FieldMarshaller1 : Db4objects.Db4o.Internal.Marshall.FieldMarshaller0
+	public class FieldMarshaller1 : FieldMarshaller0
 	{
-		private bool HasBTreeIndex(Db4objects.Db4o.Internal.FieldMetadata field)
+		private bool HasBTreeIndex(FieldMetadata field)
 		{
 			return !field.IsVirtual();
 		}
 
-		public override void Write(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.ClassMetadata
-			 clazz, Db4objects.Db4o.Internal.FieldMetadata field, Db4objects.Db4o.Internal.Buffer
-			 writer)
+		public override void Write(Transaction trans, ClassMetadata clazz, FieldMetadata 
+			field, Db4objects.Db4o.Internal.Buffer writer)
 		{
 			base.Write(trans, clazz, field, writer);
 			if (!HasBTreeIndex(field))
@@ -20,11 +23,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			writer.WriteIDOf(trans, field.GetIndex(trans));
 		}
 
-		public override Db4objects.Db4o.Internal.Marshall.RawFieldSpec ReadSpec(Db4objects.Db4o.Internal.ObjectContainerBase
-			 stream, Db4objects.Db4o.Internal.Buffer reader)
+		public override RawFieldSpec ReadSpec(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
+			 reader)
 		{
-			Db4objects.Db4o.Internal.Marshall.RawFieldSpec spec = base.ReadSpec(stream, reader
-				);
+			RawFieldSpec spec = base.ReadSpec(stream, reader);
 			if (spec == null)
 			{
 				return null;
@@ -38,12 +40,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return spec;
 		}
 
-		protected override Db4objects.Db4o.Internal.FieldMetadata FromSpec(Db4objects.Db4o.Internal.Marshall.RawFieldSpec
-			 spec, Db4objects.Db4o.Internal.ObjectContainerBase stream, Db4objects.Db4o.Internal.FieldMetadata
-			 field)
+		protected override FieldMetadata FromSpec(RawFieldSpec spec, ObjectContainerBase 
+			stream, FieldMetadata field)
 		{
-			Db4objects.Db4o.Internal.FieldMetadata actualField = base.FromSpec(spec, stream, 
-				field);
+			FieldMetadata actualField = base.FromSpec(spec, stream, field);
 			if (spec == null)
 			{
 				return field;
@@ -55,21 +55,20 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return actualField;
 		}
 
-		public override int MarshalledLength(Db4objects.Db4o.Internal.ObjectContainerBase
-			 stream, Db4objects.Db4o.Internal.FieldMetadata field)
+		public override int MarshalledLength(ObjectContainerBase stream, FieldMetadata field
+			)
 		{
 			int len = base.MarshalledLength(stream, field);
 			if (!HasBTreeIndex(field))
 			{
 				return len;
 			}
-			int BTREE_ID = Db4objects.Db4o.Internal.Const4.ID_LENGTH;
+			int BTREE_ID = Const4.ID_LENGTH;
 			return len + BTREE_ID;
 		}
 
-		public override void Defrag(Db4objects.Db4o.Internal.ClassMetadata yapClass, Db4objects.Db4o.Internal.FieldMetadata
-			 yapField, Db4objects.Db4o.Internal.LatinStringIO sio, Db4objects.Db4o.Internal.ReaderPair
-			 readers)
+		public override void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO
+			 sio, ReaderPair readers)
 		{
 			base.Defrag(yapClass, yapField, sio, readers);
 			if (yapField.IsVirtual())
@@ -78,8 +77,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			if (yapField.HasIndex())
 			{
-				Db4objects.Db4o.Internal.Btree.BTree index = yapField.GetIndex(readers.SystemTrans
-					());
+				BTree index = yapField.GetIndex(readers.SystemTrans());
 				int targetIndexID = readers.CopyID();
 				if (targetIndexID != 0)
 				{

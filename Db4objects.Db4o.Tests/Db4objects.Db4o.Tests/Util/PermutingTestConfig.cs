@@ -1,3 +1,5 @@
+using System;
+
 namespace Db4objects.Db4o.Tests.Util
 {
 	public class PermutingTestConfig
@@ -42,11 +44,11 @@ namespace Db4objects.Db4o.Tests.Util
 		{
 			if (!_started)
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			if (groupIdx < 0 || groupIdx >= _indices.Length)
 			{
-				throw new System.ArgumentException();
+				throw new ArgumentException();
 			}
 			return _values[groupIdx][_indices[groupIdx]];
 		}

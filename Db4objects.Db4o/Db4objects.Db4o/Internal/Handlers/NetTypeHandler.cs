@@ -1,11 +1,13 @@
+using System;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public abstract class NetTypeHandler : Db4objects.Db4o.Internal.Handlers.PrimitiveHandler
-		, Db4objects.Db4o.Internal.Handlers.INetType
+	public abstract class NetTypeHandler : PrimitiveHandler, INetType
 	{
-		public NetTypeHandler(Db4objects.Db4o.Internal.ObjectContainerBase stream) : base
-			(stream)
+		public NetTypeHandler(ObjectContainerBase stream) : base(stream)
 		{
 		}
 
@@ -61,7 +63,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_linkLength;
 		}
 
-		protected override System.Type PrimitiveJavaClass()
+		protected override Type PrimitiveJavaClass()
 		{
 			return null;
 		}

@@ -1,6 +1,8 @@
+using Db4oUnit;
+
 namespace Db4oUnit
 {
-	public class NullTest : Db4oUnit.ITest
+	public class NullTest : ITest
 	{
 		internal string _label;
 
@@ -14,7 +16,7 @@ namespace Db4oUnit
 			return _label;
 		}
 
-		public virtual void Run(Db4oUnit.TestResult result)
+		public virtual void Run(TestResult result)
 		{
 		}
 	}

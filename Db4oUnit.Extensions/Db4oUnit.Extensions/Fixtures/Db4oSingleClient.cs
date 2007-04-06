@@ -1,26 +1,30 @@
+using System.IO;
+using Db4oUnit;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+
 namespace Db4oUnit.Extensions.Fixtures
 {
-	public class Db4oSingleClient : Db4oUnit.Extensions.Fixtures.AbstractClientServerDb4oFixture
+	public class Db4oSingleClient : AbstractClientServerDb4oFixture
 	{
-		private Db4objects.Db4o.Ext.IExtObjectContainer _objectContainer;
+		private IExtObjectContainer _objectContainer;
 
-		public Db4oSingleClient(Db4oUnit.Extensions.Fixtures.IConfigurationSource config, 
-			string fileName, int port) : base(config, fileName, port)
+		public Db4oSingleClient(IConfigurationSource config, string fileName, int port) : 
+			base(config, fileName, port)
 		{
 		}
 
-		public Db4oSingleClient(Db4oUnit.Extensions.Fixtures.IConfigurationSource config, 
-			int port) : base(config, FILE, port)
+		public Db4oSingleClient(IConfigurationSource config, int port) : base(config, FILE
+			, port)
 		{
 		}
 
-		public Db4oSingleClient(Db4oUnit.Extensions.Fixtures.IConfigurationSource config)
-			 : base(config)
+		public Db4oSingleClient(IConfigurationSource config) : base(config)
 		{
 		}
 
-		public Db4oSingleClient() : this(new Db4oUnit.Extensions.Fixtures.IndependentConfigurationSource
-			())
+		public Db4oSingleClient() : this(new IndependentConfigurationSource())
 		{
 		}
 
@@ -39,17 +43,17 @@ namespace Db4oUnit.Extensions.Fixtures
 			base.Open();
 			try
 			{
-				_objectContainer = _port == 0 ? OpenEmbeddedClient().Ext() : Db4objects.Db4o.Db4oFactory
-					.OpenClient(Config(), HOST, _port, USERNAME, PASSWORD).Ext();
+				_objectContainer = _port == 0 ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient
+					(Config(), HOST, _port, USERNAME, PASSWORD).Ext();
 			}
-			catch (System.IO.IOException e)
+			catch (IOException e)
 			{
 				Sharpen.Runtime.PrintStackTrace(e);
-				throw new Db4oUnit.TestException(e);
+				throw new TestException(e);
 			}
 		}
 
-		public override Db4objects.Db4o.Ext.IExtObjectContainer Db()
+		public override IExtObjectContainer Db()
 		{
 			return _objectContainer;
 		}

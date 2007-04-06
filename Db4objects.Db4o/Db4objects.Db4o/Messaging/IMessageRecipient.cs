@@ -1,3 +1,6 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Messaging;
+
 namespace Db4objects.Db4o.Messaging
 {
 	/// <summary>message recipient for client/server messaging.</summary>
@@ -13,8 +16,7 @@ namespace Db4objects.Db4o.Messaging
 	/// <see cref="com.db4o.config.Configuration#setMessageRecipient(com.db4o.messaging.MessageRecipient)
 	/// 	">Configuration.setMessageRecipient(MessageRecipient)</see>
 	/// , <br />
-	/// <see cref="Db4objects.Db4o.Messaging.IMessageSender">Db4objects.Db4o.Messaging.IMessageSender
-	/// 	</see>
+	/// <see cref="IMessageSender">IMessageSender</see>
 	/// ,<br />
 	/// <see cref="com.db4o.config.Configuration#getMessageSender()">com.db4o.config.Configuration#getMessageSender()
 	/// 	</see>
@@ -26,6 +28,6 @@ namespace Db4objects.Db4o.Messaging
 		/// <remarks>the method called upon the arrival of messages.</remarks>
 		/// <param name="con">the ObjectContainer the message was sent to.</param>
 		/// <param name="message">the message received.</param>
-		void ProcessMessage(Db4objects.Db4o.IObjectContainer con, object message);
+		void ProcessMessage(IObjectContainer con, object message);
 	}
 }

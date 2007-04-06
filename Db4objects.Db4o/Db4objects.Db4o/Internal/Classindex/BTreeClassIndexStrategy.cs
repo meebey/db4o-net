@@ -1,27 +1,32 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Classindex;
+
 namespace Db4objects.Db4o.Internal.Classindex
 {
 	/// <exclude></exclude>
-	public class BTreeClassIndexStrategy : Db4objects.Db4o.Internal.Classindex.AbstractClassIndexStrategy
+	public class BTreeClassIndexStrategy : AbstractClassIndexStrategy
 	{
-		private Db4objects.Db4o.Internal.Btree.BTree _btreeIndex;
+		private BTree _btreeIndex;
 
-		public BTreeClassIndexStrategy(Db4objects.Db4o.Internal.ClassMetadata yapClass) : 
-			base(yapClass)
+		public BTreeClassIndexStrategy(ClassMetadata yapClass) : base(yapClass)
 		{
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.BTree Btree()
+		public virtual BTree Btree()
 		{
 			return _btreeIndex;
 		}
 
-		public override int EntryCount(Db4objects.Db4o.Internal.Transaction ta)
+		public override int EntryCount(Transaction ta)
 		{
 			return _btreeIndex != null ? _btreeIndex.Size(ta) : 0;
 		}
 
-		public override void Initialize(Db4objects.Db4o.Internal.ObjectContainerBase stream
-			)
+		public override void Initialize(ObjectContainerBase stream)
 		{
 			CreateBTreeIndex(stream, 0);
 		}
@@ -30,13 +35,12 @@ namespace Db4objects.Db4o.Internal.Classindex
 		{
 		}
 
-		public override void Read(Db4objects.Db4o.Internal.ObjectContainerBase stream, int
-			 indexID)
+		public override void Read(ObjectContainerBase stream, int indexID)
 		{
 			ReadBTreeIndex(stream, indexID);
 		}
 
-		public override int Write(Db4objects.Db4o.Internal.Transaction trans)
+		public override int Write(Transaction trans)
 		{
 			if (_btreeIndex == null)
 			{
@@ -46,8 +50,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			return _btreeIndex.GetID();
 		}
 
-		public override void TraverseAll(Db4objects.Db4o.Internal.Transaction ta, Db4objects.Db4o.Foundation.IVisitor4
-			 command)
+		public override void TraverseAll(Transaction ta, IVisitor4 command)
 		{
 			if (_btreeIndex != null)
 			{
@@ -55,21 +58,19 @@ namespace Db4objects.Db4o.Internal.Classindex
 			}
 		}
 
-		private void CreateBTreeIndex(Db4objects.Db4o.Internal.ObjectContainerBase stream
-			, int btreeID)
+		private void CreateBTreeIndex(ObjectContainerBase stream, int btreeID)
 		{
 			if (stream.IsClient())
 			{
 				return;
 			}
-			_btreeIndex = ((Db4objects.Db4o.Internal.LocalObjectContainer)stream).CreateBTreeClassIndex
-				(btreeID);
+			_btreeIndex = ((LocalObjectContainer)stream).CreateBTreeClassIndex(btreeID);
 			_btreeIndex.SetRemoveListener(new _AnonymousInnerClass61(this, stream));
 		}
 
-		private sealed class _AnonymousInnerClass61 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass61 : IVisitor4
 		{
-			public _AnonymousInnerClass61(BTreeClassIndexStrategy _enclosing, Db4objects.Db4o.Internal.ObjectContainerBase
+			public _AnonymousInnerClass61(BTreeClassIndexStrategy _enclosing, ObjectContainerBase
 				 stream)
 			{
 				this._enclosing = _enclosing;
@@ -79,7 +80,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			public void Visit(object obj)
 			{
 				int id = ((int)obj);
-				Db4objects.Db4o.Internal.ObjectReference yo = stream.ReferenceForId(id);
+				ObjectReference yo = stream.ReferenceForId(id);
 				if (yo != null)
 				{
 					stream.RemoveReference(yo);
@@ -88,11 +89,10 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 			private readonly BTreeClassIndexStrategy _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.ObjectContainerBase stream;
+			private readonly ObjectContainerBase stream;
 		}
 
-		private void ReadBTreeIndex(Db4objects.Db4o.Internal.ObjectContainerBase stream, 
-			int indexId)
+		private void ReadBTreeIndex(ObjectContainerBase stream, int indexId)
 		{
 			if (!stream.IsClient() && _btreeIndex == null)
 			{
@@ -100,25 +100,22 @@ namespace Db4objects.Db4o.Internal.Classindex
 			}
 		}
 
-		protected override void InternalAdd(Db4objects.Db4o.Internal.Transaction trans, int
-			 id)
+		protected override void InternalAdd(Transaction trans, int id)
 		{
 			_btreeIndex.Add(trans, id);
 		}
 
-		protected override void InternalRemove(Db4objects.Db4o.Internal.Transaction ta, int
-			 id)
+		protected override void InternalRemove(Transaction ta, int id)
 		{
 			_btreeIndex.Remove(ta, id);
 		}
 
-		public override void DontDelete(Db4objects.Db4o.Internal.Transaction transaction, 
-			int id)
+		public override void DontDelete(Transaction transaction, int id)
 		{
 		}
 
-		public override void DefragReference(Db4objects.Db4o.Internal.ClassMetadata yapClass
-			, Db4objects.Db4o.Internal.ReaderPair readers, int classIndexID)
+		public override void DefragReference(ClassMetadata yapClass, ReaderPair readers, 
+			int classIndexID)
 		{
 			int newID = -classIndexID;
 			readers.WriteInt(newID);
@@ -129,31 +126,28 @@ namespace Db4objects.Db4o.Internal.Classindex
 			return _btreeIndex.GetID();
 		}
 
-		public override System.Collections.IEnumerator AllSlotIDs(Db4objects.Db4o.Internal.Transaction
-			 trans)
+		public override IEnumerator AllSlotIDs(Transaction trans)
 		{
 			return _btreeIndex.AllNodeIds(trans);
 		}
 
-		public override void DefragIndex(Db4objects.Db4o.Internal.ReaderPair readers)
+		public override void DefragIndex(ReaderPair readers)
 		{
 			_btreeIndex.DefragIndex(readers);
 		}
 
-		public static Db4objects.Db4o.Internal.Btree.BTree Btree(Db4objects.Db4o.Internal.ClassMetadata
-			 clazz)
+		public static BTree Btree(ClassMetadata clazz)
 		{
-			Db4objects.Db4o.Internal.Classindex.IClassIndexStrategy index = clazz.Index();
+			IClassIndexStrategy index = clazz.Index();
 			if (!(index is Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy))
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			return ((Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy)index).Btree
 				();
 		}
 
-		public static System.Collections.IEnumerator Iterate(Db4objects.Db4o.Internal.ClassMetadata
-			 clazz, Db4objects.Db4o.Internal.Transaction trans)
+		public static IEnumerator Iterate(ClassMetadata clazz, Transaction trans)
 		{
 			return Btree(clazz).AsRange(trans).Keys();
 		}

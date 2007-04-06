@@ -1,3 +1,9 @@
+using System;
+using System.IO;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
@@ -67,16 +73,15 @@ namespace Db4objects.Db4o.Internal
 					, "Uncaught Exception. Engine closed.", "writing log for %", "% is closed. close() was called or open() failed."
 					, "Filename not specified.", "The database file is locked by another process.", 
 					"Class not available: %. Check CLASSPATH settings.", "finalized while performing a task.\n DO NOT USE CTRL + C OR System.exit() TO STOP THE ENGINE."
-					, "Please mail the following to exception@db4o.com:\n <db4o " + Db4objects.Db4o.Db4oVersion
-					.NAME + " stacktrace>", "</db4o " + Db4objects.Db4o.Db4oVersion.NAME + " stacktrace>"
-					, "Creation of lock file failed: %", "Previous session was not shut down correctly"
-					, "This method call is only possible on stored objects", "Could not open port: %"
-					, "Server listening on port: %", "Client % connected.", "Client % timed out and closed."
-					, "Connection closed by client %.", "Connection closed by server. %.", "% connected to server."
-					, "The directory % can neither be found nor created.", "This blob was never stored."
-					, "Blob file % not available.", "Failure finding blob filename.", "File does not exist %."
-					, "Failed to connect to server.", "No blob data stored.", "Uncaught Exception. db4o engine closed."
-					, "Add constructor that won't throw exceptions, configure constructor calls, or provide a translator to class % and make sure the class is deployed to the server with the same package/namespace + assembly name."
+					, "Please mail the following to exception@db4o.com:\n <db4o " + Db4oVersion.NAME
+					 + " stacktrace>", "</db4o " + Db4oVersion.NAME + " stacktrace>", "Creation of lock file failed: %"
+					, "Previous session was not shut down correctly", "This method call is only possible on stored objects"
+					, "Could not open port: %", "Server listening on port: %", "Client % connected."
+					, "Client % timed out and closed.", "Connection closed by client %.", "Connection closed by server. %."
+					, "% connected to server.", "The directory % can neither be found nor created.", 
+					"This blob was never stored.", "Blob file % not available.", "Failure finding blob filename."
+					, "File does not exist %.", "Failed to connect to server.", "No blob data stored."
+					, "Uncaught Exception. db4o engine closed.", "Add constructor that won't throw exceptions, configure constructor calls, or provide a translator to class % and make sure the class is deployed to the server with the same package/namespace + assembly name."
 					, "This method can only be called before opening the database file.", "AccessibleObject#setAccessible() is not available. Private fields can not be stored."
 					, "ObjectTranslator could not be installed: %.", "Not implemented", "% closed by ShutdownHook."
 					, "This constraint is not persistent. It has no database identity.", "Add at least one ObjectContainer to the Cluster"
@@ -92,37 +97,33 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public static void LogErr(Db4objects.Db4o.Config.IConfiguration config, int code, 
-			string msg, System.Exception t)
+		public static void LogErr(IConfiguration config, int code, string msg, Exception 
+			t)
 		{
 			if (config == null)
 			{
-				config = Db4objects.Db4o.Db4oFactory.Configure();
+				config = Db4oFactory.Configure();
 			}
-			System.IO.TextWriter ps = ((Db4objects.Db4o.Internal.Config4Impl)config).ErrStream
-				();
-			new Db4objects.Db4o.Internal.Message(msg, code, ps);
+			TextWriter ps = ((Config4Impl)config).ErrStream();
+			new Message(msg, code, ps);
 			if (t != null)
 			{
-				new Db4objects.Db4o.Internal.Message(null, 25, ps);
+				new Message(null, 25, ps);
 				Sharpen.Runtime.PrintStackTrace(t, ps);
-				new Db4objects.Db4o.Internal.Message(null, 26, ps, false);
+				new Message(null, 26, ps, false);
 			}
 		}
 
-		public static void LogMsg(Db4objects.Db4o.Config.IConfiguration config, int code, 
-			string msg)
+		public static void LogMsg(IConfiguration config, int code, string msg)
 		{
-			Db4objects.Db4o.Internal.Config4Impl c4i = (Db4objects.Db4o.Internal.Config4Impl)
-				config;
+			Config4Impl c4i = (Config4Impl)config;
 			if (c4i == null)
 			{
-				c4i = (Db4objects.Db4o.Internal.Config4Impl)Db4objects.Db4o.Db4oFactory.Configure
-					();
+				c4i = (Config4Impl)Db4oFactory.Configure();
 			}
-			if (c4i.MessageLevel() > Db4objects.Db4o.Internal.Const4.NONE)
+			if (c4i.MessageLevel() > Const4.NONE)
 			{
-				new Db4objects.Db4o.Internal.Message(msg, code, c4i.OutStream());
+				new Message(msg, code, c4i.OutStream());
 			}
 		}
 	}

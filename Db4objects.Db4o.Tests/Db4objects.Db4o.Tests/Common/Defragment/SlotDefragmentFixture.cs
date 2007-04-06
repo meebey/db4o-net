@@ -1,3 +1,11 @@
+using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Defragment;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Defragment;
+
 namespace Db4objects.Db4o.Tests.Common.Defragment
 {
 	public class SlotDefragmentFixture
@@ -14,10 +22,9 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 			public int _wrapper;
 
-			public Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data _next;
+			public SlotDefragmentFixture.Data _next;
 
-			public Data(int id, Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data
-				 next)
+			public Data(int id, SlotDefragmentFixture.Data next)
 			{
 				_id = id;
 				_wrapper = id;
@@ -27,27 +34,22 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		public const int VALUE = 42;
 
-		public static Db4objects.Db4o.Defragment.DefragmentConfig DefragConfig(bool forceBackupDelete
-			)
+		public static DefragmentConfig DefragConfig(bool forceBackupDelete)
 		{
-			Db4objects.Db4o.Defragment.DefragmentConfig defragConfig = new Db4objects.Db4o.Defragment.DefragmentConfig
-				(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants.FILENAME, Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants
-				.BACKUPFILENAME);
+			DefragmentConfig defragConfig = new DefragmentConfig(SlotDefragmentTestConstants.
+				FILENAME, SlotDefragmentTestConstants.BACKUPFILENAME);
 			defragConfig.ForceBackupDelete(forceBackupDelete);
 			return defragConfig;
 		}
 
 		public static void CreateFile(string fileName)
 		{
-			Db4objects.Db4o.Config.IConfiguration config = Db4objects.Db4o.Db4oFactory.NewConfiguration
-				();
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(config
-				, fileName);
-			Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data data = null;
+			IConfiguration config = Db4oFactory.NewConfiguration();
+			IObjectContainer db = Db4oFactory.OpenFile(config, fileName);
+			SlotDefragmentFixture.Data data = null;
 			for (int value = VALUE - 1; value <= VALUE + 1; value++)
 			{
-				data = new Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data(value
-					, data);
+				data = new SlotDefragmentFixture.Data(value, data);
 				db.Set(data);
 			}
 			db.Close();
@@ -55,60 +57,54 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		public static void ForceIndex()
 		{
-			Db4objects.Db4o.Config.IConfiguration config = Db4objects.Db4o.Db4oFactory.NewConfiguration
-				();
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data)
-				).ObjectField(PRIMITIVE_FIELDNAME).Indexed(true);
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data)
-				).ObjectField(WRAPPER_FIELDNAME).Indexed(true);
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data)
-				).ObjectField(TYPEDOBJECT_FIELDNAME).Indexed(true);
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(config
-				, Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants.FILENAME);
-			Db4oUnit.Assert.IsTrue(db.Ext().StoredClass(typeof(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data)
-				).StoredField(PRIMITIVE_FIELDNAME, typeof(int)).HasIndex());
-			Db4oUnit.Assert.IsTrue(db.Ext().StoredClass(typeof(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data)
-				).StoredField(WRAPPER_FIELDNAME, typeof(int)).HasIndex());
-			Db4oUnit.Assert.IsTrue(db.Ext().StoredClass(typeof(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data)
-				).StoredField(TYPEDOBJECT_FIELDNAME, typeof(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data)
-				).HasIndex());
+			IConfiguration config = Db4oFactory.NewConfiguration();
+			config.ObjectClass(typeof(SlotDefragmentFixture.Data)).ObjectField(PRIMITIVE_FIELDNAME
+				).Indexed(true);
+			config.ObjectClass(typeof(SlotDefragmentFixture.Data)).ObjectField(WRAPPER_FIELDNAME
+				).Indexed(true);
+			config.ObjectClass(typeof(SlotDefragmentFixture.Data)).ObjectField(TYPEDOBJECT_FIELDNAME
+				).Indexed(true);
+			IObjectContainer db = Db4oFactory.OpenFile(config, SlotDefragmentTestConstants.FILENAME
+				);
+			Assert.IsTrue(db.Ext().StoredClass(typeof(SlotDefragmentFixture.Data)).StoredField
+				(PRIMITIVE_FIELDNAME, typeof(int)).HasIndex());
+			Assert.IsTrue(db.Ext().StoredClass(typeof(SlotDefragmentFixture.Data)).StoredField
+				(WRAPPER_FIELDNAME, typeof(int)).HasIndex());
+			Assert.IsTrue(db.Ext().StoredClass(typeof(SlotDefragmentFixture.Data)).StoredField
+				(TYPEDOBJECT_FIELDNAME, typeof(SlotDefragmentFixture.Data)).HasIndex());
 			db.Close();
 		}
 
 		public static void AssertIndex(string fieldName)
 		{
 			ForceIndex();
-			Db4objects.Db4o.Defragment.Defragment.Defrag(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants
-				.FILENAME, Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants.BACKUPFILENAME
-				);
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(Db4objects.Db4o.Db4oFactory
-				.NewConfiguration(), Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants
+			Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.FILENAME
+				, SlotDefragmentTestConstants.BACKUPFILENAME);
+			IObjectContainer db = Db4oFactory.OpenFile(Db4oFactory.NewConfiguration(), SlotDefragmentTestConstants
 				.FILENAME);
-			Db4objects.Db4o.Query.IQuery query = db.Query();
-			query.Constrain(typeof(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data)
-				);
+			IQuery query = db.Query();
+			query.Constrain(typeof(SlotDefragmentFixture.Data));
 			query.Descend(fieldName).Constrain(VALUE);
-			Db4objects.Db4o.IObjectSet result = query.Execute();
-			Db4oUnit.Assert.AreEqual(1, result.Size());
+			IObjectSet result = query.Execute();
+			Assert.AreEqual(1, result.Size());
 			db.Close();
 		}
 
 		public static void AssertDataClassKnown(bool expected)
 		{
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(Db4objects.Db4o.Db4oFactory
-				.NewConfiguration(), Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants
+			IObjectContainer db = Db4oFactory.OpenFile(Db4oFactory.NewConfiguration(), SlotDefragmentTestConstants
 				.FILENAME);
 			try
 			{
-				Db4objects.Db4o.Ext.IStoredClass storedClass = db.Ext().StoredClass(typeof(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data)
+				IStoredClass storedClass = db.Ext().StoredClass(typeof(SlotDefragmentFixture.Data)
 					);
 				if (expected)
 				{
-					Db4oUnit.Assert.IsNotNull(storedClass);
+					Assert.IsNotNull(storedClass);
 				}
 				else
 				{
-					Db4oUnit.Assert.IsNull(storedClass);
+					Assert.IsNull(storedClass);
 				}
 			}
 			finally

@@ -1,40 +1,40 @@
+using System;
+
 namespace Db4objects.Db4o.Internal
 {
 	[System.Serializable]
-	public class ClassIndexException : System.Exception
+	public class ClassIndexException : Exception
 	{
-		private Db4objects.Db4o.Internal.ClassMetadata _class;
+		private string _className;
 
-		public ClassIndexException(Db4objects.Db4o.Internal.ClassMetadata clazz) : this(null
-			, null, clazz)
+		public ClassIndexException(string className) : this(null, null, className)
 		{
 		}
 
-		public ClassIndexException(string msg, Db4objects.Db4o.Internal.ClassMetadata clazz
-			) : this(msg, null, clazz)
+		public ClassIndexException(string msg, string className) : this(msg, null, className
+			)
 		{
 		}
 
-		public ClassIndexException(System.Exception cause, Db4objects.Db4o.Internal.ClassMetadata
-			 clazz) : this(null, cause, clazz)
+		public ClassIndexException(Exception cause, string className) : this(null, cause, 
+			className)
 		{
 		}
 
-		public ClassIndexException(string msg, System.Exception cause, Db4objects.Db4o.Internal.ClassMetadata
-			 clazz) : base(EnhancedMessage(msg, clazz), cause)
+		public ClassIndexException(string msg, Exception cause, string className) : base(
+			EnhancedMessage(msg, className), cause)
 		{
-			_class = clazz;
+			_className = className;
 		}
 
-		public virtual Db4objects.Db4o.Internal.ClassMetadata Clazz()
+		public virtual string ClassName()
 		{
-			return _class;
+			return _className;
 		}
 
-		private static string EnhancedMessage(string msg, Db4objects.Db4o.Internal.ClassMetadata
-			 clazz)
+		private static string EnhancedMessage(string msg, string className)
 		{
-			string enhancedMessage = "Class index for " + clazz.GetName();
+			string enhancedMessage = "Class index for " + className;
 			if (msg != null)
 			{
 				enhancedMessage += ": " + msg;

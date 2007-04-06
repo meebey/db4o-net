@@ -1,11 +1,17 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Tests.Common.Assorted;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class ObjectMarshallerTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class ObjectMarshallerTestCase : AbstractDb4oTestCase
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase().RunSoloAndClientServer
-				();
+			new ObjectMarshallerTestCase().RunSoloAndClientServer();
 		}
 
 		public class Item
@@ -28,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
-		public class ItemMarshaller : Db4objects.Db4o.Config.IObjectMarshaller
+		public class ItemMarshaller : IObjectMarshaller
 		{
 			public bool readCalled;
 
@@ -43,92 +49,81 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			public virtual void WriteFields(object obj, byte[] slot, int offset)
 			{
 				writeCalled = true;
-				Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item item = (Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item
-					)obj;
-				Db4objects.Db4o.Foundation.PrimitiveCodec.WriteInt(slot, offset, item._one);
-				offset += Db4objects.Db4o.Foundation.PrimitiveCodec.INT_LENGTH;
-				Db4objects.Db4o.Foundation.PrimitiveCodec.WriteLong(slot, offset, item._two);
-				offset += Db4objects.Db4o.Foundation.PrimitiveCodec.LONG_LENGTH;
-				Db4objects.Db4o.Foundation.PrimitiveCodec.WriteInt(slot, offset, item._three);
+				ObjectMarshallerTestCase.Item item = (ObjectMarshallerTestCase.Item)obj;
+				PrimitiveCodec.WriteInt(slot, offset, item._one);
+				offset += PrimitiveCodec.INT_LENGTH;
+				PrimitiveCodec.WriteLong(slot, offset, item._two);
+				offset += PrimitiveCodec.LONG_LENGTH;
+				PrimitiveCodec.WriteInt(slot, offset, item._three);
 			}
 
 			public virtual void ReadFields(object obj, byte[] slot, int offset)
 			{
 				readCalled = true;
-				Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item item = (Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item
-					)obj;
-				item._one = Db4objects.Db4o.Foundation.PrimitiveCodec.ReadInt(slot, offset);
-				offset += Db4objects.Db4o.Foundation.PrimitiveCodec.INT_LENGTH;
-				item._two = Db4objects.Db4o.Foundation.PrimitiveCodec.ReadLong(slot, offset);
-				offset += Db4objects.Db4o.Foundation.PrimitiveCodec.LONG_LENGTH;
-				item._three = Db4objects.Db4o.Foundation.PrimitiveCodec.ReadInt(slot, offset);
+				ObjectMarshallerTestCase.Item item = (ObjectMarshallerTestCase.Item)obj;
+				item._one = PrimitiveCodec.ReadInt(slot, offset);
+				offset += PrimitiveCodec.INT_LENGTH;
+				item._two = PrimitiveCodec.ReadLong(slot, offset);
+				offset += PrimitiveCodec.LONG_LENGTH;
+				item._three = PrimitiveCodec.ReadInt(slot, offset);
 			}
 
 			public virtual int MarshalledFieldLength()
 			{
-				return Db4objects.Db4o.Foundation.PrimitiveCodec.INT_LENGTH * 2 + Db4objects.Db4o.Foundation.PrimitiveCodec
-					.LONG_LENGTH;
+				return PrimitiveCodec.INT_LENGTH * 2 + PrimitiveCodec.LONG_LENGTH;
 			}
 		}
 
-		public static readonly Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.ItemMarshaller
-			 marshaller = new Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.ItemMarshaller
+		public static readonly ObjectMarshallerTestCase.ItemMarshaller marshaller = new ObjectMarshallerTestCase.ItemMarshaller
 			();
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item)
-				).MarshallWith(marshaller);
+			config.ObjectClass(typeof(ObjectMarshallerTestCase.Item)).MarshallWith(marshaller
+				);
 		}
 
 		protected override void Store()
 		{
 			marshaller.Reset();
-			Store(new Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item(int.MaxValue
-				, long.MaxValue, 1));
-			Db4oUnit.Assert.IsTrue(marshaller.writeCalled);
+			Store(new ObjectMarshallerTestCase.Item(int.MaxValue, long.MaxValue, 1));
+			Assert.IsTrue(marshaller.writeCalled);
 		}
 
 		public virtual void TestReadWrite()
 		{
-			Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item item = AssertRetrieve
-				();
-			Db4oUnit.Assert.IsTrue(marshaller.readCalled);
+			ObjectMarshallerTestCase.Item item = AssertRetrieve();
+			Assert.IsTrue(marshaller.readCalled);
 			marshaller.Reset();
 			Db().Set(item);
-			Db4oUnit.Assert.IsTrue(marshaller.writeCalled);
+			Assert.IsTrue(marshaller.writeCalled);
 			Defragment();
 			AssertRetrieve();
 		}
 
 		public virtual void TestQueryByExample()
 		{
-			Db4objects.Db4o.IObjectSet os = Db().Get(new Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item
-				());
-			Db4oUnit.Assert.AreEqual(1, os.Size());
-			Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item item = (Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item
-				)os.Next();
+			IObjectSet os = Db().Get(new ObjectMarshallerTestCase.Item());
+			Assert.AreEqual(1, os.Size());
+			ObjectMarshallerTestCase.Item item = (ObjectMarshallerTestCase.Item)os.Next();
 			AssertItem(item);
 		}
 
-		private Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item AssertRetrieve
-			()
+		private ObjectMarshallerTestCase.Item AssertRetrieve()
 		{
 			marshaller.Reset();
-			Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item item = (Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item
-				)RetrieveOnlyInstance(typeof(Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item)
-				);
+			ObjectMarshallerTestCase.Item item = (ObjectMarshallerTestCase.Item)RetrieveOnlyInstance
+				(typeof(ObjectMarshallerTestCase.Item));
 			AssertItem(item);
 			return item;
 		}
 
-		private void AssertItem(Db4objects.Db4o.Tests.Common.Assorted.ObjectMarshallerTestCase.Item
-			 item)
+		private void AssertItem(ObjectMarshallerTestCase.Item item)
 		{
-			Db4oUnit.Assert.AreEqual(int.MaxValue, item._one);
-			Db4oUnit.Assert.AreEqual(long.MaxValue, item._two);
-			Db4oUnit.Assert.AreEqual(1, item._three);
+			Assert.AreEqual(int.MaxValue, item._one);
+			Assert.AreEqual(long.MaxValue, item._two);
+			Assert.AreEqual(1, item._three);
 		}
 	}
 }

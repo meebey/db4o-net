@@ -1,3 +1,5 @@
+using Sharpen.IO;
+
 namespace Db4objects.Db4o.Tests.Common.Acid
 {
 	public class CrashSimulatingWrite
@@ -15,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			this.length = length;
 		}
 
-		public virtual void Write(Sharpen.IO.RandomAccessFile raf)
+		public virtual void Write(RandomAccessFile raf)
 		{
 			raf.Seek(offset);
 			raf.Write(data, 0, length);

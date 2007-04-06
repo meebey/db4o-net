@@ -1,23 +1,21 @@
+using System;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Tests.Common.Soda.Arrays.Object;
+using Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed;
+using Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Arrays
 {
-	public class AllTests : Db4oUnit.Extensions.Db4oTestSuite
+	public class AllTests : Db4oTestSuite
 	{
-		protected override System.Type[] TestCases()
+		protected override Type[] TestCases()
 		{
-			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrStringOTestCase), 
-				typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrStringONTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTNTestCase), 
-				typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrStringUTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrStringUNTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrIntegerOTestCase), 
-				typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrIntegerONTestCase), 
-				typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrIntegerTTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrIntegerTNTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrIntegerUTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrIntegerUNTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrIntegerWTTestCase), 
-				typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrIntegerWTONTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrIntegerWUONTestCase)
-				 };
+			return new Type[] { typeof(STArrMixedTestCase), typeof(STArrStringOTestCase), typeof(STArrStringONTestCase)
+				, typeof(STArrStringTTestCase), typeof(STArrStringTNTestCase), typeof(STArrStringUTestCase)
+				, typeof(STArrStringUNTestCase), typeof(STArrIntegerOTestCase), typeof(STArrIntegerONTestCase)
+				, typeof(STArrIntegerTTestCase), typeof(STArrIntegerTNTestCase), typeof(STArrIntegerUTestCase)
+				, typeof(STArrIntegerUNTestCase), typeof(STArrIntegerWTTestCase), typeof(STArrIntegerWTONTestCase)
+				, typeof(STArrIntegerWUONTestCase) };
 		}
 	}
 }

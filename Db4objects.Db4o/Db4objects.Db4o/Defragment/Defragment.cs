@@ -1,3 +1,16 @@
+using System.Collections;
+using System.IO;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Defragment;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Classindex;
+using Db4objects.Db4o.Internal.Handlers;
+
 namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>defragments database files.</summary>
@@ -24,7 +37,7 @@ namespace Db4objects.Db4o.Defragment
 	/// process will skip all classes that have instances stored within the yap file,
 	/// but that are not available on the class path (through the current
 	/// classloader). Custom db4o configuration options are read from the
-	/// <see cref="Db4objects.Db4o.Config.IConfiguration">Configuration</see>
+	/// <see cref="IConfiguration">Configuration</see>
 	/// passed as db4oConfig.
 	/// <strong>Note:</strong> For some specific, non-default configuration settings like
 	/// UUID generation, etc., you <strong>must</strong> pass an appropriate db4o configuration,
@@ -41,12 +54,11 @@ namespace Db4objects.Db4o.Defragment
 		/// builds a defragmented version of the file in the original place.
 		/// </remarks>
 		/// <param name="origPath">The path to the file to be defragmented.</param>
-		/// <exception cref="System.IO.IOException">if the original file cannot be moved to the backup location
+		/// <exception cref="IOException">if the original file cannot be moved to the backup location
 		/// 	</exception>
 		public static void Defrag(string origPath)
 		{
-			Defrag(new Db4objects.Db4o.Defragment.DefragmentConfig(origPath), new Db4objects.Db4o.Defragment.Defragment.NullListener
-				());
+			Defrag(new DefragmentConfig(origPath), new Defragment.NullListener());
 		}
 
 		/// <summary>
@@ -59,12 +71,11 @@ namespace Db4objects.Db4o.Defragment
 		/// </remarks>
 		/// <param name="origPath">The path to the file to be defragmented.</param>
 		/// <param name="backupPath">The path to the backup file to be created.</param>
-		/// <exception cref="System.IO.IOException">if the original file cannot be moved to the backup location
+		/// <exception cref="IOException">if the original file cannot be moved to the backup location
 		/// 	</exception>
 		public static void Defrag(string origPath, string backupPath)
 		{
-			Defrag(new Db4objects.Db4o.Defragment.DefragmentConfig(origPath, backupPath), new 
-				Db4objects.Db4o.Defragment.Defragment.NullListener());
+			Defrag(new DefragmentConfig(origPath, backupPath), new Defragment.NullListener());
 		}
 
 		/// <summary>
@@ -78,11 +89,11 @@ namespace Db4objects.Db4o.Defragment
 		/// place.
 		/// </remarks>
 		/// <param name="config">The configuration for this defragmentation run.</param>
-		/// <exception cref="System.IO.IOException">if the original file cannot be moved to the backup location
+		/// <exception cref="IOException">if the original file cannot be moved to the backup location
 		/// 	</exception>
-		public static void Defrag(Db4objects.Db4o.Defragment.DefragmentConfig config)
+		public static void Defrag(DefragmentConfig config)
 		{
-			Defrag(config, new Db4objects.Db4o.Defragment.Defragment.NullListener());
+			Defrag(config, new Defragment.NullListener());
 		}
 
 		/// <summary>
@@ -100,17 +111,16 @@ namespace Db4objects.Db4o.Defragment
 		/// A listener for status notifications during the defragmentation
 		/// process.
 		/// </param>
-		/// <exception cref="System.IO.IOException">if the original file cannot be moved to the backup location
+		/// <exception cref="IOException">if the original file cannot be moved to the backup location
 		/// 	</exception>
-		public static void Defrag(Db4objects.Db4o.Defragment.DefragmentConfig config, Db4objects.Db4o.Defragment.IDefragmentListener
-			 listener)
+		public static void Defrag(DefragmentConfig config, IDefragmentListener listener)
 		{
 			Sharpen.IO.File backupFile = new Sharpen.IO.File(config.BackupPath());
 			if (backupFile.Exists())
 			{
 				if (!config.ForceBackupDelete())
 				{
-					throw new System.IO.IOException("Could not use '" + config.BackupPath() + "' as backup path - file exists."
+					throw new IOException("Could not use '" + config.BackupPath() + "' as backup path - file exists."
 						);
 				}
 				backupFile.Delete();
@@ -120,8 +130,7 @@ namespace Db4objects.Db4o.Defragment
 			{
 				UpgradeFile(config);
 			}
-			Db4objects.Db4o.Defragment.DefragContextImpl context = new Db4objects.Db4o.Defragment.DefragContextImpl
-				(config, listener);
+			DefragContextImpl context = new DefragContextImpl(config, listener);
 			int newClassCollectionID = 0;
 			int targetIdentityID = 0;
 			int targetUuidIndexID = 0;
@@ -132,12 +141,11 @@ namespace Db4objects.Db4o.Defragment
 				DefragUnindexed(context);
 				newClassCollectionID = context.MappedID(context.SourceClassCollectionID());
 				context.TargetClassCollectionID(newClassCollectionID);
-				int sourceIdentityID = context.DatabaseIdentityID(Db4objects.Db4o.Defragment.DefragContextImpl
-					.SOURCEDB);
+				int sourceIdentityID = context.DatabaseIdentityID(DefragContextImpl.SOURCEDB);
 				targetIdentityID = context.MappedID(sourceIdentityID, 0);
 				targetUuidIndexID = context.MappedID(context.SourceUuidIndexID(), 0);
 			}
-			catch (Db4objects.Db4o.CorruptionException exc)
+			catch (CorruptionException exc)
 			{
 				Sharpen.Runtime.PrintStackTrace(exc);
 			}
@@ -152,57 +160,51 @@ namespace Db4objects.Db4o.Defragment
 			}
 			else
 			{
-				listener.NotifyDefragmentInfo(new Db4objects.Db4o.Defragment.DefragmentInfo("No database identity found in original file."
+				listener.NotifyDefragmentInfo(new DefragmentInfo("No database identity found in original file."
 					));
 			}
 		}
 
-		private static void UpgradeFile(Db4objects.Db4o.Defragment.DefragmentConfig config
-			)
+		private static void UpgradeFile(DefragmentConfig config)
 		{
-			Db4objects.Db4o.Foundation.IO.File4.Copy(config.BackupPath(), config.TempPath());
-			Db4objects.Db4o.Config.IConfiguration db4oConfig = (Db4objects.Db4o.Config.IConfiguration
-				)((Db4objects.Db4o.Internal.Config4Impl)config.Db4oConfig()).DeepClone(null);
+			File4.Copy(config.BackupPath(), config.TempPath());
+			IConfiguration db4oConfig = (IConfiguration)((Config4Impl)config.Db4oConfig()).DeepClone
+				(null);
 			db4oConfig.AllowVersionUpdates(true);
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(db4oConfig
-				, config.TempPath());
+			IObjectContainer db = Db4oFactory.OpenFile(db4oConfig, config.TempPath());
 			db.Close();
 		}
 
-		private static void DefragUnindexed(Db4objects.Db4o.Defragment.DefragContextImpl 
-			context)
+		private static void DefragUnindexed(DefragContextImpl context)
 		{
-			System.Collections.IEnumerator unindexedIDs = context.UnindexedIDs();
+			IEnumerator unindexedIDs = context.UnindexedIDs();
 			while (unindexedIDs.MoveNext())
 			{
 				int origID = ((int)unindexedIDs.Current);
-				Db4objects.Db4o.Internal.ReaderPair.ProcessCopy(context, origID, new _AnonymousInnerClass168
-					(), true);
+				ReaderPair.ProcessCopy(context, origID, new _AnonymousInnerClass168(), true);
 			}
 		}
 
-		private sealed class _AnonymousInnerClass168 : Db4objects.Db4o.Internal.ISlotCopyHandler
+		private sealed class _AnonymousInnerClass168 : ISlotCopyHandler
 		{
 			public _AnonymousInnerClass168()
 			{
 			}
 
-			public void ProcessCopy(Db4objects.Db4o.Internal.ReaderPair readers)
+			public void ProcessCopy(ReaderPair readers)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata.DefragObject(readers);
+				ClassMetadata.DefragObject(readers);
 			}
 		}
 
 		private static void SetIdentity(string targetFile, int targetIdentityID, int targetUuidIndexID
 			, int blockSize)
 		{
-			Db4objects.Db4o.Internal.LocalObjectContainer targetDB = (Db4objects.Db4o.Internal.LocalObjectContainer
-				)Db4objects.Db4o.Db4oFactory.OpenFile(Db4objects.Db4o.Defragment.DefragmentConfig
+			LocalObjectContainer targetDB = (LocalObjectContainer)Db4oFactory.OpenFile(DefragmentConfig
 				.VanillaDb4oConfig(blockSize), targetFile);
 			try
 			{
-				Db4objects.Db4o.Ext.Db4oDatabase identity = (Db4objects.Db4o.Ext.Db4oDatabase)targetDB
-					.GetByID(targetIdentityID);
+				Db4oDatabase identity = (Db4oDatabase)targetDB.GetByID(targetIdentityID);
 				targetDB.SetIdentity(identity);
 				targetDB.SystemData().UuidIndexId(targetUuidIndexID);
 			}
@@ -212,29 +214,25 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private static void FirstPass(Db4objects.Db4o.Defragment.DefragContextImpl context
-			, Db4objects.Db4o.Defragment.DefragmentConfig config)
+		private static void FirstPass(DefragContextImpl context, DefragmentConfig config)
 		{
-			Pass(context, config, new Db4objects.Db4o.Defragment.FirstPassCommand());
+			Pass(context, config, new FirstPassCommand());
 		}
 
-		private static void SecondPass(Db4objects.Db4o.Defragment.DefragContextImpl context
-			, Db4objects.Db4o.Defragment.DefragmentConfig config)
+		private static void SecondPass(DefragContextImpl context, DefragmentConfig config
+			)
 		{
-			Pass(context, config, new Db4objects.Db4o.Defragment.SecondPassCommand(config.ObjectCommitFrequency
-				()));
+			Pass(context, config, new SecondPassCommand(config.ObjectCommitFrequency()));
 		}
 
-		private static void Pass(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Defragment.DefragmentConfig
-			 config, Db4objects.Db4o.Defragment.IPassCommand command)
+		private static void Pass(DefragContextImpl context, DefragmentConfig config, IPassCommand
+			 command)
 		{
 			command.ProcessClassCollection(context);
-			Db4objects.Db4o.Ext.IStoredClass[] classes = context.StoredClasses(Db4objects.Db4o.Defragment.DefragContextImpl
-				.SOURCEDB);
+			IStoredClass[] classes = context.StoredClasses(DefragContextImpl.SOURCEDB);
 			for (int classIdx = 0; classIdx < classes.Length; classIdx++)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yapClass = (Db4objects.Db4o.Internal.ClassMetadata
-					)classes[classIdx];
+				ClassMetadata yapClass = (ClassMetadata)classes[classIdx];
 				if (!config.StoredClassFilter().Accept(yapClass))
 				{
 					continue;
@@ -246,7 +244,7 @@ namespace Db4objects.Db4o.Defragment
 					context.TargetCommit();
 				}
 			}
-			Db4objects.Db4o.Internal.Btree.BTree uuidIndex = context.SourceUuidIndex();
+			BTree uuidIndex = context.SourceUuidIndex();
 			if (uuidIndex != null)
 			{
 				command.ProcessBTree(context, uuidIndex);
@@ -255,9 +253,8 @@ namespace Db4objects.Db4o.Defragment
 			context.TargetCommit();
 		}
 
-		private static void ProcessYapClass(Db4objects.Db4o.Defragment.DefragContextImpl 
-			context, Db4objects.Db4o.Internal.ClassMetadata curClass, Db4objects.Db4o.Defragment.IPassCommand
-			 command)
+		private static void ProcessYapClass(DefragContextImpl context, ClassMetadata curClass
+			, IPassCommand command)
 		{
 			ProcessClassIndex(context, curClass, command);
 			if (!ParentHasIndex(curClass))
@@ -267,10 +264,9 @@ namespace Db4objects.Db4o.Defragment
 			ProcessYapClassAndFieldIndices(context, curClass, command);
 		}
 
-		private static bool ParentHasIndex(Db4objects.Db4o.Internal.ClassMetadata curClass
-			)
+		private static bool ParentHasIndex(ClassMetadata curClass)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata parentClass = curClass.i_ancestor;
+			ClassMetadata parentClass = curClass.i_ancestor;
 			while (parentClass != null)
 			{
 				if (parentClass.HasIndex())
@@ -282,19 +278,18 @@ namespace Db4objects.Db4o.Defragment
 			return false;
 		}
 
-		private static void ProcessObjectsForYapClass(Db4objects.Db4o.Defragment.DefragContextImpl
-			 context, Db4objects.Db4o.Internal.ClassMetadata curClass, Db4objects.Db4o.Defragment.IPassCommand
-			 command)
+		private static void ProcessObjectsForYapClass(DefragContextImpl context, ClassMetadata
+			 curClass, IPassCommand command)
 		{
 			bool withStringIndex = WithFieldIndex(curClass);
 			context.TraverseAll(curClass, new _AnonymousInnerClass261(command, context, curClass
 				, withStringIndex));
 		}
 
-		private sealed class _AnonymousInnerClass261 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass261 : IVisitor4
 		{
-			public _AnonymousInnerClass261(Db4objects.Db4o.Defragment.IPassCommand command, Db4objects.Db4o.Defragment.DefragContextImpl
-				 context, Db4objects.Db4o.Internal.ClassMetadata curClass, bool withStringIndex)
+			public _AnonymousInnerClass261(IPassCommand command, DefragContextImpl context, ClassMetadata
+				 curClass, bool withStringIndex)
 			{
 				this.command = command;
 				this.context = context;
@@ -309,34 +304,32 @@ namespace Db4objects.Db4o.Defragment
 				{
 					command.ProcessObjectSlot(context, curClass, id, withStringIndex);
 				}
-				catch (Db4objects.Db4o.CorruptionException e)
+				catch (CorruptionException e)
 				{
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
-				catch (System.IO.IOException e)
+				catch (IOException e)
 				{
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
 			}
 
-			private readonly Db4objects.Db4o.Defragment.IPassCommand command;
+			private readonly IPassCommand command;
 
-			private readonly Db4objects.Db4o.Defragment.DefragContextImpl context;
+			private readonly DefragContextImpl context;
 
-			private readonly Db4objects.Db4o.Internal.ClassMetadata curClass;
+			private readonly ClassMetadata curClass;
 
 			private readonly bool withStringIndex;
 		}
 
-		private static bool WithFieldIndex(Db4objects.Db4o.Internal.ClassMetadata clazz)
+		private static bool WithFieldIndex(ClassMetadata clazz)
 		{
-			System.Collections.IEnumerator fieldIter = clazz.Fields();
+			IEnumerator fieldIter = clazz.Fields();
 			while (fieldIter.MoveNext())
 			{
-				Db4objects.Db4o.Internal.FieldMetadata curField = (Db4objects.Db4o.Internal.FieldMetadata
-					)fieldIter.Current;
-				if (curField.HasIndex() && (curField.GetHandler() is Db4objects.Db4o.Internal.Handlers.StringHandler
-					))
+				FieldMetadata curField = (FieldMetadata)fieldIter.Current;
+				if (curField.HasIndex() && (curField.GetHandler() is StringHandler))
 				{
 					return true;
 				}
@@ -344,9 +337,8 @@ namespace Db4objects.Db4o.Defragment
 			return false;
 		}
 
-		private static void ProcessYapClassAndFieldIndices(Db4objects.Db4o.Defragment.DefragContextImpl
-			 context, Db4objects.Db4o.Internal.ClassMetadata curClass, Db4objects.Db4o.Defragment.IPassCommand
-			 command)
+		private static void ProcessYapClassAndFieldIndices(DefragContextImpl context, ClassMetadata
+			 curClass, IPassCommand command)
 		{
 			int sourceClassIndexID = 0;
 			int targetClassIndexID = 0;
@@ -358,23 +350,20 @@ namespace Db4objects.Db4o.Defragment
 			command.ProcessClass(context, curClass, curClass.GetID(), targetClassIndexID);
 		}
 
-		private static void ProcessClassIndex(Db4objects.Db4o.Defragment.DefragContextImpl
-			 context, Db4objects.Db4o.Internal.ClassMetadata curClass, Db4objects.Db4o.Defragment.IPassCommand
-			 command)
+		private static void ProcessClassIndex(DefragContextImpl context, ClassMetadata curClass
+			, IPassCommand command)
 		{
 			if (curClass.HasIndex())
 			{
-				Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy indexStrategy = (Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy
-					)curClass.Index();
-				Db4objects.Db4o.Internal.Btree.BTree btree = indexStrategy.Btree();
+				BTreeClassIndexStrategy indexStrategy = (BTreeClassIndexStrategy)curClass.Index();
+				BTree btree = indexStrategy.Btree();
 				command.ProcessBTree(context, btree);
 			}
 		}
 
-		internal class NullListener : Db4objects.Db4o.Defragment.IDefragmentListener
+		internal class NullListener : IDefragmentListener
 		{
-			public virtual void NotifyDefragmentInfo(Db4objects.Db4o.Defragment.DefragmentInfo
-				 info)
+			public virtual void NotifyDefragmentInfo(DefragmentInfo info)
 			{
 			}
 		}

@@ -1,3 +1,5 @@
+using Db4oUnit;
+
 namespace Db4oUnit
 {
 	public class ArrayAssert
@@ -8,7 +10,7 @@ namespace Db4oUnit
 			{
 				return;
 			}
-			Db4oUnit.Assert.Fail("Expecting '" + expected + "'.");
+			Assert.Fail("Expecting '" + expected + "'.");
 		}
 
 		public static void AreEqual(object[] expected, object[] actual)
@@ -19,12 +21,12 @@ namespace Db4oUnit
 			}
 			if (expected == null || actual == null)
 			{
-				Db4oUnit.Assert.AreSame(expected, actual);
+				Assert.AreSame(expected, actual);
 			}
-			Db4oUnit.Assert.AreEqual(expected.Length, actual.Length);
+			Assert.AreEqual(expected.Length, actual.Length);
 			for (int i = 0; i < expected.Length; i++)
 			{
-				Db4oUnit.Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
+				Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
 			}
 		}
 
@@ -41,18 +43,18 @@ namespace Db4oUnit
 			}
 			if (expected == null || actual == null)
 			{
-				Db4oUnit.Assert.AreSame(expected, actual);
+				Assert.AreSame(expected, actual);
 			}
-			Db4oUnit.Assert.AreEqual(expected.Length, actual.Length);
+			Assert.AreEqual(expected.Length, actual.Length);
 			for (int i = 0; i < expected.Length; i++)
 			{
-				Db4oUnit.Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
+				Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
 			}
 		}
 
 		public static void AreNotEqual(byte[] expected, byte[] actual)
 		{
-			Db4oUnit.Assert.AreNotSame(expected, actual);
+			Assert.AreNotSame(expected, actual);
 			for (int i = 0; i < expected.Length; i++)
 			{
 				if (expected[i] != actual[i])
@@ -60,7 +62,7 @@ namespace Db4oUnit
 					return;
 				}
 			}
-			Db4oUnit.Assert.IsTrue(false);
+			Assert.IsTrue(false);
 		}
 
 		public static void AreEqual(int[] expected, int[] actual)
@@ -71,12 +73,12 @@ namespace Db4oUnit
 			}
 			if (expected == null || actual == null)
 			{
-				Db4oUnit.Assert.AreSame(expected, actual);
+				Assert.AreSame(expected, actual);
 			}
-			Db4oUnit.Assert.AreEqual(expected.Length, actual.Length);
+			Assert.AreEqual(expected.Length, actual.Length);
 			for (int i = 0; i < expected.Length; i++)
 			{
-				Db4oUnit.Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
+				Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
 			}
 		}
 
@@ -88,12 +90,12 @@ namespace Db4oUnit
 			}
 			if (expected == null || actual == null)
 			{
-				Db4oUnit.Assert.AreSame(expected, actual);
+				Assert.AreSame(expected, actual);
 			}
-			Db4oUnit.Assert.AreEqual(expected.Length, actual.Length);
+			Assert.AreEqual(expected.Length, actual.Length);
 			for (int i = 0; i < expected.Length; i++)
 			{
-				Db4oUnit.Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
+				Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
 			}
 		}
 

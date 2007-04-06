@@ -1,19 +1,24 @@
+using System;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public class IntHandler : Db4objects.Db4o.Internal.Handlers.PrimitiveHandler
+	public class IntHandler : PrimitiveHandler
 	{
 		private static readonly int i_primitive = 0;
 
-		public IntHandler(Db4objects.Db4o.Internal.ObjectContainerBase stream) : base(stream
-			)
+		public IntHandler(ObjectContainerBase stream) : base(stream)
 		{
 		}
 
-		public override object Coerce(Db4objects.Db4o.Reflect.IReflectClass claxx, object
-			 obj)
+		public override object Coerce(IReflectClass claxx, object obj)
 		{
-			return Db4objects.Db4o.Foundation.Coercion4.ToInt(obj);
+			return Coercion4.ToInt(obj);
 		}
 
 		public override object DefaultValue()
@@ -26,14 +31,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return 1;
 		}
 
-		protected override System.Type PrimitiveJavaClass()
+		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(int);
 		}
 
 		public override int LinkLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			return Const4.INT_LENGTH;
 		}
 
 		public override object PrimitiveNull()
@@ -41,8 +46,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_primitive;
 		}
 
-		public override object Read(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf
-			, Db4objects.Db4o.Internal.StatefulBuffer writer, bool redirect)
+		public override object Read(MarshallerFamily mf, StatefulBuffer writer, bool redirect
+			)
 		{
 			return mf._primitive.ReadInteger(writer);
 		}
@@ -114,8 +119,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return obj is int && Val(obj) < i_compareTo;
 		}
 
-		public override void DefragIndexEntry(Db4objects.Db4o.Internal.ReaderPair readers
-			)
+		public override void DefragIndexEntry(ReaderPair readers)
 		{
 			readers.IncrementIntSize();
 		}

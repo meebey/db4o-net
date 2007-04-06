@@ -1,29 +1,31 @@
+using System.Collections;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Fieldindex;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Fieldindex
 {
 	/// <exclude></exclude>
-	public class IndexedLeaf : Db4objects.Db4o.Internal.Fieldindex.IndexedNodeBase, Db4objects.Db4o.Internal.Fieldindex.IIndexedNodeWithRange
+	public class IndexedLeaf : IndexedNodeBase, IIndexedNodeWithRange
 	{
-		private readonly Db4objects.Db4o.Internal.Btree.IBTreeRange _range;
+		private readonly IBTreeRange _range;
 
-		public IndexedLeaf(Db4objects.Db4o.Internal.Query.Processor.QConObject qcon) : base
-			(qcon)
+		public IndexedLeaf(QConObject qcon) : base(qcon)
 		{
 			_range = Search();
 		}
 
-		private Db4objects.Db4o.Internal.Btree.IBTreeRange Search()
+		private IBTreeRange Search()
 		{
-			Db4objects.Db4o.Internal.Btree.IBTreeRange range = Search(Constraint().GetObject(
-				));
-			Db4objects.Db4o.Internal.Fieldindex.QEBitmap bitmap = Db4objects.Db4o.Internal.Fieldindex.QEBitmap
-				.ForQE(Constraint().Evaluator());
+			IBTreeRange range = Search(Constraint().GetObject());
+			QEBitmap bitmap = QEBitmap.ForQE(Constraint().Evaluator());
 			if (bitmap.TakeGreater())
 			{
 				if (bitmap.TakeEqual())
 				{
 					return range.ExtendToLast();
 				}
-				Db4objects.Db4o.Internal.Btree.IBTreeRange greater = range.Greater();
+				IBTreeRange greater = range.Greater();
 				if (bitmap.TakeSmaller())
 				{
 					return greater.Union(range.Smaller());
@@ -46,12 +48,12 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 			return _range.Size();
 		}
 
-		public override System.Collections.IEnumerator GetEnumerator()
+		public override IEnumerator GetEnumerator()
 		{
 			return _range.Keys();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.IBTreeRange GetRange()
+		public virtual IBTreeRange GetRange()
 		{
 			return _range;
 		}

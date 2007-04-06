@@ -1,6 +1,9 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 {
-	public class STDoubleWUTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STDoubleWUTestCase : SodaBaseTestCase
 	{
 		public object i_double;
 
@@ -25,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 
 		public virtual void TestEquals()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STDoubleWUTestCase
 				(0));
 			q.Descend("i_double").Constrain(System.Convert.ToDouble(0));
@@ -34,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 
 		public virtual void TestGreater()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STDoubleWUTestCase
 				(1));
 			q.Descend("i_double").Constraints().Greater();
@@ -43,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 
 		public virtual void TestSmaller()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STDoubleWUTestCase
 				(1));
 			q.Descend("i_double").Constraints().Smaller();
@@ -52,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 
 		public virtual void TestGreaterOrEqual()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(_array[2]);
 			q.Descend("i_double").Constraints().Greater().Equal();
 			Expect(q, new int[] { 2, 3, 4 });
@@ -60,10 +63,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 
 		public virtual void TestGreaterAndNot()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STDoubleWUTestCase
 				());
-			Db4objects.Db4o.Query.IQuery val = q.Descend("i_double");
+			IQuery val = q.Descend("i_double");
 			val.Constrain(System.Convert.ToDouble(0)).Greater();
 			val.Constrain(99.99).Not();
 			Expect(q, new int[] { 2, 4 });

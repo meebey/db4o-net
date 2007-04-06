@@ -1,25 +1,27 @@
+using System;
+using Db4objects.Db4o.Reflect;
+using Sharpen.Lang.Reflect;
+
 namespace Db4objects.Db4o.Reflect.Core
 {
 	/// <exclude></exclude>
-	public abstract class AbstractReflectArray : Db4objects.Db4o.Reflect.IReflectArray
+	public abstract class AbstractReflectArray : IReflectArray
 	{
-		protected readonly Db4objects.Db4o.Reflect.IReflector _reflector;
+		protected readonly IReflector _reflector;
 
-		public AbstractReflectArray(Db4objects.Db4o.Reflect.IReflector reflector)
+		public AbstractReflectArray(IReflector reflector)
 		{
 			_reflector = reflector;
 		}
 
-		public abstract object NewInstance(Db4objects.Db4o.Reflect.IReflectClass componentType
-			, int[] dimensions);
+		public abstract object NewInstance(IReflectClass componentType, int[] dimensions);
 
-		public abstract object NewInstance(Db4objects.Db4o.Reflect.IReflectClass componentType
-			, int length);
+		public abstract object NewInstance(IReflectClass componentType, int length);
 
 		public virtual int[] Dimensions(object arr)
 		{
 			int count = 0;
-			Db4objects.Db4o.Reflect.IReflectClass claxx = _reflector.ForObject(arr);
+			IReflectClass claxx = _reflector.ForObject(arr);
 			while (claxx.IsArray())
 			{
 				count++;
@@ -33,7 +35,7 @@ namespace Db4objects.Db4o.Reflect.Core
 					dim[i] = GetLength(arr);
 					arr = Get(arr, 0);
 				}
-				catch (System.Exception)
+				catch (Exception)
 				{
 					return dim;
 				}
@@ -67,8 +69,7 @@ namespace Db4objects.Db4o.Reflect.Core
 			return Sharpen.Runtime.GetArrayValue(onArray, index);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass GetComponentType(Db4objects.Db4o.Reflect.IReflectClass
-			 a_class)
+		public virtual IReflectClass GetComponentType(IReflectClass a_class)
 		{
 			while (a_class.IsArray())
 			{
@@ -88,13 +89,13 @@ namespace Db4objects.Db4o.Reflect.Core
 			{
 				return Get(onArray, index);
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
 				return null;
 			}
 		}
 
-		public virtual bool IsNDimensional(Db4objects.Db4o.Reflect.IReflectClass a_class)
+		public virtual bool IsNDimensional(IReflectClass a_class)
 		{
 			return a_class.GetComponentType().IsArray();
 		}
@@ -107,7 +108,7 @@ namespace Db4objects.Db4o.Reflect.Core
 				{
 					Sharpen.Runtime.SetArrayValue(onArray, index, element);
 				}
-				catch (System.Exception)
+				catch (Exception)
 				{
 				}
 			}

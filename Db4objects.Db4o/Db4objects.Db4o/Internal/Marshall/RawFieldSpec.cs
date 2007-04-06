@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	public class RawFieldSpec
@@ -20,8 +22,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			_name = name;
 			_handlerID = handlerID;
-			Db4objects.Db4o.Foundation.BitMap4 bitmap = new Db4objects.Db4o.Foundation.BitMap4
-				(attribs);
+			BitMap4 bitmap = new BitMap4(attribs);
 			_isPrimitive = bitmap.IsTrue(0);
 			_isArray = bitmap.IsTrue(1);
 			_isNArray = bitmap.IsTrue(2);

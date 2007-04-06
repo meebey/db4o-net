@@ -1,7 +1,9 @@
+using Db4objects.Db4o.Tests.Common.Fieldindex;
+
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
 	/// <exclude></exclude>
-	public class NonIndexedFieldIndexItem : Db4objects.Db4o.Tests.Common.Fieldindex.IHasFoo
+	public class NonIndexedFieldIndexItem : IHasFoo
 	{
 		public int foo;
 

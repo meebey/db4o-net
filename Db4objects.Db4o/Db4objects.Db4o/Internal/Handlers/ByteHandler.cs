@@ -1,20 +1,24 @@
+using System;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal.Handlers
 {
-	public sealed class ByteHandler : Db4objects.Db4o.Internal.Handlers.PrimitiveHandler
+	public sealed class ByteHandler : PrimitiveHandler
 	{
-		internal const int LENGTH = 1 + Db4objects.Db4o.Internal.Const4.ADDED_LENGTH;
+		internal const int LENGTH = 1 + Const4.ADDED_LENGTH;
 
 		private static readonly byte i_primitive = (byte)0;
 
-		public ByteHandler(Db4objects.Db4o.Internal.ObjectContainerBase stream) : base(stream
-			)
+		public ByteHandler(ObjectContainerBase stream) : base(stream)
 		{
 		}
 
-		public override object Coerce(Db4objects.Db4o.Reflect.IReflectClass claxx, object
-			 obj)
+		public override object Coerce(IReflectClass claxx, object obj)
 		{
-			return Db4objects.Db4o.Foundation.Coercion4.ToSByte(obj);
+			return Coercion4.ToSByte(obj);
 		}
 
 		public override int GetID()
@@ -32,7 +36,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return LENGTH;
 		}
 
-		protected override System.Type PrimitiveJavaClass()
+		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(byte);
 		}

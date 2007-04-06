@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Defragment;
+
 namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>Listener for defragmentation process messages.</summary>
@@ -15,6 +17,6 @@ namespace Db4objects.Db4o.Defragment
 		/// file layout anomalies during the defragmentation process.
 		/// </remarks>
 		/// <param name="info">The message from the defragmentation process.</param>
-		void NotifyDefragmentInfo(Db4objects.Db4o.Defragment.DefragmentInfo info);
+		void NotifyDefragmentInfo(DefragmentInfo info);
 	}
 }

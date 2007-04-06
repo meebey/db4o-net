@@ -1,11 +1,13 @@
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	public class QEEqual : Db4objects.Db4o.Internal.Query.Processor.QEAbstract
+	public class QEEqual : QEAbstract
 	{
 		public override void IndexBitMap(bool[] bits)
 		{
-			bits[Db4objects.Db4o.Internal.Query.Processor.QE.EQUAL] = true;
+			bits[QE.EQUAL] = true;
 		}
 	}
 }

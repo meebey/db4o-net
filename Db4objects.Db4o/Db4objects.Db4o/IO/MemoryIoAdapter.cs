@@ -1,3 +1,7 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.IO;
+using Sharpen;
+
 namespace Db4objects.Db4o.IO
 {
 	/// <summary>IoAdapter for in-memory operation.</summary>
@@ -25,7 +29,7 @@ namespace Db4objects.Db4o.IO
 	/// 	</see>
 	/// and pass an empty byte array.
 	/// </remarks>
-	public class MemoryIoAdapter : Db4objects.Db4o.IO.IoAdapter
+	public class MemoryIoAdapter : IoAdapter
 	{
 		private byte[] _bytes;
 
@@ -33,13 +37,13 @@ namespace Db4objects.Db4o.IO
 
 		private int _seekPos;
 
-		private Db4objects.Db4o.Foundation.Hashtable4 _memoryFiles;
+		private Hashtable4 _memoryFiles;
 
 		private int _growBy;
 
 		public MemoryIoAdapter()
 		{
-			_memoryFiles = new Db4objects.Db4o.Foundation.Hashtable4();
+			_memoryFiles = new Hashtable4();
 			_growBy = 10000;
 		}
 
@@ -143,8 +147,7 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>for internal processing only.</summary>
 		/// <remarks>for internal processing only.</remarks>
-		public override Db4objects.Db4o.IO.IoAdapter Open(string path, bool lockFile, long
-			 initialLength)
+		public override IoAdapter Open(string path, bool lockFile, long initialLength)
 		{
 			Db4objects.Db4o.IO.MemoryIoAdapter mia = (Db4objects.Db4o.IO.MemoryIoAdapter)_memoryFiles
 				.Get(path);

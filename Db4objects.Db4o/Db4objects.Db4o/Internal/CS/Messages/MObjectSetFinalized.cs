@@ -1,7 +1,9 @@
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MObjectSetFinalized : Db4objects.Db4o.Internal.CS.Messages.MsgD, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public class MObjectSetFinalized : MsgD, IServerSideMessage
 	{
 		public virtual bool ProcessAtServer()
 		{

@@ -1,6 +1,9 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 {
-	public class STLongTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STLongTestCase : SodaBaseTestCase
 	{
 		public long i_long;
 
@@ -24,17 +27,16 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestEquals()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STLongTestCase(long.MinValue
 				));
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.Expect(q, new object[] { new 
-				Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STLongTestCase(long.MinValue) }
-				);
+			SodaTestUtil.Expect(q, new object[] { new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STLongTestCase
+				(long.MinValue) });
 		}
 
 		public virtual void TestGreater()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STLongTestCase(-
 				1));
 			q.Descend("i_long").Constraints().Greater();
@@ -43,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestSmaller()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STLongTestCase(1
 				));
 			q.Descend("i_long").Constraints().Smaller();
@@ -52,10 +54,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestBetween()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STLongTestCase()
 				);
-			Db4objects.Db4o.Query.IQuery sub = q.Descend("i_long");
+			IQuery sub = q.Descend("i_long");
 			sub.Constrain(System.Convert.ToInt64(-3)).Greater();
 			sub.Constrain(System.Convert.ToInt64(3)).Smaller();
 			Expect(q, new int[] { 1, 2 });
@@ -63,10 +65,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestAnd()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STLongTestCase()
 				);
-			Db4objects.Db4o.Query.IQuery sub = q.Descend("i_long");
+			IQuery sub = q.Descend("i_long");
 			sub.Constrain(System.Convert.ToInt64(-3)).Greater().And(sub.Constrain(System.Convert.ToInt64
 				(3)).Smaller());
 			Expect(q, new int[] { 1, 2 });
@@ -74,10 +76,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestOr()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STLongTestCase()
 				);
-			Db4objects.Db4o.Query.IQuery sub = q.Descend("i_long");
+			IQuery sub = q.Descend("i_long");
 			sub.Constrain(System.Convert.ToInt64(3)).Greater().Or(sub.Constrain(System.Convert.ToInt64
 				(-3)).Smaller());
 			Expect(q, new int[] { 0, 3 });

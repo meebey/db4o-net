@@ -1,21 +1,25 @@
+using System;
+using System.Reflection;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Nativequery.Optimization
 {
 	public class ReflectUtil
 	{
-		public static System.Reflection.MethodInfo MethodFor(System.Type clazz, string methodName
-			, System.Type[] paramTypes)
+		public static MethodInfo MethodFor(Type clazz, string methodName, Type[] paramTypes
+			)
 		{
-			System.Type curclazz = clazz;
+			Type curclazz = clazz;
 			while (curclazz != null)
 			{
 				try
 				{
-					System.Reflection.MethodInfo method = Sharpen.Runtime.GetDeclaredMethod(curclazz, 
-						methodName, paramTypes);
-					Db4objects.Db4o.Internal.Platform4.SetAccessible(method);
+					MethodInfo method = Sharpen.Runtime.GetDeclaredMethod(curclazz, methodName, paramTypes
+						);
+					Platform4.SetAccessible(method);
 					return method;
 				}
-				catch (System.Exception)
+				catch (Exception)
 				{
 				}
 				curclazz = curclazz.BaseType;
@@ -23,20 +27,18 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 			return null;
 		}
 
-		public static System.Reflection.FieldInfo FieldFor(System.Type clazz, string name
-			)
+		public static FieldInfo FieldFor(Type clazz, string name)
 		{
-			System.Type curclazz = clazz;
+			Type curclazz = clazz;
 			while (curclazz != null)
 			{
 				try
 				{
-					System.Reflection.FieldInfo field = Sharpen.Runtime.GetDeclaredField(curclazz, name
-						);
-					Db4objects.Db4o.Internal.Platform4.SetAccessible(field);
+					FieldInfo field = Sharpen.Runtime.GetDeclaredField(curclazz, name);
+					Platform4.SetAccessible(field);
 					return field;
 				}
-				catch (System.Exception)
+				catch (Exception)
 				{
 				}
 				curclazz = curclazz.BaseType;

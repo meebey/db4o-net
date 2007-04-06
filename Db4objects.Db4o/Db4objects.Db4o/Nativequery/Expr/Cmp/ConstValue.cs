@@ -1,6 +1,8 @@
+using Db4objects.Db4o.Nativequery.Expr.Cmp;
+
 namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 {
-	public class ConstValue : Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand
+	public class ConstValue : IComparisonOperand
 	{
 		private object _value;
 
@@ -59,8 +61,7 @@ namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 			return _value.GetHashCode();
 		}
 
-		public virtual void Accept(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandVisitor
-			 visitor)
+		public virtual void Accept(IComparisonOperandVisitor visitor)
 		{
 			visitor.Visit(this);
 		}

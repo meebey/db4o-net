@@ -1,6 +1,15 @@
+using System.Collections;
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda;
+using Db4objects.Db4o.Tests.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda
 {
-	public class CollectionIndexedJoinTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class CollectionIndexedJoinTestCase : AbstractDb4oTestCase
 	{
 		private static readonly string COLLECTIONFIELDNAME = "_data";
 
@@ -10,13 +19,12 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 
 		public class DataHolder
 		{
-			public System.Collections.ArrayList _data;
+			public ArrayList _data;
 
 			public DataHolder(int id)
 			{
-				_data = new System.Collections.ArrayList();
-				_data.Add(new Db4objects.Db4o.Tests.Common.Soda.CollectionIndexedJoinTestCase.Data
-					(id));
+				_data = new ArrayList();
+				_data.Add(new CollectionIndexedJoinTestCase.Data(id));
 			}
 		}
 
@@ -30,18 +38,17 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			}
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Soda.CollectionIndexedJoinTestCase.Data)
-				).ObjectField(IDFIELDNAME).Indexed(true);
+			config.ObjectClass(typeof(CollectionIndexedJoinTestCase.Data)).ObjectField(IDFIELDNAME
+				).Indexed(true);
 		}
 
 		protected override void Store()
 		{
 			for (int i = 0; i < NUMENTRIES; i++)
 			{
-				Store(new Db4objects.Db4o.Tests.Common.Soda.CollectionIndexedJoinTestCase.DataHolder
-					(i));
+				Store(new CollectionIndexedJoinTestCase.DataHolder(i));
 			}
 		}
 
@@ -52,8 +59,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 
 		private void AssertIndexedOr(int[] values, int expectedResultCount)
 		{
-			Db4objects.Db4o.Tests.Common.Soda.CollectionIndexedJoinTestCase.TestConfig config
-				 = new Db4objects.Db4o.Tests.Common.Soda.CollectionIndexedJoinTestCase.TestConfig
+			CollectionIndexedJoinTestCase.TestConfig config = new CollectionIndexedJoinTestCase.TestConfig
 				(values.Length);
 			while (config.MoveNext())
 			{
@@ -69,30 +75,28 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 
 		public virtual void TestTwoJoinLegs()
 		{
-			Db4objects.Db4o.Query.IQuery query = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Soda.CollectionIndexedJoinTestCase.DataHolder)
-				).Descend(COLLECTIONFIELDNAME);
-			Db4objects.Db4o.Query.IConstraint left = query.Descend(IDFIELDNAME).Constrain(0);
+			IQuery query = NewQuery(typeof(CollectionIndexedJoinTestCase.DataHolder)).Descend
+				(COLLECTIONFIELDNAME);
+			IConstraint left = query.Descend(IDFIELDNAME).Constrain(0);
 			left.Or(query.Descend(IDFIELDNAME).Constrain(1));
-			Db4objects.Db4o.Query.IConstraint right = query.Descend(IDFIELDNAME).Constrain(2);
+			IConstraint right = query.Descend(IDFIELDNAME).Constrain(2);
 			right.Or(query.Descend(IDFIELDNAME).Constrain(-1));
 			left.Or(right);
-			Db4objects.Db4o.IObjectSet result = query.Execute();
-			Db4oUnit.Assert.AreEqual(3, result.Size());
+			IObjectSet result = query.Execute();
+			Assert.AreEqual(3, result.Size());
 		}
 
 		public virtual void AssertIndexedOr(int[] values, int expectedResultCount, int rootIdx
 			, bool connectLeft)
 		{
-			Db4objects.Db4o.Query.IQuery query = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Soda.CollectionIndexedJoinTestCase.DataHolder)
-				).Descend(COLLECTIONFIELDNAME);
-			Db4objects.Db4o.Query.IConstraint constraint = query.Descend(IDFIELDNAME).Constrain
-				(values[rootIdx]);
+			IQuery query = NewQuery(typeof(CollectionIndexedJoinTestCase.DataHolder)).Descend
+				(COLLECTIONFIELDNAME);
+			IConstraint constraint = query.Descend(IDFIELDNAME).Constrain(values[rootIdx]);
 			for (int idx = 0; idx < values.Length; idx++)
 			{
 				if (idx != rootIdx)
 				{
-					Db4objects.Db4o.Query.IConstraint curConstraint = query.Descend(IDFIELDNAME).Constrain
-						(values[idx]);
+					IConstraint curConstraint = query.Descend(IDFIELDNAME).Constrain(values[idx]);
 					if (connectLeft)
 					{
 						constraint.Or(curConstraint);
@@ -103,11 +107,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 					}
 				}
 			}
-			Db4objects.Db4o.IObjectSet result = query.Execute();
-			Db4oUnit.Assert.AreEqual(expectedResultCount, result.Size());
+			IObjectSet result = query.Execute();
+			Assert.AreEqual(expectedResultCount, result.Size());
 		}
 
-		private class TestConfig : Db4objects.Db4o.Tests.Util.PermutingTestConfig
+		private class TestConfig : PermutingTestConfig
 		{
 			public TestConfig(int numValues) : base(new object[][] { new object[] { 0, numValues
 				 - 1 }, new object[] { false, true } })

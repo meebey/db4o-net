@@ -1,3 +1,7 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Types;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <summary>Query Evaluator - Represents such things as &gt;, &gt;=, &lt;, &lt;=, EQUAL, LIKE, etc.
@@ -5,10 +9,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// <remarks>Query Evaluator - Represents such things as &gt;, &gt;=, &lt;, &lt;=, EQUAL, LIKE, etc.
 	/// 	</remarks>
 	/// <exclude></exclude>
-	public class QE : Db4objects.Db4o.Types.IUnversioned
+	public class QE : IUnversioned
 	{
-		internal static readonly Db4objects.Db4o.Internal.Query.Processor.QE DEFAULT = new 
-			Db4objects.Db4o.Internal.Query.Processor.QE();
+		internal static readonly QE DEFAULT = new QE();
 
 		public const int NULLS = 0;
 
@@ -18,8 +21,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public const int GREATER = 3;
 
-		internal virtual Db4objects.Db4o.Internal.Query.Processor.QE Add(Db4objects.Db4o.Internal.Query.Processor.QE
-			 evaluator)
+		internal virtual QE Add(QE evaluator)
 		{
 			return evaluator;
 		}
@@ -34,13 +36,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		internal virtual bool Evaluate(Db4objects.Db4o.Internal.Query.Processor.QConObject
-			 a_constraint, Db4objects.Db4o.Internal.Query.Processor.QCandidate a_candidate, 
-			object a_value)
+		internal virtual bool Evaluate(QConObject a_constraint, QCandidate a_candidate, object
+			 a_value)
 		{
 			if (a_value == null)
 			{
-				return a_constraint.GetComparator(a_candidate) is Db4objects.Db4o.Internal.Null;
+				return a_constraint.GetComparator(a_candidate) is Null;
 			}
 			return a_constraint.GetComparator(a_candidate).IsEqual(a_value);
 		}
@@ -72,7 +73,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		/// <param name="bits"></param>
 		public virtual void IndexBitMap(bool[] bits)
 		{
-			bits[Db4objects.Db4o.Internal.Query.Processor.QE.EQUAL] = true;
+			bits[QE.EQUAL] = true;
 		}
 
 		public virtual bool SupportsIndex()

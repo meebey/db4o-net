@@ -1,23 +1,28 @@
+using System;
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.Tests.Common.Defragment;
+
 namespace Db4objects.Db4o.Tests.Common.Defragment
 {
-	public abstract class AbstractDb4oDefragTestCase : Db4oUnit.ITest
+	public abstract class AbstractDb4oDefragTestCase : ITest
 	{
 		public virtual string GetLabel()
 		{
 			return "DefragAllTestCase: " + TestSuite().FullName;
 		}
 
-		public abstract System.Type TestSuite();
+		public abstract Type TestSuite();
 
-		public virtual void Run(Db4oUnit.TestResult result)
+		public virtual void Run(TestResult result)
 		{
 			try
 			{
-				new Db4oUnit.Extensions.Db4oTestSuiteBuilder(new Db4objects.Db4o.Tests.Common.Defragment.Db4oDefragSolo
-					(new Db4oUnit.Extensions.Fixtures.IndependentConfigurationSource()), TestSuite()
-					).Build().Run(result);
+				new Db4oTestSuiteBuilder(new Db4oDefragSolo(new IndependentConfigurationSource())
+					, TestSuite()).Build().Run(result);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
 				result.TestFailed(this, e);
 			}

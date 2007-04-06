@@ -1,6 +1,10 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Tests.Common.Assorted;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class RollbackTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class RollbackTestCase : AbstractDb4oTestCase
 	{
 		public class Item
 		{
@@ -18,16 +22,15 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Assorted.RollbackTestCase().RunClientServer();
+			new RollbackTestCase().RunClientServer();
 		}
 
 		public virtual void TestNotIsStoredOnRollback()
 		{
-			Db4objects.Db4o.Tests.Common.Assorted.RollbackTestCase.Item item = new Db4objects.Db4o.Tests.Common.Assorted.RollbackTestCase.Item
-				();
+			RollbackTestCase.Item item = new RollbackTestCase.Item();
 			Store(item);
 			Db().Rollback();
-			Db4oUnit.Assert.IsFalse(Db().IsStored(item));
+			Assert.IsFalse(Db().IsStored(item));
 		}
 	}
 }

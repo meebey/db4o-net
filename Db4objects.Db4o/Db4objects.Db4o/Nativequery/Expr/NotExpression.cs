@@ -1,10 +1,12 @@
+using Db4objects.Db4o.Nativequery.Expr;
+
 namespace Db4objects.Db4o.Nativequery.Expr
 {
-	public class NotExpression : Db4objects.Db4o.Nativequery.Expr.IExpression
+	public class NotExpression : IExpression
 	{
-		private Db4objects.Db4o.Nativequery.Expr.IExpression _expr;
+		private IExpression _expr;
 
-		public NotExpression(Db4objects.Db4o.Nativequery.Expr.IExpression expr)
+		public NotExpression(IExpression expr)
 		{
 			this._expr = expr;
 		}
@@ -14,7 +16,7 @@ namespace Db4objects.Db4o.Nativequery.Expr
 			return "!(" + _expr + ")";
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.IExpression Expr()
+		public virtual IExpression Expr()
 		{
 			return _expr;
 		}
@@ -39,8 +41,7 @@ namespace Db4objects.Db4o.Nativequery.Expr
 			return -_expr.GetHashCode();
 		}
 
-		public virtual void Accept(Db4objects.Db4o.Nativequery.Expr.IExpressionVisitor visitor
-			)
+		public virtual void Accept(IExpressionVisitor visitor)
 		{
 			visitor.Visit(this);
 		}

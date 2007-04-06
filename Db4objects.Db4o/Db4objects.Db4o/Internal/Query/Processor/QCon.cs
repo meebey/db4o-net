@@ -1,27 +1,33 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Types;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <summary>Base class for all constraints on queries.</summary>
 	/// <remarks>Base class for all constraints on queries.</remarks>
 	/// <exclude></exclude>
-	public abstract class QCon : Db4objects.Db4o.Query.IConstraint, Db4objects.Db4o.Foundation.IVisitor4
-		, Db4objects.Db4o.Types.IUnversioned
+	public abstract class QCon : IConstraint, IVisitor4, IUnversioned
 	{
-		internal static readonly Db4objects.Db4o.Internal.IDGenerator idGenerator = new Db4objects.Db4o.Internal.IDGenerator
-			();
+		internal static readonly IDGenerator idGenerator = new IDGenerator();
 
 		[System.NonSerialized]
-		internal Db4objects.Db4o.Internal.Query.Processor.QCandidates i_candidates;
+		internal QCandidates i_candidates;
 
-		public Db4objects.Db4o.Foundation.Collection4 i_childrenCandidates;
+		public Collection4 i_childrenCandidates;
 
-		public Db4objects.Db4o.Foundation.List4 _children;
+		public List4 _children;
 
-		public Db4objects.Db4o.Internal.Query.Processor.QE i_evaluator = Db4objects.Db4o.Internal.Query.Processor.QE
-			.DEFAULT;
+		public QE i_evaluator = QE.DEFAULT;
 
 		public int i_id;
 
-		public Db4objects.Db4o.Foundation.Collection4 i_joins;
+		public Collection4 i_joins;
 
 		public int i_orderID = 0;
 
@@ -45,11 +51,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal virtual Db4objects.Db4o.Internal.Query.Processor.QCon AddConstraint(Db4objects.Db4o.Internal.Query.Processor.QCon
 			 a_child)
 		{
-			_children = new Db4objects.Db4o.Foundation.List4(_children, a_child);
+			_children = new List4(_children, a_child);
 			return a_child;
 		}
 
-		public virtual Db4objects.Db4o.Internal.ObjectContainerBase Container()
+		public virtual ObjectContainerBase Container()
 		{
 			return Transaction().Stream();
 		}
@@ -59,27 +65,24 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return i_trans;
 		}
 
-		internal virtual void AddJoin(Db4objects.Db4o.Internal.Query.Processor.QConJoin a_join
-			)
+		internal virtual void AddJoin(QConJoin a_join)
 		{
 			if (i_joins == null)
 			{
-				i_joins = new Db4objects.Db4o.Foundation.Collection4();
+				i_joins = new Collection4();
 			}
 			i_joins.Add(a_join);
 		}
 
 		internal virtual Db4objects.Db4o.Internal.Query.Processor.QCon AddSharedConstraint
-			(Db4objects.Db4o.Internal.Query.Processor.QField a_field, object a_object)
+			(QField a_field, object a_object)
 		{
-			Db4objects.Db4o.Internal.Query.Processor.QConObject newConstraint = new Db4objects.Db4o.Internal.Query.Processor.QConObject
-				(i_trans, this, a_field, a_object);
+			QConObject newConstraint = new QConObject(i_trans, this, a_field, a_object);
 			AddConstraint(newConstraint);
 			return newConstraint;
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint And(Db4objects.Db4o.Query.IConstraint
-			 andWith)
+		public virtual IConstraint And(IConstraint andWith)
 		{
 			lock (StreamLock())
 			{
@@ -96,23 +99,21 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual bool Attach(Db4objects.Db4o.Internal.Query.Processor.QQuery query
-			, string a_field)
+		internal virtual bool Attach(QQuery query, string a_field)
 		{
 			Db4objects.Db4o.Internal.Query.Processor.QCon qcon = this;
-			Db4objects.Db4o.Internal.ClassMetadata yc = GetYapClass();
+			ClassMetadata yc = GetYapClass();
 			bool[] foundField = new bool[] { false };
 			ForEachChildField(a_field, new _AnonymousInnerClass112(this, foundField, query));
 			if (foundField[0])
 			{
 				return true;
 			}
-			Db4objects.Db4o.Internal.Query.Processor.QField qf = null;
+			QField qf = null;
 			if (yc == null || yc.HoldsAnyClass())
 			{
 				int[] count = new int[] { 0 };
-				Db4objects.Db4o.Internal.FieldMetadata[] yfs = new Db4objects.Db4o.Internal.FieldMetadata
-					[] { null };
+				FieldMetadata[] yfs = new FieldMetadata[] { null };
 				i_trans.Stream().ClassCollection().AttachQueryNode(a_field, new _AnonymousInnerClass130
 					(this, yfs, count));
 				if (count[0] == 0)
@@ -125,8 +126,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				else
 				{
-					qf = new Db4objects.Db4o.Internal.Query.Processor.QField(i_trans, a_field, null, 
-						0, 0);
+					qf = new QField(i_trans, a_field, null, 0, 0);
 				}
 			}
 			else
@@ -136,28 +136,25 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					i_trans.Stream().i_handlers._diagnosticProcessor.DescendIntoTranslator(yc, a_field
 						);
 				}
-				Db4objects.Db4o.Internal.FieldMetadata yf = yc.FieldMetadataForName(a_field);
+				FieldMetadata yf = yc.FieldMetadataForName(a_field);
 				if (yf != null)
 				{
 					qf = yf.QField(i_trans);
 				}
 				if (qf == null)
 				{
-					qf = new Db4objects.Db4o.Internal.Query.Processor.QField(i_trans, a_field, null, 
-						0, 0);
+					qf = new QField(i_trans, a_field, null, 0, 0);
 				}
 			}
-			Db4objects.Db4o.Internal.Query.Processor.QConPath qcp = new Db4objects.Db4o.Internal.Query.Processor.QConPath
-				(i_trans, qcon, qf);
+			QConPath qcp = new QConPath(i_trans, qcon, qf);
 			query.AddConstraint(qcp);
 			qcon.AddConstraint(qcp);
 			return true;
 		}
 
-		private sealed class _AnonymousInnerClass112 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass112 : IVisitor4
 		{
-			public _AnonymousInnerClass112(QCon _enclosing, bool[] foundField, Db4objects.Db4o.Internal.Query.Processor.QQuery
-				 query)
+			public _AnonymousInnerClass112(QCon _enclosing, bool[] foundField, QQuery query)
 			{
 				this._enclosing = _enclosing;
 				this.foundField = foundField;
@@ -174,13 +171,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 			private readonly bool[] foundField;
 
-			private readonly Db4objects.Db4o.Internal.Query.Processor.QQuery query;
+			private readonly QQuery query;
 		}
 
-		private sealed class _AnonymousInnerClass130 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass130 : IVisitor4
 		{
-			public _AnonymousInnerClass130(QCon _enclosing, Db4objects.Db4o.Internal.FieldMetadata[]
-				 yfs, int[] count)
+			public _AnonymousInnerClass130(QCon _enclosing, FieldMetadata[] yfs, int[] count)
 			{
 				this._enclosing = _enclosing;
 				this.yfs = yfs;
@@ -189,13 +185,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 			public void Visit(object obj)
 			{
-				yfs[0] = (Db4objects.Db4o.Internal.FieldMetadata)((object[])obj)[1];
+				yfs[0] = (FieldMetadata)((object[])obj)[1];
 				count[0]++;
 			}
 
 			private readonly QCon _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.FieldMetadata[] yfs;
+			private readonly FieldMetadata[] yfs;
 
 			private readonly int[] count;
 		}
@@ -218,38 +214,34 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual void Collect(Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 a_candidates)
+		internal virtual void Collect(QCandidates a_candidates)
 		{
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Contains()
+		public virtual IConstraint Contains()
 		{
 			throw NotSupported();
 		}
 
-		internal virtual void CreateCandidates(Db4objects.Db4o.Foundation.Collection4 a_candidateCollection
-			)
+		internal virtual void CreateCandidates(Collection4 a_candidateCollection)
 		{
-			System.Collections.IEnumerator j = a_candidateCollection.GetEnumerator();
+			IEnumerator j = a_candidateCollection.GetEnumerator();
 			while (j.MoveNext())
 			{
-				Db4objects.Db4o.Internal.Query.Processor.QCandidates candidates = (Db4objects.Db4o.Internal.Query.Processor.QCandidates
-					)j.Current;
+				QCandidates candidates = (QCandidates)j.Current;
 				if (candidates.TryAddConstraint(this))
 				{
 					i_candidates = candidates;
 					return;
 				}
 			}
-			i_candidates = new Db4objects.Db4o.Internal.Query.Processor.QCandidates((Db4objects.Db4o.Internal.LocalTransaction
-				)i_trans, GetYapClass(), GetField());
+			i_candidates = new QCandidates((LocalTransaction)i_trans, GetYapClass(), GetField
+				());
 			i_candidates.AddConstraint(this);
 			a_candidateCollection.Add(i_candidates);
 		}
 
-		internal virtual void DoNotInclude(Db4objects.Db4o.Internal.Query.Processor.QCandidate
-			 a_root)
+		internal virtual void DoNotInclude(QCandidate a_root)
 		{
 			if (i_parent != null)
 			{
@@ -261,40 +253,38 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Equal()
+		public virtual IConstraint Equal()
 		{
 			throw NotSupported();
 		}
 
-		internal virtual bool Evaluate(Db4objects.Db4o.Internal.Query.Processor.QCandidate
-			 a_candidate)
+		internal virtual bool Evaluate(QCandidate a_candidate)
 		{
-			throw Db4objects.Db4o.Internal.Exceptions4.VirtualException();
+			throw Exceptions4.VirtualException();
 		}
 
 		internal virtual void EvaluateChildren()
 		{
-			System.Collections.IEnumerator i = i_childrenCandidates.GetEnumerator();
+			IEnumerator i = i_childrenCandidates.GetEnumerator();
 			while (i.MoveNext())
 			{
-				((Db4objects.Db4o.Internal.Query.Processor.QCandidates)i.Current).Evaluate();
+				((QCandidates)i.Current).Evaluate();
 			}
 		}
 
 		internal virtual void EvaluateCollectChildren()
 		{
-			System.Collections.IEnumerator i = i_childrenCandidates.GetEnumerator();
+			IEnumerator i = i_childrenCandidates.GetEnumerator();
 			while (i.MoveNext())
 			{
-				((Db4objects.Db4o.Internal.Query.Processor.QCandidates)i.Current).Collect(i_candidates
-					);
+				((QCandidates)i.Current).Collect(i_candidates);
 			}
 		}
 
 		internal virtual void EvaluateCreateChildrenCandidates()
 		{
-			i_childrenCandidates = new Db4objects.Db4o.Foundation.Collection4();
-			System.Collections.IEnumerator i = IterateChildren();
+			i_childrenCandidates = new Collection4();
+			IEnumerator i = IterateChildren();
 			while (i.MoveNext())
 			{
 				((Db4objects.Db4o.Internal.Query.Processor.QCon)i.Current).CreateCandidates(i_childrenCandidates
@@ -304,7 +294,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual void EvaluateEvaluations()
 		{
-			System.Collections.IEnumerator i = IterateChildren();
+			IEnumerator i = IterateChildren();
 			while (i.MoveNext())
 			{
 				((Db4objects.Db4o.Internal.Query.Processor.QCon)i.Current).EvaluateEvaluationsExec
@@ -312,8 +302,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual void EvaluateEvaluationsExec(Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 a_candidates, bool rereadObject)
+		internal virtual void EvaluateEvaluationsExec(QCandidates a_candidates, bool rereadObject
+			)
 		{
 		}
 
@@ -328,7 +318,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return;
 			}
-			System.Collections.IEnumerator i = IterateChildren();
+			IEnumerator i = IterateChildren();
 			while (i.MoveNext())
 			{
 				Db4objects.Db4o.Internal.Query.Processor.QCon qcon = (Db4objects.Db4o.Internal.Query.Processor.QCon
@@ -342,16 +332,15 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			i_candidates.SetCurrentConstraint(null);
 		}
 
-		internal virtual void EvaluateSimpleExec(Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 a_candidates)
+		internal virtual void EvaluateSimpleExec(QCandidates a_candidates)
 		{
 		}
 
 		internal virtual void ExchangeConstraint(Db4objects.Db4o.Internal.Query.Processor.QCon
 			 a_exchange, Db4objects.Db4o.Internal.Query.Processor.QCon a_with)
 		{
-			Db4objects.Db4o.Foundation.List4 previous = null;
-			Db4objects.Db4o.Foundation.List4 current = _children;
+			List4 previous = null;
+			List4 current = _children;
 			while (current != null)
 			{
 				if (current._element == a_exchange)
@@ -368,20 +357,18 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				previous = current;
 				current = current._next;
 			}
-			_children = new Db4objects.Db4o.Foundation.List4(_children, a_with);
+			_children = new List4(_children, a_with);
 		}
 
-		internal virtual void ForEachChildField(string name, Db4objects.Db4o.Foundation.IVisitor4
-			 visitor)
+		internal virtual void ForEachChildField(string name, IVisitor4 visitor)
 		{
-			System.Collections.IEnumerator i = IterateChildren();
+			IEnumerator i = IterateChildren();
 			while (i.MoveNext())
 			{
 				object obj = i.Current;
-				if (obj is Db4objects.Db4o.Internal.Query.Processor.QConObject)
+				if (obj is QConObject)
 				{
-					if (((Db4objects.Db4o.Internal.Query.Processor.QConObject)obj).i_field.i_name.Equals
-						(name))
+					if (((QConObject)obj).i_field.i_name.Equals(name))
 					{
 						visitor.Visit(obj);
 					}
@@ -389,7 +376,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public virtual Db4objects.Db4o.Internal.Query.Processor.QField GetField()
+		public virtual QField GetField()
 		{
 			return null;
 		}
@@ -415,15 +402,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return this;
 			}
-			System.Collections.IEnumerator i = IterateJoins();
+			IEnumerator i = IterateJoins();
 			if (i_joins.Size() == 1)
 			{
 				i.MoveNext();
 				return ((Db4objects.Db4o.Internal.Query.Processor.QCon)i.Current).ProduceTopLevelJoin
 					();
 			}
-			Db4objects.Db4o.Foundation.Collection4 col = new Db4objects.Db4o.Foundation.Collection4
-				();
+			Collection4 col = new Collection4();
 			while (i.MoveNext())
 			{
 				col.Ensure(((Db4objects.Db4o.Internal.Query.Processor.QCon)i.Current).ProduceTopLevelJoin
@@ -439,18 +425,18 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			while (i.MoveNext())
 			{
-				qcon = (Db4objects.Db4o.Internal.Query.Processor.QCon)qcon.And((Db4objects.Db4o.Query.IConstraint
-					)i.Current);
+				qcon = (Db4objects.Db4o.Internal.Query.Processor.QCon)qcon.And((IConstraint)i.Current
+					);
 			}
 			return qcon;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.ClassMetadata GetYapClass()
+		internal virtual ClassMetadata GetYapClass()
 		{
 			return null;
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Greater()
+		public virtual IConstraint Greater()
 		{
 			throw NotSupported();
 		}
@@ -472,12 +458,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual bool HasOrJoins()
 		{
-			Db4objects.Db4o.Foundation.Collection4 lookedAt = new Db4objects.Db4o.Foundation.Collection4
-				();
+			Collection4 lookedAt = new Collection4();
 			return HasOrJoins(lookedAt);
 		}
 
-		internal virtual bool HasOrJoins(Db4objects.Db4o.Foundation.Collection4 lookedAt)
+		internal virtual bool HasOrJoins(Collection4 lookedAt)
 		{
 			if (lookedAt.ContainsByIdentity(this))
 			{
@@ -488,11 +473,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return false;
 			}
-			System.Collections.IEnumerator i = IterateJoins();
+			IEnumerator i = IterateJoins();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Internal.Query.Processor.QConJoin join = (Db4objects.Db4o.Internal.Query.Processor.QConJoin
-					)i.Current;
+				QConJoin join = (QConJoin)i.Current;
 				if (join.IsOr())
 				{
 					return true;
@@ -505,14 +489,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return false;
 		}
 
-		public virtual bool HasOrJoinWith(Db4objects.Db4o.Internal.Query.Processor.QConObject
-			 y)
+		public virtual bool HasOrJoinWith(QConObject y)
 		{
-			System.Collections.IEnumerator i = IterateJoins();
+			IEnumerator i = IterateJoins();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Internal.Query.Processor.QConJoin join = (Db4objects.Db4o.Internal.Query.Processor.QConJoin
-					)i.Current;
+				QConJoin join = (QConJoin)i.Current;
 				if (join.IsOr())
 				{
 					if (y == join.GetOtherConstraint(this))
@@ -542,7 +524,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return false;
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Identity()
+		public virtual IConstraint Identity()
 		{
 			throw NotSupported();
 		}
@@ -554,7 +536,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual bool IsNot()
 		{
-			return i_evaluator is Db4objects.Db4o.Internal.Query.Processor.QENot;
+			return i_evaluator is QENot;
 		}
 
 		internal virtual bool IsNullConstraint()
@@ -562,26 +544,25 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return false;
 		}
 
-		internal virtual System.Collections.IEnumerator IterateJoins()
+		internal virtual IEnumerator IterateJoins()
 		{
 			if (i_joins == null)
 			{
-				return Db4objects.Db4o.Foundation.Iterators.EMPTY_ITERATOR;
+				return Iterators.EMPTY_ITERATOR;
 			}
 			return i_joins.GetEnumerator();
 		}
 
-		public virtual System.Collections.IEnumerator IterateChildren()
+		public virtual IEnumerator IterateChildren()
 		{
 			if (_children == null)
 			{
-				return Db4objects.Db4o.Foundation.Iterators.EMPTY_ITERATOR;
+				return Iterators.EMPTY_ITERATOR;
 			}
-			return new Db4objects.Db4o.Foundation.Iterator4Impl(_children);
+			return new Iterator4Impl(_children);
 		}
 
-		internal virtual Db4objects.Db4o.Query.IConstraint Join(Db4objects.Db4o.Query.IConstraint
-			 a_with, bool a_and)
+		internal virtual IConstraint Join(IConstraint a_with, bool a_and)
 		{
 			if (!(a_with is Db4objects.Db4o.Internal.Query.Processor.QCon))
 			{
@@ -594,30 +575,27 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return Join1((Db4objects.Db4o.Internal.Query.Processor.QCon)a_with, a_and);
 		}
 
-		internal virtual Db4objects.Db4o.Query.IConstraint Join1(Db4objects.Db4o.Internal.Query.Processor.QCon
-			 a_with, bool a_and)
+		internal virtual IConstraint Join1(Db4objects.Db4o.Internal.Query.Processor.QCon 
+			a_with, bool a_and)
 		{
-			if (a_with is Db4objects.Db4o.Internal.Query.Processor.QConstraints)
+			if (a_with is QConstraints)
 			{
 				int j = 0;
-				Db4objects.Db4o.Foundation.Collection4 joinHooks = new Db4objects.Db4o.Foundation.Collection4
-					();
-				Db4objects.Db4o.Query.IConstraint[] constraints = ((Db4objects.Db4o.Internal.Query.Processor.QConstraints
-					)a_with).ToArray();
+				Collection4 joinHooks = new Collection4();
+				IConstraint[] constraints = ((QConstraints)a_with).ToArray();
 				for (j = 0; j < constraints.Length; j++)
 				{
 					joinHooks.Ensure(((Db4objects.Db4o.Internal.Query.Processor.QCon)constraints[j]).
 						JoinHook());
 				}
-				Db4objects.Db4o.Query.IConstraint[] joins = new Db4objects.Db4o.Query.IConstraint
-					[joinHooks.Size()];
+				IConstraint[] joins = new IConstraint[joinHooks.Size()];
 				j = 0;
-				System.Collections.IEnumerator i = joinHooks.GetEnumerator();
+				IEnumerator i = joinHooks.GetEnumerator();
 				while (i.MoveNext())
 				{
-					joins[j++] = Join((Db4objects.Db4o.Query.IConstraint)i.Current, a_and);
+					joins[j++] = Join((IConstraint)i.Current, a_and);
 				}
-				return new Db4objects.Db4o.Internal.Query.Processor.QConstraints(i_trans, joins);
+				return new QConstraints(i_trans, joins);
 			}
 			Db4objects.Db4o.Internal.Query.Processor.QCon myHook = JoinHook();
 			Db4objects.Db4o.Internal.Query.Processor.QCon otherHook = a_with.JoinHook();
@@ -625,8 +603,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return myHook;
 			}
-			Db4objects.Db4o.Internal.Query.Processor.QConJoin cj = new Db4objects.Db4o.Internal.Query.Processor.QConJoin
-				(i_trans, myHook, otherHook, a_and);
+			QConJoin cj = new QConJoin(i_trans, myHook, otherHook, a_and);
 			myHook.AddJoin(cj);
 			otherHook.AddJoin(cj);
 			return cj;
@@ -637,17 +614,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return ProduceTopLevelJoin();
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Like()
+		public virtual IConstraint Like()
 		{
 			throw NotSupported();
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint StartsWith(bool caseSensitive)
+		public virtual IConstraint StartsWith(bool caseSensitive)
 		{
 			throw NotSupported();
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint EndsWith(bool caseSensitive)
+		public virtual IConstraint EndsWith(bool caseSensitive)
 		{
 			throw NotSupported();
 		}
@@ -663,28 +640,28 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual void Marshall()
 		{
-			System.Collections.IEnumerator i = IterateChildren();
+			IEnumerator i = IterateChildren();
 			while (i.MoveNext())
 			{
 				((Db4objects.Db4o.Internal.Query.Processor.QCon)i.Current).Marshall();
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Not()
+		public virtual IConstraint Not()
 		{
 			lock (StreamLock())
 			{
-				if (!(i_evaluator is Db4objects.Db4o.Internal.Query.Processor.QENot))
+				if (!(i_evaluator is QENot))
 				{
-					i_evaluator = new Db4objects.Db4o.Internal.Query.Processor.QENot(i_evaluator);
+					i_evaluator = new QENot(i_evaluator);
 				}
 				return this;
 			}
 		}
 
-		private System.Exception NotSupported()
+		private Exception NotSupported()
 		{
-			return new System.Exception("Not supported.");
+			return new Exception("Not supported.");
 		}
 
 		public virtual bool OnSameFieldAs(Db4objects.Db4o.Internal.Query.Processor.QCon other
@@ -693,8 +670,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return false;
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Or(Db4objects.Db4o.Query.IConstraint
-			 orWith)
+		public virtual IConstraint Or(IConstraint orWith)
 		{
 			lock (StreamLock())
 			{
@@ -719,11 +695,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return;
 			}
-			System.Collections.IEnumerator i = IterateJoins();
+			IEnumerator i = IterateJoins();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Internal.Query.Processor.QConJoin qcj = (Db4objects.Db4o.Internal.Query.Processor.QConJoin
-					)i.Current;
+				QConJoin qcj = (QConJoin)i.Current;
 				if (qcj.RemoveForParent(this))
 				{
 					i_joins.Remove(qcj);
@@ -732,8 +707,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			CheckLastJoinRemoved();
 		}
 
-		internal virtual void RemoveJoin(Db4objects.Db4o.Internal.Query.Processor.QConJoin
-			 a_join)
+		internal virtual void RemoveJoin(QConJoin a_join)
 		{
 			i_joins.Remove(a_join);
 			CheckLastJoinRemoved();
@@ -743,12 +717,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (IsNot())
 			{
-				i_evaluator = ((Db4objects.Db4o.Internal.Query.Processor.QENot)i_evaluator).i_evaluator;
+				i_evaluator = ((QENot)i_evaluator).i_evaluator;
 			}
 		}
 
-		public virtual void SetCandidates(Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 a_candidates)
+		public virtual void SetCandidates(QCandidates a_candidates)
 		{
 			i_candidates = a_candidates;
 		}
@@ -775,13 +748,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return null;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.Query.Processor.QConClass ShareParentForClass
-			(Db4objects.Db4o.Reflect.IReflectClass a_class, bool[] removeExisting)
+		internal virtual QConClass ShareParentForClass(IReflectClass a_class, bool[] removeExisting
+			)
 		{
 			return null;
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Smaller()
+		public virtual IConstraint Smaller()
 		{
 			throw NotSupported();
 		}
@@ -818,7 +791,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private void UnmarshallChildren(Db4objects.Db4o.Internal.Transaction a_trans)
 		{
-			System.Collections.IEnumerator i = IterateChildren();
+			IEnumerator i = IterateChildren();
 			while (i.MoveNext())
 			{
 				((Db4objects.Db4o.Internal.Query.Processor.QCon)i.Current).Unmarshall(a_trans);
@@ -829,7 +802,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (HasJoins())
 			{
-				System.Collections.IEnumerator i = IterateJoins();
+				IEnumerator i = IterateJoins();
 				while (i.MoveNext())
 				{
 					((Db4objects.Db4o.Internal.Query.Processor.QCon)i.Current).Unmarshall(a_trans);
@@ -839,27 +812,24 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual void Visit(object obj)
 		{
-			Db4objects.Db4o.Internal.Query.Processor.QCandidate qc = (Db4objects.Db4o.Internal.Query.Processor.QCandidate
-				)obj;
+			QCandidate qc = (QCandidate)obj;
 			Visit1(qc.GetRoot(), this, Evaluate(qc));
 		}
 
-		internal virtual void Visit(Db4objects.Db4o.Internal.Query.Processor.QCandidate a_root
-			, bool res)
+		internal virtual void Visit(QCandidate a_root, bool res)
 		{
 			Visit1(a_root, this, i_evaluator.Not(res));
 		}
 
-		internal virtual void Visit1(Db4objects.Db4o.Internal.Query.Processor.QCandidate 
-			a_root, Db4objects.Db4o.Internal.Query.Processor.QCon a_reason, bool res)
+		internal virtual void Visit1(QCandidate a_root, Db4objects.Db4o.Internal.Query.Processor.QCon
+			 a_reason, bool res)
 		{
 			if (HasJoins())
 			{
-				System.Collections.IEnumerator i = IterateJoins();
+				IEnumerator i = IterateJoins();
 				while (i.MoveNext())
 				{
-					a_root.Evaluate(new Db4objects.Db4o.Internal.Query.Processor.QPending((Db4objects.Db4o.Internal.Query.Processor.QConJoin
-						)i.Current, this, res));
+					a_root.Evaluate(new QPending((QConJoin)i.Current, this, res));
 				}
 			}
 			else
@@ -871,10 +841,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal void VisitOnNull(Db4objects.Db4o.Internal.Query.Processor.QCandidate a_root
-			)
+		internal void VisitOnNull(QCandidate a_root)
 		{
-			System.Collections.IEnumerator i = IterateChildren();
+			IEnumerator i = IterateChildren();
 			while (i.MoveNext())
 			{
 				((Db4objects.Db4o.Internal.Query.Processor.QCon)i.Current).VisitOnNull(a_root);
@@ -890,7 +859,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		public virtual Db4objects.Db4o.Internal.Query.Processor.QE Evaluator()
+		public virtual QE Evaluator()
 		{
 			return i_evaluator;
 		}
@@ -901,7 +870,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return true;
 			}
-			System.Collections.IEnumerator i = IterateChildren();
+			IEnumerator i = IterateChildren();
 			while (i.MoveNext())
 			{
 				if (((Db4objects.Db4o.Internal.Query.Processor.QCon)i.Current).RequiresSort())

@@ -1,19 +1,24 @@
+using System;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public sealed class DoubleHandler : Db4objects.Db4o.Internal.Handlers.LongHandler
+	public sealed class DoubleHandler : LongHandler
 	{
 		private static readonly double DEFAULT_VALUE = System.Convert.ToDouble(0);
 
-		public DoubleHandler(Db4objects.Db4o.Internal.ObjectContainerBase stream) : base(
-			stream)
+		public DoubleHandler(ObjectContainerBase stream) : base(stream)
 		{
 		}
 
-		public override object Coerce(Db4objects.Db4o.Reflect.IReflectClass claxx, object
-			 obj)
+		public override object Coerce(IReflectClass claxx, object obj)
 		{
-			return Db4objects.Db4o.Foundation.Coercion4.ToDouble(obj);
+			return Coercion4.ToDouble(obj);
 		}
 
 		public override object DefaultValue()
@@ -26,7 +31,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return 5;
 		}
 
-		protected override System.Type PrimitiveJavaClass()
+		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(double);
 		}
@@ -36,8 +41,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return DEFAULT_VALUE;
 		}
 
-		public override object Read(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf
-			, Db4objects.Db4o.Internal.StatefulBuffer buffer, bool redirect)
+		public override object Read(MarshallerFamily mf, StatefulBuffer buffer, bool redirect
+			)
 		{
 			return mf._primitive.ReadDouble(buffer);
 		}
@@ -50,8 +55,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override void Write(object a_object, Db4objects.Db4o.Internal.Buffer a_bytes
 			)
 		{
-			a_bytes.WriteLong(Db4objects.Db4o.Internal.Platform4.DoubleToLong(((double)a_object
-				)));
+			a_bytes.WriteLong(Platform4.DoubleToLong(((double)a_object)));
 		}
 
 		private double i_compareToDouble;

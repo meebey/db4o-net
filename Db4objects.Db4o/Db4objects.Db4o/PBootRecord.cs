@@ -1,3 +1,7 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o
 {
 	/// <summary>Old database boot record class.</summary>
@@ -12,28 +16,27 @@ namespace Db4objects.Db4o
 	/// </remarks>
 	/// <exclude></exclude>
 	/// <persistent></persistent>
-	public class PBootRecord : Db4objects.Db4o.P1Object, Db4objects.Db4o.Internal.IDb4oTypeImpl
-		, Db4objects.Db4o.IInternal4
+	public class PBootRecord : P1Object, IInternal4
 	{
-		public Db4objects.Db4o.Ext.Db4oDatabase i_db;
+		public Db4oDatabase i_db;
 
 		public long i_versionGenerator;
 
-		public Db4objects.Db4o.MetaIndex i_uuidMetaIndex;
+		public MetaIndex i_uuidMetaIndex;
 
 		public override int ActivationDepth()
 		{
 			return int.MaxValue;
 		}
 
-		public virtual Db4objects.Db4o.MetaIndex GetUUIDMetaIndex()
+		public virtual MetaIndex GetUUIDMetaIndex()
 		{
 			return i_uuidMetaIndex;
 		}
 
-		public virtual void Write(Db4objects.Db4o.Internal.LocalObjectContainer file)
+		public virtual void Write(LocalObjectContainer file)
 		{
-			Db4objects.Db4o.Internal.SystemData systemData = file.SystemData();
+			SystemData systemData = file.SystemData();
 			i_versionGenerator = systemData.LastTimeStampID();
 			i_db = systemData.Identity();
 			file.ShowInternalClasses(true);

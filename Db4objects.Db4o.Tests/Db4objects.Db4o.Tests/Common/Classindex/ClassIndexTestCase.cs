@@ -1,6 +1,13 @@
+using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Classindex;
+using Db4objects.Db4o.Tests.Common.Btree;
+using Db4objects.Db4o.Tests.Common.Classindex;
+
 namespace Db4objects.Db4o.Tests.Common.Classindex
 {
-	public class ClassIndexTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutCS
+	public class ClassIndexTestCase : AbstractDb4oTestCase, IOptOutCS
 	{
 		public class Item
 		{
@@ -14,19 +21,17 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Classindex.ClassIndexTestCase().RunSolo();
+			new ClassIndexTestCase().RunSolo();
 		}
 
 		public virtual void TestDelete()
 		{
-			Db4objects.Db4o.Tests.Common.Classindex.ClassIndexTestCase.Item item = new Db4objects.Db4o.Tests.Common.Classindex.ClassIndexTestCase.Item
-				("test");
+			ClassIndexTestCase.Item item = new ClassIndexTestCase.Item("test");
 			Store(item);
 			int id = (int)Db().GetID(item);
 			AssertID(id);
 			Reopen();
-			item = (Db4objects.Db4o.Tests.Common.Classindex.ClassIndexTestCase.Item)Db().Get(
-				item).Next();
+			item = (ClassIndexTestCase.Item)Db().Get(item).Next();
 			id = (int)Db().GetID(item);
 			AssertID(id);
 			Db().Delete(item);
@@ -48,12 +53,10 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 
 		private void AssertIndex(object[] expected)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata clazz = Stream().ClassMetadataForReflectClass
-				(Reflector().ForClass(typeof(Db4objects.Db4o.Tests.Common.Classindex.ClassIndexTestCase.Item)
-				));
-			Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor visitor = new Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
-				(expected);
-			Db4objects.Db4o.Internal.Classindex.IClassIndexStrategy index = clazz.Index();
+			ClassMetadata clazz = Stream().ClassMetadataForReflectClass(Reflector().ForClass(
+				typeof(ClassIndexTestCase.Item)));
+			ExpectingVisitor visitor = new ExpectingVisitor(expected);
+			IClassIndexStrategy index = clazz.Index();
 			index.TraverseAll(Trans(), visitor);
 			visitor.AssertExpectations();
 		}

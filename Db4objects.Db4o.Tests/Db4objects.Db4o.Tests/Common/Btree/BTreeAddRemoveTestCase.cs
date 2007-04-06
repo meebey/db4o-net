@@ -1,6 +1,11 @@
+using Db4oUnit;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Tests.Common.Btree;
+
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public class BTreeAddRemoveTestCase : Db4objects.Db4o.Tests.Common.Btree.BTreeTestCaseBase
+	public class BTreeAddRemoveTestCase : BTreeTestCaseBase
 	{
 		public virtual void TestFirstPointerMultiTransactional()
 		{
@@ -10,13 +15,12 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 				Add(count + i + 1);
 			}
 			int smallest = count + 1;
-			Db4objects.Db4o.Internal.Transaction trans = NewTransaction();
+			Transaction trans = NewTransaction();
 			for (int i = 0; i < count; i++)
 			{
 				Add(trans, i);
 			}
-			Db4objects.Db4o.Internal.Btree.BTreePointer firstPointer = _btree.FirstPointer(Trans
-				());
+			BTreePointer firstPointer = _btree.FirstPointer(Trans());
 			AssertPointerKey(smallest, firstPointer);
 		}
 
@@ -36,11 +40,10 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			int[] keys = new int[] { 3, 4, 7, 9 };
 			Add(keys);
 			Remove(4);
-			Db4objects.Db4o.Internal.Btree.IBTreeRange result = Search(4);
-			Db4oUnit.Assert.IsTrue(result.IsEmpty());
-			Db4objects.Db4o.Internal.Btree.IBTreeRange range = result.Greater();
-			Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.AssertRange(new int[] { 7, 9 }, range
-				);
+			IBTreeRange result = Search(4);
+			Assert.IsTrue(result.IsEmpty());
+			IBTreeRange range = result.Greater();
+			BTreeAssert.AssertRange(new int[] { 7, 9 }, range);
 		}
 
 		public virtual void TestMultipleRemoveAdds()
@@ -58,8 +61,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			int element = 1;
 			Add(element);
 			Commit();
-			Db4objects.Db4o.Internal.Transaction trans1 = NewTransaction();
-			Db4objects.Db4o.Internal.Transaction trans2 = NewTransaction();
+			Transaction trans1 = NewTransaction();
+			Transaction trans2 = NewTransaction();
 			Remove(trans1, element);
 			AssertSingleElement(trans2, element);
 			Add(trans1, element);
@@ -79,13 +82,12 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			AssertKeys(keys);
 			Remove(SystemTrans(), assorted);
 			AssertKeys(keys);
-			Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.AssertRange(new int[] { 7, 9 }, Search
-				(Trans(), 4).Greater());
+			BTreeAssert.AssertRange(new int[] { 7, 9 }, Search(Trans(), 4).Greater());
 		}
 
 		private void AssertKeys(int[] keys)
 		{
-			Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.AssertKeys(Trans(), _btree, keys);
+			BTreeAssert.AssertKeys(Trans(), _btree, keys);
 		}
 
 		public virtual void TestAddRemoveInDifferentTransactions()
@@ -128,7 +130,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Btree.BTreeAddRemoveTestCase().RunSolo();
+			new BTreeAddRemoveTestCase().RunSolo();
 		}
 	}
 }

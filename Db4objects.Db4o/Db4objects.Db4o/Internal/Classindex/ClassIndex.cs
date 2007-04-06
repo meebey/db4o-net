@@ -1,27 +1,31 @@
+using System.IO;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Slots;
+
 namespace Db4objects.Db4o.Internal.Classindex
 {
 	/// <summary>representation to collect and hold all IDs of one class</summary>
-	public class ClassIndex : Db4objects.Db4o.Internal.PersistentBase, Db4objects.Db4o.Internal.IReadWriteable
+	public class ClassIndex : PersistentBase, IReadWriteable
 	{
-		private readonly Db4objects.Db4o.Internal.ClassMetadata _clazz;
+		private readonly ClassMetadata _clazz;
 
 		/// <summary>contains TreeInt with object IDs</summary>
-		private Db4objects.Db4o.Internal.TreeInt i_root;
+		private TreeInt i_root;
 
-		internal ClassIndex(Db4objects.Db4o.Internal.ClassMetadata yapClass)
+		internal ClassIndex(ClassMetadata yapClass)
 		{
 			_clazz = yapClass;
 		}
 
 		public virtual void Add(int a_id)
 		{
-			i_root = Db4objects.Db4o.Internal.TreeInt.Add(i_root, a_id);
+			i_root = TreeInt.Add(i_root, a_id);
 		}
 
 		public int ByteCount()
 		{
-			return Db4objects.Db4o.Internal.Const4.INT_LENGTH * (Db4objects.Db4o.Foundation.Tree
-				.Size(i_root) + 1);
+			return Const4.INT_LENGTH * (Tree.Size(i_root) + 1);
 		}
 
 		public void Clear()
@@ -29,7 +33,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			i_root = null;
 		}
 
-		internal virtual void EnsureActive(Db4objects.Db4o.Internal.Transaction trans)
+		internal virtual void EnsureActive(Transaction trans)
 		{
 			if (!IsActive())
 			{
@@ -38,62 +42,59 @@ namespace Db4objects.Db4o.Internal.Classindex
 			}
 		}
 
-		internal virtual int EntryCount(Db4objects.Db4o.Internal.Transaction ta)
+		internal virtual int EntryCount(Transaction ta)
 		{
 			if (IsActive() || IsNew())
 			{
-				return Db4objects.Db4o.Foundation.Tree.Size(i_root);
+				return Tree.Size(i_root);
 			}
-			Db4objects.Db4o.Internal.Slots.Slot slot = ((Db4objects.Db4o.Internal.LocalTransaction
-				)ta).GetCurrentSlotOfID(GetID());
-			int length = Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			Slot slot = ((LocalTransaction)ta).GetCurrentSlotOfID(GetID());
+			int length = Const4.INT_LENGTH;
 			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(length
 				);
 			try
 			{
 				reader.ReadEncrypt(ta.Stream(), slot._address);
 			}
-			catch (System.IO.IOException exc)
+			catch (IOException exc)
 			{
-				throw new Db4objects.Db4o.Internal.ClassIndexException(exc, _clazz);
+				throw new ClassIndexException(exc, _clazz.GetName());
 			}
 			return reader.ReadInt();
 		}
 
 		public sealed override byte GetIdentifier()
 		{
-			return Db4objects.Db4o.Internal.Const4.YAPINDEX;
+			return Const4.YAPINDEX;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.TreeInt GetRoot()
+		internal virtual TreeInt GetRoot()
 		{
 			return i_root;
 		}
 
 		public sealed override int OwnLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.OBJECT_LENGTH + ByteCount();
+			return Const4.OBJECT_LENGTH + ByteCount();
 		}
 
 		public object Read(Db4objects.Db4o.Internal.Buffer a_reader)
 		{
-			throw Db4objects.Db4o.Internal.Exceptions4.VirtualException();
+			throw Exceptions4.VirtualException();
 		}
 
-		public sealed override void ReadThis(Db4objects.Db4o.Internal.Transaction a_trans
-			, Db4objects.Db4o.Internal.Buffer a_reader)
+		public sealed override void ReadThis(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
+			 a_reader)
 		{
-			i_root = (Db4objects.Db4o.Internal.TreeInt)new Db4objects.Db4o.Internal.TreeReader
-				(a_reader, new Db4objects.Db4o.Internal.TreeInt(0)).Read();
+			i_root = (TreeInt)new TreeReader(a_reader, new TreeInt(0)).Read();
 		}
 
 		public virtual void Remove(int a_id)
 		{
-			i_root = Db4objects.Db4o.Internal.TreeInt.RemoveLike(i_root, a_id);
+			i_root = TreeInt.RemoveLike(i_root, a_id);
 		}
 
-		internal virtual void SetDirty(Db4objects.Db4o.Internal.ObjectContainerBase a_stream
-			)
+		internal virtual void SetDirty(ObjectContainerBase a_stream)
 		{
 			a_stream.SetDirtyInSystemTransaction(this);
 		}
@@ -103,10 +104,10 @@ namespace Db4objects.Db4o.Internal.Classindex
 			WriteThis(null, a_writer);
 		}
 
-		public sealed override void WriteThis(Db4objects.Db4o.Internal.Transaction trans, 
-			Db4objects.Db4o.Internal.Buffer a_writer)
+		public sealed override void WriteThis(Transaction trans, Db4objects.Db4o.Internal.Buffer
+			 a_writer)
 		{
-			Db4objects.Db4o.Internal.TreeInt.Write(a_writer, i_root);
+			TreeInt.Write(a_writer, i_root);
 		}
 
 		public override string ToString()

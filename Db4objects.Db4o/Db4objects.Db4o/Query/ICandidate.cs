@@ -1,34 +1,37 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Query
 {
 	/// <summary>
 	/// candidate for
-	/// <see cref="Db4objects.Db4o.Query.IEvaluation">Db4objects.Db4o.Query.IEvaluation</see>
+	/// <see cref="IEvaluation">IEvaluation</see>
 	/// callbacks.
 	/// <br /><br />
 	/// During
-	/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">query execution</see>
+	/// <see cref="IQuery.Execute">query execution</see>
 	/// all registered
-	/// <see cref="Db4objects.Db4o.Query.IEvaluation">Db4objects.Db4o.Query.IEvaluation</see>
+	/// <see cref="IEvaluation">IEvaluation</see>
 	/// callback
 	/// handlers are called with
-	/// <see cref="Db4objects.Db4o.Query.ICandidate">Db4objects.Db4o.Query.ICandidate</see>
+	/// <see cref="ICandidate">ICandidate</see>
 	/// proxies that represent the persistent objects that
 	/// meet all other
-	/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
+	/// <see cref="IQuery">IQuery</see>
 	/// criteria.
 	/// <br /><br />
 	/// A
-	/// <see cref="Db4objects.Db4o.Query.ICandidate">Db4objects.Db4o.Query.ICandidate</see>
+	/// <see cref="ICandidate">ICandidate</see>
 	/// provides access to the persistent object it
 	/// represents and allows to specify, whether it is to be included in the
-	/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
+	/// <see cref="IObjectSet">IObjectSet</see>
 	/// resultset.
 	/// </summary>
 	public interface ICandidate
 	{
 		/// <summary>
 		/// returns the persistent object that is represented by this query
-		/// <see cref="Db4objects.Db4o.Query.ICandidate">Db4objects.Db4o.Query.ICandidate</see>
+		/// <see cref="ICandidate">ICandidate</see>
 		/// .
 		/// </summary>
 		/// <returns>Object the persistent object.</returns>
@@ -36,7 +39,7 @@ namespace Db4objects.Db4o.Query
 
 		/// <summary>
 		/// specify whether the Candidate is to be included in the
-		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
+		/// <see cref="IObjectSet">IObjectSet</see>
 		/// resultset.
 		/// <br /><br />
 		/// This method may be called multiple times. The last call prevails.
@@ -46,13 +49,13 @@ namespace Db4objects.Db4o.Query
 
 		/// <summary>
 		/// returns the
-		/// <see cref="Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// the Candidate object is stored in.
 		/// </summary>
 		/// <returns>
 		/// the
-		/// <see cref="Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// </returns>
-		Db4objects.Db4o.IObjectContainer ObjectContainer();
+		IObjectContainer ObjectContainer();
 	}
 }

@@ -1,8 +1,11 @@
+using Db4oUnit;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public class SearcherTestCase : Db4oUnit.ITestCase, Db4oUnit.ITestLifeCycle
+	public class SearcherTestCase : ITestCase, ITestLifeCycle
 	{
-		private Db4objects.Db4o.Internal.Btree.Searcher _searcher;
+		private Searcher _searcher;
 
 		private const int FIRST = 4;
 
@@ -33,10 +36,10 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void TestCursorEndsOnSmaller()
 		{
-			Db4oUnit.Assert.AreEqual(0, Search(EVEN_VALUES, 6));
-			Db4oUnit.Assert.AreEqual(0, Search(ODD_VALUES, 6));
-			Db4oUnit.Assert.AreEqual(2, Search(EVEN_VALUES, 10));
-			Db4oUnit.Assert.AreEqual(3, Search(ODD_VALUES, 10));
+			Assert.AreEqual(0, Search(EVEN_VALUES, 6));
+			Assert.AreEqual(0, Search(ODD_VALUES, 6));
+			Assert.AreEqual(2, Search(EVEN_VALUES, 10));
+			Assert.AreEqual(3, Search(ODD_VALUES, 10));
 		}
 
 		public virtual void TestMatchEven()
@@ -101,13 +104,12 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void TestEmptySet()
 		{
-			_searcher = new Db4objects.Db4o.Internal.Btree.Searcher(Db4objects.Db4o.Internal.Btree.SearchTarget
-				.ANY, 0);
+			_searcher = new Searcher(SearchTarget.ANY, 0);
 			if (_searcher.Incomplete())
 			{
-				Db4oUnit.Assert.Fail();
+				Assert.Fail();
 			}
-			Db4oUnit.Assert.AreEqual(0, _searcher.Cursor());
+			Assert.AreEqual(0, _searcher.Cursor());
 		}
 
 		private void AssertMatch(int[] values)
@@ -115,7 +117,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			for (int i = 0; i < MATCHES.Length; i++)
 			{
 				Search(values, MATCHES[i]);
-				Db4oUnit.Assert.IsTrue(_searcher.FoundMatch());
+				Assert.IsTrue(_searcher.FoundMatch());
 			}
 		}
 
@@ -124,42 +126,41 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			for (int i = 0; i < NON_MATCHES.Length; i++)
 			{
 				Search(values, NON_MATCHES[i]);
-				Db4oUnit.Assert.IsFalse(_searcher.FoundMatch());
+				Assert.IsFalse(_searcher.FoundMatch());
 			}
 		}
 
 		private void AssertBeyond(int[] values)
 		{
 			int res = Search(values, BEYOND);
-			Db4oUnit.Assert.AreEqual(values.Length - 1, res);
-			Db4oUnit.Assert.IsTrue(_searcher.AfterLast());
+			Assert.AreEqual(values.Length - 1, res);
+			Assert.IsTrue(_searcher.AfterLast());
 		}
 
 		private void AssertNotBeyond(int[] values)
 		{
 			int res = Search(values, LAST);
-			Db4oUnit.Assert.AreEqual(values.Length - 1, res);
-			Db4oUnit.Assert.IsFalse(_searcher.AfterLast());
+			Assert.AreEqual(values.Length - 1, res);
+			Assert.IsFalse(_searcher.AfterLast());
 		}
 
 		private void AssertBefore(int[] values)
 		{
 			int res = Search(values, BEFORE);
-			Db4oUnit.Assert.AreEqual(0, res);
-			Db4oUnit.Assert.IsTrue(_searcher.BeforeFirst());
+			Assert.AreEqual(0, res);
+			Assert.IsTrue(_searcher.BeforeFirst());
 		}
 
 		private void AssertNotBefore(int[] values)
 		{
 			int res = Search(values, FIRST);
-			Db4oUnit.Assert.AreEqual(0, res);
-			Db4oUnit.Assert.IsFalse(_searcher.BeforeFirst());
+			Assert.AreEqual(0, res);
+			Assert.IsFalse(_searcher.BeforeFirst());
 		}
 
 		private int Search(int[] values, int value)
 		{
-			_searcher = new Db4objects.Db4o.Internal.Btree.Searcher(Db4objects.Db4o.Internal.Btree.SearchTarget
-				.ANY, values.Length);
+			_searcher = new Searcher(SearchTarget.ANY, values.Length);
 			while (_searcher.Incomplete())
 			{
 				_searcher.ResultIs(values[_searcher.Cursor()] - value);

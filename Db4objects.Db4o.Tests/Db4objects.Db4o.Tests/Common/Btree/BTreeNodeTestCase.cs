@@ -1,10 +1,16 @@
+using System.Collections;
+using Db4oUnit;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Tests.Common.Btree;
+
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public class BTreeNodeTestCase : Db4objects.Db4o.Tests.Common.Btree.BTreeTestCaseBase
+	public class BTreeNodeTestCase : BTreeTestCaseBase
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Btree.BTreeNodeTestCase().RunSolo();
+			new BTreeNodeTestCase().RunSolo();
 		}
 
 		private readonly int[] keys = new int[] { -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 7, 9
@@ -19,32 +25,30 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void TestLastKeyIndex()
 		{
-			Db4objects.Db4o.Internal.Btree.BTreeNode node = Node(3);
-			Db4oUnit.Assert.AreEqual(1, node.LastKeyIndex(Trans()));
-			Db4objects.Db4o.Internal.Transaction trans = NewTransaction();
+			BTreeNode node = Node(3);
+			Assert.AreEqual(1, node.LastKeyIndex(Trans()));
+			Transaction trans = NewTransaction();
 			_btree.Add(trans, 5);
-			Db4oUnit.Assert.AreEqual(1, node.LastKeyIndex(Trans()));
+			Assert.AreEqual(1, node.LastKeyIndex(Trans()));
 			_btree.Commit(trans);
-			Db4oUnit.Assert.AreEqual(2, node.LastKeyIndex(Trans()));
+			Assert.AreEqual(2, node.LastKeyIndex(Trans()));
 		}
 
-		private Db4objects.Db4o.Internal.Btree.BTreeNode Node(int value)
+		private BTreeNode Node(int value)
 		{
-			Db4objects.Db4o.Internal.Btree.IBTreeRange range = Search(value);
-			System.Collections.IEnumerator i = range.Pointers();
+			IBTreeRange range = Search(value);
+			IEnumerator i = range.Pointers();
 			i.MoveNext();
-			Db4objects.Db4o.Internal.Btree.BTreePointer firstPointer = (Db4objects.Db4o.Internal.Btree.BTreePointer
-				)i.Current;
-			Db4objects.Db4o.Internal.Btree.BTreeNode node = firstPointer.Node();
+			BTreePointer firstPointer = (BTreePointer)i.Current;
+			BTreeNode node = firstPointer.Node();
 			node.DebugLoadFully(SystemTrans());
 			return node;
 		}
 
 		public virtual void TestLastPointer()
 		{
-			Db4objects.Db4o.Internal.Btree.BTreeNode node = Node(3);
-			Db4objects.Db4o.Internal.Btree.BTreePointer lastPointer = node.LastPointer(Trans(
-				));
+			BTreeNode node = Node(3);
+			BTreePointer lastPointer = node.LastPointer(Trans());
 			AssertPointerKey(4, lastPointer);
 		}
 	}

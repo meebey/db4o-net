@@ -1,99 +1,96 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Nativequery.Expr;
+using Db4objects.Db4o.Nativequery.Expr.Cmp;
+using Db4objects.Db4o.Nativequery.Optimization;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Nativequery.Optimization
 {
 	public class SODAQueryBuilder
 	{
-		private class SODAQueryVisitor : Db4objects.Db4o.Nativequery.Expr.IExpressionVisitor
+		private class SODAQueryVisitor : IExpressionVisitor
 		{
 			private object _predicate;
 
-			private Db4objects.Db4o.Query.IQuery _query;
+			private IQuery _query;
 
-			private Db4objects.Db4o.Query.IConstraint _constraint;
+			private IConstraint _constraint;
 
-			internal SODAQueryVisitor(Db4objects.Db4o.Query.IQuery query, object predicate)
+			internal SODAQueryVisitor(IQuery query, object predicate)
 			{
 				_query = query;
 				_predicate = predicate;
 			}
 
-			public virtual void Visit(Db4objects.Db4o.Nativequery.Expr.AndExpression expression
-				)
+			public virtual void Visit(AndExpression expression)
 			{
 				expression.Left().Accept(this);
-				Db4objects.Db4o.Query.IConstraint left = _constraint;
+				IConstraint left = _constraint;
 				expression.Right().Accept(this);
 				left.And(_constraint);
 				_constraint = left;
 			}
 
-			public virtual void Visit(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression expression
-				)
+			public virtual void Visit(BoolConstExpression expression)
 			{
 			}
 
-			public virtual void Visit(Db4objects.Db4o.Nativequery.Expr.OrExpression expression
-				)
+			public virtual void Visit(OrExpression expression)
 			{
 				expression.Left().Accept(this);
-				Db4objects.Db4o.Query.IConstraint left = _constraint;
+				IConstraint left = _constraint;
 				expression.Right().Accept(this);
 				left.Or(_constraint);
 				_constraint = left;
 			}
 
-			public virtual void Visit(Db4objects.Db4o.Nativequery.Expr.ComparisonExpression expression
-				)
+			public virtual void Visit(ComparisonExpression expression)
 			{
-				Db4objects.Db4o.Query.IQuery subQuery = _query;
-				System.Collections.IEnumerator fieldNameIterator = FieldNames(expression.Left());
+				IQuery subQuery = _query;
+				IEnumerator fieldNameIterator = FieldNames(expression.Left());
 				while (fieldNameIterator.MoveNext())
 				{
 					subQuery = subQuery.Descend((string)fieldNameIterator.Current);
 				}
-				Db4objects.Db4o.Nativequery.Optimization.ComparisonQueryGeneratingVisitor visitor
-					 = new Db4objects.Db4o.Nativequery.Optimization.ComparisonQueryGeneratingVisitor
-					(_predicate);
+				ComparisonQueryGeneratingVisitor visitor = new ComparisonQueryGeneratingVisitor(_predicate
+					);
 				expression.Right().Accept(visitor);
 				_constraint = subQuery.Constrain(visitor.Value());
-				if (!expression.Op().Equals(Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator
-					.EQUALS))
+				if (!expression.Op().Equals(ComparisonOperator.EQUALS))
 				{
-					if (expression.Op().Equals(Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator
-						.GREATER))
+					if (expression.Op().Equals(ComparisonOperator.GREATER))
 					{
 						_constraint.Greater();
 					}
 					else
 					{
-						if (expression.Op().Equals(Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator
-							.SMALLER))
+						if (expression.Op().Equals(ComparisonOperator.SMALLER))
 						{
 							_constraint.Smaller();
 						}
 						else
 						{
-							if (expression.Op().Equals(Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator
-								.CONTAINS))
+							if (expression.Op().Equals(ComparisonOperator.CONTAINS))
 							{
 								_constraint.Contains();
 							}
 							else
 							{
-								if (expression.Op().Equals(Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator
-									.STARTSWITH))
+								if (expression.Op().Equals(ComparisonOperator.STARTSWITH))
 								{
 									_constraint.StartsWith(true);
 								}
 								else
 								{
-									if (expression.Op().Equals(Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator
-										.ENDSWITH))
+									if (expression.Op().Equals(ComparisonOperator.ENDSWITH))
 									{
 										_constraint.EndsWith(true);
 									}
 									else
 									{
-										throw new System.Exception("Can't handle constraint: " + expression.Op());
+										throw new Exception("Can't handle constraint: " + expression.Op());
 									}
 								}
 							}
@@ -102,23 +99,19 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 				}
 			}
 
-			public virtual void Visit(Db4objects.Db4o.Nativequery.Expr.NotExpression expression
-				)
+			public virtual void Visit(NotExpression expression)
 			{
 				expression.Expr().Accept(this);
 				_constraint.Not();
 			}
 
-			private System.Collections.IEnumerator FieldNames(Db4objects.Db4o.Nativequery.Expr.Cmp.FieldValue
-				 fieldValue)
+			private IEnumerator FieldNames(FieldValue fieldValue)
 			{
-				Db4objects.Db4o.Foundation.Collection4 coll = new Db4objects.Db4o.Foundation.Collection4
-					();
-				Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand curOp = fieldValue;
-				while (curOp is Db4objects.Db4o.Nativequery.Expr.Cmp.FieldValue)
+				Collection4 coll = new Collection4();
+				IComparisonOperand curOp = fieldValue;
+				while (curOp is FieldValue)
 				{
-					Db4objects.Db4o.Nativequery.Expr.Cmp.FieldValue curField = (Db4objects.Db4o.Nativequery.Expr.Cmp.FieldValue
-						)curOp;
+					FieldValue curField = (FieldValue)curOp;
 					coll.Prepend(curField.FieldName());
 					curOp = curField.Parent();
 				}
@@ -126,11 +119,10 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 			}
 		}
 
-		public virtual void OptimizeQuery(Db4objects.Db4o.Nativequery.Expr.IExpression expr
-			, Db4objects.Db4o.Query.IQuery query, object predicate)
+		public virtual void OptimizeQuery(IExpression expr, IQuery query, object predicate
+			)
 		{
-			expr.Accept(new Db4objects.Db4o.Nativequery.Optimization.SODAQueryBuilder.SODAQueryVisitor
-				(query, predicate));
+			expr.Accept(new SODAQueryBuilder.SODAQueryVisitor(query, predicate));
 		}
 	}
 }

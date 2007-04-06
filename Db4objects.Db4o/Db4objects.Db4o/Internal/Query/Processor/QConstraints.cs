@@ -1,3 +1,7 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <summary>Array of constraints for queries.</summary>
@@ -6,30 +10,29 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// Necessary to be returned to Query#constraints()
 	/// </remarks>
 	/// <exclude></exclude>
-	public class QConstraints : Db4objects.Db4o.Internal.Query.Processor.QCon, Db4objects.Db4o.Query.IConstraints
+	public class QConstraints : QCon, IConstraints
 	{
-		private Db4objects.Db4o.Query.IConstraint[] i_constraints;
+		private IConstraint[] i_constraints;
 
-		internal QConstraints(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Query.IConstraint[]
-			 constraints) : base(a_trans)
+		internal QConstraints(Transaction a_trans, IConstraint[] constraints) : base(a_trans
+			)
 		{
 			i_constraints = constraints;
 		}
 
-		internal override Db4objects.Db4o.Query.IConstraint Join(Db4objects.Db4o.Query.IConstraint
-			 a_with, bool a_and)
+		internal override IConstraint Join(IConstraint a_with, bool a_and)
 		{
 			lock (StreamLock())
 			{
-				if (!(a_with is Db4objects.Db4o.Internal.Query.Processor.QCon))
+				if (!(a_with is QCon))
 				{
 					return null;
 				}
-				return ((Db4objects.Db4o.Internal.Query.Processor.QCon)a_with).Join1(this, a_and);
+				return ((QCon)a_with).Join1(this, a_and);
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint[] ToArray()
+		public virtual IConstraint[] ToArray()
 		{
 			lock (StreamLock())
 			{
@@ -37,7 +40,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Contains()
+		public override IConstraint Contains()
 		{
 			lock (StreamLock())
 			{
@@ -49,7 +52,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Equal()
+		public override IConstraint Equal()
 		{
 			lock (StreamLock())
 			{
@@ -61,7 +64,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Greater()
+		public override IConstraint Greater()
 		{
 			lock (StreamLock())
 			{
@@ -73,7 +76,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Identity()
+		public override IConstraint Identity()
 		{
 			lock (StreamLock())
 			{
@@ -85,7 +88,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Not()
+		public override IConstraint Not()
 		{
 			lock (StreamLock())
 			{
@@ -97,7 +100,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Like()
+		public override IConstraint Like()
 		{
 			lock (StreamLock())
 			{
@@ -109,7 +112,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint StartsWith(bool caseSensitive)
+		public override IConstraint StartsWith(bool caseSensitive)
 		{
 			lock (StreamLock())
 			{
@@ -121,7 +124,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint EndsWith(bool caseSensitive)
+		public override IConstraint EndsWith(bool caseSensitive)
 		{
 			lock (StreamLock())
 			{
@@ -133,7 +136,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Smaller()
+		public override IConstraint Smaller()
 		{
 			lock (StreamLock())
 			{

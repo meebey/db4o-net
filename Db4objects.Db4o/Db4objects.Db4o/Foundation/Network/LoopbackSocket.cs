@@ -1,28 +1,28 @@
+using Db4objects.Db4o.Foundation.Network;
+
 namespace Db4objects.Db4o.Foundation.Network
 {
 	/// <summary>Fakes a socket connection for an embedded client.</summary>
 	/// <remarks>Fakes a socket connection for an embedded client.</remarks>
-	public class LoopbackSocket : Db4objects.Db4o.Foundation.Network.ISocket4
+	public class LoopbackSocket : ISocket4
 	{
-		private readonly Db4objects.Db4o.Foundation.Network.ILoopbackSocketServer _server;
+		private readonly ILoopbackSocketServer _server;
 
 		private Db4objects.Db4o.Foundation.Network.LoopbackSocket _affiliate;
 
-		private Db4objects.Db4o.Foundation.Network.ByteBuffer4 _uploadBuffer;
+		private BlockingByteChannel _uploadBuffer;
 
-		private Db4objects.Db4o.Foundation.Network.ByteBuffer4 _downloadBuffer;
+		private BlockingByteChannel _downloadBuffer;
 
-		public LoopbackSocket(Db4objects.Db4o.Foundation.Network.ILoopbackSocketServer a_server
-			, int timeout)
+		public LoopbackSocket(ILoopbackSocketServer a_server, int timeout)
 		{
 			_server = a_server;
-			_uploadBuffer = new Db4objects.Db4o.Foundation.Network.ByteBuffer4(timeout);
-			_downloadBuffer = new Db4objects.Db4o.Foundation.Network.ByteBuffer4(timeout);
+			_uploadBuffer = new BlockingByteChannel(timeout);
+			_downloadBuffer = new BlockingByteChannel(timeout);
 		}
 
-		public LoopbackSocket(Db4objects.Db4o.Foundation.Network.ILoopbackSocketServer a_server
-			, int timeout, Db4objects.Db4o.Foundation.Network.LoopbackSocket affiliate) : this
-			(a_server, timeout)
+		public LoopbackSocket(ILoopbackSocketServer a_server, int timeout, Db4objects.Db4o.Foundation.Network.LoopbackSocket
+			 affiliate) : this(a_server, timeout)
 		{
 			_affiliate = affiliate;
 			affiliate._affiliate = this;
@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			_uploadBuffer.Write(i);
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Network.ISocket4 OpenParalellSocket()
+		public virtual ISocket4 OpenParalellSocket()
 		{
 			return _server.OpenClientSocket();
 		}

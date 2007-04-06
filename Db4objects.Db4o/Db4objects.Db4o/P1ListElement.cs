@@ -1,9 +1,12 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o
 {
 	/// <summary>element of linked lists</summary>
 	/// <exclude></exclude>
 	/// <persistent></persistent>
-	public class P1ListElement : Db4objects.Db4o.P1Object
+	public class P1ListElement : P1Object
 	{
 		public Db4objects.Db4o.P1ListElement i_next;
 
@@ -13,8 +16,8 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		public P1ListElement(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.P1ListElement
-			 a_next, object a_object) : base(a_trans)
+		public P1ListElement(Transaction a_trans, Db4objects.Db4o.P1ListElement a_next, object
+			 a_object) : base(a_trans)
 		{
 			i_next = a_next;
 			i_object = a_object;
@@ -36,8 +39,7 @@ namespace Db4objects.Db4o
 			return i_object;
 		}
 
-		public override object CreateDefault(Db4objects.Db4o.Internal.Transaction a_trans
-			)
+		public override object CreateDefault(Transaction a_trans)
 		{
 			Db4objects.Db4o.P1ListElement elem4 = new Db4objects.Db4o.P1ListElement();
 			elem4.SetTrans(a_trans);

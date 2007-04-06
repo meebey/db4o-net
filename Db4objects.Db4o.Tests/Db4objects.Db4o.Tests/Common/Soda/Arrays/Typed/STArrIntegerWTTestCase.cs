@@ -1,6 +1,9 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 {
-	public class STArrIntegerWTTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STArrIntegerWTTestCase : SodaBaseTestCase
 	{
 		public int[] intArr;
 
@@ -25,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 
 		public virtual void TestDefaultContainsOne()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrIntegerWTTestCase
 				(new int[] { 17 }));
 			Expect(q, new int[] { 3, 4 });
@@ -33,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 
 		public virtual void TestDefaultContainsTwo()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrIntegerWTTestCase
 				(new int[] { 17, 25 }));
 			Expect(q, new int[] { 4 });

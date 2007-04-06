@@ -1,18 +1,19 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Marshall;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
-	public class StringMarshaller1 : Db4objects.Db4o.Internal.Marshall.StringMarshaller
+	public class StringMarshaller1 : StringMarshaller
 	{
-		private const int DEFRAGMENT_INCREMENT_OFFSET = Db4objects.Db4o.Internal.Const4.INT_LENGTH
-			 * 2;
+		private const int DEFRAGMENT_INCREMENT_OFFSET = Const4.INT_LENGTH * 2;
 
 		public override bool InlinedStrings()
 		{
 			return true;
 		}
 
-		public override void CalculateLengths(Db4objects.Db4o.Internal.Transaction trans, 
-			Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes header, bool topLevel, 
-			object obj, bool withIndirection)
+		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
+			, bool topLevel, object obj, bool withIndirection)
 		{
 			if (topLevel)
 			{
@@ -33,10 +34,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			header.AddPayLoadLength(trans.Stream().StringIO().Length((string)obj));
 		}
 
-		public override object WriteNew(object obj, bool topLevel, Db4objects.Db4o.Internal.StatefulBuffer
-			 writer, bool redirect)
+		public override object WriteNew(object obj, bool topLevel, StatefulBuffer writer, 
+			bool redirect)
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = writer.GetStream();
+			ObjectContainerBase stream = writer.GetStream();
 			string str = (string)obj;
 			if (!redirect)
 			{
@@ -52,15 +53,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return null;
 			}
 			int length = stream.StringIO().Length(str);
-			Db4objects.Db4o.Internal.StatefulBuffer bytes = new Db4objects.Db4o.Internal.StatefulBuffer
-				(writer.GetTransaction(), length);
+			StatefulBuffer bytes = new StatefulBuffer(writer.GetTransaction(), length);
 			WriteShort(stream, str, bytes);
 			writer.WritePayload(bytes, topLevel);
 			return bytes;
 		}
 
-		public override Db4objects.Db4o.Internal.Buffer ReadIndexEntry(Db4objects.Db4o.Internal.StatefulBuffer
-			 parentSlot)
+		public override Db4objects.Db4o.Internal.Buffer ReadIndexEntry(StatefulBuffer parentSlot
+			)
 		{
 			int payLoadOffSet = parentSlot.ReadInt();
 			int length = parentSlot.ReadInt();
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return parentSlot.ReadPayloadWriter(payLoadOffSet, length);
 		}
 
-		public override Db4objects.Db4o.Internal.Buffer ReadSlotFromParentSlot(Db4objects.Db4o.Internal.ObjectContainerBase
+		public override Db4objects.Db4o.Internal.Buffer ReadSlotFromParentSlot(ObjectContainerBase
 			 stream, Db4objects.Db4o.Internal.Buffer reader)
 		{
 			int payLoadOffSet = reader.ReadInt();
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return reader.ReadPayloadReader(payLoadOffSet, length);
 		}
 
-		public override void Defrag(Db4objects.Db4o.Internal.ISlotReader reader)
+		public override void Defrag(ISlotReader reader)
 		{
 			reader.IncrementOffset(DEFRAGMENT_INCREMENT_OFFSET);
 		}

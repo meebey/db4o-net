@@ -1,13 +1,28 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Convert;
+using Db4objects.Db4o.Internal.Fileheader;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Query.Result;
+using Db4objects.Db4o.Internal.Slots;
+using Sharpen;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public abstract class LocalObjectContainer : Db4objects.Db4o.Internal.ObjectContainerBase
+	public abstract class LocalObjectContainer : ObjectContainerBase
 	{
 		private const int DEFAULT_FREESPACE_ID = 0;
 
-		protected Db4objects.Db4o.Internal.Fileheader.FileHeader _fileHeader;
+		protected FileHeader _fileHeader;
 
-		private Db4objects.Db4o.Foundation.Collection4 i_dirty;
+		private Collection4 i_dirty;
 
 		private Db4objects.Db4o.Internal.Freespace.FreespaceManager _freespaceManager;
 
@@ -15,25 +30,24 @@ namespace Db4objects.Db4o.Internal
 
 		private bool i_isServer = false;
 
-		private Db4objects.Db4o.Foundation.Tree i_prefetchedIDs;
+		private Tree i_prefetchedIDs;
 
-		private Db4objects.Db4o.Foundation.Hashtable4 i_semaphores;
+		private Hashtable4 i_semaphores;
 
 		private int _blockEndAddress;
 
-		private Db4objects.Db4o.Foundation.Tree _freeOnCommit;
+		private Tree _freeOnCommit;
 
 		private Db4objects.Db4o.Internal.SystemData _systemData;
 
-		internal LocalObjectContainer(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.Internal.ObjectContainerBase
-			 a_parent) : base(config, a_parent)
+		internal LocalObjectContainer(IConfiguration config, ObjectContainerBase a_parent
+			) : base(config, a_parent)
 		{
 		}
 
-		public override Db4objects.Db4o.Internal.Transaction NewTransaction(Db4objects.Db4o.Internal.Transaction
-			 parentTransaction)
+		public override Transaction NewTransaction(Transaction parentTransaction)
 		{
-			return new Db4objects.Db4o.Internal.LocalTransaction(this, parentTransaction);
+			return new LocalTransaction(this, parentTransaction);
 		}
 
 		public virtual Db4objects.Db4o.Internal.Freespace.FreespaceManager FreespaceManager
@@ -73,20 +87,20 @@ namespace Db4objects.Db4o.Internal
 		internal virtual void ConfigureNewFile()
 		{
 			NewSystemData(ConfigImpl().FreespaceSystem());
-			SystemData().ConverterVersion(Db4objects.Db4o.Internal.Convert.Converter.VERSION);
+			SystemData().ConverterVersion(Converter.VERSION);
 			CreateStringIO(_systemData.StringEncoding());
 			GenerateNewIdentity();
 			_freespaceManager = Db4objects.Db4o.Internal.Freespace.FreespaceManager.CreateNew
 				(this);
 			BlockSize(ConfigImpl().BlockSize());
-			_fileHeader = new Db4objects.Db4o.Internal.Fileheader.FileHeader1();
+			_fileHeader = new FileHeader1();
 			SetRegularEndAddress(_fileHeader.Length());
 			InitNewClassCollection();
 			InitializeEssentialClasses();
 			_fileHeader.InitNew(this);
 			_freespaceManager.OnNew(this);
 			_freespaceManager.Start(_systemData.FreespaceAddress());
-			if (Db4objects.Db4o.Debug.freespace && Db4objects.Db4o.Debug.freespaceChecker)
+			if (Debug.freespace && Debug.freespaceChecker)
 			{
 				_fmChecker.Start(0);
 			}
@@ -117,48 +131,45 @@ namespace Db4objects.Db4o.Internal
 			ClassCollection().InitTables(1);
 		}
 
-		public Db4objects.Db4o.Internal.Btree.BTree CreateBTreeClassIndex(int id)
+		public BTree CreateBTreeClassIndex(int id)
 		{
-			return new Db4objects.Db4o.Internal.Btree.BTree(i_trans, id, new Db4objects.Db4o.Internal.IDHandler
-				(this));
+			return new BTree(i_trans, id, new IDHandler(this));
 		}
 
-		public Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult NewQueryResult(Db4objects.Db4o.Internal.Transaction
-			 trans)
+		public AbstractQueryResult NewQueryResult(Transaction trans)
 		{
 			return NewQueryResult(trans, Config().QueryEvaluationMode());
 		}
 
-		public sealed override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult 
-			NewQueryResult(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Config.QueryEvaluationMode
+		public sealed override AbstractQueryResult NewQueryResult(Transaction trans, QueryEvaluationMode
 			 mode)
 		{
-			if (mode == Db4objects.Db4o.Config.QueryEvaluationMode.IMMEDIATE)
+			if (mode == QueryEvaluationMode.IMMEDIATE)
 			{
-				return new Db4objects.Db4o.Internal.Query.Result.IdListQueryResult(trans);
+				return new IdListQueryResult(trans);
 			}
-			return new Db4objects.Db4o.Internal.Query.Result.HybridQueryResult(trans, mode);
+			return new HybridQueryResult(trans, mode);
 		}
 
-		public sealed override bool Delete4(Db4objects.Db4o.Internal.Transaction ta, Db4objects.Db4o.Internal.ObjectReference
-			 yo, int a_cascade, bool userCall)
+		public sealed override bool Delete4(Transaction ta, ObjectReference yo, int a_cascade
+			, bool userCall)
 		{
 			int id = yo.GetID();
-			Db4objects.Db4o.Internal.StatefulBuffer reader = ReadWriterByID(ta, id);
+			StatefulBuffer reader = ReadWriterByID(ta, id);
 			if (reader != null)
 			{
 				object obj = yo.GetObject();
 				if (obj != null)
 				{
-					if ((!ShowInternalClasses()) && Db4objects.Db4o.Internal.Const4.CLASS_INTERNAL.IsAssignableFrom
-						(obj.GetType()))
+					if ((!ShowInternalClasses()) && Const4.CLASS_INTERNAL.IsAssignableFrom(obj.GetType
+						()))
 					{
 						return false;
 					}
 				}
 				reader.SetCascadeDeletes(a_cascade);
 				reader.SlotDelete();
-				Db4objects.Db4o.Internal.ClassMetadata yc = yo.GetYapClass();
+				ClassMetadata yc = yo.GetYapClass();
 				yc.Delete(reader, obj);
 				return true;
 			}
@@ -169,7 +180,7 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract string FileName();
 
-		public virtual void Free(Db4objects.Db4o.Internal.Slots.Slot slot)
+		public virtual void Free(Slot slot)
 		{
 			if (slot == null)
 			{
@@ -189,7 +200,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			_freespaceManager.Free(a_address, a_length);
-			if (Db4objects.Db4o.Debug.freespace && Db4objects.Db4o.Debug.freespaceChecker)
+			if (Debug.freespace && Debug.freespaceChecker)
 			{
 				_fmChecker.Free(a_address, a_length);
 			}
@@ -204,7 +215,7 @@ namespace Db4objects.Db4o.Internal
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _AnonymousInnerClass213 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass213 : IVisitor4
 		{
 			public _AnonymousInnerClass213(LocalObjectContainer _enclosing)
 			{
@@ -213,8 +224,7 @@ namespace Db4objects.Db4o.Internal
 
 			public void Visit(object a_object)
 			{
-				this._enclosing.Free(((Db4objects.Db4o.Internal.TreeInt)a_object)._key, Db4objects.Db4o.Internal.Const4
-					.POINTER_LENGTH);
+				this._enclosing.Free(((TreeInt)a_object)._key, Const4.POINTER_LENGTH);
 			}
 
 			private readonly LocalObjectContainer _enclosing;
@@ -242,30 +252,27 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (i_lock)
 			{
-				SetIdentity(Db4objects.Db4o.Ext.Db4oDatabase.Generate());
+				SetIdentity(Db4oDatabase.Generate());
 			}
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult GetAll(
-			Db4objects.Db4o.Internal.Transaction trans)
+		public override AbstractQueryResult GetAll(Transaction trans)
 		{
 			return GetAll(trans, Config().QueryEvaluationMode());
 		}
 
-		public virtual Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult GetAll(Db4objects.Db4o.Internal.Transaction
-			 trans, Db4objects.Db4o.Config.QueryEvaluationMode mode)
+		public virtual AbstractQueryResult GetAll(Transaction trans, QueryEvaluationMode 
+			mode)
 		{
-			Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult queryResult = NewQueryResult
-				(trans, mode);
+			AbstractQueryResult queryResult = NewQueryResult(trans, mode);
 			queryResult.LoadFromClassIndexes(ClassCollection().Iterator());
 			return queryResult;
 		}
 
 		internal int GetPointerSlot()
 		{
-			int id = GetSlot(Db4objects.Db4o.Internal.Const4.POINTER_LENGTH);
-			((Db4objects.Db4o.Internal.LocalTransaction)SystemTransaction()).WritePointer(id, 
-				0, 0);
+			int id = GetSlot(Const4.POINTER_LENGTH);
+			((LocalTransaction)SystemTransaction()).WritePointer(id, 0, 0);
 			if (i_handlers.IsSystemHandler(id))
 			{
 				return GetPointerSlot();
@@ -277,7 +284,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			return GetSlot1(a_length);
 			int address = GetSlot1(a_length);
-			Db4objects.Db4o.DTrace.GET_SLOT.LogLength(address, a_length);
+			DTrace.GET_SLOT.LogLength(address, a_length);
 			return address;
 		}
 
@@ -286,19 +293,18 @@ namespace Db4objects.Db4o.Internal
 			if (_freespaceManager != null)
 			{
 				int freeAddress = _freespaceManager.GetSlot(bytes);
-				if (Db4objects.Db4o.Debug.freespace && Db4objects.Db4o.Debug.freespaceChecker)
+				if (Debug.freespace && Debug.freespaceChecker)
 				{
 					if (freeAddress > 0)
 					{
-						Db4objects.Db4o.Foundation.Collection4 wrongOnes = new Db4objects.Db4o.Foundation.Collection4
-							();
+						Collection4 wrongOnes = new Collection4();
 						int freeCheck = _fmChecker.GetSlot(bytes);
 						while (freeCheck != freeAddress && freeCheck > 0)
 						{
 							wrongOnes.Add(new int[] { freeCheck, bytes });
 							freeCheck = _fmChecker.GetSlot(bytes);
 						}
-						System.Collections.IEnumerator i = wrongOnes.GetEnumerator();
+						IEnumerator i = wrongOnes.GetEnumerator();
 						while (i.MoveNext())
 						{
 							int[] adrLength = (int[])i.Current;
@@ -317,7 +323,7 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			int blocksNeeded = BlocksFor(bytes);
-			if (Db4objects.Db4o.Debug.xbytes && Db4objects.Db4o.Deploy.overwrite)
+			if (Debug.xbytes && Deploy.overwrite)
 			{
 				OverwriteDeletedBytes(_blockEndAddress, blocksNeeded * BlockSize());
 			}
@@ -339,7 +345,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Rollback1();
 				SwitchToReadOnlyMode();
-				Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(69);
+				Exceptions4.ThrowRuntimeException(69);
 			}
 		}
 
@@ -352,18 +358,18 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_blockEndAddress > BlocksFor(FileLength()))
 			{
-				Db4objects.Db4o.Internal.StatefulBuffer writer = GetWriter(SystemTransaction(), _blockEndAddress
-					 - 1, BlockSize());
+				StatefulBuffer writer = GetWriter(SystemTransaction(), _blockEndAddress - 1, BlockSize
+					());
 				writer.Write();
 			}
 		}
 
-		public override Db4objects.Db4o.Ext.Db4oDatabase Identity()
+		public override Db4oDatabase Identity()
 		{
 			return _systemData.Identity();
 		}
 
-		public virtual void SetIdentity(Db4objects.Db4o.Ext.Db4oDatabase identity)
+		public virtual void SetIdentity(Db4oDatabase identity)
 		{
 			_systemData.Identity(identity);
 			_timeStampIdGenerator.Next();
@@ -371,7 +377,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal override void Initialize2()
 		{
-			i_dirty = new Db4objects.Db4o.Foundation.Collection4();
+			i_dirty = new Collection4();
 			base.Initialize2();
 		}
 
@@ -380,13 +386,12 @@ namespace Db4objects.Db4o.Internal
 			return i_isServer;
 		}
 
-		public Db4objects.Db4o.Internal.Slots.Pointer4 NewSlot(Db4objects.Db4o.Internal.Transaction
-			 a_trans, int a_length)
+		public Pointer4 NewSlot(Transaction a_trans, int a_length)
 		{
 			int id = GetPointerSlot();
 			int address = GetSlot(a_length);
 			a_trans.SetPointer(id, address, a_length);
-			return new Db4objects.Db4o.Internal.Slots.Pointer4(id, address);
+			return new Pointer4(id, address);
 		}
 
 		public sealed override int NewUserObject()
@@ -396,35 +401,29 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void PrefetchedIDConsumed(int a_id)
 		{
-			i_prefetchedIDs = i_prefetchedIDs.RemoveLike(new Db4objects.Db4o.Internal.TreeIntObject
-				(a_id));
+			i_prefetchedIDs = i_prefetchedIDs.RemoveLike(new TreeIntObject(a_id));
 		}
 
 		public virtual int PrefetchID()
 		{
 			int id = GetPointerSlot();
-			i_prefetchedIDs = Db4objects.Db4o.Foundation.Tree.Add(i_prefetchedIDs, new Db4objects.Db4o.Internal.TreeInt
-				(id));
+			i_prefetchedIDs = Tree.Add(i_prefetchedIDs, new TreeInt(id));
 			return id;
 		}
 
-		public virtual Db4objects.Db4o.Internal.Slots.ReferencedSlot ProduceFreeOnCommitEntry
-			(int id)
+		public virtual ReferencedSlot ProduceFreeOnCommitEntry(int id)
 		{
-			Db4objects.Db4o.Foundation.Tree node = Db4objects.Db4o.Internal.TreeInt.Find(_freeOnCommit
-				, id);
+			Tree node = TreeInt.Find(_freeOnCommit, id);
 			if (node != null)
 			{
-				return (Db4objects.Db4o.Internal.Slots.ReferencedSlot)node;
+				return (ReferencedSlot)node;
 			}
-			Db4objects.Db4o.Internal.Slots.ReferencedSlot slot = new Db4objects.Db4o.Internal.Slots.ReferencedSlot
-				(id);
-			_freeOnCommit = Db4objects.Db4o.Foundation.Tree.Add(_freeOnCommit, slot);
+			ReferencedSlot slot = new ReferencedSlot(id);
+			_freeOnCommit = Tree.Add(_freeOnCommit, slot);
 			return slot;
 		}
 
-		public virtual void ReduceFreeOnCommitReferences(Db4objects.Db4o.Internal.Slots.ReferencedSlot
-			 slot)
+		public virtual void ReduceFreeOnCommitReferences(ReferencedSlot slot)
 		{
 			if (slot.RemoveReferenceIsLast())
 			{
@@ -432,8 +431,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual void FreeDuringCommit(Db4objects.Db4o.Internal.Slots.ReferencedSlot
-			 referencedSlot, Db4objects.Db4o.Internal.Slots.Slot slot)
+		public virtual void FreeDuringCommit(ReferencedSlot referencedSlot, Slot slot)
 		{
 			_freeOnCommit = referencedSlot.Free(this, _freeOnCommit, slot);
 		}
@@ -446,43 +444,44 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public override Db4objects.Db4o.Internal.StatefulBuffer ReadWriterByID(Db4objects.Db4o.Internal.Transaction
-			 a_ta, int a_id)
+		public override StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id)
 		{
-			return (Db4objects.Db4o.Internal.StatefulBuffer)ReadReaderOrWriterByID(a_ta, a_id
-				, false);
+			return (StatefulBuffer)ReadReaderOrWriterByID(a_ta, a_id, false);
 		}
 
-		public override Db4objects.Db4o.Internal.StatefulBuffer[] ReadWritersByIDs(Db4objects.Db4o.Internal.Transaction
-			 a_ta, int[] ids)
+		public override StatefulBuffer[] ReadWritersByIDs(Transaction a_ta, int[] ids)
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer[] yapWriters = new Db4objects.Db4o.Internal.StatefulBuffer
-				[ids.Length];
+			StatefulBuffer[] yapWriters = new StatefulBuffer[ids.Length];
 			for (int i = 0; i < ids.Length; ++i)
 			{
-				yapWriters[i] = (Db4objects.Db4o.Internal.StatefulBuffer)ReadReaderOrWriterByID(a_ta
-					, ids[i], false);
+				if (ids[i] == 0)
+				{
+					yapWriters[i] = null;
+				}
+				else
+				{
+					yapWriters[i] = (StatefulBuffer)ReadReaderOrWriterByID(a_ta, ids[i], false);
+				}
 			}
 			return yapWriters;
 		}
 
-		public override Db4objects.Db4o.Internal.Buffer ReadReaderByID(Db4objects.Db4o.Internal.Transaction
-			 a_ta, int a_id)
+		public override Db4objects.Db4o.Internal.Buffer ReadReaderByID(Transaction a_ta, 
+			int a_id)
 		{
 			return ReadReaderOrWriterByID(a_ta, a_id, true);
 		}
 
-		private Db4objects.Db4o.Internal.Buffer ReadReaderOrWriterByID(Db4objects.Db4o.Internal.Transaction
-			 a_ta, int a_id, bool useReader)
+		private Db4objects.Db4o.Internal.Buffer ReadReaderOrWriterByID(Transaction a_ta, 
+			int a_id, bool useReader)
 		{
-			if (a_id == 0)
+			if (a_id <= 0)
 			{
-				return null;
+				throw new ArgumentException("id must be greater than 0");
 			}
 			try
 			{
-				Db4objects.Db4o.Internal.Slots.Slot slot = ((Db4objects.Db4o.Internal.LocalTransaction
-					)a_ta).GetCurrentSlotOfID(a_id);
+				Slot slot = ((LocalTransaction)a_ta).GetCurrentSlotOfID(a_id);
 				if (slot == null)
 				{
 					return null;
@@ -499,12 +498,12 @@ namespace Db4objects.Db4o.Internal
 				else
 				{
 					reader = GetWriter(a_ta, slot._address, slot._length);
-					((Db4objects.Db4o.Internal.StatefulBuffer)reader).SetID(a_id);
+					((StatefulBuffer)reader).SetID(a_id);
 				}
 				reader.ReadEncrypt(this, slot._address);
 				return reader;
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
 			}
 			return null;
@@ -519,12 +518,11 @@ namespace Db4objects.Db4o.Internal
 		{
 			NewSystemData(Db4objects.Db4o.Internal.Freespace.FreespaceManager.FM_LEGACY_RAM);
 			BlockSizeReadFromFile(1);
-			_fileHeader = Db4objects.Db4o.Internal.Fileheader.FileHeader.ReadFixedPart(this);
+			_fileHeader = FileHeader.ReadFixedPart(this);
 			CreateStringIO(_systemData.StringEncoding());
 			ClassCollection().SetID(_systemData.ClassCollectionID());
 			ClassCollection().Read(SystemTransaction());
-			Db4objects.Db4o.Internal.Convert.Converter.Convert(new Db4objects.Db4o.Internal.Convert.ConversionStage.ClassCollectionAvailableStage
-				(this));
+			Converter.Convert(new ConversionStage.ClassCollectionAvailableStage(this));
 			ReadHeaderVariablePart();
 			_freespaceManager = Db4objects.Db4o.Internal.Freespace.FreespaceManager.CreateNew
 				(this, _systemData.FreespaceSystem());
@@ -542,8 +540,7 @@ namespace Db4objects.Db4o.Internal
 				_fileHeader.WriteVariablePart(this, 1);
 			}
 			WriteHeader(true, false);
-			Db4objects.Db4o.Internal.LocalTransaction trans = (Db4objects.Db4o.Internal.LocalTransaction
-				)_fileHeader.InterruptedTransaction();
+			LocalTransaction trans = (LocalTransaction)_fileHeader.InterruptedTransaction();
 			if (trans != null)
 			{
 				if (!ConfigImpl().CommitRecoveryDisabled())
@@ -551,10 +548,9 @@ namespace Db4objects.Db4o.Internal
 					trans.WriteOld();
 				}
 			}
-			if (Db4objects.Db4o.Internal.Convert.Converter.Convert(new Db4objects.Db4o.Internal.Convert.ConversionStage.SystemUpStage
-				(this)))
+			if (Converter.Convert(new ConversionStage.SystemUpStage(this)))
 			{
-				_systemData.ConverterVersion(Db4objects.Db4o.Internal.Convert.Converter.VERSION);
+				_systemData.ConverterVersion(Converter.VERSION);
 				_fileHeader.WriteVariablePart(this, 1);
 				GetTransaction().Commit();
 			}
@@ -587,8 +583,7 @@ namespace Db4objects.Db4o.Internal
 			ReleaseSemaphore(CheckTransaction(null), name);
 		}
 
-		public virtual void ReleaseSemaphore(Db4objects.Db4o.Internal.Transaction ta, string
-			 name)
+		public virtual void ReleaseSemaphore(Transaction ta, string name)
 		{
 			if (i_semaphores != null)
 			{
@@ -603,24 +598,24 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public override void ReleaseSemaphores(Db4objects.Db4o.Internal.Transaction ta)
+		public override void ReleaseSemaphores(Transaction ta)
 		{
 			if (i_semaphores != null)
 			{
-				Db4objects.Db4o.Foundation.Hashtable4 semaphores = i_semaphores;
+				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass591(this, semaphores), ta
+					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass596(this, semaphores), ta
 						);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass591 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass596 : IVisitor4
 		{
-			public _AnonymousInnerClass591(LocalObjectContainer _enclosing, Db4objects.Db4o.Foundation.Hashtable4
-				 semaphores)
+			public _AnonymousInnerClass596(LocalObjectContainer _enclosing, Hashtable4 semaphores
+				)
 			{
 				this._enclosing = _enclosing;
 				this.semaphores = semaphores;
@@ -633,7 +628,7 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly LocalObjectContainer _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.Hashtable4 semaphores;
+			private readonly Hashtable4 semaphores;
 		}
 
 		public sealed override void Rollback1()
@@ -641,8 +636,7 @@ namespace Db4objects.Db4o.Internal
 			GetTransaction().Rollback();
 		}
 
-		public sealed override void SetDirtyInSystemTransaction(Db4objects.Db4o.Internal.PersistentBase
-			 a_object)
+		public sealed override void SetDirtyInSystemTransaction(PersistentBase a_object)
 		{
 			a_object.SetStateDirty();
 			a_object.CacheDirty(i_dirty);
@@ -653,18 +647,17 @@ namespace Db4objects.Db4o.Internal
 			return SetSemaphore(CheckTransaction(null), name, timeout);
 		}
 
-		public virtual bool SetSemaphore(Db4objects.Db4o.Internal.Transaction ta, string 
-			name, int timeout)
+		public virtual bool SetSemaphore(Transaction ta, string name, int timeout)
 		{
 			if (name == null)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			lock (i_lock)
 			{
 				if (i_semaphores == null)
 				{
-					i_semaphores = new Db4objects.Db4o.Foundation.Hashtable4(10);
+					i_semaphores = new Hashtable4(10);
 				}
 			}
 			lock (i_semaphores)
@@ -679,7 +672,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					return true;
 				}
-				long endtime = Sharpen.Runtime.CurrentTimeMillis() + timeout;
+				long endtime = Runtime.CurrentTimeMillis() + timeout;
 				long waitTime = timeout;
 				while (waitTime > 0)
 				{
@@ -687,7 +680,7 @@ namespace Db4objects.Db4o.Internal
 					{
 						Sharpen.Runtime.Wait(i_semaphores, waitTime);
 					}
-					catch (System.Exception e)
+					catch (Exception e)
 					{
 					}
 					if (ClassCollection() == null)
@@ -700,7 +693,7 @@ namespace Db4objects.Db4o.Internal
 						i_semaphores.Put(name, ta);
 						return true;
 					}
-					waitTime = endtime - Sharpen.Runtime.CurrentTimeMillis();
+					waitTime = endtime - Runtime.CurrentTimeMillis();
 				}
 				return false;
 			}
@@ -747,11 +740,10 @@ namespace Db4objects.Db4o.Internal
 
 		private void WriteCachedDirty()
 		{
-			System.Collections.IEnumerator i = i_dirty.GetEnumerator();
+			IEnumerator i = i_dirty.GetEnumerator();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Internal.PersistentBase dirty = (Db4objects.Db4o.Internal.PersistentBase
-					)i.Current;
+				PersistentBase dirty = (PersistentBase)i.Current;
 				dirty.Write(SystemTransaction());
 				dirty.NotCachedDirty();
 			}
@@ -769,8 +761,8 @@ namespace Db4objects.Db4o.Internal
 			_timeStampIdGenerator.SetClean();
 		}
 
-		public sealed override void WriteEmbedded(Db4objects.Db4o.Internal.StatefulBuffer
-			 a_parent, Db4objects.Db4o.Internal.StatefulBuffer a_child)
+		public sealed override void WriteEmbedded(StatefulBuffer a_parent, StatefulBuffer
+			 a_child)
 		{
 			int length = a_child.GetLength();
 			int address = GetSlot(length);
@@ -791,12 +783,11 @@ namespace Db4objects.Db4o.Internal
 				freespaceID = _freespaceManager.Shutdown();
 				_freespaceManager = null;
 			}
-			if (Db4objects.Db4o.Debug.freespace && Db4objects.Db4o.Debug.freespaceChecker)
+			if (Debug.freespace && Debug.freespaceChecker)
 			{
 				freespaceID = _fmChecker.Shutdown();
 			}
-			Db4objects.Db4o.Internal.StatefulBuffer writer = GetWriter(SystemTransaction(), 0
-				, _fileHeader.Length());
+			StatefulBuffer writer = GetWriter(SystemTransaction(), 0, _fileHeader.Length());
 			_fileHeader.WriteFixedPart(this, startFileLockingThread, shuttingDown, writer, BlockSize
 				(), freespaceID);
 			if (shuttingDown)
@@ -806,8 +797,8 @@ namespace Db4objects.Db4o.Internal
 			SyncFiles();
 		}
 
-		public sealed override void WriteNew(Db4objects.Db4o.Internal.ClassMetadata a_yapClass
-			, Db4objects.Db4o.Internal.StatefulBuffer aWriter)
+		public sealed override void WriteNew(ClassMetadata a_yapClass, StatefulBuffer aWriter
+			)
 		{
 			aWriter.WriteEncrypt(this, aWriter.GetAddress(), 0);
 			if (a_yapClass == null)
@@ -827,9 +818,9 @@ namespace Db4objects.Db4o.Internal
 			_fileHeader.WriteTransactionPointer(SystemTransaction(), address);
 		}
 
-		public void GetSlotForUpdate(Db4objects.Db4o.Internal.StatefulBuffer forWriter)
+		public void GetSlotForUpdate(StatefulBuffer forWriter)
 		{
-			Db4objects.Db4o.Internal.Transaction trans = forWriter.GetTransaction();
+			Transaction trans = forWriter.GetTransaction();
 			int id = forWriter.GetID();
 			int length = forWriter.GetLength();
 			int address = GetSlot(length);
@@ -837,8 +828,8 @@ namespace Db4objects.Db4o.Internal
 			trans.ProduceUpdateSlotChange(id, address, length);
 		}
 
-		public sealed override void WriteUpdate(Db4objects.Db4o.Internal.ClassMetadata a_yapClass
-			, Db4objects.Db4o.Internal.StatefulBuffer a_bytes)
+		public sealed override void WriteUpdate(ClassMetadata a_yapClass, StatefulBuffer 
+			a_bytes)
 		{
 			if (a_bytes.GetAddress() == 0)
 			{
@@ -853,12 +844,12 @@ namespace Db4objects.Db4o.Internal
 			_timeStampIdGenerator.SetClean();
 		}
 
-		public override Db4objects.Db4o.Ext.ISystemInfo SystemInfo()
+		public override ISystemInfo SystemInfo()
 		{
-			return new Db4objects.Db4o.Internal.SystemInfoFileImpl(this);
+			return new SystemInfoFileImpl(this);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Fileheader.FileHeader GetFileHeader()
+		public virtual FileHeader GetFileHeader()
 		{
 			return _fileHeader;
 		}
@@ -874,19 +865,16 @@ namespace Db4objects.Db4o.Internal
 			return _systemData;
 		}
 
-		public override long[] GetIDsForClass(Db4objects.Db4o.Internal.Transaction trans, 
-			Db4objects.Db4o.Internal.ClassMetadata clazz)
+		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
-			Db4objects.Db4o.Foundation.IntArrayList ids = new Db4objects.Db4o.Foundation.IntArrayList
-				();
-			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass810(this, ids));
+			IntArrayList ids = new IntArrayList();
+			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass815(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _AnonymousInnerClass810 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass815 : IVisitor4
 		{
-			public _AnonymousInnerClass810(LocalObjectContainer _enclosing, Db4objects.Db4o.Foundation.IntArrayList
-				 ids)
+			public _AnonymousInnerClass815(LocalObjectContainer _enclosing, IntArrayList ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;
@@ -899,36 +887,31 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly LocalObjectContainer _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.IntArrayList ids;
+			private readonly IntArrayList ids;
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Result.IQueryResult ClassOnlyQuery
-			(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.ClassMetadata
-			 clazz)
+		public override IQueryResult ClassOnlyQuery(Transaction trans, ClassMetadata clazz
+			)
 		{
 			if (!clazz.HasIndex())
 			{
 				return null;
 			}
-			Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult queryResult = NewQueryResult
-				(trans);
+			AbstractQueryResult queryResult = NewQueryResult(trans);
 			queryResult.LoadFromClassIndex(clazz);
 			return queryResult;
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Result.IQueryResult ExecuteQuery(Db4objects.Db4o.Internal.Query.Processor.QQuery
-			 query)
+		public override IQueryResult ExecuteQuery(QQuery query)
 		{
-			Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult queryResult = NewQueryResult
-				(query.GetTransaction());
+			AbstractQueryResult queryResult = NewQueryResult(query.GetTransaction());
 			queryResult.LoadFromQuery(query);
 			return queryResult;
 		}
 
-		public virtual Db4objects.Db4o.Internal.LocalTransaction GetLocalSystemTransaction
-			()
+		public virtual LocalTransaction GetLocalSystemTransaction()
 		{
-			return (Db4objects.Db4o.Internal.LocalTransaction)SystemTransaction();
+			return (LocalTransaction)SystemTransaction();
 		}
 	}
 }

@@ -1,22 +1,26 @@
+using System.IO;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Slots;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class ObjectMarshaller1 : Db4objects.Db4o.Internal.Marshall.ObjectMarshaller
+	public class ObjectMarshaller1 : ObjectMarshaller
 	{
-		public override void AddFieldIndices(Db4objects.Db4o.Internal.ClassMetadata yc, Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes
-			 attributes, Db4objects.Db4o.Internal.StatefulBuffer writer, Db4objects.Db4o.Internal.Slots.Slot
-			 oldSlot)
+		public override void AddFieldIndices(ClassMetadata yc, ObjectHeaderAttributes attributes
+			, StatefulBuffer writer, Slot oldSlot)
 		{
-			Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand command = 
-				new _AnonymousInnerClass17(this, writer, yc, oldSlot);
+			ObjectMarshaller.TraverseFieldCommand command = new _AnonymousInnerClass17(this, 
+				writer, yc, oldSlot);
 			TraverseFields(yc, writer, attributes, command);
 		}
 
-		private sealed class _AnonymousInnerClass17 : Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand
+		private sealed class _AnonymousInnerClass17 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _AnonymousInnerClass17(ObjectMarshaller1 _enclosing, Db4objects.Db4o.Internal.StatefulBuffer
-				 writer, Db4objects.Db4o.Internal.ClassMetadata yc, Db4objects.Db4o.Internal.Slots.Slot
-				 oldSlot)
+			public _AnonymousInnerClass17(ObjectMarshaller1 _enclosing, StatefulBuffer writer
+				, ClassMetadata yc, Slot oldSlot)
 			{
 				this._enclosing = _enclosing;
 				this.writer = writer;
@@ -24,8 +28,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 				this.oldSlot = oldSlot;
 			}
 
-			public override void ProcessField(Db4objects.Db4o.Internal.FieldMetadata field, bool
-				 isNull, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
+				 containingClass)
 			{
 				if (isNull)
 				{
@@ -39,29 +43,27 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly ObjectMarshaller1 _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.StatefulBuffer writer;
+			private readonly StatefulBuffer writer;
 
-			private readonly Db4objects.Db4o.Internal.ClassMetadata yc;
+			private readonly ClassMetadata yc;
 
-			private readonly Db4objects.Db4o.Internal.Slots.Slot oldSlot;
+			private readonly Slot oldSlot;
 		}
 
-		public override Db4objects.Db4o.Internal.TreeInt CollectFieldIDs(Db4objects.Db4o.Internal.TreeInt
-			 tree, Db4objects.Db4o.Internal.ClassMetadata yc, Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes
-			 attributes, Db4objects.Db4o.Internal.StatefulBuffer writer, string name)
+		public override TreeInt CollectFieldIDs(TreeInt tree, ClassMetadata yc, ObjectHeaderAttributes
+			 attributes, StatefulBuffer writer, string name)
 		{
-			Db4objects.Db4o.Internal.TreeInt[] ret = new Db4objects.Db4o.Internal.TreeInt[] { 
-				tree };
-			Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand command = 
-				new _AnonymousInnerClass32(this, name, ret, writer);
+			TreeInt[] ret = new TreeInt[] { tree };
+			ObjectMarshaller.TraverseFieldCommand command = new _AnonymousInnerClass32(this, 
+				name, ret, writer);
 			TraverseFields(yc, writer, attributes, command);
 			return ret[0];
 		}
 
-		private sealed class _AnonymousInnerClass32 : Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand
+		private sealed class _AnonymousInnerClass32 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _AnonymousInnerClass32(ObjectMarshaller1 _enclosing, string name, Db4objects.Db4o.Internal.TreeInt[]
-				 ret, Db4objects.Db4o.Internal.StatefulBuffer writer)
+			public _AnonymousInnerClass32(ObjectMarshaller1 _enclosing, string name, TreeInt[]
+				 ret, StatefulBuffer writer)
 			{
 				this._enclosing = _enclosing;
 				this.name = name;
@@ -69,8 +71,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 				this.writer = writer;
 			}
 
-			public override void ProcessField(Db4objects.Db4o.Internal.FieldMetadata field, bool
-				 isNull, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
+				 containingClass)
 			{
 				if (isNull)
 				{
@@ -90,32 +92,31 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly string name;
 
-			private readonly Db4objects.Db4o.Internal.TreeInt[] ret;
+			private readonly TreeInt[] ret;
 
-			private readonly Db4objects.Db4o.Internal.StatefulBuffer writer;
+			private readonly StatefulBuffer writer;
 		}
 
-		public override void DeleteMembers(Db4objects.Db4o.Internal.ClassMetadata yc, Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes
-			 attributes, Db4objects.Db4o.Internal.StatefulBuffer writer, int type, bool isUpdate
-			)
+		public override void DeleteMembers(ClassMetadata yc, ObjectHeaderAttributes attributes
+			, StatefulBuffer writer, int type, bool isUpdate)
 		{
-			Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand command = 
-				new _AnonymousInnerClass50(this, writer, isUpdate);
+			ObjectMarshaller.TraverseFieldCommand command = new _AnonymousInnerClass50(this, 
+				writer, isUpdate);
 			TraverseFields(yc, writer, attributes, command);
 		}
 
-		private sealed class _AnonymousInnerClass50 : Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand
+		private sealed class _AnonymousInnerClass50 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _AnonymousInnerClass50(ObjectMarshaller1 _enclosing, Db4objects.Db4o.Internal.StatefulBuffer
-				 writer, bool isUpdate)
+			public _AnonymousInnerClass50(ObjectMarshaller1 _enclosing, StatefulBuffer writer
+				, bool isUpdate)
 			{
 				this._enclosing = _enclosing;
 				this.writer = writer;
 				this.isUpdate = isUpdate;
 			}
 
-			public override void ProcessField(Db4objects.Db4o.Internal.FieldMetadata field, bool
-				 isNull, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
+				 containingClass)
 			{
 				if (isNull)
 				{
@@ -129,26 +130,25 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly ObjectMarshaller1 _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.StatefulBuffer writer;
+			private readonly StatefulBuffer writer;
 
 			private readonly bool isUpdate;
 		}
 
-		public override bool FindOffset(Db4objects.Db4o.Internal.ClassMetadata yc, Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes
-			 attributes, Db4objects.Db4o.Internal.Buffer reader, Db4objects.Db4o.Internal.FieldMetadata
-			 field)
+		public override bool FindOffset(ClassMetadata yc, ObjectHeaderAttributes attributes
+			, Db4objects.Db4o.Internal.Buffer reader, FieldMetadata field)
 		{
 			bool[] ret = new bool[] { false };
-			Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand command = 
-				new _AnonymousInnerClass64(this, field, ret, reader);
+			ObjectMarshaller.TraverseFieldCommand command = new _AnonymousInnerClass64(this, 
+				field, ret, reader);
 			TraverseFields(yc, reader, attributes, command);
 			return ret[0];
 		}
 
-		private sealed class _AnonymousInnerClass64 : Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand
+		private sealed class _AnonymousInnerClass64 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _AnonymousInnerClass64(ObjectMarshaller1 _enclosing, Db4objects.Db4o.Internal.FieldMetadata
-				 field, bool[] ret, Db4objects.Db4o.Internal.Buffer reader)
+			public _AnonymousInnerClass64(ObjectMarshaller1 _enclosing, FieldMetadata field, 
+				bool[] ret, Db4objects.Db4o.Internal.Buffer reader)
 			{
 				this._enclosing = _enclosing;
 				this.field = field;
@@ -156,8 +156,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 				this.reader = reader;
 			}
 
-			public override void ProcessField(Db4objects.Db4o.Internal.FieldMetadata curField
-				, bool isNull, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			public override void ProcessField(FieldMetadata curField, bool isNull, ClassMetadata
+				 containingClass)
 			{
 				if (curField == field)
 				{
@@ -173,26 +173,25 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly ObjectMarshaller1 _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.FieldMetadata field;
+			private readonly FieldMetadata field;
 
 			private readonly bool[] ret;
 
 			private readonly Db4objects.Db4o.Internal.Buffer reader;
 		}
 
-		public override void InstantiateFields(Db4objects.Db4o.Internal.ClassMetadata yc, 
-			Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes attributes, Db4objects.Db4o.Internal.ObjectReference
-			 yapObject, object onObject, Db4objects.Db4o.Internal.StatefulBuffer writer)
+		public override void InstantiateFields(ClassMetadata yc, ObjectHeaderAttributes attributes
+			, ObjectReference yapObject, object onObject, StatefulBuffer writer)
 		{
-			Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand command = 
-				new _AnonymousInnerClass81(this, onObject, yapObject, writer);
+			ObjectMarshaller.TraverseFieldCommand command = new _AnonymousInnerClass81(this, 
+				onObject, yapObject, writer);
 			TraverseFields(yc, writer, attributes, command);
 		}
 
-		private sealed class _AnonymousInnerClass81 : Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand
+		private sealed class _AnonymousInnerClass81 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _AnonymousInnerClass81(ObjectMarshaller1 _enclosing, object onObject, Db4objects.Db4o.Internal.ObjectReference
-				 yapObject, Db4objects.Db4o.Internal.StatefulBuffer writer)
+			public _AnonymousInnerClass81(ObjectMarshaller1 _enclosing, object onObject, ObjectReference
+				 yapObject, StatefulBuffer writer)
 			{
 				this._enclosing = _enclosing;
 				this.onObject = onObject;
@@ -200,8 +199,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 				this.writer = writer;
 			}
 
-			public override void ProcessField(Db4objects.Db4o.Internal.FieldMetadata field, bool
-				 isNull, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
+				 containingClass)
 			{
 				if (isNull)
 				{
@@ -212,11 +211,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 				{
 					field.Instantiate(this._enclosing._family, yapObject, onObject, writer);
 				}
-				catch (Db4objects.Db4o.CorruptionException)
+				catch (CorruptionException)
 				{
 					this.Cancel();
 				}
-				catch (System.IO.IOException)
+				catch (IOException)
 				{
 					this.Cancel();
 				}
@@ -226,29 +225,28 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly object onObject;
 
-			private readonly Db4objects.Db4o.Internal.ObjectReference yapObject;
+			private readonly ObjectReference yapObject;
 
-			private readonly Db4objects.Db4o.Internal.StatefulBuffer writer;
+			private readonly StatefulBuffer writer;
 		}
 
-		private void Marshall(Db4objects.Db4o.Internal.ObjectReference yo, object obj, Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes1
-			 attributes, Db4objects.Db4o.Internal.StatefulBuffer writer, bool isNew)
+		private void Marshall(ObjectReference yo, object obj, ObjectHeaderAttributes1 attributes
+			, StatefulBuffer writer, bool isNew)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata yc = yo.GetYapClass();
+			ClassMetadata yc = yo.GetYapClass();
 			WriteObjectClassID(writer, yc.GetID());
 			attributes.Write(writer);
 			yc.CheckUpdateDepth(writer);
-			Db4objects.Db4o.Internal.Transaction trans = writer.GetTransaction();
-			Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand command = 
-				new _AnonymousInnerClass108(this, trans, writer, obj, yo, isNew);
+			Transaction trans = writer.GetTransaction();
+			ObjectMarshaller.TraverseFieldCommand command = new _AnonymousInnerClass108(this, 
+				trans, writer, obj, yo, isNew);
 			TraverseFields(yc, writer, attributes, command);
 		}
 
-		private sealed class _AnonymousInnerClass108 : Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand
+		private sealed class _AnonymousInnerClass108 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _AnonymousInnerClass108(ObjectMarshaller1 _enclosing, Db4objects.Db4o.Internal.Transaction
-				 trans, Db4objects.Db4o.Internal.StatefulBuffer writer, object obj, Db4objects.Db4o.Internal.ObjectReference
-				 yo, bool isNew)
+			public _AnonymousInnerClass108(ObjectMarshaller1 _enclosing, Transaction trans, StatefulBuffer
+				 writer, object obj, ObjectReference yo, bool isNew)
 			{
 				this._enclosing = _enclosing;
 				this.trans = trans;
@@ -258,15 +256,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 				this.isNew = isNew;
 			}
 
-			public override int FieldCount(Db4objects.Db4o.Internal.ClassMetadata yapClass, Db4objects.Db4o.Internal.Buffer
+			public override int FieldCount(ClassMetadata yapClass, Db4objects.Db4o.Internal.Buffer
 				 reader)
 			{
 				reader.WriteInt(yapClass.i_fields.Length);
 				return yapClass.i_fields.Length;
 			}
 
-			public override void ProcessField(Db4objects.Db4o.Internal.FieldMetadata field, bool
-				 isNull, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
+				 containingClass)
 			{
 				if (isNull)
 				{
@@ -274,9 +272,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 					return;
 				}
 				object child = field.GetOrCreate(trans, obj);
-				if (child is Db4objects.Db4o.Internal.IDb4oTypeImpl)
+				if (child is IDb4oTypeImpl)
 				{
-					child = ((Db4objects.Db4o.Internal.IDb4oTypeImpl)child).StoredTo(trans);
+					child = ((IDb4oTypeImpl)child).StoredTo(trans);
 				}
 				field.Marshall(yo, child, this._enclosing._family, writer, containingClass.ConfigOrAncestorConfig
 					(), isNew);
@@ -284,53 +282,49 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly ObjectMarshaller1 _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.Transaction trans;
+			private readonly Transaction trans;
 
-			private readonly Db4objects.Db4o.Internal.StatefulBuffer writer;
+			private readonly StatefulBuffer writer;
 
 			private readonly object obj;
 
-			private readonly Db4objects.Db4o.Internal.ObjectReference yo;
+			private readonly ObjectReference yo;
 
 			private readonly bool isNew;
 		}
 
-		public override Db4objects.Db4o.Internal.StatefulBuffer MarshallNew(Db4objects.Db4o.Internal.Transaction
-			 a_trans, Db4objects.Db4o.Internal.ObjectReference yo, int a_updateDepth)
+		public override StatefulBuffer MarshallNew(Transaction a_trans, ObjectReference yo
+			, int a_updateDepth)
 		{
-			Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes1 attributes = new Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes1
-				(yo);
-			Db4objects.Db4o.Internal.StatefulBuffer writer = CreateWriterForNew(a_trans, yo, 
-				a_updateDepth, attributes.ObjectLength());
+			ObjectHeaderAttributes1 attributes = new ObjectHeaderAttributes1(yo);
+			StatefulBuffer writer = CreateWriterForNew(a_trans, yo, a_updateDepth, attributes
+				.ObjectLength());
 			Marshall(yo, yo.GetObject(), attributes, writer, true);
 			return writer;
 		}
 
-		public override void MarshallUpdate(Db4objects.Db4o.Internal.Transaction trans, int
-			 updateDepth, Db4objects.Db4o.Internal.ObjectReference yo, object obj)
+		public override void MarshallUpdate(Transaction trans, int updateDepth, ObjectReference
+			 yo, object obj)
 		{
-			Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes1 attributes = new Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes1
-				(yo);
-			Db4objects.Db4o.Internal.StatefulBuffer writer = CreateWriterForUpdate(trans, updateDepth
-				, yo.GetID(), 0, attributes.ObjectLength());
-			if (trans is Db4objects.Db4o.Internal.LocalTransaction)
+			ObjectHeaderAttributes1 attributes = new ObjectHeaderAttributes1(yo);
+			StatefulBuffer writer = CreateWriterForUpdate(trans, updateDepth, yo.GetID(), 0, 
+				attributes.ObjectLength());
+			if (trans is LocalTransaction)
 			{
-				((Db4objects.Db4o.Internal.LocalTransaction)trans).File().GetSlotForUpdate(writer
-					);
+				((LocalTransaction)trans).File().GetSlotForUpdate(writer);
 			}
 			Marshall(yo, obj, attributes, writer, false);
 			MarshallUpdateWrite(trans, yo, obj, writer);
 		}
 
-		public override Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes ReadHeaderAttributes
-			(Db4objects.Db4o.Internal.Buffer reader)
+		public override ObjectHeaderAttributes ReadHeaderAttributes(Db4objects.Db4o.Internal.Buffer
+			 reader)
 		{
-			return new Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes1(reader);
+			return new ObjectHeaderAttributes1(reader);
 		}
 
-		public override object ReadIndexEntry(Db4objects.Db4o.Internal.ClassMetadata clazz
-			, Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes attributes, Db4objects.Db4o.Internal.FieldMetadata
-			 field, Db4objects.Db4o.Internal.StatefulBuffer reader)
+		public override object ReadIndexEntry(ClassMetadata clazz, ObjectHeaderAttributes
+			 attributes, FieldMetadata field, StatefulBuffer reader)
 		{
 			if (clazz == null)
 			{
@@ -344,31 +338,28 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return field.ReadIndexEntry(_family, reader);
 			}
-			catch (Db4objects.Db4o.CorruptionException exc)
+			catch (CorruptionException exc)
 			{
-				throw new Db4objects.Db4o.Internal.FieldIndexException(exc, field);
+				throw new FieldIndexException(exc, field);
 			}
-			catch (System.IO.IOException exc)
+			catch (IOException exc)
 			{
-				throw new Db4objects.Db4o.Internal.FieldIndexException(exc, field);
+				throw new FieldIndexException(exc, field);
 			}
 		}
 
-		public override void ReadVirtualAttributes(Db4objects.Db4o.Internal.Transaction trans
-			, Db4objects.Db4o.Internal.ClassMetadata yc, Db4objects.Db4o.Internal.ObjectReference
-			 yo, Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes attributes, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public override void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
+			 yo, ObjectHeaderAttributes attributes, Db4objects.Db4o.Internal.Buffer reader)
 		{
-			Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand command = 
-				new _AnonymousInnerClass198(this, trans, reader, yo);
+			ObjectMarshaller.TraverseFieldCommand command = new _AnonymousInnerClass198(this, 
+				trans, reader, yo);
 			TraverseFields(yc, reader, attributes, command);
 		}
 
-		private sealed class _AnonymousInnerClass198 : Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand
+		private sealed class _AnonymousInnerClass198 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _AnonymousInnerClass198(ObjectMarshaller1 _enclosing, Db4objects.Db4o.Internal.Transaction
-				 trans, Db4objects.Db4o.Internal.Buffer reader, Db4objects.Db4o.Internal.ObjectReference
-				 yo)
+			public _AnonymousInnerClass198(ObjectMarshaller1 _enclosing, Transaction trans, Db4objects.Db4o.Internal.Buffer
+				 reader, ObjectReference yo)
 			{
 				this._enclosing = _enclosing;
 				this.trans = trans;
@@ -376,8 +367,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 				this.yo = yo;
 			}
 
-			public override void ProcessField(Db4objects.Db4o.Internal.FieldMetadata field, bool
-				 isNull, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
+				 containingClass)
 			{
 				if (!isNull)
 				{
@@ -387,45 +378,42 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly ObjectMarshaller1 _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.Transaction trans;
+			private readonly Transaction trans;
 
 			private readonly Db4objects.Db4o.Internal.Buffer reader;
 
-			private readonly Db4objects.Db4o.Internal.ObjectReference yo;
+			private readonly ObjectReference yo;
 		}
 
-		protected override bool IsNull(Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes
-			 attributes, int fieldIndex)
+		protected override bool IsNull(ObjectHeaderAttributes attributes, int fieldIndex)
 		{
-			return ((Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes1)attributes).IsNull
-				(fieldIndex);
+			return ((ObjectHeaderAttributes1)attributes).IsNull(fieldIndex);
 		}
 
-		public override void DefragFields(Db4objects.Db4o.Internal.ClassMetadata yc, Db4objects.Db4o.Internal.Marshall.ObjectHeader
-			 header, Db4objects.Db4o.Internal.ReaderPair readers)
+		public override void DefragFields(ClassMetadata yc, ObjectHeader header, ReaderPair
+			 readers)
 		{
-			Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand command = 
-				new _AnonymousInnerClass213(this, readers);
+			ObjectMarshaller.TraverseFieldCommand command = new _AnonymousInnerClass213(this, 
+				readers);
 			TraverseFields(yc, null, header._headerAttributes, command);
 		}
 
-		private sealed class _AnonymousInnerClass213 : Db4objects.Db4o.Internal.Marshall.ObjectMarshaller.TraverseFieldCommand
+		private sealed class _AnonymousInnerClass213 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _AnonymousInnerClass213(ObjectMarshaller1 _enclosing, Db4objects.Db4o.Internal.ReaderPair
-				 readers)
+			public _AnonymousInnerClass213(ObjectMarshaller1 _enclosing, ReaderPair readers)
 			{
 				this._enclosing = _enclosing;
 				this.readers = readers;
 			}
 
-			public override int FieldCount(Db4objects.Db4o.Internal.ClassMetadata yapClass, Db4objects.Db4o.Internal.Buffer
+			public override int FieldCount(ClassMetadata yapClass, Db4objects.Db4o.Internal.Buffer
 				 reader)
 			{
 				return readers.ReadInt();
 			}
 
-			public override void ProcessField(Db4objects.Db4o.Internal.FieldMetadata field, bool
-				 isNull, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
+				 containingClass)
 			{
 				if (!isNull)
 				{
@@ -435,7 +423,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly ObjectMarshaller1 _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.ReaderPair readers;
+			private readonly ReaderPair readers;
 		}
 
 		public override void WriteObjectClassID(Db4objects.Db4o.Internal.Buffer reader, int

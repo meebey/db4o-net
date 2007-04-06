@@ -1,6 +1,17 @@
+using System.IO;
+using Db4oUnit;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Acid;
+using Db4objects.Db4o.Tests.Common.Assorted;
+
 namespace Db4objects.Db4o.Tests.Common.Acid
 {
-	public class CrashSimulatingTestCase : Db4oUnit.ITestCase, Db4oUnit.Extensions.Fixtures.IOptOutCS
+	public class CrashSimulatingTestCase : ITestCase, IOptOutCS
 	{
 		public string _name;
 
@@ -21,11 +32,11 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 
 		private bool HasLockFileThread()
 		{
-			if (!Db4objects.Db4o.Internal.Platform4.HasLockFileThread())
+			if (!Platform4.HasLockFileThread())
 			{
 				return false;
 			}
-			return !Db4objects.Db4o.Internal.Platform4.HasNio();
+			return !Platform4.HasNio();
 		}
 
 		public virtual void Test()
@@ -36,19 +47,17 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 					);
 				return;
 			}
-			string path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "crashSimulate"
-				);
-			string fileName = System.IO.Path.Combine(path, "cs");
-			Db4objects.Db4o.Foundation.IO.File4.Delete(fileName);
+			string path = Path.Combine(Path.GetTempPath(), "crashSimulate");
+			string fileName = Path.Combine(path, "cs");
+			File4.Delete(fileName);
 			System.IO.Directory.CreateDirectory(path);
-			Db4objects.Db4o.Db4oFactory.Configure().BTreeNodeSize(4);
+			Db4oFactory.Configure().BTreeNodeSize(4);
 			CreateFile(fileName);
-			Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter adapterFactory = new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter
-				(new Db4objects.Db4o.IO.RandomAccessFileAdapter());
-			Db4objects.Db4o.Db4oFactory.Configure().Io(adapterFactory);
-			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(fileName
-				);
-			Db4objects.Db4o.IObjectSet objectSet = oc.Get(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase
+			CrashSimulatingIoAdapter adapterFactory = new CrashSimulatingIoAdapter(new RandomAccessFileAdapter
+				());
+			Db4oFactory.Configure().Io(adapterFactory);
+			IObjectContainer oc = Db4oFactory.OpenFile(fileName);
+			IObjectSet objectSet = oc.Get(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase
 				(null, "three"));
 			oc.Delete(objectSet.Next());
 			oc.Set(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase(null, "four"
@@ -69,7 +78,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			oc.Set(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase(null, "13"));
 			oc.Set(new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase(null, "14"));
 			oc.Commit();
-			Db4objects.Db4o.Query.IQuery q = oc.Query();
+			IQuery q = oc.Query();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase));
 			objectSet = q.Execute();
 			while (objectSet.HasNext())
@@ -83,8 +92,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			}
 			oc.Commit();
 			oc.Close();
-			Db4objects.Db4o.Db4oFactory.Configure().Io(new Db4objects.Db4o.IO.RandomAccessFileAdapter
-				());
+			Db4oFactory.Configure().Io(new RandomAccessFileAdapter());
 			int count = adapterFactory.batch.WriteVersions(fileName);
 			CheckFiles(fileName, "R", adapterFactory.batch.NumSyncs());
 			CheckFiles(fileName, "W", count);
@@ -96,38 +104,37 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			for (int i = 1; i <= count; i++)
 			{
 				string versionedFileName = fileName + infix + i;
-				Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(versionedFileName
-					);
+				IObjectContainer oc = Db4oFactory.OpenFile(versionedFileName);
 				if (!StateBeforeCommit(oc))
 				{
 					if (!StateAfterFirstCommit(oc))
 					{
-						Db4oUnit.Assert.IsTrue(StateAfterSecondCommit(oc));
+						Assert.IsTrue(StateAfterSecondCommit(oc));
 					}
 				}
 				oc.Close();
 			}
 		}
 
-		private bool StateBeforeCommit(Db4objects.Db4o.IObjectContainer oc)
+		private bool StateBeforeCommit(IObjectContainer oc)
 		{
 			return Expect(oc, new string[] { "one", "two", "three" });
 		}
 
-		private bool StateAfterFirstCommit(Db4objects.Db4o.IObjectContainer oc)
+		private bool StateAfterFirstCommit(IObjectContainer oc)
 		{
 			return Expect(oc, new string[] { "one", "two", "four", "five", "six", "seven", "eight"
 				, "nine", "10", "11", "12", "13", "14" });
 		}
 
-		private bool StateAfterSecondCommit(Db4objects.Db4o.IObjectContainer oc)
+		private bool StateAfterSecondCommit(IObjectContainer oc)
 		{
 			return Expect(oc, new string[] { "10", "13" });
 		}
 
-		private bool Expect(Db4objects.Db4o.IObjectContainer oc, string[] names)
+		private bool Expect(IObjectContainer oc, string[] names)
 		{
-			Db4objects.Db4o.IObjectSet objectSet = oc.Query(typeof(Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase)
+			IObjectSet objectSet = oc.Query(typeof(Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase)
 				);
 			if (objectSet.Size() != names.Length)
 			{
@@ -164,11 +171,10 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 
 		private void CreateFile(string fileName)
 		{
-			Db4objects.Db4o.IObjectContainer oc = Db4objects.Db4o.Db4oFactory.OpenFile(fileName
-				);
+			IObjectContainer oc = Db4oFactory.OpenFile(fileName);
 			for (int i = 0; i < 10; i++)
 			{
-				oc.Set(new Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleItem("delme"));
+				oc.Set(new SimplestPossibleItem("delme"));
 			}
 			Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase one = new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase
 				(null, "one");
@@ -180,14 +186,13 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			oc.Set(two);
 			oc.Set(three);
 			oc.Commit();
-			Db4objects.Db4o.IObjectSet objectSet = oc.Query(typeof(Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleItem)
-				);
+			IObjectSet objectSet = oc.Query(typeof(SimplestPossibleItem));
 			while (objectSet.HasNext())
 			{
 				oc.Delete(objectSet.Next());
 			}
 			oc.Close();
-			Db4objects.Db4o.Foundation.IO.File4.Copy(fileName, fileName + "0");
+			File4.Copy(fileName, fileName + "0");
 		}
 
 		public override string ToString()

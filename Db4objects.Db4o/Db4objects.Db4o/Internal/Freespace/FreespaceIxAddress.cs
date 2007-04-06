@@ -1,9 +1,15 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.IX;
+
 namespace Db4objects.Db4o.Internal.Freespace
 {
-	internal class FreespaceIxAddress : Db4objects.Db4o.Internal.Freespace.FreespaceIx
+	internal class FreespaceIxAddress : FreespaceIx
 	{
-		internal FreespaceIxAddress(Db4objects.Db4o.Internal.LocalObjectContainer file, Db4objects.Db4o.MetaIndex
-			 metaIndex) : base(file, metaIndex)
+		internal FreespaceIxAddress(LocalObjectContainer file, MetaIndex metaIndex) : base
+			(file, metaIndex)
 		{
 		}
 
@@ -31,18 +37,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		internal virtual int FreeSize()
 		{
-			Db4objects.Db4o.Foundation.MutableInt mint = new Db4objects.Db4o.Foundation.MutableInt
-				();
-			Db4objects.Db4o.Foundation.IIntObjectVisitor freespaceVisitor = new _AnonymousInnerClass37
-				(this, mint);
+			MutableInt mint = new MutableInt();
+			IIntObjectVisitor freespaceVisitor = new _AnonymousInnerClass37(this, mint);
 			Traverse(new _AnonymousInnerClass42(this, freespaceVisitor));
 			return mint.Value();
 		}
 
-		private sealed class _AnonymousInnerClass37 : Db4objects.Db4o.Foundation.IIntObjectVisitor
+		private sealed class _AnonymousInnerClass37 : IIntObjectVisitor
 		{
-			public _AnonymousInnerClass37(FreespaceIxAddress _enclosing, Db4objects.Db4o.Foundation.MutableInt
-				 mint)
+			public _AnonymousInnerClass37(FreespaceIxAddress _enclosing, MutableInt mint)
 			{
 				this._enclosing = _enclosing;
 				this.mint = mint;
@@ -55,13 +58,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 			private readonly FreespaceIxAddress _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.MutableInt mint;
+			private readonly MutableInt mint;
 		}
 
-		private sealed class _AnonymousInnerClass42 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass42 : IVisitor4
 		{
-			public _AnonymousInnerClass42(FreespaceIxAddress _enclosing, Db4objects.Db4o.Foundation.IIntObjectVisitor
-				 freespaceVisitor)
+			public _AnonymousInnerClass42(FreespaceIxAddress _enclosing, IIntObjectVisitor freespaceVisitor
+				)
 			{
 				this._enclosing = _enclosing;
 				this.freespaceVisitor = freespaceVisitor;
@@ -69,12 +72,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 			public void Visit(object obj)
 			{
-				((Db4objects.Db4o.Internal.IX.IxTree)obj).VisitAll(freespaceVisitor);
+				((IxTree)obj).VisitAll(freespaceVisitor);
 			}
 
 			private readonly FreespaceIxAddress _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.IIntObjectVisitor freespaceVisitor;
+			private readonly IIntObjectVisitor freespaceVisitor;
 		}
 	}
 }

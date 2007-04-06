@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 {
 	public class STUH2
@@ -10,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 		{
 		}
 
-		public STUH2(Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STUH3 a3)
+		public STUH2(STUH3 a3)
 		{
 			h3 = a3;
 		}
@@ -20,8 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 			foo2 = str;
 		}
 
-		public STUH2(Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STUH3 a3, 
-			string str)
+		public STUH2(STUH3 a3, string str)
 		{
 			h3 = a3;
 			foo2 = str;

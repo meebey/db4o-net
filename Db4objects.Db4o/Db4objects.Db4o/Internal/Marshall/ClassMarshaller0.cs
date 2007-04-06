@@ -1,15 +1,19 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Classindex;
+using Db4objects.Db4o.Internal.Convert.Conversions;
+using Db4objects.Db4o.Internal.Marshall;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class ClassMarshaller0 : Db4objects.Db4o.Internal.Marshall.ClassMarshaller
+	public class ClassMarshaller0 : ClassMarshaller
 	{
-		protected override void ReadIndex(Db4objects.Db4o.Internal.ObjectContainerBase stream
-			, Db4objects.Db4o.Internal.ClassMetadata clazz, Db4objects.Db4o.Internal.Buffer 
-			reader)
+		protected override void ReadIndex(ObjectContainerBase stream, ClassMetadata clazz
+			, Db4objects.Db4o.Internal.Buffer reader)
 		{
 			int indexID = reader.ReadInt();
-			if (!stream.MaintainsIndices() || !(stream is Db4objects.Db4o.Internal.LocalObjectContainer
-				))
+			if (!stream.MaintainsIndices() || !(stream is LocalObjectContainer))
 			{
 				return;
 			}
@@ -20,16 +24,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			clazz.Index().Read(stream, ValidIndexId(indexID));
 			if (IsOldClassIndex(indexID))
 			{
-				new Db4objects.Db4o.Internal.Convert.Conversions.ClassIndexesToBTrees_5_5().Convert
-					((Db4objects.Db4o.Internal.LocalObjectContainer)stream, indexID, Btree(clazz));
+				new ClassIndexesToBTrees_5_5().Convert((LocalObjectContainer)stream, indexID, Btree
+					(clazz));
 				stream.SetDirtyInSystemTransaction(clazz);
 			}
 		}
 
-		private Db4objects.Db4o.Internal.Btree.BTree Btree(Db4objects.Db4o.Internal.ClassMetadata
-			 clazz)
+		private BTree Btree(ClassMetadata clazz)
 		{
-			return Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy.Btree(clazz);
+			return BTreeClassIndexStrategy.Btree(clazz);
 		}
 
 		private int ValidIndexId(int indexID)

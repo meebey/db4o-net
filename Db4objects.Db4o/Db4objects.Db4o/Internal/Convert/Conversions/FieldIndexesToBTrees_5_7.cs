@@ -1,26 +1,29 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Convert;
+using Db4objects.Db4o.Internal.Fileheader;
+
 namespace Db4objects.Db4o.Internal.Convert.Conversions
 {
 	/// <exclude></exclude>
-	public class FieldIndexesToBTrees_5_7 : Db4objects.Db4o.Internal.Convert.Conversion
+	public class FieldIndexesToBTrees_5_7 : Conversion
 	{
 		public const int VERSION = 6;
 
-		public override void Convert(Db4objects.Db4o.Internal.Convert.ConversionStage.SystemUpStage
-			 stage)
+		public override void Convert(ConversionStage.SystemUpStage stage)
 		{
 			stage.File().ClassCollection().WriteAllClasses();
 			RebuildUUIDIndex(stage.File());
 			FreeOldUUIDMetaIndex(stage.File());
 		}
 
-		private void RebuildUUIDIndex(Db4objects.Db4o.Internal.LocalObjectContainer file)
+		private void RebuildUUIDIndex(LocalObjectContainer file)
 		{
-			Db4objects.Db4o.Internal.UUIDFieldMetadata uuid = file.GetUUIDIndex();
-			Db4objects.Db4o.Internal.ClassMetadataIterator i = file.ClassCollection().Iterator
-				();
+			UUIDFieldMetadata uuid = file.GetUUIDIndex();
+			ClassMetadataIterator i = file.ClassCollection().Iterator();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Internal.ClassMetadata clazz = i.CurrentClass();
+				ClassMetadata clazz = i.CurrentClass();
 				if (clazz.GenerateUUIDs())
 				{
 					uuid.RebuildIndexForClass(file, clazz);
@@ -28,16 +31,14 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 			}
 		}
 
-		private void FreeOldUUIDMetaIndex(Db4objects.Db4o.Internal.LocalObjectContainer file
-			)
+		private void FreeOldUUIDMetaIndex(LocalObjectContainer file)
 		{
-			Db4objects.Db4o.Internal.Fileheader.FileHeader fh = file.GetFileHeader();
-			if (!(fh is Db4objects.Db4o.Internal.Fileheader.FileHeader0))
+			FileHeader fh = file.GetFileHeader();
+			if (!(fh is FileHeader0))
 			{
 				return;
 			}
-			Db4objects.Db4o.MetaIndex metaIndex = ((Db4objects.Db4o.Internal.Fileheader.FileHeader0
-				)fh).GetUUIDMetaIndex();
+			MetaIndex metaIndex = ((FileHeader0)fh).GetUUIDMetaIndex();
 			if (metaIndex == null)
 			{
 				return;

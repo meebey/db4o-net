@@ -1,3 +1,10 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Defragment;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>
@@ -11,21 +18,19 @@ namespace Db4objects.Db4o.Defragment
 	/// to target pointer address.
 	/// </remarks>
 	/// <exclude></exclude>
-	internal sealed class FirstPassCommand : Db4objects.Db4o.Defragment.IPassCommand
+	internal sealed class FirstPassCommand : IPassCommand
 	{
 		private const int ID_BATCH_SIZE = 4096;
 
-		private Db4objects.Db4o.Internal.TreeInt _ids;
+		private TreeInt _ids;
 
-		internal void Process(Db4objects.Db4o.Defragment.DefragContextImpl context, int objectID
-			, bool isClassID)
+		internal void Process(DefragContextImpl context, int objectID, bool isClassID)
 		{
 			if (BatchFull())
 			{
 				Flush(context);
 			}
-			_ids = Db4objects.Db4o.Internal.TreeInt.Add(_ids, (isClassID ? -objectID : objectID
-				));
+			_ids = TreeInt.Add(_ids, (isClassID ? -objectID : objectID));
 		}
 
 		private bool BatchFull()
@@ -33,13 +38,13 @@ namespace Db4objects.Db4o.Defragment
 			return _ids != null && _ids.Size() == ID_BATCH_SIZE;
 		}
 
-		public void ProcessClass(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Internal.ClassMetadata
-			 yapClass, int id, int classIndexID)
+		public void ProcessClass(DefragContextImpl context, ClassMetadata yapClass, int id
+			, int classIndexID)
 		{
 			Process(context, id, true);
 			for (int fieldIdx = 0; fieldIdx < yapClass.i_fields.Length; fieldIdx++)
 			{
-				Db4objects.Db4o.Internal.FieldMetadata field = yapClass.i_fields[fieldIdx];
+				FieldMetadata field = yapClass.i_fields[fieldIdx];
 				if (!field.IsVirtual() && field.HasIndex())
 				{
 					ProcessBTree(context, field.GetIndex(context.SystemTrans()));
@@ -47,30 +52,27 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public void ProcessObjectSlot(Db4objects.Db4o.Defragment.DefragContextImpl context
-			, Db4objects.Db4o.Internal.ClassMetadata yapClass, int sourceID, bool registerAddresses
-			)
+		public void ProcessObjectSlot(DefragContextImpl context, ClassMetadata yapClass, 
+			int sourceID, bool registerAddresses)
 		{
 			Process(context, sourceID, false);
 		}
 
-		public void ProcessClassCollection(Db4objects.Db4o.Defragment.DefragContextImpl context
-			)
+		public void ProcessClassCollection(DefragContextImpl context)
 		{
 			Process(context, context.SourceClassCollectionID(), false);
 		}
 
-		public void ProcessBTree(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Internal.Btree.BTree
-			 btree)
+		public void ProcessBTree(DefragContextImpl context, BTree btree)
 		{
 			Process(context, btree.GetID(), false);
 			context.TraverseAllIndexSlots(btree, new _AnonymousInnerClass54(this, context));
 		}
 
-		private sealed class _AnonymousInnerClass54 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass54 : IVisitor4
 		{
-			public _AnonymousInnerClass54(FirstPassCommand _enclosing, Db4objects.Db4o.Defragment.DefragContextImpl
-				 context)
+			public _AnonymousInnerClass54(FirstPassCommand _enclosing, DefragContextImpl context
+				)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -84,29 +86,26 @@ namespace Db4objects.Db4o.Defragment
 
 			private readonly FirstPassCommand _enclosing;
 
-			private readonly Db4objects.Db4o.Defragment.DefragContextImpl context;
+			private readonly DefragContextImpl context;
 		}
 
-		public void Flush(Db4objects.Db4o.Defragment.DefragContextImpl context)
+		public void Flush(DefragContextImpl context)
 		{
 			if (_ids == null)
 			{
 				return;
 			}
 			int blockSize = context.BlockSize();
-			int blockLength = System.Math.Max(Db4objects.Db4o.Internal.Const4.POINTER_LENGTH, 
-				blockSize);
-			bool overlapping = (Db4objects.Db4o.Internal.Const4.POINTER_LENGTH % blockSize > 
-				0);
-			int blocksPerPointer = Db4objects.Db4o.Internal.Const4.POINTER_LENGTH / blockSize;
+			int blockLength = Math.Max(Const4.POINTER_LENGTH, blockSize);
+			bool overlapping = (Const4.POINTER_LENGTH % blockSize > 0);
+			int blocksPerPointer = Const4.POINTER_LENGTH / blockSize;
 			if (overlapping)
 			{
 				blocksPerPointer++;
 			}
 			int batchSize = _ids.Size() * blockLength;
 			int pointerAddress = context.AllocateTargetSlot(batchSize);
-			System.Collections.IEnumerator idIter = new Db4objects.Db4o.Foundation.TreeKeyIterator
-				(_ids);
+			IEnumerator idIter = new TreeKeyIterator(_ids);
 			while (idIter.MoveNext())
 			{
 				int objectID = ((int)idIter.Current);

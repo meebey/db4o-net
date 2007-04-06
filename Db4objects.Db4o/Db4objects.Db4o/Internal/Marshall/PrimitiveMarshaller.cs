@@ -1,16 +1,20 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Marshall;
+using Sharpen.Util;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	public abstract class PrimitiveMarshaller
 	{
-		public Db4objects.Db4o.Internal.Marshall.MarshallerFamily _family;
+		public MarshallerFamily _family;
 
 		public abstract bool UseNormalClassRead();
 
-		public abstract int WriteNew(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.PrimitiveFieldHandler
-			 yapClassPrimitive, object obj, bool topLevel, Db4objects.Db4o.Internal.StatefulBuffer
-			 parentWriter, bool withIndirection, bool restoreLinkOffset);
+		public abstract int WriteNew(Transaction trans, PrimitiveFieldHandler yapClassPrimitive
+			, object obj, bool topLevel, StatefulBuffer parentWriter, bool withIndirection, 
+			bool restoreLinkOffset);
 
-		public abstract Sharpen.Util.Date ReadDate(Db4objects.Db4o.Internal.Buffer bytes);
+		public abstract Date ReadDate(Db4objects.Db4o.Internal.Buffer bytes);
 
 		public abstract object ReadShort(Db4objects.Db4o.Internal.Buffer buffer);
 
@@ -22,10 +26,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public abstract object ReadLong(Db4objects.Db4o.Internal.Buffer buffer);
 
-		protected int ObjectLength(Db4objects.Db4o.Internal.ITypeHandler4 handler)
+		protected int ObjectLength(ITypeHandler4 handler)
 		{
-			return handler.LinkLength() + Db4objects.Db4o.Internal.Const4.OBJECT_LENGTH + Db4objects.Db4o.Internal.Const4
-				.ID_LENGTH;
+			return handler.LinkLength() + Const4.OBJECT_LENGTH + Const4.ID_LENGTH;
 		}
 	}
 }

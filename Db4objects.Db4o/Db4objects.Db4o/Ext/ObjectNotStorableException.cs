@@ -1,3 +1,7 @@
+using System;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>
@@ -8,14 +12,13 @@ namespace Db4objects.Db4o.Ext
 	/// this Exception is thrown, if objects can not be stored and if
 	/// db4o is configured to throw Exceptions on storage failures.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ExceptionsOnNotStorable">Db4objects.Db4o.Config.IConfiguration.ExceptionsOnNotStorable
+	/// <seealso cref="IConfiguration.ExceptionsOnNotStorable">IConfiguration.ExceptionsOnNotStorable
 	/// 	</seealso>
 	[System.Serializable]
-	public class ObjectNotStorableException : System.Exception
+	public class ObjectNotStorableException : Exception
 	{
-		public ObjectNotStorableException(Db4objects.Db4o.Reflect.IReflectClass a_class) : 
-			base(Db4objects.Db4o.Internal.Messages.Get(a_class.IsPrimitive() ? 59 : 45, a_class
-			.GetName()))
+		public ObjectNotStorableException(IReflectClass a_class) : base(Db4objects.Db4o.Internal.Messages
+			.Get(a_class.IsPrimitive() ? 59 : 45, a_class.GetName()))
 		{
 		}
 

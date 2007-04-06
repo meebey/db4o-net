@@ -1,17 +1,20 @@
+using System;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.Query.Result;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MGetAll : Db4objects.Db4o.Internal.CS.Messages.MsgQuery, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public sealed class MGetAll : MsgQuery, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{
-			Db4objects.Db4o.Config.QueryEvaluationMode evaluationMode = Db4objects.Db4o.Config.QueryEvaluationMode
-				.FromInt(ReadInt());
+			QueryEvaluationMode evaluationMode = QueryEvaluationMode.FromInt(ReadInt());
 			WriteQueryResult(GetAll(evaluationMode), evaluationMode);
 			return true;
 		}
 
-		private Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult GetAll(Db4objects.Db4o.Config.QueryEvaluationMode
-			 mode)
+		private AbstractQueryResult GetAll(QueryEvaluationMode mode)
 		{
 			lock (StreamLock())
 			{
@@ -19,7 +22,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				{
 					return File().GetAll(Transaction(), mode);
 				}
-				catch (System.Exception e)
+				catch (Exception e)
 				{
 				}
 				return NewQueryResult(mode);

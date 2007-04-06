@@ -1,8 +1,10 @@
+using Db4objects.Db4o.Diagnostic;
+
 namespace Db4objects.Db4o.Diagnostic
 {
 	/// <summary>Diagnostic, if update depth greater than 1.</summary>
 	/// <remarks>Diagnostic, if update depth greater than 1.</remarks>
-	public class UpdateDepthGreaterOne : Db4objects.Db4o.Diagnostic.DiagnosticBase
+	public class UpdateDepthGreaterOne : DiagnosticBase
 	{
 		private readonly int _depth;
 

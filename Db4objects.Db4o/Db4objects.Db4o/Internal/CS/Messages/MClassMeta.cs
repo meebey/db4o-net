@@ -1,43 +1,45 @@
+using System;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Reflect.Generic;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MClassMeta : Db4objects.Db4o.Internal.CS.Messages.MsgObject, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public class MClassMeta : MsgObject, IServerSideMessage
 	{
 		public virtual bool ProcessAtServer()
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
+			ObjectContainerBase stream = Stream();
 			Unmarshall();
 			try
 			{
-				Db4objects.Db4o.Internal.CS.ClassInfo classMeta = (Db4objects.Db4o.Internal.CS.ClassInfo
-					)ReadObjectFromPayLoad();
-				Db4objects.Db4o.Reflect.Generic.GenericClass genericClass = stream.GetClassMetaHelper
-					().ClassMetaToGenericClass(Stream().Reflector(), classMeta);
+				ClassInfo classMeta = (ClassInfo)ReadObjectFromPayLoad();
+				GenericClass genericClass = stream.GetClassMetaHelper().ClassMetaToGenericClass(Stream
+					().Reflector(), classMeta);
 				if (genericClass != null)
 				{
 					lock (StreamLock())
 					{
-						Db4objects.Db4o.Internal.Transaction trans = stream.SystemTransaction();
-						Db4objects.Db4o.Internal.ClassMetadata yapClass = stream.ProduceClassMetadata(genericClass
-							);
+						Transaction trans = stream.SystemTransaction();
+						ClassMetadata yapClass = stream.ProduceClassMetadata(genericClass);
 						if (yapClass != null)
 						{
 							stream.CheckStillToSet();
 							yapClass.SetStateDirty();
 							yapClass.Write(trans);
 							trans.Commit();
-							Db4objects.Db4o.Internal.StatefulBuffer returnBytes = stream.ReadWriterByID(trans
-								, yapClass.GetID());
-							Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter(returnBytes
-								));
+							StatefulBuffer returnBytes = stream.ReadWriterByID(trans, yapClass.GetID());
+							Write(Msg.OBJECT_TO_CLIENT.GetWriter(returnBytes));
 							return true;
 						}
 					}
 				}
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
 			}
-			Write(Db4objects.Db4o.Internal.CS.Messages.Msg.FAILED);
+			Write(Msg.FAILED);
 			return true;
 		}
 	}

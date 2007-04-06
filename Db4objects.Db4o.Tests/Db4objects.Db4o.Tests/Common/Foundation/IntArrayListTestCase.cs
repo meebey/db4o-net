@@ -1,12 +1,14 @@
+using Db4oUnit;
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
 	/// <exclude></exclude>
-	public class IntArrayListTestCase : Db4oUnit.ITestCase
+	public class IntArrayListTestCase : ITestCase
 	{
 		public virtual void TestIteratorGoesForwards()
 		{
-			Db4objects.Db4o.Foundation.IntArrayList list = new Db4objects.Db4o.Foundation.IntArrayList
-				();
+			IntArrayList list = new IntArrayList();
 			AssertIterator(new int[] {  }, list.IntIterator());
 			list.Add(1);
 			AssertIterator(new int[] { 1 }, list.IntIterator());
@@ -14,16 +16,15 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			AssertIterator(new int[] { 1, 2 }, list.IntIterator());
 		}
 
-		private void AssertIterator(int[] expected, Db4objects.Db4o.Foundation.IIntIterator4
-			 iterator)
+		private void AssertIterator(int[] expected, IIntIterator4 iterator)
 		{
 			for (int i = 0; i < expected.Length; ++i)
 			{
-				Db4oUnit.Assert.IsTrue(iterator.MoveNext());
-				Db4oUnit.Assert.AreEqual(expected[i], iterator.CurrentInt());
-				Db4oUnit.Assert.AreEqual(expected[i], iterator.Current);
+				Assert.IsTrue(iterator.MoveNext());
+				Assert.AreEqual(expected[i], iterator.CurrentInt());
+				Assert.AreEqual(expected[i], iterator.Current);
 			}
-			Db4oUnit.Assert.IsFalse(iterator.MoveNext());
+			Assert.IsFalse(iterator.MoveNext());
 		}
 	}
 }

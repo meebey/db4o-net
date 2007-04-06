@@ -1,12 +1,14 @@
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Btree.Algebra;
+
 namespace Db4objects.Db4o.Internal.Btree.Algebra
 {
 	/// <exclude></exclude>
-	public abstract class BTreeRangeUnionOperation : Db4objects.Db4o.Internal.Btree.Algebra.BTreeRangeOperation
+	public abstract class BTreeRangeUnionOperation : BTreeRangeOperation
 	{
-		protected readonly Db4objects.Db4o.Internal.Btree.BTreeRangeUnion _union;
+		protected readonly BTreeRangeUnion _union;
 
-		public BTreeRangeUnionOperation(Db4objects.Db4o.Internal.Btree.BTreeRangeUnion union
-			)
+		public BTreeRangeUnionOperation(BTreeRangeUnion union)
 		{
 			_union = union;
 		}

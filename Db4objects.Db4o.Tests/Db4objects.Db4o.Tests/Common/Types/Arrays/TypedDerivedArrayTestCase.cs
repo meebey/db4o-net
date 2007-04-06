@@ -1,16 +1,20 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Tests.Common.Sampledata;
+using Db4objects.Db4o.Tests.Common.Types.Arrays;
+
 namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 {
-	public class TypedDerivedArrayTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class TypedDerivedArrayTestCase : AbstractDb4oTestCase
 	{
-		private static readonly Db4objects.Db4o.Tests.Common.Sampledata.MoleculeData[] ARRAY
-			 = new Db4objects.Db4o.Tests.Common.Sampledata.MoleculeData[] { new Db4objects.Db4o.Tests.Common.Sampledata.MoleculeData
+		private static readonly MoleculeData[] ARRAY = new MoleculeData[] { new MoleculeData
 			("TypedDerivedArray") };
 
 		public class Data
 		{
-			public Db4objects.Db4o.Tests.Common.Sampledata.AtomData[] _array;
+			public AtomData[] _array;
 
-			public Data(Db4objects.Db4o.Tests.Common.Sampledata.AtomData[] AtomDatas)
+			public Data(AtomData[] AtomDatas)
 			{
 				this._array = AtomDatas;
 			}
@@ -18,20 +22,16 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		protected override void Store()
 		{
-			Db().Set(new Db4objects.Db4o.Tests.Common.Types.Arrays.TypedDerivedArrayTestCase.Data
-				(ARRAY));
+			Db().Set(new TypedDerivedArrayTestCase.Data(ARRAY));
 		}
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Tests.Common.Types.Arrays.TypedDerivedArrayTestCase.Data data = (
-				Db4objects.Db4o.Tests.Common.Types.Arrays.TypedDerivedArrayTestCase.Data)RetrieveOnlyInstance
-				(typeof(Db4objects.Db4o.Tests.Common.Types.Arrays.TypedDerivedArrayTestCase.Data)
-				);
-			Db4oUnit.Assert.IsTrue(data._array is Db4objects.Db4o.Tests.Common.Sampledata.MoleculeData[]
-				, "Expected instance of " + typeof(Db4objects.Db4o.Tests.Common.Sampledata.MoleculeData[])
+			TypedDerivedArrayTestCase.Data data = (TypedDerivedArrayTestCase.Data)RetrieveOnlyInstance
+				(typeof(TypedDerivedArrayTestCase.Data));
+			Assert.IsTrue(data._array is MoleculeData[], "Expected instance of " + typeof(MoleculeData[])
 				 + ", but got " + data._array);
-			Db4oUnit.ArrayAssert.AreEqual(ARRAY, data._array);
+			ArrayAssert.AreEqual(ARRAY, data._array);
 		}
 	}
 }

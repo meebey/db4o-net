@@ -1,23 +1,24 @@
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+
 namespace Db4oUnit.Extensions.Fixtures
 {
-	public class Db4oSolo : Db4oUnit.Extensions.Fixtures.AbstractFileBasedDb4oFixture
+	public class Db4oSolo : AbstractFileBasedDb4oFixture
 	{
 		private static readonly string FILE = "db4oSoloTest.yap";
 
-		public Db4oSolo() : this(new Db4oUnit.Extensions.Fixtures.IndependentConfigurationSource
-			())
+		public Db4oSolo() : this(new IndependentConfigurationSource())
 		{
 		}
 
-		public Db4oSolo(Db4oUnit.Extensions.Fixtures.IConfigurationSource configSource) : 
-			base(configSource, FILE)
+		public Db4oSolo(IConfigurationSource configSource) : base(configSource, FILE)
 		{
 		}
 
-		protected override Db4objects.Db4o.IObjectContainer CreateDatabase(Db4objects.Db4o.Config.IConfiguration
-			 config)
+		protected override IObjectContainer CreateDatabase(IConfiguration config)
 		{
-			return Db4objects.Db4o.Db4oFactory.OpenFile(config, GetAbsolutePath());
+			return Db4oFactory.OpenFile(config, GetAbsolutePath());
 		}
 
 		public override string GetLabel()

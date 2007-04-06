@@ -1,10 +1,12 @@
+using Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 {
 	public class STRTH2
 	{
-		public Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase parent;
+		public STRTH1TestCase parent;
 
-		public Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH3 h3;
+		public STRTH3 h3;
 
 		public string foo2;
 
@@ -12,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 		{
 		}
 
-		public STRTH2(Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH3 a3)
+		public STRTH2(STRTH3 a3)
 		{
 			h3 = a3;
 			a3.parent = this;
@@ -23,8 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 			foo2 = str;
 		}
 
-		public STRTH2(Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH3 a3, 
-			string str)
+		public STRTH2(STRTH3 a3, string str)
 		{
 			h3 = a3;
 			a3.parent = this;

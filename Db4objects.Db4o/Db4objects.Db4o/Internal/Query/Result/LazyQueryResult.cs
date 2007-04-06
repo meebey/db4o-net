@@ -1,47 +1,49 @@
+using System.Collections;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Query.Result;
+
 namespace Db4objects.Db4o.Internal.Query.Result
 {
 	/// <exclude></exclude>
-	public class LazyQueryResult : Db4objects.Db4o.Internal.Query.Result.AbstractLateQueryResult
+	public class LazyQueryResult : AbstractLateQueryResult
 	{
-		public LazyQueryResult(Db4objects.Db4o.Internal.Transaction trans) : base(trans)
+		public LazyQueryResult(Transaction trans) : base(trans)
 		{
 		}
 
-		public override void LoadFromClassIndex(Db4objects.Db4o.Internal.ClassMetadata clazz
-			)
+		public override void LoadFromClassIndex(ClassMetadata clazz)
 		{
 			_iterable = ClassIndexIterable(clazz);
 		}
 
-		public override void LoadFromClassIndexes(Db4objects.Db4o.Internal.ClassMetadataIterator
-			 classCollectionIterator)
+		public override void LoadFromClassIndexes(ClassMetadataIterator classCollectionIterator
+			)
 		{
 			_iterable = ClassIndexesIterable(classCollectionIterator);
 		}
 
-		public override void LoadFromQuery(Db4objects.Db4o.Internal.Query.Processor.QQuery
-			 query)
+		public override void LoadFromQuery(QQuery query)
 		{
 			_iterable = new _AnonymousInnerClass28(this, query);
 		}
 
-		private sealed class _AnonymousInnerClass28 : System.Collections.IEnumerable
+		private sealed class _AnonymousInnerClass28 : IEnumerable
 		{
-			public _AnonymousInnerClass28(LazyQueryResult _enclosing, Db4objects.Db4o.Internal.Query.Processor.QQuery
-				 query)
+			public _AnonymousInnerClass28(LazyQueryResult _enclosing, QQuery query)
 			{
 				this._enclosing = _enclosing;
 				this.query = query;
 			}
 
-			public System.Collections.IEnumerator GetEnumerator()
+			public IEnumerator GetEnumerator()
 			{
 				return query.ExecuteLazy();
 			}
 
 			private readonly LazyQueryResult _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.Query.Processor.QQuery query;
+			private readonly QQuery query;
 		}
 	}
 }

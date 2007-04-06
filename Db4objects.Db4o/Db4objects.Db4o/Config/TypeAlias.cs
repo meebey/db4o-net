@@ -1,3 +1,6 @@
+using System;
+using Db4objects.Db4o.Config;
+
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>
@@ -8,10 +11,10 @@ namespace Db4objects.Db4o.Config
 	/// a simple Alias for a single Class or Type, using #equals() on
 	/// the names in the resolve method.
 	/// <br /><br />See
-	/// <see cref="Db4objects.Db4o.Config.IAlias">Db4objects.Db4o.Config.IAlias</see>
+	/// <see cref="IAlias">IAlias</see>
 	/// for concrete examples.
 	/// </remarks>
-	public class TypeAlias : Db4objects.Db4o.Config.IAlias
+	public class TypeAlias : IAlias
 	{
 		private readonly string _storedType;
 
@@ -21,7 +24,7 @@ namespace Db4objects.Db4o.Config
 		{
 			if (null == storedType || null == runtimeType)
 			{
-				throw new System.ArgumentException();
+				throw new ArgumentException();
 			}
 			_storedType = storedType;
 			_runtimeType = runtimeType;

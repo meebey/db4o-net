@@ -1,21 +1,22 @@
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	public class QENot : Db4objects.Db4o.Internal.Query.Processor.QE
+	public class QENot : QE
 	{
-		public Db4objects.Db4o.Internal.Query.Processor.QE i_evaluator;
+		public QE i_evaluator;
 
 		public QENot()
 		{
 		}
 
-		internal QENot(Db4objects.Db4o.Internal.Query.Processor.QE a_evaluator)
+		internal QENot(QE a_evaluator)
 		{
 			i_evaluator = a_evaluator;
 		}
 
-		internal override Db4objects.Db4o.Internal.Query.Processor.QE Add(Db4objects.Db4o.Internal.Query.Processor.QE
-			 evaluator)
+		internal override QE Add(QE evaluator)
 		{
 			if (!(evaluator is Db4objects.Db4o.Internal.Query.Processor.QENot))
 			{
@@ -34,8 +35,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return false;
 		}
 
-		internal override bool Evaluate(Db4objects.Db4o.Internal.Query.Processor.QConObject
-			 a_constraint, Db4objects.Db4o.Internal.Query.Processor.QCandidate a_candidate, 
+		internal override bool Evaluate(QConObject a_constraint, QCandidate a_candidate, 
 			object a_value)
 		{
 			return !i_evaluator.Evaluate(a_constraint, a_candidate, a_value);

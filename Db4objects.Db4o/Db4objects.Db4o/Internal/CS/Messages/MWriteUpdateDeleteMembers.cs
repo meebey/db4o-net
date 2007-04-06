@@ -1,7 +1,8 @@
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MWriteUpdateDeleteMembers : Db4objects.Db4o.Internal.CS.Messages.MsgD
-		, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public sealed class MWriteUpdateDeleteMembers : MsgD, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{

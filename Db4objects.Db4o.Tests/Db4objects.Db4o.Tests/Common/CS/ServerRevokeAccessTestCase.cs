@@ -1,6 +1,12 @@
+using System;
+using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.Tests.Common.CS;
+
 namespace Db4objects.Db4o.Tests.Common.CS
 {
-	public class ServerRevokeAccessTestCase : Db4oUnit.ITestCase
+	public class ServerRevokeAccessTestCase : ITestCase
 	{
 		internal static readonly string FILE = "ServerRevokeAccessTest.yap";
 
@@ -11,21 +17,20 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		#if !CF_1_0 && !CF_2_0
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Foundation.IO.File4.Delete(FILE);
-			Db4objects.Db4o.IObjectServer server = Db4objects.Db4o.Db4oFactory.OpenServer(FILE
-				, SERVER_PORT);
+			File4.Delete(FILE);
+			IObjectServer server = Db4oFactory.OpenServer(FILE, SERVER_PORT);
 			try
 			{
 				string user = "hohohi";
 				string password = "hohoho";
 				server.GrantAccess(user, password);
-				Db4objects.Db4o.IObjectContainer con = Db4objects.Db4o.Db4oFactory.OpenClient(SERVER_HOSTNAME
-					, SERVER_PORT, user, password);
-				Db4oUnit.Assert.IsNotNull(con);
+				IObjectContainer con = Db4oFactory.OpenClient(SERVER_HOSTNAME, SERVER_PORT, user, 
+					password);
+				Assert.IsNotNull(con);
 				con.Close();
 				server.Ext().RevokeAccess(user);
-				Db4oUnit.Assert.Expect(typeof(System.Exception), new _AnonymousInnerClass37(this, 
-					user, password));
+				Assert.Expect(typeof(Exception), new _AnonymousInnerClass37(this, user, password)
+					);
 			}
 			finally
 			{
@@ -34,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		}
 		#endif // !CF_1_0 && !CF_2_0
 
-		private sealed class _AnonymousInnerClass37 : Db4oUnit.ICodeBlock
+		private sealed class _AnonymousInnerClass37 : ICodeBlock
 		{
 			public _AnonymousInnerClass37(ServerRevokeAccessTestCase _enclosing, string user, 
 				string password)
@@ -46,9 +51,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 			public void Run()
 			{
-				Db4objects.Db4o.Db4oFactory.OpenClient(Db4objects.Db4o.Tests.Common.CS.ServerRevokeAccessTestCase
-					.SERVER_HOSTNAME, Db4objects.Db4o.Tests.Common.CS.ServerRevokeAccessTestCase.SERVER_PORT
-					, user, password);
+				Db4oFactory.OpenClient(ServerRevokeAccessTestCase.SERVER_HOSTNAME, ServerRevokeAccessTestCase
+					.SERVER_PORT, user, password);
 			}
 
 			private readonly ServerRevokeAccessTestCase _enclosing;

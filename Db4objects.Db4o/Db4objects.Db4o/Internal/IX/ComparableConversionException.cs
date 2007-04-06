@@ -1,7 +1,9 @@
+using System;
+
 namespace Db4objects.Db4o.Internal.IX
 {
 	[System.Serializable]
-	public class ComparableConversionException : System.Exception
+	public class ComparableConversionException : Exception
 	{
 		private object _unconverted;
 
@@ -10,13 +12,13 @@ namespace Db4objects.Db4o.Internal.IX
 		{
 		}
 
-		public ComparableConversionException(object unconverted, System.Exception cause) : 
-			this(unconverted, null, cause)
+		public ComparableConversionException(object unconverted, Exception cause) : this(
+			unconverted, null, cause)
 		{
 		}
 
-		public ComparableConversionException(object unconverted, string msg, System.Exception
-			 cause) : base(msg, cause)
+		public ComparableConversionException(object unconverted, string msg, Exception cause
+			) : base(msg, cause)
 		{
 			_unconverted = unconverted;
 		}

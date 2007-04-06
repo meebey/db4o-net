@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Types;
+
 namespace Db4objects.Db4o.Types
 {
 	/// <summary>marks objects as second class objects.</summary>
@@ -14,7 +16,7 @@ namespace Db4objects.Db4o.Types
 	/// - should always be deleted if they are not referenced any
 	/// longer.<br />
 	/// </remarks>
-	public interface ISecondClass : Db4objects.Db4o.Types.IDb4oType
+	public interface ISecondClass : IDb4oType
 	{
 	}
 }

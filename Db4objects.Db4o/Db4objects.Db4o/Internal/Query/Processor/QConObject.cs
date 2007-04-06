@@ -1,56 +1,60 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <summary>Object constraint on queries</summary>
 	/// <exclude></exclude>
-	public class QConObject : Db4objects.Db4o.Internal.Query.Processor.QCon
+	public class QConObject : QCon
 	{
 		public object i_object;
 
 		public int i_objectID;
 
 		[System.NonSerialized]
-		internal Db4objects.Db4o.Internal.ClassMetadata i_yapClass;
+		internal ClassMetadata i_yapClass;
 
 		public int i_yapClassID;
 
-		public Db4objects.Db4o.Internal.Query.Processor.QField i_field;
+		public QField i_field;
 
 		[System.NonSerialized]
-		internal Db4objects.Db4o.Internal.IComparable4 i_comparator;
+		internal IComparable4 i_comparator;
 
-		public Db4objects.Db4o.Config.IObjectAttribute i_attributeProvider;
+		public IObjectAttribute i_attributeProvider;
 
 		[System.NonSerialized]
 		private bool i_selfComparison = false;
-
-		[System.NonSerialized]
-		private bool i_loadedFromIndex;
 
 		public QConObject()
 		{
 		}
 
-		public QConObject(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Internal.Query.Processor.QCon
-			 a_parent, Db4objects.Db4o.Internal.Query.Processor.QField a_field, object a_object
+		public QConObject(Transaction a_trans, QCon a_parent, QField a_field, object a_object
 			) : base(a_trans)
 		{
 			i_parent = a_parent;
-			if (a_object is Db4objects.Db4o.Config.ICompare)
+			if (a_object is ICompare)
 			{
-				a_object = ((Db4objects.Db4o.Config.ICompare)a_object).Compare();
+				a_object = ((ICompare)a_object).Compare();
 			}
 			i_object = a_object;
 			i_field = a_field;
 			AssociateYapClass(a_trans, a_object);
 		}
 
-		private void AssociateYapClass(Db4objects.Db4o.Internal.Transaction a_trans, object
-			 a_object)
+		private void AssociateYapClass(Transaction a_trans, object a_object)
 		{
 			if (a_object == null)
 			{
 				i_object = null;
-				i_comparator = Db4objects.Db4o.Internal.Null.INSTANCE;
+				i_comparator = Null.INSTANCE;
 				i_yapClass = null;
 			}
 			else
@@ -68,7 +72,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 					if (i_yapClass != null)
 					{
-						i_yapClass.CollectConstraints(a_trans, this, i_object, new _AnonymousInnerClass84
+						i_yapClass.CollectConstraints(a_trans, this, i_object, new _AnonymousInnerClass82
 							(this));
 					}
 					else
@@ -83,16 +87,16 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		private sealed class _AnonymousInnerClass84 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass82 : IVisitor4
 		{
-			public _AnonymousInnerClass84(QConObject _enclosing)
+			public _AnonymousInnerClass82(QConObject _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Visit(object obj)
 			{
-				this._enclosing.AddConstraint((Db4objects.Db4o.Internal.Query.Processor.QCon)obj);
+				this._enclosing.AddConstraint((QCon)obj);
 			}
 
 			private readonly QConObject _enclosing;
@@ -124,39 +128,28 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return i_field.i_yapField.CanLoadByIndex();
 		}
 
-		internal override void CreateCandidates(Db4objects.Db4o.Foundation.Collection4 a_candidateCollection
-			)
-		{
-			if (i_loadedFromIndex && !HasChildren())
-			{
-				return;
-			}
-			base.CreateCandidates(a_candidateCollection);
-		}
-
-		internal override bool Evaluate(Db4objects.Db4o.Internal.Query.Processor.QCandidate
-			 a_candidate)
+		internal override bool Evaluate(QCandidate a_candidate)
 		{
 			try
 			{
 				return a_candidate.Evaluate(this, i_evaluator);
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
 				return false;
 			}
 		}
 
-		internal override void EvaluateEvaluationsExec(Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 a_candidates, bool rereadObject)
+		internal override void EvaluateEvaluationsExec(QCandidates a_candidates, bool rereadObject
+			)
 		{
 			if (i_field.IsSimple())
 			{
 				bool hasEvaluation = false;
-				System.Collections.IEnumerator i = IterateChildren();
+				IEnumerator i = IterateChildren();
 				while (i.MoveNext())
 				{
-					if (i.Current is Db4objects.Db4o.Internal.Query.Processor.QConEvaluation)
+					if (i.Current is QConEvaluation)
 					{
 						hasEvaluation = true;
 						break;
@@ -165,11 +158,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				if (hasEvaluation)
 				{
 					a_candidates.Traverse(i_field);
-					System.Collections.IEnumerator j = IterateChildren();
+					IEnumerator j = IterateChildren();
 					while (j.MoveNext())
 					{
-						((Db4objects.Db4o.Internal.Query.Processor.QCon)j.Current).EvaluateEvaluationsExec
-							(a_candidates, false);
+						((QCon)j.Current).EvaluateEvaluationsExec(a_candidates, false);
 					}
 				}
 			}
@@ -179,7 +171,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_yapClass != null)
 			{
-				if (!(i_yapClass is Db4objects.Db4o.Internal.PrimitiveFieldHandler))
+				if (!(i_yapClass is PrimitiveFieldHandler))
 				{
 					if (!i_evaluator.Identity())
 					{
@@ -192,8 +184,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			i_selfComparison = false;
 		}
 
-		internal override void Collect(Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 a_candidates)
+		internal override void Collect(QCandidates a_candidates)
 		{
 			if (i_field.IsClass())
 			{
@@ -202,22 +193,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal override void EvaluateSimpleExec(Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 a_candidates)
+		internal override void EvaluateSimpleExec(QCandidates a_candidates)
 		{
-			if (HasOrdering() || !i_loadedFromIndex)
+			if (i_field.IsSimple() || IsNullConstraint())
 			{
-				if (i_field.IsSimple() || IsNullConstraint())
-				{
-					a_candidates.Traverse(i_field);
-					PrepareComparison(i_field);
-					a_candidates.Filter(this);
-				}
+				a_candidates.Traverse(i_field);
+				PrepareComparison(i_field);
+				a_candidates.Filter(this);
 			}
 		}
 
-		internal virtual Db4objects.Db4o.Internal.IComparable4 GetComparator(Db4objects.Db4o.Internal.Query.Processor.QCandidate
-			 a_candidate)
+		internal virtual IComparable4 GetComparator(QCandidate a_candidate)
 		{
 			if (i_comparator == null)
 			{
@@ -226,12 +212,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return i_comparator;
 		}
 
-		internal override Db4objects.Db4o.Internal.ClassMetadata GetYapClass()
+		internal override ClassMetadata GetYapClass()
 		{
 			return i_yapClass;
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Processor.QField GetField()
+		public override QField GetField()
 		{
 			return i_field;
 		}
@@ -265,7 +251,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				int id = GetObjectID();
 				if (id != 0)
 				{
-					if (!(i_evaluator is Db4objects.Db4o.Internal.Query.Processor.QENot))
+					if (!(i_evaluator is QENot))
 					{
 						return id;
 					}
@@ -298,8 +284,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public override bool OnSameFieldAs(Db4objects.Db4o.Internal.Query.Processor.QCon 
-			other)
+		public override bool OnSameFieldAs(QCon other)
 		{
 			if (!(other is Db4objects.Db4o.Internal.Query.Processor.QConObject))
 			{
@@ -308,12 +293,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return i_field == ((Db4objects.Db4o.Internal.Query.Processor.QConObject)other).i_field;
 		}
 
-		internal virtual void PrepareComparison(Db4objects.Db4o.Internal.Query.Processor.QField
-			 a_field)
+		internal virtual void PrepareComparison(QField a_field)
 		{
 			if (IsNullConstraint() & !a_field.IsArray())
 			{
-				i_comparator = Db4objects.Db4o.Internal.Null.INSTANCE;
+				i_comparator = Null.INSTANCE;
 			}
 			else
 			{
@@ -327,23 +311,22 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_children = null;
 		}
 
-		internal override Db4objects.Db4o.Internal.Query.Processor.QCon ShareParent(object
-			 a_object, bool[] removeExisting)
+		internal override QCon ShareParent(object a_object, bool[] removeExisting)
 		{
 			if (i_parent == null)
 			{
 				return null;
 			}
 			object obj = i_field.Coerce(a_object);
-			if (obj == Db4objects.Db4o.Foundation.No4.INSTANCE)
+			if (obj == No4.INSTANCE)
 			{
 				return null;
 			}
 			return i_parent.AddSharedConstraint(i_field, obj);
 		}
 
-		internal override Db4objects.Db4o.Internal.Query.Processor.QConClass ShareParentForClass
-			(Db4objects.Db4o.Reflect.IReflectClass a_class, bool[] removeExisting)
+		internal override QConClass ShareParentForClass(IReflectClass a_class, bool[] removeExisting
+			)
 		{
 			if (i_parent == null)
 			{
@@ -353,8 +336,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return null;
 			}
-			Db4objects.Db4o.Internal.Query.Processor.QConClass newConstraint = new Db4objects.Db4o.Internal.Query.Processor.QConClass
-				(i_trans, i_parent, i_field, a_class);
+			QConClass newConstraint = new QConClass(i_trans, i_parent, i_field, a_class);
 			i_parent.AddConstraint(newConstraint);
 			return newConstraint;
 		}
@@ -369,14 +351,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return candidate;
 		}
 
-		internal override void Unmarshall(Db4objects.Db4o.Internal.Transaction a_trans)
+		internal override void Unmarshall(Transaction a_trans)
 		{
 			if (i_trans == null)
 			{
 				base.Unmarshall(a_trans);
 				if (i_object == null)
 				{
-					i_comparator = Db4objects.Db4o.Internal.Null.INSTANCE;
+					i_comparator = Null.INSTANCE;
 				}
 				if (i_yapClassID != 0)
 				{
@@ -399,13 +381,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override void Visit(object obj)
 		{
-			Db4objects.Db4o.Internal.Query.Processor.QCandidate qc = (Db4objects.Db4o.Internal.Query.Processor.QCandidate
-				)obj;
+			QCandidate qc = (QCandidate)obj;
 			bool res = true;
 			bool processed = false;
 			if (i_selfComparison)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = qc.ReadYapClass();
+				ClassMetadata yc = qc.ReadYapClass();
 				if (yc != null)
 				{
 					res = i_evaluator.Not(i_yapClass.GetHigherHierarchy(yc) == i_yapClass);
@@ -421,32 +402,29 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				object cmp = qc.Value();
 				if (cmp != null && i_field != null)
 				{
-					Db4objects.Db4o.Internal.IComparable4 comparatorBackup = i_comparator;
+					IComparable4 comparatorBackup = i_comparator;
 					i_comparator = i_field.PrepareComparison(qc.Value());
-					i_candidates.AddOrder(new Db4objects.Db4o.Internal.Query.Processor.QOrder(this, qc
-						));
+					i_candidates.AddOrder(new QOrder(this, qc));
 					i_comparator = comparatorBackup.PrepareComparison(i_object);
 				}
 			}
 			Visit1(qc.GetRoot(), this, res);
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Contains()
+		public override IConstraint Contains()
 		{
 			lock (StreamLock())
 			{
-				i_evaluator = i_evaluator.Add(new Db4objects.Db4o.Internal.Query.Processor.QEContains
-					(true));
+				i_evaluator = i_evaluator.Add(new QEContains(true));
 				return this;
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Equal()
+		public override IConstraint Equal()
 		{
 			lock (StreamLock())
 			{
-				i_evaluator = i_evaluator.Add(new Db4objects.Db4o.Internal.Query.Processor.QEEqual
-					());
+				i_evaluator = i_evaluator.Add(new QEEqual());
 				return this;
 			}
 		}
@@ -459,17 +437,16 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Greater()
+		public override IConstraint Greater()
 		{
 			lock (StreamLock())
 			{
-				i_evaluator = i_evaluator.Add(new Db4objects.Db4o.Internal.Query.Processor.QEGreater
-					());
+				i_evaluator = i_evaluator.Add(new QEGreater());
 				return this;
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Identity()
+		public override IConstraint Identity()
 		{
 			lock (StreamLock())
 			{
@@ -477,51 +454,46 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				if (!(id > 0))
 				{
 					i_objectID = 0;
-					Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(51);
+					Exceptions4.ThrowRuntimeException(51);
 				}
 				RemoveChildrenJoins();
-				i_evaluator = i_evaluator.Add(new Db4objects.Db4o.Internal.Query.Processor.QEIdentity
-					());
+				i_evaluator = i_evaluator.Add(new QEIdentity());
 				return this;
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Like()
+		public override IConstraint Like()
 		{
 			lock (StreamLock())
 			{
-				i_evaluator = i_evaluator.Add(new Db4objects.Db4o.Internal.Query.Processor.QEContains
-					(false));
+				i_evaluator = i_evaluator.Add(new QEContains(false));
 				return this;
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Smaller()
+		public override IConstraint Smaller()
 		{
 			lock (StreamLock())
 			{
-				i_evaluator = i_evaluator.Add(new Db4objects.Db4o.Internal.Query.Processor.QESmaller
-					());
+				i_evaluator = i_evaluator.Add(new QESmaller());
 				return this;
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint StartsWith(bool caseSensitive)
+		public override IConstraint StartsWith(bool caseSensitive)
 		{
 			lock (StreamLock())
 			{
-				i_evaluator = i_evaluator.Add(new Db4objects.Db4o.Internal.Query.Processor.QEStartsWith
-					(caseSensitive));
+				i_evaluator = i_evaluator.Add(new QEStartsWith(caseSensitive));
 				return this;
 			}
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint EndsWith(bool caseSensitive)
+		public override IConstraint EndsWith(bool caseSensitive)
 		{
 			lock (StreamLock())
 			{
-				i_evaluator = i_evaluator.Add(new Db4objects.Db4o.Internal.Query.Processor.QEEndsWith
-					(caseSensitive));
+				i_evaluator = i_evaluator.Add(new QEEndsWith(caseSensitive));
 				return this;
 			}
 		}

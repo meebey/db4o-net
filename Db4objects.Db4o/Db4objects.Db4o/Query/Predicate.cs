@@ -1,3 +1,7 @@
+using System;
+using System.Reflection;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Query
 {
 	/// <summary>Base class for native queries.</summary>
@@ -82,33 +86,33 @@ namespace Db4objects.Db4o.Query
 		/// <remarks>public for implementation reasons, please ignore.</remarks>
 		public static readonly string PREDICATEMETHOD_NAME = "match";
 
-		internal static readonly System.Type OBJECT_CLASS = typeof(object);
+		internal static readonly Type OBJECT_CLASS = typeof(object);
 
-		private System.Type _extentType;
+		private Type _extentType;
 
 		[System.NonSerialized]
-		private System.Reflection.MethodInfo cachedFilterMethod = null;
+		private MethodInfo cachedFilterMethod = null;
 
 		public Predicate() : this(null)
 		{
 		}
 
-		public Predicate(System.Type extentType)
+		public Predicate(Type extentType)
 		{
 			_extentType = extentType;
 		}
 
-		internal virtual System.Reflection.MethodInfo GetFilterMethod()
+		internal virtual MethodInfo GetFilterMethod()
 		{
 			if (cachedFilterMethod != null)
 			{
 				return cachedFilterMethod;
 			}
-			System.Reflection.MethodInfo[] methods = GetType().GetMethods();
-			System.Reflection.MethodInfo untypedMethod = null;
+			MethodInfo[] methods = GetType().GetMethods();
+			MethodInfo untypedMethod = null;
 			for (int methodIdx = 0; methodIdx < methods.Length; methodIdx++)
 			{
-				System.Reflection.MethodInfo method = methods[methodIdx];
+				MethodInfo method = methods[methodIdx];
 				if (IsFilterMethod(method))
 				{
 					if (!OBJECT_CLASS.Equals(Sharpen.Runtime.GetParameterTypes(method)[0]))
@@ -124,10 +128,10 @@ namespace Db4objects.Db4o.Query
 				cachedFilterMethod = untypedMethod;
 				return untypedMethod;
 			}
-			throw new System.ArgumentException("Invalid predicate.");
+			throw new ArgumentException("Invalid predicate.");
 		}
 
-		private bool IsFilterMethod(System.Reflection.MethodInfo method)
+		private bool IsFilterMethod(MethodInfo method)
 		{
 			if (Sharpen.Runtime.GetParameterTypes(method).Length != 1)
 			{
@@ -139,7 +143,7 @@ namespace Db4objects.Db4o.Query
 
 		/// <summary>public for implementation reasons, please ignore.</summary>
 		/// <remarks>public for implementation reasons, please ignore.</remarks>
-		public virtual System.Type ExtentType()
+		public virtual Type ExtentType()
 		{
 			return (_extentType != null ? _extentType : Sharpen.Runtime.GetParameterTypes(GetFilterMethod
 				())[0]);
@@ -151,12 +155,12 @@ namespace Db4objects.Db4o.Query
 		{
 			try
 			{
-				System.Reflection.MethodInfo filterMethod = GetFilterMethod();
-				Db4objects.Db4o.Internal.Platform4.SetAccessible(filterMethod);
+				MethodInfo filterMethod = GetFilterMethod();
+				Platform4.SetAccessible(filterMethod);
 				object ret = filterMethod.Invoke(this, new object[] { candidate });
 				return ((bool)ret);
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
 				return false;
 			}

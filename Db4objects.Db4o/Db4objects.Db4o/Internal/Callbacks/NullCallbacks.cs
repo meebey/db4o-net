@@ -1,12 +1,16 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Callbacks;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Callbacks
 {
-	public class NullCallbacks : Db4objects.Db4o.Internal.Callbacks.ICallbacks
+	public class NullCallbacks : ICallbacks
 	{
-		public virtual void QueryOnFinished(Db4objects.Db4o.Query.IQuery query)
+		public virtual void QueryOnFinished(IQuery query)
 		{
 		}
 
-		public virtual void QueryOnStarted(Db4objects.Db4o.Query.IQuery query)
+		public virtual void QueryOnStarted(IQuery query)
 		{
 		}
 
@@ -55,13 +59,22 @@ namespace Db4objects.Db4o.Internal.Callbacks
 		{
 		}
 
-		public virtual void CommitOnStarted(object transaction, Db4objects.Db4o.Ext.IObjectInfoCollection
-			 added, Db4objects.Db4o.Ext.IObjectInfoCollection deleted, Db4objects.Db4o.Ext.IObjectInfoCollection
-			 updated)
+		public virtual void CommitOnStarted(object transaction, CallbackObjectInfoCollections
+			 objectInfoCollections)
 		{
 		}
 
-		public virtual bool CaresAboutCommit()
+		public virtual void CommitOnCompleted(object transaction, CallbackObjectInfoCollections
+			 objectInfoCollections)
+		{
+		}
+
+		public virtual bool CaresAboutCommitting()
+		{
+			return false;
+		}
+
+		public virtual bool CaresAboutCommitted()
 		{
 			return false;
 		}

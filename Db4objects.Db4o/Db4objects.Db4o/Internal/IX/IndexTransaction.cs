@@ -1,20 +1,25 @@
+using System.Text;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.IX;
+using Sharpen;
+
 namespace Db4objects.Db4o.Internal.IX
 {
 	/// <summary>Index root holder for a field and a transaction.</summary>
 	/// <remarks>Index root holder for a field and a transaction.</remarks>
 	/// <exclude></exclude>
-	public class IndexTransaction : Db4objects.Db4o.Foundation.IVisitor4
+	public class IndexTransaction : IVisitor4
 	{
-		internal readonly Db4objects.Db4o.Internal.IX.Index4 i_index;
+		internal readonly Index4 i_index;
 
-		internal readonly Db4objects.Db4o.Internal.LocalTransaction i_trans;
+		internal readonly LocalTransaction i_trans;
 
 		internal int i_version;
 
-		private Db4objects.Db4o.Foundation.Tree i_root;
+		private Tree i_root;
 
-		internal IndexTransaction(Db4objects.Db4o.Internal.LocalTransaction a_trans, Db4objects.Db4o.Internal.IX.Index4
-			 a_index)
+		internal IndexTransaction(LocalTransaction a_trans, Index4 a_index)
 		{
 			i_trans = a_trans;
 			i_index = a_index;
@@ -36,7 +41,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 			if (GetType() != obj.GetType())
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ShouldNeverHappen();
+				Exceptions4.ShouldNeverHappen();
 			}
 			return i_trans == ((Db4objects.Db4o.Internal.IX.IndexTransaction)obj).i_trans;
 		}
@@ -48,20 +53,20 @@ namespace Db4objects.Db4o.Internal.IX
 
 		public virtual void Add(int id, object value)
 		{
-			Patch(new Db4objects.Db4o.Internal.IX.IxAdd(this, id, value));
+			Patch(new IxAdd(this, id, value));
 		}
 
 		public virtual void Remove(int id, object value)
 		{
-			Patch(new Db4objects.Db4o.Internal.IX.IxRemove(this, id, value));
+			Patch(new IxRemove(this, id, value));
 		}
 
-		private void Patch(Db4objects.Db4o.Internal.IX.IxPatch patch)
+		private void Patch(IxPatch patch)
 		{
-			i_root = Db4objects.Db4o.Foundation.Tree.Add(i_root, patch);
+			i_root = Tree.Add(i_root, patch);
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Tree GetRoot()
+		public virtual Tree GetRoot()
 		{
 			return i_root;
 		}
@@ -78,7 +83,7 @@ namespace Db4objects.Db4o.Internal.IX
 
 		internal virtual void Merge(Db4objects.Db4o.Internal.IX.IndexTransaction a_ft)
 		{
-			Db4objects.Db4o.Foundation.Tree otherRoot = a_ft.GetRoot();
+			Tree otherRoot = a_ft.GetRoot();
 			if (otherRoot != null)
 			{
 				otherRoot.TraverseFromLeaves(this);
@@ -91,13 +96,13 @@ namespace Db4objects.Db4o.Internal.IX
 		/// </summary>
 		public virtual void Visit(object obj)
 		{
-			if (obj is Db4objects.Db4o.Internal.IX.IxPatch)
+			if (obj is IxPatch)
 			{
-				Db4objects.Db4o.Internal.IX.IxPatch tree = (Db4objects.Db4o.Internal.IX.IxPatch)obj;
+				IxPatch tree = (IxPatch)obj;
 				if (tree.HasQueue())
 				{
-					Db4objects.Db4o.Foundation.Queue4 queue = tree.DetachQueue();
-					while ((tree = (Db4objects.Db4o.Internal.IX.IxPatch)queue.Next()) != null)
+					IQueue4 queue = tree.DetachQueue();
+					while ((tree = (IxPatch)queue.Next()) != null)
 					{
 						tree.DetachQueue();
 						AddPatchToRoot(tree);
@@ -110,7 +115,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		private void AddPatchToRoot(Db4objects.Db4o.Internal.IX.IxPatch tree)
+		private void AddPatchToRoot(IxPatch tree)
 		{
 			if (tree._version != i_version)
 			{
@@ -139,7 +144,7 @@ namespace Db4objects.Db4o.Internal.IX
 			return leaves[0];
 		}
 
-		private sealed class _AnonymousInnerClass118 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass118 : IVisitor4
 		{
 			public _AnonymousInnerClass118(IndexTransaction _enclosing, int[] leaves)
 			{
@@ -157,7 +162,7 @@ namespace Db4objects.Db4o.Internal.IX
 			private readonly int[] leaves;
 		}
 
-		public virtual void SetRoot(Db4objects.Db4o.Foundation.Tree a_tree)
+		public virtual void SetRoot(Tree a_tree)
 		{
 			i_root = a_tree;
 		}
@@ -165,9 +170,9 @@ namespace Db4objects.Db4o.Internal.IX
 		public override string ToString()
 		{
 			return base.ToString();
-			System.Text.StringBuilder sb = new System.Text.StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			sb.Append("IxFieldTransaction ");
-			sb.Append(Sharpen.Runtime.IdentityHashCode(this));
+			sb.Append(Runtime.IdentityHashCode(this));
 			if (i_root == null)
 			{
 				sb.Append("\n    Empty");
@@ -179,10 +184,9 @@ namespace Db4objects.Db4o.Internal.IX
 			return sb.ToString();
 		}
 
-		private sealed class _AnonymousInnerClass140 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass140 : IVisitor4
 		{
-			public _AnonymousInnerClass140(IndexTransaction _enclosing, System.Text.StringBuilder
-				 sb)
+			public _AnonymousInnerClass140(IndexTransaction _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -196,7 +200,7 @@ namespace Db4objects.Db4o.Internal.IX
 
 			private readonly IndexTransaction _enclosing;
 
-			private readonly System.Text.StringBuilder sb;
+			private readonly StringBuilder sb;
 		}
 	}
 }

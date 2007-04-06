@@ -1,3 +1,5 @@
+using Db4oUnit.Extensions.Fixtures;
+
 namespace Db4oUnit.Extensions.Fixtures
 {
 	/// <summary>
@@ -8,7 +10,7 @@ namespace Db4oUnit.Extensions.Fixtures
 	/// Marker interface to denote that implementing test cases should be excluded
 	/// from running against a defragmenting fixture.
 	/// </remarks>
-	public interface IOptOutDefragSolo : Db4oUnit.Extensions.Fixtures.IOptOutFromTestFixture
+	public interface IOptOutDefragSolo : IOptOutFromTestFixture
 	{
 	}
 }

@@ -1,8 +1,15 @@
+using System.IO;
+using System.Text;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.IX;
+
 namespace Db4objects.Db4o.Internal.IX
 {
 	/// <summary>A range of index entries in the database file.</summary>
 	/// <remarks>A range of index entries in the database file.</remarks>
-	internal class IxFileRange : Db4objects.Db4o.Internal.IX.IxTree
+	internal class IxFileRange : IxTree
 	{
 		internal readonly int _address;
 
@@ -12,8 +19,8 @@ namespace Db4objects.Db4o.Internal.IX
 
 		private int[] _lowerAndUpperMatches;
 
-		public IxFileRange(Db4objects.Db4o.Internal.IX.IndexTransaction a_ft, int a_address
-			, int addressOffset, int a_entries) : base(a_ft)
+		public IxFileRange(IndexTransaction a_ft, int a_address, int addressOffset, int a_entries
+			) : base(a_ft)
 		{
 			_address = a_address;
 			_addressOffset = addressOffset;
@@ -21,13 +28,12 @@ namespace Db4objects.Db4o.Internal.IX
 			_size = a_entries;
 		}
 
-		public override Db4objects.Db4o.Foundation.Tree Add(Db4objects.Db4o.Foundation.Tree
-			 a_new)
+		public override Tree Add(Tree a_new)
 		{
 			return Reader().Add(this, a_new);
 		}
 
-		public override int Compare(Db4objects.Db4o.Foundation.Tree a_to)
+		public override int Compare(Tree a_to)
 		{
 			_lowerAndUpperMatches = new int[2];
 			return Reader().Compare(this, _lowerAndUpperMatches);
@@ -38,7 +44,7 @@ namespace Db4objects.Db4o.Internal.IX
 			return _lowerAndUpperMatches;
 		}
 
-		private Db4objects.Db4o.Internal.IX.IxFileRangeReader Reader()
+		private IxFileRangeReader Reader()
 		{
 			return _fieldTransaction.i_index.FileRangeReader();
 		}
@@ -58,16 +64,15 @@ namespace Db4objects.Db4o.Internal.IX
 			return base.ToString();
 			Db4objects.Db4o.Internal.Buffer fileReader = new Db4objects.Db4o.Internal.Buffer(
 				SlotLength());
-			System.Text.StringBuilder sb = new System.Text.StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			sb.Append("IxFileRange");
 			VisitAll(new _AnonymousInnerClass67(this, sb));
 			return sb.ToString();
 		}
 
-		private sealed class _AnonymousInnerClass67 : Db4objects.Db4o.Foundation.IIntObjectVisitor
+		private sealed class _AnonymousInnerClass67 : IIntObjectVisitor
 		{
-			public _AnonymousInnerClass67(IxFileRange _enclosing, System.Text.StringBuilder sb
-				)
+			public _AnonymousInnerClass67(IxFileRange _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -83,18 +88,17 @@ namespace Db4objects.Db4o.Internal.IX
 
 			private readonly IxFileRange _enclosing;
 
-			private readonly System.Text.StringBuilder sb;
+			private readonly StringBuilder sb;
 		}
 
 		public override void Visit(object obj)
 		{
-			Visit((Db4objects.Db4o.Foundation.IVisitor4)obj, null);
+			Visit((IVisitor4)obj, null);
 		}
 
-		public override void Visit(Db4objects.Db4o.Foundation.IVisitor4 visitor, int[] lowerUpper
-			)
+		public override void Visit(IVisitor4 visitor, int[] lowerUpper)
 		{
-			Db4objects.Db4o.Internal.IX.IxFileRangeReader frr = Reader();
+			IxFileRangeReader frr = Reader();
 			if (lowerUpper == null)
 			{
 				lowerUpper = new int[] { 0, _entries - 1 };
@@ -109,9 +113,9 @@ namespace Db4objects.Db4o.Internal.IX
 				{
 					fileReader.Read(Stream(), _address, offset);
 				}
-				catch (System.IO.IOException e)
+				catch (IOException e)
 				{
-					throw new Db4objects.Db4o.Internal.IX.IxException(e, _address, offset);
+					throw new IxException(e, _address, offset);
 				}
 				for (int i = lowerUpper[0]; i <= lowerUpper[1]; i++)
 				{
@@ -121,11 +125,9 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		public override int Write(Db4objects.Db4o.Internal.IX.IIndexable4 a_handler, Db4objects.Db4o.Internal.StatefulBuffer
-			 a_writer)
+		public override int Write(IIndexable4 a_handler, StatefulBuffer a_writer)
 		{
-			Db4objects.Db4o.Internal.LocalObjectContainer yf = (Db4objects.Db4o.Internal.LocalObjectContainer
-				)a_writer.GetStream();
+			LocalObjectContainer yf = (LocalObjectContainer)a_writer.GetStream();
 			int length = _entries * SlotLength();
 			yf.Copy(_address, _addressOffset, a_writer.GetAddress(), a_writer.AddressOffset()
 				, length);
@@ -133,11 +135,10 @@ namespace Db4objects.Db4o.Internal.IX
 			return _entries;
 		}
 
-		public override void VisitAll(Db4objects.Db4o.Foundation.IIntObjectVisitor visitor
-			)
+		public override void VisitAll(IIntObjectVisitor visitor)
 		{
-			Db4objects.Db4o.Internal.LocalObjectContainer yf = Stream();
-			Db4objects.Db4o.Internal.Transaction transaction = Trans();
+			LocalObjectContainer yf = Stream();
+			Transaction transaction = Trans();
 			Db4objects.Db4o.Internal.Buffer fileReader = new Db4objects.Db4o.Internal.Buffer(
 				SlotLength());
 			for (int i = 0; i < _entries; i++)
@@ -147,9 +148,9 @@ namespace Db4objects.Db4o.Internal.IX
 				{
 					fileReader.Read(yf, address, _addressOffset);
 				}
-				catch (System.IO.IOException e)
+				catch (IOException e)
 				{
-					throw new Db4objects.Db4o.Internal.IX.IxException(e, address, _addressOffset);
+					throw new IxException(e, address, _addressOffset);
 				}
 				fileReader._offset = 0;
 				object obj = Handler().ComparableObject(transaction, Handler().ReadIndexEntry(fileReader
@@ -158,12 +159,11 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		public override void VisitFirst(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor)
+		public override void VisitFirst(FreespaceVisitor visitor)
 		{
 			if (_preceding != null)
 			{
-				((Db4objects.Db4o.Internal.IX.IxTree)_preceding).VisitFirst(visitor);
+				((IxTree)_preceding).VisitFirst(visitor);
 				if (visitor.Visited())
 				{
 					return;
@@ -172,12 +172,11 @@ namespace Db4objects.Db4o.Internal.IX
 			FreespaceVisit(visitor, 0);
 		}
 
-		public override void VisitLast(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor)
+		public override void VisitLast(FreespaceVisitor visitor)
 		{
 			if (_subsequent != null)
 			{
-				((Db4objects.Db4o.Internal.IX.IxTree)_subsequent).VisitLast(visitor);
+				((IxTree)_subsequent).VisitLast(visitor);
 				if (visitor.Visited())
 				{
 					return;
@@ -186,19 +185,18 @@ namespace Db4objects.Db4o.Internal.IX
 			FreespaceVisit(visitor, _entries - 1);
 		}
 
-		public override void FreespaceVisit(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor, int index)
+		public override void FreespaceVisit(FreespaceVisitor visitor, int index)
 		{
-			Db4objects.Db4o.Internal.IX.IxFileRangeReader frr = Reader();
+			IxFileRangeReader frr = Reader();
 			Db4objects.Db4o.Internal.Buffer fileReader = new Db4objects.Db4o.Internal.Buffer(
 				frr._slotLength);
 			try
 			{
 				fileReader.Read(Stream(), _address, _addressOffset + (index * frr._slotLength));
 			}
-			catch (System.IO.IOException e)
+			catch (IOException e)
 			{
-				throw new Db4objects.Db4o.Internal.IX.IxException(e, _address, _addressOffset);
+				throw new IxException(e, _address, _addressOffset);
 			}
 			int val = fileReader.ReadInt();
 			int parentID = fileReader.ReadInt();

@@ -1,6 +1,9 @@
+using Db4oUnit;
+using Db4oUnit.Tests;
+
 namespace Db4oUnit.Tests
 {
-	public class RunsLifeCycle : Db4oUnit.ITestCase, Db4oUnit.ITestLifeCycle
+	public class RunsLifeCycle : ITestCase, ITestLifeCycle
 	{
 		private bool _setupCalled = false;
 
@@ -28,9 +31,9 @@ namespace Db4oUnit.Tests
 
 		public virtual void TestMethod()
 		{
-			Db4oUnit.Assert.IsTrue(_setupCalled);
-			Db4oUnit.Assert.IsTrue(!_tearDownCalled);
-			throw Db4oUnit.Tests.FrameworkTestCase.EXCEPTION;
+			Assert.IsTrue(_setupCalled);
+			Assert.IsTrue(!_tearDownCalled);
+			throw FrameworkTestCase.EXCEPTION;
 		}
 	}
 }

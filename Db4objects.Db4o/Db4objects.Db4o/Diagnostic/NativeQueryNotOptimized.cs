@@ -1,12 +1,15 @@
+using Db4objects.Db4o.Diagnostic;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Diagnostic
 {
 	/// <summary>Diagnostic, if Native Query can not be run optimized.</summary>
 	/// <remarks>Diagnostic, if Native Query can not be run optimized.</remarks>
-	public class NativeQueryNotOptimized : Db4objects.Db4o.Diagnostic.DiagnosticBase
+	public class NativeQueryNotOptimized : DiagnosticBase
 	{
-		private readonly Db4objects.Db4o.Query.Predicate _predicate;
+		private readonly Predicate _predicate;
 
-		public NativeQueryNotOptimized(Db4objects.Db4o.Query.Predicate predicate)
+		public NativeQueryNotOptimized(Predicate predicate)
 		{
 			_predicate = predicate;
 		}

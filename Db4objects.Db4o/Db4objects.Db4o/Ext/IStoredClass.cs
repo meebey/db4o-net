@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Ext;
+
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>the internal representation of a stored class.</summary>
@@ -18,11 +20,11 @@ namespace Db4objects.Db4o.Ext
 		/// 	</summary>
 		/// <remarks>returns the StoredClass for the parent of the class, this StoredClass represents.
 		/// 	</remarks>
-		Db4objects.Db4o.Ext.IStoredClass GetParentStoredClass();
+		IStoredClass GetParentStoredClass();
 
 		/// <summary>returns all stored fields of this stored class.</summary>
 		/// <remarks>returns all stored fields of this stored class.</remarks>
-		Db4objects.Db4o.Ext.IStoredField[] GetStoredFields();
+		IStoredField[] GetStoredFields();
 
 		/// <summary>renames this stored class.</summary>
 		/// <remarks>
@@ -47,8 +49,8 @@ namespace Db4objects.Db4o.Ext
 		/// </param>
 		/// <returns>
 		/// the
-		/// <see cref="Db4objects.Db4o.Ext.IStoredField">Db4objects.Db4o.Ext.IStoredField</see>
+		/// <see cref="IStoredField">IStoredField</see>
 		/// </returns>
-		Db4objects.Db4o.Ext.IStoredField StoredField(string name, object type);
+		IStoredField StoredField(string name, object type);
 	}
 }

@@ -1,3 +1,5 @@
+using System;
+
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>
@@ -13,18 +15,22 @@ namespace Db4objects.Db4o.Ext
 	/// .
 	/// </remarks>
 	[System.Serializable]
-	public class Db4oException : System.Exception
+	public class Db4oException : Exception
 	{
-		public Db4oException(string msg) : base(msg)
+		public Db4oException(string msg) : this(msg, null)
 		{
 		}
 
-		public Db4oException(System.Exception cause) : base(cause.Message, cause)
+		public Db4oException(Exception cause) : this(cause.Message, cause)
 		{
 		}
 
 		public Db4oException(int messageConstant) : this(Db4objects.Db4o.Internal.Messages
 			.Get(messageConstant))
+		{
+		}
+
+		public Db4oException(string msg, Exception cause) : base(msg, cause)
 		{
 		}
 	}

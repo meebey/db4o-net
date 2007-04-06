@@ -1,6 +1,9 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Object
 {
-	public class STArrIntegerOTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STArrIntegerOTestCase : SodaBaseTestCase
 	{
 		public object intArr;
 
@@ -25,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Object
 
 		public virtual void TestDefaultContainsOne()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrIntegerOTestCase
 				(new object[] { 17 }));
 			Expect(q, new int[] { 3, 4 });
@@ -33,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Object
 
 		public virtual void TestDefaultContainsTwo()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrIntegerOTestCase
 				(new object[] { 17, 25 }));
 			Expect(q, new int[] { 4 });
@@ -41,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Object
 
 		public virtual void TestDescendOne()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrIntegerOTestCase)
 				);
 			q.Descend("intArr").Constrain(17);
@@ -50,10 +53,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Object
 
 		public virtual void TestDescendTwo()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrIntegerOTestCase)
 				);
-			Db4objects.Db4o.Query.IQuery qElements = q.Descend("intArr");
+			IQuery qElements = q.Descend("intArr");
 			qElements.Constrain(17);
 			qElements.Constrain(25);
 			Expect(q, new int[] { 4 });
@@ -61,10 +64,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Object
 
 		public virtual void TestDescendSmaller()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Object.STArrIntegerOTestCase)
 				);
-			Db4objects.Db4o.Query.IQuery qElements = q.Descend("intArr");
+			IQuery qElements = q.Descend("intArr");
 			qElements.Constrain(3).Smaller();
 			Expect(q, new int[] { 2, 3 });
 		}

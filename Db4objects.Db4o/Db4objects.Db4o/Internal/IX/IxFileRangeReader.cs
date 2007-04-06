@@ -1,3 +1,8 @@
+using System.IO;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.IX;
+
 namespace Db4objects.Db4o.Internal.IX
 {
 	/// <exclude></exclude>
@@ -9,7 +14,7 @@ namespace Db4objects.Db4o.Internal.IX
 
 		private int _addressOffset;
 
-		private readonly Db4objects.Db4o.Internal.IX.IIndexable4 _handler;
+		private readonly IIndexable4 _handler;
 
 		private int _lower;
 
@@ -23,20 +28,19 @@ namespace Db4objects.Db4o.Internal.IX
 
 		internal readonly int _linkLegth;
 
-		internal IxFileRangeReader(Db4objects.Db4o.Internal.IX.IIndexable4 handler)
+		internal IxFileRangeReader(IIndexable4 handler)
 		{
 			_handler = handler;
 			_linkLegth = handler.LinkLength();
-			_slotLength = _linkLegth + Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			_slotLength = _linkLegth + Const4.INT_LENGTH;
 			_reader = new Db4objects.Db4o.Internal.Buffer(_slotLength);
 		}
 
-		internal virtual Db4objects.Db4o.Foundation.Tree Add(Db4objects.Db4o.Internal.IX.IxFileRange
-			 fileRange, Db4objects.Db4o.Foundation.Tree newTree)
+		internal virtual Tree Add(IxFileRange fileRange, Tree newTree)
 		{
 			SetFileRange(fileRange);
-			Db4objects.Db4o.Internal.LocalObjectContainer yf = fileRange.Stream();
-			Db4objects.Db4o.Internal.Transaction trans = fileRange.Trans();
+			LocalObjectContainer yf = fileRange.Stream();
+			Transaction trans = fileRange.Trans();
 			while (true)
 			{
 				int offset = _baseAddressOffset + _addressOffset;
@@ -44,16 +48,16 @@ namespace Db4objects.Db4o.Internal.IX
 				{
 					_reader.Read(yf, _baseAddress, offset);
 				}
-				catch (System.IO.IOException e)
+				catch (IOException e)
 				{
-					throw new Db4objects.Db4o.Internal.IX.IxException(e, _baseAddress, offset);
+					throw new IxException(e, _baseAddress, offset);
 				}
 				_reader._offset = 0;
 				int cmp = Compare(trans);
 				if (cmp == 0)
 				{
 					int parentID = _reader.ReadInt();
-					cmp = parentID - ((Db4objects.Db4o.Internal.IX.IxPatch)newTree)._parentID;
+					cmp = parentID - ((IxPatch)newTree)._parentID;
 				}
 				if (cmp > 0)
 				{
@@ -75,7 +79,7 @@ namespace Db4objects.Db4o.Internal.IX
 					}
 					else
 					{
-						if (newTree is Db4objects.Db4o.Internal.IX.IxRemove)
+						if (newTree is IxRemove)
 						{
 							if (_cursor == 0)
 							{
@@ -154,12 +158,11 @@ namespace Db4objects.Db4o.Internal.IX
 			return _cursor != oldCursor;
 		}
 
-		internal virtual int Compare(Db4objects.Db4o.Internal.IX.IxFileRange fileRange, int[]
-			 matches)
+		internal virtual int Compare(IxFileRange fileRange, int[] matches)
 		{
 			SetFileRange(fileRange);
-			Db4objects.Db4o.Internal.LocalObjectContainer yf = fileRange.Stream();
-			Db4objects.Db4o.Internal.Transaction trans = fileRange.Trans();
+			LocalObjectContainer yf = fileRange.Stream();
+			Transaction trans = fileRange.Trans();
 			int res = 0;
 			while (true)
 			{
@@ -168,9 +171,9 @@ namespace Db4objects.Db4o.Internal.IX
 				{
 					_reader.Read(yf, _baseAddress, offset);
 				}
-				catch (System.IO.IOException e)
+				catch (IOException e)
 				{
-					throw new Db4objects.Db4o.Internal.IX.IxException(e, _baseAddress, offset);
+					throw new IxException(e, _baseAddress, offset);
 				}
 				_reader._offset = 0;
 				int cmp = Compare(trans);
@@ -227,9 +230,9 @@ namespace Db4objects.Db4o.Internal.IX
 				{
 					_reader.Read(yf, _baseAddress, offset);
 				}
-				catch (System.IO.IOException e)
+				catch (IOException e)
 				{
-					throw new Db4objects.Db4o.Internal.IX.IxException(e, _baseAddress, offset);
+					throw new IxException(e, _baseAddress, offset);
 				}
 				_reader._offset = 0;
 				int cmp = Compare(trans);
@@ -266,9 +269,9 @@ namespace Db4objects.Db4o.Internal.IX
 				{
 					_reader.Read(yf, _baseAddress, offset);
 				}
-				catch (System.IO.IOException e)
+				catch (IOException e)
 				{
-					throw new Db4objects.Db4o.Internal.IX.IxException(e, _baseAddress, offset);
+					throw new IxException(e, _baseAddress, offset);
 				}
 				_reader._offset = 0;
 				int cmp = Compare(trans);
@@ -294,22 +297,20 @@ namespace Db4objects.Db4o.Internal.IX
 			return res;
 		}
 
-		private int Compare(Db4objects.Db4o.Internal.Transaction trans)
+		private int Compare(Transaction trans)
 		{
 			return _handler.CompareTo(_handler.ComparableObject(trans, _handler.ReadIndexEntry
 				(_reader)));
 		}
 
-		private Db4objects.Db4o.Foundation.Tree Insert(Db4objects.Db4o.Internal.IX.IxFileRange
-			 fileRange, Db4objects.Db4o.Foundation.Tree a_new, int a_cursor, int a_cmp)
+		private Tree Insert(IxFileRange fileRange, Tree a_new, int a_cursor, int a_cmp)
 		{
 			int incStartNewAt = a_cmp <= 0 ? 1 : 0;
 			int newAddressOffset = (a_cursor + incStartNewAt) * _slotLength;
 			int newEntries = fileRange._entries - a_cursor - incStartNewAt;
 			fileRange._entries = a_cmp < 0 ? a_cursor + 1 : a_cursor;
-			Db4objects.Db4o.Internal.IX.IxFileRange ifr = new Db4objects.Db4o.Internal.IX.IxFileRange
-				(fileRange._fieldTransaction, _baseAddress, _baseAddressOffset + newAddressOffset
-				, newEntries);
+			IxFileRange ifr = new IxFileRange(fileRange._fieldTransaction, _baseAddress, _baseAddressOffset
+				 + newAddressOffset, newEntries);
 			ifr._subsequent = fileRange._subsequent;
 			fileRange._subsequent = null;
 			a_new._preceding = fileRange.BalanceCheckNulls();
@@ -317,7 +318,7 @@ namespace Db4objects.Db4o.Internal.IX
 			return a_new.Balance();
 		}
 
-		private void SetFileRange(Db4objects.Db4o.Internal.IX.IxFileRange a_fr)
+		private void SetFileRange(IxFileRange a_fr)
 		{
 			_lower = 0;
 			_upper = a_fr._entries - 1;

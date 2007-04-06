@@ -1,8 +1,13 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Replication;
+
 namespace Db4objects.Db4o.Replication
 {
 	/// <summary>db4o replication interface.</summary>
 	/// <remarks>db4o replication interface.</remarks>
-	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.ReplicationBegin">Db4objects.Db4o.Ext.IExtObjectContainer.ReplicationBegin
+	/// <seealso cref="IExtObjectContainer.ReplicationBegin">IExtObjectContainer.ReplicationBegin
 	/// 	</seealso>
 	public interface IReplicationProcess
 	{
@@ -38,13 +43,13 @@ namespace Db4objects.Db4o.Replication
 		/// 	</summary>
 		/// <remarks>returns the "peerA" ObjectContainer involved in this ReplicationProcess.
 		/// 	</remarks>
-		Db4objects.Db4o.IObjectContainer PeerA();
+		IObjectContainer PeerA();
 
 		/// <summary>returns the "peerB" ObjectContainer involved in this ReplicationProcess.
 		/// 	</summary>
 		/// <remarks>returns the "peerB" ObjectContainer involved in this ReplicationProcess.
 		/// 	</remarks>
-		Db4objects.Db4o.IObjectContainer PeerB();
+		IObjectContainer PeerB();
 
 		/// <summary>replicates an object.</summary>
 		/// <remarks>
@@ -63,16 +68,14 @@ namespace Db4objects.Db4o.Replication
 
 		/// <summary>
 		/// modifies the replication policy, what to do on a call to
-		/// <see cref="Db4objects.Db4o.Replication.IReplicationProcess.Replicate">Db4objects.Db4o.Replication.IReplicationProcess.Replicate
-		/// 	</see>
+		/// <see cref="IReplicationProcess.Replicate">IReplicationProcess.Replicate</see>
 		/// .
 		/// <br /><br />If no direction is set, the replication process will be bidirectional by
 		/// default.
 		/// </summary>
 		/// <param name="relicateFrom">the ObjectContainer to replicate from</param>
 		/// <param name="replicateTo">the ObjectContainer to replicate to</param>
-		void SetDirection(Db4objects.Db4o.IObjectContainer relicateFrom, Db4objects.Db4o.IObjectContainer
-			 replicateTo);
+		void SetDirection(IObjectContainer relicateFrom, IObjectContainer replicateTo);
 
 		/// <summary>
 		/// adds a constraint to the passed Query to query only for objects that
@@ -85,6 +88,6 @@ namespace Db4objects.Db4o.Replication
 		/// ObjectContainers involved in this replication process.
 		/// </remarks>
 		/// <param name="query">the Query to be constrained</param>
-		void WhereModified(Db4objects.Db4o.Query.IQuery query);
+		void WhereModified(IQuery query);
 	}
 }

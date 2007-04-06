@@ -1,6 +1,13 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Querying;
+
 namespace Db4objects.Db4o.Tests.Common.Querying
 {
-	public class CascadedDeleteUpdate : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class CascadedDeleteUpdate : AbstractDb4oTestCase
 	{
 		public class ParentItem
 		{
@@ -16,24 +23,21 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public static void Main(string[] arguments)
 		{
-			new Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate().RunClientServer(
-				);
+			new CascadedDeleteUpdate().RunClientServer();
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate.ParentItem)
-				).CascadeOnDelete(true);
+			config.ObjectClass(typeof(CascadedDeleteUpdate.ParentItem)).CascadeOnDelete(true);
 		}
 
 		protected override void Store()
 		{
-			Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate.ParentItem parentItem1
-				 = new Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate.ParentItem();
-			Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate.ParentItem parentItem2
-				 = new Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate.ParentItem();
-			Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate.ChildItem child = new 
-				Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate.ChildItem();
+			CascadedDeleteUpdate.ParentItem parentItem1 = new CascadedDeleteUpdate.ParentItem
+				();
+			CascadedDeleteUpdate.ParentItem parentItem2 = new CascadedDeleteUpdate.ParentItem
+				();
+			CascadedDeleteUpdate.ChildItem child = new CascadedDeleteUpdate.ChildItem();
 			child.parent1 = parentItem1;
 			child.parent2 = parentItem2;
 			parentItem1.child = child;
@@ -48,9 +52,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public virtual void TestUpdate()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate.ParentItem)
-				);
-			Db4objects.Db4o.IObjectSet objectSet = q.Execute();
+			IQuery q = NewQuery(typeof(CascadedDeleteUpdate.ParentItem));
+			IObjectSet objectSet = q.Execute();
 			while (objectSet.HasNext())
 			{
 				Db().Set(objectSet.Next());
@@ -62,16 +65,14 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		private void AssertAllObjectStored()
 		{
 			Reopen();
-			Db4objects.Db4o.Query.IQuery q = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate.ParentItem)
-				);
-			Db4objects.Db4o.IObjectSet objectSet = q.Execute();
+			IQuery q = NewQuery(typeof(CascadedDeleteUpdate.ParentItem));
+			IObjectSet objectSet = q.Execute();
 			while (objectSet.HasNext())
 			{
-				Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate.ParentItem parentItem = 
-					(Db4objects.Db4o.Tests.Common.Querying.CascadedDeleteUpdate.ParentItem)objectSet
+				CascadedDeleteUpdate.ParentItem parentItem = (CascadedDeleteUpdate.ParentItem)objectSet
 					.Next();
 				Db().Refresh(parentItem, 3);
-				Db4oUnit.Assert.IsNotNull(parentItem.child);
+				Assert.IsNotNull(parentItem.child);
 			}
 		}
 	}

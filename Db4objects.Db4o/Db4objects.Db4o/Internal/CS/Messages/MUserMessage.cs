@@ -1,7 +1,9 @@
+using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Messaging;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MUserMessage : Db4objects.Db4o.Internal.CS.Messages.MsgObject
-		, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public sealed class MUserMessage : MsgObject, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{
@@ -13,7 +15,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return true;
 		}
 
-		private Db4objects.Db4o.Messaging.IMessageRecipient MessageRecipient()
+		private IMessageRecipient MessageRecipient()
 		{
 			return Config().MessageRecipient();
 		}

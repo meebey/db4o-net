@@ -1,6 +1,11 @@
+using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 {
-	public class STShortTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STShortTestCase : SodaBaseTestCase
 	{
 		internal static readonly string DESCENDANT = "i_short";
 
@@ -26,16 +31,16 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestEquals()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)0));
 			q.Descend(DESCENDANT).Constrain((short)0);
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, _array[0]);
+			SodaTestUtil.ExpectOne(q, _array[0]);
 		}
 
 		public virtual void TestNotEquals()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(_array[0]);
 			q.Descend(DESCENDANT).Constrain((short)0).Not();
 			Expect(q, new int[] { 1, 2, 3 });
@@ -43,7 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestGreater()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)9));
 			q.Descend(DESCENDANT).Constraints().Greater();
@@ -52,16 +57,16 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestSmaller()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)1));
 			q.Descend(DESCENDANT).Constraints().Smaller();
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, _array[0]);
+			SodaTestUtil.ExpectOne(q, _array[0]);
 		}
 
 		public virtual void TestContains()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)9));
 			q.Descend(DESCENDANT).Constraints().Contains();
@@ -70,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestNotContains()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)0));
 			q.Descend(DESCENDANT).Constrain((short)0).Contains().Not();
@@ -79,11 +84,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestLike()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)90));
 			q.Descend(DESCENDANT).Constraints().Like();
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, _array[3]);
+			SodaTestUtil.ExpectOne(q, _array[3]);
 			q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)10));
@@ -93,7 +98,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestNotLike()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)1));
 			q.Descend(DESCENDANT).Constraints().Like().Not();
@@ -102,25 +107,25 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestIdentity()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)1));
-			Db4objects.Db4o.IObjectSet set = q.Execute();
+			IObjectSet set = q.Execute();
 			Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase identityConstraint
 				 = (Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase)set.Next();
 			identityConstraint.i_short = 9999;
 			q = NewQuery();
 			q.Constrain(identityConstraint).Identity();
 			identityConstraint.i_short = 1;
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, _array[1]);
+			SodaTestUtil.ExpectOne(q, _array[1]);
 		}
 
 		public virtual void TestNotIdentity()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)1));
-			Db4objects.Db4o.IObjectSet set = q.Execute();
+			IObjectSet set = q.Execute();
 			Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase identityConstraint
 				 = (Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase)set.Next();
 			identityConstraint.i_short = 9080;
@@ -132,16 +137,16 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestConstraints()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)1));
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase(
 				(short)0));
-			Db4objects.Db4o.Query.IConstraints cs = q.Constraints();
-			Db4objects.Db4o.Query.IConstraint[] csa = cs.ToArray();
+			IConstraints cs = q.Constraints();
+			IConstraint[] csa = cs.ToArray();
 			if (csa.Length != 2)
 			{
-				Db4oUnit.Assert.Fail("Constraints not returned");
+				Assert.Fail("Constraints not returned");
 			}
 		}
 	}

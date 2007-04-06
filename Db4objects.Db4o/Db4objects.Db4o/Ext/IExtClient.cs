@@ -1,17 +1,20 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>
 	/// extended client functionality for the
-	/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer">ExtObjectContainer</see>
+	/// <see cref="IExtObjectContainer">ExtObjectContainer</see>
 	/// interface.
 	/// <br /><br />Both
-	/// <see cref="Db4objects.Db4o.Db4oFactory.OpenClient">Db4o.openClient()</see>
+	/// <see cref="Db4oFactory.OpenClient">Db4o.openClient()</see>
 	/// methods always
 	/// return an <code>ExtClient</code> object so a cast is possible.<br /><br />
 	/// The ObjectContainer functionality is split into multiple interfaces to allow newcomers to
 	/// focus on the essential methods.
 	/// </summary>
-	public interface IExtClient : Db4objects.Db4o.Ext.IExtObjectContainer
+	public interface IExtClient : IExtObjectContainer
 	{
 		/// <summary>requests opening a different server database file for this client session.
 		/// 	</summary>

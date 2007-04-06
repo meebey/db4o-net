@@ -1,41 +1,40 @@
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree.Algebra
 {
 	/// <exclude></exclude>
 	internal class BTreeAlgebra
 	{
-		public static Db4objects.Db4o.Internal.Btree.IBTreeRange Intersect(Db4objects.Db4o.Internal.Btree.BTreeRangeUnion
-			 union, Db4objects.Db4o.Internal.Btree.BTreeRangeSingle single)
+		public static IBTreeRange Intersect(BTreeRangeUnion union, BTreeRangeSingle single
+			)
 		{
-			Db4objects.Db4o.Foundation.SortedCollection4 collection = NewBTreeRangeSingleCollection
-				();
+			SortedCollection4 collection = NewBTreeRangeSingleCollection();
 			CollectIntersections(collection, union, single);
 			return ToRange(collection);
 		}
 
-		public static Db4objects.Db4o.Internal.Btree.IBTreeRange Intersect(Db4objects.Db4o.Internal.Btree.BTreeRangeUnion
-			 union1, Db4objects.Db4o.Internal.Btree.BTreeRangeUnion union2)
+		public static IBTreeRange Intersect(BTreeRangeUnion union1, BTreeRangeUnion union2
+			)
 		{
-			Db4objects.Db4o.Foundation.SortedCollection4 collection = NewBTreeRangeSingleCollection
-				();
-			System.Collections.IEnumerator ranges = union1.Ranges();
+			SortedCollection4 collection = NewBTreeRangeSingleCollection();
+			IEnumerator ranges = union1.Ranges();
 			while (ranges.MoveNext())
 			{
-				Db4objects.Db4o.Internal.Btree.BTreeRangeSingle current = (Db4objects.Db4o.Internal.Btree.BTreeRangeSingle
-					)ranges.Current;
+				BTreeRangeSingle current = (BTreeRangeSingle)ranges.Current;
 				CollectIntersections(collection, union2, current);
 			}
 			return ToRange(collection);
 		}
 
-		private static void CollectIntersections(Db4objects.Db4o.Foundation.SortedCollection4
-			 collection, Db4objects.Db4o.Internal.Btree.BTreeRangeUnion union, Db4objects.Db4o.Internal.Btree.BTreeRangeSingle
-			 single)
+		private static void CollectIntersections(SortedCollection4 collection, BTreeRangeUnion
+			 union, BTreeRangeSingle single)
 		{
-			System.Collections.IEnumerator ranges = union.Ranges();
+			IEnumerator ranges = union.Ranges();
 			while (ranges.MoveNext())
 			{
-				Db4objects.Db4o.Internal.Btree.BTreeRangeSingle current = (Db4objects.Db4o.Internal.Btree.BTreeRangeSingle
-					)ranges.Current;
+				BTreeRangeSingle current = (BTreeRangeSingle)ranges.Current;
 				if (single.Overlaps(current))
 				{
 					collection.Add(single.Intersect(current));
@@ -43,44 +42,38 @@ namespace Db4objects.Db4o.Internal.Btree.Algebra
 			}
 		}
 
-		public static Db4objects.Db4o.Internal.Btree.IBTreeRange Intersect(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle
-			 single1, Db4objects.Db4o.Internal.Btree.BTreeRangeSingle single2)
+		public static IBTreeRange Intersect(BTreeRangeSingle single1, BTreeRangeSingle single2
+			)
 		{
-			Db4objects.Db4o.Internal.Btree.BTreePointer first = Db4objects.Db4o.Internal.Btree.BTreePointer
-				.Max(single1.First(), single2.First());
-			Db4objects.Db4o.Internal.Btree.BTreePointer end = Db4objects.Db4o.Internal.Btree.BTreePointer
-				.Min(single1.End(), single2.End());
+			BTreePointer first = BTreePointer.Max(single1.First(), single2.First());
+			BTreePointer end = BTreePointer.Min(single1.End(), single2.End());
 			return single1.NewBTreeRangeSingle(first, end);
 		}
 
-		public static Db4objects.Db4o.Internal.Btree.IBTreeRange Union(Db4objects.Db4o.Internal.Btree.BTreeRangeUnion
-			 union1, Db4objects.Db4o.Internal.Btree.BTreeRangeUnion union2)
+		public static IBTreeRange Union(BTreeRangeUnion union1, BTreeRangeUnion union2)
 		{
-			System.Collections.IEnumerator ranges = union1.Ranges();
-			Db4objects.Db4o.Internal.Btree.IBTreeRange merged = union2;
+			IEnumerator ranges = union1.Ranges();
+			IBTreeRange merged = union2;
 			while (ranges.MoveNext())
 			{
-				merged = merged.Union((Db4objects.Db4o.Internal.Btree.IBTreeRange)ranges.Current);
+				merged = merged.Union((IBTreeRange)ranges.Current);
 			}
 			return merged;
 		}
 
-		public static Db4objects.Db4o.Internal.Btree.IBTreeRange Union(Db4objects.Db4o.Internal.Btree.BTreeRangeUnion
-			 union, Db4objects.Db4o.Internal.Btree.BTreeRangeSingle single)
+		public static IBTreeRange Union(BTreeRangeUnion union, BTreeRangeSingle single)
 		{
 			if (single.IsEmpty())
 			{
 				return union;
 			}
-			Db4objects.Db4o.Foundation.SortedCollection4 sorted = NewBTreeRangeSingleCollection
-				();
+			SortedCollection4 sorted = NewBTreeRangeSingleCollection();
 			sorted.Add(single);
-			Db4objects.Db4o.Internal.Btree.BTreeRangeSingle range = single;
-			System.Collections.IEnumerator ranges = union.Ranges();
+			BTreeRangeSingle range = single;
+			IEnumerator ranges = union.Ranges();
 			while (ranges.MoveNext())
 			{
-				Db4objects.Db4o.Internal.Btree.BTreeRangeSingle current = (Db4objects.Db4o.Internal.Btree.BTreeRangeSingle
-					)ranges.Current;
+				BTreeRangeSingle current = (BTreeRangeSingle)ranges.Current;
 				if (CanBeMerged(current, range))
 				{
 					sorted.Remove(range);
@@ -95,25 +88,22 @@ namespace Db4objects.Db4o.Internal.Btree.Algebra
 			return ToRange(sorted);
 		}
 
-		private static Db4objects.Db4o.Internal.Btree.IBTreeRange ToRange(Db4objects.Db4o.Foundation.SortedCollection4
-			 sorted)
+		private static IBTreeRange ToRange(SortedCollection4 sorted)
 		{
 			if (1 == sorted.Size())
 			{
-				return (Db4objects.Db4o.Internal.Btree.IBTreeRange)sorted.SingleElement();
+				return (IBTreeRange)sorted.SingleElement();
 			}
-			return new Db4objects.Db4o.Internal.Btree.BTreeRangeUnion(sorted);
+			return new BTreeRangeUnion(sorted);
 		}
 
-		private static Db4objects.Db4o.Foundation.SortedCollection4 NewBTreeRangeSingleCollection
-			()
+		private static SortedCollection4 NewBTreeRangeSingleCollection()
 		{
-			return new Db4objects.Db4o.Foundation.SortedCollection4(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle
-				.COMPARISON);
+			return new SortedCollection4(BTreeRangeSingle.COMPARISON);
 		}
 
-		public static Db4objects.Db4o.Internal.Btree.IBTreeRange Union(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle
-			 single1, Db4objects.Db4o.Internal.Btree.BTreeRangeSingle single2)
+		public static IBTreeRange Union(BTreeRangeSingle single1, BTreeRangeSingle single2
+			)
 		{
 			if (single1.IsEmpty())
 			{
@@ -127,20 +117,17 @@ namespace Db4objects.Db4o.Internal.Btree.Algebra
 			{
 				return Merge(single1, single2);
 			}
-			return new Db4objects.Db4o.Internal.Btree.BTreeRangeUnion(new Db4objects.Db4o.Internal.Btree.BTreeRangeSingle
-				[] { single1, single2 });
+			return new BTreeRangeUnion(new BTreeRangeSingle[] { single1, single2 });
 		}
 
-		private static Db4objects.Db4o.Internal.Btree.BTreeRangeSingle Merge(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle
-			 range1, Db4objects.Db4o.Internal.Btree.BTreeRangeSingle range2)
+		private static BTreeRangeSingle Merge(BTreeRangeSingle range1, BTreeRangeSingle range2
+			)
 		{
-			return range1.NewBTreeRangeSingle(Db4objects.Db4o.Internal.Btree.BTreePointer.Min
-				(range1.First(), range2.First()), Db4objects.Db4o.Internal.Btree.BTreePointer.Max
-				(range1.End(), range2.End()));
+			return range1.NewBTreeRangeSingle(BTreePointer.Min(range1.First(), range2.First()
+				), BTreePointer.Max(range1.End(), range2.End()));
 		}
 
-		private static bool CanBeMerged(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle range1
-			, Db4objects.Db4o.Internal.Btree.BTreeRangeSingle range2)
+		private static bool CanBeMerged(BTreeRangeSingle range1, BTreeRangeSingle range2)
 		{
 			return range1.Overlaps(range2) || range1.Adjacent(range2);
 		}

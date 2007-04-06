@@ -1,10 +1,12 @@
+using System;
+using Db4objects.Db4o.Events;
+
 namespace Db4objects.Db4o.Events
 {
 	/// <summary>Arguments for object related events.</summary>
 	/// <remarks>Arguments for object related events.</remarks>
-	/// <seealso cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
-	/// 	</seealso>
-	public class ObjectEventArgs : System.EventArgs
+	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
+	public class ObjectEventArgs : EventArgs
 	{
 		private object _obj;
 

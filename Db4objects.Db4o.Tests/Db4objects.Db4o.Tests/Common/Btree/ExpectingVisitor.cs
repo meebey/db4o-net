@@ -1,6 +1,10 @@
+using Db4oUnit;
+using Db4objects.Db4o.Foundation;
+using Sharpen;
+
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public class ExpectingVisitor : Db4objects.Db4o.Foundation.IVisitor4
+	public class ExpectingVisitor : IVisitor4
 	{
 		private const bool DEBUG = false;
 
@@ -8,8 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		private readonly bool _obeyOrder;
 
-		private readonly Db4objects.Db4o.Foundation.Collection4 _unexpected = new Db4objects.Db4o.Foundation.Collection4
-			();
+		private readonly Collection4 _unexpected = new Collection4();
 
 		private bool _ignoreUnexpected;
 
@@ -116,11 +119,11 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		{
 			if (_unexpected.Size() > 0)
 			{
-				Db4oUnit.Assert.Fail("UNEXPECTED: " + _unexpected.ToString());
+				Assert.Fail("UNEXPECTED: " + _unexpected.ToString());
 			}
 			for (int i = 0; i < _expected.Length; i++)
 			{
-				Db4oUnit.Assert.AreSame(FOUND, _expected[i]);
+				Assert.AreSame(FOUND, _expected[i]);
 			}
 		}
 	}

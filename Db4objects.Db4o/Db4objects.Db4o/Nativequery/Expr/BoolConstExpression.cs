@@ -1,6 +1,8 @@
+using Db4objects.Db4o.Nativequery.Expr;
+
 namespace Db4objects.Db4o.Nativequery.Expr
 {
-	public class BoolConstExpression : Db4objects.Db4o.Nativequery.Expr.IExpression
+	public class BoolConstExpression : IExpression
 	{
 		public static readonly Db4objects.Db4o.Nativequery.Expr.BoolConstExpression TRUE = 
 			new Db4objects.Db4o.Nativequery.Expr.BoolConstExpression(true);
@@ -31,13 +33,12 @@ namespace Db4objects.Db4o.Nativequery.Expr
 			return (value ? TRUE : FALSE);
 		}
 
-		public virtual void Accept(Db4objects.Db4o.Nativequery.Expr.IExpressionVisitor visitor
-			)
+		public virtual void Accept(IExpressionVisitor visitor)
 		{
 			visitor.Visit(this);
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.IExpression Negate()
+		public virtual IExpression Negate()
 		{
 			return (_value ? FALSE : TRUE);
 		}

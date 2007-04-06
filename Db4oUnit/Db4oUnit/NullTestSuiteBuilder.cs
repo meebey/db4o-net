@@ -1,15 +1,17 @@
+using Db4oUnit;
+
 namespace Db4oUnit
 {
-	public class NullTestSuiteBuilder : Db4oUnit.ITestSuiteBuilder
+	public class NullTestSuiteBuilder : ITestSuiteBuilder
 	{
-		private Db4oUnit.TestSuite _suite;
+		private TestSuite _suite;
 
-		public NullTestSuiteBuilder(Db4oUnit.TestSuite suite)
+		public NullTestSuiteBuilder(TestSuite suite)
 		{
 			_suite = suite;
 		}
 
-		public virtual Db4oUnit.TestSuite Build()
+		public virtual TestSuite Build()
 		{
 			return _suite;
 		}

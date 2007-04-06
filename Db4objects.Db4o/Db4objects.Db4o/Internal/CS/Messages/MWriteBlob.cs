@@ -1,38 +1,42 @@
+using System;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS.Messages;
+using Sharpen.IO;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MWriteBlob : Db4objects.Db4o.Internal.CS.Messages.MsgBlob, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public class MWriteBlob : MsgBlob, IServerSideMessage
 	{
-		public override void ProcessClient(Db4objects.Db4o.Foundation.Network.ISocket4 sock
-			)
+		public override void ProcessClient(ISocket4 sock)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.Msg message = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.ReadMessage(MessageDispatcher(), Transaction(), sock);
-			if (message.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.OK))
+			Msg message = Msg.ReadMessage(MessageDispatcher(), Transaction(), sock);
+			if (message.Equals(Msg.OK))
 			{
 				try
 				{
 					_currentByte = 0;
 					_length = this._blob.GetLength();
 					_blob.GetStatusFrom(this);
-					_blob.SetStatus(Db4objects.Db4o.Ext.Status.PROCESSING);
-					Sharpen.IO.FileInputStream inBlob = this._blob.GetClientInputStream();
+					_blob.SetStatus(Status.PROCESSING);
+					FileInputStream inBlob = this._blob.GetClientInputStream();
 					Copy(inBlob, sock, true);
 					sock.Flush();
-					Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
-					message = Db4objects.Db4o.Internal.CS.Messages.Msg.ReadMessage(MessageDispatcher(
-						), Transaction(), sock);
-					if (message.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.OK))
+					ObjectContainerBase stream = Stream();
+					message = Msg.ReadMessage(MessageDispatcher(), Transaction(), sock);
+					if (message.Equals(Msg.OK))
 					{
 						stream.Deactivate(_blob, int.MaxValue);
 						stream.Activate(_blob, int.MaxValue);
-						this._blob.SetStatus(Db4objects.Db4o.Ext.Status.COMPLETED);
+						this._blob.SetStatus(Status.COMPLETED);
 					}
 					else
 					{
-						this._blob.SetStatus(Db4objects.Db4o.Ext.Status.ERROR);
+						this._blob.SetStatus(Status.ERROR);
 					}
 				}
-				catch (System.Exception e)
+				catch (Exception e)
 				{
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
@@ -43,21 +47,20 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			try
 			{
-				Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
-				Db4objects.Db4o.Internal.BlobImpl blobImpl = this.ServerGetBlobImpl();
+				ObjectContainerBase stream = Stream();
+				BlobImpl blobImpl = this.ServerGetBlobImpl();
 				if (blobImpl != null)
 				{
 					blobImpl.SetTrans(Transaction());
 					Sharpen.IO.File file = blobImpl.ServerFile(null, true);
-					Db4objects.Db4o.Foundation.Network.ISocket4 sock = ServerMessageDispatcher().Socket
-						();
-					Db4objects.Db4o.Internal.CS.Messages.Msg.OK.Write(stream, sock);
-					Sharpen.IO.FileOutputStream fout = new Sharpen.IO.FileOutputStream(file);
+					ISocket4 sock = ServerMessageDispatcher().Socket();
+					Msg.OK.Write(stream, sock);
+					FileOutputStream fout = new FileOutputStream(file);
 					Copy(sock, fout, blobImpl.GetLength(), false);
-					Db4objects.Db4o.Internal.CS.Messages.Msg.OK.Write(stream, sock);
+					Msg.OK.Write(stream, sock);
 				}
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
 			}
 			return true;

@@ -1,8 +1,12 @@
+using Db4oUnit;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Tests.Common.Foundation;
+
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
-	public class Algorithms4TestCase : Db4oUnit.ITestCase
+	public class Algorithms4TestCase : ITestCase
 	{
-		public class QuickSortableIntArray : Db4objects.Db4o.Foundation.IQuickSortable4
+		public class QuickSortableIntArray : IQuickSortable4
 		{
 			private int[] ints;
 
@@ -32,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			{
 				for (int i = 0; i < ints.Length; i++)
 				{
-					Db4oUnit.Assert.AreEqual(i + 1, ints[i]);
+					Assert.AreEqual(i + 1, ints[i]);
 				}
 			}
 		}
@@ -55,10 +59,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private void AssertQSort(int[] ints)
 		{
-			Db4objects.Db4o.Tests.Common.Foundation.Algorithms4TestCase.QuickSortableIntArray
-				 sample = new Db4objects.Db4o.Tests.Common.Foundation.Algorithms4TestCase.QuickSortableIntArray
+			Algorithms4TestCase.QuickSortableIntArray sample = new Algorithms4TestCase.QuickSortableIntArray
 				(ints);
-			Db4objects.Db4o.Foundation.Algorithms4.Qsort(sample);
+			Algorithms4.Qsort(sample);
 			sample.AssertSorted();
 		}
 	}

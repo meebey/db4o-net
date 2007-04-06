@@ -1,7 +1,9 @@
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	public abstract class QEStringCmp : Db4objects.Db4o.Internal.Query.Processor.QEAbstract
+	public abstract class QEStringCmp : QEAbstract
 	{
 		public bool caseSensitive;
 
@@ -10,8 +12,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			caseSensitive = caseSensitive_;
 		}
 
-		internal override bool Evaluate(Db4objects.Db4o.Internal.Query.Processor.QConObject
-			 a_constraint, Db4objects.Db4o.Internal.Query.Processor.QCandidate a_candidate, 
+		internal override bool Evaluate(QConObject a_constraint, QCandidate a_candidate, 
 			object a_value)
 		{
 			if (a_value != null)

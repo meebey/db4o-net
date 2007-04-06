@@ -1,7 +1,10 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Fileheader;
+
 namespace Db4objects.Db4o.Internal.Fileheader
 {
 	/// <exclude></exclude>
-	public class TimerFileLockDisabled : Db4objects.Db4o.Internal.Fileheader.TimerFileLock
+	public class TimerFileLockDisabled : TimerFileLock
 	{
 		public override void CheckHeaderLock()
 		{
@@ -46,8 +49,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 		}
 
-		public override void CheckIfOtherSessionAlive(Db4objects.Db4o.Internal.LocalObjectContainer
-			 container, int address, int offset, long lastAccessTime)
+		public override void CheckIfOtherSessionAlive(LocalObjectContainer container, int
+			 address, int offset, long lastAccessTime)
 		{
 		}
 	}

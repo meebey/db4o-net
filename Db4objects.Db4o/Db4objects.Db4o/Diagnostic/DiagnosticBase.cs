@@ -1,7 +1,10 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Diagnostic;
+
 namespace Db4objects.Db4o.Diagnostic
 {
 	/// <summary>base class for Diagnostic messages</summary>
-	public abstract class DiagnosticBase : Db4objects.Db4o.Diagnostic.IDiagnostic
+	public abstract class DiagnosticBase : IDiagnostic
 	{
 		/// <summary>returns the reason for the message</summary>
 		public abstract object Reason();
@@ -14,8 +17,8 @@ namespace Db4objects.Db4o.Diagnostic
 
 		public override string ToString()
 		{
-			return ":: db4o " + Db4objects.Db4o.Db4oVersion.NAME + " Diagnostics ::\n  " + Reason
-				() + " :: " + Problem() + "\n    " + Solution();
+			return ":: db4o " + Db4oVersion.NAME + " Diagnostics ::\n  " + Reason() + " :: " 
+				+ Problem() + "\n    " + Solution();
 		}
 	}
 }

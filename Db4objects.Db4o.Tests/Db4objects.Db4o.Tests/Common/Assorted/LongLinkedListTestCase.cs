@@ -1,26 +1,29 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Assorted;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class LongLinkedListTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class LongLinkedListTestCase : AbstractDb4oTestCase
 	{
 		private const int COUNT = 1000;
 
 		public class LinkedList
 		{
-			public Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase.LinkedList _next;
+			public LongLinkedListTestCase.LinkedList _next;
 
 			public int _depth;
 		}
 
-		private static Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase.LinkedList
-			 NewLongCircularList()
+		private static LongLinkedListTestCase.LinkedList NewLongCircularList()
 		{
-			Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase.LinkedList head = new 
-				Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase.LinkedList();
-			Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase.LinkedList tail = head;
+			LongLinkedListTestCase.LinkedList head = new LongLinkedListTestCase.LinkedList();
+			LongLinkedListTestCase.LinkedList tail = head;
 			for (int i = 1; i < COUNT; i++)
 			{
-				tail._next = new Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase.LinkedList
-					();
+				tail._next = new LongLinkedListTestCase.LinkedList();
 				tail = tail._next;
 				tail._depth = i;
 			}
@@ -30,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase().RunSolo();
+			new LongLinkedListTestCase().RunSolo();
 		}
 
 		protected override void Store()
@@ -40,13 +43,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase.LinkedList)
-				);
+			IQuery q = NewQuery(typeof(LongLinkedListTestCase.LinkedList));
 			q.Descend("_depth").Constrain(0);
-			Db4objects.Db4o.IObjectSet objectSet = q.Execute();
-			Db4oUnit.Assert.AreEqual(1, objectSet.Size());
-			Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase.LinkedList head = (Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase.LinkedList
-				)objectSet.Next();
+			IObjectSet objectSet = q.Execute();
+			Assert.AreEqual(1, objectSet.Size());
+			LongLinkedListTestCase.LinkedList head = (LongLinkedListTestCase.LinkedList)objectSet
+				.Next();
 			Db().Activate(head, int.MaxValue);
 			AssertListIsComplete(head);
 			Db().Deactivate(head, int.MaxValue);
@@ -57,18 +59,16 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AssertListIsComplete(head);
 		}
 
-		private void AssertListIsComplete(Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase.LinkedList
-			 head)
+		private void AssertListIsComplete(LongLinkedListTestCase.LinkedList head)
 		{
 			int count = 1;
-			Db4objects.Db4o.Tests.Common.Assorted.LongLinkedListTestCase.LinkedList tail = head
-				._next;
+			LongLinkedListTestCase.LinkedList tail = head._next;
 			while (tail != head)
 			{
 				count++;
 				tail = tail._next;
 			}
-			Db4oUnit.Assert.AreEqual(COUNT, count);
+			Assert.AreEqual(COUNT, count);
 		}
 	}
 }

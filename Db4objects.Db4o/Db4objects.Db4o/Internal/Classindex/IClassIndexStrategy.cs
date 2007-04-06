@@ -1,19 +1,23 @@
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal.Classindex
 {
 	/// <exclude></exclude>
 	public interface IClassIndexStrategy
 	{
-		void Initialize(Db4objects.Db4o.Internal.ObjectContainerBase stream);
+		void Initialize(ObjectContainerBase stream);
 
-		void Read(Db4objects.Db4o.Internal.ObjectContainerBase stream, int indexID);
+		void Read(ObjectContainerBase stream, int indexID);
 
-		int Write(Db4objects.Db4o.Internal.Transaction transaction);
+		int Write(Transaction transaction);
 
-		void Add(Db4objects.Db4o.Internal.Transaction transaction, int id);
+		void Add(Transaction transaction, int id);
 
-		void Remove(Db4objects.Db4o.Internal.Transaction transaction, int id);
+		void Remove(Transaction transaction, int id);
 
-		int EntryCount(Db4objects.Db4o.Internal.Transaction transaction);
+		int EntryCount(Transaction transaction);
 
 		int OwnLength();
 
@@ -21,19 +25,17 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		/// <summary>Traverses all index entries (java.lang.Integer references).</summary>
 		/// <remarks>Traverses all index entries (java.lang.Integer references).</remarks>
-		void TraverseAll(Db4objects.Db4o.Internal.Transaction transaction, Db4objects.Db4o.Foundation.IVisitor4
-			 command);
+		void TraverseAll(Transaction transaction, IVisitor4 command);
 
-		void DontDelete(Db4objects.Db4o.Internal.Transaction transaction, int id);
+		void DontDelete(Transaction transaction, int id);
 
-		System.Collections.IEnumerator AllSlotIDs(Db4objects.Db4o.Internal.Transaction trans
+		IEnumerator AllSlotIDs(Transaction trans);
+
+		void DefragReference(ClassMetadata yapClass, ReaderPair readers, int classIndexID
 			);
-
-		void DefragReference(Db4objects.Db4o.Internal.ClassMetadata yapClass, Db4objects.Db4o.Internal.ReaderPair
-			 readers, int classIndexID);
 
 		int Id();
 
-		void DefragIndex(Db4objects.Db4o.Internal.ReaderPair readers);
+		void DefragIndex(ReaderPair readers);
 	}
 }

@@ -1,12 +1,18 @@
+using System.IO;
+using System.Net.Sockets;
+using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.Internal;
+using Sharpen.IO;
+
 namespace Db4objects.Db4o.Foundation.Network
 {
-	public class NetworkSocket : Db4objects.Db4o.Foundation.Network.ISocket4
+	public class NetworkSocket : ISocket4
 	{
 		private Sharpen.Net.Socket _socket;
 
-		private Sharpen.IO.OutputStream _out;
+		private OutputStream _out;
 
-		private Sharpen.IO.InputStream _in;
+		private InputStream _in;
 
 		private string _hostName;
 
@@ -35,7 +41,7 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		public virtual bool IsConnected()
 		{
-			return Db4objects.Db4o.Internal.Platform4.IsConnected(_socket);
+			return Platform4.IsConnected(_socket);
 		}
 
 		public virtual int Read()
@@ -54,7 +60,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			{
 				_socket.SetSoTimeout(timeout);
 			}
-			catch (System.Net.Sockets.SocketException e)
+			catch (SocketException e)
 			{
 				Sharpen.Runtime.PrintStackTrace(e);
 			}
@@ -75,11 +81,11 @@ namespace Db4objects.Db4o.Foundation.Network
 			_out.Write(i);
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Network.ISocket4 OpenParalellSocket()
+		public virtual ISocket4 OpenParalellSocket()
 		{
 			if (_hostName == null)
 			{
-				throw new System.IO.IOException("Cannot open parallel socket - invalid state.");
+				throw new IOException("Cannot open parallel socket - invalid state.");
 			}
 			return new Db4objects.Db4o.Foundation.Network.NetworkSocket(_hostName, _socket.GetPort
 				());

@@ -1,3 +1,6 @@
+using System;
+using Db4objects.Db4o.Config;
+
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>
@@ -9,29 +12,27 @@ namespace Db4objects.Db4o.Config
 	/// namespaces or multiple similar named classes. One single '*'
 	/// wildcard character is supported in the names.
 	/// <br /><br />See
-	/// <see cref="Db4objects.Db4o.Config.IAlias">Db4objects.Db4o.Config.IAlias</see>
+	/// <see cref="IAlias">IAlias</see>
 	/// for concrete examples.
 	/// </remarks>
-	public class WildcardAlias : Db4objects.Db4o.Config.IAlias
+	public class WildcardAlias : IAlias
 	{
-		private readonly Db4objects.Db4o.Config.WildcardAlias.WildcardPattern _storedPattern;
+		private readonly WildcardAlias.WildcardPattern _storedPattern;
 
-		private readonly Db4objects.Db4o.Config.WildcardAlias.WildcardPattern _runtimePattern;
+		private readonly WildcardAlias.WildcardPattern _runtimePattern;
 
 		public WildcardAlias(string storedPattern, string runtimePattern)
 		{
 			if (null == storedPattern)
 			{
-				throw new System.ArgumentNullException("storedPattern");
+				throw new ArgumentNullException("storedPattern");
 			}
 			if (null == runtimePattern)
 			{
-				throw new System.ArgumentNullException("runtimePattern");
+				throw new ArgumentNullException("runtimePattern");
 			}
-			_storedPattern = new Db4objects.Db4o.Config.WildcardAlias.WildcardPattern(storedPattern
-				);
-			_runtimePattern = new Db4objects.Db4o.Config.WildcardAlias.WildcardPattern(runtimePattern
-				);
+			_storedPattern = new WildcardAlias.WildcardPattern(storedPattern);
+			_runtimePattern = new WildcardAlias.WildcardPattern(runtimePattern);
 		}
 
 		/// <summary>resolving is done through simple pattern matching</summary>
@@ -77,7 +78,7 @@ namespace Db4objects.Db4o.Config
 
 			private void InvalidPattern()
 			{
-				throw new System.ArgumentException("only one '*' character");
+				throw new ArgumentException("only one '*' character");
 			}
 
 			internal virtual string[] Split(string pattern)

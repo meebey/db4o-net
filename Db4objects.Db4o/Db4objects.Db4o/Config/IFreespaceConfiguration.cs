@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Config;
+
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>interface to configure the freespace system to be used.</summary>
@@ -6,10 +8,10 @@ namespace Db4objects.Db4o.Config
 	/// <br /><br />All methods should be called before opening database files.
 	/// If db4o is instructed to exchange the system
 	/// (
-	/// <see cref="Db4objects.Db4o.Config.IFreespaceConfiguration.UseIndexSystem">Db4objects.Db4o.Config.IFreespaceConfiguration.UseIndexSystem
+	/// <see cref="IFreespaceConfiguration.UseIndexSystem">IFreespaceConfiguration.UseIndexSystem
 	/// 	</see>
 	/// ,
-	/// <see cref="Db4objects.Db4o.Config.IFreespaceConfiguration.UseRamSystem">Db4objects.Db4o.Config.IFreespaceConfiguration.UseRamSystem
+	/// <see cref="IFreespaceConfiguration.UseRamSystem">IFreespaceConfiguration.UseRamSystem
 	/// 	</see>
 	/// )
 	/// this will happen on opening the database file.<br /><br />
@@ -50,7 +52,7 @@ namespace Db4objects.Db4o.Config
 		/// reliably set after an object container has been opened.
 		/// </remarks>
 		/// <param name="freespaceFiller">The freespace overwriting callback to use</param>
-		void FreespaceFiller(Db4objects.Db4o.Config.IFreespaceFiller freespaceFiller);
+		void FreespaceFiller(IFreespaceFiller freespaceFiller);
 
 		/// <summary>configures db4o to use an index-based freespace system.</summary>
 		/// <remarks>

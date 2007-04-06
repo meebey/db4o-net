@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Config;
+
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>
@@ -13,21 +15,20 @@ namespace Db4objects.Db4o.Config
 	/// <br /><br />Two simple Alias implementations are supplied along with
 	/// db4o:<br />
 	/// -
-	/// <see cref="Db4objects.Db4o.Config.TypeAlias">Db4objects.Db4o.Config.TypeAlias</see>
+	/// <see cref="TypeAlias">TypeAlias</see>
 	/// provides an #equals() resolver to match
 	/// names directly.<br />
 	/// -
-	/// <see cref="Db4objects.Db4o.Config.WildcardAlias">Db4objects.Db4o.Config.WildcardAlias
-	/// 	</see>
+	/// <see cref="WildcardAlias">WildcardAlias</see>
 	/// allows simple pattern matching
 	/// with one single '*' wildcard character.<br />
 	/// <br />
 	/// It is possible to create
 	/// own complex
-	/// <see cref="Db4objects.Db4o.Config.IAlias">Db4objects.Db4o.Config.IAlias</see>
+	/// <see cref="IAlias">IAlias</see>
 	/// constructs by creating own resolvers
 	/// that implement the
-	/// <see cref="Db4objects.Db4o.Config.IAlias">Db4objects.Db4o.Config.IAlias</see>
+	/// <see cref="IAlias">IAlias</see>
 	/// interface.
 	/// <br /><br />
 	/// Four examples of concrete usecases:

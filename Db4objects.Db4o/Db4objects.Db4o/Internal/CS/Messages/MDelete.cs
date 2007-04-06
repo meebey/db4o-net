@@ -1,11 +1,15 @@
+using System;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MDelete : Db4objects.Db4o.Internal.CS.Messages.MsgD, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public sealed class MDelete : MsgD, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{
 			Db4objects.Db4o.Internal.Buffer bytes = this.GetByteLoad();
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
+			ObjectContainerBase stream = Stream();
 			lock (StreamLock())
 			{
 				object obj = stream.GetByID1(Transaction(), bytes.ReadInt());
@@ -16,7 +20,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					{
 						stream.Delete1(Transaction(), obj, userCall);
 					}
-					catch (System.Exception)
+					catch (Exception)
 					{
 					}
 				}

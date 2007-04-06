@@ -1,13 +1,15 @@
+using Db4oUnit;
+
 namespace Db4oUnit.Tests
 {
-	internal class RunsGreen : Db4oUnit.ITest
+	internal class RunsGreen : ITest
 	{
 		public virtual string GetLabel()
 		{
 			return "RunsGreen";
 		}
 
-		public virtual void Run(Db4oUnit.TestResult result)
+		public virtual void Run(TestResult result)
 		{
 		}
 	}

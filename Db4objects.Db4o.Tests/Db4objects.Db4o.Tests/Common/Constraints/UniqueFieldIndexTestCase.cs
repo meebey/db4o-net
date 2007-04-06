@@ -1,11 +1,17 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Constraints;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Constraints;
+
 namespace Db4objects.Db4o.Tests.Common.Constraints
 {
-	public class UniqueFieldIndexTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class UniqueFieldIndexTestCase : AbstractDb4oTestCase
 	{
 		public static void Main(string[] arguments)
 		{
-			new Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase().RunClientServer
-				();
+			new UniqueFieldIndexTestCase().RunClientServer();
 		}
 
 		public class Item
@@ -22,35 +28,31 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 			}
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item)
-				).ObjectField("_str").Indexed(true);
-			config.Add(new Db4objects.Db4o.Constraints.UniqueFieldValueConstraint(typeof(Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item)
-				, "_str"));
+			config.ObjectClass(typeof(UniqueFieldIndexTestCase.Item)).ObjectField("_str").Indexed
+				(true);
+			config.Add(new UniqueFieldValueConstraint(typeof(UniqueFieldIndexTestCase.Item), 
+				"_str"));
 		}
 
 		protected override void Store()
 		{
-			Store(new Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item(
-				"1"));
-			Store(new Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item(
-				"2"));
-			Store(new Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item(
-				"3"));
+			Store(new UniqueFieldIndexTestCase.Item("1"));
+			Store(new UniqueFieldIndexTestCase.Item("2"));
+			Store(new UniqueFieldIndexTestCase.Item("3"));
 		}
 
 		public virtual void TestNewViolates()
 		{
-			Store(new Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item(
-				"2"));
-			Db4oUnit.Assert.Expect(typeof(Db4objects.Db4o.Constraints.UniqueFieldValueConstraintViolationException)
-				, new _AnonymousInnerClass46(this));
+			Store(new UniqueFieldIndexTestCase.Item("2"));
+			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _AnonymousInnerClass46
+				(this));
 			Db().Rollback();
 		}
 
-		private sealed class _AnonymousInnerClass46 : Db4oUnit.ICodeBlock
+		private sealed class _AnonymousInnerClass46 : ICodeBlock
 		{
 			public _AnonymousInnerClass46(UniqueFieldIndexTestCase _enclosing)
 			{
@@ -67,19 +69,18 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 
 		public virtual void TestUpdateViolates()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item)
-				);
+			IQuery q = NewQuery(typeof(UniqueFieldIndexTestCase.Item));
 			q.Descend("_str").Constrain("2");
-			Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item item = (Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item
-				)q.Execute().Next();
+			UniqueFieldIndexTestCase.Item item = (UniqueFieldIndexTestCase.Item)q.Execute().Next
+				();
 			item._str = "3";
 			Store(item);
-			Db4oUnit.Assert.Expect(typeof(Db4objects.Db4o.Constraints.UniqueFieldValueConstraintViolationException)
-				, new _AnonymousInnerClass60(this));
+			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _AnonymousInnerClass60
+				(this));
 			Db().Rollback();
 		}
 
-		private sealed class _AnonymousInnerClass60 : Db4oUnit.ICodeBlock
+		private sealed class _AnonymousInnerClass60 : ICodeBlock
 		{
 			public _AnonymousInnerClass60(UniqueFieldIndexTestCase _enclosing)
 			{
@@ -96,11 +97,10 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 
 		public virtual void TestUpdateDoesNotViolate()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item)
-				);
+			IQuery q = NewQuery(typeof(UniqueFieldIndexTestCase.Item));
 			q.Descend("_str").Constrain("2");
-			Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item item = (Db4objects.Db4o.Tests.Common.Constraints.UniqueFieldIndexTestCase.Item
-				)q.Execute().Next();
+			UniqueFieldIndexTestCase.Item item = (UniqueFieldIndexTestCase.Item)q.Execute().Next
+				();
 			item._str = "4";
 			Store(item);
 			Db().Commit();

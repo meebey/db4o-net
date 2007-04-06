@@ -1,14 +1,16 @@
+using System;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MReadMultipleObjects : Db4objects.Db4o.Internal.CS.Messages.MsgD
-		, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public sealed class MReadMultipleObjects : MsgD, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{
 			int size = ReadInt();
-			Db4objects.Db4o.Internal.CS.Messages.MsgD[] ret = new Db4objects.Db4o.Internal.CS.Messages.MsgD
-				[size];
-			int length = (1 + size) * Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			MsgD[] ret = new MsgD[size];
+			int length = (1 + size) * Const4.INT_LENGTH;
 			lock (StreamLock())
 			{
 				for (int i = 0; i < size; i++)
@@ -16,22 +18,20 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					int id = this._payLoad.ReadInt();
 					try
 					{
-						Db4objects.Db4o.Internal.StatefulBuffer bytes = Stream().ReadWriterByID(Transaction
-							(), id);
+						StatefulBuffer bytes = Stream().ReadWriterByID(Transaction(), id);
 						if (bytes != null)
 						{
-							ret[i] = Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT.GetWriter(bytes
-								);
+							ret[i] = Msg.OBJECT_TO_CLIENT.GetWriter(bytes);
 							length += ret[i]._payLoad.GetLength();
 						}
 					}
-					catch (System.Exception e)
+					catch (Exception e)
 					{
 					}
 				}
 			}
-			Db4objects.Db4o.Internal.CS.Messages.MsgD multibytes = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.READ_MULTIPLE_OBJECTS.GetWriterForLength(Transaction(), length);
+			MsgD multibytes = Msg.READ_MULTIPLE_OBJECTS.GetWriterForLength(Transaction(), length
+				);
 			multibytes.WriteInt(size);
 			for (int i = 0; i < size; i++)
 			{

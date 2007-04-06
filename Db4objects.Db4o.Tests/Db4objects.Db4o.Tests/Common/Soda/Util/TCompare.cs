@@ -1,13 +1,20 @@
+using System;
+using System.Collections;
+using System.Reflection;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Internal;
+using Sharpen.Lang.Reflect;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Util
 {
 	public class TCompare
 	{
 		public static bool IsEqual(object a_compare, object a_with)
 		{
-			return IsEqual(a_compare, a_with, null, new System.Collections.ArrayList());
+			return IsEqual(a_compare, a_with, null, new ArrayList());
 		}
 
-		private static bool IsEqual(object a_compare, object a_with, string a_path, System.Collections.ArrayList
+		private static bool IsEqual(object a_compare, object a_with, string a_path, ArrayList
 			 a_list)
 		{
 			if (a_compare == null)
@@ -18,12 +25,12 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			{
 				return false;
 			}
-			System.Type clazz = a_compare.GetType();
+			Type clazz = a_compare.GetType();
 			if (clazz != a_with.GetType())
 			{
 				return false;
 			}
-			if (Db4objects.Db4o.Internal.Platform4.IsSimple(clazz))
+			if (Platform4.IsSimple(clazz))
 			{
 				return a_compare.Equals(a_with);
 			}
@@ -45,17 +52,16 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 		}
 
 		private static bool AreFieldsEqual(object a_compare, object a_with, string a_path
-			, System.Collections.ArrayList a_list)
+			, ArrayList a_list)
 		{
 			string path = GetPath(a_compare, a_with, a_path);
-			System.Reflection.FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(a_compare
-				.GetType());
+			FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(a_compare.GetType());
 			for (int i = 0; i < fields.Length; i++)
 			{
-				System.Reflection.FieldInfo field = fields[i];
-				if (Db4oUnit.Extensions.Db4oUnitPlatform.IsStoreableField(field))
+				FieldInfo field = fields[i];
+				if (Db4oUnitPlatform.IsStoreableField(field))
 				{
-					Db4objects.Db4o.Internal.Platform4.SetAccessible(field);
+					Platform4.SetAccessible(field);
 					try
 					{
 						if (!IsFieldEqual(field, a_compare, a_with, path, a_list))
@@ -63,7 +69,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 							return false;
 						}
 					}
-					catch (System.Exception e)
+					catch (Exception e)
 					{
 						Sharpen.Runtime.Err.WriteLine("TCompare failure executing path:" + path);
 						Sharpen.Runtime.PrintStackTrace(e);
@@ -74,28 +80,27 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			return true;
 		}
 
-		private static bool IsFieldEqual(System.Reflection.FieldInfo field, object a_compare
-			, object a_with, string path, System.Collections.ArrayList a_list)
+		private static bool IsFieldEqual(FieldInfo field, object a_compare, object a_with
+			, string path, ArrayList a_list)
 		{
 			object compare = GetFieldValue(field, a_compare);
 			object with = GetFieldValue(field, a_with);
 			return IsEqual(compare, with, path + field.Name + ":", a_list);
 		}
 
-		private static object GetFieldValue(System.Reflection.FieldInfo field, object obj
-			)
+		private static object GetFieldValue(FieldInfo field, object obj)
 		{
 			try
 			{
 				return field.GetValue(obj);
 			}
-			catch (System.MemberAccessException)
+			catch (MemberAccessException)
 			{
 				return null;
 			}
 		}
 
-		private static bool AreArraysEqual(object compare, object with, string path, System.Collections.ArrayList
+		private static bool AreArraysEqual(object compare, object with, string path, ArrayList
 			 a_list)
 		{
 			int len = Sharpen.Runtime.GetArrayLength(compare);
@@ -135,7 +140,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			return a_path;
 		}
 
-		internal static bool HasPublicConstructor(System.Type a_class)
+		internal static bool HasPublicConstructor(Type a_class)
 		{
 			if (a_class != typeof(string))
 			{
@@ -191,7 +196,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 		internal static int[] ArrayDimensions(object a_object)
 		{
 			int count = 0;
-			for (System.Type clazz = a_object.GetType(); clazz.IsArray; clazz = clazz.GetElementType
+			for (Type clazz = a_object.GetType(); clazz.IsArray; clazz = clazz.GetElementType
 				())
 			{
 				count++;

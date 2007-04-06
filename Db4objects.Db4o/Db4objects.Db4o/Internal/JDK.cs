@@ -1,21 +1,31 @@
+using System;
+using System.Reflection;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Generic;
+using Db4objects.Db4o.Types;
+using Sharpen.Lang;
+using Sharpen.Util;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	public class JDK
 	{
-		internal virtual Sharpen.Lang.Thread AddShutdownHook(Sharpen.Lang.IRunnable runnable
-			)
+		internal virtual Thread AddShutdownHook(IRunnable runnable)
 		{
 			return null;
 		}
 
-		internal virtual Db4objects.Db4o.Types.IDb4oCollections Collections(Db4objects.Db4o.Internal.ObjectContainerBase
-			 session)
+		internal virtual IDb4oCollections Collections(ObjectContainerBase session)
 		{
 			return null;
 		}
 
-		internal virtual System.Type ConstructorClass()
+		internal virtual Type ConstructorClass()
 		{
 			return null;
 		}
@@ -30,31 +40,28 @@ namespace Db4objects.Db4o.Internal
 			return obj;
 		}
 
-		internal virtual object CreateYapRef(object queue, Db4objects.Db4o.Internal.ObjectReference
-			 @ref, object obj)
+		internal virtual object CreateYapRef(object queue, ObjectReference @ref, object obj
+			)
 		{
 			return null;
 		}
 
 		internal virtual object Deserialize(byte[] bytes)
 		{
-			throw new Db4objects.Db4o.Ext.Db4oException(Db4objects.Db4o.Internal.Messages.NOT_IMPLEMENTED
-				);
+			throw new Db4oException(Db4objects.Db4o.Internal.Messages.NOT_IMPLEMENTED);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Config4Class ExtendConfiguration(Db4objects.Db4o.Reflect.IReflectClass
-			 clazz, Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.Internal.Config4Class
-			 classConfig)
+		public virtual Config4Class ExtendConfiguration(IReflectClass clazz, IConfiguration
+			 config, Config4Class classConfig)
 		{
 			return classConfig;
 		}
 
-		internal virtual void ForEachCollectionElement(object obj, Db4objects.Db4o.Foundation.IVisitor4
-			 visitor)
+		internal virtual void ForEachCollectionElement(object obj, IVisitor4 visitor)
 		{
 		}
 
-		internal virtual string Format(Sharpen.Util.Date date, bool showTime)
+		internal virtual string Format(Date date, bool showTime)
 		{
 			return date.ToString();
 		}
@@ -69,8 +76,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		internal virtual bool IsCollectionTranslator(Db4objects.Db4o.Internal.Config4Class
-			 config)
+		internal virtual bool IsCollectionTranslator(Config4Class config)
 		{
 			return false;
 		}
@@ -100,44 +106,40 @@ namespace Db4objects.Db4o.Internal
 		/// use for system classes only, since not ClassLoader
 		/// or Reflector-aware
 		/// </summary>
-		internal virtual bool MethodIsAvailable(string className, string methodName, System.Type[]
+		internal virtual bool MethodIsAvailable(string className, string methodName, Type[]
 			 @params)
 		{
 			return false;
 		}
 
-		internal virtual void PollReferenceQueue(Db4objects.Db4o.Internal.ObjectContainerBase
-			 session, object referenceQueue)
+		internal virtual void PollReferenceQueue(ObjectContainerBase session, object referenceQueue
+			)
 		{
 		}
 
-		public virtual void RegisterCollections(Db4objects.Db4o.Reflect.Generic.GenericReflector
-			 reflector)
+		public virtual void RegisterCollections(GenericReflector reflector)
 		{
 		}
 
-		internal virtual void RemoveShutdownHook(Sharpen.Lang.Thread thread)
+		internal virtual void RemoveShutdownHook(Thread thread)
 		{
 		}
 
-		public virtual System.Reflection.ConstructorInfo SerializableConstructor(System.Type
-			 clazz)
+		public virtual ConstructorInfo SerializableConstructor(Type clazz)
 		{
 			return null;
 		}
 
 		internal virtual byte[] Serialize(object obj)
 		{
-			throw new Db4objects.Db4o.Ext.Db4oException(Db4objects.Db4o.Internal.Messages.NOT_IMPLEMENTED
-				);
+			throw new Db4oException(Db4objects.Db4o.Internal.Messages.NOT_IMPLEMENTED);
 		}
 
 		internal virtual void SetAccessible(object accessibleObject)
 		{
 		}
 
-		internal virtual bool IsEnum(Db4objects.Db4o.Reflect.IReflector reflector, Db4objects.Db4o.Reflect.IReflectClass
-			 clazz)
+		internal virtual bool IsEnum(IReflector reflector, IReflectClass clazz)
 		{
 			return false;
 		}
@@ -154,8 +156,7 @@ namespace Db4objects.Db4o.Internal
 			return weakRef;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflector CreateReflector(object classLoader
-			)
+		public virtual IReflector CreateReflector(object classLoader)
 		{
 			return null;
 		}

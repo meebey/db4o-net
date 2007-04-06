@@ -1,10 +1,11 @@
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	public class QEGreater : Db4objects.Db4o.Internal.Query.Processor.QEAbstract
+	public class QEGreater : QEAbstract
 	{
-		internal override bool Evaluate(Db4objects.Db4o.Internal.Query.Processor.QConObject
-			 a_constraint, Db4objects.Db4o.Internal.Query.Processor.QCandidate a_candidate, 
+		internal override bool Evaluate(QConObject a_constraint, QCandidate a_candidate, 
 			object a_value)
 		{
 			if (a_value == null)
@@ -16,7 +17,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override void IndexBitMap(bool[] bits)
 		{
-			bits[Db4objects.Db4o.Internal.Query.Processor.QE.GREATER] = true;
+			bits[QE.GREATER] = true;
 		}
 	}
 }

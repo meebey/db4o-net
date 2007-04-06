@@ -1,3 +1,5 @@
+using Db4objects.Db4o;
+
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>callback methods.</summary>
@@ -26,14 +28,14 @@ namespace Db4objects.Db4o.Ext
 		/// <param name="container">the <code>ObjectContainer</code> the object is stored in.
 		/// 	</param>
 		/// <returns>false to prevent activation.</returns>
-		bool ObjectCanActivate(Db4objects.Db4o.IObjectContainer container);
+		bool ObjectCanActivate(IObjectContainer container);
 
 		/// <summary>called before an Object is deactivated.</summary>
 		/// <remarks>called before an Object is deactivated.</remarks>
 		/// <param name="container">the <code>ObjectContainer</code> the object is stored in.
 		/// 	</param>
 		/// <returns>false to prevent deactivation.</returns>
-		bool ObjectCanDeactivate(Db4objects.Db4o.IObjectContainer container);
+		bool ObjectCanDeactivate(IObjectContainer container);
 
 		/// <summary>called before an Object is deleted.</summary>
 		/// <remarks>
@@ -44,33 +46,33 @@ namespace Db4objects.Db4o.Ext
 		/// <param name="container">the <code>ObjectContainer</code> the object is stored in.
 		/// 	</param>
 		/// <returns>false to prevent the object from being deleted.</returns>
-		bool ObjectCanDelete(Db4objects.Db4o.IObjectContainer container);
+		bool ObjectCanDelete(IObjectContainer container);
 
 		/// <summary>called before an Object is stored the first time.</summary>
 		/// <remarks>called before an Object is stored the first time.</remarks>
 		/// <param name="container">the <code>ObjectContainer</code> is about to be stored to.
 		/// 	</param>
 		/// <returns>false to prevent the object from being stored.</returns>
-		bool ObjectCanNew(Db4objects.Db4o.IObjectContainer container);
+		bool ObjectCanNew(IObjectContainer container);
 
 		/// <summary>called before a persisted Object is updated.</summary>
 		/// <remarks>called before a persisted Object is updated.</remarks>
 		/// <param name="container">the <code>ObjectContainer</code> the object is stored in.
 		/// 	</param>
 		/// <returns>false to prevent the object from being updated.</returns>
-		bool ObjectCanUpdate(Db4objects.Db4o.IObjectContainer container);
+		bool ObjectCanUpdate(IObjectContainer container);
 
 		/// <summary>called upon activation of an object.</summary>
 		/// <remarks>called upon activation of an object.</remarks>
 		/// <param name="container">the <code>ObjectContainer</code> the object is stored in.
 		/// 	</param>
-		void ObjectOnActivate(Db4objects.Db4o.IObjectContainer container);
+		void ObjectOnActivate(IObjectContainer container);
 
 		/// <summary>called upon deactivation of an object.</summary>
 		/// <remarks>called upon deactivation of an object.</remarks>
 		/// <param name="container">the <code>ObjectContainer</code> the object is stored in.
 		/// 	</param>
-		void ObjectOnDeactivate(Db4objects.Db4o.IObjectContainer container);
+		void ObjectOnDeactivate(IObjectContainer container);
 
 		/// <summary>called after an object was deleted.</summary>
 		/// <remarks>
@@ -80,18 +82,18 @@ namespace Db4objects.Db4o.Ext
 		/// </remarks>
 		/// <param name="container">the <code>ObjectContainer</code> the object was stored in.
 		/// 	</param>
-		void ObjectOnDelete(Db4objects.Db4o.IObjectContainer container);
+		void ObjectOnDelete(IObjectContainer container);
 
 		/// <summary>called after a new object was stored.</summary>
 		/// <remarks>called after a new object was stored.</remarks>
 		/// <param name="container">the <code>ObjectContainer</code> the object is stored to.
 		/// 	</param>
-		void ObjectOnNew(Db4objects.Db4o.IObjectContainer container);
+		void ObjectOnNew(IObjectContainer container);
 
 		/// <summary>called after an object was updated.</summary>
 		/// <remarks>called after an object was updated.</remarks>
 		/// <param name="container">the <code>ObjectContainer</code> the object is stored in.
 		/// 	</param>
-		void ObjectOnUpdate(Db4objects.Db4o.IObjectContainer container);
+		void ObjectOnUpdate(IObjectContainer container);
 	}
 }

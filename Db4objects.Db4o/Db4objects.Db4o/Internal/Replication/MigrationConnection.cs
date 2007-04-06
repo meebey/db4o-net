@@ -1,48 +1,49 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Sharpen;
+
 namespace Db4objects.Db4o.Internal.Replication
 {
 	/// <exclude></exclude>
 	public class MigrationConnection
 	{
-		public readonly Db4objects.Db4o.Internal.ObjectContainerBase _peerA;
+		public readonly ObjectContainerBase _peerA;
 
-		public readonly Db4objects.Db4o.Internal.ObjectContainerBase _peerB;
+		public readonly ObjectContainerBase _peerB;
 
-		private readonly Db4objects.Db4o.Foundation.Hashtable4 _referenceMap;
+		private readonly Hashtable4 _referenceMap;
 
-		private readonly Db4objects.Db4o.Foundation.Hashtable4 _identityMap;
+		private readonly Hashtable4 _identityMap;
 
-		public MigrationConnection(Db4objects.Db4o.Internal.ObjectContainerBase peerA, Db4objects.Db4o.Internal.ObjectContainerBase
-			 peerB)
+		public MigrationConnection(ObjectContainerBase peerA, ObjectContainerBase peerB)
 		{
-			_referenceMap = new Db4objects.Db4o.Foundation.Hashtable4();
-			_identityMap = new Db4objects.Db4o.Foundation.Hashtable4();
+			_referenceMap = new Hashtable4();
+			_identityMap = new Hashtable4();
 			_peerA = peerA;
 			_peerB = peerB;
 		}
 
-		public virtual void MapReference(object obj, Db4objects.Db4o.Internal.ObjectReference
-			 @ref)
+		public virtual void MapReference(object obj, ObjectReference @ref)
 		{
-			_referenceMap.Put(Sharpen.Runtime.IdentityHashCode(obj), @ref);
+			_referenceMap.Put(Runtime.IdentityHashCode(obj), @ref);
 		}
 
 		public virtual void MapIdentity(object obj, object otherObj)
 		{
-			_identityMap.Put(Sharpen.Runtime.IdentityHashCode(obj), otherObj);
+			_identityMap.Put(Runtime.IdentityHashCode(obj), otherObj);
 		}
 
-		public virtual Db4objects.Db4o.Internal.ObjectReference ReferenceFor(object obj)
+		public virtual ObjectReference ReferenceFor(object obj)
 		{
-			int hcode = Sharpen.Runtime.IdentityHashCode(obj);
-			Db4objects.Db4o.Internal.ObjectReference @ref = (Db4objects.Db4o.Internal.ObjectReference
-				)_referenceMap.Get(hcode);
+			int hcode = Runtime.IdentityHashCode(obj);
+			ObjectReference @ref = (ObjectReference)_referenceMap.Get(hcode);
 			_referenceMap.Remove(hcode);
 			return @ref;
 		}
 
 		public virtual object IdentityFor(object obj)
 		{
-			int hcode = Sharpen.Runtime.IdentityHashCode(obj);
+			int hcode = Runtime.IdentityHashCode(obj);
 			return _identityMap.Get(hcode);
 		}
 
@@ -52,8 +53,7 @@ namespace Db4objects.Db4o.Internal.Replication
 			_peerB.MigrateFrom(null);
 		}
 
-		public virtual Db4objects.Db4o.Internal.ObjectContainerBase Peer(Db4objects.Db4o.Internal.ObjectContainerBase
-			 stream)
+		public virtual ObjectContainerBase Peer(ObjectContainerBase stream)
 		{
 			if (_peerA == stream)
 			{

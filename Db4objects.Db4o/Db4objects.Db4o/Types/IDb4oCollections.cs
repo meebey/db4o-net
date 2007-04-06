@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Types;
+
 namespace Db4objects.Db4o.Types
 {
 	/// <summary>factory and other methods for database-aware collections.</summary>
@@ -20,10 +22,10 @@ namespace Db4objects.Db4o.Types
 		/// </remarks>
 		/// <returns>
 		/// 
-		/// <see cref="Db4objects.Db4o.Types.IDb4oList">Db4objects.Db4o.Types.IDb4oList</see>
+		/// <see cref="IDb4oList">IDb4oList</see>
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Types.IDb4oList">Db4objects.Db4o.Types.IDb4oList</seealso>
-		Db4objects.Db4o.Types.IDb4oList NewLinkedList();
+		/// <seealso cref="IDb4oList">IDb4oList</seealso>
+		IDb4oList NewLinkedList();
 
 		/// <summary>creates a new database-aware HashMap.</summary>
 		/// <remarks>
@@ -47,10 +49,10 @@ namespace Db4objects.Db4o.Types
 		/// <param name="initialSize">the initial size of the HashMap</param>
 		/// <returns>
 		/// 
-		/// <see cref="Db4objects.Db4o.Types.IDb4oMap">Db4objects.Db4o.Types.IDb4oMap</see>
+		/// <see cref="IDb4oMap">IDb4oMap</see>
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Types.IDb4oMap">Db4objects.Db4o.Types.IDb4oMap</seealso>
-		Db4objects.Db4o.Types.IDb4oMap NewHashMap(int initialSize);
+		/// <seealso cref="IDb4oMap">IDb4oMap</seealso>
+		IDb4oMap NewHashMap(int initialSize);
 
 		/// <summary>creates a new database-aware IdentityHashMap.</summary>
 		/// <remarks>
@@ -74,9 +76,9 @@ namespace Db4objects.Db4o.Types
 		/// <param name="initialSize">the initial size of the HashMap</param>
 		/// <returns>
 		/// 
-		/// <see cref="Db4objects.Db4o.Types.IDb4oMap">Db4objects.Db4o.Types.IDb4oMap</see>
+		/// <see cref="IDb4oMap">IDb4oMap</see>
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Types.IDb4oMap">Db4objects.Db4o.Types.IDb4oMap</seealso>
-		Db4objects.Db4o.Types.IDb4oMap NewIdentityHashMap(int initialSize);
+		/// <seealso cref="IDb4oMap">IDb4oMap</seealso>
+		IDb4oMap NewIdentityHashMap(int initialSize);
 	}
 }

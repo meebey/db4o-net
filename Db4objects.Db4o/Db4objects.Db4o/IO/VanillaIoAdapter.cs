@@ -1,18 +1,20 @@
+using Db4objects.Db4o.IO;
+
 namespace Db4objects.Db4o.IO
 {
 	/// <summary>base class for IoAdapters that delegate to other IoAdapters (decorator pattern)
 	/// 	</summary>
-	public abstract class VanillaIoAdapter : Db4objects.Db4o.IO.IoAdapter
+	public abstract class VanillaIoAdapter : IoAdapter
 	{
-		protected Db4objects.Db4o.IO.IoAdapter _delegate;
+		protected IoAdapter _delegate;
 
-		public VanillaIoAdapter(Db4objects.Db4o.IO.IoAdapter delegateAdapter)
+		public VanillaIoAdapter(IoAdapter delegateAdapter)
 		{
 			_delegate = delegateAdapter;
 		}
 
-		protected VanillaIoAdapter(Db4objects.Db4o.IO.IoAdapter delegateAdapter, string path
-			, bool lockFile, long initialLength)
+		protected VanillaIoAdapter(IoAdapter delegateAdapter, string path, bool lockFile, 
+			long initialLength)
 		{
 			_delegate = delegateAdapter.Open(path, lockFile, initialLength);
 		}

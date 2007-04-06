@@ -1,12 +1,16 @@
+using Db4objects.Db4o.Defragment;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>In-memory mapping for IDs during a defragmentation run.</summary>
 	/// <remarks>In-memory mapping for IDs during a defragmentation run.</remarks>
 	/// <seealso cref="Db4objects.Db4o.Defragment.Defragment">Db4objects.Db4o.Defragment.Defragment
 	/// 	</seealso>
-	public class TreeIDMapping : Db4objects.Db4o.Defragment.AbstractContextIDMapping
+	public class TreeIDMapping : AbstractContextIDMapping
 	{
-		private Db4objects.Db4o.Foundation.Tree _tree;
+		private Tree _tree;
 
 		public override int MappedID(int oldID, bool lenient)
 		{
@@ -15,17 +19,15 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return classID;
 			}
-			Db4objects.Db4o.Internal.TreeIntObject res = (Db4objects.Db4o.Internal.TreeIntObject
-				)Db4objects.Db4o.Internal.TreeInt.Find(_tree, oldID);
+			TreeIntObject res = (TreeIntObject)TreeInt.Find(_tree, oldID);
 			if (res != null)
 			{
 				return ((int)res._object);
 			}
 			if (lenient)
 			{
-				Db4objects.Db4o.Internal.TreeIntObject nextSmaller = (Db4objects.Db4o.Internal.TreeIntObject
-					)Db4objects.Db4o.Foundation.Tree.FindSmaller(_tree, new Db4objects.Db4o.Internal.TreeInt
-					(oldID));
+				TreeIntObject nextSmaller = (TreeIntObject)Tree.FindSmaller(_tree, new TreeInt(oldID
+					));
 				if (nextSmaller != null)
 				{
 					int baseOldID = nextSmaller._key;
@@ -46,8 +48,7 @@ namespace Db4objects.Db4o.Defragment
 
 		protected override void MapNonClassIDs(int origID, int mappedID)
 		{
-			_tree = Db4objects.Db4o.Foundation.Tree.Add(_tree, new Db4objects.Db4o.Internal.TreeIntObject
-				(origID, mappedID));
+			_tree = Tree.Add(_tree, new TreeIntObject(origID, mappedID));
 		}
 	}
 }

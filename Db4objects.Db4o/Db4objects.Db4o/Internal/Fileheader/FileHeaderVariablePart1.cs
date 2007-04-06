@@ -1,10 +1,13 @@
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal.Fileheader
 {
 	/// <exclude></exclude>
-	public class FileHeaderVariablePart1 : Db4objects.Db4o.Internal.PersistentBase
+	public class FileHeaderVariablePart1 : PersistentBase
 	{
-		private const int LENGTH = 1 + (Db4objects.Db4o.Internal.Const4.INT_LENGTH * 4) +
-			 Db4objects.Db4o.Internal.Const4.LONG_LENGTH + Db4objects.Db4o.Internal.Const4.ADDED_LENGTH;
+		private const int LENGTH = 1 + (Const4.INT_LENGTH * 4) + Const4.LONG_LENGTH + Const4
+			.ADDED_LENGTH;
 
 		private readonly Db4objects.Db4o.Internal.SystemData _systemData;
 
@@ -22,7 +25,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public override byte GetIdentifier()
 		{
-			return Db4objects.Db4o.Internal.Const4.HEADER;
+			return Const4.HEADER;
 		}
 
 		public override int OwnLength()
@@ -30,18 +33,18 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return LENGTH;
 		}
 
-		public override void ReadThis(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public override void ReadThis(Transaction trans, Db4objects.Db4o.Internal.Buffer 
+			reader)
 		{
 			_systemData.ConverterVersion(reader.ReadInt());
 			_systemData.FreespaceSystem(reader.ReadByte());
 			_systemData.FreespaceAddress(reader.ReadInt());
-			ReadIdentity((Db4objects.Db4o.Internal.LocalTransaction)trans, reader.ReadInt());
+			ReadIdentity((LocalTransaction)trans, reader.ReadInt());
 			_systemData.LastTimeStampID(reader.ReadLong());
 			_systemData.UuidIndexId(reader.ReadInt());
 		}
 
-		public override void WriteThis(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
+		public override void WriteThis(Transaction trans, Db4objects.Db4o.Internal.Buffer
 			 writer)
 		{
 			writer.WriteInt(_systemData.ConverterVersion());
@@ -52,12 +55,10 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			writer.WriteInt(_systemData.UuidIndexId());
 		}
 
-		private void ReadIdentity(Db4objects.Db4o.Internal.LocalTransaction trans, int identityID
-			)
+		private void ReadIdentity(LocalTransaction trans, int identityID)
 		{
-			Db4objects.Db4o.Internal.LocalObjectContainer file = trans.File();
-			Db4objects.Db4o.Ext.Db4oDatabase identity = (Db4objects.Db4o.Ext.Db4oDatabase)file
-				.GetByID1(trans, identityID);
+			LocalObjectContainer file = trans.File();
+			Db4oDatabase identity = (Db4oDatabase)file.GetByID1(trans, identityID);
 			file.Activate1(trans, identity, 2);
 			_systemData.Identity(identity);
 		}

@@ -1,8 +1,10 @@
+using System;
+
 namespace Db4objects.Db4o.Internal.Mapping
 {
 	/// <exclude></exclude>
 	[System.Serializable]
-	public class MappingNotFoundException : System.Exception
+	public class MappingNotFoundException : Exception
 	{
 		private const long serialVersionUID = -1771324770287654802L;
 

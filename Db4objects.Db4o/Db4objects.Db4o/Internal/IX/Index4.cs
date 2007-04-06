@@ -1,73 +1,73 @@
+using System.Collections;
+using System.Text;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.IX;
+using Sharpen;
+
 namespace Db4objects.Db4o.Internal.IX
 {
 	/// <exclude></exclude>
 	public class Index4
 	{
-		public readonly Db4objects.Db4o.Internal.IX.IIndexable4 _handler;
+		public readonly IIndexable4 _handler;
 
 		private static int _version;
 
-		public readonly Db4objects.Db4o.MetaIndex _metaIndex;
+		public readonly MetaIndex _metaIndex;
 
-		private Db4objects.Db4o.Internal.IX.IndexTransaction _globalIndexTransaction;
+		private IndexTransaction _globalIndexTransaction;
 
-		private Db4objects.Db4o.Foundation.Collection4 _indexTransactions;
+		private Collection4 _indexTransactions;
 
-		private Db4objects.Db4o.Internal.IX.IxFileRangeReader _fileRangeReader;
+		private IxFileRangeReader _fileRangeReader;
 
 		internal readonly bool _nullHandling;
 
-		public Index4(Db4objects.Db4o.Internal.LocalTransaction systemTrans, Db4objects.Db4o.Internal.IX.IIndexable4
-			 handler, Db4objects.Db4o.MetaIndex metaIndex, bool nullHandling)
+		public Index4(LocalTransaction systemTrans, IIndexable4 handler, MetaIndex metaIndex
+			, bool nullHandling)
 		{
 			_metaIndex = metaIndex;
 			_handler = handler;
-			_globalIndexTransaction = new Db4objects.Db4o.Internal.IX.IndexTransaction(systemTrans
-				, this);
+			_globalIndexTransaction = new IndexTransaction(systemTrans, this);
 			_nullHandling = nullHandling;
 			CreateGlobalFileRange();
 		}
 
-		public virtual Db4objects.Db4o.Internal.IX.IndexTransaction DirtyIndexTransaction
-			(Db4objects.Db4o.Internal.LocalTransaction a_trans)
+		public virtual IndexTransaction DirtyIndexTransaction(LocalTransaction a_trans)
 		{
-			Db4objects.Db4o.Internal.IX.IndexTransaction ift = new Db4objects.Db4o.Internal.IX.IndexTransaction
-				(a_trans, this);
+			IndexTransaction ift = new IndexTransaction(a_trans, this);
 			if (_indexTransactions == null)
 			{
-				_indexTransactions = new Db4objects.Db4o.Foundation.Collection4();
+				_indexTransactions = new Collection4();
 			}
 			else
 			{
-				Db4objects.Db4o.Internal.IX.IndexTransaction iftExisting = (Db4objects.Db4o.Internal.IX.IndexTransaction
-					)_indexTransactions.Get(ift);
+				IndexTransaction iftExisting = (IndexTransaction)_indexTransactions.Get(ift);
 				if (iftExisting != null)
 				{
 					return iftExisting;
 				}
 			}
 			a_trans.AddDirtyFieldIndex(ift);
-			ift.SetRoot(Db4objects.Db4o.Foundation.Tree.DeepClone(_globalIndexTransaction.GetRoot
-				(), ift));
+			ift.SetRoot(Tree.DeepClone(_globalIndexTransaction.GetRoot(), ift));
 			ift.i_version = ++_version;
 			_indexTransactions.Add(ift);
 			return ift;
 		}
 
-		public virtual Db4objects.Db4o.Internal.IX.IndexTransaction GlobalIndexTransaction
-			()
+		public virtual IndexTransaction GlobalIndexTransaction()
 		{
 			return _globalIndexTransaction;
 		}
 
-		public virtual Db4objects.Db4o.Internal.IX.IndexTransaction IndexTransactionFor(Db4objects.Db4o.Internal.LocalTransaction
-			 a_trans)
+		public virtual IndexTransaction IndexTransactionFor(LocalTransaction a_trans)
 		{
 			if (_indexTransactions != null)
 			{
-				Db4objects.Db4o.Internal.IX.IndexTransaction ift = new Db4objects.Db4o.Internal.IX.IndexTransaction
-					(a_trans, this);
-				ift = (Db4objects.Db4o.Internal.IX.IndexTransaction)_indexTransactions.Get(ift);
+				IndexTransaction ift = new IndexTransaction(a_trans, this);
+				ift = (IndexTransaction)_indexTransactions.Get(ift);
 				if (ift != null)
 				{
 					return ift;
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Internal.IX
 
 		private void DoFree(int[] addressLength)
 		{
-			Db4objects.Db4o.Internal.LocalObjectContainer yf = File();
+			LocalObjectContainer yf = File();
 			for (int i = 0; i < addressLength.Length; i += 2)
 			{
 				yf.Free(addressLength[i], addressLength[i + 1]);
@@ -118,12 +118,12 @@ namespace Db4objects.Db4o.Internal.IX
 
 		private int LengthPerEntry()
 		{
-			return _handler.LinkLength() + Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			return _handler.LinkLength() + Const4.INT_LENGTH;
 		}
 
 		private void MetaIndexStore(int entries, int length, int address)
 		{
-			Db4objects.Db4o.Internal.Transaction transact = Trans();
+			Transaction transact = Trans();
 			MetaIndexSetMembers(entries, length, address);
 			transact.Stream().SetInternal(transact, _metaIndex, 1, false);
 		}
@@ -137,9 +137,8 @@ namespace Db4objects.Db4o.Internal.IX
 
 		private int WriteToNewSlot(int slot)
 		{
-			Db4objects.Db4o.Foundation.Tree root = GetRoot();
-			Db4objects.Db4o.Internal.StatefulBuffer writer = new Db4objects.Db4o.Internal.StatefulBuffer
-				(Trans(), slot, LengthPerEntry());
+			Tree root = GetRoot();
+			StatefulBuffer writer = new StatefulBuffer(Trans(), slot, LengthPerEntry());
 			int[] entries = new int[] { 0 };
 			if (root != null)
 			{
@@ -148,10 +147,10 @@ namespace Db4objects.Db4o.Internal.IX
 			return entries[0];
 		}
 
-		private sealed class _AnonymousInnerClass149 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass149 : IVisitor4
 		{
-			public _AnonymousInnerClass149(Index4 _enclosing, int[] entries, Db4objects.Db4o.Internal.StatefulBuffer
-				 writer)
+			public _AnonymousInnerClass149(Index4 _enclosing, int[] entries, StatefulBuffer writer
+				)
 			{
 				this._enclosing = _enclosing;
 				this.entries = entries;
@@ -160,19 +159,17 @@ namespace Db4objects.Db4o.Internal.IX
 
 			public void Visit(object a_object)
 			{
-				entries[0] += ((Db4objects.Db4o.Internal.IX.IxTree)a_object).Write(this._enclosing
-					._handler, writer);
+				entries[0] += ((IxTree)a_object).Write(this._enclosing._handler, writer);
 			}
 
 			private readonly Index4 _enclosing;
 
 			private readonly int[] entries;
 
-			private readonly Db4objects.Db4o.Internal.StatefulBuffer writer;
+			private readonly StatefulBuffer writer;
 		}
 
-		internal virtual void Commit(Db4objects.Db4o.Internal.IX.IndexTransaction ixTrans
-			)
+		internal virtual void Commit(IndexTransaction ixTrans)
 		{
 			_indexTransactions.Remove(ixTrans);
 			_globalIndexTransaction.Merge(ixTrans);
@@ -185,21 +182,19 @@ namespace Db4objects.Db4o.Internal.IX
 				int[] free = FreeForMetaIndex();
 				MetaIndexStore(entries, length, slot);
 				WriteToNewSlot(slot);
-				Db4objects.Db4o.Internal.IX.IxFileRange newFileRange = CreateGlobalFileRange();
+				IxFileRange newFileRange = CreateGlobalFileRange();
 				if (_indexTransactions != null)
 				{
-					System.Collections.IEnumerator i = _indexTransactions.GetEnumerator();
+					IEnumerator i = _indexTransactions.GetEnumerator();
 					while (i.MoveNext())
 					{
-						Db4objects.Db4o.Internal.IX.IndexTransaction ft = (Db4objects.Db4o.Internal.IX.IndexTransaction
-							)i.Current;
-						Db4objects.Db4o.Foundation.Tree clonedTree = newFileRange;
+						IndexTransaction ft = (IndexTransaction)i.Current;
+						Tree clonedTree = newFileRange;
 						if (clonedTree != null)
 						{
-							clonedTree = (Db4objects.Db4o.Foundation.Tree)clonedTree.DeepClone(ft);
+							clonedTree = (Tree)clonedTree.DeepClone(ft);
 						}
-						Db4objects.Db4o.Foundation.Tree.ByRef tree = new Db4objects.Db4o.Foundation.Tree.ByRef
-							(clonedTree);
+						Tree.ByRef tree = new Tree.ByRef(clonedTree);
 						ft.GetRoot().TraverseFromLeaves((new _AnonymousInnerClass197(this, ft, tree)));
 						ft.SetRoot(tree.value);
 					}
@@ -208,18 +203,18 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 			else
 			{
-				System.Collections.IEnumerator i = _indexTransactions.GetEnumerator();
+				IEnumerator i = _indexTransactions.GetEnumerator();
 				while (i.MoveNext())
 				{
-					((Db4objects.Db4o.Internal.IX.IndexTransaction)i.Current).Merge(ixTrans);
+					((IndexTransaction)i.Current).Merge(ixTrans);
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass197 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass197 : IVisitor4
 		{
-			public _AnonymousInnerClass197(Index4 _enclosing, Db4objects.Db4o.Internal.IX.IndexTransaction
-				 ft, Db4objects.Db4o.Foundation.Tree.ByRef tree)
+			public _AnonymousInnerClass197(Index4 _enclosing, IndexTransaction ft, Tree.ByRef
+				 tree)
 			{
 				this._enclosing = _enclosing;
 				this.ft = ft;
@@ -228,46 +223,46 @@ namespace Db4objects.Db4o.Internal.IX
 
 			public void Visit(object a_object)
 			{
-				Db4objects.Db4o.Internal.IX.IxTree ixTree = (Db4objects.Db4o.Internal.IX.IxTree)a_object;
+				IxTree ixTree = (IxTree)a_object;
 				if (ixTree._version == ft.i_version)
 				{
-					if (!(ixTree is Db4objects.Db4o.Internal.IX.IxFileRange))
+					if (!(ixTree is IxFileRange))
 					{
 						ixTree.BeginMerge();
-						tree.value = Db4objects.Db4o.Foundation.Tree.Add(tree.value, ixTree);
+						tree.value = Tree.Add(tree.value, ixTree);
 					}
 				}
 			}
 
 			private readonly Index4 _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.IX.IndexTransaction ft;
+			private readonly IndexTransaction ft;
 
-			private readonly Db4objects.Db4o.Foundation.Tree.ByRef tree;
+			private readonly Tree.ByRef tree;
 		}
 
-		private Db4objects.Db4o.Internal.IX.IxFileRange CreateGlobalFileRange()
+		private IxFileRange CreateGlobalFileRange()
 		{
-			Db4objects.Db4o.Internal.IX.IxFileRange fr = null;
+			IxFileRange fr = null;
 			if (_metaIndex.indexEntries > 0)
 			{
-				fr = new Db4objects.Db4o.Internal.IX.IxFileRange(_globalIndexTransaction, _metaIndex
-					.indexAddress, 0, _metaIndex.indexEntries);
+				fr = new IxFileRange(_globalIndexTransaction, _metaIndex.indexAddress, 0, _metaIndex
+					.indexEntries);
 			}
 			_globalIndexTransaction.SetRoot(fr);
 			return fr;
 		}
 
-		internal virtual void Rollback(Db4objects.Db4o.Internal.IX.IndexTransaction a_ft)
+		internal virtual void Rollback(IndexTransaction a_ft)
 		{
 			_indexTransactions.Remove(a_ft);
 		}
 
-		internal virtual Db4objects.Db4o.Internal.IX.IxFileRangeReader FileRangeReader()
+		internal virtual IxFileRangeReader FileRangeReader()
 		{
 			if (_fileRangeReader == null)
 			{
-				_fileRangeReader = new Db4objects.Db4o.Internal.IX.IxFileRangeReader(_handler);
+				_fileRangeReader = new IxFileRangeReader(_handler);
 			}
 			return _fileRangeReader;
 		}
@@ -275,8 +270,8 @@ namespace Db4objects.Db4o.Internal.IX
 		public override string ToString()
 		{
 			return base.ToString();
-			System.Text.StringBuilder sb = new System.Text.StringBuilder();
-			sb.Append("IxField  " + Sharpen.Runtime.IdentityHashCode(this));
+			StringBuilder sb = new StringBuilder();
+			sb.Append("IxField  " + Runtime.IdentityHashCode(this));
 			if (_globalIndexTransaction != null)
 			{
 				sb.Append("\n  Global \n   ");
@@ -288,7 +283,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 			if (_indexTransactions != null)
 			{
-				System.Collections.IEnumerator i = _indexTransactions.GetEnumerator();
+				IEnumerator i = _indexTransactions.GetEnumerator();
 				while (i.MoveNext())
 				{
 					sb.Append("\n");
@@ -298,12 +293,12 @@ namespace Db4objects.Db4o.Internal.IX
 			return sb.ToString();
 		}
 
-		private Db4objects.Db4o.Internal.LocalTransaction Trans()
+		private LocalTransaction Trans()
 		{
 			return _globalIndexTransaction.i_trans;
 		}
 
-		private Db4objects.Db4o.Internal.LocalObjectContainer File()
+		private LocalObjectContainer File()
 		{
 			return Trans().File();
 		}
@@ -313,14 +308,14 @@ namespace Db4objects.Db4o.Internal.IX
 			return File().GetSlot(length);
 		}
 
-		private Db4objects.Db4o.Foundation.Tree GetRoot()
+		private Tree GetRoot()
 		{
 			return _globalIndexTransaction.GetRoot();
 		}
 
 		private int CountEntries()
 		{
-			Db4objects.Db4o.Foundation.Tree root = GetRoot();
+			Tree root = GetRoot();
 			return root == null ? 0 : root.Size();
 		}
 	}

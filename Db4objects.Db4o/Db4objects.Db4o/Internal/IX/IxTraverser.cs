@@ -1,26 +1,30 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.IX;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.IX
 {
 	/// <exclude></exclude>
 	public class IxTraverser
 	{
-		private Db4objects.Db4o.Internal.IX.IxPath i_appendHead;
+		private IxPath i_appendHead;
 
-		private Db4objects.Db4o.Internal.IX.IxPath i_appendTail;
+		private IxPath i_appendTail;
 
-		private Db4objects.Db4o.Internal.IX.IxPath i_greatHead;
+		private IxPath i_greatHead;
 
-		private Db4objects.Db4o.Internal.IX.IxPath i_greatTail;
+		private IxPath i_greatTail;
 
-		internal Db4objects.Db4o.Internal.IX.IIndexable4 i_handler;
+		internal IIndexable4 i_handler;
 
-		private Db4objects.Db4o.Internal.IX.IxPath i_smallHead;
+		private IxPath i_smallHead;
 
-		private Db4objects.Db4o.Internal.IX.IxPath i_smallTail;
+		private IxPath i_smallTail;
 
 		internal bool[] i_take;
 
-		private void Add(Db4objects.Db4o.Foundation.IVisitor4 visitor, Db4objects.Db4o.Internal.IX.IxPath
-			 a_previousPath, Db4objects.Db4o.Internal.IX.IxPath a_great, Db4objects.Db4o.Internal.IX.IxPath
+		private void Add(IVisitor4 visitor, IxPath a_previousPath, IxPath a_great, IxPath
 			 a_small)
 		{
 			AddPathTree(visitor, a_previousPath);
@@ -33,19 +37,17 @@ namespace Db4objects.Db4o.Internal.IX
 			AddSmaller(visitor, a_great);
 		}
 
-		private void AddAll(Db4objects.Db4o.Foundation.IVisitor4 visitor, Db4objects.Db4o.Foundation.Tree
-			 a_tree)
+		private void AddAll(IVisitor4 visitor, Tree a_tree)
 		{
 			if (a_tree != null)
 			{
-				((Db4objects.Db4o.Internal.IX.IxTree)a_tree).Visit(visitor, null);
+				((IxTree)a_tree).Visit(visitor, null);
 				AddAll(visitor, a_tree._preceding);
 				AddAll(visitor, a_tree._subsequent);
 			}
 		}
 
-		private void AddGreater(Db4objects.Db4o.Foundation.IVisitor4 visitor, Db4objects.Db4o.Internal.IX.IxPath
-			 a_path)
+		private void AddGreater(IVisitor4 visitor, IxPath a_path)
 		{
 			if (a_path != null)
 			{
@@ -68,8 +70,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		private void AddPathTree(Db4objects.Db4o.Foundation.IVisitor4 visitor, Db4objects.Db4o.Internal.IX.IxPath
-			 a_path)
+		private void AddPathTree(IVisitor4 visitor, IxPath a_path)
 		{
 			if (a_path != null)
 			{
@@ -77,15 +78,13 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		private void AddPreceding(Db4objects.Db4o.Foundation.IVisitor4 visitor, Db4objects.Db4o.Internal.IX.IxPath
-			 a_path)
+		private void AddPreceding(IVisitor4 visitor, IxPath a_path)
 		{
 			AddPathTree(visitor, a_path);
 			AddAll(visitor, a_path.i_tree._preceding);
 		}
 
-		private void AddSmaller(Db4objects.Db4o.Foundation.IVisitor4 visitor, Db4objects.Db4o.Internal.IX.IxPath
-			 a_path)
+		private void AddSmaller(IVisitor4 visitor, IxPath a_path)
 		{
 			if (a_path != null)
 			{
@@ -108,14 +107,13 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		private void AddSubsequent(Db4objects.Db4o.Foundation.IVisitor4 visitor, Db4objects.Db4o.Internal.IX.IxPath
-			 a_path)
+		private void AddSubsequent(IVisitor4 visitor, IxPath a_path)
 		{
 			AddPathTree(visitor, a_path);
 			AddAll(visitor, a_path.i_tree._subsequent);
 		}
 
-		private int CountGreater(Db4objects.Db4o.Internal.IX.IxPath a_path, int a_sum)
+		private int CountGreater(IxPath a_path, int a_sum)
 		{
 			if (a_path.i_next == null)
 			{
@@ -132,13 +130,12 @@ namespace Db4objects.Db4o.Internal.IX
 			return CountGreater(a_path.i_next, a_sum);
 		}
 
-		private int CountPreceding(Db4objects.Db4o.Internal.IX.IxPath a_path)
+		private int CountPreceding(IxPath a_path)
 		{
-			return Db4objects.Db4o.Foundation.Tree.Size(a_path.i_tree._preceding) + a_path.CountMatching
-				();
+			return Tree.Size(a_path.i_tree._preceding) + a_path.CountMatching();
 		}
 
-		private int CountSmaller(Db4objects.Db4o.Internal.IX.IxPath a_path, int a_sum)
+		private int CountSmaller(IxPath a_path, int a_sum)
 		{
 			if (a_path.i_next == null)
 			{
@@ -155,8 +152,7 @@ namespace Db4objects.Db4o.Internal.IX
 			return CountSmaller(a_path.i_next, a_sum);
 		}
 
-		private int CountSpan(Db4objects.Db4o.Internal.IX.IxPath a_previousPath, Db4objects.Db4o.Internal.IX.IxPath
-			 a_great, Db4objects.Db4o.Internal.IX.IxPath a_small)
+		private int CountSpan(IxPath a_previousPath, IxPath a_great, IxPath a_small)
 		{
 			if (a_great == null)
 			{
@@ -181,19 +177,18 @@ namespace Db4objects.Db4o.Internal.IX
 				, 0);
 		}
 
-		private int CountSubsequent(Db4objects.Db4o.Internal.IX.IxPath a_path)
+		private int CountSubsequent(IxPath a_path)
 		{
-			return Db4objects.Db4o.Foundation.Tree.Size(a_path.i_tree._subsequent) + a_path.CountMatching
-				();
+			return Tree.Size(a_path.i_tree._subsequent) + a_path.CountMatching();
 		}
 
-		private void DelayedAppend(Db4objects.Db4o.Internal.IX.IxTree a_tree, int a_comparisonResult
-			, int[] lowerAndUpperMatch)
+		private void DelayedAppend(IxTree a_tree, int a_comparisonResult, int[] lowerAndUpperMatch
+			)
 		{
 			if (i_appendHead == null)
 			{
-				i_appendHead = new Db4objects.Db4o.Internal.IX.IxPath(this, null, a_tree, a_comparisonResult
-					, lowerAndUpperMatch);
+				i_appendHead = new IxPath(this, null, a_tree, a_comparisonResult, lowerAndUpperMatch
+					);
 				i_appendTail = i_appendHead;
 			}
 			else
@@ -207,26 +202,24 @@ namespace Db4objects.Db4o.Internal.IX
 		{
 			if (i_greatTail.i_comparisonResult == 0)
 			{
-				FindSmallestEqualFromEqual((Db4objects.Db4o.Internal.IX.IxTree)i_greatTail.i_tree
-					._preceding);
+				FindSmallestEqualFromEqual((IxTree)i_greatTail.i_tree._preceding);
 				ResetDelayedAppend();
-				FindGreatestEqualFromEqual((Db4objects.Db4o.Internal.IX.IxTree)i_greatTail.i_tree
-					._subsequent);
+				FindGreatestEqualFromEqual((IxTree)i_greatTail.i_tree._subsequent);
 			}
 			else
 			{
 				if (i_greatTail.i_comparisonResult < 0)
 				{
-					FindBoth1((Db4objects.Db4o.Internal.IX.IxTree)i_greatTail.i_tree._subsequent);
+					FindBoth1((IxTree)i_greatTail.i_tree._subsequent);
 				}
 				else
 				{
-					FindBoth1((Db4objects.Db4o.Internal.IX.IxTree)i_greatTail.i_tree._preceding);
+					FindBoth1((IxTree)i_greatTail.i_tree._preceding);
 				}
 			}
 		}
 
-		private void FindBoth1(Db4objects.Db4o.Internal.IX.IxTree a_tree)
+		private void FindBoth1(IxTree a_tree)
 		{
 			if (a_tree != null)
 			{
@@ -238,30 +231,26 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		private void FindNullPath1(Db4objects.Db4o.Internal.IX.IxPath[] headTail)
+		private void FindNullPath1(IxPath[] headTail)
 		{
 			if (headTail[1].i_comparisonResult == 0)
 			{
-				FindGreatestNullFromNull(headTail, (Db4objects.Db4o.Internal.IX.IxTree)headTail[1
-					].i_tree._subsequent);
+				FindGreatestNullFromNull(headTail, (IxTree)headTail[1].i_tree._subsequent);
 			}
 			else
 			{
 				if (headTail[1].i_comparisonResult < 0)
 				{
-					FindNullPath2(headTail, (Db4objects.Db4o.Internal.IX.IxTree)headTail[1].i_tree._subsequent
-						);
+					FindNullPath2(headTail, (IxTree)headTail[1].i_tree._subsequent);
 				}
 				else
 				{
-					FindNullPath2(headTail, (Db4objects.Db4o.Internal.IX.IxTree)headTail[1].i_tree._preceding
-						);
+					FindNullPath2(headTail, (IxTree)headTail[1].i_tree._preceding);
 				}
 			}
 		}
 
-		private void FindNullPath2(Db4objects.Db4o.Internal.IX.IxPath[] headTail, Db4objects.Db4o.Internal.IX.IxTree
-			 tree)
+		private void FindNullPath2(IxPath[] headTail, IxTree tree)
 		{
 			if (tree != null)
 			{
@@ -271,8 +260,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		private void FindGreatestNullFromNull(Db4objects.Db4o.Internal.IX.IxPath[] headTail
-			, Db4objects.Db4o.Internal.IX.IxTree tree)
+		private void FindGreatestNullFromNull(IxPath[] headTail, IxTree tree)
 		{
 			if (tree != null)
 			{
@@ -285,49 +273,44 @@ namespace Db4objects.Db4o.Internal.IX
 				}
 				if (res > 0)
 				{
-					FindGreatestNullFromNull(headTail, (Db4objects.Db4o.Internal.IX.IxTree)tree._preceding
-						);
+					FindGreatestNullFromNull(headTail, (IxTree)tree._preceding);
 				}
 				else
 				{
-					FindGreatestNullFromNull(headTail, (Db4objects.Db4o.Internal.IX.IxTree)tree._subsequent
-						);
+					FindGreatestNullFromNull(headTail, (IxTree)tree._subsequent);
 				}
 			}
 		}
 
-		public virtual int FindBounds(object a_constraint, Db4objects.Db4o.Internal.IX.IxTree
-			 a_tree)
+		public virtual int FindBounds(object a_constraint, IxTree a_tree)
 		{
 			if (a_tree != null)
 			{
 				i_handler = a_tree.Handler();
 				i_handler.PrepareComparison(a_constraint);
 				int res = a_tree.Compare(null);
-				i_greatHead = new Db4objects.Db4o.Internal.IX.IxPath(this, null, a_tree, res, a_tree
-					.LowerAndUpperMatch());
+				i_greatHead = new IxPath(this, null, a_tree, res, a_tree.LowerAndUpperMatch());
 				i_greatTail = i_greatHead;
-				i_smallHead = (Db4objects.Db4o.Internal.IX.IxPath)i_greatHead.ShallowClone();
+				i_smallHead = (IxPath)i_greatHead.ShallowClone();
 				i_smallTail = i_smallHead;
 				FindBoth();
 				int span = 0;
-				if (i_take[Db4objects.Db4o.Internal.Query.Processor.QE.EQUAL])
+				if (i_take[QE.EQUAL])
 				{
 					span += CountSpan(i_greatHead, i_greatHead.i_next, i_smallHead.i_next);
 				}
-				if (i_take[Db4objects.Db4o.Internal.Query.Processor.QE.SMALLER])
+				if (i_take[QE.SMALLER])
 				{
-					Db4objects.Db4o.Internal.IX.IxPath head = i_smallHead;
+					IxPath head = i_smallHead;
 					while (head != null)
 					{
-						span += head.CountPreceding(i_take[Db4objects.Db4o.Internal.Query.Processor.QE.NULLS
-							]);
+						span += head.CountPreceding(i_take[QE.NULLS]);
 						head = head.i_next;
 					}
 				}
-				if (i_take[Db4objects.Db4o.Internal.Query.Processor.QE.GREATER])
+				if (i_take[QE.GREATER])
 				{
-					Db4objects.Db4o.Internal.IX.IxPath head = i_greatHead;
+					IxPath head = i_greatHead;
 					while (head != null)
 					{
 						span += head.CountSubsequent();
@@ -339,16 +322,14 @@ namespace Db4objects.Db4o.Internal.IX
 			return 0;
 		}
 
-		public virtual int FindBoundsExactMatch(object a_constraint, Db4objects.Db4o.Internal.IX.IxTree
-			 a_tree)
+		public virtual int FindBoundsExactMatch(object a_constraint, IxTree a_tree)
 		{
 			i_take = new bool[] { false, false, false, false };
-			i_take[Db4objects.Db4o.Internal.Query.Processor.QE.EQUAL] = true;
+			i_take[QE.EQUAL] = true;
 			return FindBounds(a_constraint, a_tree);
 		}
 
-		private void FindGreatestEqualFromEqual(Db4objects.Db4o.Internal.IX.IxTree a_tree
-			)
+		private void FindGreatestEqualFromEqual(IxTree a_tree)
 		{
 			if (a_tree != null)
 			{
@@ -361,18 +342,16 @@ namespace Db4objects.Db4o.Internal.IX
 				}
 				if (res > 0)
 				{
-					FindGreatestEqualFromEqual((Db4objects.Db4o.Internal.IX.IxTree)a_tree._preceding);
+					FindGreatestEqualFromEqual((IxTree)a_tree._preceding);
 				}
 				else
 				{
-					FindGreatestEqualFromEqual((Db4objects.Db4o.Internal.IX.IxTree)a_tree._subsequent
-						);
+					FindGreatestEqualFromEqual((IxTree)a_tree._subsequent);
 				}
 			}
 		}
 
-		private void FindSmallestEqualFromEqual(Db4objects.Db4o.Internal.IX.IxTree a_tree
-			)
+		private void FindSmallestEqualFromEqual(IxTree a_tree)
 		{
 			if (a_tree != null)
 			{
@@ -385,12 +364,11 @@ namespace Db4objects.Db4o.Internal.IX
 				}
 				if (res < 0)
 				{
-					FindSmallestEqualFromEqual((Db4objects.Db4o.Internal.IX.IxTree)a_tree._subsequent
-						);
+					FindSmallestEqualFromEqual((IxTree)a_tree._subsequent);
 				}
 				else
 				{
-					FindSmallestEqualFromEqual((Db4objects.Db4o.Internal.IX.IxTree)a_tree._preceding);
+					FindSmallestEqualFromEqual((IxTree)a_tree._preceding);
 				}
 			}
 		}
@@ -401,27 +379,27 @@ namespace Db4objects.Db4o.Internal.IX
 			i_appendTail = null;
 		}
 
-		public virtual void VisitAll(Db4objects.Db4o.Foundation.IVisitor4 visitor)
+		public virtual void VisitAll(IVisitor4 visitor)
 		{
-			if (i_take[Db4objects.Db4o.Internal.Query.Processor.QE.EQUAL])
+			if (i_take[QE.EQUAL])
 			{
 				if (i_greatHead != null)
 				{
 					Add(visitor, i_greatHead, i_greatHead.i_next, i_smallHead.i_next);
 				}
 			}
-			if (i_take[Db4objects.Db4o.Internal.Query.Processor.QE.SMALLER])
+			if (i_take[QE.SMALLER])
 			{
-				Db4objects.Db4o.Internal.IX.IxPath head = i_smallHead;
+				IxPath head = i_smallHead;
 				while (head != null)
 				{
 					head.AddPrecedingToCandidatesTree(visitor);
 					head = head.i_next;
 				}
 			}
-			if (i_take[Db4objects.Db4o.Internal.Query.Processor.QE.GREATER])
+			if (i_take[QE.GREATER])
 			{
-				Db4objects.Db4o.Internal.IX.IxPath head = i_greatHead;
+				IxPath head = i_greatHead;
 				while (head != null)
 				{
 					head.AddSubsequentToCandidatesTree(visitor);
@@ -430,8 +408,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		public virtual void VisitPreceding(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor)
+		public virtual void VisitPreceding(FreespaceVisitor visitor)
 		{
 			if (i_smallHead != null)
 			{
@@ -439,8 +416,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		public virtual void VisitSubsequent(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor)
+		public virtual void VisitSubsequent(FreespaceVisitor visitor)
 		{
 			if (i_greatHead != null)
 			{
@@ -448,8 +424,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		public virtual void VisitMatch(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor)
+		public virtual void VisitMatch(FreespaceVisitor visitor)
 		{
 			if (i_smallHead != null)
 			{

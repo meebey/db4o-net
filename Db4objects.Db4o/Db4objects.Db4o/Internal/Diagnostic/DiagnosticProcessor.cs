@@ -1,34 +1,37 @@
+using System.Collections;
+using Db4objects.Db4o.Diagnostic;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Diagnostic
 {
 	/// <exclude>FIXME: remove me from the core and make me a facade over Events</exclude>
-	public class DiagnosticProcessor : Db4objects.Db4o.Diagnostic.IDiagnosticConfiguration
-		, Db4objects.Db4o.Foundation.IDeepClone
+	public class DiagnosticProcessor : IDiagnosticConfiguration, IDeepClone
 	{
-		private Db4objects.Db4o.Foundation.Collection4 _listeners;
+		private Collection4 _listeners;
 
 		public DiagnosticProcessor()
 		{
 		}
 
-		private DiagnosticProcessor(Db4objects.Db4o.Foundation.Collection4 listeners)
+		private DiagnosticProcessor(Collection4 listeners)
 		{
 			_listeners = listeners;
 		}
 
-		public virtual void AddListener(Db4objects.Db4o.Diagnostic.IDiagnosticListener listener
-			)
+		public virtual void AddListener(IDiagnosticListener listener)
 		{
 			if (_listeners == null)
 			{
-				_listeners = new Db4objects.Db4o.Foundation.Collection4();
+				_listeners = new Collection4();
 			}
 			_listeners.Add(listener);
 		}
 
-		public virtual void CheckClassHasFields(Db4objects.Db4o.Internal.ClassMetadata yc
-			)
+		public virtual void CheckClassHasFields(ClassMetadata yc)
 		{
-			Db4objects.Db4o.Internal.FieldMetadata[] fields = yc.i_fields;
+			FieldMetadata[] fields = yc.i_fields;
 			if (fields != null && fields.Length == 0)
 			{
 				string name = yc.GetName();
@@ -44,7 +47,7 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 				{
 					return;
 				}
-				OnDiagnostic(new Db4objects.Db4o.Diagnostic.ClassHasNoFields(name));
+				OnDiagnostic(new ClassHasNoFields(name));
 			}
 		}
 
@@ -52,7 +55,7 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 		{
 			if (depth > 1)
 			{
-				OnDiagnostic(new Db4objects.Db4o.Diagnostic.UpdateDepthGreaterOne(depth));
+				OnDiagnostic(new UpdateDepthGreaterOne(depth));
 			}
 		}
 
@@ -62,10 +65,9 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 				());
 		}
 
-		private Db4objects.Db4o.Foundation.Collection4 CloneListeners()
+		private Collection4 CloneListeners()
 		{
-			return _listeners != null ? new Db4objects.Db4o.Foundation.Collection4(_listeners
-				) : null;
+			return _listeners != null ? new Collection4(_listeners) : null;
 		}
 
 		public virtual bool Enabled()
@@ -73,13 +75,12 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 			return _listeners != null;
 		}
 
-		private bool IsDb4oClass(Db4objects.Db4o.Internal.ClassMetadata yc)
+		private bool IsDb4oClass(ClassMetadata yc)
 		{
-			return Db4objects.Db4o.Internal.Platform4.IsDb4oClass(yc.GetName());
+			return Platform4.IsDb4oClass(yc.GetName());
 		}
 
-		public virtual void LoadedFromClassIndex(Db4objects.Db4o.Internal.ClassMetadata yc
-			)
+		public virtual void LoadedFromClassIndex(ClassMetadata yc)
 		{
 			if (IsDb4oClass(yc))
 			{
@@ -88,29 +89,27 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 			OnDiagnostic(new Db4objects.Db4o.Diagnostic.LoadedFromClassIndex(yc.GetName()));
 		}
 
-		public virtual void DescendIntoTranslator(Db4objects.Db4o.Internal.ClassMetadata 
-			parent, string fieldName)
+		public virtual void DescendIntoTranslator(ClassMetadata parent, string fieldName)
 		{
 			OnDiagnostic(new Db4objects.Db4o.Diagnostic.DescendIntoTranslator(parent.GetName(
 				), fieldName));
 		}
 
-		public virtual void NativeQueryUnoptimized(Db4objects.Db4o.Query.Predicate predicate
-			)
+		public virtual void NativeQueryUnoptimized(Predicate predicate)
 		{
-			OnDiagnostic(new Db4objects.Db4o.Diagnostic.NativeQueryNotOptimized(predicate));
+			OnDiagnostic(new NativeQueryNotOptimized(predicate));
 		}
 
-		private void OnDiagnostic(Db4objects.Db4o.Diagnostic.IDiagnostic d)
+		private void OnDiagnostic(IDiagnostic d)
 		{
 			if (_listeners == null)
 			{
 				return;
 			}
-			System.Collections.IEnumerator i = _listeners.GetEnumerator();
+			IEnumerator i = _listeners.GetEnumerator();
 			while (i.MoveNext())
 			{
-				((Db4objects.Db4o.Diagnostic.IDiagnosticListener)i.Current).OnDiagnostic(d);
+				((IDiagnosticListener)i.Current).OnDiagnostic(d);
 			}
 		}
 

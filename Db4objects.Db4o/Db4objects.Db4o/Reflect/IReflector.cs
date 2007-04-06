@@ -1,3 +1,8 @@
+using System;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Reflect
 {
 	/// <summary>root of the reflection implementation API.</summary>
@@ -10,18 +15,18 @@ namespace Db4objects.Db4o.Reflect
 	/// that uses java.lang.reflect.*.
 	/// <br /><br />
 	/// Use
-	/// <see cref="Db4objects.Db4o.Config.IConfiguration.ReflectWith">Db4o.configure().reflectWith(IReflect reflector)
+	/// <see cref="IConfiguration.ReflectWith">Db4o.configure().reflectWith(IReflect reflector)
 	/// 	</see>
 	/// to register the use of your implementation before opening database
 	/// files.
 	/// </remarks>
-	public interface IReflector : Db4objects.Db4o.Foundation.IDeepClone
+	public interface IReflector : IDeepClone
 	{
 		/// <summary>returns an ReflectArray object, the equivalent to java.lang.reflect.Array.
 		/// 	</summary>
 		/// <remarks>returns an ReflectArray object, the equivalent to java.lang.reflect.Array.
 		/// 	</remarks>
-		Db4objects.Db4o.Reflect.IReflectArray Array();
+		IReflectArray Array();
 
 		/// <summary>specifiy whether parameterized Constructors are supported.</summary>
 		/// <remarks>
@@ -33,22 +38,22 @@ namespace Db4objects.Db4o.Reflect
 		bool ConstructorCallsSupported();
 
 		/// <summary>returns an ReflectClass for a Class</summary>
-		Db4objects.Db4o.Reflect.IReflectClass ForClass(System.Type clazz);
+		IReflectClass ForClass(Type clazz);
 
 		/// <summary>
 		/// returns an ReflectClass class reflector for a class name or null
 		/// if no such class is found
 		/// </summary>
-		Db4objects.Db4o.Reflect.IReflectClass ForName(string className);
+		IReflectClass ForName(string className);
 
 		/// <summary>returns an ReflectClass for an object or null if the passed object is null.
 		/// 	</summary>
 		/// <remarks>returns an ReflectClass for an object or null if the passed object is null.
 		/// 	</remarks>
-		Db4objects.Db4o.Reflect.IReflectClass ForObject(object a_object);
+		IReflectClass ForObject(object a_object);
 
-		bool IsCollection(Db4objects.Db4o.Reflect.IReflectClass claxx);
+		bool IsCollection(IReflectClass claxx);
 
-		void SetParent(Db4objects.Db4o.Reflect.IReflector reflector);
+		void SetParent(IReflector reflector);
 	}
 }

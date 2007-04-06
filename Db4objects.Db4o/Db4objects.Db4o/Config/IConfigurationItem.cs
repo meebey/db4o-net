@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>
@@ -19,6 +21,6 @@ namespace Db4objects.Db4o.Config
 		/// to an ObjectContainerBase after it is opened.
 		/// </remarks>
 		/// <param name="objectContainer">the ObjectContainerBase</param>
-		void Apply(Db4objects.Db4o.Internal.ObjectContainerBase objectContainer);
+		void Apply(ObjectContainerBase objectContainer);
 	}
 }

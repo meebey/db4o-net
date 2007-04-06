@@ -1,3 +1,6 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
@@ -31,44 +34,41 @@ namespace Db4objects.Db4o.Internal
 
 		internal const int COUNT = 10;
 
-		private readonly Db4objects.Db4o.Reflect.IReflectMethod[] methods;
+		private readonly IReflectMethod[] methods;
 
-		private EventDispatcher(Db4objects.Db4o.Reflect.IReflectMethod[] methods_)
+		private EventDispatcher(IReflectMethod[] methods_)
 		{
 			methods = methods_;
 		}
 
-		internal bool Dispatch(Db4objects.Db4o.Internal.ObjectContainerBase stream, object
-			 obj, int eventID)
+		internal bool Dispatch(ObjectContainerBase stream, object obj, int eventID)
 		{
-			if (methods[eventID] != null)
+			if (methods[eventID] == null)
 			{
-				object[] parameters = new object[] { stream };
-				int stackDepth = stream.StackDepth();
-				int topLevelCallId = stream.TopLevelCallId();
-				stream.StackDepth(0);
-				try
+				return true;
+			}
+			object[] parameters = new object[] { stream };
+			int stackDepth = stream.StackDepth();
+			int topLevelCallId = stream.TopLevelCallId();
+			stream.StackDepth(0);
+			try
+			{
+				object res = methods[eventID].Invoke(obj, parameters);
+				if (res is bool)
 				{
-					object res = methods[eventID].Invoke(obj, parameters);
-					if (res != null && res is bool)
-					{
-						return ((bool)res);
-					}
+					return ((bool)res);
 				}
-				catch (System.Exception)
-				{
-				}
-				finally
-				{
-					stream.StackDepth(stackDepth);
-					stream.TopLevelCallId(topLevelCallId);
-				}
+			}
+			finally
+			{
+				stream.StackDepth(stackDepth);
+				stream.TopLevelCallId(topLevelCallId);
 			}
 			return true;
 		}
 
-		internal static Db4objects.Db4o.Internal.EventDispatcher ForClass(Db4objects.Db4o.Internal.ObjectContainerBase
-			 a_stream, Db4objects.Db4o.Reflect.IReflectClass classReflector)
+		internal static Db4objects.Db4o.Internal.EventDispatcher ForClass(ObjectContainerBase
+			 a_stream, IReflectClass classReflector)
 		{
 			if (a_stream == null || classReflector == null)
 			{
@@ -89,14 +89,12 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (count > 0)
 			{
-				Db4objects.Db4o.Reflect.IReflectClass[] parameterClasses = new Db4objects.Db4o.Reflect.IReflectClass
-					[] { a_stream.i_handlers.ICLASS_OBJECTCONTAINER };
-				Db4objects.Db4o.Reflect.IReflectMethod[] methods = new Db4objects.Db4o.Reflect.IReflectMethod
-					[COUNT];
+				IReflectClass[] parameterClasses = new IReflectClass[] { a_stream.i_handlers.ICLASS_OBJECTCONTAINER
+					 };
+				IReflectMethod[] methods = new IReflectMethod[COUNT];
 				for (int i = COUNT - 1; i >= 0; i--)
 				{
-					Db4objects.Db4o.Reflect.IReflectMethod method = classReflector.GetMethod(events[i
-						], parameterClasses);
+					IReflectMethod method = classReflector.GetMethod(events[i], parameterClasses);
 					if (null == method)
 					{
 						method = classReflector.GetMethod(ToPascalCase(events[i]), parameterClasses);

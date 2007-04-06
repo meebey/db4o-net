@@ -1,6 +1,8 @@
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MRollback : Db4objects.Db4o.Internal.CS.Messages.Msg, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public sealed class MRollback : Msg, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{

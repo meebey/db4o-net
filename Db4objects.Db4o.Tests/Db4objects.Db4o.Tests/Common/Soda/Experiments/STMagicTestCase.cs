@@ -1,7 +1,14 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda;
+using Db4objects.Db4o.Tests.Common.Soda.Classes.Simple;
+using Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+using Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped;
+using Sharpen;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 {
-	public class STMagicTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
-		, Db4objects.Db4o.Tests.Common.Soda.ISTInterface
+	public class STMagicTestCase : SodaBaseTestCase, ISTInterface
 	{
 		public string str;
 
@@ -46,12 +53,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 		/// </remarks>
 		public virtual void TestUnconstrainedClass()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Descend("str").Constrain("aaa");
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.Expect(q, new object[] { new 
-				Db4objects.Db4o.Tests.Common.Soda.Experiments.STMagicTestCase("aaa"), new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
-				("aaa"), new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STStringUTestCase
-				("aaa") });
+			SodaTestUtil.Expect(q, new object[] { new Db4objects.Db4o.Tests.Common.Soda.Experiments.STMagicTestCase
+				("aaa"), new STStringTestCase("aaa"), new STStringUTestCase("aaa") });
 		}
 
 		/// <summary>
@@ -65,18 +70,14 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 		/// </remarks>
 		public virtual void TestMultiClass()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STDoubleTestCase)
-				).Or(q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase)
-				));
-			object[] stDoubles = new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STDoubleTestCase
-				().CreateData();
-			object[] stStrings = new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
-				().CreateData();
+			IQuery q = NewQuery();
+			q.Constrain(typeof(STDoubleTestCase)).Or(q.Constrain(typeof(STStringTestCase)));
+			object[] stDoubles = new STDoubleTestCase().CreateData();
+			object[] stStrings = new STStringTestCase().CreateData();
 			object[] res = new object[stDoubles.Length + stStrings.Length];
 			System.Array.Copy(stDoubles, 0, res, 0, stDoubles.Length);
 			System.Array.Copy(stStrings, 0, res, stDoubles.Length, stStrings.Length);
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.Expect(q, res);
+			SodaTestUtil.Expect(q, res);
 		}
 
 		/// <summary>
@@ -90,12 +91,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 		/// </remarks>
 		public virtual void TestExecuteAnyNode()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
-			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STTH1TestCase
-				().CreateData()[5]);
+			IQuery q = NewQuery();
+			q.Constrain(new STTH1TestCase().CreateData()[5]);
 			q = q.Descend("h2").Descend("h3");
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STTH3
-				("str3"));
+			SodaTestUtil.ExpectOne(q, new STTH3("str3"));
 		}
 
 		/// <summary>
@@ -110,25 +109,23 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 		/// </remarks>
 		public virtual void TestInterface()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.ISTInterface));
+			IQuery q = NewQuery();
+			q.Constrain(typeof(ISTInterface));
 			q.Constrain(new _AnonymousInnerClass117(this));
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.Expect(q, new object[] { new 
-				Db4objects.Db4o.Tests.Common.Soda.Experiments.STMagicTestCase("aaa"), new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
-				("aaa") });
+			SodaTestUtil.Expect(q, new object[] { new Db4objects.Db4o.Tests.Common.Soda.Experiments.STMagicTestCase
+				("aaa"), new STStringTestCase("aaa") });
 		}
 
-		private sealed class _AnonymousInnerClass117 : Db4objects.Db4o.Query.IEvaluation
+		private sealed class _AnonymousInnerClass117 : IEvaluation
 		{
 			public _AnonymousInnerClass117(STMagicTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
-			public void Evaluate(Db4objects.Db4o.Query.ICandidate candidate)
+			public void Evaluate(ICandidate candidate)
 			{
-				Db4objects.Db4o.Tests.Common.Soda.ISTInterface sti = (Db4objects.Db4o.Tests.Common.Soda.ISTInterface
-					)candidate.GetObject();
+				ISTInterface sti = (ISTInterface)candidate.GetObject();
 				candidate.Include(sti.ReturnSomething().Equals("aaa"));
 			}
 

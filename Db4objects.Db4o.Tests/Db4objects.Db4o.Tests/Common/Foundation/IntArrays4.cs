@@ -1,3 +1,7 @@
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Sharpen;
+
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
 	public class IntArrays4
@@ -49,9 +53,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			return ret;
 		}
 
-		public static System.Collections.IEnumerator NewIterator(int[] values)
+		public static IEnumerator NewIterator(int[] values)
 		{
-			return new Db4objects.Db4o.Foundation.ArrayIterator4(ToObjectArray(values));
+			return new ArrayIterator4(ToObjectArray(values));
 		}
 	}
 }

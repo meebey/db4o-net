@@ -1,11 +1,15 @@
+using System;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	internal class QPending : Db4objects.Db4o.Foundation.Tree
+	internal class QPending : Tree
 	{
-		internal readonly Db4objects.Db4o.Internal.Query.Processor.QConJoin _join;
+		internal readonly QConJoin _join;
 
-		internal Db4objects.Db4o.Internal.Query.Processor.QCon _constraint;
+		internal QCon _constraint;
 
 		internal int _result;
 
@@ -15,15 +19,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal const int TRUE = 2;
 
-		internal QPending(Db4objects.Db4o.Internal.Query.Processor.QConJoin a_join, Db4objects.Db4o.Internal.Query.Processor.QCon
-			 a_constraint, bool a_firstResult)
+		internal QPending(QConJoin a_join, QCon a_constraint, bool a_firstResult)
 		{
 			_join = a_join;
 			_constraint = a_constraint;
 			_result = a_firstResult ? TRUE : FALSE;
 		}
 
-		public override int Compare(Db4objects.Db4o.Foundation.Tree a_to)
+		public override int Compare(Tree a_to)
 		{
 			return _constraint.i_id - ((Db4objects.Db4o.Internal.Query.Processor.QPending)a_to
 				)._constraint.i_id;
@@ -45,7 +48,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override object Key()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

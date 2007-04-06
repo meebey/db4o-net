@@ -1,7 +1,10 @@
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Generic;
+
 namespace Db4objects.Db4o.Reflect.Generic
 {
 	/// <exclude></exclude>
-	public class GenericVirtualField : Db4objects.Db4o.Reflect.Generic.GenericField
+	public class GenericVirtualField : GenericField
 	{
 		public GenericVirtualField(string name) : base(name, null, false, false, false)
 		{
@@ -17,7 +20,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return null;
 		}
 
-		public override Db4objects.Db4o.Reflect.IReflectClass GetFieldType()
+		public override IReflectClass GetFieldType()
 		{
 			return null;
 		}

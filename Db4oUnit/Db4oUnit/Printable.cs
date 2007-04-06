@@ -1,20 +1,22 @@
+using System.IO;
+
 namespace Db4oUnit
 {
 	public abstract class Printable
 	{
 		public override string ToString()
 		{
-			System.IO.StringWriter writer = new System.IO.StringWriter();
+			StringWriter writer = new StringWriter();
 			try
 			{
 				Print(writer);
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
 			}
 			return writer.ToString();
 		}
 
-		public abstract void Print(System.IO.TextWriter writer);
+		public abstract void Print(TextWriter writer);
 	}
 }

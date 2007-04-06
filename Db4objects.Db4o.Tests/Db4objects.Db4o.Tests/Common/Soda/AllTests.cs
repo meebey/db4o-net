@@ -1,27 +1,29 @@
+using System;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Tests.Common.Soda;
+using Db4objects.Db4o.Tests.Common.Soda.Classes.Simple;
+using Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy;
+using Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy;
+using Db4objects.Db4o.Tests.Common.Soda.Joins.Typed;
+using Db4objects.Db4o.Tests.Common.Soda.Joins.Untyped;
+using Db4objects.Db4o.Tests.Common.Soda.Ordered;
+using Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped;
+
 namespace Db4objects.Db4o.Tests.Common.Soda
 {
-	public class AllTests : Db4oUnit.Extensions.Db4oTestSuite
+	public class AllTests : Db4oTestSuite
 	{
-		protected override System.Type[] TestCases()
+		protected override Type[] TestCases()
 		{
-			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.CollectionIndexedJoinTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.SortMultipleTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STBooleanTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STByteTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STCharTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STCharWUTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STDoubleTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STDoubleWUTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STETH1TestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STFloatTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STFloatWUTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STIntegerTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STIntegerWUTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STLongTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STLongWUTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Joins.Typed.STOrTTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Joins.Untyped.STOrUTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Ordered.STOStringTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STSDFT1TestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STShortTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STShortWUTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STStringUTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STRUH1TestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STTH1TestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STUH1TestCase)
+			return new Type[] { typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.AllTests), typeof(CollectionIndexedJoinTestCase)
+				, typeof(SortMultipleTestCase), typeof(STBooleanTestCase), typeof(STBooleanWUTestCase)
+				, typeof(STByteTestCase), typeof(STByteWUTestCase), typeof(STCharTestCase), typeof(STCharWUTestCase)
+				, typeof(STDoubleTestCase), typeof(STDoubleWUTestCase), typeof(STETH1TestCase), 
+				typeof(STFloatTestCase), typeof(STFloatWUTestCase), typeof(STIntegerTestCase), typeof(STIntegerWUTestCase)
+				, typeof(STLongTestCase), typeof(STLongWUTestCase), typeof(STOrTTestCase), typeof(STOrUTestCase)
+				, typeof(STOStringTestCase), typeof(STOIntegerTestCase), typeof(STOIntegerWTTestCase)
+				, typeof(STRTH1TestCase), typeof(STSDFT1TestCase), typeof(STShortTestCase), typeof(STShortWUTestCase)
+				, typeof(STStringUTestCase), typeof(STRUH1TestCase), typeof(STTH1TestCase), typeof(STUH1TestCase)
 				 };
 		}
 

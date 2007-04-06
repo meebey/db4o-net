@@ -1,6 +1,13 @@
+using System;
+using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+
 namespace Db4oUnit.Extensions.Fixtures
 {
-	public abstract class AbstractClientServerDb4oFixture : Db4oUnit.Extensions.Fixtures.AbstractDb4oFixture
+	public abstract class AbstractClientServerDb4oFixture : AbstractDb4oFixture
 	{
 		protected static readonly string FILE = "Db4oClientServer.yap";
 
@@ -12,21 +19,21 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		protected static readonly string PASSWORD = USERNAME;
 
-		private Db4objects.Db4o.IObjectServer _server;
+		private IObjectServer _server;
 
 		private readonly Sharpen.IO.File _yap;
 
 		protected readonly int _port;
 
-		public AbstractClientServerDb4oFixture(Db4oUnit.Extensions.Fixtures.IConfigurationSource
-			 configSource, string fileName, int port) : base(configSource)
+		public AbstractClientServerDb4oFixture(IConfigurationSource configSource, string 
+			fileName, int port) : base(configSource)
 		{
 			_yap = new Sharpen.IO.File(fileName);
 			_port = port;
 		}
 
-		public AbstractClientServerDb4oFixture(Db4oUnit.Extensions.Fixtures.IConfigurationSource
-			 configSource) : this(configSource, FILE, PORT)
+		public AbstractClientServerDb4oFixture(IConfigurationSource configSource) : this(
+			configSource, FILE, PORT)
 		{
 		}
 
@@ -41,19 +48,18 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public override void Open()
 		{
-			_server = Db4objects.Db4o.Db4oFactory.OpenServer(Config(), _yap.GetAbsolutePath()
-				, _port);
+			_server = Db4oFactory.OpenServer(Config(), _yap.GetAbsolutePath(), _port);
 			_server.GrantAccess(USERNAME, PASSWORD);
 		}
 
-		public abstract override Db4objects.Db4o.Ext.IExtObjectContainer Db();
+		public abstract override IExtObjectContainer Db();
 
 		protected override void DoClean()
 		{
 			_yap.Delete();
 		}
 
-		public virtual Db4objects.Db4o.IObjectServer Server()
+		public virtual IObjectServer Server()
 		{
 			return _server;
 		}
@@ -70,20 +76,19 @@ namespace Db4oUnit.Extensions.Fixtures
 		/// returns false if the clazz is assignable from OptOutCS, or not
 		/// assignable from Db4oTestCase. Otherwise, returns true.
 		/// </returns>
-		public override bool Accept(System.Type clazz)
+		public override bool Accept(Type clazz)
 		{
-			if ((typeof(Db4oUnit.Extensions.Fixtures.IOptOutCS).IsAssignableFrom(clazz)) || !
-				typeof(Db4oUnit.Extensions.IDb4oTestCase).IsAssignableFrom(clazz))
+			if ((typeof(IOptOutCS).IsAssignableFrom(clazz)) || !typeof(IDb4oTestCase).IsAssignableFrom
+				(clazz))
 			{
 				return false;
 			}
 			return true;
 		}
 
-		public override Db4objects.Db4o.Internal.LocalObjectContainer FileSession()
+		public override LocalObjectContainer FileSession()
 		{
-			return (Db4objects.Db4o.Internal.LocalObjectContainer)_server.Ext().ObjectContainer
-				();
+			return (LocalObjectContainer)_server.Ext().ObjectContainer();
 		}
 
 		public override void Defragment()
@@ -91,7 +96,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			Defragment(FILE);
 		}
 
-		protected virtual Db4objects.Db4o.IObjectContainer OpenEmbeddedClient()
+		protected virtual IObjectContainer OpenEmbeddedClient()
 		{
 			return _server.OpenClient(Config());
 		}

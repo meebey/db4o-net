@@ -1,13 +1,18 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	/// <exclude></exclude>
-	public class DoubleHandlerTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class DoubleHandlerTestCase : AbstractDb4oTestCase
 	{
-		private Db4objects.Db4o.Internal.ITypeHandler4 _handler;
+		private ITypeHandler4 _handler;
 
 		protected override void Db4oSetupBeforeStore()
 		{
-			_handler = new Db4objects.Db4o.Internal.Handlers.DoubleHandler(Stream());
+			_handler = new DoubleHandler(Stream());
 		}
 
 		public virtual void TestMarshalling()
@@ -18,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			_handler.WriteIndexEntry(buffer, expected);
 			buffer.Seek(0);
 			object actual = _handler.ReadIndexEntry(buffer);
-			Db4oUnit.Assert.AreEqual(expected, actual);
+			Assert.AreEqual(expected, actual);
 		}
 
 		public virtual void TestComparison()
@@ -32,30 +37,30 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			_handler.PrepareComparison(prepareWith);
 			double doubleCompareTo = compareTo;
-			Db4oUnit.Assert.AreEqual(expected, _handler.CompareTo(doubleCompareTo));
+			Assert.AreEqual(expected, _handler.CompareTo(doubleCompareTo));
 			switch (expected)
 			{
 				case 0:
 				{
-					Db4oUnit.Assert.IsTrue(_handler.IsEqual(doubleCompareTo));
-					Db4oUnit.Assert.IsFalse(_handler.IsGreater(doubleCompareTo));
-					Db4oUnit.Assert.IsFalse(_handler.IsSmaller(doubleCompareTo));
+					Assert.IsTrue(_handler.IsEqual(doubleCompareTo));
+					Assert.IsFalse(_handler.IsGreater(doubleCompareTo));
+					Assert.IsFalse(_handler.IsSmaller(doubleCompareTo));
 					break;
 				}
 
 				case 1:
 				{
-					Db4oUnit.Assert.IsFalse(_handler.IsEqual(doubleCompareTo));
-					Db4oUnit.Assert.IsTrue(_handler.IsGreater(doubleCompareTo));
-					Db4oUnit.Assert.IsFalse(_handler.IsSmaller(doubleCompareTo));
+					Assert.IsFalse(_handler.IsEqual(doubleCompareTo));
+					Assert.IsTrue(_handler.IsGreater(doubleCompareTo));
+					Assert.IsFalse(_handler.IsSmaller(doubleCompareTo));
 					break;
 				}
 
 				case -1:
 				{
-					Db4oUnit.Assert.IsFalse(_handler.IsEqual(doubleCompareTo));
-					Db4oUnit.Assert.IsFalse(_handler.IsGreater(doubleCompareTo));
-					Db4oUnit.Assert.IsTrue(_handler.IsSmaller(doubleCompareTo));
+					Assert.IsFalse(_handler.IsEqual(doubleCompareTo));
+					Assert.IsFalse(_handler.IsGreater(doubleCompareTo));
+					Assert.IsTrue(_handler.IsSmaller(doubleCompareTo));
 					break;
 				}
 			}

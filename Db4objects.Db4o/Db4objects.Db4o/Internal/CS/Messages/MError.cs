@@ -1,7 +1,9 @@
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MError : Db4objects.Db4o.Internal.CS.Messages.Msg
+	public class MError : Msg
 	{
 	}
 }

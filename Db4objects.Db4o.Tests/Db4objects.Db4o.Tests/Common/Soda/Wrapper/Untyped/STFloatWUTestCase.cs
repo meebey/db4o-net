@@ -1,6 +1,9 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 {
-	public class STFloatWUTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STFloatWUTestCase : SodaBaseTestCase
 	{
 		public object i_float;
 
@@ -24,14 +27,14 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 
 		public virtual void TestEquals()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(_array[0]);
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, _array[0]);
+			SodaTestUtil.ExpectOne(q, _array[0]);
 		}
 
 		public virtual void TestGreater()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STFloatWUTestCase
 				((float)0.1));
 			q.Descend("i_float").Constraints().Greater();
@@ -40,7 +43,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 
 		public virtual void TestSmaller()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STFloatWUTestCase
 				((float)1.5));
 			q.Descend("i_float").Constraints().Smaller();

@@ -1,46 +1,53 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Fieldindex;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Fieldindex
 {
-	public class JoinedLeaf : Db4objects.Db4o.Internal.Fieldindex.IIndexedNodeWithRange
+	public class JoinedLeaf : IIndexedNodeWithRange
 	{
-		private readonly Db4objects.Db4o.Internal.Query.Processor.QCon _constraint;
+		private readonly QCon _constraint;
 
-		private readonly Db4objects.Db4o.Internal.Fieldindex.IIndexedNodeWithRange _leaf1;
+		private readonly IIndexedNodeWithRange _leaf1;
 
-		private readonly Db4objects.Db4o.Internal.Btree.IBTreeRange _range;
+		private readonly IBTreeRange _range;
 
-		public JoinedLeaf(Db4objects.Db4o.Internal.Query.Processor.QCon constraint, Db4objects.Db4o.Internal.Fieldindex.IIndexedNodeWithRange
-			 leaf1, Db4objects.Db4o.Internal.Btree.IBTreeRange range)
+		public JoinedLeaf(QCon constraint, IIndexedNodeWithRange leaf1, IBTreeRange range
+			)
 		{
 			if (null == constraint || null == leaf1 || null == range)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			_constraint = constraint;
 			_leaf1 = leaf1;
 			_range = range;
 		}
 
-		public virtual Db4objects.Db4o.Internal.Query.Processor.QCon GetConstraint()
+		public virtual QCon GetConstraint()
 		{
 			return _constraint;
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.IBTreeRange GetRange()
+		public virtual IBTreeRange GetRange()
 		{
 			return _range;
 		}
 
-		public virtual System.Collections.IEnumerator GetEnumerator()
+		public virtual IEnumerator GetEnumerator()
 		{
 			return _range.Keys();
 		}
 
-		public virtual Db4objects.Db4o.Internal.TreeInt ToTreeInt()
+		public virtual TreeInt ToTreeInt()
 		{
-			return Db4objects.Db4o.Internal.Fieldindex.IndexedNodeBase.AddToTree(null, this);
+			return IndexedNodeBase.AddToTree(null, this);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.BTree GetIndex()
+		public virtual BTree GetIndex()
 		{
 			return _leaf1.GetIndex();
 		}
@@ -50,10 +57,9 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 			return _leaf1.IsResolved();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Fieldindex.IIndexedNode Resolve()
+		public virtual IIndexedNode Resolve()
 		{
-			return Db4objects.Db4o.Internal.Fieldindex.IndexedPath.NewParentPath(this, _constraint
-				);
+			return IndexedPath.NewParentPath(this, _constraint);
 		}
 
 		public virtual int ResultSize()

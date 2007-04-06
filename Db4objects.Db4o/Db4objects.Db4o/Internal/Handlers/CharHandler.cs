@@ -1,14 +1,16 @@
+using System;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+
 namespace Db4objects.Db4o.Internal.Handlers
 {
-	public sealed class CharHandler : Db4objects.Db4o.Internal.Handlers.PrimitiveHandler
+	public sealed class CharHandler : PrimitiveHandler
 	{
-		internal const int LENGTH = Db4objects.Db4o.Internal.Const4.CHAR_BYTES + Db4objects.Db4o.Internal.Const4
-			.ADDED_LENGTH;
+		internal const int LENGTH = Const4.CHAR_BYTES + Const4.ADDED_LENGTH;
 
 		private static readonly char i_primitive = (char)0;
 
-		public CharHandler(Db4objects.Db4o.Internal.ObjectContainerBase stream) : base(stream
-			)
+		public CharHandler(ObjectContainerBase stream) : base(stream)
 		{
 		}
 
@@ -27,7 +29,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return LENGTH;
 		}
 
-		protected override System.Type PrimitiveJavaClass()
+		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(char);
 		}

@@ -1,43 +1,42 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
 	public abstract class ArrayMarshaller
 	{
-		public Db4objects.Db4o.Internal.Marshall.MarshallerFamily _family;
+		public MarshallerFamily _family;
 
-		public abstract void DeleteEmbedded(Db4objects.Db4o.Internal.Handlers.ArrayHandler
-			 arrayHandler, Db4objects.Db4o.Internal.StatefulBuffer reader);
+		public abstract void DeleteEmbedded(ArrayHandler arrayHandler, StatefulBuffer reader
+			);
 
-		public Db4objects.Db4o.Internal.TreeInt CollectIDs(Db4objects.Db4o.Internal.Handlers.ArrayHandler
-			 arrayHandler, Db4objects.Db4o.Internal.TreeInt tree, Db4objects.Db4o.Internal.StatefulBuffer
+		public TreeInt CollectIDs(ArrayHandler arrayHandler, TreeInt tree, StatefulBuffer
 			 reader)
 		{
-			Db4objects.Db4o.Internal.Transaction trans = reader.GetTransaction();
+			Transaction trans = reader.GetTransaction();
 			return arrayHandler.CollectIDs1(trans, tree, PrepareIDReader(trans, reader));
 		}
 
-		public abstract void DefragIDs(Db4objects.Db4o.Internal.Handlers.ArrayHandler arrayHandler
-			, Db4objects.Db4o.Internal.ReaderPair readers);
+		public abstract void DefragIDs(ArrayHandler arrayHandler, ReaderPair readers);
 
-		public abstract void CalculateLengths(Db4objects.Db4o.Internal.Transaction trans, 
-			Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes header, Db4objects.Db4o.Internal.Handlers.ArrayHandler
-			 handler, object obj, bool topLevel);
+		public abstract void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
+			, ArrayHandler handler, object obj, bool topLevel);
 
-		public abstract object Read(Db4objects.Db4o.Internal.Handlers.ArrayHandler arrayHandler
-			, Db4objects.Db4o.Internal.StatefulBuffer reader);
+		public abstract object Read(ArrayHandler arrayHandler, StatefulBuffer reader);
 
-		public abstract void ReadCandidates(Db4objects.Db4o.Internal.Handlers.ArrayHandler
-			 arrayHandler, Db4objects.Db4o.Internal.Buffer reader, Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 candidates);
+		public abstract void ReadCandidates(ArrayHandler arrayHandler, Db4objects.Db4o.Internal.Buffer
+			 reader, QCandidates candidates);
 
-		public abstract object ReadQuery(Db4objects.Db4o.Internal.Handlers.ArrayHandler arrayHandler
-			, Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer reader
-			);
+		public abstract object ReadQuery(ArrayHandler arrayHandler, Transaction trans, Db4objects.Db4o.Internal.Buffer
+			 reader);
 
-		public abstract object WriteNew(Db4objects.Db4o.Internal.Handlers.ArrayHandler arrayHandler
-			, object obj, bool topLevel, Db4objects.Db4o.Internal.StatefulBuffer writer);
+		public abstract object WriteNew(ArrayHandler arrayHandler, object obj, bool topLevel
+			, StatefulBuffer writer);
 
-		protected abstract Db4objects.Db4o.Internal.Buffer PrepareIDReader(Db4objects.Db4o.Internal.Transaction
-			 trans, Db4objects.Db4o.Internal.Buffer reader);
+		protected abstract Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans
+			, Db4objects.Db4o.Internal.Buffer reader);
 	}
 }

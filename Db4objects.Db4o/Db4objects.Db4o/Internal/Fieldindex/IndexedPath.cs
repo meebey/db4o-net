@@ -1,28 +1,32 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Fieldindex;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Fieldindex
 {
-	public class IndexedPath : Db4objects.Db4o.Internal.Fieldindex.IndexedNodeBase
+	public class IndexedPath : IndexedNodeBase
 	{
-		public static Db4objects.Db4o.Internal.Fieldindex.IIndexedNode NewParentPath(Db4objects.Db4o.Internal.Fieldindex.IIndexedNode
-			 next, Db4objects.Db4o.Internal.Query.Processor.QCon constraint)
+		public static IIndexedNode NewParentPath(IIndexedNode next, QCon constraint)
 		{
 			if (!CanFollowParent(constraint))
 			{
 				return null;
 			}
-			return new Db4objects.Db4o.Internal.Fieldindex.IndexedPath((Db4objects.Db4o.Internal.Query.Processor.QConObject
-				)constraint.Parent(), next);
+			return new Db4objects.Db4o.Internal.Fieldindex.IndexedPath((QConObject)constraint
+				.Parent(), next);
 		}
 
-		private static bool CanFollowParent(Db4objects.Db4o.Internal.Query.Processor.QCon
-			 con)
+		private static bool CanFollowParent(QCon con)
 		{
-			Db4objects.Db4o.Internal.Query.Processor.QCon parent = con.Parent();
-			Db4objects.Db4o.Internal.FieldMetadata parentField = GetYapField(parent);
+			QCon parent = con.Parent();
+			FieldMetadata parentField = GetYapField(parent);
 			if (null == parentField)
 			{
 				return false;
 			}
-			Db4objects.Db4o.Internal.FieldMetadata conField = GetYapField(con);
+			FieldMetadata conField = GetYapField(con);
 			if (null == conField)
 			{
 				return false;
@@ -31,10 +35,9 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 				(conField.GetParentYapClass());
 		}
 
-		private static Db4objects.Db4o.Internal.FieldMetadata GetYapField(Db4objects.Db4o.Internal.Query.Processor.QCon
-			 con)
+		private static FieldMetadata GetYapField(QCon con)
 		{
-			Db4objects.Db4o.Internal.Query.Processor.QField field = con.GetField();
+			QField field = con.GetField();
 			if (null == field)
 			{
 				return null;
@@ -42,23 +45,21 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 			return field.GetYapField();
 		}
 
-		private Db4objects.Db4o.Internal.Fieldindex.IIndexedNode _next;
+		private IIndexedNode _next;
 
-		public IndexedPath(Db4objects.Db4o.Internal.Query.Processor.QConObject parent, Db4objects.Db4o.Internal.Fieldindex.IIndexedNode
-			 next) : base(parent)
+		public IndexedPath(QConObject parent, IIndexedNode next) : base(parent)
 		{
 			_next = next;
 		}
 
-		public override System.Collections.IEnumerator GetEnumerator()
+		public override IEnumerator GetEnumerator()
 		{
-			return new Db4objects.Db4o.Internal.Fieldindex.IndexedPathIterator(this, _next.GetEnumerator
-				());
+			return new IndexedPathIterator(this, _next.GetEnumerator());
 		}
 
 		public override int ResultSize()
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 	}
 }

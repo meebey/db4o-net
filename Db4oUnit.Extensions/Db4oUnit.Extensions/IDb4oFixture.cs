@@ -1,3 +1,8 @@
+using System;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+
 namespace Db4oUnit.Extensions
 {
 	public interface IDb4oFixture
@@ -12,13 +17,13 @@ namespace Db4oUnit.Extensions
 
 		void Clean();
 
-		Db4objects.Db4o.Internal.LocalObjectContainer FileSession();
+		LocalObjectContainer FileSession();
 
-		Db4objects.Db4o.Ext.IExtObjectContainer Db();
+		IExtObjectContainer Db();
 
-		Db4objects.Db4o.Config.IConfiguration Config();
+		IConfiguration Config();
 
-		bool Accept(System.Type clazz);
+		bool Accept(Type clazz);
 
 		void Defragment();
 	}

@@ -1,55 +1,55 @@
+using System;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Internal.Cluster;
+using Db4objects.Db4o.Internal.Query;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Cluster
 {
 	/// <exclude></exclude>
-	public class ClusterQuery : Db4objects.Db4o.Query.IQuery
+	public class ClusterQuery : IQuery
 	{
 		private readonly Db4objects.Db4o.Cluster.Cluster _cluster;
 
-		private readonly Db4objects.Db4o.Query.IQuery[] _queries;
+		private readonly IQuery[] _queries;
 
-		public ClusterQuery(Db4objects.Db4o.Cluster.Cluster cluster, Db4objects.Db4o.Query.IQuery[]
-			 queries)
+		public ClusterQuery(Db4objects.Db4o.Cluster.Cluster cluster, IQuery[] queries)
 		{
 			_cluster = cluster;
 			_queries = queries;
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Constrain(object constraint)
+		public virtual IConstraint Constrain(object constraint)
 		{
 			lock (_cluster)
 			{
-				Db4objects.Db4o.Query.IConstraint[] constraints = new Db4objects.Db4o.Query.IConstraint
-					[_queries.Length];
+				IConstraint[] constraints = new IConstraint[_queries.Length];
 				for (int i = 0; i < constraints.Length; i++)
 				{
 					constraints[i] = _queries[i].Constrain(constraint);
 				}
-				return new Db4objects.Db4o.Internal.Cluster.ClusterConstraint(_cluster, constraints
-					);
+				return new ClusterConstraint(_cluster, constraints);
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraints Constraints()
+		public virtual IConstraints Constraints()
 		{
 			lock (_cluster)
 			{
-				Db4objects.Db4o.Query.IConstraint[] constraints = new Db4objects.Db4o.Query.IConstraint
-					[_queries.Length];
+				IConstraint[] constraints = new IConstraint[_queries.Length];
 				for (int i = 0; i < constraints.Length; i++)
 				{
 					constraints[i] = _queries[i].Constraints();
 				}
-				return new Db4objects.Db4o.Internal.Cluster.ClusterConstraints(_cluster, constraints
-					);
+				return new ClusterConstraints(_cluster, constraints);
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IQuery Descend(string fieldName)
+		public virtual IQuery Descend(string fieldName)
 		{
 			lock (_cluster)
 			{
-				Db4objects.Db4o.Query.IQuery[] queries = new Db4objects.Db4o.Query.IQuery[_queries
-					.Length];
+				IQuery[] queries = new IQuery[_queries.Length];
 				for (int i = 0; i < queries.Length; i++)
 				{
 					queries[i] = _queries[i].Descend(fieldName);
@@ -58,29 +58,27 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
-		public virtual Db4objects.Db4o.IObjectSet Execute()
+		public virtual IObjectSet Execute()
 		{
 			lock (_cluster)
 			{
-				return new Db4objects.Db4o.Internal.Query.ObjectSetFacade(new Db4objects.Db4o.Internal.Cluster.ClusterQueryResult
-					(_cluster, _queries));
+				return new ObjectSetFacade(new ClusterQueryResult(_cluster, _queries));
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IQuery OrderAscending()
+		public virtual IQuery OrderAscending()
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 
-		public virtual Db4objects.Db4o.Query.IQuery OrderDescending()
+		public virtual IQuery OrderDescending()
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 
-		public virtual Db4objects.Db4o.Query.IQuery SortBy(Db4objects.Db4o.Query.IQueryComparator
-			 comparator)
+		public virtual IQuery SortBy(IQueryComparator comparator)
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 	}
 }

@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Reflect
 {
 	/// <summary>representation for java.lang.reflect.Array.</summary>
@@ -5,8 +7,7 @@ namespace Db4objects.Db4o.Reflect
 	/// representation for java.lang.reflect.Array.
 	/// <br /><br />See the respective documentation in the JDK API.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Reflect.IReflector">Db4objects.Db4o.Reflect.IReflector
-	/// 	</seealso>
+	/// <seealso cref="IReflector">IReflector</seealso>
 	public interface IReflectArray
 	{
 		int[] Dimensions(object arr);
@@ -16,18 +17,15 @@ namespace Db4objects.Db4o.Reflect
 
 		object Get(object onArray, int index);
 
-		Db4objects.Db4o.Reflect.IReflectClass GetComponentType(Db4objects.Db4o.Reflect.IReflectClass
-			 a_class);
+		IReflectClass GetComponentType(IReflectClass a_class);
 
 		int GetLength(object array);
 
-		bool IsNDimensional(Db4objects.Db4o.Reflect.IReflectClass a_class);
+		bool IsNDimensional(IReflectClass a_class);
 
-		object NewInstance(Db4objects.Db4o.Reflect.IReflectClass componentType, int length
-			);
+		object NewInstance(IReflectClass componentType, int length);
 
-		object NewInstance(Db4objects.Db4o.Reflect.IReflectClass componentType, int[] dimensions
-			);
+		object NewInstance(IReflectClass componentType, int[] dimensions);
 
 		void Set(object onArray, int index, object element);
 

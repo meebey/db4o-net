@@ -1,6 +1,11 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Tests.Common.Assorted;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class CanUpdateFalseRefreshTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class CanUpdateFalseRefreshTestCase : AbstractDb4oTestCase
 	{
 		public class Item
 		{
@@ -14,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				_name = name;
 			}
 
-			public virtual bool ObjectCanUpdate(Db4objects.Db4o.IObjectContainer container)
+			public virtual bool ObjectCanUpdate(IObjectContainer container)
 			{
 				return false;
 			}
@@ -22,27 +27,23 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		protected override void Store()
 		{
-			Store(new Db4objects.Db4o.Tests.Common.Assorted.CanUpdateFalseRefreshTestCase.Item
-				(1, "one"));
+			Store(new CanUpdateFalseRefreshTestCase.Item(1, "one"));
 		}
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Tests.Common.Assorted.CanUpdateFalseRefreshTestCase.Item item = (
-				Db4objects.Db4o.Tests.Common.Assorted.CanUpdateFalseRefreshTestCase.Item)RetrieveOnlyInstance
-				(typeof(Db4objects.Db4o.Tests.Common.Assorted.CanUpdateFalseRefreshTestCase.Item)
-				);
+			CanUpdateFalseRefreshTestCase.Item item = (CanUpdateFalseRefreshTestCase.Item)RetrieveOnlyInstance
+				(typeof(CanUpdateFalseRefreshTestCase.Item));
 			item._name = "two";
 			Db().Set(item);
-			Db4oUnit.Assert.AreEqual("two", item._name);
+			Assert.AreEqual("two", item._name);
 			Db().Refresh(item, 2);
-			Db4oUnit.Assert.AreEqual("one", item._name);
+			Assert.AreEqual("one", item._name);
 		}
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Assorted.CanUpdateFalseRefreshTestCase().RunSoloAndClientServer
-				();
+			new CanUpdateFalseRefreshTestCase().RunSoloAndClientServer();
 		}
 	}
 }

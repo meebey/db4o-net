@@ -1,8 +1,9 @@
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MClose : Db4objects.Db4o.Internal.CS.Messages.Msg, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
-		, Db4objects.Db4o.Internal.CS.Messages.IClientSideMessage
+	public class MClose : Msg, IServerSideMessage, IClientSideMessage
 	{
 		public virtual bool ProcessAtServer()
 		{

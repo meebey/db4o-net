@@ -1,7 +1,9 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class TreeStringObject : Db4objects.Db4o.Internal.TreeString
+	public class TreeStringObject : TreeString
 	{
 		public readonly object _object;
 

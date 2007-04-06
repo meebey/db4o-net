@@ -1,84 +1,87 @@
+using System;
+using System.Collections;
+using System.Reflection;
+using Db4oUnit;
+
 namespace Db4oUnit
 {
-	public class ReflectionTestSuiteBuilder : Db4oUnit.ITestSuiteBuilder
+	public class ReflectionTestSuiteBuilder : ITestSuiteBuilder
 	{
-		private System.Type[] _classes;
+		private Type[] _classes;
 
-		public ReflectionTestSuiteBuilder(System.Type clazz)
+		public ReflectionTestSuiteBuilder(Type clazz)
 		{
 			if (null == clazz)
 			{
-				throw new System.ArgumentException("clazz");
+				throw new ArgumentException("clazz");
 			}
-			_classes = new System.Type[] { clazz };
+			_classes = new Type[] { clazz };
 		}
 
-		public ReflectionTestSuiteBuilder(System.Type[] classes)
+		public ReflectionTestSuiteBuilder(Type[] classes)
 		{
 			if (null == classes)
 			{
-				throw new System.ArgumentException("classes");
+				throw new ArgumentException("classes");
 			}
 			_classes = classes;
 		}
 
-		public virtual Db4oUnit.TestSuite Build()
+		public virtual TestSuite Build()
 		{
 			return (1 == _classes.Length) ? FromClass(_classes[0]) : FromClasses(_classes);
 		}
 
-		protected virtual Db4oUnit.TestSuite FromClasses(System.Type[] classes)
+		protected virtual TestSuite FromClasses(Type[] classes)
 		{
-			System.Collections.ArrayList suites = new System.Collections.ArrayList(classes.Length
-				);
+			ArrayList suites = new ArrayList(classes.Length);
 			for (int i = 0; i < classes.Length; i++)
 			{
-				Db4oUnit.TestSuite suite = FromClass(classes[i]);
+				TestSuite suite = FromClass(classes[i]);
 				if (suite.GetTests().Length > 0)
 				{
 					suites.Add(suite);
 				}
 			}
-			return new Db4oUnit.TestSuite(ToTestArray(suites));
+			return new TestSuite(ToTestArray(suites));
 		}
 
-		protected virtual Db4oUnit.TestSuite FromClass(System.Type clazz)
+		protected virtual TestSuite FromClass(Type clazz)
 		{
 			if (!IsApplicable(clazz))
 			{
-				Db4oUnit.TestPlatform.EmitWarning("DISABLED: " + clazz.FullName);
-				return new Db4oUnit.TestSuite(new Db4oUnit.ITest[0]);
+				TestPlatform.EmitWarning("DISABLED: " + clazz.FullName);
+				return new TestSuite(new ITest[0]);
 			}
-			if (typeof(Db4oUnit.ITestSuiteBuilder).IsAssignableFrom(clazz))
+			if (typeof(ITestSuiteBuilder).IsAssignableFrom(clazz))
 			{
-				return ((Db4oUnit.ITestSuiteBuilder)NewInstance(clazz)).Build();
+				return ((ITestSuiteBuilder)NewInstance(clazz)).Build();
 			}
-			if (typeof(Db4oUnit.ITest).IsAssignableFrom(clazz))
+			if (typeof(ITest).IsAssignableFrom(clazz))
 			{
-				return new Db4oUnit.TestSuite(clazz.FullName, new Db4oUnit.ITest[] { (Db4oUnit.ITest
-					)NewInstance(clazz) });
+				return new TestSuite(clazz.FullName, new ITest[] { (ITest)NewInstance(clazz) });
 			}
-			if (!(typeof(Db4oUnit.ITestCase).IsAssignableFrom(clazz)))
+			if (!(typeof(ITestCase).IsAssignableFrom(clazz)))
 			{
-				throw new System.ArgumentException(string.Empty + clazz + " is not marked as " + 
-					typeof(Db4oUnit.ITestCase));
+				throw new ArgumentException(string.Empty + clazz + " is not marked as " + typeof(ITestCase)
+					);
 			}
 			return FromMethods(clazz);
 		}
 
-		protected virtual bool IsApplicable(System.Type clazz)
+		protected virtual bool IsApplicable(Type clazz)
 		{
 			return clazz != null;
 		}
 
-		private Db4oUnit.TestSuite FromMethods(System.Type clazz)
+		private TestSuite FromMethods(Type clazz)
 		{
-			System.Collections.ArrayList tests = new System.Collections.ArrayList();
-			System.Reflection.MethodInfo[] methods = clazz.GetMethods();
+			ArrayList tests = new ArrayList();
+			MethodInfo[] methods = clazz.GetMethods();
 			for (int i = 0; i < methods.Length; i++)
 			{
 				object instance = NewInstance(clazz);
-				System.Reflection.MethodInfo method = methods[i];
+				MethodInfo method = methods[i];
 				if (!IsTestMethod(method))
 				{
 					EmitWarningOnIgnoredTestMethod(instance, method);
@@ -86,27 +89,25 @@ namespace Db4oUnit
 				}
 				tests.Add(CreateTest(instance, method));
 			}
-			return new Db4oUnit.TestSuite(clazz.FullName, ToTestArray(tests));
+			return new TestSuite(clazz.FullName, ToTestArray(tests));
 		}
 
-		private void EmitWarningOnIgnoredTestMethod(object subject, System.Reflection.MethodInfo
-			 method)
+		private void EmitWarningOnIgnoredTestMethod(object subject, MethodInfo method)
 		{
 			if (!StartsWithIgnoreCase(method.Name, "_test"))
 			{
 				return;
 			}
-			Db4oUnit.TestPlatform.EmitWarning("IGNORED: " + CreateTest(subject, method).GetLabel
-				());
+			TestPlatform.EmitWarning("IGNORED: " + CreateTest(subject, method).GetLabel());
 		}
 
-		protected virtual bool IsTestMethod(System.Reflection.MethodInfo method)
+		protected virtual bool IsTestMethod(MethodInfo method)
 		{
-			return HasTestPrefix(method) && Db4oUnit.TestPlatform.IsPublic(method) && !Db4oUnit.TestPlatform
-				.IsStatic(method) && !Db4oUnit.TestPlatform.HasParameters(method);
+			return HasTestPrefix(method) && TestPlatform.IsPublic(method) && !TestPlatform.IsStatic
+				(method) && !TestPlatform.HasParameters(method);
 		}
 
-		private bool HasTestPrefix(System.Reflection.MethodInfo method)
+		private bool HasTestPrefix(MethodInfo method)
 		{
 			return StartsWithIgnoreCase(method.Name, "test");
 		}
@@ -116,29 +117,28 @@ namespace Db4oUnit
 			return s.ToUpper().StartsWith(prefix.ToUpper());
 		}
 
-		private static Db4oUnit.ITest[] ToTestArray(System.Collections.ArrayList tests)
+		private static ITest[] ToTestArray(ArrayList tests)
 		{
-			Db4oUnit.ITest[] array = new Db4oUnit.ITest[tests.Count];
+			ITest[] array = new ITest[tests.Count];
 			tests.CopyTo(array);
 			return array;
 		}
 
-		protected virtual object NewInstance(System.Type clazz)
+		protected virtual object NewInstance(Type clazz)
 		{
 			try
 			{
 				return System.Activator.CreateInstance(clazz);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				throw new Db4oUnit.TestException(e);
+				throw new TestException(e);
 			}
 		}
 
-		protected virtual Db4oUnit.ITest CreateTest(object instance, System.Reflection.MethodInfo
-			 method)
+		protected virtual ITest CreateTest(object instance, MethodInfo method)
 		{
-			return new Db4oUnit.TestMethod(instance, method);
+			return new TestMethod(instance, method);
 		}
 	}
 }

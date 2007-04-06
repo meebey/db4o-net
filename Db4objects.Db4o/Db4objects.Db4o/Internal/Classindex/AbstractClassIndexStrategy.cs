@@ -1,12 +1,16 @@
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Classindex;
+
 namespace Db4objects.Db4o.Internal.Classindex
 {
 	/// <exclude></exclude>
-	public abstract class AbstractClassIndexStrategy : Db4objects.Db4o.Internal.Classindex.IClassIndexStrategy
+	public abstract class AbstractClassIndexStrategy : IClassIndexStrategy
 	{
-		protected readonly Db4objects.Db4o.Internal.ClassMetadata _yapClass;
+		protected readonly ClassMetadata _yapClass;
 
-		public AbstractClassIndexStrategy(Db4objects.Db4o.Internal.ClassMetadata yapClass
-			)
+		public AbstractClassIndexStrategy(ClassMetadata yapClass)
 		{
 			_yapClass = yapClass;
 		}
@@ -18,22 +22,20 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public virtual int OwnLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.ID_LENGTH;
+			return Const4.ID_LENGTH;
 		}
 
-		protected abstract void InternalAdd(Db4objects.Db4o.Internal.Transaction trans, int
-			 id);
+		protected abstract void InternalAdd(Transaction trans, int id);
 
-		public void Add(Db4objects.Db4o.Internal.Transaction trans, int id)
+		public void Add(Transaction trans, int id)
 		{
 			CheckId(id);
 			InternalAdd(trans, id);
 		}
 
-		protected abstract void InternalRemove(Db4objects.Db4o.Internal.Transaction ta, int
-			 id);
+		protected abstract void InternalRemove(Transaction ta, int id);
 
-		public void Remove(Db4objects.Db4o.Internal.Transaction ta, int id)
+		public void Remove(Transaction ta, int id)
 		{
 			CheckId(id);
 			InternalRemove(ta, id);
@@ -43,32 +45,27 @@ namespace Db4objects.Db4o.Internal.Classindex
 		{
 		}
 
-		public abstract System.Collections.IEnumerator AllSlotIDs(Db4objects.Db4o.Internal.Transaction
-			 arg1);
+		public abstract IEnumerator AllSlotIDs(Transaction arg1);
 
-		public abstract void DefragIndex(Db4objects.Db4o.Internal.ReaderPair arg1);
+		public abstract void DefragIndex(ReaderPair arg1);
 
-		public abstract void DefragReference(Db4objects.Db4o.Internal.ClassMetadata arg1, 
-			Db4objects.Db4o.Internal.ReaderPair arg2, int arg3);
-
-		public abstract void DontDelete(Db4objects.Db4o.Internal.Transaction arg1, int arg2
+		public abstract void DefragReference(ClassMetadata arg1, ReaderPair arg2, int arg3
 			);
 
-		public abstract int EntryCount(Db4objects.Db4o.Internal.Transaction arg1);
+		public abstract void DontDelete(Transaction arg1, int arg2);
+
+		public abstract int EntryCount(Transaction arg1);
 
 		public abstract int Id();
 
-		public abstract void Initialize(Db4objects.Db4o.Internal.ObjectContainerBase arg1
-			);
+		public abstract void Initialize(ObjectContainerBase arg1);
 
 		public abstract void Purge();
 
-		public abstract void Read(Db4objects.Db4o.Internal.ObjectContainerBase arg1, int 
-			arg2);
+		public abstract void Read(ObjectContainerBase arg1, int arg2);
 
-		public abstract void TraverseAll(Db4objects.Db4o.Internal.Transaction arg1, Db4objects.Db4o.Foundation.IVisitor4
-			 arg2);
+		public abstract void TraverseAll(Transaction arg1, IVisitor4 arg2);
 
-		public abstract int Write(Db4objects.Db4o.Internal.Transaction arg1);
+		public abstract int Write(Transaction arg1);
 	}
 }

@@ -1,13 +1,12 @@
+using Db4objects.Db4o.Events;
+
 namespace Db4objects.Db4o.Events
 {
 	/// <summary>Argument for object related events which can be cancelled.</summary>
 	/// <remarks>Argument for object related events which can be cancelled.</remarks>
-	/// <seealso cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
-	/// 	</seealso>
-	/// <seealso cref="Db4objects.Db4o.Events.ICancellableEventArgs">Db4objects.Db4o.Events.ICancellableEventArgs
-	/// 	</seealso>
-	public class CancellableObjectEventArgs : Db4objects.Db4o.Events.ObjectEventArgs, 
-		Db4objects.Db4o.Events.ICancellableEventArgs
+	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
+	/// <seealso cref="ICancellableEventArgs">ICancellableEventArgs</seealso>
+	public class CancellableObjectEventArgs : ObjectEventArgs, ICancellableEventArgs
 	{
 		private bool _cancelled;
 
@@ -15,14 +14,13 @@ namespace Db4objects.Db4o.Events
 		{
 		}
 
-		/// <seealso cref="Db4objects.Db4o.Events.ICancellableEventArgs.Cancel">Db4objects.Db4o.Events.ICancellableEventArgs.Cancel
-		/// 	</seealso>
+		/// <seealso cref="ICancellableEventArgs.Cancel">ICancellableEventArgs.Cancel</seealso>
 		public virtual void Cancel()
 		{
 			_cancelled = true;
 		}
 
-		/// <seealso cref="Db4objects.Db4o.Events.ICancellableEventArgs.IsCancelled">Db4objects.Db4o.Events.ICancellableEventArgs.IsCancelled
+		/// <seealso cref="ICancellableEventArgs.IsCancelled">ICancellableEventArgs.IsCancelled
 		/// 	</seealso>
 		public virtual bool IsCancelled
 		{

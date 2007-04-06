@@ -1,35 +1,40 @@
+using System.Collections;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public sealed class ClassMetadataRepository : Db4objects.Db4o.Internal.PersistentBase
+	public sealed class ClassMetadataRepository : PersistentBase
 	{
-		private Db4objects.Db4o.Foundation.Collection4 i_classes;
+		private Collection4 i_classes;
 
-		private Db4objects.Db4o.Foundation.Hashtable4 i_creating;
+		private Hashtable4 i_creating;
 
-		private readonly Db4objects.Db4o.Internal.Transaction _systemTransaction;
+		private readonly Transaction _systemTransaction;
 
-		private Db4objects.Db4o.Foundation.Hashtable4 i_yapClassByBytes;
+		private Hashtable4 i_yapClassByBytes;
 
-		private Db4objects.Db4o.Foundation.Hashtable4 i_yapClassByClass;
+		private Hashtable4 i_yapClassByClass;
 
-		private Db4objects.Db4o.Foundation.Hashtable4 i_yapClassByID;
+		private Hashtable4 i_yapClassByID;
 
 		private int i_yapClassCreationDepth;
 
-		private Db4objects.Db4o.Foundation.Queue4 i_initYapClassesOnUp;
+		private IQueue4 i_initYapClassesOnUp;
 
-		private readonly Db4objects.Db4o.Internal.PendingClassInits _classInits;
+		private readonly PendingClassInits _classInits;
 
-		internal ClassMetadataRepository(Db4objects.Db4o.Internal.Transaction systemTransaction
-			)
+		internal ClassMetadataRepository(Transaction systemTransaction)
 		{
 			_systemTransaction = systemTransaction;
-			i_initYapClassesOnUp = new Db4objects.Db4o.Foundation.Queue4();
-			_classInits = new Db4objects.Db4o.Internal.PendingClassInits(_systemTransaction);
+			i_initYapClassesOnUp = new NonblockingQueue();
+			_classInits = new PendingClassInits(_systemTransaction);
 		}
 
-		public void AddYapClass(Db4objects.Db4o.Internal.ClassMetadata yapClass)
+		public void AddYapClass(ClassMetadata yapClass)
 		{
 			Stream().SetDirtyInSystemTransaction(this);
 			i_classes.Add(yapClass);
@@ -53,26 +58,24 @@ namespace Db4objects.Db4o.Internal
 			return Stream().StringIO().Write(str);
 		}
 
-		public void AttachQueryNode(string fieldName, Db4objects.Db4o.Foundation.IVisitor4
-			 a_visitor)
+		public void AttachQueryNode(string fieldName, IVisitor4 a_visitor)
 		{
-			Db4objects.Db4o.Internal.ClassMetadataIterator i = Iterator();
+			ClassMetadataIterator i = Iterator();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = i.CurrentClass();
+				ClassMetadata yc = i.CurrentClass();
 				if (!yc.IsInternal())
 				{
-					yc.ForEachFieldMetadata(new _AnonymousInnerClass67(this, fieldName, a_visitor, yc
+					yc.ForEachFieldMetadata(new _AnonymousInnerClass68(this, fieldName, a_visitor, yc
 						));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass67 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass68 : IVisitor4
 		{
-			public _AnonymousInnerClass67(ClassMetadataRepository _enclosing, string fieldName
-				, Db4objects.Db4o.Foundation.IVisitor4 a_visitor, Db4objects.Db4o.Internal.ClassMetadata
-				 yc)
+			public _AnonymousInnerClass68(ClassMetadataRepository _enclosing, string fieldName
+				, IVisitor4 a_visitor, ClassMetadata yc)
 			{
 				this._enclosing = _enclosing;
 				this.fieldName = fieldName;
@@ -82,8 +85,7 @@ namespace Db4objects.Db4o.Internal
 
 			public void Visit(object obj)
 			{
-				Db4objects.Db4o.Internal.FieldMetadata yf = (Db4objects.Db4o.Internal.FieldMetadata
-					)obj;
+				FieldMetadata yf = (FieldMetadata)obj;
 				if (yf.CanAddToQuery(fieldName))
 				{
 					a_visitor.Visit(new object[] { yc, yf });
@@ -94,26 +96,25 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly string fieldName;
 
-			private readonly Db4objects.Db4o.Foundation.IVisitor4 a_visitor;
+			private readonly IVisitor4 a_visitor;
 
-			private readonly Db4objects.Db4o.Internal.ClassMetadata yc;
+			private readonly ClassMetadata yc;
 		}
 
 		internal void CheckChanges()
 		{
-			System.Collections.IEnumerator i = i_classes.GetEnumerator();
+			IEnumerator i = i_classes.GetEnumerator();
 			while (i.MoveNext())
 			{
-				((Db4objects.Db4o.Internal.ClassMetadata)i.Current).CheckChanges();
+				((ClassMetadata)i.Current).CheckChanges();
 			}
 		}
 
-		internal bool CreateYapClass(Db4objects.Db4o.Internal.ClassMetadata a_yapClass, Db4objects.Db4o.Reflect.IReflectClass
-			 a_class)
+		internal bool CreateYapClass(ClassMetadata a_yapClass, IReflectClass a_class)
 		{
 			i_yapClassCreationDepth++;
-			Db4objects.Db4o.Reflect.IReflectClass superClass = a_class.GetSuperclass();
-			Db4objects.Db4o.Internal.ClassMetadata superYapClass = null;
+			IReflectClass superClass = a_class.GetSuperclass();
+			ClassMetadata superYapClass = null;
 			if (superClass != null && !superClass.Equals(Stream().i_handlers.ICLASS_OBJECT))
 			{
 				superYapClass = ProduceClassMetadata(superClass);
@@ -124,7 +125,7 @@ namespace Db4objects.Db4o.Internal
 			return ret;
 		}
 
-		public static void Defrag(Db4objects.Db4o.Internal.ReaderPair readers)
+		public static void Defrag(ReaderPair readers)
 		{
 			int numClasses = readers.ReadInt();
 			for (int classIdx = 0; classIdx < numClasses; classIdx++)
@@ -138,24 +139,21 @@ namespace Db4objects.Db4o.Internal
 			bool allClassesRead = false;
 			while (!allClassesRead)
 			{
-				Db4objects.Db4o.Foundation.Collection4 unreadClasses = new Db4objects.Db4o.Foundation.Collection4
-					();
+				Collection4 unreadClasses = new Collection4();
 				int numClasses = i_classes.Size();
-				System.Collections.IEnumerator classIter = i_classes.GetEnumerator();
+				IEnumerator classIter = i_classes.GetEnumerator();
 				while (classIter.MoveNext())
 				{
-					Db4objects.Db4o.Internal.ClassMetadata yapClass = (Db4objects.Db4o.Internal.ClassMetadata
-						)classIter.Current;
+					ClassMetadata yapClass = (ClassMetadata)classIter.Current;
 					if (yapClass.StateUnread())
 					{
 						unreadClasses.Add(yapClass);
 					}
 				}
-				System.Collections.IEnumerator unreadIter = unreadClasses.GetEnumerator();
+				IEnumerator unreadIter = unreadClasses.GetEnumerator();
 				while (unreadIter.MoveNext())
 				{
-					Db4objects.Db4o.Internal.ClassMetadata yapClass = (Db4objects.Db4o.Internal.ClassMetadata
-						)unreadIter.Current;
+					ClassMetadata yapClass = (ClassMetadata)unreadIter.Current;
 					ReadYapClass(yapClass, null);
 					if (yapClass.ClassReflector() == null)
 					{
@@ -169,7 +167,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal bool FieldExists(string a_field)
 		{
-			Db4objects.Db4o.Internal.ClassMetadataIterator i = Iterator();
+			ClassMetadataIterator i = Iterator();
 			while (i.MoveNext())
 			{
 				if (i.CurrentClass().FieldMetadataForName(a_field) != null)
@@ -180,30 +178,26 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public Db4objects.Db4o.Foundation.Collection4 ForInterface(Db4objects.Db4o.Reflect.IReflectClass
-			 claxx)
+		public Collection4 ForInterface(IReflectClass claxx)
 		{
-			Db4objects.Db4o.Foundation.Collection4 col = new Db4objects.Db4o.Foundation.Collection4
-				();
-			Db4objects.Db4o.Internal.ClassMetadataIterator i = Iterator();
+			Collection4 col = new Collection4();
+			ClassMetadataIterator i = Iterator();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = i.CurrentClass();
-				Db4objects.Db4o.Reflect.IReflectClass candidate = yc.ClassReflector();
+				ClassMetadata yc = i.CurrentClass();
+				IReflectClass candidate = yc.ClassReflector();
 				if (!candidate.IsInterface())
 				{
 					if (claxx.IsAssignableFrom(candidate))
 					{
 						col.Add(yc);
-						System.Collections.IEnumerator j = new Db4objects.Db4o.Foundation.Collection4(col
-							).GetEnumerator();
+						IEnumerator j = new Collection4(col).GetEnumerator();
 						while (j.MoveNext())
 						{
-							Db4objects.Db4o.Internal.ClassMetadata existing = (Db4objects.Db4o.Internal.ClassMetadata
-								)j.Current;
+							ClassMetadata existing = (ClassMetadata)j.Current;
 							if (existing != yc)
 							{
-								Db4objects.Db4o.Internal.ClassMetadata higher = yc.GetHigherHierarchy(existing);
+								ClassMetadata higher = yc.GetHigherHierarchy(existing);
 								if (higher != null)
 								{
 									if (higher == yc)
@@ -225,45 +219,40 @@ namespace Db4objects.Db4o.Internal
 
 		public override byte GetIdentifier()
 		{
-			return Db4objects.Db4o.Internal.Const4.YAPCLASSCOLLECTION;
+			return Const4.YAPCLASSCOLLECTION;
 		}
 
-		internal Db4objects.Db4o.Internal.ClassMetadata GetActiveYapClass(Db4objects.Db4o.Reflect.IReflectClass
-			 a_class)
+		internal ClassMetadata GetActiveYapClass(IReflectClass a_class)
 		{
-			return (Db4objects.Db4o.Internal.ClassMetadata)i_yapClassByClass.Get(a_class);
+			return (ClassMetadata)i_yapClassByClass.Get(a_class);
 		}
 
-		internal Db4objects.Db4o.Internal.ClassMetadata ClassMetadataForReflectClass(Db4objects.Db4o.Reflect.IReflectClass
-			 a_class)
+		internal ClassMetadata ClassMetadataForReflectClass(IReflectClass a_class)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata yapClass = (Db4objects.Db4o.Internal.ClassMetadata
-				)i_yapClassByClass.Get(a_class);
+			ClassMetadata yapClass = (ClassMetadata)i_yapClassByClass.Get(a_class);
 			if (yapClass != null)
 			{
 				return yapClass;
 			}
-			yapClass = (Db4objects.Db4o.Internal.ClassMetadata)i_yapClassByBytes.Remove(GetNameBytes
-				(a_class.GetName()));
+			yapClass = (ClassMetadata)i_yapClassByBytes.Remove(GetNameBytes(a_class.GetName()
+				));
 			ReadYapClass(yapClass, a_class);
 			return yapClass;
 		}
 
-		internal Db4objects.Db4o.Internal.ClassMetadata ProduceClassMetadata(Db4objects.Db4o.Reflect.IReflectClass
-			 a_class)
+		internal ClassMetadata ProduceClassMetadata(IReflectClass a_class)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata yapClass = ClassMetadataForReflectClass(a_class
-				);
+			ClassMetadata yapClass = ClassMetadataForReflectClass(a_class);
 			if (yapClass != null)
 			{
 				return yapClass;
 			}
-			yapClass = (Db4objects.Db4o.Internal.ClassMetadata)i_creating.Get(a_class);
+			yapClass = (ClassMetadata)i_creating.Get(a_class);
 			if (yapClass != null)
 			{
 				return yapClass;
 			}
-			yapClass = new Db4objects.Db4o.Internal.ClassMetadata(Stream(), a_class);
+			yapClass = new ClassMetadata(Stream(), a_class);
 			i_creating.Put(a_class, yapClass);
 			if (!CreateYapClass(yapClass, a_class))
 			{
@@ -296,23 +285,22 @@ namespace Db4objects.Db4o.Internal
 			return yapClass;
 		}
 
-		internal Db4objects.Db4o.Internal.ClassMetadata GetYapClass(int id)
+		internal ClassMetadata GetYapClass(int id)
 		{
-			return ReadYapClass((Db4objects.Db4o.Internal.ClassMetadata)i_yapClassByID.Get(id
-				), null);
+			return ReadYapClass((ClassMetadata)i_yapClassByID.Get(id), null);
 		}
 
-		public Db4objects.Db4o.Internal.ClassMetadata GetYapClass(string a_name)
+		public ClassMetadata GetYapClass(string a_name)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata yapClass = (Db4objects.Db4o.Internal.ClassMetadata
-				)i_yapClassByBytes.Remove(GetNameBytes(a_name));
+			ClassMetadata yapClass = (ClassMetadata)i_yapClassByBytes.Remove(GetNameBytes(a_name
+				));
 			ReadYapClass(yapClass, null);
 			if (yapClass == null)
 			{
-				Db4objects.Db4o.Internal.ClassMetadataIterator i = Iterator();
+				ClassMetadataIterator i = Iterator();
 				while (i.MoveNext())
 				{
-					yapClass = (Db4objects.Db4o.Internal.ClassMetadata)i.Current;
+					yapClass = (ClassMetadata)i.Current;
 					if (a_name.Equals(yapClass.GetName()))
 					{
 						ReadYapClass(yapClass, null);
@@ -326,8 +314,7 @@ namespace Db4objects.Db4o.Internal
 
 		public int GetYapClassID(string name)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata yc = (Db4objects.Db4o.Internal.ClassMetadata
-				)i_yapClassByBytes.Get(GetNameBytes(name));
+			ClassMetadata yc = (ClassMetadata)i_yapClassByBytes.Get(GetNameBytes(name));
 			if (yc != null)
 			{
 				return yc.GetID();
@@ -345,16 +332,16 @@ namespace Db4objects.Db4o.Internal
 			return Stream().ConfigImpl().ResolveAliasRuntimeName(name);
 		}
 
-		internal void InitOnUp(Db4objects.Db4o.Internal.Transaction systemTrans)
+		internal void InitOnUp(Transaction systemTrans)
 		{
 			i_yapClassCreationDepth++;
 			systemTrans.Stream().ShowInternalClasses(true);
 			try
 			{
-				System.Collections.IEnumerator i = i_classes.GetEnumerator();
+				IEnumerator i = i_classes.GetEnumerator();
 				while (i.MoveNext())
 				{
-					((Db4objects.Db4o.Internal.ClassMetadata)i.Current).InitOnUp(systemTrans);
+					((ClassMetadata)i.Current).InitOnUp(systemTrans);
 				}
 			}
 			finally
@@ -367,88 +354,82 @@ namespace Db4objects.Db4o.Internal
 
 		internal void InitTables(int a_size)
 		{
-			i_classes = new Db4objects.Db4o.Foundation.Collection4();
-			i_yapClassByBytes = new Db4objects.Db4o.Foundation.Hashtable4(a_size);
+			i_classes = new Collection4();
+			i_yapClassByBytes = new Hashtable4(a_size);
 			if (a_size < 16)
 			{
 				a_size = 16;
 			}
-			i_yapClassByClass = new Db4objects.Db4o.Foundation.Hashtable4(a_size);
-			i_yapClassByID = new Db4objects.Db4o.Foundation.Hashtable4(a_size);
-			i_creating = new Db4objects.Db4o.Foundation.Hashtable4(1);
+			i_yapClassByClass = new Hashtable4(a_size);
+			i_yapClassByID = new Hashtable4(a_size);
+			i_creating = new Hashtable4(1);
 		}
 
 		private void InitYapClassesOnUp()
 		{
 			if (i_yapClassCreationDepth == 0)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = (Db4objects.Db4o.Internal.ClassMetadata
-					)i_initYapClassesOnUp.Next();
+				ClassMetadata yc = (ClassMetadata)i_initYapClassesOnUp.Next();
 				while (yc != null)
 				{
 					yc.InitOnUp(_systemTransaction);
-					yc = (Db4objects.Db4o.Internal.ClassMetadata)i_initYapClassesOnUp.Next();
+					yc = (ClassMetadata)i_initYapClassesOnUp.Next();
 				}
 			}
 		}
 
-		public Db4objects.Db4o.Internal.ClassMetadataIterator Iterator()
+		public ClassMetadataIterator Iterator()
 		{
-			return new Db4objects.Db4o.Internal.ClassMetadataIterator(this, new Db4objects.Db4o.Foundation.ArrayIterator4
-				(i_classes.ToArray()));
+			return new ClassMetadataIterator(this, new ArrayIterator4(i_classes.ToArray()));
 		}
 
-		private class ClassIDIterator : Db4objects.Db4o.Foundation.MappingIterator
+		private class ClassIDIterator : MappingIterator
 		{
-			public ClassIDIterator(Db4objects.Db4o.Foundation.Collection4 classes) : base(classes
-				.GetEnumerator())
+			public ClassIDIterator(Collection4 classes) : base(classes.GetEnumerator())
 			{
 			}
 
 			protected override object Map(object current)
 			{
-				return ((Db4objects.Db4o.Internal.ClassMetadata)current).GetID();
+				return ((ClassMetadata)current).GetID();
 			}
 		}
 
-		public System.Collections.IEnumerator Ids()
+		public IEnumerator Ids()
 		{
-			return new Db4objects.Db4o.Internal.ClassMetadataRepository.ClassIDIterator(i_classes
-				);
+			return new ClassMetadataRepository.ClassIDIterator(i_classes);
 		}
 
 		public override int OwnLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.OBJECT_LENGTH + Db4objects.Db4o.Internal.Const4
-				.INT_LENGTH + (i_classes.Size() * Db4objects.Db4o.Internal.Const4.ID_LENGTH);
+			return Const4.OBJECT_LENGTH + Const4.INT_LENGTH + (i_classes.Size() * Const4.ID_LENGTH
+				);
 		}
 
 		internal void Purge()
 		{
-			System.Collections.IEnumerator i = i_classes.GetEnumerator();
+			IEnumerator i = i_classes.GetEnumerator();
 			while (i.MoveNext())
 			{
-				((Db4objects.Db4o.Internal.ClassMetadata)i.Current).Purge();
+				((ClassMetadata)i.Current).Purge();
 			}
 		}
 
-		public sealed override void ReadThis(Db4objects.Db4o.Internal.Transaction a_trans
-			, Db4objects.Db4o.Internal.Buffer a_reader)
+		public sealed override void ReadThis(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
+			 a_reader)
 		{
 			int classCount = a_reader.ReadInt();
 			InitTables(classCount);
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
+			ObjectContainerBase stream = Stream();
 			int[] ids = new int[classCount];
 			for (int i = 0; i < classCount; ++i)
 			{
 				ids[i] = a_reader.ReadInt();
 			}
-			Db4objects.Db4o.Internal.StatefulBuffer[] yapWriters = stream.ReadWritersByIDs(a_trans
-				, ids);
+			StatefulBuffer[] yapWriters = stream.ReadWritersByIDs(a_trans, ids);
 			for (int i = 0; i < classCount; ++i)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yapClass = new Db4objects.Db4o.Internal.ClassMetadata
-					(stream, null);
+				ClassMetadata yapClass = new ClassMetadata(stream, null);
 				yapClass.SetID(ids[i]);
 				i_classes.Add(yapClass);
 				i_yapClassByID.Put(ids[i], yapClass);
@@ -461,21 +442,21 @@ namespace Db4objects.Db4o.Internal
 			ApplyReadAs();
 		}
 
-		internal Db4objects.Db4o.Foundation.Hashtable4 ClassByBytes()
+		internal Hashtable4 ClassByBytes()
 		{
 			return i_yapClassByBytes;
 		}
 
 		private void ApplyReadAs()
 		{
-			Db4objects.Db4o.Foundation.Hashtable4 readAs = Stream().ConfigImpl().ReadAs();
-			readAs.ForEachKey(new _AnonymousInnerClass388(this, readAs));
+			Hashtable4 readAs = Stream().ConfigImpl().ReadAs();
+			readAs.ForEachKey(new _AnonymousInnerClass389(this, readAs));
 		}
 
-		private sealed class _AnonymousInnerClass388 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass389 : IVisitor4
 		{
-			public _AnonymousInnerClass388(ClassMetadataRepository _enclosing, Db4objects.Db4o.Foundation.Hashtable4
-				 readAs)
+			public _AnonymousInnerClass389(ClassMetadataRepository _enclosing, Hashtable4 readAs
+				)
 			{
 				this._enclosing = _enclosing;
 				this.readAs = readAs;
@@ -489,8 +470,7 @@ namespace Db4objects.Db4o.Internal
 				byte[] useBytes = this._enclosing.GetNameBytes(useName);
 				if (this._enclosing.ClassByBytes().Get(useBytes) == null)
 				{
-					Db4objects.Db4o.Internal.ClassMetadata yc = (Db4objects.Db4o.Internal.ClassMetadata
-						)this._enclosing.ClassByBytes().Get(dbbytes);
+					ClassMetadata yc = (ClassMetadata)this._enclosing.ClassByBytes().Get(dbbytes);
 					if (yc != null)
 					{
 						yc.i_nameBytes = useBytes;
@@ -503,11 +483,10 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly ClassMetadataRepository _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.Hashtable4 readAs;
+			private readonly Hashtable4 readAs;
 		}
 
-		public Db4objects.Db4o.Internal.ClassMetadata ReadYapClass(Db4objects.Db4o.Internal.ClassMetadata
-			 yapClass, Db4objects.Db4o.Reflect.IReflectClass a_class)
+		public ClassMetadata ReadYapClass(ClassMetadata yapClass, IReflectClass a_class)
 		{
 			if (yapClass == null)
 			{
@@ -519,7 +498,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			i_yapClassCreationDepth++;
 			yapClass.CreateConfigAndConstructor(i_yapClassByBytes, Stream(), a_class);
-			Db4objects.Db4o.Reflect.IReflectClass claxx = yapClass.ClassReflector();
+			IReflectClass claxx = yapClass.ClassReflector();
 			if (claxx != null)
 			{
 				i_yapClassByClass.Put(claxx, yapClass);
@@ -534,15 +513,14 @@ namespace Db4objects.Db4o.Internal
 
 		public void RefreshClasses()
 		{
-			Db4objects.Db4o.Internal.ClassMetadataRepository rereader = new Db4objects.Db4o.Internal.ClassMetadataRepository
-				(_systemTransaction);
+			ClassMetadataRepository rereader = new ClassMetadataRepository(_systemTransaction
+				);
 			rereader.i_id = i_id;
 			rereader.Read(Stream().SystemTransaction());
-			System.Collections.IEnumerator i = rereader.i_classes.GetEnumerator();
+			IEnumerator i = rereader.i_classes.GetEnumerator();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = (Db4objects.Db4o.Internal.ClassMetadata
-					)i.Current;
+				ClassMetadata yc = (ClassMetadata)i.Current;
 				if (i_yapClassByID.Get(yc.GetID()) == null)
 				{
 					i_classes.Add(yc);
@@ -560,13 +538,12 @@ namespace Db4objects.Db4o.Internal
 			i = i_classes.GetEnumerator();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = (Db4objects.Db4o.Internal.ClassMetadata
-					)i.Current;
+				ClassMetadata yc = (ClassMetadata)i.Current;
 				yc.Refresh();
 			}
 		}
 
-		internal void ReReadYapClass(Db4objects.Db4o.Internal.ClassMetadata yapClass)
+		internal void ReReadYapClass(ClassMetadata yapClass)
 		{
 			if (yapClass != null)
 			{
@@ -574,45 +551,42 @@ namespace Db4objects.Db4o.Internal
 				yapClass.ReadName(_systemTransaction);
 				yapClass.ForceRead();
 				yapClass.SetStateClean();
-				yapClass.BitFalse(Db4objects.Db4o.Internal.Const4.CHECKED_CHANGES);
-				yapClass.BitFalse(Db4objects.Db4o.Internal.Const4.READING);
-				yapClass.BitFalse(Db4objects.Db4o.Internal.Const4.CONTINUE);
-				yapClass.BitFalse(Db4objects.Db4o.Internal.Const4.DEAD);
+				yapClass.BitFalse(Const4.CHECKED_CHANGES);
+				yapClass.BitFalse(Const4.READING);
+				yapClass.BitFalse(Const4.CONTINUE);
+				yapClass.BitFalse(Const4.DEAD);
 				yapClass.CheckChanges();
 			}
 		}
 
-		public Db4objects.Db4o.Ext.IStoredClass[] StoredClasses()
+		public IStoredClass[] StoredClasses()
 		{
 			EnsureAllClassesRead();
-			Db4objects.Db4o.Ext.IStoredClass[] sclasses = new Db4objects.Db4o.Ext.IStoredClass
-				[i_classes.Size()];
+			IStoredClass[] sclasses = new IStoredClass[i_classes.Size()];
 			i_classes.ToArray(sclasses);
 			return sclasses;
 		}
 
 		public void WriteAllClasses()
 		{
-			Db4objects.Db4o.Ext.IStoredClass[] storedClasses = StoredClasses();
+			IStoredClass[] storedClasses = StoredClasses();
 			for (int i = 0; i < storedClasses.Length; i++)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = (Db4objects.Db4o.Internal.ClassMetadata
-					)storedClasses[i];
+				ClassMetadata yc = (ClassMetadata)storedClasses[i];
 				yc.SetStateDirty();
 			}
 			for (int i = 0; i < storedClasses.Length; i++)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = (Db4objects.Db4o.Internal.ClassMetadata
-					)storedClasses[i];
+				ClassMetadata yc = (ClassMetadata)storedClasses[i];
 				yc.Write(_systemTransaction);
 			}
 		}
 
-		public override void WriteThis(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
+		public override void WriteThis(Transaction trans, Db4objects.Db4o.Internal.Buffer
 			 a_writer)
 		{
 			a_writer.WriteInt(i_classes.Size());
-			System.Collections.IEnumerator i = i_classes.GetEnumerator();
+			IEnumerator i = i_classes.GetEnumerator();
 			while (i.MoveNext())
 			{
 				a_writer.WriteIDOf(trans, i.Current);
@@ -623,17 +597,16 @@ namespace Db4objects.Db4o.Internal
 		{
 			return base.ToString();
 			string str = "Active:\n";
-			System.Collections.IEnumerator i = i_classes.GetEnumerator();
+			IEnumerator i = i_classes.GetEnumerator();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = (Db4objects.Db4o.Internal.ClassMetadata
-					)i.Current;
+				ClassMetadata yc = (ClassMetadata)i.Current;
 				str += yc.GetID() + " " + yc + "\n";
 			}
 			return str;
 		}
 
-		internal Db4objects.Db4o.Internal.ObjectContainerBase Stream()
+		internal ObjectContainerBase Stream()
 		{
 			return _systemTransaction.Stream();
 		}
@@ -652,14 +625,14 @@ namespace Db4objects.Db4o.Internal
 			base.SetID(a_id);
 		}
 
-		private Db4objects.Db4o.Internal.SystemData SystemData()
+		private SystemData SystemData()
 		{
 			return LocalSystemTransaction().File().SystemData();
 		}
 
-		private Db4objects.Db4o.Internal.LocalTransaction LocalSystemTransaction()
+		private LocalTransaction LocalSystemTransaction()
 		{
-			return ((Db4objects.Db4o.Internal.LocalTransaction)_systemTransaction);
+			return ((LocalTransaction)_systemTransaction);
 		}
 	}
 }

@@ -1,9 +1,14 @@
+using System;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
+
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public sealed class BooleanHandler : Db4objects.Db4o.Internal.Handlers.PrimitiveHandler
+	public sealed class BooleanHandler : PrimitiveHandler
 	{
-		internal const int LENGTH = 1 + Db4objects.Db4o.Internal.Const4.ADDED_LENGTH;
+		internal const int LENGTH = 1 + Const4.ADDED_LENGTH;
 
 		private const byte TRUE = (byte)'T';
 
@@ -13,8 +18,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private static readonly bool i_primitive = false;
 
-		public BooleanHandler(Db4objects.Db4o.Internal.ObjectContainerBase stream) : base
-			(stream)
+		public BooleanHandler(ObjectContainerBase stream) : base(stream)
 		{
 		}
 
@@ -33,7 +37,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return LENGTH;
 		}
 
-		protected override System.Type PrimitiveJavaClass()
+		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(bool);
 		}
@@ -57,9 +61,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return null;
 		}
 
-		public override object WriteNew(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, object obj, bool topLevel, Db4objects.Db4o.Internal.StatefulBuffer buffer, 
-			bool withIndirection, bool restoreLinkeOffset)
+		public override object WriteNew(MarshallerFamily mf, object obj, bool topLevel, StatefulBuffer
+			 buffer, bool withIndirection, bool restoreLinkeOffset)
 		{
 			Write(obj, buffer);
 			return obj;

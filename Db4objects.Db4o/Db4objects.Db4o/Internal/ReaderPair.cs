@@ -1,18 +1,23 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Mapping;
+using Db4objects.Db4o.Internal.Marshall;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public sealed class ReaderPair : Db4objects.Db4o.Internal.ISlotReader
+	public sealed class ReaderPair : ISlotReader
 	{
 		private Db4objects.Db4o.Internal.Buffer _source;
 
 		private Db4objects.Db4o.Internal.Buffer _target;
 
-		private Db4objects.Db4o.Internal.Mapping.IDefragContext _mapping;
+		private IDefragContext _mapping;
 
-		private Db4objects.Db4o.Internal.Transaction _systemTrans;
+		private Transaction _systemTrans;
 
-		public ReaderPair(Db4objects.Db4o.Internal.Buffer source, Db4objects.Db4o.Internal.Mapping.IDefragContext
-			 mapping, Db4objects.Db4o.Internal.Transaction systemTrans)
+		public ReaderPair(Db4objects.Db4o.Internal.Buffer source, IDefragContext mapping, 
+			Transaction systemTrans)
 		{
 			_source = source;
 			_mapping = mapping;
@@ -40,7 +45,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void IncrementIntSize()
 		{
-			IncrementOffset(Db4objects.Db4o.Internal.Const4.INT_LENGTH);
+			IncrementOffset(Const4.INT_LENGTH);
 		}
 
 		public int CopyUnindexedID()
@@ -51,10 +56,9 @@ namespace Db4objects.Db4o.Internal
 			{
 				mapped = _mapping.MappedID(orig);
 			}
-			catch (Db4objects.Db4o.Internal.Mapping.MappingNotFoundException)
+			catch (MappingNotFoundException)
 			{
-				mapped = _mapping.AllocateTargetSlot(Db4objects.Db4o.Internal.Const4.POINTER_LENGTH
-					);
+				mapped = _mapping.AllocateTargetSlot(Const4.POINTER_LENGTH);
 				_mapping.MapIDs(orig, mapped, false);
 				_mapping.RegisterUnindexed(orig);
 			}
@@ -75,11 +79,10 @@ namespace Db4objects.Db4o.Internal
 			return InternalCopyID(flipNegative, lenient, id);
 		}
 
-		public Db4objects.Db4o.Internal.Mapping.MappedIDPair CopyIDAndRetrieveMapping()
+		public MappedIDPair CopyIDAndRetrieveMapping()
 		{
 			int id = _source.ReadInt();
-			return new Db4objects.Db4o.Internal.Mapping.MappedIDPair(id, InternalCopyID(false
-				, false, id));
+			return new MappedIDPair(id, InternalCopyID(false, false, id));
 		}
 
 		private int InternalCopyID(bool flipNegative, bool lenient, int id)
@@ -113,27 +116,25 @@ namespace Db4objects.Db4o.Internal
 		public int ReadInt()
 		{
 			int value = _source.ReadInt();
-			_target.IncrementOffset(Db4objects.Db4o.Internal.Const4.INT_LENGTH);
+			_target.IncrementOffset(Const4.INT_LENGTH);
 			return value;
 		}
 
 		public void WriteInt(int value)
 		{
-			_source.IncrementOffset(Db4objects.Db4o.Internal.Const4.INT_LENGTH);
+			_source.IncrementOffset(Const4.INT_LENGTH);
 			_target.WriteInt(value);
 		}
 
-		public void Write(Db4objects.Db4o.Internal.LocalObjectContainer file, int address
-			)
+		public void Write(LocalObjectContainer file, int address)
 		{
 			file.WriteBytes(_target, address, 0);
 		}
 
-		public string ReadShortString(Db4objects.Db4o.Internal.LatinStringIO sio)
+		public string ReadShortString(LatinStringIO sio)
 		{
-			string value = Db4objects.Db4o.Internal.Marshall.StringMarshaller.ReadShort(sio, 
-				false, _source);
-			Db4objects.Db4o.Internal.Marshall.StringMarshaller.ReadShort(sio, false, _target);
+			string value = StringMarshaller.ReadShort(sio, false, _source);
+			StringMarshaller.ReadShort(sio, false, _target);
 			return value;
 		}
 
@@ -147,30 +148,29 @@ namespace Db4objects.Db4o.Internal
 			return _target;
 		}
 
-		public Db4objects.Db4o.Internal.Mapping.IIDMapping Mapping()
+		public IIDMapping Mapping()
 		{
 			return _mapping;
 		}
 
-		public Db4objects.Db4o.Internal.Transaction SystemTrans()
+		public Transaction SystemTrans()
 		{
 			return _systemTrans;
 		}
 
-		public Db4objects.Db4o.Internal.Mapping.IDefragContext Context()
+		public IDefragContext Context()
 		{
 			return _mapping;
 		}
 
-		public static void ProcessCopy(Db4objects.Db4o.Internal.Mapping.IDefragContext context
-			, int sourceID, Db4objects.Db4o.Internal.ISlotCopyHandler command)
+		public static void ProcessCopy(IDefragContext context, int sourceID, ISlotCopyHandler
+			 command)
 		{
 			ProcessCopy(context, sourceID, command, false);
 		}
 
-		public static void ProcessCopy(Db4objects.Db4o.Internal.Mapping.IDefragContext context
-			, int sourceID, Db4objects.Db4o.Internal.ISlotCopyHandler command, bool registerAddressMapping
-			)
+		public static void ProcessCopy(IDefragContext context, int sourceID, ISlotCopyHandler
+			 command, bool registerAddressMapping)
 		{
 			Db4objects.Db4o.Internal.Buffer sourceReader = (registerAddressMapping ? context.
 				SourceWriterByID(sourceID) : context.SourceReaderByID(sourceID));
@@ -179,12 +179,11 @@ namespace Db4objects.Db4o.Internal
 			int targetAddress = context.AllocateTargetSlot(targetLength);
 			if (registerAddressMapping)
 			{
-				int sourceAddress = ((Db4objects.Db4o.Internal.StatefulBuffer)sourceReader).GetAddress
-					();
+				int sourceAddress = ((StatefulBuffer)sourceReader).GetAddress();
 				context.MapIDs(sourceAddress, targetAddress, false);
 			}
 			Db4objects.Db4o.Internal.Buffer targetPointerReader = new Db4objects.Db4o.Internal.Buffer
-				(Db4objects.Db4o.Internal.Const4.POINTER_LENGTH);
+				(Const4.POINTER_LENGTH);
 			targetPointerReader.WriteInt(targetAddress);
 			targetPointerReader.WriteInt(targetLength);
 			context.TargetWriteBytes(targetPointerReader, targetID);
@@ -203,19 +202,19 @@ namespace Db4objects.Db4o.Internal
 		public long ReadLong()
 		{
 			long value = _source.ReadLong();
-			_target.IncrementOffset(Db4objects.Db4o.Internal.Const4.LONG_LENGTH);
+			_target.IncrementOffset(Const4.LONG_LENGTH);
 			return value;
 		}
 
 		public void WriteLong(long value)
 		{
-			_source.IncrementOffset(Db4objects.Db4o.Internal.Const4.LONG_LENGTH);
+			_source.IncrementOffset(Const4.LONG_LENGTH);
 			_target.WriteLong(value);
 		}
 
-		public Db4objects.Db4o.Foundation.BitMap4 ReadBitMap(int bitCount)
+		public BitMap4 ReadBitMap(int bitCount)
 		{
-			Db4objects.Db4o.Foundation.BitMap4 value = _source.ReadBitMap(bitCount);
+			BitMap4 value = _source.ReadBitMap(bitCount);
 			_target.IncrementOffset(value.MarshalledLength());
 			return value;
 		}

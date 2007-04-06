@@ -1,8 +1,10 @@
+using Db4objects.Db4o;
+
 namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
 	/// <persistent></persistent>
-	public class StaticField : Db4objects.Db4o.IInternal4
+	public class StaticField : IInternal4
 	{
 		public string name;
 

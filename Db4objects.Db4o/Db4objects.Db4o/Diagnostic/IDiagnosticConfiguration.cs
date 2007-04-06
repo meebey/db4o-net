@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Diagnostic;
+
 namespace Db4objects.Db4o.Diagnostic
 {
 	/// <summary>provides methods to configure the behaviour of db4o diagnostics.</summary>
@@ -12,7 +14,7 @@ namespace Db4objects.Db4o.Diagnostic
 	{
 		/// <summary>adds a DiagnosticListener to listen to Diagnostic messages.</summary>
 		/// <remarks>adds a DiagnosticListener to listen to Diagnostic messages.</remarks>
-		void AddListener(Db4objects.Db4o.Diagnostic.IDiagnosticListener listener);
+		void AddListener(IDiagnosticListener listener);
 
 		/// <summary>removes all DiagnosticListeners.</summary>
 		/// <remarks>removes all DiagnosticListeners.</remarks>

@@ -1,8 +1,10 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
 	public interface ITransactionAware
 	{
-		void SetTrans(Db4objects.Db4o.Internal.Transaction a_trans);
+		void SetTrans(Transaction a_trans);
 	}
 }

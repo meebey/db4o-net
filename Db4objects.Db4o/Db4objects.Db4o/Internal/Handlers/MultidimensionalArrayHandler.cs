@@ -1,12 +1,18 @@
+using System;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <summary>n-dimensional array</summary>
 	/// <exclude></exclude>
-	public sealed class MultidimensionalArrayHandler : Db4objects.Db4o.Internal.Handlers.ArrayHandler
+	public sealed class MultidimensionalArrayHandler : ArrayHandler
 	{
-		public MultidimensionalArrayHandler(Db4objects.Db4o.Internal.ObjectContainerBase 
-			stream, Db4objects.Db4o.Internal.ITypeHandler4 a_handler, bool a_isPrimitive) : 
-			base(stream, a_handler, a_isPrimitive)
+		public MultidimensionalArrayHandler(ObjectContainerBase stream, ITypeHandler4 a_handler
+			, bool a_isPrimitive) : base(stream, a_handler, a_isPrimitive)
 		{
 		}
 
@@ -18,11 +24,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return flat;
 		}
 
-		public int ElementCount(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			 a_bytes)
+		public int ElementCount(Transaction a_trans, Db4objects.Db4o.Internal.Buffer a_bytes
+			)
 		{
-			return ElementCount(ReadDimensions(a_trans, a_bytes, new Db4objects.Db4o.Reflect.IReflectClass
-				[1]));
+			return ElementCount(ReadDimensions(a_trans, a_bytes, new IReflectClass[1]));
 		}
 
 		private int ElementCount(int[] a_dim)
@@ -37,25 +42,23 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public sealed override byte Identifier()
 		{
-			return Db4objects.Db4o.Internal.Const4.YAPARRAYN;
+			return Const4.YAPARRAYN;
 		}
 
 		public sealed override int ObjectLength(object a_object)
 		{
 			int[] dim = _reflectArray.Dimensions(a_object);
-			return Db4objects.Db4o.Internal.Const4.OBJECT_LENGTH + (Db4objects.Db4o.Internal.Const4
-				.INT_LENGTH * (2 + dim.Length)) + (ElementCount(dim) * i_handler.LinkLength());
+			return Const4.OBJECT_LENGTH + (Const4.INT_LENGTH * (2 + dim.Length)) + (ElementCount
+				(dim) * i_handler.LinkLength());
 		}
 
 		public override int OwnLength(object obj)
 		{
 			int[] dim = _reflectArray.Dimensions(obj);
-			return Db4objects.Db4o.Internal.Const4.OBJECT_LENGTH + (Db4objects.Db4o.Internal.Const4
-				.INT_LENGTH * (2 + dim.Length));
+			return Const4.OBJECT_LENGTH + (Const4.INT_LENGTH * (2 + dim.Length));
 		}
 
-		public sealed override object Read1(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.StatefulBuffer reader)
+		public sealed override object Read1(MarshallerFamily mf, StatefulBuffer reader)
 		{
 			object[] ret = new object[1];
 			int[] dim = Read1Create(reader.GetTransaction(), reader, ret);
@@ -71,8 +74,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ret[0];
 		}
 
-		protected override int ReadElementsDefrag(Db4objects.Db4o.Internal.ReaderPair readers
-			)
+		protected override int ReadElementsDefrag(ReaderPair readers)
 		{
 			int numDimensions = base.ReadElementsDefrag(readers);
 			int[] dimensions = new int[numDimensions];
@@ -83,9 +85,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ElementCount(dimensions);
 		}
 
-		public sealed override void Read1Candidates(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.Buffer reader, Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 candidates)
+		public sealed override void Read1Candidates(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
+			 reader, QCandidates candidates)
 		{
 			object[] ret = new object[1];
 			int[] dim = Read1Create(candidates.i_trans, reader, ret);
@@ -94,8 +95,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				int count = ElementCount(dim);
 				for (int i = 0; i < count; i++)
 				{
-					Db4objects.Db4o.Internal.Query.Processor.QCandidate qc = i_handler.ReadSubCandidate
-						(mf, reader, candidates, true);
+					QCandidate qc = i_handler.ReadSubCandidate(mf, reader, candidates, true);
 					if (qc != null)
 					{
 						candidates.AddByIdentity(qc);
@@ -104,9 +104,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public sealed override object Read1Query(Db4objects.Db4o.Internal.Transaction a_trans
-			, Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
-			 a_bytes)
+		public sealed override object Read1Query(Transaction a_trans, MarshallerFamily mf
+			, Db4objects.Db4o.Internal.Buffer a_bytes)
 		{
 			object[] ret = new object[1];
 			int[] dim = Read1Create(a_trans, a_bytes, ret);
@@ -122,11 +121,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ret[0];
 		}
 
-		private int[] Read1Create(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			 a_bytes, object[] obj)
+		private int[] Read1Create(Transaction a_trans, Db4objects.Db4o.Internal.Buffer a_bytes
+			, object[] obj)
 		{
-			Db4objects.Db4o.Reflect.IReflectClass[] clazz = new Db4objects.Db4o.Reflect.IReflectClass
-				[1];
+			IReflectClass[] clazz = new IReflectClass[1];
 			int[] dim = ReadDimensions(a_trans, a_bytes, clazz);
 			if (i_isPrimitive)
 			{
@@ -143,8 +141,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return dim;
 		}
 
-		private int[] ReadDimensions(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			 a_bytes, Db4objects.Db4o.Reflect.IReflectClass[] clazz)
+		private int[] ReadDimensions(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
+			 a_bytes, IReflectClass[] clazz)
 		{
 			int[] dim = new int[ReadElementsAndClass(a_trans, a_bytes, clazz)];
 			for (int i = 0; i < dim.Length; i++)
@@ -154,8 +152,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return dim;
 		}
 
-		public sealed override void WriteNew1(object obj, Db4objects.Db4o.Internal.StatefulBuffer
-			 writer)
+		public sealed override void WriteNew1(object obj, StatefulBuffer writer)
 		{
 			int[] dim = _reflectArray.Dimensions(obj);
 			WriteClass(obj, writer);
@@ -165,8 +162,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				writer.WriteInt(dim[i]);
 			}
 			object[] objects = AllElements(obj);
-			Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf = Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-				.Current();
+			MarshallerFamily mf = MarshallerFamily.Current();
 			for (int i = 0; i < objects.Length; i++)
 			{
 				i_handler.WriteNew(mf, Element(objects, i), false, writer, true, true);
@@ -179,7 +175,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return _reflectArray.Get(a_array, a_position);
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
 				return null;
 			}

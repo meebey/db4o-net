@@ -1,32 +1,35 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Generic;
+
 namespace Db4objects.Db4o.Reflect.Generic
 {
 	/// <exclude></exclude>
-	public class GenericReflector : Db4objects.Db4o.Reflect.IReflector, Db4objects.Db4o.Foundation.IDeepClone
+	public class GenericReflector : IReflector, IDeepClone
 	{
-		private Db4objects.Db4o.Reflect.Generic.KnownClassesRepository _repository;
+		private KnownClassesRepository _repository;
 
-		private Db4objects.Db4o.Reflect.IReflector _delegate;
+		private IReflector _delegate;
 
-		private Db4objects.Db4o.Reflect.Generic.GenericArrayReflector _array;
+		private GenericArrayReflector _array;
 
-		private Db4objects.Db4o.Foundation.Collection4 _collectionPredicates = new Db4objects.Db4o.Foundation.Collection4
-			();
+		private Collection4 _collectionPredicates = new Collection4();
 
-		private Db4objects.Db4o.Foundation.Collection4 _collectionUpdateDepths = new Db4objects.Db4o.Foundation.Collection4
-			();
+		private Collection4 _collectionUpdateDepths = new Collection4();
 
-		private readonly Db4objects.Db4o.Foundation.Hashtable4 _classByClass = new Db4objects.Db4o.Foundation.Hashtable4
-			();
+		private readonly Hashtable4 _classByClass = new Hashtable4();
 
-		private Db4objects.Db4o.Internal.Transaction _trans;
+		private Transaction _trans;
 
-		private Db4objects.Db4o.Internal.ObjectContainerBase _stream;
+		private ObjectContainerBase _stream;
 
-		public GenericReflector(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Reflect.IReflector
-			 delegateReflector)
+		public GenericReflector(Transaction trans, IReflector delegateReflector)
 		{
-			_repository = new Db4objects.Db4o.Reflect.Generic.KnownClassesRepository(new Db4objects.Db4o.Reflect.Generic.GenericClassBuilder
-				(this, delegateReflector));
+			_repository = new KnownClassesRepository(new GenericClassBuilder(this, delegateReflector
+				));
 			SetTransaction(trans);
 			_delegate = delegateReflector;
 			if (_delegate != null)
@@ -38,15 +41,15 @@ namespace Db4objects.Db4o.Reflect.Generic
 		public virtual object DeepClone(object obj)
 		{
 			Db4objects.Db4o.Reflect.Generic.GenericReflector myClone = new Db4objects.Db4o.Reflect.Generic.GenericReflector
-				(null, (Db4objects.Db4o.Reflect.IReflector)_delegate.DeepClone(this));
-			myClone._collectionPredicates = (Db4objects.Db4o.Foundation.Collection4)_collectionPredicates
-				.DeepClone(myClone);
-			myClone._collectionUpdateDepths = (Db4objects.Db4o.Foundation.Collection4)_collectionUpdateDepths
-				.DeepClone(myClone);
+				(null, (IReflector)_delegate.DeepClone(this));
+			myClone._collectionPredicates = (Collection4)_collectionPredicates.DeepClone(myClone
+				);
+			myClone._collectionUpdateDepths = (Collection4)_collectionUpdateDepths.DeepClone(
+				myClone);
 			return myClone;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.ObjectContainerBase GetStream()
+		internal virtual ObjectContainerBase GetStream()
 		{
 			return _stream;
 		}
@@ -56,7 +59,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _trans != null;
 		}
 
-		public virtual void SetTransaction(Db4objects.Db4o.Internal.Transaction trans)
+		public virtual void SetTransaction(Transaction trans)
 		{
 			if (trans != null)
 			{
@@ -66,23 +69,21 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_repository.SetTransaction(trans);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectArray Array()
+		public virtual IReflectArray Array()
 		{
 			if (_array == null)
 			{
-				_array = new Db4objects.Db4o.Reflect.Generic.GenericArrayReflector(this);
+				_array = new GenericArrayReflector(this);
 			}
 			return _array;
 		}
 
-		public virtual int CollectionUpdateDepth(Db4objects.Db4o.Reflect.IReflectClass candidate
-			)
+		public virtual int CollectionUpdateDepth(IReflectClass candidate)
 		{
-			System.Collections.IEnumerator i = _collectionUpdateDepths.GetEnumerator();
+			IEnumerator i = _collectionUpdateDepths.GetEnumerator();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Reflect.Generic.CollectionUpdateDepthEntry entry = (Db4objects.Db4o.Reflect.Generic.CollectionUpdateDepthEntry
-					)i.Current;
+				CollectionUpdateDepthEntry entry = (CollectionUpdateDepthEntry)i.Current;
 				if (entry._predicate.Match(candidate))
 				{
 					return entry._depth;
@@ -96,7 +97,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _delegate.ConstructorCallsSupported();
 		}
 
-		internal virtual Db4objects.Db4o.Reflect.Generic.GenericClass EnsureDelegate(Db4objects.Db4o.Reflect.IReflectClass
+		internal virtual Db4objects.Db4o.Reflect.Generic.GenericClass EnsureDelegate(IReflectClass
 			 clazz)
 		{
 			if (clazz == null)
@@ -113,15 +114,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return claxx;
 		}
 
-		private Db4objects.Db4o.Reflect.Generic.GenericClass GenericClass(Db4objects.Db4o.Reflect.IReflectClass
-			 clazz)
+		private Db4objects.Db4o.Reflect.Generic.GenericClass GenericClass(IReflectClass clazz
+			)
 		{
 			Db4objects.Db4o.Reflect.Generic.GenericClass ret;
 			string name = clazz.GetName();
-			if (name.Equals(typeof(Db4objects.Db4o.Reflect.Generic.GenericArray).FullName))
+			if (name.Equals(typeof(GenericArray).FullName))
 			{
-				ret = new Db4objects.Db4o.Reflect.Generic.GenericArrayClass(this, clazz, name, null
-					);
+				ret = new GenericArrayClass(this, clazz, name, null);
 			}
 			else
 			{
@@ -130,14 +130,13 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return ret;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass ForClass(System.Type clazz)
+		public virtual IReflectClass ForClass(Type clazz)
 		{
 			if (clazz == null)
 			{
 				return null;
 			}
-			Db4objects.Db4o.Reflect.IReflectClass claxx = (Db4objects.Db4o.Reflect.IReflectClass
-				)_classByClass.Get(clazz);
+			IReflectClass claxx = (IReflectClass)_classByClass.Get(clazz);
 			if (claxx != null)
 			{
 				return claxx;
@@ -158,9 +157,9 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return claxx;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass ForName(string className)
+		public virtual IReflectClass ForName(string className)
 		{
-			Db4objects.Db4o.Reflect.IReflectClass clazz = _repository.LookupByName(className);
+			IReflectClass clazz = _repository.LookupByName(className);
 			if (clazz != null)
 			{
 				return clazz;
@@ -173,27 +172,26 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _repository.ForName(className);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass ForObject(object obj)
+		public virtual IReflectClass ForObject(object obj)
 		{
-			if (obj is Db4objects.Db4o.Reflect.Generic.GenericObject)
+			if (obj is GenericObject)
 			{
-				return ForGenericObject((Db4objects.Db4o.Reflect.Generic.GenericObject)obj);
+				return ForGenericObject((GenericObject)obj);
 			}
 			return _delegate.ForObject(obj);
 		}
 
-		private Db4objects.Db4o.Reflect.IReflectClass ForGenericObject(Db4objects.Db4o.Reflect.Generic.GenericObject
-			 genericObject)
+		private IReflectClass ForGenericObject(GenericObject genericObject)
 		{
 			Db4objects.Db4o.Reflect.Generic.GenericClass claxx = genericObject._class;
 			if (claxx == null)
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			string name = claxx.GetName();
 			if (name == null)
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			Db4objects.Db4o.Reflect.Generic.GenericClass existingClass = (Db4objects.Db4o.Reflect.Generic.GenericClass
 				)ForName(name);
@@ -204,22 +202,22 @@ namespace Db4objects.Db4o.Reflect.Generic
 			}
 			if (existingClass != claxx)
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			return claxx;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflector GetDelegate()
+		public virtual IReflector GetDelegate()
 		{
 			return _delegate;
 		}
 
-		public virtual bool IsCollection(Db4objects.Db4o.Reflect.IReflectClass candidate)
+		public virtual bool IsCollection(IReflectClass candidate)
 		{
-			System.Collections.IEnumerator i = _collectionPredicates.GetEnumerator();
+			IEnumerator i = _collectionPredicates.GetEnumerator();
 			while (i.MoveNext())
 			{
-				if (((Db4objects.Db4o.Reflect.IReflectClassPredicate)i.Current).Match(candidate))
+				if (((IReflectClassPredicate)i.Current).Match(candidate))
 				{
 					return true;
 				}
@@ -227,55 +225,52 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _delegate.IsCollection(candidate.GetDelegate());
 		}
 
-		public virtual void RegisterCollection(System.Type clazz)
+		public virtual void RegisterCollection(Type clazz)
 		{
 			RegisterCollection(ClassPredicate(clazz));
 		}
 
-		public virtual void RegisterCollection(Db4objects.Db4o.Reflect.IReflectClassPredicate
-			 predicate)
+		public virtual void RegisterCollection(IReflectClassPredicate predicate)
 		{
 			_collectionPredicates.Add(predicate);
 		}
 
-		private Db4objects.Db4o.Reflect.IReflectClassPredicate ClassPredicate(System.Type
-			 clazz)
+		private IReflectClassPredicate ClassPredicate(Type clazz)
 		{
-			Db4objects.Db4o.Reflect.IReflectClass collectionClass = ForClass(clazz);
-			Db4objects.Db4o.Reflect.IReflectClassPredicate predicate = new _AnonymousInnerClass220
-				(this, collectionClass);
+			IReflectClass collectionClass = ForClass(clazz);
+			IReflectClassPredicate predicate = new _AnonymousInnerClass220(this, collectionClass
+				);
 			return predicate;
 		}
 
-		private sealed class _AnonymousInnerClass220 : Db4objects.Db4o.Reflect.IReflectClassPredicate
+		private sealed class _AnonymousInnerClass220 : IReflectClassPredicate
 		{
-			public _AnonymousInnerClass220(GenericReflector _enclosing, Db4objects.Db4o.Reflect.IReflectClass
-				 collectionClass)
+			public _AnonymousInnerClass220(GenericReflector _enclosing, IReflectClass collectionClass
+				)
 			{
 				this._enclosing = _enclosing;
 				this.collectionClass = collectionClass;
 			}
 
-			public bool Match(Db4objects.Db4o.Reflect.IReflectClass candidate)
+			public bool Match(IReflectClass candidate)
 			{
 				return collectionClass.IsAssignableFrom(candidate);
 			}
 
 			private readonly GenericReflector _enclosing;
 
-			private readonly Db4objects.Db4o.Reflect.IReflectClass collectionClass;
+			private readonly IReflectClass collectionClass;
 		}
 
-		public virtual void RegisterCollectionUpdateDepth(System.Type clazz, int depth)
+		public virtual void RegisterCollectionUpdateDepth(Type clazz, int depth)
 		{
 			RegisterCollectionUpdateDepth(ClassPredicate(clazz), depth);
 		}
 
-		public virtual void RegisterCollectionUpdateDepth(Db4objects.Db4o.Reflect.IReflectClassPredicate
-			 predicate, int depth)
+		public virtual void RegisterCollectionUpdateDepth(IReflectClassPredicate predicate
+			, int depth)
 		{
-			_collectionUpdateDepths.Add(new Db4objects.Db4o.Reflect.Generic.CollectionUpdateDepthEntry
-				(predicate, depth));
+			_collectionUpdateDepths.Add(new CollectionUpdateDepthEntry(predicate, depth));
 		}
 
 		public virtual void Register(Db4objects.Db4o.Reflect.Generic.GenericClass clazz)
@@ -287,18 +282,16 @@ namespace Db4objects.Db4o.Reflect.Generic
 			}
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass[] KnownClasses()
+		public virtual IReflectClass[] KnownClasses()
 		{
-			Db4objects.Db4o.Foundation.Collection4 classes = new Db4objects.Db4o.Foundation.Collection4
-				();
+			Collection4 classes = new Collection4();
 			CollectKnownClasses(classes);
-			return (Db4objects.Db4o.Reflect.IReflectClass[])classes.ToArray(new Db4objects.Db4o.Reflect.IReflectClass
-				[classes.Size()]);
+			return (IReflectClass[])classes.ToArray(new IReflectClass[classes.Size()]);
 		}
 
-		private void CollectKnownClasses(Db4objects.Db4o.Foundation.Collection4 classes)
+		private void CollectKnownClasses(Collection4 classes)
 		{
-			System.Collections.IEnumerator i = _repository.Classes();
+			IEnumerator i = _repository.Classes();
 			while (i.MoveNext())
 			{
 				Db4objects.Db4o.Reflect.Generic.GenericClass clazz = (Db4objects.Db4o.Reflect.Generic.GenericClass
@@ -316,7 +309,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			}
 		}
 
-		public virtual void RegisterPrimitiveClass(int id, string name, Db4objects.Db4o.Reflect.Generic.IGenericConverter
+		public virtual void RegisterPrimitiveClass(int id, string name, IGenericConverter
 			 converter)
 		{
 			Db4objects.Db4o.Reflect.Generic.GenericClass existing = (Db4objects.Db4o.Reflect.Generic.GenericClass
@@ -333,7 +326,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 				}
 				return;
 			}
-			Db4objects.Db4o.Reflect.IReflectClass clazz = _delegate.ForName(name);
+			IReflectClass clazz = _delegate.ForName(name);
 			Db4objects.Db4o.Reflect.Generic.GenericClass claxx = null;
 			if (clazz != null)
 			{
@@ -343,8 +336,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				claxx = new Db4objects.Db4o.Reflect.Generic.GenericClass(this, null, name, null);
 				Register(claxx);
-				claxx.InitFields(new Db4objects.Db4o.Reflect.Generic.GenericField[] { new Db4objects.Db4o.Reflect.Generic.GenericField
-					(null, null, true, false, false) });
+				claxx.InitFields(new GenericField[] { new GenericField(null, null, true, false, false
+					) });
 				claxx.SetConverter(converter);
 			}
 			claxx.SetSecondClass();
@@ -352,7 +345,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_repository.Register(id, claxx);
 		}
 
-		public virtual void SetParent(Db4objects.Db4o.Reflect.IReflector reflector)
+		public virtual void SetParent(IReflector reflector)
 		{
 		}
 	}

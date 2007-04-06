@@ -1,21 +1,22 @@
+using Db4objects.Db4o.Nativequery.Expr.Cmp;
+
 namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 {
-	public abstract class ComparisonOperandDescendant : Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandAnchor
+	public abstract class ComparisonOperandDescendant : IComparisonOperandAnchor
 	{
-		private Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandAnchor _parent;
+		private IComparisonOperandAnchor _parent;
 
-		protected ComparisonOperandDescendant(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandAnchor
-			 _parent)
+		protected ComparisonOperandDescendant(IComparisonOperandAnchor _parent)
 		{
 			this._parent = _parent;
 		}
 
-		public Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandAnchor Parent()
+		public IComparisonOperandAnchor Parent()
 		{
 			return _parent;
 		}
 
-		public Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandAnchor Root()
+		public IComparisonOperandAnchor Root()
 		{
 			return _parent.Root();
 		}
@@ -45,7 +46,6 @@ namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 			return _parent.ToString();
 		}
 
-		public abstract void Accept(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandVisitor
-			 arg1);
+		public abstract void Accept(IComparisonOperandVisitor arg1);
 	}
 }

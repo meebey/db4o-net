@@ -1,6 +1,10 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Config;
+
 namespace Db4oUnit.Extensions.Tests
 {
-	public class MultipleDb4oTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class MultipleDb4oTestCase : AbstractDb4oTestCase
 	{
 		private static int configureCalls = 0;
 
@@ -14,19 +18,19 @@ namespace Db4oUnit.Extensions.Tests
 			return configureCalls;
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
 			configureCalls++;
 		}
 
 		public virtual void TestFirst()
 		{
-			Db4oUnit.Assert.Fail();
+			Assert.Fail();
 		}
 
 		public virtual void TestSecond()
 		{
-			Db4oUnit.Assert.Fail();
+			Assert.Fail();
 		}
 	}
 }

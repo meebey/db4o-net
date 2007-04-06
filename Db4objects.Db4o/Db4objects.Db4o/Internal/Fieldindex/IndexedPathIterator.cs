@@ -1,19 +1,23 @@
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Fieldindex;
+
 namespace Db4objects.Db4o.Internal.Fieldindex
 {
-	internal sealed class IndexedPathIterator : Db4objects.Db4o.Foundation.CompositeIterator4
+	internal sealed class IndexedPathIterator : CompositeIterator4
 	{
-		private Db4objects.Db4o.Internal.Fieldindex.IndexedPath _path;
+		private IndexedPath _path;
 
-		public IndexedPathIterator(Db4objects.Db4o.Internal.Fieldindex.IndexedPath path, 
-			System.Collections.IEnumerator iterator) : base(iterator)
+		public IndexedPathIterator(IndexedPath path, IEnumerator iterator) : base(iterator
+			)
 		{
 			_path = path;
 		}
 
-		protected override System.Collections.IEnumerator NextIterator(object current)
+		protected override IEnumerator NextIterator(object current)
 		{
-			Db4objects.Db4o.Internal.Btree.FieldIndexKey key = (Db4objects.Db4o.Internal.Btree.FieldIndexKey
-				)current;
+			FieldIndexKey key = (FieldIndexKey)current;
 			return _path.Search(key.ParentID()).Keys();
 		}
 	}

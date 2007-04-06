@@ -1,6 +1,10 @@
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Util
 {
-	public abstract class SodaBaseTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public abstract class SodaBaseTestCase : AbstractDb4oTestCase
 	{
 		[System.NonSerialized]
 		protected object[] _array;
@@ -21,17 +25,14 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 
 		public abstract object[] CreateData();
 
-		protected virtual void Expect(Db4objects.Db4o.Query.IQuery query, int[] indices)
+		protected virtual void Expect(IQuery query, int[] indices)
 		{
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.Expect(query, CollectCandidates
-				(indices), false);
+			SodaTestUtil.Expect(query, CollectCandidates(indices), false);
 		}
 
-		protected virtual void ExpectOrdered(Db4objects.Db4o.Query.IQuery query, int[] indices
-			)
+		protected virtual void ExpectOrdered(IQuery query, int[] indices)
 		{
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOrdered(query, CollectCandidates
-				(indices));
+			SodaTestUtil.ExpectOrdered(query, CollectCandidates(indices));
 		}
 
 		private object[] CollectCandidates(int[] indices)

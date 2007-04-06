@@ -1,3 +1,6 @@
+using System;
+using Db4objects.Db4o.IO;
+
 namespace Db4objects.Db4o.IO
 {
 	/// <summary>
@@ -19,7 +22,7 @@ namespace Db4objects.Db4o.IO
 		{
 			if (0 == _blockSize)
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			return (long)blockAddress * _blockSize + blockAddressOffset;
 		}
@@ -49,7 +52,7 @@ namespace Db4objects.Db4o.IO
 		{
 			if (blockSize < 1)
 			{
-				throw new System.ArgumentException();
+				throw new ArgumentException();
 			}
 			_blockSize = blockSize;
 		}
@@ -94,8 +97,7 @@ namespace Db4objects.Db4o.IO
 		public abstract long GetLength();
 
 		/// <summary>implement to open the file</summary>
-		public abstract Db4objects.Db4o.IO.IoAdapter Open(string path, bool lockFile, long
-			 initialLength);
+		public abstract IoAdapter Open(string path, bool lockFile, long initialLength);
 
 		/// <summary>reads a buffer at the seeked address</summary>
 		/// <returns>the number of bytes read and returned</returns>
@@ -128,7 +130,7 @@ namespace Db4objects.Db4o.IO
 			return _blockSize;
 		}
 
-		public virtual Db4objects.Db4o.IO.IoAdapter DelegatedIoAdapter()
+		public virtual IoAdapter DelegatedIoAdapter()
 		{
 			return this;
 		}

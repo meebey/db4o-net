@@ -1,14 +1,23 @@
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MProcessDeletes : Db4objects.Db4o.Internal.CS.Messages.Msg, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public class MProcessDeletes : Msg, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{
 			lock (StreamLock())
 			{
-				Transaction().ProcessDeletes();
-				return true;
+				try
+				{
+					Transaction().ProcessDeletes();
+				}
+				catch (Db4oException)
+				{
+				}
 			}
+			return true;
 		}
 	}
 }

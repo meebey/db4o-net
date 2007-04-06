@@ -1,11 +1,14 @@
+using System;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Tests.Common.Interfaces;
+
 namespace Db4objects.Db4o.Tests.Common.Interfaces
 {
-	public class AllTests : Db4oUnit.Extensions.Db4oTestSuite
+	public class AllTests : Db4oTestSuite
 	{
-		protected override System.Type[] TestCases()
+		protected override Type[] TestCases()
 		{
-			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Interfaces.InterfaceTestCase)
-				 };
+			return new Type[] { typeof(InterfaceTestCase) };
 		}
 	}
 }

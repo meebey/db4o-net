@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Ext;
+
 namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>Filter for StoredClass instances.</summary>
@@ -7,6 +9,6 @@ namespace Db4objects.Db4o.Defragment
 		/// <param name="storedClass">StoredClass instance to be checked</param>
 		/// <returns>true, if the given StoredClass instance should be accepted, false otherwise.
 		/// 	</returns>
-		bool Accept(Db4objects.Db4o.Ext.IStoredClass storedClass);
+		bool Accept(IStoredClass storedClass);
 	}
 }

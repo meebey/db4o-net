@@ -1,3 +1,5 @@
+using Db4objects.Db4o;
+
 namespace Db4objects.Db4o
 {
 	/// <summary>
@@ -10,7 +12,7 @@ namespace Db4objects.Db4o
 	/// </remarks>
 	/// <exclude></exclude>
 	/// <persistent></persistent>
-	public sealed class Rename : Db4objects.Db4o.IInternal4
+	public sealed class Rename : IInternal4
 	{
 		public string rClass;
 

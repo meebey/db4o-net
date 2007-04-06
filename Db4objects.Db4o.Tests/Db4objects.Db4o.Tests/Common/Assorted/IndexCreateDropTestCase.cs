@@ -1,6 +1,13 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Assorted;
+using Sharpen.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class IndexCreateDropTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class IndexCreateDropTestCase : AbstractDb4oTestCase
 	{
 		public class IndexCreateDropItem
 		{
@@ -8,9 +15,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 			public string _string;
 
-			public Sharpen.Util.Date _date;
+			public Date _date;
 
-			public IndexCreateDropItem(int int_, string string_, Sharpen.Util.Date date_)
+			public IndexCreateDropItem(int int_, string string_, Date date_)
 			{
 				_int = int_;
 				_string = string_;
@@ -18,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 
 			public IndexCreateDropItem(int int_) : this(int_, int_ == 0 ? null : string.Empty
-				 + int_, int_ == 0 ? null : new Sharpen.Util.Date(int_))
+				 + int_, int_ == 0 ? null : new Date(int_))
 			{
 			}
 		}
@@ -27,15 +34,14 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public static void Main(string[] arguments)
 		{
-			new Db4objects.Db4o.Tests.Common.Assorted.IndexCreateDropTestCase().RunSolo();
+			new IndexCreateDropTestCase().RunSolo();
 		}
 
 		protected override void Store()
 		{
 			for (int i = 0; i < VALUES.Length; i++)
 			{
-				Db().Set(new Db4objects.Db4o.Tests.Common.Assorted.IndexCreateDropTestCase.IndexCreateDropItem
-					(VALUES[i]));
+				Db().Set(new IndexCreateDropTestCase.IndexCreateDropItem(VALUES[i]));
 			}
 		}
 
@@ -56,24 +62,23 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void Indexed(bool flag)
 		{
-			Db4objects.Db4o.Config.IObjectClass oc = Fixture().Config().ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Assorted.IndexCreateDropTestCase.IndexCreateDropItem)
+			IObjectClass oc = Fixture().Config().ObjectClass(typeof(IndexCreateDropTestCase.IndexCreateDropItem)
 				);
 			oc.ObjectField("_int").Indexed(flag);
 			oc.ObjectField("_string").Indexed(flag);
 			oc.ObjectField("_date").Indexed(flag);
 		}
 
-		protected override Db4objects.Db4o.Query.IQuery NewQuery()
+		protected override IQuery NewQuery()
 		{
-			Db4objects.Db4o.Query.IQuery q = base.NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Assorted.IndexCreateDropTestCase.IndexCreateDropItem)
-				);
+			IQuery q = base.NewQuery();
+			q.Constrain(typeof(IndexCreateDropTestCase.IndexCreateDropItem));
 			return q;
 		}
 
 		private void AssertQueryResults()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Descend("_int").Constrain(6);
 			AssertQuerySize(2, q);
 			q = NewQuery();
@@ -101,25 +106,25 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			q.Descend("_string").Constrain(null);
 			AssertQuerySize(2, q);
 			q = NewQuery();
-			q.Descend("_date").Constrain(new Sharpen.Util.Date(4)).Greater();
+			q.Descend("_date").Constrain(new Date(4)).Greater();
 			AssertQuerySize(4, q);
 			q = NewQuery();
-			q.Descend("_date").Constrain(new Sharpen.Util.Date(4)).Greater().Equal();
+			q.Descend("_date").Constrain(new Date(4)).Greater().Equal();
 			AssertQuerySize(6, q);
 			q = NewQuery();
-			q.Descend("_date").Constrain(new Sharpen.Util.Date(7)).Smaller().Equal();
+			q.Descend("_date").Constrain(new Date(7)).Smaller().Equal();
 			AssertQuerySize(6, q);
 			q = NewQuery();
-			q.Descend("_date").Constrain(new Sharpen.Util.Date(7)).Smaller();
+			q.Descend("_date").Constrain(new Date(7)).Smaller();
 			AssertQuerySize(5, q);
 			q = NewQuery();
 			q.Descend("_date").Constrain(null);
 			AssertQuerySize(2, q);
 		}
 
-		private void AssertQuerySize(int size, Db4objects.Db4o.Query.IQuery q)
+		private void AssertQuerySize(int size, IQuery q)
 		{
-			Db4oUnit.Assert.AreEqual(size, q.Execute().Size());
+			Assert.AreEqual(size, q.Execute().Size());
 		}
 	}
 }

@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
@@ -5,7 +7,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 	{
 		bool IsMessageDispatcherAlive();
 
-		void Write(Db4objects.Db4o.Internal.CS.Messages.Msg msg);
+		void Write(Msg msg);
 
 		bool Close();
 

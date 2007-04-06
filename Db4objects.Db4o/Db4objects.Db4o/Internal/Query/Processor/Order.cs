@@ -1,6 +1,8 @@
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
-	internal class Order : Db4objects.Db4o.Internal.Query.Processor.IOrderable
+	internal class Order : IOrderable
 	{
 		private int i_major;
 
@@ -8,10 +10,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual int CompareTo(object obj)
 		{
-			if (obj is Db4objects.Db4o.Internal.Query.Processor.Order)
+			if (obj is Order)
 			{
-				Db4objects.Db4o.Internal.Query.Processor.Order other = (Db4objects.Db4o.Internal.Query.Processor.Order
-					)obj;
+				Order other = (Order)obj;
 				int res = i_major - other.i_major;
 				if (res != 0)
 				{

@@ -1,3 +1,7 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 {
 	/// <summary>
@@ -16,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 	/// </remarks>
 	/// <author><a href="mailto:Paul-Ebermann@gmx.de">Paul Ebermann</a></author>
 	/// <version>0.1</version>
-	public class STInnerClassesTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STInnerClassesTestCase : SodaBaseTestCase
 	{
 		public class Parent
 		{
@@ -70,19 +74,17 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 
 		public override object[] CreateData()
 		{
-			return new object[] { new Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STInnerClassesTestCase.Parent
-				(this, new Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STInnerClassesTestCase.FirstClass
-				(this, "Example")), new Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STInnerClassesTestCase.Parent
-				(this, new Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy.STInnerClassesTestCase.FirstClass
+			return new object[] { new STInnerClassesTestCase.Parent(this, new STInnerClassesTestCase.FirstClass
+				(this, "Example")), new STInnerClassesTestCase.Parent(this, new STInnerClassesTestCase.FirstClass
 				(this, "no Example")) };
 		}
 
 		/// <summary>Only</summary>
 		public virtual void TestNothing()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Descend("child");
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.Expect(q, _array);
+			SodaTestUtil.Expect(q, _array);
 		}
 	}
 }

@@ -1,7 +1,11 @@
+using System.IO;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal.Freespace
 {
 	/// <exclude></exclude>
-	public sealed class FreeSlotNode : Db4objects.Db4o.Internal.TreeInt
+	public sealed class FreeSlotNode : TreeInt
 	{
 		internal static int sizeLimit;
 
@@ -32,11 +36,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public sealed override int OwnLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.INT_LENGTH * 2;
+			return Const4.INT_LENGTH * 2;
 		}
 
-		internal static Db4objects.Db4o.Foundation.Tree RemoveGreaterOrEqual(Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-			 a_in, Db4objects.Db4o.Internal.TreeIntObject a_finder)
+		internal static Tree RemoveGreaterOrEqual(Db4objects.Db4o.Internal.Freespace.FreeSlotNode
+			 a_in, TreeIntObject a_finder)
 		{
 			if (a_in == null)
 			{
@@ -86,18 +90,17 @@ namespace Db4objects.Db4o.Internal.Freespace
 		private void DebugCheckBuffer(Db4objects.Db4o.Internal.Buffer buffer, Db4objects.Db4o.Internal.Freespace.FreeSlotNode
 			 node)
 		{
-			if (!(buffer is Db4objects.Db4o.Internal.StatefulBuffer))
+			if (!(buffer is StatefulBuffer))
 			{
 				return;
 			}
-			Db4objects.Db4o.Internal.Transaction trans = ((Db4objects.Db4o.Internal.StatefulBuffer
-				)buffer).GetTransaction();
-			if (!(trans.Stream() is Db4objects.Db4o.Internal.IoAdaptedObjectContainer))
+			Transaction trans = ((StatefulBuffer)buffer).GetTransaction();
+			if (!(trans.Stream() is IoAdaptedObjectContainer))
 			{
 				return;
 			}
-			Db4objects.Db4o.Internal.StatefulBuffer checker = trans.Stream().GetWriter(trans, 
-				node._peer._key, node._key);
+			StatefulBuffer checker = trans.Stream().GetWriter(trans, node._peer._key, node._key
+				);
 			try
 			{
 				checker.Read();
@@ -110,7 +113,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 					}
 				}
 			}
-			catch (System.IO.IOException e)
+			catch (IOException e)
 			{
 				Sharpen.Runtime.PrintStackTrace(e);
 			}

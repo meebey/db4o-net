@@ -1,27 +1,32 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Assorted;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class SimplestPossibleTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class SimplestPossibleTestCase : AbstractDb4oTestCase
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleTestCase().RunSolo();
+			new SimplestPossibleTestCase().RunSolo();
 		}
 
 		protected override void Store()
 		{
-			Db().Set(new Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleItem("one"));
+			Db().Set(new SimplestPossibleItem("one"));
 		}
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Query.IQuery q = Db().Query();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleItem));
+			IQuery q = Db().Query();
+			q.Constrain(typeof(SimplestPossibleItem));
 			q.Descend("name").Constrain("one");
-			Db4objects.Db4o.IObjectSet objectSet = q.Execute();
-			Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleItem item = (Db4objects.Db4o.Tests.Common.Assorted.SimplestPossibleItem
-				)objectSet.Next();
-			Db4oUnit.Assert.IsNotNull(item);
-			Db4oUnit.Assert.AreEqual("one", item.GetName());
+			IObjectSet objectSet = q.Execute();
+			SimplestPossibleItem item = (SimplestPossibleItem)objectSet.Next();
+			Assert.IsNotNull(item);
+			Assert.AreEqual("one", item.GetName());
 		}
 	}
 }

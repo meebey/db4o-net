@@ -1,16 +1,22 @@
+using System;
+using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Fieldindex;
+
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
-	public abstract class FieldIndexTestCaseBase : Db4oUnit.Extensions.AbstractDb4oTestCase
-		, Db4oUnit.Extensions.Fixtures.IOptOutCS
+	public abstract class FieldIndexTestCaseBase : AbstractDb4oTestCase, IOptOutCS
 	{
 		public FieldIndexTestCaseBase() : base()
 		{
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
-			IndexField(config, typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, "foo");
+			IndexField(config, typeof(FieldIndexItem), "foo");
 		}
 
 		protected abstract override void Store();
@@ -19,46 +25,42 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			for (int i = 0; i < foos.Length; i++)
 			{
-				Store(new Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem(foos[i]));
+				Store(new FieldIndexItem(foos[i]));
 			}
 		}
 
-		protected virtual Db4objects.Db4o.Query.IQuery CreateQuery(int id)
+		protected virtual IQuery CreateQuery(int id)
 		{
-			Db4objects.Db4o.Query.IQuery q = CreateItemQuery();
+			IQuery q = CreateItemQuery();
 			q.Descend("foo").Constrain(id);
 			return q;
 		}
 
-		protected virtual Db4objects.Db4o.Query.IQuery CreateItemQuery()
+		protected virtual IQuery CreateItemQuery()
 		{
-			return CreateQuery(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				);
+			return CreateQuery(typeof(FieldIndexItem));
 		}
 
-		protected virtual Db4objects.Db4o.Query.IQuery CreateQuery(System.Type clazz)
+		protected virtual IQuery CreateQuery(Type clazz)
 		{
 			return CreateQuery(Trans(), clazz);
 		}
 
-		protected virtual Db4objects.Db4o.Query.IQuery CreateQuery(Db4objects.Db4o.Internal.Transaction
-			 trans, System.Type clazz)
+		protected virtual IQuery CreateQuery(Transaction trans, Type clazz)
 		{
-			Db4objects.Db4o.Query.IQuery q = CreateQuery(trans);
+			IQuery q = CreateQuery(trans);
 			q.Constrain(clazz);
 			return q;
 		}
 
-		protected virtual Db4objects.Db4o.Query.IQuery CreateItemQuery(Db4objects.Db4o.Internal.Transaction
-			 trans)
+		protected virtual IQuery CreateItemQuery(Transaction trans)
 		{
-			Db4objects.Db4o.Query.IQuery q = CreateQuery(trans);
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem));
+			IQuery q = CreateQuery(trans);
+			q.Constrain(typeof(FieldIndexItem));
 			return q;
 		}
 
-		private Db4objects.Db4o.Query.IQuery CreateQuery(Db4objects.Db4o.Internal.Transaction
-			 trans)
+		private IQuery CreateQuery(Transaction trans)
 		{
 			return Stream().Query(trans);
 		}

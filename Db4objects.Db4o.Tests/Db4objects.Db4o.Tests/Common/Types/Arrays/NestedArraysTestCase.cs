@@ -1,6 +1,10 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Tests.Common.Types.Arrays;
+
 namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 {
-	public class NestedArraysTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class NestedArraysTestCase : AbstractDb4oTestCase
 	{
 		private const int DEPTH = 5;
 
@@ -25,8 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 			Fill(obj, DEPTH);
 			object[] arr = new object[ELEMENTS];
 			Fill(arr, DEPTH);
-			Db().Set(new Db4objects.Db4o.Tests.Common.Types.Arrays.NestedArraysTestCase.Data(
-				obj, arr));
+			Db().Set(new NestedArraysTestCase.Data(obj, arr));
 		}
 
 		private void Fill(object[] arr, int depth)
@@ -47,9 +50,8 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		public virtual void TestOne()
 		{
-			Db4objects.Db4o.Tests.Common.Types.Arrays.NestedArraysTestCase.Data data = (Db4objects.Db4o.Tests.Common.Types.Arrays.NestedArraysTestCase.Data
-				)RetrieveOnlyInstance(typeof(Db4objects.Db4o.Tests.Common.Types.Arrays.NestedArraysTestCase.Data)
-				);
+			NestedArraysTestCase.Data data = (NestedArraysTestCase.Data)RetrieveOnlyInstance(
+				typeof(NestedArraysTestCase.Data));
 			Db().Activate(data, int.MaxValue);
 			Check((object[])data._obj, DEPTH);
 			Check(data._arr, DEPTH);
@@ -59,8 +61,8 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		{
 			if (depth <= 0)
 			{
-				Db4oUnit.Assert.AreEqual("somestring", arr[0]);
-				Db4oUnit.Assert.AreEqual(10, arr[1]);
+				Assert.AreEqual("somestring", arr[0]);
+				Assert.AreEqual(10, arr[1]);
 				return;
 			}
 			depth--;

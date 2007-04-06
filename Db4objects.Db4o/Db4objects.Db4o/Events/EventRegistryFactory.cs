@@ -1,43 +1,45 @@
+using System;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Callbacks;
+using Db4objects.Db4o.Internal.Events;
+
 namespace Db4objects.Db4o.Events
 {
 	/// <summary>
 	/// Provides an interface for getting an
-	/// <see cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
-	/// 	</see>
+	/// <see cref="IEventRegistry">IEventRegistry</see>
 	/// from an
-	/// <see cref="Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
+	/// <see cref="IObjectContainer">IObjectContainer</see>
 	/// .
 	/// </summary>
 	public class EventRegistryFactory
 	{
 		/// <summary>
 		/// Returns an
-		/// <see cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
-		/// 	</see>
+		/// <see cref="IEventRegistry">IEventRegistry</see>
 		/// for registering events with the specified container.
 		/// </summary>
-		public static Db4objects.Db4o.Events.IEventRegistry ForObjectContainer(Db4objects.Db4o.IObjectContainer
-			 container)
+		public static IEventRegistry ForObjectContainer(IObjectContainer container)
 		{
 			if (null == container)
 			{
-				throw new System.ArgumentNullException("container");
+				throw new ArgumentNullException("container");
 			}
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = ((Db4objects.Db4o.Internal.ObjectContainerBase
-				)container);
-			Db4objects.Db4o.Internal.Callbacks.ICallbacks callbacks = stream.Callbacks();
-			if (callbacks is Db4objects.Db4o.Events.IEventRegistry)
+			ObjectContainerBase stream = ((ObjectContainerBase)container);
+			ICallbacks callbacks = stream.Callbacks();
+			if (callbacks is IEventRegistry)
 			{
-				return (Db4objects.Db4o.Events.IEventRegistry)callbacks;
+				return (IEventRegistry)callbacks;
 			}
-			if (callbacks is Db4objects.Db4o.Internal.Callbacks.NullCallbacks)
+			if (callbacks is NullCallbacks)
 			{
-				Db4objects.Db4o.Internal.Events.EventRegistryImpl impl = new Db4objects.Db4o.Internal.Events.EventRegistryImpl
-					();
+				EventRegistryImpl impl = new EventRegistryImpl();
 				stream.Callbacks(impl);
 				return impl;
 			}
-			throw new System.ArgumentException("container callbacks already in use");
+			throw new ArgumentException("container callbacks already in use");
 		}
 	}
 }

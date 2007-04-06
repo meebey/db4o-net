@@ -1,10 +1,14 @@
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+
 namespace Db4oUnit.Extensions.Fixtures
 {
-	public class IndependentConfigurationSource : Db4oUnit.Extensions.Fixtures.IConfigurationSource
+	public class IndependentConfigurationSource : IConfigurationSource
 	{
-		public virtual Db4objects.Db4o.Config.IConfiguration Config()
+		public virtual IConfiguration Config()
 		{
-			return Db4objects.Db4o.Db4oFactory.NewConfiguration();
+			return Db4oFactory.NewConfiguration();
 		}
 	}
 }

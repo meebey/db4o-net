@@ -1,16 +1,18 @@
+using Db4objects.Db4o.Internal.Query.Result;
+using Db4objects.Db4o.Tests.Common.Querying;
+
 namespace Db4objects.Db4o.Tests.Common.Querying
 {
-	public class LazyQueryResultTestCase : Db4objects.Db4o.Tests.Common.Querying.QueryResultTestCase
+	public class LazyQueryResultTestCase : QueryResultTestCase
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Querying.LazyQueryResultTestCase().RunSolo();
+			new LazyQueryResultTestCase().RunSolo();
 		}
 
-		protected override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult NewQueryResult
-			()
+		protected override AbstractQueryResult NewQueryResult()
 		{
-			return new Db4objects.Db4o.Internal.Query.Result.LazyQueryResult(Trans());
+			return new LazyQueryResult(Trans());
 		}
 	}
 }

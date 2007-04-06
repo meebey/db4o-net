@@ -1,19 +1,24 @@
+using System;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public class LongHandler : Db4objects.Db4o.Internal.Handlers.PrimitiveHandler
+	public class LongHandler : PrimitiveHandler
 	{
 		private static readonly long i_primitive = System.Convert.ToInt64(0);
 
-		public LongHandler(Db4objects.Db4o.Internal.ObjectContainerBase stream) : base(stream
-			)
+		public LongHandler(ObjectContainerBase stream) : base(stream)
 		{
 		}
 
-		public override object Coerce(Db4objects.Db4o.Reflect.IReflectClass claxx, object
-			 obj)
+		public override object Coerce(IReflectClass claxx, object obj)
 		{
-			return Db4objects.Db4o.Foundation.Coercion4.ToLong(obj);
+			return Coercion4.ToLong(obj);
 		}
 
 		public override object DefaultValue()
@@ -26,14 +31,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return 2;
 		}
 
-		protected override System.Type PrimitiveJavaClass()
+		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(long);
 		}
 
 		public override int LinkLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.LONG_LENGTH;
+			return Const4.LONG_LENGTH;
 		}
 
 		public override object PrimitiveNull()
@@ -41,8 +46,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_primitive;
 		}
 
-		public override object Read(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf
-			, Db4objects.Db4o.Internal.StatefulBuffer buffer, bool redirect)
+		public override object Read(MarshallerFamily mf, StatefulBuffer buffer, bool redirect
+			)
 		{
 			return mf._primitive.ReadLong(buffer);
 		}
@@ -59,14 +64,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public static void WriteLong(long val, Db4objects.Db4o.Internal.Buffer bytes)
 		{
-			Db4objects.Db4o.Foundation.PrimitiveCodec.WriteLong(bytes._buffer, bytes._offset, 
-				val);
+			PrimitiveCodec.WriteLong(bytes._buffer, bytes._offset, val);
 			IncrementOffset(bytes);
 		}
 
 		private static void IncrementOffset(Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			buffer.IncrementOffset(Db4objects.Db4o.Internal.Const4.LONG_BYTES);
+			buffer.IncrementOffset(Const4.LONG_BYTES);
 		}
 
 		private long i_compareTo;

@@ -1,38 +1,73 @@
+using System;
+using System.IO;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Internal;
+using Sharpen.Lang;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class IoAdaptedObjectContainer : Db4objects.Db4o.Internal.LocalObjectContainer
+	public class IoAdaptedObjectContainer : LocalObjectContainer
 	{
 		private readonly string _fileName;
 
-		private Db4objects.Db4o.IO.IoAdapter _file;
+		private IoAdapter _file;
 
-		private Db4objects.Db4o.IO.IoAdapter _timerFile;
+		private IoAdapter _timerFile;
 
-		private volatile Db4objects.Db4o.IO.IoAdapter _backupFile;
+		private volatile IoAdapter _backupFile;
 
 		private object _fileLock;
 
-		private readonly Db4objects.Db4o.Config.IFreespaceFiller _freespaceFiller;
+		private readonly IFreespaceFiller _freespaceFiller;
 
-		internal IoAdaptedObjectContainer(Db4objects.Db4o.Config.IConfiguration config, string
-			 fileName) : base(config, null)
+		internal IoAdaptedObjectContainer(IConfiguration config, string fileName) : base(
+			config, null)
 		{
-			lock (i_lock)
+			_fileLock = new object();
+			_fileName = fileName;
+			Open();
+			_freespaceFiller = CreateFreespaceFiller();
+		}
+
+		protected sealed override void OpenImpl()
+		{
+			IoAdapter ioAdapter = ConfigImpl().IoAdapter();
+			bool isNew = !ioAdapter.Exists(FileName());
+			if (isNew)
 			{
-				_fileLock = new object();
-				_fileName = fileName;
-				_freespaceFiller = CreateFreespaceFiller();
-				try
+				LogMsg(14, FileName());
+				i_handlers.OldEncryptionOff();
+			}
+			bool lockFile = Debug.lockFile && ConfigImpl().LockFile() && (!ConfigImpl().IsReadOnly
+				());
+			try
+			{
+				_file = ioAdapter.Open(FileName(), lockFile, 0);
+				if (NeedsTimerFile())
 				{
-					Open();
+					_timerFile = ioAdapter.DelegatedIoAdapter().Open(FileName(), false, 0);
 				}
-				catch (Db4objects.Db4o.Ext.DatabaseFileLockedException e)
+				if (isNew)
 				{
-					StopSession();
-					throw;
+					ConfigureNewFile();
+					if (ConfigImpl().ReservedStorageSpace() > 0)
+					{
+						Reserve(ConfigImpl().ReservedStorageSpace());
+					}
+					CommitTransaction();
+					WriteHeader(true, false);
 				}
-				InitializePostOpen();
+				else
+				{
+					ReadThis();
+				}
+			}
+			catch (IOException e)
+			{
+				throw new OpenDatabaseException(e);
 			}
 		}
 
@@ -43,17 +78,17 @@ namespace Db4objects.Db4o.Internal
 				CheckClosed();
 				if (_backupFile != null)
 				{
-					Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(61);
+					Exceptions4.ThrowRuntimeException(61);
 				}
 				try
 				{
 					_backupFile = ConfigImpl().IoAdapter().Open(path, true, _file.GetLength());
 					_backupFile.BlockSize(BlockSize());
 				}
-				catch (System.Exception)
+				catch (Exception)
 				{
 					_backupFile = null;
-					Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(12, path);
+					Exceptions4.ThrowRuntimeException(12, path);
 				}
 			}
 			long pos = 0;
@@ -75,9 +110,9 @@ namespace Db4objects.Db4o.Internal
 				}
 				try
 				{
-					Sharpen.Lang.Thread.Sleep(1);
+					Thread.Sleep(1);
 				}
-				catch (System.Exception)
+				catch (Exception)
 				{
 				}
 			}
@@ -123,7 +158,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				_file.Close();
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
 			}
 			finally
@@ -138,7 +173,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				_fileHeader.Close();
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
 			}
 			finally
@@ -156,7 +191,7 @@ namespace Db4objects.Db4o.Internal
 					_timerFile.Close();
 				}
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
 			}
 			finally
@@ -174,7 +209,7 @@ namespace Db4objects.Db4o.Internal
 		public override void Copy(int oldAddress, int oldAddressOffset, int newAddress, int
 			 newAddressOffset, int length)
 		{
-			if (Db4objects.Db4o.Debug.xbytes && Db4objects.Db4o.Deploy.overwrite)
+			if (Debug.xbytes && Deploy.overwrite)
 			{
 				CheckXBytes(newAddress, newAddressOffset, length);
 			}
@@ -197,15 +232,15 @@ namespace Db4objects.Db4o.Internal
 					_backupFile.Write(copyBytes);
 				}
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(16, e);
+				Exceptions4.ThrowRuntimeException(16, e);
 			}
 		}
 
 		private void CheckXBytes(int newAddress, int newAddressOffset, int length)
 		{
-			if (Db4objects.Db4o.Debug.xbytes && Db4objects.Db4o.Deploy.overwrite)
+			if (Debug.xbytes && Deploy.overwrite)
 			{
 				try
 				{
@@ -214,14 +249,14 @@ namespace Db4objects.Db4o.Internal
 					_file.Read(checkXBytes);
 					for (int i = 0; i < checkXBytes.Length; i++)
 					{
-						if (checkXBytes[i] != Db4objects.Db4o.Internal.Const4.XBYTE)
+						if (checkXBytes[i] != Const4.XBYTE)
 						{
 							string msg = "XByte corruption adress:" + newAddress + " length:" + length;
-							throw new System.Exception(msg);
+							throw new Exception(msg);
 						}
 					}
 				}
-				catch (System.Exception e)
+				catch (Exception e)
 				{
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
@@ -234,77 +269,15 @@ namespace Db4objects.Db4o.Internal
 			{
 				return _file.GetLength();
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
-				throw new System.Exception();
+				throw new Exception();
 			}
 		}
 
 		public override string FileName()
 		{
 			return _fileName;
-		}
-
-		private void Open()
-		{
-			bool isNew = false;
-			Db4objects.Db4o.IO.IoAdapter ioAdapter = ConfigImpl().IoAdapter();
-			try
-			{
-				if (FileName().Length > 0)
-				{
-					if (!ioAdapter.Exists(FileName()))
-					{
-						isNew = true;
-						LogMsg(14, FileName());
-						i_handlers.OldEncryptionOff();
-					}
-					try
-					{
-						bool lockFile = Db4objects.Db4o.Debug.lockFile && ConfigImpl().LockFile() && (!ConfigImpl
-							().IsReadOnly());
-						_file = ioAdapter.Open(FileName(), lockFile, 0);
-						if (NeedsTimerFile())
-						{
-							_timerFile = ioAdapter.DelegatedIoAdapter().Open(FileName(), false, 0);
-						}
-					}
-					catch (Db4objects.Db4o.Ext.DatabaseFileLockedException de)
-					{
-						throw;
-					}
-					catch (System.Exception e)
-					{
-						Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(12, FileName(), e);
-					}
-					if (isNew)
-					{
-						ConfigureNewFile();
-						if (ConfigImpl().ReservedStorageSpace() > 0)
-						{
-							Reserve(ConfigImpl().ReservedStorageSpace());
-						}
-						CommitTransaction();
-						WriteHeader(true, false);
-					}
-					else
-					{
-						ReadThis();
-					}
-				}
-				else
-				{
-					Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(21);
-				}
-			}
-			catch (System.Exception exc)
-			{
-				if (i_references != null)
-				{
-					i_references.StopTimer();
-				}
-				throw;
-			}
 		}
 
 		public override void ReadBytes(byte[] bytes, int address, int length)
@@ -324,8 +297,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (bytesRead != expected)
 			{
-				throw new System.IO.IOException("expected read bytes = " + expected + ", but read = "
-					 + bytesRead + "bytes");
+				throw new IOException("expected read bytes = " + expected + ", but read = " + bytesRead
+					 + "bytes");
 			}
 		}
 
@@ -350,13 +323,13 @@ namespace Db4objects.Db4o.Internal
 				ZeroFile(_file, address, length);
 				ZeroFile(_backupFile, address, length);
 			}
-			catch (System.IO.IOException e)
+			catch (IOException e)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(16, e);
+				Exceptions4.ThrowRuntimeException(16, e);
 			}
 		}
 
-		private void ZeroFile(Db4objects.Db4o.IO.IoAdapter io, int address, int length)
+		private void ZeroFile(IoAdapter io, int address, int length)
 		{
 			if (io == null)
 			{
@@ -386,14 +359,14 @@ namespace Db4objects.Db4o.Internal
 					_timerFile.Sync();
 				}
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
 			}
 		}
 
 		private bool NeedsTimerFile()
 		{
-			return NeedsLockFileThread() && Db4objects.Db4o.Debug.lockFile;
+			return NeedsLockFileThread() && Debug.lockFile;
 		}
 
 		public override void WriteBytes(Db4objects.Db4o.Internal.Buffer bytes, int address
@@ -403,20 +376,19 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (Db4objects.Db4o.Deploy.debug && !Db4objects.Db4o.Deploy.flush)
+			if (Deploy.debug && !Deploy.flush)
 			{
 				return;
 			}
 			try
 			{
-				if (Db4objects.Db4o.Debug.xbytes && Db4objects.Db4o.Deploy.overwrite)
+				if (Debug.xbytes && Deploy.overwrite)
 				{
 					bool doCheck = true;
-					if (bytes is Db4objects.Db4o.Internal.StatefulBuffer)
+					if (bytes is StatefulBuffer)
 					{
-						Db4objects.Db4o.Internal.StatefulBuffer writer = (Db4objects.Db4o.Internal.StatefulBuffer
-							)bytes;
-						if (writer.GetID() == Db4objects.Db4o.Internal.Const4.IGNORE_ID)
+						StatefulBuffer writer = (StatefulBuffer)bytes;
+						if (writer.GetID() == Const4.IGNORE_ID)
 						{
 							doCheck = false;
 						}
@@ -434,9 +406,9 @@ namespace Db4objects.Db4o.Internal
 					_backupFile.Write(bytes._buffer, bytes.GetLength());
 				}
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(16, e);
+				Exceptions4.ThrowRuntimeException(16, e);
 			}
 		}
 
@@ -446,13 +418,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (address > 0 && length > 0)
 				{
-					Db4objects.Db4o.IO.IoAdapterWindow window = new Db4objects.Db4o.IO.IoAdapterWindow
-						(_file, address, length);
+					IoAdapterWindow window = new IoAdapterWindow(_file, address, length);
 					try
 					{
 						CreateFreespaceFiller().Fill(window);
 					}
-					catch (System.Exception e)
+					catch (Exception e)
 					{
 						Sharpen.Runtime.PrintStackTrace(e);
 					}
@@ -464,21 +435,20 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual Db4objects.Db4o.IO.IoAdapter TimerFile()
+		public virtual IoAdapter TimerFile()
 		{
 			return _timerFile;
 		}
 
-		private Db4objects.Db4o.Config.IFreespaceFiller CreateFreespaceFiller()
+		private IFreespaceFiller CreateFreespaceFiller()
 		{
-			Db4objects.Db4o.Config.IFreespaceFiller freespaceFiller = Config().FreespaceFiller
-				();
+			IFreespaceFiller freespaceFiller = Config().FreespaceFiller();
 			return freespaceFiller;
 		}
 
-		private class XByteFreespaceFiller : Db4objects.Db4o.Config.IFreespaceFiller
+		private class XByteFreespaceFiller : IFreespaceFiller
 		{
-			public virtual void Fill(Db4objects.Db4o.IO.IoAdapterWindow io)
+			public virtual void Fill(IoAdapterWindow io)
 			{
 				io.Write(0, XBytes(io.Length()));
 			}
@@ -488,7 +458,7 @@ namespace Db4objects.Db4o.Internal
 				byte[] bytes = new byte[len];
 				for (int i = 0; i < len; i++)
 				{
-					bytes[i] = Db4objects.Db4o.Internal.Const4.XBYTE;
+					bytes[i] = Const4.XBYTE;
 				}
 				return bytes;
 			}

@@ -1,7 +1,12 @@
+using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Tests.Common.Btree;
+
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public class BTreeSimpleTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutDefragSolo
-		, Db4oUnit.Extensions.Fixtures.IOptOutCS
+	public class BTreeSimpleTestCase : AbstractDb4oTestCase, IOptOutDefragSolo, IOptOutCS
 	{
 		protected const int BTREE_NODE_SIZE = 4;
 
@@ -43,16 +48,14 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void TestIntKeys()
 		{
-			Db4objects.Db4o.Internal.Btree.BTree btree = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert
-				.CreateIntKeyBTree(Stream(), 0, BTREE_NODE_SIZE);
+			BTree btree = BTreeAssert.CreateIntKeyBTree(Stream(), 0, BTREE_NODE_SIZE);
 			for (int i = 0; i < 5; i++)
 			{
 				btree = CycleIntKeys(btree);
 			}
 		}
 
-		private Db4objects.Db4o.Internal.Btree.BTree CycleIntKeys(Db4objects.Db4o.Internal.Btree.BTree
-			 btree)
+		private BTree CycleIntKeys(BTree btree)
 		{
 			AddKeys(btree);
 			ExpectKeys(btree, _sortedKeys);
@@ -64,8 +67,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			ExpectKeys(btree, _sortedKeys);
 			int id = btree.GetID();
 			Reopen();
-			btree = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.CreateIntKeyBTree(Stream()
-				, id, BTREE_NODE_SIZE);
+			btree = BTreeAssert.CreateIntKeyBTree(Stream(), id, BTREE_NODE_SIZE);
 			ExpectKeys(btree, _sortedKeys);
 			RemoveKeys(btree);
 			ExpectKeys(btree, _keysOnRemoval);
@@ -87,24 +89,24 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			return btree;
 		}
 
-		private void RemoveKeys(Db4objects.Db4o.Internal.Btree.BTree btree)
+		private void RemoveKeys(BTree btree)
 		{
 			btree.Remove(Trans(), 3);
 			btree.Remove(Trans(), 101);
 		}
 
-		private void AddKeys(Db4objects.Db4o.Internal.Btree.BTree btree)
+		private void AddKeys(BTree btree)
 		{
-			Db4objects.Db4o.Internal.Transaction trans = Trans();
+			Transaction trans = Trans();
 			for (int i = 0; i < _keys.Length; i++)
 			{
 				btree.Add(trans, _keys[i]);
 			}
 		}
 
-		private void ExpectKeys(Db4objects.Db4o.Internal.Btree.BTree btree, int[] keys)
+		private void ExpectKeys(BTree btree, int[] keys)
 		{
-			Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.AssertKeys(Trans(), btree, keys);
+			BTreeAssert.AssertKeys(Trans(), btree, keys);
 		}
 	}
 }

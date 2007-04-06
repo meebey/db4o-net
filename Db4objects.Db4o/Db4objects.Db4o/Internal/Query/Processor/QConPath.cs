@@ -1,3 +1,9 @@
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <summary>
@@ -11,14 +17,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// other place to hook up a new constraint.
 	/// </remarks>
 	/// <exclude></exclude>
-	public class QConPath : Db4objects.Db4o.Internal.Query.Processor.QConClass
+	public class QConPath : QConClass
 	{
 		public QConPath()
 		{
 		}
 
-		internal QConPath(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Internal.Query.Processor.QCon
-			 a_parent, Db4objects.Db4o.Internal.Query.Processor.QField a_field) : base(a_trans
+		internal QConPath(Transaction a_trans, QCon a_parent, QField a_field) : base(a_trans
 			, a_parent, a_field, null)
 		{
 			if (a_field != null)
@@ -32,8 +37,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return false;
 		}
 
-		internal override bool Evaluate(Db4objects.Db4o.Internal.Query.Processor.QCandidate
-			 a_candidate)
+		internal override bool Evaluate(QCandidate a_candidate)
 		{
 			if (!a_candidate.FieldIsAvailable())
 			{
@@ -51,8 +55,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return !HasChildren();
 		}
 
-		internal override Db4objects.Db4o.Internal.Query.Processor.QConClass ShareParentForClass
-			(Db4objects.Db4o.Reflect.IReflectClass a_class, bool[] removeExisting)
+		internal override QConClass ShareParentForClass(IReflectClass a_class, bool[] removeExisting
+			)
 		{
 			if (i_parent == null)
 			{
@@ -62,53 +66,47 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return null;
 			}
-			Db4objects.Db4o.Internal.Query.Processor.QConClass newConstraint = new Db4objects.Db4o.Internal.Query.Processor.QConClass
-				(i_trans, i_parent, i_field, a_class);
+			QConClass newConstraint = new QConClass(i_trans, i_parent, i_field, a_class);
 			Morph(removeExisting, newConstraint, a_class);
 			return newConstraint;
 		}
 
-		internal override Db4objects.Db4o.Internal.Query.Processor.QCon ShareParent(object
-			 a_object, bool[] removeExisting)
+		internal override QCon ShareParent(object a_object, bool[] removeExisting)
 		{
 			if (i_parent == null)
 			{
 				return null;
 			}
 			object obj = i_field.Coerce(a_object);
-			if (obj == Db4objects.Db4o.Foundation.No4.INSTANCE)
+			if (obj == No4.INSTANCE)
 			{
-				Db4objects.Db4o.Internal.Query.Processor.QConObject falseConstraint = new Db4objects.Db4o.Internal.Query.Processor.QConFalse
-					(i_trans, i_parent, i_field);
+				QConObject falseConstraint = new QConFalse(i_trans, i_parent, i_field);
 				Morph(removeExisting, falseConstraint, ReflectClassForObject(obj));
 				return falseConstraint;
 			}
-			Db4objects.Db4o.Internal.Query.Processor.QConObject newConstraint = new Db4objects.Db4o.Internal.Query.Processor.QConObject
-				(i_trans, i_parent, i_field, obj);
+			QConObject newConstraint = new QConObject(i_trans, i_parent, i_field, obj);
 			Morph(removeExisting, newConstraint, ReflectClassForObject(obj));
 			return newConstraint;
 		}
 
-		private Db4objects.Db4o.Reflect.IReflectClass ReflectClassForObject(object obj)
+		private IReflectClass ReflectClassForObject(object obj)
 		{
 			return i_trans.Reflector().ForObject(obj);
 		}
 
-		private void Morph(bool[] removeExisting, Db4objects.Db4o.Internal.Query.Processor.QConObject
-			 newConstraint, Db4objects.Db4o.Reflect.IReflectClass claxx)
+		private void Morph(bool[] removeExisting, QConObject newConstraint, IReflectClass
+			 claxx)
 		{
 			bool mayMorph = true;
 			if (claxx != null)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = i_trans.Stream().ProduceClassMetadata
-					(claxx);
+				ClassMetadata yc = i_trans.Stream().ProduceClassMetadata(claxx);
 				if (yc != null)
 				{
-					System.Collections.IEnumerator i = IterateChildren();
+					IEnumerator i = IterateChildren();
 					while (i.MoveNext())
 					{
-						Db4objects.Db4o.Internal.Query.Processor.QField qf = ((Db4objects.Db4o.Internal.Query.Processor.QCon
-							)i.Current).GetField();
+						QField qf = ((QCon)i.Current).GetField();
 						if (!yc.HasField(i_trans.Stream(), qf.i_name))
 						{
 							mayMorph = false;
@@ -119,19 +117,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			if (mayMorph)
 			{
-				System.Collections.IEnumerator j = IterateChildren();
+				IEnumerator j = IterateChildren();
 				while (j.MoveNext())
 				{
-					newConstraint.AddConstraint((Db4objects.Db4o.Internal.Query.Processor.QCon)j.Current
-						);
+					newConstraint.AddConstraint((QCon)j.Current);
 				}
 				if (HasJoins())
 				{
-					System.Collections.IEnumerator k = IterateJoins();
+					IEnumerator k = IterateJoins();
 					while (k.MoveNext())
 					{
-						Db4objects.Db4o.Internal.Query.Processor.QConJoin qcj = (Db4objects.Db4o.Internal.Query.Processor.QConJoin
-							)k.Current;
+						QConJoin qcj = (QConJoin)k.Current;
 						qcj.ExchangeConstraint(this, newConstraint);
 						newConstraint.AddJoin(qcj);
 					}

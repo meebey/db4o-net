@@ -1,30 +1,30 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.Slots;
+
 namespace Db4objects.Db4o.Internal.Freespace
 {
-	public class FreespaceManagerRam : Db4objects.Db4o.Internal.Freespace.FreespaceManager
+	public class FreespaceManagerRam : FreespaceManager
 	{
-		private readonly Db4objects.Db4o.Internal.TreeIntObject _finder = new Db4objects.Db4o.Internal.TreeIntObject
-			(0);
+		private readonly TreeIntObject _finder = new TreeIntObject(0);
 
-		private Db4objects.Db4o.Foundation.Tree _freeByAddress;
+		private Tree _freeByAddress;
 
-		private Db4objects.Db4o.Foundation.Tree _freeBySize;
+		private Tree _freeBySize;
 
-		public FreespaceManagerRam(Db4objects.Db4o.Internal.LocalObjectContainer file) : 
-			base(file)
+		public FreespaceManagerRam(LocalObjectContainer file) : base(file)
 		{
 		}
 
-		public virtual void TraverseFreeSlots(Db4objects.Db4o.Foundation.IVisitor4 visitor
-			)
+		public virtual void TraverseFreeSlots(IVisitor4 visitor)
 		{
-			Db4objects.Db4o.Foundation.Tree.Traverse(_freeByAddress, new _AnonymousInnerClass24
-				(this, visitor));
+			Tree.Traverse(_freeByAddress, new _AnonymousInnerClass24(this, visitor));
 		}
 
-		private sealed class _AnonymousInnerClass24 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass24 : IVisitor4
 		{
-			public _AnonymousInnerClass24(FreespaceManagerRam _enclosing, Db4objects.Db4o.Foundation.IVisitor4
-				 visitor)
+			public _AnonymousInnerClass24(FreespaceManagerRam _enclosing, IVisitor4 visitor)
 			{
 				this._enclosing = _enclosing;
 				this.visitor = visitor;
@@ -32,25 +32,23 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 			public void Visit(object obj)
 			{
-				Db4objects.Db4o.Internal.Freespace.FreeSlotNode node = (Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-					)obj;
+				FreeSlotNode node = (FreeSlotNode)obj;
 				int address = node._key;
 				int length = node._peer._key;
-				visitor.Visit(new Db4objects.Db4o.Internal.Slots.Slot(address, length));
+				visitor.Visit(new Slot(address, length));
 			}
 
 			private readonly FreespaceManagerRam _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.IVisitor4 visitor;
+			private readonly IVisitor4 visitor;
 		}
 
 		private void AddFreeSlotNodes(int a_address, int a_length)
 		{
-			Db4objects.Db4o.Internal.Freespace.FreeSlotNode addressNode = new Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-				(a_address);
+			FreeSlotNode addressNode = new FreeSlotNode(a_address);
 			addressNode.CreatePeer(a_length);
-			_freeByAddress = Db4objects.Db4o.Foundation.Tree.Add(_freeByAddress, addressNode);
-			_freeBySize = Db4objects.Db4o.Foundation.Tree.Add(_freeBySize, addressNode._peer);
+			_freeByAddress = Tree.Add(_freeByAddress, addressNode);
+			_freeBySize = Tree.Add(_freeBySize, addressNode._peer);
 		}
 
 		public override void BeginCommit()
@@ -77,17 +75,17 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 			length = _file.BlocksFor(length);
 			_finder._key = address;
-			Db4objects.Db4o.Internal.Freespace.FreeSlotNode sizeNode;
-			Db4objects.Db4o.Internal.Freespace.FreeSlotNode addressnode = (Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-				)Db4objects.Db4o.Foundation.Tree.FindSmaller(_freeByAddress, _finder);
+			FreeSlotNode sizeNode;
+			FreeSlotNode addressnode = (FreeSlotNode)Tree.FindSmaller(_freeByAddress, _finder
+				);
 			if ((addressnode != null) && ((addressnode._key + addressnode._peer._key) == address
 				))
 			{
 				sizeNode = addressnode._peer;
 				_freeBySize = _freeBySize.RemoveNode(sizeNode);
 				sizeNode._key += length;
-				Db4objects.Db4o.Internal.Freespace.FreeSlotNode secondAddressNode = (Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-					)Db4objects.Db4o.Foundation.Tree.FindGreaterOrEqual(_freeByAddress, _finder);
+				FreeSlotNode secondAddressNode = (FreeSlotNode)Tree.FindGreaterOrEqual(_freeByAddress
+					, _finder);
 				if ((secondAddressNode != null) && (address + length == secondAddressNode._key))
 				{
 					sizeNode._key += secondAddressNode._peer._key;
@@ -95,12 +93,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 					_freeByAddress = _freeByAddress.RemoveNode(secondAddressNode);
 				}
 				sizeNode.RemoveChildren();
-				_freeBySize = Db4objects.Db4o.Foundation.Tree.Add(_freeBySize, sizeNode);
+				_freeBySize = Tree.Add(_freeBySize, sizeNode);
 			}
 			else
 			{
-				addressnode = (Db4objects.Db4o.Internal.Freespace.FreeSlotNode)Db4objects.Db4o.Foundation.Tree
-					.FindGreaterOrEqual(_freeByAddress, _finder);
+				addressnode = (FreeSlotNode)Tree.FindGreaterOrEqual(_freeByAddress, _finder);
 				if ((addressnode != null) && (address + length == addressnode._key))
 				{
 					sizeNode = addressnode._peer;
@@ -110,8 +107,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 					addressnode._key = address;
 					addressnode.RemoveChildren();
 					sizeNode.RemoveChildren();
-					_freeByAddress = Db4objects.Db4o.Foundation.Tree.Add(_freeByAddress, addressnode);
-					_freeBySize = Db4objects.Db4o.Foundation.Tree.Add(_freeBySize, sizeNode);
+					_freeByAddress = Tree.Add(_freeByAddress, addressnode);
+					_freeBySize = Tree.Add(_freeBySize, sizeNode);
 				}
 				else
 				{
@@ -127,17 +124,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override int FreeSize()
 		{
-			Db4objects.Db4o.Foundation.MutableInt mint = new Db4objects.Db4o.Foundation.MutableInt
-				();
-			Db4objects.Db4o.Foundation.Tree.Traverse(_freeBySize, new _AnonymousInnerClass136
-				(this, mint));
+			MutableInt mint = new MutableInt();
+			Tree.Traverse(_freeBySize, new _AnonymousInnerClass136(this, mint));
 			return mint.Value();
 		}
 
-		private sealed class _AnonymousInnerClass136 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass136 : IVisitor4
 		{
-			public _AnonymousInnerClass136(FreespaceManagerRam _enclosing, Db4objects.Db4o.Foundation.MutableInt
-				 mint)
+			public _AnonymousInnerClass136(FreespaceManagerRam _enclosing, MutableInt mint)
 			{
 				this._enclosing = _enclosing;
 				this.mint = mint;
@@ -145,22 +139,18 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 			public void Visit(object obj)
 			{
-				Db4objects.Db4o.Internal.Freespace.FreeSlotNode node = (Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-					)obj;
+				FreeSlotNode node = (FreeSlotNode)obj;
 				mint.Add(node._key);
 			}
 
 			private readonly FreespaceManagerRam _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.MutableInt mint;
+			private readonly MutableInt mint;
 		}
 
 		public override int GetSlot(int length)
 		{
 			int address = GetSlot1(length);
-			if (address != 0)
-			{
-			}
 			return address;
 		}
 
@@ -169,14 +159,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 			length = _file.BlocksFor(length);
 			_finder._key = length;
 			_finder._object = null;
-			_freeBySize = Db4objects.Db4o.Internal.Freespace.FreeSlotNode.RemoveGreaterOrEqual
-				((Db4objects.Db4o.Internal.Freespace.FreeSlotNode)_freeBySize, _finder);
+			_freeBySize = FreeSlotNode.RemoveGreaterOrEqual((FreeSlotNode)_freeBySize, _finder
+				);
 			if (_finder._object == null)
 			{
 				return 0;
 			}
-			Db4objects.Db4o.Internal.Freespace.FreeSlotNode node = (Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-				)_finder._object;
+			FreeSlotNode node = (FreeSlotNode)_finder._object;
 			int blocksFound = node._key;
 			int address = node._peer._key;
 			_freeByAddress = _freeByAddress.RemoveNode(node._peer);
@@ -187,19 +176,18 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return address;
 		}
 
-		public override void Migrate(Db4objects.Db4o.Internal.Freespace.FreespaceManager 
-			newFM)
+		public override void Migrate(FreespaceManager newFM)
 		{
 			if (_freeByAddress != null)
 			{
-				_freeByAddress.Traverse(new _AnonymousInnerClass180(this, newFM));
+				_freeByAddress.Traverse(new _AnonymousInnerClass179(this, newFM));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass180 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass179 : IVisitor4
 		{
-			public _AnonymousInnerClass180(FreespaceManagerRam _enclosing, Db4objects.Db4o.Internal.Freespace.FreespaceManager
-				 newFM)
+			public _AnonymousInnerClass179(FreespaceManagerRam _enclosing, FreespaceManager newFM
+				)
 			{
 				this._enclosing = _enclosing;
 				this.newFM = newFM;
@@ -207,8 +195,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 			public void Visit(object a_object)
 			{
-				Db4objects.Db4o.Internal.Freespace.FreeSlotNode fsn = (Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-					)a_object;
+				FreeSlotNode fsn = (FreeSlotNode)a_object;
 				int address = fsn._key;
 				int length = fsn._peer._key;
 				newFM.Free(address, length);
@@ -216,10 +203,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 			private readonly FreespaceManagerRam _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.Freespace.FreespaceManager newFM;
+			private readonly FreespaceManager newFM;
 		}
 
-		public override void OnNew(Db4objects.Db4o.Internal.LocalObjectContainer file)
+		public override void OnNew(LocalObjectContainer file)
 		{
 		}
 
@@ -233,30 +220,27 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			Db4objects.Db4o.Internal.StatefulBuffer reader = _file.ReadWriterByID(Trans(), freeSlotsID
-				);
+			StatefulBuffer reader = _file.ReadWriterByID(Trans(), freeSlotsID);
 			if (reader == null)
 			{
 				return;
 			}
-			Db4objects.Db4o.Internal.Freespace.FreeSlotNode.sizeLimit = DiscardLimit();
-			_freeBySize = new Db4objects.Db4o.Internal.TreeReader(reader, new Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-				(0), true).Read();
-			Db4objects.Db4o.Foundation.Tree.ByRef addressTree = new Db4objects.Db4o.Foundation.Tree.ByRef
-				();
+			FreeSlotNode.sizeLimit = DiscardLimit();
+			_freeBySize = new TreeReader(reader, new FreeSlotNode(0), true).Read();
+			Tree.ByRef addressTree = new Tree.ByRef();
 			if (_freeBySize != null)
 			{
-				_freeBySize.Traverse(new _AnonymousInnerClass213(this, addressTree));
+				_freeBySize.Traverse(new _AnonymousInnerClass212(this, addressTree));
 			}
 			_freeByAddress = addressTree.value;
-			_file.Free(freeSlotsID, Db4objects.Db4o.Internal.Const4.POINTER_LENGTH);
+			_file.Free(freeSlotsID, Const4.POINTER_LENGTH);
 			_file.Free(reader.GetAddress(), reader.GetLength());
 		}
 
-		private sealed class _AnonymousInnerClass213 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass212 : IVisitor4
 		{
-			public _AnonymousInnerClass213(FreespaceManagerRam _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
-				 addressTree)
+			public _AnonymousInnerClass212(FreespaceManagerRam _enclosing, Tree.ByRef addressTree
+				)
 			{
 				this._enclosing = _enclosing;
 				this.addressTree = addressTree;
@@ -264,14 +248,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 			public void Visit(object a_object)
 			{
-				Db4objects.Db4o.Internal.Freespace.FreeSlotNode node = ((Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-					)a_object)._peer;
-				addressTree.value = Db4objects.Db4o.Foundation.Tree.Add(addressTree.value, node);
+				FreeSlotNode node = ((FreeSlotNode)a_object)._peer;
+				addressTree.value = Tree.Add(addressTree.value, node);
 			}
 
 			private readonly FreespaceManagerRam _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.Tree.ByRef addressTree;
+			private readonly Tree.ByRef addressTree;
 		}
 
 		public override void Start(int slotAddress)
@@ -283,23 +266,20 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return FM_RAM;
 		}
 
-		private Db4objects.Db4o.Internal.LocalTransaction Trans()
+		private LocalTransaction Trans()
 		{
-			return (Db4objects.Db4o.Internal.LocalTransaction)_file.SystemTransaction();
+			return (LocalTransaction)_file.SystemTransaction();
 		}
 
 		public override int Shutdown()
 		{
 			int freeBySizeID = 0;
-			int length = Db4objects.Db4o.Internal.TreeInt.ByteCount((Db4objects.Db4o.Internal.TreeInt
-				)_freeBySize);
-			Db4objects.Db4o.Internal.Slots.Pointer4 ptr = _file.NewSlot(Trans(), length);
+			int length = TreeInt.ByteCount((TreeInt)_freeBySize);
+			Pointer4 ptr = _file.NewSlot(Trans(), length);
 			freeBySizeID = ptr._id;
-			Db4objects.Db4o.Internal.StatefulBuffer sdwriter = new Db4objects.Db4o.Internal.StatefulBuffer
-				(Trans(), length);
+			StatefulBuffer sdwriter = new StatefulBuffer(Trans(), length);
 			sdwriter.UseSlot(freeBySizeID, ptr._address, length);
-			Db4objects.Db4o.Internal.TreeInt.Write(sdwriter, (Db4objects.Db4o.Internal.TreeInt
-				)_freeBySize);
+			TreeInt.Write(sdwriter, (TreeInt)_freeBySize);
 			sdwriter.WriteEncrypt();
 			Trans().WritePointer(ptr._id, ptr._address, length);
 			return freeBySizeID;
@@ -307,7 +287,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override int EntryCount()
 		{
-			return Db4objects.Db4o.Foundation.Tree.Size(_freeByAddress);
+			return Tree.Size(_freeByAddress);
 		}
 	}
 }

@@ -1,18 +1,19 @@
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MPing : Db4objects.Db4o.Internal.CS.Messages.Msg, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
-		, Db4objects.Db4o.Internal.CS.Messages.IClientSideMessage
+	public class MPing : Msg, IServerSideMessage, IClientSideMessage
 	{
 		public virtual bool ProcessAtServer()
 		{
-			Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OK);
+			Write(Msg.OK);
 			return true;
 		}
 
 		public virtual bool ProcessAtClient()
 		{
-			Write(Db4objects.Db4o.Internal.CS.Messages.Msg.OK);
+			Write(Msg.PONG);
 			return true;
 		}
 	}

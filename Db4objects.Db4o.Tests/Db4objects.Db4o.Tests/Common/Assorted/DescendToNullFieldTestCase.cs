@@ -1,6 +1,12 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Assorted;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class DescendToNullFieldTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class DescendToNullFieldTestCase : AbstractDb4oTestCase
 	{
 		private static int COUNT = 2;
 
@@ -8,14 +14,11 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			public string _name;
 
-			public Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase.ChildItem
-				 one;
+			public DescendToNullFieldTestCase.ChildItem one;
 
-			public Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase.ChildItem
-				 two;
+			public DescendToNullFieldTestCase.ChildItem two;
 
-			public ParentItem(string name, Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase.ChildItem
-				 child1, Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase.ChildItem
+			public ParentItem(string name, DescendToNullFieldTestCase.ChildItem child1, DescendToNullFieldTestCase.ChildItem
 				 child2)
 			{
 				_name = name;
@@ -38,14 +41,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			for (int i = 0; i < COUNT; i++)
 			{
-				Store(new Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase.ParentItem
-					("one", new Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase.ChildItem
+				Store(new DescendToNullFieldTestCase.ParentItem("one", new DescendToNullFieldTestCase.ChildItem
 					("one"), null));
 			}
 			for (int i = 0; i < COUNT; i++)
 			{
-				Store(new Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase.ParentItem
-					("two", null, new Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase.ChildItem
+				Store(new DescendToNullFieldTestCase.ParentItem("two", null, new DescendToNullFieldTestCase.ChildItem
 					("two")));
 			}
 		}
@@ -58,17 +59,15 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void AssertResults(string name)
 		{
-			Db4objects.Db4o.Query.IQuery query = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase.ParentItem)
-				);
+			IQuery query = NewQuery(typeof(DescendToNullFieldTestCase.ParentItem));
 			query.Descend(name).Descend("_name").Constrain(name);
-			Db4objects.Db4o.IObjectSet objectSet = query.Execute();
-			Db4oUnit.Assert.AreEqual(COUNT, objectSet.Size());
+			IObjectSet objectSet = query.Execute();
+			Assert.AreEqual(COUNT, objectSet.Size());
 			while (objectSet.HasNext())
 			{
-				Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase.ParentItem parentItem
-					 = (Db4objects.Db4o.Tests.Common.Assorted.DescendToNullFieldTestCase.ParentItem)
-					objectSet.Next();
-				Db4oUnit.Assert.AreEqual(name, parentItem._name);
+				DescendToNullFieldTestCase.ParentItem parentItem = (DescendToNullFieldTestCase.ParentItem
+					)objectSet.Next();
+				Assert.AreEqual(name, parentItem._name);
 			}
 		}
 	}

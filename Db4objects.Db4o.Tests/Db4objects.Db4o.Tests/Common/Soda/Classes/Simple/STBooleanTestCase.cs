@@ -1,6 +1,9 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 {
-	public class STBooleanTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STBooleanTestCase : SodaBaseTestCase
 	{
 		public bool i_boolean;
 
@@ -24,16 +27,16 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 
 		public virtual void TestEqualsTrue()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STBooleanTestCase
 				(true));
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STBooleanTestCase
+			SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STBooleanTestCase
 				(true));
 		}
 
 		public virtual void TestEqualsFalse()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STBooleanTestCase
 				(false));
 			q.Descend("i_boolean").Constrain(false);

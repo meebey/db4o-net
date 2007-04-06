@@ -1,15 +1,20 @@
+using System.Collections;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Fieldindex;
+
 namespace Db4objects.Db4o.Internal.Fieldindex
 {
-	public interface IIndexedNode : System.Collections.IEnumerable
+	public interface IIndexedNode : IEnumerable
 	{
 		bool IsResolved();
 
-		Db4objects.Db4o.Internal.Fieldindex.IIndexedNode Resolve();
+		IIndexedNode Resolve();
 
-		Db4objects.Db4o.Internal.Btree.BTree GetIndex();
+		BTree GetIndex();
 
 		int ResultSize();
 
-		Db4objects.Db4o.Internal.TreeInt ToTreeInt();
+		TreeInt ToTreeInt();
 	}
 }

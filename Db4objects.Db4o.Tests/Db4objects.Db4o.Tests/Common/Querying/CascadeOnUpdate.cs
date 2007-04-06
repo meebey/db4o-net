@@ -1,10 +1,16 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Tests.Common.Querying;
+
 namespace Db4objects.Db4o.Tests.Common.Querying
 {
-	public class CascadeOnUpdate : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class CascadeOnUpdate : AbstractDb4oTestCase
 	{
 		public class Atom
 		{
-			public Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate.Atom child;
+			public CascadeOnUpdate.Atom child;
 
 			public string name;
 
@@ -12,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			{
 			}
 
-			public Atom(Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate.Atom child)
+			public Atom(CascadeOnUpdate.Atom child)
 			{
 				this.child = child;
 			}
@@ -22,8 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 				this.name = name;
 			}
 
-			public Atom(Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate.Atom child, string
-				 name) : this(child)
+			public Atom(CascadeOnUpdate.Atom child, string name) : this(child)
 			{
 				this.name = name;
 			}
@@ -31,17 +36,16 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public object child;
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration conf)
+		protected override void Configure(IConfiguration conf)
 		{
 			conf.ObjectClass(this).CascadeOnUpdate(true);
 		}
 
 		protected override void Store()
 		{
-			Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate cou = new Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate
-				();
-			cou.child = new Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate.Atom(new Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate.Atom
-				("storedChild"), "stored");
+			CascadeOnUpdate cou = new CascadeOnUpdate();
+			cou.child = new CascadeOnUpdate.Atom(new CascadeOnUpdate.Atom("storedChild"), "stored"
+				);
 			Db().Set(cou);
 		}
 
@@ -52,7 +56,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			Foreach(GetType(), new _AnonymousInnerClass59(this));
 		}
 
-		private sealed class _AnonymousInnerClass48 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass48 : IVisitor4
 		{
 			public _AnonymousInnerClass48(CascadeOnUpdate _enclosing)
 			{
@@ -61,18 +65,16 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 			public void Visit(object obj)
 			{
-				Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate cou = (Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate
-					)obj;
-				((Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate.Atom)cou.child).name = "updated";
-				((Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate.Atom)cou.child).child.name
-					 = "updated";
+				CascadeOnUpdate cou = (CascadeOnUpdate)obj;
+				((CascadeOnUpdate.Atom)cou.child).name = "updated";
+				((CascadeOnUpdate.Atom)cou.child).child.name = "updated";
 				this._enclosing.Db().Set(cou);
 			}
 
 			private readonly CascadeOnUpdate _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass59 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass59 : IVisitor4
 		{
 			public _AnonymousInnerClass59(CascadeOnUpdate _enclosing)
 			{
@@ -81,12 +83,10 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 			public void Visit(object obj)
 			{
-				Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate cou = (Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate
-					)obj;
-				Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate.Atom atom = (Db4objects.Db4o.Tests.Common.Querying.CascadeOnUpdate.Atom
-					)cou.child;
-				Db4oUnit.Assert.AreEqual("updated", atom.name);
-				Db4oUnit.Assert.AreNotEqual("updated", atom.child.name);
+				CascadeOnUpdate cou = (CascadeOnUpdate)obj;
+				CascadeOnUpdate.Atom atom = (CascadeOnUpdate.Atom)cou.child;
+				Assert.AreEqual("updated", atom.name);
+				Assert.AreNotEqual("updated", atom.child.name);
 			}
 
 			private readonly CascadeOnUpdate _enclosing;

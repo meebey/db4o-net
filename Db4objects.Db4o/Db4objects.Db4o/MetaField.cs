@@ -1,3 +1,5 @@
+using Db4objects.Db4o;
+
 namespace Db4objects.Db4o
 {
 	/// <summary>Field MetaData to be stored to the database file.</summary>
@@ -7,10 +9,10 @@ namespace Db4objects.Db4o
 	/// </remarks>
 	/// <exclude></exclude>
 	/// <persistent></persistent>
-	public class MetaField : Db4objects.Db4o.IInternal4
+	public class MetaField : IInternal4
 	{
 		public string name;
 
-		public Db4objects.Db4o.MetaIndex index;
+		public MetaIndex index;
 	}
 }

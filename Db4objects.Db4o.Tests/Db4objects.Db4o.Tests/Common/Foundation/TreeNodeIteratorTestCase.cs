@@ -1,11 +1,17 @@
+using System.Collections;
+using Db4oUnit;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Foundation;
+using Sharpen;
+
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
-	public class TreeNodeIteratorTestCase : Db4oUnit.ITestCase
+	public class TreeNodeIteratorTestCase : ITestCase
 	{
 		public static void Main(string[] args)
 		{
-			new Db4oUnit.TestRunner(typeof(Db4objects.Db4o.Tests.Common.Foundation.TreeNodeIteratorTestCase)
-				).Run();
+			new TestRunner(typeof(TreeNodeIteratorTestCase)).Run();
 		}
 
 		private static int[] VALUES = new int[] { 1, 3, 5, 7, 9, 10, 11, 13, 24, 76 };
@@ -20,12 +26,11 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		public virtual void TestMoveNextAfterCompletion()
 		{
-			System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.TreeNodeIterator
-				(CreateTree(VALUES));
+			IEnumerator i = new TreeNodeIterator(CreateTree(VALUES));
 			while (i.MoveNext())
 			{
 			}
-			Db4oUnit.Assert.IsFalse(i.MoveNext());
+			Assert.IsFalse(i.MoveNext());
 		}
 
 		private void AssertIterateValues(int[] values, int count)
@@ -37,16 +42,14 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private void AssertIterateValues(int[] values)
 		{
-			Db4objects.Db4o.Foundation.Tree tree = CreateTree(VALUES);
-			System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.TreeNodeIterator
-				(tree);
+			Tree tree = CreateTree(VALUES);
+			IEnumerator i = new TreeNodeIterator(tree);
 			tree.Traverse(new _AnonymousInnerClass47(this, i));
 		}
 
-		private sealed class _AnonymousInnerClass47 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass47 : IVisitor4
 		{
-			public _AnonymousInnerClass47(TreeNodeIteratorTestCase _enclosing, System.Collections.IEnumerator
-				 i)
+			public _AnonymousInnerClass47(TreeNodeIteratorTestCase _enclosing, IEnumerator i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;
@@ -55,30 +58,28 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			public void Visit(object obj)
 			{
 				i.MoveNext();
-				Db4oUnit.Assert.AreSame(obj, i.Current);
+				Assert.AreSame(obj, i.Current);
 			}
 
 			private readonly TreeNodeIteratorTestCase _enclosing;
 
-			private readonly System.Collections.IEnumerator i;
+			private readonly IEnumerator i;
 		}
 
-		private Db4objects.Db4o.Foundation.Tree CreateTree(int[] values)
+		private Tree CreateTree(int[] values)
 		{
-			Db4objects.Db4o.Foundation.Tree tree = new Db4objects.Db4o.Internal.TreeInt(values
-				[0]);
+			Tree tree = new TreeInt(values[0]);
 			for (int i = 1; i < values.Length; i++)
 			{
-				tree = tree.Add(new Db4objects.Db4o.Internal.TreeInt(values[i]));
+				tree = tree.Add(new TreeInt(values[i]));
 			}
 			return tree;
 		}
 
 		public virtual void TestEmpty()
 		{
-			System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.TreeNodeIterator
-				(null);
-			Db4oUnit.Assert.IsFalse(i.MoveNext());
+			IEnumerator i = new TreeNodeIterator(null);
+			Assert.IsFalse(i.MoveNext());
 		}
 	}
 }

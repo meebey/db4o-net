@@ -1,25 +1,23 @@
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Btree.Algebra;
+
 namespace Db4objects.Db4o.Internal.Btree.Algebra
 {
 	/// <exclude></exclude>
-	public class BTreeRangeSingleIntersect : Db4objects.Db4o.Internal.Btree.Algebra.BTreeRangeSingleOperation
+	public class BTreeRangeSingleIntersect : BTreeRangeSingleOperation
 	{
-		public BTreeRangeSingleIntersect(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle 
-			single) : base(single)
+		public BTreeRangeSingleIntersect(BTreeRangeSingle single) : base(single)
 		{
 		}
 
-		protected override Db4objects.Db4o.Internal.Btree.IBTreeRange Execute(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle
-			 single)
+		protected override IBTreeRange Execute(BTreeRangeSingle single)
 		{
-			return Db4objects.Db4o.Internal.Btree.Algebra.BTreeAlgebra.Intersect(_single, single
-				);
+			return BTreeAlgebra.Intersect(_single, single);
 		}
 
-		protected override Db4objects.Db4o.Internal.Btree.IBTreeRange Execute(Db4objects.Db4o.Internal.Btree.BTreeRangeUnion
-			 union)
+		protected override IBTreeRange Execute(BTreeRangeUnion union)
 		{
-			return Db4objects.Db4o.Internal.Btree.Algebra.BTreeAlgebra.Intersect(union, _single
-				);
+			return BTreeAlgebra.Intersect(union, _single);
 		}
 	}
 }

@@ -1,3 +1,6 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o
 {
 	/// <summary>The index record that is written to the database file.</summary>
@@ -7,7 +10,7 @@ namespace Db4objects.Db4o
 	/// </remarks>
 	/// <exclude></exclude>
 	/// <persistent></persistent>
-	public class MetaIndex : Db4objects.Db4o.IInternal4
+	public class MetaIndex : IInternal4
 	{
 		public int indexAddress;
 
@@ -41,7 +44,7 @@ namespace Db4objects.Db4o
 			writer.WriteInt(patchLength);
 		}
 
-		public virtual void Free(Db4objects.Db4o.Internal.LocalObjectContainer file)
+		public virtual void Free(LocalObjectContainer file)
 		{
 			file.Free(indexAddress, indexLength);
 			indexAddress = 0;

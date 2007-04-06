@@ -1,6 +1,10 @@
+using Db4oUnit;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Tests.Common.Foundation;
+
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
-	public class CompositeIterator4TestCase : Db4oUnit.ITestCase
+	public class CompositeIterator4TestCase : ITestCase
 	{
 		public virtual void TestWithEmptyIterators()
 		{
@@ -9,33 +13,26 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		public virtual void TestReset()
 		{
-			Db4objects.Db4o.Foundation.CompositeIterator4 iterator = NewIterator();
+			CompositeIterator4 iterator = NewIterator();
 			AssertIterator(iterator);
 			iterator.Reset();
 			AssertIterator(iterator);
 		}
 
-		private void AssertIterator(Db4objects.Db4o.Foundation.CompositeIterator4 iterator
-			)
+		private void AssertIterator(CompositeIterator4 iterator)
 		{
-			Db4objects.Db4o.Tests.Common.Foundation.IteratorAssert.AreEqual(Db4objects.Db4o.Tests.Common.Foundation.IntArrays4
-				.NewIterator(new int[] { 1, 2, 3, 4, 5, 6 }), iterator);
+			IteratorAssert.AreEqual(IntArrays4.NewIterator(new int[] { 1, 2, 3, 4, 5, 6 }), iterator
+				);
 		}
 
-		private Db4objects.Db4o.Foundation.CompositeIterator4 NewIterator()
+		private CompositeIterator4 NewIterator()
 		{
-			Db4objects.Db4o.Foundation.Collection4 iterators = new Db4objects.Db4o.Foundation.Collection4
-				();
-			iterators.Add(Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.NewIterator(new 
-				int[] { 1, 2, 3 }));
-			iterators.Add(Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.NewIterator(new 
-				int[] {  }));
-			iterators.Add(Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.NewIterator(new 
-				int[] { 4 }));
-			iterators.Add(Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.NewIterator(new 
-				int[] { 5, 6 }));
-			Db4objects.Db4o.Foundation.CompositeIterator4 iterator = new Db4objects.Db4o.Foundation.CompositeIterator4
-				(iterators.GetEnumerator());
+			Collection4 iterators = new Collection4();
+			iterators.Add(IntArrays4.NewIterator(new int[] { 1, 2, 3 }));
+			iterators.Add(IntArrays4.NewIterator(new int[] {  }));
+			iterators.Add(IntArrays4.NewIterator(new int[] { 4 }));
+			iterators.Add(IntArrays4.NewIterator(new int[] { 5, 6 }));
+			CompositeIterator4 iterator = new CompositeIterator4(iterators.GetEnumerator());
 			return iterator;
 		}
 	}

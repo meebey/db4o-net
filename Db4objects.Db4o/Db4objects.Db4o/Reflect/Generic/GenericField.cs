@@ -1,11 +1,15 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Generic;
+
 namespace Db4objects.Db4o.Reflect.Generic
 {
 	/// <exclude></exclude>
-	public class GenericField : Db4objects.Db4o.Reflect.IReflectField, Db4objects.Db4o.Foundation.IDeepClone
+	public class GenericField : IReflectField, IDeepClone
 	{
 		private readonly string _name;
 
-		private readonly Db4objects.Db4o.Reflect.Generic.GenericClass _type;
+		private readonly GenericClass _type;
 
 		private readonly bool _primitive;
 
@@ -15,11 +19,11 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private int _index = -1;
 
-		public GenericField(string name, Db4objects.Db4o.Reflect.IReflectClass clazz, bool
-			 primitive, bool array, bool nDimensionalArray)
+		public GenericField(string name, IReflectClass clazz, bool primitive, bool array, 
+			bool nDimensionalArray)
 		{
 			_name = name;
-			_type = (Db4objects.Db4o.Reflect.Generic.GenericClass)clazz;
+			_type = (GenericClass)clazz;
 			_primitive = primitive;
 			_array = array;
 			_nDimensionalArray = nDimensionalArray;
@@ -27,9 +31,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual object DeepClone(object obj)
 		{
-			Db4objects.Db4o.Reflect.IReflector reflector = (Db4objects.Db4o.Reflect.IReflector
-				)obj;
-			Db4objects.Db4o.Reflect.IReflectClass newReflectClass = null;
+			IReflector reflector = (IReflector)obj;
+			IReflectClass newReflectClass = null;
 			if (_type != null)
 			{
 				newReflectClass = reflector.ForName(_type.GetName());
@@ -40,7 +43,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual object Get(object onObject)
 		{
-			return ((Db4objects.Db4o.Reflect.Generic.GenericObject)onObject).Get(_index);
+			return ((GenericObject)onObject).Get(_index);
 		}
 
 		public virtual string GetName()
@@ -48,7 +51,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _name;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass GetFieldType()
+		public virtual IReflectClass GetFieldType()
 		{
 			if (_array)
 			{
@@ -79,7 +82,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual void Set(object onObject, object value)
 		{
-			((Db4objects.Db4o.Reflect.Generic.GenericObject)onObject).Set(_index, value);
+			((GenericObject)onObject).Set(_index, value);
 		}
 
 		public virtual void SetAccessible()
@@ -96,7 +99,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return orig;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass IndexType()
+		public virtual IReflectClass IndexType()
 		{
 			return GetFieldType();
 		}

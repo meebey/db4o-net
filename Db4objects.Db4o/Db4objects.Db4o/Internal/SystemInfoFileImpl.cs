@@ -1,11 +1,14 @@
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class SystemInfoFileImpl : Db4objects.Db4o.Ext.ISystemInfo
+	public class SystemInfoFileImpl : ISystemInfo
 	{
-		private Db4objects.Db4o.Internal.LocalObjectContainer _file;
+		private LocalObjectContainer _file;
 
-		public SystemInfoFileImpl(Db4objects.Db4o.Internal.LocalObjectContainer file)
+		public SystemInfoFileImpl(LocalObjectContainer file)
 		{
 			_file = file;
 		}

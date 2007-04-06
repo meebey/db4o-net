@@ -1,8 +1,11 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
+
 namespace Db4objects.Db4o.Internal.Freespace
 {
 	public abstract class FreespaceManager
 	{
-		internal readonly Db4objects.Db4o.Internal.LocalObjectContainer _file;
+		internal readonly LocalObjectContainer _file;
 
 		public const byte FM_DEFAULT = 0;
 
@@ -16,7 +19,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private const int INTS_IN_SLOT = 12;
 
-		public FreespaceManager(Db4objects.Db4o.Internal.LocalObjectContainer file)
+		public FreespaceManager(LocalObjectContainer file)
 		{
 			_file = file;
 		}
@@ -30,15 +33,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return systemType;
 		}
 
-		public static Db4objects.Db4o.Internal.Freespace.FreespaceManager CreateNew(Db4objects.Db4o.Internal.LocalObjectContainer
+		public static Db4objects.Db4o.Internal.Freespace.FreespaceManager CreateNew(LocalObjectContainer
 			 file)
 		{
 			return CreateNew(file, file.SystemData().FreespaceSystem());
 		}
 
-		public abstract void OnNew(Db4objects.Db4o.Internal.LocalObjectContainer file);
+		public abstract void OnNew(LocalObjectContainer file);
 
-		public static Db4objects.Db4o.Internal.Freespace.FreespaceManager CreateNew(Db4objects.Db4o.Internal.LocalObjectContainer
+		public static Db4objects.Db4o.Internal.Freespace.FreespaceManager CreateNew(LocalObjectContainer
 			 file, byte systemType)
 		{
 			systemType = CheckType(systemType);
@@ -46,29 +49,28 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				case FM_IX:
 				{
-					return new Db4objects.Db4o.Internal.Freespace.FreespaceManagerIx(file);
+					return new FreespaceManagerIx(file);
 				}
 
 				default:
 				{
-					return new Db4objects.Db4o.Internal.Freespace.FreespaceManagerRam(file);
+					return new FreespaceManagerRam(file);
 					break;
 				}
 			}
 		}
 
-		public static int InitSlot(Db4objects.Db4o.Internal.LocalObjectContainer file)
+		public static int InitSlot(LocalObjectContainer file)
 		{
 			int address = file.GetSlot(SlotLength());
 			SlotEntryToZeroes(file, address);
 			return address;
 		}
 
-		internal static void SlotEntryToZeroes(Db4objects.Db4o.Internal.LocalObjectContainer
-			 file, int address)
+		internal static void SlotEntryToZeroes(LocalObjectContainer file, int address)
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer writer = new Db4objects.Db4o.Internal.StatefulBuffer
-				(file.SystemTransaction(), address, SlotLength());
+			StatefulBuffer writer = new StatefulBuffer(file.SystemTransaction(), address, SlotLength
+				());
 			for (int i = 0; i < INTS_IN_SLOT; i++)
 			{
 				writer.WriteInt(0);
@@ -78,7 +80,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		internal static int SlotLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.INT_LENGTH * INTS_IN_SLOT;
+			return Const4.INT_LENGTH * INTS_IN_SLOT;
 		}
 
 		public abstract void BeginCommit();

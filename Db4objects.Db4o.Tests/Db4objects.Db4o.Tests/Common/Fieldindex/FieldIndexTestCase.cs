@@ -1,15 +1,28 @@
+using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Tests.Common.Btree;
+using Db4objects.Db4o.Tests.Common.Fieldindex;
+using Db4objects.Db4o.Tests.Common.Foundation;
+
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
-	public class FieldIndexTestCase : Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexTestCaseBase
+	public class FieldIndexTestCase : FieldIndexTestCaseBase
 	{
 		private static readonly int[] FOOS = new int[] { 3, 7, 9, 4 };
 
 		public static void Main(string[] arguments)
 		{
-			new Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexTestCase().RunSolo();
+			new FieldIndexTestCase().RunSolo();
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
 		}
@@ -21,9 +34,9 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestTraverseValues()
 		{
-			Db4objects.Db4o.Ext.IStoredField field = YapField();
-			Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor expectingVisitor = new Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
-				(Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.ToObjectArray(FOOS));
+			IStoredField field = YapField();
+			ExpectingVisitor expectingVisitor = new ExpectingVisitor(IntArrays4.ToObjectArray
+				(FOOS));
 			field.TraverseValues(expectingVisitor);
 			expectingVisitor.AssertExpectations();
 		}
@@ -32,47 +45,43 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			for (int i = 0; i < FOOS.Length; i++)
 			{
-				Db4objects.Db4o.Query.IQuery q = CreateQuery(FOOS[i]);
-				Db4objects.Db4o.IObjectSet objectSet = q.Execute();
-				Db4oUnit.Assert.AreEqual(1, objectSet.Size());
-				Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem fii = (Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem
-					)objectSet.Next();
-				Db4oUnit.Assert.AreEqual(FOOS[i], fii.foo);
+				IQuery q = CreateQuery(FOOS[i]);
+				IObjectSet objectSet = q.Execute();
+				Assert.AreEqual(1, objectSet.Size());
+				FieldIndexItem fii = (FieldIndexItem)objectSet.Next();
+				Assert.AreEqual(FOOS[i], fii.foo);
 			}
 		}
 
 		public virtual void TestAccessingBTree()
 		{
-			Db4objects.Db4o.Internal.Btree.BTree bTree = YapField().GetIndex(Trans());
-			Db4oUnit.Assert.IsNotNull(bTree);
+			BTree bTree = YapField().GetIndex(Trans());
+			Assert.IsNotNull(bTree);
 			ExpectKeysSearch(bTree, FOOS);
 		}
 
-		private void ExpectKeysSearch(Db4objects.Db4o.Internal.Btree.BTree btree, int[] values
-			)
+		private void ExpectKeysSearch(BTree btree, int[] values)
 		{
 			int lastValue = int.MinValue;
 			for (int i = 0; i < values.Length; i++)
 			{
 				if (values[i] != lastValue)
 				{
-					Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor expectingVisitor = Db4objects.Db4o.Tests.Common.Btree.BTreeAssert
-						.CreateExpectingVisitor(values[i], Db4objects.Db4o.Tests.Common.Foundation.IntArrays4
-						.Occurences(values, values[i]));
-					Db4objects.Db4o.Internal.Btree.IBTreeRange range = FieldIndexKeySearch(Trans(), btree
-						, values[i]);
-					Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.TraverseKeys(range, new _AnonymousInnerClass64
-						(this, expectingVisitor));
+					ExpectingVisitor expectingVisitor = BTreeAssert.CreateExpectingVisitor(values[i], 
+						IntArrays4.Occurences(values, values[i]));
+					IBTreeRange range = FieldIndexKeySearch(Trans(), btree, values[i]);
+					BTreeAssert.TraverseKeys(range, new _AnonymousInnerClass64(this, expectingVisitor
+						));
 					expectingVisitor.AssertExpectations();
 					lastValue = values[i];
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass64 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass64 : IVisitor4
 		{
-			public _AnonymousInnerClass64(FieldIndexTestCase _enclosing, Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
-				 expectingVisitor)
+			public _AnonymousInnerClass64(FieldIndexTestCase _enclosing, ExpectingVisitor expectingVisitor
+				)
 			{
 				this._enclosing = _enclosing;
 				this.expectingVisitor = expectingVisitor;
@@ -87,7 +96,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 			private readonly FieldIndexTestCase _enclosing;
 
-			private readonly Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor expectingVisitor;
+			private readonly ExpectingVisitor expectingVisitor;
 		}
 
 		private Db4objects.Db4o.Internal.Btree.FieldIndexKey FieldIndexKey(int integerPart
@@ -96,24 +105,21 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			return new Db4objects.Db4o.Internal.Btree.FieldIndexKey(integerPart, composite);
 		}
 
-		private Db4objects.Db4o.Internal.Btree.IBTreeRange FieldIndexKeySearch(Db4objects.Db4o.Internal.Transaction
-			 trans, Db4objects.Db4o.Internal.Btree.BTree btree, object key)
+		private IBTreeRange FieldIndexKeySearch(Transaction trans, BTree btree, object key
+			)
 		{
-			Db4objects.Db4o.Internal.Btree.BTreeNodeSearchResult start = btree.SearchLeaf(trans
-				, FieldIndexKey(0, key), Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST);
-			Db4objects.Db4o.Internal.Btree.BTreeNodeSearchResult end = btree.SearchLeaf(trans
-				, FieldIndexKey(int.MaxValue, key), Db4objects.Db4o.Internal.Btree.SearchTarget.
-				LOWEST);
+			BTreeNodeSearchResult start = btree.SearchLeaf(trans, FieldIndexKey(0, key), SearchTarget
+				.LOWEST);
+			BTreeNodeSearchResult end = btree.SearchLeaf(trans, FieldIndexKey(int.MaxValue, key
+				), SearchTarget.LOWEST);
 			return start.CreateIncludingRange(end);
 		}
 
-		private Db4objects.Db4o.Internal.FieldMetadata YapField()
+		private FieldMetadata YapField()
 		{
-			Db4objects.Db4o.Reflect.IReflectClass claxx = Stream().Reflector().ForObject(new 
-				Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem());
-			Db4objects.Db4o.Internal.ClassMetadata yc = Stream().ClassMetadataForReflectClass
-				(claxx);
-			Db4objects.Db4o.Internal.FieldMetadata yf = yc.FieldMetadataForName("foo");
+			IReflectClass claxx = Stream().Reflector().ForObject(new FieldIndexItem());
+			ClassMetadata yc = Stream().ClassMetadataForReflectClass(claxx);
+			FieldMetadata yf = yc.FieldMetadataForName("foo");
 			return yf;
 		}
 	}

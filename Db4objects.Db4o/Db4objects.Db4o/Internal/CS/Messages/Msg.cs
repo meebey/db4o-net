@@ -1,9 +1,17 @@
+using System;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.CS.Messages;
+using Sharpen.Lang;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <summary>Messages for Client/Server Communication</summary>
 	public abstract class Msg : Sharpen.Lang.ICloneable
 	{
-		internal static int _idGenerator = 1;
+		internal static int _messageIdGenerator = 1;
 
 		private static Db4objects.Db4o.Internal.CS.Messages.Msg[] _messages = new Db4objects.Db4o.Internal.CS.Messages.Msg
 			[60];
@@ -14,177 +22,131 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		private Db4objects.Db4o.Internal.Transaction _trans;
 
-		private Db4objects.Db4o.Internal.CS.Messages.IMessageDispatcher _messageDispatcher;
+		private IMessageDispatcher _messageDispatcher;
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD CLASS_NAME_FOR_ID
-			 = new Db4objects.Db4o.Internal.CS.Messages.MClassNameForID();
+		public static readonly MClassNameForID CLASS_NAME_FOR_ID = new MClassNameForID();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg CLOSE = new Db4objects.Db4o.Internal.CS.Messages.MClose
+		public static readonly MClose CLOSE = new MClose();
+
+		public static readonly MCommit COMMIT = new MCommit();
+
+		public static readonly MCommitSystemTransaction COMMIT_SYSTEMTRANS = new MCommitSystemTransaction
 			();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg COMMIT = new Db4objects.Db4o.Internal.CS.Messages.MCommit
+		public static readonly MCreateClass CREATE_CLASS = new MCreateClass();
+
+		public static readonly MClassMeta CLASS_META = new MClassMeta();
+
+		public static readonly MVersion CURRENT_VERSION = new MVersion();
+
+		public static readonly MDb4oException DB4O_EXCEPTION = new MDb4oException();
+
+		public static readonly MDelete DELETE = new MDelete();
+
+		public static readonly MError ERROR = new MError();
+
+		public static readonly MFailed FAILED = new MFailed();
+
+		public static readonly MGetAll GET_ALL = new MGetAll();
+
+		public static readonly MGetClasses GET_CLASSES = new MGetClasses();
+
+		public static readonly MGetInternalIDs GET_INTERNAL_IDS = new MGetInternalIDs();
+
+		public static readonly MGetThreadID GET_THREAD_ID = new MGetThreadID();
+
+		public static readonly MIDList ID_LIST = new MIDList();
+
+		public static readonly MIdentity IDENTITY = new MIdentity();
+
+		public static readonly MLength LENGTH = new MLength();
+
+		public static readonly MLogin LOGIN = new MLogin();
+
+		public static readonly MLoginOK LOGIN_OK = new MLoginOK();
+
+		public static readonly MNull NULL = new MNull();
+
+		public static readonly MObjectByUuid OBJECT_BY_UUID = new MObjectByUuid();
+
+		public static readonly MsgObject OBJECT_TO_CLIENT = new MsgObject();
+
+		public static readonly MObjectSetFetch OBJECTSET_FETCH = new MObjectSetFetch();
+
+		public static readonly MObjectSetFinalized OBJECTSET_FINALIZED = new MObjectSetFinalized
 			();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD COMMIT_RESPONSE = 
-			new Db4objects.Db4o.Internal.CS.Messages.MCommitResponse();
+		public static readonly MObjectSetGetId OBJECTSET_GET_ID = new MObjectSetGetId();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg COMMIT_SYSTEMTRANS
-			 = new Db4objects.Db4o.Internal.CS.Messages.MCommitSystemTransaction();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD CREATE_CLASS = new 
-			Db4objects.Db4o.Internal.CS.Messages.MCreateClass();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgObject CLASS_META = 
-			new Db4objects.Db4o.Internal.CS.Messages.MClassMeta();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg CURRENT_VERSION = 
-			new Db4objects.Db4o.Internal.CS.Messages.MVersion();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD DELETE = new Db4objects.Db4o.Internal.CS.Messages.MDelete
+		public static readonly MObjectSetIndexOf OBJECTSET_INDEXOF = new MObjectSetIndexOf
 			();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg ERROR = new Db4objects.Db4o.Internal.CS.Messages.MError
+		public static readonly MObjectSetReset OBJECTSET_RESET = new MObjectSetReset();
+
+		public static readonly MObjectSetSize OBJECTSET_SIZE = new MObjectSetSize();
+
+		public static readonly MOK OK = new MOK();
+
+		public static readonly MPing PING = new MPing();
+
+		public static readonly MPong PONG = new MPong();
+
+		public static readonly MPrefetchIDs PREFETCH_IDS = new MPrefetchIDs();
+
+		public static readonly MProcessDeletes PROCESS_DELETES = new MProcessDeletes();
+
+		public static readonly MQueryExecute QUERY_EXECUTE = new MQueryExecute();
+
+		public static readonly MQueryResult QUERY_RESULT = new MQueryResult();
+
+		public static readonly MRaiseVersion RAISE_VERSION = new MRaiseVersion();
+
+		public static readonly MReadBlob READ_BLOB = new MReadBlob();
+
+		public static readonly MReadBytes READ_BYTES = new MReadBytes();
+
+		public static readonly MReadMultipleObjects READ_MULTIPLE_OBJECTS = new MReadMultipleObjects
 			();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg FAILED = new Db4objects.Db4o.Internal.CS.Messages.MFailed
+		public static readonly MReadObject READ_OBJECT = new MReadObject();
+
+		public static readonly MReleaseSemaphore RELEASE_SEMAPHORE = new MReleaseSemaphore
 			();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD GET_ALL = new Db4objects.Db4o.Internal.CS.Messages.MGetAll
+		public static readonly MRollback ROLLBACK = new MRollback();
+
+		public static readonly MSetSemaphore SET_SEMAPHORE = new MSetSemaphore();
+
+		public static readonly MSuccess SUCCESS = new MSuccess();
+
+		public static readonly MSwitchToFile SWITCH_TO_FILE = new MSwitchToFile();
+
+		public static readonly MSwitchToMainFile SWITCH_TO_MAIN_FILE = new MSwitchToMainFile
 			();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD GET_CLASSES = new 
-			Db4objects.Db4o.Internal.CS.Messages.MGetClasses();
+		public static readonly MTaDelete TA_DELETE = new MTaDelete();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD GET_INTERNAL_IDS
-			 = new Db4objects.Db4o.Internal.CS.Messages.MGetInternalIDs();
+		public static readonly MTaIsDeleted TA_IS_DELETED = new MTaIsDeleted();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg GET_THREAD_ID = new 
-			Db4objects.Db4o.Internal.CS.Messages.MGetThreadID();
+		public static readonly MUserMessage USER_MESSAGE = new MUserMessage();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD ID_LIST = new Db4objects.Db4o.Internal.CS.Messages.MIDList
-			();
+		public static readonly MUseTransaction USE_TRANSACTION = new MUseTransaction();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg IDENTITY = new Db4objects.Db4o.Internal.CS.Messages.MIdentity
-			();
+		public static readonly MWriteBlob WRITE_BLOB = new MWriteBlob();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD LENGTH = new Db4objects.Db4o.Internal.CS.Messages.MLength
-			();
+		public static readonly MWriteNew WRITE_NEW = new MWriteNew();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD LOGIN = new Db4objects.Db4o.Internal.CS.Messages.MLogin
-			();
+		public static readonly MWriteUpdate WRITE_UPDATE = new MWriteUpdate();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD LOGIN_OK = new Db4objects.Db4o.Internal.CS.Messages.MLoginOK
-			();
+		public static readonly MWriteUpdateDeleteMembers WRITE_UPDATE_DELETE_MEMBERS = new 
+			MWriteUpdateDeleteMembers();
 
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg NULL = new Db4objects.Db4o.Internal.CS.Messages.MNull
-			();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD OBJECT_BY_UUID = 
-			new Db4objects.Db4o.Internal.CS.Messages.MObjectByUuid();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgObject OBJECT_TO_CLIENT
-			 = new Db4objects.Db4o.Internal.CS.Messages.MsgObject();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD OBJECTSET_FETCH = 
-			new Db4objects.Db4o.Internal.CS.Messages.MObjectSetFetch();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD OBJECTSET_FINALIZED
-			 = new Db4objects.Db4o.Internal.CS.Messages.MObjectSetFinalized();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD OBJECTSET_GET_ID
-			 = new Db4objects.Db4o.Internal.CS.Messages.MObjectSetGetId();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD OBJECTSET_INDEXOF
-			 = new Db4objects.Db4o.Internal.CS.Messages.MObjectSetIndexOf();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD OBJECTSET_RESET = 
-			new Db4objects.Db4o.Internal.CS.Messages.MObjectSetReset();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD OBJECTSET_SIZE = 
-			new Db4objects.Db4o.Internal.CS.Messages.MObjectSetSize();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg OK = new Db4objects.Db4o.Internal.CS.Messages.MOK
-			();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg PING = new Db4objects.Db4o.Internal.CS.Messages.MPing
-			();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD PREFETCH_IDS = new 
-			Db4objects.Db4o.Internal.CS.Messages.MPrefetchIDs();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg PROCESS_DELETES = 
-			new Db4objects.Db4o.Internal.CS.Messages.MProcessDeletes();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgObject QUERY_EXECUTE
-			 = new Db4objects.Db4o.Internal.CS.Messages.MQueryExecute();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD QUERY_RESULT = new 
-			Db4objects.Db4o.Internal.CS.Messages.MsgD("QUERY_RESULT");
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD RAISE_VERSION = 
-			new Db4objects.Db4o.Internal.CS.Messages.MRaiseVersion();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgBlob READ_BLOB = new 
-			Db4objects.Db4o.Internal.CS.Messages.MReadBlob();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD READ_BYTES = new 
-			Db4objects.Db4o.Internal.CS.Messages.MReadBytes();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD READ_MULTIPLE_OBJECTS
-			 = new Db4objects.Db4o.Internal.CS.Messages.MReadMultipleObjects();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD READ_OBJECT = new 
-			Db4objects.Db4o.Internal.CS.Messages.MReadObject();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD RELEASE_SEMAPHORE
-			 = new Db4objects.Db4o.Internal.CS.Messages.MReleaseSemaphore();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg ROLLBACK = new Db4objects.Db4o.Internal.CS.Messages.MRollback
-			();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD SET_SEMAPHORE = 
-			new Db4objects.Db4o.Internal.CS.Messages.MSetSemaphore();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg SUCCESS = new Db4objects.Db4o.Internal.CS.Messages.MSuccess
-			();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD SWITCH_TO_FILE = 
-			new Db4objects.Db4o.Internal.CS.Messages.MSwitchToFile();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.Msg SWITCH_TO_MAIN_FILE
-			 = new Db4objects.Db4o.Internal.CS.Messages.MSwitchToMainFile();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD TA_DELETE = new 
-			Db4objects.Db4o.Internal.CS.Messages.MTaDelete();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD TA_IS_DELETED = 
-			new Db4objects.Db4o.Internal.CS.Messages.MTaIsDeleted();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD USER_MESSAGE = new 
-			Db4objects.Db4o.Internal.CS.Messages.MUserMessage();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD USE_TRANSACTION = 
-			new Db4objects.Db4o.Internal.CS.Messages.MUseTransaction();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgBlob WRITE_BLOB = 
-			new Db4objects.Db4o.Internal.CS.Messages.MWriteBlob();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MWriteNew WRITE_NEW = 
-			new Db4objects.Db4o.Internal.CS.Messages.MWriteNew();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgObject WRITE_UPDATE
-			 = new Db4objects.Db4o.Internal.CS.Messages.MWriteUpdate();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MsgD WRITE_UPDATE_DELETE_MEMBERS
-			 = new Db4objects.Db4o.Internal.CS.Messages.MWriteUpdateDeleteMembers();
-
-		public static readonly Db4objects.Db4o.Internal.CS.Messages.MWriteBatchedMessages
-			 WRITE_BATCHED_MESSAGES = new Db4objects.Db4o.Internal.CS.Messages.MWriteBatchedMessages
+		public static readonly MWriteBatchedMessages WRITE_BATCHED_MESSAGES = new MWriteBatchedMessages
 			();
 
 		internal Msg()
 		{
-			_msgID = _idGenerator++;
+			_msgID = _messageIdGenerator++;
 			_messages[_msgID] = this;
 		}
 
@@ -204,9 +166,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				return (Db4objects.Db4o.Internal.CS.Messages.Msg)MemberwiseClone();
 			}
-			catch (Sharpen.Lang.CloneNotSupportedException)
+			catch (CloneNotSupportedException)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ShouldNeverHappen();
+				Exceptions4.ShouldNeverHappen();
 				return null;
 			}
 		}
@@ -252,9 +214,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return _name;
 		}
 
-		protected virtual Db4objects.Db4o.Internal.LocalTransaction ServerTransaction()
+		protected virtual LocalTransaction ServerTransaction()
 		{
-			return (Db4objects.Db4o.Internal.LocalTransaction)_trans;
+			return (LocalTransaction)_trans;
 		}
 
 		protected virtual Db4objects.Db4o.Internal.Transaction Transaction()
@@ -262,12 +224,12 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return _trans;
 		}
 
-		protected virtual Db4objects.Db4o.Internal.LocalObjectContainer File()
+		protected virtual LocalObjectContainer File()
 		{
-			return (Db4objects.Db4o.Internal.LocalObjectContainer)Stream();
+			return (LocalObjectContainer)Stream();
 		}
 
-		protected virtual Db4objects.Db4o.Internal.ObjectContainerBase Stream()
+		protected virtual ObjectContainerBase Stream()
 		{
 			return Transaction().Stream();
 		}
@@ -277,23 +239,21 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return Stream().Lock();
 		}
 
-		protected virtual Db4objects.Db4o.Internal.Config4Impl Config()
+		protected virtual Config4Impl Config()
 		{
 			return Stream().Config();
 		}
 
-		protected static Db4objects.Db4o.Internal.StatefulBuffer ReadMessageBuffer(Db4objects.Db4o.Internal.Transaction
-			 trans, Db4objects.Db4o.Foundation.Network.ISocket4 sock)
+		protected static StatefulBuffer ReadMessageBuffer(Db4objects.Db4o.Internal.Transaction
+			 trans, ISocket4 sock)
 		{
-			return ReadMessageBuffer(trans, sock, Db4objects.Db4o.Internal.Const4.MESSAGE_LENGTH
-				);
+			return ReadMessageBuffer(trans, sock, Const4.MESSAGE_LENGTH);
 		}
 
-		protected static Db4objects.Db4o.Internal.StatefulBuffer ReadMessageBuffer(Db4objects.Db4o.Internal.Transaction
-			 trans, Db4objects.Db4o.Foundation.Network.ISocket4 sock, int length)
+		protected static StatefulBuffer ReadMessageBuffer(Db4objects.Db4o.Internal.Transaction
+			 trans, ISocket4 sock, int length)
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer buffer = new Db4objects.Db4o.Internal.StatefulBuffer
-				(trans, length);
+			StatefulBuffer buffer = new StatefulBuffer(trans, length);
 			int offset = 0;
 			while (length > 0)
 			{
@@ -308,11 +268,10 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return buffer;
 		}
 
-		public static Db4objects.Db4o.Internal.CS.Messages.Msg ReadMessage(Db4objects.Db4o.Internal.CS.Messages.IMessageDispatcher
-			 messageDispatcher, Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Foundation.Network.ISocket4
-			 sock)
+		public static Db4objects.Db4o.Internal.CS.Messages.Msg ReadMessage(IMessageDispatcher
+			 messageDispatcher, Db4objects.Db4o.Internal.Transaction trans, ISocket4 sock)
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer reader = ReadMessageBuffer(trans, sock);
+			StatefulBuffer reader = ReadMessageBuffer(trans, sock);
 			if (null == reader)
 			{
 				return null;
@@ -322,9 +281,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return message;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.CS.Messages.Msg ReadPayLoad(Db4objects.Db4o.Internal.CS.Messages.IMessageDispatcher
-			 messageDispatcher, Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Foundation.Network.ISocket4
-			 sock, Db4objects.Db4o.Internal.Buffer reader)
+		internal virtual Db4objects.Db4o.Internal.CS.Messages.Msg ReadPayLoad(IMessageDispatcher
+			 messageDispatcher, Db4objects.Db4o.Internal.Transaction a_trans, ISocket4 sock, 
+			Db4objects.Db4o.Internal.Buffer reader)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.Msg msg = PublicClone();
 			msg.SetMessageDispatcher(messageDispatcher);
@@ -335,8 +294,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		protected Db4objects.Db4o.Internal.Transaction CheckParentTransaction(Db4objects.Db4o.Internal.Transaction
 			 a_trans, Db4objects.Db4o.Internal.Buffer reader)
 		{
-			if (reader.ReadByte() == Db4objects.Db4o.Internal.Const4.SYSTEM_TRANS && a_trans.
-				ParentTransaction() != null)
+			if (reader.ReadByte() == Const4.SYSTEM_TRANS && a_trans.ParentTransaction() != null
+				)
 			{
 				return a_trans.ParentTransaction();
 			}
@@ -358,22 +317,25 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			_messageDispatcher.Write(msg);
 		}
 
-		public virtual void RespondInt(int response)
+		public virtual void WriteException(Db4oException e)
 		{
-			Write(Db4objects.Db4o.Internal.CS.Messages.Msg.ID_LIST.GetWriterForInt(Transaction
-				(), response));
+			Write(DB4O_EXCEPTION.Clone(Transaction(), e));
 		}
 
-		public void Write(Db4objects.Db4o.Internal.ObjectContainerBase stream, Db4objects.Db4o.Foundation.Network.ISocket4
-			 sock)
+		public virtual void RespondInt(int response)
+		{
+			Write(ID_LIST.GetWriterForInt(Transaction(), response));
+		}
+
+		public void Write(ObjectContainerBase stream, ISocket4 sock)
 		{
 			if (null == stream)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			if (null == sock)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			lock (sock)
 			{
@@ -382,48 +344,43 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					sock.Write(PayLoad()._buffer);
 					sock.Flush();
 				}
-				catch (System.Exception)
+				catch (Exception)
 				{
 				}
 			}
 		}
 
-		public virtual Db4objects.Db4o.Internal.StatefulBuffer PayLoad()
+		public virtual StatefulBuffer PayLoad()
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer writer = new Db4objects.Db4o.Internal.StatefulBuffer
-				(Transaction(), Db4objects.Db4o.Internal.Const4.MESSAGE_LENGTH);
+			StatefulBuffer writer = new StatefulBuffer(Transaction(), Const4.MESSAGE_LENGTH);
 			writer.WriteInt(_msgID);
 			return writer;
 		}
 
-		public virtual Db4objects.Db4o.Internal.CS.Messages.IMessageDispatcher MessageDispatcher
-			()
+		public virtual IMessageDispatcher MessageDispatcher()
 		{
 			return _messageDispatcher;
 		}
 
-		public virtual Db4objects.Db4o.Internal.CS.IServerMessageDispatcher ServerMessageDispatcher
-			()
+		public virtual IServerMessageDispatcher ServerMessageDispatcher()
 		{
-			if (_messageDispatcher is Db4objects.Db4o.Internal.CS.IServerMessageDispatcher)
+			if (_messageDispatcher is IServerMessageDispatcher)
 			{
-				return (Db4objects.Db4o.Internal.CS.IServerMessageDispatcher)_messageDispatcher;
+				return (IServerMessageDispatcher)_messageDispatcher;
 			}
-			throw new System.InvalidOperationException();
+			throw new InvalidOperationException();
 		}
 
-		public virtual Db4objects.Db4o.Internal.CS.IClientMessageDispatcher ClientMessageDispatcher
-			()
+		public virtual IClientMessageDispatcher ClientMessageDispatcher()
 		{
-			if (_messageDispatcher is Db4objects.Db4o.Internal.CS.IClientMessageDispatcher)
+			if (_messageDispatcher is IClientMessageDispatcher)
 			{
-				return (Db4objects.Db4o.Internal.CS.IClientMessageDispatcher)_messageDispatcher;
+				return (IClientMessageDispatcher)_messageDispatcher;
 			}
-			throw new System.InvalidOperationException();
+			throw new InvalidOperationException();
 		}
 
-		public virtual void SetMessageDispatcher(Db4objects.Db4o.Internal.CS.Messages.IMessageDispatcher
-			 messageDispatcher)
+		public virtual void SetMessageDispatcher(IMessageDispatcher messageDispatcher)
 		{
 			_messageDispatcher = messageDispatcher;
 		}

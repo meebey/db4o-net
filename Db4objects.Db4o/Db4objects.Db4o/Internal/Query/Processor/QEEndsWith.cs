@@ -1,7 +1,9 @@
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	public class QEEndsWith : Db4objects.Db4o.Internal.Query.Processor.QEStringCmp
+	public class QEEndsWith : QEStringCmp
 	{
 		public QEEndsWith(bool caseSensitive_) : base(caseSensitive_)
 		{

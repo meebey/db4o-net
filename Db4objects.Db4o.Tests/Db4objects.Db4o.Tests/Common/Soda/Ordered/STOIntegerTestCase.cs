@@ -1,6 +1,9 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 {
-	public class STOIntegerTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STOIntegerTestCase : SodaBaseTestCase
 	{
 		public int i_int;
 
@@ -30,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 
 		public virtual void TestAscending()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerTestCase));
 			q.Descend("i_int").OrderAscending();
 			ExpectOrdered(q, new int[] { 5, 2, 1, 3, 0, 4, 6 });
@@ -38,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 
 		public virtual void TestDescending()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerTestCase));
 			q.Descend("i_int").OrderDescending();
 			ExpectOrdered(q, new int[] { 6, 4, 0, 3, 1, 2, 5 });
@@ -46,9 +49,9 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 
 		public virtual void TestAscendingGreater()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerTestCase));
-			Db4objects.Db4o.Query.IQuery qInt = q.Descend("i_int");
+			IQuery qInt = q.Descend("i_int");
 			qInt.Constrain(100).Greater();
 			qInt.OrderAscending();
 			ExpectOrdered(q, new int[] { 3, 0, 4, 6 });

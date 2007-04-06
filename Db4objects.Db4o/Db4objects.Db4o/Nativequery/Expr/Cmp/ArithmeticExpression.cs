@@ -1,15 +1,16 @@
+using Db4objects.Db4o.Nativequery.Expr.Cmp;
+
 namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 {
-	public class ArithmeticExpression : Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand
+	public class ArithmeticExpression : IComparisonOperand
 	{
-		private Db4objects.Db4o.Nativequery.Expr.Cmp.ArithmeticOperator _op;
+		private ArithmeticOperator _op;
 
-		private Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand _left;
+		private IComparisonOperand _left;
 
-		private Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand _right;
+		private IComparisonOperand _right;
 
-		public ArithmeticExpression(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand
-			 left, Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand right, Db4objects.Db4o.Nativequery.Expr.Cmp.ArithmeticOperator
+		public ArithmeticExpression(IComparisonOperand left, IComparisonOperand right, ArithmeticOperator
 			 op)
 		{
 			this._op = op;
@@ -17,17 +18,17 @@ namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 			this._right = right;
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand Left()
+		public virtual IComparisonOperand Left()
 		{
 			return _left;
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand Right()
+		public virtual IComparisonOperand Right()
 		{
 			return _right;
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.Cmp.ArithmeticOperator Op()
+		public virtual ArithmeticOperator Op()
 		{
 			return _op;
 		}
@@ -61,8 +62,7 @@ namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 			return hc;
 		}
 
-		public virtual void Accept(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandVisitor
-			 visitor)
+		public virtual void Accept(IComparisonOperandVisitor visitor)
 		{
 			visitor.Visit(this);
 		}

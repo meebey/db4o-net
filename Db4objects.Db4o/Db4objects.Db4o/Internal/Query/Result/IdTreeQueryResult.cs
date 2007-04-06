@@ -1,20 +1,23 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Result;
+
 namespace Db4objects.Db4o.Internal.Query.Result
 {
 	/// <exclude></exclude>
-	public class IdTreeQueryResult : Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult
+	public class IdTreeQueryResult : AbstractQueryResult
 	{
-		private Db4objects.Db4o.Foundation.Tree _ids;
+		private Tree _ids;
 
-		public IdTreeQueryResult(Db4objects.Db4o.Internal.Transaction transaction, Db4objects.Db4o.Foundation.IIntIterator4
-			 ids) : base(transaction)
+		public IdTreeQueryResult(Transaction transaction, IIntIterator4 ids) : base(transaction
+			)
 		{
-			_ids = Db4objects.Db4o.Internal.TreeInt.AddAll(null, ids);
+			_ids = TreeInt.AddAll(null, ids);
 		}
 
-		public override Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs()
+		public override IIntIterator4 IterateIDs()
 		{
-			return new Db4objects.Db4o.Foundation.IntIterator4Adaptor(new Db4objects.Db4o.Foundation.TreeKeyIterator
-				(_ids));
+			return new IntIterator4Adaptor(new TreeKeyIterator(_ids));
 		}
 
 		public override int Size()
@@ -26,14 +29,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			return _ids.Size();
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult SupportSort
-			()
+		public override AbstractQueryResult SupportSort()
 		{
 			return ToIdList();
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult SupportElementAccess
-			()
+		public override AbstractQueryResult SupportElementAccess()
 		{
 			return ToIdList();
 		}

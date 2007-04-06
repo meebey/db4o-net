@@ -1,54 +1,58 @@
+using System;
+using System.Reflection;
+using Db4oUnit;
+
 namespace Db4oUnit
 {
 	/// <summary>Reflection based db4ounit.Test implementation.</summary>
 	/// <remarks>Reflection based db4ounit.Test implementation.</remarks>
-	public class TestMethod : Db4oUnit.ITest
+	public class TestMethod : ITest
 	{
 		public interface ILabelProvider
 		{
-			string GetLabel(Db4oUnit.TestMethod method);
+			string GetLabel(TestMethod method);
 		}
 
-		private sealed class _AnonymousInnerClass15 : Db4oUnit.TestMethod.ILabelProvider
+		private sealed class _AnonymousInnerClass15 : TestMethod.ILabelProvider
 		{
 			public _AnonymousInnerClass15()
 			{
 			}
 
-			public string GetLabel(Db4oUnit.TestMethod method)
+			public string GetLabel(TestMethod method)
 			{
 				return method.GetSubject().GetType().FullName + "." + method.GetMethod().Name;
 			}
 		}
 
-		public static Db4oUnit.TestMethod.ILabelProvider DEFAULT_LABEL_PROVIDER = new _AnonymousInnerClass15
+		public static TestMethod.ILabelProvider DEFAULT_LABEL_PROVIDER = new _AnonymousInnerClass15
 			();
 
 		private readonly object _subject;
 
-		private readonly System.Reflection.MethodInfo _method;
+		private readonly MethodInfo _method;
 
-		private readonly Db4oUnit.TestMethod.ILabelProvider _labelProvider;
+		private readonly TestMethod.ILabelProvider _labelProvider;
 
-		public TestMethod(object instance, System.Reflection.MethodInfo method) : this(instance
-			, method, DEFAULT_LABEL_PROVIDER)
+		public TestMethod(object instance, MethodInfo method) : this(instance, method, DEFAULT_LABEL_PROVIDER
+			)
 		{
 		}
 
-		public TestMethod(object instance, System.Reflection.MethodInfo method, Db4oUnit.TestMethod.ILabelProvider
-			 labelProvider)
+		public TestMethod(object instance, MethodInfo method, TestMethod.ILabelProvider labelProvider
+			)
 		{
 			if (null == instance)
 			{
-				throw new System.ArgumentException("instance");
+				throw new ArgumentException("instance");
 			}
 			if (null == method)
 			{
-				throw new System.ArgumentException("method");
+				throw new ArgumentException("method");
 			}
 			if (null == labelProvider)
 			{
-				throw new System.ArgumentException("labelProvider");
+				throw new ArgumentException("labelProvider");
 			}
 			_subject = instance;
 			_method = method;
@@ -60,7 +64,7 @@ namespace Db4oUnit
 			return _subject;
 		}
 
-		public virtual System.Reflection.MethodInfo GetMethod()
+		public virtual MethodInfo GetMethod()
 		{
 			return _method;
 		}
@@ -70,7 +74,7 @@ namespace Db4oUnit
 			return _labelProvider.GetLabel(this);
 		}
 
-		public virtual void Run(Db4oUnit.TestResult result)
+		public virtual void Run(TestResult result)
 		{
 			try
 			{
@@ -78,11 +82,11 @@ namespace Db4oUnit
 				SetUp();
 				Invoke();
 			}
-			catch (System.Reflection.TargetInvocationException e)
+			catch (TargetInvocationException e)
 			{
 				result.TestFailed(this, e.InnerException);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
 				result.TestFailed(this, e);
 			}
@@ -92,7 +96,7 @@ namespace Db4oUnit
 				{
 					TearDown();
 				}
-				catch (Db4oUnit.TestException e)
+				catch (TestException e)
 				{
 					result.TestFailed(this, e);
 				}
@@ -106,30 +110,30 @@ namespace Db4oUnit
 
 		protected virtual void TearDown()
 		{
-			if (_subject is Db4oUnit.ITestLifeCycle)
+			if (_subject is ITestLifeCycle)
 			{
 				try
 				{
-					((Db4oUnit.ITestLifeCycle)_subject).TearDown();
+					((ITestLifeCycle)_subject).TearDown();
 				}
-				catch (System.Exception e)
+				catch (Exception e)
 				{
-					throw new Db4oUnit.TearDownFailureException(e);
+					throw new TearDownFailureException(e);
 				}
 			}
 		}
 
 		protected virtual void SetUp()
 		{
-			if (_subject is Db4oUnit.ITestLifeCycle)
+			if (_subject is ITestLifeCycle)
 			{
 				try
 				{
-					((Db4oUnit.ITestLifeCycle)_subject).SetUp();
+					((ITestLifeCycle)_subject).SetUp();
 				}
-				catch (System.Exception e)
+				catch (Exception e)
 				{
-					throw new Db4oUnit.SetupFailureException(e);
+					throw new SetupFailureException(e);
 				}
 			}
 		}

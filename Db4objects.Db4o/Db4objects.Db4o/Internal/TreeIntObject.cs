@@ -1,7 +1,10 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class TreeIntObject : Db4objects.Db4o.Internal.TreeInt
+	public class TreeIntObject : TreeInt
 	{
 		public object _object;
 
@@ -19,8 +22,7 @@ namespace Db4objects.Db4o.Internal
 			return ShallowCloneInternal(new Db4objects.Db4o.Internal.TreeIntObject(_key));
 		}
 
-		protected override Db4objects.Db4o.Foundation.Tree ShallowCloneInternal(Db4objects.Db4o.Foundation.Tree
-			 tree)
+		protected override Tree ShallowCloneInternal(Tree tree)
 		{
 			Db4objects.Db4o.Internal.TreeIntObject tio = (Db4objects.Db4o.Internal.TreeIntObject
 				)base.ShallowCloneInternal(tree);
@@ -42,14 +44,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			int key = a_bytes.ReadInt();
 			object obj = null;
-			if (_object is Db4objects.Db4o.Internal.TreeInt)
+			if (_object is TreeInt)
 			{
-				obj = new Db4objects.Db4o.Internal.TreeReader(a_bytes, (Db4objects.Db4o.Internal.IReadable
-					)_object).Read();
+				obj = new TreeReader(a_bytes, (IReadable)_object).Read();
 			}
 			else
 			{
-				obj = ((Db4objects.Db4o.Internal.IReadable)_object).Read(a_bytes);
+				obj = ((IReadable)_object).Read(a_bytes);
 			}
 			return new Db4objects.Db4o.Internal.TreeIntObject(key, obj);
 		}
@@ -63,14 +64,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				if (_object is Db4objects.Db4o.Internal.TreeInt)
+				if (_object is TreeInt)
 				{
-					Db4objects.Db4o.Internal.TreeInt.Write(a_writer, (Db4objects.Db4o.Internal.TreeInt
-						)_object);
+					TreeInt.Write(a_writer, (TreeInt)_object);
 				}
 				else
 				{
-					((Db4objects.Db4o.Internal.IReadWriteable)_object).Write(a_writer);
+					((IReadWriteable)_object).Write(a_writer);
 				}
 			}
 		}
@@ -79,10 +79,9 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_object == null)
 			{
-				return Db4objects.Db4o.Internal.Const4.INT_LENGTH * 2;
+				return Const4.INT_LENGTH * 2;
 			}
-			return Db4objects.Db4o.Internal.Const4.INT_LENGTH + ((Db4objects.Db4o.Internal.IReadable
-				)_object).ByteCount();
+			return Const4.INT_LENGTH + ((IReadable)_object).ByteCount();
 		}
 
 		internal override bool VariableLength()

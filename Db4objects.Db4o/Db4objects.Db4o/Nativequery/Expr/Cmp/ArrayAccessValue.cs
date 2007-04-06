@@ -1,23 +1,23 @@
+using Db4objects.Db4o.Nativequery.Expr.Cmp;
+
 namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 {
-	public class ArrayAccessValue : Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperandDescendant
+	public class ArrayAccessValue : ComparisonOperandDescendant
 	{
-		private Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand _index;
+		private IComparisonOperand _index;
 
-		public ArrayAccessValue(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandAnchor
-			 parent, Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand index) : base(parent
-			)
+		public ArrayAccessValue(IComparisonOperandAnchor parent, IComparisonOperand index
+			) : base(parent)
 		{
 			_index = index;
 		}
 
-		public override void Accept(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandVisitor
-			 visitor)
+		public override void Accept(IComparisonOperandVisitor visitor)
 		{
 			visitor.Visit(this);
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand Index()
+		public virtual IComparisonOperand Index()
 		{
 			return _index;
 		}

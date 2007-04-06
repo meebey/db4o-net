@@ -1,24 +1,25 @@
+using Db4objects.Db4o.Nativequery.Expr;
+
 namespace Db4objects.Db4o.Nativequery.Expr
 {
-	public abstract class BinaryExpression : Db4objects.Db4o.Nativequery.Expr.IExpression
+	public abstract class BinaryExpression : IExpression
 	{
-		protected Db4objects.Db4o.Nativequery.Expr.IExpression _left;
+		protected IExpression _left;
 
-		protected Db4objects.Db4o.Nativequery.Expr.IExpression _right;
+		protected IExpression _right;
 
-		public BinaryExpression(Db4objects.Db4o.Nativequery.Expr.IExpression left, Db4objects.Db4o.Nativequery.Expr.IExpression
-			 right)
+		public BinaryExpression(IExpression left, IExpression right)
 		{
 			this._left = left;
 			this._right = right;
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.IExpression Left()
+		public virtual IExpression Left()
 		{
 			return _left;
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.IExpression Right()
+		public virtual IExpression Right()
 		{
 			return _right;
 		}
@@ -44,7 +45,6 @@ namespace Db4objects.Db4o.Nativequery.Expr
 			return _left.GetHashCode() + _right.GetHashCode();
 		}
 
-		public abstract void Accept(Db4objects.Db4o.Nativequery.Expr.IExpressionVisitor arg1
-			);
+		public abstract void Accept(IExpressionVisitor arg1);
 	}
 }

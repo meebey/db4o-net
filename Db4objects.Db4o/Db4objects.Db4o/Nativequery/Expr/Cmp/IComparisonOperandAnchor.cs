@@ -1,9 +1,11 @@
+using Db4objects.Db4o.Nativequery.Expr.Cmp;
+
 namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 {
-	public interface IComparisonOperandAnchor : Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand
+	public interface IComparisonOperandAnchor : IComparisonOperand
 	{
-		Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandAnchor Parent();
+		IComparisonOperandAnchor Parent();
 
-		Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandAnchor Root();
+		IComparisonOperandAnchor Root();
 	}
 }

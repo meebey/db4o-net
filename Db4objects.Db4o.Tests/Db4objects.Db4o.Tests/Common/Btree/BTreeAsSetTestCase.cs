@@ -1,6 +1,8 @@
+using Db4objects.Db4o.Tests.Common.Btree;
+
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public class BTreeAsSetTestCase : Db4objects.Db4o.Tests.Common.Btree.BTreeTestCaseBase
+	public class BTreeAsSetTestCase : BTreeTestCaseBase
 	{
 		/// <summary>For now this won't work completely easy.</summary>
 		/// <remarks>

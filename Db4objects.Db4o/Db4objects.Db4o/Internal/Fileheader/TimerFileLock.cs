@@ -1,17 +1,19 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Fileheader;
+using Sharpen.Lang;
+
 namespace Db4objects.Db4o.Internal.Fileheader
 {
 	/// <exclude></exclude>
-	public abstract class TimerFileLock : Sharpen.Lang.IRunnable
+	public abstract class TimerFileLock : IRunnable
 	{
-		public static Db4objects.Db4o.Internal.Fileheader.TimerFileLock ForFile(Db4objects.Db4o.Internal.LocalObjectContainer
-			 file)
+		public static TimerFileLock ForFile(LocalObjectContainer file)
 		{
 			if (file.NeedsLockFileThread())
 			{
-				return new Db4objects.Db4o.Internal.Fileheader.TimerFileLockEnabled((Db4objects.Db4o.Internal.IoAdaptedObjectContainer
-					)file);
+				return new TimerFileLockEnabled((IoAdaptedObjectContainer)file);
 			}
-			return new Db4objects.Db4o.Internal.Fileheader.TimerFileLockDisabled();
+			return new TimerFileLockDisabled();
 		}
 
 		public abstract void CheckHeaderLock();
@@ -33,8 +35,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public abstract void Close();
 
-		public abstract void CheckIfOtherSessionAlive(Db4objects.Db4o.Internal.LocalObjectContainer
-			 container, int address, int offset, long lastAccessTime);
+		public abstract void CheckIfOtherSessionAlive(LocalObjectContainer container, int
+			 address, int offset, long lastAccessTime);
 
 		public abstract void Run();
 	}

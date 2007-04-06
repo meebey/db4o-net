@@ -1,9 +1,13 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
+
 namespace Db4objects.Db4o.Internal.Freespace
 {
-	internal class FreespaceIxLength : Db4objects.Db4o.Internal.Freespace.FreespaceIx
+	internal class FreespaceIxLength : FreespaceIx
 	{
-		internal FreespaceIxLength(Db4objects.Db4o.Internal.LocalObjectContainer file, Db4objects.Db4o.MetaIndex
-			 metaIndex) : base(file, metaIndex)
+		internal FreespaceIxLength(LocalObjectContainer file, MetaIndex metaIndex) : base
+			(file, metaIndex)
 		{
 		}
 

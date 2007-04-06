@@ -1,12 +1,17 @@
+using Db4oUnit;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Fieldindex;
+
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
 	/// <exclude></exclude>
-	public class StringIndexTestCase : Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase
-		, Db4oUnit.Extensions.Fixtures.IOptOutCS
+	public class StringIndexTestCase : StringIndexTestCaseBase, IOptOutCS
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCase().RunSolo();
+			new StringIndexTestCase().RunSolo();
 		}
 
 		public virtual void TestNotEquals()
@@ -15,8 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			Add("bar");
 			Add("baz");
 			Add(null);
-			Db4objects.Db4o.Query.IQuery query = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item)
-				);
+			IQuery query = NewQuery(typeof(StringIndexTestCaseBase.Item));
 			query.Descend("name").Constrain("bar").Not();
 			AssertItems(new string[] { "foo", "baz", null }, query.Execute());
 		}
@@ -33,8 +37,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestCancelRemovalRollbackForMultipleTransactions()
 		{
-			Db4objects.Db4o.Internal.Transaction trans1 = NewTransaction();
-			Db4objects.Db4o.Internal.Transaction trans2 = NewTransaction();
+			Transaction trans1 = NewTransaction();
+			Transaction trans2 = NewTransaction();
 			PrepareCancelRemoval(trans1, "original");
 			AssertExists(trans2, "original");
 			trans1.Rollback();
@@ -57,8 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			AssertExists("original");
 		}
 
-		private void PrepareCancelRemoval(Db4objects.Db4o.Internal.Transaction transaction
-			, string itemName)
+		private void PrepareCancelRemoval(Transaction transaction, string itemName)
 		{
 			Add(itemName);
 			Db().Commit();
@@ -70,8 +73,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestCancelRemovalForMultipleTransactions()
 		{
-			Db4objects.Db4o.Internal.Transaction trans1 = NewTransaction();
-			Db4objects.Db4o.Internal.Transaction trans2 = NewTransaction();
+			Transaction trans1 = NewTransaction();
+			Transaction trans2 = NewTransaction();
 			PrepareCancelRemoval(trans1, "original");
 			Rename(trans2, "original", "updated");
 			trans1.Commit();
@@ -86,10 +89,10 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			AssertExists("original");
 			Rename("original", "updated");
 			AssertExists("updated");
-			Db4oUnit.Assert.IsNull(Query("original"));
+			Assert.IsNull(Query("original"));
 			Reopen();
 			AssertExists("updated");
-			Db4oUnit.Assert.IsNull(Query("original"));
+			Assert.IsNull(Query("original"));
 		}
 	}
 }

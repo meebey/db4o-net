@@ -1,75 +1,79 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Fieldindex;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Fieldindex
 {
-	public abstract class IndexedNodeBase : Db4objects.Db4o.Internal.Fieldindex.IIndexedNode
+	public abstract class IndexedNodeBase : IIndexedNode
 	{
-		private readonly Db4objects.Db4o.Internal.Query.Processor.QConObject _constraint;
+		private readonly QConObject _constraint;
 
-		public IndexedNodeBase(Db4objects.Db4o.Internal.Query.Processor.QConObject qcon)
+		public IndexedNodeBase(QConObject qcon)
 		{
 			if (null == qcon)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			if (null == qcon.GetField())
 			{
-				throw new System.ArgumentException();
+				throw new ArgumentException();
 			}
 			_constraint = qcon;
 		}
 
-		public virtual Db4objects.Db4o.Internal.TreeInt ToTreeInt()
+		public virtual TreeInt ToTreeInt()
 		{
 			return AddToTree(null, this);
 		}
 
-		public Db4objects.Db4o.Internal.Btree.BTree GetIndex()
+		public BTree GetIndex()
 		{
 			return GetYapField().GetIndex(Transaction());
 		}
 
-		private Db4objects.Db4o.Internal.FieldMetadata GetYapField()
+		private FieldMetadata GetYapField()
 		{
 			return _constraint.GetField().GetYapField();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Query.Processor.QCon Constraint()
+		public virtual QCon Constraint()
 		{
 			return _constraint;
 		}
 
 		public virtual bool IsResolved()
 		{
-			Db4objects.Db4o.Internal.Query.Processor.QCon parent = Constraint().Parent();
+			QCon parent = Constraint().Parent();
 			return null == parent || !parent.HasParent();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.IBTreeRange Search(object value)
+		public virtual IBTreeRange Search(object value)
 		{
 			return GetYapField().Search(Transaction(), value);
 		}
 
-		public static Db4objects.Db4o.Internal.TreeInt AddToTree(Db4objects.Db4o.Internal.TreeInt
-			 tree, Db4objects.Db4o.Internal.Fieldindex.IIndexedNode node)
+		public static TreeInt AddToTree(TreeInt tree, IIndexedNode node)
 		{
-			System.Collections.IEnumerator i = node.GetEnumerator();
+			IEnumerator i = node.GetEnumerator();
 			while (i.MoveNext())
 			{
-				Db4objects.Db4o.Internal.Btree.FieldIndexKey composite = (Db4objects.Db4o.Internal.Btree.FieldIndexKey
-					)i.Current;
-				tree = (Db4objects.Db4o.Internal.TreeInt)Db4objects.Db4o.Foundation.Tree.Add(tree
-					, new Db4objects.Db4o.Internal.TreeInt(composite.ParentID()));
+				FieldIndexKey composite = (FieldIndexKey)i.Current;
+				tree = (TreeInt)Tree.Add(tree, new TreeInt(composite.ParentID()));
 			}
 			return tree;
 		}
 
-		public virtual Db4objects.Db4o.Internal.Fieldindex.IIndexedNode Resolve()
+		public virtual IIndexedNode Resolve()
 		{
 			if (IsResolved())
 			{
 				return null;
 			}
-			return Db4objects.Db4o.Internal.Fieldindex.IndexedPath.NewParentPath(this, Constraint
-				());
+			return IndexedPath.NewParentPath(this, Constraint());
 		}
 
 		private Db4objects.Db4o.Internal.Transaction Transaction()
@@ -77,7 +81,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 			return Constraint().Transaction();
 		}
 
-		public abstract System.Collections.IEnumerator GetEnumerator();
+		public abstract IEnumerator GetEnumerator();
 
 		public abstract int ResultSize();
 	}

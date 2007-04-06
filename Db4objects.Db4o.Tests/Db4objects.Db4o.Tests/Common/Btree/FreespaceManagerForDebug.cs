@@ -1,11 +1,16 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Tests.Common.Btree;
+
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public class FreespaceManagerForDebug : Db4objects.Db4o.Internal.Freespace.FreespaceManager
+	public class FreespaceManagerForDebug : FreespaceManager
 	{
-		private readonly Db4objects.Db4o.Tests.Common.Btree.ISlotListener _listener;
+		private readonly ISlotListener _listener;
 
-		public FreespaceManagerForDebug(Db4objects.Db4o.Internal.LocalObjectContainer file
-			, Db4objects.Db4o.Tests.Common.Btree.ISlotListener listener) : base(file)
+		public FreespaceManagerForDebug(LocalObjectContainer file, ISlotListener listener
+			) : base(file)
 		{
 			_listener = listener;
 		}
@@ -29,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public override void Free(int address, int length)
 		{
-			_listener.OnFree(new Db4objects.Db4o.Internal.Slots.Slot(address, length));
+			_listener.OnFree(new Slot(address, length));
 		}
 
 		public override void FreeSelf()
@@ -46,12 +51,11 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			return 0;
 		}
 
-		public override void Migrate(Db4objects.Db4o.Internal.Freespace.FreespaceManager 
-			newFM)
+		public override void Migrate(FreespaceManager newFM)
 		{
 		}
 
-		public override void OnNew(Db4objects.Db4o.Internal.LocalObjectContainer file)
+		public override void OnNew(LocalObjectContainer file)
 		{
 		}
 

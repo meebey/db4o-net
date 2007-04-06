@@ -1,17 +1,25 @@
+using System;
+using Db4oUnit;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+
 namespace Db4oUnit.Extensions.Fixtures
 {
-	public abstract class AbstractSoloDb4oFixture : Db4oUnit.Extensions.Fixtures.AbstractDb4oFixture
+	public abstract class AbstractSoloDb4oFixture : AbstractDb4oFixture
 	{
-		private Db4objects.Db4o.Ext.IExtObjectContainer _db;
+		private IExtObjectContainer _db;
 
-		protected AbstractSoloDb4oFixture(Db4oUnit.Extensions.Fixtures.IConfigurationSource
-			 configSource) : base(configSource)
+		protected AbstractSoloDb4oFixture(IConfigurationSource configSource) : base(configSource
+			)
 		{
 		}
 
 		public sealed override void Open()
 		{
-			Db4oUnit.Assert.IsNull(_db);
+			Assert.IsNull(_db);
 			_db = CreateDatabase(Config()).Ext();
 		}
 
@@ -19,27 +27,26 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			if (null != _db)
 			{
-				Db4oUnit.Assert.IsTrue(Db().Close());
+				Assert.IsTrue(Db().Close());
 				_db = null;
 			}
 		}
 
-		public override bool Accept(System.Type clazz)
+		public override bool Accept(Type clazz)
 		{
-			return !typeof(Db4oUnit.Extensions.Fixtures.IOptOutSolo).IsAssignableFrom(clazz);
+			return !typeof(IOptOutSolo).IsAssignableFrom(clazz);
 		}
 
-		public override Db4objects.Db4o.Ext.IExtObjectContainer Db()
+		public override IExtObjectContainer Db()
 		{
 			return _db;
 		}
 
-		protected abstract Db4objects.Db4o.IObjectContainer CreateDatabase(Db4objects.Db4o.Config.IConfiguration
-			 config);
+		protected abstract IObjectContainer CreateDatabase(IConfiguration config);
 
-		public override Db4objects.Db4o.Internal.LocalObjectContainer FileSession()
+		public override LocalObjectContainer FileSession()
 		{
-			return (Db4objects.Db4o.Internal.LocalObjectContainer)_db;
+			return (LocalObjectContainer)_db;
 		}
 	}
 }

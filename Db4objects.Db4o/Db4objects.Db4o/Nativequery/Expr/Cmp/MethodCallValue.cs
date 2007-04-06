@@ -1,24 +1,25 @@
+using System;
+using Db4objects.Db4o.Nativequery.Expr.Cmp;
+
 namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 {
-	public class MethodCallValue : Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperandDescendant
+	public class MethodCallValue : ComparisonOperandDescendant
 	{
 		private string _methodName;
 
-		private System.Type[] _paramTypes;
+		private Type[] _paramTypes;
 
-		private Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand[] _args;
+		private IComparisonOperand[] _args;
 
-		public MethodCallValue(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandAnchor
-			 parent, string name, System.Type[] paramTypes, Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand[]
-			 args) : base(parent)
+		public MethodCallValue(IComparisonOperandAnchor parent, string name, Type[] paramTypes
+			, IComparisonOperand[] args) : base(parent)
 		{
 			_methodName = name;
 			_paramTypes = paramTypes;
 			_args = args;
 		}
 
-		public override void Accept(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandVisitor
-			 visitor)
+		public override void Accept(IComparisonOperandVisitor visitor)
 		{
 			visitor.Visit(this);
 		}
@@ -28,12 +29,12 @@ namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 			return _methodName;
 		}
 
-		public virtual System.Type[] ParamTypes()
+		public virtual Type[] ParamTypes()
 		{
 			return _paramTypes;
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand[] Args()
+		public virtual IComparisonOperand[] Args()
 		{
 			return _args;
 		}

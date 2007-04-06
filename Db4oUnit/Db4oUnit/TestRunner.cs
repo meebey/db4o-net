@@ -1,29 +1,32 @@
+using System;
+using System.IO;
+using Db4oUnit;
+
 namespace Db4oUnit
 {
 	public class TestRunner
 	{
-		private Db4oUnit.ITestSuiteBuilder _suiteBuilder;
+		private ITestSuiteBuilder _suiteBuilder;
 
-		public TestRunner(Db4oUnit.TestSuite suite)
+		public TestRunner(TestSuite suite)
 		{
 			if (null == suite)
 			{
-				throw new System.ArgumentException("suite");
+				throw new ArgumentException("suite");
 			}
-			_suiteBuilder = new Db4oUnit.NullTestSuiteBuilder(suite);
+			_suiteBuilder = new NullTestSuiteBuilder(suite);
 		}
 
-		public TestRunner(Db4oUnit.ITestSuiteBuilder builder)
+		public TestRunner(ITestSuiteBuilder builder)
 		{
 			if (null == builder)
 			{
-				throw new System.ArgumentException("suite");
+				throw new ArgumentException("suite");
 			}
 			_suiteBuilder = builder;
 		}
 
-		public TestRunner(System.Type clazz) : this(new Db4oUnit.ReflectionTestSuiteBuilder
-			(clazz))
+		public TestRunner(Type clazz) : this(new ReflectionTestSuiteBuilder(clazz))
 		{
 		}
 
@@ -34,12 +37,12 @@ namespace Db4oUnit
 
 		private int Run(bool printLabels)
 		{
-			Db4oUnit.TestSuite suite = BuildTestSuite();
+			TestSuite suite = BuildTestSuite();
 			if (null == suite)
 			{
 				return 1;
 			}
-			Db4oUnit.TestResult result = new Db4oUnit.TestResult(printLabels);
+			TestResult result = new TestResult(printLabels);
 			result.RunStarted();
 			suite.Run(result);
 			result.RunFinished();
@@ -47,34 +50,34 @@ namespace Db4oUnit
 			return result.Failures().Size();
 		}
 
-		private Db4oUnit.TestSuite BuildTestSuite()
+		private TestSuite BuildTestSuite()
 		{
 			try
 			{
 				return _suiteBuilder.Build();
 			}
-			catch (System.Exception x)
+			catch (Exception x)
 			{
 				Report(x);
 			}
 			return null;
 		}
 
-		private void Report(System.Exception x)
+		private void Report(Exception x)
 		{
-			System.IO.TextWriter stdout = Db4oUnit.TestPlatform.GetStdOut();
-			Db4oUnit.TestPlatform.PrintStackTrace(stdout, x);
+			TextWriter stdout = TestPlatform.GetStdOut();
+			TestPlatform.PrintStackTrace(stdout, x);
 		}
 
-		private void Report(Db4oUnit.TestResult result)
+		private void Report(TestResult result)
 		{
 			try
 			{
-				System.IO.TextWriter stdout = Db4oUnit.TestPlatform.GetStdOut();
+				TextWriter stdout = TestPlatform.GetStdOut();
 				result.Print(stdout);
 				stdout.Flush();
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
 			}
 		}

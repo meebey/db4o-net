@@ -1,21 +1,23 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Classindex;
+
 namespace Db4objects.Db4o.Internal.Classindex
 {
 	/// <exclude></exclude>
-	public class OldClassIndexStrategy : Db4objects.Db4o.Internal.Classindex.AbstractClassIndexStrategy
-		, Db4objects.Db4o.Internal.ITransactionParticipant
+	public class OldClassIndexStrategy : AbstractClassIndexStrategy, ITransactionParticipant
 	{
-		private Db4objects.Db4o.Internal.Classindex.ClassIndex _index;
+		private ClassIndex _index;
 
-		private readonly Db4objects.Db4o.Foundation.Hashtable4 _perTransaction = new Db4objects.Db4o.Foundation.Hashtable4
-			();
+		private readonly Hashtable4 _perTransaction = new Hashtable4();
 
-		public OldClassIndexStrategy(Db4objects.Db4o.Internal.ClassMetadata yapClass) : base
-			(yapClass)
+		public OldClassIndexStrategy(ClassMetadata yapClass) : base(yapClass)
 		{
 		}
 
-		public override void Read(Db4objects.Db4o.Internal.ObjectContainerBase stream, int
-			 indexID)
+		public override void Read(ObjectContainerBase stream, int indexID)
 		{
 			_index = CreateClassIndex(stream);
 			if (indexID > 0)
@@ -25,8 +27,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			_index.SetStateDeactivated();
 		}
 
-		private Db4objects.Db4o.Internal.Classindex.ClassIndex GetActiveIndex(Db4objects.Db4o.Internal.Transaction
-			 transaction)
+		private ClassIndex GetActiveIndex(Transaction transaction)
 		{
 			if (null != _index)
 			{
@@ -35,7 +36,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			return _index;
 		}
 
-		public override int EntryCount(Db4objects.Db4o.Internal.Transaction transaction)
+		public override int EntryCount(Transaction transaction)
 		{
 			if (_index != null)
 			{
@@ -44,8 +45,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			return 0;
 		}
 
-		public override void Initialize(Db4objects.Db4o.Internal.ObjectContainerBase stream
-			)
+		public override void Initialize(ObjectContainerBase stream)
 		{
 			_index = CreateClassIndex(stream);
 		}
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			}
 		}
 
-		public override int Write(Db4objects.Db4o.Internal.Transaction transaction)
+		public override int Write(Transaction transaction)
 		{
 			if (_index == null)
 			{
@@ -72,20 +72,17 @@ namespace Db4objects.Db4o.Internal.Classindex
 			return _index.GetID();
 		}
 
-		private void FlushContext(Db4objects.Db4o.Internal.Transaction transaction)
+		private void FlushContext(Transaction transaction)
 		{
-			Db4objects.Db4o.Internal.Classindex.OldClassIndexStrategy.TransactionState context
-				 = GetState(transaction);
-			Db4objects.Db4o.Internal.Classindex.ClassIndex index = GetActiveIndex(transaction
-				);
+			OldClassIndexStrategy.TransactionState context = GetState(transaction);
+			ClassIndex index = GetActiveIndex(transaction);
 			context.TraverseAdded(new _AnonymousInnerClass68(this, index));
 			context.TraverseRemoved(new _AnonymousInnerClass74(this, transaction, index));
 		}
 
-		private sealed class _AnonymousInnerClass68 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass68 : IVisitor4
 		{
-			public _AnonymousInnerClass68(OldClassIndexStrategy _enclosing, Db4objects.Db4o.Internal.Classindex.ClassIndex
-				 index)
+			public _AnonymousInnerClass68(OldClassIndexStrategy _enclosing, ClassIndex index)
 			{
 				this._enclosing = _enclosing;
 				this.index = index;
@@ -98,13 +95,13 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 			private readonly OldClassIndexStrategy _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.Classindex.ClassIndex index;
+			private readonly ClassIndex index;
 		}
 
-		private sealed class _AnonymousInnerClass74 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass74 : IVisitor4
 		{
-			public _AnonymousInnerClass74(OldClassIndexStrategy _enclosing, Db4objects.Db4o.Internal.Transaction
-				 transaction, Db4objects.Db4o.Internal.Classindex.ClassIndex index)
+			public _AnonymousInnerClass74(OldClassIndexStrategy _enclosing, Transaction transaction
+				, ClassIndex index)
 			{
 				this._enclosing = _enclosing;
 				this.transaction = transaction;
@@ -114,8 +111,8 @@ namespace Db4objects.Db4o.Internal.Classindex
 			public void Visit(object a_object)
 			{
 				int id = this._enclosing.IdFromValue(a_object);
-				Db4objects.Db4o.Internal.ObjectContainerBase stream = transaction.Stream();
-				Db4objects.Db4o.Internal.ObjectReference yo = stream.ReferenceForId(id);
+				ObjectContainerBase stream = transaction.Stream();
+				ObjectReference yo = stream.ReferenceForId(id);
 				if (yo != null)
 				{
 					stream.RemoveReference(yo);
@@ -125,12 +122,12 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 			private readonly OldClassIndexStrategy _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.Transaction transaction;
+			private readonly Transaction transaction;
 
-			private readonly Db4objects.Db4o.Internal.Classindex.ClassIndex index;
+			private readonly ClassIndex index;
 		}
 
-		private void WriteIndex(Db4objects.Db4o.Internal.Transaction transaction)
+		private void WriteIndex(Transaction transaction)
 		{
 			_index.SetStateDirty();
 			_index.Write(transaction);
@@ -138,34 +135,28 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		internal sealed class TransactionState
 		{
-			private Db4objects.Db4o.Foundation.Tree i_addToClassIndex;
+			private Tree i_addToClassIndex;
 
-			private Db4objects.Db4o.Foundation.Tree i_removeFromClassIndex;
+			private Tree i_removeFromClassIndex;
 
 			public void Add(int id)
 			{
-				i_removeFromClassIndex = Db4objects.Db4o.Foundation.Tree.RemoveLike(i_removeFromClassIndex
-					, new Db4objects.Db4o.Internal.TreeInt(id));
-				i_addToClassIndex = Db4objects.Db4o.Foundation.Tree.Add(i_addToClassIndex, new Db4objects.Db4o.Internal.TreeInt
-					(id));
+				i_removeFromClassIndex = Tree.RemoveLike(i_removeFromClassIndex, new TreeInt(id));
+				i_addToClassIndex = Tree.Add(i_addToClassIndex, new TreeInt(id));
 			}
 
 			public void Remove(int id)
 			{
-				i_addToClassIndex = Db4objects.Db4o.Foundation.Tree.RemoveLike(i_addToClassIndex, 
-					new Db4objects.Db4o.Internal.TreeInt(id));
-				i_removeFromClassIndex = Db4objects.Db4o.Foundation.Tree.Add(i_removeFromClassIndex
-					, new Db4objects.Db4o.Internal.TreeInt(id));
+				i_addToClassIndex = Tree.RemoveLike(i_addToClassIndex, new TreeInt(id));
+				i_removeFromClassIndex = Tree.Add(i_removeFromClassIndex, new TreeInt(id));
 			}
 
 			public void DontDelete(int id)
 			{
-				i_removeFromClassIndex = Db4objects.Db4o.Foundation.Tree.RemoveLike(i_removeFromClassIndex
-					, new Db4objects.Db4o.Internal.TreeInt(id));
+				i_removeFromClassIndex = Tree.RemoveLike(i_removeFromClassIndex, new TreeInt(id));
 			}
 
-			internal void Traverse(Db4objects.Db4o.Foundation.Tree node, Db4objects.Db4o.Foundation.IVisitor4
-				 visitor)
+			internal void Traverse(Tree node, IVisitor4 visitor)
 			{
 				if (node != null)
 				{
@@ -173,63 +164,55 @@ namespace Db4objects.Db4o.Internal.Classindex
 				}
 			}
 
-			public void TraverseAdded(Db4objects.Db4o.Foundation.IVisitor4 visitor4)
+			public void TraverseAdded(IVisitor4 visitor4)
 			{
 				Traverse(i_addToClassIndex, visitor4);
 			}
 
-			public void TraverseRemoved(Db4objects.Db4o.Foundation.IVisitor4 visitor4)
+			public void TraverseRemoved(IVisitor4 visitor4)
 			{
 				Traverse(i_removeFromClassIndex, visitor4);
 			}
 		}
 
-		protected override void InternalAdd(Db4objects.Db4o.Internal.Transaction transaction
-			, int id)
+		protected override void InternalAdd(Transaction transaction, int id)
 		{
 			GetState(transaction).Add(id);
 		}
 
-		private Db4objects.Db4o.Internal.Classindex.OldClassIndexStrategy.TransactionState
-			 GetState(Db4objects.Db4o.Internal.Transaction transaction)
+		private OldClassIndexStrategy.TransactionState GetState(Transaction transaction)
 		{
 			lock (_perTransaction)
 			{
-				Db4objects.Db4o.Internal.Classindex.OldClassIndexStrategy.TransactionState context
-					 = (Db4objects.Db4o.Internal.Classindex.OldClassIndexStrategy.TransactionState)_perTransaction
-					.Get(transaction);
+				OldClassIndexStrategy.TransactionState context = (OldClassIndexStrategy.TransactionState
+					)_perTransaction.Get(transaction);
 				if (null == context)
 				{
-					context = new Db4objects.Db4o.Internal.Classindex.OldClassIndexStrategy.TransactionState
-						();
+					context = new OldClassIndexStrategy.TransactionState();
 					_perTransaction.Put(transaction, context);
-					((Db4objects.Db4o.Internal.LocalTransaction)transaction).Enlist(this);
+					((LocalTransaction)transaction).Enlist(this);
 				}
 				return context;
 			}
 		}
 
-		private Db4objects.Db4o.Foundation.Tree GetAll(Db4objects.Db4o.Internal.Transaction
-			 transaction)
+		private Tree GetAll(Transaction transaction)
 		{
-			Db4objects.Db4o.Internal.Classindex.ClassIndex ci = GetActiveIndex(transaction);
+			ClassIndex ci = GetActiveIndex(transaction);
 			if (ci == null)
 			{
 				return null;
 			}
-			Db4objects.Db4o.Foundation.Tree.ByRef tree = new Db4objects.Db4o.Foundation.Tree.ByRef
-				(Db4objects.Db4o.Foundation.Tree.DeepClone(ci.GetRoot(), null));
-			Db4objects.Db4o.Internal.Classindex.OldClassIndexStrategy.TransactionState context
-				 = GetState(transaction);
+			Tree.ByRef tree = new Tree.ByRef(Tree.DeepClone(ci.GetRoot(), null));
+			OldClassIndexStrategy.TransactionState context = GetState(transaction);
 			context.TraverseAdded(new _AnonymousInnerClass151(this, tree));
 			context.TraverseRemoved(new _AnonymousInnerClass156(this, tree));
 			return tree.value;
 		}
 
-		private sealed class _AnonymousInnerClass151 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass151 : IVisitor4
 		{
-			public _AnonymousInnerClass151(OldClassIndexStrategy _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
-				 tree)
+			public _AnonymousInnerClass151(OldClassIndexStrategy _enclosing, Tree.ByRef tree)
 			{
 				this._enclosing = _enclosing;
 				this.tree = tree;
@@ -237,19 +220,17 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 			public void Visit(object obj)
 			{
-				tree.value = Db4objects.Db4o.Foundation.Tree.Add(tree.value, new Db4objects.Db4o.Internal.TreeInt
-					(this._enclosing.IdFromValue(obj)));
+				tree.value = Tree.Add(tree.value, new TreeInt(this._enclosing.IdFromValue(obj)));
 			}
 
 			private readonly OldClassIndexStrategy _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.Tree.ByRef tree;
+			private readonly Tree.ByRef tree;
 		}
 
-		private sealed class _AnonymousInnerClass156 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass156 : IVisitor4
 		{
-			public _AnonymousInnerClass156(OldClassIndexStrategy _enclosing, Db4objects.Db4o.Foundation.Tree.ByRef
-				 tree)
+			public _AnonymousInnerClass156(OldClassIndexStrategy _enclosing, Tree.ByRef tree)
 			{
 				this._enclosing = _enclosing;
 				this.tree = tree;
@@ -257,35 +238,32 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 			public void Visit(object obj)
 			{
-				tree.value = Db4objects.Db4o.Foundation.Tree.RemoveLike(tree.value, (Db4objects.Db4o.Internal.TreeInt
-					)obj);
+				tree.value = Tree.RemoveLike(tree.value, (TreeInt)obj);
 			}
 
 			private readonly OldClassIndexStrategy _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.Tree.ByRef tree;
+			private readonly Tree.ByRef tree;
 		}
 
-		protected override void InternalRemove(Db4objects.Db4o.Internal.Transaction transaction
-			, int id)
+		protected override void InternalRemove(Transaction transaction, int id)
 		{
 			GetState(transaction).Remove(id);
 		}
 
-		public override void TraverseAll(Db4objects.Db4o.Internal.Transaction transaction
-			, Db4objects.Db4o.Foundation.IVisitor4 command)
+		public override void TraverseAll(Transaction transaction, IVisitor4 command)
 		{
-			Db4objects.Db4o.Foundation.Tree tree = GetAll(transaction);
+			Tree tree = GetAll(transaction);
 			if (tree != null)
 			{
 				tree.Traverse(new _AnonymousInnerClass171(this, command));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass171 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass171 : IVisitor4
 		{
-			public _AnonymousInnerClass171(OldClassIndexStrategy _enclosing, Db4objects.Db4o.Foundation.IVisitor4
-				 command)
+			public _AnonymousInnerClass171(OldClassIndexStrategy _enclosing, IVisitor4 command
+				)
 			{
 				this._enclosing = _enclosing;
 				this.command = command;
@@ -298,31 +276,29 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 			private readonly OldClassIndexStrategy _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.IVisitor4 command;
+			private readonly IVisitor4 command;
 		}
 
 		public virtual int IdFromValue(object value)
 		{
-			return ((Db4objects.Db4o.Internal.TreeInt)value)._key;
+			return ((TreeInt)value)._key;
 		}
 
-		private Db4objects.Db4o.Internal.Classindex.ClassIndex CreateClassIndex(Db4objects.Db4o.Internal.ObjectContainerBase
-			 stream)
+		private ClassIndex CreateClassIndex(ObjectContainerBase stream)
 		{
 			if (stream.IsClient())
 			{
-				return new Db4objects.Db4o.Internal.Classindex.ClassIndexClient(_yapClass);
+				return new ClassIndexClient(_yapClass);
 			}
-			return new Db4objects.Db4o.Internal.Classindex.ClassIndex(_yapClass);
+			return new ClassIndex(_yapClass);
 		}
 
-		public override void DontDelete(Db4objects.Db4o.Internal.Transaction transaction, 
-			int id)
+		public override void DontDelete(Transaction transaction, int id)
 		{
 			GetState(transaction).DontDelete(id);
 		}
 
-		public virtual void Commit(Db4objects.Db4o.Internal.Transaction trans)
+		public virtual void Commit(Transaction trans)
 		{
 			if (null != _index)
 			{
@@ -331,7 +307,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			}
 		}
 
-		public virtual void Dispose(Db4objects.Db4o.Internal.Transaction transaction)
+		public virtual void Dispose(Transaction transaction)
 		{
 			lock (_perTransaction)
 			{
@@ -339,12 +315,12 @@ namespace Db4objects.Db4o.Internal.Classindex
 			}
 		}
 
-		public virtual void Rollback(Db4objects.Db4o.Internal.Transaction transaction)
+		public virtual void Rollback(Transaction transaction)
 		{
 		}
 
-		public override void DefragReference(Db4objects.Db4o.Internal.ClassMetadata yapClass
-			, Db4objects.Db4o.Internal.ReaderPair readers, int classIndexID)
+		public override void DefragReference(ClassMetadata yapClass, ReaderPair readers, 
+			int classIndexID)
 		{
 		}
 
@@ -353,13 +329,12 @@ namespace Db4objects.Db4o.Internal.Classindex
 			return _index.GetID();
 		}
 
-		public override System.Collections.IEnumerator AllSlotIDs(Db4objects.Db4o.Internal.Transaction
-			 trans)
+		public override IEnumerator AllSlotIDs(Transaction trans)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public override void DefragIndex(Db4objects.Db4o.Internal.ReaderPair readers)
+		public override void DefragIndex(ReaderPair readers)
 		{
 		}
 	}

@@ -1,3 +1,11 @@
+using System.IO;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Diagnostic;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>configuration interface.</summary>
@@ -5,8 +13,7 @@ namespace Db4objects.Db4o.Config
 	/// configuration interface.
 	/// <br /><br />This interface contains methods to configure db4o.<br /><br />
 	/// The global Configuration context is available with
-	/// <see cref="Db4objects.Db4o.Db4oFactory.Configure">Db4objects.Db4o.Db4oFactory.Configure
-	/// 	</see>
+	/// <see cref="Db4oFactory.Configure">Db4oFactory.Configure</see>
 	/// .
 	/// When an ObjectContainer or ObjectServer is opened, the global Configuration
 	/// context is cloned and copied into the ObjectContainer/ObjectServer.
@@ -17,11 +24,9 @@ namespace Db4objects.Db4o.Config
 	/// <br /><br />Some configuration settings can be modified on an open
 	/// ObjectContainer/ObjectServer. The local Configuration context is
 	/// available with
-	/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Configure">Db4objects.Db4o.Ext.IExtObjectContainer.Configure
-	/// 	</see>
+	/// <see cref="IExtObjectContainer.Configure">IExtObjectContainer.Configure</see>
 	/// and
-	/// <see cref="Db4objects.Db4o.Ext.IExtObjectServer.Configure">Db4objects.Db4o.Ext.IExtObjectServer.Configure
-	/// 	</see>
+	/// <see cref="IExtObjectServer.Configure">IExtObjectServer.Configure</see>
 	/// .
 	/// </remarks>
 	public interface IConfiguration
@@ -38,7 +43,7 @@ namespace Db4objects.Db4o.Config
 		/// is away from another object. <b>The preconfigured "activation depth" db4o uses
 		/// in the default setting is 5.</b>
 		/// <br /><br />Whenever an application iterates through the
-		/// <see cref="Db4objects.Db4o.IObjectSet">ObjectSet</see>
+		/// <see cref="IObjectSet">ObjectSet</see>
 		/// of a query result, the result objects
 		/// will be activated to the configured activation depth.<br /><br />
 		/// A concrete example with the preconfigured activation depth of 5:<br />
@@ -49,20 +54,19 @@ namespace Db4objects.Db4o.Config
 		/// foo, member1, member2, member3 and member4 will be activated<br />
 		/// member5 will be deactivated, all of it's members will be null<br />
 		/// member5 can be activated at any time by calling
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Activate">ObjectContainer#activate(member5, depth)
-		/// 	</see>
+		/// <see cref="IObjectContainer.Activate">ObjectContainer#activate(member5, depth)</see>
 		/// .
 		/// <br /><br />
 		/// Note that raising the global activation depth will consume more memory and
 		/// have negative effects on the performance of first-time retrievals. Lowering
 		/// the global activation depth needs more individual activation work but can
 		/// increase performance of queries.<br /><br />
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Deactivate">ObjectContainer#deactivate(Object, depth)
+		/// <see cref="IObjectContainer.Deactivate">ObjectContainer#deactivate(Object, depth)
 		/// 	</see>
 		/// can be used to manually free memory by deactivating objects.<br /><br />
 		/// </remarks>
 		/// <param name="depth">the desired global activation depth.</param>
-		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth">configuring classes individually
+		/// <seealso cref="IObjectClass.MaximumActivationDepth">configuring classes individually
 		/// 	</seealso>
 		void ActivationDepth(int depth);
 
@@ -75,7 +79,7 @@ namespace Db4objects.Db4o.Config
 		/// an ObjectContainer or ObjectServer is opened.
 		/// </remarks>
 		/// <param name="configurationItem">the ConfigurationItem</param>
-		void Add(Db4objects.Db4o.Config.IConfigurationItem configurationItem);
+		void Add(IConfigurationItem configurationItem);
 
 		/// <summary>adds a new Alias for a class, namespace or package.</summary>
 		/// <remarks>
@@ -86,21 +90,20 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />Two simple Alias implementations are supplied along with
 		/// db4o:<br />
 		/// -
-		/// <see cref="Db4objects.Db4o.Config.TypeAlias">Db4objects.Db4o.Config.TypeAlias</see>
+		/// <see cref="TypeAlias">TypeAlias</see>
 		/// provides an #equals() resolver to match
 		/// names directly.<br />
 		/// -
-		/// <see cref="Db4objects.Db4o.Config.WildcardAlias">Db4objects.Db4o.Config.WildcardAlias
-		/// 	</see>
+		/// <see cref="WildcardAlias">WildcardAlias</see>
 		/// allows simple pattern matching
 		/// with one single '*' wildcard character.<br />
 		/// <br />
 		/// It is possible to create
 		/// own complex
-		/// <see cref="Db4objects.Db4o.Config.IAlias">Db4objects.Db4o.Config.IAlias</see>
+		/// <see cref="IAlias">IAlias</see>
 		/// constructs by creating own resolvers
 		/// that implement the
-		/// <see cref="Db4objects.Db4o.Config.IAlias">Db4objects.Db4o.Config.IAlias</see>
+		/// <see cref="IAlias">IAlias</see>
 		/// interface.
 		/// <br /><br />
 		/// Four examples of concrete usecases:
@@ -134,7 +137,7 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />Aliases should be configured before opening a database file
 		/// or connecting to a server.
 		/// </remarks>
-		void AddAlias(Db4objects.Db4o.Config.IAlias alias);
+		void AddAlias(IAlias alias);
 
 		/// <summary>
 		/// Removes an alias previously added with
@@ -142,7 +145,7 @@ namespace Db4objects.Db4o.Config
 		/// .
 		/// </summary>
 		/// <param name="alias">the alias to remove</param>
-		void RemoveAlias(Db4objects.Db4o.Config.IAlias alias);
+		void RemoveAlias(IAlias alias);
 
 		/// <summary>turns automatic database file format version updates on.</summary>
 		/// <remarks>
@@ -229,7 +232,7 @@ namespace Db4objects.Db4o.Config
 		/// increase the performance on system startup.<br /><br />
 		/// </remarks>
 		/// <param name="flag">false to turn callback methods off</param>
-		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
+		/// <seealso cref="IObjectCallbacks">Using callbacks</seealso>
 		void Callbacks(bool flag);
 
 		/// <summary>
@@ -248,8 +251,7 @@ namespace Db4objects.Db4o.Config
 		/// FormatterServices.GetUninitializedObject() on
 		/// the .NET framework (not available on CompactFramework).
 		/// This setting may also be overridden for individual classes in
-		/// <see cref="Db4objects.Db4o.Config.IObjectClass.CallConstructor">Db4objects.Db4o.Config.IObjectClass.CallConstructor
-		/// 	</see>
+		/// <see cref="IObjectClass.CallConstructor">IObjectClass.CallConstructor</see>
 		/// .
 		/// <br /><br />The default setting depends on the features supported by your current environment.
 		/// <br /><br />
@@ -258,13 +260,12 @@ namespace Db4objects.Db4o.Config
 		/// - specify true, to request calling constructors, specify
 		/// false to request <b>not</b> calling constructors.
 		/// </param>
-		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.CallConstructor">Db4objects.Db4o.Config.IObjectClass.CallConstructor
-		/// 	</seealso>
+		/// <seealso cref="IObjectClass.CallConstructor">IObjectClass.CallConstructor</seealso>
 		void CallConstructors(bool flag);
 
 		/// <summary>
 		/// turns
-		/// <see cref="Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth">individual class activation depth configuration
+		/// <see cref="IObjectClass.MaximumActivationDepth">individual class activation depth configuration
 		/// 	</see>
 		/// on
 		/// and off.
@@ -274,8 +275,7 @@ namespace Db4objects.Db4o.Config
 		/// false to turn the possibility to individually configure class
 		/// activation depths off
 		/// </param>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?
-		/// 	</seealso>
+		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
 		void ClassActivationDepthConfigurable(bool flag);
 
 		/// <summary>
@@ -297,7 +297,7 @@ namespace Db4objects.Db4o.Config
 		/// <summary>returns the configuration interface for diagnostics.</summary>
 		/// <remarks>returns the configuration interface for diagnostics.</remarks>
 		/// <returns>the configuration interface for diagnostics.</returns>
-		Db4objects.Db4o.Diagnostic.IDiagnosticConfiguration Diagnostic();
+		IDiagnosticConfiguration Diagnostic();
 
 		/// <summary>turns commit recovery off.</summary>
 		/// <remarks>
@@ -343,7 +343,7 @@ namespace Db4objects.Db4o.Config
 		/// configures the use of encryption.
 		/// <br /><br />This method needs to be called <b>before</b> a database file
 		/// is created with the first
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
 		/// .
 		/// <br /><br />If encryption is set to true,
 		/// you need to supply a password to seed the encryption mechanism.<br /><br />
@@ -351,15 +351,14 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <deprecated>
 		/// use a custom encrypting
-		/// <see cref="Db4objects.Db4o.IO.IoAdapter">Db4objects.Db4o.IO.IoAdapter</see>
+		/// <see cref="IoAdapter">IoAdapter</see>
 		/// instead
 		/// </deprecated>
 		/// <param name="flag">
 		/// true for turning encryption on, false for turning encryption
 		/// off.
 		/// </param>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Password">Db4objects.Db4o.Config.IConfiguration.Password
-		/// 	</seealso>
+		/// <seealso cref="IConfiguration.Password">IConfiguration.Password</seealso>
 		void Encrypt(bool flag);
 
 		/// <summary>configures whether Exceptions are to be thrown, if objects can not be stored.
@@ -375,8 +374,7 @@ namespace Db4objects.Db4o.Config
 		/// can not be instantiated, the object will not be stored. By default,
 		/// execution will continue without any message or error. This method can
 		/// be used to configure db4o to throw an
-		/// <see cref="Db4objects.Db4o.Ext.ObjectNotStorableException">ObjectNotStorableException
-		/// 	</see>
+		/// <see cref="ObjectNotStorableException">ObjectNotStorableException</see>
 		/// if an object can not be stored.
 		/// <br /><br />
 		/// The default for this setting is <b>false</b>.<br /><br />
@@ -419,7 +417,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>returns the freespace configuration interface.</summary>
 		/// <remarks>returns the freespace configuration interface.</remarks>
-		Db4objects.Db4o.Config.IFreespaceConfiguration Freespace();
+		IFreespaceConfiguration Freespace();
 
 		/// <summary>configures db4o to generate UUIDs for stored objects.</summary>
 		/// <remarks>configures db4o to generate UUIDs for stored objects.</remarks>
@@ -431,8 +429,7 @@ namespace Db4objects.Db4o.Config
 		/// </param>
 		/// <deprecated>
 		/// Use
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs">Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs
-		/// 	</see>
+		/// <see cref="IConfiguration.GenerateUUIDs">IConfiguration.GenerateUUIDs</see>
 		/// instead.
 		/// </deprecated>
 		void GenerateUUIDs(int setting);
@@ -441,7 +438,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>configures db4o to generate UUIDs for stored objects.</remarks>
 		/// <param name="the">scope for UUID generation: disabled, generate for all classes, or configure individually
 		/// 	</param>
-		void GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope setting);
+		void GenerateUUIDs(ConfigScope setting);
 
 		/// <summary>configures db4o to generate version numbers for stored objects.</summary>
 		/// <remarks>configures db4o to generate version numbers for stored objects.</remarks>
@@ -453,7 +450,7 @@ namespace Db4objects.Db4o.Config
 		/// </param>
 		/// <deprecated>
 		/// Use
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers">Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers
+		/// <see cref="IConfiguration.GenerateVersionNumbers">IConfiguration.GenerateVersionNumbers
 		/// 	</see>
 		/// instead.
 		/// </deprecated>
@@ -463,7 +460,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>configures db4o to generate version numbers for stored objects.</remarks>
 		/// <param name="the">scope for version number generation: disabled, generate for all classes, or configure individually
 		/// 	</param>
-		void GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope setting);
+		void GenerateVersionNumbers(ConfigScope setting);
 
 		/// <summary>Configures db4o to call intern() on strings upon retrieval.</summary>
 		/// <remarks>Configures db4o to call intern() on strings upon retrieval.</remarks>
@@ -474,7 +471,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// allows to configure db4o to use a customized byte IO adapter.
 		/// <br /><br />Derive from the abstract class
-		/// <see cref="Db4objects.Db4o.IO.IoAdapter">Db4objects.Db4o.IO.IoAdapter</see>
+		/// <see cref="IoAdapter">IoAdapter</see>
 		/// to
 		/// write your own. Possible usecases could be improved performance
 		/// with a native library, mirrored write to two files, encryption or
@@ -483,7 +480,7 @@ namespace Db4objects.Db4o.Config
 		/// http://developer.db4o.com/ProjectSpaces/view.aspx/XTEA
 		/// </remarks>
 		/// <param name="adapter">- the IoAdapter</param>
-		void Io(Db4objects.Db4o.IO.IoAdapter adapter);
+		void Io(IoAdapter adapter);
 
 		/// <summary>allows to mark fields as transient with custom attributes.</summary>
 		/// <remarks>
@@ -503,7 +500,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// sets the detail level of db4o messages. Messages will be output to the
 		/// configured output
-		/// <see cref="System.IO.TextWriter">PrintStream</see>
+		/// <see cref="TextWriter">PrintStream</see>
 		/// .
 		/// <br /><br />
 		/// Level 0 - no messages<br />
@@ -513,8 +510,7 @@ namespace Db4objects.Db4o.Config
 		/// When using client-server and the level is set to 0, the server will override this and set it to 1.  To get around this you can set the level to -1.  This has the effect of not returning any messages.<br /><br />
 		/// </remarks>
 		/// <param name="level">integer from 0 to 3</param>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.SetOut">Db4objects.Db4o.Config.IConfiguration.SetOut
-		/// 	</seealso>
+		/// <seealso cref="IConfiguration.SetOut">IConfiguration.SetOut</seealso>
 		void MessageLevel(int level);
 
 		/// <summary>can be used to turn the database file locking thread off.</summary>
@@ -539,7 +535,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>
 		/// returns an
-		/// <see cref="Db4objects.Db4o.Config.IObjectClass">ObjectClass</see>
+		/// <see cref="IObjectClass">ObjectClass</see>
 		/// object
 		/// to configure the specified class.
 		/// <br /><br />
@@ -551,10 +547,10 @@ namespace Db4objects.Db4o.Config
 		/// <param name="clazz">class name, Class object, or example object.<br /><br /></param>
 		/// <returns>
 		/// an instance of an
-		/// <see cref="Db4objects.Db4o.Config.IObjectClass">ObjectClass</see>
+		/// <see cref="IObjectClass">ObjectClass</see>
 		/// object for configuration.
 		/// </returns>
-		Db4objects.Db4o.Config.IObjectClass ObjectClass(object clazz);
+		IObjectClass ObjectClass(object clazz);
 
 		/// <summary>
 		/// If set to true, db4o will try to optimize native queries
@@ -589,7 +585,7 @@ namespace Db4objects.Db4o.Config
 		/// boolean indicates whether Native Queries will be optimized
 		/// dynamically.
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.OptimizeNativeQueries">Db4objects.Db4o.Config.IConfiguration.OptimizeNativeQueries
+		/// <seealso cref="IConfiguration.OptimizeNativeQueries">IConfiguration.OptimizeNativeQueries
 		/// 	</seealso>
 		bool OptimizeNativeQueries();
 
@@ -598,7 +594,7 @@ namespace Db4objects.Db4o.Config
 		/// protects the database file with a password.
 		/// <br /><br />To set a password for a database file, this method needs to be
 		/// called <b>before</b> a database file is created with the first
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
 		/// .
 		/// <br /><br />All further attempts to open
 		/// the file, are required to set the same password.<br /><br />The password
@@ -607,7 +603,7 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <deprecated>
 		/// use a custom encrypting
-		/// <see cref="Db4objects.Db4o.IO.IoAdapter">Db4objects.Db4o.IO.IoAdapter</see>
+		/// <see cref="IoAdapter">IoAdapter</see>
 		/// instead
 		/// </deprecated>
 		/// <param name="pass">the password to be used.</param>
@@ -615,13 +611,13 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>returns the Query configuration interface.</summary>
 		/// <remarks>returns the Query configuration interface.</remarks>
-		Db4objects.Db4o.Config.IQueryConfiguration Queries();
+		IQueryConfiguration Queries();
 
 		/// <summary>turns readOnly mode on and off.</summary>
 		/// <remarks>
 		/// turns readOnly mode on and off.
 		/// <br /><br />This method configures the mode in which subsequent calls to
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
 		/// will open files.
 		/// <br /><br />Readonly mode allows to open an unlimited number of reading
 		/// processes on one database file. It is also convenient
@@ -630,7 +626,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="flag">
 		/// <code>true</code> for configuring readOnly mode for subsequent
 		/// calls to
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
 		/// .
 		/// </param>
 		void ReadOnly(bool flag);
@@ -645,7 +641,7 @@ namespace Db4objects.Db4o.Config
 		/// package. This method can be used to install a custom reflection
 		/// implementation.
 		/// </remarks>
-		void ReflectWith(Db4objects.Db4o.Reflect.IReflector reflector);
+		void ReflectWith(IReflector reflector);
 
 		/// <summary>forces analysis of all Classes during a running session.</summary>
 		/// <remarks>
@@ -658,8 +654,7 @@ namespace Db4objects.Db4o.Config
 		/// in an ObjectContainer Configuration context, only the classes of the
 		/// respective ObjectContainer will be refreshed.<br /><br />
 		/// </remarks>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.SetClassLoader">Db4objects.Db4o.Config.IConfiguration.SetClassLoader
-		/// 	</seealso>
+		/// <seealso cref="IConfiguration.SetClassLoader">IConfiguration.SetClassLoader</seealso>
 		void RefreshClasses();
 
 		/// <summary>tuning feature only: reserves a number of bytes in database files.</summary>
@@ -668,8 +663,7 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />The global setting is used for the creation of new database
 		/// files. Continous calls on an ObjectContainer Configuration context
 		/// (see
-		/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Configure">Db4objects.Db4o.Ext.IExtObjectContainer.Configure
-		/// 	</see>
+		/// <see cref="IExtObjectContainer.Configure">IExtObjectContainer.Configure</see>
 		/// ) will
 		/// continually allocate space.
 		/// <br /><br />The allocation of a fixed number of bytes at one time
@@ -710,20 +704,18 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>
 		/// Assigns a
-		/// <see cref="System.IO.TextWriter">PrintStream</see>
+		/// <see cref="TextWriter">PrintStream</see>
 		/// where db4o is to print its event messages.
 		/// <br /><br />Messages are useful for debugging purposes and for learning
 		/// to understand, how db4o works. The message level can be raised with
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.MessageLevel">Db4o.configure().messageLevel()
-		/// 	</see>
+		/// <see cref="IConfiguration.MessageLevel">Db4o.configure().messageLevel()</see>
 		/// to produce more detailed messages.
 		/// <br /><br />Use <code>setOut(System.out)</code> to print messages to the
 		/// console.<br /><br />
 		/// </summary>
 		/// <param name="outStream">the new <code>PrintStream</code> for messages.</param>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.MessageLevel">Db4objects.Db4o.Config.IConfiguration.MessageLevel
-		/// 	</seealso>
-		void SetOut(System.IO.TextWriter outStream);
+		/// <seealso cref="IConfiguration.MessageLevel">IConfiguration.MessageLevel</seealso>
+		void SetOut(TextWriter outStream);
 
 		/// <summary>
 		/// tuning feature: configures whether db4o should try to instantiate one instance
@@ -745,7 +737,7 @@ namespace Db4objects.Db4o.Config
 		/// configures the storage format of Strings.
 		/// <br /><br />This method needs to be called <b>before</b> a database file
 		/// is created with the first
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
 		/// .
 		/// db4o database files keep their string format after creation.<br /><br />
 		/// Turning Unicode support off reduces the file storage space for strings
@@ -762,19 +754,17 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// specifies the global updateDepth.
 		/// <br /><br />see the documentation of
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Set">ObjectContainer.set()</see>
+		/// <see cref="IObjectContainer.Set">ObjectContainer.set()</see>
 		/// for further details.<br /><br />
 		/// The value be may be overridden for individual classes.<br /><br />
 		/// The default setting is 1: Only the object passed to
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Set">ObjectContainer.set()</see>
+		/// <see cref="IObjectContainer.Set">ObjectContainer.set()</see>
 		/// will be updated.<br /><br />
 		/// </remarks>
 		/// <param name="depth">the depth of the desired update.</param>
-		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.UpdateDepth">Db4objects.Db4o.Config.IObjectClass.UpdateDepth
-		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate">Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate
-		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
+		/// <seealso cref="IObjectClass.UpdateDepth">IObjectClass.UpdateDepth</seealso>
+		/// <seealso cref="IObjectClass.CascadeOnUpdate">IObjectClass.CascadeOnUpdate</seealso>
+		/// <seealso cref="IObjectCallbacks">Using callbacks</seealso>
 		void UpdateDepth(int depth);
 
 		/// <summary>turns weak reference management on or off.</summary>
@@ -787,8 +777,7 @@ namespace Db4objects.Db4o.Config
 		/// references durring memory management at the cost of higher
 		/// memory consumption or by alternatively implementing a manual
 		/// memory management scheme using
-		/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Purge">Db4objects.Db4o.Ext.IExtObjectContainer.Purge
-		/// 	</see>
+		/// <see cref="IExtObjectContainer.Purge">IExtObjectContainer.Purge</see>
 		/// <br /><br />Setting the value to <code>false</code> causes db4o to use hard
 		/// references to objects, preventing the garbage collection process
 		/// from disposing of unused objects.
@@ -810,6 +799,6 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>returns client/server configuration interface.</summary>
 		/// <remarks>returns client/server configuration interface.</remarks>
-		Db4objects.Db4o.Config.IClientServerConfiguration ClientServer();
+		IClientServerConfiguration ClientServer();
 	}
 }

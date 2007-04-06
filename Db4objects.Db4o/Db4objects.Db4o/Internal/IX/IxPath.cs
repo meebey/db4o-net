@@ -1,10 +1,15 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.IX;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.IX
 {
 	/// <summary>
 	/// Index Path to represent a list of traversed index tree entries,
 	/// used by IxTraverser
 	/// </summary>
-	internal class IxPath : Db4objects.Db4o.Foundation.IShallowClone, Db4objects.Db4o.Foundation.IVisitor4
+	internal class IxPath : IShallowClone, IVisitor4
 	{
 		internal int i_comparisonResult;
 
@@ -14,15 +19,14 @@ namespace Db4objects.Db4o.Internal.IX
 
 		internal Db4objects.Db4o.Internal.IX.IxPath i_next;
 
-		internal Db4objects.Db4o.Internal.IX.IxTraverser i_traverser;
+		internal IxTraverser i_traverser;
 
-		internal Db4objects.Db4o.Internal.IX.IxTree i_tree;
+		internal IxTree i_tree;
 
-		internal Db4objects.Db4o.Foundation.IVisitor4 _visitor;
+		internal IVisitor4 _visitor;
 
-		internal IxPath(Db4objects.Db4o.Internal.IX.IxTraverser a_traverser, Db4objects.Db4o.Internal.IX.IxPath
-			 a_next, Db4objects.Db4o.Internal.IX.IxTree a_tree, int a_comparisonResult, int[]
-			 lowerAndUpperMatch)
+		internal IxPath(IxTraverser a_traverser, Db4objects.Db4o.Internal.IX.IxPath a_next
+			, IxTree a_tree, int a_comparisonResult, int[] lowerAndUpperMatch)
 		{
 			i_traverser = a_traverser;
 			i_next = a_next;
@@ -31,17 +35,15 @@ namespace Db4objects.Db4o.Internal.IX
 			i_lowerAndUpperMatch = lowerAndUpperMatch;
 		}
 
-		internal virtual void Add(Db4objects.Db4o.Foundation.IVisitor4 visitor)
+		internal virtual void Add(IVisitor4 visitor)
 		{
-			if (i_comparisonResult == 0 && i_traverser.i_take[Db4objects.Db4o.Internal.Query.Processor.QE
-				.EQUAL])
+			if (i_comparisonResult == 0 && i_traverser.i_take[QE.EQUAL])
 			{
 				i_tree.Visit(visitor, i_lowerAndUpperMatch);
 			}
 		}
 
-		internal virtual void AddPrecedingToCandidatesTree(Db4objects.Db4o.Foundation.IVisitor4
-			 visitor)
+		internal virtual void AddPrecedingToCandidatesTree(IVisitor4 visitor)
 		{
 			_visitor = visitor;
 			if (i_tree._preceding != null)
@@ -65,8 +67,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		internal virtual void AddSubsequentToCandidatesTree(Db4objects.Db4o.Foundation.IVisitor4
-			 visitor)
+		internal virtual void AddSubsequentToCandidatesTree(IVisitor4 visitor)
 		{
 			_visitor = visitor;
 			if (i_tree._subsequent != null)
@@ -78,7 +79,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 			if (i_lowerAndUpperMatch != null)
 			{
-				int[] lowerAndUpperMatch = new int[] { i_lowerAndUpperMatch[1] + 1, ((Db4objects.Db4o.Internal.IX.IxFileRange
+				int[] lowerAndUpperMatch = new int[] { i_lowerAndUpperMatch[1] + 1, ((IxFileRange
 					)i_tree)._entries - 1 };
 				i_tree.Visit(visitor, lowerAndUpperMatch);
 			}
@@ -102,8 +103,8 @@ namespace Db4objects.Db4o.Internal.IX
 			return a_tail;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.IX.IxPath Append(Db4objects.Db4o.Internal.IX.IxTree
-			 a_tree, int a_comparisonResult, int[] lowerAndUpperMatch)
+		internal virtual Db4objects.Db4o.Internal.IX.IxPath Append(IxTree a_tree, int a_comparisonResult
+			, int[] lowerAndUpperMatch)
 		{
 			i_next = new Db4objects.Db4o.Internal.IX.IxPath(i_traverser, null, a_tree, a_comparisonResult
 				, lowerAndUpperMatch);
@@ -139,8 +140,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		public virtual void VisitMatch(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor)
+		public virtual void VisitMatch(FreespaceVisitor visitor)
 		{
 			if (i_next != null)
 			{
@@ -170,8 +170,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		public virtual void VisitPreceding(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor)
+		public virtual void VisitPreceding(FreespaceVisitor visitor)
 		{
 			if (i_next != null)
 			{
@@ -204,13 +203,12 @@ namespace Db4objects.Db4o.Internal.IX
 			{
 				if (i_next == null || i_next.i_tree != i_tree._preceding)
 				{
-					((Db4objects.Db4o.Internal.IX.IxTree)i_tree._preceding).VisitLast(visitor);
+					((IxTree)i_tree._preceding).VisitLast(visitor);
 				}
 			}
 		}
 
-		public virtual void VisitSubsequent(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor)
+		public virtual void VisitSubsequent(FreespaceVisitor visitor)
 		{
 			if (i_next != null)
 			{
@@ -223,7 +221,7 @@ namespace Db4objects.Db4o.Internal.IX
 			if (i_lowerAndUpperMatch != null)
 			{
 				int ix = i_lowerAndUpperMatch[1] + 1;
-				if (ix < ((Db4objects.Db4o.Internal.IX.IxFileRange)i_tree)._entries)
+				if (ix < ((IxFileRange)i_tree)._entries)
 				{
 					i_tree.FreespaceVisit(visitor, ix);
 				}
@@ -243,7 +241,7 @@ namespace Db4objects.Db4o.Internal.IX
 			{
 				if (i_next == null || i_next.i_tree != i_tree._subsequent)
 				{
-					((Db4objects.Db4o.Internal.IX.IxTree)i_tree._subsequent).VisitFirst(visitor);
+					((IxTree)i_tree._subsequent).VisitFirst(visitor);
 				}
 			}
 		}
@@ -254,7 +252,7 @@ namespace Db4objects.Db4o.Internal.IX
 			{
 				if (i_lowerAndUpperMatch == null)
 				{
-					if (i_tree is Db4objects.Db4o.Internal.IX.IxRemove)
+					if (i_tree is IxRemove)
 					{
 						return 0;
 					}
@@ -289,7 +287,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 			else
 			{
-				if (i_comparisonResult < 0 && !(i_tree is Db4objects.Db4o.Internal.IX.IxRemove))
+				if (i_comparisonResult < 0 && !(i_tree is IxRemove))
 				{
 					preceding++;
 				}
@@ -309,12 +307,11 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 			if (i_lowerAndUpperMatch != null)
 			{
-				subsequent += ((Db4objects.Db4o.Internal.IX.IxFileRange)i_tree)._entries - i_lowerAndUpperMatch
-					[1] - 1;
+				subsequent += ((IxFileRange)i_tree)._entries - i_lowerAndUpperMatch[1] - 1;
 			}
 			else
 			{
-				if (i_comparisonResult > 0 && !(i_tree is Db4objects.Db4o.Internal.IX.IxRemove))
+				if (i_comparisonResult > 0 && !(i_tree is IxRemove))
 				{
 					subsequent++;
 				}
@@ -345,7 +342,7 @@ namespace Db4objects.Db4o.Internal.IX
 
 		public virtual void Visit(object a_object)
 		{
-			((Db4objects.Db4o.Foundation.IVisitor4)a_object).Visit(_visitor);
+			((IVisitor4)a_object).Visit(_visitor);
 		}
 	}
 }

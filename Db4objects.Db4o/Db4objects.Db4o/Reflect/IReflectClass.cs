@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Reflect
 {
 	/// <summary>representation for java.lang.Class.</summary>
@@ -5,32 +7,30 @@ namespace Db4objects.Db4o.Reflect
 	/// representation for java.lang.Class.
 	/// <br /><br />See the respective documentation in the JDK API.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Reflect.IReflector">Db4objects.Db4o.Reflect.IReflector
-	/// 	</seealso>
+	/// <seealso cref="IReflector">IReflector</seealso>
 	public interface IReflectClass
 	{
-		Db4objects.Db4o.Reflect.IReflectClass GetComponentType();
+		IReflectClass GetComponentType();
 
-		Db4objects.Db4o.Reflect.IReflectConstructor[] GetDeclaredConstructors();
+		IReflectConstructor[] GetDeclaredConstructors();
 
-		Db4objects.Db4o.Reflect.IReflectField[] GetDeclaredFields();
+		IReflectField[] GetDeclaredFields();
 
-		Db4objects.Db4o.Reflect.IReflectField GetDeclaredField(string name);
+		IReflectField GetDeclaredField(string name);
 
-		Db4objects.Db4o.Reflect.IReflectClass GetDelegate();
+		IReflectClass GetDelegate();
 
-		Db4objects.Db4o.Reflect.IReflectMethod GetMethod(string methodName, Db4objects.Db4o.Reflect.IReflectClass[]
-			 paramClasses);
+		IReflectMethod GetMethod(string methodName, IReflectClass[] paramClasses);
 
 		string GetName();
 
-		Db4objects.Db4o.Reflect.IReflectClass GetSuperclass();
+		IReflectClass GetSuperclass();
 
 		bool IsAbstract();
 
 		bool IsArray();
 
-		bool IsAssignableFrom(Db4objects.Db4o.Reflect.IReflectClass type);
+		bool IsAssignableFrom(IReflectClass type);
 
 		bool IsCollection();
 
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Reflect
 
 		object NewInstance();
 
-		Db4objects.Db4o.Reflect.IReflector Reflector();
+		IReflector Reflector();
 
 		/// <summary>
 		/// instructs to install or uninstall a special constructor for the
@@ -58,8 +58,7 @@ namespace Db4objects.Db4o.Reflect
 		/// <returns>true if the special constructor is in place after the call</returns>
 		bool SkipConstructor(bool flag);
 
-		void UseConstructor(Db4objects.Db4o.Reflect.IReflectConstructor constructor, object[]
-			 @params);
+		void UseConstructor(IReflectConstructor constructor, object[] @params);
 
 		object[] ToArray(object obj);
 	}

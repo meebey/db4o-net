@@ -1,3 +1,5 @@
+using Db4objects.Db4o;
+
 namespace Db4objects.Db4o
 {
 	/// <summary>
@@ -10,12 +12,12 @@ namespace Db4objects.Db4o
 	/// </remarks>
 	/// <exclude></exclude>
 	/// <persistent></persistent>
-	public class MetaClass : Db4objects.Db4o.IInternal4
+	public class MetaClass : IInternal4
 	{
 		/// <summary>persistent field, don't touch</summary>
 		public string name;
 
 		/// <summary>persistent field, don't touch</summary>
-		public Db4objects.Db4o.MetaField[] fields;
+		public MetaField[] fields;
 	}
 }

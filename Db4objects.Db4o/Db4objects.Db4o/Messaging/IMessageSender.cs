@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Messaging;
+
 namespace Db4objects.Db4o.Messaging
 {
 	/// <summary>message sender for client/server messaging.</summary>
@@ -13,8 +15,7 @@ namespace Db4objects.Db4o.Messaging
 	/// <see cref="com.db4o.config.Configuration#getMessageSender()">com.db4o.config.Configuration#getMessageSender()
 	/// 	</see>
 	/// ,<br />
-	/// <see cref="Db4objects.Db4o.Messaging.IMessageRecipient">Db4objects.Db4o.Messaging.IMessageRecipient
-	/// 	</see>
+	/// <see cref="IMessageRecipient">IMessageRecipient</see>
 	/// ,<br />
 	/// <see cref="com.db4o.config.Configuration#setMessageRecipient(MessageRecipient)">com.db4o.config.Configuration#setMessageRecipient(MessageRecipient)
 	/// 	</see>

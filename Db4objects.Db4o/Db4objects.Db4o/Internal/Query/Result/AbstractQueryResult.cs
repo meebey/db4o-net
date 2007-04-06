@@ -1,7 +1,16 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Query.Result;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Query.Result
 {
 	/// <exclude></exclude>
-	public abstract class AbstractQueryResult : Db4objects.Db4o.Internal.Query.Result.IQueryResult
+	public abstract class AbstractQueryResult : IQueryResult
 	{
 		protected readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
@@ -18,7 +27,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public object ActivatedObject(int id)
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
+			ObjectContainerBase stream = Stream();
 			object ret = stream.GetActivatedObjectFromCache(_transaction, id);
 			if (ret != null)
 			{
@@ -29,12 +38,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public virtual object Lock()
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = Stream();
+			ObjectContainerBase stream = Stream();
 			stream.CheckClosed();
 			return stream.Lock();
 		}
 
-		public virtual Db4objects.Db4o.Internal.ObjectContainerBase Stream()
+		public virtual ObjectContainerBase Stream()
 		{
 			return _transaction.Stream();
 		}
@@ -44,20 +53,20 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			return _transaction;
 		}
 
-		public virtual Db4objects.Db4o.Ext.IExtObjectContainer ObjectContainer()
+		public virtual IExtObjectContainer ObjectContainer()
 		{
 			return Stream();
 		}
 
-		public virtual System.Collections.IEnumerator GetEnumerator()
+		public virtual IEnumerator GetEnumerator()
 		{
 			return new _AnonymousInnerClass56(this, IterateIDs());
 		}
 
-		private sealed class _AnonymousInnerClass56 : Db4objects.Db4o.Foundation.MappingIterator
+		private sealed class _AnonymousInnerClass56 : MappingIterator
 		{
-			public _AnonymousInnerClass56(AbstractQueryResult _enclosing, Db4objects.Db4o.Foundation.IIntIterator4
-				 baseArg1) : base(baseArg1)
+			public _AnonymousInnerClass56(AbstractQueryResult _enclosing, IIntIterator4 baseArg1
+				) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -66,14 +75,14 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			{
 				if (current == null)
 				{
-					return Db4objects.Db4o.Foundation.MappingIterator.SKIP;
+					return MappingIterator.SKIP;
 				}
 				lock (this._enclosing.Lock())
 				{
 					object obj = this._enclosing.ActivatedObject(((int)current));
 					if (obj == null)
 					{
-						return Db4objects.Db4o.Foundation.MappingIterator.SKIP;
+						return MappingIterator.SKIP;
 					}
 					return obj;
 				}
@@ -108,9 +117,8 @@ namespace Db4objects.Db4o.Internal.Query.Result
 		public virtual Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult ToIdList
 			()
 		{
-			Db4objects.Db4o.Internal.Query.Result.IdListQueryResult res = new Db4objects.Db4o.Internal.Query.Result.IdListQueryResult
-				(Transaction(), KnownSize());
-			Db4objects.Db4o.Foundation.IIntIterator4 i = IterateIDs();
+			IdListQueryResult res = new IdListQueryResult(Transaction(), KnownSize());
+			IIntIterator4 i = IterateIDs();
 			while (i.MoveNext())
 			{
 				res.Add(i.CurrentInt());
@@ -121,62 +129,59 @@ namespace Db4objects.Db4o.Internal.Query.Result
 		protected virtual Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult ToIdTree
 			()
 		{
-			return new Db4objects.Db4o.Internal.Query.Result.IdTreeQueryResult(Transaction(), 
-				IterateIDs());
+			return new IdTreeQueryResult(Transaction(), IterateIDs());
 		}
 
-		public virtual Db4objects.Db4o.Internal.Config4Impl Config()
+		public virtual Config4Impl Config()
 		{
 			return Stream().Config();
 		}
 
 		public virtual int Size()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public virtual void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
+		public virtual void Sort(IQueryComparator cmp)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public virtual object Get(int index)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public virtual int GetId(int i)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public virtual int IndexOf(int id)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public virtual void LoadFromClassIndex(Db4objects.Db4o.Internal.ClassMetadata c)
+		public virtual void LoadFromClassIndex(ClassMetadata c)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public virtual void LoadFromClassIndexes(Db4objects.Db4o.Internal.ClassMetadataIterator
-			 i)
+		public virtual void LoadFromClassIndexes(ClassMetadataIterator i)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public virtual void LoadFromIdReader(Db4objects.Db4o.Internal.Buffer r)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public virtual void LoadFromQuery(Db4objects.Db4o.Internal.Query.Processor.QQuery
-			 q)
+		public virtual void LoadFromQuery(QQuery q)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public abstract Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs();
+		public abstract IIntIterator4 IterateIDs();
 	}
 }

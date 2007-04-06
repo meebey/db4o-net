@@ -1,17 +1,18 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MWriteNew : Db4objects.Db4o.Internal.CS.Messages.MsgObject, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public sealed class MWriteNew : MsgObject, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{
 			int yapClassId = _payLoad.ReadInt();
-			Db4objects.Db4o.Internal.LocalObjectContainer stream = (Db4objects.Db4o.Internal.LocalObjectContainer
-				)Stream();
+			LocalObjectContainer stream = (LocalObjectContainer)Stream();
 			Unmarshall(_payLoad._offset);
 			lock (StreamLock())
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = yapClassId == 0 ? null : stream.ClassMetadataForId
-					(yapClassId);
+				ClassMetadata yc = yapClassId == 0 ? null : stream.ClassMetadataForId(yapClassId);
 				_payLoad.WriteEmbedded();
 				int id = _payLoad.GetID();
 				int length = _payLoad.GetLength();

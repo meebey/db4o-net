@@ -1,22 +1,27 @@
+using System;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.IX;
+
 namespace Db4objects.Db4o.Internal.IX
 {
 	/// <exclude></exclude>
-	public abstract class IxTree : Db4objects.Db4o.Foundation.Tree, Db4objects.Db4o.Foundation.IVisitor4
+	public abstract class IxTree : Tree, IVisitor4
 	{
-		internal Db4objects.Db4o.Internal.IX.IndexTransaction _fieldTransaction;
+		internal IndexTransaction _fieldTransaction;
 
 		internal int _version;
 
 		internal int _nodes = 1;
 
-		internal IxTree(Db4objects.Db4o.Internal.IX.IndexTransaction a_ft)
+		internal IxTree(IndexTransaction a_ft)
 		{
 			_fieldTransaction = a_ft;
 			_version = a_ft.i_version;
 		}
 
-		public override Db4objects.Db4o.Foundation.Tree Add(Db4objects.Db4o.Foundation.Tree
-			 a_new, int a_cmp)
+		public override Tree Add(Tree a_new, int a_cmp)
 		{
 			if (a_cmp < 0)
 			{
@@ -54,17 +59,17 @@ namespace Db4objects.Db4o.Internal.IX
 		{
 			Db4objects.Db4o.Internal.IX.IxTree tree = (Db4objects.Db4o.Internal.IX.IxTree)this
 				.ShallowClone();
-			tree._fieldTransaction = (Db4objects.Db4o.Internal.IX.IndexTransaction)a_param;
+			tree._fieldTransaction = (IndexTransaction)a_param;
 			tree._nodes = _nodes;
 			return tree;
 		}
 
-		internal Db4objects.Db4o.Internal.IX.IIndexable4 Handler()
+		internal IIndexable4 Handler()
 		{
 			return _fieldTransaction.i_index._handler;
 		}
 
-		internal Db4objects.Db4o.Internal.IX.Index4 Index()
+		internal Index4 Index()
 		{
 			return _fieldTransaction.i_index;
 		}
@@ -107,14 +112,13 @@ namespace Db4objects.Db4o.Internal.IX
 			_nodes = 1 + _subsequent.Nodes();
 		}
 
-		public sealed override void SetSizeOwnPlus(Db4objects.Db4o.Foundation.Tree tree)
+		public sealed override void SetSizeOwnPlus(Tree tree)
 		{
 			base.SetSizeOwnPlus(tree);
 			_nodes = 1 + tree.Nodes();
 		}
 
-		public sealed override void SetSizeOwnPlus(Db4objects.Db4o.Foundation.Tree tree1, 
-			Db4objects.Db4o.Foundation.Tree tree2)
+		public sealed override void SetSizeOwnPlus(Tree tree1, Tree tree2)
 		{
 			base.SetSizeOwnPlus(tree1, tree2);
 			_nodes = 1 + tree1.Nodes() + tree2.Nodes();
@@ -122,35 +126,30 @@ namespace Db4objects.Db4o.Internal.IX
 
 		internal virtual int SlotLength()
 		{
-			return Handler().LinkLength() + Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			return Handler().LinkLength() + Const4.INT_LENGTH;
 		}
 
-		internal Db4objects.Db4o.Internal.LocalObjectContainer Stream()
+		internal LocalObjectContainer Stream()
 		{
 			return Trans().File();
 		}
 
-		internal Db4objects.Db4o.Internal.LocalTransaction Trans()
+		internal LocalTransaction Trans()
 		{
 			return _fieldTransaction.i_trans;
 		}
 
 		public abstract void Visit(object obj);
 
-		public abstract void Visit(Db4objects.Db4o.Foundation.IVisitor4 visitor, int[] a_lowerAndUpperMatch
-			);
+		public abstract void Visit(IVisitor4 visitor, int[] a_lowerAndUpperMatch);
 
-		public abstract void VisitAll(Db4objects.Db4o.Foundation.IIntObjectVisitor visitor
-			);
+		public abstract void VisitAll(IIntObjectVisitor visitor);
 
-		public abstract void FreespaceVisit(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor, int index);
+		public abstract void FreespaceVisit(FreespaceVisitor visitor, int index);
 
-		public abstract int Write(Db4objects.Db4o.Internal.IX.IIndexable4 a_handler, Db4objects.Db4o.Internal.StatefulBuffer
-			 a_writer);
+		public abstract int Write(IIndexable4 a_handler, StatefulBuffer a_writer);
 
-		public virtual void VisitFirst(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor)
+		public virtual void VisitFirst(FreespaceVisitor visitor)
 		{
 			if (_preceding != null)
 			{
@@ -175,8 +174,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		public virtual void VisitLast(Db4objects.Db4o.Internal.Freespace.FreespaceVisitor
-			 visitor)
+		public virtual void VisitLast(FreespaceVisitor visitor)
 		{
 			if (_subsequent != null)
 			{
@@ -201,8 +199,7 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		protected override Db4objects.Db4o.Foundation.Tree ShallowCloneInternal(Db4objects.Db4o.Foundation.Tree
-			 tree)
+		protected override Tree ShallowCloneInternal(Tree tree)
 		{
 			Db4objects.Db4o.Internal.IX.IxTree ixTree = (Db4objects.Db4o.Internal.IX.IxTree)base
 				.ShallowCloneInternal(tree);
@@ -214,7 +211,7 @@ namespace Db4objects.Db4o.Internal.IX
 
 		public override object Key()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

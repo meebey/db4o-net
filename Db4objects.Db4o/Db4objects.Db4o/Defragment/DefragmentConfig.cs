@@ -1,3 +1,9 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Defragment;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>Configuration for a defragmentation run.</summary>
@@ -16,11 +22,11 @@ namespace Db4objects.Db4o.Defragment
 
 		private string _tempPath;
 
-		private Db4objects.Db4o.Defragment.IContextIDMapping _mapping;
+		private IContextIDMapping _mapping;
 
-		private Db4objects.Db4o.Config.IConfiguration _config;
+		private IConfiguration _config;
 
-		private Db4objects.Db4o.Defragment.IStoredClassFilter _storedClassFilter = null;
+		private IStoredClassFilter _storedClassFilter = null;
 
 		private bool _forceBackupDelete = false;
 
@@ -32,12 +38,12 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		public DefragmentConfig(string origPath, string backupPath) : this(origPath, backupPath
-			, new Db4objects.Db4o.Defragment.TreeIDMapping())
+			, new TreeIDMapping())
 		{
 		}
 
-		public DefragmentConfig(string origPath, string backupPath, Db4objects.Db4o.Defragment.IContextIDMapping
-			 mapping)
+		public DefragmentConfig(string origPath, string backupPath, IContextIDMapping mapping
+			)
 		{
 			_origPath = origPath;
 			_backupPath = backupPath;
@@ -57,32 +63,29 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		/// <returns>The intermediate mapping used internally. For internal use only.</returns>
-		public virtual Db4objects.Db4o.Defragment.IContextIDMapping Mapping()
+		public virtual IContextIDMapping Mapping()
 		{
 			return _mapping;
 		}
 
 		/// <returns>
 		/// The
-		/// <see cref="Db4objects.Db4o.Defragment.IStoredClassFilter">Db4objects.Db4o.Defragment.IStoredClassFilter
-		/// 	</see>
+		/// <see cref="IStoredClassFilter">IStoredClassFilter</see>
 		/// used to select stored class extents to
 		/// be included into the defragmented file.
 		/// </returns>
-		public virtual Db4objects.Db4o.Defragment.IStoredClassFilter StoredClassFilter()
+		public virtual IStoredClassFilter StoredClassFilter()
 		{
 			return (_storedClassFilter == null ? NULLFILTER : _storedClassFilter);
 		}
 
 		/// <param name="storedClassFilter">
 		/// The
-		/// <see cref="Db4objects.Db4o.Defragment.IStoredClassFilter">Db4objects.Db4o.Defragment.IStoredClassFilter
-		/// 	</see>
+		/// <see cref="IStoredClassFilter">IStoredClassFilter</see>
 		/// used to select stored class extents to
 		/// be included into the defragmented file.
 		/// </param>
-		public virtual void StoredClassFilter(Db4objects.Db4o.Defragment.IStoredClassFilter
-			 storedClassFilter)
+		public virtual void StoredClassFilter(IStoredClassFilter storedClassFilter)
 		{
 			_storedClassFilter = storedClassFilter;
 		}
@@ -102,11 +105,11 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <returns>
 		/// The db4o
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">Configuration</see>
 		/// to be applied
 		/// during the defragment process.
 		/// </returns>
-		public virtual Db4objects.Db4o.Config.IConfiguration Db4oConfig()
+		public virtual IConfiguration Db4oConfig()
 		{
 			if (_config == null)
 			{
@@ -117,11 +120,11 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <param name="config">
 		/// The db4o
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">Configuration</see>
 		/// to be applied
 		/// during the defragment process.
 		/// </param>
-		public virtual void Db4oConfig(Db4objects.Db4o.Config.IConfiguration config)
+		public virtual void Db4oConfig(IConfiguration config)
 		{
 			_config = config;
 		}
@@ -168,25 +171,23 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual int BlockSize()
 		{
-			return ((Db4objects.Db4o.Internal.Config4Impl)Db4oConfig()).BlockSize();
+			return ((Config4Impl)Db4oConfig()).BlockSize();
 		}
 
-		private class NullFilter : Db4objects.Db4o.Defragment.IStoredClassFilter
+		private class NullFilter : IStoredClassFilter
 		{
-			public virtual bool Accept(Db4objects.Db4o.Ext.IStoredClass storedClass)
+			public virtual bool Accept(IStoredClass storedClass)
 			{
 				return true;
 			}
 		}
 
-		private static readonly Db4objects.Db4o.Defragment.IStoredClassFilter NULLFILTER = 
-			new Db4objects.Db4o.Defragment.DefragmentConfig.NullFilter();
+		private static readonly IStoredClassFilter NULLFILTER = new DefragmentConfig.NullFilter
+			();
 
-		public static Db4objects.Db4o.Config.IConfiguration VanillaDb4oConfig(int blockSize
-			)
+		public static IConfiguration VanillaDb4oConfig(int blockSize)
 		{
-			Db4objects.Db4o.Config.IConfiguration config = Db4objects.Db4o.Db4oFactory.NewConfiguration
-				();
+			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.WeakReferences(false);
 			config.BlockSize(blockSize);
 			return config;

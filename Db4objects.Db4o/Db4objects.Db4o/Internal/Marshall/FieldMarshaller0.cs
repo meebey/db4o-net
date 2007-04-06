@@ -1,10 +1,17 @@
+using System;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class FieldMarshaller0 : Db4objects.Db4o.Internal.Marshall.IFieldMarshaller
+	public class FieldMarshaller0 : IFieldMarshaller
 	{
-		public virtual int MarshalledLength(Db4objects.Db4o.Internal.ObjectContainerBase 
-			stream, Db4objects.Db4o.Internal.FieldMetadata field)
+		public virtual int MarshalledLength(ObjectContainerBase stream, FieldMetadata field
+			)
 		{
 			int len = stream.StringIO().ShortLength(field.GetName());
 			if (field.NeedsArrayAndPrimitiveInfo())
@@ -13,48 +20,44 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			if (field.NeedsHandlerId())
 			{
-				len += Db4objects.Db4o.Internal.Const4.ID_LENGTH;
+				len += Const4.ID_LENGTH;
 			}
 			return len;
 		}
 
-		public virtual Db4objects.Db4o.Internal.Marshall.RawFieldSpec ReadSpec(Db4objects.Db4o.Internal.ObjectContainerBase
-			 stream, Db4objects.Db4o.Internal.Buffer reader)
+		public virtual RawFieldSpec ReadSpec(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
+			 reader)
 		{
 			string name = null;
 			try
 			{
-				name = Db4objects.Db4o.Internal.Marshall.StringMarshaller.ReadShort(stream, reader
-					);
+				name = StringMarshaller.ReadShort(stream, reader);
 			}
-			catch (Db4objects.Db4o.CorruptionException)
+			catch (CorruptionException)
 			{
 				return null;
 			}
-			if (name.IndexOf(Db4objects.Db4o.Internal.Const4.VIRTUAL_FIELD_PREFIX) == 0)
+			if (name.IndexOf(Const4.VIRTUAL_FIELD_PREFIX) == 0)
 			{
 				if (stream.i_handlers.VirtualFieldByName(name) != null)
 				{
-					return new Db4objects.Db4o.Internal.Marshall.RawFieldSpec(name);
+					return new RawFieldSpec(name);
 				}
 			}
 			int handlerID = reader.ReadInt();
 			byte attribs = reader.ReadByte();
-			return new Db4objects.Db4o.Internal.Marshall.RawFieldSpec(name, handlerID, attribs
-				);
+			return new RawFieldSpec(name, handlerID, attribs);
 		}
 
-		public Db4objects.Db4o.Internal.FieldMetadata Read(Db4objects.Db4o.Internal.ObjectContainerBase
-			 stream, Db4objects.Db4o.Internal.FieldMetadata field, Db4objects.Db4o.Internal.Buffer
+		public FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, Db4objects.Db4o.Internal.Buffer
 			 reader)
 		{
-			Db4objects.Db4o.Internal.Marshall.RawFieldSpec spec = ReadSpec(stream, reader);
+			RawFieldSpec spec = ReadSpec(stream, reader);
 			return FromSpec(spec, stream, field);
 		}
 
-		protected virtual Db4objects.Db4o.Internal.FieldMetadata FromSpec(Db4objects.Db4o.Internal.Marshall.RawFieldSpec
-			 spec, Db4objects.Db4o.Internal.ObjectContainerBase stream, Db4objects.Db4o.Internal.FieldMetadata
-			 field)
+		protected virtual FieldMetadata FromSpec(RawFieldSpec spec, ObjectContainerBase stream
+			, FieldMetadata field)
 		{
 			if (spec == null)
 			{
@@ -72,9 +75,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return field;
 		}
 
-		public virtual void Write(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.ClassMetadata
-			 clazz, Db4objects.Db4o.Internal.FieldMetadata field, Db4objects.Db4o.Internal.Buffer
-			 writer)
+		public virtual void Write(Transaction trans, ClassMetadata clazz, FieldMetadata field
+			, Db4objects.Db4o.Internal.Buffer writer)
 		{
 			field.Alive();
 			writer.WriteShortString(trans, field.GetName());
@@ -82,8 +84,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return;
 			}
-			Db4objects.Db4o.Internal.ITypeHandler4 handler = field.GetHandler();
-			if (handler is Db4objects.Db4o.Internal.ClassMetadata)
+			ITypeHandler4 handler = field.GetHandler();
+			if (handler is ClassMetadata)
 			{
 				if (handler.GetID() == 0)
 				{
@@ -95,7 +97,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				handlerID = handler.GetID();
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
 			}
 			if (handlerID == 0)
@@ -103,18 +105,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 				handlerID = field.GetHandlerID();
 			}
 			writer.WriteInt(handlerID);
-			Db4objects.Db4o.Foundation.BitMap4 bitmap = new Db4objects.Db4o.Foundation.BitMap4
-				(3);
+			BitMap4 bitmap = new BitMap4(3);
 			bitmap.Set(0, field.IsPrimitive());
-			bitmap.Set(1, handler is Db4objects.Db4o.Internal.Handlers.ArrayHandler);
-			bitmap.Set(2, handler is Db4objects.Db4o.Internal.Handlers.MultidimensionalArrayHandler
-				);
+			bitmap.Set(1, handler is ArrayHandler);
+			bitmap.Set(2, handler is MultidimensionalArrayHandler);
 			writer.Append(bitmap.GetByte(0));
 		}
 
-		public virtual void Defrag(Db4objects.Db4o.Internal.ClassMetadata yapClass, Db4objects.Db4o.Internal.FieldMetadata
-			 yapField, Db4objects.Db4o.Internal.LatinStringIO sio, Db4objects.Db4o.Internal.ReaderPair
-			 readers)
+		public virtual void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO
+			 sio, ReaderPair readers)
 		{
 			readers.ReadShortString(sio);
 			if (yapField.IsVirtual())

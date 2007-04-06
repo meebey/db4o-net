@@ -1,11 +1,17 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Header;
+
 namespace Db4objects.Db4o.Tests.Common.Header
 {
-	public class SimpleTimeStampIdTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
-		, Db4oUnit.Extensions.Fixtures.IOptOutCS
+	public class SimpleTimeStampIdTestCase : AbstractDb4oTestCase, IOptOutCS
 	{
 		public static void Main(string[] arguments)
 		{
-			new Db4objects.Db4o.Tests.Common.Header.SimpleTimeStampIdTestCase().RunSolo();
+			new SimpleTimeStampIdTestCase().RunSolo();
 		}
 
 		public class STSItem
@@ -22,9 +28,9 @@ namespace Db4objects.Db4o.Tests.Common.Header
 			}
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
-			Db4objects.Db4o.Config.IObjectClass objectClass = config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Header.SimpleTimeStampIdTestCase.STSItem)
+			IObjectClass objectClass = config.ObjectClass(typeof(SimpleTimeStampIdTestCase.STSItem)
 				);
 			objectClass.GenerateUUIDs(true);
 			objectClass.GenerateVersionNumbers(true);
@@ -32,30 +38,28 @@ namespace Db4objects.Db4o.Tests.Common.Header
 
 		protected override void Store()
 		{
-			Db().Set(new Db4objects.Db4o.Tests.Common.Header.SimpleTimeStampIdTestCase.STSItem
-				("one"));
+			Db().Set(new SimpleTimeStampIdTestCase.STSItem("one"));
 		}
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Tests.Common.Header.SimpleTimeStampIdTestCase.STSItem item = (Db4objects.Db4o.Tests.Common.Header.SimpleTimeStampIdTestCase.STSItem
-				)Db().Get(typeof(Db4objects.Db4o.Tests.Common.Header.SimpleTimeStampIdTestCase.STSItem)
-				).Next();
+			SimpleTimeStampIdTestCase.STSItem item = (SimpleTimeStampIdTestCase.STSItem)Db().
+				Get(typeof(SimpleTimeStampIdTestCase.STSItem)).Next();
 			long version = Db().GetObjectInfo(item).GetVersion();
-			Db4oUnit.Assert.IsGreater(0, version);
-			Db4oUnit.Assert.IsGreaterOrEqual(version, CurrentVersion());
+			Assert.IsGreater(0, version);
+			Assert.IsGreaterOrEqual(version, CurrentVersion());
 			Reopen();
-			Db4objects.Db4o.Tests.Common.Header.SimpleTimeStampIdTestCase.STSItem item2 = new 
-				Db4objects.Db4o.Tests.Common.Header.SimpleTimeStampIdTestCase.STSItem("two");
+			SimpleTimeStampIdTestCase.STSItem item2 = new SimpleTimeStampIdTestCase.STSItem("two"
+				);
 			Db().Set(item2);
 			long secondVersion = Db().GetObjectInfo(item2).GetVersion();
-			Db4oUnit.Assert.IsGreater(version, secondVersion);
-			Db4oUnit.Assert.IsGreaterOrEqual(secondVersion, CurrentVersion());
+			Assert.IsGreater(version, secondVersion);
+			Assert.IsGreaterOrEqual(secondVersion, CurrentVersion());
 		}
 
 		private long CurrentVersion()
 		{
-			return ((Db4objects.Db4o.Internal.LocalObjectContainer)Db()).CurrentVersion();
+			return ((LocalObjectContainer)Db()).CurrentVersion();
 		}
 	}
 }

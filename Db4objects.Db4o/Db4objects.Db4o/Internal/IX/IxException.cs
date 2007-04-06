@@ -1,7 +1,9 @@
+using System;
+
 namespace Db4objects.Db4o.Internal.IX
 {
 	[System.Serializable]
-	public class IxException : System.Exception
+	public class IxException : Exception
 	{
 		private int _address;
 
@@ -17,13 +19,13 @@ namespace Db4objects.Db4o.Internal.IX
 		{
 		}
 
-		public IxException(System.Exception cause, int address, int addressOffset) : this
-			(null, cause, address, addressOffset)
+		public IxException(Exception cause, int address, int addressOffset) : this(null, 
+			cause, address, addressOffset)
 		{
 		}
 
-		public IxException(string msg, System.Exception cause, int address, int addressOffset
-			) : base(EnhancedMessage(msg, address, addressOffset), cause)
+		public IxException(string msg, Exception cause, int address, int addressOffset) : 
+			base(EnhancedMessage(msg, address, addressOffset), cause)
 		{
 			_address = address;
 			_addressOffset = addressOffset;

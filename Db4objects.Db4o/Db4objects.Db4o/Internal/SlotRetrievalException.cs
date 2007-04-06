@@ -1,7 +1,9 @@
+using System;
+
 namespace Db4objects.Db4o.Internal
 {
 	[System.Serializable]
-	public class SlotRetrievalException : System.Exception
+	public class SlotRetrievalException : Exception
 	{
 		private int _id;
 
@@ -13,13 +15,12 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public SlotRetrievalException(System.Exception cause, int id) : this(null, cause, 
-			id)
+		public SlotRetrievalException(Exception cause, int id) : this(null, cause, id)
 		{
 		}
 
-		public SlotRetrievalException(string msg, System.Exception cause, int id) : base(
-			EnhancedMessage(msg, id), cause)
+		public SlotRetrievalException(string msg, Exception cause, int id) : base(EnhancedMessage
+			(msg, id), cause)
 		{
 			_id = id;
 		}

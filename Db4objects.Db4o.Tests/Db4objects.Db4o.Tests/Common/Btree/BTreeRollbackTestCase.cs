@@ -1,10 +1,12 @@
+using Db4objects.Db4o.Tests.Common.Btree;
+
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public class BTreeRollbackTestCase : Db4objects.Db4o.Tests.Common.Btree.BTreeTestCaseBase
+	public class BTreeRollbackTestCase : BTreeTestCaseBase
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Btree.BTreeRollbackTestCase().RunSolo();
+			new BTreeRollbackTestCase().RunSolo();
 		}
 
 		private static readonly int[] COMMITTED_VALUES = new int[] { 6, 8, 15, 45, 43, 9, 
@@ -22,8 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 				Add(ROLLED_BACK_VALUES);
 				RollbackBTree();
 			}
-			Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.AssertKeys(Trans(), _btree, COMMITTED_VALUES
-				);
+			BTreeAssert.AssertKeys(Trans(), _btree, COMMITTED_VALUES);
 		}
 
 		private void CommitBTree()

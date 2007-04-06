@@ -1,56 +1,55 @@
+using Db4objects.Db4o.Nativequery.Expr;
+using Db4objects.Db4o.Nativequery.Expr.Cmp;
+
 namespace Db4objects.Db4o.Nativequery.Expr.Build
 {
 	public class ExpressionBuilder
 	{
 		/// <summary>Optimizations: !(Bool)->(!Bool), !!X->X, !(X==Bool)->(X==!Bool)</summary>
-		public virtual Db4objects.Db4o.Nativequery.Expr.IExpression Not(Db4objects.Db4o.Nativequery.Expr.IExpression
-			 expr)
+		public virtual IExpression Not(IExpression expr)
 		{
-			if (expr.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.TRUE))
+			if (expr.Equals(BoolConstExpression.TRUE))
 			{
-				return Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.FALSE;
+				return BoolConstExpression.FALSE;
 			}
-			if (expr.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.FALSE))
+			if (expr.Equals(BoolConstExpression.FALSE))
 			{
-				return Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.TRUE;
+				return BoolConstExpression.TRUE;
 			}
-			if (expr is Db4objects.Db4o.Nativequery.Expr.NotExpression)
+			if (expr is NotExpression)
 			{
-				return ((Db4objects.Db4o.Nativequery.Expr.NotExpression)expr).Expr();
+				return ((NotExpression)expr).Expr();
 			}
-			if (expr is Db4objects.Db4o.Nativequery.Expr.ComparisonExpression)
+			if (expr is ComparisonExpression)
 			{
-				Db4objects.Db4o.Nativequery.Expr.ComparisonExpression cmpExpr = (Db4objects.Db4o.Nativequery.Expr.ComparisonExpression
-					)expr;
-				if (cmpExpr.Right() is Db4objects.Db4o.Nativequery.Expr.Cmp.ConstValue)
+				ComparisonExpression cmpExpr = (ComparisonExpression)expr;
+				if (cmpExpr.Right() is ConstValue)
 				{
-					Db4objects.Db4o.Nativequery.Expr.Cmp.ConstValue rightConst = (Db4objects.Db4o.Nativequery.Expr.Cmp.ConstValue
-						)cmpExpr.Right();
+					ConstValue rightConst = (ConstValue)cmpExpr.Right();
 					if (rightConst.Value() is bool)
 					{
 						bool boolVal = (bool)rightConst.Value();
-						return new Db4objects.Db4o.Nativequery.Expr.ComparisonExpression(cmpExpr.Left(), 
-							new Db4objects.Db4o.Nativequery.Expr.Cmp.ConstValue(!boolVal), cmpExpr.Op());
+						return new ComparisonExpression(cmpExpr.Left(), new ConstValue(!boolVal), cmpExpr
+							.Op());
 					}
 				}
 			}
-			return new Db4objects.Db4o.Nativequery.Expr.NotExpression(expr);
+			return new NotExpression(expr);
 		}
 
 		/// <summary>Optimizations: f&&X->f, t&&X->X, X&&X->X, X&&!X->f</summary>
-		public virtual Db4objects.Db4o.Nativequery.Expr.IExpression And(Db4objects.Db4o.Nativequery.Expr.IExpression
-			 left, Db4objects.Db4o.Nativequery.Expr.IExpression right)
+		public virtual IExpression And(IExpression left, IExpression right)
 		{
-			if (left.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.FALSE) || right
-				.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.FALSE))
+			if (left.Equals(BoolConstExpression.FALSE) || right.Equals(BoolConstExpression.FALSE
+				))
 			{
-				return Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.FALSE;
+				return BoolConstExpression.FALSE;
 			}
-			if (left.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.TRUE))
+			if (left.Equals(BoolConstExpression.TRUE))
 			{
 				return right;
 			}
-			if (right.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.TRUE))
+			if (right.Equals(BoolConstExpression.TRUE))
 			{
 				return left;
 			}
@@ -60,25 +59,24 @@ namespace Db4objects.Db4o.Nativequery.Expr.Build
 			}
 			if (Negatives(left, right))
 			{
-				return Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.FALSE;
+				return BoolConstExpression.FALSE;
 			}
-			return new Db4objects.Db4o.Nativequery.Expr.AndExpression(left, right);
+			return new AndExpression(left, right);
 		}
 
 		/// <summary>Optimizations: X||t->t, f||X->X, X||X->X, X||!X->t</summary>
-		public virtual Db4objects.Db4o.Nativequery.Expr.IExpression Or(Db4objects.Db4o.Nativequery.Expr.IExpression
-			 left, Db4objects.Db4o.Nativequery.Expr.IExpression right)
+		public virtual IExpression Or(IExpression left, IExpression right)
 		{
-			if (left.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.TRUE) || right
-				.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.TRUE))
+			if (left.Equals(BoolConstExpression.TRUE) || right.Equals(BoolConstExpression.TRUE
+				))
 			{
-				return Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.TRUE;
+				return BoolConstExpression.TRUE;
 			}
-			if (left.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.FALSE))
+			if (left.Equals(BoolConstExpression.FALSE))
 			{
 				return right;
 			}
-			if (right.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.FALSE))
+			if (right.Equals(BoolConstExpression.FALSE))
 			{
 				return left;
 			}
@@ -88,24 +86,21 @@ namespace Db4objects.Db4o.Nativequery.Expr.Build
 			}
 			if (Negatives(left, right))
 			{
-				return Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.TRUE;
+				return BoolConstExpression.TRUE;
 			}
-			return new Db4objects.Db4o.Nativequery.Expr.OrExpression(left, right);
+			return new OrExpression(left, right);
 		}
 
 		/// <summary>Optimizations: static bool roots</summary>
-		public virtual Db4objects.Db4o.Nativequery.Expr.BoolConstExpression Constant(bool
-			 value)
+		public virtual BoolConstExpression Constant(bool value)
 		{
-			return Db4objects.Db4o.Nativequery.Expr.BoolConstExpression.Expr(value);
+			return BoolConstExpression.Expr(value);
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.IExpression IfThenElse(Db4objects.Db4o.Nativequery.Expr.IExpression
-			 cond, Db4objects.Db4o.Nativequery.Expr.IExpression truePath, Db4objects.Db4o.Nativequery.Expr.IExpression
+		public virtual IExpression IfThenElse(IExpression cond, IExpression truePath, IExpression
 			 falsePath)
 		{
-			Db4objects.Db4o.Nativequery.Expr.IExpression expr = CheckBoolean(cond, truePath, 
-				falsePath);
+			IExpression expr = CheckBoolean(cond, truePath, falsePath);
 			if (expr != null)
 			{
 				return expr;
@@ -113,18 +108,16 @@ namespace Db4objects.Db4o.Nativequery.Expr.Build
 			return Or(And(cond, truePath), And(Not(cond), falsePath));
 		}
 
-		private Db4objects.Db4o.Nativequery.Expr.IExpression CheckBoolean(Db4objects.Db4o.Nativequery.Expr.IExpression
-			 cmp, Db4objects.Db4o.Nativequery.Expr.IExpression trueExpr, Db4objects.Db4o.Nativequery.Expr.IExpression
+		private IExpression CheckBoolean(IExpression cmp, IExpression trueExpr, IExpression
 			 falseExpr)
 		{
-			if (cmp is Db4objects.Db4o.Nativequery.Expr.BoolConstExpression)
+			if (cmp is BoolConstExpression)
 			{
 				return null;
 			}
-			if (trueExpr is Db4objects.Db4o.Nativequery.Expr.BoolConstExpression)
+			if (trueExpr is BoolConstExpression)
 			{
-				bool leftNegative = trueExpr.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression
-					.FALSE);
+				bool leftNegative = trueExpr.Equals(BoolConstExpression.FALSE);
 				if (!leftNegative)
 				{
 					return Or(cmp, falseExpr);
@@ -134,10 +127,9 @@ namespace Db4objects.Db4o.Nativequery.Expr.Build
 					return And(Not(cmp), falseExpr);
 				}
 			}
-			if (falseExpr is Db4objects.Db4o.Nativequery.Expr.BoolConstExpression)
+			if (falseExpr is BoolConstExpression)
 			{
-				bool rightNegative = falseExpr.Equals(Db4objects.Db4o.Nativequery.Expr.BoolConstExpression
-					.FALSE);
+				bool rightNegative = falseExpr.Equals(BoolConstExpression.FALSE);
 				if (!rightNegative)
 				{
 					return And(cmp, trueExpr);
@@ -147,22 +139,21 @@ namespace Db4objects.Db4o.Nativequery.Expr.Build
 					return Or(Not(cmp), falseExpr);
 				}
 			}
-			if (cmp is Db4objects.Db4o.Nativequery.Expr.NotExpression)
+			if (cmp is NotExpression)
 			{
-				cmp = ((Db4objects.Db4o.Nativequery.Expr.NotExpression)cmp).Expr();
-				Db4objects.Db4o.Nativequery.Expr.IExpression swap = trueExpr;
+				cmp = ((NotExpression)cmp).Expr();
+				IExpression swap = trueExpr;
 				trueExpr = falseExpr;
 				falseExpr = swap;
 			}
-			if (trueExpr is Db4objects.Db4o.Nativequery.Expr.OrExpression)
+			if (trueExpr is OrExpression)
 			{
-				Db4objects.Db4o.Nativequery.Expr.OrExpression orExpr = (Db4objects.Db4o.Nativequery.Expr.OrExpression
-					)trueExpr;
-				Db4objects.Db4o.Nativequery.Expr.IExpression orLeft = orExpr.Left();
-				Db4objects.Db4o.Nativequery.Expr.IExpression orRight = orExpr.Right();
+				OrExpression orExpr = (OrExpression)trueExpr;
+				IExpression orLeft = orExpr.Left();
+				IExpression orRight = orExpr.Right();
 				if (falseExpr.Equals(orRight))
 				{
-					Db4objects.Db4o.Nativequery.Expr.IExpression swap = orRight;
+					IExpression swap = orRight;
 					orRight = orLeft;
 					orLeft = swap;
 				}
@@ -171,15 +162,14 @@ namespace Db4objects.Db4o.Nativequery.Expr.Build
 					return Or(orLeft, And(cmp, orRight));
 				}
 			}
-			if (falseExpr is Db4objects.Db4o.Nativequery.Expr.AndExpression)
+			if (falseExpr is AndExpression)
 			{
-				Db4objects.Db4o.Nativequery.Expr.AndExpression andExpr = (Db4objects.Db4o.Nativequery.Expr.AndExpression
-					)falseExpr;
-				Db4objects.Db4o.Nativequery.Expr.IExpression andLeft = andExpr.Left();
-				Db4objects.Db4o.Nativequery.Expr.IExpression andRight = andExpr.Right();
+				AndExpression andExpr = (AndExpression)falseExpr;
+				IExpression andLeft = andExpr.Left();
+				IExpression andRight = andExpr.Right();
 				if (trueExpr.Equals(andRight))
 				{
-					Db4objects.Db4o.Nativequery.Expr.IExpression swap = andRight;
+					IExpression swap = andRight;
 					andRight = andLeft;
 					andLeft = swap;
 				}
@@ -191,17 +181,14 @@ namespace Db4objects.Db4o.Nativequery.Expr.Build
 			return null;
 		}
 
-		private bool Negatives(Db4objects.Db4o.Nativequery.Expr.IExpression left, Db4objects.Db4o.Nativequery.Expr.IExpression
-			 right)
+		private bool Negatives(IExpression left, IExpression right)
 		{
 			return NegativeOf(left, right) || NegativeOf(right, left);
 		}
 
-		private bool NegativeOf(Db4objects.Db4o.Nativequery.Expr.IExpression right, Db4objects.Db4o.Nativequery.Expr.IExpression
-			 left)
+		private bool NegativeOf(IExpression right, IExpression left)
 		{
-			return (right is Db4objects.Db4o.Nativequery.Expr.NotExpression) && ((Db4objects.Db4o.Nativequery.Expr.NotExpression
-				)right).Expr().Equals(left);
+			return (right is NotExpression) && ((NotExpression)right).Expr().Equals(left);
 		}
 	}
 }

@@ -1,13 +1,19 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Tests.Common.Querying;
+
 namespace Db4objects.Db4o.Tests.Common.Querying
 {
-	public class CascadeOnDelete : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class CascadeOnDelete : AbstractDb4oTestCase
 	{
 		public class Item
 		{
 			public string item;
 		}
 
-		public Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete.Item[] items;
+		public CascadeOnDelete.Item[] items;
 
 		public virtual void Test()
 		{
@@ -25,17 +31,14 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		private void NoAccidentalDeletes1(bool cascadeOnUpdate, bool cascadeOnDelete)
 		{
 			DeleteAll(GetType());
-			DeleteAll(typeof(Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete.Item));
-			Db4objects.Db4o.Config.IObjectClass oc = Db4objects.Db4o.Db4oFactory.Configure().
-				ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete));
+			DeleteAll(typeof(CascadeOnDelete.Item));
+			IObjectClass oc = Db4oFactory.Configure().ObjectClass(typeof(CascadeOnDelete));
 			oc.CascadeOnDelete(cascadeOnDelete);
 			oc.CascadeOnUpdate(cascadeOnUpdate);
 			Reopen();
-			Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete.Item i = new Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete.Item
-				();
-			Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete cod = new Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete
-				();
-			cod.items = new Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete.Item[] { i };
+			CascadeOnDelete.Item i = new CascadeOnDelete.Item();
+			CascadeOnDelete cod = new CascadeOnDelete();
+			cod.items = new CascadeOnDelete.Item[] { i };
 			Db().Set(cod);
 			Db().Commit();
 			cod.items[0].item = "abrakadabra";
@@ -44,11 +47,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			{
 				Db().Set(cod.items[0]);
 			}
-			Db4oUnit.Assert.AreEqual(1, CountOccurences(typeof(Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete.Item)
-				));
+			Assert.AreEqual(1, CountOccurences(typeof(CascadeOnDelete.Item)));
 			Db().Commit();
-			Db4oUnit.Assert.AreEqual(1, CountOccurences(typeof(Db4objects.Db4o.Tests.Common.Querying.CascadeOnDelete.Item)
-				));
+			Assert.AreEqual(1, CountOccurences(typeof(CascadeOnDelete.Item)));
 		}
 	}
 }

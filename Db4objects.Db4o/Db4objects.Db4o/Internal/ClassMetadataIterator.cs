@@ -1,25 +1,28 @@
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude>TODO: remove this class or make it private to ClassMetadataRepository</exclude>
-	public class ClassMetadataIterator : Db4objects.Db4o.Foundation.MappingIterator
+	public class ClassMetadataIterator : MappingIterator
 	{
-		private readonly Db4objects.Db4o.Internal.ClassMetadataRepository i_collection;
+		private readonly ClassMetadataRepository i_collection;
 
-		internal ClassMetadataIterator(Db4objects.Db4o.Internal.ClassMetadataRepository a_collection
-			, System.Collections.IEnumerator iterator) : base(iterator)
+		internal ClassMetadataIterator(ClassMetadataRepository a_collection, IEnumerator 
+			iterator) : base(iterator)
 		{
 			i_collection = a_collection;
 		}
 
-		public virtual Db4objects.Db4o.Internal.ClassMetadata CurrentClass()
+		public virtual ClassMetadata CurrentClass()
 		{
-			return (Db4objects.Db4o.Internal.ClassMetadata)Current;
+			return (ClassMetadata)Current;
 		}
 
 		protected override object Map(object current)
 		{
-			return i_collection.ReadYapClass((Db4objects.Db4o.Internal.ClassMetadata)current, 
-				null);
+			return i_collection.ReadYapClass((ClassMetadata)current, null);
 		}
 	}
 }

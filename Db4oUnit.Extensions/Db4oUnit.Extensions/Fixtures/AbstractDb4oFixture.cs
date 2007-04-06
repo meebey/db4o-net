@@ -1,13 +1,20 @@
+using System;
+using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Defragment;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+
 namespace Db4oUnit.Extensions.Fixtures
 {
-	public abstract class AbstractDb4oFixture : Db4oUnit.Extensions.IDb4oFixture
+	public abstract class AbstractDb4oFixture : IDb4oFixture
 	{
-		private readonly Db4oUnit.Extensions.Fixtures.IConfigurationSource _configSource;
+		private readonly IConfigurationSource _configSource;
 
-		private Db4objects.Db4o.Config.IConfiguration _config;
+		private IConfiguration _config;
 
-		protected AbstractDb4oFixture(Db4oUnit.Extensions.Fixtures.IConfigurationSource configSource
-			)
+		protected AbstractDb4oFixture(IConfigurationSource configSource)
 		{
 			_configSource = configSource;
 		}
@@ -18,7 +25,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			Open();
 		}
 
-		public virtual Db4objects.Db4o.Config.IConfiguration Config()
+		public virtual IConfiguration Config()
 		{
 			if (_config == null)
 			{
@@ -33,7 +40,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			ResetConfig();
 		}
 
-		public virtual bool Accept(System.Type clazz)
+		public virtual bool Accept(Type clazz)
 		{
 			return true;
 		}
@@ -48,8 +55,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		protected virtual void Defragment(string fileName)
 		{
 			string targetFile = fileName + ".defrag.backup";
-			Db4objects.Db4o.Defragment.DefragmentConfig defragConfig = new Db4objects.Db4o.Defragment.DefragmentConfig
-				(fileName, targetFile);
+			DefragmentConfig defragConfig = new DefragmentConfig(fileName, targetFile);
 			defragConfig.ForceBackupDelete(true);
 			defragConfig.Db4oConfig(Config());
 			Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig);
@@ -57,11 +63,11 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public abstract void Close();
 
-		public abstract Db4objects.Db4o.Ext.IExtObjectContainer Db();
+		public abstract IExtObjectContainer Db();
 
 		public abstract void Defragment();
 
-		public abstract Db4objects.Db4o.Internal.LocalObjectContainer FileSession();
+		public abstract LocalObjectContainer FileSession();
 
 		public abstract string GetLabel();
 

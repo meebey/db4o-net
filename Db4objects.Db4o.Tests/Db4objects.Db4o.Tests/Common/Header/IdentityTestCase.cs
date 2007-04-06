@@ -1,19 +1,26 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Header;
+
 namespace Db4objects.Db4o.Tests.Common.Header
 {
-	public class IdentityTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutCS
+	public class IdentityTestCase : AbstractDb4oTestCase, IOptOutCS
 	{
 		public static void Main(string[] arguments)
 		{
-			new Db4objects.Db4o.Tests.Common.Header.IdentityTestCase().RunSolo();
+			new IdentityTestCase().RunSolo();
 		}
 
 		public virtual void TestIdentityPreserved()
 		{
-			Db4objects.Db4o.Ext.Db4oDatabase ident = Db().Identity();
+			Db4oDatabase ident = Db().Identity();
 			Reopen();
-			Db4objects.Db4o.Ext.Db4oDatabase ident2 = Db().Identity();
-			Db4oUnit.Assert.IsNotNull(ident);
-			Db4oUnit.Assert.AreEqual(ident, ident2);
+			Db4oDatabase ident2 = Db().Identity();
+			Assert.IsNotNull(ident);
+			Assert.AreEqual(ident, ident2);
 		}
 
 		public virtual void TestGenerateIdentity()
@@ -21,12 +28,12 @@ namespace Db4objects.Db4o.Tests.Common.Header
 			byte[] oldSignature = Db().Identity().GetSignature();
 			GenerateNewIdentity();
 			Reopen();
-			Db4oUnit.ArrayAssert.AreNotEqual(oldSignature, Db().Identity().GetSignature());
+			ArrayAssert.AreNotEqual(oldSignature, Db().Identity().GetSignature());
 		}
 
 		private void GenerateNewIdentity()
 		{
-			((Db4objects.Db4o.Internal.LocalObjectContainer)Db()).GenerateNewIdentity();
+			((LocalObjectContainer)Db()).GenerateNewIdentity();
 		}
 	}
 }

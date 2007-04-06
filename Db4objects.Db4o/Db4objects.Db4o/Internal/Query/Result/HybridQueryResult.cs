@@ -1,29 +1,36 @@
+using System.Collections;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Query.Result;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Query.Result
 {
 	/// <exclude></exclude>
-	public class HybridQueryResult : Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult
+	public class HybridQueryResult : AbstractQueryResult
 	{
-		private Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult _delegate;
+		private AbstractQueryResult _delegate;
 
-		public HybridQueryResult(Db4objects.Db4o.Internal.Transaction transaction, Db4objects.Db4o.Config.QueryEvaluationMode
-			 mode) : base(transaction)
+		public HybridQueryResult(Transaction transaction, QueryEvaluationMode mode) : base
+			(transaction)
 		{
 			_delegate = ForMode(transaction, mode);
 		}
 
-		private static Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult ForMode(
-			Db4objects.Db4o.Internal.Transaction transaction, Db4objects.Db4o.Config.QueryEvaluationMode
+		private static AbstractQueryResult ForMode(Transaction transaction, QueryEvaluationMode
 			 mode)
 		{
-			if (mode == Db4objects.Db4o.Config.QueryEvaluationMode.LAZY)
+			if (mode == QueryEvaluationMode.LAZY)
 			{
-				return new Db4objects.Db4o.Internal.Query.Result.LazyQueryResult(transaction);
+				return new LazyQueryResult(transaction);
 			}
-			if (mode == Db4objects.Db4o.Config.QueryEvaluationMode.SNAPSHOT)
+			if (mode == QueryEvaluationMode.SNAPSHOT)
 			{
-				return new Db4objects.Db4o.Internal.Query.Result.SnapShotQueryResult(transaction);
+				return new SnapShotQueryResult(transaction);
 			}
-			return new Db4objects.Db4o.Internal.Query.Result.IdListQueryResult(transaction);
+			return new IdListQueryResult(transaction);
 		}
 
 		public override object Get(int index)
@@ -44,24 +51,22 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			return _delegate.IndexOf(id);
 		}
 
-		public override Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs()
+		public override IIntIterator4 IterateIDs()
 		{
 			return _delegate.IterateIDs();
 		}
 
-		public override System.Collections.IEnumerator GetEnumerator()
+		public override IEnumerator GetEnumerator()
 		{
 			return _delegate.GetEnumerator();
 		}
 
-		public override void LoadFromClassIndex(Db4objects.Db4o.Internal.ClassMetadata clazz
-			)
+		public override void LoadFromClassIndex(ClassMetadata clazz)
 		{
 			_delegate.LoadFromClassIndex(clazz);
 		}
 
-		public override void LoadFromClassIndexes(Db4objects.Db4o.Internal.ClassMetadataIterator
-			 iterator)
+		public override void LoadFromClassIndexes(ClassMetadataIterator iterator)
 		{
 			_delegate.LoadFromClassIndexes(iterator);
 		}
@@ -71,13 +76,11 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			_delegate.LoadFromIdReader(reader);
 		}
 
-		public override void LoadFromQuery(Db4objects.Db4o.Internal.Query.Processor.QQuery
-			 query)
+		public override void LoadFromQuery(QQuery query)
 		{
 			if (query.RequiresSort())
 			{
-				_delegate = new Db4objects.Db4o.Internal.Query.Result.IdListQueryResult(Transaction
-					());
+				_delegate = new IdListQueryResult(Transaction());
 			}
 			_delegate.LoadFromQuery(query);
 		}
@@ -88,7 +91,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			return _delegate.Size();
 		}
 
-		public override void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
+		public override void Sort(IQueryComparator cmp)
 		{
 			_delegate = _delegate.SupportSort();
 			_delegate.Sort(cmp);

@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
@@ -12,22 +14,21 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual byte EncodingByte()
 		{
-			return Db4objects.Db4o.Internal.Const4.ISO8859;
+			return Const4.ISO8859;
 		}
 
-		internal static Db4objects.Db4o.Internal.LatinStringIO ForEncoding(byte encodingByte
-			)
+		internal static LatinStringIO ForEncoding(byte encodingByte)
 		{
 			switch (encodingByte)
 			{
-				case Db4objects.Db4o.Internal.Const4.ISO8859:
+				case Const4.ISO8859:
 				{
-					return new Db4objects.Db4o.Internal.LatinStringIO();
+					return new LatinStringIO();
 				}
 
 				default:
 				{
-					return new Db4objects.Db4o.Internal.UnicodeStringIO();
+					return new UnicodeStringIO();
 					break;
 				}
 			}
@@ -35,8 +36,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int Length(string a_string)
 		{
-			return a_string.Length + Db4objects.Db4o.Internal.Const4.OBJECT_LENGTH + Db4objects.Db4o.Internal.Const4
-				.INT_LENGTH;
+			return a_string.Length + Const4.OBJECT_LENGTH + Const4.INT_LENGTH;
 		}
 
 		protected virtual void CheckBufferLength(int a_length)
@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int ShortLength(string a_string)
 		{
-			return a_string.Length + Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			return a_string.Length + Const4.INT_LENGTH;
 		}
 
 		protected virtual int WritetoBuffer(string str)

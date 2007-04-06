@@ -1,3 +1,7 @@
+using Db4objects.Db4o.Defragment;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>Implements one step in the defragmenting process.</summary>
@@ -5,17 +9,16 @@ namespace Db4objects.Db4o.Defragment
 	/// <exclude></exclude>
 	internal interface IPassCommand
 	{
-		void ProcessObjectSlot(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Internal.ClassMetadata
-			 yapClass, int id, bool registerAddresses);
+		void ProcessObjectSlot(DefragContextImpl context, ClassMetadata yapClass, int id, 
+			bool registerAddresses);
 
-		void ProcessClass(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Internal.ClassMetadata
-			 yapClass, int id, int classIndexID);
+		void ProcessClass(DefragContextImpl context, ClassMetadata yapClass, int id, int 
+			classIndexID);
 
-		void ProcessClassCollection(Db4objects.Db4o.Defragment.DefragContextImpl context);
+		void ProcessClassCollection(DefragContextImpl context);
 
-		void ProcessBTree(Db4objects.Db4o.Defragment.DefragContextImpl context, Db4objects.Db4o.Internal.Btree.BTree
-			 btree);
+		void ProcessBTree(DefragContextImpl context, BTree btree);
 
-		void Flush(Db4objects.Db4o.Defragment.DefragContextImpl context);
+		void Flush(DefragContextImpl context);
 	}
 }

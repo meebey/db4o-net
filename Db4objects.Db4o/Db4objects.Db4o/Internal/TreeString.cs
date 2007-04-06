@@ -1,7 +1,11 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class TreeString : Db4objects.Db4o.Foundation.Tree
+	public class TreeString : Tree
 	{
 		public string _key;
 
@@ -10,8 +14,7 @@ namespace Db4objects.Db4o.Internal
 			this._key = a_key;
 		}
 
-		protected override Db4objects.Db4o.Foundation.Tree ShallowCloneInternal(Db4objects.Db4o.Foundation.Tree
-			 tree)
+		protected override Tree ShallowCloneInternal(Tree tree)
 		{
 			Db4objects.Db4o.Internal.TreeString ts = (Db4objects.Db4o.Internal.TreeString)base
 				.ShallowCloneInternal(tree);
@@ -24,11 +27,10 @@ namespace Db4objects.Db4o.Internal
 			return ShallowCloneInternal(new Db4objects.Db4o.Internal.TreeString(_key));
 		}
 
-		public override int Compare(Db4objects.Db4o.Foundation.Tree a_to)
+		public override int Compare(Tree a_to)
 		{
-			return Db4objects.Db4o.Internal.Handlers.StringHandler.Compare(Db4objects.Db4o.Internal.Const4
-				.stringIO.Write(((Db4objects.Db4o.Internal.TreeString)a_to)._key), Db4objects.Db4o.Internal.Const4
-				.stringIO.Write(_key));
+			return StringHandler.Compare(Const4.stringIO.Write(((Db4objects.Db4o.Internal.TreeString
+				)a_to)._key), Const4.stringIO.Write(_key));
 		}
 
 		public override object Key()

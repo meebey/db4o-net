@@ -1,6 +1,9 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 {
-	public class STBooleanWUTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STBooleanWUTestCase : SodaBaseTestCase
 	{
 		internal static readonly string DESCENDANT = "i_boolean";
 
@@ -27,16 +30,16 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 
 		public virtual void TestEqualsTrue()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				(true));
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
+			SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				(true));
 		}
 
 		public virtual void TestEqualsFalse()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				(false));
 			q.Descend(DESCENDANT).Constrain(false);
@@ -45,30 +48,30 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 
 		public virtual void TestNull()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				());
 			q.Descend(DESCENDANT).Constrain(null);
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
+			SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				());
 		}
 
 		public virtual void TestNullOrTrue()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				());
-			Db4objects.Db4o.Query.IQuery qd = q.Descend(DESCENDANT);
+			IQuery qd = q.Descend(DESCENDANT);
 			qd.Constrain(null).Or(qd.Constrain(true));
 			Expect(q, new int[] { 1, 4 });
 		}
 
 		public virtual void TestNotNullAndFalse()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				());
-			Db4objects.Db4o.Query.IQuery qd = q.Descend(DESCENDANT);
+			IQuery qd = q.Descend(DESCENDANT);
 			qd.Constrain(null).Not().And(qd.Constrain(false));
 			Expect(q, new int[] { 0, 2, 3 });
 		}

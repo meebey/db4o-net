@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Nativequery.Expr;
+
 namespace Db4objects.Db4o.Nativequery.Expr
 {
 	public interface IExpression
@@ -6,6 +8,6 @@ namespace Db4objects.Db4o.Nativequery.Expr
 		/// must implement the visitor interface required
 		/// by the concrete Expression implementation.
 		/// </param>
-		void Accept(Db4objects.Db4o.Nativequery.Expr.IExpressionVisitor visitor);
+		void Accept(IExpressionVisitor visitor);
 	}
 }

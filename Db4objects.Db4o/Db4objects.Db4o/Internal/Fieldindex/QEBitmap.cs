@@ -1,9 +1,10 @@
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Fieldindex
 {
 	internal class QEBitmap
 	{
-		public static Db4objects.Db4o.Internal.Fieldindex.QEBitmap ForQE(Db4objects.Db4o.Internal.Query.Processor.QE
-			 qe)
+		public static Db4objects.Db4o.Internal.Fieldindex.QEBitmap ForQE(QE qe)
 		{
 			bool[] bitmap = new bool[4];
 			qe.IndexBitMap(bitmap);
@@ -19,17 +20,17 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		public virtual bool TakeGreater()
 		{
-			return _bitmap[Db4objects.Db4o.Internal.Query.Processor.QE.GREATER];
+			return _bitmap[QE.GREATER];
 		}
 
 		public virtual bool TakeEqual()
 		{
-			return _bitmap[Db4objects.Db4o.Internal.Query.Processor.QE.EQUAL];
+			return _bitmap[QE.EQUAL];
 		}
 
 		public virtual bool TakeSmaller()
 		{
-			return _bitmap[Db4objects.Db4o.Internal.Query.Processor.QE.SMALLER];
+			return _bitmap[QE.SMALLER];
 		}
 	}
 }

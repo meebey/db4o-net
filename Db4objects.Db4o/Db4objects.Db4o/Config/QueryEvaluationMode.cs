@@ -1,3 +1,6 @@
+using System;
+using Db4objects.Db4o.Config;
+
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>
@@ -8,7 +11,7 @@ namespace Db4objects.Db4o.Config
 	/// This class provides static constants for the query evaluation
 	/// modes that db4o supports.
 	/// <br /><br /><b>For detailed documentation please see
-	/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
+	/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
 	/// 	</see>
 	/// </b>
 	/// </remarks>
@@ -23,7 +26,7 @@ namespace Db4objects.Db4o.Config
 		/// Constant for immediate query evaluation. The query is executed fully
 		/// when Query#execute() is called.
 		/// <br /><br /><b>For detailed documentation please see
-		/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
+		/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
 		/// 	</see>
 		/// </b>
 		/// </remarks>
@@ -40,7 +43,7 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="ObjectSet">ObjectSet</see>
 		/// resultset of the query.
 		/// <br /><br /><b>For detailed documentation please see
-		/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
+		/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
 		/// 	</see>
 		/// </b>
 		/// </remarks>
@@ -56,7 +59,7 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="ObjectSet">ObjectSet</see>
 		/// resultset of the query.
 		/// <br /><br /><b>For detailed documentation please see
-		/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
+		/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
 		/// 	</see>
 		/// </b>
 		/// </remarks>
@@ -79,7 +82,7 @@ namespace Db4objects.Db4o.Config
 					return i;
 				}
 			}
-			throw new System.InvalidOperationException();
+			throw new InvalidOperationException();
 		}
 
 		/// <summary>internal method, ignore please.</summary>

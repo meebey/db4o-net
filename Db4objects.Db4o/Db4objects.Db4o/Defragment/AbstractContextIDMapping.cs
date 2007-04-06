@@ -1,13 +1,15 @@
+using Db4objects.Db4o.Defragment;
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>Base class for defragment ID mappings.</summary>
 	/// <remarks>Base class for defragment ID mappings.</remarks>
 	/// <seealso cref="Db4objects.Db4o.Defragment.Defragment">Db4objects.Db4o.Defragment.Defragment
 	/// 	</seealso>
-	public abstract class AbstractContextIDMapping : Db4objects.Db4o.Defragment.IContextIDMapping
+	public abstract class AbstractContextIDMapping : IContextIDMapping
 	{
-		private Db4objects.Db4o.Foundation.Hashtable4 _classIDs = new Db4objects.Db4o.Foundation.Hashtable4
-			();
+		private Hashtable4 _classIDs = new Hashtable4();
 
 		public void MapIDs(int origID, int mappedID, bool isClassID)
 		{

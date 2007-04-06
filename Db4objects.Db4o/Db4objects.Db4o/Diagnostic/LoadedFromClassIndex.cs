@@ -1,10 +1,12 @@
+using Db4objects.Db4o.Diagnostic;
+
 namespace Db4objects.Db4o.Diagnostic
 {
 	/// <summary>Diagnostic, if query was required to load candidate set from class index.
 	/// 	</summary>
 	/// <remarks>Diagnostic, if query was required to load candidate set from class index.
 	/// 	</remarks>
-	public class LoadedFromClassIndex : Db4objects.Db4o.Diagnostic.DiagnosticBase
+	public class LoadedFromClassIndex : DiagnosticBase
 	{
 		private readonly string _className;
 

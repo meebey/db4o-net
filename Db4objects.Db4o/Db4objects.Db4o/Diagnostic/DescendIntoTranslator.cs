@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Diagnostic;
+
 namespace Db4objects.Db4o.Diagnostic
 {
 	/// <summary>
@@ -8,7 +10,7 @@ namespace Db4objects.Db4o.Diagnostic
 	/// Query tries to descend into a field of a class that is configured to be translated
 	/// (and thus cannot be descended into).
 	/// </remarks>
-	public class DescendIntoTranslator : Db4objects.Db4o.Diagnostic.DiagnosticBase
+	public class DescendIntoTranslator : DiagnosticBase
 	{
 		private string className;
 

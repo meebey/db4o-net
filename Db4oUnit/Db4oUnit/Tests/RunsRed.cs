@@ -1,10 +1,13 @@
+using System;
+using Db4oUnit;
+
 namespace Db4oUnit.Tests
 {
-	internal class RunsRed : Db4oUnit.ITest
+	internal class RunsRed : ITest
 	{
-		private System.Exception _exception;
+		private Exception _exception;
 
-		public RunsRed(System.Exception exception)
+		public RunsRed(Exception exception)
 		{
 			_exception = exception;
 		}
@@ -14,7 +17,7 @@ namespace Db4oUnit.Tests
 			return "RunsRed";
 		}
 
-		public virtual void Run(Db4oUnit.TestResult result)
+		public virtual void Run(TestResult result)
 		{
 			result.TestFailed(this, _exception);
 		}

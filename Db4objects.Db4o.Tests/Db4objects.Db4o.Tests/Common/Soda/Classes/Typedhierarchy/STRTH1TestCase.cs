@@ -1,9 +1,16 @@
+using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 {
 	/// <summary>RTH: Roundtrip Typed Hierarchy</summary>
-	public class STRTH1TestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STRTH1TestCase : SodaBaseTestCase
 	{
-		public Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2 h2;
+		public STRTH2 h2;
 
 		public string foo1;
 
@@ -11,8 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 		{
 		}
 
-		public STRTH1TestCase(Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2
-			 a2)
+		public STRTH1TestCase(STRTH2 a2)
 		{
 			h2 = a2;
 		}
@@ -22,8 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 			foo1 = str;
 		}
 
-		public STRTH1TestCase(Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2
-			 a2, string str)
+		public STRTH1TestCase(STRTH2 a2, string str)
 		{
 			h2 = a2;
 			foo1 = str;
@@ -36,13 +41,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 				 { new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase()
 				, new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase("str1"
 				), new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase(new 
-				Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2()), new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
-				(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2("str2")), new 
-				Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2
-				(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH3("str3"))), 
-				new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase(new 
-				Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH3
-				("str3"), "str2")) };
+				STRTH2()), new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
+				(new STRTH2("str2")), new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
+				(new STRTH2(new STRTH3("str3"))), new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
+				(new STRTH2(new STRTH3("str3"), "str2")) };
 			for (int i = 0; i < objects.Length; i++)
 			{
 				objects[i].AdjustParents();
@@ -66,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 
 		public virtual void TestStrNull()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
 				());
 			q.Descend("foo1").Constrain(null);
@@ -75,17 +77,17 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 
 		public virtual void TestBothNull()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
 				());
 			q.Descend("foo1").Constrain(null);
 			q.Descend("h2").Constrain(null);
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, _array[0]);
+			SodaTestUtil.ExpectOne(q, _array[0]);
 		}
 
 		public virtual void TestDescendantNotNull()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
 				());
 			q.Descend("h2").Constrain(null).Not();
@@ -94,7 +96,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 
 		public virtual void TestDescendantDescendantNotNull()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
 				());
 			q.Descend("h2").Descend("h3").Constrain(null).Not();
@@ -103,39 +105,37 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 
 		public virtual void TestDescendantExists()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(_array[2]);
 			Expect(q, new int[] { 2, 3, 4, 5 });
 		}
 
 		public virtual void TestDescendantValue()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(_array[3]);
 			Expect(q, new int[] { 3, 5 });
 		}
 
 		public virtual void TestDescendantDescendantExists()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
-				(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH3
-				())));
+				(new STRTH2(new STRTH3())));
 			Expect(q, new int[] { 4, 5 });
 		}
 
 		public virtual void TestDescendantDescendantValue()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
-				(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH3
-				("str3"))));
+				(new STRTH2(new STRTH3("str3"))));
 			Expect(q, new int[] { 4, 5 });
 		}
 
 		public virtual void TestDescendantDescendantStringPath()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
 				());
 			q.Descend("h2").Descend("h3").Descend("foo3").Constrain("str3");
@@ -144,23 +144,21 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 
 		public virtual void TestSequentialAddition()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
 				());
-			Db4objects.Db4o.Query.IQuery cur = q.Descend("h2");
-			cur.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH2
-				());
+			IQuery cur = q.Descend("h2");
+			cur.Constrain(new STRTH2());
 			cur.Descend("foo2").Constrain("str2");
 			cur = cur.Descend("h3");
-			cur.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH3
-				());
+			cur.Constrain(new STRTH3());
 			cur.Descend("foo3").Constrain("str3");
-			Db4objects.Db4o.Tests.Common.Soda.Util.SodaTestUtil.ExpectOne(q, _array[5]);
+			SodaTestUtil.ExpectOne(q, _array[5]);
 		}
 
 		public virtual void TestTwoLevelOr()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
 				("str1"));
 			q.Descend("foo1").Constraints().Or(q.Descend("h2").Descend("h3").Descend("foo3").
@@ -170,7 +168,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 
 		public virtual void TestThreeLevelOr()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STRTH1TestCase
 				("str1"));
 			q.Descend("foo1").Constraints().Or(q.Descend("h2").Descend("foo2").Constrain("str2"
@@ -180,8 +178,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 
 		public virtual void TestDeleteAll()
 		{
-			Db4objects.Db4o.Ext.IExtObjectContainer oc = Fixture().Db();
-			Db4objects.Db4o.IObjectSet os = oc.Get(null);
+			IExtObjectContainer oc = Fixture().Db();
+			IObjectSet os = oc.Get(null);
 			while (os.HasNext())
 			{
 				oc.Delete(os.Next());
@@ -190,7 +188,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 			Fixture().Reopen();
 			oc = Fixture().Db();
 			os = oc.Get(null);
-			Db4oUnit.Assert.AreEqual(0, os.Size());
+			Assert.AreEqual(0, os.Size());
 		}
 
 		public static void Main(string[] arguments)

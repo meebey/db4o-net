@@ -1,6 +1,11 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Tests.Common.Assorted;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class NakedObjectTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class NakedObjectTestCase : AbstractDb4oTestCase
 	{
 		public class Item
 		{
@@ -11,10 +16,10 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			try
 			{
-				Db().Set(new Db4objects.Db4o.Tests.Common.Assorted.NakedObjectTestCase.Item());
-				Db4oUnit.Assert.Fail("Naked objects can't be stored");
+				Db().Set(new NakedObjectTestCase.Item());
+				Assert.Fail("Naked objects can't be stored");
 			}
-			catch (Db4objects.Db4o.Ext.ObjectNotStorableException)
+			catch (ObjectNotStorableException)
 			{
 			}
 		}

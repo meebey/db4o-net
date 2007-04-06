@@ -1,70 +1,71 @@
+using System;
+using System.Reflection;
+using Db4oUnit;
+using Db4oUnit.Extensions;
+
 namespace Db4oUnit.Extensions
 {
-	public class Db4oTestSuiteBuilder : Db4oUnit.ReflectionTestSuiteBuilder
+	public class Db4oTestSuiteBuilder : ReflectionTestSuiteBuilder
 	{
-		private sealed class Db4oLabelProvider : Db4oUnit.TestMethod.ILabelProvider
+		private sealed class Db4oLabelProvider : TestMethod.ILabelProvider
 		{
-			public static readonly Db4oUnit.TestMethod.ILabelProvider DEFAULT = new Db4oUnit.Extensions.Db4oTestSuiteBuilder.Db4oLabelProvider
+			public static readonly TestMethod.ILabelProvider DEFAULT = new Db4oTestSuiteBuilder.Db4oLabelProvider
 				();
 
-			public string GetLabel(Db4oUnit.TestMethod method)
+			public string GetLabel(TestMethod method)
 			{
-				return "[" + FixtureLabel(method) + "] " + Db4oUnit.TestMethod.DEFAULT_LABEL_PROVIDER
-					.GetLabel(method);
+				return "[" + FixtureLabel(method) + "] " + TestMethod.DEFAULT_LABEL_PROVIDER.GetLabel
+					(method);
 			}
 
-			private string FixtureLabel(Db4oUnit.TestMethod method)
+			private string FixtureLabel(TestMethod method)
 			{
-				return ((Db4oUnit.Extensions.AbstractDb4oTestCase)method.GetSubject()).Fixture().
-					GetLabel();
+				return ((AbstractDb4oTestCase)method.GetSubject()).Fixture().GetLabel();
 			}
 		}
 
-		private Db4oUnit.Extensions.IDb4oFixture _fixture;
+		private IDb4oFixture _fixture;
 
-		public Db4oTestSuiteBuilder(Db4oUnit.Extensions.IDb4oFixture fixture, System.Type
-			 clazz) : base(clazz)
+		public Db4oTestSuiteBuilder(IDb4oFixture fixture, Type clazz) : base(clazz)
 		{
 			SetFixture(fixture);
 		}
 
-		public Db4oTestSuiteBuilder(Db4oUnit.Extensions.IDb4oFixture fixture, System.Type[]
-			 classes) : base(classes)
+		public Db4oTestSuiteBuilder(IDb4oFixture fixture, Type[] classes) : base(classes)
 		{
 			SetFixture(fixture);
 		}
 
-		private void SetFixture(Db4oUnit.Extensions.IDb4oFixture fixture)
+		private void SetFixture(IDb4oFixture fixture)
 		{
 			if (null == fixture)
 			{
-				throw new System.ArgumentNullException("fixture");
+				throw new ArgumentNullException("fixture");
 			}
 			_fixture = fixture;
 		}
 
-		protected override bool IsApplicable(System.Type clazz)
+		protected override bool IsApplicable(Type clazz)
 		{
 			return _fixture.Accept(clazz);
 		}
 
-		protected override object NewInstance(System.Type clazz)
+		protected override object NewInstance(Type clazz)
 		{
 			object instance = base.NewInstance(clazz);
-			if (instance is Db4oUnit.Extensions.AbstractDb4oTestCase)
+			if (instance is AbstractDb4oTestCase)
 			{
-				((Db4oUnit.Extensions.AbstractDb4oTestCase)instance).Fixture(_fixture);
+				((AbstractDb4oTestCase)instance).Fixture(_fixture);
 			}
 			return instance;
 		}
 
-		protected override Db4oUnit.ITest CreateTest(object instance, System.Reflection.MethodInfo
-			 method)
+		protected override ITest CreateTest(object instance, MethodInfo method)
 		{
-			if (instance is Db4oUnit.Extensions.AbstractDb4oTestCase)
+			if (instance is AbstractDb4oTestCase)
 			{
-				return new Db4oUnit.TestMethod(instance, method, Db4oUnit.Extensions.Db4oTestSuiteBuilder.Db4oLabelProvider
-					.DEFAULT);
+				return new TestMethod(instance, method, Db4oTestSuiteBuilder.Db4oLabelProvider.DEFAULT
+					);
 			}
 			return base.CreateTest(instance, method);
 		}

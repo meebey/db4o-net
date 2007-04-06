@@ -1,20 +1,25 @@
+using System.Collections;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Query.Result
 {
 	/// <exclude></exclude>
-	public interface IQueryResult : System.Collections.IEnumerable
+	public interface IQueryResult : IEnumerable
 	{
 		object Get(int index);
 
-		Db4objects.Db4o.Foundation.IIntIterator4 IterateIDs();
+		IIntIterator4 IterateIDs();
 
 		object Lock();
 
-		Db4objects.Db4o.Ext.IExtObjectContainer ObjectContainer();
+		IExtObjectContainer ObjectContainer();
 
 		int IndexOf(int id);
 
 		int Size();
 
-		void Sort(Db4objects.Db4o.Query.IQueryComparator cmp);
+		void Sort(IQueryComparator cmp);
 	}
 }

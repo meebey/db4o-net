@@ -1,17 +1,22 @@
+using System.Collections;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Query.Result;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Query.Result
 {
 	/// <exclude></exclude>
 	public class StatefulQueryResult
 	{
-		private readonly Db4objects.Db4o.Internal.Query.Result.IQueryResult _delegate;
+		private readonly IQueryResult _delegate;
 
-		private readonly Db4objects.Db4o.Foundation.Iterable4Adaptor _iterable;
+		private readonly Iterable4Adaptor _iterable;
 
-		public StatefulQueryResult(Db4objects.Db4o.Internal.Query.Result.IQueryResult queryResult
-			)
+		public StatefulQueryResult(IQueryResult queryResult)
 		{
 			_delegate = queryResult;
-			_iterable = new Db4objects.Db4o.Foundation.Iterable4Adaptor(queryResult);
+			_iterable = new Iterable4Adaptor(queryResult);
 		}
 
 		public virtual object Get(int index)
@@ -28,7 +33,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			{
 				long[] ids = new long[Size()];
 				int i = 0;
-				Db4objects.Db4o.Foundation.IIntIterator4 iterator = _delegate.IterateIDs();
+				IIntIterator4 iterator = _delegate.IterateIDs();
 				while (iterator.MoveNext())
 				{
 					ids[i++] = iterator.CurrentInt();
@@ -69,7 +74,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			}
 		}
 
-		public virtual void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
+		public virtual void Sort(IQueryComparator cmp)
 		{
 			lock (Lock())
 			{
@@ -82,7 +87,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			return _delegate.Lock();
 		}
 
-		internal virtual Db4objects.Db4o.Ext.IExtObjectContainer ObjectContainer()
+		internal virtual IExtObjectContainer ObjectContainer()
 		{
 			return _delegate.ObjectContainer();
 		}
@@ -100,7 +105,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			}
 		}
 
-		public virtual System.Collections.IEnumerator IterateIDs()
+		public virtual IEnumerator IterateIDs()
 		{
 			lock (Lock())
 			{
@@ -108,7 +113,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			}
 		}
 
-		public virtual System.Collections.IEnumerator Iterator()
+		public virtual IEnumerator Iterator()
 		{
 			lock (Lock())
 			{

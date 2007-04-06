@@ -1,26 +1,29 @@
+using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Tests.Common.Acid;
+using Sharpen;
+
 namespace Db4objects.Db4o.Tests.Common.Acid
 {
-	public class CrashSimulatingIoAdapter : Db4objects.Db4o.IO.VanillaIoAdapter
+	public class CrashSimulatingIoAdapter : VanillaIoAdapter
 	{
-		internal Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingBatch batch;
+		internal CrashSimulatingBatch batch;
 
 		internal long curPos;
 
-		public CrashSimulatingIoAdapter(Db4objects.Db4o.IO.IoAdapter delegateAdapter) : base
-			(delegateAdapter)
+		public CrashSimulatingIoAdapter(IoAdapter delegateAdapter) : base(delegateAdapter
+			)
 		{
-			batch = new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingBatch();
+			batch = new CrashSimulatingBatch();
 		}
 
-		private CrashSimulatingIoAdapter(Db4objects.Db4o.IO.IoAdapter delegateAdapter, string
-			 path, bool lockFile, long initialLength, Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingBatch
-			 batch) : base(delegateAdapter.Open(path, lockFile, initialLength))
+		private CrashSimulatingIoAdapter(IoAdapter delegateAdapter, string path, bool lockFile
+			, long initialLength, CrashSimulatingBatch batch) : base(delegateAdapter.Open(path
+			, lockFile, initialLength))
 		{
 			this.batch = batch;
 		}
 
-		public override Db4objects.Db4o.IO.IoAdapter Open(string path, bool lockFile, long
-			 initialLength)
+		public override IoAdapter Open(string path, bool lockFile, long initialLength)
 		{
 			return new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter(_delegate, 
 				path, lockFile, initialLength, batch);

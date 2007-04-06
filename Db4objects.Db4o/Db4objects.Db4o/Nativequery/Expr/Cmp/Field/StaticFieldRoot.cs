@@ -1,6 +1,8 @@
+using Db4objects.Db4o.Nativequery.Expr.Cmp;
+
 namespace Db4objects.Db4o.Nativequery.Expr.Cmp.Field
 {
-	public class StaticFieldRoot : Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperandRoot
+	public class StaticFieldRoot : ComparisonOperandRoot
 	{
 		private string _className;
 
@@ -39,8 +41,7 @@ namespace Db4objects.Db4o.Nativequery.Expr.Cmp.Field
 			return _className;
 		}
 
-		public override void Accept(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandVisitor
-			 visitor)
+		public override void Accept(IComparisonOperandVisitor visitor)
 		{
 			visitor.Visit(this);
 		}

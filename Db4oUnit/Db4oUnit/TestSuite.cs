@@ -1,18 +1,20 @@
+using Db4oUnit;
+
 namespace Db4oUnit
 {
-	public class TestSuite : Db4oUnit.ITest
+	public class TestSuite : ITest
 	{
-		private Db4oUnit.ITest[] _tests;
+		private ITest[] _tests;
 
 		private string _label;
 
-		public TestSuite(string label, Db4oUnit.ITest[] tests)
+		public TestSuite(string label, ITest[] tests)
 		{
 			this._label = label;
 			this._tests = tests;
 		}
 
-		public TestSuite(Db4oUnit.ITest[] tests) : this(null, tests)
+		public TestSuite(ITest[] tests) : this(null, tests)
 		{
 		}
 
@@ -21,21 +23,21 @@ namespace Db4oUnit
 			return _label == null ? LabelFromTests(_tests) : _label;
 		}
 
-		public virtual Db4oUnit.ITest[] GetTests()
+		public virtual ITest[] GetTests()
 		{
 			return _tests;
 		}
 
-		public virtual void Run(Db4oUnit.TestResult result)
+		public virtual void Run(TestResult result)
 		{
-			Db4oUnit.ITest[] tests = GetTests();
+			ITest[] tests = GetTests();
 			for (int i = 0; i < tests.Length; i++)
 			{
 				tests[i].Run(result);
 			}
 		}
 
-		private static string LabelFromTests(Db4oUnit.ITest[] tests)
+		private static string LabelFromTests(ITest[] tests)
 		{
 			if (tests.Length == 0)
 			{

@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
@@ -7,7 +9,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public abstract void AddPayLoadLength(int length);
 
-		public abstract void PrepareIndexedPayLoadEntry(Db4objects.Db4o.Internal.Transaction
-			 trans);
+		public abstract void PrepareIndexedPayLoadEntry(Transaction trans);
 	}
 }

@@ -1,18 +1,21 @@
+using System;
+using Db4oUnit;
+using Db4oUnit.Tests;
+
 namespace Db4oUnit.Tests
 {
-	public class AllTests : Db4oUnit.ITestSuiteBuilder
+	public class AllTests : ITestSuiteBuilder
 	{
-		public virtual Db4oUnit.TestSuite Build()
+		public virtual TestSuite Build()
 		{
-			return new Db4oUnit.ReflectionTestSuiteBuilder(new System.Type[] { typeof(Db4oUnit.Tests.FrameworkTestCase)
-				, typeof(Db4oUnit.Tests.AssertTestCase), typeof(Db4oUnit.Tests.TestLifeCycleTestCase)
-				, typeof(Db4oUnit.Tests.ReflectionTestSuiteBuilderTestCase), typeof(Db4oUnit.Tests.ReinstantiatePerMethodTest)
+			return new ReflectionTestSuiteBuilder(new Type[] { typeof(FrameworkTestCase), typeof(AssertTestCase)
+				, typeof(TestLifeCycleTestCase), typeof(ReflectionTestSuiteBuilderTestCase), typeof(ReinstantiatePerMethodTest)
 				 }).Build();
 		}
 
 		public static void Main(string[] args)
 		{
-			new Db4oUnit.TestRunner(typeof(Db4oUnit.Tests.AllTests)).Run();
+			new TestRunner(typeof(AllTests)).Run();
 		}
 	}
 }

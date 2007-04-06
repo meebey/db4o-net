@@ -1,31 +1,33 @@
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Marshall;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	internal sealed class CustomMarshallerFieldMetadata : Db4objects.Db4o.Internal.FieldMetadata
+	internal sealed class CustomMarshallerFieldMetadata : FieldMetadata
 	{
-		private readonly Db4objects.Db4o.Config.IObjectMarshaller _marshaller;
+		private readonly IObjectMarshaller _marshaller;
 
-		public CustomMarshallerFieldMetadata(Db4objects.Db4o.Internal.ClassMetadata containingClass
-			, Db4objects.Db4o.Config.IObjectMarshaller marshaller) : base(containingClass, marshaller
-			)
+		public CustomMarshallerFieldMetadata(ClassMetadata containingClass, IObjectMarshaller
+			 marshaller) : base(containingClass, marshaller)
 		{
 			_marshaller = marshaller;
 		}
 
-		public override void CalculateLengths(Db4objects.Db4o.Internal.Transaction trans, 
-			Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes header, object obj)
+		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
+			, object obj)
 		{
 			header.AddBaseLength(LinkLength());
 		}
 
-		public override void DefragField(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.ReaderPair readers)
+		public override void DefragField(MarshallerFamily mf, ReaderPair readers)
 		{
 			readers.IncrementOffset(LinkLength());
 		}
 
-		public override void Delete(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf
-			, Db4objects.Db4o.Internal.StatefulBuffer a_bytes, bool isUpdate)
+		public override void Delete(MarshallerFamily mf, StatefulBuffer a_bytes, bool isUpdate
+			)
 		{
 			IncrementOffset(a_bytes);
 		}
@@ -35,14 +37,12 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override object GetOn(Db4objects.Db4o.Internal.Transaction a_trans, object
-			 obj)
+		public override object GetOn(Transaction a_trans, object obj)
 		{
 			return obj;
 		}
 
-		public override object GetOrCreate(Db4objects.Db4o.Internal.Transaction trans, object
-			 onObject)
+		public override object GetOrCreate(Transaction trans, object onObject)
 		{
 			return onObject;
 		}
@@ -51,17 +51,15 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override void Instantiate(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.ObjectReference @ref, object onObject, Db4objects.Db4o.Internal.StatefulBuffer
-			 reader)
+		public override void Instantiate(MarshallerFamily mf, ObjectReference @ref, object
+			 onObject, StatefulBuffer reader)
 		{
 			_marshaller.ReadFields(onObject, reader._buffer, reader._offset);
 			IncrementOffset(reader);
 		}
 
-		public override void Marshall(Db4objects.Db4o.Internal.ObjectReference yo, object
-			 obj, Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf, Db4objects.Db4o.Internal.StatefulBuffer
-			 writer, Db4objects.Db4o.Internal.Config4Class config, bool isNew)
+		public override void Marshall(ObjectReference yo, object obj, MarshallerFamily mf
+			, StatefulBuffer writer, Config4Class config, bool isNew)
 		{
 			_marshaller.WriteFields(obj, writer._buffer, writer._offset);
 			IncrementOffset(writer);

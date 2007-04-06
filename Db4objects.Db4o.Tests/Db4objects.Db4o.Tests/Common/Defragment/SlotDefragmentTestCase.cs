@@ -1,49 +1,47 @@
+using System.IO;
+using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Defragment;
+
 namespace Db4objects.Db4o.Tests.Common.Defragment
 {
-	public class SlotDefragmentTestCase : Db4oUnit.ITestLifeCycle
+	public class SlotDefragmentTestCase : ITestLifeCycle
 	{
 		public virtual void TestPrimitiveIndex()
 		{
-			Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.AssertIndex(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture
-				.PRIMITIVE_FIELDNAME);
+			SlotDefragmentFixture.AssertIndex(SlotDefragmentFixture.PRIMITIVE_FIELDNAME);
 		}
 
 		public virtual void TestWrapperIndex()
 		{
-			Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.AssertIndex(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture
-				.WRAPPER_FIELDNAME);
+			SlotDefragmentFixture.AssertIndex(SlotDefragmentFixture.WRAPPER_FIELDNAME);
 		}
 
 		public virtual void TestTypedObjectIndex()
 		{
-			Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.ForceIndex();
-			Db4objects.Db4o.Defragment.Defragment.Defrag(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants
-				.FILENAME, Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants.BACKUPFILENAME
-				);
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(Db4objects.Db4o.Db4oFactory
-				.NewConfiguration(), Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants
+			SlotDefragmentFixture.ForceIndex();
+			Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.FILENAME
+				, SlotDefragmentTestConstants.BACKUPFILENAME);
+			IObjectContainer db = Db4oFactory.OpenFile(Db4oFactory.NewConfiguration(), SlotDefragmentTestConstants
 				.FILENAME);
-			Db4objects.Db4o.Query.IQuery query = db.Query();
-			query.Constrain(typeof(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.Data)
-				);
-			query.Descend(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.TYPEDOBJECT_FIELDNAME
-				).Descend(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.PRIMITIVE_FIELDNAME
-				).Constrain(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.VALUE);
-			Db4objects.Db4o.IObjectSet result = query.Execute();
-			Db4oUnit.Assert.AreEqual(1, result.Size());
+			IQuery query = db.Query();
+			query.Constrain(typeof(SlotDefragmentFixture.Data));
+			query.Descend(SlotDefragmentFixture.TYPEDOBJECT_FIELDNAME).Descend(SlotDefragmentFixture
+				.PRIMITIVE_FIELDNAME).Constrain(SlotDefragmentFixture.VALUE);
+			IObjectSet result = query.Execute();
+			Assert.AreEqual(1, result.Size());
 			db.Close();
 		}
 
 		public virtual void TestNoForceDelete()
 		{
-			Db4objects.Db4o.Defragment.Defragment.Defrag(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants
-				.FILENAME, Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants.BACKUPFILENAME
-				);
-			Db4oUnit.Assert.Expect(typeof(System.IO.IOException), new _AnonymousInnerClass37(
-				this));
+			Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.FILENAME
+				, SlotDefragmentTestConstants.BACKUPFILENAME);
+			Assert.Expect(typeof(IOException), new _AnonymousInnerClass37(this));
 		}
 
-		private sealed class _AnonymousInnerClass37 : Db4oUnit.ICodeBlock
+		private sealed class _AnonymousInnerClass37 : ICodeBlock
 		{
 			public _AnonymousInnerClass37(SlotDefragmentTestCase _enclosing)
 			{
@@ -52,9 +50,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 			public void Run()
 			{
-				Db4objects.Db4o.Defragment.Defragment.Defrag(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants
-					.FILENAME, Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants.BACKUPFILENAME
-					);
+				Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.FILENAME
+					, SlotDefragmentTestConstants.BACKUPFILENAME);
 			}
 
 			private readonly SlotDefragmentTestCase _enclosing;
@@ -62,12 +59,9 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		public virtual void SetUp()
 		{
-			new Sharpen.IO.File(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants
-				.FILENAME).Delete();
-			new Sharpen.IO.File(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants
-				.BACKUPFILENAME).Delete();
-			Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentFixture.CreateFile(Db4objects.Db4o.Tests.Common.Defragment.SlotDefragmentTestConstants
-				.FILENAME);
+			new Sharpen.IO.File(SlotDefragmentTestConstants.FILENAME).Delete();
+			new Sharpen.IO.File(SlotDefragmentTestConstants.BACKUPFILENAME).Delete();
+			SlotDefragmentFixture.CreateFile(SlotDefragmentTestConstants.FILENAME);
 		}
 
 		public virtual void TearDown()

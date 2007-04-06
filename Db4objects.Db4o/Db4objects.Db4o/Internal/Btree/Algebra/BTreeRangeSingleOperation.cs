@@ -1,12 +1,14 @@
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Btree.Algebra;
+
 namespace Db4objects.Db4o.Internal.Btree.Algebra
 {
 	/// <exclude></exclude>
-	public abstract class BTreeRangeSingleOperation : Db4objects.Db4o.Internal.Btree.Algebra.BTreeRangeOperation
+	public abstract class BTreeRangeSingleOperation : BTreeRangeOperation
 	{
-		protected readonly Db4objects.Db4o.Internal.Btree.BTreeRangeSingle _single;
+		protected readonly BTreeRangeSingle _single;
 
-		public BTreeRangeSingleOperation(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle 
-			single)
+		public BTreeRangeSingleOperation(BTreeRangeSingle single)
 		{
 			_single = single;
 		}

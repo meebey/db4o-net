@@ -1,7 +1,10 @@
+using System;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MGetInternalIDs : Db4objects.Db4o.Internal.CS.Messages.MsgD, 
-		Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public sealed class MGetInternalIDs : MsgD, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{
@@ -13,15 +16,14 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				{
 					ids = Stream().ClassMetadataForId(bytes.ReadInt()).GetIDs(Transaction());
 				}
-				catch (System.Exception)
+				catch (Exception)
 				{
 					ids = new long[0];
 				}
 			}
 			int size = ids.Length;
-			Db4objects.Db4o.Internal.CS.Messages.MsgD message = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.ID_LIST.GetWriterForLength(Transaction(), Db4objects.Db4o.Internal.Const4.ID_LENGTH
-				 * (size + 1));
+			MsgD message = Msg.ID_LIST.GetWriterForLength(Transaction(), Const4.ID_LENGTH * (
+				size + 1));
 			Db4objects.Db4o.Internal.Buffer writer = message.PayLoad();
 			writer.WriteInt(size);
 			for (int i = 0; i < size; i++)

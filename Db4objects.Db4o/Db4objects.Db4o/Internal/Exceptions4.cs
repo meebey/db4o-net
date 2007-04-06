@@ -1,3 +1,7 @@
+using System;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
@@ -8,7 +12,7 @@ namespace Db4objects.Db4o.Internal
 			ThrowRuntimeException(code, null, null);
 		}
 
-		public static void ThrowRuntimeException(int code, System.Exception cause)
+		public static void ThrowRuntimeException(int code, Exception cause)
 		{
 			ThrowRuntimeException(code, null, cause);
 		}
@@ -18,22 +22,20 @@ namespace Db4objects.Db4o.Internal
 			ThrowRuntimeException(code, msg, null);
 		}
 
-		public static void ThrowRuntimeException(int code, string msg, System.Exception cause
-			)
+		public static void ThrowRuntimeException(int code, string msg, Exception cause)
 		{
 			ThrowRuntimeException(code, msg, cause, true);
 		}
 
-		public static void ThrowRuntimeException(int code, string msg, System.Exception cause
-			, bool doLog)
+		public static void ThrowRuntimeException(int code, string msg, Exception cause, bool
+			 doLog)
 		{
 			if (doLog)
 			{
-				Db4objects.Db4o.Internal.Messages.LogErr(Db4objects.Db4o.Db4oFactory.Configure(), 
-					code, msg, cause);
+				Db4objects.Db4o.Internal.Messages.LogErr(Db4oFactory.Configure(), code, msg, cause
+					);
 			}
-			throw new Db4objects.Db4o.Ext.Db4oException(Db4objects.Db4o.Internal.Messages.Get
-				(code, msg));
+			throw new Db4oException(Db4objects.Db4o.Internal.Messages.Get(code, msg));
 		}
 
 		/// <deprecated>Use com.db4o.foundation.NotSupportedException instead</deprecated>
@@ -42,27 +44,27 @@ namespace Db4objects.Db4o.Internal
 			ThrowRuntimeException(53);
 		}
 
-		public static void CatchAllExceptDb4oException(System.Exception exc)
+		public static void CatchAllExceptDb4oException(Exception exc)
 		{
-			if (exc is Db4objects.Db4o.Ext.Db4oException)
+			if (exc is Db4oException)
 			{
-				throw (Db4objects.Db4o.Ext.Db4oException)exc;
+				throw (Db4oException)exc;
 			}
 		}
 
-		public static System.Exception ShouldNeverBeCalled()
+		public static Exception ShouldNeverBeCalled()
 		{
-			throw new System.Exception();
+			throw new Exception();
 		}
 
 		public static void ShouldNeverHappen()
 		{
-			throw new System.Exception();
+			throw new Exception();
 		}
 
-		public static System.Exception VirtualException()
+		public static Exception VirtualException()
 		{
-			throw new System.Exception();
+			throw new Exception();
 		}
 	}
 }

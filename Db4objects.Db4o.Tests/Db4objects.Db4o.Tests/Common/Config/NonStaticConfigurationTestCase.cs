@@ -1,6 +1,12 @@
+using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Config;
+
 namespace Db4objects.Db4o.Tests.Common.Config
 {
-	public class NonStaticConfigurationTestCase : Db4oUnit.ITestCase
+	public class NonStaticConfigurationTestCase : ITestCase
 	{
 		public class Data
 		{
@@ -17,28 +23,23 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		public virtual void TestOpenWithNonStaticConfiguration()
 		{
 			new Sharpen.IO.File(FILENAME).Delete();
-			Db4objects.Db4o.Config.IConfiguration cfg = Db4objects.Db4o.Db4oFactory.NewConfiguration
-				();
+			IConfiguration cfg = Db4oFactory.NewConfiguration();
 			cfg.ReadOnly(true);
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(cfg, FILENAME
-				);
+			IObjectContainer db = Db4oFactory.OpenFile(cfg, FILENAME);
 			try
 			{
-				db.Set(new Db4objects.Db4o.Tests.Common.Config.NonStaticConfigurationTestCase.Data
-					(1));
+				db.Set(new NonStaticConfigurationTestCase.Data(1));
 			}
 			finally
 			{
 				db.Close();
 			}
-			cfg = Db4objects.Db4o.Db4oFactory.NewConfiguration();
-			db = Db4objects.Db4o.Db4oFactory.OpenFile(cfg, FILENAME);
+			cfg = Db4oFactory.NewConfiguration();
+			db = Db4oFactory.OpenFile(cfg, FILENAME);
 			try
 			{
-				db.Set(new Db4objects.Db4o.Tests.Common.Config.NonStaticConfigurationTestCase.Data
-					(2));
-				Db4oUnit.Assert.AreEqual(1, db.Query(typeof(Db4objects.Db4o.Tests.Common.Config.NonStaticConfigurationTestCase.Data)
-					).Size());
+				db.Set(new NonStaticConfigurationTestCase.Data(2));
+				Assert.AreEqual(1, db.Query(typeof(NonStaticConfigurationTestCase.Data)).Size());
 			}
 			finally
 			{
@@ -48,19 +49,16 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		public virtual void TestIndependentObjectConfigs()
 		{
-			Db4objects.Db4o.Config.IConfiguration config = Db4objects.Db4o.Db4oFactory.NewConfiguration
-				();
-			Db4objects.Db4o.Config.IObjectClass objectConfig = config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Config.NonStaticConfigurationTestCase.Data)
+			IConfiguration config = Db4oFactory.NewConfiguration();
+			IObjectClass objectConfig = config.ObjectClass(typeof(NonStaticConfigurationTestCase.Data)
 				);
-			objectConfig.Translate(new Db4objects.Db4o.Config.TNull());
-			Db4objects.Db4o.Config.IConfiguration otherConfig = Db4objects.Db4o.Db4oFactory.NewConfiguration
-				();
-			Db4oUnit.Assert.AreNotSame(config, otherConfig);
-			Db4objects.Db4o.Internal.Config4Class otherObjectConfig = (Db4objects.Db4o.Internal.Config4Class
-				)otherConfig.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Config.NonStaticConfigurationTestCase.Data)
+			objectConfig.Translate(new TNull());
+			IConfiguration otherConfig = Db4oFactory.NewConfiguration();
+			Assert.AreNotSame(config, otherConfig);
+			Config4Class otherObjectConfig = (Config4Class)otherConfig.ObjectClass(typeof(NonStaticConfigurationTestCase.Data)
 				);
-			Db4oUnit.Assert.AreNotSame(objectConfig, otherObjectConfig);
-			Db4oUnit.Assert.IsNull(otherObjectConfig.GetTranslator());
+			Assert.AreNotSame(objectConfig, otherObjectConfig);
+			Assert.IsNull(otherObjectConfig.GetTranslator());
 		}
 	}
 }

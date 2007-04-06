@@ -1,23 +1,47 @@
+using System;
+using Db4oUnit;
+
 namespace Db4oUnit
 {
 	public sealed class Assert
 	{
-		public static void Expect(System.Type exception, Db4oUnit.ICodeBlock block)
+		public static void Expect(Type exception, ICodeBlock block)
+		{
+			Exception e = GetThrowable(block);
+			AssertThrowable(exception, e);
+		}
+
+		public static void Expect(Type exception, Type cause, ICodeBlock block)
+		{
+			Exception e = GetThrowable(block);
+			AssertThrowable(exception, e);
+		}
+
+		private static void AssertThrowable(Type exception, Exception e)
+		{
+			if (e == null)
+			{
+				Fail("Exception '" + exception.FullName + "' expected");
+			}
+			if (exception.IsInstanceOfType(e))
+			{
+				return;
+			}
+			Fail("Expecting '" + exception.FullName + "' but got '" + e.GetType().FullName + 
+				"'");
+		}
+
+		private static Exception GetThrowable(ICodeBlock block)
 		{
 			try
 			{
 				block.Run();
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				if (exception.IsInstanceOfType(e))
-				{
-					return;
-				}
-				Fail("Expecting '" + exception.FullName + "' but got '" + e.GetType().FullName + 
-					"'");
+				return e;
 			}
-			Fail("Exception '" + exception.FullName + "' expected");
+			return null;
 		}
 
 		public static void Fail()
@@ -27,7 +51,7 @@ namespace Db4oUnit
 
 		public static void Fail(string msg)
 		{
-			throw new Db4oUnit.AssertionException(msg);
+			throw new AssertionException(msg);
 		}
 
 		public static void IsTrue(bool condition)
@@ -182,7 +206,7 @@ namespace Db4oUnit
 			IsTrue(!condition, message);
 		}
 
-		public static void IsInstanceOf(System.Type expectedClass, object actual)
+		public static void IsInstanceOf(Type expectedClass, object actual)
 		{
 			IsTrue(expectedClass.IsInstanceOfType(actual), FailureMessage(expectedClass, actual
 				 == null ? null : actual.GetType()));

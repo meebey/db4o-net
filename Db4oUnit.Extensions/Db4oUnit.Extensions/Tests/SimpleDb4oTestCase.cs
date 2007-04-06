@@ -1,6 +1,11 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Tests;
+using Db4objects.Db4o.Config;
+
 namespace Db4oUnit.Extensions.Tests
 {
-	public class SimpleDb4oTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class SimpleDb4oTestCase : AbstractDb4oTestCase
 	{
 		public class Data
 		{
@@ -8,28 +13,27 @@ namespace Db4oUnit.Extensions.Tests
 
 		private bool[] _everythingCalled = new bool[3];
 
-		private Db4oUnit.Extensions.IDb4oFixture _expectedFixture;
+		private IDb4oFixture _expectedFixture;
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
-			Db4oUnit.Assert.AreSame(_expectedFixture, Fixture());
-			Db4oUnit.Assert.IsTrue(EverythingCalledBefore(0));
+			Assert.AreSame(_expectedFixture, Fixture());
+			Assert.IsTrue(EverythingCalledBefore(0));
 			_everythingCalled[0] = true;
 		}
 
 		protected override void Store()
 		{
-			Db4oUnit.Assert.IsTrue(EverythingCalledBefore(1));
+			Assert.IsTrue(EverythingCalledBefore(1));
 			_everythingCalled[1] = true;
-			Fixture().Db().Set(new Db4oUnit.Extensions.Tests.SimpleDb4oTestCase.Data());
+			Fixture().Db().Set(new SimpleDb4oTestCase.Data());
 		}
 
 		public virtual void TestResultSize()
 		{
-			Db4oUnit.Assert.IsTrue(EverythingCalledBefore(2));
+			Assert.IsTrue(EverythingCalledBefore(2));
 			_everythingCalled[2] = true;
-			Db4oUnit.Assert.AreEqual(1, Fixture().Db().Get(typeof(Db4oUnit.Extensions.Tests.SimpleDb4oTestCase.Data)
-				).Size());
+			Assert.AreEqual(1, Fixture().Db().Get(typeof(SimpleDb4oTestCase.Data)).Size());
 		}
 
 		public virtual bool EverythingCalled()
@@ -56,7 +60,7 @@ namespace Db4oUnit.Extensions.Tests
 			return true;
 		}
 
-		public virtual void ExpectedFixture(Db4oUnit.Extensions.IDb4oFixture fixture)
+		public virtual void ExpectedFixture(IDb4oFixture fixture)
 		{
 			_expectedFixture = fixture;
 		}

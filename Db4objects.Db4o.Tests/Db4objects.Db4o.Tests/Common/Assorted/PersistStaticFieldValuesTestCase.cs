@@ -1,63 +1,53 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Tests.Common.Assorted;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class PersistStaticFieldValuesTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class PersistStaticFieldValuesTestCase : AbstractDb4oTestCase
 	{
 		public class Data
 		{
-			public static readonly Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.PsfvHelper
-				 ONE = new Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.PsfvHelper
+			public static readonly PersistStaticFieldValuesTestCase.PsfvHelper ONE = new PersistStaticFieldValuesTestCase.PsfvHelper
 				();
 
-			public static readonly Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.PsfvHelper
-				 TWO = new Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.PsfvHelper
+			public static readonly PersistStaticFieldValuesTestCase.PsfvHelper TWO = new PersistStaticFieldValuesTestCase.PsfvHelper
 				();
 
-			public static readonly Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.PsfvHelper
-				 THREE = new Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.PsfvHelper
+			public static readonly PersistStaticFieldValuesTestCase.PsfvHelper THREE = new PersistStaticFieldValuesTestCase.PsfvHelper
 				();
 
-			public Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.PsfvHelper
-				 one;
+			public PersistStaticFieldValuesTestCase.PsfvHelper one;
 
-			public Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.PsfvHelper
-				 two;
+			public PersistStaticFieldValuesTestCase.PsfvHelper two;
 
-			public Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.PsfvHelper
-				 three;
+			public PersistStaticFieldValuesTestCase.PsfvHelper three;
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data)
-				).PersistStaticFieldValues();
+			config.ObjectClass(typeof(PersistStaticFieldValuesTestCase.Data)).PersistStaticFieldValues
+				();
 		}
 
 		protected override void Store()
 		{
-			Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data psfv = 
-				new Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data(
-				);
-			psfv.one = Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data
-				.ONE;
-			psfv.two = Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data
-				.TWO;
-			psfv.three = Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data
-				.THREE;
+			PersistStaticFieldValuesTestCase.Data psfv = new PersistStaticFieldValuesTestCase.Data
+				();
+			psfv.one = PersistStaticFieldValuesTestCase.Data.ONE;
+			psfv.two = PersistStaticFieldValuesTestCase.Data.TWO;
+			psfv.three = PersistStaticFieldValuesTestCase.Data.THREE;
 			Store(psfv);
 		}
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data psfv = 
-				(Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data)RetrieveOnlyInstance
-				(typeof(Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data)
-				);
-			Db4oUnit.Assert.AreSame(Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data
-				.ONE, psfv.one);
-			Db4oUnit.Assert.AreSame(Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data
-				.TWO, psfv.two);
-			Db4oUnit.Assert.AreSame(Db4objects.Db4o.Tests.Common.Assorted.PersistStaticFieldValuesTestCase.Data
-				.THREE, psfv.three);
+			PersistStaticFieldValuesTestCase.Data psfv = (PersistStaticFieldValuesTestCase.Data
+				)RetrieveOnlyInstance(typeof(PersistStaticFieldValuesTestCase.Data));
+			Assert.AreSame(PersistStaticFieldValuesTestCase.Data.ONE, psfv.one);
+			Assert.AreSame(PersistStaticFieldValuesTestCase.Data.TWO, psfv.two);
+			Assert.AreSame(PersistStaticFieldValuesTestCase.Data.THREE, psfv.three);
 		}
 
 		public class PsfvHelper

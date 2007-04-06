@@ -1,21 +1,25 @@
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Replication;
+
 namespace Db4objects.Db4o
 {
 	/// <summary>base class for all database aware objects</summary>
 	/// <exclude></exclude>
 	/// <persistent></persistent>
-	public class P1Object : Db4objects.Db4o.Internal.IDb4oTypeImpl
+	public class P1Object : IDb4oTypeImpl
 	{
 		[System.NonSerialized]
-		private Db4objects.Db4o.Internal.Transaction i_trans;
+		private Transaction i_trans;
 
 		[System.NonSerialized]
-		private Db4objects.Db4o.Internal.ObjectReference i_yapObject;
+		private ObjectReference i_yapObject;
 
 		public P1Object()
 		{
 		}
 
-		internal P1Object(Db4objects.Db4o.Internal.Transaction a_trans)
+		internal P1Object(Transaction a_trans)
 		{
 			i_trans = a_trans;
 		}
@@ -72,9 +76,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		public virtual object CreateDefault(Db4objects.Db4o.Internal.Transaction a_trans)
+		public virtual object CreateDefault(Transaction a_trans)
 		{
-			throw Db4objects.Db4o.Internal.Exceptions4.VirtualException();
+			throw Exceptions4.VirtualException();
 		}
 
 		internal virtual void Deactivate()
@@ -118,7 +122,7 @@ namespace Db4objects.Db4o
 			return Stream().GetID(a_obj);
 		}
 
-		protected virtual Db4objects.Db4o.Internal.Transaction GetTrans()
+		protected virtual Transaction GetTrans()
 		{
 			return i_trans;
 		}
@@ -132,13 +136,11 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		protected virtual object Replicate(Db4objects.Db4o.Internal.Transaction fromTrans
-			, Db4objects.Db4o.Internal.Transaction toTrans)
+		protected virtual object Replicate(Transaction fromTrans, Transaction toTrans)
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase fromStream = fromTrans.Stream();
-			Db4objects.Db4o.Internal.ObjectContainerBase toStream = toTrans.Stream();
-			Db4objects.Db4o.Internal.Replication.MigrationConnection mgc = fromStream.i_handlers
-				.MigrationConnection();
+			ObjectContainerBase fromStream = fromTrans.Stream();
+			ObjectContainerBase toStream = toTrans.Stream();
+			MigrationConnection mgc = fromStream.i_handlers.MigrationConnection();
 			lock (fromStream.Lock())
 			{
 				int id = toStream.OldReplicationHandles(this);
@@ -174,13 +176,12 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		public virtual void SetTrans(Db4objects.Db4o.Internal.Transaction a_trans)
+		public virtual void SetTrans(Transaction a_trans)
 		{
 			i_trans = a_trans;
 		}
 
-		public virtual void SetObjectReference(Db4objects.Db4o.Internal.ObjectReference a_yapObject
-			)
+		public virtual void SetObjectReference(ObjectReference a_yapObject)
 		{
 			i_yapObject = a_yapObject;
 		}
@@ -193,7 +194,7 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		public virtual object StoredTo(Db4objects.Db4o.Internal.Transaction a_trans)
+		public virtual object StoredTo(Transaction a_trans)
 		{
 			i_trans = a_trans;
 			return this;
@@ -237,16 +238,21 @@ namespace Db4objects.Db4o
 		{
 			if (ValidYapObject())
 			{
-				Stream().BeginTopLevelSet();
+				ObjectContainerBase stream = Stream();
+				stream.BeginTopLevelSet();
 				try
 				{
 					i_yapObject.WriteUpdate(i_trans, depth);
-					Stream().CheckStillToSet();
-					Stream().CompleteTopLevelSet();
+					stream.CheckStillToSet();
+					stream.CompleteTopLevelSet();
+				}
+				catch (Db4oException e)
+				{
+					stream.CompleteTopLevelSet(e);
 				}
 				finally
 				{
-					Stream().EndTopLevelSet(i_trans);
+					stream.EndTopLevelSet(i_trans);
 				}
 			}
 		}
@@ -271,7 +277,7 @@ namespace Db4objects.Db4o
 			return (i_trans != null) && (i_yapObject != null) && (i_yapObject.GetID() > 0);
 		}
 
-		private Db4objects.Db4o.Internal.ObjectContainerBase Stream()
+		private ObjectContainerBase Stream()
 		{
 			return i_trans.Stream();
 		}

@@ -1,3 +1,6 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Callbacks
 {
 	public interface ICallbacks
@@ -22,14 +25,18 @@ namespace Db4objects.Db4o.Internal.Callbacks
 
 		void ObjectOnDeactivate(object obj);
 
-		void QueryOnStarted(Db4objects.Db4o.Query.IQuery query);
+		void QueryOnStarted(IQuery query);
 
-		void QueryOnFinished(Db4objects.Db4o.Query.IQuery query);
+		void QueryOnFinished(IQuery query);
 
-		bool CaresAboutCommit();
+		bool CaresAboutCommitting();
 
-		void CommitOnStarted(object transaction, Db4objects.Db4o.Ext.IObjectInfoCollection
-			 added, Db4objects.Db4o.Ext.IObjectInfoCollection deleted, Db4objects.Db4o.Ext.IObjectInfoCollection
-			 updated);
+		bool CaresAboutCommitted();
+
+		void CommitOnStarted(object transaction, CallbackObjectInfoCollections objectInfoCollections
+			);
+
+		void CommitOnCompleted(object transaction, CallbackObjectInfoCollections objectInfoCollections
+			);
 	}
 }

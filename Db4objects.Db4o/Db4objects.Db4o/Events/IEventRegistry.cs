@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Events;
+
 namespace Db4objects.Db4o.Events
 {
 	public delegate void QueryEventHandler(object sender, Db4objects.Db4o.Events.QueryEventArgs
@@ -17,14 +19,12 @@ namespace Db4objects.Db4o.Events
 	/// <see cref="ObjectContainer">ObjectContainer</see>
 	/// events.
 	/// </summary>
-	/// <seealso cref="Db4objects.Db4o.Events.EventRegistryFactory">Db4objects.Db4o.Events.EventRegistryFactory
-	/// 	</seealso>
+	/// <seealso cref="EventRegistryFactory">EventRegistryFactory</seealso>
 	public interface IEventRegistry
 	{
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.QueryEventArgs">Db4objects.Db4o.Events.QueryEventArgs
-		/// 	</see>
+		/// <see cref="QueryEventArgs">QueryEventArgs</see>
 		/// .
 		/// </summary>
 		/// <returns></returns>
@@ -32,8 +32,7 @@ namespace Db4objects.Db4o.Events
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.QueryEventArgs">Db4objects.Db4o.Events.QueryEventArgs
-		/// 	</see>
+		/// <see cref="QueryEventArgs">QueryEventArgs</see>
 		/// .
 		/// </summary>
 		/// <returns></returns>
@@ -41,8 +40,7 @@ namespace Db4objects.Db4o.Events
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.CancellableObjectEventArgs">Db4objects.Db4o.Events.CancellableObjectEventArgs
-		/// 	</see>
+		/// <see cref="CancellableObjectEventArgs">CancellableObjectEventArgs</see>
 		/// .
 		/// </summary>
 		/// <returns></returns>
@@ -50,8 +48,7 @@ namespace Db4objects.Db4o.Events
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.CancellableObjectEventArgs">Db4objects.Db4o.Events.CancellableObjectEventArgs
-		/// 	</see>
+		/// <see cref="CancellableObjectEventArgs">CancellableObjectEventArgs</see>
 		/// .
 		/// </summary>
 		/// <returns></returns>
@@ -59,32 +56,28 @@ namespace Db4objects.Db4o.Events
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.CancellableObjectEventArgs">Db4objects.Db4o.Events.CancellableObjectEventArgs
-		/// 	</see>
+		/// <see cref="CancellableObjectEventArgs">CancellableObjectEventArgs</see>
 		/// </summary>
 		/// <returns></returns>
 		event Db4objects.Db4o.Events.CancellableObjectEventHandler Updating;
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.CancellableObjectEventArgs">Db4objects.Db4o.Events.CancellableObjectEventArgs
-		/// 	</see>
+		/// <see cref="CancellableObjectEventArgs">CancellableObjectEventArgs</see>
 		/// </summary>
 		/// <returns></returns>
 		event Db4objects.Db4o.Events.CancellableObjectEventHandler Deleting;
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.CancellableObjectEventArgs">Db4objects.Db4o.Events.CancellableObjectEventArgs
-		/// 	</see>
+		/// <see cref="CancellableObjectEventArgs">CancellableObjectEventArgs</see>
 		/// </summary>
 		/// <returns></returns>
 		event Db4objects.Db4o.Events.CancellableObjectEventHandler Deactivating;
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
-		/// 	</see>
+		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
 		/// .
 		/// </summary>
 		/// <returns></returns>
@@ -92,8 +85,7 @@ namespace Db4objects.Db4o.Events
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
-		/// 	</see>
+		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
 		/// .
 		/// </summary>
 		/// <returns></returns>
@@ -101,34 +93,37 @@ namespace Db4objects.Db4o.Events
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
-		/// 	</see>
+		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
 		/// </summary>
 		/// <returns></returns>
 		event Db4objects.Db4o.Events.ObjectEventHandler Updated;
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
-		/// 	</see>
+		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
 		/// </summary>
 		/// <returns></returns>
 		event Db4objects.Db4o.Events.ObjectEventHandler Deleted;
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
-		/// 	</see>
+		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
 		/// </summary>
 		/// <returns></returns>
 		event Db4objects.Db4o.Events.ObjectEventHandler Deactivated;
 
 		/// <summary>
 		/// Receives
-		/// <see cref="Db4objects.Db4o.Events.CommitEventArgs">Db4objects.Db4o.Events.CommitEventArgs
-		/// 	</see>
+		/// <see cref="CommitEventArgs">CommitEventArgs</see>
 		/// </summary>
 		/// <returns></returns>
 		event Db4objects.Db4o.Events.CommitEventHandler Committing;
+
+		/// <summary>
+		/// Receives
+		/// <see cref="CommitEventArgs">CommitEventArgs</see>
+		/// </summary>
+		/// <returns></returns>
+		event Db4objects.Db4o.Events.CommitEventHandler Committed;
 	}
 }

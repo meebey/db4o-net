@@ -1,6 +1,9 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 {
-	public class STNullOnPathTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STNullOnPathTestCase : SodaBaseTestCase
 	{
 		public bool @bool;
 
@@ -21,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Experiments.STNullOnPathTestCase
 				());
 			q.Descend("bool").Constrain(null);

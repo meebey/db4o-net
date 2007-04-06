@@ -1,11 +1,18 @@
+using System.Collections;
+using Db4oUnit;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Btree;
+using Db4objects.Db4o.Tests.Common.Foundation;
+using Sharpen;
+
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
-	public class TreeKeyIteratorTestCase : Db4oUnit.ITestCase
+	public class TreeKeyIteratorTestCase : ITestCase
 	{
 		public static void Main(string[] args)
 		{
-			new Db4oUnit.TestRunner(typeof(Db4objects.Db4o.Tests.Common.Foundation.TreeKeyIteratorTestCase)
-				).Run();
+			new TestRunner(typeof(TreeKeyIteratorTestCase)).Run();
 		}
 
 		private static int[] VALUES = new int[] { 1, 3, 5, 7, 9, 10, 11, 13, 24, 76 };
@@ -20,12 +27,11 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		public virtual void TestMoveNextAfterCompletion()
 		{
-			System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.TreeKeyIterator
-				(CreateTree(VALUES));
+			IEnumerator i = new TreeKeyIterator(CreateTree(VALUES));
 			while (i.MoveNext())
 			{
 			}
-			Db4oUnit.Assert.IsFalse(i.MoveNext());
+			Assert.IsFalse(i.MoveNext());
 		}
 
 		private void AssertIterateValues(int[] values, int count)
@@ -37,11 +43,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private void AssertIterateValues(int[] values)
 		{
-			Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor expectingVisitor = new Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
-				(Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.ToObjectArray(values), true, 
-				false);
-			System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.TreeKeyIterator
-				(CreateTree(values));
+			ExpectingVisitor expectingVisitor = new ExpectingVisitor(IntArrays4.ToObjectArray
+				(values), true, false);
+			IEnumerator i = new TreeKeyIterator(CreateTree(values));
 			while (i.MoveNext())
 			{
 				expectingVisitor.Visit(i.Current);
@@ -49,22 +53,20 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			expectingVisitor.AssertExpectations();
 		}
 
-		private Db4objects.Db4o.Foundation.Tree CreateTree(int[] values)
+		private Tree CreateTree(int[] values)
 		{
-			Db4objects.Db4o.Foundation.Tree tree = new Db4objects.Db4o.Internal.TreeInt(values
-				[0]);
+			Tree tree = new TreeInt(values[0]);
 			for (int i = 1; i < values.Length; i++)
 			{
-				tree = tree.Add(new Db4objects.Db4o.Internal.TreeInt(values[i]));
+				tree = tree.Add(new TreeInt(values[i]));
 			}
 			return tree;
 		}
 
 		public virtual void TestEmpty()
 		{
-			System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.TreeKeyIterator
-				(null);
-			Db4oUnit.Assert.IsFalse(i.MoveNext());
+			IEnumerator i = new TreeKeyIterator(null);
+			Assert.IsFalse(i.MoveNext());
 		}
 	}
 }

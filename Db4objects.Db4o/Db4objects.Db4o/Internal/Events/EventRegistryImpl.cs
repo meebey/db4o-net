@@ -1,7 +1,13 @@
+using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Callbacks;
+using Db4objects.Db4o.Internal.Events;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Events
 {
 	/// <exclude></exclude>
-	public class EventRegistryImpl : Db4objects.Db4o.Internal.Callbacks.ICallbacks, Db4objects.Db4o.Events.IEventRegistry
+	public class EventRegistryImpl : ICallbacks, IEventRegistry
 	{
 		protected Db4objects.Db4o.Events.QueryEventHandler _queryStarted;
 
@@ -29,80 +35,78 @@ namespace Db4objects.Db4o.Internal.Events
 
 		protected Db4objects.Db4o.Events.CommitEventHandler _committing;
 
-		public virtual void QueryOnFinished(Db4objects.Db4o.Query.IQuery query)
+		protected Db4objects.Db4o.Events.CommitEventHandler _committed;
+
+		public virtual void QueryOnFinished(IQuery query)
 		{
-			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerQueryEvent(_queryFinished, query
-				);
+			EventPlatform.TriggerQueryEvent(_queryFinished, query);
 		}
 
-		public virtual void QueryOnStarted(Db4objects.Db4o.Query.IQuery query)
+		public virtual void QueryOnStarted(IQuery query)
 		{
-			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerQueryEvent(_queryStarted, query
-				);
+			EventPlatform.TriggerQueryEvent(_queryStarted, query);
 		}
 
 		public virtual bool ObjectCanNew(object obj)
 		{
-			return Db4objects.Db4o.Internal.Events.EventPlatform.TriggerCancellableObjectEventArgs
-				(_creating, obj);
+			return EventPlatform.TriggerCancellableObjectEventArgs(_creating, obj);
 		}
 
 		public virtual bool ObjectCanActivate(object obj)
 		{
-			return Db4objects.Db4o.Internal.Events.EventPlatform.TriggerCancellableObjectEventArgs
-				(_activating, obj);
+			return EventPlatform.TriggerCancellableObjectEventArgs(_activating, obj);
 		}
 
 		public virtual bool ObjectCanUpdate(object obj)
 		{
-			return Db4objects.Db4o.Internal.Events.EventPlatform.TriggerCancellableObjectEventArgs
-				(_updating, obj);
+			return EventPlatform.TriggerCancellableObjectEventArgs(_updating, obj);
 		}
 
 		public virtual bool ObjectCanDelete(object obj)
 		{
-			return Db4objects.Db4o.Internal.Events.EventPlatform.TriggerCancellableObjectEventArgs
-				(_deleting, obj);
+			return EventPlatform.TriggerCancellableObjectEventArgs(_deleting, obj);
 		}
 
 		public virtual bool ObjectCanDeactivate(object obj)
 		{
-			return Db4objects.Db4o.Internal.Events.EventPlatform.TriggerCancellableObjectEventArgs
-				(_deactivating, obj);
+			return EventPlatform.TriggerCancellableObjectEventArgs(_deactivating, obj);
 		}
 
 		public virtual void ObjectOnActivate(object obj)
 		{
-			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerObjectEvent(_activated, obj);
+			EventPlatform.TriggerObjectEvent(_activated, obj);
 		}
 
 		public virtual void ObjectOnNew(object obj)
 		{
-			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerObjectEvent(_created, obj);
+			EventPlatform.TriggerObjectEvent(_created, obj);
 		}
 
 		public virtual void ObjectOnUpdate(object obj)
 		{
-			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerObjectEvent(_updated, obj);
+			EventPlatform.TriggerObjectEvent(_updated, obj);
 		}
 
 		public virtual void ObjectOnDelete(object obj)
 		{
-			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerObjectEvent(_deleted, obj);
+			EventPlatform.TriggerObjectEvent(_deleted, obj);
 		}
 
 		public virtual void ObjectOnDeactivate(object obj)
 		{
-			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerObjectEvent(_deactivated, obj
-				);
+			EventPlatform.TriggerObjectEvent(_deactivated, obj);
 		}
 
-		public virtual void CommitOnStarted(object transaction, Db4objects.Db4o.Ext.IObjectInfoCollection
-			 added, Db4objects.Db4o.Ext.IObjectInfoCollection deleted, Db4objects.Db4o.Ext.IObjectInfoCollection
-			 updated)
+		public virtual void CommitOnStarted(object transaction, CallbackObjectInfoCollections
+			 objectInfoCollections)
 		{
-			Db4objects.Db4o.Internal.Events.EventPlatform.TriggerCommitEvent(_committing, transaction
-				, added, deleted, updated);
+			EventPlatform.TriggerCommitEvent(_committing, transaction, objectInfoCollections);
+		}
+
+		public virtual void CommitOnCompleted(object transaction, CallbackObjectInfoCollections
+			 objectInfoCollections)
+		{
+			EventPlatform.TriggerCommitEvent(_committed, transaction, objectInfoCollections);
 		}
 
 		public virtual event Db4objects.Db4o.Events.QueryEventHandler QueryFinished
@@ -287,9 +291,28 @@ namespace Db4objects.Db4o.Internal.Events
 			}
 		}
 
-		public virtual bool CaresAboutCommit()
+		public virtual event Db4objects.Db4o.Events.CommitEventHandler Committed
 		{
-			return Db4objects.Db4o.Internal.Events.EventPlatform.HasListeners(_committing);
+			add
+			{
+				_committed = (Db4objects.Db4o.Events.CommitEventHandler)System.Delegate.Combine(_committed
+					, value);
+			}
+			remove
+			{
+				_committed = (Db4objects.Db4o.Events.CommitEventHandler)System.Delegate.Remove(_committed
+					, value);
+			}
+		}
+
+		public virtual bool CaresAboutCommitting()
+		{
+			return EventPlatform.HasListeners(_committing);
+		}
+
+		public virtual bool CaresAboutCommitted()
+		{
+			return EventPlatform.HasListeners(_committed);
 		}
 	}
 }

@@ -1,12 +1,16 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
-	internal class ArrayMarshaller1 : Db4objects.Db4o.Internal.Marshall.ArrayMarshaller
+	internal class ArrayMarshaller1 : ArrayMarshaller
 	{
-		public override void CalculateLengths(Db4objects.Db4o.Internal.Transaction trans, 
-			Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes header, Db4objects.Db4o.Internal.Handlers.ArrayHandler
-			 arrayHandler, object obj, bool topLevel)
+		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
+			, ArrayHandler arrayHandler, object obj, bool topLevel)
 		{
-			Db4objects.Db4o.Internal.ITypeHandler4 typeHandler = arrayHandler.i_handler;
+			ITypeHandler4 typeHandler = arrayHandler.i_handler;
 			if (topLevel)
 			{
 				header.AddBaseLength(arrayHandler.LinkLength());
@@ -30,8 +34,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 		}
 
-		public override void DeleteEmbedded(Db4objects.Db4o.Internal.Handlers.ArrayHandler
-			 arrayHandler, Db4objects.Db4o.Internal.StatefulBuffer reader)
+		public override void DeleteEmbedded(ArrayHandler arrayHandler, StatefulBuffer reader
+			)
 		{
 			int address = reader.ReadInt();
 			reader.ReadInt();
@@ -40,10 +44,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return;
 			}
 			int linkOffSet = reader._offset;
-			Db4objects.Db4o.Internal.Transaction trans = reader.GetTransaction();
-			Db4objects.Db4o.Internal.ITypeHandler4 typeHandler = arrayHandler.i_handler;
-			if (reader.CascadeDeletes() > 0 && typeHandler is Db4objects.Db4o.Internal.ClassMetadata
-				)
+			Transaction trans = reader.GetTransaction();
+			ITypeHandler4 typeHandler = arrayHandler.i_handler;
+			if (reader.CascadeDeletes() > 0 && typeHandler is ClassMetadata)
 			{
 				reader._offset = address;
 				reader.SetCascadeDeletes(reader.CascadeDeletes());
@@ -58,8 +61,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 		}
 
-		public override object Read(Db4objects.Db4o.Internal.Handlers.ArrayHandler arrayHandler
-			, Db4objects.Db4o.Internal.StatefulBuffer reader)
+		public override object Read(ArrayHandler arrayHandler, StatefulBuffer reader)
 		{
 			int linkOffSet = reader.PreparePayloadRead();
 			object array = arrayHandler.Read1(_family, reader);
@@ -67,25 +69,22 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return array;
 		}
 
-		public override void ReadCandidates(Db4objects.Db4o.Internal.Handlers.ArrayHandler
-			 arrayHandler, Db4objects.Db4o.Internal.Buffer reader, Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 candidates)
+		public override void ReadCandidates(ArrayHandler arrayHandler, Db4objects.Db4o.Internal.Buffer
+			 reader, QCandidates candidates)
 		{
 			reader._offset = reader.ReadInt();
 			arrayHandler.Read1Candidates(_family, reader, candidates);
 		}
 
-		public sealed override object ReadQuery(Db4objects.Db4o.Internal.Handlers.ArrayHandler
-			 arrayHandler, Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public sealed override object ReadQuery(ArrayHandler arrayHandler, Transaction trans
+			, Db4objects.Db4o.Internal.Buffer reader)
 		{
 			reader._offset = reader.ReadInt();
 			return arrayHandler.Read1Query(trans, _family, reader);
 		}
 
-		public override object WriteNew(Db4objects.Db4o.Internal.Handlers.ArrayHandler arrayHandler
-			, object obj, bool restoreLinkOffset, Db4objects.Db4o.Internal.StatefulBuffer writer
-			)
+		public override object WriteNew(ArrayHandler arrayHandler, object obj, bool restoreLinkOffset
+			, StatefulBuffer writer)
 		{
 			if (obj == null)
 			{
@@ -102,15 +101,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return obj;
 		}
 
-		protected override Db4objects.Db4o.Internal.Buffer PrepareIDReader(Db4objects.Db4o.Internal.Transaction
-			 trans, Db4objects.Db4o.Internal.Buffer reader)
+		protected override Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans
+			, Db4objects.Db4o.Internal.Buffer reader)
 		{
 			reader._offset = reader.ReadInt();
 			return reader;
 		}
 
-		public override void DefragIDs(Db4objects.Db4o.Internal.Handlers.ArrayHandler arrayHandler
-			, Db4objects.Db4o.Internal.ReaderPair readers)
+		public override void DefragIDs(ArrayHandler arrayHandler, ReaderPair readers)
 		{
 			int offset = readers.PreparePayloadRead();
 			arrayHandler.Defrag1(_family, readers);

@@ -1,10 +1,13 @@
+using System;
+using Db4objects.Db4o.IO;
+
 namespace Db4objects.Db4o.IO
 {
 	/// <summary>Bounded handle into an IoAdapter: Can only access a restricted area.</summary>
 	/// <remarks>Bounded handle into an IoAdapter: Can only access a restricted area.</remarks>
 	public class IoAdapterWindow
 	{
-		private Db4objects.Db4o.IO.IoAdapter _io;
+		private IoAdapter _io;
 
 		private int _blockOff;
 
@@ -12,7 +15,7 @@ namespace Db4objects.Db4o.IO
 
 		private bool _disabled;
 
-		public IoAdapterWindow(Db4objects.Db4o.IO.IoAdapter io, int blockOff, int len)
+		public IoAdapterWindow(IoAdapter io, int blockOff, int len)
 		{
 			_io = io;
 			_blockOff = blockOff;
@@ -62,11 +65,11 @@ namespace Db4objects.Db4o.IO
 		{
 			if (_disabled)
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			if (data == null || off < 0 || off + data.Length > _len)
 			{
-				throw new System.ArgumentException();
+				throw new ArgumentException();
 			}
 		}
 	}

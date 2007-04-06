@@ -1,21 +1,24 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>extended factory class with static methods to open special db4o sessions.
 	/// 	</summary>
 	/// <remarks>extended factory class with static methods to open special db4o sessions.
 	/// 	</remarks>
-	public class ExtDb4oFactory : Db4objects.Db4o.Db4oFactory
+	public class ExtDb4oFactory : Db4oFactory
 	{
 		/// <summary>
 		/// Operates just like
-		/// <see cref="Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile">Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile
-		/// 	</see>
+		/// <see cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</see>
 		/// , but uses
 		/// the global db4o
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">Configuration</see>
 		/// context.
 		/// opens an
-		/// <see cref="Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// for in-memory use .
 		/// <br /><br />In-memory ObjectContainers are useful for maximum performance
 		/// on small databases, for swapping objects or for storing db4o format data
@@ -25,25 +28,23 @@ namespace Db4objects.Db4o.Ext
 		/// </summary>
 		/// <param name="memoryFile">
 		/// a
-		/// <see cref="Db4objects.Db4o.Ext.MemoryFile">MemoryFile</see>
+		/// <see cref="MemoryFile">MemoryFile</see>
 		/// 
 		/// to store the raw byte data.
 		/// </param>
 		/// <returns>
 		/// an open
-		/// <see cref="Db4objects.Db4o.IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">ObjectContainer</see>
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Ext.MemoryFile">Db4objects.Db4o.Ext.MemoryFile</seealso>
-		public static Db4objects.Db4o.IObjectContainer OpenMemoryFile(Db4objects.Db4o.Ext.MemoryFile
-			 memoryFile)
+		/// <seealso cref="MemoryFile">MemoryFile</seealso>
+		public static IObjectContainer OpenMemoryFile(MemoryFile memoryFile)
 		{
-			return OpenMemoryFile1(Db4objects.Db4o.Db4oFactory.NewConfiguration(), memoryFile
-				);
+			return OpenMemoryFile1(Db4oFactory.NewConfiguration(), memoryFile);
 		}
 
 		/// <summary>
 		/// opens an
-		/// <see cref="Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// for in-memory use .
 		/// <br /><br />In-memory ObjectContainers are useful for maximum performance
 		/// on small databases, for swapping objects or for storing db4o format data
@@ -53,24 +54,23 @@ namespace Db4objects.Db4o.Ext
 		/// </summary>
 		/// <param name="config">
 		/// a custom
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">Configuration</see>
 		/// instance to be obtained via
-		/// <see cref="Db4objects.Db4o.Db4oFactory.NewConfiguration">Db4objects.Db4o.Db4oFactory.NewConfiguration
-		/// 	</see>
+		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
 		/// </param>
 		/// <param name="memoryFile">
 		/// a
-		/// <see cref="Db4objects.Db4o.Ext.MemoryFile">MemoryFile</see>
+		/// <see cref="MemoryFile">MemoryFile</see>
 		/// 
 		/// to store the raw byte data.
 		/// </param>
 		/// <returns>
 		/// an open
-		/// <see cref="Db4objects.Db4o.IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">ObjectContainer</see>
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Ext.MemoryFile">Db4objects.Db4o.Ext.MemoryFile</seealso>
-		public static Db4objects.Db4o.IObjectContainer OpenMemoryFile(Db4objects.Db4o.Config.IConfiguration
-			 config, Db4objects.Db4o.Ext.MemoryFile memoryFile)
+		/// <seealso cref="MemoryFile">MemoryFile</seealso>
+		public static IObjectContainer OpenMemoryFile(IConfiguration config, MemoryFile memoryFile
+			)
 		{
 			return OpenMemoryFile1(config, memoryFile);
 		}

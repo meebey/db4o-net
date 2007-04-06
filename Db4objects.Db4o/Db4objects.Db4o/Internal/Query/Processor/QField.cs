@@ -1,15 +1,22 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Types;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	public class QField : Db4objects.Db4o.Foundation.IVisitor4, Db4objects.Db4o.Types.IUnversioned
+	public class QField : IVisitor4, IUnversioned
 	{
 		[System.NonSerialized]
-		internal Db4objects.Db4o.Internal.Transaction i_trans;
+		internal Transaction i_trans;
 
 		public string i_name;
 
 		[System.NonSerialized]
-		internal Db4objects.Db4o.Internal.FieldMetadata i_yapField;
+		internal FieldMetadata i_yapField;
 
 		public int i_yapClassID;
 
@@ -19,8 +26,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 		}
 
-		public QField(Db4objects.Db4o.Internal.Transaction a_trans, string name, Db4objects.Db4o.Internal.FieldMetadata
-			 a_yapField, int a_yapClassID, int a_index)
+		public QField(Transaction a_trans, string name, FieldMetadata a_yapField, int a_yapClassID
+			, int a_index)
 		{
 			i_trans = a_trans;
 			i_name = name;
@@ -36,20 +43,20 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual bool CanHold(Db4objects.Db4o.Reflect.IReflectClass claxx)
+		internal virtual bool CanHold(IReflectClass claxx)
 		{
 			return i_yapField == null || i_yapField.CanHold(claxx);
 		}
 
 		internal virtual object Coerce(object a_object)
 		{
-			Db4objects.Db4o.Reflect.IReflectClass claxx = null;
-			Db4objects.Db4o.Reflect.IReflector reflector = i_trans.Reflector();
+			IReflectClass claxx = null;
+			IReflector reflector = i_trans.Reflector();
 			if (a_object != null)
 			{
-				if (a_object is Db4objects.Db4o.Reflect.IReflectClass)
+				if (a_object is IReflectClass)
 				{
-					claxx = (Db4objects.Db4o.Reflect.IReflectClass)a_object;
+					claxx = (IReflectClass)a_object;
 				}
 				else
 				{
@@ -67,7 +74,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return i_yapField.Coerce(claxx, a_object);
 		}
 
-		internal virtual Db4objects.Db4o.Internal.ClassMetadata GetYapClass()
+		internal virtual ClassMetadata GetYapClass()
 		{
 			if (i_yapField != null)
 			{
@@ -76,14 +83,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return null;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.FieldMetadata GetYapField(Db4objects.Db4o.Internal.ClassMetadata
-			 yc)
+		internal virtual FieldMetadata GetYapField(ClassMetadata yc)
 		{
 			if (i_yapField != null)
 			{
 				return i_yapField;
 			}
-			Db4objects.Db4o.Internal.FieldMetadata yf = yc.FieldMetadataForName(i_name);
+			FieldMetadata yf = yc.FieldMetadataForName(i_name);
 			if (yf != null)
 			{
 				yf.Alive();
@@ -91,30 +97,27 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return yf;
 		}
 
-		public virtual Db4objects.Db4o.Internal.FieldMetadata GetYapField()
+		public virtual FieldMetadata GetYapField()
 		{
 			return i_yapField;
 		}
 
 		internal virtual bool IsArray()
 		{
-			return i_yapField != null && i_yapField.GetHandler() is Db4objects.Db4o.Internal.Handlers.ArrayHandler;
+			return i_yapField != null && i_yapField.GetHandler() is ArrayHandler;
 		}
 
 		internal virtual bool IsClass()
 		{
-			return i_yapField == null || i_yapField.GetHandler().GetTypeID() == Db4objects.Db4o.Internal.Const4
-				.TYPE_CLASS;
+			return i_yapField == null || i_yapField.GetHandler().GetTypeID() == Const4.TYPE_CLASS;
 		}
 
 		internal virtual bool IsSimple()
 		{
-			return i_yapField != null && i_yapField.GetHandler().GetTypeID() == Db4objects.Db4o.Internal.Const4
-				.TYPE_SIMPLE;
+			return i_yapField != null && i_yapField.GetHandler().GetTypeID() == Const4.TYPE_SIMPLE;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.IComparable4 PrepareComparison(object obj
-			)
+		internal virtual IComparable4 PrepareComparison(object obj)
 		{
 			if (i_yapField != null)
 			{
@@ -122,11 +125,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			if (obj == null)
 			{
-				return Db4objects.Db4o.Internal.Null.INSTANCE;
+				return Null.INSTANCE;
 			}
-			Db4objects.Db4o.Internal.ClassMetadata yc = i_trans.Stream().ProduceClassMetadata
-				(i_trans.Reflector().ForObject(obj));
-			Db4objects.Db4o.Internal.FieldMetadata yf = yc.FieldMetadataForName(i_name);
+			ClassMetadata yc = i_trans.Stream().ProduceClassMetadata(i_trans.Reflector().ForObject
+				(obj));
+			FieldMetadata yf = yc.FieldMetadataForName(i_name);
 			if (yf != null)
 			{
 				return yf.PrepareComparison(obj);
@@ -134,19 +137,18 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return null;
 		}
 
-		internal virtual void Unmarshall(Db4objects.Db4o.Internal.Transaction a_trans)
+		internal virtual void Unmarshall(Transaction a_trans)
 		{
 			if (i_yapClassID != 0)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata yc = a_trans.Stream().ClassMetadataForId(i_yapClassID
-					);
+				ClassMetadata yc = a_trans.Stream().ClassMetadataForId(i_yapClassID);
 				i_yapField = yc.i_fields[i_index];
 			}
 		}
 
 		public virtual void Visit(object obj)
 		{
-			((Db4objects.Db4o.Internal.Query.Processor.QCandidate)obj).UseField(this);
+			((QCandidate)obj).UseField(this);
 		}
 
 		public override string ToString()

@@ -1,14 +1,18 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Generic;
+
 namespace Db4objects.Db4o.Reflect.Generic
 {
 	/// <exclude></exclude>
-	public class GenericClass : Db4objects.Db4o.Reflect.IReflectClass, Db4objects.Db4o.Foundation.IDeepClone
+	public class GenericClass : IReflectClass, IDeepClone
 	{
-		private static readonly Db4objects.Db4o.Reflect.Generic.GenericField[] NO_FIELDS = 
-			new Db4objects.Db4o.Reflect.Generic.GenericField[0];
+		private static readonly GenericField[] NO_FIELDS = new GenericField[0];
 
-		private readonly Db4objects.Db4o.Reflect.Generic.GenericReflector _reflector;
+		private readonly GenericReflector _reflector;
 
-		private readonly Db4objects.Db4o.Reflect.IReflectClass _delegate;
+		private readonly IReflectClass _delegate;
 
 		private readonly string _name;
 
@@ -22,9 +26,9 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private int _isCollection;
 
-		private Db4objects.Db4o.Reflect.Generic.IGenericConverter _converter;
+		private IGenericConverter _converter;
 
-		private Db4objects.Db4o.Reflect.Generic.GenericField[] _fields = NO_FIELDS;
+		private GenericField[] _fields = NO_FIELDS;
 
 		private int _declaredFieldCount = -1;
 
@@ -32,9 +36,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private readonly int _hashCode;
 
-		public GenericClass(Db4objects.Db4o.Reflect.Generic.GenericReflector reflector, Db4objects.Db4o.Reflect.IReflectClass
-			 delegateClass, string name, Db4objects.Db4o.Reflect.Generic.GenericClass superclass
-			)
+		public GenericClass(GenericReflector reflector, IReflectClass delegateClass, string
+			 name, Db4objects.Db4o.Reflect.Generic.GenericClass superclass)
 		{
 			_reflector = reflector;
 			_delegate = delegateClass;
@@ -49,16 +52,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return _array;
 			}
-			_array = new Db4objects.Db4o.Reflect.Generic.GenericArrayClass(_reflector, this, 
-				_name, _superclass);
+			_array = new GenericArrayClass(_reflector, this, _name, _superclass);
 			_array._isSecondClass = _isSecondClass;
 			return _array;
 		}
 
 		public virtual object DeepClone(object obj)
 		{
-			Db4objects.Db4o.Reflect.Generic.GenericReflector reflector = (Db4objects.Db4o.Reflect.Generic.GenericReflector
-				)obj;
+			GenericReflector reflector = (GenericReflector)obj;
 			Db4objects.Db4o.Reflect.Generic.GenericClass superClass = null;
 			if (_superclass != null)
 			{
@@ -68,12 +69,10 @@ namespace Db4objects.Db4o.Reflect.Generic
 			Db4objects.Db4o.Reflect.Generic.GenericClass ret = new Db4objects.Db4o.Reflect.Generic.GenericClass
 				(reflector, _delegate, _name, superClass);
 			ret._isSecondClass = _isSecondClass;
-			Db4objects.Db4o.Reflect.Generic.GenericField[] fields = new Db4objects.Db4o.Reflect.Generic.GenericField
-				[_fields.Length];
+			GenericField[] fields = new GenericField[_fields.Length];
 			for (int i = 0; i < fields.Length; i++)
 			{
-				fields[i] = (Db4objects.Db4o.Reflect.Generic.GenericField)_fields[i].DeepClone(reflector
-					);
+				fields[i] = (GenericField)_fields[i].DeepClone(reflector);
 			}
 			ret.InitFields(fields);
 			return ret;
@@ -102,7 +101,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _name.Equals(otherGC._name);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass GetComponentType()
+		public virtual IReflectClass GetComponentType()
 		{
 			if (_delegate != null)
 			{
@@ -111,8 +110,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return null;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectConstructor[] GetDeclaredConstructors
-			()
+		public virtual IReflectConstructor[] GetDeclaredConstructors()
 		{
 			if (_delegate != null)
 			{
@@ -121,8 +119,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return null;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectField GetDeclaredField(string name
-			)
+		public virtual IReflectField GetDeclaredField(string name)
 		{
 			if (_delegate != null)
 			{
@@ -138,7 +135,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return null;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectField[] GetDeclaredFields()
+		public virtual IReflectField[] GetDeclaredFields()
 		{
 			if (_delegate != null)
 			{
@@ -147,7 +144,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _fields;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass GetDelegate()
+		public virtual IReflectClass GetDelegate()
 		{
 			if (_delegate != null)
 			{
@@ -175,8 +172,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _fieldCount;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectMethod GetMethod(string methodName
-			, Db4objects.Db4o.Reflect.IReflectClass[] paramClasses)
+		public virtual IReflectMethod GetMethod(string methodName, IReflectClass[] paramClasses
+			)
 		{
 			if (_delegate != null)
 			{
@@ -190,7 +187,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _name;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass GetSuperclass()
+		public virtual IReflectClass GetSuperclass()
 		{
 			if (_superclass != null)
 			{
@@ -200,8 +197,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return _reflector.ForClass(typeof(object));
 			}
-			Db4objects.Db4o.Reflect.IReflectClass delegateSuperclass = _delegate.GetSuperclass
-				();
+			IReflectClass delegateSuperclass = _delegate.GetSuperclass();
 			if (delegateSuperclass != null)
 			{
 				_superclass = _reflector.EnsureDelegate(delegateSuperclass);
@@ -214,8 +210,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _hashCode;
 		}
 
-		public virtual void InitFields(Db4objects.Db4o.Reflect.Generic.GenericField[] fields
-			)
+		public virtual void InitFields(GenericField[] fields)
 		{
 			int startIndex = 0;
 			if (_superclass != null)
@@ -247,8 +242,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return false;
 		}
 
-		public virtual bool IsAssignableFrom(Db4objects.Db4o.Reflect.IReflectClass subclassCandidate
-			)
+		public virtual bool IsAssignableFrom(IReflectClass subclassCandidate)
 		{
 			if (subclassCandidate == null)
 			{
@@ -294,12 +288,11 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return _delegate.IsInstance(candidate);
 			}
-			if (!(candidate is Db4objects.Db4o.Reflect.Generic.GenericObject))
+			if (!(candidate is GenericObject))
 			{
 				return false;
 			}
-			return IsAssignableFrom(((Db4objects.Db4o.Reflect.Generic.GenericObject)candidate
-				)._class);
+			return IsAssignableFrom(((GenericObject)candidate)._class);
 		}
 
 		public virtual bool IsInterface()
@@ -335,10 +328,10 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return _delegate.NewInstance();
 			}
-			return new Db4objects.Db4o.Reflect.Generic.GenericObject(this);
+			return new GenericObject(this);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflector Reflector()
+		public virtual IReflector Reflector()
 		{
 			if (_delegate != null)
 			{
@@ -347,8 +340,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _reflector;
 		}
 
-		internal virtual void SetConverter(Db4objects.Db4o.Reflect.Generic.IGenericConverter
-			 converter)
+		internal virtual void SetConverter(IGenericConverter converter)
 		{
 			_converter = converter;
 		}
@@ -382,7 +374,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return "GenericClass " + _name;
 		}
 
-		public virtual string ToString(Db4objects.Db4o.Reflect.Generic.GenericObject obj)
+		public virtual string ToString(GenericObject obj)
 		{
 			if (_converter == null)
 			{
@@ -391,8 +383,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _converter.ToString(obj);
 		}
 
-		public virtual void UseConstructor(Db4objects.Db4o.Reflect.IReflectConstructor constructor
-			, object[] @params)
+		public virtual void UseConstructor(IReflectConstructor constructor, object[] @params
+			)
 		{
 			if (_delegate != null)
 			{
@@ -406,8 +398,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return new object[] { obj };
 			}
-			return Db4objects.Db4o.Internal.Platform4.CollectionToArray(_reflector.GetStream(
-				), obj);
+			return Platform4.CollectionToArray(_reflector.GetStream(), obj);
 		}
 	}
 }

@@ -1,55 +1,54 @@
+using System;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Cluster
 {
 	/// <exclude></exclude>
-	public class ClusterConstraint : Db4objects.Db4o.Query.IConstraint
+	public class ClusterConstraint : IConstraint
 	{
 		internal readonly Db4objects.Db4o.Cluster.Cluster _cluster;
 
-		internal readonly Db4objects.Db4o.Query.IConstraint[] _constraints;
+		internal readonly IConstraint[] _constraints;
 
-		public ClusterConstraint(Db4objects.Db4o.Cluster.Cluster cluster, Db4objects.Db4o.Query.IConstraint[]
-			 constraints)
+		public ClusterConstraint(Db4objects.Db4o.Cluster.Cluster cluster, IConstraint[] constraints
+			)
 		{
 			_cluster = cluster;
 			_constraints = constraints;
 		}
 
-		private Db4objects.Db4o.Internal.Cluster.ClusterConstraint Compatible(Db4objects.Db4o.Query.IConstraint
+		private Db4objects.Db4o.Internal.Cluster.ClusterConstraint Compatible(IConstraint
 			 with)
 		{
 			if (!(with is Db4objects.Db4o.Internal.Cluster.ClusterConstraint))
 			{
-				throw new System.ArgumentException();
+				throw new ArgumentException();
 			}
 			Db4objects.Db4o.Internal.Cluster.ClusterConstraint other = (Db4objects.Db4o.Internal.Cluster.ClusterConstraint
 				)with;
 			if (other._constraints.Length != _constraints.Length)
 			{
-				throw new System.ArgumentException();
+				throw new ArgumentException();
 			}
 			return other;
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint And(Db4objects.Db4o.Query.IConstraint
-			 with)
+		public virtual IConstraint And(IConstraint with)
 		{
 			return Join(with, true);
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Or(Db4objects.Db4o.Query.IConstraint
-			 with)
+		public virtual IConstraint Or(IConstraint with)
 		{
 			return Join(with, false);
 		}
 
-		private Db4objects.Db4o.Query.IConstraint Join(Db4objects.Db4o.Query.IConstraint 
-			with, bool isAnd)
+		private IConstraint Join(IConstraint with, bool isAnd)
 		{
 			lock (_cluster)
 			{
 				Db4objects.Db4o.Internal.Cluster.ClusterConstraint other = Compatible(with);
-				Db4objects.Db4o.Query.IConstraint[] newConstraints = new Db4objects.Db4o.Query.IConstraint
-					[_constraints.Length];
+				IConstraint[] newConstraints = new IConstraint[_constraints.Length];
 				for (int i = 0; i < _constraints.Length; i++)
 				{
 					newConstraints[i] = isAnd ? _constraints[i].And(other._constraints[i]) : _constraints
@@ -60,7 +59,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Equal()
+		public virtual IConstraint Equal()
 		{
 			lock (_cluster)
 			{
@@ -72,7 +71,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Greater()
+		public virtual IConstraint Greater()
 		{
 			lock (_cluster)
 			{
@@ -84,7 +83,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Smaller()
+		public virtual IConstraint Smaller()
 		{
 			lock (_cluster)
 			{
@@ -96,7 +95,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Identity()
+		public virtual IConstraint Identity()
 		{
 			lock (_cluster)
 			{
@@ -108,7 +107,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Like()
+		public virtual IConstraint Like()
 		{
 			lock (_cluster)
 			{
@@ -120,7 +119,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint StartsWith(bool caseSensitive)
+		public virtual IConstraint StartsWith(bool caseSensitive)
 		{
 			lock (_cluster)
 			{
@@ -132,7 +131,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint EndsWith(bool caseSensitive)
+		public virtual IConstraint EndsWith(bool caseSensitive)
 		{
 			lock (_cluster)
 			{
@@ -144,7 +143,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Contains()
+		public virtual IConstraint Contains()
 		{
 			lock (_cluster)
 			{
@@ -156,7 +155,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
-		public virtual Db4objects.Db4o.Query.IConstraint Not()
+		public virtual IConstraint Not()
 		{
 			lock (_cluster)
 			{
@@ -170,7 +169,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 
 		public virtual object GetObject()
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 	}
 }

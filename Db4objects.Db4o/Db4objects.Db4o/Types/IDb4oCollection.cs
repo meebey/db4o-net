@@ -1,7 +1,9 @@
+using Db4objects.Db4o.Types;
+
 namespace Db4objects.Db4o.Types
 {
 	/// <summary>base interface for db4o collections</summary>
-	public interface IDb4oCollection : Db4objects.Db4o.Types.IDb4oType
+	public interface IDb4oCollection : IDb4oType
 	{
 		/// <summary>configures the activation depth for objects returned from this collection.
 		/// 	</summary>

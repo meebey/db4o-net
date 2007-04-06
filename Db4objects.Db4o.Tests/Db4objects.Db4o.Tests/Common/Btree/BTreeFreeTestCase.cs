@@ -1,60 +1,63 @@
+using System.Collections;
+using Db4oUnit;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Tests.Common.Btree;
+
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public class BTreeFreeTestCase : Db4objects.Db4o.Tests.Common.Btree.BTreeTestCaseBase
+	public class BTreeFreeTestCase : BTreeTestCaseBase
 	{
 		private static readonly int[] VALUES = new int[] { 1, 2, 5, 7, 8, 9, 12 };
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Btree.BTreeFreeTestCase().RunSolo();
+			new BTreeFreeTestCase().RunSolo();
 		}
 
 		public virtual void Test()
 		{
 			Add(VALUES);
-			System.Collections.IEnumerator allSlotIDs = _btree.AllNodeIds(SystemTrans());
-			Db4objects.Db4o.Foundation.Collection4 allSlots = new Db4objects.Db4o.Foundation.Collection4
-				();
+			IEnumerator allSlotIDs = _btree.AllNodeIds(SystemTrans());
+			Collection4 allSlots = new Collection4();
 			while (allSlotIDs.MoveNext())
 			{
 				int slotID = (int)allSlotIDs.Current;
-				Db4objects.Db4o.Internal.Slots.Slot slot = FileTransaction().GetCurrentSlotOfID(slotID
-					);
+				Slot slot = FileTransaction().GetCurrentSlotOfID(slotID);
 				allSlots.Add(slot);
 			}
-			Db4objects.Db4o.Internal.LocalObjectContainer yapFile = (Db4objects.Db4o.Internal.LocalObjectContainer
-				)Stream();
-			Db4objects.Db4o.Foundation.Collection4 freedSlots = new Db4objects.Db4o.Foundation.Collection4
-				();
-			yapFile.InstallDebugFreespaceManager(new Db4objects.Db4o.Tests.Common.Btree.FreespaceManagerForDebug
-				(yapFile, new _AnonymousInnerClass40(this, freedSlots)));
+			LocalObjectContainer yapFile = (LocalObjectContainer)Stream();
+			Collection4 freedSlots = new Collection4();
+			yapFile.InstallDebugFreespaceManager(new FreespaceManagerForDebug(yapFile, new _AnonymousInnerClass40
+				(this, freedSlots)));
 			_btree.Free(SystemTrans());
 			SystemTrans().Commit();
-			Db4oUnit.Assert.IsTrue(freedSlots.ContainsAll(allSlots.GetEnumerator()));
+			Assert.IsTrue(freedSlots.ContainsAll(allSlots.GetEnumerator()));
 		}
 
-		private sealed class _AnonymousInnerClass40 : Db4objects.Db4o.Tests.Common.Btree.ISlotListener
+		private sealed class _AnonymousInnerClass40 : ISlotListener
 		{
-			public _AnonymousInnerClass40(BTreeFreeTestCase _enclosing, Db4objects.Db4o.Foundation.Collection4
-				 freedSlots)
+			public _AnonymousInnerClass40(BTreeFreeTestCase _enclosing, Collection4 freedSlots
+				)
 			{
 				this._enclosing = _enclosing;
 				this.freedSlots = freedSlots;
 			}
 
-			public void OnFree(Db4objects.Db4o.Internal.Slots.Slot slot)
+			public void OnFree(Slot slot)
 			{
 				freedSlots.Add(slot);
 			}
 
 			private readonly BTreeFreeTestCase _enclosing;
 
-			private readonly Db4objects.Db4o.Foundation.Collection4 freedSlots;
+			private readonly Collection4 freedSlots;
 		}
 
-		private Db4objects.Db4o.Internal.LocalTransaction FileTransaction()
+		private LocalTransaction FileTransaction()
 		{
-			return ((Db4objects.Db4o.Internal.LocalTransaction)Trans());
+			return ((LocalTransaction)Trans());
 		}
 	}
 }

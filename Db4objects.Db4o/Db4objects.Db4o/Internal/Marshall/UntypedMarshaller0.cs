@@ -1,21 +1,24 @@
+using System;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class UntypedMarshaller0 : Db4objects.Db4o.Internal.Marshall.UntypedMarshaller
+	public class UntypedMarshaller0 : UntypedMarshaller
 	{
-		public override void DeleteEmbedded(Db4objects.Db4o.Internal.StatefulBuffer parentBytes
-			)
+		public override void DeleteEmbedded(StatefulBuffer parentBytes)
 		{
 			int objectID = parentBytes.ReadInt();
 			if (objectID > 0)
 			{
-				Db4objects.Db4o.Internal.StatefulBuffer reader = parentBytes.GetStream().ReadWriterByID
-					(parentBytes.GetTransaction(), objectID);
+				StatefulBuffer reader = parentBytes.GetStream().ReadWriterByID(parentBytes.GetTransaction
+					(), objectID);
 				if (reader != null)
 				{
 					reader.SetCascadeDeletes(parentBytes.CascadeDeletes());
-					Db4objects.Db4o.Internal.Marshall.ObjectHeader oh = new Db4objects.Db4o.Internal.Marshall.ObjectHeader
-						(reader);
+					ObjectHeader oh = new ObjectHeader(reader);
 					if (oh.YapClass() != null)
 					{
 						oh.YapClass().DeleteEmbedded1(_family, reader, objectID);
@@ -29,19 +32,19 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return true;
 		}
 
-		public override object Read(Db4objects.Db4o.Internal.StatefulBuffer reader)
+		public override object Read(StatefulBuffer reader)
 		{
-			throw Db4objects.Db4o.Internal.Exceptions4.ShouldNeverBeCalled();
+			throw Exceptions4.ShouldNeverBeCalled();
 		}
 
-		public override object ReadQuery(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
+		public override object ReadQuery(Transaction trans, Db4objects.Db4o.Internal.Buffer
 			 reader, bool toArray)
 		{
-			throw Db4objects.Db4o.Internal.Exceptions4.ShouldNeverBeCalled();
+			throw Exceptions4.ShouldNeverBeCalled();
 		}
 
-		public override Db4objects.Db4o.Internal.ITypeHandler4 ReadArrayHandler(Db4objects.Db4o.Internal.Transaction
-			 a_trans, Db4objects.Db4o.Internal.Buffer[] a_bytes)
+		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, Db4objects.Db4o.Internal.Buffer[]
+			 a_bytes)
 		{
 			int id = 0;
 			int offset = a_bytes[0]._offset;
@@ -49,18 +52,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				id = a_bytes[0].ReadInt();
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
 			}
 			a_bytes[0]._offset = offset;
 			if (id != 0)
 			{
-				Db4objects.Db4o.Internal.StatefulBuffer reader = a_trans.Stream().ReadWriterByID(
-					a_trans, id);
+				StatefulBuffer reader = a_trans.Stream().ReadWriterByID(a_trans, id);
 				if (reader != null)
 				{
-					Db4objects.Db4o.Internal.Marshall.ObjectHeader oh = new Db4objects.Db4o.Internal.Marshall.ObjectHeader
-						(reader);
+					ObjectHeader oh = new ObjectHeader(reader);
 					try
 					{
 						if (oh.YapClass() != null)
@@ -69,7 +70,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 							return oh.YapClass().ReadArrayHandler1(a_bytes);
 						}
 					}
-					catch (System.Exception e)
+					catch (Exception e)
 					{
 					}
 				}
@@ -77,14 +78,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return null;
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Processor.QCandidate ReadSubCandidate
-			(Db4objects.Db4o.Internal.Buffer reader, Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 candidates, bool withIndirection)
+		public override QCandidate ReadSubCandidate(Db4objects.Db4o.Internal.Buffer reader
+			, QCandidates candidates, bool withIndirection)
 		{
 			return null;
 		}
 
-		public override object WriteNew(object a_object, bool restoreLinkOffset, Db4objects.Db4o.Internal.StatefulBuffer
+		public override object WriteNew(object a_object, bool restoreLinkOffset, StatefulBuffer
 			 a_bytes)
 		{
 			if (a_object == null)
@@ -98,7 +98,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return id;
 		}
 
-		public override void Defrag(Db4objects.Db4o.Internal.ReaderPair readers)
+		public override void Defrag(ReaderPair readers)
 		{
 		}
 	}

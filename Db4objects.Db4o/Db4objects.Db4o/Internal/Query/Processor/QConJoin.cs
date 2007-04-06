@@ -1,21 +1,25 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <summary>Join constraint on queries</summary>
 	/// <exclude></exclude>
-	public class QConJoin : Db4objects.Db4o.Internal.Query.Processor.QCon
+	public class QConJoin : QCon
 	{
 		public bool i_and;
 
-		public Db4objects.Db4o.Internal.Query.Processor.QCon i_constraint1;
+		public QCon i_constraint1;
 
-		public Db4objects.Db4o.Internal.Query.Processor.QCon i_constraint2;
+		public QCon i_constraint2;
 
 		public QConJoin()
 		{
 		}
 
-		internal QConJoin(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Internal.Query.Processor.QCon
-			 a_c1, Db4objects.Db4o.Internal.Query.Processor.QCon a_c2, bool a_and) : base(a_trans
+		internal QConJoin(Transaction a_trans, QCon a_c1, QCon a_c2, bool a_and) : base(a_trans
 			)
 		{
 			i_constraint1 = a_c1;
@@ -23,15 +27,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			i_and = a_and;
 		}
 
-		internal override void DoNotInclude(Db4objects.Db4o.Internal.Query.Processor.QCandidate
-			 a_root)
+		internal override void DoNotInclude(QCandidate a_root)
 		{
 			i_constraint1.DoNotInclude(a_root);
 			i_constraint2.DoNotInclude(a_root);
 		}
 
-		internal override void ExchangeConstraint(Db4objects.Db4o.Internal.Query.Processor.QCon
-			 a_exchange, Db4objects.Db4o.Internal.Query.Processor.QCon a_with)
+		internal override void ExchangeConstraint(QCon a_exchange, QCon a_with)
 		{
 			base.ExchangeConstraint(a_exchange, a_with);
 			if (a_exchange == i_constraint1)
@@ -44,21 +46,19 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual void EvaluatePending(Db4objects.Db4o.Internal.Query.Processor.QCandidate
-			 a_root, Db4objects.Db4o.Internal.Query.Processor.QPending a_pending, int a_secondResult
-			)
+		internal virtual void EvaluatePending(QCandidate a_root, QPending a_pending, int 
+			a_secondResult)
 		{
 			bool res = i_evaluator.Not(i_and ? ((a_pending._result + a_secondResult) > 0) : (
 				a_pending._result + a_secondResult) > -4);
 			if (HasJoins())
 			{
-				System.Collections.IEnumerator i = IterateJoins();
+				IEnumerator i = IterateJoins();
 				while (i.MoveNext())
 				{
 					Db4objects.Db4o.Internal.Query.Processor.QConJoin qcj = (Db4objects.Db4o.Internal.Query.Processor.QConJoin
 						)i.Current;
-					a_root.Evaluate(new Db4objects.Db4o.Internal.Query.Processor.QPending(qcj, this, 
-						res));
+					a_root.Evaluate(new QPending(qcj, this, res));
 				}
 			}
 			else
@@ -71,8 +71,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		public virtual Db4objects.Db4o.Internal.Query.Processor.QCon GetOtherConstraint(Db4objects.Db4o.Internal.Query.Processor.QCon
-			 a_constraint)
+		public virtual QCon GetOtherConstraint(QCon a_constraint)
 		{
 			if (a_constraint == i_constraint1)
 			{
@@ -85,7 +84,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					return i_constraint1;
 				}
 			}
-			throw new System.ArgumentException();
+			throw new ArgumentException();
 		}
 
 		internal override string LogObject()
@@ -93,13 +92,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return string.Empty;
 		}
 
-		internal virtual bool RemoveForParent(Db4objects.Db4o.Internal.Query.Processor.QCon
-			 a_constraint)
+		internal virtual bool RemoveForParent(QCon a_constraint)
 		{
 			if (i_and)
 			{
-				Db4objects.Db4o.Internal.Query.Processor.QCon other = GetOtherConstraint(a_constraint
-					);
+				QCon other = GetOtherConstraint(a_constraint);
 				other.RemoveJoin(this);
 				other.Remove();
 				return true;

@@ -1,3 +1,6 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>extended functionality for the ObjectServer interface.</summary>
@@ -5,12 +8,12 @@ namespace Db4objects.Db4o.Ext
 	/// extended functionality for the ObjectServer interface.
 	/// <br /><br />Every ObjectServer also always is an ExtObjectServer
 	/// so a cast is possible.<br /><br />
-	/// <see cref="Db4objects.Db4o.IObjectServer.Ext">Db4objects.Db4o.IObjectServer.Ext</see>
+	/// <see cref="IObjectServer.Ext">IObjectServer.Ext</see>
 	/// is a convenient method to perform the cast.<br /><br />
 	/// The functionality is split to two interfaces to allow newcomers to
 	/// focus on the essential methods.
 	/// </remarks>
-	public interface IExtObjectServer : Db4objects.Db4o.IObjectServer
+	public interface IExtObjectServer : IObjectServer
 	{
 		/// <summary>backs up the database file used by the ObjectServer.</summary>
 		/// <remarks>
@@ -26,26 +29,22 @@ namespace Db4objects.Db4o.Ext
 
 		/// <summary>
 		/// returns the
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Db4objects.Db4o.Config.IConfiguration
-		/// 	</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// context for this ObjectServer.
 		/// <br /><br />
 		/// Upon opening an ObjectServer with any of the factory methods in the
-		/// <see cref="Db4objects.Db4o.Db4oFactory">Db4objects.Db4o.Db4oFactory</see>
+		/// <see cref="Db4oFactory">Db4oFactory</see>
 		/// class, the global
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Db4objects.Db4o.Config.IConfiguration
-		/// 	</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// context
 		/// is copied into the ObjectServer. The
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Db4objects.Db4o.Config.IConfiguration
-		/// 	</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// can be modified individually for
 		/// each ObjectServer without any effects on the global settings.<br /><br />
 		/// </summary>
 		/// <returns>the Configuration context for this ObjectServer</returns>
-		/// <seealso cref="Db4objects.Db4o.Db4oFactory.Configure">Db4objects.Db4o.Db4oFactory.Configure
-		/// 	</seealso>
-		Db4objects.Db4o.Config.IConfiguration Configure();
+		/// <seealso cref="Db4oFactory.Configure">Db4oFactory.Configure</seealso>
+		IConfiguration Configure();
 
 		/// <summary>returns the ObjectContainer used by the server.</summary>
 		/// <remarks>
@@ -53,7 +52,7 @@ namespace Db4objects.Db4o.Ext
 		/// <br /><br />
 		/// </remarks>
 		/// <returns>the ObjectContainer used by the server</returns>
-		Db4objects.Db4o.IObjectContainer ObjectContainer();
+		IObjectContainer ObjectContainer();
 
 		/// <summary>removes client access permissions for the specified user.</summary>
 		/// <remarks>

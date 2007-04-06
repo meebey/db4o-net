@@ -1,17 +1,24 @@
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.Query.Result;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public abstract class MsgQuery : Db4objects.Db4o.Internal.CS.Messages.MsgObject
+	public abstract class MsgQuery : MsgObject
 	{
 		private const int ID_AND_SIZE = 2;
 
 		private static int nextID;
 
-		protected void WriteQueryResult(Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult
-			 queryResult, Db4objects.Db4o.Config.QueryEvaluationMode evaluationMode)
+		protected void WriteQueryResult(AbstractQueryResult queryResult, QueryEvaluationMode
+			 evaluationMode)
 		{
 			int queryResultId = 0;
 			int maxCount = 0;
-			if (evaluationMode == Db4objects.Db4o.Config.QueryEvaluationMode.IMMEDIATE)
+			if (evaluationMode == QueryEvaluationMode.IMMEDIATE)
 			{
 				maxCount = queryResult.Size();
 			}
@@ -20,25 +27,24 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				queryResultId = GenerateID();
 				maxCount = Config().PrefetchObjectCount();
 			}
-			Db4objects.Db4o.Internal.CS.Messages.MsgD message = QUERY_RESULT.GetWriterForLength
-				(Transaction(), BufferLength(maxCount));
-			Db4objects.Db4o.Internal.StatefulBuffer writer = message.PayLoad();
+			MsgD message = QUERY_RESULT.GetWriterForLength(Transaction(), BufferLength(maxCount
+				));
+			StatefulBuffer writer = message.PayLoad();
 			writer.WriteInt(queryResultId);
-			Db4objects.Db4o.Foundation.IIntIterator4 idIterator = queryResult.IterateIDs();
+			IIntIterator4 idIterator = queryResult.IterateIDs();
 			writer.WriteIDs(idIterator, maxCount);
 			if (queryResultId > 0)
 			{
-				Db4objects.Db4o.Internal.CS.IServerMessageDispatcher serverThread = ServerMessageDispatcher
-					();
-				serverThread.MapQueryResultToID(new Db4objects.Db4o.Internal.CS.LazyClientObjectSetStub
-					(queryResult, idIterator), queryResultId);
+				IServerMessageDispatcher serverThread = ServerMessageDispatcher();
+				serverThread.MapQueryResultToID(new LazyClientObjectSetStub(queryResult, idIterator
+					), queryResultId);
 			}
 			Write(message);
 		}
 
 		private int BufferLength(int maxCount)
 		{
-			return Db4objects.Db4o.Internal.Const4.INT_LENGTH * (maxCount + ID_AND_SIZE);
+			return Const4.INT_LENGTH * (maxCount + ID_AND_SIZE);
 		}
 
 		private static int GenerateID()
@@ -54,8 +60,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			}
 		}
 
-		protected virtual Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult NewQueryResult
-			(Db4objects.Db4o.Config.QueryEvaluationMode mode)
+		protected virtual AbstractQueryResult NewQueryResult(QueryEvaluationMode mode)
 		{
 			return Stream().NewQueryResult(Transaction(), mode);
 		}

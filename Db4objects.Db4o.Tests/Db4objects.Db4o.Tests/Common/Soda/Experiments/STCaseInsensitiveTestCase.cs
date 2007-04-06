@@ -1,6 +1,9 @@
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 {
-	public class STCaseInsensitiveTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STCaseInsensitiveTestCase : SodaBaseTestCase
 	{
 		public string str;
 
@@ -23,21 +26,21 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STCaseInsensitiveTestCase)
 				);
 			q.Descend("str").Constrain(new _AnonymousInnerClass30(this));
 			Expect(q, new int[] { 1, 2 });
 		}
 
-		private sealed class _AnonymousInnerClass30 : Db4objects.Db4o.Query.IEvaluation
+		private sealed class _AnonymousInnerClass30 : IEvaluation
 		{
 			public _AnonymousInnerClass30(STCaseInsensitiveTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
-			public void Evaluate(Db4objects.Db4o.Query.ICandidate candidate)
+			public void Evaluate(ICandidate candidate)
 			{
 				candidate.Include(candidate.GetObject().ToString().ToLower().StartsWith("hell"));
 			}

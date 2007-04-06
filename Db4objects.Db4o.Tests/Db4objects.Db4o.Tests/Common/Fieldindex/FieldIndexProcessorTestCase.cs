@@ -1,18 +1,29 @@
+using System;
+using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Fieldindex;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Btree;
+using Db4objects.Db4o.Tests.Common.Fieldindex;
+using Db4objects.Db4o.Tests.Common.Foundation;
+
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
-	public class FieldIndexProcessorTestCase : Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexProcessorTestCaseBase
+	public class FieldIndexProcessorTestCase : FieldIndexProcessorTestCaseBase
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexProcessorTestCase().RunSolo
-				();
+			new FieldIndexProcessorTestCase().RunSolo();
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
-			IndexField(config, typeof(Db4objects.Db4o.Tests.Common.Fieldindex.NonIndexedFieldIndexItem)
-				, "indexed");
+			IndexField(config, typeof(NonIndexedFieldIndexItem), "indexed");
 		}
 
 		protected override void Store()
@@ -23,79 +34,66 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestIdentity()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateComplexItemQuery();
+			IQuery query = CreateComplexItemQuery();
 			query.Descend("foo").Constrain(3);
-			Db4objects.Db4o.Tests.Common.Fieldindex.ComplexFieldIndexItem item = (Db4objects.Db4o.Tests.Common.Fieldindex.ComplexFieldIndexItem
-				)query.Execute().Next();
+			ComplexFieldIndexItem item = (ComplexFieldIndexItem)query.Execute().Next();
 			query = CreateComplexItemQuery();
 			query.Descend("child").Constrain(item).Identity();
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.ComplexFieldIndexItem)
-				, new int[] { 4 }, query);
+			AssertExpectedFoos(typeof(ComplexFieldIndexItem), new int[] { 4 }, query);
 		}
 
 		public virtual void TestSingleIndexNotSmaller()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery();
+			IQuery query = CreateItemQuery();
 			query.Descend("foo").Constrain(5).Smaller().Not();
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, new int[] { 7, 9 }, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 7, 9 }, query);
 		}
 
 		public virtual void TestSingleIndexNotGreater()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery();
+			IQuery query = CreateItemQuery();
 			query.Descend("foo").Constrain(4).Greater().Not();
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, new int[] { 3, 4 }, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 3, 4 }, query);
 		}
 
 		public virtual void TestSingleIndexSmallerOrEqual()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery();
+			IQuery query = CreateItemQuery();
 			query.Descend("foo").Constrain(7).Smaller().Equal();
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, new int[] { 3, 4, 7 }, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 3, 4, 7 }, query);
 		}
 
 		public virtual void TestSingleIndexGreaterOrEqual()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery();
+			IQuery query = CreateItemQuery();
 			query.Descend("foo").Constrain(7).Greater().Equal();
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, new int[] { 7, 9 }, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 7, 9 }, query);
 		}
 
 		public virtual void TestSingleIndexRange()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery();
+			IQuery query = CreateItemQuery();
 			query.Descend("foo").Constrain(3).Greater();
 			query.Descend("foo").Constrain(9).Smaller();
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, new int[] { 4, 7 }, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 4, 7 }, query);
 		}
 
 		public virtual void TestSingleIndexAndRange()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery();
-			Db4objects.Db4o.Query.IConstraint c1 = query.Descend("foo").Constrain(3).Greater(
-				);
-			Db4objects.Db4o.Query.IConstraint c2 = query.Descend("foo").Constrain(9).Smaller(
-				);
+			IQuery query = CreateItemQuery();
+			IConstraint c1 = query.Descend("foo").Constrain(3).Greater();
+			IConstraint c2 = query.Descend("foo").Constrain(9).Smaller();
 			c1.And(c2);
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, new int[] { 4, 7 }, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 4, 7 }, query);
 		}
 
 		public virtual void TestSingleIndexOr()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery();
-			Db4objects.Db4o.Query.IConstraint c1 = query.Descend("foo").Constrain(4).Smaller(
-				);
-			Db4objects.Db4o.Query.IConstraint c2 = query.Descend("foo").Constrain(7).Greater(
-				);
+			IQuery query = CreateItemQuery();
+			IConstraint c1 = query.Descend("foo").Constrain(4).Smaller();
+			IConstraint c2 = query.Descend("foo").Constrain(7).Greater();
 			c1.Or(c2);
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, new int[] { 3, 9 }, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 3, 9 }, query);
 		}
 
 		public virtual void TestExplicitAndOverOr()
@@ -110,118 +108,98 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		private void AssertAndOverOrQuery(bool explicitAnd)
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery();
-			Db4objects.Db4o.Query.IConstraint c1 = query.Descend("foo").Constrain(3);
-			Db4objects.Db4o.Query.IConstraint c2 = query.Descend("foo").Constrain(9);
-			Db4objects.Db4o.Query.IConstraint c3 = query.Descend("foo").Constrain(3);
-			Db4objects.Db4o.Query.IConstraint c4 = query.Descend("foo").Constrain(7);
-			Db4objects.Db4o.Query.IConstraint cc1 = c1.Or(c2);
-			Db4objects.Db4o.Query.IConstraint cc2 = c3.Or(c4);
+			IQuery query = CreateItemQuery();
+			IConstraint c1 = query.Descend("foo").Constrain(3);
+			IConstraint c2 = query.Descend("foo").Constrain(9);
+			IConstraint c3 = query.Descend("foo").Constrain(3);
+			IConstraint c4 = query.Descend("foo").Constrain(7);
+			IConstraint cc1 = c1.Or(c2);
+			IConstraint cc2 = c3.Or(c4);
 			if (explicitAnd)
 			{
 				cc1.And(cc2);
 			}
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, new int[] { 3 }, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 3 }, query);
 		}
 
 		public virtual void TestSingleIndexOrRange()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery();
-			Db4objects.Db4o.Query.IConstraint c1 = query.Descend("foo").Constrain(1).Greater(
-				);
-			Db4objects.Db4o.Query.IConstraint c2 = query.Descend("foo").Constrain(4).Smaller(
-				);
-			Db4objects.Db4o.Query.IConstraint c3 = query.Descend("foo").Constrain(4).Greater(
-				);
-			Db4objects.Db4o.Query.IConstraint c4 = query.Descend("foo").Constrain(10).Smaller
-				();
-			Db4objects.Db4o.Query.IConstraint cc1 = c1.And(c2);
-			Db4objects.Db4o.Query.IConstraint cc2 = c3.And(c4);
+			IQuery query = CreateItemQuery();
+			IConstraint c1 = query.Descend("foo").Constrain(1).Greater();
+			IConstraint c2 = query.Descend("foo").Constrain(4).Smaller();
+			IConstraint c3 = query.Descend("foo").Constrain(4).Greater();
+			IConstraint c4 = query.Descend("foo").Constrain(10).Smaller();
+			IConstraint cc1 = c1.And(c2);
+			IConstraint cc2 = c3.And(c4);
 			cc1.Or(cc2);
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, new int[] { 3, 7, 9 }, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 3, 7, 9 }, query);
 		}
 
 		public virtual void TestImplicitAndOnOrs()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery();
-			Db4objects.Db4o.Query.IConstraint c1 = query.Descend("foo").Constrain(4).Smaller(
-				);
-			Db4objects.Db4o.Query.IConstraint c2 = query.Descend("foo").Constrain(3).Greater(
-				);
-			Db4objects.Db4o.Query.IConstraint c3 = query.Descend("foo").Constrain(4).Greater(
-				);
+			IQuery query = CreateItemQuery();
+			IConstraint c1 = query.Descend("foo").Constrain(4).Smaller();
+			IConstraint c2 = query.Descend("foo").Constrain(3).Greater();
+			IConstraint c3 = query.Descend("foo").Constrain(4).Greater();
 			c1.Or(c2);
 			c1.Or(c3);
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, new int[] { 3, 4, 7, 9 }, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 3, 4, 7, 9 }, query);
 		}
 
 		public virtual void TestTwoLevelDescendOr()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateComplexItemQuery();
-			Db4objects.Db4o.Query.IConstraint c1 = query.Descend("child").Descend("foo").Constrain
-				(4).Smaller();
-			Db4objects.Db4o.Query.IConstraint c2 = query.Descend("child").Descend("foo").Constrain
-				(4).Greater();
+			IQuery query = CreateComplexItemQuery();
+			IConstraint c1 = query.Descend("child").Descend("foo").Constrain(4).Smaller();
+			IConstraint c2 = query.Descend("child").Descend("foo").Constrain(4).Greater();
 			c1.Or(c2);
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.ComplexFieldIndexItem)
-				, new int[] { 4, 9 }, query);
+			AssertExpectedFoos(typeof(ComplexFieldIndexItem), new int[] { 4, 9 }, query);
 		}
 
 		public virtual void _testOrOnDifferentFields()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateComplexItemQuery();
-			Db4objects.Db4o.Query.IConstraint c1 = query.Descend("foo").Constrain(3);
-			Db4objects.Db4o.Query.IConstraint c2 = query.Descend("bar").Constrain(8);
+			IQuery query = CreateComplexItemQuery();
+			IConstraint c1 = query.Descend("foo").Constrain(3);
+			IConstraint c2 = query.Descend("bar").Constrain(8);
 			c1.Or(c2);
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.ComplexFieldIndexItem)
-				, new int[] { 3, 7, 9 }, query);
+			AssertExpectedFoos(typeof(ComplexFieldIndexItem), new int[] { 3, 7, 9 }, query);
 		}
 
 		public virtual void TestCantOptimizeOrInvolvingNonIndexedField()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateQuery(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.NonIndexedFieldIndexItem)
-				);
-			Db4objects.Db4o.Query.IConstraint c1 = query.Descend("indexed").Constrain(1);
-			Db4objects.Db4o.Query.IConstraint c2 = query.Descend("foo").Constrain(2);
+			IQuery query = CreateQuery(typeof(NonIndexedFieldIndexItem));
+			IConstraint c1 = query.Descend("indexed").Constrain(1);
+			IConstraint c2 = query.Descend("foo").Constrain(2);
 			c1.Or(c2);
 			AssertCantOptimize(query);
 		}
 
 		public virtual void TestCantOptimizeDifferentLevels()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateComplexItemQuery();
-			Db4objects.Db4o.Query.IConstraint c1 = query.Descend("child").Descend("foo").Constrain
-				(4).Smaller();
-			Db4objects.Db4o.Query.IConstraint c2 = query.Descend("foo").Constrain(7).Greater(
-				);
+			IQuery query = CreateComplexItemQuery();
+			IConstraint c1 = query.Descend("child").Descend("foo").Constrain(4).Smaller();
+			IConstraint c2 = query.Descend("foo").Constrain(7).Greater();
 			c1.Or(c2);
 			AssertCantOptimize(query);
 		}
 
 		public virtual void TestCantOptimizeJoinOnNonIndexedFields()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateQuery(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.NonIndexedFieldIndexItem)
-				);
-			Db4objects.Db4o.Query.IConstraint c1 = query.Descend("foo").Constrain(1);
-			Db4objects.Db4o.Query.IConstraint c2 = query.Descend("foo").Constrain(2);
+			IQuery query = CreateQuery(typeof(NonIndexedFieldIndexItem));
+			IConstraint c1 = query.Descend("foo").Constrain(1);
+			IConstraint c2 = query.Descend("foo").Constrain(2);
 			c1.Or(c2);
 			AssertCantOptimize(query);
 		}
 
-		private void AssertCantOptimize(Db4objects.Db4o.Query.IQuery query)
+		private void AssertCantOptimize(IQuery query)
 		{
-			Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult result = ExecuteProcessor
-				(query);
-			Db4oUnit.Assert.AreSame(Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult
-				.NO_INDEX_FOUND, result);
+			FieldIndexProcessorResult result = ExecuteProcessor(query);
+			Assert.AreSame(FieldIndexProcessorResult.NO_INDEX_FOUND, result);
 		}
 
 		public virtual void TestIndexSelection()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateComplexItemQuery();
+			IQuery query = CreateComplexItemQuery();
 			query.Descend("bar").Constrain(2);
 			query.Descend("foo").Constrain(3);
 			AssertBestIndex("foo", query);
@@ -231,44 +209,40 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			AssertBestIndex("foo", query);
 		}
 
-		private void AssertBestIndex(string expectedFieldIndex, Db4objects.Db4o.Query.IQuery
-			 query)
+		private void AssertBestIndex(string expectedFieldIndex, IQuery query)
 		{
-			Db4objects.Db4o.Internal.Fieldindex.IIndexedNode node = SelectBestIndex(query);
+			IIndexedNode node = SelectBestIndex(query);
 			AssertComplexItemIndex(expectedFieldIndex, node);
 		}
 
 		public virtual void TestDoubleDescendingOnQuery()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateComplexItemQuery();
+			IQuery query = CreateComplexItemQuery();
 			query.Descend("child").Descend("foo").Constrain(3);
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.ComplexFieldIndexItem)
-				, new int[] { 4 }, query);
+			AssertExpectedFoos(typeof(ComplexFieldIndexItem), new int[] { 4 }, query);
 		}
 
 		public virtual void TestTripleDescendingOnQuery()
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateComplexItemQuery();
+			IQuery query = CreateComplexItemQuery();
 			query.Descend("child").Descend("child").Descend("foo").Constrain(3);
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.ComplexFieldIndexItem)
-				, new int[] { 7 }, query);
+			AssertExpectedFoos(typeof(ComplexFieldIndexItem), new int[] { 7 }, query);
 		}
 
 		public virtual void TestMultiTransactionSmallerWithCommit()
 		{
-			Db4objects.Db4o.Internal.Transaction transaction = NewTransaction();
+			Transaction transaction = NewTransaction();
 			FillTransactionWith(transaction, 0);
 			int[] expectedZeros = NewBTreeNodeSizedArray(0);
 			AssertSmaller(transaction, expectedZeros, 3);
 			transaction.Commit();
 			FillTransactionWith(transaction, 5);
-			AssertSmaller(Db4objects.Db4o.Tests.Common.Foundation.IntArrays4.Concat(expectedZeros
-				, new int[] { 3, 4 }), 7);
+			AssertSmaller(IntArrays4.Concat(expectedZeros, new int[] { 3, 4 }), 7);
 		}
 
 		public virtual void TestMultiTransactionWithRollback()
 		{
-			Db4objects.Db4o.Internal.Transaction transaction = NewTransaction();
+			Transaction transaction = NewTransaction();
 			FillTransactionWith(transaction, 0);
 			int[] expectedZeros = NewBTreeNodeSizedArray(0);
 			AssertSmaller(transaction, expectedZeros, 3);
@@ -280,7 +254,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestMultiTransactionSmaller()
 		{
-			Db4objects.Db4o.Internal.Transaction transaction = NewTransaction();
+			Transaction transaction = NewTransaction();
 			FillTransactionWith(transaction, 0);
 			int[] expected = NewBTreeNodeSizedArray(0);
 			AssertSmaller(transaction, expected, 3);
@@ -302,8 +276,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		public virtual void TestSingleIndexEquals()
 		{
 			int expectedBar = 3;
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, new int[] { expectedBar }, CreateQuery(expectedBar));
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { expectedBar }, CreateQuery
+				(expectedBar));
 		}
 
 		public virtual void TestSingleIndexSmaller()
@@ -318,83 +292,69 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		private void AssertGreater(int[] expectedFoos, int greaterThan)
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery();
+			IQuery query = CreateItemQuery();
 			query.Descend("foo").Constrain(greaterThan).Greater();
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, expectedFoos, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), expectedFoos, query);
 		}
 
-		private void AssertExpectedFoos(System.Type itemClass, int[] expectedFoos, Db4objects.Db4o.Query.IQuery
-			 query)
+		private void AssertExpectedFoos(Type itemClass, int[] expectedFoos, IQuery query)
 		{
-			Db4objects.Db4o.Internal.Transaction trans = TransactionFromQuery(query);
+			Transaction trans = TransactionFromQuery(query);
 			int[] expectedIds = MapToObjectIds(CreateQuery(trans, itemClass), expectedFoos);
 			AssertExpectedIDs(expectedIds, query);
 		}
 
-		private void AssertExpectedIDs(int[] expectedIds, Db4objects.Db4o.Query.IQuery query
-			)
+		private void AssertExpectedIDs(int[] expectedIds, IQuery query)
 		{
-			Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult result = ExecuteProcessor
-				(query);
+			FieldIndexProcessorResult result = ExecuteProcessor(query);
 			if (expectedIds.Length == 0)
 			{
-				Db4oUnit.Assert.AreSame(Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult
-					.FOUND_INDEX_BUT_NO_MATCH, result);
+				Assert.AreSame(FieldIndexProcessorResult.FOUND_INDEX_BUT_NO_MATCH, result);
 				return;
 			}
 			AssertTreeInt(expectedIds, result.ToTreeInt());
 		}
 
-		private Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult ExecuteProcessor
-			(Db4objects.Db4o.Query.IQuery query)
+		private FieldIndexProcessorResult ExecuteProcessor(IQuery query)
 		{
 			return CreateProcessor(query).Run();
 		}
 
-		private Db4objects.Db4o.Internal.Transaction TransactionFromQuery(Db4objects.Db4o.Query.IQuery
-			 query)
+		private Transaction TransactionFromQuery(IQuery query)
 		{
-			return ((Db4objects.Db4o.Internal.Query.Processor.QQuery)query).GetTransaction();
+			return ((QQuery)query).GetTransaction();
 		}
 
-		private Db4objects.Db4o.Internal.Btree.BTree Btree()
+		private BTree Btree()
 		{
-			return FieldIndexBTree(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, "foo");
+			return FieldIndexBTree(typeof(FieldIndexItem), "foo");
 		}
 
-		private void Store(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem
-			 item)
+		private void Store(Transaction trans, FieldIndexItem item)
 		{
 			Stream().Set(trans, item);
 		}
 
-		private void FillTransactionWith(Db4objects.Db4o.Internal.Transaction trans, int 
-			bar)
+		private void FillTransactionWith(Transaction trans, int bar)
 		{
-			for (int i = 0; i < Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.FillSize(Btree
-				()); ++i)
+			for (int i = 0; i < BTreeAssert.FillSize(Btree()); ++i)
 			{
-				Store(trans, new Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem(bar));
+				Store(trans, new FieldIndexItem(bar));
 			}
 		}
 
 		private int[] NewBTreeNodeSizedArray(int value)
 		{
-			Db4objects.Db4o.Internal.Btree.BTree btree = Btree();
-			return Db4objects.Db4o.Tests.Common.Btree.BTreeAssert.NewBTreeNodeSizedArray(btree
-				, value);
+			BTree btree = Btree();
+			return BTreeAssert.NewBTreeNodeSizedArray(btree, value);
 		}
 
-		private void RemoveFromTransaction(Db4objects.Db4o.Internal.Transaction trans, int
-			 foo)
+		private void RemoveFromTransaction(Transaction trans, int foo)
 		{
-			Db4objects.Db4o.IObjectSet found = CreateItemQuery(trans).Execute();
+			IObjectSet found = CreateItemQuery(trans).Execute();
 			while (found.HasNext())
 			{
-				Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem item = (Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem
-					)found.Next();
+				FieldIndexItem item = (FieldIndexItem)found.Next();
 				if (item.foo == foo)
 				{
 					Stream().Delete(trans, item);
@@ -407,13 +367,12 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			AssertSmaller(Trans(), expectedFoos, smallerThan);
 		}
 
-		private void AssertSmaller(Db4objects.Db4o.Internal.Transaction transaction, int[]
-			 expectedFoos, int smallerThan)
+		private void AssertSmaller(Transaction transaction, int[] expectedFoos, int smallerThan
+			)
 		{
-			Db4objects.Db4o.Query.IQuery query = CreateItemQuery(transaction);
+			IQuery query = CreateItemQuery(transaction);
 			query.Descend("foo").Constrain(smallerThan).Smaller();
-			AssertExpectedFoos(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.FieldIndexItem)
-				, expectedFoos, query);
+			AssertExpectedFoos(typeof(FieldIndexItem), expectedFoos, query);
 		}
 	}
 }

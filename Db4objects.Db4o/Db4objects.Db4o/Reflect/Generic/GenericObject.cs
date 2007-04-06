@@ -1,13 +1,15 @@
+using Db4objects.Db4o.Reflect.Generic;
+
 namespace Db4objects.Db4o.Reflect.Generic
 {
 	/// <exclude></exclude>
 	public class GenericObject
 	{
-		internal readonly Db4objects.Db4o.Reflect.Generic.GenericClass _class;
+		internal readonly GenericClass _class;
 
 		private object[] _values;
 
-		public GenericObject(Db4objects.Db4o.Reflect.Generic.GenericClass clazz)
+		public GenericObject(GenericClass clazz)
 		{
 			_class = clazz;
 		}
@@ -44,7 +46,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _class.ToString(this);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.Generic.GenericClass GetGenericClass()
+		public virtual GenericClass GetGenericClass()
 		{
 			return _class;
 		}

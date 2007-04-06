@@ -1,12 +1,19 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Assorted;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class CascadedDeleteReadTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class CascadedDeleteReadTestCase : AbstractDb4oTestCase
 	{
 		public class Item
 		{
-			public Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item _child1;
+			public CascadedDeleteReadTestCase.Item _child1;
 
-			public Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item _child2;
+			public CascadedDeleteReadTestCase.Item _child2;
 
 			public string _name;
 
@@ -19,9 +26,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				_name = name;
 			}
 
-			public Item(Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item
-				 child1, Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item child2
-				, string name)
+			public Item(CascadedDeleteReadTestCase.Item child1, CascadedDeleteReadTestCase.Item
+				 child2, string name)
 			{
 				_child1 = child1;
 				_child2 = child2;
@@ -31,34 +37,31 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase().RunSoloAndClientServer
-				();
+			new CascadedDeleteReadTestCase().RunSoloAndClientServer();
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item)
-				).ObjectField("_child1").CascadeOnDelete(true);
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item)
-				).ObjectField("_child2").CascadeOnDelete(true);
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item)
-				).ObjectField("_child1").CascadeOnUpdate(true);
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item)
-				).ObjectField("_child2").CascadeOnUpdate(true);
+			config.ObjectClass(typeof(CascadedDeleteReadTestCase.Item)).ObjectField("_child1"
+				).CascadeOnDelete(true);
+			config.ObjectClass(typeof(CascadedDeleteReadTestCase.Item)).ObjectField("_child2"
+				).CascadeOnDelete(true);
+			config.ObjectClass(typeof(CascadedDeleteReadTestCase.Item)).ObjectField("_child1"
+				).CascadeOnUpdate(true);
+			config.ObjectClass(typeof(CascadedDeleteReadTestCase.Item)).ObjectField("_child2"
+				).CascadeOnUpdate(true);
 		}
 
 		protected override void Store()
 		{
-			Store(new Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item(new 
-				Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item("1"), null
-				, "parent"));
+			Store(new CascadedDeleteReadTestCase.Item(new CascadedDeleteReadTestCase.Item("1"
+				), null, "parent"));
 		}
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item item = ParentItem
-				();
+			CascadedDeleteReadTestCase.Item item = ParentItem();
 			item._child2 = item._child1;
 			item._child1 = null;
 			Store(item);
@@ -66,24 +69,20 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AssertItemCount(0);
 		}
 
-		private Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item ParentItem
-			()
+		private CascadedDeleteReadTestCase.Item ParentItem()
 		{
-			Db4objects.Db4o.Query.IQuery q = Db().Query();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item)
-				);
+			IQuery q = Db().Query();
+			q.Constrain(typeof(CascadedDeleteReadTestCase.Item));
 			q.Descend("_name").Constrain("parent");
-			return (Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item)q.Execute
-				().Next();
+			return (CascadedDeleteReadTestCase.Item)q.Execute().Next();
 		}
 
 		private void AssertItemCount(int count)
 		{
-			Db4objects.Db4o.Query.IQuery q = Db().Query();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Assorted.CascadedDeleteReadTestCase.Item)
-				);
-			Db4objects.Db4o.IObjectSet objectSet = q.Execute();
-			Db4oUnit.Assert.AreEqual(count, objectSet.Size());
+			IQuery q = Db().Query();
+			q.Constrain(typeof(CascadedDeleteReadTestCase.Item));
+			IObjectSet objectSet = q.Execute();
+			Assert.AreEqual(count, objectSet.Size());
 		}
 	}
 }

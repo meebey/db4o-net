@@ -1,39 +1,49 @@
+using System;
+using System.IO;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.IX;
+using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public sealed class StringHandler : Db4objects.Db4o.Internal.Handlers.BuiltinTypeHandler
+	public sealed class StringHandler : BuiltinTypeHandler
 	{
-		public Db4objects.Db4o.Internal.LatinStringIO i_stringIo;
+		public LatinStringIO i_stringIo;
 
-		public StringHandler(Db4objects.Db4o.Internal.ObjectContainerBase stream, Db4objects.Db4o.Internal.LatinStringIO
-			 stringIO) : base(stream)
+		public StringHandler(ObjectContainerBase stream, LatinStringIO stringIO) : base(stream
+			)
 		{
 			i_stringIo = stringIO;
 		}
 
-		public override bool CanHold(Db4objects.Db4o.Reflect.IReflectClass claxx)
+		public override bool CanHold(IReflectClass claxx)
 		{
 			return claxx.Equals(ClassReflector());
 		}
 
-		public override void CascadeActivation(Db4objects.Db4o.Internal.Transaction a_trans
-			, object a_object, int a_depth, bool a_activate)
+		public override void CascadeActivation(Transaction a_trans, object a_object, int 
+			a_depth, bool a_activate)
 		{
 		}
 
-		public override Db4objects.Db4o.Reflect.IReflectClass ClassReflector()
+		public override IReflectClass ClassReflector()
 		{
 			return _stream.i_handlers.ICLASS_STRING;
 		}
 
-		public override object ComparableObject(Db4objects.Db4o.Internal.Transaction trans
-			, object obj)
+		public override object ComparableObject(Transaction trans, object obj)
 		{
 			return Val(obj, trans.Stream());
 		}
 
-		public override void DeleteEmbedded(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.StatefulBuffer a_bytes)
+		public override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes)
 		{
 			int address = a_bytes.ReadInt();
 			int length = a_bytes.ReadInt();
@@ -43,7 +53,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public override bool Equals(Db4objects.Db4o.Internal.ITypeHandler4 a_dataType)
+		public override bool IsEqual(ITypeHandler4 a_dataType)
 		{
 			return (this == a_dataType);
 		}
@@ -55,24 +65,22 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		internal byte GetIdentifier()
 		{
-			return Db4objects.Db4o.Internal.Const4.YAPSTRING;
+			return Const4.YAPSTRING;
 		}
 
-		public override Db4objects.Db4o.Internal.ClassMetadata GetClassMetadata(Db4objects.Db4o.Internal.ObjectContainerBase
-			 a_stream)
+		public override ClassMetadata GetClassMetadata(ObjectContainerBase a_stream)
 		{
 			return a_stream.i_handlers.PrimitiveClassById(GetID());
 		}
 
-		public override object IndexEntryToObject(Db4objects.Db4o.Internal.Transaction trans
-			, object indexEntry)
+		public override object IndexEntryToObject(Transaction trans, object indexEntry)
 		{
 			try
 			{
-				return Db4objects.Db4o.Internal.Marshall.StringMarshaller.ReadShort(_stream, (Db4objects.Db4o.Internal.Buffer
-					)indexEntry);
+				return StringMarshaller.ReadShort(_stream, (Db4objects.Db4o.Internal.Buffer)indexEntry
+					);
 			}
-			catch (Db4objects.Db4o.CorruptionException)
+			catch (CorruptionException)
 			{
 			}
 			return null;
@@ -83,42 +91,37 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return true;
 		}
 
-		public override Db4objects.Db4o.Foundation.TernaryBool IsSecondClass()
+		public override TernaryBool IsSecondClass()
 		{
-			return Db4objects.Db4o.Foundation.TernaryBool.YES;
+			return TernaryBool.YES;
 		}
 
-		public override void CalculateLengths(Db4objects.Db4o.Internal.Transaction trans, 
-			Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes header, bool topLevel, 
-			object obj, bool withIndirection)
+		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
+			, bool topLevel, object obj, bool withIndirection)
 		{
-			Db4objects.Db4o.Internal.Marshall.MarshallerFamily.Current()._string.CalculateLengths
-				(trans, header, topLevel, obj, withIndirection);
+			MarshallerFamily.Current()._string.CalculateLengths(trans, header, topLevel, obj, 
+				withIndirection);
 		}
 
-		public override object Read(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf
-			, Db4objects.Db4o.Internal.StatefulBuffer a_bytes, bool redirect)
+		public override object Read(MarshallerFamily mf, StatefulBuffer a_bytes, bool redirect
+			)
 		{
 			return mf._string.ReadFromParentSlot(a_bytes.GetStream(), a_bytes, redirect);
 		}
 
-		public override Db4objects.Db4o.Internal.ITypeHandler4 ReadArrayHandler(Db4objects.Db4o.Internal.Transaction
-			 a_trans, Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer[]
-			 a_bytes)
+		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
+			 mf, Db4objects.Db4o.Internal.Buffer[] a_bytes)
 		{
 			return null;
 		}
 
-		public override void ReadCandidates(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.Buffer a_bytes, Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 a_candidates)
+		public override void ReadCandidates(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
+			 a_bytes, QCandidates a_candidates)
 		{
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Processor.QCandidate ReadSubCandidate
-			(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
-			 reader, Db4objects.Db4o.Internal.Query.Processor.QCandidates candidates, bool withIndirection
-			)
+		public override QCandidate ReadSubCandidate(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
+			 reader, QCandidates candidates, bool withIndirection)
 		{
 			try
 			{
@@ -133,14 +136,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 				}
 				if (obj != null)
 				{
-					return new Db4objects.Db4o.Internal.Query.Processor.QCandidate(candidates, obj, 0
-						, true);
+					return new QCandidate(candidates, obj, 0, true);
 				}
 			}
-			catch (Db4objects.Db4o.CorruptionException)
+			catch (CorruptionException)
 			{
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
 			}
 			return null;
@@ -151,9 +153,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// This readIndexEntry method reads from the parent slot.
 		/// TODO: Consider renaming methods in Indexable4 and Typhandler4 to make direction clear.
 		/// </remarks>
-		/// <exception cref="System.IO.IOException"></exception>
-		public override object ReadIndexEntry(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.StatefulBuffer a_writer)
+		/// <exception cref="IOException"></exception>
+		/// <exception cref="CorruptionException">CorruptionException</exception>
+		public override object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer
+			)
 		{
 			return mf._string.ReadIndexEntry(a_writer);
 		}
@@ -165,8 +168,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// </remarks>
 		public override object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer reader)
 		{
-			Db4objects.Db4o.Internal.Slots.Slot s = new Db4objects.Db4o.Internal.Slots.Slot(reader
-				.ReadInt(), reader.ReadInt());
+			Slot s = new Slot(reader.ReadInt(), reader.ReadInt());
 			if (IsInvalidSlot(s))
 			{
 				return null;
@@ -174,14 +176,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return s;
 		}
 
-		private bool IsInvalidSlot(Db4objects.Db4o.Internal.Slots.Slot slot)
+		private bool IsInvalidSlot(Slot slot)
 		{
 			return (slot._address == 0) && (slot._length == 0);
 		}
 
-		public override object ReadQuery(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, bool withRedirection, Db4objects.Db4o.Internal.Buffer a_reader, bool a_toArray
-			)
+		public override object ReadQuery(Transaction a_trans, MarshallerFamily mf, bool withRedirection
+			, Db4objects.Db4o.Internal.Buffer a_reader, bool a_toArray)
 		{
 			if (!withRedirection)
 			{
@@ -196,7 +197,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return reader;
 		}
 
-		public void SetStringIo(Db4objects.Db4o.Internal.LatinStringIO a_io)
+		public void SetStringIo(LatinStringIO a_io)
 		{
 			i_stringIo = a_io;
 		}
@@ -215,27 +216,25 @@ namespace Db4objects.Db4o.Internal.Handlers
 				writer.WriteInt(0);
 				return;
 			}
-			if (entry is Db4objects.Db4o.Internal.StatefulBuffer)
+			if (entry is StatefulBuffer)
 			{
-				Db4objects.Db4o.Internal.StatefulBuffer entryAsWriter = (Db4objects.Db4o.Internal.StatefulBuffer
-					)entry;
+				StatefulBuffer entryAsWriter = (StatefulBuffer)entry;
 				writer.WriteInt(entryAsWriter.GetAddress());
 				writer.WriteInt(entryAsWriter.GetLength());
 				return;
 			}
-			if (entry is Db4objects.Db4o.Internal.Slots.Slot)
+			if (entry is Slot)
 			{
-				Db4objects.Db4o.Internal.Slots.Slot s = (Db4objects.Db4o.Internal.Slots.Slot)entry;
+				Slot s = (Slot)entry;
 				writer.WriteInt(s._address);
 				writer.WriteInt(s._length);
 				return;
 			}
-			throw new System.ArgumentException();
+			throw new ArgumentException();
 		}
 
-		public override object WriteNew(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, object a_object, bool topLevel, Db4objects.Db4o.Internal.StatefulBuffer a_bytes
-			, bool withIndirection, bool restoreLinkeOffset)
+		public override object WriteNew(MarshallerFamily mf, object a_object, bool topLevel
+			, StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkeOffset)
 		{
 			return mf._string.WriteNew(a_object, topLevel, a_bytes, withIndirection);
 		}
@@ -255,7 +254,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override int GetTypeID()
 		{
-			return Db4objects.Db4o.Internal.Const4.TYPE_SIMPLE;
+			return Const4.TYPE_SIMPLE;
 		}
 
 		private Db4objects.Db4o.Internal.Buffer i_compareTo;
@@ -265,8 +264,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Val(obj, _stream);
 		}
 
-		private Db4objects.Db4o.Internal.Buffer Val(object obj, Db4objects.Db4o.Internal.ObjectContainerBase
-			 oc)
+		private Db4objects.Db4o.Internal.Buffer Val(object obj, ObjectContainerBase oc)
 		{
 			if (obj is Db4objects.Db4o.Internal.Buffer)
 			{
@@ -274,37 +272,34 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			if (obj is string)
 			{
-				return Db4objects.Db4o.Internal.Marshall.StringMarshaller.WriteShort(_stream, (string
-					)obj);
+				return StringMarshaller.WriteShort(_stream, (string)obj);
 			}
-			if (obj is Db4objects.Db4o.Internal.Slots.Slot)
+			if (obj is Slot)
 			{
-				Db4objects.Db4o.Internal.Slots.Slot s = (Db4objects.Db4o.Internal.Slots.Slot)obj;
+				Slot s = (Slot)obj;
 				try
 				{
 					return oc.BufferByAddress(s._address, s._length);
 				}
-				catch (System.IO.IOException e)
+				catch (IOException e)
 				{
-					throw new Db4objects.Db4o.Internal.IX.ComparableConversionException(s, e);
+					throw new ComparableConversionException(s, e);
 				}
 			}
 			return null;
 		}
 
-		public override void PrepareComparison(Db4objects.Db4o.Internal.Transaction a_trans
-			, object obj)
+		public override void PrepareComparison(Transaction a_trans, object obj)
 		{
 			i_compareTo = (Db4objects.Db4o.Internal.Buffer)obj;
 		}
 
-		public override Db4objects.Db4o.Internal.IComparable4 PrepareComparison(object obj
-			)
+		public override IComparable4 PrepareComparison(object obj)
 		{
 			if (obj == null)
 			{
 				i_compareTo = null;
-				return Db4objects.Db4o.Internal.Null.INSTANCE;
+				return Null.INSTANCE;
 			}
 			i_compareTo = Val(obj);
 			return this;
@@ -384,7 +379,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public static int Compare(byte[] compare, byte[] with)
 		{
 			int min = compare.Length < with.Length ? compare.Length : with.Length;
-			int start = Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			int start = Const4.INT_LENGTH;
 			for (int i = start; i < min; i++)
 			{
 				if (compare[i] != with[i])
@@ -395,15 +390,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return with.Length - compare.Length;
 		}
 
-		public override void DefragIndexEntry(Db4objects.Db4o.Internal.ReaderPair readers
-			)
+		public override void DefragIndexEntry(ReaderPair readers)
 		{
 			readers.CopyID(false, true);
 			readers.IncrementIntSize();
 		}
 
-		public override void Defrag(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf
-			, Db4objects.Db4o.Internal.ReaderPair readers, bool redirect)
+		public override void Defrag(MarshallerFamily mf, ReaderPair readers, bool redirect
+			)
 		{
 			if (!redirect)
 			{

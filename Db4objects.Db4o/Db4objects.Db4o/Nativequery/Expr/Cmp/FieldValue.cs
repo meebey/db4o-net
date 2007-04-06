@@ -1,18 +1,20 @@
+using Db4objects.Db4o.Nativequery.Expr.Cmp;
+
 namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 {
-	public class FieldValue : Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperandDescendant
+	public class FieldValue : ComparisonOperandDescendant
 	{
 		private string _fieldName;
 
 		private object _tag;
 
-		public FieldValue(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandAnchor root
-			, string name) : this(root, name, null)
+		public FieldValue(IComparisonOperandAnchor root, string name) : this(root, name, 
+			null)
 		{
 		}
 
-		public FieldValue(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandAnchor root
-			, string name, object tag) : base(root)
+		public FieldValue(IComparisonOperandAnchor root, string name, object tag) : base(
+			root)
 		{
 			_fieldName = name;
 			_tag = tag;
@@ -63,8 +65,7 @@ namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 			return base.ToString() + "." + _fieldName;
 		}
 
-		public override void Accept(Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperandVisitor
-			 visitor)
+		public override void Accept(IComparisonOperandVisitor visitor)
 		{
 			visitor.Visit(this);
 		}

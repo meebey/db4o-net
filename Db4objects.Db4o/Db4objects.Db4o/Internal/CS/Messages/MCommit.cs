@@ -1,21 +1,21 @@
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	internal sealed class MCommit : Db4objects.Db4o.Internal.CS.Messages.Msg, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public sealed class MCommit : Msg, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{
 			try
 			{
-				Transaction().Commit();
+				ServerTransaction().Commit(ServerMessageDispatcher());
+				Write(Msg.OK);
 			}
-			catch (Db4objects.Db4o.Ext.Db4oException db4oException)
+			catch (Db4oException e)
 			{
-				Write(Db4objects.Db4o.Internal.CS.Messages.MCommitResponse.CreateWithException(Transaction
-					(), db4oException));
-				return true;
+				WriteException(e);
 			}
-			Write(Db4objects.Db4o.Internal.CS.Messages.MCommitResponse.CreateWithoutException
-				(Transaction()));
 			return true;
 		}
 	}

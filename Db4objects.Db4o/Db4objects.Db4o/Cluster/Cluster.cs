@@ -1,3 +1,8 @@
+using System;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Internal.Cluster;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Cluster
 {
 	/// <summary>allows running Queries against multiple ObjectContainers.</summary>
@@ -5,23 +10,23 @@ namespace Db4objects.Db4o.Cluster
 	/// <exclude></exclude>
 	public class Cluster
 	{
-		public readonly Db4objects.Db4o.IObjectContainer[] _objectContainers;
+		public readonly IObjectContainer[] _objectContainers;
 
-		public Cluster(Db4objects.Db4o.IObjectContainer[] objectContainers)
+		public Cluster(IObjectContainer[] objectContainers)
 		{
 			if (objectContainers == null)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			if (objectContainers.Length < 1)
 			{
-				throw new System.ArgumentException();
+				throw new ArgumentException();
 			}
 			for (int i = 0; i < objectContainers.Length; i++)
 			{
 				if (objectContainers[i] == null)
 				{
-					throw new System.ArgumentException();
+					throw new ArgumentException();
 				}
 			}
 			_objectContainers = objectContainers;
@@ -36,17 +41,16 @@ namespace Db4objects.Db4o.Cluster
 		/// this Cluster.
 		/// </remarks>
 		/// <returns>the Query</returns>
-		public virtual Db4objects.Db4o.Query.IQuery Query()
+		public virtual IQuery Query()
 		{
 			lock (this)
 			{
-				Db4objects.Db4o.Query.IQuery[] queries = new Db4objects.Db4o.Query.IQuery[_objectContainers
-					.Length];
+				IQuery[] queries = new IQuery[_objectContainers.Length];
 				for (int i = 0; i < _objectContainers.Length; i++)
 				{
 					queries[i] = _objectContainers[i].Query();
 				}
-				return new Db4objects.Db4o.Internal.Cluster.ClusterQuery(this, queries);
+				return new ClusterQuery(this, queries);
 			}
 		}
 
@@ -57,7 +61,7 @@ namespace Db4objects.Db4o.Cluster
 		/// </summary>
 		/// <param name="obj">the object</param>
 		/// <returns>the ObjectContainer</returns>
-		public virtual Db4objects.Db4o.IObjectContainer ObjectContainerFor(object obj)
+		public virtual IObjectContainer ObjectContainerFor(object obj)
 		{
 			lock (this)
 			{

@@ -1,16 +1,20 @@
+using Db4oUnit;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Tests.Common.Fieldindex;
+
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
 	/// <summary>Jira ticket: COR-373</summary>
 	/// <exclude></exclude>
-	public class StringIndexCorruptionTestCase : Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase
+	public class StringIndexCorruptionTestCase : StringIndexTestCaseBase
 	{
 		public static void Main(string[] arguments)
 		{
-			new Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexCorruptionTestCase().RunSolo
-				();
+			new StringIndexCorruptionTestCase().RunSolo();
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
 			config.BTreeNodeSize(4);
@@ -19,12 +23,11 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestStressSet()
 		{
-			Db4objects.Db4o.Ext.IExtObjectContainer container = Db();
+			IExtObjectContainer container = Db();
 			int itemCount = 300;
 			for (int i = 0; i < itemCount; ++i)
 			{
-				Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item item = new Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item
-					(ItemName(i));
+				StringIndexTestCaseBase.Item item = new StringIndexTestCaseBase.Item(ItemName(i));
 				container.Set(item);
 				container.Set(item);
 				container.Commit();
@@ -35,10 +38,9 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			for (int i = 0; i < itemCount; ++i)
 			{
 				string itemName = ItemName(i);
-				Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item found = Query
-					(itemName);
-				Db4oUnit.Assert.IsNotNull(found, "'" + itemName + "' not found");
-				Db4oUnit.Assert.AreEqual(itemName, found.name);
+				StringIndexTestCaseBase.Item found = Query(itemName);
+				Assert.IsNotNull(found, "'" + itemName + "' not found");
+				Assert.AreEqual(itemName, found.name);
 			}
 		}
 

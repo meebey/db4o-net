@@ -1,12 +1,13 @@
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MUseTransaction : Db4objects.Db4o.Internal.CS.Messages.MsgD, 
-		Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public sealed class MUseTransaction : MsgD, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{
-			Db4objects.Db4o.Internal.CS.IServerMessageDispatcher serverThread = ServerMessageDispatcher
-				();
+			IServerMessageDispatcher serverThread = ServerMessageDispatcher();
 			serverThread.UseTransaction(this);
 			return true;
 		}

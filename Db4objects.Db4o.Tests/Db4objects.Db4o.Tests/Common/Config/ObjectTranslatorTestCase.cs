@@ -1,6 +1,14 @@
+using System;
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Tests.Common.Config;
+
 namespace Db4objects.Db4o.Tests.Common.Config
 {
-	public class ObjectTranslatorTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class ObjectTranslatorTestCase : AbstractDb4oTestCase
 	{
 		public class Thing
 		{
@@ -12,27 +20,24 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		public class ThingCounterTranslator : Db4objects.Db4o.Config.IObjectConstructor
+		public class ThingCounterTranslator : IObjectConstructor
 		{
-			private Db4objects.Db4o.Foundation.Hashtable4 _countCache = new Db4objects.Db4o.Foundation.Hashtable4
-				();
+			private Hashtable4 _countCache = new Hashtable4();
 
-			public virtual void OnActivate(Db4objects.Db4o.IObjectContainer container, object
-				 applicationObject, object storedObject)
+			public virtual void OnActivate(IObjectContainer container, object applicationObject
+				, object storedObject)
 			{
 			}
 
-			public virtual object OnStore(Db4objects.Db4o.IObjectContainer container, object 
-				applicationObject)
+			public virtual object OnStore(IObjectContainer container, object applicationObject
+				)
 			{
-				Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.Thing t = (Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.Thing
-					)applicationObject;
+				ObjectTranslatorTestCase.Thing t = (ObjectTranslatorTestCase.Thing)applicationObject;
 				AddToCache(t);
 				return t.name;
 			}
 
-			private void AddToCache(Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.Thing
-				 t)
+			private void AddToCache(ObjectTranslatorTestCase.Thing t)
 			{
 				object o = (object)_countCache.Get(t.name);
 				if (o == null)
@@ -42,8 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				_countCache.Put(t.name, ((int)o) + 1);
 			}
 
-			public virtual int GetCount(Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.Thing
-				 t)
+			public virtual int GetCount(ObjectTranslatorTestCase.Thing t)
 			{
 				object o = (int)_countCache.Get(t.name);
 				if (o == null)
@@ -53,49 +57,44 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				return ((int)o);
 			}
 
-			public virtual object OnInstantiate(Db4objects.Db4o.IObjectContainer container, object
-				 storedObject)
+			public virtual object OnInstantiate(IObjectContainer container, object storedObject
+				)
 			{
 				string name = (string)storedObject;
-				return new Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.Thing(name
-					);
+				return new ObjectTranslatorTestCase.Thing(name);
 			}
 
-			public virtual System.Type StoredClass()
+			public virtual Type StoredClass()
 			{
 				return typeof(string);
 			}
 		}
 
-		private Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.ThingCounterTranslator
-			 _trans;
+		private ObjectTranslatorTestCase.ThingCounterTranslator _trans;
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.Thing)
-				).Translate(_trans = new Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.ThingCounterTranslator
-				());
+			config.ObjectClass(typeof(ObjectTranslatorTestCase.Thing)).Translate(_trans = new 
+				ObjectTranslatorTestCase.ThingCounterTranslator());
 		}
 
 		protected override void Store()
 		{
-			Db().Set(new Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.Thing("jbe"
-				));
+			Db().Set(new ObjectTranslatorTestCase.Thing("jbe"));
 		}
 
 		public virtual void _testTranslationCount()
 		{
-			Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.Thing t = (Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.Thing
-				)RetrieveOnlyInstance(typeof(Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase.Thing)
-				);
-			Db4oUnit.Assert.IsNotNull(t);
-			Db4oUnit.Assert.AreEqual("jbe", t.name);
-			Db4oUnit.Assert.AreEqual(1, _trans.GetCount(t));
+			ObjectTranslatorTestCase.Thing t = (ObjectTranslatorTestCase.Thing)RetrieveOnlyInstance
+				(typeof(ObjectTranslatorTestCase.Thing));
+			Assert.IsNotNull(t);
+			Assert.AreEqual("jbe", t.name);
+			Assert.AreEqual(1, _trans.GetCount(t));
 		}
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase().RunSolo();
+			new ObjectTranslatorTestCase().RunSolo();
 		}
 	}
 }

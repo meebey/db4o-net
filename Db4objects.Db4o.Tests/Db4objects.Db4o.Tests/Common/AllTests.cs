@@ -1,23 +1,27 @@
+using System;
+using Db4oUnit.Extensions;
+
 namespace Db4objects.Db4o.Tests.Common
 {
 	/// <summary>Carl testing commit notifications yet again and again.</summary>
 	/// <remarks>Carl testing commit notifications yet again and again.</remarks>
-	public class AllTests : Db4oUnit.Extensions.Db4oTestSuite
+	public class AllTests : Db4oTestSuite
 	{
-		protected override System.Type[] TestCases()
+		protected override Type[] TestCases()
 		{
-			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Acid.AllTests), typeof(Db4objects.Db4o.Tests.Common.Assorted.AllTests)
+			return new Type[] { typeof(Db4objects.Db4o.Tests.Common.Acid.AllTests), typeof(Db4objects.Db4o.Tests.Common.Assorted.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Btree.AllTests), typeof(Db4objects.Db4o.Tests.Common.Classindex.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.Config.AllTests), typeof(Db4objects.Db4o.Tests.Common.Constraints.AllTests)
 				, typeof(Db4objects.Db4o.Tests.Common.CS.AllTests), typeof(Db4objects.Db4o.Tests.Common.Defragment.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Ext.AllTests), typeof(Db4objects.Db4o.Tests.Common.Fieldindex.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Fatalerror.AllTests), typeof(Db4objects.Db4o.Tests.Common.Foundation.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Handlers.AllTests), typeof(Db4objects.Db4o.Tests.Common.Header.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Interfaces.AllTests), typeof(Db4objects.Db4o.Tests.Common.IO.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Reflect.AllTests), typeof(Db4objects.Db4o.Tests.Common.Regression.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Querying.AllTests), typeof(Db4objects.Db4o.Tests.Common.Soda.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Common.Stored.AllTests), typeof(Db4objects.Db4o.Tests.Common.Types.AllTests)
-				, typeof(Db4objects.Db4o.Tests.Util.Test.AllTests) };
+				, typeof(Db4objects.Db4o.Tests.Common.Exceptions.AllTests), typeof(Db4objects.Db4o.Tests.Common.Ext.AllTests)
+				, typeof(Db4objects.Db4o.Tests.Common.Fieldindex.AllTests), typeof(Db4objects.Db4o.Tests.Common.Fatalerror.AllTests)
+				, typeof(Db4objects.Db4o.Tests.Common.Foundation.AllTests), typeof(Db4objects.Db4o.Tests.Common.Handlers.AllTests)
+				, typeof(Db4objects.Db4o.Tests.Common.Header.AllTests), typeof(Db4objects.Db4o.Tests.Common.Interfaces.AllTests)
+				, typeof(Db4objects.Db4o.Tests.Common.IO.AllTests), typeof(Db4objects.Db4o.Tests.Common.Reflect.AllTests)
+				, typeof(Db4objects.Db4o.Tests.Common.Regression.AllTests), typeof(Db4objects.Db4o.Tests.Common.Querying.AllTests)
+				, typeof(Db4objects.Db4o.Tests.Common.Soda.AllTests), typeof(Db4objects.Db4o.Tests.Common.Stored.AllTests)
+				, typeof(Db4objects.Db4o.Tests.Common.Types.AllTests), typeof(Db4objects.Db4o.Tests.Util.Test.AllTests)
+				 };
 		}
 	}
 }

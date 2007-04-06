@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Reflect
 {
 	/// <summary>representation for java.lang.reflect.Field.</summary>
@@ -5,15 +7,14 @@ namespace Db4objects.Db4o.Reflect
 	/// representation for java.lang.reflect.Field.
 	/// <br /><br />See the respective documentation in the JDK API.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Reflect.IReflector">Db4objects.Db4o.Reflect.IReflector
-	/// 	</seealso>
+	/// <seealso cref="IReflector">IReflector</seealso>
 	public interface IReflectField
 	{
 		object Get(object onObject);
 
 		string GetName();
 
-		Db4objects.Db4o.Reflect.IReflectClass GetFieldType();
+		IReflectClass GetFieldType();
 
 		bool IsPublic();
 
@@ -25,7 +26,7 @@ namespace Db4objects.Db4o.Reflect
 
 		void SetAccessible();
 
-		Db4objects.Db4o.Reflect.IReflectClass IndexType();
+		IReflectClass IndexType();
 
 		object IndexEntry(object orig);
 	}

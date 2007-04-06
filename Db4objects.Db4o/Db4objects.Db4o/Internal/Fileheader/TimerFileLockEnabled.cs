@@ -1,17 +1,26 @@
+using System.IO;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Fileheader;
+using Sharpen;
+using Sharpen.Lang;
+
 namespace Db4objects.Db4o.Internal.Fileheader
 {
 	/// <exclude></exclude>
-	public class TimerFileLockEnabled : Db4objects.Db4o.Internal.Fileheader.TimerFileLock
+	public class TimerFileLockEnabled : TimerFileLock
 	{
-		private readonly Db4objects.Db4o.IO.IoAdapter _timerFile;
+		private readonly IoAdapter _timerFile;
 
 		private readonly object _timerLock;
 
-		private byte[] _longBytes = new byte[Db4objects.Db4o.Internal.Const4.LONG_LENGTH];
+		private byte[] _longBytes = new byte[Const4.LONG_LENGTH];
 
-		private byte[] _intBytes = new byte[Db4objects.Db4o.Internal.Const4.INT_LENGTH];
+		private byte[] _intBytes = new byte[Const4.INT_LENGTH];
 
-		private int _headerLockOffset = 2 + Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+		private int _headerLockOffset = 2 + Const4.INT_LENGTH;
 
 		private readonly long _opentime;
 
@@ -23,8 +32,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private bool _closed = false;
 
-		public TimerFileLockEnabled(Db4objects.Db4o.Internal.IoAdaptedObjectContainer file
-			)
+		public TimerFileLockEnabled(IoAdaptedObjectContainer file)
 		{
 			_timerLock = file.Lock();
 			_timerFile = file.TimerFile();
@@ -41,10 +49,10 @@ namespace Db4objects.Db4o.Internal.Fileheader
 					return;
 				}
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
 			}
-			throw new Db4objects.Db4o.Ext.DatabaseFileLockedException(_timerFile.ToString());
+			throw new DatabaseFileLockedException(_timerFile.ToString());
 		}
 
 		public override void CheckOpenTime()
@@ -58,29 +66,29 @@ namespace Db4objects.Db4o.Internal.Fileheader
 					return;
 				}
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
 			}
-			throw new Db4objects.Db4o.Ext.DatabaseFileLockedException(_timerFile.ToString());
+			throw new DatabaseFileLockedException(_timerFile.ToString());
 		}
 
-		public override void CheckIfOtherSessionAlive(Db4objects.Db4o.Internal.LocalObjectContainer
-			 container, int address, int offset, long lastAccessTime)
+		public override void CheckIfOtherSessionAlive(LocalObjectContainer container, int
+			 address, int offset, long lastAccessTime)
 		{
 			if (_timerFile == null)
 			{
 				return;
 			}
-			long waitTime = Db4objects.Db4o.Internal.Const4.LOCK_TIME_INTERVAL * 5;
-			long currentTime = Sharpen.Runtime.CurrentTimeMillis();
-			while (Sharpen.Runtime.CurrentTimeMillis() < currentTime + waitTime)
+			long waitTime = Const4.LOCK_TIME_INTERVAL * 5;
+			long currentTime = Runtime.CurrentTimeMillis();
+			while (Runtime.CurrentTimeMillis() < currentTime + waitTime)
 			{
-				Db4objects.Db4o.Foundation.Cool.SleepIgnoringInterruption(waitTime);
+				Cool.SleepIgnoringInterruption(waitTime);
 			}
 			long currentAccessTime = ReadLong(address, offset);
 			if ((currentAccessTime > lastAccessTime))
 			{
-				throw new Db4objects.Db4o.Ext.DatabaseFileLockedException(container.ToString());
+				throw new DatabaseFileLockedException(container.ToString());
 			}
 		}
 
@@ -102,21 +110,20 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public override void Run()
 		{
-			Sharpen.Lang.Thread t = Sharpen.Lang.Thread.CurrentThread();
+			Thread t = Thread.CurrentThread();
 			t.SetName("db4o file lock");
 			try
 			{
 				while (WriteAccessTime(false))
 				{
-					Db4objects.Db4o.Foundation.Cool.SleepIgnoringInterruption(Db4objects.Db4o.Internal.Const4
-						.LOCK_TIME_INTERVAL);
+					Cool.SleepIgnoringInterruption(Const4.LOCK_TIME_INTERVAL);
 					if (_closed)
 					{
 						break;
 					}
 				}
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
 			}
 		}
@@ -134,12 +141,12 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			WriteAccessTime(false);
 			_timerFile.Sync();
 			CheckOpenTime();
-			new Sharpen.Lang.Thread(this).Start();
+			new Thread(this).Start();
 		}
 
 		private long UniqueOpenTime()
 		{
-			return Sharpen.Runtime.CurrentTimeMillis();
+			return Runtime.CurrentTimeMillis();
 		}
 
 		private bool WriteAccessTime(bool closing)
@@ -148,7 +155,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			{
 				return true;
 			}
-			long time = closing ? 0 : Sharpen.Runtime.CurrentTimeMillis();
+			long time = closing ? 0 : Runtime.CurrentTimeMillis();
 			bool ret = WriteLong(_baseAddress, _accessTimeOffset, time);
 			Sync();
 			return ret;
@@ -166,7 +173,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				WriteInt(0, _headerLockOffset, (int)_opentime);
 				Sync();
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
 			}
 		}
@@ -178,7 +185,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				WriteLong(_baseAddress, _openTimeOffset, _opentime);
 				Sync();
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
 			}
 		}
@@ -192,7 +199,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 					return false;
 				}
 				_timerFile.BlockSeek(address, offset);
-				Db4objects.Db4o.Foundation.PrimitiveCodec.WriteLong(_longBytes, time);
+				PrimitiveCodec.WriteLong(_longBytes, time);
 				_timerFile.Write(_longBytes);
 				return true;
 			}
@@ -208,7 +215,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				}
 				_timerFile.BlockSeek(address, offset);
 				_timerFile.Read(_longBytes);
-				return Db4objects.Db4o.Foundation.PrimitiveCodec.ReadLong(_longBytes, 0);
+				return PrimitiveCodec.ReadLong(_longBytes, 0);
 			}
 		}
 
@@ -221,7 +228,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 					return false;
 				}
 				_timerFile.BlockSeek(address, offset);
-				Db4objects.Db4o.Foundation.PrimitiveCodec.WriteInt(_intBytes, 0, time);
+				PrimitiveCodec.WriteInt(_intBytes, 0, time);
 				_timerFile.Write(_intBytes);
 				return true;
 			}
@@ -237,7 +244,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				}
 				_timerFile.BlockSeek(address, offset);
 				_timerFile.Read(_longBytes);
-				return Db4objects.Db4o.Foundation.PrimitiveCodec.ReadInt(_longBytes, 0);
+				return PrimitiveCodec.ReadInt(_longBytes, 0);
 			}
 		}
 

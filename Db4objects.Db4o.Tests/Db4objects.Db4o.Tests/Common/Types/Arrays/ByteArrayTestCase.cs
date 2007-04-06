@@ -1,6 +1,14 @@
+using System;
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Types.Arrays;
+
 namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 {
-	public class ByteArrayTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class ByteArrayTestCase : AbstractDb4oTestCase
 	{
 		public interface IIByteArrayHolder
 		{
@@ -8,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		}
 
 		[System.Serializable]
-		public class SerializableByteArrayHolder : Db4objects.Db4o.Tests.Common.Types.Arrays.ByteArrayTestCase.IIByteArrayHolder
+		public class SerializableByteArrayHolder : ByteArrayTestCase.IIByteArrayHolder
 		{
 			private const long serialVersionUID = 1L;
 
@@ -25,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 			}
 		}
 
-		public class ByteArrayHolder : Db4objects.Db4o.Tests.Common.Types.Arrays.ByteArrayTestCase.IIByteArrayHolder
+		public class ByteArrayHolder : ByteArrayTestCase.IIByteArrayHolder
 		{
 			public byte[] _bytes;
 
@@ -45,10 +53,10 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		internal const int ARRAY_LENGTH = 1024 * 512;
 
 		#if !CF_1_0 && !CF_2_0
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Types.Arrays.ByteArrayTestCase.SerializableByteArrayHolder)
-				).Translate(new Db4objects.Db4o.Config.TSerializable());
+			config.ObjectClass(typeof(ByteArrayTestCase.SerializableByteArrayHolder)).Translate
+				(new TSerializable());
 		}
 		#endif // !CF_1_0 && !CF_2_0
 
@@ -56,38 +64,35 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		{
 			for (int i = 0; i < INSTANCES; ++i)
 			{
-				Db().Set(new Db4objects.Db4o.Tests.Common.Types.Arrays.ByteArrayTestCase.ByteArrayHolder
-					(CreateByteArray()));
-				Db().Set(new Db4objects.Db4o.Tests.Common.Types.Arrays.ByteArrayTestCase.SerializableByteArrayHolder
-					(CreateByteArray()));
+				Db().Set(new ByteArrayTestCase.ByteArrayHolder(CreateByteArray()));
+				Db().Set(new ByteArrayTestCase.SerializableByteArrayHolder(CreateByteArray()));
 			}
 		}
 
 		#if !CF_1_0 && !CF_2_0
 		public virtual void TestByteArrayHolder()
 		{
-			TimeQueryLoop("raw byte array", typeof(Db4objects.Db4o.Tests.Common.Types.Arrays.ByteArrayTestCase.ByteArrayHolder)
-				);
+			TimeQueryLoop("raw byte array", typeof(ByteArrayTestCase.ByteArrayHolder));
 		}
 		#endif // !CF_1_0 && !CF_2_0
 
 		#if !CF_1_0 && !CF_2_0
 		public virtual void TestSerializableByteArrayHolder()
 		{
-			TimeQueryLoop("TSerializable", typeof(Db4objects.Db4o.Tests.Common.Types.Arrays.ByteArrayTestCase.SerializableByteArrayHolder)
+			TimeQueryLoop("TSerializable", typeof(ByteArrayTestCase.SerializableByteArrayHolder)
 				);
 		}
 		#endif // !CF_1_0 && !CF_2_0
 
-		private void TimeQueryLoop(string label, System.Type clazz)
+		private void TimeQueryLoop(string label, Type clazz)
 		{
-			Db4objects.Db4o.Query.IQuery query = NewQuery(clazz);
-			Db4objects.Db4o.IObjectSet os = query.Execute();
-			Db4oUnit.Assert.AreEqual(INSTANCES, os.Size());
+			IQuery query = NewQuery(clazz);
+			IObjectSet os = query.Execute();
+			Assert.AreEqual(INSTANCES, os.Size());
 			while (os.HasNext())
 			{
-				Db4oUnit.Assert.AreEqual(ARRAY_LENGTH, ((Db4objects.Db4o.Tests.Common.Types.Arrays.ByteArrayTestCase.IIByteArrayHolder
-					)os.Next()).GetBytes().Length, label);
+				Assert.AreEqual(ARRAY_LENGTH, ((ByteArrayTestCase.IIByteArrayHolder)os.Next()).GetBytes
+					().Length, label);
 			}
 		}
 

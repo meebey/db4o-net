@@ -1,14 +1,18 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Convert;
+
 namespace Db4objects.Db4o.Internal.Convert.Conversions
 {
 	/// <exclude></exclude>
-	public class ClassIndexesToBTrees_5_5 : Db4objects.Db4o.Internal.Convert.Conversion
+	public class ClassIndexesToBTrees_5_5 : Conversion
 	{
 		public const int VERSION = 5;
 
-		public virtual void Convert(Db4objects.Db4o.Internal.LocalObjectContainer yapFile
-			, int classIndexId, Db4objects.Db4o.Internal.Btree.BTree bTree)
+		public virtual void Convert(LocalObjectContainer yapFile, int classIndexId, BTree
+			 bTree)
 		{
-			Db4objects.Db4o.Internal.Transaction trans = yapFile.SystemTransaction();
+			Transaction trans = yapFile.SystemTransaction();
 			Db4objects.Db4o.Internal.Buffer reader = yapFile.ReadReaderByID(trans, classIndexId
 				);
 			if (reader == null)
@@ -22,8 +26,7 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 			}
 		}
 
-		public override void Convert(Db4objects.Db4o.Internal.Convert.ConversionStage.SystemUpStage
-			 stage)
+		public override void Convert(ConversionStage.SystemUpStage stage)
 		{
 			stage.File().StoredClasses();
 		}

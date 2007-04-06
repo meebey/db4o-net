@@ -1,3 +1,10 @@
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Fieldindex;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Fieldindex
 {
 	public class FieldIndexProcessorResult
@@ -10,21 +17,19 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 			 FOUND_INDEX_BUT_NO_MATCH = new Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult
 			(null);
 
-		private readonly Db4objects.Db4o.Internal.Fieldindex.IIndexedNode _indexedNode;
+		private readonly IIndexedNode _indexedNode;
 
-		public FieldIndexProcessorResult(Db4objects.Db4o.Internal.Fieldindex.IIndexedNode
-			 indexedNode)
+		public FieldIndexProcessorResult(IIndexedNode indexedNode)
 		{
 			_indexedNode = indexedNode;
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Tree ToQCandidate(Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 candidates)
+		public virtual Tree ToQCandidate(QCandidates candidates)
 		{
-			return Db4objects.Db4o.Internal.TreeInt.ToQCandidate(ToTreeInt(), candidates);
+			return TreeInt.ToQCandidate(ToTreeInt(), candidates);
 		}
 
-		public virtual Db4objects.Db4o.Internal.TreeInt ToTreeInt()
+		public virtual TreeInt ToTreeInt()
 		{
 			if (FoundMatch())
 			{
@@ -48,23 +53,22 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 			return this == FOUND_INDEX_BUT_NO_MATCH;
 		}
 
-		public virtual System.Collections.IEnumerator IterateIDs()
+		public virtual IEnumerator IterateIDs()
 		{
 			return new _AnonymousInnerClass46(this, _indexedNode.GetEnumerator());
 		}
 
-		private sealed class _AnonymousInnerClass46 : Db4objects.Db4o.Foundation.MappingIterator
+		private sealed class _AnonymousInnerClass46 : MappingIterator
 		{
-			public _AnonymousInnerClass46(FieldIndexProcessorResult _enclosing, System.Collections.IEnumerator
-				 baseArg1) : base(baseArg1)
+			public _AnonymousInnerClass46(FieldIndexProcessorResult _enclosing, IEnumerator baseArg1
+				) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			protected override object Map(object current)
 			{
-				Db4objects.Db4o.Internal.Btree.FieldIndexKey composite = (Db4objects.Db4o.Internal.Btree.FieldIndexKey
-					)current;
+				FieldIndexKey composite = (FieldIndexKey)current;
 				return composite.ParentID();
 			}
 

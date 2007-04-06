@@ -1,3 +1,7 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+
 namespace Db4objects.Db4o
 {
 	/// <summary>query resultset.</summary>
@@ -10,13 +14,13 @@ namespace Db4objects.Db4o
 	/// recommended, never to reference ObjectSet directly in code but to use
 	/// List / IList instead.
 	/// <br /><br />Note that the underlying
-	/// <see cref="Db4objects.Db4o.IObjectContainer">ObjectContainer</see>
+	/// <see cref="IObjectContainer">ObjectContainer</see>
 	/// of an ObjectSet
 	/// needs to remain open as long as an ObjectSet is used. This is necessary
 	/// for lazy instantiation. The objects in an ObjectSet are only instantiated
 	/// when they are actually being used by the application.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectSet">for extended functionality.</seealso>
+	/// <seealso cref="IExtObjectSet">for extended functionality.</seealso>
 	public interface IObjectSet : System.Collections.IList
 	{
 		/// <summary>returns an ObjectSet with extended functionality.</summary>
@@ -28,7 +32,7 @@ namespace Db4objects.Db4o
 		/// <br /><br />The ObjectSet functionality is split to two interfaces
 		/// to allow newcomers to focus on the essential methods.
 		/// </remarks>
-		Db4objects.Db4o.Ext.IExtObjectSet Ext();
+		IExtObjectSet Ext();
 
 		/// <summary>returns <code>true</code> if the <code>ObjectSet</code> has more elements.
 		/// 	</summary>
@@ -46,10 +50,9 @@ namespace Db4objects.Db4o
 		/// <br /><br />
 		/// Before returning the Object, next() triggers automatic activation of the
 		/// Object with the respective
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">global</see>
+		/// <see cref="IConfiguration.ActivationDepth">global</see>
 		/// or
-		/// <see cref="Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth">class specific
-		/// 	</see>
+		/// <see cref="IObjectClass.MaximumActivationDepth">class specific</see>
 		/// setting.<br /><br />
 		/// </remarks>
 		/// <returns>the next object in the <code>ObjectSet</code>.</returns>

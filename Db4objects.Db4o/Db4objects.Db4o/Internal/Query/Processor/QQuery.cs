@@ -1,3 +1,7 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <summary>QQuery is the users hook on our graph.</summary>
@@ -6,9 +10,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// A QQuery is defined by it's constraints.
 	/// </remarks>
 	/// <exclude></exclude>
-	public class QQuery : Db4objects.Db4o.Internal.Query.Processor.QQueryBase, Db4objects.Db4o.Query.IQuery
+	public class QQuery : QQueryBase, IQuery
 	{
-		public QQuery(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Internal.Query.Processor.QQuery
+		public QQuery(Transaction a_trans, Db4objects.Db4o.Internal.Query.Processor.QQuery
 			 a_parent, string a_field) : base(a_trans, a_parent, a_field)
 		{
 		}

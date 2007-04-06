@@ -1,44 +1,42 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Soda.Experiments;
+using Db4objects.Db4o.Tests.Common.Soda.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 {
-	public class STIdentityEvaluationTestCase : Db4objects.Db4o.Tests.Common.Soda.Util.SodaBaseTestCase
+	public class STIdentityEvaluationTestCase : SodaBaseTestCase
 	{
 		public override object[] CreateData()
 		{
-			Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase.Helper
-				 helperA = new Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase.Helper
+			STIdentityEvaluationTestCase.Helper helperA = new STIdentityEvaluationTestCase.Helper
 				("aaa");
 			return new object[] { new Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase
 				(null), new Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase
 				(helperA), new Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase
 				(helperA), new Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase
 				(helperA), new Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase
-				(new Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase.HelperDerivate
-				("bbb")), new Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase
-				(new Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase.Helper
-				("dod")) };
+				(new STIdentityEvaluationTestCase.HelperDerivate("bbb")), new Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase
+				(new STIdentityEvaluationTestCase.Helper("dod")) };
 		}
 
-		public Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase.Helper
-			 helper;
+		public STIdentityEvaluationTestCase.Helper helper;
 
 		public STIdentityEvaluationTestCase()
 		{
 		}
 
-		public STIdentityEvaluationTestCase(Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase.Helper
-			 h)
+		public STIdentityEvaluationTestCase(STIdentityEvaluationTestCase.Helper h)
 		{
 			this.helper = h;
 		}
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
-			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase.Helper
-				("aaa"));
-			Db4objects.Db4o.IObjectSet os = q.Execute();
-			Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase.Helper
-				 helperA = (Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase.Helper
+			IQuery q = NewQuery();
+			q.Constrain(new STIdentityEvaluationTestCase.Helper("aaa"));
+			IObjectSet os = q.Execute();
+			STIdentityEvaluationTestCase.Helper helperA = (STIdentityEvaluationTestCase.Helper
 				)os.Next();
 			q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase)
@@ -48,14 +46,14 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 			Expect(q, new int[] { 1, 2, 3 });
 		}
 
-		private sealed class _AnonymousInnerClass42 : Db4objects.Db4o.Query.IEvaluation
+		private sealed class _AnonymousInnerClass42 : IEvaluation
 		{
 			public _AnonymousInnerClass42(STIdentityEvaluationTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
-			public void Evaluate(Db4objects.Db4o.Query.ICandidate candidate)
+			public void Evaluate(ICandidate candidate)
 			{
 				candidate.Include(true);
 			}
@@ -65,10 +63,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 
 		public virtual void TestMemberClassConstraint()
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery();
+			IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase)
 				);
-			q.Descend("helper").Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase.HelperDerivate)
+			q.Descend("helper").Constrain(typeof(STIdentityEvaluationTestCase.HelperDerivate)
 				);
 			Expect(q, new int[] { 4 });
 		}
@@ -87,7 +85,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 			}
 		}
 
-		public class HelperDerivate : Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase.Helper
+		public class HelperDerivate : STIdentityEvaluationTestCase.Helper
 		{
 			public HelperDerivate()
 			{

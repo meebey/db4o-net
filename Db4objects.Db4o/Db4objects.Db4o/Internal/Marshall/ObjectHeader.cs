@@ -1,31 +1,33 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Marshall;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
 	public sealed class ObjectHeader
 	{
-		private readonly Db4objects.Db4o.Internal.ClassMetadata _yapClass;
+		private readonly ClassMetadata _yapClass;
 
-		public readonly Db4objects.Db4o.Internal.Marshall.MarshallerFamily _marshallerFamily;
+		public readonly MarshallerFamily _marshallerFamily;
 
-		public readonly Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes _headerAttributes;
+		public readonly ObjectHeaderAttributes _headerAttributes;
 
-		public ObjectHeader(Db4objects.Db4o.Internal.ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
-			 reader) : this(stream, null, reader)
+		public ObjectHeader(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer reader
+			) : this(stream, null, reader)
 		{
 		}
 
-		public ObjectHeader(Db4objects.Db4o.Internal.ClassMetadata yapClass, Db4objects.Db4o.Internal.Buffer
-			 reader) : this(null, yapClass, reader)
+		public ObjectHeader(ClassMetadata yapClass, Db4objects.Db4o.Internal.Buffer reader
+			) : this(null, yapClass, reader)
 		{
 		}
 
-		public ObjectHeader(Db4objects.Db4o.Internal.StatefulBuffer writer) : this(writer
-			.GetStream(), writer)
+		public ObjectHeader(StatefulBuffer writer) : this(writer.GetStream(), writer)
 		{
 		}
 
-		public ObjectHeader(Db4objects.Db4o.Internal.ObjectContainerBase stream, Db4objects.Db4o.Internal.ClassMetadata
-			 yc, Db4objects.Db4o.Internal.Buffer reader)
+		public ObjectHeader(ObjectContainerBase stream, ClassMetadata yc, Db4objects.Db4o.Internal.Buffer
+			 reader)
 		{
 			int classID = reader.ReadInt();
 			_marshallerFamily = ReadMarshallerFamily(reader, classID);
@@ -34,8 +36,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_headerAttributes = ReadAttributes(_marshallerFamily, reader);
 		}
 
-		public static Db4objects.Db4o.Internal.Marshall.ObjectHeader Defrag(Db4objects.Db4o.Internal.ReaderPair
-			 readers)
+		public static Db4objects.Db4o.Internal.Marshall.ObjectHeader Defrag(ReaderPair readers
+			)
 		{
 			Db4objects.Db4o.Internal.Buffer source = readers.Source();
 			Db4objects.Db4o.Internal.Buffer target = readers.Target();
@@ -53,8 +55,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _marshallerFamily._object;
 		}
 
-		private Db4objects.Db4o.Internal.Marshall.MarshallerFamily ReadMarshallerFamily(Db4objects.Db4o.Internal.Buffer
-			 reader, int classID)
+		private MarshallerFamily ReadMarshallerFamily(Db4objects.Db4o.Internal.Buffer reader
+			, int classID)
 		{
 			bool marshallerAware = MarshallerAware(classID);
 			byte marshallerVersion = 0;
@@ -62,14 +64,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				marshallerVersion = reader.ReadByte();
 			}
-			Db4objects.Db4o.Internal.Marshall.MarshallerFamily marshallerFamily = Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-				.Version(marshallerVersion);
+			MarshallerFamily marshallerFamily = MarshallerFamily.Version(marshallerVersion);
 			return marshallerFamily;
 		}
 
-		private static Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes ReadAttributes
-			(Db4objects.Db4o.Internal.Marshall.MarshallerFamily marshallerFamily, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		private static ObjectHeaderAttributes ReadAttributes(MarshallerFamily marshallerFamily
+			, Db4objects.Db4o.Internal.Buffer reader)
 		{
 			return marshallerFamily._object.ReadHeaderAttributes(reader);
 		}
@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return (id < 0 ? -id : id);
 		}
 
-		public Db4objects.Db4o.Internal.ClassMetadata YapClass()
+		public ClassMetadata YapClass()
 		{
 			return _yapClass;
 		}

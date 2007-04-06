@@ -1,16 +1,20 @@
+using System;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Tests.Common.Config;
+
 namespace Db4objects.Db4o.Tests.Common.Config
 {
-	public class AllTests : Db4oUnit.Extensions.Db4oTestSuite
+	public class AllTests : Db4oTestSuite
 	{
 		public static void Main(string[] args)
 		{
 			new Db4objects.Db4o.Tests.Common.Config.AllTests().RunSolo();
 		}
 
-		protected override System.Type[] TestCases()
+		protected override Type[] TestCases()
 		{
-			return new System.Type[] { typeof(Db4objects.Db4o.Tests.Common.Config.NonStaticConfigurationTestCase)
-				, typeof(Db4objects.Db4o.Tests.Common.Config.ObjectTranslatorTestCase) };
+			return new Type[] { typeof(NonStaticConfigurationTestCase), typeof(ObjectTranslatorTestCase)
+				 };
 		}
 	}
 }

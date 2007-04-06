@@ -1,11 +1,16 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <summary>Class constraint on queries</summary>
 	/// <exclude></exclude>
-	public class QConClass : Db4objects.Db4o.Internal.Query.Processor.QConObject
+	public class QConClass : QConObject
 	{
 		[System.NonSerialized]
-		private Db4objects.Db4o.Reflect.IReflectClass _claxx;
+		private IReflectClass _claxx;
 
 		public string _className;
 
@@ -15,8 +20,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 		}
 
-		internal QConClass(Db4objects.Db4o.Internal.Transaction a_trans, Db4objects.Db4o.Internal.Query.Processor.QCon
-			 a_parent, Db4objects.Db4o.Internal.Query.Processor.QField a_field, Db4objects.Db4o.Reflect.IReflectClass
+		internal QConClass(Transaction a_trans, QCon a_parent, QField a_field, IReflectClass
 			 claxx) : base(a_trans, a_parent, a_field, null)
 		{
 			if (claxx != null)
@@ -24,8 +28,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				i_yapClass = a_trans.Stream().ProduceClassMetadata(claxx);
 				if (claxx.Equals(a_trans.Stream().i_handlers.ICLASS_OBJECT))
 				{
-					i_yapClass = (Db4objects.Db4o.Internal.ClassMetadata)((Db4objects.Db4o.Internal.PrimitiveFieldHandler
-						)i_yapClass).i_handler;
+					i_yapClass = (ClassMetadata)((PrimitiveFieldHandler)i_yapClass).i_handler;
 				}
 			}
 			_claxx = claxx;
@@ -36,11 +39,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return false;
 		}
 
-		internal override bool Evaluate(Db4objects.Db4o.Internal.Query.Processor.QCandidate
-			 a_candidate)
+		internal override bool Evaluate(QCandidate a_candidate)
 		{
 			bool res = true;
-			Db4objects.Db4o.Reflect.IReflectClass claxx = a_candidate.ClassReflector();
+			IReflectClass claxx = a_candidate.ClassReflector();
 			if (claxx == null)
 			{
 				res = false;
@@ -57,7 +59,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			i_candidates.Filter(this);
 		}
 
-		public override Db4objects.Db4o.Query.IConstraint Equal()
+		public override IConstraint Equal()
 		{
 			lock (StreamLock())
 			{
@@ -96,7 +98,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return str + base.ToString();
 		}
 
-		internal override void Unmarshall(Db4objects.Db4o.Internal.Transaction a_trans)
+		internal override void Unmarshall(Transaction a_trans)
 		{
 			if (i_trans == null)
 			{

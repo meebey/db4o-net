@@ -1,10 +1,14 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Tests.Common.Sampledata;
+using Db4objects.Db4o.Tests.Common.Types.Arrays;
+
 namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 {
-	public class TypedArrayInObjectTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class TypedArrayInObjectTestCase : AbstractDb4oTestCase
 	{
-		private static readonly Db4objects.Db4o.Tests.Common.Sampledata.AtomData[] ARRAY = 
-			new Db4objects.Db4o.Tests.Common.Sampledata.AtomData[] { new Db4objects.Db4o.Tests.Common.Sampledata.AtomData
-			("TypedArrayInObject") };
+		private static readonly AtomData[] ARRAY = new AtomData[] { new AtomData("TypedArrayInObject"
+			) };
 
 		public class Data
 		{
@@ -21,27 +25,21 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		protected override void Store()
 		{
-			Db4objects.Db4o.Tests.Common.Types.Arrays.TypedArrayInObjectTestCase.Data data = 
-				new Db4objects.Db4o.Tests.Common.Types.Arrays.TypedArrayInObjectTestCase.Data(ARRAY
-				, ARRAY);
+			TypedArrayInObjectTestCase.Data data = new TypedArrayInObjectTestCase.Data(ARRAY, 
+				ARRAY);
 			Db().Set(data);
 		}
 
 		public virtual void TestRetrieve()
 		{
-			Db4objects.Db4o.Tests.Common.Types.Arrays.TypedArrayInObjectTestCase.Data data = 
-				(Db4objects.Db4o.Tests.Common.Types.Arrays.TypedArrayInObjectTestCase.Data)RetrieveOnlyInstance
-				(typeof(Db4objects.Db4o.Tests.Common.Types.Arrays.TypedArrayInObjectTestCase.Data)
-				);
-			Db4oUnit.Assert.IsTrue(data._obj is Db4objects.Db4o.Tests.Common.Sampledata.AtomData[]
-				, "Expected instance of " + typeof(Db4objects.Db4o.Tests.Common.Sampledata.AtomData[])
+			TypedArrayInObjectTestCase.Data data = (TypedArrayInObjectTestCase.Data)RetrieveOnlyInstance
+				(typeof(TypedArrayInObjectTestCase.Data));
+			Assert.IsTrue(data._obj is AtomData[], "Expected instance of " + typeof(AtomData[])
 				 + ", but got " + data._obj);
-			Db4oUnit.Assert.IsTrue(data._objArr is Db4objects.Db4o.Tests.Common.Sampledata.AtomData[]
-				, "Expected instance of " + typeof(Db4objects.Db4o.Tests.Common.Sampledata.AtomData[])
+			Assert.IsTrue(data._objArr is AtomData[], "Expected instance of " + typeof(AtomData[])
 				 + ", but got " + data._objArr);
-			Db4oUnit.ArrayAssert.AreEqual(ARRAY, data._objArr);
-			Db4oUnit.ArrayAssert.AreEqual(ARRAY, (Db4objects.Db4o.Tests.Common.Sampledata.AtomData[]
-				)data._obj);
+			ArrayAssert.AreEqual(ARRAY, data._objArr);
+			ArrayAssert.AreEqual(ARRAY, (AtomData[])data._obj);
 		}
 	}
 }

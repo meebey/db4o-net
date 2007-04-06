@@ -1,19 +1,27 @@
+using System;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Replication;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Replication;
+
 namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
-	public class ReplicationImpl : Db4objects.Db4o.Replication.IReplicationProcess
+	public class ReplicationImpl : IReplicationProcess
 	{
-		internal readonly Db4objects.Db4o.Internal.ObjectContainerBase _peerA;
+		internal readonly ObjectContainerBase _peerA;
 
-		internal readonly Db4objects.Db4o.Internal.Transaction _transA;
+		internal readonly Transaction _transA;
 
-		internal readonly Db4objects.Db4o.Internal.ObjectContainerBase _peerB;
+		internal readonly ObjectContainerBase _peerB;
 
-		internal readonly Db4objects.Db4o.Internal.Transaction _transB;
+		internal readonly Transaction _transB;
 
-		internal readonly Db4objects.Db4o.Replication.IReplicationConflictHandler _conflictHandler;
+		internal readonly IReplicationConflictHandler _conflictHandler;
 
-		internal readonly Db4objects.Db4o.ReplicationRecord _record;
+		internal readonly ReplicationRecord _record;
 
 		private int _direction;
 
@@ -25,12 +33,12 @@ namespace Db4objects.Db4o
 
 		private const int CHECK_CONFLICT = -99;
 
-		public ReplicationImpl(Db4objects.Db4o.Internal.ObjectContainerBase peerA, Db4objects.Db4o.IObjectContainer
-			 peerB, Db4objects.Db4o.Replication.IReplicationConflictHandler conflictHandler)
+		public ReplicationImpl(ObjectContainerBase peerA, IObjectContainer peerB, IReplicationConflictHandler
+			 conflictHandler)
 		{
 			if (conflictHandler == null)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			lock (peerA.Ext().Lock())
 			{
@@ -38,33 +46,30 @@ namespace Db4objects.Db4o
 				{
 					_peerA = peerA;
 					_transA = peerA.CheckTransaction(null);
-					_peerB = (Db4objects.Db4o.Internal.ObjectContainerBase)peerB;
+					_peerB = (ObjectContainerBase)peerB;
 					_transB = _peerB.CheckTransaction(null);
-					Db4objects.Db4o.Internal.Replication.MigrationConnection mgc = new Db4objects.Db4o.Internal.Replication.MigrationConnection
-						(_peerA, _peerB);
+					MigrationConnection mgc = new MigrationConnection(_peerA, _peerB);
 					_peerA.i_handlers.MigrationConnection(mgc);
 					_peerA.i_handlers.Replication(this);
-					_peerA.ReplicationCallState(Db4objects.Db4o.Internal.Const4.OLD);
+					_peerA.ReplicationCallState(Const4.OLD);
 					_peerB.i_handlers.MigrationConnection(mgc);
 					_peerB.i_handlers.Replication(this);
-					_peerB.ReplicationCallState(Db4objects.Db4o.Internal.Const4.OLD);
+					_peerB.ReplicationCallState(Const4.OLD);
 					_conflictHandler = conflictHandler;
-					_record = Db4objects.Db4o.ReplicationRecord.BeginReplication(_transA, _transB);
+					_record = ReplicationRecord.BeginReplication(_transA, _transB);
 				}
 			}
 		}
 
-		private int BindAndSet(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.ObjectContainerBase
-			 peer, Db4objects.Db4o.Internal.ObjectReference @ref, object sourceObject)
+		private int BindAndSet(Transaction trans, ObjectContainerBase peer, ObjectReference
+			 @ref, object sourceObject)
 		{
-			if (sourceObject is Db4objects.Db4o.Internal.IDb4oTypeImpl)
+			if (sourceObject is IDb4oTypeImpl)
 			{
-				Db4objects.Db4o.Internal.IDb4oTypeImpl db4oType = (Db4objects.Db4o.Internal.IDb4oTypeImpl
-					)sourceObject;
+				IDb4oTypeImpl db4oType = (IDb4oTypeImpl)sourceObject;
 				if (!db4oType.CanBind())
 				{
-					Db4objects.Db4o.Internal.IDb4oTypeImpl targetObject = (Db4objects.Db4o.Internal.IDb4oTypeImpl
-						)@ref.GetObject();
+					IDb4oTypeImpl targetObject = (IDb4oTypeImpl)@ref.GetObject();
 					targetObject.ReplicateFrom(sourceObject);
 					return @ref.GetID();
 				}
@@ -103,16 +108,16 @@ namespace Db4objects.Db4o
 
 		private void EndReplication()
 		{
-			_peerA.ReplicationCallState(Db4objects.Db4o.Internal.Const4.NONE);
+			_peerA.ReplicationCallState(Const4.NONE);
 			_peerA.i_handlers.MigrationConnection(null);
 			_peerA.i_handlers.Replication(null);
-			_peerA.ReplicationCallState(Db4objects.Db4o.Internal.Const4.NONE);
+			_peerA.ReplicationCallState(Const4.NONE);
 			_peerB.i_handlers.MigrationConnection(null);
 			_peerB.i_handlers.Replication(null);
 		}
 
-		private int IdInCaller(Db4objects.Db4o.Internal.ObjectContainerBase caller, Db4objects.Db4o.Internal.ObjectReference
-			 referenceA, Db4objects.Db4o.Internal.ObjectReference referenceB)
+		private int IdInCaller(ObjectContainerBase caller, ObjectReference referenceA, ObjectReference
+			 referenceB)
 		{
 			return (caller == _peerA) ? referenceA.GetID() : referenceB.GetID();
 		}
@@ -148,19 +153,19 @@ namespace Db4objects.Db4o
 			return _record._version;
 		}
 
-		public virtual Db4objects.Db4o.IObjectContainer PeerA()
+		public virtual IObjectContainer PeerA()
 		{
 			return _peerA;
 		}
 
-		public virtual Db4objects.Db4o.IObjectContainer PeerB()
+		public virtual IObjectContainer PeerB()
 		{
 			return _peerB;
 		}
 
 		public virtual void Replicate(object obj)
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = _peerB;
+			ObjectContainerBase stream = _peerB;
 			if (_peerB.IsStored(obj))
 			{
 				if (!_peerA.IsStored(obj))
@@ -178,8 +183,8 @@ namespace Db4objects.Db4o
 			EndReplication();
 		}
 
-		public virtual void SetDirection(Db4objects.Db4o.IObjectContainer replicateFrom, 
-			Db4objects.Db4o.IObjectContainer replicateTo)
+		public virtual void SetDirection(IObjectContainer replicateFrom, IObjectContainer
+			 replicateTo)
 		{
 			if (replicateFrom == _peerA && replicateTo == _peerB)
 			{
@@ -191,17 +196,16 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private void ShareBinding(Db4objects.Db4o.Internal.ObjectReference sourceReference
-			, Db4objects.Db4o.Internal.ObjectReference referenceA, object objectA, Db4objects.Db4o.Internal.ObjectReference
-			 referenceB, object objectB)
+		private void ShareBinding(ObjectReference sourceReference, ObjectReference referenceA
+			, object objectA, ObjectReference referenceB, object objectB)
 		{
 			if (sourceReference == null)
 			{
 				return;
 			}
-			if (objectA is Db4objects.Db4o.Internal.IDb4oTypeImpl)
+			if (objectA is IDb4oTypeImpl)
 			{
-				if (!((Db4objects.Db4o.Internal.IDb4oTypeImpl)objectA).CanBind())
+				if (!((IDb4oTypeImpl)objectA).CanBind())
 				{
 					return;
 				}
@@ -248,12 +252,11 @@ namespace Db4objects.Db4o
 		/// if #set() should stop processing because of a direction
 		/// setting.
 		/// </returns>
-		public virtual int TryToHandle(Db4objects.Db4o.Internal.ObjectContainerBase caller
-			, object obj)
+		public virtual int TryToHandle(ObjectContainerBase caller, object obj)
 		{
 			int notProcessed = 0;
-			Db4objects.Db4o.Internal.ObjectContainerBase other = null;
-			Db4objects.Db4o.Internal.ObjectReference sourceReference = null;
+			ObjectContainerBase other = null;
+			ObjectReference sourceReference = null;
 			if (caller == _peerA)
 			{
 				other = _peerB;
@@ -274,12 +277,10 @@ namespace Db4objects.Db4o
 			{
 				object objectA = obj;
 				object objectB = obj;
-				Db4objects.Db4o.Internal.ObjectReference referenceA = _peerA.ReferenceForObject(obj
-					);
-				Db4objects.Db4o.Internal.ObjectReference referenceB = _peerB.ReferenceForObject(obj
-					);
-				Db4objects.Db4o.Internal.VirtualAttributes attA = null;
-				Db4objects.Db4o.Internal.VirtualAttributes attB = null;
+				ObjectReference referenceA = _peerA.ReferenceForObject(obj);
+				ObjectReference referenceB = _peerB.ReferenceForObject(obj);
+				VirtualAttributes attA = null;
+				VirtualAttributes attB = null;
 				if (referenceA == null)
 				{
 					if (referenceB == null)
@@ -292,8 +293,8 @@ namespace Db4objects.Db4o
 					{
 						return notProcessed;
 					}
-					Db4objects.Db4o.Internal.HardObjectReference hardRef = _transA.GetHardReferenceBySignature
-						(attB.i_uuid, attB.i_database.i_signature);
+					HardObjectReference hardRef = _transA.GetHardReferenceBySignature(attB.i_uuid, attB
+						.i_database.i_signature);
 					if (hardRef._object == null)
 					{
 						return notProcessed;
@@ -312,8 +313,8 @@ namespace Db4objects.Db4o
 					if (referenceB == null)
 					{
 						sourceReference = referenceA;
-						Db4objects.Db4o.Internal.HardObjectReference hardRef = _transB.GetHardReferenceBySignature
-							(attA.i_uuid, attA.i_database.i_signature);
+						HardObjectReference hardRef = _transB.GetHardReferenceBySignature(attA.i_uuid, attA
+							.i_database.i_signature);
 						if (hardRef._object == null)
 						{
 							return notProcessed;
@@ -398,10 +399,9 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		public virtual void WhereModified(Db4objects.Db4o.Query.IQuery query)
+		public virtual void WhereModified(IQuery query)
 		{
-			query.Descend(Db4objects.Db4o.Ext.VirtualField.VERSION).Constrain(LastSynchronization
-				()).Greater();
+			query.Descend(VirtualField.VERSION).Constrain(LastSynchronization()).Greater();
 		}
 	}
 }

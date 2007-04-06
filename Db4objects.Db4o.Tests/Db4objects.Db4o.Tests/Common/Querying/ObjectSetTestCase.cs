@@ -1,12 +1,18 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Querying;
+
 namespace Db4objects.Db4o.Tests.Common.Querying
 {
 	/// <exclude></exclude>
-	public class ObjectSetTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class ObjectSetTestCase : AbstractDb4oTestCase
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase().RunSoloAndClientServer
-				();
+			new ObjectSetTestCase().RunSoloAndClientServer();
 		}
 
 		public class Item
@@ -30,66 +36,57 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		protected override void Store()
 		{
-			Db().Set(new Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item("foo"));
-			Db().Set(new Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item("bar"));
-			Db().Set(new Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item("baz"));
+			Db().Set(new ObjectSetTestCase.Item("foo"));
+			Db().Set(new ObjectSetTestCase.Item("bar"));
+			Db().Set(new ObjectSetTestCase.Item("baz"));
 		}
 
 		public virtual void TestObjectsCantBeSeenAfterDelete()
 		{
-			Db4objects.Db4o.Internal.Transaction trans1 = NewTransaction();
-			Db4objects.Db4o.Internal.Transaction trans2 = NewTransaction();
-			Db4objects.Db4o.IObjectSet os = QueryItems(trans1);
+			Transaction trans1 = NewTransaction();
+			Transaction trans2 = NewTransaction();
+			IObjectSet os = QueryItems(trans1);
 			DeleteItemAndCommit(trans2, "foo");
 			AssertItems(new string[] { "bar", "baz" }, os);
 		}
 
 		public virtual void TestAccessOrder()
 		{
-			Db4objects.Db4o.IObjectSet result = NewQuery(typeof(Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item)
-				).Execute();
+			IObjectSet result = NewQuery(typeof(ObjectSetTestCase.Item)).Execute();
 			for (int i = 0; i < result.Size(); ++i)
 			{
-				Db4oUnit.Assert.IsTrue(result.HasNext());
-				Db4oUnit.Assert.AreSame(result.Ext().Get(i), result.Next());
+				Assert.IsTrue(result.HasNext());
+				Assert.AreSame(result.Ext().Get(i), result.Next());
 			}
-			Db4oUnit.Assert.IsFalse(result.HasNext());
+			Assert.IsFalse(result.HasNext());
 		}
 
-		private void AssertItems(string[] expectedNames, Db4objects.Db4o.IObjectSet actual
-			)
+		private void AssertItems(string[] expectedNames, IObjectSet actual)
 		{
 			for (int i = 0; i < expectedNames.Length; i++)
 			{
-				Db4oUnit.Assert.IsTrue(actual.HasNext());
-				Db4oUnit.Assert.AreEqual(expectedNames[i], ((Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item
-					)actual.Next()).name);
+				Assert.IsTrue(actual.HasNext());
+				Assert.AreEqual(expectedNames[i], ((ObjectSetTestCase.Item)actual.Next()).name);
 			}
-			Db4oUnit.Assert.IsFalse(actual.HasNext());
+			Assert.IsFalse(actual.HasNext());
 		}
 
-		private void DeleteItemAndCommit(Db4objects.Db4o.Internal.Transaction trans, string
-			 name)
+		private void DeleteItemAndCommit(Transaction trans, string name)
 		{
 			Stream().Delete(trans, QueryItem(trans, name));
 			trans.Commit();
 		}
 
-		private Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item QueryItem(Db4objects.Db4o.Internal.Transaction
-			 trans, string name)
+		private ObjectSetTestCase.Item QueryItem(Transaction trans, string name)
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery(trans, typeof(Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item)
-				);
+			IQuery q = NewQuery(trans, typeof(ObjectSetTestCase.Item));
 			q.Descend("name").Constrain(name);
-			return (Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item)q.Execute().
-				Next();
+			return (ObjectSetTestCase.Item)q.Execute().Next();
 		}
 
-		private Db4objects.Db4o.IObjectSet QueryItems(Db4objects.Db4o.Internal.Transaction
-			 trans)
+		private IObjectSet QueryItems(Transaction trans)
 		{
-			Db4objects.Db4o.Query.IQuery q = NewQuery(trans, typeof(Db4objects.Db4o.Tests.Common.Querying.ObjectSetTestCase.Item)
-				);
+			IQuery q = NewQuery(trans, typeof(ObjectSetTestCase.Item));
 			q.Descend("name").OrderAscending();
 			return q.Execute();
 		}

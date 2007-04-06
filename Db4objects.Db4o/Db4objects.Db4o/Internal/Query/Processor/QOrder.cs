@@ -1,18 +1,21 @@
+using System;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	internal class QOrder : Db4objects.Db4o.Foundation.Tree
+	internal class QOrder : Tree
 	{
 		internal static int equalityIDGenerator = 1;
 
-		internal readonly Db4objects.Db4o.Internal.Query.Processor.QConObject _constraint;
+		internal readonly QConObject _constraint;
 
-		internal readonly Db4objects.Db4o.Internal.Query.Processor.QCandidate _candidate;
+		internal readonly QCandidate _candidate;
 
 		private int _equalityID;
 
-		internal QOrder(Db4objects.Db4o.Internal.Query.Processor.QConObject a_constraint, 
-			Db4objects.Db4o.Internal.Query.Processor.QCandidate a_candidate)
+		internal QOrder(QConObject a_constraint, QCandidate a_candidate)
 		{
 			_constraint = a_constraint;
 			_candidate = a_candidate;
@@ -28,7 +31,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return _equalityID != 0 && _equalityID == other._equalityID;
 		}
 
-		public override int Compare(Db4objects.Db4o.Foundation.Tree a_to)
+		public override int Compare(Tree a_to)
 		{
 			int res = InternalCompare();
 			if (res != 0)
@@ -77,7 +80,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override object Key()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		private static int GenerateEqualityID()

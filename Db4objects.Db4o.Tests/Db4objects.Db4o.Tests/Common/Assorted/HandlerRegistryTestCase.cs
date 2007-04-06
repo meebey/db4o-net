@@ -1,6 +1,12 @@
+using System;
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Assorted;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class HandlerRegistryTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class HandlerRegistryTestCase : AbstractDb4oTestCase
 	{
 		public interface IFooInterface
 		{
@@ -8,16 +14,16 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void _testInterfaceHandlerIsSameAsObjectHandler()
 		{
-			Db4oUnit.Assert.AreSame(HandlerForClass(typeof(object)), HandlerForClass(typeof(Db4objects.Db4o.Tests.Common.Assorted.HandlerRegistryTestCase.IFooInterface)
+			Assert.AreSame(HandlerForClass(typeof(object)), HandlerForClass(typeof(HandlerRegistryTestCase.IFooInterface)
 				));
 		}
 
-		private Db4objects.Db4o.Internal.ITypeHandler4 HandlerForClass(System.Type clazz)
+		private ITypeHandler4 HandlerForClass(Type clazz)
 		{
 			return Handlers().HandlerForClass(Stream(), ReflectClass(clazz));
 		}
 
-		private Db4objects.Db4o.Internal.HandlerRegistry Handlers()
+		private HandlerRegistry Handlers()
 		{
 			return Stream().Handlers();
 		}

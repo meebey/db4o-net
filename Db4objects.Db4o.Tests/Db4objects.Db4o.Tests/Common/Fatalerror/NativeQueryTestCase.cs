@@ -1,6 +1,12 @@
+using System;
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Fatalerror;
+
 namespace Db4objects.Db4o.Tests.Common.Fatalerror
 {
-	public class NativeQueryTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class NativeQueryTestCase : AbstractDb4oTestCase
 	{
 		public class Item
 		{
@@ -14,24 +20,22 @@ namespace Db4objects.Db4o.Tests.Common.Fatalerror
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Fatalerror.NativeQueryTestCase().RunSoloAndClientServer
-				();
+			new NativeQueryTestCase().RunSoloAndClientServer();
 		}
 
 		protected override void Store()
 		{
-			Store(new Db4objects.Db4o.Tests.Common.Fatalerror.NativeQueryTestCase.Item("hello"
-				));
+			Store(new NativeQueryTestCase.Item("hello"));
 		}
 
 		public virtual void _test()
 		{
-			Db4oUnit.Assert.Expect(typeof(Db4objects.Db4o.Tests.Common.Fatalerror.NativeQueryTestCase.NQError)
-				, new _AnonymousInnerClass30(this));
-			Db4oUnit.Assert.IsTrue(Db().IsClosed());
+			Assert.Expect(typeof(NativeQueryTestCase.NQError), new _AnonymousInnerClass30(this
+				));
+			Assert.IsTrue(Db().IsClosed());
 		}
 
-		private sealed class _AnonymousInnerClass30 : Db4oUnit.ICodeBlock
+		private sealed class _AnonymousInnerClass30 : ICodeBlock
 		{
 			public _AnonymousInnerClass30(NativeQueryTestCase _enclosing)
 			{
@@ -40,8 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Fatalerror
 
 			public void Run()
 			{
-				Db4objects.Db4o.Query.Predicate fatalErrorPredicate = new Db4objects.Db4o.Tests.Common.Fatalerror.NativeQueryTestCase.FatalErrorPredicate
-					();
+				Predicate fatalErrorPredicate = new NativeQueryTestCase.FatalErrorPredicate();
 				this._enclosing.Db().Query(fatalErrorPredicate);
 			}
 
@@ -49,17 +52,16 @@ namespace Db4objects.Db4o.Tests.Common.Fatalerror
 		}
 
 		[System.Serializable]
-		public class FatalErrorPredicate : Db4objects.Db4o.Query.Predicate
+		public class FatalErrorPredicate : Predicate
 		{
 			public virtual bool Match(object item)
 			{
-				throw new Db4objects.Db4o.Tests.Common.Fatalerror.NativeQueryTestCase.NQError("nq error!"
-					);
+				throw new NativeQueryTestCase.NQError("nq error!");
 			}
 		}
 
 		[System.Serializable]
-		public class NQError : System.Exception
+		public class NQError : Exception
 		{
 			public NQError(string msg) : base(msg)
 			{

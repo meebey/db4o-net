@@ -1,7 +1,20 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Btree;
+using Db4objects.Db4o.Tests.Common.Fieldindex;
+using Sharpen;
+
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
 	/// <exclude></exclude>
-	public abstract class StringIndexTestCaseBase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public abstract class StringIndexTestCaseBase : AbstractDb4oTestCase
 	{
 		public class Item
 		{
@@ -21,21 +34,17 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
-			IndexField(config, typeof(Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item)
-				, "name");
+			IndexField(config, typeof(StringIndexTestCaseBase.Item), "name");
 		}
 
-		protected virtual void AssertItems(string[] expected, Db4objects.Db4o.IObjectSet 
-			result)
+		protected virtual void AssertItems(string[] expected, IObjectSet result)
 		{
-			Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor expectingVisitor = new Db4objects.Db4o.Tests.Common.Btree.ExpectingVisitor
-				(ToObjectArray(expected));
+			ExpectingVisitor expectingVisitor = new ExpectingVisitor(ToObjectArray(expected));
 			while (result.HasNext())
 			{
-				expectingVisitor.Visit(((Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item
-					)result.Next()).name);
+				expectingVisitor.Visit(((StringIndexTestCaseBase.Item)result.Next()).name);
 			}
 			expectingVisitor.AssertExpectations();
 		}
@@ -49,16 +58,14 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		protected virtual void GrafittiFreeSpace()
 		{
-			Db4objects.Db4o.Internal.IoAdaptedObjectContainer file = ((Db4objects.Db4o.Internal.IoAdaptedObjectContainer
-				)Db());
-			Db4objects.Db4o.Internal.Freespace.FreespaceManagerRam fm = (Db4objects.Db4o.Internal.Freespace.FreespaceManagerRam
-				)file.FreespaceManager();
+			IoAdaptedObjectContainer file = ((IoAdaptedObjectContainer)Db());
+			FreespaceManagerRam fm = (FreespaceManagerRam)file.FreespaceManager();
 			fm.TraverseFreeSlots(new _AnonymousInnerClass58(this, file));
 		}
 
-		private sealed class _AnonymousInnerClass58 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass58 : IVisitor4
 		{
-			public _AnonymousInnerClass58(StringIndexTestCaseBase _enclosing, Db4objects.Db4o.Internal.IoAdaptedObjectContainer
+			public _AnonymousInnerClass58(StringIndexTestCaseBase _enclosing, IoAdaptedObjectContainer
 				 file)
 			{
 				this._enclosing = _enclosing;
@@ -67,13 +74,13 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 			public void Visit(object obj)
 			{
-				Db4objects.Db4o.Internal.Slots.Slot slot = (Db4objects.Db4o.Internal.Slots.Slot)obj;
+				Slot slot = (Slot)obj;
 				file.OverwriteDeletedBytes(slot.GetAddress(), slot.GetLength());
 			}
 
 			private readonly StringIndexTestCaseBase _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.IoAdaptedObjectContainer file;
+			private readonly IoAdaptedObjectContainer file;
 		}
 
 		protected virtual void AssertExists(string itemName)
@@ -86,25 +93,20 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			Add(Trans(), itemName);
 		}
 
-		protected virtual void Add(Db4objects.Db4o.Internal.Transaction transaction, string
-			 itemName)
+		protected virtual void Add(Transaction transaction, string itemName)
 		{
-			Stream().Set(transaction, new Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item
-				(itemName));
+			Stream().Set(transaction, new StringIndexTestCaseBase.Item(itemName));
 		}
 
-		protected virtual void AssertExists(Db4objects.Db4o.Internal.Transaction transaction
-			, string itemName)
+		protected virtual void AssertExists(Transaction transaction, string itemName)
 		{
-			Db4oUnit.Assert.IsNotNull(Query(transaction, itemName));
+			Assert.IsNotNull(Query(transaction, itemName));
 		}
 
-		protected virtual void Rename(Db4objects.Db4o.Internal.Transaction transaction, string
-			 from, string to)
+		protected virtual void Rename(Transaction transaction, string from, string to)
 		{
-			Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item item = Query
-				(transaction, from);
-			Db4oUnit.Assert.IsNotNull(item);
+			StringIndexTestCaseBase.Item item = Query(transaction, from);
+			Assert.IsNotNull(item);
 			item.name = to;
 			Stream().Set(transaction, item);
 		}
@@ -114,30 +116,26 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			Rename(Trans(), from, to);
 		}
 
-		protected virtual Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item
-			 Query(string name)
+		protected virtual StringIndexTestCaseBase.Item Query(string name)
 		{
 			return Query(Trans(), name);
 		}
 
-		protected virtual Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item
-			 Query(Db4objects.Db4o.Internal.Transaction transaction, string name)
+		protected virtual StringIndexTestCaseBase.Item Query(Transaction transaction, string
+			 name)
 		{
-			Db4objects.Db4o.IObjectSet objectSet = NewQuery(transaction, name).Execute();
+			IObjectSet objectSet = NewQuery(transaction, name).Execute();
 			if (!objectSet.HasNext())
 			{
 				return null;
 			}
-			return (Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item)objectSet
-				.Next();
+			return (StringIndexTestCaseBase.Item)objectSet.Next();
 		}
 
-		protected virtual Db4objects.Db4o.Query.IQuery NewQuery(Db4objects.Db4o.Internal.Transaction
-			 transaction, string itemName)
+		protected virtual IQuery NewQuery(Transaction transaction, string itemName)
 		{
-			Db4objects.Db4o.Query.IQuery query = Stream().Query(transaction);
-			query.Constrain(typeof(Db4objects.Db4o.Tests.Common.Fieldindex.StringIndexTestCaseBase.Item)
-				);
+			IQuery query = Stream().Query(transaction);
+			query.Constrain(typeof(StringIndexTestCaseBase.Item));
 			query.Descend("name").Constrain(itemName);
 			return query;
 		}

@@ -1,6 +1,14 @@
+using System.IO;
+using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Assorted;
+using Sharpen.Lang;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class BackupStressTestCase : Db4oUnit.ITestLifeCycle
+	public class BackupStressTestCase : ITestLifeCycle
 	{
 		private static bool verbose = false;
 
@@ -14,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private const int COMMITS = 10;
 
-		private Db4objects.Db4o.IObjectContainer _objectContainer;
+		private IObjectContainer _objectContainer;
 
 		private volatile bool _inBackup;
 
@@ -28,16 +36,15 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			verbose = true;
 			runOnOldJDK = true;
-			Db4objects.Db4o.Tests.Common.Assorted.BackupStressTestCase stressTest = new Db4objects.Db4o.Tests.Common.Assorted.BackupStressTestCase
-				();
+			BackupStressTestCase stressTest = new BackupStressTestCase();
 			stressTest.SetUp();
 			stressTest.Test();
 		}
 
 		public virtual void SetUp()
 		{
-			Db4objects.Db4o.Db4oFactory.Configure().ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Assorted.BackupStressItem)
-				).ObjectField("_iteration").Indexed(true);
+			Db4oFactory.Configure().ObjectClass(typeof(BackupStressItem)).ObjectField("_iteration"
+				).Indexed(true);
 		}
 
 		public virtual void TearDown()
@@ -66,8 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 					);
 				return;
 			}
-			Db4objects.Db4o.Tests.Common.Assorted.BackupStressIteration iteration = new Db4objects.Db4o.Tests.Common.Assorted.BackupStressIteration
-				();
+			BackupStressIteration iteration = new BackupStressIteration();
 			_objectContainer.Set(iteration);
 			_objectContainer.Commit();
 			StartBackupThread();
@@ -75,8 +81,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			{
 				for (int obj = 0; obj < OBJECTS; obj++)
 				{
-					_objectContainer.Set(new Db4objects.Db4o.Tests.Common.Assorted.BackupStressItem("i"
-						 + obj, i));
+					_objectContainer.Set(new BackupStressItem("i" + obj, i));
 					_commitCounter++;
 					if (_commitCounter >= COMMITS)
 					{
@@ -92,10 +97,10 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void StartBackupThread()
 		{
-			new Sharpen.Lang.Thread(new _AnonymousInnerClass92(this)).Start();
+			new Thread(new _AnonymousInnerClass92(this)).Start();
 		}
 
-		private sealed class _AnonymousInnerClass92 : Sharpen.Lang.IRunnable
+		private sealed class _AnonymousInnerClass92 : IRunnable
 		{
 			public _AnonymousInnerClass92(BackupStressTestCase _enclosing)
 			{
@@ -115,7 +120,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 						this._enclosing._objectContainer.Ext().Backup(fileName);
 						this._enclosing._inBackup = false;
 					}
-					catch (System.IO.IOException e)
+					catch (IOException e)
 					{
 						Sharpen.Runtime.PrintStackTrace(e);
 					}
@@ -128,7 +133,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		private void OpenDatabase()
 		{
 			DeleteFile(FILE);
-			_objectContainer = Db4objects.Db4o.Db4oFactory.OpenFile(FILE);
+			_objectContainer = Db4oFactory.OpenFile(FILE);
 		}
 
 		private void CloseDatabase()
@@ -136,7 +141,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			_noMoreBackups = true;
 			while (_inBackup)
 			{
-				Sharpen.Lang.Thread.Sleep(1000);
+				Thread.Sleep(1000);
 			}
 			_objectContainer.Close();
 		}
@@ -148,29 +153,26 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			for (int i = 1; i < _backups; i++)
 			{
 				Stdout("Backup " + i);
-				Db4objects.Db4o.IObjectContainer container = Db4objects.Db4o.Db4oFactory.OpenFile
-					(BackupFile(i));
+				IObjectContainer container = Db4oFactory.OpenFile(BackupFile(i));
 				try
 				{
 					Stdout("Open successful");
-					Db4objects.Db4o.Query.IQuery q = container.Query();
-					q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Assorted.BackupStressIteration));
-					Db4objects.Db4o.Tests.Common.Assorted.BackupStressIteration iteration = (Db4objects.Db4o.Tests.Common.Assorted.BackupStressIteration
-						)q.Execute().Next();
+					IQuery q = container.Query();
+					q.Constrain(typeof(BackupStressIteration));
+					BackupStressIteration iteration = (BackupStressIteration)q.Execute().Next();
 					int iterations = iteration.GetCount();
 					Stdout("Iterations in backup: " + iterations);
 					if (iterations > 0)
 					{
 						q = container.Query();
-						q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Assorted.BackupStressItem));
+						q.Constrain(typeof(BackupStressItem));
 						q.Descend("_iteration").Constrain(iteration.GetCount());
-						Db4objects.Db4o.IObjectSet items = q.Execute();
-						Db4oUnit.Assert.AreEqual(OBJECTS, items.Size());
+						IObjectSet items = q.Execute();
+						Assert.AreEqual(OBJECTS, items.Size());
 						while (items.HasNext())
 						{
-							Db4objects.Db4o.Tests.Common.Assorted.BackupStressItem item = (Db4objects.Db4o.Tests.Common.Assorted.BackupStressItem
-								)items.Next();
-							Db4oUnit.Assert.AreEqual(iterations, item._iteration);
+							BackupStressItem item = (BackupStressItem)items.Next();
+							Assert.AreEqual(iterations, item._iteration);
 						}
 					}
 				}
@@ -195,8 +197,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private bool IsOldJDK()
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = (Db4objects.Db4o.Internal.ObjectContainerBase
-				)_objectContainer;
+			ObjectContainerBase stream = (ObjectContainerBase)_objectContainer;
 			return stream.NeedsLockFileThread();
 		}
 

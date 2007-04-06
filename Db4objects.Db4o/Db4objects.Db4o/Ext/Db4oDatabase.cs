@@ -1,3 +1,11 @@
+using System;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Types;
+using Sharpen;
+
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>Class to identify a database by it's signature.</summary>
@@ -8,7 +16,7 @@ namespace Db4objects.Db4o.Ext
 	/// </remarks>
 	/// <persistent></persistent>
 	/// <exclude></exclude>
-	public class Db4oDatabase : Db4objects.Db4o.Types.IDb4oType, Db4objects.Db4o.IInternal4
+	public class Db4oDatabase : IDb4oType, IInternal4
 	{
 		/// <summary>Field is public for implementation reasons, DO NOT TOUCH!</summary>
 		public byte[] i_signature;
@@ -28,7 +36,7 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>cached ObjectContainer for getting the own ID.</summary>
 		/// <remarks>cached ObjectContainer for getting the own ID.</remarks>
 		[System.NonSerialized]
-		private Db4objects.Db4o.Internal.ObjectContainerBase i_stream;
+		private ObjectContainerBase i_stream;
 
 		/// <summary>cached ID, only valid in combination with i_objectContainer</summary>
 		[System.NonSerialized]
@@ -48,8 +56,8 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>generates a new Db4oDatabase object with a unique signature.</remarks>
 		public static Db4objects.Db4o.Ext.Db4oDatabase Generate()
 		{
-			return new Db4objects.Db4o.Ext.Db4oDatabase(Db4objects.Db4o.Internal.Unobfuscated
-				.GenerateSignature(), Sharpen.Runtime.CurrentTimeMillis());
+			return new Db4objects.Db4o.Ext.Db4oDatabase(Unobfuscated.GenerateSignature(), Runtime
+				.CurrentTimeMillis());
 		}
 
 		/// <summary>comparison by signature.</summary>
@@ -69,8 +77,7 @@ namespace Db4objects.Db4o.Ext
 			{
 				return false;
 			}
-			return Db4objects.Db4o.Foundation.Arrays4.AreEqual(other.i_signature, this.i_signature
-				);
+			return Arrays4.AreEqual(other.i_signature, this.i_signature);
 		}
 
 		public override int GetHashCode()
@@ -81,9 +88,9 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>gets the db4o ID, and may cache it for performance reasons.</summary>
 		/// <remarks>gets the db4o ID, and may cache it for performance reasons.</remarks>
 		/// <returns>the db4o ID for the ObjectContainer</returns>
-		public virtual int GetID(Db4objects.Db4o.Internal.Transaction trans)
+		public virtual int GetID(Transaction trans)
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = trans.Stream();
+			ObjectContainerBase stream = trans.Stream();
 			if (stream != i_stream)
 			{
 				i_stream = stream;
@@ -112,7 +119,7 @@ namespace Db4objects.Db4o.Ext
 		{
 			if (peer == this)
 			{
-				throw new System.ArgumentException();
+				throw new ArgumentException();
 			}
 			if (i_uuid != peer.i_uuid)
 			{
@@ -129,14 +136,14 @@ namespace Db4objects.Db4o.Ext
 					return i_signature[i] < peer.i_signature[i];
 				}
 			}
-			throw new System.Exception();
+			throw new Exception();
 		}
 
 		/// <summary>make sure this Db4oDatabase is stored.</summary>
 		/// <remarks>make sure this Db4oDatabase is stored. Return the ID.</remarks>
-		public virtual int Bind(Db4objects.Db4o.Internal.Transaction trans)
+		public virtual int Bind(Transaction trans)
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = trans.Stream();
+			ObjectContainerBase stream = trans.Stream();
 			Db4objects.Db4o.Ext.Db4oDatabase stored = (Db4objects.Db4o.Ext.Db4oDatabase)stream
 				.Db4oTypeStored(trans, this);
 			if (stored == null)
@@ -164,9 +171,9 @@ namespace Db4objects.Db4o.Ext
 			}
 		}
 
-		private int StoreAndGetId(Db4objects.Db4o.Internal.Transaction trans)
+		private int StoreAndGetId(Transaction trans)
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = trans.Stream();
+			ObjectContainerBase stream = trans.Stream();
 			stream.ShowInternalClasses(true);
 			try
 			{
@@ -180,8 +187,7 @@ namespace Db4objects.Db4o.Ext
 		}
 
 		/// <summary>find a Db4oDatabase with the same signature as this one</summary>
-		public virtual Db4objects.Db4o.Ext.Db4oDatabase Query(Db4objects.Db4o.Internal.Transaction
-			 trans)
+		public virtual Db4objects.Db4o.Ext.Db4oDatabase Query(Transaction trans)
 		{
 			if (i_uuid > 0)
 			{
@@ -194,17 +200,17 @@ namespace Db4objects.Db4o.Ext
 			return Query(trans, false);
 		}
 
-		private Db4objects.Db4o.Ext.Db4oDatabase Query(Db4objects.Db4o.Internal.Transaction
-			 trans, bool constrainByUUID)
+		private Db4objects.Db4o.Ext.Db4oDatabase Query(Transaction trans, bool constrainByUUID
+			)
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = trans.Stream();
-			Db4objects.Db4o.Query.IQuery q = stream.Query(trans);
+			ObjectContainerBase stream = trans.Stream();
+			IQuery q = stream.Query(trans);
 			q.Constrain(GetType());
 			if (constrainByUUID)
 			{
 				q.Descend(CREATIONTIME_FIELD).Constrain(i_uuid);
 			}
-			Db4objects.Db4o.IObjectSet objectSet = q.Execute();
+			IObjectSet objectSet = q.Execute();
 			while (objectSet.HasNext())
 			{
 				Db4objects.Db4o.Ext.Db4oDatabase storedDatabase = (Db4objects.Db4o.Ext.Db4oDatabase

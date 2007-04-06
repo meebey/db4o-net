@@ -1,7 +1,12 @@
+using System;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	public class QConEvaluation : Db4objects.Db4o.Internal.Query.Processor.QCon
+	public class QConEvaluation : QCon
 	{
 		[System.NonSerialized]
 		private object i_evaluation;
@@ -14,14 +19,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 		}
 
-		public QConEvaluation(Db4objects.Db4o.Internal.Transaction a_trans, object a_evaluation
-			) : base(a_trans)
+		public QConEvaluation(Transaction a_trans, object a_evaluation) : base(a_trans)
 		{
 			i_evaluation = a_evaluation;
 		}
 
-		internal override void EvaluateEvaluationsExec(Db4objects.Db4o.Internal.Query.Processor.QCandidates
-			 a_candidates, bool rereadObject)
+		internal override void EvaluateEvaluationsExec(QCandidates a_candidates, bool rereadObject
+			)
 		{
 			if (rereadObject)
 			{
@@ -30,7 +34,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			a_candidates.Filter(this);
 		}
 
-		private sealed class _AnonymousInnerClass32 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass32 : IVisitor4
 		{
 			public _AnonymousInnerClass32(QConEvaluation _enclosing)
 			{
@@ -39,7 +43,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 			public void Visit(object a_object)
 			{
-				((Db4objects.Db4o.Internal.Query.Processor.QCandidate)a_object).UseField(null);
+				((QCandidate)a_object).UseField(null);
 			}
 
 			private readonly QConEvaluation _enclosing;
@@ -53,39 +57,42 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private void MarshallUsingDb4oFormat()
 		{
-			Db4objects.Db4o.Internal.SerializedGraph serialized = Db4objects.Db4o.Internal.Serializer
-				.Marshall(Container(), i_evaluation);
+			SerializedGraph serialized = Serializer.Marshall(Container(), i_evaluation);
 			i_marshalledEvaluation = serialized._bytes;
 			i_marshalledID = serialized._id;
 		}
 
-		internal override void Unmarshall(Db4objects.Db4o.Internal.Transaction a_trans)
+		internal override void Unmarshall(Transaction a_trans)
 		{
 			if (i_trans == null)
 			{
 				base.Unmarshall(a_trans);
-				i_evaluation = Db4objects.Db4o.Internal.Serializer.Unmarshall(Container(), i_marshalledEvaluation
-					, i_marshalledID);
+				i_evaluation = Serializer.Unmarshall(Container(), i_marshalledEvaluation, i_marshalledID
+					);
 			}
 		}
 
 		public override void Visit(object obj)
 		{
-			Db4objects.Db4o.Internal.Query.Processor.QCandidate candidate = (Db4objects.Db4o.Internal.Query.Processor.QCandidate
-				)obj;
+			QCandidate candidate = (QCandidate)obj;
+			ForceActivation(candidate);
 			try
 			{
-				Db4objects.Db4o.Internal.Platform4.EvaluationEvaluate(i_evaluation, candidate);
-				if (!candidate._include)
-				{
-					DoNotInclude(candidate.GetRoot());
-				}
+				Platform4.EvaluationEvaluate(i_evaluation, candidate);
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
 				candidate.Include(false);
+			}
+			if (!candidate._include)
+			{
 				DoNotInclude(candidate.GetRoot());
 			}
+		}
+
+		private void ForceActivation(QCandidate candidate)
+		{
+			candidate.GetObject();
 		}
 
 		internal virtual bool SupportsIndex()

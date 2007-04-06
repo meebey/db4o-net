@@ -1,13 +1,13 @@
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	public abstract class QEAbstract : Db4objects.Db4o.Internal.Query.Processor.QE
+	public abstract class QEAbstract : QE
 	{
-		internal override Db4objects.Db4o.Internal.Query.Processor.QE Add(Db4objects.Db4o.Internal.Query.Processor.QE
-			 evaluator)
+		internal override QE Add(QE evaluator)
 		{
-			Db4objects.Db4o.Internal.Query.Processor.QE qe = new Db4objects.Db4o.Internal.Query.Processor.QEMulti
-				();
+			QE qe = new QEMulti();
 			qe.Add(this);
 			qe.Add(evaluator);
 			return qe;

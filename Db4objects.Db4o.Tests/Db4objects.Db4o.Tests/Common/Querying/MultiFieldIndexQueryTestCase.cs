@@ -1,18 +1,25 @@
+using System;
+using System.Reflection;
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Querying;
+
 namespace Db4objects.Db4o.Tests.Common.Querying
 {
 	/// <exclude></exclude>
-	public class MultiFieldIndexQueryTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class MultiFieldIndexQueryTestCase : AbstractDb4oTestCase
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase().RunSolo(
-				);
+			new MultiFieldIndexQueryTestCase().RunSolo();
 		}
 
 		public class Book
 		{
-			public Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person[]
-				 authors;
+			public MultiFieldIndexQueryTestCase.Person[] authors;
 
 			public string title;
 
@@ -20,8 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			{
 			}
 
-			public Book(string title, Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person[]
-				 authors)
+			public Book(string title, MultiFieldIndexQueryTestCase.Person[] authors)
 			{
 				this.title = title;
 				this.authors = authors;
@@ -63,23 +69,20 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			}
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
-			IndexAllFields(config, typeof(Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Book)
-				);
-			IndexAllFields(config, typeof(Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person)
-				);
+			IndexAllFields(config, typeof(MultiFieldIndexQueryTestCase.Book));
+			IndexAllFields(config, typeof(MultiFieldIndexQueryTestCase.Person));
 		}
 
-		protected virtual void IndexAllFields(Db4objects.Db4o.Config.IConfiguration config
-			, System.Type clazz)
+		protected virtual void IndexAllFields(IConfiguration config, Type clazz)
 		{
-			System.Reflection.FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(clazz);
+			FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(clazz);
 			for (int i = 0; i < fields.Length; i++)
 			{
 				IndexField(config, clazz, fields[i].Name);
 			}
-			System.Type superclass = clazz.BaseType;
+			Type superclass = clazz.BaseType;
 			if (superclass != null)
 			{
 				IndexAllFields(config, superclass);
@@ -88,63 +91,50 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		protected override void Store()
 		{
-			Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person aaron = 
-				new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person("Aaron"
-				, "OneOK");
-			Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person bill = 
-				new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person("Bill"
-				, "TwoOK");
-			Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person chris = 
-				new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person("Chris"
-				, "ThreeOK");
-			Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person dave = 
-				new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person("Dave"
-				, "FourOK");
-			Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person neil = 
-				new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person("Neil"
-				, "Notwanted");
-			Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person nat = new 
-				Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person("Nat", 
-				"Neverwanted");
-			Db().Set(new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Book
-				("Persistence possibilities", new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person
+			MultiFieldIndexQueryTestCase.Person aaron = new MultiFieldIndexQueryTestCase.Person
+				("Aaron", "OneOK");
+			MultiFieldIndexQueryTestCase.Person bill = new MultiFieldIndexQueryTestCase.Person
+				("Bill", "TwoOK");
+			MultiFieldIndexQueryTestCase.Person chris = new MultiFieldIndexQueryTestCase.Person
+				("Chris", "ThreeOK");
+			MultiFieldIndexQueryTestCase.Person dave = new MultiFieldIndexQueryTestCase.Person
+				("Dave", "FourOK");
+			MultiFieldIndexQueryTestCase.Person neil = new MultiFieldIndexQueryTestCase.Person
+				("Neil", "Notwanted");
+			MultiFieldIndexQueryTestCase.Person nat = new MultiFieldIndexQueryTestCase.Person
+				("Nat", "Neverwanted");
+			Db().Set(new MultiFieldIndexQueryTestCase.Book("Persistence possibilities", new MultiFieldIndexQueryTestCase.Person
 				[] { aaron, bill, chris }));
-			Db().Set(new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Book
-				("Persistence using S.O.D.A.", new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person
-				[] { aaron }));
-			Db().Set(new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Book
-				("Persistence using JDO", new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person
+			Db().Set(new MultiFieldIndexQueryTestCase.Book("Persistence using S.O.D.A.", new 
+				MultiFieldIndexQueryTestCase.Person[] { aaron }));
+			Db().Set(new MultiFieldIndexQueryTestCase.Book("Persistence using JDO", new MultiFieldIndexQueryTestCase.Person
 				[] { bill, dave }));
-			Db().Set(new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Book
-				("Don't want to find Phil", new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person
+			Db().Set(new MultiFieldIndexQueryTestCase.Book("Don't want to find Phil", new MultiFieldIndexQueryTestCase.Person
 				[] { aaron, bill, neil }));
-			Db().Set(new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Book
-				("Persistence by Jeff", new Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person
+			Db().Set(new MultiFieldIndexQueryTestCase.Book("Persistence by Jeff", new MultiFieldIndexQueryTestCase.Person
 				[] { nat }));
 		}
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Query.IQuery qBooks = NewQuery();
-			qBooks.Constrain(typeof(Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Book)
-				);
+			IQuery qBooks = NewQuery();
+			qBooks.Constrain(typeof(MultiFieldIndexQueryTestCase.Book));
 			qBooks.Descend("title").Constrain("Persistence").Like();
-			Db4objects.Db4o.Query.IQuery qAuthors = qBooks.Descend("authors");
-			Db4objects.Db4o.Query.IQuery qFirstName = qAuthors.Descend("firstName");
-			Db4objects.Db4o.Query.IQuery qLastName = qAuthors.Descend("lastName");
-			Db4objects.Db4o.Query.IConstraint cAaron = qFirstName.Constrain("Aaron").And(qLastName
-				.Constrain("OneOK"));
-			Db4objects.Db4o.Query.IConstraint cBill = qFirstName.Constrain("Bill").And(qLastName
-				.Constrain("TwoOK"));
+			IQuery qAuthors = qBooks.Descend("authors");
+			IQuery qFirstName = qAuthors.Descend("firstName");
+			IQuery qLastName = qAuthors.Descend("lastName");
+			IConstraint cAaron = qFirstName.Constrain("Aaron").And(qLastName.Constrain("OneOK"
+				));
+			IConstraint cBill = qFirstName.Constrain("Bill").And(qLastName.Constrain("TwoOK")
+				);
 			cAaron.Or(cBill);
-			Db4objects.Db4o.IObjectSet results = qAuthors.Execute();
-			Db4oUnit.Assert.AreEqual(4, results.Size());
+			IObjectSet results = qAuthors.Execute();
+			Assert.AreEqual(4, results.Size());
 			while (results.HasNext())
 			{
-				Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person person = 
-					(Db4objects.Db4o.Tests.Common.Querying.MultiFieldIndexQueryTestCase.Person)results
-					.Next();
-				Db4oUnit.Assert.IsTrue(person.lastName.EndsWith("OK"));
+				MultiFieldIndexQueryTestCase.Person person = (MultiFieldIndexQueryTestCase.Person
+					)results.Next();
+				Assert.IsTrue(person.lastName.EndsWith("OK"));
 			}
 		}
 	}

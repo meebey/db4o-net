@@ -1,22 +1,29 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Tests.Common.Assorted;
+using Db4objects.Db4o.Tests.Util;
+
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class AliasesTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutDefragSolo
+	public class AliasesTestCase : AbstractDb4oTestCase, IOptOutDefragSolo
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase().RunSolo();
+			new AliasesTestCase().RunSolo();
 		}
 
 		private int id;
 
-		private Db4objects.Db4o.Config.IAlias alias;
+		private IAlias alias;
 
 		public class AFoo
 		{
 			public string foo;
 		}
 
-		public class ABar : Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.AFoo
+		public class ABar : AliasesTestCase.AFoo
 		{
 			public string bar;
 		}
@@ -26,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			public string foo;
 		}
 
-		public class BBar : Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.BFoo
+		public class BBar : AliasesTestCase.BFoo
 		{
 			public string bar;
 		}
@@ -36,7 +43,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			public string foo;
 		}
 
-		public class CBar : Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.CFoo
+		public class CBar : AliasesTestCase.CFoo
 		{
 			public string bar;
 		}
@@ -44,8 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		protected override void Store()
 		{
 			AddACAlias();
-			Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.CBar bar = new Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.CBar
-				();
+			AliasesTestCase.CBar bar = new AliasesTestCase.CBar();
 			bar.foo = "foo";
 			bar.bar = "bar";
 			Store(bar);
@@ -55,8 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestAccessByChildClass()
 		{
 			AddABAlias();
-			Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.BBar bar = (Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.BBar
-				)RetrieveOnlyInstance(typeof(Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.BBar)
+			AliasesTestCase.BBar bar = (AliasesTestCase.BBar)RetrieveOnlyInstance(typeof(AliasesTestCase.BBar)
 				);
 			AssertInstanceOK(bar);
 		}
@@ -64,8 +69,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestAccessByParentClass()
 		{
 			AddABAlias();
-			Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.BBar bar = (Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.BBar
-				)RetrieveOnlyInstance(typeof(Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.BFoo)
+			AliasesTestCase.BBar bar = (AliasesTestCase.BBar)RetrieveOnlyInstance(typeof(AliasesTestCase.BFoo)
 				);
 			AssertInstanceOK(bar);
 		}
@@ -73,8 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestAccessById()
 		{
 			AddABAlias();
-			Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.BBar bar = (Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.BBar
-				)Db().GetByID(id);
+			AliasesTestCase.BBar bar = (AliasesTestCase.BBar)Db().GetByID(id);
 			Db().Activate(bar, 2);
 			AssertInstanceOK(bar);
 		}
@@ -82,24 +85,21 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestAccessWithoutAlias()
 		{
 			RemoveAlias();
-			Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.ABar bar = (Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.ABar
-				)RetrieveOnlyInstance(typeof(Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.ABar)
+			AliasesTestCase.ABar bar = (AliasesTestCase.ABar)RetrieveOnlyInstance(typeof(AliasesTestCase.ABar)
 				);
 			AssertInstanceOK(bar);
 		}
 
-		private void AssertInstanceOK(Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.BBar
-			 bar)
+		private void AssertInstanceOK(AliasesTestCase.BBar bar)
 		{
-			Db4oUnit.Assert.AreEqual("foo", bar.foo);
-			Db4oUnit.Assert.AreEqual("bar", bar.bar);
+			Assert.AreEqual("foo", bar.foo);
+			Assert.AreEqual("bar", bar.bar);
 		}
 
-		private void AssertInstanceOK(Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.ABar
-			 bar)
+		private void AssertInstanceOK(AliasesTestCase.ABar bar)
 		{
-			Db4oUnit.Assert.AreEqual("foo", bar.foo);
-			Db4oUnit.Assert.AreEqual("bar", bar.bar);
+			Assert.AreEqual("foo", bar.foo);
+			Assert.AreEqual("bar", bar.bar);
 		}
 
 		private void AddABAlias()
@@ -128,14 +128,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
-		private Db4objects.Db4o.Config.WildcardAlias CreateAlias(string storedLetter, string
-			 runtimeLetter)
+		private WildcardAlias CreateAlias(string storedLetter, string runtimeLetter)
 		{
-			string className = Reflector().ForObject(new Db4objects.Db4o.Tests.Common.Assorted.AliasesTestCase.ABar
-				()).GetName();
+			string className = Reflector().ForObject(new AliasesTestCase.ABar()).GetName();
 			string storedPattern = className.Replace("ABar", storedLetter + "*");
 			string runtimePattern = className.Replace("ABar", runtimeLetter + "*");
-			return new Db4objects.Db4o.Config.WildcardAlias(storedPattern, runtimePattern);
+			return new WildcardAlias(storedPattern, runtimePattern);
 		}
 	}
 }

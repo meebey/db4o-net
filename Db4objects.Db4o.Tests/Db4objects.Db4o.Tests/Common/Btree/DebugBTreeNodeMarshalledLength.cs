@@ -1,6 +1,13 @@
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Classindex;
+using Db4objects.Db4o.Tests.Common.Btree;
+
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public class DebugBTreeNodeMarshalledLength : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class DebugBTreeNodeMarshalledLength : AbstractDb4oTestCase
 	{
 		public class Item
 		{
@@ -11,44 +18,39 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Btree.DebugBTreeNodeMarshalledLength().RunSolo();
+			new DebugBTreeNodeMarshalledLength().RunSolo();
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Btree.DebugBTreeNodeMarshalledLength.Item)
-				).ObjectField("_int").Indexed(true);
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Btree.DebugBTreeNodeMarshalledLength.Item)
-				).ObjectField("_string").Indexed(true);
+			config.ObjectClass(typeof(DebugBTreeNodeMarshalledLength.Item)).ObjectField("_int"
+				).Indexed(true);
+			config.ObjectClass(typeof(DebugBTreeNodeMarshalledLength.Item)).ObjectField("_string"
+				).Indexed(true);
 		}
 
 		protected override void Store()
 		{
 			for (int i = 0; i < 50000; i++)
 			{
-				Store(new Db4objects.Db4o.Tests.Common.Btree.DebugBTreeNodeMarshalledLength.Item(
-					));
+				Store(new DebugBTreeNodeMarshalledLength.Item());
 			}
 		}
 
 		public virtual void Test()
 		{
-			Db4objects.Db4o.Internal.Btree.BTree btree = Btree().DebugLoadFully(SystemTrans()
-				);
-			Store(new Db4objects.Db4o.Tests.Common.Btree.DebugBTreeNodeMarshalledLength.Item(
-				));
+			BTree btree = Btree().DebugLoadFully(SystemTrans());
+			Store(new DebugBTreeNodeMarshalledLength.Item());
 			btree.Write(SystemTrans());
 		}
 
-		private Db4objects.Db4o.Internal.Btree.BTree Btree()
+		private BTree Btree()
 		{
-			Db4objects.Db4o.Internal.ClassMetadata clazz = Stream().ClassMetadataForReflectClass
-				(Reflector().ForClass(typeof(Db4objects.Db4o.Tests.Common.Btree.DebugBTreeNodeMarshalledLength.Item)
-				));
-			Db4objects.Db4o.Internal.Classindex.IClassIndexStrategy index = clazz.Index();
-			return ((Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy)index).Btree
-				();
+			ClassMetadata clazz = Stream().ClassMetadataForReflectClass(Reflector().ForClass(
+				typeof(DebugBTreeNodeMarshalledLength.Item)));
+			IClassIndexStrategy index = clazz.Index();
+			return ((BTreeClassIndexStrategy)index).Btree();
 		}
 	}
 }

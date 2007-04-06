@@ -1,22 +1,26 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Marshall;
+
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class ObjectHeaderAttributes1 : Db4objects.Db4o.Internal.Marshall.ObjectHeaderAttributes
+	public class ObjectHeaderAttributes1 : ObjectHeaderAttributes
 	{
 		private const byte VERSION = (byte)1;
 
 		private readonly int _fieldCount;
 
-		private readonly Db4objects.Db4o.Foundation.BitMap4 _nullBitMap;
+		private readonly BitMap4 _nullBitMap;
 
 		private int _baseLength;
 
 		private int _payLoadLength;
 
-		public ObjectHeaderAttributes1(Db4objects.Db4o.Internal.ObjectReference yo)
+		public ObjectHeaderAttributes1(ObjectReference yo)
 		{
 			_fieldCount = yo.GetYapClass().FieldCount();
-			_nullBitMap = new Db4objects.Db4o.Foundation.BitMap4(_fieldCount);
+			_nullBitMap = new BitMap4(_fieldCount);
 			CalculateLengths(yo);
 		}
 
@@ -36,26 +40,26 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_payLoadLength += length;
 		}
 
-		private void CalculateLengths(Db4objects.Db4o.Internal.ObjectReference yo)
+		private void CalculateLengths(ObjectReference yo)
 		{
 			_baseLength = HeaderLength() + NullBitMapLength();
 			_payLoadLength = 0;
-			Db4objects.Db4o.Internal.ClassMetadata yc = yo.GetYapClass();
-			Db4objects.Db4o.Internal.Transaction trans = yo.GetTrans();
+			ClassMetadata yc = yo.GetYapClass();
+			Transaction trans = yo.GetTrans();
 			object obj = yo.GetObject();
 			CalculateLengths(trans, yc, obj, 0);
 			_baseLength = yo.GetStream().AlignToBlockSize(_baseLength);
 		}
 
-		private void CalculateLengths(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.ClassMetadata
-			 yc, object obj, int fieldIndex)
+		private void CalculateLengths(Transaction trans, ClassMetadata yc, object obj, int
+			 fieldIndex)
 		{
-			_baseLength += Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			_baseLength += Const4.INT_LENGTH;
 			if (yc.i_fields != null)
 			{
 				for (int i = 0; i < yc.i_fields.Length; i++)
 				{
-					Db4objects.Db4o.Internal.FieldMetadata yf = yc.i_fields[i];
+					FieldMetadata yf = yc.i_fields[i];
 					object child = yf.GetOrCreate(trans, obj);
 					if (child == null && yf.CanUseNullBitmap())
 					{
@@ -77,8 +81,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int HeaderLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.OBJECT_LENGTH + Db4objects.Db4o.Internal.Const4
-				.ID_LENGTH + 1;
+			return Const4.OBJECT_LENGTH + Const4.ID_LENGTH + 1;
 		}
 
 		public virtual bool IsNull(int fieldIndex)
@@ -88,8 +91,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int NullBitMapLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.INT_LENGTH + _nullBitMap.MarshalledLength(
-				);
+			return Const4.INT_LENGTH + _nullBitMap.MarshalledLength();
 		}
 
 		public virtual int ObjectLength()
@@ -97,13 +99,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _baseLength + _payLoadLength;
 		}
 
-		public override void PrepareIndexedPayLoadEntry(Db4objects.Db4o.Internal.Transaction
-			 trans)
+		public override void PrepareIndexedPayLoadEntry(Transaction trans)
 		{
 			_payLoadLength = trans.Stream().AlignToBlockSize(_payLoadLength);
 		}
 
-		public virtual void Write(Db4objects.Db4o.Internal.StatefulBuffer writer)
+		public virtual void Write(StatefulBuffer writer)
 		{
 			writer.Append(VERSION);
 			writer.WriteInt(_fieldCount);

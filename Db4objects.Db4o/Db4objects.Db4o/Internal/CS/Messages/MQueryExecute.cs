@@ -1,43 +1,45 @@
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Query.Result;
+
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MQueryExecute : Db4objects.Db4o.Internal.CS.Messages.MsgQuery
-		, Db4objects.Db4o.Internal.CS.Messages.IServerSideMessage
+	public sealed class MQueryExecute : MsgQuery, IServerSideMessage
 	{
-		private Db4objects.Db4o.Config.QueryEvaluationMode _evaluationMode;
+		private QueryEvaluationMode _evaluationMode;
 
 		public bool ProcessAtServer()
 		{
-			Unmarshall(_payLoad._offset);
-			WriteQueryResult(Execute(), _evaluationMode);
+			try
+			{
+				Unmarshall(_payLoad._offset);
+				WriteQueryResult(Execute(), _evaluationMode);
+			}
+			catch (Db4oException e)
+			{
+				WriteException(e);
+			}
 			return true;
 		}
 
-		private Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult Execute()
+		private AbstractQueryResult Execute()
 		{
 			lock (StreamLock())
 			{
-				Db4objects.Db4o.Internal.Query.Processor.QQuery query = (Db4objects.Db4o.Internal.Query.Processor.QQuery
-					)ReadObjectFromPayLoad();
+				QQuery query = (QQuery)ReadObjectFromPayLoad();
 				query.Unmarshall(Transaction());
 				_evaluationMode = query.EvaluationMode();
 				return ExecuteFully(query);
 			}
 		}
 
-		private Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult ExecuteFully(Db4objects.Db4o.Internal.Query.Processor.QQuery
-			 query)
+		private AbstractQueryResult ExecuteFully(QQuery query)
 		{
-			try
-			{
-				Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult qr = NewQueryResult(query
-					.EvaluationMode());
-				qr.LoadFromQuery(query);
-				return qr;
-			}
-			catch (System.Exception)
-			{
-				return NewQueryResult(query.EvaluationMode());
-			}
+			AbstractQueryResult qr = NewQueryResult(query.EvaluationMode());
+			qr.LoadFromQuery(query);
+			return qr;
 		}
 	}
 }

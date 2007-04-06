@@ -1,6 +1,12 @@
+using System;
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Tests.Common.Stored;
+
 namespace Db4objects.Db4o.Tests.Common.Stored
 {
-	public class ArrayStoredTypeTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase
+	public class ArrayStoredTypeTestCase : AbstractDb4oTestCase
 	{
 		public class Data
 		{
@@ -24,28 +30,25 @@ namespace Db4objects.Db4o.Tests.Common.Stored
 
 		protected override void Store()
 		{
-			Db4objects.Db4o.Tests.Common.Stored.ArrayStoredTypeTestCase.Data data = new Db4objects.Db4o.Tests.Common.Stored.ArrayStoredTypeTestCase.Data
-				(new bool[] { true, false }, new bool[] { true, false }, new int[] { 0, 1, 2 }, 
-				new int[] { 4, 5, 6 });
+			ArrayStoredTypeTestCase.Data data = new ArrayStoredTypeTestCase.Data(new bool[] { 
+				true, false }, new bool[] { true, false }, new int[] { 0, 1, 2 }, new int[] { 4, 
+				5, 6 });
 			Store(data);
 		}
 
 		public virtual void TestArrayStoredTypes()
 		{
-			Db4objects.Db4o.Ext.IStoredClass clazz = Db().StoredClass(typeof(Db4objects.Db4o.Tests.Common.Stored.ArrayStoredTypeTestCase.Data)
-				);
+			IStoredClass clazz = Db().StoredClass(typeof(ArrayStoredTypeTestCase.Data));
 			AssertStoredType(clazz, "_primitiveBoolean", typeof(bool));
 			AssertStoredType(clazz, "_wrapperBoolean", typeof(bool));
 			AssertStoredType(clazz, "_primitiveInt", typeof(int));
 			AssertStoredType(clazz, "_wrapperInteger", typeof(int));
 		}
 
-		private void AssertStoredType(Db4objects.Db4o.Ext.IStoredClass clazz, string fieldName
-			, System.Type type)
+		private void AssertStoredType(IStoredClass clazz, string fieldName, Type type)
 		{
-			Db4objects.Db4o.Ext.IStoredField field = clazz.StoredField(fieldName, null);
-			Db4oUnit.Assert.AreEqual(type.FullName, SimpleName(field.GetStoredType().GetName(
-				)));
+			IStoredField field = clazz.StoredField(fieldName, null);
+			Assert.AreEqual(type.FullName, SimpleName(field.GetStoredType().GetName()));
 		}
 
 		private string SimpleName(string name)

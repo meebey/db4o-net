@@ -1,6 +1,8 @@
+using Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy;
+
 namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 {
-	public class STSDFT3 : Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STSDFT1TestCase
+	public class STSDFT3 : STSDFT1TestCase
 	{
 		public string foo;
 

@@ -1,6 +1,14 @@
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Classindex;
+
 namespace Db4objects.Db4o.Tests.Common.Classindex
 {
-	public class ClassIndexOffTestCase : Db4oUnit.Extensions.AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutCS
+	public class ClassIndexOffTestCase : AbstractDb4oTestCase, IOptOutCS
 	{
 		public class Item
 		{
@@ -14,24 +22,21 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Classindex.ClassIndexOffTestCase().RunSolo();
+			new ClassIndexOffTestCase().RunSolo();
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Classindex.ClassIndexOffTestCase.Item)
-				).Indexed(false);
+			config.ObjectClass(typeof(ClassIndexOffTestCase.Item)).Indexed(false);
 		}
 
 		public virtual void Test()
 		{
-			Db().Set(new Db4objects.Db4o.Tests.Common.Classindex.ClassIndexOffTestCase.Item("1"
-				));
-			Db4objects.Db4o.Internal.ClassMetadata yc = (Db4objects.Db4o.Internal.ClassMetadata
-				)Db().StoredClass(typeof(Db4objects.Db4o.Tests.Common.Classindex.ClassIndexOffTestCase.Item)
+			Db().Set(new ClassIndexOffTestCase.Item("1"));
+			ClassMetadata yc = (ClassMetadata)Db().StoredClass(typeof(ClassIndexOffTestCase.Item)
 				);
-			Db4oUnit.Assert.IsFalse(yc.HasIndex());
+			Assert.IsFalse(yc.HasIndex());
 			AssertNoItemFound();
 			Db().Commit();
 			AssertNoItemFound();
@@ -39,10 +44,9 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 
 		private void AssertNoItemFound()
 		{
-			Db4objects.Db4o.Query.IQuery q = Db().Query();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Classindex.ClassIndexOffTestCase.Item)
-				);
-			Db4oUnit.Assert.AreEqual(0, q.Execute().Size());
+			IQuery q = Db().Query();
+			q.Constrain(typeof(ClassIndexOffTestCase.Item));
+			Assert.AreEqual(0, q.Execute().Size());
 		}
 	}
 }

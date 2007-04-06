@@ -1,20 +1,20 @@
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Query
 {
 	/// <summary>
 	/// constraint to limit the objects returned upon
-	/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">query execution</see>
+	/// <see cref="IQuery.Execute">query execution</see>
 	/// .
 	/// <br /><br />
 	/// Constraints are constructed by calling
-	/// <see cref="Db4objects.Db4o.Query.IQuery.Constrain">Query.constrain()</see>
+	/// <see cref="IQuery.Constrain">Query.constrain()</see>
 	/// .
 	/// <br /><br />
 	/// Constraints can be joined with the methods
-	/// <see cref="Db4objects.Db4o.Query.IConstraint.And">Db4objects.Db4o.Query.IConstraint.And
-	/// 	</see>
+	/// <see cref="IConstraint.And">IConstraint.And</see>
 	/// and
-	/// <see cref="Db4objects.Db4o.Query.IConstraint.Or">Db4objects.Db4o.Query.IConstraint.Or
-	/// 	</see>
+	/// <see cref="IConstraint.Or">IConstraint.Or</see>
 	/// .
 	/// <br /><br />
 	/// The methods to modify the constraint evaluation algorithm may
@@ -32,71 +32,71 @@ namespace Db4objects.Db4o.Query
 		/// <remarks>links two Constraints for AND evaluation.</remarks>
 		/// <param name="with">
 		/// the other
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// </param>
 		/// <returns>
 		/// a new
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// , that can be used for further calls
 		/// to
-		/// <see cref="Db4objects.Db4o.Query.IConstraint.And">and()</see>
+		/// <see cref="IConstraint.And">and()</see>
 		/// and
-		/// <see cref="Db4objects.Db4o.Query.IConstraint.Or">or()</see>
+		/// <see cref="IConstraint.Or">or()</see>
 		/// </returns>
-		Db4objects.Db4o.Query.IConstraint And(Db4objects.Db4o.Query.IConstraint with);
+		IConstraint And(IConstraint with);
 
 		/// <summary>links two Constraints for OR evaluation.</summary>
 		/// <remarks>links two Constraints for OR evaluation.</remarks>
 		/// <param name="with">
 		/// the other
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// </param>
 		/// <returns>
 		/// a new
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// , that can be used for further calls
 		/// to
-		/// <see cref="Db4objects.Db4o.Query.IConstraint.And">and()</see>
+		/// <see cref="IConstraint.And">and()</see>
 		/// and
-		/// <see cref="Db4objects.Db4o.Query.IConstraint.Or">or()</see>
+		/// <see cref="IConstraint.Or">or()</see>
 		/// </returns>
-		Db4objects.Db4o.Query.IConstraint Or(Db4objects.Db4o.Query.IConstraint with);
+		IConstraint Or(IConstraint with);
 
 		/// <summary>sets the evaluation mode to <code>==</code>.</summary>
 		/// <remarks>sets the evaluation mode to <code>==</code>.</remarks>
 		/// <returns>
 		/// this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
-		Db4objects.Db4o.Query.IConstraint Equal();
+		IConstraint Equal();
 
 		/// <summary>sets the evaluation mode to <code>&gt;</code>.</summary>
 		/// <remarks>sets the evaluation mode to <code>&gt;</code>.</remarks>
 		/// <returns>
 		/// this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
-		Db4objects.Db4o.Query.IConstraint Greater();
+		IConstraint Greater();
 
 		/// <summary>sets the evaluation mode to <code>&lt;</code>.</summary>
 		/// <remarks>sets the evaluation mode to <code>&lt;</code>.</remarks>
 		/// <returns>
 		/// this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
-		Db4objects.Db4o.Query.IConstraint Smaller();
+		IConstraint Smaller();
 
 		/// <summary>sets the evaluation mode to identity comparison.</summary>
 		/// <remarks>sets the evaluation mode to identity comparison.</remarks>
 		/// <returns>
 		/// this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
-		Db4objects.Db4o.Query.IConstraint Identity();
+		IConstraint Identity();
 
 		/// <summary>sets the evaluation mode to "like" comparison.</summary>
 		/// <remarks>
@@ -105,19 +105,19 @@ namespace Db4objects.Db4o.Query
 		/// </remarks>
 		/// <returns>
 		/// this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
-		Db4objects.Db4o.Query.IConstraint Like();
+		IConstraint Like();
 
 		/// <summary>sets the evaluation mode to containment comparison.</summary>
 		/// <remarks>sets the evaluation mode to containment comparison.</remarks>
 		/// <returns>
 		/// this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
-		Db4objects.Db4o.Query.IConstraint Contains();
+		IConstraint Contains();
 
 		/// <summary>sets the evaluation mode to string startsWith comparison.</summary>
 		/// <remarks>sets the evaluation mode to string startsWith comparison.</remarks>
@@ -125,10 +125,10 @@ namespace Db4objects.Db4o.Query
 		/// 	</param>
 		/// <returns>
 		/// this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
-		Db4objects.Db4o.Query.IConstraint StartsWith(bool caseSensitive);
+		IConstraint StartsWith(bool caseSensitive);
 
 		/// <summary>sets the evaluation mode to string endsWith comparison.</summary>
 		/// <remarks>sets the evaluation mode to string endsWith comparison.</remarks>
@@ -136,24 +136,24 @@ namespace Db4objects.Db4o.Query
 		/// 	</param>
 		/// <returns>
 		/// this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
-		Db4objects.Db4o.Query.IConstraint EndsWith(bool caseSensitive);
+		IConstraint EndsWith(bool caseSensitive);
 
 		/// <summary>turns on not() comparison.</summary>
 		/// <remarks>turns on not() comparison.</remarks>
 		/// <returns>
 		/// this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
-		Db4objects.Db4o.Query.IConstraint Not();
+		IConstraint Not();
 
 		/// <summary>
 		/// returns the Object the query graph was constrained with to
 		/// create this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// .
 		/// </summary>
 		/// <returns>Object the constraining object.</returns>
