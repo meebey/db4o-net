@@ -1,3 +1,6 @@
+using System;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
 	/// <exclude></exclude>
@@ -39,7 +42,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return y;
 		}
 
-		private readonly Db4objects.Db4o.Internal.Btree.BTreeNode _node;
+		private readonly BTreeNode _node;
 
 		private readonly int _index;
 
@@ -48,11 +51,11 @@ namespace Db4objects.Db4o.Internal.Btree
 		private readonly Db4objects.Db4o.Internal.Buffer _nodeReader;
 
 		public BTreePointer(Db4objects.Db4o.Internal.Transaction transaction, Db4objects.Db4o.Internal.Buffer
-			 nodeReader, Db4objects.Db4o.Internal.Btree.BTreeNode node, int index)
+			 nodeReader, BTreeNode node, int index)
 		{
 			if (transaction == null || node == null)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			_transaction = transaction;
 			_nodeReader = nodeReader;
@@ -70,7 +73,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _index;
 		}
 
-		public Db4objects.Db4o.Internal.Btree.BTreeNode Node()
+		public BTreeNode Node()
 		{
 			return _node;
 		}
@@ -98,7 +101,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				indexInMyNode++;
 			}
 			int newIndex = -1;
-			Db4objects.Db4o.Internal.Btree.BTreeNode nextNode = Node();
+			BTreeNode nextNode = Node();
 			Db4objects.Db4o.Internal.Buffer nextReader = null;
 			while (newIndex == -1)
 			{
@@ -127,7 +130,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				indexInMyNode--;
 			}
 			int newIndex = -1;
-			Db4objects.Db4o.Internal.Btree.BTreeNode previousNode = Node();
+			BTreeNode previousNode = Node();
 			Db4objects.Db4o.Internal.Buffer previousReader = null;
 			while (newIndex == -1)
 			{
@@ -176,16 +179,16 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			if (null == y)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			if (Btree() != y.Btree())
 			{
-				throw new System.ArgumentException();
+				throw new ArgumentException();
 			}
 			return Btree().CompareKeys(Key(), y.Key());
 		}
 
-		private Db4objects.Db4o.Internal.Btree.BTree Btree()
+		private BTree Btree()
 		{
 			return Node().Btree();
 		}

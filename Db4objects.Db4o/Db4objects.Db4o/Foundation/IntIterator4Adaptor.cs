@@ -1,17 +1,19 @@
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class IntIterator4Adaptor : Db4objects.Db4o.Foundation.IIntIterator4
+	public class IntIterator4Adaptor : IIntIterator4
 	{
-		private readonly System.Collections.IEnumerator _iterator;
+		private readonly IEnumerator _iterator;
 
-		public IntIterator4Adaptor(System.Collections.IEnumerator iterator)
+		public IntIterator4Adaptor(IEnumerator iterator)
 		{
 			_iterator = iterator;
 		}
 
-		public IntIterator4Adaptor(System.Collections.IEnumerable iterable) : this(iterable
-			.GetEnumerator())
+		public IntIterator4Adaptor(IEnumerable iterable) : this(iterable.GetEnumerator())
 		{
 		}
 

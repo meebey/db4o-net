@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Internal.CS;
+
 namespace Db4objects.Db4o.Internal.CS
 {
 	public class ClassInfo
@@ -20,7 +22,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public Db4objects.Db4o.Internal.CS.ClassInfo _superClass;
 
-		public Db4objects.Db4o.Internal.CS.FieldInfo[] _fields;
+		public FieldInfo[] _fields;
 
 		public ClassInfo()
 		{
@@ -32,12 +34,12 @@ namespace Db4objects.Db4o.Internal.CS
 			_isSystemClass = systemClass;
 		}
 
-		public virtual Db4objects.Db4o.Internal.CS.FieldInfo[] GetFields()
+		public virtual FieldInfo[] GetFields()
 		{
 			return _fields;
 		}
 
-		public virtual void SetFields(Db4objects.Db4o.Internal.CS.FieldInfo[] fields)
+		public virtual void SetFields(FieldInfo[] fields)
 		{
 			this._fields = fields;
 		}

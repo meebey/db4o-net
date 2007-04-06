@@ -1,13 +1,15 @@
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class TreeNodeIterator : Db4objects.Db4o.Foundation.AbstractTreeIterator
+	public class TreeNodeIterator : AbstractTreeIterator
 	{
-		public TreeNodeIterator(Db4objects.Db4o.Foundation.Tree tree) : base(tree)
+		public TreeNodeIterator(Tree tree) : base(tree)
 		{
 		}
 
-		protected override object CurrentValue(Db4objects.Db4o.Foundation.Tree tree)
+		protected override object CurrentValue(Tree tree)
 		{
 			return tree.Root();
 		}

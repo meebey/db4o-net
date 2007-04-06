@@ -1,26 +1,28 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Query.Result;
+
 namespace Db4objects.Db4o.Internal.CS
 {
 	/// <exclude></exclude>
 	public class LazyClientObjectSetStub
 	{
-		private readonly Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult _queryResult;
+		private readonly AbstractQueryResult _queryResult;
 
-		private Db4objects.Db4o.Foundation.IIntIterator4 _idIterator;
+		private IIntIterator4 _idIterator;
 
-		public LazyClientObjectSetStub(Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult
-			 queryResult, Db4objects.Db4o.Foundation.IIntIterator4 idIterator)
+		public LazyClientObjectSetStub(AbstractQueryResult queryResult, IIntIterator4 idIterator
+			)
 		{
 			_queryResult = queryResult;
 			_idIterator = idIterator;
 		}
 
-		public virtual Db4objects.Db4o.Foundation.IIntIterator4 IdIterator()
+		public virtual IIntIterator4 IdIterator()
 		{
 			return _idIterator;
 		}
 
-		public virtual Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult QueryResult
-			()
+		public virtual AbstractQueryResult QueryResult()
 		{
 			return _queryResult;
 		}

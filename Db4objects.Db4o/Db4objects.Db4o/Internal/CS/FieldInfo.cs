@@ -1,10 +1,12 @@
+using Db4objects.Db4o.Internal.CS;
+
 namespace Db4objects.Db4o.Internal.CS
 {
 	public class FieldInfo
 	{
 		public string _fieldName;
 
-		public Db4objects.Db4o.Internal.CS.ClassInfo _fieldClass;
+		public ClassInfo _fieldClass;
 
 		public bool _isPrimitive;
 
@@ -16,8 +18,8 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
-		public FieldInfo(string fieldName, Db4objects.Db4o.Internal.CS.ClassInfo fieldClass
-			, bool isPrimitive, bool isArray, bool isNArray)
+		public FieldInfo(string fieldName, ClassInfo fieldClass, bool isPrimitive, bool isArray
+			, bool isNArray)
 		{
 			_fieldName = fieldName;
 			_fieldClass = fieldClass;
@@ -26,7 +28,7 @@ namespace Db4objects.Db4o.Internal.CS
 			_isNArray = isNArray;
 		}
 
-		public virtual Db4objects.Db4o.Internal.CS.ClassInfo GetFieldClass()
+		public virtual ClassInfo GetFieldClass()
 		{
 			return _fieldClass;
 		}

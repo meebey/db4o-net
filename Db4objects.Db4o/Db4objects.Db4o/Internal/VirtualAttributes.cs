@@ -1,9 +1,13 @@
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class VirtualAttributes : Db4objects.Db4o.Foundation.IShallowClone
+	public class VirtualAttributes : IShallowClone
 	{
-		public Db4objects.Db4o.Ext.Db4oDatabase i_database;
+		public Db4oDatabase i_database;
 
 		public long i_version;
 
@@ -11,8 +15,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object ShallowClone()
 		{
-			Db4objects.Db4o.Internal.VirtualAttributes va = new Db4objects.Db4o.Internal.VirtualAttributes
-				();
+			VirtualAttributes va = new VirtualAttributes();
 			va.i_database = i_database;
 			va.i_version = i_version;
 			va.i_uuid = i_uuid;

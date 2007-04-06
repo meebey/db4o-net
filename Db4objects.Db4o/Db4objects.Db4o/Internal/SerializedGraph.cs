@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
@@ -20,7 +22,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int MarshalledLength()
 		{
-			return (Db4objects.Db4o.Internal.Const4.INT_LENGTH * 2) + Length();
+			return (Const4.INT_LENGTH * 2) + Length();
 		}
 
 		public virtual void Write(Db4objects.Db4o.Internal.Buffer buffer)

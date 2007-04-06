@@ -1,30 +1,60 @@
+using System;
+using System.IO;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+using Sharpen;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class InMemoryObjectContainer : Db4objects.Db4o.Internal.LocalObjectContainer
+	public class InMemoryObjectContainer : LocalObjectContainer
 	{
 		private bool _closed = false;
 
-		private readonly Db4objects.Db4o.Ext.MemoryFile _memoryFile;
+		private readonly MemoryFile _memoryFile;
 
 		private int _length = 0;
 
-		protected InMemoryObjectContainer(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.Internal.ObjectContainerBase
-			 parent, Db4objects.Db4o.Ext.MemoryFile memoryFile) : base(config, parent)
+		protected InMemoryObjectContainer(IConfiguration config, ObjectContainerBase parent
+			, MemoryFile memoryFile) : base(config, parent)
 		{
 			_memoryFile = memoryFile;
 			Open();
-			InitializePostOpen();
 		}
 
-		public InMemoryObjectContainer(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.Ext.MemoryFile
-			 memoryFile) : this(config, null, memoryFile)
+		public InMemoryObjectContainer(IConfiguration config, MemoryFile memoryFile) : this
+			(config, null, memoryFile)
 		{
+		}
+
+		protected sealed override void OpenImpl()
+		{
+			byte[] bytes = _memoryFile.GetBytes();
+			try
+			{
+				if (bytes == null || bytes.Length == 0)
+				{
+					_memoryFile.SetBytes(new byte[_memoryFile.GetInitialSize()]);
+					ConfigureNewFile();
+					CommitTransaction();
+					WriteHeader(false, false);
+				}
+				else
+				{
+					_length = bytes.Length;
+					ReadThis();
+				}
+			}
+			catch (IOException e)
+			{
+				throw new OpenDatabaseException(e);
+			}
 		}
 
 		public override void Backup(string path)
 		{
-			Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(60);
+			Exceptions4.ThrowRuntimeException(60);
 		}
 
 		public override void BlockSize(int size)
@@ -81,32 +111,15 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		private void Open()
-		{
-			byte[] bytes = _memoryFile.GetBytes();
-			if (bytes == null || bytes.Length == 0)
-			{
-				_memoryFile.SetBytes(new byte[_memoryFile.GetInitialSize()]);
-				ConfigureNewFile();
-				CommitTransaction();
-				WriteHeader(false, false);
-			}
-			else
-			{
-				_length = bytes.Length;
-				ReadThis();
-			}
-		}
-
 		public override void ReadBytes(byte[] bytes, int address, int length)
 		{
 			try
 			{
 				System.Array.Copy(_memoryFile.GetBytes(), address, bytes, 0, length);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(13, e);
+				Exceptions4.ThrowRuntimeException(13, e);
 			}
 		}
 
@@ -150,7 +163,6 @@ namespace Db4objects.Db4o.Internal
 			System.Array.Copy(bytes, 0, newBytes, 0, bytes.Length);
 			_memoryFile.SetBytes(newBytes);
 			_length = newBytes.Length;
-			bytes = null;
 		}
 
 		public override void OverwriteDeletedBytes(int a_address, int a_length)

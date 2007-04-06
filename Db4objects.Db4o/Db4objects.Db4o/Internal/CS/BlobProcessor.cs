@@ -1,21 +1,27 @@
+using System;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.CS.Messages;
+using Sharpen.Lang;
+
 namespace Db4objects.Db4o.Internal.CS
 {
-	internal class BlobProcessor : Sharpen.Lang.Thread
+	internal class BlobProcessor : Thread
 	{
-		private Db4objects.Db4o.Internal.CS.ClientObjectContainer stream;
+		private ClientObjectContainer stream;
 
-		private Db4objects.Db4o.Foundation.Queue4 queue = new Db4objects.Db4o.Foundation.Queue4
-			();
+		private IQueue4 queue = new NonblockingQueue();
 
 		private bool terminated = false;
 
-		internal BlobProcessor(Db4objects.Db4o.Internal.CS.ClientObjectContainer aStream)
+		internal BlobProcessor(ClientObjectContainer aStream)
 		{
 			stream = aStream;
 			SetPriority(MIN_PRIORITY);
 		}
 
-		internal virtual void Add(Db4objects.Db4o.Internal.CS.Messages.MsgBlob msg)
+		internal virtual void Add(MsgBlob msg)
 		{
 			lock (queue)
 			{
@@ -35,12 +41,11 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			try
 			{
-				Db4objects.Db4o.Foundation.Network.ISocket4 socket = stream.CreateParalellSocket(
-					);
-				Db4objects.Db4o.Internal.CS.Messages.MsgBlob msg = null;
+				ISocket4 socket = stream.CreateParalellSocket();
+				MsgBlob msg = null;
 				lock (queue)
 				{
-					msg = (Db4objects.Db4o.Internal.CS.Messages.MsgBlob)queue.Next();
+					msg = (MsgBlob)queue.Next();
 				}
 				while (msg != null)
 				{
@@ -50,24 +55,24 @@ namespace Db4objects.Db4o.Internal.CS
 					{
 						lock (queue)
 						{
-							msg = (Db4objects.Db4o.Internal.CS.Messages.MsgBlob)queue.Next();
+							msg = (MsgBlob)queue.Next();
 						}
 						if (msg == null)
 						{
 							terminated = true;
-							Db4objects.Db4o.Internal.CS.Messages.Msg.CLOSE.Write(stream, socket);
+							Msg.CLOSE.Write(stream, socket);
 							try
 							{
 								socket.Close();
 							}
-							catch (System.Exception)
+							catch (Exception)
 							{
 							}
 						}
 					}
 				}
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
 				Sharpen.Runtime.PrintStackTrace(e);
 			}

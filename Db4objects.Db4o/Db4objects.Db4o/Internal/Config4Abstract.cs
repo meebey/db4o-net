@@ -1,33 +1,31 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	public abstract class Config4Abstract
 	{
-		protected Db4objects.Db4o.Foundation.KeySpecHashtable4 _config;
+		protected KeySpecHashtable4 _config;
 
-		private static readonly Db4objects.Db4o.Foundation.KeySpec CASCADE_ON_ACTIVATE = 
-			new Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED
+		private static readonly KeySpec CASCADE_ON_ACTIVATE = new KeySpec(TernaryBool.UNSPECIFIED
 			);
 
-		private static readonly Db4objects.Db4o.Foundation.KeySpec CASCADE_ON_DELETE = new 
-			Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED
+		private static readonly KeySpec CASCADE_ON_DELETE = new KeySpec(TernaryBool.UNSPECIFIED
 			);
 
-		private static readonly Db4objects.Db4o.Foundation.KeySpec CASCADE_ON_UPDATE = new 
-			Db4objects.Db4o.Foundation.KeySpec(Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED
+		private static readonly KeySpec CASCADE_ON_UPDATE = new KeySpec(TernaryBool.UNSPECIFIED
 			);
 
-		private static readonly Db4objects.Db4o.Foundation.KeySpec NAME = new Db4objects.Db4o.Foundation.KeySpec
-			(null);
+		private static readonly KeySpec NAME = new KeySpec(null);
 
-		public Config4Abstract() : this(new Db4objects.Db4o.Foundation.KeySpecHashtable4(
-			10))
+		public Config4Abstract() : this(new KeySpecHashtable4(10))
 		{
 		}
 
-		protected Config4Abstract(Db4objects.Db4o.Foundation.KeySpecHashtable4 config)
+		protected Config4Abstract(KeySpecHashtable4 config)
 		{
-			_config = (Db4objects.Db4o.Foundation.KeySpecHashtable4)config.DeepClone(this);
+			_config = (KeySpecHashtable4)config.DeepClone(this);
 		}
 
 		public virtual void CascadeOnActivate(bool flag)
@@ -45,35 +43,32 @@ namespace Db4objects.Db4o.Internal
 			PutThreeValued(CASCADE_ON_UPDATE, flag);
 		}
 
-		protected virtual void PutThreeValued(Db4objects.Db4o.Foundation.KeySpec spec, bool
-			 flag)
+		protected virtual void PutThreeValued(KeySpec spec, bool flag)
 		{
-			_config.Put(spec, Db4objects.Db4o.Foundation.TernaryBool.ForBoolean(flag));
+			_config.Put(spec, TernaryBool.ForBoolean(flag));
 		}
 
-		protected virtual void PutThreeValuedInt(Db4objects.Db4o.Foundation.KeySpec spec, 
-			bool flag)
+		protected virtual void PutThreeValuedInt(KeySpec spec, bool flag)
 		{
 			_config.Put(spec, flag ? 1 : -1);
 		}
 
-		public virtual Db4objects.Db4o.Foundation.TernaryBool CascadeOnActivate()
+		public virtual TernaryBool CascadeOnActivate()
 		{
 			return Cascade(CASCADE_ON_ACTIVATE);
 		}
 
-		public virtual Db4objects.Db4o.Foundation.TernaryBool CascadeOnDelete()
+		public virtual TernaryBool CascadeOnDelete()
 		{
 			return Cascade(CASCADE_ON_DELETE);
 		}
 
-		public virtual Db4objects.Db4o.Foundation.TernaryBool CascadeOnUpdate()
+		public virtual TernaryBool CascadeOnUpdate()
 		{
 			return Cascade(CASCADE_ON_UPDATE);
 		}
 
-		private Db4objects.Db4o.Foundation.TernaryBool Cascade(Db4objects.Db4o.Foundation.KeySpec
-			 spec)
+		private TernaryBool Cascade(KeySpec spec)
 		{
 			return _config.GetAsTernaryBool(spec);
 		}
@@ -96,7 +91,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (GetType() != obj.GetType())
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ShouldNeverHappen();
+				Exceptions4.ShouldNeverHappen();
 			}
 			return GetName().Equals(((Db4objects.Db4o.Internal.Config4Abstract)obj).GetName()
 				);

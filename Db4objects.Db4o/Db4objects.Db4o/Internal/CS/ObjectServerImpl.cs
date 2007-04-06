@@ -1,27 +1,40 @@
+using System;
+using System.Collections;
+using System.IO;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS;
+using Sharpen.Lang;
+
 namespace Db4objects.Db4o.Internal.CS
 {
-	public class ObjectServerImpl : Db4objects.Db4o.IObjectServer, Db4objects.Db4o.Ext.IExtObjectServer
-		, Sharpen.Lang.IRunnable, Db4objects.Db4o.Foundation.Network.ILoopbackSocketServer
+	public class ObjectServerImpl : IObjectServer, IExtObjectServer, IRunnable, ILoopbackSocketServer
 	{
+		private const int START_THREAD_WAIT_TIMEOUT = 5000;
+
 		private readonly string _name;
 
-		private Db4objects.Db4o.Foundation.Network.ServerSocket4 _serverSocket;
+		private ServerSocket4 _serverSocket;
 
 		private readonly int _port;
 
 		private int i_threadIDGen = 1;
 
-		private readonly Db4objects.Db4o.Foundation.Collection4 _dispatchers = new Db4objects.Db4o.Foundation.Collection4
-			();
+		private readonly Collection4 _dispatchers = new Collection4();
 
-		internal Db4objects.Db4o.Internal.LocalObjectContainer _container;
+		internal LocalObjectContainer _container;
 
 		private readonly object _startupLock = new object();
 
-		private Db4objects.Db4o.Internal.Config4Impl _config;
+		private Config4Impl _config;
 
-		public ObjectServerImpl(Db4objects.Db4o.Internal.LocalObjectContainer container, 
-			int port)
+		private BlockingQueue _committedInfosQueue = new BlockingQueue();
+
+		public ObjectServerImpl(LocalObjectContainer container, int port)
 		{
 			_container = container;
 			_port = port;
@@ -29,9 +42,21 @@ namespace Db4objects.Db4o.Internal.CS
 			_name = "db4o ServerSocket FILE: " + container.ToString() + "  PORT:" + _port;
 			_container.SetServer(true);
 			ConfigureObjectServer();
-			EnsureLoadStaticClass();
-			EnsureLoadConfiguredClasses();
-			StartServer();
+			bool ok = false;
+			try
+			{
+				EnsureLoadStaticClass();
+				EnsureLoadConfiguredClasses();
+				StartServer();
+				ok = true;
+			}
+			finally
+			{
+				if (!ok)
+				{
+					Close();
+				}
+			}
 		}
 
 		private void StartServer()
@@ -40,49 +65,52 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				return;
 			}
-			StartServerSocket();
-			StartServerThread();
-			WaitForThreadStart();
+			lock (_startupLock)
+			{
+				StartServerSocket();
+				StartServerThread();
+				bool started = false;
+				while (!started)
+				{
+					try
+					{
+						Sharpen.Runtime.Wait(_startupLock, START_THREAD_WAIT_TIMEOUT);
+						started = true;
+					}
+					catch (Exception)
+					{
+					}
+				}
+			}
 		}
 
 		private void StartServerThread()
 		{
-			Sharpen.Lang.Thread thread = new Sharpen.Lang.Thread(this);
-			thread.SetDaemon(true);
-			thread.Start();
+			lock (_startupLock)
+			{
+				Thread thread = new Thread(this);
+				thread.SetDaemon(true);
+				thread.Start();
+			}
 		}
 
 		private void StartServerSocket()
 		{
 			try
 			{
-				_serverSocket = new Db4objects.Db4o.Foundation.Network.ServerSocket4(_port);
+				_serverSocket = new ServerSocket4(_port);
 				_serverSocket.SetSoTimeout(_config.TimeoutServerSocket());
 			}
-			catch (System.IO.IOException)
+			catch (IOException)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages
-					.COULD_NOT_OPEN_PORT, string.Empty + _port);
+				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.COULD_NOT_OPEN_PORT
+					, string.Empty + _port);
 			}
 		}
 
 		private bool IsEmbeddedServer()
 		{
 			return _port <= 0;
-		}
-
-		private void WaitForThreadStart()
-		{
-			lock (_startupLock)
-			{
-				try
-				{
-					Sharpen.Runtime.Wait(_startupLock, 1000);
-				}
-				catch (System.Exception)
-				{
-				}
-			}
 		}
 
 		private void EnsureLoadStaticClass()
@@ -92,12 +120,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void EnsureLoadConfiguredClasses()
 		{
-			_config.ExceptionalClasses().ForEachValue(new _AnonymousInnerClass95(this));
+			_config.ExceptionalClasses().ForEachValue(new _AnonymousInnerClass107(this));
 		}
 
-		private sealed class _AnonymousInnerClass95 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass107 : IVisitor4
 		{
-			public _AnonymousInnerClass95(ObjectServerImpl _enclosing)
+			public _AnonymousInnerClass107(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -105,7 +133,7 @@ namespace Db4objects.Db4o.Internal.CS
 			public void Visit(object a_object)
 			{
 				this._enclosing._container.ProduceClassMetadata(this._enclosing._container.Reflector
-					().ForName(((Db4objects.Db4o.Internal.Config4Class)a_object).GetName()));
+					().ForName(((Config4Class)a_object).GetName()));
 			}
 
 			private readonly ObjectServerImpl _enclosing;
@@ -115,7 +143,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			_config.Callbacks(false);
 			_config.IsServer(true);
-			_config.ObjectClass(typeof(Db4objects.Db4o.User)).MinimumActivationDepth(1);
+			_config.ObjectClass(typeof(User)).MinimumActivationDepth(1);
 		}
 
 		public virtual void Backup(string path)
@@ -127,8 +155,8 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (_container == null)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages
-					.CLOSED_OR_OPEN_FAILED, _name);
+				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.CLOSED_OR_OPEN_FAILED
+					, _name);
 			}
 			_container.CheckClosed();
 		}
@@ -157,25 +185,25 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void CloseMessageDispatchers()
 		{
-			System.Collections.IEnumerator i = IterateDispatchers();
+			IEnumerator i = IterateDispatchers();
 			while (i.MoveNext())
 			{
 				try
 				{
-					((Db4objects.Db4o.Internal.CS.IServerMessageDispatcher)i.Current).Close();
+					((IServerMessageDispatcher)i.Current).Close();
 				}
-				catch (System.Exception e)
+				catch (Exception e)
 				{
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
 			}
 		}
 
-		public virtual System.Collections.IEnumerator IterateDispatchers()
+		public virtual IEnumerator IterateDispatchers()
 		{
 			lock (_dispatchers)
 			{
-				return new Db4objects.Db4o.Foundation.Collection4(_dispatchers).GetEnumerator();
+				return new Collection4(_dispatchers).GetEnumerator();
 			}
 		}
 
@@ -188,32 +216,30 @@ namespace Db4objects.Db4o.Internal.CS
 					_serverSocket.Close();
 				}
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
 			}
 			_serverSocket = null;
 		}
 
-		public virtual Db4objects.Db4o.Config.IConfiguration Configure()
+		public virtual IConfiguration Configure()
 		{
 			return _config;
 		}
 
-		public virtual Db4objects.Db4o.Ext.IExtObjectServer Ext()
+		public virtual IExtObjectServer Ext()
 		{
 			return this;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl FindThread
-			(int a_threadID)
+		internal virtual ServerMessageDispatcherImpl FindThread(int a_threadID)
 		{
 			lock (_dispatchers)
 			{
-				System.Collections.IEnumerator i = _dispatchers.GetEnumerator();
+				IEnumerator i = _dispatchers.GetEnumerator();
 				while (i.MoveNext())
 				{
-					Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl serverThread = (Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl
-						)i.Current;
+					ServerMessageDispatcherImpl serverThread = (ServerMessageDispatcherImpl)i.Current;
 					if (serverThread.i_threadID == a_threadID)
 					{
 						return serverThread;
@@ -230,7 +256,7 @@ namespace Db4objects.Db4o.Internal.CS
 				CheckClosed();
 				lock (_container.i_lock)
 				{
-					Db4objects.Db4o.User existing = GetUser(userName);
+					User existing = GetUser(userName);
 					if (existing != null)
 					{
 						SetPassword(existing, password);
@@ -246,31 +272,31 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void AddUser(string userName, string password)
 		{
-			_container.Set(new Db4objects.Db4o.User(userName, password));
+			_container.Set(new User(userName, password));
 		}
 
-		private void SetPassword(Db4objects.Db4o.User existing, string password)
+		private void SetPassword(User existing, string password)
 		{
 			existing.password = password;
 			_container.Set(existing);
 		}
 
-		public virtual Db4objects.Db4o.User GetUser(string userName)
+		public virtual User GetUser(string userName)
 		{
-			Db4objects.Db4o.IObjectSet result = QueryUsers(userName);
+			IObjectSet result = QueryUsers(userName);
 			if (!result.HasNext())
 			{
 				return null;
 			}
-			return (Db4objects.Db4o.User)result.Next();
+			return (User)result.Next();
 		}
 
-		private Db4objects.Db4o.IObjectSet QueryUsers(string userName)
+		private IObjectSet QueryUsers(string userName)
 		{
 			_container.ShowInternalClasses(true);
 			try
 			{
-				return _container.Get(new Db4objects.Db4o.User(userName, null));
+				return _container.Get(new User(userName, null));
 			}
 			finally
 			{
@@ -278,63 +304,49 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		public virtual Db4objects.Db4o.IObjectContainer ObjectContainer()
+		public virtual IObjectContainer ObjectContainer()
 		{
 			return _container;
 		}
 
-		public virtual Db4objects.Db4o.IObjectContainer OpenClient()
+		public virtual IObjectContainer OpenClient()
 		{
-			return OpenClient(Db4objects.Db4o.Db4oFactory.CloneConfiguration());
+			return OpenClient(Db4oFactory.CloneConfiguration());
 		}
 
-		public virtual Db4objects.Db4o.IObjectContainer OpenClient(Db4objects.Db4o.Config.IConfiguration
-			 config)
+		public virtual IObjectContainer OpenClient(IConfiguration config)
 		{
 			lock (this)
 			{
 				CheckClosed();
-				try
-				{
-					Db4objects.Db4o.Internal.CS.ClientObjectContainer client = new Db4objects.Db4o.Internal.CS.ClientObjectContainer
-						(config, OpenClientSocket(), Db4objects.Db4o.Internal.Const4.EMBEDDED_CLIENT_USER
-						 + (i_threadIDGen - 1), string.Empty, false);
-					client.BlockSize(_container.BlockSize());
-					return client;
-				}
-				catch (System.IO.IOException e)
-				{
-					Sharpen.Runtime.PrintStackTrace(e);
-				}
-				return null;
+				ClientObjectContainer client = new ClientObjectContainer(config, OpenClientSocket
+					(), Const4.EMBEDDED_CLIENT_USER + (i_threadIDGen - 1), string.Empty, false);
+				client.BlockSize(_container.BlockSize());
+				return client;
 			}
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Network.LoopbackSocket OpenClientSocket
-			()
+		public virtual LoopbackSocket OpenClientSocket()
 		{
 			int timeout = _config.TimeoutClientSocket();
-			Db4objects.Db4o.Foundation.Network.LoopbackSocket clientFake = new Db4objects.Db4o.Foundation.Network.LoopbackSocket
-				(this, timeout);
-			Db4objects.Db4o.Foundation.Network.LoopbackSocket serverFake = new Db4objects.Db4o.Foundation.Network.LoopbackSocket
-				(this, timeout, clientFake);
+			LoopbackSocket clientFake = new LoopbackSocket(this, timeout);
+			LoopbackSocket serverFake = new LoopbackSocket(this, timeout, clientFake);
 			try
 			{
-				Db4objects.Db4o.Internal.CS.IServerMessageDispatcher messageDispatcher = new Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl
-					(this, _container, serverFake, NewThreadId(), true);
+				IServerMessageDispatcher messageDispatcher = new ServerMessageDispatcherImpl(this
+					, _container, serverFake, NewThreadId(), true);
 				AddServerMessageDispatcher(messageDispatcher);
 				messageDispatcher.StartDispatcher();
 				return clientFake;
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
 				Sharpen.Runtime.PrintStackTrace(e);
 			}
 			return null;
 		}
 
-		internal virtual void RemoveThread(Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl
-			 aThread)
+		internal virtual void RemoveThread(ServerMessageDispatcherImpl aThread)
 		{
 			lock (_dispatchers)
 			{
@@ -357,7 +369,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void DeleteUsers(string userName)
 		{
-			Db4objects.Db4o.IObjectSet set = QueryUsers(userName);
+			IObjectSet set = QueryUsers(userName);
 			while (set.HasNext())
 			{
 				_container.Delete(set.Next());
@@ -369,26 +381,34 @@ namespace Db4objects.Db4o.Internal.CS
 			SetThreadName();
 			LogListeningOnPort();
 			NotifyThreadStarted();
-			SocketServerLoop();
+			StartPushedUpdatesThread(_committedInfosQueue);
+			Listen();
+		}
+
+		private void StartPushedUpdatesThread(BlockingQueue committedInfosQueue)
+		{
+			PushedUpdatesThread thread = new PushedUpdatesThread(committedInfosQueue);
+			thread.SetDaemon(true);
+			thread.Start();
 		}
 
 		private void SetThreadName()
 		{
-			Sharpen.Lang.Thread.CurrentThread().SetName(_name);
+			Thread.CurrentThread().SetName(_name);
 		}
 
-		private void SocketServerLoop()
+		private void Listen()
 		{
 			while (_serverSocket != null)
 			{
 				try
 				{
-					Db4objects.Db4o.Internal.CS.IServerMessageDispatcher messageDispatcher = new Db4objects.Db4o.Internal.CS.ServerMessageDispatcherImpl
-						(this, _container, _serverSocket.Accept(), NewThreadId(), false);
+					IServerMessageDispatcher messageDispatcher = new ServerMessageDispatcherImpl(this
+						, _container, _serverSocket.Accept(), NewThreadId(), false);
 					AddServerMessageDispatcher(messageDispatcher);
 					messageDispatcher.StartDispatcher();
 				}
-				catch (System.Exception)
+				catch (Exception)
 				{
 				}
 			}
@@ -413,13 +433,18 @@ namespace Db4objects.Db4o.Internal.CS
 			return i_threadIDGen++;
 		}
 
-		private void AddServerMessageDispatcher(Db4objects.Db4o.Internal.CS.IServerMessageDispatcher
-			 thread)
+		private void AddServerMessageDispatcher(IServerMessageDispatcher thread)
 		{
 			lock (_dispatchers)
 			{
 				_dispatchers.Add(thread);
 			}
+		}
+
+		public virtual void CommitOnCompleted(IServerMessageDispatcher dispatcher, CallbackObjectInfoCollections
+			 callbackInfos)
+		{
+			_committedInfosQueue.Add(callbackInfos);
 		}
 	}
 }

@@ -1,15 +1,18 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
-	public abstract class AbstractBTreeRangeIterator : System.Collections.IEnumerator
+	public abstract class AbstractBTreeRangeIterator : IEnumerator
 	{
-		private readonly Db4objects.Db4o.Internal.Btree.BTreeRangeSingle _range;
+		private readonly BTreeRangeSingle _range;
 
-		private Db4objects.Db4o.Internal.Btree.BTreePointer _cursor;
+		private BTreePointer _cursor;
 
-		private Db4objects.Db4o.Internal.Btree.BTreePointer _current;
+		private BTreePointer _current;
 
-		public AbstractBTreeRangeIterator(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle
-			 range)
+		public AbstractBTreeRangeIterator(BTreeRangeSingle range)
 		{
 			_range = range;
 			_cursor = range.First();
@@ -32,16 +35,16 @@ namespace Db4objects.Db4o.Internal.Btree
 			_cursor = _range.First();
 		}
 
-		protected virtual Db4objects.Db4o.Internal.Btree.BTreePointer CurrentPointer()
+		protected virtual BTreePointer CurrentPointer()
 		{
 			if (null == _current)
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			return _current;
 		}
 
-		private bool ReachedEnd(Db4objects.Db4o.Internal.Btree.BTreePointer cursor)
+		private bool ReachedEnd(BTreePointer cursor)
 		{
 			if (cursor == null)
 			{

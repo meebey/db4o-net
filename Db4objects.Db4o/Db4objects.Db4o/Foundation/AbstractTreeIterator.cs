@@ -1,13 +1,17 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public abstract class AbstractTreeIterator : System.Collections.IEnumerator
+	public abstract class AbstractTreeIterator : IEnumerator
 	{
-		private readonly Db4objects.Db4o.Foundation.Tree _tree;
+		private readonly Tree _tree;
 
-		private Db4objects.Db4o.Foundation.Stack4 _stack;
+		private Stack4 _stack;
 
-		public AbstractTreeIterator(Db4objects.Db4o.Foundation.Tree tree)
+		public AbstractTreeIterator(Tree tree)
 		{
 			_tree = tree;
 		}
@@ -18,9 +22,9 @@ namespace Db4objects.Db4o.Foundation
 			{
 				if (_stack == null)
 				{
-					throw new System.InvalidOperationException();
+					throw new InvalidOperationException();
 				}
-				Db4objects.Db4o.Foundation.Tree tree = Peek();
+				Tree tree = Peek();
 				if (tree == null)
 				{
 					return null;
@@ -29,9 +33,9 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		private Db4objects.Db4o.Foundation.Tree Peek()
+		private Tree Peek()
 		{
-			return (Db4objects.Db4o.Foundation.Tree)_stack.Peek();
+			return (Tree)_stack.Peek();
 		}
 
 		public virtual void Reset()
@@ -46,7 +50,7 @@ namespace Db4objects.Db4o.Foundation
 				InitStack();
 				return _stack != null;
 			}
-			Db4objects.Db4o.Foundation.Tree current = Peek();
+			Tree current = Peek();
 			if (current == null)
 			{
 				return false;
@@ -58,7 +62,7 @@ namespace Db4objects.Db4o.Foundation
 			while (true)
 			{
 				_stack.Pop();
-				Db4objects.Db4o.Foundation.Tree parent = Peek();
+				Tree parent = Peek();
 				if (parent == null)
 				{
 					return false;
@@ -77,11 +81,11 @@ namespace Db4objects.Db4o.Foundation
 			{
 				return;
 			}
-			_stack = new Db4objects.Db4o.Foundation.Stack4();
+			_stack = new Stack4();
 			PushPreceding(_tree);
 		}
 
-		private bool PushPreceding(Db4objects.Db4o.Foundation.Tree node)
+		private bool PushPreceding(Tree node)
 		{
 			if (node == null)
 			{
@@ -95,6 +99,6 @@ namespace Db4objects.Db4o.Foundation
 			return true;
 		}
 
-		protected abstract object CurrentValue(Db4objects.Db4o.Foundation.Tree tree);
+		protected abstract object CurrentValue(Tree tree);
 	}
 }

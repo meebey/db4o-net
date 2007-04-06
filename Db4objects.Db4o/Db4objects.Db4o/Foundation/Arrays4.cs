@@ -1,3 +1,5 @@
+using System;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
@@ -39,7 +41,7 @@ namespace Db4objects.Db4o.Foundation
 			return true;
 		}
 
-		public static bool ContainsInstanceOf(object[] array, System.Type klass)
+		public static bool ContainsInstanceOf(object[] array, Type klass)
 		{
 			if (array == null)
 			{

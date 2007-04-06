@@ -1,37 +1,40 @@
+using System;
+using Db4objects.Db4o.Nativequery.Expr;
+using Db4objects.Db4o.Nativequery.Expr.Cmp;
+
 namespace Db4objects.Db4o.Nativequery.Expr
 {
-	public class ComparisonExpression : Db4objects.Db4o.Nativequery.Expr.IExpression
+	public class ComparisonExpression : IExpression
 	{
-		private Db4objects.Db4o.Nativequery.Expr.Cmp.FieldValue _left;
+		private FieldValue _left;
 
-		private Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand _right;
+		private IComparisonOperand _right;
 
-		private Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator _op;
+		private ComparisonOperator _op;
 
-		public ComparisonExpression(Db4objects.Db4o.Nativequery.Expr.Cmp.FieldValue left, 
-			Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand right, Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator
+		public ComparisonExpression(FieldValue left, IComparisonOperand right, ComparisonOperator
 			 op)
 		{
 			if (left == null || right == null || op == null)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			this._left = left;
 			this._right = right;
 			this._op = op;
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.Cmp.FieldValue Left()
+		public virtual FieldValue Left()
 		{
 			return _left;
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.Cmp.IComparisonOperand Right()
+		public virtual IComparisonOperand Right()
 		{
 			return _right;
 		}
 
-		public virtual Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator Op()
+		public virtual ComparisonOperator Op()
 		{
 			return _op;
 		}
@@ -62,8 +65,7 @@ namespace Db4objects.Db4o.Nativequery.Expr
 			return (_left.GetHashCode() * 29 + _right.GetHashCode()) * 29 + _op.GetHashCode();
 		}
 
-		public virtual void Accept(Db4objects.Db4o.Nativequery.Expr.IExpressionVisitor visitor
-			)
+		public virtual void Accept(IExpressionVisitor visitor)
 		{
 			visitor.Visit(this);
 		}

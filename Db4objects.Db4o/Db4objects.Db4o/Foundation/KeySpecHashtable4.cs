@@ -1,9 +1,11 @@
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class KeySpecHashtable4 : Db4objects.Db4o.Foundation.Hashtable4
+	public class KeySpecHashtable4 : Hashtable4
 	{
-		private KeySpecHashtable4() : base((Db4objects.Db4o.Foundation.IDeepClone)null)
+		private KeySpecHashtable4() : base((IDeepClone)null)
 		{
 		}
 
@@ -11,53 +13,52 @@ namespace Db4objects.Db4o.Foundation
 		{
 		}
 
-		public virtual void Put(Db4objects.Db4o.Foundation.KeySpec spec, byte value)
+		public virtual void Put(KeySpec spec, byte value)
 		{
 			base.Put(spec, value);
 		}
 
-		public virtual void Put(Db4objects.Db4o.Foundation.KeySpec spec, bool value)
+		public virtual void Put(KeySpec spec, bool value)
 		{
 			base.Put(spec, value);
 		}
 
-		public virtual void Put(Db4objects.Db4o.Foundation.KeySpec spec, int value)
+		public virtual void Put(KeySpec spec, int value)
 		{
 			base.Put(spec, value);
 		}
 
-		public virtual void Put(Db4objects.Db4o.Foundation.KeySpec spec, object value)
+		public virtual void Put(KeySpec spec, object value)
 		{
 			base.Put(spec, value);
 		}
 
-		public virtual byte GetAsByte(Db4objects.Db4o.Foundation.KeySpec spec)
+		public virtual byte GetAsByte(KeySpec spec)
 		{
 			return ((byte)Get(spec));
 		}
 
-		public virtual bool GetAsBoolean(Db4objects.Db4o.Foundation.KeySpec spec)
+		public virtual bool GetAsBoolean(KeySpec spec)
 		{
 			return ((bool)Get(spec));
 		}
 
-		public virtual int GetAsInt(Db4objects.Db4o.Foundation.KeySpec spec)
+		public virtual int GetAsInt(KeySpec spec)
 		{
 			return ((int)Get(spec));
 		}
 
-		public virtual Db4objects.Db4o.Foundation.TernaryBool GetAsTernaryBool(Db4objects.Db4o.Foundation.KeySpec
-			 spec)
+		public virtual TernaryBool GetAsTernaryBool(KeySpec spec)
 		{
-			return (Db4objects.Db4o.Foundation.TernaryBool)Get(spec);
+			return (TernaryBool)Get(spec);
 		}
 
-		public virtual string GetAsString(Db4objects.Db4o.Foundation.KeySpec spec)
+		public virtual string GetAsString(KeySpec spec)
 		{
 			return (string)Get(spec);
 		}
 
-		public virtual object Get(Db4objects.Db4o.Foundation.KeySpec spec)
+		public virtual object Get(KeySpec spec)
 		{
 			object value = base.Get(spec);
 			if (value == null)

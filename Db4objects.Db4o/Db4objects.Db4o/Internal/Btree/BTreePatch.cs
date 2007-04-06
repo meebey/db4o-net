@@ -1,21 +1,23 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
 	public abstract class BTreePatch
 	{
-		protected readonly Db4objects.Db4o.Internal.Transaction _transaction;
+		protected readonly Transaction _transaction;
 
 		protected object _object;
 
-		public BTreePatch(Db4objects.Db4o.Internal.Transaction transaction, object obj)
+		public BTreePatch(Transaction transaction, object obj)
 		{
 			_transaction = transaction;
 			_object = obj;
 		}
 
-		public abstract object Commit(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Btree.BTree
-			 btree);
+		public abstract object Commit(Transaction trans, BTree btree);
 
-		public abstract Db4objects.Db4o.Internal.Btree.BTreePatch ForTransaction(Db4objects.Db4o.Internal.Transaction
+		public abstract Db4objects.Db4o.Internal.Btree.BTreePatch ForTransaction(Transaction
 			 trans);
 
 		public virtual object GetObject()
@@ -38,10 +40,9 @@ namespace Db4objects.Db4o.Internal.Btree
 			return false;
 		}
 
-		public abstract object Key(Db4objects.Db4o.Internal.Transaction trans);
+		public abstract object Key(Transaction trans);
 
-		public abstract object Rollback(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Btree.BTree
-			 btree);
+		public abstract object Rollback(Transaction trans, BTree btree);
 
 		public override string ToString()
 		{

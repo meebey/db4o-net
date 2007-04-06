@@ -1,7 +1,15 @@
+using System;
+using System.IO;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+using Sharpen;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class Buffer : Db4objects.Db4o.Internal.ISlotReader
+	public class Buffer : ISlotReader
 	{
 		public byte[] _buffer;
 
@@ -76,9 +84,9 @@ namespace Db4objects.Db4o.Internal
 		/// <summary>non-encrypted read, used for indexes</summary>
 		/// <param name="a_stream"></param>
 		/// <param name="a_address"></param>
-		/// <exception cref="System.IO.IOException"></exception>
-		public virtual void Read(Db4objects.Db4o.Internal.ObjectContainerBase stream, int
-			 address, int addressOffset)
+		/// <exception cref="IOException"></exception>
+		public virtual void Read(ObjectContainerBase stream, int address, int addressOffset
+			)
 		{
 			stream.ReadBytes(_buffer, address, addressOffset, GetLength());
 		}
@@ -87,10 +95,9 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public virtual Db4objects.Db4o.Foundation.BitMap4 ReadBitMap(int bitCount)
+		public virtual BitMap4 ReadBitMap(int bitCount)
 		{
-			Db4objects.Db4o.Foundation.BitMap4 map = new Db4objects.Db4o.Foundation.BitMap4(_buffer
-				, _offset, bitCount);
+			BitMap4 map = new BitMap4(_buffer, _offset, bitCount);
 			_offset += map.MarshalledLength();
 			return map;
 		}
@@ -114,14 +121,12 @@ namespace Db4objects.Db4o.Internal
 			_offset += length;
 		}
 
-		public Db4objects.Db4o.Internal.Buffer ReadEmbeddedObject(Db4objects.Db4o.Internal.Transaction
-			 trans)
+		public Db4objects.Db4o.Internal.Buffer ReadEmbeddedObject(Transaction trans)
 		{
 			return trans.Stream().BufferByAddress(ReadInt(), ReadInt());
 		}
 
-		public virtual void ReadEncrypt(Db4objects.Db4o.Internal.ObjectContainerBase stream
-			, int address)
+		public virtual void ReadEncrypt(ObjectContainerBase stream, int address)
 		{
 			stream.ReadBytes(_buffer, address, GetLength());
 			stream.i_handlers.Decrypt(this);
@@ -129,11 +134,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void ReadEnd()
 		{
-			if (Db4objects.Db4o.Deploy.debug && Db4objects.Db4o.Deploy.brackets)
+			if (Deploy.debug && Deploy.brackets)
 			{
-				if (ReadByte() != Db4objects.Db4o.Internal.Const4.YAPEND)
+				if (ReadByte() != Const4.YAPEND)
 				{
-					throw new System.Exception("YapBytes.readEnd() YAPEND expected");
+					throw new Exception("YapBytes.readEnd() YAPEND expected");
 				}
 			}
 		}
@@ -148,9 +153,8 @@ namespace Db4objects.Db4o.Internal
 		public virtual long ReadLong()
 		{
 			long ret = 0;
-			ret = Db4objects.Db4o.Foundation.PrimitiveCodec.ReadLong(this._buffer, this._offset
-				);
-			this.IncrementOffset(Db4objects.Db4o.Internal.Const4.LONG_BYTES);
+			ret = PrimitiveCodec.ReadLong(this._buffer, this._offset);
+			this.IncrementOffset(Const4.LONG_BYTES);
 			return ret;
 		}
 
@@ -183,9 +187,9 @@ namespace Db4objects.Db4o.Internal
 				}
 				return str;
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				if (Db4objects.Db4o.Deploy.debug || Db4objects.Db4o.Debug.atHome)
+				if (Deploy.debug || Debug.atHome)
 				{
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
@@ -197,14 +201,14 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public void WriteBitMap(Db4objects.Db4o.Foundation.BitMap4 nullBitMap)
+		public void WriteBitMap(BitMap4 nullBitMap)
 		{
 			nullBitMap.WriteTo(_buffer, _offset);
 			_offset += nullBitMap.MarshalledLength();
 		}
 
-		public void WriteEncrypt(Db4objects.Db4o.Internal.LocalObjectContainer file, int 
-			address, int addressOffset)
+		public void WriteEncrypt(LocalObjectContainer file, int address, int addressOffset
+			)
 		{
 			file.i_handlers.Encrypt(this);
 			file.WriteBytes(this, address, addressOffset);
@@ -213,9 +217,9 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void WriteEnd()
 		{
-			if (Db4objects.Db4o.Deploy.debug && Db4objects.Db4o.Deploy.brackets)
+			if (Deploy.debug && Deploy.brackets)
 			{
-				Append(Db4objects.Db4o.Internal.Const4.YAPEND);
+				Append(Const4.YAPEND);
 			}
 		}
 
@@ -230,24 +234,22 @@ namespace Db4objects.Db4o.Internal
 			b[--o] = (byte)(a_int >> 8);
 		}
 
-		public virtual void WriteIDOf(Db4objects.Db4o.Internal.Transaction trans, object 
-			obj)
+		public virtual void WriteIDOf(Transaction trans, object obj)
 		{
 			if (obj == null)
 			{
 				WriteInt(0);
 				return;
 			}
-			if (obj is Db4objects.Db4o.Internal.PersistentBase)
+			if (obj is PersistentBase)
 			{
-				WriteIDOf(trans, (Db4objects.Db4o.Internal.PersistentBase)obj);
+				WriteIDOf(trans, (PersistentBase)obj);
 				return;
 			}
 			WriteInt(((int)obj));
 		}
 
-		public virtual void WriteIDOf(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.PersistentBase
-			 yapMeta)
+		public virtual void WriteIDOf(Transaction trans, PersistentBase yapMeta)
 		{
 			if (yapMeta == null)
 			{
@@ -257,20 +259,19 @@ namespace Db4objects.Db4o.Internal
 			yapMeta.WriteOwnID(trans, this);
 		}
 
-		public virtual void WriteShortString(Db4objects.Db4o.Internal.Transaction trans, 
-			string a_string)
+		public virtual void WriteShortString(Transaction trans, string a_string)
 		{
 			trans.Stream().i_handlers.i_stringHandler.WriteShort(a_string, this);
 		}
 
 		public virtual void WriteLong(long l)
 		{
-			Db4objects.Db4o.Internal.Handlers.LongHandler.WriteLong(l, this);
+			LongHandler.WriteLong(l, this);
 		}
 
 		public virtual void IncrementIntSize()
 		{
-			IncrementOffset(Db4objects.Db4o.Internal.Const4.INT_LENGTH);
+			IncrementOffset(Const4.INT_LENGTH);
 		}
 
 		public virtual int Offset()

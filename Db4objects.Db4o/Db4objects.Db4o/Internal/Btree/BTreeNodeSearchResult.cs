@@ -1,23 +1,26 @@
+using System;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
 	/// <exclude></exclude>
 	public class BTreeNodeSearchResult
 	{
-		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
+		private readonly Transaction _transaction;
 
-		private readonly Db4objects.Db4o.Internal.Btree.BTree _btree;
+		private readonly BTree _btree;
 
-		private readonly Db4objects.Db4o.Internal.Btree.BTreePointer _pointer;
+		private readonly BTreePointer _pointer;
 
 		private readonly bool _foundMatch;
 
-		internal BTreeNodeSearchResult(Db4objects.Db4o.Internal.Transaction transaction, 
-			Db4objects.Db4o.Internal.Btree.BTree btree, Db4objects.Db4o.Internal.Btree.BTreePointer
+		internal BTreeNodeSearchResult(Transaction transaction, BTree btree, BTreePointer
 			 pointer, bool foundMatch)
 		{
 			if (null == transaction || null == btree)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			_transaction = transaction;
 			_btree = btree;
@@ -25,23 +28,20 @@ namespace Db4objects.Db4o.Internal.Btree
 			_foundMatch = foundMatch;
 		}
 
-		internal BTreeNodeSearchResult(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 nodeReader, Db4objects.Db4o.Internal.Btree.BTree btree, Db4objects.Db4o.Internal.Btree.BTreeNode
-			 node, int cursor, bool foundMatch) : this(trans, btree, PointerOrNull(trans, nodeReader
-			, node, cursor), foundMatch)
+		internal BTreeNodeSearchResult(Transaction trans, Db4objects.Db4o.Internal.Buffer
+			 nodeReader, BTree btree, BTreeNode node, int cursor, bool foundMatch) : this(trans
+			, btree, PointerOrNull(trans, nodeReader, node, cursor), foundMatch)
 		{
 		}
 
-		internal BTreeNodeSearchResult(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 nodeReader, Db4objects.Db4o.Internal.Btree.BTree btree, Db4objects.Db4o.Internal.Btree.Searcher
-			 searcher, Db4objects.Db4o.Internal.Btree.BTreeNode node) : this(trans, btree, NextPointerIf
-			(PointerOrNull(trans, nodeReader, node, searcher.Cursor()), searcher.IsGreater()
-			), searcher.FoundMatch())
+		internal BTreeNodeSearchResult(Transaction trans, Db4objects.Db4o.Internal.Buffer
+			 nodeReader, BTree btree, Searcher searcher, BTreeNode node) : this(trans, btree
+			, NextPointerIf(PointerOrNull(trans, nodeReader, node, searcher.Cursor()), searcher
+			.IsGreater()), searcher.FoundMatch())
 		{
 		}
 
-		private static Db4objects.Db4o.Internal.Btree.BTreePointer NextPointerIf(Db4objects.Db4o.Internal.Btree.BTreePointer
-			 pointer, bool condition)
+		private static BTreePointer NextPointerIf(BTreePointer pointer, bool condition)
 		{
 			if (null == pointer)
 			{
@@ -54,25 +54,22 @@ namespace Db4objects.Db4o.Internal.Btree
 			return pointer;
 		}
 
-		private static Db4objects.Db4o.Internal.Btree.BTreePointer PointerOrNull(Db4objects.Db4o.Internal.Transaction
-			 trans, Db4objects.Db4o.Internal.Buffer nodeReader, Db4objects.Db4o.Internal.Btree.BTreeNode
-			 node, int cursor)
+		private static BTreePointer PointerOrNull(Transaction trans, Db4objects.Db4o.Internal.Buffer
+			 nodeReader, BTreeNode node, int cursor)
 		{
-			return node == null ? null : new Db4objects.Db4o.Internal.Btree.BTreePointer(trans
-				, nodeReader, node, cursor);
+			return node == null ? null : new BTreePointer(trans, nodeReader, node, cursor);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.IBTreeRange CreateIncludingRange(Db4objects.Db4o.Internal.Btree.BTreeNodeSearchResult
+		public virtual IBTreeRange CreateIncludingRange(Db4objects.Db4o.Internal.Btree.BTreeNodeSearchResult
 			 end)
 		{
-			Db4objects.Db4o.Internal.Btree.BTreePointer firstPointer = FirstValidPointer();
-			Db4objects.Db4o.Internal.Btree.BTreePointer endPointer = end._foundMatch ? end._pointer
-				.Next() : end.FirstValidPointer();
-			return new Db4objects.Db4o.Internal.Btree.BTreeRangeSingle(_transaction, _btree, 
-				firstPointer, endPointer);
+			BTreePointer firstPointer = FirstValidPointer();
+			BTreePointer endPointer = end._foundMatch ? end._pointer.Next() : end.FirstValidPointer
+				();
+			return new BTreeRangeSingle(_transaction, _btree, firstPointer, endPointer);
 		}
 
-		private Db4objects.Db4o.Internal.Btree.BTreePointer FirstValidPointer()
+		private BTreePointer FirstValidPointer()
 		{
 			if (null == _pointer)
 			{

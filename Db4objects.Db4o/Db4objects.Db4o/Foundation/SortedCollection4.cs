@@ -1,17 +1,21 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
 	public class SortedCollection4
 	{
-		private readonly Db4objects.Db4o.Foundation.IComparison4 _comparison;
+		private readonly IComparison4 _comparison;
 
-		private Db4objects.Db4o.Foundation.Tree _tree;
+		private Tree _tree;
 
-		public SortedCollection4(Db4objects.Db4o.Foundation.IComparison4 comparison)
+		public SortedCollection4(IComparison4 comparison)
 		{
 			if (null == comparison)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			_comparison = comparison;
 			_tree = null;
@@ -21,12 +25,12 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (1 != Size())
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			return _tree.Key();
 		}
 
-		public virtual void AddAll(System.Collections.IEnumerator iterator)
+		public virtual void AddAll(IEnumerator iterator)
 		{
 			while (iterator.MoveNext())
 			{
@@ -36,24 +40,21 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Add(object element)
 		{
-			_tree = Db4objects.Db4o.Foundation.Tree.Add(_tree, new Db4objects.Db4o.Foundation.TreeObject
-				(element, _comparison));
+			_tree = Tree.Add(_tree, new TreeObject(element, _comparison));
 		}
 
 		public virtual void Remove(object element)
 		{
-			_tree = Db4objects.Db4o.Foundation.Tree.RemoveLike(_tree, new Db4objects.Db4o.Foundation.TreeObject
-				(element, _comparison));
+			_tree = Tree.RemoveLike(_tree, new TreeObject(element, _comparison));
 		}
 
 		public virtual object[] ToArray(object[] array)
 		{
-			Db4objects.Db4o.Foundation.Tree.Traverse(_tree, new _AnonymousInnerClass43(this, 
-				array));
+			Tree.Traverse(_tree, new _AnonymousInnerClass43(this, array));
 			return array;
 		}
 
-		private sealed class _AnonymousInnerClass43 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass43 : IVisitor4
 		{
 			public _AnonymousInnerClass43(SortedCollection4 _enclosing, object[] array)
 			{
@@ -65,7 +66,7 @@ namespace Db4objects.Db4o.Foundation
 
 			public void Visit(object obj)
 			{
-				array[this.i++] = ((Db4objects.Db4o.Foundation.TreeObject)obj).Key();
+				array[this.i++] = ((TreeObject)obj).Key();
 			}
 
 			private readonly SortedCollection4 _enclosing;
@@ -75,7 +76,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual int Size()
 		{
-			return Db4objects.Db4o.Foundation.Tree.Size(_tree);
+			return Tree.Size(_tree);
 		}
 	}
 }

@@ -1,10 +1,16 @@
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.Query.Result;
+using Sharpen;
+
 namespace Db4objects.Db4o.Internal.CS
 {
 	/// <exclude></exclude>
-	internal class ClientQueryResultIterator : System.Collections.IEnumerator
+	internal class ClientQueryResultIterator : IEnumerator
 	{
-		private static readonly Db4objects.Db4o.Internal.CS.IPrefetchingStrategy _prefetchingStrategy
-			 = Db4objects.Db4o.Internal.CS.SingleMessagePrefetchingStrategy.INSTANCE;
+		private static readonly IPrefetchingStrategy _prefetchingStrategy = SingleMessagePrefetchingStrategy
+			.INSTANCE;
 
 		private object[] _prefetchedObjects;
 
@@ -12,12 +18,11 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private int _prefetchRight;
 
-		private readonly Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult _client;
+		private readonly AbstractQueryResult _client;
 
-		private readonly Db4objects.Db4o.Foundation.IIntIterator4 _ids;
+		private readonly IIntIterator4 _ids;
 
-		internal ClientQueryResultIterator(Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult
-			 client)
+		internal ClientQueryResultIterator(AbstractQueryResult client)
 		{
 			_client = client;
 			_ids = client.IterateIDs();
@@ -86,9 +91,9 @@ namespace Db4objects.Db4o.Internal.CS
 			return Stream().Config().PrefetchObjectCount();
 		}
 
-		private Db4objects.Db4o.Internal.CS.ClientObjectContainer Stream()
+		private ClientObjectContainer Stream()
 		{
-			return (Db4objects.Db4o.Internal.CS.ClientObjectContainer)_client.Stream();
+			return (ClientObjectContainer)_client.Stream();
 		}
 
 		private object PrefetchedCurrent()

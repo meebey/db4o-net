@@ -1,26 +1,39 @@
+using System;
+using System.Collections;
+using System.IO;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.Convert;
+using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Query.Result;
+using Db4objects.Db4o.Reflect;
+using Sharpen;
+
 namespace Db4objects.Db4o.Internal.CS
 {
 	/// <exclude></exclude>
-	public class ClientObjectContainer : Db4objects.Db4o.Internal.ObjectContainerBase
-		, Db4objects.Db4o.Ext.IExtClient, Db4objects.Db4o.IBlobTransport, Db4objects.Db4o.Internal.CS.IClientMessageDispatcher
+	public class ClientObjectContainer : ObjectContainerBase, IExtClient, IBlobTransport
+		, IClientMessageDispatcher
 	{
 		internal readonly object blobLock = new object();
 
-		private Db4objects.Db4o.Internal.CS.BlobProcessor blobThread;
+		private BlobProcessor blobThread;
 
-		private Db4objects.Db4o.Foundation.Network.ISocket4 i_socket;
+		private ISocket4 i_socket;
 
-		internal Db4objects.Db4o.Foundation.Queue4 messageQueue = new Db4objects.Db4o.Foundation.Queue4
-			();
-
-		internal readonly Db4objects.Db4o.Foundation.Lock4 messageQueueLock = new Db4objects.Db4o.Foundation.Lock4
-			();
+		private BlockingQueue _messageQueue = new BlockingQueue();
 
 		private string password;
 
 		internal int[] _prefetchedIDs;
 
-		internal Db4objects.Db4o.Internal.CS.IClientMessageDispatcher _messageDispatcher;
+		internal IClientMessageDispatcher _messageDispatcher;
 
 		internal int remainingIDs;
 
@@ -30,83 +43,67 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private string userName;
 
-		private Db4objects.Db4o.Ext.Db4oDatabase i_db;
+		private Db4oDatabase i_db;
 
 		protected bool _doFinalize = true;
 
 		private int _blockSize = 1;
 
-		private Db4objects.Db4o.Foundation.Collection4 _batchedMessages = new Db4objects.Db4o.Foundation.Collection4
-			();
+		private Collection4 _batchedMessages = new Collection4();
 
-		private int _batchedQueueLength = Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+		private int _batchedQueueLength = Const4.INT_LENGTH;
 
-		private ClientObjectContainer(Db4objects.Db4o.Config.IConfiguration config) : base
-			(config, null)
+		private string _fakeServerFile;
+
+		private bool _login;
+
+		public ClientObjectContainer(string fakeServerFile) : base(Db4oFactory.CloneConfiguration
+			(), null)
 		{
+			throw new InvalidOperationException();
+			_fakeServerFile = fakeServerFile;
+			Open();
 		}
 
-		public ClientObjectContainer(string fakeServerFile) : this(Db4objects.Db4o.Db4oFactory
-			.CloneConfiguration())
+		public ClientObjectContainer(IConfiguration config, ISocket4 socket, string user, 
+			string password_, bool login) : base(config, null)
 		{
-			lock (Lock())
+			if (password_ == null)
 			{
-				_singleThreaded = ConfigImpl().SingleThreadedClient();
-				throw new System.Exception("This constructor is for Debug.fakeServer use only.");
-				InitializePostOpen();
-				Db4objects.Db4o.Internal.Platform4.PostOpen(this);
+				throw new InvalidPasswordException();
 			}
+			userName = user;
+			password = password_;
+			i_socket = socket;
+			_login = login;
+			Open();
 		}
 
-		public ClientObjectContainer(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.Foundation.Network.ISocket4
-			 socket, string user, string password_, bool login) : this(config)
+		protected sealed override void OpenImpl()
 		{
-			lock (Lock())
+			_singleThreaded = ConfigImpl().SingleThreadedClient();
+			if (_login)
 			{
-				_singleThreaded = ConfigImpl().SingleThreadedClient();
-				if (password_ == null)
-				{
-					throw new System.ArgumentNullException(Db4objects.Db4o.Internal.Messages.Get(56));
-				}
-				if (!login)
-				{
-					password_ = null;
-				}
-				userName = user;
-				password = password_;
-				i_socket = socket;
-				try
-				{
-					LoginToServer(socket);
-				}
-				catch (System.IO.IOException e)
-				{
-					StopSession();
-					throw;
-				}
-				if (!_singleThreaded)
-				{
-					StartReaderThread(socket, user);
-				}
-				LogMsg(36, ToString());
-				ReadThis();
-				InitializePostOpen();
-				Db4objects.Db4o.Internal.Platform4.PostOpen(this);
+				LoginToServer(i_socket);
 			}
+			if (!_singleThreaded)
+			{
+				StartDispatcherThread(i_socket, userName);
+			}
+			LogMsg(36, ToString());
+			ReadThis();
 		}
 
-		private void StartReaderThread(Db4objects.Db4o.Foundation.Network.ISocket4 socket
-			, string user)
+		private void StartDispatcherThread(ISocket4 socket, string user)
 		{
-			_messageDispatcher = new Db4objects.Db4o.Internal.CS.ClientMessageDispatcherImpl(
-				this, socket, messageQueue, messageQueueLock);
+			_messageDispatcher = new ClientMessageDispatcherImpl(this, socket, _messageQueue);
 			_messageDispatcher.SetDispatcherName(user);
 			_messageDispatcher.StartDispatcher();
 		}
 
 		public override void Backup(string path)
 		{
-			Db4objects.Db4o.Internal.Exceptions4.ThrowRuntimeException(60);
+			throw new NotSupportedException();
 		}
 
 		public virtual void BlockSize(int blockSize)
@@ -130,17 +127,17 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				Commit1();
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.CatchAllExceptDb4oException(e);
+				Exceptions4.CatchAllExceptDb4oException(e);
 			}
 			try
 			{
-				WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.CLOSE, true);
+				WriteMsg(Msg.CLOSE, true);
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.CatchAllExceptDb4oException(e);
+				Exceptions4.CatchAllExceptDb4oException(e);
 			}
 			try
 			{
@@ -149,17 +146,17 @@ namespace Db4objects.Db4o.Internal.CS
 					_messageDispatcher.Close();
 				}
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.CatchAllExceptDb4oException(e);
+				Exceptions4.CatchAllExceptDb4oException(e);
 			}
 			try
 			{
 				i_socket.Close();
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
-				Db4objects.Db4o.Internal.Exceptions4.CatchAllExceptDb4oException(e);
+				Exceptions4.CatchAllExceptDb4oException(e);
 			}
 			ShutdownObjectContainer();
 		}
@@ -171,80 +168,72 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override int ConverterVersion()
 		{
-			return Db4objects.Db4o.Internal.Convert.Converter.VERSION;
+			return Converter.VERSION;
 		}
 
-		internal virtual Db4objects.Db4o.Foundation.Network.ISocket4 CreateParalellSocket
-			()
+		internal virtual ISocket4 CreateParalellSocket()
 		{
-			WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.GET_THREAD_ID, true);
-			int serverThreadID = ExpectedByteResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
-				.ID_LIST).ReadInt();
-			Db4objects.Db4o.Foundation.Network.ISocket4 sock = i_socket.OpenParalellSocket();
-			if (!(i_socket is Db4objects.Db4o.Foundation.Network.LoopbackSocket))
+			WriteMsg(Msg.GET_THREAD_ID, true);
+			int serverThreadID = ExpectedByteResponse(Msg.ID_LIST).ReadInt();
+			ISocket4 sock = i_socket.OpenParalellSocket();
+			if (!(i_socket is LoopbackSocket))
 			{
 				LoginToServer(sock);
 			}
 			if (switchedToFile != null)
 			{
-				Db4objects.Db4o.Internal.CS.Messages.MsgD message = Db4objects.Db4o.Internal.CS.Messages.Msg
-					.SWITCH_TO_FILE.GetWriterForString(SystemTransaction(), switchedToFile);
+				MsgD message = Msg.SWITCH_TO_FILE.GetWriterForString(SystemTransaction(), switchedToFile
+					);
 				message.Write(this, sock);
-				if (!(Db4objects.Db4o.Internal.CS.Messages.Msg.OK.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg
-					.ReadMessage(this, SystemTransaction(), sock))))
+				if (!(Msg.OK.Equals(Msg.ReadMessage(this, SystemTransaction(), sock))))
 				{
-					throw new System.IO.IOException(Db4objects.Db4o.Internal.Messages.Get(42));
+					throw new IOException(Db4objects.Db4o.Internal.Messages.Get(42));
 				}
 			}
-			Db4objects.Db4o.Internal.CS.Messages.Msg.USE_TRANSACTION.GetWriterForInt(i_trans, 
-				serverThreadID).Write(this, sock);
+			Msg.USE_TRANSACTION.GetWriterForInt(i_trans, serverThreadID).Write(this, sock);
 			return sock;
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult NewQueryResult
-			(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Config.QueryEvaluationMode
+		public override AbstractQueryResult NewQueryResult(Transaction trans, QueryEvaluationMode
 			 mode)
 		{
-			throw new System.InvalidOperationException();
+			throw new InvalidOperationException();
 		}
 
-		public sealed override Db4objects.Db4o.Internal.Transaction NewTransaction(Db4objects.Db4o.Internal.Transaction
-			 parentTransaction)
+		public sealed override Transaction NewTransaction(Transaction parentTransaction)
 		{
-			return new Db4objects.Db4o.Internal.CS.ClientTransaction(this, parentTransaction);
+			return new ClientTransaction(this, parentTransaction);
 		}
 
-		public override bool CreateClassMetadata(Db4objects.Db4o.Internal.ClassMetadata a_yapClass
-			, Db4objects.Db4o.Reflect.IReflectClass a_class, Db4objects.Db4o.Internal.ClassMetadata
-			 a_superYapClass)
+		public override bool CreateClassMetadata(ClassMetadata a_yapClass, IReflectClass 
+			a_class, ClassMetadata a_superYapClass)
 		{
-			WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.CREATE_CLASS.GetWriterForString
-				(SystemTransaction(), a_class.GetName()), true);
-			Db4objects.Db4o.Internal.CS.Messages.Msg resp = GetResponse();
+			WriteMsg(Msg.CREATE_CLASS.GetWriterForString(SystemTransaction(), a_class.GetName
+				()), true);
+			Msg resp = GetResponse();
 			if (resp == null)
 			{
 				return false;
 			}
-			if (resp.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.FAILED))
+			if (resp.Equals(Msg.FAILED))
 			{
 				SendClassMeta(a_class);
 				resp = GetResponse();
 			}
-			if (resp.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.FAILED))
+			if (resp.Equals(Msg.FAILED))
 			{
 				if (ConfigImpl().ExceptionsOnNotStorable())
 				{
-					throw new Db4objects.Db4o.Ext.ObjectNotStorableException(a_class);
+					throw new ObjectNotStorableException(a_class);
 				}
 				return false;
 			}
-			if (!resp.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT))
+			if (!resp.Equals(Msg.OBJECT_TO_CLIENT))
 			{
 				return false;
 			}
-			Db4objects.Db4o.Internal.CS.Messages.MsgObject message = (Db4objects.Db4o.Internal.CS.Messages.MsgObject
-				)resp;
-			Db4objects.Db4o.Internal.StatefulBuffer bytes = message.Unmarshall();
+			MsgObject message = (MsgObject)resp;
+			StatefulBuffer bytes = message.Unmarshall();
 			if (bytes == null)
 			{
 				return false;
@@ -261,26 +250,24 @@ namespace Db4objects.Db4o.Internal.CS
 			return true;
 		}
 
-		private void SendClassMeta(Db4objects.Db4o.Reflect.IReflectClass reflectClass)
+		private void SendClassMeta(IReflectClass reflectClass)
 		{
-			Db4objects.Db4o.Internal.CS.ClassInfo classMeta = _classMetaHelper.GetClassMeta(reflectClass
-				);
-			WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.CLASS_META.GetWriter(Db4objects.Db4o.Internal.Serializer
-				.Marshall(SystemTransaction(), classMeta)), true);
+			ClassInfo classMeta = _classMetaHelper.GetClassMeta(reflectClass);
+			WriteMsg(Msg.CLASS_META.GetWriter(Serializer.Marshall(SystemTransaction(), classMeta
+				)), true);
 		}
 
 		public override long CurrentVersion()
 		{
-			WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.CURRENT_VERSION, true);
-			return ((Db4objects.Db4o.Internal.CS.Messages.MsgD)ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
-				.ID_LIST)).ReadLong();
+			WriteMsg(Msg.CURRENT_VERSION, true);
+			return ((MsgD)ExpectedResponse(Msg.ID_LIST)).ReadLong();
 		}
 
-		public sealed override bool Delete4(Db4objects.Db4o.Internal.Transaction ta, Db4objects.Db4o.Internal.ObjectReference
-			 yo, int a_cascade, bool userCall)
+		public sealed override bool Delete4(Transaction ta, ObjectReference yo, int a_cascade
+			, bool userCall)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.DELETE.GetWriterForInts(i_trans, new int[] { yo.GetID(), userCall ? 1 : 0 });
+			MsgD msg = Msg.DELETE.GetWriterForInts(i_trans, new int[] { yo.GetID(), userCall ? 
+				1 : 0 });
 			WriteMsg(msg, false);
 			return true;
 		}
@@ -295,10 +282,10 @@ namespace Db4objects.Db4o.Internal.CS
 			return _doFinalize;
 		}
 
-		internal Db4objects.Db4o.Internal.Buffer ExpectedByteResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
-			 expectedMessage)
+		internal Db4objects.Db4o.Internal.Buffer ExpectedByteResponse(Msg expectedMessage
+			)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.Msg msg = ExpectedResponse(expectedMessage);
+			Msg msg = ExpectedResponse(expectedMessage);
 			if (msg == null)
 			{
 				return null;
@@ -306,23 +293,30 @@ namespace Db4objects.Db4o.Internal.CS
 			return msg.GetByteLoad();
 		}
 
-		public Db4objects.Db4o.Internal.CS.Messages.Msg ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
-			 expectedMessage)
+		public Msg ExpectedResponse(Msg expectedMessage)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.Msg message = GetResponse();
+			Msg message = GetResponse();
 			if (expectedMessage.Equals(message))
 			{
 				return message;
 			}
-			return null;
+			CheckDb4oExceptionMessage(message);
+			throw new InvalidOperationException("Unexpected Message:" + message + "  Expected:"
+				 + expectedMessage);
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult GetAll(
-			Db4objects.Db4o.Internal.Transaction trans)
+		private void CheckDb4oExceptionMessage(Msg msg)
+		{
+			if (msg is MDb4oException)
+			{
+				throw ((MDb4oException)msg).Exception();
+			}
+		}
+
+		public override AbstractQueryResult GetAll(Transaction trans)
 		{
 			int mode = Config().QueryEvaluationMode().AsInt();
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.GET_ALL.GetWriterForInt(trans, mode);
+			MsgD msg = Msg.GET_ALL.GetWriterForInt(trans, mode);
 			WriteMsg(msg, true);
 			return ReadQueryResult(trans);
 		}
@@ -333,92 +327,45 @@ namespace Db4objects.Db4o.Internal.CS
 		/// should ideally be able to trigger some sort of state listener (connection
 		/// dead) on the client.
 		/// </remarks>
-		public virtual Db4objects.Db4o.Internal.CS.Messages.Msg GetResponse()
+		public virtual Msg GetResponse()
 		{
 			return _singleThreaded ? GetResponseSingleThreaded() : GetResponseMultiThreaded();
 		}
 
-		private Db4objects.Db4o.Internal.CS.Messages.Msg GetResponseMultiThreaded()
+		private Msg GetResponseMultiThreaded()
 		{
-			try
+			Msg msg = (Msg)_messageQueue.Next();
+			if (msg == Msg.ERROR)
 			{
-				return (Db4objects.Db4o.Internal.CS.Messages.Msg)messageQueueLock.Run(new _AnonymousInnerClass333
-					(this));
+				OnMsgError();
 			}
-			catch (System.Exception ex)
-			{
-				Db4objects.Db4o.Internal.Exceptions4.CatchAllExceptDb4oException(ex);
-				return null;
-			}
+			return msg;
 		}
 
-		private sealed class _AnonymousInnerClass333 : Db4objects.Db4o.Foundation.IClosure4
+		private void OnMsgError()
 		{
-			public _AnonymousInnerClass333(ClientObjectContainer _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public object Run()
-			{
-				Db4objects.Db4o.Internal.CS.Messages.Msg message = this.RetrieveMessage();
-				if (message != null)
-				{
-					return message;
-				}
-				this.ThrowOnClosed();
-				this._enclosing.messageQueueLock.Snooze(this._enclosing.Timeout());
-				this.ThrowOnClosed();
-				return this.RetrieveMessage();
-			}
-
-			private void ThrowOnClosed()
-			{
-				if (!this._enclosing._messageDispatcher.IsMessageDispatcherAlive())
-				{
-					this._enclosing._doFinalize = false;
-					throw new Db4objects.Db4o.Ext.Db4oException(Db4objects.Db4o.Internal.Messages.Get
-						(Db4objects.Db4o.Internal.Messages.CLOSED_OR_OPEN_FAILED));
-				}
-			}
-
-			private Db4objects.Db4o.Internal.CS.Messages.Msg RetrieveMessage()
-			{
-				Db4objects.Db4o.Internal.CS.Messages.Msg message = null;
-				message = (Db4objects.Db4o.Internal.CS.Messages.Msg)this._enclosing.messageQueue.
-					Next();
-				if (message != null)
-				{
-					if (Db4objects.Db4o.Internal.CS.Messages.Msg.ERROR.Equals(message))
-					{
-						throw new Db4objects.Db4o.Ext.Db4oException("Client connection error");
-					}
-				}
-				return message;
-			}
-
-			private readonly ClientObjectContainer _enclosing;
+			Close();
+			throw new Db4oException(Db4objects.Db4o.Internal.Messages.Get(Db4objects.Db4o.Internal.Messages
+				.CLOSED_OR_OPEN_FAILED));
 		}
 
-		private Db4objects.Db4o.Internal.CS.Messages.Msg GetResponseSingleThreaded()
+		private Msg GetResponseSingleThreaded()
 		{
 			while (IsMessageDispatcherAlive())
 			{
 				try
 				{
-					Db4objects.Db4o.Internal.CS.Messages.Msg message = Db4objects.Db4o.Internal.CS.Messages.Msg
-						.ReadMessage(this, i_trans, i_socket);
-					if (message is Db4objects.Db4o.Internal.CS.Messages.IClientSideMessage)
+					Msg message = Msg.ReadMessage(this, i_trans, i_socket);
+					if (message is IClientSideMessage)
 					{
-						if (((Db4objects.Db4o.Internal.CS.Messages.IClientSideMessage)message).ProcessAtClient
-							())
+						if (((IClientSideMessage)message).ProcessAtClient())
 						{
 							continue;
 						}
 					}
 					return message;
 				}
-				catch (System.Exception)
+				catch (Exception)
 				{
 				}
 			}
@@ -430,27 +377,24 @@ namespace Db4objects.Db4o.Internal.CS
 			return i_socket != null;
 		}
 
-		public override Db4objects.Db4o.Internal.ClassMetadata ClassMetadataForId(int a_id
-			)
+		public override ClassMetadata ClassMetadataForId(int a_id)
 		{
 			if (a_id == 0)
 			{
 				return null;
 			}
-			Db4objects.Db4o.Internal.ClassMetadata yc = base.ClassMetadataForId(a_id);
+			ClassMetadata yc = base.ClassMetadataForId(a_id);
 			if (yc != null)
 			{
 				return yc;
 			}
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.CLASS_NAME_FOR_ID.GetWriterForInt(SystemTransaction(), a_id);
+			MsgD msg = Msg.CLASS_NAME_FOR_ID.GetWriterForInt(SystemTransaction(), a_id);
 			WriteMsg(msg, true);
-			Db4objects.Db4o.Internal.CS.Messages.MsgD message = (Db4objects.Db4o.Internal.CS.Messages.MsgD
-				)ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.CLASS_NAME_FOR_ID);
+			MsgD message = (MsgD)ExpectedResponse(Msg.CLASS_NAME_FOR_ID);
 			string className = message.ReadString();
 			if (className != null && className.Length > 0)
 			{
-				Db4objects.Db4o.Reflect.IReflectClass claxx = Reflector().ForName(className);
+				IReflectClass claxx = Reflector().ForName(className);
 				if (claxx != null)
 				{
 					return ProduceClassMetadata(claxx);
@@ -469,17 +413,16 @@ namespace Db4objects.Db4o.Internal.CS
 			return false;
 		}
 
-		public override Db4objects.Db4o.Ext.Db4oDatabase Identity()
+		public override Db4oDatabase Identity()
 		{
 			if (i_db == null)
 			{
-				WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.IDENTITY, true);
-				Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
-					.ID_LIST);
+				WriteMsg(Msg.IDENTITY, true);
+				Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.ID_LIST);
 				ShowInternalClasses(true);
 				try
 				{
-					i_db = (Db4objects.Db4o.Ext.Db4oDatabase)GetByID(reader.ReadInt());
+					i_db = (Db4oDatabase)GetByID(reader.ReadInt());
 					Activate1(SystemTransaction(), i_db, 3);
 				}
 				finally
@@ -495,24 +438,20 @@ namespace Db4objects.Db4o.Internal.CS
 			return true;
 		}
 
-		internal virtual void LoginToServer(Db4objects.Db4o.Foundation.Network.ISocket4 a_socket
-			)
+		private void LoginToServer(ISocket4 a_socket)
 		{
-			if (password != null)
+			UnicodeStringIO stringWriter = new UnicodeStringIO();
+			int length = stringWriter.Length(userName) + stringWriter.Length(password);
+			MsgD message = Msg.LOGIN.GetWriterForLength(SystemTransaction(), length);
+			message.WriteString(userName);
+			message.WriteString(password);
+			message.Write(this, a_socket);
+			try
 			{
-				Db4objects.Db4o.Internal.UnicodeStringIO stringWriter = new Db4objects.Db4o.Internal.UnicodeStringIO
-					();
-				int length = stringWriter.Length(userName) + stringWriter.Length(password);
-				Db4objects.Db4o.Internal.CS.Messages.MsgD message = Db4objects.Db4o.Internal.CS.Messages.Msg
-					.LOGIN.GetWriterForLength(SystemTransaction(), length);
-				message.WriteString(userName);
-				message.WriteString(password);
-				message.Write(this, a_socket);
-				Db4objects.Db4o.Internal.CS.Messages.Msg msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-					.ReadMessage(this, SystemTransaction(), a_socket);
-				if (!Db4objects.Db4o.Internal.CS.Messages.Msg.LOGIN_OK.Equals(msg))
+				Msg msg = Msg.ReadMessage(this, SystemTransaction(), a_socket);
+				if (!Msg.LOGIN_OK.Equals(msg))
 				{
-					throw new System.IO.IOException(Db4objects.Db4o.Internal.Messages.Get(42));
+					throw new InvalidPasswordException();
 				}
 				Db4objects.Db4o.Internal.Buffer payLoad = msg.PayLoad();
 				_blockSize = payLoad.ReadInt();
@@ -521,6 +460,10 @@ namespace Db4objects.Db4o.Internal.CS
 				{
 					i_handlers.OldEncryptionOff();
 				}
+			}
+			catch (IOException e)
+			{
+				throw new OpenDatabaseException(e);
 			}
 		}
 
@@ -536,10 +479,9 @@ namespace Db4objects.Db4o.Internal.CS
 			Db4objects.Db4o.Internal.Buffer reader = null;
 			if (remainingIDs < 1)
 			{
-				Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-					.PREFETCH_IDS.GetWriterForInt(i_trans, prefetchIDCount);
+				MsgD msg = Msg.PREFETCH_IDS.GetWriterForInt(i_trans, prefetchIDCount);
 				WriteMsg(msg, true);
-				reader = ExpectedByteResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.ID_LIST);
+				reader = ExpectedByteResponse(Msg.ID_LIST);
 				for (int i = prefetchIDCount - 1; i >= 0; i--)
 				{
 					_prefetchedIDs[i] = reader.ReadInt();
@@ -550,15 +492,14 @@ namespace Db4objects.Db4o.Internal.CS
 			return _prefetchedIDs[remainingIDs];
 		}
 
-		internal virtual void ProcessBlobMessage(Db4objects.Db4o.Internal.CS.Messages.MsgBlob
-			 msg)
+		internal virtual void ProcessBlobMessage(MsgBlob msg)
 		{
 			lock (blobLock)
 			{
 				bool needStart = blobThread == null || blobThread.IsTerminated();
 				if (needStart)
 				{
-					blobThread = new Db4objects.Db4o.Internal.CS.BlobProcessor(this);
+					blobThread = new BlobProcessor(this);
 				}
 				blobThread.Add(msg);
 				if (needStart)
@@ -570,101 +511,88 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override void RaiseVersion(long a_minimumVersion)
 		{
-			WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.RAISE_VERSION.GetWriterForLong(
-				i_trans, a_minimumVersion), true);
+			WriteMsg(Msg.RAISE_VERSION.GetWriterForLong(i_trans, a_minimumVersion), true);
 		}
 
 		public override void ReadBytes(byte[] bytes, int address, int addressOffset, int 
 			length)
 		{
-			throw Db4objects.Db4o.Internal.Exceptions4.VirtualException();
+			throw Exceptions4.VirtualException();
 		}
 
 		public override void ReadBytes(byte[] a_bytes, int a_address, int a_length)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.READ_BYTES.GetWriterForInts(i_trans, new int[] { a_address, a_length });
+			MsgD msg = Msg.READ_BYTES.GetWriterForInts(i_trans, new int[] { a_address, a_length
+				 });
 			WriteMsg(msg, true);
-			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
-				.READ_BYTES);
+			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.READ_BYTES);
 			System.Array.Copy(reader._buffer, 0, a_bytes, 0, a_length);
 		}
 
-		protected override bool Rename1(Db4objects.Db4o.Internal.Config4Impl config)
+		protected override bool Rename1(Config4Impl config)
 		{
 			LogMsg(58, null);
 			return false;
 		}
 
-		public sealed override Db4objects.Db4o.Internal.StatefulBuffer ReadWriterByID(Db4objects.Db4o.Internal.Transaction
-			 a_ta, int a_id)
+		public sealed override StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.READ_OBJECT.GetWriterForInt(a_ta, a_id);
+			MsgD msg = Msg.READ_OBJECT.GetWriterForInt(a_ta, a_id);
 			WriteMsg(msg, true);
-			Db4objects.Db4o.Internal.StatefulBuffer bytes = ((Db4objects.Db4o.Internal.CS.Messages.MsgObject
-				)ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT)).Unmarshall
+			StatefulBuffer bytes = ((MsgObject)ExpectedResponse(Msg.OBJECT_TO_CLIENT)).Unmarshall
 				();
 			bytes.SetTransaction(a_ta);
 			return bytes;
 		}
 
-		public sealed override Db4objects.Db4o.Internal.StatefulBuffer[] ReadWritersByIDs
-			(Db4objects.Db4o.Internal.Transaction a_ta, int[] ids)
+		public sealed override StatefulBuffer[] ReadWritersByIDs(Transaction a_ta, int[] 
+			ids)
 		{
 			try
 			{
-				Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-					.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(a_ta, ids, ids.Length);
+				MsgD msg = Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(a_ta, ids, ids.Length);
 				WriteMsg(msg, true);
-				Db4objects.Db4o.Internal.CS.Messages.MsgD response = (Db4objects.Db4o.Internal.CS.Messages.MsgD
-					)ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.READ_MULTIPLE_OBJECTS
-					);
+				MsgD response = (MsgD)ExpectedResponse(Msg.READ_MULTIPLE_OBJECTS);
 				int count = response.ReadInt();
-				Db4objects.Db4o.Internal.StatefulBuffer[] yapWriters = new Db4objects.Db4o.Internal.StatefulBuffer
-					[count];
+				StatefulBuffer[] yapWriters = new StatefulBuffer[count];
 				for (int i = 0; i < count; i++)
 				{
-					Db4objects.Db4o.Internal.CS.Messages.MsgObject mso = (Db4objects.Db4o.Internal.CS.Messages.MsgObject
-						)Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT.PublicClone();
+					MsgObject mso = (MsgObject)Msg.OBJECT_TO_CLIENT.PublicClone();
 					mso.SetTransaction(GetTransaction());
 					mso.PayLoad(response.PayLoad().ReadYapBytes());
 					if (mso.PayLoad() != null)
 					{
-						mso.PayLoad().IncrementOffset(Db4objects.Db4o.Internal.Const4.MESSAGE_LENGTH);
-						yapWriters[i] = mso.Unmarshall(Db4objects.Db4o.Internal.Const4.MESSAGE_LENGTH);
+						mso.PayLoad().IncrementOffset(Const4.MESSAGE_LENGTH);
+						yapWriters[i] = mso.Unmarshall(Const4.MESSAGE_LENGTH);
 						yapWriters[i].SetTransaction(a_ta);
 					}
 				}
 				return yapWriters;
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
 			}
 			return null;
 		}
 
-		public sealed override Db4objects.Db4o.Internal.Buffer ReadReaderByID(Db4objects.Db4o.Internal.Transaction
+		public sealed override Db4objects.Db4o.Internal.Buffer ReadReaderByID(Transaction
 			 a_ta, int a_id)
 		{
 			return ReadWriterByID(a_ta, a_id);
 		}
 
-		private Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult ReadQueryResult
-			(Db4objects.Db4o.Internal.Transaction trans)
+		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
-			Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult queryResult = null;
-			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
-				.QUERY_RESULT);
+			AbstractQueryResult queryResult = null;
+			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.QUERY_RESULT);
 			int queryResultID = reader.ReadInt();
 			if (queryResultID > 0)
 			{
-				queryResult = new Db4objects.Db4o.Internal.CS.LazyClientQueryResult(trans, this, 
-					queryResultID);
+				queryResult = new LazyClientQueryResult(trans, this, queryResultID);
 			}
 			else
 			{
-				queryResult = new Db4objects.Db4o.Internal.CS.ClientQueryResult(trans);
+				queryResult = new ClientQueryResult(trans);
 			}
 			queryResult.LoadFromIdReader(reader);
 			return queryResult;
@@ -672,10 +600,8 @@ namespace Db4objects.Db4o.Internal.CS
 
 		internal virtual void ReadThis()
 		{
-			WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.GET_CLASSES.GetWriter(SystemTransaction
-				()), true);
-			Db4objects.Db4o.Internal.Buffer bytes = ExpectedByteResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
-				.GET_CLASSES);
+			WriteMsg(Msg.GET_CLASSES.GetWriter(SystemTransaction()), true);
+			Db4objects.Db4o.Internal.Buffer bytes = ExpectedByteResponse(Msg.GET_CLASSES);
 			ClassCollection().SetID(bytes.ReadInt());
 			CreateStringIO(bytes.ReadByte());
 			ClassCollection().Read(SystemTransaction());
@@ -689,18 +615,17 @@ namespace Db4objects.Db4o.Internal.CS
 				CheckClosed();
 				if (name == null)
 				{
-					throw new System.ArgumentNullException();
+					throw new ArgumentNullException();
 				}
-				WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.RELEASE_SEMAPHORE.GetWriterForString
-					(i_trans, name), true);
+				WriteMsg(Msg.RELEASE_SEMAPHORE.GetWriterForString(i_trans, name), true);
 			}
 		}
 
-		public override void ReleaseSemaphores(Db4objects.Db4o.Internal.Transaction ta)
+		public override void ReleaseSemaphores(Transaction ta)
 		{
 		}
 
-		private void ReReadAll(Db4objects.Db4o.Config.IConfiguration config)
+		private void ReReadAll(IConfiguration config)
 		{
 			remainingIDs = 0;
 			Initialize1(config);
@@ -714,7 +639,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				ClearBatchedObjects();
 			}
-			WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.ROLLBACK, true);
+			WriteMsg(Msg.ROLLBACK, true);
 			i_trans.Rollback();
 		}
 
@@ -724,14 +649,12 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				if (obj != null)
 				{
-					WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.USER_MESSAGE.GetWriter(Db4objects.Db4o.Internal.Serializer
-						.Marshall(i_trans, obj)), true);
+					WriteMsg(Msg.USER_MESSAGE.GetWriter(Serializer.Marshall(i_trans, obj)), true);
 				}
 			}
 		}
 
-		public sealed override void SetDirtyInSystemTransaction(Db4objects.Db4o.Internal.PersistentBase
-			 a_object)
+		public sealed override void SetDirtyInSystemTransaction(PersistentBase a_object)
 		{
 		}
 
@@ -742,13 +665,12 @@ namespace Db4objects.Db4o.Internal.CS
 				CheckClosed();
 				if (name == null)
 				{
-					throw new System.ArgumentNullException();
+					throw new ArgumentNullException();
 				}
-				Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-					.SET_SEMAPHORE.GetWriterForIntString(i_trans, timeout, name);
+				MsgD msg = Msg.SET_SEMAPHORE.GetWriterForIntString(i_trans, timeout, name);
 				WriteMsg(msg, true);
-				Db4objects.Db4o.Internal.CS.Messages.Msg message = GetResponse();
-				return (message.Equals(Db4objects.Db4o.Internal.CS.Messages.Msg.SUCCESS));
+				Msg message = GetResponse();
+				return (message.Equals(Msg.SUCCESS));
 			}
 		}
 
@@ -757,11 +679,10 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (i_lock)
 			{
 				Commit();
-				Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-					.SWITCH_TO_FILE.GetWriterForString(i_trans, fileName);
+				MsgD msg = Msg.SWITCH_TO_FILE.GetWriterForString(i_trans, fileName);
 				WriteMsg(msg, true);
-				ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.OK);
-				ReReadAll(Db4objects.Db4o.Db4oFactory.CloneConfiguration());
+				ExpectedResponse(Msg.OK);
+				ReReadAll(Db4oFactory.CloneConfiguration());
 				switchedToFile = fileName;
 			}
 		}
@@ -771,9 +692,9 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (i_lock)
 			{
 				Commit();
-				WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.SWITCH_TO_MAIN_FILE, true);
-				ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.OK);
-				ReReadAll(Db4objects.Db4o.Db4oFactory.CloneConfiguration());
+				WriteMsg(Msg.SWITCH_TO_MAIN_FILE, true);
+				ExpectedResponse(Msg.OK);
+				ReReadAll(Db4oFactory.CloneConfiguration());
 				switchedToFile = null;
 			}
 		}
@@ -796,19 +717,18 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
-		public sealed override void WriteEmbedded(Db4objects.Db4o.Internal.StatefulBuffer
-			 a_parent, Db4objects.Db4o.Internal.StatefulBuffer a_child)
+		public sealed override void WriteEmbedded(StatefulBuffer a_parent, StatefulBuffer
+			 a_child)
 		{
 			a_parent.AddEmbedded(a_child);
 		}
 
-		public void Write(Db4objects.Db4o.Internal.CS.Messages.Msg msg)
+		public void Write(Msg msg)
 		{
 			msg.Write(this, i_socket);
 		}
 
-		public void WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg a_message, bool flush
-			)
+		public void WriteMsg(Msg a_message, bool flush)
 		{
 			if (i_config.BatchMessages())
 			{
@@ -831,11 +751,10 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		public sealed override void WriteNew(Db4objects.Db4o.Internal.ClassMetadata a_yapClass
-			, Db4objects.Db4o.Internal.StatefulBuffer aWriter)
+		public sealed override void WriteNew(ClassMetadata a_yapClass, StatefulBuffer aWriter
+			)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.WRITE_NEW.GetWriter(a_yapClass, aWriter);
+			MsgD msg = Msg.WRITE_NEW.GetWriter(a_yapClass, aWriter);
 			WriteMsg(msg, false);
 		}
 
@@ -843,11 +762,10 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
-		public sealed override void WriteUpdate(Db4objects.Db4o.Internal.ClassMetadata a_yapClass
-			, Db4objects.Db4o.Internal.StatefulBuffer a_bytes)
+		public sealed override void WriteUpdate(ClassMetadata a_yapClass, StatefulBuffer 
+			a_bytes)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.WRITE_UPDATE.GetWriter(a_yapClass, a_bytes);
+			MsgD msg = Msg.WRITE_UPDATE.GetWriter(a_yapClass, a_bytes);
 			WriteMsg(msg, false);
 		}
 
@@ -855,16 +773,16 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			try
 			{
-				WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.PING, true);
-				return ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.OK) != null;
+				WriteMsg(Msg.PING, true);
+				return ExpectedResponse(Msg.OK) != null;
 			}
-			catch (Db4objects.Db4o.Ext.Db4oException)
+			catch (Db4oException)
 			{
 				return false;
 			}
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Network.ISocket4 Socket()
+		public virtual ISocket4 Socket()
 		{
 			return i_socket;
 		}
@@ -884,46 +802,39 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		public override Db4objects.Db4o.Ext.ISystemInfo SystemInfo()
+		public override ISystemInfo SystemInfo()
 		{
-			throw new System.NotImplementedException("Functionality not availble on clients."
-				);
+			throw new NotImplementedException("Functionality not availble on clients.");
 		}
 
-		public virtual void WriteBlobTo(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.BlobImpl
-			 blob, Sharpen.IO.File file)
+		public virtual void WriteBlobTo(Transaction trans, BlobImpl blob, Sharpen.IO.File
+			 file)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.MsgBlob msg = (Db4objects.Db4o.Internal.CS.Messages.MsgBlob
-				)Db4objects.Db4o.Internal.CS.Messages.Msg.READ_BLOB.GetWriterForInt(trans, (int)
-				GetID(blob));
+			MsgBlob msg = (MsgBlob)Msg.READ_BLOB.GetWriterForInt(trans, (int)GetID(blob));
 			msg._blob = blob;
 			ProcessBlobMessage(msg);
 		}
 
-		public virtual void ReadBlobFrom(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.BlobImpl
-			 blob, Sharpen.IO.File file)
+		public virtual void ReadBlobFrom(Transaction trans, BlobImpl blob, Sharpen.IO.File
+			 file)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.MsgBlob msg = null;
+			MsgBlob msg = null;
 			lock (Lock())
 			{
 				Set(blob);
 				int id = (int)GetID(blob);
-				msg = (Db4objects.Db4o.Internal.CS.Messages.MsgBlob)Db4objects.Db4o.Internal.CS.Messages.Msg
-					.WRITE_BLOB.GetWriterForInt(trans, id);
+				msg = (MsgBlob)Msg.WRITE_BLOB.GetWriterForInt(trans, id);
 				msg._blob = blob;
-				blob.SetStatus(Db4objects.Db4o.Ext.Status.QUEUED);
+				blob.SetStatus(Status.QUEUED);
 			}
 			ProcessBlobMessage(msg);
 		}
 
-		public override long[] GetIDsForClass(Db4objects.Db4o.Internal.Transaction trans, 
-			Db4objects.Db4o.Internal.ClassMetadata clazz)
+		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.GET_INTERNAL_IDS.GetWriterForInt(trans, clazz.GetID());
+			MsgD msg = Msg.GET_INTERNAL_IDS.GetWriterForInt(trans, clazz.GetID());
 			WriteMsg(msg, true);
-			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
-				.ID_LIST);
+			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.ID_LIST);
 			int size = reader.ReadInt();
 			long[] ids = new long[size];
 			for (int i = 0; i < size; i++)
@@ -933,13 +844,11 @@ namespace Db4objects.Db4o.Internal.CS
 			return ids;
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Result.IQueryResult ClassOnlyQuery
-			(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.ClassMetadata
-			 clazz)
+		public override IQueryResult ClassOnlyQuery(Transaction trans, ClassMetadata clazz
+			)
 		{
 			long[] ids = clazz.GetIDs(trans);
-			Db4objects.Db4o.Internal.CS.ClientQueryResult resClient = new Db4objects.Db4o.Internal.CS.ClientQueryResult
-				(trans, ids.Length);
+			ClientQueryResult resClient = new ClientQueryResult(trans, ids.Length);
 			for (int i = 0; i < ids.Length; i++)
 			{
 				resClient.Add((int)ids[i]);
@@ -947,15 +856,12 @@ namespace Db4objects.Db4o.Internal.CS
 			return resClient;
 		}
 
-		public override Db4objects.Db4o.Internal.Query.Result.IQueryResult ExecuteQuery(Db4objects.Db4o.Internal.Query.Processor.QQuery
-			 query)
+		public override IQueryResult ExecuteQuery(QQuery query)
 		{
-			Db4objects.Db4o.Internal.Transaction trans = query.GetTransaction();
+			Transaction trans = query.GetTransaction();
 			query.EvaluationMode(Config().QueryEvaluationMode());
 			query.Marshall();
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.QUERY_EXECUTE.GetWriter(Db4objects.Db4o.Internal.Serializer.Marshall(trans, query
-				));
+			MsgD msg = Msg.QUERY_EXECUTE.GetWriter(Serializer.Marshall(trans, query));
 			WriteMsg(msg, true);
 			return ReadQueryResult(trans);
 		}
@@ -966,15 +872,14 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				return;
 			}
-			Db4objects.Db4o.Internal.CS.Messages.Msg msg;
-			Db4objects.Db4o.Internal.CS.Messages.MsgD multibytes = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.WRITE_BATCHED_MESSAGES.GetWriterForLength(GetTransaction(), _batchedQueueLength
-				);
+			Msg msg;
+			MsgD multibytes = Msg.WRITE_BATCHED_MESSAGES.GetWriterForLength(GetTransaction(), 
+				_batchedQueueLength);
 			multibytes.WriteInt(_batchedMessages.Size());
-			System.Collections.IEnumerator iter = _batchedMessages.GetEnumerator();
+			IEnumerator iter = _batchedMessages.GetEnumerator();
 			while (iter.MoveNext())
 			{
-				msg = (Db4objects.Db4o.Internal.CS.Messages.Msg)iter.Current;
+				msg = (Msg)iter.Current;
 				if (msg == null)
 				{
 					multibytes.WriteInt(0);
@@ -989,28 +894,27 @@ namespace Db4objects.Db4o.Internal.CS
 			ClearBatchedObjects();
 		}
 
-		public void AddToBatch(Db4objects.Db4o.Internal.CS.Messages.Msg msg)
+		public void AddToBatch(Msg msg)
 		{
 			_batchedMessages.Add(msg);
-			_batchedQueueLength += Db4objects.Db4o.Internal.Const4.INT_LENGTH + msg.PayLoad()
-				.GetLength();
+			_batchedQueueLength += Const4.INT_LENGTH + msg.PayLoad().GetLength();
 		}
 
 		private void ClearBatchedObjects()
 		{
 			_batchedMessages.Clear();
-			_batchedQueueLength = Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			_batchedQueueLength = Const4.INT_LENGTH;
 		}
 
 		internal virtual int Timeout()
 		{
-			return IsEmbeddedClient() ? Db4objects.Db4o.Internal.Const4.CLIENT_EMBEDDED_TIMEOUT
-				 : ConfigImpl().TimeoutClientSocket();
+			return IsEmbeddedClient() ? Const4.CLIENT_EMBEDDED_TIMEOUT : ConfigImpl().TimeoutClientSocket
+				();
 		}
 
 		private bool IsEmbeddedClient()
 		{
-			return i_socket is Db4objects.Db4o.Foundation.Network.LoopbackSocket;
+			return i_socket is LoopbackSocket;
 		}
 
 		protected override void ShutdownDataStorage()
@@ -1025,8 +929,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
-		public virtual Db4objects.Db4o.Internal.CS.IClientMessageDispatcher MessageDispatcher
-			()
+		public virtual IClientMessageDispatcher MessageDispatcher()
 		{
 			return _singleThreaded ? this : _messageDispatcher;
 		}

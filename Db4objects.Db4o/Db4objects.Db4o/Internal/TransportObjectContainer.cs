@@ -1,3 +1,10 @@
+using System;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Convert;
+using Db4objects.Db4o.Types;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <summary>
@@ -9,21 +16,20 @@ namespace Db4objects.Db4o.Internal
 	/// MetaInformationCaches
 	/// </summary>
 	/// <exclude></exclude>
-	public class TransportObjectContainer : Db4objects.Db4o.Internal.InMemoryObjectContainer
+	public class TransportObjectContainer : InMemoryObjectContainer
 	{
-		public TransportObjectContainer(Db4objects.Db4o.Internal.ObjectContainerBase serviceProvider
-			, Db4objects.Db4o.Ext.MemoryFile memoryFile) : base(serviceProvider.Config(), serviceProvider
-			, memoryFile)
+		public TransportObjectContainer(ObjectContainerBase serviceProvider, MemoryFile memoryFile
+			) : base(serviceProvider.Config(), serviceProvider, memoryFile)
 		{
 			i_showInternalClasses = serviceProvider.i_showInternalClasses;
 		}
 
-		protected override void Initialize1(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Initialize1(IConfiguration config)
 		{
 			i_handlers = i_parent.i_handlers;
 			_classCollection = i_parent.ClassCollection();
 			i_config = i_parent.ConfigImpl();
-			i_references = new Db4objects.Db4o.Internal.WeakReferenceCollector(this);
+			i_references = new WeakReferenceCollector(this);
 			Initialize2();
 		}
 
@@ -48,7 +54,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override Db4objects.Db4o.Internal.ClassMetadata ClassMetadataForId(int id)
+		public override ClassMetadata ClassMetadataForId(int id)
 		{
 			return i_parent.ClassMetadataForId(id);
 		}
@@ -59,7 +65,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override int ConverterVersion()
 		{
-			return Db4objects.Db4o.Internal.Convert.Converter.VERSION;
+			return Converter.VERSION;
 		}
 
 		protected override void DropReferences()
@@ -67,18 +73,17 @@ namespace Db4objects.Db4o.Internal
 			i_config = null;
 		}
 
-		protected override void HandleExceptionOnClose(System.Exception exc)
+		protected override void HandleExceptionOnClose(Exception exc)
 		{
 		}
 
-		public sealed override Db4objects.Db4o.Internal.Transaction NewTransaction(Db4objects.Db4o.Internal.Transaction
-			 parentTransaction)
+		public sealed override Transaction NewTransaction(Transaction parentTransaction)
 		{
 			if (null != parentTransaction)
 			{
 				return parentTransaction;
 			}
-			return new Db4objects.Db4o.Internal.TransactionObjectCarrier(this, null);
+			return new TransactionObjectCarrier(this, null);
 		}
 
 		public override long CurrentVersion()
@@ -86,8 +91,7 @@ namespace Db4objects.Db4o.Internal
 			return 0;
 		}
 
-		public override Db4objects.Db4o.Types.IDb4oType Db4oTypeStored(Db4objects.Db4o.Internal.Transaction
-			 a_trans, object a_object)
+		public override IDb4oType Db4oTypeStored(Transaction a_trans, object a_object)
 		{
 			return null;
 		}
@@ -110,7 +114,7 @@ namespace Db4objects.Db4o.Internal
 			return AppendBlocks(length);
 		}
 
-		public override Db4objects.Db4o.Ext.Db4oDatabase Identity()
+		public override Db4oDatabase Identity()
 		{
 			return i_parent.Identity();
 		}

@@ -1,7 +1,9 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public sealed class UnicodeStringIO : Db4objects.Db4o.Internal.LatinStringIO
+	public sealed class UnicodeStringIO : LatinStringIO
 	{
 		public override int BytesPerChar()
 		{
@@ -10,13 +12,12 @@ namespace Db4objects.Db4o.Internal
 
 		public override byte EncodingByte()
 		{
-			return Db4objects.Db4o.Internal.Const4.UNICODE;
+			return Const4.UNICODE;
 		}
 
 		public override int Length(string a_string)
 		{
-			return (a_string.Length * 2) + Db4objects.Db4o.Internal.Const4.OBJECT_LENGTH + Db4objects.Db4o.Internal.Const4
-				.INT_LENGTH;
+			return (a_string.Length * 2) + Const4.OBJECT_LENGTH + Const4.INT_LENGTH;
 		}
 
 		public override string Read(Db4objects.Db4o.Internal.Buffer bytes, int a_length)
@@ -45,7 +46,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override int ShortLength(string a_string)
 		{
-			return (a_string.Length * 2) + Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			return (a_string.Length * 2) + Const4.INT_LENGTH;
 		}
 
 		public override void Write(Db4objects.Db4o.Internal.Buffer bytes, string @string)

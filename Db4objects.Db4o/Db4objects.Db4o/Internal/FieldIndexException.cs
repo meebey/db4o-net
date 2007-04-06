@@ -1,41 +1,55 @@
+using System;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	[System.Serializable]
-	public class FieldIndexException : System.Exception
+	public class FieldIndexException : Exception
 	{
-		private Db4objects.Db4o.Internal.FieldMetadata _field;
+		private string _className;
 
-		public FieldIndexException(Db4objects.Db4o.Internal.FieldMetadata field) : this(null
-			, null, field)
+		private string _fieldName;
+
+		public FieldIndexException(FieldMetadata field) : this(null, null, field)
 		{
 		}
 
-		public FieldIndexException(string msg, Db4objects.Db4o.Internal.FieldMetadata field
-			) : this(msg, null, field)
+		public FieldIndexException(string msg, FieldMetadata field) : this(msg, null, field
+			)
 		{
 		}
 
-		public FieldIndexException(System.Exception cause, Db4objects.Db4o.Internal.FieldMetadata
-			 field) : this(null, cause, field)
+		public FieldIndexException(Exception cause, FieldMetadata field) : this(null, cause
+			, field)
 		{
 		}
 
-		public FieldIndexException(string msg, System.Exception cause, Db4objects.Db4o.Internal.FieldMetadata
-			 field) : base(EnhancedMessage(msg, field), cause)
+		public FieldIndexException(string msg, Exception cause, FieldMetadata field) : this
+			(msg, cause, field.GetParentYapClass().GetName(), field.GetName())
 		{
-			_field = field;
 		}
 
-		public virtual Db4objects.Db4o.Internal.FieldMetadata Field()
+		public FieldIndexException(string msg, Exception cause, string className, string 
+			fieldName) : base(EnhancedMessage(msg, className, fieldName), cause)
 		{
-			return _field;
+			_className = className;
+			_fieldName = fieldName;
 		}
 
-		private static string EnhancedMessage(string msg, Db4objects.Db4o.Internal.FieldMetadata
-			 field)
+		public virtual string ClassName()
 		{
-			string enhancedMessage = "Field index for " + field.GetParentYapClass().GetName()
-				 + "#" + field.GetName();
+			return _className;
+		}
+
+		public virtual string FieldName()
+		{
+			return _fieldName;
+		}
+
+		private static string EnhancedMessage(string msg, string className, string fieldName
+			)
+		{
+			string enhancedMessage = "Field index for " + className + "#" + fieldName;
 			if (msg != null)
 			{
 				enhancedMessage += ": " + msg;

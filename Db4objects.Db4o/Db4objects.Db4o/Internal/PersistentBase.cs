@@ -1,7 +1,11 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Slots;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public abstract class PersistentBase : Db4objects.Db4o.Internal.IPersistent
+	public abstract class PersistentBase : IPersistent
 	{
 		protected int i_id;
 
@@ -9,11 +13,11 @@ namespace Db4objects.Db4o.Internal
 
 		internal bool BeginProcessing()
 		{
-			if (BitIsTrue(Db4objects.Db4o.Internal.Const4.PROCESSING))
+			if (BitIsTrue(Const4.PROCESSING))
 			{
 				return false;
 			}
-			BitTrue(Db4objects.Db4o.Internal.Const4.PROCESSING);
+			BitTrue(Const4.PROCESSING);
 			return true;
 		}
 
@@ -37,18 +41,18 @@ namespace Db4objects.Db4o.Internal
 			i_state |= (1 << bitPos);
 		}
 
-		internal virtual void CacheDirty(Db4objects.Db4o.Foundation.Collection4 col)
+		internal virtual void CacheDirty(Collection4 col)
 		{
-			if (!BitIsTrue(Db4objects.Db4o.Internal.Const4.CACHED_DIRTY))
+			if (!BitIsTrue(Const4.CACHED_DIRTY))
 			{
-				BitTrue(Db4objects.Db4o.Internal.Const4.CACHED_DIRTY);
+				BitTrue(Const4.CACHED_DIRTY);
 				col.Add(this);
 			}
 		}
 
 		public virtual void EndProcessing()
 		{
-			BitFalse(Db4objects.Db4o.Internal.Const4.PROCESSING);
+			BitFalse(Const4.PROCESSING);
 		}
 
 		public virtual int GetID()
@@ -58,13 +62,12 @@ namespace Db4objects.Db4o.Internal
 
 		public bool IsActive()
 		{
-			return BitIsTrue(Db4objects.Db4o.Internal.Const4.ACTIVE);
+			return BitIsTrue(Const4.ACTIVE);
 		}
 
 		public virtual bool IsDirty()
 		{
-			return BitIsTrue(Db4objects.Db4o.Internal.Const4.ACTIVE) && (!BitIsTrue(Db4objects.Db4o.Internal.Const4
-				.CLEAN));
+			return BitIsTrue(Const4.ACTIVE) && (!BitIsTrue(Const4.CLEAN));
 		}
 
 		public bool IsNew()
@@ -74,15 +77,15 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int LinkLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.ID_LENGTH;
+			return Const4.ID_LENGTH;
 		}
 
 		internal void NotCachedDirty()
 		{
-			BitFalse(Db4objects.Db4o.Internal.Const4.CACHED_DIRTY);
+			BitFalse(Const4.CACHED_DIRTY);
 		}
 
-		public virtual void Read(Db4objects.Db4o.Internal.Transaction trans)
+		public virtual void Read(Transaction trans)
 		{
 			if (!BeginProcessing())
 			{
@@ -108,24 +111,24 @@ namespace Db4objects.Db4o.Internal
 
 		public void SetStateClean()
 		{
-			BitTrue(Db4objects.Db4o.Internal.Const4.ACTIVE);
-			BitTrue(Db4objects.Db4o.Internal.Const4.CLEAN);
+			BitTrue(Const4.ACTIVE);
+			BitTrue(Const4.CLEAN);
 		}
 
 		public void SetStateDeactivated()
 		{
-			BitFalse(Db4objects.Db4o.Internal.Const4.ACTIVE);
+			BitFalse(Const4.ACTIVE);
 		}
 
 		public virtual void SetStateDirty()
 		{
-			BitTrue(Db4objects.Db4o.Internal.Const4.ACTIVE);
-			BitFalse(Db4objects.Db4o.Internal.Const4.CLEAN);
+			BitTrue(Const4.ACTIVE);
+			BitFalse(Const4.CLEAN);
 		}
 
 		internal virtual void SetStateOnRead(Db4objects.Db4o.Internal.Buffer reader)
 		{
-			if (BitIsTrue(Db4objects.Db4o.Internal.Const4.CACHED_DIRTY))
+			if (BitIsTrue(Const4.CACHED_DIRTY))
 			{
 				SetStateDirty();
 			}
@@ -135,21 +138,20 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public void Write(Db4objects.Db4o.Internal.Transaction trans)
+		public void Write(Transaction trans)
 		{
 			if (!WriteObjectBegin())
 			{
 				return;
 			}
-			Db4objects.Db4o.Internal.LocalObjectContainer stream = (Db4objects.Db4o.Internal.LocalObjectContainer
-				)trans.Stream();
+			LocalObjectContainer stream = (LocalObjectContainer)trans.Stream();
 			int address = 0;
 			int length = OwnLength();
 			Db4objects.Db4o.Internal.Buffer writer = new Db4objects.Db4o.Internal.Buffer(length
 				);
 			if (IsNew())
 			{
-				Db4objects.Db4o.Internal.Slots.Pointer4 ptr = stream.NewSlot(trans, length);
+				Pointer4 ptr = stream.NewSlot(trans, length);
 				SetID(ptr._id);
 				address = ptr._address;
 			}
@@ -176,7 +178,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public virtual void WriteOwnID(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
+		public virtual void WriteOwnID(Transaction trans, Db4objects.Db4o.Internal.Buffer
 			 writer)
 		{
 			Write(trans);
@@ -187,10 +189,10 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract int OwnLength();
 
-		public abstract void ReadThis(Db4objects.Db4o.Internal.Transaction arg1, Db4objects.Db4o.Internal.Buffer
-			 arg2);
+		public abstract void ReadThis(Transaction arg1, Db4objects.Db4o.Internal.Buffer arg2
+			);
 
-		public abstract void WriteThis(Db4objects.Db4o.Internal.Transaction arg1, Db4objects.Db4o.Internal.Buffer
-			 arg2);
+		public abstract void WriteThis(Transaction arg1, Db4objects.Db4o.Internal.Buffer 
+			arg2);
 	}
 }

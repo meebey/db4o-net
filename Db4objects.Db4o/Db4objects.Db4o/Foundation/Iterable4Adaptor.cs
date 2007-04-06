@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <summary>
@@ -15,13 +18,13 @@ namespace Db4objects.Db4o.Foundation
 
 		private static readonly object MOVE_NEXT = new object();
 
-		private readonly System.Collections.IEnumerable _delegate;
+		private readonly IEnumerable _delegate;
 
-		private System.Collections.IEnumerator _iterator;
+		private IEnumerator _iterator;
 
 		private object _current = MOVE_NEXT;
 
-		public Iterable4Adaptor(System.Collections.IEnumerable delegate_)
+		public Iterable4Adaptor(IEnumerable delegate_)
 		{
 			_delegate = delegate_;
 		}
@@ -39,7 +42,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (!HasNext())
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			object returnValue = _current;
 			_current = MOVE_NEXT;

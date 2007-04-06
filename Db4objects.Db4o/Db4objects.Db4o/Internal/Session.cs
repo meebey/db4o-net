@@ -1,10 +1,10 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	internal sealed class Session
 	{
 		internal readonly string i_fileName;
-
-		internal Db4objects.Db4o.Internal.ObjectContainerBase i_stream;
 
 		private int i_openCount;
 
@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (GetType() != obj.GetType())
 			{
-				Db4objects.Db4o.Internal.Exceptions4.ShouldNeverHappen();
+				Exceptions4.ShouldNeverHappen();
 			}
 			return i_fileName.Equals(((Db4objects.Db4o.Internal.Session)obj).i_fileName);
 		}
@@ -49,16 +49,6 @@ namespace Db4objects.Db4o.Internal
 		internal string FileName()
 		{
 			return i_fileName;
-		}
-
-		internal Db4objects.Db4o.Internal.ObjectContainerBase SubSequentOpen()
-		{
-			if (i_stream.IsClosed())
-			{
-				return null;
-			}
-			i_openCount++;
-			return i_stream;
 		}
 	}
 }

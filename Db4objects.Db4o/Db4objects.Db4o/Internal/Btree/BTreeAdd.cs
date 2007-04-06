@@ -1,17 +1,20 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
 	/// <exclude></exclude>
-	public class BTreeAdd : Db4objects.Db4o.Internal.Btree.BTreePatch
+	public class BTreeAdd : BTreePatch
 	{
-		public BTreeAdd(Db4objects.Db4o.Internal.Transaction transaction, object obj) : base
-			(transaction, obj)
+		public BTreeAdd(Transaction transaction, object obj) : base(transaction, obj)
 		{
 		}
 
-		protected virtual object RolledBack(Db4objects.Db4o.Internal.Btree.BTree btree)
+		protected virtual object RolledBack(BTree btree)
 		{
 			btree.NotifyRemoveListener(GetObject());
-			return Db4objects.Db4o.Foundation.No4.INSTANCE;
+			return No4.INSTANCE;
 		}
 
 		public override string ToString()
@@ -19,8 +22,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return "(+) " + base.ToString();
 		}
 
-		public override object Commit(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Btree.BTree
-			 btree)
+		public override object Commit(Transaction trans, BTree btree)
 		{
 			if (_transaction == trans)
 			{
@@ -29,8 +31,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return this;
 		}
 
-		public override Db4objects.Db4o.Internal.Btree.BTreePatch ForTransaction(Db4objects.Db4o.Internal.Transaction
-			 trans)
+		public override BTreePatch ForTransaction(Transaction trans)
 		{
 			if (_transaction == trans)
 			{
@@ -39,17 +40,16 @@ namespace Db4objects.Db4o.Internal.Btree
 			return null;
 		}
 
-		public override object Key(Db4objects.Db4o.Internal.Transaction trans)
+		public override object Key(Transaction trans)
 		{
 			if (_transaction != trans)
 			{
-				return Db4objects.Db4o.Foundation.No4.INSTANCE;
+				return No4.INSTANCE;
 			}
 			return GetObject();
 		}
 
-		public override object Rollback(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Btree.BTree
-			 btree)
+		public override object Rollback(Transaction trans, BTree btree)
 		{
 			if (_transaction == trans)
 			{

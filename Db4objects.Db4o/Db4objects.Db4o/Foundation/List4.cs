@@ -1,8 +1,10 @@
+using Db4objects.Db4o.Types;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <summary>elements in linked list Collection4</summary>
 	/// <exclude></exclude>
-	public sealed class List4 : Db4objects.Db4o.Types.IUnversioned
+	public sealed class List4 : IUnversioned
 	{
 		/// <summary>next element in list</summary>
 		public Db4objects.Db4o.Foundation.List4 _next;

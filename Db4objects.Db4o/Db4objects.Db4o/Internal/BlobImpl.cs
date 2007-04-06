@@ -1,3 +1,12 @@
+using System.IO;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Types;
+using Sharpen;
+using Sharpen.IO;
+using Sharpen.Lang;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <summary>
@@ -10,7 +19,7 @@ namespace Db4objects.Db4o.Internal
 	/// </remarks>
 	/// <moveto>com.db4o.internal.blobs</moveto>
 	/// <exclude></exclude>
-	public class BlobImpl : Db4objects.Db4o.Types.IBlob, Sharpen.Lang.ICloneable, Db4objects.Db4o.Internal.IDb4oTypeImpl
+	public class BlobImpl : IBlob, Sharpen.Lang.ICloneable, IDb4oTypeImpl
 	{
 		public const int COPYBUFFER_LENGTH = 4096;
 
@@ -22,18 +31,18 @@ namespace Db4objects.Db4o.Internal
 		private Sharpen.IO.File i_file;
 
 		[System.NonSerialized]
-		private Db4objects.Db4o.IBlobStatus i_getStatusFrom;
+		private IBlobStatus i_getStatusFrom;
 
 		public int i_length;
 
 		[System.NonSerialized]
-		private double i_status = Db4objects.Db4o.Ext.Status.UNUSED;
+		private double i_status = Status.UNUSED;
 
 		[System.NonSerialized]
-		private Db4objects.Db4o.Internal.ObjectContainerBase i_stream;
+		private ObjectContainerBase i_stream;
 
 		[System.NonSerialized]
-		private Db4objects.Db4o.Internal.Transaction i_trans;
+		private Transaction i_trans;
 
 		public virtual int AdjustReadDepth(int a_depth)
 		{
@@ -61,44 +70,54 @@ namespace Db4objects.Db4o.Internal
 		private void Copy(Sharpen.IO.File from, Sharpen.IO.File to)
 		{
 			to.Delete();
-			Sharpen.IO.BufferedInputStream @in = new Sharpen.IO.BufferedInputStream(new Sharpen.IO.FileInputStream
-				(from));
-			Sharpen.IO.BufferedOutputStream @out = new Sharpen.IO.BufferedOutputStream(new Sharpen.IO.FileOutputStream
-				(to));
-			byte[] buffer = new byte[COPYBUFFER_LENGTH];
-			int bytesread = -1;
-			while ((bytesread = @in.Read(buffer)) >= 0)
-			{
-				@out.Write(buffer, 0, bytesread);
-			}
-			@out.Flush();
-			@out.Close();
-			@in.Close();
-		}
-
-		public virtual object CreateDefault(Db4objects.Db4o.Internal.Transaction a_trans)
-		{
-			Db4objects.Db4o.Internal.BlobImpl bi = null;
+			BufferedInputStream @in = new BufferedInputStream(new FileInputStream(from));
 			try
 			{
-				bi = (Db4objects.Db4o.Internal.BlobImpl)this.MemberwiseClone();
+				BufferedOutputStream @out = new BufferedOutputStream(new FileOutputStream(to));
+				try
+				{
+					byte[] buffer = new byte[COPYBUFFER_LENGTH];
+					int bytesread = -1;
+					while ((bytesread = @in.Read(buffer)) >= 0)
+					{
+						@out.Write(buffer, 0, bytesread);
+					}
+					@out.Flush();
+				}
+				finally
+				{
+					@out.Close();
+				}
+			}
+			finally
+			{
+				@in.Close();
+			}
+		}
+
+		public virtual object CreateDefault(Transaction a_trans)
+		{
+			BlobImpl bi = null;
+			try
+			{
+				bi = (BlobImpl)this.MemberwiseClone();
 				bi.SetTrans(a_trans);
 			}
-			catch (Sharpen.Lang.CloneNotSupportedException)
+			catch (CloneNotSupportedException)
 			{
 				return null;
 			}
 			return bi;
 		}
 
-		public virtual Sharpen.IO.FileInputStream GetClientInputStream()
+		public virtual FileInputStream GetClientInputStream()
 		{
-			return new Sharpen.IO.FileInputStream(i_file);
+			return new FileInputStream(i_file);
 		}
 
-		public virtual Sharpen.IO.FileOutputStream GetClientOutputStream()
+		public virtual FileOutputStream GetClientOutputStream()
 		{
-			return new Sharpen.IO.FileOutputStream(i_file);
+			return new FileOutputStream(i_file);
 		}
 
 		public virtual string GetFileName()
@@ -113,21 +132,21 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual double GetStatus()
 		{
-			if (i_status == Db4objects.Db4o.Ext.Status.PROCESSING && i_getStatusFrom != null)
+			if (i_status == Status.PROCESSING && i_getStatusFrom != null)
 			{
 				return i_getStatusFrom.GetStatus();
 			}
-			if (i_status == Db4objects.Db4o.Ext.Status.UNUSED)
+			if (i_status == Status.UNUSED)
 			{
 				if (i_length > 0)
 				{
-					i_status = Db4objects.Db4o.Ext.Status.AVAILABLE;
+					i_status = Status.AVAILABLE;
 				}
 			}
 			return i_status;
 		}
 
-		public virtual void GetStatusFrom(Db4objects.Db4o.IBlobStatus from)
+		public virtual void GetStatusFrom(IBlobStatus from)
 		{
 			i_getStatusFrom = from;
 		}
@@ -141,15 +160,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (!file.Exists())
 			{
-				throw new System.IO.IOException(Db4objects.Db4o.Internal.Messages.Get(41, file.GetAbsolutePath
-					()));
+				throw new IOException(Messages.Get(41, file.GetAbsolutePath()));
 			}
 			i_length = (int)file.Length();
 			CheckExt(file);
 			if (i_stream.IsClient())
 			{
 				i_file = file;
-				((Db4objects.Db4o.IBlobTransport)i_stream).ReadBlobFrom(i_trans, this, file);
+				((IBlobTransport)i_stream).ReadBlobFrom(i_trans, this, file);
 			}
 			else
 			{
@@ -178,7 +196,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				i_stream.SetInternal(i_trans, this, false);
 			}
-			i_status = Db4objects.Db4o.Ext.Status.COMPLETED;
+			i_status = Status.COMPLETED;
 		}
 
 		public virtual void PreDeactivate()
@@ -203,7 +221,7 @@ namespace Db4objects.Db4o.Internal
 					}
 					else
 					{
-						fileName = "b_" + Sharpen.Runtime.CurrentTimeMillis();
+						fileName = "b_" + Runtime.CurrentTimeMillis();
 					}
 					string tryPath = fileName + i_ext;
 					int i = 0;
@@ -212,8 +230,8 @@ namespace Db4objects.Db4o.Internal
 						tryPath = fileName + "_" + i++ + i_ext;
 						if (i == 99)
 						{
-							i_status = Db4objects.Db4o.Ext.Status.ERROR;
-							throw new System.IO.IOException(Db4objects.Db4o.Internal.Messages.Get(40));
+							i_status = Status.ERROR;
+							throw new IOException(Messages.Get(40));
 						}
 					}
 					fileName = tryPath;
@@ -227,7 +245,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (fileName == null)
 				{
-					throw new System.IO.IOException(Db4objects.Db4o.Internal.Messages.Get(38));
+					throw new IOException(Messages.Get(38));
 				}
 			}
 			string lastTryPath = path + Sharpen.IO.File.separator + fileName;
@@ -235,7 +253,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (!(new Sharpen.IO.File(lastTryPath).Exists()))
 				{
-					throw new System.IO.IOException(Db4objects.Db4o.Internal.Messages.Get(39));
+					throw new IOException(Messages.Get(39));
 				}
 			}
 			return new Sharpen.IO.File(lastTryPath);
@@ -257,7 +275,7 @@ namespace Db4objects.Db4o.Internal
 			i_status = status;
 		}
 
-		public virtual void SetTrans(Db4objects.Db4o.Internal.Transaction a_trans)
+		public virtual void SetTrans(Transaction a_trans)
 		{
 			i_trans = a_trans;
 			i_stream = a_trans.Stream();
@@ -266,20 +284,20 @@ namespace Db4objects.Db4o.Internal
 		public virtual void WriteLocal(Sharpen.IO.File file)
 		{
 			Copy(ServerFile(null, false), file);
-			i_status = Db4objects.Db4o.Ext.Status.COMPLETED;
+			i_status = Status.COMPLETED;
 		}
 
 		public virtual void WriteTo(Sharpen.IO.File file)
 		{
-			if (GetStatus() == Db4objects.Db4o.Ext.Status.UNUSED)
+			if (GetStatus() == Status.UNUSED)
 			{
-				throw new System.IO.IOException(Db4objects.Db4o.Internal.Messages.Get(43));
+				throw new IOException(Messages.Get(43));
 			}
 			if (i_stream.IsClient())
 			{
 				i_file = file;
-				i_status = Db4objects.Db4o.Ext.Status.QUEUED;
-				((Db4objects.Db4o.IBlobTransport)i_stream).WriteBlobTo(i_trans, this, file);
+				i_status = Status.QUEUED;
+				((IBlobTransport)i_stream).WriteBlobTo(i_trans, this, file);
 			}
 			else
 			{
@@ -291,13 +309,12 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public virtual object StoredTo(Db4objects.Db4o.Internal.Transaction a_trans)
+		public virtual object StoredTo(Transaction a_trans)
 		{
 			return this;
 		}
 
-		public virtual void SetObjectReference(Db4objects.Db4o.Internal.ObjectReference a_yapObject
-			)
+		public virtual void SetObjectReference(ObjectReference a_yapObject)
 		{
 		}
 	}

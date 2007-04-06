@@ -1,3 +1,6 @@
+using System;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
 	/// <exclude></exclude>
@@ -11,15 +14,15 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private int _cmp;
 
-		private readonly Db4objects.Db4o.Internal.Btree.SearchTarget _target;
+		private readonly SearchTarget _target;
 
 		private readonly int _count;
 
-		public Searcher(Db4objects.Db4o.Internal.Btree.SearchTarget target, int count)
+		public Searcher(SearchTarget target, int count)
 		{
 			if (count < 0)
 			{
-				throw new System.ArgumentException();
+				throw new ArgumentException();
 			}
 			_target = target;
 			_count = count;
@@ -57,26 +60,26 @@ namespace Db4objects.Db4o.Internal.Btree
 				}
 				return;
 			}
-			if (_target == Db4objects.Db4o.Internal.Btree.SearchTarget.ANY)
+			if (_target == SearchTarget.ANY)
 			{
 				_lower = _cursor;
 				_upper = _cursor;
 			}
 			else
 			{
-				if (_target == Db4objects.Db4o.Internal.Btree.SearchTarget.HIGHEST)
+				if (_target == SearchTarget.HIGHEST)
 				{
 					_lower = _cursor;
 				}
 				else
 				{
-					if (_target == Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST)
+					if (_target == SearchTarget.LOWEST)
 					{
 						_upper = _cursor;
 					}
 					else
 					{
-						throw new System.InvalidOperationException("Unknown target");
+						throw new InvalidOperationException("Unknown target");
 					}
 				}
 			}
@@ -87,8 +90,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			int oldCursor = _cursor;
 			if (_upper - _lower <= 1)
 			{
-				if ((_target == Db4objects.Db4o.Internal.Btree.SearchTarget.LOWEST) && (_cmp == 0
-					))
+				if ((_target == SearchTarget.LOWEST) && (_cmp == 0))
 				{
 					_cursor = _lower;
 				}

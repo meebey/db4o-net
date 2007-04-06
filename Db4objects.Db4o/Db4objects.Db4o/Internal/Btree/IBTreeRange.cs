@@ -1,3 +1,6 @@
+using System.Collections;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
 	public interface IBTreeRange
@@ -11,33 +14,30 @@ namespace Db4objects.Db4o.Internal.Btree
 		/// this range.
 		/// </remarks>
 		/// <returns>an Iterator4 over BTreePointer value</returns>
-		System.Collections.IEnumerator Pointers();
+		IEnumerator Pointers();
 
-		System.Collections.IEnumerator Keys();
+		IEnumerator Keys();
 
 		int Size();
 
-		Db4objects.Db4o.Internal.Btree.IBTreeRange Greater();
+		IBTreeRange Greater();
 
-		Db4objects.Db4o.Internal.Btree.IBTreeRange Union(Db4objects.Db4o.Internal.Btree.IBTreeRange
-			 other);
+		IBTreeRange Union(IBTreeRange other);
 
-		Db4objects.Db4o.Internal.Btree.IBTreeRange ExtendToLast();
+		IBTreeRange ExtendToLast();
 
-		Db4objects.Db4o.Internal.Btree.IBTreeRange Smaller();
+		IBTreeRange Smaller();
 
-		Db4objects.Db4o.Internal.Btree.IBTreeRange ExtendToFirst();
+		IBTreeRange ExtendToFirst();
 
-		Db4objects.Db4o.Internal.Btree.IBTreeRange Intersect(Db4objects.Db4o.Internal.Btree.IBTreeRange
-			 range);
+		IBTreeRange Intersect(IBTreeRange range);
 
-		Db4objects.Db4o.Internal.Btree.IBTreeRange ExtendToLastOf(Db4objects.Db4o.Internal.Btree.IBTreeRange
-			 upperRange);
+		IBTreeRange ExtendToLastOf(IBTreeRange upperRange);
 
 		bool IsEmpty();
 
-		void Accept(Db4objects.Db4o.Internal.Btree.IBTreeRangeVisitor visitor);
+		void Accept(IBTreeRangeVisitor visitor);
 
-		Db4objects.Db4o.Internal.Btree.BTreePointer LastPointer();
+		BTreePointer LastPointer();
 	}
 }

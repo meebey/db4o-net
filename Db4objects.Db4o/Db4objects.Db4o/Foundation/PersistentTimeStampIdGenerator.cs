@@ -1,11 +1,12 @@
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
 	public class PersistentTimeStampIdGenerator
 	{
 		private bool _dirty;
 
-		private readonly Db4objects.Db4o.Foundation.TimeStampIdGenerator _generator = new 
-			Db4objects.Db4o.Foundation.TimeStampIdGenerator();
+		private readonly TimeStampIdGenerator _generator = new TimeStampIdGenerator();
 
 		public virtual long Next()
 		{

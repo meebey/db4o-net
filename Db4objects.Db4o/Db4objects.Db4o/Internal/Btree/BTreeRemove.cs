@@ -1,14 +1,17 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
 	/// <exclude></exclude>
-	public class BTreeRemove : Db4objects.Db4o.Internal.Btree.BTreeUpdate
+	public class BTreeRemove : BTreeUpdate
 	{
-		public BTreeRemove(Db4objects.Db4o.Internal.Transaction transaction, object obj) : 
-			base(transaction, obj)
+		public BTreeRemove(Transaction transaction, object obj) : base(transaction, obj)
 		{
 		}
 
-		protected override void Committed(Db4objects.Db4o.Internal.Btree.BTree btree)
+		protected override void Committed(BTree btree)
 		{
 			btree.NotifyRemoveListener(GetObject());
 		}
@@ -25,7 +28,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		protected override object GetCommittedObject()
 		{
-			return Db4objects.Db4o.Foundation.No4.INSTANCE;
+			return No4.INSTANCE;
 		}
 	}
 }

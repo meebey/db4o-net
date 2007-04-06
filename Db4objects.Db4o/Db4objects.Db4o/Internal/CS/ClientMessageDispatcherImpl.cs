@@ -1,23 +1,26 @@
+using System.IO;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.CS.Messages;
+using Sharpen.Lang;
+
 namespace Db4objects.Db4o.Internal.CS
 {
-	internal class ClientMessageDispatcherImpl : Sharpen.Lang.Thread, Db4objects.Db4o.Internal.CS.IClientMessageDispatcher
+	internal class ClientMessageDispatcherImpl : Thread, IClientMessageDispatcher
 	{
-		private Db4objects.Db4o.Internal.CS.ClientObjectContainer i_stream;
+		private ClientObjectContainer i_stream;
 
-		private Db4objects.Db4o.Foundation.Network.ISocket4 i_socket;
+		private ISocket4 i_socket;
 
-		internal readonly Db4objects.Db4o.Foundation.Queue4 messageQueue;
+		private readonly BlockingQueue _messageQueue;
 
-		internal readonly Db4objects.Db4o.Foundation.Lock4 messageQueueLock;
-
-		internal ClientMessageDispatcherImpl(Db4objects.Db4o.Internal.CS.ClientObjectContainer
-			 client, Db4objects.Db4o.Foundation.Network.ISocket4 a_socket, Db4objects.Db4o.Foundation.Queue4
-			 messageQueue_, Db4objects.Db4o.Foundation.Lock4 messageQueueLock_)
+		internal ClientMessageDispatcherImpl(ClientObjectContainer client, ISocket4 a_socket
+			, BlockingQueue messageQueue_)
 		{
 			i_stream = client;
-			messageQueue = messageQueue_;
+			_messageQueue = messageQueue_;
 			i_socket = a_socket;
-			messageQueueLock = messageQueueLock_;
 		}
 
 		public virtual bool IsMessageDispatcherAlive()
@@ -42,59 +45,28 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			while (IsMessageDispatcherAlive())
 			{
+				Msg message = null;
 				try
 				{
-					Db4objects.Db4o.Internal.CS.Messages.Msg message = null;
-					try
+					message = Msg.ReadMessage(this, i_stream.GetTransaction(), i_socket);
+					if (message is IClientSideMessage)
 					{
-						message = Db4objects.Db4o.Internal.CS.Messages.Msg.ReadMessage(this, i_stream.GetTransaction
-							(), i_socket);
-						if (message is Db4objects.Db4o.Internal.CS.Messages.IClientSideMessage)
+						if (((IClientSideMessage)message).ProcessAtClient())
 						{
-							if (((Db4objects.Db4o.Internal.CS.Messages.IClientSideMessage)message).ProcessAtClient
-								())
-							{
-								continue;
-							}
+							continue;
 						}
 					}
-					catch (System.Exception)
-					{
-						message = Db4objects.Db4o.Internal.CS.Messages.Msg.ERROR;
-						Close();
-					}
-					Db4objects.Db4o.Internal.CS.Messages.Msg msgToBeAdded = message;
-					messageQueueLock.Run(new _AnonymousInnerClass49(this, msgToBeAdded));
 				}
-				catch (System.Exception)
+				catch (IOException)
 				{
 					Close();
+					message = Msg.ERROR;
 				}
+				_messageQueue.Add(message);
 			}
 		}
 
-		private sealed class _AnonymousInnerClass49 : Db4objects.Db4o.Foundation.IClosure4
-		{
-			public _AnonymousInnerClass49(ClientMessageDispatcherImpl _enclosing, Db4objects.Db4o.Internal.CS.Messages.Msg
-				 msgToBeAdded)
-			{
-				this._enclosing = _enclosing;
-				this.msgToBeAdded = msgToBeAdded;
-			}
-
-			public object Run()
-			{
-				this._enclosing.messageQueue.Add(msgToBeAdded);
-				this._enclosing.messageQueueLock.Awake();
-				return null;
-			}
-
-			private readonly ClientMessageDispatcherImpl _enclosing;
-
-			private readonly Db4objects.Db4o.Internal.CS.Messages.Msg msgToBeAdded;
-		}
-
-		public virtual void Write(Db4objects.Db4o.Internal.CS.Messages.Msg msg)
+		public virtual void Write(Msg msg)
 		{
 			i_stream.Write(msg);
 		}

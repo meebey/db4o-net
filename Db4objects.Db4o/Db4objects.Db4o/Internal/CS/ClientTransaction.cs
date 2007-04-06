@@ -1,13 +1,18 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS
 {
-	internal sealed class ClientTransaction : Db4objects.Db4o.Internal.Transaction
+	internal sealed class ClientTransaction : Transaction
 	{
-		private readonly Db4objects.Db4o.Internal.CS.ClientObjectContainer i_client;
+		private readonly ClientObjectContainer i_client;
 
-		private Db4objects.Db4o.Foundation.Tree i_yapObjectsToGc;
+		private Tree i_yapObjectsToGc;
 
-		internal ClientTransaction(Db4objects.Db4o.Internal.CS.ClientObjectContainer a_stream
-			, Db4objects.Db4o.Internal.Transaction a_parent) : base(a_stream, a_parent)
+		internal ClientTransaction(ClientObjectContainer a_stream, Transaction a_parent) : 
+			base(a_stream, a_parent)
 		{
 			i_client = a_stream;
 		}
@@ -18,20 +23,12 @@ namespace Db4objects.Db4o.Internal.CS
 			ClearAll();
 			if (IsSystemTransaction())
 			{
-				i_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.COMMIT_SYSTEMTRANS, true
-					);
+				i_client.WriteMsg(Msg.COMMIT_SYSTEMTRANS, true);
 			}
 			else
 			{
-				i_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.COMMIT, true);
-				Db4objects.Db4o.Internal.CS.Messages.MCommitResponse message = (Db4objects.Db4o.Internal.CS.Messages.MCommitResponse
-					)i_client.ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.COMMIT_RESPONSE
-					);
-				Db4objects.Db4o.Ext.Db4oException exc = message.ReadException();
-				if (exc != null)
-				{
-					throw exc;
-				}
+				i_client.WriteMsg(Msg.COMMIT, true);
+				i_client.ExpectedResponse(Msg.OK);
 			}
 		}
 
@@ -44,97 +41,87 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (i_yapObjectsToGc != null)
 			{
-				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass42(this));
+				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass37(this));
 			}
 			i_yapObjectsToGc = null;
 		}
 
-		private sealed class _AnonymousInnerClass42 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass37 : IVisitor4
 		{
-			public _AnonymousInnerClass42(ClientTransaction _enclosing)
+			public _AnonymousInnerClass37(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Visit(object a_object)
 			{
-				Db4objects.Db4o.Internal.ObjectReference yo = (Db4objects.Db4o.Internal.ObjectReference
-					)((Db4objects.Db4o.Internal.TreeIntObject)a_object)._object;
+				ObjectReference yo = (ObjectReference)((TreeIntObject)a_object)._object;
 				this._enclosing.Stream().RemoveReference(yo);
 			}
 
 			private readonly ClientTransaction _enclosing;
 		}
 
-		public override bool Delete(Db4objects.Db4o.Internal.ObjectReference @ref, int id
-			, int cascade)
+		public override bool Delete(ObjectReference @ref, int id, int cascade)
 		{
 			if (!base.Delete(@ref, id, cascade))
 			{
 				return false;
 			}
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.TA_DELETE.GetWriterForInts(this, new int[] { id, cascade });
+			MsgD msg = Msg.TA_DELETE.GetWriterForInts(this, new int[] { id, cascade });
 			i_client.WriteMsg(msg, false);
 			return true;
 		}
 
 		public override bool IsDeleted(int a_id)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.TA_IS_DELETED.GetWriterForInt(this, a_id);
+			MsgD msg = Msg.TA_IS_DELETED.GetWriterForInt(this, a_id);
 			i_client.WriteMsg(msg, true);
-			int res = i_client.ExpectedByteResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.
-				TA_IS_DELETED).ReadInt();
+			int res = i_client.ExpectedByteResponse(Msg.TA_IS_DELETED).ReadInt();
 			return res == 1;
 		}
 
-		public sealed override Db4objects.Db4o.Internal.HardObjectReference GetHardReferenceBySignature
-			(long a_uuid, byte[] a_signature)
+		public sealed override HardObjectReference GetHardReferenceBySignature(long a_uuid
+			, byte[] a_signature)
 		{
-			int messageLength = Db4objects.Db4o.Internal.Const4.LONG_LENGTH + Db4objects.Db4o.Internal.Const4
-				.INT_LENGTH + a_signature.Length;
-			Db4objects.Db4o.Internal.CS.Messages.MsgD message = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.OBJECT_BY_UUID.GetWriterForLength(this, messageLength);
+			int messageLength = Const4.LONG_LENGTH + Const4.INT_LENGTH + a_signature.Length;
+			MsgD message = Msg.OBJECT_BY_UUID.GetWriterForLength(this, messageLength);
 			message.WriteLong(a_uuid);
 			message.WriteBytes(a_signature);
 			i_client.Write(message);
-			message = (Db4objects.Db4o.Internal.CS.Messages.MsgD)i_client.ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg
-				.OBJECT_BY_UUID);
+			message = (MsgD)i_client.ExpectedResponse(Msg.OBJECT_BY_UUID);
 			int id = message.ReadInt();
 			if (id > 0)
 			{
 				return Stream().GetHardObjectReferenceById(this, id);
 			}
-			return Db4objects.Db4o.Internal.HardObjectReference.INVALID;
+			return HardObjectReference.INVALID;
 		}
 
 		public override void ProcessDeletes()
 		{
 			if (i_delete != null)
 			{
-				i_delete.Traverse(new _AnonymousInnerClass91(this));
+				i_delete.Traverse(new _AnonymousInnerClass86(this));
 			}
 			i_delete = null;
-			i_client.WriteMsg(Db4objects.Db4o.Internal.CS.Messages.Msg.PROCESS_DELETES, false
-				);
+			i_client.WriteMsg(Msg.PROCESS_DELETES, false);
 		}
 
-		private sealed class _AnonymousInnerClass91 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass86 : IVisitor4
 		{
-			public _AnonymousInnerClass91(ClientTransaction _enclosing)
+			public _AnonymousInnerClass86(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Visit(object a_object)
 			{
-				Db4objects.Db4o.Internal.DeleteInfo info = (Db4objects.Db4o.Internal.DeleteInfo)a_object;
+				DeleteInfo info = (DeleteInfo)a_object;
 				if (info._reference != null)
 				{
-					this._enclosing.i_yapObjectsToGc = Db4objects.Db4o.Foundation.Tree.Add(this._enclosing
-						.i_yapObjectsToGc, new Db4objects.Db4o.Internal.TreeIntObject(info._key, info._reference
-						));
+					this._enclosing.i_yapObjectsToGc = Tree.Add(this._enclosing.i_yapObjectsToGc, new 
+						TreeIntObject(info._key, info._reference));
 				}
 			}
 
@@ -148,12 +135,11 @@ namespace Db4objects.Db4o.Internal.CS
 			ClearAll();
 		}
 
-		public override void WriteUpdateDeleteMembers(int a_id, Db4objects.Db4o.Internal.ClassMetadata
-			 a_yc, int a_type, int a_cascade)
+		public override void WriteUpdateDeleteMembers(int a_id, ClassMetadata a_yc, int a_type
+			, int a_cascade)
 		{
-			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-				.WRITE_UPDATE_DELETE_MEMBERS.GetWriterForInts(this, new int[] { a_id, a_yc.GetID
-				(), a_type, a_cascade });
+			MsgD msg = Msg.WRITE_UPDATE_DELETE_MEMBERS.GetWriterForInts(this, new int[] { a_id
+				, a_yc.GetID(), a_type, a_cascade });
 			i_client.WriteMsg(msg, false);
 		}
 

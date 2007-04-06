@@ -1,7 +1,11 @@
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Sharpen;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class IntArrayList : System.Collections.IEnumerable
+	public class IntArrayList : IEnumerable
 	{
 		protected int[] i_content;
 
@@ -59,12 +63,12 @@ namespace Db4objects.Db4o.Foundation
 			return longs;
 		}
 
-		public virtual Db4objects.Db4o.Foundation.IIntIterator4 IntIterator()
+		public virtual IIntIterator4 IntIterator()
 		{
-			return new Db4objects.Db4o.Foundation.IntIterator4Impl(i_content, i_count);
+			return new IntIterator4Impl(i_content, i_count);
 		}
 
-		public virtual System.Collections.IEnumerator GetEnumerator()
+		public virtual IEnumerator GetEnumerator()
 		{
 			return IntIterator();
 		}

@@ -1,21 +1,25 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
-	public class CompositeIterator4 : System.Collections.IEnumerator
+	public class CompositeIterator4 : IEnumerator
 	{
-		private readonly System.Collections.IEnumerator _iterators;
+		private readonly IEnumerator _iterators;
 
-		private System.Collections.IEnumerator _currentIterator;
+		private IEnumerator _currentIterator;
 
-		public CompositeIterator4(System.Collections.IEnumerator[] iterators) : this(new 
-			Db4objects.Db4o.Foundation.ArrayIterator4(iterators))
+		public CompositeIterator4(IEnumerator[] iterators) : this(new ArrayIterator4(iterators
+			))
 		{
 		}
 
-		public CompositeIterator4(System.Collections.IEnumerator iterators)
+		public CompositeIterator4(IEnumerator iterators)
 		{
 			if (null == iterators)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			_iterators = iterators;
 		}
@@ -54,7 +58,7 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		public virtual System.Collections.IEnumerator CurrentIterator()
+		public virtual IEnumerator CurrentIterator()
 		{
 			return _currentIterator;
 		}
@@ -67,9 +71,9 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		protected virtual System.Collections.IEnumerator NextIterator(object current)
+		protected virtual IEnumerator NextIterator(object current)
 		{
-			return (System.Collections.IEnumerator)current;
+			return (IEnumerator)current;
 		}
 	}
 }

@@ -1,13 +1,14 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.IX;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class Null : Db4objects.Db4o.Internal.IX.IIndexable4
+	public class Null : IIndexable4
 	{
-		public static readonly Db4objects.Db4o.Internal.IX.IIndexable4 INSTANCE = new Db4objects.Db4o.Internal.Null
-			();
+		public static readonly IIndexable4 INSTANCE = new Null();
 
-		public virtual object ComparableObject(Db4objects.Db4o.Internal.Transaction trans
-			, object indexEntry)
+		public virtual object ComparableObject(Transaction trans, object indexEntry)
 		{
 			return null;
 		}
@@ -46,8 +47,7 @@ namespace Db4objects.Db4o.Internal
 			return 0;
 		}
 
-		public virtual Db4objects.Db4o.Internal.IComparable4 PrepareComparison(object obj
-			)
+		public virtual IComparable4 PrepareComparison(object obj)
 		{
 			return this;
 		}
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public virtual void DefragIndexEntry(Db4objects.Db4o.Internal.ReaderPair readers)
+		public virtual void DefragIndexEntry(ReaderPair readers)
 		{
 		}
 	}

@@ -1,3 +1,6 @@
+using System;
+using Sharpen.Lang;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <summary>A collection of cool static methods that should be part of the runtime environment but are not.
@@ -11,9 +14,9 @@ namespace Db4objects.Db4o.Foundation
 		{
 			try
 			{
-				Sharpen.Lang.Thread.Sleep(millis);
+				Thread.Sleep(millis);
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
 			}
 		}

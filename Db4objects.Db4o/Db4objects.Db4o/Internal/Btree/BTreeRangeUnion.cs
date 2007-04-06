@@ -1,25 +1,30 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Btree.Algebra;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
-	public class BTreeRangeUnion : Db4objects.Db4o.Internal.Btree.IBTreeRange
+	public class BTreeRangeUnion : IBTreeRange
 	{
-		private readonly Db4objects.Db4o.Internal.Btree.BTreeRangeSingle[] _ranges;
+		private readonly BTreeRangeSingle[] _ranges;
 
-		public BTreeRangeUnion(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle[] ranges) : 
-			this(ToSortedCollection(ranges))
+		public BTreeRangeUnion(BTreeRangeSingle[] ranges) : this(ToSortedCollection(ranges
+			))
 		{
 		}
 
-		public BTreeRangeUnion(Db4objects.Db4o.Foundation.SortedCollection4 sorted)
+		public BTreeRangeUnion(SortedCollection4 sorted)
 		{
 			if (null == sorted)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			_ranges = ToArray(sorted);
 		}
 
-		public virtual void Accept(Db4objects.Db4o.Internal.Btree.IBTreeRangeVisitor visitor
-			)
+		public virtual void Accept(IBTreeRangeVisitor visitor)
 		{
 			visitor.Visit(this);
 		}
@@ -36,18 +41,16 @@ namespace Db4objects.Db4o.Internal.Btree
 			return true;
 		}
 
-		private static Db4objects.Db4o.Foundation.SortedCollection4 ToSortedCollection(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle[]
-			 ranges)
+		private static SortedCollection4 ToSortedCollection(BTreeRangeSingle[] ranges)
 		{
 			if (null == ranges)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
-			Db4objects.Db4o.Foundation.SortedCollection4 collection = new Db4objects.Db4o.Foundation.SortedCollection4
-				(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle.COMPARISON);
+			SortedCollection4 collection = new SortedCollection4(BTreeRangeSingle.COMPARISON);
 			for (int i = 0; i < ranges.Length; i++)
 			{
-				Db4objects.Db4o.Internal.Btree.BTreeRangeSingle range = ranges[i];
+				BTreeRangeSingle range = ranges[i];
 				if (!range.IsEmpty())
 				{
 					collection.Add(range);
@@ -56,52 +59,47 @@ namespace Db4objects.Db4o.Internal.Btree
 			return collection;
 		}
 
-		private static Db4objects.Db4o.Internal.Btree.BTreeRangeSingle[] ToArray(Db4objects.Db4o.Foundation.SortedCollection4
-			 collection)
+		private static BTreeRangeSingle[] ToArray(SortedCollection4 collection)
 		{
-			return (Db4objects.Db4o.Internal.Btree.BTreeRangeSingle[])collection.ToArray(new 
-				Db4objects.Db4o.Internal.Btree.BTreeRangeSingle[collection.Size()]);
+			return (BTreeRangeSingle[])collection.ToArray(new BTreeRangeSingle[collection.Size
+				()]);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.IBTreeRange ExtendToFirst()
+		public virtual IBTreeRange ExtendToFirst()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.IBTreeRange ExtendToLast()
+		public virtual IBTreeRange ExtendToLast()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.IBTreeRange ExtendToLastOf(Db4objects.Db4o.Internal.Btree.IBTreeRange
-			 upperRange)
+		public virtual IBTreeRange ExtendToLastOf(IBTreeRange upperRange)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.IBTreeRange Greater()
+		public virtual IBTreeRange Greater()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.IBTreeRange Intersect(Db4objects.Db4o.Internal.Btree.IBTreeRange
-			 range)
+		public virtual IBTreeRange Intersect(IBTreeRange range)
 		{
 			if (null == range)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
-			return new Db4objects.Db4o.Internal.Btree.Algebra.BTreeRangeUnionIntersect(this).
-				Dispatch(range);
+			return new BTreeRangeUnionIntersect(this).Dispatch(range);
 		}
 
-		public virtual System.Collections.IEnumerator Pointers()
+		public virtual IEnumerator Pointers()
 		{
-			return Db4objects.Db4o.Foundation.Iterators.Concat(Db4objects.Db4o.Foundation.Iterators
-				.Map(_ranges, new _AnonymousInnerClass76(this)));
+			return Iterators.Concat(Iterators.Map(_ranges, new _AnonymousInnerClass76(this)));
 		}
 
-		private sealed class _AnonymousInnerClass76 : Db4objects.Db4o.Foundation.IFunction4
+		private sealed class _AnonymousInnerClass76 : IFunction4
 		{
 			public _AnonymousInnerClass76(BTreeRangeUnion _enclosing)
 			{
@@ -110,19 +108,18 @@ namespace Db4objects.Db4o.Internal.Btree
 
 			public object Apply(object range)
 			{
-				return ((Db4objects.Db4o.Internal.Btree.IBTreeRange)range).Pointers();
+				return ((IBTreeRange)range).Pointers();
 			}
 
 			private readonly BTreeRangeUnion _enclosing;
 		}
 
-		public virtual System.Collections.IEnumerator Keys()
+		public virtual IEnumerator Keys()
 		{
-			return Db4objects.Db4o.Foundation.Iterators.Concat(Db4objects.Db4o.Foundation.Iterators
-				.Map(_ranges, new _AnonymousInnerClass84(this)));
+			return Iterators.Concat(Iterators.Map(_ranges, new _AnonymousInnerClass84(this)));
 		}
 
-		private sealed class _AnonymousInnerClass84 : Db4objects.Db4o.Foundation.IFunction4
+		private sealed class _AnonymousInnerClass84 : IFunction4
 		{
 			public _AnonymousInnerClass84(BTreeRangeUnion _enclosing)
 			{
@@ -131,7 +128,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 			public object Apply(object range)
 			{
-				return ((Db4objects.Db4o.Internal.Btree.IBTreeRange)range).Keys();
+				return ((IBTreeRange)range).Keys();
 			}
 
 			private readonly BTreeRangeUnion _enclosing;
@@ -147,30 +144,28 @@ namespace Db4objects.Db4o.Internal.Btree
 			return size;
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.IBTreeRange Smaller()
+		public virtual IBTreeRange Smaller()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.IBTreeRange Union(Db4objects.Db4o.Internal.Btree.IBTreeRange
-			 other)
+		public virtual IBTreeRange Union(IBTreeRange other)
 		{
 			if (null == other)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
-			return new Db4objects.Db4o.Internal.Btree.Algebra.BTreeRangeUnionUnion(this).Dispatch
-				(other);
+			return new BTreeRangeUnionUnion(this).Dispatch(other);
 		}
 
-		public virtual System.Collections.IEnumerator Ranges()
+		public virtual IEnumerator Ranges()
 		{
-			return new Db4objects.Db4o.Foundation.ArrayIterator4(_ranges);
+			return new ArrayIterator4(_ranges);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.BTreePointer LastPointer()
+		public virtual BTreePointer LastPointer()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

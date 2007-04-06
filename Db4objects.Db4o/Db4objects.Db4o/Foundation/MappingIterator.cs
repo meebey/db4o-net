@@ -1,22 +1,26 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public abstract class MappingIterator : System.Collections.IEnumerator
+	public abstract class MappingIterator : IEnumerator
 	{
-		private readonly System.Collections.IEnumerator _iterator;
+		private readonly IEnumerator _iterator;
 
 		private object _current;
 
 		public static readonly object SKIP = new object();
 
-		public MappingIterator(System.Collections.IEnumerator iterator)
+		public MappingIterator(IEnumerator iterator)
 		{
 			if (null == iterator)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			_iterator = iterator;
-			_current = Db4objects.Db4o.Foundation.Iterators.NO_ELEMENT;
+			_current = Iterators.NO_ELEMENT;
 		}
 
 		protected abstract object Map(object current);
@@ -27,7 +31,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				if (!_iterator.MoveNext())
 				{
-					_current = Db4objects.Db4o.Foundation.Iterators.NO_ELEMENT;
+					_current = Iterators.NO_ELEMENT;
 					return false;
 				}
 				_current = Map(_iterator.Current);
@@ -38,7 +42,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Reset()
 		{
-			_current = Db4objects.Db4o.Foundation.Iterators.NO_ELEMENT;
+			_current = Iterators.NO_ELEMENT;
 			_iterator.Reset();
 		}
 
@@ -46,9 +50,9 @@ namespace Db4objects.Db4o.Foundation
 		{
 			get
 			{
-				if (Db4objects.Db4o.Foundation.Iterators.NO_ELEMENT == _current)
+				if (Iterators.NO_ELEMENT == _current)
 				{
-					throw new System.InvalidOperationException();
+					throw new InvalidOperationException();
 				}
 				return _current;
 			}

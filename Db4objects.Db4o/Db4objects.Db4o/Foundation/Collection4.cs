@@ -1,15 +1,19 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Types;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <summary>Fast linked list for all usecases.</summary>
 	/// <remarks>Fast linked list for all usecases.</remarks>
 	/// <exclude></exclude>
-	public class Collection4 : System.Collections.IEnumerable, Db4objects.Db4o.Foundation.IDeepClone
-		, Db4objects.Db4o.Types.IUnversioned
+	public class Collection4 : IEnumerable, IDeepClone, IUnversioned
 	{
 		/// <summary>first element of the linked list</summary>
-		private Db4objects.Db4o.Foundation.List4 _first;
+		private List4 _first;
 
-		private Db4objects.Db4o.Foundation.List4 _last;
+		private List4 _last;
 
 		/// <summary>number of elements collected</summary>
 		private int _size;
@@ -22,12 +26,12 @@ namespace Db4objects.Db4o.Foundation
 		{
 		}
 
-		public Collection4(System.Collections.IEnumerable other)
+		public Collection4(IEnumerable other)
 		{
 			AddAll(other);
 		}
 
-		public Collection4(System.Collections.IEnumerator iterator)
+		public Collection4(IEnumerator iterator)
 		{
 			AddAll(iterator);
 		}
@@ -36,7 +40,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (Size() != 1)
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			return _first._element;
 		}
@@ -64,7 +68,7 @@ namespace Db4objects.Db4o.Foundation
 			}
 			else
 			{
-				_first = new Db4objects.Db4o.Foundation.List4(_first, element);
+				_first = new List4(_first, element);
 				_size++;
 			}
 		}
@@ -73,12 +77,12 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (_last == null)
 			{
-				_first = new Db4objects.Db4o.Foundation.List4(element);
+				_first = new List4(element);
 				_last = _first;
 			}
 			else
 			{
-				_last._next = new Db4objects.Db4o.Foundation.List4(element);
+				_last._next = new List4(element);
 				_last = _last._next;
 			}
 			_size++;
@@ -93,13 +97,13 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		public void AddAll(System.Collections.IEnumerable other)
+		public void AddAll(IEnumerable other)
 		{
 			AssertNotNull(other);
 			AddAll(other.GetEnumerator());
 		}
 
-		public void AddAll(System.Collections.IEnumerator iterator)
+		public void AddAll(IEnumerator iterator)
 		{
 			AssertNotNull(iterator);
 			while (iterator.MoveNext())
@@ -121,7 +125,7 @@ namespace Db4objects.Db4o.Foundation
 			return GetInternal(element) != NOT_FOUND;
 		}
 
-		public virtual bool ContainsAll(System.Collections.IEnumerator iter)
+		public virtual bool ContainsAll(IEnumerator iter)
 		{
 			AssertNotNull(iter);
 			while (iter.MoveNext())
@@ -138,7 +142,7 @@ namespace Db4objects.Db4o.Foundation
 		/// <remarks>tests if the object is in the Collection. == comparison.</remarks>
 		public bool ContainsByIdentity(object element)
 		{
-			System.Collections.IEnumerator i = InternalIterator();
+			IEnumerator i = InternalIterator();
 			while (i.MoveNext())
 			{
 				object current = i.Current;
@@ -170,7 +174,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				return ContainsNull() ? null : NOT_FOUND;
 			}
-			System.Collections.IEnumerator i = InternalIterator();
+			IEnumerator i = InternalIterator();
 			while (i.MoveNext())
 			{
 				object current = i.Current;
@@ -192,13 +196,13 @@ namespace Db4objects.Db4o.Foundation
 			Db4objects.Db4o.Foundation.Collection4 col = new Db4objects.Db4o.Foundation.Collection4
 				();
 			object element = null;
-			System.Collections.IEnumerator i = InternalIterator();
+			IEnumerator i = InternalIterator();
 			while (i.MoveNext())
 			{
 				element = i.Current;
-				if (element is Db4objects.Db4o.Foundation.IDeepClone)
+				if (element is IDeepClone)
 				{
-					col.Add(((Db4objects.Db4o.Foundation.IDeepClone)element).DeepClone(newParent));
+					col.Add(((IDeepClone)element).DeepClone(newParent));
 				}
 				else
 				{
@@ -230,10 +234,10 @@ namespace Db4objects.Db4o.Foundation
 		/// to be the fastest.
 		/// </remarks>
 		/// <returns></returns>
-		public System.Collections.IEnumerator GetEnumerator()
+		public IEnumerator GetEnumerator()
 		{
-			return _first == null ? Db4objects.Db4o.Foundation.Iterators.EMPTY_ITERATOR : new 
-				Db4objects.Db4o.Foundation.Collection4Iterator(this, _first);
+			return _first == null ? Iterators.EMPTY_ITERATOR : new Collection4Iterator(this, 
+				_first);
 		}
 
 		/// <summary>
@@ -242,8 +246,8 @@ namespace Db4objects.Db4o.Foundation
 		/// </summary>
 		public virtual object Remove(object a_object)
 		{
-			Db4objects.Db4o.Foundation.List4 previous = null;
-			Db4objects.Db4o.Foundation.List4 current = _first;
+			List4 previous = null;
+			List4 current = _first;
 			while (current != null)
 			{
 				if (current.Holds(a_object))
@@ -259,8 +263,7 @@ namespace Db4objects.Db4o.Foundation
 			return null;
 		}
 
-		private void AdjustOnRemoval(Db4objects.Db4o.Foundation.List4 previous, Db4objects.Db4o.Foundation.List4
-			 removed)
+		private void AdjustOnRemoval(List4 previous, List4 removed)
 		{
 			if (removed == _first)
 			{
@@ -295,7 +298,7 @@ namespace Db4objects.Db4o.Foundation
 		public object[] ToArray(object[] a_array)
 		{
 			int j = 0;
-			System.Collections.IEnumerator i = InternalIterator();
+			IEnumerator i = InternalIterator();
 			while (i.MoveNext())
 			{
 				a_array[j++] = i.Current;
@@ -312,7 +315,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public override string ToString()
 		{
-			return Db4objects.Db4o.Foundation.Iterators.ToString(InternalIterator());
+			return Iterators.ToString(InternalIterator());
 		}
 
 		private void Changed()
@@ -329,7 +332,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (element == null)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 		}
 
@@ -341,9 +344,9 @@ namespace Db4objects.Db4o.Foundation
 		/// Leaner iterator for faster iteration (but unprotected against
 		/// concurrent modifications).
 		/// </remarks>
-		private System.Collections.IEnumerator InternalIterator()
+		private IEnumerator InternalIterator()
 		{
-			return new Db4objects.Db4o.Foundation.Iterator4Impl(_first);
+			return new Iterator4Impl(_first);
 		}
 	}
 }

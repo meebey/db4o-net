@@ -1,41 +1,45 @@
+using System;
+using System.Collections;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.IX;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	public abstract class Transaction
 	{
-		protected Db4objects.Db4o.Foundation.Tree i_delete;
+		protected Tree i_delete;
 
-		private Db4objects.Db4o.Foundation.List4 i_dirtyFieldIndexes;
+		private List4 i_dirtyFieldIndexes;
 
 		protected readonly Db4objects.Db4o.Internal.Transaction _systemTransaction;
 
-		private readonly Db4objects.Db4o.Internal.ObjectContainerBase _container;
+		private readonly ObjectContainerBase _container;
 
-		private Db4objects.Db4o.Foundation.List4 i_transactionListeners;
+		private List4 i_transactionListeners;
 
-		public Transaction(Db4objects.Db4o.Internal.ObjectContainerBase container, Db4objects.Db4o.Internal.Transaction
+		public Transaction(ObjectContainerBase container, Db4objects.Db4o.Internal.Transaction
 			 systemTransaction)
 		{
 			_container = container;
 			_systemTransaction = systemTransaction;
 		}
 
-		public virtual void AddDirtyFieldIndex(Db4objects.Db4o.Internal.IX.IndexTransaction
-			 a_xft)
+		public virtual void AddDirtyFieldIndex(IndexTransaction a_xft)
 		{
-			i_dirtyFieldIndexes = new Db4objects.Db4o.Foundation.List4(i_dirtyFieldIndexes, a_xft
-				);
+			i_dirtyFieldIndexes = new List4(i_dirtyFieldIndexes, a_xft);
 		}
 
 		public void CheckSynchronization()
 		{
 		}
 
-		public virtual void AddTransactionListener(Db4objects.Db4o.ITransactionListener a_listener
-			)
+		public virtual void AddTransactionListener(ITransactionListener a_listener)
 		{
-			i_transactionListeners = new Db4objects.Db4o.Foundation.List4(i_transactionListeners
-				, a_listener);
+			i_transactionListeners = new List4(i_transactionListeners, a_listener);
 		}
 
 		protected void ClearAll()
@@ -57,7 +61,7 @@ namespace Db4objects.Db4o.Internal
 					Stream().ReleaseSemaphores(this);
 				}
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
 			}
 			if (a_rollbackOnClose)
@@ -66,7 +70,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					Rollback();
 				}
-				catch (System.Exception e)
+				catch (Exception e)
 				{
 				}
 			}
@@ -86,11 +90,10 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (i_dirtyFieldIndexes != null)
 			{
-				System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.Iterator4Impl(i_dirtyFieldIndexes
-					);
+				IEnumerator i = new Iterator4Impl(i_dirtyFieldIndexes);
 				while (i.MoveNext())
 				{
-					((Db4objects.Db4o.Internal.IX.IndexTransaction)i.Current).Commit();
+					((IndexTransaction)i.Current).Commit();
 				}
 			}
 		}
@@ -100,11 +103,10 @@ namespace Db4objects.Db4o.Internal
 			CheckSynchronization();
 			if (i_transactionListeners != null)
 			{
-				System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.Iterator4Impl(i_transactionListeners
-					);
+				IEnumerator i = new Iterator4Impl(i_transactionListeners);
 				while (i.MoveNext())
 				{
-					((Db4objects.Db4o.ITransactionListener)i.Current).PreCommit();
+					((ITransactionListener)i.Current).PreCommit();
 				}
 				i_transactionListeners = null;
 			}
@@ -117,8 +119,7 @@ namespace Db4objects.Db4o.Internal
 			return _systemTransaction == null;
 		}
 
-		public virtual bool Delete(Db4objects.Db4o.Internal.ObjectReference @ref, int id, 
-			int cascade)
+		public virtual bool Delete(ObjectReference @ref, int id, int cascade)
 		{
 			CheckSynchronization();
 			if (@ref != null)
@@ -128,12 +129,11 @@ namespace Db4objects.Db4o.Internal
 					return false;
 				}
 			}
-			Db4objects.Db4o.Internal.DeleteInfo info = (Db4objects.Db4o.Internal.DeleteInfo)Db4objects.Db4o.Internal.TreeInt
-				.Find(i_delete, id);
+			DeleteInfo info = (DeleteInfo)TreeInt.Find(i_delete, id);
 			if (info == null)
 			{
-				info = new Db4objects.Db4o.Internal.DeleteInfo(id, @ref, cascade);
-				i_delete = Db4objects.Db4o.Foundation.Tree.Add(i_delete, info);
+				info = new DeleteInfo(id, @ref, cascade);
+				i_delete = Tree.Add(i_delete, info);
 				return true;
 			}
 			info._reference = @ref;
@@ -150,20 +150,18 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			i_delete = Db4objects.Db4o.Internal.TreeInt.RemoveLike((Db4objects.Db4o.Internal.TreeInt
-				)i_delete, a_id);
+			i_delete = TreeInt.RemoveLike((TreeInt)i_delete, a_id);
 		}
 
 		internal virtual void DontRemoveFromClassIndex(int a_yapClassID, int a_id)
 		{
 			CheckSynchronization();
-			Db4objects.Db4o.Internal.ClassMetadata yapClass = Stream().ClassMetadataForId(a_yapClassID
-				);
+			ClassMetadata yapClass = Stream().ClassMetadataForId(a_yapClassID);
 			yapClass.Index().Add(this, a_id);
 		}
 
-		public virtual Db4objects.Db4o.Internal.HardObjectReference GetHardReferenceBySignature
-			(long a_uuid, byte[] a_signature)
+		public virtual HardObjectReference GetHardReferenceBySignature(long a_uuid, byte[]
+			 a_signature)
 		{
 			CheckSynchronization();
 			return Stream().GetUUIDIndex().GetHardObjectReferenceBySignature(this, a_uuid, a_signature
@@ -172,7 +170,7 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract void ProcessDeletes();
 
-		public virtual Db4objects.Db4o.Reflect.IReflector Reflector()
+		public virtual IReflector Reflector()
 		{
 			return Stream().Reflector();
 		}
@@ -183,11 +181,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_dirtyFieldIndexes != null)
 			{
-				System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.Iterator4Impl(i_dirtyFieldIndexes
-					);
+				IEnumerator i = new Iterator4Impl(i_dirtyFieldIndexes);
 				while (i.MoveNext())
 				{
-					((Db4objects.Db4o.Internal.IX.IndexTransaction)i.Current).Rollback();
+					((IndexTransaction)i.Current).Rollback();
 				}
 			}
 		}
@@ -197,11 +194,10 @@ namespace Db4objects.Db4o.Internal
 			CheckSynchronization();
 			if (i_transactionListeners != null)
 			{
-				System.Collections.IEnumerator i = new Db4objects.Db4o.Foundation.Iterator4Impl(i_transactionListeners
-					);
+				IEnumerator i = new Iterator4Impl(i_transactionListeners);
 				while (i.MoveNext())
 				{
-					((Db4objects.Db4o.ITransactionListener)i.Current).PostRollback();
+					((ITransactionListener)i.Current).PostRollback();
 				}
 				i_transactionListeners = null;
 			}
@@ -263,10 +259,10 @@ namespace Db4objects.Db4o.Internal
 			return Stream().ToString();
 		}
 
-		public abstract void WriteUpdateDeleteMembers(int id, Db4objects.Db4o.Internal.ClassMetadata
-			 clazz, int typeInfo, int cascade);
+		public abstract void WriteUpdateDeleteMembers(int id, ClassMetadata clazz, int typeInfo
+			, int cascade);
 
-		public Db4objects.Db4o.Internal.ObjectContainerBase Stream()
+		public ObjectContainerBase Stream()
 		{
 			return _container;
 		}

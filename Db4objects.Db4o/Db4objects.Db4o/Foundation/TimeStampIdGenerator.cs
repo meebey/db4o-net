@@ -1,3 +1,5 @@
+using Sharpen;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
@@ -21,7 +23,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual long Generate()
 		{
-			long t = Sharpen.Runtime.CurrentTimeMillis();
+			long t = Runtime.CurrentTimeMillis();
 			t = t << 15;
 			if (t <= _last)
 			{

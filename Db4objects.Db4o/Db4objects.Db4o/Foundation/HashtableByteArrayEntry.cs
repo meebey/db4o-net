@@ -1,6 +1,8 @@
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
-	internal class HashtableByteArrayEntry : Db4objects.Db4o.Foundation.HashtableObjectEntry
+	internal class HashtableByteArrayEntry : HashtableObjectEntry
 	{
 		public HashtableByteArrayEntry(byte[] bytes, object value) : base(Hash(bytes), bytes
 			, value)

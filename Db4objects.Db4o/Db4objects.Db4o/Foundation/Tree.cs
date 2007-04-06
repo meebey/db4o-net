@@ -1,7 +1,10 @@
+using System;
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public abstract class Tree : Db4objects.Db4o.Foundation.IShallowClone, Db4objects.Db4o.Foundation.IDeepClone
+	public abstract class Tree : IShallowClone, IDeepClone
 	{
 		public sealed class ByRef
 		{
@@ -9,22 +12,21 @@ namespace Db4objects.Db4o.Foundation
 			{
 			}
 
-			public ByRef(Db4objects.Db4o.Foundation.Tree initialValue)
+			public ByRef(Tree initialValue)
 			{
 				value = initialValue;
 			}
 
-			public Db4objects.Db4o.Foundation.Tree value;
+			public Tree value;
 		}
 
-		public Db4objects.Db4o.Foundation.Tree _preceding;
+		public Tree _preceding;
 
 		public int _size = 1;
 
-		public Db4objects.Db4o.Foundation.Tree _subsequent;
+		public Tree _subsequent;
 
-		public static Db4objects.Db4o.Foundation.Tree Add(Db4objects.Db4o.Foundation.Tree
-			 a_old, Db4objects.Db4o.Foundation.Tree a_new)
+		public static Tree Add(Tree a_old, Tree a_new)
 		{
 			if (a_old == null)
 			{
@@ -33,8 +35,7 @@ namespace Db4objects.Db4o.Foundation
 			return a_old.Add(a_new);
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Tree Add(Db4objects.Db4o.Foundation.Tree
-			 a_new)
+		public virtual Tree Add(Tree a_new)
 		{
 			return Add(a_new, Compare(a_new));
 		}
@@ -51,8 +52,7 @@ namespace Db4objects.Db4o.Foundation
 		/// prevails in the tree using #duplicateOrThis(). This mechanism
 		/// allows doing find() and add() in one run.
 		/// </remarks>
-		public virtual Db4objects.Db4o.Foundation.Tree Add(Db4objects.Db4o.Foundation.Tree
-			 a_new, int a_cmp)
+		public virtual Tree Add(Tree a_new, int a_cmp)
 		{
 			if (a_cmp < 0)
 			{
@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Foundation
 		/// in the tree on adding, using the #addedOrExisting() method.
 		/// This mechanism allows doing find() and add() in one run.
 		/// </remarks>
-		public virtual Db4objects.Db4o.Foundation.Tree AddedOrExisting()
+		public virtual Tree AddedOrExisting()
 		{
 			if (WasAddedToTree())
 			{
@@ -127,7 +127,7 @@ namespace Db4objects.Db4o.Foundation
 			return _size != 0;
 		}
 
-		public Db4objects.Db4o.Foundation.Tree Balance()
+		public Tree Balance()
 		{
 			int cmp = _subsequent.Nodes() - _preceding.Nodes();
 			if (cmp < -2)
@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Tree BalanceCheckNulls()
+		public virtual Tree BalanceCheckNulls()
 		{
 			if (_subsequent == null)
 			{
@@ -201,22 +201,18 @@ namespace Db4objects.Db4o.Foundation
 		/// returns positive if this is greater than a_to
 		/// returns negative if this is smaller than a_to
 		/// </summary>
-		public abstract int Compare(Db4objects.Db4o.Foundation.Tree a_to);
+		public abstract int Compare(Tree a_to);
 
-		public static Db4objects.Db4o.Foundation.Tree DeepClone(Db4objects.Db4o.Foundation.Tree
-			 a_tree, object a_param)
+		public static Tree DeepClone(Tree a_tree, object a_param)
 		{
 			if (a_tree == null)
 			{
 				return null;
 			}
-			Db4objects.Db4o.Foundation.Tree newNode = (Db4objects.Db4o.Foundation.Tree)a_tree
-				.DeepClone(a_param);
+			Tree newNode = (Tree)a_tree.DeepClone(a_param);
 			newNode._size = a_tree._size;
-			newNode._preceding = Db4objects.Db4o.Foundation.Tree.DeepClone(a_tree._preceding, 
-				a_param);
-			newNode._subsequent = Db4objects.Db4o.Foundation.Tree.DeepClone(a_tree._subsequent
-				, a_param);
+			newNode._preceding = Tree.DeepClone(a_tree._preceding, a_param);
+			newNode._subsequent = Tree.DeepClone(a_tree._subsequent, a_param);
 			return newNode;
 		}
 
@@ -230,8 +226,7 @@ namespace Db4objects.Db4o.Foundation
 			return true;
 		}
 
-		public Db4objects.Db4o.Foundation.Tree Filter(Db4objects.Db4o.Foundation.IPredicate4
-			 a_filter)
+		public Tree Filter(IPredicate4 a_filter)
 		{
 			if (_preceding != null)
 			{
@@ -248,8 +243,7 @@ namespace Db4objects.Db4o.Foundation
 			return this;
 		}
 
-		public static Db4objects.Db4o.Foundation.Tree Find(Db4objects.Db4o.Foundation.Tree
-			 a_in, Db4objects.Db4o.Foundation.Tree a_tree)
+		public static Tree Find(Tree a_in, Tree a_tree)
 		{
 			if (a_in == null)
 			{
@@ -258,8 +252,7 @@ namespace Db4objects.Db4o.Foundation
 			return a_in.Find(a_tree);
 		}
 
-		public Db4objects.Db4o.Foundation.Tree Find(Db4objects.Db4o.Foundation.Tree a_tree
-			)
+		public Tree Find(Tree a_tree)
 		{
 			int cmp = Compare(a_tree);
 			if (cmp < 0)
@@ -286,8 +279,7 @@ namespace Db4objects.Db4o.Foundation
 			return null;
 		}
 
-		public static Db4objects.Db4o.Foundation.Tree FindGreaterOrEqual(Db4objects.Db4o.Foundation.Tree
-			 a_in, Db4objects.Db4o.Foundation.Tree a_finder)
+		public static Tree FindGreaterOrEqual(Tree a_in, Tree a_finder)
 		{
 			if (a_in == null)
 			{
@@ -300,8 +292,7 @@ namespace Db4objects.Db4o.Foundation
 			}
 			if (cmp > 0)
 			{
-				Db4objects.Db4o.Foundation.Tree node = FindGreaterOrEqual(a_in._preceding, a_finder
-					);
+				Tree node = FindGreaterOrEqual(a_in._preceding, a_finder);
 				if (node != null)
 				{
 					return node;
@@ -311,8 +302,7 @@ namespace Db4objects.Db4o.Foundation
 			return FindGreaterOrEqual(a_in._subsequent, a_finder);
 		}
 
-		public static Db4objects.Db4o.Foundation.Tree FindSmaller(Db4objects.Db4o.Foundation.Tree
-			 a_in, Db4objects.Db4o.Foundation.Tree a_node)
+		public static Tree FindSmaller(Tree a_in, Tree a_node)
 		{
 			if (a_in == null)
 			{
@@ -321,7 +311,7 @@ namespace Db4objects.Db4o.Foundation
 			int cmp = a_in.Compare(a_node);
 			if (cmp < 0)
 			{
-				Db4objects.Db4o.Foundation.Tree node = FindSmaller(a_in._subsequent, a_node);
+				Tree node = FindSmaller(a_in._subsequent, a_node);
 				if (node != null)
 				{
 					return node;
@@ -331,7 +321,7 @@ namespace Db4objects.Db4o.Foundation
 			return FindSmaller(a_in._preceding, a_node);
 		}
 
-		public Db4objects.Db4o.Foundation.Tree First()
+		public Tree First()
 		{
 			if (_preceding == null)
 			{
@@ -340,8 +330,7 @@ namespace Db4objects.Db4o.Foundation
 			return _preceding.First();
 		}
 
-		public virtual void OnAttemptToAddDuplicate(Db4objects.Db4o.Foundation.Tree a_tree
-			)
+		public virtual void OnAttemptToAddDuplicate(Tree a_tree)
 		{
 			_size = 0;
 			_preceding = a_tree;
@@ -358,7 +347,7 @@ namespace Db4objects.Db4o.Foundation
 			return 1;
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Tree Remove()
+		public virtual Tree Remove()
 		{
 			if (_subsequent != null && _preceding != null)
 			{
@@ -381,7 +370,7 @@ namespace Db4objects.Db4o.Foundation
 			SetSizeOwn();
 		}
 
-		public virtual Db4objects.Db4o.Foundation.Tree RemoveFirst()
+		public virtual Tree RemoveFirst()
 		{
 			if (_preceding == null)
 			{
@@ -392,8 +381,7 @@ namespace Db4objects.Db4o.Foundation
 			return this;
 		}
 
-		public static Db4objects.Db4o.Foundation.Tree RemoveLike(Db4objects.Db4o.Foundation.Tree
-			 from, Db4objects.Db4o.Foundation.Tree a_find)
+		public static Tree RemoveLike(Tree from, Tree a_find)
 		{
 			if (from == null)
 			{
@@ -402,8 +390,7 @@ namespace Db4objects.Db4o.Foundation
 			return from.RemoveLike(a_find);
 		}
 
-		public Db4objects.Db4o.Foundation.Tree RemoveLike(Db4objects.Db4o.Foundation.Tree
-			 a_find)
+		public Tree RemoveLike(Tree a_find)
 		{
 			int cmp = Compare(a_find);
 			if (cmp == 0)
@@ -428,8 +415,7 @@ namespace Db4objects.Db4o.Foundation
 			return this;
 		}
 
-		public Db4objects.Db4o.Foundation.Tree RemoveNode(Db4objects.Db4o.Foundation.Tree
-			 a_tree)
+		public Tree RemoveNode(Tree a_tree)
 		{
 			if (this == a_tree)
 			{
@@ -454,9 +440,9 @@ namespace Db4objects.Db4o.Foundation
 			return this;
 		}
 
-		public Db4objects.Db4o.Foundation.Tree RotateLeft()
+		public Tree RotateLeft()
 		{
-			Db4objects.Db4o.Foundation.Tree tree = _subsequent;
+			Tree tree = _subsequent;
 			_subsequent = tree._preceding;
 			CalculateSize();
 			tree._preceding = this;
@@ -471,9 +457,9 @@ namespace Db4objects.Db4o.Foundation
 			return tree;
 		}
 
-		public Db4objects.Db4o.Foundation.Tree RotateRight()
+		public Tree RotateRight()
 		{
-			Db4objects.Db4o.Foundation.Tree tree = _preceding;
+			Tree tree = _preceding;
 			_preceding = tree._subsequent;
 			CalculateSize();
 			tree._subsequent = this;
@@ -488,7 +474,7 @@ namespace Db4objects.Db4o.Foundation
 			return tree;
 		}
 
-		private Db4objects.Db4o.Foundation.Tree RotateSmallestUp()
+		private Tree RotateSmallestUp()
 		{
 			if (_preceding != null)
 			{
@@ -518,18 +504,17 @@ namespace Db4objects.Db4o.Foundation
 			_size = OwnSize() + _subsequent._size;
 		}
 
-		public virtual void SetSizeOwnPlus(Db4objects.Db4o.Foundation.Tree tree)
+		public virtual void SetSizeOwnPlus(Tree tree)
 		{
 			_size = OwnSize() + tree._size;
 		}
 
-		public virtual void SetSizeOwnPlus(Db4objects.Db4o.Foundation.Tree tree1, Db4objects.Db4o.Foundation.Tree
-			 tree2)
+		public virtual void SetSizeOwnPlus(Tree tree1, Tree tree2)
 		{
 			_size = OwnSize() + tree1._size + tree2._size;
 		}
 
-		public static int Size(Db4objects.Db4o.Foundation.Tree a_tree)
+		public static int Size(Tree a_tree)
 		{
 			if (a_tree == null)
 			{
@@ -544,8 +529,7 @@ namespace Db4objects.Db4o.Foundation
 			return _size;
 		}
 
-		public static void Traverse(Db4objects.Db4o.Foundation.Tree tree, Db4objects.Db4o.Foundation.IVisitor4
-			 visitor)
+		public static void Traverse(Tree tree, IVisitor4 visitor)
 		{
 			if (tree == null)
 			{
@@ -554,7 +538,7 @@ namespace Db4objects.Db4o.Foundation
 			tree.Traverse(visitor);
 		}
 
-		public void Traverse(Db4objects.Db4o.Foundation.IVisitor4 a_visitor)
+		public void Traverse(IVisitor4 a_visitor)
 		{
 			if (_preceding != null)
 			{
@@ -567,7 +551,7 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		public void TraverseFromLeaves(Db4objects.Db4o.Foundation.IVisitor4 a_visitor)
+		public void TraverseFromLeaves(IVisitor4 a_visitor)
 		{
 			if (_preceding != null)
 			{
@@ -580,8 +564,7 @@ namespace Db4objects.Db4o.Foundation
 			a_visitor.Visit(this);
 		}
 
-		protected virtual Db4objects.Db4o.Foundation.Tree ShallowCloneInternal(Db4objects.Db4o.Foundation.Tree
-			 tree)
+		protected virtual Tree ShallowCloneInternal(Tree tree)
 		{
 			tree._preceding = _preceding;
 			tree._size = _size;
@@ -591,7 +574,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual object ShallowClone()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public abstract object Key();

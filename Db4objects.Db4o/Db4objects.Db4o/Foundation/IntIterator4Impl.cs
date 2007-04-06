@@ -1,7 +1,10 @@
+using System;
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class IntIterator4Impl : Db4objects.Db4o.Foundation.IIntIterator4
+	public class IntIterator4Impl : IIntIterator4
 	{
 		private readonly int _count;
 
@@ -20,7 +23,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (_content == null || _current == _count)
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			return _content[_current];
 		}

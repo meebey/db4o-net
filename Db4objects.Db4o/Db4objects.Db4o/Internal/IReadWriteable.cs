@@ -1,7 +1,9 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public interface IReadWriteable : Db4objects.Db4o.Internal.IReadable
+	public interface IReadWriteable : IReadable
 	{
 		void Write(Db4objects.Db4o.Internal.Buffer a_writer);
 	}

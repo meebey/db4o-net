@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Ext;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
@@ -13,7 +15,7 @@ namespace Db4objects.Db4o.Internal
 
 		private byte _freespaceSystem;
 
-		private Db4objects.Db4o.Ext.Db4oDatabase _identity;
+		private Db4oDatabase _identity;
 
 		private long _lastTimeStampID;
 
@@ -71,12 +73,12 @@ namespace Db4objects.Db4o.Internal
 			_freespaceSystem = freespaceSystemtype;
 		}
 
-		public virtual Db4objects.Db4o.Ext.Db4oDatabase Identity()
+		public virtual Db4oDatabase Identity()
 		{
 			return _identity;
 		}
 
-		public virtual void Identity(Db4objects.Db4o.Ext.Db4oDatabase identityObject)
+		public virtual void Identity(Db4oDatabase identityObject)
 		{
 			_identity = identityObject;
 		}

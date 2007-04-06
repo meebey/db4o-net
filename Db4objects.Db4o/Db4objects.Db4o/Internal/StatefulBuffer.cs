@@ -1,3 +1,8 @@
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Sharpen;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <summary>
@@ -14,7 +19,7 @@ namespace Db4objects.Db4o.Internal
 	{
 		private interface IStatefulBufferVisitor
 		{
-			void Visit(Db4objects.Db4o.Internal.StatefulBuffer buffer);
+			void Visit(StatefulBuffer buffer);
 		}
 
 		private int i_address;
@@ -23,7 +28,7 @@ namespace Db4objects.Db4o.Internal
 
 		private int i_cascadeDelete;
 
-		private Db4objects.Db4o.Foundation.Tree i_embedded;
+		private Tree i_embedded;
 
 		private int i_id;
 
@@ -31,28 +36,27 @@ namespace Db4objects.Db4o.Internal
 
 		private int i_length;
 
-		internal Db4objects.Db4o.Internal.Transaction i_trans;
+		internal Transaction i_trans;
 
 		private int i_updateDepth = 1;
 
 		public int _payloadOffset;
 
-		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction a_trans, int a_initialBufferSize
-			)
+		public StatefulBuffer(Transaction a_trans, int a_initialBufferSize)
 		{
 			i_trans = a_trans;
 			i_length = a_initialBufferSize;
 			_buffer = new byte[i_length];
 		}
 
-		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction a_trans, int a_address
-			, int a_initialBufferSize) : this(a_trans, a_initialBufferSize)
+		public StatefulBuffer(Transaction a_trans, int a_address, int a_initialBufferSize
+			) : this(a_trans, a_initialBufferSize)
 		{
 			i_address = a_address;
 		}
 
-		public StatefulBuffer(Db4objects.Db4o.Internal.StatefulBuffer parent, Db4objects.Db4o.Internal.StatefulBuffer[]
-			 previousRead, int previousCount)
+		public StatefulBuffer(StatefulBuffer parent, StatefulBuffer[] previousRead, int previousCount
+			)
 		{
 			previousRead[previousCount++] = this;
 			int parentID = parent.ReadInt();
@@ -66,14 +70,13 @@ namespace Db4objects.Db4o.Internal
 			parent._offset += i_length;
 			if (previousCount < previousRead.Length)
 			{
-				new Db4objects.Db4o.Internal.StatefulBuffer(parent, previousRead, previousCount);
+				new StatefulBuffer(parent, previousRead, previousCount);
 			}
 		}
 
-		public void AddEmbedded(Db4objects.Db4o.Internal.StatefulBuffer a_bytes)
+		public void AddEmbedded(StatefulBuffer a_bytes)
 		{
-			i_embedded = Db4objects.Db4o.Foundation.Tree.Add(i_embedded, new Db4objects.Db4o.Internal.TreeIntObject
-				(a_bytes.GetID(), a_bytes));
+			i_embedded = Tree.Add(i_embedded, new TreeIntObject(a_bytes.GetID(), a_bytes));
 		}
 
 		public int AppendTo(Db4objects.Db4o.Internal.Buffer a_bytes, int a_id)
@@ -89,7 +92,7 @@ namespace Db4objects.Db4o.Internal
 			return newID[0];
 		}
 
-		private sealed class _AnonymousInnerClass99 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
+		private sealed class _AnonymousInnerClass99 : StatefulBuffer.IStatefulBufferVisitor
 		{
 			public _AnonymousInnerClass99(StatefulBuffer _enclosing, Db4objects.Db4o.Internal.Buffer
 				 a_bytes, int myID, int[] newID)
@@ -100,7 +103,7 @@ namespace Db4objects.Db4o.Internal
 				this.newID = newID;
 			}
 
-			public void Visit(Db4objects.Db4o.Internal.StatefulBuffer a_embedded)
+			public void Visit(StatefulBuffer a_embedded)
 			{
 				a_bytes.WriteInt(myID);
 				newID[0] = a_embedded.AppendTo(a_bytes, newID[0]);
@@ -131,7 +134,7 @@ namespace Db4objects.Db4o.Internal
 			return count[0];
 		}
 
-		private sealed class _AnonymousInnerClass124 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
+		private sealed class _AnonymousInnerClass124 : StatefulBuffer.IStatefulBufferVisitor
 		{
 			public _AnonymousInnerClass124(StatefulBuffer _enclosing, int[] count)
 			{
@@ -139,7 +142,7 @@ namespace Db4objects.Db4o.Internal
 				this.count = count;
 			}
 
-			public void Visit(Db4objects.Db4o.Internal.StatefulBuffer a_bytes)
+			public void Visit(StatefulBuffer a_bytes)
 			{
 				count[0] += 1 + a_bytes.EmbeddedCount();
 			}
@@ -156,7 +159,7 @@ namespace Db4objects.Db4o.Internal
 			return length[0];
 		}
 
-		private sealed class _AnonymousInnerClass134 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
+		private sealed class _AnonymousInnerClass134 : StatefulBuffer.IStatefulBufferVisitor
 		{
 			public _AnonymousInnerClass134(StatefulBuffer _enclosing, int[] length)
 			{
@@ -164,7 +167,7 @@ namespace Db4objects.Db4o.Internal
 				this.length = length;
 			}
 
-			public void Visit(Db4objects.Db4o.Internal.StatefulBuffer a_bytes)
+			public void Visit(StatefulBuffer a_bytes)
 			{
 				length[0] += a_bytes.GetLength() + a_bytes.EmbeddedLength();
 			}
@@ -174,8 +177,7 @@ namespace Db4objects.Db4o.Internal
 			private readonly int[] length;
 		}
 
-		private void ForEachEmbedded(Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
-			 a_visitor)
+		private void ForEachEmbedded(StatefulBuffer.IStatefulBufferVisitor a_visitor)
 		{
 			if (i_embedded != null)
 			{
@@ -183,9 +185,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _AnonymousInnerClass144 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass144 : IVisitor4
 		{
-			public _AnonymousInnerClass144(StatefulBuffer _enclosing, Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
+			public _AnonymousInnerClass144(StatefulBuffer _enclosing, StatefulBuffer.IStatefulBufferVisitor
 				 a_visitor)
 			{
 				this._enclosing = _enclosing;
@@ -194,13 +196,12 @@ namespace Db4objects.Db4o.Internal
 
 			public void Visit(object a_object)
 			{
-				a_visitor.Visit((Db4objects.Db4o.Internal.StatefulBuffer)((Db4objects.Db4o.Internal.TreeIntObject
-					)a_object)._object);
+				a_visitor.Visit((StatefulBuffer)((TreeIntObject)a_object)._object);
 			}
 
 			private readonly StatefulBuffer _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor a_visitor;
+			private readonly StatefulBuffer.IStatefulBufferVisitor a_visitor;
 		}
 
 		public int GetAddress()
@@ -228,22 +229,22 @@ namespace Db4objects.Db4o.Internal
 			return i_length;
 		}
 
-		public Db4objects.Db4o.Internal.ObjectContainerBase GetStream()
+		public ObjectContainerBase GetStream()
 		{
 			return i_trans.Stream();
 		}
 
-		public Db4objects.Db4o.Internal.ObjectContainerBase Stream()
+		public ObjectContainerBase Stream()
 		{
 			return i_trans.Stream();
 		}
 
-		public Db4objects.Db4o.Internal.LocalObjectContainer File()
+		public LocalObjectContainer File()
 		{
-			return ((Db4objects.Db4o.Internal.LocalTransaction)i_trans).File();
+			return ((LocalTransaction)i_trans).File();
 		}
 
-		public Db4objects.Db4o.Internal.Transaction GetTransaction()
+		public Transaction GetTransaction()
 		{
 			return i_trans;
 		}
@@ -275,17 +276,15 @@ namespace Db4objects.Db4o.Internal
 			Stream().ReadBytes(_buffer, i_address, _addressOffset, i_length);
 		}
 
-		public Db4objects.Db4o.Internal.StatefulBuffer ReadEmbeddedObject()
+		public StatefulBuffer ReadEmbeddedObject()
 		{
 			int id = ReadInt();
 			int length = ReadInt();
-			Db4objects.Db4o.Internal.StatefulBuffer bytes = null;
-			Db4objects.Db4o.Foundation.Tree tio = Db4objects.Db4o.Internal.TreeInt.Find(i_embedded
-				, id);
+			StatefulBuffer bytes = null;
+			Tree tio = TreeInt.Find(i_embedded, id);
 			if (tio != null)
 			{
-				bytes = (Db4objects.Db4o.Internal.StatefulBuffer)((Db4objects.Db4o.Internal.TreeIntObject
-					)tio)._object;
+				bytes = (StatefulBuffer)((TreeIntObject)tio)._object;
 			}
 			else
 			{
@@ -303,15 +302,14 @@ namespace Db4objects.Db4o.Internal
 			return bytes;
 		}
 
-		public Db4objects.Db4o.Internal.StatefulBuffer ReadYapBytes()
+		public StatefulBuffer ReadYapBytes()
 		{
 			int length = ReadInt();
 			if (length == 0)
 			{
 				return null;
 			}
-			Db4objects.Db4o.Internal.StatefulBuffer yb = new Db4objects.Db4o.Internal.StatefulBuffer
-				(i_trans, length);
+			StatefulBuffer yb = new StatefulBuffer(i_trans, length);
 			System.Array.Copy(_buffer, _offset, yb._buffer, 0, length);
 			_offset += length;
 			return yb;
@@ -350,7 +348,7 @@ namespace Db4objects.Db4o.Internal
 			i_instantionDepth = a_depth;
 		}
 
-		public void SetTransaction(Db4objects.Db4o.Internal.Transaction aTrans)
+		public void SetTransaction(Transaction aTrans)
 		{
 			i_trans = aTrans;
 		}
@@ -403,21 +401,21 @@ namespace Db4objects.Db4o.Internal
 
 		public void WriteEmbedded()
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer finalThis = this;
+			StatefulBuffer finalThis = this;
 			ForEachEmbedded(new _AnonymousInnerClass316(this, finalThis));
 			i_embedded = null;
 		}
 
-		private sealed class _AnonymousInnerClass316 : Db4objects.Db4o.Internal.StatefulBuffer.IStatefulBufferVisitor
+		private sealed class _AnonymousInnerClass316 : StatefulBuffer.IStatefulBufferVisitor
 		{
-			public _AnonymousInnerClass316(StatefulBuffer _enclosing, Db4objects.Db4o.Internal.StatefulBuffer
-				 finalThis)
+			public _AnonymousInnerClass316(StatefulBuffer _enclosing, StatefulBuffer finalThis
+				)
 			{
 				this._enclosing = _enclosing;
 				this.finalThis = finalThis;
 			}
 
-			public void Visit(Db4objects.Db4o.Internal.StatefulBuffer a_bytes)
+			public void Visit(StatefulBuffer a_bytes)
 			{
 				a_bytes.WriteEmbedded();
 				this._enclosing.Stream().WriteEmbedded(finalThis, a_bytes);
@@ -425,7 +423,7 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly StatefulBuffer _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.StatefulBuffer finalThis;
+			private readonly StatefulBuffer finalThis;
 		}
 
 		public void WriteEmbeddedNull()
@@ -439,8 +437,7 @@ namespace Db4objects.Db4o.Internal
 			WriteEncrypt(File(), i_address, _addressOffset);
 		}
 
-		public void WritePayload(Db4objects.Db4o.Internal.StatefulBuffer payLoad, bool topLevel
-			)
+		public void WritePayload(StatefulBuffer payLoad, bool topLevel)
 		{
 			CheckMinimumPayLoadOffsetAndWritePointerAndLength(payLoad.GetLength(), topLevel);
 			System.Array.Copy(payLoad._buffer, 0, _buffer, _payloadOffset, payLoad._buffer.Length
@@ -452,9 +449,9 @@ namespace Db4objects.Db4o.Internal
 		private void CheckMinimumPayLoadOffsetAndWritePointerAndLength(int length, bool alignToBlockSize
 			)
 		{
-			if (_payloadOffset <= _offset + (Db4objects.Db4o.Internal.Const4.INT_LENGTH * 2))
+			if (_payloadOffset <= _offset + (Const4.INT_LENGTH * 2))
 			{
-				_payloadOffset = _offset + (Db4objects.Db4o.Internal.Const4.INT_LENGTH * 2);
+				_payloadOffset = _offset + (Const4.INT_LENGTH * 2);
 			}
 			if (alignToBlockSize)
 			{
@@ -475,15 +472,13 @@ namespace Db4objects.Db4o.Internal
 
 		public Db4objects.Db4o.Internal.Buffer ReadPayloadWriter(int offset, int length)
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer payLoad = new Db4objects.Db4o.Internal.StatefulBuffer
-				(i_trans, 0, length);
+			StatefulBuffer payLoad = new StatefulBuffer(i_trans, 0, length);
 			System.Array.Copy(_buffer, offset, payLoad._buffer, 0, length);
 			TransferPayLoadAddress(payLoad, offset);
 			return payLoad;
 		}
 
-		private void TransferPayLoadAddress(Db4objects.Db4o.Internal.StatefulBuffer toWriter
-			, int offset)
+		private void TransferPayLoadAddress(StatefulBuffer toWriter, int offset)
 		{
 			int blockedOffset = offset / Stream().BlockSize();
 			toWriter.i_address = i_address + blockedOffset;
@@ -516,14 +511,13 @@ namespace Db4objects.Db4o.Internal
 
 		public void NoXByteCheck()
 		{
-			if (Db4objects.Db4o.Debug.xbytes && Db4objects.Db4o.Deploy.overwrite)
+			if (Debug.xbytes && Deploy.overwrite)
 			{
-				SetID(Db4objects.Db4o.Internal.Const4.IGNORE_ID);
+				SetID(Const4.IGNORE_ID);
 			}
 		}
 
-		public void WriteIDs(Db4objects.Db4o.Foundation.IIntIterator4 idIterator, int maxCount
-			)
+		public void WriteIDs(IIntIterator4 idIterator, int maxCount)
 		{
 			int savedOffset = _offset;
 			WriteInt(0);

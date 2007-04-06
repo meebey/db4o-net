@@ -1,9 +1,13 @@
+using System;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.CS;
+
 namespace Db4objects.Db4o.Internal.CS
 {
 	/// <exclude></exclude>
-	public class LazyClientIdIterator : Db4objects.Db4o.Foundation.IIntIterator4
+	public class LazyClientIdIterator : IIntIterator4
 	{
-		private readonly Db4objects.Db4o.Internal.CS.LazyClientQueryResult _queryResult;
+		private readonly LazyClientQueryResult _queryResult;
 
 		private int _current;
 
@@ -13,8 +17,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private int _available;
 
-		public LazyClientIdIterator(Db4objects.Db4o.Internal.CS.LazyClientQueryResult queryResult
-			)
+		public LazyClientIdIterator(LazyClientQueryResult queryResult)
 		{
 			_queryResult = queryResult;
 			_batchSize = queryResult.Config().PrefetchObjectCount();
@@ -26,7 +29,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (_current < 0)
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 			return _ids[_current];
 		}

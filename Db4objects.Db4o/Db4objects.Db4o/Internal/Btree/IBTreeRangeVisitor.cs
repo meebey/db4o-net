@@ -1,10 +1,12 @@
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
 	/// <exclude></exclude>
 	public interface IBTreeRangeVisitor
 	{
-		void Visit(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle range);
+		void Visit(BTreeRangeSingle range);
 
-		void Visit(Db4objects.Db4o.Internal.Btree.BTreeRangeUnion union);
+		void Visit(BTreeRangeUnion union);
 	}
 }

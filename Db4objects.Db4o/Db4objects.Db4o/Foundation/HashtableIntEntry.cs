@@ -1,6 +1,8 @@
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
-	internal class HashtableIntEntry : Db4objects.Db4o.Foundation.IDeepClone
+	internal class HashtableIntEntry : IDeepClone
 	{
 		internal int i_key;
 
@@ -18,8 +20,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 		}
 
-		public virtual void AcceptKeyVisitor(Db4objects.Db4o.Foundation.IVisitor4 visitor
-			)
+		public virtual void AcceptKeyVisitor(IVisitor4 visitor)
 		{
 			visitor.Visit(i_key);
 		}
@@ -39,9 +40,9 @@ namespace Db4objects.Db4o.Foundation
 		{
 			entry.i_key = i_key;
 			entry.i_next = i_next;
-			if (i_object is Db4objects.Db4o.Foundation.IDeepClone)
+			if (i_object is IDeepClone)
 			{
-				entry.i_object = ((Db4objects.Db4o.Foundation.IDeepClone)i_object).DeepClone(obj);
+				entry.i_object = ((IDeepClone)i_object).DeepClone(obj);
 			}
 			else
 			{

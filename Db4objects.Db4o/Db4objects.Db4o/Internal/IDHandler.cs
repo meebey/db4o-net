@@ -1,15 +1,15 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class IDHandler : Db4objects.Db4o.Internal.PrimitiveIntHandler
+	public class IDHandler : PrimitiveIntHandler
 	{
-		public IDHandler(Db4objects.Db4o.Internal.ObjectContainerBase stream) : base(stream
-			)
+		public IDHandler(ObjectContainerBase stream) : base(stream)
 		{
 		}
 
-		public override void DefragIndexEntry(Db4objects.Db4o.Internal.ReaderPair readers
-			)
+		public override void DefragIndexEntry(ReaderPair readers)
 		{
 			readers.CopyID(true, false);
 		}

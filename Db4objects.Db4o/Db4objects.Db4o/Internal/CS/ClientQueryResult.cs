@@ -1,21 +1,24 @@
+using System.Collections;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.Query.Result;
+
 namespace Db4objects.Db4o.Internal.CS
 {
 	/// <exclude></exclude>
-	public class ClientQueryResult : Db4objects.Db4o.Internal.Query.Result.IdListQueryResult
+	public class ClientQueryResult : IdListQueryResult
 	{
-		public ClientQueryResult(Db4objects.Db4o.Internal.Transaction ta) : base(ta)
+		public ClientQueryResult(Transaction ta) : base(ta)
 		{
 		}
 
-		public ClientQueryResult(Db4objects.Db4o.Internal.Transaction ta, int initialSize
-			) : base(ta, initialSize)
+		public ClientQueryResult(Transaction ta, int initialSize) : base(ta, initialSize)
 		{
 		}
 
-		public override System.Collections.IEnumerator GetEnumerator()
+		public override IEnumerator GetEnumerator()
 		{
-			return Db4objects.Db4o.Internal.CS.ClientServerPlatform.CreateClientQueryResultIterator
-				(this);
+			return ClientServerPlatform.CreateClientQueryResultIterator(this);
 		}
 	}
 }

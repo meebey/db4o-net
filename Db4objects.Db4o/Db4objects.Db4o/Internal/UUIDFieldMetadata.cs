@@ -1,41 +1,48 @@
+using System;
+using System.Collections;
+using System.IO;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Slots;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class UUIDFieldMetadata : Db4objects.Db4o.Internal.VirtualFieldMetadata
+	public class UUIDFieldMetadata : VirtualFieldMetadata
 	{
-		private const int LINK_LENGTH = Db4objects.Db4o.Internal.Const4.LONG_LENGTH + Db4objects.Db4o.Internal.Const4
-			.ID_LENGTH;
+		private const int LINK_LENGTH = Const4.LONG_LENGTH + Const4.ID_LENGTH;
 
-		internal UUIDFieldMetadata(Db4objects.Db4o.Internal.ObjectContainerBase stream) : 
-			base()
+		internal UUIDFieldMetadata(ObjectContainerBase stream) : base()
 		{
-			SetName(Db4objects.Db4o.Internal.Const4.VIRTUAL_FIELD_PREFIX + "uuid");
-			i_handler = new Db4objects.Db4o.Internal.Handlers.LongHandler(stream);
+			SetName(Const4.VIRTUAL_FIELD_PREFIX + "uuid");
+			i_handler = new LongHandler(stream);
 		}
 
-		public override void AddFieldIndex(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.ClassMetadata yapClass, Db4objects.Db4o.Internal.StatefulBuffer
-			 writer, Db4objects.Db4o.Internal.Slots.Slot oldSlot)
+		public override void AddFieldIndex(MarshallerFamily mf, ClassMetadata yapClass, StatefulBuffer
+			 writer, Slot oldSlot)
 		{
 			bool isnew = (oldSlot == null);
 			int offset = writer._offset;
 			int db4oDatabaseIdentityID = writer.ReadInt();
 			long uuid = writer.ReadLong();
 			writer._offset = offset;
-			Db4objects.Db4o.Internal.LocalObjectContainer yf = (Db4objects.Db4o.Internal.LocalObjectContainer
-				)writer.GetStream();
+			LocalObjectContainer yf = (LocalObjectContainer)writer.GetStream();
 			if ((uuid == 0 || db4oDatabaseIdentityID == 0) && writer.GetID() > 0 && !isnew)
 			{
 				try
 				{
-					Db4objects.Db4o.Internal.UUIDFieldMetadata.DatabaseIdentityIDAndUUID identityAndUUID
-						 = ReadDatabaseIdentityIDAndUUID(yf, yapClass, oldSlot, false);
+					UUIDFieldMetadata.DatabaseIdentityIDAndUUID identityAndUUID = ReadDatabaseIdentityIDAndUUID
+						(yf, yapClass, oldSlot, false);
 					db4oDatabaseIdentityID = identityAndUUID.databaseIdentityID;
 					uuid = identityAndUUID.uuid;
 				}
-				catch (System.IO.IOException exc)
+				catch (IOException exc)
 				{
-					throw new Db4objects.Db4o.Internal.FieldIndexException(exc, this);
+					throw new FieldIndexException(exc, this);
 				}
 			}
 			if (db4oDatabaseIdentityID == 0)
@@ -67,16 +74,15 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private Db4objects.Db4o.Internal.UUIDFieldMetadata.DatabaseIdentityIDAndUUID ReadDatabaseIdentityIDAndUUID
-			(Db4objects.Db4o.Internal.ObjectContainerBase stream, Db4objects.Db4o.Internal.ClassMetadata
-			 yapClass, Db4objects.Db4o.Internal.Slots.Slot oldSlot, bool checkClass)
+		private UUIDFieldMetadata.DatabaseIdentityIDAndUUID ReadDatabaseIdentityIDAndUUID
+			(ObjectContainerBase stream, ClassMetadata yapClass, Slot oldSlot, bool checkClass
+			)
 		{
 			Db4objects.Db4o.Internal.Buffer reader = stream.BufferByAddress(oldSlot.GetAddress
 				(), oldSlot.GetLength());
 			if (checkClass)
 			{
-				Db4objects.Db4o.Internal.ClassMetadata realClass = Db4objects.Db4o.Internal.ClassMetadata
-					.ReadClass(stream, reader);
+				ClassMetadata realClass = ClassMetadata.ReadClass(stream, reader);
 				if (realClass != yapClass)
 				{
 					return null;
@@ -86,23 +92,23 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			return new Db4objects.Db4o.Internal.UUIDFieldMetadata.DatabaseIdentityIDAndUUID(reader
-				.ReadInt(), reader.ReadLong());
+			return new UUIDFieldMetadata.DatabaseIdentityIDAndUUID(reader.ReadInt(), reader.ReadLong
+				());
 		}
 
-		public override void Delete(Db4objects.Db4o.Internal.Marshall.MarshallerFamily mf
-			, Db4objects.Db4o.Internal.StatefulBuffer a_bytes, bool isUpdate)
+		public override void Delete(MarshallerFamily mf, StatefulBuffer a_bytes, bool isUpdate
+			)
 		{
 			if (isUpdate)
 			{
 				a_bytes.IncrementOffset(LinkLength());
 				return;
 			}
-			a_bytes.IncrementOffset(Db4objects.Db4o.Internal.Const4.INT_LENGTH);
+			a_bytes.IncrementOffset(Const4.INT_LENGTH);
 			long longPart = a_bytes.ReadLong();
 			if (longPart > 0)
 			{
-				Db4objects.Db4o.Internal.ObjectContainerBase stream = a_bytes.GetStream();
+				ObjectContainerBase stream = a_bytes.GetStream();
 				if (stream.MaintainsIndices())
 				{
 					RemoveIndexEntry(a_bytes.GetTransaction(), a_bytes.GetID(), longPart);
@@ -115,50 +121,48 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		public override Db4objects.Db4o.Internal.Btree.BTree GetIndex(Db4objects.Db4o.Internal.Transaction
-			 transaction)
+		public override BTree GetIndex(Transaction transaction)
 		{
 			EnsureIndex(transaction);
 			return base.GetIndex(transaction);
 		}
 
-		protected override void RebuildIndexForObject(Db4objects.Db4o.Internal.LocalObjectContainer
-			 stream, Db4objects.Db4o.Internal.ClassMetadata yapClass, int objectId)
+		protected override void RebuildIndexForObject(LocalObjectContainer stream, ClassMetadata
+			 yapClass, int objectId)
 		{
 			try
 			{
-				Db4objects.Db4o.Internal.UUIDFieldMetadata.DatabaseIdentityIDAndUUID data = ReadDatabaseIdentityIDAndUUID
-					(stream, yapClass, ((Db4objects.Db4o.Internal.LocalTransaction)stream.SystemTransaction
-					()).GetCurrentSlotOfID(objectId), true);
+				UUIDFieldMetadata.DatabaseIdentityIDAndUUID data = ReadDatabaseIdentityIDAndUUID(
+					stream, yapClass, ((LocalTransaction)stream.SystemTransaction()).GetCurrentSlotOfID
+					(objectId), true);
 				if (null == data)
 				{
 					return;
 				}
 				AddIndexEntry(stream.GetLocalSystemTransaction(), objectId, data.uuid);
 			}
-			catch (Db4objects.Db4o.Internal.SlotRetrievalException exc)
+			catch (SlotRetrievalException exc)
 			{
-				throw new Db4objects.Db4o.Internal.FieldIndexException(exc, this);
+				throw new FieldIndexException(exc, this);
 			}
-			catch (System.IO.IOException exc)
+			catch (IOException exc)
 			{
-				throw new Db4objects.Db4o.Internal.FieldIndexException(exc, this);
+				throw new FieldIndexException(exc, this);
 			}
 		}
 
-		private void EnsureIndex(Db4objects.Db4o.Internal.Transaction transaction)
+		private void EnsureIndex(Transaction transaction)
 		{
 			if (null == transaction)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
 			if (null != base.GetIndex(transaction))
 			{
 				return;
 			}
-			Db4objects.Db4o.Internal.LocalObjectContainer file = ((Db4objects.Db4o.Internal.LocalObjectContainer
-				)transaction.Stream());
-			Db4objects.Db4o.Internal.SystemData sd = file.SystemData();
+			LocalObjectContainer file = ((LocalObjectContainer)transaction.Stream());
+			SystemData sd = file.SystemData();
 			if (sd == null)
 			{
 				return;
@@ -171,22 +175,20 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal override void Instantiate1(Db4objects.Db4o.Internal.Transaction a_trans, 
-			Db4objects.Db4o.Internal.ObjectReference a_yapObject, Db4objects.Db4o.Internal.Buffer
-			 a_bytes)
+		internal override void Instantiate1(Transaction a_trans, ObjectReference a_yapObject
+			, Db4objects.Db4o.Internal.Buffer a_bytes)
 		{
 			int dbID = a_bytes.ReadInt();
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = a_trans.Stream();
+			ObjectContainerBase stream = a_trans.Stream();
 			stream.ShowInternalClasses(true);
 			try
 			{
-				Db4objects.Db4o.Ext.Db4oDatabase db = (Db4objects.Db4o.Ext.Db4oDatabase)stream.GetByID2
-					(a_trans, dbID);
+				Db4oDatabase db = (Db4oDatabase)stream.GetByID2(a_trans, dbID);
 				if (db != null && db.i_signature == null)
 				{
 					stream.Activate2(a_trans, db, 2);
 				}
-				Db4objects.Db4o.Internal.VirtualAttributes va = a_yapObject.VirtualAttributes();
+				VirtualAttributes va = a_yapObject.VirtualAttributes();
 				va.i_database = db;
 				va.i_uuid = a_bytes.ReadLong();
 			}
@@ -201,14 +203,14 @@ namespace Db4objects.Db4o.Internal
 			return LINK_LENGTH;
 		}
 
-		internal override void Marshall1(Db4objects.Db4o.Internal.ObjectReference a_yapObject
-			, Db4objects.Db4o.Internal.StatefulBuffer a_bytes, bool a_migrating, bool a_new)
+		internal override void Marshall1(ObjectReference a_yapObject, StatefulBuffer a_bytes
+			, bool a_migrating, bool a_new)
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase stream = a_bytes.GetStream();
-			Db4objects.Db4o.Internal.Transaction trans = a_bytes.GetTransaction();
+			ObjectContainerBase stream = a_bytes.GetStream();
+			Transaction trans = a_bytes.GetTransaction();
 			bool indexEntry = a_new && stream.MaintainsIndices();
 			int dbID = 0;
-			Db4objects.Db4o.Internal.VirtualAttributes attr = a_yapObject.VirtualAttributes();
+			VirtualAttributes attr = a_yapObject.VirtualAttributes();
 			bool linkToDatabase = !a_migrating;
 			if (attr != null && attr.i_database == null)
 			{
@@ -216,7 +218,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (linkToDatabase)
 			{
-				Db4objects.Db4o.Ext.Db4oDatabase db = stream.Identity();
+				Db4oDatabase db = stream.Identity();
 				if (db == null)
 				{
 					attr = null;
@@ -226,7 +228,7 @@ namespace Db4objects.Db4o.Internal
 					if (attr.i_database == null)
 					{
 						attr.i_database = db;
-						if (stream is Db4objects.Db4o.Internal.LocalObjectContainer)
+						if (stream is LocalObjectContainer)
 						{
 							attr.i_uuid = stream.GenerateTimeStampId();
 							indexEntry = true;
@@ -267,51 +269,45 @@ namespace Db4objects.Db4o.Internal
 			writer.WriteLong(0);
 		}
 
-		public Db4objects.Db4o.Internal.HardObjectReference GetHardObjectReferenceBySignature
-			(Db4objects.Db4o.Internal.Transaction transaction, long longPart, byte[] signature
-			)
+		public HardObjectReference GetHardObjectReferenceBySignature(Transaction transaction
+			, long longPart, byte[] signature)
 		{
-			Db4objects.Db4o.Internal.Btree.IBTreeRange range = Search(transaction, longPart);
-			System.Collections.IEnumerator keys = range.Keys();
+			IBTreeRange range = Search(transaction, longPart);
+			IEnumerator keys = range.Keys();
 			while (keys.MoveNext())
 			{
-				Db4objects.Db4o.Internal.Btree.FieldIndexKey current = (Db4objects.Db4o.Internal.Btree.FieldIndexKey
-					)keys.Current;
-				Db4objects.Db4o.Internal.HardObjectReference hardRef = GetHardObjectReferenceById
-					(transaction, current.ParentID(), signature);
+				FieldIndexKey current = (FieldIndexKey)keys.Current;
+				HardObjectReference hardRef = GetHardObjectReferenceById(transaction, current.ParentID
+					(), signature);
 				if (null != hardRef)
 				{
 					return hardRef;
 				}
 			}
-			return Db4objects.Db4o.Internal.HardObjectReference.INVALID;
+			return HardObjectReference.INVALID;
 		}
 
-		protected Db4objects.Db4o.Internal.HardObjectReference GetHardObjectReferenceById
-			(Db4objects.Db4o.Internal.Transaction transaction, int parentId, byte[] signature
-			)
+		protected HardObjectReference GetHardObjectReferenceById(Transaction transaction, 
+			int parentId, byte[] signature)
 		{
-			Db4objects.Db4o.Internal.HardObjectReference hardRef = transaction.Stream().GetHardObjectReferenceById
-				(transaction, parentId);
+			HardObjectReference hardRef = transaction.Stream().GetHardObjectReferenceById(transaction
+				, parentId);
 			if (hardRef._reference == null)
 			{
 				return null;
 			}
-			Db4objects.Db4o.Internal.VirtualAttributes vad = hardRef._reference.VirtualAttributes
-				(transaction);
-			if (!Db4objects.Db4o.Foundation.Arrays4.AreEqual(signature, vad.i_database.i_signature
-				))
+			VirtualAttributes vad = hardRef._reference.VirtualAttributes(transaction);
+			if (!Arrays4.AreEqual(signature, vad.i_database.i_signature))
 			{
 				return null;
 			}
 			return hardRef;
 		}
 
-		public override void DefragField(Db4objects.Db4o.Internal.Marshall.MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.ReaderPair readers)
+		public override void DefragField(MarshallerFamily mf, ReaderPair readers)
 		{
 			readers.CopyID();
-			readers.IncrementOffset(Db4objects.Db4o.Internal.Const4.LONG_LENGTH);
+			readers.IncrementOffset(Const4.LONG_LENGTH);
 		}
 	}
 }

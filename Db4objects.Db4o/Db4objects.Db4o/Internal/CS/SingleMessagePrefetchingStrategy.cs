@@ -1,20 +1,24 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.CS.Messages;
+
 namespace Db4objects.Db4o.Internal.CS
 {
 	/// <summary>Prefetchs multiples objects at once (in a single message).</summary>
 	/// <remarks>Prefetchs multiples objects at once (in a single message).</remarks>
 	/// <exclude></exclude>
-	public class SingleMessagePrefetchingStrategy : Db4objects.Db4o.Internal.CS.IPrefetchingStrategy
+	public class SingleMessagePrefetchingStrategy : IPrefetchingStrategy
 	{
-		public static readonly Db4objects.Db4o.Internal.CS.IPrefetchingStrategy INSTANCE = 
-			new Db4objects.Db4o.Internal.CS.SingleMessagePrefetchingStrategy();
+		public static readonly IPrefetchingStrategy INSTANCE = new Db4objects.Db4o.Internal.CS.SingleMessagePrefetchingStrategy
+			();
 
 		private SingleMessagePrefetchingStrategy()
 		{
 		}
 
-		public virtual int PrefetchObjects(Db4objects.Db4o.Internal.CS.ClientObjectContainer
-			 container, Db4objects.Db4o.Foundation.IIntIterator4 ids, object[] prefetched, int
-			 prefetchCount)
+		public virtual int PrefetchObjects(ClientObjectContainer container, IIntIterator4
+			 ids, object[] prefetched, int prefetchCount)
 		{
 			int count = 0;
 			int toGet = 0;
@@ -45,25 +49,20 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			if (toGet > 0)
 			{
-				Db4objects.Db4o.Internal.CS.Messages.MsgD msg = Db4objects.Db4o.Internal.CS.Messages.Msg
-					.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(container.GetTransaction(), idsToGet
-					, toGet);
+				MsgD msg = Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(container.GetTransaction
+					(), idsToGet, toGet);
 				container.WriteMsg(msg, true);
-				Db4objects.Db4o.Internal.CS.Messages.MsgD response = (Db4objects.Db4o.Internal.CS.Messages.MsgD
-					)container.ExpectedResponse(Db4objects.Db4o.Internal.CS.Messages.Msg.READ_MULTIPLE_OBJECTS
-					);
+				MsgD response = (MsgD)container.ExpectedResponse(Msg.READ_MULTIPLE_OBJECTS);
 				int embeddedMessageCount = response.ReadInt();
 				for (int i = 0; i < embeddedMessageCount; i++)
 				{
-					Db4objects.Db4o.Internal.CS.Messages.MsgObject mso = (Db4objects.Db4o.Internal.CS.Messages.MsgObject
-						)Db4objects.Db4o.Internal.CS.Messages.Msg.OBJECT_TO_CLIENT.PublicClone();
+					MsgObject mso = (MsgObject)Msg.OBJECT_TO_CLIENT.PublicClone();
 					mso.SetTransaction(container.GetTransaction());
 					mso.PayLoad(response.PayLoad().ReadYapBytes());
 					if (mso.PayLoad() != null)
 					{
-						mso.PayLoad().IncrementOffset(Db4objects.Db4o.Internal.Const4.MESSAGE_LENGTH);
-						Db4objects.Db4o.Internal.StatefulBuffer reader = mso.Unmarshall(Db4objects.Db4o.Internal.Const4
-							.MESSAGE_LENGTH);
+						mso.PayLoad().IncrementOffset(Const4.MESSAGE_LENGTH);
+						StatefulBuffer reader = mso.Unmarshall(Const4.MESSAGE_LENGTH);
 						object obj = container.ObjectForIdFromCache(idsToGet[i]);
 						if (obj != null)
 						{
@@ -71,8 +70,8 @@ namespace Db4objects.Db4o.Internal.CS
 						}
 						else
 						{
-							prefetched[position[i]] = new Db4objects.Db4o.Internal.ObjectReference(idsToGet[i
-								]).ReadPrefetch(container, reader);
+							prefetched[position[i]] = new ObjectReference(idsToGet[i]).ReadPrefetch(container
+								, reader);
 						}
 					}
 				}

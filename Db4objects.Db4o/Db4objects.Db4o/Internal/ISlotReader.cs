@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
@@ -27,7 +29,7 @@ namespace Db4objects.Db4o.Internal
 
 		void WriteLong(long value);
 
-		Db4objects.Db4o.Foundation.BitMap4 ReadBitMap(int bitCount);
+		BitMap4 ReadBitMap(int bitCount);
 
 		void CopyBytes(byte[] target, int sourceOffset, int targetOffset, int length);
 	}

@@ -1,14 +1,16 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS;
+
 namespace Db4objects.Db4o.Internal.CS
 {
 	/// <exclude></exclude>
 	public class DebugCS
 	{
-		public static Db4objects.Db4o.Internal.CS.ClientObjectContainer clientStream;
+		public static ClientObjectContainer clientStream;
 
-		public static Db4objects.Db4o.Internal.LocalObjectContainer serverStream;
+		public static LocalObjectContainer serverStream;
 
-		public static Db4objects.Db4o.Foundation.Queue4 clientMessageQueue;
-
-		public static Db4objects.Db4o.Foundation.Lock4 clientMessageQueueLock;
+		public static IQueue4 clientMessageQueue;
 	}
 }

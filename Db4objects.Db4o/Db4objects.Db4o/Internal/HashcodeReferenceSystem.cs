@@ -1,38 +1,37 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class HashcodeReferenceSystem : Db4objects.Db4o.Internal.IReferenceSystem
+	public class HashcodeReferenceSystem : IReferenceSystem
 	{
-		private Db4objects.Db4o.Internal.ObjectReference _hashCodeTree;
+		private ObjectReference _hashCodeTree;
 
-		private Db4objects.Db4o.Internal.ObjectReference _idTree;
+		private ObjectReference _idTree;
 
-		public virtual void AddNewReference(Db4objects.Db4o.Internal.ObjectReference @ref
-			)
+		public virtual void AddNewReference(ObjectReference @ref)
 		{
 			AddReference(@ref);
 		}
 
-		public virtual void AddExistingReference(Db4objects.Db4o.Internal.ObjectReference
-			 @ref)
+		public virtual void AddExistingReference(ObjectReference @ref)
 		{
 			AddReference(@ref);
 		}
 
-		private void AddReference(Db4objects.Db4o.Internal.ObjectReference @ref)
+		private void AddReference(ObjectReference @ref)
 		{
 			IdAdd(@ref);
 			HashCodeAdd(@ref);
 		}
 
-		public virtual void AddExistingReferenceToObjectTree(Db4objects.Db4o.Internal.ObjectReference
-			 @ref)
+		public virtual void AddExistingReferenceToObjectTree(ObjectReference @ref)
 		{
 			HashCodeAdd(@ref);
 		}
 
-		public virtual void AddExistingReferenceToIdTree(Db4objects.Db4o.Internal.ObjectReference
-			 @ref)
+		public virtual void AddExistingReferenceToIdTree(ObjectReference @ref)
 		{
 			IdAdd(@ref);
 		}
@@ -41,7 +40,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		private void HashCodeAdd(Db4objects.Db4o.Internal.ObjectReference @ref)
+		private void HashCodeAdd(ObjectReference @ref)
 		{
 			if (_hashCodeTree == null)
 			{
@@ -52,7 +51,7 @@ namespace Db4objects.Db4o.Internal
 			_hashCodeTree = _hashCodeTree.Hc_add(@ref);
 		}
 
-		private void IdAdd(Db4objects.Db4o.Internal.ObjectReference @ref)
+		private void IdAdd(ObjectReference @ref)
 		{
 			if (_idTree == null)
 			{
@@ -63,21 +62,20 @@ namespace Db4objects.Db4o.Internal
 			_idTree = _idTree.Id_add(@ref);
 		}
 
-		public virtual Db4objects.Db4o.Internal.ObjectReference ReferenceForId(int id)
+		public virtual ObjectReference ReferenceForId(int id)
 		{
 			if (_idTree == null)
 			{
 				return null;
 			}
-			if (!Db4objects.Db4o.Internal.ObjectReference.IsValidId(id))
+			if (!ObjectReference.IsValidId(id))
 			{
 				return null;
 			}
 			return _idTree.Id_find(id);
 		}
 
-		public virtual Db4objects.Db4o.Internal.ObjectReference ReferenceForObject(object
-			 obj)
+		public virtual ObjectReference ReferenceForObject(object obj)
 		{
 			if (_hashCodeTree == null)
 			{
@@ -86,8 +84,7 @@ namespace Db4objects.Db4o.Internal
 			return _hashCodeTree.Hc_find(obj);
 		}
 
-		public virtual void RemoveReference(Db4objects.Db4o.Internal.ObjectReference @ref
-			)
+		public virtual void RemoveReference(ObjectReference @ref)
 		{
 			if (_hashCodeTree != null)
 			{
@@ -103,8 +100,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public virtual void TraverseReferences(Db4objects.Db4o.Foundation.IVisitor4 visitor
-			)
+		public virtual void TraverseReferences(IVisitor4 visitor)
 		{
 			if (_hashCodeTree == null)
 			{

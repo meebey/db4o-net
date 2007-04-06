@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
@@ -16,20 +18,18 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		public static void Qsort(Db4objects.Db4o.Foundation.IQuickSortable4 sortable)
+		public static void Qsort(IQuickSortable4 sortable)
 		{
-			Db4objects.Db4o.Foundation.Stack4 stack = new Db4objects.Db4o.Foundation.Stack4();
+			Stack4 stack = new Stack4();
 			AddRange(stack, 0, sortable.Size() - 1);
 			Qsort(sortable, stack);
 		}
 
-		private static void Qsort(Db4objects.Db4o.Foundation.IQuickSortable4 sortable, Db4objects.Db4o.Foundation.Stack4
-			 stack)
+		private static void Qsort(IQuickSortable4 sortable, Stack4 stack)
 		{
 			while (!stack.IsEmpty())
 			{
-				Db4objects.Db4o.Foundation.Algorithms4.Range range = (Db4objects.Db4o.Foundation.Algorithms4.Range
-					)stack.Peek();
+				Algorithms4.Range range = (Algorithms4.Range)stack.Peek();
 				stack.Pop();
 				int from = range._from;
 				int to = range._to;
@@ -54,18 +54,16 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		private static void AddRange(Db4objects.Db4o.Foundation.Stack4 stack, int from, int
-			 to)
+		private static void AddRange(Stack4 stack, int from, int to)
 		{
 			if (to - from < 1)
 			{
 				return;
 			}
-			stack.Push(new Db4objects.Db4o.Foundation.Algorithms4.Range(from, to));
+			stack.Push(new Algorithms4.Range(from, to));
 		}
 
-		private static void Swap(Db4objects.Db4o.Foundation.IQuickSortable4 sortable, int
-			 left, int right)
+		private static void Swap(IQuickSortable4 sortable, int left, int right)
 		{
 			if (left == right)
 			{

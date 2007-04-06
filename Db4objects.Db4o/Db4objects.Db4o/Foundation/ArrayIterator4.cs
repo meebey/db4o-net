@@ -1,6 +1,8 @@
+using System.Collections;
+
 namespace Db4objects.Db4o.Foundation
 {
-	public class ArrayIterator4 : System.Collections.IEnumerator
+	public class ArrayIterator4 : IEnumerator
 	{
 		internal object[] _elements;
 

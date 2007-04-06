@@ -1,26 +1,29 @@
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <summary>Base class for balanced trees.</summary>
 	/// <remarks>Base class for balanced trees.</remarks>
 	/// <exclude></exclude>
-	public class TreeInt : Db4objects.Db4o.Foundation.Tree, Db4objects.Db4o.Internal.IReadWriteable
+	public class TreeInt : Tree, IReadWriteable
 	{
 		public static Db4objects.Db4o.Internal.TreeInt Add(Db4objects.Db4o.Internal.TreeInt
 			 tree, int value)
 		{
-			return (Db4objects.Db4o.Internal.TreeInt)Db4objects.Db4o.Foundation.Tree.Add(tree
-				, new Db4objects.Db4o.Internal.TreeInt(value));
+			return (Db4objects.Db4o.Internal.TreeInt)Tree.Add(tree, new Db4objects.Db4o.Internal.TreeInt
+				(value));
 		}
 
 		public static Db4objects.Db4o.Internal.TreeInt RemoveLike(Db4objects.Db4o.Internal.TreeInt
 			 tree, int value)
 		{
-			return (Db4objects.Db4o.Internal.TreeInt)Db4objects.Db4o.Foundation.Tree.RemoveLike
-				(tree, new Db4objects.Db4o.Internal.TreeInt(value));
+			return (Db4objects.Db4o.Internal.TreeInt)Tree.RemoveLike(tree, new Db4objects.Db4o.Internal.TreeInt
+				(value));
 		}
 
-		public static Db4objects.Db4o.Foundation.Tree AddAll(Db4objects.Db4o.Foundation.Tree
-			 tree, Db4objects.Db4o.Foundation.IIntIterator4 iter)
+		public static Tree AddAll(Tree tree, IIntIterator4 iter)
 		{
 			if (!iter.MoveNext())
 			{
@@ -28,7 +31,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			Db4objects.Db4o.Internal.TreeInt firstAdded = new Db4objects.Db4o.Internal.TreeInt
 				(iter.CurrentInt());
-			tree = Db4objects.Db4o.Foundation.Tree.Add(tree, firstAdded);
+			tree = Tree.Add(tree, firstAdded);
 			while (iter.MoveNext())
 			{
 				tree = tree.Add(new Db4objects.Db4o.Internal.TreeInt(iter.CurrentInt()));
@@ -43,12 +46,12 @@ namespace Db4objects.Db4o.Internal
 			this._key = a_key;
 		}
 
-		public override int Compare(Db4objects.Db4o.Foundation.Tree a_to)
+		public override int Compare(Tree a_to)
 		{
 			return _key - ((Db4objects.Db4o.Internal.TreeInt)a_to)._key;
 		}
 
-		internal virtual Db4objects.Db4o.Foundation.Tree DeepClone()
+		internal virtual Tree DeepClone()
 		{
 			return new Db4objects.Db4o.Internal.TreeInt(_key);
 		}
@@ -58,8 +61,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public static Db4objects.Db4o.Internal.TreeInt Find(Db4objects.Db4o.Foundation.Tree
-			 a_in, int a_key)
+		public static Db4objects.Db4o.Internal.TreeInt Find(Tree a_in, int a_key)
 		{
 			if (a_in == null)
 			{
@@ -123,7 +125,7 @@ namespace Db4objects.Db4o.Internal
 			a_tree.Traverse(new _AnonymousInnerClass97(a_writer));
 		}
 
-		private sealed class _AnonymousInnerClass97 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass97 : IVisitor4
 		{
 			public _AnonymousInnerClass97(Db4objects.Db4o.Internal.Buffer a_writer)
 			{
@@ -140,7 +142,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int OwnLength()
 		{
-			return Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+			return Const4.INT_LENGTH;
 		}
 
 		internal virtual bool VariableLength()
@@ -148,11 +150,9 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.Query.Processor.QCandidate ToQCandidate
-			(Db4objects.Db4o.Internal.Query.Processor.QCandidates candidates)
+		internal virtual QCandidate ToQCandidate(QCandidates candidates)
 		{
-			Db4objects.Db4o.Internal.Query.Processor.QCandidate qc = new Db4objects.Db4o.Internal.Query.Processor.QCandidate
-				(candidates, null, _key, true);
+			QCandidate qc = new QCandidate(candidates, null, _key, true);
 			qc._preceding = ToQCandidate((Db4objects.Db4o.Internal.TreeInt)_preceding, candidates
 				);
 			qc._subsequent = ToQCandidate((Db4objects.Db4o.Internal.TreeInt)_subsequent, candidates
@@ -161,8 +161,8 @@ namespace Db4objects.Db4o.Internal
 			return qc;
 		}
 
-		public static Db4objects.Db4o.Internal.Query.Processor.QCandidate ToQCandidate(Db4objects.Db4o.Internal.TreeInt
-			 tree, Db4objects.Db4o.Internal.Query.Processor.QCandidates candidates)
+		public static QCandidate ToQCandidate(Db4objects.Db4o.Internal.TreeInt tree, QCandidates
+			 candidates)
 		{
 			if (tree == null)
 			{
@@ -176,8 +176,7 @@ namespace Db4objects.Db4o.Internal
 			return string.Empty + _key;
 		}
 
-		protected override Db4objects.Db4o.Foundation.Tree ShallowCloneInternal(Db4objects.Db4o.Foundation.Tree
-			 tree)
+		protected override Tree ShallowCloneInternal(Tree tree)
 		{
 			Db4objects.Db4o.Internal.TreeInt treeint = (Db4objects.Db4o.Internal.TreeInt)base
 				.ShallowCloneInternal(tree);
@@ -196,7 +195,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (a_tree == null)
 			{
-				return Db4objects.Db4o.Internal.Const4.INT_LENGTH;
+				return Const4.INT_LENGTH;
 			}
 			return a_tree.ByteCount();
 		}
@@ -205,14 +204,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (VariableLength())
 			{
-				int[] length = new int[] { Db4objects.Db4o.Internal.Const4.INT_LENGTH };
+				int[] length = new int[] { Const4.INT_LENGTH };
 				Traverse(new _AnonymousInnerClass152(this, length));
 				return length[0];
 			}
-			return Db4objects.Db4o.Internal.Const4.INT_LENGTH + (Size() * OwnLength());
+			return Const4.INT_LENGTH + (Size() * OwnLength());
 		}
 
-		private sealed class _AnonymousInnerClass152 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _AnonymousInnerClass152 : IVisitor4
 		{
 			public _AnonymousInnerClass152(TreeInt _enclosing, int[] length)
 			{

@@ -1,30 +1,30 @@
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
-	internal class Config4Field : Db4objects.Db4o.Internal.Config4Abstract, Db4objects.Db4o.Config.IObjectField
-		, Db4objects.Db4o.Foundation.IDeepClone
+	internal class Config4Field : Config4Abstract, IObjectField, IDeepClone
 	{
-		private readonly Db4objects.Db4o.Internal.Config4Class _configClass;
+		private readonly Config4Class _configClass;
 
-		private static readonly Db4objects.Db4o.Foundation.KeySpec QUERY_EVALUATION = new 
-			Db4objects.Db4o.Foundation.KeySpec(true);
+		private static readonly KeySpec QUERY_EVALUATION = new KeySpec(true);
 
-		private static readonly Db4objects.Db4o.Foundation.KeySpec INDEXED = new Db4objects.Db4o.Foundation.KeySpec
-			(Db4objects.Db4o.Foundation.TernaryBool.UNSPECIFIED);
+		private static readonly KeySpec INDEXED = new KeySpec(TernaryBool.UNSPECIFIED);
 
-		protected Config4Field(Db4objects.Db4o.Internal.Config4Class a_class, Db4objects.Db4o.Foundation.KeySpecHashtable4
-			 config) : base(config)
+		protected Config4Field(Config4Class a_class, KeySpecHashtable4 config) : base(config
+			)
 		{
 			_configClass = a_class;
 		}
 
-		internal Config4Field(Db4objects.Db4o.Internal.Config4Class a_class, string a_name
-			)
+		internal Config4Field(Config4Class a_class, string a_name)
 		{
 			_configClass = a_class;
 			SetName(a_name);
 		}
 
-		private Db4objects.Db4o.Internal.Config4Class ClassConfig()
+		private Config4Class ClassConfig()
 		{
 			return _configClass;
 		}
@@ -36,8 +36,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object DeepClone(object param)
 		{
-			return new Db4objects.Db4o.Internal.Config4Field((Db4objects.Db4o.Internal.Config4Class
-				)param, _config);
+			return new Db4objects.Db4o.Internal.Config4Field((Config4Class)param, _config);
 		}
 
 		public virtual void QueryEvaluation(bool flag)
@@ -57,10 +56,9 @@ namespace Db4objects.Db4o.Internal
 			PutThreeValued(INDEXED, flag);
 		}
 
-		public virtual void InitOnUp(Db4objects.Db4o.Internal.Transaction systemTrans, Db4objects.Db4o.Internal.FieldMetadata
-			 yapField)
+		public virtual void InitOnUp(Transaction systemTrans, FieldMetadata yapField)
 		{
-			Db4objects.Db4o.Internal.ObjectContainerBase anyStream = systemTrans.Stream();
+			ObjectContainerBase anyStream = systemTrans.Stream();
 			if (!anyStream.MaintainsIndices())
 			{
 				return;
@@ -69,10 +67,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				Indexed(false);
 			}
-			Db4objects.Db4o.Internal.LocalObjectContainer stream = (Db4objects.Db4o.Internal.LocalObjectContainer
-				)anyStream;
-			Db4objects.Db4o.Foundation.TernaryBool indexedFlag = _config.GetAsTernaryBool(INDEXED
-				);
+			LocalObjectContainer stream = (LocalObjectContainer)anyStream;
+			TernaryBool indexedFlag = _config.GetAsTernaryBool(INDEXED);
 			if (indexedFlag.DefiniteNo())
 			{
 				yapField.DropIndex(systemTrans);
@@ -89,16 +85,15 @@ namespace Db4objects.Db4o.Internal
 			CreateIndex(systemTrans, yapField, stream);
 		}
 
-		private bool UseExistingIndex(Db4objects.Db4o.Internal.Transaction systemTrans, Db4objects.Db4o.Internal.FieldMetadata
-			 yapField)
+		private bool UseExistingIndex(Transaction systemTrans, FieldMetadata yapField)
 		{
 			return yapField.GetIndex(systemTrans) != null;
 		}
 
-		private void CreateIndex(Db4objects.Db4o.Internal.Transaction systemTrans, Db4objects.Db4o.Internal.FieldMetadata
-			 yapField, Db4objects.Db4o.Internal.LocalObjectContainer stream)
+		private void CreateIndex(Transaction systemTrans, FieldMetadata yapField, LocalObjectContainer
+			 stream)
 		{
-			if (stream.ConfigImpl().MessageLevel() > Db4objects.Db4o.Internal.Const4.NONE)
+			if (stream.ConfigImpl().MessageLevel() > Const4.NONE)
 			{
 				stream.Message("creating index " + yapField.ToString());
 			}
@@ -107,10 +102,10 @@ namespace Db4objects.Db4o.Internal
 			Reindex(systemTrans, yapField, stream);
 		}
 
-		private void Reindex(Db4objects.Db4o.Internal.Transaction systemTrans, Db4objects.Db4o.Internal.FieldMetadata
-			 yapField, Db4objects.Db4o.Internal.LocalObjectContainer stream)
+		private void Reindex(Transaction systemTrans, FieldMetadata yapField, LocalObjectContainer
+			 stream)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata yapClass = yapField.GetParentYapClass();
+			ClassMetadata yapClass = yapField.GetParentYapClass();
 			if (yapField.RebuildIndexForClass(stream, yapClass))
 			{
 				systemTrans.Commit();

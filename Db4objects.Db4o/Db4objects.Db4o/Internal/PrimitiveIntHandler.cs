@@ -1,3 +1,6 @@
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <summary>
@@ -5,15 +8,13 @@ namespace Db4objects.Db4o.Internal
 	/// and by doing the comparison with a substraction
 	/// </summary>
 	/// <exclude></exclude>
-	public class PrimitiveIntHandler : Db4objects.Db4o.Internal.Handlers.IntHandler
+	public class PrimitiveIntHandler : IntHandler
 	{
-		public PrimitiveIntHandler(Db4objects.Db4o.Internal.ObjectContainerBase stream) : 
-			base(stream)
+		public PrimitiveIntHandler(ObjectContainerBase stream) : base(stream)
 		{
 		}
 
-		public override Db4objects.Db4o.Internal.IComparable4 PrepareComparison(object obj
-			)
+		public override IComparable4 PrepareComparison(object obj)
 		{
 			_currentInteger = ((int)obj);
 			_currentInt = _currentInteger;

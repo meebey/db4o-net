@@ -1,9 +1,10 @@
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
-	public class BTreeRangePointerIterator : Db4objects.Db4o.Internal.Btree.AbstractBTreeRangeIterator
+	public class BTreeRangePointerIterator : AbstractBTreeRangeIterator
 	{
-		public BTreeRangePointerIterator(Db4objects.Db4o.Internal.Btree.BTreeRangeSingle 
-			range) : base(range)
+		public BTreeRangePointerIterator(BTreeRangeSingle range) : base(range)
 		{
 		}
 

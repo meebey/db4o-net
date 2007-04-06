@@ -1,14 +1,16 @@
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class LazyObjectReference : Db4objects.Db4o.Ext.IObjectInfo
+	public class LazyObjectReference : IObjectInfo
 	{
-		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
+		private readonly Transaction _transaction;
 
 		private readonly int _id;
 
-		public LazyObjectReference(Db4objects.Db4o.Internal.Transaction transaction, int 
-			id)
+		public LazyObjectReference(Transaction transaction, int id)
 		{
 			_transaction = transaction;
 			_id = id;
@@ -24,7 +26,7 @@ namespace Db4objects.Db4o.Internal
 			return Reference().GetObject();
 		}
 
-		public virtual Db4objects.Db4o.Ext.Db4oUUID GetUUID()
+		public virtual Db4oUUID GetUUID()
 		{
 			return Reference().GetUUID();
 		}
@@ -34,10 +36,10 @@ namespace Db4objects.Db4o.Internal
 			return Reference().GetVersion();
 		}
 
-		private Db4objects.Db4o.Internal.ObjectReference Reference()
+		private ObjectReference Reference()
 		{
-			Db4objects.Db4o.Internal.HardObjectReference hardRef = _transaction.Stream().GetHardObjectReferenceById
-				(_transaction, _id);
+			HardObjectReference hardRef = _transaction.Stream().GetHardObjectReferenceById(_transaction
+				, _id);
 			return hardRef._reference;
 		}
 	}

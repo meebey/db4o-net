@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
@@ -7,10 +9,8 @@ namespace Db4objects.Db4o.Internal
 
 		int OwnLength();
 
-		void ReadThis(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 reader);
+		void ReadThis(Transaction trans, Db4objects.Db4o.Internal.Buffer reader);
 
-		void WriteThis(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 writer);
+		void WriteThis(Transaction trans, Db4objects.Db4o.Internal.Buffer writer);
 	}
 }

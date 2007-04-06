@@ -1,3 +1,5 @@
+using Sharpen;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>

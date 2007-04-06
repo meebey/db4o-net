@@ -1,10 +1,14 @@
+using System;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Types;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude>TODO: Split into separate enums with defined range and values.</exclude>
 	public sealed class Const4
 	{
-		public static readonly object initMe = Init();
-
 		public const byte YAPFILEVERSION = 4;
 
 		public const byte YAPBEGIN = (byte)'{';
@@ -57,11 +61,9 @@ namespace Db4objects.Db4o.Internal
 
 		public const byte HEADER = (byte)'H';
 
-		public const int IDENTIFIER_LENGTH = (Db4objects.Db4o.Deploy.debug && Db4objects.Db4o.Deploy
-			.identifiers) ? 1 : 0;
+		public const int IDENTIFIER_LENGTH = (Deploy.debug && Deploy.identifiers) ? 1 : 0;
 
-		public const int BRACKETS_BYTES = (Db4objects.Db4o.Deploy.debug && Db4objects.Db4o.Deploy
-			.brackets) ? 1 : 0;
+		public const int BRACKETS_BYTES = (Deploy.debug && Deploy.brackets) ? 1 : 0;
 
 		public const int BRACKETS_LENGTH = BRACKETS_BYTES * 2;
 
@@ -71,11 +73,9 @@ namespace Db4objects.Db4o.Internal
 
 		public const int SHORT_BYTES = 2;
 
-		public const int INTEGER_BYTES = (Db4objects.Db4o.Deploy.debug && Db4objects.Db4o.Deploy
-			.debugLong) ? 11 : 4;
+		public const int INTEGER_BYTES = (Deploy.debug && Deploy.debugLong) ? 11 : 4;
 
-		public const int LONG_BYTES = (Db4objects.Db4o.Deploy.debug && Db4objects.Db4o.Deploy
-			.debugLong) ? 20 : 8;
+		public const int LONG_BYTES = (Deploy.debug && Deploy.debugLong) ? 20 : 8;
 
 		public const int CHAR_BYTES = 2;
 
@@ -131,15 +131,13 @@ namespace Db4objects.Db4o.Internal
 
 		public const int LOCK_TIME_INTERVAL = 1000;
 
-		public const int SERVER_SOCKET_TIMEOUT = Db4objects.Db4o.Debug.longTimeOuts ? 1000000
-			 : 5000;
+		public const int SERVER_SOCKET_TIMEOUT = Debug.longTimeOuts ? 1000000 : 5000;
 
 		public const int CLIENT_SOCKET_TIMEOUT = 300000;
 
 		public const int CLIENT_EMBEDDED_TIMEOUT = 3000;
 
-		public const int CONNECTION_TIMEOUT = Db4objects.Db4o.Debug.longTimeOuts ? 1000000
-			 : 180000;
+		public const int CONNECTION_TIMEOUT = Debug.longTimeOuts ? 1000000 : 180000;
 
 		public const int MAXIMUM_BLOCK_SIZE = 70000000;
 
@@ -147,27 +145,28 @@ namespace Db4objects.Db4o.Internal
 
 		public const int MAXIMUM_ARRAY_ENTRIES_PRIMITIVE = MAXIMUM_ARRAY_ENTRIES * 100;
 
-		public static System.Type CLASS_COMPARE;
+		public static readonly Type CLASS_COMPARE = typeof(ICompare);
 
-		public static System.Type CLASS_DB4OTYPE;
+		public static readonly Type CLASS_DB4OTYPE = typeof(IDb4oType);
 
-		public static System.Type CLASS_DB4OTYPEIMPL;
+		public static readonly Type CLASS_DB4OTYPEIMPL = typeof(IDb4oTypeImpl);
 
-		public static System.Type CLASS_INTERNAL;
+		public static readonly Type CLASS_INTERNAL = typeof(IInternal4);
 
-		public static System.Type CLASS_UNVERSIONED;
+		public static readonly Type CLASS_UNVERSIONED = typeof(IUnversioned);
 
-		public static System.Type CLASS_OBJECT;
+		public static readonly Type CLASS_OBJECT = new object().GetType();
 
-		public static System.Type CLASS_OBJECTCONTAINER;
+		public static readonly Type CLASS_OBJECTCONTAINER = typeof(IObjectContainer);
 
-		public static System.Type CLASS_REPLICATIONRECORD;
+		public static readonly Type CLASS_REPLICATIONRECORD = new ReplicationRecord().GetType
+			();
 
-		public static System.Type CLASS_STATICFIELD;
+		public static readonly Type CLASS_STATICFIELD = new StaticField().GetType();
 
-		public static System.Type CLASS_STATICCLASS;
+		public static readonly Type CLASS_STATICCLASS = new StaticClass().GetType();
 
-		public static System.Type CLASS_TRANSIENTCLASS;
+		public static readonly Type CLASS_TRANSIENTCLASS = typeof(ITransientClass);
 
 		public static readonly string EMBEDDED_CLIENT_USER = "embedded client";
 
@@ -193,27 +192,10 @@ namespace Db4objects.Db4o.Internal
 
 		public const int NEW = 1;
 
-		public static readonly Db4objects.Db4o.Internal.UnicodeStringIO stringIO = new Db4objects.Db4o.Internal.UnicodeStringIO
-			();
+		public static readonly UnicodeStringIO stringIO = new UnicodeStringIO();
 
-		private static object Init()
-		{
-			CLASS_OBJECT = new object().GetType();
-			CLASS_COMPARE = typeof(Db4objects.Db4o.Config.ICompare);
-			CLASS_DB4OTYPE = typeof(Db4objects.Db4o.Types.IDb4oType);
-			CLASS_DB4OTYPEIMPL = typeof(Db4objects.Db4o.Internal.IDb4oTypeImpl);
-			CLASS_INTERNAL = typeof(Db4objects.Db4o.IInternal4);
-			CLASS_UNVERSIONED = typeof(Db4objects.Db4o.Types.IUnversioned);
-			CLASS_OBJECTCONTAINER = typeof(Db4objects.Db4o.IObjectContainer);
-			CLASS_REPLICATIONRECORD = new Db4objects.Db4o.ReplicationRecord().GetType();
-			CLASS_STATICFIELD = new Db4objects.Db4o.StaticField().GetType();
-			CLASS_STATICCLASS = new Db4objects.Db4o.StaticClass().GetType();
-			CLASS_TRANSIENTCLASS = typeof(Db4objects.Db4o.Types.ITransientClass);
-			return null;
-		}
-
-		public static readonly System.Type[] ESSENTIAL_CLASSES = new System.Type[] { CLASS_STATICFIELD
-			, CLASS_STATICCLASS };
+		public static readonly Type[] ESSENTIAL_CLASSES = new Type[] { CLASS_STATICFIELD, 
+			CLASS_STATICCLASS };
 
 		public static readonly string VIRTUAL_FIELD_PREFIX = "v4o";
 

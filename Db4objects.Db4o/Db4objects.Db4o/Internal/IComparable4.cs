@@ -1,10 +1,12 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	/// <renameto>com.db4o.internal.Comparable4</renameto>
 	public interface IComparable4
 	{
-		Db4objects.Db4o.Internal.IComparable4 PrepareComparison(object obj);
+		IComparable4 PrepareComparison(object obj);
 
 		int CompareTo(object obj);
 

@@ -1,14 +1,15 @@
+using Db4objects.Db4o.Internal;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class DeleteInfo : Db4objects.Db4o.Internal.TreeInt
+	public class DeleteInfo : TreeInt
 	{
 		internal int _cascade;
 
-		public Db4objects.Db4o.Internal.ObjectReference _reference;
+		public ObjectReference _reference;
 
-		public DeleteInfo(int id, Db4objects.Db4o.Internal.ObjectReference reference, int
-			 cascade) : base(id)
+		public DeleteInfo(int id, ObjectReference reference, int cascade) : base(id)
 		{
 			_reference = reference;
 			_cascade = cascade;

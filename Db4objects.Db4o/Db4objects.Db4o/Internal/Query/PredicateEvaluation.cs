@@ -1,21 +1,23 @@
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o.Internal.Query
 {
 	/// <exclude></exclude>
 	[System.Serializable]
-	public class PredicateEvaluation : Db4objects.Db4o.Query.IEvaluation
+	public class PredicateEvaluation : IEvaluation
 	{
-		public Db4objects.Db4o.Query.Predicate _predicate;
+		public Predicate _predicate;
 
 		public PredicateEvaluation()
 		{
 		}
 
-		public PredicateEvaluation(Db4objects.Db4o.Query.Predicate predicate)
+		public PredicateEvaluation(Predicate predicate)
 		{
 			_predicate = predicate;
 		}
 
-		public virtual void Evaluate(Db4objects.Db4o.Query.ICandidate candidate)
+		public virtual void Evaluate(ICandidate candidate)
 		{
 			candidate.Include(_predicate.AppliesTo(candidate.GetObject()));
 		}

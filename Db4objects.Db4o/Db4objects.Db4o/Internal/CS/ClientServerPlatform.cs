@@ -1,3 +1,7 @@
+using System.Collections;
+using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.Query.Result;
+
 namespace Db4objects.Db4o.Internal.CS
 {
 	/// <summary>Platform specific defaults.</summary>
@@ -6,21 +10,20 @@ namespace Db4objects.Db4o.Internal.CS
 	{
 		/// <summary>
 		/// The default
-		/// <see cref="Db4objects.Db4o.Internal.CS.ClientQueryResultIterator">Db4objects.Db4o.Internal.CS.ClientQueryResultIterator
-		/// 	</see>
+		/// <see cref="ClientQueryResultIterator">ClientQueryResultIterator</see>
 		/// for this platform.
 		/// </summary>
 		/// <returns></returns>
-		public static System.Collections.IEnumerator CreateClientQueryResultIterator(Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult
-			 result)
+		public static IEnumerator CreateClientQueryResultIterator(AbstractQueryResult result
+			)
 		{
-			Db4objects.Db4o.Internal.CS.IQueryResultIteratorFactory factory = result.Config()
-				.QueryResultIteratorFactory();
+			IQueryResultIteratorFactory factory = result.Config().QueryResultIteratorFactory(
+				);
 			if (null != factory)
 			{
 				return factory.NewInstance(result);
 			}
-			return new Db4objects.Db4o.Internal.CS.ClientQueryResultIterator(result);
+			return new ClientQueryResultIterator(result);
 		}
 	}
 }
