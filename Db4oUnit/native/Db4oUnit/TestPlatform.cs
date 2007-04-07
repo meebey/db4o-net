@@ -15,15 +15,15 @@ namespace Db4oUnit
 			Out = Console.Out;
 		}
 #endif
-
-		public static System.Exception GetExceptionCause(System.Exception e)
-		{
-			return e.InnerException;
-		}
 		
 		public static void PrintStackTrace(TextWriter writer, Exception e)
 		{
 			writer.Write(e);
+		}
+
+		public static void PrintStackTrace(Exception e)
+		{
+			PrintStackTrace (GetStdOut(), e);
 		}
 
 		public static TextWriter GetStdOut()
