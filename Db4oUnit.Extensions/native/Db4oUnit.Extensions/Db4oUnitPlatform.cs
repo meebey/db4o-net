@@ -6,7 +6,7 @@ namespace Db4oUnit.Extensions
 {
 	public class Db4oUnitPlatform
 	{
-	    public static bool IsStoreableField(FieldInfo field)
+	    public static bool IsUserField(FieldInfo field)
 	    {
 	        if (field.IsStatic) return false;
             if (NetField.IsTransient(field)) return false;
