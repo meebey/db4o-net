@@ -9,11 +9,18 @@ namespace Sharpen.Net
 	{
 		public ServerSocket(int port)
 		{
-			NativeSocket socket = new NativeSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			socket.Bind(new IPEndPoint(IPAddress.Any, port));
+            try
+            {
+                NativeSocket socket = new NativeSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.Bind(new IPEndPoint(IPAddress.Any, port));
 
-			int maxConnections = 42;
-			socket.Listen(maxConnections);
+                int maxPendingConnections = 42;
+                socket.Listen(maxPendingConnections);
+            }
+            catch (SocketException e)
+            {
+                throw new System.IO.IOException(e.Message);
+            }
 
 			Initialize(socket);
 		}
