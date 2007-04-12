@@ -16,13 +16,13 @@ namespace Sharpen.Net
 
                 int maxPendingConnections = 42;
                 socket.Listen(maxPendingConnections);
+                Initialize(socket);
             }
             catch (SocketException e)
             {
                 throw new System.IO.IOException(e.Message);
             }
 
-			Initialize(socket);
 		}
 
 		public Socket Accept()
