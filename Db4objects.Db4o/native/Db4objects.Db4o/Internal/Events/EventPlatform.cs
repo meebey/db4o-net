@@ -7,6 +7,12 @@ namespace Db4objects.Db4o.Internal.Events
 {
 	internal class EventPlatform
 	{
+		public static void TriggerClassEvent(ClassEventHandler e, Db4objects.Db4o.Internal.ClassMetadata klass)
+		{
+			if (null == e) return;
+			e(klass, new ClassEventArgs(klass));
+		}
+		
 		public static void TriggerQueryEvent(QueryEventHandler e, Db4objects.Db4o.Query.IQuery q)
 		{
 			if (null == e) return;
