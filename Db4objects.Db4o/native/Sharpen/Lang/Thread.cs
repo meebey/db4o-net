@@ -106,6 +106,13 @@ namespace Sharpen.Lang
 			_thread.Start();
 		}
 
+		public void Join() 
+		{
+#if !CF_1_0
+			_thread.Join();
+#endif		
+		}
+		
 		public void SetDaemon(bool isDaemon)
 		{
 			_isDaemon = isDaemon;
