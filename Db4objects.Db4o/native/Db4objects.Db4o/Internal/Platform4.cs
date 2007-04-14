@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal
 
         internal static bool IsDb4oClass(string className)
         {
-            if (className.StartsWith("Db4objects.Db4o.Tests"))
+            if (className.IndexOf(".Tests.") > 0)
             {
                 return false;
             }
