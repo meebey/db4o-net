@@ -47,7 +47,6 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Commit(IServerMessageDispatcher dispatcher)
 		{
-			CallbackObjectInfoCollections committedInfo = null;
 			lock (Stream().i_lock)
 			{
 				if (DoCommittingCallbacks())
@@ -56,30 +55,30 @@ namespace Db4objects.Db4o.Internal
 				}
 				_file.FreeSpaceBeginCommit();
 				CommitExceptForFreespace();
+				CallbackObjectInfoCollections committedInfo = null;
 				if (DoCommittedCallbacks())
 				{
 					committedInfo = CollectCallbackObjectInfos(dispatcher);
 				}
 				CommitClearAll();
 				_file.FreeSpaceEndCommit();
-			}
-			if (DoCommittedCallbacks())
-			{
-				if (dispatcher == null)
+				if (DoCommittedCallbacks())
 				{
-					Callbacks().CommitOnCompleted(this, committedInfo);
-				}
-				else
-				{
-					ObjectServerImpl server = dispatcher.Server();
-					server.CommitOnCompleted(dispatcher, committedInfo);
+					if (dispatcher == null)
+					{
+						Callbacks().CommitOnCompleted(this, committedInfo);
+					}
+					else
+					{
+						dispatcher.CommittedInfo(committedInfo);
+					}
 				}
 			}
 		}
 
 		private bool DoCommittedCallbacks()
 		{
-			return !IsSystemTransaction() && Callbacks().CaresAboutCommitted();
+			return !IsSystemTransaction();
 		}
 
 		private bool DoCommittingCallbacks()
@@ -200,13 +199,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass188(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass189(this));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass188 : IVisitor4
+		private sealed class _AnonymousInnerClass189 : IVisitor4
 		{
-			public _AnonymousInnerClass188(LocalTransaction _enclosing)
+			public _AnonymousInnerClass189(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -276,15 +275,15 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass267(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass268(this));
 				ret = true;
 			}
 			return ret;
 		}
 
-		private sealed class _AnonymousInnerClass267 : IVisitor4
+		private sealed class _AnonymousInnerClass268 : IVisitor4
 		{
-			public _AnonymousInnerClass267(LocalTransaction _enclosing)
+			public _AnonymousInnerClass268(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -435,14 +434,14 @@ namespace Db4objects.Db4o.Internal
 			int[] slotSetPointerCount = new int[] { count };
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass410(this, slotSetPointerCount));
+				_slotChanges.Traverse(new _AnonymousInnerClass411(this, slotSetPointerCount));
 			}
 			return slotSetPointerCount[0];
 		}
 
-		private sealed class _AnonymousInnerClass410 : IVisitor4
+		private sealed class _AnonymousInnerClass411 : IVisitor4
 		{
-			public _AnonymousInnerClass410(LocalTransaction _enclosing, int[] slotSetPointerCount
+			public _AnonymousInnerClass411(LocalTransaction _enclosing, int[] slotSetPointerCount
 				)
 			{
 				this._enclosing = _enclosing;
@@ -501,13 +500,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_slotChanges != null)
 			{
-				_slotChanges.Traverse(new _AnonymousInnerClass452(this));
+				_slotChanges.Traverse(new _AnonymousInnerClass453(this));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass452 : IVisitor4
+		private sealed class _AnonymousInnerClass453 : IVisitor4
 		{
-			public _AnonymousInnerClass452(LocalTransaction _enclosing)
+			public _AnonymousInnerClass453(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -526,12 +525,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				ParentLocalTransaction().AppendSlotChanges(writer);
 			}
-			Tree.Traverse(_slotChanges, new _AnonymousInnerClass466(this, writer));
+			Tree.Traverse(_slotChanges, new _AnonymousInnerClass467(this, writer));
 		}
 
-		private sealed class _AnonymousInnerClass466 : IVisitor4
+		private sealed class _AnonymousInnerClass467 : IVisitor4
 		{
-			public _AnonymousInnerClass466(LocalTransaction _enclosing, Db4objects.Db4o.Internal.Buffer
+			public _AnonymousInnerClass467(LocalTransaction _enclosing, Db4objects.Db4o.Internal.Buffer
 				 writer)
 			{
 				this._enclosing = _enclosing;
@@ -642,14 +641,14 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = i_delete;
 				i_delete = null;
-				delete.Traverse(new _AnonymousInnerClass590(this));
+				delete.Traverse(new _AnonymousInnerClass591(this));
 			}
 			_writtenUpdateDeletedMembers = null;
 		}
 
-		private sealed class _AnonymousInnerClass590 : IVisitor4
+		private sealed class _AnonymousInnerClass591 : IVisitor4
 		{
-			public _AnonymousInnerClass590(LocalTransaction _enclosing)
+			public _AnonymousInnerClass591(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -734,15 +733,15 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			_slotChanges.Traverse(new _AnonymousInnerClass677(this, deleted, added, updated));
+			_slotChanges.Traverse(new _AnonymousInnerClass678(this, deleted, added, updated));
 			return new CallbackObjectInfoCollections(serverMessageDispatcher, new ObjectInfoCollectionImpl
 				(added), new ObjectInfoCollectionImpl(updated), new ObjectInfoCollectionImpl(deleted
 				));
 		}
 
-		private sealed class _AnonymousInnerClass677 : IVisitor4
+		private sealed class _AnonymousInnerClass678 : IVisitor4
 		{
-			public _AnonymousInnerClass677(LocalTransaction _enclosing, Collection4 deleted, 
+			public _AnonymousInnerClass678(LocalTransaction _enclosing, Collection4 deleted, 
 				Collection4 added, Collection4 updated)
 			{
 				this._enclosing = _enclosing;

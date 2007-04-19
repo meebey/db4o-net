@@ -1,6 +1,7 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Concurrency;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -17,6 +18,11 @@ namespace Db4oUnit.Extensions
 		[System.NonSerialized]
 		private IDb4oFixture _fixture;
 
+		private const int DERFAULT_CONCURRENCY_THREAD_COUNT = 10;
+
+		[System.NonSerialized]
+		private int _threadCount = DERFAULT_CONCURRENCY_THREAD_COUNT;
+
 		public virtual void Fixture(IDb4oFixture fixture)
 		{
 			_fixture = fixture;
@@ -29,7 +35,7 @@ namespace Db4oUnit.Extensions
 
 		public virtual bool IsClientServer()
 		{
-			return Fixture() is AbstractClientServerDb4oFixture;
+			return Fixture() is IDb4oClientServerFixture;
 		}
 
 		protected virtual void Reopen()
@@ -130,6 +136,16 @@ namespace Db4oUnit.Extensions
 			return RunEmbeddedClientServer(true);
 		}
 
+		public virtual int RunConcurrency()
+		{
+			return RunConcurrency(true);
+		}
+
+		public virtual int RunEmbeddedConcurrency()
+		{
+			return RunEmbeddedConcurrency(true);
+		}
+
 		private int RunEmbeddedClientServer(bool independentConfig)
 		{
 			return new TestRunner(EmbeddedClientServerSuite(independentConfig)).Run();
@@ -140,6 +156,17 @@ namespace Db4oUnit.Extensions
 			return new TestRunner(ClientServerSuite(independentConfig)).Run();
 		}
 
+		private int RunConcurrency(bool independentConfig)
+		{
+			return new TestRunner(ConcurrenyClientServerSuite(independentConfig, false)).Run(
+				);
+		}
+
+		private int RunEmbeddedConcurrency(bool independentConfig)
+		{
+			return new TestRunner(ConcurrenyClientServerSuite(independentConfig, true)).Run();
+		}
+
 		private Db4oTestSuiteBuilder SoloSuite(bool independentConfig)
 		{
 			return new Db4oTestSuiteBuilder(new Db4oSolo(ConfigSource(independentConfig)), TestCases
@@ -148,14 +175,21 @@ namespace Db4oUnit.Extensions
 
 		private Db4oTestSuiteBuilder ClientServerSuite(bool independentConfig)
 		{
-			return new Db4oTestSuiteBuilder(new Db4oSingleClient(ConfigSource(independentConfig
-				)), TestCases());
+			return new Db4oTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
+				), false), TestCases());
 		}
 
 		private Db4oTestSuiteBuilder EmbeddedClientServerSuite(bool independentConfig)
 		{
-			return new Db4oTestSuiteBuilder(new Db4oSingleClient(ConfigSource(independentConfig
-				), 0), TestCases());
+			return new Db4oTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
+				), true), TestCases());
+		}
+
+		private Db4oTestSuiteBuilder ConcurrenyClientServerSuite(bool independentConfig, 
+			bool embedded)
+		{
+			return new Db4oConcurrencyTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
+				), embedded), TestCases());
 		}
 
 		private IConfigurationSource ConfigSource(bool independentConfig)
@@ -198,7 +232,24 @@ namespace Db4oUnit.Extensions
 
 		protected virtual IQuery NewQuery()
 		{
-			return Db().Query();
+			return NewQuery(Db());
+		}
+
+		protected virtual IQuery NewQuery(IExtObjectContainer oc)
+		{
+			return oc.Query();
+		}
+
+		protected virtual IQuery NewQuery(Type clazz)
+		{
+			return NewQuery(Db(), clazz);
+		}
+
+		protected virtual IQuery NewQuery(IExtObjectContainer oc, Type clazz)
+		{
+			IQuery query = NewQuery(oc);
+			query.Constrain(clazz);
+			return query;
 		}
 
 		protected virtual IReflector Reflector()
@@ -217,16 +268,14 @@ namespace Db4oUnit.Extensions
 			return Stream().NewTransaction();
 		}
 
-		protected virtual IQuery NewQuery(Type clazz)
-		{
-			IQuery query = NewQuery();
-			query.Constrain(clazz);
-			return query;
-		}
-
 		protected virtual object RetrieveOnlyInstance(Type clazz)
 		{
-			IObjectSet result = NewQuery(clazz).Execute();
+			return RetrieveOnlyInstance(Db(), clazz);
+		}
+
+		protected virtual object RetrieveOnlyInstance(IExtObjectContainer oc, Type clazz)
+		{
+			IObjectSet result = NewQuery(oc, clazz).Execute();
 			Assert.AreEqual(1, result.Size());
 			return result.Next();
 		}
@@ -235,6 +284,18 @@ namespace Db4oUnit.Extensions
 		{
 			IObjectSet result = NewQuery(clazz).Execute();
 			return result.Size();
+		}
+
+		protected virtual int CountOccurences(IExtObjectContainer oc, Type clazz)
+		{
+			IObjectSet result = NewQuery(oc, clazz).Execute();
+			return result.Size();
+		}
+
+		protected virtual void AssertOccurrences(IExtObjectContainer oc, Type clazz, int 
+			expected)
+		{
+			Assert.AreEqual(expected, CountOccurences(oc, clazz));
 		}
 
 		protected virtual void Foreach(Type clazz, IVisitor4 visitor)
@@ -248,24 +309,46 @@ namespace Db4oUnit.Extensions
 			}
 		}
 
-		protected virtual void DeleteAll(Type clazz)
+		protected void DeleteAll(Type clazz)
 		{
-			Foreach(clazz, new _AnonymousInnerClass218(this));
+			DeleteAll(Db(), clazz);
 		}
 
-		private sealed class _AnonymousInnerClass218 : IVisitor4
+		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			public _AnonymousInnerClass218(AbstractDb4oTestCase _enclosing)
+			Foreach(clazz, new _AnonymousInnerClass270(this, oc));
+		}
+
+		private sealed class _AnonymousInnerClass270 : IVisitor4
+		{
+			public _AnonymousInnerClass270(AbstractDb4oTestCase _enclosing, IExtObjectContainer
+				 oc)
 			{
 				this._enclosing = _enclosing;
+				this.oc = oc;
 			}
 
 			public void Visit(object obj)
 			{
-				this._enclosing.Db().Delete(obj);
+				oc.Delete(obj);
 			}
 
 			private readonly AbstractDb4oTestCase _enclosing;
+
+			private readonly IExtObjectContainer oc;
+		}
+
+		protected void DeleteObjectSet(IObjectSet os)
+		{
+			DeleteObjectSet(Db(), os);
+		}
+
+		protected void DeleteObjectSet(IObjectContainer oc, IObjectSet os)
+		{
+			while (os.HasNext())
+			{
+				oc.Delete(os.Next());
+			}
 		}
 
 		protected void Store(object obj)
@@ -283,6 +366,16 @@ namespace Db4oUnit.Extensions
 			Fixture().Close();
 			Fixture().Defragment();
 			Fixture().Open();
+		}
+
+		public int ThreadCount()
+		{
+			return _threadCount;
+		}
+
+		public void ConfigureThreadCount(int count)
+		{
+			_threadCount = count;
 		}
 	}
 }

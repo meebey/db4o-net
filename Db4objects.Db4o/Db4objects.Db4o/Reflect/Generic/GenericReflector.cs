@@ -141,7 +141,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return claxx;
 			}
-			claxx = ForName(clazz.FullName);
+			claxx = ForName(ReflectPlatform.FullyQualifiedName(clazz));
 			if (claxx != null)
 			{
 				_classByClass.Put(clazz, claxx);

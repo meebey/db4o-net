@@ -39,6 +39,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				return i_translator.OnStore(a_trans.Stream(), a_OnObject);
 			}
+			catch (ReflectException e)
+			{
+				throw;
+			}
 			catch (Exception e)
 			{
 				throw new ReflectException(e);

@@ -913,5 +913,9 @@ namespace Db4objects.Db4o.Internal
 		{
 			return (LocalTransaction)SystemTransaction();
 		}
+
+		public override void OnCommittedListener()
+		{
+		}
 	}
 }

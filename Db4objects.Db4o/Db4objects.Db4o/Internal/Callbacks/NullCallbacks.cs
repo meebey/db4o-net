@@ -59,6 +59,10 @@ namespace Db4objects.Db4o.Internal.Callbacks
 		{
 		}
 
+		public virtual void ObjectOnInstantiate(object obj)
+		{
+		}
+
 		public virtual void CommitOnStarted(object transaction, CallbackObjectInfoCollections
 			 objectInfoCollections)
 		{
@@ -77,6 +81,10 @@ namespace Db4objects.Db4o.Internal.Callbacks
 		public virtual bool CaresAboutCommitted()
 		{
 			return false;
+		}
+
+		public virtual void ClassOnRegistered(ClassMetadata clazz)
+		{
 		}
 	}
 }

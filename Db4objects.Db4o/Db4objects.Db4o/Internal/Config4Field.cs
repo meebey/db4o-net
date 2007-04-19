@@ -67,7 +67,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				Indexed(false);
 			}
-			LocalObjectContainer stream = (LocalObjectContainer)anyStream;
 			TernaryBool indexedFlag = _config.GetAsTernaryBool(INDEXED);
 			if (indexedFlag.DefiniteNo())
 			{
@@ -82,34 +81,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			CreateIndex(systemTrans, yapField, stream);
+			yapField.CreateIndex();
 		}
 
 		private bool UseExistingIndex(Transaction systemTrans, FieldMetadata yapField)
 		{
 			return yapField.GetIndex(systemTrans) != null;
-		}
-
-		private void CreateIndex(Transaction systemTrans, FieldMetadata yapField, LocalObjectContainer
-			 stream)
-		{
-			if (stream.ConfigImpl().MessageLevel() > Const4.NONE)
-			{
-				stream.Message("creating index " + yapField.ToString());
-			}
-			yapField.InitIndex(systemTrans);
-			stream.SetDirtyInSystemTransaction(yapField.GetParentYapClass());
-			Reindex(systemTrans, yapField, stream);
-		}
-
-		private void Reindex(Transaction systemTrans, FieldMetadata yapField, LocalObjectContainer
-			 stream)
-		{
-			ClassMetadata yapClass = yapField.GetParentYapClass();
-			if (yapField.RebuildIndexForClass(stream, yapClass))
-			{
-				systemTrans.Commit();
-			}
 		}
 
 		internal virtual bool QueryEvaluation()

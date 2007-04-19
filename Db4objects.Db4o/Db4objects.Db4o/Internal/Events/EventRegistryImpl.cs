@@ -9,6 +9,8 @@ namespace Db4objects.Db4o.Internal.Events
 	/// <exclude></exclude>
 	public class EventRegistryImpl : ICallbacks, IEventRegistry
 	{
+		private readonly ObjectContainerBase _container;
+
 		protected Db4objects.Db4o.Events.QueryEventHandler _queryStarted;
 
 		protected Db4objects.Db4o.Events.QueryEventHandler _queryFinished;
@@ -36,6 +38,15 @@ namespace Db4objects.Db4o.Internal.Events
 		protected Db4objects.Db4o.Events.CommitEventHandler _committing;
 
 		protected Db4objects.Db4o.Events.CommitEventHandler _committed;
+
+		protected Db4objects.Db4o.Events.ObjectEventHandler _instantiated;
+
+		protected Db4objects.Db4o.Events.ClassEventHandler _classRegistered;
+
+		public EventRegistryImpl(ObjectContainerBase container)
+		{
+			_container = container;
+		}
 
 		public virtual void QueryOnFinished(IQuery query)
 		{
@@ -92,9 +103,19 @@ namespace Db4objects.Db4o.Internal.Events
 			EventPlatform.TriggerObjectEvent(_deleted, obj);
 		}
 
+		public virtual void ClassOnRegistered(ClassMetadata clazz)
+		{
+			EventPlatform.TriggerClassEvent(_classRegistered, clazz);
+		}
+
 		public virtual void ObjectOnDeactivate(object obj)
 		{
 			EventPlatform.TriggerObjectEvent(_deactivated, obj);
+		}
+
+		public virtual void ObjectOnInstantiate(object obj)
+		{
+			EventPlatform.TriggerObjectEvent(_instantiated, obj);
 		}
 
 		public virtual void CommitOnStarted(object transaction, CallbackObjectInfoCollections
@@ -297,12 +318,46 @@ namespace Db4objects.Db4o.Internal.Events
 			{
 				_committed = (Db4objects.Db4o.Events.CommitEventHandler)System.Delegate.Combine(_committed
 					, value);
+				OnCommittedListener();
 			}
 			remove
 			{
 				_committed = (Db4objects.Db4o.Events.CommitEventHandler)System.Delegate.Remove(_committed
 					, value);
 			}
+		}
+
+		public virtual event Db4objects.Db4o.Events.ClassEventHandler ClassRegistered
+		{
+			add
+			{
+				_classRegistered = (Db4objects.Db4o.Events.ClassEventHandler)System.Delegate.Combine
+					(_classRegistered, value);
+			}
+			remove
+			{
+				_classRegistered = (Db4objects.Db4o.Events.ClassEventHandler)System.Delegate.Remove
+					(_classRegistered, value);
+			}
+		}
+
+		public virtual event Db4objects.Db4o.Events.ObjectEventHandler Instantiated
+		{
+			add
+			{
+				_instantiated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Combine
+					(_instantiated, value);
+			}
+			remove
+			{
+				_instantiated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Remove
+					(_instantiated, value);
+			}
+		}
+
+		private void OnCommittedListener()
+		{
+			_container.OnCommittedListener();
 		}
 
 		public virtual bool CaresAboutCommitting()

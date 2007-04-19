@@ -7,23 +7,6 @@ namespace Db4oUnit.Extensions
 {
 	public class Db4oTestSuiteBuilder : ReflectionTestSuiteBuilder
 	{
-		private sealed class Db4oLabelProvider : TestMethod.ILabelProvider
-		{
-			public static readonly TestMethod.ILabelProvider DEFAULT = new Db4oTestSuiteBuilder.Db4oLabelProvider
-				();
-
-			public string GetLabel(TestMethod method)
-			{
-				return "[" + FixtureLabel(method) + "] " + TestMethod.DEFAULT_LABEL_PROVIDER.GetLabel
-					(method);
-			}
-
-			private string FixtureLabel(TestMethod method)
-			{
-				return ((AbstractDb4oTestCase)method.GetSubject()).Fixture().GetLabel();
-			}
-		}
-
 		private IDb4oFixture _fixture;
 
 		public Db4oTestSuiteBuilder(IDb4oFixture fixture, Type clazz) : base(clazz)
@@ -64,8 +47,7 @@ namespace Db4oUnit.Extensions
 		{
 			if (instance is AbstractDb4oTestCase)
 			{
-				return new TestMethod(instance, method, Db4oTestSuiteBuilder.Db4oLabelProvider.DEFAULT
-					);
+				return new TestMethod(instance, method, Db4oFixtureLabelProvider.DEFAULT);
 			}
 			return base.CreateTest(instance, method);
 		}

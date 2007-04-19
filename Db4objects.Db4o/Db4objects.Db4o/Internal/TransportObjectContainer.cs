@@ -3,6 +3,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Convert;
+using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Internal
@@ -126,6 +127,11 @@ namespace Db4objects.Db4o.Internal
 
 		internal override void Message(string msg)
 		{
+		}
+
+		public override ClassMetadata ProduceClassMetadata(IReflectClass claxx)
+		{
+			return i_parent.ProduceClassMetadata(claxx);
 		}
 
 		public override void RaiseVersion(long a_minimumVersion)

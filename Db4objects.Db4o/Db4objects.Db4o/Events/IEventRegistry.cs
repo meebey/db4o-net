@@ -14,6 +14,9 @@ namespace Db4objects.Db4o.Events
 	public delegate void CommitEventHandler(object sender, Db4objects.Db4o.Events.CommitEventArgs
 		 args);
 
+	public delegate void ClassEventHandler(object sender, Db4objects.Db4o.Events.ClassEventArgs
+		 args);
+
 	/// <summary>
 	/// Provides a way to register event handlers for specific
 	/// <see cref="ObjectContainer">ObjectContainer</see>
@@ -125,5 +128,19 @@ namespace Db4objects.Db4o.Events
 		/// </summary>
 		/// <returns></returns>
 		event Db4objects.Db4o.Events.CommitEventHandler Committed;
+
+		/// <summary>
+		/// Receives
+		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
+		/// </summary>
+		/// <returns></returns>
+		event Db4objects.Db4o.Events.ObjectEventHandler Instantiated;
+
+		/// <summary>
+		/// Receives
+		/// <see cref="ClassEventArgs">ClassEventArgs</see>
+		/// </summary>
+		/// <returns></returns>
+		event Db4objects.Db4o.Events.ClassEventHandler ClassRegistered;
 	}
 }

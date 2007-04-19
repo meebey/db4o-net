@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -199,6 +200,7 @@ namespace Db4objects.Db4o.Internal
 					i_fields = new FieldMetadata[0];
 				}
 			}
+			i_stream.Callbacks().ClassOnRegistered(this);
 			SetStateOK();
 		}
 
@@ -1091,13 +1093,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _AnonymousInnerClass929(this, name, yf));
+			ForEachFieldMetadata(new _AnonymousInnerClass930(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _AnonymousInnerClass929 : IVisitor4
+		private sealed class _AnonymousInnerClass930 : IVisitor4
 		{
-			public _AnonymousInnerClass929(ClassMetadata _enclosing, string name, FieldMetadata[]
+			public _AnonymousInnerClass930(ClassMetadata _enclosing, string name, FieldMetadata[]
 				 yf)
 			{
 				this._enclosing = _enclosing;
@@ -1251,59 +1253,76 @@ namespace Db4objects.Db4o.Internal
 			{
 				@ref.AddExistingReferenceToIdTree(stream);
 			}
-			bool doFields = buffer.GetInstantiationDepth() > 0 || CascadeOnActivate();
-			if (doFields && !ActivatingAlreadyActiveObject(instantiating, stream, @ref))
+			if (instantiating)
 			{
-				if (ObjectCanActivate(stream, obj))
-				{
-					@ref.SetStateClean();
-					InstantiateFields(@ref, obj, mf, attributes, buffer);
-					ObjectOnActivate(stream, obj);
-				}
-				else
-				{
-					if (instantiating)
-					{
-						@ref.SetStateDeactivated();
-					}
-				}
-			}
-			else
-			{
-				if (instantiating)
+				if (buffer.GetInstantiationDepth() == 0)
 				{
 					@ref.SetStateDeactivated();
 				}
 				else
+				{
+					Activate(stream, buffer, mf, attributes, @ref, obj);
+				}
+			}
+			else
+			{
+				if (ActivatingActiveObject(stream, @ref))
 				{
 					if (buffer.GetInstantiationDepth() > 1)
 					{
 						ActivateFields(buffer.GetTransaction(), obj, buffer.GetInstantiationDepth() - 1);
 					}
 				}
+				else
+				{
+					Activate(stream, buffer, mf, attributes, @ref, obj);
+				}
 			}
 			return obj;
 		}
 
-		private bool ActivatingAlreadyActiveObject(bool instantiating, ObjectContainerBase
-			 stream, ObjectReference yapObject)
+		private bool ActivatingActiveObject(ObjectContainerBase stream, ObjectReference @ref
+			)
 		{
-			return !instantiating && !stream.i_refreshInsteadOfActivate && yapObject.IsActive
-				();
+			return !stream.i_refreshInsteadOfActivate && @ref.IsActive();
 		}
 
-		private object InstantiateObject(StatefulBuffer a_bytes, MarshallerFamily mf)
+		private void Activate(ObjectContainerBase stream, StatefulBuffer buffer, MarshallerFamily
+			 mf, ObjectHeaderAttributes attributes, ObjectReference @ref, object obj)
+		{
+			if (ObjectCanActivate(stream, obj))
+			{
+				@ref.SetStateClean();
+				if (buffer.GetInstantiationDepth() > 0 || CascadeOnActivate())
+				{
+					InstantiateFields(@ref, obj, mf, attributes, buffer);
+				}
+				ObjectOnActivate(stream, obj);
+			}
+			else
+			{
+				@ref.SetStateDeactivated();
+			}
+		}
+
+		private object InstantiateObject(StatefulBuffer buffer, MarshallerFamily mf)
 		{
 			object instance = null;
 			if (ConfigInstantiates())
 			{
-				instance = InstantiateFromConfig(a_bytes.GetStream(), a_bytes, mf);
+				instance = InstantiateFromConfig(buffer.GetStream(), buffer, mf);
 			}
 			else
 			{
-				instance = InstantiateFromReflector(a_bytes.GetStream());
+				instance = InstantiateFromReflector(buffer.GetStream());
 			}
+			ObjectOnInstantiate(buffer.GetStream(), instance);
 			return instance;
+		}
+
+		private void ObjectOnInstantiate(ObjectContainerBase container, object instance)
+		{
+			container.Callbacks().ObjectOnInstantiate(instance);
 		}
 
 		private object InstantiateFromReflector(ObjectContainerBase stream)
@@ -1341,7 +1360,13 @@ namespace Db4objects.Db4o.Internal
 			{
 				return i_config.Instantiate(stream, i_fields[0].Read(mf, a_bytes));
 			}
-			catch (Exception e)
+			catch (IOException e)
+			{
+				Db4objects.Db4o.Internal.Messages.LogErr(stream.ConfigImpl(), 6, ClassReflector()
+					.GetName(), e);
+				return null;
+			}
+			catch (CorruptionException e)
 			{
 				Db4objects.Db4o.Internal.Messages.LogErr(stream.ConfigImpl(), 6, ClassReflector()
 					.GetName(), e);
@@ -1669,15 +1694,15 @@ namespace Db4objects.Db4o.Internal
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1408(this, a_candidates
+					Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1428(this, a_candidates
 						, trans));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1408 : IVisitor4
+		private sealed class _AnonymousInnerClass1428 : IVisitor4
 		{
-			public _AnonymousInnerClass1408(ClassMetadata _enclosing, QCandidates a_candidates
+			public _AnonymousInnerClass1428(ClassMetadata _enclosing, QCandidates a_candidates
 				, Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -2060,7 +2085,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Stream();
 			stream.Activate1(trans, sc, 4);
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _AnonymousInnerClass1733
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _AnonymousInnerClass1753
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2069,9 +2094,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1733 : IFunction4
+		private sealed class _AnonymousInnerClass1753 : IFunction4
 		{
-			public _AnonymousInnerClass1733(ClassMetadata _enclosing, StaticField[] existingFields
+			public _AnonymousInnerClass1753(ClassMetadata _enclosing, StaticField[] existingFields
 				, Transaction trans)
 			{
 				this._enclosing = _enclosing;
@@ -2112,12 +2137,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _AnonymousInnerClass1761(this));
+			return Iterators.Map(StaticReflectFields(), new _AnonymousInnerClass1781(this));
 		}
 
-		private sealed class _AnonymousInnerClass1761 : IFunction4
+		private sealed class _AnonymousInnerClass1781 : IFunction4
 		{
-			public _AnonymousInnerClass1761(ClassMetadata _enclosing)
+			public _AnonymousInnerClass1781(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2159,12 +2184,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _AnonymousInnerClass1791(this));
+			return Iterators.Filter(ReflectFields(), new _AnonymousInnerClass1811(this));
 		}
 
-		private sealed class _AnonymousInnerClass1791 : IPredicate4
+		private sealed class _AnonymousInnerClass1811 : IPredicate4
 		{
-			public _AnonymousInnerClass1791(ClassMetadata _enclosing)
+			public _AnonymousInnerClass1811(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

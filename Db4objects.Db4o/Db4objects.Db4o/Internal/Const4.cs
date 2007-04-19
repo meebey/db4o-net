@@ -135,7 +135,7 @@ namespace Db4objects.Db4o.Internal
 
 		public const int CLIENT_SOCKET_TIMEOUT = 300000;
 
-		public const int CLIENT_EMBEDDED_TIMEOUT = 3000;
+		public const int CLIENT_EMBEDDED_TIMEOUT = 300000;
 
 		public const int CONNECTION_TIMEOUT = Debug.longTimeOuts ? 1000000 : 180000;
 

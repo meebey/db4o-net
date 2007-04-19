@@ -17,7 +17,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				, typeof(ObjectCanActiviateExceptionTestCase), typeof(ObjectCanDeleteExceptionTestCase)
 				, typeof(ObjectOnDeleteExceptionTestCase), typeof(ObjectCanNewExceptionTestCase)
 				, typeof(StoreExceptionBubblesUpTestCase), typeof(StoredClassExceptionBubblesUpTestCase)
-				 };
+				, typeof(TSerializableOnInstantiateCNFExceptionTestCase), typeof(TSerializableOnInstantiateIOExceptionTestCase)
+				, typeof(TSerializableOnStoreExceptionTestCase) };
 		}
 	}
 }

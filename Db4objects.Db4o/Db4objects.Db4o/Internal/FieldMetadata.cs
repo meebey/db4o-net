@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class FieldMetadata : IStoredField
 	{
-		private ClassMetadata i_yapClass;
+		private ClassMetadata _clazz;
 
 		private int i_arrayPosition;
 
@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Internal
 
 		public FieldMetadata(ClassMetadata a_yapClass)
 		{
-			i_yapClass = a_yapClass;
+			_clazz = a_yapClass;
 		}
 
 		internal FieldMetadata(ClassMetadata a_yapClass, IObjectTranslator a_translator) : 
@@ -390,7 +390,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			bool isEnumClass = i_yapClass.IsEnum();
+			bool isEnumClass = _clazz.IsEnum();
 			if (i_isPrimitive && !i_isArray)
 			{
 				if (!isEnumClass)
@@ -488,9 +488,9 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object Get(object a_onObject)
 		{
-			if (i_yapClass != null)
+			if (_clazz != null)
 			{
-				ObjectContainerBase stream = i_yapClass.GetStream();
+				ObjectContainerBase stream = _clazz.GetStream();
 				if (stream != null)
 				{
 					lock (stream.i_lock)
@@ -506,9 +506,8 @@ namespace Db4objects.Db4o.Internal
 								if (writer != null)
 								{
 									writer._offset = 0;
-									ObjectHeader oh = new ObjectHeader(stream, i_yapClass, writer);
-									if (oh.ObjectMarshaller().FindOffset(i_yapClass, oh._headerAttributes, writer, this
-										))
+									ObjectHeader oh = new ObjectHeader(stream, _clazz, writer);
+									if (oh.ObjectMarshaller().FindOffset(_clazz, oh._headerAttributes, writer, this))
 									{
 										try
 										{
@@ -580,7 +579,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual ClassMetadata GetParentYapClass()
 		{
-			return i_yapClass;
+			return _clazz;
 		}
 
 		public virtual IReflectClass GetStoredType()
@@ -594,11 +593,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual ObjectContainerBase GetStream()
 		{
-			if (i_yapClass == null)
+			if (_clazz == null)
 			{
 				return null;
 			}
-			return i_yapClass.GetStream();
+			return _clazz.GetStream();
 		}
 
 		public virtual bool HasConfig()
@@ -618,7 +617,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void Init(ClassMetadata a_yapClass, string a_name)
 		{
-			i_yapClass = a_yapClass;
+			_clazz = a_yapClass;
 			i_name = a_name;
 			InitIndex(a_yapClass, a_name);
 		}
@@ -716,7 +715,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			try
 			{
-				IReflectClass claxx = i_yapClass.ClassReflector();
+				IReflectClass claxx = _clazz.ClassReflector();
 				if (claxx == null)
 				{
 					return null;
@@ -727,7 +726,7 @@ namespace Db4objects.Db4o.Internal
 					return null;
 				}
 				i_javaField.SetAccessible();
-				ObjectContainerBase stream = i_yapClass.GetStream();
+				ObjectContainerBase stream = _clazz.GetStream();
 				stream.ShowInternalClasses(true);
 				try
 				{
@@ -752,9 +751,9 @@ namespace Db4objects.Db4o.Internal
 				|| (i_config != null && (i_config.CascadeOnUpdate().DefiniteYes()))))
 			{
 				int min = 1;
-				if (i_yapClass.IsCollection(obj))
+				if (_clazz.IsCollection(obj))
 				{
-					GenericReflector reflector = i_yapClass.Reflector();
+					GenericReflector reflector = _clazz.Reflector();
 					min = reflector.CollectionUpdateDepth(reflector.ForObject(obj));
 				}
 				int updateDepth = writer.GetUpdateDepth();
@@ -796,9 +795,9 @@ namespace Db4objects.Db4o.Internal
 			 a_trans)
 		{
 			int yapClassID = 0;
-			if (i_yapClass != null)
+			if (_clazz != null)
 			{
-				yapClassID = i_yapClass.GetID();
+				yapClassID = _clazz.GetID();
 			}
 			return new Db4objects.Db4o.Internal.Query.Processor.QField(a_trans, i_name, this, 
 				yapClassID, i_arrayPosition);
@@ -843,12 +842,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Rename(string newName)
 		{
-			ObjectContainerBase stream = i_yapClass.GetStream();
+			ObjectContainerBase stream = _clazz.GetStream();
 			if (!stream.IsClient())
 			{
 				i_name = newName;
-				i_yapClass.SetStateDirty();
-				i_yapClass.Write(stream.SystemTransaction());
+				_clazz.SetStateDirty();
+				_clazz.Write(stream.SystemTransaction());
 			}
 			else
 			{
@@ -887,7 +886,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			AssertHasIndex();
-			ObjectContainerBase stream = i_yapClass.GetStream();
+			ObjectContainerBase stream = _clazz.GetStream();
 			if (stream.IsClient())
 			{
 				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.CLIENT_SERVER_UNSUPPORTED
@@ -953,9 +952,9 @@ namespace Db4objects.Db4o.Internal
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
-			if (i_yapClass != null)
+			if (_clazz != null)
 			{
-				sb.Append(i_yapClass.GetName());
+				sb.Append(_clazz.GetName());
 				sb.Append(".");
 				sb.Append(GetName());
 			}
@@ -991,7 +990,7 @@ namespace Db4objects.Db4o.Internal
 			return str;
 		}
 
-		public virtual void InitIndex(Transaction systemTrans)
+		private void InitIndex(Transaction systemTrans)
 		{
 			InitIndex(systemTrans, 0);
 		}
@@ -1128,6 +1127,31 @@ namespace Db4objects.Db4o.Internal
 		public virtual void DefragField(MarshallerFamily mf, ReaderPair readers)
 		{
 			GetHandler().Defrag(mf, readers, true);
+		}
+
+		public virtual void CreateIndex()
+		{
+			if (HasIndex())
+			{
+				return;
+			}
+			LocalObjectContainer container = (LocalObjectContainer)_clazz.GetStream();
+			if (container.ConfigImpl().MessageLevel() > Const4.NONE)
+			{
+				container.Message("creating index " + ToString());
+			}
+			InitIndex(container.SystemTransaction());
+			container.SetDirtyInSystemTransaction(GetParentYapClass());
+			Reindex(container);
+		}
+
+		private void Reindex(LocalObjectContainer container)
+		{
+			ClassMetadata clazz = GetParentYapClass();
+			if (RebuildIndexForClass(container, clazz))
+			{
+				container.SystemTransaction().Commit();
+			}
 		}
 	}
 }

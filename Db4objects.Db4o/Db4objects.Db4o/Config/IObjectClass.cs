@@ -227,6 +227,11 @@ namespace Db4objects.Db4o.Config
 		/// <seealso cref="IObjectClass.CascadeOnActivate">IObjectClass.CascadeOnActivate</seealso>
 		void MinimumActivationDepth(int depth);
 
+		/// <summary>gets the configured minimum activation depth.</summary>
+		/// <remarks>gets the configured minimum activation depth.</remarks>
+		/// <returns>the configured minimum activation depth.</returns>
+		int MinimumActivationDepth();
+
 		/// <summary>
 		/// returns an
 		/// <see cref="IObjectField">ObjectField</see>

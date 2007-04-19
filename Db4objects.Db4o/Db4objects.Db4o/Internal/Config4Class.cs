@@ -229,7 +229,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(MINIMUM_ACTIVATION_DEPTH, depth);
 		}
 
-		internal virtual int MinimumActivationDepth()
+		public virtual int MinimumActivationDepth()
 		{
 			return _config.GetAsInt(MINIMUM_ACTIVATION_DEPTH);
 		}

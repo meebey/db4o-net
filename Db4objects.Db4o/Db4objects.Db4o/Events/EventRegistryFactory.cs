@@ -21,25 +21,25 @@ namespace Db4objects.Db4o.Events
 		/// <see cref="IEventRegistry">IEventRegistry</see>
 		/// for registering events with the specified container.
 		/// </summary>
-		public static IEventRegistry ForObjectContainer(IObjectContainer container)
+		public static IEventRegistry ForObjectContainer(IObjectContainer objectContainer)
 		{
-			if (null == container)
+			if (null == objectContainer)
 			{
-				throw new ArgumentNullException("container");
+				throw new ArgumentNullException();
 			}
-			ObjectContainerBase stream = ((ObjectContainerBase)container);
-			ICallbacks callbacks = stream.Callbacks();
+			ObjectContainerBase container = ((ObjectContainerBase)objectContainer);
+			ICallbacks callbacks = container.Callbacks();
 			if (callbacks is IEventRegistry)
 			{
 				return (IEventRegistry)callbacks;
 			}
 			if (callbacks is NullCallbacks)
 			{
-				EventRegistryImpl impl = new EventRegistryImpl();
-				stream.Callbacks(impl);
+				EventRegistryImpl impl = new EventRegistryImpl(container);
+				container.Callbacks(impl);
 				return impl;
 			}
-			throw new ArgumentException("container callbacks already in use");
+			throw new ArgumentException();
 		}
 	}
 }

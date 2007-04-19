@@ -122,6 +122,16 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return message;
 		}
 
+		public virtual Db4objects.Db4o.Internal.CS.Messages.MsgD GetWriterForSingleObject
+			(Transaction trans, object obj)
+		{
+			SerializedGraph serialized = Serializer.Marshall(trans.Stream(), obj);
+			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = GetWriterForLength(trans, serialized
+				.MarshalledLength());
+			serialized.Write(msg._payLoad);
+			return msg;
+		}
+
 		public Db4objects.Db4o.Internal.CS.Messages.MsgD GetWriterForString(Transaction a_trans
 			, string str)
 		{
@@ -182,6 +192,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			int length = ReadInt();
 			return Const4.stringIO.Read(_payLoad, length);
+		}
+
+		public virtual object ReadSingleObject()
+		{
+			return Serializer.Unmarshall(Stream(), SerializedGraph.Read(_payLoad));
 		}
 
 		public void WriteBytes(byte[] aBytes)

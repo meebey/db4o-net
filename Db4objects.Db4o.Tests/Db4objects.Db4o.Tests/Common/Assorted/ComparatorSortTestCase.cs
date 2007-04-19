@@ -59,9 +59,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		[System.Serializable]
 		public class SmallerThanThreePredicate : Predicate
 		{
-			public virtual bool Match(object candidate)
+			public virtual bool Match(ComparatorSortTestCase.Item candidate)
 			{
-				return ((ComparatorSortTestCase.Item)candidate)._id < 3;
+				return candidate._id < 3;
 			}
 		}
 

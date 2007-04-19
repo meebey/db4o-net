@@ -70,5 +70,11 @@ namespace Db4oUnit.Extensions.Tests
 		{
 			return ((SimpleDb4oTestCase)((TestMethod)suite.GetTests()[0]).GetSubject());
 		}
+
+		public virtual void TestInterfaceIsAvailable()
+		{
+			Assert.IsTrue(typeof(IDb4oTestCase).IsAssignableFrom(typeof(AbstractDb4oTestCase)
+				));
+		}
 	}
 }

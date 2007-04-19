@@ -450,8 +450,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			lock (StreamLock())
 			{
+				if (i_object == null)
+				{
+					return this;
+				}
 				int id = GetObjectID();
-				if (!(id > 0))
+				if (id <= 0)
 				{
 					i_objectID = 0;
 					Exceptions4.ThrowRuntimeException(51);

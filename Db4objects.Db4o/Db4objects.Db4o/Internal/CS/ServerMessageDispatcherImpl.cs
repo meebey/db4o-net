@@ -42,6 +42,10 @@ namespace Db4objects.Db4o.Internal.CS
 
 		internal readonly int i_threadID;
 
+		private CallbackObjectInfoCollections _committedInfo;
+
+		private bool _caresAboutCommitted;
+
 		internal ServerMessageDispatcherImpl(ObjectServerImpl aServer, LocalObjectContainer
 			 aStream, ISocket4 aSocket, int aThreadID, bool loggedIn)
 		{
@@ -189,7 +193,7 @@ namespace Db4objects.Db4o.Internal.CS
 					{
 						break;
 					}
-					if (!i_socket.IsConnected())
+					if (i_socket == null || !i_socket.IsConnected())
 					{
 						break;
 					}
@@ -313,6 +317,17 @@ namespace Db4objects.Db4o.Internal.CS
 			msg.Write(GetStream(), i_socket);
 		}
 
+		public void WriteIfAlive(Msg msg)
+		{
+			lock (this)
+			{
+				if (IsMessageDispatcherAlive())
+				{
+					Write(msg);
+				}
+			}
+		}
+
 		public ISocket4 Socket()
 		{
 			return i_socket;
@@ -342,6 +357,26 @@ namespace Db4objects.Db4o.Internal.CS
 		public void StartDispatcher()
 		{
 			Start();
+		}
+
+		public bool CaresAboutCommitted()
+		{
+			return _caresAboutCommitted;
+		}
+
+		public void CaresAboutCommitted(bool care)
+		{
+			_caresAboutCommitted = true;
+		}
+
+		public CallbackObjectInfoCollections CommittedInfo()
+		{
+			return _committedInfo;
+		}
+
+		public void CommittedInfo(CallbackObjectInfoCollections committedInfo)
+		{
+			_committedInfo = committedInfo;
 		}
 	}
 }

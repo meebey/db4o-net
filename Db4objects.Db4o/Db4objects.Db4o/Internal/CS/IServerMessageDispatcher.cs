@@ -1,4 +1,5 @@
 using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
 
@@ -30,5 +31,15 @@ namespace Db4objects.Db4o.Internal.CS
 		void Login();
 
 		bool Close();
+
+		bool CaresAboutCommitted();
+
+		void CaresAboutCommitted(bool care);
+
+		void WriteIfAlive(Msg msg);
+
+		CallbackObjectInfoCollections CommittedInfo();
+
+		void CommittedInfo(CallbackObjectInfoCollections committedInfo);
 	}
 }

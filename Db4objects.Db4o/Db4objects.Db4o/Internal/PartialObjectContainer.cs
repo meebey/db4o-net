@@ -1037,7 +1037,7 @@ namespace Db4objects.Db4o.Internal
 			return _classCollection.ClassMetadataForReflectClass(claxx);
 		}
 
-		public ClassMetadata ProduceClassMetadata(IReflectClass claxx)
+		public virtual ClassMetadata ProduceClassMetadata(IReflectClass claxx)
 		{
 			if (CantGetClassMetadata(claxx))
 			{
@@ -2376,5 +2376,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			_replicationCallState = state;
 		}
+
+		public abstract void OnCommittedListener();
 	}
 }

@@ -70,6 +70,11 @@ namespace Db4objects.Db4o.Config
 		/// 	</seealso>
 		void ActivationDepth(int depth);
 
+		/// <summary>gets the configured activation depth.</summary>
+		/// <remarks>gets the configured activation depth.</remarks>
+		/// <returns>the configured activation depth.</returns>
+		int ActivationDepth();
+
 		/// <summary>
 		/// adds ConfigurationItems to be applied when
 		/// an ObjectContainer or ObjectServer is opened.

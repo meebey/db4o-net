@@ -8,6 +8,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.CS.Messages;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.CS
@@ -34,6 +35,8 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private BlockingQueue _committedInfosQueue = new BlockingQueue();
 
+		private CommittedCallbacksDispatcher _committedCallbacksDispatcher;
+
 		public ObjectServerImpl(LocalObjectContainer container, int port)
 		{
 			_container = container;
@@ -47,6 +50,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				EnsureLoadStaticClass();
 				EnsureLoadConfiguredClasses();
+				StartCommittedCallbackThread(_committedInfosQueue);
 				StartServer();
 				ok = true;
 			}
@@ -120,12 +124,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void EnsureLoadConfiguredClasses()
 		{
-			_config.ExceptionalClasses().ForEachValue(new _AnonymousInnerClass107(this));
+			_config.ExceptionalClasses().ForEachValue(new _AnonymousInnerClass111(this));
 		}
 
-		private sealed class _AnonymousInnerClass107 : IVisitor4
+		private sealed class _AnonymousInnerClass111 : IVisitor4
 		{
-			public _AnonymousInnerClass107(ObjectServerImpl _enclosing)
+			public _AnonymousInnerClass111(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -166,21 +170,28 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (this)
 			{
 				CloseServerSocket();
-				bool isClosed = CloseFile();
+				StopCommittedCallbacksDispatcher();
 				CloseMessageDispatchers();
-				return isClosed;
+				return CloseFile();
+			}
+		}
+
+		private void StopCommittedCallbacksDispatcher()
+		{
+			if (_committedCallbacksDispatcher != null)
+			{
+				_committedCallbacksDispatcher.Stop();
 			}
 		}
 
 		private bool CloseFile()
 		{
-			if (_container == null)
+			if (_container != null)
 			{
-				return true;
+				_container.Close();
+				_container = null;
 			}
-			bool isClosed = _container.Close();
-			_container = null;
-			return isClosed;
+			return true;
 		}
 
 		private void CloseMessageDispatchers()
@@ -381,13 +392,14 @@ namespace Db4objects.Db4o.Internal.CS
 			SetThreadName();
 			LogListeningOnPort();
 			NotifyThreadStarted();
-			StartPushedUpdatesThread(_committedInfosQueue);
 			Listen();
 		}
 
-		private void StartPushedUpdatesThread(BlockingQueue committedInfosQueue)
+		private void StartCommittedCallbackThread(BlockingQueue committedInfosQueue)
 		{
-			PushedUpdatesThread thread = new PushedUpdatesThread(committedInfosQueue);
+			_committedCallbacksDispatcher = new CommittedCallbacksDispatcher(this, committedInfosQueue
+				);
+			Thread thread = new Thread(_committedCallbacksDispatcher);
 			thread.SetDaemon(true);
 			thread.Start();
 		}
@@ -441,10 +453,22 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		public virtual void CommitOnCompleted(IServerMessageDispatcher dispatcher, CallbackObjectInfoCollections
-			 callbackInfos)
+		public virtual void AddCommittedInfoMsg(MCommittedInfo message)
 		{
-			_committedInfosQueue.Add(callbackInfos);
+			_committedInfosQueue.Add(message);
+		}
+
+		public virtual void SendCommittedInfoMsg(MCommittedInfo message)
+		{
+			IEnumerator i = IterateDispatchers();
+			while (i.MoveNext())
+			{
+				IServerMessageDispatcher dispatcher = (IServerMessageDispatcher)i.Current;
+				if (dispatcher.CaresAboutCommitted())
+				{
+					dispatcher.WriteIfAlive(message);
+				}
+			}
 		}
 	}
 }

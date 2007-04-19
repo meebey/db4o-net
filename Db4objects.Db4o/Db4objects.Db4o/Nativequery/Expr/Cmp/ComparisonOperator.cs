@@ -14,6 +14,8 @@ namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 
 		public const int ENDSWITH_ID = 5;
 
+		public const int IDENTITY_ID = 6;
+
 		public static readonly Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator EQUALS
 			 = new Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator(EQUALS_ID, "==", 
 			true);
@@ -37,6 +39,10 @@ namespace Db4objects.Db4o.Nativequery.Expr.Cmp
 		public static readonly Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator ENDSWITH
 			 = new Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator(ENDSWITH_ID, "<ENDSWITH>"
 			, false);
+
+		public static readonly Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator IDENTITY
+			 = new Db4objects.Db4o.Nativequery.Expr.Cmp.ComparisonOperator(IDENTITY_ID, "==="
+			, true);
 
 		private int _id;
 

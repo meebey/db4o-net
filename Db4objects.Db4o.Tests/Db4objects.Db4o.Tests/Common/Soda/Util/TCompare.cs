@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			for (int i = 0; i < fields.Length; i++)
 			{
 				FieldInfo field = fields[i];
-				if (Db4oUnitPlatform.IsStoreableField(field))
+				if (Db4oUnitPlatform.IsUserField(field))
 				{
 					Platform4.SetAccessible(field);
 					try

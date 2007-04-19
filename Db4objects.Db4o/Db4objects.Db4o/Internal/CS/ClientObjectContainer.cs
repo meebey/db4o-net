@@ -309,7 +309,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (msg is MDb4oException)
 			{
-				throw ((MDb4oException)msg).Exception();
+				throw (Db4oException)((MDb4oException)msg).ReadSingleObject();
 			}
 		}
 
@@ -725,7 +725,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public void Write(Msg msg)
 		{
-			msg.Write(this, i_socket);
+			WriteMsg(msg, true);
 		}
 
 		public void WriteMsg(Msg a_message, bool flush)
@@ -734,7 +734,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				if (flush && _batchedMessages.IsEmpty())
 				{
-					Write(a_message);
+					WriteImpl(a_message);
 				}
 				else
 				{
@@ -747,8 +747,13 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			else
 			{
-				Write(a_message);
+				WriteImpl(a_message);
 			}
+		}
+
+		private void WriteImpl(Msg msg)
+		{
+			msg.Write(this, i_socket);
 		}
 
 		public sealed override void WriteNew(ClassMetadata a_yapClass, StatefulBuffer aWriter
@@ -773,7 +778,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			try
 			{
-				WriteMsg(Msg.PING, true);
+				Write(Msg.PING);
 				return ExpectedResponse(Msg.OK) != null;
 			}
 			catch (Db4oException)
@@ -890,7 +895,7 @@ namespace Db4objects.Db4o.Internal.CS
 					multibytes.PayLoad().Append(msg.PayLoad()._buffer);
 				}
 			}
-			Write(multibytes);
+			WriteImpl(multibytes);
 			ClearBatchedObjects();
 		}
 
@@ -932,6 +937,15 @@ namespace Db4objects.Db4o.Internal.CS
 		public virtual IClientMessageDispatcher MessageDispatcher()
 		{
 			return _singleThreaded ? this : _messageDispatcher;
+		}
+
+		public override void OnCommittedListener()
+		{
+			if (_singleThreaded)
+			{
+				return;
+			}
+			Write(Msg.COMMITTED_CALLBACK_REGISTER);
 		}
 	}
 }

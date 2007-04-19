@@ -30,6 +30,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public static readonly MCommit COMMIT = new MCommit();
 
+		public static readonly MCommittedCallBackRegistry COMMITTED_CALLBACK_REGISTER = new 
+			MCommittedCallBackRegistry();
+
+		public static readonly MCommittedInfo COMMITTED_INFO = new MCommittedInfo();
+
 		public static readonly MCommitSystemTransaction COMMIT_SYSTEMTRANS = new MCommitSystemTransaction
 			();
 
@@ -319,7 +324,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public virtual void WriteException(Db4oException e)
 		{
-			Write(DB4O_EXCEPTION.Clone(Transaction(), e));
+			Write(DB4O_EXCEPTION.GetWriterForSingleObject(Transaction(), e));
 		}
 
 		public virtual void RespondInt(int response)

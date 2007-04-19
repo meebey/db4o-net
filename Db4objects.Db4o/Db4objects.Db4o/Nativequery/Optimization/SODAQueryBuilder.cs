@@ -58,45 +58,42 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 					);
 				expression.Right().Accept(visitor);
 				_constraint = subQuery.Constrain(visitor.Value());
-				if (!expression.Op().Equals(ComparisonOperator.EQUALS))
+				ComparisonOperator op = expression.Op();
+				if (op.Equals(ComparisonOperator.EQUALS))
 				{
-					if (expression.Op().Equals(ComparisonOperator.GREATER))
-					{
-						_constraint.Greater();
-					}
-					else
-					{
-						if (expression.Op().Equals(ComparisonOperator.SMALLER))
-						{
-							_constraint.Smaller();
-						}
-						else
-						{
-							if (expression.Op().Equals(ComparisonOperator.CONTAINS))
-							{
-								_constraint.Contains();
-							}
-							else
-							{
-								if (expression.Op().Equals(ComparisonOperator.STARTSWITH))
-								{
-									_constraint.StartsWith(true);
-								}
-								else
-								{
-									if (expression.Op().Equals(ComparisonOperator.ENDSWITH))
-									{
-										_constraint.EndsWith(true);
-									}
-									else
-									{
-										throw new Exception("Can't handle constraint: " + expression.Op());
-									}
-								}
-							}
-						}
-					}
+					return;
 				}
+				if (op.Equals(ComparisonOperator.IDENTITY))
+				{
+					_constraint.Identity();
+					return;
+				}
+				if (op.Equals(ComparisonOperator.GREATER))
+				{
+					_constraint.Greater();
+					return;
+				}
+				if (op.Equals(ComparisonOperator.SMALLER))
+				{
+					_constraint.Smaller();
+					return;
+				}
+				if (op.Equals(ComparisonOperator.CONTAINS))
+				{
+					_constraint.Contains();
+					return;
+				}
+				if (op.Equals(ComparisonOperator.STARTSWITH))
+				{
+					_constraint.StartsWith(true);
+					return;
+				}
+				if (op.Equals(ComparisonOperator.ENDSWITH))
+				{
+					_constraint.EndsWith(true);
+					return;
+				}
+				throw new Exception("Can't handle constraint: " + op);
 			}
 
 			public virtual void Visit(NotExpression expression)

@@ -7,13 +7,14 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class CallbackObjectInfoCollections
 	{
-		public readonly IObjectInfoCollection added;
+		public IObjectInfoCollection added;
 
-		public readonly IObjectInfoCollection updated;
+		public IObjectInfoCollection updated;
 
-		public readonly IObjectInfoCollection deleted;
+		public IObjectInfoCollection deleted;
 
-		public readonly IServerMessageDispatcher serverMessageDispatcher;
+		[System.NonSerialized]
+		public IServerMessageDispatcher serverMessageDispatcher;
 
 		public static readonly Db4objects.Db4o.Internal.CallbackObjectInfoCollections EMTPY
 			 = Empty();

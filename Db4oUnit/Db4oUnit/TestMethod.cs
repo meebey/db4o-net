@@ -8,38 +8,33 @@ namespace Db4oUnit
 	/// <remarks>Reflection based db4ounit.Test implementation.</remarks>
 	public class TestMethod : ITest
 	{
-		public interface ILabelProvider
+		private sealed class _AnonymousInnerClass11 : ILabelProvider
 		{
-			string GetLabel(TestMethod method);
-		}
-
-		private sealed class _AnonymousInnerClass15 : TestMethod.ILabelProvider
-		{
-			public _AnonymousInnerClass15()
+			public _AnonymousInnerClass11()
 			{
 			}
 
-			public string GetLabel(TestMethod method)
+			public string GetLabel(Db4oUnit.TestMethod method)
 			{
 				return method.GetSubject().GetType().FullName + "." + method.GetMethod().Name;
 			}
 		}
 
-		public static TestMethod.ILabelProvider DEFAULT_LABEL_PROVIDER = new _AnonymousInnerClass15
-			();
+		public static ILabelProvider DEFAULT_LABEL_PROVIDER = new _AnonymousInnerClass11(
+			);
 
 		private readonly object _subject;
 
 		private readonly MethodInfo _method;
 
-		private readonly TestMethod.ILabelProvider _labelProvider;
+		private readonly ILabelProvider _labelProvider;
 
 		public TestMethod(object instance, MethodInfo method) : this(instance, method, DEFAULT_LABEL_PROVIDER
 			)
 		{
 		}
 
-		public TestMethod(object instance, MethodInfo method, TestMethod.ILabelProvider labelProvider
+		public TestMethod(object instance, MethodInfo method, ILabelProvider labelProvider
 			)
 		{
 			if (null == instance)

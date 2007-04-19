@@ -15,6 +15,7 @@ namespace Db4oUnit
 		{
 			Exception e = GetThrowable(block);
 			AssertThrowable(exception, e);
+			AssertThrowable(cause, e.InnerException);
 		}
 
 		private static void AssertThrowable(Type exception, Exception e)

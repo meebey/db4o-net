@@ -40,10 +40,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			ResetConfig();
 		}
 
-		public virtual bool Accept(Type clazz)
-		{
-			return true;
-		}
+		public abstract bool Accept(Type clazz);
 
 		protected abstract void DoClean();
 

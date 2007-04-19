@@ -25,6 +25,8 @@ namespace Db4objects.Db4o.Internal.Callbacks
 
 		void ObjectOnDeactivate(object obj);
 
+		void ObjectOnInstantiate(object obj);
+
 		void QueryOnStarted(IQuery query);
 
 		void QueryOnFinished(IQuery query);
@@ -32,6 +34,8 @@ namespace Db4objects.Db4o.Internal.Callbacks
 		bool CaresAboutCommitting();
 
 		bool CaresAboutCommitted();
+
+		void ClassOnRegistered(ClassMetadata clazz);
 
 		void CommitOnStarted(object transaction, CallbackObjectInfoCollections objectInfoCollections
 			);

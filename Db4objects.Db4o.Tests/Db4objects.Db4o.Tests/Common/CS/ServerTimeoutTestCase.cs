@@ -1,6 +1,5 @@
 using System.Collections;
 using Db4oUnit;
-using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.CS;
@@ -25,9 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public virtual void _test()
 		{
-			AbstractClientServerDb4oFixture fixture = (AbstractClientServerDb4oFixture)Fixture
-				();
-			ObjectServerImpl serverImpl = (ObjectServerImpl)fixture.Server();
+			ObjectServerImpl serverImpl = (ObjectServerImpl)ClientServerFixture().Server();
 			IEnumerator iter = serverImpl.IterateDispatchers();
 			iter.MoveNext();
 			IServerMessageDispatcher serverDispatcher = (IServerMessageDispatcher)iter.Current;

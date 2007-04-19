@@ -22,11 +22,11 @@ namespace Db4objects.Db4o.Internal
 			MemoryFile memoryFile = new MemoryFile();
 			memoryFile.SetInitialSize(223);
 			memoryFile.SetIncrementSizeBy(300);
-			serviceProvider.ProduceClassMetadata(serviceProvider.Reflector().ForObject(obj));
 			try
 			{
 				TransportObjectContainer carrier = new TransportObjectContainer(serviceProvider, 
 					memoryFile);
+				carrier.ProduceClassMetadata(carrier.Reflector().ForObject(obj));
 				carrier.Set(obj);
 				int id = (int)carrier.GetID(obj);
 				carrier.Close();

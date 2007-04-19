@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Config
 		/// Implement this interface to to apply a configuration item
 		/// to an ObjectContainerBase after it is opened.
 		/// </remarks>
-		/// <param name="objectContainer">the ObjectContainerBase</param>
-		void Apply(ObjectContainerBase objectContainer);
+		/// <param name="container">the ObjectContainerBase</param>
+		void Apply(ObjectContainerBase container);
 	}
 }
