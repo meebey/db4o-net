@@ -49,7 +49,9 @@ namespace Sharpen
 	        ((Array)array).SetValue(value, index);
 	    }
 
-		private const BindingFlags DeclaredMembers = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+        private const BindingFlags AllMembers = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
+        private const BindingFlags DeclaredMembers = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
         private const BindingFlags DeclaredMembersIncludingStatic = DeclaredMembers | BindingFlags.Static;
 		
@@ -67,6 +69,11 @@ namespace Sharpen
 		{
 			return type.GetMethod(name, DeclaredMembers, null, parameterTypes, null);
 		}
+
+        public static MethodInfo GetMethod(Type type, string name, Type[] parameterTypes)
+        {
+            return type.GetMethod(name, AllMembers, null, parameterTypes, null);
+        }
 
 		public static Type[] GetParameterTypes(MethodBase method)
 		{

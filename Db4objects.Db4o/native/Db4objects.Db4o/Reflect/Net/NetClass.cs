@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 			try
 			{
-				System.Reflection.MethodInfo method = Sharpen.Runtime.GetDeclaredMethod(_type, methodName, Db4objects.Db4o.Reflect.Net.NetReflector
+                System.Reflection.MethodInfo method = Sharpen.Runtime.GetMethod(_type, methodName, Db4objects.Db4o.Reflect.Net.NetReflector
 					.ToNative(paramClasses));
 				if (method == null)
 				{
