@@ -6,7 +6,7 @@ using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
-	internal class ReflectPlatform
+	public class ReflectPlatform
 	{
 		public static Type ForName(string typeName)
 		{
