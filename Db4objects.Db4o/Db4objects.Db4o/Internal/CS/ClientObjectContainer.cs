@@ -133,7 +133,7 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			try
 			{
-				WriteMsg(Msg.CLOSE, true);
+				Write(Msg.CLOSE);
 			}
 			catch (Exception e)
 			{
@@ -173,7 +173,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		internal virtual ISocket4 CreateParalellSocket()
 		{
-			WriteMsg(Msg.GET_THREAD_ID, true);
+			Write(Msg.GET_THREAD_ID);
 			int serverThreadID = ExpectedByteResponse(Msg.ID_LIST).ReadInt();
 			ISocket4 sock = i_socket.OpenParalellSocket();
 			if (!(i_socket is LoopbackSocket))
@@ -208,8 +208,8 @@ namespace Db4objects.Db4o.Internal.CS
 		public override bool CreateClassMetadata(ClassMetadata a_yapClass, IReflectClass 
 			a_class, ClassMetadata a_superYapClass)
 		{
-			WriteMsg(Msg.CREATE_CLASS.GetWriterForString(SystemTransaction(), a_class.GetName
-				()), true);
+			Write(Msg.CREATE_CLASS.GetWriterForString(SystemTransaction(), a_class.GetName())
+				);
 			Msg resp = GetResponse();
 			if (resp == null)
 			{
@@ -253,13 +253,13 @@ namespace Db4objects.Db4o.Internal.CS
 		private void SendClassMeta(IReflectClass reflectClass)
 		{
 			ClassInfo classMeta = _classMetaHelper.GetClassMeta(reflectClass);
-			WriteMsg(Msg.CLASS_META.GetWriter(Serializer.Marshall(SystemTransaction(), classMeta
-				)), true);
+			Write(Msg.CLASS_META.GetWriter(Serializer.Marshall(SystemTransaction(), classMeta
+				)));
 		}
 
 		public override long CurrentVersion()
 		{
-			WriteMsg(Msg.CURRENT_VERSION, true);
+			Write(Msg.CURRENT_VERSION);
 			return ((MsgD)ExpectedResponse(Msg.ID_LIST)).ReadLong();
 		}
 
@@ -268,7 +268,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			MsgD msg = Msg.DELETE.GetWriterForInts(i_trans, new int[] { yo.GetID(), userCall ? 
 				1 : 0 });
-			WriteMsg(msg, false);
+			WriteBatchedMessage(msg);
 			return true;
 		}
 
@@ -317,7 +317,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			int mode = Config().QueryEvaluationMode().AsInt();
 			MsgD msg = Msg.GET_ALL.GetWriterForInt(trans, mode);
-			WriteMsg(msg, true);
+			Write(msg);
 			return ReadQueryResult(trans);
 		}
 
@@ -389,7 +389,7 @@ namespace Db4objects.Db4o.Internal.CS
 				return yc;
 			}
 			MsgD msg = Msg.CLASS_NAME_FOR_ID.GetWriterForInt(SystemTransaction(), a_id);
-			WriteMsg(msg, true);
+			Write(msg);
 			MsgD message = (MsgD)ExpectedResponse(Msg.CLASS_NAME_FOR_ID);
 			string className = message.ReadString();
 			if (className != null && className.Length > 0)
@@ -417,7 +417,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (i_db == null)
 			{
-				WriteMsg(Msg.IDENTITY, true);
+				Write(Msg.IDENTITY);
 				Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.ID_LIST);
 				ShowInternalClasses(true);
 				try
@@ -480,7 +480,7 @@ namespace Db4objects.Db4o.Internal.CS
 			if (remainingIDs < 1)
 			{
 				MsgD msg = Msg.PREFETCH_IDS.GetWriterForInt(i_trans, prefetchIDCount);
-				WriteMsg(msg, true);
+				Write(msg);
 				reader = ExpectedByteResponse(Msg.ID_LIST);
 				for (int i = prefetchIDCount - 1; i >= 0; i--)
 				{
@@ -511,7 +511,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override void RaiseVersion(long a_minimumVersion)
 		{
-			WriteMsg(Msg.RAISE_VERSION.GetWriterForLong(i_trans, a_minimumVersion), true);
+			Write(Msg.RAISE_VERSION.GetWriterForLong(i_trans, a_minimumVersion));
 		}
 
 		public override void ReadBytes(byte[] bytes, int address, int addressOffset, int 
@@ -524,7 +524,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			MsgD msg = Msg.READ_BYTES.GetWriterForInts(i_trans, new int[] { a_address, a_length
 				 });
-			WriteMsg(msg, true);
+			Write(msg);
 			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.READ_BYTES);
 			System.Array.Copy(reader._buffer, 0, a_bytes, 0, a_length);
 		}
@@ -538,10 +538,13 @@ namespace Db4objects.Db4o.Internal.CS
 		public sealed override StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id)
 		{
 			MsgD msg = Msg.READ_OBJECT.GetWriterForInt(a_ta, a_id);
-			WriteMsg(msg, true);
+			Write(msg);
 			StatefulBuffer bytes = ((MsgObject)ExpectedResponse(Msg.OBJECT_TO_CLIENT)).Unmarshall
 				();
-			bytes.SetTransaction(a_ta);
+			if (bytes != null)
+			{
+				bytes.SetTransaction(a_ta);
+			}
 			return bytes;
 		}
 
@@ -551,14 +554,14 @@ namespace Db4objects.Db4o.Internal.CS
 			try
 			{
 				MsgD msg = Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(a_ta, ids, ids.Length);
-				WriteMsg(msg, true);
+				Write(msg);
 				MsgD response = (MsgD)ExpectedResponse(Msg.READ_MULTIPLE_OBJECTS);
 				int count = response.ReadInt();
 				StatefulBuffer[] yapWriters = new StatefulBuffer[count];
 				for (int i = 0; i < count; i++)
 				{
 					MsgObject mso = (MsgObject)Msg.OBJECT_TO_CLIENT.PublicClone();
-					mso.SetTransaction(GetTransaction());
+					mso.SetTransaction(a_ta);
 					mso.PayLoad(response.PayLoad().ReadYapBytes());
 					if (mso.PayLoad() != null)
 					{
@@ -600,7 +603,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		internal virtual void ReadThis()
 		{
-			WriteMsg(Msg.GET_CLASSES.GetWriter(SystemTransaction()), true);
+			Write(Msg.GET_CLASSES.GetWriter(SystemTransaction()));
 			Db4objects.Db4o.Internal.Buffer bytes = ExpectedByteResponse(Msg.GET_CLASSES);
 			ClassCollection().SetID(bytes.ReadInt());
 			CreateStringIO(bytes.ReadByte());
@@ -617,7 +620,7 @@ namespace Db4objects.Db4o.Internal.CS
 				{
 					throw new ArgumentNullException();
 				}
-				WriteMsg(Msg.RELEASE_SEMAPHORE.GetWriterForString(i_trans, name), true);
+				Write(Msg.RELEASE_SEMAPHORE.GetWriterForString(i_trans, name));
 			}
 		}
 
@@ -639,7 +642,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				ClearBatchedObjects();
 			}
-			WriteMsg(Msg.ROLLBACK, true);
+			Write(Msg.ROLLBACK);
 			i_trans.Rollback();
 		}
 
@@ -649,7 +652,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				if (obj != null)
 				{
-					WriteMsg(Msg.USER_MESSAGE.GetWriter(Serializer.Marshall(i_trans, obj)), true);
+					Write(Msg.USER_MESSAGE.GetWriter(Serializer.Marshall(i_trans, obj)));
 				}
 			}
 		}
@@ -668,7 +671,7 @@ namespace Db4objects.Db4o.Internal.CS
 					throw new ArgumentNullException();
 				}
 				MsgD msg = Msg.SET_SEMAPHORE.GetWriterForIntString(i_trans, timeout, name);
-				WriteMsg(msg, true);
+				Write(msg);
 				Msg message = GetResponse();
 				return (message.Equals(Msg.SUCCESS));
 			}
@@ -680,7 +683,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				Commit();
 				MsgD msg = Msg.SWITCH_TO_FILE.GetWriterForString(i_trans, fileName);
-				WriteMsg(msg, true);
+				Write(msg);
 				ExpectedResponse(Msg.OK);
 				ReReadAll(Db4oFactory.CloneConfiguration());
 				switchedToFile = fileName;
@@ -692,7 +695,7 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (i_lock)
 			{
 				Commit();
-				WriteMsg(Msg.SWITCH_TO_MAIN_FILE, true);
+				Write(Msg.SWITCH_TO_MAIN_FILE);
 				ExpectedResponse(Msg.OK);
 				ReReadAll(Db4oFactory.CloneConfiguration());
 				switchedToFile = null;
@@ -728,7 +731,12 @@ namespace Db4objects.Db4o.Internal.CS
 			WriteMsg(msg, true);
 		}
 
-		public void WriteMsg(Msg a_message, bool flush)
+		public void WriteBatchedMessage(Msg msg)
+		{
+			WriteMsg(msg, false);
+		}
+
+		private void WriteMsg(Msg a_message, bool flush)
 		{
 			if (i_config.BatchMessages())
 			{
@@ -760,7 +768,7 @@ namespace Db4objects.Db4o.Internal.CS
 			)
 		{
 			MsgD msg = Msg.WRITE_NEW.GetWriter(a_yapClass, aWriter);
-			WriteMsg(msg, false);
+			WriteBatchedMessage(msg);
 		}
 
 		public sealed override void WriteTransactionPointer(int a_address)
@@ -771,7 +779,7 @@ namespace Db4objects.Db4o.Internal.CS
 			a_bytes)
 		{
 			MsgD msg = Msg.WRITE_UPDATE.GetWriter(a_yapClass, a_bytes);
-			WriteMsg(msg, false);
+			WriteBatchedMessage(msg);
 		}
 
 		public virtual bool IsAlive()
@@ -838,7 +846,7 @@ namespace Db4objects.Db4o.Internal.CS
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			MsgD msg = Msg.GET_INTERNAL_IDS.GetWriterForInt(trans, clazz.GetID());
-			WriteMsg(msg, true);
+			Write(msg);
 			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.ID_LIST);
 			int size = reader.ReadInt();
 			long[] ids = new long[size];
@@ -867,7 +875,7 @@ namespace Db4objects.Db4o.Internal.CS
 			query.EvaluationMode(Config().QueryEvaluationMode());
 			query.Marshall();
 			MsgD msg = Msg.QUERY_EXECUTE.GetWriter(Serializer.Marshall(trans, query));
-			WriteMsg(msg, true);
+			Write(msg);
 			return ReadQueryResult(trans);
 		}
 

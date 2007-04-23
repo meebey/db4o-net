@@ -1,4 +1,7 @@
 using System;
+using Db4objects.Db4o.Tests.Common.Assorted;
+using Db4objects.Db4o.Tests.Common.Events;
+using Db4objects.Db4o.Tests.Common.Exceptions;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests

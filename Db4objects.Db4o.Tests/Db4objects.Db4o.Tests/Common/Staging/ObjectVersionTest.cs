@@ -4,7 +4,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Assorted;
 
-namespace Db4objects.Db4o.Tests.Common.Assorted
+namespace Db4objects.Db4o.Tests.Common.Staging
 {
 	public class ObjectVersionTest : AbstractDb4oTestCase
 	{

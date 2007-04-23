@@ -1169,7 +1169,7 @@ namespace Db4objects.Db4o.Internal
 		internal bool Init(ObjectContainerBase a_stream, ClassMetadata a_ancestor, IReflectClass
 			 claxx)
 		{
-			i_ancestor = a_ancestor;
+			SetAncestor(a_ancestor);
 			Config4Impl config = a_stream.ConfigImpl();
 			string className = claxx.GetName();
 			SetConfig(config.ConfigClass(className));
@@ -2461,6 +2461,15 @@ namespace Db4objects.Db4o.Internal
 		public void DefragIndexEntry(ReaderPair readers)
 		{
 			readers.CopyID();
+		}
+
+		public virtual void SetAncestor(ClassMetadata ancestor)
+		{
+			if (ancestor == this)
+			{
+				throw new InvalidOperationException();
+			}
+			i_ancestor = ancestor;
 		}
 	}
 }

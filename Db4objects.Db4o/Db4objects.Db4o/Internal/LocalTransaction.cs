@@ -665,12 +665,17 @@ namespace Db4objects.Db4o.Internal
 				{
 					obj = info._reference.GetObject();
 				}
-				if (obj == null)
+				if (obj == null || info._reference.GetID() < 0)
 				{
 					HardObjectReference hardRef = this._enclosing.Stream().GetHardObjectReferenceById
 						(this._enclosing, info._key);
+					if (hardRef == HardObjectReference.INVALID)
+					{
+						return;
+					}
 					info._reference = hardRef._reference;
 					info._reference.FlagForDelete(this._enclosing.Stream().TopLevelCallId());
+					obj = info._reference.GetObject();
 				}
 				this._enclosing.Stream().Delete3(this._enclosing, info._reference, info._cascade, 
 					false);
@@ -733,15 +738,15 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			_slotChanges.Traverse(new _AnonymousInnerClass678(this, deleted, added, updated));
+			_slotChanges.Traverse(new _AnonymousInnerClass682(this, deleted, added, updated));
 			return new CallbackObjectInfoCollections(serverMessageDispatcher, new ObjectInfoCollectionImpl
 				(added), new ObjectInfoCollectionImpl(updated), new ObjectInfoCollectionImpl(deleted
 				));
 		}
 
-		private sealed class _AnonymousInnerClass678 : IVisitor4
+		private sealed class _AnonymousInnerClass682 : IVisitor4
 		{
-			public _AnonymousInnerClass678(LocalTransaction _enclosing, Collection4 deleted, 
+			public _AnonymousInnerClass682(LocalTransaction _enclosing, Collection4 deleted, 
 				Collection4 added, Collection4 updated)
 			{
 				this._enclosing = _enclosing;

@@ -23,17 +23,26 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object GetObject()
 		{
-			return Reference().GetObject();
+			lock (ContainerLock())
+			{
+				return Reference().GetObject();
+			}
 		}
 
 		public virtual Db4oUUID GetUUID()
 		{
-			return Reference().GetUUID();
+			lock (ContainerLock())
+			{
+				return Reference().GetUUID();
+			}
 		}
 
 		public virtual long GetVersion()
 		{
-			return Reference().GetVersion();
+			lock (ContainerLock())
+			{
+				return Reference().GetVersion();
+			}
 		}
 
 		private ObjectReference Reference()
@@ -41,6 +50,12 @@ namespace Db4objects.Db4o.Internal
 			HardObjectReference hardRef = _transaction.Stream().GetHardObjectReferenceById(_transaction
 				, _id);
 			return hardRef._reference;
+		}
+
+		private object ContainerLock()
+		{
+			_transaction.Stream().CheckClosed();
+			return _transaction.Stream().Lock();
 		}
 	}
 }

@@ -28,8 +28,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			_fileLock = new object();
 			_fileName = fileName;
-			Open();
 			_freespaceFiller = CreateFreespaceFiller();
+			Open();
 		}
 
 		protected sealed override void OpenImpl()

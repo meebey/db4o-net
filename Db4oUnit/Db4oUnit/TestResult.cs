@@ -44,7 +44,7 @@ namespace Db4oUnit
 			}
 			else
 			{
-				Print("\t! " + failure.Message);
+				Print("\t! " + failure);
 			}
 		}
 

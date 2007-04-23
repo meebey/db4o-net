@@ -37,6 +37,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			Msg.COMMITTED_INFO.SetTransaction(serverTransaction);
 			MCommittedInfo message = Msg.COMMITTED_INFO.Encode(committedInfo);
+			message.SetMessageDispatcher(ServerMessageDispatcher());
 			ServerMessageDispatcher().Server().AddCommittedInfoMsg(message);
 		}
 	}

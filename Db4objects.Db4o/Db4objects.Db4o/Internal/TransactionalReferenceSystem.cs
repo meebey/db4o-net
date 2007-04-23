@@ -51,7 +51,12 @@ namespace Db4objects.Db4o.Internal
 
 			public void Visit(object obj)
 			{
-				this._enclosing._committedReferences.AddExistingReference((ObjectReference)obj);
+				ObjectReference oref = (ObjectReference)obj;
+				object referent = oref.GetObject();
+				if (referent != null)
+				{
+					this._enclosing._committedReferences.AddExistingReference(oref);
+				}
 			}
 
 			private readonly TransactionalReferenceSystem _enclosing;

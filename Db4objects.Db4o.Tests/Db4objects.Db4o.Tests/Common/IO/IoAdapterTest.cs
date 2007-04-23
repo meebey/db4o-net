@@ -1,11 +1,11 @@
-using System;
 using System.IO;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.Tests.Common.IO
 {
-	public class IoAdapterTest : ITestCase, ITestLifeCycle
+	public class IoAdapterTest : IDb4oTestCase
 	{
 		private string _cachedIoAdapterFile = "CachedIoAdapter.dat";
 
@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			Assert.AreEqual(str, Sharpen.Runtime.GetStringForBytes(read, 0, data.Length));
 		}
 
-		public virtual void TestReadWriteAheadFileEnd()
+		public virtual void _testReadWriteAheadFileEnd()
 		{
 			string str = "this is a really long string, just to make sure that all IoAdapters work correctly. ";
 			for (int i = 0; i < _adapters.Length; i++)
@@ -128,71 +128,6 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			adapter.Seek(0);
 			readBytes = adapter.Read(read);
 			Assert.AreEqual(1200 + data.Length, readBytes);
-		}
-
-		public virtual void TestReadWriteTooMuch()
-		{
-			for (int i = 0; i < _adapters.Length; i++)
-			{
-				AssertReadWriteTooMuch(_adapters[i]);
-			}
-		}
-
-		private void AssertReadWriteTooMuch(IoAdapter adapter)
-		{
-			byte[] data = Sharpen.Runtime.GetBytesForString("hello");
-			byte[] buffer = new byte[1];
-			adapter.Seek(0);
-			adapter.Write(data);
-			adapter.Seek(0);
-			Assert.Expect(typeof(Exception), new _AnonymousInnerClass143(this, adapter, buffer
-				));
-			Assert.Expect(typeof(Exception), new _AnonymousInnerClass148(this, adapter, buffer
-				));
-		}
-
-		private sealed class _AnonymousInnerClass143 : ICodeBlock
-		{
-			public _AnonymousInnerClass143(IoAdapterTest _enclosing, IoAdapter adapter, byte[]
-				 buffer)
-			{
-				this._enclosing = _enclosing;
-				this.adapter = adapter;
-				this.buffer = buffer;
-			}
-
-			public void Run()
-			{
-				adapter.Read(buffer, buffer.Length + 1);
-			}
-
-			private readonly IoAdapterTest _enclosing;
-
-			private readonly IoAdapter adapter;
-
-			private readonly byte[] buffer;
-		}
-
-		private sealed class _AnonymousInnerClass148 : ICodeBlock
-		{
-			public _AnonymousInnerClass148(IoAdapterTest _enclosing, IoAdapter adapter, byte[]
-				 buffer)
-			{
-				this._enclosing = _enclosing;
-				this.adapter = adapter;
-				this.buffer = buffer;
-			}
-
-			public void Run()
-			{
-				adapter.Write(buffer, buffer.Length + 1);
-			}
-
-			private readonly IoAdapterTest _enclosing;
-
-			private readonly IoAdapter adapter;
-
-			private readonly byte[] buffer;
 		}
 
 		public virtual void TestReopen()

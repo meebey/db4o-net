@@ -3,6 +3,7 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Stored;
+using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Stored
 {
@@ -48,17 +49,8 @@ namespace Db4objects.Db4o.Tests.Common.Stored
 		private void AssertStoredType(IStoredClass clazz, string fieldName, Type type)
 		{
 			IStoredField field = clazz.StoredField(fieldName, null);
-			Assert.AreEqual(type.FullName, SimpleName(field.GetStoredType().GetName()));
-		}
-
-		private string SimpleName(string name)
-		{
-			int index = name.IndexOf(',');
-			if (index < 0)
-			{
-				return name;
-			}
-			return Sharpen.Runtime.Substring(name, 0, index);
+			Assert.AreEqual(type.FullName, CrossPlatformServices.SimpleName(field.GetStoredType
+				().GetName()));
 		}
 	}
 }

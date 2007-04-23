@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					{
 						stream.Delete1(Transaction(), obj, userCall);
 					}
-					catch (Exception)
+					catch (Exception e)
 					{
 					}
 				}

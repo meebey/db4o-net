@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				MsgD msg = Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(container.GetTransaction
 					(), idsToGet, toGet);
-				container.WriteMsg(msg, true);
+				container.Write(msg);
 				MsgD response = (MsgD)container.ExpectedResponse(Msg.READ_MULTIPLE_OBJECTS);
 				int embeddedMessageCount = response.ReadInt();
 				for (int i = 0; i < embeddedMessageCount; i++)

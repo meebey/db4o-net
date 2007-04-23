@@ -23,11 +23,11 @@ namespace Db4objects.Db4o.Internal.CS
 			ClearAll();
 			if (IsSystemTransaction())
 			{
-				i_client.WriteMsg(Msg.COMMIT_SYSTEMTRANS, true);
+				i_client.Write(Msg.COMMIT_SYSTEMTRANS);
 			}
 			else
 			{
-				i_client.WriteMsg(Msg.COMMIT, true);
+				i_client.Write(Msg.COMMIT);
 				i_client.ExpectedResponse(Msg.OK);
 			}
 		}
@@ -69,14 +69,14 @@ namespace Db4objects.Db4o.Internal.CS
 				return false;
 			}
 			MsgD msg = Msg.TA_DELETE.GetWriterForInts(this, new int[] { id, cascade });
-			i_client.WriteMsg(msg, false);
+			i_client.WriteBatchedMessage(msg);
 			return true;
 		}
 
 		public override bool IsDeleted(int a_id)
 		{
 			MsgD msg = Msg.TA_IS_DELETED.GetWriterForInt(this, a_id);
-			i_client.WriteMsg(msg, true);
+			i_client.Write(msg);
 			int res = i_client.ExpectedByteResponse(Msg.TA_IS_DELETED).ReadInt();
 			return res == 1;
 		}
@@ -105,7 +105,7 @@ namespace Db4objects.Db4o.Internal.CS
 				i_delete.Traverse(new _AnonymousInnerClass86(this));
 			}
 			i_delete = null;
-			i_client.WriteMsg(Msg.PROCESS_DELETES, false);
+			i_client.WriteBatchedMessage(Msg.PROCESS_DELETES);
 		}
 
 		private sealed class _AnonymousInnerClass86 : IVisitor4
@@ -140,7 +140,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			MsgD msg = Msg.WRITE_UPDATE_DELETE_MEMBERS.GetWriterForInts(this, new int[] { a_id
 				, a_yc.GetID(), a_type, a_cascade });
-			i_client.WriteMsg(msg, false);
+			i_client.WriteBatchedMessage(msg);
 		}
 
 		public override void SetPointer(int a_id, int a_address, int a_length)

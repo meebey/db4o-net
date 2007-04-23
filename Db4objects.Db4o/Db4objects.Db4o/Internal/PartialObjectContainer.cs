@@ -512,11 +512,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Delete(object a_object)
 		{
-			lock (i_lock)
-			{
-				GenerateCallIDOnTopLevel();
-				Delete(null, a_object);
-			}
+			Delete(null, a_object);
 		}
 
 		public virtual void Delete(Transaction trans, object obj)
@@ -543,6 +539,10 @@ namespace Db4objects.Db4o.Internal
 			if (@ref == null)
 			{
 				return;
+			}
+			if (userCall)
+			{
+				GenerateCallIDOnTopLevel();
 			}
 			try
 			{
@@ -653,7 +653,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			ClassMetadata yc = yo.GetYapClass();
 			FieldMetadata[] field = new FieldMetadata[] { null };
-			yc.ForEachFieldMetadata(new _AnonymousInnerClass618(this, fieldName, field));
+			yc.ForEachFieldMetadata(new _AnonymousInnerClass617(this, fieldName, field));
 			if (field[0] == null)
 			{
 				return null;
@@ -698,9 +698,9 @@ namespace Db4objects.Db4o.Internal
 			return Descend1(trans, child, subPath);
 		}
 
-		private sealed class _AnonymousInnerClass618 : IVisitor4
+		private sealed class _AnonymousInnerClass617 : IVisitor4
 		{
-			public _AnonymousInnerClass618(PartialObjectContainer _enclosing, string fieldName
+			public _AnonymousInnerClass617(PartialObjectContainer _enclosing, string fieldName
 				, FieldMetadata[] field)
 			{
 				this._enclosing = _enclosing;

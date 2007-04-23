@@ -15,16 +15,18 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				int messageId = writer.ReadInt();
 				Msg message = Msg.GetMessage(messageId);
 				Msg clonedMessage = message.PublicClone();
+				clonedMessage.SetMessageDispatcher(MessageDispatcher());
 				clonedMessage.SetTransaction(ta);
 				if (clonedMessage is MsgD)
 				{
-					MsgD mso = (MsgD)clonedMessage;
-					mso.PayLoad(writer);
-					if (mso.PayLoad() != null)
+					MsgD msgd = (MsgD)clonedMessage;
+					msgd.PayLoad(writer);
+					if (msgd.PayLoad() != null)
 					{
-						mso.PayLoad().IncrementOffset(Const4.MESSAGE_LENGTH - Const4.INT_LENGTH);
-						mso.PayLoad().SetTransaction(ta);
-						((IServerSideMessage)mso).ProcessAtServer();
+						msgd.PayLoad().IncrementOffset(Const4.INT_LENGTH);
+						Transaction t = CheckParentTransaction(ta, msgd.PayLoad());
+						msgd.SetTransaction(t);
+						((IServerSideMessage)msgd).ProcessAtServer();
 					}
 				}
 				else

@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				{
 					Transaction().ProcessDeletes();
 				}
-				catch (Db4oException)
+				catch (Db4oException e)
 				{
 				}
 			}

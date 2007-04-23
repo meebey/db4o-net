@@ -5,6 +5,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS.Messages;
 using Sharpen.IO;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
@@ -99,8 +100,28 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public virtual bool ProcessAtClient()
 		{
 			CallbackObjectInfoCollections callbackInfos = Decode();
-			Stream().Callbacks().CommitOnCompleted(Transaction(), callbackInfos);
+			new Thread(new _AnonymousInnerClass88(this, callbackInfos)).Start();
 			return true;
+		}
+
+		private sealed class _AnonymousInnerClass88 : IRunnable
+		{
+			public _AnonymousInnerClass88(MCommittedInfo _enclosing, CallbackObjectInfoCollections
+				 callbackInfos)
+			{
+				this._enclosing = _enclosing;
+				this.callbackInfos = callbackInfos;
+			}
+
+			public void Run()
+			{
+				this._enclosing.Stream().Callbacks().CommitOnCompleted(this._enclosing.Transaction
+					(), callbackInfos);
+			}
+
+			private readonly MCommittedInfo _enclosing;
+
+			private readonly CallbackObjectInfoCollections callbackInfos;
 		}
 	}
 }
