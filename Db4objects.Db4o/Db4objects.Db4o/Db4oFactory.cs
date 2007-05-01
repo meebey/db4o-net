@@ -181,8 +181,15 @@ namespace Db4objects.Db4o
 		public static IObjectContainer OpenClient(IConfiguration config, string hostName, 
 			int port, string user, string password)
 		{
-			return new ClientObjectContainer(config, new NetworkSocket(hostName, port), user, 
-				password, true);
+			try
+			{
+				NetworkSocket networkSocket = new NetworkSocket(hostName, port);
+				return new ClientObjectContainer(config, networkSocket, user, password, true);
+			}
+			catch (IOException e)
+			{
+				throw new OpenDatabaseException(e);
+			}
 		}
 
 		/// <summary>

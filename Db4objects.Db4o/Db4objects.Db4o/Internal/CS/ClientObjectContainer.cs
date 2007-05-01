@@ -106,6 +106,11 @@ namespace Db4objects.Db4o.Internal.CS
 			throw new NotSupportedException();
 		}
 
+		public override void Reserve(int byteCount)
+		{
+			throw new NotSupportedException();
+		}
+
 		public virtual void BlockSize(int blockSize)
 		{
 			_blockSize = blockSize;
@@ -150,6 +155,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				Exceptions4.CatchAllExceptDb4oException(e);
 			}
+			_messageQueue.Stop();
 			try
 			{
 				i_socket.Close();
@@ -334,7 +340,15 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private Msg GetResponseMultiThreaded()
 		{
-			Msg msg = (Msg)_messageQueue.Next();
+			Msg msg;
+			try
+			{
+				msg = (Msg)_messageQueue.Next();
+			}
+			catch (BlockingQueueStoppedException)
+			{
+				msg = Msg.ERROR;
+			}
 			if (msg == Msg.ERROR)
 			{
 				OnMsgError();
@@ -551,31 +565,24 @@ namespace Db4objects.Db4o.Internal.CS
 		public sealed override StatefulBuffer[] ReadWritersByIDs(Transaction a_ta, int[] 
 			ids)
 		{
-			try
+			MsgD msg = Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(a_ta, ids, ids.Length);
+			Write(msg);
+			MsgD response = (MsgD)ExpectedResponse(Msg.READ_MULTIPLE_OBJECTS);
+			int count = response.ReadInt();
+			StatefulBuffer[] yapWriters = new StatefulBuffer[count];
+			for (int i = 0; i < count; i++)
 			{
-				MsgD msg = Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(a_ta, ids, ids.Length);
-				Write(msg);
-				MsgD response = (MsgD)ExpectedResponse(Msg.READ_MULTIPLE_OBJECTS);
-				int count = response.ReadInt();
-				StatefulBuffer[] yapWriters = new StatefulBuffer[count];
-				for (int i = 0; i < count; i++)
+				MsgObject mso = (MsgObject)Msg.OBJECT_TO_CLIENT.PublicClone();
+				mso.SetTransaction(a_ta);
+				mso.PayLoad(response.PayLoad().ReadYapBytes());
+				if (mso.PayLoad() != null)
 				{
-					MsgObject mso = (MsgObject)Msg.OBJECT_TO_CLIENT.PublicClone();
-					mso.SetTransaction(a_ta);
-					mso.PayLoad(response.PayLoad().ReadYapBytes());
-					if (mso.PayLoad() != null)
-					{
-						mso.PayLoad().IncrementOffset(Const4.MESSAGE_LENGTH);
-						yapWriters[i] = mso.Unmarshall(Const4.MESSAGE_LENGTH);
-						yapWriters[i].SetTransaction(a_ta);
-					}
+					mso.PayLoad().IncrementOffset(Const4.MESSAGE_LENGTH);
+					yapWriters[i] = mso.Unmarshall(Const4.MESSAGE_LENGTH);
+					yapWriters[i].SetTransaction(a_ta);
 				}
-				return yapWriters;
 			}
-			catch (Exception e)
-			{
-			}
-			return null;
+			return yapWriters;
 		}
 
 		public sealed override Db4objects.Db4o.Internal.Buffer ReadReaderByID(Transaction

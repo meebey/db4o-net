@@ -174,27 +174,16 @@ namespace Db4objects.Db4o.Internal
 
 		public override string ToString()
 		{
-			try
+			string str = string.Empty;
+			for (int i = 0; i < _buffer.Length; i++)
 			{
-				string str = string.Empty;
-				for (int i = 0; i < _buffer.Length; i++)
+				if (i > 0)
 				{
-					if (i > 0)
-					{
-						str += " , ";
-					}
-					str += _buffer[i];
+					str += " , ";
 				}
-				return str;
+				str += _buffer[i];
 			}
-			catch (Exception e)
-			{
-				if (Deploy.debug || Debug.atHome)
-				{
-					Sharpen.Runtime.PrintStackTrace(e);
-				}
-			}
-			return string.Empty;
+			return str;
 		}
 
 		public virtual void WriteBegin(byte a_identifier)

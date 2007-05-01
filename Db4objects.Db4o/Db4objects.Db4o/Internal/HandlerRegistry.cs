@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Security;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -268,16 +267,10 @@ namespace Db4objects.Db4o.Internal
 			Tree sortedConstructors = null;
 			for (int i = 0; i < constructors.Length; i++)
 			{
-				try
-				{
-					constructors[i].SetAccessible();
-					int parameterCount = constructors[i].GetParameterTypes().Length;
-					sortedConstructors = Tree.Add(sortedConstructors, new TreeIntObject(i + constructors
-						.Length * parameterCount, constructors[i]));
-				}
-				catch (SecurityException e)
-				{
-				}
+				constructors[i].SetAccessible();
+				int parameterCount = constructors[i].GetParameterTypes().Length;
+				sortedConstructors = Tree.Add(sortedConstructors, new TreeIntObject(i + constructors
+					.Length * parameterCount, constructors[i]));
 			}
 			return sortedConstructors;
 		}

@@ -713,34 +713,23 @@ namespace Db4objects.Db4o.Internal
 
 		private ITypeHandler4 LoadJavaField1()
 		{
-			try
+			IReflectClass claxx = _clazz.ClassReflector();
+			if (claxx == null)
 			{
-				IReflectClass claxx = _clazz.ClassReflector();
-				if (claxx == null)
-				{
-					return null;
-				}
-				i_javaField = claxx.GetDeclaredField(i_name);
-				if (i_javaField == null)
-				{
-					return null;
-				}
-				i_javaField.SetAccessible();
-				ObjectContainerBase stream = _clazz.GetStream();
-				stream.ShowInternalClasses(true);
-				try
-				{
-					return stream.i_handlers.HandlerForClass(stream, i_javaField.GetFieldType());
-				}
-				finally
-				{
-					stream.ShowInternalClasses(false);
-				}
+				return null;
 			}
-			catch (Exception e)
+			i_javaField = claxx.GetDeclaredField(i_name);
+			if (i_javaField == null)
 			{
+				return null;
 			}
-			return null;
+			i_javaField.SetAccessible();
+			ObjectContainerBase stream = _clazz.GetStream();
+			stream.ShowInternalClasses(true);
+			ITypeHandler4 handlerForClass = stream.i_handlers.HandlerForClass(stream, i_javaField
+				.GetFieldType());
+			stream.ShowInternalClasses(false);
+			return handlerForClass;
 		}
 
 		public virtual void Marshall(ObjectReference yo, object obj, MarshallerFamily mf, 
@@ -895,13 +884,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				Transaction trans = stream.GetTransaction();
-				_index.TraverseKeys(trans, new _AnonymousInnerClass821(this, userVisitor, trans));
+				_index.TraverseKeys(trans, new _AnonymousInnerClass811(this, userVisitor, trans));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass821 : IVisitor4
+		private sealed class _AnonymousInnerClass811 : IVisitor4
 		{
-			public _AnonymousInnerClass821(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _AnonymousInnerClass811(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;

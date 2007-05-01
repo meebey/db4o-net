@@ -134,6 +134,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (i_lock)
 			{
+				CheckClosed();
 				Activate1(null, a_activate, a_depth);
 			}
 		}
@@ -242,20 +243,17 @@ namespace Db4objects.Db4o.Internal
 			_referenceSystem.AddExistingReference(@ref);
 		}
 
-		public virtual byte BlockSize()
-		{
-			return 1;
-		}
+		public abstract byte BlockSize();
 
 		public virtual int BlocksFor(long bytes)
 		{
 			int blockLen = BlockSize();
-			int result = (int)(bytes / blockLen);
-			if (bytes % blockLen != 0)
-			{
-				result++;
-			}
-			return result;
+			return (int)((bytes + blockLen - 1) / blockLen);
+		}
+
+		public int BlockAligned(int bytes)
+		{
+			return BlocksFor(bytes) * BlockSize();
 		}
 
 		private bool BreakDeleteForEnum(ObjectReference reference, bool userCall)
@@ -282,7 +280,15 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_classCollection == null)
 			{
-				Exceptions4.ThrowRuntimeException(20, ToString());
+				throw new DatabaseClosedException();
+			}
+		}
+
+		protected void CheckReadOnly()
+		{
+			if (i_config.IsReadOnly())
+			{
+				throw new DatabaseReadOnlyException();
 			}
 		}
 
@@ -376,12 +382,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Commit()
 		{
-			if (i_config.IsReadOnly())
-			{
-				return;
-			}
 			lock (i_lock)
 			{
+				CheckClosed();
+				CheckReadOnly();
 				BeginTopLevelCall();
 				try
 				{
@@ -476,6 +480,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (i_lock)
 			{
+				CheckClosed();
 				BeginTopLevelCall();
 				try
 				{
@@ -517,12 +522,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Delete(Transaction trans, object obj)
 		{
-			if (i_config.IsReadOnly())
-			{
-				return;
-			}
 			lock (i_lock)
 			{
+				CheckClosed();
+				CheckReadOnly();
 				trans = CheckTransaction(trans);
 				Delete1(trans, obj, true);
 				trans.ProcessDeletes();
@@ -653,7 +656,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			ClassMetadata yc = yo.GetYapClass();
 			FieldMetadata[] field = new FieldMetadata[] { null };
-			yc.ForEachFieldMetadata(new _AnonymousInnerClass617(this, fieldName, field));
+			yc.ForEachFieldMetadata(new _AnonymousInnerClass588(this, fieldName, field));
 			if (field[0] == null)
 			{
 				return null;
@@ -698,9 +701,9 @@ namespace Db4objects.Db4o.Internal
 			return Descend1(trans, child, subPath);
 		}
 
-		private sealed class _AnonymousInnerClass617 : IVisitor4
+		private sealed class _AnonymousInnerClass588 : IVisitor4
 		{
-			public _AnonymousInnerClass617(PartialObjectContainer _enclosing, string fieldName
+			public _AnonymousInnerClass588(PartialObjectContainer _enclosing, string fieldName
 				, FieldMetadata[] field)
 			{
 				this._enclosing = _enclosing;
@@ -810,6 +813,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (i_lock)
 			{
+				CheckClosed();
 				return Get1(null, template);
 			}
 		}
@@ -856,6 +860,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (i_lock)
 			{
+				CheckClosed();
 				return GetByID1(null, id);
 			}
 		}
@@ -1412,6 +1417,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (i_lock)
 			{
+				CheckClosed();
 				BeginTopLevelCall();
 				try
 				{
@@ -1745,14 +1751,14 @@ namespace Db4objects.Db4o.Internal
 			return @ref.IsFlaggedAsHandled(_topLevelCallId);
 		}
 
-		internal virtual void Reserve(int byteCount)
-		{
-		}
+		public abstract void Reserve(int byteCount);
 
 		public virtual void Rollback()
 		{
 			lock (i_lock)
 			{
+				CheckClosed();
+				CheckReadOnly();
 				Rollback1();
 				_referenceSystem.Rollback();
 			}
@@ -1795,10 +1801,8 @@ namespace Db4objects.Db4o.Internal
 		public int SetInternal(Transaction trans, object obj, int depth, bool checkJustSet
 			)
 		{
-			if (i_config.IsReadOnly())
-			{
-				return 0;
-			}
+			CheckClosed();
+			CheckReadOnly();
 			BeginTopLevelSet();
 			try
 			{
@@ -2202,7 +2206,6 @@ namespace Db4objects.Db4o.Internal
 
 		private void BeginTopLevelCall()
 		{
-			CheckClosed();
 			GenerateCallIDOnTopLevel();
 			if (_stackDepth == 0)
 			{

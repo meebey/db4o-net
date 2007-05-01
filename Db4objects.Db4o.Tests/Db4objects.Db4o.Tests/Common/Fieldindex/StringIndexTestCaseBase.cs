@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			public void Visit(object obj)
 			{
 				Slot slot = (Slot)obj;
-				file.OverwriteDeletedBytes(slot.GetAddress(), slot.GetLength());
+				file.OverwriteDeletedSlot(slot);
 			}
 
 			private readonly StringIndexTestCaseBase _enclosing;

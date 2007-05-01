@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return new BTreeRangeSingle(_transaction, _btree, firstPointer, endPointer);
 		}
 
-		private BTreePointer FirstValidPointer()
+		public virtual BTreePointer FirstValidPointer()
 		{
 			if (null == _pointer)
 			{

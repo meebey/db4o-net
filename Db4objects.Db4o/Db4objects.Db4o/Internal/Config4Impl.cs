@@ -69,8 +69,8 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec FREESPACE_FILLER = new KeySpec(null);
 
-		private static readonly KeySpec FREESPACE_SYSTEM = new KeySpec(FreespaceManager.FM_DEFAULT
-			);
+		private static readonly KeySpec FREESPACE_SYSTEM = new KeySpec(AbstractFreespaceManager
+			.FM_DEFAULT);
 
 		private static readonly KeySpec GENERATE_UUIDS = new KeySpec(ConfigScope.INDIVIDUALLY
 			);
@@ -217,12 +217,9 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (bytes < 1 || bytes > 127)
 			{
-				Exceptions4.ThrowRuntimeException(1);
+				throw new ArgumentException();
 			}
-			if (i_stream != null)
-			{
-				Exceptions4.ThrowRuntimeException(46);
-			}
+			GlobalSettingOnly();
 			_config.Put(BLOCKSIZE, (byte)bytes);
 		}
 
@@ -390,8 +387,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_stream != null)
 			{
-				Sharpen.Runtime.PrintStackTrace(new Exception());
-				Exceptions4.ThrowRuntimeException(46);
+				throw new GlobalOnlyConfigException();
 			}
 		}
 
@@ -628,14 +624,19 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(UPDATE_DEPTH, depth);
 		}
 
+		public void UseBTreeSystem()
+		{
+			_config.Put(FREESPACE_SYSTEM, AbstractFreespaceManager.FM_BTREE);
+		}
+
 		public void UseRamSystem()
 		{
-			_config.Put(FREESPACE_SYSTEM, FreespaceManager.FM_RAM);
+			_config.Put(FREESPACE_SYSTEM, AbstractFreespaceManager.FM_RAM);
 		}
 
 		public void UseIndexSystem()
 		{
-			_config.Put(FREESPACE_SYSTEM, FreespaceManager.FM_IX);
+			_config.Put(FREESPACE_SYSTEM, AbstractFreespaceManager.FM_IX);
 		}
 
 		public void WeakReferenceCollectionInterval(int milliseconds)

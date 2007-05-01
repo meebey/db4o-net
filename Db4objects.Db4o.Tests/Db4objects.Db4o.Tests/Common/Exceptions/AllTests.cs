@@ -13,12 +13,15 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(ActivationExceptionBubblesUpTestCase), typeof(InvalidPasswordTestCase)
-				, typeof(ObjectCanActiviateExceptionTestCase), typeof(ObjectCanDeleteExceptionTestCase)
-				, typeof(ObjectOnDeleteExceptionTestCase), typeof(ObjectCanNewExceptionTestCase)
-				, typeof(StoreExceptionBubblesUpTestCase), typeof(StoredClassExceptionBubblesUpTestCase)
-				, typeof(TSerializableOnInstantiateCNFExceptionTestCase), typeof(TSerializableOnInstantiateIOExceptionTestCase)
-				, typeof(TSerializableOnStoreExceptionTestCase) };
+			return new Type[] { typeof(ActivationExceptionBubblesUpTestCase), typeof(BackupCSExceptionTestCase)
+				, typeof(BackupExceptionTestCase), typeof(DatabaseClosedExceptionTestCase), typeof(DatabaseReadonlyExceptionTestCase)
+				, typeof(GlobalOnlyConfigExceptionTestCase), typeof(IncompatibleFileFormatExceptionTestCase)
+				, typeof(InvalidPasswordTestCase), typeof(ObjectCanActiviateExceptionTestCase), 
+				typeof(ObjectCanDeleteExceptionTestCase), typeof(ObjectOnDeleteExceptionTestCase)
+				, typeof(ObjectCanNewExceptionTestCase), typeof(StoreExceptionBubblesUpTestCase)
+				, typeof(StoredClassExceptionBubblesUpTestCase), typeof(TSerializableOnInstantiateCNFExceptionTestCase)
+				, typeof(TSerializableOnInstantiateIOExceptionTestCase), typeof(TSerializableOnStoreExceptionTestCase)
+				 };
 		}
 	}
 }

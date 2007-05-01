@@ -1,5 +1,6 @@
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -19,7 +20,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return 0;
 			}
-			return FreespaceManager().EntryCount();
+			return FreespaceManager().SlotCount();
 		}
 
 		private bool HasFreespaceManager()
@@ -27,7 +28,7 @@ namespace Db4objects.Db4o.Internal
 			return FreespaceManager() != null;
 		}
 
-		private Db4objects.Db4o.Internal.Freespace.FreespaceManager FreespaceManager()
+		private IFreespaceManager FreespaceManager()
 		{
 			return _file.FreespaceManager();
 		}
@@ -39,7 +40,7 @@ namespace Db4objects.Db4o.Internal
 				return 0;
 			}
 			long blockSize = _file.BlockSize();
-			long blockedSize = FreespaceManager().FreeSize();
+			long blockedSize = FreespaceManager().TotalFreespace();
 			return blockSize * blockedSize;
 		}
 

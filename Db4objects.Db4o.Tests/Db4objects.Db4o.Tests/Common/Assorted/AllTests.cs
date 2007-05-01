@@ -20,10 +20,10 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				, typeof(GetByUUIDTestCase), typeof(GetSingleSimpleArrayTestCase), typeof(HandlerRegistryTestCase)
 				, typeof(IndexCreateDropTestCase), typeof(LazyObjectReferenceTestCase), typeof(LongLinkedListTestCase)
 				, typeof(MaximumActivationDepthTestCase), typeof(MultiDeleteTestCase), typeof(NakedObjectTestCase)
-				, typeof(ObjectMarshallerTestCase), typeof(PersistStaticFieldValuesTestCase), typeof(PersistTypeTestCase)
-				, typeof(PreventMultipleOpenTestCase), typeof(ReAddCascadedDeleteTestCase), typeof(ReferenceSystemTestCase)
-				, typeof(RollbackTestCase), typeof(SimplestPossibleTestCase), typeof(SystemInfoTestCase)
-				 };
+				, typeof(ObjectMarshallerTestCase), typeof(PersistentIntegerArrayTestCase), typeof(PersistStaticFieldValuesTestCase)
+				, typeof(PersistTypeTestCase), typeof(PreventMultipleOpenTestCase), typeof(ReAddCascadedDeleteTestCase)
+				, typeof(ReferenceSystemTestCase), typeof(RollbackTestCase), typeof(SimplestPossibleTestCase)
+				, typeof(SystemInfoTestCase) };
 		}
 	}
 }

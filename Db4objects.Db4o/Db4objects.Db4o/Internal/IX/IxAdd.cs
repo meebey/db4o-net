@@ -47,7 +47,6 @@ namespace Db4objects.Db4o.Internal.IX
 
 		public override string ToString()
 		{
-			return base.ToString();
 			string str = "IxAdd " + _parentID + "\n " + Handler().ComparableObject(Trans(), _value
 				);
 			return str;

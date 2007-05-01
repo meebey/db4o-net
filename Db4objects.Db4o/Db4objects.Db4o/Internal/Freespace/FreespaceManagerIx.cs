@@ -4,10 +4,11 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.IX;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Freespace
 {
-	public class FreespaceManagerIx : FreespaceManager
+	public class FreespaceManagerIx : AbstractFreespaceManager
 	{
 		private int _slotAddress;
 
@@ -21,10 +22,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private readonly bool _overwriteDeletedSlots;
 
-		internal FreespaceManagerIx(LocalObjectContainer file) : base(file)
+		public FreespaceManagerIx(LocalObjectContainer file) : base(file)
 		{
-			_overwriteDeletedSlots = Db4objects.Db4o.Debug.xbytes || file.Config().FreespaceFiller
-				() != null;
+			_overwriteDeletedSlots = Debug.xbytes || file.Config().FreespaceFiller() != null;
 		}
 
 		private void Add(int address, int length)
@@ -40,10 +40,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 				return;
 			}
 			SlotEntryToZeroes(_file, _slotAddress);
-		}
-
-		public override void Debug()
-		{
 		}
 
 		public override void EndCommit()
@@ -82,13 +78,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 		}
 
-		public override int EntryCount()
+		public override int SlotCount()
 		{
 			return _addressIx.EntryCount();
 		}
 
-		public override void Free(int address, int length)
+		public override void Free(Slot slot)
 		{
+			int address = slot._address;
+			int length = slot._length;
 			if (!Started())
 			{
 				return;
@@ -140,98 +138,99 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_lengthIx._index._metaIndex.Free(_file);
 		}
 
-		public override int FreeSize()
-		{
-			return _addressIx.FreeSize();
-		}
-
-		public override int GetSlot(int length)
+		public override Slot GetSlot(int length)
 		{
 			if (!Started())
 			{
-				return 0;
+				return null;
 			}
-			int address = GetSlot1(length);
-			return address;
-		}
-
-		private int GetSlot1(int length)
-		{
-			if (!Started())
-			{
-				return 0;
-			}
-			length = _file.BlocksFor(length);
-			_lengthIx.Find(length);
+			int requiredLength = _file.BlocksFor(length);
+			int address = 0;
+			_lengthIx.Find(requiredLength);
 			if (_lengthIx.Match())
 			{
 				Remove(_lengthIx.Address(), _lengthIx.Length());
-				return _lengthIx.Address();
+				address = _lengthIx.Address();
 			}
-			if (_lengthIx.Subsequent())
+			else
 			{
-				int lengthRemainder = _lengthIx.Length() - length;
-				int addressRemainder = _lengthIx.Address() + length;
-				Remove(_lengthIx.Address(), _lengthIx.Length());
-				Add(addressRemainder, lengthRemainder);
-				return _lengthIx.Address();
+				if (_lengthIx.Subsequent())
+				{
+					int lengthRemainder = _lengthIx.Length() - requiredLength;
+					int addressRemainder = _lengthIx.Address() + requiredLength;
+					Remove(_lengthIx.Address(), _lengthIx.Length());
+					Add(addressRemainder, lengthRemainder);
+					address = _lengthIx.Address();
+				}
 			}
-			return 0;
+			if (address == 0)
+			{
+				return null;
+			}
+			return new Slot(address, length);
 		}
 
-		public override void Migrate(FreespaceManager newFM)
+		public override void MigrateTo(IFreespaceManager fm)
 		{
 			if (!Started())
 			{
 				return;
 			}
-			IIntObjectVisitor addToNewFM = new _AnonymousInnerClass195(this, newFM);
-			Tree.Traverse(_addressIx._indexTrans.GetRoot(), new _AnonymousInnerClass200(this, 
-				addToNewFM));
+			base.MigrateTo(fm);
 		}
 
-		private sealed class _AnonymousInnerClass195 : IIntObjectVisitor
+		public override void Traverse(IVisitor4 visitor)
 		{
-			public _AnonymousInnerClass195(FreespaceManagerIx _enclosing, FreespaceManager newFM
-				)
+			if (!Started())
+			{
+				return;
+			}
+			IIntObjectVisitor dispatcher = new _AnonymousInnerClass182(this, visitor);
+			Tree.Traverse(_addressIx._indexTrans.GetRoot(), new _AnonymousInnerClass187(this, 
+				dispatcher));
+		}
+
+		private sealed class _AnonymousInnerClass182 : IIntObjectVisitor
+		{
+			public _AnonymousInnerClass182(FreespaceManagerIx _enclosing, IVisitor4 visitor)
 			{
 				this._enclosing = _enclosing;
-				this.newFM = newFM;
+				this.visitor = visitor;
 			}
 
 			public void Visit(int length, object address)
 			{
-				newFM.Free(((int)address), length);
+				visitor.Visit(new Slot(((int)address), length));
 			}
 
 			private readonly FreespaceManagerIx _enclosing;
 
-			private readonly FreespaceManager newFM;
+			private readonly IVisitor4 visitor;
 		}
 
-		private sealed class _AnonymousInnerClass200 : IVisitor4
+		private sealed class _AnonymousInnerClass187 : IVisitor4
 		{
-			public _AnonymousInnerClass200(FreespaceManagerIx _enclosing, IIntObjectVisitor addToNewFM
+			public _AnonymousInnerClass187(FreespaceManagerIx _enclosing, IIntObjectVisitor dispatcher
 				)
 			{
 				this._enclosing = _enclosing;
-				this.addToNewFM = addToNewFM;
+				this.dispatcher = dispatcher;
 			}
 
 			public void Visit(object a_object)
 			{
 				IxTree ixTree = (IxTree)a_object;
-				ixTree.VisitAll(addToNewFM);
+				ixTree.VisitAll(dispatcher);
 			}
 
 			private readonly FreespaceManagerIx _enclosing;
 
-			private readonly IIntObjectVisitor addToNewFM;
+			private readonly IIntObjectVisitor dispatcher;
 		}
 
-		public override void OnNew(LocalObjectContainer file)
+		public override int OnNew(LocalObjectContainer file)
 		{
-			file.EnsureFreespaceSlot();
+			return file.EnsureFreespaceSlot();
 		}
 
 		public override void Read(int freespaceID)
@@ -273,7 +272,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return FM_IX;
 		}
 
-		public override int Shutdown()
+		public override int Write()
 		{
 			return 0;
 		}
@@ -292,6 +291,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 					_xBytes.Add(new int[] { address, length });
 				}
 			}
+		}
+
+		public override string ToString()
+		{
+			string str = "FreespaceManagerIx\n" + _lengthIx.ToString();
+			return str;
 		}
 	}
 }

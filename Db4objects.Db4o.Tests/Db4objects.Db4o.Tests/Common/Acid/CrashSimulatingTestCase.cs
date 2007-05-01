@@ -96,7 +96,6 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			int count = adapterFactory.batch.WriteVersions(fileName);
 			CheckFiles(fileName, "R", adapterFactory.batch.NumSyncs());
 			CheckFiles(fileName, "W", count);
-			Sharpen.Runtime.Out.WriteLine("Total versions: " + count);
 		}
 
 		private void CheckFiles(string fileName, string infix, int count)

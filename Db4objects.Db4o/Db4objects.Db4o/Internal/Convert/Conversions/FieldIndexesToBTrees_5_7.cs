@@ -1,7 +1,5 @@
-using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Convert;
-using Db4objects.Db4o.Internal.Fileheader;
 
 namespace Db4objects.Db4o.Internal.Convert.Conversions
 {
@@ -33,17 +31,6 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 
 		private void FreeOldUUIDMetaIndex(LocalObjectContainer file)
 		{
-			FileHeader fh = file.GetFileHeader();
-			if (!(fh is FileHeader0))
-			{
-				return;
-			}
-			MetaIndex metaIndex = ((FileHeader0)fh).GetUUIDMetaIndex();
-			if (metaIndex == null)
-			{
-				return;
-			}
-			file.Free(metaIndex.indexAddress, metaIndex.indexLength);
 		}
 	}
 }

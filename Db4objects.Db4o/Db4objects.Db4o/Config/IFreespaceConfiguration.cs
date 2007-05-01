@@ -54,6 +54,18 @@ namespace Db4objects.Db4o.Config
 		/// <param name="freespaceFiller">The freespace overwriting callback to use</param>
 		void FreespaceFiller(IFreespaceFiller freespaceFiller);
 
+		/// <summary>configures db4o to use a BTree-based freespace system.</summary>
+		/// <remarks>
+		/// configures db4o to use a BTree-based freespace system.
+		/// <br /><br /><b>Advantages</b><br />
+		/// - ACID, no freespace is lost on abnormal system termination<br />
+		/// - low memory consumption<br />
+		/// <br /><b>Disadvantages</b><br />
+		/// - slower than the RAM-based system, since freespace information
+		/// is written during every commit<br />
+		/// </remarks>
+		void UseBTreeSystem();
+
 		/// <summary>configures db4o to use an index-based freespace system.</summary>
 		/// <remarks>
 		/// configures db4o to use an index-based freespace system.

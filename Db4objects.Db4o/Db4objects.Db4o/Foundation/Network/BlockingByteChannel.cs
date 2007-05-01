@@ -53,6 +53,23 @@ namespace Db4objects.Db4o.Foundation.Network
 		internal virtual void Close()
 		{
 			i_closed = true;
+			i_lock.Run(new _AnonymousInnerClass43(this));
+		}
+
+		private sealed class _AnonymousInnerClass43 : ISafeClosure4
+		{
+			public _AnonymousInnerClass43(BlockingByteChannel _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Run()
+			{
+				this._enclosing.i_lock.Awake();
+				return null;
+			}
+
+			private readonly BlockingByteChannel _enclosing;
 		}
 
 		protected virtual void Makefit(int length)
@@ -87,7 +104,7 @@ namespace Db4objects.Db4o.Foundation.Network
 		{
 			try
 			{
-				int ret = (int)i_lock.Run(new _AnonymousInnerClass71(this));
+				int ret = (int)i_lock.Run(new _AnonymousInnerClass77(this));
 				return ret;
 			}
 			catch (IOException iex)
@@ -100,9 +117,9 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
-		private sealed class _AnonymousInnerClass71 : IClosure4
+		private sealed class _AnonymousInnerClass77 : IClosure4
 		{
-			public _AnonymousInnerClass71(BlockingByteChannel _enclosing)
+			public _AnonymousInnerClass77(BlockingByteChannel _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -122,7 +139,7 @@ namespace Db4objects.Db4o.Foundation.Network
 		{
 			try
 			{
-				int ret = (int)i_lock.Run(new _AnonymousInnerClass90(this, a_length, a_bytes, a_offset
+				int ret = (int)i_lock.Run(new _AnonymousInnerClass96(this, a_length, a_bytes, a_offset
 					));
 				return ret;
 			}
@@ -136,9 +153,9 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
-		private sealed class _AnonymousInnerClass90 : IClosure4
+		private sealed class _AnonymousInnerClass96 : IClosure4
 		{
-			public _AnonymousInnerClass90(BlockingByteChannel _enclosing, int a_length, byte[]
+			public _AnonymousInnerClass96(BlockingByteChannel _enclosing, int a_length, byte[]
 				 a_bytes, int a_offset)
 			{
 				this._enclosing = _enclosing;
@@ -185,14 +202,7 @@ namespace Db4objects.Db4o.Foundation.Network
 				{
 					throw new IOException(Db4objects.Db4o.Internal.Messages.Get(35));
 				}
-				try
-				{
-					i_lock.Snooze(i_timeout);
-				}
-				catch (Exception)
-				{
-					throw new IOException(Db4objects.Db4o.Internal.Messages.Get(55));
-				}
+				i_lock.Snooze(i_timeout);
 			}
 		}
 
@@ -204,12 +214,12 @@ namespace Db4objects.Db4o.Foundation.Network
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
 			CheckClosed();
-			i_lock.Run(new _AnonymousInnerClass135(this, len, bytes, off));
+			i_lock.Run(new _AnonymousInnerClass137(this, len, bytes, off));
 		}
 
-		private sealed class _AnonymousInnerClass135 : ISafeClosure4
+		private sealed class _AnonymousInnerClass137 : ISafeClosure4
 		{
-			public _AnonymousInnerClass135(BlockingByteChannel _enclosing, int len, byte[] bytes
+			public _AnonymousInnerClass137(BlockingByteChannel _enclosing, int len, byte[] bytes
 				, int off)
 			{
 				this._enclosing = _enclosing;
@@ -240,12 +250,12 @@ namespace Db4objects.Db4o.Foundation.Network
 		public virtual void Write(int i)
 		{
 			CheckClosed();
-			i_lock.Run(new _AnonymousInnerClass148(this, i));
+			i_lock.Run(new _AnonymousInnerClass150(this, i));
 		}
 
-		private sealed class _AnonymousInnerClass148 : ISafeClosure4
+		private sealed class _AnonymousInnerClass150 : ISafeClosure4
 		{
-			public _AnonymousInnerClass148(BlockingByteChannel _enclosing, int i)
+			public _AnonymousInnerClass150(BlockingByteChannel _enclosing, int i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;

@@ -30,6 +30,8 @@ namespace Db4objects.Db4o.Ext
 		/// the open ObjectContainer and to the backup.<br /><br />
 		/// While the backup is running, the ObjectContainer should not be closed.<br /><br />
 		/// If a file already exists at the specified path, it will be overwritten.<br /><br />
+		/// The backup call may be started in a seperated thread by the application,
+		/// if concurrent execution with normal database access is desired.<br /><br />
 		/// </remarks>
 		/// <param name="path">a fully qualified path</param>
 		void Backup(string path);

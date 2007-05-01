@@ -1,107 +1,105 @@
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class InvalidPasswordTestCase : ITestCase, ITestLifeCycle
+	public class InvalidPasswordTestCase : Db4oClientServerTestCase
 	{
-		private static readonly string DB_FILE = "server.db4o";
-
-		private const int PORT = unchecked((int)(0xdb40));
-
-		private static readonly string USER = "db4o";
-
-		private static readonly string PASSWORD = "db4o";
-
-		private IObjectServer _server;
-
-		public virtual void SetUp()
+		public static void Main(string[] args)
 		{
-			new Sharpen.IO.File(DB_FILE).Delete();
-			_server = Db4oFactory.OpenServer(DB_FILE, PORT);
-			_server.GrantAccess(USER, PASSWORD);
-		}
-
-		public virtual void TearDown()
-		{
-			_server.Close();
+			new InvalidPasswordTestCase().RunClientServer();
 		}
 
 		public virtual void TestInvalidPassword()
 		{
-			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass34(this));
+			int port = ClientServerFixture().ServerPort();
+			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass17(this, 
+				port));
 		}
 
-		private sealed class _AnonymousInnerClass34 : ICodeBlock
+		private sealed class _AnonymousInnerClass17 : ICodeBlock
 		{
-			public _AnonymousInnerClass34(InvalidPasswordTestCase _enclosing)
+			public _AnonymousInnerClass17(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
+				this.port = port;
 			}
 
 			public void Run()
 			{
-				Db4oFactory.OpenClient("127.0.0.1", InvalidPasswordTestCase.PORT, "hello", "invalid"
-					);
+				Db4oFactory.OpenClient("127.0.0.1", port, "strangeusername", "invalidPassword");
 			}
 
 			private readonly InvalidPasswordTestCase _enclosing;
+
+			private readonly int port;
 		}
 
 		public virtual void TestEmptyPassword()
 		{
-			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass43(this));
-			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass49(this));
-			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass55(this));
+			int port = ClientServerFixture().ServerPort();
+			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass28(this, 
+				port));
+			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass34(this, 
+				port));
+			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass40(this, 
+				port));
 		}
 
-		private sealed class _AnonymousInnerClass43 : ICodeBlock
+		private sealed class _AnonymousInnerClass28 : ICodeBlock
 		{
-			public _AnonymousInnerClass43(InvalidPasswordTestCase _enclosing)
+			public _AnonymousInnerClass28(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
+				this.port = port;
 			}
 
 			public void Run()
 			{
-				Db4oFactory.OpenClient("127.0.0.1", InvalidPasswordTestCase.PORT, string.Empty, string.Empty
-					);
+				Db4oFactory.OpenClient("127.0.0.1", port, string.Empty, string.Empty);
 			}
 
 			private readonly InvalidPasswordTestCase _enclosing;
+
+			private readonly int port;
 		}
 
-		private sealed class _AnonymousInnerClass49 : ICodeBlock
+		private sealed class _AnonymousInnerClass34 : ICodeBlock
 		{
-			public _AnonymousInnerClass49(InvalidPasswordTestCase _enclosing)
+			public _AnonymousInnerClass34(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
+				this.port = port;
 			}
 
 			public void Run()
 			{
-				Db4oFactory.OpenClient("127.0.0.1", InvalidPasswordTestCase.PORT, string.Empty, null
-					);
+				Db4oFactory.OpenClient("127.0.0.1", port, string.Empty, null);
 			}
 
 			private readonly InvalidPasswordTestCase _enclosing;
+
+			private readonly int port;
 		}
 
-		private sealed class _AnonymousInnerClass55 : ICodeBlock
+		private sealed class _AnonymousInnerClass40 : ICodeBlock
 		{
-			public _AnonymousInnerClass55(InvalidPasswordTestCase _enclosing)
+			public _AnonymousInnerClass40(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
+				this.port = port;
 			}
 
 			public void Run()
 			{
-				Db4oFactory.OpenClient("127.0.0.1", InvalidPasswordTestCase.PORT, null, null);
+				Db4oFactory.OpenClient("127.0.0.1", port, null, null);
 			}
 
 			private readonly InvalidPasswordTestCase _enclosing;
+
+			private readonly int port;
 		}
 	}
 }

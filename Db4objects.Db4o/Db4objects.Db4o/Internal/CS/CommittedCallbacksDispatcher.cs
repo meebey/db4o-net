@@ -24,13 +24,22 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			while (!_stopped)
 			{
-				MCommittedInfo committedInfos = (MCommittedInfo)_committedInfosQueue.Next();
+				MCommittedInfo committedInfos;
+				try
+				{
+					committedInfos = (MCommittedInfo)_committedInfosQueue.Next();
+				}
+				catch (BlockingQueueStoppedException)
+				{
+					break;
+				}
 				_server.SendCommittedInfoMsg(committedInfos);
 			}
 		}
 
 		public virtual void Stop()
 		{
+			_committedInfosQueue.Stop();
 			_stopped = true;
 		}
 	}

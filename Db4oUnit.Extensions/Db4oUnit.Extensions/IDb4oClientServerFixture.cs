@@ -8,6 +8,8 @@ namespace Db4oUnit.Extensions
 	{
 		IObjectServer Server();
 
+		int ServerPort();
+
 		IExtObjectContainer OpenNewClient();
 	}
 }

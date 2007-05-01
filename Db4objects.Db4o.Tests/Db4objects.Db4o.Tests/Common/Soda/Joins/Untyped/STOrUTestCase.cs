@@ -5,6 +5,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Untyped
 {
 	public class STOrUTestCase : SodaBaseTestCase
 	{
+		public static void Main(string[] arguments)
+		{
+			new Db4objects.Db4o.Tests.Common.Soda.Joins.Untyped.STOrUTestCase().RunAll();
+		}
+
 		public object orInt;
 
 		public object orString;

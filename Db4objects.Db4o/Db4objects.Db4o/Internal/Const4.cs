@@ -61,6 +61,8 @@ namespace Db4objects.Db4o.Internal
 
 		public const byte HEADER = (byte)'H';
 
+		public const byte INTEGER_ARRAY = (byte)'I';
+
 		public const int IDENTIFIER_LENGTH = (Deploy.debug && Deploy.identifiers) ? 1 : 0;
 
 		public const int BRACKETS_BYTES = (Deploy.debug && Deploy.brackets) ? 1 : 0;

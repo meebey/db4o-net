@@ -2,9 +2,10 @@ using System;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
-using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -39,6 +40,7 @@ namespace Db4objects.Db4o.Internal
 			if (isNew)
 			{
 				LogMsg(14, FileName());
+				CheckReadOnly();
 				i_handlers.OldEncryptionOff();
 			}
 			bool lockFile = Debug.lockFile && ConfigImpl().LockFile() && (!ConfigImpl().IsReadOnly
@@ -78,47 +80,54 @@ namespace Db4objects.Db4o.Internal
 				CheckClosed();
 				if (_backupFile != null)
 				{
-					Exceptions4.ThrowRuntimeException(61);
+					throw new BackupInProgressException();
 				}
 				try
 				{
 					_backupFile = ConfigImpl().IoAdapter().Open(path, true, _file.GetLength());
-					_backupFile.BlockSize(BlockSize());
 				}
-				catch (Exception)
+				catch (IOException e)
 				{
-					_backupFile = null;
-					Exceptions4.ThrowRuntimeException(12, path);
+					throw new BackupException(e);
 				}
+				_backupFile.BlockSize(BlockSize());
 			}
 			long pos = 0;
-			int bufferlength = 8192;
-			byte[] buffer = new byte[bufferlength];
+			byte[] buffer = new byte[8192];
 			while (true)
 			{
 				lock (i_lock)
 				{
-					_file.Seek(pos);
-					int read = _file.Read(buffer);
-					if (read <= 0)
+					try
 					{
-						break;
+						_file.Seek(pos);
+						int read = _file.Read(buffer);
+						if (read <= 0)
+						{
+							break;
+						}
+						_backupFile.Seek(pos);
+						_backupFile.Write(buffer, read);
+						pos += read;
 					}
-					_backupFile.Seek(pos);
-					_backupFile.Write(buffer, read);
-					pos += read;
+					catch (IOException e)
+					{
+						_backupFile = null;
+						throw new BackupException(e);
+					}
 				}
-				try
-				{
-					Thread.Sleep(1);
-				}
-				catch (Exception)
-				{
-				}
+				Cool.SleepIgnoringInterruption(1);
 			}
 			lock (i_lock)
 			{
-				_backupFile.Close();
+				try
+				{
+					_backupFile.Close();
+				}
+				catch (IOException e)
+				{
+					throw new BackupException(e);
+				}
 				_backupFile = null;
 			}
 		}
@@ -171,7 +180,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			try
 			{
-				_fileHeader.Close();
+				if (_fileHeader != null)
+				{
+					_fileHeader.Close();
+				}
 			}
 			catch (IOException)
 			{
@@ -290,20 +302,21 @@ namespace Db4objects.Db4o.Internal
 		{
 			_file.BlockSeek(address, addressOffset);
 			int bytesRead = _file.Read(bytes, length);
-			AssertRead(bytesRead, length);
+			CheckReadCount(bytesRead, length);
 		}
 
-		private void AssertRead(int bytesRead, int expected)
+		private void CheckReadCount(int bytesRead, int expected)
 		{
 			if (bytesRead != expected)
 			{
-				throw new IOException("expected read bytes = " + expected + ", but read = " + bytesRead
-					 + "bytes");
+				ShutdownObjectContainer();
+				throw new IncompatibleFileFormatException();
 			}
 		}
 
-		internal override void Reserve(int byteCount)
+		public override void Reserve(int byteCount)
 		{
+			CheckReadOnly();
 			lock (i_lock)
 			{
 				int address = GetSlot(byteCount);
@@ -314,10 +327,6 @@ namespace Db4objects.Db4o.Internal
 
 		private void ZeroReservedStorage(int address, int length)
 		{
-			if (ConfigImpl().IsReadOnly())
-			{
-				return;
-			}
 			try
 			{
 				ZeroFile(_file, address, length);
@@ -372,10 +381,6 @@ namespace Db4objects.Db4o.Internal
 		public override void WriteBytes(Db4objects.Db4o.Internal.Buffer bytes, int address
 			, int addressOffset)
 		{
-			if (ConfigImpl().IsReadOnly())
-			{
-				return;
-			}
 			if (Deploy.debug && !Deploy.flush)
 			{
 				return;
@@ -414,23 +419,24 @@ namespace Db4objects.Db4o.Internal
 
 		public override void OverwriteDeletedBytes(int address, int length)
 		{
-			if (!ConfigImpl().IsReadOnly() && _freespaceFiller != null)
+			if (_freespaceFiller == null)
 			{
-				if (address > 0 && length > 0)
+				return;
+			}
+			if (address > 0 && length > 0)
+			{
+				IoAdapterWindow window = new IoAdapterWindow(_file, address, length);
+				try
 				{
-					IoAdapterWindow window = new IoAdapterWindow(_file, address, length);
-					try
-					{
-						CreateFreespaceFiller().Fill(window);
-					}
-					catch (Exception e)
-					{
-						Sharpen.Runtime.PrintStackTrace(e);
-					}
-					finally
-					{
-						window.Disable();
-					}
+					CreateFreespaceFiller().Fill(window);
+				}
+				catch (IOException e)
+				{
+					Sharpen.Runtime.PrintStackTrace(e);
+				}
+				finally
+				{
+					window.Disable();
 				}
 			}
 		}

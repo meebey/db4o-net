@@ -1,3 +1,4 @@
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
@@ -5,7 +6,7 @@ using Db4objects.Db4o.Tests.Common.Btree;
 
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public class FreespaceManagerForDebug : FreespaceManager
+	public class FreespaceManagerForDebug : AbstractFreespaceManager
 	{
 		private readonly ISlotListener _listener;
 
@@ -19,44 +20,32 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		{
 		}
 
-		public override void Debug()
-		{
-		}
-
 		public override void EndCommit()
 		{
 		}
 
-		public override int EntryCount()
+		public override int SlotCount()
 		{
 			return 0;
 		}
 
-		public override void Free(int address, int length)
+		public override void Free(Slot slot)
 		{
-			_listener.OnFree(new Slot(address, length));
+			_listener.OnFree(slot);
 		}
 
 		public override void FreeSelf()
 		{
 		}
 
-		public override int FreeSize()
+		public override Slot GetSlot(int length)
+		{
+			return null;
+		}
+
+		public override int OnNew(LocalObjectContainer file)
 		{
 			return 0;
-		}
-
-		public override int GetSlot(int length)
-		{
-			return 0;
-		}
-
-		public override void Migrate(FreespaceManager newFM)
-		{
-		}
-
-		public override void OnNew(LocalObjectContainer file)
-		{
 		}
 
 		public override void Read(int freeSlotsID)
@@ -72,7 +61,11 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			return FM_DEBUG;
 		}
 
-		public override int Shutdown()
+		public override void Traverse(IVisitor4 visitor)
+		{
+		}
+
+		public override int Write()
 		{
 			return 0;
 		}

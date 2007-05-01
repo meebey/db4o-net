@@ -48,6 +48,38 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Assert.IsGreater(500, end - start);
 		}
 
+		public virtual void TestStop()
+		{
+			BlockingQueue queue = new BlockingQueue();
+			string[] data = new string[] { "a", "b", "c", "d" };
+			queue.Add(data[0]);
+			Assert.AreSame(data[0], queue.Next());
+			BlockingQueueTestCase.StopThread notifyThread = new BlockingQueueTestCase.StopThread
+				(queue);
+			notifyThread.Start();
+			Assert.Expect(typeof(BlockingQueueStoppedException), new _AnonymousInnerClass52(this
+				, queue));
+		}
+
+		private sealed class _AnonymousInnerClass52 : ICodeBlock
+		{
+			public _AnonymousInnerClass52(BlockingQueueTestCase _enclosing, BlockingQueue queue
+				)
+			{
+				this._enclosing = _enclosing;
+				this.queue = queue;
+			}
+
+			public void Run()
+			{
+				queue.Next();
+			}
+
+			private readonly BlockingQueueTestCase _enclosing;
+
+			private readonly BlockingQueue queue;
+		}
+
 		private class NotifyThread : Thread
 		{
 			private IQueue4 _queue;
@@ -70,6 +102,28 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				{
 				}
 				_queue.Add(_data);
+			}
+		}
+
+		private class StopThread : Thread
+		{
+			private BlockingQueue _queue;
+
+			internal StopThread(BlockingQueue queue)
+			{
+				_queue = queue;
+			}
+
+			public override void Run()
+			{
+				try
+				{
+					Thread.Sleep(1000);
+				}
+				catch (Exception)
+				{
+				}
+				_queue.Stop();
 			}
 		}
 	}

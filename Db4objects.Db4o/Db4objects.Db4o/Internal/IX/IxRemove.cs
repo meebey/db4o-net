@@ -21,7 +21,6 @@ namespace Db4objects.Db4o.Internal.IX
 
 		public override string ToString()
 		{
-			return base.ToString();
 			string str = "IxRemove " + _parentID + "\n " + Handler().ComparableObject(Trans()
 				, _value);
 			return str;

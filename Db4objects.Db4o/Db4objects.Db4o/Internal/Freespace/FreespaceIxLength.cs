@@ -32,5 +32,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_index._handler.PrepareComparison(length);
 			_indexTrans.Remove(address, length);
 		}
+
+		public override string ToString()
+		{
+			return _indexTrans.ToString();
+		}
 	}
 }

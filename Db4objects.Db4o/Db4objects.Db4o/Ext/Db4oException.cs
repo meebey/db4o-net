@@ -17,6 +17,10 @@ namespace Db4objects.Db4o.Ext
 	[System.Serializable]
 	public class Db4oException : Exception
 	{
+		public Db4oException() : this(null, null)
+		{
+		}
+
 		public Db4oException(string msg) : this(msg, null)
 		{
 		}

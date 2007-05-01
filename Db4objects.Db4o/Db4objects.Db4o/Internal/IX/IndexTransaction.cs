@@ -169,7 +169,6 @@ namespace Db4objects.Db4o.Internal.IX
 
 		public override string ToString()
 		{
-			return base.ToString();
 			StringBuilder sb = new StringBuilder();
 			sb.Append("IxFieldTransaction ");
 			sb.Append(Runtime.IdentityHashCode(this));
@@ -179,14 +178,14 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 			else
 			{
-				i_root.Traverse(new _AnonymousInnerClass140(this, sb));
+				i_root.Traverse(new _AnonymousInnerClass137(this, sb));
 			}
 			return sb.ToString();
 		}
 
-		private sealed class _AnonymousInnerClass140 : IVisitor4
+		private sealed class _AnonymousInnerClass137 : IVisitor4
 		{
-			public _AnonymousInnerClass140(IndexTransaction _enclosing, StringBuilder sb)
+			public _AnonymousInnerClass137(IndexTransaction _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;

@@ -115,6 +115,10 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 			public void Run()
 			{
+				if (this._enclosing.Stream().IsClosed())
+				{
+					return;
+				}
 				this._enclosing.Stream().Callbacks().CommitOnCompleted(this._enclosing.Transaction
 					(), callbackInfos);
 			}

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
@@ -51,28 +50,16 @@ namespace Db4objects.Db4o.Internal
 
 		protected abstract void Clear();
 
-		public virtual void Close(bool a_rollbackOnClose)
+		public virtual void Close(bool rollbackOnClose)
 		{
-			try
+			if (Stream() != null)
 			{
-				if (Stream() != null)
-				{
-					CheckSynchronization();
-					Stream().ReleaseSemaphores(this);
-				}
+				CheckSynchronization();
+				Stream().ReleaseSemaphores(this);
 			}
-			catch (Exception e)
+			if (rollbackOnClose)
 			{
-			}
-			if (a_rollbackOnClose)
-			{
-				try
-				{
-					Rollback();
-				}
-				catch (Exception e)
-				{
-				}
+				Rollback();
 			}
 		}
 

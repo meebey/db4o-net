@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
@@ -78,28 +77,14 @@ namespace Db4oUnit.Extensions.Fixtures
 		public override void Open()
 		{
 			OpenServer();
-			try
-			{
-				_objectContainer = _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient
-					(Config(), HOST, _port, USERNAME, PASSWORD).Ext();
-			}
-			catch (IOException e)
-			{
-				throw new TestException(e);
-			}
+			_objectContainer = _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient
+				(Config(), HOST, _port, USERNAME, PASSWORD).Ext();
 		}
 
 		public virtual IExtObjectContainer OpenNewClient()
 		{
-			try
-			{
-				return _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient(CloneDb4oConfiguration
-					((Config4Impl)Config()), HOST, _port, USERNAME, PASSWORD).Ext();
-			}
-			catch (IOException e)
-			{
-				throw new TestException(e);
-			}
+			return _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient(CloneDb4oConfiguration
+				((Config4Impl)Config()), HOST, _port, USERNAME, PASSWORD).Ext();
 		}
 
 		private void OpenServer()
@@ -187,6 +172,11 @@ namespace Db4oUnit.Extensions.Fixtures
 		public override string GetLabel()
 		{
 			return "C/S" + (_embeddedClient ? " Embedded" : string.Empty);
+		}
+
+		public virtual int ServerPort()
+		{
+			return _port;
 		}
 	}
 }

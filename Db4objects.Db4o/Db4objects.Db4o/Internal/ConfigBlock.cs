@@ -1,4 +1,5 @@
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -103,8 +104,8 @@ namespace Db4objects.Db4o.Internal
 		private byte[] PasswordToken()
 		{
 			byte[] pwdtoken = new byte[ENCRYPTION_PASSWORD_LENGTH];
-			string fullpwd = _container.ConfigImpl().Password();
-			if (_container.ConfigImpl().Encrypt() && fullpwd != null)
+			string fullpwd = ConfigImpl().Password();
+			if (ConfigImpl().Encrypt() && fullpwd != null)
 			{
 				try
 				{
@@ -135,25 +136,17 @@ namespace Db4objects.Db4o.Internal
 			TimerFileLock().WriteOpenTime();
 			StatefulBuffer reader = _container.GetWriter(_container.SystemTransaction(), _address
 				, LENGTH);
-			try
-			{
-				_container.ReadBytes(reader._buffer, _address, LENGTH);
-			}
-			catch (Exception)
-			{
-			}
+			_container.ReadBytes(reader._buffer, _address, LENGTH);
 			int oldLength = reader.ReadInt();
 			if (oldLength > LENGTH || oldLength < MINIMUM_LENGTH)
 			{
-				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.INCOMPATIBLE_FORMAT
-					);
+				throw new IncompatibleFileFormatException();
 			}
 			if (oldLength != LENGTH)
 			{
-				if (!_container.ConfigImpl().IsReadOnly() && !_container.ConfigImpl().AllowVersionUpdates
-					())
+				if (!AllowVersionUpdate())
 				{
-					if (_container.ConfigImpl().AutomaticShutDown())
+					if (AllowAutomaticShutdown())
 					{
 						Platform4.RemoveShutDownHook(_container);
 					}
@@ -240,6 +233,22 @@ namespace Db4objects.Db4o.Internal
 			{
 				Write();
 			}
+		}
+
+		private bool AllowAutomaticShutdown()
+		{
+			return ConfigImpl().AutomaticShutDown();
+		}
+
+		private bool AllowVersionUpdate()
+		{
+			Config4Impl configImpl = ConfigImpl();
+			return !configImpl.IsReadOnly() && configImpl.AllowVersionUpdates();
+		}
+
+		private Config4Impl ConfigImpl()
+		{
+			return _container.ConfigImpl();
 		}
 
 		public void Write()

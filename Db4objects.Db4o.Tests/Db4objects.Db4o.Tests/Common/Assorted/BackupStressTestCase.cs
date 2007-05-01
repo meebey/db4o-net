@@ -1,6 +1,7 @@
-using System.IO;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Assorted;
@@ -8,7 +9,7 @@ using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class BackupStressTestCase : ITestLifeCycle
+	public class BackupStressTestCase : IDb4oTestCase
 	{
 		private static bool verbose = false;
 
@@ -37,18 +38,27 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			verbose = true;
 			runOnOldJDK = true;
 			BackupStressTestCase stressTest = new BackupStressTestCase();
-			stressTest.SetUp();
-			stressTest.Test();
+			try
+			{
+				stressTest.SetUp();
+				stressTest.Test();
+			}
+			finally
+			{
+				stressTest.TearDown();
+			}
 		}
 
 		public virtual void SetUp()
 		{
+			DeleteFile(FILE);
 			Db4oFactory.Configure().ObjectClass(typeof(BackupStressItem)).ObjectField("_iteration"
 				).Indexed(true);
 		}
 
 		public virtual void TearDown()
 		{
+			DeleteFile(FILE);
 		}
 
 		public virtual void Test()
@@ -97,12 +107,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void StartBackupThread()
 		{
-			new Thread(new _AnonymousInnerClass92(this)).Start();
+			new Thread(new _AnonymousInnerClass98(this)).Start();
 		}
 
-		private sealed class _AnonymousInnerClass92 : IRunnable
+		private sealed class _AnonymousInnerClass98 : IRunnable
 		{
-			public _AnonymousInnerClass92(BackupStressTestCase _enclosing)
+			public _AnonymousInnerClass98(BackupStressTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -114,16 +124,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 					this._enclosing._backups++;
 					string fileName = this._enclosing.BackupFile(this._enclosing._backups);
 					this._enclosing.DeleteFile(fileName);
-					try
-					{
-						this._enclosing._inBackup = true;
-						this._enclosing._objectContainer.Ext().Backup(fileName);
-						this._enclosing._inBackup = false;
-					}
-					catch (IOException e)
-					{
-						Sharpen.Runtime.PrintStackTrace(e);
-					}
+					this._enclosing._inBackup = true;
+					this._enclosing._objectContainer.Ext().Backup(fileName);
+					this._enclosing._inBackup = false;
 				}
 			}
 
@@ -182,17 +185,16 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				}
 				Stdout("Backup OK");
 			}
-			Sharpen.Runtime.Out.WriteLine("BackupStressTest " + _backups + " files OK.");
+			Stdout("BackupStressTest " + _backups + " files OK.");
 			for (int i = 1; i <= _backups; i++)
 			{
 				DeleteFile(BackupFile(i));
 			}
-			DeleteFile(FILE);
 		}
 
-		private bool DeleteFile(string fname)
+		private void DeleteFile(string fname)
 		{
-			return new Sharpen.IO.File(fname).Delete();
+			File4.Delete(fname);
 		}
 
 		private bool IsOldJDK()

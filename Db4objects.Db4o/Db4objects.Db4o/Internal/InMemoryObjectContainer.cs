@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Backup(string path)
 		{
-			Exceptions4.ThrowRuntimeException(60);
+			throw new NotSupportedException();
 		}
 
 		public override void BlockSize(int size)
@@ -167,6 +167,16 @@ namespace Db4objects.Db4o.Internal
 
 		public override void OverwriteDeletedBytes(int a_address, int a_length)
 		{
+		}
+
+		public override void Reserve(int byteCount)
+		{
+			throw new NotSupportedException();
+		}
+
+		public override byte BlockSize()
+		{
+			return 1;
 		}
 	}
 }
