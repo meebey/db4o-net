@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit.Extensions.Fixtures;
 
@@ -13,7 +14,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 #if !CF_1_0 && !CF_2_0
         public void TestAccessingJavaFromDotnet()
         {
-            if (!ShouldRunJavaFromDotnetTest())
+            if (!JavaServices.CanRunJavaCompatibilityTests())
             {
                 return;
             }
@@ -25,17 +26,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
             }
         }
 
-        private bool ShouldRunJavaFromDotnetTest()
-        {
-            if (null == WorkspaceServices.WorkspaceRoot)
-            {
-                Console.WriteLine("'db4obuild' directory not found, skipping java compatibility test.");
-                return false;
-            }
-            return true;
-        }
-
-        private void ConfigureAliases(IConfiguration configuration)
+    	private void ConfigureAliases(IConfiguration configuration)
         {
             configuration.AddAlias(new TypeAlias("com.db4o.test.aliases.Person2", GetTypeName(GetAliasedDataType())));
             //	        configuration.AddAlias(
@@ -53,25 +44,30 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
             return Db4oFactory.OpenFile(configuration, GetJavaDataFile());
         }
 
-        private String GetJavaDataFile()
+        private static string GetJavaDataFile()
         {
             return IOServices.BuildTempPath("java.yap");
         }
 
         private void GenerateJavaData()
         {
-            File.Delete(GetJavaDataFile());
-            GenerateClassFile();
-            string stdout = IOServices.Exec("java", "-cp " + Quote(JavaTempPath()) + Path.PathSeparator + WorkspaceServices.Db4ojarPath(), "com.db4o.test.aliases.Program", Quote(GetJavaDataFile()));
-            Console.WriteLine(stdout);
+            DeleteOldDataFile();
+            CompileJavaProgram();
+        	RunJavaProgram();
         }
 
-        private static string JavaTempPath()
-        {
-            return IOServices.BuildTempPath("aliases");
-        }
+    	private static void RunJavaProgram()
+    	{
+    		string stdout = JavaServices.java("com.db4o.test.aliases.Program", JavaServices.Quote(GetJavaDataFile()));
+    		Console.WriteLine(stdout);
+    	}
 
-        private void GenerateClassFile()
+    	private static void DeleteOldDataFile()
+    	{
+    		File.Delete(GetJavaDataFile());
+    	}
+
+    	private void CompileJavaProgram()
         {
             String code = @"
 package com.db4o.test.aliases;
@@ -96,18 +92,11 @@ public class Program {
 	}
 }";
 
-            string tempPath = JavaTempPath();
-            if (Directory.Exists(tempPath)) Directory.Delete(tempPath, true);
-            string srcFile = Path.Combine(tempPath, "com/db4o/test/aliases/Program.java");
-            IOServices.WriteFile(srcFile, code);
-            string stdout = IOServices.Exec(WorkspaceServices.JavacPath(), "-classpath " + WorkspaceServices.Db4ojarPath(), Quote(srcFile));
-            Console.WriteLine(stdout);
+    		JavaServices.ResetJavaTempPath();
+    		string stdout = JavaServices.CompileJavaCode("com/db4o/test/aliases/Program.java", code);
+    		Console.WriteLine(stdout);
         }
 
-        static string Quote(string s)
-        {
-            return "\"" + s + "\"";
-        }
 #endif 
 
         private string GetTypeName(Type type)

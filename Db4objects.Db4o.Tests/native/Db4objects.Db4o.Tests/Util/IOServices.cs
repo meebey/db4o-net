@@ -33,9 +33,14 @@ namespace Db4objects.Db4o.Tests.Util
 #if !CF_1_0 && !CF_2_0
 		public static String Exec(String program, params String[] arguments)
 		{
+			return Exec(program, string.Join(" ", arguments));
+		}
+
+		private static string Exec(string program, string arguments)
+		{
 			ProcessStartInfo psi = new ProcessStartInfo(program);
 			psi.UseShellExecute = false;
-			psi.Arguments = string.Join(" ", arguments);
+			psi.Arguments = arguments;
 			psi.RedirectStandardOutput = true;
 			psi.RedirectStandardError = true;
 			psi.WorkingDirectory = Path.GetTempPath();

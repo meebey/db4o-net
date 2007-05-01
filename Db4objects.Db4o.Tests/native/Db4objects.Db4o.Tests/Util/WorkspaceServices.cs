@@ -36,12 +36,6 @@ namespace Db4objects.Db4o.Tests.Util
 			return path;
 		}
 
-		public static String Db4ojarPath()
-		{
-			string db4oVersion = string.Format("{0}.{1}", Db4oVersion.MAJOR, Db4oVersion.MINOR);
-			return WorkspacePath("db4obuild/dist/java/lib/db4o-" + db4oVersion + "-java1.2.jar");
-		}
-
 		public static string WorkspacePath(string fname)
 		{
 			string root = WorkspaceRoot;
