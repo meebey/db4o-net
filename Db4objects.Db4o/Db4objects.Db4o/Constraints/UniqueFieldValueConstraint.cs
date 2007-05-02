@@ -24,17 +24,21 @@ namespace Db4objects.Db4o.Constraints
 			_fieldName = fieldName;
 		}
 
+		public virtual void Prepare(IConfiguration configuration)
+		{
+		}
+
 		/// <summary>internal method, public for implementation reasons.</summary>
 		/// <remarks>internal method, public for implementation reasons.</remarks>
 		public virtual void Apply(ObjectContainerBase objectContainer)
 		{
 			EventRegistryFactory.ForObjectContainer(objectContainer).Committing += new Db4objects.Db4o.Events.CommitEventHandler
-				(new _AnonymousInnerClass37(this, objectContainer).OnEvent);
+				(new _AnonymousInnerClass41(this, objectContainer).OnEvent);
 		}
 
-		private sealed class _AnonymousInnerClass37
+		private sealed class _AnonymousInnerClass41
 		{
-			public _AnonymousInnerClass37(UniqueFieldValueConstraint _enclosing, ObjectContainerBase
+			public _AnonymousInnerClass41(UniqueFieldValueConstraint _enclosing, ObjectContainerBase
 				 objectContainer)
 			{
 				this._enclosing = _enclosing;

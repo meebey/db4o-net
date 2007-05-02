@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 
 	class UUIDJavaCompatibilityTestCase : ITestCase
 	{
-		public void _Test()
+		public void Test()
 		{
 			if (!JavaServices.CanRunJavaCompatibilityTests())
 			{
@@ -39,8 +39,18 @@ namespace Db4objects.Db4o.Tests.CLI1
 
 		private void AssertJavaOutput(string output)
 		{
-			Console.WriteLine(output);
-			Assert.IsFalse(output.Contains("Exception"));
+//			Console.WriteLine(output);
+			string expected = @"Db4objects.Db4o.Tests.CLI1.MyTestClass, Db4objects.Db4o.Tests
+	v4ouuid
+	field1
+	field2
+	field3";
+			Assert.IsTrue(Normalize(output).Contains(Normalize(expected)));
+		}
+
+		private string Normalize(string output)
+		{
+			return output.Trim().Replace("\r\n", "\n");
 		}
 
 		private string RunJavaProgram()
@@ -55,10 +65,14 @@ package com.db4o.test.uuidcompatibility;
 
 import com.db4o.*;
 import com.db4o.ext.*;
+import com.db4o.config.*;
 
 public class Program {
 	public static void main(String[] args) {
-		ObjectContainer container = Db4o.openFile(args[0]);
+		Configuration config = Db4o.newConfiguration();
+		config.add(new DotnetSupport());
+
+		ObjectContainer container = Db4o.openFile(config, args[0]);
 		StoredClass[] storedClasses = container.ext().storedClasses();
 		for (int i = 0; i < storedClasses.length; i++) {
 			StoredClass storedClass = storedClasses[i];
@@ -82,6 +96,7 @@ public class Program {
 
 		private void GenerateDataFile()
 		{
+			System.IO.File.Delete(DataFilePath());
 			Db4oFactory.Configure().GenerateUUIDs(int.MaxValue);
 			using (IObjectContainer container = Db4oFactory.OpenFile(DataFilePath()))
 			{

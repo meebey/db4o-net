@@ -159,13 +159,19 @@ namespace Db4objects.Db4o.Internal
 
 		public void Add(IConfigurationItem item)
 		{
+			item.Prepare(this);
+			SafeConfigurationItems().Put(item, item);
+		}
+
+		private Hashtable4 SafeConfigurationItems()
+		{
 			Hashtable4 items = ConfigurationItems();
 			if (items == null)
 			{
 				items = new Hashtable4(16);
 				_config.Put(CONFIGURATION_ITEMS, items);
 			}
-			items.Put(item, item);
+			return items;
 		}
 
 		public void AllowVersionUpdates(bool flag)
@@ -185,12 +191,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			items.ForEachValue(new _AnonymousInnerClass182(this, container));
+			items.ForEachValue(new _AnonymousInnerClass187(this, container));
 		}
 
-		private sealed class _AnonymousInnerClass182 : IVisitor4
+		private sealed class _AnonymousInnerClass187 : IVisitor4
 		{
-			public _AnonymousInnerClass182(Config4Impl _enclosing, ObjectContainerBase container
+			public _AnonymousInnerClass187(Config4Impl _enclosing, ObjectContainerBase container
 				)
 			{
 				this._enclosing = _enclosing;

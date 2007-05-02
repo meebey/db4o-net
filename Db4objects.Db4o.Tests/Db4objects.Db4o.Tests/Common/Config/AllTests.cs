@@ -13,8 +13,8 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(NonStaticConfigurationTestCase), typeof(ObjectTranslatorTestCase)
-				 };
+			return new Type[] { typeof(ConfigurationItemTestCase), typeof(NonStaticConfigurationTestCase)
+				, typeof(ObjectTranslatorTestCase) };
 		}
 	}
 }
