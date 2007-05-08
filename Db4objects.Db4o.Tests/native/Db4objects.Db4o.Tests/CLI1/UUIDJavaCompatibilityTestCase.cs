@@ -45,8 +45,13 @@ namespace Db4objects.Db4o.Tests.CLI1
 	field1
 	field2
 	field3";
-			Assert.IsTrue(Normalize(output).Contains(Normalize(expected)));
+			Assert.IsTrue(Contains(Normalize(output), Normalize(expected)));
 		}
+		
+		private bool Contains(string s, string what)
+		{
+			return -1 != s.IndexOf(what);
+		} 
 
 		private string Normalize(string output)
 		{
