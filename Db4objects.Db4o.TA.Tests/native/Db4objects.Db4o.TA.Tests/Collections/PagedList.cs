@@ -56,7 +56,13 @@ namespace Db4objects.Db4o.TA.Tests.Collections
 
 		public object this[int index]
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				// TA BEGIN
+				activate();
+				// TA END
+				return _store.Get(index);
+			}
 			set { throw new NotImplementedException(); }
 		}
 
@@ -81,7 +87,13 @@ namespace Db4objects.Db4o.TA.Tests.Collections
 
 		public int Count
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				// TA BEGIN
+				activate();
+				// TA END
+				return _store.Size();
+			}
 		}
 
 		public object SyncRoot
@@ -100,7 +112,39 @@ namespace Db4objects.Db4o.TA.Tests.Collections
 
 		public IEnumerator GetEnumerator()
 		{
-			throw new NotImplementedException();
+			return new ListEnumerator(this);
+		}
+
+		class ListEnumerator : IEnumerator
+		{
+			private IList _list;
+			private int _currentIndex;
+
+			public ListEnumerator(IList list)
+			{
+				_list = list;
+				Reset();
+			}
+
+			public bool MoveNext()
+			{
+				if (_currentIndex + 1 < _list.Count)
+				{
+					++_currentIndex;
+					return true;
+				}
+				return false;
+			}
+
+			public void Reset()
+			{
+				_currentIndex = -1;
+			}
+
+			public object Current
+			{
+				get { return _list[_currentIndex]; }
+			}
 		}
 
 		#endregion
