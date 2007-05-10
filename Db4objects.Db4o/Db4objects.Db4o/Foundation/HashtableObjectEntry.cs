@@ -2,29 +2,29 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
 {
-	internal class HashtableObjectEntry : HashtableIntEntry
+	public class HashtableObjectEntry : HashtableIntEntry
 	{
-		internal object i_objectKey;
+		private object _objectKey;
 
 		internal HashtableObjectEntry(int a_hash, object a_key, object a_object) : base(a_hash
 			, a_object)
 		{
-			i_objectKey = a_key;
+			_objectKey = a_key;
 		}
 
 		internal HashtableObjectEntry(object a_key, object a_object) : base(a_key.GetHashCode
 			(), a_object)
 		{
-			i_objectKey = a_key;
+			_objectKey = a_key;
 		}
 
 		protected HashtableObjectEntry() : base()
 		{
 		}
 
-		public override void AcceptKeyVisitor(IVisitor4 visitor)
+		public override object Key()
 		{
-			visitor.Visit(i_objectKey);
+			return _objectKey;
 		}
 
 		public override object DeepClone(object obj)
@@ -36,19 +36,19 @@ namespace Db4objects.Db4o.Foundation
 		protected override HashtableIntEntry DeepCloneInternal(HashtableIntEntry entry, object
 			 obj)
 		{
-			((Db4objects.Db4o.Foundation.HashtableObjectEntry)entry).i_objectKey = i_objectKey;
+			((Db4objects.Db4o.Foundation.HashtableObjectEntry)entry)._objectKey = _objectKey;
 			return base.DeepCloneInternal(entry, obj);
 		}
 
 		public virtual bool HasKey(object key)
 		{
-			return i_objectKey.Equals(key);
+			return _objectKey.Equals(key);
 		}
 
 		public override bool SameKeyAs(HashtableIntEntry other)
 		{
 			return other is Db4objects.Db4o.Foundation.HashtableObjectEntry ? HasKey(((Db4objects.Db4o.Foundation.HashtableObjectEntry
-				)other).i_objectKey) : false;
+				)other)._objectKey) : false;
 		}
 	}
 }

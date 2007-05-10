@@ -26,6 +26,11 @@ namespace Db4objects.Db4o.Foundation
 		{
 		}
 
+		public Collection4(object[] elements)
+		{
+			AddAll(elements);
+		}
+
 		public Collection4(IEnumerable other)
 		{
 			AddAll(other);

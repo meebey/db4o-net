@@ -1,4 +1,3 @@
-using System.IO;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
@@ -23,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			i_root = TreeInt.Add(i_root, a_id);
 		}
 
-		public int ByteCount()
+		public int MarshalledLength()
 		{
 			return Const4.INT_LENGTH * (Tree.Size(i_root) + 1);
 		}
@@ -52,14 +51,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			int length = Const4.INT_LENGTH;
 			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(length
 				);
-			try
-			{
-				reader.ReadEncrypt(ta.Stream(), slot._address);
-			}
-			catch (IOException exc)
-			{
-				throw new ClassIndexException(exc, _clazz.GetName());
-			}
+			reader.ReadEncrypt(ta.Stream(), slot.Address());
 			return reader.ReadInt();
 		}
 
@@ -75,7 +67,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public sealed override int OwnLength()
 		{
-			return Const4.OBJECT_LENGTH + ByteCount();
+			return Const4.OBJECT_LENGTH + MarshalledLength();
 		}
 
 		public object Read(Db4objects.Db4o.Internal.Buffer a_reader)

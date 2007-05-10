@@ -1,12 +1,13 @@
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Tests.Common.Assorted;
 using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class ClassRenameTestCase : AbstractDb4oTestCase
+	public class ClassRenameTestCase : AbstractDb4oTestCase, IOptOutDefragSolo
 	{
 		public static void Main(string[] args)
 		{

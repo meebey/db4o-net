@@ -1,4 +1,3 @@
-using System.IO;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 
@@ -101,21 +100,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 			StatefulBuffer checker = trans.Stream().GetWriter(trans, node._peer._key, node._key
 				);
-			try
+			checker.Read();
+			for (int i = 0; i < node._key; i++)
 			{
-				checker.Read();
-				for (int i = 0; i < node._key; i++)
+				if (checker.ReadByte() != (byte)'X')
 				{
-					if (checker.ReadByte() != (byte)'X')
-					{
-						Sharpen.Runtime.Out.WriteLine("!!! Free space corruption at:" + node._peer._key);
-						break;
-					}
+					Sharpen.Runtime.Out.WriteLine("!!! Free space corruption at:" + node._peer._key);
+					break;
 				}
-			}
-			catch (IOException e)
-			{
-				Sharpen.Runtime.PrintStackTrace(e);
 			}
 		}
 

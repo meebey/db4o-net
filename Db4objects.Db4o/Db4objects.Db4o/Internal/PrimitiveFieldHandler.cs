@@ -1,4 +1,3 @@
-using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -101,15 +100,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal void Free(Transaction a_trans, int a_id, int a_address, int a_length)
-		{
-			a_trans.SlotFreePointerOnCommit(a_id, a_address, a_length);
-		}
-
 		internal void Free(StatefulBuffer a_bytes, int a_id)
 		{
-			a_bytes.GetTransaction().SlotFreePointerOnCommit(a_id, a_bytes.GetAddress(), a_bytes
-				.GetLength());
+			a_bytes.GetTransaction().SlotFreePointerOnCommit(a_id, a_bytes.Slot());
 		}
 
 		public override bool HasIndex()
@@ -131,10 +124,6 @@ namespace Db4objects.Db4o.Internal
 				{
 					return null;
 				}
-				catch (IOException)
-				{
-					return null;
-				}
 				a_yapObject.SetObjectWeak(a_bytes.GetStream(), a_object);
 			}
 			a_yapObject.SetStateClean();
@@ -153,10 +142,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			catch (IOException)
-			{
-				return null;
-			}
 		}
 
 		internal override void InstantiateFields(ObjectReference a_yapObject, object a_onObject
@@ -169,9 +154,6 @@ namespace Db4objects.Db4o.Internal
 				obj = i_handler.Read(mf, a_bytes, true);
 			}
 			catch (CorruptionException)
-			{
-			}
-			catch (IOException)
 			{
 			}
 			if (obj != null)

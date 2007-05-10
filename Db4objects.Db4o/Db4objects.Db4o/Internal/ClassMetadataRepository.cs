@@ -66,15 +66,15 @@ namespace Db4objects.Db4o.Internal
 				ClassMetadata yc = i.CurrentClass();
 				if (!yc.IsInternal())
 				{
-					yc.ForEachFieldMetadata(new _AnonymousInnerClass68(this, fieldName, a_visitor, yc
+					yc.ForEachFieldMetadata(new _AnonymousInnerClass60(this, fieldName, a_visitor, yc
 						));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass68 : IVisitor4
+		private sealed class _AnonymousInnerClass60 : IVisitor4
 		{
-			public _AnonymousInnerClass68(ClassMetadataRepository _enclosing, string fieldName
+			public _AnonymousInnerClass60(ClassMetadataRepository _enclosing, string fieldName
 				, IVisitor4 a_visitor, ClassMetadata yc)
 			{
 				this._enclosing = _enclosing;
@@ -450,40 +450,26 @@ namespace Db4objects.Db4o.Internal
 		private void ApplyReadAs()
 		{
 			Hashtable4 readAs = Stream().ConfigImpl().ReadAs();
-			readAs.ForEachKey(new _AnonymousInnerClass389(this, readAs));
-		}
-
-		private sealed class _AnonymousInnerClass389 : IVisitor4
-		{
-			public _AnonymousInnerClass389(ClassMetadataRepository _enclosing, Hashtable4 readAs
-				)
+			IEnumerator i = readAs.Iterator();
+			while (i.MoveNext())
 			{
-				this._enclosing = _enclosing;
-				this.readAs = readAs;
-			}
-
-			public void Visit(object a_object)
-			{
-				string dbName = (string)a_object;
-				byte[] dbbytes = this._enclosing.GetNameBytes(dbName);
-				string useName = (string)readAs.Get(dbName);
-				byte[] useBytes = this._enclosing.GetNameBytes(useName);
-				if (this._enclosing.ClassByBytes().Get(useBytes) == null)
+				IEntry4 entry = (IEntry4)i.Current;
+				string dbName = (string)entry.Key();
+				string useName = (string)entry.Value();
+				byte[] dbbytes = GetNameBytes(dbName);
+				byte[] useBytes = GetNameBytes(useName);
+				if (ClassByBytes().Get(useBytes) == null)
 				{
-					ClassMetadata yc = (ClassMetadata)this._enclosing.ClassByBytes().Get(dbbytes);
+					ClassMetadata yc = (ClassMetadata)ClassByBytes().Get(dbbytes);
 					if (yc != null)
 					{
 						yc.i_nameBytes = useBytes;
-						yc.SetConfig(this._enclosing.Stream().ConfigImpl().ConfigClass(dbName));
-						this._enclosing.ClassByBytes().Put(dbbytes, null);
-						this._enclosing.ClassByBytes().Put(useBytes, yc);
+						yc.SetConfig(Stream().ConfigImpl().ConfigClass(dbName));
+						ClassByBytes().Put(dbbytes, null);
+						ClassByBytes().Put(useBytes, yc);
 					}
 				}
 			}
-
-			private readonly ClassMetadataRepository _enclosing;
-
-			private readonly Hashtable4 readAs;
 		}
 
 		public ClassMetadata ReadYapClass(ClassMetadata yapClass, IReflectClass a_class)

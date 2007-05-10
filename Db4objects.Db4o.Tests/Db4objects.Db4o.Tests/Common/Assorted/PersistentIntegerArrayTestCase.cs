@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.Assorted;
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
 	/// <exclude></exclude>
-	public class PersistentIntegerArrayTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class PersistentIntegerArrayTestCase : AbstractDb4oTestCase, IOptOutCS, IOptOutDefragSolo
 	{
 		public static void Main(string[] arguments)
 		{

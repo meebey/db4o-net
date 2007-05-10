@@ -2,6 +2,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -10,24 +11,23 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void DeleteEmbedded(ArrayHandler arrayHandler, StatefulBuffer reader
 			)
 		{
-			int address = reader.ReadInt();
-			int length = reader.ReadInt();
-			if (address <= 0)
+			Slot slot = reader.ReadSlot();
+			if (slot.Address() <= 0)
 			{
 				return;
 			}
 			Transaction trans = reader.GetTransaction();
 			if (reader.CascadeDeletes() > 0 && arrayHandler.i_handler is ClassMetadata)
 			{
-				StatefulBuffer bytes = reader.GetStream().ReadWriterByAddress(trans, address, length
-					);
+				StatefulBuffer bytes = reader.GetStream().ReadWriterByAddress(trans, slot.Address
+					(), slot.Length());
 				bytes.SetCascadeDeletes(reader.CascadeDeletes());
 				for (int i = arrayHandler.ElementCount(trans, bytes); i > 0; i--)
 				{
 					arrayHandler.i_handler.DeleteEmbedded(_family, bytes);
 				}
 			}
-			trans.SlotFreeOnCommit(address, address, length);
+			trans.SlotFreeOnCommit(slot.Address(), slot);
 		}
 
 		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header

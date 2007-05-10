@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (key is byte[])
 			{
-				return AreEqual((byte[])i_objectKey, (byte[])key);
+				return AreEqual((byte[])Key(), (byte[])key);
 			}
 			return false;
 		}

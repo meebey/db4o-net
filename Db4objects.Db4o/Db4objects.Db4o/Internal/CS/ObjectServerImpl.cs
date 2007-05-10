@@ -124,23 +124,13 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void EnsureLoadConfiguredClasses()
 		{
-			_config.ExceptionalClasses().ForEachValue(new _AnonymousInnerClass111(this));
-		}
-
-		private sealed class _AnonymousInnerClass111 : IVisitor4
-		{
-			public _AnonymousInnerClass111(ObjectServerImpl _enclosing)
+			IEnumerator i = _config.ExceptionalClasses().Iterator();
+			while (i.MoveNext())
 			{
-				this._enclosing = _enclosing;
+				IEntry4 entry = (IEntry4)i.Current;
+				_container.ProduceClassMetadata(_container.Reflector().ForName(((Config4Class)entry
+					.Value()).GetName()));
 			}
-
-			public void Visit(object a_object)
-			{
-				this._enclosing._container.ProduceClassMetadata(this._enclosing._container.Reflector
-					().ForName(((Config4Class)a_object).GetName()));
-			}
-
-			private readonly ObjectServerImpl _enclosing;
 		}
 
 		private void ConfigureObjectServer()

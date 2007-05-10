@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return Const4.INT_LENGTH * 2;
 			}
-			return Const4.INT_LENGTH + ((IReadable)_object).ByteCount();
+			return Const4.INT_LENGTH + ((IReadable)_object).MarshalledLength();
 		}
 
 		internal override bool VariableLength()

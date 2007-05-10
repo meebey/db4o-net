@@ -1,3 +1,4 @@
+using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
@@ -144,29 +145,42 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			LocalObjectContainer stream = (LocalObjectContainer)trans.Stream();
-			int address = 0;
-			int length = OwnLength();
-			Db4objects.Db4o.Internal.Buffer writer = new Db4objects.Db4o.Internal.Buffer(length
-				);
-			if (IsNew())
+			try
 			{
-				Pointer4 ptr = stream.NewSlot(trans, length);
-				SetID(ptr._id);
-				address = ptr._address;
+				LocalObjectContainer stream = (LocalObjectContainer)trans.Stream();
+				int length = OwnLength();
+				Db4objects.Db4o.Internal.Buffer writer = new Db4objects.Db4o.Internal.Buffer(length
+					);
+				Slot slot;
+				if (IsNew())
+				{
+					Pointer4 pointer = stream.NewSlot(trans, length);
+					SetID(pointer._id);
+					slot = pointer._slot;
+				}
+				else
+				{
+					slot = stream.GetSlot(length);
+					trans.SlotFreeOnRollbackCommitSetPointer(i_id, slot, true);
+				}
+				WriteToFile(trans, writer, slot);
 			}
-			else
+			finally
 			{
-				address = stream.GetSlot(length);
-				trans.SlotFreeOnRollbackCommitSetPointer(i_id, address, length);
+				EndProcessing();
 			}
+		}
+
+		private void WriteToFile(Transaction trans, Db4objects.Db4o.Internal.Buffer writer
+			, Slot slot)
+		{
+			LocalObjectContainer container = (LocalObjectContainer)trans.Stream();
 			WriteThis(trans, writer);
-			writer.WriteEncrypt(stream, address, 0);
+			writer.WriteEncrypt(container, slot.Address(), 0);
 			if (IsActive())
 			{
 				SetStateClean();
 			}
-			EndProcessing();
 		}
 
 		public virtual bool WriteObjectBegin()
@@ -183,6 +197,15 @@ namespace Db4objects.Db4o.Internal
 		{
 			Write(trans);
 			writer.WriteInt(GetID());
+		}
+
+		public override int GetHashCode()
+		{
+			if (IsNew())
+			{
+				throw new InvalidOperationException();
+			}
+			return GetID();
 		}
 
 		public abstract byte GetIdentifier();

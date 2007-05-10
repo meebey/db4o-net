@@ -18,8 +18,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			handler.WriteIndexEntry(reader, original);
 			reader._offset = 0;
 			Slot retrieved = (Slot)handler.ReadIndexEntry(reader);
-			Assert.AreEqual(original._address, retrieved._address);
-			Assert.AreEqual(original._length, retrieved._length);
+			Assert.AreEqual(original.Address(), retrieved.Address());
+			Assert.AreEqual(original.Length(), retrieved.Length());
 		}
 	}
 }

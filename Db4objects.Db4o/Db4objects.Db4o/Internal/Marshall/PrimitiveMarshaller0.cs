@@ -1,5 +1,6 @@
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Slots;
 using Sharpen.Util;
 
 namespace Db4objects.Db4o.Internal.Marshall
@@ -21,15 +22,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 				ITypeHandler4 handler = yapClassPrimitive.i_handler;
 				ObjectContainerBase stream = trans.Stream();
 				id = stream.NewUserObject();
-				int address = -1;
-				int length = ObjectLength(handler);
+				Slot slot = new Slot(-1, ObjectLength(handler));
 				if (!stream.IsClient())
 				{
-					address = ((LocalTransaction)trans).File().GetSlot(length);
+					slot = ((LocalTransaction)trans).File().GetSlot(slot.Length());
 				}
-				trans.SetPointer(id, address, length);
-				StatefulBuffer writer = new StatefulBuffer(trans, length);
-				writer.UseSlot(id, address, length);
+				trans.SetPointer(id, slot);
+				StatefulBuffer writer = new StatefulBuffer(trans, slot.Length());
+				writer.UseSlot(id, slot);
 				writer.WriteInt(yapClassPrimitive.GetID());
 				handler.WriteNew(_family, obj, false, writer, true, false);
 				writer.WriteEnd();

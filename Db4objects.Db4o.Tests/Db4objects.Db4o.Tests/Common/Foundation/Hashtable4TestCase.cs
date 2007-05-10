@@ -1,3 +1,4 @@
+using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Common.Foundation;
@@ -6,6 +7,11 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 {
 	public class Hashtable4TestCase : ITestCase
 	{
+		public static void Main(string[] args)
+		{
+			new TestRunner(typeof(Hashtable4TestCase)).Run();
+		}
+
 		public virtual void TestContainsKey()
 		{
 			Hashtable4 table = new Hashtable4();
@@ -47,6 +53,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Assert.AreEqual(0, table.Size());
 		}
 
+		public virtual void TestIterator()
+		{
+			AssertIsIteratable(new object[0]);
+			AssertIsIteratable(new object[] { "one" });
+			AssertIsIteratable(new object[] { 1, 3, 2 });
+			AssertIsIteratable(new object[] { "one", "three", "two" });
+			AssertIsIteratable(new object[] { new Hashtable4TestCase.Key(1), new Hashtable4TestCase.Key
+				(3), new Hashtable4TestCase.Key(2) });
+		}
+
 		public virtual void TestSameKeyTwice()
 		{
 			int key = 1;
@@ -57,19 +73,26 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Assert.AreEqual(1, CountKeys(table));
 		}
 
-		internal class Key
+		public virtual void TestSameHashCodeIterator()
 		{
-			private int _hashCode;
+			Hashtable4TestCase.Key[] keys = CreateKeys(1, 5);
+			AssertIsIteratable(keys);
+		}
 
-			public Key(int hashCode)
+		private Hashtable4TestCase.Key[] CreateKeys(int begin, int end)
+		{
+			int factor = 10;
+			int count = (end - begin);
+			Hashtable4TestCase.Key[] keys = new Hashtable4TestCase.Key[count * factor];
+			for (int i = 0; i < count; ++i)
 			{
-				_hashCode = hashCode;
+				int baseIndex = i * factor;
+				for (int j = 0; j < factor; ++j)
+				{
+					keys[baseIndex + j] = new Hashtable4TestCase.Key(begin + i);
+				}
 			}
-
-			public override int GetHashCode()
-			{
-				return _hashCode;
-			}
+			return keys;
 		}
 
 		public virtual void TestDifferentKeysSameHashCode()
@@ -110,28 +133,51 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private int CountKeys(Hashtable4 table)
 		{
-			Hashtable4TestCase.KeyCount count = new Hashtable4TestCase.KeyCount();
-			table.ForEachKey(new _AnonymousInnerClass126(this, count));
-			return count.keys;
+			int count = 0;
+			IEnumerator i = table.Iterator();
+			while (i.MoveNext())
+			{
+				count++;
+			}
+			return count;
 		}
 
-		private sealed class _AnonymousInnerClass126 : IVisitor4
+		public virtual void AssertIsIteratable(object[] keys)
 		{
-			public _AnonymousInnerClass126(Hashtable4TestCase _enclosing, Hashtable4TestCase.KeyCount
-				 count)
+			Collection4 expected = new Collection4(keys);
+			IEnumerator iter = TableFromKeys(keys).Iterator();
+			while (iter.MoveNext())
 			{
-				this._enclosing = _enclosing;
-				this.count = count;
+				IEntry4 entry = (IEntry4)iter.Current;
+				object removed = expected.Remove(entry.Key());
+				Assert.IsNotNull(removed);
+			}
+			Assert.IsTrue(expected.IsEmpty(), expected.ToString());
+		}
+
+		private Hashtable4 TableFromKeys(object[] keys)
+		{
+			Hashtable4 ht = new Hashtable4();
+			for (int i = 0; i < keys.Length; i++)
+			{
+				ht.Put(keys[i], keys[i]);
+			}
+			return ht;
+		}
+
+		internal class Key
+		{
+			private int _hashCode;
+
+			public Key(int hashCode)
+			{
+				_hashCode = hashCode;
 			}
 
-			public void Visit(object key)
+			public override int GetHashCode()
 			{
-				++count.keys;
+				return _hashCode;
 			}
-
-			private readonly Hashtable4TestCase _enclosing;
-
-			private readonly Hashtable4TestCase.KeyCount count;
 		}
 	}
 }

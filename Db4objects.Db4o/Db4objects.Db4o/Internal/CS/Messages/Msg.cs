@@ -1,5 +1,4 @@
 using System;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
@@ -24,6 +23,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		private IMessageDispatcher _messageDispatcher;
 
+		public static readonly MChainedRuntimeException CHAINED_RUNTIME_EXCEPTION = new MChainedRuntimeException
+			();
+
 		public static readonly MClassNameForID CLASS_NAME_FOR_ID = new MClassNameForID();
 
 		public static readonly MClose CLOSE = new MClose();
@@ -43,8 +45,6 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public static readonly MClassMeta CLASS_META = new MClassMeta();
 
 		public static readonly MVersion CURRENT_VERSION = new MVersion();
-
-		public static readonly MDb4oException DB4O_EXCEPTION = new MDb4oException();
 
 		public static readonly MDelete DELETE = new MDelete();
 
@@ -322,9 +322,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			_messageDispatcher.Write(msg);
 		}
 
-		public virtual void WriteException(Db4oException e)
+		public virtual void WriteException(Exception e)
 		{
-			Write(DB4O_EXCEPTION.GetWriterForSingleObject(Transaction(), e));
+			Write(CHAINED_RUNTIME_EXCEPTION.GetWriterForSingleObject(Transaction(), e));
 		}
 
 		public virtual void RespondInt(int response)

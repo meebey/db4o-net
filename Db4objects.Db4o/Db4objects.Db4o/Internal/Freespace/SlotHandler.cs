@@ -34,8 +34,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			 obj)
 		{
 			Slot slot = (Slot)obj;
-			writer.WriteInt(slot._address);
-			writer.WriteInt(slot._length);
+			writer.WriteInt(slot.Address());
+			writer.WriteInt(slot.Length());
 		}
 
 		public virtual object Current()

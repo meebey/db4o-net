@@ -20,6 +20,10 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		{
 		}
 
+		public override void Commit()
+		{
+		}
+
 		public override void EndCommit()
 		{
 		}

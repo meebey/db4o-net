@@ -59,8 +59,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		protected virtual void GrafittiFreeSpace()
 		{
 			IoAdaptedObjectContainer file = ((IoAdaptedObjectContainer)Db());
-			FreespaceManagerRam fm = (FreespaceManagerRam)file.FreespaceManager();
-			fm.TraverseFreeSlots(new _AnonymousInnerClass58(this, file));
+			IFreespaceManager fm = file.FreespaceManager();
+			fm.Traverse(new _AnonymousInnerClass58(this, file));
 		}
 
 		private sealed class _AnonymousInnerClass58 : IVisitor4
@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			public void Visit(object obj)
 			{
 				Slot slot = (Slot)obj;
-				file.OverwriteDeletedSlot(slot);
+				file.OverwriteDeletedBlockedSlot(slot);
 			}
 
 			private readonly StringIndexTestCaseBase _enclosing;

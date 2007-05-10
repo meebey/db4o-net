@@ -2,6 +2,7 @@ using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
@@ -104,14 +105,20 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			{
 				string versionedFileName = fileName + infix + i;
 				IObjectContainer oc = Db4oFactory.OpenFile(versionedFileName);
-				if (!StateBeforeCommit(oc))
+				try
 				{
-					if (!StateAfterFirstCommit(oc))
+					if (!StateBeforeCommit(oc))
 					{
-						Assert.IsTrue(StateAfterSecondCommit(oc));
+						if (!StateAfterFirstCommit(oc))
+						{
+							Assert.IsTrue(StateAfterSecondCommit(oc));
+						}
 					}
 				}
-				oc.Close();
+				finally
+				{
+					oc.Close();
+				}
 			}
 		}
 
@@ -131,49 +138,42 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			return Expect(oc, new string[] { "10", "13" });
 		}
 
-		private bool Expect(IObjectContainer oc, string[] names)
+		private bool Expect(IObjectContainer container, string[] names)
 		{
-			IObjectSet objectSet = oc.Query(typeof(Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase)
+			Collection4 expected = new Collection4(names);
+			IObjectSet actual = container.Query(typeof(Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase)
 				);
-			if (objectSet.Size() != names.Length)
+			while (actual.HasNext())
 			{
-				return false;
-			}
-			while (objectSet.HasNext())
-			{
-				Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase cst = (Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase
-					)objectSet.Next();
-				bool found = false;
-				for (int i = 0; i < names.Length; i++)
-				{
-					if (cst._name.Equals(names[i]))
-					{
-						names[i] = null;
-						found = true;
-						break;
-					}
-				}
-				if (!found)
+				Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase current = (Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase
+					)actual.Next();
+				if (null == expected.Remove(current._name))
 				{
 					return false;
 				}
 			}
-			for (int i = 0; i < names.Length; i++)
-			{
-				if (names[i] != null)
-				{
-					return false;
-				}
-			}
-			return true;
+			return expected.IsEmpty();
 		}
 
 		private void CreateFile(string fileName)
 		{
 			IObjectContainer oc = Db4oFactory.OpenFile(fileName);
+			try
+			{
+				Populate(oc);
+			}
+			finally
+			{
+				oc.Close();
+			}
+			File4.Copy(fileName, fileName + "0");
+		}
+
+		private void Populate(IObjectContainer container)
+		{
 			for (int i = 0; i < 10; i++)
 			{
-				oc.Set(new SimplestPossibleItem("delme"));
+				container.Set(new SimplestPossibleItem("delme"));
 			}
 			Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase one = new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase
 				(null, "one");
@@ -181,17 +181,15 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				(one, "two");
 			Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase three = new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase
 				(one, "three");
-			oc.Set(one);
-			oc.Set(two);
-			oc.Set(three);
-			oc.Commit();
-			IObjectSet objectSet = oc.Query(typeof(SimplestPossibleItem));
+			container.Set(one);
+			container.Set(two);
+			container.Set(three);
+			container.Commit();
+			IObjectSet objectSet = container.Query(typeof(SimplestPossibleItem));
 			while (objectSet.HasNext())
 			{
-				oc.Delete(objectSet.Next());
+				container.Delete(objectSet.Next());
 			}
-			oc.Close();
-			File4.Copy(fileName, fileName + "0");
 		}
 
 		public override string ToString()

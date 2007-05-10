@@ -254,7 +254,7 @@ namespace Db4objects.Db4o.Internal
 		public void Write()
 		{
 			TimerFileLock().CheckHeaderLock();
-			AddressChanged(_container.GetSlot(LENGTH));
+			AddressChanged(_container.GetSlot(LENGTH).Address());
 			StatefulBuffer writer = _container.GetWriter(_container.GetTransaction(), _address
 				, LENGTH);
 			IntHandler.WriteInt(LENGTH, writer);

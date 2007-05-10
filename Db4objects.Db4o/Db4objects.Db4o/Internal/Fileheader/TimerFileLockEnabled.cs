@@ -57,19 +57,12 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public override void CheckOpenTime()
 		{
-			try
+			long readOpenTime = ReadLong(_baseAddress, _openTimeOffset);
+			if (_opentime != readOpenTime)
 			{
-				long readOpenTime = ReadLong(_baseAddress, _openTimeOffset);
-				if (_opentime == readOpenTime)
-				{
-					WriteOpenTime();
-					return;
-				}
+				throw new DatabaseFileLockedException(_timerFile.ToString());
 			}
-			catch (IOException)
-			{
-			}
-			throw new DatabaseFileLockedException(_timerFile.ToString());
+			WriteOpenTime();
 		}
 
 		public override void CheckIfOtherSessionAlive(LocalObjectContainer container, int
@@ -112,19 +105,13 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 			Thread t = Thread.CurrentThread();
 			t.SetName("db4o file lock");
-			try
+			while (WriteAccessTime(false))
 			{
-				while (WriteAccessTime(false))
+				Cool.SleepIgnoringInterruption(Const4.LOCK_TIME_INTERVAL);
+				if (_closed)
 				{
-					Cool.SleepIgnoringInterruption(Const4.LOCK_TIME_INTERVAL);
-					if (_closed)
-					{
-						break;
-					}
+					break;
 				}
-			}
-			catch (IOException)
-			{
 			}
 		}
 
@@ -180,14 +167,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public override void WriteOpenTime()
 		{
-			try
-			{
-				WriteLong(_baseAddress, _openTimeOffset, _opentime);
-				Sync();
-			}
-			catch (IOException)
-			{
-			}
+			WriteLong(_baseAddress, _openTimeOffset, _opentime);
+			Sync();
 		}
 
 		private bool WriteLong(int address, int offset, long time)

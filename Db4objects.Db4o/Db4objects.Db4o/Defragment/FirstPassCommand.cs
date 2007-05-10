@@ -4,6 +4,7 @@ using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Defragment
 {
@@ -66,12 +67,12 @@ namespace Db4objects.Db4o.Defragment
 		public void ProcessBTree(DefragContextImpl context, BTree btree)
 		{
 			Process(context, btree.GetID(), false);
-			context.TraverseAllIndexSlots(btree, new _AnonymousInnerClass54(this, context));
+			context.TraverseAllIndexSlots(btree, new _AnonymousInnerClass55(this, context));
 		}
 
-		private sealed class _AnonymousInnerClass54 : IVisitor4
+		private sealed class _AnonymousInnerClass55 : IVisitor4
 		{
-			public _AnonymousInnerClass54(FirstPassCommand _enclosing, DefragContextImpl context
+			public _AnonymousInnerClass55(FirstPassCommand _enclosing, DefragContextImpl context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -104,7 +105,8 @@ namespace Db4objects.Db4o.Defragment
 				blocksPerPointer++;
 			}
 			int batchSize = _ids.Size() * blockLength;
-			int pointerAddress = context.AllocateTargetSlot(batchSize);
+			Slot pointerSlot = context.AllocateTargetSlot(batchSize);
+			int pointerAddress = pointerSlot.Address();
 			IEnumerator idIter = new TreeKeyIterator(_ids);
 			while (idIter.MoveNext())
 			{

@@ -63,14 +63,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 yo, int updateDepth, int length)
 		{
 			int id = yo.GetID();
-			int address = -1;
+			Slot slot = new Slot(-1, length);
 			if (trans is LocalTransaction)
 			{
-				address = ((LocalTransaction)trans).File().GetSlot(length);
-				trans.SlotFreeOnRollback(id, address, length);
+				slot = ((LocalTransaction)trans).File().GetSlot(length);
+				trans.SlotFreeOnRollback(id, slot);
 			}
-			trans.SetPointer(id, address, length);
-			return CreateWriterForUpdate(trans, updateDepth, id, address, length);
+			trans.SetPointer(id, slot);
+			return CreateWriterForUpdate(trans, updateDepth, id, slot.Address(), slot.Length(
+				));
 		}
 
 		protected virtual StatefulBuffer CreateWriterForUpdate(Transaction a_trans, int updateDepth

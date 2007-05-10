@@ -2,6 +2,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.CS
 {
@@ -41,14 +42,14 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (i_yapObjectsToGc != null)
 			{
-				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass37(this));
+				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass38(this));
 			}
 			i_yapObjectsToGc = null;
 		}
 
-		private sealed class _AnonymousInnerClass37 : IVisitor4
+		private sealed class _AnonymousInnerClass38 : IVisitor4
 		{
-			public _AnonymousInnerClass37(ClientTransaction _enclosing)
+			public _AnonymousInnerClass38(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -102,15 +103,15 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (i_delete != null)
 			{
-				i_delete.Traverse(new _AnonymousInnerClass86(this));
+				i_delete.Traverse(new _AnonymousInnerClass87(this));
 			}
 			i_delete = null;
 			i_client.WriteBatchedMessage(Msg.PROCESS_DELETES);
 		}
 
-		private sealed class _AnonymousInnerClass86 : IVisitor4
+		private sealed class _AnonymousInnerClass87 : IVisitor4
 		{
-			public _AnonymousInnerClass86(ClientTransaction _enclosing)
+			public _AnonymousInnerClass87(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -143,7 +144,7 @@ namespace Db4objects.Db4o.Internal.CS
 			i_client.WriteBatchedMessage(msg);
 		}
 
-		public override void SetPointer(int a_id, int a_address, int a_length)
+		public override void SetPointer(int a_id, Slot slot)
 		{
 		}
 	}

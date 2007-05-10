@@ -1,3 +1,4 @@
+using System.Collections;
 using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
@@ -7,27 +8,27 @@ namespace Db4objects.Db4o.Foundation
 	{
 		private const float FILL = 0.5F;
 
-		private int i_tableSize;
+		private int _tableSize;
 
-		private int i_mask;
+		private int _mask;
 
-		private int i_maximumSize;
+		private int _maximumSize;
 
-		private int i_size;
+		private int _size;
 
-		private HashtableIntEntry[] i_table;
+		private HashtableIntEntry[] _table;
 
-		public Hashtable4(int a_size)
+		public Hashtable4(int size)
 		{
-			a_size = NewSize(a_size);
-			i_tableSize = 1;
-			while (i_tableSize < a_size)
+			size = NewSize(size);
+			_tableSize = 1;
+			while (_tableSize < size)
 			{
-				i_tableSize = i_tableSize << 1;
+				_tableSize = _tableSize << 1;
 			}
-			i_mask = i_tableSize - 1;
-			i_maximumSize = (int)(i_tableSize * FILL);
-			i_table = new HashtableIntEntry[i_tableSize];
+			_mask = _tableSize - 1;
+			_maximumSize = (int)(_tableSize * FILL);
+			_table = new HashtableIntEntry[_tableSize];
 		}
 
 		public Hashtable4() : this(1)
@@ -40,7 +41,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual int Size()
 		{
-			return i_size;
+			return _size;
 		}
 
 		public virtual object DeepClone(object obj)
@@ -49,44 +50,18 @@ namespace Db4objects.Db4o.Foundation
 				), obj);
 		}
 
-		public virtual void ForEachKey(IVisitor4 visitor)
+		public virtual void ForEachKeyForIdentity(IVisitor4 visitor, object obj)
 		{
-			for (int i = 0; i < i_table.Length; i++)
+			for (int i = 0; i < _table.Length; i++)
 			{
-				HashtableIntEntry entry = i_table[i];
+				HashtableIntEntry entry = _table[i];
 				while (entry != null)
 				{
-					entry.AcceptKeyVisitor(visitor);
-					entry = entry.i_next;
-				}
-			}
-		}
-
-		public virtual void ForEachKeyForIdentity(IVisitor4 visitor, object a_identity)
-		{
-			for (int i = 0; i < i_table.Length; i++)
-			{
-				HashtableIntEntry entry = i_table[i];
-				while (entry != null)
-				{
-					if (entry.i_object == a_identity)
+					if (entry._object == obj)
 					{
-						entry.AcceptKeyVisitor(visitor);
+						visitor.Visit(entry.Key());
 					}
-					entry = entry.i_next;
-				}
-			}
-		}
-
-		public virtual void ForEachValue(IVisitor4 visitor)
-		{
-			for (int i = 0; i < i_table.Length; i++)
-			{
-				HashtableIntEntry entry = i_table[i];
-				while (entry != null)
-				{
-					visitor.Visit(entry.i_object);
-					entry = entry.i_next;
+					entry = entry._next;
 				}
 			}
 		}
@@ -99,14 +74,14 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual object Get(int key)
 		{
-			HashtableIntEntry entry = i_table[key & i_mask];
+			HashtableIntEntry entry = _table[key & _mask];
 			while (entry != null)
 			{
-				if (entry.i_key == key)
+				if (entry._key == key)
 				{
-					return entry.i_object;
+					return entry._object;
 				}
-				entry = entry.i_next;
+				entry = entry._next;
 			}
 			return null;
 		}
@@ -118,6 +93,11 @@ namespace Db4objects.Db4o.Foundation
 				return null;
 			}
 			return GetFromObjectEntry(key.GetHashCode(), key);
+		}
+
+		public virtual IEnumerator Iterator()
+		{
+			return new HashtableIterator(_table);
 		}
 
 		public virtual bool ContainsKey(object key)
@@ -150,19 +130,19 @@ namespace Db4objects.Db4o.Foundation
 			return RemoveObjectEntry(intKey, key);
 		}
 
-		public virtual void Remove(int a_key)
+		public virtual void Remove(int key)
 		{
-			HashtableIntEntry entry = i_table[a_key & i_mask];
+			HashtableIntEntry entry = _table[key & _mask];
 			HashtableIntEntry predecessor = null;
 			while (entry != null)
 			{
-				if (entry.i_key == a_key)
+				if (entry._key == key)
 				{
 					RemoveEntry(predecessor, entry);
 					return;
 				}
 				predecessor = entry;
-				entry = entry.i_next;
+				entry = entry._next;
 			}
 		}
 
@@ -175,16 +155,16 @@ namespace Db4objects.Db4o.Foundation
 		protected virtual Db4objects.Db4o.Foundation.Hashtable4 DeepCloneInternal(Db4objects.Db4o.Foundation.Hashtable4
 			 ret, object obj)
 		{
-			ret.i_mask = i_mask;
-			ret.i_maximumSize = i_maximumSize;
-			ret.i_size = i_size;
-			ret.i_tableSize = i_tableSize;
-			ret.i_table = new HashtableIntEntry[i_tableSize];
-			for (int i = 0; i < i_tableSize; i++)
+			ret._mask = _mask;
+			ret._maximumSize = _maximumSize;
+			ret._size = _size;
+			ret._tableSize = _tableSize;
+			ret._table = new HashtableIntEntry[_tableSize];
+			for (int i = 0; i < _tableSize; i++)
 			{
-				if (i_table[i] != null)
+				if (_table[i] != null)
 				{
-					ret.i_table[i] = (HashtableIntEntry)i_table[i].DeepClone(obj);
+					ret._table[i] = (HashtableIntEntry)_table[i].DeepClone(obj);
 				}
 			}
 			return ret;
@@ -192,19 +172,19 @@ namespace Db4objects.Db4o.Foundation
 
 		private int EntryIndex(HashtableIntEntry entry)
 		{
-			return entry.i_key & i_mask;
+			return entry._key & _mask;
 		}
 
 		private HashtableIntEntry FindWithSameKey(HashtableIntEntry newEntry)
 		{
-			HashtableIntEntry existing = i_table[EntryIndex(newEntry)];
+			HashtableIntEntry existing = _table[EntryIndex(newEntry)];
 			while (null != existing)
 			{
 				if (existing.SameKeyAs(newEntry))
 				{
 					return existing;
 				}
-				existing = existing.i_next;
+				existing = existing._next;
 			}
 			return null;
 		}
@@ -212,30 +192,30 @@ namespace Db4objects.Db4o.Foundation
 		private object GetFromObjectEntry(int intKey, object objectKey)
 		{
 			HashtableObjectEntry entry = GetObjectEntry(intKey, objectKey);
-			return entry == null ? null : entry.i_object;
+			return entry == null ? null : entry._object;
 		}
 
 		private HashtableObjectEntry GetObjectEntry(int intKey, object objectKey)
 		{
-			HashtableObjectEntry entry = (HashtableObjectEntry)i_table[intKey & i_mask];
+			HashtableObjectEntry entry = (HashtableObjectEntry)_table[intKey & _mask];
 			while (entry != null)
 			{
-				if (entry.i_key == intKey && entry.HasKey(objectKey))
+				if (entry._key == intKey && entry.HasKey(objectKey))
 				{
 					return entry;
 				}
-				entry = (HashtableObjectEntry)entry.i_next;
+				entry = (HashtableObjectEntry)entry._next;
 			}
 			return null;
 		}
 
 		private void IncreaseSize()
 		{
-			i_tableSize = i_tableSize << 1;
-			i_maximumSize = i_maximumSize << 1;
-			i_mask = i_tableSize - 1;
-			HashtableIntEntry[] temp = i_table;
-			i_table = new HashtableIntEntry[i_tableSize];
+			_tableSize = _tableSize << 1;
+			_maximumSize = _maximumSize << 1;
+			_mask = _tableSize - 1;
+			HashtableIntEntry[] temp = _table;
+			_table = new HashtableIntEntry[_tableSize];
 			for (int i = 0; i < temp.Length; i++)
 			{
 				Reposition(temp[i]);
@@ -244,19 +224,19 @@ namespace Db4objects.Db4o.Foundation
 
 		private void Insert(HashtableIntEntry newEntry)
 		{
-			i_size++;
-			if (i_size > i_maximumSize)
+			_size++;
+			if (_size > _maximumSize)
 			{
 				IncreaseSize();
 			}
 			int index = EntryIndex(newEntry);
-			newEntry.i_next = i_table[index];
-			i_table[index] = newEntry;
+			newEntry._next = _table[index];
+			_table[index] = newEntry;
 		}
 
-		private int NewSize(int a_size)
+		private int NewSize(int size)
 		{
-			return (int)(a_size / FILL);
+			return (int)(size / FILL);
 		}
 
 		private void PutEntry(HashtableIntEntry newEntry)
@@ -276,57 +256,57 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (predecessor != null)
 			{
-				predecessor.i_next = entry.i_next;
+				predecessor._next = entry._next;
 			}
 			else
 			{
-				i_table[EntryIndex(entry)] = entry.i_next;
+				_table[EntryIndex(entry)] = entry._next;
 			}
-			i_size--;
+			_size--;
 		}
 
 		private object RemoveObjectEntry(int intKey, object objectKey)
 		{
-			HashtableObjectEntry entry = (HashtableObjectEntry)i_table[intKey & i_mask];
+			HashtableObjectEntry entry = (HashtableObjectEntry)_table[intKey & _mask];
 			HashtableObjectEntry predecessor = null;
 			while (entry != null)
 			{
-				if (entry.i_key == intKey && entry.HasKey(objectKey))
+				if (entry._key == intKey && entry.HasKey(objectKey))
 				{
 					RemoveEntry(predecessor, entry);
-					return entry.i_object;
+					return entry._object;
 				}
 				predecessor = entry;
-				entry = (HashtableObjectEntry)entry.i_next;
+				entry = (HashtableObjectEntry)entry._next;
 			}
 			return null;
 		}
 
 		private void Replace(HashtableIntEntry existing, HashtableIntEntry newEntry)
 		{
-			newEntry.i_next = existing.i_next;
-			HashtableIntEntry entry = i_table[EntryIndex(existing)];
+			newEntry._next = existing._next;
+			HashtableIntEntry entry = _table[EntryIndex(existing)];
 			if (entry == existing)
 			{
-				i_table[EntryIndex(existing)] = newEntry;
+				_table[EntryIndex(existing)] = newEntry;
 			}
 			else
 			{
-				while (entry.i_next != existing)
+				while (entry._next != existing)
 				{
-					entry = entry.i_next;
+					entry = entry._next;
 				}
-				entry.i_next = newEntry;
+				entry._next = newEntry;
 			}
 		}
 
-		private void Reposition(HashtableIntEntry a_entry)
+		private void Reposition(HashtableIntEntry entry)
 		{
-			if (a_entry != null)
+			if (entry != null)
 			{
-				Reposition(a_entry.i_next);
-				a_entry.i_next = i_table[EntryIndex(a_entry)];
-				i_table[EntryIndex(a_entry)] = a_entry;
+				Reposition(entry._next);
+				entry._next = _table[EntryIndex(entry)];
+				_table[EntryIndex(entry)] = entry;
 			}
 		}
 	}

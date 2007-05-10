@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.IO;
 using System.Text;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -121,10 +120,6 @@ namespace Db4objects.Db4o.Internal
 				AddIndexEntry(writer, ReadIndexEntry(mf, writer));
 			}
 			catch (CorruptionException exc)
-			{
-				throw new FieldIndexException(exc, this);
-			}
-			catch (IOException exc)
 			{
 				throw new FieldIndexException(exc, this);
 			}
@@ -348,14 +343,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					if (i_handler is ArrayHandler)
 					{
-						try
-						{
-							tree = ((ArrayHandler)i_handler).CollectIDs(mf, tree, a_bytes);
-						}
-						catch (IOException e)
-						{
-							throw new FieldIndexException(e, this);
-						}
+						tree = ((ArrayHandler)i_handler).CollectIDs(mf, tree, a_bytes);
 					}
 				}
 			}
@@ -449,10 +437,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new FieldIndexException(exc, this);
 			}
-			catch (IOException exc)
-			{
-				throw new FieldIndexException(exc, this);
-			}
 		}
 
 		private void RemoveIndexEntry(MarshallerFamily mf, StatefulBuffer a_bytes)
@@ -488,42 +472,47 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object Get(object a_onObject)
 		{
-			if (_clazz != null)
+			if (_clazz == null)
 			{
-				ObjectContainerBase stream = _clazz.GetStream();
-				if (stream != null)
+				return null;
+			}
+			ObjectContainerBase stream = _clazz.GetStream();
+			if (stream == null)
+			{
+				return null;
+			}
+			lock (stream.i_lock)
+			{
+				stream.CheckClosed();
+				ObjectReference yo = stream.ReferenceForObject(a_onObject);
+				if (yo == null)
 				{
-					lock (stream.i_lock)
-					{
-						stream.CheckClosed();
-						ObjectReference yo = stream.ReferenceForObject(a_onObject);
-						if (yo != null)
-						{
-							int id = yo.GetID();
-							if (id > 0)
-							{
-								StatefulBuffer writer = stream.ReadWriterByID(stream.GetTransaction(), id);
-								if (writer != null)
-								{
-									writer._offset = 0;
-									ObjectHeader oh = new ObjectHeader(stream, _clazz, writer);
-									if (oh.ObjectMarshaller().FindOffset(_clazz, oh._headerAttributes, writer, this))
-									{
-										try
-										{
-											return Read(oh._marshallerFamily, writer);
-										}
-										catch (CorruptionException e)
-										{
-										}
-										catch (IOException exc)
-										{
-										}
-									}
-								}
-							}
-						}
-					}
+					return null;
+				}
+				int id = yo.GetID();
+				if (id <= 0)
+				{
+					return null;
+				}
+				StatefulBuffer writer = stream.ReadWriterByID(stream.GetTransaction(), id);
+				if (writer == null)
+				{
+					return null;
+				}
+				writer._offset = 0;
+				ObjectHeader oh = new ObjectHeader(stream, _clazz, writer);
+				bool findOffset = oh.ObjectMarshaller().FindOffset(_clazz, oh._headerAttributes, 
+					writer, this);
+				if (!findOffset)
+				{
+					return null;
+				}
+				try
+				{
+					return Read(oh._marshallerFamily, writer);
+				}
+				catch (CorruptionException e)
+				{
 				}
 			}
 			return null;
@@ -884,13 +873,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				Transaction trans = stream.GetTransaction();
-				_index.TraverseKeys(trans, new _AnonymousInnerClass811(this, userVisitor, trans));
+				_index.TraverseKeys(trans, new _AnonymousInnerClass782(this, userVisitor, trans));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass811 : IVisitor4
+		private sealed class _AnonymousInnerClass782 : IVisitor4
 		{
-			public _AnonymousInnerClass811(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _AnonymousInnerClass782(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;

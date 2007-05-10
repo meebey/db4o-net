@@ -16,8 +16,8 @@ namespace Db4objects.Db4o
 	[System.Serializable]
 	public class DatabaseFileLockedException : Db4oException
 	{
-		public DatabaseFileLockedException(string databaseDescription) : this(databaseDescription
-			, null)
+		public DatabaseFileLockedException(string databaseDescription) : base(databaseDescription
+			)
 		{
 		}
 

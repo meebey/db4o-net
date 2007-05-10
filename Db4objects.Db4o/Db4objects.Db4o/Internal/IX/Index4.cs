@@ -305,7 +305,7 @@ namespace Db4objects.Db4o.Internal.IX
 
 		private int GetSlot(int length)
 		{
-			return File().GetSlot(length);
+			return File().GetSlot(length).Address();
 		}
 
 		private Tree GetRoot()

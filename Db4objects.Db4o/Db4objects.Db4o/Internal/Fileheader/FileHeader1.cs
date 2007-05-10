@@ -1,4 +1,3 @@
-using System.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
 using Sharpen;
@@ -124,13 +123,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			file.SyncFiles();
 			if (startFileLockingThread)
 			{
-				try
-				{
-					_timerFileLock.Start();
-				}
-				catch (IOException)
-				{
-				}
+				_timerFileLock.Start();
 			}
 		}
 

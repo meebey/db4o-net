@@ -10,6 +10,11 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 {
 	public class ByteArrayTestCase : AbstractDb4oTestCase
 	{
+		public static void Main(string[] args)
+		{
+			new ByteArrayTestCase().RunAll();
+		}
+
 		public interface IIByteArrayHolder
 		{
 			byte[] GetBytes();
@@ -50,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		internal const int INSTANCES = 2;
 
-		internal const int ARRAY_LENGTH = 1024 * 512;
+		internal const int ARRAY_LENGTH = 1024;
 
 		#if !CF_1_0 && !CF_2_0
 		protected override void Configure(IConfiguration config)

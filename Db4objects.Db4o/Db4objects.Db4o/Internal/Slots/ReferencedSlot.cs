@@ -31,10 +31,13 @@ namespace Db4objects.Db4o.Internal.Slots
 		public virtual Tree Free(LocalObjectContainer file, Tree treeRoot, Db4objects.Db4o.Internal.Slots.Slot
 			 slot)
 		{
-			file.Free(_slot._address, _slot._length);
+			file.Free(_slot.Address(), _slot.Length());
 			if (RemoveReferenceIsLast())
 			{
-				return treeRoot.RemoveNode(this);
+				if (treeRoot != null)
+				{
+					return treeRoot.RemoveNode(this);
+				}
 			}
 			PointTo(slot);
 			return treeRoot;

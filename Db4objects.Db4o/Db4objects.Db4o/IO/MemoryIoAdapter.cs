@@ -6,28 +6,31 @@ namespace Db4objects.Db4o.IO
 {
 	/// <summary>IoAdapter for in-memory operation.</summary>
 	/// <remarks>
-	/// IoAdapter for in-memory operation.
-	/// <br /><br />Configure db4o to operate with this in-memory IoAdapter with
+	/// IoAdapter for in-memory operation. <br />
+	/// <br />
+	/// Configure db4o to operate with this in-memory IoAdapter with
 	/// <code>MemoryIoAdapter memoryIoAdapter = new MemoryIoAdapter();<br />
 	/// Db4o.configure().io(memoryIoAdapter);</code><br />
-	/// <br /><br />Use the normal #openFile() and #openServer() commands to
-	/// open ObjectContainers and ObjectServers. The names specified as
-	/// file names will be used to identify the
-	/// <code>byte[]</code> content of the in-memory files in
-	/// the _memoryFiles Hashtable in the adapter. After working with an
-	/// in-memory ObjectContainer/ObjectServer the <code>byte[]</code> content
-	/// is available in the MemoryIoAdapter by using
+	/// <br />
+	/// <br />
+	/// Use the normal #openFile() and #openServer() commands to open
+	/// ObjectContainers and ObjectServers. The names specified as file names will be
+	/// used to identify the <code>byte[]</code> content of the in-memory files in
+	/// the _memoryFiles Hashtable in the adapter. After working with an in-memory
+	/// ObjectContainer/ObjectServer the <code>byte[]</code> content is available
+	/// in the MemoryIoAdapter by using
 	/// <see cref="Db4objects.Db4o.IO.MemoryIoAdapter.Get">Db4objects.Db4o.IO.MemoryIoAdapter.Get
 	/// 	</see>
-	/// . To add old existing database
-	/// <code>byte[]</code> content to a MemoryIoAdapter use
+	/// . To add old existing
+	/// database <code>byte[]</code> content to a MemoryIoAdapter use
 	/// <see cref="Db4objects.Db4o.IO.MemoryIoAdapter.Put">Db4objects.Db4o.IO.MemoryIoAdapter.Put
 	/// 	</see>
-	/// . To reduce memory consumption of memory
-	/// file names that will no longer be used call
+	/// . To reduce memory consumption of memory file
+	/// names that will no longer be used call
 	/// <see cref="Db4objects.Db4o.IO.MemoryIoAdapter.Put">Db4objects.Db4o.IO.MemoryIoAdapter.Put
 	/// 	</see>
-	/// and pass an empty byte array.
+	/// and pass
+	/// an empty byte array.
 	/// </remarks>
 	public class MemoryIoAdapter : IoAdapter
 	{
@@ -60,12 +63,12 @@ namespace Db4objects.Db4o.IO
 		}
 
 		/// <summary>
-		/// creates an in-memory database with the passed content bytes and
-		/// adds it to the adapter for the specified name.
+		/// creates an in-memory database with the passed content bytes and adds it
+		/// to the adapter for the specified name.
 		/// </summary>
 		/// <remarks>
-		/// creates an in-memory database with the passed content bytes and
-		/// adds it to the adapter for the specified name.
+		/// creates an in-memory database with the passed content bytes and adds it
+		/// to the adapter for the specified name.
 		/// </remarks>
 		/// <param name="name">the name to be use for #openFile() or #openServer() calls</param>
 		/// <param name="bytes">the database content</param>
@@ -94,15 +97,16 @@ namespace Db4objects.Db4o.IO
 		}
 
 		/// <summary>
-		/// configures the length a memory file should grow, if no more
-		/// free slots are found within.
+		/// configures the length a memory file should grow, if no more free slots
+		/// are found within.
 		/// </summary>
 		/// <remarks>
-		/// configures the length a memory file should grow, if no more
-		/// free slots are found within.
-		/// <br /><br />Specify a large value (100,000 or more) for best performance.
-		/// Specify a small value (100) for the smallest memory consumption. The
-		/// default setting is 10,000.
+		/// configures the length a memory file should grow, if no more free slots
+		/// are found within. <br />
+		/// <br />
+		/// Specify a large value (100,000 or more) for best performance. Specify a
+		/// small value (100) for the smallest memory consumption. The default
+		/// setting is 10,000.
 		/// </remarks>
 		/// <param name="length">the length in bytes</param>
 		public virtual void GrowBy(int length)

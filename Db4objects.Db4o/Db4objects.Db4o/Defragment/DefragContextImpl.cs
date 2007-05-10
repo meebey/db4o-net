@@ -157,14 +157,14 @@ namespace Db4objects.Db4o.Defragment
 			 selector, int id)
 		{
 			Slot slot = ReadPointer(selector, id);
-			return ReaderByAddress(selector, slot._address, slot._length);
+			return ReaderByAddress(selector, slot.Address(), slot.Length());
 		}
 
 		public virtual StatefulBuffer SourceWriterByID(int id)
 		{
 			Slot slot = ReadPointer(SOURCEDB, id);
-			return _sourceDb.ReadWriterByAddress(SOURCEDB.Transaction(this), slot._address, slot
-				._length);
+			return _sourceDb.ReadWriterByAddress(SOURCEDB.Transaction(this), slot.Address(), 
+				slot.Length());
 		}
 
 		public virtual Db4objects.Db4o.Internal.Buffer SourceReaderByAddress(int address, 
@@ -190,7 +190,7 @@ namespace Db4objects.Db4o.Defragment
 			return _targetDb.ReadWriterByAddress(TARGETDB.Transaction(this), address, length);
 		}
 
-		public virtual int AllocateTargetSlot(int length)
+		public virtual Slot AllocateTargetSlot(int length)
 		{
 			return _targetDb.GetSlot(length);
 		}

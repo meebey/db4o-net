@@ -1,0 +1,288 @@
+using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Tests.Common.Exceptions;
+
+namespace Db4objects.Db4o.Tests.Common.Exceptions
+{
+	public class Db4oIOExceptionTestCase : Db4oIOExceptionTestCaseBase
+	{
+		public static void Main(string[] args)
+		{
+			new Db4oIOExceptionTestCase().RunSolo();
+		}
+
+		protected override void Configure(IConfiguration config)
+		{
+			base.Configure(config);
+		}
+
+		public virtual void TestActivate()
+		{
+			Store(new Db4oIOExceptionTestCase.Item(3));
+			Fixture().Config().ActivationDepth(1);
+			Fixture().Reopen();
+			Db4oIOExceptionTestCase.Item item = (Db4oIOExceptionTestCase.Item)RetrieveOnlyInstance
+				(typeof(Db4oIOExceptionTestCase.Item));
+			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass25(this, item));
+		}
+
+		private sealed class _AnonymousInnerClass25 : ICodeBlock
+		{
+			public _AnonymousInnerClass25(Db4oIOExceptionTestCase _enclosing, Db4oIOExceptionTestCase.Item
+				 item)
+			{
+				this._enclosing = _enclosing;
+				this.item = item;
+			}
+
+			public void Run()
+			{
+				ExceptionIOAdapter.exception = true;
+				this._enclosing.Db().Activate(item, 3);
+			}
+
+			private readonly Db4oIOExceptionTestCase _enclosing;
+
+			private readonly Db4oIOExceptionTestCase.Item item;
+		}
+
+		public virtual void TestClose()
+		{
+			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass34(this));
+		}
+
+		private sealed class _AnonymousInnerClass34 : ICodeBlock
+		{
+			public _AnonymousInnerClass34(Db4oIOExceptionTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				ExceptionIOAdapter.exception = true;
+				this._enclosing.Db().Close();
+			}
+
+			private readonly Db4oIOExceptionTestCase _enclosing;
+		}
+
+		public virtual void TestCommit()
+		{
+			Store(new Db4oIOExceptionTestCase.Item(0));
+			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass44(this));
+		}
+
+		private sealed class _AnonymousInnerClass44 : ICodeBlock
+		{
+			public _AnonymousInnerClass44(Db4oIOExceptionTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				ExceptionIOAdapter.exception = true;
+				this._enclosing.Db().Commit();
+			}
+
+			private readonly Db4oIOExceptionTestCase _enclosing;
+		}
+
+		public virtual void TestDelete()
+		{
+			Store(new Db4oIOExceptionTestCase.Item(3));
+			Db4oIOExceptionTestCase.Item item = (Db4oIOExceptionTestCase.Item)RetrieveOnlyInstance
+				(typeof(Db4oIOExceptionTestCase.Item));
+			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass55(this, item));
+		}
+
+		private sealed class _AnonymousInnerClass55 : ICodeBlock
+		{
+			public _AnonymousInnerClass55(Db4oIOExceptionTestCase _enclosing, Db4oIOExceptionTestCase.Item
+				 item)
+			{
+				this._enclosing = _enclosing;
+				this.item = item;
+			}
+
+			public void Run()
+			{
+				ExceptionIOAdapter.exception = true;
+				this._enclosing.Db().Delete(item);
+			}
+
+			private readonly Db4oIOExceptionTestCase _enclosing;
+
+			private readonly Db4oIOExceptionTestCase.Item item;
+		}
+
+		public virtual void TestGet()
+		{
+			Store(new Db4oIOExceptionTestCase.Item(3));
+			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass65(this));
+		}
+
+		private sealed class _AnonymousInnerClass65 : ICodeBlock
+		{
+			public _AnonymousInnerClass65(Db4oIOExceptionTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				ExceptionIOAdapter.exception = true;
+				this._enclosing.Db().Get(typeof(Db4oIOExceptionTestCase.Item));
+			}
+
+			private readonly Db4oIOExceptionTestCase _enclosing;
+		}
+
+		public virtual void TestGetAll()
+		{
+			Store(new Db4oIOExceptionTestCase.Item(3));
+			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass75(this));
+		}
+
+		private sealed class _AnonymousInnerClass75 : ICodeBlock
+		{
+			public _AnonymousInnerClass75(Db4oIOExceptionTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				ExceptionIOAdapter.exception = true;
+				IObjectSet os = this._enclosing.Db().Get(null);
+				while (os.HasNext())
+				{
+					os.Next();
+				}
+			}
+
+			private readonly Db4oIOExceptionTestCase _enclosing;
+		}
+
+		public virtual void TestQuery()
+		{
+			Store(new Db4oIOExceptionTestCase.Item(3));
+			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass88(this));
+		}
+
+		private sealed class _AnonymousInnerClass88 : ICodeBlock
+		{
+			public _AnonymousInnerClass88(Db4oIOExceptionTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				ExceptionIOAdapter.exception = true;
+				this._enclosing.Db().Query(typeof(Db4oIOExceptionTestCase.Item));
+			}
+
+			private readonly Db4oIOExceptionTestCase _enclosing;
+		}
+
+		public virtual void TestRollback()
+		{
+			Store(new Db4oIOExceptionTestCase.Item(3));
+			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass98(this));
+		}
+
+		private sealed class _AnonymousInnerClass98 : ICodeBlock
+		{
+			public _AnonymousInnerClass98(Db4oIOExceptionTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				ExceptionIOAdapter.exception = true;
+				this._enclosing.Db().Rollback();
+			}
+
+			private readonly Db4oIOExceptionTestCase _enclosing;
+		}
+
+		public virtual void TestSet()
+		{
+			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass107(this));
+		}
+
+		private sealed class _AnonymousInnerClass107 : ICodeBlock
+		{
+			public _AnonymousInnerClass107(Db4oIOExceptionTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				ExceptionIOAdapter.exception = true;
+				this._enclosing.Db().Set(new Db4oIOExceptionTestCase.Item(3));
+			}
+
+			private readonly Db4oIOExceptionTestCase _enclosing;
+		}
+
+		public virtual void TestGetByUUID()
+		{
+			Fixture().Config().GenerateUUIDs(ConfigScope.GLOBALLY_ID);
+			Fixture().Reopen();
+			Db4oIOExceptionTestCase.Item item = new Db4oIOExceptionTestCase.Item(1);
+			Store(item);
+			Db4oUUID uuid = Db().GetObjectInfo(item).GetUUID();
+			Fixture().Reopen();
+			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass122(this, uuid));
+		}
+
+		private sealed class _AnonymousInnerClass122 : ICodeBlock
+		{
+			public _AnonymousInnerClass122(Db4oIOExceptionTestCase _enclosing, Db4oUUID uuid)
+			{
+				this._enclosing = _enclosing;
+				this.uuid = uuid;
+			}
+
+			public void Run()
+			{
+				ExceptionIOAdapter.exception = true;
+				this._enclosing.Db().GetByUUID(uuid);
+			}
+
+			private readonly Db4oIOExceptionTestCase _enclosing;
+
+			private readonly Db4oUUID uuid;
+		}
+
+		public class Item
+		{
+			public Item(int depth)
+			{
+				member = new Db4oIOExceptionTestCase.DeepMemeber(depth);
+			}
+
+			public Db4oIOExceptionTestCase.DeepMemeber member;
+		}
+
+		public class DeepMemeber
+		{
+			public DeepMemeber(int depth)
+			{
+				if (depth > 0)
+				{
+					member = new Db4oIOExceptionTestCase.DeepMemeber(--depth);
+				}
+			}
+
+			public Db4oIOExceptionTestCase.DeepMemeber member;
+		}
+	}
+}

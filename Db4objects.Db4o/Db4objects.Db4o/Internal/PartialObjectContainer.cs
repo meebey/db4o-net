@@ -122,7 +122,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					if (!ok)
 					{
-						StopSession();
+						ShutdownObjectContainer();
 					}
 				}
 			}
@@ -192,11 +192,6 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual int AlignToBlockSize(int length)
-		{
-			return BlocksFor(length) * BlockSize();
-		}
-
 		public virtual void Bind(object obj, long id)
 		{
 			lock (i_lock)
@@ -245,15 +240,20 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract byte BlockSize();
 
-		public virtual int BlocksFor(long bytes)
+		public virtual int BlocksToBytes(long bytes)
 		{
 			int blockLen = BlockSize();
 			return (int)((bytes + blockLen - 1) / blockLen);
 		}
 
-		public int BlockAligned(int bytes)
+		public int BlockAlignedBytes(int bytes)
 		{
-			return BlocksFor(bytes) * BlockSize();
+			return BlocksToBytes(bytes) * BlockSize();
+		}
+
+		public int BytesToBlocks(int blocks)
+		{
+			return blocks * BlockSize();
 		}
 
 		private bool BreakDeleteForEnum(ObjectReference reference, bool userCall)
@@ -322,14 +322,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (i_lock)
 			{
-				try
-				{
-					Close1();
-				}
-				catch (Exception e)
-				{
-					HandleExceptionOnClose(e);
-				}
+				Close1();
 				return true;
 			}
 		}
@@ -656,7 +649,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			ClassMetadata yc = yo.GetYapClass();
 			FieldMetadata[] field = new FieldMetadata[] { null };
-			yc.ForEachFieldMetadata(new _AnonymousInnerClass588(this, fieldName, field));
+			yc.ForEachFieldMetadata(new _AnonymousInnerClass584(this, fieldName, field));
 			if (field[0] == null)
 			{
 				return null;
@@ -684,9 +677,6 @@ namespace Db4objects.Db4o.Internal
 				catch (CorruptionException)
 				{
 				}
-				catch (IOException)
-				{
-				}
 			}
 			if (path.Length == 1)
 			{
@@ -701,9 +691,9 @@ namespace Db4objects.Db4o.Internal
 			return Descend1(trans, child, subPath);
 		}
 
-		private sealed class _AnonymousInnerClass588 : IVisitor4
+		private sealed class _AnonymousInnerClass584 : IVisitor4
 		{
-			public _AnonymousInnerClass588(PartialObjectContainer _enclosing, string fieldName
+			public _AnonymousInnerClass584(PartialObjectContainer _enclosing, string fieldName
 				, FieldMetadata[] field)
 			{
 				this._enclosing = _enclosing;
@@ -877,13 +867,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			catch (Db4oException e)
 			{
-				CompleteTopLevelCall(e);
-				return null;
+				CompleteTopLevelCall(new InvalidIDException(e));
 			}
 			finally
 			{
 				EndTopLevelCall();
 			}
+			return null;
 		}
 
 		internal object GetByID2(Transaction ta, int id)
@@ -1230,7 +1220,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			catch (IOException e)
 			{
-				throw new OpenDatabaseException(e);
+				throw new Db4oIOException(e);
 			}
 		}
 

@@ -3,6 +3,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.IX;
+using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
@@ -190,27 +191,26 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public abstract void SetPointer(int a_id, int a_address, int a_length);
+		public abstract void SetPointer(int a_id, Slot slot);
 
-		public virtual void SlotDelete(int a_id, int a_address, int a_length)
+		public virtual void SlotDelete(int id, Slot slot)
 		{
 		}
 
-		public virtual void SlotFreeOnCommit(int a_id, int a_address, int a_length)
+		public virtual void SlotFreeOnCommit(int id, Slot slot)
 		{
 		}
 
-		public virtual void SlotFreeOnRollback(int a_id, int a_address, int a_length)
+		public virtual void SlotFreeOnRollback(int id, Slot slot)
 		{
 		}
 
-		internal virtual void SlotFreeOnRollbackCommitSetPointer(int a_id, int newAddress
-			, int newLength)
+		internal virtual void SlotFreeOnRollbackCommitSetPointer(int id, Slot slot, bool 
+			freeImmediately)
 		{
 		}
 
-		internal virtual void ProduceUpdateSlotChange(int a_id, int a_address, int a_length
-			)
+		internal virtual void ProduceUpdateSlotChange(int id, Slot slot)
 		{
 		}
 
@@ -218,8 +218,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		internal virtual void SlotFreePointerOnCommit(int a_id, int a_address, int a_length
-			)
+		internal virtual void SlotFreePointerOnCommit(int a_id, Slot slot)
 		{
 		}
 

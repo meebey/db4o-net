@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Text;
 using Db4objects.Db4o.Foundation;
@@ -60,6 +61,15 @@ namespace Db4objects.Db4o.Foundation
 		public static int Size(IEnumerable iterable)
 		{
 			return Size(iterable.GetEnumerator());
+		}
+
+		public static object Next(IEnumerator iterator)
+		{
+			if (!iterator.MoveNext())
+			{
+				throw new InvalidOperationException();
+			}
+			return iterator.Current;
 		}
 
 		private static int Size(IEnumerator iterator)

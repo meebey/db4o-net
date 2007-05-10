@@ -4,11 +4,13 @@ using Sharpen;
 
 namespace Db4objects.Db4o.IO
 {
-	/// <summary>CachedIoAdapter is an IOAdapter for random access files, which caches data for IO access.
-	/// 	</summary>
+	/// <summary>
+	/// CachedIoAdapter is an IOAdapter for random access files, which caches data
+	/// for IO access.
+	/// </summary>
 	/// <remarks>
-	/// CachedIoAdapter is an IOAdapter for random access files, which caches data for IO access.
-	/// Its functionality is similar to OS cache.<br />
+	/// CachedIoAdapter is an IOAdapter for random access files, which caches data
+	/// for IO access. Its functionality is similar to OS cache.<br />
 	/// Example:<br />
 	/// <code>delegateAdapter = new RandomAccessFileAdapter();</code><br />
 	/// <code>Db4o.configure().io(new CachedIoAdapter(delegateAdapter));</code><br />
@@ -50,11 +52,10 @@ namespace Db4objects.Db4o.IO
 		public CachedIoAdapter(string path, bool lockFile, long initialLength, IoAdapter 
 			io, int pageSize, int pageCount)
 		{
-			_io = io;
 			_pageSize = pageSize;
 			_pageCount = pageCount;
 			InitCache();
-			InitIOAdaptor(path, lockFile, initialLength);
+			InitIOAdaptor(path, lockFile, initialLength, io);
 			_position = initialLength;
 			_filePointer = initialLength;
 			_fileLength = _io.GetLength();
@@ -85,9 +86,10 @@ namespace Db4objects.Db4o.IO
 			return _io.Exists(path);
 		}
 
-		private void InitIOAdaptor(string path, bool lockFile, long initialLength)
+		private void InitIOAdaptor(string path, bool lockFile, long initialLength, IoAdapter
+			 io)
 		{
-			_io = _io.Open(path, lockFile, initialLength);
+			_io = io.Open(path, lockFile, initialLength);
 		}
 
 		private void InitCache()
@@ -108,8 +110,8 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>Reads the file into the buffer using pages from cache.</summary>
 		/// <remarks>
-		/// Reads the file into the buffer using pages from cache.
-		/// If the next page is not cached it will be read from the file.
+		/// Reads the file into the buffer using pages from cache. If the next page
+		/// is not cached it will be read from the file.
 		/// </remarks>
 		/// <param name="buffer">destination buffer</param>
 		/// <param name="length">how many bytes to read</param>

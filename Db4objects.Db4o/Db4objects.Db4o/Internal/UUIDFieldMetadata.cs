@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -33,17 +32,10 @@ namespace Db4objects.Db4o.Internal
 			LocalObjectContainer yf = (LocalObjectContainer)writer.GetStream();
 			if ((uuid == 0 || db4oDatabaseIdentityID == 0) && writer.GetID() > 0 && !isnew)
 			{
-				try
-				{
-					UUIDFieldMetadata.DatabaseIdentityIDAndUUID identityAndUUID = ReadDatabaseIdentityIDAndUUID
-						(yf, yapClass, oldSlot, false);
-					db4oDatabaseIdentityID = identityAndUUID.databaseIdentityID;
-					uuid = identityAndUUID.uuid;
-				}
-				catch (IOException exc)
-				{
-					throw new FieldIndexException(exc, this);
-				}
+				UUIDFieldMetadata.DatabaseIdentityIDAndUUID identityAndUUID = ReadDatabaseIdentityIDAndUUID
+					(yf, yapClass, oldSlot, false);
+				db4oDatabaseIdentityID = identityAndUUID.databaseIdentityID;
+				uuid = identityAndUUID.uuid;
 			}
 			if (db4oDatabaseIdentityID == 0)
 			{
@@ -78,8 +70,8 @@ namespace Db4objects.Db4o.Internal
 			(ObjectContainerBase stream, ClassMetadata yapClass, Slot oldSlot, bool checkClass
 			)
 		{
-			Db4objects.Db4o.Internal.Buffer reader = stream.BufferByAddress(oldSlot.GetAddress
-				(), oldSlot.GetLength());
+			Db4objects.Db4o.Internal.Buffer reader = stream.BufferByAddress(oldSlot.Address()
+				, oldSlot.Length());
 			if (checkClass)
 			{
 				ClassMetadata realClass = ClassMetadata.ReadClass(stream, reader);
@@ -130,25 +122,14 @@ namespace Db4objects.Db4o.Internal
 		protected override void RebuildIndexForObject(LocalObjectContainer stream, ClassMetadata
 			 yapClass, int objectId)
 		{
-			try
+			UUIDFieldMetadata.DatabaseIdentityIDAndUUID data = ReadDatabaseIdentityIDAndUUID(
+				stream, yapClass, ((LocalTransaction)stream.SystemTransaction()).GetCurrentSlotOfID
+				(objectId), true);
+			if (null == data)
 			{
-				UUIDFieldMetadata.DatabaseIdentityIDAndUUID data = ReadDatabaseIdentityIDAndUUID(
-					stream, yapClass, ((LocalTransaction)stream.SystemTransaction()).GetCurrentSlotOfID
-					(objectId), true);
-				if (null == data)
-				{
-					return;
-				}
-				AddIndexEntry(stream.GetLocalSystemTransaction(), objectId, data.uuid);
+				return;
 			}
-			catch (SlotRetrievalException exc)
-			{
-				throw new FieldIndexException(exc, this);
-			}
-			catch (IOException exc)
-			{
-				throw new FieldIndexException(exc, this);
-			}
+			AddIndexEntry(stream.GetLocalSystemTransaction(), objectId, data.uuid);
 		}
 
 		private void EnsureIndex(Transaction transaction)

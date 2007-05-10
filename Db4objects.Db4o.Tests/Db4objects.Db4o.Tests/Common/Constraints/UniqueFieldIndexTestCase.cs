@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 	{
 		public static void Main(string[] arguments)
 		{
-			new UniqueFieldIndexTestCase().RunClientServer();
+			new UniqueFieldIndexTestCase().RunAll();
 		}
 
 		public class Item

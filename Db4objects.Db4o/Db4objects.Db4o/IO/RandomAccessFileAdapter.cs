@@ -1,4 +1,4 @@
-using System;
+using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
@@ -20,37 +20,49 @@ namespace Db4objects.Db4o.IO
 
 		protected RandomAccessFileAdapter(string path, bool lockFile, long initialLength)
 		{
-			_path = new Sharpen.IO.File(path).GetCanonicalPath();
-			_delegate = new RandomAccessFile(_path, "rw");
-			if (initialLength > 0)
+			bool ok = false;
+			try
 			{
-				_delegate.Seek(initialLength - 1);
-				_delegate.Write(new byte[] { 0 });
-			}
-			if (lockFile)
-			{
-				try
+				_path = new Sharpen.IO.File(path).GetCanonicalPath();
+				_delegate = new RandomAccessFile(_path, "rw");
+				if (initialLength > 0)
+				{
+					_delegate.Seek(initialLength - 1);
+					_delegate.Write(new byte[] { 0 });
+				}
+				if (lockFile)
 				{
 					Platform4.LockFile(_path, _delegate);
 				}
-				catch (DatabaseFileLockedException e)
+				ok = true;
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
+			finally
+			{
+				if (!ok)
 				{
-					_delegate.Close();
-					throw;
+					Close();
 				}
 			}
 		}
 
 		public override void Close()
 		{
+			Platform4.UnlockFile(_path, _delegate);
 			try
 			{
-				Platform4.UnlockFile(_path, _delegate);
+				if (_delegate != null)
+				{
+					_delegate.Close();
+				}
 			}
-			catch (Exception)
+			catch (IOException e)
 			{
+				throw new Db4oIOException(e);
 			}
-			_delegate.Close();
 		}
 
 		public override void Delete(string path)
@@ -66,7 +78,14 @@ namespace Db4objects.Db4o.IO
 
 		public override long GetLength()
 		{
-			return _delegate.Length();
+			try
+			{
+				return _delegate.Length();
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 
 		public override IoAdapter Open(string path, bool lockFile, long initialLength)
@@ -77,22 +96,50 @@ namespace Db4objects.Db4o.IO
 
 		public override int Read(byte[] bytes, int length)
 		{
-			return _delegate.Read(bytes, 0, length);
+			try
+			{
+				return _delegate.Read(bytes, 0, length);
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 
 		public override void Seek(long pos)
 		{
-			_delegate.Seek(pos);
+			try
+			{
+				_delegate.Seek(pos);
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 
 		public override void Sync()
 		{
-			_delegate.GetFD().Sync();
+			try
+			{
+				_delegate.GetFD().Sync();
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 
 		public override void Write(byte[] buffer, int length)
 		{
-			_delegate.Write(buffer, 0, length);
+			try
+			{
+				_delegate.Write(buffer, 0, length);
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 	}
 }

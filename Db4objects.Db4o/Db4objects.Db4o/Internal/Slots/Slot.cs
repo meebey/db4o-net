@@ -5,9 +5,12 @@ namespace Db4objects.Db4o.Internal.Slots
 	/// <exclude></exclude>
 	public class Slot
 	{
-		public readonly int _address;
+		private readonly int _address;
 
-		public readonly int _length;
+		private readonly int _length;
+
+		public static readonly Db4objects.Db4o.Internal.Slots.Slot ZERO = new Db4objects.Db4o.Internal.Slots.Slot
+			(0, 0);
 
 		public Slot(int address, int length)
 		{
@@ -15,12 +18,12 @@ namespace Db4objects.Db4o.Internal.Slots
 			_length = length;
 		}
 
-		public virtual int GetAddress()
+		public virtual int Address()
 		{
 			return _address;
 		}
 
-		public virtual int GetLength()
+		public virtual int Length()
 		{
 			return _length;
 		}
@@ -37,23 +40,23 @@ namespace Db4objects.Db4o.Internal.Slots
 			}
 			Db4objects.Db4o.Internal.Slots.Slot other = (Db4objects.Db4o.Internal.Slots.Slot)
 				obj;
-			return (_address == other._address) && (_length == other._length);
+			return (_address == other._address) && (Length() == other.Length());
 		}
 
 		public override int GetHashCode()
 		{
-			return _address ^ _length;
+			return _address ^ Length();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Slots.Slot SubSlot(int requiredLength)
+		public virtual Db4objects.Db4o.Internal.Slots.Slot SubSlot(int offset)
 		{
-			return new Db4objects.Db4o.Internal.Slots.Slot(_address + requiredLength, _length
-				 - requiredLength);
+			return new Db4objects.Db4o.Internal.Slots.Slot(_address + offset, Length() - offset
+				);
 		}
 
 		public override string ToString()
 		{
-			return "[A:" + _address + ",L:" + _length + "]";
+			return "[A:" + _address + ",L:" + Length() + "]";
 		}
 
 		public virtual Db4objects.Db4o.Internal.Slots.Slot Truncate(int requiredLength)
@@ -70,7 +73,7 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		public virtual int CompareByLength(Db4objects.Db4o.Internal.Slots.Slot slot)
 		{
-			int res = slot._length - _length;
+			int res = slot.Length() - Length();
 			if (res != 0)
 			{
 				return res;
@@ -81,13 +84,14 @@ namespace Db4objects.Db4o.Internal.Slots
 		public virtual bool IsDirectlyPreceding(Db4objects.Db4o.Internal.Slots.Slot other
 			)
 		{
-			return _address + _length == other._address;
+			return _address + Length() == other._address;
 		}
 
 		public virtual Db4objects.Db4o.Internal.Slots.Slot Append(Db4objects.Db4o.Internal.Slots.Slot
 			 slot)
 		{
-			return new Db4objects.Db4o.Internal.Slots.Slot(_address, _length + slot._length);
+			return new Db4objects.Db4o.Internal.Slots.Slot(Address(), _length + slot.Length()
+				);
 		}
 	}
 }

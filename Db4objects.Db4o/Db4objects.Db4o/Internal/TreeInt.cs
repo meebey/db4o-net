@@ -191,42 +191,42 @@ namespace Db4objects.Db4o.Internal
 			return ShallowCloneInternal(treeint);
 		}
 
-		public static int ByteCount(Db4objects.Db4o.Internal.TreeInt a_tree)
+		public static int MarshalledLength(Db4objects.Db4o.Internal.TreeInt a_tree)
 		{
 			if (a_tree == null)
 			{
 				return Const4.INT_LENGTH;
 			}
-			return a_tree.ByteCount();
+			return a_tree.MarshalledLength();
 		}
 
-		public int ByteCount()
+		public int MarshalledLength()
 		{
 			if (VariableLength())
 			{
-				int[] length = new int[] { Const4.INT_LENGTH };
-				Traverse(new _AnonymousInnerClass152(this, length));
-				return length[0];
+				MutableInt mint = new MutableInt(Const4.INT_LENGTH);
+				Traverse(new _AnonymousInnerClass152(this, mint));
+				return mint.Value();
 			}
 			return Const4.INT_LENGTH + (Size() * OwnLength());
 		}
 
 		private sealed class _AnonymousInnerClass152 : IVisitor4
 		{
-			public _AnonymousInnerClass152(TreeInt _enclosing, int[] length)
+			public _AnonymousInnerClass152(TreeInt _enclosing, MutableInt mint)
 			{
 				this._enclosing = _enclosing;
-				this.length = length;
+				this.mint = mint;
 			}
 
 			public void Visit(object obj)
 			{
-				length[0] += ((Db4objects.Db4o.Internal.TreeInt)obj).OwnLength();
+				mint.Add(((Db4objects.Db4o.Internal.TreeInt)obj).OwnLength());
 			}
 
 			private readonly TreeInt _enclosing;
 
-			private readonly int[] length;
+			private readonly MutableInt mint;
 		}
 
 		public override object Key()

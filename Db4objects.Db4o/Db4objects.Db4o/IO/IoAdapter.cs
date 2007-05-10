@@ -3,14 +3,10 @@ using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.IO
 {
-	/// <summary>
-	/// Base class for database file adapters, both for file and memory
-	/// databases.
-	/// </summary>
-	/// <remarks>
-	/// Base class for database file adapters, both for file and memory
-	/// databases.
-	/// </remarks>
+	/// <summary>Base class for database file adapters, both for file and memory databases.
+	/// 	</summary>
+	/// <remarks>Base class for database file adapters, both for file and memory databases.
+	/// 	</remarks>
 	public abstract class IoAdapter
 	{
 		private const int COPY_SIZE = 4096;

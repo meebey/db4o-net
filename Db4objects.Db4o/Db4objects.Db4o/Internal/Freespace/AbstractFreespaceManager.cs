@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 				default:
 				{
-					return new FreespaceManagerRam(file);
+					return new RamFreespaceManager(file);
 					break;
 				}
 			}
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public static int InitSlot(LocalObjectContainer file)
 		{
-			int address = file.GetSlot(SlotLength());
+			int address = file.GetSlot(SlotLength()).Address();
 			SlotEntryToZeroes(file, address);
 			return address;
 		}
@@ -116,26 +116,16 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return Const4.INT_LENGTH * INTS_IN_SLOT;
 		}
 
-		protected virtual Slot ToBlocked(Slot slot)
-		{
-			return new Slot(slot._address, _file.BlocksFor(slot._length));
-		}
-
-		protected virtual Slot ToNonBlocked(Slot slot)
-		{
-			return new Slot(slot._address, slot._length * BlockSize());
-		}
-
 		public int TotalFreespace()
 		{
 			MutableInt mint = new MutableInt();
-			Traverse(new _AnonymousInnerClass92(this, mint));
+			Traverse(new _AnonymousInnerClass84(this, mint));
 			return mint.Value();
 		}
 
-		private sealed class _AnonymousInnerClass92 : IVisitor4
+		private sealed class _AnonymousInnerClass84 : IVisitor4
 		{
-			public _AnonymousInnerClass92(AbstractFreespaceManager _enclosing, MutableInt mint
+			public _AnonymousInnerClass84(AbstractFreespaceManager _enclosing, MutableInt mint
 				)
 			{
 				this._enclosing = _enclosing;
@@ -145,7 +135,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			public void Visit(object obj)
 			{
 				Slot slot = (Slot)obj;
-				mint.Add(slot._length);
+				mint.Add(slot.Length());
 			}
 
 			private readonly AbstractFreespaceManager _enclosing;
@@ -155,14 +145,19 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public abstract void BeginCommit();
 
-		internal int BlockSize()
+		protected int BlockedDiscardLimit()
 		{
-			return _file.BlockSize();
+			return _file.BlocksToBytes(DiscardLimit());
 		}
 
-		internal int DiscardLimit()
+		protected virtual int DiscardLimit()
 		{
 			return _file.ConfigImpl().DiscardFreeSpace();
+		}
+
+		internal bool CanDiscard(int blocks)
+		{
+			return blocks == 0 || blocks < BlockedDiscardLimit();
 		}
 
 		public static void Migrate(IFreespaceManager oldFM, IFreespaceManager newFM)
@@ -172,6 +167,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			newFM.BeginCommit();
 			newFM.EndCommit();
 		}
+
+		public abstract void Commit();
 
 		public abstract void EndCommit();
 

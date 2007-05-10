@@ -2,27 +2,32 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
 {
-	internal class HashtableIntEntry : IDeepClone
+	public class HashtableIntEntry : IEntry4, IDeepClone
 	{
-		internal int i_key;
+		internal int _key;
 
-		internal object i_object;
+		internal object _object;
 
-		internal Db4objects.Db4o.Foundation.HashtableIntEntry i_next;
+		internal Db4objects.Db4o.Foundation.HashtableIntEntry _next;
 
 		internal HashtableIntEntry(int a_hash, object a_object)
 		{
-			i_key = a_hash;
-			i_object = a_object;
+			_key = a_hash;
+			_object = a_object;
 		}
 
 		protected HashtableIntEntry()
 		{
 		}
 
-		public virtual void AcceptKeyVisitor(IVisitor4 visitor)
+		public virtual object Key()
 		{
-			visitor.Visit(i_key);
+			return _key;
+		}
+
+		public virtual object Value()
+		{
+			return _object;
 		}
 
 		public virtual object DeepClone(object obj)
@@ -32,26 +37,25 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual bool SameKeyAs(Db4objects.Db4o.Foundation.HashtableIntEntry other)
 		{
-			return i_key == other.i_key;
+			return _key == other._key;
 		}
 
 		protected virtual Db4objects.Db4o.Foundation.HashtableIntEntry DeepCloneInternal(
 			Db4objects.Db4o.Foundation.HashtableIntEntry entry, object obj)
 		{
-			entry.i_key = i_key;
-			entry.i_next = i_next;
-			if (i_object is IDeepClone)
+			entry._key = _key;
+			entry._next = _next;
+			if (_object is IDeepClone)
 			{
-				entry.i_object = ((IDeepClone)i_object).DeepClone(obj);
+				entry._object = ((IDeepClone)_object).DeepClone(obj);
 			}
 			else
 			{
-				entry.i_object = i_object;
+				entry._object = _object;
 			}
-			if (i_next != null)
+			if (_next != null)
 			{
-				entry.i_next = (Db4objects.Db4o.Foundation.HashtableIntEntry)i_next.DeepClone(obj
-					);
+				entry._next = (Db4objects.Db4o.Foundation.HashtableIntEntry)_next.DeepClone(obj);
 			}
 			return entry;
 		}

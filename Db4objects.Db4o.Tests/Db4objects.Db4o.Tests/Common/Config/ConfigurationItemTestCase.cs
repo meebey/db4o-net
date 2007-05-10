@@ -28,12 +28,12 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				_configuration = configuration;
 			}
 
-			public IConfiguration Configuration()
+			public IConfiguration PreparedConfiguration()
 			{
 				return _configuration;
 			}
 
-			public ObjectContainerBase Container()
+			public ObjectContainerBase AppliedContainer()
 			{
 				return _container;
 			}
@@ -45,12 +45,12 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			ConfigurationItemTestCase.ConfigurationItemStub item = new ConfigurationItemTestCase.ConfigurationItemStub
 				();
 			configuration.Add(item);
-			Assert.AreSame(configuration, item.Configuration());
-			Assert.IsNull(item.Container());
+			Assert.AreSame(configuration, item.PreparedConfiguration());
+			Assert.IsNull(item.AppliedContainer());
 			File4.Delete(DatabaseFile());
 			IObjectContainer container = Db4oFactory.OpenFile(configuration, DatabaseFile());
 			container.Close();
-			Assert.AreSame(container, item.Container());
+			Assert.AreSame(container, item.AppliedContainer());
 		}
 
 		private string DatabaseFile()

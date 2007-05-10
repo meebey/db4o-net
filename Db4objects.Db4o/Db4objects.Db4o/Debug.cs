@@ -20,8 +20,6 @@ namespace Db4objects.Db4o
 
 		public const bool xbytes = freespace;
 
-		public const bool freespaceChecker = false;
-
 		public const bool checkSychronization = false;
 
 		public const bool configureAllClasses = indexAllFields;

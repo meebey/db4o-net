@@ -19,6 +19,11 @@ namespace Db4objects.Db4o.Foundation
 			_value += addVal;
 		}
 
+		public virtual void Increment()
+		{
+			_value++;
+		}
+
 		public virtual void Substract(int substractVal)
 		{
 			_value -= substractVal;

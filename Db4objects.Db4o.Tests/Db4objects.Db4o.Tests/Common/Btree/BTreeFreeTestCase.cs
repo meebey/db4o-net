@@ -27,10 +27,10 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 				Slot slot = FileTransaction().GetCurrentSlotOfID(slotID);
 				allSlots.Add(slot);
 			}
-			LocalObjectContainer yapFile = (LocalObjectContainer)Stream();
+			LocalObjectContainer container = (LocalObjectContainer)Stream();
 			Collection4 freedSlots = new Collection4();
-			yapFile.InstallDebugFreespaceManager(new FreespaceManagerForDebug(yapFile, new _AnonymousInnerClass40
-				(this, freedSlots)));
+			container.InstallDebugFreespaceManager(new FreespaceManagerForDebug(container, new 
+				_AnonymousInnerClass40(this, freedSlots, container)));
 			_btree.Free(SystemTrans());
 			SystemTrans().Commit();
 			Assert.IsTrue(freedSlots.ContainsAll(allSlots.GetEnumerator()));
@@ -39,20 +39,23 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		private sealed class _AnonymousInnerClass40 : ISlotListener
 		{
 			public _AnonymousInnerClass40(BTreeFreeTestCase _enclosing, Collection4 freedSlots
-				)
+				, LocalObjectContainer container)
 			{
 				this._enclosing = _enclosing;
 				this.freedSlots = freedSlots;
+				this.container = container;
 			}
 
 			public void OnFree(Slot slot)
 			{
-				freedSlots.Add(slot);
+				freedSlots.Add(container.ToNonBlockedLength(slot));
 			}
 
 			private readonly BTreeFreeTestCase _enclosing;
 
 			private readonly Collection4 freedSlots;
+
+			private readonly LocalObjectContainer container;
 		}
 
 		private LocalTransaction FileTransaction()

@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Internal.Slots;
+
 namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
@@ -264,6 +266,10 @@ namespace Db4objects.Db4o
 		}
 
 		public virtual void LogLength(long start, long length)
+		{
+		}
+
+		public virtual void LogLength(Slot slot)
 		{
 		}
 

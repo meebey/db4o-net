@@ -85,16 +85,16 @@ namespace Db4objects.Db4o.Internal.Slots
 			_shared = refSlot;
 		}
 
-		public virtual void FreeOnRollback(int address, int length)
+		public virtual void FreeOnRollback(Slot slot)
 		{
 			DoFreeOnRollback();
-			_newSlot = new Slot(address, length);
+			_newSlot = slot;
 		}
 
-		public virtual void FreeOnRollbackSetPointer(int address, int length)
+		public virtual void FreeOnRollbackSetPointer(Slot slot)
 		{
 			DoSetPointer();
-			FreeOnRollback(address, length);
+			FreeOnRollback(slot);
 		}
 
 		public virtual void FreePointerOnCommit()
@@ -114,7 +114,7 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		public virtual bool IsDeleted()
 		{
-			return IsSetPointer() && (_newSlot._address == 0);
+			return IsSetPointer() && (_newSlot.Address() == 0);
 		}
 
 		public virtual bool IsNew()
@@ -191,10 +191,10 @@ namespace Db4objects.Db4o.Internal.Slots
 			_action |= (1 << bitPos);
 		}
 
-		public virtual void SetPointer(int address, int length)
+		public virtual void SetPointer(Slot slot)
 		{
 			DoSetPointer();
-			_newSlot = new Slot(address, length);
+			_newSlot = slot;
 		}
 
 		public override void Write(Db4objects.Db4o.Internal.Buffer writer)
@@ -202,8 +202,8 @@ namespace Db4objects.Db4o.Internal.Slots
 			if (IsSetPointer())
 			{
 				writer.WriteInt(_key);
-				writer.WriteInt(_newSlot._address);
-				writer.WriteInt(_newSlot._length);
+				writer.WriteInt(_newSlot.Address());
+				writer.WriteInt(_newSlot.Length());
 			}
 		}
 
@@ -211,7 +211,7 @@ namespace Db4objects.Db4o.Internal.Slots
 		{
 			if (IsSetPointer())
 			{
-				trans.WritePointer(_key, _newSlot._address, _newSlot._length);
+				trans.WritePointer(_key, _newSlot);
 			}
 		}
 	}

@@ -35,5 +35,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 		void Traverse(IVisitor4 visitor);
 
 		int Write();
+
+		void Commit();
 	}
 }

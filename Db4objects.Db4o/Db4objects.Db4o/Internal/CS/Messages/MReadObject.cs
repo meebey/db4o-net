@@ -1,4 +1,4 @@
-using System;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS.Messages;
 
@@ -15,8 +15,10 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				{
 					bytes = Stream().ReadWriterByID(Transaction(), _payLoad.ReadInt());
 				}
-				catch (Exception)
+				catch (Db4oException e)
 				{
+					WriteException(e);
+					return true;
 				}
 			}
 			if (bytes == null)

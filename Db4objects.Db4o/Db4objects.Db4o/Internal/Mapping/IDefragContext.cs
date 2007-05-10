@@ -3,6 +3,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Mapping;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Mapping
 {
@@ -19,7 +20,7 @@ namespace Db4objects.Db4o.Internal.Mapping
 
 		Db4objects.Db4o.Internal.Buffer SourceReaderByID(int sourceID);
 
-		int AllocateTargetSlot(int targetLength);
+		Slot AllocateTargetSlot(int targetLength);
 
 		void TargetWriteBytes(Db4objects.Db4o.Internal.Buffer targetPointerReader, int targetID
 			);

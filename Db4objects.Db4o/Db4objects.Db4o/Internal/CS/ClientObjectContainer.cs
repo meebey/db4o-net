@@ -306,16 +306,16 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				return message;
 			}
-			CheckDb4oExceptionMessage(message);
+			CheckExceptionMessage(message);
 			throw new InvalidOperationException("Unexpected Message:" + message + "  Expected:"
 				 + expectedMessage);
 		}
 
-		private void CheckDb4oExceptionMessage(Msg msg)
+		private void CheckExceptionMessage(Msg msg)
 		{
-			if (msg is MDb4oException)
+			if (msg is MChainedRuntimeException)
 			{
-				throw (Db4oException)((MDb4oException)msg).ReadSingleObject();
+				throw (Exception)((MChainedRuntimeException)msg).ReadSingleObject();
 			}
 		}
 
@@ -477,7 +477,7 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			catch (IOException e)
 			{
-				throw new OpenDatabaseException(e);
+				throw new Db4oIOException(e);
 			}
 		}
 

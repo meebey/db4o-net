@@ -5,6 +5,6 @@ namespace Db4objects.Db4o.Internal
 	{
 		object Read(Db4objects.Db4o.Internal.Buffer a_reader);
 
-		int ByteCount();
+		int MarshalledLength();
 	}
 }

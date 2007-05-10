@@ -1,31 +1,14 @@
 using Db4oUnit;
-using Db4oUnit.Extensions;
-using Db4oUnit.Extensions.Fixtures;
-using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Tests.Common.Freespace;
 
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
-	public class FreespaceManagerTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class FreespaceManagerTestCase : FreespaceManagerTestCaseBase
 	{
-		private IFreespaceManager[] fm;
-
 		public static void Main(string[] args)
 		{
 			new FreespaceManagerTestCase().RunSolo();
-		}
-
-		protected override void Db4oSetupAfterStore()
-		{
-			LocalObjectContainer container = (LocalObjectContainer)Db();
-			FreespaceManagerIx fmIx = new FreespaceManagerIx(container);
-			int address = fmIx.OnNew(container);
-			fmIx.Start(address);
-			BTreeFreespaceManager btreeFm = new BTreeFreespaceManager(container);
-			btreeFm.Start(0);
-			fm = new IFreespaceManager[] { new FreespaceManagerRam(container), btreeFm };
 		}
 
 		public virtual void TestConstructor()
@@ -56,13 +39,15 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 				Assert.AreEqual(0, fm[i].SlotCount());
 				fm[i].Free(new Slot(10, 1));
 				slot = fm[i].GetSlot(1);
-				Assert.AreEqual(slot._address, 10);
+				Assert.AreEqual(slot.Address(), 10);
 				Assert.AreEqual(0, fm[i].SlotCount());
+				slot = fm[i].GetSlot(1);
+				Assert.IsNull(slot);
 				fm[i].Free(new Slot(10, 1));
 				fm[i].Free(new Slot(20, 2));
 				slot = fm[i].GetSlot(1);
 				Assert.AreEqual(1, fm[i].SlotCount());
-				Assert.AreEqual(slot._address, 10);
+				Assert.AreEqual(slot.Address(), 10);
 				slot = fm[i].GetSlot(3);
 				Assert.IsNull(slot);
 				slot = fm[i].GetSlot(1);
@@ -119,24 +104,6 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 					}
 				}
 			}
-		}
-
-		private void Clear(IFreespaceManager freespaceManager)
-		{
-			Slot slot = null;
-			do
-			{
-				slot = freespaceManager.GetSlot(1);
-			}
-			while (slot != null);
-			Assert.AreEqual(0, freespaceManager.SlotCount());
-			Assert.AreEqual(0, freespaceManager.TotalFreespace());
-		}
-
-		private void AssertSame(IFreespaceManager fm1, IFreespaceManager fm2)
-		{
-			Assert.AreEqual(fm1.SlotCount(), fm2.SlotCount());
-			Assert.AreEqual(fm1.TotalFreespace(), fm2.TotalFreespace());
 		}
 	}
 }

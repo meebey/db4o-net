@@ -188,7 +188,7 @@ namespace Db4objects.Db4o
 			}
 			catch (IOException e)
 			{
-				throw new OpenDatabaseException(e);
+				throw new Db4oIOException(e);
 			}
 		}
 

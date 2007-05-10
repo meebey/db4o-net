@@ -6,6 +6,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -69,7 +70,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			catch (IOException e)
 			{
-				throw new OpenDatabaseException(e);
+				throw new Db4oIOException(e);
 			}
 		}
 
@@ -82,14 +83,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					throw new BackupInProgressException();
 				}
-				try
-				{
-					_backupFile = ConfigImpl().IoAdapter().Open(path, true, _file.GetLength());
-				}
-				catch (IOException e)
-				{
-					throw new BackupException(e);
-				}
+				_backupFile = ConfigImpl().IoAdapter().Open(path, true, _file.GetLength());
 				_backupFile.BlockSize(BlockSize());
 			}
 			long pos = 0;
@@ -98,36 +92,21 @@ namespace Db4objects.Db4o.Internal
 			{
 				lock (i_lock)
 				{
-					try
+					_file.Seek(pos);
+					int read = _file.Read(buffer);
+					if (read <= 0)
 					{
-						_file.Seek(pos);
-						int read = _file.Read(buffer);
-						if (read <= 0)
-						{
-							break;
-						}
-						_backupFile.Seek(pos);
-						_backupFile.Write(buffer, read);
-						pos += read;
+						break;
 					}
-					catch (IOException e)
-					{
-						_backupFile = null;
-						throw new BackupException(e);
-					}
+					_backupFile.Seek(pos);
+					_backupFile.Write(buffer, read);
+					pos += read;
 				}
-				Cool.SleepIgnoringInterruption(1);
 			}
+			Cool.SleepIgnoringInterruption(1);
 			lock (i_lock)
 			{
-				try
-				{
-					_backupFile.Close();
-				}
-				catch (IOException e)
-				{
-					throw new BackupException(e);
-				}
+				_backupFile.Close();
 				_backupFile = null;
 			}
 		}
@@ -165,10 +144,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			try
 			{
-				_file.Close();
-			}
-			catch (IOException)
-			{
+				if (_file != null)
+				{
+					_file.Close();
+				}
 			}
 			finally
 			{
@@ -185,9 +164,6 @@ namespace Db4objects.Db4o.Internal
 					_fileHeader.Close();
 				}
 			}
-			catch (IOException)
-			{
-			}
 			finally
 			{
 				_fileHeader = null;
@@ -202,9 +178,6 @@ namespace Db4objects.Db4o.Internal
 				{
 					_timerFile.Close();
 				}
-			}
-			catch (IOException)
-			{
 			}
 			finally
 			{
@@ -263,7 +236,8 @@ namespace Db4objects.Db4o.Internal
 					{
 						if (checkXBytes[i] != Const4.XBYTE)
 						{
-							string msg = "XByte corruption adress:" + newAddress + " length:" + length;
+							string msg = "XByte corruption adress:" + newAddress + " length:" + length + " starting:"
+								 + i;
 							throw new Exception(msg);
 						}
 					}
@@ -309,7 +283,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (bytesRead != expected)
 			{
-				ShutdownObjectContainer();
 				throw new IncompatibleFileFormatException();
 			}
 		}
@@ -319,18 +292,18 @@ namespace Db4objects.Db4o.Internal
 			CheckReadOnly();
 			lock (i_lock)
 			{
-				int address = GetSlot(byteCount);
-				ZeroReservedStorage(address, byteCount);
-				Free(address, byteCount);
+				Slot slot = GetSlot(byteCount);
+				ZeroReservedSlot(slot);
+				Free(slot);
 			}
 		}
 
-		private void ZeroReservedStorage(int address, int length)
+		private void ZeroReservedSlot(Slot slot)
 		{
 			try
 			{
-				ZeroFile(_file, address, length);
-				ZeroFile(_backupFile, address, length);
+				ZeroFile(_file, slot);
+				ZeroFile(_backupFile, slot);
 			}
 			catch (IOException e)
 			{
@@ -338,15 +311,15 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private void ZeroFile(IoAdapter io, int address, int length)
+		private void ZeroFile(IoAdapter io, Slot slot)
 		{
 			if (io == null)
 			{
 				return;
 			}
 			byte[] zeroBytes = new byte[1024];
-			int left = length;
-			io.BlockSeek(address, 0);
+			int left = slot.Length();
+			io.BlockSeek(slot.Address(), 0);
 			while (left > zeroBytes.Length)
 			{
 				io.Write(zeroBytes, zeroBytes.Length);
@@ -385,35 +358,28 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			try
+			if (Debug.xbytes && Deploy.overwrite)
 			{
-				if (Debug.xbytes && Deploy.overwrite)
+				bool doCheck = true;
+				if (bytes is StatefulBuffer)
 				{
-					bool doCheck = true;
-					if (bytes is StatefulBuffer)
+					StatefulBuffer writer = (StatefulBuffer)bytes;
+					if (writer.GetID() == Const4.IGNORE_ID)
 					{
-						StatefulBuffer writer = (StatefulBuffer)bytes;
-						if (writer.GetID() == Const4.IGNORE_ID)
-						{
-							doCheck = false;
-						}
-					}
-					if (doCheck)
-					{
-						CheckXBytes(address, addressOffset, bytes.GetLength());
+						doCheck = false;
 					}
 				}
-				_file.BlockSeek(address, addressOffset);
-				_file.Write(bytes._buffer, bytes.GetLength());
-				if (_backupFile != null)
+				if (doCheck)
 				{
-					_backupFile.BlockSeek(address, addressOffset);
-					_backupFile.Write(bytes._buffer, bytes.GetLength());
+					CheckXBytes(address, addressOffset, bytes.GetLength());
 				}
 			}
-			catch (Exception e)
+			_file.BlockSeek(address, addressOffset);
+			_file.Write(bytes._buffer, bytes.GetLength());
+			if (_backupFile != null)
 			{
-				Exceptions4.ThrowRuntimeException(16, e);
+				_backupFile.BlockSeek(address, addressOffset);
+				_backupFile.Write(bytes._buffer, bytes.GetLength());
 			}
 		}
 

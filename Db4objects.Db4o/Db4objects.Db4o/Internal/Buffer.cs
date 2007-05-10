@@ -4,6 +4,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Slots;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal
@@ -167,6 +168,11 @@ namespace Db4objects.Db4o.Internal
 			return payLoad;
 		}
 
+		public virtual Slot ReadSlot()
+		{
+			return new Slot(ReadInt(), ReadInt());
+		}
+
 		internal virtual void ReplaceWith(byte[] a_bytes)
 		{
 			System.Array.Copy(a_bytes, 0, _buffer, 0, GetLength());
@@ -238,14 +244,32 @@ namespace Db4objects.Db4o.Internal
 			WriteInt(((int)obj));
 		}
 
-		public virtual void WriteIDOf(Transaction trans, PersistentBase yapMeta)
+		public virtual void WriteIDOf(Transaction trans, PersistentBase persistent)
 		{
-			if (yapMeta == null)
+			if (persistent == null)
 			{
 				WriteInt(0);
 				return;
 			}
-			yapMeta.WriteOwnID(trans, this);
+			if (CanWritePersistentBase())
+			{
+				persistent.WriteOwnID(trans, this);
+			}
+			else
+			{
+				WriteInt(persistent.GetID());
+			}
+		}
+
+		public void WriteSlot(Slot slot)
+		{
+			WriteInt(slot.Address());
+			WriteInt(slot.Length());
+		}
+
+		protected virtual bool CanWritePersistentBase()
+		{
+			return true;
 		}
 
 		public virtual void WriteShortString(Transaction trans, string a_string)

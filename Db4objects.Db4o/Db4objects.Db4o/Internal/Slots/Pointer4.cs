@@ -1,3 +1,5 @@
+using Db4objects.Db4o.Internal.Slots;
+
 namespace Db4objects.Db4o.Internal.Slots
 {
 	/// <exclude></exclude>
@@ -5,12 +7,12 @@ namespace Db4objects.Db4o.Internal.Slots
 	{
 		public readonly int _id;
 
-		public readonly int _address;
+		public readonly Slot _slot;
 
-		public Pointer4(int id, int address)
+		public Pointer4(int id, Slot slot)
 		{
 			_id = id;
-			_address = address;
+			_slot = slot;
 		}
 	}
 }

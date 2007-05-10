@@ -27,8 +27,6 @@ namespace Db4objects.Db4o.Internal
 
 		private IFreespaceManager _freespaceManager;
 
-		private IFreespaceManager _fmChecker;
-
 		private bool i_isServer = false;
 
 		private Tree i_prefetchedIDs;
@@ -66,7 +64,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void SetRegularEndAddress(long address)
 		{
-			_blockEndAddress = BlocksFor(address);
+			_blockEndAddress = BlocksToBytes(address);
 		}
 
 		protected sealed override void Close2()
@@ -99,10 +97,6 @@ namespace Db4objects.Db4o.Internal
 			_fileHeader.InitNew(this);
 			_freespaceManager.OnNew(this);
 			_freespaceManager.Start(_systemData.FreespaceAddress());
-			if (Debug.freespace && Debug.freespaceChecker)
-			{
-				_fmChecker.Start(0);
-			}
 		}
 
 		private void NewSystemData(byte freespaceSystem)
@@ -181,42 +175,45 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Free(Slot slot)
 		{
-			if (slot == null)
+			if (slot.Address() == 0)
 			{
 				return;
 			}
-			if (slot._address == 0)
-			{
-				return;
-			}
-			Free(slot._address, slot._length);
-		}
-
-		public virtual void Free(int a_address, int a_length)
-		{
 			if (_freespaceManager == null)
 			{
 				return;
 			}
-			_freespaceManager.Free(new Slot(a_address, a_length));
-			if (Debug.freespace && Debug.freespaceChecker)
-			{
-				_fmChecker.Free(new Slot(a_address, a_length));
-			}
+			Slot blockedSlot = ToBlockedLength(slot);
+			_freespaceManager.Free(blockedSlot);
+		}
+
+		private Slot ToBlockedLength(Slot slot)
+		{
+			return new Slot(slot.Address(), BytesToBlocks(slot.Length()));
+		}
+
+		public virtual Slot ToNonBlockedLength(Slot slot)
+		{
+			return new Slot(slot.Address(), BlocksToBytes(slot.Length()));
+		}
+
+		public virtual void Free(int address, int a_length)
+		{
+			Free(new Slot(address, a_length));
 		}
 
 		internal void FreePrefetchedPointers()
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _AnonymousInnerClass213(this));
+				i_prefetchedIDs.Traverse(new _AnonymousInnerClass211(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _AnonymousInnerClass213 : IVisitor4
+		private sealed class _AnonymousInnerClass211 : IVisitor4
 		{
-			public _AnonymousInnerClass213(LocalObjectContainer _enclosing)
+			public _AnonymousInnerClass211(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -227,24 +224,6 @@ namespace Db4objects.Db4o.Internal
 			}
 
 			private readonly LocalObjectContainer _enclosing;
-		}
-
-		internal void FreeSpaceBeginCommit()
-		{
-			if (_freespaceManager == null)
-			{
-				return;
-			}
-			_freespaceManager.BeginCommit();
-		}
-
-		internal void FreeSpaceEndCommit()
-		{
-			if (_freespaceManager == null)
-			{
-				return;
-			}
-			_freespaceManager.EndCommit();
 		}
 
 		public virtual void GenerateNewIdentity()
@@ -270,8 +249,8 @@ namespace Db4objects.Db4o.Internal
 
 		internal int GetPointerSlot()
 		{
-			int id = GetSlot(Const4.POINTER_LENGTH);
-			((LocalTransaction)SystemTransaction()).WritePointer(id, 0, 0);
+			int id = GetSlot(Const4.POINTER_LENGTH).Address();
+			((LocalTransaction)SystemTransaction()).WritePointer(id, Slot.ZERO);
 			if (i_handlers.IsSystemHandler(id))
 			{
 				return GetPointerSlot();
@@ -279,71 +258,43 @@ namespace Db4objects.Db4o.Internal
 			return id;
 		}
 
-		public virtual int GetSlot(int length)
+		public virtual Slot GetSlot(int length)
 		{
-			return GetSlot1(length)._address;
-			int address = GetSlot1(length)._address;
-			DTrace.GET_SLOT.LogLength(address, length);
-			return address;
+			int blocks = BytesToBlocks(length);
+			Slot slot = GetBlockedSlot(blocks);
+			return ToNonBlockedLength(slot);
 		}
 
-		private Slot GetSlot1(int bytes)
+		private Slot GetBlockedSlot(int blocks)
 		{
-			if (bytes <= 0)
+			if (blocks <= 0)
 			{
 				throw new ArgumentException();
 			}
 			Slot slot;
 			if (_freespaceManager != null)
 			{
-				slot = _freespaceManager.GetSlot(bytes);
-				if (Debug.freespace && Debug.freespaceChecker)
-				{
-					if (slot != null)
-					{
-						int freeAddress = slot._address;
-						Collection4 wrongOnes = new Collection4();
-						Slot freeCheck = _fmChecker.GetSlot(bytes);
-						while (freeCheck != null && freeCheck._address != freeAddress)
-						{
-							wrongOnes.Add(new int[] { freeCheck._address, bytes });
-							freeCheck = _fmChecker.GetSlot(bytes);
-						}
-						IEnumerator i = wrongOnes.GetEnumerator();
-						while (i.MoveNext())
-						{
-							int[] adrLength = (int[])i.Current;
-							_fmChecker.Free(new Slot(adrLength[0], adrLength[1]));
-						}
-						if (freeCheck == null)
-						{
-							Sharpen.Runtime.Out.WriteLine(_freespaceManager);
-							Sharpen.Runtime.Out.WriteLine(_fmChecker);
-						}
-					}
-				}
+				slot = _freespaceManager.GetSlot(blocks);
 				if (slot != null)
 				{
 					return slot;
 				}
 			}
-			int blocksNeeded = BlocksFor(bytes);
-			int address = AppendBlocks(blocksNeeded);
-			slot = new Slot(address, bytes);
+			slot = AppendBlocks(blocks);
 			if (Debug.xbytes && Deploy.overwrite)
 			{
-				OverwriteDeletedSlot(slot);
+				OverwriteDeletedBlockedSlot(slot);
 			}
 			return slot;
 		}
 
-		protected virtual int AppendBlocks(int blockCount)
+		protected Slot AppendBlocks(int blockCount)
 		{
 			int blockedStartAddress = _blockEndAddress;
 			int blockedEndAddress = _blockEndAddress + blockCount;
 			CheckBlockedAddress(blockedEndAddress);
 			_blockEndAddress = blockedEndAddress;
-			return blockedStartAddress;
+			return new Slot(blockedStartAddress, blockCount);
 		}
 
 		private void CheckBlockedAddress(int blockedAddress)
@@ -362,7 +313,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void EnsureLastSlotWritten()
 		{
-			if (_blockEndAddress > BlocksFor(FileLength()))
+			if (_blockEndAddress > BlocksToBytes(FileLength()))
 			{
 				StatefulBuffer writer = GetWriter(SystemTransaction(), _blockEndAddress - 1, BlockSize
 					());
@@ -392,12 +343,12 @@ namespace Db4objects.Db4o.Internal
 			return i_isServer;
 		}
 
-		public Pointer4 NewSlot(Transaction a_trans, int a_length)
+		public Pointer4 NewSlot(Transaction trans, int length)
 		{
 			int id = GetPointerSlot();
-			int address = GetSlot(a_length);
-			a_trans.SetPointer(id, address, a_length);
-			return new Pointer4(id, address);
+			Slot slot = GetSlot(length);
+			trans.SetPointer(id, slot);
+			return new Pointer4(id, slot);
 		}
 
 		public sealed override int NewUserObject()
@@ -483,36 +434,29 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (a_id <= 0)
 			{
-				throw new ArgumentException("id must be greater than 0");
+				throw new ArgumentException();
 			}
-			try
+			Slot slot = ((LocalTransaction)a_ta).GetCurrentSlotOfID(a_id);
+			if (slot == null)
 			{
-				Slot slot = ((LocalTransaction)a_ta).GetCurrentSlotOfID(a_id);
-				if (slot == null)
-				{
-					return null;
-				}
-				if (slot._address == 0)
-				{
-					return null;
-				}
-				Db4objects.Db4o.Internal.Buffer reader = null;
-				if (useReader)
-				{
-					reader = new Db4objects.Db4o.Internal.Buffer(slot._length);
-				}
-				else
-				{
-					reader = GetWriter(a_ta, slot._address, slot._length);
-					((StatefulBuffer)reader).SetID(a_id);
-				}
-				reader.ReadEncrypt(this, slot._address);
-				return reader;
+				return null;
 			}
-			catch (Exception e)
+			if (slot.Address() == 0)
 			{
+				return null;
 			}
-			return null;
+			Db4objects.Db4o.Internal.Buffer reader = null;
+			if (useReader)
+			{
+				reader = new Db4objects.Db4o.Internal.Buffer(slot.Length());
+			}
+			else
+			{
+				reader = GetWriter(a_ta, slot.Address(), slot.Length());
+				((StatefulBuffer)reader).SetID(a_id);
+			}
+			reader.ReadEncrypt(this, slot.Address());
+			return reader;
 		}
 
 		protected override bool DoFinalize()
@@ -623,16 +567,16 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass606(this, semaphores), ta
+					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass537(this, semaphores), ta
 						);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass606 : IVisitor4
+		private sealed class _AnonymousInnerClass537 : IVisitor4
 		{
-			public _AnonymousInnerClass606(LocalObjectContainer _enclosing, Hashtable4 semaphores
+			public _AnonymousInnerClass537(LocalObjectContainer _enclosing, Hashtable4 semaphores
 				)
 			{
 				this._enclosing = _enclosing;
@@ -774,14 +718,13 @@ namespace Db4objects.Db4o.Internal
 		public sealed override void WriteEmbedded(StatefulBuffer a_parent, StatefulBuffer
 			 a_child)
 		{
-			int length = a_child.GetLength();
-			int address = GetSlot(length);
-			a_child.GetTransaction().SlotFreeOnRollback(address, address, length);
-			a_child.Address(address);
+			Slot slot = GetSlot(a_child.GetLength());
+			a_child.GetTransaction().SlotFreeOnRollback(slot.Address(), slot);
+			a_child.Address(slot.Address());
 			a_child.WriteEncrypt();
 			int offsetBackup = a_parent._offset;
 			a_parent._offset = a_child.GetID();
-			a_parent.WriteInt(address);
+			a_parent.WriteInt(slot.Address());
 			a_parent._offset = offsetBackup;
 		}
 
@@ -792,10 +735,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				freespaceID = _freespaceManager.Write();
 				_freespaceManager = null;
-			}
-			if (Debug.freespace && Debug.freespaceChecker)
-			{
-				freespaceID = _fmChecker.Write();
 			}
 			StatefulBuffer writer = GetWriter(SystemTransaction(), 0, _fileHeader.Length());
 			_fileHeader.WriteFixedPart(this, startFileLockingThread, shuttingDown, writer, BlockSize
@@ -823,9 +762,9 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract void OverwriteDeletedBytes(int address, int length);
 
-		public virtual void OverwriteDeletedSlot(Slot slot)
+		public virtual void OverwriteDeletedBlockedSlot(Slot slot)
 		{
-			OverwriteDeletedBytes(slot._address, BlockAligned(slot._length));
+			OverwriteDeletedBytes(slot.Address(), BlocksToBytes(slot.Length()));
 		}
 
 		public sealed override void WriteTransactionPointer(int address)
@@ -833,14 +772,13 @@ namespace Db4objects.Db4o.Internal
 			_fileHeader.WriteTransactionPointer(SystemTransaction(), address);
 		}
 
-		public void GetSlotForUpdate(StatefulBuffer forWriter)
+		public void GetSlotForUpdate(StatefulBuffer buffer)
 		{
-			Transaction trans = forWriter.GetTransaction();
-			int id = forWriter.GetID();
-			int length = forWriter.GetLength();
-			int address = GetSlot(length);
-			forWriter.Address(address);
-			trans.ProduceUpdateSlotChange(id, address, length);
+			Transaction trans = buffer.GetTransaction();
+			int id = buffer.GetID();
+			Slot slot = GetSlot(buffer.GetLength());
+			buffer.Address(slot.Address());
+			trans.ProduceUpdateSlotChange(id, slot);
 		}
 
 		public sealed override void WriteUpdate(ClassMetadata a_yapClass, StatefulBuffer 
@@ -883,13 +821,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass819(this, ids));
+			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass743(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _AnonymousInnerClass819 : IVisitor4
+		private sealed class _AnonymousInnerClass743 : IVisitor4
 		{
-			public _AnonymousInnerClass819(LocalObjectContainer _enclosing, IntArrayList ids)
+			public _AnonymousInnerClass743(LocalObjectContainer _enclosing, IntArrayList ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;

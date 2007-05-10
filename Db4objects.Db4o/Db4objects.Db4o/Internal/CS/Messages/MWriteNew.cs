@@ -1,5 +1,6 @@
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
@@ -15,18 +16,17 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				ClassMetadata yc = yapClassId == 0 ? null : stream.ClassMetadataForId(yapClassId);
 				_payLoad.WriteEmbedded();
 				int id = _payLoad.GetID();
-				int length = _payLoad.GetLength();
 				stream.PrefetchedIDConsumed(id);
 				Transaction().SlotFreePointerOnRollback(id);
-				int address = stream.GetSlot(length);
-				_payLoad.Address(address);
-				Transaction().SlotFreeOnRollback(id, address, length);
+				Slot slot = stream.GetSlot(_payLoad.GetLength());
+				_payLoad.Address(slot.Address());
+				Transaction().SlotFreeOnRollback(id, slot);
 				if (yc != null)
 				{
 					yc.AddFieldIndices(_payLoad, null);
 				}
 				stream.WriteNew(yc, _payLoad);
-				ServerTransaction().WritePointer(id, address, length);
+				ServerTransaction().WritePointer(id, slot);
 			}
 			return true;
 		}

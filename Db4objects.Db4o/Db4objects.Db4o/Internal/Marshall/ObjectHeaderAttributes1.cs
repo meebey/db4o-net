@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			Transaction trans = yo.GetTrans();
 			object obj = yo.GetObject();
 			CalculateLengths(trans, yc, obj, 0);
-			_baseLength = yo.GetStream().AlignToBlockSize(_baseLength);
+			_baseLength = yo.GetStream().BlockAlignedBytes(_baseLength);
 		}
 
 		private void CalculateLengths(Transaction trans, ClassMetadata yc, object obj, int
@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public override void PrepareIndexedPayLoadEntry(Transaction trans)
 		{
-			_payLoadLength = trans.Stream().AlignToBlockSize(_payLoadLength);
+			_payLoadLength = trans.Stream().BlockAlignedBytes(_payLoadLength);
 		}
 
 		public virtual void Write(StatefulBuffer writer)

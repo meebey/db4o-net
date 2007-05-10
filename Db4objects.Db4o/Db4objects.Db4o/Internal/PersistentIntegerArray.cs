@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override int OwnLength()
 		{
-			return Const4.INT_LENGTH * (Size() + 1);
+			return (Const4.INT_LENGTH * (Size() + 1)) + Const4.ADDED_LENGTH;
 		}
 
 		public override void ReadThis(Transaction trans, Db4objects.Db4o.Internal.Buffer 

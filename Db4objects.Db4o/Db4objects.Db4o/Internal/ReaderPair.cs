@@ -2,6 +2,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -58,7 +59,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			catch (MappingNotFoundException)
 			{
-				mapped = _mapping.AllocateTargetSlot(Const4.POINTER_LENGTH);
+				mapped = _mapping.AllocateTargetSlot(Const4.POINTER_LENGTH).Address();
 				_mapping.MapIDs(orig, mapped, false);
 				_mapping.RegisterUnindexed(orig);
 			}
@@ -175,22 +176,21 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Internal.Buffer sourceReader = (registerAddressMapping ? context.
 				SourceWriterByID(sourceID) : context.SourceReaderByID(sourceID));
 			int targetID = context.MappedID(sourceID);
-			int targetLength = sourceReader.GetLength();
-			int targetAddress = context.AllocateTargetSlot(targetLength);
+			Slot targetSlot = context.AllocateTargetSlot(sourceReader.GetLength());
 			if (registerAddressMapping)
 			{
 				int sourceAddress = ((StatefulBuffer)sourceReader).GetAddress();
-				context.MapIDs(sourceAddress, targetAddress, false);
+				context.MapIDs(sourceAddress, targetSlot.Address(), false);
 			}
 			Db4objects.Db4o.Internal.Buffer targetPointerReader = new Db4objects.Db4o.Internal.Buffer
 				(Const4.POINTER_LENGTH);
-			targetPointerReader.WriteInt(targetAddress);
-			targetPointerReader.WriteInt(targetLength);
+			targetPointerReader.WriteInt(targetSlot.Address());
+			targetPointerReader.WriteInt(targetSlot.Length());
 			context.TargetWriteBytes(targetPointerReader, targetID);
 			Db4objects.Db4o.Internal.ReaderPair readers = new Db4objects.Db4o.Internal.ReaderPair
 				(sourceReader, context, context.SystemTrans());
 			command.ProcessCopy(readers);
-			context.TargetWriteBytes(readers, targetAddress);
+			context.TargetWriteBytes(readers, targetSlot.Address());
 		}
 
 		public void Append(byte value)

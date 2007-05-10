@@ -9,14 +9,19 @@ namespace Db4objects.Db4o.Internal.Freespace
 	/// <exclude></exclude>
 	public class BTreeFreespaceManager : AbstractFreespaceManager
 	{
-		private BTree _slotsByAddress;
+		private RamFreespaceManager _delegate;
 
-		private BTree _slotsByLength;
+		private FreespaceBTree _slotsByAddress;
+
+		private FreespaceBTree _slotsByLength;
 
 		private PersistentIntegerArray _btreeIDs;
 
+		private int _recursion;
+
 		public BTreeFreespaceManager(LocalObjectContainer file) : base(file)
 		{
+			_delegate = new RamFreespaceManager(file);
 		}
 
 		public override void Free(Slot slot)
@@ -25,45 +30,62 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			if (slot._length <= DiscardLimit())
+			if (RecursiveCall())
 			{
+				_delegate.Free(slot);
 				return;
 			}
-			Slot newFreeSlot = ToBlocked(slot);
-			BTreeNodeSearchResult searchResult = _slotsByAddress.SearchLeaf(Transaction(), slot
-				, SearchTarget.LOWEST);
-			BTreePointer pointer = searchResult.FirstValidPointer();
-			if (pointer != null)
+			try
 			{
-				BTreePointer previousPointer = pointer.Previous();
-				if (previousPointer != null)
+				_recursion++;
+				Slot newFreeSlot = slot;
+				BTreeNodeSearchResult searchResult = _slotsByAddress.SearchLeaf(Transaction(), slot
+					, SearchTarget.LOWEST);
+				BTreePointer pointer = searchResult.FirstValidPointer();
+				if (pointer != null)
 				{
-					Slot previousSlot = (Slot)previousPointer.Key();
-					if (previousSlot.IsDirectlyPreceding(newFreeSlot))
+					BTreePointer previousPointer = pointer.Previous();
+					if (previousPointer != null)
 					{
-						RemoveSlot(previousSlot);
-						newFreeSlot = previousSlot.Append(newFreeSlot);
+						Slot previousSlot = (Slot)previousPointer.Key();
+						if (previousSlot.IsDirectlyPreceding(newFreeSlot))
+						{
+							RemoveSlot(previousSlot);
+							newFreeSlot = previousSlot.Append(newFreeSlot);
+						}
 					}
 				}
-			}
-			searchResult = _slotsByAddress.SearchLeaf(Transaction(), slot, SearchTarget.HIGHEST
-				);
-			pointer = searchResult.FirstValidPointer();
-			if (pointer != null)
-			{
-				Slot nextSlot = (Slot)pointer.Key();
-				if (newFreeSlot.IsDirectlyPreceding(nextSlot))
+				searchResult = _slotsByAddress.SearchLeaf(Transaction(), slot, SearchTarget.HIGHEST
+					);
+				pointer = searchResult.FirstValidPointer();
+				if (pointer != null)
 				{
-					RemoveSlot(nextSlot);
-					newFreeSlot = newFreeSlot.Append(nextSlot);
+					Slot nextSlot = (Slot)pointer.Key();
+					if (newFreeSlot.IsDirectlyPreceding(nextSlot))
+					{
+						RemoveSlot(nextSlot);
+						newFreeSlot = newFreeSlot.Append(nextSlot);
+					}
 				}
+				if (!CanDiscard(newFreeSlot.Length()))
+				{
+					AddSlot(newFreeSlot);
+				}
+				_file.OverwriteDeletedBlockedSlot(newFreeSlot);
 			}
-			AddSlot(newFreeSlot);
-			_file.OverwriteDeletedSlot(slot);
+			finally
+			{
+				_recursion--;
+			}
 		}
 
 		public override void FreeSelf()
 		{
+		}
+
+		private bool RecursiveCall()
+		{
+			return _recursion > 0;
 		}
 
 		public override Slot GetSlot(int length)
@@ -72,22 +94,35 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return null;
 			}
-			int requiredLength = _file.BlocksFor(length);
-			BTreeNodeSearchResult searchResult = _slotsByLength.SearchLeaf(Transaction(), new 
-				Slot(0, requiredLength), SearchTarget.HIGHEST);
-			BTreePointer pointer = searchResult.FirstValidPointer();
-			if (pointer == null)
+			if (RecursiveCall())
 			{
-				return null;
+				return _delegate.GetSlot(length);
 			}
-			Slot slot = (Slot)pointer.Key();
-			RemoveSlot(slot);
-			if (slot._length == requiredLength)
+			try
 			{
-				return ToNonBlocked(slot);
+				_recursion++;
+				BTreeNodeSearchResult searchResult = _slotsByLength.SearchLeaf(Transaction(), new 
+					Slot(0, length), SearchTarget.HIGHEST);
+				BTreePointer pointer = searchResult.FirstValidPointer();
+				if (pointer == null)
+				{
+					return null;
+				}
+				Slot slot = (Slot)pointer.Key();
+				RemoveSlot(slot);
+				int remainingLength = slot.Length() - length;
+				if (CanDiscard(remainingLength))
+				{
+					return slot;
+				}
+				AddSlot(slot.SubSlot(length));
+				slot = slot.Truncate(length);
+				return slot;
 			}
-			AddSlot(slot.SubSlot(requiredLength));
-			return ToNonBlocked(slot.Truncate(requiredLength));
+			finally
+			{
+				_recursion--;
+			}
 		}
 
 		private void AddSlot(Slot slot)
@@ -129,25 +164,38 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override void Start(int slotAddress)
 		{
-			if (slotAddress == 0)
+			try
 			{
-				CreateBTrees(new int[] { 0, 0 });
-				_slotsByAddress.Write(Transaction());
-				_slotsByLength.Write(Transaction());
-				int[] ids = new int[] { _slotsByAddress.GetID(), _slotsByLength.GetID() };
-				_btreeIDs = new PersistentIntegerArray(ids);
-				_btreeIDs.Write(Transaction());
-				return;
+				_recursion++;
+				if (slotAddress == 0)
+				{
+					CreateBTrees(new int[] { 0, 0 });
+					_slotsByAddress.Write(Transaction());
+					_slotsByLength.Write(Transaction());
+					int[] ids = new int[] { _slotsByAddress.GetID(), _slotsByLength.GetID() };
+					_btreeIDs = new PersistentIntegerArray(ids);
+					_btreeIDs.Write(Transaction());
+					_file.SystemData().FreespaceAddress(_btreeIDs.GetID());
+					return;
+				}
+				_btreeIDs = new PersistentIntegerArray(slotAddress);
+				_btreeIDs.Read(Transaction());
+				CreateBTrees(_btreeIDs.Array());
+				_slotsByAddress.Read(Transaction());
+				_slotsByLength.Read(Transaction());
 			}
-			_btreeIDs = new PersistentIntegerArray(slotAddress);
-			_btreeIDs.Read(Transaction());
-			CreateBTrees(_btreeIDs.Array());
+			finally
+			{
+				_recursion--;
+			}
 		}
 
 		private void CreateBTrees(int[] ids)
 		{
-			_slotsByAddress = new BTree(Transaction(), ids[0], new AddressKeySlotHandler());
-			_slotsByLength = new BTree(Transaction(), ids[1], new LengthKeySlotHandler());
+			_slotsByAddress = new FreespaceBTree(Transaction(), ids[0], new AddressKeySlotHandler
+				());
+			_slotsByLength = new FreespaceBTree(Transaction(), ids[1], new LengthKeySlotHandler
+				());
 		}
 
 		private bool Started()
@@ -166,10 +214,18 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override void EndCommit()
 		{
+			_recursion--;
 		}
 
 		public override void Read(int freeSpaceID)
 		{
+		}
+
+		public override void Commit()
+		{
+			_recursion++;
+			_slotsByAddress.Commit(Transaction());
+			_slotsByLength.Commit(Transaction());
 		}
 	}
 }

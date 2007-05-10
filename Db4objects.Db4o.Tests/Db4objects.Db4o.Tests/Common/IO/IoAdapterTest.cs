@@ -1,6 +1,6 @@
-using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4objects.Db4o;
 using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.Tests.Common.IO
@@ -204,7 +204,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 				{
 					_adapters[i].Close();
 				}
-				catch (IOException)
+				catch (Db4oIOException)
 				{
 				}
 			}

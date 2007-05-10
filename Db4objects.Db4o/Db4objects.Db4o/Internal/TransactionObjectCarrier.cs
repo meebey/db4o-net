@@ -1,4 +1,5 @@
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -14,28 +15,26 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override void SlotFreeOnCommit(int a_id, int a_address, int a_length)
+		public override void SlotFreeOnCommit(int id, Slot slot)
 		{
 		}
 
-		public override void SlotFreeOnRollback(int a_id, int a_address, int a_length)
+		public override void SlotFreeOnRollback(int id, Slot slot)
 		{
 		}
 
-		internal override void ProduceUpdateSlotChange(int a_id, int a_address, int a_length
-			)
+		internal override void ProduceUpdateSlotChange(int id, Slot slot)
 		{
-			SetPointer(a_id, a_address, a_length);
+			SetPointer(id, slot);
 		}
 
-		internal override void SlotFreeOnRollbackCommitSetPointer(int a_id, int newAddress
-			, int newLength)
+		internal override void SlotFreeOnRollbackCommitSetPointer(int id, Slot slot, bool
+			 freeImmediately)
 		{
-			SetPointer(a_id, newAddress, newLength);
+			SetPointer(id, slot);
 		}
 
-		internal override void SlotFreePointerOnCommit(int a_id, int a_address, int a_length
-			)
+		internal override void SlotFreePointerOnCommit(int a_id, Slot slot)
 		{
 		}
 
@@ -43,9 +42,9 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override void SetPointer(int a_id, int a_address, int a_length)
+		public override void SetPointer(int a_id, Slot slot)
 		{
-			WritePointer(a_id, a_address, a_length);
+			WritePointer(a_id, slot);
 		}
 
 		internal override bool SupportsVirtualFields()

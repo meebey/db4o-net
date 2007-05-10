@@ -1,10 +1,8 @@
 using System;
-using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.IX;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Slots;
@@ -43,13 +41,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Val(obj, trans.Stream());
 		}
 
-		public override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes)
+		public override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer buffer)
 		{
-			int address = a_bytes.ReadInt();
-			int length = a_bytes.ReadInt();
-			if (address > 0 && !mf._string.InlinedStrings())
+			Slot slot = buffer.ReadSlot();
+			if (slot.Address() > 0 && !mf._string.InlinedStrings())
 			{
-				a_bytes.GetTransaction().SlotFreeOnCommit(address, address, length);
+				buffer.GetTransaction().SlotFreeOnCommit(slot.Address(), slot);
 			}
 		}
 
@@ -142,9 +139,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			catch (CorruptionException)
 			{
 			}
-			catch (IOException)
-			{
-			}
 			return null;
 		}
 
@@ -153,7 +147,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// This readIndexEntry method reads from the parent slot.
 		/// TODO: Consider renaming methods in Indexable4 and Typhandler4 to make direction clear.
 		/// </remarks>
-		/// <exception cref="IOException"></exception>
 		/// <exception cref="CorruptionException">CorruptionException</exception>
 		public override object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer
 			)
@@ -178,7 +171,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private bool IsInvalidSlot(Slot slot)
 		{
-			return (slot._address == 0) && (slot._length == 0);
+			return (slot.Address() == 0) && (slot.Length() == 0);
 		}
 
 		public override object ReadQuery(Transaction a_trans, MarshallerFamily mf, bool withRedirection
@@ -226,8 +219,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (entry is Slot)
 			{
 				Slot s = (Slot)entry;
-				writer.WriteInt(s._address);
-				writer.WriteInt(s._length);
+				writer.WriteInt(s.Address());
+				writer.WriteInt(s.Length());
 				return;
 			}
 			throw new ArgumentException();
@@ -277,14 +270,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (obj is Slot)
 			{
 				Slot s = (Slot)obj;
-				try
-				{
-					return oc.BufferByAddress(s._address, s._length);
-				}
-				catch (IOException e)
-				{
-					throw new ComparableConversionException(s, e);
-				}
+				return oc.BufferByAddress(s.Address(), s.Length());
 			}
 			return null;
 		}

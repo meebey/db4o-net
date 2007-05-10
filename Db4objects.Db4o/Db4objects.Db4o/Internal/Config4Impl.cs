@@ -191,27 +191,13 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			items.ForEachValue(new _AnonymousInnerClass187(this, container));
-		}
-
-		private sealed class _AnonymousInnerClass187 : IVisitor4
-		{
-			public _AnonymousInnerClass187(Config4Impl _enclosing, ObjectContainerBase container
-				)
+			IEnumerator i = items.Iterator();
+			while (i.MoveNext())
 			{
-				this._enclosing = _enclosing;
-				this.container = container;
-			}
-
-			public void Visit(object obj)
-			{
-				IConfigurationItem item = (IConfigurationItem)obj;
+				IEntry4 entry = (IEntry4)i.Current;
+				IConfigurationItem item = (IConfigurationItem)entry.Value();
 				item.Apply(container);
 			}
-
-			private readonly Config4Impl _enclosing;
-
-			private readonly ObjectContainerBase container;
 		}
 
 		public void AutomaticShutDown(bool flag)
@@ -287,6 +273,10 @@ namespace Db4objects.Db4o.Internal
 
 		public void DiscardFreeSpace(int bytes)
 		{
+			if (bytes < 0)
+			{
+				throw new ArgumentException();
+			}
 			_config.Put(DISCARD_FREESPACE, bytes);
 		}
 

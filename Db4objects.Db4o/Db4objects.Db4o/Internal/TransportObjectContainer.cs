@@ -3,6 +3,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Convert;
+using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Types;
 
@@ -110,7 +111,11 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override int GetSlot(int length)
+		public sealed override void Free(Slot slot)
+		{
+		}
+
+		public override Slot GetSlot(int length)
 		{
 			return AppendBlocks(length);
 		}
