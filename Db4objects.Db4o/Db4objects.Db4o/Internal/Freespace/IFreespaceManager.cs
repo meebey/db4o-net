@@ -37,5 +37,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 		int Write();
 
 		void Commit();
+
+		Slot AllocateTransactionLogSlot(int length);
+
+		void FreeTransactionLogSlot(Slot slot);
 	}
 }

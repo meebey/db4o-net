@@ -1,5 +1,6 @@
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Util;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Diagnostic;
@@ -58,12 +59,12 @@ namespace Db4objects.Db4o.TA.Tests
 		protected override void Configure(IConfiguration config)
 		{
 			config.Add(new TransparentActivationSupport());
-			config.Diagnostic().AddListener(new _AnonymousInnerClass49(this));
+			config.Diagnostic().AddListener(new _AnonymousInnerClass50(this));
 		}
 
-		private sealed class _AnonymousInnerClass49 : IDiagnosticListener
+		private sealed class _AnonymousInnerClass50 : IDiagnosticListener
 		{
-			public _AnonymousInnerClass49(TransparentActivationDiagnosticsTestCase _enclosing
+			public _AnonymousInnerClass50(TransparentActivationDiagnosticsTestCase _enclosing
 				)
 			{
 				this._enclosing = _enclosing;
@@ -71,9 +72,13 @@ namespace Db4objects.Db4o.TA.Tests
 
 			public void OnDiagnostic(IDiagnostic diagnostic)
 			{
+				if (!(diagnostic is NotTransparentActivationEnabled))
+				{
+					return;
+				}
 				NotTransparentActivationEnabled taDiagnostic = (NotTransparentActivationEnabled)diagnostic;
-				Assert.AreEqual(typeof(TransparentActivationDiagnosticsTestCase.NotTAAwareData).FullName
-					, ((ClassMetadata)taDiagnostic.Reason()).GetName());
+				Assert.AreEqual(CrossPlatformServices.FullyQualifiedName(typeof(TransparentActivationDiagnosticsTestCase.NotTAAwareData)
+					), ((ClassMetadata)taDiagnostic.Reason()).GetName());
 				this._enclosing._registered._registeredCount++;
 			}
 

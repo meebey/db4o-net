@@ -330,6 +330,24 @@ namespace Db4objects.Db4o.Foundation
 			return _preceding.First();
 		}
 
+		public static Tree Last(Tree tree)
+		{
+			if (tree == null)
+			{
+				return null;
+			}
+			return tree.Last();
+		}
+
+		public Tree Last()
+		{
+			if (_subsequent == null)
+			{
+				return this;
+			}
+			return _subsequent.Last();
+		}
+
 		public virtual void OnAttemptToAddDuplicate(Tree a_tree)
 		{
 			_size = 0;

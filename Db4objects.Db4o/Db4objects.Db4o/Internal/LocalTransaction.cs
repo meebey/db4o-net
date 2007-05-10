@@ -106,9 +106,10 @@ namespace Db4objects.Db4o.Internal
 			Commit4FieldIndexes();
 			CommitParticipants();
 			Stream().WriteDirty();
-			CommitFreespace();
-			Commit6WriteChanges();
+			Slot reservedSlot = AllocateTransactionLogSlot(false);
 			FreeOnCommit();
+			CommitFreespace();
+			Commit6WriteChanges(reservedSlot);
 		}
 
 		private void Commit2Listeners()
@@ -198,12 +199,12 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void RollbackSlotChanges()
 		{
-			Tree.Traverse(_slotChanges, new _AnonymousInnerClass197(this));
+			Tree.Traverse(_slotChanges, new _AnonymousInnerClass192(this));
 		}
 
-		private sealed class _AnonymousInnerClass197 : IVisitor4
+		private sealed class _AnonymousInnerClass192 : IVisitor4
 		{
-			public _AnonymousInnerClass197(LocalTransaction _enclosing)
+			public _AnonymousInnerClass192(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -221,21 +222,50 @@ namespace Db4objects.Db4o.Internal
 			return SlotChangeIsFlaggedDeleted(id);
 		}
 
-		protected virtual void Commit6WriteChanges()
+		private Slot AllocateTransactionLogSlot(bool appendToFile)
+		{
+			if (FreespaceManager() != null)
+			{
+				int nonBlockedLength = TransactionLogSlotLength();
+				int blockedLength = _file.BytesToBlocks(nonBlockedLength);
+				Slot slot = FreespaceManager().AllocateTransactionLogSlot(blockedLength);
+				if (slot != null)
+				{
+					return _file.ToNonBlockedLength(slot);
+				}
+			}
+			if (!appendToFile)
+			{
+				return null;
+			}
+			return _file.AppendSlot(TransactionLogSlotLength());
+		}
+
+		private int TransactionLogSlotLength()
+		{
+			return ((CountSlotChanges() * 3) + 2) * Const4.INT_LENGTH;
+		}
+
+		private bool SlotLongEnoughForLog(Slot slot)
+		{
+			return slot != null && slot.Length() >= TransactionLogSlotLength();
+		}
+
+		protected virtual void Commit6WriteChanges(Slot reservedSlot)
 		{
 			CheckSynchronization();
-			int slotSetPointerCount = CountSlotChanges();
-			if (slotSetPointerCount > 0)
+			int slotChangeCount = CountSlotChanges();
+			if (slotChangeCount > 0)
 			{
-				int length = (((slotSetPointerCount * 3) + 2) * Const4.INT_LENGTH);
-				Slot slot = _file.GetSlot(length);
-				StatefulBuffer bytes = new StatefulBuffer(this, slot.Address(), slot.Length());
-				bytes.WriteInt(slot.Length());
-				bytes.WriteInt(slotSetPointerCount);
-				AppendSlotChanges(bytes);
-				bytes.Write();
+				Slot transactionLogSlot = SlotLongEnoughForLog(reservedSlot) ? reservedSlot : AllocateTransactionLogSlot
+					(true);
+				StatefulBuffer buffer = new StatefulBuffer(this, transactionLogSlot);
+				buffer.WriteInt(transactionLogSlot.Length());
+				buffer.WriteInt(slotChangeCount);
+				AppendSlotChanges(buffer);
+				buffer.Write();
 				FlushFile();
-				Stream().WriteTransactionPointer(slot.Address());
+				Stream().WriteTransactionPointer(transactionLogSlot.Address());
 				FlushFile();
 				if (WriteSlots())
 				{
@@ -243,8 +273,21 @@ namespace Db4objects.Db4o.Internal
 				}
 				Stream().WriteTransactionPointer(0);
 				FlushFile();
-				_file.Free(slot);
+				if (transactionLogSlot != reservedSlot)
+				{
+					_file.Free(transactionLogSlot);
+				}
 			}
+			FreeTransactionLogSlot(reservedSlot);
+		}
+
+		private void FreeTransactionLogSlot(Slot slot)
+		{
+			if (slot == null)
+			{
+				return;
+			}
+			FreespaceManager().FreeTransactionLogSlot(_file.ToNonBlockedLength(slot));
 		}
 
 		public virtual void WritePointer(int id, Slot slot)
@@ -262,13 +305,13 @@ namespace Db4objects.Db4o.Internal
 		private bool WriteSlots()
 		{
 			MutableBoolean ret = new MutableBoolean();
-			TraverseSlotChanges(new _AnonymousInnerClass263(this, ret));
+			TraverseSlotChanges(new _AnonymousInnerClass296(this, ret));
 			return ret.Value();
 		}
 
-		private sealed class _AnonymousInnerClass263 : IVisitor4
+		private sealed class _AnonymousInnerClass296 : IVisitor4
 		{
-			public _AnonymousInnerClass263(LocalTransaction _enclosing, MutableBoolean ret)
+			public _AnonymousInnerClass296(LocalTransaction _enclosing, MutableBoolean ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -402,13 +445,13 @@ namespace Db4objects.Db4o.Internal
 		private int CountSlotChanges()
 		{
 			MutableInt count = new MutableInt();
-			TraverseSlotChanges(new _AnonymousInnerClass386(this, count));
+			TraverseSlotChanges(new _AnonymousInnerClass419(this, count));
 			return count.Value();
 		}
 
-		private sealed class _AnonymousInnerClass386 : IVisitor4
+		private sealed class _AnonymousInnerClass419 : IVisitor4
 		{
-			public _AnonymousInnerClass386(LocalTransaction _enclosing, MutableInt count)
+			public _AnonymousInnerClass419(LocalTransaction _enclosing, MutableInt count)
 			{
 				this._enclosing = _enclosing;
 				this.count = count;
@@ -460,12 +503,12 @@ namespace Db4objects.Db4o.Internal
 		protected sealed override void FreeOnCommit()
 		{
 			CheckSynchronization();
-			TraverseSlotChanges(new _AnonymousInnerClass422(this));
+			TraverseSlotChanges(new _AnonymousInnerClass455(this));
 		}
 
-		private sealed class _AnonymousInnerClass422 : IVisitor4
+		private sealed class _AnonymousInnerClass455 : IVisitor4
 		{
-			public _AnonymousInnerClass422(LocalTransaction _enclosing)
+			public _AnonymousInnerClass455(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -480,12 +523,12 @@ namespace Db4objects.Db4o.Internal
 
 		private void AppendSlotChanges(Db4objects.Db4o.Internal.Buffer writer)
 		{
-			TraverseSlotChanges(new _AnonymousInnerClass430(this, writer));
+			TraverseSlotChanges(new _AnonymousInnerClass463(this, writer));
 		}
 
-		private sealed class _AnonymousInnerClass430 : IVisitor4
+		private sealed class _AnonymousInnerClass463 : IVisitor4
 		{
-			public _AnonymousInnerClass430(LocalTransaction _enclosing, Db4objects.Db4o.Internal.Buffer
+			public _AnonymousInnerClass463(LocalTransaction _enclosing, Db4objects.Db4o.Internal.Buffer
 				 writer)
 			{
 				this._enclosing = _enclosing;
@@ -494,7 +537,7 @@ namespace Db4objects.Db4o.Internal
 
 			public void Visit(object obj)
 			{
-				((TreeInt)obj).Write(writer);
+				((SlotChange)obj).Write(writer);
 			}
 
 			private readonly LocalTransaction _enclosing;
@@ -594,14 +637,14 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = i_delete;
 				i_delete = null;
-				delete.Traverse(new _AnonymousInnerClass553(this));
+				delete.Traverse(new _AnonymousInnerClass586(this));
 			}
 			_writtenUpdateDeletedMembers = null;
 		}
 
-		private sealed class _AnonymousInnerClass553 : IVisitor4
+		private sealed class _AnonymousInnerClass586 : IVisitor4
 		{
-			public _AnonymousInnerClass553(LocalTransaction _enclosing)
+			public _AnonymousInnerClass586(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -691,15 +734,15 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			_slotChanges.Traverse(new _AnonymousInnerClass644(this, deleted, added, updated));
+			_slotChanges.Traverse(new _AnonymousInnerClass677(this, deleted, added, updated));
 			return new CallbackObjectInfoCollections(serverMessageDispatcher, new ObjectInfoCollectionImpl
 				(added), new ObjectInfoCollectionImpl(updated), new ObjectInfoCollectionImpl(deleted
 				));
 		}
 
-		private sealed class _AnonymousInnerClass644 : IVisitor4
+		private sealed class _AnonymousInnerClass677 : IVisitor4
 		{
-			public _AnonymousInnerClass644(LocalTransaction _enclosing, Collection4 deleted, 
+			public _AnonymousInnerClass677(LocalTransaction _enclosing, Collection4 deleted, 
 				Collection4 added, Collection4 updated)
 			{
 				this._enclosing = _enclosing;
@@ -789,11 +832,6 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			FreespaceManager().Commit();
-		}
-
-		private Slot TransactionLogSlot()
-		{
-			return null;
 		}
 	}
 }

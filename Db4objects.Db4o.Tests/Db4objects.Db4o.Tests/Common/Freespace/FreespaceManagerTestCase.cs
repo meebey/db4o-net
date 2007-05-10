@@ -1,4 +1,5 @@
 using Db4oUnit;
+using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Tests.Common.Freespace;
 
@@ -9,6 +10,27 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		public static void Main(string[] args)
 		{
 			new FreespaceManagerTestCase().RunSolo();
+		}
+
+		public virtual void TestAllocateTransactionLogSlot()
+		{
+			for (int i = 0; i < fm.Length; i++)
+			{
+				if (fm[i].SystemType() == AbstractFreespaceManager.FM_RAM)
+				{
+					Slot slot = fm[i].AllocateTransactionLogSlot(1);
+					Assert.IsNull(slot);
+					fm[i].Free(new Slot(5, 10));
+					fm[i].Free(new Slot(100, 5));
+					fm[i].Free(new Slot(140, 27));
+					slot = fm[i].AllocateTransactionLogSlot(28);
+					Assert.IsNull(slot);
+					Assert.AreEqual(3, fm[i].SlotCount());
+					slot = fm[i].AllocateTransactionLogSlot(27);
+					Assert.AreEqual(2, fm[i].SlotCount());
+					Assert.AreEqual(new Slot(140, 27), slot);
+				}
+			}
 		}
 
 		public virtual void TestConstructor()

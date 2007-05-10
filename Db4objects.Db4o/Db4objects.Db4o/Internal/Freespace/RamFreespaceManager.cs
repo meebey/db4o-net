@@ -27,6 +27,22 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_freeBySize = Tree.Add(_freeBySize, addressNode._peer);
 		}
 
+		public override Slot AllocateTransactionLogSlot(int length)
+		{
+			FreeSlotNode sizeNode = (FreeSlotNode)Tree.Last(_freeBySize);
+			if (sizeNode == null || sizeNode._key < length)
+			{
+				return null;
+			}
+			RemoveFromBothTrees(sizeNode);
+			return new Slot(sizeNode._peer._key, sizeNode._key);
+		}
+
+		public override void FreeTransactionLogSlot(Slot slot)
+		{
+			Free(slot);
+		}
+
 		public override void BeginCommit()
 		{
 		}
@@ -62,8 +78,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 				if ((secondAddressNode != null) && (address + length == secondAddressNode._key))
 				{
 					sizeNode._key += secondAddressNode._peer._key;
-					_freeBySize = _freeBySize.RemoveNode(secondAddressNode._peer);
-					_freeByAddress = _freeByAddress.RemoveNode(secondAddressNode);
+					RemoveFromBothTrees(secondAddressNode._peer);
 				}
 				sizeNode.RemoveChildren();
 				_freeBySize = Tree.Add(_freeBySize, sizeNode);
@@ -74,8 +89,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 				if ((addressnode != null) && (address + length == addressnode._key))
 				{
 					sizeNode = addressnode._peer;
-					_freeByAddress = _freeByAddress.RemoveNode(addressnode);
-					_freeBySize = _freeBySize.RemoveNode(sizeNode);
+					RemoveFromBothTrees(sizeNode);
 					sizeNode._key += length;
 					addressnode._key = address;
 					addressnode.RemoveChildren();
@@ -130,15 +144,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 			StringBuilder sb = new StringBuilder();
 			sb.Append("RAM FreespaceManager\n");
 			sb.Append("Address Index\n");
-			_freeByAddress.Traverse(new _AnonymousInnerClass136(this, sb));
+			_freeByAddress.Traverse(new _AnonymousInnerClass145(this, sb));
 			sb.Append("Length Index\n");
-			_freeBySize.Traverse(new _AnonymousInnerClass144(this, sb));
+			_freeBySize.Traverse(new _AnonymousInnerClass153(this, sb));
 			return sb.ToString();
 		}
 
-		private sealed class _AnonymousInnerClass136 : IVisitor4
+		private sealed class _AnonymousInnerClass145 : IVisitor4
 		{
-			public _AnonymousInnerClass136(RamFreespaceManager _enclosing, StringBuilder sb)
+			public _AnonymousInnerClass145(RamFreespaceManager _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -155,9 +169,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly StringBuilder sb;
 		}
 
-		private sealed class _AnonymousInnerClass144 : IVisitor4
+		private sealed class _AnonymousInnerClass153 : IVisitor4
 		{
-			public _AnonymousInnerClass144(RamFreespaceManager _enclosing, StringBuilder sb)
+			public _AnonymousInnerClass153(RamFreespaceManager _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -180,12 +194,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			_freeByAddress.Traverse(new _AnonymousInnerClass157(this, visitor));
+			_freeByAddress.Traverse(new _AnonymousInnerClass166(this, visitor));
 		}
 
-		private sealed class _AnonymousInnerClass157 : IVisitor4
+		private sealed class _AnonymousInnerClass166 : IVisitor4
 		{
-			public _AnonymousInnerClass157(RamFreespaceManager _enclosing, IVisitor4 visitor)
+			public _AnonymousInnerClass166(RamFreespaceManager _enclosing, IVisitor4 visitor)
 			{
 				this._enclosing = _enclosing;
 				this.visitor = visitor;
@@ -229,16 +243,16 @@ namespace Db4objects.Db4o.Internal.Freespace
 			Tree.ByRef addressTree = new Tree.ByRef();
 			if (_freeBySize != null)
 			{
-				_freeBySize.Traverse(new _AnonymousInnerClass190(this, addressTree));
+				_freeBySize.Traverse(new _AnonymousInnerClass199(this, addressTree));
 			}
 			_freeByAddress = addressTree.value;
 			_file.Free(freeSlotsID, Const4.POINTER_LENGTH);
 			_file.Free(reader.GetAddress(), reader.GetLength());
 		}
 
-		private sealed class _AnonymousInnerClass190 : IVisitor4
+		private sealed class _AnonymousInnerClass199 : IVisitor4
 		{
-			public _AnonymousInnerClass190(RamFreespaceManager _enclosing, Tree.ByRef addressTree
+			public _AnonymousInnerClass199(RamFreespaceManager _enclosing, Tree.ByRef addressTree
 				)
 			{
 				this._enclosing = _enclosing;
@@ -287,6 +301,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public override int SlotCount()
 		{
 			return Tree.Size(_freeByAddress);
+		}
+
+		private void RemoveFromBothTrees(FreeSlotNode sizeNode)
+		{
+			_freeBySize = _freeBySize.RemoveNode(sizeNode);
+			_freeByAddress = _freeByAddress.RemoveNode(sizeNode._peer);
 		}
 	}
 }

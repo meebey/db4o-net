@@ -24,6 +24,16 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_delegate = new RamFreespaceManager(file);
 		}
 
+		public override Slot AllocateTransactionLogSlot(int length)
+		{
+			return _delegate.AllocateTransactionLogSlot(length);
+		}
+
+		public override void FreeTransactionLogSlot(Slot slot)
+		{
+			_delegate.FreeTransactionLogSlot(slot);
+		}
+
 		public override void Free(Slot slot)
 		{
 			if (!Started())

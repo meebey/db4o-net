@@ -271,21 +271,15 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new ArgumentException();
 			}
-			Slot slot;
 			if (_freespaceManager != null)
 			{
-				slot = _freespaceManager.GetSlot(blocks);
+				Slot slot = _freespaceManager.GetSlot(blocks);
 				if (slot != null)
 				{
 					return slot;
 				}
 			}
-			slot = AppendBlocks(blocks);
-			if (Debug.xbytes && Deploy.overwrite)
-			{
-				OverwriteDeletedBlockedSlot(slot);
-			}
-			return slot;
+			return AppendBlocks(blocks);
 		}
 
 		protected Slot AppendBlocks(int blockCount)
@@ -294,7 +288,18 @@ namespace Db4objects.Db4o.Internal
 			int blockedEndAddress = _blockEndAddress + blockCount;
 			CheckBlockedAddress(blockedEndAddress);
 			_blockEndAddress = blockedEndAddress;
-			return new Slot(blockedStartAddress, blockCount);
+			Slot slot = new Slot(blockedStartAddress, blockCount);
+			if (Debug.xbytes && Deploy.overwrite)
+			{
+				OverwriteDeletedBlockedSlot(slot);
+			}
+			return slot;
+		}
+
+		internal Slot AppendSlot(int length)
+		{
+			Slot slot = AppendBlocks(BytesToBlocks(length));
+			return ToNonBlockedLength(slot);
 		}
 
 		private void CheckBlockedAddress(int blockedAddress)
@@ -567,16 +572,16 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass537(this, semaphores), ta
+					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass540(this, semaphores), ta
 						);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass537 : IVisitor4
+		private sealed class _AnonymousInnerClass540 : IVisitor4
 		{
-			public _AnonymousInnerClass537(LocalObjectContainer _enclosing, Hashtable4 semaphores
+			public _AnonymousInnerClass540(LocalObjectContainer _enclosing, Hashtable4 semaphores
 				)
 			{
 				this._enclosing = _enclosing;
@@ -821,13 +826,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass743(this, ids));
+			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass746(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _AnonymousInnerClass743 : IVisitor4
+		private sealed class _AnonymousInnerClass746 : IVisitor4
 		{
-			public _AnonymousInnerClass743(LocalObjectContainer _enclosing, IntArrayList ids)
+			public _AnonymousInnerClass746(LocalObjectContainer _enclosing, IntArrayList ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;

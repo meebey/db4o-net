@@ -16,6 +16,15 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			_listener = listener;
 		}
 
+		public override Slot AllocateTransactionLogSlot(int length)
+		{
+			return null;
+		}
+
+		public override void FreeTransactionLogSlot(Slot slot)
+		{
+		}
+
 		public override void BeginCommit()
 		{
 		}

@@ -1,9 +1,9 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Util;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Stored;
-using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Stored
 {

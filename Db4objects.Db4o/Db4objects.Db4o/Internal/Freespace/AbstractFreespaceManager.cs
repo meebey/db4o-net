@@ -168,6 +168,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			newFM.EndCommit();
 		}
 
+		public abstract Slot AllocateTransactionLogSlot(int arg1);
+
 		public abstract void Commit();
 
 		public abstract void EndCommit();
@@ -175,6 +177,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public abstract void Free(Slot arg1);
 
 		public abstract void FreeSelf();
+
+		public abstract void FreeTransactionLogSlot(Slot arg1);
 
 		public abstract Slot GetSlot(int arg1);
 

@@ -33,6 +33,16 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_lengthIx.Add(address, length);
 		}
 
+		public override Slot AllocateTransactionLogSlot(int length)
+		{
+			return GetSlot(length);
+		}
+
+		public override void FreeTransactionLogSlot(Slot slot)
+		{
+			Free(slot);
+		}
+
 		public override void BeginCommit()
 		{
 			if (!Started())
@@ -183,14 +193,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			IIntObjectVisitor dispatcher = new _AnonymousInnerClass178(this, visitor);
-			Tree.Traverse(_addressIx._indexTrans.GetRoot(), new _AnonymousInnerClass183(this, 
+			IIntObjectVisitor dispatcher = new _AnonymousInnerClass186(this, visitor);
+			Tree.Traverse(_addressIx._indexTrans.GetRoot(), new _AnonymousInnerClass191(this, 
 				dispatcher));
 		}
 
-		private sealed class _AnonymousInnerClass178 : IIntObjectVisitor
+		private sealed class _AnonymousInnerClass186 : IIntObjectVisitor
 		{
-			public _AnonymousInnerClass178(FreespaceManagerIx _enclosing, IVisitor4 visitor)
+			public _AnonymousInnerClass186(FreespaceManagerIx _enclosing, IVisitor4 visitor)
 			{
 				this._enclosing = _enclosing;
 				this.visitor = visitor;
@@ -206,9 +216,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly IVisitor4 visitor;
 		}
 
-		private sealed class _AnonymousInnerClass183 : IVisitor4
+		private sealed class _AnonymousInnerClass191 : IVisitor4
 		{
-			public _AnonymousInnerClass183(FreespaceManagerIx _enclosing, IIntObjectVisitor dispatcher
+			public _AnonymousInnerClass191(FreespaceManagerIx _enclosing, IIntObjectVisitor dispatcher
 				)
 			{
 				this._enclosing = _enclosing;
