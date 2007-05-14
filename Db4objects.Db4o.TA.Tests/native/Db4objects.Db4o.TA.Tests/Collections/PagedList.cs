@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA.Tests.Collections.Internal;
 
 namespace Db4objects.Db4o.TA.Tests.Collections
@@ -10,7 +11,7 @@ namespace Db4objects.Db4o.TA.Tests.Collections
 
 		// TA BEGIN
 		[NonSerialized]
-		TA.Internal.Activator _activator;
+		IActivator _activator;
 		// TA END
 
 		#region IList Members
@@ -18,7 +19,7 @@ namespace Db4objects.Db4o.TA.Tests.Collections
 		public int Add(object value)
 		{
 			// TA BEGIN
-			activate();
+			Activate();
 			// TA END
 			_store.Add(value);
 			return _store.Size() - 1;
@@ -59,7 +60,7 @@ namespace Db4objects.Db4o.TA.Tests.Collections
 			get
 			{
 				// TA BEGIN
-				activate();
+				Activate();
 				// TA END
 				return _store.Get(index);
 			}
@@ -90,7 +91,7 @@ namespace Db4objects.Db4o.TA.Tests.Collections
 			get
 			{
 				// TA BEGIN
-				activate();
+				Activate();
 				// TA END
 				return _store.Size();
 			}
@@ -152,17 +153,16 @@ namespace Db4objects.Db4o.TA.Tests.Collections
 		#region IActivatable Members
 
 		// TA BEGIN
-		public void Bind(IObjectContainer container)
+		public void Bind(IActivator activator)
 		{
 			if (null != _activator)
 			{
-				_activator.AssertCompatible(container);
-				return;
+				throw new InvalidOperationException();
 			}
-			_activator = new TA.Internal.Activator(container, this);
+			_activator = activator;
 		}
 
-		private void activate()
+		private void Activate()
 		{
 			if (_activator == null) return;
 			_activator.Activate();
