@@ -27,7 +27,7 @@ namespace Db4oAdmin
 
 		private MethodDefinition CreateActivateMethod(FieldDefinition activatorField)
 		{
-			MethodDefinition activate = new MethodDefinition("Activate", MethodAttributes.Family, VoidType());
+			MethodDefinition activate = new MethodDefinition("db4o$$ta$$activate", MethodAttributes.Family, VoidType());
 		
 			CilWorker cil = activate.Body.CilWorker;
 			cil.Emit(OpCodes.Ldarg_0);
