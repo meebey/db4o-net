@@ -160,19 +160,43 @@ namespace Db4oAdmin.Tests
 		
 		protected string EmitAssemblyFromResource()
 		{
-			string assemblyName = ResourceName + ".dll";
-			CopyParentAssemblyToTemp(typeof(IObjectContainer));
-            CopyParentAssemblyToTemp(typeof(Assert));
-			CopyParentAssemblyToTemp(GetType());
-			string path = Path.Combine(Path.GetTempPath(), assemblyName);
+			CopyDependenciesToTemp();
+			string path = Path.Combine(Path.GetTempPath(), ResourceName + ".dll");
 			CompilationServices.EmitAssembly(path,
+											 Dependencies,
 			                                 GetResourceAsString("Db4oAdmin.Tests.Resources." + ResourceName + ".cs"));
 			return path;
 		}
 
-		private static void CopyParentAssemblyToTemp(Type type)
+		virtual protected void CopyDependenciesToTemp()
 		{
-			ShellUtilities.CopyFileToFolder(type.Module.FullyQualifiedName, Path.GetTempPath());
+			foreach (Assembly dependency in Dependencies)
+			{
+				CopyAssemblyToTemp(dependency);
+			}
+		}
+
+		protected virtual Assembly[] Dependencies
+		{
+			get
+			{
+				return new Assembly[]
+					{
+						typeof(IObjectContainer).Assembly,
+						typeof(Assert).Assembly,
+						GetType().Assembly
+					};
+			}
+		}
+
+		protected static void CopyParentAssemblyToTemp(Type type)
+		{
+			CopyAssemblyToTemp(type.Assembly);
+		}
+
+		private static void CopyAssemblyToTemp(Assembly assembly)
+		{
+			ShellUtilities.CopyFileToFolder(assembly.ManifestModule.FullyQualifiedName, Path.GetTempPath());
 		}
 	}
 }

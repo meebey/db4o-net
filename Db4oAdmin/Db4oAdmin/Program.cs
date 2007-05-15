@@ -32,6 +32,10 @@ namespace Db4oAdmin
 				{
 					pipeline.Add(new CFNQEnabler());
 				}
+				if (options.TransparentActivation)
+				{
+					pipeline.Add(new TAInstrumentation());
+				}
 				foreach (string customInstrumentation in options.CustomInstrumentations)
 				{
 					pipeline.Add((IAssemblyInstrumentation)Activator.CreateInstance(Type.GetType(customInstrumentation, true)));

@@ -1,6 +1,7 @@
 using System;
 using System.CodeDom.Compiler;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using Db4objects.Db4o;
 using Db4oUnit;
@@ -12,11 +13,11 @@ namespace Db4oAdmin.Tests
 	/// </summary>
 	public class CompilationServices
 	{
-		public static void EmitAssembly(string assemblyFileName, params string[] code)
+		public static void EmitAssembly(string assemblyFileName, Assembly[] references, params string[] code)
 		{
 			string basePath = Path.GetDirectoryName(assemblyFileName);
 			CreateDirectoryIfNeeded(basePath);
-			CompileFromSource(assemblyFileName, code);
+			CompileFromSource(assemblyFileName, references, code);
 		}
 
 		public static void CreateDirectoryIfNeeded(string directory)
@@ -42,7 +43,7 @@ namespace Db4oAdmin.Tests
 			return GetCSharpCompilerInfo().CreateDefaultCompilerParameters();
 		}
 
-		public static void CompileFromSource(string assemblyFName, params string[] sources)
+		public static void CompileFromSource(string assemblyFName, Assembly[] references, params string[] sources)
 		{
 			using (CodeDomProvider provider = GetCSharpCodeDomProvider())
 			{
@@ -50,10 +51,10 @@ namespace Db4oAdmin.Tests
 				// TODO: run test cases in both modes (optimized and debug)
 				parameters.IncludeDebugInformation = true;
 				parameters.OutputAssembly = assemblyFName;
-				parameters.ReferencedAssemblies.Add(typeof(IObjectContainer).Module.FullyQualifiedName);
-				parameters.ReferencedAssemblies.Add(typeof(CompilationServices).Module.FullyQualifiedName);
-                parameters.ReferencedAssemblies.Add(typeof(Assert).Module.FullyQualifiedName);
-				
+				foreach (Assembly reference in references)
+				{
+					parameters.ReferencedAssemblies.Add(reference.ManifestModule.FullyQualifiedName);
+				}
 				CompilerResults results = provider.CompileAssemblyFromSource(parameters, sources);
 				if (results.Errors.Count > 0)
 				{

@@ -59,7 +59,7 @@ namespace Db4oAdmin
 		{	
 		}
 
-		private void ProcessMethods(System.Collections.IEnumerable methods)
+		protected void ProcessMethods(System.Collections.IEnumerable methods)
 		{
 			foreach (MethodDefinition methodef in methods)
 			{

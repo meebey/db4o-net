@@ -9,6 +9,9 @@ namespace Db4oAdmin
 		
 		[Option("Optimize predicate subclasses", "optimize-predicates")]
 		public bool OptimizePredicates;
+
+		[Option("Implement Transparent Activation Support", "ta")]
+		public bool TransparentActivation;
 		
 		[Option("Enable delegate style queries for CompactFramework 2", "cf2-delegates")]
 		public bool EnableCF2DelegateQueries;
@@ -62,6 +65,7 @@ namespace Db4oAdmin
 				return Assembly != null
 				       && (OptimizePredicates
 				           || EnableCF2DelegateQueries
+						   || TransparentActivation
 				           || CustomInstrumentations.Count > 0);
 			}
 		}

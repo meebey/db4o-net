@@ -9,7 +9,7 @@ namespace Db4oAdmin.Tests
 
 		override protected void InstrumentAssembly(string path)
 		{
-			ShellUtilities.ProcessOutput output = ShellUtilities.shell(InstrumentationUtilityPath, Append(CommandLine.Split(' '), path));
+			ShellUtilities.ProcessOutput output = ShellUtilities.shell(InstrumentationUtilityPath, ArrayServices.Append(CommandLine.Split(' '), path));
 			CheckInstrumentationOutput(output);
 		}
 
@@ -21,13 +21,6 @@ namespace Db4oAdmin.Tests
 		private static string InstrumentationUtilityPath
 		{
 			get { return typeof(InstrumentationPipeline).Module.FullyQualifiedName; }
-		}
-
-		private string[] Append(string[] line, string path)
-		{
-			Array.Resize(ref line, line.Length + 1);
-			line[line.Length - 1] = path;
-			return line;
 		}
 	}
 }
