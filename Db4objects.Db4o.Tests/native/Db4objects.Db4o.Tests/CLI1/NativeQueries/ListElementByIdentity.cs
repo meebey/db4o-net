@@ -1,4 +1,5 @@
-﻿using Db4objects.Db4o.Ext;
+﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using Db4objects.Db4o.Ext;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 

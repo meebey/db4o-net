@@ -1,3 +1,4 @@
+﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using Db4objects.Db4o.Activation;
 using Mono.Cecil;
 using Mono.Cecil.Cil;

@@ -1,4 +1,5 @@
-﻿namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
+﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 {
 	public class Cat : Animal
 	{

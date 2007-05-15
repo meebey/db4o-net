@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using System;
 using System.IO;
 using System.Reflection;
 using Db4objects.Db4o.Tests.Util;
