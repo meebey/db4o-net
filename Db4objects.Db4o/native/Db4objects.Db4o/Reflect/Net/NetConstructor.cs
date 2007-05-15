@@ -1,4 +1,5 @@
-﻿namespace Db4objects.Db4o.Reflect.Net
+﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+namespace Db4objects.Db4o.Reflect.Net
 {
 
 	/// <remarks>Reflection implementation for Constructor to map to JDK reflection.</remarks>

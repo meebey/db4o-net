@@ -1,4 +1,5 @@
-﻿namespace Db4objects.Db4o
+﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+namespace Db4objects.Db4o
 {
 	/// <summary>the interface to a db4o database, stand-alone or client/server.</summary>
 	/// <remarks>

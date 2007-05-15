@@ -1,4 +1,5 @@
-﻿namespace Db4objects.Db4o.Internal
+﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+namespace Db4objects.Db4o.Internal
 {
 	using System;
 	using Db4objects.Db4o.Internal.Query;
