@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using Db4oUnit;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
@@ -126,6 +128,31 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			Db().Commit();
 			AssertSingleElement(Trans(), element);
 			AssertSingleElement(SystemTrans(), element);
+		}
+
+		public virtual void TestMultipleConcurrentRemoves()
+		{
+			int count = 100;
+			for (int i = 0; i < count; i++)
+			{
+				Add(Trans(), i);
+			}
+			Db().Commit();
+			Transaction secondTransaction = NewTransaction();
+			for (int i = 1; i < count; i++)
+			{
+				if (i % 2 == 0)
+				{
+					Remove(Trans(), i);
+				}
+				else
+				{
+					Remove(secondTransaction, i);
+				}
+			}
+			secondTransaction.Commit();
+			Db().Commit();
+			AssertSize(1);
 		}
 
 		public static void Main(string[] args)

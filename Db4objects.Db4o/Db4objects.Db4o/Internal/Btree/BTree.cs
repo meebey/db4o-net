@@ -1,6 +1,9 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using System.Collections;
 using System.IO;
+using System.Text;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -634,6 +637,35 @@ namespace Db4objects.Db4o.Internal.Btree
 			private readonly BTree _enclosing;
 
 			private readonly IVisitor4 visitor;
+		}
+
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.Append("BTree ");
+			sb.Append(GetID());
+			sb.Append(" Active Nodes: \n");
+			TraverseAllNodes(new _AnonymousInnerClass480(this, sb));
+			return sb.ToString();
+		}
+
+		private sealed class _AnonymousInnerClass480 : IVisitor4
+		{
+			public _AnonymousInnerClass480(BTree _enclosing, StringBuilder sb)
+			{
+				this._enclosing = _enclosing;
+				this.sb = sb;
+			}
+
+			public void Visit(object obj)
+			{
+				sb.Append(obj);
+				sb.Append("\n");
+			}
+
+			private readonly BTree _enclosing;
+
+			private readonly StringBuilder sb;
 		}
 	}
 }

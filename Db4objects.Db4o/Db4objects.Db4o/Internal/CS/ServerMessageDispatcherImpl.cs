@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
@@ -367,6 +369,7 @@ namespace Db4objects.Db4o.Internal.CS
 		public void CaresAboutCommitted(bool care)
 		{
 			_caresAboutCommitted = true;
+			Server().CheckCaresAboutCommitted();
 		}
 
 		public CallbackObjectInfoCollections CommittedInfo()

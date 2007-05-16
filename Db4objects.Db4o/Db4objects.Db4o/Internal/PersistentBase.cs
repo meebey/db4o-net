@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -154,14 +156,15 @@ namespace Db4objects.Db4o.Internal
 				Slot slot;
 				if (IsNew())
 				{
-					Pointer4 pointer = stream.NewSlot(trans, length);
+					Pointer4 pointer = stream.NewSlot(length);
 					SetID(pointer._id);
 					slot = pointer._slot;
+					trans.SetPointer(pointer);
 				}
 				else
 				{
 					slot = stream.GetSlot(length);
-					trans.SlotFreeOnRollbackCommitSetPointer(i_id, slot, true);
+					trans.SlotFreeOnRollbackCommitSetPointer(i_id, slot, IsFreespaceComponent());
 				}
 				WriteToFile(trans, writer, slot);
 			}
@@ -169,6 +172,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				EndProcessing();
 			}
+		}
+
+		public virtual bool IsFreespaceComponent()
+		{
+			return false;
 		}
 
 		private void WriteToFile(Transaction trans, Db4objects.Db4o.Internal.Buffer writer

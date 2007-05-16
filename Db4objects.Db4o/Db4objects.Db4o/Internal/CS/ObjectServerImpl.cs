@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using System.Collections;
 using System.IO;
@@ -36,6 +38,8 @@ namespace Db4objects.Db4o.Internal.CS
 		private BlockingQueue _committedInfosQueue = new BlockingQueue();
 
 		private CommittedCallbacksDispatcher _committedCallbacksDispatcher;
+
+		private bool _caresAboutCommitted;
 
 		public ObjectServerImpl(LocalObjectContainer container, int port)
 		{
@@ -347,11 +351,12 @@ namespace Db4objects.Db4o.Internal.CS
 			return null;
 		}
 
-		internal virtual void RemoveThread(ServerMessageDispatcherImpl aThread)
+		internal virtual void RemoveThread(ServerMessageDispatcherImpl dispatcher)
 		{
 			lock (_dispatchers)
 			{
-				_dispatchers.Remove(aThread);
+				_dispatchers.Remove(dispatcher);
+				CheckCaresAboutCommitted();
 			}
 		}
 
@@ -440,6 +445,7 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (_dispatchers)
 			{
 				_dispatchers.Add(thread);
+				CheckCaresAboutCommitted();
 			}
 		}
 
@@ -459,6 +465,30 @@ namespace Db4objects.Db4o.Internal.CS
 					dispatcher.WriteIfAlive(message);
 				}
 			}
+		}
+
+		public virtual bool CaresAboutCommitted()
+		{
+			return _caresAboutCommitted;
+		}
+
+		public virtual void CheckCaresAboutCommitted()
+		{
+			_caresAboutCommitted = AnyDispatcherCaresAboutCommitted();
+		}
+
+		private bool AnyDispatcherCaresAboutCommitted()
+		{
+			IEnumerator i = IterateDispatchers();
+			while (i.MoveNext())
+			{
+				IServerMessageDispatcher dispatcher = (IServerMessageDispatcher)i.Current;
+				if (dispatcher.CaresAboutCommitted())
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

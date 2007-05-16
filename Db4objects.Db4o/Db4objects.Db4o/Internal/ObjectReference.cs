@@ -1,4 +1,7 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -8,9 +11,8 @@ using Sharpen;
 
 namespace Db4objects.Db4o.Internal
 {
-	/// <renameto>ObjectReference</renameto>
 	/// <exclude></exclude>
-	public class ObjectReference : PersistentBase, IObjectInfo
+	public class ObjectReference : PersistentBase, IObjectInfo, IActivator
 	{
 		private ClassMetadata _class;
 
@@ -47,6 +49,20 @@ namespace Db4objects.Db4o.Internal
 		{
 			_class = a_yapClass;
 			i_id = a_id;
+		}
+
+		public virtual void Activate()
+		{
+			if (IsActive())
+			{
+				return;
+			}
+			Activate(Stream().GetTransaction(), GetObject(), 1, false);
+		}
+
+		private ObjectContainerBase Stream()
+		{
+			return _class.Stream();
 		}
 
 		public virtual void Activate(Transaction ta, object a_object, int a_depth, bool a_refresh

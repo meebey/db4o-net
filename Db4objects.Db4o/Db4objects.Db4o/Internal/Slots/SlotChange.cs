@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
 
@@ -21,6 +23,8 @@ namespace Db4objects.Db4o.Internal.Slots
 		private const int FREE_POINTER_ON_COMMIT_BIT = 4;
 
 		private const int FREE_POINTER_ON_ROLLBACK_BIT = 5;
+
+		private const int FREESPACE_BIT = 6;
 
 		public SlotChange(int id) : base(id)
 		{
@@ -61,9 +65,10 @@ namespace Db4objects.Db4o.Internal.Slots
 			SetBit(SET_POINTER_BIT);
 		}
 
-		public virtual void FreeDuringCommit(LocalObjectContainer file)
+		public virtual void FreeDuringCommit(LocalObjectContainer file, bool forFreespace
+			)
 		{
-			if (IsFreeOnCommit())
+			if (IsFreeOnCommit() && (IsForFreeSpace() == forFreespace))
 			{
 				file.FreeDuringCommit(_shared, _newSlot);
 			}
@@ -120,6 +125,11 @@ namespace Db4objects.Db4o.Internal.Slots
 		public virtual bool IsNew()
 		{
 			return IsFreePointerOnRollback();
+		}
+
+		private bool IsForFreeSpace()
+		{
+			return IsBitSet(FREESPACE_BIT);
 		}
 
 		private bool IsFreeOnCommit()
@@ -212,6 +222,14 @@ namespace Db4objects.Db4o.Internal.Slots
 			if (IsSetPointer())
 			{
 				trans.WritePointer(_key, _newSlot);
+			}
+		}
+
+		public virtual void ForFreespace(bool flag)
+		{
+			if (flag)
+			{
+				SetBit(FREESPACE_BIT);
 			}
 		}
 	}

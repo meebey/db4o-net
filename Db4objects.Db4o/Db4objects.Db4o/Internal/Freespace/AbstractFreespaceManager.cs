@@ -1,3 +1,6 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
+using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
@@ -116,7 +119,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return Const4.INT_LENGTH * INTS_IN_SLOT;
 		}
 
-		public int TotalFreespace()
+		public virtual int TotalFreespace()
 		{
 			MutableInt mint = new MutableInt();
 			Traverse(new _AnonymousInnerClass84(this, mint));
@@ -166,6 +169,46 @@ namespace Db4objects.Db4o.Internal.Freespace
 			oldFM.FreeSelf();
 			newFM.BeginCommit();
 			newFM.EndCommit();
+		}
+
+		public virtual void DebugCheckIntegrity()
+		{
+			MutableInt lastStart = new MutableInt();
+			MutableInt lastEnd = new MutableInt();
+			Traverse(new _AnonymousInnerClass117(this, lastEnd, lastStart));
+		}
+
+		private sealed class _AnonymousInnerClass117 : IVisitor4
+		{
+			public _AnonymousInnerClass117(AbstractFreespaceManager _enclosing, MutableInt lastEnd
+				, MutableInt lastStart)
+			{
+				this._enclosing = _enclosing;
+				this.lastEnd = lastEnd;
+				this.lastStart = lastStart;
+			}
+
+			public void Visit(object obj)
+			{
+				Slot slot = (Slot)obj;
+				if (slot.Address() <= lastEnd.Value())
+				{
+					throw new InvalidOperationException();
+				}
+				lastStart.Value(slot.Address());
+				lastEnd.Value(slot.Address() + slot.Length());
+			}
+
+			private readonly AbstractFreespaceManager _enclosing;
+
+			private readonly MutableInt lastEnd;
+
+			private readonly MutableInt lastStart;
+		}
+
+		protected LocalTransaction Transaction()
+		{
+			return (LocalTransaction)_file.SystemTransaction();
 		}
 
 		public abstract Slot AllocateTransactionLogSlot(int arg1);

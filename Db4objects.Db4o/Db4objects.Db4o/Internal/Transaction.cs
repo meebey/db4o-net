@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
@@ -65,10 +67,6 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public abstract void Commit();
-
-		protected virtual void FreeOnCommit()
-		{
-		}
 
 		protected virtual void Commit4FieldIndexes()
 		{
@@ -191,7 +189,14 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public abstract void SetPointer(int a_id, Slot slot);
+		public void SetPointer(Pointer4 pointer)
+		{
+			SetPointer(pointer._id, pointer._slot);
+		}
+
+		public virtual void SetPointer(int a_id, Slot slot)
+		{
+		}
 
 		public virtual void SlotDelete(int id, Slot slot)
 		{
@@ -206,7 +211,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		internal virtual void SlotFreeOnRollbackCommitSetPointer(int id, Slot slot, bool 
-			freeImmediately)
+			forFreespace)
 		{
 		}
 

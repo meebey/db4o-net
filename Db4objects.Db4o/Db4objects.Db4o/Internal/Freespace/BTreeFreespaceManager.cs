@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
@@ -15,124 +17,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private FreespaceBTree _slotsByLength;
 
-		private PersistentIntegerArray _btreeIDs;
+		private PersistentIntegerArray _idArray;
 
-		private int _recursion;
+		private int _delegateIndirectionID;
+
+		private int _delegationRequests;
 
 		public BTreeFreespaceManager(LocalObjectContainer file) : base(file)
 		{
 			_delegate = new RamFreespaceManager(file);
-		}
-
-		public override Slot AllocateTransactionLogSlot(int length)
-		{
-			return _delegate.AllocateTransactionLogSlot(length);
-		}
-
-		public override void FreeTransactionLogSlot(Slot slot)
-		{
-			_delegate.FreeTransactionLogSlot(slot);
-		}
-
-		public override void Free(Slot slot)
-		{
-			if (!Started())
-			{
-				return;
-			}
-			if (RecursiveCall())
-			{
-				_delegate.Free(slot);
-				return;
-			}
-			try
-			{
-				_recursion++;
-				Slot newFreeSlot = slot;
-				BTreeNodeSearchResult searchResult = _slotsByAddress.SearchLeaf(Transaction(), slot
-					, SearchTarget.LOWEST);
-				BTreePointer pointer = searchResult.FirstValidPointer();
-				if (pointer != null)
-				{
-					BTreePointer previousPointer = pointer.Previous();
-					if (previousPointer != null)
-					{
-						Slot previousSlot = (Slot)previousPointer.Key();
-						if (previousSlot.IsDirectlyPreceding(newFreeSlot))
-						{
-							RemoveSlot(previousSlot);
-							newFreeSlot = previousSlot.Append(newFreeSlot);
-						}
-					}
-				}
-				searchResult = _slotsByAddress.SearchLeaf(Transaction(), slot, SearchTarget.HIGHEST
-					);
-				pointer = searchResult.FirstValidPointer();
-				if (pointer != null)
-				{
-					Slot nextSlot = (Slot)pointer.Key();
-					if (newFreeSlot.IsDirectlyPreceding(nextSlot))
-					{
-						RemoveSlot(nextSlot);
-						newFreeSlot = newFreeSlot.Append(nextSlot);
-					}
-				}
-				if (!CanDiscard(newFreeSlot.Length()))
-				{
-					AddSlot(newFreeSlot);
-				}
-				_file.OverwriteDeletedBlockedSlot(newFreeSlot);
-			}
-			finally
-			{
-				_recursion--;
-			}
-		}
-
-		public override void FreeSelf()
-		{
-		}
-
-		private bool RecursiveCall()
-		{
-			return _recursion > 0;
-		}
-
-		public override Slot GetSlot(int length)
-		{
-			if (!Started())
-			{
-				return null;
-			}
-			if (RecursiveCall())
-			{
-				return _delegate.GetSlot(length);
-			}
-			try
-			{
-				_recursion++;
-				BTreeNodeSearchResult searchResult = _slotsByLength.SearchLeaf(Transaction(), new 
-					Slot(0, length), SearchTarget.HIGHEST);
-				BTreePointer pointer = searchResult.FirstValidPointer();
-				if (pointer == null)
-				{
-					return null;
-				}
-				Slot slot = (Slot)pointer.Key();
-				RemoveSlot(slot);
-				int remainingLength = slot.Length() - length;
-				if (CanDiscard(remainingLength))
-				{
-					return slot;
-				}
-				AddSlot(slot.SubSlot(length));
-				slot = slot.Truncate(length);
-				return slot;
-			}
-			finally
-			{
-				_recursion--;
-			}
 		}
 
 		private void AddSlot(Slot slot)
@@ -141,20 +34,245 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_slotsByAddress.Add(Transaction(), slot);
 		}
 
+		public override Slot AllocateTransactionLogSlot(int length)
+		{
+			return _delegate.AllocateTransactionLogSlot(length);
+		}
+
+		public override void BeginCommit()
+		{
+		}
+
+		private void BeginDelegation()
+		{
+			_delegationRequests++;
+		}
+
+		public override void Commit()
+		{
+			BeginDelegation();
+			_slotsByAddress.Commit(Transaction());
+			_slotsByLength.Commit(Transaction());
+		}
+
+		private void CreateBTrees(int addressID, int lengthID)
+		{
+			_slotsByAddress = new FreespaceBTree(Transaction(), addressID, new AddressKeySlotHandler
+				());
+			_slotsByLength = new FreespaceBTree(Transaction(), lengthID, new LengthKeySlotHandler
+				());
+		}
+
+		public override void EndCommit()
+		{
+			EndDelegation();
+		}
+
+		private void EndDelegation()
+		{
+			_delegationRequests--;
+		}
+
+		public override void Free(Slot slot)
+		{
+			if (!Started())
+			{
+				return;
+			}
+			if (IsDelegating())
+			{
+				_delegate.Free(slot);
+				return;
+			}
+			try
+			{
+				BeginDelegation();
+				Slot[] remove = new Slot[2];
+				Slot newFreeSlot = slot;
+				BTreePointer pointer = SearchBTree(_slotsByAddress, slot, SearchTarget.LOWEST);
+				BTreePointer previousPointer = pointer != null ? pointer.Previous() : _slotsByAddress
+					.LastPointer(Transaction());
+				if (previousPointer != null)
+				{
+					Slot previousSlot = (Slot)previousPointer.Key();
+					if (previousSlot.IsDirectlyPreceding(newFreeSlot))
+					{
+						remove[0] = previousSlot;
+						newFreeSlot = previousSlot.Append(newFreeSlot);
+					}
+				}
+				if (pointer != null)
+				{
+					Slot nextSlot = (Slot)pointer.Key();
+					if (newFreeSlot.IsDirectlyPreceding(nextSlot))
+					{
+						remove[1] = nextSlot;
+						newFreeSlot = newFreeSlot.Append(nextSlot);
+					}
+				}
+				for (int i = 0; i < remove.Length; i++)
+				{
+					if (remove[i] != null)
+					{
+						RemoveSlot(remove[i]);
+					}
+				}
+				if (!CanDiscard(newFreeSlot.Length()))
+				{
+					AddSlot(newFreeSlot);
+				}
+				_file.OverwriteDeletedBlockedSlot(slot);
+			}
+			finally
+			{
+				EndDelegation();
+			}
+		}
+
+		public override void FreeSelf()
+		{
+		}
+
+		public override void FreeTransactionLogSlot(Slot slot)
+		{
+			_delegate.FreeTransactionLogSlot(slot);
+		}
+
+		public override Slot GetSlot(int length)
+		{
+			if (!Started())
+			{
+				return null;
+			}
+			if (IsDelegating())
+			{
+				return _delegate.GetSlot(length);
+			}
+			try
+			{
+				BeginDelegation();
+				BTreePointer pointer = SearchBTree(_slotsByLength, new Slot(0, length), SearchTarget
+					.HIGHEST);
+				if (pointer == null)
+				{
+					return null;
+				}
+				Slot slot = (Slot)pointer.Key();
+				RemoveSlot(slot);
+				int remainingLength = slot.Length() - length;
+				if (!CanDiscard(remainingLength))
+				{
+					AddSlot(slot.SubSlot(length));
+					slot = slot.Truncate(length);
+				}
+				return slot;
+			}
+			finally
+			{
+				EndDelegation();
+			}
+		}
+
+		private void InitializeExisting(int slotAddress)
+		{
+			_idArray = new PersistentIntegerArray(slotAddress);
+			_idArray.Read(Transaction());
+			int[] ids = _idArray.Array();
+			int addressId = ids[0];
+			int lengthID = ids[1];
+			_delegateIndirectionID = ids[2];
+			CreateBTrees(addressId, lengthID);
+			_slotsByAddress.Read(Transaction());
+			_slotsByLength.Read(Transaction());
+			Pointer4 delegatePointer = Transaction().ReadPointer(_delegateIndirectionID);
+			Transaction().WriteZeroPointer(_delegateIndirectionID);
+			Transaction().FlushFile();
+			_delegate.Read(delegatePointer._slot);
+		}
+
+		private void InitializeNew()
+		{
+			CreateBTrees(0, 0);
+			_slotsByAddress.Write(Transaction());
+			_slotsByLength.Write(Transaction());
+			_delegateIndirectionID = _file.GetPointerSlot();
+			int[] ids = new int[] { _slotsByAddress.GetID(), _slotsByLength.GetID(), _delegateIndirectionID
+				 };
+			_idArray = new PersistentIntegerArray(ids);
+			_idArray.Write(Transaction());
+			_file.SystemData().FreespaceAddress(_idArray.GetID());
+		}
+
+		private bool IsDelegating()
+		{
+			return _delegationRequests > 0;
+		}
+
+		public override int OnNew(LocalObjectContainer file)
+		{
+			return 0;
+		}
+
+		public override void Read(int freeSpaceID)
+		{
+		}
+
 		private void RemoveSlot(Slot slot)
 		{
 			_slotsByLength.Remove(Transaction(), slot);
 			_slotsByAddress.Remove(Transaction(), slot);
 		}
 
+		private BTreePointer SearchBTree(BTree bTree, Slot slot, SearchTarget target)
+		{
+			BTreeNodeSearchResult searchResult = bTree.SearchLeaf(Transaction(), slot, target
+				);
+			return searchResult.FirstValidPointer();
+		}
+
 		public override int SlotCount()
 		{
-			return _slotsByAddress.Size(Transaction());
+			return _slotsByAddress.Size(Transaction()) + _delegate.SlotCount();
+		}
+
+		public override void Start(int slotAddress)
+		{
+			try
+			{
+				BeginDelegation();
+				if (slotAddress == 0)
+				{
+					InitializeNew();
+				}
+				else
+				{
+					InitializeExisting(slotAddress);
+				}
+			}
+			finally
+			{
+				EndDelegation();
+			}
+		}
+
+		private bool Started()
+		{
+			return _idArray != null;
 		}
 
 		public override byte SystemType()
 		{
 			return FM_BTREE;
+		}
+
+		public override string ToString()
+		{
+			return _slotsByLength.ToString();
+		}
+
+		public override int TotalFreespace()
+		{
+			return base.TotalFreespace() + _delegate.TotalFreespace();
 		}
 
 		public override void Traverse(IVisitor4 visitor)
@@ -164,78 +282,18 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override int Write()
 		{
-			return _btreeIDs.GetID();
-		}
-
-		private Db4objects.Db4o.Internal.Transaction Transaction()
-		{
-			return _file.SystemTransaction();
-		}
-
-		public override void Start(int slotAddress)
-		{
 			try
 			{
-				_recursion++;
-				if (slotAddress == 0)
-				{
-					CreateBTrees(new int[] { 0, 0 });
-					_slotsByAddress.Write(Transaction());
-					_slotsByLength.Write(Transaction());
-					int[] ids = new int[] { _slotsByAddress.GetID(), _slotsByLength.GetID() };
-					_btreeIDs = new PersistentIntegerArray(ids);
-					_btreeIDs.Write(Transaction());
-					_file.SystemData().FreespaceAddress(_btreeIDs.GetID());
-					return;
-				}
-				_btreeIDs = new PersistentIntegerArray(slotAddress);
-				_btreeIDs.Read(Transaction());
-				CreateBTrees(_btreeIDs.Array());
-				_slotsByAddress.Read(Transaction());
-				_slotsByLength.Read(Transaction());
+				BeginDelegation();
+				Slot slot = _file.GetSlot(_delegate.MarshalledLength());
+				Pointer4 pointer = new Pointer4(_delegateIndirectionID, slot);
+				_delegate.Write(pointer);
+				return _idArray.GetID();
 			}
 			finally
 			{
-				_recursion--;
+				EndDelegation();
 			}
-		}
-
-		private void CreateBTrees(int[] ids)
-		{
-			_slotsByAddress = new FreespaceBTree(Transaction(), ids[0], new AddressKeySlotHandler
-				());
-			_slotsByLength = new FreespaceBTree(Transaction(), ids[1], new LengthKeySlotHandler
-				());
-		}
-
-		private bool Started()
-		{
-			return _btreeIDs != null;
-		}
-
-		public override void BeginCommit()
-		{
-		}
-
-		public override int OnNew(LocalObjectContainer file)
-		{
-			return 0;
-		}
-
-		public override void EndCommit()
-		{
-			_recursion--;
-		}
-
-		public override void Read(int freeSpaceID)
-		{
-		}
-
-		public override void Commit()
-		{
-			_recursion++;
-			_slotsByAddress.Commit(Transaction());
-			_slotsByLength.Commit(Transaction());
 		}
 	}
 }

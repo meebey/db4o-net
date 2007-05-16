@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 
 namespace Db4objects.Db4o.Ext
@@ -11,7 +13,7 @@ namespace Db4objects.Db4o.Ext
 	/// db4o exception wrapper: Exceptions occurring during internal processing
 	/// will be proliferated to the client calling code encapsulated in an exception
 	/// of this type. The original exception, if any, is available through
-	/// <see cref="Db4oException#cause()">Db4oException#cause()</see>
+	/// <see cref="Exception.InnerException">Exception.InnerException</see>
 	/// .
 	/// </remarks>
 	[System.Serializable]

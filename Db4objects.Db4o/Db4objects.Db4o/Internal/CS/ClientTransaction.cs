@@ -1,8 +1,9 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
-using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.CS
 {
@@ -142,10 +143,6 @@ namespace Db4objects.Db4o.Internal.CS
 			MsgD msg = Msg.WRITE_UPDATE_DELETE_MEMBERS.GetWriterForInts(this, new int[] { a_id
 				, a_yc.GetID(), a_type, a_cascade });
 			i_client.WriteBatchedMessage(msg);
-		}
-
-		public override void SetPointer(int a_id, Slot slot)
-		{
 		}
 	}
 }

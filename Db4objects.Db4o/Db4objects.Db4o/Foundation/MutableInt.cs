@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
@@ -32,6 +34,11 @@ namespace Db4objects.Db4o.Foundation
 		public virtual int Value()
 		{
 			return _value;
+		}
+
+		public virtual void Value(int val)
+		{
+			_value = val;
 		}
 	}
 }

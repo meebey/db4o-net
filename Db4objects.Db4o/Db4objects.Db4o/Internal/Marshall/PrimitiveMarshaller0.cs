@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
@@ -27,9 +29,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 				{
 					slot = ((LocalTransaction)trans).File().GetSlot(slot.Length());
 				}
-				trans.SetPointer(id, slot);
-				StatefulBuffer writer = new StatefulBuffer(trans, slot.Length());
-				writer.UseSlot(id, slot);
+				Pointer4 pointer = new Pointer4(id, slot);
+				trans.SetPointer(pointer);
+				StatefulBuffer writer = new StatefulBuffer(trans, pointer);
 				writer.WriteInt(yapClassPrimitive.GetID());
 				handler.WriteNew(_family, obj, false, writer, true, false);
 				writer.WriteEnd();

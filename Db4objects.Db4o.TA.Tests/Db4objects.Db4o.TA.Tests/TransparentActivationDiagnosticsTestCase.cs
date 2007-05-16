@@ -1,7 +1,9 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Util;
-using Db4objects.Db4o;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.Internal;
@@ -26,7 +28,7 @@ namespace Db4objects.Db4o.TA.Tests
 		{
 			public TransparentActivationDiagnosticsTestCase.SomeTAAwareData _data;
 
-			public virtual void Bind(IObjectContainer container)
+			public virtual void Bind(IActivator activator)
 			{
 			}
 
@@ -59,12 +61,12 @@ namespace Db4objects.Db4o.TA.Tests
 		protected override void Configure(IConfiguration config)
 		{
 			config.Add(new TransparentActivationSupport());
-			config.Diagnostic().AddListener(new _AnonymousInnerClass50(this));
+			config.Diagnostic().AddListener(new _AnonymousInnerClass54(this));
 		}
 
-		private sealed class _AnonymousInnerClass50 : IDiagnosticListener
+		private sealed class _AnonymousInnerClass54 : IDiagnosticListener
 		{
-			public _AnonymousInnerClass50(TransparentActivationDiagnosticsTestCase _enclosing
+			public _AnonymousInnerClass54(TransparentActivationDiagnosticsTestCase _enclosing
 				)
 			{
 				this._enclosing = _enclosing;

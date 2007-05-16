@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -1291,6 +1293,11 @@ namespace Db4objects.Db4o.Internal.Btree
 					readers.CopyID();
 				}
 			}
+		}
+
+		public override bool IsFreespaceComponent()
+		{
+			return _btree.IsFreespaceComponent();
 		}
 
 		public bool IsLeaf()

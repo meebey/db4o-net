@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -23,15 +25,15 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			ClassRegistrationEventsTestCase.EventFlag eventFlag = new ClassRegistrationEventsTestCase.EventFlag
 				();
 			IEventRegistry registry = EventRegistryFactory.ForObjectContainer(Db());
-			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _AnonymousInnerClass22
+			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _AnonymousInnerClass23
 				(this, eventFlag).OnEvent);
 			Store(new ClassRegistrationEventsTestCase.Data());
 			Assert.IsTrue(eventFlag._eventOccurred);
 		}
 
-		private sealed class _AnonymousInnerClass22
+		private sealed class _AnonymousInnerClass23
 		{
-			public _AnonymousInnerClass22(ClassRegistrationEventsTestCase _enclosing, ClassRegistrationEventsTestCase.EventFlag
+			public _AnonymousInnerClass23(ClassRegistrationEventsTestCase _enclosing, ClassRegistrationEventsTestCase.EventFlag
 				 eventFlag)
 			{
 				this._enclosing = _enclosing;

@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using System.Collections;
 using System.IO;
@@ -216,7 +218,8 @@ namespace Db4objects.Db4o.Internal
 					{
 						if (ta.Reflector().ForObject(obj) == yo.GetYapClass().ClassReflector())
 						{
-							Bind2(yo, obj);
+							ObjectReference newRef = Bind2(yo, obj);
+							newRef.VirtualAttributes(ta);
 						}
 						else
 						{
@@ -227,15 +230,16 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public void Bind2(ObjectReference @ref, object obj)
+		public ObjectReference Bind2(ObjectReference oldRef, object obj)
 		{
-			int id = @ref.GetID();
-			RemoveReference(@ref);
-			@ref = new ObjectReference(ClassMetadataForReflectClass(Reflector().ForObject(obj
-				)), id);
-			@ref.SetObjectWeak(_this, obj);
-			@ref.SetStateDirty();
-			_referenceSystem.AddExistingReference(@ref);
+			int id = oldRef.GetID();
+			RemoveReference(oldRef);
+			ObjectReference newRef = new ObjectReference(ClassMetadataForReflectClass(Reflector
+				().ForObject(obj)), id);
+			newRef.SetObjectWeak(_this, obj);
+			newRef.SetStateDirty();
+			_referenceSystem.AddExistingReference(newRef);
+			return newRef;
 		}
 
 		public abstract byte BlockSize();
@@ -649,7 +653,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			ClassMetadata yc = yo.GetYapClass();
 			FieldMetadata[] field = new FieldMetadata[] { null };
-			yc.ForEachFieldMetadata(new _AnonymousInnerClass584(this, fieldName, field));
+			yc.ForEachFieldMetadata(new _AnonymousInnerClass586(this, fieldName, field));
 			if (field[0] == null)
 			{
 				return null;
@@ -691,9 +695,9 @@ namespace Db4objects.Db4o.Internal
 			return Descend1(trans, child, subPath);
 		}
 
-		private sealed class _AnonymousInnerClass584 : IVisitor4
+		private sealed class _AnonymousInnerClass586 : IVisitor4
 		{
-			public _AnonymousInnerClass584(PartialObjectContainer _enclosing, string fieldName
+			public _AnonymousInnerClass586(PartialObjectContainer _enclosing, string fieldName
 				, FieldMetadata[] field)
 			{
 				this._enclosing = _enclosing;

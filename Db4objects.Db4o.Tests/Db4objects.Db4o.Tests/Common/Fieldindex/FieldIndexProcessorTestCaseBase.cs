@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using Db4oUnit;
 using Db4objects.Db4o;
@@ -137,13 +139,13 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		protected virtual void AssertTreeInt(int[] expectedValues, TreeInt treeInt)
 		{
 			ExpectingVisitor visitor = BTreeAssert.CreateExpectingVisitor(expectedValues);
-			treeInt.Traverse(new _AnonymousInnerClass120(this, visitor));
+			treeInt.Traverse(new _AnonymousInnerClass121(this, visitor));
 			visitor.AssertExpectations();
 		}
 
-		private sealed class _AnonymousInnerClass120 : IVisitor4
+		private sealed class _AnonymousInnerClass121 : IVisitor4
 		{
-			public _AnonymousInnerClass120(FieldIndexProcessorTestCaseBase _enclosing, ExpectingVisitor
+			public _AnonymousInnerClass121(FieldIndexProcessorTestCaseBase _enclosing, ExpectingVisitor
 				 visitor)
 			{
 				this._enclosing = _enclosing;

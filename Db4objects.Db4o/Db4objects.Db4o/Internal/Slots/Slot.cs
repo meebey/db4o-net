@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal.Slots
@@ -68,7 +70,12 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		public virtual int CompareByAddress(Db4objects.Db4o.Internal.Slots.Slot slot)
 		{
-			return slot._address - _address;
+			int res = slot._address - _address;
+			if (res != 0)
+			{
+				return res;
+			}
+			return slot.Length() - Length();
 		}
 
 		public virtual int CompareByLength(Db4objects.Db4o.Internal.Slots.Slot slot)
@@ -78,7 +85,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			{
 				return res;
 			}
-			return CompareByAddress(slot);
+			return slot._address - _address;
 		}
 
 		public virtual bool IsDirectlyPreceding(Db4objects.Db4o.Internal.Slots.Slot other

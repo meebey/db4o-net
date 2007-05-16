@@ -1,6 +1,8 @@
-using Db4objects.Db4o;
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
+using System;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
-using Db4objects.Db4o.TA.Internal;
 
 namespace Db4objects.Db4o.TA.Tests.Collections.Internal
 {
@@ -18,7 +20,7 @@ namespace Db4objects.Db4o.TA.Tests.Collections.Internal
 		private bool _dirty = false;
 
 		[System.NonSerialized]
-		internal Activator _activator;
+		internal IActivator _activator;
 
 		public Page(int pageIndex)
 		{
@@ -73,14 +75,13 @@ namespace Db4objects.Db4o.TA.Tests.Collections.Internal
 			return Db4objects.Db4o.TA.Tests.Collections.Internal.Page.PAGESIZE - Size();
 		}
 
-		public virtual void Bind(IObjectContainer container)
+		public virtual void Bind(IActivator activator)
 		{
 			if (null != _activator)
 			{
-				_activator.AssertCompatible(container);
-				return;
+				throw new InvalidOperationException();
 			}
-			_activator = new Activator(container, this);
+			_activator = activator;
 		}
 
 		private void Activate()

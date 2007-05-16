@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using System.Text;
 using Db4objects.Db4o.Foundation;
@@ -33,6 +35,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 			if (sizeNode == null || sizeNode._key < length)
 			{
 				return null;
+			}
+			int limit = length + 100;
+			if (sizeNode._key > limit)
+			{
+				return GetSlot(limit);
 			}
 			RemoveFromBothTrees(sizeNode);
 			return new Slot(sizeNode._peer._key, sizeNode._key);
@@ -113,6 +120,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 		}
 
+		private void FreeReader(StatefulBuffer reader)
+		{
+			_file.Free(reader.GetAddress(), reader.GetLength());
+		}
+
 		public override Slot GetSlot(int length)
 		{
 			_finder._key = length;
@@ -139,20 +151,123 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return new Slot(address, length);
 		}
 
+		internal virtual int MarshalledLength()
+		{
+			return TreeInt.MarshalledLength((TreeInt)_freeBySize);
+		}
+
+		public override int OnNew(LocalObjectContainer file)
+		{
+			return 0;
+		}
+
+		public override void Read(int freeSlotsID)
+		{
+			ReadById(freeSlotsID);
+		}
+
+		private void Read(StatefulBuffer reader)
+		{
+			FreeSlotNode.sizeLimit = BlockedDiscardLimit();
+			_freeBySize = new TreeReader(reader, new FreeSlotNode(0), true).Read();
+			Tree.ByRef addressTree = new Tree.ByRef();
+			if (_freeBySize != null)
+			{
+				_freeBySize.Traverse(new _AnonymousInnerClass173(this, addressTree));
+			}
+			_freeByAddress = addressTree.value;
+		}
+
+		private sealed class _AnonymousInnerClass173 : IVisitor4
+		{
+			public _AnonymousInnerClass173(RamFreespaceManager _enclosing, Tree.ByRef addressTree
+				)
+			{
+				this._enclosing = _enclosing;
+				this.addressTree = addressTree;
+			}
+
+			public void Visit(object a_object)
+			{
+				FreeSlotNode node = ((FreeSlotNode)a_object)._peer;
+				addressTree.value = Tree.Add(addressTree.value, node);
+			}
+
+			private readonly RamFreespaceManager _enclosing;
+
+			private readonly Tree.ByRef addressTree;
+		}
+
+		internal virtual void Read(Slot slot)
+		{
+			if (slot.Address() == 0)
+			{
+				return;
+			}
+			StatefulBuffer reader = _file.ReadWriterByAddress(Transaction(), slot.Address(), 
+				slot.Length());
+			if (reader == null)
+			{
+				return;
+			}
+			Read(reader);
+			FreeReader(reader);
+		}
+
+		private void ReadById(int freeSlotsID)
+		{
+			if (freeSlotsID <= 0)
+			{
+				return;
+			}
+			if (DiscardLimit() == int.MaxValue)
+			{
+				return;
+			}
+			StatefulBuffer reader = _file.ReadWriterByID(Transaction(), freeSlotsID);
+			if (reader == null)
+			{
+				return;
+			}
+			Read(reader);
+			_file.Free(freeSlotsID, Const4.POINTER_LENGTH);
+			FreeReader(reader);
+		}
+
+		private void RemoveFromBothTrees(FreeSlotNode sizeNode)
+		{
+			_freeBySize = _freeBySize.RemoveNode(sizeNode);
+			_freeByAddress = _freeByAddress.RemoveNode(sizeNode._peer);
+		}
+
+		public override int SlotCount()
+		{
+			return Tree.Size(_freeByAddress);
+		}
+
+		public override void Start(int slotAddress)
+		{
+		}
+
+		public override byte SystemType()
+		{
+			return FM_RAM;
+		}
+
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.Append("RAM FreespaceManager\n");
 			sb.Append("Address Index\n");
-			_freeByAddress.Traverse(new _AnonymousInnerClass145(this, sb));
+			_freeByAddress.Traverse(new _AnonymousInnerClass236(this, sb));
 			sb.Append("Length Index\n");
-			_freeBySize.Traverse(new _AnonymousInnerClass153(this, sb));
+			_freeBySize.Traverse(new _AnonymousInnerClass244(this, sb));
 			return sb.ToString();
 		}
 
-		private sealed class _AnonymousInnerClass145 : IVisitor4
+		private sealed class _AnonymousInnerClass236 : IVisitor4
 		{
-			public _AnonymousInnerClass145(RamFreespaceManager _enclosing, StringBuilder sb)
+			public _AnonymousInnerClass236(RamFreespaceManager _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -169,9 +284,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly StringBuilder sb;
 		}
 
-		private sealed class _AnonymousInnerClass153 : IVisitor4
+		private sealed class _AnonymousInnerClass244 : IVisitor4
 		{
-			public _AnonymousInnerClass153(RamFreespaceManager _enclosing, StringBuilder sb)
+			public _AnonymousInnerClass244(RamFreespaceManager _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -194,12 +309,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			_freeByAddress.Traverse(new _AnonymousInnerClass166(this, visitor));
+			_freeByAddress.Traverse(new _AnonymousInnerClass257(this, visitor));
 		}
 
-		private sealed class _AnonymousInnerClass166 : IVisitor4
+		private sealed class _AnonymousInnerClass257 : IVisitor4
 		{
-			public _AnonymousInnerClass166(RamFreespaceManager _enclosing, IVisitor4 visitor)
+			public _AnonymousInnerClass257(RamFreespaceManager _enclosing, IVisitor4 visitor)
 			{
 				this._enclosing = _enclosing;
 				this.visitor = visitor;
@@ -218,95 +333,20 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly IVisitor4 visitor;
 		}
 
-		public override int OnNew(LocalObjectContainer file)
-		{
-			return 0;
-		}
-
-		public override void Read(int freeSlotsID)
-		{
-			if (freeSlotsID <= 0)
-			{
-				return;
-			}
-			if (DiscardLimit() == int.MaxValue)
-			{
-				return;
-			}
-			StatefulBuffer reader = _file.ReadWriterByID(Trans(), freeSlotsID);
-			if (reader == null)
-			{
-				return;
-			}
-			FreeSlotNode.sizeLimit = BlockedDiscardLimit();
-			_freeBySize = new TreeReader(reader, new FreeSlotNode(0), true).Read();
-			Tree.ByRef addressTree = new Tree.ByRef();
-			if (_freeBySize != null)
-			{
-				_freeBySize.Traverse(new _AnonymousInnerClass199(this, addressTree));
-			}
-			_freeByAddress = addressTree.value;
-			_file.Free(freeSlotsID, Const4.POINTER_LENGTH);
-			_file.Free(reader.GetAddress(), reader.GetLength());
-		}
-
-		private sealed class _AnonymousInnerClass199 : IVisitor4
-		{
-			public _AnonymousInnerClass199(RamFreespaceManager _enclosing, Tree.ByRef addressTree
-				)
-			{
-				this._enclosing = _enclosing;
-				this.addressTree = addressTree;
-			}
-
-			public void Visit(object a_object)
-			{
-				FreeSlotNode node = ((FreeSlotNode)a_object)._peer;
-				addressTree.value = Tree.Add(addressTree.value, node);
-			}
-
-			private readonly RamFreespaceManager _enclosing;
-
-			private readonly Tree.ByRef addressTree;
-		}
-
-		public override void Start(int slotAddress)
-		{
-		}
-
-		public override byte SystemType()
-		{
-			return FM_RAM;
-		}
-
-		private LocalTransaction Trans()
-		{
-			return (LocalTransaction)_file.SystemTransaction();
-		}
-
 		public override int Write()
 		{
-			int freeBySizeID = 0;
-			int length = TreeInt.MarshalledLength((TreeInt)_freeBySize);
-			Pointer4 pointer = _file.NewSlot(Trans(), length);
-			freeBySizeID = pointer._id;
-			StatefulBuffer sdwriter = new StatefulBuffer(Trans(), length);
-			sdwriter.UseSlot(freeBySizeID, pointer._slot);
-			TreeInt.Write(sdwriter, (TreeInt)_freeBySize);
-			sdwriter.WriteEncrypt();
-			Trans().WritePointer(pointer._id, pointer._slot);
-			return freeBySizeID;
+			Pointer4 pointer = _file.NewSlot(MarshalledLength());
+			Write(pointer);
+			return pointer._id;
 		}
 
-		public override int SlotCount()
+		internal virtual void Write(Pointer4 pointer)
 		{
-			return Tree.Size(_freeByAddress);
-		}
-
-		private void RemoveFromBothTrees(FreeSlotNode sizeNode)
-		{
-			_freeBySize = _freeBySize.RemoveNode(sizeNode);
-			_freeByAddress = _freeByAddress.RemoveNode(sizeNode._peer);
+			StatefulBuffer buffer = new StatefulBuffer(Transaction(), pointer);
+			TreeInt.Write(buffer, (TreeInt)_freeBySize);
+			buffer.WriteEncrypt();
+			Transaction().FlushFile();
+			Transaction().WritePointer(pointer);
 		}
 	}
 }

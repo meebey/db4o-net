@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -11,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 	{
 		public static void Main(string[] args)
 		{
-			new ObjectMarshallerTestCase().RunSoloAndClientServer();
+			new ObjectMarshallerTestCase().RunSolo();
 		}
 
 		public class Item

@@ -1,6 +1,8 @@
-using Db4objects.Db4o;
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
+using System;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
-using Db4objects.Db4o.TA.Internal;
 using Db4objects.Db4o.TA.Tests.Collections.Internal;
 using Sharpen;
 
@@ -17,7 +19,7 @@ namespace Db4objects.Db4o.TA.Tests.Collections.Internal
 		private int _top = 0;
 
 		[System.NonSerialized]
-		internal Activator _activator;
+		internal IActivator _activator;
 
 		public PagedBackingStore()
 		{
@@ -99,14 +101,13 @@ namespace Db4objects.Db4o.TA.Tests.Collections.Internal
 			return itemIndex % Page.PAGESIZE;
 		}
 
-		public virtual void Bind(IObjectContainer container)
+		public virtual void Bind(IActivator activator)
 		{
 			if (null != _activator)
 			{
-				_activator.AssertCompatible(container);
-				return;
+				throw new InvalidOperationException();
 			}
-			_activator = new Activator(container, this);
+			_activator = activator;
 		}
 
 		private void Activate()

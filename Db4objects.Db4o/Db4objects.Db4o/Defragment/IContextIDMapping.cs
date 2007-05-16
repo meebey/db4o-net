@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>The ID mapping used internally during a defragmentation run.</summary>

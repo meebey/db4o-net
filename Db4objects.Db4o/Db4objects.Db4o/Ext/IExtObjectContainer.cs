@@ -1,3 +1,6 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
+using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -34,6 +37,14 @@ namespace Db4objects.Db4o.Ext
 		/// if concurrent execution with normal database access is desired.<br /><br />
 		/// </remarks>
 		/// <param name="path">a fully qualified path</param>
+		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		/// <exception cref="DatabaseClosedException">db4o database file was closed or failed to open.
+		/// 	</exception>
+		/// <exception cref="NotSupportedException">
+		/// is thrown when the operation is not supported in current
+		/// configuration/environment
+		/// </exception>
 		void Backup(string path);
 
 		/// <summary>binds an object to an internal object ID.</summary>
@@ -56,6 +67,12 @@ namespace Db4objects.Db4o.Ext
 		/// <seealso cref="IExtObjectContainer.GetID">IExtObjectContainer.GetID</seealso>
 		/// <param name="obj">the object that is to be bound</param>
 		/// <param name="id">the internal id the object is to be bound to</param>
+		/// <exception cref="DatabaseClosedException">db4o database file was closed or failed to open.
+		/// 	</exception>
+		/// <exception cref="InvalidIDException">
+		/// when the provided id is outside the scope of the
+		/// database IDs.
+		/// </exception>
 		void Bind(object obj, long id);
 
 		/// <summary>
@@ -127,6 +144,10 @@ namespace Db4objects.Db4o.Ext
 		/// if no object is associated with this ID in this <code>ObjectContainer</code>.
 		/// </returns>
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
+		/// <exception cref="DatabaseClosedException">db4o database file was closed or failed to open.
+		/// 	</exception>
+		/// <exception cref="InvalidIDException">when the provided id is outside the scope of the
+		/// 	</exception>
 		object GetByID(long ID);
 
 		/// <summary>
@@ -149,6 +170,10 @@ namespace Db4objects.Db4o.Ext
 		/// <param name="uuid">the UUID</param>
 		/// <returns>the object for the UUID</returns>
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
+		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		/// <exception cref="DatabaseClosedException">db4o database file was closed or failed to open.
+		/// 	</exception>
 		object GetByUUID(Db4oUUID uuid);
 
 		/// <summary>returns the internal unique object ID.</summary>
@@ -229,6 +254,8 @@ namespace Db4objects.Db4o.Ext
 		/// </remarks>
 		/// <param name="obj">to be tested<br /><br /></param>
 		/// <returns><code>true</code> if the passed object is stored.</returns>
+		/// <exception cref="DatabaseClosedException">db4o database file was closed or failed to open.
+		/// 	</exception>
 		bool IsStored(object obj);
 
 		/// <summary>
@@ -352,7 +379,9 @@ namespace Db4objects.Db4o.Ext
 		/// <param name="name">the name of the semaphore to be released.</param>
 		void ReleaseSemaphore(string name);
 
-		/// <summary>
+		/// <deprecated>
+		/// Since db4o-5.2. Use db4o Replication System (dRS)
+		/// instead.<br /><br />
 		/// prepares for replication with another
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// .
@@ -368,7 +397,7 @@ namespace Db4objects.Db4o.Ext
 		/// and to cancel the replication process.
 		/// <br /><br />This ObjectContainer will be "peerA" for the
 		/// returned ReplicationProcess. The other ObjectContainer will be "peerB".
-		/// </summary>
+		/// </deprecated>
 		/// <param name="peerB">
 		/// the
 		/// <see cref="IObjectContainer">IObjectContainer</see>

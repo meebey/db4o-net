@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 namespace Db4objects.Db4o
 {
 	/// <summary>Marker interface to denote that a class is used for db4o internals.</summary>

@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
@@ -96,12 +98,12 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual IEnumerator Pointers()
 		{
-			return Iterators.Concat(Iterators.Map(_ranges, new _AnonymousInnerClass76(this)));
+			return Iterators.Concat(Iterators.Map(_ranges, new _AnonymousInnerClass77(this)));
 		}
 
-		private sealed class _AnonymousInnerClass76 : IFunction4
+		private sealed class _AnonymousInnerClass77 : IFunction4
 		{
-			public _AnonymousInnerClass76(BTreeRangeUnion _enclosing)
+			public _AnonymousInnerClass77(BTreeRangeUnion _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -116,12 +118,12 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual IEnumerator Keys()
 		{
-			return Iterators.Concat(Iterators.Map(_ranges, new _AnonymousInnerClass84(this)));
+			return Iterators.Concat(Iterators.Map(_ranges, new _AnonymousInnerClass85(this)));
 		}
 
-		private sealed class _AnonymousInnerClass84 : IFunction4
+		private sealed class _AnonymousInnerClass85 : IFunction4
 		{
-			public _AnonymousInnerClass84(BTreeRangeUnion _enclosing)
+			public _AnonymousInnerClass85(BTreeRangeUnion _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

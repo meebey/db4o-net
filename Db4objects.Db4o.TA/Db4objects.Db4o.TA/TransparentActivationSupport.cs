@@ -1,4 +1,7 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Internal;
@@ -18,17 +21,17 @@ namespace Db4objects.Db4o.TA
 		{
 			container.Configure().ActivationDepth(0);
 			IEventRegistry factory = EventRegistryFactory.ForObjectContainer(container);
-			factory.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _AnonymousInnerClass21
+			factory.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _AnonymousInnerClass23
 				(this, container).OnEvent);
 			TransparentActivationSupport.TADiagnosticProcessor processor = new TransparentActivationSupport.TADiagnosticProcessor
 				(this, container);
-			factory.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _AnonymousInnerClass31
+			factory.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _AnonymousInnerClass39
 				(this, processor).OnEvent);
 		}
 
-		private sealed class _AnonymousInnerClass21
+		private sealed class _AnonymousInnerClass23
 		{
-			public _AnonymousInnerClass21(TransparentActivationSupport _enclosing, ObjectContainerBase
+			public _AnonymousInnerClass23(TransparentActivationSupport _enclosing, ObjectContainerBase
 				 container)
 			{
 				this._enclosing = _enclosing;
@@ -38,10 +41,16 @@ namespace Db4objects.Db4o.TA
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
 			{
 				ObjectEventArgs oea = (ObjectEventArgs)args;
-				if (oea.Object is IActivatable)
+				object obj = oea.Object;
+				if (obj is IActivatable)
 				{
-					((IActivatable)oea.Object).Bind(container);
+					((IActivatable)obj).Bind(this.ActivatorForObject(container, obj));
 				}
+			}
+
+			private IActivator ActivatorForObject(ObjectContainerBase container, object obj)
+			{
+				return (IActivator)container.ReferenceForObject(obj);
 			}
 
 			private readonly TransparentActivationSupport _enclosing;
@@ -49,9 +58,9 @@ namespace Db4objects.Db4o.TA
 			private readonly ObjectContainerBase container;
 		}
 
-		private sealed class _AnonymousInnerClass31
+		private sealed class _AnonymousInnerClass39
 		{
-			public _AnonymousInnerClass31(TransparentActivationSupport _enclosing, TransparentActivationSupport.TADiagnosticProcessor
+			public _AnonymousInnerClass39(TransparentActivationSupport _enclosing, TransparentActivationSupport.TADiagnosticProcessor
 				 processor)
 			{
 				this._enclosing = _enclosing;

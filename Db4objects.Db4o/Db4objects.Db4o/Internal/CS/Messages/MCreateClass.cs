@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS.Messages;
@@ -19,14 +21,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				{
 					lock (StreamLock())
 					{
-						ClassMetadata yapClass = stream.ProduceClassMetadata(claxx);
-						if (yapClass != null)
+						ClassMetadata classMetadata = stream.ProduceClassMetadata(claxx);
+						if (classMetadata != null)
 						{
 							stream.CheckStillToSet();
-							yapClass.SetStateDirty();
-							yapClass.Write(trans);
-							trans.Commit();
-							StatefulBuffer returnBytes = stream.ReadWriterByID(trans, yapClass.GetID());
+							StatefulBuffer returnBytes = stream.ReadWriterByID(trans, classMetadata.GetID());
 							MsgD createdClass = Msg.OBJECT_TO_CLIENT.GetWriter(returnBytes);
 							Write(createdClass);
 							ok = true;

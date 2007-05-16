@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o.Foundation;
@@ -57,12 +59,12 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public static void DumpKeys(Transaction trans, BTree tree)
 		{
-			tree.TraverseKeys(trans, new _AnonymousInnerClass50());
+			tree.TraverseKeys(trans, new _AnonymousInnerClass51());
 		}
 
-		private sealed class _AnonymousInnerClass50 : IVisitor4
+		private sealed class _AnonymousInnerClass51 : IVisitor4
 		{
-			public _AnonymousInnerClass50()
+			public _AnonymousInnerClass51()
 			{
 			}
 

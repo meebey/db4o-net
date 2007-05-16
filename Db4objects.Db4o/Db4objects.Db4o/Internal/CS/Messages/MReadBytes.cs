@@ -1,6 +1,9 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
@@ -10,8 +13,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			int address = _payLoad.ReadInt();
 			int length = _payLoad.GetLength() - (Const4.INT_LENGTH);
+			Slot slot = new Slot(address, length);
 			_payLoad.RemoveFirstBytes(Const4.INT_LENGTH);
-			_payLoad.UseSlot(address, length);
+			_payLoad.UseSlot(slot);
 			return this._payLoad;
 		}
 

@@ -1,4 +1,5 @@
-using System.IO;
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
@@ -41,18 +42,11 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public override void CheckHeaderLock()
 		{
-			try
+			if (((int)_opentime) != ReadInt(0, _headerLockOffset))
 			{
-				if (((int)_opentime) == ReadInt(0, _headerLockOffset))
-				{
-					WriteHeaderLock();
-					return;
-				}
+				throw new DatabaseFileLockedException(_timerFile.ToString());
 			}
-			catch (IOException)
-			{
-			}
-			throw new DatabaseFileLockedException(_timerFile.ToString());
+			WriteHeaderLock();
 		}
 
 		public override void CheckOpenTime()
@@ -88,7 +82,10 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override void Close()
 		{
 			WriteAccessTime(true);
-			_closed = true;
+			lock (_timerLock)
+			{
+				_closed = true;
+			}
 		}
 
 		public override bool LockFile()
@@ -103,15 +100,17 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public override void Run()
 		{
-			Thread t = Thread.CurrentThread();
-			t.SetName("db4o file lock");
-			while (WriteAccessTime(false))
+			while (true)
 			{
-				Cool.SleepIgnoringInterruption(Const4.LOCK_TIME_INTERVAL);
-				if (_closed)
+				lock (_timerLock)
 				{
-					break;
+					if (_closed)
+					{
+						return;
+					}
+					WriteAccessTime(false);
 				}
+				Cool.SleepIgnoringInterruption(Const4.LOCK_TIME_INTERVAL);
 			}
 		}
 
@@ -128,7 +127,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			WriteAccessTime(false);
 			_timerFile.Sync();
 			CheckOpenTime();
-			new Thread(this).Start();
+			Thread thread = new Thread(this);
+			thread.SetName("db4o file lock");
+			thread.Start();
 		}
 
 		private long UniqueOpenTime()
@@ -155,14 +156,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public override void WriteHeaderLock()
 		{
-			try
-			{
-				WriteInt(0, _headerLockOffset, (int)_opentime);
-				Sync();
-			}
-			catch (IOException)
-			{
-			}
+			WriteInt(0, _headerLockOffset, (int)_opentime);
+			Sync();
 		}
 
 		public override void WriteOpenTime()

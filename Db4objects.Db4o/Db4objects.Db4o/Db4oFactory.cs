@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -135,6 +137,20 @@ namespace Db4objects.Db4o
 		/// <see cref="IObjectContainer">ObjectContainer</see>
 		/// </returns>
 		/// <seealso cref="IObjectServer.GrantAccess">IObjectServer.GrantAccess</seealso>
+		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		/// <exception cref="OldFormatException">
+		/// open operation failed because the database file
+		/// is in old format and
+		/// <see cref="IConfiguration.AllowVersionUpdates">IConfiguration.AllowVersionUpdates
+		/// 	</see>
+		/// 
+		/// is set to false.
+		/// </exception>
+		/// <exception cref="InvalidPasswordException">
+		/// password supplied for the connection is
+		/// invalid.
+		/// </exception>
 		public static IObjectContainer OpenClient(string hostName, int port, string user, 
 			string password)
 		{
@@ -178,6 +194,20 @@ namespace Db4objects.Db4o
 		/// <see cref="IObjectContainer">ObjectContainer</see>
 		/// </returns>
 		/// <seealso cref="IObjectServer.GrantAccess">IObjectServer.GrantAccess</seealso>
+		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		/// <exception cref="OldFormatException">
+		/// open operation failed because the database file
+		/// is in old format and
+		/// <see cref="IConfiguration.AllowVersionUpdates">IConfiguration.AllowVersionUpdates
+		/// 	</see>
+		/// 
+		/// is set to false.
+		/// </exception>
+		/// <exception cref="InvalidPasswordException">
+		/// password supplied for the connection is
+		/// invalid.
+		/// </exception>
 		public static IObjectContainer OpenClient(IConfiguration config, string hostName, 
 			int port, string user, string password)
 		{
@@ -222,6 +252,28 @@ namespace Db4objects.Db4o
 		/// <seealso cref="IConfiguration.ReadOnly">IConfiguration.ReadOnly</seealso>
 		/// <seealso cref="IConfiguration.Encrypt">IConfiguration.Encrypt</seealso>
 		/// <seealso cref="IConfiguration.Password">IConfiguration.Password</seealso>
+		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		/// <exception cref="DatabaseFileLockedException">
+		/// the required database file is locked by
+		/// another process.
+		/// </exception>
+		/// <exception cref="IncompatibleFileFormatException">
+		/// runtime
+		/// <see cref="IConfiguration">configuration</see>
+		/// is not compatible
+		/// with the configuration of the database file.
+		/// </exception>
+		/// <exception cref="OldFormatException">
+		/// open operation failed because the database file
+		/// is in old format and
+		/// <see cref="IConfiguration.AllowVersionUpdates">IConfiguration.AllowVersionUpdates
+		/// 	</see>
+		/// 
+		/// is set to false.
+		/// </exception>
+		/// <exception cref="DatabaseReadOnlyException">database was configured as read-only.
+		/// 	</exception>
 		public static IObjectContainer OpenFile(string databaseFileName)
 		{
 			return OpenFile(CloneConfiguration(), databaseFileName);
@@ -257,6 +309,28 @@ namespace Db4objects.Db4o
 		/// <seealso cref="IConfiguration.ReadOnly">IConfiguration.ReadOnly</seealso>
 		/// <seealso cref="IConfiguration.Encrypt">IConfiguration.Encrypt</seealso>
 		/// <seealso cref="IConfiguration.Password">IConfiguration.Password</seealso>
+		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		/// <exception cref="DatabaseFileLockedException">
+		/// the required database file is locked by
+		/// another process.
+		/// </exception>
+		/// <exception cref="IncompatibleFileFormatException">
+		/// runtime
+		/// <see cref="IConfiguration">configuration</see>
+		/// is not compatible
+		/// with the configuration of the database file.
+		/// </exception>
+		/// <exception cref="OldFormatException">
+		/// open operation failed because the database file
+		/// is in old format and
+		/// <see cref="IConfiguration.AllowVersionUpdates">IConfiguration.AllowVersionUpdates
+		/// 	</see>
+		/// 
+		/// is set to false.
+		/// </exception>
+		/// <exception cref="DatabaseReadOnlyException">database was configured as read-only.
+		/// 	</exception>
 		public static IObjectContainer OpenFile(IConfiguration config, string databaseFileName
 			)
 		{
@@ -315,6 +389,28 @@ namespace Db4objects.Db4o
 		/// <seealso cref="IConfiguration.ReadOnly">IConfiguration.ReadOnly</seealso>
 		/// <seealso cref="IConfiguration.Encrypt">IConfiguration.Encrypt</seealso>
 		/// <seealso cref="IConfiguration.Password">IConfiguration.Password</seealso>
+		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		/// <exception cref="DatabaseFileLockedException">
+		/// the required database file is locked by
+		/// another process.
+		/// </exception>
+		/// <exception cref="IncompatibleFileFormatException">
+		/// runtime
+		/// <see cref="IConfiguration">configuration</see>
+		/// is not compatible
+		/// with the configuration of the database file.
+		/// </exception>
+		/// <exception cref="OldFormatException">
+		/// open operation failed because the database file
+		/// is in old format and
+		/// <see cref="IConfiguration.AllowVersionUpdates">IConfiguration.AllowVersionUpdates
+		/// 	</see>
+		/// 
+		/// is set to false.
+		/// </exception>
+		/// <exception cref="DatabaseReadOnlyException">database was configured as read-only.
+		/// 	</exception>
 		public static IObjectServer OpenServer(string databaseFileName, int port)
 		{
 			return OpenServer(CloneConfiguration(), databaseFileName, port);
@@ -352,6 +448,28 @@ namespace Db4objects.Db4o
 		/// <seealso cref="IConfiguration.ReadOnly">IConfiguration.ReadOnly</seealso>
 		/// <seealso cref="IConfiguration.Encrypt">IConfiguration.Encrypt</seealso>
 		/// <seealso cref="IConfiguration.Password">IConfiguration.Password</seealso>
+		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		/// <exception cref="DatabaseFileLockedException">
+		/// the required database file is locked by
+		/// another process.
+		/// </exception>
+		/// <exception cref="IncompatibleFileFormatException">
+		/// runtime
+		/// <see cref="IConfiguration">configuration</see>
+		/// is not compatible
+		/// with the configuration of the database file.
+		/// </exception>
+		/// <exception cref="OldFormatException">
+		/// open operation failed because the database file
+		/// is in old format and
+		/// <see cref="IConfiguration.AllowVersionUpdates">IConfiguration.AllowVersionUpdates
+		/// 	</see>
+		/// 
+		/// is set to false.
+		/// </exception>
+		/// <exception cref="DatabaseReadOnlyException">database was configured as read-only.
+		/// 	</exception>
 		public static IObjectServer OpenServer(IConfiguration config, string databaseFileName
 			, int port)
 		{

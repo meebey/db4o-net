@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using System.Collections;
 using Db4objects.Db4o;
@@ -247,10 +249,10 @@ namespace Db4objects.Db4o.Internal
 			return queryResult;
 		}
 
-		internal int GetPointerSlot()
+		public int GetPointerSlot()
 		{
 			int id = GetSlot(Const4.POINTER_LENGTH).Address();
-			((LocalTransaction)SystemTransaction()).WritePointer(id, Slot.ZERO);
+			((LocalTransaction)SystemTransaction()).WriteZeroPointer(id);
 			if (i_handlers.IsSystemHandler(id))
 			{
 				return GetPointerSlot();
@@ -348,12 +350,9 @@ namespace Db4objects.Db4o.Internal
 			return i_isServer;
 		}
 
-		public Pointer4 NewSlot(Transaction trans, int length)
+		public Pointer4 NewSlot(int length)
 		{
-			int id = GetPointerSlot();
-			Slot slot = GetSlot(length);
-			trans.SetPointer(id, slot);
-			return new Pointer4(id, slot);
+			return new Pointer4(GetPointerSlot(), GetSlot(length));
 		}
 
 		public sealed override int NewUserObject()
@@ -572,16 +571,16 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass540(this, semaphores), ta
+					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass536(this, semaphores), ta
 						);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass540 : IVisitor4
+		private sealed class _AnonymousInnerClass536 : IVisitor4
 		{
-			public _AnonymousInnerClass540(LocalObjectContainer _enclosing, Hashtable4 semaphores
+			public _AnonymousInnerClass536(LocalObjectContainer _enclosing, Hashtable4 semaphores
 				)
 			{
 				this._enclosing = _enclosing;
@@ -826,13 +825,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass746(this, ids));
+			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass742(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _AnonymousInnerClass746 : IVisitor4
+		private sealed class _AnonymousInnerClass742 : IVisitor4
 		{
-			public _AnonymousInnerClass746(LocalObjectContainer _enclosing, IntArrayList ids)
+			public _AnonymousInnerClass742(LocalObjectContainer _enclosing, IntArrayList ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;

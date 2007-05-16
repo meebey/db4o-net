@@ -1,3 +1,5 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
 using System;
 using Db4oUnit;
 using Db4objects.Db4o.Config;
@@ -17,15 +19,15 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		{
 			EventsTestCaseBase.EventLog instantiatedLog = new EventsTestCaseBase.EventLog();
 			EventRegistry().Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new 
-				_AnonymousInnerClass18(this, instantiatedLog).OnEvent);
+				_AnonymousInnerClass19(this, instantiatedLog).OnEvent);
 			RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item));
 			Assert.IsFalse(instantiatedLog.xing);
 			Assert.IsTrue(instantiatedLog.xed);
 		}
 
-		private sealed class _AnonymousInnerClass18
+		private sealed class _AnonymousInnerClass19
 		{
-			public _AnonymousInnerClass18(InstantiationEventsTestCase _enclosing, EventsTestCaseBase.EventLog
+			public _AnonymousInnerClass19(InstantiationEventsTestCase _enclosing, EventsTestCaseBase.EventLog
 				 instantiatedLog)
 			{
 				this._enclosing = _enclosing;
@@ -35,6 +37,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
 			{
 				instantiatedLog.xed = true;
+				object obj = ((ObjectEventArgs)args).Object;
+				Assert.IsNotNull(this._enclosing.Stream().ReferenceSystem().ReferenceForObject(obj
+					));
 			}
 
 			private readonly InstantiationEventsTestCase _enclosing;
