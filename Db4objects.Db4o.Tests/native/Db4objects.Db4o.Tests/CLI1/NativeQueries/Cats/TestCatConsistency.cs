@@ -1,4 +1,4 @@
-ï»¿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System.Collections;
 using Db4objects.Db4o.Query;
 using Db4oUnit;
@@ -114,11 +114,11 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 		public void RunTests()
 		{
 			Expect(new NoneFound());
-			Expect(new AgeOne(), "Occam", "VahinÃ©");
+			Expect(new AgeOne(), "Occam", "Vahiné");
 			Expect(new FatherAgeOne(), "Achat", "Acrobat");
 			Expect(new GrandFatherName(), "Achat", "Acrobat");
 			Expect(new OrFatherName(), "Achat", "Acrobat", "Occam");
-			Expect(new AddToAge(), "Occam", "VahinÃ©");
+			Expect(new AddToAge(), "Occam", "Vahiné");
 			Expect(new TwoGetters(), "Occam");
 			Expect(new CalculatedGetter(), "Achat");
 			Expect(new GetterNull());
@@ -133,7 +133,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 			Expect<Cat>(delegate(Cat cat)
 			{
 				return cat._age == 1;
-			}, "Occam", "VahinÃ©");
+			}, "Occam", "Vahiné");
 			Expect<Cat>(delegate(Cat cat)
 			{
 				return cat._father._age == 1;
@@ -151,7 +151,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 			Expect<Cat>(delegate(Cat cat)
 			{
 				return cat._age + 1 == 2;
-			}, "Occam", "VahinÃ©");
+			}, "Occam", "Vahiné");
 			Expect<Cat>(delegate(Cat cat)
 			{
 				return cat.GetFirstName() == "Occam"
@@ -185,20 +185,20 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 			Cat bachi = new Cat();
 			bachi._sex = Animal.FEMALE;
 			bachi._firstName = "Frau Bachmann";
-			bachi._lastName = "von der BÃ¤renhÃ¶hle";
+			bachi._lastName = "von der Bärenhöhle";
 			bachi._age = 10;
 
 			Cat occam = new Cat();
 			occam._sex = Animal.MALE;
 			occam._firstName = "Occam";
-			occam._lastName = "von der BÃ¤renhÃ¶hle";
+			occam._lastName = "von der Bärenhöhle";
 			occam._age = 1;
 			occam._father = winni;
 			occam._mother = bachi;
 
 			Cat zora = new Cat();
 			zora._sex = Animal.FEMALE;
-			zora._firstName = "VahinÃ©";
+			zora._firstName = "Vahiné";
 			zora._lastName = "des Fauves et Or";
 			zora._age = 1;
 

@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2006   db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2006   db4objects Inc.   http://www.db4o.com */
 
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
