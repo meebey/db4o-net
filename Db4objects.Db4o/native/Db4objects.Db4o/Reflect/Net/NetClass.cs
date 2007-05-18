@@ -189,7 +189,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			return _reflector;
 		}
 
-		public virtual bool SkipConstructor(bool flag)
+		public virtual bool SkipConstructor(bool flag, bool testConstructor)
 		{
 #if !CF_1_0 && !CF_2_0
 			if (flag)
@@ -197,8 +197,13 @@ namespace Db4objects.Db4o.Reflect.Net
 				IReflectConstructor constructor = new SerializationConstructor(GetNetType());
 				try
 				{
-					object o = constructor.NewInstance(null);
-					if (o != null)
+					bool serializationIsOk = true;
+					if(testConstructor)
+					{
+						object o = constructor.NewInstance(null);
+						serializationIsOk = ( o != null);
+					}
+					if (serializationIsOk)
 					{
 						UseConstructor(constructor, null);
 						return true;
