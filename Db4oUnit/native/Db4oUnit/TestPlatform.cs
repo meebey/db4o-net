@@ -10,10 +10,13 @@ namespace Db4oUnit
 		// will be assigned from the outside on CF
 		public static TextWriter Out;
 
+        public static TextWriter Error;
+        
 #if !CF_1_0
 		static TestPlatform()
 		{
 			Out = Console.Out;
+            Error = Console.Error;
 		}
 #endif
 		
@@ -30,6 +33,11 @@ namespace Db4oUnit
 		public static TextWriter GetStdOut()
 		{
 			return Out;
+		}
+        
+        public static TextWriter GetStdErr()
+		{
+			return Error;
 		}
 		
 		public static void EmitWarning(string warning)
