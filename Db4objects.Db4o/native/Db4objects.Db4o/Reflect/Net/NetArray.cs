@@ -38,6 +38,10 @@ namespace Db4objects.Db4o.Reflect.Net
 
         private static System.Type GetArrayType(Type type, int dimensions)
         {
+            if (dimensions == 0) {
+                return type;
+            }
+            
             Type arrayType = MakeArrayType(type);
             for (int i=1; i<dimensions; ++i)
             {
