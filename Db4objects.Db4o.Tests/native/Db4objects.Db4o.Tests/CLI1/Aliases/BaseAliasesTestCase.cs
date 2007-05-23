@@ -37,7 +37,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 
         protected object CreateAliasedData(string name)
         {
+#if CF_1_0 || CF_2_0
+            return null;
+#else
             return Activator.CreateInstance(GetAliasedDataType(), new object[] { name });
+#endif
         }
 
         public static void AssertContains(IObjectSet actual, object expected)

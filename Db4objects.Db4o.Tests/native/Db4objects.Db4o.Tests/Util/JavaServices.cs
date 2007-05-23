@@ -42,8 +42,12 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public static string javac(string srcFile)
 		{
-			return IOServices.Exec(WorkspaceServices.JavacPath(), "-classpath " + JavaServices.Db4ojarPath(), Quote(srcFile));
-		}
+#if CF_1_0 || CF_2_0 
+            return null;
+#else
+            return IOServices.Exec(WorkspaceServices.JavacPath(), "-classpath " + JavaServices.Db4ojarPath(), Quote(srcFile));
+#endif
+        }
 
 		public static string Quote(string s)
 		{
@@ -53,7 +57,11 @@ namespace Db4objects.Db4o.Tests.Util
 		public static string java(string className, params string[] args)
 		{
 			string classPathArgument = "-cp " + Quote(JavaServices.JavaTempPath) + Path.PathSeparator + Db4ojarPath();
-			return IOServices.Exec("java", classPathArgument + " " + className + " " + string.Join(" ", args));
-		}
+#if CF_1_0 || CF_2_0
+            return null;
+#else
+            return IOServices.Exec("java", classPathArgument + " " + className + " " + string.Join(" ", args));
+#endif
+        }
 	}
 }
