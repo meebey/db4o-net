@@ -114,6 +114,11 @@ namespace Db4objects.Db4o.Internal
             return new NetReflector();
         }
 
+        public static IReflector ReflectorForType(Type typeInstance)
+        {
+            return new NetReflector();
+        }
+
         internal static Object CreateReferenceQueue()
         {
             return new WeakReferenceHandlerQueue();
