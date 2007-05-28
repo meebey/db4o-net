@@ -7,6 +7,12 @@ namespace Db4oUnit
 
 	public class TestPlatform
 	{
+#if CF_1_0 || CF_2_0
+        public static string NEWLINE = "\n";
+#else
+	    public static string NEWLINE = Environment.NewLine;
+#endif
+
 		// will be assigned from the outside on CF
 		public static TextWriter Out;
 
@@ -59,5 +65,10 @@ namespace Db4oUnit
 		{
 			return method.GetParameters().Length > 0;
 		}
+
+        public static TextWriter OpenTextFile(string fname)
+        {
+            return new StreamWriter(fname);
+        }
 	}
 }
