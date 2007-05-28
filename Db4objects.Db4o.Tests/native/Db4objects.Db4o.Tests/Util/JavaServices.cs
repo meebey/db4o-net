@@ -8,12 +8,16 @@ namespace Db4objects.Db4o.Tests.Util
 	{
 		public static bool CanRunJavaCompatibilityTests()
 		{
+#if CF_1_0 || CF_2_0 
+			return false;
+#else
 			if (null == WorkspaceServices.WorkspaceRoot)
 			{
 				Console.WriteLine("'db4obuild' directory not found, skipping java compatibility test.");
 				return false;
 			}
 			return true;
+#endif
 		}
 
 		public static string Db4ojarPath()
