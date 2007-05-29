@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit.Extensions.Fixtures;
@@ -35,7 +36,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
             //	                "com.db4o.test.aliases.*",
             //	                CurrentNamespace + ".*, " + CurrentAssemblyName));
             configuration.AddAlias(
-                new TypeAlias("com.db4o.ext.Db4oDatabase", "Db4objects.Db4o.Ext.Db4oDatabase, Db4objects.Db4o"));
+                new TypeAlias("com.db4o.ext.Db4oDatabase", GetTypeName(typeof(Db4oDatabase))));
         }
 
         private IObjectContainer OpenJavaDataFile()
@@ -102,12 +103,7 @@ public class Program {
 
         private string GetTypeName(Type type)
         {
-            return type.FullName + ", " + CurrentAssemblyName;
-        }
-
-        private string CurrentAssemblyName
-        {
-            get { return GetType().Assembly.GetName().Name; }
+            return type.FullName + ", " + type.Assembly.GetName().Name;
         }
     }
 }
