@@ -19,6 +19,11 @@ namespace Db4objects.Db4o.Reflect.Net
 			this.field = field;
 		}
 
+        public override string ToString()
+        {
+            return string.Format("NetField({0})", field);
+        }
+
 		public virtual string GetName()
 		{
 			return field.Name;
