@@ -10,14 +10,14 @@ namespace Db4objects.Db4o.Tests
 		{
 //			return new AllTests().RunSolo();
 //            return new AllTests().RunClientServer();
-			return new AllTests().RunSoloAndClientServer();
+		    return new AllTests().RunAll();
 		}
 		
 		protected override Type[] TestCases()
 		{
 			return new Type[]
 				{
-//					typeof(Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase),
+					typeof(Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase),
 					typeof(Db4objects.Db4o.Tests.Common.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI1.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI2.AllTests),
