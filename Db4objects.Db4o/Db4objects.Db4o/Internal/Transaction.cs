@@ -194,40 +194,57 @@ namespace Db4objects.Db4o.Internal
 			SetPointer(pointer._id, pointer._slot);
 		}
 
-		public virtual void SetPointer(int a_id, Slot slot)
+		/// <param name="id"></param>
+		/// <param name="slot"></param>
+		public virtual void SetPointer(int id, Slot slot)
 		{
 		}
 
+		/// <param name="id"></param>
+		/// <param name="slot"></param>
 		public virtual void SlotDelete(int id, Slot slot)
 		{
 		}
 
+		/// <param name="id"></param>
+		/// <param name="slot"></param>
 		public virtual void SlotFreeOnCommit(int id, Slot slot)
 		{
 		}
 
+		/// <param name="id"></param>
+		/// <param name="slot"></param>
 		public virtual void SlotFreeOnRollback(int id, Slot slot)
 		{
 		}
 
+		/// <param name="id"></param>
+		/// <param name="slot"></param>
+		/// <param name="forFreespace"></param>
 		internal virtual void SlotFreeOnRollbackCommitSetPointer(int id, Slot slot, bool 
 			forFreespace)
 		{
 		}
 
+		/// <param name="id"></param>
+		/// <param name="slot"></param>
 		internal virtual void ProduceUpdateSlotChange(int id, Slot slot)
 		{
 		}
 
-		public virtual void SlotFreePointerOnCommit(int a_id)
+		/// <param name="id"></param>
+		public virtual void SlotFreePointerOnCommit(int id)
 		{
 		}
 
-		internal virtual void SlotFreePointerOnCommit(int a_id, Slot slot)
+		/// <param name="id"></param>
+		/// <param name="slot"></param>
+		internal virtual void SlotFreePointerOnCommit(int id, Slot slot)
 		{
 		}
 
-		public virtual void SlotFreePointerOnRollback(int a_id)
+		/// <param name="id"></param>
+		public virtual void SlotFreePointerOnRollback(int id)
 		{
 		}
 

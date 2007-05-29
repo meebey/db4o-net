@@ -176,7 +176,7 @@ namespace Db4objects.Db4o.Defragment
 			return ((Config4Impl)Db4oConfig()).BlockSize();
 		}
 
-		private class NullFilter : IStoredClassFilter
+		protected class NullFilter : IStoredClassFilter
 		{
 			public virtual bool Accept(IStoredClass storedClass)
 			{

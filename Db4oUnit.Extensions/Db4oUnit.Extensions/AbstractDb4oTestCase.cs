@@ -318,13 +318,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _AnonymousInnerClass270(this, oc));
+			Foreach(clazz, new _IVisitor4_270(this, oc));
 		}
 
-		private sealed class _AnonymousInnerClass270 : IVisitor4
+		private sealed class _IVisitor4_270 : IVisitor4
 		{
-			public _AnonymousInnerClass270(AbstractDb4oTestCase _enclosing, IExtObjectContainer
-				 oc)
+			public _IVisitor4_270(AbstractDb4oTestCase _enclosing, IExtObjectContainer oc)
 			{
 				this._enclosing = _enclosing;
 				this.oc = oc;

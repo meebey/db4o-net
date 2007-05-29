@@ -19,12 +19,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			Item item = new Item();
 			Store(item);
 			long id = Db().GetID(item);
-			Assert.Expect(typeof(InvalidIDException), new _AnonymousInnerClass18(this, id));
+			Assert.Expect(typeof(InvalidIDException), new _ICodeBlock_18(this, id));
 		}
 
-		private sealed class _AnonymousInnerClass18 : ICodeBlock
+		private sealed class _ICodeBlock_18 : ICodeBlock
 		{
-			public _AnonymousInnerClass18(InvalidIDExceptionTestCase _enclosing, long id)
+			public _ICodeBlock_18(InvalidIDExceptionTestCase _enclosing, long id)
 			{
 				this._enclosing = _enclosing;
 				this.id = id;

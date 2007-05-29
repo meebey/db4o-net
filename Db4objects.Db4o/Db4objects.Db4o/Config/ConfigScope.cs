@@ -1,8 +1,19 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Config;
+
 namespace Db4objects.Db4o.Config
 {
-	/// <summary>yes/no/dontknow data type</summary>
+	/// <summary>
+	/// Defines a scope of applicability of a config setting.<br /><br />
+	/// Some of the configuration settings can be either: <br /><br />
+	/// - enabled globally; <br />
+	/// - enabled individually for a specified class; <br />
+	/// - disabled.<br /><br />
+	/// </summary>
+	/// <seealso cref="IConfiguration.GenerateUUIDs">IConfiguration.GenerateUUIDs</seealso>
+	/// <seealso cref="IConfiguration.GenerateVersionNumbers">IConfiguration.GenerateVersionNumbers
+	/// 	</seealso>
 	[System.Serializable]
 	public sealed class ConfigScope
 	{
@@ -43,6 +54,19 @@ namespace Db4objects.Db4o.Config
 			_name = name;
 		}
 
+		/// <summary>
+		/// Checks if the current configuration scope is globally
+		/// enabled or disabled.
+		/// </summary>
+		/// <remarks>
+		/// Checks if the current configuration scope is globally
+		/// enabled or disabled.
+		/// </remarks>
+		/// <param name="defaultValue">- default result</param>
+		/// <returns>
+		/// false if disabled, true if globally enabled, default
+		/// value otherwise
+		/// </returns>
 		public bool ApplyConfig(bool defaultValue)
 		{
 			switch (_value)
@@ -65,7 +89,7 @@ namespace Db4objects.Db4o.Config
 			}
 		}
 
-		/// <deprecated></deprecated>
+		[System.ObsoleteAttribute]
 		public static Db4objects.Db4o.Config.ConfigScope ForID(int id)
 		{
 			switch (id)

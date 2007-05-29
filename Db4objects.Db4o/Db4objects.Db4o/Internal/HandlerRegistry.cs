@@ -203,7 +203,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (!Platform4.CallConstructor())
 			{
-				if (claxx.SkipConstructor(skipConstructor))
+				if (claxx.SkipConstructor(skipConstructor, _masterStream.Config().TestConstructors
+					()))
 				{
 					return true;
 				}

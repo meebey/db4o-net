@@ -124,12 +124,12 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			a_writer.WriteInt(size);
-			a_tree.Traverse(new _AnonymousInnerClass97(a_writer));
+			a_tree.Traverse(new _IVisitor4_97(a_writer));
 		}
 
-		private sealed class _AnonymousInnerClass97 : IVisitor4
+		private sealed class _IVisitor4_97 : IVisitor4
 		{
-			public _AnonymousInnerClass97(Db4objects.Db4o.Internal.Buffer a_writer)
+			public _IVisitor4_97(Db4objects.Db4o.Internal.Buffer a_writer)
 			{
 				this.a_writer = a_writer;
 			}
@@ -207,15 +207,15 @@ namespace Db4objects.Db4o.Internal
 			if (VariableLength())
 			{
 				MutableInt mint = new MutableInt(Const4.INT_LENGTH);
-				Traverse(new _AnonymousInnerClass152(this, mint));
+				Traverse(new _IVisitor4_152(this, mint));
 				return mint.Value();
 			}
 			return Const4.INT_LENGTH + (Size() * OwnLength());
 		}
 
-		private sealed class _AnonymousInnerClass152 : IVisitor4
+		private sealed class _IVisitor4_152 : IVisitor4
 		{
-			public _AnonymousInnerClass152(TreeInt _enclosing, MutableInt mint)
+			public _IVisitor4_152(TreeInt _enclosing, MutableInt mint)
 			{
 				this._enclosing = _enclosing;
 				this.mint = mint;

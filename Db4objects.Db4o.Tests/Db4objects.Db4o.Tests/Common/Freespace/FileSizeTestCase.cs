@@ -2,12 +2,12 @@
 
 using System;
 using Db4oUnit;
-using Db4objects.Db4o.Tests.Common.Filesize;
+using Db4objects.Db4o.Tests.Common.Freespace;
 using Sharpen.Lang;
 
-namespace Db4objects.Db4o.Tests.Common.Filesize
+namespace Db4objects.Db4o.Tests.Common.Freespace
 {
-	public class FileSizeTestCase : FileSizeTestCaseBase
+	public class FileSizeTestCase : FreespaceManagerTestCaseBase
 	{
 		private const int ITERATIONS = 100;
 
@@ -20,19 +20,19 @@ namespace Db4objects.Db4o.Tests.Common.Filesize
 		{
 			StoreSomeItems();
 			ProduceSomeFreeSpace();
-			AssertConsistentSize(new _AnonymousInnerClass19(this));
+			AssertConsistentSize(new _IRunnable_20(this));
 		}
 
-		private sealed class _AnonymousInnerClass19 : IRunnable
+		private sealed class _IRunnable_20 : IRunnable
 		{
-			public _AnonymousInnerClass19(FileSizeTestCase _enclosing)
+			public _IRunnable_20(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Run()
 			{
-				this._enclosing.Store(new FileSizeTestCaseBase.Item());
+				this._enclosing.Store(new FreespaceManagerTestCaseBase.Item());
 				this._enclosing.Db().Rollback();
 			}
 
@@ -43,12 +43,12 @@ namespace Db4objects.Db4o.Tests.Common.Filesize
 		{
 			StoreSomeItems();
 			Db().Commit();
-			AssertConsistentSize(new _AnonymousInnerClass30(this));
+			AssertConsistentSize(new _IRunnable_31(this));
 		}
 
-		private sealed class _AnonymousInnerClass30 : IRunnable
+		private sealed class _IRunnable_31 : IRunnable
 		{
-			public _AnonymousInnerClass30(FileSizeTestCase _enclosing)
+			public _IRunnable_31(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -65,15 +65,15 @@ namespace Db4objects.Db4o.Tests.Common.Filesize
 		{
 			StoreSomeItems();
 			ProduceSomeFreeSpace();
-			FileSizeTestCaseBase.Item item = new FileSizeTestCaseBase.Item();
+			FreespaceManagerTestCaseBase.Item item = new FreespaceManagerTestCaseBase.Item();
 			Store(item);
 			Db().Commit();
-			AssertConsistentSize(new _AnonymousInnerClass43(this, item));
+			AssertConsistentSize(new _IRunnable_44(this, item));
 		}
 
-		private sealed class _AnonymousInnerClass43 : IRunnable
+		private sealed class _IRunnable_44 : IRunnable
 		{
-			public _AnonymousInnerClass43(FileSizeTestCase _enclosing, FileSizeTestCaseBase.Item
+			public _IRunnable_44(FileSizeTestCase _enclosing, FreespaceManagerTestCaseBase.Item
 				 item)
 			{
 				this._enclosing = _enclosing;
@@ -88,19 +88,19 @@ namespace Db4objects.Db4o.Tests.Common.Filesize
 
 			private readonly FileSizeTestCase _enclosing;
 
-			private readonly FileSizeTestCaseBase.Item item;
+			private readonly FreespaceManagerTestCaseBase.Item item;
 		}
 
 		public virtual void TestConsistentSizeOnReopen()
 		{
 			Db().Commit();
 			Reopen();
-			AssertConsistentSize(new _AnonymousInnerClass54(this));
+			AssertConsistentSize(new _IRunnable_55(this));
 		}
 
-		private sealed class _AnonymousInnerClass54 : IRunnable
+		private sealed class _IRunnable_55 : IRunnable
 		{
-			public _AnonymousInnerClass54(FileSizeTestCase _enclosing)
+			public _IRunnable_55(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -123,21 +123,21 @@ namespace Db4objects.Db4o.Tests.Common.Filesize
 		public virtual void TestConsistentSizeOnUpdateAndReopen()
 		{
 			ProduceSomeFreeSpace();
-			Store(new FileSizeTestCaseBase.Item());
+			Store(new FreespaceManagerTestCaseBase.Item());
 			Db().Commit();
-			AssertConsistentSize(new _AnonymousInnerClass69(this));
+			AssertConsistentSize(new _IRunnable_70(this));
 		}
 
-		private sealed class _AnonymousInnerClass69 : IRunnable
+		private sealed class _IRunnable_70 : IRunnable
 		{
-			public _AnonymousInnerClass69(FileSizeTestCase _enclosing)
+			public _IRunnable_70(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Run()
 			{
-				this._enclosing.Store(this._enclosing.RetrieveOnlyInstance(typeof(FileSizeTestCaseBase.Item)
+				this._enclosing.Store(this._enclosing.RetrieveOnlyInstance(typeof(FreespaceManagerTestCaseBase.Item)
 					));
 				this._enclosing.Db().Commit();
 				try

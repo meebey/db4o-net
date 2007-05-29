@@ -40,12 +40,12 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		{
 			Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.FILENAME
 				, SlotDefragmentTestConstants.BACKUPFILENAME);
-			Assert.Expect(typeof(IOException), new _AnonymousInnerClass37(this));
+			Assert.Expect(typeof(IOException), new _ICodeBlock_37(this));
 		}
 
-		private sealed class _AnonymousInnerClass37 : ICodeBlock
+		private sealed class _ICodeBlock_37 : ICodeBlock
 		{
-			public _AnonymousInnerClass37(SlotDefragmentTestCase _enclosing)
+			public _ICodeBlock_37(SlotDefragmentTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

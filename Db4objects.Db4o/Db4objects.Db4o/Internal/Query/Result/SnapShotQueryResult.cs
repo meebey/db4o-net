@@ -29,13 +29,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 		public override void LoadFromQuery(QQuery query)
 		{
 			IEnumerator _iterator = query.ExecuteSnapshot();
-			_iterable = new _AnonymousInnerClass29(this, _iterator);
+			_iterable = new _IEnumerable_29(this, _iterator);
 		}
 
-		private sealed class _AnonymousInnerClass29 : IEnumerable
+		private sealed class _IEnumerable_29 : IEnumerable
 		{
-			public _AnonymousInnerClass29(SnapShotQueryResult _enclosing, IEnumerator _iterator
-				)
+			public _IEnumerable_29(SnapShotQueryResult _enclosing, IEnumerator _iterator)
 			{
 				this._enclosing = _enclosing;
 				this._iterator = _iterator;
@@ -55,12 +54,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 		private void CreateSnapshot(IEnumerable iterable)
 		{
 			Tree ids = TreeInt.AddAll(null, new IntIterator4Adaptor(iterable));
-			_iterable = new _AnonymousInnerClass39(this, ids);
+			_iterable = new _IEnumerable_39(this, ids);
 		}
 
-		private sealed class _AnonymousInnerClass39 : IEnumerable
+		private sealed class _IEnumerable_39 : IEnumerable
 		{
-			public _AnonymousInnerClass39(SnapShotQueryResult _enclosing, Tree ids)
+			public _IEnumerable_39(SnapShotQueryResult _enclosing, Tree ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;

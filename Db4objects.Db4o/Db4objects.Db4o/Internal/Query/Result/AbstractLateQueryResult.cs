@@ -70,13 +70,13 @@ namespace Db4objects.Db4o.Internal.Query.Result
 		protected virtual IEnumerable ClassIndexesIterable(ClassMetadataIterator classCollectionIterator
 			)
 		{
-			return new _AnonymousInnerClass61(this, classCollectionIterator);
+			return new _IEnumerable_61(this, classCollectionIterator);
 		}
 
-		private sealed class _AnonymousInnerClass61 : IEnumerable
+		private sealed class _IEnumerable_61 : IEnumerable
 		{
-			public _AnonymousInnerClass61(AbstractLateQueryResult _enclosing, ClassMetadataIterator
-				 classCollectionIterator)
+			public _IEnumerable_61(AbstractLateQueryResult _enclosing, ClassMetadataIterator 
+				classCollectionIterator)
 			{
 				this._enclosing = _enclosing;
 				this.classCollectionIterator = classCollectionIterator;
@@ -84,14 +84,14 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 			public IEnumerator GetEnumerator()
 			{
-				return new CompositeIterator4(new _AnonymousInnerClass64(this, classCollectionIterator
+				return new CompositeIterator4(new _MappingIterator_64(this, classCollectionIterator
 					));
 			}
 
-			private sealed class _AnonymousInnerClass64 : MappingIterator
+			private sealed class _MappingIterator_64 : MappingIterator
 			{
-				public _AnonymousInnerClass64(_AnonymousInnerClass61 _enclosing, ClassMetadataIterator
-					 baseArg1) : base(baseArg1)
+				public _MappingIterator_64(_IEnumerable_61 _enclosing, ClassMetadataIterator baseArg1
+					) : base(baseArg1)
 				{
 					this._enclosing = _enclosing;
 				}
@@ -106,7 +106,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 					return this._enclosing._enclosing.ClassIndexIterator(yapClass);
 				}
 
-				private readonly _AnonymousInnerClass61 _enclosing;
+				private readonly _IEnumerable_61 _enclosing;
 			}
 
 			private readonly AbstractLateQueryResult _enclosing;
@@ -116,13 +116,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		protected virtual IEnumerable ClassIndexIterable(ClassMetadata clazz)
 		{
-			return new _AnonymousInnerClass79(this, clazz);
+			return new _IEnumerable_79(this, clazz);
 		}
 
-		private sealed class _AnonymousInnerClass79 : IEnumerable
+		private sealed class _IEnumerable_79 : IEnumerable
 		{
-			public _AnonymousInnerClass79(AbstractLateQueryResult _enclosing, ClassMetadata clazz
-				)
+			public _IEnumerable_79(AbstractLateQueryResult _enclosing, ClassMetadata clazz)
 			{
 				this._enclosing = _enclosing;
 				this.clazz = clazz;

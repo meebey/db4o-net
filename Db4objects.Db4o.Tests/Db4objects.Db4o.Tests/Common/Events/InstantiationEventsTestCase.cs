@@ -19,15 +19,15 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		{
 			EventsTestCaseBase.EventLog instantiatedLog = new EventsTestCaseBase.EventLog();
 			EventRegistry().Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new 
-				_AnonymousInnerClass19(this, instantiatedLog).OnEvent);
+				_IEventListener4_19(this, instantiatedLog).OnEvent);
 			RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item));
 			Assert.IsFalse(instantiatedLog.xing);
 			Assert.IsTrue(instantiatedLog.xed);
 		}
 
-		private sealed class _AnonymousInnerClass19
+		private sealed class _IEventListener4_19
 		{
-			public _AnonymousInnerClass19(InstantiationEventsTestCase _enclosing, EventsTestCaseBase.EventLog
+			public _IEventListener4_19(InstantiationEventsTestCase _enclosing, EventsTestCaseBase.EventLog
 				 instantiatedLog)
 			{
 				this._enclosing = _enclosing;

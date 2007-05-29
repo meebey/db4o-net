@@ -13,16 +13,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		public virtual void TestFilter()
 		{
 			AssertFilter(new string[] { "bar", "baz" }, new string[] { "foo", "bar", "baz", "zong"
-				 }, new _AnonymousInnerClass18(this));
-			AssertFilter(new string[] { "foo", "bar" }, new string[] { "foo", "bar" }, new _AnonymousInnerClass26
+				 }, new _IPredicate4_18(this));
+			AssertFilter(new string[] { "foo", "bar" }, new string[] { "foo", "bar" }, new _IPredicate4_26
 				(this));
-			AssertFilter(new string[0], new string[] { "foo", "bar" }, new _AnonymousInnerClass35
-				(this));
+			AssertFilter(new string[0], new string[] { "foo", "bar" }, new _IPredicate4_35(this
+				));
 		}
 
-		private sealed class _AnonymousInnerClass18 : IPredicate4
+		private sealed class _IPredicate4_18 : IPredicate4
 		{
-			public _AnonymousInnerClass18(IteratorsTestCase _enclosing)
+			public _IPredicate4_18(IteratorsTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -35,9 +35,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			private readonly IteratorsTestCase _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass26 : IPredicate4
+		private sealed class _IPredicate4_26 : IPredicate4
 		{
-			public _AnonymousInnerClass26(IteratorsTestCase _enclosing)
+			public _IPredicate4_26(IteratorsTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -50,9 +50,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			private readonly IteratorsTestCase _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass35 : IPredicate4
+		private sealed class _IPredicate4_35 : IPredicate4
 		{
-			public _AnonymousInnerClass35(IteratorsTestCase _enclosing)
+			public _IPredicate4_35(IteratorsTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		{
 			int[] array = new int[] { 1, 2, 3 };
 			Collection4 args = new Collection4();
-			IEnumerator iterator = Iterators.Map(IntArrays4.NewIterator(array), new _AnonymousInnerClass51
+			IEnumerator iterator = Iterators.Map(IntArrays4.NewIterator(array), new _IFunction4_51
 				(this, args));
 			Assert.IsNotNull(iterator);
 			Assert.AreEqual(0, args.Size());
@@ -86,9 +86,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
-		private sealed class _AnonymousInnerClass51 : IFunction4
+		private sealed class _IFunction4_51 : IFunction4
 		{
-			public _AnonymousInnerClass51(IteratorsTestCase _enclosing, Collection4 args)
+			public _IFunction4_51(IteratorsTestCase _enclosing, Collection4 args)
 			{
 				this._enclosing = _enclosing;
 				this.args = args;

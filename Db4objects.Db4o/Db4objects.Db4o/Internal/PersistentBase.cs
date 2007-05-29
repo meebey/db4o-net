@@ -58,6 +58,11 @@ namespace Db4objects.Db4o.Internal
 			BitFalse(Const4.PROCESSING);
 		}
 
+		public virtual void Free(Transaction trans)
+		{
+			trans.SystemTransaction().SlotFreePointerOnCommit(GetID());
+		}
+
 		public virtual int GetID()
 		{
 			return i_id;

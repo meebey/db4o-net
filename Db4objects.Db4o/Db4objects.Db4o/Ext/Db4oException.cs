@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Ext
 		{
 		}
 
-		public Db4oException(Exception cause) : this(cause.Message, cause)
+		public Db4oException(Exception cause) : this(null, cause)
 		{
 		}
 

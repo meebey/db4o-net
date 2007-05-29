@@ -57,8 +57,10 @@ namespace Db4objects.Db4o.Reflect
 		/// true to try to install a special constructor, false if
 		/// such a constructor is to be removed if present
 		/// </param>
+		/// <param name="testConstructor">true, if the special constructor shall be tested, false if it shall be set without testing
+		/// 	</param>
 		/// <returns>true if the special constructor is in place after the call</returns>
-		bool SkipConstructor(bool flag);
+		bool SkipConstructor(bool flag, bool testConstructor);
 
 		void UseConstructor(IReflectConstructor constructor, object[] @params);
 

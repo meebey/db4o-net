@@ -31,8 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				Assert.IsNotNull(con);
 				con.Close();
 				server.Ext().RevokeAccess(user);
-				Assert.Expect(typeof(Exception), new _AnonymousInnerClass37(this, user, password)
-					);
+				Assert.Expect(typeof(Exception), new _ICodeBlock_37(this, user, password));
 			}
 			finally
 			{
@@ -41,10 +40,10 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		}
 		#endif // !CF_1_0 && !CF_2_0
 
-		private sealed class _AnonymousInnerClass37 : ICodeBlock
+		private sealed class _ICodeBlock_37 : ICodeBlock
 		{
-			public _AnonymousInnerClass37(ServerRevokeAccessTestCase _enclosing, string user, 
-				string password)
+			public _ICodeBlock_37(ServerRevokeAccessTestCase _enclosing, string user, string 
+				password)
 			{
 				this._enclosing = _enclosing;
 				this.user = user;

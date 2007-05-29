@@ -28,13 +28,12 @@ namespace Db4oUnit.Tests
 		{
 			ReflectionTestSuiteBuilder builder = new ReflectionTestSuiteBuilder(typeof(ReflectionTestSuiteBuilderTestCase.NonTestFixture)
 				);
-			Assert.Expect(typeof(ArgumentException), new _AnonymousInnerClass28(this, builder
-				));
+			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_28(this, builder));
 		}
 
-		private sealed class _AnonymousInnerClass28 : ICodeBlock
+		private sealed class _ICodeBlock_28 : ICodeBlock
 		{
-			public _AnonymousInnerClass28(ReflectionTestSuiteBuilderTestCase _enclosing, ReflectionTestSuiteBuilder
+			public _ICodeBlock_28(ReflectionTestSuiteBuilderTestCase _enclosing, ReflectionTestSuiteBuilder
 				 builder)
 			{
 				this._enclosing = _enclosing;

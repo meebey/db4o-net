@@ -54,6 +54,8 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			string fileName = Path.Combine(path, "cs");
 			File4.Delete(fileName);
 			System.IO.Directory.CreateDirectory(path);
+			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase)
+				));
 			Db4oFactory.Configure().BTreeNodeSize(4);
 			CreateFile(fileName);
 			CrashSimulatingIoAdapter adapterFactory = new CrashSimulatingIoAdapter(new RandomAccessFileAdapter

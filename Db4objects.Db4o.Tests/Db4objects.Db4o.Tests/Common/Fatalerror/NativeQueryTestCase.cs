@@ -32,14 +32,13 @@ namespace Db4objects.Db4o.Tests.Common.Fatalerror
 
 		public virtual void _test()
 		{
-			Assert.Expect(typeof(NativeQueryTestCase.NQError), new _AnonymousInnerClass30(this
-				));
+			Assert.Expect(typeof(NativeQueryTestCase.NQError), new _ICodeBlock_30(this));
 			Assert.IsTrue(Db().IsClosed());
 		}
 
-		private sealed class _AnonymousInnerClass30 : ICodeBlock
+		private sealed class _ICodeBlock_30 : ICodeBlock
 		{
-			public _AnonymousInnerClass30(NativeQueryTestCase _enclosing)
+			public _ICodeBlock_30(NativeQueryTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

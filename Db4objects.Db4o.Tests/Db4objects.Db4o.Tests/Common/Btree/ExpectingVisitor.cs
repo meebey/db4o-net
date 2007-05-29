@@ -20,9 +20,9 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		private int _cursor;
 
-		private sealed class _AnonymousInnerClass24 : object
+		private sealed class _object_24 : object
 		{
-			public _AnonymousInnerClass24()
+			public _object_24()
 			{
 			}
 
@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			}
 		}
 
-		private static readonly object FOUND = new _AnonymousInnerClass24();
+		private static readonly object FOUND = new _object_24();
 
 		public ExpectingVisitor(object[] results, bool obeyOrder, bool ignoreUnexpected)
 		{

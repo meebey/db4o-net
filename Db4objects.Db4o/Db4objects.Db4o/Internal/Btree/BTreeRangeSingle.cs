@@ -11,9 +11,9 @@ namespace Db4objects.Db4o.Internal.Btree
 	/// <exclude></exclude>
 	public class BTreeRangeSingle : IBTreeRange
 	{
-		private sealed class _AnonymousInnerClass14 : IComparison4
+		private sealed class _IComparison4_14 : IComparison4
 		{
-			public _AnonymousInnerClass14()
+			public _IComparison4_14()
 			{
 			}
 
@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		public static readonly IComparison4 COMPARISON = new _AnonymousInnerClass14();
+		public static readonly IComparison4 COMPARISON = new _IComparison4_14();
 
 		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
 

@@ -183,13 +183,13 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.MoveNext())
 			{
 				int origID = ((int)unindexedIDs.Current);
-				ReaderPair.ProcessCopy(context, origID, new _AnonymousInnerClass168(), true);
+				ReaderPair.ProcessCopy(context, origID, new _ISlotCopyHandler_168(), true);
 			}
 		}
 
-		private sealed class _AnonymousInnerClass168 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_168 : ISlotCopyHandler
 		{
-			public _AnonymousInnerClass168()
+			public _ISlotCopyHandler_168()
 			{
 			}
 
@@ -284,13 +284,13 @@ namespace Db4objects.Db4o.Defragment
 			 curClass, IPassCommand command)
 		{
 			bool withStringIndex = WithFieldIndex(curClass);
-			context.TraverseAll(curClass, new _AnonymousInnerClass261(command, context, curClass
-				, withStringIndex));
+			context.TraverseAll(curClass, new _IVisitor4_261(command, context, curClass, withStringIndex
+				));
 		}
 
-		private sealed class _AnonymousInnerClass261 : IVisitor4
+		private sealed class _IVisitor4_261 : IVisitor4
 		{
-			public _AnonymousInnerClass261(IPassCommand command, DefragContextImpl context, ClassMetadata
+			public _IVisitor4_261(IPassCommand command, DefragContextImpl context, ClassMetadata
 				 curClass, bool withStringIndex)
 			{
 				this.command = command;

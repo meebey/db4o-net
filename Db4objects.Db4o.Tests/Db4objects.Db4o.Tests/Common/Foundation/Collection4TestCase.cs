@@ -63,13 +63,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			IEnumerator i = c.GetEnumerator();
 			Assert.IsTrue(i.MoveNext());
 			c.Add("3");
-			Assert.Expect(typeof(InvalidIteratorException), new _AnonymousInnerClass60(this, 
-				i));
+			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_60(this, i));
 		}
 
-		private sealed class _AnonymousInnerClass60 : ICodeBlock
+		private sealed class _ICodeBlock_60 : ICodeBlock
 		{
-			public _AnonymousInnerClass60(Collection4TestCase _enclosing, IEnumerator i)
+			public _ICodeBlock_60(Collection4TestCase _enclosing, IEnumerator i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;

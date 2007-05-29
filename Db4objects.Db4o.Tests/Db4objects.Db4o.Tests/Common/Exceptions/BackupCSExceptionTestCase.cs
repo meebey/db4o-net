@@ -16,12 +16,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void Test()
 		{
-			Assert.Expect(typeof(NotSupportedException), new _AnonymousInnerClass15(this));
+			Assert.Expect(typeof(NotSupportedException), new _ICodeBlock_15(this));
 		}
 
-		private sealed class _AnonymousInnerClass15 : ICodeBlock
+		private sealed class _ICodeBlock_15 : ICodeBlock
 		{
-			public _AnonymousInnerClass15(BackupCSExceptionTestCase _enclosing)
+			public _ICodeBlock_15(BackupCSExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

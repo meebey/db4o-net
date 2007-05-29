@@ -106,7 +106,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			Db4objects.Db4o.Internal.Query.Processor.QCon qcon = this;
 			ClassMetadata yc = GetYapClass();
 			bool[] foundField = new bool[] { false };
-			ForEachChildField(a_field, new _AnonymousInnerClass112(this, foundField, query));
+			ForEachChildField(a_field, new _IVisitor4_112(this, foundField, query));
 			if (foundField[0])
 			{
 				return true;
@@ -116,8 +116,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				int[] count = new int[] { 0 };
 				FieldMetadata[] yfs = new FieldMetadata[] { null };
-				i_trans.Stream().ClassCollection().AttachQueryNode(a_field, new _AnonymousInnerClass130
-					(this, yfs, count));
+				i_trans.Stream().ClassCollection().AttachQueryNode(a_field, new _IVisitor4_130(this
+					, yfs, count));
 				if (count[0] == 0)
 				{
 					return false;
@@ -154,9 +154,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _AnonymousInnerClass112 : IVisitor4
+		private sealed class _IVisitor4_112 : IVisitor4
 		{
-			public _AnonymousInnerClass112(QCon _enclosing, bool[] foundField, QQuery query)
+			public _IVisitor4_112(QCon _enclosing, bool[] foundField, QQuery query)
 			{
 				this._enclosing = _enclosing;
 				this.foundField = foundField;
@@ -176,9 +176,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly QQuery query;
 		}
 
-		private sealed class _AnonymousInnerClass130 : IVisitor4
+		private sealed class _IVisitor4_130 : IVisitor4
 		{
-			public _AnonymousInnerClass130(QCon _enclosing, FieldMetadata[] yfs, int[] count)
+			public _IVisitor4_130(QCon _enclosing, FieldMetadata[] yfs, int[] count)
 			{
 				this._enclosing = _enclosing;
 				this.yfs = yfs;
@@ -216,7 +216,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual void Collect(QCandidates a_candidates)
+		/// <param name="candidates"></param>
+		internal virtual void Collect(QCandidates candidates)
 		{
 		}
 
@@ -260,7 +261,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			throw NotSupported();
 		}
 
-		internal virtual bool Evaluate(QCandidate a_candidate)
+		/// <param name="candidate"></param>
+		internal virtual bool Evaluate(QCandidate candidate)
 		{
 			throw Exceptions4.VirtualException();
 		}
@@ -304,7 +306,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual void EvaluateEvaluationsExec(QCandidates a_candidates, bool rereadObject
+		/// <param name="candidates"></param>
+		/// <param name="rereadObject"></param>
+		internal virtual void EvaluateEvaluationsExec(QCandidates candidates, bool rereadObject
 			)
 		{
 		}
@@ -334,7 +338,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			i_candidates.SetCurrentConstraint(null);
 		}
 
-		internal virtual void EvaluateSimpleExec(QCandidates a_candidates)
+		/// <param name="candidates"></param>
+		internal virtual void EvaluateSimpleExec(QCandidates candidates)
 		{
 		}
 
@@ -666,6 +671,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return new Exception("Not supported.");
 		}
 
+		/// <param name="other"></param>
 		public virtual bool OnSameFieldAs(Db4objects.Db4o.Internal.Query.Processor.QCon other
 			)
 		{
@@ -744,13 +750,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			i_parent = a_newParent;
 		}
 
+		/// <param name="obj"></param>
+		/// <param name="removeExisting"></param>
 		internal virtual Db4objects.Db4o.Internal.Query.Processor.QCon ShareParent(object
-			 a_object, bool[] removeExisting)
+			 obj, bool[] removeExisting)
 		{
 			return null;
 		}
 
-		internal virtual QConClass ShareParentForClass(IReflectClass a_class, bool[] removeExisting
+		/// <param name="claxx"></param>
+		/// <param name="removeExisting"></param>
+		internal virtual QConClass ShareParentForClass(IReflectClass claxx, bool[] removeExisting
 			)
 		{
 			return null;
@@ -823,22 +833,23 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			Visit1(a_root, this, i_evaluator.Not(res));
 		}
 
-		internal virtual void Visit1(QCandidate a_root, Db4objects.Db4o.Internal.Query.Processor.QCon
-			 a_reason, bool res)
+		/// <param name="reason"></param>
+		internal virtual void Visit1(QCandidate root, Db4objects.Db4o.Internal.Query.Processor.QCon
+			 reason, bool res)
 		{
 			if (HasJoins())
 			{
 				IEnumerator i = IterateJoins();
 				while (i.MoveNext())
 				{
-					a_root.Evaluate(new QPending((QConJoin)i.Current, this, res));
+					root.Evaluate(new QPending((QConJoin)i.Current, this, res));
 				}
 			}
 			else
 			{
 				if (!res)
 				{
-					DoNotInclude(a_root);
+					DoNotInclude(root);
 				}
 			}
 		}

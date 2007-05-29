@@ -67,20 +67,50 @@ namespace Db4oUnit
 
 		private void Report(Exception x)
 		{
-			TextWriter stdout = TestPlatform.GetStdOut();
-			TestPlatform.PrintStackTrace(stdout, x);
+			TestPlatform.PrintStackTrace(TestPlatform.GetStdOut(), x);
 		}
 
 		private void Report(TestResult result)
 		{
+			ReportToTextFile(result);
+			ReportToStdErr(result);
+		}
+
+		private void ReportToTextFile(TestResult result)
+		{
 			try
 			{
-				TextWriter stdout = TestPlatform.GetStdOut();
-				result.Print(stdout);
-				stdout.Flush();
+				TextWriter writer = TestPlatform.OpenTextFile("db4ounit.log");
+				try
+				{
+					Report(writer, result);
+				}
+				finally
+				{
+					writer.Close();
+				}
 			}
-			catch (IOException)
+			catch (IOException e)
 			{
+				Report(e);
+			}
+		}
+
+		private void ReportToStdErr(TestResult result)
+		{
+			Report(TestPlatform.GetStdErr(), result);
+		}
+
+		private void Report(TextWriter writer, TestResult result)
+		{
+			try
+			{
+				result.Print(writer);
+				writer.Flush();
+			}
+			catch (IOException e)
+			{
+				Report(e);
 			}
 		}
 	}

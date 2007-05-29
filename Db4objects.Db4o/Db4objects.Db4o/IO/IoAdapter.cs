@@ -128,6 +128,8 @@ namespace Db4objects.Db4o.IO
 			return _blockSize;
 		}
 
+		/// <summary>Delegated IO Adapter</summary>
+		/// <returns>reference to itself</returns>
 		public virtual IoAdapter DelegatedIoAdapter()
 		{
 			return this;

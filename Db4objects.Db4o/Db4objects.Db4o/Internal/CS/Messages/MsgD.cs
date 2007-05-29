@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.IO;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS.Messages;
@@ -186,7 +188,14 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				)PublicClone();
 			command.SetTransaction(a_trans);
 			command.SetMessageDispatcher(messageDispatcher);
-			command._payLoad = ReadMessageBuffer(a_trans, sock, length);
+			try
+			{
+				command._payLoad = ReadMessageBuffer(a_trans, sock, length);
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 			return command;
 		}
 

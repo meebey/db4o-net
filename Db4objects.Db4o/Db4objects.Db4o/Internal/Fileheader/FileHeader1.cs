@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private static readonly int TRANSACTION_POINTER_OFFSET = ACCESS_TIME_OFFSET + Const4
 			.LONG_LENGTH;
 
-		internal static readonly int LENGTH = TRANSACTION_POINTER_OFFSET + (Const4.INT_LENGTH
+		public static readonly int LENGTH = TRANSACTION_POINTER_OFFSET + (Const4.INT_LENGTH
 			 * 6);
 
 		private TimerFileLock _timerFileLock;

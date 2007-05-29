@@ -10,6 +10,7 @@ using Db4objects.Db4o.Reflect.Generic;
 
 namespace Db4objects.Db4o.Reflect.Generic
 {
+	/// <exclude></exclude>
 	public class KnownClassesRepository
 	{
 		private static readonly Hashtable4 PRIMITIVES;
@@ -89,7 +90,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			}
 			if (_stream.ClassCollection() != null)
 			{
-				int classID = _stream.ClassCollection().GetYapClassID(className);
+				int classID = _stream.ClassMetadataIdForName(className);
 				if (classID > 0)
 				{
 					clazz = EnsureClassInitialised(classID);

@@ -143,21 +143,25 @@ namespace Db4objects.Db4o.Internal.Cluster
 			throw new NotSupportedException();
 		}
 
+		/// <param name="c"></param>
 		public virtual void LoadFromClassIndex(ClassMetadata c)
 		{
 			throw new NotSupportedException();
 		}
 
+		/// <param name="q"></param>
 		public virtual void LoadFromQuery(QQuery q)
 		{
 			throw new NotSupportedException();
 		}
 
+		/// <param name="i"></param>
 		public virtual void LoadFromClassIndexes(ClassMetadataIterator i)
 		{
 			throw new NotSupportedException();
 		}
 
+		/// <param name="r"></param>
 		public virtual void LoadFromIdReader(Db4objects.Db4o.Internal.Buffer r)
 		{
 			throw new NotSupportedException();

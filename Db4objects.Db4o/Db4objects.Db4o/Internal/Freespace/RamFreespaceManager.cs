@@ -173,15 +173,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 			Tree.ByRef addressTree = new Tree.ByRef();
 			if (_freeBySize != null)
 			{
-				_freeBySize.Traverse(new _AnonymousInnerClass173(this, addressTree));
+				_freeBySize.Traverse(new _IVisitor4_173(this, addressTree));
 			}
 			_freeByAddress = addressTree.value;
 		}
 
-		private sealed class _AnonymousInnerClass173 : IVisitor4
+		private sealed class _IVisitor4_173 : IVisitor4
 		{
-			public _AnonymousInnerClass173(RamFreespaceManager _enclosing, Tree.ByRef addressTree
-				)
+			public _IVisitor4_173(RamFreespaceManager _enclosing, Tree.ByRef addressTree)
 			{
 				this._enclosing = _enclosing;
 				this.addressTree = addressTree;
@@ -259,15 +258,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 			StringBuilder sb = new StringBuilder();
 			sb.Append("RAM FreespaceManager\n");
 			sb.Append("Address Index\n");
-			_freeByAddress.Traverse(new _AnonymousInnerClass236(this, sb));
+			_freeByAddress.Traverse(new _IVisitor4_236(this, sb));
 			sb.Append("Length Index\n");
-			_freeBySize.Traverse(new _AnonymousInnerClass244(this, sb));
+			_freeBySize.Traverse(new _IVisitor4_244(this, sb));
 			return sb.ToString();
 		}
 
-		private sealed class _AnonymousInnerClass236 : IVisitor4
+		private sealed class _IVisitor4_236 : IVisitor4
 		{
-			public _AnonymousInnerClass236(RamFreespaceManager _enclosing, StringBuilder sb)
+			public _IVisitor4_236(RamFreespaceManager _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -284,9 +283,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly StringBuilder sb;
 		}
 
-		private sealed class _AnonymousInnerClass244 : IVisitor4
+		private sealed class _IVisitor4_244 : IVisitor4
 		{
-			public _AnonymousInnerClass244(RamFreespaceManager _enclosing, StringBuilder sb)
+			public _IVisitor4_244(RamFreespaceManager _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -309,12 +308,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			_freeByAddress.Traverse(new _AnonymousInnerClass257(this, visitor));
+			_freeByAddress.Traverse(new _IVisitor4_257(this, visitor));
 		}
 
-		private sealed class _AnonymousInnerClass257 : IVisitor4
+		private sealed class _IVisitor4_257 : IVisitor4
 		{
-			public _AnonymousInnerClass257(RamFreespaceManager _enclosing, IVisitor4 visitor)
+			public _IVisitor4_257(RamFreespaceManager _enclosing, IVisitor4 visitor)
 			{
 				this._enclosing = _enclosing;
 				this.visitor = visitor;

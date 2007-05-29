@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Internal
 
 		private Tree _writtenUpdateDeletedMembers;
 
-		private readonly LocalObjectContainer _file;
+		protected readonly LocalObjectContainer _file;
 
 		public LocalTransaction(ObjectContainerBase container, Transaction parent) : base
 			(container, parent)
@@ -125,7 +125,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void FreeSlotChanges(bool forFreespace)
 		{
-			IVisitor4 visitor = new _AnonymousInnerClass121(this, forFreespace);
+			IVisitor4 visitor = new _IVisitor4_121(this, forFreespace);
 			if (IsSystemTransaction())
 			{
 				_slotChanges.TraverseMutable(visitor);
@@ -138,9 +138,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _AnonymousInnerClass121 : IVisitor4
+		private sealed class _IVisitor4_121 : IVisitor4
 		{
-			public _AnonymousInnerClass121(LocalTransaction _enclosing, bool forFreespace)
+			public _IVisitor4_121(LocalTransaction _enclosing, bool forFreespace)
 			{
 				this._enclosing = _enclosing;
 				this.forFreespace = forFreespace;
@@ -243,12 +243,12 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void RollbackSlotChanges()
 		{
-			_slotChanges.TraverseLocked(new _AnonymousInnerClass212(this));
+			_slotChanges.TraverseLocked(new _IVisitor4_212(this));
 		}
 
-		private sealed class _AnonymousInnerClass212 : IVisitor4
+		private sealed class _IVisitor4_212 : IVisitor4
 		{
-			public _AnonymousInnerClass212(LocalTransaction _enclosing)
+			public _IVisitor4_212(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -359,13 +359,13 @@ namespace Db4objects.Db4o.Internal
 		private bool WriteSlots()
 		{
 			MutableBoolean ret = new MutableBoolean();
-			TraverseSlotChanges(new _AnonymousInnerClass322(this, ret));
+			TraverseSlotChanges(new _IVisitor4_322(this, ret));
 			return ret.Value();
 		}
 
-		private sealed class _AnonymousInnerClass322 : IVisitor4
+		private sealed class _IVisitor4_322 : IVisitor4
 		{
-			public _AnonymousInnerClass322(LocalTransaction _enclosing, MutableBoolean ret)
+			public _IVisitor4_322(LocalTransaction _enclosing, MutableBoolean ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -493,13 +493,13 @@ namespace Db4objects.Db4o.Internal
 		private int CountSlotChanges()
 		{
 			MutableInt count = new MutableInt();
-			TraverseSlotChanges(new _AnonymousInnerClass446(this, count));
+			TraverseSlotChanges(new _IVisitor4_446(this, count));
 			return count.Value();
 		}
 
-		private sealed class _AnonymousInnerClass446 : IVisitor4
+		private sealed class _IVisitor4_446 : IVisitor4
 		{
-			public _AnonymousInnerClass446(LocalTransaction _enclosing, MutableInt count)
+			public _IVisitor4_446(LocalTransaction _enclosing, MutableInt count)
 			{
 				this._enclosing = _enclosing;
 				this.count = count;
@@ -550,12 +550,12 @@ namespace Db4objects.Db4o.Internal
 
 		private void AppendSlotChanges(Db4objects.Db4o.Internal.Buffer writer)
 		{
-			TraverseSlotChanges(new _AnonymousInnerClass481(this, writer));
+			TraverseSlotChanges(new _IVisitor4_481(this, writer));
 		}
 
-		private sealed class _AnonymousInnerClass481 : IVisitor4
+		private sealed class _IVisitor4_481 : IVisitor4
 		{
-			public _AnonymousInnerClass481(LocalTransaction _enclosing, Db4objects.Db4o.Internal.Buffer
+			public _IVisitor4_481(LocalTransaction _enclosing, Db4objects.Db4o.Internal.Buffer
 				 writer)
 			{
 				this._enclosing = _enclosing;
@@ -665,14 +665,14 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = i_delete;
 				i_delete = null;
-				delete.Traverse(new _AnonymousInnerClass605(this));
+				delete.Traverse(new _IVisitor4_605(this));
 			}
 			_writtenUpdateDeletedMembers = null;
 		}
 
-		private sealed class _AnonymousInnerClass605 : IVisitor4
+		private sealed class _IVisitor4_605 : IVisitor4
 		{
-			public _AnonymousInnerClass605(LocalTransaction _enclosing)
+			public _IVisitor4_605(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -762,17 +762,16 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			_slotChanges.TraverseLocked(new _AnonymousInnerClass696(this, deleted, added, updated
-				));
+			_slotChanges.TraverseLocked(new _IVisitor4_696(this, deleted, added, updated));
 			return new CallbackObjectInfoCollections(serverMessageDispatcher, new ObjectInfoCollectionImpl
 				(added), new ObjectInfoCollectionImpl(updated), new ObjectInfoCollectionImpl(deleted
 				));
 		}
 
-		private sealed class _AnonymousInnerClass696 : IVisitor4
+		private sealed class _IVisitor4_696 : IVisitor4
 		{
-			public _AnonymousInnerClass696(LocalTransaction _enclosing, Collection4 deleted, 
-				Collection4 added, Collection4 updated)
+			public _IVisitor4_696(LocalTransaction _enclosing, Collection4 deleted, Collection4
+				 added, Collection4 updated)
 			{
 				this._enclosing = _enclosing;
 				this.deleted = deleted;

@@ -342,7 +342,8 @@ namespace Db4objects.Db4o.Config
 		/// <code>0</code> all space is reused
 		/// </remarks>
 		/// <param name="byteCount">Slots with this size or smaller will be lost.</param>
-		/// <deprecated>please call Db4o.configure().freespace().discardSmallerThan()</deprecated>
+		[System.ObsoleteAttribute(@"please call Db4o.configure().freespace().discardSmallerThan()"
+			)]
 		void DiscardFreeSpace(int byteCount);
 
 		/// <summary>configures the use of encryption.</summary>
@@ -356,16 +357,12 @@ namespace Db4objects.Db4o.Config
 		/// you need to supply a password to seed the encryption mechanism.<br /><br />
 		/// db4o database files keep their encryption format after creation.<br /><br />
 		/// </remarks>
-		/// <deprecated>
-		/// use a custom encrypting
-		/// <see cref="IoAdapter">IoAdapter</see>
-		/// instead
-		/// </deprecated>
 		/// <param name="flag">
 		/// true for turning encryption on, false for turning encryption
 		/// off.
 		/// </param>
 		/// <seealso cref="IConfiguration.Password">IConfiguration.Password</seealso>
+		[System.ObsoleteAttribute(@"use a custom encrypting")]
 		void Encrypt(bool flag);
 
 		/// <summary>configures whether Exceptions are to be thrown, if objects can not be stored.
@@ -434,11 +431,7 @@ namespace Db4objects.Db4o.Config
 		/// 1 - configure classes individually<br />
 		/// Integer.MAX_Value - on for all classes
 		/// </param>
-		/// <deprecated>
-		/// Use
-		/// <see cref="IConfiguration.GenerateUUIDs">IConfiguration.GenerateUUIDs</see>
-		/// instead.
-		/// </deprecated>
+		[System.ObsoleteAttribute(@"Use")]
 		void GenerateUUIDs(int setting);
 
 		/// <summary>configures db4o to generate UUIDs for stored objects.</summary>
@@ -455,12 +448,7 @@ namespace Db4objects.Db4o.Config
 		/// 1 - configure classes individually<br />
 		/// Integer.MAX_Value - on for all classes
 		/// </param>
-		/// <deprecated>
-		/// Use
-		/// <see cref="IConfiguration.GenerateVersionNumbers">IConfiguration.GenerateVersionNumbers
-		/// 	</see>
-		/// instead.
-		/// </deprecated>
+		[System.ObsoleteAttribute(@"Use")]
 		void GenerateVersionNumbers(int setting);
 
 		/// <summary>configures db4o to generate version numbers for stored objects.</summary>
@@ -608,12 +596,8 @@ namespace Db4objects.Db4o.Config
 		/// is used to seed the encryption mechanism, which makes it impossible
 		/// to read the database file without knowing the password.<br /><br />
 		/// </remarks>
-		/// <deprecated>
-		/// use a custom encrypting
-		/// <see cref="IoAdapter">IoAdapter</see>
-		/// instead
-		/// </deprecated>
 		/// <param name="pass">the password to be used.</param>
+		[System.ObsoleteAttribute(@"use a custom encrypting")]
 		void Password(string pass);
 
 		/// <summary>returns the Query configuration interface.</summary>
@@ -706,7 +690,8 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />
 		/// </remarks>
 		/// <param name="classLoader">the ClassLoader to be used</param>
-		/// <deprecated>use reflectWith(new JdkReflector(classLoader)) instead</deprecated>
+		[System.ObsoleteAttribute(@"use reflectWith(new JdkReflector(classLoader)) instead"
+			)]
 		void SetClassLoader(object classLoader);
 
 		/// <summary>

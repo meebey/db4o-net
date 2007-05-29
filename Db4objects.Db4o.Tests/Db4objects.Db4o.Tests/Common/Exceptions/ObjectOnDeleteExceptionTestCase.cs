@@ -29,13 +29,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			ObjectOnDeleteExceptionTestCase.Item item = new ObjectOnDeleteExceptionTestCase.Item
 				();
 			Store(item);
-			Assert.Expect(typeof(ReflectException), typeof(ItemException), new _AnonymousInnerClass27
+			Assert.Expect(typeof(ReflectException), typeof(ItemException), new _ICodeBlock_27
 				(this, item));
 		}
 
-		private sealed class _AnonymousInnerClass27 : ICodeBlock
+		private sealed class _ICodeBlock_27 : ICodeBlock
 		{
-			public _AnonymousInnerClass27(ObjectOnDeleteExceptionTestCase _enclosing, ObjectOnDeleteExceptionTestCase.Item
+			public _ICodeBlock_27(ObjectOnDeleteExceptionTestCase _enclosing, ObjectOnDeleteExceptionTestCase.Item
 				 item)
 			{
 				this._enclosing = _enclosing;

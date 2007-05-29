@@ -62,12 +62,12 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			IoAdaptedObjectContainer file = ((IoAdaptedObjectContainer)Db());
 			IFreespaceManager fm = file.FreespaceManager();
-			fm.Traverse(new _AnonymousInnerClass58(this, file));
+			fm.Traverse(new _IVisitor4_58(this, file));
 		}
 
-		private sealed class _AnonymousInnerClass58 : IVisitor4
+		private sealed class _IVisitor4_58 : IVisitor4
 		{
-			public _AnonymousInnerClass58(StringIndexTestCaseBase _enclosing, IoAdaptedObjectContainer
+			public _IVisitor4_58(StringIndexTestCaseBase _enclosing, IoAdaptedObjectContainer
 				 file)
 			{
 				this._enclosing = _enclosing;

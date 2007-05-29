@@ -1,15 +1,18 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Regression;
 using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Regression
 {
 	/// <exclude></exclude>
-	public class COR234TestCase : ITestCase
+	public class COR234TestCase : ITestCase, IOptOutNoFileSystemData
 	{
 		public virtual void Test()
 		{
@@ -20,12 +23,14 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 				return;
 			}
 			Db4oFactory.Configure().AllowVersionUpdates(false);
-			Assert.Expect(typeof(OldFormatException), new _AnonymousInnerClass26(this));
+			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(COR234TestCase)
+				));
+			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_32(this));
 		}
 
-		private sealed class _AnonymousInnerClass26 : ICodeBlock
+		private sealed class _ICodeBlock_32 : ICodeBlock
 		{
-			public _AnonymousInnerClass26(COR234TestCase _enclosing)
+			public _ICodeBlock_32(COR234TestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

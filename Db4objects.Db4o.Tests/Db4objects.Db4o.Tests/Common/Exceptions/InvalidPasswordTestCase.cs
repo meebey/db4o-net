@@ -17,13 +17,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestInvalidPassword()
 		{
 			int port = ClientServerFixture().ServerPort();
-			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass17(this, 
-				port));
+			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_17(this, port));
 		}
 
-		private sealed class _AnonymousInnerClass17 : ICodeBlock
+		private sealed class _ICodeBlock_17 : ICodeBlock
 		{
-			public _AnonymousInnerClass17(InvalidPasswordTestCase _enclosing, int port)
+			public _ICodeBlock_17(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;
@@ -42,17 +41,14 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestEmptyPassword()
 		{
 			int port = ClientServerFixture().ServerPort();
-			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass28(this, 
-				port));
-			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass34(this, 
-				port));
-			Assert.Expect(typeof(InvalidPasswordException), new _AnonymousInnerClass40(this, 
-				port));
+			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_28(this, port));
+			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_34(this, port));
+			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_40(this, port));
 		}
 
-		private sealed class _AnonymousInnerClass28 : ICodeBlock
+		private sealed class _ICodeBlock_28 : ICodeBlock
 		{
-			public _AnonymousInnerClass28(InvalidPasswordTestCase _enclosing, int port)
+			public _ICodeBlock_28(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;
@@ -68,9 +64,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly int port;
 		}
 
-		private sealed class _AnonymousInnerClass34 : ICodeBlock
+		private sealed class _ICodeBlock_34 : ICodeBlock
 		{
-			public _AnonymousInnerClass34(InvalidPasswordTestCase _enclosing, int port)
+			public _ICodeBlock_34(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;
@@ -86,9 +82,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly int port;
 		}
 
-		private sealed class _AnonymousInnerClass40 : ICodeBlock
+		private sealed class _ICodeBlock_40 : ICodeBlock
 		{
-			public _AnonymousInnerClass40(InvalidPasswordTestCase _enclosing, int port)
+			public _ICodeBlock_40(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;

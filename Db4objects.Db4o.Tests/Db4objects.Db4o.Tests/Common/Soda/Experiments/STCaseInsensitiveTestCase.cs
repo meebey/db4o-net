@@ -31,13 +31,13 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 			IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STCaseInsensitiveTestCase)
 				);
-			q.Descend("str").Constrain(new _AnonymousInnerClass30(this));
+			q.Descend("str").Constrain(new _IEvaluation_30(this));
 			Expect(q, new int[] { 1, 2 });
 		}
 
-		private sealed class _AnonymousInnerClass30 : IEvaluation
+		private sealed class _IEvaluation_30 : IEvaluation
 		{
-			public _AnonymousInnerClass30(STCaseInsensitiveTestCase _enclosing)
+			public _IEvaluation_30(STCaseInsensitiveTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

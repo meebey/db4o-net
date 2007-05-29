@@ -16,12 +16,12 @@ namespace Db4objects.Db4o.TA.Tests.Collections
 		public virtual void Apply(ObjectContainerBase db)
 		{
 			EventRegistry(db).Updating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
-				(new _AnonymousInnerClass18(this).OnEvent);
+				(new _IEventListener4_18(this).OnEvent);
 		}
 
-		private sealed class _AnonymousInnerClass18
+		private sealed class _IEventListener4_18
 		{
-			public _AnonymousInnerClass18(PagedListSupport _enclosing)
+			public _IEventListener4_18(PagedListSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

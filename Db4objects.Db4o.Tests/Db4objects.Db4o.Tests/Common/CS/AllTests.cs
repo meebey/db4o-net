@@ -16,7 +16,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(ClientServerPingTestCase), typeof(SendMessageToClientTestCase)
-				, typeof(ServerRevokeAccessTestCase), typeof(ServerTimeoutTestCase) };
+				, typeof(ServerRevokeAccessTestCase), typeof(ServerTimeoutTestCase), typeof(CallConstructorsConfigTestCase)
+				 };
 		}
 	}
 }

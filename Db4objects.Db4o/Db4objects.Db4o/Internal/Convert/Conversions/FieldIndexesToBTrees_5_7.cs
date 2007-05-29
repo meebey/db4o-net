@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 			}
 		}
 
+		/// <param name="file"></param>
 		private void FreeOldUUIDMetaIndex(LocalObjectContainer file)
 		{
 		}

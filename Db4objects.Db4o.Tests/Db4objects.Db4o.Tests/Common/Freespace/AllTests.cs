@@ -15,8 +15,9 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(FreespaceManagerDiscardLimitTestCase), typeof(FreespaceManagerReopenTestCase)
-				, typeof(FreespaceManagerTestCase) };
+			return new Type[] { typeof(FileSizeTestCase), typeof(FreespaceManagerDiscardLimitTestCase)
+				, typeof(FreespaceManagerReopenTestCase), typeof(FreespaceManagerTestCase), typeof(FreespaceMigrationTestCase)
+				 };
 		}
 	}
 }

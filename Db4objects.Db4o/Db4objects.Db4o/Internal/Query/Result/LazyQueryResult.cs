@@ -27,12 +27,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public override void LoadFromQuery(QQuery query)
 		{
-			_iterable = new _AnonymousInnerClass28(this, query);
+			_iterable = new _IEnumerable_28(this, query);
 		}
 
-		private sealed class _AnonymousInnerClass28 : IEnumerable
+		private sealed class _IEnumerable_28 : IEnumerable
 		{
-			public _AnonymousInnerClass28(LazyQueryResult _enclosing, QQuery query)
+			public _IEnumerable_28(LazyQueryResult _enclosing, QQuery query)
 			{
 				this._enclosing = _enclosing;
 				this.query = query;

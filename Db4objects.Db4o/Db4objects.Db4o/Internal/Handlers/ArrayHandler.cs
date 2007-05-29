@@ -104,8 +104,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			mf._array.DeleteEmbedded(this, a_bytes);
 		}
 
+		/// <param name="classPrimitive"></param>
 		public void DeletePrimitiveEmbedded(StatefulBuffer a_bytes, PrimitiveFieldHandler
-			 a_classPrimitive)
+			 classPrimitive)
 		{
 			a_bytes.ReadInt();
 			a_bytes.ReadInt();
@@ -115,7 +116,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public virtual int ElementCount(Transaction a_trans, ISlotReader reader)
+		/// <param name="trans"></param>
+		public virtual int ElementCount(Transaction trans, ISlotReader reader)
 		{
 			int typeOrLength = reader.ReadInt();
 			if (typeOrLength >= 0)
@@ -186,6 +188,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return OwnLength(obj) + (_reflectArray.GetLength(obj) * i_handler.LinkLength());
 		}
 
+		/// <param name="obj"></param>
 		public virtual int OwnLength(object obj)
 		{
 			return OwnLength();

@@ -53,7 +53,6 @@ namespace Db4objects.Db4o.Internal.CS
 			try
 			{
 				EnsureLoadStaticClass();
-				EnsureLoadConfiguredClasses();
 				StartCommittedCallbackThread(_committedInfosQueue);
 				StartServer();
 				ok = true;
@@ -124,17 +123,6 @@ namespace Db4objects.Db4o.Internal.CS
 		private void EnsureLoadStaticClass()
 		{
 			_container.ProduceClassMetadata(_container.i_handlers.ICLASS_STATICCLASS);
-		}
-
-		private void EnsureLoadConfiguredClasses()
-		{
-			IEnumerator i = _config.ExceptionalClasses().Iterator();
-			while (i.MoveNext())
-			{
-				IEntry4 entry = (IEntry4)i.Current;
-				_container.ProduceClassMetadata(_container.Reflector().ForName(((Config4Class)entry
-					.Value()).GetName()));
-			}
 		}
 
 		private void ConfigureObjectServer()

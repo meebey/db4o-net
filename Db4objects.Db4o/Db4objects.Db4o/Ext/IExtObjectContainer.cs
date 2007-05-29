@@ -379,25 +379,6 @@ namespace Db4objects.Db4o.Ext
 		/// <param name="name">the name of the semaphore to be released.</param>
 		void ReleaseSemaphore(string name);
 
-		/// <deprecated>
-		/// Since db4o-5.2. Use db4o Replication System (dRS)
-		/// instead.<br /><br />
-		/// prepares for replication with another
-		/// <see cref="IObjectContainer">IObjectContainer</see>
-		/// .
-		/// <br /><br />An
-		/// <see cref="IObjectContainer">IObjectContainer</see>
-		/// can only be involved in a replication
-		/// process with one other
-		/// <see cref="IObjectContainer">IObjectContainer</see>
-		/// at the same time.<br /><br />
-		/// The returned
-		/// <see cref="IReplicationProcess">IReplicationProcess</see>
-		/// interface provides methods to commit
-		/// and to cancel the replication process.
-		/// <br /><br />This ObjectContainer will be "peerA" for the
-		/// returned ReplicationProcess. The other ObjectContainer will be "peerB".
-		/// </deprecated>
 		/// <param name="peerB">
 		/// the
 		/// <see cref="IObjectContainer">IObjectContainer</see>
@@ -420,6 +401,7 @@ namespace Db4objects.Db4o.Ext
 		/// <see cref="IReplicationProcess">IReplicationProcess</see>
 		/// interface for this replication process.
 		/// </returns>
+		[System.ObsoleteAttribute(@"Since db4o-5.2. Use db4o Replication System (dRS)")]
 		IReplicationProcess ReplicationBegin(IObjectContainer peerB, IReplicationConflictHandler
 			 conflictHandler);
 

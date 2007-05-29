@@ -52,13 +52,13 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual object[] ToArray(object[] array)
 		{
-			Tree.Traverse(_tree, new _AnonymousInnerClass43(this, array));
+			Tree.Traverse(_tree, new _IVisitor4_43(this, array));
 			return array;
 		}
 
-		private sealed class _AnonymousInnerClass43 : IVisitor4
+		private sealed class _IVisitor4_43 : IVisitor4
 		{
-			public _AnonymousInnerClass43(SortedCollection4 _enclosing, object[] array)
+			public _IVisitor4_43(SortedCollection4 _enclosing, object[] array)
 			{
 				this._enclosing = _enclosing;
 				this.array = array;

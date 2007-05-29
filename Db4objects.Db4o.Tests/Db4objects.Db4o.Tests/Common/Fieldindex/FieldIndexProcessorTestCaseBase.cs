@@ -139,13 +139,13 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		protected virtual void AssertTreeInt(int[] expectedValues, TreeInt treeInt)
 		{
 			ExpectingVisitor visitor = BTreeAssert.CreateExpectingVisitor(expectedValues);
-			treeInt.Traverse(new _AnonymousInnerClass121(this, visitor));
+			treeInt.Traverse(new _IVisitor4_121(this, visitor));
 			visitor.AssertExpectations();
 		}
 
-		private sealed class _AnonymousInnerClass121 : IVisitor4
+		private sealed class _IVisitor4_121 : IVisitor4
 		{
-			public _AnonymousInnerClass121(FieldIndexProcessorTestCaseBase _enclosing, ExpectingVisitor
+			public _IVisitor4_121(FieldIndexProcessorTestCaseBase _enclosing, ExpectingVisitor
 				 visitor)
 			{
 				this._enclosing = _enclosing;

@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.IX;
@@ -46,14 +45,7 @@ namespace Db4objects.Db4o.Internal.IX
 			while (true)
 			{
 				int offset = _baseAddressOffset + _addressOffset;
-				try
-				{
-					_reader.Read(yf, _baseAddress, offset);
-				}
-				catch (IOException e)
-				{
-					throw new IxException(e, _baseAddress, offset);
-				}
+				_reader.Read(yf, _baseAddress, offset);
 				_reader._offset = 0;
 				int cmp = Compare(trans);
 				if (cmp == 0)
@@ -169,14 +161,7 @@ namespace Db4objects.Db4o.Internal.IX
 			while (true)
 			{
 				int offset = _baseAddressOffset + _addressOffset;
-				try
-				{
-					_reader.Read(yf, _baseAddress, offset);
-				}
-				catch (IOException e)
-				{
-					throw new IxException(e, _baseAddress, offset);
-				}
+				_reader.Read(yf, _baseAddress, offset);
 				_reader._offset = 0;
 				int cmp = Compare(trans);
 				if (cmp > 0)
@@ -228,14 +213,7 @@ namespace Db4objects.Db4o.Internal.IX
 			while (true)
 			{
 				int offset = _baseAddressOffset + _addressOffset;
-				try
-				{
-					_reader.Read(yf, _baseAddress, offset);
-				}
-				catch (IOException e)
-				{
-					throw new IxException(e, _baseAddress, offset);
-				}
+				_reader.Read(yf, _baseAddress, offset);
 				_reader._offset = 0;
 				int cmp = Compare(trans);
 				if (cmp == 0)
@@ -267,14 +245,7 @@ namespace Db4objects.Db4o.Internal.IX
 			while (true)
 			{
 				int offset = _baseAddressOffset + _addressOffset;
-				try
-				{
-					_reader.Read(yf, _baseAddress, offset);
-				}
-				catch (IOException e)
-				{
-					throw new IxException(e, _baseAddress, offset);
-				}
+				_reader.Read(yf, _baseAddress, offset);
 				_reader._offset = 0;
 				int cmp = Compare(trans);
 				if (cmp == 0)

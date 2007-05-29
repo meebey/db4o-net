@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.CS
 	{
 		private readonly ClientObjectContainer i_client;
 
-		private Tree i_yapObjectsToGc;
+		protected Tree i_yapObjectsToGc;
 
 		internal ClientTransaction(ClientObjectContainer a_stream, Transaction a_parent) : 
 			base(a_stream, a_parent)
@@ -43,14 +43,14 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (i_yapObjectsToGc != null)
 			{
-				i_yapObjectsToGc.Traverse(new _AnonymousInnerClass38(this));
+				i_yapObjectsToGc.Traverse(new _IVisitor4_37(this));
 			}
 			i_yapObjectsToGc = null;
 		}
 
-		private sealed class _AnonymousInnerClass38 : IVisitor4
+		private sealed class _IVisitor4_37 : IVisitor4
 		{
-			public _AnonymousInnerClass38(ClientTransaction _enclosing)
+			public _IVisitor4_37(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -104,15 +104,15 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (i_delete != null)
 			{
-				i_delete.Traverse(new _AnonymousInnerClass87(this));
+				i_delete.Traverse(new _IVisitor4_86(this));
 			}
 			i_delete = null;
 			i_client.WriteBatchedMessage(Msg.PROCESS_DELETES);
 		}
 
-		private sealed class _AnonymousInnerClass87 : IVisitor4
+		private sealed class _IVisitor4_86 : IVisitor4
 		{
-			public _AnonymousInnerClass87(ClientTransaction _enclosing)
+			public _IVisitor4_86(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

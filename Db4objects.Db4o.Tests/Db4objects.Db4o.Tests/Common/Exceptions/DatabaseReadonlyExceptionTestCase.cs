@@ -18,13 +18,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestRollback()
 		{
 			ConfigReadOnly();
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _AnonymousInnerClass18(this)
-				);
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_18(this));
 		}
 
-		private sealed class _AnonymousInnerClass18 : ICodeBlock
+		private sealed class _ICodeBlock_18 : ICodeBlock
 		{
-			public _AnonymousInnerClass18(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_18(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -40,13 +39,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestCommit()
 		{
 			ConfigReadOnly();
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _AnonymousInnerClass27(this)
-				);
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_27(this));
 		}
 
-		private sealed class _AnonymousInnerClass27 : ICodeBlock
+		private sealed class _ICodeBlock_27 : ICodeBlock
 		{
-			public _AnonymousInnerClass27(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_27(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -62,13 +60,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestSet()
 		{
 			ConfigReadOnly();
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _AnonymousInnerClass36(this)
-				);
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_36(this));
 		}
 
-		private sealed class _AnonymousInnerClass36 : ICodeBlock
+		private sealed class _ICodeBlock_36 : ICodeBlock
 		{
-			public _AnonymousInnerClass36(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_36(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -84,13 +81,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestDelete()
 		{
 			ConfigReadOnly();
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _AnonymousInnerClass45(this)
-				);
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_45(this));
 		}
 
-		private sealed class _AnonymousInnerClass45 : ICodeBlock
+		private sealed class _ICodeBlock_45 : ICodeBlock
 		{
-			public _AnonymousInnerClass45(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_45(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -105,13 +101,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestNewFile()
 		{
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _AnonymousInnerClass53(this)
-				);
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_53(this));
 		}
 
-		private sealed class _AnonymousInnerClass53 : ICodeBlock
+		private sealed class _ICodeBlock_53 : ICodeBlock
 		{
-			public _AnonymousInnerClass53(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_53(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -131,12 +126,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		{
 			ConfigReadOnly();
 			Type exceptionType = IsClientServer() ? typeof(NotSupportedException) : typeof(DatabaseReadOnlyException);
-			Assert.Expect(exceptionType, new _AnonymousInnerClass67(this));
+			Assert.Expect(exceptionType, new _ICodeBlock_67(this));
 		}
 
-		private sealed class _AnonymousInnerClass67 : ICodeBlock
+		private sealed class _ICodeBlock_67 : ICodeBlock
 		{
-			public _AnonymousInnerClass67(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_67(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

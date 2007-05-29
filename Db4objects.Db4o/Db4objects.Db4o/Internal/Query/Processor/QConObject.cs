@@ -74,8 +74,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 					if (i_yapClass != null)
 					{
-						i_yapClass.CollectConstraints(a_trans, this, i_object, new _AnonymousInnerClass82
-							(this));
+						i_yapClass.CollectConstraints(a_trans, this, i_object, new _IVisitor4_82(this));
 					}
 					else
 					{
@@ -89,9 +88,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		private sealed class _AnonymousInnerClass82 : IVisitor4
+		private sealed class _IVisitor4_82 : IVisitor4
 		{
-			public _AnonymousInnerClass82(QConObject _enclosing)
+			public _IVisitor4_82(QConObject _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -20,17 +20,17 @@ namespace Db4objects.Db4o.Foundation.Network
 	{
 		private const int DISCARD_BUFFER_SIZE = 500;
 
-		private byte[] i_cache;
+		protected byte[] i_cache;
 
 		private bool i_closed = false;
 
-		private int i_readOffset;
+		protected int i_readOffset;
 
 		private int i_timeout;
 
-		private int i_writeOffset;
+		protected int i_writeOffset;
 
-		private readonly Lock4 i_lock = new Lock4();
+		protected readonly Lock4 i_lock = new Lock4();
 
 		public BlockingByteChannel(int timeout)
 		{
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			return i_writeOffset - i_readOffset;
 		}
 
-		private void CheckDiscardCache()
+		protected virtual void CheckDiscardCache()
 		{
 			if (i_readOffset == i_writeOffset && i_cache.Length > DISCARD_BUFFER_SIZE)
 			{
@@ -55,12 +55,12 @@ namespace Db4objects.Db4o.Foundation.Network
 		internal virtual void Close()
 		{
 			i_closed = true;
-			i_lock.Run(new _AnonymousInnerClass43(this));
+			i_lock.Run(new _ISafeClosure4_43(this));
 		}
 
-		private sealed class _AnonymousInnerClass43 : ISafeClosure4
+		private sealed class _ISafeClosure4_43 : ISafeClosure4
 		{
-			public _AnonymousInnerClass43(BlockingByteChannel _enclosing)
+			public _ISafeClosure4_43(BlockingByteChannel _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -106,7 +106,7 @@ namespace Db4objects.Db4o.Foundation.Network
 		{
 			try
 			{
-				int ret = (int)i_lock.Run(new _AnonymousInnerClass77(this));
+				int ret = (int)i_lock.Run(new _IClosure4_77(this));
 				return ret;
 			}
 			catch (IOException iex)
@@ -119,9 +119,9 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
-		private sealed class _AnonymousInnerClass77 : IClosure4
+		private sealed class _IClosure4_77 : IClosure4
 		{
-			public _AnonymousInnerClass77(BlockingByteChannel _enclosing)
+			public _IClosure4_77(BlockingByteChannel _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -141,8 +141,7 @@ namespace Db4objects.Db4o.Foundation.Network
 		{
 			try
 			{
-				int ret = (int)i_lock.Run(new _AnonymousInnerClass96(this, a_length, a_bytes, a_offset
-					));
+				int ret = (int)i_lock.Run(new _IClosure4_96(this, a_length, a_bytes, a_offset));
 				return ret;
 			}
 			catch (IOException iex)
@@ -155,10 +154,10 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
-		private sealed class _AnonymousInnerClass96 : IClosure4
+		private sealed class _IClosure4_96 : IClosure4
 		{
-			public _AnonymousInnerClass96(BlockingByteChannel _enclosing, int a_length, byte[]
-				 a_bytes, int a_offset)
+			public _IClosure4_96(BlockingByteChannel _enclosing, int a_length, byte[] a_bytes
+				, int a_offset)
 			{
 				this._enclosing = _enclosing;
 				this.a_length = a_length;
@@ -196,7 +195,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			i_timeout = timeout;
 		}
 
-		private void WaitForAvailable()
+		protected virtual void WaitForAvailable()
 		{
 			while (Available() == 0)
 			{
@@ -216,13 +215,13 @@ namespace Db4objects.Db4o.Foundation.Network
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
 			CheckClosed();
-			i_lock.Run(new _AnonymousInnerClass137(this, len, bytes, off));
+			i_lock.Run(new _ISafeClosure4_137(this, len, bytes, off));
 		}
 
-		private sealed class _AnonymousInnerClass137 : ISafeClosure4
+		private sealed class _ISafeClosure4_137 : ISafeClosure4
 		{
-			public _AnonymousInnerClass137(BlockingByteChannel _enclosing, int len, byte[] bytes
-				, int off)
+			public _ISafeClosure4_137(BlockingByteChannel _enclosing, int len, byte[] bytes, 
+				int off)
 			{
 				this._enclosing = _enclosing;
 				this.len = len;
@@ -252,12 +251,12 @@ namespace Db4objects.Db4o.Foundation.Network
 		public virtual void Write(int i)
 		{
 			CheckClosed();
-			i_lock.Run(new _AnonymousInnerClass150(this, i));
+			i_lock.Run(new _ISafeClosure4_150(this, i));
 		}
 
-		private sealed class _AnonymousInnerClass150 : ISafeClosure4
+		private sealed class _ISafeClosure4_150 : ISafeClosure4
 		{
-			public _AnonymousInnerClass150(BlockingByteChannel _enclosing, int i)
+			public _ISafeClosure4_150(BlockingByteChannel _enclosing, int i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;

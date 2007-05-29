@@ -81,13 +81,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public virtual void MigrateTo(IFreespaceManager fm)
 		{
-			Traverse(new _AnonymousInnerClass59(this, fm));
+			Traverse(new _IVisitor4_59(this, fm));
 		}
 
-		private sealed class _AnonymousInnerClass59 : IVisitor4
+		private sealed class _IVisitor4_59 : IVisitor4
 		{
-			public _AnonymousInnerClass59(AbstractFreespaceManager _enclosing, IFreespaceManager
-				 fm)
+			public _IVisitor4_59(AbstractFreespaceManager _enclosing, IFreespaceManager fm)
 			{
 				this._enclosing = _enclosing;
 				this.fm = fm;
@@ -122,14 +121,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public virtual int TotalFreespace()
 		{
 			MutableInt mint = new MutableInt();
-			Traverse(new _AnonymousInnerClass84(this, mint));
+			Traverse(new _IVisitor4_84(this, mint));
 			return mint.Value();
 		}
 
-		private sealed class _AnonymousInnerClass84 : IVisitor4
+		private sealed class _IVisitor4_84 : IVisitor4
 		{
-			public _AnonymousInnerClass84(AbstractFreespaceManager _enclosing, MutableInt mint
-				)
+			public _IVisitor4_84(AbstractFreespaceManager _enclosing, MutableInt mint)
 			{
 				this._enclosing = _enclosing;
 				this.mint = mint;
@@ -175,13 +173,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			MutableInt lastStart = new MutableInt();
 			MutableInt lastEnd = new MutableInt();
-			Traverse(new _AnonymousInnerClass117(this, lastEnd, lastStart));
+			Traverse(new _IVisitor4_117(this, lastEnd, lastStart));
 		}
 
-		private sealed class _AnonymousInnerClass117 : IVisitor4
+		private sealed class _IVisitor4_117 : IVisitor4
 		{
-			public _AnonymousInnerClass117(AbstractFreespaceManager _enclosing, MutableInt lastEnd
-				, MutableInt lastStart)
+			public _IVisitor4_117(AbstractFreespaceManager _enclosing, MutableInt lastEnd, MutableInt
+				 lastStart)
 			{
 				this._enclosing = _enclosing;
 				this.lastEnd = lastEnd;

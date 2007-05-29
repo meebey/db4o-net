@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 
@@ -24,21 +23,13 @@ namespace Db4objects.Db4o.Internal
 			MemoryFile memoryFile = new MemoryFile();
 			memoryFile.SetInitialSize(223);
 			memoryFile.SetIncrementSizeBy(300);
-			try
-			{
-				TransportObjectContainer carrier = new TransportObjectContainer(serviceProvider, 
-					memoryFile);
-				carrier.ProduceClassMetadata(carrier.Reflector().ForObject(obj));
-				carrier.Set(obj);
-				int id = (int)carrier.GetID(obj);
-				carrier.Close();
-				return new SerializedGraph(id, memoryFile.GetBytes());
-			}
-			catch (IOException)
-			{
-				Exceptions4.ShouldNeverHappen();
-				return null;
-			}
+			TransportObjectContainer carrier = new TransportObjectContainer(serviceProvider, 
+				memoryFile);
+			carrier.ProduceClassMetadata(carrier.Reflector().ForObject(obj));
+			carrier.Set(obj);
+			int id = (int)carrier.GetID(obj);
+			carrier.Close();
+			return new SerializedGraph(id, memoryFile.GetBytes());
 		}
 
 		public static object Unmarshall(ObjectContainerBase serviceProvider, StatefulBuffer
@@ -61,20 +52,12 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			MemoryFile memoryFile = new MemoryFile(bytes);
-			try
-			{
-				TransportObjectContainer carrier = new TransportObjectContainer(serviceProvider, 
-					memoryFile);
-				object obj = carrier.GetByID(id);
-				carrier.Activate(obj, int.MaxValue);
-				carrier.Close();
-				return obj;
-			}
-			catch (IOException)
-			{
-				Exceptions4.ShouldNeverHappen();
-				return null;
-			}
+			TransportObjectContainer carrier = new TransportObjectContainer(serviceProvider, 
+				memoryFile);
+			object obj = carrier.GetByID(id);
+			carrier.Activate(obj, int.MaxValue);
+			carrier.Close();
+			return obj;
 		}
 	}
 }

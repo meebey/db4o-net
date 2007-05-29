@@ -67,13 +67,13 @@ namespace Db4objects.Db4o.Internal.Classindex
 				return;
 			}
 			_btreeIndex = ((LocalObjectContainer)stream).CreateBTreeClassIndex(btreeID);
-			_btreeIndex.SetRemoveListener(new _AnonymousInnerClass61(this, stream));
+			_btreeIndex.SetRemoveListener(new _IVisitor4_61(this, stream));
 		}
 
-		private sealed class _AnonymousInnerClass61 : IVisitor4
+		private sealed class _IVisitor4_61 : IVisitor4
 		{
-			public _AnonymousInnerClass61(BTreeClassIndexStrategy _enclosing, ObjectContainerBase
-				 stream)
+			public _IVisitor4_61(BTreeClassIndexStrategy _enclosing, ObjectContainerBase stream
+				)
 			{
 				this._enclosing = _enclosing;
 				this.stream = stream;

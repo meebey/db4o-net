@@ -12,15 +12,15 @@ namespace Db4oUnit.Tests
 			Assert.AreEqual(42, 42);
 			Assert.AreEqual(42, 42);
 			Assert.AreEqual(null, null);
-			ExpectFailure(new _AnonymousInnerClass14(this));
-			ExpectFailure(new _AnonymousInnerClass19(this));
-			ExpectFailure(new _AnonymousInnerClass24(this));
-			ExpectFailure(new _AnonymousInnerClass29(this));
+			ExpectFailure(new _ICodeBlock_14(this));
+			ExpectFailure(new _ICodeBlock_19(this));
+			ExpectFailure(new _ICodeBlock_24(this));
+			ExpectFailure(new _ICodeBlock_29(this));
 		}
 
-		private sealed class _AnonymousInnerClass14 : ICodeBlock
+		private sealed class _ICodeBlock_14 : ICodeBlock
 		{
-			public _AnonymousInnerClass14(AssertTestCase _enclosing)
+			public _ICodeBlock_14(AssertTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -33,9 +33,9 @@ namespace Db4oUnit.Tests
 			private readonly AssertTestCase _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass19 : ICodeBlock
+		private sealed class _ICodeBlock_19 : ICodeBlock
 		{
-			public _AnonymousInnerClass19(AssertTestCase _enclosing)
+			public _ICodeBlock_19(AssertTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -48,9 +48,9 @@ namespace Db4oUnit.Tests
 			private readonly AssertTestCase _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass24 : ICodeBlock
+		private sealed class _ICodeBlock_24 : ICodeBlock
 		{
-			public _AnonymousInnerClass24(AssertTestCase _enclosing)
+			public _ICodeBlock_24(AssertTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -63,9 +63,9 @@ namespace Db4oUnit.Tests
 			private readonly AssertTestCase _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass29 : ICodeBlock
+		private sealed class _ICodeBlock_29 : ICodeBlock
 		{
-			public _AnonymousInnerClass29(AssertTestCase _enclosing)
+			public _ICodeBlock_29(AssertTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -80,13 +80,13 @@ namespace Db4oUnit.Tests
 
 		public virtual void TestAreSame()
 		{
-			ExpectFailure(new _AnonymousInnerClass37(this));
+			ExpectFailure(new _ICodeBlock_37(this));
 			Assert.AreSame(this, this);
 		}
 
-		private sealed class _AnonymousInnerClass37 : ICodeBlock
+		private sealed class _ICodeBlock_37 : ICodeBlock
 		{
-			public _AnonymousInnerClass37(AssertTestCase _enclosing)
+			public _ICodeBlock_37(AssertTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

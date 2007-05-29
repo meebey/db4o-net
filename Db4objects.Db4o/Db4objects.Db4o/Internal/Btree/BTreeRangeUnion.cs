@@ -98,12 +98,12 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual IEnumerator Pointers()
 		{
-			return Iterators.Concat(Iterators.Map(_ranges, new _AnonymousInnerClass77(this)));
+			return Iterators.Concat(Iterators.Map(_ranges, new _IFunction4_77(this)));
 		}
 
-		private sealed class _AnonymousInnerClass77 : IFunction4
+		private sealed class _IFunction4_77 : IFunction4
 		{
-			public _AnonymousInnerClass77(BTreeRangeUnion _enclosing)
+			public _IFunction4_77(BTreeRangeUnion _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -118,12 +118,12 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual IEnumerator Keys()
 		{
-			return Iterators.Concat(Iterators.Map(_ranges, new _AnonymousInnerClass85(this)));
+			return Iterators.Concat(Iterators.Map(_ranges, new _IFunction4_85(this)));
 		}
 
-		private sealed class _AnonymousInnerClass85 : IFunction4
+		private sealed class _IFunction4_85 : IFunction4
 		{
-			public _AnonymousInnerClass85(BTreeRangeUnion _enclosing)
+			public _IFunction4_85(BTreeRangeUnion _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

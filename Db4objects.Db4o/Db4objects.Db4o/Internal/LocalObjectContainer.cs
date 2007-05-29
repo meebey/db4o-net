@@ -208,14 +208,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _AnonymousInnerClass211(this));
+				i_prefetchedIDs.Traverse(new _IVisitor4_209(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _AnonymousInnerClass211 : IVisitor4
+		private sealed class _IVisitor4_209 : IVisitor4
 		{
-			public _AnonymousInnerClass211(LocalObjectContainer _enclosing)
+			public _IVisitor4_209(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -514,9 +514,11 @@ namespace Db4objects.Db4o.Internal
 		private void MigrateFreespace()
 		{
 			IFreespaceManager oldFreespaceManager = _freespaceManager;
-			_freespaceManager = AbstractFreespaceManager.CreateNew(this, _systemData.FreespaceSystem
+			_freespaceManager = AbstractFreespaceManager.CreateNew(this, ConfigImpl().FreespaceSystem
 				());
-			_freespaceManager.Start(CreateFreespaceSlot(_systemData.FreespaceSystem()));
+			SystemData().FreespaceAddress(0);
+			SystemData().FreespaceSystem(ConfigImpl().FreespaceSystem());
+			_freespaceManager.Start(_freespaceManager.OnNew(this));
 			AbstractFreespaceManager.Migrate(oldFreespaceManager, _freespaceManager);
 			_fileHeader.WriteVariablePart(this, 1);
 		}
@@ -571,17 +573,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _AnonymousInnerClass536(this, semaphores), ta
-						);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_536(this, semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass536 : IVisitor4
+		private sealed class _IVisitor4_536 : IVisitor4
 		{
-			public _AnonymousInnerClass536(LocalObjectContainer _enclosing, Hashtable4 semaphores
-				)
+			public _IVisitor4_536(LocalObjectContainer _enclosing, Hashtable4 semaphores)
 			{
 				this._enclosing = _enclosing;
 				this.semaphores = semaphores;
@@ -825,13 +825,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _AnonymousInnerClass742(this, ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_742(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _AnonymousInnerClass742 : IVisitor4
+		private sealed class _IVisitor4_742 : IVisitor4
 		{
-			public _AnonymousInnerClass742(LocalObjectContainer _enclosing, IntArrayList ids)
+			public _IVisitor4_742(LocalObjectContainer _enclosing, IntArrayList ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;

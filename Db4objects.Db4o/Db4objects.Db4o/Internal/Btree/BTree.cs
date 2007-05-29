@@ -201,12 +201,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return;
 			}
-			_nodes.Traverse(new _AnonymousInnerClass197(this, systemTransaction));
+			_nodes.Traverse(new _IVisitor4_197(this, systemTransaction));
 		}
 
-		private sealed class _AnonymousInnerClass197 : IVisitor4
+		private sealed class _IVisitor4_197 : IVisitor4
 		{
-			public _AnonymousInnerClass197(BTree _enclosing, Transaction systemTransaction)
+			public _IVisitor4_197(BTree _enclosing, Transaction systemTransaction)
 			{
 				this._enclosing = _enclosing;
 				this.systemTransaction = systemTransaction;
@@ -240,12 +240,12 @@ namespace Db4objects.Db4o.Internal.Btree
 				_root.HoldChildrenAsIDs();
 				AddNode(_root);
 			}
-			temp.Traverse(new _AnonymousInnerClass221(this));
+			temp.Traverse(new _IVisitor4_221(this));
 		}
 
-		private sealed class _AnonymousInnerClass221 : IVisitor4
+		private sealed class _IVisitor4_221 : IVisitor4
 		{
-			public _AnonymousInnerClass221(BTree _enclosing)
+			public _IVisitor4_221(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -262,12 +262,12 @@ namespace Db4objects.Db4o.Internal.Btree
 		private void ProcessAllNodes()
 		{
 			_processing = new NonblockingQueue();
-			_nodes.Traverse(new _AnonymousInnerClass231(this));
+			_nodes.Traverse(new _IVisitor4_231(this));
 		}
 
-		private sealed class _AnonymousInnerClass231 : IVisitor4
+		private sealed class _IVisitor4_231 : IVisitor4
 		{
-			public _AnonymousInnerClass231(BTree _enclosing)
+			public _IVisitor4_231(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -462,13 +462,13 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual void DefragBTree(IDefragContext context)
 		{
-			ReaderPair.ProcessCopy(context, GetID(), new _AnonymousInnerClass390(this));
+			ReaderPair.ProcessCopy(context, GetID(), new _ISlotCopyHandler_390(this));
 			CorruptionException[] corruptx = new CorruptionException[] { null };
 			IOException[] iox = new IOException[] { null };
 			try
 			{
-				context.TraverseAllIndexSlots(this, new _AnonymousInnerClass398(this, context, corruptx
-					, iox));
+				context.TraverseAllIndexSlots(this, new _IVisitor4_398(this, context, corruptx, iox
+					));
 			}
 			catch (Exception e)
 			{
@@ -484,9 +484,9 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		private sealed class _AnonymousInnerClass390 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_390 : ISlotCopyHandler
 		{
-			public _AnonymousInnerClass390(BTree _enclosing)
+			public _ISlotCopyHandler_390(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -499,9 +499,9 @@ namespace Db4objects.Db4o.Internal.Btree
 			private readonly BTree _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass398 : IVisitor4
+		private sealed class _IVisitor4_398 : IVisitor4
 		{
-			public _AnonymousInnerClass398(BTree _enclosing, IDefragContext context, CorruptionException[]
+			public _IVisitor4_398(BTree _enclosing, IDefragContext context, CorruptionException[]
 				 corruptx, IOException[] iox)
 			{
 				this._enclosing = _enclosing;
@@ -515,7 +515,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				int id = ((int)obj);
 				try
 				{
-					ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass402(this));
+					ReaderPair.ProcessCopy(context, id, new _ISlotCopyHandler_402(this));
 				}
 				catch (CorruptionException e)
 				{
@@ -529,9 +529,9 @@ namespace Db4objects.Db4o.Internal.Btree
 				}
 			}
 
-			private sealed class _AnonymousInnerClass402 : ISlotCopyHandler
+			private sealed class _ISlotCopyHandler_402 : ISlotCopyHandler
 			{
-				public _AnonymousInnerClass402(_AnonymousInnerClass398 _enclosing)
+				public _ISlotCopyHandler_402(_IVisitor4_398 _enclosing)
 				{
 					this._enclosing = _enclosing;
 				}
@@ -541,7 +541,7 @@ namespace Db4objects.Db4o.Internal.Btree
 					this._enclosing._enclosing.DefragIndexNode(readers);
 				}
 
-				private readonly _AnonymousInnerClass398 _enclosing;
+				private readonly _IVisitor4_398 _enclosing;
 			}
 
 			private readonly BTree _enclosing;
@@ -568,9 +568,10 @@ namespace Db4objects.Db4o.Internal.Btree
 			return trans.Stream().ConfigImpl();
 		}
 
-		public virtual void Free(Transaction systemTrans)
+		public override void Free(Transaction systemTrans)
 		{
 			FreeAllNodeIds(systemTrans, AllNodeIds(systemTrans));
+			base.Free(systemTrans);
 		}
 
 		private void FreeAllNodeIds(Transaction systemTrans, IEnumerator allNodeIDs)
@@ -585,13 +586,13 @@ namespace Db4objects.Db4o.Internal.Btree
 		public virtual IEnumerator AllNodeIds(Transaction systemTrans)
 		{
 			Collection4 allNodeIDs = new Collection4();
-			TraverseAllNodes(systemTrans, new _AnonymousInnerClass452(this, allNodeIDs));
+			TraverseAllNodes(systemTrans, new _IVisitor4_453(this, allNodeIDs));
 			return allNodeIDs.GetEnumerator();
 		}
 
-		private sealed class _AnonymousInnerClass452 : IVisitor4
+		private sealed class _IVisitor4_453 : IVisitor4
 		{
-			public _AnonymousInnerClass452(BTree _enclosing, Collection4 allNodeIDs)
+			public _IVisitor4_453(BTree _enclosing, Collection4 allNodeIDs)
 			{
 				this._enclosing = _enclosing;
 				this.allNodeIDs = allNodeIDs;
@@ -618,12 +619,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return;
 			}
-			_nodes.Traverse(new _AnonymousInnerClass468(this, visitor));
+			_nodes.Traverse(new _IVisitor4_469(this, visitor));
 		}
 
-		private sealed class _AnonymousInnerClass468 : IVisitor4
+		private sealed class _IVisitor4_469 : IVisitor4
 		{
-			public _AnonymousInnerClass468(BTree _enclosing, IVisitor4 visitor)
+			public _IVisitor4_469(BTree _enclosing, IVisitor4 visitor)
 			{
 				this._enclosing = _enclosing;
 				this.visitor = visitor;
@@ -645,13 +646,13 @@ namespace Db4objects.Db4o.Internal.Btree
 			sb.Append("BTree ");
 			sb.Append(GetID());
 			sb.Append(" Active Nodes: \n");
-			TraverseAllNodes(new _AnonymousInnerClass480(this, sb));
+			TraverseAllNodes(new _IVisitor4_481(this, sb));
 			return sb.ToString();
 		}
 
-		private sealed class _AnonymousInnerClass480 : IVisitor4
+		private sealed class _IVisitor4_481 : IVisitor4
 		{
-			public _AnonymousInnerClass480(BTree _enclosing, StringBuilder sb)
+			public _IVisitor4_481(BTree _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;

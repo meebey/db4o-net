@@ -7,9 +7,9 @@ namespace Db4objects.Db4o.Ext
 	/// <summary>callback methods.</summary>
 	/// <remarks>
 	/// callback methods.
-	/// <br /><br /><b>Examples: ../com/db4o/samples/callbacks.</b><br /><br />
-	/// This interface only serves as a lists of all available callback methods.
-	/// Every method is called individually, independant of implementing this interface.<br /><br />
+	/// <br /><br />
+	/// This interface only serves as a list of all available callback methods.
+	/// Every method is called individually, independantly of implementing this interface.<br /><br />
 	/// <b>Using callbacks</b><br />
 	/// Simply implement one or more of the listed methods in your application classes to
 	/// do tasks before activation, deactivation, delete, new or update, to cancel the

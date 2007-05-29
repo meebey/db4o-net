@@ -40,13 +40,13 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Commit()
 		{
-			TraveseNewReferences(new _AnonymousInnerClass38(this));
+			TraveseNewReferences(new _IVisitor4_38(this));
 			CreateNewReferences();
 		}
 
-		private sealed class _AnonymousInnerClass38 : IVisitor4
+		private sealed class _IVisitor4_38 : IVisitor4
 		{
-			public _AnonymousInnerClass38(TransactionalReferenceSystem _enclosing)
+			public _IVisitor4_38(TransactionalReferenceSystem _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

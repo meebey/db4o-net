@@ -62,12 +62,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public virtual IEnumerator GetEnumerator()
 		{
-			return new _AnonymousInnerClass56(this, IterateIDs());
+			return new _MappingIterator_56(this, IterateIDs());
 		}
 
-		private sealed class _AnonymousInnerClass56 : MappingIterator
+		private sealed class _MappingIterator_56 : MappingIterator
 		{
-			public _AnonymousInnerClass56(AbstractQueryResult _enclosing, IIntIterator4 baseArg1
+			public _MappingIterator_56(AbstractQueryResult _enclosing, IIntIterator4 baseArg1
 				) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
@@ -154,6 +154,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			throw new NotImplementedException();
 		}
 
+		/// <param name="i"></param>
 		public virtual int GetId(int i)
 		{
 			throw new NotImplementedException();
@@ -164,21 +165,25 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			throw new NotImplementedException();
 		}
 
+		/// <param name="c"></param>
 		public virtual void LoadFromClassIndex(ClassMetadata c)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <param name="i"></param>
 		public virtual void LoadFromClassIndexes(ClassMetadataIterator i)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <param name="r"></param>
 		public virtual void LoadFromIdReader(Db4objects.Db4o.Internal.Buffer r)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <param name="q"></param>
 		public virtual void LoadFromQuery(QQuery q)
 		{
 			throw new NotImplementedException();

@@ -55,9 +55,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public virtual void Test()
 		{
-			Foreach(GetType(), new _AnonymousInnerClass52(this));
+			Foreach(GetType(), new _IVisitor4_52(this));
 			Reopen();
-			Foreach(GetType(), new _AnonymousInnerClass69(this));
+			Foreach(GetType(), new _IVisitor4_69(this));
 			Db().Commit();
 			Reopen();
 			IObjectSet os = NewQuery(GetType()).Execute();
@@ -68,9 +68,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			Assert.AreEqual(1, CountOccurences(typeof(CascadeToArray.Atom)));
 		}
 
-		private sealed class _AnonymousInnerClass52 : IVisitor4
+		private sealed class _IVisitor4_52 : IVisitor4
 		{
-			public _AnonymousInnerClass52(CascadeToArray _enclosing)
+			public _IVisitor4_52(CascadeToArray _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -93,9 +93,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			private readonly CascadeToArray _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass69 : IVisitor4
+		private sealed class _IVisitor4_69 : IVisitor4
 		{
-			public _AnonymousInnerClass69(CascadeToArray _enclosing)
+			public _IVisitor4_69(CascadeToArray _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

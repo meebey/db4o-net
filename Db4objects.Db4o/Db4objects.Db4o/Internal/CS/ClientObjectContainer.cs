@@ -964,5 +964,14 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			Write(Msg.COMMITTED_CALLBACK_REGISTER);
 		}
+
+		public override int ClassMetadataIdForName(string name)
+		{
+			MsgD msg = Msg.CLASS_METADATA_ID_FOR_NAME.GetWriterForString(SystemTransaction(), 
+				name);
+			msg.Write(this, i_socket);
+			MsgD response = (MsgD)ExpectedResponse(Msg.CLASS_ID);
+			return response.ReadInt();
+		}
 	}
 }

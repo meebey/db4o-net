@@ -44,13 +44,13 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase)
 				);
 			q.Descend("helper").Constrain(helperA).Identity();
-			q.Constrain(new _AnonymousInnerClass42(this));
+			q.Constrain(new _IEvaluation_42(this));
 			Expect(q, new int[] { 1, 2, 3 });
 		}
 
-		private sealed class _AnonymousInnerClass42 : IEvaluation
+		private sealed class _IEvaluation_42 : IEvaluation
 		{
-			public _AnonymousInnerClass42(STIdentityEvaluationTestCase _enclosing)
+			public _IEvaluation_42(STIdentityEvaluationTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

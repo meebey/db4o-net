@@ -7,7 +7,8 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public class Tuning
 	{
-		/// <deprecated>Use Db4o.configure().io(new com.db4o.io.SymbianIoAdapter()) instead</deprecated>
+		[System.ObsoleteAttribute(@"Use Db4o.configure().io(new com.db4o.io.SymbianIoAdapter()) instead"
+			)]
 		public const bool symbianSeek = false;
 
 		public const bool readableMessages = true;

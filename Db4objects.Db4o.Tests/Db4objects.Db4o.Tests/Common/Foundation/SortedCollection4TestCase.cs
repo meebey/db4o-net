@@ -9,9 +9,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 	/// <exclude></exclude>
 	public class SortedCollection4TestCase : ITestCase
 	{
-		private sealed class _AnonymousInnerClass14 : IComparison4
+		private sealed class _IComparison4_14 : IComparison4
 		{
-			public _AnonymousInnerClass14()
+			public _IComparison4_14()
 			{
 			}
 
@@ -21,8 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
-		internal static readonly IComparison4 INTEGER_COMPARISON = new _AnonymousInnerClass14
-			();
+		internal static readonly IComparison4 INTEGER_COMPARISON = new _IComparison4_14();
 
 		public virtual void TestAddAllAndToArray()
 		{

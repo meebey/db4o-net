@@ -131,6 +131,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override void FreeSelf()
 		{
+			_slotsByAddress.Free(Transaction());
+			_slotsByLength.Free(Transaction());
 		}
 
 		public override void FreeTransactionLogSlot(Slot slot)

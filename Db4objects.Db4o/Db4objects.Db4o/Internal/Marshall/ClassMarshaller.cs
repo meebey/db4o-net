@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 reader)
 		{
 			clazz.SetAncestor(stream.ClassMetadataForId(reader.ReadInt()));
-			if (clazz.i_dontCallConstructors)
+			if (clazz.CallConstructor())
 			{
 				clazz.CreateConstructor(stream, clazz.ClassReflector(), clazz.GetName(), true);
 			}

@@ -10,9 +10,9 @@ namespace Db4oUnit
 	/// <remarks>Reflection based db4ounit.Test implementation.</remarks>
 	public class TestMethod : ITest
 	{
-		private sealed class _AnonymousInnerClass11 : ILabelProvider
+		private sealed class _ILabelProvider_11 : ILabelProvider
 		{
-			public _AnonymousInnerClass11()
+			public _ILabelProvider_11()
 			{
 			}
 
@@ -22,8 +22,7 @@ namespace Db4oUnit
 			}
 		}
 
-		public static ILabelProvider DEFAULT_LABEL_PROVIDER = new _AnonymousInnerClass11(
-			);
+		public static ILabelProvider DEFAULT_LABEL_PROVIDER = new _ILabelProvider_11();
 
 		private readonly object _subject;
 

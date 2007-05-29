@@ -2,6 +2,7 @@
 
 using System;
 using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Internal.Fileheader;
 using Sharpen;
 
 namespace Db4objects.Db4o.IO
@@ -123,11 +124,11 @@ namespace Db4objects.Db4o.IO
 			CachedIoAdapter.Page page;
 			int readBytes;
 			int bytesToRead = length;
-			int bufferOffset = 0;
+			int totalRead = 0;
 			while (bytesToRead > 0)
 			{
 				page = GetPage(startAddress, true);
-				readBytes = page.Read(buffer, bufferOffset, startAddress, bytesToRead);
+				readBytes = page.Read(buffer, totalRead, startAddress, bytesToRead);
 				MovePageToHead(page);
 				if (readBytes <= 0)
 				{
@@ -135,10 +136,10 @@ namespace Db4objects.Db4o.IO
 				}
 				bytesToRead -= readBytes;
 				startAddress += readBytes;
-				bufferOffset += readBytes;
+				totalRead += readBytes;
 			}
-			_position = startAddress + bufferOffset;
-			return bufferOffset == 0 ? -1 : bufferOffset;
+			_position = startAddress;
+			return totalRead == 0 ? -1 : totalRead;
 		}
 
 		/// <summary>Writes the buffer to cache using pages</summary>
@@ -157,6 +158,10 @@ namespace Db4objects.Db4o.IO
 				page = GetPage(startAddress, loadFromDisk);
 				page.EnsureEndAddress(GetLength());
 				writtenBytes = page.Write(buffer, bufferOffset, startAddress, bytesToWrite);
+				if (ContainsHeaderBlock(page))
+				{
+					FlushPage(page);
+				}
 				MovePageToHead(page);
 				bytesToWrite -= writtenBytes;
 				startAddress += writtenBytes;
@@ -197,6 +202,10 @@ namespace Db4objects.Db4o.IO
 			CachedIoAdapter.Page page = GetPageFromCache(startAddress);
 			if (page != null)
 			{
+				if (ContainsHeaderBlock(page))
+				{
+					GetPageFromDisk(page, startAddress);
+				}
 				page.EnsureEndAddress(_fileLength);
 				return page;
 			}
@@ -210,6 +219,11 @@ namespace Db4objects.Db4o.IO
 				ResetPageAddress(page, startAddress);
 			}
 			return page;
+		}
+
+		private bool ContainsHeaderBlock(CachedIoAdapter.Page page)
+		{
+			return page.StartAddress() <= FileHeader1.LENGTH;
 		}
 
 		private void ResetPageAddress(CachedIoAdapter.Page page, long startAddress)
@@ -421,7 +435,7 @@ namespace Db4objects.Db4o.IO
 				)
 			{
 				int bufferOffset = (int)(startAddress - _startAddress);
-				int pageAvailabeBufferSize = (int)(_bufferSize - bufferOffset);
+				int pageAvailabeBufferSize = _bufferSize - bufferOffset;
 				int writtenBytes = Math.Min(pageAvailabeBufferSize, length);
 				System.Array.Copy(data, dataOffset, _buffer, bufferOffset, writtenBytes);
 				long endAddress = startAddress + writtenBytes;

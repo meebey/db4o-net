@@ -8,18 +8,18 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class BlockingQueue : IQueue4
 	{
-		private NonblockingQueue _queue = new NonblockingQueue();
+		protected NonblockingQueue _queue = new NonblockingQueue();
 
-		private Lock4 _lock = new Lock4();
+		protected Lock4 _lock = new Lock4();
 
 		public virtual void Add(object obj)
 		{
-			_lock.Run(new _AnonymousInnerClass13(this, obj));
+			_lock.Run(new _ISafeClosure4_14(this, obj));
 		}
 
-		private sealed class _AnonymousInnerClass13 : ISafeClosure4
+		private sealed class _ISafeClosure4_14 : ISafeClosure4
 		{
-			public _AnonymousInnerClass13(BlockingQueue _enclosing, object obj)
+			public _ISafeClosure4_14(BlockingQueue _enclosing, object obj)
 			{
 				this._enclosing = _enclosing;
 				this.obj = obj;
@@ -39,13 +39,13 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual bool HasNext()
 		{
-			bool hasNext = (bool)_lock.Run(new _AnonymousInnerClass23(this));
+			bool hasNext = (bool)_lock.Run(new _ISafeClosure4_24(this));
 			return hasNext;
 		}
 
-		private sealed class _AnonymousInnerClass23 : ISafeClosure4
+		private sealed class _ISafeClosure4_24 : ISafeClosure4
 		{
-			public _AnonymousInnerClass23(BlockingQueue _enclosing)
+			public _ISafeClosure4_24(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -60,12 +60,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual IEnumerator Iterator()
 		{
-			return (IEnumerator)_lock.Run(new _AnonymousInnerClass32(this));
+			return (IEnumerator)_lock.Run(new _ISafeClosure4_33(this));
 		}
 
-		private sealed class _AnonymousInnerClass32 : ISafeClosure4
+		private sealed class _ISafeClosure4_33 : ISafeClosure4
 		{
-			public _AnonymousInnerClass32(BlockingQueue _enclosing)
+			public _ISafeClosure4_33(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -80,12 +80,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual object Next()
 		{
-			return _lock.Run(new _AnonymousInnerClass40(this));
+			return _lock.Run(new _ISafeClosure4_41(this));
 		}
 
-		private sealed class _AnonymousInnerClass40 : ISafeClosure4
+		private sealed class _ISafeClosure4_41 : ISafeClosure4
 		{
-			public _AnonymousInnerClass40(BlockingQueue _enclosing)
+			public _ISafeClosure4_41(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -110,12 +110,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Stop()
 		{
-			_lock.Run(new _AnonymousInnerClass56(this));
+			_lock.Run(new _ISafeClosure4_57(this));
 		}
 
-		private sealed class _AnonymousInnerClass56 : ISafeClosure4
+		private sealed class _ISafeClosure4_57 : ISafeClosure4
 		{
-			public _AnonymousInnerClass56(BlockingQueue _enclosing)
+			public _ISafeClosure4_57(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

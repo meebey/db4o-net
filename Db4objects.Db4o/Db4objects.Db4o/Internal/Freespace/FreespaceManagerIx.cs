@@ -195,14 +195,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			IIntObjectVisitor dispatcher = new _AnonymousInnerClass186(this, visitor);
-			Tree.Traverse(_addressIx._indexTrans.GetRoot(), new _AnonymousInnerClass191(this, 
-				dispatcher));
+			IIntObjectVisitor dispatcher = new _IIntObjectVisitor_186(this, visitor);
+			Tree.Traverse(_addressIx._indexTrans.GetRoot(), new _IVisitor4_191(this, dispatcher
+				));
 		}
 
-		private sealed class _AnonymousInnerClass186 : IIntObjectVisitor
+		private sealed class _IIntObjectVisitor_186 : IIntObjectVisitor
 		{
-			public _AnonymousInnerClass186(FreespaceManagerIx _enclosing, IVisitor4 visitor)
+			public _IIntObjectVisitor_186(FreespaceManagerIx _enclosing, IVisitor4 visitor)
 			{
 				this._enclosing = _enclosing;
 				this.visitor = visitor;
@@ -218,9 +218,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly IVisitor4 visitor;
 		}
 
-		private sealed class _AnonymousInnerClass191 : IVisitor4
+		private sealed class _IVisitor4_191 : IVisitor4
 		{
-			public _AnonymousInnerClass191(FreespaceManagerIx _enclosing, IIntObjectVisitor dispatcher
+			public _IVisitor4_191(FreespaceManagerIx _enclosing, IIntObjectVisitor dispatcher
 				)
 			{
 				this._enclosing = _enclosing;

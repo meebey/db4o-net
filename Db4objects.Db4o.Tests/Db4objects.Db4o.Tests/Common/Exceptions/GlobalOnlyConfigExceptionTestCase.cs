@@ -17,15 +17,14 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestBlockSize()
 		{
-			Assert.Expect(typeof(ArgumentException), new _AnonymousInnerClass16(this));
-			Assert.Expect(typeof(ArgumentException), new _AnonymousInnerClass22(this));
-			Assert.Expect(typeof(GlobalOnlyConfigException), new _AnonymousInnerClass28(this)
-				);
+			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_16(this));
+			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_22(this));
+			Assert.Expect(typeof(GlobalOnlyConfigException), new _ICodeBlock_28(this));
 		}
 
-		private sealed class _AnonymousInnerClass16 : ICodeBlock
+		private sealed class _ICodeBlock_16 : ICodeBlock
 		{
-			public _AnonymousInnerClass16(GlobalOnlyConfigExceptionTestCase _enclosing)
+			public _ICodeBlock_16(GlobalOnlyConfigExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -38,9 +37,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly GlobalOnlyConfigExceptionTestCase _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass22 : ICodeBlock
+		private sealed class _ICodeBlock_22 : ICodeBlock
 		{
-			public _AnonymousInnerClass22(GlobalOnlyConfigExceptionTestCase _enclosing)
+			public _ICodeBlock_22(GlobalOnlyConfigExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -53,9 +52,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly GlobalOnlyConfigExceptionTestCase _enclosing;
 		}
 
-		private sealed class _AnonymousInnerClass28 : ICodeBlock
+		private sealed class _ICodeBlock_28 : ICodeBlock
 		{
-			public _AnonymousInnerClass28(GlobalOnlyConfigExceptionTestCase _enclosing)
+			public _ICodeBlock_28(GlobalOnlyConfigExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

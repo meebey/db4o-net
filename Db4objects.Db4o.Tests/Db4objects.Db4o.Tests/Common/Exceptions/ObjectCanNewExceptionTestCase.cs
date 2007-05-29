@@ -25,13 +25,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void Test()
 		{
-			Assert.Expect(typeof(ReflectException), typeof(ItemException), new _AnonymousInnerClass24
+			Assert.Expect(typeof(ReflectException), typeof(ItemException), new _ICodeBlock_24
 				(this));
 		}
 
-		private sealed class _AnonymousInnerClass24 : ICodeBlock
+		private sealed class _ICodeBlock_24 : ICodeBlock
 		{
-			public _AnonymousInnerClass24(ObjectCanNewExceptionTestCase _enclosing)
+			public _ICodeBlock_24(ObjectCanNewExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

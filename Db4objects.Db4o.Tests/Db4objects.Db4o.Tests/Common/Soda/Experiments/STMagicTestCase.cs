@@ -113,14 +113,14 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 		{
 			IQuery q = NewQuery();
 			q.Constrain(typeof(ISTInterface));
-			q.Constrain(new _AnonymousInnerClass117(this));
+			q.Constrain(new _IEvaluation_117(this));
 			SodaTestUtil.Expect(q, new object[] { new Db4objects.Db4o.Tests.Common.Soda.Experiments.STMagicTestCase
 				("aaa"), new STStringTestCase("aaa") });
 		}
 
-		private sealed class _AnonymousInnerClass117 : IEvaluation
+		private sealed class _IEvaluation_117 : IEvaluation
 		{
-			public _AnonymousInnerClass117(STMagicTestCase _enclosing)
+			public _IEvaluation_117(STMagicTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

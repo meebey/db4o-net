@@ -431,7 +431,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return GetID();
 		}
 
-		private void Free(Transaction trans)
+		public override void Free(Transaction trans)
 		{
 			_dead = true;
 			if (!IsRoot())
@@ -441,7 +441,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			PointPreviousTo(trans, _nextID);
 			PointNextTo(trans, _previousID);
-			trans.SystemTransaction().SlotFreePointerOnCommit(GetID());
+			base.Free(trans);
 			_btree.RemoveNode(this);
 		}
 

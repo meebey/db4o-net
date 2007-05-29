@@ -142,13 +142,13 @@ namespace Db4objects.Db4o.Internal.IX
 				return 0;
 			}
 			int[] leaves = new int[] { 0 };
-			i_root.Traverse(new _AnonymousInnerClass118(this, leaves));
+			i_root.Traverse(new _IVisitor4_118(this, leaves));
 			return leaves[0];
 		}
 
-		private sealed class _AnonymousInnerClass118 : IVisitor4
+		private sealed class _IVisitor4_118 : IVisitor4
 		{
-			public _AnonymousInnerClass118(IndexTransaction _enclosing, int[] leaves)
+			public _IVisitor4_118(IndexTransaction _enclosing, int[] leaves)
 			{
 				this._enclosing = _enclosing;
 				this.leaves = leaves;
@@ -180,14 +180,14 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 			else
 			{
-				i_root.Traverse(new _AnonymousInnerClass137(this, sb));
+				i_root.Traverse(new _IVisitor4_137(this, sb));
 			}
 			return sb.ToString();
 		}
 
-		private sealed class _AnonymousInnerClass137 : IVisitor4
+		private sealed class _IVisitor4_137 : IVisitor4
 		{
-			public _AnonymousInnerClass137(IndexTransaction _enclosing, StringBuilder sb)
+			public _IVisitor4_137(IndexTransaction _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;

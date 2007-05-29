@@ -20,9 +20,9 @@ namespace Db4objects.Db4o.Defragment
 	/// <exclude></exclude>
 	internal sealed class SecondPassCommand : IPassCommand
 	{
-		private readonly int _objectCommitFrequency;
+		protected readonly int _objectCommitFrequency;
 
-		private int _objectCount = 0;
+		protected int _objectCount = 0;
 
 		public SecondPassCommand(int objectCommitFrequency)
 		{
@@ -36,14 +36,14 @@ namespace Db4objects.Db4o.Defragment
 			{
 				Sharpen.Runtime.Err.WriteLine("MAPPING NOT FOUND: " + id);
 			}
-			ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass34(this, yapClass, classIndexID
+			ReaderPair.ProcessCopy(context, id, new _ISlotCopyHandler_34(this, yapClass, classIndexID
 				));
 		}
 
-		private sealed class _AnonymousInnerClass34 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_34 : ISlotCopyHandler
 		{
-			public _AnonymousInnerClass34(SecondPassCommand _enclosing, ClassMetadata yapClass
-				, int classIndexID)
+			public _ISlotCopyHandler_34(SecondPassCommand _enclosing, ClassMetadata yapClass, 
+				int classIndexID)
 			{
 				this._enclosing = _enclosing;
 				this.yapClass = yapClass;
@@ -65,13 +65,13 @@ namespace Db4objects.Db4o.Defragment
 		public void ProcessObjectSlot(DefragContextImpl context, ClassMetadata yapClass, 
 			int id, bool registerAddresses)
 		{
-			ReaderPair.ProcessCopy(context, id, new _AnonymousInnerClass42(this, context), registerAddresses
+			ReaderPair.ProcessCopy(context, id, new _ISlotCopyHandler_42(this, context), registerAddresses
 				);
 		}
 
-		private sealed class _AnonymousInnerClass42 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_42 : ISlotCopyHandler
 		{
-			public _AnonymousInnerClass42(SecondPassCommand _enclosing, DefragContextImpl context
+			public _ISlotCopyHandler_42(SecondPassCommand _enclosing, DefragContextImpl context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -99,13 +99,13 @@ namespace Db4objects.Db4o.Defragment
 
 		public void ProcessClassCollection(DefragContextImpl context)
 		{
-			ReaderPair.ProcessCopy(context, context.SourceClassCollectionID(), new _AnonymousInnerClass57
+			ReaderPair.ProcessCopy(context, context.SourceClassCollectionID(), new _ISlotCopyHandler_57
 				(this));
 		}
 
-		private sealed class _AnonymousInnerClass57 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_57 : ISlotCopyHandler
 		{
-			public _AnonymousInnerClass57(SecondPassCommand _enclosing)
+			public _ISlotCopyHandler_57(SecondPassCommand _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

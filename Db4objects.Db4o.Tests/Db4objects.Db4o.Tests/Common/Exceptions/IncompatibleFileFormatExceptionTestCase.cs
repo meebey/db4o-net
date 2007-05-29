@@ -34,13 +34,15 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void Test()
 		{
-			Assert.Expect(typeof(IncompatibleFileFormatException), new _AnonymousInnerClass32
-				(this));
+			Assert.Expect(typeof(IncompatibleFileFormatException), new _ICodeBlock_32(this));
+			File4.Delete(INCOMPATIBLE_FILE_FORMAT);
+			IoAdapter adapter = new RandomAccessFileAdapter();
+			Assert.IsFalse(adapter.Exists(INCOMPATIBLE_FILE_FORMAT));
 		}
 
-		private sealed class _AnonymousInnerClass32 : ICodeBlock
+		private sealed class _ICodeBlock_32 : ICodeBlock
 		{
-			public _AnonymousInnerClass32(IncompatibleFileFormatExceptionTestCase _enclosing)
+			public _ICodeBlock_32(IncompatibleFileFormatExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections;
-using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -353,7 +352,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected abstract void Close2();
 
-		protected void ShutdownObjectContainer()
+		public void ShutdownObjectContainer()
 		{
 			LogMsg(3, ToString());
 			lock (i_lock)
@@ -653,7 +652,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			ClassMetadata yc = yo.GetYapClass();
 			FieldMetadata[] field = new FieldMetadata[] { null };
-			yc.ForEachFieldMetadata(new _AnonymousInnerClass586(this, fieldName, field));
+			yc.ForEachFieldMetadata(new _IVisitor4_584(this, fieldName, field));
 			if (field[0] == null)
 			{
 				return null;
@@ -695,10 +694,10 @@ namespace Db4objects.Db4o.Internal
 			return Descend1(trans, child, subPath);
 		}
 
-		private sealed class _AnonymousInnerClass586 : IVisitor4
+		private sealed class _IVisitor4_584 : IVisitor4
 		{
-			public _AnonymousInnerClass586(PartialObjectContainer _enclosing, string fieldName
-				, FieldMetadata[] field)
+			public _IVisitor4_584(PartialObjectContainer _enclosing, string fieldName, FieldMetadata[]
+				 field)
 			{
 				this._enclosing = _enclosing;
 				this.fieldName = fieldName;
@@ -1094,6 +1093,11 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
+		public virtual int ClassMetadataIdForName(string name)
+		{
+			return _classCollection.ClassMetadataIdForName(name);
+		}
+
 		public virtual ClassMetadata ClassMetadataForId(int id)
 		{
 			if (id == 0)
@@ -1162,7 +1166,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void Initialize1(IConfiguration config)
 		{
-			InitializeConfig(i_config);
+			i_config = InitializeConfig(config);
 			i_handlers = new HandlerRegistry(_this, ConfigImpl().Encoding(), ConfigImpl().Reflector
 				());
 			if (i_references != null)
@@ -1212,20 +1216,13 @@ namespace Db4objects.Db4o.Internal
 		protected virtual void InitializePostOpenExcludingTransportObjectContainer()
 		{
 			InitializeEssentialClasses();
-			try
+			Rename(ConfigImpl());
+			_classCollection.InitOnUp(i_systemTrans);
+			if (ConfigImpl().DetectSchemaChanges())
 			{
-				Rename(ConfigImpl());
-				_classCollection.InitOnUp(i_systemTrans);
-				if (ConfigImpl().DetectSchemaChanges())
-				{
-					i_systemTrans.Commit();
-				}
-				ConfigImpl().ApplyConfigurationItems(_this);
+				i_systemTrans.Commit();
 			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
+			ConfigImpl().ApplyConfigurationItems(_this);
 		}
 
 		internal virtual void InitializeEssentialClasses()
@@ -1760,6 +1757,7 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract void Rollback1();
 
+		/// <param name="obj"></param>
 		public virtual void Send(object obj)
 		{
 		}

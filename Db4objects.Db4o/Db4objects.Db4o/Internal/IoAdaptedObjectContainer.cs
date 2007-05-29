@@ -48,31 +48,24 @@ namespace Db4objects.Db4o.Internal
 			}
 			bool lockFile = Debug.lockFile && ConfigImpl().LockFile() && (!ConfigImpl().IsReadOnly
 				());
-			try
+			_file = ioAdapter.Open(FileName(), lockFile, 0);
+			if (NeedsTimerFile())
 			{
-				_file = ioAdapter.Open(FileName(), lockFile, 0);
-				if (NeedsTimerFile())
-				{
-					_timerFile = ioAdapter.DelegatedIoAdapter().Open(FileName(), false, 0);
-				}
-				if (isNew)
-				{
-					ConfigureNewFile();
-					if (ConfigImpl().ReservedStorageSpace() > 0)
-					{
-						Reserve(ConfigImpl().ReservedStorageSpace());
-					}
-					CommitTransaction();
-					WriteHeader(true, false);
-				}
-				else
-				{
-					ReadThis();
-				}
+				_timerFile = ioAdapter.DelegatedIoAdapter().Open(FileName(), false, 0);
 			}
-			catch (IOException e)
+			if (isNew)
 			{
-				throw new Db4oIOException(e);
+				ConfigureNewFile();
+				if (ConfigImpl().ReservedStorageSpace() > 0)
+				{
+					Reserve(ConfigImpl().ReservedStorageSpace());
+				}
+				CommitTransaction();
+				WriteHeader(true, false);
+			}
+			else
+			{
+				ReadThis();
 			}
 		}
 
@@ -302,15 +295,8 @@ namespace Db4objects.Db4o.Internal
 
 		private void ZeroReservedSlot(Slot slot)
 		{
-			try
-			{
-				ZeroFile(_file, slot);
-				ZeroFile(_backupFile, slot);
-			}
-			catch (IOException e)
-			{
-				Exceptions4.ThrowRuntimeException(16, e);
-			}
+			ZeroFile(_file, slot);
+			ZeroFile(_backupFile, slot);
 		}
 
 		private void ZeroFile(IoAdapter io, Slot slot)

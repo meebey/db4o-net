@@ -4,6 +4,7 @@ using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Reflect.Generic
 {
+	/// <exclude></exclude>
 	public interface IReflectClassBuilder
 	{
 		IReflectClass CreateClass(string name, IReflectClass superClass, int fieldCount);

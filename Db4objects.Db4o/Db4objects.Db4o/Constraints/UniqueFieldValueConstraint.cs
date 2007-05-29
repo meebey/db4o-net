@@ -16,9 +16,9 @@ namespace Db4objects.Db4o.Constraints
 	/// <remarks>configures a field of a class to allow unique values only.</remarks>
 	public class UniqueFieldValueConstraint : IConfigurationItem
 	{
-		private readonly object _clazz;
+		protected readonly object _clazz;
 
-		private readonly string _fieldName;
+		protected readonly string _fieldName;
 
 		public UniqueFieldValueConstraint(object clazz, string fieldName)
 		{
@@ -35,12 +35,12 @@ namespace Db4objects.Db4o.Constraints
 		public virtual void Apply(ObjectContainerBase objectContainer)
 		{
 			EventRegistryFactory.ForObjectContainer(objectContainer).Committing += new Db4objects.Db4o.Events.CommitEventHandler
-				(new _AnonymousInnerClass41(this, objectContainer).OnEvent);
+				(new _IEventListener4_41(this, objectContainer).OnEvent);
 		}
 
-		private sealed class _AnonymousInnerClass41
+		private sealed class _IEventListener4_41
 		{
-			public _AnonymousInnerClass41(UniqueFieldValueConstraint _enclosing, ObjectContainerBase
+			public _IEventListener4_41(UniqueFieldValueConstraint _enclosing, ObjectContainerBase
 				 objectContainer)
 			{
 				this._enclosing = _enclosing;
@@ -71,6 +71,11 @@ namespace Db4objects.Db4o.Constraints
 				}
 			}
 
+			private bool IsClassMetadataAvailable()
+			{
+				return null != this.ClassMetadata();
+			}
+
 			private FieldMetadata FieldMetadata()
 			{
 				if (this._fieldMetaData != null)
@@ -84,13 +89,21 @@ namespace Db4objects.Db4o.Constraints
 
 			private ClassMetadata ClassMetadata()
 			{
-				IReflectClass reflectClass = ReflectorUtils.ReflectClassFor(objectContainer.Reflector
-					(), this._enclosing._clazz);
-				return objectContainer.ClassMetadataForReflectClass(reflectClass);
+				return objectContainer.ClassMetadataForReflectClass(this.ReflectClass());
+			}
+
+			private IReflectClass ReflectClass()
+			{
+				return ReflectorUtils.ReflectClassFor(objectContainer.Reflector(), this._enclosing
+					._clazz);
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.CommitEventArgs args)
 			{
+				if (!this.IsClassMetadataAvailable())
+				{
+					return;
+				}
 				CommitEventArgs commitEventArgs = (CommitEventArgs)args;
 				Transaction trans = (Transaction)commitEventArgs.Transaction;
 				this.EnsureSingleOccurence(trans, commitEventArgs.Added);

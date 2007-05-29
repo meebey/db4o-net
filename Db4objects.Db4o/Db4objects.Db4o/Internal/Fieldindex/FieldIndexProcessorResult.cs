@@ -57,12 +57,12 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		public virtual IEnumerator IterateIDs()
 		{
-			return new _AnonymousInnerClass46(this, _indexedNode.GetEnumerator());
+			return new _MappingIterator_46(this, _indexedNode.GetEnumerator());
 		}
 
-		private sealed class _AnonymousInnerClass46 : MappingIterator
+		private sealed class _MappingIterator_46 : MappingIterator
 		{
-			public _AnonymousInnerClass46(FieldIndexProcessorResult _enclosing, IEnumerator baseArg1
+			public _MappingIterator_46(FieldIndexProcessorResult _enclosing, IEnumerator baseArg1
 				) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;

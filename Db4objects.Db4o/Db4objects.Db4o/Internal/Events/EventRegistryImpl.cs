@@ -357,7 +357,7 @@ namespace Db4objects.Db4o.Internal.Events
 			}
 		}
 
-		private void OnCommittedListener()
+		protected virtual void OnCommittedListener()
 		{
 			_container.OnCommittedListener();
 		}

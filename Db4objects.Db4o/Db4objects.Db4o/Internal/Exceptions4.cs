@@ -40,7 +40,8 @@ namespace Db4objects.Db4o.Internal
 			throw new Db4oException(Db4objects.Db4o.Internal.Messages.Get(code, msg));
 		}
 
-		/// <deprecated>Use com.db4o.foundation.NotSupportedException instead</deprecated>
+		[System.ObsoleteAttribute(@"Use com.db4o.foundation.NotSupportedException instead"
+			)]
 		public static void NotSupported()
 		{
 			ThrowRuntimeException(53);

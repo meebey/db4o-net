@@ -68,16 +68,15 @@ namespace Db4objects.Db4o.Internal
 				ClassMetadata yc = i.CurrentClass();
 				if (!yc.IsInternal())
 				{
-					yc.ForEachFieldMetadata(new _AnonymousInnerClass60(this, fieldName, a_visitor, yc
-						));
+					yc.ForEachFieldMetadata(new _IVisitor4_60(this, fieldName, a_visitor, yc));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass60 : IVisitor4
+		private sealed class _IVisitor4_60 : IVisitor4
 		{
-			public _AnonymousInnerClass60(ClassMetadataRepository _enclosing, string fieldName
-				, IVisitor4 a_visitor, ClassMetadata yc)
+			public _IVisitor4_60(ClassMetadataRepository _enclosing, string fieldName, IVisitor4
+				 a_visitor, ClassMetadata yc)
 			{
 				this._enclosing = _enclosing;
 				this.fieldName = fieldName;
@@ -292,26 +291,48 @@ namespace Db4objects.Db4o.Internal
 			return ReadYapClass((ClassMetadata)i_yapClassByID.Get(id), null);
 		}
 
+		public int ClassMetadataIdForName(string name)
+		{
+			ClassMetadata classMetadata = (ClassMetadata)i_yapClassByBytes.Get(GetNameBytes(name
+				));
+			if (classMetadata == null)
+			{
+				classMetadata = FindInitializedClassByName(name);
+			}
+			if (classMetadata != null)
+			{
+				return classMetadata.GetID();
+			}
+			return 0;
+		}
+
 		public ClassMetadata GetYapClass(string a_name)
 		{
-			ClassMetadata yapClass = (ClassMetadata)i_yapClassByBytes.Remove(GetNameBytes(a_name
-				));
-			ReadYapClass(yapClass, null);
-			if (yapClass == null)
+			ClassMetadata classMetadata = (ClassMetadata)i_yapClassByBytes.Remove(GetNameBytes
+				(a_name));
+			if (classMetadata == null)
 			{
-				ClassMetadataIterator i = Iterator();
-				while (i.MoveNext())
-				{
-					yapClass = (ClassMetadata)i.Current;
-					if (a_name.Equals(yapClass.GetName()))
-					{
-						ReadYapClass(yapClass, null);
-						return yapClass;
-					}
-				}
-				return null;
+				classMetadata = FindInitializedClassByName(a_name);
 			}
-			return yapClass;
+			if (classMetadata != null)
+			{
+				ReadYapClass(classMetadata, null);
+			}
+			return classMetadata;
+		}
+
+		private ClassMetadata FindInitializedClassByName(string name)
+		{
+			ClassMetadataIterator i = Iterator();
+			while (i.MoveNext())
+			{
+				ClassMetadata classMetadata = (ClassMetadata)i.Current;
+				if (name.Equals(classMetadata.GetName()))
+				{
+					return classMetadata;
+				}
+			}
+			return null;
 		}
 
 		public int GetYapClassID(string name)

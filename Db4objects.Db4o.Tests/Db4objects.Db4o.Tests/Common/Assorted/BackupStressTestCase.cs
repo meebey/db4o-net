@@ -56,6 +56,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			DeleteFile(FILE);
 			Db4oFactory.Configure().ObjectClass(typeof(BackupStressItem)).ObjectField("_iteration"
 				).Indexed(true);
+			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(BackupStressItem)
+				));
 		}
 
 		public virtual void TearDown()
@@ -88,7 +90,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			BackupStressIteration iteration = new BackupStressIteration();
 			_objectContainer.Set(iteration);
 			_objectContainer.Commit();
-			StartBackupThread();
+			Thread backupThread = StartBackupThread();
 			for (int i = 1; i <= ITERATIONS; i++)
 			{
 				for (int obj = 0; obj < OBJECTS; obj++)
@@ -105,16 +107,20 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				_objectContainer.Set(iteration);
 				_objectContainer.Commit();
 			}
+			_noMoreBackups = true;
+			backupThread.Join();
 		}
 
-		private void StartBackupThread()
+		private Thread StartBackupThread()
 		{
-			new Thread(new _AnonymousInnerClass98(this)).Start();
+			Thread thread = new Thread(new _IRunnable_101(this));
+			thread.Start();
+			return thread;
 		}
 
-		private sealed class _AnonymousInnerClass98 : IRunnable
+		private sealed class _IRunnable_101 : IRunnable
 		{
-			public _AnonymousInnerClass98(BackupStressTestCase _enclosing)
+			public _IRunnable_101(BackupStressTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -143,7 +149,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void CloseDatabase()
 		{
-			_noMoreBackups = true;
 			while (_inBackup)
 			{
 				Thread.Sleep(1000);

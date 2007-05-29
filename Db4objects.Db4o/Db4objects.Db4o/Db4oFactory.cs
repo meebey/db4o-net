@@ -344,17 +344,9 @@ namespace Db4objects.Db4o
 			{
 				memoryFile = new MemoryFile();
 			}
-			try
-			{
-				IObjectContainer oc = new InMemoryObjectContainer(config, memoryFile);
-				Db4objects.Db4o.Internal.Messages.LogMsg(i_config, 5, "Memory File");
-				return oc;
-			}
-			catch (IOException)
-			{
-				Exceptions4.ShouldNeverHappen();
-				return null;
-			}
+			IObjectContainer oc = new InMemoryObjectContainer(config, memoryFile);
+			Db4objects.Db4o.Internal.Messages.LogMsg(i_config, 5, "Memory File");
+			return oc;
 		}
 
 		/// <summary>

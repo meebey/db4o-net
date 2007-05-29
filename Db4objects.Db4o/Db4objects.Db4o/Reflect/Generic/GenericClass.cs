@@ -362,11 +362,11 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_isSecondClass = true;
 		}
 
-		public virtual bool SkipConstructor(bool flag)
+		public virtual bool SkipConstructor(bool flag, bool testConstructor)
 		{
 			if (_delegate != null)
 			{
-				return _delegate.SkipConstructor(flag);
+				return _delegate.SkipConstructor(flag, testConstructor);
 			}
 			return false;
 		}

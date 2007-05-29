@@ -49,14 +49,14 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 		public virtual void TestNewViolates()
 		{
 			Store(new UniqueFieldIndexTestCase.Item("2"));
-			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _AnonymousInnerClass46
+			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _ICodeBlock_46
 				(this));
 			Db().Rollback();
 		}
 
-		private sealed class _AnonymousInnerClass46 : ICodeBlock
+		private sealed class _ICodeBlock_46 : ICodeBlock
 		{
-			public _AnonymousInnerClass46(UniqueFieldIndexTestCase _enclosing)
+			public _ICodeBlock_46(UniqueFieldIndexTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -77,14 +77,14 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 				();
 			item._str = "3";
 			Store(item);
-			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _AnonymousInnerClass60
+			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _ICodeBlock_60
 				(this));
 			Db().Rollback();
 		}
 
-		private sealed class _AnonymousInnerClass60 : ICodeBlock
+		private sealed class _ICodeBlock_60 : ICodeBlock
 		{
-			public _AnonymousInnerClass60(UniqueFieldIndexTestCase _enclosing)
+			public _ICodeBlock_60(UniqueFieldIndexTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

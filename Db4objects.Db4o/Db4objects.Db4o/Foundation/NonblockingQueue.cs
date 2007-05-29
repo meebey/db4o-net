@@ -12,11 +12,11 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class NonblockingQueue : IQueue4
 	{
-		private sealed class Queue4Iterator : IEnumerator
+		protected sealed class Queue4Iterator : IEnumerator
 		{
-			private bool _active = false;
+			protected bool _active = false;
 
-			private List4 _current = null;
+			protected List4 _current = null;
 
 			public object Current
 			{
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Foundation
 
 		private List4 _first;
 
-		private List4 _last;
+		protected List4 _last;
 
 		public void Add(object obj)
 		{

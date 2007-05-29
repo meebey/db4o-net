@@ -33,9 +33,9 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private sealed class _AnonymousInnerClass33 : DefragContextImpl.DbSelector
+		private sealed class _DbSelector_33 : DefragContextImpl.DbSelector
 		{
-			public _AnonymousInnerClass33()
+			public _DbSelector_33()
 			{
 			}
 
@@ -45,12 +45,12 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragContextImpl.DbSelector SOURCEDB = new _AnonymousInnerClass33
+		public static readonly DefragContextImpl.DbSelector SOURCEDB = new _DbSelector_33
 			();
 
-		private sealed class _AnonymousInnerClass39 : DefragContextImpl.DbSelector
+		private sealed class _DbSelector_39 : DefragContextImpl.DbSelector
 		{
-			public _AnonymousInnerClass39()
+			public _DbSelector_39()
 			{
 			}
 
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragContextImpl.DbSelector TARGETDB = new _AnonymousInnerClass39
+		public static readonly DefragContextImpl.DbSelector TARGETDB = new _DbSelector_39
 			();
 
 		private const long CLASSCOLLECTION_POINTER_ADDRESS = 2 + 2 * Const4.INT_LENGTH;

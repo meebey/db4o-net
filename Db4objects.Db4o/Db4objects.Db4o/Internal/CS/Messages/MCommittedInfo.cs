@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System.Collections;
-using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -16,23 +15,15 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 	{
 		public virtual MCommittedInfo Encode(CallbackObjectInfoCollections callbackInfo)
 		{
-			try
-			{
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				EncodeObjectInfoCollection(os, callbackInfo.added);
-				EncodeObjectInfoCollection(os, callbackInfo.deleted);
-				EncodeObjectInfoCollection(os, callbackInfo.updated);
-				byte[] bytes = os.ToByteArray();
-				MCommittedInfo committedInfo = (MCommittedInfo)GetWriterForLength(Transaction(), 
-					bytes.Length);
-				committedInfo._payLoad.Append(bytes);
-				return committedInfo;
-			}
-			catch (IOException)
-			{
-				Exceptions4.ShouldNeverHappen();
-				return null;
-			}
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			EncodeObjectInfoCollection(os, callbackInfo.added);
+			EncodeObjectInfoCollection(os, callbackInfo.deleted);
+			EncodeObjectInfoCollection(os, callbackInfo.updated);
+			byte[] bytes = os.ToByteArray();
+			MCommittedInfo committedInfo = (MCommittedInfo)GetWriterForLength(Transaction(), 
+				bytes.Length);
+			committedInfo._payLoad.Append(bytes);
+			return committedInfo;
 		}
 
 		private void EncodeObjectInfoCollection(ByteArrayOutputStream os, IObjectInfoCollection
@@ -49,20 +40,12 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public virtual CallbackObjectInfoCollections Decode()
 		{
-			try
-			{
-				CallbackObjectInfoCollections callbackInfo = CallbackObjectInfoCollections.EMTPY;
-				ByteArrayInputStream @is = new ByteArrayInputStream(_payLoad._buffer);
-				callbackInfo.added = DecodeObjectInfoCollection(@is);
-				callbackInfo.deleted = DecodeObjectInfoCollection(@is);
-				callbackInfo.updated = DecodeObjectInfoCollection(@is);
-				return callbackInfo;
-			}
-			catch (IOException)
-			{
-				Exceptions4.ShouldNeverHappen();
-				return null;
-			}
+			CallbackObjectInfoCollections callbackInfo = CallbackObjectInfoCollections.EMTPY;
+			ByteArrayInputStream @is = new ByteArrayInputStream(_payLoad._buffer);
+			callbackInfo.added = DecodeObjectInfoCollection(@is);
+			callbackInfo.deleted = DecodeObjectInfoCollection(@is);
+			callbackInfo.updated = DecodeObjectInfoCollection(@is);
+			return callbackInfo;
 		}
 
 		private IObjectInfoCollection DecodeObjectInfoCollection(ByteArrayInputStream @is
@@ -102,14 +85,14 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public virtual bool ProcessAtClient()
 		{
 			CallbackObjectInfoCollections callbackInfos = Decode();
-			new Thread(new _AnonymousInnerClass88(this, callbackInfos)).Start();
+			new Thread(new _IRunnable_76(this, callbackInfos)).Start();
 			return true;
 		}
 
-		private sealed class _AnonymousInnerClass88 : IRunnable
+		private sealed class _IRunnable_76 : IRunnable
 		{
-			public _AnonymousInnerClass88(MCommittedInfo _enclosing, CallbackObjectInfoCollections
-				 callbackInfos)
+			public _IRunnable_76(MCommittedInfo _enclosing, CallbackObjectInfoCollections callbackInfos
+				)
 			{
 				this._enclosing = _enclosing;
 				this.callbackInfos = callbackInfos;

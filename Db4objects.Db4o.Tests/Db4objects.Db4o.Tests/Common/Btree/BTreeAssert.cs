@@ -59,12 +59,12 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public static void DumpKeys(Transaction trans, BTree tree)
 		{
-			tree.TraverseKeys(trans, new _AnonymousInnerClass51());
+			tree.TraverseKeys(trans, new _IVisitor4_51());
 		}
 
-		private sealed class _AnonymousInnerClass51 : IVisitor4
+		private sealed class _IVisitor4_51 : IVisitor4
 		{
-			public _AnonymousInnerClass51()
+			public _IVisitor4_51()
 			{
 			}
 

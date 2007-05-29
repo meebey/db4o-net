@@ -26,14 +26,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		private void AssertExhausted(ArrayIterator4 i)
 		{
 			Assert.IsFalse(i.MoveNext());
-			Assert.Expect(typeof(IndexOutOfRangeException), new _AnonymousInnerClass29(this, 
-				i));
+			Assert.Expect(typeof(IndexOutOfRangeException), new _ICodeBlock_29(this, i));
 		}
 
-		private sealed class _AnonymousInnerClass29 : ICodeBlock
+		private sealed class _ICodeBlock_29 : ICodeBlock
 		{
-			public _AnonymousInnerClass29(ArrayIterator4TestCase _enclosing, ArrayIterator4 i
-				)
+			public _ICodeBlock_29(ArrayIterator4TestCase _enclosing, ArrayIterator4 i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;

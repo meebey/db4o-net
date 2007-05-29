@@ -240,14 +240,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private IReflectClassPredicate ClassPredicate(Type clazz)
 		{
 			IReflectClass collectionClass = ForClass(clazz);
-			IReflectClassPredicate predicate = new _AnonymousInnerClass220(this, collectionClass
+			IReflectClassPredicate predicate = new _IReflectClassPredicate_220(this, collectionClass
 				);
 			return predicate;
 		}
 
-		private sealed class _AnonymousInnerClass220 : IReflectClassPredicate
+		private sealed class _IReflectClassPredicate_220 : IReflectClassPredicate
 		{
-			public _AnonymousInnerClass220(GenericReflector _enclosing, IReflectClass collectionClass
+			public _IReflectClassPredicate_220(GenericReflector _enclosing, IReflectClass collectionClass
 				)
 			{
 				this._enclosing = _enclosing;

@@ -42,15 +42,14 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		{
 			IConfiguration config1 = Db4oFactory.NewConfiguration();
 			config1.ReadOnly(true);
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _AnonymousInnerClass41(this, 
-				config1));
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_41(this, config1
+				));
 			config1.ReadOnly(false);
 			IObjectContainer db1 = Db4oFactory.OpenFile(config1, FILENAME);
 			config1.ReadOnly(true);
 			try
 			{
-				Assert.Expect(typeof(DatabaseReadOnlyException), new _AnonymousInnerClass50(this, 
-					db1));
+				Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_50(this, db1));
 			}
 			finally
 			{
@@ -69,10 +68,10 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _AnonymousInnerClass41 : ICodeBlock
+		private sealed class _ICodeBlock_41 : ICodeBlock
 		{
-			public _AnonymousInnerClass41(NonStaticConfigurationTestCase _enclosing, IConfiguration
-				 config1)
+			public _ICodeBlock_41(NonStaticConfigurationTestCase _enclosing, IConfiguration config1
+				)
 			{
 				this._enclosing = _enclosing;
 				this.config1 = config1;
@@ -88,9 +87,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			private readonly IConfiguration config1;
 		}
 
-		private sealed class _AnonymousInnerClass50 : ICodeBlock
+		private sealed class _ICodeBlock_50 : ICodeBlock
 		{
-			public _AnonymousInnerClass50(NonStaticConfigurationTestCase _enclosing, IObjectContainer
+			public _ICodeBlock_50(NonStaticConfigurationTestCase _enclosing, IObjectContainer
 				 db1)
 			{
 				this._enclosing = _enclosing;

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		internal static int _messageIdGenerator = 1;
 
 		private static Db4objects.Db4o.Internal.CS.Messages.Msg[] _messages = new Db4objects.Db4o.Internal.CS.Messages.Msg
-			[60];
+			[70];
 
 		internal int _msgID;
 
@@ -26,6 +26,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		private IMessageDispatcher _messageDispatcher;
 
 		public static readonly MChainedRuntimeException CHAINED_RUNTIME_EXCEPTION = new MChainedRuntimeException
+			();
+
+		public static readonly MClassID CLASS_ID = new MClassID();
+
+		public static readonly MClassMetadataIdForName CLASS_METADATA_ID_FOR_NAME = new MClassMetadataIdForName
 			();
 
 		public static readonly MClassNameForID CLASS_NAME_FOR_ID = new MClassNameForID();
@@ -288,6 +293,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return message;
 		}
 
+		/// <param name="sock"></param>
 		internal virtual Db4objects.Db4o.Internal.CS.Messages.Msg ReadPayLoad(IMessageDispatcher
 			 messageDispatcher, Db4objects.Db4o.Internal.Transaction a_trans, ISocket4 sock, 
 			Db4objects.Db4o.Internal.Buffer reader)

@@ -20,14 +20,13 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			LockedTree lockedTree = new LockedTree();
 			lockedTree.Add(new TreeInt(1));
-			Assert.Expect(typeof(InvalidOperationException), new _AnonymousInnerClass21(this, 
-				lockedTree));
+			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_21(this, lockedTree
+				));
 		}
 
-		private sealed class _AnonymousInnerClass21 : ICodeBlock
+		private sealed class _ICodeBlock_21 : ICodeBlock
 		{
-			public _AnonymousInnerClass21(LockedTreeTestCase _enclosing, LockedTree lockedTree
-				)
+			public _ICodeBlock_21(LockedTreeTestCase _enclosing, LockedTree lockedTree)
 			{
 				this._enclosing = _enclosing;
 				this.lockedTree = lockedTree;
@@ -35,13 +34,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 			public void Run()
 			{
-				lockedTree.TraverseLocked(new _AnonymousInnerClass23(this, lockedTree));
+				lockedTree.TraverseLocked(new _IVisitor4_23(this, lockedTree));
 			}
 
-			private sealed class _AnonymousInnerClass23 : IVisitor4
+			private sealed class _IVisitor4_23 : IVisitor4
 			{
-				public _AnonymousInnerClass23(_AnonymousInnerClass21 _enclosing, LockedTree lockedTree
-					)
+				public _IVisitor4_23(_ICodeBlock_21 _enclosing, LockedTree lockedTree)
 				{
 					this._enclosing = _enclosing;
 					this.lockedTree = lockedTree;
@@ -56,7 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 					}
 				}
 
-				private readonly _AnonymousInnerClass21 _enclosing;
+				private readonly _ICodeBlock_21 _enclosing;
 
 				private readonly LockedTree lockedTree;
 			}
@@ -70,14 +68,13 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			LockedTree lockedTree = new LockedTree();
 			lockedTree.Add(new TreeInt(1));
-			Assert.Expect(typeof(InvalidOperationException), new _AnonymousInnerClass38(this, 
-				lockedTree));
+			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_38(this, lockedTree
+				));
 		}
 
-		private sealed class _AnonymousInnerClass38 : ICodeBlock
+		private sealed class _ICodeBlock_38 : ICodeBlock
 		{
-			public _AnonymousInnerClass38(LockedTreeTestCase _enclosing, LockedTree lockedTree
-				)
+			public _ICodeBlock_38(LockedTreeTestCase _enclosing, LockedTree lockedTree)
 			{
 				this._enclosing = _enclosing;
 				this.lockedTree = lockedTree;
@@ -85,13 +82,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 			public void Run()
 			{
-				lockedTree.TraverseLocked(new _AnonymousInnerClass40(this, lockedTree));
+				lockedTree.TraverseLocked(new _IVisitor4_40(this, lockedTree));
 			}
 
-			private sealed class _AnonymousInnerClass40 : IVisitor4
+			private sealed class _IVisitor4_40 : IVisitor4
 			{
-				public _AnonymousInnerClass40(_AnonymousInnerClass38 _enclosing, LockedTree lockedTree
-					)
+				public _IVisitor4_40(_ICodeBlock_38 _enclosing, LockedTree lockedTree)
 				{
 					this._enclosing = _enclosing;
 					this.lockedTree = lockedTree;
@@ -102,7 +98,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 					lockedTree.Clear();
 				}
 
-				private readonly _AnonymousInnerClass38 _enclosing;
+				private readonly _ICodeBlock_38 _enclosing;
 
 				private readonly LockedTree lockedTree;
 			}

@@ -59,14 +59,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			BlockingQueueTestCase.StopThread notifyThread = new BlockingQueueTestCase.StopThread
 				(queue);
 			notifyThread.Start();
-			Assert.Expect(typeof(BlockingQueueStoppedException), new _AnonymousInnerClass52(this
-				, queue));
+			Assert.Expect(typeof(BlockingQueueStoppedException), new _ICodeBlock_52(this, queue
+				));
 		}
 
-		private sealed class _AnonymousInnerClass52 : ICodeBlock
+		private sealed class _ICodeBlock_52 : ICodeBlock
 		{
-			public _AnonymousInnerClass52(BlockingQueueTestCase _enclosing, BlockingQueue queue
-				)
+			public _ICodeBlock_52(BlockingQueueTestCase _enclosing, BlockingQueue queue)
 			{
 				this._enclosing = _enclosing;
 				this.queue = queue;

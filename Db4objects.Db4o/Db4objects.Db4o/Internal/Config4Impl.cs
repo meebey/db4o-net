@@ -273,6 +273,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(DISABLE_COMMIT_RECOVERY, true);
 		}
 
+		[System.ObsoleteAttribute]
 		public void DiscardFreeSpace(int bytes)
 		{
 			if (bytes < 0)
@@ -287,6 +288,7 @@ namespace Db4objects.Db4o.Internal
 			DiscardFreeSpace(byteCount);
 		}
 
+		[System.ObsoleteAttribute]
 		public void Encrypt(bool flag)
 		{
 			GlobalSettingOnly();
@@ -345,11 +347,7 @@ namespace Db4objects.Db4o.Internal
 			return (IFreespaceFiller)_config.Get(FREESPACE_FILLER);
 		}
 
-		/// <deprecated>
-		/// Use
-		/// <see cref="Config4Impl.GenerateUUIDs">Config4Impl.GenerateUUIDs</see>
-		/// instead.
-		/// </deprecated>
+		[System.ObsoleteAttribute(@"Use")]
 		public void GenerateUUIDs(int setting)
 		{
 			GenerateUUIDs(ConfigScope.ForID(setting));
@@ -360,12 +358,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(GENERATE_UUIDS, scope);
 		}
 
-		/// <deprecated>
-		/// Use
-		/// <see cref="Config4Impl.GenerateVersionNumbers">Config4Impl.GenerateVersionNumbers
-		/// 	</see>
-		/// instead.
-		/// </deprecated>
+		[System.ObsoleteAttribute(@"Use")]
 		public void GenerateVersionNumbers(int setting)
 		{
 			GenerateVersionNumbers(ConfigScope.ForID(setting));
@@ -466,6 +459,7 @@ namespace Db4objects.Db4o.Internal
 			return outStream == null ? Sharpen.Runtime.Out : outStream;
 		}
 
+		[System.ObsoleteAttribute]
 		public void Password(string pw)
 		{
 			GlobalSettingOnly();
@@ -557,6 +551,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(BLOBPATH, path);
 		}
 
+		[System.ObsoleteAttribute]
 		public void SetClassLoader(object classLoader)
 		{
 			ReflectWith(Platform4.CreateReflector(classLoader));

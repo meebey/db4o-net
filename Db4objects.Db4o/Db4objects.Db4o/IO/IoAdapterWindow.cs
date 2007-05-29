@@ -50,11 +50,13 @@ namespace Db4objects.Db4o.IO
 			return _io.Read(data);
 		}
 
+		/// <summary>Disable IO Adapter Window</summary>
 		public virtual void Disable()
 		{
 			_disabled = true;
 		}
 
+		/// <summary>Flush IO Adapter Window</summary>
 		public virtual void Flush()
 		{
 			if (!_disabled)

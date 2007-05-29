@@ -27,12 +27,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			Fixture().Reopen();
 			Db4oIOExceptionTestCase.Item item = (Db4oIOExceptionTestCase.Item)RetrieveOnlyInstance
 				(typeof(Db4oIOExceptionTestCase.Item));
-			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass25(this, item));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_25(this, item));
 		}
 
-		private sealed class _AnonymousInnerClass25 : ICodeBlock
+		private sealed class _ICodeBlock_25 : ICodeBlock
 		{
-			public _AnonymousInnerClass25(Db4oIOExceptionTestCase _enclosing, Db4oIOExceptionTestCase.Item
+			public _ICodeBlock_25(Db4oIOExceptionTestCase _enclosing, Db4oIOExceptionTestCase.Item
 				 item)
 			{
 				this._enclosing = _enclosing;
@@ -52,12 +52,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestClose()
 		{
-			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass34(this));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_34(this));
 		}
 
-		private sealed class _AnonymousInnerClass34 : ICodeBlock
+		private sealed class _ICodeBlock_34 : ICodeBlock
 		{
-			public _AnonymousInnerClass34(Db4oIOExceptionTestCase _enclosing)
+			public _ICodeBlock_34(Db4oIOExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -74,12 +74,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestCommit()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(0));
-			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass44(this));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_44(this));
 		}
 
-		private sealed class _AnonymousInnerClass44 : ICodeBlock
+		private sealed class _ICodeBlock_44 : ICodeBlock
 		{
-			public _AnonymousInnerClass44(Db4oIOExceptionTestCase _enclosing)
+			public _ICodeBlock_44(Db4oIOExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -98,12 +98,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			Store(new Db4oIOExceptionTestCase.Item(3));
 			Db4oIOExceptionTestCase.Item item = (Db4oIOExceptionTestCase.Item)RetrieveOnlyInstance
 				(typeof(Db4oIOExceptionTestCase.Item));
-			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass55(this, item));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_55(this, item));
 		}
 
-		private sealed class _AnonymousInnerClass55 : ICodeBlock
+		private sealed class _ICodeBlock_55 : ICodeBlock
 		{
-			public _AnonymousInnerClass55(Db4oIOExceptionTestCase _enclosing, Db4oIOExceptionTestCase.Item
+			public _ICodeBlock_55(Db4oIOExceptionTestCase _enclosing, Db4oIOExceptionTestCase.Item
 				 item)
 			{
 				this._enclosing = _enclosing;
@@ -124,12 +124,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestGet()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
-			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass65(this));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_65(this));
 		}
 
-		private sealed class _AnonymousInnerClass65 : ICodeBlock
+		private sealed class _ICodeBlock_65 : ICodeBlock
 		{
-			public _AnonymousInnerClass65(Db4oIOExceptionTestCase _enclosing)
+			public _ICodeBlock_65(Db4oIOExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -146,12 +146,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestGetAll()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
-			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass75(this));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_75(this));
 		}
 
-		private sealed class _AnonymousInnerClass75 : ICodeBlock
+		private sealed class _ICodeBlock_75 : ICodeBlock
 		{
-			public _AnonymousInnerClass75(Db4oIOExceptionTestCase _enclosing)
+			public _ICodeBlock_75(Db4oIOExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -172,12 +172,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestQuery()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
-			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass88(this));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_88(this));
 		}
 
-		private sealed class _AnonymousInnerClass88 : ICodeBlock
+		private sealed class _ICodeBlock_88 : ICodeBlock
 		{
-			public _AnonymousInnerClass88(Db4oIOExceptionTestCase _enclosing)
+			public _ICodeBlock_88(Db4oIOExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -194,12 +194,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestRollback()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
-			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass98(this));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_98(this));
 		}
 
-		private sealed class _AnonymousInnerClass98 : ICodeBlock
+		private sealed class _ICodeBlock_98 : ICodeBlock
 		{
-			public _AnonymousInnerClass98(Db4oIOExceptionTestCase _enclosing)
+			public _ICodeBlock_98(Db4oIOExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -215,12 +215,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestSet()
 		{
-			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass107(this));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_107(this));
 		}
 
-		private sealed class _AnonymousInnerClass107 : ICodeBlock
+		private sealed class _ICodeBlock_107 : ICodeBlock
 		{
-			public _AnonymousInnerClass107(Db4oIOExceptionTestCase _enclosing)
+			public _ICodeBlock_107(Db4oIOExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -242,12 +242,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			Store(item);
 			Db4oUUID uuid = Db().GetObjectInfo(item).GetUUID();
 			Fixture().Reopen();
-			Assert.Expect(typeof(Db4oIOException), new _AnonymousInnerClass122(this, uuid));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_122(this, uuid));
 		}
 
-		private sealed class _AnonymousInnerClass122 : ICodeBlock
+		private sealed class _ICodeBlock_122 : ICodeBlock
 		{
-			public _AnonymousInnerClass122(Db4oIOExceptionTestCase _enclosing, Db4oUUID uuid)
+			public _ICodeBlock_122(Db4oIOExceptionTestCase _enclosing, Db4oUUID uuid)
 			{
 				this._enclosing = _enclosing;
 				this.uuid = uuid;

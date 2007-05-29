@@ -82,12 +82,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public override void Sort(IQueryComparator cmp)
 		{
-			Algorithms4.Qsort(new _AnonymousInnerClass73(this, cmp));
+			Algorithms4.Qsort(new _IQuickSortable4_73(this, cmp));
 		}
 
-		private sealed class _AnonymousInnerClass73 : IQuickSortable4
+		private sealed class _IQuickSortable4_73 : IQuickSortable4
 		{
-			public _AnonymousInnerClass73(IdListQueryResult _enclosing, IQueryComparator cmp)
+			public _IQuickSortable4_73(IdListQueryResult _enclosing, IQueryComparator cmp)
 			{
 				this._enclosing = _enclosing;
 				this.cmp = cmp;
@@ -122,12 +122,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 				BTree btree = ((BTreeClassIndexStrategy)index).Btree();
 				_ids = new IntArrayList(btree.Size(Transaction()));
 			}
-			index.TraverseAll(_transaction, new _AnonymousInnerClass92(this));
+			index.TraverseAll(_transaction, new _IVisitor4_92(this));
 		}
 
-		private sealed class _AnonymousInnerClass92 : IVisitor4
+		private sealed class _IVisitor4_92 : IVisitor4
 		{
-			public _AnonymousInnerClass92(IdListQueryResult _enclosing)
+			public _IVisitor4_92(IdListQueryResult _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -158,16 +158,15 @@ namespace Db4objects.Db4o.Internal.Query.Result
 						)))
 					{
 						IClassIndexStrategy index = yapClass.Index();
-						index.TraverseAll(_transaction, new _AnonymousInnerClass115(this, duplicates));
+						index.TraverseAll(_transaction, new _IVisitor4_115(this, duplicates));
 					}
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass115 : IVisitor4
+		private sealed class _IVisitor4_115 : IVisitor4
 		{
-			public _AnonymousInnerClass115(IdListQueryResult _enclosing, Tree.ByRef duplicates
-				)
+			public _IVisitor4_115(IdListQueryResult _enclosing, Tree.ByRef duplicates)
 			{
 				this._enclosing = _enclosing;
 				this.duplicates = duplicates;

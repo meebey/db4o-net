@@ -109,8 +109,10 @@ namespace Db4objects.Db4o.Internal
 			i_state = AVAILABLE;
 		}
 
-		public virtual void AddFieldIndex(MarshallerFamily mf, ClassMetadata yapClass, StatefulBuffer
-			 writer, Slot oldSlot)
+		/// <param name="classMetadata"></param>
+		/// <param name="oldSlot"></param>
+		public virtual void AddFieldIndex(MarshallerFamily mf, ClassMetadata classMetadata
+			, StatefulBuffer writer, Slot oldSlot)
 		{
 			if (!HasIndex())
 			{
@@ -399,6 +401,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <param name="isUpdate"></param>
 		public virtual void Delete(MarshallerFamily mf, StatefulBuffer a_bytes, bool isUpdate
 			)
 		{
@@ -540,11 +543,12 @@ namespace Db4objects.Db4o.Internal
 			return i_handlerID;
 		}
 
-		public virtual object GetOn(Transaction a_trans, object a_OnObject)
+		/// <param name="trans"></param>
+		public virtual object GetOn(Transaction trans, object onObject)
 		{
 			if (Alive())
 			{
-				return i_javaField.Get(a_OnObject);
+				return i_javaField.Get(onObject);
 			}
 			return null;
 		}
@@ -641,6 +645,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <param name="@ref"></param>
 		public virtual void Instantiate(MarshallerFamily mf, ObjectReference @ref, object
 			 onObject, StatefulBuffer buffer)
 		{
@@ -723,8 +728,10 @@ namespace Db4objects.Db4o.Internal
 			return handlerForClass;
 		}
 
-		public virtual void Marshall(ObjectReference yo, object obj, MarshallerFamily mf, 
-			StatefulBuffer writer, Config4Class config, bool isNew)
+		/// <param name="@ref"></param>
+		/// <param name="isNew"></param>
+		public virtual void Marshall(ObjectReference @ref, object obj, MarshallerFamily mf
+			, StatefulBuffer writer, Config4Class config, bool isNew)
 		{
 			object indexEntry = null;
 			if (obj != null && ((config != null && (config.CascadeOnUpdate().DefiniteYes())) 
@@ -799,10 +806,12 @@ namespace Db4objects.Db4o.Internal
 			return i_handler.ReadQuery(a_trans, mf, true, a_reader, false);
 		}
 
-		public virtual void ReadVirtualAttribute(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			 a_reader, ObjectReference a_yapObject)
+		/// <param name="trans"></param>
+		/// <param name="@ref"></param>
+		public virtual void ReadVirtualAttribute(Transaction trans, Db4objects.Db4o.Internal.Buffer
+			 buffer, ObjectReference @ref)
 		{
-			a_reader.IncrementOffset(i_handler.LinkLength());
+			buffer.IncrementOffset(i_handler.LinkLength());
 		}
 
 		internal virtual void Refresh()
@@ -875,13 +884,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				Transaction trans = stream.GetTransaction();
-				_index.TraverseKeys(trans, new _AnonymousInnerClass782(this, userVisitor, trans));
+				_index.TraverseKeys(trans, new _IVisitor4_797(this, userVisitor, trans));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass782 : IVisitor4
+		private sealed class _IVisitor4_797 : IVisitor4
 		{
-			public _AnonymousInnerClass782(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_797(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -1010,7 +1019,8 @@ namespace Db4objects.Db4o.Internal
 			return indexHandler;
 		}
 
-		public virtual BTree GetIndex(Transaction transaction)
+		/// <param name="trans"></param>
+		public virtual BTree GetIndex(Transaction trans)
 		{
 			return _index;
 		}
@@ -1063,8 +1073,9 @@ namespace Db4objects.Db4o.Internal
 			return ids.Length > 0;
 		}
 
+		/// <param name="classMetadata"></param>
 		protected virtual void RebuildIndexForObject(LocalObjectContainer stream, ClassMetadata
-			 yapClass, int objectId)
+			 classMetadata, int objectId)
 		{
 			StatefulBuffer writer = stream.ReadWriterByID(stream.SystemTransaction(), objectId
 				);

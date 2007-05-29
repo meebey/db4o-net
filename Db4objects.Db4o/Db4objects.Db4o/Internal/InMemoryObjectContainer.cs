@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
@@ -34,24 +32,17 @@ namespace Db4objects.Db4o.Internal
 		protected sealed override void OpenImpl()
 		{
 			byte[] bytes = _memoryFile.GetBytes();
-			try
+			if (bytes == null || bytes.Length == 0)
 			{
-				if (bytes == null || bytes.Length == 0)
-				{
-					_memoryFile.SetBytes(new byte[_memoryFile.GetInitialSize()]);
-					ConfigureNewFile();
-					CommitTransaction();
-					WriteHeader(false, false);
-				}
-				else
-				{
-					_length = bytes.Length;
-					ReadThis();
-				}
+				_memoryFile.SetBytes(new byte[_memoryFile.GetInitialSize()]);
+				ConfigureNewFile();
+				CommitTransaction();
+				WriteHeader(false, false);
 			}
-			catch (IOException e)
+			else
 			{
-				throw new Db4oIOException(e);
+				_length = bytes.Length;
+				ReadThis();
 			}
 		}
 

@@ -7,9 +7,9 @@ namespace Db4oUnit.Extensions
 {
 	public sealed class Db4oFixtureLabelProvider
 	{
-		private sealed class _AnonymousInnerClass8 : ILabelProvider
+		private sealed class _ILabelProvider_8 : ILabelProvider
 		{
-			public _AnonymousInnerClass8()
+			public _ILabelProvider_8()
 			{
 			}
 
@@ -25,6 +25,6 @@ namespace Db4oUnit.Extensions
 			}
 		}
 
-		public static readonly ILabelProvider DEFAULT = new _AnonymousInnerClass8();
+		public static readonly ILabelProvider DEFAULT = new _ILabelProvider_8();
 	}
 }

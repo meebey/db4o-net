@@ -47,8 +47,6 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _isEnum;
 
-		public bool i_dontCallConstructors;
-
 		private EventDispatcher _eventDispatcher;
 
 		private bool _internal;
@@ -665,6 +663,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <param name="mf"></param>
 		public virtual void DeleteEmbedded1(MarshallerFamily mf, StatefulBuffer a_bytes, 
 			int a_id)
 		{
@@ -1099,14 +1098,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _AnonymousInnerClass934(this, name, yf));
+			ForEachFieldMetadata(new _IVisitor4_935(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _AnonymousInnerClass934 : IVisitor4
+		private sealed class _IVisitor4_935 : IVisitor4
 		{
-			public _AnonymousInnerClass934(ClassMetadata _enclosing, string name, FieldMetadata[]
-				 yf)
+			public _IVisitor4_935(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
 			{
 				this._enclosing = _enclosing;
 				this.name = name;
@@ -1133,13 +1131,14 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		public virtual bool HasField(ObjectContainerBase a_stream, string a_field)
+		/// <param name="container"></param>
+		public virtual bool HasField(ObjectContainerBase container, string fieldName)
 		{
 			if (ClassReflector().IsCollection())
 			{
 				return true;
 			}
-			return FieldMetadataForName(a_field) != null;
+			return FieldMetadataForName(fieldName) != null;
 		}
 
 		internal virtual bool HasVirtualAttributes()
@@ -1420,6 +1419,7 @@ namespace Db4objects.Db4o.Internal
 				.CAN_ACTIVATE);
 		}
 
+		/// <param name="obj"></param>
 		internal virtual object InstantiateTransient(ObjectReference yapObject, object obj
 			, MarshallerFamily mf, ObjectHeaderAttributes attributes, StatefulBuffer buffer)
 		{
@@ -1520,18 +1520,12 @@ namespace Db4objects.Db4o.Internal
 			return _stream.ConfigImpl().ResolveAliasRuntimeName(i_name);
 		}
 
-		internal bool CallConstructor()
+		public bool CallConstructor()
 		{
-			i_dontCallConstructors = !CallConstructor1();
-			return !i_dontCallConstructors;
-		}
-
-		private bool CallConstructor1()
-		{
-			TernaryBool res = CallConstructorSpecialized();
-			if (!res.Unspecified())
+			TernaryBool specialized = CallConstructorSpecialized();
+			if (!specialized.Unspecified())
 			{
-				return res == TernaryBool.YES;
+				return specialized.DefiniteYes();
 			}
 			return _stream.ConfigImpl().CallConstructors().DefiniteYes();
 		}
@@ -1694,16 +1688,16 @@ namespace Db4objects.Db4o.Internal
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Platform4.ForEachCollectionElement(obj, new _AnonymousInnerClass1431(this, a_candidates
-						, trans));
+					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1429(this, a_candidates, trans
+						));
 				}
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1431 : IVisitor4
+		private sealed class _IVisitor4_1429 : IVisitor4
 		{
-			public _AnonymousInnerClass1431(ClassMetadata _enclosing, QCandidates a_candidates
-				, Transaction trans)
+			public _IVisitor4_1429(ClassMetadata _enclosing, QCandidates a_candidates, Transaction
+				 trans)
 			{
 				this._enclosing = _enclosing;
 				this.a_candidates = a_candidates;
@@ -2085,7 +2079,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Stream();
 			stream.Activate1(trans, sc, 4);
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _AnonymousInnerClass1757
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1755
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2094,10 +2088,10 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _AnonymousInnerClass1757 : IFunction4
+		private sealed class _IFunction4_1755 : IFunction4
 		{
-			public _AnonymousInnerClass1757(ClassMetadata _enclosing, StaticField[] existingFields
-				, Transaction trans)
+			public _IFunction4_1755(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+				 trans)
 			{
 				this._enclosing = _enclosing;
 				this.existingFields = existingFields;
@@ -2137,12 +2131,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _AnonymousInnerClass1785(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1783(this));
 		}
 
-		private sealed class _AnonymousInnerClass1785 : IFunction4
+		private sealed class _IFunction4_1783 : IFunction4
 		{
-			public _AnonymousInnerClass1785(ClassMetadata _enclosing)
+			public _IFunction4_1783(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2155,7 +2149,7 @@ namespace Db4objects.Db4o.Internal
 			private readonly ClassMetadata _enclosing;
 		}
 
-		private StaticField ToStaticField(IReflectField reflectField)
+		protected virtual StaticField ToStaticField(IReflectField reflectField)
 		{
 			return new StaticField(reflectField.GetName(), StaticReflectFieldValue(reflectField
 				));
@@ -2184,12 +2178,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _AnonymousInnerClass1815(this));
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1813(this));
 		}
 
-		private sealed class _AnonymousInnerClass1815 : IPredicate4
+		private sealed class _IPredicate4_1813 : IPredicate4
 		{
-			public _AnonymousInnerClass1815(ClassMetadata _enclosing)
+			public _IPredicate4_1813(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2207,7 +2201,7 @@ namespace Db4objects.Db4o.Internal
 			return ClassReflector().GetDeclaredFields();
 		}
 
-		private void UpdateExistingStaticField(Transaction trans, StaticField existingField
+		protected virtual void UpdateExistingStaticField(Transaction trans, StaticField existingField
 			, IReflectField reflectField)
 		{
 			ObjectContainerBase stream = trans.Stream();
@@ -2246,7 +2240,7 @@ namespace Db4objects.Db4o.Internal
 			return (i_config != null && i_config.StaticFieldValuesArePersisted());
 		}
 
-		private StaticField FieldByName(StaticField[] fields, string fieldName)
+		protected virtual StaticField FieldByName(StaticField[] fields, string fieldName)
 		{
 			for (int i = 0; i < fields.Length; i++)
 			{

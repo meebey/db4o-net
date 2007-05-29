@@ -78,13 +78,13 @@ namespace Db4objects.Db4o.Internal.Classindex
 		{
 			OldClassIndexStrategy.TransactionState context = GetState(transaction);
 			ClassIndex index = GetActiveIndex(transaction);
-			context.TraverseAdded(new _AnonymousInnerClass68(this, index));
-			context.TraverseRemoved(new _AnonymousInnerClass74(this, transaction, index));
+			context.TraverseAdded(new _IVisitor4_68(this, index));
+			context.TraverseRemoved(new _IVisitor4_74(this, transaction, index));
 		}
 
-		private sealed class _AnonymousInnerClass68 : IVisitor4
+		private sealed class _IVisitor4_68 : IVisitor4
 		{
-			public _AnonymousInnerClass68(OldClassIndexStrategy _enclosing, ClassIndex index)
+			public _IVisitor4_68(OldClassIndexStrategy _enclosing, ClassIndex index)
 			{
 				this._enclosing = _enclosing;
 				this.index = index;
@@ -100,10 +100,10 @@ namespace Db4objects.Db4o.Internal.Classindex
 			private readonly ClassIndex index;
 		}
 
-		private sealed class _AnonymousInnerClass74 : IVisitor4
+		private sealed class _IVisitor4_74 : IVisitor4
 		{
-			public _AnonymousInnerClass74(OldClassIndexStrategy _enclosing, Transaction transaction
-				, ClassIndex index)
+			public _IVisitor4_74(OldClassIndexStrategy _enclosing, Transaction transaction, ClassIndex
+				 index)
 			{
 				this._enclosing = _enclosing;
 				this.transaction = transaction;
@@ -207,14 +207,14 @@ namespace Db4objects.Db4o.Internal.Classindex
 			}
 			Tree.ByRef tree = new Tree.ByRef(Tree.DeepClone(ci.GetRoot(), null));
 			OldClassIndexStrategy.TransactionState context = GetState(transaction);
-			context.TraverseAdded(new _AnonymousInnerClass151(this, tree));
-			context.TraverseRemoved(new _AnonymousInnerClass156(this, tree));
+			context.TraverseAdded(new _IVisitor4_151(this, tree));
+			context.TraverseRemoved(new _IVisitor4_156(this, tree));
 			return tree.value;
 		}
 
-		private sealed class _AnonymousInnerClass151 : IVisitor4
+		private sealed class _IVisitor4_151 : IVisitor4
 		{
-			public _AnonymousInnerClass151(OldClassIndexStrategy _enclosing, Tree.ByRef tree)
+			public _IVisitor4_151(OldClassIndexStrategy _enclosing, Tree.ByRef tree)
 			{
 				this._enclosing = _enclosing;
 				this.tree = tree;
@@ -230,9 +230,9 @@ namespace Db4objects.Db4o.Internal.Classindex
 			private readonly Tree.ByRef tree;
 		}
 
-		private sealed class _AnonymousInnerClass156 : IVisitor4
+		private sealed class _IVisitor4_156 : IVisitor4
 		{
-			public _AnonymousInnerClass156(OldClassIndexStrategy _enclosing, Tree.ByRef tree)
+			public _IVisitor4_156(OldClassIndexStrategy _enclosing, Tree.ByRef tree)
 			{
 				this._enclosing = _enclosing;
 				this.tree = tree;
@@ -258,14 +258,13 @@ namespace Db4objects.Db4o.Internal.Classindex
 			Tree tree = GetAll(transaction);
 			if (tree != null)
 			{
-				tree.Traverse(new _AnonymousInnerClass171(this, command));
+				tree.Traverse(new _IVisitor4_171(this, command));
 			}
 		}
 
-		private sealed class _AnonymousInnerClass171 : IVisitor4
+		private sealed class _IVisitor4_171 : IVisitor4
 		{
-			public _AnonymousInnerClass171(OldClassIndexStrategy _enclosing, IVisitor4 command
-				)
+			public _IVisitor4_171(OldClassIndexStrategy _enclosing, IVisitor4 command)
 			{
 				this._enclosing = _enclosing;
 				this.command = command;

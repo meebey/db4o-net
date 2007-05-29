@@ -61,12 +61,12 @@ namespace Db4objects.Db4o.TA.Tests
 		protected override void Configure(IConfiguration config)
 		{
 			config.Add(new TransparentActivationSupport());
-			config.Diagnostic().AddListener(new _AnonymousInnerClass54(this));
+			config.Diagnostic().AddListener(new _IDiagnosticListener_54(this));
 		}
 
-		private sealed class _AnonymousInnerClass54 : IDiagnosticListener
+		private sealed class _IDiagnosticListener_54 : IDiagnosticListener
 		{
-			public _AnonymousInnerClass54(TransparentActivationDiagnosticsTestCase _enclosing
+			public _IDiagnosticListener_54(TransparentActivationDiagnosticsTestCase _enclosing
 				)
 			{
 				this._enclosing = _enclosing;

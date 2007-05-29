@@ -118,12 +118,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 					{
 						Clear(fm[from]);
 						Clear(fm[to]);
-						fm[from].MigrateTo(fm[to]);
+						AbstractFreespaceManager.Migrate(fm[from], fm[to]);
 						AssertSame(fm[from], fm[to]);
 						fm[from].Free(new Slot(5, 10));
 						fm[from].Free(new Slot(100, 5));
 						fm[from].Free(new Slot(140, 27));
-						fm[from].MigrateTo(fm[to]);
+						AbstractFreespaceManager.Migrate(fm[from], fm[to]);
 						AssertSame(fm[from], fm[to]);
 					}
 				}

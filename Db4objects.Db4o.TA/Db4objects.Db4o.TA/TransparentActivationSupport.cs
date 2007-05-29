@@ -21,17 +21,17 @@ namespace Db4objects.Db4o.TA
 		{
 			container.Configure().ActivationDepth(0);
 			IEventRegistry factory = EventRegistryFactory.ForObjectContainer(container);
-			factory.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _AnonymousInnerClass23
+			factory.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_23
 				(this, container).OnEvent);
 			TransparentActivationSupport.TADiagnosticProcessor processor = new TransparentActivationSupport.TADiagnosticProcessor
 				(this, container);
-			factory.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _AnonymousInnerClass39
+			factory.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_39
 				(this, processor).OnEvent);
 		}
 
-		private sealed class _AnonymousInnerClass23
+		private sealed class _IEventListener4_23
 		{
-			public _AnonymousInnerClass23(TransparentActivationSupport _enclosing, ObjectContainerBase
+			public _IEventListener4_23(TransparentActivationSupport _enclosing, ObjectContainerBase
 				 container)
 			{
 				this._enclosing = _enclosing;
@@ -58,9 +58,9 @@ namespace Db4objects.Db4o.TA
 			private readonly ObjectContainerBase container;
 		}
 
-		private sealed class _AnonymousInnerClass39
+		private sealed class _IEventListener4_39
 		{
-			public _AnonymousInnerClass39(TransparentActivationSupport _enclosing, TransparentActivationSupport.TADiagnosticProcessor
+			public _IEventListener4_39(TransparentActivationSupport _enclosing, TransparentActivationSupport.TADiagnosticProcessor
 				 processor)
 			{
 				this._enclosing = _enclosing;

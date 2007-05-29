@@ -164,13 +164,13 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase
 				());
-			q.Constrain(new _AnonymousInnerClass139(this));
+			q.Constrain(new _IEvaluation_139(this));
 			Expect(q, new int[] { 2, 3 });
 		}
 
-		private sealed class _AnonymousInnerClass139 : IEvaluation
+		private sealed class _IEvaluation_139 : IEvaluation
 		{
-			public _AnonymousInnerClass139(STByteWUTestCase _enclosing)
+			public _IEvaluation_139(STByteWUTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

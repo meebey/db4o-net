@@ -14,9 +14,9 @@ namespace Db4objects.Db4o.Foundation
 	{
 		public static readonly IEnumerator EMPTY_ITERATOR = new Iterator4Impl(null);
 
-		private sealed class _AnonymousInnerClass15 : IEnumerable
+		private sealed class _IEnumerable_15 : IEnumerable
 		{
-			public _AnonymousInnerClass15()
+			public _IEnumerable_15()
 			{
 			}
 
@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		public static readonly IEnumerable EMPTY_ITERABLE = new _AnonymousInnerClass15();
+		public static readonly IEnumerable EMPTY_ITERABLE = new _IEnumerable_15();
 
 		internal static readonly object NO_ELEMENT = new object();
 

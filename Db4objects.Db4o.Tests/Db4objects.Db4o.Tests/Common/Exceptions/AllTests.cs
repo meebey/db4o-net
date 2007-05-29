@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				, typeof(IncompatibleFileFormatExceptionTestCase), typeof(InvalidIDExceptionTestCase)
 				, typeof(InvalidPasswordTestCase), typeof(ObjectCanActiviateExceptionTestCase), 
 				typeof(ObjectCanDeleteExceptionTestCase), typeof(ObjectOnDeleteExceptionTestCase)
-				, typeof(ObjectCanNewExceptionTestCase), typeof(StoreExceptionBubblesUpTestCase)
+				, typeof(ObjectCanNewExceptionTestCase), typeof(OldFormatExceptionTestCase), typeof(StoreExceptionBubblesUpTestCase)
 				, typeof(StoredClassExceptionBubblesUpTestCase), typeof(TSerializableOnInstantiateCNFExceptionTestCase)
 				, typeof(TSerializableOnInstantiateIOExceptionTestCase), typeof(TSerializableOnStoreExceptionTestCase)
 				 };

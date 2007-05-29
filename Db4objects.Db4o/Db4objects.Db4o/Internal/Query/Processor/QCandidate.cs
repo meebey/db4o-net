@@ -50,10 +50,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_candidates = qcandidates;
 		}
 
-		private QCandidate() : this(null)
-		{
-		}
-
 		public QCandidate(QCandidates candidates, object obj, int id, bool include) : base
 			(id)
 		{
@@ -165,14 +161,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								candidates.Evaluate();
 								Tree.ByRef pending = new Tree.ByRef();
 								bool[] innerRes = new bool[] { isNot };
-								candidates.Traverse(new _AnonymousInnerClass176(this, innerRes, isNot, pending));
+								candidates.Traverse(new _IVisitor4_171(this, innerRes, isNot, pending));
 								if (isNot)
 								{
 									qcon.Not();
 								}
 								if (pending.value != null)
 								{
-									pending.value.Traverse(new _AnonymousInnerClass245(this));
+									pending.value.Traverse(new _IVisitor4_240(this));
 								}
 								if (!innerRes[0])
 								{
@@ -229,10 +225,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _AnonymousInnerClass176 : IVisitor4
+		private sealed class _IVisitor4_171 : IVisitor4
 		{
-			public _AnonymousInnerClass176(QCandidate _enclosing, bool[] innerRes, bool isNot
-				, Tree.ByRef pending)
+			public _IVisitor4_171(QCandidate _enclosing, bool[] innerRes, bool isNot, Tree.ByRef
+				 pending)
 			{
 				this._enclosing = _enclosing;
 				this.innerRes = innerRes;
@@ -250,14 +246,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (cand._pendingJoins != null)
 				{
-					cand._pendingJoins.Traverse(new _AnonymousInnerClass189(this, pending));
+					cand._pendingJoins.Traverse(new _IVisitor4_184(this, pending));
 				}
 			}
 
-			private sealed class _AnonymousInnerClass189 : IVisitor4
+			private sealed class _IVisitor4_184 : IVisitor4
 			{
-				public _AnonymousInnerClass189(_AnonymousInnerClass176 _enclosing, Tree.ByRef pending
-					)
+				public _IVisitor4_184(_IVisitor4_171 _enclosing, Tree.ByRef pending)
 				{
 					this._enclosing = _enclosing;
 					this.pending = pending;
@@ -281,7 +276,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 
-				private readonly _AnonymousInnerClass176 _enclosing;
+				private readonly _IVisitor4_171 _enclosing;
 
 				private readonly Tree.ByRef pending;
 			}
@@ -295,9 +290,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly Tree.ByRef pending;
 		}
 
-		private sealed class _AnonymousInnerClass245 : IVisitor4
+		private sealed class _IVisitor4_240 : IVisitor4
 		{
-			public _AnonymousInnerClass245(QCandidate _enclosing)
+			public _IVisitor4_240(QCandidate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

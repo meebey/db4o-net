@@ -19,17 +19,17 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		{
 			EventsTestCaseBase.EventLog activationLog = new EventsTestCaseBase.EventLog();
 			EventRegistry().Activating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
-				(new _AnonymousInnerClass19(this, activationLog).OnEvent);
-			EventRegistry().Activated += new Db4objects.Db4o.Events.ObjectEventHandler(new _AnonymousInnerClass24
+				(new _IEventListener4_19(this, activationLog).OnEvent);
+			EventRegistry().Activated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_24
 				(this, activationLog).OnEvent);
 			RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item));
 			Assert.IsTrue(activationLog.xing);
 			Assert.IsTrue(activationLog.xed);
 		}
 
-		private sealed class _AnonymousInnerClass19
+		private sealed class _IEventListener4_19
 		{
-			public _AnonymousInnerClass19(ActivationEventsTestCase _enclosing, EventsTestCaseBase.EventLog
+			public _IEventListener4_19(ActivationEventsTestCase _enclosing, EventsTestCaseBase.EventLog
 				 activationLog)
 			{
 				this._enclosing = _enclosing;
@@ -47,9 +47,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			private readonly EventsTestCaseBase.EventLog activationLog;
 		}
 
-		private sealed class _AnonymousInnerClass24
+		private sealed class _IEventListener4_24
 		{
-			public _AnonymousInnerClass24(ActivationEventsTestCase _enclosing, EventsTestCaseBase.EventLog
+			public _IEventListener4_24(ActivationEventsTestCase _enclosing, EventsTestCaseBase.EventLog
 				 activationLog)
 			{
 				this._enclosing = _enclosing;

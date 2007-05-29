@@ -144,15 +144,14 @@ namespace Db4objects.Db4o.Internal.IX
 			int[] entries = new int[] { 0 };
 			if (root != null)
 			{
-				root.Traverse(new _AnonymousInnerClass149(this, entries, writer));
+				root.Traverse(new _IVisitor4_149(this, entries, writer));
 			}
 			return entries[0];
 		}
 
-		private sealed class _AnonymousInnerClass149 : IVisitor4
+		private sealed class _IVisitor4_149 : IVisitor4
 		{
-			public _AnonymousInnerClass149(Index4 _enclosing, int[] entries, StatefulBuffer writer
-				)
+			public _IVisitor4_149(Index4 _enclosing, int[] entries, StatefulBuffer writer)
 			{
 				this._enclosing = _enclosing;
 				this.entries = entries;
@@ -197,7 +196,7 @@ namespace Db4objects.Db4o.Internal.IX
 							clonedTree = (Tree)clonedTree.DeepClone(ft);
 						}
 						Tree.ByRef tree = new Tree.ByRef(clonedTree);
-						ft.GetRoot().TraverseFromLeaves((new _AnonymousInnerClass197(this, ft, tree)));
+						ft.GetRoot().TraverseFromLeaves((new _IVisitor4_197(this, ft, tree)));
 						ft.SetRoot(tree.value);
 					}
 				}
@@ -213,10 +212,9 @@ namespace Db4objects.Db4o.Internal.IX
 			}
 		}
 
-		private sealed class _AnonymousInnerClass197 : IVisitor4
+		private sealed class _IVisitor4_197 : IVisitor4
 		{
-			public _AnonymousInnerClass197(Index4 _enclosing, IndexTransaction ft, Tree.ByRef
-				 tree)
+			public _IVisitor4_197(Index4 _enclosing, IndexTransaction ft, Tree.ByRef tree)
 			{
 				this._enclosing = _enclosing;
 				this.ft = ft;
