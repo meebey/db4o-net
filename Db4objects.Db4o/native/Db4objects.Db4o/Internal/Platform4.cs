@@ -301,19 +301,16 @@ namespace Db4objects.Db4o.Internal
             }
 
             Translate(config, typeof(Delegate), new TNull());
-            Translate(config, typeof(Type), new TType());
+            Translate(config, typeof(Type), new TType()); // TODO: unnecessary?
+            Translate(config, typeof(Type).GetType(), new TType());
 
+#if !CF_1_0 && !CF_2_0
             if (IsMono())
             {
-#if !CF_1_0 && !CF_2_0
+
 				Translate(config, new Exception(), new TSerializable());
+            }
 #endif
-                Translate(config, "System.MonoType, mscorlib", new TType());
-            }
-            else
-            {
-                Translate(config, "System.RuntimeType, mscorlib", new TType());
-            }
 
             Translate(config, new ArrayList(), new TList());
             Translate(config, new Hashtable(), new TDictionary());
