@@ -1,5 +1,7 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
+using System.Collections;
+using System.Collections.Specialized;
 using System.IO;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -28,7 +30,65 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
             }
         }
 
-    	private void ConfigureAliases(IConfiguration configuration)
+        public void TestUpdatingAliasedDataSameSession()
+        {
+            if (!JavaServices.CanRunJavaCompatibilityTests())
+            {
+                return;
+            }
+
+            GenerateJavaData();
+            using (IObjectContainer container = OpenJavaDataFile())
+            {
+                string[] newNames = UpdateAliasedData(container);
+                AssertAliasedData(QueryAliasedData(container), newNames);
+            }
+        }
+
+        public void TestUpdatingAliasedDataDifferentSession()
+        {
+            if (!JavaServices.CanRunJavaCompatibilityTests())
+            {
+                return;
+            }
+
+            GenerateJavaData();
+            string[] newNames = UpdateAliasedData();
+            using (IObjectContainer container = OpenJavaDataFile())
+            {
+                AssertAliasedData(QueryAliasedData(container), newNames);
+            }
+        }
+
+        private string[] UpdateAliasedData()
+        {
+            using (IObjectContainer container = OpenJavaDataFile())
+            {
+                return UpdateAliasedData(container);
+            }
+        }
+
+        private string[] UpdateAliasedData(IObjectContainer container)
+        {
+            ArrayList newNames = new ArrayList();
+            foreach (IPerson person in QueryAliasedData(container))
+            {
+                string newName = person.Name + "*";
+                person.Name = newName;
+                container.Set(person);
+                newNames.Add(newName);
+            }
+
+            // new item
+            string newItemName = "orestes";
+            container.Set(CreateAliasedData(newItemName));
+            newNames.Add(newItemName);
+
+            container.Commit();
+            return (string[])newNames.ToArray(typeof(string));
+        }
+
+        private void ConfigureAliases(IConfiguration configuration)
         {
             configuration.AddAlias(new TypeAlias("com.db4o.test.aliases.Person2", GetTypeName(GetAliasedDataType())));
             //	        configuration.AddAlias(

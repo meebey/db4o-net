@@ -16,18 +16,25 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
             AssertAliasedData(QueryAliasedData(container));
         }
 
-        private IObjectSet QueryAliasedData(IObjectContainer container)
+        protected IObjectSet QueryAliasedData(IObjectContainer container)
         {
             IQuery query = container.Query();
             query.Constrain(GetAliasedDataType());
             return query.Execute();
         }
 
-        private void AssertAliasedData(IObjectSet os)
+        protected void AssertAliasedData(IObjectSet os)
         {
-            Assert.AreEqual(2, os.Size());
-            AssertContains(os, CreateAliasedData("Homer Simpson"));
-            AssertContains(os, CreateAliasedData("John Cleese"));
+            AssertAliasedData(os, "Homer Simpson", "John Cleese");
+        }
+
+        protected void AssertAliasedData(IObjectSet os, params string[] expectedNames)
+        {
+            Assert.AreEqual(expectedNames.Length, os.Size());
+            foreach (string name in expectedNames)
+            {
+                AssertContains(os, CreateAliasedData(name));
+            }
         }
 
         protected virtual Type GetAliasedDataType()

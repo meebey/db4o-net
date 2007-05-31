@@ -16,8 +16,7 @@ namespace Db4objects.Db4o.Tests
 		protected override Type[] TestCases()
 		{
 			return new Type[]
-				{
-					typeof(Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingTestCase),
+				{	
 					typeof(Db4objects.Db4o.Tests.Common.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI1.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI2.AllTests),

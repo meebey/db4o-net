@@ -3,7 +3,7 @@ using System;
 
 namespace Db4objects.Db4o.Tests.CLI1.Aliases
 {
-    public class Person2
+    public class Person2 : IPerson
     {
         private String _name;
 
@@ -15,6 +15,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
         public String Name
         {
             get { return _name; }
+            set { _name = value; }
         }
 
         public override bool Equals(object obj)

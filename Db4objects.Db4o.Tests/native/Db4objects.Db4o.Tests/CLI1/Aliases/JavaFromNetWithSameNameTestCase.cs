@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 
 namespace com.db4o.test.aliases
 {
-    public class Person2
+    public class Person2 : Db4objects.Db4o.Tests.CLI1.Aliases.IPerson
     {
         private string _name;
 
@@ -25,6 +25,7 @@ namespace com.db4o.test.aliases
         public string Name
         {
             get { return _name; }
+            set { _name = value; }
         }
 
         public override bool Equals(object obj)
