@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected override object Map(object current)
 		{
-			return i_collection.ReadYapClass((ClassMetadata)current, null);
+			return i_collection.ReadClassMetadata((ClassMetadata)current, null);
 		}
 	}
 }

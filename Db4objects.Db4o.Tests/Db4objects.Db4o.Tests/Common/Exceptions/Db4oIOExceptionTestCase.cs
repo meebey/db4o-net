@@ -236,7 +236,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestGetByUUID()
 		{
-			Fixture().Config().GenerateUUIDs(ConfigScope.GLOBALLY_ID);
+			Fixture().Config().GenerateUUIDs(ConfigScope.GLOBALLY);
 			Fixture().Reopen();
 			Db4oIOExceptionTestCase.Item item = new Db4oIOExceptionTestCase.Item(1);
 			Store(item);

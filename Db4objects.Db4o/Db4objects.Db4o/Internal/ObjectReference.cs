@@ -94,9 +94,9 @@ namespace Db4objects.Db4o.Internal
 						{
 							if (a_depth > 1)
 							{
-								if (_class.i_config != null)
+								if (_class.Config() != null)
 								{
-									a_depth = _class.i_config.AdjustActivationDepth(a_depth);
+									a_depth = _class.Config().AdjustActivationDepth(a_depth);
 								}
 								_class.ActivateFields(ta, a_object, a_depth);
 							}

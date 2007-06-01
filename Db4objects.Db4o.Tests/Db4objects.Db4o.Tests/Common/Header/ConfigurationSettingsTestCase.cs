@@ -10,6 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 {
 	public class ConfigurationSettingsTestCase : AbstractDb4oTestCase, IOptOutCS
 	{
+		[System.ObsoleteAttribute]
 		public virtual void TestChangingUuidSettings()
 		{
 			Fixture().Config().GenerateUUIDs(0);

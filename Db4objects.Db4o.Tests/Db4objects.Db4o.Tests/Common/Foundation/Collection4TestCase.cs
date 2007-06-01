@@ -14,6 +14,20 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			new TestRunner(typeof(Collection4TestCase)).Run();
 		}
 
+		public virtual void TestReplace()
+		{
+			Collection4 c = new Collection4();
+			c.Replace("one", "two");
+			c.Add("one");
+			c.Add("two");
+			c.Add("three");
+			c.Replace("two", "two.half");
+			AssertCollection(new string[] { "one", "two.half", "three" }, c);
+			c.Replace("two.half", "one");
+			c.Replace("one", "half");
+			AssertCollection(new string[] { "half", "one", "three" }, c);
+		}
+
 		public virtual void TestNulls()
 		{
 			Collection4 c = new Collection4();
@@ -63,12 +77,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			IEnumerator i = c.GetEnumerator();
 			Assert.IsTrue(i.MoveNext());
 			c.Add("3");
-			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_60(this, i));
+			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_73(this, i));
 		}
 
-		private sealed class _ICodeBlock_60 : ICodeBlock
+		private sealed class _ICodeBlock_73 : ICodeBlock
 		{
-			public _ICodeBlock_60(Collection4TestCase _enclosing, IEnumerator i)
+			public _ICodeBlock_73(Collection4TestCase _enclosing, IEnumerator i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;

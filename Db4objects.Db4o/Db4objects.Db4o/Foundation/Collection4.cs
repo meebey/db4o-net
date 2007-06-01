@@ -22,8 +22,6 @@ namespace Db4objects.Db4o.Foundation
 
 		private int _version;
 
-		private static readonly object NOT_FOUND = new object();
-
 		public Collection4()
 		{
 		}
@@ -129,7 +127,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public bool Contains(object element)
 		{
-			return GetInternal(element) != NOT_FOUND;
+			return Find(element) != null;
 		}
 
 		public virtual bool ContainsAll(IEnumerator iter)
@@ -161,41 +159,28 @@ namespace Db4objects.Db4o.Foundation
 			return false;
 		}
 
+		private List4 Find(object obj)
+		{
+			List4 current = _first;
+			while (current != null)
+			{
+				if (current.Holds(obj))
+				{
+					return current;
+				}
+				current = current._next;
+			}
+			return null;
+		}
+
 		/// <summary>
 		/// returns the first object found in the Collections that equals() the
 		/// passed object
 		/// </summary>
 		public object Get(object element)
 		{
-			object obj = GetInternal(element);
-			if (obj == NOT_FOUND)
-			{
-				return null;
-			}
-			return obj;
-		}
-
-		private object GetInternal(object element)
-		{
-			if (element == null)
-			{
-				return ContainsNull() ? null : NOT_FOUND;
-			}
-			IEnumerator i = InternalIterator();
-			while (i.MoveNext())
-			{
-				object current = i.Current;
-				if (element.Equals(current))
-				{
-					return current;
-				}
-			}
-			return NOT_FOUND;
-		}
-
-		private bool ContainsNull()
-		{
-			return ContainsByIdentity(null);
+			List4 holder = Find(element);
+			return holder == null ? null : holder._element;
 		}
 
 		public virtual object DeepClone(object newParent)
@@ -223,13 +208,13 @@ namespace Db4objects.Db4o.Foundation
 		/// <remarks>makes sure the passed object is in the Collection. equals() comparison.</remarks>
 		public object Ensure(object element)
 		{
-			object existing = GetInternal(element);
-			if (existing == NOT_FOUND)
+			List4 list = Find(element);
+			if (list == null)
 			{
 				Add(element);
 				return element;
 			}
-			return existing;
+			return list._element;
 		}
 
 		/// <summary>
@@ -268,6 +253,15 @@ namespace Db4objects.Db4o.Foundation
 				current = current._next;
 			}
 			return null;
+		}
+
+		public virtual void Replace(object oldObject, object newObject)
+		{
+			List4 list = Find(oldObject);
+			if (list != null)
+			{
+				list._element = newObject;
+			}
 		}
 
 		private void AdjustOnRemoval(List4 previous, List4 removed)

@@ -11,6 +11,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 {
 	public class CallConstructorsConfigTestCase : ITestCase
 	{
+		private const int PORT = unchecked((int)(0xdb40));
+
 		public sealed class Item
 		{
 		}
@@ -20,12 +22,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.CallConstructors(true);
 			config.ExceptionsOnNotStorable(true);
-			IObjectServer server = Db4oFactory.OpenServer(config, DatabaseFile(), 1022);
+			IObjectServer server = Db4oFactory.OpenServer(config, DatabaseFile(), PORT);
 			try
 			{
 				server.GrantAccess("db4o", "db4o");
-				WithClient(new _IClientBlock_26(this));
-				WithClient(new _IClientBlock_32(this));
+				WithClient(new _IClientBlock_28(this));
+				WithClient(new _IClientBlock_34(this));
 			}
 			finally
 			{
@@ -34,9 +36,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		private sealed class _IClientBlock_26 : CallConstructorsConfigTestCase.IClientBlock
+		private sealed class _IClientBlock_28 : CallConstructorsConfigTestCase.IClientBlock
 		{
-			public _IClientBlock_26(CallConstructorsConfigTestCase _enclosing)
+			public _IClientBlock_28(CallConstructorsConfigTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -49,9 +51,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			private readonly CallConstructorsConfigTestCase _enclosing;
 		}
 
-		private sealed class _IClientBlock_32 : CallConstructorsConfigTestCase.IClientBlock
+		private sealed class _IClientBlock_34 : CallConstructorsConfigTestCase.IClientBlock
 		{
-			public _IClientBlock_32(CallConstructorsConfigTestCase _enclosing)
+			public _IClientBlock_34(CallConstructorsConfigTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -77,7 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private void WithClient(CallConstructorsConfigTestCase.IClientBlock block)
 		{
-			IObjectContainer client = Db4oFactory.OpenClient("localhost", 1022, "db4o", "db4o"
+			IObjectContainer client = Db4oFactory.OpenClient("localhost", PORT, "db4o", "db4o"
 				);
 			try
 			{

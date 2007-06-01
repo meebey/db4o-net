@@ -20,19 +20,24 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public sealed override object[] AllElements(object a_array)
 		{
-			int[] dim = _reflectArray.Dimensions(a_array);
+			return AllElements(_reflectArray, a_array);
+		}
+
+		public static object[] AllElements(IReflectArray reflectArray, object array)
+		{
+			int[] dim = reflectArray.Dimensions(array);
 			object[] flat = new object[ElementCount(dim)];
-			_reflectArray.Flatten(a_array, dim, 0, flat, 0);
+			reflectArray.Flatten(array, dim, 0, flat, 0);
 			return flat;
 		}
 
 		public int ElementCount(Transaction a_trans, Db4objects.Db4o.Internal.Buffer a_bytes
 			)
 		{
-			return ElementCount(ReadDimensions(a_trans, a_bytes, new IReflectClass[1]));
+			return ElementCount(ReadDimensions(a_trans, a_bytes, ReflectClassByRef.IGNORED));
 		}
 
-		private int ElementCount(int[] a_dim)
+		private static int ElementCount(int[] a_dim)
 		{
 			int elements = a_dim[0];
 			for (int i = 1; i < a_dim.Length; i++)
@@ -126,7 +131,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		private int[] Read1Create(Transaction a_trans, Db4objects.Db4o.Internal.Buffer a_bytes
 			, object[] obj)
 		{
-			IReflectClass[] clazz = new IReflectClass[1];
+			ReflectClassByRef clazz = new ReflectClassByRef();
 			int[] dim = ReadDimensions(a_trans, a_bytes, clazz);
 			if (i_isPrimitive)
 			{
@@ -135,16 +140,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			else
 			{
-				if (clazz[0] != null)
+				if (clazz.value != null)
 				{
-					obj[0] = a_trans.Reflector().Array().NewInstance(clazz[0], dim);
+					obj[0] = a_trans.Reflector().Array().NewInstance(clazz.value, dim);
 				}
 			}
 			return dim;
 		}
 
 		private int[] ReadDimensions(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			 a_bytes, IReflectClass[] clazz)
+			 a_bytes, ReflectClassByRef clazz)
 		{
 			int[] dim = new int[ReadElementsAndClass(a_trans, a_bytes, clazz)];
 			for (int i = 0; i < dim.Length; i++)

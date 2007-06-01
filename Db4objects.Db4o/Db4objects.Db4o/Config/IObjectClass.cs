@@ -349,5 +349,10 @@ namespace Db4objects.Db4o.Config
 		/// <seealso cref="IObjectField.CascadeOnUpdate">IObjectField.CascadeOnUpdate</seealso>
 		/// <seealso cref="IObjectCallbacks">Using callbacks</seealso>
 		void UpdateDepth(int depth);
+
+		/// <summary>installs a CustomClassHandler for this class.</summary>
+		/// <remarks>installs a CustomClassHandler for this class.</remarks>
+		/// <param name="customClassHandler">the CustomClassHandler</param>
+		void InstallCustomHandler(ICustomClassHandler customClassHandler);
 	}
 }

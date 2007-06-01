@@ -15,7 +15,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(StringHandlerTestCase), typeof(DoubleHandlerTestCase) };
+			return new Type[] { typeof(CustomClassHandlerTestCase), typeof(StringHandlerTestCase)
+				, typeof(DoubleHandlerTestCase) };
 		}
 	}
 }

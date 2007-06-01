@@ -1709,12 +1709,14 @@ namespace Db4objects.Db4o.Internal
 			return renamedOne;
 		}
 
+		[System.ObsoleteAttribute(@"see")]
 		public virtual IReplicationProcess ReplicationBegin(IObjectContainer peerB, IReplicationConflictHandler
 			 conflictHandler)
 		{
 			return new ReplicationImpl(_this, peerB, conflictHandler);
 		}
 
+		[System.ObsoleteAttribute]
 		public int OldReplicationHandles(object obj)
 		{
 			if (_replicationCallState != Const4.OLD)

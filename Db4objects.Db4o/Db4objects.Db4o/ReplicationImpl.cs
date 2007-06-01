@@ -11,6 +11,7 @@ using Db4objects.Db4o.Replication;
 namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
+	[System.ObsoleteAttribute]
 	public class ReplicationImpl : IReplicationProcess
 	{
 		internal readonly ObjectContainerBase _peerA;

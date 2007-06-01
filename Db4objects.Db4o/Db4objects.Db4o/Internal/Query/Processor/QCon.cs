@@ -133,7 +133,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			else
 			{
-				if (yc.ConfigInstantiates())
+				if (yc.CustomizedNewInstance())
 				{
 					i_trans.Stream().i_handlers._diagnosticProcessor.DescendIntoTranslator(yc, a_field
 						);

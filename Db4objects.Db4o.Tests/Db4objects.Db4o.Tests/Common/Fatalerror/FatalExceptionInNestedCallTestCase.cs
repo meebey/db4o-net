@@ -2,7 +2,6 @@
 
 using System;
 using Db4oUnit.Extensions;
-using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Tests.Common.Fatalerror;
 
 namespace Db4objects.Db4o.Tests.Common.Fatalerror
@@ -47,11 +46,6 @@ namespace Db4objects.Db4o.Tests.Common.Fatalerror
 
 		public virtual void Test()
 		{
-		}
-
-		private IEventRegistry EventRegistry()
-		{
-			return EventRegistryFactory.ForObjectContainer(Db());
 		}
 	}
 }

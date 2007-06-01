@@ -254,7 +254,7 @@ namespace Db4objects.Db4o.Internal.CS
 			a_yapClass.SetID(message.GetId());
 			a_yapClass.ReadName1(SystemTransaction(), bytes);
 			ClassCollection().AddYapClass(a_yapClass);
-			ClassCollection().ReadYapClass(a_yapClass, a_class);
+			ClassCollection().ReadClassMetadata(a_yapClass, a_class);
 			return true;
 		}
 

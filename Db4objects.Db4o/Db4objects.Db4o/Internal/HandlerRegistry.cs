@@ -64,6 +64,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal SharedIndexedFields i_indexes;
 
+		[System.ObsoleteAttribute]
 		internal ReplicationImpl i_replication;
 
 		internal Db4objects.Db4o.Internal.Replication.MigrationConnection i_migration;
@@ -472,11 +473,13 @@ namespace Db4objects.Db4o.Internal
 			return i_migration;
 		}
 
+		[System.ObsoleteAttribute]
 		public void Replication(ReplicationImpl impl)
 		{
 			i_replication = impl;
 		}
 
+		[System.ObsoleteAttribute]
 		public ReplicationImpl Replication()
 		{
 			return i_replication;

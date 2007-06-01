@@ -354,15 +354,14 @@ namespace Db4objects.Db4o.Internal
 			return tree;
 		}
 
-		internal virtual void Configure(IReflectClass a_class, bool isPrimitive)
+		internal virtual void Configure(IReflectClass clazz, bool isPrimitive)
 		{
-			i_isPrimitive = isPrimitive | a_class.IsPrimitive();
-			i_isArray = a_class.IsArray();
+			i_isArray = clazz.IsArray();
 			if (i_isArray)
 			{
 				IReflectArray reflectArray = GetStream().Reflector().Array();
-				i_isNArray = reflectArray.IsNDimensional(a_class);
-				a_class = reflectArray.GetComponentType(a_class);
+				i_isNArray = reflectArray.IsNDimensional(clazz);
+				i_isPrimitive = reflectArray.GetComponentType(clazz).IsPrimitive();
 				if (i_isNArray)
 				{
 					i_handler = new MultidimensionalArrayHandler(GetStream(), i_handler, i_isPrimitive
@@ -372,6 +371,10 @@ namespace Db4objects.Db4o.Internal
 				{
 					i_handler = new ArrayHandler(GetStream(), i_handler, i_isPrimitive);
 				}
+			}
+			else
+			{
+				i_isPrimitive = isPrimitive | clazz.IsPrimitive();
 			}
 		}
 
@@ -619,9 +622,9 @@ namespace Db4objects.Db4o.Internal
 
 		internal void InitIndex(ClassMetadata a_yapClass, string a_name)
 		{
-			if (a_yapClass.i_config != null)
+			if (a_yapClass.Config() != null)
 			{
-				i_config = a_yapClass.i_config.ConfigField(a_name);
+				i_config = a_yapClass.Config().ConfigField(a_name);
 			}
 		}
 
@@ -884,13 +887,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				Transaction trans = stream.GetTransaction();
-				_index.TraverseKeys(trans, new _IVisitor4_797(this, userVisitor, trans));
+				_index.TraverseKeys(trans, new _IVisitor4_793(this, userVisitor, trans));
 			}
 		}
 
-		private sealed class _IVisitor4_797 : IVisitor4
+		private sealed class _IVisitor4_793 : IVisitor4
 		{
-			public _IVisitor4_797(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_793(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;

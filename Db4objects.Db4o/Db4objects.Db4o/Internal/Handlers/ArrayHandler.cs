@@ -8,6 +8,7 @@ using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Generic;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
@@ -30,10 +31,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual object[] AllElements(object a_object)
 		{
-			object[] all = new object[_reflectArray.GetLength(a_object)];
+			return AllElements(_reflectArray, a_object);
+		}
+
+		public static object[] AllElements(IReflectArray reflectArray, object array)
+		{
+			object[] all = new object[reflectArray.GetLength(array)];
 			for (int i = all.Length - 1; i >= 0; i--)
 			{
-				all[i] = _reflectArray.Get(a_object, i);
+				all[i] = reflectArray.Get(array, i);
 			}
 			return all;
 		}
@@ -229,11 +235,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual object Read1Query(Transaction a_trans, MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
 			 a_reader)
 		{
-			int[] elements = new int[1];
+			IntByRef elements = new IntByRef();
 			object ret = ReadCreate(a_trans, a_reader, elements);
 			if (ret != null)
 			{
-				for (int i = 0; i < elements[0]; i++)
+				for (int i = 0; i < elements.value; i++)
 				{
 					_reflectArray.Set(ret, i, i_handler.ReadQuery(a_trans, mf, true, a_reader, true));
 				}
@@ -243,7 +249,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual object Read1(MarshallerFamily mf, StatefulBuffer reader)
 		{
-			int[] elements = new int[1];
+			IntByRef elements = new IntByRef();
 			object ret = ReadCreate(reader.GetTransaction(), reader, elements);
 			if (ret != null)
 			{
@@ -251,7 +257,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				{
 					return ret;
 				}
-				for (int i = 0; i < elements[0]; i++)
+				for (int i = 0; i < elements.value; i++)
 				{
 					_reflectArray.Set(ret, i, i_handler.Read(mf, reader, true));
 				}
@@ -259,19 +265,19 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ret;
 		}
 
-		private object ReadCreate(Transaction a_trans, Db4objects.Db4o.Internal.Buffer a_reader
-			, int[] a_elements)
+		private object ReadCreate(Transaction trans, Db4objects.Db4o.Internal.Buffer buffer
+			, IntByRef elements)
 		{
-			IReflectClass[] clazz = new IReflectClass[1];
-			a_elements[0] = ReadElementsAndClass(a_trans, a_reader, clazz);
+			ReflectClassByRef clazz = new ReflectClassByRef();
+			elements.value = ReadElementsAndClass(trans, buffer, clazz);
 			if (i_isPrimitive)
 			{
-				return _reflectArray.NewInstance(i_handler.PrimitiveClassReflector(), a_elements[
-					0]);
+				return _reflectArray.NewInstance(i_handler.PrimitiveClassReflector(), elements.value
+					);
 			}
-			if (clazz[0] != null)
+			if (clazz.value != null)
 			{
-				return _reflectArray.NewInstance(clazz[0], a_elements[0]);
+				return _reflectArray.NewInstance(clazz.value, elements.value);
 			}
 			return null;
 		}
@@ -291,11 +297,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual void Read1Candidates(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
 			 reader, QCandidates candidates)
 		{
-			int[] elements = new int[1];
+			IntByRef elements = new IntByRef();
 			object ret = ReadCreate(candidates.i_trans, reader, elements);
 			if (ret != null)
 			{
-				for (int i = 0; i < elements[0]; i++)
+				for (int i = 0; i < elements.value; i++)
 				{
 					QCandidate qc = i_handler.ReadSubCandidate(mf, reader, candidates, true);
 					if (qc != null)
@@ -313,18 +319,18 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return null;
 		}
 
-		internal int ReadElementsAndClass(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			 a_bytes, IReflectClass[] clazz)
+		internal int ReadElementsAndClass(Transaction trans, Db4objects.Db4o.Internal.Buffer
+			 buffer, ReflectClassByRef clazz)
 		{
-			int elements = a_bytes.ReadInt();
+			int elements = buffer.ReadInt();
 			if (elements < 0)
 			{
-				clazz[0] = ReflectClassFromElementsEntry(a_trans, elements);
-				elements = a_bytes.ReadInt();
+				clazz.value = ReflectClassFromElementsEntry(trans, elements);
+				elements = buffer.ReadInt();
 			}
 			else
 			{
-				clazz[0] = i_handler.ClassReflector();
+				clazz.value = i_handler.ClassReflector();
 			}
 			if (Debug.ExceedsMaximumArrayEntries(elements, i_isPrimitive))
 			{
@@ -370,26 +376,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_handler.ClassReflector();
 		}
 
-		public static object[] ToArray(ObjectContainerBase a_stream, object a_object)
+		public static object[] ToArray(ObjectContainerBase stream, object obj)
 		{
-			if (a_object != null)
+			GenericReflector reflector = stream.Reflector();
+			IReflectClass claxx = reflector.ForObject(obj);
+			IReflectArray reflectArray = reflector.Array();
+			if (reflectArray.IsNDimensional(claxx))
 			{
-				IReflectClass claxx = a_stream.Reflector().ForObject(a_object);
-				if (claxx.IsArray())
-				{
-					Db4objects.Db4o.Internal.Handlers.ArrayHandler ya;
-					if (a_stream.Reflector().Array().IsNDimensional(claxx))
-					{
-						ya = new MultidimensionalArrayHandler(a_stream, null, false);
-					}
-					else
-					{
-						ya = new Db4objects.Db4o.Internal.Handlers.ArrayHandler(a_stream, null, false);
-					}
-					return ya.AllElements(a_object);
-				}
+				return MultidimensionalArrayHandler.AllElements(reflectArray, obj);
 			}
-			return new object[0];
+			return Db4objects.Db4o.Internal.Handlers.ArrayHandler.AllElements(reflectArray, obj
+				);
 		}
 
 		internal virtual void WriteClass(object a_object, StatefulBuffer a_bytes)

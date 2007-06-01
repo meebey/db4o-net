@@ -191,6 +191,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
+		/// <param name="clazz"></param>
 		public virtual IReflector ReflectorForType(Type clazz)
 		{
 			return null;

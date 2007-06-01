@@ -138,6 +138,7 @@ namespace Db4objects.Db4o
 		{
 		}
 
+		[System.ObsoleteAttribute]
 		protected virtual object Replicate(Transaction fromTrans, Transaction toTrans)
 		{
 			ObjectContainerBase fromStream = fromTrans.Stream();
