@@ -1,6 +1,7 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.IO;
+using System.Text;
 
 namespace Db4objects.Db4o.Tests.Util
 {
@@ -49,22 +50,23 @@ namespace Db4objects.Db4o.Tests.Util
 #if CF_1_0 || CF_2_0 
             return null;
 #else
-            return IOServices.Exec(WorkspaceServices.JavacPath(), "-classpath " + JavaServices.Db4ojarPath(), Quote(srcFile));
+            return IOServices.Exec(WorkspaceServices.JavacPath(),
+                    "-classpath",
+                    JavaServices.Db4ojarPath(),
+                    srcFile);
 #endif
         }
 
-		public static string Quote(string s)
-		{
-			return "\"" + s + "\"";
-		}
-
 		public static string java(string className, params string[] args)
 		{
-			string classPathArgument = "-cp " + Quote(JavaServices.JavaTempPath) + Path.PathSeparator + Db4ojarPath();
 #if CF_1_0 || CF_2_0
             return null;
 #else
-            return IOServices.Exec("java", classPathArgument + " " + className + " " + string.Join(" ", args));
+            return IOServices.Exec("java",
+                    "-cp",
+                    IOServices.JoinQuotedArgs(Path.PathSeparator, JavaServices.JavaTempPath, Db4ojarPath()),
+                    className,
+                    IOServices.JoinQuotedArgs(args));
 #endif
         }
 	}

@@ -120,7 +120,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 
     	private static void RunJavaProgram()
     	{
-    		string stdout = JavaServices.java("com.db4o.test.aliases.Program", JavaServices.Quote(GetJavaDataFile()));
+    		string stdout = JavaServices.java("com.db4o.test.aliases.Program", GetJavaDataFile());
     		Console.WriteLine(stdout);
     	}
 

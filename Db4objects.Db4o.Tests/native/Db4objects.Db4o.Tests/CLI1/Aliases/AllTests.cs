@@ -11,6 +11,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 				{
                     typeof(JavaFromNetAliasesTestCase),
                     typeof(JavaFromNetWithSameNameTestCase),
+                    typeof(NetArrayFromJavaTestCase),
                     typeof(TypeAliasesTestCase),
 				};
         }

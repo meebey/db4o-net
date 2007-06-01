@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 
 		private string RunJavaProgram()
 		{
-			return JavaServices.java("com.db4o.test.uuidcompatibility.Program", JavaServices.Quote(DataFilePath()));
+			return JavaServices.java("com.db4o.test.uuidcompatibility.Program", DataFilePath());
 		}
 
 		private void CompileJavaProgram()
