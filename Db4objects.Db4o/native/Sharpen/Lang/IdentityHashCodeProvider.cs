@@ -7,7 +7,7 @@ namespace Sharpen.Lang
 {
 	public class IdentityHashCodeProvider
 	{
-#if NET_2_0 || MONO
+#if !CF_1_0 && !CF_2_0
 		public static int IdentityHashCode(object obj)
 		{
 			return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
@@ -25,7 +25,6 @@ namespace Sharpen.Lang
 		{
 			Assembly assembly = typeof(object).Assembly;
 
-	#if CF_1_0 || CF_2_0
 			// CompactFramework
 			try
 			{
@@ -39,7 +38,7 @@ namespace Sharpen.Lang
 			catch (Exception e)
 			{
 			}
-	#endif
+
 			// We may be running the CF app on .NET Framework 1.1
 			// for profiling, let's give that a chance
 			try
