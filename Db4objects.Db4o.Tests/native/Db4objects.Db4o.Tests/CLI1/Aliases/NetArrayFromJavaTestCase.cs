@@ -27,6 +27,8 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 
         public void Test()
         {
+            if (!JavaServices.CanRunJavaCompatibilityTests()) return;
+
             DeleteDataFile();
             GenerateNetDataFile();
             string output = CompileAndRunJavaApplication();
@@ -40,10 +42,10 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 
         private void AssertJavaOutput(string output)
         {
-            string expected = @"
+            string expected = @"**
 Item(1) all null arrays, null, null, null)
 Item(2) non null arrays, [0, 1, 127], [-2147483648, 0, 2147483647], [-3.4028235E38, 0.0, 3.4028235E38, NaN])
-";
+**";
             Assert.AreEqual(ns(expected), ns(output));
         }
 
@@ -118,15 +120,21 @@ public class Program {
 
         String fname = args[0];
         String typeName = args[1];
+
+		if (!new java.io.File(fname).exists()) {
+			System.out.println(""'"" + fname + ""' not found."");
+		}
         Configuration configuration = Db4o.newConfiguration();
         configuration.addAlias(new TypeAlias(typeName, ""NetArrayFromJava.Item""));
         configuration.add(new DotnetSupport());
         ObjectContainer container = Db4o.openFile(configuration, fname);
         try {  
             ObjectSet found = queryItems(container);
+			System.out.println(""**"");
             while (found.hasNext()) {
                 System.out.println(found.next());
             }
+			System.out.println(""**"");
         } finally {
             container.close();
         }
