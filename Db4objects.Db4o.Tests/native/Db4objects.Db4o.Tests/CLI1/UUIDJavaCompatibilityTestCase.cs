@@ -1,5 +1,6 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
 
@@ -103,7 +104,7 @@ public class Program {
 		private void GenerateDataFile()
 		{
 			System.IO.File.Delete(DataFilePath());
-			Db4oFactory.Configure().GenerateUUIDs(int.MaxValue);
+			Db4oFactory.Configure().GenerateUUIDs(ConfigScope.GLOBALLY);
 			using (IObjectContainer container = Db4oFactory.OpenFile(DataFilePath()))
 			{
 				MyTestClass test1 = new MyTestClass();
