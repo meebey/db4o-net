@@ -210,6 +210,17 @@ namespace Sharpen.Lang
 
 	public class ArrayTypeReference : QualifiedTypeReference
 	{
+		public static Type MakeArrayType(Type elementType, int rank)
+		{
+#if NET_2_0
+			if (rank == 1) return elementType.MakeArrayType();
+			return elementType.MakeArrayType(rank);
+#else
+			return Array.CreateInstance(elementType, new int[rank]).GetType();
+#endif
+		}
+
+
 		private int _rank;
 
 		internal ArrayTypeReference(TypeReference elementType, int rank)
@@ -225,16 +236,10 @@ namespace Sharpen.Lang
 
 		public override Type Resolve()
 		{
-#if NET_2_0
-		    Type elementType = _elementType.Resolve();
-            if (_rank == 1) return elementType.MakeArrayType();
-		    return elementType.MakeArrayType(_rank);
-#else
-			return Array.CreateInstance(_elementType.Resolve(), new int[_rank]).GetType();
-#endif
+			return MakeArrayType(_elementType.Resolve(), _rank);
 		}
 
-	    protected override void AppendQualifier(StringBuilder builder)
+		protected override void AppendQualifier(StringBuilder builder)
 		{
 			builder.Append('[');
 			for (int i = 1; i < _rank; ++i)

@@ -52,11 +52,7 @@ namespace Db4objects.Db4o.Reflect.Net
 
         private static Type MakeArrayType(Type type)
         {
-#if NET_2_0
-            return type.MakeArrayType();
-#else
-            return type.Module.GetType(type.FullName + "[]");
-#endif
+        	return Sharpen.Lang.ArrayTypeReference.MakeArrayType(type, 1);
         }
 
         public override object NewInstance(IReflectClass componentType, int length)
