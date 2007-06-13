@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Util
 #if CF_1_0 || CF_2_0
             return null;
 #else
-            return IOServices.Exec("java",
+            return IOServices.Exec(WorkspaceServices.JavaPath(),
                     "-cp",
                     IOServices.JoinQuotedArgs(Path.PathSeparator, JavaServices.JavaTempPath, Db4ojarPath()),
                     className,

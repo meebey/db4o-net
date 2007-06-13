@@ -9,7 +9,22 @@ namespace Db4objects.Db4o.Tests.Util
 	{
 		public static string JavacPath()
 		{
-			string path = ReadProperty(MachinePropertiesPath(), "file.compiler.jdk1.3");
+			return ReadMachinePathProperty("file.compiler.jdk1.3");
+		}
+		
+		public static string JavaPath()
+		{
+			return ReadMachinePathProperty("file.jvm.jdk1.5");
+		}
+		
+		public static string ReadMachineProperty(string property)
+		{
+			return ReadProperty(MachinePropertiesPath(), property);
+		}
+		
+		public static string ReadMachinePathProperty(string property)
+		{
+			string path = ReadMachineProperty(property);
 			Assert.IsTrue(File.Exists(path));
 			return path;
 		}
