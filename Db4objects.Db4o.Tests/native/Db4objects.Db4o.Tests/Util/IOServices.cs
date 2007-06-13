@@ -51,7 +51,6 @@ namespace Db4objects.Db4o.Tests.Util
         public static string Quote(string s)
         {
             if (s.StartsWith("\"")) return s;
-            if (s.IndexOf(' ') < 0) return s;
             return "\"" + s + "\"";
         }
 		
