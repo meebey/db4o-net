@@ -6,71 +6,101 @@ using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI1.Aliases
 {
-    class NetArrayFromJavaTestCase : ITestCase
-    {
+	class NetArrayFromJavaTestCase : ITestCase
+	{
 #if !CF_1_0 && !CF_2_0
-        public class Item
-        {
-            private string _description;
-            private byte[] _byteArray;
-            private int[] _intArray;
-            private float[] _floatArray;
+		public class Item
+		{
+			private string _description;
+			private byte[] _byteArray;
+			private int[] _intArray;
+			private float[] _floatArray;
 
-            public Item(string description, byte[] byteArray, int[] intArray, float[] floatArray)
-            {
-                _description = description;
-                _byteArray = byteArray;
-                _intArray = intArray;
-                _floatArray = floatArray;
-            }
-        }
+			public Item(string description, byte[] byteArray, int[] intArray, float[] floatArray)
+			{
+				_description = description;
+				_byteArray = byteArray;
+				_intArray = intArray;
+				_floatArray = floatArray;
+			}
 
-        public void Test()
-        {
-            if (!JavaServices.CanRunJavaCompatibilityTests()) return;
+			public override string ToString()
+			{
+				return "Item("
+					+ _description
+					+ ", " + ToString(_byteArray)
+					+ ", " + ToString(_intArray)
+					+ ", " + ToString(_floatArray)
+					+ ")";
+			}
 
-            DeleteDataFile();
-            GenerateNetDataFile();
-            string output = CompileAndRunJavaApplication();
-            AssertJavaOutput(output);
-        }
+			static string ToString(System.Collections.IEnumerable items)
+			{
+				if (items == null) return "null";
+				return new Db4objects.Db4o.Foundation.Collection4(items).ToString();
+			}
 
-        private void DeleteDataFile()
-        {
-            File4.Delete(DataFile);
-        }
+		}
 
-        private void AssertJavaOutput(string output)
-        {
-            string expected = @"**
+		public void Test()
+		{
+			if (!JavaServices.CanRunJavaCompatibilityTests()) return;
+
+			DeleteDataFile();
+			GenerateNetDataFile();
+			DumpDataFile();
+
+			string output = CompileAndRunJavaApplication();
+			AssertJavaOutput(output);
+		}
+
+		private void DumpDataFile()
+		{
+			using (IObjectContainer container = Db4oFactory.OpenFile(DataFile))
+			{
+				foreach (Item item in container.Query(typeof(Item)))
+				{
+					Console.WriteLine(item);
+				}
+			}
+		}
+
+		private void DeleteDataFile()
+		{
+			File4.Delete(DataFile);
+		}
+
+		private void AssertJavaOutput(string output)
+		{
+			string expected = @"**
 Item(1) all null arrays, null, null, null)
 Item(2) non null arrays, [0, 1, 127], [-2147483648, 0, 2147483647], [-3.4028235E38, 0.0, 3.4028235E38, NaN])
 **";
-            Assert.AreEqual(ns(expected), ns(output));
-        }
+			Assert.AreEqual(ns(expected), ns(output));
+		}
 
-        static string ns(string s)
-        {
-            return s.Trim().Replace("\r\n", Environment.NewLine);
-        }
+		static string ns(string s)
+		{
+			return s.Trim().Replace("\r\n", Environment.NewLine);
+		}
 
-        private string CompileAndRunJavaApplication()
-        {
-            CompileJavaApplication();
-            return RunJavaApplication();
-        }
+		private string CompileAndRunJavaApplication()
+		{
+			CompileJavaApplication();
+			return RunJavaApplication();
+		}
 
-        private static string RunJavaApplication()
-        {
-            return
-                JavaServices.java("NetArrayFromJava.Program",
-                                  DataFile,
-                                  CrossPlatformServices.FullyQualifiedName(typeof(Item)));
-        }
+		private static string RunJavaApplication()
+		{
+			return
+				JavaServices.java("NetArrayFromJava.Program",
+								  DataFile,
+								  CrossPlatformServices.FullyQualifiedName(typeof(Item)));
+		}
 
-        private static void CompileJavaApplication()
-        {
-            string code = @"
+		private static void CompileJavaApplication()
+		{
+			string code = @"
 package NetArrayFromJava;
 
 import com.db4o.*;
@@ -121,6 +151,7 @@ public class Program {
         String fname = args[0];
         String typeName = args[1];
 
+		//System.out.println(fname);
 		if (!new java.io.File(fname).exists()) {
 			System.out.println(""'"" + fname + ""' not found."");
 		}
@@ -148,42 +179,43 @@ public class Program {
     }
 }
 ";
-            JavaServices.CompileJavaCode("NetArrayFromJava/Program.java", code);
-        }
+			JavaServices.CompileJavaCode("NetArrayFromJava/Program.java", code);
+		}
 
-        private void GenerateNetDataFile()
-        {
-            using (IObjectContainer container = Db4oFactory.OpenFile(DataFile))
-            {
-                container.Set(new Item("1) all null arrays", null, null, null));
-                container.Set(
-                    new Item(
-                        "2) non null arrays",
-                        ByteArray(),
-                        IntArray(),
-                        FloatArray()));
-            }
-        }
+		private void GenerateNetDataFile()
+		{
+			using (IObjectContainer container = Db4oFactory.OpenFile(DataFile))
+			{
+				container.Set(new Item("1) all null arrays", null, null, null));
+				container.Set(
+					new Item(
+						"2) non null arrays",
+						ByteArray(),
+						IntArray(),
+						FloatArray()));
+			}
+			Console.WriteLine(DataFile);
+		}
 
-        private static string DataFile
-        {
-            get { return Path.Combine(Path.GetTempPath(), "NetArray.db4o"); }
-        }
+		private static string DataFile
+		{
+			get { return Path.Combine(Path.GetTempPath(), "NetArray.db4o"); }
+		}
 
-        private static byte[] ByteArray()
-        {
-            return new byte[] { 0, 1, 127 };
-        }
+		private static byte[] ByteArray()
+		{
+			return new byte[] { 0, 1, 127 };
+		}
 
-        private static int[] IntArray()
-        {
-            return new int[] { int.MinValue, 0, int.MaxValue };
-        }
+		private static int[] IntArray()
+		{
+			return new int[] { int.MinValue, 0, int.MaxValue };
+		}
 
-        private static float[] FloatArray()
-        {
-            return new float[] { float.MinValue, 0, float.MaxValue, float.NaN };
-        }
+		private static float[] FloatArray()
+		{
+			return new float[] { float.MinValue, 0, float.MaxValue, float.NaN };
+		}
 #endif
-    }
+	}
 }
