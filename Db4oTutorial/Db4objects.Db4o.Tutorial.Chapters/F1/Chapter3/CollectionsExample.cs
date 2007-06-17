@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 			{
 				StoreFirstCar(db);
 				StoreSecondCar(db);
-				RetrieveAllSensorReadouts(db);
+				RetrieveAllSensorReadout(db);
 				RetrieveSensorReadoutQBE(db);
 				RetrieveCarQBE(db);
 				RetrieveCollections(db);
@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 				DeleteAllPart1();
 				db=Db4oFactory.OpenFile(Util.YapFileName);
 				DeleteAllPart2(db);
-				RetrieveAllSensorReadouts(db);
+				RetrieveAllSensorReadout(db);
 			}
 			finally
 			{
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 			db.Set(car2);       
 		}
         
-		public static void RetrieveAllSensorReadouts(IObjectContainer db)
+		public static void RetrieveAllSensorReadout(IObjectContainer db)
 		{
 			IObjectSet result = db.Get(typeof(SensorReadout));
 			ListResult(result);
@@ -166,7 +166,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 			Car car = (Car)result.Next();
 			car.Snapshot();
 			db.Set(car);
-			RetrieveAllSensorReadouts(db);
+			RetrieveAllSensorReadout(db);
 		}
         
 		public static void UpdateCollection(IObjectContainer db)
