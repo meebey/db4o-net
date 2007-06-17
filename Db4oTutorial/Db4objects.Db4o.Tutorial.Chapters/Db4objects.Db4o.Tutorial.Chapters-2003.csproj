@@ -134,21 +134,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "F1\Chapter21\Car.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "F1\Chapter21\IndexedExample.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "F1\Chapter21\Pilot.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "F1\Chapter3\Car.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
