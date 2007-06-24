@@ -1,4 +1,4 @@
-﻿using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Query;
 
 using Db4objects.Db4o.Tutorial.F1.Chapter3;
 

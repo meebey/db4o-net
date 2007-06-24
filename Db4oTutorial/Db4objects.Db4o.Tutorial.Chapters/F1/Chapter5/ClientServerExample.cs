@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using Db4objects.Db4o;
 
 namespace Db4objects.Db4o.Tutorial.F1.Chapter5

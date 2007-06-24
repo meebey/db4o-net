@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Db4objects.Db4o;
 
 namespace Db4objects.Db4o.Tutorial.F1

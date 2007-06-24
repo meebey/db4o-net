@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Messaging;
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
                 {
                     if (! stop)
                     {
-                        // wait forever for Notify() from Close()
+                        // wait forever until Close will change stop variable
                         Monitor.Wait(this);
                     }
                 }

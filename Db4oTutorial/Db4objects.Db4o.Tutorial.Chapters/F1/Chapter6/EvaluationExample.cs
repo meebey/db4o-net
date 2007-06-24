@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 
 using Db4objects.Db4o.Query;
 
