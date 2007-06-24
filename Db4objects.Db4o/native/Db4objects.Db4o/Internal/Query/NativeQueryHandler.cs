@@ -1,5 +1,6 @@
 /* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 using System;
+using Db4objects.Db4o.Nativequery;
 using Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Nativequery.Optimization;
 using Db4objects.Db4o.Query;
@@ -46,9 +47,12 @@ namespace Db4objects.Db4o.Internal.Query
 
 		public event QueryOptimizationFailureHandler QueryOptimizationFailure;
 
+		private Db4objects.Db4o.Nativequery.INativeClassFactory _classFactory;
+
 		public NativeQueryHandler(Db4objects.Db4o.IObjectContainer container)
 		{
 			_container = container;
+			_classFactory = new Db4objects.Db4o.Nativequery.DefaultNativeClassFactory();
 		}
 
 		public virtual Db4objects.Db4o.IObjectSet Execute(Db4objects.Db4o.Query.Predicate predicate, Db4objects.Db4o.Query.IQueryComparator comparator)
@@ -204,7 +208,7 @@ namespace Db4objects.Db4o.Internal.Query
 
 			// TODO: cache predicate expressions here
 			IExpression expression = _builder.FromMethod(filterMethod);
-			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate);
+			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate, _classFactory);
 		}
 
 		private void OnQueryExecution(object predicate, QueryExecutionKind kind)
