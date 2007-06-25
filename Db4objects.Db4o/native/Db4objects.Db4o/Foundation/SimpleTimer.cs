@@ -10,14 +10,21 @@ namespace Db4objects.Db4o.Foundation
 	public sealed class SimpleTimer
 	{
 		private readonly Timer _timer;
+		private bool _started = false;
 
 		public SimpleTimer(IRunnable runnable, int interval, string name)
 		{
 			_timer = new Timer(new TimerCallback(Run), runnable, 0, interval);
 		}
 
-		private static void Run(object state)
+		public void Start()
 		{
+			_started = true;
+		}
+
+		private void Run(object state)
+		{
+			if (!_started) return;
 			((IRunnable)state).Run();
 		}
 

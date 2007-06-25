@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Reflection;
 using System.Text;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Nativequery.Optimization;
 using Db4objects.Db4o.Query;
@@ -26,16 +27,8 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 		}
 
 		private string ToString(IEnumerable os)
-		{	
-			StringBuilder buffer = new StringBuilder();
-			buffer.Append('[');
-			foreach (object item in os)
-			{
-				if (buffer.Length > 1) buffer.Append(", ");
-				buffer.Append(item.ToString());
-			}
-			buffer.Append(']');
-			return buffer.ToString();
+		{
+			return Iterators.ToString(os.GetEnumerator());
 		}
 
 		private IQuery QueryFromPredicate(object predicate)
@@ -43,7 +36,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			MethodInfo match = predicate.GetType().GetMethod("Match");
 			IExpression expression = (new QueryExpressionBuilder ()).FromMethod(match);
 			IQuery q = NewQuery(match.GetParameters()[0].ParameterType);
-			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate);
+			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate, new Db4objects.Db4o.Nativequery.DefaultNativeClassFactory());
 			return q;
 		}
 	}
