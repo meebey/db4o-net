@@ -1,4 +1,4 @@
-/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2004 - 2007 db4objects Inc.   http://www.db4o.com */
 
 using System;
 using System.Collections;
@@ -630,6 +630,11 @@ namespace Db4objects.Db4o.Internal
 					new UShortHandler(stream),
 					new DateTimeHandler(stream),
 				};
+        }
+
+        public static bool IsByteArray(object obj)
+        {
+            return (obj is byte[]) && ! (obj is sbyte[]);
         }
 
         public static bool IsSimple(Type a_class)
