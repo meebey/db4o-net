@@ -632,11 +632,6 @@ namespace Db4objects.Db4o.Internal
 				};
         }
 
-        public static bool IsByteArray(object obj)
-        {
-            return (obj is byte[]) && ! (obj is sbyte[]);
-        }
-
         public static bool IsSimple(Type a_class)
         {
             for (int i1 = 0; i1 < SIMPLE_CLASSES.Length; i1++)
