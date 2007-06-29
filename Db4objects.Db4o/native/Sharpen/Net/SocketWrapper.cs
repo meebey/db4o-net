@@ -15,12 +15,6 @@ namespace Sharpen.Net
 
 		public void SetSoTimeout(int timeout)
 		{
-            // Socket timeouts have turned out to be a bad option on all supported
-            // .NET platforms. If timeouts are turned on, the waiting message loop
-            // will run into IoExceptions, causing a CPU load of 100%. 
-
-            // All test cases work fine without socket timeouts on the server.
-
 			_delegate.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, timeout);
 			_delegate.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, timeout);
 		}
