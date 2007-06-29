@@ -22,9 +22,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			File4.Delete(BACKUP_FILE);
 		}
 
-		protected override void Db4oCustomTearDown()
+		protected override void Db4oTearDownBeforeClean()
 		{
-			base.Db4oCustomTearDown();
+			base.Db4oTearDownBeforeClean();
 			File4.Delete(BACKUP_FILE);
 		}
 

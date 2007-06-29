@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			SwitchingFilesFromClientUtil.DeleteFiles();
 		}
 
-		protected override void Db4oCustomTearDown()
+		protected override void Db4oTearDownAfterClean()
 		{
 			SwitchingFilesFromClientUtil.DeleteFiles();
 		}

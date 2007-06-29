@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			new ServerPortUsedTestCase().RunAll();
 		}
 
-		protected override void Db4oCustomTearDown()
+		protected override void Db4oTearDownBeforeClean()
 		{
 			File4.Delete(DB);
 		}

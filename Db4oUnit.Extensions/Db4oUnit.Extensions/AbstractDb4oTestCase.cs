@@ -60,9 +60,16 @@ namespace Db4oUnit.Extensions
 
 		public void TearDown()
 		{
-			Db4oCustomTearDown();
-			_fixture.Close();
-			_fixture.Clean();
+			try
+			{
+				Db4oTearDownBeforeClean();
+			}
+			finally
+			{
+				_fixture.Close();
+				_fixture.Clean();
+			}
+			Db4oTearDownAfterClean();
 		}
 
 		protected virtual void Db4oSetupBeforeStore()
@@ -73,7 +80,11 @@ namespace Db4oUnit.Extensions
 		{
 		}
 
-		protected virtual void Db4oCustomTearDown()
+		protected virtual void Db4oTearDownBeforeClean()
+		{
+		}
+
+		protected virtual void Db4oTearDownAfterClean()
 		{
 		}
 
@@ -318,12 +329,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_270(this, oc));
+			Foreach(clazz, new _IVisitor4_275(this, oc));
 		}
 
-		private sealed class _IVisitor4_270 : IVisitor4
+		private sealed class _IVisitor4_275 : IVisitor4
 		{
-			public _IVisitor4_270(AbstractDb4oTestCase _enclosing, IExtObjectContainer oc)
+			public _IVisitor4_275(AbstractDb4oTestCase _enclosing, IExtObjectContainer oc)
 			{
 				this._enclosing = _enclosing;
 				this.oc = oc;

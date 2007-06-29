@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			ExceptionIOAdapter.exception = false;
 		}
 
-		protected override void Db4oCustomTearDown()
+		protected override void Db4oTearDownBeforeClean()
 		{
 			ExceptionIOAdapter.exception = false;
 		}

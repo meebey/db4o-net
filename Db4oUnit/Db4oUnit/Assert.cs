@@ -31,7 +31,7 @@ namespace Db4oUnit
 				return;
 			}
 			Fail("Expecting '" + exception.FullName + "' but got '" + e.GetType().FullName + 
-				"'");
+				"'", e);
 		}
 
 		private static Exception GetThrowable(ICodeBlock block)
@@ -55,6 +55,11 @@ namespace Db4oUnit
 		public static void Fail(string msg)
 		{
 			throw new AssertionException(msg);
+		}
+
+		public static void Fail(string msg, Exception cause)
+		{
+			throw new AssertionException(msg, cause);
 		}
 
 		public static void IsTrue(bool condition)

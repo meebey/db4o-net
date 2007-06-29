@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			new SystemInfoTestCase().RunSolo();
 		}
 
-		protected override void Db4oCustomTearDown()
+		protected override void Db4oTearDownBeforeClean()
 		{
 			Db4oFactory.Configure().Freespace().UseRamSystem();
 		}
