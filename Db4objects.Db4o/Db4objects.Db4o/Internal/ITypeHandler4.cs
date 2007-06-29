@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.IX;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Reflect;
@@ -10,30 +8,19 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public interface ITypeHandler4 : IIndexable4
+	public interface ITypeHandler4 : IComparable4
 	{
-		bool CanHold(IReflectClass claxx);
-
-		void CascadeActivation(Transaction a_trans, object a_object, int a_depth, bool a_activate
-			);
+		void CascadeActivation(Transaction trans, object obj, int depth, bool activate);
 
 		IReflectClass ClassReflector();
 
-		object Coerce(IReflectClass claxx, object obj);
-
-		void CopyValue(object a_from, object a_to);
-
-		void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes);
+		void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer buffer);
 
 		int GetID();
 
-		bool IsEqual(ITypeHandler4 a_dataType);
-
 		bool HasFixedLength();
 
-		bool IndexNullHandling();
-
-		TernaryBool IsSecondClass();
+		int LinkLength();
 
 		/// <summary>
 		/// The length calculation is different, depending from where we
@@ -55,42 +42,16 @@ namespace Db4objects.Db4o.Internal
 		void CalculateLengths(Transaction trans, ObjectHeaderAttributes header, bool topLevel
 			, object obj, bool withIndirection);
 
-		object IndexEntryToObject(Transaction trans, object indexEntry);
-
-		void PrepareComparison(Transaction a_trans, object obj);
-
-		IReflectClass PrimitiveClassReflector();
-
-		object Read(MarshallerFamily mf, StatefulBuffer writer, bool redirect);
-
-		object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer writer);
+		object Read(MarshallerFamily mf, StatefulBuffer buffer, bool redirect);
 
 		object ReadQuery(Transaction trans, MarshallerFamily mf, bool withRedirection, Db4objects.Db4o.Internal.Buffer
-			 reader, bool toArray);
+			 buffer, bool toArray);
 
-		bool SupportsIndex();
-
-		object WriteNew(MarshallerFamily mf, object a_object, bool topLevel, StatefulBuffer
-			 a_bytes, bool withIndirection, bool restoreLinkOffset);
-
-		int GetTypeID();
-
-		ClassMetadata GetClassMetadata(ObjectContainerBase a_stream);
-
-		/// <summary>performance optimized read (only used for byte[] so far)</summary>
-		bool ReadArray(object array, Db4objects.Db4o.Internal.Buffer reader);
-
-		void ReadCandidates(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer reader, 
-			QCandidates candidates);
-
-		ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer[]
-			 a_bytes);
-
-		/// <summary>performance optimized write (only used for byte[] so far)</summary>
-		bool WriteArray(object array, Db4objects.Db4o.Internal.Buffer reader);
+		object Write(MarshallerFamily mf, object obj, bool topLevel, StatefulBuffer buffer
+			, bool withIndirection, bool restoreLinkOffset);
 
 		QCandidate ReadSubCandidate(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer 
-			reader, QCandidates candidates, bool withIndirection);
+			buffer, QCandidates candidates, bool withIndirection);
 
 		void Defrag(MarshallerFamily mf, ReaderPair readers, bool redirect);
 	}

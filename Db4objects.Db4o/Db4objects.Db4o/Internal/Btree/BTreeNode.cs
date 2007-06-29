@@ -4,7 +4,6 @@ using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
-using Db4objects.Db4o.Internal.IX;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal.Btree
@@ -91,7 +90,8 @@ namespace Db4objects.Db4o.Internal.Btree
 		/// the split node if this node is split
 		/// or this if the first key has changed
 		/// </returns>
-		public Db4objects.Db4o.Internal.Btree.BTreeNode Add(Transaction trans)
+		public Db4objects.Db4o.Internal.Btree.BTreeNode Add(Transaction trans, object obj
+			)
 		{
 			Db4objects.Db4o.Internal.Buffer reader = PrepareRead(trans);
 			Searcher s = Search(reader);
@@ -100,7 +100,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				PrepareWrite(trans);
 				if (WasRemoved(trans, s))
 				{
-					CancelRemoval(trans, s.Cursor());
+					CancelRemoval(trans, obj, s.Cursor());
 					return null;
 				}
 				if (s.Count() > 0 && !s.BeforeFirst())
@@ -108,12 +108,13 @@ namespace Db4objects.Db4o.Internal.Btree
 					s.MoveForward();
 				}
 				PrepareInsert(s.Cursor());
-				_keys[s.Cursor()] = NewAddPatch(trans);
+				_keys[s.Cursor()] = NewAddPatch(trans, obj);
 			}
 			else
 			{
 				Db4objects.Db4o.Internal.Btree.BTreeNode childNode = Child(reader, s.Cursor());
-				Db4objects.Db4o.Internal.Btree.BTreeNode childNodeOrSplit = childNode.Add(trans);
+				Db4objects.Db4o.Internal.Btree.BTreeNode childNodeOrSplit = childNode.Add(trans, 
+					obj);
 				if (childNodeOrSplit == null)
 				{
 					return null;
@@ -144,29 +145,24 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _count >= _btree.NodeSize();
 		}
 
-		private BTreeAdd NewAddPatch(Transaction trans)
+		private BTreeAdd NewAddPatch(Transaction trans, object obj)
 		{
 			SizeIncrement(trans);
-			return new BTreeAdd(trans, CurrentKey());
+			return new BTreeAdd(trans, obj);
 		}
 
-		private object CurrentKey()
-		{
-			return KeyHandler().Current();
-		}
-
-		private void CancelRemoval(Transaction trans, int index)
+		private void CancelRemoval(Transaction trans, object obj, int index)
 		{
 			BTreeUpdate patch = (BTreeUpdate)KeyPatch(index);
 			BTreeUpdate nextPatch = patch.RemoveFor(trans);
-			_keys[index] = NewCancelledRemoval(trans, patch.GetObject(), nextPatch);
+			_keys[index] = NewCancelledRemoval(trans, patch.GetObject(), obj, nextPatch);
 			SizeIncrement(trans);
 		}
 
 		private BTreePatch NewCancelledRemoval(Transaction trans, object originalObject, 
-			BTreeUpdate existingPatches)
+			object currentObject, BTreeUpdate existingPatches)
 		{
-			return new BTreeCancelledRemoval(trans, originalObject, CurrentKey(), existingPatches
+			return new BTreeCancelledRemoval(trans, originalObject, currentObject, existingPatches
 				);
 		}
 
@@ -800,7 +796,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		public void Remove(Transaction trans, int index)
+		public void Remove(Transaction trans, object obj, int index)
 		{
 			if (!_isLeaf)
 			{
@@ -810,7 +806,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			BTreePatch patch = KeyPatch(index);
 			if (patch == null)
 			{
-				_keys[index] = NewRemovePatch(trans);
+				_keys[index] = NewRemovePatch(trans, obj);
 				KeyChanged(trans, index);
 				return;
 			}
@@ -824,7 +820,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				}
 				if (transPatch.IsCancelledRemoval())
 				{
-					BTreeRemove removePatch = NewRemovePatch(trans, transPatch.GetObject());
+					BTreeRemove removePatch = ApplyNewRemovePatch(trans, transPatch.GetObject());
 					_keys[index] = ((BTreeUpdate)patch).ReplacePatch(transPatch, removePatch);
 					KeyChanged(trans, index);
 					return;
@@ -834,7 +830,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				if (!patch.IsAdd())
 				{
-					((BTreeUpdate)patch).Append(NewRemovePatch(trans));
+					((BTreeUpdate)patch).Append(NewRemovePatch(trans, obj));
 					return;
 				}
 			}
@@ -844,7 +840,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				{
 					return;
 				}
-				Remove(trans, index + 1);
+				Remove(trans, obj, index + 1);
 				return;
 			}
 			Db4objects.Db4o.Internal.Btree.BTreeNode node = NextNode();
@@ -857,7 +853,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return;
 			}
-			node.Remove(trans, 0);
+			node.Remove(trans, obj, 0);
 		}
 
 		private void CancelAdding(Transaction trans, int index)
@@ -883,12 +879,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _count - 1;
 		}
 
-		private BTreeRemove NewRemovePatch(Transaction trans)
+		private BTreeRemove NewRemovePatch(Transaction trans, object obj)
 		{
-			return NewRemovePatch(trans, CurrentKey());
+			return ApplyNewRemovePatch(trans, obj);
 		}
 
-		private BTreeRemove NewRemovePatch(Transaction trans, object key)
+		private BTreeRemove ApplyNewRemovePatch(Transaction trans, object key)
 		{
 			_btree.SizeChanged(trans, -1);
 			return new BTreeRemove(trans, key);

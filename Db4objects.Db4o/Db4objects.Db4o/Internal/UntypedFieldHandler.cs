@@ -1,10 +1,8 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
-using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -13,11 +11,6 @@ namespace Db4objects.Db4o.Internal
 		public UntypedFieldHandler(ObjectContainerBase stream) : base(stream, stream.i_handlers
 			.ICLASS_OBJECT)
 		{
-		}
-
-		public override bool CanHold(IReflectClass claxx)
-		{
-			return true;
 		}
 
 		public override void CascadeActivation(Transaction a_trans, object a_object, int 
@@ -58,11 +51,6 @@ namespace Db4objects.Db4o.Internal
 		public override bool HoldsAnyClass()
 		{
 			return true;
-		}
-
-		public override TernaryBool IsSecondClass()
-		{
-			return TernaryBool.UNSPECIFIED;
 		}
 
 		public override bool IsStrongTyped()
@@ -126,12 +114,7 @@ namespace Db4objects.Db4o.Internal
 			return mf._untyped.ReadSubCandidate(reader, candidates, withIndirection);
 		}
 
-		public override bool SupportsIndex()
-		{
-			return false;
-		}
-
-		public override object WriteNew(MarshallerFamily mf, object obj, bool topLevel, StatefulBuffer
+		public override object Write(MarshallerFamily mf, object obj, bool topLevel, StatefulBuffer
 			 writer, bool withIndirection, bool restoreLinkeOffset)
 		{
 			return mf._untyped.WriteNew(obj, restoreLinkeOffset, writer);

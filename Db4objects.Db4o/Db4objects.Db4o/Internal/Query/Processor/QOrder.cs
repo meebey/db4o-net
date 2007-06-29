@@ -61,11 +61,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private int InternalCompare()
 		{
-			if (_constraint.i_comparator.IsSmaller(_candidate.Value()))
+			int comparisonResult = _constraint.i_comparator.CompareTo(_candidate.Value());
+			if (comparisonResult < 0)
 			{
 				return -_constraint.Ordering();
 			}
-			if (_constraint.i_comparator.IsEqual(_candidate.Value()))
+			if (comparisonResult == 0)
 			{
 				return 0;
 			}

@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.IX;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Replication;
@@ -182,7 +181,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected override IIndexable4 IndexHandler(ObjectContainerBase stream)
 		{
-			return i_handler;
+			return (IIndexable4)i_handler;
 		}
 	}
 }

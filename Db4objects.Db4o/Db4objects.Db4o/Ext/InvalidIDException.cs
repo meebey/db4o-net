@@ -20,6 +20,8 @@ namespace Db4objects.Db4o.Ext
 	[System.Serializable]
 	public class InvalidIDException : Db4oException
 	{
+		/// <summary>Constructor allowing to specify the exception cause</summary>
+		/// <param name="cause">cause exception</param>
 		public InvalidIDException(Exception cause) : base(cause)
 		{
 		}

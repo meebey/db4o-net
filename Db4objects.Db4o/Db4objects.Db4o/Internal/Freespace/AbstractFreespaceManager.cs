@@ -120,14 +120,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public virtual int TotalFreespace()
 		{
-			MutableInt mint = new MutableInt();
+			IntByRef mint = new IntByRef();
 			Traverse(new _IVisitor4_84(this, mint));
-			return mint.Value();
+			return mint.value;
 		}
 
 		private sealed class _IVisitor4_84 : IVisitor4
 		{
-			public _IVisitor4_84(AbstractFreespaceManager _enclosing, MutableInt mint)
+			public _IVisitor4_84(AbstractFreespaceManager _enclosing, IntByRef mint)
 			{
 				this._enclosing = _enclosing;
 				this.mint = mint;
@@ -136,12 +136,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			public void Visit(object obj)
 			{
 				Slot slot = (Slot)obj;
-				mint.Add(slot.Length());
+				mint.value += slot.Length();
 			}
 
 			private readonly AbstractFreespaceManager _enclosing;
 
-			private readonly MutableInt mint;
+			private readonly IntByRef mint;
 		}
 
 		public abstract void BeginCommit();
@@ -171,14 +171,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public virtual void DebugCheckIntegrity()
 		{
-			MutableInt lastStart = new MutableInt();
-			MutableInt lastEnd = new MutableInt();
+			IntByRef lastStart = new IntByRef();
+			IntByRef lastEnd = new IntByRef();
 			Traverse(new _IVisitor4_117(this, lastEnd, lastStart));
 		}
 
 		private sealed class _IVisitor4_117 : IVisitor4
 		{
-			public _IVisitor4_117(AbstractFreespaceManager _enclosing, MutableInt lastEnd, MutableInt
+			public _IVisitor4_117(AbstractFreespaceManager _enclosing, IntByRef lastEnd, IntByRef
 				 lastStart)
 			{
 				this._enclosing = _enclosing;
@@ -189,19 +189,19 @@ namespace Db4objects.Db4o.Internal.Freespace
 			public void Visit(object obj)
 			{
 				Slot slot = (Slot)obj;
-				if (slot.Address() <= lastEnd.Value())
+				if (slot.Address() <= lastEnd.value)
 				{
 					throw new InvalidOperationException();
 				}
-				lastStart.Value(slot.Address());
-				lastEnd.Value(slot.Address() + slot.Length());
+				lastStart.value = slot.Address();
+				lastEnd.value = slot.Address() + slot.Length();
 			}
 
 			private readonly AbstractFreespaceManager _enclosing;
 
-			private readonly MutableInt lastEnd;
+			private readonly IntByRef lastEnd;
 
-			private readonly MutableInt lastStart;
+			private readonly IntByRef lastStart;
 		}
 
 		protected LocalTransaction Transaction()

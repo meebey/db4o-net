@@ -96,11 +96,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			PrepareComparison(Val(obj));
 		}
 
-		public override object Current1()
-		{
-			return CurrentInt();
-		}
-
 		public virtual int CurrentInt()
 		{
 			return i_compareTo;

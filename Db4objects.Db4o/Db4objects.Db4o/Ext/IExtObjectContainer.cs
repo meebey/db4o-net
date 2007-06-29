@@ -13,10 +13,10 @@ namespace Db4objects.Db4o.Ext
 {
 	/// <summary>
 	/// extended functionality for the
-	/// <see cref="IObjectContainer">ObjectContainer</see>
+	/// <see cref="IObjectContainer">IObjectContainer</see>
 	/// interface.
 	/// <br /><br />Every db4o
-	/// <see cref="IObjectContainer">ObjectContainer</see>
+	/// <see cref="IObjectContainer">IObjectContainer</see>
 	/// always is an <code>ExtObjectContainer</code> so a cast is possible.<br /><br />
 	/// <see cref="IObjectContainer.Ext">IObjectContainer.Ext</see>
 	/// is a convenient method to perform the cast.<br /><br />
@@ -99,16 +99,16 @@ namespace Db4objects.Db4o.Ext
 		/// Upon opening an ObjectContainer with any of the factory methods in the
 		/// <see cref="Db4oFactory">Db4o class</see>
 		/// , the global
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// context
 		/// is copied into the ObjectContainer. The
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// can be modified individually for
 		/// each ObjectContainer without any effects on the global settings.<br /><br />
 		/// </remarks>
 		/// <returns>
 		/// 
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// the Configuration
 		/// context for this ObjectContainer
 		/// </returns>

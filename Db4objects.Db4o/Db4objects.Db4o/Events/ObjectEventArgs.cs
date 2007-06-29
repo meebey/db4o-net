@@ -12,6 +12,8 @@ namespace Db4objects.Db4o.Events
 	{
 		private object _obj;
 
+		/// <summary>Creates a new instance for the specified object.</summary>
+		/// <remarks>Creates a new instance for the specified object.</remarks>
 		public ObjectEventArgs(object obj)
 		{
 			_obj = obj;

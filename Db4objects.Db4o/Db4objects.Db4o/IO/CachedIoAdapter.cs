@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal.Fileheader;
 using Sharpen;
@@ -36,15 +37,33 @@ namespace Db4objects.Db4o.IO
 
 		private IoAdapter _io;
 
+		private bool _readOnly;
+
 		private static int DEFAULT_PAGE_SIZE = 1024;
 
 		private static int DEFAULT_PAGE_COUNT = 64;
 
+		/// <summary>
+		/// Creates an instance of CachedIoAdapter with the default page size and
+		/// page count.
+		/// </summary>
+		/// <remarks>
+		/// Creates an instance of CachedIoAdapter with the default page size and
+		/// page count.
+		/// </remarks>
+		/// <param name="ioAdapter">delegate IO adapter (RandomAccessFileAdapter by default)</param>
 		public CachedIoAdapter(IoAdapter ioAdapter) : this(ioAdapter, DEFAULT_PAGE_SIZE, 
 			DEFAULT_PAGE_COUNT)
 		{
 		}
 
+		/// <summary>
+		/// Creates an instance of CachedIoAdapter with a custom page size and page
+		/// count.<br />
+		/// </summary>
+		/// <param name="ioAdapter">delegate IO adapter (RandomAccessFileAdapter by default)</param>
+		/// <param name="pageSize">cache page size</param>
+		/// <param name="pageCount">allocated amount of pages</param>
 		public CachedIoAdapter(IoAdapter ioAdapter, int pageSize, int pageCount)
 		{
 			_io = ioAdapter;
@@ -52,13 +71,22 @@ namespace Db4objects.Db4o.IO
 			_pageCount = pageCount;
 		}
 
-		public CachedIoAdapter(string path, bool lockFile, long initialLength, IoAdapter 
-			io, int pageSize, int pageCount)
+		/// <summary>Creates an instance of CachedIoAdapter with extended parameters.<br /></summary>
+		/// <param name="path">database file path</param>
+		/// <param name="lockFile">determines if the file should be locked</param>
+		/// <param name="initialLength">initial file length, new writes will start from this point
+		/// 	</param>
+		/// <param name="ioAdapter">delegate IO adapter (RandomAccessFileAdapter by default)</param>
+		/// <param name="pageSize">cache page size</param>
+		/// <param name="pageCount">allocated amount of pages</param>
+		public CachedIoAdapter(string path, bool lockFile, long initialLength, bool readOnly
+			, IoAdapter io, int pageSize, int pageCount)
 		{
+			_readOnly = readOnly;
 			_pageSize = pageSize;
 			_pageCount = pageCount;
 			InitCache();
-			InitIOAdaptor(path, lockFile, initialLength, io);
+			InitIOAdaptor(path, lockFile, initialLength, readOnly, io);
 			_position = initialLength;
 			_filePointer = initialLength;
 			_fileLength = _io.GetLength();
@@ -69,10 +97,11 @@ namespace Db4objects.Db4o.IO
 		/// <param name="lockFile">determines if the file should be locked</param>
 		/// <param name="initialLength">initial file length, new writes will start from this point
 		/// 	</param>
-		public override IoAdapter Open(string path, bool lockFile, long initialLength)
+		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
+			 readOnly)
 		{
-			return new Db4objects.Db4o.IO.CachedIoAdapter(path, lockFile, initialLength, _io, 
-				_pageSize, _pageCount);
+			return new Db4objects.Db4o.IO.CachedIoAdapter(path, lockFile, initialLength, readOnly
+				, _io, _pageSize, _pageCount);
 		}
 
 		/// <summary>Deletes the database file</summary>
@@ -89,10 +118,10 @@ namespace Db4objects.Db4o.IO
 			return _io.Exists(path);
 		}
 
-		private void InitIOAdaptor(string path, bool lockFile, long initialLength, IoAdapter
-			 io)
+		private void InitIOAdaptor(string path, bool lockFile, long initialLength, bool readOnly
+			, IoAdapter io)
 		{
-			_io = io.Open(path, lockFile, initialLength);
+			_io = io.Open(path, lockFile, initialLength, readOnly);
 		}
 
 		private void InitCache()
@@ -147,6 +176,7 @@ namespace Db4objects.Db4o.IO
 		/// <param name="length">how many bytes to write</param>
 		public override void Write(byte[] buffer, int length)
 		{
+			ValidateReadOnly();
 			long startAddress = _position;
 			CachedIoAdapter.Page page = null;
 			int writtenBytes;
@@ -172,9 +202,18 @@ namespace Db4objects.Db4o.IO
 			_fileLength = Math.Max(endAddress, _fileLength);
 		}
 
+		private void ValidateReadOnly()
+		{
+			if (_readOnly)
+			{
+				throw new Db4oIOException();
+			}
+		}
+
 		/// <summary>Flushes cache to a physical storage</summary>
 		public override void Sync()
 		{
+			ValidateReadOnly();
 			FlushAllPages();
 			_io.Sync();
 		}
@@ -368,7 +407,7 @@ namespace Db4objects.Db4o.IO
 
 			internal CachedIoAdapter.Page _next;
 
-			public static byte[] zeroBytes;
+			private byte[] zeroBytes;
 
 			public Page(int size)
 			{

@@ -19,7 +19,7 @@ namespace Db4oUnit
 
 		public TestResult(bool printLabels)
 		{
-			_stdout = printLabels ? TestPlatform.GetStdOut() : null;
+			_stdout = printLabels ? TestPlatform.GetStdErr() : null;
 		}
 
 		public TestResult() : this(false)

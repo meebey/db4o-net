@@ -1,0 +1,111 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
+using System;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Tests.Common.Reflect.Custom;
+
+namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
+{
+	public class CustomField : IReflectField
+	{
+		public CustomClassRepository _repository;
+
+		public int _index;
+
+		public string _name;
+
+		public Type _type;
+
+		public CustomField()
+		{
+		}
+
+		public CustomField(CustomClassRepository repository, int index, string name, Type
+			 type)
+		{
+			_repository = repository;
+			_index = index;
+			_name = name;
+			_type = type;
+		}
+
+		public virtual object Get(object onObject)
+		{
+			LogMethodCall("get", onObject);
+			return FieldValues(onObject)[_index];
+		}
+
+		private object[] FieldValues(object onObject)
+		{
+			return ((PersistentEntry)onObject).fieldValues;
+		}
+
+		public virtual IReflectClass GetFieldType()
+		{
+			LogMethodCall("getFieldType");
+			return _repository.ReflectClass(_type);
+		}
+
+		public virtual string GetName()
+		{
+			return _name;
+		}
+
+		public virtual object IndexEntry(object orig)
+		{
+			LogMethodCall("indexEntry", orig);
+			throw new NotImplementedException();
+		}
+
+		public virtual IReflectClass IndexType()
+		{
+			LogMethodCall("indexType");
+			throw new NotImplementedException();
+		}
+
+		public virtual bool IsPublic()
+		{
+			return true;
+		}
+
+		public virtual bool IsStatic()
+		{
+			return false;
+		}
+
+		public virtual bool IsTransient()
+		{
+			return false;
+		}
+
+		public virtual void Set(object onObject, object value)
+		{
+			LogMethodCall("set", onObject, value);
+			FieldValues(onObject)[_index] = value;
+		}
+
+		public virtual void SetAccessible()
+		{
+		}
+
+		public override string ToString()
+		{
+			return "CustomField(" + _index + ", " + _name + ", " + _type.FullName + ")";
+		}
+
+		private void LogMethodCall(string methodName)
+		{
+			Logger.LogMethodCall(this, methodName);
+		}
+
+		private void LogMethodCall(string methodName, object arg)
+		{
+			Logger.LogMethodCall(this, methodName, arg);
+		}
+
+		private void LogMethodCall(string methodName, object arg1, object arg2)
+		{
+			Logger.LogMethodCall(this, methodName, arg1, arg2);
+		}
+	}
+}

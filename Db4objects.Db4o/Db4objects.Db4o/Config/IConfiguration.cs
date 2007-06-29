@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Config
 		/// is away from another object. <b>The preconfigured "activation depth" db4o uses
 		/// in the default setting is 5.</b>
 		/// <br /><br />Whenever an application iterates through the
-		/// <see cref="IObjectSet">ObjectSet</see>
+		/// <see cref="IObjectSet">IObjectSet</see>
 		/// of a query result, the result objects
 		/// will be activated to the configured activation depth.<br /><br />
 		/// A concrete example with the preconfigured activation depth of 5:<br />
@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>
 		/// Removes an alias previously added with
-		/// <see cref="addAlias">addAlias</see>
+		/// <see cref="IConfiguration.AddAlias">IConfiguration.AddAlias</see>
 		/// .
 		/// </summary>
 		/// <param name="alias">the alias to remove</param>
@@ -436,7 +436,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>configures db4o to generate UUIDs for stored objects.</summary>
 		/// <remarks>configures db4o to generate UUIDs for stored objects.</remarks>
-		/// <param name="the">scope for UUID generation: disabled, generate for all classes, or configure individually
+		/// <param name="setting">the scope for UUID generation: disabled, generate for all classes, or configure individually
 		/// 	</param>
 		void GenerateUUIDs(ConfigScope setting);
 
@@ -453,7 +453,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>configures db4o to generate version numbers for stored objects.</summary>
 		/// <remarks>configures db4o to generate version numbers for stored objects.</remarks>
-		/// <param name="the">scope for version number generation: disabled, generate for all classes, or configure individually
+		/// <param name="setting">the scope for version number generation: disabled, generate for all classes, or configure individually
 		/// 	</param>
 		void GenerateVersionNumbers(ConfigScope setting);
 
@@ -495,7 +495,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// sets the detail level of db4o messages. Messages will be output to the
 		/// configured output
-		/// <see cref="TextWriter">PrintStream</see>
+		/// <see cref="TextWriter">TextWriter</see>
 		/// .
 		/// <br /><br />
 		/// Level 0 - no messages<br />
@@ -530,7 +530,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>
 		/// returns an
-		/// <see cref="IObjectClass">ObjectClass</see>
+		/// <see cref="IObjectClass">IObjectClass</see>
 		/// object
 		/// to configure the specified class.
 		/// <br /><br />
@@ -542,7 +542,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="clazz">class name, Class object, or example object.<br /><br /></param>
 		/// <returns>
 		/// an instance of an
-		/// <see cref="IObjectClass">ObjectClass</see>
+		/// <see cref="IObjectClass">IObjectClass</see>
 		/// object for configuration.
 		/// </returns>
 		IObjectClass ObjectClass(object clazz);
@@ -696,7 +696,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>
 		/// Assigns a
-		/// <see cref="TextWriter">PrintStream</see>
+		/// <see cref="TextWriter">TextWriter</see>
 		/// where db4o is to print its event messages.
 		/// <br /><br />Messages are useful for debugging purposes and for learning
 		/// to understand, how db4o works. The message level can be raised with

@@ -17,6 +17,10 @@ namespace Db4objects.Db4o.IO
 
 		private bool _disabled;
 
+		/// <param name="io">The delegate I/O adapter</param>
+		/// <param name="blockOff">The block offset address into the I/O adapter that maps to the start index (0) of this window
+		/// 	</param>
+		/// <param name="len">The size of this window in bytes</param>
 		public IoAdapterWindow(IoAdapter io, int blockOff, int len)
 		{
 			_io = io;

@@ -14,6 +14,7 @@ namespace Db4objects.Db4o.Foundation
 		/// <summary>carried object</summary>
 		public object _element;
 
+		/// <summary>db4o constructor to be able to store objects of this class</summary>
 		public List4()
 		{
 		}

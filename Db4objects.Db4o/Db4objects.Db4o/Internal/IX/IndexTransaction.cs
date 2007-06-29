@@ -122,8 +122,8 @@ namespace Db4objects.Db4o.Internal.IX
 			if (tree._version != i_version)
 			{
 				tree.BeginMerge();
-				tree.Handler().PrepareComparison(tree.Handler().ComparableObject(i_trans, tree._value
-					));
+				tree.Handler().PrepareComparison(IxDeprecationHelper.ComparableObject(tree.Handler
+					(), i_trans, tree._value));
 				if (i_root == null)
 				{
 					i_root = tree;

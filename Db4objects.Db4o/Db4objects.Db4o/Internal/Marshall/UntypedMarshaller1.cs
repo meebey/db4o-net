@@ -130,7 +130,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			int linkOffset = writer._offset;
 			writer._offset = writer._payloadOffset;
 			writer.WriteInt(yc.GetID());
-			yc.WriteNew(_family, obj, false, writer, false, false);
+			yc.Write(_family, obj, false, writer, false, false);
 			if (writer._payloadOffset < writer._offset)
 			{
 				writer._payloadOffset = writer._offset;

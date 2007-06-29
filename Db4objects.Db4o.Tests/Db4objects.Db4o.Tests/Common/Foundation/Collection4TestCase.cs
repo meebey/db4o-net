@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		private void AssertCollection(string[] expected, Collection4 c)
 		{
 			Assert.AreEqual(expected.Length, c.Size());
-			AssertIterator(expected, c.GetEnumerator());
+			Iterator4Assert.AreEqual(expected, c.GetEnumerator());
 		}
 
 		private void AssertContainsNull(Collection4 c)
@@ -146,7 +146,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		{
 			string[] expected = new string[] { "1", "2", "3" };
 			Collection4 c = NewCollection(expected);
-			AssertIterator(expected, c.GetEnumerator());
+			Iterator4Assert.AreEqual(expected, c.GetEnumerator());
 		}
 
 		private Collection4 NewCollection(string[] expected)
@@ -154,17 +154,6 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Collection4 c = new Collection4();
 			c.AddAll(expected);
 			return c;
-		}
-
-		private void AssertIterator(string[] expected, IEnumerator iterator)
-		{
-			Assert.IsNotNull(iterator);
-			for (int i = 0; i < expected.Length; ++i)
-			{
-				Assert.IsTrue(iterator.MoveNext());
-				Assert.AreEqual(expected[i], iterator.Current);
-			}
-			Assert.IsFalse(iterator.MoveNext());
 		}
 
 		public virtual void TestToString()

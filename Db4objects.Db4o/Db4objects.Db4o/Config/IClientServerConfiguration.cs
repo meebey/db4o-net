@@ -72,8 +72,7 @@ namespace Db4objects.Db4o.Config
 		/// <br />
 		/// If no client messages are received by the server for the configured
 		/// interval, the server sends a "PING" message to the client and wait's for
-		/// an "OK" response. After 5 unsuccessful attempts, the client connection is
-		/// closed. <br />
+		/// an "PONG" response. <br />
 		/// <br />
 		/// This value may need to be increased for single-threaded clients, since
 		/// they can't respond instantaneously. <br />
@@ -84,7 +83,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="milliseconds">time in milliseconds</param>
 		/// <seealso cref="IClientServerConfiguration.SingleThreadedClient">IClientServerConfiguration.SingleThreadedClient
 		/// 	</seealso>
-		void TimeoutPingClients(int milliseconds);
+		void PingInterval(int milliseconds);
 
 		/// <summary>
 		/// configures the client messaging system to be single threaded

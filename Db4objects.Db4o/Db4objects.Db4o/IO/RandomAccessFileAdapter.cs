@@ -20,13 +20,14 @@ namespace Db4objects.Db4o.IO
 		{
 		}
 
-		protected RandomAccessFileAdapter(string path, bool lockFile, long initialLength)
+		protected RandomAccessFileAdapter(string path, bool lockFile, long initialLength, 
+			bool readOnly)
 		{
 			bool ok = false;
 			try
 			{
 				_path = new Sharpen.IO.File(path).GetCanonicalPath();
-				_delegate = new RandomAccessFile(_path, "rw");
+				_delegate = new RandomAccessFile(_path, readOnly ? "r" : "rw");
 				if (initialLength > 0)
 				{
 					_delegate.Seek(initialLength - 1);
@@ -90,10 +91,11 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
-		public override IoAdapter Open(string path, bool lockFile, long initialLength)
+		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
+			 readOnly)
 		{
 			return new Db4objects.Db4o.IO.RandomAccessFileAdapter(path, lockFile, initialLength
-				);
+				, readOnly);
 		}
 
 		public override int Read(byte[] bytes, int length)

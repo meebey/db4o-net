@@ -22,6 +22,14 @@ namespace Db4objects.Db4o.Config
 
 		private readonly string _runtimeType;
 
+		/// <summary>
+		/// pass the stored name as the first
+		/// parameter and the desired runtime name as the second parameter.
+		/// </summary>
+		/// <remarks>
+		/// pass the stored name as the first
+		/// parameter and the desired runtime name as the second parameter.
+		/// </remarks>
 		public TypeAlias(string storedType, string runtimeType)
 		{
 			if (null == storedType || null == runtimeType)

@@ -319,5 +319,29 @@ namespace Db4objects.Db4o.Internal
 		public virtual void SetObjectReference(ObjectReference a_yapObject)
 		{
 		}
+
+		public virtual void DeleteFile()
+		{
+			if (GetStatus() == Status.UNUSED)
+			{
+				throw new IOException(Messages.Get(43));
+			}
+			if (i_stream.IsClient())
+			{
+				((IBlobTransport)i_stream).DeleteBlobFile(i_trans, this);
+			}
+			else
+			{
+				ServerFile(null, false).Delete();
+			}
+			fileName = null;
+			i_ext = null;
+			i_length = 0;
+			SetStatus(Status.UNUSED);
+			lock (i_stream.i_lock)
+			{
+				i_stream.SetInternal(i_trans, this, false);
+			}
+		}
 	}
 }

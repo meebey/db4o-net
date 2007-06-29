@@ -20,6 +20,12 @@ namespace Db4objects.Db4o.Reflect
 
 		IReflectField GetDeclaredField(string name);
 
+		/// <summary>Returns the ReflectClass instance being delegated to.</summary>
+		/// <remarks>
+		/// Returns the ReflectClass instance being delegated to.
+		/// If there's no delegation it should return this.
+		/// </remarks>
+		/// <returns>delegate or this</returns>
 		IReflectClass GetDelegate();
 
 		IReflectMethod GetMethod(string methodName, IReflectClass[] paramClasses);

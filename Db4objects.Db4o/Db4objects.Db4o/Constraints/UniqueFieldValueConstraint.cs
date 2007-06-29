@@ -20,6 +20,11 @@ namespace Db4objects.Db4o.Constraints
 
 		protected readonly string _fieldName;
 
+		/// <summary>constructor to create a UniqueFieldValueConstraint.</summary>
+		/// <remarks>constructor to create a UniqueFieldValueConstraint.</remarks>
+		/// <param name="clazz">can be a class (Java) / Type (.NET) / instance of the class / fully qualified class name
+		/// 	</param>
+		/// <param name="fieldName">the name of the field that is to be unique.</param>
 		public UniqueFieldValueConstraint(object clazz, string fieldName)
 		{
 			_clazz = clazz;

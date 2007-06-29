@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Config
 {
@@ -27,5 +28,9 @@ namespace Db4objects.Db4o.Config
 		/// </summary>
 		/// <returns>true, if this CustomClassHandler creates new instances.</returns>
 		bool CanNewInstance();
+
+		IReflectClass ClassSubstitute();
+
+		bool IgnoreAncestor();
 	}
 }

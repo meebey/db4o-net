@@ -102,6 +102,12 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 			OnDiagnostic(new NativeQueryNotOptimized(predicate));
 		}
 
+		public virtual void NativeQueryOptimizerNotLoaded(int reason)
+		{
+			OnDiagnostic(new Db4objects.Db4o.Diagnostic.NativeQueryOptimizerNotLoaded(reason)
+				);
+		}
+
 		public virtual void OnDiagnostic(IDiagnostic d)
 		{
 			if (_listeners == null)

@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.IX;
 
 namespace Db4objects.Db4o.Internal.IX
@@ -51,7 +52,8 @@ namespace Db4objects.Db4o.Internal.IX
 		public override int Compare(Tree a_to)
 		{
 			IIndexable4 handler = _fieldTransaction.i_index._handler;
-			return handler.CompareTo(handler.ComparableObject(Trans(), _value));
+			return handler.CompareTo(IxDeprecationHelper.ComparableObject(handler, Trans(), _value
+				));
 		}
 
 		public virtual bool HasQueue()

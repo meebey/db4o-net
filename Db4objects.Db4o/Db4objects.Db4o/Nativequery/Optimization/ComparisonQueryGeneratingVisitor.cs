@@ -2,6 +2,7 @@
 
 using System;
 using System.Reflection;
+using Db4objects.Db4o.Nativequery;
 using Db4objects.Db4o.Nativequery.Expr.Cmp;
 using Db4objects.Db4o.Nativequery.Expr.Cmp.Field;
 using Db4objects.Db4o.Nativequery.Optimization;
@@ -14,6 +15,8 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 		private object _predicate;
 
 		private object _value = null;
+
+		private INativeClassFactory classSource;
 
 		public object Value()
 		{
@@ -156,7 +159,7 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 		{
 			try
 			{
-				_value = Sharpen.Runtime.GetType(root.ClassName());
+				_value = classSource.ForName(root.ClassName());
 			}
 			catch (TypeLoadException e)
 			{
@@ -201,9 +204,11 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 			}
 		}
 
-		public ComparisonQueryGeneratingVisitor(object predicate) : base()
+		public ComparisonQueryGeneratingVisitor(object predicate, INativeClassFactory classSource
+			) : base()
 		{
 			this._predicate = predicate;
+			this.classSource = classSource;
 		}
 	}
 }

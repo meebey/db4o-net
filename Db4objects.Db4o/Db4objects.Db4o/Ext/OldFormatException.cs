@@ -16,6 +16,8 @@ namespace Db4objects.Db4o.Ext
 	[System.Serializable]
 	public class OldFormatException : Db4oException
 	{
+		/// <summary>Constructor with the default message.</summary>
+		/// <remarks>Constructor with the default message.</remarks>
 		public OldFormatException() : base(Db4objects.Db4o.Internal.Messages.OLD_DATABASE_FORMAT
 			)
 		{

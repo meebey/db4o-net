@@ -33,55 +33,72 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
-			config.ObjectClass(typeof(UniqueFieldIndexTestCase.Item)).ObjectField("_str").Indexed
-				(true);
+			IndexField(config, typeof(UniqueFieldIndexTestCase.Item), "_str");
 			config.Add(new UniqueFieldValueConstraint(typeof(UniqueFieldIndexTestCase.Item), 
 				"_str"));
 		}
 
 		protected override void Store()
 		{
-			Store(new UniqueFieldIndexTestCase.Item("1"));
-			Store(new UniqueFieldIndexTestCase.Item("2"));
-			Store(new UniqueFieldIndexTestCase.Item("3"));
+			AddItem("1");
+			AddItem("2");
+			AddItem("3");
 		}
 
 		public virtual void TestNewViolates()
 		{
-			Store(new UniqueFieldIndexTestCase.Item("2"));
-			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _ICodeBlock_46
-				(this));
-			Db().Rollback();
-		}
-
-		private sealed class _ICodeBlock_46 : ICodeBlock
-		{
-			public _ICodeBlock_46(UniqueFieldIndexTestCase _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public void Run()
-			{
-				this._enclosing.Db().Commit();
-			}
-
-			private readonly UniqueFieldIndexTestCase _enclosing;
+			AddItem("2");
+			CommitExpectingViolation();
 		}
 
 		public virtual void TestUpdateViolates()
 		{
-			UniqueFieldIndexTestCase.Item item = QueryItem("2");
-			item._str = "3";
-			Store(item);
-			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _ICodeBlock_58
+			UpdateItem("2", "3");
+			CommitExpectingViolation();
+		}
+
+		public virtual void TestUpdateDoesNotViolate()
+		{
+			UpdateItem("2", "4");
+			Db().Commit();
+		}
+
+		public virtual void TestUpdatingSameObjectDoesNotViolate()
+		{
+			UpdateItem("2", "2");
+			Db().Commit();
+		}
+
+		public virtual void TestNewAfterDeleteDoesNotViolate()
+		{
+			DeleteItem("2");
+			AddItem("2");
+			Db().Commit();
+		}
+
+		public virtual void TestDeleteAfterNewDoesNotViolate()
+		{
+			UniqueFieldIndexTestCase.Item existing = QueryItem("2");
+			AddItem("2");
+			Db().Delete(existing);
+			Db().Commit();
+		}
+
+		private void DeleteItem(string value)
+		{
+			Db().Delete(QueryItem(value));
+		}
+
+		private void CommitExpectingViolation()
+		{
+			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _ICodeBlock_81
 				(this));
 			Db().Rollback();
 		}
 
-		private sealed class _ICodeBlock_58 : ICodeBlock
+		private sealed class _ICodeBlock_81 : ICodeBlock
 		{
-			public _ICodeBlock_58(UniqueFieldIndexTestCase _enclosing)
+			public _ICodeBlock_81(UniqueFieldIndexTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -101,12 +118,16 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 			return (UniqueFieldIndexTestCase.Item)q.Execute().Next();
 		}
 
-		public virtual void TestUpdateDoesNotViolate()
+		private void AddItem(string value)
 		{
-			UniqueFieldIndexTestCase.Item item = QueryItem("2");
-			item._str = "4";
+			Store(new UniqueFieldIndexTestCase.Item(value));
+		}
+
+		private void UpdateItem(string existing, string newValue)
+		{
+			UniqueFieldIndexTestCase.Item item = QueryItem(existing);
+			item._str = newValue;
 			Store(item);
-			Db().Commit();
 		}
 	}
 }

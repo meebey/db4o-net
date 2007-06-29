@@ -7,10 +7,10 @@ namespace Db4objects.Db4o.Ext
 {
 	/// <summary>
 	/// extended functionality for the
-	/// <see cref="IObjectSet">ObjectSet</see>
+	/// <see cref="IObjectSet">IObjectSet</see>
 	/// interface.
 	/// <br /><br />Every db4o
-	/// <see cref="IObjectSet">ObjectSet</see>
+	/// <see cref="IObjectSet">IObjectSet</see>
 	/// always is an ExtObjectSet so a cast is possible.<br /><br />
 	/// <see cref="IObjectSet.Ext">IObjectSet.Ext</see>
 	/// is a convenient method to perform the cast.<br /><br />

@@ -6,13 +6,14 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
-	public class IteratorAssert
+	public class Iterator4Assert
 	{
 		public static void AreEqual(IEnumerator expected, IEnumerator actual)
 		{
 			if (null == expected)
 			{
 				Assert.IsNull(actual);
+				return;
 			}
 			Assert.IsNotNull(actual);
 			while (expected.MoveNext())

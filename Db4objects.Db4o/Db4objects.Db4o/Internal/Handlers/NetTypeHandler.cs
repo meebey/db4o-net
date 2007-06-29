@@ -105,11 +105,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			i_compareTo = obj;
 		}
 
-		public override object Current1()
-		{
-			return i_compareTo;
-		}
-
 		internal override bool IsEqual1(object obj)
 		{
 			return IsEqual(i_compareTo, obj);

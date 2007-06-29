@@ -6,6 +6,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Types;
@@ -195,6 +196,12 @@ namespace Db4objects.Db4o.Internal
 		public virtual IReflector ReflectorForType(Type clazz)
 		{
 			return null;
+		}
+
+		/// <param name="container"></param>
+		public virtual NetTypeHandler[] Types(ObjectContainerBase container)
+		{
+			return new NetTypeHandler[] {  };
 		}
 	}
 }

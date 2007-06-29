@@ -15,9 +15,12 @@ namespace Db4objects.Db4o.Internal
 	/// <br />
 	/// This exception is thrown when one of the db4o reflection methods fails.
 	/// </remarks>
+	/// <seealso cref="Db4objects.Db4o.Reflect">Db4objects.Db4o.Reflect</seealso>
 	[System.Serializable]
 	public class ReflectException : Db4oException
 	{
+		/// <summary>Constructor with the cause exception</summary>
+		/// <param name="cause">cause exception</param>
 		public ReflectException(Exception cause) : base(cause)
 		{
 		}

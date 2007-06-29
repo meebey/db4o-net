@@ -206,16 +206,16 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (VariableLength())
 			{
-				MutableInt mint = new MutableInt(Const4.INT_LENGTH);
+				IntByRef mint = new IntByRef(Const4.INT_LENGTH);
 				Traverse(new _IVisitor4_152(this, mint));
-				return mint.Value();
+				return mint.value;
 			}
 			return Const4.INT_LENGTH + (Size() * OwnLength());
 		}
 
 		private sealed class _IVisitor4_152 : IVisitor4
 		{
-			public _IVisitor4_152(TreeInt _enclosing, MutableInt mint)
+			public _IVisitor4_152(TreeInt _enclosing, IntByRef mint)
 			{
 				this._enclosing = _enclosing;
 				this.mint = mint;
@@ -223,12 +223,12 @@ namespace Db4objects.Db4o.Internal
 
 			public void Visit(object obj)
 			{
-				mint.Add(((Db4objects.Db4o.Internal.TreeInt)obj).OwnLength());
+				mint.value += ((Db4objects.Db4o.Internal.TreeInt)obj).OwnLength();
 			}
 
 			private readonly TreeInt _enclosing;
 
-			private readonly MutableInt mint;
+			private readonly IntByRef mint;
 		}
 
 		public override object Key()

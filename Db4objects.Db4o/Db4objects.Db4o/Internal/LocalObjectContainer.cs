@@ -71,9 +71,12 @@ namespace Db4objects.Db4o.Internal
 
 		protected sealed override void Close2()
 		{
-			FreeInternalResources();
-			CommitTransaction();
-			Shutdown();
+			if (!i_config.IsReadOnly())
+			{
+				FreeInternalResources();
+				CommitTransaction();
+				Shutdown();
+			}
 			ShutdownObjectContainer();
 		}
 
@@ -208,14 +211,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _IVisitor4_209(this));
+				i_prefetchedIDs.Traverse(new _IVisitor4_211(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _IVisitor4_209 : IVisitor4
+		private sealed class _IVisitor4_211 : IVisitor4
 		{
-			public _IVisitor4_209(LocalObjectContainer _enclosing)
+			public _IVisitor4_211(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -486,6 +489,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				MigrateFreespace();
 			}
+			if (i_config.IsReadOnly())
+			{
+				return;
+			}
 			WriteHeader(true, false);
 			LocalTransaction trans = (LocalTransaction)_fileHeader.InterruptedTransaction();
 			if (trans != null)
@@ -573,15 +580,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_536(this, semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_542(this, semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_536 : IVisitor4
+		private sealed class _IVisitor4_542 : IVisitor4
 		{
-			public _IVisitor4_536(LocalObjectContainer _enclosing, Hashtable4 semaphores)
+			public _IVisitor4_542(LocalObjectContainer _enclosing, Hashtable4 semaphores)
 			{
 				this._enclosing = _enclosing;
 				this.semaphores = semaphores;
@@ -825,13 +832,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_742(this, ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_748(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_742 : IVisitor4
+		private sealed class _IVisitor4_748 : IVisitor4
 		{
-			public _IVisitor4_742(LocalObjectContainer _enclosing, IntArrayList ids)
+			public _IVisitor4_748(LocalObjectContainer _enclosing, IntArrayList ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;

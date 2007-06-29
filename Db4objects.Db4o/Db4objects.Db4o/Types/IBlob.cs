@@ -110,5 +110,13 @@ namespace Db4objects.Db4o.Types
 		/// </exception>
 		/// <param name="file">the file the blob is to be written to.</param>
 		void WriteTo(Sharpen.IO.File file);
+
+		/// <summary>Deletes the current file stored in this BLOB.</summary>
+		/// <remarks>Deletes the current file stored in this BLOB.</remarks>
+		/// <exception cref="IOException">
+		/// in case of errors and in case no
+		/// data was stored
+		/// </exception>
+		void DeleteFile();
 	}
 }

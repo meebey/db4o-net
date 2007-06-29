@@ -257,7 +257,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			for (int k = 0; k < PRIMITIVECOUNT; k++)
 			{
-				if (clazz.Equals(i_handlers[k].PrimitiveClassReflector()))
+				PrimitiveHandler handler = (PrimitiveHandler)i_handlers[k];
+				if (clazz.Equals(handler.PrimitiveClassReflector()))
 				{
 					return ((PrimitiveHandler)i_handlers[k]).PrimitiveNull();
 				}

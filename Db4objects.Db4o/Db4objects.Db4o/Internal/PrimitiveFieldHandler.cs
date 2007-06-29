@@ -41,11 +41,6 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override bool CanHold(IReflectClass claxx)
-		{
-			return i_handler.CanHold(claxx);
-		}
-
 		public override IReflectClass ClassReflector()
 		{
 			return i_handler.ClassReflector();
@@ -158,9 +153,9 @@ namespace Db4objects.Db4o.Internal
 			catch (CorruptionException)
 			{
 			}
-			if (obj != null)
+			if (obj != null && (i_handler is DateHandler))
 			{
-				i_handler.CopyValue(obj, a_onObject);
+				((DateHandler)i_handler).CopyValue(obj, a_onObject);
 			}
 		}
 
@@ -172,11 +167,6 @@ namespace Db4objects.Db4o.Internal
 		public override bool IsPrimitive()
 		{
 			return true;
-		}
-
-		public override TernaryBool IsSecondClass()
-		{
-			return TernaryBool.UNSPECIFIED;
 		}
 
 		public override bool IsStrongTyped()
@@ -194,11 +184,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			i_handler.PrepareComparison(a_constraint);
 			return i_handler;
-		}
-
-		public sealed override IReflectClass PrimitiveClassReflector()
-		{
-			return i_handler.PrimitiveClassReflector();
 		}
 
 		public override object Read(MarshallerFamily mf, StatefulBuffer a_bytes, bool redirect
@@ -241,18 +226,13 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override bool SupportsIndex()
-		{
-			return true;
-		}
-
 		public sealed override bool WriteObjectBegin()
 		{
 			return false;
 		}
 
-		public override object WriteNew(MarshallerFamily mf, object a_object, bool topLevel
-			, StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkOffset)
+		public override object Write(MarshallerFamily mf, object a_object, bool topLevel, 
+			StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkOffset)
 		{
 			mf._primitive.WriteNew(a_bytes.GetTransaction(), this, a_object, topLevel, a_bytes
 				, withIndirection, restoreLinkOffset);

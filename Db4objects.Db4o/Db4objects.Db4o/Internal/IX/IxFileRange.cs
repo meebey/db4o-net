@@ -67,13 +67,13 @@ namespace Db4objects.Db4o.Internal.IX
 				SlotLength());
 			StringBuilder sb = new StringBuilder();
 			sb.Append("IxFileRange");
-			VisitAll(new _IIntObjectVisitor_65(this, sb));
+			VisitAll(new _IIntObjectVisitor_62(this, sb));
 			return sb.ToString();
 		}
 
-		private sealed class _IIntObjectVisitor_65 : IIntObjectVisitor
+		private sealed class _IIntObjectVisitor_62 : IIntObjectVisitor
 		{
-			public _IIntObjectVisitor_65(IxFileRange _enclosing, StringBuilder sb)
+			public _IIntObjectVisitor_62(IxFileRange _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -140,8 +140,8 @@ namespace Db4objects.Db4o.Internal.IX
 				int address = _address + (i * SlotLength());
 				fileReader.Read(yf, address, _addressOffset);
 				fileReader._offset = 0;
-				object obj = Handler().ComparableObject(transaction, Handler().ReadIndexEntry(fileReader
-					));
+				object obj = IxDeprecationHelper.ComparableObject(Handler(), transaction, Handler
+					().ReadIndexEntry(fileReader));
 				visitor.Visit(fileReader.ReadInt(), obj);
 			}
 		}

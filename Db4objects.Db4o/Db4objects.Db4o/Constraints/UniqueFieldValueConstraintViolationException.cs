@@ -16,6 +16,16 @@ namespace Db4objects.Db4o.Constraints
 	[System.Serializable]
 	public class UniqueFieldValueConstraintViolationException : ConstraintViolationException
 	{
+		/// <summary>
+		/// Constructor with a message composed from the class and field
+		/// name of the entity causing the exception.
+		/// </summary>
+		/// <remarks>
+		/// Constructor with a message composed from the class and field
+		/// name of the entity causing the exception.
+		/// </remarks>
+		/// <param name="className">class, which caused the exception</param>
+		/// <param name="fieldName">field, which caused the exception</param>
 		public UniqueFieldValueConstraintViolationException(string className, string fieldName
 			) : base("class: " + className + " field: " + fieldName)
 		{

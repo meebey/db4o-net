@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 	/// <exclude></exclude>
 	public class DoubleHandlerTestCase : AbstractDb4oTestCase
 	{
-		private ITypeHandler4 _handler;
+		private IIndexable4 _handler;
 
 		protected override void Db4oSetupBeforeStore()
 		{
@@ -40,32 +40,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			_handler.PrepareComparison(prepareWith);
 			double doubleCompareTo = compareTo;
 			Assert.AreEqual(expected, _handler.CompareTo(doubleCompareTo));
-			switch (expected)
-			{
-				case 0:
-				{
-					Assert.IsTrue(_handler.IsEqual(doubleCompareTo));
-					Assert.IsFalse(_handler.IsGreater(doubleCompareTo));
-					Assert.IsFalse(_handler.IsSmaller(doubleCompareTo));
-					break;
-				}
-
-				case 1:
-				{
-					Assert.IsFalse(_handler.IsEqual(doubleCompareTo));
-					Assert.IsTrue(_handler.IsGreater(doubleCompareTo));
-					Assert.IsFalse(_handler.IsSmaller(doubleCompareTo));
-					break;
-				}
-
-				case -1:
-				{
-					Assert.IsFalse(_handler.IsEqual(doubleCompareTo));
-					Assert.IsFalse(_handler.IsGreater(doubleCompareTo));
-					Assert.IsTrue(_handler.IsSmaller(doubleCompareTo));
-					break;
-				}
-			}
 		}
 	}
 }

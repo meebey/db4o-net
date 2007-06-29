@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
-using Db4objects.Db4o.Internal.IX;
 
 namespace Db4objects.Db4o.Internal.Freespace
 {

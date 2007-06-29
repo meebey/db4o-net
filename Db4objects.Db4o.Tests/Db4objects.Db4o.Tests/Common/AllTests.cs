@@ -5,8 +5,6 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.Common
 {
-	/// <summary>Carl testing commit notifications yet again and again.</summary>
-	/// <remarks>Carl testing commit notifications yet again and again.</remarks>
 	public class AllTests : Db4oTestSuite
 	{
 		protected override Type[] TestCases()

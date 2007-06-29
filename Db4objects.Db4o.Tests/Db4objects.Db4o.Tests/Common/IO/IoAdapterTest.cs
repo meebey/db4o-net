@@ -1,14 +1,19 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Tests.Common.IO;
 
 namespace Db4objects.Db4o.Tests.Common.IO
 {
-	public class IoAdapterTest : IDb4oTestCase
+	public class IoAdapterTest : ITestLifeCycle
 	{
+		public static void Main(string[] args)
+		{
+			new TestRunner(typeof(IoAdapterTest)).Run();
+		}
+
 		private string _cachedIoAdapterFile = "CachedIoAdapter.dat";
 
 		private string _randomAccessFileAdapterFile = "_randomAccessFileAdapter.dat";
@@ -18,13 +23,13 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		public virtual void SetUp()
 		{
 			DeleteAllTestFiles();
-			InitAdapters();
+			InitAdapters(false);
 		}
 
-		private void InitAdapters()
+		private void InitAdapters(bool readOnly)
 		{
-			_adapters = new IoAdapter[] { InitRandomAccessAdapter(), InitCachedRandomAccessAdapter
-				() };
+			_adapters = new IoAdapter[] { InitRandomAccessAdapter(readOnly), InitCachedRandomAccessAdapter
+				(readOnly) };
 		}
 
 		public virtual void TearDown()
@@ -92,6 +97,39 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			Assert.AreEqual(str, Sharpen.Runtime.GetStringForBytes(read, 0, data.Length));
 		}
 
+		public virtual void TestReadOnly()
+		{
+			CloseAdapters();
+			InitAdapters(true);
+			for (int i = 0; i < _adapters.Length; i++)
+			{
+				AssertReadOnly(_adapters[i]);
+			}
+		}
+
+		private void AssertReadOnly(IoAdapter adapter)
+		{
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_97(this, adapter));
+		}
+
+		private sealed class _ICodeBlock_97 : ICodeBlock
+		{
+			public _ICodeBlock_97(IoAdapterTest _enclosing, IoAdapter adapter)
+			{
+				this._enclosing = _enclosing;
+				this.adapter = adapter;
+			}
+
+			public void Run()
+			{
+				adapter.Write(new byte[] { 0 });
+			}
+
+			private readonly IoAdapterTest _enclosing;
+
+			private readonly IoAdapter adapter;
+		}
+
 		public virtual void _testReadWriteAheadFileEnd()
 		{
 			string str = "this is a really long string, just to make sure that all IoAdapters work correctly. ";
@@ -136,7 +174,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		{
 			TestReadWrite();
 			CloseAdapters();
-			InitAdapters();
+			InitAdapters(false);
 			TestReadWrite();
 		}
 
@@ -178,17 +216,17 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			}
 		}
 
-		private IoAdapter InitCachedRandomAccessAdapter()
+		private IoAdapter InitCachedRandomAccessAdapter(bool readOnly)
 		{
 			IoAdapter adapter = new CachedIoAdapter(new RandomAccessFileAdapter());
-			adapter = adapter.Open(_cachedIoAdapterFile, false, 0);
+			adapter = adapter.Open(_cachedIoAdapterFile, false, 0, readOnly);
 			return adapter;
 		}
 
-		private IoAdapter InitRandomAccessAdapter()
+		private IoAdapter InitRandomAccessAdapter(bool readOnly)
 		{
 			IoAdapter adapter = new RandomAccessFileAdapter();
-			adapter = adapter.Open(_randomAccessFileAdapterFile, false, 0);
+			adapter = adapter.Open(_randomAccessFileAdapterFile, false, 0, readOnly);
 			return adapter;
 		}
 

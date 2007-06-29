@@ -1898,7 +1898,7 @@ namespace Db4objects.Db4o.Internal
 			i_stillToSet = postponedStillToSet;
 		}
 
-		private void NotStorable(IReflectClass claxx, object obj)
+		internal virtual void NotStorable(IReflectClass claxx, object obj)
 		{
 			if (!ConfigImpl().ExceptionsOnNotStorable())
 			{
@@ -1926,45 +1926,21 @@ namespace Db4objects.Db4o.Internal
 			{
 				((IDb4oTypeImpl)obj).StoredTo(trans);
 			}
-			ClassMetadata yc = null;
-			ObjectReference @ref = ReferenceForObject(obj);
-			if (@ref == null)
+			ObjectAnalyzer analyzer = new ObjectAnalyzer(this, obj);
+			if (analyzer.NotStorable())
 			{
-				IReflectClass claxx = Reflector().ForObject(obj);
-				if (claxx == null)
-				{
-					NotStorable(claxx, obj);
-					return 0;
-				}
-				yc = GetActiveClassMetadata(claxx);
-				if (yc == null)
-				{
-					yc = ProduceClassMetadata(claxx);
-					if (yc == null)
-					{
-						NotStorable(claxx, obj);
-						return 0;
-					}
-					@ref = ReferenceForObject(obj);
-				}
-			}
-			else
-			{
-				yc = @ref.GetYapClass();
-			}
-			if (IsPlainObjectOrPrimitive(yc))
-			{
-				NotStorable(yc.ClassReflector(), obj);
 				return 0;
 			}
+			ObjectReference @ref = analyzer.ObjectReference();
 			if (@ref == null)
 			{
-				if (!ObjectCanNew(yc, obj))
+				ClassMetadata classMetadata = analyzer.ClassMetadata();
+				if (!ObjectCanNew(classMetadata, obj))
 				{
 					return 0;
 				}
 				@ref = new ObjectReference();
-				@ref.Store(trans, yc, obj);
+				@ref.Store(trans, classMetadata, obj);
 				_referenceSystem.AddNewReference(@ref);
 				if (obj is IDb4oTypeImpl)
 				{
@@ -2002,11 +1978,6 @@ namespace Db4objects.Db4o.Internal
 		private bool UpdateDepthSufficient(int updateDepth)
 		{
 			return (updateDepth == Const4.UNSPECIFIED) || (updateDepth > 0);
-		}
-
-		private bool IsPlainObjectOrPrimitive(ClassMetadata yc)
-		{
-			return yc.GetID() == HandlerRegistry.ANY_ID || yc.IsPrimitive();
 		}
 
 		private bool ObjectCanNew(ClassMetadata yc, object a_object)

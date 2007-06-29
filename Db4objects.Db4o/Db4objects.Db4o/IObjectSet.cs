@@ -16,7 +16,7 @@ namespace Db4objects.Db4o
 	/// recommended, never to reference ObjectSet directly in code but to use
 	/// List / IList instead.
 	/// <br /><br />Note that the underlying
-	/// <see cref="IObjectContainer">ObjectContainer</see>
+	/// <see cref="IObjectContainer">IObjectContainer</see>
 	/// of an ObjectSet
 	/// needs to remain open as long as an ObjectSet is used. This is necessary
 	/// for lazy instantiation. The objects in an ObjectSet are only instantiated

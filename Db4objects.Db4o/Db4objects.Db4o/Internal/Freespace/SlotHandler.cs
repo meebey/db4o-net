@@ -2,7 +2,6 @@
 
 using System;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.IX;
 using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Freespace
@@ -11,11 +10,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 	public abstract class SlotHandler : IIndexable4
 	{
 		protected Slot _current;
-
-		public virtual object ComparableObject(Transaction trans, object indexEntry)
-		{
-			throw new NotImplementedException();
-		}
 
 		public virtual void DefragIndexEntry(ReaderPair readers)
 		{
@@ -38,26 +32,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 			Slot slot = (Slot)obj;
 			writer.WriteInt(slot.Address());
 			writer.WriteInt(slot.Length());
-		}
-
-		public virtual object Current()
-		{
-			return _current;
-		}
-
-		public virtual bool IsEqual(object obj)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual bool IsGreater(object obj)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual bool IsSmaller(object obj)
-		{
-			throw new NotImplementedException();
 		}
 
 		public virtual IComparable4 PrepareComparison(object obj)

@@ -59,6 +59,10 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private bool _login;
 
+		/// <summary>
+		/// Single-Threaded Client-Server Debug Mode, this constructor is only for
+		/// fake server
+		/// </summary>
 		public ClientObjectContainer(string fakeServerFile) : base(Db4oFactory.CloneConfiguration
 			(), null)
 		{
@@ -76,9 +80,15 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			userName = user;
 			password = password_;
-			i_socket = socket;
 			_login = login;
+			SetAndConfigSocket(socket);
 			Open();
+		}
+
+		private void SetAndConfigSocket(ISocket4 socket)
+		{
+			i_socket = socket;
+			i_socket.SetSoTimeout(i_config.TimeoutClientSocket());
 		}
 
 		protected sealed override void OpenImpl()
@@ -361,8 +371,7 @@ namespace Db4objects.Db4o.Internal.CS
 		private void OnMsgError()
 		{
 			Close();
-			throw new Db4oException(Db4objects.Db4o.Internal.Messages.Get(Db4objects.Db4o.Internal.Messages
-				.CLOSED_OR_OPEN_FAILED));
+			throw new DatabaseClosedException();
 		}
 
 		private Msg GetResponseSingleThreaded()
@@ -796,7 +805,7 @@ namespace Db4objects.Db4o.Internal.CS
 			try
 			{
 				Write(Msg.PING);
-				return ExpectedResponse(Msg.OK) != null;
+				return ExpectedResponse(Msg.PONG) != null;
 			}
 			catch (Db4oException)
 			{
@@ -850,6 +859,13 @@ namespace Db4objects.Db4o.Internal.CS
 				blob.SetStatus(Status.QUEUED);
 			}
 			ProcessBlobMessage(msg);
+		}
+
+		public virtual void DeleteBlobFile(Transaction trans, BlobImpl blob)
+		{
+			MDeleteBlobFile msg = (MDeleteBlobFile)Msg.DELETE_BLOB_FILE.GetWriterForInt(trans
+				, (int)GetID(blob));
+			WriteMsg(msg, false);
 		}
 
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)

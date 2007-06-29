@@ -19,16 +19,17 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		}
 
 		private CrashSimulatingIoAdapter(IoAdapter delegateAdapter, string path, bool lockFile
-			, long initialLength, CrashSimulatingBatch batch) : base(delegateAdapter.Open(path
-			, lockFile, initialLength))
+			, long initialLength, bool readOnly, CrashSimulatingBatch batch) : base(delegateAdapter
+			.Open(path, lockFile, initialLength, readOnly))
 		{
 			this.batch = batch;
 		}
 
-		public override IoAdapter Open(string path, bool lockFile, long initialLength)
+		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
+			 readOnly)
 		{
 			return new Db4objects.Db4o.Tests.Common.Acid.CrashSimulatingIoAdapter(_delegate, 
-				path, lockFile, initialLength, batch);
+				path, lockFile, initialLength, readOnly, batch);
 		}
 
 		public override void Seek(long pos)

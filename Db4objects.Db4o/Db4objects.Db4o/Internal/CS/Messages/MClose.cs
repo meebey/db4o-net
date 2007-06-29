@@ -9,6 +9,10 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 	{
 		public virtual bool ProcessAtServer()
 		{
+			if (Stream().IsClosed())
+			{
+				return true;
+			}
 			Transaction().Commit();
 			LogMsg(35, ServerMessageDispatcher().Name());
 			ServerMessageDispatcher().Close();

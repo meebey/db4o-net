@@ -13,6 +13,11 @@ namespace Db4objects.Db4o.Events
 	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
 	public class QueryEventArgs : ObjectEventArgs
 	{
+		/// <summary>
+		/// Creates a new instance for the specified
+		/// <see cref="IQuery">IQuery</see>
+		/// instance.
+		/// </summary>
 		public QueryEventArgs(IQuery q) : base(q)
 		{
 		}

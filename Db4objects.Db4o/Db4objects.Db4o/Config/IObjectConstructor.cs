@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Config
 	/// <br /><br />
 	/// Before starting a db4o session, translator classes that implement the
 	/// <code>ObjectConstructor</code> or
-	/// <see cref="IObjectTranslator">ObjectTranslator</see>
+	/// <see cref="IObjectTranslator">IObjectTranslator</see>
 	/// need to be registered.<br /><br />
 	/// Example:<br />
 	/// <code>

@@ -2,6 +2,7 @@
 
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Assorted;
@@ -9,7 +10,7 @@ using Sharpen.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class IndexCreateDropTestCase : AbstractDb4oTestCase
+	public class IndexCreateDropTestCase : AbstractDb4oTestCase, IOptOutDefragSolo
 	{
 		public class IndexCreateDropItem
 		{
@@ -37,6 +38,11 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public static void Main(string[] arguments)
 		{
 			new IndexCreateDropTestCase().RunSolo();
+		}
+
+		protected override void Configure(IConfiguration config)
+		{
+			base.Configure(config);
 		}
 
 		protected override void Store()

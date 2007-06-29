@@ -43,5 +43,7 @@ namespace Db4objects.Db4o.Internal.CS
 		CallbackObjectInfoCollections CommittedInfo();
 
 		void CommittedInfo(CallbackObjectInfoCollections committedInfo);
+
+		bool IsPingTimeout();
 	}
 }

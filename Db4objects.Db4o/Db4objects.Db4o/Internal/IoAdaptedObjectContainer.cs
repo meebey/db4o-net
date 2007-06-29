@@ -46,12 +46,12 @@ namespace Db4objects.Db4o.Internal
 				CheckReadOnly();
 				i_handlers.OldEncryptionOff();
 			}
-			bool lockFile = Debug.lockFile && ConfigImpl().LockFile() && (!ConfigImpl().IsReadOnly
-				());
-			_file = ioAdapter.Open(FileName(), lockFile, 0);
-			if (NeedsTimerFile())
+			bool readOnly = ConfigImpl().IsReadOnly();
+			bool lockFile = Debug.lockFile && ConfigImpl().LockFile() && (!readOnly);
+			_file = ioAdapter.Open(FileName(), lockFile, 0, readOnly);
+			if (NeedsLockFileThread())
 			{
-				_timerFile = ioAdapter.DelegatedIoAdapter().Open(FileName(), false, 0);
+				_timerFile = ioAdapter.DelegatedIoAdapter().Open(FileName(), false, 0, false);
 			}
 			if (isNew)
 			{
@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					throw new BackupInProgressException();
 				}
-				_backupFile = ConfigImpl().IoAdapter().Open(path, true, _file.GetLength());
+				_backupFile = ConfigImpl().IoAdapter().Open(path, true, _file.GetLength(), false);
 				_backupFile.BlockSize(BlockSize());
 			}
 			long pos = 0;
@@ -332,11 +332,6 @@ namespace Db4objects.Db4o.Internal
 			catch (Exception)
 			{
 			}
-		}
-
-		private bool NeedsTimerFile()
-		{
-			return NeedsLockFileThread() && Debug.lockFile;
 		}
 
 		public override void WriteBytes(Db4objects.Db4o.Internal.Buffer bytes, int address

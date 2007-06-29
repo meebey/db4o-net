@@ -3,7 +3,6 @@
 using System;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.IX;
 using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal
@@ -88,7 +87,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected override IIndexable4 IndexHandler(ObjectContainerBase stream)
 		{
-			return i_handler;
+			return (IIndexable4)i_handler;
 		}
 	}
 }

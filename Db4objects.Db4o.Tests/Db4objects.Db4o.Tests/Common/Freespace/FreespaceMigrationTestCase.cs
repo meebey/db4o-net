@@ -9,6 +9,7 @@ using Db4objects.Db4o.Tests.Common.Freespace;
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
 	public class FreespaceMigrationTestCase : FreespaceManagerTestCaseBase, IOptOutCS
+		, IOptOutDefragSolo
 	{
 		private IConfiguration configuration;
 

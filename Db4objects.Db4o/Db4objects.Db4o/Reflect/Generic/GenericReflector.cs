@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
@@ -9,7 +11,34 @@ using Db4objects.Db4o.Reflect.Generic;
 
 namespace Db4objects.Db4o.Reflect.Generic
 {
-	/// <exclude></exclude>
+	/// <summary>
+	/// db4o provides GenericReflector as a wrapper around specific
+	/// reflector (delegate).
+	/// </summary>
+	/// <remarks>
+	/// db4o provides GenericReflector as a wrapper around specific
+	/// reflector (delegate). GenericReflector is set when an
+	/// ObjectContainer is opened. All subsequent reflector
+	/// calls are routed through this interface.<br /><br />
+	/// An instance of GenericReflector can be obtained through
+	/// <see cref="IExtObjectContainer.Reflector">IExtObjectContainer.Reflector</see>
+	/// .<br /><br />
+	/// GenericReflector keeps list of known classes in memory.
+	/// When the GenericReflector is called, it first checks its list of
+	/// known classes. If the class cannot be found, the task is
+	/// transferred to the delegate reflector. If the delegate fails as
+	/// well, generic objects are created, which hold simulated
+	/// "field values" in an array of objects.<br /><br />
+	/// Generic reflector makes possible the following usecases:<ul>
+	/// <li>running a db4o server without deploying application classes;</li>
+	/// <li>running db4o on Java dialects without reflection (J2ME CLDC, MIDP);</li>
+	/// <li>easier access to stored objects where classes or fields are not available;</li>
+	/// <li>running refactorings in the reflector;</li>
+	/// <li>building interfaces to db4o from any programming language.</li></ul>
+	/// <br /><br />
+	/// One of the live usecases is ObjectManager, which uses GenericReflector
+	/// to read C# objects from Java.
+	/// </remarks>
 	public class GenericReflector : IReflector, IDeepClone
 	{
 		private KnownClassesRepository _repository;
@@ -28,6 +57,12 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private ObjectContainerBase _stream;
 
+		/// <summary>Creates an instance of GenericReflector</summary>
+		/// <param name="trans">transaction</param>
+		/// <param name="delegateReflector">
+		/// delegate reflector,
+		/// providing specific reflector functionality. For example
+		/// </param>
 		public GenericReflector(Transaction trans, IReflector delegateReflector)
 		{
 			_repository = new KnownClassesRepository(new GenericClassBuilder(this, delegateReflector
@@ -40,6 +75,9 @@ namespace Db4objects.Db4o.Reflect.Generic
 			}
 		}
 
+		/// <summary>Creates a clone of provided object</summary>
+		/// <param name="obj">object to copy</param>
+		/// <returns>copy of the submitted object</returns>
 		public virtual object DeepClone(object obj)
 		{
 			Db4objects.Db4o.Reflect.Generic.GenericReflector myClone = new Db4objects.Db4o.Reflect.Generic.GenericReflector
@@ -56,11 +94,17 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _stream;
 		}
 
+		/// <summary>If there is a transaction assosiated with the current refector.</summary>
+		/// <remarks>If there is a transaction assosiated with the current refector.</remarks>
+		/// <returns>true if there is a transaction assosiated with the current refector.</returns>
 		public virtual bool HasTransaction()
 		{
 			return _trans != null;
 		}
 
+		/// <summary>Associated a transaction with the current reflector.</summary>
+		/// <remarks>Associated a transaction with the current reflector.</remarks>
+		/// <param name="trans"></param>
 		public virtual void SetTransaction(Transaction trans)
 		{
 			if (trans != null)
@@ -71,6 +115,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_repository.SetTransaction(trans);
 		}
 
+		/// <returns>generic reflect array instance.</returns>
 		public virtual IReflectArray Array()
 		{
 			if (_array == null)
@@ -80,6 +125,9 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _array;
 		}
 
+		/// <summary>Determines collection update depth for the specified class</summary>
+		/// <param name="candidate">candidate class</param>
+		/// <returns>collection update depth for the specified class</returns>
 		public virtual int CollectionUpdateDepth(IReflectClass candidate)
 		{
 			IEnumerator i = _collectionUpdateDepths.GetEnumerator();
@@ -94,6 +142,10 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return 2;
 		}
 
+		/// <summary>Defines if constructor calls are supported.</summary>
+		/// <remarks>Defines if constructor calls are supported.</remarks>
+		/// <returns>true if constructor calls are supported.</returns>
+		/// <seealso cref="IConfiguration.Callbacks">IConfiguration.Callbacks</seealso>
 		public virtual bool ConstructorCallsSupported()
 		{
 			return _delegate.ConstructorCallsSupported();
@@ -132,6 +184,10 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return ret;
 		}
 
+		/// <summary>Returns a ReflectClass instance for the specified class</summary>
+		/// <param name="clazz">class</param>
+		/// <returns>a ReflectClass instance for the specified class</returns>
+		/// <seealso cref="IReflectClass">IReflectClass</seealso>
 		public virtual IReflectClass ForClass(Type clazz)
 		{
 			if (clazz == null)
@@ -159,6 +215,10 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return claxx;
 		}
 
+		/// <summary>Returns a ReflectClass instance for the specified class name</summary>
+		/// <param name="className">class name</param>
+		/// <returns>a ReflectClass instance for the specified class name</returns>
+		/// <seealso cref="IReflectClass">IReflectClass</seealso>
 		public virtual IReflectClass ForName(string className)
 		{
 			IReflectClass clazz = _repository.LookupByName(className);
@@ -174,6 +234,10 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _repository.ForName(className);
 		}
 
+		/// <summary>Returns a ReflectClass instance for the specified class object</summary>
+		/// <param name="obj">class object</param>
+		/// <returns>a ReflectClass instance for the specified class object</returns>
+		/// <seealso cref="IReflectClass">IReflectClass</seealso>
 		public virtual IReflectClass ForObject(object obj)
 		{
 			if (obj is GenericObject)
@@ -209,11 +273,16 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return claxx;
 		}
 
+		/// <summary>Returns delegate reflector</summary>
+		/// <returns>delegate reflector</returns>
 		public virtual IReflector GetDelegate()
 		{
 			return _delegate;
 		}
 
+		/// <summary>Determines if a candidate ReflectClass is a collection</summary>
+		/// <param name="candidate">candidate ReflectClass</param>
+		/// <returns>true  if a candidate ReflectClass is a collection.</returns>
 		public virtual bool IsCollection(IReflectClass candidate)
 		{
 			IEnumerator i = _collectionPredicates.GetEnumerator();
@@ -227,11 +296,15 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _delegate.IsCollection(candidate.GetDelegate());
 		}
 
+		/// <summary>Register a class as a collection</summary>
+		/// <param name="clazz">class to be registered</param>
 		public virtual void RegisterCollection(Type clazz)
 		{
 			RegisterCollection(ClassPredicate(clazz));
 		}
 
+		/// <summary>Register a predicate as a collection</summary>
+		/// <param name="predicate">predicate to be registered</param>
 		public virtual void RegisterCollection(IReflectClassPredicate predicate)
 		{
 			_collectionPredicates.Add(predicate);
@@ -240,14 +313,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private IReflectClassPredicate ClassPredicate(Type clazz)
 		{
 			IReflectClass collectionClass = ForClass(clazz);
-			IReflectClassPredicate predicate = new _IReflectClassPredicate_220(this, collectionClass
+			IReflectClassPredicate predicate = new _IReflectClassPredicate_306(this, collectionClass
 				);
 			return predicate;
 		}
 
-		private sealed class _IReflectClassPredicate_220 : IReflectClassPredicate
+		private sealed class _IReflectClassPredicate_306 : IReflectClassPredicate
 		{
-			public _IReflectClassPredicate_220(GenericReflector _enclosing, IReflectClass collectionClass
+			public _IReflectClassPredicate_306(GenericReflector _enclosing, IReflectClass collectionClass
 				)
 			{
 				this._enclosing = _enclosing;
@@ -264,17 +337,25 @@ namespace Db4objects.Db4o.Reflect.Generic
 			private readonly IReflectClass collectionClass;
 		}
 
+		/// <summary>Register update depth for a collection class</summary>
+		/// <param name="clazz">class</param>
+		/// <param name="depth">update depth</param>
 		public virtual void RegisterCollectionUpdateDepth(Type clazz, int depth)
 		{
 			RegisterCollectionUpdateDepth(ClassPredicate(clazz), depth);
 		}
 
+		/// <summary>Register update depth for a collection class</summary>
+		/// <param name="predicate">class predicate</param>
+		/// <param name="depth">update depth</param>
 		public virtual void RegisterCollectionUpdateDepth(IReflectClassPredicate predicate
 			, int depth)
 		{
 			_collectionUpdateDepths.Add(new CollectionUpdateDepthEntry(predicate, depth));
 		}
 
+		/// <summary>Register a class</summary>
+		/// <param name="clazz">class</param>
 		public virtual void Register(Db4objects.Db4o.Reflect.Generic.GenericClass clazz)
 		{
 			string name = clazz.GetName();
@@ -284,6 +365,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 			}
 		}
 
+		/// <summary>Returns an array of classes known to the reflector</summary>
+		/// <returns>an array of classes known to the reflector</returns>
 		public virtual IReflectClass[] KnownClasses()
 		{
 			Collection4 classes = new Collection4();
@@ -311,6 +394,10 @@ namespace Db4objects.Db4o.Reflect.Generic
 			}
 		}
 
+		/// <summary>Registers primitive class</summary>
+		/// <param name="id">class id</param>
+		/// <param name="name">class name</param>
+		/// <param name="converter">class converter</param>
 		public virtual void RegisterPrimitiveClass(int id, string name, IGenericConverter
 			 converter)
 		{
@@ -347,6 +434,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_repository.Register(id, claxx);
 		}
 
+		/// <summary>method stub: generic reflector does not have a parent</summary>
 		public virtual void SetParent(IReflector reflector)
 		{
 		}

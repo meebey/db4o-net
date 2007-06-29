@@ -34,16 +34,57 @@ namespace Db4objects.Db4o.Defragment
 
 		private int _objectCommitFrequency;
 
+		/// <summary>Creates a configuration for a defragmentation run.</summary>
+		/// <remarks>
+		/// Creates a configuration for a defragmentation run. The backup and mapping
+		/// file paths are generated from the original path by appending the default
+		/// suffixes. All properties other than the provided paths are set to FALSE
+		/// by default.
+		/// </remarks>
+		/// <param name="origPath">
+		/// The path to the file to be defragmented. Must exist and must be
+		/// a valid yap file.
+		/// </param>
 		public DefragmentConfig(string origPath) : this(origPath, origPath + "." + BACKUP_SUFFIX
 			)
 		{
 		}
 
+		/// <summary>Creates a configuration for a defragmentation run with in-memory mapping.
+		/// 	</summary>
+		/// <remarks>
+		/// Creates a configuration for a defragmentation run with in-memory mapping.
+		/// All properties other than the provided paths are set to FALSE by default.
+		/// </remarks>
+		/// <param name="origPath">
+		/// The path to the file to be defragmented. Must exist and must be
+		/// a valid yap file.
+		/// </param>
+		/// <param name="backupPath">
+		/// The path to the backup of the original file. No file should
+		/// exist at this position, otherwise it will be OVERWRITTEN if forceBackupDelete()
+		/// is set to true!
+		/// </param>
 		public DefragmentConfig(string origPath, string backupPath) : this(origPath, backupPath
 			, new TreeIDMapping())
 		{
 		}
 
+		/// <summary>Creates a configuration for a defragmentation run.</summary>
+		/// <remarks>
+		/// Creates a configuration for a defragmentation run. All properties other
+		/// than the provided paths are set to FALSE by default.
+		/// </remarks>
+		/// <param name="origPath">
+		/// The path to the file to be defragmented. Must exist and must be
+		/// a valid yap file.
+		/// </param>
+		/// <param name="backupPath">
+		/// The path to the backup of the original file. No file should
+		/// exist at this position, otherwise it will be OVERWRITTEN if forceBackupDelete()
+		/// is set to true!
+		/// </param>
+		/// <param name="mapping">The intermediate mapping used internally.</param>
 		public DefragmentConfig(string origPath, string backupPath, IContextIDMapping mapping
 			)
 		{
@@ -107,7 +148,7 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <returns>
 		/// The db4o
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// to be applied
 		/// during the defragment process.
 		/// </returns>
@@ -122,7 +163,7 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <param name="config">
 		/// The db4o
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// to be applied
 		/// during the defragment process.
 		/// </param>

@@ -101,6 +101,23 @@ namespace Db4oUnit
 			}
 		}
 
+		public static void AreEqual(char[] expected, char[] actual)
+		{
+			if (expected == actual)
+			{
+				return;
+			}
+			if (expected == null || actual == null)
+			{
+				Assert.AreSame(expected, actual);
+			}
+			Assert.AreEqual(expected.Length, actual.Length);
+			for (int i = 0; i < expected.Length; i++)
+			{
+				Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
+			}
+		}
+
 		private static int IndexOf(long[] array, long expected)
 		{
 			for (int i = 0; i < array.Length; ++i)

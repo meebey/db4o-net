@@ -10,5 +10,7 @@ namespace Db4objects.Db4o
 		void WriteBlobTo(Transaction trans, BlobImpl blob, Sharpen.IO.File file);
 
 		void ReadBlobFrom(Transaction trans, BlobImpl blob, Sharpen.IO.File file);
+
+		void DeleteBlobFile(Transaction trans, BlobImpl blob);
 	}
 }

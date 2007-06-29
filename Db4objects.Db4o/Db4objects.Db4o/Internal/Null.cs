@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.IX;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -10,11 +9,6 @@ namespace Db4objects.Db4o.Internal
 	{
 		public static readonly IIndexable4 INSTANCE = new Null();
 
-		public virtual object ComparableObject(Transaction trans, object indexEntry)
-		{
-			return null;
-		}
-
 		public virtual int CompareTo(object a_obj)
 		{
 			if (a_obj == null)
@@ -22,26 +16,6 @@ namespace Db4objects.Db4o.Internal
 				return 0;
 			}
 			return -1;
-		}
-
-		public virtual object Current()
-		{
-			return null;
-		}
-
-		public virtual bool IsEqual(object obj)
-		{
-			return obj == null;
-		}
-
-		public virtual bool IsGreater(object obj)
-		{
-			return false;
-		}
-
-		public virtual bool IsSmaller(object obj)
-		{
-			return false;
 		}
 
 		public virtual int LinkLength()

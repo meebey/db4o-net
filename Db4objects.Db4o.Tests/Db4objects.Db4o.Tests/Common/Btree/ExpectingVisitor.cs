@@ -51,6 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		{
 		}
 
+		/// <summary>Expect empty</summary>
 		public ExpectingVisitor() : this(new object[0])
 		{
 		}

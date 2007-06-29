@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -38,6 +39,16 @@ namespace Db4objects.Db4o.Internal
 		public virtual Config4Class Config()
 		{
 			return _classMetadata.Config();
+		}
+
+		public virtual IReflectClass ClassSubstitute()
+		{
+			return null;
+		}
+
+		public virtual bool IgnoreAncestor()
+		{
+			return false;
 		}
 	}
 }

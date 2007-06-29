@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		protected ExceptionIOAdapter(string path, bool lockFile, long initialLength)
 		{
-			_delegate = _delegate.Open(path, lockFile, initialLength);
+			_delegate = _delegate.Open(path, lockFile, initialLength, false);
 		}
 
 		public override void Close()
@@ -68,7 +68,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
-		public override IoAdapter Open(string path, bool lockFile, long initialLength)
+		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
+			 readOnly)
 		{
 			return new Db4objects.Db4o.Tests.Common.Exceptions.ExceptionIOAdapter(path, lockFile
 				, initialLength);

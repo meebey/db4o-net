@@ -12,6 +12,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			, Db4objects.Db4o.Internal.Buffer reader)
 		{
 			int indexID = reader.ReadInt();
+			if (indexID == 0)
+			{
+				return;
+			}
 			clazz.Index().Read(stream, indexID);
 		}
 

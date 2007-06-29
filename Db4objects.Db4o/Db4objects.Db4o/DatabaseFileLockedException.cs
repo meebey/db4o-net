@@ -20,11 +20,17 @@ namespace Db4objects.Db4o
 	[System.Serializable]
 	public class DatabaseFileLockedException : Db4oException
 	{
+		/// <summary>Constructor with a database description message</summary>
+		/// <param name="databaseDescription">message, which can help to identify the database
+		/// 	</param>
 		public DatabaseFileLockedException(string databaseDescription) : base(databaseDescription
 			)
 		{
 		}
 
+		/// <summary>Constructor with a database description and cause exception</summary>
+		/// <param name="databaseDescription">database description</param>
+		/// <param name="cause">previous exception caused DatabaseFileLockedException</param>
 		public DatabaseFileLockedException(string databaseDescription, Exception cause) : 
 			base(databaseDescription, cause)
 		{

@@ -21,7 +21,8 @@ using Sharpen;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class ClassMetadata : PersistentBase, ITypeHandler4, IStoredClass
+	public class ClassMetadata : PersistentBase, IIndexableTypeHandler, IFirstClassHandler
+		, IStoredClass
 	{
 		private ClassHandler _classHandler;
 
@@ -348,23 +349,6 @@ namespace Db4objects.Db4o.Internal
 			return HasIndex();
 		}
 
-		public virtual bool CanHold(IReflectClass claxx)
-		{
-			if (claxx == null)
-			{
-				return true;
-			}
-			if (_reflector != null)
-			{
-				if (ClassReflector().IsCollection())
-				{
-					return true;
-				}
-				return ClassReflector().IsAssignableFrom(claxx);
-			}
-			return false;
-		}
-
 		public virtual void CascadeActivation(Transaction a_trans, object a_object, int a_depth
 			, bool a_activate)
 		{
@@ -497,11 +481,6 @@ namespace Db4objects.Db4o.Internal
 			return depth;
 		}
 
-		public virtual object Coerce(IReflectClass claxx, object obj)
-		{
-			return CanHold(claxx) ? obj : No4.INSTANCE;
-		}
-
 		public virtual void CollectConstraints(Transaction a_trans, QConObject a_parent, 
 			object a_object, IVisitor4 a_visitor)
 		{
@@ -545,10 +524,6 @@ namespace Db4objects.Db4o.Internal
 				return i_ancestor.ConfigOrAncestorConfig();
 			}
 			return null;
-		}
-
-		public virtual void CopyValue(object a_from, object a_to)
-		{
 		}
 
 		private bool CreateConstructor(ObjectContainerBase container, string className)
@@ -733,11 +708,6 @@ namespace Db4objects.Db4o.Internal
 				return true;
 			}
 			return _eventDispatcher.Dispatch(stream, obj, message);
-		}
-
-		public bool IsEqual(ITypeHandler4 a_dataType)
-		{
-			return (this == a_dataType);
 		}
 
 		public int FieldCount()
@@ -1088,26 +1058,16 @@ namespace Db4objects.Db4o.Internal
 			return _stream;
 		}
 
-		public virtual int GetTypeID()
-		{
-			return Const4.TYPE_CLASS;
-		}
-
-		public virtual ClassMetadata GetClassMetadata(ObjectContainerBase a_stream)
-		{
-			return this;
-		}
-
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_938(this, name, yf));
+			ForEachFieldMetadata(new _IVisitor4_905(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_938 : IVisitor4
+		private sealed class _IVisitor4_905 : IVisitor4
 		{
-			public _IVisitor4_938(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
+			public _IVisitor4_905(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
 			{
 				this._enclosing = _enclosing;
 				this.name = name;
@@ -1167,11 +1127,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				i_fields[i].IncrementOffset(a_bytes);
 			}
-		}
-
-		public virtual object ComparableObject(Transaction a_trans, object a_object)
-		{
-			return a_object;
 		}
 
 		internal bool Init(ObjectContainerBase a_stream, ClassMetadata a_ancestor, IReflectClass
@@ -1435,11 +1390,6 @@ namespace Db4objects.Db4o.Internal
 			mf._object.InstantiateFields(this, attributes, a_yapObject, a_onObject, a_bytes);
 		}
 
-		public virtual bool IndexNullHandling()
-		{
-			return true;
-		}
-
 		public virtual bool IsArray()
 		{
 			return ClassReflector().IsCollection();
@@ -1467,11 +1417,6 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool IsPrimitive()
 		{
 			return false;
-		}
-
-		public virtual TernaryBool IsSecondClass()
-		{
-			return TernaryBool.NO;
 		}
 
 		/// <summary>no any, primitive, array or other tricks.</summary>
@@ -1549,11 +1494,6 @@ namespace Db4objects.Db4o.Internal
 		public override int OwnLength()
 		{
 			return MarshallerFamily.Current()._class.MarshalledLength(_stream, this);
-		}
-
-		public virtual IReflectClass PrimitiveClassReflector()
-		{
-			return null;
 		}
 
 		internal virtual void Purge()
@@ -1683,15 +1623,15 @@ namespace Db4objects.Db4o.Internal
 				if (obj != null)
 				{
 					a_candidates.i_trans.Stream().Activate1(trans, obj, 2);
-					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1426(this, a_candidates, trans
+					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1377(this, a_candidates, trans
 						));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_1426 : IVisitor4
+		private sealed class _IVisitor4_1377 : IVisitor4
 		{
-			public _IVisitor4_1426(ClassMetadata _enclosing, QCandidates a_candidates, Transaction
+			public _IVisitor4_1377(ClassMetadata _enclosing, QCandidates a_candidates, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -1867,12 +1807,6 @@ namespace Db4objects.Db4o.Internal
 			BitFalse(Const4.READING);
 		}
 
-		public virtual bool ReadArray(object array, Db4objects.Db4o.Internal.Buffer reader
-			)
-		{
-			return false;
-		}
-
 		public override void ReadThis(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
 			 a_reader)
 		{
@@ -1943,6 +1877,10 @@ namespace Db4objects.Db4o.Internal
 				if (customHandler != null)
 				{
 					_classHandler = new CustomizedClassHandler(this, customHandler);
+					if (_classHandler.IgnoreAncestor())
+					{
+						i_ancestor = null;
+					}
 				}
 			}
 		}
@@ -2086,7 +2024,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Stream();
 			stream.Activate1(trans, sc, 4);
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1765
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1715
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2095,9 +2033,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1765 : IFunction4
+		private sealed class _IFunction4_1715 : IFunction4
 		{
-			public _IFunction4_1765(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1715(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2138,12 +2076,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1793(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1743(this));
 		}
 
-		private sealed class _IFunction4_1793 : IFunction4
+		private sealed class _IFunction4_1743 : IFunction4
 		{
-			public _IFunction4_1793(ClassMetadata _enclosing)
+			public _IFunction4_1743(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2185,12 +2123,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1823(this));
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1773(this));
 		}
 
-		private sealed class _IPredicate4_1823 : IPredicate4
+		private sealed class _IPredicate4_1773 : IPredicate4
 		{
-			public _IPredicate4_1823(ClassMetadata _enclosing)
+			public _IPredicate4_1773(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2269,11 +2207,6 @@ namespace Db4objects.Db4o.Internal
 			return os.Size() > 0 ? (StaticClass)os.Next() : null;
 		}
 
-		public virtual bool SupportsIndex()
-		{
-			return true;
-		}
-
 		public override string ToString()
 		{
 			if (i_name != null)
@@ -2286,12 +2219,6 @@ namespace Db4objects.Db4o.Internal
 			}
 			LatinStringIO stringIO = _stream == null ? Const4.stringIO : _stream.StringIO();
 			return stringIO.Read(i_nameBytes);
-		}
-
-		public virtual bool WriteArray(object array, Db4objects.Db4o.Internal.Buffer reader
-			)
-		{
-			return false;
 		}
 
 		public override bool WriteObjectBegin()
@@ -2314,8 +2241,8 @@ namespace Db4objects.Db4o.Internal
 			a_writer.WriteInt(((int)a_object));
 		}
 
-		public virtual object WriteNew(MarshallerFamily mf, object a_object, bool topLevel
-			, StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkOffset)
+		public virtual object Write(MarshallerFamily mf, object a_object, bool topLevel, 
+			StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkOffset)
 		{
 			if (a_object == null)
 			{
@@ -2335,11 +2262,6 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		private IReflectClass i_compareTo;
-
-		public virtual void PrepareComparison(Transaction a_trans, object obj)
-		{
-			PrepareComparison(obj);
-		}
 
 		public virtual IComparable4 PrepareComparison(object obj)
 		{
@@ -2363,45 +2285,28 @@ namespace Db4objects.Db4o.Internal
 			return this;
 		}
 
-		public virtual object Current()
+		public virtual int CompareTo(object obj)
 		{
-			if (i_compareTo == null)
+			if (obj is int)
 			{
-				return null;
+				return ((int)obj) - i_lastID;
 			}
-			return i_lastID;
-		}
-
-		public virtual int CompareTo(object a_obj)
-		{
-			if (a_obj is int)
-			{
-				return ((int)a_obj) - i_lastID;
-			}
-			if ((a_obj == null) && (i_compareTo == null))
-			{
-				return 0;
-			}
-			return -1;
-		}
-
-		public virtual bool IsEqual(object obj)
-		{
 			if (obj == null)
 			{
-				return i_compareTo == null;
+				if (i_compareTo == null)
+				{
+					return 0;
+				}
+				return -1;
 			}
-			return i_compareTo.IsAssignableFrom(Reflector().ForObject(obj));
-		}
-
-		public virtual bool IsGreater(object obj)
-		{
-			return false;
-		}
-
-		public virtual bool IsSmaller(object obj)
-		{
-			return false;
+			if (i_compareTo != null)
+			{
+				if (i_compareTo.IsAssignableFrom(Reflector().ForObject(obj)))
+				{
+					return 0;
+				}
+			}
+			throw new IllegalComparisonException();
 		}
 
 		public virtual string ToString(MarshallerFamily mf, StatefulBuffer writer, ObjectReference
@@ -2471,6 +2376,15 @@ namespace Db4objects.Db4o.Internal
 				throw new InvalidOperationException();
 			}
 			i_ancestor = ancestor;
+			if (_classHandler.IgnoreAncestor())
+			{
+				i_ancestor = null;
+			}
+		}
+
+		public virtual IReflectClass ClassSubstitute()
+		{
+			return _classHandler.ClassSubstitute();
 		}
 	}
 }

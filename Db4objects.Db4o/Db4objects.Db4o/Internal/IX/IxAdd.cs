@@ -21,7 +21,8 @@ namespace Db4objects.Db4o.Internal.IX
 		internal override void BeginMerge()
 		{
 			base.BeginMerge();
-			Handler().PrepareComparison(Handler().ComparableObject(Trans(), _value));
+			Handler().PrepareComparison(IxDeprecationHelper.ComparableObject(Handler(), Trans
+				(), _value));
 		}
 
 		public override void Visit(object obj)
@@ -49,14 +50,15 @@ namespace Db4objects.Db4o.Internal.IX
 
 		public override string ToString()
 		{
-			string str = "IxAdd " + _parentID + "\n " + Handler().ComparableObject(Trans(), _value
-				);
+			string str = "IxAdd " + _parentID + "\n " + IxDeprecationHelper.ComparableObject(
+				Handler(), Trans(), _value);
 			return str;
 		}
 
 		public override void VisitAll(IIntObjectVisitor visitor)
 		{
-			visitor.Visit(_parentID, Handler().ComparableObject(Trans(), _value));
+			visitor.Visit(_parentID, IxDeprecationHelper.ComparableObject(Handler(), Trans(), 
+				_value));
 		}
 
 		public override object ShallowClone()

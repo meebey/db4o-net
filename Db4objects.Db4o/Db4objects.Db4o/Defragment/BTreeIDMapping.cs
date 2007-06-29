@@ -4,7 +4,6 @@ using System.Collections;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
-using Db4objects.Db4o.Internal.IX;
 using Db4objects.Db4o.Internal.Mapping;
 
 namespace Db4objects.Db4o.Defragment
@@ -29,10 +28,30 @@ namespace Db4objects.Db4o.Defragment
 
 		private int _insertCount = 0;
 
+		/// <summary>Will maintain the ID mapping as a BTree in the file with the given path.
+		/// 	</summary>
+		/// <remarks>
+		/// Will maintain the ID mapping as a BTree in the file with the given path.
+		/// If a file exists in this location, it will be DELETED.
+		/// Node size and cache height of the tree will be the default values used by
+		/// the BTree implementation. The tree will never commit.
+		/// </remarks>
+		/// <param name="fileName">The location where the BTree file should be created.</param>
 		public BTreeIDMapping(string fileName) : this(fileName, null, 0)
 		{
 		}
 
+		/// <summary>Will maintain the ID mapping as a BTree in the file with the given path.
+		/// 	</summary>
+		/// <remarks>
+		/// Will maintain the ID mapping as a BTree in the file with the given path.
+		/// If a file exists in this location, it will be DELETED.
+		/// </remarks>
+		/// <param name="fileName">The location where the BTree file should be created.</param>
+		/// <param name="nodeSize">The size of a BTree node</param>
+		/// <param name="cacheHeight">The height of the BTree node cache</param>
+		/// <param name="commitFrequency">The number of inserts after which a commit should be issued (<=0: never commit)
+		/// 	</param>
 		public BTreeIDMapping(string fileName, int nodeSize, int cacheHeight, int commitFrequency
 			) : this(fileName, new BTreeIDMapping.BTreeSpec(nodeSize, cacheHeight), commitFrequency
 			)

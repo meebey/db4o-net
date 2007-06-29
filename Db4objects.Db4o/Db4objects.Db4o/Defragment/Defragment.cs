@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Defragment
 	/// process will skip all classes that have instances stored within the yap file,
 	/// but that are not available on the class path (through the current
 	/// classloader). Custom db4o configuration options are read from the
-	/// <see cref="IConfiguration">Configuration</see>
+	/// <see cref="IConfiguration">IConfiguration</see>
 	/// passed as db4oConfig.
 	/// <strong>Note:</strong> For some specific, non-default configuration settings like
 	/// UUID generation, etc., you <strong>must</strong> pass an appropriate db4o configuration,

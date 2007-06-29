@@ -14,6 +14,10 @@ namespace Db4objects.Db4o.Cluster
 	{
 		public readonly IObjectContainer[] _objectContainers;
 
+		/// <summary>
+		/// use this constructor to create a Cluster and call
+		/// add() to add ObjectContainers
+		/// </summary>
 		public Cluster(IObjectContainer[] objectContainers)
 		{
 			if (objectContainers == null)

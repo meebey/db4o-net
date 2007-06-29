@@ -17,6 +17,8 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private readonly BlockingQueue _messageQueue;
 
+		private bool _isClosed;
+
 		internal ClientMessageDispatcherImpl(ClientObjectContainer client, ISocket4 a_socket
 			, BlockingQueue messageQueue_)
 		{
@@ -29,7 +31,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			lock (this)
 			{
-				return i_socket != null;
+				return !_isClosed;
 			}
 		}
 
@@ -37,8 +39,17 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			lock (this)
 			{
-				i_stream = null;
-				i_socket = null;
+				_isClosed = true;
+				if (i_socket != null)
+				{
+					try
+					{
+						i_socket.Close();
+					}
+					catch (IOException)
+					{
+					}
+				}
 				return true;
 			}
 		}
@@ -51,21 +62,26 @@ namespace Db4objects.Db4o.Internal.CS
 				try
 				{
 					message = Msg.ReadMessage(this, i_stream.GetTransaction(), i_socket);
-					if (message is IClientSideMessage)
+					if (IsClientSideMessage(message))
 					{
 						if (((IClientSideMessage)message).ProcessAtClient())
 						{
 							continue;
 						}
 					}
+					_messageQueue.Add(message);
 				}
 				catch (IOException)
 				{
 					Close();
-					message = Msg.ERROR;
+					_messageQueue.Add(Msg.ERROR);
 				}
-				_messageQueue.Add(message);
 			}
+		}
+
+		private bool IsClientSideMessage(Msg message)
+		{
+			return message is IClientSideMessage;
 		}
 
 		public virtual void Write(Msg msg)
@@ -75,7 +91,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public virtual void SetDispatcherName(string name)
 		{
-			SetName("db4o message client for user " + name);
+			SetName("db4o client side message dispather for " + name);
 		}
 
 		public virtual void StartDispatcher()

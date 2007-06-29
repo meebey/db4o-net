@@ -2,13 +2,11 @@
 
 using Db4objects.Db4o.Internal;
 
-namespace Db4objects.Db4o.Internal.IX
+namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	public interface IIndexable4 : IComparable4
 	{
-		object ComparableObject(Transaction trans, object indexEntry);
-
 		int LinkLength();
 
 		object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer reader);

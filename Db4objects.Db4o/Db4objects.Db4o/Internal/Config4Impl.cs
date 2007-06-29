@@ -119,8 +119,7 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec TIMEOUT_CLIENT_SOCKET = new KeySpec(Const4.CLIENT_SOCKET_TIMEOUT
 			);
 
-		private static readonly KeySpec TIMEOUT_PING_CLIENTS = new KeySpec(Const4.CONNECTION_TIMEOUT
-			);
+		private static readonly KeySpec PING_INTERVAL = new KeySpec(Const4.PING_INTERVAL);
 
 		private static readonly KeySpec TIMEOUT_SERVER_SOCKET = new KeySpec(Const4.SERVER_SOCKET_TIMEOUT
 			);
@@ -591,9 +590,9 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(TIMEOUT_CLIENT_SOCKET, milliseconds);
 		}
 
-		public void TimeoutPingClients(int milliseconds)
+		public void PingInterval(int milliseconds)
 		{
-			_config.Put(TIMEOUT_PING_CLIENTS, milliseconds);
+			_config.Put(PING_INTERVAL, milliseconds);
 		}
 
 		public void TimeoutServerSocket(int milliseconds)
@@ -932,9 +931,9 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsInt(TIMEOUT_CLIENT_SOCKET);
 		}
 
-		public int TimeoutPingClients()
+		public int PingInterval()
 		{
-			return _config.GetAsInt(TIMEOUT_PING_CLIENTS);
+			return _config.GetAsInt(PING_INTERVAL);
 		}
 
 		public int TimeoutServerSocket()

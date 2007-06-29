@@ -133,10 +133,15 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					Db4objects.Db4o.Internal.Buffer[] arrayBytes = new Db4objects.Db4o.Internal.Buffer
 						[] { _bytes };
-					ITypeHandler4 arrayHandler = handler.ReadArrayHandler(GetTransaction(), _marshallerFamily
-						, arrayBytes);
-					if (arrayHandler != null)
+					ITypeHandler4 tempHandler = null;
+					if (handler is IFirstClassHandler)
 					{
+						tempHandler = ((IFirstClassHandler)handler).ReadArrayHandler(GetTransaction(), _marshallerFamily
+							, arrayBytes);
+					}
+					if (tempHandler != null)
+					{
+						ITypeHandler4 arrayHandler = tempHandler;
 						int offset = arrayBytes[0]._offset;
 						bool outerRes = true;
 						IEnumerator i = a_candidates.IterateConstraints();
@@ -151,7 +156,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								QCandidates candidates = new QCandidates(a_candidates.i_trans, null, qf);
 								candidates.AddConstraint(qcon);
 								qcon.SetCandidates(candidates);
-								arrayHandler.ReadCandidates(_marshallerFamily, arrayBytes[0], candidates);
+								if (arrayHandler is IFirstClassHandler)
+								{
+									((IFirstClassHandler)arrayHandler).ReadCandidates(_marshallerFamily, arrayBytes[0
+										], candidates);
+								}
 								arrayBytes[0]._offset = offset;
 								bool isNot = qcon.IsNot();
 								if (isNot)
@@ -161,14 +170,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								candidates.Evaluate();
 								Tree.ByRef pending = new Tree.ByRef();
 								bool[] innerRes = new bool[] { isNot };
-								candidates.Traverse(new _IVisitor4_171(this, innerRes, isNot, pending));
+								candidates.Traverse(new _IVisitor4_183(this, innerRes, isNot, pending));
 								if (isNot)
 								{
 									qcon.Not();
 								}
 								if (pending.value != null)
 								{
-									pending.value.Traverse(new _IVisitor4_240(this));
+									pending.value.Traverse(new _IVisitor4_252(this));
 								}
 								if (!innerRes[0])
 								{
@@ -180,7 +189,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						}
 						return outerRes;
 					}
-					if (handler.GetTypeID() == Const4.TYPE_SIMPLE)
+					if (Handlers4.HandlesSimple(handler))
 					{
 						a_candidates.i_currentConstraint.Visit(this);
 						return true;
@@ -203,18 +212,19 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				if (_yapField != null)
 				{
 					ITypeHandler4 handler = _yapField.GetHandler();
-					if (handler != null && (handler.GetTypeID() == Const4.TYPE_CLASS))
+					if (handler is ClassMetadata)
 					{
-						ClassMetadata yc = (ClassMetadata)handler;
-						if (yc is UntypedFieldHandler)
+						ClassMetadata classMetadata = (ClassMetadata)handler;
+						if (classMetadata is UntypedFieldHandler)
 						{
-							yc = candidate.ReadYapClass();
+							classMetadata = candidate.ReadYapClass();
 						}
-						if (yc == null)
+						if (classMetadata == null)
 						{
 							return false;
 						}
-						if (!yc.CanHold(a_candidates.i_yapClass.ClassReflector()))
+						if (!Handlers4.HandlerCanHold(classMetadata, a_candidates.i_yapClass.ClassReflector
+							()))
 						{
 							return false;
 						}
@@ -225,9 +235,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _IVisitor4_171 : IVisitor4
+		private sealed class _IVisitor4_183 : IVisitor4
 		{
-			public _IVisitor4_171(QCandidate _enclosing, bool[] innerRes, bool isNot, Tree.ByRef
+			public _IVisitor4_183(QCandidate _enclosing, bool[] innerRes, bool isNot, Tree.ByRef
 				 pending)
 			{
 				this._enclosing = _enclosing;
@@ -246,13 +256,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (cand._pendingJoins != null)
 				{
-					cand._pendingJoins.Traverse(new _IVisitor4_184(this, pending));
+					cand._pendingJoins.Traverse(new _IVisitor4_196(this, pending));
 				}
 			}
 
-			private sealed class _IVisitor4_184 : IVisitor4
+			private sealed class _IVisitor4_196 : IVisitor4
 			{
-				public _IVisitor4_184(_IVisitor4_171 _enclosing, Tree.ByRef pending)
+				public _IVisitor4_196(_IVisitor4_183 _enclosing, Tree.ByRef pending)
 				{
 					this._enclosing = _enclosing;
 					this.pending = pending;
@@ -276,7 +286,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 
-				private readonly _IVisitor4_171 _enclosing;
+				private readonly _IVisitor4_183 _enclosing;
 
 				private readonly Tree.ByRef pending;
 			}
@@ -290,9 +300,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly Tree.ByRef pending;
 		}
 
-		private sealed class _IVisitor4_240 : IVisitor4
+		private sealed class _IVisitor4_252 : IVisitor4
 		{
-			public _IVisitor4_240(QCandidate _enclosing)
+			public _IVisitor4_252(QCandidate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Config
 	/// configuration interface for fields of classes.
 	/// <br /><br /><b>Examples: ../com/db4o/samples/translators.</b><br /><br />
 	/// Use the global Configuration object to configure db4o before opening an
-	/// <see cref="IObjectContainer">ObjectContainer</see>
+	/// <see cref="IObjectContainer">IObjectContainer</see>
 	/// .<br /><br />
 	/// <b>Example:</b><br />
 	/// <code>

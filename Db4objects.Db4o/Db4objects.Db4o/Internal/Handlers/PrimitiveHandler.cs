@@ -11,7 +11,7 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public abstract class PrimitiveHandler : ITypeHandler4
+	public abstract class PrimitiveHandler : IIndexableTypeHandler
 	{
 		protected readonly ObjectContainerBase _stream;
 
@@ -26,11 +26,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private bool i_compareToIsNull;
 
-		public virtual bool CanHold(IReflectClass claxx)
-		{
-			return claxx.Equals(ClassReflector());
-		}
-
 		public virtual void CascadeActivation(Transaction a_trans, object a_object, int a_depth
 			, bool a_activate)
 		{
@@ -38,16 +33,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual object Coerce(IReflectClass claxx, object obj)
 		{
-			return CanHold(claxx) ? obj : No4.INSTANCE;
-		}
-
-		public virtual object ComparableObject(Transaction a_trans, object a_object)
-		{
-			return a_object;
-		}
-
-		public virtual void CopyValue(object a_from, object a_to)
-		{
+			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.INSTANCE;
 		}
 
 		public abstract object DefaultValue();
@@ -55,21 +41,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes)
 		{
 			a_bytes.IncrementOffset(LinkLength());
-		}
-
-		public virtual bool IsEqual(ITypeHandler4 a_dataType)
-		{
-			return (this == a_dataType);
-		}
-
-		public virtual int GetTypeID()
-		{
-			return Const4.TYPE_SIMPLE;
-		}
-
-		public virtual ClassMetadata GetClassMetadata(ObjectContainerBase a_stream)
-		{
-			return a_stream.i_handlers.PrimitiveClassById(GetID());
 		}
 
 		public virtual bool HasFixedLength()
@@ -80,16 +51,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual object IndexEntryToObject(Transaction trans, object indexEntry)
 		{
 			return indexEntry;
-		}
-
-		public virtual bool IndexNullHandling()
-		{
-			return false;
-		}
-
-		public virtual TernaryBool IsSecondClass()
-		{
-			return TernaryBool.YES;
 		}
 
 		public virtual void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
@@ -105,26 +66,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public virtual void PrepareComparison(Transaction a_trans, object obj)
-		{
-			PrepareComparison(obj);
-		}
-
 		protected abstract Type PrimitiveJavaClass();
 
 		public abstract object PrimitiveNull();
-
-		public virtual bool ReadArray(object array, Db4objects.Db4o.Internal.Buffer reader
-			)
-		{
-			return false;
-		}
-
-		public virtual ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.Buffer[] a_bytes)
-		{
-			return null;
-		}
 
 		public virtual object ReadQuery(Transaction trans, MarshallerFamily mf, bool withRedirection
 			, Db4objects.Db4o.Internal.Buffer reader, bool toArray)
@@ -139,11 +83,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		internal abstract object Read1(Db4objects.Db4o.Internal.Buffer reader);
-
-		public virtual void ReadCandidates(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
-			 a_bytes, QCandidates a_candidates)
-		{
-		}
 
 		public virtual QCandidate ReadSubCandidate(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
 			 reader, QCandidates candidates, bool withIndirection)
@@ -201,19 +140,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return _primitiveClassReflector;
 		}
 
-		public virtual bool SupportsIndex()
-		{
-			return true;
-		}
-
 		public abstract void Write(object a_object, Db4objects.Db4o.Internal.Buffer a_bytes
 			);
-
-		public virtual bool WriteArray(object array, Db4objects.Db4o.Internal.Buffer reader
-			)
-		{
-			return false;
-		}
 
 		public virtual void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer a_writer, object
 			 a_object)
@@ -225,8 +153,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			Write(a_object, a_writer);
 		}
 
-		public virtual object WriteNew(MarshallerFamily mf, object a_object, bool topLevel
-			, StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkeOffset)
+		public virtual object Write(MarshallerFamily mf, object a_object, bool topLevel, 
+			StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkeOffset)
 		{
 			if (a_object == null)
 			{
@@ -248,18 +176,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return this;
 		}
 
-		public virtual object Current()
-		{
-			if (i_compareToIsNull)
-			{
-				return null;
-			}
-			return Current1();
-		}
-
 		internal abstract void PrepareComparison1(object obj);
-
-		public abstract object Current1();
 
 		public virtual int CompareTo(object obj)
 		{
@@ -286,36 +203,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return -1;
 		}
 
-		public virtual bool IsEqual(object obj)
-		{
-			if (i_compareToIsNull)
-			{
-				return obj == null;
-			}
-			return IsEqual1(obj);
-		}
-
 		internal abstract bool IsEqual1(object obj);
 
-		public virtual bool IsGreater(object obj)
-		{
-			if (i_compareToIsNull)
-			{
-				return obj != null;
-			}
-			return IsGreater1(obj);
-		}
-
 		internal abstract bool IsGreater1(object obj);
-
-		public virtual bool IsSmaller(object obj)
-		{
-			if (i_compareToIsNull)
-			{
-				return false;
-			}
-			return IsSmaller1(obj);
-		}
 
 		internal abstract bool IsSmaller1(object obj);
 

@@ -31,6 +31,8 @@ namespace Db4objects.Db4o.Internal.CS
 
 		internal LocalObjectContainer _container;
 
+		internal ClientTransactionPool _transactionPool;
+
 		private readonly object _startupLock = new object();
 
 		private Config4Impl _config;
@@ -41,9 +43,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private bool _caresAboutCommitted;
 
+		private SimpleTimer _houseKeepingTimer;
+
 		public ObjectServerImpl(LocalObjectContainer container, int port)
 		{
 			_container = container;
+			_transactionPool = new ClientTransactionPool(container, new object());
 			_port = port;
 			_config = _container.ConfigImpl();
 			_name = "db4o ServerSocket FILE: " + container.ToString() + "  PORT:" + _port;
@@ -54,6 +59,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				EnsureLoadStaticClass();
 				StartCommittedCallbackThread(_committedInfosQueue);
+				StartHouseKeepingTimer();
 				StartServer();
 				ok = true;
 			}
@@ -64,6 +70,13 @@ namespace Db4objects.Db4o.Internal.CS
 					Close();
 				}
 			}
+		}
+
+		private void StartHouseKeepingTimer()
+		{
+			_houseKeepingTimer = new SimpleTimer(new HouseKeepingTask(this), 1, "HouseKeeping"
+				);
+			_houseKeepingTimer.Start();
 		}
 
 		private void StartServer()
@@ -106,13 +119,12 @@ namespace Db4objects.Db4o.Internal.CS
 			try
 			{
 				_serverSocket = new ServerSocket4(_port);
-				_serverSocket.SetSoTimeout(_config.TimeoutServerSocket());
 			}
-			catch (IOException)
+			catch (IOException e)
 			{
-				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.COULD_NOT_OPEN_PORT
-					, string.Empty + _port);
+				throw new Db4oIOException(e);
 			}
+			_serverSocket.SetSoTimeout(_config.TimeoutServerSocket());
 		}
 
 		private bool IsEmbeddedServer()
@@ -153,6 +165,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				CloseServerSocket();
 				StopCommittedCallbacksDispatcher();
+				StopHouseKeepingTimer();
 				CloseMessageDispatchers();
 				return CloseFile();
 			}
@@ -166,11 +179,19 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
+		private void StopHouseKeepingTimer()
+		{
+			if (_houseKeepingTimer != null)
+			{
+				_houseKeepingTimer.Stop();
+			}
+		}
+
 		private bool CloseFile()
 		{
 			if (_container != null)
 			{
-				_container.Close();
+				_transactionPool.Close();
 				_container = null;
 			}
 			return true;
@@ -225,7 +246,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return this;
 		}
 
-		internal virtual ServerMessageDispatcherImpl FindThread(int a_threadID)
+		private ServerMessageDispatcherImpl FindThread(int a_threadID)
 		{
 			lock (_dispatchers)
 			{
@@ -240,6 +261,12 @@ namespace Db4objects.Db4o.Internal.CS
 				}
 			}
 			return null;
+		}
+
+		internal virtual Transaction FindTransaction(int threadID)
+		{
+			ServerMessageDispatcherImpl dispatcher = FindThread(threadID);
+			return (dispatcher == null ? null : dispatcher.GetTransaction());
 		}
 
 		public virtual void GrantAccess(string userName, string password)
@@ -327,7 +354,8 @@ namespace Db4objects.Db4o.Internal.CS
 			try
 			{
 				IServerMessageDispatcher messageDispatcher = new ServerMessageDispatcherImpl(this
-					, _container, serverFake, NewThreadId(), true);
+					, new ClientTransactionHandle(_transactionPool), serverFake, NewThreadId(), true
+					);
 				AddServerMessageDispatcher(messageDispatcher);
 				messageDispatcher.StartDispatcher();
 				return clientFake;
@@ -383,6 +411,7 @@ namespace Db4objects.Db4o.Internal.CS
 			_committedCallbacksDispatcher = new CommittedCallbacksDispatcher(this, committedInfosQueue
 				);
 			Thread thread = new Thread(_committedCallbacksDispatcher);
+			thread.SetName("committed callback thread");
 			thread.SetDaemon(true);
 			thread.Start();
 		}
@@ -399,7 +428,8 @@ namespace Db4objects.Db4o.Internal.CS
 				try
 				{
 					IServerMessageDispatcher messageDispatcher = new ServerMessageDispatcherImpl(this
-						, _container, _serverSocket.Accept(), NewThreadId(), false);
+						, new ClientTransactionHandle(_transactionPool), _serverSocket.Accept(), NewThreadId
+						(), false);
 					AddServerMessageDispatcher(messageDispatcher);
 					messageDispatcher.StartDispatcher();
 				}
@@ -442,13 +472,13 @@ namespace Db4objects.Db4o.Internal.CS
 			_committedInfosQueue.Add(message);
 		}
 
-		public virtual void SendCommittedInfoMsg(MCommittedInfo message)
+		public virtual void BroadcastMsg(Msg message, IBroadcastFilter filter)
 		{
 			IEnumerator i = IterateDispatchers();
 			while (i.MoveNext())
 			{
 				IServerMessageDispatcher dispatcher = (IServerMessageDispatcher)i.Current;
-				if (dispatcher.CaresAboutCommitted())
+				if (filter.Accept(dispatcher))
 				{
 					dispatcher.WriteIfAlive(message);
 				}

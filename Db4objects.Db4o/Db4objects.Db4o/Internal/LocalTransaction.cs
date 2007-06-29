@@ -362,14 +362,14 @@ namespace Db4objects.Db4o.Internal
 
 		private bool WriteSlots()
 		{
-			MutableBoolean ret = new MutableBoolean();
+			BooleanByRef ret = new BooleanByRef();
 			TraverseSlotChanges(new _IVisitor4_325(this, ret));
-			return ret.Value();
+			return ret.value;
 		}
 
 		private sealed class _IVisitor4_325 : IVisitor4
 		{
-			public _IVisitor4_325(LocalTransaction _enclosing, MutableBoolean ret)
+			public _IVisitor4_325(LocalTransaction _enclosing, BooleanByRef ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -378,12 +378,12 @@ namespace Db4objects.Db4o.Internal
 			public void Visit(object obj)
 			{
 				((SlotChange)obj).WritePointer(this._enclosing);
-				ret.Set(true);
+				ret.value = true;
 			}
 
 			private readonly LocalTransaction _enclosing;
 
-			private readonly MutableBoolean ret;
+			private readonly BooleanByRef ret;
 		}
 
 		public virtual void FlushFile()
@@ -496,14 +496,14 @@ namespace Db4objects.Db4o.Internal
 
 		private int CountSlotChanges()
 		{
-			MutableInt count = new MutableInt();
+			IntByRef count = new IntByRef();
 			TraverseSlotChanges(new _IVisitor4_449(this, count));
-			return count.Value();
+			return count.value;
 		}
 
 		private sealed class _IVisitor4_449 : IVisitor4
 		{
-			public _IVisitor4_449(LocalTransaction _enclosing, MutableInt count)
+			public _IVisitor4_449(LocalTransaction _enclosing, IntByRef count)
 			{
 				this._enclosing = _enclosing;
 				this.count = count;
@@ -514,13 +514,13 @@ namespace Db4objects.Db4o.Internal
 				SlotChange slot = (SlotChange)obj;
 				if (slot.IsSetPointer())
 				{
-					count.Increment();
+					count.value++;
 				}
 			}
 
 			private readonly LocalTransaction _enclosing;
 
-			private readonly MutableInt count;
+			private readonly IntByRef count;
 		}
 
 		internal void WriteOld()

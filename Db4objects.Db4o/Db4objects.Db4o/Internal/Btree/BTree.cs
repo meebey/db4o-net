@@ -8,7 +8,6 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
-using Db4objects.Db4o.Internal.IX;
 using Db4objects.Db4o.Internal.Mapping;
 
 namespace Db4objects.Db4o.Internal.Btree
@@ -90,7 +89,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			KeyCantBeNull(key);
 			_keyHandler.PrepareComparison(key);
 			EnsureDirty(trans);
-			BTreeNode rootOrSplit = _root.Add(trans);
+			BTreeNode rootOrSplit = _root.Add(trans, key);
 			if (rootOrSplit != null && rootOrSplit != _root)
 			{
 				_root = new BTreeNode(trans, _root, rootOrSplit);
@@ -110,7 +109,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			BTreePointer first = (BTreePointer)pointers.Current;
 			EnsureDirty(trans);
 			BTreeNode node = first.Node();
-			node.Remove(trans, first.Index());
+			node.Remove(trans, key, first.Index());
 		}
 
 		public virtual IBTreeRange Search(Transaction trans, object key)
@@ -201,12 +200,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return;
 			}
-			_nodes.Traverse(new _IVisitor4_197(this, systemTransaction));
+			_nodes.Traverse(new _IVisitor4_196(this, systemTransaction));
 		}
 
-		private sealed class _IVisitor4_197 : IVisitor4
+		private sealed class _IVisitor4_196 : IVisitor4
 		{
-			public _IVisitor4_197(BTree _enclosing, Transaction systemTransaction)
+			public _IVisitor4_196(BTree _enclosing, Transaction systemTransaction)
 			{
 				this._enclosing = _enclosing;
 				this.systemTransaction = systemTransaction;
@@ -240,12 +239,12 @@ namespace Db4objects.Db4o.Internal.Btree
 				_root.HoldChildrenAsIDs();
 				AddNode(_root);
 			}
-			temp.Traverse(new _IVisitor4_221(this));
+			temp.Traverse(new _IVisitor4_220(this));
 		}
 
-		private sealed class _IVisitor4_221 : IVisitor4
+		private sealed class _IVisitor4_220 : IVisitor4
 		{
-			public _IVisitor4_221(BTree _enclosing)
+			public _IVisitor4_220(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -262,12 +261,12 @@ namespace Db4objects.Db4o.Internal.Btree
 		private void ProcessAllNodes()
 		{
 			_processing = new NonblockingQueue();
-			_nodes.Traverse(new _IVisitor4_231(this));
+			_nodes.Traverse(new _IVisitor4_230(this));
 		}
 
-		private sealed class _IVisitor4_231 : IVisitor4
+		private sealed class _IVisitor4_230 : IVisitor4
 		{
-			public _IVisitor4_231(BTree _enclosing)
+			public _IVisitor4_230(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -462,12 +461,12 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual void DefragBTree(IDefragContext context)
 		{
-			ReaderPair.ProcessCopy(context, GetID(), new _ISlotCopyHandler_390(this));
+			ReaderPair.ProcessCopy(context, GetID(), new _ISlotCopyHandler_389(this));
 			CorruptionException[] corruptx = new CorruptionException[] { null };
 			IOException[] iox = new IOException[] { null };
 			try
 			{
-				context.TraverseAllIndexSlots(this, new _IVisitor4_398(this, context, corruptx, iox
+				context.TraverseAllIndexSlots(this, new _IVisitor4_397(this, context, corruptx, iox
 					));
 			}
 			catch (Exception e)
@@ -484,9 +483,9 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		private sealed class _ISlotCopyHandler_390 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_389 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_390(BTree _enclosing)
+			public _ISlotCopyHandler_389(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -499,9 +498,9 @@ namespace Db4objects.Db4o.Internal.Btree
 			private readonly BTree _enclosing;
 		}
 
-		private sealed class _IVisitor4_398 : IVisitor4
+		private sealed class _IVisitor4_397 : IVisitor4
 		{
-			public _IVisitor4_398(BTree _enclosing, IDefragContext context, CorruptionException[]
+			public _IVisitor4_397(BTree _enclosing, IDefragContext context, CorruptionException[]
 				 corruptx, IOException[] iox)
 			{
 				this._enclosing = _enclosing;
@@ -515,7 +514,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				int id = ((int)obj);
 				try
 				{
-					ReaderPair.ProcessCopy(context, id, new _ISlotCopyHandler_402(this));
+					ReaderPair.ProcessCopy(context, id, new _ISlotCopyHandler_401(this));
 				}
 				catch (CorruptionException e)
 				{
@@ -529,9 +528,9 @@ namespace Db4objects.Db4o.Internal.Btree
 				}
 			}
 
-			private sealed class _ISlotCopyHandler_402 : ISlotCopyHandler
+			private sealed class _ISlotCopyHandler_401 : ISlotCopyHandler
 			{
-				public _ISlotCopyHandler_402(_IVisitor4_398 _enclosing)
+				public _ISlotCopyHandler_401(_IVisitor4_397 _enclosing)
 				{
 					this._enclosing = _enclosing;
 				}
@@ -541,7 +540,7 @@ namespace Db4objects.Db4o.Internal.Btree
 					this._enclosing._enclosing.DefragIndexNode(readers);
 				}
 
-				private readonly _IVisitor4_398 _enclosing;
+				private readonly _IVisitor4_397 _enclosing;
 			}
 
 			private readonly BTree _enclosing;
@@ -586,13 +585,13 @@ namespace Db4objects.Db4o.Internal.Btree
 		public virtual IEnumerator AllNodeIds(Transaction systemTrans)
 		{
 			Collection4 allNodeIDs = new Collection4();
-			TraverseAllNodes(systemTrans, new _IVisitor4_453(this, allNodeIDs));
+			TraverseAllNodes(systemTrans, new _IVisitor4_452(this, allNodeIDs));
 			return allNodeIDs.GetEnumerator();
 		}
 
-		private sealed class _IVisitor4_453 : IVisitor4
+		private sealed class _IVisitor4_452 : IVisitor4
 		{
-			public _IVisitor4_453(BTree _enclosing, Collection4 allNodeIDs)
+			public _IVisitor4_452(BTree _enclosing, Collection4 allNodeIDs)
 			{
 				this._enclosing = _enclosing;
 				this.allNodeIDs = allNodeIDs;
@@ -619,12 +618,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return;
 			}
-			_nodes.Traverse(new _IVisitor4_469(this, visitor));
+			_nodes.Traverse(new _IVisitor4_468(this, visitor));
 		}
 
-		private sealed class _IVisitor4_469 : IVisitor4
+		private sealed class _IVisitor4_468 : IVisitor4
 		{
-			public _IVisitor4_469(BTree _enclosing, IVisitor4 visitor)
+			public _IVisitor4_468(BTree _enclosing, IVisitor4 visitor)
 			{
 				this._enclosing = _enclosing;
 				this.visitor = visitor;
@@ -646,13 +645,13 @@ namespace Db4objects.Db4o.Internal.Btree
 			sb.Append("BTree ");
 			sb.Append(GetID());
 			sb.Append(" Active Nodes: \n");
-			TraverseAllNodes(new _IVisitor4_481(this, sb));
+			TraverseAllNodes(new _IVisitor4_480(this, sb));
 			return sb.ToString();
 		}
 
-		private sealed class _IVisitor4_481 : IVisitor4
+		private sealed class _IVisitor4_480 : IVisitor4
 		{
-			public _IVisitor4_481(BTree _enclosing, StringBuilder sb)
+			public _IVisitor4_480(BTree _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;

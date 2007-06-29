@@ -20,10 +20,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object Coerce(IReflectClass claxx, object obj)
 		{
-			return CanHold(claxx) ? obj : No4.INSTANCE;
+			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.INSTANCE;
 		}
 
-		public override void CopyValue(object a_from, object a_to)
+		public void CopyValue(object a_from, object a_to)
 		{
 			try
 			{
@@ -42,11 +42,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override int GetID()
 		{
 			return 10;
-		}
-
-		public override bool IndexNullHandling()
-		{
-			return true;
 		}
 
 		protected override Type PrimitiveJavaClass()
@@ -78,11 +73,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				a_object = new Date(0);
 			}
 			a_bytes.WriteLong(((Date)a_object).GetTime());
-		}
-
-		public override object Current1()
-		{
-			return new Date(CurrentLong());
 		}
 
 		public static string Now()

@@ -10,13 +10,16 @@ namespace Db4objects.Db4o.Tests.Common.CS
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.CS.AllTests().RunClientServer();
+			new Db4objects.Db4o.Tests.Common.CS.AllTests().RunAll();
 		}
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(ClientServerPingTestCase), typeof(SendMessageToClientTestCase)
-				, typeof(ServerRevokeAccessTestCase), typeof(ServerTimeoutTestCase), typeof(CallConstructorsConfigTestCase)
+			return new Type[] { typeof(CallConstructorsConfigTestCase), typeof(ClientServerPingTestCase)
+				, typeof(ClientTimeOutTestCase), typeof(ClientTransactionHandleTestCase), typeof(ClientTransactionPoolTestCase)
+				, typeof(PingTestCase), typeof(SendMessageToClientTestCase), typeof(ServerClosedTestCase)
+				, typeof(ServerPortUsedTestCase), typeof(ServerRevokeAccessTestCase), typeof(ServerTimeoutTestCase)
+				, typeof(SwitchingFilesFromClientTestCase), typeof(SwitchingFilesFromMultipleClientsTestCase)
 				 };
 		}
 	}

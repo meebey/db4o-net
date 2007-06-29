@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.IO;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
@@ -156,6 +157,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public static readonly MWriteBatchedMessages WRITE_BATCHED_MESSAGES = new MWriteBatchedMessages
 			();
 
+		public static readonly MsgBlob DELETE_BLOB_FILE = new MDeleteBlobFile();
+
 		internal Msg()
 		{
 			_msgID = _messageIdGenerator++;
@@ -272,7 +275,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				int read = sock.Read(buffer._buffer, offset, length);
 				if (read < 0)
 				{
-					return null;
+					throw new IOException();
 				}
 				offset += read;
 				length -= read;
@@ -284,10 +287,6 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			 messageDispatcher, Db4objects.Db4o.Internal.Transaction trans, ISocket4 sock)
 		{
 			StatefulBuffer reader = ReadMessageBuffer(trans, sock);
-			if (null == reader)
-			{
-				return null;
-			}
 			Db4objects.Db4o.Internal.CS.Messages.Msg message = _messages[reader.ReadInt()].ReadPayLoad
 				(messageDispatcher, trans, sock, reader);
 			return message;

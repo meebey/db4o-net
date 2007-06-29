@@ -72,11 +72,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			i_compareToDouble = Dval(obj);
 		}
 
-		public override object Current1()
-		{
-			return i_compareToDouble;
-		}
-
 		internal override bool IsEqual1(object obj)
 		{
 			return obj is double && Dval(obj) == i_compareToDouble;

@@ -135,8 +135,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			int[] dim = ReadDimensions(a_trans, a_bytes, clazz);
 			if (i_isPrimitive)
 			{
-				obj[0] = a_trans.Reflector().Array().NewInstance(i_handler.PrimitiveClassReflector
-					(), dim);
+				obj[0] = a_trans.Reflector().Array().NewInstance(PrimitiveClassReflector(), dim);
 			}
 			else
 			{
@@ -172,7 +171,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			MarshallerFamily mf = MarshallerFamily.Current();
 			for (int i = 0; i < objects.Length; i++)
 			{
-				i_handler.WriteNew(mf, Element(objects, i), false, writer, true, true);
+				i_handler.Write(mf, Element(objects, i), false, writer, true, true);
 			}
 		}
 

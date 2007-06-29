@@ -91,6 +91,11 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				return genericClass;
 			}
+			IReflectClass reflectClass = reflector.ForName(className);
+			if (reflectClass != null)
+			{
+				return (GenericClass)reflectClass;
+			}
 			GenericClass genericSuperClass = null;
 			ClassInfo superClassMeta = classMeta.GetSuperClass();
 			if (superClassMeta != null)
@@ -122,6 +127,7 @@ namespace Db4objects.Db4o.Internal.CS
 		private void RegisterGenericClass(string className, GenericClass classMeta)
 		{
 			_genericClassTable.Put(className, classMeta);
+			((GenericReflector)classMeta.Reflector()).Register(classMeta);
 		}
 	}
 }

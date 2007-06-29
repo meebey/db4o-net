@@ -95,7 +95,8 @@ namespace Db4objects.Db4o.IO
 		public abstract long GetLength();
 
 		/// <summary>implement to open the file</summary>
-		public abstract IoAdapter Open(string path, bool lockFile, long initialLength);
+		public abstract IoAdapter Open(string path, bool lockFile, long initialLength, bool
+			 readOnly);
 
 		/// <summary>reads a buffer at the seeked address</summary>
 		/// <returns>the number of bytes read and returned</returns>

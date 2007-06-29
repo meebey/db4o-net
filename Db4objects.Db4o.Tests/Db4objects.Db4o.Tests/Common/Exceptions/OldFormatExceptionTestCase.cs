@@ -27,11 +27,17 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 					);
 				return;
 			}
+			if (!System.IO.File.Exists(SourceFile()))
+			{
+				Sharpen.Runtime.Err.WriteLine("Test source file " + SourceFile() + " not available. Skipping test case..."
+					);
+				return;
+			}
 			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(OldFormatExceptionTestCase)
 				));
 			Db4oFactory.Configure().AllowVersionUpdates(false);
 			string oldDatabaseFilePath = OldDatabaseFilePath();
-			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_39(this, oldDatabaseFilePath
+			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_44(this, oldDatabaseFilePath
 				));
 			Db4oFactory.Configure().AllowVersionUpdates(true);
 			IObjectContainer container = null;
@@ -48,9 +54,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
-		private sealed class _ICodeBlock_39 : ICodeBlock
+		private sealed class _ICodeBlock_44 : ICodeBlock
 		{
-			public _ICodeBlock_39(OldFormatExceptionTestCase _enclosing, string oldDatabaseFilePath
+			public _ICodeBlock_44(OldFormatExceptionTestCase _enclosing, string oldDatabaseFilePath
 				)
 			{
 				this._enclosing = _enclosing;
@@ -70,9 +76,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		protected virtual string OldDatabaseFilePath()
 		{
 			string oldFile = IOServices.BuildTempPath("old_db.yap");
-			File4.Copy(WorkspaceServices.WorkspaceTestFilePath("db4oVersions/db4o_3.0.3"), oldFile
-				);
+			File4.Copy(SourceFile(), oldFile);
 			return oldFile;
+		}
+
+		private string SourceFile()
+		{
+			return WorkspaceServices.WorkspaceTestFilePath("db4oVersions/db4o_3.0.3");
 		}
 	}
 }

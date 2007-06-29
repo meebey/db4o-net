@@ -141,7 +141,7 @@ namespace Db4objects.Db4o.Foundation.Network
 		{
 			try
 			{
-				int ret = (int)i_lock.Run(new _IClosure4_96(this, a_length, a_bytes, a_offset));
+				int ret = (int)i_lock.Run(new _IClosure4_95(this, a_length, a_bytes, a_offset));
 				return ret;
 			}
 			catch (IOException iex)
@@ -154,9 +154,9 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
-		private sealed class _IClosure4_96 : IClosure4
+		private sealed class _IClosure4_95 : IClosure4
 		{
-			public _IClosure4_96(BlockingByteChannel _enclosing, int a_length, byte[] a_bytes
+			public _IClosure4_95(BlockingByteChannel _enclosing, int a_length, byte[] a_bytes
 				, int a_offset)
 			{
 				this._enclosing = _enclosing;
@@ -197,6 +197,7 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		protected virtual void WaitForAvailable()
 		{
+			long beginTime = Runtime.CurrentTimeMillis();
 			while (Available() == 0)
 			{
 				if (i_closed)
@@ -204,7 +205,16 @@ namespace Db4objects.Db4o.Foundation.Network
 					throw new IOException(Db4objects.Db4o.Internal.Messages.Get(35));
 				}
 				i_lock.Snooze(i_timeout);
+				if (IsTimeout(beginTime))
+				{
+					throw new IOException();
+				}
 			}
+		}
+
+		private bool IsTimeout(long start)
+		{
+			return Runtime.CurrentTimeMillis() - start >= i_timeout;
 		}
 
 		public virtual void Write(byte[] bytes)
@@ -215,12 +225,12 @@ namespace Db4objects.Db4o.Foundation.Network
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
 			CheckClosed();
-			i_lock.Run(new _ISafeClosure4_137(this, len, bytes, off));
+			i_lock.Run(new _ISafeClosure4_144(this, len, bytes, off));
 		}
 
-		private sealed class _ISafeClosure4_137 : ISafeClosure4
+		private sealed class _ISafeClosure4_144 : ISafeClosure4
 		{
-			public _ISafeClosure4_137(BlockingByteChannel _enclosing, int len, byte[] bytes, 
+			public _ISafeClosure4_144(BlockingByteChannel _enclosing, int len, byte[] bytes, 
 				int off)
 			{
 				this._enclosing = _enclosing;
@@ -251,12 +261,12 @@ namespace Db4objects.Db4o.Foundation.Network
 		public virtual void Write(int i)
 		{
 			CheckClosed();
-			i_lock.Run(new _ISafeClosure4_150(this, i));
+			i_lock.Run(new _ISafeClosure4_157(this, i));
 		}
 
-		private sealed class _ISafeClosure4_150 : ISafeClosure4
+		private sealed class _ISafeClosure4_157 : ISafeClosure4
 		{
-			public _ISafeClosure4_150(BlockingByteChannel _enclosing, int i)
+			public _ISafeClosure4_157(BlockingByteChannel _enclosing, int i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;

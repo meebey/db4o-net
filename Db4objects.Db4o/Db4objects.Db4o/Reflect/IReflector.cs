@@ -52,9 +52,9 @@ namespace Db4objects.Db4o.Reflect
 		/// 	</summary>
 		/// <remarks>returns an ReflectClass for an object or null if the passed object is null.
 		/// 	</remarks>
-		IReflectClass ForObject(object a_object);
+		IReflectClass ForObject(object obj);
 
-		bool IsCollection(IReflectClass claxx);
+		bool IsCollection(IReflectClass clazz);
 
 		void SetParent(IReflector reflector);
 	}

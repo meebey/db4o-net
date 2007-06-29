@@ -2,7 +2,6 @@
 
 using System;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -13,7 +12,7 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public sealed class StringHandler : BuiltinTypeHandler
+	public sealed class StringHandler : BuiltinTypeHandler, IIndexableTypeHandler
 	{
 		public LatinStringIO i_stringIo;
 
@@ -21,11 +20,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			i_stringIo = stringIO;
-		}
-
-		public override bool CanHold(IReflectClass claxx)
-		{
-			return claxx.Equals(ClassReflector());
 		}
 
 		public override void CascadeActivation(Transaction a_trans, object a_object, int 
@@ -38,11 +32,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return _stream.i_handlers.ICLASS_STRING;
 		}
 
-		public override object ComparableObject(Transaction trans, object obj)
-		{
-			return Val(obj, trans.Stream());
-		}
-
 		public override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer buffer)
 		{
 			Slot slot = buffer.ReadSlot();
@@ -50,11 +39,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				buffer.GetTransaction().SlotFreeOnCommit(slot.Address(), slot);
 			}
-		}
-
-		public override bool IsEqual(ITypeHandler4 a_dataType)
-		{
-			return (this == a_dataType);
 		}
 
 		public override int GetID()
@@ -67,12 +51,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.YAPSTRING;
 		}
 
-		public override ClassMetadata GetClassMetadata(ObjectContainerBase a_stream)
-		{
-			return a_stream.i_handlers.PrimitiveClassById(GetID());
-		}
-
-		public override object IndexEntryToObject(Transaction trans, object indexEntry)
+		public object IndexEntryToObject(Transaction trans, object indexEntry)
 		{
 			try
 			{
@@ -83,16 +62,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 			}
 			return null;
-		}
-
-		public override bool IndexNullHandling()
-		{
-			return true;
-		}
-
-		public override TernaryBool IsSecondClass()
-		{
-			return TernaryBool.YES;
 		}
 
 		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
@@ -106,17 +75,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			return mf._string.ReadFromParentSlot(a_bytes.GetStream(), a_bytes, redirect);
-		}
-
-		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.Buffer[] a_bytes)
-		{
-			return null;
-		}
-
-		public override void ReadCandidates(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
-			 a_bytes, QCandidates a_candidates)
-		{
 		}
 
 		public override QCandidate ReadSubCandidate(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
@@ -150,8 +108,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// TODO: Consider renaming methods in Indexable4 and Typhandler4 to make direction clear.
 		/// </remarks>
 		/// <exception cref="CorruptionException">CorruptionException</exception>
-		public override object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer
-			)
+		public object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer)
 		{
 			return mf._string.ReadIndexEntry(a_writer);
 		}
@@ -161,7 +118,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// This readIndexEntry method reads from the actual index in the file.
 		/// TODO: Consider renaming methods in Indexable4 and Typhandler4 to make direction clear.
 		/// </remarks>
-		public override object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer reader)
+		public object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer reader)
 		{
 			Slot s = new Slot(reader.ReadInt(), reader.ReadInt());
 			if (IsInvalidSlot(s))
@@ -197,13 +154,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			i_stringIo = a_io;
 		}
 
-		public override bool SupportsIndex()
-		{
-			return true;
-		}
-
-		public override void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer writer, object
-			 entry)
+		public void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer writer, object entry)
 		{
 			if (entry == null)
 			{
@@ -228,8 +179,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			throw new ArgumentException();
 		}
 
-		public override object WriteNew(MarshallerFamily mf, object a_object, bool topLevel
-			, StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkeOffset)
+		public override object Write(MarshallerFamily mf, object a_object, bool topLevel, 
+			StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkeOffset)
 		{
 			return mf._string.WriteNew(a_object, topLevel, a_bytes, withIndirection);
 		}
@@ -247,11 +198,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public override int GetTypeID()
-		{
-			return Const4.TYPE_SIMPLE;
-		}
-
 		private Db4objects.Db4o.Internal.Buffer i_compareTo;
 
 		private Db4objects.Db4o.Internal.Buffer Val(object obj)
@@ -259,7 +205,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Val(obj, _stream);
 		}
 
-		private Db4objects.Db4o.Internal.Buffer Val(object obj, ObjectContainerBase oc)
+		public Db4objects.Db4o.Internal.Buffer Val(object obj, ObjectContainerBase oc)
 		{
 			if (obj is Db4objects.Db4o.Internal.Buffer)
 			{
@@ -277,11 +223,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return null;
 		}
 
-		public override void PrepareComparison(Transaction a_trans, object obj)
-		{
-			i_compareTo = (Db4objects.Db4o.Internal.Buffer)obj;
-		}
-
 		public override IComparable4 PrepareComparison(object obj)
 		{
 			if (obj == null)
@@ -291,11 +232,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			i_compareTo = Val(obj);
 			return this;
-		}
-
-		public override object Current()
-		{
-			return i_compareTo;
 		}
 
 		public override int CompareTo(object obj)
@@ -309,33 +245,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return 1;
 			}
 			return Compare(i_compareTo, Val(obj));
-		}
-
-		public override bool IsEqual(object obj)
-		{
-			if (i_compareTo == null)
-			{
-				return obj == null;
-			}
-			return i_compareTo.ContainsTheSame(Val(obj));
-		}
-
-		public override bool IsGreater(object obj)
-		{
-			if (i_compareTo == null)
-			{
-				return obj != null;
-			}
-			return Compare(i_compareTo, Val(obj)) > 0;
-		}
-
-		public override bool IsSmaller(object obj)
-		{
-			if (i_compareTo == null)
-			{
-				return false;
-			}
-			return Compare(i_compareTo, Val(obj)) < 0;
 		}
 
 		/// <summary>
@@ -378,7 +287,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return with.Length - compare.Length;
 		}
 
-		public override void DefragIndexEntry(ReaderPair readers)
+		public void DefragIndexEntry(ReaderPair readers)
 		{
 			readers.CopyID(false, true);
 			readers.IncrementIntSize();

@@ -16,9 +16,9 @@ namespace Db4objects.Db4o.IO
 		}
 
 		protected VanillaIoAdapter(IoAdapter delegateAdapter, string path, bool lockFile, 
-			long initialLength)
+			long initialLength, bool readOnly)
 		{
-			_delegate = delegateAdapter.Open(path, lockFile, initialLength);
+			_delegate = delegateAdapter.Open(path, lockFile, initialLength, readOnly);
 		}
 
 		public override void Close()

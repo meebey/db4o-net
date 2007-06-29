@@ -17,7 +17,8 @@ namespace Db4objects.Db4o.Tests
 		{
 			return new Type[]
 				{	
-//                    typeof(CLI1.Aliases.NetArrayFromJavaTestCase),
+                    //typeof(Common.Reflect.ReflectArrayTestCase),
+                    //typeof(CLI1.Aliases.NetArrayFromJavaTestCase),
 					typeof(Db4objects.Db4o.Tests.Common.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI1.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI2.AllTests),

@@ -111,12 +111,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual bool IsClass()
 		{
-			return i_yapField == null || i_yapField.GetHandler().GetTypeID() == Const4.TYPE_CLASS;
+			return i_yapField == null || Handlers4.HandlesClass(i_yapField.GetHandler());
 		}
 
 		internal virtual bool IsSimple()
 		{
-			return i_yapField != null && i_yapField.GetHandler().GetTypeID() == Const4.TYPE_SIMPLE;
+			return i_yapField != null && Handlers4.HandlesSimple(i_yapField.GetHandler());
 		}
 
 		internal virtual IComparable4 PrepareComparison(object obj)

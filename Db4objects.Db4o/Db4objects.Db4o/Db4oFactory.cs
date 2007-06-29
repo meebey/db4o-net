@@ -53,12 +53,12 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// returns the global db4o
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// context
 		/// for the running JVM session.
 		/// <br /><br />
 		/// The
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// can be overriden in each
 		/// <see cref="IExtObjectContainer.Configure">ObjectContainer</see>
 		/// .<br /><br />
@@ -75,7 +75,7 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// Creates a fresh
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance.
 		/// </summary>
 		/// <returns>a fresh, independent configuration with all options set to their default values
@@ -89,7 +89,7 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// Creates a clone of the global db4o
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// .
 		/// </summary>
 		/// <returns>
@@ -106,10 +106,10 @@ namespace Db4objects.Db4o
 		/// <see cref="Db4oFactory.OpenClient">Db4oFactory.OpenClient</see>
 		/// , but uses
 		/// the global db4o
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// context.
 		/// opens an
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// client and connects it to the specified named server and port.
 		/// <br /><br />
 		/// The server needs to
@@ -117,14 +117,14 @@ namespace Db4objects.Db4o
 		/// for the specified user and password.
 		/// <br /><br />
 		/// A client
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// can be cast to
-		/// <see cref="IExtClient">ExtClient</see>
+		/// <see cref="IExtClient">IExtClient</see>
 		/// to use extended
-		/// <see cref="IExtObjectContainer">ExtObjectContainer</see>
+		/// <see cref="IExtObjectContainer">IExtObjectContainer</see>
 		/// 
 		/// and
-		/// <see cref="IExtClient">ExtClient</see>
+		/// <see cref="IExtClient">IExtClient</see>
 		/// methods.
 		/// <br /><br />
 		/// </summary>
@@ -134,7 +134,7 @@ namespace Db4objects.Db4o
 		/// <param name="password">the user password</param>
 		/// <returns>
 		/// an open
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// </returns>
 		/// <seealso cref="IObjectServer.GrantAccess">IObjectServer.GrantAccess</seealso>
 		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
@@ -160,7 +160,7 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// opens an
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// client and connects it to the specified named server and port.
 		/// <br /><br />
 		/// The server needs to
@@ -168,20 +168,20 @@ namespace Db4objects.Db4o
 		/// for the specified user and password.
 		/// <br /><br />
 		/// A client
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// can be cast to
-		/// <see cref="IExtClient">ExtClient</see>
+		/// <see cref="IExtClient">IExtClient</see>
 		/// to use extended
-		/// <see cref="IExtObjectContainer">ExtObjectContainer</see>
+		/// <see cref="IExtObjectContainer">IExtObjectContainer</see>
 		/// 
 		/// and
-		/// <see cref="IExtClient">ExtClient</see>
+		/// <see cref="IExtClient">IExtClient</see>
 		/// methods.
 		/// <br /><br />
 		/// </summary>
 		/// <param name="config">
 		/// a custom
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
 		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
 		/// </param>
@@ -191,7 +191,7 @@ namespace Db4objects.Db4o
 		/// <param name="password">the user password</param>
 		/// <returns>
 		/// an open
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// </returns>
 		/// <seealso cref="IObjectServer.GrantAccess">IObjectServer.GrantAccess</seealso>
 		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
@@ -227,14 +227,14 @@ namespace Db4objects.Db4o
 		/// <see cref="Db4oFactory.OpenFile">Db4oFactory.OpenFile</see>
 		/// , but uses
 		/// the global db4o
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// context.
 		/// opens an
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// on the specified database file for local use.
 		/// <br /><br />A database file can only be opened once, subsequent attempts to open
 		/// another
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// against the same file will result in
 		/// a
 		/// <see cref="DatabaseFileLockedException">DatabaseFileLockedException</see>
@@ -247,7 +247,7 @@ namespace Db4objects.Db4o
 		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
 		/// <returns>
 		/// an open
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// </returns>
 		/// <seealso cref="IConfiguration.ReadOnly">IConfiguration.ReadOnly</seealso>
 		/// <seealso cref="IConfiguration.Encrypt">IConfiguration.Encrypt</seealso>
@@ -281,11 +281,11 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// opens an
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// on the specified database file for local use.
 		/// <br /><br />A database file can only be opened once, subsequent attempts to open
 		/// another
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// against the same file will result in
 		/// a
 		/// <see cref="DatabaseFileLockedException">DatabaseFileLockedException</see>
@@ -297,14 +297,14 @@ namespace Db4objects.Db4o
 		/// </summary>
 		/// <param name="config">
 		/// a custom
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
 		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
 		/// </param>
 		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
 		/// <returns>
 		/// an open
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// </returns>
 		/// <seealso cref="IConfiguration.ReadOnly">IConfiguration.ReadOnly</seealso>
 		/// <seealso cref="IConfiguration.Encrypt">IConfiguration.Encrypt</seealso>
@@ -354,10 +354,10 @@ namespace Db4objects.Db4o
 		/// <see cref="Db4oFactory.OpenServer">Db4oFactory.OpenServer</see>
 		/// , but uses
 		/// the global db4o
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// context.
 		/// opens an
-		/// <see cref="IObjectServer">ObjectServer</see>
+		/// <see cref="IObjectServer">IObjectServer</see>
 		/// on the specified database file and port.
 		/// <br /><br />
 		/// If the server does not need to listen on a port because it will only be used
@@ -374,7 +374,7 @@ namespace Db4objects.Db4o
 		/// </param>
 		/// <returns>
 		/// an
-		/// <see cref="IObjectServer">ObjectServer</see>
+		/// <see cref="IObjectServer">IObjectServer</see>
 		/// listening
 		/// on the specified port.
 		/// </returns>
@@ -410,7 +410,7 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// opens an
-		/// <see cref="IObjectServer">ObjectServer</see>
+		/// <see cref="IObjectServer">IObjectServer</see>
 		/// on the specified database file and port.
 		/// <br /><br />
 		/// If the server does not need to listen on a port because it will only be used
@@ -421,7 +421,7 @@ namespace Db4objects.Db4o
 		/// </summary>
 		/// <param name="config">
 		/// a custom
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
 		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
 		/// </param>
@@ -433,7 +433,7 @@ namespace Db4objects.Db4o
 		/// </param>
 		/// <returns>
 		/// an
-		/// <see cref="IObjectServer">ObjectServer</see>
+		/// <see cref="IObjectServer">IObjectServer</see>
 		/// listening
 		/// on the specified port.
 		/// </returns>

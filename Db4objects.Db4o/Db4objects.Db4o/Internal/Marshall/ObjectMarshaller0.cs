@@ -317,7 +317,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			object obj = yo.GetObject();
 			if (yc.IsPrimitive())
 			{
-				((PrimitiveFieldHandler)yc).i_handler.WriteNew(MarshallerFamily.Current(), obj, false
+				((PrimitiveFieldHandler)yc).i_handler.Write(MarshallerFamily.Current(), obj, false
 					, writer, true, false);
 			}
 			else

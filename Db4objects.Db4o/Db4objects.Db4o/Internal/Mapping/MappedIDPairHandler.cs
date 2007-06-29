@@ -3,7 +3,6 @@
 using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.IX;
 using Db4objects.Db4o.Internal.Mapping;
 
 namespace Db4objects.Db4o.Internal.Mapping
@@ -19,11 +18,6 @@ namespace Db4objects.Db4o.Internal.Mapping
 		{
 			_origHandler = new IntHandler(stream);
 			_mappedHandler = new IntHandler(stream);
-		}
-
-		public virtual object ComparableObject(Transaction trans, object indexEntry)
-		{
-			throw new NotImplementedException();
 		}
 
 		public virtual void DefragIndexEntry(ReaderPair readers)
@@ -54,26 +48,6 @@ namespace Db4objects.Db4o.Internal.Mapping
 		public virtual int CompareTo(object obj)
 		{
 			return _origHandler.CompareTo(((MappedIDPair)obj).Orig());
-		}
-
-		public virtual object Current()
-		{
-			return new MappedIDPair(_origHandler.CurrentInt(), _mappedHandler.CurrentInt());
-		}
-
-		public virtual bool IsEqual(object obj)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual bool IsGreater(object obj)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual bool IsSmaller(object obj)
-		{
-			throw new NotImplementedException();
 		}
 
 		public virtual IComparable4 PrepareComparison(object obj)

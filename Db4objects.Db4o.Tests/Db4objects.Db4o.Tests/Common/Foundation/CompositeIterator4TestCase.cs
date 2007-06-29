@@ -23,8 +23,8 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private void AssertIterator(CompositeIterator4 iterator)
 		{
-			IteratorAssert.AreEqual(IntArrays4.NewIterator(new int[] { 1, 2, 3, 4, 5, 6 }), iterator
-				);
+			Iterator4Assert.AreEqual(IntArrays4.NewIterator(new int[] { 1, 2, 3, 4, 5, 6 }), 
+				iterator);
 		}
 
 		private CompositeIterator4 NewIterator()

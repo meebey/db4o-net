@@ -18,10 +18,14 @@ namespace Db4objects.Db4o
 	[System.Serializable]
 	public class Db4oIOException : Db4oException
 	{
+		/// <summary>Constructor.</summary>
+		/// <remarks>Constructor.</remarks>
 		public Db4oIOException() : base()
 		{
 		}
 
+		/// <summary>Constructor allowing to specify the causing exception</summary>
+		/// <param name="cause">exception cause</param>
 		public Db4oIOException(Exception cause) : base(cause.Message, cause)
 		{
 		}

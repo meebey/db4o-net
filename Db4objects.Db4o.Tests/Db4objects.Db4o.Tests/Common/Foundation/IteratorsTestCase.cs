@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private void AssertFilter(string[] expected, string[] actual, IPredicate4 filter)
 		{
-			IteratorAssert.AreEqual(expected, Iterators.Filter(actual, filter));
+			Iterator4Assert.AreEqual(expected, Iterators.Filter(actual, filter));
 		}
 
 		public virtual void TestMap()

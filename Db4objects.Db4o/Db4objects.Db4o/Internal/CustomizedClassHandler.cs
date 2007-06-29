@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -30,6 +31,16 @@ namespace Db4objects.Db4o.Internal
 				return _customHandler.NewInstance();
 			}
 			return base.InstantiateObject(buffer, mf);
+		}
+
+		public override IReflectClass ClassSubstitute()
+		{
+			return _customHandler.ClassSubstitute();
+		}
+
+		public override bool IgnoreAncestor()
+		{
+			return _customHandler.IgnoreAncestor();
 		}
 	}
 }

@@ -109,10 +109,6 @@ namespace Db4objects.Db4o.Internal
 
 		public const int PRIMITIVE = -2000000000;
 
-		public const int TYPE_SIMPLE = 1;
-
-		public const int TYPE_CLASS = 2;
-
 		public const int TYPE_ARRAY = 3;
 
 		public const int TYPE_NARRAY = 4;
@@ -141,7 +137,7 @@ namespace Db4objects.Db4o.Internal
 
 		public const int CLIENT_EMBEDDED_TIMEOUT = 300000;
 
-		public const int CONNECTION_TIMEOUT = Debug.longTimeOuts ? 1000000 : 180000;
+		public const int PING_INTERVAL = Debug.longTimeOuts ? 1000000 : 180000;
 
 		public const int MAXIMUM_BLOCK_SIZE = 70000000;
 

@@ -46,7 +46,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 		}
 
-		private static int FindFreePort()
+		public static int FindFreePort()
 		{
 			try
 			{

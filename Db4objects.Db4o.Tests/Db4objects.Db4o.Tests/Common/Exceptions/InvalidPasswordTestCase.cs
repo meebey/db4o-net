@@ -38,17 +38,15 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly int port;
 		}
 
-		public virtual void TestEmptyPassword()
+		public virtual void TestEmptyUserPassword()
 		{
 			int port = ClientServerFixture().ServerPort();
-			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_28(this, port));
-			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_34(this, port));
-			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_40(this, port));
+			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_27(this, port));
 		}
 
-		private sealed class _ICodeBlock_28 : ICodeBlock
+		private sealed class _ICodeBlock_27 : ICodeBlock
 		{
-			public _ICodeBlock_28(InvalidPasswordTestCase _enclosing, int port)
+			public _ICodeBlock_27(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;
@@ -64,9 +62,15 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly int port;
 		}
 
-		private sealed class _ICodeBlock_34 : ICodeBlock
+		public virtual void TestEmptyPassword()
 		{
-			public _ICodeBlock_34(InvalidPasswordTestCase _enclosing, int port)
+			int port = ClientServerFixture().ServerPort();
+			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_36(this, port));
+		}
+
+		private sealed class _ICodeBlock_36 : ICodeBlock
+		{
+			public _ICodeBlock_36(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;
@@ -82,9 +86,15 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly int port;
 		}
 
-		private sealed class _ICodeBlock_40 : ICodeBlock
+		public virtual void TestNullPassword()
 		{
-			public _ICodeBlock_40(InvalidPasswordTestCase _enclosing, int port)
+			int port = ClientServerFixture().ServerPort();
+			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_45(this, port));
+		}
+
+		private sealed class _ICodeBlock_45 : ICodeBlock
+		{
+			public _ICodeBlock_45(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;

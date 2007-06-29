@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Config
 	/// configuration interface for classes.
 	/// <br /><br /><b>Examples: ../com/db4o/samples/translators/Default.java.</b><br /><br />
 	/// Use the global Configuration object to configure db4o before opening an
-	/// <see cref="IObjectContainer">ObjectContainer</see>
+	/// <see cref="IObjectContainer">IObjectContainer</see>
 	/// .<br /><br />
 	/// <b>Example:</b><br />
 	/// <code>
@@ -179,7 +179,7 @@ namespace Db4objects.Db4o.Config
 		/// and read objects. Instead of letting db4o do all the marshalling
 		/// by detecting the fields on a class and by using reflection, a
 		/// custom
-		/// <see cref="IObjectMarshaller">ObjectMarshaller</see>
+		/// <see cref="IObjectMarshaller">IObjectMarshaller</see>
 		/// allows the
 		/// application developer to write the logic how the fields of an
 		/// object are converted to a byte[] and back.
@@ -190,15 +190,15 @@ namespace Db4objects.Db4o.Config
 		/// - Reflection does not need to be called.<br />
 		/// <br /><br />As an alternative to using a custom marshallers you may
 		/// want to consider writing an
-		/// <see cref="IObjectTranslator">ObjectTranslator</see>
+		/// <see cref="IObjectTranslator">IObjectTranslator</see>
 		/// or your own
-		/// <see cref="IReflector">Reflector</see>
+		/// <see cref="IReflector">IReflector</see>
 		/// .
 		/// <br /><br />The use of an
-		/// <see cref="IObjectMarshaller">ObjectMarshaller</see>
+		/// <see cref="IObjectMarshaller">IObjectMarshaller</see>
 		/// is not
 		/// compatible with the use of an
-		/// <see cref="IObjectTranslator">ObjectTranslator</see>
+		/// <see cref="IObjectTranslator">IObjectTranslator</see>
 		/// .<br /><br />
 		/// </remarks>
 		/// <param name="marshaller">to be used for this class</param>
@@ -236,7 +236,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>
 		/// returns an
-		/// <see cref="IObjectField">ObjectField</see>
+		/// <see cref="IObjectField">IObjectField</see>
 		/// object
 		/// to configure the specified field.
 		/// <br /><br />
@@ -244,7 +244,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="fieldName">the fieldname of the field to be configured.<br /><br /></param>
 		/// <returns>
 		/// an instance of an
-		/// <see cref="IObjectField">ObjectField</see>
+		/// <see cref="IObjectField">IObjectField</see>
 		/// object for configuration.
 		/// </returns>
 		IObjectField ObjectField(string fieldName);
@@ -317,17 +317,17 @@ namespace Db4objects.Db4o.Config
 		/// com.db4o.samples.translators.Default.java#defaultConfiguration().
 		/// <br /><br />Example translators can also be found in this folder.<br /><br />
 		/// <br /><br />The use of an
-		/// <see cref="IObjectTranslator">ObjectTranslator</see>
+		/// <see cref="IObjectTranslator">IObjectTranslator</see>
 		/// is not
 		/// compatible with the use of an
-		/// <see cref="IObjectMarshaller">ObjectMarshaller</see>
+		/// <see cref="IObjectMarshaller">IObjectMarshaller</see>
 		/// .<br /><br />
 		/// </remarks>
 		/// <param name="translator">
 		/// this may be an
-		/// <see cref="IObjectTranslator">ObjectTranslator</see>
+		/// <see cref="IObjectTranslator">IObjectTranslator</see>
 		/// or an
-		/// <see cref="IObjectConstructor">ObjectConstructor</see>
+		/// <see cref="IObjectConstructor">IObjectConstructor</see>
 		/// </param>
 		/// <seealso cref="IObjectTranslator">IObjectTranslator</seealso>
 		/// <seealso cref="IObjectConstructor">IObjectConstructor</seealso>

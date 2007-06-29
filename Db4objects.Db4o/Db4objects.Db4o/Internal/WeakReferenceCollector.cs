@@ -66,6 +66,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			_timer = new SimpleTimer(this, _stream.ConfigImpl().WeakReferenceCollectionInterval
 				(), "db4o WeakReference collector");
+			_timer.Start();
 		}
 
 		internal virtual void StopTimer()

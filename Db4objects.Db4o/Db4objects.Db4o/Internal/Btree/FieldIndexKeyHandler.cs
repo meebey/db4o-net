@@ -4,7 +4,6 @@ using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.IX;
 
 namespace Db4objects.Db4o.Internal.Btree
 {
@@ -19,11 +18,6 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			_parentIdHandler = new IDHandler(stream);
 			_valueHandler = delegate_;
-		}
-
-		public virtual object ComparableObject(Transaction trans, object indexEntry)
-		{
-			throw new NotImplementedException();
 		}
 
 		public virtual int LinkLength()
@@ -82,32 +76,18 @@ namespace Db4objects.Db4o.Internal.Btree
 				throw new ArgumentNullException();
 			}
 			FieldIndexKey composite = (FieldIndexKey)obj;
-			int delegateResult = _valueHandler.CompareTo(composite.Value());
-			if (delegateResult != 0)
+			try
 			{
-				return delegateResult;
+				int delegateResult = _valueHandler.CompareTo(composite.Value());
+				if (delegateResult != 0)
+				{
+					return delegateResult;
+				}
+			}
+			catch (IllegalComparisonException)
+			{
 			}
 			return _parentIdHandler.CompareTo(composite.ParentID());
-		}
-
-		public virtual bool IsEqual(object obj)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual bool IsGreater(object obj)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual bool IsSmaller(object obj)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual object Current()
-		{
-			return new FieldIndexKey(_parentIdHandler.CurrentInt(), _valueHandler.Current());
 		}
 
 		public virtual void DefragIndexEntry(ReaderPair readers)

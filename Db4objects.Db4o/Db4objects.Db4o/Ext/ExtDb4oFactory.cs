@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Ext
 		/// <see cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</see>
 		/// , but uses
 		/// the global db4o
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// context.
 		/// opens an
 		/// <see cref="IObjectContainer">IObjectContainer</see>
@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Ext
 		/// </param>
 		/// <returns>
 		/// an open
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// </returns>
 		/// <seealso cref="MemoryFile">MemoryFile</seealso>
 		public static IObjectContainer OpenMemoryFile(MemoryFile memoryFile)
@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Ext
 		/// </summary>
 		/// <param name="config">
 		/// a custom
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
 		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
 		/// </param>
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Ext
 		/// </param>
 		/// <returns>
 		/// an open
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// </returns>
 		/// <seealso cref="MemoryFile">MemoryFile</seealso>
 		public static IObjectContainer OpenMemoryFile(IConfiguration config, MemoryFile memoryFile

@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Types;
 
@@ -38,14 +39,19 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		internal virtual bool Evaluate(QConObject a_constraint, QCandidate a_candidate, object
-			 a_value)
+		internal virtual bool Evaluate(QConObject constraint, QCandidate candidate, object
+			 obj)
 		{
-			if (a_value == null)
+			IComparable4 comparator = constraint.GetComparator(candidate);
+			if (obj == null)
 			{
-				return a_constraint.GetComparator(a_candidate) is Null;
+				return comparator is Null;
 			}
-			return a_constraint.GetComparator(a_candidate).IsEqual(a_value);
+			if (comparator is ArrayHandler)
+			{
+				return ((ArrayHandler)comparator).IsEqual(obj);
+			}
+			return comparator.CompareTo(obj) == 0;
 		}
 
 		public override bool Equals(object obj)

@@ -37,6 +37,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 		}
 
+		/// <param name="cloneOnlyCtor"></param>
 		protected Hashtable4(IDeepClone cloneOnlyCtor)
 		{
 		}

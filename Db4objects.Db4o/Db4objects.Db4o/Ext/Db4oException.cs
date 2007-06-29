@@ -19,23 +19,40 @@ namespace Db4objects.Db4o.Ext
 	[System.Serializable]
 	public class Db4oException : Exception
 	{
+		/// <summary>Simple constructor</summary>
 		public Db4oException() : this(null, null)
 		{
 		}
 
+		/// <summary>Constructor with an exception message specified</summary>
+		/// <param name="msg">exception message</param>
 		public Db4oException(string msg) : this(msg, null)
 		{
 		}
 
+		/// <summary>Constructor with an exception cause specified</summary>
+		/// <param name="cause">exception cause</param>
 		public Db4oException(Exception cause) : this(null, cause)
 		{
 		}
 
+		/// <summary>
+		/// Constructor with an exception message selected
+		/// from the internal message collection.
+		/// </summary>
+		/// <remarks>
+		/// Constructor with an exception message selected
+		/// from the internal message collection.
+		/// </remarks>
+		/// <param name="messageConstant">internal db4o message number</param>
 		public Db4oException(int messageConstant) : this(Db4objects.Db4o.Internal.Messages
 			.Get(messageConstant))
 		{
 		}
 
+		/// <summary>Constructor with an exception message and cause specified</summary>
+		/// <param name="msg">exception message</param>
+		/// <param name="cause">exception cause</param>
 		public Db4oException(string msg, Exception cause) : base(msg, cause)
 		{
 		}

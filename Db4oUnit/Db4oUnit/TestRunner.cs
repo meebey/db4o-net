@@ -67,7 +67,7 @@ namespace Db4oUnit
 
 		private void Report(Exception x)
 		{
-			TestPlatform.PrintStackTrace(TestPlatform.GetStdOut(), x);
+			TestPlatform.PrintStackTrace(TestPlatform.GetStdErr(), x);
 		}
 
 		private void Report(TestResult result)

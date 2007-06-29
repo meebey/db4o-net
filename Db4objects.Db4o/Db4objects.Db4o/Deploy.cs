@@ -5,6 +5,7 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public sealed class Deploy
 	{
+		/// <summary>turning debug on makes the file format human readable</summary>
 		public const bool debug = false;
 
 		public const bool overwrite = true;
@@ -17,10 +18,6 @@ namespace Db4objects.Db4o
 
 		public const bool debugLong = true;
 
-		public const bool deleteFile = false;
-
 		public const bool csharp = true;
-
-		public const bool debugQueries = false;
 	}
 }

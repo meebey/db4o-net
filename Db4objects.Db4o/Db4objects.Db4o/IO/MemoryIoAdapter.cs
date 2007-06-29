@@ -153,7 +153,8 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>for internal processing only.</summary>
 		/// <remarks>for internal processing only.</remarks>
-		public override IoAdapter Open(string path, bool lockFile, long initialLength)
+		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
+			 readOnly)
 		{
 			Db4objects.Db4o.IO.MemoryIoAdapter mia = (Db4objects.Db4o.IO.MemoryIoAdapter)_memoryFiles
 				.Get(path);

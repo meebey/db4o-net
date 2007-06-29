@@ -23,6 +23,17 @@ namespace Db4objects.Db4o.Config
 
 		private readonly WildcardAlias.WildcardPattern _runtimePattern;
 
+		/// <summary>
+		/// Create a WildcardAlias with two patterns, the
+		/// stored pattern and the pattern that is to be used
+		/// at runtime.
+		/// </summary>
+		/// <remarks>
+		/// Create a WildcardAlias with two patterns, the
+		/// stored pattern and the pattern that is to be used
+		/// at runtime. One single '*' is allowed as a wildcard
+		/// character.
+		/// </remarks>
 		public WildcardAlias(string storedPattern, string runtimePattern)
 		{
 			if (null == storedPattern)

@@ -11,13 +11,13 @@ namespace Db4objects.Db4o.Config
 	/// and read objects. Instead of letting db4o do all the marshalling
 	/// by detecting the fields on a class and by using reflection, a
 	/// custom
-	/// <see cref="IObjectMarshaller">ObjectMarshaller</see>
+	/// <see cref="IObjectMarshaller">IObjectMarshaller</see>
 	/// allows the
 	/// application developer to write the logic how the fields of an
 	/// object are converted to a byte[] and back.
 	/// <br /><br />To implement a custom marshaller, write a class that
 	/// implements the methods of the
-	/// <see cref="IObjectMarshaller">ObjectMarshaller</see>
+	/// <see cref="IObjectMarshaller">IObjectMarshaller</see>
 	/// interface and register it for your persistent class:<br />
 	/// <code>Db4o.configure().objectClass(YourClass.class).marshallWith(yourMarshaller);</code>
 	/// </remarks>

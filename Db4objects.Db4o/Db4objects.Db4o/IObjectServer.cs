@@ -77,13 +77,13 @@ namespace Db4objects.Db4o
 		/// </summary>
 		/// <param name="config">
 		/// a custom
-		/// <see cref="IConfiguration">Configuration</see>
+		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
 		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
 		/// </param>
 		/// <returns>
 		/// an open
-		/// <see cref="IObjectContainer">ObjectContainer</see>
+		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// </returns>
 		IObjectContainer OpenClient(IConfiguration config);
 	}

@@ -44,10 +44,12 @@ namespace Db4objects.Db4o.Ext
 		[System.NonSerialized]
 		private int i_id;
 
+		/// <summary>constructor for persistence</summary>
 		public Db4oDatabase()
 		{
 		}
 
+		/// <summary>constructor for comparison and to store new ones</summary>
 		public Db4oDatabase(byte[] signature, long creationTime)
 		{
 			i_signature = signature;

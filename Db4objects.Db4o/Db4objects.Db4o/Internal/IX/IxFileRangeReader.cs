@@ -272,8 +272,8 @@ namespace Db4objects.Db4o.Internal.IX
 
 		private int Compare(Transaction trans)
 		{
-			return _handler.CompareTo(_handler.ComparableObject(trans, _handler.ReadIndexEntry
-				(_reader)));
+			return _handler.CompareTo(IxDeprecationHelper.ComparableObject(_handler, trans, _handler
+				.ReadIndexEntry(_reader)));
 		}
 
 		private Tree Insert(IxFileRange fileRange, Tree a_new, int a_cursor, int a_cmp)

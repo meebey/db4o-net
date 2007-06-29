@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		{
 			File4.Delete(INCOMPATIBLE_FILE_FORMAT);
 			IoAdapter adapter = new RandomAccessFileAdapter();
-			adapter = adapter.Open(INCOMPATIBLE_FILE_FORMAT, false, 0);
+			adapter = adapter.Open(INCOMPATIBLE_FILE_FORMAT, false, 0, false);
 			adapter.Write(new byte[] { 1, 2, 3 }, 3);
 			adapter.Close();
 		}

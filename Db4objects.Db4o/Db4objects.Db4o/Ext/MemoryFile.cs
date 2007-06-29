@@ -25,10 +25,23 @@ namespace Db4objects.Db4o.Ext
 
 		private int i_incrementSizeBy = INITIAL_SIZE_AND_INC;
 
+		/// <summary>constructs a new MemoryFile without any data.</summary>
+		/// <remarks>constructs a new MemoryFile without any data.</remarks>
+		/// <seealso cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</seealso>
 		public MemoryFile()
 		{
 		}
 
+		/// <summary>
+		/// constructs a MemoryFile to use the byte data from a previous
+		/// MemoryFile.
+		/// </summary>
+		/// <remarks>
+		/// constructs a MemoryFile to use the byte data from a previous
+		/// MemoryFile.
+		/// </remarks>
+		/// <param name="bytes">the raw byte data.</param>
+		/// <seealso cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</seealso>
 		public MemoryFile(byte[] bytes)
 		{
 			i_bytes = bytes;

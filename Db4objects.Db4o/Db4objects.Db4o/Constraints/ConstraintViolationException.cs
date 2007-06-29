@@ -9,6 +9,15 @@ namespace Db4objects.Db4o.Constraints
 	[System.Serializable]
 	public abstract class ConstraintViolationException : Db4oException
 	{
+		/// <summary>
+		/// ConstraintViolationException constructor with a specific
+		/// message.
+		/// </summary>
+		/// <remarks>
+		/// ConstraintViolationException constructor with a specific
+		/// message.
+		/// </remarks>
+		/// <param name="msg">exception message</param>
 		public ConstraintViolationException(string msg) : base(msg)
 		{
 		}

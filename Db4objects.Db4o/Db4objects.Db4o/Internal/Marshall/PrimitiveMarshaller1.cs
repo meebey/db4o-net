@@ -20,8 +20,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			if (obj != null)
 			{
 				ITypeHandler4 handler = yapClassPrimitive.i_handler;
-				handler.WriteNew(_family, obj, topLevel, writer, withIndirection, restoreLinkOffset
-					);
+				handler.Write(_family, obj, topLevel, writer, withIndirection, restoreLinkOffset);
 			}
 			return 0;
 		}

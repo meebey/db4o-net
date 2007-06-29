@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				trans.SetPointer(pointer);
 				StatefulBuffer writer = new StatefulBuffer(trans, pointer);
 				writer.WriteInt(yapClassPrimitive.GetID());
-				handler.WriteNew(_family, obj, false, writer, true, false);
+				handler.Write(_family, obj, false, writer, true, false);
 				writer.WriteEnd();
 				stream.WriteNew(yapClassPrimitive, writer);
 			}

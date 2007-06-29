@@ -7,19 +7,36 @@ using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
-	internal class ShutDownRunnable : Collection4, IRunnable
+	internal class ShutDownRunnable : IRunnable
 	{
+		private Collection4 _containers = new Collection4();
+
 		public volatile bool dontRemove = false;
+
+		public virtual void Ensure(PartialObjectContainer container)
+		{
+			_containers.Ensure(container);
+		}
+
+		public virtual void Remove(PartialObjectContainer container)
+		{
+			_containers.Remove(container);
+		}
 
 		public virtual void Run()
 		{
 			dontRemove = true;
-			Collection4 copy = new Collection4(this);
+			Collection4 copy = new Collection4(_containers);
 			IEnumerator i = copy.GetEnumerator();
 			while (i.MoveNext())
 			{
 				((ObjectContainerBase)i.Current).ShutdownHook();
 			}
+		}
+
+		public virtual int Size()
+		{
+			return _containers.Size();
 		}
 	}
 }

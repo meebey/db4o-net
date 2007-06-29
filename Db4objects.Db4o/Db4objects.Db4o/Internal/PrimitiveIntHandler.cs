@@ -31,25 +31,5 @@ namespace Db4objects.Db4o.Internal
 		{
 			return Val(obj) - _currentInt;
 		}
-
-		public override object Current()
-		{
-			return _currentInteger;
-		}
-
-		public override bool IsEqual(object obj)
-		{
-			return Val(obj) == _currentInt;
-		}
-
-		public override bool IsGreater(object obj)
-		{
-			return Val(obj) > _currentInt;
-		}
-
-		public override bool IsSmaller(object obj)
-		{
-			return Val(obj) < _currentInt;
-		}
 	}
 }

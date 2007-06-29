@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Nativequery;
 using Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Nativequery.Expr.Cmp;
 using Db4objects.Db4o.Nativequery.Optimization;
@@ -20,10 +21,14 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 
 			private IConstraint _constraint;
 
-			internal SODAQueryVisitor(IQuery query, object predicate)
+			private INativeClassFactory _classSource;
+
+			internal SODAQueryVisitor(IQuery query, object predicate, INativeClassFactory classSource
+				)
 			{
 				_query = query;
 				_predicate = predicate;
+				_classSource = classSource;
 			}
 
 			public virtual void Visit(AndExpression expression)
@@ -57,7 +62,7 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 					subQuery = subQuery.Descend((string)fieldNameIterator.Current);
 				}
 				ComparisonQueryGeneratingVisitor visitor = new ComparisonQueryGeneratingVisitor(_predicate
-					);
+					, _classSource);
 				expression.Right().Accept(visitor);
 				_constraint = subQuery.Constrain(visitor.Value());
 				ComparisonOperator op = expression.Op();
@@ -119,9 +124,9 @@ namespace Db4objects.Db4o.Nativequery.Optimization
 		}
 
 		public virtual void OptimizeQuery(IExpression expr, IQuery query, object predicate
-			)
+			, INativeClassFactory classSource)
 		{
-			expr.Accept(new SODAQueryBuilder.SODAQueryVisitor(query, predicate));
+			expr.Accept(new SODAQueryBuilder.SODAQueryVisitor(query, predicate, classSource));
 		}
 	}
 }

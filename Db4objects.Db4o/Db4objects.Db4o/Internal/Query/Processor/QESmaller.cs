@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Query.Processor;
 
 namespace Db4objects.Db4o.Internal.Query.Processor
@@ -7,14 +9,19 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// <exclude></exclude>
 	public class QESmaller : QEAbstract
 	{
-		internal override bool Evaluate(QConObject a_constraint, QCandidate a_candidate, 
-			object a_value)
+		internal override bool Evaluate(QConObject constraint, QCandidate candidate, object
+			 obj)
 		{
-			if (a_value == null)
+			if (obj == null)
 			{
 				return false;
 			}
-			return a_constraint.GetComparator(a_candidate).IsSmaller(a_value);
+			IComparable4 comparator = constraint.GetComparator(candidate);
+			if (comparator is ArrayHandler)
+			{
+				return ((ArrayHandler)comparator).IsSmaller(obj);
+			}
+			return comparator.CompareTo(obj) < 0;
 		}
 
 		public override void IndexBitMap(bool[] bits)

@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Ext
 {
 	/// <summary>
 	/// extended client functionality for the
-	/// <see cref="IExtObjectContainer">ExtObjectContainer</see>
+	/// <see cref="IExtObjectContainer">IExtObjectContainer</see>
 	/// interface.
 	/// <br /><br />Both
 	/// <see cref="Db4oFactory.OpenClient">Db4o.openClient()</see>

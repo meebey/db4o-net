@@ -22,15 +22,21 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 					);
 				return;
 			}
+			if (!System.IO.File.Exists(SourceFile()))
+			{
+				Sharpen.Runtime.Err.WriteLine("Test source file " + SourceFile() + " not available. Skipping test case..."
+					);
+				return;
+			}
 			Db4oFactory.Configure().AllowVersionUpdates(false);
 			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(COR234TestCase)
 				));
-			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_32(this));
+			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_37(this));
 		}
 
-		private sealed class _ICodeBlock_32 : ICodeBlock
+		private sealed class _ICodeBlock_37 : ICodeBlock
 		{
-			public _ICodeBlock_32(COR234TestCase _enclosing)
+			public _ICodeBlock_37(COR234TestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -46,9 +52,13 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 		protected virtual string OldDatabaseFilePath()
 		{
 			string oldFile = IOServices.BuildTempPath("old_db.yap");
-			File4.Copy(WorkspaceServices.WorkspaceTestFilePath("db4oVersions/db4o_3.0.3"), oldFile
-				);
+			File4.Copy(SourceFile(), oldFile);
 			return oldFile;
+		}
+
+		private string SourceFile()
+		{
+			return WorkspaceServices.WorkspaceTestFilePath("db4oVersions/db4o_3.0.3");
 		}
 	}
 }

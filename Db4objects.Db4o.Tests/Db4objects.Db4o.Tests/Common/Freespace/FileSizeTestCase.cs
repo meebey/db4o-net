@@ -165,7 +165,6 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 				runnable.Run();
 			}
 			Assert.AreEqual(originalFileSize, FileSize());
-			Sharpen.Runtime.Out.WriteLine(FileSize());
 		}
 	}
 }
