@@ -3,6 +3,11 @@ namespace Db4oUnit
 {
 	public class TestException : System.Exception
 	{
+        public TestException(string message, System.Exception reason)
+            : base(message, reason)
+        {
+        }
+
 		public TestException(System.Exception reason) : base(reason.Message, reason)
 		{
 		}
