@@ -78,12 +78,19 @@ namespace Sharpen.IO
 
         public void Write(byte[] bytes)
         {
-            this.Write(bytes, 0, bytes.Length);
+            Write(bytes, 0, bytes.Length);
         }
 
         public void Write(byte[] bytes, int offset, int length)
         {
-            _stream.Write(bytes, offset, length);
+            try
+            {
+                _stream.Write(bytes, offset, length);
+            }
+            catch (System.NotSupportedException e)
+            {
+                throw new Db4oIOException(e);
+            }
         }
     }
 }
