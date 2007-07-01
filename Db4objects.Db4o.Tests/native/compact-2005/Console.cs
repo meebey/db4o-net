@@ -21,6 +21,9 @@ namespace Db4objects.Db4o.Tests
         private TextBox _console;
         private System.Windows.Forms.MainMenu mainMenu1;
 
+        private static int failureCount = 0;
+        private static bool runningOnStart = false;
+
         public Console()
         {
             //
@@ -85,6 +88,7 @@ namespace Db4objects.Db4o.Tests
             this._console.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this._console.Size = new System.Drawing.Size(240, 268);
             this._console.TabIndex = 0;
+            this._console.GotFocus += new System.EventHandler(this._console_GotFocus);
             // 
             // Console
             // 
@@ -103,10 +107,16 @@ namespace Db4objects.Db4o.Tests
         /// The main entry point for the application.
         /// </summary>
 
-        static void Main()
+        static int Main(string[] args)
         {
+            if ((args.Length > 0) && (args[0] == "run"))
+            {
+                runningOnStart = true;
+            }
+
             Db4oUnit.TestPlatform.Out = new WindowWriter();
             Application.Run(new Console());
+            return failureCount;
         }
 
         static void CheckStatus(Object state)
@@ -145,6 +155,16 @@ namespace Db4objects.Db4o.Tests
         private void _menuItem3_Click(object sender, System.EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void _console_GotFocus(object sender, EventArgs e)
+        {
+            if (runningOnStart)
+            {
+                _console.Text = "";
+                failureCount = AllTests.Main(null);
+                Application.Exit();
+            }
         }
     }
 }
