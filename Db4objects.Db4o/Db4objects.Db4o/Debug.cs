@@ -30,8 +30,6 @@ namespace Db4objects.Db4o
 
 		public const bool weakReferences = true;
 
-		public const bool fakeServer = false;
-
 		public const bool messages = false;
 
 		public const bool nio = true;

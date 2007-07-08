@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Reflect.Custom;
@@ -80,14 +81,19 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			_reflector = reflector;
 		}
 
-		public virtual IReflectClass ReflectClass(Type type)
+		public virtual IReflectClass ForFieldType(Type type)
 		{
-			return _reflector.ForClass(type);
+			return _reflector.ForFieldType(type);
 		}
 
 		public override string ToString()
 		{
 			return "CustomClassRepository(classes: " + _classes.Size() + ")";
+		}
+
+		public virtual IEnumerator Iterator()
+		{
+			return _classes.Values();
 		}
 	}
 }

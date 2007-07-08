@@ -1,6 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal.CS;
@@ -46,10 +46,11 @@ namespace Db4objects.Db4o.Internal.CS
 					{
 						i_socket.Close();
 					}
-					catch (IOException)
+					catch (Db4oIOException)
 					{
 					}
 				}
+				_messageQueue.Stop();
 				return true;
 			}
 		}
@@ -71,10 +72,9 @@ namespace Db4objects.Db4o.Internal.CS
 					}
 					_messageQueue.Add(message);
 				}
-				catch (IOException)
+				catch (Db4oIOException)
 				{
 					Close();
-					_messageQueue.Add(Msg.ERROR);
 				}
 			}
 		}

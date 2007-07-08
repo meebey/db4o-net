@@ -1,11 +1,13 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Reflect.Custom;
 
 namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
@@ -37,27 +39,40 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			}
 		}
 
-		public virtual void CloseContext(PersistenceContext context, bool purge)
-		{
-			LogMethodCall("closeContext", context, purge);
-			CloseContext(context);
-			if (purge)
-			{
-				Purge(context.Url());
-			}
-		}
-
 		public virtual void CreateEntryClass(PersistenceContext context, string className
 			, string[] fieldNames, string[] fieldTypes)
 		{
 			LogMethodCall("createEntryClass", context, className);
-			Repository(context).DefineClass(className, fieldNames, fieldTypes);
-			UpdateRepository(context);
+			CustomClassRepository repository = Repository(context);
+			repository.DefineClass(className, fieldNames, fieldTypes);
+			UpdateMetadata(context, repository);
 		}
 
 		public virtual void CreateIndex(PersistenceContext context, string className, string
 			 fieldName)
 		{
+			MarkIndexedField(context, className, fieldName, true);
+		}
+
+		public virtual void DropIndex(PersistenceContext context, string className, string
+			 fieldName)
+		{
+			MarkIndexedField(context, className, fieldName, false);
+		}
+
+		private void MarkIndexedField(PersistenceContext context, string className, string
+			 fieldName, bool indexed)
+		{
+			CustomField field = CustomClass(context, className).CustomField(fieldName);
+			field.Indexed(indexed);
+			UpdateMetadata(context, field);
+			Restart(context);
+		}
+
+		private void Restart(PersistenceContext context)
+		{
+			CloseContext(context);
+			InitContext(context);
 		}
 
 		public virtual int Delete(PersistenceContext context, string className, object uid
@@ -70,20 +85,36 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		{
 		}
 
-		public virtual void DropIndex(PersistenceContext context, string className, string
-			 fieldName)
-		{
-		}
-
 		public virtual void InitContext(PersistenceContext context)
 		{
 			LogMethodCall("initContext", context);
 			IObjectContainer metadata = OpenMetadata(context.Url());
-			CustomClassRepository repository = InitializeClassRepository(metadata);
-			CustomReflector reflector = new CustomReflector(repository);
-			IObjectContainer data = OpenData(reflector, context.Url());
-			context.SetProviderContext(new Db4oPersistenceProvider.MyContext(repository, metadata
-				, data));
+			try
+			{
+				CustomClassRepository repository = InitializeClassRepository(metadata);
+				CustomReflector reflector = new CustomReflector(repository);
+				IObjectContainer data = OpenData(reflector, context.Url());
+				context.SetProviderContext(new Db4oPersistenceProvider.MyContext(repository, metadata
+					, data));
+			}
+			catch (Exception e)
+			{
+				Sharpen.Runtime.PrintStackTrace(e);
+				CloseIgnoringExceptions(metadata);
+				throw new Exception(e.Message);
+			}
+		}
+
+		private void CloseIgnoringExceptions(IObjectContainer container)
+		{
+			try
+			{
+				container.Close();
+			}
+			catch (Exception e)
+			{
+				Sharpen.Runtime.PrintStackTrace(e);
+			}
 		}
 
 		public virtual void Insert(PersistenceContext context, PersistentEntry entry)
@@ -102,12 +133,28 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public virtual void Update(PersistenceContext context, PersistentEntry entry)
 		{
+			PersistentEntry existing = SelectByUid(context, entry.className, entry.uid);
+			existing.fieldValues = entry.fieldValues;
+			DataContainer(context).Set(existing);
 		}
 
-		private void AddClassConstraint(PersistenceContext context, IQuery query, PersistentEntryTemplate
-			 template)
+		private PersistentEntry SelectByUid(PersistenceContext context, string className, 
+			object uid)
 		{
-			query.Constrain(Repository(context).ForName(template.className));
+			IQuery query = NewQuery(context, className);
+			query.Descend("uid").Constrain(uid);
+			return (PersistentEntry)query.Execute().Next();
+		}
+
+		private void AddClassConstraint(PersistenceContext context, IQuery query, string 
+			className)
+		{
+			query.Constrain(CustomClass(context, className));
+		}
+
+		private CustomClass CustomClass(PersistenceContext context, string className)
+		{
+			return Repository(context).ForName(className);
 		}
 
 		private IConstraint AddFieldConstraint(IQuery query, PersistentEntryTemplate template
@@ -123,7 +170,11 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			{
 				return;
 			}
-			AddFieldConstraint(query, template, 0);
+			IConstraint c = AddFieldConstraint(query, template, 0);
+			for (int i = 1; i < template.fieldNames.Length; ++i)
+			{
+				c = c.And(AddFieldConstraint(query, template, i));
+			}
 		}
 
 		private PersistentEntry Clone(PersistentEntry entry)
@@ -131,14 +182,14 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			return new PersistentEntry(entry.className, entry.uid, entry.fieldValues);
 		}
 
-		private void CloseContext(PersistenceContext context)
+		public virtual void CloseContext(PersistenceContext context)
 		{
 			LogMethodCall("closeContext", context);
 			Db4oPersistenceProvider.MyContext customContext = My(context);
 			if (null != customContext)
 			{
-				customContext.metadata.Close();
-				customContext.data.Close();
+				CloseIgnoringExceptions(customContext.metadata);
+				CloseIgnoringExceptions(customContext.data);
 				context.SetProviderContext(null);
 			}
 		}
@@ -148,14 +199,36 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			return ((Db4oPersistenceProvider.MyContext)context.GetProviderContext());
 		}
 
-		private IConfiguration DataConfiguration(IReflector reflector)
+		private IConfiguration DataConfiguration(CustomReflector reflector)
 		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.ReflectWith(reflector);
+			ConfigureCustomClasses(config, reflector);
 			return config;
 		}
 
-		private IObjectContainer DataContainer(PersistenceContext context)
+		private void ConfigureCustomClasses(IConfiguration config, CustomReflector reflector
+			)
+		{
+			IEnumerator classes = reflector.CustomClasses();
+			while (classes.MoveNext())
+			{
+				CustomClass cc = (CustomClass)classes.Current;
+				ConfigureFields(config, cc);
+			}
+		}
+
+		private void ConfigureFields(IConfiguration config, CustomClass cc)
+		{
+			IEnumerator fields = cc.CustomFields();
+			while (fields.MoveNext())
+			{
+				CustomField field = (CustomField)fields.Current;
+				config.ObjectClass(cc).ObjectField(field.GetName()).Indexed(field.Indexed());
+			}
+		}
+
+		public virtual IObjectContainer DataContainer(PersistenceContext context)
 		{
 			return My(context).data;
 		}
@@ -180,9 +253,18 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		private IConfiguration MetaConfiguration()
 		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
-			config.ObjectClass(typeof(CustomClassRepository)).CascadeOnUpdate(true);
-			config.ObjectClass(typeof(CustomClassRepository)).CascadeOnActivate(true);
+			config.ExceptionsOnNotStorable(true);
+			config.ReflectWith(Platform4.ReflectorForType(typeof(CustomClassRepository)));
+			Cascade(config, typeof(CustomClassRepository));
+			Cascade(config, typeof(Hashtable4));
+			Cascade(config, typeof(CustomClass));
 			return config;
+		}
+
+		private void Cascade(IConfiguration config, Type klass)
+		{
+			config.ObjectClass(klass).CascadeOnUpdate(true);
+			config.ObjectClass(klass).CascadeOnActivate(true);
 		}
 
 		private IObjectContainer MetadataContainer(PersistenceContext context)
@@ -195,7 +277,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			return fname + ".metadata";
 		}
 
-		private IObjectContainer OpenData(IReflector reflector, string fname)
+		private IObjectContainer OpenData(CustomReflector reflector, string fname)
 		{
 			return Db4oFactory.OpenFile(DataConfiguration(reflector), fname);
 		}
@@ -205,7 +287,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			return Db4oFactory.OpenFile(MetaConfiguration(), MetadataFile(fname));
 		}
 
-		private void Purge(string url)
+		public virtual void Purge(string url)
 		{
 			File4.Delete(url);
 			File4.Delete(MetadataFile(url));
@@ -224,9 +306,15 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		private IQuery QueryFromTemplate(PersistenceContext context, PersistentEntryTemplate
 			 template)
 		{
-			IQuery query = DataContainer(context).Query();
-			AddClassConstraint(context, query, template);
+			IQuery query = NewQuery(context, template.className);
 			AddFieldConstraints(query, template);
+			return query;
+		}
+
+		private IQuery NewQuery(PersistenceContext context, string className)
+		{
+			IQuery query = DataContainer(context).Query();
+			AddClassConstraint(context, query, className);
 			return query;
 		}
 
@@ -241,9 +329,9 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			container.Commit();
 		}
 
-		private void UpdateRepository(PersistenceContext context)
+		private void UpdateMetadata(PersistenceContext context, object metadata)
 		{
-			Store(MetadataContainer(context), Repository(context));
+			Store(MetadataContainer(context), metadata);
 		}
 
 		private void Log(string message)

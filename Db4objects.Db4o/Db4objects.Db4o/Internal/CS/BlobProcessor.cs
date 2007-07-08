@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Internal.CS
 				}
 				while (msg != null)
 				{
-					msg.Write(stream, socket);
+					msg.Write(socket);
 					msg.ProcessClient(socket);
 					lock (stream.blobLock)
 					{
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Internal.CS
 						if (msg == null)
 						{
 							terminated = true;
-							Msg.CLOSE.Write(stream, socket);
+							Msg.CLOSE.Write(socket);
 							try
 							{
 								socket.Close();

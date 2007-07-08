@@ -49,17 +49,16 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			try
 			{
-				ObjectContainerBase stream = Stream();
 				BlobImpl blobImpl = this.ServerGetBlobImpl();
 				if (blobImpl != null)
 				{
 					blobImpl.SetTrans(Transaction());
 					Sharpen.IO.File file = blobImpl.ServerFile(null, true);
 					ISocket4 sock = ServerMessageDispatcher().Socket();
-					Msg.OK.Write(stream, sock);
+					Msg.OK.Write(sock);
 					FileOutputStream fout = new FileOutputStream(file);
 					Copy(sock, fout, blobImpl.GetLength(), false);
-					Msg.OK.Write(stream, sock);
+					Msg.OK.Write(sock);
 				}
 			}
 			catch (Exception)

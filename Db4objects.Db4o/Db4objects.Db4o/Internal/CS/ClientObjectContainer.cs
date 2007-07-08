@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private BlockingQueue _messageQueue = new BlockingQueue();
 
-		private string password;
+		private string _password;
 
 		internal int[] _prefetchedIDs;
 
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private bool _singleThreaded;
 
-		private string userName;
+		private string _userName;
 
 		private Db4oDatabase i_db;
 
@@ -55,31 +55,13 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private int _batchedQueueLength = Const4.INT_LENGTH;
 
-		private string _fakeServerFile;
-
 		private bool _login;
 
-		/// <summary>
-		/// Single-Threaded Client-Server Debug Mode, this constructor is only for
-		/// fake server
-		/// </summary>
-		public ClientObjectContainer(string fakeServerFile) : base(Db4oFactory.CloneConfiguration
-			(), null)
-		{
-			throw new InvalidOperationException();
-			_fakeServerFile = fakeServerFile;
-			Open();
-		}
-
 		public ClientObjectContainer(IConfiguration config, ISocket4 socket, string user, 
-			string password_, bool login) : base(config, null)
+			string password, bool login) : base(config, null)
 		{
-			if (password_ == null)
-			{
-				throw new InvalidPasswordException();
-			}
-			userName = user;
-			password = password_;
+			_userName = user;
+			_password = password;
 			_login = login;
 			SetAndConfigSocket(socket);
 			Open();
@@ -100,7 +82,7 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			if (!_singleThreaded)
 			{
-				StartDispatcherThread(i_socket, userName);
+				StartDispatcherThread(i_socket, _userName);
 			}
 			LogMsg(36, ToString());
 			ReadThis();
@@ -202,13 +184,13 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				MsgD message = Msg.SWITCH_TO_FILE.GetWriterForString(SystemTransaction(), switchedToFile
 					);
-				message.Write(this, sock);
+				message.Write(sock);
 				if (!(Msg.OK.Equals(Msg.ReadMessage(this, SystemTransaction(), sock))))
 				{
 					throw new IOException(Db4objects.Db4o.Internal.Messages.Get(42));
 				}
 			}
-			Msg.USE_TRANSACTION.GetWriterForInt(i_trans, serverThreadID).Write(this, sock);
+			Msg.USE_TRANSACTION.GetWriterForInt(i_trans, serverThreadID).Write(sock);
 			return sock;
 		}
 
@@ -466,29 +448,22 @@ namespace Db4objects.Db4o.Internal.CS
 		private void LoginToServer(ISocket4 a_socket)
 		{
 			UnicodeStringIO stringWriter = new UnicodeStringIO();
-			int length = stringWriter.Length(userName) + stringWriter.Length(password);
+			int length = stringWriter.Length(_userName) + stringWriter.Length(_password);
 			MsgD message = Msg.LOGIN.GetWriterForLength(SystemTransaction(), length);
-			message.WriteString(userName);
-			message.WriteString(password);
-			message.Write(this, a_socket);
-			try
+			message.WriteString(_userName);
+			message.WriteString(_password);
+			message.Write(a_socket);
+			Msg msg = Msg.ReadMessage(this, SystemTransaction(), a_socket);
+			if (!Msg.LOGIN_OK.Equals(msg))
 			{
-				Msg msg = Msg.ReadMessage(this, SystemTransaction(), a_socket);
-				if (!Msg.LOGIN_OK.Equals(msg))
-				{
-					throw new InvalidPasswordException();
-				}
-				Db4objects.Db4o.Internal.Buffer payLoad = msg.PayLoad();
-				_blockSize = payLoad.ReadInt();
-				int doEncrypt = payLoad.ReadInt();
-				if (doEncrypt == 0)
-				{
-					i_handlers.OldEncryptionOff();
-				}
+				throw new InvalidPasswordException();
 			}
-			catch (IOException e)
+			Db4objects.Db4o.Internal.Buffer payLoad = msg.PayLoad();
+			_blockSize = payLoad.ReadInt();
+			int doEncrypt = payLoad.ReadInt();
+			if (doEncrypt == 0)
 			{
-				throw new Db4oIOException(e);
+				i_handlers.OldEncryptionOff();
 			}
 		}
 
@@ -727,7 +702,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override string ToString()
 		{
-			return "Client Connection " + userName;
+			return "Client Connection " + _userName;
 		}
 
 		public override void Shutdown()
@@ -779,7 +754,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void WriteImpl(Msg msg)
 		{
-			msg.Write(this, i_socket);
+			msg.Write(i_socket);
 		}
 
 		public sealed override void WriteNew(ClassMetadata a_yapClass, StatefulBuffer aWriter
@@ -985,7 +960,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			MsgD msg = Msg.CLASS_METADATA_ID_FOR_NAME.GetWriterForString(SystemTransaction(), 
 				name);
-			msg.Write(this, i_socket);
+			msg.Write(i_socket);
 			MsgD response = (MsgD)ExpectedResponse(Msg.CLASS_ID);
 			return response.ReadInt();
 		}

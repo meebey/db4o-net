@@ -4,10 +4,8 @@ using System;
 using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
-using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS
 {
@@ -19,9 +17,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private readonly LocalObjectContainer _mainContainer;
 
-		private readonly object _lock;
-
-		public ClientTransactionPool(LocalObjectContainer mainContainer, object Lock)
+		public ClientTransactionPool(LocalObjectContainer mainContainer)
 		{
 			ClientTransactionPool.ContainerCount mainEntry = new ClientTransactionPool.ContainerCount
 				(mainContainer, 1);
@@ -29,7 +25,6 @@ namespace Db4objects.Db4o.Internal.CS
 			_fileName2Container = new Hashtable4();
 			_fileName2Container.Put(mainContainer.FileName(), mainEntry);
 			_mainContainer = mainContainer;
-			_lock = Lock;
 		}
 
 		public virtual Transaction AcquireMain()
@@ -39,7 +34,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public virtual Transaction Acquire(string fileName)
 		{
-			lock (_lock)
+			lock (_mainContainer.Lock())
 			{
 				ClientTransactionPool.ContainerCount entry = (ClientTransactionPool.ContainerCount
 					)_fileName2Container.Get(fileName);
@@ -61,7 +56,7 @@ namespace Db4objects.Db4o.Internal.CS
 		public virtual void Release(Transaction transaction, bool rollbackOnClose)
 		{
 			transaction.Close(rollbackOnClose);
-			lock (_lock)
+			lock (_mainContainer.Lock())
 			{
 				ClientTransactionPool.ContainerCount entry = (ClientTransactionPool.ContainerCount
 					)_transaction2Container.Get(transaction);
@@ -77,12 +72,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public virtual void Close()
 		{
-			lock (_lock)
+			lock (_mainContainer.Lock())
 			{
 				IEnumerator entryIter = _fileName2Container.Iterator();
 				while (entryIter.MoveNext())
 				{
-					HashtableObjectEntry hashEntry = (HashtableObjectEntry)entryIter.Current;
+					IEntry4 hashEntry = (IEntry4)entryIter.Current;
 					((ClientTransactionPool.ContainerCount)hashEntry.Value()).Close();
 				}
 				_transaction2Container = null;
@@ -98,16 +93,6 @@ namespace Db4objects.Db4o.Internal.CS
 		public virtual bool IsClosed()
 		{
 			return _mainContainer == null || _mainContainer.IsClosed();
-		}
-
-		public virtual object StreamLock()
-		{
-			return _mainContainer.Lock();
-		}
-
-		public virtual void Write(Msg message, ISocket4 socket)
-		{
-			message.Write(_mainContainer, socket);
 		}
 
 		private class ContainerCount

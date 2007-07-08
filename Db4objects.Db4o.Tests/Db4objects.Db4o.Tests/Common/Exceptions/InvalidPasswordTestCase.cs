@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 	{
 		public static void Main(string[] args)
 		{
-			new InvalidPasswordTestCase().RunClientServer();
+			new InvalidPasswordTestCase().RunAll();
 		}
 
 		public virtual void TestInvalidPassword()
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly int port;
 		}
 
-		public virtual void TestEmptyPassword()
+		public virtual void TestEmptyUserNullPassword()
 		{
 			int port = ClientServerFixture().ServerPort();
 			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_36(this, port));

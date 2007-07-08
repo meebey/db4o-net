@@ -16,6 +16,16 @@ namespace Db4objects.Db4o.Reflect
 
 		string GetName();
 
+		/// <summary>
+		/// The ReflectClass returned by this method should have been
+		/// provided by the parent reflector.
+		/// </summary>
+		/// <remarks>
+		/// The ReflectClass returned by this method should have been
+		/// provided by the parent reflector.
+		/// </remarks>
+		/// <returns>the ReflectClass representing the field type as provided by the parent reflector
+		/// 	</returns>
 		IReflectClass GetFieldType();
 
 		bool IsPublic();
@@ -28,6 +38,16 @@ namespace Db4objects.Db4o.Reflect
 
 		void SetAccessible();
 
+		/// <summary>
+		/// The ReflectClass returned by this method should have been
+		/// provided by the parent reflector.
+		/// </summary>
+		/// <remarks>
+		/// The ReflectClass returned by this method should have been
+		/// provided by the parent reflector.
+		/// </remarks>
+		/// <returns>the ReflectClass representing the index type as provided by the parent reflector
+		/// 	</returns>
 		IReflectClass IndexType();
 
 		object IndexEntry(object orig);

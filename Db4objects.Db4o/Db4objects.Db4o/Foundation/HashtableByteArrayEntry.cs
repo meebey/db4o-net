@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 		}
 
-		private HashtableByteArrayEntry() : base()
+		public HashtableByteArrayEntry() : base()
 		{
 		}
 

@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public virtual IReflectClass GetFieldType()
 		{
-			return _repository.ReflectClass(typeof(object));
+			return _repository.ForFieldType(typeof(object));
 		}
 
 		public virtual string GetName()

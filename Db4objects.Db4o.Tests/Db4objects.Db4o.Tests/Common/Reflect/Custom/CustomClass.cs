@@ -1,6 +1,8 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Reflect.Custom;
 
@@ -31,7 +33,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			IReflectField[] fields = new IReflectField[fieldNames.Length + 1];
 			for (int i = 0; i < fieldNames.Length; ++i)
 			{
-				fields[i] = new CustomField(_repository, i, fieldNames[i], fieldTypes[i]);
+				fields[i] = new Db4objects.Db4o.Tests.Common.Reflect.Custom.CustomField(_repository
+					, i, fieldNames[i], fieldTypes[i]);
 			}
 			fields[fields.Length - 1] = new CustomUidField(_repository);
 			return fields;
@@ -45,6 +48,13 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		public virtual IReflectConstructor[] GetDeclaredConstructors()
 		{
 			throw new NotImplementedException();
+		}
+
+		public virtual Db4objects.Db4o.Tests.Common.Reflect.Custom.CustomField CustomField
+			(string name)
+		{
+			return (Db4objects.Db4o.Tests.Common.Reflect.Custom.CustomField)GetDeclaredField(
+				name);
 		}
 
 		public virtual IReflectField GetDeclaredField(string name)
@@ -128,7 +138,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public virtual object NewInstance()
 		{
-			return new PersistentEntry(_name, null, new object[_fields.Length]);
+			return new PersistentEntry(_name, null, new object[_fields.Length - 1]);
 		}
 
 		public virtual IReflector Reflector()
@@ -150,6 +160,26 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			)
 		{
 			throw new NotImplementedException();
+		}
+
+		public virtual IEnumerator CustomFields()
+		{
+			return Iterators.Filter(_fields, new _IPredicate4_129(this));
+		}
+
+		private sealed class _IPredicate4_129 : IPredicate4
+		{
+			public _IPredicate4_129(CustomClass _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public bool Match(object candidate)
+			{
+				return candidate is Db4objects.Db4o.Tests.Common.Reflect.Custom.CustomField;
+			}
+
+			private readonly CustomClass _enclosing;
 		}
 	}
 }

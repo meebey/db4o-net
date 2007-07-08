@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
-using System.IO;
-using Db4objects.Db4o.Ext;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Sharpen;
 
@@ -54,19 +52,19 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		internal virtual void Close()
 		{
-			i_closed = true;
-			i_lock.Run(new _ISafeClosure4_43(this));
+			i_lock.Run(new _ISafeClosure4_39(this));
 		}
 
-		private sealed class _ISafeClosure4_43 : ISafeClosure4
+		private sealed class _ISafeClosure4_39 : ISafeClosure4
 		{
-			public _ISafeClosure4_43(BlockingByteChannel _enclosing)
+			public _ISafeClosure4_39(BlockingByteChannel _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public object Run()
 			{
+				this._enclosing.i_closed = true;
 				this._enclosing.i_lock.Awake();
 				return null;
 			}
@@ -104,24 +102,13 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		public virtual int Read()
 		{
-			try
-			{
-				int ret = (int)i_lock.Run(new _IClosure4_77(this));
-				return ret;
-			}
-			catch (IOException iex)
-			{
-				throw;
-			}
-			catch (Exception e)
-			{
-				throw new Db4oUnexpectedException(e);
-			}
+			int ret = (int)i_lock.Run(new _ISafeClosure4_73(this));
+			return ret;
 		}
 
-		private sealed class _IClosure4_77 : IClosure4
+		private sealed class _ISafeClosure4_73 : ISafeClosure4
 		{
-			public _IClosure4_77(BlockingByteChannel _enclosing)
+			public _ISafeClosure4_73(BlockingByteChannel _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -139,24 +126,14 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		public virtual int Read(byte[] a_bytes, int a_offset, int a_length)
 		{
-			try
-			{
-				int ret = (int)i_lock.Run(new _IClosure4_95(this, a_length, a_bytes, a_offset));
-				return ret;
-			}
-			catch (IOException iex)
-			{
-				throw;
-			}
-			catch (Exception e)
-			{
-				throw new Db4oUnexpectedException(e);
-			}
+			int ret = (int)i_lock.Run(new _ISafeClosure4_87(this, a_length, a_bytes, a_offset
+				));
+			return ret;
 		}
 
-		private sealed class _IClosure4_95 : IClosure4
+		private sealed class _ISafeClosure4_87 : ISafeClosure4
 		{
-			public _IClosure4_95(BlockingByteChannel _enclosing, int a_length, byte[] a_bytes
+			public _ISafeClosure4_87(BlockingByteChannel _enclosing, int a_length, byte[] a_bytes
 				, int a_offset)
 			{
 				this._enclosing = _enclosing;
@@ -200,14 +177,11 @@ namespace Db4objects.Db4o.Foundation.Network
 			long beginTime = Runtime.CurrentTimeMillis();
 			while (Available() == 0)
 			{
-				if (i_closed)
-				{
-					throw new IOException(Db4objects.Db4o.Internal.Messages.Get(35));
-				}
+				CheckClosed();
 				i_lock.Snooze(i_timeout);
 				if (IsTimeout(beginTime))
 				{
-					throw new IOException();
+					throw new Db4oIOException();
 				}
 			}
 		}
@@ -224,13 +198,12 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
-			CheckClosed();
-			i_lock.Run(new _ISafeClosure4_144(this, len, bytes, off));
+			i_lock.Run(new _ISafeClosure4_129(this, len, bytes, off));
 		}
 
-		private sealed class _ISafeClosure4_144 : ISafeClosure4
+		private sealed class _ISafeClosure4_129 : ISafeClosure4
 		{
-			public _ISafeClosure4_144(BlockingByteChannel _enclosing, int len, byte[] bytes, 
+			public _ISafeClosure4_129(BlockingByteChannel _enclosing, int len, byte[] bytes, 
 				int off)
 			{
 				this._enclosing = _enclosing;
@@ -241,6 +214,7 @@ namespace Db4objects.Db4o.Foundation.Network
 
 			public object Run()
 			{
+				this._enclosing.CheckClosed();
 				this._enclosing.Makefit(len);
 				System.Array.Copy(bytes, off, this._enclosing.i_cache, this._enclosing.i_writeOffset
 					, len);
@@ -260,13 +234,12 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		public virtual void Write(int i)
 		{
-			CheckClosed();
-			i_lock.Run(new _ISafeClosure4_157(this, i));
+			i_lock.Run(new _ISafeClosure4_142(this, i));
 		}
 
-		private sealed class _ISafeClosure4_157 : ISafeClosure4
+		private sealed class _ISafeClosure4_142 : ISafeClosure4
 		{
-			public _ISafeClosure4_157(BlockingByteChannel _enclosing, int i)
+			public _ISafeClosure4_142(BlockingByteChannel _enclosing, int i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;
@@ -274,6 +247,7 @@ namespace Db4objects.Db4o.Foundation.Network
 
 			public object Run()
 			{
+				this._enclosing.CheckClosed();
 				this._enclosing.Makefit(1);
 				this._enclosing.i_cache[this._enclosing.i_writeOffset++] = (byte)i;
 				this._enclosing.i_lock.Awake();
@@ -289,7 +263,7 @@ namespace Db4objects.Db4o.Foundation.Network
 		{
 			if (i_closed)
 			{
-				throw new IOException();
+				throw new Db4oIOException();
 			}
 		}
 	}

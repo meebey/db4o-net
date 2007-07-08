@@ -6,15 +6,27 @@ using Db4objects.Db4o.Tests.Common.Reflect.Custom;
 
 namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 {
+	/// <summary>
+	/// One important thing to remember when implementing ReflectField
+	/// is that getFieldType and getIndexType must always return ReflectClass
+	/// instances given by the parent reflector.
+	/// </summary>
+	/// <remarks>
+	/// One important thing to remember when implementing ReflectField
+	/// is that getFieldType and getIndexType must always return ReflectClass
+	/// instances given by the parent reflector.
+	/// </remarks>
 	public class CustomField : IReflectField
 	{
 		public CustomClassRepository _repository;
 
-		public int _index;
-
 		public string _name;
 
 		public Type _type;
+
+		public int _index;
+
+		public bool _indexed;
 
 		public CustomField()
 		{
@@ -43,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		public virtual IReflectClass GetFieldType()
 		{
 			LogMethodCall("getFieldType");
-			return _repository.ReflectClass(_type);
+			return _repository.ForFieldType(_type);
 		}
 
 		public virtual string GetName()
@@ -54,13 +66,13 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		public virtual object IndexEntry(object orig)
 		{
 			LogMethodCall("indexEntry", orig);
-			throw new NotImplementedException();
+			return orig;
 		}
 
 		public virtual IReflectClass IndexType()
 		{
 			LogMethodCall("indexType");
-			throw new NotImplementedException();
+			return GetFieldType();
 		}
 
 		public virtual bool IsPublic()
@@ -86,6 +98,16 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public virtual void SetAccessible()
 		{
+		}
+
+		public virtual void Indexed(bool value)
+		{
+			_indexed = value;
+		}
+
+		public virtual bool Indexed()
+		{
+			return _indexed;
 		}
 
 		public override string ToString()

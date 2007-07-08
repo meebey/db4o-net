@@ -4,9 +4,10 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
 {
+	/// <exclude></exclude>
 	public class HashtableObjectEntry : HashtableIntEntry
 	{
-		private object _objectKey;
+		public object _objectKey;
 
 		internal HashtableObjectEntry(int a_hash, object a_key, object a_object) : base(a_hash
 			, a_object)
@@ -20,7 +21,7 @@ namespace Db4objects.Db4o.Foundation
 			_objectKey = a_key;
 		}
 
-		protected HashtableObjectEntry() : base()
+		public HashtableObjectEntry() : base()
 		{
 		}
 

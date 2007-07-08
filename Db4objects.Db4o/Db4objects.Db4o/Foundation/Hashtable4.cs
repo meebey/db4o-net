@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
 
@@ -10,15 +11,15 @@ namespace Db4objects.Db4o.Foundation
 	{
 		private const float FILL = 0.5F;
 
-		private int _tableSize;
+		public int _tableSize;
 
-		private int _mask;
+		public int _mask;
 
-		private int _maximumSize;
+		public int _maximumSize;
 
-		private int _size;
+		public int _size;
 
-		private HashtableIntEntry[] _table;
+		public HashtableIntEntry[] _table;
 
 		public Hashtable4(int size)
 		{
@@ -98,9 +99,65 @@ namespace Db4objects.Db4o.Foundation
 			return GetFromObjectEntry(key.GetHashCode(), key);
 		}
 
+		/// <summary>
+		/// Iterates through all the
+		/// <see cref="IEntry4">entries</see>
+		/// .
+		/// </summary>
+		/// <returns>
+		/// 
+		/// <see cref="IEntry4">IEntry4</see>
+		/// iterator
+		/// </returns>
 		public virtual IEnumerator Iterator()
 		{
 			return new HashtableIterator(_table);
+		}
+
+		/// <summary>Iterates through all the keys.</summary>
+		/// <remarks>Iterates through all the keys.</remarks>
+		/// <returns>key iterator</returns>
+		public virtual IEnumerator Keys()
+		{
+			return Iterators.Map(Iterator(), new _IFunction4_102(this));
+		}
+
+		private sealed class _IFunction4_102 : IFunction4
+		{
+			public _IFunction4_102(Hashtable4 _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Apply(object current)
+			{
+				return ((IEntry4)current).Key();
+			}
+
+			private readonly Hashtable4 _enclosing;
+		}
+
+		/// <summary>Iterates through all the values.</summary>
+		/// <remarks>Iterates through all the values.</remarks>
+		/// <returns>value iterator</returns>
+		public virtual IEnumerator Values()
+		{
+			return Iterators.Map(Iterator(), new _IFunction4_115(this));
+		}
+
+		private sealed class _IFunction4_115 : IFunction4
+		{
+			public _IFunction4_115(Hashtable4 _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Apply(object current)
+			{
+				return ((IEntry4)current).Value();
+			}
+
+			private readonly Hashtable4 _enclosing;
 		}
 
 		public virtual bool ContainsKey(object key)
@@ -124,6 +181,10 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Put(object key, object value)
 		{
+			if (null == key)
+			{
+				throw new ArgumentNullException();
+			}
 			PutEntry(new HashtableObjectEntry(key, value));
 		}
 

@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			config.Io(new MemoryIoAdapter());
 			LocalObjectContainer db = (LocalObjectContainer)Db4oFactory.OpenFile(config, SwitchingFilesFromClientUtil
 				.MAINFILE_NAME);
-			ClientTransactionPool pool = new ClientTransactionPool(db, new object());
+			ClientTransactionPool pool = new ClientTransactionPool(db);
 			try
 			{
 				ClientTransactionHandle handleA = new ClientTransactionHandle(pool);

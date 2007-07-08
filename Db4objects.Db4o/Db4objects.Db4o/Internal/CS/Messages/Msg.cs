@@ -1,7 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
@@ -206,11 +206,6 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return _msgID;
 		}
 
-		internal virtual void FakePayLoad(Db4objects.Db4o.Internal.Transaction a_trans)
-		{
-			_trans = a_trans;
-		}
-
 		/// <summary>
 		/// dummy method to allow clean override handling
 		/// without casting
@@ -275,7 +270,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				int read = sock.Read(buffer._buffer, offset, length);
 				if (read < 0)
 				{
-					throw new IOException();
+					throw new Db4oIOException();
 				}
 				offset += read;
 				length -= read;
@@ -339,12 +334,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			Write(ID_LIST.GetWriterForInt(Transaction(), response));
 		}
 
-		public void Write(ObjectContainerBase stream, ISocket4 sock)
+		public void Write(ISocket4 sock)
 		{
-			if (null == stream)
-			{
-				throw new ArgumentNullException();
-			}
 			if (null == sock)
 			{
 				throw new ArgumentNullException();

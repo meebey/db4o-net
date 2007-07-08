@@ -17,7 +17,9 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 	{
 		void InitContext(PersistenceContext context);
 
-		void CloseContext(PersistenceContext context, bool purge);
+		void CloseContext(PersistenceContext context);
+
+		void Purge(string url);
 
 		void CreateEntryClass(PersistenceContext context, string className, string[] fieldNames
 			, string[] fieldTypes);

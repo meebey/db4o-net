@@ -1,7 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
@@ -40,9 +40,15 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private bool _isClosed;
 
+		private readonly object _lock = new object();
+
+		private readonly object _mainLock;
+
 		internal ServerMessageDispatcherImpl(ObjectServerImpl server, ClientTransactionHandle
-			 transactionHandle, ISocket4 socket, int threadID, bool loggedIn)
+			 transactionHandle, ISocket4 socket, int threadID, bool loggedIn, object mainLock
+			)
 		{
+			_mainLock = mainLock;
 			_transactionHandle = transactionHandle;
 			SetDaemon(true);
 			i_loggedin = loggedIn;
@@ -57,19 +63,22 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public bool Close()
 		{
-			lock (this)
+			lock (_mainLock)
 			{
-				if (!IsMessageDispatcherAlive())
+				lock (_lock)
 				{
+					if (!IsMessageDispatcherAlive())
+					{
+						return true;
+					}
+					_transactionHandle.ReleaseTransaction();
+					SendCloseMessage();
+					_transactionHandle.Close();
+					CloseSocket();
+					RemoveFromServer();
+					_isClosed = true;
 					return true;
 				}
-				_transactionHandle.ReleaseTransaction();
-				SendCloseMessage();
-				_transactionHandle.Close();
-				CloseSocket();
-				RemoveFromServer();
-				_isClosed = true;
-				return true;
 			}
 		}
 
@@ -108,7 +117,7 @@ namespace Db4objects.Db4o.Internal.CS
 					i_socket.Close();
 				}
 			}
-			catch (IOException e)
+			catch (Db4oIOException e)
 			{
 			}
 		}
@@ -137,7 +146,7 @@ namespace Db4objects.Db4o.Internal.CS
 						break;
 					}
 				}
-				catch (IOException e)
+				catch (Db4oIOException e)
 				{
 					if (_transactionHandle.IsClosed())
 					{
@@ -198,7 +207,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public void SwitchToFile(MSwitchToFile message)
 		{
-			lock (_transactionHandle.Lock())
+			lock (_mainLock)
 			{
 				string fileName = message.ReadString();
 				try
@@ -217,7 +226,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public void SwitchToMainFile()
 		{
-			lock (_transactionHandle.Lock())
+			lock (_mainLock)
 			{
 				_transactionHandle.ReleaseTransaction();
 				Write(Msg.OK);
@@ -233,16 +242,16 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public void Write(Msg msg)
 		{
-			lock (this)
+			lock (_lock)
 			{
-				_transactionHandle.Write(msg, i_socket);
+				msg.Write(i_socket);
 				UpdateLastActiveTime();
 			}
 		}
 
 		public void WriteIfAlive(Msg msg)
 		{
-			lock (this)
+			lock (_lock)
 			{
 				if (IsMessageDispatcherAlive())
 				{
@@ -305,7 +314,8 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public bool IsPingTimeout()
 		{
-			return (Runtime.CurrentTimeMillis() - _lastActiveTime > i_config.PingInterval());
+			long elapsed = Runtime.CurrentTimeMillis() - _lastActiveTime;
+			return i_loggedin && ((elapsed > i_config.PingInterval()));
 		}
 	}
 }

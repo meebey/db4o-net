@@ -1,5 +1,6 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
+using Db4objects.Db4o.Tests.Common.Reflect.Custom;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests
@@ -17,7 +18,6 @@ namespace Db4objects.Db4o.Tests
 		{
 			return new Type[]
 				{	
-//                    typeof(Db4objects.Db4o.Tests.Common.CS.SwitchingFilesFromClientTestCase),
 					typeof(Db4objects.Db4o.Tests.Common.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI1.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI2.AllTests),

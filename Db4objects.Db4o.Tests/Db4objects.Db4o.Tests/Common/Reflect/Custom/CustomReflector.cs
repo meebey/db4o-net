@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Reflect.Custom;
@@ -15,6 +16,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			);
 
 		private readonly CustomClassRepository _classRepository;
+
+		private IReflector _parent;
 
 		public CustomReflector(CustomClassRepository classRepository)
 		{
@@ -90,6 +93,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		public virtual void SetParent(IReflector reflector)
 		{
 			LogMethodCall("setParent", reflector);
+			_parent = reflector;
 			_delegate.SetParent(reflector);
 		}
 
@@ -113,6 +117,16 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		private void LogMethodCall(string methodName, object arg)
 		{
 			Logger.LogMethodCall(this, methodName, arg);
+		}
+
+		public virtual IReflectClass ForFieldType(Type type)
+		{
+			return _parent.ForClass(type);
+		}
+
+		public virtual IEnumerator CustomClasses()
+		{
+			return _classRepository.Iterator();
 		}
 	}
 }

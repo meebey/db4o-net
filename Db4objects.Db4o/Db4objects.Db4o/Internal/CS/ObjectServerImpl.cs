@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Internal.CS
 		public ObjectServerImpl(LocalObjectContainer container, int port)
 		{
 			_container = container;
-			_transactionPool = new ClientTransactionPool(container, new object());
+			_transactionPool = new ClientTransactionPool(container);
 			_port = port;
 			_config = _container.ConfigImpl();
 			_name = "db4o ServerSocket FILE: " + container.ToString() + "  PORT:" + _port;
@@ -355,7 +355,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				IServerMessageDispatcher messageDispatcher = new ServerMessageDispatcherImpl(this
 					, new ClientTransactionHandle(_transactionPool), serverFake, NewThreadId(), true
-					);
+					, _container.Lock());
 				AddServerMessageDispatcher(messageDispatcher);
 				messageDispatcher.StartDispatcher();
 				return clientFake;
@@ -429,7 +429,7 @@ namespace Db4objects.Db4o.Internal.CS
 				{
 					IServerMessageDispatcher messageDispatcher = new ServerMessageDispatcherImpl(this
 						, new ClientTransactionHandle(_transactionPool), _serverSocket.Accept(), NewThreadId
-						(), false);
+						(), false, _container.Lock());
 					AddServerMessageDispatcher(messageDispatcher);
 					messageDispatcher.StartDispatcher();
 				}

@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -211,15 +210,12 @@ namespace Db4objects.Db4o
 		public static IObjectContainer OpenClient(IConfiguration config, string hostName, 
 			int port, string user, string password)
 		{
-			try
+			if (user == null || password == null)
 			{
-				NetworkSocket networkSocket = new NetworkSocket(hostName, port);
-				return new ClientObjectContainer(config, networkSocket, user, password, true);
+				throw new InvalidPasswordException();
 			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
+			NetworkSocket networkSocket = new NetworkSocket(hostName, port);
+			return new ClientObjectContainer(config, networkSocket, user, password, true);
 		}
 
 		/// <summary>

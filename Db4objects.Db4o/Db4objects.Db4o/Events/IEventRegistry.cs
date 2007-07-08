@@ -21,34 +21,15 @@ namespace Db4objects.Db4o.Events
 		 args);
 
 	/// <summary>
-	/// Provides a way to register event handlers for specific
-	/// <see cref="IObjectContainer">IObjectContainer</see>
-	/// events.<br />
-	/// EventRegistry methods represent events available for registering callbacks.
-	/// EventRegistry instance can be obtained from
-	/// <see cref="EventRegistryFactory">EventRegistryFactory</see>
-	/// .
-	/// <code>EventRegistry registry =  EventRegistryFactory.forObjectContainer(container);</code>
-	/// A new callback can be registered for an event with the following code:
-	/// <code>registry.created().addListener(new EventListener4(){...});</code>
+	/// This was overlaid here.
+	/// 
+	/// Including its multiple lines.
 	/// </summary>
-	/// <seealso cref="EventRegistryFactory">EventRegistryFactory</seealso>
-	/// <seealso cref="IEventListener4">IEventListener4</seealso>
 	public interface IEventRegistry
 	{
 		/// <summary>
-		/// This event is fired upon a query start and can be used to gather
-		/// query statistics.
+		/// A query was started.
 		/// </summary>
-		/// <remarks>
-		/// This event is fired upon a query start and can be used to gather
-		/// query statistics.
-		/// The query object is available from
-		/// <see cref="QueryEventArgs">QueryEventArgs</see>
-		/// event parameter.<br />
-		/// </remarks>
-		/// <returns>event</returns>
-		/// <seealso cref="QueryEventArgs">QueryEventArgs</seealso>
 		event Db4objects.Db4o.Events.QueryEventHandler QueryStarted;
 
 		/// <summary>

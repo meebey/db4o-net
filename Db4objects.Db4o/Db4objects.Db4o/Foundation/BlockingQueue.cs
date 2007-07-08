@@ -12,14 +12,16 @@ namespace Db4objects.Db4o.Foundation
 
 		protected Lock4 _lock = new Lock4();
 
+		protected bool _stopped;
+
 		public virtual void Add(object obj)
 		{
-			_lock.Run(new _ISafeClosure4_14(this, obj));
+			_lock.Run(new _ISafeClosure4_16(this, obj));
 		}
 
-		private sealed class _ISafeClosure4_14 : ISafeClosure4
+		private sealed class _ISafeClosure4_16 : ISafeClosure4
 		{
-			public _ISafeClosure4_14(BlockingQueue _enclosing, object obj)
+			public _ISafeClosure4_16(BlockingQueue _enclosing, object obj)
 			{
 				this._enclosing = _enclosing;
 				this.obj = obj;
@@ -39,13 +41,13 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual bool HasNext()
 		{
-			bool hasNext = (bool)_lock.Run(new _ISafeClosure4_24(this));
+			bool hasNext = (bool)_lock.Run(new _ISafeClosure4_26(this));
 			return hasNext;
 		}
 
-		private sealed class _ISafeClosure4_24 : ISafeClosure4
+		private sealed class _ISafeClosure4_26 : ISafeClosure4
 		{
-			public _ISafeClosure4_24(BlockingQueue _enclosing)
+			public _ISafeClosure4_26(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -60,12 +62,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual IEnumerator Iterator()
 		{
-			return (IEnumerator)_lock.Run(new _ISafeClosure4_33(this));
+			return (IEnumerator)_lock.Run(new _ISafeClosure4_35(this));
 		}
 
-		private sealed class _ISafeClosure4_33 : ISafeClosure4
+		private sealed class _ISafeClosure4_35 : ISafeClosure4
 		{
-			public _ISafeClosure4_33(BlockingQueue _enclosing)
+			public _ISafeClosure4_35(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -80,12 +82,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual object Next()
 		{
-			return _lock.Run(new _ISafeClosure4_41(this));
+			return _lock.Run(new _ISafeClosure4_43(this));
 		}
 
-		private sealed class _ISafeClosure4_41 : ISafeClosure4
+		private sealed class _ISafeClosure4_43 : ISafeClosure4
 		{
-			public _ISafeClosure4_41(BlockingQueue _enclosing)
+			public _ISafeClosure4_43(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -95,6 +97,10 @@ namespace Db4objects.Db4o.Foundation
 				if (this._enclosing._queue.HasNext())
 				{
 					return this._enclosing._queue.Next();
+				}
+				if (this._enclosing._stopped)
+				{
+					throw new BlockingQueueStoppedException();
 				}
 				this._enclosing._lock.Snooze(int.MaxValue);
 				object obj = this._enclosing._queue.Next();
@@ -110,18 +116,19 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Stop()
 		{
-			_lock.Run(new _ISafeClosure4_57(this));
+			_lock.Run(new _ISafeClosure4_62(this));
 		}
 
-		private sealed class _ISafeClosure4_57 : ISafeClosure4
+		private sealed class _ISafeClosure4_62 : ISafeClosure4
 		{
-			public _ISafeClosure4_57(BlockingQueue _enclosing)
+			public _ISafeClosure4_62(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public object Run()
 			{
+				this._enclosing._stopped = true;
 				this._enclosing._lock.Awake();
 				return null;
 			}

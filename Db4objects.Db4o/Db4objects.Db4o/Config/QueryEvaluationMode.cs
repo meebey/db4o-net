@@ -19,8 +19,11 @@ namespace Db4objects.Db4o.Config
 	/// </remarks>
 	public class QueryEvaluationMode
 	{
-		private QueryEvaluationMode()
+		private readonly string _id;
+
+		private QueryEvaluationMode(string id)
 		{
+			_id = id;
 		}
 
 		/// <summary>Constant for immediate query evaluation.</summary>
@@ -33,7 +36,7 @@ namespace Db4objects.Db4o.Config
 		/// </b>
 		/// </remarks>
 		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode IMMEDIATE = new 
-			Db4objects.Db4o.Config.QueryEvaluationMode();
+			Db4objects.Db4o.Config.QueryEvaluationMode("IMMEDIATE");
 
 		/// <summary>Constant for snapshot query evaluation.</summary>
 		/// <remarks>
@@ -50,7 +53,7 @@ namespace Db4objects.Db4o.Config
 		/// </b>
 		/// </remarks>
 		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode SNAPSHOT = new 
-			Db4objects.Db4o.Config.QueryEvaluationMode();
+			Db4objects.Db4o.Config.QueryEvaluationMode("SNAPSHOT");
 
 		/// <summary>Constant for lazy query evaluation.</summary>
 		/// <remarks>
@@ -66,7 +69,7 @@ namespace Db4objects.Db4o.Config
 		/// </b>
 		/// </remarks>
 		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode LAZY = new Db4objects.Db4o.Config.QueryEvaluationMode
-			();
+			("LAZY");
 
 		private static readonly Db4objects.Db4o.Config.QueryEvaluationMode[] MODES = new 
 			Db4objects.Db4o.Config.QueryEvaluationMode[] { Db4objects.Db4o.Config.QueryEvaluationMode
@@ -92,6 +95,11 @@ namespace Db4objects.Db4o.Config
 		public static Db4objects.Db4o.Config.QueryEvaluationMode FromInt(int i)
 		{
 			return MODES[i];
+		}
+
+		public override string ToString()
+		{
+			return _id;
 		}
 	}
 }

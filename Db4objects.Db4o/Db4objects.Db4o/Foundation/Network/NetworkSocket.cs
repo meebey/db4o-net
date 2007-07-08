@@ -1,7 +1,9 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.IO;
 using System.Net.Sockets;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Sharpen.IO;
@@ -18,13 +20,26 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		private string _hostName;
 
-		public NetworkSocket(string hostName, int port) : this(new Sharpen.Net.Socket(hostName
-			, port))
+		public NetworkSocket(string hostName, int port)
 		{
+			try
+			{
+				Sharpen.Net.Socket socket = new Sharpen.Net.Socket(hostName, port);
+				InitSocket(socket);
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 			_hostName = hostName;
 		}
 
 		public NetworkSocket(Sharpen.Net.Socket socket)
+		{
+			InitSocket(socket);
+		}
+
+		private void InitSocket(Sharpen.Net.Socket socket)
 		{
 			_socket = socket;
 			_out = _socket.GetOutputStream();
@@ -33,12 +48,26 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		public virtual void Close()
 		{
-			_socket.Close();
+			try
+			{
+				_socket.Close();
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 
 		public virtual void Flush()
 		{
-			_out.Flush();
+			try
+			{
+				_out.Flush();
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 
 		public virtual bool IsConnected()
@@ -48,12 +77,26 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		public virtual int Read()
 		{
-			return _in.Read();
+			try
+			{
+				return _in.Read();
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 
 		public virtual int Read(byte[] a_bytes, int a_offset, int a_length)
 		{
-			return _in.Read(a_bytes, a_offset, a_length);
+			try
+			{
+				return _in.Read(a_bytes, a_offset, a_length);
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 
 		public virtual void SetSoTimeout(int timeout)
@@ -70,24 +113,45 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		public virtual void Write(byte[] bytes)
 		{
-			_out.Write(bytes);
+			try
+			{
+				_out.Write(bytes);
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
-			_out.Write(bytes, off, len);
+			try
+			{
+				_out.Write(bytes, off, len);
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 
 		public virtual void Write(int i)
 		{
-			_out.Write(i);
+			try
+			{
+				_out.Write(i);
+			}
+			catch (IOException e)
+			{
+				throw new Db4oIOException(e);
+			}
 		}
 
 		public virtual ISocket4 OpenParalellSocket()
 		{
 			if (_hostName == null)
 			{
-				throw new IOException("Cannot open parallel socket - invalid state.");
+				throw new InvalidOperationException();
 			}
 			return new Db4objects.Db4o.Foundation.Network.NetworkSocket(_hostName, _socket.GetPort
 				());

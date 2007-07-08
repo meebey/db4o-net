@@ -4,13 +4,14 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
 {
+	/// <exclude></exclude>
 	public class HashtableIntEntry : IEntry4, IDeepClone
 	{
-		internal int _key;
+		public int _key;
 
-		internal object _object;
+		public object _object;
 
-		internal Db4objects.Db4o.Foundation.HashtableIntEntry _next;
+		public Db4objects.Db4o.Foundation.HashtableIntEntry _next;
 
 		internal HashtableIntEntry(int a_hash, object a_object)
 		{
@@ -18,7 +19,7 @@ namespace Db4objects.Db4o.Foundation
 			_object = a_object;
 		}
 
-		protected HashtableIntEntry()
+		public HashtableIntEntry()
 		{
 		}
 

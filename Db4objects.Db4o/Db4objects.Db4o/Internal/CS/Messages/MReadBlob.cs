@@ -48,7 +48,6 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public virtual bool ProcessAtServer()
 		{
-			ObjectContainerBase stream = Stream();
 			try
 			{
 				BlobImpl blobImpl = this.ServerGetBlobImpl();
@@ -58,11 +57,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					Sharpen.IO.File file = blobImpl.ServerFile(null, false);
 					int length = (int)file.Length();
 					ISocket4 sock = ServerMessageDispatcher().Socket();
-					Msg.LENGTH.GetWriterForInt(Transaction(), length).Write(stream, sock);
+					Msg.LENGTH.GetWriterForInt(Transaction(), length).Write(sock);
 					FileInputStream fin = new FileInputStream(file);
 					Copy(fin, sock, false);
 					sock.Flush();
-					Msg.OK.Write(stream, sock);
+					Msg.OK.Write(sock);
 				}
 			}
 			catch (Exception)

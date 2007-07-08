@@ -481,10 +481,13 @@ namespace Db4objects.Db4o.Internal
 			ClassCollection().Read(SystemTransaction());
 			Converter.Convert(new ConversionStage.ClassCollectionAvailableStage(this));
 			ReadHeaderVariablePart();
-			_freespaceManager = AbstractFreespaceManager.CreateNew(this, _systemData.FreespaceSystem
-				());
-			_freespaceManager.Read(_systemData.FreespaceID());
-			_freespaceManager.Start(_systemData.FreespaceAddress());
+			if (!i_config.IsReadOnly())
+			{
+				_freespaceManager = AbstractFreespaceManager.CreateNew(this, _systemData.FreespaceSystem
+					());
+				_freespaceManager.Read(_systemData.FreespaceID());
+				_freespaceManager.Start(_systemData.FreespaceAddress());
+			}
 			if (NeedFreespaceMigration())
 			{
 				MigrateFreespace();
@@ -580,15 +583,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_542(this, semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_544(this, semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_542 : IVisitor4
+		private sealed class _IVisitor4_544 : IVisitor4
 		{
-			public _IVisitor4_542(LocalObjectContainer _enclosing, Hashtable4 semaphores)
+			public _IVisitor4_544(LocalObjectContainer _enclosing, Hashtable4 semaphores)
 			{
 				this._enclosing = _enclosing;
 				this.semaphores = semaphores;
@@ -832,13 +835,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_748(this, ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_750(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_748 : IVisitor4
+		private sealed class _IVisitor4_750 : IVisitor4
 		{
-			public _IVisitor4_748(LocalObjectContainer _enclosing, IntArrayList ids)
+			public _IVisitor4_750(LocalObjectContainer _enclosing, IntArrayList ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;
