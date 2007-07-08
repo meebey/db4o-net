@@ -1,5 +1,6 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
+using System.IO;
 using System.Net;
 using Sharpen.IO;
 using NativeSocket=System.Net.Sockets.Socket;
@@ -15,11 +16,24 @@ namespace Sharpen.Net
 		public Socket(string hostName, int port)
 		{
 			NativeSocket socket = new NativeSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			socket.Connect(new IPEndPoint(Dns.Resolve(hostName).AddressList[0], port));
+			socket.Connect(new IPEndPoint(Resolve(hostName), port));
 			Initialize(socket);
 		}
 
-		public Socket(NativeSocket socket)
+	    private static IPAddress Resolve(string hostName)
+	    {
+	        IPHostEntry found = Dns.Resolve(hostName);
+	        foreach (IPAddress address in found.AddressList)
+	        {
+                if (address.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return address;
+                }
+	        }
+	        throw new IOException("couldn't find suitable address for name '" + hostName + "'");
+	    }
+
+	    public Socket(NativeSocket socket)
 		{
 			Initialize(socket);
 		}
