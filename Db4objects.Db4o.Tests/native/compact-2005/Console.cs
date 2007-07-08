@@ -114,9 +114,16 @@ namespace Db4objects.Db4o.Tests
                 runningOnStart = true;
             }
 
-            Db4oUnit.TestPlatform.Out = new WindowWriter();
+            SetUpDb4oUnit();
             Application.Run(new Console());
             return failureCount;
+        }
+
+        private static void SetUpDb4oUnit()
+        {
+            WindowWriter writer = new WindowWriter();
+            Db4oUnit.TestPlatform.Out = writer;
+            Db4oUnit.TestPlatform.Error = writer;
         }
 
         static void CheckStatus(Object state)
