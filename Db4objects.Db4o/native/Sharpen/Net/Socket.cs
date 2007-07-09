@@ -1,5 +1,6 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
+using System.Collections;
 using System.IO;
 using System.Net;
 using Sharpen.IO;
@@ -15,8 +16,9 @@ namespace Sharpen.Net
 
 		public Socket(string hostName, int port)
 		{
-			NativeSocket socket = new NativeSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			socket.Connect(new IPEndPoint(Resolve(hostName), port));
+			IPAddress targetAddress = Resolve(hostName);
+			NativeSocket socket = new NativeSocket(targetAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+			socket.Connect(new IPEndPoint(targetAddress, port));
 			Initialize(socket);
 		}
 
@@ -57,8 +59,45 @@ namespace Sharpen.Net
 		{
 			base.Initialize(socket);
 			NetworkStream stream = new NetworkStream(_delegate);
-			_in = new InputStream(stream);
+			_in = new SocketInputStream(stream, this);
 			_out = new OutputStream(stream);
 		}
 	}
+
+    internal class SocketInputStream : InputStream
+    {
+    	private Socket _socket;
+
+    	public SocketInputStream(NetworkStream stream, Socket socket) : base(stream)
+        {
+    		_socket = socket;
+        }
+
+		protected override void BeforeRead()
+		{
+			if (!IsTimeoutConfigured())
+			{
+				return;
+			}
+			if (!PollRead(GetMicroSecondsTimeout()))
+			{
+				throw new IOException("timeout");
+			}
+		}
+
+    	private bool IsTimeoutConfigured()
+    	{
+    		return _socket.SoTimeout != 0;
+    	}
+
+    	private bool PollRead(int timeout)
+    	{
+			return _socket.UnderlyingSocket.Poll(timeout, SelectMode.SelectRead);
+    	}
+
+    	private int GetMicroSecondsTimeout()
+    	{
+    		return _socket.SoTimeout*1000;
+    	}
+    }
 }

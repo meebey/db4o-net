@@ -8,15 +8,26 @@ namespace Sharpen.Net
 	{
 		protected NativeSocket _delegate;
 
-		protected virtual void Initialize(NativeSocket socket)
+	    private int _soTimeout = 0;
+
+        public int SoTimeout
+        {
+            get { return _soTimeout; }
+        }
+
+		public NativeSocket UnderlyingSocket
+		{
+			get { return _delegate;  }
+		}
+
+	    protected virtual void Initialize(NativeSocket socket)
 		{
 			_delegate = socket;
 		}
 
 		public void SetSoTimeout(int timeout)
 		{
-			_delegate.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, timeout);
-			_delegate.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, timeout);
+			_soTimeout = timeout;
 		}
 
 		public void Close()
@@ -28,6 +39,5 @@ namespace Sharpen.Net
         {
             return _delegate.Connected;
         }
-
 	}
 }

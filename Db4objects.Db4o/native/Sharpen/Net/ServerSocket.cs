@@ -12,7 +12,7 @@ namespace Sharpen.Net
 		{
             try
             {
-                NativeSocket socket = new NativeSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+				NativeSocket socket = new NativeSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Bind(new IPEndPoint(IPAddress.Any, port));
 
                 int maxPendingConnections = 42;
