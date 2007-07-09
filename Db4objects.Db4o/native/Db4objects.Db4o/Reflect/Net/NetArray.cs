@@ -17,6 +17,11 @@ namespace Db4objects.Db4o.Reflect.Net
         public override object NewInstance(IReflectClass componentType, int[] dimensions)
         {
             Type type = GetNetType(componentType);
+            if (dimensions.Length == 1)
+            {
+                return UnfoldArrayCreation(type, dimensions, 0);
+            }
+            
             return UnfoldArrayCreation(GetArrayType(type, dimensions.Length - 1), dimensions, 0);
         }
 
