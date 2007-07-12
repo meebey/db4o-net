@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Collections;
 using System.Windows.Forms;
 using System.Data;
+using System.IO;
 
 namespace Db4objects.Db4o.Tests
 {
@@ -170,6 +171,14 @@ namespace Db4objects.Db4o.Tests
             {
                 _console.Text = "";
                 failureCount = AllTests.Main(null);
+                //copy test log to share folder
+                try
+                {
+                    File.Copy("\\db4ounit.log", "\\Storage Card\\db4ounit.log");
+                }
+                catch (Exception exception)
+                {
+                }
                 Application.Exit();
             }
         }
