@@ -16,24 +16,11 @@ namespace Sharpen.Net
 
 		public Socket(string hostName, int port)
 		{
-			IPAddress targetAddress = Resolve(hostName);
-			NativeSocket socket = new NativeSocket(targetAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-			socket.Connect(new IPEndPoint(targetAddress, port));
-			Initialize(socket);
+            IPEndPoint ipEndPoint = new IPEndPoint(Dns.Resolve(hostName).AddressList[0], port);
+            NativeSocket socket = new NativeSocket(ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            socket.Connect(ipEndPoint);
+            Initialize(socket);
 		}
-
-	    private static IPAddress Resolve(string hostName)
-	    {
-	        IPHostEntry found = Dns.Resolve(hostName);
-	        foreach (IPAddress address in found.AddressList)
-	        {
-                if (address.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return address;
-                }
-	        }
-	        throw new IOException("couldn't find suitable address for name '" + hostName + "'");
-	    }
 
 	    public Socket(NativeSocket socket)
 		{
