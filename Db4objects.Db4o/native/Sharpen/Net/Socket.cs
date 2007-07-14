@@ -24,6 +24,7 @@ namespace Sharpen.Net
 	    private static IPAddress Resolve(string hostName)
 	    {
 	        IPHostEntry found = Dns.Resolve(hostName);
+#if !CF_1_0
 	        foreach (IPAddress address in found.AddressList)
 	        {
                 if (address.AddressFamily == AddressFamily.InterNetwork)
@@ -32,6 +33,9 @@ namespace Sharpen.Net
                 }
 	        }
 	        throw new IOException("couldn't find suitable address for name '" + hostName + "'");
+#else
+            return found.AddressList[0];
+#endif
 	    }
 
 	    public Socket(NativeSocket socket)
