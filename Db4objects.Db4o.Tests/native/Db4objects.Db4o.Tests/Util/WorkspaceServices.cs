@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Util
 		public static string ReadMachinePathProperty(string property)
 		{
 			string path = ReadMachineProperty(property);
-			Assert.IsTrue(File.Exists(path));
+			Assert.IsTrue(File.Exists(path), string.Format("File '{0}' could not be found ({1}).", path, property));
 			return path;
 		}
 
