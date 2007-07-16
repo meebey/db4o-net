@@ -2,7 +2,7 @@
 namespace Db4objects.Db4o.Reflect.Net
 {
 
-	/// <remarks>Reflection implementation for Constructor to map to JDK reflection.</remarks>
+	/// <remarks>Reflection implementation for Constructor to map to .NET reflection.</remarks>
 	public class NetConstructor : Db4objects.Db4o.Reflect.IReflectConstructor
 	{
 		private readonly Db4objects.Db4o.Reflect.IReflector reflector;
