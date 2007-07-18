@@ -20,14 +20,19 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public virtual object Invoke(object onObject, object[] parameters)
 		{
-			try
-			{
-				return method.Invoke(onObject, parameters);
-			}
-			catch (System.Reflection.TargetInvocationException e)
-			{
-				throw new Db4objects.Db4o.Internal.ReflectException(e.InnerException);
-			}
+            try
+            {
+                return method.Invoke(onObject, parameters);
+            }
+            catch (System.Reflection.TargetInvocationException e)
+            {
+                throw new Db4objects.Db4o.Internal.ReflectException(e.InnerException);
+            }
+#if CF_1_0 || CF_2_0
+            catch (System.Exception e) {
+                throw new Db4objects.Db4o.Internal.ReflectException(e);
+            }
+#endif
 		}
 	}
 }
