@@ -95,8 +95,19 @@ namespace Sharpen.Net
 
     	private bool PollRead(int timeout)
     	{
-			return _socket.UnderlyingSocket.Poll(timeout, SelectMode.SelectRead);
-    	}
+#if CF_1_0 || CF_2_0
+            try
+            {
+                return _socket.UnderlyingSocket.Poll(timeout, SelectMode.SelectRead);
+            }
+            catch (SocketException e)
+            {
+                return false;
+            }
+#else
+            return _socket.UnderlyingSocket.Poll(timeout, SelectMode.SelectRead);
+#endif
+        }
 
     	private int GetMicroSecondsTimeout()
     	{
