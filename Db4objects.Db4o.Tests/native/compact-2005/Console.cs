@@ -135,8 +135,9 @@ namespace Db4objects.Db4o.Tests
         public static void WriteLine(string s)
         {
             TextBox console = staticThis._console;
-            console.SelectedText = s.Replace("\r", "").Replace("\n", "\r\n");
-            console.SelectedText = "\r\n";
+            //console.SelectedText = s.Replace("\r", "").Replace("\n", "\r\n");
+            //console.SelectedText = "\r\n";
+            console.Text = s.Replace("\r", "").Replace("\n", "\r\n");
             Application.DoEvents();
         }
 
@@ -174,7 +175,7 @@ namespace Db4objects.Db4o.Tests
                 //copy test log to share folder
                 try
                 {
-                    File.Copy("\\db4ounit.log", "\\Storage Card\\db4ounit.log");
+                    File.Copy("\\db4ounit.log", "\\Storage Card\\db4ounit.log", true);
                 }
                 catch (Exception exception)
                 {

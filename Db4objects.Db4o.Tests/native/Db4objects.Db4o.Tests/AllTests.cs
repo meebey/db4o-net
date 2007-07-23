@@ -9,9 +9,12 @@ namespace Db4objects.Db4o.Tests
 	{
 		public static int Main(string[] args)
 		{
-//			return new AllTests().RunSolo();
+#if CF_1_0 || CF_2_0
+			return new AllTests().RunSolo();
 //            return new AllTests().RunClientServer();
+#else
 		    return new AllTests().RunAll();
+#endif
 		}
 		
 		protected override Type[] TestCases()
