@@ -5,41 +5,31 @@ using System.IO;
 
 namespace Sharpen.IO
 {
-	public class InputStream : StreamAdaptor
+	public class InputStream : StreamAdaptor, IInputStream
 	{
 		public InputStream(Stream stream)
 			: base(stream)
 		{
 		}
 
-		public int Available()
-		{
-			return (int)(_stream.Length - _stream.Position);
-		}
-
 		public int Read()
 		{
-			BeforeRead();
 			return _stream.ReadByte();
 		}
 
 		public int Read(byte[] bytes)
 		{
-			BeforeRead();
-			int read = _stream.Read(bytes, 0, bytes.Length);
-			return (0 == read) ? -1 : read;
+			return Read(bytes, 0, bytes.Length);
 		}
 
 		public int Read(byte[] bytes, int offset, int length)
 		{
-			BeforeRead();
-			int read = _stream.Read(bytes, offset, length);
-			return (0 == read) ? -1 : read;
+			return TranslateReadReturnValue(_stream.Read(bytes, offset, length));
 		}
 
-		virtual protected void BeforeRead()
+		internal static int TranslateReadReturnValue(int read)
 		{
-
+			return (0 == read) ? -1 : read;
 		}
 	}
 }

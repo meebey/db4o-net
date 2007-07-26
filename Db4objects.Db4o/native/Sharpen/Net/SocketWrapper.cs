@@ -1,4 +1,5 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using System;
 using System.Net.Sockets;
 using NativeSocket=System.Net.Sockets.Socket;
 
@@ -32,6 +33,16 @@ namespace Sharpen.Net
 
 		public void Close()
 		{
+			if (_delegate.Connected)
+			{
+				try
+				{
+					_delegate.Shutdown(SocketShutdown.Both);
+				}
+				catch (Exception)
+				{	
+				}
+			}
 			_delegate.Close();
 		}
 

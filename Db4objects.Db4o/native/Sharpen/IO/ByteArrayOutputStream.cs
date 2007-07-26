@@ -30,7 +30,8 @@ namespace Sharpen.IO
 			return Stream.ToArray();
 		}
 
-		private MemoryStream Stream {
+		private MemoryStream Stream
+		{
 			get { return (MemoryStream)UnderlyingStream; }
 		}
 	}

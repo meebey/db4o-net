@@ -1,18 +1,46 @@
 /* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 
 using System;
-using System.IO;
-using Db4objects.Db4o;
 
-namespace Sharpen.IO {
+namespace Sharpen.IO
+{
+	public class BufferedOutputStream : IOutputStream
+	{
+		private IOutputStream _stream;
 
-	public class BufferedOutputStream : OutputStream {
-
-		public BufferedOutputStream(OutputStream stream) : base(stream.Buffered()) {
+		public BufferedOutputStream(IOutputStream stream)
+		{
+			_stream = stream;
 		}
 
-		public BufferedOutputStream(OutputStream stream, int bufferSize) : base(stream.Buffered(bufferSize)) {
+		public BufferedOutputStream(IOutputStream stream, int bufferSize)
+		{
+			_stream = stream;
 		}
 
+		public void Write(int i)
+		{
+			_stream.Write(i);
+		}
+
+		public void Write(byte[] bytes)
+		{
+			_stream.Write(bytes);
+		}
+
+		public void Write(byte[] bytes, int offset, int length)
+		{
+			_stream.Write(bytes, offset, length);
+		}
+
+		public void Flush()
+		{
+			_stream.Flush();
+		}
+
+		public void Close()
+		{
+			_stream.Close();
+		}
 	}
 }
