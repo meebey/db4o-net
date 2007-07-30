@@ -61,12 +61,18 @@ namespace Sharpen.Net
 		override protected void Initialize(NativeSocket socket)
 		{
 			base.Initialize(socket);
+
 			NetworkStream stream = new NetworkStream(_delegate);
+
+#if CF_1_0 || CF_2_0
 			_in = new SocketInputStream(this);
+#else
+			_in = new InputStream(stream);
+#endif
 			_out = new OutputStream(stream);
 		}
 	}
-
+#if CF_1_0 || CF_2_0
     internal class SocketInputStream : IInputStream
     {
     	private readonly Socket _socket;
@@ -124,4 +130,5 @@ namespace Sharpen.Net
 			get { return _socket.UnderlyingSocket;  }
     	}
     }
+#endif
 }

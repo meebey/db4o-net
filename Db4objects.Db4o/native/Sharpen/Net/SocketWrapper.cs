@@ -28,7 +28,12 @@ namespace Sharpen.Net
 
 		public void SetSoTimeout(int timeout)
 		{
+#if !CF_1_0 && !CF_2_0
+			_delegate.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, timeout);
+			_delegate.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, timeout);
+#else
 			_soTimeout = timeout;
+#endif
 		}
 
 		public void Close()
