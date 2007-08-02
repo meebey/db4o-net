@@ -104,9 +104,9 @@ namespace Db4objects.Db4o.Internal
             return true;
         }
 
-        internal static IDb4oCollections Collections(Object a_object)
+        internal static IDb4oCollections Collections(Transaction transaction)
         {
-            return new P2Collections(a_object);
+            return new P2Collections(transaction);
         }
 
         internal static IReflector CreateReflector(Object config)

@@ -10,17 +10,17 @@ namespace Db4objects.Db4o {
 
    internal class P2Collections : IDb4oCollections {
 
-      internal IExtObjectContainer i_stream;
+      internal Transaction _transaction;
       
-      internal P2Collections(Object a_stream) : base() {
-         i_stream = (IExtObjectContainer)a_stream;
+      internal P2Collections(Transaction transaction) : base() {
+          _transaction = transaction;
       }
       
       public IDb4oList NewLinkedList() {
-          lock(i_stream.Lock()){
-              if (Unobfuscated.CreateDb4oList(i_stream)){
+          lock(Lock()){
+              if (Unobfuscated.CreateDb4oList(Container())){
                   IDb4oList l = new P2LinkedList();
-                  i_stream.Set(l);
+                  Container().Set(_transaction, l);
                   return l;
               }
               return null;
@@ -28,22 +28,34 @@ namespace Db4objects.Db4o {
       }
       
       public IDb4oMap NewHashMap(int size) {
-          lock(i_stream.Lock()){
-              if (Unobfuscated.CreateDb4oList(i_stream)) return new P2HashMap(size);
+          lock(Lock()){
+              if (Unobfuscated.CreateDb4oList(Container())){
+                  return new P2HashMap(size);
+              }
               return null;
           }
       }
 
        public IDb4oMap NewIdentityHashMap(int size) {
-           lock(i_stream.Lock()){
-               if(Unobfuscated.CreateDb4oList(i_stream)){
+           lock(Lock()){
+               if(Unobfuscated.CreateDb4oList(Container())){
                    P2HashMap m = new P2HashMap(size);
                    m.i_type = 1;
-                   i_stream.Set(m);
+                   Container().Set(_transaction, m);
                    return m;
                }
                return null;
            }
        }
+
+    private Object Lock(){
+        return Container().Lock();
+    }
+    
+    private ObjectContainerBase Container(){
+        return _transaction.Stream();
+    }
+
+
    }
 }
