@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests
 		{
 			return new Type[]
 				{	
-                    //Db4objects.Db4o.Tests.Common.AllTests
+#if CF_1_0 || CF_2_0
                     typeof(Db4objects.Db4o.Tests.Common.Acid.AllTests), 
                     typeof(Db4objects.Db4o.Tests.Common.Assorted.AllTests), 
                     typeof(Db4objects.Db4o.Tests.Common.Btree.AllTests), 
@@ -50,7 +50,9 @@ namespace Db4objects.Db4o.Tests
                     typeof(Db4objects.Db4o.Tests.Common.Stored.AllTests), 
                     typeof(Db4objects.Db4o.Tests.Common.Types.AllTests), 
                     typeof(Db4objects.Db4o.Tests.Util.Test.AllTests),
-					
+#else
+                    typeof(Db4objects.Db4o.Tests.Common.AllTests),
+#endif
                     typeof(Db4objects.Db4o.Tests.CLI1.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI2.AllTests),
                     typeof(Db4objects.Db4o.Tests.SharpenLang.AllTests),
