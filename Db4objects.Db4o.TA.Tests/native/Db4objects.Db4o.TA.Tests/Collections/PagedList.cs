@@ -1,4 +1,4 @@
-﻿﻿/* Copyright (C) 2004-2007   db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2004-2007   db4objects Inc.   http://www.db4o.com */ 
 using System;
 using System.Collections;
 using Db4objects.Db4o.Activation;
@@ -6,14 +6,9 @@ using Db4objects.Db4o.TA.Tests.Collections.Internal;
 
 namespace Db4objects.Db4o.TA.Tests.Collections
 {
-	public class PagedList : IList, IActivatable
+	public class PagedList : ActivatableImpl, IList
 	{
 		private PagedBackingStore _store = new PagedBackingStore();
-
-		// TA BEGIN
-		[NonSerialized]
-		IActivator _activator;
-		// TA END
 
 		#region IList Members
 
@@ -148,27 +143,6 @@ namespace Db4objects.Db4o.TA.Tests.Collections
 				get { return _list[_currentIndex]; }
 			}
 		}
-
-		#endregion
-
-		#region IActivatable Members
-
-		// TA BEGIN
-		public void Bind(IActivator activator)
-		{
-			if (null != _activator)
-			{
-				throw new InvalidOperationException();
-			}
-			_activator = activator;
-		}
-
-		private void Activate()
-		{
-			if (_activator == null) return;
-			_activator.Activate();
-		}
-		// TA END
 
 		#endregion
 	}

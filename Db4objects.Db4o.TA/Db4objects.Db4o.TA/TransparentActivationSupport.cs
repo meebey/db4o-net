@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.TA
 				(this, container).OnEvent);
 			TransparentActivationSupport.TADiagnosticProcessor processor = new TransparentActivationSupport.TADiagnosticProcessor
 				(this, container);
-			factory.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_39
+			factory.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_40
 				(this, processor).OnEvent);
 		}
 
@@ -48,9 +48,9 @@ namespace Db4objects.Db4o.TA
 				}
 			}
 
-			private IActivator ActivatorForObject(ObjectContainerBase container, object obj)
+			private IActivator ActivatorForObject(ObjectContainerBase container_, object obj)
 			{
-				return (IActivator)container.ReferenceForObject(obj);
+				return container_.GetTransaction().ReferenceForObject(obj);
 			}
 
 			private readonly TransparentActivationSupport _enclosing;
@@ -58,9 +58,9 @@ namespace Db4objects.Db4o.TA
 			private readonly ObjectContainerBase container;
 		}
 
-		private sealed class _IEventListener4_39
+		private sealed class _IEventListener4_40
 		{
-			public _IEventListener4_39(TransparentActivationSupport _enclosing, TransparentActivationSupport.TADiagnosticProcessor
+			public _IEventListener4_40(TransparentActivationSupport _enclosing, TransparentActivationSupport.TADiagnosticProcessor
 				 processor)
 			{
 				this._enclosing = _enclosing;

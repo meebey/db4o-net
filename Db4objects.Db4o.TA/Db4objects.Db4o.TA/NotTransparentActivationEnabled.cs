@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.TA
 {
@@ -26,7 +27,8 @@ namespace Db4objects.Db4o.TA
 
 		public override string Solution()
 		{
-			return "Use a TA aware class with equivalent functionality or ensure that this class provides a sensible implementation of the Activatable interface and the implicit TA hooks, either manually or by applying instrumentation.";
+			return "Use a TA aware class with equivalent functionality or ensure that this class provides a sensible implementation of the "
+				 + typeof(IActivatable).FullName + " interface and the implicit TA hooks, either manually or by applying instrumentation.";
 		}
 	}
 }

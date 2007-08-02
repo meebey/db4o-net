@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
-using Db4objects.Db4o.Activation;
-using Db4objects.Db4o.TA;
+using Db4objects.Db4o.TA.Tests;
 using Db4objects.Db4o.TA.Tests.Collections.Internal;
 using Sharpen;
 
@@ -10,16 +8,13 @@ namespace Db4objects.Db4o.TA.Tests.Collections.Internal
 {
 	/// <summary>Shared implementation for a paged collection.</summary>
 	/// <remarks>Shared implementation for a paged collection.</remarks>
-	public class PagedBackingStore : IActivatable
+	public class PagedBackingStore : ActivatableImpl
 	{
 		public const int INITIAL_PAGE_COUNT = 16;
 
 		private Page[] _pages = new Page[INITIAL_PAGE_COUNT];
 
 		private int _top = 0;
-
-		[System.NonSerialized]
-		internal IActivator _activator;
 
 		public PagedBackingStore()
 		{
@@ -99,24 +94,6 @@ namespace Db4objects.Db4o.TA.Tests.Collections.Internal
 		private int IndexInPage(int itemIndex)
 		{
 			return itemIndex % Page.PAGESIZE;
-		}
-
-		public virtual void Bind(IActivator activator)
-		{
-			if (null != _activator)
-			{
-				throw new InvalidOperationException();
-			}
-			_activator = activator;
-		}
-
-		private void Activate()
-		{
-			if (_activator == null)
-			{
-				return;
-			}
-			_activator.Activate();
 		}
 	}
 }
