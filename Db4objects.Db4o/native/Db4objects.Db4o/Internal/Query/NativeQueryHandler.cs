@@ -187,7 +187,7 @@ namespace Db4objects.Db4o.Internal.Query
 			}
 			if (OptimizeNativeQueries())
 			{
-				DiagnosticProcessor dp = ((ObjectContainerBase)_container).i_handlers._diagnosticProcessor;
+				DiagnosticProcessor dp = ((ObjectContainerBase)_container)._handlers._diagnosticProcessor;
 				if (dp.Enabled()) dp.NativeQueryUnoptimized(predicate);
 
 			}

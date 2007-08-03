@@ -53,7 +53,7 @@ namespace Db4objects.Db4o {
     }
     
     private ObjectContainerBase Container(){
-        return _transaction.Stream();
+        return _transaction.Container();
     }
 
 

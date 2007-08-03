@@ -332,7 +332,7 @@ namespace Db4objects.Db4o
 		protected int IndexOf4(Object obj)
 		{
 			int idx = 0;
-			if (GetTrans() != null && (!GetTrans().Stream().Handlers().IsSecondClass(obj)))
+			if (GetTrans() != null && (!GetTrans().Container().Handlers().IsSecondClass(obj)))
 			{
 				long id = GetIDOf(obj);
 				if (id > 0)
