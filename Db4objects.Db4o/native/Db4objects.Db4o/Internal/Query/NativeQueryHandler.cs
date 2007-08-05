@@ -55,9 +55,9 @@ namespace Db4objects.Db4o.Internal.Query
 			_classFactory = new Db4objects.Db4o.Nativequery.DefaultNativeClassFactory();
 		}
 
-		public virtual Db4objects.Db4o.IObjectSet Execute(Db4objects.Db4o.Query.Predicate predicate, Db4objects.Db4o.Query.IQueryComparator comparator)
+        public virtual Db4objects.Db4o.IObjectSet Execute(Db4objects.Db4o.Query.IQuery query, Db4objects.Db4o.Query.Predicate predicate, Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
-			Db4objects.Db4o.Query.IQuery q = ConfigureQuery(predicate);
+			Db4objects.Db4o.Query.IQuery q = ConfigureQuery(query, predicate);
 			q.SortBy(comparator);
 			return q.Execute();
 		}
@@ -159,26 +159,25 @@ namespace Db4objects.Db4o.Internal.Query
 		}
 #endif
 
-		private Db4objects.Db4o.Query.IQuery ConfigureQuery(Db4objects.Db4o.Query.Predicate predicate)
+        private Db4objects.Db4o.Query.IQuery ConfigureQuery(Db4objects.Db4o.Query.IQuery query, Db4objects.Db4o.Query.Predicate predicate)
 		{
-			Db4objects.Db4o.Query.IQuery q = _container.Query();
 			IDb4oEnhancedFilter filter = predicate as IDb4oEnhancedFilter;
 			if (null != filter)
 			{
-				filter.OptimizeQuery(q);
+				filter.OptimizeQuery(query);
 				OnQueryExecution(predicate, QueryExecutionKind.PreOptimized);
-				return q;
+				return query;
 			}
 
-			q.Constrain(predicate.ExtentType());
+			query.Constrain(predicate.ExtentType());
 
 			try
 			{
 				if (OptimizeNativeQueries())
 				{
-					OptimizeQuery(q, predicate, predicate.GetFilterMethod());
+					OptimizeQuery(query, predicate, predicate.GetFilterMethod());
 					OnQueryExecution(predicate, QueryExecutionKind.DynamicallyOptimized);
-					return q;
+					return query;
 				}
 			}
 			catch (System.Exception e)
@@ -191,9 +190,9 @@ namespace Db4objects.Db4o.Internal.Query
 				if (dp.Enabled()) dp.NativeQueryUnoptimized(predicate);
 
 			}
-			q.Constrain(new Db4objects.Db4o.Internal.Query.PredicateEvaluation(predicate));
+			query.Constrain(new Db4objects.Db4o.Internal.Query.PredicateEvaluation(predicate));
 			OnQueryExecution(predicate, QueryExecutionKind.Unoptimized);
-			return q;
+			return query;
 		}
 
 		private bool OptimizeNativeQueries()
