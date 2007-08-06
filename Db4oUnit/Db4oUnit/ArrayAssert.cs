@@ -15,6 +15,29 @@ namespace Db4oUnit
 			Assert.Fail("Expecting '" + expected + "'.");
 		}
 
+		public static void Contains(object[] array, object[] expected)
+		{
+			for (int i = 0; i < expected.Length; i++)
+			{
+				if (-1 == IndexOf(array, expected[i]))
+				{
+					Assert.Fail("Expecting contains '" + expected[i] + "'.");
+				}
+			}
+		}
+
+		public static int IndexOf(object[] array, object expected)
+		{
+			for (int i = 0; i < array.Length; ++i)
+			{
+				if (expected.Equals(array[i]))
+				{
+					return i;
+				}
+			}
+			return -1;
+		}
+
 		public static void AreEqual(object[] expected, object[] actual)
 		{
 			if (expected == actual)

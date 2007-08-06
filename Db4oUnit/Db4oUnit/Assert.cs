@@ -260,5 +260,16 @@ namespace Db4oUnit
 			}
 			Fail("Expecting not '" + notExpected + "'");
 		}
+
+		public static void EqualsAndHashcode(object obj, object same, object other)
+		{
+			AreEqual(obj, obj);
+			AreEqual(obj, same);
+			AreNotEqual(obj, other);
+			AreEqual(obj.GetHashCode(), same.GetHashCode());
+			AreEqual(same, obj);
+			AreNotEqual(other, obj);
+			AreNotEqual(obj, null);
+		}
 	}
 }
