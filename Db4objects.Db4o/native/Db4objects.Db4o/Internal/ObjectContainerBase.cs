@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal
 	/// <summary>
 	/// </summary>
 	/// <exclude />
-	public abstract class ObjectContainerBase : Db4objects.Db4o.Internal.PartialObjectContainer, IObjectContainer, IExtObjectContainer
+	public abstract class ObjectContainerBase : Db4objects.Db4o.Internal.PartialObjectContainer, IInternalObjectContainer
 	{
 		internal ObjectContainerBase(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.Internal.ObjectContainerBase a_parent)
 			: base(config, a_parent)
