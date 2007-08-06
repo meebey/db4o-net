@@ -9,12 +9,14 @@ namespace Sharpen.Net
 	{
 		protected NativeSocket _delegate;
 
+#if CF_1_0 || CF_2_0
 	    private int _soTimeout = 0;
 
         public int SoTimeout
         {
             get { return _soTimeout; }
         }
+#endif
 
 		public NativeSocket UnderlyingSocket
 		{
