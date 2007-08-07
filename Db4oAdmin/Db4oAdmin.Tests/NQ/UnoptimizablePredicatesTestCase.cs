@@ -1,10 +1,11 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.IO;
+using Db4oAdmin.Tests.Core;
 using Db4objects.Db4o.Internal.Query;
 using Db4oUnit;
 
-namespace Db4oAdmin.Tests
+namespace Db4oAdmin.Tests.NQ
 {
 	// TODO: generate evaluation based queries for unoptimizable predicates
 	// so they don't need to be analyzed again in runtime

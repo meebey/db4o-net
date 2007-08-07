@@ -7,30 +7,11 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query;
 using Db4oUnit;
 
-namespace Db4oAdmin.Tests
+namespace Db4oAdmin.Tests.Core
 {
-	public class InstrumentedTestCase : ITestLifeCycle
-	{
-		protected IObjectContainer _container;
-		
-		public IObjectContainer Container
-		{
-			set { _container = value; }
-			get { return _container; }
-		}
-		
-		public virtual void SetUp()
-		{	
-		}
-		
-		public virtual void TearDown()
-		{	
-		}
-	}
-	
 	public abstract class AbstractInstrumentationTestCase : ITestSuiteBuilder
 	{
-		public const string DatabaseFile = "subject.yap";
+		public const string DatabaseFile = "subject.db4o";
 		
 		class InstrumentedTestMethod : TestMethod
 		{

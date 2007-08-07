@@ -10,12 +10,12 @@ namespace Db4oAdmin.Tests
 		{
 			return new Type[]
 				{
-					typeof(TAInstrumentationTestCase),
-					typeof(ILPatternTestCase),
-					typeof(CFNQRuntimeOptimizationTestCase),
-					typeof(PredicateBuildTimeOptimizationTestCase),
-					typeof(UnoptimizablePredicatesTestCase),
-					typeof(CustomInstrumentationTestCase),
+					typeof(Core.ILPatternTestCase),
+					typeof(Core.CustomInstrumentationTestCase),
+					typeof(NQ.CFNQRuntimeOptimizationTestCase),
+					typeof(NQ.PredicateBuildTimeOptimizationTestCase),
+					typeof(NQ.UnoptimizablePredicatesTestCase),
+					typeof(TA.TAInstrumentationTestCase),
 				};
 		}
 	}

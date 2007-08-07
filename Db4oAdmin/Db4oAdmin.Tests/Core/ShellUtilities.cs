@@ -2,7 +2,7 @@
 using System.IO;
 using System.Diagnostics;
 
-namespace Db4oAdmin.Tests
+namespace Db4oAdmin.Tests.Core
 {
 	public class ShellUtilities
 	{

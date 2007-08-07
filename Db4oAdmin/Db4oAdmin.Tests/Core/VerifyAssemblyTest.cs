@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using Db4oUnit;
 
-namespace Db4oAdmin.Tests
+namespace Db4oAdmin.Tests.Core
 {
 	class VerifyAssemblyTest : ITest
 	{

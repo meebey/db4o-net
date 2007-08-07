@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -37,26 +38,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractCommandLineInstrumentationTestCase.cs" />
-    <Compile Include="AbstractInstrumentationTestCase.cs" />
     <Compile Include="AllTests.cs" />
-    <Compile Include="ArrayServices.cs" />
-    <Compile Include="CompilationServices.cs" />
-    <Compile Include="CustomInstrumentationTestCase.cs" />
-    <Compile Include="ILPatternTestCase.cs" />
-    <Compile Include="PredicateBuildTimeOptimizationTestCase.cs" />
+    <Compile Include="Core\AbstractCommandLineInstrumentationTestCase.cs" />
+    <Compile Include="Core\AbstractInstrumentationTestCase.cs" />
+    <Compile Include="Core\ArrayServices.cs" />
+    <Compile Include="Core\CompilationServices.cs" />
+    <Compile Include="Core\CustomInstrumentationTestCase.cs" />
+    <Compile Include="Core\ILPatternTestCase.cs" />
+    <Compile Include="Core\InstrumentedTestCase.cs" />
+    <Compile Include="Core\ShellUtilities.cs" />
+    <Compile Include="Core\VerifyAssemblyTest.cs" />
+    <Compile Include="NQ\CFNQRuntimeOptimizationTestCase.cs" />
+    <Compile Include="NQ\PredicateBuildTimeOptimizationTestCase.cs" />
+    <Compile Include="NQ\UnoptimizablePredicatesTestCase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CFNQRuntimeOptimizationTestCase.cs" />
     <EmbeddedResource Include="Resources\CFNQSubject.cs" />
-    <EmbeddedResource Include="Resources\PredicateSubject.cs" />
-    <EmbeddedResource Include="Resources\UnoptimizablePredicateSubject.cs" />
     <EmbeddedResource Include="Resources\CustomInstrumentationSubject.cs" />
+    <EmbeddedResource Include="Resources\PredicateSubject.cs" />
     <EmbeddedResource Include="Resources\TAInstrumentationSubject.cs" />
-    <Compile Include="ShellUtilities.cs" />
-    <Compile Include="TAInstrumentationTestCase.cs" />
-    <Compile Include="UnoptimizablePredicatesTestCase.cs" />
-    <Compile Include="VerifyAssemblyTest.cs" />
+    <EmbeddedResource Include="Resources\UnoptimizablePredicateSubject.cs" />
+    <Compile Include="TA\TAInstrumentationTestCase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Db4objects.Db4o.TA\Db4objects.Db4o.TA-2005.csproj">

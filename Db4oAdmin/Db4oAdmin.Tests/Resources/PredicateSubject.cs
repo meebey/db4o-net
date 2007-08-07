@@ -228,7 +228,7 @@ class OverweightPeople : Predicate
 	}
 }
 
-public class PredicateSubject : Db4oAdmin.Tests.InstrumentedTestCase
+public class PredicateSubject : Db4oAdmin.Tests.Core.InstrumentedTestCase
 {
 	override public void SetUp()
 	{

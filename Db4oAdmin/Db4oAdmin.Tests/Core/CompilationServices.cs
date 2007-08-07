@@ -4,10 +4,8 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Db4objects.Db4o;
-using Db4oUnit;
 
-namespace Db4oAdmin.Tests
+namespace Db4oAdmin.Tests.Core
 {
 	/// <summary>
 	/// Compilation helper.

@@ -4,7 +4,7 @@ using Db4oUnit;
 using Mono.Cecil.Cil;
 using Mono.Cecil;
 
-namespace Db4oAdmin.Tests
+namespace Db4oAdmin.Tests.Core
 {
 	public class ILPatternTestCase : ITestCase
 	{
