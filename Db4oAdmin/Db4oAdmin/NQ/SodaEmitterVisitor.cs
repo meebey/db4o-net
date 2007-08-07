@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 using Cecil.FlowAnalysis.CodeStructure;
+using Db4oAdmin.Core;
 using Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Nativequery.Expr.Cmp;
 using Db4objects.Db4o.Nativequery.Expr.Cmp.Field;
@@ -9,7 +10,7 @@ using Db4objects.Db4o.Query;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace Db4oAdmin
+namespace Db4oAdmin.NQ
 {
 	// const values
 	// value type candidates
@@ -209,14 +210,14 @@ namespace Db4oAdmin
 
 		public void Visit(FieldValue operand)
 		{   
-		    operand.Parent().Accept(this);
+			operand.Parent().Accept(this);
 		    
-            IComparisonOperandAnchor root = operand.Root();
-		    if (root is CandidateFieldRoot)
+			IComparisonOperandAnchor root = operand.Root();
+			if (root is CandidateFieldRoot)
 			{
 				// query.Descend(operand.FieldName());
-			    _worker.Emit(OpCodes.Ldstr, operand.FieldName());
-			    _worker.Emit(OpCodes.Callvirt, _Query_Descend);
+				_worker.Emit(OpCodes.Ldstr, operand.FieldName());
+				_worker.Emit(OpCodes.Callvirt, _Query_Descend);
 			}
 			else if (root is PredicateFieldRoot)
 			{
@@ -233,12 +234,12 @@ namespace Db4oAdmin
 		public void Visit(CandidateFieldRoot root)
 		{
 			// being visited as part of a FieldValue
-            _worker.Emit(OpCodes.Ldarg_1);
+			_worker.Emit(OpCodes.Ldarg_1);
 		}
 
 		public void Visit(PredicateFieldRoot root)
 		{
-            _worker.Emit(OpCodes.Ldarg_0);
+			_worker.Emit(OpCodes.Ldarg_0);
 		}
 
 		public void Visit(StaticFieldRoot root)

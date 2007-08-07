@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Db4oAdmin
+namespace Db4oAdmin.Core
 {
 	public class InstrumentationPipeline
 	{

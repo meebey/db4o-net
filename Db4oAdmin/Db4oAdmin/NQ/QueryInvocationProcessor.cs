@@ -1,13 +1,13 @@
 /* Copyright (C) 2004 - 2006  db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Reflection;
-using Db4objects.Db4o;
+using Db4oAdmin.Core;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace Db4oAdmin
+namespace Db4oAdmin.NQ
 {
 	class QueryInvocationProcessor
 	{
@@ -67,10 +67,10 @@ namespace Db4oAdmin
 			// At this point the stack is like this:
 			//     runtime method handle, delegate reference, target object, ObjectContainer
 			worker.Replace(queryInvocation,
-						   worker.Create(OpCodes.Call,
-										 InstantiateGenericMethod(
-											 _NativeQueryHandler_ExecuteInstrumentedDelegateQuery,
-											 GetQueryCallExtent(queryInvocation))));
+			               worker.Create(OpCodes.Call,
+			                             InstantiateGenericMethod(
+			                             	_NativeQueryHandler_ExecuteInstrumentedDelegateQuery,
+			                             	GetQueryCallExtent(queryInvocation))));
 		}
 
 		private void ProcessCachedStaticFieldPattern(CilWorker worker, Instruction queryInvocation)
@@ -81,10 +81,10 @@ namespace Db4oAdmin
 			// At this point the stack is like this:
 			//     runtime method handle, delegate reference, ObjectContainer
 			worker.Replace(queryInvocation,
-						   worker.Create(OpCodes.Call,
-										 InstantiateGenericMethod(
-											 _NativeQueryHandler_ExecuteInstrumentedStaticDelegateQuery,
-											 GetQueryCallExtent(queryInvocation))));
+			               worker.Create(OpCodes.Call,
+			                             InstantiateGenericMethod(
+			                             	_NativeQueryHandler_ExecuteInstrumentedStaticDelegateQuery,
+			                             	GetQueryCallExtent(queryInvocation))));
 		}
 
 		private GenericInstanceType InstantiateGenericType(TypeReference genericTypeDefinition, params TypeReference[] arguments)

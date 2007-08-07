@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using Cecil.FlowAnalysis.CecilUtilities;
+using Db4oAdmin.Core;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Query;
@@ -10,7 +11,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MethodAttributes=Mono.Cecil.MethodAttributes;
 
-namespace Db4oAdmin
+namespace Db4oAdmin.NQ
 {
 	public class PredicateOptimizer : AbstractAssemblyInstrumentation
 	{
@@ -84,7 +85,7 @@ namespace Db4oAdmin
 			catch (Exception x)
 			{	
 				TraceWarning("WARNING: Predicate '{0}' could not be optimized. {1}", match.DeclaringType, x.Message);
-                TraceVerbose("{0}", x);
+				TraceVerbose("{0}", x);
 			}
 			return null;
 		}
@@ -113,7 +114,7 @@ namespace Db4oAdmin
 			// Db4oAdmin running under .net 2.0
 			MethodDefinition method = new MethodDefinition("OptimizeQuery",
 			                                               MethodAttributes.Virtual|MethodAttributes.Public,
-														   Import(typeof(void)));
+			                                               Import(typeof(void)));
 			method.Parameters.Add(new ParameterDefinition(Import(typeof(IQuery))));
 			
 			return method;

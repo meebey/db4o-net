@@ -1,8 +1,7 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
-using System;
 using System.Diagnostics;
 
-namespace Db4oAdmin
+namespace Db4oAdmin.Core
 {
 	public class Configuration
 	{

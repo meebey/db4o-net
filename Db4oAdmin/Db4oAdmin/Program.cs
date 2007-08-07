@@ -1,6 +1,9 @@
 /* Copyright (C) 2004 - 2006  db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Diagnostics;
+using Db4oAdmin.Core;
+using Db4oAdmin.NQ;
+using Db4oAdmin.TA;
 
 namespace Db4oAdmin
 {
