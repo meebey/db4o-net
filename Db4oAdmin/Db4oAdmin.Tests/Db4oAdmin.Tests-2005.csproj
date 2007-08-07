@@ -46,18 +46,18 @@
     <Compile Include="Core\CustomInstrumentationTestCase.cs" />
     <Compile Include="Core\ILPatternTestCase.cs" />
     <Compile Include="Core\InstrumentedTestCase.cs" />
+    <EmbeddedResource Include="Core\Resources\CustomInstrumentationSubject.cs" />
     <Compile Include="Core\ShellUtilities.cs" />
     <Compile Include="Core\VerifyAssemblyTest.cs" />
     <Compile Include="NQ\CFNQRuntimeOptimizationTestCase.cs" />
     <Compile Include="NQ\PredicateBuildTimeOptimizationTestCase.cs" />
+    <EmbeddedResource Include="NQ\Resources\CFNQSubject.cs" />
+    <EmbeddedResource Include="NQ\Resources\PredicateSubject.cs" />
+    <EmbeddedResource Include="NQ\Resources\UnoptimizablePredicateSubject.cs" />
     <Compile Include="NQ\UnoptimizablePredicatesTestCase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Resources\CFNQSubject.cs" />
-    <EmbeddedResource Include="Resources\CustomInstrumentationSubject.cs" />
-    <EmbeddedResource Include="Resources\PredicateSubject.cs" />
-    <EmbeddedResource Include="Resources\TAInstrumentationSubject.cs" />
-    <EmbeddedResource Include="Resources\UnoptimizablePredicateSubject.cs" />
+    <EmbeddedResource Include="TA\Resources\TAInstrumentationSubject.cs" />
     <Compile Include="TA\TAInstrumentationTestCase.cs" />
   </ItemGroup>
   <ItemGroup>

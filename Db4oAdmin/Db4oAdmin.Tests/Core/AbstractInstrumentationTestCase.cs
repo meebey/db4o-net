@@ -146,7 +146,7 @@ namespace Db4oAdmin.Tests.Core
 			string path = Path.Combine(Path.GetTempPath(), ResourceName + ".dll");
 			CompilationServices.EmitAssembly(path,
 											 Dependencies,
-			                                 GetResourceAsString("Db4oAdmin.Tests.Resources." + ResourceName + ".cs"));
+			                                 GetResourceAsString(GetType().Namespace + ".Resources." + ResourceName + ".cs"));
 			return path;
 		}
 
