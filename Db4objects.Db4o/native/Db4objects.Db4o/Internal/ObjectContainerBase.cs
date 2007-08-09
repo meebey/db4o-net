@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal
 	/// <summary>
 	/// </summary>
 	/// <exclude />
-	public abstract class ObjectContainerBase : Db4objects.Db4o.Internal.PartialObjectContainer, IInternalObjectContainer
+    public abstract class ObjectContainerBase : Db4objects.Db4o.Internal.PartialObjectContainer, System.IDisposable
 	{
 		internal ObjectContainerBase(Db4objects.Db4o.Config.IConfiguration config, Db4objects.Db4o.Internal.ObjectContainerBase a_parent)
 			: base(config, a_parent)
@@ -22,10 +22,6 @@ namespace Db4objects.Db4o.Internal
 			Close();
 		}
 
-		public abstract Db4objects.Db4o.Ext.Db4oDatabase Identity();
-
-		public abstract void Backup(string path);
-		
 		class ComparerAdaptor : Db4objects.Db4o.Query.IQueryComparator
 		{
 			private System.Collections.IComparer _comparer;
@@ -44,7 +40,7 @@ namespace Db4objects.Db4o.Internal
 		public IObjectSet Query(Db4objects.Db4o.Query.Predicate match, System.Collections.IComparer comparer)
 		{
 			if (null == match) throw new ArgumentNullException("match");
-			return Query(match, new ComparerAdaptor(comparer));
+			return Query(null, match, new ComparerAdaptor(comparer));
 		}
 
 #if NET_2_0 || CF_2_0
@@ -108,7 +104,7 @@ namespace Db4objects.Db4o.Internal
 
 		public System.Collections.Generic.IList<ElementType> Query<ElementType>(System.Type extent, System.Collections.Generic.IComparer<ElementType> comparer)
 		{
-			QQuery q = (QQuery)Query();
+			QQuery q = (QQuery)Query(null);
 			q.Constrain(extent);
 			if (null != comparer) q.SortBy(new GenericComparerAdaptor<ElementType>(comparer));
 			IQueryResult qres = q.GetQueryResult();
