@@ -22,21 +22,6 @@ namespace Db4objects.Db4o.Internal
 			Close();
 		}
 
-		class ComparerAdaptor : Db4objects.Db4o.Query.IQueryComparator
-		{
-			private System.Collections.IComparer _comparer;
-
-			public ComparerAdaptor(System.Collections.IComparer comparer)
-			{
-				_comparer = comparer;
-			}
-
-			public int Compare(object first, object second)
-			{
-				return _comparer.Compare(first, second);
-			}
-		}
-
 		public IObjectSet Query(Db4objects.Db4o.Query.Predicate match, System.Collections.IComparer comparer)
 		{
 			if (null == match) throw new ArgumentNullException("match");

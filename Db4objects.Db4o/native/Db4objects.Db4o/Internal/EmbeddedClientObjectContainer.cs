@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	public class EmbeddedClientObjectContainer : PartialEmbeddedClientObjectContainer
-		, IExtObjectContainer
+		, IInternalObjectContainer
 	{
 		public EmbeddedClientObjectContainer(LocalObjectContainer server) : base(server)
 		{
@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Internal
 
         public IObjectSet Query(Db4objects.Db4o.Query.Predicate match, System.Collections.IComparer comparer)
         {
-            return null;
+            return _server.Query(_transaction, match, new ComparerAdaptor(comparer));
         }
 
 #if NET_2_0 || CF_2_0
@@ -36,17 +36,17 @@ namespace Db4objects.Db4o.Internal
 
         public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match)
         {
-            return null;
+            return _server.Query(match);
         }
 
         public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match, System.Collections.Generic.IComparer<Extent> comparer)
         {
-            return null;
+            return _server.Query(match, comparer);
         }
 
         public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match, System.Comparison<Extent> comparison)
         {
-            return null;
+            return _server.Query(match, comparison);
         }
 
         public System.Collections.Generic.IList<ElementType> Query<ElementType>(System.Type extent)
@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Internal
 
         public System.Collections.Generic.IList<ElementType> Query<ElementType>(System.Type extent, System.Collections.Generic.IComparer<ElementType> comparer)
         {
-            return null;
+            return _server.Query(extent, comparer);
         }
 
         public System.Collections.Generic.IList<Extent> Query<Extent>()
