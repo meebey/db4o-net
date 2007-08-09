@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Internal.Query
 
 		private Db4objects.Db4o.Nativequery.INativeClassFactory _classFactory;
 
-		public NativeQueryHandler(Db4objects.Db4o.IObjectContainer container)
+		public NativeQueryHandler(IObjectContainer container)
 		{
 			_container = container;
 			_classFactory = new Db4objects.Db4o.Nativequery.DefaultNativeClassFactory();
@@ -63,17 +63,17 @@ namespace Db4objects.Db4o.Internal.Query
 		}
 
 #if NET_2_0 || CF_2_0
-		public virtual System.Collections.Generic.IList<Extent> Execute<Extent>(System.Predicate<Extent> match,
+        public virtual System.Collections.Generic.IList<Extent> Execute<Extent>(Db4objects.Db4o.Query.IQuery query, System.Predicate<Extent> match,
 																				Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
 #if CF_2_0
-			return ExecuteUnoptimized<Extent>(QueryForExtent<Extent>(comparator), match);
+			return ExecuteUnoptimized<Extent>(QueryForExtent<Extent>(query, comparator), match);
 #else
 			// XXX: check GetDelegateList().Length
 			// only 1 delegate must be allowed
 			// although we could use it as a filter chain
 			// (and)
-			return ExecuteImpl<Extent>(match, match.Target, match.Method, match, comparator);
+			return ExecuteImpl<Extent>(query, match, match.Target, match.Method, match, comparator);
 #endif
 		}
 #endif
@@ -87,24 +87,27 @@ namespace Db4objects.Db4o.Internal.Query
 		/// <param name="predicate"></param>
 		/// <param name="comparator"></param>
 		/// <returns></returns>
-		public System.Collections.Generic.IList<Extent> ExecuteMeta<Extent>(MetaDelegate<System.Predicate<Extent>> predicate, Db4objects.Db4o.Query.IQueryComparator comparator)
+        public System.Collections.Generic.IList<Extent> ExecuteMeta<Extent>(Db4objects.Db4o.Query.IQuery query, MetaDelegate<System.Predicate<Extent>> predicate, Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
-			return ExecuteImpl<Extent>(predicate, predicate.Target, predicate.Method, predicate.Delegate, comparator);
+			return ExecuteImpl<Extent>(query, predicate, predicate.Target, predicate.Method, predicate.Delegate, comparator);
 		}
 
 		public static System.Collections.Generic.IList<Extent> ExecuteInstrumentedStaticDelegateQuery<Extent>(IObjectContainer container,
+                                                                                    Db4objects.Db4o.Query.IQuery query, 
 																					System.Predicate<Extent> predicate,
 																					RuntimeMethodHandle predicateMethodHandle)
 		{
-			return ExecuteInstrumentedDelegateQuery(container, null, predicate, predicateMethodHandle);
+			return ExecuteInstrumentedDelegateQuery(container, query, null, predicate, predicateMethodHandle);
 		}
 
 		public static System.Collections.Generic.IList<Extent> ExecuteInstrumentedDelegateQuery<Extent>(IObjectContainer container,
+                                                                                    Db4objects.Db4o.Query.IQuery query, 
 																					object target,
 																					System.Predicate<Extent> predicate,
 																					RuntimeMethodHandle predicateMethodHandle)
 		{
 			return ((ObjectContainerBase)container).GetNativeQueryHandler().ExecuteMeta(
+                query, 
 				new MetaDelegate<Predicate<Extent>>(
 					target,
 					predicate,
@@ -113,13 +116,14 @@ namespace Db4objects.Db4o.Internal.Query
 		}
 
 		private System.Collections.Generic.IList<Extent> ExecuteImpl<Extent>(
+                                                                        Db4objects.Db4o.Query.IQuery query, 
 																		object originalPredicate,
 																		object matchTarget,
 																		System.Reflection.MethodBase matchMethod,
 																		System.Predicate<Extent> match,
 																		Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
-			Db4objects.Db4o.Query.IQuery q = QueryForExtent<Extent>(comparator);
+			Db4objects.Db4o.Query.IQuery q = QueryForExtent<Extent>(query, comparator);
 			try
 			{
 				if (OptimizeNativeQueries())
@@ -144,18 +148,17 @@ namespace Db4objects.Db4o.Internal.Query
 			return WrapQueryResult<Extent>(q);
 		}
 
-		private Db4objects.Db4o.Query.IQuery QueryForExtent<Extent>(Db4objects.Db4o.Query.IQueryComparator comparator)
+        private Db4objects.Db4o.Query.IQuery QueryForExtent<Extent>(Db4objects.Db4o.Query.IQuery query, Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
-			Db4objects.Db4o.Query.IQuery q = _container.Query();
-			q.Constrain(typeof(Extent));
-			q.SortBy(comparator);
-			return q;
+			query.Constrain(typeof(Extent));
+			query.SortBy(comparator);
+			return query;
 		}
 
-		private static System.Collections.Generic.IList<Extent> WrapQueryResult<Extent>(Db4objects.Db4o.Query.IQuery q)
+		private static System.Collections.Generic.IList<Extent> WrapQueryResult<Extent>(Db4objects.Db4o.Query.IQuery query)
 		{
-			IQueryResult qr = ((QQuery)q).GetQueryResult();
-			return new GenericObjectSetFacade<Extent>(qr);
+			IQueryResult queryResult = ((QQuery)query).GetQueryResult();
+			return new GenericObjectSetFacade<Extent>(queryResult);
 		}
 #endif
 

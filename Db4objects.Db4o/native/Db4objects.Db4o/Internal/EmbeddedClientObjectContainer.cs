@@ -36,27 +36,27 @@ namespace Db4objects.Db4o.Internal
 
         public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match)
         {
-            return _server.Query(match);
+            return _server.Query(_transaction, match);
         }
 
         public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match, System.Collections.Generic.IComparer<Extent> comparer)
         {
-            return _server.Query(match, comparer);
+            return _server.Query(_transaction, match, comparer);
         }
 
         public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match, System.Comparison<Extent> comparison)
         {
-            return _server.Query(match, comparison);
+            return _server.Query(_transaction, match, comparison);
         }
 
         public System.Collections.Generic.IList<ElementType> Query<ElementType>(System.Type extent)
         {
-            return Query<ElementType>(extent, null);
+            return _server.Query<ElementType>(_transaction, extent, null);
         }
 
         public System.Collections.Generic.IList<ElementType> Query<ElementType>(System.Type extent, System.Collections.Generic.IComparer<ElementType> comparer)
         {
-            return _server.Query(extent, comparer);
+            return _server.Query(_transaction, extent, comparer);
         }
 
         public System.Collections.Generic.IList<Extent> Query<Extent>()
