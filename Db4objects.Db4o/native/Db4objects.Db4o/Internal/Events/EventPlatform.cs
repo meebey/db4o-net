@@ -24,25 +24,20 @@ namespace Db4objects.Db4o.Internal.Events
 		{
 			if (null == e) return true;
 			CancellableObjectEventArgs coea = new CancellableObjectEventArgs(transaction, o);
-            onEvent(e, o, coea);
-			return !coea.IsCancelled;
-		}
-
-        private static void onEvent(CancellableObjectEventHandler e, object sender, Db4objects.Db4o.Events.CancellableObjectEventArgs args)
-        {
             try
             {
-                e(sender, args);
+                e(o, coea);
             }
-            catch (Db4oException db4oException)
+            catch (Db4oException)
             {
-                throw db4oException;
+                throw;
             }
             catch (System.Exception exception)
             {
                 throw new ReflectException(exception);
             }
-        }
+			return !coea.IsCancelled;
+		}
 
 		public static void TriggerObjectEvent(Transaction transaction, ObjectEventHandler e, object o)
 		{
