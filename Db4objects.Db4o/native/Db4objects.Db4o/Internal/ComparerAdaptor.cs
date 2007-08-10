@@ -1,6 +1,5 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Db4objects.Db4o.Internal
