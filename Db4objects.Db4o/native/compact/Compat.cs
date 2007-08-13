@@ -18,13 +18,13 @@ namespace System.Runtime.CompilerServices
 
 namespace System
 {
-	class NotImplementedException : Exception
+	public class NotImplementedException : Exception
 	{
-		internal NotImplementedException ()
+		public NotImplementedException ()
 		{
 		}
 
-		internal NotImplementedException (string message) : base (message)
+		public NotImplementedException (string message) : base (message)
 		{
 		}
 	}
