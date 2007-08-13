@@ -10,7 +10,15 @@ namespace Db4oAdmin.Tests.Core
 
 		override protected void InstrumentAssembly(string path)
 		{
-			ShellUtilities.ProcessOutput output = ShellUtilities.shell(InstrumentationUtilityPath, BuildCommandLine(path));
+			ShellUtilities.ProcessOutput output = null;
+			if (System.Diagnostics.Debugger.IsAttached)
+			{
+				output = ShellUtilities.shellm(InstrumentationUtilityPath, BuildCommandLine(path));
+			}
+			else
+			{
+				output = ShellUtilities.shell(InstrumentationUtilityPath, BuildCommandLine(path));
+			}
 			CheckInstrumentationOutput(output);
 		}
 

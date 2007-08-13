@@ -1,6 +1,8 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using System;
 using System.IO;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Db4oAdmin.Tests.Core
 {
@@ -16,10 +18,41 @@ namespace Db4oAdmin.Tests.Core
 			public int ExitCode;
 			public string StdOut;
 			public string StdErr;
+
+			public ProcessOutput()
+			{	
+			}
+
+			public ProcessOutput(int exitCode, string stdout, string stderr)
+			{
+				ExitCode = exitCode;
+				StdOut = stdout;
+				StdErr = stderr;
+			}
 			
 			public override string ToString()
 			{
 				return StdOut + StdErr;
+			}
+		}
+
+		public static ProcessOutput shellm(string fname, params string[] args)
+		{
+			StringWriter stdout = new System.IO.StringWriter();
+			StringWriter stderr = new System.IO.StringWriter();
+			TextWriter saved = Console.Out;
+			TextWriter savedErr = Console.Error;
+			try
+			{
+				Console.SetOut(stdout);
+				Console.SetError(stderr);
+				Assembly.LoadFrom(fname).EntryPoint.Invoke(null, new object[] { args });
+				return new ProcessOutput(0, stdout.ToString(), stderr.ToString());
+			}
+			finally
+			{
+				Console.SetOut(saved);
+				Console.SetError(savedErr);
 			}
 		}
 
