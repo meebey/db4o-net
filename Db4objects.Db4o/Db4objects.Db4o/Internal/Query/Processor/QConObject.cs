@@ -61,16 +61,16 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			else
 			{
-				i_yapClass = a_trans.Stream().ProduceClassMetadata(a_trans.Reflector().ForObject(
-					a_object));
+				i_yapClass = a_trans.Container().ProduceClassMetadata(a_trans.Reflector().ForObject
+					(a_object));
 				if (i_yapClass != null)
 				{
 					i_object = i_yapClass.GetComparableObject(a_object);
 					if (a_object != i_object)
 					{
 						i_attributeProvider = i_yapClass.Config().QueryAttributeProvider();
-						i_yapClass = a_trans.Stream().ProduceClassMetadata(a_trans.Reflector().ForObject(
-							i_object));
+						i_yapClass = a_trans.Container().ProduceClassMetadata(a_trans.Reflector().ForObject
+							(i_object));
 					}
 					if (i_yapClass != null)
 					{
@@ -178,7 +178,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					{
 						i_selfComparison = true;
 					}
-					i_comparator = i_yapClass.PrepareComparison(i_object);
+					object transactionalObject = i_yapClass.WrapWithTransactionContext(Transaction(), 
+						i_object);
+					i_comparator = i_yapClass.PrepareComparison(transactionalObject);
 				}
 			}
 			base.EvaluateSelf();
@@ -208,7 +210,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_comparator == null)
 			{
-				return a_candidate.PrepareComparison(i_trans.Stream(), i_object);
+				return a_candidate.PrepareComparison(i_trans.Container(), i_object);
 			}
 			return i_comparator;
 		}
@@ -227,7 +229,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_objectID == 0)
 			{
-				i_objectID = i_trans.Stream().GetID1(i_object);
+				i_objectID = i_trans.Container().GetID(i_trans, i_object);
 				if (i_objectID == 0)
 				{
 					i_objectID = -1;
@@ -346,32 +348,33 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_attributeProvider != null)
 			{
-				i_candidates.i_trans.Stream().Activate1(i_candidates.i_trans, candidate);
+				i_candidates.i_trans.Container().ActivateDefaultDepth(i_candidates.i_trans, candidate
+					);
 				return i_attributeProvider.Attribute(candidate);
 			}
 			return candidate;
 		}
 
-		internal override void Unmarshall(Transaction a_trans)
+		internal override void Unmarshall(Transaction trans)
 		{
 			if (i_trans == null)
 			{
-				base.Unmarshall(a_trans);
+				base.Unmarshall(trans);
 				if (i_object == null)
 				{
 					i_comparator = Null.INSTANCE;
 				}
 				if (i_yapClassID != 0)
 				{
-					i_yapClass = a_trans.Stream().ClassMetadataForId(i_yapClassID);
+					i_yapClass = trans.Container().ClassMetadataForId(i_yapClassID);
 				}
 				if (i_field != null)
 				{
-					i_field.Unmarshall(a_trans);
+					i_field.Unmarshall(trans);
 				}
 				if (i_objectID > 0)
 				{
-					object obj = a_trans.Stream().GetByID(i_objectID);
+					object obj = trans.Container().GetByID(trans, i_objectID);
 					if (obj != null)
 					{
 						i_object = obj;

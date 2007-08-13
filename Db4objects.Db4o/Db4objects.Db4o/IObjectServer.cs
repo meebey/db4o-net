@@ -27,25 +27,31 @@ namespace Db4objects.Db4o
 	/// <seealso cref="IExtObjectServer">ExtObjectServer for extended functionality</seealso>
 	public interface IObjectServer
 	{
-		/// <summary>closes the <code>ObjectServer</code> and writes all cached data.</summary>
-		/// <remarks>
-		/// closes the <code>ObjectServer</code> and writes all cached data.
+		/// <summary>
+		/// closes the
+		/// <see cref="IObjectServer"></see>
+		/// and writes all cached data.
 		/// <br /><br />
-		/// </remarks>
+		/// </summary>
 		/// <returns>
 		/// true - denotes that the last instance connected to the
 		/// used database file was closed.
 		/// </returns>
 		bool Close();
 
-		/// <summary>returns an ObjectServer with extended functionality.</summary>
-		/// <remarks>
-		/// returns an ObjectServer with extended functionality.
+		/// <summary>
+		/// returns an
+		/// <see cref="IObjectServer"></see>
+		/// with extended functionality.
 		/// <br /><br />Use this method as a convient accessor to extended methods.
-		/// Every ObjectServer can be casted to an ExtObjectServer.
+		/// Every
+		/// <see cref="IObjectServer"></see>
+		/// can be casted to an
+		/// <see cref="IExtObjectServer">IExtObjectServer</see>
+		/// .
 		/// <br /><br />The functionality is split to two interfaces to allow newcomers to
 		/// focus on the essential methods.
-		/// </remarks>
+		/// </summary>
 		IExtObjectServer Ext();
 
 		/// <summary>grants client access to the specified user with the specified password.</summary>

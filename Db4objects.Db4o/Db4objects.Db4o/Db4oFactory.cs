@@ -54,18 +54,19 @@ namespace Db4objects.Db4o
 		/// returns the global db4o
 		/// <see cref="IConfiguration">IConfiguration</see>
 		/// context
-		/// for the running JVM session.
-		/// <br /><br />
+		/// for the running CLR session.
+		/// <br/><br/>
 		/// The
 		/// <see cref="IConfiguration">IConfiguration</see>
 		/// can be overriden in each
 		/// <see cref="IExtObjectContainer.Configure">ObjectContainer</see>
-		/// .<br /><br />
+		/// .<br/><br/>
 		/// </summary>
 		/// <returns>
 		/// the global
 		/// <see cref="IConfiguration">configuration</see>
 		/// context
+		/// 
 		/// </returns>
 		public static IConfiguration Configure()
 		{
@@ -210,11 +211,68 @@ namespace Db4objects.Db4o
 		public static IObjectContainer OpenClient(IConfiguration config, string hostName, 
 			int port, string user, string password)
 		{
+			return OpenClient(config, hostName, port, user, password, new PlainSocketFactory(
+				));
+		}
+
+		/// <summary>
+		/// opens an
+		/// <see cref="IObjectContainer">IObjectContainer</see>
+		/// client and connects it to the specified named server and port.
+		/// <br /><br />
+		/// The server needs to
+		/// <see cref="IObjectServer.GrantAccess">allow access</see>
+		/// for the specified user and password.
+		/// <br /><br />
+		/// A client
+		/// <see cref="IObjectContainer">IObjectContainer</see>
+		/// can be cast to
+		/// <see cref="IExtClient">IExtClient</see>
+		/// to use extended
+		/// <see cref="IExtObjectContainer">IExtObjectContainer</see>
+		/// 
+		/// and
+		/// <see cref="IExtClient">IExtClient</see>
+		/// methods.
+		/// <br /><br />
+		/// </summary>
+		/// <param name="config">
+		/// a custom
+		/// <see cref="IConfiguration">IConfiguration</see>
+		/// instance to be obtained via
+		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
+		/// </param>
+		/// <param name="hostName">the host name</param>
+		/// <param name="port">the port the server is using</param>
+		/// <param name="user">the user name</param>
+		/// <param name="password">the user password</param>
+		/// <returns>
+		/// an open
+		/// <see cref="IObjectContainer">IObjectContainer</see>
+		/// </returns>
+		/// <seealso cref="IObjectServer.GrantAccess">IObjectServer.GrantAccess</seealso>
+		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		/// <exception cref="OldFormatException">
+		/// open operation failed because the database file
+		/// is in old format and
+		/// <see cref="IConfiguration.AllowVersionUpdates">IConfiguration.AllowVersionUpdates
+		/// 	</see>
+		/// 
+		/// is set to false.
+		/// </exception>
+		/// <exception cref="InvalidPasswordException">
+		/// password supplied for the connection is
+		/// invalid.
+		/// </exception>
+		public static IObjectContainer OpenClient(IConfiguration config, string hostName, 
+			int port, string user, string password, INativeSocketFactory socketFactory)
+		{
 			if (user == null || password == null)
 			{
 				throw new InvalidPasswordException();
 			}
-			NetworkSocket networkSocket = new NetworkSocket(hostName, port);
+			NetworkSocket networkSocket = new NetworkSocket(socketFactory, hostName, port);
 			return new ClientObjectContainer(config, networkSocket, user, password, true);
 		}
 
@@ -228,48 +286,55 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// on the specified database file for local use.
-		/// <br /><br />A database file can only be opened once, subsequent attempts to open
+		/// <br/><br/>A database file can only be opened once, subsequent attempts to open
 		/// another
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// against the same file will result in
 		/// a
 		/// <see cref="DatabaseFileLockedException">DatabaseFileLockedException</see>
-		/// .<br /><br />
+		/// .<br/><br/>
 		/// Database files can only be accessed for readwrite access from one process
-		/// (one Java VM) at one time. All versions except for db4o mobile edition use an
+		/// at one time. All versions except for db4o mobile edition use an
 		/// internal mechanism to lock the database file for other processes.
-		/// <br /><br />
+		/// <br/><br/>
+		/// 
 		/// </summary>
 		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
 		/// <returns>
 		/// an open
 		/// <see cref="IObjectContainer">IObjectContainer</see>
+		/// 
 		/// </returns>
 		/// <seealso cref="IConfiguration.ReadOnly">IConfiguration.ReadOnly</seealso>
 		/// <seealso cref="IConfiguration.Encrypt">IConfiguration.Encrypt</seealso>
 		/// <seealso cref="IConfiguration.Password">IConfiguration.Password</seealso>
-		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
-		/// 	</exception>
+		/// <exception cref="Db4oIOException">
+		/// I/O operation failed or was unexpectedly interrupted.
+		/// 
+		/// </exception>
 		/// <exception cref="DatabaseFileLockedException">
 		/// the required database file is locked by
 		/// another process.
+		/// 
 		/// </exception>
 		/// <exception cref="IncompatibleFileFormatException">
 		/// runtime
 		/// <see cref="IConfiguration">configuration</see>
 		/// is not compatible
 		/// with the configuration of the database file.
+		/// 
 		/// </exception>
 		/// <exception cref="OldFormatException">
 		/// open operation failed because the database file
 		/// is in old format and
-		/// <see cref="IConfiguration.AllowVersionUpdates">IConfiguration.AllowVersionUpdates
-		/// 	</see>
-		/// 
+		/// <see cref="IConfiguration.AllowVersionUpdates">
+		/// IConfiguration.AllowVersionUpdates
+		/// </see>
 		/// is set to false.
 		/// </exception>
-		/// <exception cref="DatabaseReadOnlyException">database was configured as read-only.
-		/// 	</exception>
+		/// <exception cref="DatabaseReadOnlyException">
+		/// database was configured as read-only.
+		/// </exception>
 		public static IObjectContainer OpenFile(string databaseFileName)
 		{
 			return OpenFile(CloneConfiguration(), databaseFileName);
@@ -279,54 +344,66 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// on the specified database file for local use.
-		/// <br /><br />A database file can only be opened once, subsequent attempts to open
+		/// <br/><br/>A database file can only be opened once, subsequent attempts to open
 		/// another
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// against the same file will result in
 		/// a
 		/// <see cref="DatabaseFileLockedException">DatabaseFileLockedException</see>
-		/// .<br /><br />
+		/// .<br/><br/>
 		/// Database files can only be accessed for readwrite access from one process
-		/// (one Java VM) at one time. All versions except for db4o mobile edition use an
+		/// at one time. All versions except for db4o mobile edition use an
 		/// internal mechanism to lock the database file for other processes.
-		/// <br /><br />
+		/// <br/><br/>
+		/// 
 		/// </summary>
 		/// <param name="config">
 		/// a custom
 		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
 		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
+		/// 
 		/// </param>
 		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
 		/// <returns>
 		/// an open
 		/// <see cref="IObjectContainer">IObjectContainer</see>
+		/// 
 		/// </returns>
 		/// <seealso cref="IConfiguration.ReadOnly">IConfiguration.ReadOnly</seealso>
 		/// <seealso cref="IConfiguration.Encrypt">IConfiguration.Encrypt</seealso>
 		/// <seealso cref="IConfiguration.Password">IConfiguration.Password</seealso>
-		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
-		/// 	</exception>
+		/// <exception cref="Db4oIOException">
+		/// I/O operation failed or was unexpectedly interrupted.
+		/// 
+		/// </exception>
 		/// <exception cref="DatabaseFileLockedException">
 		/// the required database file is locked by
 		/// another process.
+		/// 
 		/// </exception>
 		/// <exception cref="IncompatibleFileFormatException">
 		/// runtime
 		/// <see cref="IConfiguration">configuration</see>
 		/// is not compatible
 		/// with the configuration of the database file.
+		/// 
 		/// </exception>
 		/// <exception cref="OldFormatException">
 		/// open operation failed because the database file
 		/// is in old format and
-		/// <see cref="IConfiguration.AllowVersionUpdates">IConfiguration.AllowVersionUpdates
-		/// 	</see>
+		/// <see cref="IConfiguration.AllowVersionUpdates">
+		/// IConfiguration.AllowVersionUpdates
+		/// 
+		/// </see>
 		/// 
 		/// is set to false.
+		/// 
 		/// </exception>
-		/// <exception cref="DatabaseReadOnlyException">database was configured as read-only.
-		/// 	</exception>
+		/// <exception cref="DatabaseReadOnlyException">
+		/// database was configured as read-only.
+		/// 
+		/// </exception>
 		public static IObjectContainer OpenFile(IConfiguration config, string databaseFileName
 			)
 		{
@@ -461,6 +538,71 @@ namespace Db4objects.Db4o
 		public static IObjectServer OpenServer(IConfiguration config, string databaseFileName
 			, int port)
 		{
+			return OpenServer(config, databaseFileName, port, new PlainSocketFactory());
+		}
+
+		/// <summary>
+		/// opens an
+		/// <see cref="IObjectServer">IObjectServer</see>
+		/// on the specified database file and port.
+		/// <br /><br />
+		/// If the server does not need to listen on a port because it will only be used
+		/// in embedded mode with
+		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
+		/// , specify '0' as the
+		/// port number.
+		/// </summary>
+		/// <param name="config">
+		/// a custom
+		/// <see cref="IConfiguration">IConfiguration</see>
+		/// instance to be obtained via
+		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
+		/// </param>
+		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
+		/// <param name="port">
+		/// the port to be used, or 0, if the server should not open a port,
+		/// because it will only be used with
+		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
+		/// </param>
+		/// <param name="socketFactory">
+		/// the
+		/// <see cref="INativeSocketFactory">INativeSocketFactory</see>
+		/// to be used for socket creation
+		/// </param>
+		/// <returns>
+		/// an
+		/// <see cref="IObjectServer">IObjectServer</see>
+		/// listening
+		/// on the specified port.
+		/// </returns>
+		/// <seealso cref="IConfiguration.ReadOnly">IConfiguration.ReadOnly</seealso>
+		/// <seealso cref="IConfiguration.Encrypt">IConfiguration.Encrypt</seealso>
+		/// <seealso cref="IConfiguration.Password">IConfiguration.Password</seealso>
+		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		/// <exception cref="DatabaseFileLockedException">
+		/// the required database file is locked by
+		/// another process.
+		/// </exception>
+		/// <exception cref="IncompatibleFileFormatException">
+		/// runtime
+		/// <see cref="IConfiguration">configuration</see>
+		/// is not compatible
+		/// with the configuration of the database file.
+		/// </exception>
+		/// <exception cref="OldFormatException">
+		/// open operation failed because the database file
+		/// is in old format and
+		/// <see cref="IConfiguration.AllowVersionUpdates">IConfiguration.AllowVersionUpdates
+		/// 	</see>
+		/// 
+		/// is set to false.
+		/// </exception>
+		/// <exception cref="DatabaseReadOnlyException">database was configured as read-only.
+		/// 	</exception>
+		public static IObjectServer OpenServer(IConfiguration config, string databaseFileName
+			, int port, INativeSocketFactory socketFactory)
+		{
 			LocalObjectContainer stream = (LocalObjectContainer)OpenFile(config, databaseFileName
 				);
 			if (stream == null)
@@ -469,7 +611,7 @@ namespace Db4objects.Db4o
 			}
 			lock (stream.Lock())
 			{
-				return new ObjectServerImpl(stream, port);
+				return new ObjectServerImpl(stream, port, socketFactory);
 			}
 		}
 

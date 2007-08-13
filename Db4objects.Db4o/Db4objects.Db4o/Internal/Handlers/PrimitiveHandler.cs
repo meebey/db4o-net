@@ -211,13 +211,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract int LinkLength();
 
-		public void Defrag(MarshallerFamily mf, ReaderPair readers, bool redirect)
+		public void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect)
 		{
 			int linkLength = LinkLength();
 			readers.IncrementOffset(linkLength);
 		}
 
-		public virtual void DefragIndexEntry(ReaderPair readers)
+		public virtual void DefragIndexEntry(BufferPair readers)
 		{
 			try
 			{

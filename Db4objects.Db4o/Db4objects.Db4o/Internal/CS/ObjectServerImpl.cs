@@ -45,8 +45,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private SimpleTimer _houseKeepingTimer;
 
-		public ObjectServerImpl(LocalObjectContainer container, int port)
+		private readonly INativeSocketFactory _socketFactory;
+
+		public ObjectServerImpl(LocalObjectContainer container, int port, INativeSocketFactory
+			 socketFactory)
 		{
+			_socketFactory = socketFactory;
 			_container = container;
 			_transactionPool = new ClientTransactionPool(container);
 			_port = port;
@@ -118,7 +122,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			try
 			{
-				_serverSocket = new ServerSocket4(_port);
+				_serverSocket = new ServerSocket4(_socketFactory, _port);
 			}
 			catch (IOException e)
 			{
@@ -134,7 +138,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void EnsureLoadStaticClass()
 		{
-			_container.ProduceClassMetadata(_container.i_handlers.ICLASS_STATICCLASS);
+			_container.ProduceClassMetadata(_container._handlers.ICLASS_STATICCLASS);
 		}
 
 		private void ConfigureObjectServer()
@@ -274,7 +278,7 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (this)
 			{
 				CheckClosed();
-				lock (_container.i_lock)
+				lock (_container._lock)
 				{
 					User existing = GetUser(userName);
 					if (existing != null)
@@ -339,10 +343,7 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (this)
 			{
 				CheckClosed();
-				ClientObjectContainer client = new ClientObjectContainer(config, OpenClientSocket
-					(), Const4.EMBEDDED_CLIENT_USER + (i_threadIDGen - 1), string.Empty, false);
-				client.BlockSize(_container.BlockSize());
-				return client;
+				return new EmbeddedClientObjectContainer(_container);
 			}
 		}
 
@@ -381,7 +382,7 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (this)
 			{
 				CheckClosed();
-				lock (_container.i_lock)
+				lock (_container._lock)
 				{
 					DeleteUsers(userName);
 					_container.Commit();

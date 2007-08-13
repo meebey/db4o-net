@@ -28,7 +28,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			Configure(config);
-			IObjectServer server = Db4oFactory.OpenServer(config, DatabaseFile(), _port);
+			string fileName = DatabaseFile();
+			File4.Delete(fileName);
+			IObjectServer server = Db4oFactory.OpenServer(config, fileName, _port);
 			try
 			{
 				server.GrantAccess("db4o", "db4o");
@@ -37,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			finally
 			{
 				server.Close();
-				File4.Delete(DatabaseFile());
+				File4.Delete(fileName);
 			}
 		}
 

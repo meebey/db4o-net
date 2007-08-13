@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 	{
 		protected Slot _current;
 
-		public virtual void DefragIndexEntry(ReaderPair readers)
+		public virtual void DefragIndexEntry(BufferPair readers)
 		{
 			throw new NotImplementedException();
 		}

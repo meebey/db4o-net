@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(Db4oDatabaseTestCase) };
+			return new Type[] { typeof(Db4oDatabaseTestCase), typeof(RefreshTestCase) };
 		}
 	}
 }

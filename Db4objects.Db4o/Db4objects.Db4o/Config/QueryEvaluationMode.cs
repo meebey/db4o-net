@@ -5,18 +5,14 @@ using Db4objects.Db4o.Config;
 
 namespace Db4objects.Db4o.Config
 {
-	/// <summary>
-	/// This class provides static constants for the query evaluation
-	/// modes that db4o supports.
-	/// </summary>
-	/// <remarks>
+	/// <exclude>
 	/// This class provides static constants for the query evaluation
 	/// modes that db4o supports.
 	/// <br /><br /><b>For detailed documentation please see
 	/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
 	/// 	</see>
 	/// </b>
-	/// </remarks>
+	/// </exclude>
 	public class QueryEvaluationMode
 	{
 		private readonly string _id;

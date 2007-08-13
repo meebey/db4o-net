@@ -209,8 +209,8 @@ namespace Db4objects.Db4o.Internal
 		internal virtual object Instantiate(ObjectContainerBase a_stream, object a_toTranslate
 			)
 		{
-			return ((IObjectConstructor)_config.Get(TRANSLATOR)).OnInstantiate(a_stream, a_toTranslate
-				);
+			return ((IObjectConstructor)_config.Get(TRANSLATOR)).OnInstantiate((IInternalObjectContainer
+				)a_stream, a_toTranslate);
 		}
 
 		internal virtual bool Instantiates()

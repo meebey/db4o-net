@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public sealed class ObjectHeader
 	{
-		private readonly ClassMetadata _yapClass;
+		private readonly Db4objects.Db4o.Internal.ClassMetadata _classMetadata;
 
 		public readonly MarshallerFamily _marshallerFamily;
 
@@ -19,8 +19,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 		}
 
-		public ObjectHeader(ClassMetadata yapClass, Db4objects.Db4o.Internal.Buffer reader
-			) : this(null, yapClass, reader)
+		public ObjectHeader(Db4objects.Db4o.Internal.ClassMetadata yapClass, Db4objects.Db4o.Internal.Buffer
+			 reader) : this(null, yapClass, reader)
 		{
 		}
 
@@ -28,24 +28,24 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 		}
 
-		public ObjectHeader(ObjectContainerBase stream, ClassMetadata yc, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public ObjectHeader(ObjectContainerBase stream, Db4objects.Db4o.Internal.ClassMetadata
+			 yc, Db4objects.Db4o.Internal.Buffer reader)
 		{
 			int classID = reader.ReadInt();
 			_marshallerFamily = ReadMarshallerFamily(reader, classID);
 			classID = NormalizeID(classID);
-			_yapClass = (yc != null ? yc : stream.ClassMetadataForId(classID));
+			_classMetadata = (yc != null ? yc : stream.ClassMetadataForId(classID));
 			_headerAttributes = ReadAttributes(_marshallerFamily, reader);
 		}
 
-		public static Db4objects.Db4o.Internal.Marshall.ObjectHeader Defrag(ReaderPair readers
+		public static Db4objects.Db4o.Internal.Marshall.ObjectHeader Defrag(BufferPair readers
 			)
 		{
 			Db4objects.Db4o.Internal.Buffer source = readers.Source();
 			Db4objects.Db4o.Internal.Buffer target = readers.Target();
 			Db4objects.Db4o.Internal.Marshall.ObjectHeader header = new Db4objects.Db4o.Internal.Marshall.ObjectHeader
-				(readers.Context().SystemTrans().Stream(), null, source);
-			int newID = readers.Mapping().MappedID(header.YapClass().GetID());
+				(readers.Context().SystemTrans().Container(), null, source);
+			int newID = readers.Mapping().MappedID(header.ClassMetadata().GetID());
 			header._marshallerFamily._object.WriteObjectClassID(target, newID);
 			header._marshallerFamily._object.SkipMarshallerInfo(target);
 			ReadAttributes(header._marshallerFamily, target);
@@ -86,9 +86,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return (id < 0 ? -id : id);
 		}
 
-		public ClassMetadata YapClass()
+		public Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
 		{
-			return _yapClass;
+			return _classMetadata;
 		}
 	}
 }

@@ -110,7 +110,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			if (trans != null)
 			{
 				_trans = trans;
-				_stream = trans.Stream();
+				_stream = trans.Container();
 			}
 			_repository.SetTransaction(trans);
 		}
@@ -244,6 +244,10 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return ForGenericObject((GenericObject)obj);
 			}
+			if (obj is GenericArray)
+			{
+				return ((GenericArray)obj)._clazz;
+			}
 			return _delegate.ForObject(obj);
 		}
 
@@ -313,14 +317,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private IReflectClassPredicate ClassPredicate(Type clazz)
 		{
 			IReflectClass collectionClass = ForClass(clazz);
-			IReflectClassPredicate predicate = new _IReflectClassPredicate_306(this, collectionClass
+			IReflectClassPredicate predicate = new _IReflectClassPredicate_309(this, collectionClass
 				);
 			return predicate;
 		}
 
-		private sealed class _IReflectClassPredicate_306 : IReflectClassPredicate
+		private sealed class _IReflectClassPredicate_309 : IReflectClassPredicate
 		{
-			public _IReflectClassPredicate_306(GenericReflector _enclosing, IReflectClass collectionClass
+			public _IReflectClassPredicate_309(GenericReflector _enclosing, IReflectClass collectionClass
 				)
 			{
 				this._enclosing = _enclosing;
@@ -381,7 +385,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				Db4objects.Db4o.Reflect.Generic.GenericClass clazz = (Db4objects.Db4o.Reflect.Generic.GenericClass
 					)i.Current;
-				if (!_stream.i_handlers.ICLASS_INTERNAL.IsAssignableFrom(clazz))
+				if (!_stream._handlers.ICLASS_INTERNAL.IsAssignableFrom(clazz))
 				{
 					if (!clazz.IsSecondClass())
 					{
@@ -425,8 +429,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				claxx = new Db4objects.Db4o.Reflect.Generic.GenericClass(this, null, name, null);
 				Register(claxx);
-				claxx.InitFields(new GenericField[] { new GenericField(null, null, true, false, false
-					) });
+				claxx.InitFields(new GenericField[] { new GenericField(null, null, true) });
 				claxx.SetConverter(converter);
 			}
 			claxx.SetSecondClass();

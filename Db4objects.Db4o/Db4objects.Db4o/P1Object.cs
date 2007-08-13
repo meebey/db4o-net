@@ -34,11 +34,11 @@ namespace Db4objects.Db4o
 			}
 			if (a_depth < 0)
 			{
-				Stream().Activate1(i_trans, a_obj);
+				Stream().ActivateDefaultDepth(i_trans, a_obj);
 			}
 			else
 			{
-				Stream().Activate1(i_trans, a_obj, a_depth);
+				Stream().Activate(i_trans, a_obj, a_depth);
 			}
 		}
 
@@ -65,11 +65,11 @@ namespace Db4objects.Db4o
 			}
 			if (i_yapObject == null)
 			{
-				i_yapObject = Stream().ReferenceForObject(this);
+				i_yapObject = i_trans.ReferenceForObject(this);
 				if (i_yapObject == null)
 				{
-					Stream().Set(this);
-					i_yapObject = Stream().ReferenceForObject(this);
+					Stream().Set(i_trans, this);
+					i_yapObject = i_trans.ReferenceForObject(this);
 				}
 			}
 			if (ValidYapObject())
@@ -99,7 +99,7 @@ namespace Db4objects.Db4o
 			}
 			if (i_yapObject == null)
 			{
-				i_yapObject = Stream().ReferenceForObject(this);
+				i_yapObject = i_trans.ReferenceForObject(this);
 			}
 			if (ValidYapObject())
 			{
@@ -111,7 +111,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_trans != null)
 			{
-				Stream().Delete(a_obj);
+				Stream().Delete(i_trans, a_obj);
 			}
 		}
 
@@ -121,7 +121,7 @@ namespace Db4objects.Db4o
 			{
 				return 0;
 			}
-			return Stream().GetID(a_obj);
+			return Stream().GetID(i_trans, a_obj);
 		}
 
 		protected virtual Transaction GetTrans()
@@ -141,19 +141,19 @@ namespace Db4objects.Db4o
 		[System.ObsoleteAttribute]
 		protected virtual object Replicate(Transaction fromTrans, Transaction toTrans)
 		{
-			ObjectContainerBase fromStream = fromTrans.Stream();
-			ObjectContainerBase toStream = toTrans.Stream();
-			MigrationConnection mgc = fromStream.i_handlers.MigrationConnection();
+			ObjectContainerBase fromStream = fromTrans.Container();
+			ObjectContainerBase toStream = toTrans.Container();
+			MigrationConnection mgc = fromStream._handlers.MigrationConnection();
 			lock (fromStream.Lock())
 			{
-				int id = toStream.OldReplicationHandles(this);
+				int id = toStream.OldReplicationHandles(toTrans, this);
 				if (id == -1)
 				{
 					return this;
 				}
 				if (id > 0)
 				{
-					return toStream.GetByID(id);
+					return toStream.GetByID(toTrans, id);
 				}
 				if (mgc != null)
 				{
@@ -221,11 +221,11 @@ namespace Db4objects.Db4o
 			}
 			if (i_yapObject == null)
 			{
-				i_yapObject = i_trans.Stream().ReferenceForObject(this);
+				i_yapObject = i_trans.ReferenceForObject(this);
 				if (i_yapObject == null)
 				{
-					i_trans.Stream().SetInternal(i_trans, this, true);
-					i_yapObject = i_trans.Stream().ReferenceForObject(this);
+					i_trans.Container().SetInternal(i_trans, this, true);
+					i_yapObject = i_trans.ReferenceForObject(this);
 					return;
 				}
 			}
@@ -282,7 +282,7 @@ namespace Db4objects.Db4o
 
 		private ObjectContainerBase Stream()
 		{
-			return i_trans.Stream();
+			return i_trans.Container();
 		}
 	}
 }

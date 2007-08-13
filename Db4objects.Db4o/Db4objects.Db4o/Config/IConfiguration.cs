@@ -10,27 +10,181 @@ using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Config
 {
-	/// <summary>configuration interface.</summary>
+	/// <member name="ActivationDepth(int)">
+	/// <doc>
+	/// <summary>sets the activation depth to the specified value.</summary>
 	/// <remarks>
-	/// configuration interface.
-	/// <br /><br />This interface contains methods to configure db4o.<br /><br />
-	/// The global Configuration context is available with
-	/// <see cref="Db4oFactory.Configure">Db4oFactory.Configure</see>
+	/// sets the activation depth to the specified value.
+	/// <br/><br/><b>Why activation?</b><br/>
+	/// When objects are instantiated from the database, the instantiation of member
+	/// objects needs to be limited to a certain depth. Otherwise a single object
+	/// could lead to loading the complete database into memory, if all objects where
+	/// reachable from a single root object.<br/><br/>
+	/// db4o uses the concept "depth", the number of field-to-field hops an object
+	/// is away from another object. <b>
+	/// The preconfigured "activation depth" db4o uses
+	/// in the default setting is 5.
+	/// </b>
+	/// <br/><br/>Whenever an application iterates through the
+	/// <see cref="IObjectSet">IObjectSet</see>
+	/// of a query result, the result objects
+	/// will be activated to the configured activation depth.<br/><br/>
+	/// A concrete example with the preconfigured activation depth of 5:<br/>
+	/// <pre>
+	/// Object foo is the result of a query, it is delivered by the ObjectSet
+	/// object foo = objectSet.Next();
+	/// </pre>
+	/// foo.member1.member2.member3.member4.member5 will be a valid object<br/>
+	/// foo, member1, member2, member3 and member4 will be activated<br/>
+	/// member5 will be deactivated, all of it's members will be null<br/>
+	/// member5 can be activated at any time by calling
+	/// <see cref="IObjectContainer.Activate">ObjectContainer#activate(member5, depth)</see>
 	/// .
-	/// When an ObjectContainer or ObjectServer is opened, the global Configuration
-	/// context is cloned and copied into the ObjectContainer/ObjectServer.
-	/// That means every ObjectContainer/ObjectServer gets it's own copy of
-	/// configuration settings.<br /><br />
-	/// <b>Most configuration settings should be set before opening an
-	/// ObjectContainer/ObjectServer</b>.
-	/// <br /><br />Some configuration settings can be modified on an open
-	/// ObjectContainer/ObjectServer. The local Configuration context is
-	/// available with
-	/// <see cref="IExtObjectContainer.Configure">IExtObjectContainer.Configure</see>
-	/// and
-	/// <see cref="IExtObjectServer.Configure">IExtObjectServer.Configure</see>
-	/// .
+	/// <br/><br/>
+	/// Note that raising the global activation depth will consume more memory and
+	/// have negative effects on the performance of first-time retrievals. Lowering
+	/// the global activation depth needs more individual activation work but can
+	/// increase performance of queries.<br/><br/>
+	/// <see cref="IObjectContainer.Deactivate">
+	/// ObjectContainer#deactivate(Object, depth)
+	/// </see>
+	/// can be used to manually free memory by deactivating objects.<br/><br/>
 	/// </remarks>
+	/// <param name="depth">the desired global activation depth.</param>
+	/// <seealso cref="IObjectClass.MaximumActivationDepth">
+	/// configuring classes individually
+	/// </seealso>
+	/// 
+	/// </doc>
+	/// </member>
+	/// <member name="AddAlias(IAlias)">
+	/// <doc>
+	/// <summary>adds a new Alias for a class, namespace or package.</summary>
+	/// <remarks>
+	/// adds a new Alias for a class, namespace or package.
+	/// <br/><br/>Aliases can be used to persist classes in the running
+	/// application to different persistent classes in a database file
+	/// or on a db4o server.
+	/// <br/><br/>Two simple Alias implementations are supplied along with
+	/// db4o:<br/>
+	/// -
+	/// <see cref="TypeAlias">TypeAlias</see>
+	/// provides an #equals() resolver to match
+	/// names directly.<br/>
+	/// -
+	/// <see cref="WildcardAlias">WildcardAlias</see>
+	/// allows simple pattern matching
+	/// with one single '*' wildcard character.<br/>
+	/// <br/>
+	/// It is possible to create
+	/// own complex
+	/// <see cref="IAlias">IAlias</see>
+	/// constructs by creating own resolvers
+	/// that implement the
+	/// <see cref="IAlias">IAlias</see>
+	/// interface.
+	/// <br/><br/>
+	/// Four examples of concrete usecases:
+	/// <br/><br/>
+	/// <code>
+	/// <b>// Creating an Alias for a single class</b><br/>
+	/// Db4oFactory.Configure().AddAlias(<br/>
+	///   new TypeAlias("Tutorial.F1.Pilot", "Tutorial.F1.Driver"));<br/>
+	/// <br/><br/>
+	/// <b>// Accessing a Java package from a .NET assembly</b><br/>
+	/// Db4o.configure().addAlias(<br/>
+	///   new WildcardAlias(<br/>
+	///     "com.f1.*",<br/>
+	///     "Tutorial.F1.*, Tutorial"));<br/>
+	/// <br/><br/>
+	/// <b>// Using a different local .NET assembly</b><br/>
+	/// Db4o.configure().addAlias(<br/>
+	///   new WildcardAlias(<br/>
+	///     "Tutorial.F1.*, Tutorial",<br/>
+	///     "Tutorial.F1.*, RaceClient"));<br/>
+	/// </code>
+	/// <br/><br/>Aliases that translate the persistent name of a class to
+	/// a name that already exists as a persistent name in the database
+	/// (or on the server) are not permitted and will throw an exception
+	/// when the database file is opened.
+	/// <br/><br/>Aliases should be configured before opening a database file
+	/// or connecting to a server.
+	/// </remarks>
+	/// 
+	/// </doc>
+	/// </member>
+	/// 
+	/// <member name="AutomaticShutDown(boo)">
+	/// <doc>
+	/// <summary>turns automatic shutdown of the engine on and off.</summary>
+	/// <remarks>
+	/// turns automatic shutdown of the engine on and off.
+	/// </remarks>
+	/// <param name="flag">whether db4o should shut down automatically.</param>
+	/// </doc>
+	/// </member>
+	/// 
+	/// <member name="LockDatabaseFile(bool)">
+	/// <doc>
+	/// <summary>can be used to turn the database file locking thread off.</summary>
+	/// <param name="flag">
+	/// <code>false</code> to turn database file locking off.
+	/// </param>
+	/// 
+	/// </doc>
+	/// </member>
+	/// 
+	/// <member name="ReflectWith(IReflector)">
+	/// <doc>
+	/// <summary>configures the use of a specially designed reflection implementation.</summary>
+	/// <remarks>
+	/// configures the use of a specially designed reflection implementation.
+	/// <br/><br/>
+	/// db4o internally uses System.Reflection by default. On platforms that
+	/// do not support this package, customized implementations may be written
+	/// to supply all the functionality of the interfaces in System.Reflection
+	/// namespace. This method can be used to install a custom reflection
+	/// implementation.
+	/// 
+	/// </remarks>
+	/// 
+	/// </doc>
+	/// </member>
+	/// 
+	/// <member name="WeakReferenceCollectionInterval(int)">
+	/// <doc>
+	/// <summary>configures the timer for WeakReference collection.</summary>
+	/// <remarks>
+	/// configures the timer for WeakReference collection.
+	/// <br/><br/>The default setting is 1000 milliseconds.
+	/// <br/><br/>Configure this setting to zero to turn WeakReference
+	/// collection off.
+	/// 
+	/// </remarks>
+	/// <param name="milliseconds">the time in milliseconds</param>
+	/// </doc>
+	/// </member>
+	/// 
+	/// <member name="WeakReferences(bool)">
+	/// <doc>
+	/// <summary>turns weak reference management on or off.</summary>
+	/// <remarks>
+	/// turns weak reference management on or off.
+	/// <br/><br/>
+	/// This method must be called before opening a database.
+	/// <br/><br/>
+	/// Performance may be improved by running db4o without using weak
+	/// references durring memory management at the cost of higher
+	/// memory consumption or by alternatively implementing a manual
+	/// memory management scheme using
+	/// <see cref="IExtObjectContainer.Purge">IExtObjectContainer.Purge</see>
+	/// <br/><br/>Setting the value to <code>false</code> causes db4o to use hard
+	/// references to objects, preventing the garbage collection process
+	/// from disposing of unused objects.
+	/// <br/><br/>The default setting is <code>true</code>.
+	/// </remarks>
+	/// </doc>
+	/// </member>
 	public interface IConfiguration
 	{
 		/// <summary>sets the activation depth to the specified value.</summary>
@@ -113,7 +267,7 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="IAlias">IAlias</see>
 		/// interface.
 		/// <br /><br />
-		/// Four examples of concrete usecases:
+		/// Examples of concrete usecases:
 		/// <br /><br />
 		/// <code>
 		/// <b>// Creating an Alias for a single class</b><br />
@@ -123,14 +277,8 @@ namespace Db4objects.Db4o.Config
 		/// <b>// Accessing a .NET assembly from a Java package</b><br />
 		/// Db4o.configure().addAlias(<br />
 		/// &#160;&#160;new WildcardAlias(<br />
-		/// &#160;&#160;&#160;&#160;"com.f1.*, F1RaceAssembly",<br />
+		/// &#160;&#160;&#160;&#160;"Tutorial.F1.*, Tutorial",<br />
 		/// &#160;&#160;&#160;&#160;"com.f1.*"));<br />
-		/// <br /><br />
-		/// <b>// Using a different local .NET assembly</b><br />
-		/// Db4o.configure().addAlias(<br />
-		/// &#160;&#160;new WildcardAlias(<br />
-		/// &#160;&#160;&#160;&#160;"com.f1.*, F1RaceAssembly",<br />
-		/// &#160;&#160;&#160;&#160;"com.f1.*, RaceClient"));<br />
 		/// <br /><br />
 		/// <b>// Mapping a Java package onto another</b><br />
 		/// Db4o.configure().addAlias(<br />
@@ -351,7 +499,7 @@ namespace Db4objects.Db4o.Config
 		/// configures the use of encryption.
 		/// <br /><br />This method needs to be called <b>before</b> a database file
 		/// is created with the first
-		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4oFactory.OpenFile">Db4oFactory.OpenFile</see>
 		/// .
 		/// <br /><br />If encryption is set to true,
 		/// you need to supply a password to seed the encryption mechanism.<br /><br />
@@ -589,7 +737,7 @@ namespace Db4objects.Db4o.Config
 		/// protects the database file with a password.
 		/// <br /><br />To set a password for a database file, this method needs to be
 		/// called <b>before</b> a database file is created with the first
-		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4oFactory.OpenFile">Db4oFactory.OpenFile</see>
 		/// .
 		/// <br /><br />All further attempts to open
 		/// the file, are required to set the same password.<br /><br />The password
@@ -700,7 +848,7 @@ namespace Db4objects.Db4o.Config
 		/// where db4o is to print its event messages.
 		/// <br /><br />Messages are useful for debugging purposes and for learning
 		/// to understand, how db4o works. The message level can be raised with
-		/// <see cref="IConfiguration.MessageLevel">Db4o.configure().messageLevel()</see>
+		/// <see cref="IConfiguration.MessageLevel">IConfiguration.MessageLevel</see>
 		/// to produce more detailed messages.
 		/// <br /><br />Use <code>setOut(System.out)</code> to print messages to the
 		/// console.<br /><br />
@@ -729,7 +877,7 @@ namespace Db4objects.Db4o.Config
 		/// configures the storage format of Strings.
 		/// <br /><br />This method needs to be called <b>before</b> a database file
 		/// is created with the first
-		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4oFactory.OpenFile">Db4oFactory.OpenFile</see>
 		/// .
 		/// db4o database files keep their string format after creation.<br /><br />
 		/// Turning Unicode support off reduces the file storage space for strings
@@ -746,11 +894,11 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// specifies the global updateDepth.
 		/// <br /><br />see the documentation of
-		/// <see cref="IObjectContainer.Set">ObjectContainer.set()</see>
+		/// <see cref="IObjectContainer.Set"></see>
 		/// for further details.<br /><br />
 		/// The value be may be overridden for individual classes.<br /><br />
 		/// The default setting is 1: Only the object passed to
-		/// <see cref="IObjectContainer.Set">ObjectContainer.set()</see>
+		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
 		/// will be updated.<br /><br />
 		/// </remarks>
 		/// <param name="depth">the depth of the desired update.</param>

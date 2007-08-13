@@ -112,11 +112,11 @@ namespace Db4objects.Db4o.Internal
 				try
 				{
 					byte[] pwdbytes = new LatinStringIO().Write(fullpwd);
-					Db4objects.Db4o.Internal.Buffer encwriter = new StatefulBuffer(_container.GetTransaction
+					Db4objects.Db4o.Internal.Buffer encwriter = new StatefulBuffer(_container.Transaction
 						(), pwdbytes.Length + ENCRYPTION_PASSWORD_LENGTH);
 					encwriter.Append(pwdbytes);
 					encwriter.Append(new byte[ENCRYPTION_PASSWORD_LENGTH]);
-					_container.i_handlers.Decrypt(encwriter);
+					_container._handlers.Decrypt(encwriter);
 					System.Array.Copy(encwriter._buffer, 0, pwdtoken, 0, ENCRYPTION_PASSWORD_LENGTH);
 				}
 				catch (Exception exc)
@@ -185,7 +185,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				if (!nonZeroByte)
 				{
-					_container.i_handlers.OldEncryptionOff();
+					_container._handlers.OldEncryptionOff();
 				}
 				else
 				{
@@ -257,8 +257,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			TimerFileLock().CheckHeaderLock();
 			AddressChanged(_container.GetSlot(LENGTH).Address());
-			StatefulBuffer writer = _container.GetWriter(_container.GetTransaction(), _address
-				, LENGTH);
+			StatefulBuffer writer = _container.GetWriter(_container.Transaction(), _address, 
+				LENGTH);
 			IntHandler.WriteInt(LENGTH, writer);
 			for (int i = 0; i < 2; i++)
 			{
@@ -289,8 +289,8 @@ namespace Db4objects.Db4o.Internal
 		private void WritePointer()
 		{
 			TimerFileLock().CheckHeaderLock();
-			StatefulBuffer writer = _container.GetWriter(_container.GetTransaction(), 0, Const4
-				.ID_LENGTH);
+			StatefulBuffer writer = _container.GetWriter(_container.Transaction(), 0, Const4.
+				ID_LENGTH);
 			writer.MoveForward(2);
 			IntHandler.WriteInt(_address, writer);
 			writer.NoXByteCheck();

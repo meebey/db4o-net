@@ -13,52 +13,78 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public abstract class Transaction
 	{
-		protected Tree i_delete;
+		protected Tree _delete;
 
-		private List4 i_dirtyFieldIndexes;
+		private List4 _dirtyFieldIndexes;
 
 		protected readonly Db4objects.Db4o.Internal.Transaction _systemTransaction;
 
+		/// <summary>
+		/// This is the inside representation to operate against, the actual
+		/// file-based ObjectContainerBase or the client.
+		/// </summary>
+		/// <remarks>
+		/// This is the inside representation to operate against, the actual
+		/// file-based ObjectContainerBase or the client. For all calls
+		/// against this ObjectContainerBase the method signatures that take
+		/// a transaction have to be used.
+		/// </remarks>
 		private readonly ObjectContainerBase _container;
 
-		private List4 i_transactionListeners;
+		/// <summary>This is the outside representation to the user.</summary>
+		/// <remarks>
+		/// This is the outside representation to the user. This ObjectContainer
+		/// should use this transaction as it's main user transation, so it also
+		/// allows using the method signatures on ObjectContainer without a
+		/// transaction.
+		/// </remarks>
+		private IObjectContainer _objectContainer;
+
+		private List4 _transactionListeners;
+
+		private readonly TransactionalReferenceSystem _referenceSystem;
 
 		public Transaction(ObjectContainerBase container, Db4objects.Db4o.Internal.Transaction
-			 systemTransaction)
+			 systemTransaction, TransactionalReferenceSystem referenceSystem)
 		{
 			_container = container;
 			_systemTransaction = systemTransaction;
+			_referenceSystem = referenceSystem;
 		}
 
-		public virtual void AddDirtyFieldIndex(IndexTransaction a_xft)
+		public virtual void AddDirtyFieldIndex(IndexTransaction indexTransaction)
 		{
-			i_dirtyFieldIndexes = new List4(i_dirtyFieldIndexes, a_xft);
+			_dirtyFieldIndexes = new List4(_dirtyFieldIndexes, indexTransaction);
 		}
 
 		public void CheckSynchronization()
 		{
 		}
 
-		public virtual void AddTransactionListener(ITransactionListener a_listener)
+		public virtual void AddTransactionListener(ITransactionListener listener)
 		{
-			i_transactionListeners = new List4(i_transactionListeners, a_listener);
+			_transactionListeners = new List4(_transactionListeners, listener);
 		}
 
 		protected void ClearAll()
 		{
 			Clear();
-			i_dirtyFieldIndexes = null;
-			i_transactionListeners = null;
+			_dirtyFieldIndexes = null;
+			_transactionListeners = null;
 		}
 
 		protected abstract void Clear();
 
 		public virtual void Close(bool rollbackOnClose)
 		{
-			if (Stream() != null)
+			if (Container() != null)
 			{
 				CheckSynchronization();
-				Stream().ReleaseSemaphores(this);
+				Container().ReleaseSemaphores(this);
+				if (_referenceSystem != null)
+				{
+					Container().ReferenceSystemRegistry().RemoveReferenceSystem(_referenceSystem);
+				}
 			}
 			if (rollbackOnClose)
 			{
@@ -74,9 +100,9 @@ namespace Db4objects.Db4o.Internal
 			{
 				_systemTransaction.Commit4FieldIndexes();
 			}
-			if (i_dirtyFieldIndexes != null)
+			if (_dirtyFieldIndexes != null)
 			{
-				IEnumerator i = new Iterator4Impl(i_dirtyFieldIndexes);
+				IEnumerator i = new Iterator4Impl(_dirtyFieldIndexes);
 				while (i.MoveNext())
 				{
 					((IndexTransaction)i.Current).Commit();
@@ -87,14 +113,14 @@ namespace Db4objects.Db4o.Internal
 		protected virtual void CommitTransactionListeners()
 		{
 			CheckSynchronization();
-			if (i_transactionListeners != null)
+			if (_transactionListeners != null)
 			{
-				IEnumerator i = new Iterator4Impl(i_transactionListeners);
+				IEnumerator i = new Iterator4Impl(_transactionListeners);
 				while (i.MoveNext())
 				{
 					((ITransactionListener)i.Current).PreCommit();
 				}
-				i_transactionListeners = null;
+				_transactionListeners = null;
 			}
 		}
 
@@ -115,11 +141,11 @@ namespace Db4objects.Db4o.Internal
 					return false;
 				}
 			}
-			DeleteInfo info = (DeleteInfo)TreeInt.Find(i_delete, id);
+			DeleteInfo info = (DeleteInfo)TreeInt.Find(_delete, id);
 			if (info == null)
 			{
 				info = new DeleteInfo(id, @ref, cascade);
-				i_delete = Tree.Add(i_delete, info);
+				_delete = Tree.Add(_delete, info);
 				return true;
 			}
 			info._reference = @ref;
@@ -132,17 +158,17 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void DontDelete(int a_id)
 		{
-			if (i_delete == null)
+			if (_delete == null)
 			{
 				return;
 			}
-			i_delete = TreeInt.RemoveLike((TreeInt)i_delete, a_id);
+			_delete = TreeInt.RemoveLike((TreeInt)_delete, a_id);
 		}
 
 		internal virtual void DontRemoveFromClassIndex(int a_yapClassID, int a_id)
 		{
 			CheckSynchronization();
-			ClassMetadata yapClass = Stream().ClassMetadataForId(a_yapClassID);
+			ClassMetadata yapClass = Container().ClassMetadataForId(a_yapClassID);
 			yapClass.Index().Add(this, a_id);
 		}
 
@@ -150,24 +176,33 @@ namespace Db4objects.Db4o.Internal
 			 a_signature)
 		{
 			CheckSynchronization();
-			return Stream().GetUUIDIndex().GetHardObjectReferenceBySignature(this, a_uuid, a_signature
-				);
+			return Container().GetUUIDIndex().GetHardObjectReferenceBySignature(this, a_uuid, 
+				a_signature);
 		}
 
 		public abstract void ProcessDeletes();
 
+		public virtual IReferenceSystem ReferenceSystem()
+		{
+			if (_referenceSystem != null)
+			{
+				return _referenceSystem;
+			}
+			return ParentTransaction().ReferenceSystem();
+		}
+
 		public virtual IReflector Reflector()
 		{
-			return Stream().Reflector();
+			return Container().Reflector();
 		}
 
 		public abstract void Rollback();
 
 		protected virtual void RollbackFieldIndexes()
 		{
-			if (i_dirtyFieldIndexes != null)
+			if (_dirtyFieldIndexes != null)
 			{
-				IEnumerator i = new Iterator4Impl(i_dirtyFieldIndexes);
+				IEnumerator i = new Iterator4Impl(_dirtyFieldIndexes);
 				while (i.MoveNext())
 				{
 					((IndexTransaction)i.Current).Rollback();
@@ -178,14 +213,14 @@ namespace Db4objects.Db4o.Internal
 		protected virtual void RollBackTransactionListeners()
 		{
 			CheckSynchronization();
-			if (i_transactionListeners != null)
+			if (_transactionListeners != null)
 			{
-				IEnumerator i = new Iterator4Impl(i_transactionListeners);
+				IEnumerator i = new Iterator4Impl(_transactionListeners);
 				while (i.MoveNext())
 				{
 					((ITransactionListener)i.Current).PostRollback();
 				}
-				i_transactionListeners = null;
+				_transactionListeners = null;
 			}
 		}
 
@@ -264,13 +299,13 @@ namespace Db4objects.Db4o.Internal
 
 		public override string ToString()
 		{
-			return Stream().ToString();
+			return Container().ToString();
 		}
 
 		public abstract void WriteUpdateDeleteMembers(int id, ClassMetadata clazz, int typeInfo
 			, int cascade);
 
-		public ObjectContainerBase Stream()
+		public ObjectContainerBase Container()
 		{
 			return _container;
 		}
@@ -278,6 +313,94 @@ namespace Db4objects.Db4o.Internal
 		public virtual Db4objects.Db4o.Internal.Transaction ParentTransaction()
 		{
 			return _systemTransaction;
+		}
+
+		public virtual void RollbackReferenceSystem()
+		{
+			ReferenceSystem().Rollback();
+		}
+
+		public virtual void CommitReferenceSystem()
+		{
+			ReferenceSystem().Commit();
+		}
+
+		public virtual void AddNewReference(ObjectReference @ref)
+		{
+			ReferenceSystem().AddNewReference(@ref);
+		}
+
+		public object ObjectForIdFromCache(int id)
+		{
+			ObjectReference @ref = ReferenceForId(id);
+			if (@ref == null)
+			{
+				return null;
+			}
+			object candidate = @ref.GetObject();
+			if (candidate == null)
+			{
+				RemoveReference(@ref);
+			}
+			return candidate;
+		}
+
+		public ObjectReference ReferenceForId(int id)
+		{
+			ObjectReference @ref = ReferenceSystem().ReferenceForId(id);
+			if (@ref != null)
+			{
+				return @ref;
+			}
+			if (ParentTransaction() != null)
+			{
+				return ParentTransaction().ReferenceForId(id);
+			}
+			return null;
+		}
+
+		public ObjectReference ReferenceForObject(object obj)
+		{
+			ObjectReference @ref = ReferenceSystem().ReferenceForObject(obj);
+			if (@ref != null)
+			{
+				return @ref;
+			}
+			if (ParentTransaction() != null)
+			{
+				return ParentTransaction().ReferenceForObject(obj);
+			}
+			return null;
+		}
+
+		public void RemoveReference(ObjectReference @ref)
+		{
+			ReferenceSystem().RemoveReference(@ref);
+			@ref.SetID(-1);
+			Platform4.KillYapRef(@ref.GetObjectReference());
+		}
+
+		public void RemoveObjectFromReferenceSystem(object obj)
+		{
+			ObjectReference @ref = ReferenceForObject(obj);
+			if (@ref != null)
+			{
+				RemoveReference(@ref);
+			}
+		}
+
+		public virtual void SetOutSideRepresentation(IObjectContainer objectContainer)
+		{
+			_objectContainer = objectContainer;
+		}
+
+		public virtual IObjectContainer ObjectContainer()
+		{
+			if (_objectContainer != null)
+			{
+				return _objectContainer;
+			}
+			return (IObjectContainer)_container;
 		}
 	}
 }

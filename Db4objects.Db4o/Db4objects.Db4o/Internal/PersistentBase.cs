@@ -101,8 +101,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			try
 			{
-				Db4objects.Db4o.Internal.Buffer reader = trans.Stream().ReadReaderByID(trans, GetID
-					());
+				Db4objects.Db4o.Internal.Buffer reader = trans.Container().ReadReaderByID(trans, 
+					GetID());
 				ReadThis(trans, reader);
 				SetStateOnRead(reader);
 			}
@@ -154,8 +154,9 @@ namespace Db4objects.Db4o.Internal
 			}
 			try
 			{
-				LocalObjectContainer stream = (LocalObjectContainer)trans.Stream();
+				LocalObjectContainer stream = (LocalObjectContainer)trans.Container();
 				int length = OwnLength();
+				length = stream.BlockAlignedBytes(length);
 				Db4objects.Db4o.Internal.Buffer writer = new Db4objects.Db4o.Internal.Buffer(length
 					);
 				Slot slot;
@@ -187,7 +188,7 @@ namespace Db4objects.Db4o.Internal
 		private void WriteToFile(Transaction trans, Db4objects.Db4o.Internal.Buffer writer
 			, Slot slot)
 		{
-			LocalObjectContainer container = (LocalObjectContainer)trans.Stream();
+			LocalObjectContainer container = (LocalObjectContainer)trans.Container();
 			WriteThis(trans, writer);
 			writer.WriteEncrypt(container, slot.Address(), 0);
 			if (IsActive())

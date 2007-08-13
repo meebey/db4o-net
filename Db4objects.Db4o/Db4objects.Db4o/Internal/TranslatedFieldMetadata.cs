@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal
 			 translator) : base(containingClass, translator)
 		{
 			i_translator = translator;
-			ObjectContainerBase stream = containingClass.GetStream();
+			ObjectContainerBase stream = containingClass.Container();
 			Configure(stream.Reflector().ForClass(TranslatorStoredClass(translator)), false);
 		}
 
@@ -24,21 +24,20 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		internal override void Deactivate(Transaction a_trans, object a_onObject, int a_depth
-			)
+		internal override void Deactivate(Transaction trans, object onObject, int depth)
 		{
-			if (a_depth > 0)
+			if (depth > 0)
 			{
-				CascadeActivation(a_trans, a_onObject, a_depth, false);
+				CascadeActivation(trans, onObject, depth, false);
 			}
-			SetOn(a_trans.Stream(), a_onObject, null);
+			SetOn(trans, onObject, null);
 		}
 
 		public override object GetOn(Transaction a_trans, object a_OnObject)
 		{
 			try
 			{
-				return i_translator.OnStore(a_trans.Stream(), a_OnObject);
+				return i_translator.OnStore(a_trans.ObjectContainer(), a_OnObject);
 			}
 			catch (ReflectException e)
 			{
@@ -59,20 +58,20 @@ namespace Db4objects.Db4o.Internal
 			, object a_onObject, StatefulBuffer a_bytes)
 		{
 			object toSet = Read(mf, a_bytes);
-			a_bytes.GetStream().Activate1(a_bytes.GetTransaction(), toSet, a_bytes.GetInstantiationDepth
+			a_bytes.GetStream().Activate(a_bytes.GetTransaction(), toSet, a_bytes.GetInstantiationDepth
 				());
-			SetOn(a_bytes.GetStream(), a_onObject, toSet);
+			SetOn(a_bytes.GetTransaction(), a_onObject, toSet);
 		}
 
 		internal override void Refresh()
 		{
 		}
 
-		private void SetOn(ObjectContainerBase a_stream, object a_onObject, object toSet)
+		private void SetOn(Transaction trans, object a_onObject, object toSet)
 		{
 			try
 			{
-				i_translator.OnActivate(a_stream, a_onObject, toSet);
+				i_translator.OnActivate(trans.ObjectContainer(), a_onObject, toSet);
 			}
 			catch (Exception e)
 			{

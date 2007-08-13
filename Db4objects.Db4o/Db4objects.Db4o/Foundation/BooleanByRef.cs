@@ -7,5 +7,14 @@ namespace Db4objects.Db4o.Foundation
 	public class BooleanByRef
 	{
 		public bool value;
+
+		public BooleanByRef() : this(false)
+		{
+		}
+
+		public BooleanByRef(bool value_)
+		{
+			value = value_;
+		}
 	}
 }

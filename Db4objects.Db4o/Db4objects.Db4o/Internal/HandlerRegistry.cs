@@ -9,7 +9,6 @@ using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
-using Db4objects.Db4o.Types;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal
@@ -60,8 +59,6 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly Hashtable4 i_classByClass = new Hashtable4(32);
 
-		internal IDb4oCollections i_collections;
-
 		internal SharedIndexedFields i_indexes;
 
 		[System.ObsoleteAttribute]
@@ -105,7 +102,7 @@ namespace Db4objects.Db4o.Internal
 			 reflector)
 		{
 			_masterStream = a_stream;
-			a_stream.i_handlers = this;
+			a_stream._handlers = this;
 			_reflector = reflector;
 			_diagnosticProcessor = a_stream.ConfigImpl().DiagnosticProcessor();
 			InitClassReflectors(reflector);

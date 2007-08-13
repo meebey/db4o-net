@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override IReflectClass ClassReflector()
 		{
-			return _stream.i_handlers.ICLASS_STRING;
+			return _stream._handlers.ICLASS_STRING;
 		}
 
 		public override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer buffer)
@@ -53,6 +53,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public object IndexEntryToObject(Transaction trans, object indexEntry)
 		{
+			if (indexEntry is Slot)
+			{
+				Slot slot = (Slot)indexEntry;
+				indexEntry = _stream.BufferByAddress(slot.Address(), slot.Length());
+			}
 			try
 			{
 				return StringMarshaller.ReadShort(_stream, (Db4objects.Db4o.Internal.Buffer)indexEntry
@@ -138,13 +143,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			if (!withRedirection)
 			{
-				return mf._string.Read(a_trans.Stream(), a_reader);
+				return mf._string.Read(a_trans.Container(), a_reader);
 			}
 			Db4objects.Db4o.Internal.Buffer reader = mf._string.ReadSlotFromParentSlot(a_trans
-				.Stream(), a_reader);
+				.Container(), a_reader);
 			if (a_toArray)
 			{
-				return mf._string.ReadFromOwnSlot(a_trans.Stream(), reader);
+				return mf._string.ReadFromOwnSlot(a_trans.Container(), reader);
 			}
 			return reader;
 		}
@@ -287,13 +292,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return with.Length - compare.Length;
 		}
 
-		public void DefragIndexEntry(ReaderPair readers)
+		public void DefragIndexEntry(BufferPair readers)
 		{
 			readers.CopyID(false, true);
 			readers.IncrementIntSize();
 		}
 
-		public override void Defrag(MarshallerFamily mf, ReaderPair readers, bool redirect
+		public override void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
 			)
 		{
 			if (!redirect)

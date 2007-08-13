@@ -5,7 +5,7 @@ using Db4objects.Db4o.Foundation;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public interface ISlotReader
+	public interface ISlotBuffer
 	{
 		int Offset();
 

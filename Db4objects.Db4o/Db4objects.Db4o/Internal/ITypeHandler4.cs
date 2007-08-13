@@ -53,6 +53,6 @@ namespace Db4objects.Db4o.Internal
 		QCandidate ReadSubCandidate(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer 
 			buffer, QCandidates candidates, bool withIndirection);
 
-		void Defrag(MarshallerFamily mf, ReaderPair readers, bool redirect);
+		void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect);
 	}
 }

@@ -21,9 +21,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 				{
 					reader.SetCascadeDeletes(parentBytes.CascadeDeletes());
 					ObjectHeader oh = new ObjectHeader(reader);
-					if (oh.YapClass() != null)
+					if (oh.ClassMetadata() != null)
 					{
-						oh.YapClass().DeleteEmbedded1(_family, reader, objectID);
+						oh.ClassMetadata().DeleteEmbedded1(_family, reader, objectID);
 					}
 				}
 			}
@@ -60,16 +60,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 			a_bytes[0]._offset = offset;
 			if (id != 0)
 			{
-				StatefulBuffer reader = a_trans.Stream().ReadWriterByID(a_trans, id);
+				StatefulBuffer reader = a_trans.Container().ReadWriterByID(a_trans, id);
 				if (reader != null)
 				{
 					ObjectHeader oh = new ObjectHeader(reader);
 					try
 					{
-						if (oh.YapClass() != null)
+						if (oh.ClassMetadata() != null)
 						{
 							a_bytes[0] = reader;
-							return oh.YapClass().ReadArrayHandler1(a_bytes);
+							return oh.ClassMetadata().ReadArrayHandler1(a_bytes);
 						}
 					}
 					catch (Exception e)
@@ -100,7 +100,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return id;
 		}
 
-		public override void Defrag(ReaderPair readers)
+		public override void Defrag(BufferPair readers)
 		{
 		}
 	}

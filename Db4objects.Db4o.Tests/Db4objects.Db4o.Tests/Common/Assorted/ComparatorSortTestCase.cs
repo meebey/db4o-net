@@ -11,6 +11,11 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 {
 	public class ComparatorSortTestCase : AbstractDb4oTestCase
 	{
+		public static void Main(string[] args)
+		{
+			new ComparatorSortTestCase().RunAll();
+		}
+
 		[System.Serializable]
 		public class AscendingIdComparator : IQueryComparator
 		{

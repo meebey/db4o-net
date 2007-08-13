@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal
 			header.AddBaseLength(LinkLength());
 		}
 
-		public override void DefragField(MarshallerFamily mf, ReaderPair readers)
+		public override void DefragField(MarshallerFamily mf, BufferPair readers)
 		{
 			readers.IncrementOffset(LinkLength());
 		}

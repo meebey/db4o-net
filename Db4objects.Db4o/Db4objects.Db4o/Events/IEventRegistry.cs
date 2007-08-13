@@ -21,15 +21,39 @@ namespace Db4objects.Db4o.Events
 		 args);
 
 	/// <summary>
-	/// This was overlaid here.
-	/// 
-	/// Including its multiple lines.
+	/// Provides a way to register event handlers for specific <see cref="IObjectContainer">IObjectContainer</see> events.<br/>
+	/// EventRegistry methods represent events available for registering callbacks.
+	/// EventRegistry instance can be obtained from <see cref="EventRegistryFactory">EventRegistryFactory</see>.
+	/// <code>EventRegistry registry =  EventRegistryFactory.ForObjectContainer(container);</code>
+	/// A new callback can be registered for an event with the following code:
+	/// <code>
+	/// private static void OnCreated(object sender, ObjectEventArgs args)
+	/// {
+	/// Object obj = args.Object;
+	/// if (obj is Pilot)
+	/// {
+	/// Console.WriteLine(obj.ToString());
+	/// }
+	/// }
+	/// registry.Created+=new ObjectEventHandler(OnCreated);
+	/// </code>
+	/// <seealso cref="EventRegistryFactory">EventRegistryFactory</seealso>
 	/// </summary>
 	public interface IEventRegistry
 	{
 		/// <summary>
-		/// A query was started.
+		/// This event is fired upon a query start and can be used to gather
+		/// query statistics.
 		/// </summary>
+		/// <remarks>
+		/// This event is fired upon a query start and can be used to gather
+		/// query statistics.
+		/// The query object is available from
+		/// <see cref="QueryEventArgs">QueryEventArgs</see>
+		/// event parameter.<br />
+		/// </remarks>
+		/// <returns>event</returns>
+		/// <seealso cref="QueryEventArgs">QueryEventArgs</seealso>
 		event Db4objects.Db4o.Events.QueryEventHandler QueryStarted;
 
 		/// <summary>

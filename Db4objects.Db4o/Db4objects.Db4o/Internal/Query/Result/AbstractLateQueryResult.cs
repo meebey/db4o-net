@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 				return true;
 			}
 			IReflectClass claxx = yapClass.ClassReflector();
-			if (Stream().i_handlers.ICLASS_INTERNAL.IsAssignableFrom(claxx))
+			if (Stream()._handlers.ICLASS_INTERNAL.IsAssignableFrom(claxx))
 			{
 				return true;
 			}

@@ -185,7 +185,7 @@ namespace Db4objects.Db4o.Internal
 			return (Hashtable4)_config.Get(CONFIGURATION_ITEMS);
 		}
 
-		public void ApplyConfigurationItems(ObjectContainerBase container)
+		public void ApplyConfigurationItems(IInternalObjectContainer container)
 		{
 			Hashtable4 items = ConfigurationItems();
 			if (items == null)

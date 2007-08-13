@@ -8,69 +8,69 @@ namespace Db4objects.Db4o.Internal.Callbacks
 {
 	public class NullCallbacks : ICallbacks
 	{
-		public virtual void QueryOnFinished(IQuery query)
+		public virtual void QueryOnFinished(Transaction transaction, IQuery query)
 		{
 		}
 
-		public virtual void QueryOnStarted(IQuery query)
+		public virtual void QueryOnStarted(Transaction transaction, IQuery query)
 		{
 		}
 
-		public virtual bool ObjectCanNew(object obj)
-		{
-			return true;
-		}
-
-		public virtual bool ObjectCanActivate(object obj)
+		public virtual bool ObjectCanNew(Transaction transaction, object obj)
 		{
 			return true;
 		}
 
-		public virtual bool ObjectCanUpdate(object obj)
+		public virtual bool ObjectCanActivate(Transaction transaction, object obj)
 		{
 			return true;
 		}
 
-		public virtual bool ObjectCanDelete(object obj)
+		public virtual bool ObjectCanUpdate(Transaction transaction, object obj)
 		{
 			return true;
 		}
 
-		public virtual bool ObjectCanDeactivate(object obj)
+		public virtual bool ObjectCanDelete(Transaction transaction, object obj)
 		{
 			return true;
 		}
 
-		public virtual void ObjectOnNew(object obj)
+		public virtual bool ObjectCanDeactivate(Transaction transaction, object obj)
+		{
+			return true;
+		}
+
+		public virtual void ObjectOnNew(Transaction transaction, object obj)
 		{
 		}
 
-		public virtual void ObjectOnActivate(object obj)
+		public virtual void ObjectOnActivate(Transaction transaction, object obj)
 		{
 		}
 
-		public virtual void ObjectOnUpdate(object obj)
+		public virtual void ObjectOnUpdate(Transaction transaction, object obj)
 		{
 		}
 
-		public virtual void ObjectOnDelete(object obj)
+		public virtual void ObjectOnDelete(Transaction transaction, object obj)
 		{
 		}
 
-		public virtual void ObjectOnDeactivate(object obj)
+		public virtual void ObjectOnDeactivate(Transaction transaction, object obj)
 		{
 		}
 
-		public virtual void ObjectOnInstantiate(object obj)
+		public virtual void ObjectOnInstantiate(Transaction transaction, object obj)
 		{
 		}
 
-		public virtual void CommitOnStarted(object transaction, CallbackObjectInfoCollections
+		public virtual void CommitOnStarted(Transaction transaction, CallbackObjectInfoCollections
 			 objectInfoCollections)
 		{
 		}
 
-		public virtual void CommitOnCompleted(object transaction, CallbackObjectInfoCollections
+		public virtual void CommitOnCompleted(Transaction transaction, CallbackObjectInfoCollections
 			 objectInfoCollections)
 		{
 		}
@@ -87,6 +87,16 @@ namespace Db4objects.Db4o.Internal.Callbacks
 
 		public virtual void ClassOnRegistered(ClassMetadata clazz)
 		{
+		}
+
+		public virtual bool CaresAboutDeleting()
+		{
+			return false;
+		}
+
+		public virtual bool CaresAboutDeleted()
+		{
+			return false;
 		}
 	}
 }

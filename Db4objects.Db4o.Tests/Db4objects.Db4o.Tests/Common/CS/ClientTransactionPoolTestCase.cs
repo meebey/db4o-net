@@ -23,13 +23,13 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			{
 				Assert.AreEqual(1, pool.OpenFileCount());
 				Transaction trans1 = pool.Acquire(SwitchingFilesFromClientUtil.MAINFILE_NAME);
-				Assert.AreEqual(db, trans1.Stream());
+				Assert.AreEqual(db, trans1.Container());
 				Assert.AreEqual(1, pool.OpenFileCount());
 				Transaction trans2 = pool.Acquire(SwitchingFilesFromClientUtil.FILENAME_A);
-				Assert.AreNotEqual(db, trans2.Stream());
+				Assert.AreNotEqual(db, trans2.Container());
 				Assert.AreEqual(2, pool.OpenFileCount());
 				Transaction trans3 = pool.Acquire(SwitchingFilesFromClientUtil.FILENAME_A);
-				Assert.AreEqual(trans2.Stream(), trans3.Stream());
+				Assert.AreEqual(trans2.Container(), trans3.Container());
 				Assert.AreEqual(2, pool.OpenFileCount());
 				pool.Release(trans3, true);
 				Assert.AreEqual(2, pool.OpenFileCount());

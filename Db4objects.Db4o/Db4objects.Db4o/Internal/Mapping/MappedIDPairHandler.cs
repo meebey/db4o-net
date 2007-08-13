@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal.Mapping
 			_mappedHandler = new IntHandler(stream);
 		}
 
-		public virtual void DefragIndexEntry(ReaderPair readers)
+		public virtual void DefragIndexEntry(BufferPair readers)
 		{
 			throw new NotImplementedException();
 		}

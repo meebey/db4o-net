@@ -28,17 +28,21 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public virtual void Test()
 		{
+			if (IsMTOC())
+			{
+				return;
+			}
 			ClientServerFixture().Server().Ext().Configure().ClientServer().SetMessageRecipient
 				(recipient);
 			IExtObjectContainer client = ClientServerFixture().Db();
 			IMessageSender sender = client.Configure().ClientServer().GetMessageSender();
 			sender.Send(new ClientTimeOutTestCase.Data());
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_36(this, client));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_42(this, client));
 		}
 
-		private sealed class _ICodeBlock_36 : ICodeBlock
+		private sealed class _ICodeBlock_42 : ICodeBlock
 		{
-			public _ICodeBlock_36(ClientTimeOutTestCase _enclosing, IExtObjectContainer client
+			public _ICodeBlock_42(ClientTimeOutTestCase _enclosing, IExtObjectContainer client
 				)
 			{
 				this._enclosing = _enclosing;

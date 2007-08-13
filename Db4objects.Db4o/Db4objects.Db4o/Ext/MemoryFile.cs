@@ -7,12 +7,13 @@ namespace Db4objects.Db4o.Ext
 	/// <summary>carries in-memory data for db4o in-memory operation.</summary>
 	/// <remarks>
 	/// carries in-memory data for db4o in-memory operation.
-	/// <br /><br />In-memory ObjectContainers are useful for maximum performance
+	/// <br/><br/>In-memory ObjectContainers are useful for maximum performance
 	/// on small databases, for swapping objects or for storing db4o format data
-	/// to other media or other databases.<br /><br />Be aware of the danger of running
+	/// to other media or other databases.<br/><br/>Be aware of the danger of running
 	/// into OutOfMemory problems or complete loss of all data, in case of hardware
-	/// or JVM failures.
-	/// <br /><br />
+	/// or runtime failures.
+	/// <br/><br/>
+	/// 
 	/// </remarks>
 	/// <seealso cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</seealso>
 	public class MemoryFile
@@ -108,7 +109,7 @@ namespace Db4objects.Db4o.Ext
 		/// configures the size the MemoryFile is to be enlarged by, if it grows
 		/// beyond the current size.
 		/// <br /><br />Call this method before passing the MemoryFile to
-		/// <see cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4o#openMemoryFile(MemoryFile)</see>
+		/// <see cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</see>
 		/// .
 		/// <br /><br />
 		/// This parameter can be modified to tune the maximum performance of
@@ -125,7 +126,7 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>
 		/// configures the initial size of the MemoryFile.
 		/// <br /><br />Call this method before passing the MemoryFile to
-		/// <see cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4o#openMemoryFile(MemoryFile)</see>
+		/// <see cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</see>
 		/// .
 		/// <br /><br />
 		/// This parameter can be modified to tune the maximum performance of

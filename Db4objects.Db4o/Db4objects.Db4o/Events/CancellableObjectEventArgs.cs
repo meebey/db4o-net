@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Events
 {
@@ -14,7 +15,8 @@ namespace Db4objects.Db4o.Events
 
 		/// <summary>Creates a new instance for the specified object.</summary>
 		/// <remarks>Creates a new instance for the specified object.</remarks>
-		public CancellableObjectEventArgs(object obj) : base(obj)
+		public CancellableObjectEventArgs(Transaction transaction, object obj) : base(transaction
+			, obj)
 		{
 		}
 

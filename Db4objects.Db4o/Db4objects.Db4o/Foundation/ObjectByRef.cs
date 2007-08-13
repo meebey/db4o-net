@@ -7,5 +7,14 @@ namespace Db4objects.Db4o.Foundation
 	public sealed class ObjectByRef
 	{
 		public object value;
+
+		public ObjectByRef()
+		{
+		}
+
+		public ObjectByRef(object value_)
+		{
+			value = value_;
+		}
 	}
 }

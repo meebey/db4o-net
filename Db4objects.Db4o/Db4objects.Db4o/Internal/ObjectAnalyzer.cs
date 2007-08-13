@@ -18,11 +18,12 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _notStorable;
 
-		internal ObjectAnalyzer(PartialObjectContainer container, object obj)
+		internal ObjectAnalyzer(PartialObjectContainer container, Transaction trans, object
+			 obj)
 		{
 			_container = container;
 			_obj = obj;
-			_ref = _container.ReferenceForObject(_obj);
+			_ref = trans.ReferenceForObject(_obj);
 			if (_ref == null)
 			{
 				IReflectClass claxx = _container.Reflector().ForObject(_obj);
@@ -31,14 +32,14 @@ namespace Db4objects.Db4o.Internal
 					NotStorable(_obj, claxx);
 					return;
 				}
-				if (!DetectClassMetadata(claxx))
+				if (!DetectClassMetadata(trans, claxx))
 				{
 					return;
 				}
 				IReflectClass substituteClass = _classMetadata.ClassSubstitute();
 				if (substituteClass != null)
 				{
-					if (!DetectClassMetadata(substituteClass))
+					if (!DetectClassMetadata(trans, substituteClass))
 					{
 						return;
 					}
@@ -54,7 +55,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private bool DetectClassMetadata(IReflectClass claxx)
+		private bool DetectClassMetadata(Transaction trans, IReflectClass claxx)
 		{
 			_classMetadata = _container.GetActiveClassMetadata(claxx);
 			if (_classMetadata == null)
@@ -65,7 +66,7 @@ namespace Db4objects.Db4o.Internal
 					NotStorable(_obj, claxx);
 					return false;
 				}
-				_ref = _container.ReferenceForObject(_obj);
+				_ref = trans.ReferenceForObject(_obj);
 			}
 			return true;
 		}

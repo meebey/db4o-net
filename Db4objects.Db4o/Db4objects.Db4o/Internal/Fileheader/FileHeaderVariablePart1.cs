@@ -60,8 +60,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private void ReadIdentity(LocalTransaction trans, int identityID)
 		{
 			LocalObjectContainer file = trans.File();
-			Db4oDatabase identity = (Db4oDatabase)file.GetByID1(trans, identityID);
-			file.Activate1(trans, identity, 2);
+			Db4oDatabase identity = (Db4oDatabase)file.GetByID(trans, identityID);
+			file.Activate(trans, identity, 2);
 			_systemData.Identity(identity);
 		}
 	}

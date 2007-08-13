@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			object obj = i_field.Coerce(a_object);
 			if (obj == No4.INSTANCE)
 			{
-				QConObject falseConstraint = new QConFalse(i_trans, i_parent, i_field);
+				QCon falseConstraint = new QConUnconditional(i_trans, false);
 				Morph(removeExisting, falseConstraint, ReflectClassForObject(obj));
 				return falseConstraint;
 			}
@@ -96,20 +96,20 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return i_trans.Reflector().ForObject(obj);
 		}
 
-		private void Morph(bool[] removeExisting, QConObject newConstraint, IReflectClass
-			 claxx)
+		private void Morph(bool[] removeExisting, QCon newConstraint, IReflectClass claxx
+			)
 		{
 			bool mayMorph = true;
 			if (claxx != null)
 			{
-				ClassMetadata yc = i_trans.Stream().ProduceClassMetadata(claxx);
+				ClassMetadata yc = i_trans.Container().ProduceClassMetadata(claxx);
 				if (yc != null)
 				{
 					IEnumerator i = IterateChildren();
 					while (i.MoveNext())
 					{
 						QField qf = ((QCon)i.Current).GetField();
-						if (!yc.HasField(i_trans.Stream(), qf.i_name))
+						if (!yc.HasField(i_trans.Container(), qf.i_name))
 						{
 							mayMorph = false;
 							break;

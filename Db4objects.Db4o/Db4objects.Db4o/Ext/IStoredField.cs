@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Reflect;
 
@@ -9,6 +10,10 @@ namespace Db4objects.Db4o.Ext
 	/// <remarks>the internal representation of a field on a stored class.</remarks>
 	public interface IStoredField
 	{
+		/// <summary>creates an index on this field at runtime.</summary>
+		/// <remarks>creates an index on this field at runtime.</remarks>
+		void CreateIndex();
+
 		/// <summary>returns the field value on the passed object.</summary>
 		/// <remarks>
 		/// returns the field value on the passed object.
@@ -27,7 +32,9 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>
 		/// returns the Class (Java) / Type (.NET) of the field.
 		/// <br /><br />For array fields this method will return the type of the array.
-		/// Use {link #isArray()} to detect arrays.
+		/// Use
+		/// <see cref="IStoredField.IsArray">IStoredField.IsArray</see>
+		/// to detect arrays.
 		/// </remarks>
 		IReflectClass GetStoredType();
 

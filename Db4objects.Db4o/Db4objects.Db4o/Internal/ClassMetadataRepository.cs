@@ -65,10 +65,11 @@ namespace Db4objects.Db4o.Internal
 			ClassMetadataIterator i = Iterator();
 			while (i.MoveNext())
 			{
-				ClassMetadata yc = i.CurrentClass();
-				if (!yc.IsInternal())
+				ClassMetadata classMetadata = i.CurrentClass();
+				if (!classMetadata.IsInternal())
 				{
-					yc.ForEachFieldMetadata(new _IVisitor4_60(this, fieldName, a_visitor, yc));
+					classMetadata.ForEachFieldMetadata(new _IVisitor4_60(this, fieldName, a_visitor, 
+						classMetadata));
 				}
 			}
 		}
@@ -76,12 +77,12 @@ namespace Db4objects.Db4o.Internal
 		private sealed class _IVisitor4_60 : IVisitor4
 		{
 			public _IVisitor4_60(ClassMetadataRepository _enclosing, string fieldName, IVisitor4
-				 a_visitor, ClassMetadata yc)
+				 a_visitor, ClassMetadata classMetadata)
 			{
 				this._enclosing = _enclosing;
 				this.fieldName = fieldName;
 				this.a_visitor = a_visitor;
-				this.yc = yc;
+				this.classMetadata = classMetadata;
 			}
 
 			public void Visit(object obj)
@@ -89,7 +90,7 @@ namespace Db4objects.Db4o.Internal
 				FieldMetadata yf = (FieldMetadata)obj;
 				if (yf.CanAddToQuery(fieldName))
 				{
-					a_visitor.Visit(new object[] { yc, yf });
+					a_visitor.Visit(new object[] { classMetadata, yf });
 				}
 			}
 
@@ -99,7 +100,23 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly IVisitor4 a_visitor;
 
-			private readonly ClassMetadata yc;
+			private readonly ClassMetadata classMetadata;
+		}
+
+		public void IterateTopLevelClasses(IVisitor4 visitor)
+		{
+			ClassMetadataIterator i = Iterator();
+			while (i.MoveNext())
+			{
+				ClassMetadata classMetadata = i.CurrentClass();
+				if (!classMetadata.IsInternal())
+				{
+					if (classMetadata.GetAncestor() == null)
+					{
+						visitor.Visit(classMetadata);
+					}
+				}
+			}
 		}
 
 		internal void CheckChanges()
@@ -116,7 +133,7 @@ namespace Db4objects.Db4o.Internal
 			i_yapClassCreationDepth++;
 			IReflectClass superClass = a_class.GetSuperclass();
 			ClassMetadata superYapClass = null;
-			if (superClass != null && !superClass.Equals(Stream().i_handlers.ICLASS_OBJECT))
+			if (superClass != null && !superClass.Equals(Stream()._handlers.ICLASS_OBJECT))
 			{
 				superYapClass = ProduceClassMetadata(superClass);
 			}
@@ -126,7 +143,7 @@ namespace Db4objects.Db4o.Internal
 			return ret;
 		}
 
-		public static void Defrag(ReaderPair readers)
+		public static void Defrag(BufferPair readers)
 		{
 			int numClasses = readers.ReadInt();
 			for (int classIdx = 0; classIdx < numClasses; classIdx++)
@@ -357,7 +374,7 @@ namespace Db4objects.Db4o.Internal
 		internal void InitOnUp(Transaction systemTrans)
 		{
 			i_yapClassCreationDepth++;
-			systemTrans.Stream().ShowInternalClasses(true);
+			systemTrans.Container().ShowInternalClasses(true);
 			try
 			{
 				IEnumerator i = i_classes.GetEnumerator();
@@ -368,7 +385,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			finally
 			{
-				systemTrans.Stream().ShowInternalClasses(false);
+				systemTrans.Container().ShowInternalClasses(false);
 			}
 			i_yapClassCreationDepth--;
 			InitYapClassesOnUp();
@@ -623,7 +640,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal ObjectContainerBase Stream()
 		{
-			return _systemTransaction.Stream();
+			return _systemTransaction.Container();
 		}
 
 		public override void SetID(int a_id)

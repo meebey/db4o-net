@@ -8,6 +8,10 @@ namespace Db4objects.Db4o.Tests.Common.CS
 	{
 		public virtual void TestSwitch()
 		{
+			if (IsMTOC())
+			{
+				return;
+			}
 			Client().SwitchToFile(SwitchingFilesFromClientUtil.FILENAME_A);
 			Client().SwitchToFile(SwitchingFilesFromClientUtil.FILENAME_B);
 			Client().SwitchToMainFile();

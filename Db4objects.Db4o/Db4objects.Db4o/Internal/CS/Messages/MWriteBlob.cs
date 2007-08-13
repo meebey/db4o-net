@@ -29,8 +29,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					message = Msg.ReadMessage(MessageDispatcher(), Transaction(), sock);
 					if (message.Equals(Msg.OK))
 					{
-						stream.Deactivate(_blob, int.MaxValue);
-						stream.Activate(_blob, int.MaxValue);
+						stream.Deactivate(Transaction(), _blob, int.MaxValue);
+						stream.Activate(Transaction(), _blob, int.MaxValue);
 						this._blob.SetStatus(Status.COMPLETED);
 					}
 					else

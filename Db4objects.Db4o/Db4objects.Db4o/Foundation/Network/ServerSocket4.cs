@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System.Net.Sockets;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation.Network;
 using Sharpen.Net;
 
@@ -10,9 +11,12 @@ namespace Db4objects.Db4o.Foundation.Network
 	{
 		private ServerSocket _serverSocket;
 
-		public ServerSocket4(int port)
+		private INativeSocketFactory _factory;
+
+		public ServerSocket4(INativeSocketFactory factory, int port)
 		{
-			_serverSocket = new ServerSocket(port);
+			_factory = factory;
+			_serverSocket = _factory.CreateServerSocket(port);
 		}
 
 		public virtual void SetSoTimeout(int timeout)
@@ -35,7 +39,7 @@ namespace Db4objects.Db4o.Foundation.Network
 		public virtual ISocket4 Accept()
 		{
 			Sharpen.Net.Socket sock = _serverSocket.Accept();
-			return new NetworkSocket(sock);
+			return new NetworkSocket(_factory, sock);
 		}
 
 		public virtual void Close()

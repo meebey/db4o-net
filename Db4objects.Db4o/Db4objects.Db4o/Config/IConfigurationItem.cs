@@ -27,6 +27,6 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>Gives a chance for the item to configure the just opened ObjectContainer.
 		/// 	</remarks>
 		/// <param name="container">the ObjectContainer to configure</param>
-		void Apply(ObjectContainerBase container);
+		void Apply(IInternalObjectContainer container);
 	}
 }

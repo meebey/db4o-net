@@ -245,12 +245,12 @@ namespace Db4objects.Db4o.Internal
 
 		public ObjectContainerBase GetStream()
 		{
-			return i_trans.Stream();
+			return i_trans.Container();
 		}
 
 		public ObjectContainerBase Stream()
 		{
-			return i_trans.Stream();
+			return i_trans.Container();
 		}
 
 		public LocalObjectContainer File()

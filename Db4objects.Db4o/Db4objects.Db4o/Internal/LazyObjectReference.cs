@@ -49,15 +49,15 @@ namespace Db4objects.Db4o.Internal
 
 		private ObjectReference Reference()
 		{
-			HardObjectReference hardRef = _transaction.Stream().GetHardObjectReferenceById(_transaction
-				, _id);
+			HardObjectReference hardRef = _transaction.Container().GetHardObjectReferenceById
+				(_transaction, _id);
 			return hardRef._reference;
 		}
 
 		private object ContainerLock()
 		{
-			_transaction.Stream().CheckClosed();
-			return _transaction.Stream().Lock();
+			_transaction.Container().CheckClosed();
+			return _transaction.Container().Lock();
 		}
 	}
 }

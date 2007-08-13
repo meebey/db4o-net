@@ -98,7 +98,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private void CommonTasksForNewAndRead(LocalObjectContainer file)
 		{
 			NewTimerFileLock(file);
-			file.i_handlers.OldEncryptionOff();
+			file._handlers.OldEncryptionOff();
 		}
 
 		public override void ReadVariablePart(LocalObjectContainer file)

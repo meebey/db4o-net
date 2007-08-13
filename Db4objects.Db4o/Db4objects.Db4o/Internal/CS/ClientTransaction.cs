@@ -13,10 +13,11 @@ namespace Db4objects.Db4o.Internal.CS
 
 		protected Tree i_yapObjectsToGc;
 
-		internal ClientTransaction(ClientObjectContainer a_stream, Transaction a_parent) : 
-			base(a_stream, a_parent)
+		internal ClientTransaction(ClientObjectContainer container, Transaction parentTransaction
+			, TransactionalReferenceSystem referenceSystem) : base(container, parentTransaction
+			, referenceSystem)
 		{
-			i_client = a_stream;
+			i_client = container;
 		}
 
 		public override void Commit()
@@ -58,7 +59,7 @@ namespace Db4objects.Db4o.Internal.CS
 			public void Visit(object a_object)
 			{
 				ObjectReference yo = (ObjectReference)((TreeIntObject)a_object)._object;
-				this._enclosing.Stream().RemoveReference(yo);
+				this._enclosing.RemoveReference(yo);
 			}
 
 			private readonly ClientTransaction _enclosing;
@@ -95,18 +96,18 @@ namespace Db4objects.Db4o.Internal.CS
 			int id = message.ReadInt();
 			if (id > 0)
 			{
-				return Stream().GetHardObjectReferenceById(this, id);
+				return Container().GetHardObjectReferenceById(this, id);
 			}
 			return HardObjectReference.INVALID;
 		}
 
 		public override void ProcessDeletes()
 		{
-			if (i_delete != null)
+			if (_delete != null)
 			{
-				i_delete.Traverse(new _IVisitor4_86(this));
+				_delete.Traverse(new _IVisitor4_86(this));
 			}
-			i_delete = null;
+			_delete = null;
 			i_client.WriteBatchedMessage(Msg.PROCESS_DELETES);
 		}
 

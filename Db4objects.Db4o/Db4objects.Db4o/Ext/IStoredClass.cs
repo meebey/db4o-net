@@ -28,6 +28,10 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>returns all stored fields of this stored class.</remarks>
 		IStoredField[] GetStoredFields();
 
+		/// <summary>returns true if this StoredClass has a class index.</summary>
+		/// <remarks>returns true if this StoredClass has a class index.</remarks>
+		bool HasClassIndex();
+
 		/// <summary>renames this stored class.</summary>
 		/// <remarks>
 		/// renames this stored class.

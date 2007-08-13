@@ -82,11 +82,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			public void Visit(object obj)
 			{
 				int id = ((int)obj);
-				ObjectReference yo = stream.ReferenceForId(id);
-				if (yo != null)
-				{
-					stream.RemoveReference(yo);
-				}
+				stream.ReferenceSystemRegistry().RemoveId(id);
 			}
 
 			private readonly BTreeClassIndexStrategy _enclosing;
@@ -116,7 +112,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 		{
 		}
 
-		public override void DefragReference(ClassMetadata yapClass, ReaderPair readers, 
+		public override void DefragReference(ClassMetadata yapClass, BufferPair readers, 
 			int classIndexID)
 		{
 			int newID = -classIndexID;
@@ -133,7 +129,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			return _btreeIndex.AllNodeIds(trans);
 		}
 
-		public override void DefragIndex(ReaderPair readers)
+		public override void DefragIndex(BufferPair readers)
 		{
 			_btreeIndex.DefragIndex(readers);
 		}

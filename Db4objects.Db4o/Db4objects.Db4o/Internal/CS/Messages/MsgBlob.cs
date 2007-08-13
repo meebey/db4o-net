@@ -34,16 +34,16 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			BlobImpl blobImpl = null;
 			int id = _payLoad.ReadInt();
 			ObjectContainerBase stream = Stream();
-			lock (stream.i_lock)
+			lock (stream._lock)
 			{
-				blobImpl = (BlobImpl)stream.GetByID1(Transaction(), id);
-				stream.Activate1(Transaction(), blobImpl, 3);
+				blobImpl = (BlobImpl)stream.GetByID(Transaction(), id);
+				stream.Activate(Transaction(), blobImpl, 3);
 			}
 			return blobImpl;
 		}
 
-		protected virtual void Copy(ISocket4 sock, OutputStream rawout, int length, bool 
-			update)
+		protected virtual void Copy(ISocket4 sock, IOutputStream rawout, int length, bool
+			 update)
 		{
 			BufferedOutputStream @out = new BufferedOutputStream(rawout);
 			byte[] buffer = new byte[BlobImpl.COPYBUFFER_LENGTH];
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			@out.Close();
 		}
 
-		protected virtual void Copy(InputStream rawin, ISocket4 sock, bool update)
+		protected virtual void Copy(IInputStream rawin, ISocket4 sock, bool update)
 		{
 			BufferedInputStream @in = new BufferedInputStream(rawin);
 			byte[] buffer = new byte[BlobImpl.COPYBUFFER_LENGTH];

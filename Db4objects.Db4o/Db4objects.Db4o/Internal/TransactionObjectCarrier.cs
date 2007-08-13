@@ -8,8 +8,9 @@ namespace Db4objects.Db4o.Internal
 	/// <summary>TODO: Check if all time-consuming stuff is overridden!</summary>
 	internal class TransactionObjectCarrier : LocalTransaction
 	{
-		internal TransactionObjectCarrier(ObjectContainerBase a_stream, Transaction a_parent
-			) : base(a_stream, a_parent)
+		internal TransactionObjectCarrier(ObjectContainerBase container, Transaction parentTransaction
+			, TransactionalReferenceSystem referenceSystem) : base(container, parentTransaction
+			, referenceSystem)
 		{
 		}
 

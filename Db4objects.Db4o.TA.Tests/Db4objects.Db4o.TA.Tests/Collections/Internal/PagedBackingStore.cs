@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.TA.Tests.Collections.Internal
 
 		private Page LastPage()
 		{
-			return (Page)_pages[_top - 1];
+			return _pages[_top - 1];
 		}
 
 		private Page GetPageForAdd()
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.TA.Tests.Collections.Internal
 		/// <returns></returns>
 		private Page PageHolding(int itemIndex)
 		{
-			return (Page)_pages[PageIndex(itemIndex)];
+			return _pages[PageIndex(itemIndex)];
 		}
 
 		private int PageIndex(int itemIndex)

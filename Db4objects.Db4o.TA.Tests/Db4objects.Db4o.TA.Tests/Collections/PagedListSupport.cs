@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.TA.Tests.Collections
 	/// <remarks>Configures the support for paged collections.</remarks>
 	public class PagedListSupport : IConfigurationItem
 	{
-		public virtual void Apply(ObjectContainerBase db)
+		public virtual void Apply(IInternalObjectContainer db)
 		{
 			EventRegistry(db).Updating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
 				(new _IEventListener4_18(this).OnEvent);

@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			if (name.IndexOf(Const4.VIRTUAL_FIELD_PREFIX) == 0)
 			{
-				if (stream.i_handlers.VirtualFieldByName(name) != null)
+				if (stream._handlers.VirtualFieldByName(name) != null)
 				{
 					return new RawFieldSpec(name);
 				}
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			string name = spec.Name();
 			if (spec.IsVirtual())
 			{
-				return stream.i_handlers.VirtualFieldByName(name);
+				return stream._handlers.VirtualFieldByName(name);
 			}
 			field.Init(field.GetParentYapClass(), name);
 			field.Init(spec.HandlerID(), spec.IsPrimitive(), spec.IsArray(), spec.IsNArray());
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				if (handler.GetID() == 0)
 				{
-					trans.Stream().NeedsUpdate(clazz);
+					trans.Container().NeedsUpdate(clazz);
 				}
 			}
 			int handlerID = 0;
@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public virtual void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO
-			 sio, ReaderPair readers)
+			 sio, BufferPair readers)
 		{
 			readers.ReadShortString(sio);
 			if (yapField.IsVirtual())

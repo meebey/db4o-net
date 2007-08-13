@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		public virtual void TestMarshall()
 		{
 			ReflectException e = new ReflectException(new ArgumentNullException());
-			SerializedGraph marshalled = Serializer.Marshall((ObjectContainerBase)Db(), e);
+			SerializedGraph marshalled = Serializer.Marshall(Stream().Container(), e);
 			Assert.IsTrue(marshalled.Length() > 0);
 		}
 	}

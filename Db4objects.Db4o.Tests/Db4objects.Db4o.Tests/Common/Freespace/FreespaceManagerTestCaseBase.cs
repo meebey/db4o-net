@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
@@ -10,7 +9,7 @@ using Db4objects.Db4o.Tests.Common.Freespace;
 
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
-	public abstract class FreespaceManagerTestCaseBase : AbstractDb4oTestCase, IOptOutCS
+	public abstract class FreespaceManagerTestCaseBase : FileSizeTestCaseBase, IOptOutCS
 	{
 		protected IFreespaceManager[] fm;
 
@@ -64,15 +63,6 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		public class Item
 		{
 			public int _int;
-		}
-
-		protected virtual int FileSize()
-		{
-			LocalObjectContainer localContainer = Fixture().FileSession();
-			IoAdaptedObjectContainer container = (IoAdaptedObjectContainer)localContainer;
-			container.SyncFiles();
-			long length = new Sharpen.IO.File(container.FileName()).Length();
-			return (int)length;
 		}
 
 		protected virtual void StoreSomeItems()

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 reader)
 		{
 			byte[] nameBytes = ReadName(trans, reader);
-			string className = trans.Stream().StringIO().Read(nameBytes);
+			string className = trans.Container().StringIO().Read(nameBytes);
 			ReadMetaClassID(reader);
 			int ancestorID = reader.ReadInt();
 			reader.IncrementOffset(Const4.INT_LENGTH);
@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual byte[] ReadName(Transaction trans, Db4objects.Db4o.Internal.Buffer
 			 reader)
 		{
-			byte[] name = ReadName(trans.Stream().StringIO(), reader);
+			byte[] name = ReadName(trans.Container().StringIO(), reader);
 			return name;
 		}
 
@@ -130,7 +130,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return len;
 		}
 
-		public virtual void Defrag(ClassMetadata yapClass, LatinStringIO sio, ReaderPair 
+		public virtual void Defrag(ClassMetadata yapClass, LatinStringIO sio, BufferPair 
 			readers, int classIndexID)
 		{
 			ReadName(sio, readers.Source());

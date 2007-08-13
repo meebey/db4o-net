@@ -13,8 +13,8 @@ namespace Db4objects.Db4o.Activation
 	/// <seealso cref="Transparent">Activation framework.</seealso>
 	public interface IActivator
 	{
-		/// <summary>Method to be called to acivate the host object.</summary>
-		/// <remarks>Method to be called to acivate the host object.</remarks>
+		/// <summary>Method to be called to activate the host object.</summary>
+		/// <remarks>Method to be called to activate the host object.</remarks>
 		void Activate();
 	}
 }

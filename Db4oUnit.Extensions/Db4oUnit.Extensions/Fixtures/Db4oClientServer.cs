@@ -5,6 +5,7 @@ using System.IO;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
@@ -32,17 +33,20 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private IExtObjectContainer _objectContainer;
 
+		private string _label;
+
 		protected static readonly int _port = FindFreePort();
 
 		public Db4oClientServer(IConfigurationSource configSource, string fileName, bool 
-			embeddedClient) : base(configSource)
+			embeddedClient, string label) : base(configSource)
 		{
 			_yap = new Sharpen.IO.File(fileName);
 			_embeddedClient = embeddedClient;
+			_label = label;
 		}
 
-		public Db4oClientServer(IConfigurationSource configSource, bool embeddedClient) : 
-			this(configSource, FILE, embeddedClient)
+		public Db4oClientServer(IConfigurationSource configSource, bool embeddedClient, string
+			 label) : this(configSource, FILE, embeddedClient, label)
 		{
 		}
 
@@ -69,7 +73,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private static int FindFreePort(int port)
 		{
-			ServerSocket4 server = new ServerSocket4(port);
+			ServerSocket4 server = new ServerSocket4(new PlainSocketFactory(), port);
 			port = server.GetLocalPort();
 			server.Close();
 			Cool.SleepIgnoringInterruption(3);
@@ -129,6 +133,11 @@ namespace Db4oUnit.Extensions.Fixtures
 			return _server;
 		}
 
+		public virtual bool EmbeddedClients()
+		{
+			return _embeddedClient;
+		}
+
 		/// <summary>
 		/// Does not accept a clazz which is assignable from OptOutCS, or not
 		/// assignable from Db4oTestCase.
@@ -173,7 +182,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public override string GetLabel()
 		{
-			return "C/S" + (_embeddedClient ? " Embedded" : string.Empty);
+			return _label;
 		}
 
 		public virtual int ServerPort()

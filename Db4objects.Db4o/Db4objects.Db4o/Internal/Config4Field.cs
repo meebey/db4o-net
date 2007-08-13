@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void InitOnUp(Transaction systemTrans, FieldMetadata yapField)
 		{
-			ObjectContainerBase anyStream = systemTrans.Stream();
+			ObjectContainerBase anyStream = systemTrans.Container();
 			if (!anyStream.MaintainsIndices())
 			{
 				return;

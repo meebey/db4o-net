@@ -26,11 +26,6 @@ namespace Db4objects.Db4o.Internal
 			return writer.GetWrittenBytes();
 		}
 
-		internal static void PurgeUnsychronized(object a_stream, object a_object)
-		{
-			((ObjectContainerBase)a_stream).Purge1(a_object);
-		}
-
 		public static long RandomLong()
 		{
 			return _random.NextLong();

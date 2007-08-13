@@ -127,7 +127,7 @@ namespace Db4objects.Db4o.Internal.IX
 		{
 			Transaction transact = Trans();
 			MetaIndexSetMembers(entries, length, address);
-			transact.Stream().SetInternal(transact, _metaIndex, 1, false);
+			transact.Container().SetInternal(transact, _metaIndex, 1, false);
 		}
 
 		private void MetaIndexSetMembers(int entries, int length, int address)

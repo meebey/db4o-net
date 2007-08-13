@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			int linkOffSet = reader._offset;
 			reader._offset = payLoadOffSet;
 			int yapClassID = reader.ReadInt();
-			ClassMetadata yc = trans.Stream().ClassMetadataForId(yapClassID);
+			ClassMetadata yc = trans.Container().ClassMetadataForId(yapClassID);
 			if (yc != null)
 			{
 				ret = yc.ReadQuery(trans, _family, false, reader, toArray);
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			ITypeHandler4 ret = null;
 			reader[0]._offset = payLoadOffSet;
 			int yapClassID = reader[0].ReadInt();
-			ClassMetadata yc = trans.Stream().ClassMetadataForId(yapClassID);
+			ClassMetadata yc = trans.Container().ClassMetadataForId(yapClassID);
 			if (yc != null)
 			{
 				ret = yc.ReadArrayHandler(trans, _family, reader);
@@ -103,7 +103,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			int linkOffSet = reader._offset;
 			reader._offset = payLoadOffSet;
 			int yapClassID = reader.ReadInt();
-			ClassMetadata yc = candidates.i_trans.Stream().ClassMetadataForId(yapClassID);
+			ClassMetadata yc = candidates.i_trans.Container().ClassMetadataForId(yapClassID);
 			if (yc != null)
 			{
 				ret = yc.ReadSubCandidate(_family, reader, candidates, false);
@@ -142,7 +142,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return obj;
 		}
 
-		public override void Defrag(ReaderPair readers)
+		public override void Defrag(BufferPair readers)
 		{
 			int payLoadOffSet = readers.ReadInt();
 			if (payLoadOffSet == 0)

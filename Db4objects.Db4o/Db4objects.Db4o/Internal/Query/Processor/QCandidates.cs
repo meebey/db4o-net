@@ -359,7 +359,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					return MappingIterator.SKIP;
 				}
 				ObjectHeader oh = new ObjectHeader(this._enclosing.Stream(), reader);
-				Tree idTree = oh.YapClass().CollectFieldIDs(oh._marshallerFamily, oh._headerAttributes
+				Tree idTree = oh.ClassMetadata().CollectFieldIDs(oh._marshallerFamily, oh._headerAttributes
 					, null, reader, fieldName);
 				return new TreeKeyIterator(idTree);
 			}
@@ -371,7 +371,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public ObjectContainerBase Stream()
 		{
-			return i_trans.Stream();
+			return i_trans.Container();
 		}
 
 		public int ClassIndexEntryCount()
@@ -519,7 +519,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			IClassIndexStrategy index = i_yapClass.Index();
 			index.TraverseAll(i_trans, new _IVisitor4_399(this, result));
 			i_root = result.tree;
-			DiagnosticProcessor dp = i_trans.Stream().i_handlers._diagnosticProcessor;
+			DiagnosticProcessor dp = i_trans.Container()._handlers._diagnosticProcessor;
 			if (dp.Enabled())
 			{
 				dp.LoadedFromClassIndex(i_yapClass);

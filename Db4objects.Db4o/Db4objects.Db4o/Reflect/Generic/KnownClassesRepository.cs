@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			if (trans != null)
 			{
 				_trans = trans;
-				_stream = trans.Stream();
+				_stream = trans.Container();
 			}
 		}
 

@@ -22,24 +22,25 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			try
 			{
 				ClientTransactionHandle handleA = new ClientTransactionHandle(pool);
-				Assert.AreEqual(db, handleA.Transaction().Stream());
+				Assert.AreEqual(db, handleA.Transaction().Container());
 				ClientTransactionHandle handleB = new ClientTransactionHandle(pool);
 				Assert.AreNotEqual(handleA.Transaction(), handleB.Transaction());
-				Assert.AreEqual(db, handleB.Transaction().Stream());
+				Assert.AreEqual(db, handleB.Transaction().Container());
 				Assert.AreEqual(1, pool.OpenFileCount());
 				handleA.AcquireTransactionForFile(SwitchingFilesFromClientUtil.FILENAME_A);
 				Assert.AreEqual(2, pool.OpenFileCount());
-				Assert.AreNotEqual(db, handleA.Transaction().Stream());
+				Assert.AreNotEqual(db, handleA.Transaction().Container());
 				handleB.AcquireTransactionForFile(SwitchingFilesFromClientUtil.FILENAME_A);
 				Assert.AreEqual(2, pool.OpenFileCount());
 				Assert.AreNotEqual(handleA.Transaction(), handleB.Transaction());
-				Assert.AreEqual(handleA.Transaction().Stream(), handleB.Transaction().Stream());
+				Assert.AreEqual(handleA.Transaction().Container(), handleB.Transaction().Container
+					());
 				handleA.ReleaseTransaction();
-				Assert.AreEqual(db, handleA.Transaction().Stream());
-				Assert.AreNotEqual(db, handleB.Transaction().Stream());
+				Assert.AreEqual(db, handleA.Transaction().Container());
+				Assert.AreNotEqual(db, handleB.Transaction().Container());
 				Assert.AreEqual(2, pool.OpenFileCount());
 				handleB.ReleaseTransaction();
-				Assert.AreEqual(db, handleB.Transaction().Stream());
+				Assert.AreEqual(db, handleB.Transaction().Container());
 				Assert.AreEqual(1, pool.OpenFileCount());
 			}
 			finally

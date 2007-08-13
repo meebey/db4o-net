@@ -55,12 +55,12 @@ namespace Db4objects.Db4o.Ext
 		/// reference with the object parameter. The method may be used to replace
 		/// objects or to reassociate an object with it's stored instance
 		/// after closing and opening a database file. A subsequent call to
-		/// <see cref="IObjectContainer.Set">set(Object)</see>
+		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
 		/// is
 		/// necessary to update the stored object.<br /><br />
 		/// <b>Requirements:</b><br />- The ID needs to be a valid internal object ID,
 		/// previously retrieved with
-		/// <see cref="IExtObjectContainer.GetID">getID(Object)</see>
+		/// <see cref="IExtObjectContainer.GetID">IExtObjectContainer.GetID</see>
 		/// .<br />
 		/// - The object parameter needs to be of the same class as the stored object.<br /><br />
 		/// </remarks>
@@ -97,8 +97,8 @@ namespace Db4objects.Db4o.Ext
 		/// returns the Configuration context for this ObjectContainer.
 		/// <br /><br />
 		/// Upon opening an ObjectContainer with any of the factory methods in the
-		/// <see cref="Db4oFactory">Db4o class</see>
-		/// , the global
+		/// <see cref="Db4oFactory">Db4oFactory</see>
+		/// class, the global
 		/// <see cref="IConfiguration">IConfiguration</see>
 		/// context
 		/// is copied into the ObjectContainer. The
@@ -133,12 +133,12 @@ namespace Db4objects.Db4o.Ext
 		/// returns the stored object for an internal ID.
 		/// <br /><br />This is the fastest method for direct access to objects. Internal
 		/// IDs can be obtained with
-		/// <see cref="IExtObjectContainer.GetID">getID(Object)</see>
+		/// <see cref="IExtObjectContainer.GetID">IExtObjectContainer.GetID</see>
 		/// .
 		/// Objects will not be activated by this method. They will be returned in the
 		/// activation state they are currently in, in the local cache.<br /><br />
 		/// </remarks>
-		/// <param name="ID">the internal ID</param>
+		/// <param name="id">the internal ID</param>
 		/// <returns>
 		/// the object associated with the passed ID or <code>null</code>,
 		/// if no object is associated with this ID in this <code>ObjectContainer</code>.
@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Ext
 		/// 	</exception>
 		/// <exception cref="InvalidIDException">when the provided id is outside the scope of the
 		/// 	</exception>
-		object GetByID(long ID);
+		object GetByID(long id);
 
 		/// <summary>
 		/// returns a stored object for a
@@ -183,7 +183,7 @@ namespace Db4objects.Db4o.Ext
 		/// guaranteed to be unique within one <code>ObjectContainer</code>.
 		/// An object carries the same ID in every db4o session. Internal IDs can
 		/// be used to look up objects with the very fast
-		/// <see cref="IExtObjectContainer.GetByID">getByID</see>
+		/// <see cref="IExtObjectContainer.GetByID">IExtObjectContainer.GetByID</see>
 		/// method.<br /><br />
 		/// Internal IDs will change when a database is defragmented. Use
 		/// <see cref="IExtObjectContainer.GetObjectInfo">IExtObjectContainer.GetObjectInfo</see>
@@ -409,7 +409,7 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>
 		/// deep update interface to store or update objects.
 		/// <br /><br />In addition to the normal storage interface,
-		/// <see cref="IObjectContainer.Set">ObjectContainer#set(Object)</see>
+		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
 		/// ,
 		/// this method allows a manual specification of the depth, the passed object is to be updated.<br /><br />
 		/// </remarks>
@@ -460,7 +460,7 @@ namespace Db4objects.Db4o.Ext
 		/// <see cref="IExtObjectContainer.GetID">getID(Object)</see>
 		/// <br /> -
 		/// generate a unique client ID. A suggested name:  "CLIENT_" +
-		/// System.currentTimeMillis().<br /><br />
+		/// currentTime.<br /><br />
 		/// </remarks>
 		/// <param name="name">the name of the semaphore to be set</param>
 		/// <param name="waitForAvailability">

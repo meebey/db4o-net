@@ -93,7 +93,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				LocalObjectContainer stream = GetStream();
 				_yapClass = stream.ClassMetadataForReflectClass(stream.Reflector().ForObject(_member
 					));
-				_key = (int)stream.GetID(_member);
+				_key = stream.GetID(GetTransaction(), _member);
 				if (_key == 0)
 				{
 					SetBytes(null);
@@ -270,7 +270,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 				public void Visit(object a_object)
 				{
-					QPending newPending = (QPending)a_object;
+					QPending newPending = ((QPending)a_object).InternalClonePayload();
 					newPending.ChangeConstraint();
 					QPending oldPending = (QPending)Tree.Find(pending.value, newPending);
 					if (oldPending != null)
@@ -547,10 +547,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			Transaction trans = GetTransaction();
 			if (trans != null)
 			{
-				_member = trans.Stream().GetByID1(trans, _key);
+				_member = trans.Container().GetByID(trans, _key);
 				if (_member != null && (a_activate || _member is ICompare))
 				{
-					trans.Stream().Activate1(trans, _member);
+					trans.Container().ActivateDefaultDepth(trans, _member);
 					CheckInstanceOfCompare();
 				}
 			}
@@ -566,11 +566,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					_bytes._offset = 0;
 					ObjectContainerBase stream = GetStream();
 					ObjectHeader objectHeader = new ObjectHeader(stream, _bytes);
-					_yapClass = objectHeader.YapClass();
+					_yapClass = objectHeader.ClassMetadata();
 					if (_yapClass != null)
 					{
-						if (stream.i_handlers.ICLASS_COMPARE.IsAssignableFrom(_yapClass.ClassReflector())
-							)
+						if (stream._handlers.ICLASS_COMPARE.IsAssignableFrom(_yapClass.ClassReflector()))
 						{
 							ReadThis(false);
 						}

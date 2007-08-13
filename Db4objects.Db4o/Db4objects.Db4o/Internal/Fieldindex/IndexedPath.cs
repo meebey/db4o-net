@@ -33,8 +33,8 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 			{
 				return false;
 			}
-			return parentField.HasIndex() && parentField.GetParentYapClass().IsAssignableFrom
-				(conField.GetParentYapClass());
+			return parentField.HasIndex() && parentField.GetFieldYapClass(con.Transaction().Container
+				()).IsAssignableFrom(conField.GetParentYapClass());
 		}
 
 		private static FieldMetadata GetYapField(QCon con)

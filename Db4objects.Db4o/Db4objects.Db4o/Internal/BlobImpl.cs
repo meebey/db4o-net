@@ -194,7 +194,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Copy(file, ServerFile(CheckExt(file), true));
 			}
-			lock (i_stream.i_lock)
+			lock (i_stream._lock)
 			{
 				i_stream.SetInternal(i_trans, this, false);
 			}
@@ -207,9 +207,9 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual Sharpen.IO.File ServerFile(string promptName, bool writeToServer)
 		{
-			lock (i_stream.i_lock)
+			lock (i_stream._lock)
 			{
-				i_stream.Activate1(i_trans, this, 2);
+				i_stream.Activate(i_trans, this, 2);
 			}
 			string path = ServerPath();
 			i_stream.ConfigImpl().EnsureDirExists(path);
@@ -237,7 +237,7 @@ namespace Db4objects.Db4o.Internal
 						}
 					}
 					fileName = tryPath;
-					lock (i_stream.i_lock)
+					lock (i_stream._lock)
 					{
 						i_stream.SetInternal(i_trans, this, false);
 					}
@@ -280,7 +280,7 @@ namespace Db4objects.Db4o.Internal
 		public virtual void SetTrans(Transaction a_trans)
 		{
 			i_trans = a_trans;
-			i_stream = a_trans.Stream();
+			i_stream = a_trans.Container();
 		}
 
 		public virtual void WriteLocal(Sharpen.IO.File file)
@@ -338,7 +338,7 @@ namespace Db4objects.Db4o.Internal
 			i_ext = null;
 			i_length = 0;
 			SetStatus(Status.UNUSED);
-			lock (i_stream.i_lock)
+			lock (i_stream._lock)
 			{
 				i_stream.SetInternal(i_trans, this, false);
 			}

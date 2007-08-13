@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		private IMessageDispatcher _messageDispatcher;
 
-		public static readonly MChainedRuntimeException CHAINED_RUNTIME_EXCEPTION = new MChainedRuntimeException
+		public static readonly MRuntimeException RUNTIME_EXCEPTION = new MRuntimeException
 			();
 
 		public static readonly MClassID CLASS_ID = new MClassID();
@@ -241,7 +241,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		protected virtual ObjectContainerBase Stream()
 		{
-			return Transaction().Stream();
+			return Transaction().Container();
 		}
 
 		protected virtual object StreamLock()
@@ -326,7 +326,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public virtual void WriteException(Exception e)
 		{
-			Write(CHAINED_RUNTIME_EXCEPTION.GetWriterForSingleObject(Transaction(), e));
+			Write(RUNTIME_EXCEPTION.GetWriterForSingleObject(Transaction(), e));
 		}
 
 		public virtual void RespondInt(int response)

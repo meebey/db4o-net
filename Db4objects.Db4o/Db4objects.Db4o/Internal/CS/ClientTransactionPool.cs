@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Internal.CS
 			public virtual Transaction NewTransaction()
 			{
 				_count++;
-				return _container.NewTransaction();
+				return _container.NewUserTransaction();
 			}
 
 			public virtual void Release()

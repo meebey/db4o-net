@@ -1273,7 +1273,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		public static void DefragIndex(ReaderPair readers, IIndexable4 keyHandler)
+		public static void DefragIndex(BufferPair readers, IIndexable4 keyHandler)
 		{
 			int count = readers.ReadInt();
 			byte leafByte = readers.ReadByte();

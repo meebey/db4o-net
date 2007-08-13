@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 
@@ -83,6 +84,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 				Db4objects.Db4o.Internal.Freespace.FreeSlotNode node = new Db4objects.Db4o.Internal.Freespace.FreeSlotNode
 					(size);
 				node.CreatePeer(address);
+				if (Deploy.debug && Debug.xbytes)
+				{
+					DebugCheckBuffer(buffer, node);
+				}
 				return node;
 			}
 			return null;
@@ -96,12 +101,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 				return;
 			}
 			Transaction trans = ((StatefulBuffer)buffer).GetTransaction();
-			if (!(trans.Stream() is IoAdaptedObjectContainer))
+			if (!(trans.Container() is IoAdaptedObjectContainer))
 			{
 				return;
 			}
-			StatefulBuffer checker = trans.Stream().GetWriter(trans, node._peer._key, node._key
-				);
+			StatefulBuffer checker = trans.Container().GetWriter(trans, node._peer._key, node
+				._key);
 			checker.Read();
 			for (int i = 0; i < node._key; i++)
 			{

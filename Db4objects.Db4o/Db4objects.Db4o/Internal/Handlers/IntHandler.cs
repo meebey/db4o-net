@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return obj is int && Val(obj) < i_compareTo;
 		}
 
-		public override void DefragIndexEntry(ReaderPair readers)
+		public override void DefragIndexEntry(BufferPair readers)
 		{
 			readers.IncrementIntSize();
 		}

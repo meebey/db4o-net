@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				LogMsg(14, FileName());
 				CheckReadOnly();
-				i_handlers.OldEncryptionOff();
+				_handlers.OldEncryptionOff();
 			}
 			bool readOnly = ConfigImpl().IsReadOnly();
 			bool lockFile = Debug.lockFile && ConfigImpl().LockFile() && (!readOnly);
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Backup(string path)
 		{
-			lock (i_lock)
+			lock (_lock)
 			{
 				CheckClosed();
 				if (_backupFile != null)
@@ -85,7 +85,7 @@ namespace Db4objects.Db4o.Internal
 			byte[] buffer = new byte[8192];
 			while (true)
 			{
-				lock (i_lock)
+				lock (_lock)
 				{
 					_file.Seek(pos);
 					int read = _file.Read(buffer);
@@ -99,7 +99,7 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			Cool.SleepIgnoringInterruption(1);
-			lock (i_lock)
+			lock (_lock)
 			{
 				_backupFile.Close();
 				_backupFile = null;
@@ -180,10 +180,10 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public override void Commit1()
+		public override void Commit1(Transaction trans)
 		{
 			EnsureLastSlotWritten();
-			base.Commit1();
+			base.Commit1(trans);
 		}
 
 		public override void Copy(int oldAddress, int oldAddressOffset, int newAddress, int
@@ -285,7 +285,7 @@ namespace Db4objects.Db4o.Internal
 		public override void Reserve(int byteCount)
 		{
 			CheckReadOnly();
-			lock (i_lock)
+			lock (_lock)
 			{
 				Slot slot = GetSlot(byteCount);
 				ZeroReservedSlot(slot);

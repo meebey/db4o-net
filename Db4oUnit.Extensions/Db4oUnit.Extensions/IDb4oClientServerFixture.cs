@@ -13,5 +13,7 @@ namespace Db4oUnit.Extensions
 		int ServerPort();
 
 		IExtObjectContainer OpenNewClient();
+
+		bool EmbeddedClients();
 	}
 }

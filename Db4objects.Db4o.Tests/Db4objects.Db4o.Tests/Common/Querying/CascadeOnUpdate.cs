@@ -10,6 +10,11 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 {
 	public class CascadeOnUpdate : AbstractDb4oTestCase
 	{
+		public static void Main(string[] arguments)
+		{
+			new CascadeOnUpdate().RunClientServer();
+		}
+
 		public class Atom
 		{
 			public CascadeOnUpdate.Atom child;
@@ -53,14 +58,14 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public virtual void Test()
 		{
-			Foreach(GetType(), new _IVisitor4_48(this));
+			Foreach(GetType(), new _IVisitor4_52(this));
 			Reopen();
-			Foreach(GetType(), new _IVisitor4_59(this));
+			Foreach(GetType(), new _IVisitor4_63(this));
 		}
 
-		private sealed class _IVisitor4_48 : IVisitor4
+		private sealed class _IVisitor4_52 : IVisitor4
 		{
-			public _IVisitor4_48(CascadeOnUpdate _enclosing)
+			public _IVisitor4_52(CascadeOnUpdate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -76,9 +81,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			private readonly CascadeOnUpdate _enclosing;
 		}
 
-		private sealed class _IVisitor4_59 : IVisitor4
+		private sealed class _IVisitor4_63 : IVisitor4
 		{
-			public _IVisitor4_59(CascadeOnUpdate _enclosing)
+			public _IVisitor4_63(CascadeOnUpdate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

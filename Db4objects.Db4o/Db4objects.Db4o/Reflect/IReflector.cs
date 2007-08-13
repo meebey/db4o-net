@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Reflect;
 
@@ -10,24 +9,23 @@ namespace Db4objects.Db4o.Reflect
 	/// <summary>root of the reflection implementation API.</summary>
 	/// <remarks>
 	/// root of the reflection implementation API.
-	/// <br /><br />The open reflection interface is supplied to allow to implement
-	/// reflection functionality on JDKs that do not come with the
-	/// java.lang.reflect.* package.<br /><br />
-	/// See the code in com.db4o.samples.reflect for a reference implementation
-	/// that uses java.lang.reflect.*.
-	/// <br /><br />
+	/// <br/><br/>The open reflection interface is supplied to allow to implement
+	/// custom reflection functionality.<br/><br/>
 	/// Use
-	/// <see cref="IConfiguration.ReflectWith">Db4o.configure().reflectWith(IReflect reflector)
-	/// 	</see>
+	/// <see cref="IConfiguration.ReflectWith">
+	/// Db4o.Configure().ReflectWith(IReflect reflector)
+	/// </see>
 	/// to register the use of your implementation before opening database
 	/// files.
 	/// </remarks>
 	public interface IReflector : IDeepClone
 	{
-		/// <summary>returns an ReflectArray object, the equivalent to java.lang.reflect.Array.
-		/// 	</summary>
-		/// <remarks>returns an ReflectArray object, the equivalent to java.lang.reflect.Array.
-		/// 	</remarks>
+		/// <summary>
+		/// returns an ReflectArray object.
+		/// </summary>
+		/// <remarks>
+		/// returns an ReflectArray object.
+		/// </remarks>
 		IReflectArray Array();
 
 		/// <summary>specifiy whether parameterized Constructors are supported.</summary>

@@ -159,12 +159,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			{
 				runnable.Run();
 			}
-			int originalFileSize = FileSize();
+			int originalFileSize = DatabaseFileSize();
 			for (int i = 0; i < ITERATIONS; i++)
 			{
 				runnable.Run();
 			}
-			Assert.AreEqual(originalFileSize, FileSize());
+			Assert.AreEqual(originalFileSize, DatabaseFileSize());
 		}
 	}
 }

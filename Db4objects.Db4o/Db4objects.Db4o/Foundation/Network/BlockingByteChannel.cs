@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		protected byte[] i_cache;
 
-		private bool i_closed = false;
+		internal bool i_closed = false;
 
 		protected int i_readOffset;
 
@@ -259,7 +259,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			private readonly int i;
 		}
 
-		private void CheckClosed()
+		public virtual void CheckClosed()
 		{
 			if (i_closed)
 			{

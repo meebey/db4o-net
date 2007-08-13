@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		int MarshalledLength(ObjectContainerBase stream, FieldMetadata field);
 
-		void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO sio, ReaderPair
+		void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO sio, BufferPair
 			 readers);
 	}
 }

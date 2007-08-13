@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			int length = Const4.INT_LENGTH;
 			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(length
 				);
-			reader.ReadEncrypt(ta.Stream(), slot.Address());
+			reader.ReadEncrypt(ta.Container(), slot.Address());
 			return reader.ReadInt();
 		}
 

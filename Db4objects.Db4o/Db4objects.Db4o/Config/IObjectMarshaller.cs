@@ -1,7 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Config;
-
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>interface for custom marshallers.</summary>
@@ -15,11 +13,11 @@ namespace Db4objects.Db4o.Config
 	/// allows the
 	/// application developer to write the logic how the fields of an
 	/// object are converted to a byte[] and back.
-	/// <br /><br />To implement a custom marshaller, write a class that
+	/// <br/><br/>To implement a custom marshaller, write a class that
 	/// implements the methods of the
 	/// <see cref="IObjectMarshaller">IObjectMarshaller</see>
-	/// interface and register it for your persistent class:<br />
-	/// <code>Db4o.configure().objectClass(YourClass.class).marshallWith(yourMarshaller);</code>
+	/// interface and register it for your persistent class:<br/>
+	/// <code>Db4oFactory.Configure().ObjectClass(typeof(YourClass)).MarshallWith(yourMarshaller);</code>
 	/// </remarks>
 	public interface IObjectMarshaller
 	{

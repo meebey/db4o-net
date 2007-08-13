@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Query
 	/// .
 	/// <br /><br />
 	/// Constraints are constructed by calling
-	/// <see cref="IQuery.Constrain">Query.constrain()</see>
+	/// <see cref="IQuery.Constrain">IQuery.Constrain</see>
 	/// .
 	/// <br /><br />
 	/// Constraints can be joined with the methods
@@ -31,7 +31,13 @@ namespace Db4objects.Db4o.Query
 	public interface IConstraint
 	{
 		/// <summary>links two Constraints for AND evaluation.</summary>
-		/// <remarks>links two Constraints for AND evaluation.</remarks>
+		/// <remarks>
+		/// links two Constraints for AND evaluation.
+		/// For example:<br />
+		/// <code>query.constrain(Pilot.class);</code><br />
+		/// <code>query.descend("points").constrain(101).smaller().and(query.descend("name").constrain("Test Pilot0"));	</code><br />
+		/// will retrieve all pilots with points less than 101 and name as "Test Pilot0"<br />
+		/// </remarks>
 		/// <param name="with">
 		/// the other
 		/// <see cref="IConstraint">IConstraint</see>
@@ -48,7 +54,13 @@ namespace Db4objects.Db4o.Query
 		IConstraint And(IConstraint with);
 
 		/// <summary>links two Constraints for OR evaluation.</summary>
-		/// <remarks>links two Constraints for OR evaluation.</remarks>
+		/// <remarks>
+		/// links two Constraints for OR evaluation.
+		/// For example:<br /><br />
+		/// <code>query.constrain(Pilot.class);</code><br />
+		/// <code>query.descend("points").constrain(101).greater().or(query.descend("name").constrain("Test Pilot0"));</code><br />
+		/// will retrieve all pilots with points more than 101 or pilots with the name "Test Pilot0"<br />
+		/// </remarks>
 		/// <param name="with">
 		/// the other
 		/// <see cref="IConstraint">IConstraint</see>
@@ -64,8 +76,18 @@ namespace Db4objects.Db4o.Query
 		/// </returns>
 		IConstraint Or(IConstraint with);
 
-		/// <summary>sets the evaluation mode to <code>==</code>.</summary>
-		/// <remarks>sets the evaluation mode to <code>==</code>.</remarks>
+		/// <summary>
+		/// Used in conjunction with
+		/// <see>smaller()</see>
+		/// or
+		/// <see>greater()</see>
+		/// to create constraints
+		/// like "smaller or equal", "greater or equal".
+		/// For example:<br />
+		/// <code>query.constrain(Pilot.class);</code><br />
+		/// <code>query.descend("points").constrain(101).smaller().equal();</code><br />
+		/// will return all pilots with points &lt;= 101.<br />
+		/// </summary>
 		/// <returns>
 		/// this
 		/// <see cref="IConstraint">IConstraint</see>
@@ -74,7 +96,13 @@ namespace Db4objects.Db4o.Query
 		IConstraint Equal();
 
 		/// <summary>sets the evaluation mode to <code>&gt;</code>.</summary>
-		/// <remarks>sets the evaluation mode to <code>&gt;</code>.</remarks>
+		/// <remarks>
+		/// sets the evaluation mode to <code>&gt;</code>.
+		/// For example:<br />
+		/// <code>query.constrain(Pilot.class);</code><br />
+		/// <code>query.descend("points").constrain(101).greater()</code><br />
+		/// will return all pilots with points &gt; 101.<br />
+		/// </remarks>
 		/// <returns>
 		/// this
 		/// <see cref="IConstraint">IConstraint</see>
@@ -83,7 +111,13 @@ namespace Db4objects.Db4o.Query
 		IConstraint Greater();
 
 		/// <summary>sets the evaluation mode to <code>&lt;</code>.</summary>
-		/// <remarks>sets the evaluation mode to <code>&lt;</code>.</remarks>
+		/// <remarks>
+		/// sets the evaluation mode to <code>&lt;</code>.
+		/// For example:<br />
+		/// <code>query.constrain(Pilot.class);</code><br />
+		/// <code>query.descend("points").constrain(101).smaller()</code><br />
+		/// will return all pilots with points &lt; 101.<br />
+		/// </remarks>
 		/// <returns>
 		/// this
 		/// <see cref="IConstraint">IConstraint</see>
@@ -92,7 +126,25 @@ namespace Db4objects.Db4o.Query
 		IConstraint Smaller();
 
 		/// <summary>sets the evaluation mode to identity comparison.</summary>
-		/// <remarks>sets the evaluation mode to identity comparison.</remarks>
+		/// <remarks>
+		/// sets the evaluation mode to identity comparison. In this case only
+		/// objects having the same database identity will be included in the result set.
+		/// For example:<br />
+		/// <code>Pilot pilot = new Pilot("Test Pilot1", 100);</code><br />
+		/// <code>Car car = new Car("BMW", pilot);</code><br />
+		/// <code>container.set(car);</code><br />
+		/// <code>// Change the name, the pilot instance stays the same</code><br />
+		/// <code>pilot.setName("Test Pilot2");</code><br />
+		/// <code>// create a new car</code><br />
+		/// <code>car = new Car("Ferrari", pilot);</code><br />
+		/// <code>container.set(car);</code><br />
+		/// <code>Query query = container.query();</code><br />
+		/// <code>query.constrain(Car.class);</code><br />
+		/// <code>// All cars having pilot with the same database identity</code><br />
+		/// <code>// will be retrieved. As we only created Pilot object once</code><br />
+		/// <code>// it should mean all car objects</code><br />
+		/// <code>query.descend("_pilot").constrain(pilot).identity();</code><br /><br />
+		/// </remarks>
 		/// <returns>
 		/// this
 		/// <see cref="IConstraint">IConstraint</see>
@@ -102,8 +154,15 @@ namespace Db4objects.Db4o.Query
 
 		/// <summary>sets the evaluation mode to "like" comparison.</summary>
 		/// <remarks>
-		/// sets the evaluation mode to "like" comparison.
-		/// <br /><br />Constraints are compared to the first characters of a field.<br /><br />
+		/// sets the evaluation mode to "like" comparison. This mode will include
+		/// all objects having the constrain expression somewhere inside the string field.
+		/// For example:<br />
+		/// <code>Pilot pilot = new Pilot("Test Pilot1", 100);</code><br />
+		/// <code>container.set(pilot);</code><br />
+		/// <code> ...</code><br />
+		/// <code>query.constrain(Pilot.class);</code><br />
+		/// <code>// All pilots with the name containing "est" will be retrieved</code><br />
+		/// <code>query.descend("name").constrain("est").like();</code><br />
 		/// </remarks>
 		/// <returns>
 		/// this
@@ -113,7 +172,23 @@ namespace Db4objects.Db4o.Query
 		IConstraint Like();
 
 		/// <summary>sets the evaluation mode to containment comparison.</summary>
-		/// <remarks>sets the evaluation mode to containment comparison.</remarks>
+		/// <remarks>
+		/// sets the evaluation mode to containment comparison.
+		/// For example:<br />
+		/// <code>Pilot pilot1 = new Pilot("Test 1", 1);</code><br />
+		/// <code>list.add(pilot1);</code><br />
+		/// <code>Pilot pilot2 = new Pilot("Test 2", 2);</code><br />
+		/// <code>list.add(pilot2);</code><br />
+		/// <code>Team team = new Team("Ferrari", list);</code><br />
+		/// <code>container.set(team);</code><br />
+		/// <code>Query query = container.query();</code><br />
+		/// <code>query.constrain(Team.class);</code><br />
+		/// <code>query.descend("pilots").constrain(pilot2).contains();</code><br />
+		/// will return the Team object as it contains pilot2.<br />
+		/// If applied to a String object, this constrain will behave as
+		/// <see>like()</see>
+		/// .
+		/// </remarks>
 		/// <returns>
 		/// this
 		/// <see cref="IConstraint">IConstraint</see>
@@ -122,7 +197,15 @@ namespace Db4objects.Db4o.Query
 		IConstraint Contains();
 
 		/// <summary>sets the evaluation mode to string startsWith comparison.</summary>
-		/// <remarks>sets the evaluation mode to string startsWith comparison.</remarks>
+		/// <remarks>
+		/// sets the evaluation mode to string startsWith comparison.
+		/// For example:<br />
+		/// <code>Pilot pilot = new Pilot("Test Pilot0", 100);</code><br />
+		/// <code>container.set(pilot);</code><br />
+		/// <code> ...</code><br />
+		/// <code>query.constrain(Pilot.class);</code><br />
+		/// <code>query.descend("name").constrain("Test").startsWith(true);</code><br />
+		/// </remarks>
 		/// <param name="caseSensitive">comparison will be case sensitive if true, case insensitive otherwise
 		/// 	</param>
 		/// <returns>
@@ -133,7 +216,15 @@ namespace Db4objects.Db4o.Query
 		IConstraint StartsWith(bool caseSensitive);
 
 		/// <summary>sets the evaluation mode to string endsWith comparison.</summary>
-		/// <remarks>sets the evaluation mode to string endsWith comparison.</remarks>
+		/// <remarks>
+		/// sets the evaluation mode to string endsWith comparison.
+		/// For example:<br />
+		/// <code>Pilot pilot = new Pilot("Test Pilot0", 100);</code><br />
+		/// <code>container.set(pilot);</code><br />
+		/// <code> ...</code><br />
+		/// <code>query.constrain(Pilot.class);</code><br />
+		/// <code>query.descend("name").constrain("T0").endsWith(false);</code><br />
+		/// </remarks>
 		/// <param name="caseSensitive">comparison will be case sensitive if true, case insensitive otherwise
 		/// 	</param>
 		/// <returns>
@@ -144,7 +235,15 @@ namespace Db4objects.Db4o.Query
 		IConstraint EndsWith(bool caseSensitive);
 
 		/// <summary>turns on not() comparison.</summary>
-		/// <remarks>turns on not() comparison.</remarks>
+		/// <remarks>
+		/// turns on not() comparison. All objects not fullfilling the constrain condition will be returned.
+		/// For example:<br />
+		/// <code>Pilot pilot = new Pilot("Test Pilot1", 100);</code><br />
+		/// <code>container.set(pilot);</code><br />
+		/// <code> ...</code><br />
+		/// <code>query.constrain(Pilot.class);</code><br />
+		/// <code>query.descend("name").constrain("t0").endsWith(true).not();</code><br />
+		/// </remarks>
 		/// <returns>
 		/// this
 		/// <see cref="IConstraint">IConstraint</see>

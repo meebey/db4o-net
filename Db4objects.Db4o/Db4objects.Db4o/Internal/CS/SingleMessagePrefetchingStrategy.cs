@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal.CS
 				int id = ids.CurrentInt();
 				if (id > 0)
 				{
-					object obj = container.ObjectForIdFromCache(id);
+					object obj = container.Transaction().ObjectForIdFromCache(id);
 					if (obj != null)
 					{
 						prefetched[count] = obj;
@@ -51,21 +51,21 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			if (toGet > 0)
 			{
-				MsgD msg = Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(container.GetTransaction
-					(), idsToGet, toGet);
+				MsgD msg = Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(container.Transaction()
+					, idsToGet, toGet);
 				container.Write(msg);
 				MsgD response = (MsgD)container.ExpectedResponse(Msg.READ_MULTIPLE_OBJECTS);
 				int embeddedMessageCount = response.ReadInt();
 				for (int i = 0; i < embeddedMessageCount; i++)
 				{
 					MsgObject mso = (MsgObject)Msg.OBJECT_TO_CLIENT.PublicClone();
-					mso.SetTransaction(container.GetTransaction());
+					mso.SetTransaction(container.Transaction());
 					mso.PayLoad(response.PayLoad().ReadYapBytes());
 					if (mso.PayLoad() != null)
 					{
 						mso.PayLoad().IncrementOffset(Const4.MESSAGE_LENGTH);
 						StatefulBuffer reader = mso.Unmarshall(Const4.MESSAGE_LENGTH);
-						object obj = container.ObjectForIdFromCache(idsToGet[i]);
+						object obj = container.Transaction().ObjectForIdFromCache(idsToGet[i]);
 						if (obj != null)
 						{
 							prefetched[position[i]] = obj;

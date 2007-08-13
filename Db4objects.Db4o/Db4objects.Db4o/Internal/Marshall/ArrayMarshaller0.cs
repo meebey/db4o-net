@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return reader.ReadEmbeddedObject(trans);
 		}
 
-		public override void DefragIDs(ArrayHandler arrayHandler, ReaderPair readers)
+		public override void DefragIDs(ArrayHandler arrayHandler, BufferPair readers)
 		{
 		}
 	}

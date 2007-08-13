@@ -30,8 +30,9 @@ namespace Db4objects.Db4o.Internal
 
 		protected readonly LocalObjectContainer _file;
 
-		public LocalTransaction(ObjectContainerBase container, Transaction parent) : base
-			(container, parent)
+		public LocalTransaction(ObjectContainerBase container, Transaction parentTransaction
+			, TransactionalReferenceSystem referenceSystem) : base(container, parentTransaction
+			, referenceSystem)
 		{
 			_file = (LocalObjectContainer)container;
 			i_pointerIo = new StatefulBuffer(this, Const4.POINTER_LENGTH);
@@ -49,7 +50,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Commit(IServerMessageDispatcher dispatcher)
 		{
-			lock (Stream().i_lock)
+			lock (Container()._lock)
 			{
 				if (DoCommittingCallbacks())
 				{
@@ -115,7 +116,7 @@ namespace Db4objects.Db4o.Internal
 			Commit3Stream();
 			Commit4FieldIndexes();
 			CommitParticipants();
-			Stream().WriteDirty();
+			Container().WriteDirty();
 			Slot reservedSlot = AllocateTransactionLogSlot(false);
 			FreeSlotChanges(false);
 			CommitFreespace();
@@ -185,9 +186,9 @@ namespace Db4objects.Db4o.Internal
 
 		private void Commit3Stream()
 		{
-			Stream().ProcessPendingClassUpdates();
-			Stream().WriteDirty();
-			Stream().ClassCollection().Write(Stream().SystemTransaction());
+			Container().ProcessPendingClassUpdates();
+			Container().WriteDirty();
+			Container().ClassCollection().Write(Container().SystemTransaction());
 		}
 
 		private Db4objects.Db4o.Internal.LocalTransaction ParentLocalTransaction()
@@ -222,7 +223,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Rollback()
 		{
-			lock (Stream().i_lock)
+			lock (Container()._lock)
 			{
 				RollbackParticipants();
 				RollbackFieldIndexes();
@@ -268,10 +269,10 @@ namespace Db4objects.Db4o.Internal
 
 		private Slot AllocateTransactionLogSlot(bool appendToFile)
 		{
+			int transactionLogByteCount = TransactionLogSlotLength();
 			if (FreespaceManager() != null)
 			{
-				int nonBlockedLength = TransactionLogSlotLength();
-				int blockedLength = _file.BytesToBlocks(nonBlockedLength);
+				int blockedLength = _file.BytesToBlocks(transactionLogByteCount);
 				Slot slot = FreespaceManager().AllocateTransactionLogSlot(blockedLength);
 				if (slot != null)
 				{
@@ -282,7 +283,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			return _file.AppendSlot(TransactionLogSlotLength());
+			return _file.AppendBytes(transactionLogByteCount);
 		}
 
 		private int TransactionLogSlotLength()
@@ -295,7 +296,7 @@ namespace Db4objects.Db4o.Internal
 			return slot != null && slot.Length() >= TransactionLogSlotLength();
 		}
 
-		protected virtual void Commit6WriteChanges(Slot reservedSlot)
+		protected void Commit6WriteChanges(Slot reservedSlot)
 		{
 			CheckSynchronization();
 			int slotChangeCount = CountSlotChanges();
@@ -309,13 +310,13 @@ namespace Db4objects.Db4o.Internal
 				AppendSlotChanges(buffer);
 				buffer.Write();
 				FlushFile();
-				Stream().WriteTransactionPointer(transactionLogSlot.Address());
+				Container().WriteTransactionPointer(transactionLogSlot.Address());
 				FlushFile();
 				if (WriteSlots())
 				{
 					FlushFile();
 				}
-				Stream().WriteTransactionPointer(0);
+				Container().WriteTransactionPointer(0);
 				FlushFile();
 				if (transactionLogSlot != reservedSlot)
 				{
@@ -335,7 +336,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			FreespaceManager().FreeTransactionLogSlot(_file.ToNonBlockedLength(slot));
+			FreespaceManager().FreeTransactionLogSlot(_file.ToBlockedLength(slot));
 		}
 
 		public virtual void WriteZeroPointer(int id)
@@ -525,7 +526,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal void WriteOld()
 		{
-			lock (Stream().i_lock)
+			lock (Container()._lock)
 			{
 				i_pointerIo.UseSlot(i_address);
 				i_pointerIo.Read();
@@ -540,13 +541,13 @@ namespace Db4objects.Db4o.Internal
 					{
 						FlushFile();
 					}
-					Stream().WriteTransactionPointer(0);
+					Container().WriteTransactionPointer(0);
 					FlushFile();
 					FreeSlotChanges(false);
 				}
 				else
 				{
-					Stream().WriteTransactionPointer(0);
+					Container().WriteTransactionPointer(0);
 					FlushFile();
 				}
 			}
@@ -660,15 +661,15 @@ namespace Db4objects.Db4o.Internal
 
 		public override void ProcessDeletes()
 		{
-			if (i_delete == null)
+			if (_delete == null)
 			{
 				_writtenUpdateDeletedMembers = null;
 				return;
 			}
-			while (i_delete != null)
+			while (_delete != null)
 			{
-				Tree delete = i_delete;
-				i_delete = null;
+				Tree delete = _delete;
+				_delete = null;
 				delete.Traverse(new _IVisitor4_608(this));
 			}
 			_writtenUpdateDeletedMembers = null;
@@ -695,18 +696,18 @@ namespace Db4objects.Db4o.Internal
 				}
 				if (obj == null || info._reference.GetID() < 0)
 				{
-					HardObjectReference hardRef = this._enclosing.Stream().GetHardObjectReferenceById
+					HardObjectReference hardRef = this._enclosing.Container().GetHardObjectReferenceById
 						(this._enclosing, info._key);
 					if (hardRef == HardObjectReference.INVALID)
 					{
 						return;
 					}
 					info._reference = hardRef._reference;
-					info._reference.FlagForDelete(this._enclosing.Stream().TopLevelCallId());
+					info._reference.FlagForDelete(this._enclosing.Container().TopLevelCallId());
 					obj = info._reference.GetObject();
 				}
-				this._enclosing.Stream().Delete3(this._enclosing, info._reference, info._cascade, 
-					false);
+				this._enclosing.Container().Delete3(this._enclosing, info._reference, info._cascade
+					, false);
 			}
 
 			private readonly LocalTransaction _enclosing;
@@ -727,17 +728,17 @@ namespace Db4objects.Db4o.Internal
 				SlotFreeOnCommit(id, GetCurrentSlotOfID(id));
 				return;
 			}
-			StatefulBuffer objectBytes = Stream().ReadWriterByID(this, id);
+			StatefulBuffer objectBytes = Container().ReadWriterByID(this, id);
 			if (objectBytes == null)
 			{
-				if (clazz.HasIndex())
+				if (clazz.HasClassIndex())
 				{
 					DontRemoveFromClassIndex(clazz.GetID(), id);
 				}
 				return;
 			}
-			ObjectHeader oh = new ObjectHeader(Stream(), clazz, objectBytes);
-			DeleteInfo info = (DeleteInfo)TreeInt.Find(i_delete, id);
+			ObjectHeader oh = new ObjectHeader(Container(), clazz, objectBytes);
+			DeleteInfo info = (DeleteInfo)TreeInt.Find(_delete, id);
 			if (info != null)
 			{
 				if (info._cascade > cascade)
@@ -753,7 +754,7 @@ namespace Db4objects.Db4o.Internal
 
 		private ICallbacks Callbacks()
 		{
-			return Stream().Callbacks();
+			return Container().Callbacks();
 		}
 
 		private CallbackObjectInfoCollections CollectCallbackObjectInfos(IServerMessageDispatcher
@@ -827,7 +828,7 @@ namespace Db4objects.Db4o.Internal
 			if ((transactionID1 > 0) && (transactionID1 == transactionID2))
 			{
 				Db4objects.Db4o.Internal.LocalTransaction transaction = (Db4objects.Db4o.Internal.LocalTransaction
-					)file.NewTransaction(null);
+					)file.NewTransaction(null, null);
 				transaction.SetAddress(transactionID1);
 				return transaction;
 			}

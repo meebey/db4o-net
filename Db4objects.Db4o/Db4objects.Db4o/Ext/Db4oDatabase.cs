@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Ext
 		/// <returns>the db4o ID for the ObjectContainer</returns>
 		public virtual int GetID(Transaction trans)
 		{
-			ObjectContainerBase stream = trans.Stream();
+			ObjectContainerBase stream = trans.Container();
 			if (stream != i_stream)
 			{
 				i_stream = stream;
@@ -147,7 +147,7 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>make sure this Db4oDatabase is stored. Return the ID.</remarks>
 		public virtual int Bind(Transaction trans)
 		{
-			ObjectContainerBase stream = trans.Stream();
+			ObjectContainerBase stream = trans.Container();
 			Db4objects.Db4o.Ext.Db4oDatabase stored = (Db4objects.Db4o.Ext.Db4oDatabase)stream
 				.Db4oTypeStored(trans, this);
 			if (stored == null)
@@ -156,7 +156,7 @@ namespace Db4objects.Db4o.Ext
 			}
 			if (stored == this)
 			{
-				return stream.GetID1(this);
+				return stream.GetID(trans, this);
 			}
 			if (i_uuid == 0)
 			{
@@ -165,8 +165,8 @@ namespace Db4objects.Db4o.Ext
 			stream.ShowInternalClasses(true);
 			try
 			{
-				int id = stream.GetID1(stored);
-				stream.Bind(this, id);
+				int id = stream.GetID(trans, stored);
+				stream.Bind(trans, this, id);
 				return id;
 			}
 			finally
@@ -177,12 +177,12 @@ namespace Db4objects.Db4o.Ext
 
 		private int StoreAndGetId(Transaction trans)
 		{
-			ObjectContainerBase stream = trans.Stream();
+			ObjectContainerBase stream = trans.Container();
 			stream.ShowInternalClasses(true);
 			try
 			{
 				stream.Set3(trans, this, 2, false);
-				return stream.GetID1(this);
+				return stream.GetID(trans, this);
 			}
 			finally
 			{
@@ -207,7 +207,7 @@ namespace Db4objects.Db4o.Ext
 		private Db4objects.Db4o.Ext.Db4oDatabase Query(Transaction trans, bool constrainByUUID
 			)
 		{
-			ObjectContainerBase stream = trans.Stream();
+			ObjectContainerBase stream = trans.Container();
 			IQuery q = stream.Query(trans);
 			q.Constrain(GetType());
 			if (constrainByUUID)
@@ -219,7 +219,7 @@ namespace Db4objects.Db4o.Ext
 			{
 				Db4objects.Db4o.Ext.Db4oDatabase storedDatabase = (Db4objects.Db4o.Ext.Db4oDatabase
 					)objectSet.Next();
-				stream.Activate1(null, storedDatabase, 4);
+				stream.Activate(null, storedDatabase, 4);
 				if (storedDatabase.Equals(this))
 				{
 					return storedDatabase;

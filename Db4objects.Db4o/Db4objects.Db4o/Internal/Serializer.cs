@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal
 	{
 		public static StatefulBuffer Marshall(Transaction ta, object obj)
 		{
-			SerializedGraph serialized = Marshall(ta.Stream(), obj);
+			SerializedGraph serialized = Marshall(ta.Container(), obj);
 			StatefulBuffer buffer = new StatefulBuffer(ta, serialized.Length());
 			buffer.Append(serialized._bytes);
 			buffer.UseSlot(serialized._id, 0, serialized.Length());

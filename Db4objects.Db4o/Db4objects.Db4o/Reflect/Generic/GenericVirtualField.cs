@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 	/// <exclude></exclude>
 	public class GenericVirtualField : GenericField
 	{
-		public GenericVirtualField(string name) : base(name, null, false, false, false)
+		public GenericVirtualField(string name) : base(name, null, false)
 		{
 		}
 

@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			Activate(Stream().GetTransaction(), GetObject(), 1, false);
+			Activate(Stream().Transaction(), GetObject(), 1, false);
 		}
 
 		private ObjectContainerBase Stream()
@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			Activate1(ta, a_object, a_depth, a_refresh);
-			ta.Stream().Activate3CheckStill(ta);
+			ta.Container().Activate3CheckStill(ta);
 		}
 
 		internal virtual void Activate1(Transaction ta, object a_object, int a_depth, bool
@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (a_depth > 0)
 			{
-				ObjectContainerBase stream = ta.Stream();
+				ObjectContainerBase stream = ta.Container();
 				if (a_refresh)
 				{
 					LogActivation(stream, "refresh");
@@ -122,16 +122,16 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal void AddExistingReferenceToIdTree(ObjectContainerBase a_stream)
+		internal void AddExistingReferenceToIdTree(Transaction trans)
 		{
 			if (!(_class is PrimitiveFieldHandler))
 			{
-				a_stream.ReferenceSystem().AddExistingReferenceToIdTree(this);
+				trans.ReferenceSystem().AddExistingReferenceToIdTree(this);
 			}
 		}
 
 		/// <summary>return false if class not completely initialized, otherwise true *</summary>
-		internal virtual bool ContinueSet(Transaction a_trans, int a_updateDepth)
+		internal virtual bool ContinueSet(Transaction trans, int updateDepth)
 		{
 			if (BitIsTrue(Const4.CONTINUE))
 			{
@@ -140,15 +140,15 @@ namespace Db4objects.Db4o.Internal
 					return false;
 				}
 				BitFalse(Const4.CONTINUE);
-				StatefulBuffer writer = MarshallerFamily.Current()._object.MarshallNew(a_trans, this
-					, a_updateDepth);
-				ObjectContainerBase stream = a_trans.Stream();
+				StatefulBuffer writer = MarshallerFamily.Current()._object.MarshallNew(trans, this
+					, updateDepth);
+				ObjectContainerBase stream = trans.Container();
 				stream.WriteNew(_class, writer);
 				object obj = _object;
-				ObjectOnNew(stream, obj);
+				ObjectOnNew(trans, obj);
 				if (!_class.IsPrimitive())
 				{
-					_object = stream.i_references.CreateYapRef(this, obj);
+					_object = stream._references.CreateYapRef(this, obj);
 				}
 				SetStateClean();
 				EndProcessing();
@@ -156,10 +156,11 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		private void ObjectOnNew(ObjectContainerBase stream, object obj)
+		private void ObjectOnNew(Transaction transaction, object obj)
 		{
-			stream.Callbacks().ObjectOnNew(obj);
-			_class.DispatchEvent(stream, obj, EventDispatcher.NEW);
+			ObjectContainerBase container = transaction.Container();
+			container.Callbacks().ObjectOnNew(transaction, obj);
+			_class.DispatchEvent(container, obj, EventDispatcher.NEW);
 		}
 
 		public virtual void Deactivate(Transaction a_trans, int a_depth)
@@ -173,7 +174,7 @@ namespace Db4objects.Db4o.Internal
 					{
 						((IDb4oTypeImpl)obj).PreDeactivate();
 					}
-					ObjectContainerBase stream = a_trans.Stream();
+					ObjectContainerBase stream = a_trans.Container();
 					LogActivation(stream, "deactivate");
 					SetStateDeactivated();
 					_class.Deactivate(a_trans, obj, a_depth);
@@ -205,21 +206,21 @@ namespace Db4objects.Db4o.Internal
 			return _object;
 		}
 
-		public virtual ObjectContainerBase GetStream()
+		public virtual ObjectContainerBase Container()
 		{
 			if (_class == null)
 			{
 				return null;
 			}
-			return _class.GetStream();
+			return _class.Container();
 		}
 
 		public virtual Transaction GetTrans()
 		{
-			ObjectContainerBase stream = GetStream();
-			if (stream != null)
+			ObjectContainerBase container = Container();
+			if (container != null)
 			{
-				return stream.GetTransaction();
+				return container.Transaction();
 			}
 			return null;
 		}
@@ -280,7 +281,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (BeginProcessing())
 			{
-				ObjectContainerBase stream = ta.Stream();
+				ObjectContainerBase stream = ta.Container();
 				int id = GetID();
 				if (a_reader == null && id > 0)
 				{
@@ -289,14 +290,14 @@ namespace Db4objects.Db4o.Internal
 				if (a_reader != null)
 				{
 					ObjectHeader header = new ObjectHeader(stream, a_reader);
-					_class = header.YapClass();
+					_class = header.ClassMetadata();
 					if (_class == null)
 					{
 						return null;
 					}
 					if (checkIDTree)
 					{
-						object objectInCacheFromClassCreation = stream.ObjectForIdFromCache(GetID());
+						object objectInCacheFromClassCreation = ta.ObjectForIdFromCache(GetID());
 						if (objectInCacheFromClassCreation != null)
 						{
 							return objectInCacheFromClassCreation;
@@ -326,7 +327,7 @@ namespace Db4objects.Db4o.Internal
 			if (BeginProcessing())
 			{
 				ObjectHeader header = new ObjectHeader(a_stream, a_reader);
-				_class = header.YapClass();
+				_class = header.ClassMetadata();
 				if (_class == null)
 				{
 					return null;
@@ -347,13 +348,13 @@ namespace Db4objects.Db4o.Internal
 		internal virtual void SetObjectWeak(ObjectContainerBase a_stream, object a_object
 			)
 		{
-			if (a_stream.i_references._weak)
+			if (a_stream._references._weak)
 			{
 				if (_object != null)
 				{
 					Platform4.KillYapRef(_object);
 				}
-				_object = Platform4.CreateYapRef(a_stream.i_references._queue, this, a_object);
+				_object = Platform4.CreateYapRef(a_stream._references._queue, this, a_object);
 			}
 			else
 			{
@@ -371,7 +372,7 @@ namespace Db4objects.Db4o.Internal
 			_object = obj;
 			_class = yapClass;
 			WriteObjectBegin();
-			int id = trans.Stream().NewUserObject();
+			int id = trans.Container().NewUserObject();
 			trans.SlotFreePointerOnRollback(id);
 			SetID(id);
 			BeginProcessing();
@@ -414,31 +415,34 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public virtual Db4objects.Db4o.Internal.VirtualAttributes VirtualAttributes(Transaction
-			 a_trans)
+			 trans)
 		{
-			if (a_trans == null)
+			if (trans == null)
 			{
 				return _virtualAttributes;
 			}
-			if (_virtualAttributes == null)
+			lock (trans.Container().Lock())
 			{
-				if (_class.HasVirtualAttributes())
-				{
-					_virtualAttributes = new Db4objects.Db4o.Internal.VirtualAttributes();
-					_class.ReadVirtualAttributes(a_trans, this);
-				}
-			}
-			else
-			{
-				if (!_virtualAttributes.SuppliesUUID())
+				if (_virtualAttributes == null)
 				{
 					if (_class.HasVirtualAttributes())
 					{
-						_class.ReadVirtualAttributes(a_trans, this);
+						_virtualAttributes = new Db4objects.Db4o.Internal.VirtualAttributes();
+						_class.ReadVirtualAttributes(trans, this);
 					}
 				}
+				else
+				{
+					if (!_virtualAttributes.SuppliesUUID())
+					{
+						if (_class.HasVirtualAttributes())
+						{
+							_class.ReadVirtualAttributes(trans, this);
+						}
+					}
+				}
+				return _virtualAttributes;
 			}
-			return _virtualAttributes;
 		}
 
 		public virtual void SetVirtualAttributes(Db4objects.Db4o.Internal.VirtualAttributes
@@ -452,25 +456,24 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public virtual void WriteUpdate(Transaction a_trans, int a_updatedepth)
+		public virtual void WriteUpdate(Transaction trans, int updatedepth)
 		{
-			ContinueSet(a_trans, a_updatedepth);
+			ContinueSet(trans, updatedepth);
 			if (BeginProcessing())
 			{
 				object obj = GetObject();
-				if (ObjectCanUpdate(a_trans.Stream(), obj))
+				if (ObjectCanUpdate(trans, obj))
 				{
 					if ((!IsActive()) || obj == null)
 					{
 						EndProcessing();
 						return;
 					}
-					LogEvent(a_trans.Stream(), "update", Const4.STATE);
+					LogEvent(trans.Container(), "update", Const4.STATE);
 					SetStateClean();
-					a_trans.WriteUpdateDeleteMembers(GetID(), _class, a_trans.Stream().i_handlers.ArrayType
+					trans.WriteUpdateDeleteMembers(GetID(), _class, trans.Container()._handlers.ArrayType
 						(obj), 0);
-					MarshallerFamily.Current()._object.MarshallUpdate(a_trans, a_updatedepth, this, obj
-						);
+					MarshallerFamily.Current()._object.MarshallUpdate(trans, updatedepth, this, obj);
 				}
 				else
 				{
@@ -479,10 +482,11 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private bool ObjectCanUpdate(ObjectContainerBase stream, object obj)
+		private bool ObjectCanUpdate(Transaction transaction, object obj)
 		{
-			return stream.Callbacks().ObjectCanUpdate(obj) && _class.DispatchEvent(stream, obj
-				, EventDispatcher.CAN_UPDATE);
+			ObjectContainerBase container = transaction.Container();
+			return container.Callbacks().ObjectCanUpdate(transaction, obj) && _class.DispatchEvent
+				(container, obj, EventDispatcher.CAN_UPDATE);
 		}
 
 		/// <summary>HCTREE ****</summary>
@@ -985,16 +989,16 @@ namespace Db4objects.Db4o.Internal
 				string str = "YapObject\nID=" + id;
 				if (_class != null)
 				{
-					ObjectContainerBase stream = _class.GetStream();
+					ObjectContainerBase stream = _class.Container();
 					if (stream != null && id > 0)
 					{
-						StatefulBuffer writer = stream.ReadWriterByID(stream.GetTransaction(), id);
+						StatefulBuffer writer = stream.ReadWriterByID(stream.Transaction(), id);
 						if (writer != null)
 						{
 							str += "\nAddress=" + writer.GetAddress();
 						}
 						ObjectHeader oh = new ObjectHeader(stream, writer);
-						ClassMetadata yc = oh.YapClass();
+						ClassMetadata yc = oh.ClassMetadata();
 						if (yc != _class)
 						{
 							str += "\nYapClass corruption";

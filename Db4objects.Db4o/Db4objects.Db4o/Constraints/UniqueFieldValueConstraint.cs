@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Constraints
 
 		/// <summary>internal method, public for implementation reasons.</summary>
 		/// <remarks>internal method, public for implementation reasons.</remarks>
-		public virtual void Apply(ObjectContainerBase objectContainer)
+		public virtual void Apply(IInternalObjectContainer objectContainer)
 		{
 			EventRegistryFactory.ForObjectContainer(objectContainer).Committing += new Db4objects.Db4o.Events.CommitEventHandler
 				(new _IEventListener4_41(this, objectContainer).OnEvent);
@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Constraints
 
 		private sealed class _IEventListener4_41
 		{
-			public _IEventListener4_41(UniqueFieldValueConstraint _enclosing, ObjectContainerBase
+			public _IEventListener4_41(UniqueFieldValueConstraint _enclosing, IInternalObjectContainer
 				 objectContainer)
 			{
 				this._enclosing = _enclosing;
@@ -110,14 +110,14 @@ namespace Db4objects.Db4o.Constraints
 					return;
 				}
 				CommitEventArgs commitEventArgs = (CommitEventArgs)args;
-				Transaction trans = (Transaction)commitEventArgs.Transaction;
+				Transaction trans = (Transaction)commitEventArgs.Transaction();
 				this.EnsureSingleOccurence(trans, commitEventArgs.Added);
 				this.EnsureSingleOccurence(trans, commitEventArgs.Updated);
 			}
 
 			private readonly UniqueFieldValueConstraint _enclosing;
 
-			private readonly ObjectContainerBase objectContainer;
+			private readonly IInternalObjectContainer objectContainer;
 		}
 	}
 }

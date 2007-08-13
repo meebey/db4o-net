@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		public virtual void Defrag(MarshallerFamily mf, ReaderPair readers, bool redirect
+		public virtual void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
 			)
 		{
 		}

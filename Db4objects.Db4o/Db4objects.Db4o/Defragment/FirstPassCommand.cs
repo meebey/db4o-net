@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		public void ProcessObjectSlot(DefragContextImpl context, ClassMetadata yapClass, 
-			int sourceID, bool registerAddresses)
+			int sourceID)
 		{
 			Process(context, sourceID, false);
 		}
@@ -69,12 +69,12 @@ namespace Db4objects.Db4o.Defragment
 		public void ProcessBTree(DefragContextImpl context, BTree btree)
 		{
 			Process(context, btree.GetID(), false);
-			context.TraverseAllIndexSlots(btree, new _IVisitor4_55(this, context));
+			context.TraverseAllIndexSlots(btree, new _IVisitor4_54(this, context));
 		}
 
-		private sealed class _IVisitor4_55 : IVisitor4
+		private sealed class _IVisitor4_54 : IVisitor4
 		{
-			public _IVisitor4_55(FirstPassCommand _enclosing, DefragContextImpl context)
+			public _IVisitor4_54(FirstPassCommand _enclosing, DefragContextImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;

@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return new GenericVirtualField(fieldName);
 			}
-			return new GenericField(fieldName, fieldType, isPrimitive, isArray, isNArray);
+			return new GenericField(fieldName, fieldType, isPrimitive);
 		}
 
 		public virtual void InitFields(IReflectClass clazz, IReflectField[] fields)

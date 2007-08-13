@@ -113,11 +113,10 @@ namespace Db4objects.Db4o.Internal.Classindex
 			public void Visit(object a_object)
 			{
 				int id = this._enclosing.IdFromValue(a_object);
-				ObjectContainerBase stream = transaction.Stream();
-				ObjectReference yo = stream.ReferenceForId(id);
+				ObjectReference yo = transaction.ReferenceForId(id);
 				if (yo != null)
 				{
-					stream.RemoveReference(yo);
+					transaction.RemoveReference(yo);
 				}
 				index.Remove(id);
 			}
@@ -207,14 +206,14 @@ namespace Db4objects.Db4o.Internal.Classindex
 			}
 			Tree.ByRef tree = new Tree.ByRef(Tree.DeepClone(ci.GetRoot(), null));
 			OldClassIndexStrategy.TransactionState context = GetState(transaction);
-			context.TraverseAdded(new _IVisitor4_151(this, tree));
-			context.TraverseRemoved(new _IVisitor4_156(this, tree));
+			context.TraverseAdded(new _IVisitor4_150(this, tree));
+			context.TraverseRemoved(new _IVisitor4_155(this, tree));
 			return tree.value;
 		}
 
-		private sealed class _IVisitor4_151 : IVisitor4
+		private sealed class _IVisitor4_150 : IVisitor4
 		{
-			public _IVisitor4_151(OldClassIndexStrategy _enclosing, Tree.ByRef tree)
+			public _IVisitor4_150(OldClassIndexStrategy _enclosing, Tree.ByRef tree)
 			{
 				this._enclosing = _enclosing;
 				this.tree = tree;
@@ -230,9 +229,9 @@ namespace Db4objects.Db4o.Internal.Classindex
 			private readonly Tree.ByRef tree;
 		}
 
-		private sealed class _IVisitor4_156 : IVisitor4
+		private sealed class _IVisitor4_155 : IVisitor4
 		{
-			public _IVisitor4_156(OldClassIndexStrategy _enclosing, Tree.ByRef tree)
+			public _IVisitor4_155(OldClassIndexStrategy _enclosing, Tree.ByRef tree)
 			{
 				this._enclosing = _enclosing;
 				this.tree = tree;
@@ -258,13 +257,13 @@ namespace Db4objects.Db4o.Internal.Classindex
 			Tree tree = GetAll(transaction);
 			if (tree != null)
 			{
-				tree.Traverse(new _IVisitor4_171(this, command));
+				tree.Traverse(new _IVisitor4_170(this, command));
 			}
 		}
 
-		private sealed class _IVisitor4_171 : IVisitor4
+		private sealed class _IVisitor4_170 : IVisitor4
 		{
-			public _IVisitor4_171(OldClassIndexStrategy _enclosing, IVisitor4 command)
+			public _IVisitor4_170(OldClassIndexStrategy _enclosing, IVisitor4 command)
 			{
 				this._enclosing = _enclosing;
 				this.command = command;
@@ -320,7 +319,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 		{
 		}
 
-		public override void DefragReference(ClassMetadata yapClass, ReaderPair readers, 
+		public override void DefragReference(ClassMetadata yapClass, BufferPair readers, 
 			int classIndexID)
 		{
 		}
@@ -335,7 +334,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			throw new NotImplementedException();
 		}
 
-		public override void DefragIndex(ReaderPair readers)
+		public override void DefragIndex(BufferPair readers)
 		{
 		}
 	}

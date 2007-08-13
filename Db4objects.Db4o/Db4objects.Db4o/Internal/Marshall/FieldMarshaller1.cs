@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public override void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO
-			 sio, ReaderPair readers)
+			 sio, BufferPair readers)
 		{
 			base.Defrag(yapClass, yapField, sio, readers);
 			if (yapField.IsVirtual())

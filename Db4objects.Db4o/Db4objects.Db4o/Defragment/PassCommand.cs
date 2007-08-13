@@ -11,8 +11,7 @@ namespace Db4objects.Db4o.Defragment
 	/// <exclude></exclude>
 	internal interface IPassCommand
 	{
-		void ProcessObjectSlot(DefragContextImpl context, ClassMetadata yapClass, int id, 
-			bool registerAddresses);
+		void ProcessObjectSlot(DefragContextImpl context, ClassMetadata yapClass, int id);
 
 		void ProcessClass(DefragContextImpl context, ClassMetadata yapClass, int id, int 
 			classIndexID);

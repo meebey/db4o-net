@@ -24,8 +24,8 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		/// <param name="session"></param>
-		internal virtual IDb4oCollections Collections(ObjectContainerBase session)
+		/// <param name="transaction">TODO</param>
+		internal virtual IDb4oCollections Collections(Transaction transaction)
 		{
 			return null;
 		}

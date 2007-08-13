@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			file.ShowInternalClasses(true);
 			try
 			{
-				return file.GetByID1(file.SystemTransaction(), _configBlock._bootRecordID);
+				return file.GetByID(file.SystemTransaction(), _configBlock._bootRecordID);
 			}
 			finally
 			{
@@ -100,7 +100,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			{
 				_bootRecord = new PBootRecord();
 				file.SetInternal(file.SystemTransaction(), _bootRecord, false);
-				_configBlock._bootRecordID = file.GetID1(_bootRecord);
+				_configBlock._bootRecordID = file.GetID(file.SystemTransaction(), _bootRecord);
 				WriteVariablePart(file, 1);
 			}
 			finally

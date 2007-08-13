@@ -9,17 +9,18 @@ namespace Db4objects.Db4o.Config
 	/// <summary>configuration interface for fields of classes.</summary>
 	/// <remarks>
 	/// configuration interface for fields of classes.
-	/// <br /><br /><b>Examples: ../com/db4o/samples/translators.</b><br /><br />
+	/// <br/><br/>
 	/// Use the global Configuration object to configure db4o before opening an
 	/// <see cref="IObjectContainer">IObjectContainer</see>
-	/// .<br /><br />
-	/// <b>Example:</b><br />
+	/// .<br/><br/>
+	/// <b>Example:</b><br/>
 	/// <code>
-	/// Configuration config = Db4o.configure();<br />
-	/// ObjectClass oc = config.objectClass("package.className");<br />
-	/// ObjectField of = oc.objectField("fieldName");
-	/// of.rename("newFieldName");
-	/// of.queryEvaluation(false);
+	/// IConfiguration config = Db4oFactory.Configure();<br/>
+	/// IObjectClass oc = config.ObjectClass("Namespace.ClassName");<br/>
+	/// IObjectField of = oc.ObjectField("fieldName");
+	/// of.Rename("newFieldName");
+	/// of.QueryEvaluation(false);
+	/// 
 	/// </code>
 	/// </remarks>
 	public interface IObjectField
@@ -48,16 +49,16 @@ namespace Db4objects.Db4o.Config
 		/// Setting cascadeOnDelete to true will result in the deletion of
 		/// the object attribute stored in this field on the parent object
 		/// if the parent object is passed to
-		/// <see cref="IObjectContainer.Delete">ObjectContainer#delete()</see>
+		/// <see cref="IObjectContainer.Delete">IObjectContainer.Delete</see>
 		/// .
 		/// <br /><br />
 		/// <b>Caution !</b><br />
 		/// This setting will also trigger deletion of the old member object, on
 		/// calls to
-		/// <see cref="IObjectContainer.Set">ObjectContainer#set()</see>
+		/// <see cref="IObjectContainer.Set"></see>
 		/// .
 		/// An example of the behaviour can be found in
-		/// <see cref="IObjectClass.CascadeOnDelete">ObjectClass#cascadeOnDelete()</see>
+		/// <see cref="IObjectClass.CascadeOnDelete">IObjectClass.CascadeOnDelete</see>
 		/// <br /><br />
 		/// The default setting is <b>false</b>.<br /><br />
 		/// </remarks>
@@ -74,7 +75,7 @@ namespace Db4objects.Db4o.Config
 		/// Setting cascadeOnUpdate to true will result in the update
 		/// of the object attribute stored in this field if the parent object
 		/// is passed to
-		/// <see cref="IObjectContainer.Set">ObjectContainer#set()</see>
+		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
 		/// .
 		/// <br /><br />
 		/// The default setting is <b>false</b>.<br /><br />
@@ -110,7 +111,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// renames a field of a stored class.
 		/// <br /><br />Use this method to refactor classes.
-		/// <br /><br /><b>Examples: ../com/db4o/samples/rename.</b><br /><br />
+		/// <br /><br />
 		/// </remarks>
 		/// <param name="newName">the new fieldname.</param>
 		void Rename(string newName);

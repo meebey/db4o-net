@@ -448,20 +448,20 @@ namespace Db4objects.Db4o.Internal.Btree
 			_root.TraverseAllNodes(trans, command);
 		}
 
-		public virtual void DefragIndex(ReaderPair readers)
+		public virtual void DefragIndex(BufferPair readers)
 		{
 			readers.IncrementOffset(DEFRAGMENT_INCREMENT_OFFSET);
 			readers.CopyID();
 		}
 
-		public virtual void DefragIndexNode(ReaderPair readers)
+		public virtual void DefragIndexNode(BufferPair readers)
 		{
 			BTreeNode.DefragIndex(readers, _keyHandler);
 		}
 
 		public virtual void DefragBTree(IDefragContext context)
 		{
-			ReaderPair.ProcessCopy(context, GetID(), new _ISlotCopyHandler_389(this));
+			BufferPair.ProcessCopy(context, GetID(), new _ISlotCopyHandler_389(this));
 			CorruptionException[] corruptx = new CorruptionException[] { null };
 			IOException[] iox = new IOException[] { null };
 			try
@@ -490,7 +490,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				this._enclosing = _enclosing;
 			}
 
-			public void ProcessCopy(ReaderPair readers)
+			public void ProcessCopy(BufferPair readers)
 			{
 				this._enclosing.DefragIndex(readers);
 			}
@@ -514,7 +514,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				int id = ((int)obj);
 				try
 				{
-					ReaderPair.ProcessCopy(context, id, new _ISlotCopyHandler_401(this));
+					BufferPair.ProcessCopy(context, id, new _ISlotCopyHandler_401(this));
 				}
 				catch (CorruptionException e)
 				{
@@ -535,7 +535,7 @@ namespace Db4objects.Db4o.Internal.Btree
 					this._enclosing = _enclosing;
 				}
 
-				public void ProcessCopy(ReaderPair readers)
+				public void ProcessCopy(BufferPair readers)
 				{
 					this._enclosing._enclosing.DefragIndexNode(readers);
 				}
@@ -564,7 +564,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				throw new ArgumentNullException();
 			}
-			return trans.Stream().ConfigImpl();
+			return trans.Container().ConfigImpl();
 		}
 
 		public override void Free(Transaction systemTrans)

@@ -16,11 +16,11 @@ namespace Db4objects.Db4o.Internal.Mapping
 	/// <exclude></exclude>
 	public interface IDefragContext : IIDMapping
 	{
-		Db4objects.Db4o.Internal.Buffer SourceReaderByAddress(int address, int length);
+		Db4objects.Db4o.Internal.Buffer SourceBufferByAddress(int address, int length);
 
-		Db4objects.Db4o.Internal.Buffer TargetReaderByAddress(int address, int length);
+		Db4objects.Db4o.Internal.Buffer TargetBufferByAddress(int address, int length);
 
-		Db4objects.Db4o.Internal.Buffer SourceReaderByID(int sourceID);
+		Db4objects.Db4o.Internal.Buffer SourceBufferByID(int sourceID);
 
 		Slot AllocateTargetSlot(int targetLength);
 
@@ -29,18 +29,18 @@ namespace Db4objects.Db4o.Internal.Mapping
 
 		Transaction SystemTrans();
 
-		void TargetWriteBytes(ReaderPair readers, int targetAddress);
+		void TargetWriteBytes(BufferPair readers, int targetAddress);
 
 		void TraverseAllIndexSlots(BTree tree, IVisitor4 visitor4);
 
 		ClassMetadata YapClass(int id);
-
-		StatefulBuffer SourceWriterByID(int sourceID);
 
 		int MappedID(int id, bool lenient);
 
 		void RegisterUnindexed(int id);
 
 		IEnumerator UnindexedIDs();
+
+		int SourceAddressByID(int sourceID);
 	}
 }

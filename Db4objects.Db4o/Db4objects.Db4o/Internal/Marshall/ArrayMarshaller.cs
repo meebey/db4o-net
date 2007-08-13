@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return arrayHandler.CollectIDs1(trans, tree, PrepareIDReader(trans, reader));
 		}
 
-		public abstract void DefragIDs(ArrayHandler arrayHandler, ReaderPair readers);
+		public abstract void DefragIDs(ArrayHandler arrayHandler, BufferPair readers);
 
 		public abstract void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
 			, ArrayHandler handler, object obj, bool topLevel);

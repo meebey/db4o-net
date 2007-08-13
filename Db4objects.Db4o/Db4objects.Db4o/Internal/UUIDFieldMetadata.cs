@@ -144,7 +144,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			LocalObjectContainer file = ((LocalObjectContainer)transaction.Stream());
+			LocalObjectContainer file = ((LocalObjectContainer)transaction.Container());
 			SystemData sd = file.SystemData();
 			if (sd == null)
 			{
@@ -162,14 +162,14 @@ namespace Db4objects.Db4o.Internal
 			, Db4objects.Db4o.Internal.Buffer a_bytes)
 		{
 			int dbID = a_bytes.ReadInt();
-			ObjectContainerBase stream = a_trans.Stream();
+			ObjectContainerBase stream = a_trans.Container();
 			stream.ShowInternalClasses(true);
 			try
 			{
 				Db4oDatabase db = (Db4oDatabase)stream.GetByID2(a_trans, dbID);
 				if (db != null && db.i_signature == null)
 				{
-					stream.Activate2(a_trans, db, 2);
+					stream.Activate(a_trans, db, 2);
 				}
 				VirtualAttributes va = a_yapObject.VirtualAttributes();
 				va.i_database = db;
@@ -201,7 +201,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (linkToDatabase)
 			{
-				Db4oDatabase db = stream.Identity();
+				Db4oDatabase db = ((IInternalObjectContainer)stream).Identity();
 				if (db == null)
 				{
 					attr = null;
@@ -273,8 +273,8 @@ namespace Db4objects.Db4o.Internal
 		protected HardObjectReference GetHardObjectReferenceById(Transaction transaction, 
 			int parentId, byte[] signature)
 		{
-			HardObjectReference hardRef = transaction.Stream().GetHardObjectReferenceById(transaction
-				, parentId);
+			HardObjectReference hardRef = transaction.Container().GetHardObjectReferenceById(
+				transaction, parentId);
 			if (hardRef._reference == null)
 			{
 				return null;
@@ -287,7 +287,7 @@ namespace Db4objects.Db4o.Internal
 			return hardRef;
 		}
 
-		public override void DefragField(MarshallerFamily mf, ReaderPair readers)
+		public override void DefragField(MarshallerFamily mf, BufferPair readers)
 		{
 			readers.CopyID();
 			readers.IncrementOffset(Const4.LONG_LENGTH);

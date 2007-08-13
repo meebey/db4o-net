@@ -8,31 +8,39 @@ namespace Db4objects.Db4o.IO
 {
 	/// <summary>IoAdapter for in-memory operation.</summary>
 	/// <remarks>
-	/// IoAdapter for in-memory operation. <br />
-	/// <br />
+	/// IoAdapter for in-memory operation. <br/>
+	/// <br/>
 	/// Configure db4o to operate with this in-memory IoAdapter with
-	/// <code>MemoryIoAdapter memoryIoAdapter = new MemoryIoAdapter();<br />
-	/// Db4o.configure().io(memoryIoAdapter);</code><br />
-	/// <br />
-	/// <br />
+	/// <code>
+	/// MemoryIoAdapter memoryIoAdapter = new MemoryIoAdapter();<br/>
+	/// Db4oFactory.Configure().Io(memoryIoAdapter);
+	/// </code><br/>
+	/// <br/>
+	/// <br/>
 	/// Use the normal #openFile() and #openServer() commands to open
 	/// ObjectContainers and ObjectServers. The names specified as file names will be
 	/// used to identify the <code>byte[]</code> content of the in-memory files in
 	/// the _memoryFiles Hashtable in the adapter. After working with an in-memory
 	/// ObjectContainer/ObjectServer the <code>byte[]</code> content is available
 	/// in the MemoryIoAdapter by using
-	/// <see cref="Db4objects.Db4o.IO.MemoryIoAdapter.Get">Db4objects.Db4o.IO.MemoryIoAdapter.Get
-	/// 	</see>
+	/// <see cref="Db4objects.Db4o.IO.MemoryIoAdapter.Get">
+	/// Db4objects.Db4o.IO.MemoryIoAdapter.Get
+	/// </see>
 	/// . To add old existing
 	/// database <code>byte[]</code> content to a MemoryIoAdapter use
-	/// <see cref="Db4objects.Db4o.IO.MemoryIoAdapter.Put">Db4objects.Db4o.IO.MemoryIoAdapter.Put
-	/// 	</see>
+	/// <see cref="Db4objects.Db4o.IO.MemoryIoAdapter.Put">
+	/// Db4objects.Db4o.IO.MemoryIoAdapter.Put
+	/// 
+	/// </see>
 	/// . To reduce memory consumption of memory file
 	/// names that will no longer be used call
-	/// <see cref="Db4objects.Db4o.IO.MemoryIoAdapter.Put">Db4objects.Db4o.IO.MemoryIoAdapter.Put
-	/// 	</see>
+	/// <see cref="Db4objects.Db4o.IO.MemoryIoAdapter.Put">
+	/// Db4objects.Db4o.IO.MemoryIoAdapter.Put
+	/// 
+	/// </see>
 	/// and pass
 	/// an empty byte array.
+	/// 
 	/// </remarks>
 	public class MemoryIoAdapter : IoAdapter
 	{

@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Defragment
 {
@@ -36,13 +37,13 @@ namespace Db4objects.Db4o.Defragment
 			{
 				Sharpen.Runtime.Err.WriteLine("MAPPING NOT FOUND: " + id);
 			}
-			ReaderPair.ProcessCopy(context, id, new _ISlotCopyHandler_34(this, yapClass, classIndexID
+			BufferPair.ProcessCopy(context, id, new _ISlotCopyHandler_35(this, yapClass, classIndexID
 				));
 		}
 
-		private sealed class _ISlotCopyHandler_34 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_35 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_34(SecondPassCommand _enclosing, ClassMetadata yapClass, 
+			public _ISlotCopyHandler_35(SecondPassCommand _enclosing, ClassMetadata yapClass, 
 				int classIndexID)
 			{
 				this._enclosing = _enclosing;
@@ -50,7 +51,7 @@ namespace Db4objects.Db4o.Defragment
 				this.classIndexID = classIndexID;
 			}
 
-			public void ProcessCopy(ReaderPair readers)
+			public void ProcessCopy(BufferPair readers)
 			{
 				yapClass.DefragClass(readers, classIndexID);
 			}
@@ -63,24 +64,28 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		public void ProcessObjectSlot(DefragContextImpl context, ClassMetadata yapClass, 
-			int id, bool registerAddresses)
+			int id)
 		{
-			ReaderPair.ProcessCopy(context, id, new _ISlotCopyHandler_42(this, context), registerAddresses
-				);
+			Db4objects.Db4o.Internal.Buffer sourceBuffer = context.SourceBufferByID(id);
+			ObjectHeader objHead = context.SourceObjectHeader(sourceBuffer);
+			sourceBuffer._offset = 0;
+			bool registerAddresses = context.HasFieldIndex(objHead.ClassMetadata());
+			BufferPair.ProcessCopy(context, id, new _ISlotCopyHandler_47(this, context), registerAddresses
+				, sourceBuffer);
 		}
 
-		private sealed class _ISlotCopyHandler_42 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_47 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_42(SecondPassCommand _enclosing, DefragContextImpl context
+			public _ISlotCopyHandler_47(SecondPassCommand _enclosing, DefragContextImpl context
 				)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
 			}
 
-			public void ProcessCopy(ReaderPair readers)
+			public void ProcessCopy(BufferPair buffers)
 			{
-				ClassMetadata.DefragObject(readers);
+				ClassMetadata.DefragObject(buffers);
 				if (this._enclosing._objectCommitFrequency > 0)
 				{
 					this._enclosing._objectCount++;
@@ -99,18 +104,18 @@ namespace Db4objects.Db4o.Defragment
 
 		public void ProcessClassCollection(DefragContextImpl context)
 		{
-			ReaderPair.ProcessCopy(context, context.SourceClassCollectionID(), new _ISlotCopyHandler_57
+			BufferPair.ProcessCopy(context, context.SourceClassCollectionID(), new _ISlotCopyHandler_62
 				(this));
 		}
 
-		private sealed class _ISlotCopyHandler_57 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_62 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_57(SecondPassCommand _enclosing)
+			public _ISlotCopyHandler_62(SecondPassCommand _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
-			public void ProcessCopy(ReaderPair readers)
+			public void ProcessCopy(BufferPair readers)
 			{
 				ClassMetadataRepository.Defrag(readers);
 			}

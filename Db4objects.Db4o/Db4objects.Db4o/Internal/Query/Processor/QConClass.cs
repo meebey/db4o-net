@@ -27,13 +27,18 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (claxx != null)
 			{
-				i_yapClass = a_trans.Stream().ProduceClassMetadata(claxx);
-				if (claxx.Equals(a_trans.Stream().i_handlers.ICLASS_OBJECT))
+				i_yapClass = a_trans.Container().ProduceClassMetadata(claxx);
+				if (claxx.Equals(a_trans.Container()._handlers.ICLASS_OBJECT))
 				{
 					i_yapClass = (ClassMetadata)((PrimitiveFieldHandler)i_yapClass).i_handler;
 				}
 			}
 			_claxx = claxx;
+		}
+
+		internal QConClass(Transaction trans, IReflectClass claxx) : this(trans, null, null
+			, claxx)
+		{
 		}
 
 		public override bool CanBeIndexLeaf()

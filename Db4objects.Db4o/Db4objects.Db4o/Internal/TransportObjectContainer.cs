@@ -25,15 +25,15 @@ namespace Db4objects.Db4o.Internal
 		public TransportObjectContainer(ObjectContainerBase serviceProvider, MemoryFile memoryFile
 			) : base(serviceProvider.Config(), serviceProvider, memoryFile)
 		{
-			i_showInternalClasses = serviceProvider.i_showInternalClasses;
+			_showInternalClasses = serviceProvider._showInternalClasses;
 		}
 
 		protected override void Initialize1(IConfiguration config)
 		{
-			i_handlers = i_parent.i_handlers;
-			_classCollection = i_parent.ClassCollection();
-			i_config = i_parent.ConfigImpl();
-			i_references = new WeakReferenceCollector(this);
+			_handlers = _parent._handlers;
+			_classCollection = _parent.ClassCollection();
+			_config = _parent.ConfigImpl();
+			_references = new WeakReferenceCollector(this);
 			Initialize2();
 		}
 
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override ClassMetadata ClassMetadataForId(int id)
 		{
-			return i_parent.ClassMetadataForId(id);
+			return _parent.ClassMetadataForId(id);
 		}
 
 		internal override void ConfigureNewFile()
@@ -74,20 +74,21 @@ namespace Db4objects.Db4o.Internal
 
 		protected override void DropReferences()
 		{
-			i_config = null;
+			_config = null;
 		}
 
 		protected override void HandleExceptionOnClose(Exception exc)
 		{
 		}
 
-		public sealed override Transaction NewTransaction(Transaction parentTransaction)
+		public sealed override Transaction NewTransaction(Transaction parentTransaction, 
+			TransactionalReferenceSystem referenceSystem)
 		{
 			if (null != parentTransaction)
 			{
 				return parentTransaction;
 			}
-			return new TransactionObjectCarrier(this, null);
+			return new TransactionObjectCarrier(this, null, referenceSystem);
 		}
 
 		public override long CurrentVersion()
@@ -124,7 +125,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override Db4oDatabase Identity()
 		{
-			return i_parent.Identity();
+			return ((ExternalObjectContainer)_parent).Identity();
 		}
 
 		public override bool MaintainsIndices()
@@ -138,7 +139,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override ClassMetadata ProduceClassMetadata(IReflectClass claxx)
 		{
-			return i_parent.ProduceClassMetadata(claxx);
+			return _parent.ProduceClassMetadata(claxx);
 		}
 
 		public override void RaiseVersion(long a_minimumVersion)
@@ -158,7 +159,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			ProcessPendingClassUpdates();
 			WriteDirty();
-			GetTransaction().Commit();
+			Transaction().Commit();
 		}
 
 		internal sealed override void WriteHeader(bool startFileLockingThread, bool shuttingDown

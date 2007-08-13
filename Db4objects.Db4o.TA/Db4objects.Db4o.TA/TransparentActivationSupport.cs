@@ -17,12 +17,12 @@ namespace Db4objects.Db4o.TA
 		{
 		}
 
-		public virtual void Apply(ObjectContainerBase container)
+		public virtual void Apply(IInternalObjectContainer container)
 		{
 			container.Configure().ActivationDepth(0);
 			IEventRegistry factory = EventRegistryFactory.ForObjectContainer(container);
 			factory.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_23
-				(this, container).OnEvent);
+				(this).OnEvent);
 			TransparentActivationSupport.TADiagnosticProcessor processor = new TransparentActivationSupport.TADiagnosticProcessor
 				(this, container);
 			factory.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_40
@@ -31,11 +31,9 @@ namespace Db4objects.Db4o.TA
 
 		private sealed class _IEventListener4_23
 		{
-			public _IEventListener4_23(TransparentActivationSupport _enclosing, ObjectContainerBase
-				 container)
+			public _IEventListener4_23(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
-				this.container = container;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
@@ -44,18 +42,17 @@ namespace Db4objects.Db4o.TA
 				object obj = oea.Object;
 				if (obj is IActivatable)
 				{
-					((IActivatable)obj).Bind(this.ActivatorForObject(container, obj));
+					((IActivatable)obj).Bind(this.ActivatorForObject((Transaction)oea.Transaction(), 
+						obj));
 				}
 			}
 
-			private IActivator ActivatorForObject(ObjectContainerBase container_, object obj)
+			private IActivator ActivatorForObject(Transaction transaction, object obj)
 			{
-				return container_.GetTransaction().ReferenceForObject(obj);
+				return transaction.ReferenceForObject(obj);
 			}
 
 			private readonly TransparentActivationSupport _enclosing;
-
-			private readonly ObjectContainerBase container;
 		}
 
 		private sealed class _IEventListener4_40
@@ -80,9 +77,9 @@ namespace Db4objects.Db4o.TA
 
 		private sealed class TADiagnosticProcessor
 		{
-			private readonly ObjectContainerBase _container;
+			private readonly IInternalObjectContainer _container;
 
-			public TADiagnosticProcessor(TransparentActivationSupport _enclosing, ObjectContainerBase
+			public TADiagnosticProcessor(TransparentActivationSupport _enclosing, IInternalObjectContainer
 				 container)
 			{
 				this._enclosing = _enclosing;

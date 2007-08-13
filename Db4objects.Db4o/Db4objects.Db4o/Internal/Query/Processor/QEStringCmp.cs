@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				if (a_value is Db4objects.Db4o.Internal.Buffer)
 				{
 					a_value = a_candidate._marshallerFamily._string.ReadFromOwnSlot(a_constraint.i_trans
-						.Stream(), ((Db4objects.Db4o.Internal.Buffer)a_value));
+						.Container(), ((Db4objects.Db4o.Internal.Buffer)a_value));
 				}
 				string candidate = a_value.ToString();
 				string constraint = a_constraint.i_object.ToString();

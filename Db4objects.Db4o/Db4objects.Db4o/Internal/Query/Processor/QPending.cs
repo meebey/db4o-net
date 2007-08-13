@@ -41,10 +41,18 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override object ShallowClone()
 		{
+			Db4objects.Db4o.Internal.Query.Processor.QPending pending = InternalClonePayload(
+				);
+			base.ShallowCloneInternal(pending);
+			return pending;
+		}
+
+		internal virtual Db4objects.Db4o.Internal.Query.Processor.QPending InternalClonePayload
+			()
+		{
 			Db4objects.Db4o.Internal.Query.Processor.QPending pending = new Db4objects.Db4o.Internal.Query.Processor.QPending
 				(_join, _constraint, false);
 			pending._result = _result;
-			base.ShallowCloneInternal(pending);
 			return pending;
 		}
 

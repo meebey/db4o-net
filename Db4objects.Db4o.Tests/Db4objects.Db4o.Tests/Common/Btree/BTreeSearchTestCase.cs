@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			ExpectKeysSearch(Trans(), btree, values);
 			btree.Commit(Trans());
 			int id = btree.GetID();
-			Stream().Commit();
+			Stream().Commit(Trans());
 			Reopen();
 			btree = BTreeAssert.CreateIntKeyBTree(Stream(), id, BTREE_NODE_SIZE);
 			ExpectKeysSearch(Trans(), btree, values);

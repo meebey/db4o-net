@@ -13,6 +13,6 @@ namespace Db4objects.Db4o.Internal
 
 		void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer writer, object obj);
 
-		void DefragIndexEntry(ReaderPair readers);
+		void DefragIndexEntry(BufferPair readers);
 	}
 }

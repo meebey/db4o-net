@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Internal
 		internal override void Marshall1(ObjectReference a_yapObject, StatefulBuffer a_bytes
 			, bool a_migrating, bool a_new)
 		{
-			ObjectContainerBase stream = a_bytes.GetStream().i_parent;
+			ObjectContainerBase stream = a_bytes.GetStream()._parent;
 			VirtualAttributes va = a_yapObject.VirtualAttributes();
 			if (!a_migrating)
 			{

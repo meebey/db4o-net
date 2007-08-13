@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override void DefragIndexEntry(ReaderPair readers)
+		public override void DefragIndexEntry(BufferPair readers)
 		{
 			readers.CopyID(true, false);
 		}

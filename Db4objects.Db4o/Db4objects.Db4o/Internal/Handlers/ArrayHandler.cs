@@ -55,14 +55,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 				{
 					for (int i = all.Length - 1; i >= 0; i--)
 					{
-						_stream.StillToActivate(all[i], a_depth);
+						_stream.StillToActivate(a_trans, all[i], a_depth);
 					}
 				}
 				else
 				{
 					for (int i = all.Length - 1; i >= 0; i--)
 					{
-						_stream.StillToDeactivate(all[i], a_depth, false);
+						_stream.StillToDeactivate(a_trans, all[i], a_depth, false);
 					}
 				}
 			}
@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		/// <param name="trans"></param>
-		public virtual int ElementCount(Transaction trans, ISlotReader reader)
+		public virtual int ElementCount(Transaction trans, ISlotBuffer reader)
 		{
 			int typeOrLength = reader.ReadInt();
 			if (typeOrLength >= 0)
@@ -331,7 +331,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				bool primitive = false;
 				int classID = -elements;
-				ClassMetadata classMetadata = a_trans.Stream().ClassMetadataForId(classID);
+				ClassMetadata classMetadata = a_trans.Container().ClassMetadataForId(classID);
 				if (classMetadata != null)
 				{
 					return (primitive ? Handlers4.PrimitiveClassReflector(classMetadata) : classMetadata
@@ -364,7 +364,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			ObjectContainerBase stream = a_bytes.GetStream();
 			if (primitive)
 			{
-				claxx = stream.i_handlers.HandlerForClass(stream, claxx).ClassReflector();
+				claxx = stream._handlers.HandlerForClass(stream, claxx).ClassReflector();
 			}
 			ClassMetadata yc = stream.ProduceClassMetadata(claxx);
 			if (yc != null)
@@ -464,7 +464,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return false;
 		}
 
-		public sealed override void Defrag(MarshallerFamily mf, ReaderPair readers, bool 
+		public sealed override void Defrag(MarshallerFamily mf, BufferPair readers, bool 
 			redirect)
 		{
 			if (Handlers4.HandlesSimple(i_handler))
@@ -477,7 +477,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public virtual void Defrag1(MarshallerFamily mf, ReaderPair readers)
+		public virtual void Defrag1(MarshallerFamily mf, BufferPair readers)
 		{
 			int elements = ReadElementsDefrag(readers);
 			for (int i = 0; i < elements; i++)
@@ -486,7 +486,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		protected virtual int ReadElementsDefrag(ReaderPair readers)
+		protected virtual int ReadElementsDefrag(BufferPair readers)
 		{
 			int elements = readers.Source().ReadInt();
 			readers.Target().WriteInt(MapElementsEntry(elements, readers.Mapping()));

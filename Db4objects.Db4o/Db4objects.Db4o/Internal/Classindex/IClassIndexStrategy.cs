@@ -33,11 +33,11 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		IEnumerator AllSlotIDs(Transaction trans);
 
-		void DefragReference(ClassMetadata yapClass, ReaderPair readers, int classIndexID
+		void DefragReference(ClassMetadata yapClass, BufferPair readers, int classIndexID
 			);
 
 		int Id();
 
-		void DefragIndex(ReaderPair readers);
+		void DefragIndex(BufferPair readers);
 	}
 }

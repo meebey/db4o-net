@@ -29,6 +29,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public abstract QCandidate ReadSubCandidate(Db4objects.Db4o.Internal.Buffer reader
 			, QCandidates candidates, bool withIndirection);
 
-		public abstract void Defrag(ReaderPair readers);
+		public abstract void Defrag(BufferPair readers);
 	}
 }

@@ -11,7 +11,7 @@ using Sharpen;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class Buffer : ISlotReader
+	public class Buffer : ISlotBuffer
 	{
 		public byte[] _buffer;
 
@@ -108,13 +108,13 @@ namespace Db4objects.Db4o.Internal
 
 		public Db4objects.Db4o.Internal.Buffer ReadEmbeddedObject(Transaction trans)
 		{
-			return trans.Stream().BufferByAddress(ReadInt(), ReadInt());
+			return trans.Container().BufferByAddress(ReadInt(), ReadInt());
 		}
 
 		public virtual void ReadEncrypt(ObjectContainerBase stream, int address)
 		{
 			stream.ReadBytes(_buffer, address, GetLength());
-			stream.i_handlers.Decrypt(this);
+			stream._handlers.Decrypt(this);
 		}
 
 		public virtual void ReadEnd()
@@ -189,9 +189,9 @@ namespace Db4objects.Db4o.Internal
 		public void WriteEncrypt(LocalObjectContainer file, int address, int addressOffset
 			)
 		{
-			file.i_handlers.Encrypt(this);
+			file._handlers.Encrypt(this);
 			file.WriteBytes(this, address, addressOffset);
-			file.i_handlers.Decrypt(this);
+			file._handlers.Decrypt(this);
 		}
 
 		public virtual void WriteEnd()
@@ -258,7 +258,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void WriteShortString(Transaction trans, string a_string)
 		{
-			trans.Stream().i_handlers.i_stringHandler.WriteShort(a_string, this);
+			trans.Container()._handlers.i_stringHandler.WriteShort(a_string, this);
 		}
 
 		public virtual void WriteLong(long l)

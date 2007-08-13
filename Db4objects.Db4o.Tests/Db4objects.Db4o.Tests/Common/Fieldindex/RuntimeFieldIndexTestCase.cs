@@ -4,7 +4,7 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Fieldindex;
 
@@ -34,8 +34,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestCreateIndexAtRuntime()
 		{
-			FieldMetadata field = (FieldMetadata)Db().StoredClass(typeof(RuntimeFieldIndexTestCase.Data)
-				).StoredField(FIELDNAME, null);
+			IStoredField field = Db().StoredClass(typeof(RuntimeFieldIndexTestCase.Data)).StoredField
+				(FIELDNAME, null);
 			Assert.IsFalse(field.HasIndex());
 			field.CreateIndex();
 			Assert.IsTrue(field.HasIndex());

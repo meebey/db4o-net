@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public object Activate(object obj)
 		{
-			Stream().Activate1(_transaction, obj, Config().ActivationDepth());
+			Stream().Activate(_transaction, obj, Config().ActivationDepth());
 			return obj;
 		}
 
@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public virtual ObjectContainerBase Stream()
 		{
-			return _transaction.Stream();
+			return _transaction.Container();
 		}
 
 		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public virtual IExtObjectContainer ObjectContainer()
 		{
-			return Stream();
+			return Transaction().ObjectContainer().Ext();
 		}
 
 		public virtual IEnumerator GetEnumerator()

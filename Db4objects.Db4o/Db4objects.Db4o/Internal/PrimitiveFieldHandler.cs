@@ -102,7 +102,7 @@ namespace Db4objects.Db4o.Internal
 			a_bytes.GetTransaction().SlotFreePointerOnCommit(a_id, a_bytes.Slot());
 		}
 
-		public override bool HasIndex()
+		public override bool HasClassIndex()
 		{
 			return false;
 		}
@@ -244,7 +244,7 @@ namespace Db4objects.Db4o.Internal
 			return "Wraps " + i_handler.ToString() + " in YapClassPrimitive";
 		}
 
-		public override void Defrag(MarshallerFamily mf, ReaderPair readers, bool redirect
+		public override void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
 			)
 		{
 			if (mf._primitive.UseNormalClassRead())
@@ -255,6 +255,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				i_handler.Defrag(mf, readers, false);
 			}
+		}
+
+		public override object WrapWithTransactionContext(Transaction transaction, object
+			 value)
+		{
+			return value;
 		}
 	}
 }

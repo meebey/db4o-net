@@ -15,6 +15,10 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public virtual void Test()
 		{
+			if (IsMTOC())
+			{
+				return;
+			}
 			ServerDispatcher().Write(Msg.OK);
 			Msg msg = Client().GetResponse();
 			Assert.AreEqual(Msg.OK, msg);

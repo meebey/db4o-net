@@ -9,15 +9,16 @@ namespace Db4objects.Db4o.Config
 	/// <summary>translator interface to translate objects on storage and activation.</summary>
 	/// <remarks>
 	/// translator interface to translate objects on storage and activation.
-	/// <br /><br /><b>Examples: ../com/db4o/samples/translators.</b><br /><br />
+	/// <br/><br/>
 	/// By writing classes that implement this interface, it is possible to
 	/// define how application classes are to be converted to be stored more efficiently.
-	/// <br /><br />
-	/// Before starting a db4o session, translator classes need to be registered. An example:<br />
+	/// <br/><br/>
+	/// Before starting a db4o session, translator classes need to be registered. An example:<br/>
 	/// <code>
-	/// Configuration config = Db4o.configure();<br />
-	/// ObjectClass oc = config.objectClass("package.className");<br />
-	/// oc.translate(new FooTranslator());</code><br /><br />
+	/// IConfiguration config = Db4oFactory.Configure();<br/>
+	/// IObjectClass oc = config.ObjectClass("Namespace.ClassName");<br/>
+	/// oc.Translate(new FooTranslator());
+	/// </code><br/><br/>
 	/// </remarks>
 	public interface IObjectTranslator
 	{

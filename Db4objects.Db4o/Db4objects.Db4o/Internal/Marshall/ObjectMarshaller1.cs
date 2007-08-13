@@ -391,7 +391,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return ((ObjectHeaderAttributes1)attributes).IsNull(fieldIndex);
 		}
 
-		public override void DefragFields(ClassMetadata yc, ObjectHeader header, ReaderPair
+		public override void DefragFields(ClassMetadata yc, ObjectHeader header, BufferPair
 			 readers)
 		{
 			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_211(this
@@ -401,7 +401,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private sealed class _TraverseFieldCommand_211 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_211(ObjectMarshaller1 _enclosing, ReaderPair readers
+			public _TraverseFieldCommand_211(ObjectMarshaller1 _enclosing, BufferPair readers
 				)
 			{
 				this._enclosing = _enclosing;
@@ -425,7 +425,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly ObjectMarshaller1 _enclosing;
 
-			private readonly ReaderPair readers;
+			private readonly BufferPair readers;
 		}
 
 		public override void WriteObjectClassID(Db4objects.Db4o.Internal.Buffer reader, int

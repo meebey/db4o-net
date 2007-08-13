@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Internal
 
 		private ObjectContainerBase Stream()
 		{
-			return _systemTransaction.Stream();
+			return _systemTransaction.Container();
 		}
 
 		private void CheckStatics()

@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Sharpen.IO;
@@ -14,17 +15,20 @@ namespace Db4objects.Db4o.Foundation.Network
 	{
 		private Sharpen.Net.Socket _socket;
 
-		private OutputStream _out;
+		private IOutputStream _out;
 
-		private InputStream _in;
+		private IInputStream _in;
 
 		private string _hostName;
 
-		public NetworkSocket(string hostName, int port)
+		private INativeSocketFactory _factory;
+
+		public NetworkSocket(INativeSocketFactory factory, string hostName, int port)
 		{
+			_factory = factory;
 			try
 			{
-				Sharpen.Net.Socket socket = new Sharpen.Net.Socket(hostName, port);
+				Sharpen.Net.Socket socket = _factory.CreateSocket(hostName, port);
 				InitSocket(socket);
 			}
 			catch (IOException e)
@@ -34,8 +38,9 @@ namespace Db4objects.Db4o.Foundation.Network
 			_hostName = hostName;
 		}
 
-		public NetworkSocket(Sharpen.Net.Socket socket)
+		public NetworkSocket(INativeSocketFactory factory, Sharpen.Net.Socket socket)
 		{
+			_factory = factory;
 			InitSocket(socket);
 		}
 
@@ -153,8 +158,8 @@ namespace Db4objects.Db4o.Foundation.Network
 			{
 				throw new InvalidOperationException();
 			}
-			return new Db4objects.Db4o.Foundation.Network.NetworkSocket(_hostName, _socket.GetPort
-				());
+			return new Db4objects.Db4o.Foundation.Network.NetworkSocket(_factory, _hostName, 
+				_socket.GetPort());
 		}
 	}
 }

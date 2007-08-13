@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Internal.CS
 				Msg message = null;
 				try
 				{
-					message = Msg.ReadMessage(this, i_stream.GetTransaction(), i_socket);
+					message = Msg.ReadMessage(this, i_stream.Transaction(), i_socket);
 					if (IsClientSideMessage(message))
 					{
 						if (((IClientSideMessage)message).ProcessAtClient())

@@ -9,7 +9,9 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
+using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Mapping;
+using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Sharpen.IO;
 
@@ -33,9 +35,9 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private sealed class _DbSelector_33 : DefragContextImpl.DbSelector
+		private sealed class _DbSelector_35 : DefragContextImpl.DbSelector
 		{
-			public _DbSelector_33()
+			public _DbSelector_35()
 			{
 			}
 
@@ -45,12 +47,12 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragContextImpl.DbSelector SOURCEDB = new _DbSelector_33
+		public static readonly DefragContextImpl.DbSelector SOURCEDB = new _DbSelector_35
 			();
 
-		private sealed class _DbSelector_39 : DefragContextImpl.DbSelector
+		private sealed class _DbSelector_41 : DefragContextImpl.DbSelector
 		{
-			public _DbSelector_39()
+			public _DbSelector_41()
 			{
 			}
 
@@ -60,7 +62,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragContextImpl.DbSelector TARGETDB = new _DbSelector_39
+		public static readonly DefragContextImpl.DbSelector TARGETDB = new _DbSelector_41
 			();
 
 		private const long CLASSCOLLECTION_POINTER_ADDRESS = 2 + 2 * Const4.INT_LENGTH;
@@ -74,6 +76,8 @@ namespace Db4objects.Db4o.Defragment
 		private IDefragmentListener _listener;
 
 		private IQueue4 _unindexed = new NonblockingQueue();
+
+		private readonly Hashtable4 _hasFieldIndexCache = new Hashtable4();
 
 		public DefragContextImpl(DefragmentConfig defragConfig, IDefragmentListener listener
 			)
@@ -155,39 +159,33 @@ namespace Db4objects.Db4o.Defragment
 			_mapping.Close();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer ReaderByID(DefragContextImpl.DbSelector
+		public virtual Db4objects.Db4o.Internal.Buffer BufferByID(DefragContextImpl.DbSelector
 			 selector, int id)
 		{
 			Slot slot = ReadPointer(selector, id);
-			return ReaderByAddress(selector, slot.Address(), slot.Length());
+			return BufferByAddress(selector, slot.Address(), slot.Length());
 		}
 
-		public virtual StatefulBuffer SourceWriterByID(int id)
-		{
-			Slot slot = ReadPointer(SOURCEDB, id);
-			return _sourceDb.ReadWriterByAddress(SOURCEDB.Transaction(this), slot.Address(), 
-				slot.Length());
-		}
-
-		public virtual Db4objects.Db4o.Internal.Buffer SourceReaderByAddress(int address, 
+		public virtual Db4objects.Db4o.Internal.Buffer SourceBufferByAddress(int address, 
 			int length)
 		{
-			return ReaderByAddress(SOURCEDB, address, length);
+			return BufferByAddress(SOURCEDB, address, length);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer TargetReaderByAddress(int address, 
+		public virtual Db4objects.Db4o.Internal.Buffer TargetBufferByAddress(int address, 
 			int length)
 		{
-			return ReaderByAddress(TARGETDB, address, length);
+			return BufferByAddress(TARGETDB, address, length);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer ReaderByAddress(DefragContextImpl.DbSelector
+		public virtual Db4objects.Db4o.Internal.Buffer BufferByAddress(DefragContextImpl.DbSelector
 			 selector, int address, int length)
 		{
 			return selector.Db(this).BufferByAddress(address, length);
 		}
 
-		public virtual StatefulBuffer TargetWriterByAddress(int address, int length)
+		public virtual StatefulBuffer TargetStatefulBufferByAddress(int address, int length
+			)
 		{
 			return _targetDb.ReadWriterByAddress(TARGETDB.Transaction(this), address, length);
 		}
@@ -197,7 +195,7 @@ namespace Db4objects.Db4o.Defragment
 			return _targetDb.GetSlot(length);
 		}
 
-		public virtual void TargetWriteBytes(ReaderPair readers, int address)
+		public virtual void TargetWriteBytes(BufferPair readers, int address)
 		{
 			readers.Write(_targetDb, address);
 		}
@@ -215,7 +213,7 @@ namespace Db4objects.Db4o.Defragment
 			db.ShowInternalClasses(true);
 			try
 			{
-				return db.StoredClasses();
+				return db.ClassCollection().StoredClasses();
 			}
 			finally
 			{
@@ -270,7 +268,7 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual void TraverseAll(ClassMetadata yapClass, IVisitor4 command)
 		{
-			if (!yapClass.HasIndex())
+			if (!yapClass.HasClassIndex())
 			{
 				return;
 			}
@@ -334,9 +332,9 @@ namespace Db4objects.Db4o.Defragment
 			_targetDb.SystemData().ClassCollectionID(newClassCollectionID);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer SourceReaderByID(int sourceID)
+		public virtual Db4objects.Db4o.Internal.Buffer SourceBufferByID(int sourceID)
 		{
-			return ReaderByID(SOURCEDB, sourceID);
+			return BufferByID(SOURCEDB, sourceID);
 		}
 
 		public virtual BTree SourceUuidIndex()
@@ -373,18 +371,51 @@ namespace Db4objects.Db4o.Defragment
 			return _unindexed.Iterator();
 		}
 
+		public virtual ObjectHeader SourceObjectHeader(Db4objects.Db4o.Internal.Buffer buffer
+			)
+		{
+			return new ObjectHeader(_sourceDb, buffer);
+		}
+
 		private Slot ReadPointer(DefragContextImpl.DbSelector selector, int id)
 		{
-			Db4objects.Db4o.Internal.Buffer reader = ReaderByAddress(selector, id, Const4.POINTER_LENGTH
+			Db4objects.Db4o.Internal.Buffer reader = BufferByAddress(selector, id, Const4.POINTER_LENGTH
 				);
 			int address = reader.ReadInt();
 			int length = reader.ReadInt();
 			return new Slot(address, length);
 		}
 
+		public virtual bool HasFieldIndex(ClassMetadata clazz)
+		{
+			TernaryBool cachedHasFieldIndex = ((TernaryBool)_hasFieldIndexCache.Get(clazz));
+			if (cachedHasFieldIndex != null)
+			{
+				return cachedHasFieldIndex.DefiniteYes();
+			}
+			bool hasFieldIndex = false;
+			IEnumerator fieldIter = clazz.Fields();
+			while (fieldIter.MoveNext())
+			{
+				FieldMetadata curField = (FieldMetadata)fieldIter.Current;
+				if (curField.HasIndex() && (curField.GetHandler() is StringHandler))
+				{
+					hasFieldIndex = true;
+					break;
+				}
+			}
+			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex));
+			return hasFieldIndex;
+		}
+
 		public virtual int BlockSize()
 		{
 			return _sourceDb.Config().BlockSize();
+		}
+
+		public virtual int SourceAddressByID(int sourceID)
+		{
+			return ReadPointer(SOURCEDB, sourceID).Address();
 		}
 	}
 }

@@ -66,9 +66,9 @@ namespace Db4objects.Db4o.Internal
 		{
 			Init(a_yapClass, a_translator.GetType().FullName);
 			i_state = AVAILABLE;
-			ObjectContainerBase stream = GetStream();
-			i_handler = stream.i_handlers.HandlerForClass(stream, stream.Reflector().ForClass
-				(TranslatorStoredClass(a_translator)));
+			ObjectContainerBase stream = Container();
+			i_handler = stream._handlers.HandlerForClass(stream, stream.Reflector().ForClass(
+				TranslatorStoredClass(a_translator)));
 		}
 
 		protected Type TranslatorStoredClass(IObjectTranslator translator)
@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			Init(containingClass, marshaller.GetType().FullName);
 			i_state = AVAILABLE;
-			i_handler = GetStream().i_handlers.UntypedHandler();
+			i_handler = Container()._handlers.UntypedHandler();
 		}
 
 		internal FieldMetadata(ClassMetadata a_yapClass, IReflectField a_field, ITypeHandler4
@@ -210,6 +210,10 @@ namespace Db4objects.Db4o.Internal
 					}
 				}
 				LoadJavaField();
+				if (i_handler != null)
+				{
+					i_handler = WrapHandlerToArrays(Container(), i_handler);
+				}
 				if (i_handler == null || i_javaField == null)
 				{
 					i_state = UNAVAILABLE;
@@ -217,7 +221,6 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
-					i_handler = WrapHandlerToArrays(GetStream(), i_handler);
 					i_state = AVAILABLE;
 					CheckDb4oType();
 				}
@@ -297,7 +300,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_javaField != null)
 			{
-				if (GetStream().i_handlers.ICLASS_DB4OTYPE.IsAssignableFrom(i_javaField.GetFieldType
+				if (Container()._handlers.ICLASS_DB4OTYPE.IsAssignableFrom(i_javaField.GetFieldType
 					()))
 				{
 					i_db4oType = HandlerRegistry.GetDb4oType(i_javaField.GetFieldType());
@@ -311,7 +314,7 @@ namespace Db4objects.Db4o.Internal
 			object obj = GetOn(a_trans, a_template);
 			if (obj != null)
 			{
-				Collection4 objs = Platform4.FlattenCollection(a_trans.Stream(), obj);
+				Collection4 objs = Platform4.FlattenCollection(a_trans.Container(), obj);
 				IEnumerator j = objs.GetEnumerator();
 				while (j.MoveNext())
 				{
@@ -366,17 +369,17 @@ namespace Db4objects.Db4o.Internal
 			i_isArray = clazz.IsArray();
 			if (i_isArray)
 			{
-				IReflectArray reflectArray = GetStream().Reflector().Array();
+				IReflectArray reflectArray = Container().Reflector().Array();
 				i_isNArray = reflectArray.IsNDimensional(clazz);
 				i_isPrimitive = reflectArray.GetComponentType(clazz).IsPrimitive();
 				if (i_isNArray)
 				{
-					i_handler = new MultidimensionalArrayHandler(GetStream(), i_handler, i_isPrimitive
+					i_handler = new MultidimensionalArrayHandler(Container(), i_handler, i_isPrimitive
 						);
 				}
 				else
 				{
-					i_handler = new ArrayHandler(GetStream(), i_handler, i_isPrimitive);
+					i_handler = new ArrayHandler(Container(), i_handler, i_isPrimitive);
 				}
 			}
 			else
@@ -485,21 +488,30 @@ namespace Db4objects.Db4o.Internal
 			return i_name.GetHashCode();
 		}
 
-		public virtual object Get(object a_onObject)
+		public object Get(object onObject)
+		{
+			return Get(null, onObject);
+		}
+
+		public object Get(Transaction trans, object onObject)
 		{
 			if (_clazz == null)
 			{
 				return null;
 			}
-			ObjectContainerBase stream = _clazz.GetStream();
-			if (stream == null)
+			ObjectContainerBase container = Container();
+			if (container == null)
 			{
 				return null;
 			}
-			lock (stream.i_lock)
+			lock (container._lock)
 			{
-				stream.CheckClosed();
-				ObjectReference yo = stream.ReferenceForObject(a_onObject);
+				if (trans == null)
+				{
+					trans = container.Transaction();
+				}
+				container.CheckClosed();
+				ObjectReference yo = trans.ReferenceForObject(onObject);
 				if (yo == null)
 				{
 					return null;
@@ -509,15 +521,15 @@ namespace Db4objects.Db4o.Internal
 				{
 					return null;
 				}
-				StatefulBuffer writer = stream.ReadWriterByID(stream.GetTransaction(), id);
+				StatefulBuffer writer = container.ReadWriterByID(container.Transaction(), id);
 				if (writer == null)
 				{
 					return null;
 				}
 				writer._offset = 0;
-				ObjectHeader oh = new ObjectHeader(stream, _clazz, writer);
-				bool findOffset = oh.ObjectMarshaller().FindOffset(_clazz, oh._headerAttributes, 
-					writer, this);
+				ObjectHeader oh = new ObjectHeader(container, writer);
+				bool findOffset = oh.ObjectMarshaller().FindOffset(oh.ClassMetadata(), oh._headerAttributes
+					, writer, this);
 				if (!findOffset)
 				{
 					return null;
@@ -538,12 +550,12 @@ namespace Db4objects.Db4o.Internal
 			return i_name;
 		}
 
-		public virtual ClassMetadata GetFieldYapClass(ObjectContainerBase container)
+		public ClassMetadata GetFieldYapClass(ObjectContainerBase container)
 		{
 			ITypeHandler4 handler = BaseTypeHandler();
 			if (Handlers4.HandlesSimple(handler))
 			{
-				return container.i_handlers.PrimitiveClassById(handler.GetID());
+				return container._handlers.PrimitiveClassById(handler.GetID());
 			}
 			return (ClassMetadata)handler;
 		}
@@ -606,13 +618,13 @@ namespace Db4objects.Db4o.Internal
 			return i_handler.ClassReflector();
 		}
 
-		public virtual ObjectContainerBase GetStream()
+		public virtual ObjectContainerBase Container()
 		{
 			if (_clazz == null)
 			{
 				return null;
 			}
-			return _clazz.GetStream();
+			return _clazz.Container();
 		}
 
 		public virtual bool HasConfig()
@@ -740,11 +752,11 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			i_javaField.SetAccessible();
-			ObjectContainerBase stream = _clazz.GetStream();
-			stream.ShowInternalClasses(true);
-			ITypeHandler4 handlerForClass = stream.i_handlers.HandlerForClass(stream, i_javaField
+			ObjectContainerBase container = Container();
+			container.ShowInternalClasses(true);
+			ITypeHandler4 handlerForClass = container._handlers.HandlerForClass(container, i_javaField
 				.GetFieldType());
-			stream.ShowInternalClasses(false);
+			container.ShowInternalClasses(false);
 			return handlerForClass;
 		}
 
@@ -839,7 +851,7 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 handler = LoadJavaField1();
 			if (handler != null)
 			{
-				handler = WrapHandlerToArrays(GetStream(), handler);
+				handler = WrapHandlerToArrays(Container(), handler);
 				if (handler.Equals(i_handler))
 				{
 					return;
@@ -851,12 +863,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Rename(string newName)
 		{
-			ObjectContainerBase stream = _clazz.GetStream();
-			if (!stream.IsClient())
+			ObjectContainerBase container = Container();
+			if (!container.IsClient())
 			{
 				i_name = newName;
 				_clazz.SetStateDirty();
-				_clazz.Write(stream.SystemTransaction());
+				_clazz.Write(container.SystemTransaction());
 			}
 			else
 			{
@@ -895,8 +907,17 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
+			TraverseValues(Container().Transaction(), userVisitor);
+		}
+
+		public void TraverseValues(Transaction transaction, IVisitor4 userVisitor)
+		{
+			if (!Alive())
+			{
+				return;
+			}
 			AssertHasIndex();
-			ObjectContainerBase stream = _clazz.GetStream();
+			ObjectContainerBase stream = transaction.Container();
 			if (stream.IsClient())
 			{
 				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.CLIENT_SERVER_UNSUPPORTED
@@ -904,33 +925,33 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				Transaction trans = stream.GetTransaction();
-				_index.TraverseKeys(trans, new _IVisitor4_811(this, userVisitor, trans));
+				_index.TraverseKeys(transaction, new _IVisitor4_829(this, userVisitor, transaction
+					));
 			}
 		}
 
-		private sealed class _IVisitor4_811 : IVisitor4
+		private sealed class _IVisitor4_829 : IVisitor4
 		{
-			public _IVisitor4_811(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
-				 trans)
+			public _IVisitor4_829(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+				 transaction)
 			{
 				this._enclosing = _enclosing;
 				this.userVisitor = userVisitor;
-				this.trans = trans;
+				this.transaction = transaction;
 			}
 
 			public void Visit(object obj)
 			{
 				FieldIndexKey key = (FieldIndexKey)obj;
 				userVisitor.Visit(((IIndexableTypeHandler)this._enclosing.i_handler).IndexEntryToObject
-					(trans, key.Value()));
+					(transaction, key.Value()));
 			}
 
 			private readonly FieldMetadata _enclosing;
 
 			private readonly IVisitor4 userVisitor;
 
-			private readonly Transaction trans;
+			private readonly Transaction transaction;
 		}
 
 		private void AssertHasIndex()
@@ -1011,7 +1032,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new InvalidOperationException();
 			}
-			if (systemTrans.Stream().IsClient())
+			if (systemTrans.Container().IsClient())
 			{
 				return;
 			}
@@ -1020,7 +1041,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected BTree NewBTree(Transaction systemTrans, int id)
 		{
-			ObjectContainerBase stream = systemTrans.Stream();
+			ObjectContainerBase stream = systemTrans.Container();
 			IIndexable4 indexHandler = IndexHandler(stream);
 			if (indexHandler == null)
 			{
@@ -1036,7 +1057,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				indexType = i_javaField.IndexType();
 			}
-			ITypeHandler4 classHandler = stream.i_handlers.HandlerForClass(stream, indexType);
+			ITypeHandler4 classHandler = stream._handlers.HandlerForClass(stream, indexType);
 			if (!(classHandler is IIndexable4))
 			{
 				return null;
@@ -1064,9 +1085,21 @@ namespace Db4objects.Db4o.Internal
 		public virtual IBTreeRange Search(Transaction transaction, object value)
 		{
 			AssertHasIndex();
-			BTreeNodeSearchResult lowerBound = SearchLowerBound(transaction, value);
-			BTreeNodeSearchResult upperBound = SearchUpperBound(transaction, value);
+			object transActionalValue = WrapWithTransactionContext(transaction, value);
+			BTreeNodeSearchResult lowerBound = SearchLowerBound(transaction, transActionalValue
+				);
+			BTreeNodeSearchResult upperBound = SearchUpperBound(transaction, transActionalValue
+				);
 			return lowerBound.CreateIncludingRange(upperBound);
+		}
+
+		private object WrapWithTransactionContext(Transaction transaction, object value)
+		{
+			if (i_handler is ClassMetadata)
+			{
+				value = ((ClassMetadata)i_handler).WrapWithTransactionContext(transaction, value);
+			}
+			return value;
 		}
 
 		private BTreeNodeSearchResult SearchUpperBound(Transaction transaction, object value
@@ -1121,8 +1154,8 @@ namespace Db4objects.Db4o.Internal
 
 		private object ReadIndexEntryForRebuild(StatefulBuffer writer, ObjectHeader oh)
 		{
-			return oh.ObjectMarshaller().ReadIndexEntry(oh.YapClass(), oh._headerAttributes, 
-				this, writer);
+			return oh.ObjectMarshaller().ReadIndexEntry(oh.ClassMetadata(), oh._headerAttributes
+				, this, writer);
 		}
 
 		public virtual void DropIndex(Transaction systemTrans)
@@ -1131,7 +1164,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			ObjectContainerBase stream = systemTrans.Stream();
+			ObjectContainerBase stream = systemTrans.Container();
 			if (stream.ConfigImpl().MessageLevel() > Const4.NONE)
 			{
 				stream.Message("dropping index " + ToString());
@@ -1141,7 +1174,7 @@ namespace Db4objects.Db4o.Internal
 			_index = null;
 		}
 
-		public virtual void DefragField(MarshallerFamily mf, ReaderPair readers)
+		public virtual void DefragField(MarshallerFamily mf, BufferPair readers)
 		{
 			GetHandler().Defrag(mf, readers, true);
 		}
@@ -1152,7 +1185,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			LocalObjectContainer container = (LocalObjectContainer)_clazz.GetStream();
+			LocalObjectContainer container = (LocalObjectContainer)Container();
 			if (container.ConfigImpl().MessageLevel() > Const4.NONE)
 			{
 				container.Message("creating index " + ToString());

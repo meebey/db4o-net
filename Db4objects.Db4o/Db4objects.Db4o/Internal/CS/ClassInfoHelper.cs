@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Internal.CS
 				GenericClass genericFieldClass = ClassMetaToGenericClass(reflector, fieldClassMeta
 					);
 				genericFields[i] = new GenericField(fieldName, genericFieldClass, fields[i]._isPrimitive
-					, fields[i]._isArray, fields[i]._isNArray);
+					);
 			}
 			genericClass.InitFields(genericFields);
 			return genericClass;

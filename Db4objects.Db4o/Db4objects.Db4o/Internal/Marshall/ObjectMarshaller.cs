@@ -79,6 +79,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		protected virtual StatefulBuffer CreateWriterForUpdate(Transaction a_trans, int updateDepth
 			, int id, int address, int length)
 		{
+			length = a_trans.Container().BlockAlignedBytes(length);
 			StatefulBuffer writer = new StatefulBuffer(a_trans, length);
 			writer.UseSlot(id, address, length);
 			writer.SetUpdateDepth(updateDepth);
@@ -104,21 +105,22 @@ namespace Db4objects.Db4o.Internal.Marshall
 			object obj, StatefulBuffer writer)
 		{
 			ClassMetadata yc = yo.GetYapClass();
-			ObjectContainerBase stream = trans.Stream();
+			ObjectContainerBase stream = trans.Container();
 			stream.WriteUpdate(yc, writer);
 			if (yo.IsActive())
 			{
 				yo.SetStateClean();
 			}
 			yo.EndProcessing();
-			ObjectOnUpdate(yc, stream, obj);
+			ObjectOnUpdate(trans, yc, obj);
 		}
 
-		private void ObjectOnUpdate(ClassMetadata yc, ObjectContainerBase stream, object 
-			obj)
+		private void ObjectOnUpdate(Transaction transaction, ClassMetadata yc, object obj
+			)
 		{
-			stream.Callbacks().ObjectOnUpdate(obj);
-			yc.DispatchEvent(stream, obj, EventDispatcher.UPDATE);
+			ObjectContainerBase container = transaction.Container();
+			container.Callbacks().ObjectOnUpdate(transaction, obj);
+			yc.DispatchEvent(container, obj, EventDispatcher.UPDATE);
 		}
 
 		public abstract object ReadIndexEntry(ClassMetadata yc, ObjectHeaderAttributes attributes
@@ -130,7 +132,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public abstract void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
 			 yo, ObjectHeaderAttributes attributes, Db4objects.Db4o.Internal.Buffer reader);
 
-		public abstract void DefragFields(ClassMetadata yapClass, ObjectHeader header, ReaderPair
+		public abstract void DefragFields(ClassMetadata yapClass, ObjectHeader header, BufferPair
 			 readers);
 
 		public abstract void WriteObjectClassID(Db4objects.Db4o.Internal.Buffer reader, int

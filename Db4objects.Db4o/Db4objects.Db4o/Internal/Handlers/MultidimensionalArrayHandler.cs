@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ret[0];
 		}
 
-		protected override int ReadElementsDefrag(ReaderPair readers)
+		protected override int ReadElementsDefrag(BufferPair readers)
 		{
 			int numDimensions = base.ReadElementsDefrag(readers);
 			int[] dimensions = new int[numDimensions];

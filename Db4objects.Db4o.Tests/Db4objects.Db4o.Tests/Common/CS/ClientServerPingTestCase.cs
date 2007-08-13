@@ -27,6 +27,10 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public virtual void Test()
 		{
+			if (IsMTOC())
+			{
+				return;
+			}
 			IServerMessageDispatcher dispatcher = ServerDispatcher();
 			ClientServerPingTestCase.PingThread pingThread = new ClientServerPingTestCase.PingThread
 				(dispatcher);

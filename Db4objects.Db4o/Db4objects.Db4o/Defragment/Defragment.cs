@@ -11,28 +11,29 @@ using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
-using Db4objects.Db4o.Internal.Handlers;
 
 namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>defragments database files.</summary>
 	/// <remarks>
 	/// defragments database files.
-	/// <br /><br />db4o structures storage inside database files as free and occupied slots, very
-	/// much like a file system - and just like a file system it can be fragmented.<br /><br />
-	/// The simplest way to defragment a database file:<br /><br />
-	/// <code>Defragment.defrag("sample.yap");</code><br /><br />
+	/// <br/><br/>db4o structures storage inside database files as free and occupied slots, very
+	/// much like a file system - and just like a file system it can be fragmented.<br/><br/>
+	/// The simplest way to defragment a database file:<br/><br/>
+	/// <code>Defragment.Defrag("sample.yap");</code><br/><br/>
 	/// This will move the file to "sample.yap.backup", then create a defragmented
 	/// version of this file in the original position, using a temporary file
 	/// "sample.yap.mapping". If the backup file already exists, this will throw an
-	/// exception and no action will be taken.<br /><br />
+	/// exception and no action will be taken.<br/><br/>
 	/// For more detailed configuration of the defragmentation process, provide a
-	/// DefragmentConfig instance:<br /><br />
-	/// <code>DefragmentConfig config=new DefragmentConfig("sample.yap","sample.bap",new BTreeIDMapping("sample.map"));<br />
-	/// config.forceBackupDelete(true);<br />
-	/// config.storedClassFilter(new AvailableClassFilter());<br />
-	/// config.db4oConfig(db4oConfig);<br />
-	/// Defragment.defrag(config);</code><br /><br />
+	/// DefragmentConfig instance:<br/><br/>
+	/// <code>
+	/// DefragmentConfig config=new DefragmentConfig("sample.yap","sample.bap",new BTreeIDMapping("sample.map"));<br/>
+	/// config.ForceBackupDelete(true);<br/>
+	/// config.StoredClassFilter(new AvailableClassFilter());<br/>
+	/// config.Db4oConfig(db4oConfig);<br/>
+	/// Defragment.Defrag(config);
+	/// </code><br/><br/>
 	/// This will move the file to "sample.bap", then create a defragmented version
 	/// of this file in the original position, using a temporary file "sample.map" for BTree mapping.
 	/// If the backup file already exists, it will be deleted. The defragmentation
@@ -183,17 +184,17 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.MoveNext())
 			{
 				int origID = ((int)unindexedIDs.Current);
-				ReaderPair.ProcessCopy(context, origID, new _ISlotCopyHandler_168(), true);
+				BufferPair.ProcessCopy(context, origID, new _ISlotCopyHandler_167(), true);
 			}
 		}
 
-		private sealed class _ISlotCopyHandler_168 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_167 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_168()
+			public _ISlotCopyHandler_167()
 			{
 			}
 
-			public void ProcessCopy(ReaderPair readers)
+			public void ProcessCopy(BufferPair readers)
 			{
 				ClassMetadata.DefragObject(readers);
 			}
@@ -271,7 +272,7 @@ namespace Db4objects.Db4o.Defragment
 			ClassMetadata parentClass = curClass.i_ancestor;
 			while (parentClass != null)
 			{
-				if (parentClass.HasIndex())
+				if (parentClass.HasClassIndex())
 				{
 					return true;
 				}
@@ -283,20 +284,17 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessObjectsForYapClass(DefragContextImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			bool withStringIndex = WithFieldIndex(curClass);
-			context.TraverseAll(curClass, new _IVisitor4_261(command, context, curClass, withStringIndex
-				));
+			context.TraverseAll(curClass, new _IVisitor4_259(command, context, curClass));
 		}
 
-		private sealed class _IVisitor4_261 : IVisitor4
+		private sealed class _IVisitor4_259 : IVisitor4
 		{
-			public _IVisitor4_261(IPassCommand command, DefragContextImpl context, ClassMetadata
-				 curClass, bool withStringIndex)
+			public _IVisitor4_259(IPassCommand command, DefragContextImpl context, ClassMetadata
+				 curClass)
 			{
 				this.command = command;
 				this.context = context;
 				this.curClass = curClass;
-				this.withStringIndex = withStringIndex;
 			}
 
 			public void Visit(object obj)
@@ -304,7 +302,7 @@ namespace Db4objects.Db4o.Defragment
 				int id = ((int)obj);
 				try
 				{
-					command.ProcessObjectSlot(context, curClass, id, withStringIndex);
+					command.ProcessObjectSlot(context, curClass, id);
 				}
 				catch (CorruptionException e)
 				{
@@ -321,22 +319,6 @@ namespace Db4objects.Db4o.Defragment
 			private readonly DefragContextImpl context;
 
 			private readonly ClassMetadata curClass;
-
-			private readonly bool withStringIndex;
-		}
-
-		private static bool WithFieldIndex(ClassMetadata clazz)
-		{
-			IEnumerator fieldIter = clazz.Fields();
-			while (fieldIter.MoveNext())
-			{
-				FieldMetadata curField = (FieldMetadata)fieldIter.Current;
-				if (curField.HasIndex() && (curField.GetHandler() is StringHandler))
-				{
-					return true;
-				}
-			}
-			return false;
 		}
 
 		private static void ProcessYapClassAndFieldIndices(DefragContextImpl context, ClassMetadata
@@ -344,7 +326,7 @@ namespace Db4objects.Db4o.Defragment
 		{
 			int sourceClassIndexID = 0;
 			int targetClassIndexID = 0;
-			if (curClass.HasIndex())
+			if (curClass.HasClassIndex())
 			{
 				sourceClassIndexID = curClass.Index().Id();
 				targetClassIndexID = context.MappedID(sourceClassIndexID, -1);
@@ -355,7 +337,7 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessClassIndex(DefragContextImpl context, ClassMetadata curClass
 			, IPassCommand command)
 		{
-			if (curClass.HasIndex())
+			if (curClass.HasClassIndex())
 			{
 				BTreeClassIndexStrategy indexStrategy = (BTreeClassIndexStrategy)curClass.Index();
 				BTree btree = indexStrategy.Btree();

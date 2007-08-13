@@ -9,7 +9,7 @@ using Db4objects.Db4o.Internal.Slots;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public sealed class ReaderPair : ISlotReader
+	public sealed class BufferPair : ISlotBuffer
 	{
 		private Db4objects.Db4o.Internal.Buffer _source;
 
@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal
 
 		private Transaction _systemTrans;
 
-		public ReaderPair(Db4objects.Db4o.Internal.Buffer source, IDefragContext mapping, 
+		public BufferPair(Db4objects.Db4o.Internal.Buffer source, IDefragContext mapping, 
 			Transaction systemTrans)
 		{
 			_source = source;
@@ -175,13 +175,19 @@ namespace Db4objects.Db4o.Internal
 		public static void ProcessCopy(IDefragContext context, int sourceID, ISlotCopyHandler
 			 command, bool registerAddressMapping)
 		{
-			Db4objects.Db4o.Internal.Buffer sourceReader = (registerAddressMapping ? context.
-				SourceWriterByID(sourceID) : context.SourceReaderByID(sourceID));
+			Db4objects.Db4o.Internal.Buffer sourceReader = context.SourceBufferByID(sourceID);
+			ProcessCopy(context, sourceID, command, registerAddressMapping, sourceReader);
+		}
+
+		public static void ProcessCopy(IDefragContext context, int sourceID, ISlotCopyHandler
+			 command, bool registerAddressMapping, Db4objects.Db4o.Internal.Buffer sourceReader
+			)
+		{
 			int targetID = context.MappedID(sourceID);
 			Slot targetSlot = context.AllocateTargetSlot(sourceReader.GetLength());
 			if (registerAddressMapping)
 			{
-				int sourceAddress = ((StatefulBuffer)sourceReader).GetAddress();
+				int sourceAddress = context.SourceAddressByID(sourceID);
 				context.MapIDs(sourceAddress, targetSlot.Address(), false);
 			}
 			Db4objects.Db4o.Internal.Buffer targetPointerReader = new Db4objects.Db4o.Internal.Buffer
@@ -189,7 +195,7 @@ namespace Db4objects.Db4o.Internal
 			targetPointerReader.WriteInt(targetSlot.Address());
 			targetPointerReader.WriteInt(targetSlot.Length());
 			context.TargetWriteBytes(targetPointerReader, targetID);
-			Db4objects.Db4o.Internal.ReaderPair readers = new Db4objects.Db4o.Internal.ReaderPair
+			Db4objects.Db4o.Internal.BufferPair readers = new Db4objects.Db4o.Internal.BufferPair
 				(sourceReader, context, context.SystemTrans());
 			command.ProcessCopy(readers);
 			context.TargetWriteBytes(readers, targetSlot.Address());

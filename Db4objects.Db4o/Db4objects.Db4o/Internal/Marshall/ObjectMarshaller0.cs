@@ -412,7 +412,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return false;
 		}
 
-		public override void DefragFields(ClassMetadata yapClass, ObjectHeader header, ReaderPair
+		public override void DefragFields(ClassMetadata yapClass, ObjectHeader header, BufferPair
 			 readers)
 		{
 		}

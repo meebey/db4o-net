@@ -7,6 +7,7 @@ using Db4oUnit.Extensions.Concurrency;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -20,10 +21,10 @@ namespace Db4oUnit.Extensions
 		[System.NonSerialized]
 		private IDb4oFixture _fixture;
 
-		private const int DERFAULT_CONCURRENCY_THREAD_COUNT = 10;
+		private const int DEFAULT_CONCURRENCY_THREAD_COUNT = 10;
 
 		[System.NonSerialized]
-		private int _threadCount = DERFAULT_CONCURRENCY_THREAD_COUNT;
+		private int _threadCount = DEFAULT_CONCURRENCY_THREAD_COUNT;
 
 		public virtual void Fixture(IDb4oFixture fixture)
 		{
@@ -38,6 +39,17 @@ namespace Db4oUnit.Extensions
 		public virtual bool IsClientServer()
 		{
 			return Fixture() is IDb4oClientServerFixture;
+		}
+
+		protected virtual bool IsEmbeddedClientServer()
+		{
+			return IsClientServer() && ((IDb4oClientServerFixture)Fixture()).EmbeddedClients(
+				);
+		}
+
+		protected virtual bool IsMTOC()
+		{
+			return Fixture().Db() is EmbeddedClientObjectContainer;
 		}
 
 		protected virtual void Reopen()
@@ -159,6 +171,11 @@ namespace Db4oUnit.Extensions
 			return RunEmbeddedConcurrency(true);
 		}
 
+		public virtual int RunConcurrencyAll()
+		{
+			return RunConcurrencyAll(true);
+		}
+
 		private int RunEmbeddedClientServer(bool independentConfig)
 		{
 			return new TestRunner(EmbeddedClientServerSuite(independentConfig)).Run();
@@ -171,13 +188,21 @@ namespace Db4oUnit.Extensions
 
 		private int RunConcurrency(bool independentConfig)
 		{
-			return new TestRunner(ConcurrenyClientServerSuite(independentConfig, false)).Run(
-				);
+			return new TestRunner(ConcurrenyClientServerSuite(independentConfig, false, "CONC"
+				)).Run();
 		}
 
 		private int RunEmbeddedConcurrency(bool independentConfig)
 		{
-			return new TestRunner(ConcurrenyClientServerSuite(independentConfig, true)).Run();
+			return new TestRunner(ConcurrenyClientServerSuite(independentConfig, true, "CONC EMBEDDED"
+				)).Run();
+		}
+
+		private int RunConcurrencyAll(bool independentConfig)
+		{
+			return new TestRunner(new TestSuite(new ITest[] { ConcurrenyClientServerSuite(independentConfig
+				, false, "CONC").Build(), ConcurrenyClientServerSuite(independentConfig, true, "CONC EMBEDDED"
+				).Build() })).Run();
 		}
 
 		private Db4oTestSuiteBuilder SoloSuite(bool independentConfig)
@@ -189,20 +214,20 @@ namespace Db4oUnit.Extensions
 		private Db4oTestSuiteBuilder ClientServerSuite(bool independentConfig)
 		{
 			return new Db4oTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
-				), false), TestCases());
+				), false, "C/S"), TestCases());
 		}
 
 		private Db4oTestSuiteBuilder EmbeddedClientServerSuite(bool independentConfig)
 		{
 			return new Db4oTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
-				), true), TestCases());
+				), true, "C/S EMBEDDED"), TestCases());
 		}
 
 		private Db4oTestSuiteBuilder ConcurrenyClientServerSuite(bool independentConfig, 
-			bool embedded)
+			bool embedded, string label)
 		{
 			return new Db4oConcurrencyTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
-				), embedded), TestCases());
+				), embedded, label), TestCases());
 		}
 
 		private IConfigurationSource ConfigSource(bool independentConfig)
@@ -213,7 +238,7 @@ namespace Db4oUnit.Extensions
 
 		protected virtual ObjectContainerBase Stream()
 		{
-			return (ObjectContainerBase)Db();
+			return ((IInternalObjectContainer)Db()).Container();
 		}
 
 		public virtual LocalObjectContainer FileSession()
@@ -223,12 +248,12 @@ namespace Db4oUnit.Extensions
 
 		protected virtual Transaction Trans()
 		{
-			return Stream().GetTransaction();
+			return ((IInternalObjectContainer)Db()).Transaction();
 		}
 
 		protected virtual Transaction SystemTrans()
 		{
-			return Stream().SystemTransaction();
+			return Trans().SystemTransaction();
 		}
 
 		protected virtual IQuery NewQuery(Transaction transaction, Type clazz)
@@ -278,7 +303,7 @@ namespace Db4oUnit.Extensions
 
 		protected virtual Transaction NewTransaction()
 		{
-			return Stream().NewTransaction();
+			return Stream().NewUserTransaction();
 		}
 
 		protected virtual object RetrieveOnlyInstance(Type clazz)
@@ -329,12 +354,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_275(this, oc));
+			Foreach(clazz, new _IVisitor4_299(this, oc));
 		}
 
-		private sealed class _IVisitor4_275 : IVisitor4
+		private sealed class _IVisitor4_299 : IVisitor4
 		{
-			public _IVisitor4_275(AbstractDb4oTestCase _enclosing, IExtObjectContainer oc)
+			public _IVisitor4_299(AbstractDb4oTestCase _enclosing, IExtObjectContainer oc)
 			{
 				this._enclosing = _enclosing;
 				this.oc = oc;
@@ -388,6 +413,16 @@ namespace Db4oUnit.Extensions
 		public void ConfigureThreadCount(int count)
 		{
 			_threadCount = count;
+		}
+
+		protected virtual IEventRegistry EventRegistry()
+		{
+			return EventRegistryFactory.ForObjectContainer(Db());
+		}
+
+		protected virtual IEventRegistry ServerEventRegistry()
+		{
+			return EventRegistryFactory.ForObjectContainer(FileSession());
 		}
 	}
 }

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(2 * 
 				Const4.INT_LENGTH);
-			ObjectContainerBase stream = (ObjectContainerBase)Db();
+			ObjectContainerBase stream = Stream();
 			StringHandler handler = new StringHandler(stream, stream.StringIO());
 			Slot original = new Slot(unchecked((int)(0xdb)), unchecked((int)(0x40)));
 			handler.WriteIndexEntry(reader, original);

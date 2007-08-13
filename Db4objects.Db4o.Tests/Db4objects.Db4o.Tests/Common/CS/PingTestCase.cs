@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -33,6 +34,11 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				(recipient);
 			IExtObjectContainer client = ClientServerFixture().Db();
 			IMessageSender sender = client.Configure().ClientServer().GetMessageSender();
+			if (IsMTOC())
+			{
+				Assert.Expect(typeof(NotSupportedException), new _ICodeBlock_36(this, sender));
+				return;
+			}
 			sender.Send(new PingTestCase.Data());
 			IObjectSet os = client.Get(null);
 			while (os.HasNext())
@@ -40,6 +46,24 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				os.Next();
 			}
 			Assert.IsFalse(client.IsClosed());
+		}
+
+		private sealed class _ICodeBlock_36 : ICodeBlock
+		{
+			public _ICodeBlock_36(PingTestCase _enclosing, IMessageSender sender)
+			{
+				this._enclosing = _enclosing;
+				this.sender = sender;
+			}
+
+			public void Run()
+			{
+				sender.Send(new PingTestCase.Data());
+			}
+
+			private readonly PingTestCase _enclosing;
+
+			private readonly IMessageSender sender;
 		}
 
 		public class TestMessageRecipient : IMessageRecipient

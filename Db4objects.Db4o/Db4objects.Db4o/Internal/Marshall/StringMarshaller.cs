@@ -105,6 +105,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			stream.StringIO().Write(reader, str);
 		}
 
-		public abstract void Defrag(ISlotReader reader);
+		public abstract void Defrag(ISlotBuffer reader);
 	}
 }

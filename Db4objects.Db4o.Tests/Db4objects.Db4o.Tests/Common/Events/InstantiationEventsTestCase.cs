@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			{
 				instantiatedLog.xed = true;
 				object obj = ((ObjectEventArgs)args).Object;
-				Assert.IsNotNull(this._enclosing.Stream().ReferenceSystem().ReferenceForObject(obj
+				Assert.IsNotNull(this._enclosing.Trans().ReferenceSystem().ReferenceForObject(obj
 					));
 			}
 

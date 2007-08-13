@@ -123,7 +123,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public virtual Db4objects.Db4o.Internal.CS.Messages.MsgD GetWriterForSingleObject
 			(Transaction trans, object obj)
 		{
-			SerializedGraph serialized = Serializer.Marshall(trans.Stream(), obj);
+			SerializedGraph serialized = Serializer.Marshall(trans.Container(), obj);
 			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = GetWriterForLength(trans, serialized
 				.MarshalledLength());
 			serialized.Write(msg._payLoad);

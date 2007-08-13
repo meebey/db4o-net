@@ -1,30 +1,32 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query.Processor;
 
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	public class QConFalse : QConPath
+	public class QConUnconditional : QCon
 	{
-		public QConFalse()
+		private bool _value;
+
+		public QConUnconditional()
 		{
 		}
 
-		internal QConFalse(Transaction a_trans, QCon a_parent, QField a_field) : base(a_trans
-			, a_parent, a_field)
+		public QConUnconditional(Transaction trans, bool value) : base(trans)
 		{
+			_value = value;
 		}
 
-		internal override void CreateCandidates(Collection4 a_candidateCollection)
+		internal override void EvaluateSimpleExec(QCandidates a_candidates)
 		{
+			a_candidates.Filter(this);
 		}
 
 		internal override bool Evaluate(QCandidate a_candidate)
 		{
-			return false;
+			return _value;
 		}
 	}
 }

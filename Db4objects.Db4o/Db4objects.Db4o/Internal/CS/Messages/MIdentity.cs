@@ -11,7 +11,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public virtual bool ProcessAtServer()
 		{
 			ObjectContainerBase stream = Stream();
-			RespondInt((int)stream.GetID(stream.Identity()));
+			RespondInt(stream.GetID(Transaction(), ((IInternalObjectContainer)stream).Identity
+				()));
 			return true;
 		}
 	}

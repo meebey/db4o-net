@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			if (obj != null)
 			{
 				ITypeHandler4 handler = yapClassPrimitive.i_handler;
-				ObjectContainerBase stream = trans.Stream();
+				ObjectContainerBase stream = trans.Container();
 				id = stream.NewUserObject();
 				Slot slot = new Slot(-1, ObjectLength(handler));
 				if (!stream.IsClient())

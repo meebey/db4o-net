@@ -15,19 +15,18 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void Test()
 		{
 			Hashtable4 ht = new Hashtable4();
-			IExtObjectContainer oc = Db();
-			ObjectContainerBase yapStream = ((ObjectContainerBase)oc);
-			yapStream.ShowInternalClasses(true);
+			ObjectContainerBase container = Stream();
+			container.ShowInternalClasses(true);
 			IQuery q = Db().Query();
 			q.Constrain(typeof(Db4oDatabase));
 			IObjectSet objectSet = q.Execute();
 			while (objectSet.HasNext())
 			{
-				Db4oDatabase d4b = (Db4oDatabase)objectSet.Next();
-				Assert.IsFalse(ht.ContainsKey(d4b.i_signature));
-				ht.Put(d4b.i_signature, string.Empty);
+				Db4oDatabase identity = (Db4oDatabase)objectSet.Next();
+				Assert.IsFalse(ht.ContainsKey(identity.i_signature));
+				ht.Put(identity.i_signature, string.Empty);
 			}
-			yapStream.ShowInternalClasses(false);
+			container.ShowInternalClasses(false);
 		}
 	}
 }

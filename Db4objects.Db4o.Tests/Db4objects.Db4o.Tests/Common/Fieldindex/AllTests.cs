@@ -19,9 +19,9 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			Type[] fieldBased = new Type[] { typeof(IndexedNodeTestCase), typeof(FieldIndexTestCase)
 				, typeof(FieldIndexProcessorTestCase) };
 			Type[] neutral = new Type[] { typeof(DoubleFieldIndexTestCase), typeof(RuntimeFieldIndexTestCase)
-				, typeof(StringIndexTestCase), typeof(StringIndexCorruptionTestCase) };
-			Type[] tests = neutral;
-			tests = new Type[fieldBased.Length + neutral.Length];
+				, typeof(SecondLevelIndexTestCase), typeof(StringIndexTestCase), typeof(StringIndexCorruptionTestCase)
+				, typeof(StringIndexWithSuperClassTestCase) };
+			Type[] tests = new Type[fieldBased.Length + neutral.Length];
 			System.Array.Copy(neutral, 0, tests, 0, neutral.Length);
 			System.Array.Copy(fieldBased, 0, tests, neutral.Length, fieldBased.Length);
 			return tests;

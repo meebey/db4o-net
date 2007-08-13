@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.IX
 		{
 			if (handler is StringHandler)
 			{
-				return ((StringHandler)handler).Val(indexEntry, trans.Stream());
+				return ((StringHandler)handler).Val(indexEntry, trans.Container());
 			}
 			return indexEntry;
 		}

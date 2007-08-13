@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Events
 			{
 				throw new ArgumentNullException();
 			}
-			ObjectContainerBase container = ((ObjectContainerBase)objectContainer);
+			IInternalObjectContainer container = ((IInternalObjectContainer)objectContainer);
 			ICallbacks callbacks = container.Callbacks();
 			if (callbacks is IEventRegistry)
 			{

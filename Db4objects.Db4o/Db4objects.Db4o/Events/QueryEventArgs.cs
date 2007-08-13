@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Events
@@ -18,7 +19,7 @@ namespace Db4objects.Db4o.Events
 		/// <see cref="IQuery">IQuery</see>
 		/// instance.
 		/// </summary>
-		public QueryEventArgs(IQuery q) : base(q)
+		public QueryEventArgs(Transaction transaction, IQuery q) : base(transaction, q)
 		{
 		}
 

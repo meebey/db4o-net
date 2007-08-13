@@ -4,10 +4,10 @@ using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Reflect
 {
-	/// <summary>representation for java.lang.reflect.Array.</summary>
+	/// <summary>Reflection Array representation.</summary>
 	/// <remarks>
-	/// representation for java.lang.reflect.Array.
-	/// <br /><br />See the respective documentation in the JDK API.
+	/// Reflection Array representation
+	/// <br/><br/>See documentation for System.Reflection API.
 	/// </remarks>
 	/// <seealso cref="IReflector">IReflector</seealso>
 	public interface IReflectArray

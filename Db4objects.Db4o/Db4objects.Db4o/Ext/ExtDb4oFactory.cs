@@ -22,21 +22,24 @@ namespace Db4objects.Db4o.Ext
 		/// opens an
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// for in-memory use .
-		/// <br /><br />In-memory ObjectContainers are useful for maximum performance
+		/// <br/><br/>In-memory ObjectContainers are useful for maximum performance
 		/// on small databases, for swapping objects or for storing db4o format data
-		/// to other media or other databases.<br /><br />Be aware of the danger of running
+		/// to other media or other databases.<br/><br/>Be aware of the danger of running
 		/// into OutOfMemory problems or complete loss of all data, in case of hardware
-		/// or JVM failures.<br /><br />
+		/// or software failures.<br/><br/>
+		/// 
 		/// </summary>
 		/// <param name="memoryFile">
 		/// a
 		/// <see cref="MemoryFile">MemoryFile</see>
 		/// 
 		/// to store the raw byte data.
+		/// 
 		/// </param>
 		/// <returns>
 		/// an open
 		/// <see cref="IObjectContainer">IObjectContainer</see>
+		/// 
 		/// </returns>
 		/// <seealso cref="MemoryFile">MemoryFile</seealso>
 		public static IObjectContainer OpenMemoryFile(MemoryFile memoryFile)
@@ -48,27 +51,31 @@ namespace Db4objects.Db4o.Ext
 		/// opens an
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// for in-memory use .
-		/// <br /><br />In-memory ObjectContainers are useful for maximum performance
+		/// <br/><br/>In-memory ObjectContainers are useful for maximum performance
 		/// on small databases, for swapping objects or for storing db4o format data
-		/// to other media or other databases.<br /><br />Be aware of the danger of running
+		/// to other media or other databases.<br/><br/>Be aware of the danger of running
 		/// into OutOfMemory problems or complete loss of all data, in case of hardware
-		/// or JVM failures.<br /><br />
+		/// or software failures.<br/><br/>
+		/// 
 		/// </summary>
 		/// <param name="config">
 		/// a custom
 		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
 		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
+		/// 
 		/// </param>
 		/// <param name="memoryFile">
 		/// a
 		/// <see cref="MemoryFile">MemoryFile</see>
 		/// 
 		/// to store the raw byte data.
+		/// 
 		/// </param>
 		/// <returns>
 		/// an open
 		/// <see cref="IObjectContainer">IObjectContainer</see>
+		/// 
 		/// </returns>
 		/// <seealso cref="MemoryFile">MemoryFile</seealso>
 		public static IObjectContainer OpenMemoryFile(IConfiguration config, MemoryFile memoryFile

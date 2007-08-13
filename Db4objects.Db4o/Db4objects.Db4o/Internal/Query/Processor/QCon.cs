@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual ObjectContainerBase Container()
 		{
-			return Transaction().Stream();
+			return Transaction().Container();
 		}
 
 		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
@@ -116,8 +116,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				int[] count = new int[] { 0 };
 				FieldMetadata[] yfs = new FieldMetadata[] { null };
-				i_trans.Stream().ClassCollection().AttachQueryNode(a_field, new _IVisitor4_130(this
-					, yfs, count));
+				i_trans.Container().ClassCollection().AttachQueryNode(a_field, new _IVisitor4_130
+					(this, yfs, count));
 				if (count[0] == 0)
 				{
 					return false;
@@ -135,7 +135,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				if (yc.CustomizedNewInstance())
 				{
-					i_trans.Stream().i_handlers._diagnosticProcessor.DescendIntoTranslator(yc, a_field
+					i_trans.Container()._handlers._diagnosticProcessor.DescendIntoTranslator(yc, a_field
 						);
 				}
 				FieldMetadata yf = yc.FieldMetadataForName(a_field);
@@ -773,7 +773,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		protected virtual object StreamLock()
 		{
-			return i_trans.Stream().i_lock;
+			return i_trans.Container()._lock;
 		}
 
 		internal virtual bool SupportsOrdering()

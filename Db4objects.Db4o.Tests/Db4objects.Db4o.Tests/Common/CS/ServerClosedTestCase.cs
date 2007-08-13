@@ -20,6 +20,10 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public virtual void Test()
 		{
+			if (IsMTOC())
+			{
+				return;
+			}
 			IExtObjectContainer db = Fixture().Db();
 			ObjectServerImpl serverImpl = (ObjectServerImpl)ClientServerFixture().Server();
 			try
@@ -30,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 					Current;
 				serverDispatcher.Socket().Close();
 				Cool.SleepIgnoringInterruption(1000);
-				Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_28(this, db));
+				Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_34(this, db));
 				Assert.IsTrue(db.IsClosed());
 			}
 			finally
@@ -39,9 +43,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		private sealed class _ICodeBlock_28 : ICodeBlock
+		private sealed class _ICodeBlock_34 : ICodeBlock
 		{
-			public _ICodeBlock_28(ServerClosedTestCase _enclosing, IExtObjectContainer db)
+			public _ICodeBlock_34(ServerClosedTestCase _enclosing, IExtObjectContainer db)
 			{
 				this._enclosing = _enclosing;
 				this.db = db;

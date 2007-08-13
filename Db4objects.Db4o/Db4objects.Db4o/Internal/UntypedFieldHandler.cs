@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Internal
 {
 	public sealed class UntypedFieldHandler : ClassMetadata
 	{
-		public UntypedFieldHandler(ObjectContainerBase stream) : base(stream, stream.i_handlers
+		public UntypedFieldHandler(ObjectContainerBase stream) : base(stream, stream._handlers
 			.ICLASS_OBJECT)
 		{
 		}
@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Internal
 			return a_stream.ClassCollection().FieldExists(a_path);
 		}
 
-		public override bool HasIndex()
+		public override bool HasClassIndex()
 		{
 			return false;
 		}
@@ -120,7 +120,7 @@ namespace Db4objects.Db4o.Internal
 			return mf._untyped.WriteNew(obj, restoreLinkeOffset, writer);
 		}
 
-		public override void Defrag(MarshallerFamily mf, ReaderPair readers, bool redirect
+		public override void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
 			)
 		{
 			if (mf._untyped.UseNormalClassRead())

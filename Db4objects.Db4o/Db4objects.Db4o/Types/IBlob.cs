@@ -7,11 +7,11 @@ using Db4objects.Db4o.Types;
 namespace Db4objects.Db4o.Types
 {
 	/// <summary>
-	/// the db4o Blob type to store blobs independant of the main database
+	/// the db4o Blob type to store blobs independent of the main database
 	/// file and allows to perform asynchronous upload and download operations.
 	/// </summary>
 	/// <remarks>
-	/// the db4o Blob type to store blobs independant of the main database
+	/// the db4o Blob type to store blobs independent of the main database
 	/// file and allows to perform asynchronous upload and download operations.
 	/// <br /><br />
 	/// <b>Usage:</b><br />
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Types
 	/// previously stored. It may also help you to track the completion
 	/// of the current process.
 	/// <br /><br />
-	/// db4o client/server carries out all blob operations in a seperate
+	/// db4o client/server carries out all blob operations in a separate
 	/// thread on a specially dedicated socket. One socket is used for
 	/// all blob operations and operations are queued. Your application
 	/// may continue to access db4o while a blob is transferred in the

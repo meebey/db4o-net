@@ -110,7 +110,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return reader;
 		}
 
-		public override void DefragIDs(ArrayHandler arrayHandler, ReaderPair readers)
+		public override void DefragIDs(ArrayHandler arrayHandler, BufferPair readers)
 		{
 			int offset = readers.PreparePayloadRead();
 			arrayHandler.Defrag1(_family, readers);

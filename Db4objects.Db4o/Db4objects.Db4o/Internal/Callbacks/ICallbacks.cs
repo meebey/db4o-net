@@ -7,31 +7,31 @@ namespace Db4objects.Db4o.Internal.Callbacks
 {
 	public interface ICallbacks
 	{
-		bool ObjectCanNew(object obj);
+		bool ObjectCanNew(Transaction transaction, object obj);
 
-		bool ObjectCanActivate(object obj);
+		bool ObjectCanActivate(Transaction transaction, object obj);
 
-		bool ObjectCanUpdate(object obj);
+		bool ObjectCanUpdate(Transaction transaction, object obj);
 
-		bool ObjectCanDelete(object obj);
+		bool ObjectCanDelete(Transaction transaction, object obj);
 
-		bool ObjectCanDeactivate(object obj);
+		bool ObjectCanDeactivate(Transaction transaction, object obj);
 
-		void ObjectOnActivate(object obj);
+		void ObjectOnActivate(Transaction transaction, object obj);
 
-		void ObjectOnNew(object obj);
+		void ObjectOnNew(Transaction transaction, object obj);
 
-		void ObjectOnUpdate(object obj);
+		void ObjectOnUpdate(Transaction transaction, object obj);
 
-		void ObjectOnDelete(object obj);
+		void ObjectOnDelete(Transaction transaction, object obj);
 
-		void ObjectOnDeactivate(object obj);
+		void ObjectOnDeactivate(Transaction transaction, object obj);
 
-		void ObjectOnInstantiate(object obj);
+		void ObjectOnInstantiate(Transaction transaction, object obj);
 
-		void QueryOnStarted(IQuery query);
+		void QueryOnStarted(Transaction transaction, IQuery query);
 
-		void QueryOnFinished(IQuery query);
+		void QueryOnFinished(Transaction transaction, IQuery query);
 
 		bool CaresAboutCommitting();
 
@@ -39,10 +39,14 @@ namespace Db4objects.Db4o.Internal.Callbacks
 
 		void ClassOnRegistered(ClassMetadata clazz);
 
-		void CommitOnStarted(object transaction, CallbackObjectInfoCollections objectInfoCollections
+		void CommitOnStarted(Transaction transaction, CallbackObjectInfoCollections objectInfoCollections
 			);
 
-		void CommitOnCompleted(object transaction, CallbackObjectInfoCollections objectInfoCollections
+		void CommitOnCompleted(Transaction transaction, CallbackObjectInfoCollections objectInfoCollections
 			);
+
+		bool CaresAboutDeleting();
+
+		bool CaresAboutDeleted();
 	}
 }

@@ -96,8 +96,8 @@ namespace Db4objects.Db4o.Internal
 				MarshallIgnore(a_bytes);
 				return;
 			}
-			ObjectContainerBase stream = trans.Stream();
-			HandlerRegistry handlers = stream.i_handlers;
+			ObjectContainerBase stream = trans.Container();
+			HandlerRegistry handlers = stream._handlers;
 			bool migrating = false;
 			if (stream._replicationCallState != Const4.NONE)
 			{
@@ -114,7 +114,8 @@ namespace Db4objects.Db4o.Internal
 							migrateYapObject = mgc.ReferenceFor(obj);
 							if (migrateYapObject == null)
 							{
-								migrateYapObject = mgc.Peer(stream).ReferenceForObject(obj);
+								ObjectContainerBase peer = mgc.Peer(stream);
+								migrateYapObject = peer.Transaction().ReferenceForObject(obj);
 							}
 						}
 						if (migrateYapObject != null)

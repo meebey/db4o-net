@@ -15,20 +15,13 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private readonly bool _primitive;
 
-		private readonly bool _array;
-
-		private readonly bool _nDimensionalArray;
-
 		private int _index = -1;
 
-		public GenericField(string name, IReflectClass clazz, bool primitive, bool array, 
-			bool nDimensionalArray)
+		public GenericField(string name, IReflectClass clazz, bool primitive)
 		{
 			_name = name;
 			_type = (GenericClass)clazz;
 			_primitive = primitive;
-			_array = array;
-			_nDimensionalArray = nDimensionalArray;
 		}
 
 		public virtual object DeepClone(object obj)
@@ -40,7 +33,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 				newReflectClass = reflector.ForName(_type.GetName());
 			}
 			return new Db4objects.Db4o.Reflect.Generic.GenericField(_name, newReflectClass, _primitive
-				, _array, _nDimensionalArray);
+				);
 		}
 
 		public virtual object Get(object onObject)
@@ -55,10 +48,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual IReflectClass GetFieldType()
 		{
-			if (_array)
-			{
-				return _type.ArrayClass();
-			}
 			return _type;
 		}
 

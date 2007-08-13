@@ -20,7 +20,7 @@ using Sharpen;
 namespace Db4objects.Db4o.Internal.CS
 {
 	/// <exclude></exclude>
-	public class ClientObjectContainer : ObjectContainerBase, IExtClient, IBlobTransport
+	public class ClientObjectContainer : ExternalObjectContainer, IExtClient, IBlobTransport
 		, IClientMessageDispatcher
 	{
 		internal readonly object blobLock = new object();
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Internal.CS
 		private void SetAndConfigSocket(ISocket4 socket)
 		{
 			i_socket = socket;
-			i_socket.SetSoTimeout(i_config.TimeoutClientSocket());
+			i_socket.SetSoTimeout(_config.TimeoutClientSocket());
 		}
 
 		protected sealed override void OpenImpl()
@@ -124,7 +124,7 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			try
 			{
-				Commit1();
+				Commit1(_transaction);
 			}
 			catch (Exception e)
 			{
@@ -161,9 +161,9 @@ namespace Db4objects.Db4o.Internal.CS
 			ShutdownObjectContainer();
 		}
 
-		public sealed override void Commit1()
+		public sealed override void Commit1(Transaction trans)
 		{
-			i_trans.Commit();
+			trans.Commit();
 		}
 
 		public override int ConverterVersion()
@@ -190,7 +190,7 @@ namespace Db4objects.Db4o.Internal.CS
 					throw new IOException(Db4objects.Db4o.Internal.Messages.Get(42));
 				}
 			}
-			Msg.USE_TRANSACTION.GetWriterForInt(i_trans, serverThreadID).Write(sock);
+			Msg.USE_TRANSACTION.GetWriterForInt(_transaction, serverThreadID).Write(sock);
 			return sock;
 		}
 
@@ -200,9 +200,10 @@ namespace Db4objects.Db4o.Internal.CS
 			throw new InvalidOperationException();
 		}
 
-		public sealed override Transaction NewTransaction(Transaction parentTransaction)
+		public sealed override Transaction NewTransaction(Transaction parentTransaction, 
+			TransactionalReferenceSystem referenceSystem)
 		{
-			return new ClientTransaction(this, parentTransaction);
+			return new ClientTransaction(this, parentTransaction, referenceSystem);
 		}
 
 		public override bool CreateClassMetadata(ClassMetadata a_yapClass, IReflectClass 
@@ -266,8 +267,8 @@ namespace Db4objects.Db4o.Internal.CS
 		public sealed override bool Delete4(Transaction ta, ObjectReference yo, int a_cascade
 			, bool userCall)
 		{
-			MsgD msg = Msg.DELETE.GetWriterForInts(i_trans, new int[] { yo.GetID(), userCall ? 
-				1 : 0 });
+			MsgD msg = Msg.DELETE.GetWriterForInts(_transaction, new int[] { yo.GetID(), userCall
+				 ? 1 : 0 });
 			WriteBatchedMessage(msg);
 			return true;
 		}
@@ -307,9 +308,9 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void CheckExceptionMessage(Msg msg)
 		{
-			if (msg is MChainedRuntimeException)
+			if (msg is MRuntimeException)
 			{
-				throw (Exception)((MChainedRuntimeException)msg).ReadSingleObject();
+				((MRuntimeException)msg).ThrowPayload();
 			}
 		}
 
@@ -362,7 +363,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				try
 				{
-					Msg message = Msg.ReadMessage(this, i_trans, i_socket);
+					Msg message = Msg.ReadMessage(this, _transaction, i_socket);
 					if (message is IClientSideMessage)
 					{
 						if (((IClientSideMessage)message).ProcessAtClient())
@@ -430,7 +431,7 @@ namespace Db4objects.Db4o.Internal.CS
 				try
 				{
 					i_db = (Db4oDatabase)GetByID(reader.ReadInt());
-					Activate1(SystemTransaction(), i_db, 3);
+					Activate(SystemTransaction(), i_db, 3);
 				}
 				finally
 				{
@@ -463,7 +464,7 @@ namespace Db4objects.Db4o.Internal.CS
 			int doEncrypt = payLoad.ReadInt();
 			if (doEncrypt == 0)
 			{
-				i_handlers.OldEncryptionOff();
+				_handlers.OldEncryptionOff();
 			}
 		}
 
@@ -479,7 +480,7 @@ namespace Db4objects.Db4o.Internal.CS
 			Db4objects.Db4o.Internal.Buffer reader = null;
 			if (remainingIDs < 1)
 			{
-				MsgD msg = Msg.PREFETCH_IDS.GetWriterForInt(i_trans, prefetchIDCount);
+				MsgD msg = Msg.PREFETCH_IDS.GetWriterForInt(_transaction, prefetchIDCount);
 				Write(msg);
 				reader = ExpectedByteResponse(Msg.ID_LIST);
 				for (int i = prefetchIDCount - 1; i >= 0; i--)
@@ -511,7 +512,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override void RaiseVersion(long a_minimumVersion)
 		{
-			Write(Msg.RAISE_VERSION.GetWriterForLong(i_trans, a_minimumVersion));
+			Write(Msg.RAISE_VERSION.GetWriterForLong(_transaction, a_minimumVersion));
 		}
 
 		public override void ReadBytes(byte[] bytes, int address, int addressOffset, int 
@@ -522,7 +523,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override void ReadBytes(byte[] a_bytes, int a_address, int a_length)
 		{
-			MsgD msg = Msg.READ_BYTES.GetWriterForInts(i_trans, new int[] { a_address, a_length
+			MsgD msg = Msg.READ_BYTES.GetWriterForInts(_transaction, new int[] { a_address, a_length
 				 });
 			Write(msg);
 			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.READ_BYTES);
@@ -606,14 +607,14 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override void ReleaseSemaphore(string name)
 		{
-			lock (i_lock)
+			lock (_lock)
 			{
 				CheckClosed();
 				if (name == null)
 				{
 					throw new ArgumentNullException();
 				}
-				Write(Msg.RELEASE_SEMAPHORE.GetWriterForString(i_trans, name));
+				Write(Msg.RELEASE_SEMAPHORE.GetWriterForString(_transaction, name));
 			}
 		}
 
@@ -629,23 +630,23 @@ namespace Db4objects.Db4o.Internal.CS
 			ReadThis();
 		}
 
-		public sealed override void Rollback1()
+		public sealed override void Rollback1(Transaction trans)
 		{
-			if (i_config.BatchMessages())
+			if (_config.BatchMessages())
 			{
 				ClearBatchedObjects();
 			}
 			Write(Msg.ROLLBACK);
-			i_trans.Rollback();
+			trans.Rollback();
 		}
 
 		public override void Send(object obj)
 		{
-			lock (i_lock)
+			lock (_lock)
 			{
 				if (obj != null)
 				{
-					Write(Msg.USER_MESSAGE.GetWriter(Serializer.Marshall(i_trans, obj)));
+					Write(Msg.USER_MESSAGE.GetWriter(Serializer.Marshall(_transaction, obj)));
 				}
 			}
 		}
@@ -656,14 +657,14 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override bool SetSemaphore(string name, int timeout)
 		{
-			lock (i_lock)
+			lock (_lock)
 			{
 				CheckClosed();
 				if (name == null)
 				{
 					throw new ArgumentNullException();
 				}
-				MsgD msg = Msg.SET_SEMAPHORE.GetWriterForIntString(i_trans, timeout, name);
+				MsgD msg = Msg.SET_SEMAPHORE.GetWriterForIntString(_transaction, timeout, name);
 				Write(msg);
 				Msg message = GetResponse();
 				return (message.Equals(Msg.SUCCESS));
@@ -672,10 +673,10 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public virtual void SwitchToFile(string fileName)
 		{
-			lock (i_lock)
+			lock (_lock)
 			{
 				Commit();
-				MsgD msg = Msg.SWITCH_TO_FILE.GetWriterForString(i_trans, fileName);
+				MsgD msg = Msg.SWITCH_TO_FILE.GetWriterForString(_transaction, fileName);
 				Write(msg);
 				ExpectedResponse(Msg.OK);
 				ReReadAll(Db4oFactory.CloneConfiguration());
@@ -685,7 +686,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public virtual void SwitchToMainFile()
 		{
-			lock (i_lock)
+			lock (_lock)
 			{
 				Commit();
 				Write(Msg.SWITCH_TO_MAIN_FILE);
@@ -731,7 +732,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void WriteMsg(Msg a_message, bool flush)
 		{
-			if (i_config.BatchMessages())
+			if (_config.BatchMessages())
 			{
 				if (flush && _batchedMessages.IsEmpty())
 				{
@@ -740,7 +741,7 @@ namespace Db4objects.Db4o.Internal.CS
 				else
 				{
 					AddToBatch(a_message);
-					if (flush || _batchedQueueLength > i_config.MaxBatchQueueSize())
+					if (flush || _batchedQueueLength > _config.MaxBatchQueueSize())
 					{
 						WriteBatchedMessages();
 					}
@@ -886,8 +887,8 @@ namespace Db4objects.Db4o.Internal.CS
 				return;
 			}
 			Msg msg;
-			MsgD multibytes = Msg.WRITE_BATCHED_MESSAGES.GetWriterForLength(GetTransaction(), 
-				_batchedQueueLength);
+			MsgD multibytes = Msg.WRITE_BATCHED_MESSAGES.GetWriterForLength(Transaction(), _batchedQueueLength
+				);
 			multibytes.WriteInt(_batchedMessages.Size());
 			IEnumerator iter = _batchedMessages.GetEnumerator();
 			while (iter.MoveNext())

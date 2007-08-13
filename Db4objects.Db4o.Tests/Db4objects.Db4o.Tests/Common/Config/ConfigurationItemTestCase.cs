@@ -14,11 +14,11 @@ namespace Db4objects.Db4o.Tests.Common.Config
 	{
 		internal sealed class ConfigurationItemStub : IConfigurationItem
 		{
-			private ObjectContainerBase _container;
+			private IInternalObjectContainer _container;
 
 			private IConfiguration _configuration;
 
-			public void Apply(ObjectContainerBase container)
+			public void Apply(IInternalObjectContainer container)
 			{
 				Assert.IsNotNull(container);
 				_container = container;
@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				return _configuration;
 			}
 
-			public ObjectContainerBase AppliedContainer()
+			public IInternalObjectContainer AppliedContainer()
 			{
 				return _container;
 			}

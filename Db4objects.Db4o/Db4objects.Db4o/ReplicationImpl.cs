@@ -36,27 +36,27 @@ namespace Db4objects.Db4o
 
 		private const int CHECK_CONFLICT = -99;
 
-		public ReplicationImpl(ObjectContainerBase peerA, IObjectContainer peerB, IReplicationConflictHandler
+		public ReplicationImpl(ObjectContainerBase peerA, ObjectContainerBase peerB, IReplicationConflictHandler
 			 conflictHandler)
 		{
 			if (conflictHandler == null)
 			{
 				throw new ArgumentNullException();
 			}
-			lock (peerA.Ext().Lock())
+			lock (peerA.Lock())
 			{
-				lock (peerB.Ext().Lock())
+				lock (peerB.Lock())
 				{
 					_peerA = peerA;
-					_transA = peerA.CheckTransaction(null);
-					_peerB = (ObjectContainerBase)peerB;
+					_transA = peerA.CheckTransaction();
+					_peerB = peerB;
 					_transB = _peerB.CheckTransaction(null);
 					MigrationConnection mgc = new MigrationConnection(_peerA, _peerB);
-					_peerA.i_handlers.MigrationConnection(mgc);
-					_peerA.i_handlers.Replication(this);
+					_peerA._handlers.MigrationConnection(mgc);
+					_peerA._handlers.Replication(this);
 					_peerA.ReplicationCallState(Const4.OLD);
-					_peerB.i_handlers.MigrationConnection(mgc);
-					_peerB.i_handlers.Replication(this);
+					_peerB._handlers.MigrationConnection(mgc);
+					_peerB._handlers.Replication(this);
 					_peerB.ReplicationCallState(Const4.OLD);
 					_conflictHandler = conflictHandler;
 					_record = ReplicationRecord.BeginReplication(_transA, _transB);
@@ -77,7 +77,7 @@ namespace Db4objects.Db4o
 					return @ref.GetID();
 				}
 			}
-			peer.Bind2(@ref, sourceObject);
+			peer.Bind2(trans, @ref, sourceObject);
 			return peer.SetAfterReplication(trans, sourceObject, 1, true);
 		}
 
@@ -95,8 +95,8 @@ namespace Db4objects.Db4o
 			{
 				lock (_peerB.Lock())
 				{
-					_peerA.Commit();
-					_peerB.Commit();
+					_peerA.Commit(_transA);
+					_peerB.Commit(_transB);
 					EndReplication();
 					long versionA = _peerA.CurrentVersion();
 					long versionB = _peerB.CurrentVersion();
@@ -112,11 +112,11 @@ namespace Db4objects.Db4o
 		private void EndReplication()
 		{
 			_peerA.ReplicationCallState(Const4.NONE);
-			_peerA.i_handlers.MigrationConnection(null);
-			_peerA.i_handlers.Replication(null);
+			_peerA._handlers.MigrationConnection(null);
+			_peerA._handlers.Replication(null);
 			_peerA.ReplicationCallState(Const4.NONE);
-			_peerB.i_handlers.MigrationConnection(null);
-			_peerB.i_handlers.Replication(null);
+			_peerB._handlers.MigrationConnection(null);
+			_peerB._handlers.Replication(null);
 		}
 
 		private int IdInCaller(ObjectContainerBase caller, ObjectReference referenceA, ObjectReference
@@ -158,31 +158,33 @@ namespace Db4objects.Db4o
 
 		public virtual IObjectContainer PeerA()
 		{
-			return _peerA;
+			return (IObjectContainer)_peerA;
 		}
 
 		public virtual IObjectContainer PeerB()
 		{
-			return _peerB;
+			return (IObjectContainer)_peerB;
 		}
 
 		public virtual void Replicate(object obj)
 		{
-			ObjectContainerBase stream = _peerB;
-			if (_peerB.IsStored(obj))
+			ObjectContainerBase container = _peerB;
+			Transaction trans = _transB;
+			if (_peerB.IsStored(_transB, obj))
 			{
-				if (!_peerA.IsStored(obj))
+				if (!_peerA.IsStored(_transA, obj))
 				{
-					stream = _peerA;
+					container = _peerA;
+					trans = _transA;
 				}
 			}
-			stream.Set(obj);
+			container.Set(trans, obj);
 		}
 
 		public virtual void Rollback()
 		{
-			_peerA.Rollback();
-			_peerB.Rollback();
+			_peerA.Rollback(_transA);
+			_peerB.Rollback(_transB);
 			EndReplication();
 		}
 
@@ -215,11 +217,11 @@ namespace Db4objects.Db4o
 			}
 			if (sourceReference == referenceA)
 			{
-				_peerB.Bind2(referenceB, objectA);
+				_peerB.Bind2(_transB, referenceB, objectA);
 			}
 			else
 			{
-				_peerA.Bind2(referenceA, objectB);
+				_peerA.Bind2(_transA, referenceA, objectB);
 			}
 		}
 
@@ -276,12 +278,12 @@ namespace Db4objects.Db4o
 					notProcessed = -1;
 				}
 			}
-			lock (other.i_lock)
+			lock (other._lock)
 			{
 				object objectA = obj;
 				object objectB = obj;
-				ObjectReference referenceA = _peerA.ReferenceForObject(obj);
-				ObjectReference referenceB = _peerB.ReferenceForObject(obj);
+				ObjectReference referenceA = _transA.ReferenceForObject(obj);
+				ObjectReference referenceB = _transB.ReferenceForObject(obj);
 				VirtualAttributes attA = null;
 				VirtualAttributes attB = null;
 				if (referenceA == null)
@@ -343,8 +345,8 @@ namespace Db4objects.Db4o
 					}
 					return IdInCaller(caller, referenceA, referenceB);
 				}
-				_peerA.Refresh(objectA, 1);
-				_peerB.Refresh(objectB, 1);
+				_peerA.Refresh(_transA, objectA, 1);
+				_peerB.Refresh(_transB, objectB, 1);
 				if (attA.i_version <= _record._version && attB.i_version <= _record._version)
 				{
 					if (_direction != CHECK_CONFLICT)

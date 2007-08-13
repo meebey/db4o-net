@@ -40,28 +40,28 @@ namespace Db4objects.Db4o
 			_version = version;
 		}
 
-		public virtual void Store(ObjectContainerBase stream)
+		public virtual void Store(ObjectContainerBase container)
 		{
-			stream.ShowInternalClasses(true);
+			container.ShowInternalClasses(true);
 			try
 			{
-				Transaction ta = stream.CheckTransaction(null);
-				stream.SetAfterReplication(ta, this, 1, false);
-				stream.Commit();
+				Transaction trans = container.CheckTransaction();
+				container.SetAfterReplication(trans, this, 1, false);
+				container.Commit(trans);
 			}
 			finally
 			{
-				stream.ShowInternalClasses(false);
+				container.ShowInternalClasses(false);
 			}
 		}
 
 		public static Db4objects.Db4o.ReplicationRecord BeginReplication(Transaction transA
 			, Transaction transB)
 		{
-			ObjectContainerBase peerA = transA.Stream();
-			ObjectContainerBase peerB = transB.Stream();
-			Db4oDatabase dbA = peerA.Identity();
-			Db4oDatabase dbB = peerB.Identity();
+			ObjectContainerBase peerA = transA.Container();
+			ObjectContainerBase peerB = transB.Container();
+			Db4oDatabase dbA = ((IInternalObjectContainer)peerA).Identity();
+			Db4oDatabase dbB = ((IInternalObjectContainer)peerB).Identity();
 			dbB.Bind(transA);
 			dbA.Bind(transB);
 			Db4oDatabase younger = null;
@@ -76,10 +76,10 @@ namespace Db4objects.Db4o
 				younger = dbA;
 				older = dbB;
 			}
-			Db4objects.Db4o.ReplicationRecord rrA = QueryForReplicationRecord(peerA, younger, 
-				older);
-			Db4objects.Db4o.ReplicationRecord rrB = QueryForReplicationRecord(peerB, younger, 
-				older);
+			Db4objects.Db4o.ReplicationRecord rrA = QueryForReplicationRecord(peerA, transA, 
+				younger, older);
+			Db4objects.Db4o.ReplicationRecord rrB = QueryForReplicationRecord(peerB, transB, 
+				younger, older);
 			if (rrA == null)
 			{
 				if (rrB == null)
@@ -99,8 +99,8 @@ namespace Db4objects.Db4o
 				peerB.ShowInternalClasses(true);
 				try
 				{
-					int id = peerB.GetID1(rrB);
-					peerB.Bind1(transB, rrA, id);
+					int id = peerB.GetID(transB, rrB);
+					peerB.Bind(transB, rrA, id);
 				}
 				finally
 				{
@@ -111,12 +111,12 @@ namespace Db4objects.Db4o
 		}
 
 		public static Db4objects.Db4o.ReplicationRecord QueryForReplicationRecord(ObjectContainerBase
-			 stream, Db4oDatabase younger, Db4oDatabase older)
+			 container, Transaction trans, Db4oDatabase younger, Db4oDatabase older)
 		{
-			stream.ShowInternalClasses(true);
+			container.ShowInternalClasses(true);
 			try
 			{
-				IQuery q = stream.Query();
+				IQuery q = container.Query(trans);
 				q.Constrain(Const4.CLASS_REPLICATIONRECORD);
 				q.Descend("_youngerPeer").Constrain(younger).Identity();
 				q.Descend("_olderPeer").Constrain(older).Identity();
@@ -126,7 +126,7 @@ namespace Db4objects.Db4o
 			}
 			finally
 			{
-				stream.ShowInternalClasses(false);
+				container.ShowInternalClasses(false);
 			}
 		}
 	}

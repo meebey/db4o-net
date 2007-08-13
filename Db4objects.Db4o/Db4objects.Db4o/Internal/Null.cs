@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public virtual void DefragIndexEntry(ReaderPair readers)
+		public virtual void DefragIndexEntry(BufferPair readers)
 		{
 		}
 	}

@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return;
 			}
-			header.AddPayLoadLength(trans.Stream().StringIO().Length((string)obj));
+			header.AddPayLoadLength(trans.Container().StringIO().Length((string)obj));
 		}
 
 		public override object WriteNew(object obj, bool topLevel, StatefulBuffer writer, 
@@ -85,7 +85,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return reader.ReadPayloadReader(payLoadOffSet, length);
 		}
 
-		public override void Defrag(ISlotReader reader)
+		public override void Defrag(ISlotBuffer reader)
 		{
 			reader.IncrementOffset(DEFRAGMENT_INCREMENT_OFFSET);
 		}

@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (count > 0)
 			{
-				IReflectClass[] parameterClasses = new IReflectClass[] { a_stream.i_handlers.ICLASS_OBJECTCONTAINER
+				IReflectClass[] parameterClasses = new IReflectClass[] { a_stream._handlers.ICLASS_OBJECTCONTAINER
 					 };
 				IReflectMethod[] methods = new IReflectMethod[COUNT];
 				for (int i = COUNT - 1; i >= 0; i--)
@@ -118,6 +118,11 @@ namespace Db4objects.Db4o.Internal
 		{
 			return Sharpen.Runtime.Substring(name, 0, 1).ToUpper() + Sharpen.Runtime.Substring
 				(name, 1);
+		}
+
+		public bool HasEventRegistered(int eventID)
+		{
+			return methods[eventID] != null;
 		}
 	}
 }

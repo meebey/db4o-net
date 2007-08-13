@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract int CompareTo(object obj);
 
-		public abstract void Defrag(MarshallerFamily mf, ReaderPair readers, bool redirect
+		public abstract void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
 			);
 
 		public abstract void CalculateLengths(Transaction arg1, ObjectHeaderAttributes arg2

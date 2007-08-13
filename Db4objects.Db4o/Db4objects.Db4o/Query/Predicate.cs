@@ -69,9 +69,9 @@ namespace Db4objects.Db4o.Query
 	/// - use the delegate notation for .NET 2.0.<br />
 	/// - extend the Predicate class for all other language dialects<br /><br />
 	/// A class that extends Predicate is required to
-	/// implement the #match() / #Match() method, following the native query
+	/// implement the #match() method, following the native query
 	/// conventions:<br />
-	/// - The name of the method is "#match()" (Java) / "#Match()" (.NET).<br />
+	/// - The name of the method is "#match()" (Java).<br />
 	/// - The method must be public public.<br />
 	/// - The method returns a boolean.<br />
 	/// - The method takes one parameter.<br />

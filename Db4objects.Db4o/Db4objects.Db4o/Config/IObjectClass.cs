@@ -10,16 +10,16 @@ namespace Db4objects.Db4o.Config
 	/// <summary>configuration interface for classes.</summary>
 	/// <remarks>
 	/// configuration interface for classes.
-	/// <br /><br /><b>Examples: ../com/db4o/samples/translators/Default.java.</b><br /><br />
+	/// <br/><br/>
 	/// Use the global Configuration object to configure db4o before opening an
 	/// <see cref="IObjectContainer">IObjectContainer</see>
-	/// .<br /><br />
-	/// <b>Example:</b><br />
+	/// .<br/><br/>
+	/// <b>Example:</b><br/>
 	/// <code>
-	/// Configuration config = Db4o.configure();<br />
-	/// ObjectClass oc = config.objectClass("package.className");<br />
-	/// oc.updateDepth(3);<br />
-	/// oc.minimumActivationDepth(3);<br />
+	/// IConfiguration config = Db4oFactory.Configure();<br/>
+	/// IObjectClass oc = config.ObjectClass("Namespace.ClassName");<br/>
+	/// oc.UpdateDepth(3);<br/>
+	/// oc.MinimumActivationDepth(3);<br/>
 	/// </code>
 	/// </remarks>
 	public interface IObjectClass
@@ -124,10 +124,7 @@ namespace Db4objects.Db4o.Config
 		/// registers an attribute provider for special query behavior.
 		/// <br /><br />The query processor will compare the object returned by the
 		/// attribute provider instead of the actual object, both for the constraint
-		/// and the candidate persistent object.<br /><br /> Preinstalled attribute
-		/// providers are documented
-		/// in the sourcecode of
-		/// com.db4o.samples.translators.Default.java#defaultConfiguration().<br /><br />
+		/// and the candidate persistent object.<br /><br />
 		/// </remarks>
 		/// <param name="attributeProvider">the attribute provider to be used</param>
 		void Compare(IObjectAttribute attributeProvider);
@@ -296,7 +293,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// renames a stored class.
 		/// <br /><br />Use this method to refactor classes.
-		/// <br /><br /><b>Examples: ../com/db4o/samples/rename.</b><br /><br />
+		/// <br /><br />
 		/// </remarks>
 		/// <param name="newName">the new fully qualified classname.</param>
 		void Rename(string newName);
@@ -313,9 +310,6 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// registers a translator for this class.
 		/// <br /><br />
-		/// Preinstalled translators are documented in the sourcecode of
-		/// com.db4o.samples.translators.Default.java#defaultConfiguration().
-		/// <br /><br />Example translators can also be found in this folder.<br /><br />
 		/// <br /><br />The use of an
 		/// <see cref="IObjectTranslator">IObjectTranslator</see>
 		/// is not

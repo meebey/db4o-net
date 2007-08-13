@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
@@ -10,27 +9,14 @@ namespace Db4objects.Db4o.Events
 	/// <summary>Arguments for commit time related events.</summary>
 	/// <remarks>Arguments for commit time related events.</remarks>
 	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
-	public class CommitEventArgs : EventArgs
+	public class CommitEventArgs : TransactionalEventArgs
 	{
 		private readonly CallbackObjectInfoCollections _collections;
 
-		private readonly object _transaction;
-
-		public CommitEventArgs(object transaction, CallbackObjectInfoCollections collections
-			)
+		public CommitEventArgs(Transaction transaction, CallbackObjectInfoCollections collections
+			) : base(transaction)
 		{
-			_transaction = transaction;
 			_collections = collections;
-		}
-
-		/// <summary>The transaction being committed.</summary>
-		/// <remarks>The transaction being committed.</remarks>
-		public virtual object Transaction
-		{
-			get
-			{
-				return _transaction;
-			}
 		}
 
 		/// <summary>Returns a iteration</summary>

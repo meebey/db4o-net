@@ -3,13 +3,8 @@
 namespace Db4objects.Db4o.Query
 {
 	/// <summary>
-	/// Comparator for sorting queries on JDKs where
-	/// java.util.Comparator is not available.
+	/// This interface is not used in .NET.
 	/// </summary>
-	/// <remarks>
-	/// Comparator for sorting queries on JDKs where
-	/// java.util.Comparator is not available.
-	/// </remarks>
 	public interface IQueryComparator
 	{
 		/// <summary>Implement to compare two arguments for sorting.</summary>

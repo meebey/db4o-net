@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_yapField != null)
 			{
-				return i_yapField.GetFieldYapClass(i_trans.Stream());
+				return i_yapField.GetFieldYapClass(i_trans.Container());
 			}
 			return null;
 		}
@@ -129,7 +129,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return Null.INSTANCE;
 			}
-			ClassMetadata yc = i_trans.Stream().ProduceClassMetadata(i_trans.Reflector().ForObject
+			ClassMetadata yc = i_trans.Container().ProduceClassMetadata(i_trans.Reflector().ForObject
 				(obj));
 			FieldMetadata yf = yc.FieldMetadataForName(i_name);
 			if (yf != null)
@@ -143,7 +143,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_yapClassID != 0)
 			{
-				ClassMetadata yc = a_trans.Stream().ClassMetadataForId(i_yapClassID);
+				ClassMetadata yc = a_trans.Container().ClassMetadataForId(i_yapClassID);
 				i_yapField = yc.i_fields[i_index];
 			}
 		}

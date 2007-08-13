@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _parentIdHandler.CompareTo(composite.ParentID());
 		}
 
-		public virtual void DefragIndexEntry(ReaderPair readers)
+		public virtual void DefragIndexEntry(BufferPair readers)
 		{
 			_parentIdHandler.DefragIndexEntry(readers);
 			_valueHandler.DefragIndexEntry(readers);

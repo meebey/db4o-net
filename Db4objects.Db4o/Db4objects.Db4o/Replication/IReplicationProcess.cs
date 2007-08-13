@@ -31,7 +31,9 @@ namespace Db4objects.Db4o.Replication
 		/// <br /><br />Call this method after replication is completed to
 		/// write all changes back to the database files. This method
 		/// synchronizes both ObjectContainers by setting the transaction
-		/// serial number (@link ExtObjectContainer#version()) on both
+		/// serial number
+		/// <see cref="IExtObjectContainer.Version">IExtObjectContainer.Version</see>
+		/// on both
 		/// ObjectContainers to be equal
 		/// to the higher version number among the two. A record with
 		/// information about this replication task, including the

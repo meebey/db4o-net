@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			}
 		}
 
-		public virtual void FreeOnCommit(LocalObjectContainer file, Slot slot)
+		public void FreeOnCommit(LocalObjectContainer file, Slot slot)
 		{
 			if (_shared != null)
 			{
