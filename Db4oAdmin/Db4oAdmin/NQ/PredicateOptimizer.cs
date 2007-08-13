@@ -1,7 +1,6 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Diagnostics;
-using Cecil.FlowAnalysis.CecilUtilities;
 using Db4oAdmin.Core;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Nativequery.Expr;
@@ -72,7 +71,7 @@ namespace Db4oAdmin.NQ
 		{
 			if (_context.TraceSwitch.TraceVerbose)
 			{
-				TraceVerbose(CecilFormatter.FormatMethodBody(m));
+				TraceVerbose(Cecil.FlowAnalysis.Utilities.Formatter.FormatMethodBody(m));
 			}
 		}
 

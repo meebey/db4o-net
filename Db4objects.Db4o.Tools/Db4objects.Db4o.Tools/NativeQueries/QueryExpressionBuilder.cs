@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 	using Cecil.FlowAnalysis;
 	using Cecil.FlowAnalysis.ActionFlow;
 	using Cecil.FlowAnalysis.CodeStructure;
-	using AstExpression = Cecil.FlowAnalysis.CodeStructure.IExpression;
+	using Ast = Cecil.FlowAnalysis.CodeStructure;
 
 	using Db4objects.Db4o.Nativequery.Expr;	
 	using Db4objects.Db4o.Nativequery.Expr.Cmp;
@@ -124,7 +124,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 		{
 			ValidatePredicateMethodDefinition(method);
 
-			AstExpression expression = GetQueryExpression(method);
+			Expression expression = GetQueryExpression(method);
 			if (null == expression) UnsupportedPredicate("No expression found.");
 			
 			Visitor visitor = new Visitor(method);
@@ -144,9 +144,9 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				UnsupportedPredicate("A predicate must have a boolean return type.");
 		}
 
-		private static AstExpression GetQueryExpression(MethodDefinition method)
+		private static Expression GetQueryExpression(MethodDefinition method)
 		{
-			IActionFlowGraph afg = FlowGraphFactory.CreateActionFlowGraph(FlowGraphFactory.CreateControlFlowGraph(method));
+			ActionFlowGraph afg = FlowGraphFactory.CreateActionFlowGraph(FlowGraphFactory.CreateControlFlowGraph(method));
 			return GetQueryExpression(afg);
 		}
 
@@ -155,21 +155,21 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 			throw new UnsupportedPredicateException(reason);
 		}
 
-		private static void UnsupportedExpression(AstExpression node)
+		private static void UnsupportedExpression(Expression node)
 		{
 			UnsupportedPredicate("Unsupported expression: " + ExpressionPrinter.ToString(node));
 		}
 
-		private static AstExpression GetQueryExpression(IActionFlowGraph afg)
+		private static Expression GetQueryExpression(ActionFlowGraph afg)
 		{
 			Hashtable variables = new Hashtable();
-			IActionBlock block = afg.Blocks[0];
+			ActionBlock block = afg.Blocks[0];
 			while (block != null)
 			{
 				switch (block.ActionType)
 				{
 					case ActionType.Invoke:
-						UnsupportedExpression(((IInvokeActionBlock)block).Expression);
+						UnsupportedExpression(((InvokeActionBlock)block).Expression);
 						break;
 
 					case ActionType.ConditionalBranch:
@@ -177,14 +177,14 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 						break;
 
 					case ActionType.Branch:
-						block = ((IBranchActionBlock)block).Target;
+						block = ((BranchActionBlock)block).Target;
 						break;
 
 					case ActionType.Assign:
 						{
-							IAssignActionBlock assignBlock = (IAssignActionBlock)block;
-							IAssignExpression assign = assignBlock.AssignExpression;
-							IVariableReferenceExpression variable = assign.Target as IVariableReferenceExpression;
+							AssignActionBlock assignBlock = (AssignActionBlock)block;
+							AssignExpression assign = assignBlock.AssignExpression;
+							VariableReferenceExpression variable = assign.Target as VariableReferenceExpression;
 							if (null == variable)
 							{
 								UnsupportedExpression(assign);
@@ -201,11 +201,11 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 
 					case ActionType.Return:
 						{
-							AstExpression expression = ((IReturnActionBlock)block).Expression;
-							IVariableReferenceExpression variable = expression as IVariableReferenceExpression;
+							Expression expression = ((ReturnActionBlock)block).Expression;
+							VariableReferenceExpression variable = expression as VariableReferenceExpression;
 							return null == variable
 								? expression
-								: (AstExpression)variables[variable.Variable.Index];
+								: (Expression)variables[variable.Variable.Index];
 						}
 				}
 			}
@@ -282,22 +282,22 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				get { return _insideCandidate > 0; }
 			}
 
-			public override void Visit(IAssignExpression node)
+			public override void Visit(AssignExpression node)
 			{
 				UnsupportedExpression(node);
 			}
 
-			public override void Visit(IVariableReferenceExpression node)
+			public override void Visit(VariableReferenceExpression node)
 			{
 				UnsupportedExpression(node);
 			}
 
-			public override void Visit(IArgumentReferenceExpression node)
+			public override void Visit(ArgumentReferenceExpression node)
 			{
 				UnsupportedExpression(node);
 			}
 
-			public override void Visit(IUnaryExpression node)
+			public override void Visit(UnaryExpression node)
 			{
 				switch (node.Operator)
 				{
@@ -312,7 +312,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				}
 			}
 
-			public override void Visit(IBinaryExpression node)
+			public override void Visit(Ast.BinaryExpression node)
 			{
 				switch (node.Operator)
 				{
@@ -369,7 +369,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				Push(new NotExpression(top));
 			}
 
-			private void PushComparison(AstExpression lhs, AstExpression rhs, ComparisonOperator op)
+			private void PushComparison(Expression lhs, Expression rhs, ComparisonOperator op)
 			{
 				Visit(lhs);
 				object left = Pop();
@@ -402,9 +402,9 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				return value.Root() is CandidateFieldRoot;
 			}
 
-			public override void Visit(IMethodInvocationExpression node)
+			public override void Visit(MethodInvocationExpression node)
 			{
-				IMethodReferenceExpression methodRef = node.Target as IMethodReferenceExpression;
+				MethodReferenceExpression methodRef = node.Target as MethodReferenceExpression;
 				if (null == methodRef)
 					UnsupportedExpression(node);
 
@@ -429,7 +429,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				return type.FullName == "System.String";
 			}
 
-			private void ProcessStringMethod(IMethodInvocationExpression node, IMethodReferenceExpression methodRef)
+			private void ProcessStringMethod(MethodInvocationExpression node, MethodReferenceExpression methodRef)
 			{
 				MethodReference method = methodRef.Method;
 
@@ -463,12 +463,12 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				}
 			}
 
-			private void ProcessRegularMethodInvocation(IMethodInvocationExpression node, IMethodReferenceExpression methodRef)
+			private void ProcessRegularMethodInvocation(MethodInvocationExpression node, MethodReferenceExpression methodRef)
 			{
 				if (node.Arguments.Count != 0)
 					UnsupportedExpression(node);
 
-				AstExpression target = methodRef.Target;
+				Expression target = methodRef.Target;
 				switch (target.CodeElementType)
 				{
 					case CodeElementType.ThisReferenceExpression:
@@ -488,7 +488,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				}
 			}
 
-			private void ProcessOperatorMethodInvocation(IMethodInvocationExpression node, MethodReference method)
+			private void ProcessOperatorMethodInvocation(MethodInvocationExpression node, MethodReference method)
 			{
 				switch (method.Name)
 				{
@@ -527,7 +527,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				}
 			}
 
-			private void ProcessCandidateMethodInvocation(IMethodInvocationExpression node, IMethodReferenceExpression methodRef)
+			private void ProcessCandidateMethodInvocation(MethodInvocationExpression node, MethodReferenceExpression methodRef)
 			{
 				MethodDefinition method = GetMethodDefinition(methodRef);
 				if (null == method)
@@ -535,7 +535,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 
 				AssertMethodCanBeVisited(node, method);
 
-				AstExpression expression = GetQueryExpression(method);
+				Expression expression = GetQueryExpression(method);
 				if (null == expression)
 					UnsupportedExpression(node);
 
@@ -550,13 +550,13 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				}
 			}
 
-			private void AssertMethodCanBeVisited(IMethodInvocationExpression node, MethodDefinition method)
+			private void AssertMethodCanBeVisited(MethodInvocationExpression node, MethodDefinition method)
 			{
 				if (_methodDefinitionStack.Contains(method))
 					UnsupportedExpression(node);
 			}
 
-			private MethodDefinition GetMethodDefinition(IMethodReferenceExpression methodRef)
+			private MethodDefinition GetMethodDefinition(MethodReferenceExpression methodRef)
 			{
 				MethodDefinition definition = methodRef.Method as MethodDefinition;
 				return definition != null
@@ -564,7 +564,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 					: LoadExternalMethodDefinition(methodRef);
 			}
 
-			private MethodDefinition LoadExternalMethodDefinition(IMethodReferenceExpression methodRef)
+			private MethodDefinition LoadExternalMethodDefinition(MethodReferenceExpression methodRef)
 			{
 				MethodReference method = methodRef.Method;
 				AssemblyDefinition assemblyDef = GetContainingAssembly(method.DeclaringType);
@@ -604,9 +604,9 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				return !method.HasThis && method.Name.StartsWith("op_") && 2 == method.Parameters.Count;
 			}
 
-			public override void Visit(IFieldReferenceExpression node)
+			public override void Visit(FieldReferenceExpression node)
 			{
-				AstExpression target = node.Target;
+				Expression target = node.Target;
 				switch (target.CodeElementType)
 				{
 					case CodeElementType.ArgumentReferenceExpression:
@@ -645,17 +645,17 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				}
 			}
 
-			public override void Visit(ILiteralExpression node)
+			public override void Visit(LiteralExpression node)
 			{
 				Push(new ConstValue(node.Value));
 			}
 
-			NQExpression Convert(AstExpression node)
+			NQExpression Convert(Expression node)
 			{
 				return ReconstructNullComparisonIfNecessary(node);
 			}
 
-			private NQExpression ReconstructNullComparisonIfNecessary(AstExpression node)
+			private NQExpression ReconstructNullComparisonIfNecessary(Expression node)
 			{
 				Visit(node);
 
@@ -675,13 +675,13 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 							ComparisonOperator.EQUALS));
 			}
 
-			FieldValue ToFieldValue(AstExpression node)
+			FieldValue ToFieldValue(Expression node)
 			{
 				Visit(node);
 				return PopFieldValue(node);
 			}
 
-			private FieldValue PopFieldValue(AstExpression node)
+			private FieldValue PopFieldValue(Expression node)
 			{
 				return (FieldValue)Pop(node, typeof(FieldValue));
 			}
@@ -692,14 +692,14 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 				_current = value;
 			}
 
-			object Pop(AstExpression node, System.Type expectedType)
+			object Pop(Expression node, System.Type expectedType)
 			{
 				object value = Pop();
 				AssertType(value, expectedType, node);
 				return value;
 			}
 
-			private static void AssertType(object value, Type expectedType, AstExpression sourceExpression)
+			private static void AssertType(object value, Type expectedType, Expression sourceExpression)
 			{
 				Type actualType = value.GetType();
 				if (!expectedType.IsAssignableFrom(actualType))
@@ -740,7 +740,7 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 
 		private static TypeReference GetFieldType(FieldValue field)
 		{
-			return ((IFieldReferenceExpression) field.Tag()).Field.FieldType;
+			return ((FieldReferenceExpression) field.Tag()).Field.FieldType;
 		}
 
 		private void AdjustConstValue(TypeReference typeRef, ConstValue constValue)

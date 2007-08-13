@@ -3,6 +3,7 @@ using System;
 using System.Reflection;
 using Cecil.FlowAnalysis.CodeStructure;
 using Db4oAdmin.Core;
+using SodaExpr=Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Nativequery.Expr.Cmp;
 using Db4objects.Db4o.Nativequery.Expr.Cmp.Field;
@@ -84,7 +85,7 @@ namespace Db4oAdmin.NQ
 			EmitBinaryExpression(expression, _Constraint_Or);
 		}
 
-		private void EmitBinaryExpression(BinaryExpression expression, MethodReference op)
+		private void EmitBinaryExpression(SodaExpr.BinaryExpression expression, MethodReference op)
 		{
 			EnterExpression();
 			expression.Left().Accept(this);
@@ -228,7 +229,7 @@ namespace Db4oAdmin.NQ
 
 		private static FieldReference GetFieldReference(FieldValue operand)
 		{
-			return (FieldReference)((IFieldReferenceExpression) operand.Tag()).Field;
+			return (FieldReference)((FieldReferenceExpression) operand.Tag()).Field;
 		}
 
 		public void Visit(CandidateFieldRoot root)

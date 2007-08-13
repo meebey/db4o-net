@@ -10,8 +10,16 @@ namespace Db4oAdmin.Tests.Core
 
 		override protected void InstrumentAssembly(string path)
 		{
-			ShellUtilities.ProcessOutput output = ShellUtilities.shell(InstrumentationUtilityPath, ArrayServices.Append(CommandLine.Split(' '), path));
+			ShellUtilities.ProcessOutput output = ShellUtilities.shell(InstrumentationUtilityPath, BuildCommandLine(path));
 			CheckInstrumentationOutput(output);
+		}
+
+		private string[] BuildCommandLine(string path)
+		{
+			string[] cmdLine = CommandLine.Split(' ');
+			cmdLine = ArrayServices.Append(cmdLine, path);
+			//cmdLine = ArrayServices.Append(cmdLine, "-vv");
+			return cmdLine;
 		}
 
 		protected virtual void CheckInstrumentationOutput(ShellUtilities.ProcessOutput output)

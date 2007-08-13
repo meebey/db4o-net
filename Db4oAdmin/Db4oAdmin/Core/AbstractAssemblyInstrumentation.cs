@@ -64,7 +64,9 @@ namespace Db4oAdmin.Core
 		{
 			foreach (MethodDefinition methodef in methods)
 			{
+				TraceVerbose("Entering method '{0}'", methodef);
 				ProcessMethod(methodef);
+				TraceVerbose("Leaving method '{0}'", methodef);
 			}
 		}
 		
