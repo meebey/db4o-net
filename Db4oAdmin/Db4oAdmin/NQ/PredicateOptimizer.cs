@@ -64,15 +64,7 @@ namespace Db4oAdmin.NQ
 			type.Methods.Add(optimizeQuery);
 			type.Interfaces.Add(Import(typeof(IDb4oEnhancedFilter)));
 
-			DumpMethodBody(optimizeQuery);
-		}
-
-		private void DumpMethodBody(MethodDefinition m)
-		{
-			if (_context.TraceSwitch.TraceVerbose)
-			{
-				TraceVerbose(Cecil.FlowAnalysis.Utilities.Formatter.FormatMethodBody(m));
-			}
+			TraceMethodBody(optimizeQuery);
 		}
 
 		private IExpression GetExpression(MethodDefinition match)

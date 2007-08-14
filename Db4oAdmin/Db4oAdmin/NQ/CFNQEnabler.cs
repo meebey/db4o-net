@@ -14,11 +14,15 @@ namespace Db4oAdmin.NQ
 		{
 			if (null == method.Body) return;
 
+			// TraceMethodBody(method);
+
 			List<Instruction> instructions = CollectQueryInvocations(method);
 			foreach (Instruction instruction in instructions)
 			{
 				ProcessQueryInvocation(method, instruction);
 			}
+
+			//TraceMethodBody(method);
 		}
 
 		void ProcessQueryInvocation(MethodDefinition parent, Instruction queryInvocation)

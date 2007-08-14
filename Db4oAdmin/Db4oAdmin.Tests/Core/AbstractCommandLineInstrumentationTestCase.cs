@@ -26,7 +26,7 @@ namespace Db4oAdmin.Tests.Core
 		{
 			string[] cmdLine = CommandLine.Split(' ');
 			cmdLine = ArrayServices.Append(cmdLine, path);
-			//cmdLine = ArrayServices.Append(cmdLine, "-vv");
+			//cmdLine = ArrayServices.Append(cmdLine, "-v");
 			return cmdLine;
 		}
 

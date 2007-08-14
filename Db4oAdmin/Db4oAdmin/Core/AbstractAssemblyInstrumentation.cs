@@ -85,6 +85,14 @@ namespace Db4oAdmin.Core
 			_context.TraceInfo(format, args);
 		}
 
+		protected void TraceMethodBody(MethodDefinition m)
+		{
+			if (_context.TraceSwitch.TraceVerbose)
+			{
+				TraceVerbose(Cecil.FlowAnalysis.Utilities.Formatter.FormatMethodBody(m));
+			}
+		}
+
 		public TypeReference Import(System.Type type)
 		{
 			return _context.Import(type);
