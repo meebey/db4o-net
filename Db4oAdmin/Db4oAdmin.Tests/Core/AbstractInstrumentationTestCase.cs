@@ -92,14 +92,32 @@ namespace Db4oAdmin.Tests.Core
 
 		public TestSuite Build()
 		{
+			try
+			{
+				return BuildFromInstrumentedAssembly();
+			}
+			catch (Exception x)
+			{
+				return new TestSuite(TestSuiteLabel, new ITest[] { new FailingTest(TestSuiteLabel, x) });
+			}
+		}
+
+		private TestSuite BuildFromInstrumentedAssembly()
+		{
 			string assemblyPath = EmitAssemblyFromResource();
+			Assert.IsTrue(File.Exists(assemblyPath));
 			InstrumentAssembly(assemblyPath);
-			
+
 			Type type = GetTestCaseType(assemblyPath);
 			TestSuite suite = type.IsSubclassOf(typeof(InstrumentedTestCase))
 			                  	? new InstrumentationTestSuiteBuilder(this, type).Build()
 			                  	: new ReflectionTestSuiteBuilder(type).Build();
-			return new TestSuite(GetType().FullName, new ITest[] { suite, new VerifyAssemblyTest(assemblyPath)});
+			return new TestSuite(TestSuiteLabel, new ITest[] { suite, new VerifyAssemblyTest(assemblyPath)});
+		}
+
+		protected string TestSuiteLabel
+		{
+			get { return GetType().FullName;  }
 		}
 		
 		protected abstract string ResourceName { get; }
