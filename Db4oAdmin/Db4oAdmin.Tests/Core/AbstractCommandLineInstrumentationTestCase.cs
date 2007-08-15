@@ -10,15 +10,9 @@ namespace Db4oAdmin.Tests.Core
 
 		override protected void InstrumentAssembly(string path)
 		{
-			ShellUtilities.ProcessOutput output = null;
-			if (System.Diagnostics.Debugger.IsAttached)
-			{
-				output = ShellUtilities.shellm(InstrumentationUtilityPath, BuildCommandLine(path));
-			}
-			else
-			{
-				output = ShellUtilities.shell(InstrumentationUtilityPath, BuildCommandLine(path));
-			}
+			ShellUtilities.ProcessOutput output = System.Diagnostics.Debugger.IsAttached
+				? ShellUtilities.shellm(InstrumentationUtilityPath, BuildCommandLine(path))
+				: ShellUtilities.shell(InstrumentationUtilityPath, BuildCommandLine(path));
 			CheckInstrumentationOutput(output);
 		}
 
@@ -26,7 +20,7 @@ namespace Db4oAdmin.Tests.Core
 		{
 			string[] cmdLine = CommandLine.Split(' ');
 			cmdLine = ArrayServices.Append(cmdLine, path);
-			//cmdLine = ArrayServices.Append(cmdLine, "-v");
+			//cmdLine = ArrayServices.Append(cmdLine, "-vv");
 			return cmdLine;
 		}
 
