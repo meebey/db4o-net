@@ -29,13 +29,6 @@ namespace Db4oAdmin.Core
 				_sequence = sequence;
 			}
 
-			public override bool BackwardsMatch(Instruction instruction)
-			{
-				MatchContext context = new MatchContext(instruction.Previous);
-				BackwardsMatch(context);
-				return context.Success;
-			}
-
 			internal override void BackwardsMatch(MatchContext context)
 			{
 				foreach (ILPattern pattern in _sequence)
@@ -117,12 +110,7 @@ namespace Db4oAdmin.Core
 			}
 		}
 		
-		public virtual bool BackwardsMatch(Instruction instruction)
-		{
-			return false;
-		}
-		
-		internal class MatchContext
+		public class MatchContext
 		{
 			public bool Success;
 			public Instruction Instruction;
@@ -142,6 +130,18 @@ namespace Db4oAdmin.Core
 			{
 				this.Instruction = this.Instruction.Previous;
 			}
+		}
+
+		public bool IsBackwardsMatch(Instruction instruction)
+		{	
+			return BackwardsMatch(instruction).Success;
+		}
+
+		public MatchContext BackwardsMatch(Instruction instruction)
+		{
+			MatchContext context = new MatchContext(instruction.Previous);
+			BackwardsMatch(context);
+			return context;
 		}
 
 		internal abstract void BackwardsMatch(MatchContext context);

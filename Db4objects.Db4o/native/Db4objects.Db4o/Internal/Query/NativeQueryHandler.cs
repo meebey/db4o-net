@@ -92,22 +92,26 @@ namespace Db4objects.Db4o.Internal.Query
 			return ExecuteImpl<Extent>(query, predicate, predicate.Target, predicate.Method, predicate.Delegate, comparator);
 		}
 
-		public static System.Collections.Generic.IList<Extent> ExecuteInstrumentedStaticDelegateQuery<Extent>(IObjectContainer container,
-                                                                                    Db4objects.Db4o.Query.IQuery query, 
+		// WARNING: DONT CHANGE THE SIGNATURES OF THE FOLLOWING METHOD
+		// THE Admin INSTRUMENTATION RELIES ON THEM
+		// THE CONTAINER PASSED IN IS ALWAYS THE CONTAINER WITH THE RIGHT TRANSACTION
+		public static System.Collections.Generic.IList<Extent> ExecuteInstrumentedStaticDelegateQuery<Extent>(IObjectContainer container, 
 																					System.Predicate<Extent> predicate,
 																					RuntimeMethodHandle predicateMethodHandle)
 		{
-			return ExecuteInstrumentedDelegateQuery(container, query, null, predicate, predicateMethodHandle);
+			return ExecuteInstrumentedDelegateQuery(container, null, predicate, predicateMethodHandle);
 		}
 
+		// WARNING: DONT CHANGE THE SIGNATURES OF THE FOLLOWING METHOD
+		// THE Admin INSTRUMENTATION RELIES ON THEM
+		// THE CONTAINER PASSED IN IS ALWAYS THE CONTAINER WITH THE RIGHT TRANSACTION
 		public static System.Collections.Generic.IList<Extent> ExecuteInstrumentedDelegateQuery<Extent>(IObjectContainer container,
-                                                                                    Db4objects.Db4o.Query.IQuery query, 
 																					object target,
 																					System.Predicate<Extent> predicate,
 																					RuntimeMethodHandle predicateMethodHandle)
 		{
 			return ((ObjectContainerBase)container).GetNativeQueryHandler().ExecuteMeta(
-                query, 
+                container.Query(), 
 				new MetaDelegate<Predicate<Extent>>(
 					target,
 					predicate,

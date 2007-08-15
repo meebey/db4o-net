@@ -20,6 +20,7 @@ namespace Db4oAdmin.NQ
 		private TypeReference _YapStream;
 		private MethodReference _NativeQueryHandler_ExecuteInstrumentedDelegateQuery;
 		private MethodReference _NativeQueryHandler_ExecuteInstrumentedStaticDelegateQuery;
+		private MethodReference _IObjectContainer_Query;
 
 		private ILPattern _staticFieldPattern = CreateStaticFieldPattern();
 
@@ -80,6 +81,7 @@ namespace Db4oAdmin.NQ
 
 			// At this point the stack is like this:
 			//     runtime method handle, delegate reference, ObjectContainer
+			
 			worker.Replace(queryInvocation,
 			               worker.Create(OpCodes.Call,
 			                             InstantiateGenericMethod(
@@ -104,7 +106,7 @@ namespace Db4oAdmin.NQ
 
 		private bool IsPredicateCreationPattern(Instruction queryInvocation)
 		{
-			return _predicateCreationPattern.BackwardsMatch(queryInvocation);
+			return _predicateCreationPattern.IsBackwardsMatch(queryInvocation);
 		}
 
 		private MethodReference InstantiateGenericMethod(MethodReference methodReference, TypeReference extent)
@@ -162,7 +164,7 @@ namespace Db4oAdmin.NQ
 
 		private bool IsCachedStaticFieldPattern(Instruction instr)
 		{
-			return _staticFieldPattern.BackwardsMatch(instr);
+			return _staticFieldPattern.IsBackwardsMatch(instr);
 		}
 	}
 }

@@ -12,14 +12,25 @@ namespace Db4oAdmin.Tests.Core
 		{
 			ILPattern sequence = ILPattern.Sequence(OpCodes.Stsfld, OpCodes.Ldsfld);
 
+			MethodDefinition method = CreateTestMethod(TestSequence1);
+			Instruction lastInstruction = LastInstruction(method);
+			ILPattern.MatchContext context = sequence.BackwardsMatch(lastInstruction);
+			Assert.IsTrue(context.Success);
+			Assert.AreSame(method.Body.Instructions[0], context.Instruction);
+		}
+
+		public void TestSequenceIsBackwardsMatch()
+		{
+			ILPattern sequence = ILPattern.Sequence(OpCodes.Stsfld, OpCodes.Ldsfld);
+
 			Instruction lastInstruction = CreateTestMethodAndReturnLastInstruction(TestSequence1);
-			Assert.IsTrue(sequence.BackwardsMatch(lastInstruction));
+			Assert.IsTrue(sequence.IsBackwardsMatch(lastInstruction));
 
 			sequence = ILPattern.Sequence(OpCodes.Ldsfld, OpCodes.Stsfld);
-			Assert.IsTrue(!sequence.BackwardsMatch(lastInstruction));
+			Assert.IsTrue(!sequence.IsBackwardsMatch(lastInstruction));
 		}
 		
-		public void TestComplexSequenceBackwardsMatch()
+		public void TestComplexSequenceIsBackwardsMatch()
 		{
 			ILPattern sequence = ILPattern.Sequence(
 				ILPattern.Optional(OpCodes.Ret),
@@ -27,20 +38,24 @@ namespace Db4oAdmin.Tests.Core
 				ILPattern.Alternation(OpCodes.Ldfld, OpCodes.Ldsfld));
 
 			Instruction lastInstruction = CreateTestMethodAndReturnLastInstruction(TestSequence1);
-			Assert.IsTrue(sequence.BackwardsMatch(lastInstruction));
+			Assert.IsTrue(sequence.IsBackwardsMatch(lastInstruction));
 
 			lastInstruction = CreateTestMethodAndReturnLastInstruction(TestSequence2);
-			Assert.IsTrue(sequence.BackwardsMatch(lastInstruction));
+			Assert.IsTrue(sequence.IsBackwardsMatch(lastInstruction));
 		}
 
 		delegate void CilWorkerAction(CilWorker worker);
 
 		private static Instruction CreateTestMethodAndReturnLastInstruction(CilWorkerAction action)
 		{
-			MethodDefinition method = CreateTestMethod(action);
+			return LastInstruction(CreateTestMethod(action));
+		}
+
+		private static Instruction LastInstruction(MethodDefinition method)
+		{
 			return method.Body.Instructions[method.Body.Instructions.Count - 1];
 		}
-		
+
 		static MethodDefinition CreateTestMethod(CilWorkerAction action)
 		{
 			MethodDefinition test = new MethodDefinition("Test", MethodAttributes.Public, null);
@@ -51,6 +66,7 @@ namespace Db4oAdmin.Tests.Core
 		private static void TestSequence1(CilWorker worker)
 		{
 			FieldDefinition blank = new FieldDefinition("Test", null, FieldAttributes.Public);
+			worker.Emit(OpCodes.Nop);
 			worker.Emit(OpCodes.Ldsfld, blank);
 			worker.Emit(OpCodes.Stsfld, blank);
 			worker.Emit(OpCodes.Ret);
@@ -59,6 +75,7 @@ namespace Db4oAdmin.Tests.Core
 		private static void TestSequence2(CilWorker worker)
 		{
 			FieldDefinition blank = new FieldDefinition("Test", null, FieldAttributes.Public);
+			worker.Emit(OpCodes.Nop);
 			worker.Emit(OpCodes.Ldfld, blank);
 			worker.Emit(OpCodes.Stsfld, blank);
 			worker.Emit(OpCodes.Ret);
