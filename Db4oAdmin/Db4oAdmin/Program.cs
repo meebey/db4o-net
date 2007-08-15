@@ -9,8 +9,8 @@ namespace Db4oAdmin
 {
 	public class Program
 	{
-		static int Main(string[] args)
-		{	
+		public static int Main(string[] args)
+		{
 			ProgramOptions options = new ProgramOptions(args);
 			if (!options.IsValid)
 			{

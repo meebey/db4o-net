@@ -5,23 +5,10 @@ using Db4oUnit;
 
 namespace Db4oUnit.Tests
 {
-	internal class RunsRed : ITest
+	internal class RunsRed : FailingTest
 	{
-		private Exception _exception;
-
-		public RunsRed(Exception exception)
+		public RunsRed(Exception exception) : base("RunsRed", exception)
 		{
-			_exception = exception;
-		}
-
-		public virtual string GetLabel()
-		{
-			return "RunsRed";
-		}
-
-		public virtual void Run(TestResult result)
-		{
-			result.TestFailed(this, _exception);
 		}
 	}
 }
