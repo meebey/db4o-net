@@ -49,6 +49,7 @@
     <Compile Include="Core\AbstractAssemblyInstrumentation.cs" />
     <Compile Include="Core\ByAttributeFilter.cs" />
     <Compile Include="Core\Configuration.cs" />
+    <Compile Include="Core\ByNameFilter.cs" />
     <Compile Include="Core\IAssemblyInstrumentation.cs" />
     <Compile Include="Core\ILPattern.cs" />
     <Compile Include="Core\InstrumentationContext.cs" />

@@ -59,6 +59,24 @@ namespace Db4oAdmin
             return WhatToDoNext.GoAhead;
         }
 
+        public List<string> CustomFilters = new List<string>();
+
+        [Option("Custom type filter", "by-filter", MaxOccurs = -1)]
+        public WhatToDoNext ByFilter(string filterType)
+        {
+            CustomFilters.Add(filterType);
+            return WhatToDoNext.GoAhead;
+        }
+
+        public List<string> NameFilters = new List<string>();
+
+        [Option("Filter types by name (with regular expression syntax)", "by-name", MaxOccurs = -1)]
+        public WhatToDoNext ByName(string name)
+        {
+            NameFilters.Add(name);
+            return WhatToDoNext.GoAhead;
+        }
+
 		public string Assembly
 		{
 			get

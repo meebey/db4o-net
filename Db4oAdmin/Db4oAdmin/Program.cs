@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2006  db4objects Inc.   http://www.db4o.com */
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Db4oAdmin.Core;
 using Db4oAdmin.NQ;
@@ -39,10 +40,10 @@ namespace Db4oAdmin
 				{
 					pipeline.Add(new TAInstrumentation());
 				}
-				foreach (string customInstrumentation in options.CustomInstrumentations)
-				{
-					pipeline.Add((IAssemblyInstrumentation)Activator.CreateInstance(Type.GetType(customInstrumentation, true)));
-				}
+                foreach (IAssemblyInstrumentation instr in MapToObjects<IAssemblyInstrumentation>(options.CustomInstrumentations))
+                {
+                    pipeline.Add(instr);
+                }
 				if (!options.Fake)
 				{
 					pipeline.Add(new SaveAssemblyInstrumentation());
@@ -56,6 +57,14 @@ namespace Db4oAdmin
 			}
 			return 0;
 		}
+
+        private static IEnumerable<T> MapToObjects<T>(IEnumerable<string> typeNames)
+        {
+            foreach (string typeName in typeNames)
+            {
+                yield return (T)Activator.CreateInstance(Type.GetType(typeName, true));
+            }
+        }
 
 		private static void ReportError(ProgramOptions options, Exception x)
 		{
@@ -80,6 +89,14 @@ namespace Db4oAdmin
             foreach (string attribute in options.AttributeFilters)
             {
                 configuration.AddFilter(new ByAttributeFilter(attribute));
+            }
+            foreach (string name in options.NameFilters)
+            {
+                configuration.AddFilter(new ByNameFilter(name));
+            }
+            foreach (ITypeFilter filter in MapToObjects<ITypeFilter>(options.CustomFilters))
+            {
+                configuration.AddFilter(filter);
             }
 			return configuration;
 		}
