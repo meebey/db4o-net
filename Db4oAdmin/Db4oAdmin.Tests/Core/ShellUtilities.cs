@@ -6,8 +6,26 @@ using System.Reflection;
 
 namespace Db4oAdmin.Tests.Core
 {
+    public delegate void Action();
+
 	public class ShellUtilities
-	{
+	{  
+        public static string WithStdout(Action code)
+        {
+            StringWriter writer = new StringWriter();
+            TextWriter old = Console.Out;
+            try
+            {
+                Console.SetOut(writer);
+                code();
+                return writer.ToString().Trim();
+            }
+            finally
+            {
+                Console.SetOut(old);
+            }
+        }
+
 		public static void CopyFileToFolder(string fname, string path)
 		{
 			File.Copy(fname, Path.Combine(path, Path.GetFileName(fname)), true);

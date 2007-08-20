@@ -44,13 +44,20 @@ namespace Db4oAdmin.Core
 		{
 			foreach (TypeDefinition typedef in module.Types)
 			{
+                if (!IsAccepted(typedef)) continue;
+
 				TraceVerbose("Entering type '{0}'", typedef);
 				ProcessType(typedef);
 				TraceVerbose("Leaving type '{0}'", typedef);
 			}
 		}
 
-		protected virtual void ProcessType(TypeDefinition type)
+	    private bool IsAccepted(TypeDefinition typedef)
+	    {
+	        return _context.Accept(typedef);
+	    }
+
+	    protected virtual void ProcessType(TypeDefinition type)
 		{
 			ProcessMethods(type.Methods);
 			ProcessMethods(type.Constructors);

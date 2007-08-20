@@ -75,5 +75,10 @@ namespace Db4oAdmin.Core
 				Trace.WriteLine(string.Format(format, args));
 			}
 		}
-	}
+
+        public bool Accept(TypeDefinition typedef)
+        {
+            return _configuration.Accept(typedef);
+        }
+    }
 }

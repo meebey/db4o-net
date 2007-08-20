@@ -50,6 +50,15 @@ namespace Db4oAdmin
 			return WhatToDoNext.GoAhead;
 		}
 
+	    public List<string> AttributeFilters = new List<string>();
+
+        [Option("Filter types to be instrumented by attribute", "by-attribute", MaxOccurs=-1)]
+        public WhatToDoNext ByAttribute(string attribute)
+        {
+            AttributeFilters.Add(attribute);
+            return WhatToDoNext.GoAhead;
+        }
+
 		public string Assembly
 		{
 			get

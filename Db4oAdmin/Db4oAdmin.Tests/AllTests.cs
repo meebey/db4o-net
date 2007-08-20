@@ -10,6 +10,7 @@ namespace Db4oAdmin.Tests
 		{
 			return new Type[]
 				{
+                    typeof(Core.ByAttributeTestCase),
 					typeof(Core.ILPatternTestCase),
 					typeof(Core.CustomInstrumentationTestCase),
 					typeof(NQ.CFNQRuntimeOptimizationTestCase),

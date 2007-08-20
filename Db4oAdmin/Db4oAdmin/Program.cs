@@ -77,6 +77,10 @@ namespace Db4oAdmin
 			{
 				configuration.TraceSwitch.Level = options.PrettyVerbose ? TraceLevel.Verbose : TraceLevel.Info;
 			}
+            foreach (string attribute in options.AttributeFilters)
+            {
+                configuration.AddFilter(new ByAttributeFilter(attribute));
+            }
 			return configuration;
 		}
 	}

@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using Db4oUnit;
+using Db4oAdmin.Tests.Core;
 
 public class CustomInstrumentationSubject : ITestCase
 {
@@ -13,24 +14,15 @@ public class CustomInstrumentationSubject : ITestCase
 	static void Bar()
 	{	
 	}
-	
-	public void TestInstrumentation()
+
+ 	public void TestInstrumentation()
 	{
-		StringWriter writer = new StringWriter();
-		TextWriter old = Console.Out;
-		try
-		{
-			Console.SetOut(writer);
-			Foo();
-			string expected = @"
+        string stdout = ShellUtilities.WithStdout(Foo);
+
+		string expected = @"
 TRACE: System.Void CustomInstrumentationSubject::Foo()
 TRACE: System.Void CustomInstrumentationSubject::Bar()
 ";
-			Assert.AreEqual(expected.Trim(), writer.ToString().Trim());
-		}
-		finally
-		{
-			Console.SetOut(old);
-		}
+		Assert.AreEqual(expected.Trim(), stdout);
 	}
 }

@@ -42,11 +42,13 @@
     <Compile Include="Core\AbstractCommandLineInstrumentationTestCase.cs" />
     <Compile Include="Core\AbstractInstrumentationTestCase.cs" />
     <Compile Include="Core\ArrayServices.cs" />
+    <Compile Include="Core\ByAttributeTestCase.cs" />
     <Compile Include="Core\CompilationServices.cs" />
     <Compile Include="Core\CustomInstrumentationTestCase.cs" />
     <Compile Include="Core\ILPatternTestCase.cs" />
     <Compile Include="Core\InstrumentedTestCase.cs" />
     <EmbeddedResource Include="Core\Resources\CustomInstrumentationSubject.cs" />
+    <EmbeddedResource Include="Core\Resources\ByAttributeInstrumentationSubject.cs" />
     <Compile Include="Core\ShellUtilities.cs" />
     <Compile Include="Core\VerifyAssemblyTest.cs" />
     <Compile Include="NQ\CFNQRuntimeOptimizationTestCase.cs" />
