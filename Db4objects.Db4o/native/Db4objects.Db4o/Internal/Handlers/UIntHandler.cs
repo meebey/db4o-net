@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007   db4objects Inc.   http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
@@ -36,5 +37,29 @@ namespace Db4objects.Db4o.Internal.Handlers
             bytes[--offset] = (byte)(ui >>= 8);
             bytes[--offset] = (byte)(ui >>= 8);
         }
+        public override object Read(IReadContext context)
+        {
+            byte[] bytes = new byte[4];
+            context.ReadBytes(bytes);
+            return (uint)(
+                     bytes[3] & 255        | 
+                    (bytes[2] & 255) << 8  | 
+                    (bytes[1] & 255) << 16 | 
+                    (bytes[0] & 255) << 24
+                );
+        }
+
+        public override void Write(IWriteContext context, object obj)
+        {
+            uint ui = (uint)obj;
+            context.WriteBytes(
+                new byte[] { 
+                    (byte)(ui>>24),
+                    (byte)(ui>>16),
+                    (byte)(ui>>8),
+                    (byte)ui,
+                });
+        }
+
     }
 }

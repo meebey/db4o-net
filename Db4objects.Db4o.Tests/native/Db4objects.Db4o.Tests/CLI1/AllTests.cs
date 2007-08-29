@@ -17,6 +17,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(ShutdownMultipleContainer),
 #endif
 					typeof(Events.EventRegistryTestCase),
+                    typeof(Handlers.AllTests),
 					typeof(Inside.AllTests),
 					typeof(NativeQueries.AllTests),
 					typeof(Reflect.Net.AllTests),
