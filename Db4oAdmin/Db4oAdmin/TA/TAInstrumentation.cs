@@ -12,7 +12,7 @@ namespace Db4oAdmin.TA
 
 		protected override void ProcessType(TypeDefinition type)
 		{
-			if (type.IsValueType || type.IsInterface) return;
+			if (type.IsValueType || type.IsInterface || type.IsAbstract) return;
 			if (type.Name == "<Module>") return;
 
 			FieldDefinition activatorField = CreateActivatorField();
@@ -79,7 +79,8 @@ namespace Db4oAdmin.TA
 
 		protected override void ProcessMethod(Mono.Cecil.MethodDefinition method)
 		{
-			if (!method.HasBody || !IsPublic(method) || method.IsStatic) return;
+			if (method == _activateMethod) return;
+			if (!method.HasBody || IsPrivate(method) || method.IsStatic) return;
 
 			Instruction firstInstruction = method.Body.Instructions[0];
 
@@ -88,9 +89,10 @@ namespace Db4oAdmin.TA
 			cil.InsertBefore(firstInstruction, cil.Create(OpCodes.Call, _activateMethod));
 		}
 
-		private static bool IsPublic(MethodDefinition method)
+		private static bool IsPrivate(MethodDefinition method)
 		{
-			return MethodAttributes.Public == (method.Attributes & MethodAttributes.Public);
+			return method.IsCompilerControlled
+				|| method.IsPrivate;
 		}
 	}
 }

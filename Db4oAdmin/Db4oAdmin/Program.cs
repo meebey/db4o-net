@@ -40,10 +40,10 @@ namespace Db4oAdmin
 				{
 					pipeline.Add(new TAInstrumentation());
 				}
-                foreach (IAssemblyInstrumentation instr in MapToObjects<IAssemblyInstrumentation>(options.CustomInstrumentations))
-                {
-                    pipeline.Add(instr);
-                }
+				foreach (IAssemblyInstrumentation instr in MapToObjects<IAssemblyInstrumentation>(options.CustomInstrumentations))
+				{
+					pipeline.Add(instr);
+				}
 				if (!options.Fake)
 				{
 					pipeline.Add(new SaveAssemblyInstrumentation());
@@ -57,14 +57,14 @@ namespace Db4oAdmin
 			}
 			return 0;
 		}
-
-        private static IEnumerable<T> MapToObjects<T>(IEnumerable<string> typeNames)
-        {
-            foreach (string typeName in typeNames)
-            {
-                yield return (T)Activator.CreateInstance(Type.GetType(typeName, true));
-            }
-        }
+		
+		private static IEnumerable<T> MapToObjects<T>(IEnumerable<string> typeNames)
+		{
+			foreach (string typeName in typeNames)
+			{
+				yield return (T)Activator.CreateInstance(Type.GetType(typeName, true));
+			}
+		}
 
 		private static void ReportError(ProgramOptions options, Exception x)
 		{
