@@ -7,39 +7,39 @@ using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
-    class UIntHandlerTestCase : TypeHandlerTestCaseBase
+    class SByteHandlerTestCase : TypeHandlerTestCaseBase
     {
         public virtual void TestReadWrite()
         {
             MockWriteContext writeContext = new MockWriteContext(Db());
-            uint expected = 0x11223344;
-            UIntHandler().Write(writeContext, expected);
+            sbyte expected = 0x11;
+            SByteHandler().Write(writeContext, expected);
             MockReadContext readContext = new MockReadContext(writeContext);
-            uint uintValue = (uint)UIntHandler().Read(readContext);
-            Assert.AreEqual(expected, uintValue);
+            sbyte sbyteValue = (sbyte)SByteHandler().Read(readContext);
+            Assert.AreEqual(expected, sbyteValue);
         }
 
         public virtual void TestStoreObject()
         {
-            UIntHandlerTestCase.Item storedItem = new UIntHandlerTestCase.Item((uint)0x11223344, (uint)0x55667788);
+            SByteHandlerTestCase.Item storedItem = new SByteHandlerTestCase.Item(0x11, 0x22);
             DoTestStoreObject(storedItem);
         }
 
-        private Db4objects.Db4o.Internal.Handlers.UIntHandler UIntHandler()
+        private Db4objects.Db4o.Internal.Handlers.SByteHandler SByteHandler()
         {
-            return new Db4objects.Db4o.Internal.Handlers.UIntHandler(Stream());
+            return new Db4objects.Db4o.Internal.Handlers.SByteHandler(Stream());
         }
 
         public class Item
         {
-            public uint _uint;
+            public sbyte _sbyte;
 
-            public UInt32 _uintWrapper;
+            public SByte _sbyteWrapper;
 
-            public Item(uint u, UInt32 wrapper)
+            public Item(sbyte s, SByte wrapper)
             {
-                _uint = u;
-                _uintWrapper = wrapper;
+                _sbyte = s;
+                _sbyteWrapper = wrapper;
             }
 
             public override bool Equals(object obj)
@@ -48,18 +48,18 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 {
                     return true;
                 }
-                if (!(obj is UIntHandlerTestCase.Item))
+                if (!(obj is SByteHandlerTestCase.Item))
                 {
                     return false;
                 }
-                UIntHandlerTestCase.Item other = (UIntHandlerTestCase.Item)obj;
-                return (other._uint == this._uint) && this._uintWrapper.Equals(other._uintWrapper
+                SByteHandlerTestCase.Item other = (SByteHandlerTestCase.Item)obj;
+                return (other._sbyte == this._sbyte) && this._sbyteWrapper.Equals(other._sbyteWrapper
                     );
             }
 
             public override string ToString()
             {
-                return "[" + _uint + "," + _uintWrapper + "]";
+                return "[" + _sbyte + "," + _sbyteWrapper + "]";
             }
         }
 
