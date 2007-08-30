@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007   db4objects Inc.   http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
@@ -40,6 +41,18 @@ namespace Db4objects.Db4o.Internal.Handlers
             for (int i = 0; i < 8; i++){
                 bytes[offset++] = (byte)(int)(ticks >> (7 - i) * 8);
             }
+        }
+
+        public override object Read(IReadContext context)
+        {
+            long ticks = context.ReadLong();
+            return new DateTime(ticks);
+        }
+
+        public override void Write(IWriteContext context, object obj)
+        {
+            long ticks = ((DateTime)obj).Ticks;
+            context.WriteLong(ticks);
         }
     }
 }

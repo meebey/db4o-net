@@ -15,6 +15,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
         {
             return new System.Type[]
 		    {
+                typeof(DateTimeHandlerTestCase),
                 typeof(UIntHandlerTestCase),
             };
         }
