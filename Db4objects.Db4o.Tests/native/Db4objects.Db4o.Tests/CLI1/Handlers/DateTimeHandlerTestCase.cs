@@ -32,11 +32,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         public class Item
         {
-            public DateTime dateTime;
+            public DateTime _dateTime;
 
             public Item(DateTime wrapper)
             {
-                dateTime = wrapper;
+                _dateTime = wrapper;
             }
 
             public override bool Equals(object obj)
@@ -50,12 +50,12 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                     return false;
                 }
                 DateTimeHandlerTestCase.Item other = (DateTimeHandlerTestCase.Item)obj;
-                return other.dateTime == null ? dateTime == null : (other.dateTime.Equals(dateTime));
+                return (other._dateTime == _dateTime);
             }
 
             public override string ToString()
             {
-                return "[" + dateTime + "]";
+                return "[" + _dateTime + "]";
             }
         }
 
