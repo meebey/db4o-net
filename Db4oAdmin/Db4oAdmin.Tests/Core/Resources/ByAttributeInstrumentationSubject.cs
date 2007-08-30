@@ -8,34 +8,34 @@ class MyCustomAttribute : System.Attribute
 [MyCustomAttribute]
 class Instrumented
 {
-    public static void Foo()
-    {   
-    }
+	public static void Foo()
+	{
+	}
 }
 
 class NotInstrumented
-{  
-    public static void Bar()
-    {   
-    }
+{
+	public static void Bar()
+	{
+	}
 }
 
 class ByAttributeInstrumentationSubject : ITestCase
 {
-    private static void RunFooBar()
-    {
-        Instrumented.Foo();
-        NotInstrumented.Bar();
-    }
+	private static void RunFooBar()
+	{
+		Instrumented.Foo();
+		NotInstrumented.Bar();
+	}
 
-    public void Test()
-    {
-        string stdout = ShellUtilities.WithStdout(RunFooBar);
+	public void Test()
+	{
+		string stdout = ShellUtilities.WithStdout(RunFooBar);
 
-        string expected =
-            @"
+		string expected =
+			@"
 TRACE: System.Void Instrumented::Foo()
 ";
-        Assert.AreEqual(expected.Trim(), stdout);
-    }
+		Assert.AreEqual(expected.Trim(), stdout);
+	}
 }

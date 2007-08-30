@@ -10,14 +10,14 @@ public class CustomInstrumentationSubject : ITestCase
 	{
 		Bar();
 	}
-	
+
 	static void Bar()
-	{	
+	{
 	}
 
- 	public void TestInstrumentation()
+	public void TestInstrumentation()
 	{
-        string stdout = ShellUtilities.WithStdout(Foo);
+		string stdout = ShellUtilities.WithStdout(Foo);
 
 		string expected = @"
 TRACE: System.Void CustomInstrumentationSubject::Foo()

@@ -6,25 +6,25 @@ using System.Reflection;
 
 namespace Db4oAdmin.Tests.Core
 {
-    public delegate void Action();
+	public delegate void Action();
 
 	public class ShellUtilities
-	{  
-        public static string WithStdout(Action code)
-        {
-            StringWriter writer = new StringWriter();
-            TextWriter old = Console.Out;
-            try
-            {
-                Console.SetOut(writer);
-                code();
-                return writer.ToString().Trim();
-            }
-            finally
-            {
-                Console.SetOut(old);
-            }
-        }
+	{
+		public static string WithStdout(Action code)
+		{
+			StringWriter writer = new StringWriter();
+			TextWriter old = Console.Out;
+			try
+			{
+				Console.SetOut(writer);
+				code();
+				return writer.ToString().Trim();
+			}
+			finally
+			{
+				Console.SetOut(old);
+			}
+		}
 
 		public static void CopyFileToFolder(string fname, string path)
 		{
@@ -38,7 +38,7 @@ namespace Db4oAdmin.Tests.Core
 			public string StdErr;
 
 			public ProcessOutput()
-			{	
+			{
 			}
 
 			public ProcessOutput(int exitCode, string stdout, string stderr)
@@ -47,7 +47,7 @@ namespace Db4oAdmin.Tests.Core
 				StdOut = stdout;
 				StdErr = stderr;
 			}
-			
+
 			public override string ToString()
 			{
 				return StdOut + StdErr;
@@ -79,7 +79,7 @@ namespace Db4oAdmin.Tests.Core
 			Process p = StartProcess(fname, args);
 			ProcessOutput output = new ProcessOutput();
 			output.StdOut = p.StandardOutput.ReadToEnd();
-            output.StdErr = p.StandardError.ReadToEnd();
+			output.StdErr = p.StandardError.ReadToEnd();
 			p.WaitForExit();
 			output.ExitCode = p.ExitCode;
 			return output;
