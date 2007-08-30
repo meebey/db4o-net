@@ -2,25 +2,30 @@ using Mono.Cecil;
 
 namespace Db4oAdmin.Core
 {
-    class ByAttributeFilter : ITypeFilter
-    {
-        private string _attribute;
+	public class ByAttributeFilter : ITypeFilter
+	{
+		public static bool ContainsCustomAttribute(TypeDefinition typeDef, string attributeType)
+		{
+			foreach (CustomAttribute attribute in typeDef.CustomAttributes)
+			{
+				if (attributeType == attribute.Constructor.DeclaringType.FullName)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 
-        public ByAttributeFilter(string attribute)
-        {
-            _attribute = attribute;
-        }
+		private string _attribute;
 
-        public bool Accept(TypeDefinition typeDef)
-        {
-            foreach (CustomAttribute attribute in typeDef.CustomAttributes)
-            {
-                if (_attribute == attribute.Constructor.DeclaringType.FullName)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
+		public ByAttributeFilter(string attribute)
+		{
+			_attribute = attribute;
+		}
+
+		public bool Accept(TypeDefinition typeDef)
+		{
+			return ContainsCustomAttribute(typeDef, _attribute);
+		}
+	}
 }

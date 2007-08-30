@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 
 using System;
+using System.Runtime.CompilerServices;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 using Db4oUnit;
@@ -21,8 +22,16 @@ class Project
 }
 
 struct AValueType
+{	
+}
+
+abstract class AnAbstractType
 {
-	
+}
+
+[CompilerGenerated]
+class CompilerGeneratedType
+{
 }
 
 class MockActivator : IActivator
@@ -57,6 +66,16 @@ class TAInstrumentationSubject : ITestCase
 	public void TestValueTypesAreNotInstrumented()
 	{
 		Assert.IsFalse(IsActivatable(typeof(AValueType)));
+	}
+
+	public void TestAbstractClassesAreNotInstrumented()
+	{
+		Assert.IsFalse(IsActivatable(typeof(AnAbstractType)));
+	}
+
+	public void TestCompilerGeneratedClassesAreNotInstrumented()
+	{
+		Assert.IsFalse(IsActivatable(typeof(CompilerGeneratedType)));
 	}
 
 	private static bool IsActivatable(Type type)

@@ -1,4 +1,5 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using System.Runtime.CompilerServices;
 using Db4oAdmin.Core;
 using Db4objects.Db4o.Activation;
 using Mono.Cecil;
@@ -8,12 +9,13 @@ namespace Db4oAdmin.TA
 {
 	public class TAInstrumentation : AbstractAssemblyInstrumentation
 	{
+		public static readonly string CompilerGeneratedAttribute = typeof (CompilerGeneratedAttribute).FullName;
+
 		private MethodDefinition _activateMethod;
 
 		protected override void ProcessType(TypeDefinition type)
 		{
-			if (type.IsValueType || type.IsInterface || type.IsAbstract) return;
-			if (type.Name == "<Module>") return;
+			if (!RequiresTA(type)) return;
 
 			FieldDefinition activatorField = CreateActivatorField();
 			_activateMethod = CreateActivateMethod(activatorField);
@@ -25,6 +27,15 @@ namespace Db4oAdmin.TA
 
 			type.Fields.Add(activatorField);
 			type.Methods.Add(CreateBindMethod(activatorField));
+		}
+
+		private static bool RequiresTA(TypeDefinition type)
+		{
+			if (type.IsValueType) return false;
+			if (type.IsInterface || type.IsAbstract) return false;
+			if (type.Name == "<Module>") return false;
+			if (ByAttributeFilter.ContainsCustomAttribute(type, CompilerGeneratedAttribute)) return false;
+			return true;
 		}
 
 		private MethodDefinition CreateActivateMethod(FieldDefinition activatorField)
