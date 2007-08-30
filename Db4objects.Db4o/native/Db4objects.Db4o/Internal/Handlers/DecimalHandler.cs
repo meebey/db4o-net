@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007   db4objects Inc.   http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
@@ -44,6 +45,41 @@ namespace Db4objects.Db4o.Internal.Handlers
                 bytes[--offset] = (byte)(ints[i] >>= 8);
                 offset += 8;
             }
+        }
+        public override object Read(IReadContext context)
+        {
+            byte[] bytes = new byte[16];
+            int[] ints = new int[4];
+            int offset = 4;
+            context.ReadBytes(bytes);
+            for (int i = 0; i < 4; i++)
+            {
+                ints[i] =   (
+                             bytes[--offset] & 255 | 
+                            (bytes[--offset] & 255) << 8 | 
+                            (bytes[--offset] & 255) << 16 | 
+                            (bytes[--offset] & 255) << 24
+                            );
+                offset += 8;
+            }
+            return new Decimal(ints);
+        }
+
+        public override void Write(IWriteContext context, object obj)
+        {
+            decimal dec = (decimal)obj;
+            byte[] bytes = new byte[16];
+            int offset = 4;
+            int[] ints = Decimal.GetBits(dec);
+            for (int i = 0; i < 4; i++)
+            {
+                bytes[--offset] = (byte)ints[i];
+                bytes[--offset] = (byte)(ints[i] >>= 8);
+                bytes[--offset] = (byte)(ints[i] >>= 8);
+                bytes[--offset] = (byte)(ints[i] >>= 8);
+                offset += 8;
+            }
+            context.WriteBytes(bytes);
         }
     }
 }
