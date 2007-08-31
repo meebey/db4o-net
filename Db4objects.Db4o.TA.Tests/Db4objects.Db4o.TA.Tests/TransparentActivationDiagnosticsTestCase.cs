@@ -50,18 +50,19 @@ namespace Db4objects.Db4o.TA.Tests
 			}
 		}
 
-		private TransparentActivationDiagnosticsTestCase.DiagnosticsRegistered _registered
-			 = new TransparentActivationDiagnosticsTestCase.DiagnosticsRegistered();
-
 		private class DiagnosticsRegistered
 		{
 			public int _registeredCount = 0;
 		}
 
-		protected override void Configure(IConfiguration config)
+		private readonly TransparentActivationDiagnosticsTestCase.DiagnosticsRegistered _registered
+			 = new TransparentActivationDiagnosticsTestCase.DiagnosticsRegistered();
+
+		private readonly IDiagnosticListener _checker;
+
+		public TransparentActivationDiagnosticsTestCase()
 		{
-			config.Add(new TransparentActivationSupport());
-			config.Diagnostic().AddListener(new _IDiagnosticListener_54(this));
+			_checker = new _IDiagnosticListener_54(this);
 		}
 
 		private sealed class _IDiagnosticListener_54 : IDiagnosticListener
@@ -85,6 +86,18 @@ namespace Db4objects.Db4o.TA.Tests
 			}
 
 			private readonly TransparentActivationDiagnosticsTestCase _enclosing;
+		}
+
+		protected override void Configure(IConfiguration config)
+		{
+			config.Add(new TransparentActivationSupport());
+			config.Diagnostic().AddListener(_checker);
+		}
+
+		protected override void Db4oTearDownBeforeClean()
+		{
+			Db().Ext().Configure().Diagnostic().RemoveAllListeners();
+			base.Db4oTearDownBeforeClean();
 		}
 
 		public virtual void TestTADiagnostics()

@@ -9,7 +9,7 @@ namespace Db4oAdmin.TA
 {
 	public class TAInstrumentation : AbstractAssemblyInstrumentation
 	{
-		public static readonly string CompilerGeneratedAttribute = typeof (CompilerGeneratedAttribute).FullName;
+		public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
 
 		private MethodDefinition _activateMethod;
 
