@@ -19,6 +19,20 @@ class Project
 	{
 		get { return _name;  }
 	}
+
+	override public bool Equals(object o)
+	{
+		Project other = o as Project;
+		if (other == null) return false;
+
+		// foreign field access
+		return _name == other._name;
+	}
+
+	override public int GetHashCode()
+	{
+		return _name.GetHashCode();
+	}
 }
 
 struct AValueType
@@ -51,16 +65,33 @@ class MockActivator : IActivator
 
 class TAInstrumentationSubject : ITestCase
 {
-	public void TestActivatableBehavior()
+	public void TestIsActivatable()
 	{
 		Assert.IsTrue(IsActivatable(typeof(Project)));
+	}
 
-		MockActivator activator = new MockActivator();
+	public void TestPropertyGetter()
+	{
 		Project p = new Project("test");
-		((IActivatable)p).Bind(activator);
+		MockActivator activator = ActivatorFor(p);
+
 		Assert.AreEqual(0, activator.Count);
 		Assert.AreEqual("test", p.Name);
 		Assert.AreEqual(1, activator.Count);
+	}
+
+	public void TestForeignFieldAccess()
+	{
+		Project p1 = new Project("test");
+		Project p2 = new Project("test");
+
+		MockActivator a1 = ActivatorFor(p1);
+		MockActivator a2 = ActivatorFor(p2);
+
+		Assert.IsTrue(p1.Equals(p2));
+
+		Assert.AreEqual(1, a1.Count);
+		Assert.AreEqual(1, a2.Count);
 	}
 
 	public void TestValueTypesAreNotInstrumented()
@@ -76,6 +107,13 @@ class TAInstrumentationSubject : ITestCase
 	public void TestCompilerGeneratedClassesAreNotInstrumented()
 	{
 		Assert.IsFalse(IsActivatable(typeof(CompilerGeneratedType)));
+	}
+
+	private MockActivator ActivatorFor(Project p)
+	{
+		MockActivator activator = new MockActivator();
+		((IActivatable)p).Bind(activator);
+		return activator;
 	}
 
 	private static bool IsActivatable(Type type)

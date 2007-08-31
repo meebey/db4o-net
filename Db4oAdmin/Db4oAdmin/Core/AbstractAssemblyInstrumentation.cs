@@ -42,22 +42,27 @@ namespace Db4oAdmin.Core
 
 		protected virtual void ProcessModule(ModuleDefinition module)
 		{
-			foreach (TypeDefinition typedef in module.Types)
+			ProcessTypes(module.Types, ProcessType);
+		}
+
+		protected virtual void ProcessTypes(TypeDefinitionCollection types, System.Action<TypeDefinition> action)
+		{
+			foreach (TypeDefinition typedef in types)
 			{
-                if (!IsAccepted(typedef)) continue;
+				if (!IsAccepted(typedef)) continue;
 
 				TraceVerbose("Entering type '{0}'", typedef);
-				ProcessType(typedef);
+				action(typedef);
 				TraceVerbose("Leaving type '{0}'", typedef);
 			}
 		}
 
-	    private bool IsAccepted(TypeDefinition typedef)
-	    {
-	        return _context.Accept(typedef);
-	    }
-
-	    protected virtual void ProcessType(TypeDefinition type)
+		private bool IsAccepted(TypeDefinition typedef)
+		{
+			return _context.Accept(typedef);
+		}
+		
+		protected virtual void ProcessType(TypeDefinition type)
 		{
 			ProcessMethods(type.Methods);
 			ProcessMethods(type.Constructors);
@@ -65,6 +70,11 @@ namespace Db4oAdmin.Core
 		
 		protected virtual void ProcessMethod(MethodDefinition method)
 		{	
+		}
+
+		protected void ProcessMethods(TypeDefinition type)
+		{
+			ProcessMethods(type.Methods);
 		}
 
 		protected void ProcessMethods(System.Collections.IEnumerable methods)

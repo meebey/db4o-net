@@ -9,23 +9,26 @@ namespace Db4oAdmin.TA
 {
 	public class TAInstrumentation : AbstractAssemblyInstrumentation
 	{
+		private const string ActivateMethodName = "db4o$$ta$$activate";
+
 		public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
 
-		private MethodDefinition _activateMethod;
+		protected override void ProcessModule(ModuleDefinition module)
+		{
+			ProcessTypes(module.Types, MakeActivatable);
+			ProcessTypes(module.Types, ProcessMethods);
+		}
 
-		protected override void ProcessType(TypeDefinition type)
+		private void MakeActivatable(TypeDefinition type)
 		{
 			if (!RequiresTA(type)) return;
 
-			FieldDefinition activatorField = CreateActivatorField();
-			_activateMethod = CreateActivateMethod(activatorField);
-			type.Methods.Add(_activateMethod);
-
-			ProcessMethods(type.Methods);
-
 			type.Interfaces.Add(Import(typeof(Db4objects.Db4o.TA.IActivatable)));
 
+			FieldDefinition activatorField = CreateActivatorField();
 			type.Fields.Add(activatorField);
+
+			type.Methods.Add(CreateActivateMethod(activatorField));
 			type.Methods.Add(CreateBindMethod(activatorField));
 		}
 
@@ -40,7 +43,7 @@ namespace Db4oAdmin.TA
 
 		private MethodDefinition CreateActivateMethod(FieldDefinition activatorField)
 		{
-			MethodDefinition activate = new MethodDefinition("db4o$$ta$$activate", MethodAttributes.Family, VoidType());
+			MethodDefinition activate = new MethodDefinition(ActivateMethodName, MethodAttributes.Family, VoidType());
 		
 			CilWorker cil = activate.Body.CilWorker;
 			cil.Emit(OpCodes.Ldarg_0);
@@ -89,15 +92,63 @@ namespace Db4oAdmin.TA
 		}
 
 		protected override void ProcessMethod(Mono.Cecil.MethodDefinition method)
-		{
-			if (method == _activateMethod) return;
+		{	
 			if (!method.HasBody || IsPrivate(method) || method.IsStatic) return;
 
-			Instruction firstInstruction = method.Body.Instructions[0];
-
 			CilWorker cil = method.Body.CilWorker;
-			cil.InsertBefore(firstInstruction, cil.Create(OpCodes.Ldarg_0));
-			cil.InsertBefore(firstInstruction, cil.Create(OpCodes.Call, _activateMethod));
+			Instruction instruction = method.Body.Instructions[0];
+			while (instruction != null)
+			{
+				if (IsFieldAccess(instruction))
+				{
+					ProcessFieldAccess(cil, instruction);
+				}
+				instruction = instruction.Next;
+			}
+		}
+
+		private void ProcessFieldAccess(CilWorker cil, Instruction instruction)
+		{
+			FieldReference field = (FieldReference)instruction.Operand;
+			if (!IsActivatableField(field))
+			{
+				return;
+			}
+
+			MethodReference activate = ActivateMethod(field);
+			if (activate == null)
+			{
+				// TODO: better message here
+				TraceWarning("Cant instrument access to field '{0}'", field);
+				return;
+			}
+
+			cil.InsertBefore(instruction, cil.Create(OpCodes.Dup));
+			cil.InsertBefore(instruction, cil.Create(OpCodes.Call, activate));
+		}
+
+		private bool IsActivatableField(FieldReference field)
+		{
+			// TODO: check for transient here
+			return !field.Name.Contains("$");
+		}
+
+		private MethodReference ActivateMethod(FieldReference field)
+		{	
+			TypeDefinition type = field.DeclaringType as TypeDefinition;
+			if (type == null) return null;
+
+			MethodDefinition[] methods = type.Methods.GetMethod(ActivateMethodName);
+			if (methods.Length != 1) return null;
+
+			return methods[0];
+		}
+
+		private static bool IsFieldAccess(Instruction instruction)
+		{
+			return instruction.OpCode == OpCodes.Ldfld
+				// TODO: write a test case for passing a field by reference
+				; //|| instruction.OpCode == OpCodes.Ldflda;
 		}
 
 		private static bool IsPrivate(MethodDefinition method)
