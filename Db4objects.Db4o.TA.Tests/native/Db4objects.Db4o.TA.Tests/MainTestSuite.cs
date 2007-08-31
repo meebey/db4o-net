@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.TA.Tests
 			return new Type[]
 				{
 					typeof(AllTests),
-					typeof(CLI1.AllTests),
+					typeof(CLI2.AllTests),
 				};
 		}
 	}

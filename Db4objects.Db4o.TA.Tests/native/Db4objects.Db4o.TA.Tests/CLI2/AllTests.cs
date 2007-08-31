@@ -2,7 +2,7 @@
 using System;
 using Db4oUnit.Extensions;
 
-namespace Db4objects.Db4o.TA.Tests.CLI1
+namespace Db4objects.Db4o.TA.Tests.CLI2
 {
 	class AllTests : Db4oTestSuite
 	{
@@ -11,6 +11,7 @@ namespace Db4objects.Db4o.TA.Tests.CLI1
 			return new Type[]
 				{
 					typeof(ValueTypeActivationTestCase),
+					typeof(NullableTypeActivationTestCase)
 				};
 		}
 	}
