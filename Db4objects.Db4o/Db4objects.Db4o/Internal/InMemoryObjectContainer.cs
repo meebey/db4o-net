@@ -131,7 +131,7 @@ namespace Db4objects.Db4o.Internal
 			, int addressOffset)
 		{
 			int fullAddress = address + addressOffset;
-			int length = bytes.GetLength();
+			int length = bytes.Length();
 			EnsureMemoryFileSize(fullAddress + length);
 			System.Array.Copy(bytes._buffer, 0, _memoryFile.GetBytes(), fullAddress, length);
 		}

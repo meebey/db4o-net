@@ -124,47 +124,46 @@ namespace Db4objects.Db4o.Foundation.Network
 			private readonly BlockingByteChannel _enclosing;
 		}
 
-		public virtual int Read(byte[] a_bytes, int a_offset, int a_length)
+		public virtual int Read(byte[] bytes, int offset, int length)
 		{
-			int ret = (int)i_lock.Run(new _ISafeClosure4_87(this, a_length, a_bytes, a_offset
-				));
+			int ret = (int)i_lock.Run(new _ISafeClosure4_87(this, length, bytes, offset));
 			return ret;
 		}
 
 		private sealed class _ISafeClosure4_87 : ISafeClosure4
 		{
-			public _ISafeClosure4_87(BlockingByteChannel _enclosing, int a_length, byte[] a_bytes
-				, int a_offset)
+			public _ISafeClosure4_87(BlockingByteChannel _enclosing, int length, byte[] bytes
+				, int offset)
 			{
 				this._enclosing = _enclosing;
-				this.a_length = a_length;
-				this.a_bytes = a_bytes;
-				this.a_offset = a_offset;
+				this.length = length;
+				this.bytes = bytes;
+				this.offset = offset;
 			}
 
 			public object Run()
 			{
 				this._enclosing.WaitForAvailable();
 				int avail = this._enclosing.Available();
-				int length = a_length;
-				if (avail < a_length)
+				int toRead = length;
+				if (avail < length)
 				{
-					length = avail;
+					toRead = avail;
 				}
-				System.Array.Copy(this._enclosing.i_cache, this._enclosing.i_readOffset, a_bytes, 
-					a_offset, length);
-				this._enclosing.i_readOffset += length;
+				System.Array.Copy(this._enclosing.i_cache, this._enclosing.i_readOffset, bytes, offset
+					, toRead);
+				this._enclosing.i_readOffset += toRead;
 				this._enclosing.CheckDiscardCache();
-				return avail;
+				return toRead;
 			}
 
 			private readonly BlockingByteChannel _enclosing;
 
-			private readonly int a_length;
+			private readonly int length;
 
-			private readonly byte[] a_bytes;
+			private readonly byte[] bytes;
 
-			private readonly int a_offset;
+			private readonly int offset;
 		}
 
 		public virtual void SetTimeout(int timeout)
@@ -198,12 +197,12 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
-			i_lock.Run(new _ISafeClosure4_129(this, len, bytes, off));
+			i_lock.Run(new _ISafeClosure4_128(this, len, bytes, off));
 		}
 
-		private sealed class _ISafeClosure4_129 : ISafeClosure4
+		private sealed class _ISafeClosure4_128 : ISafeClosure4
 		{
-			public _ISafeClosure4_129(BlockingByteChannel _enclosing, int len, byte[] bytes, 
+			public _ISafeClosure4_128(BlockingByteChannel _enclosing, int len, byte[] bytes, 
 				int off)
 			{
 				this._enclosing = _enclosing;
@@ -234,12 +233,12 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		public virtual void Write(int i)
 		{
-			i_lock.Run(new _ISafeClosure4_142(this, i));
+			i_lock.Run(new _ISafeClosure4_141(this, i));
 		}
 
-		private sealed class _ISafeClosure4_142 : ISafeClosure4
+		private sealed class _ISafeClosure4_141 : ISafeClosure4
 		{
-			public _ISafeClosure4_142(BlockingByteChannel _enclosing, int i)
+			public _ISafeClosure4_141(BlockingByteChannel _enclosing, int i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;

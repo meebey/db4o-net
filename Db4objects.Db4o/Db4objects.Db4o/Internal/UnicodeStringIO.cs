@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -22,15 +23,15 @@ namespace Db4objects.Db4o.Internal
 			return (a_string.Length * 2) + Const4.OBJECT_LENGTH + Const4.INT_LENGTH;
 		}
 
-		public override string Read(Db4objects.Db4o.Internal.Buffer bytes, int a_length)
+		public override string Read(IReadBuffer buffer, int length)
 		{
-			CheckBufferLength(a_length);
-			for (int ii = 0; ii < a_length; ii++)
+			CheckBufferLength(length);
+			for (int ii = 0; ii < length; ii++)
 			{
-				chars[ii] = (char)((bytes._buffer[bytes._offset++] & unchecked((int)(0xff))) | ((
-					bytes._buffer[bytes._offset++] & unchecked((int)(0xff))) << 8));
+				chars[ii] = (char)((buffer.ReadByte() & unchecked((int)(0xff))) | ((buffer.ReadByte
+					() & unchecked((int)(0xff))) << 8));
 			}
-			return new string(chars, 0, a_length);
+			return new string(chars, 0, length);
 		}
 
 		public override string Read(byte[] a_bytes)
@@ -51,19 +52,19 @@ namespace Db4objects.Db4o.Internal
 			return (a_string.Length * 2) + Const4.INT_LENGTH;
 		}
 
-		public override void Write(Db4objects.Db4o.Internal.Buffer bytes, string @string)
+		public override void Write(IWriteBuffer buffer, string @string)
 		{
-			int len = WritetoBuffer(@string);
+			int len = MarshalledLength(@string);
 			for (int i = 0; i < len; i++)
 			{
-				bytes._buffer[bytes._offset++] = (byte)(chars[i] & unchecked((int)(0xff)));
-				bytes._buffer[bytes._offset++] = (byte)(chars[i] >> 8);
+				buffer.WriteByte((byte)(chars[i] & unchecked((int)(0xff))));
+				buffer.WriteByte((byte)(chars[i] >> 8));
 			}
 		}
 
 		internal override byte[] Write(string @string)
 		{
-			int len = WritetoBuffer(@string);
+			int len = MarshalledLength(@string);
 			byte[] bytes = new byte[len * 2];
 			int j = 0;
 			for (int i = 0; i < len; i++)

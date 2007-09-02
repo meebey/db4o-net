@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			, byte b)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.MsgD msg = GetWriterForLength(trans, 1);
-			msg._payLoad.Append(b);
+			msg._payLoad.WriteByte(b);
 			return msg;
 		}
 
@@ -53,11 +53,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			message.WriteInt(length);
 			if (trans.ParentTransaction() == null)
 			{
-				message._payLoad.Append(Const4.SYSTEM_TRANS);
+				message._payLoad.WriteByte(Const4.SYSTEM_TRANS);
 			}
 			else
 			{
-				message._payLoad.Append(Const4.USER_TRANS);
+				message._payLoad.WriteByte(Const4.USER_TRANS);
 			}
 			return message;
 		}
@@ -143,7 +143,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			 bytes)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.MsgD message = GetWriterForLength(bytes.GetTransaction
-				(), bytes.GetLength());
+				(), bytes.Length());
 			message._payLoad.Append(bytes._buffer);
 			return message;
 		}

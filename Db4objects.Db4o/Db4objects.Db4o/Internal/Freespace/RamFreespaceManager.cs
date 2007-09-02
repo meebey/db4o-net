@@ -122,7 +122,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private void FreeReader(StatefulBuffer reader)
 		{
-			_file.Free(reader.GetAddress(), reader.GetLength());
+			_file.Free(reader.GetAddress(), reader.Length());
 		}
 
 		public override Slot GetSlot(int length)

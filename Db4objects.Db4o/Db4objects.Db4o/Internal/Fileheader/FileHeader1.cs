@@ -110,7 +110,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			, bool shuttingDown, StatefulBuffer writer, int blockSize, int freespaceID)
 		{
 			writer.Append(SIGNATURE);
-			writer.Append(VERSION);
+			writer.WriteByte(VERSION);
 			writer.WriteInt((int)TimeToWrite(_timerFileLock.OpenTime(), shuttingDown));
 			writer.WriteLong(TimeToWrite(_timerFileLock.OpenTime(), shuttingDown));
 			writer.WriteLong(TimeToWrite(Runtime.CurrentTimeMillis(), shuttingDown));

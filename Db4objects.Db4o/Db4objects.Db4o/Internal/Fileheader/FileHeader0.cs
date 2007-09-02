@@ -134,8 +134,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override void WriteFixedPart(LocalObjectContainer file, bool startFileLockingThread
 			, bool shuttingDown, StatefulBuffer writer, int blockSize_, int freespaceID)
 		{
-			writer.Append(Const4.YAPFILEVERSION);
-			writer.Append((byte)blockSize_);
+			writer.WriteByte(Const4.YAPFILEVERSION);
+			writer.WriteByte((byte)blockSize_);
 			writer.WriteInt(_configBlock.Address());
 			writer.WriteInt((int)TimeToWrite(_configBlock.OpenTime(), shuttingDown));
 			writer.WriteInt(file.SystemData().ClassCollectionID());

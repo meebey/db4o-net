@@ -5,6 +5,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -101,6 +102,22 @@ namespace Db4objects.Db4o.Internal.Handlers
 		internal override bool IsSmaller1(object obj)
 		{
 			return obj is short && Val(obj) < i_compareTo;
+		}
+
+		public override object Read(IReadContext context)
+		{
+			int value = 0;
+			for (int i = 0; i < Const4.SHORT_BYTES; i++)
+			{
+				value = ((value << 8) + context.ReadByte());
+			}
+			return (short)value;
+		}
+
+		public override void Write(IWriteContext context, object obj)
+		{
+			short shortValue = ((short)obj);
+			context.WriteBytes(new byte[] { (byte)(shortValue >> 8), (byte)shortValue });
 		}
 	}
 }

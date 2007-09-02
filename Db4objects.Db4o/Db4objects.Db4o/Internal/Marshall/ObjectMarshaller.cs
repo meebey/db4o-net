@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
@@ -15,11 +14,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			private bool _cancelled = false;
 
-			public virtual int FieldCount(ClassMetadata yapClass, Db4objects.Db4o.Internal.Buffer
+			public virtual int FieldCount(ClassMetadata classMetadata, Db4objects.Db4o.Internal.Buffer
 				 reader)
 			{
-				return (Debug.atHome ? yapClass.ReadFieldCountSodaAtHome(reader) : yapClass.ReadFieldCount
-					(reader));
+				return classMetadata.ReadFieldCount(reader);
 			}
 
 			public virtual bool Cancelled()
@@ -36,24 +34,25 @@ namespace Db4objects.Db4o.Internal.Marshall
 				 containingClass);
 		}
 
-		protected virtual void TraverseFields(ClassMetadata yc, Db4objects.Db4o.Internal.Buffer
-			 reader, ObjectHeaderAttributes attributes, ObjectMarshaller.TraverseFieldCommand
-			 command)
+		protected void TraverseFields(ClassMetadata classMetadata, Db4objects.Db4o.Internal.Buffer
+			 reader, IFieldListInfo fieldList, ObjectMarshaller.TraverseFieldCommand command
+			)
 		{
 			int fieldIndex = 0;
-			while (yc != null && !command.Cancelled())
+			while (classMetadata != null && !command.Cancelled())
 			{
-				int fieldCount = command.FieldCount(yc, reader);
+				int fieldCount = command.FieldCount(classMetadata, reader);
 				for (int i = 0; i < fieldCount && !command.Cancelled(); i++)
 				{
-					command.ProcessField(yc.i_fields[i], IsNull(attributes, fieldIndex), yc);
+					command.ProcessField(classMetadata.i_fields[i], IsNull(fieldList, fieldIndex), classMetadata
+						);
 					fieldIndex++;
 				}
-				yc = yc.i_ancestor;
+				classMetadata = classMetadata.i_ancestor;
 			}
 		}
 
-		protected abstract bool IsNull(ObjectHeaderAttributes attributes, int fieldIndex);
+		protected abstract bool IsNull(IFieldListInfo fieldList, int fieldIndex);
 
 		public abstract void AddFieldIndices(ClassMetadata yc, ObjectHeaderAttributes attributes
 			, StatefulBuffer writer, Slot oldSlot);
@@ -104,7 +103,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		protected virtual void MarshallUpdateWrite(Transaction trans, ObjectReference yo, 
 			object obj, StatefulBuffer writer)
 		{
-			ClassMetadata yc = yo.GetYapClass();
+			ClassMetadata yc = yo.ClassMetadata();
 			ObjectContainerBase stream = trans.Container();
 			stream.WriteUpdate(yc, writer);
 			if (yo.IsActive())

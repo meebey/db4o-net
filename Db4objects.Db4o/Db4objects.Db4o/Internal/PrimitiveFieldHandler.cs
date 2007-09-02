@@ -1,11 +1,13 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
@@ -61,7 +63,7 @@ namespace Db4objects.Db4o.Internal
 			if (i_handler is ArrayHandler)
 			{
 				ArrayHandler ya = (ArrayHandler)i_handler;
-				if (ya.i_isPrimitive)
+				if (ya._isPrimitive)
 				{
 					ya.DeletePrimitiveEmbedded(a_bytes, this);
 					a_bytes.SlotDelete();
@@ -161,7 +163,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override bool IsArray()
 		{
-			return i_id == HandlerRegistry.ANY_ARRAY_ID || i_id == HandlerRegistry.ANY_ARRAY_N_ID;
+			return _id == HandlerRegistry.ANY_ARRAY_ID || _id == HandlerRegistry.ANY_ARRAY_N_ID;
 		}
 
 		public override bool IsPrimitive()
@@ -261,6 +263,16 @@ namespace Db4objects.Db4o.Internal
 			 value)
 		{
 			return value;
+		}
+
+		public override object Read(IReadContext context)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Write(IWriteContext context, object obj)
+		{
+			i_handler.Write(context, obj);
 		}
 	}
 }

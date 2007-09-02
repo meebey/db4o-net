@@ -19,23 +19,15 @@ namespace Db4objects.Db4o.Tests.Common.Set
 			public DeepSetClientServerTestCase.Item child;
 
 			public string name;
-
-			internal Item(DeepSetClientServerTestCase _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			private readonly DeepSetClientServerTestCase _enclosing;
 		}
 
 		protected override void Store()
 		{
-			DeepSetClientServerTestCase.Item item = new DeepSetClientServerTestCase.Item(this
-				);
+			DeepSetClientServerTestCase.Item item = new DeepSetClientServerTestCase.Item();
 			item.name = "1";
-			item.child = new DeepSetClientServerTestCase.Item(this);
+			item.child = new DeepSetClientServerTestCase.Item();
 			item.child.name = "2";
-			item.child.child = new DeepSetClientServerTestCase.Item(this);
+			item.child.child = new DeepSetClientServerTestCase.Item();
 			item.child.child.name = "3";
 			Store(item);
 		}
@@ -45,8 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Set
 			IExtObjectContainer oc1 = OpenNewClient();
 			IExtObjectContainer oc2 = OpenNewClient();
 			IExtObjectContainer oc3 = OpenNewClient();
-			DeepSetClientServerTestCase.Item example = new DeepSetClientServerTestCase.Item(this
-				);
+			DeepSetClientServerTestCase.Item example = new DeepSetClientServerTestCase.Item();
 			example.name = "1";
 			try
 			{

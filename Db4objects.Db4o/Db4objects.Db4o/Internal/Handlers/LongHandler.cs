@@ -1,10 +1,12 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -61,18 +63,41 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override void Write(object obj, Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			WriteLong(((long)obj), buffer);
+			WriteLong(buffer, ((long)obj));
 		}
 
-		public static void WriteLong(long val, Db4objects.Db4o.Internal.Buffer bytes)
+		public static void WriteLong(IWriteBuffer buffer, long val)
 		{
-			PrimitiveCodec.WriteLong(bytes._buffer, bytes._offset, val);
-			IncrementOffset(bytes);
+			if (Deploy.debug && Deploy.debugLong)
+			{
+				string l_s = "                                " + val;
+				new LatinStringIO().Write(buffer, Sharpen.Runtime.Substring(l_s, l_s.Length - Const4
+					.LONG_BYTES));
+			}
+			else
+			{
+				for (int i = 0; i < Const4.LONG_BYTES; i++)
+				{
+					buffer.WriteByte((byte)(val >> ((Const4.LONG_BYTES - 1 - i) * 8)));
+				}
+			}
 		}
 
-		private static void IncrementOffset(Db4objects.Db4o.Internal.Buffer buffer)
+		public static long ReadLong(IReadBuffer buffer)
 		{
-			buffer.IncrementOffset(Const4.LONG_BYTES);
+			long ret = 0;
+			if (Deploy.debug && Deploy.debugLong)
+			{
+				ret = long.Parse(new LatinStringIO().Read(buffer, Const4.LONG_BYTES).Trim());
+			}
+			else
+			{
+				for (int i = 0; i < Const4.LONG_BYTES; i++)
+				{
+					ret = (ret << 8) + (buffer.ReadByte() & unchecked((int)(0xff)));
+				}
+			}
+			return ret;
 		}
 
 		private long i_compareTo;
@@ -105,6 +130,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 		internal override bool IsSmaller1(object obj)
 		{
 			return obj is long && Val(obj) < i_compareTo;
+		}
+
+		public override object Read(IReadContext context)
+		{
+			return context.ReadLong();
+		}
+
+		public override void Write(IWriteContext context, object obj)
+		{
+			context.WriteLong(((long)obj));
 		}
 	}
 }

@@ -5,6 +5,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -84,6 +85,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 		internal override bool IsSmaller1(object obj)
 		{
 			return obj is float && Valu(obj) < i_compareTo;
+		}
+
+		public override object Read(IReadContext context)
+		{
+			return Sharpen.Runtime.IntBitsToFloat(context.ReadInt());
+		}
+
+		public override void Write(IWriteContext context, object obj)
+		{
+			context.WriteInt(Sharpen.Runtime.FloatToIntBits(((float)obj)));
 		}
 	}
 }

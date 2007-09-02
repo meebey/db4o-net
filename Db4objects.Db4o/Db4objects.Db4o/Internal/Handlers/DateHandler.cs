@@ -5,6 +5,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Sharpen.Util;
 
@@ -98,6 +99,18 @@ namespace Db4objects.Db4o.Internal.Handlers
 		internal override bool IsSmaller1(object obj)
 		{
 			return obj is Date && Val(obj) < CurrentLong();
+		}
+
+		public override object Read(IReadContext context)
+		{
+			long milliseconds = ((long)base.Read(context));
+			return new Date(milliseconds);
+		}
+
+		public override void Write(IWriteContext context, object obj)
+		{
+			long milliseconds = ((Date)obj).GetTime();
+			base.Write(context, milliseconds);
 		}
 	}
 }

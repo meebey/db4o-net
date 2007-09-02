@@ -7,6 +7,7 @@ using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -171,7 +172,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				StatefulBuffer entryAsWriter = (StatefulBuffer)entry;
 				writer.WriteInt(entryAsWriter.GetAddress());
-				writer.WriteInt(entryAsWriter.GetLength());
+				writer.WriteInt(entryAsWriter.Length());
 				return;
 			}
 			if (entry is Slot)
@@ -309,6 +310,28 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				mf._string.Defrag(readers);
 			}
+		}
+
+		public override object Read(IReadContext context)
+		{
+			int length = context.ReadInt();
+			object result = StringIo(context).Read(context, length);
+			return result;
+		}
+
+		public override void Write(IWriteContext context, object obj)
+		{
+			string str = (string)obj;
+			context.WriteInt(str.Length);
+			StringIo(context).Write(context, str);
+		}
+
+		private LatinStringIO StringIo(IContext context)
+		{
+			IInternalObjectContainer objectContainer = (IInternalObjectContainer)context.ObjectContainer
+				();
+			LatinStringIO stringIO = objectContainer.Container().StringIO();
+			return stringIO;
 		}
 	}
 }

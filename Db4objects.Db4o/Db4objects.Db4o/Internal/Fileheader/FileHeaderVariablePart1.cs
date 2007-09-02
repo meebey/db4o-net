@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 
@@ -50,7 +51,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			 writer)
 		{
 			writer.WriteInt(_systemData.ConverterVersion());
-			writer.Append(_systemData.FreespaceSystem());
+			writer.WriteByte(_systemData.FreespaceSystem());
 			writer.WriteInt(_systemData.FreespaceAddress());
 			writer.WriteInt(_systemData.Identity().GetID(trans));
 			writer.WriteLong(_systemData.LastTimeStampID());
@@ -60,7 +61,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private void ReadIdentity(LocalTransaction trans, int identityID)
 		{
 			LocalObjectContainer file = trans.File();
-			Db4oDatabase identity = (Db4oDatabase)file.GetByID(trans, identityID);
+			Db4oDatabase identity = Debug.staticIdentity ? Db4oDatabase.STATIC_IDENTITY : (Db4oDatabase
+				)file.GetByID(trans, identityID);
 			file.Activate(trans, identity, 2);
 			_systemData.Identity(identity);
 		}

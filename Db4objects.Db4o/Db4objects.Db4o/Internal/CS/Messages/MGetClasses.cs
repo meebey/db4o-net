@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				 + 1);
 			Db4objects.Db4o.Internal.Buffer writer = message.PayLoad();
 			writer.WriteInt(stream.ClassCollection().GetID());
-			writer.Append(stream.StringIO().EncodingByte());
+			writer.WriteByte(stream.StringIO().EncodingByte());
 			Write(message);
 			return true;
 		}

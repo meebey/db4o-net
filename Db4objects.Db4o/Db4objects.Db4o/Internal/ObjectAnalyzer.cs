@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				_classMetadata = _ref.GetYapClass();
+				_classMetadata = _ref.ClassMetadata();
 			}
 			if (IsPlainObjectOrPrimitive(_classMetadata))
 			{

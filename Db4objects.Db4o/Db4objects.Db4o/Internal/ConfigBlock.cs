@@ -264,13 +264,13 @@ namespace Db4objects.Db4o.Internal
 			{
 				writer.WriteLong(TimerFileLock().OpenTime());
 			}
-			writer.Append(SystemData().StringEncoding());
+			writer.WriteByte(SystemData().StringEncoding());
 			IntHandler.WriteInt(0, writer);
 			IntHandler.WriteInt(0, writer);
 			IntHandler.WriteInt(_bootRecordID, writer);
 			IntHandler.WriteInt(0, writer);
 			writer.Append(PasswordToken());
-			writer.Append(SystemData().FreespaceSystem());
+			writer.WriteByte(SystemData().FreespaceSystem());
 			_container.EnsureFreespaceSlot();
 			IntHandler.WriteInt(SystemData().FreespaceAddress(), writer);
 			IntHandler.WriteInt(SystemData().ConverterVersion(), writer);

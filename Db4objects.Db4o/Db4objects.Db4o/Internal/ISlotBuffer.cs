@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal
 
 		byte ReadByte();
 
-		void Append(byte value);
+		void WriteByte(byte value);
 
 		int ReadInt();
 

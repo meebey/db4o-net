@@ -106,9 +106,9 @@ namespace Db4objects.Db4o.Config
 		/// <summary>Configures to batch messages between client and server.</summary>
 		/// <remarks>
 		/// Configures to batch messages between client and server. By default, batch
-		/// mode is disabled.
+		/// mode is enabled.
 		/// </remarks>
-		/// <param name="flag">true for batching messages.</param>
+		/// <param name="flag">false, to turn message batching off.</param>
 		void BatchMessages(bool flag);
 
 		/// <summary>Configures the maximum memory buffer size for batched message.</summary>

@@ -117,7 +117,8 @@ namespace Db4objects.Db4o.Internal.CS
 
 		protected override void Close2()
 		{
-			if (_messageDispatcher == null || !_messageDispatcher.IsMessageDispatcherAlive())
+			if ((!_singleThreaded) && (_messageDispatcher == null || !_messageDispatcher.IsMessageDispatcherAlive
+				()))
 			{
 				ShutdownObjectContainer();
 				return;
@@ -900,7 +901,7 @@ namespace Db4objects.Db4o.Internal.CS
 				}
 				else
 				{
-					multibytes.WriteInt(msg.PayLoad().GetLength());
+					multibytes.WriteInt(msg.PayLoad().Length());
 					multibytes.PayLoad().Append(msg.PayLoad()._buffer);
 				}
 			}
@@ -911,7 +912,7 @@ namespace Db4objects.Db4o.Internal.CS
 		public void AddToBatch(Msg msg)
 		{
 			_batchedMessages.Add(msg);
-			_batchedQueueLength += Const4.INT_LENGTH + msg.PayLoad().GetLength();
+			_batchedQueueLength += Const4.INT_LENGTH + msg.PayLoad().Length();
 		}
 
 		private void ClearBatchedObjects()

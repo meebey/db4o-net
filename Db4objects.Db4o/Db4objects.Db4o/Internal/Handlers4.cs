@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (handler is ArrayHandler)
 			{
-				return ((ArrayHandler)handler).i_handler;
+				return ((ArrayHandler)handler)._handler;
 			}
 			if (handler is PrimitiveFieldHandler)
 			{

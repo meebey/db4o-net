@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Constraints
 	/// <summary>Base class for all constraint exceptions.</summary>
 	/// <remarks>Base class for all constraint exceptions.</remarks>
 	[System.Serializable]
-	public abstract class ConstraintViolationException : Db4oException
+	public class ConstraintViolationException : Db4oException
 	{
 		/// <summary>
 		/// ConstraintViolationException constructor with a specific

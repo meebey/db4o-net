@@ -168,7 +168,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				reader.SetCascadeDeletes(a_cascade);
 				reader.SlotDelete();
-				ClassMetadata yc = yo.GetYapClass();
+				ClassMetadata yc = yo.ClassMetadata();
 				yc.Delete(reader, obj);
 				return true;
 			}
@@ -739,7 +739,7 @@ namespace Db4objects.Db4o.Internal
 		public sealed override void WriteEmbedded(StatefulBuffer a_parent, StatefulBuffer
 			 a_child)
 		{
-			Slot slot = GetSlot(a_child.GetLength());
+			Slot slot = GetSlot(a_child.Length());
 			a_child.GetTransaction().SlotFreeOnRollback(slot.Address(), slot);
 			a_child.Address(slot.Address());
 			a_child.WriteEncrypt();
@@ -797,7 +797,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			Transaction trans = buffer.GetTransaction();
 			int id = buffer.GetID();
-			Slot slot = GetSlot(buffer.GetLength());
+			Slot slot = GetSlot(buffer.Length());
 			buffer.Address(slot.Address());
 			trans.ProduceUpdateSlotChange(id, slot);
 		}

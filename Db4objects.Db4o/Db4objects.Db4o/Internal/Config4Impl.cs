@@ -136,7 +136,7 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ALIASES = new KeySpec(null);
 
-		private static readonly KeySpec BATCH_MESSAGES = new KeySpec(false);
+		private static readonly KeySpec BATCH_MESSAGES = new KeySpec(true);
 
 		private static readonly KeySpec MAX_BATCH_QUEUE_SIZE = new KeySpec(int.MaxValue);
 

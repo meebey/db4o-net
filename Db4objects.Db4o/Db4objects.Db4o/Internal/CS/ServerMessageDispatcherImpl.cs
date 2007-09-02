@@ -82,6 +82,24 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
+		public void CloseConnection()
+		{
+			lock (_mainLock)
+			{
+				lock (_lock)
+				{
+					if (!IsMessageDispatcherAlive())
+					{
+						return;
+					}
+					SendCloseMessage();
+					CloseSocket();
+					RemoveFromServer();
+					_isClosed = true;
+				}
+			}
+		}
+
 		public void SendCloseMessage()
 		{
 			try

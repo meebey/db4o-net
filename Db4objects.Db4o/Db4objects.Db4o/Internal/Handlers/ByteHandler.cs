@@ -4,6 +4,7 @@ using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -57,7 +58,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override void Write(object a_object, Db4objects.Db4o.Internal.Buffer a_bytes
 			)
 		{
-			a_bytes.Append(((byte)a_object));
+			a_bytes.WriteByte(((byte)a_object));
 		}
 
 		private byte i_compareTo;
@@ -85,6 +86,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 		internal override bool IsSmaller1(object obj)
 		{
 			return obj is byte && Val(obj) < i_compareTo;
+		}
+
+		public override object Read(IReadContext context)
+		{
+			byte byteValue = context.ReadByte();
+			return byteValue;
+		}
+
+		public override void Write(IWriteContext context, object obj)
+		{
+			context.WriteByte(((byte)obj));
 		}
 	}
 }

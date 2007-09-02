@@ -19,14 +19,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return;
 			}
 			Transaction trans = reader.GetTransaction();
-			if (reader.CascadeDeletes() > 0 && arrayHandler.i_handler is ClassMetadata)
+			if (reader.CascadeDeletes() > 0 && arrayHandler._handler is ClassMetadata)
 			{
 				StatefulBuffer bytes = reader.GetStream().ReadWriterByAddress(trans, slot.Address
 					(), slot.Length());
 				bytes.SetCascadeDeletes(reader.CascadeDeletes());
 				for (int i = arrayHandler.ElementCount(trans, bytes); i > 0; i--)
 				{
-					arrayHandler.i_handler.DeleteEmbedded(_family, bytes);
+					arrayHandler._handler.DeleteEmbedded(_family, bytes);
 				}
 			}
 			trans.SlotFreeOnCommit(slot.Address(), slot);

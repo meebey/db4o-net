@@ -3,17 +3,18 @@
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <summary>
-	/// Common base class for YapString and YapArray:
-	/// There is one indirection in the database file to this.
+	/// Common base class for StringHandler and ArrayHandler:
+	/// The common pattern for both is that a slot  is one indirection in the database file to this.
 	/// </summary>
 	/// <remarks>
-	/// Common base class for YapString and YapArray:
-	/// There is one indirection in the database file to this.
+	/// Common base class for StringHandler and ArrayHandler:
+	/// The common pattern for both is that a slot  is one indirection in the database file to this.
 	/// </remarks>
 	/// <exclude></exclude>
 	public abstract class BuiltinTypeHandler : ITypeHandler4
@@ -57,6 +58,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public abstract object Read(MarshallerFamily arg1, StatefulBuffer arg2, bool arg3
 			);
 
+		public abstract object Read(IReadContext arg1);
+
 		public abstract object ReadQuery(Transaction arg1, MarshallerFamily arg2, bool arg3
 			, Db4objects.Db4o.Internal.Buffer arg4, bool arg5);
 
@@ -65,5 +68,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract object Write(MarshallerFamily arg1, object arg2, bool arg3, StatefulBuffer
 			 arg4, bool arg5, bool arg6);
+
+		public abstract void Write(IWriteContext arg1, object arg2);
 	}
 }

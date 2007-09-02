@@ -5,6 +5,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -119,6 +120,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override void DefragIndexEntry(BufferPair readers)
 		{
 			readers.IncrementIntSize();
+		}
+
+		public override object Read(IReadContext context)
+		{
+			return context.ReadInt();
+		}
+
+		public override void Write(IWriteContext context, object obj)
+		{
+			context.WriteInt(((int)obj));
 		}
 	}
 }

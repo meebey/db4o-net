@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -49,14 +50,14 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual string Read(Db4objects.Db4o.Internal.Buffer bytes, int a_length)
+		public virtual string Read(IReadBuffer buffer, int length)
 		{
-			CheckBufferLength(a_length);
-			for (int ii = 0; ii < a_length; ii++)
+			CheckBufferLength(length);
+			for (int ii = 0; ii < length; ii++)
 			{
-				chars[ii] = (char)(bytes._buffer[bytes._offset++] & unchecked((int)(0xff)));
+				chars[ii] = (char)(buffer.ReadByte() & unchecked((int)(0xff)));
 			}
-			return new string(chars, 0, a_length);
+			return new string(chars, 0, length);
 		}
 
 		public virtual string Read(byte[] a_bytes)
@@ -74,7 +75,7 @@ namespace Db4objects.Db4o.Internal
 			return a_string.Length + Const4.INT_LENGTH;
 		}
 
-		protected virtual int WritetoBuffer(string str)
+		protected virtual int MarshalledLength(string str)
 		{
 			int len = str.Length;
 			CheckBufferLength(len);
@@ -82,18 +83,18 @@ namespace Db4objects.Db4o.Internal
 			return len;
 		}
 
-		public virtual void Write(Db4objects.Db4o.Internal.Buffer bytes, string @string)
+		public virtual void Write(IWriteBuffer buffer, string @string)
 		{
-			int len = WritetoBuffer(@string);
+			int len = MarshalledLength(@string);
 			for (int i = 0; i < len; i++)
 			{
-				bytes._buffer[bytes._offset++] = (byte)(chars[i] & unchecked((int)(0xff)));
+				buffer.WriteByte((byte)(chars[i] & unchecked((int)(0xff))));
 			}
 		}
 
 		internal virtual byte[] Write(string @string)
 		{
-			int len = WritetoBuffer(@string);
+			int len = MarshalledLength(@string);
 			byte[] bytes = new byte[len];
 			for (int i = 0; i < len; i++)
 			{

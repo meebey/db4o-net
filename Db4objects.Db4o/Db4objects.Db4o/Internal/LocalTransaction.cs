@@ -749,7 +749,7 @@ namespace Db4objects.Db4o.Internal
 			objectBytes.SetCascadeDeletes(cascade);
 			clazz.DeleteMembers(oh._marshallerFamily, oh._headerAttributes, objectBytes, typeInfo
 				, true);
-			SlotFreeOnCommit(id, new Slot(objectBytes.GetAddress(), objectBytes.GetLength()));
+			SlotFreeOnCommit(id, new Slot(objectBytes.GetAddress(), objectBytes.Length()));
 		}
 
 		private ICallbacks Callbacks()

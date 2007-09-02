@@ -353,7 +353,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			if (oldPending == null)
 			{
 				a_pending.ChangeConstraint();
-				_pendingJoins = Tree.Add(_pendingJoins, a_pending);
+				_pendingJoins = Tree.Add(_pendingJoins, a_pending.InternalClonePayload());
 				return true;
 			}
 			_pendingJoins = _pendingJoins.RemoveNode(oldPending);

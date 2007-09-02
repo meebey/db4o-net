@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		internal virtual MsgD GetWriter(StatefulBuffer bytes, int[] prependInts)
 		{
-			int lengthNeeded = bytes.GetLength() + LENGTH_FOR_FIRST;
+			int lengthNeeded = bytes.Length() + LENGTH_FOR_FIRST;
 			if (prependInts != null)
 			{
 				lengthNeeded += (prependInts.Length * Const4.INT_LENGTH);

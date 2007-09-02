@@ -23,20 +23,16 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 			public SecondLevelIndexTestCase.Item item2;
 
-			public ItemPair(SecondLevelIndexTestCase _enclosing)
+			public ItemPair()
 			{
-				this._enclosing = _enclosing;
 			}
 
-			public ItemPair(SecondLevelIndexTestCase _enclosing, SecondLevelIndexTestCase.Item
-				 item_, SecondLevelIndexTestCase.Item item2_)
+			public ItemPair(SecondLevelIndexTestCase.Item item_, SecondLevelIndexTestCase.Item
+				 item2_)
 			{
-				this._enclosing = _enclosing;
-				this.item1 = item_;
-				this.item2 = item2_;
+				item1 = item_;
+				item2 = item2_;
 			}
-
-			private readonly SecondLevelIndexTestCase _enclosing;
 		}
 
 		public class Item
@@ -74,7 +70,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			SecondLevelIndexTestCase.Item itemOne = new SecondLevelIndexTestCase.Item("one");
 			SecondLevelIndexTestCase.Item itemTwo = new SecondLevelIndexTestCase.Item("two");
-			Store(new SecondLevelIndexTestCase.ItemPair(this, itemOne, itemTwo));
+			Store(new SecondLevelIndexTestCase.ItemPair(itemOne, itemTwo));
 			IQuery query = NewQuery(typeof(SecondLevelIndexTestCase.ItemPair));
 			query.Descend("item2").Descend("name").Constrain("two");
 			IObjectSet objectSet = query.Execute();

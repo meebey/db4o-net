@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			bitmap.Set(0, field.IsPrimitive());
 			bitmap.Set(1, handler is ArrayHandler);
 			bitmap.Set(2, handler is MultidimensionalArrayHandler);
-			writer.Append(bitmap.GetByte(0));
+			writer.WriteByte(bitmap.GetByte(0));
 		}
 
 		public virtual void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO

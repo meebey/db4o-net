@@ -38,6 +38,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public static readonly MClose CLOSE = new MClose();
 
+		public static readonly MCloseSocket CLOSE_SOCKET = new MCloseSocket();
+
 		public static readonly MCommit COMMIT = new MCommit();
 
 		public static readonly MCommittedCallBackRegistry COMMITTED_CALLBACK_REGISTER = new 

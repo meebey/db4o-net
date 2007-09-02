@@ -6,6 +6,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -234,6 +235,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 			()
 		{
 			return MarshallerFamily.Current()._primitive;
+		}
+
+		public virtual void Write(IWriteContext context, object obj)
+		{
+			throw new NotImplementedException();
+		}
+
+		public virtual object Read(IReadContext context)
+		{
+			throw new NotImplementedException();
 		}
 
 		public abstract int GetID();

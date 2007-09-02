@@ -1215,7 +1215,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			int endOffset = a_writer._offset;
 			a_writer._offset = startOffset;
 			a_writer.WriteInt(count);
-			a_writer.Append(_isLeaf ? (byte)1 : (byte)0);
+			a_writer.WriteByte(_isLeaf ? (byte)1 : (byte)0);
 			a_writer.WriteInt(_parentID);
 			a_writer.WriteInt(_previousID);
 			a_writer.WriteInt(_nextID);

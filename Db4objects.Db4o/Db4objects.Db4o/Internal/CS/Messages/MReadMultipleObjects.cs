@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 						if (bytes != null)
 						{
 							ret[i] = Msg.OBJECT_TO_CLIENT.GetWriter(bytes);
-							length += ret[i]._payLoad.GetLength();
+							length += ret[i]._payLoad.Length();
 						}
 					}
 					catch (Exception e)
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				}
 				else
 				{
-					multibytes.WriteInt(ret[i]._payLoad.GetLength());
+					multibytes.WriteInt(ret[i]._payLoad.Length());
 					multibytes._payLoad.Append(ret[i]._payLoad._buffer);
 				}
 			}

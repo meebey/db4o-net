@@ -372,7 +372,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		public override void WriteThis(Transaction trans, Db4objects.Db4o.Internal.Buffer
 			 a_writer)
 		{
-			a_writer.Append(BTREE_VERSION);
+			a_writer.WriteByte(BTREE_VERSION);
 			a_writer.WriteInt(_size);
 			a_writer.WriteInt(NodeSize());
 			a_writer.WriteIDOf(trans, _root);

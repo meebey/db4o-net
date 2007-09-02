@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
 			, ArrayHandler arrayHandler, object obj, bool topLevel)
 		{
-			ITypeHandler4 typeHandler = arrayHandler.i_handler;
+			ITypeHandler4 typeHandler = arrayHandler._handler;
 			if (topLevel)
 			{
 				header.AddBaseLength(arrayHandler.LinkLength());
@@ -47,14 +47,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			int linkOffSet = reader._offset;
 			Transaction trans = reader.GetTransaction();
-			ITypeHandler4 typeHandler = arrayHandler.i_handler;
+			ITypeHandler4 typeHandler = arrayHandler._handler;
 			if (reader.CascadeDeletes() > 0 && typeHandler is ClassMetadata)
 			{
 				reader._offset = address;
 				reader.SetCascadeDeletes(reader.CascadeDeletes());
 				for (int i = arrayHandler.ElementCount(trans, reader); i > 0; i--)
 				{
-					arrayHandler.i_handler.DeleteEmbedded(_family, reader);
+					arrayHandler._handler.DeleteEmbedded(_family, reader);
 				}
 			}
 			if (linkOffSet > 0)

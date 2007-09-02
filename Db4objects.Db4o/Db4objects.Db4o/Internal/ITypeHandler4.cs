@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
@@ -54,5 +55,9 @@ namespace Db4objects.Db4o.Internal
 			buffer, QCandidates candidates, bool withIndirection);
 
 		void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect);
+
+		object Read(IReadContext context);
+
+		void Write(IWriteContext context, object obj);
 	}
 }

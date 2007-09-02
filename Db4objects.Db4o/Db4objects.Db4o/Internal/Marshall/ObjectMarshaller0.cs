@@ -313,7 +313,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			StatefulBuffer writer = CreateWriterForNew(a_trans, yo, a_updateDepth, ObjectLength
 				(yo));
-			ClassMetadata yc = yo.GetYapClass();
+			ClassMetadata yc = yo.ClassMetadata();
 			object obj = yo.GetObject();
 			if (yc.IsPrimitive())
 			{
@@ -323,7 +323,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			else
 			{
 				WriteObjectClassID(writer, yc.GetID());
-				yc.CheckUpdateDepth(writer);
+				writer.SetUpdateDepth(yc.AdjustUpdateDepth(a_trans, writer.GetUpdateDepth()));
 				Marshall(yc, yo, obj, writer, true);
 			}
 			return writer;
@@ -332,18 +332,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void MarshallUpdate(Transaction trans, int updateDepth, ObjectReference
 			 yapObject, object obj)
 		{
-			StatefulBuffer writer = CreateWriterForUpdate(trans, updateDepth, yapObject.GetID
-				(), 0, ObjectLength(yapObject));
-			ClassMetadata yapClass = yapObject.GetYapClass();
-			yapClass.CheckUpdateDepth(writer);
-			writer.WriteInt(yapClass.GetID());
-			Marshall(yapClass, yapObject, obj, writer, false);
+			ClassMetadata classMetadata = yapObject.ClassMetadata();
+			StatefulBuffer writer = CreateWriterForUpdate(trans, classMetadata.AdjustUpdateDepth
+				(trans, updateDepth), yapObject.GetID(), 0, ObjectLength(yapObject));
+			writer.WriteInt(classMetadata.GetID());
+			Marshall(classMetadata, yapObject, obj, writer, false);
 			MarshallUpdateWrite(trans, yapObject, obj, writer);
 		}
 
 		private int ObjectLength(ObjectReference yo)
 		{
-			return HeaderLength() + LinkLength(yo.GetYapClass(), yo);
+			return HeaderLength() + LinkLength(yo.ClassMetadata(), yo);
 		}
 
 		public override ObjectHeaderAttributes ReadHeaderAttributes(Db4objects.Db4o.Internal.Buffer
@@ -376,14 +375,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
 			 yo, ObjectHeaderAttributes attributes, Db4objects.Db4o.Internal.Buffer reader)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_205(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_209(this
 				, trans, reader, yo);
 			TraverseFields(yc, reader, attributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_205 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_209 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_205(ObjectMarshaller0 _enclosing, Transaction trans, 
+			public _TraverseFieldCommand_209(ObjectMarshaller0 _enclosing, Transaction trans, 
 				Db4objects.Db4o.Internal.Buffer reader, ObjectReference yo)
 			{
 				this._enclosing = _enclosing;
@@ -407,7 +406,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			private readonly ObjectReference yo;
 		}
 
-		protected override bool IsNull(ObjectHeaderAttributes attributes, int fieldIndex)
+		protected override bool IsNull(IFieldListInfo fieldList, int fieldIndex)
 		{
 			return false;
 		}

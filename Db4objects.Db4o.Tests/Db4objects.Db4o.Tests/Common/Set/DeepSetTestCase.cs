@@ -19,24 +19,17 @@ namespace Db4objects.Db4o.Tests.Common.Set
 			public DeepSetTestCase.Item child;
 
 			public string name;
-
-			internal Item(DeepSetTestCase _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			private readonly DeepSetTestCase _enclosing;
 		}
 
 		private DeepSetTestCase.Item _item;
 
 		protected override void Store()
 		{
-			_item = new DeepSetTestCase.Item(this);
+			_item = new DeepSetTestCase.Item();
 			_item.name = "1";
-			_item.child = new DeepSetTestCase.Item(this);
+			_item.child = new DeepSetTestCase.Item();
 			_item.child.name = "2";
-			_item.child.child = new DeepSetTestCase.Item(this);
+			_item.child.child = new DeepSetTestCase.Item();
 			_item.child.child.name = "3";
 			Store(_item);
 		}

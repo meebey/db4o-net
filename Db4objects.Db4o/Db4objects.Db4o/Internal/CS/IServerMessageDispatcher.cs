@@ -34,6 +34,8 @@ namespace Db4objects.Db4o.Internal.CS
 
 		bool Close();
 
+		void CloseConnection();
+
 		bool CaresAboutCommitted();
 
 		void CaresAboutCommitted(bool care);

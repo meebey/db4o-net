@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				);
 			for (int i = 0; i < READERLENGTH; i++)
 			{
-				from.Append((byte)i);
+				from.WriteByte((byte)i);
 			}
 			Db4objects.Db4o.Internal.Buffer to = new Db4objects.Db4o.Internal.Buffer(READERLENGTH
 				 - 1);

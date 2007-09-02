@@ -206,7 +206,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					throw new ArgumentException("obj");
 				}
-				if (trans.Reflector().ForObject(obj) == yo.GetYapClass().ClassReflector())
+				if (trans.Reflector().ForObject(obj) == yo.ClassMetadata().ClassReflector())
 				{
 					ObjectReference newRef = Bind2(trans, yo, obj);
 					newRef.VirtualAttributes(trans);
@@ -260,7 +260,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return false;
 			}
-			return Platform4.Jdk().IsEnum(Reflector(), reference.GetYapClass().ClassReflector
+			return Platform4.Jdk().IsEnum(Reflector(), reference.ClassMetadata().ClassReflector
 				());
 		}
 
@@ -587,7 +587,7 @@ namespace Db4objects.Db4o.Internal
 				@ref.EndProcessing();
 				return;
 			}
-			ClassMetadata yc = @ref.GetYapClass();
+			ClassMetadata yc = @ref.ClassMetadata();
 			object obj = @ref.GetObject();
 			@ref.EndProcessing();
 			ActivateForDeletionCallback(trans, yc, obj);
@@ -601,7 +601,8 @@ namespace Db4objects.Db4o.Internal
 				ObjectOnDelete(trans, yc, obj);
 				if (ConfigImpl().MessageLevel() > Const4.STATE)
 				{
-					Message(string.Empty + @ref.GetID() + " delete " + @ref.GetYapClass().GetName());
+					Message(string.Empty + @ref.GetID() + " delete " + @ref.ClassMetadata().GetName()
+						);
 				}
 			}
 			@ref.EndProcessing();
@@ -662,7 +663,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					return null;
 				}
-				ClassMetadata yc = yo.GetYapClass();
+				ClassMetadata yc = yo.ClassMetadata();
 				FieldMetadata[] field = new FieldMetadata[] { null };
 				yc.ForEachFieldMetadata(new _IVisitor4_581(this, fieldName, field));
 				if (field[0] == null)
@@ -1911,7 +1912,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				if (ConfigImpl().MessageLevel() > Const4.STATE)
 				{
-					Message(string.Empty + @ref.GetID() + " new " + @ref.GetYapClass().GetName());
+					Message(string.Empty + @ref.GetID() + " new " + @ref.ClassMetadata().GetName());
 				}
 				FlagAsHandled(@ref);
 				StillToSet(trans, @ref, updateDepth);

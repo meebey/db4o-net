@@ -1,17 +1,17 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class Buffer : ISlotBuffer
+	public class Buffer : IReadBuffer, ISlotBuffer, IWriteBuffer
 	{
 		public byte[] _buffer;
 
@@ -31,15 +31,15 @@ namespace Db4objects.Db4o.Internal
 			_offset = offset;
 		}
 
-		public void Append(byte a_byte)
+		public virtual void WriteBytes(byte[] bytes)
 		{
-			_buffer[_offset++] = a_byte;
+			System.Array.Copy(bytes, 0, _buffer, _offset, bytes.Length);
+			_offset += bytes.Length;
 		}
 
-		public virtual void Append(byte[] a_bytes)
+		public virtual void Append(byte[] bytes)
 		{
-			System.Array.Copy(a_bytes, 0, _buffer, _offset, a_bytes.Length);
-			_offset += a_bytes.Length;
+			WriteBytes(bytes);
 		}
 
 		public bool ContainsTheSame(Db4objects.Db4o.Internal.Buffer other)
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Internal
 			System.Array.Copy(_buffer, fromOffset, to._buffer, toOffset, length);
 		}
 
-		public virtual int GetLength()
+		public virtual int Length()
 		{
 			return _buffer.Length;
 		}
@@ -73,10 +73,10 @@ namespace Db4objects.Db4o.Internal
 		public virtual void Read(ObjectContainerBase stream, int address, int addressOffset
 			)
 		{
-			stream.ReadBytes(_buffer, address, addressOffset, GetLength());
+			stream.ReadBytes(_buffer, address, addressOffset, Length());
 		}
 
-		public void ReadBegin(byte a_identifier)
+		public void ReadBegin(byte identifier)
 		{
 		}
 
@@ -113,19 +113,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void ReadEncrypt(ObjectContainerBase stream, int address)
 		{
-			stream.ReadBytes(_buffer, address, GetLength());
+			stream.ReadBytes(_buffer, address, Length());
 			stream._handlers.Decrypt(this);
 		}
 
 		public virtual void ReadEnd()
 		{
-			if (Deploy.debug && Deploy.brackets)
-			{
-				if (ReadByte() != Const4.YAPEND)
-				{
-					throw new Exception("YapBytes.readEnd() YAPEND expected");
-				}
-			}
 		}
 
 		public int ReadInt()
@@ -137,10 +130,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual long ReadLong()
 		{
-			long ret = 0;
-			ret = PrimitiveCodec.ReadLong(this._buffer, this._offset);
-			this.IncrementOffset(Const4.LONG_BYTES);
-			return ret;
+			return LongHandler.ReadLong(this);
 		}
 
 		public virtual Db4objects.Db4o.Internal.Buffer ReadPayloadReader(int offset, int 
@@ -159,7 +149,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void ReplaceWith(byte[] a_bytes)
 		{
-			System.Array.Copy(a_bytes, 0, _buffer, 0, GetLength());
+			System.Array.Copy(a_bytes, 0, _buffer, 0, Length());
 		}
 
 		public override string ToString()
@@ -186,6 +176,11 @@ namespace Db4objects.Db4o.Internal
 			_offset += nullBitMap.MarshalledLength();
 		}
 
+		public void WriteByte(byte a_byte)
+		{
+			_buffer[_offset++] = a_byte;
+		}
+
 		public void WriteEncrypt(LocalObjectContainer file, int address, int addressOffset
 			)
 		{
@@ -198,7 +193,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (Deploy.debug && Deploy.brackets)
 			{
-				Append(Const4.YAPEND);
+				WriteByte(Const4.YAPEND);
 			}
 		}
 
@@ -263,7 +258,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void WriteLong(long l)
 		{
-			LongHandler.WriteLong(l, this);
+			LongHandler.WriteLong(this, l);
 		}
 
 		public virtual void IncrementIntSize()

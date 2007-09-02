@@ -3,7 +3,6 @@
 using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Tests.Common.Events;
-using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.Events
 {
@@ -11,8 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 	{
 		public static void Main(string[] args)
 		{
-			System.Environment.Exit(new Db4objects.Db4o.Tests.Common.Events.AllTests().RunAll
-				());
+			new Db4objects.Db4o.Tests.Common.Events.AllTests().RunAll();
 		}
 
 		protected override Type[] TestCases()

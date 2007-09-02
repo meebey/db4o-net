@@ -766,20 +766,10 @@ namespace Db4objects.Db4o.Internal
 			, StatefulBuffer writer, Config4Class config, bool isNew)
 		{
 			object indexEntry = null;
-			if (obj != null && ((config != null && (config.CascadeOnUpdate().DefiniteYes())) 
-				|| (i_config != null && (i_config.CascadeOnUpdate().DefiniteYes()))))
+			if (obj != null && CascadeOnUpdate(config))
 			{
-				int min = 1;
-				if (_clazz.IsCollection(obj))
-				{
-					GenericReflector reflector = _clazz.Reflector();
-					min = reflector.CollectionUpdateDepth(reflector.ForObject(obj));
-				}
 				int updateDepth = writer.GetUpdateDepth();
-				if (updateDepth < min)
-				{
-					writer.SetUpdateDepth(min);
-				}
+				writer.SetUpdateDepth(AdjustUpdateDepth(obj, updateDepth));
 				indexEntry = i_handler.Write(mf, obj, true, writer, true, true);
 				writer.SetUpdateDepth(updateDepth);
 			}
@@ -788,6 +778,43 @@ namespace Db4objects.Db4o.Internal
 				indexEntry = i_handler.Write(mf, obj, true, writer, true, true);
 			}
 			AddIndexEntry(writer, indexEntry);
+		}
+
+		private int AdjustUpdateDepth(object obj, int updateDepth)
+		{
+			int minimumUpdateDepth = 1;
+			if (_clazz.IsCollection(obj))
+			{
+				GenericReflector reflector = _clazz.Reflector();
+				minimumUpdateDepth = reflector.CollectionUpdateDepth(reflector.ForObject(obj));
+			}
+			if (updateDepth < minimumUpdateDepth)
+			{
+				return minimumUpdateDepth;
+			}
+			return updateDepth;
+		}
+
+		private bool CascadeOnUpdate(Config4Class parentClassConfiguration)
+		{
+			return ((parentClassConfiguration != null && (parentClassConfiguration.CascadeOnUpdate
+				().DefiniteYes())) || (i_config != null && (i_config.CascadeOnUpdate().DefiniteYes
+				())));
+		}
+
+		public virtual void Marshall(MarshallingContext context, object obj)
+		{
+			int updateDepth = context.UpdateDepth();
+			if (obj != null && CascadeOnUpdate(context.ClassConfiguration()))
+			{
+				context.UpdateDepth(AdjustUpdateDepth(obj, updateDepth));
+			}
+			i_handler.Write(context, obj);
+			context.UpdateDepth(updateDepth);
+			if (HasIndex())
+			{
+				context.AddIndexEntry(this, obj);
+			}
 		}
 
 		public virtual bool NeedsArrayAndPrimitiveInfo()
@@ -925,14 +952,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_829(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_850(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_829 : IVisitor4
+		private sealed class _IVisitor4_850 : IVisitor4
 		{
-			public _IVisitor4_829(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_850(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;

@@ -283,7 +283,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				int encryptorOffSet = i_lastEncryptorByte;
 				byte[] bytes = reader._buffer;
-				for (int i = reader.GetLength() - 1; i >= 0; i--)
+				for (int i = reader.Length() - 1; i >= 0; i--)
 				{
 					bytes[i] += i_encryptor[encryptorOffSet];
 					if (encryptorOffSet == 0)
@@ -304,7 +304,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				byte[] bytes = reader._buffer;
 				int encryptorOffSet = i_lastEncryptorByte;
-				for (int i = reader.GetLength() - 1; i >= 0; i--)
+				for (int i = reader.Length() - 1; i >= 0; i--)
 				{
 					bytes[i] -= i_encryptor[encryptorOffSet];
 					if (encryptorOffSet == 0)

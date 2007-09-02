@@ -24,8 +24,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			_source = source;
 			_mapping = mapping;
-			_target = new Db4objects.Db4o.Internal.Buffer(source.GetLength());
-			_source.CopyTo(_target, 0, 0, _source.GetLength());
+			_target = new Db4objects.Db4o.Internal.Buffer(source.Length());
+			_source.CopyTo(_target, 0, 0, _source.Length());
 			_systemTrans = systemTrans;
 		}
 
@@ -184,7 +184,7 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			int targetID = context.MappedID(sourceID);
-			Slot targetSlot = context.AllocateTargetSlot(sourceReader.GetLength());
+			Slot targetSlot = context.AllocateTargetSlot(sourceReader.Length());
 			if (registerAddressMapping)
 			{
 				int sourceAddress = context.SourceAddressByID(sourceID);
@@ -201,10 +201,10 @@ namespace Db4objects.Db4o.Internal
 			context.TargetWriteBytes(readers, targetSlot.Address());
 		}
 
-		public void Append(byte value)
+		public void WriteByte(byte value)
 		{
 			_source.IncrementOffset(1);
-			_target.Append(value);
+			_target.WriteByte(value);
 		}
 
 		public long ReadLong()

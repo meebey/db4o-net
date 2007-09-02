@@ -14,25 +14,25 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class ObjectReference : PersistentBase, IObjectInfo, IActivator
 	{
-		private ClassMetadata _class;
+		private Db4objects.Db4o.Internal.ClassMetadata _class;
 
 		private object _object;
 
 		private Db4objects.Db4o.Internal.VirtualAttributes _virtualAttributes;
 
-		private Db4objects.Db4o.Internal.ObjectReference id_preceding;
+		private Db4objects.Db4o.Internal.ObjectReference _idPreceding;
 
-		private Db4objects.Db4o.Internal.ObjectReference id_subsequent;
+		private Db4objects.Db4o.Internal.ObjectReference _idSubsequent;
 
-		private int id_size;
+		private int _idSize;
 
-		private Db4objects.Db4o.Internal.ObjectReference hc_preceding;
+		private Db4objects.Db4o.Internal.ObjectReference _hcPreceding;
 
-		private Db4objects.Db4o.Internal.ObjectReference hc_subsequent;
+		private Db4objects.Db4o.Internal.ObjectReference _hcSubsequent;
 
-		private int hc_size;
+		private int _hcSize;
 
-		private int hc_code;
+		private int _hcHashcode;
 
 		private int _lastTopLevelCallId;
 
@@ -42,13 +42,14 @@ namespace Db4objects.Db4o.Internal
 
 		public ObjectReference(int a_id)
 		{
-			i_id = a_id;
+			_id = a_id;
 		}
 
-		internal ObjectReference(ClassMetadata a_yapClass, int a_id)
+		public ObjectReference(Db4objects.Db4o.Internal.ClassMetadata classMetadata, int 
+			id)
 		{
-			_class = a_yapClass;
-			i_id = a_id;
+			_class = classMetadata;
+			_id = id;
 		}
 
 		public virtual void Activate()
@@ -57,72 +58,68 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			Activate(Stream().Transaction(), GetObject(), 1, false);
+			Activate(Container().Transaction(), GetObject(), 1, false);
 		}
 
-		private ObjectContainerBase Stream()
+		public virtual void Activate(Db4objects.Db4o.Internal.Transaction ta, object obj, 
+			int depth, bool isRefresh)
 		{
-			return _class.Stream();
-		}
-
-		public virtual void Activate(Transaction ta, object a_object, int a_depth, bool a_refresh
-			)
-		{
-			Activate1(ta, a_object, a_depth, a_refresh);
+			Activate1(ta, obj, depth, isRefresh);
 			ta.Container().Activate3CheckStill(ta);
 		}
 
-		internal virtual void Activate1(Transaction ta, object a_object, int a_depth, bool
-			 a_refresh)
+		internal virtual void Activate1(Db4objects.Db4o.Internal.Transaction ta, object obj
+			, int depth, bool isRefresh)
 		{
-			if (a_object is IDb4oTypeImpl)
+			if (obj is IDb4oTypeImpl)
 			{
-				a_depth = ((IDb4oTypeImpl)a_object).AdjustReadDepth(a_depth);
+				depth = ((IDb4oTypeImpl)obj).AdjustReadDepth(depth);
 			}
-			if (a_depth > 0)
+			if (depth > 0)
 			{
-				ObjectContainerBase stream = ta.Container();
-				if (a_refresh)
+				ObjectContainerBase container = ta.Container();
+				if (isRefresh)
 				{
-					LogActivation(stream, "refresh");
+					LogActivation(container, "refresh");
 				}
 				else
 				{
 					if (IsActive())
 					{
-						if (a_object != null)
+						if (obj != null)
 						{
-							if (a_depth > 1)
+							if (depth > 1)
 							{
 								if (_class.Config() != null)
 								{
-									a_depth = _class.Config().AdjustActivationDepth(a_depth);
+									depth = _class.Config().AdjustActivationDepth(depth);
 								}
-								_class.ActivateFields(ta, a_object, a_depth);
+								_class.ActivateFields(ta, obj, depth);
 							}
 							return;
 						}
 					}
-					LogActivation(stream, "activate");
+					LogActivation(container, "activate");
 				}
-				Read(ta, null, a_object, a_depth, Const4.ADD_MEMBERS_TO_ID_TREE_ONLY, false);
+				Read(ta, null, obj, depth, Const4.ADD_MEMBERS_TO_ID_TREE_ONLY, false);
 			}
 		}
 
-		private void LogActivation(ObjectContainerBase stream, string @event)
+		private void LogActivation(ObjectContainerBase container, string @event)
 		{
-			LogEvent(stream, @event, Const4.ACTIVATION);
+			LogEvent(container, @event, Const4.ACTIVATION);
 		}
 
-		private void LogEvent(ObjectContainerBase stream, string @event, int level)
+		private void LogEvent(ObjectContainerBase container, string @event, int level)
 		{
-			if (stream.ConfigImpl().MessageLevel() > level)
+			if (container.ConfigImpl().MessageLevel() > level)
 			{
-				stream.Message(string.Empty + GetID() + " " + @event + " " + _class.GetName());
+				container.Message(string.Empty + GetID() + " " + @event + " " + _class.GetName());
 			}
 		}
 
-		internal void AddExistingReferenceToIdTree(Transaction trans)
+		internal void AddExistingReferenceToIdTree(Db4objects.Db4o.Internal.Transaction trans
+			)
 		{
 			if (!(_class is PrimitiveFieldHandler))
 			{
@@ -131,7 +128,8 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <summary>return false if class not completely initialized, otherwise true *</summary>
-		internal virtual bool ContinueSet(Transaction trans, int updateDepth)
+		internal virtual bool ContinueSet(Db4objects.Db4o.Internal.Transaction trans, int
+			 updateDepth)
 		{
 			if (BitIsTrue(Const4.CONTINUE))
 			{
@@ -142,13 +140,13 @@ namespace Db4objects.Db4o.Internal
 				BitFalse(Const4.CONTINUE);
 				StatefulBuffer writer = MarshallerFamily.Current()._object.MarshallNew(trans, this
 					, updateDepth);
-				ObjectContainerBase stream = trans.Container();
-				stream.WriteNew(_class, writer);
+				ObjectContainerBase container = trans.Container();
+				container.WriteNew(_class, writer);
 				object obj = _object;
 				ObjectOnNew(trans, obj);
 				if (!_class.IsPrimitive())
 				{
-					_object = stream._references.CreateYapRef(this, obj);
+					_object = container._references.CreateYapRef(this, obj);
 				}
 				SetStateClean();
 				EndProcessing();
@@ -156,16 +154,18 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		private void ObjectOnNew(Transaction transaction, object obj)
+		private void ObjectOnNew(Db4objects.Db4o.Internal.Transaction transaction, object
+			 obj)
 		{
 			ObjectContainerBase container = transaction.Container();
 			container.Callbacks().ObjectOnNew(transaction, obj);
 			_class.DispatchEvent(container, obj, EventDispatcher.NEW);
 		}
 
-		public virtual void Deactivate(Transaction a_trans, int a_depth)
+		public virtual void Deactivate(Db4objects.Db4o.Internal.Transaction trans, int depth
+			)
 		{
-			if (a_depth > 0)
+			if (depth > 0)
 			{
 				object obj = GetObject();
 				if (obj != null)
@@ -174,10 +174,10 @@ namespace Db4objects.Db4o.Internal
 					{
 						((IDb4oTypeImpl)obj).PreDeactivate();
 					}
-					ObjectContainerBase stream = a_trans.Container();
-					LogActivation(stream, "deactivate");
+					ObjectContainerBase container = trans.Container();
+					LogActivation(container, "deactivate");
 					SetStateDeactivated();
-					_class.Deactivate(a_trans, obj, a_depth);
+					_class.Deactivate(trans, obj, depth);
 				}
 			}
 		}
@@ -215,7 +215,7 @@ namespace Db4objects.Db4o.Internal
 			return _class.Container();
 		}
 
-		public virtual Transaction GetTrans()
+		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
 		{
 			ObjectContainerBase container = Container();
 			if (container != null)
@@ -227,7 +227,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual Db4oUUID GetUUID()
 		{
-			Db4objects.Db4o.Internal.VirtualAttributes va = VirtualAttributes(GetTrans());
+			Db4objects.Db4o.Internal.VirtualAttributes va = VirtualAttributes(Transaction());
 			if (va != null && va.i_database != null)
 			{
 				return new Db4oUUID(va.i_uuid, va.i_database.i_signature);
@@ -237,7 +237,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual long GetVersion()
 		{
-			Db4objects.Db4o.Internal.VirtualAttributes va = VirtualAttributes(GetTrans());
+			Db4objects.Db4o.Internal.VirtualAttributes va = VirtualAttributes(Transaction());
 			if (va == null)
 			{
 				return 0;
@@ -245,7 +245,7 @@ namespace Db4objects.Db4o.Internal
 			return va.i_version;
 		}
 
-		public virtual ClassMetadata GetYapClass()
+		public Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
 		{
 			return _class;
 		}
@@ -265,31 +265,32 @@ namespace Db4objects.Db4o.Internal
 			return _virtualAttributes;
 		}
 
-		internal object PeekPersisted(Transaction trans, int depth)
+		internal object PeekPersisted(Db4objects.Db4o.Internal.Transaction trans, int depth
+			)
 		{
 			return Read(trans, depth, Const4.TRANSIENT, false);
 		}
 
-		internal object Read(Transaction trans, int instantiationDepth, int addToIDTree, 
-			bool checkIDTree)
+		internal object Read(Db4objects.Db4o.Internal.Transaction trans, int instantiationDepth
+			, int addToIDTree, bool checkIDTree)
 		{
 			return Read(trans, null, null, instantiationDepth, addToIDTree, checkIDTree);
 		}
 
-		internal object Read(Transaction ta, StatefulBuffer a_reader, object a_object, int
-			 a_instantiationDepth, int addToIDTree, bool checkIDTree)
+		public object Read(Db4objects.Db4o.Internal.Transaction trans, StatefulBuffer buffer
+			, object obj, int instantiationDepth, int addToIDTree, bool checkIDTree)
 		{
 			if (BeginProcessing())
 			{
-				ObjectContainerBase stream = ta.Container();
+				ObjectContainerBase container = trans.Container();
 				int id = GetID();
-				if (a_reader == null && id > 0)
+				if (buffer == null && id > 0)
 				{
-					a_reader = stream.ReadWriterByID(ta, id);
+					buffer = container.ReadWriterByID(trans, id);
 				}
-				if (a_reader != null)
+				if (buffer != null)
 				{
-					ObjectHeader header = new ObjectHeader(stream, a_reader);
+					ObjectHeader header = new ObjectHeader(container, buffer);
 					_class = header.ClassMetadata();
 					if (_class == null)
 					{
@@ -297,80 +298,80 @@ namespace Db4objects.Db4o.Internal
 					}
 					if (checkIDTree)
 					{
-						object objectInCacheFromClassCreation = ta.ObjectForIdFromCache(GetID());
+						object objectInCacheFromClassCreation = trans.ObjectForIdFromCache(GetID());
 						if (objectInCacheFromClassCreation != null)
 						{
 							return objectInCacheFromClassCreation;
 						}
 					}
-					a_reader.SetInstantiationDepth(a_instantiationDepth);
-					a_reader.SetUpdateDepth(addToIDTree);
+					buffer.SetInstantiationDepth(instantiationDepth);
+					buffer.SetUpdateDepth(addToIDTree);
 					if (addToIDTree == Const4.TRANSIENT)
 					{
-						a_object = _class.InstantiateTransient(this, a_object, header._marshallerFamily, 
-							header._headerAttributes, a_reader);
+						obj = _class.InstantiateTransient(this, obj, header._marshallerFamily, header._headerAttributes
+							, buffer);
 					}
 					else
 					{
-						a_object = _class.Instantiate(this, a_object, header._marshallerFamily, header._headerAttributes
-							, a_reader, addToIDTree == Const4.ADD_TO_ID_TREE);
+						obj = _class.Instantiate(this, obj, header._marshallerFamily, header._headerAttributes
+							, buffer, addToIDTree == Const4.ADD_TO_ID_TREE);
 					}
 				}
 				EndProcessing();
 			}
-			return a_object;
+			return obj;
 		}
 
-		public object ReadPrefetch(ObjectContainerBase a_stream, StatefulBuffer a_reader)
+		public object ReadPrefetch(ObjectContainerBase container, StatefulBuffer buffer)
 		{
 			object readObject = null;
 			if (BeginProcessing())
 			{
-				ObjectHeader header = new ObjectHeader(a_stream, a_reader);
+				ObjectHeader header = new ObjectHeader(container, buffer);
 				_class = header.ClassMetadata();
 				if (_class == null)
 				{
 					return null;
 				}
-				a_reader.SetInstantiationDepth(_class.ConfigOrAncestorConfig() == null ? 1 : 0);
+				buffer.SetInstantiationDepth(_class.ConfigOrAncestorConfig() == null ? 1 : 0);
 				readObject = _class.Instantiate(this, GetObject(), header._marshallerFamily, header
-					._headerAttributes, a_reader, true);
+					._headerAttributes, buffer, true);
 				EndProcessing();
 			}
 			return readObject;
 		}
 
-		public sealed override void ReadThis(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			 a_bytes)
+		public sealed override void ReadThis(Db4objects.Db4o.Internal.Transaction trans, 
+			Db4objects.Db4o.Internal.Buffer buffer)
 		{
 		}
 
-		internal virtual void SetObjectWeak(ObjectContainerBase a_stream, object a_object
-			)
+		internal virtual void SetObjectWeak(ObjectContainerBase container, object obj)
 		{
-			if (a_stream._references._weak)
+			if (container._references._weak)
 			{
 				if (_object != null)
 				{
 					Platform4.KillYapRef(_object);
 				}
-				_object = Platform4.CreateYapRef(a_stream._references._queue, this, a_object);
+				_object = Platform4.CreateYapRef(container._references._queue, this, obj);
 			}
 			else
 			{
-				_object = a_object;
+				_object = obj;
 			}
 		}
 
-		public virtual void SetObject(object a_object)
-		{
-			_object = a_object;
-		}
-
-		internal void Store(Transaction trans, ClassMetadata yapClass, object obj)
+		public virtual void SetObject(object obj)
 		{
 			_object = obj;
-			_class = yapClass;
+		}
+
+		internal void Store(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.ClassMetadata
+			 classMetadata, object obj)
+		{
+			_object = obj;
+			_class = classMetadata;
 			WriteObjectBegin();
 			int id = trans.Container().NewUserObject();
 			trans.SlotFreePointerOnRollback(id);
@@ -414,7 +415,7 @@ namespace Db4objects.Db4o.Internal
 			return _virtualAttributes;
 		}
 
-		public virtual Db4objects.Db4o.Internal.VirtualAttributes VirtualAttributes(Transaction
+		public virtual Db4objects.Db4o.Internal.VirtualAttributes VirtualAttributes(Db4objects.Db4o.Internal.Transaction
 			 trans)
 		{
 			if (trans == null)
@@ -451,12 +452,13 @@ namespace Db4objects.Db4o.Internal
 			_virtualAttributes = at;
 		}
 
-		public override void WriteThis(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 a_writer)
+		public override void WriteThis(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
+			 buffer)
 		{
 		}
 
-		public virtual void WriteUpdate(Transaction trans, int updatedepth)
+		public virtual void WriteUpdate(Db4objects.Db4o.Internal.Transaction trans, int updatedepth
+			)
 		{
 			ContinueSet(trans, updatedepth);
 			if (BeginProcessing())
@@ -482,7 +484,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private bool ObjectCanUpdate(Transaction transaction, object obj)
+		private bool ObjectCanUpdate(Db4objects.Db4o.Internal.Transaction transaction, object
+			 obj)
 		{
 			ObjectContainerBase container = transaction.Container();
 			return container.Callbacks().ObjectCanUpdate(transaction, obj) && _class.DispatchEvent
@@ -491,39 +494,39 @@ namespace Db4objects.Db4o.Internal
 
 		/// <summary>HCTREE ****</summary>
 		public virtual Db4objects.Db4o.Internal.ObjectReference Hc_add(Db4objects.Db4o.Internal.ObjectReference
-			 a_add)
+			 newRef)
 		{
-			if (a_add.GetObject() == null)
+			if (newRef.GetObject() == null)
 			{
 				return this;
 			}
-			a_add.Hc_init();
-			return Hc_add1(a_add);
+			newRef.Hc_init();
+			return Hc_add1(newRef);
 		}
 
 		public virtual void Hc_init()
 		{
-			hc_preceding = null;
-			hc_subsequent = null;
-			hc_size = 1;
-			hc_code = Hc_getCode(GetObject());
+			_hcPreceding = null;
+			_hcSubsequent = null;
+			_hcSize = 1;
+			_hcHashcode = Hc_getCode(GetObject());
 		}
 
 		private Db4objects.Db4o.Internal.ObjectReference Hc_add1(Db4objects.Db4o.Internal.ObjectReference
-			 a_new)
+			 newRef)
 		{
-			int cmp = Hc_compare(a_new);
+			int cmp = Hc_compare(newRef);
 			if (cmp < 0)
 			{
-				if (hc_preceding == null)
+				if (_hcPreceding == null)
 				{
-					hc_preceding = a_new;
-					hc_size++;
+					_hcPreceding = newRef;
+					_hcSize++;
 				}
 				else
 				{
-					hc_preceding = hc_preceding.Hc_add1(a_new);
-					if (hc_subsequent == null)
+					_hcPreceding = _hcPreceding.Hc_add1(newRef);
+					if (_hcSubsequent == null)
 					{
 						return Hc_rotateRight();
 					}
@@ -532,15 +535,15 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				if (hc_subsequent == null)
+				if (_hcSubsequent == null)
 				{
-					hc_subsequent = a_new;
-					hc_size++;
+					_hcSubsequent = newRef;
+					_hcSize++;
 				}
 				else
 				{
-					hc_subsequent = hc_subsequent.Hc_add1(a_new);
-					if (hc_preceding == null)
+					_hcSubsequent = _hcSubsequent.Hc_add1(newRef);
+					if (_hcPreceding == null)
 					{
 						return Hc_rotateLeft();
 					}
@@ -552,7 +555,7 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Internal.ObjectReference Hc_balance()
 		{
-			int cmp = hc_subsequent.hc_size - hc_preceding.hc_size;
+			int cmp = _hcSubsequent._hcSize - _hcPreceding._hcSize;
 			if (cmp < -2)
 			{
 				return Hc_rotateRight();
@@ -565,7 +568,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
-					hc_size = hc_preceding.hc_size + hc_subsequent.hc_size + 1;
+					_hcSize = _hcPreceding._hcSize + _hcSubsequent._hcSize + 1;
 					return this;
 				}
 			}
@@ -573,36 +576,36 @@ namespace Db4objects.Db4o.Internal
 
 		private void Hc_calculateSize()
 		{
-			if (hc_preceding == null)
+			if (_hcPreceding == null)
 			{
-				if (hc_subsequent == null)
+				if (_hcSubsequent == null)
 				{
-					hc_size = 1;
+					_hcSize = 1;
 				}
 				else
 				{
-					hc_size = hc_subsequent.hc_size + 1;
+					_hcSize = _hcSubsequent._hcSize + 1;
 				}
 			}
 			else
 			{
-				if (hc_subsequent == null)
+				if (_hcSubsequent == null)
 				{
-					hc_size = hc_preceding.hc_size + 1;
+					_hcSize = _hcPreceding._hcSize + 1;
 				}
 				else
 				{
-					hc_size = hc_preceding.hc_size + hc_subsequent.hc_size + 1;
+					_hcSize = _hcPreceding._hcSize + _hcSubsequent._hcSize + 1;
 				}
 			}
 		}
 
-		private int Hc_compare(Db4objects.Db4o.Internal.ObjectReference a_to)
+		private int Hc_compare(Db4objects.Db4o.Internal.ObjectReference toRef)
 		{
-			int cmp = a_to.hc_code - hc_code;
+			int cmp = toRef._hcHashcode - _hcHashcode;
 			if (cmp == 0)
 			{
-				cmp = a_to.i_id - i_id;
+				cmp = toRef._id - _id;
 			}
 			return cmp;
 		}
@@ -612,23 +615,23 @@ namespace Db4objects.Db4o.Internal
 			return Hc_find(Hc_getCode(obj), obj);
 		}
 
-		private Db4objects.Db4o.Internal.ObjectReference Hc_find(int a_id, object obj)
+		private Db4objects.Db4o.Internal.ObjectReference Hc_find(int id, object obj)
 		{
-			int cmp = a_id - hc_code;
+			int cmp = id - _hcHashcode;
 			if (cmp < 0)
 			{
-				if (hc_preceding != null)
+				if (_hcPreceding != null)
 				{
-					return hc_preceding.Hc_find(a_id, obj);
+					return _hcPreceding.Hc_find(id, obj);
 				}
 			}
 			else
 			{
 				if (cmp > 0)
 				{
-					if (hc_subsequent != null)
+					if (_hcSubsequent != null)
 					{
-						return hc_subsequent.Hc_find(a_id, obj);
+						return _hcSubsequent.Hc_find(id, obj);
 					}
 				}
 				else
@@ -637,18 +640,18 @@ namespace Db4objects.Db4o.Internal
 					{
 						return this;
 					}
-					if (hc_preceding != null)
+					if (_hcPreceding != null)
 					{
-						Db4objects.Db4o.Internal.ObjectReference inPreceding = hc_preceding.Hc_find(a_id, 
-							obj);
+						Db4objects.Db4o.Internal.ObjectReference inPreceding = _hcPreceding.Hc_find(id, obj
+							);
 						if (inPreceding != null)
 						{
 							return inPreceding;
 						}
 					}
-					if (hc_subsequent != null)
+					if (_hcSubsequent != null)
 					{
-						return hc_subsequent.Hc_find(a_id, obj);
+						return _hcSubsequent.Hc_find(id, obj);
 					}
 				}
 			}
@@ -667,68 +670,68 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Internal.ObjectReference Hc_rotateLeft()
 		{
-			Db4objects.Db4o.Internal.ObjectReference tree = hc_subsequent;
-			hc_subsequent = tree.hc_preceding;
+			Db4objects.Db4o.Internal.ObjectReference tree = _hcSubsequent;
+			_hcSubsequent = tree._hcPreceding;
 			Hc_calculateSize();
-			tree.hc_preceding = this;
-			if (tree.hc_subsequent == null)
+			tree._hcPreceding = this;
+			if (tree._hcSubsequent == null)
 			{
-				tree.hc_size = 1 + hc_size;
+				tree._hcSize = 1 + _hcSize;
 			}
 			else
 			{
-				tree.hc_size = 1 + hc_size + tree.hc_subsequent.hc_size;
+				tree._hcSize = 1 + _hcSize + tree._hcSubsequent._hcSize;
 			}
 			return tree;
 		}
 
 		private Db4objects.Db4o.Internal.ObjectReference Hc_rotateRight()
 		{
-			Db4objects.Db4o.Internal.ObjectReference tree = hc_preceding;
-			hc_preceding = tree.hc_subsequent;
+			Db4objects.Db4o.Internal.ObjectReference tree = _hcPreceding;
+			_hcPreceding = tree._hcSubsequent;
 			Hc_calculateSize();
-			tree.hc_subsequent = this;
-			if (tree.hc_preceding == null)
+			tree._hcSubsequent = this;
+			if (tree._hcPreceding == null)
 			{
-				tree.hc_size = 1 + hc_size;
+				tree._hcSize = 1 + _hcSize;
 			}
 			else
 			{
-				tree.hc_size = 1 + hc_size + tree.hc_preceding.hc_size;
+				tree._hcSize = 1 + _hcSize + tree._hcPreceding._hcSize;
 			}
 			return tree;
 		}
 
 		private Db4objects.Db4o.Internal.ObjectReference Hc_rotateSmallestUp()
 		{
-			if (hc_preceding != null)
+			if (_hcPreceding != null)
 			{
-				hc_preceding = hc_preceding.Hc_rotateSmallestUp();
+				_hcPreceding = _hcPreceding.Hc_rotateSmallestUp();
 				return Hc_rotateRight();
 			}
 			return this;
 		}
 
 		internal virtual Db4objects.Db4o.Internal.ObjectReference Hc_remove(Db4objects.Db4o.Internal.ObjectReference
-			 a_find)
+			 findRef)
 		{
-			if (this == a_find)
+			if (this == findRef)
 			{
 				return Hc_remove();
 			}
-			int cmp = Hc_compare(a_find);
+			int cmp = Hc_compare(findRef);
 			if (cmp <= 0)
 			{
-				if (hc_preceding != null)
+				if (_hcPreceding != null)
 				{
-					hc_preceding = hc_preceding.Hc_remove(a_find);
+					_hcPreceding = _hcPreceding.Hc_remove(findRef);
 				}
 			}
 			if (cmp >= 0)
 			{
-				if (hc_subsequent != null)
+				if (_hcSubsequent != null)
 				{
-					hc_subsequent = hc_subsequent.Hc_remove(a_find);
+					_hcSubsequent = _hcSubsequent.Hc_remove(findRef);
 				}
 			}
 			Hc_calculateSize();
@@ -737,58 +740,58 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Hc_traverse(IVisitor4 visitor)
 		{
-			if (hc_preceding != null)
+			if (_hcPreceding != null)
 			{
-				hc_preceding.Hc_traverse(visitor);
+				_hcPreceding.Hc_traverse(visitor);
 			}
-			if (hc_subsequent != null)
+			if (_hcSubsequent != null)
 			{
-				hc_subsequent.Hc_traverse(visitor);
+				_hcSubsequent.Hc_traverse(visitor);
 			}
 			visitor.Visit(this);
 		}
 
 		private Db4objects.Db4o.Internal.ObjectReference Hc_remove()
 		{
-			if (hc_subsequent != null && hc_preceding != null)
+			if (_hcSubsequent != null && _hcPreceding != null)
 			{
-				hc_subsequent = hc_subsequent.Hc_rotateSmallestUp();
-				hc_subsequent.hc_preceding = hc_preceding;
-				hc_subsequent.Hc_calculateSize();
-				return hc_subsequent;
+				_hcSubsequent = _hcSubsequent.Hc_rotateSmallestUp();
+				_hcSubsequent._hcPreceding = _hcPreceding;
+				_hcSubsequent.Hc_calculateSize();
+				return _hcSubsequent;
 			}
-			if (hc_subsequent != null)
+			if (_hcSubsequent != null)
 			{
-				return hc_subsequent;
+				return _hcSubsequent;
 			}
-			return hc_preceding;
+			return _hcPreceding;
 		}
 
 		/// <summary>IDTREE ****</summary>
 		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_add(Db4objects.Db4o.Internal.ObjectReference
-			 a_add)
+			 newRef)
 		{
-			a_add.id_preceding = null;
-			a_add.id_subsequent = null;
-			a_add.id_size = 1;
-			return Id_add1(a_add);
+			newRef._idPreceding = null;
+			newRef._idSubsequent = null;
+			newRef._idSize = 1;
+			return Id_add1(newRef);
 		}
 
 		private Db4objects.Db4o.Internal.ObjectReference Id_add1(Db4objects.Db4o.Internal.ObjectReference
-			 a_new)
+			 newRef)
 		{
-			int cmp = a_new.i_id - i_id;
+			int cmp = newRef._id - _id;
 			if (cmp < 0)
 			{
-				if (id_preceding == null)
+				if (_idPreceding == null)
 				{
-					id_preceding = a_new;
-					id_size++;
+					_idPreceding = newRef;
+					_idSize++;
 				}
 				else
 				{
-					id_preceding = id_preceding.Id_add1(a_new);
-					if (id_subsequent == null)
+					_idPreceding = _idPreceding.Id_add1(newRef);
+					if (_idSubsequent == null)
 					{
 						return Id_rotateRight();
 					}
@@ -799,15 +802,15 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (cmp > 0)
 				{
-					if (id_subsequent == null)
+					if (_idSubsequent == null)
 					{
-						id_subsequent = a_new;
-						id_size++;
+						_idSubsequent = newRef;
+						_idSize++;
 					}
 					else
 					{
-						id_subsequent = id_subsequent.Id_add1(a_new);
-						if (id_preceding == null)
+						_idSubsequent = _idSubsequent.Id_add1(newRef);
+						if (_idPreceding == null)
 						{
 							return Id_rotateLeft();
 						}
@@ -820,7 +823,7 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Internal.ObjectReference Id_balance()
 		{
-			int cmp = id_subsequent.id_size - id_preceding.id_size;
+			int cmp = _idSubsequent._idSize - _idPreceding._idSize;
 			if (cmp < -2)
 			{
 				return Id_rotateRight();
@@ -833,7 +836,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
-					id_size = id_preceding.id_size + id_subsequent.id_size + 1;
+					_idSize = _idPreceding._idSize + _idSubsequent._idSize + 1;
 					return this;
 				}
 			}
@@ -841,47 +844,47 @@ namespace Db4objects.Db4o.Internal
 
 		private void Id_calculateSize()
 		{
-			if (id_preceding == null)
+			if (_idPreceding == null)
 			{
-				if (id_subsequent == null)
+				if (_idSubsequent == null)
 				{
-					id_size = 1;
+					_idSize = 1;
 				}
 				else
 				{
-					id_size = id_subsequent.id_size + 1;
+					_idSize = _idSubsequent._idSize + 1;
 				}
 			}
 			else
 			{
-				if (id_subsequent == null)
+				if (_idSubsequent == null)
 				{
-					id_size = id_preceding.id_size + 1;
+					_idSize = _idPreceding._idSize + 1;
 				}
 				else
 				{
-					id_size = id_preceding.id_size + id_subsequent.id_size + 1;
+					_idSize = _idPreceding._idSize + _idSubsequent._idSize + 1;
 				}
 			}
 		}
 
-		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_find(int a_id)
+		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_find(int id)
 		{
-			int cmp = a_id - i_id;
+			int cmp = id - _id;
 			if (cmp > 0)
 			{
-				if (id_subsequent != null)
+				if (_idSubsequent != null)
 				{
-					return id_subsequent.Id_find(a_id);
+					return _idSubsequent.Id_find(id);
 				}
 			}
 			else
 			{
 				if (cmp < 0)
 				{
-					if (id_preceding != null)
+					if (_idPreceding != null)
 					{
-						return id_preceding.Id_find(a_id);
+						return _idPreceding.Id_find(id);
 					}
 				}
 				else
@@ -894,65 +897,65 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Internal.ObjectReference Id_rotateLeft()
 		{
-			Db4objects.Db4o.Internal.ObjectReference tree = id_subsequent;
-			id_subsequent = tree.id_preceding;
+			Db4objects.Db4o.Internal.ObjectReference tree = _idSubsequent;
+			_idSubsequent = tree._idPreceding;
 			Id_calculateSize();
-			tree.id_preceding = this;
-			if (tree.id_subsequent == null)
+			tree._idPreceding = this;
+			if (tree._idSubsequent == null)
 			{
-				tree.id_size = id_size + 1;
+				tree._idSize = _idSize + 1;
 			}
 			else
 			{
-				tree.id_size = id_size + 1 + tree.id_subsequent.id_size;
+				tree._idSize = _idSize + 1 + tree._idSubsequent._idSize;
 			}
 			return tree;
 		}
 
 		private Db4objects.Db4o.Internal.ObjectReference Id_rotateRight()
 		{
-			Db4objects.Db4o.Internal.ObjectReference tree = id_preceding;
-			id_preceding = tree.id_subsequent;
+			Db4objects.Db4o.Internal.ObjectReference tree = _idPreceding;
+			_idPreceding = tree._idSubsequent;
 			Id_calculateSize();
-			tree.id_subsequent = this;
-			if (tree.id_preceding == null)
+			tree._idSubsequent = this;
+			if (tree._idPreceding == null)
 			{
-				tree.id_size = id_size + 1;
+				tree._idSize = _idSize + 1;
 			}
 			else
 			{
-				tree.id_size = id_size + 1 + tree.id_preceding.id_size;
+				tree._idSize = _idSize + 1 + tree._idPreceding._idSize;
 			}
 			return tree;
 		}
 
 		private Db4objects.Db4o.Internal.ObjectReference Id_rotateSmallestUp()
 		{
-			if (id_preceding != null)
+			if (_idPreceding != null)
 			{
-				id_preceding = id_preceding.Id_rotateSmallestUp();
+				_idPreceding = _idPreceding.Id_rotateSmallestUp();
 				return Id_rotateRight();
 			}
 			return this;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_remove(int a_id)
+		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_remove(int id)
 		{
-			int cmp = a_id - i_id;
+			int cmp = id - _id;
 			if (cmp < 0)
 			{
-				if (id_preceding != null)
+				if (_idPreceding != null)
 				{
-					id_preceding = id_preceding.Id_remove(a_id);
+					_idPreceding = _idPreceding.Id_remove(id);
 				}
 			}
 			else
 			{
 				if (cmp > 0)
 				{
-					if (id_subsequent != null)
+					if (_idSubsequent != null)
 					{
-						id_subsequent = id_subsequent.Id_remove(a_id);
+						_idSubsequent = _idSubsequent.Id_remove(id);
 					}
 				}
 				else
@@ -966,18 +969,18 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Internal.ObjectReference Id_remove()
 		{
-			if (id_subsequent != null && id_preceding != null)
+			if (_idSubsequent != null && _idPreceding != null)
 			{
-				id_subsequent = id_subsequent.Id_rotateSmallestUp();
-				id_subsequent.id_preceding = id_preceding;
-				id_subsequent.Id_calculateSize();
-				return id_subsequent;
+				_idSubsequent = _idSubsequent.Id_rotateSmallestUp();
+				_idSubsequent._idPreceding = _idPreceding;
+				_idSubsequent.Id_calculateSize();
+				return _idSubsequent;
 			}
-			if (id_subsequent != null)
+			if (_idSubsequent != null)
 			{
-				return id_subsequent;
+				return _idSubsequent;
 			}
-			return id_preceding;
+			return _idPreceding;
 		}
 
 		public override string ToString()
@@ -986,19 +989,19 @@ namespace Db4objects.Db4o.Internal
 			try
 			{
 				int id = GetID();
-				string str = "YapObject\nID=" + id;
+				string str = "ObjectReference\nID=" + id;
 				if (_class != null)
 				{
-					ObjectContainerBase stream = _class.Container();
-					if (stream != null && id > 0)
+					ObjectContainerBase container = _class.Container();
+					if (container != null && id > 0)
 					{
-						StatefulBuffer writer = stream.ReadWriterByID(stream.Transaction(), id);
+						StatefulBuffer writer = container.ReadWriterByID(container.Transaction(), id);
 						if (writer != null)
 						{
 							str += "\nAddress=" + writer.GetAddress();
 						}
-						ObjectHeader oh = new ObjectHeader(stream, writer);
-						ClassMetadata yc = oh.ClassMetadata();
+						ObjectHeader oh = new ObjectHeader(Container(), writer);
+						Db4objects.Db4o.Internal.ClassMetadata yc = oh.ClassMetadata();
 						if (yc != _class)
 						{
 							str += "\nYapClass corruption";
@@ -1024,7 +1027,7 @@ namespace Db4objects.Db4o.Internal
 					catch (Exception)
 					{
 					}
-					IReflectClass claxx = GetYapClass().Reflector().ForObject(obj);
+					IReflectClass claxx = ClassMetadata().Reflector().ForObject(obj);
 					str += "\n" + claxx.GetName() + "\n" + objToString;
 				}
 				return str;

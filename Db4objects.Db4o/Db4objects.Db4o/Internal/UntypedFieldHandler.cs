@@ -1,8 +1,10 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -128,6 +130,16 @@ namespace Db4objects.Db4o.Internal
 				base.Defrag(mf, readers, redirect);
 			}
 			mf._untyped.Defrag(readers);
+		}
+
+		public override object Read(IReadContext context)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Write(IWriteContext context, object obj)
+		{
+			((MarshallingContext)context).WriteAny(obj);
 		}
 	}
 }

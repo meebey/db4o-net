@@ -20,6 +20,12 @@ namespace Db4objects.Db4o.Ext
 	/// <exclude></exclude>
 	public class Db4oDatabase : IDb4oType, IInternal4
 	{
+		public static readonly Db4objects.Db4o.Ext.Db4oDatabase STATIC_IDENTITY = Debug.staticIdentity
+			 ? new Db4objects.Db4o.Ext.Db4oDatabase(new byte[] { (byte)'d', (byte)'e', (byte
+			)'b', (byte)'u', (byte)'g' }, 1) : null;
+
+		public const int STATIC_ID = -1;
+
 		/// <summary>Field is public for implementation reasons, DO NOT TOUCH!</summary>
 		public byte[] i_signature;
 

@@ -183,7 +183,7 @@ namespace Db4objects.Db4o.Internal
 
 			public void Visit(StatefulBuffer a_bytes)
 			{
-				length[0] += a_bytes.GetLength() + a_bytes.EmbeddedLength();
+				length[0] += a_bytes.Length() + a_bytes.EmbeddedLength();
 			}
 
 			private readonly StatefulBuffer _enclosing;
@@ -238,7 +238,7 @@ namespace Db4objects.Db4o.Internal
 			return i_instantionDepth;
 		}
 
-		public override int GetLength()
+		public override int Length()
 		{
 			return i_length;
 		}
@@ -458,7 +458,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void WritePayload(StatefulBuffer payLoad, bool topLevel)
 		{
-			CheckMinimumPayLoadOffsetAndWritePointerAndLength(payLoad.GetLength(), topLevel);
+			CheckMinimumPayLoadOffsetAndWritePointerAndLength(payLoad.Length(), topLevel);
 			System.Array.Copy(payLoad._buffer, 0, _buffer, _payloadOffset, payLoad._buffer.Length
 				);
 			TransferPayLoadAddress(payLoad, _payloadOffset);

@@ -3,6 +3,7 @@
 using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
@@ -54,8 +55,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			char char_ = ((char)a_object);
-			a_bytes.Append((byte)(char_ & unchecked((int)(0xff))));
-			a_bytes.Append((byte)(char_ >> 8));
+			a_bytes.WriteByte((byte)(char_ & unchecked((int)(0xff))));
+			a_bytes.WriteByte((byte)(char_ >> 8));
 		}
 
 		private char i_compareTo;
@@ -83,6 +84,22 @@ namespace Db4objects.Db4o.Internal.Handlers
 		internal override bool IsSmaller1(object obj)
 		{
 			return obj is char && Val(obj) < i_compareTo;
+		}
+
+		public override object Read(IReadContext context)
+		{
+			byte b1 = context.ReadByte();
+			byte b2 = context.ReadByte();
+			char charValue = (char)((b1 & unchecked((int)(0xff))) | ((b2 & unchecked((int)(0xff
+				))) << 8));
+			return charValue;
+		}
+
+		public override void Write(IWriteContext context, object obj)
+		{
+			char charValue = ((char)obj);
+			context.WriteBytes(new byte[] { (byte)(charValue & unchecked((int)(0xff))), (byte
+				)(charValue >> 8) });
 		}
 	}
 }

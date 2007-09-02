@@ -10,9 +10,9 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public abstract class PersistentBase : IPersistent
 	{
-		protected int i_id;
+		protected int _id;
 
-		protected int i_state = 2;
+		protected int _state = 2;
 
 		internal bool BeginProcessing()
 		{
@@ -26,22 +26,22 @@ namespace Db4objects.Db4o.Internal
 
 		internal void BitFalse(int bitPos)
 		{
-			i_state &= ~(1 << bitPos);
+			_state &= ~(1 << bitPos);
 		}
 
 		internal bool BitIsFalse(int bitPos)
 		{
-			return (i_state | (1 << bitPos)) != i_state;
+			return (_state | (1 << bitPos)) != _state;
 		}
 
 		internal bool BitIsTrue(int bitPos)
 		{
-			return (i_state | (1 << bitPos)) == i_state;
+			return (_state | (1 << bitPos)) == _state;
 		}
 
 		internal void BitTrue(int bitPos)
 		{
-			i_state |= (1 << bitPos);
+			_state |= (1 << bitPos);
 		}
 
 		internal virtual void CacheDirty(Collection4 col)
@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int GetID()
 		{
-			return i_id;
+			return _id;
 		}
 
 		public bool IsActive()
@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Internal
 
 		public bool IsNew()
 		{
-			return i_id == 0;
+			return _id == 0;
 		}
 
 		public virtual int LinkLength()
@@ -114,7 +114,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void SetID(int a_id)
 		{
-			i_id = a_id;
+			_id = a_id;
 		}
 
 		public void SetStateClean()
@@ -170,7 +170,7 @@ namespace Db4objects.Db4o.Internal
 				else
 				{
 					slot = stream.GetSlot(length);
-					trans.SlotFreeOnRollbackCommitSetPointer(i_id, slot, IsFreespaceComponent());
+					trans.SlotFreeOnRollbackCommitSetPointer(_id, slot, IsFreespaceComponent());
 				}
 				WriteToFile(trans, writer, slot);
 			}

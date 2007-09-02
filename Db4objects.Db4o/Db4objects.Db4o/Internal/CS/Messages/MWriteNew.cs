@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				int id = _payLoad.GetID();
 				stream.PrefetchedIDConsumed(id);
 				Transaction().SlotFreePointerOnRollback(id);
-				Slot slot = stream.GetSlot(_payLoad.GetLength());
+				Slot slot = stream.GetSlot(_payLoad.Length());
 				_payLoad.Address(slot.Address());
 				Transaction().SlotFreeOnRollback(id, slot);
 				if (yc != null)

@@ -18,6 +18,15 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			new ActivationExceptionBubblesUpTestCase().RunAll();
 		}
 
+		[System.Serializable]
+		public class AcceptAllEvaluation : IEvaluation
+		{
+			public virtual void Evaluate(ICandidate candidate)
+			{
+				candidate.Include(true);
+			}
+		}
+
 		public sealed class ItemTranslator : IObjectTranslator
 		{
 			public void OnActivate(IObjectContainer container, object applicationObject, object
@@ -50,13 +59,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void Test()
 		{
-			Assert.Expect(typeof(ReflectException), typeof(ItemException), new _ICodeBlock_49
+			Assert.Expect(typeof(ReflectException), typeof(ItemException), new _ICodeBlock_55
 				(this));
 		}
 
-		private sealed class _ICodeBlock_49 : ICodeBlock
+		private sealed class _ICodeBlock_55 : ICodeBlock
 		{
-			public _ICodeBlock_49(ActivationExceptionBubblesUpTestCase _enclosing)
+			public _ICodeBlock_55(ActivationExceptionBubblesUpTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -65,23 +74,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			{
 				IQuery q = this._enclosing.Db().Query();
 				q.Constrain(typeof(Item));
-				q.Constrain(new _IEvaluation_53(this));
+				q.Constrain(new ActivationExceptionBubblesUpTestCase.AcceptAllEvaluation());
 				q.Execute().Next();
-			}
-
-			private sealed class _IEvaluation_53 : IEvaluation
-			{
-				public _IEvaluation_53(_ICodeBlock_49 _enclosing)
-				{
-					this._enclosing = _enclosing;
-				}
-
-				public void Evaluate(ICandidate candidate)
-				{
-					candidate.Include(true);
-				}
-
-				private readonly _ICodeBlock_49 _enclosing;
 			}
 
 			private readonly ActivationExceptionBubblesUpTestCase _enclosing;

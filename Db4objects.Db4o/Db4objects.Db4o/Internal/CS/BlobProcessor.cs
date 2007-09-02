@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Internal.CS
 						if (msg == null)
 						{
 							terminated = true;
-							Msg.CLOSE.Write(socket);
+							Msg.CLOSE_SOCKET.Write(socket);
 							try
 							{
 								socket.Close();

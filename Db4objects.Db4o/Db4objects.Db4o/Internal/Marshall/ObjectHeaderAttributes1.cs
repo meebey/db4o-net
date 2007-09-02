@@ -19,11 +19,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int _payLoadLength;
 
-		public ObjectHeaderAttributes1(ObjectReference yo)
+		public ObjectHeaderAttributes1(ObjectReference @ref)
 		{
-			_fieldCount = yo.GetYapClass().FieldCount();
+			_fieldCount = @ref.ClassMetadata().FieldCount();
 			_nullBitMap = new BitMap4(_fieldCount);
-			CalculateLengths(yo);
+			CalculateLengths(@ref);
 		}
 
 		public ObjectHeaderAttributes1(Db4objects.Db4o.Internal.Buffer reader)
@@ -42,15 +42,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_payLoadLength += length;
 		}
 
-		private void CalculateLengths(ObjectReference yo)
+		private void CalculateLengths(ObjectReference @ref)
 		{
 			_baseLength = HeaderLength() + NullBitMapLength();
 			_payLoadLength = 0;
-			ClassMetadata yc = yo.GetYapClass();
-			Transaction trans = yo.GetTrans();
-			object obj = yo.GetObject();
+			ClassMetadata yc = @ref.ClassMetadata();
+			Transaction trans = @ref.Transaction();
+			object obj = @ref.GetObject();
 			CalculateLengths(trans, yc, obj, 0);
-			_baseLength = yo.Container().BlockAlignedBytes(_baseLength);
+			_baseLength = @ref.Container().BlockAlignedBytes(_baseLength);
 		}
 
 		private void CalculateLengths(Transaction trans, ClassMetadata yc, object obj, int
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return Const4.OBJECT_LENGTH + Const4.ID_LENGTH + 1;
 		}
 
-		public virtual bool IsNull(int fieldIndex)
+		public override bool IsNull(int fieldIndex)
 		{
 			return _nullBitMap.IsTrue(fieldIndex);
 		}
@@ -108,7 +108,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual void Write(StatefulBuffer writer)
 		{
-			writer.Append(VERSION);
+			writer.WriteByte(VERSION);
 			writer.WriteInt(_fieldCount);
 			writer.WriteBitMap(_nullBitMap);
 			writer._payloadOffset = _baseLength;

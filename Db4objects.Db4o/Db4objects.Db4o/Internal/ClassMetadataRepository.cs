@@ -547,7 +547,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			ClassMetadataRepository rereader = new ClassMetadataRepository(_systemTransaction
 				);
-			rereader.i_id = i_id;
+			rereader._id = _id;
 			rereader.Read(Stream().SystemTransaction());
 			IEnumerator i = rereader.i_classes.GetEnumerator();
 			while (i.MoveNext())
@@ -650,7 +650,7 @@ namespace Db4objects.Db4o.Internal
 				base.SetID(a_id);
 				return;
 			}
-			if (i_id == 0)
+			if (_id == 0)
 			{
 				SystemData().ClassCollectionID(a_id);
 			}

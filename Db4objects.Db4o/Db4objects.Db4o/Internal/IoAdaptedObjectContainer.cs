@@ -354,15 +354,15 @@ namespace Db4objects.Db4o.Internal
 				}
 				if (doCheck)
 				{
-					CheckXBytes(address, addressOffset, bytes.GetLength());
+					CheckXBytes(address, addressOffset, bytes.Length());
 				}
 			}
 			_file.BlockSeek(address, addressOffset);
-			_file.Write(bytes._buffer, bytes.GetLength());
+			_file.Write(bytes._buffer, bytes.Length());
 			if (_backupFile != null)
 			{
 				_backupFile.BlockSeek(address, addressOffset);
-				_backupFile.Write(bytes._buffer, bytes.GetLength());
+				_backupFile.Write(bytes._buffer, bytes.Length());
 			}
 		}
 

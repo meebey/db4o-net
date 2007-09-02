@@ -44,23 +44,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase)
 				);
 			q.Descend("helper").Constrain(helperA).Identity();
-			q.Constrain(new _IEvaluation_42(this));
+			q.Constrain(new STIdentityEvaluationTestCase.AcceptAllEvaluation());
 			Expect(q, new int[] { 1, 2, 3 });
-		}
-
-		private sealed class _IEvaluation_42 : IEvaluation
-		{
-			public _IEvaluation_42(STIdentityEvaluationTestCase _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public void Evaluate(ICandidate candidate)
-			{
-				candidate.Include(true);
-			}
-
-			private readonly STIdentityEvaluationTestCase _enclosing;
 		}
 
 		public virtual void TestMemberClassConstraint()
@@ -71,6 +56,15 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 			q.Descend("helper").Constrain(typeof(STIdentityEvaluationTestCase.HelperDerivate)
 				);
 			Expect(q, new int[] { 4 });
+		}
+
+		[System.Serializable]
+		public class AcceptAllEvaluation : IEvaluation
+		{
+			public virtual void Evaluate(ICandidate candidate)
+			{
+				candidate.Include(true);
+			}
 		}
 
 		public class Helper

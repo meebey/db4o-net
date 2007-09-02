@@ -480,6 +480,11 @@ namespace Db4objects.Db4o.Internal
 			return _server.ClassMetadataForName(name);
 		}
 
+		public virtual ClassMetadata ClassMetadataForId(int id)
+		{
+			return _server.ClassMetadataForId(id);
+		}
+
 		public virtual HandlerRegistry Handlers()
 		{
 			return _server.Handlers();
