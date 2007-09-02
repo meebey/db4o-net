@@ -147,8 +147,7 @@ namespace Db4oAdmin.TA
 		private static bool IsFieldAccess(Instruction instruction)
 		{
 			return instruction.OpCode == OpCodes.Ldfld
-				// TODO: write a test case for passing a field by reference
-				; //|| instruction.OpCode == OpCodes.Ldflda;
+				|| instruction.OpCode == OpCodes.Ldflda;
 		}
 
 		private static bool IsPrivate(MethodDefinition method)

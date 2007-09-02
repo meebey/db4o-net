@@ -20,6 +20,11 @@ class Project
 		get { return _name;  }
 	}
 
+	public void UseByRef()
+	{
+		ByRef(ref _name);
+	}
+
 	override public bool Equals(object o)
 	{
 		Project other = o as Project;
@@ -32,6 +37,10 @@ class Project
 	override public int GetHashCode()
 	{
 		return _name.GetHashCode();
+	}
+
+	private void ByRef(ref string name)
+	{
 	}
 }
 
@@ -92,6 +101,16 @@ class TAInstrumentationSubject : ITestCase
 
 		Assert.AreEqual(1, a1.Count);
 		Assert.AreEqual(1, a2.Count);
+	}
+
+	public void TestFieldByRef()
+	{
+		Project p1 = new Project("test");
+		MockActivator a1 = ActivatorFor(p1);
+
+		p1.UseByRef();
+
+		Assert.AreEqual(1, a1.Count);
 	}
 
 	public void TestValueTypesAreNotInstrumented()
