@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Tests.Util
 	{
 		public static string JavacPath()
 		{
-			return ReadMachinePathProperty("file.compiler.jdk1.3");
+            return ReadMachinePathProperty("file.compiler.jdk1.3");
 		}
 		
 		public static string JavaPath()
@@ -47,7 +47,12 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public static string MachinePropertiesPath()
 		{
-			string path = WorkspacePath("db4obuild/machine.properties");
+            string fileName = Environment.GetEnvironmentVariable("DB4O_MACHINE_PROPERTIES");
+            if (fileName == null || fileName.Length == 0)
+            {
+                fileName = "machine.properties";
+            }
+			string path = WorkspacePath("db4obuild/" + fileName);
 			Assert.IsTrue(File.Exists(path));
 			return path;
 		}
