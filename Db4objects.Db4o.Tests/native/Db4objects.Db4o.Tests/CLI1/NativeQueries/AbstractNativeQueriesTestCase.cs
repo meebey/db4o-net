@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			MethodInfo match = predicate.GetType().GetMethod("Match");
 			IExpression expression = (new QueryExpressionBuilder ()).FromMethod(match);
 			IQuery q = NewQuery(match.GetParameters()[0].ParameterType);
-			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate, new Db4objects.Db4o.Nativequery.DefaultNativeClassFactory());
+			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate, new Db4objects.Db4o.Instrumentation.DefaultNativeClassFactory());
 			return q;
 		}
 	}
