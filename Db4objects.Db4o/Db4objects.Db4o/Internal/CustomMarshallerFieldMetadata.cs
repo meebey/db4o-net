@@ -17,12 +17,6 @@ namespace Db4objects.Db4o.Internal
 			_marshaller = marshaller;
 		}
 
-		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, object obj)
-		{
-			header.AddBaseLength(LinkLength());
-		}
-
 		public override void DefragField(MarshallerFamily mf, BufferPair readers)
 		{
 			readers.IncrementOffset(LinkLength());
@@ -58,13 +52,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			_marshaller.ReadFields(onObject, reader._buffer, reader._offset);
 			IncrementOffset(reader);
-		}
-
-		public override void Marshall(ObjectReference yo, object obj, MarshallerFamily mf
-			, StatefulBuffer writer, Config4Class config, bool isNew)
-		{
-			_marshaller.WriteFields(obj, writer._buffer, writer._offset);
-			IncrementOffset(writer);
 		}
 
 		public override int LinkLength()

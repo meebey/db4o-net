@@ -343,7 +343,10 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (this)
 			{
 				CheckClosed();
-				return new EmbeddedClientObjectContainer(_container);
+				lock (_container._lock)
+				{
+					return new EmbeddedClientObjectContainer(_container);
+				}
 			}
 		}
 

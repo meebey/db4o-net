@@ -118,7 +118,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal void AddExistingReferenceToIdTree(Db4objects.Db4o.Internal.Transaction trans
+		public void AddExistingReferenceToIdTree(Db4objects.Db4o.Internal.Transaction trans
 			)
 		{
 			if (!(_class is PrimitiveFieldHandler))
@@ -250,6 +250,12 @@ namespace Db4objects.Db4o.Internal
 			return _class;
 		}
 
+		public virtual void ClassMetadata(Db4objects.Db4o.Internal.ClassMetadata classMetadata
+			)
+		{
+			_class = classMetadata;
+		}
+
 		public override int OwnLength()
 		{
 			throw Exceptions4.ShouldNeverBeCalled();
@@ -280,6 +286,15 @@ namespace Db4objects.Db4o.Internal
 		public object Read(Db4objects.Db4o.Internal.Transaction trans, StatefulBuffer buffer
 			, object obj, int instantiationDepth, int addToIDTree, bool checkIDTree)
 		{
+			if (NewTypeHandlerReading.enabled)
+			{
+				UnmarshallingContext context = new UnmarshallingContext(trans, this, addToIDTree, 
+					checkIDTree);
+				context.Buffer(buffer);
+				context.PersistentObject(obj);
+				context.ActivationDepth(instantiationDepth);
+				return context.Read();
+			}
 			if (BeginProcessing())
 			{
 				ObjectContainerBase container = trans.Container();
@@ -346,7 +361,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		internal virtual void SetObjectWeak(ObjectContainerBase container, object obj)
+		public virtual void SetObjectWeak(ObjectContainerBase container, object obj)
 		{
 			if (container._references._weak)
 			{

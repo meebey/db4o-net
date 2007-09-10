@@ -67,7 +67,17 @@ namespace Db4objects.Db4o
 		/// allows faking the Db4oDatabase identity object, so the first
 		/// stored object in the debugger is the actually persisted object
 		/// </summary>
-		public const bool staticIdentity = MarshallingSpike.enabled;
+		public const bool staticIdentity = false;
+
+		/// <summary>
+		/// turn to false, to prevent reading old PBootRecord object
+		/// for debugging updating database files.
+		/// </summary>
+		/// <remarks>
+		/// turn to false, to prevent reading old PBootRecord object
+		/// for debugging updating database files.
+		/// </remarks>
+		public const bool readBootRecord = true;
 
 		public static void Expect(bool cond)
 		{

@@ -9,6 +9,7 @@ using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -186,22 +187,17 @@ namespace Db4objects.Db4o.Internal
 			return LINK_LENGTH;
 		}
 
-		internal override void Marshall1(ObjectReference a_yapObject, StatefulBuffer a_bytes
-			, bool a_migrating, bool a_new)
+		internal override void Marshall(Transaction trans, ObjectReference @ref, IWriteBuffer
+			 buffer, bool isMigrating, bool isNew)
 		{
-			ObjectContainerBase stream = a_bytes.GetStream();
-			Transaction trans = a_bytes.GetTransaction();
-			bool indexEntry = a_new && stream.MaintainsIndices();
+			VirtualAttributes attr = @ref.VirtualAttributes();
+			ObjectContainerBase container = trans.Container();
+			bool doAddIndexEntry = isNew && container.MaintainsIndices();
 			int dbID = 0;
-			VirtualAttributes attr = a_yapObject.VirtualAttributes();
-			bool linkToDatabase = !a_migrating;
-			if (attr != null && attr.i_database == null)
-			{
-				linkToDatabase = true;
-			}
+			bool linkToDatabase = (attr != null && attr.i_database == null) ? true : !isMigrating;
 			if (linkToDatabase)
 			{
-				Db4oDatabase db = ((IInternalObjectContainer)stream).Identity();
+				Db4oDatabase db = ((IInternalObjectContainer)container).Identity();
 				if (db == null)
 				{
 					attr = null;
@@ -211,10 +207,10 @@ namespace Db4objects.Db4o.Internal
 					if (attr.i_database == null)
 					{
 						attr.i_database = db;
-						if (stream is LocalObjectContainer)
+						if (container is LocalObjectContainer)
 						{
-							attr.i_uuid = stream.GenerateTimeStampId();
-							indexEntry = true;
+							attr.i_uuid = container.GenerateTimeStampId();
+							doAddIndexEntry = true;
 						}
 					}
 					db = attr.i_database;
@@ -231,25 +227,23 @@ namespace Db4objects.Db4o.Internal
 					dbID = attr.i_database.GetID(trans);
 				}
 			}
-			a_bytes.WriteInt(dbID);
-			if (attr != null)
+			buffer.WriteInt(dbID);
+			if (attr == null)
 			{
-				a_bytes.WriteLong(attr.i_uuid);
-				if (indexEntry)
-				{
-					AddIndexEntry(a_bytes, attr.i_uuid);
-				}
+				buffer.WriteLong(0);
+				return;
 			}
-			else
+			buffer.WriteLong(attr.i_uuid);
+			if (doAddIndexEntry)
 			{
-				a_bytes.WriteLong(0);
+				AddIndexEntry(trans, @ref.GetID(), attr.i_uuid);
 			}
 		}
 
-		internal override void MarshallIgnore(Db4objects.Db4o.Internal.Buffer writer)
+		internal override void MarshallIgnore(IWriteBuffer buffer)
 		{
-			writer.WriteInt(0);
-			writer.WriteLong(0);
+			buffer.WriteInt(0);
+			buffer.WriteLong(0);
 		}
 
 		public HardObjectReference GetHardObjectReferenceBySignature(Transaction transaction

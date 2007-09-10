@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected int _state = 2;
 
-		internal bool BeginProcessing()
+		public bool BeginProcessing()
 		{
 			if (BitIsTrue(Const4.PROCESSING))
 			{
@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Internal
 
 		public bool IsNew()
 		{
-			return _id == 0;
+			return GetID() == 0;
 		}
 
 		public virtual int LinkLength()

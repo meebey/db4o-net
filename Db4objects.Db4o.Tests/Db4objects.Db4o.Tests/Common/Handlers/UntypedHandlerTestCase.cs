@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			DoTestStoreObject(new UntypedHandlerTestCase.Item("one"));
 		}
 
-		public virtual void _testStoreArrayItem()
+		public virtual void TestStoreArrayItem()
 		{
 			DoTestStoreObject(new UntypedHandlerTestCase.Item(new string[] { "one", "two", "three"
 				 }));

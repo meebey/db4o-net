@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		private static readonly int i_primitive = 0;
 
-		public IntHandler(ObjectContainerBase stream) : base(stream)
+		public IntHandler(ObjectContainerBase container) : base(container)
 		{
 		}
 

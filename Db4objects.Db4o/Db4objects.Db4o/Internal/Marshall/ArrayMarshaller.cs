@@ -24,9 +24,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public abstract void DefragIDs(ArrayHandler arrayHandler, BufferPair readers);
 
-		public abstract void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, ArrayHandler handler, object obj, bool topLevel);
-
 		public abstract object Read(ArrayHandler arrayHandler, StatefulBuffer reader);
 
 		public abstract void ReadCandidates(ArrayHandler arrayHandler, Db4objects.Db4o.Internal.Buffer
@@ -34,9 +31,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public abstract object ReadQuery(ArrayHandler arrayHandler, Transaction trans, Db4objects.Db4o.Internal.Buffer
 			 reader);
-
-		public abstract object WriteNew(ArrayHandler arrayHandler, object obj, bool topLevel
-			, StatefulBuffer writer);
 
 		protected abstract Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans
 			, Db4objects.Db4o.Internal.Buffer reader);

@@ -112,36 +112,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return ret;
 		}
 
-		public override object WriteNew(object obj, bool restoreLinkOffset, StatefulBuffer
-			 writer)
-		{
-			if (obj == null)
-			{
-				writer.WriteInt(0);
-				return 0;
-			}
-			ClassMetadata yc = ClassMetadata.ForObject(writer.GetTransaction(), obj, false);
-			if (yc == null)
-			{
-				writer.WriteInt(0);
-				return 0;
-			}
-			writer.WriteInt(writer._payloadOffset);
-			int linkOffset = writer._offset;
-			writer._offset = writer._payloadOffset;
-			writer.WriteInt(yc.GetID());
-			yc.Write(_family, obj, false, writer, false, false);
-			if (writer._payloadOffset < writer._offset)
-			{
-				writer._payloadOffset = writer._offset;
-			}
-			if (restoreLinkOffset)
-			{
-				writer._offset = linkOffset;
-			}
-			return obj;
-		}
-
 		public override void Defrag(BufferPair readers)
 		{
 			int payLoadOffSet = readers.ReadInt();

@@ -12,10 +12,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public abstract bool UseNormalClassRead();
 
-		public abstract int WriteNew(Transaction trans, PrimitiveFieldHandler yapClassPrimitive
-			, object obj, bool topLevel, StatefulBuffer parentWriter, bool withIndirection, 
-			bool restoreLinkOffset);
-
 		public abstract Date ReadDate(Db4objects.Db4o.Internal.Buffer bytes);
 
 		public abstract object ReadShort(Db4objects.Db4o.Internal.Buffer buffer);

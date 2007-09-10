@@ -5,10 +5,22 @@ using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Tests.Common.Assorted;
+using Db4objects.Db4o.Tests.Common.Staging;
 
-namespace Db4objects.Db4o.Tests.Common.Assorted
+namespace Db4objects.Db4o.Tests.Common.Staging
 {
+	/// <summary>
+	/// The functionality of ObjectMarshaller does not make any
+	/// sense any more with the new TypeHandler4 functionality
+	/// evolving.
+	/// </summary>
+	/// <remarks>
+	/// The functionality of ObjectMarshaller does not make any
+	/// sense any more with the new TypeHandler4 functionality
+	/// evolving.
+	/// It's just as easy to write a TypeHandler and it will get
+	/// you full querying support.
+	/// </remarks>
 	public class ObjectMarshallerTestCase : AbstractDb4oTestCase
 	{
 		public static void Main(string[] args)
@@ -86,14 +98,14 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				);
 		}
 
-		protected override void Store()
+		protected virtual void _store()
 		{
 			marshaller.Reset();
 			Store(new ObjectMarshallerTestCase.Item(int.MaxValue, long.MaxValue, 1));
 			Assert.IsTrue(marshaller.writeCalled);
 		}
 
-		public virtual void TestReadWrite()
+		public virtual void _testReadWrite()
 		{
 			ObjectMarshallerTestCase.Item item = AssertRetrieve();
 			Assert.IsTrue(marshaller.readCalled);
@@ -104,7 +116,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AssertRetrieve();
 		}
 
-		public virtual void TestQueryByExample()
+		public virtual void _testQueryByExample()
 		{
 			IObjectSet os = Db().Get(new ObjectMarshallerTestCase.Item());
 			Assert.AreEqual(1, os.Size());

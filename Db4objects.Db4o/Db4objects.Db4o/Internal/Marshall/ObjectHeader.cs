@@ -14,6 +14,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public readonly ObjectHeaderAttributes _headerAttributes;
 
+		private int _handlerVersion;
+
 		public ObjectHeader(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer reader
 			) : this(stream, null, reader)
 		{
@@ -61,12 +63,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			, int classID)
 		{
 			bool marshallerAware = MarshallerAware(classID);
-			byte marshallerVersion = 0;
+			_handlerVersion = 0;
 			if (marshallerAware)
 			{
-				marshallerVersion = reader.ReadByte();
+				_handlerVersion = reader.ReadByte();
 			}
-			MarshallerFamily marshallerFamily = MarshallerFamily.Version(marshallerVersion);
+			MarshallerFamily marshallerFamily = MarshallerFamily.Version(_handlerVersion);
 			return marshallerFamily;
 		}
 
@@ -89,6 +91,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
 		{
 			return _classMetadata;
+		}
+
+		public int HandlerVersion()
+		{
+			return _handlerVersion;
 		}
 	}
 }

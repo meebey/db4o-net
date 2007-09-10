@@ -11,11 +11,11 @@ using Sharpen.Util;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
-	public sealed class DateHandler : LongHandler
+	public class DateHandler : LongHandler
 	{
 		private static readonly Date PROTO = new Date(0);
 
-		public DateHandler(ObjectContainerBase stream) : base(stream)
+		public DateHandler(ObjectContainerBase container) : base(container)
 		{
 		}
 
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.INSTANCE;
 		}
 
-		public void CopyValue(object a_from, object a_to)
+		public virtual void CopyValue(object a_from, object a_to)
 		{
 			try
 			{

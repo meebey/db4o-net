@@ -6,6 +6,7 @@ using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -16,6 +17,8 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public abstract class VirtualFieldMetadata : FieldMetadata
 	{
+		private static readonly object ANY_OBJECT = new object();
+
 		internal VirtualFieldMetadata() : base(null)
 		{
 		}
@@ -26,12 +29,6 @@ namespace Db4objects.Db4o.Internal
 		public override bool Alive()
 		{
 			return true;
-		}
-
-		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, object obj)
-		{
-			header.AddBaseLength(LinkLength());
 		}
 
 		internal override bool CanAddToQuery(string fieldName)
@@ -59,7 +56,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override object GetOrCreate(Transaction a_trans, object a_OnObject)
 		{
-			return null;
+			return ANY_OBJECT;
 		}
 
 		public override bool NeedsArrayAndPrimitiveInfo()
@@ -79,6 +76,12 @@ namespace Db4objects.Db4o.Internal
 			Instantiate1(a_bytes.GetTransaction(), a_yapObject, a_bytes);
 		}
 
+		public override void Instantiate(UnmarshallingContext context)
+		{
+			context.Reference().ProduceVirtualAttributes();
+			Instantiate1(context.Transaction(), context.Reference(), context.Buffer());
+		}
+
 		internal abstract void Instantiate1(Transaction a_trans, ObjectReference a_yapObject
 			, Db4objects.Db4o.Internal.Buffer a_bytes);
 
@@ -86,14 +89,18 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public sealed override void Marshall(ObjectReference a_yapObject, object a_object
-			, MarshallerFamily mf, StatefulBuffer a_bytes, Config4Class a_config, bool a_new
-			)
+		public override void Marshall(MarshallingContext context, object obj)
 		{
-			Transaction trans = a_bytes.GetTransaction();
+			context.DoNotIndirectWrites();
+			Marshall(context.Transaction(), context.Reference(), context, context.IsNew());
+		}
+
+		private void Marshall(Transaction trans, ObjectReference @ref, IWriteBuffer buffer
+			, bool isNew)
+		{
 			if (!trans.SupportsVirtualFields())
 			{
-				MarshallIgnore(a_bytes);
+				MarshallIgnore(buffer);
 				return;
 			}
 			ObjectContainerBase stream = trans.Container();
@@ -104,28 +111,27 @@ namespace Db4objects.Db4o.Internal
 				if (stream._replicationCallState == Const4.OLD)
 				{
 					migrating = true;
-					if (a_yapObject.VirtualAttributes() == null)
+					if (@ref.VirtualAttributes() == null)
 					{
-						object obj = a_yapObject.GetObject();
-						ObjectReference migrateYapObject = null;
+						object obj = @ref.GetObject();
+						ObjectReference migratingRef = null;
 						MigrationConnection mgc = handlers.i_migration;
 						if (mgc != null)
 						{
-							migrateYapObject = mgc.ReferenceFor(obj);
-							if (migrateYapObject == null)
+							migratingRef = mgc.ReferenceFor(obj);
+							if (migratingRef == null)
 							{
 								ObjectContainerBase peer = mgc.Peer(stream);
-								migrateYapObject = peer.Transaction().ReferenceForObject(obj);
+								migratingRef = peer.Transaction().ReferenceForObject(obj);
 							}
 						}
-						if (migrateYapObject != null)
+						if (migratingRef != null)
 						{
-							VirtualAttributes migrateAttributes = migrateYapObject.VirtualAttributes();
+							VirtualAttributes migrateAttributes = migratingRef.VirtualAttributes();
 							if (migrateAttributes != null && migrateAttributes.i_database != null)
 							{
 								migrating = true;
-								a_yapObject.SetVirtualAttributes((VirtualAttributes)migrateAttributes.ShallowClone
-									());
+								@ref.SetVirtualAttributes((VirtualAttributes)migrateAttributes.ShallowClone());
 								migrateAttributes.i_database.Bind(trans);
 							}
 						}
@@ -134,30 +140,31 @@ namespace Db4objects.Db4o.Internal
 				else
 				{
 					IDb4oReplicationReferenceProvider provider = handlers._replicationReferenceProvider;
-					object parentObject = a_yapObject.GetObject();
-					IDb4oReplicationReference @ref = provider.ReferenceFor(parentObject);
-					if (@ref != null)
+					object parentObject = @ref.GetObject();
+					IDb4oReplicationReference replicationReference = provider.ReferenceFor(parentObject
+						);
+					if (replicationReference != null)
 					{
 						migrating = true;
-						VirtualAttributes va = a_yapObject.ProduceVirtualAttributes();
-						va.i_version = @ref.Version();
-						va.i_uuid = @ref.LongPart();
-						va.i_database = @ref.SignaturePart();
+						VirtualAttributes va = @ref.ProduceVirtualAttributes();
+						va.i_version = replicationReference.Version();
+						va.i_uuid = replicationReference.LongPart();
+						va.i_database = replicationReference.SignaturePart();
 					}
 				}
 			}
-			if (a_yapObject.VirtualAttributes() == null)
+			if (@ref.VirtualAttributes() == null)
 			{
-				a_yapObject.ProduceVirtualAttributes();
+				@ref.ProduceVirtualAttributes();
 				migrating = false;
 			}
-			Marshall1(a_yapObject, a_bytes, migrating, a_new);
+			Marshall(trans, @ref, buffer, migrating, isNew);
 		}
 
-		internal abstract void Marshall1(ObjectReference a_yapObject, StatefulBuffer a_bytes
-			, bool a_migrating, bool a_new);
+		internal abstract void Marshall(Transaction trans, ObjectReference @ref, IWriteBuffer
+			 buffer, bool migrating, bool isNew);
 
-		internal abstract void MarshallIgnore(Db4objects.Db4o.Internal.Buffer writer);
+		internal abstract void MarshallIgnore(IWriteBuffer writer);
 
 		public override void ReadVirtualAttribute(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
 			 a_reader, ObjectReference a_yapObject)

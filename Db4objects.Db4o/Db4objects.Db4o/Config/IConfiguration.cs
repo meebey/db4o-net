@@ -605,10 +605,14 @@ namespace Db4objects.Db4o.Config
 		/// 	</param>
 		void GenerateVersionNumbers(ConfigScope setting);
 
-		/// <summary>Configures db4o to call intern() on strings upon retrieval.</summary>
-		/// <remarks>Configures db4o to call intern() on strings upon retrieval.</remarks>
-		/// <param name="doIntern">intern strings on retrieval if true, don't otherwise</param>
-		void InternStrings(bool doIntern);
+		/// <summary>configures db4o to call #intern() on strings upon retrieval.</summary>
+		/// <remarks>configures db4o to call #intern() on strings upon retrieval.</remarks>
+		/// <param name="flag">true to intern strings</param>
+		void InternStrings(bool flag);
+
+		/// <summary>returns true if strings will be interned.</summary>
+		/// <remarks>returns true if strings will be interned.</remarks>
+		bool InternStrings();
 
 		/// <summary>allows to configure db4o to use a customized byte IO adapter.</summary>
 		/// <remarks>
@@ -716,16 +720,10 @@ namespace Db4objects.Db4o.Config
 		/// </param>
 		void OptimizeNativeQueries(bool optimizeNQ);
 
-		/// <summary>
-		/// indicates whether Native Queries will be optimized
-		/// dynamically.
-		/// </summary>
-		/// <remarks>
-		/// indicates whether Native Queries will be optimized
-		/// dynamically.
-		/// </remarks>
+		/// <summary>indicates whether Native Queries will be optimized dynamically.</summary>
+		/// <remarks>indicates whether Native Queries will be optimized dynamically.</remarks>
 		/// <returns>
-		/// boolean indicates whether Native Queries will be optimized
+		/// boolean true if Native Queries will be optimized
 		/// dynamically.
 		/// </returns>
 		/// <seealso cref="IConfiguration.OptimizeNativeQueries">IConfiguration.OptimizeNativeQueries

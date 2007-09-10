@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			int lastOffset = Offset(buffer);
 			buffer.WriteByte(DATA_2);
 			MarshallingBuffer other = new MarshallingBuffer();
-			buffer.TransferLastWriteTo(other);
+			buffer.TransferLastWriteTo(other, true);
 			Assert.AreEqual(lastOffset, Offset(buffer));
 			Db4objects.Db4o.Internal.Buffer content = InspectContent(other);
 			Assert.AreEqual(DATA_2, content.ReadByte());
@@ -57,10 +57,10 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingBuffer buffer = new MarshallingBuffer();
 			buffer.WriteInt(DATA_1);
 			buffer.WriteByte(DATA_2);
-			MarshallingBuffer child = buffer.AddChild(true);
+			MarshallingBuffer child = buffer.AddChild();
 			child.WriteInt(DATA_3);
 			child.WriteInt(DATA_4);
-			buffer.MergeChildren(0);
+			buffer.MergeChildren(null, 0, 0);
 			Db4objects.Db4o.Internal.Buffer content = InspectContent(buffer);
 			Assert.AreEqual(DATA_1, content.ReadInt());
 			Assert.AreEqual(DATA_2, content.ReadByte());
@@ -75,12 +75,12 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingBuffer buffer = new MarshallingBuffer();
 			buffer.WriteInt(DATA_1);
 			buffer.WriteByte(DATA_2);
-			MarshallingBuffer child = buffer.AddChild(true);
+			MarshallingBuffer child = buffer.AddChild();
 			child.WriteInt(DATA_3);
 			child.WriteInt(DATA_4);
-			MarshallingBuffer grandChild = child.AddChild(true);
+			MarshallingBuffer grandChild = child.AddChild();
 			grandChild.WriteInt(DATA_5);
-			buffer.MergeChildren(0);
+			buffer.MergeChildren(null, 0, 0);
 			Db4objects.Db4o.Internal.Buffer content = InspectContent(buffer);
 			Assert.AreEqual(DATA_1, content.ReadInt());
 			Assert.AreEqual(DATA_2, content.ReadByte());
@@ -99,12 +99,12 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingBuffer buffer = new MarshallingBuffer();
 			buffer.WriteInt(DATA_1);
 			buffer.WriteByte(DATA_2);
-			MarshallingBuffer child = buffer.AddChild(true);
+			MarshallingBuffer child = buffer.AddChild();
 			child.WriteInt(DATA_3);
 			child.WriteInt(DATA_4);
-			MarshallingBuffer grandChild = child.AddChild(true);
+			MarshallingBuffer grandChild = child.AddChild();
 			grandChild.WriteInt(DATA_5);
-			buffer.MergeChildren(linkOffset);
+			buffer.MergeChildren(null, 0, linkOffset);
 			Db4objects.Db4o.Internal.Buffer content = InspectContent(buffer);
 			Db4objects.Db4o.Internal.Buffer extendedBuffer = new Db4objects.Db4o.Internal.Buffer
 				(content.Length() + linkOffset);
@@ -125,11 +125,11 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		{
 			MarshallingBuffer buffer = new MarshallingBuffer();
 			buffer.WriteInt(DATA_1);
-			MarshallingBuffer child = buffer.AddChild(true);
+			MarshallingBuffer child = buffer.AddChild(true, true);
 			child.WriteInt(DATA_3);
 			buffer.WriteByte(DATA_2);
 			child.WriteInt(DATA_4);
-			buffer.MergeChildren(0);
+			buffer.MergeChildren(null, 0, 0);
 			Db4objects.Db4o.Internal.Buffer content = InspectContent(buffer);
 			Assert.AreEqual(DATA_1, content.ReadInt());
 			int address = content.ReadInt();

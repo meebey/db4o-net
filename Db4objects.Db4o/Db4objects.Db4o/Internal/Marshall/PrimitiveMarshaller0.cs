@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Slots;
 using Sharpen.Util;
 
 namespace Db4objects.Db4o.Internal.Marshall
@@ -12,36 +11,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override bool UseNormalClassRead()
 		{
 			return true;
-		}
-
-		public override int WriteNew(Transaction trans, PrimitiveFieldHandler yapClassPrimitive
-			, object obj, bool topLevel, StatefulBuffer parentWriter, bool withIndirection, 
-			bool restoreLinkOffset)
-		{
-			int id = 0;
-			if (obj != null)
-			{
-				ITypeHandler4 handler = yapClassPrimitive.i_handler;
-				ObjectContainerBase stream = trans.Container();
-				id = stream.NewUserObject();
-				Slot slot = new Slot(-1, ObjectLength(handler));
-				if (!stream.IsClient())
-				{
-					slot = ((LocalTransaction)trans).File().GetSlot(slot.Length());
-				}
-				Pointer4 pointer = new Pointer4(id, slot);
-				trans.SetPointer(pointer);
-				StatefulBuffer writer = new StatefulBuffer(trans, pointer);
-				writer.WriteInt(yapClassPrimitive.GetID());
-				handler.Write(_family, obj, false, writer, true, false);
-				writer.WriteEnd();
-				stream.WriteNew(yapClassPrimitive, writer);
-			}
-			if (parentWriter != null)
-			{
-				parentWriter.WriteInt(id);
-			}
-			return id;
 		}
 
 		public override Date ReadDate(Db4objects.Db4o.Internal.Buffer bytes)

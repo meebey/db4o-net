@@ -3,6 +3,7 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
@@ -10,12 +11,14 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class MarshallingContext : IFieldListInfo, IWriteContext
+	public class MarshallingContext : IFieldListInfo, IMarshallingInfo, IWriteContext
 	{
 		private const int HEADER_LENGTH = Const4.LEADING_LENGTH + Const4.ID_LENGTH + 1 + 
 			Const4.INT_LENGTH;
 
-		private const byte MARSHALLER_FAMILY_VERSION = (byte)3;
+		public const byte HANDLER_VERSION = (byte)2;
+
+		private const int NO_INDIRECTION = 3;
 
 		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
@@ -34,6 +37,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private int _fieldWriteCount;
 
 		private Db4objects.Db4o.Internal.Buffer _debugPrepend;
+
+		private object _currentMarshalledObject;
+
+		private object _currentIndexEntry;
 
 		public MarshallingContext(Db4objects.Db4o.Internal.Transaction trans, ObjectReference
 			 @ref, int updateDepth, bool isNew)
@@ -77,21 +84,20 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _transaction;
 		}
 
-		private StatefulBuffer CreateNewBuffer()
+		private StatefulBuffer CreateNewBuffer(int length)
 		{
-			Slot slot = new Slot(-1, MarshalledLength());
+			Slot slot = new Slot(-1, length);
 			if (_transaction is LocalTransaction)
 			{
-				slot = ((LocalTransaction)_transaction).File().GetSlot(MarshalledLength());
+				slot = ((LocalTransaction)_transaction).File().GetSlot(length);
 				_transaction.SlotFreeOnRollback(ObjectID(), slot);
 			}
 			_transaction.SetPointer(ObjectID(), slot);
-			return CreateUpdateBuffer(slot.Address());
+			return CreateUpdateBuffer(slot.Address(), length);
 		}
 
-		private StatefulBuffer CreateUpdateBuffer(int address)
+		private StatefulBuffer CreateUpdateBuffer(int address, int length)
 		{
-			int length = _transaction.Container().BlockAlignedBytes(MarshalledLength());
 			StatefulBuffer buffer = new StatefulBuffer(_transaction, length);
 			buffer.UseSlot(ObjectID(), address, length);
 			buffer.SetUpdateDepth(_updateDepth);
@@ -104,10 +110,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual StatefulBuffer ToWriteBuffer()
 		{
-			_writeBuffer.MergeChildren(WriteBufferOffset());
-			StatefulBuffer buffer = IsNew() ? CreateNewBuffer() : CreateUpdateBuffer(0);
+			int length = Container().BlockAlignedBytes(MarshalledLength());
+			StatefulBuffer buffer = IsNew() ? CreateNewBuffer(length) : CreateUpdateBuffer(0, 
+				length);
+			_writeBuffer.MergeChildren(this, buffer.GetAddress(), WriteBufferOffset());
 			WriteObjectClassID(buffer, ClassMetadata().GetID());
-			buffer.WriteByte(MARSHALLER_FAMILY_VERSION);
+			buffer.WriteByte(HANDLER_VERSION);
 			buffer.WriteInt(FieldCount());
 			buffer.WriteBitMap(_nullBitMap);
 			_writeBuffer.TransferContentTo(buffer);
@@ -121,16 +129,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int MarshalledLength()
 		{
-			return HEADER_LENGTH + NullBitMapLength() + RequiredLength(_writeBuffer);
+			int length = WriteBufferOffset();
+			_writeBuffer.CheckBlockAlignment(this, null, new IntByRef(length));
+			return length + _writeBuffer.MarshalledLength() + Const4.BRACKETS_BYTES;
 		}
 
-		private int NullBitMapLength()
+		public virtual int RequiredLength(MarshallingBuffer buffer, bool align)
 		{
-			return Const4.INT_LENGTH + _nullBitMap.MarshalledLength();
-		}
-
-		private int RequiredLength(MarshallingBuffer buffer)
-		{
+			if (!align)
+			{
+				return buffer.Length();
+			}
 			return Container().BlockAlignedBytes(buffer.Length());
 		}
 
@@ -212,7 +221,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_fieldWriteCount++;
 			if (IsSecondWriteToField())
 			{
-				CreateChildBuffer();
+				CreateChildBuffer(true, true);
 			}
 		}
 
@@ -220,11 +229,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 		}
 
-		private void CreateChildBuffer()
+		private void CreateChildBuffer(bool transferLastWrite, bool storeLengthInLink)
 		{
-			MarshallingBuffer childBuffer = _currentBuffer.AddChild(false);
-			_currentBuffer.TransferLastWriteTo(childBuffer);
-			_currentBuffer.ReserveChildLinkSpace();
+			MarshallingBuffer childBuffer = _currentBuffer.AddChild(false, storeLengthInLink);
+			if (transferLastWrite)
+			{
+				_currentBuffer.TransferLastWriteTo(childBuffer, storeLengthInLink);
+			}
+			_currentBuffer.ReserveChildLinkSpace(storeLengthInLink);
 			_currentBuffer = childBuffer;
 		}
 
@@ -258,26 +270,76 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			int id = Container().SetInternal(Transaction(), obj, _updateDepth, true);
 			WriteInt(id);
+			_currentMarshalledObject = obj;
+			_currentIndexEntry = id;
 		}
 
 		public virtual void WriteObject(ITypeHandler4 handler, object obj)
 		{
 			MarshallingBuffer tempBuffer = _currentBuffer;
 			int tempFieldWriteCount = _fieldWriteCount;
-			_fieldWriteCount = 0;
-			handler.Write(this, obj);
+			if (obj == null)
+			{
+				WriteNullObject(handler);
+			}
+			else
+			{
+				_fieldWriteCount = 0;
+				handler.Write(this, obj);
+			}
 			_fieldWriteCount = tempFieldWriteCount;
 			_currentBuffer = tempBuffer;
 		}
 
+		private void WriteNullObject(ITypeHandler4 handler)
+		{
+			if (HandlerRegistry().IsVariableLength(handler))
+			{
+				DoNotIndirectWrites();
+				WriteNullLink();
+				return;
+			}
+			if (handler is PrimitiveHandler)
+			{
+				PrimitiveHandler primitiveHandler = (PrimitiveHandler)handler;
+				handler.Write(this, primitiveHandler.NullRepresentationInUntypedArrays());
+				return;
+			}
+			handler.Write(this, null);
+		}
+
+		private void WriteNullLink()
+		{
+			WriteInt(0);
+			WriteInt(0);
+		}
+
 		public virtual void WriteAny(object obj)
 		{
+			if (obj == null)
+			{
+				WriteInt(0);
+				return;
+			}
 			Db4objects.Db4o.Internal.ClassMetadata classMetadata = Db4objects.Db4o.Internal.ClassMetadata
-				.ForObject(Transaction(), obj, false);
+				.ForObject(Transaction(), obj, true);
+			if (classMetadata == null)
+			{
+				WriteInt(0);
+				return;
+			}
 			MarshallingBuffer tempBuffer = _currentBuffer;
 			int tempFieldWriteCount = _fieldWriteCount;
-			_fieldWriteCount = 0;
+			CreateChildBuffer(false, false);
 			WriteInt(classMetadata.GetID());
+			if (classMetadata.IsArray())
+			{
+				_fieldWriteCount = 0;
+			}
+			else
+			{
+				DoNotIndirectWrites();
+			}
 			classMetadata.Write(this, obj);
 			_fieldWriteCount = tempFieldWriteCount;
 			_currentBuffer = tempBuffer;
@@ -287,10 +349,40 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			if (!_currentBuffer.HasParent())
 			{
-				fieldMetadata.AddIndexEntry(Transaction(), ObjectID(), obj);
+				object indexEntry = (obj == _currentMarshalledObject) ? _currentIndexEntry : obj;
+				fieldMetadata.AddIndexEntry(Transaction(), ObjectID(), indexEntry);
 				return;
 			}
-			_currentBuffer.AddIndexEntry(fieldMetadata);
+			_currentBuffer.RequestIndexEntry(fieldMetadata);
+		}
+
+		public virtual ObjectReference Reference()
+		{
+			return _reference;
+		}
+
+		public virtual void DoNotIndirectWrites()
+		{
+			_fieldWriteCount = NO_INDIRECTION;
+		}
+
+		private Db4objects.Db4o.Internal.HandlerRegistry HandlerRegistry()
+		{
+			return Container().Handlers();
+		}
+
+		public virtual void CreateIndirection(ITypeHandler4 handler)
+		{
+			if (HandlerRegistry().IsVariableLength(handler))
+			{
+				CreateChildBuffer(false, true);
+				DoNotIndirectWrites();
+			}
+		}
+
+		public virtual Db4objects.Db4o.Internal.Buffer Buffer()
+		{
+			return null;
 		}
 	}
 }

@@ -9,33 +9,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 {
 	internal class ArrayMarshaller1 : ArrayMarshaller
 	{
-		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, ArrayHandler arrayHandler, object obj, bool topLevel)
-		{
-			ITypeHandler4 typeHandler = arrayHandler._handler;
-			if (topLevel)
-			{
-				header.AddBaseLength(arrayHandler.LinkLength());
-			}
-			else
-			{
-				header.AddPayLoadLength(arrayHandler.LinkLength());
-			}
-			if (typeHandler.HasFixedLength())
-			{
-				header.AddPayLoadLength(arrayHandler.ObjectLength(obj));
-			}
-			else
-			{
-				header.AddPayLoadLength(arrayHandler.OwnLength(obj));
-				object[] all = arrayHandler.AllElements(obj);
-				for (int i = 0; i < all.Length; i++)
-				{
-					typeHandler.CalculateLengths(trans, header, false, all[i], true);
-				}
-			}
-		}
-
 		public override void DeleteEmbedded(ArrayHandler arrayHandler, StatefulBuffer reader
 			)
 		{
@@ -83,24 +56,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			reader._offset = reader.ReadInt();
 			return arrayHandler.Read1Query(trans, _family, reader);
-		}
-
-		public override object WriteNew(ArrayHandler arrayHandler, object obj, bool restoreLinkOffset
-			, StatefulBuffer writer)
-		{
-			if (obj == null)
-			{
-				writer.WriteEmbeddedNull();
-				return null;
-			}
-			int length = arrayHandler.ObjectLength(obj);
-			int linkOffset = writer.ReserveAndPointToPayLoadSlot(length);
-			arrayHandler.WriteNew1(obj, writer);
-			if (restoreLinkOffset)
-			{
-				writer._offset = linkOffset;
-			}
-			return obj;
 		}
 
 		protected override Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans

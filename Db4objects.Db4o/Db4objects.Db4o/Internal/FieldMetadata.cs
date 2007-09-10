@@ -280,19 +280,20 @@ namespace Db4objects.Db4o.Internal
 		internal virtual void CascadeActivation(Transaction a_trans, object a_object, int
 			 a_depth, bool a_activate)
 		{
-			if (Alive())
+			if (!Alive())
 			{
-				try
+				return;
+			}
+			try
+			{
+				object cascadeTo = GetOrCreate(a_trans, a_object);
+				if (cascadeTo != null && i_handler != null)
 				{
-					object cascadeTo = GetOrCreate(a_trans, a_object);
-					if (cascadeTo != null && i_handler != null)
-					{
-						i_handler.CascadeActivation(a_trans, cascadeTo, a_depth, a_activate);
-					}
+					i_handler.CascadeActivation(a_trans, cascadeTo, a_depth, a_activate);
 				}
-				catch (Exception)
-				{
-				}
+			}
+			catch (Exception)
+			{
 			}
 		}
 
@@ -347,18 +348,19 @@ namespace Db4objects.Db4o.Internal
 		public TreeInt CollectIDs(MarshallerFamily mf, TreeInt tree, StatefulBuffer a_bytes
 			)
 		{
-			if (Alive())
+			if (!Alive())
 			{
-				if (i_handler is ClassMetadata)
+				return tree;
+			}
+			if (i_handler is ClassMetadata)
+			{
+				return (TreeInt)Tree.Add(tree, new TreeInt(a_bytes.ReadInt()));
+			}
+			else
+			{
+				if (i_handler is ArrayHandler)
 				{
-					tree = (TreeInt)Tree.Add(tree, new TreeInt(a_bytes.ReadInt()));
-				}
-				else
-				{
-					if (i_handler is ArrayHandler)
-					{
-						tree = ((ArrayHandler)i_handler).CollectIDs(mf, tree, a_bytes);
-					}
+					return ((ArrayHandler)i_handler).CollectIDs(mf, tree, a_bytes);
 				}
 			}
 			return tree;
@@ -418,9 +420,8 @@ namespace Db4objects.Db4o.Internal
 		public virtual void Delete(MarshallerFamily mf, StatefulBuffer a_bytes, bool isUpdate
 			)
 		{
-			if (!Alive())
+			if (!CheckAlive(a_bytes))
 			{
-				IncrementOffset(a_bytes);
 				return;
 			}
 			try
@@ -681,9 +682,8 @@ namespace Db4objects.Db4o.Internal
 		public virtual void Instantiate(MarshallerFamily mf, ObjectReference @ref, object
 			 onObject, StatefulBuffer buffer)
 		{
-			if (!Alive())
+			if (!CheckAlive(buffer))
 			{
-				IncrementOffset(buffer);
 				return;
 			}
 			object toSet = Read(mf, buffer);
@@ -695,6 +695,35 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			Set(onObject, toSet);
+		}
+
+		public virtual void Instantiate(UnmarshallingContext context)
+		{
+			if (!CheckAlive(context.Buffer()))
+			{
+				return;
+			}
+			object toSet = Read(context);
+			InformAboutTransaction(toSet, context.Transaction());
+			Set(context.PersistentObject(), toSet);
+		}
+
+		private bool CheckAlive(Db4objects.Db4o.Internal.Buffer buffer)
+		{
+			bool alive = Alive();
+			if (!alive)
+			{
+				IncrementOffset(buffer);
+			}
+			return alive;
+		}
+
+		private void InformAboutTransaction(object obj, Transaction trans)
+		{
+			if (i_db4oType != null && obj != null)
+			{
+				((IDb4oTypeImpl)obj).SetTrans(trans);
+			}
 		}
 
 		public virtual bool IsArray()
@@ -710,18 +739,6 @@ namespace Db4objects.Db4o.Internal
 				return Const4.ID_LENGTH;
 			}
 			return i_handler.LinkLength();
-		}
-
-		public virtual void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, object obj)
-		{
-			Alive();
-			if (i_handler == null)
-			{
-				header.AddBaseLength(Const4.ID_LENGTH);
-				return;
-			}
-			i_handler.CalculateLengths(trans, header, true, obj, true);
 		}
 
 		public virtual void LoadHandler(ObjectContainerBase a_stream)
@@ -760,26 +777,6 @@ namespace Db4objects.Db4o.Internal
 			return handlerForClass;
 		}
 
-		/// <param name="@ref"></param>
-		/// <param name="isNew"></param>
-		public virtual void Marshall(ObjectReference @ref, object obj, MarshallerFamily mf
-			, StatefulBuffer writer, Config4Class config, bool isNew)
-		{
-			object indexEntry = null;
-			if (obj != null && CascadeOnUpdate(config))
-			{
-				int updateDepth = writer.GetUpdateDepth();
-				writer.SetUpdateDepth(AdjustUpdateDepth(obj, updateDepth));
-				indexEntry = i_handler.Write(mf, obj, true, writer, true, true);
-				writer.SetUpdateDepth(updateDepth);
-			}
-			else
-			{
-				indexEntry = i_handler.Write(mf, obj, true, writer, true, true);
-			}
-			AddIndexEntry(writer, indexEntry);
-		}
-
 		private int AdjustUpdateDepth(object obj, int updateDepth)
 		{
 			int minimumUpdateDepth = 1;
@@ -809,6 +806,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				context.UpdateDepth(AdjustUpdateDepth(obj, updateDepth));
 			}
+			context.CreateIndirection(i_handler);
 			i_handler.Write(context, obj);
 			context.UpdateDepth(updateDepth);
 			if (HasIndex())
@@ -849,14 +847,22 @@ namespace Db4objects.Db4o.Internal
 				yapClassID, i_arrayPosition);
 		}
 
-		internal virtual object Read(MarshallerFamily mf, StatefulBuffer a_bytes)
+		internal virtual object Read(MarshallerFamily mf, StatefulBuffer buffer)
 		{
-			if (!Alive())
+			if (!CheckAlive(buffer))
 			{
-				IncrementOffset(a_bytes);
 				return null;
 			}
-			return i_handler.Read(mf, a_bytes, true);
+			return i_handler.Read(mf, buffer, true);
+		}
+
+		public virtual object Read(UnmarshallingContext context)
+		{
+			if (!CheckAlive(context.Buffer()))
+			{
+				return null;
+			}
+			return context.Read(i_handler);
 		}
 
 		public virtual object ReadQuery(Transaction a_trans, MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
@@ -952,14 +958,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_850(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_837(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_850 : IVisitor4
+		private sealed class _IVisitor4_837 : IVisitor4
 		{
-			public _IVisitor4_850(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_837(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;
@@ -1022,28 +1028,25 @@ namespace Db4objects.Db4o.Internal
 		public string ToString(MarshallerFamily mf, StatefulBuffer writer)
 		{
 			string str = "\n Field " + i_name;
-			if (!Alive())
+			if (!CheckAlive(writer))
 			{
-				IncrementOffset(writer);
+				return str;
+			}
+			object obj = null;
+			try
+			{
+				obj = Read(mf, writer);
+			}
+			catch (Exception)
+			{
+			}
+			if (obj == null)
+			{
+				str += "\n [null]";
 			}
 			else
 			{
-				object obj = null;
-				try
-				{
-					obj = Read(mf, writer);
-				}
-				catch (Exception)
-				{
-				}
-				if (obj == null)
-				{
-					str += "\n [null]";
-				}
-				else
-				{
-					str += "\n  " + obj.ToString();
-				}
+				str += "\n  " + obj.ToString();
 			}
 			return str;
 		}
@@ -1089,8 +1092,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			IIndexable4 indexHandler = (IIndexable4)classHandler;
-			return indexHandler;
+			return (IIndexable4)classHandler;
 		}
 
 		/// <param name="trans"></param>

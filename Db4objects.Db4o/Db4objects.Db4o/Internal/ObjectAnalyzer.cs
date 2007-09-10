@@ -18,11 +18,14 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _notStorable;
 
-		internal ObjectAnalyzer(PartialObjectContainer container, Transaction trans, object
-			 obj)
+		internal ObjectAnalyzer(PartialObjectContainer container, object obj)
 		{
 			_container = container;
 			_obj = obj;
+		}
+
+		internal virtual void Analyze(Transaction trans)
+		{
 			_ref = trans.ReferenceForObject(_obj);
 			if (_ref == null)
 			{
@@ -35,14 +38,6 @@ namespace Db4objects.Db4o.Internal
 				if (!DetectClassMetadata(trans, claxx))
 				{
 					return;
-				}
-				IReflectClass substituteClass = _classMetadata.ClassSubstitute();
-				if (substituteClass != null)
-				{
-					if (!DetectClassMetadata(trans, substituteClass))
-					{
-						return;
-					}
 				}
 			}
 			else

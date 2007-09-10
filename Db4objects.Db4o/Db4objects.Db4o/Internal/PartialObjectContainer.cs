@@ -880,7 +880,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal object GetByID2(Db4objects.Db4o.Internal.Transaction ta, int id)
+		public object GetByID2(Db4objects.Db4o.Internal.Transaction ta, int id)
 		{
 			object obj = ta.ObjectForIdFromCache(id);
 			if (obj != null)
@@ -1026,7 +1026,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			ClassMetadata yc = _handlers.GetYapClassStatic(claxx);
+			ClassMetadata yc = _handlers.ClassMetadataForClass(claxx);
 			if (yc != null)
 			{
 				return yc;
@@ -1040,7 +1040,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			ClassMetadata yc = _handlers.GetYapClassStatic(claxx);
+			ClassMetadata yc = _handlers.ClassMetadataForClass(claxx);
 			if (yc != null)
 			{
 				return yc;
@@ -1070,7 +1070,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			ClassMetadata yc = _handlers.GetYapClassStatic(claxx);
+			ClassMetadata yc = _handlers.ClassMetadataForClass(claxx);
 			if (yc != null)
 			{
 				return yc;
@@ -1108,7 +1108,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			ClassMetadata yc = _handlers.GetYapClassStatic(id);
+			ClassMetadata yc = _handlers.ClassMetadataForId(id);
 			if (yc != null)
 			{
 				return yc;
@@ -1890,7 +1890,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				((IDb4oTypeImpl)obj).StoredTo(trans);
 			}
-			ObjectAnalyzer analyzer = new ObjectAnalyzer(this, trans, obj);
+			ObjectAnalyzer analyzer = new ObjectAnalyzer(this, obj);
+			analyzer.Analyze(trans);
 			if (analyzer.NotStorable())
 			{
 				return 0;
@@ -2143,7 +2144,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual LatinStringIO StringIO()
 		{
-			return _handlers.i_stringHandler.i_stringIo;
+			return _handlers.i_stringHandler.StringIO();
 		}
 
 		public abstract ISystemInfo SystemInfo();

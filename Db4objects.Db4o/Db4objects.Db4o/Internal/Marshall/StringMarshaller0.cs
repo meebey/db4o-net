@@ -12,31 +12,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return false;
 		}
 
-		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, bool topLevel, object obj, bool withIndirection)
-		{
-		}
-
-		public override object WriteNew(object a_object, bool topLevel, StatefulBuffer a_bytes
-			, bool redirect)
-		{
-			if (a_object == null)
-			{
-				a_bytes.WriteEmbeddedNull();
-				return null;
-			}
-			ObjectContainerBase stream = a_bytes.GetStream();
-			string str = (string)a_object;
-			int length = stream.StringIO().Length(str);
-			StatefulBuffer bytes = new StatefulBuffer(a_bytes.GetTransaction(), length);
-			WriteShort(stream, str, bytes);
-			bytes.SetID(a_bytes._offset);
-			a_bytes.GetStream().WriteEmbedded(a_bytes, bytes);
-			a_bytes.IncrementOffset(Const4.ID_LENGTH);
-			a_bytes.WriteInt(length);
-			return bytes;
-		}
-
 		public override Db4objects.Db4o.Internal.Buffer ReadIndexEntry(StatefulBuffer parentSlot
 			)
 		{

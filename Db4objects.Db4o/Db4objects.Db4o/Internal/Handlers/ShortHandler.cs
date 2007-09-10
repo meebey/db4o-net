@@ -106,17 +106,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object Read(IReadContext context)
 		{
-			int value = 0;
-			for (int i = 0; i < Const4.SHORT_BYTES; i++)
-			{
-				value = ((value << 8) + context.ReadByte());
-			}
+			int value = ((context.ReadByte() & unchecked((int)(0xff))) << 8) + (context.ReadByte
+				() & unchecked((int)(0xff)));
 			return (short)value;
 		}
 
 		public override void Write(IWriteContext context, object obj)
 		{
-			short shortValue = ((short)obj);
+			int shortValue = ((short)obj);
 			context.WriteBytes(new byte[] { (byte)(shortValue >> 8), (byte)shortValue });
 		}
 	}

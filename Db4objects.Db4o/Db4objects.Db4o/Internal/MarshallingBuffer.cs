@@ -1,8 +1,10 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Sharpen;
 
@@ -13,9 +15,7 @@ namespace Db4objects.Db4o.Internal
 	{
 		private const int SIZE_NEEDED = Const4.LONG_LENGTH;
 
-		private const int LINK_LENGTH = Const4.INT_LENGTH + Const4.ID_LENGTH;
-
-		private const int NO_PARENT = -1;
+		private const int NO_PARENT = -int.MaxValue;
 
 		private Db4objects.Db4o.Internal.Buffer _delegate;
 
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal
 
 		private List4 _children;
 
-		private List4 _indexEntries;
+		private FieldMetadata _indexedField;
 
 		public virtual int Length()
 		{
@@ -98,13 +98,14 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Internal.Buffer temp = new Db4objects.Db4o.Internal.Buffer(newSize
 				);
 			temp.Offset(_lastOffSet);
-			_delegate.CopyTo(temp, 0, 0, _lastOffSet);
+			_delegate.CopyTo(temp, 0, 0, _delegate.Length());
 			_delegate = temp;
 		}
 
-		public virtual void TransferLastWriteTo(MarshallingBuffer other)
+		public virtual void TransferLastWriteTo(MarshallingBuffer other, bool storeLengthInLink
+			)
 		{
-			other._addressInParent = _lastOffSet;
+			other.AddressInParent(_lastOffSet, storeLengthInLink);
 			int length = _delegate.Offset() - _lastOffSet;
 			other.PrepareWrite(length);
 			int otherOffset = other._delegate.Offset();
@@ -115,10 +116,21 @@ namespace Db4objects.Db4o.Internal
 			other._lastOffSet = otherOffset;
 		}
 
+		private void AddressInParent(int offset, bool storeLengthInLink)
+		{
+			_addressInParent = storeLengthInLink ? offset : -offset;
+		}
+
 		public virtual void TransferContentTo(Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			System.Array.Copy(_delegate._buffer, 0, buffer._buffer, buffer._offset, Length());
-			buffer._offset += Length();
+			TransferContentTo(buffer, Length());
+		}
+
+		public virtual void TransferContentTo(Db4objects.Db4o.Internal.Buffer buffer, int
+			 length)
+		{
+			System.Array.Copy(_delegate._buffer, 0, buffer._buffer, buffer._offset, length);
+			buffer._offset += length;
 		}
 
 		public virtual Db4objects.Db4o.Internal.Buffer TestDelegate()
@@ -126,31 +138,39 @@ namespace Db4objects.Db4o.Internal
 			return _delegate;
 		}
 
-		public virtual MarshallingBuffer AddChild(bool reserveLinkSpace)
+		public virtual MarshallingBuffer AddChild()
+		{
+			return AddChild(true, false);
+		}
+
+		public virtual MarshallingBuffer AddChild(bool reserveLinkSpace, bool storeLengthInLink
+			)
 		{
 			MarshallingBuffer child = new MarshallingBuffer();
-			child._addressInParent = Offset();
+			child.AddressInParent(Offset(), storeLengthInLink);
 			_children = new List4(_children, child);
 			if (reserveLinkSpace)
 			{
-				ReserveChildLinkSpace();
+				ReserveChildLinkSpace(storeLengthInLink);
 			}
 			return child;
 		}
 
-		public virtual void ReserveChildLinkSpace()
+		public virtual void ReserveChildLinkSpace(bool storeLengthInLink)
 		{
-			PrepareWrite(LINK_LENGTH);
-			_delegate.IncrementOffset(LINK_LENGTH);
+			int length = storeLengthInLink ? Const4.INT_LENGTH * 2 : Const4.INT_LENGTH;
+			PrepareWrite(length);
+			_delegate.IncrementOffset(length);
 		}
 
-		public virtual void MergeChildren(int linkOffset)
+		public virtual void MergeChildren(MarshallingContext context, int masterAddress, 
+			int linkOffset)
 		{
-			MergeChildren(this, this, linkOffset);
+			MergeChildren(context, masterAddress, this, this, linkOffset);
 		}
 
-		private static void MergeChildren(MarshallingBuffer writeBuffer, MarshallingBuffer
-			 parentBuffer, int linkOffset)
+		private static void MergeChildren(MarshallingContext context, int masterAddress, 
+			MarshallingBuffer writeBuffer, MarshallingBuffer parentBuffer, int linkOffset)
 		{
 			if (parentBuffer._children == null)
 			{
@@ -159,22 +179,25 @@ namespace Db4objects.Db4o.Internal
 			IEnumerator i = new Iterator4Impl(parentBuffer._children);
 			while (i.MoveNext())
 			{
-				Merge(writeBuffer, parentBuffer, (MarshallingBuffer)i.Current, linkOffset);
+				Merge(context, masterAddress, writeBuffer, parentBuffer, (MarshallingBuffer)i.Current
+					, linkOffset);
 			}
 		}
 
-		private static void Merge(MarshallingBuffer writeBuffer, MarshallingBuffer parentBuffer
-			, MarshallingBuffer childBuffer, int linkOffset)
+		private static void Merge(MarshallingContext context, int masterAddress, MarshallingBuffer
+			 writeBuffer, MarshallingBuffer parentBuffer, MarshallingBuffer childBuffer, int
+			 linkOffset)
 		{
-			int childLength = childBuffer.Length();
 			int childPosition = writeBuffer.Offset();
-			writeBuffer.Reserve(childLength);
-			MergeChildren(writeBuffer, childBuffer, linkOffset);
+			writeBuffer.Reserve(childBuffer.BlockedLength());
+			MergeChildren(context, masterAddress, writeBuffer, childBuffer, linkOffset);
 			int savedWriteBufferOffset = writeBuffer.Offset();
 			writeBuffer.Seek(childPosition);
 			childBuffer.TransferContentTo(writeBuffer._delegate);
 			writeBuffer.Seek(savedWriteBufferOffset);
-			parentBuffer.WriteLink(childBuffer, childPosition + linkOffset, childLength);
+			parentBuffer.WriteLink(childBuffer, childPosition + linkOffset, childBuffer.UnblockedLength
+				());
+			childBuffer.WriteIndex(context, masterAddress, childPosition + linkOffset);
 		}
 
 		public virtual void Seek(int offset)
@@ -191,10 +214,42 @@ namespace Db4objects.Db4o.Internal
 		private void WriteLink(MarshallingBuffer child, int position, int length)
 		{
 			int offset = Offset();
-			_delegate.Offset(child._addressInParent);
+			_delegate.Offset(child.AddressInParent());
 			_delegate.WriteInt(position);
-			_delegate.WriteInt(length);
+			if (child.StoreLengthInLink())
+			{
+				_delegate.WriteInt(length);
+			}
 			_delegate.Offset(offset);
+		}
+
+		private void WriteIndex(MarshallingContext context, int masterAddress, int position
+			)
+		{
+			if (_indexedField != null)
+			{
+				StatefulBuffer buffer = new StatefulBuffer(context.Transaction(), UnblockedLength
+					());
+				int blockedPosition = context.Container().BytesToBlocks(position);
+				int indexID = masterAddress + blockedPosition;
+				buffer.SetID(indexID);
+				buffer.Address(indexID);
+				TransferContentTo(buffer, UnblockedLength());
+				_indexedField.AddIndexEntry(context.Transaction(), context.ObjectID(), buffer);
+			}
+		}
+
+		private int AddressInParent()
+		{
+			if (!HasParent())
+			{
+				throw new InvalidOperationException();
+			}
+			if (_addressInParent < 0)
+			{
+				return -_addressInParent;
+			}
+			return _addressInParent;
 		}
 
 		public virtual void DebugDecrementLastOffset(int count)
@@ -207,8 +262,86 @@ namespace Db4objects.Db4o.Internal
 			return _addressInParent != NO_PARENT;
 		}
 
-		public virtual void AddIndexEntry(FieldMetadata fieldMetadata)
+		private bool StoreLengthInLink()
 		{
+			return _addressInParent > 0;
+		}
+
+		public virtual void RequestIndexEntry(FieldMetadata fieldMetadata)
+		{
+			_indexedField = fieldMetadata;
+		}
+
+		public virtual MarshallingBuffer CheckBlockAlignment(MarshallingContext context, 
+			MarshallingBuffer precedingBuffer, IntByRef precedingLength)
+		{
+			_lastOffSet = Offset();
+			if (DoBlockAlign())
+			{
+				precedingBuffer.BlockAlign(context, precedingLength.value);
+			}
+			if (precedingBuffer != null)
+			{
+				precedingLength.value += precedingBuffer.Length();
+			}
+			precedingBuffer = this;
+			if (_children != null)
+			{
+				IEnumerator i = new Iterator4Impl(_children);
+				while (i.MoveNext())
+				{
+					precedingBuffer = ((MarshallingBuffer)i.Current).CheckBlockAlignment(context, precedingBuffer
+						, precedingLength);
+				}
+			}
+			return precedingBuffer;
+		}
+
+		private void BlockAlign(MarshallingContext context, int precedingLength)
+		{
+			int totalLength = context.Container().BlockAlignedBytes(precedingLength + Length(
+				));
+			int newLength = totalLength - precedingLength;
+			BlockAlign(newLength);
+		}
+
+		public virtual int MarshalledLength()
+		{
+			int length = Length();
+			if (_children != null)
+			{
+				IEnumerator i = new Iterator4Impl(_children);
+				while (i.MoveNext())
+				{
+					length += ((MarshallingBuffer)i.Current).MarshalledLength();
+				}
+			}
+			return length;
+		}
+
+		private void BlockAlign(int length)
+		{
+			if (length > _delegate.Length())
+			{
+				int sizeNeeded = length - _delegate.Offset();
+				PrepareWrite(sizeNeeded);
+			}
+			_delegate.Offset(length);
+		}
+
+		private bool DoBlockAlign()
+		{
+			return HasParent();
+		}
+
+		private int BlockedLength()
+		{
+			return Length();
+		}
+
+		private int UnblockedLength()
+		{
+			return _lastOffSet;
 		}
 	}
 }

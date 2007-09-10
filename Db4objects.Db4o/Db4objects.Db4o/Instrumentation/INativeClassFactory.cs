@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Db4objects.Db4o.Nativequery
+namespace Db4objects.Db4o.Instrumentation
 {
 	public interface INativeClassFactory
 	{

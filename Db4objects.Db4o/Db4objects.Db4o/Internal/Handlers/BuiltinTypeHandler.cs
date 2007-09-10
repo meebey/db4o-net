@@ -19,16 +19,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public abstract class BuiltinTypeHandler : ITypeHandler4
 	{
-		internal readonly ObjectContainerBase _stream;
+		private readonly ObjectContainerBase _container;
 
-		public BuiltinTypeHandler(ObjectContainerBase stream)
+		public BuiltinTypeHandler(ObjectContainerBase container)
 		{
-			_stream = stream;
-		}
-
-		public bool HasFixedLength()
-		{
-			return false;
+			_container = container;
 		}
 
 		public int LinkLength()
@@ -43,8 +38,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public abstract void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
 			);
 
-		public abstract void CalculateLengths(Transaction arg1, ObjectHeaderAttributes arg2
-			, bool arg3, object arg4, bool arg5);
+		public virtual ObjectContainerBase Container()
+		{
+			return _container;
+		}
+
+		protected virtual Db4objects.Db4o.Internal.Buffer ReadIndirectedBuffer(IReadContext
+			 readContext)
+		{
+			UnmarshallingContext context = (UnmarshallingContext)readContext;
+			return context.Container().BufferByAddress(context.ReadInt(), context.ReadInt());
+		}
 
 		public abstract void CascadeActivation(Transaction arg1, object arg2, int arg3, bool
 			 arg4);
@@ -65,9 +69,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract QCandidate ReadSubCandidate(MarshallerFamily arg1, Db4objects.Db4o.Internal.Buffer
 			 arg2, QCandidates arg3, bool arg4);
-
-		public abstract object Write(MarshallerFamily arg1, object arg2, bool arg3, StatefulBuffer
-			 arg4, bool arg5, bool arg6);
 
 		public abstract void Write(IWriteContext arg1, object arg2);
 	}

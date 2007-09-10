@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -45,11 +44,6 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override bool HasFixedLength()
-		{
-			return false;
-		}
-
 		public override bool HoldsAnyClass()
 		{
 			return true;
@@ -58,26 +52,6 @@ namespace Db4objects.Db4o.Internal
 		public override bool IsStrongTyped()
 		{
 			return false;
-		}
-
-		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, bool topLevel, object obj, bool withIndirection)
-		{
-			if (topLevel)
-			{
-				header.AddBaseLength(Const4.INT_LENGTH);
-			}
-			else
-			{
-				header.AddPayLoadLength(Const4.INT_LENGTH);
-			}
-			ClassMetadata yc = ForObject(trans, obj, true);
-			if (yc == null)
-			{
-				return;
-			}
-			header.AddPayLoadLength(Const4.INT_LENGTH);
-			yc.CalculateLengths(trans, header, false, obj, false);
 		}
 
 		public override object Read(MarshallerFamily mf, StatefulBuffer a_bytes, bool redirect
@@ -116,12 +90,6 @@ namespace Db4objects.Db4o.Internal
 			return mf._untyped.ReadSubCandidate(reader, candidates, withIndirection);
 		}
 
-		public override object Write(MarshallerFamily mf, object obj, bool topLevel, StatefulBuffer
-			 writer, bool withIndirection, bool restoreLinkeOffset)
-		{
-			return mf._untyped.WriteNew(obj, restoreLinkeOffset, writer);
-		}
-
 		public override void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
 			)
 		{
@@ -134,7 +102,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override object Read(IReadContext context)
 		{
-			throw new NotImplementedException();
+			return ((UnmarshallingContext)context).ReadAny();
 		}
 
 		public override void Write(IWriteContext context, object obj)

@@ -20,16 +20,23 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public readonly bool _isPrimitive;
 
-		public ArrayHandler(ObjectContainerBase stream, ITypeHandler4 a_handler, bool a_isPrimitive
-			) : base(stream)
+		public ArrayHandler(ObjectContainerBase container, ITypeHandler4 handler, bool isPrimitive
+			) : base(container)
 		{
-			_handler = a_handler;
-			_isPrimitive = a_isPrimitive;
+			_handler = handler;
+			_isPrimitive = isPrimitive;
+		}
+
+		protected ArrayHandler(ITypeHandler4 template) : this(((Db4objects.Db4o.Internal.Handlers.ArrayHandler
+			)template).Container(), ((Db4objects.Db4o.Internal.Handlers.ArrayHandler)template
+			)._handler, ((Db4objects.Db4o.Internal.Handlers.ArrayHandler)template)._isPrimitive
+			)
+		{
 		}
 
 		protected virtual IReflectArray ArrayReflector()
 		{
-			return _stream.Reflector().Array();
+			return Container().Reflector().Array();
 		}
 
 		public virtual object[] AllElements(object a_object)
@@ -58,14 +65,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 				{
 					for (int i = all.Length - 1; i >= 0; i--)
 					{
-						_stream.StillToActivate(a_trans, all[i], a_depth);
+						Container().StillToActivate(a_trans, all[i], a_depth);
 					}
 				}
 				else
 				{
 					for (int i = all.Length - 1; i >= 0; i--)
 					{
-						_stream.StillToDeactivate(a_trans, all[i], a_depth, false);
+						Container().StillToDeactivate(a_trans, all[i], a_depth, false);
 					}
 				}
 			}
@@ -141,12 +148,18 @@ namespace Db4objects.Db4o.Internal.Handlers
 				));
 		}
 
+		public override int GetHashCode()
+		{
+			int hc = _handler.GetHashCode() >> 7;
+			return _isPrimitive ? hc : -hc;
+		}
+
 		public sealed override int GetID()
 		{
 			return _handler.GetID();
 		}
 
-		private bool HandleAsByteArray(object obj)
+		protected virtual bool HandleAsByteArray(object obj)
 		{
 			return obj.GetType() == typeof(byte[]);
 			return obj is byte[];
@@ -155,13 +168,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual byte Identifier()
 		{
 			return Const4.YAPARRAY;
-		}
-
-		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, bool topLevel, object obj, bool withIndirection)
-		{
-			MarshallerFamily.Current()._array.CalculateLengths(trans, header, this, obj, topLevel
-				);
 		}
 
 		public virtual int ObjectLength(object obj)
@@ -234,8 +240,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return array;
 		}
 
-		private object ReadCreate(Transaction trans, IReadBuffer buffer, IntByRef elements
-			)
+		protected virtual object ReadCreate(Transaction trans, IReadBuffer buffer, IntByRef
+			 elements)
 		{
 			ReflectClassByRef clazz = new ReflectClassByRef();
 			elements.value = ReadElementsAndClass(trans, buffer, clazz);
@@ -328,14 +334,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return mapped;
 		}
 
-		private IReflectClass ReflectClassFromElementsEntry(Transaction a_trans, int elements
+		private IReflectClass ReflectClassFromElementsEntry(Transaction trans, int elements
 			)
 		{
 			if (elements != Const4.IGNORE_ID)
 			{
 				bool primitive = false;
 				int classID = -elements;
-				ClassMetadata classMetadata = a_trans.Container().ClassMetadataForId(classID);
+				ClassMetadata classMetadata = trans.Container().ClassMetadataForId(classID);
 				if (classMetadata != null)
 				{
 					return (primitive ? Handlers4.PrimitiveClassReflector(classMetadata) : classMetadata
@@ -358,15 +364,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 				);
 		}
 
-		private int ClassID(object obj)
+		protected int ClassID(object obj)
 		{
 			IReflectClass claxx = ComponentType(obj);
 			bool primitive = Deploy.csharp ? false : claxx.IsPrimitive();
 			if (primitive)
 			{
-				claxx = _stream._handlers.HandlerForClass(_stream, claxx).ClassReflector();
+				claxx = Container()._handlers.HandlerForClass(Container(), claxx).ClassReflector(
+					);
 			}
-			ClassMetadata classMetadata = _stream.ProduceClassMetadata(claxx);
+			ClassMetadata classMetadata = Container().ProduceClassMetadata(claxx);
 			if (classMetadata == null)
 			{
 				return Const4.IGNORE_ID;
@@ -379,11 +386,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return -classID;
 		}
 
-		internal void WriteClass(object obj, StatefulBuffer buffer)
-		{
-			buffer.WriteInt(ClassID(obj));
-		}
-
 		private IReflectClass ComponentType(object obj)
 		{
 			return ArrayReflector().GetComponentType(Reflector().ForObject(obj));
@@ -391,32 +393,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private IReflector Reflector()
 		{
-			return _stream.Reflector();
-		}
-
-		public sealed override object Write(MarshallerFamily mf, object a_object, bool topLevel
-			, StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkOffset)
-		{
-			return mf._array.WriteNew(this, a_object, restoreLinkOffset, a_bytes);
-		}
-
-		public virtual void WriteNew1(object obj, StatefulBuffer writer)
-		{
-			WriteClass(obj, writer);
-			int elements = ArrayReflector().GetLength(obj);
-			writer.WriteInt(elements);
-			if (HandleAsByteArray(obj))
-			{
-				writer.WriteBytes((byte[])obj);
-			}
-			else
-			{
-				for (int i = 0; i < elements; i++)
-				{
-					_handler.Write(MarshallerFamily.Current(), ArrayReflector().Get(obj, i), false, writer
-						, true, true);
-				}
-			}
+			return Container().Reflector();
 		}
 
 		public override IComparable4 PrepareComparison(object obj)
@@ -506,6 +483,27 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return elements;
 		}
 
+		public override object Read(IReadContext context)
+		{
+			IntByRef elements = new IntByRef();
+			object array = ReadCreate(context.Transaction(), context, elements);
+			if (array != null)
+			{
+				if (HandleAsByteArray(array))
+				{
+					context.ReadBytes((byte[])array);
+				}
+				else
+				{
+					for (int i = 0; i < elements.value; i++)
+					{
+						ArrayReflector().Set(array, i, context.ReadObject(_handler));
+					}
+				}
+			}
+			return array;
+		}
+
 		public override void Write(IWriteContext context, object obj)
 		{
 			int classID = ClassID(obj);
@@ -523,27 +521,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 					context.WriteObject(_handler, ArrayReflector().Get(obj, i));
 				}
 			}
-		}
-
-		public override object Read(IReadContext context)
-		{
-			IntByRef elements = new IntByRef();
-			object array = ReadCreate(context.Transaction(), context, elements);
-			if (array != null)
-			{
-				if (HandleAsByteArray(array))
-				{
-					context.ReadBytes((byte[])array);
-				}
-				else
-				{
-					for (int i = 0; i < elements.value; i++)
-					{
-						ArrayReflector().Set(array, i, _handler.Read(context));
-					}
-				}
-			}
-			return array;
 		}
 	}
 }

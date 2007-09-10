@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -17,20 +16,19 @@ namespace Db4objects.Db4o.Internal
 	{
 		public readonly ITypeHandler4 i_handler;
 
-		internal PrimitiveFieldHandler(ObjectContainerBase a_stream, ITypeHandler4 a_handler
-			) : base(a_stream, a_handler.ClassReflector())
+		internal PrimitiveFieldHandler(ObjectContainerBase container, ITypeHandler4 handler
+			) : base(container, handler.ClassReflector())
 		{
 			i_fields = FieldMetadata.EMPTY_ARRAY;
-			i_handler = a_handler;
+			i_handler = handler;
 		}
 
-		internal override void ActivateFields(Transaction a_trans, object a_object, int a_depth
-			)
+		internal override void ActivateFields(Transaction trans, object obj, int depth)
 		{
 		}
 
-		internal sealed override void AddToIndex(LocalObjectContainer a_stream, Transaction
-			 a_trans, int a_id)
+		internal sealed override void AddToIndex(LocalObjectContainer container, Transaction
+			 trans, int id)
 		{
 		}
 
@@ -109,24 +107,23 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		internal override object Instantiate(ObjectReference a_yapObject, object a_object
-			, MarshallerFamily mf, ObjectHeaderAttributes attributes, StatefulBuffer a_bytes
-			, bool a_addToIDTree)
+		internal override object Instantiate(ObjectReference @ref, object obj, MarshallerFamily
+			 mf, ObjectHeaderAttributes attributes, StatefulBuffer buffer, bool addToIDTree)
 		{
-			if (a_object == null)
+			if (obj == null)
 			{
 				try
 				{
-					a_object = i_handler.Read(mf, a_bytes, true);
+					obj = i_handler.Read(mf, buffer, true);
 				}
 				catch (CorruptionException)
 				{
 					return null;
 				}
-				a_yapObject.SetObjectWeak(a_bytes.GetStream(), a_object);
+				@ref.SetObjectWeak(buffer.GetStream(), obj);
 			}
-			a_yapObject.SetStateClean();
-			return a_object;
+			@ref.SetStateClean();
+			return obj;
 		}
 
 		internal override object InstantiateTransient(ObjectReference a_yapObject, object
@@ -141,6 +138,23 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
+		}
+
+		public override object Instantiate(UnmarshallingContext context)
+		{
+			object obj = context.PersistentObject();
+			if (obj == null)
+			{
+				obj = context.Read(i_handler);
+				context.SetObjectWeak(obj);
+			}
+			context.SetStateClean();
+			return obj;
+		}
+
+		public override object InstantiateTransient(UnmarshallingContext context)
+		{
+			return i_handler.Read(context);
 		}
 
 		internal override void InstantiateFields(ObjectReference a_yapObject, object a_onObject
@@ -161,6 +175,15 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		internal override void InstantiateFields(UnmarshallingContext context)
+		{
+			object obj = context.Read(i_handler);
+			if (obj != null && (i_handler is DateHandler))
+			{
+				((DateHandler)i_handler).CopyValue(obj, context.PersistentObject());
+			}
+		}
+
 		public override bool IsArray()
 		{
 			return _id == HandlerRegistry.ANY_ARRAY_ID || _id == HandlerRegistry.ANY_ARRAY_N_ID;
@@ -174,12 +197,6 @@ namespace Db4objects.Db4o.Internal
 		public override bool IsStrongTyped()
 		{
 			return false;
-		}
-
-		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, bool topLevel, object obj, bool withIndirection)
-		{
-			i_handler.CalculateLengths(trans, header, topLevel, obj, withIndirection);
 		}
 
 		public override IComparable4 PrepareComparison(object a_constraint)
@@ -233,14 +250,6 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override object Write(MarshallerFamily mf, object a_object, bool topLevel, 
-			StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkOffset)
-		{
-			mf._primitive.WriteNew(a_bytes.GetTransaction(), this, a_object, topLevel, a_bytes
-				, withIndirection, restoreLinkOffset);
-			return a_object;
-		}
-
 		public override string ToString()
 		{
 			return "Wraps " + i_handler.ToString() + " in YapClassPrimitive";
@@ -267,7 +276,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override object Read(IReadContext context)
 		{
-			throw new NotImplementedException();
+			return i_handler.Read(context);
 		}
 
 		public override void Write(IWriteContext context, object obj)

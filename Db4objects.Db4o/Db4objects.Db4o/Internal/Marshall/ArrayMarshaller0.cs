@@ -32,30 +32,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			trans.SlotFreeOnCommit(slot.Address(), slot);
 		}
 
-		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, ArrayHandler handler, object obj, bool topLevel)
-		{
-		}
-
-		public override object WriteNew(ArrayHandler arrayHandler, object a_object, bool 
-			topLevel, StatefulBuffer a_bytes)
-		{
-			if (a_object == null)
-			{
-				a_bytes.WriteEmbeddedNull();
-				return null;
-			}
-			int length = arrayHandler.ObjectLength(a_object);
-			StatefulBuffer bytes = new StatefulBuffer(a_bytes.GetTransaction(), length);
-			bytes.SetUpdateDepth(a_bytes.GetUpdateDepth());
-			arrayHandler.WriteNew1(a_object, bytes);
-			bytes.SetID(a_bytes._offset);
-			a_bytes.GetStream().WriteEmbedded(a_bytes, bytes);
-			a_bytes.IncrementOffset(Const4.ID_LENGTH);
-			a_bytes.WriteInt(length);
-			return a_object;
-		}
-
 		public override object Read(ArrayHandler arrayHandler, StatefulBuffer a_bytes)
 		{
 			StatefulBuffer bytes = a_bytes.ReadEmbeddedObject();

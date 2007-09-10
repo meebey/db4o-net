@@ -3,7 +3,6 @@
 using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -11,16 +10,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		public abstract bool InlinedStrings();
 
-		public abstract void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, bool topLevel, object obj, bool withIndirection);
-
 		protected int LinkLength()
 		{
 			return Const4.INT_LENGTH + Const4.ID_LENGTH;
 		}
-
-		public abstract object WriteNew(object a_object, bool topLevel, StatefulBuffer a_bytes
-			, bool redirect);
 
 		public string Read(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer reader
 			)

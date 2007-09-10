@@ -2,7 +2,7 @@
 
 using System;
 using System.Reflection;
-using Db4objects.Db4o.Nativequery;
+using Db4objects.Db4o.Instrumentation;
 using Db4objects.Db4o.Nativequery.Expr.Cmp;
 using Db4objects.Db4o.Nativequery.Expr.Cmp.Field;
 using Db4objects.Db4o.Nativequery.Optimization;

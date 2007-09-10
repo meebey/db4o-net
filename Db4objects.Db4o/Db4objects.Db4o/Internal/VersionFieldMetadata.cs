@@ -5,6 +5,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -35,22 +36,21 @@ namespace Db4objects.Db4o.Internal
 			a_yapObject.VirtualAttributes().i_version = a_bytes.ReadLong();
 		}
 
-		internal override void Marshall1(ObjectReference a_yapObject, StatefulBuffer a_bytes
-			, bool a_migrating, bool a_new)
+		internal override void Marshall(Transaction trans, ObjectReference @ref, IWriteBuffer
+			 buffer, bool isMigrating, bool isNew)
 		{
-			ObjectContainerBase stream = a_bytes.GetStream()._parent;
-			VirtualAttributes va = a_yapObject.VirtualAttributes();
-			if (!a_migrating)
+			VirtualAttributes attr = @ref.VirtualAttributes();
+			if (!isMigrating)
 			{
-				va.i_version = stream.GenerateTimeStampId();
+				attr.i_version = trans.Container()._parent.GenerateTimeStampId();
 			}
-			if (va == null)
+			if (attr == null)
 			{
-				a_bytes.WriteLong(0);
+				buffer.WriteLong(0);
 			}
 			else
 			{
-				a_bytes.WriteLong(va.i_version);
+				buffer.WriteLong(attr.i_version);
 			}
 		}
 
@@ -59,9 +59,9 @@ namespace Db4objects.Db4o.Internal
 			return Const4.LONG_LENGTH;
 		}
 
-		internal override void MarshallIgnore(Db4objects.Db4o.Internal.Buffer writer)
+		internal override void MarshallIgnore(IWriteBuffer buffer)
 		{
-			writer.WriteLong(0);
+			buffer.WriteLong(0);
 		}
 	}
 }

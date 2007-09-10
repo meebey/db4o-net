@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			{
 				return;
 			}
-			object bootRecord = GetBootRecord(file);
+			object bootRecord = Debug.readBootRecord ? GetBootRecord(file) : null;
 			if (!(bootRecord is PBootRecord))
 			{
 				InitBootRecord(file);

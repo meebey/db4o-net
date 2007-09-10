@@ -63,6 +63,14 @@ namespace Db4objects.Db4o.Internal
 			SetOn(a_bytes.GetTransaction(), a_onObject, toSet);
 		}
 
+		public override void Instantiate(UnmarshallingContext context)
+		{
+			object obj = Read(context);
+			context.Container().Activate(context.Transaction(), obj, context.ActivationDepth(
+				));
+			SetOn(context.Transaction(), context.PersistentObject(), obj);
+		}
+
 		internal override void Refresh()
 		{
 		}

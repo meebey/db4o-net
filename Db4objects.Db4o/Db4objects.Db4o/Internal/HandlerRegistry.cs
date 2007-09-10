@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
@@ -10,6 +11,7 @@ using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 using Sharpen;
+using Sharpen.Util;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -78,6 +80,8 @@ namespace Db4objects.Db4o.Internal
 
 		internal readonly GenericReflector _reflector;
 
+		private readonly Hashtable4 _handlerVersions = new Hashtable4();
+
 		public IReflectClass ICLASS_COMPARE;
 
 		internal IReflectClass ICLASS_DB4OTYPE;
@@ -109,7 +113,7 @@ namespace Db4objects.Db4o.Internal
 			i_indexes = new SharedIndexedFields(a_stream);
 			_virtualFields[0] = i_indexes.i_fieldVersion;
 			_virtualFields[1] = i_indexes.i_fieldUUID;
-			i_stringHandler = new StringHandler(a_stream, LatinStringIO.ForEncoding(stringEncoding
+			i_stringHandler = new StringHandler2(a_stream, LatinStringIO.ForEncoding(stringEncoding
 				));
 			i_handlers = new ITypeHandler4[] { new IntHandler(a_stream), new LongHandler(a_stream
 				), new FloatHandler(a_stream), new BooleanHandler(a_stream), new DoubleHandler(a_stream
@@ -173,6 +177,48 @@ namespace Db4objects.Db4o.Internal
 				(_masterStream, UntypedHandler(), false));
 			i_anyArrayN.SetID(ANY_ARRAY_N_ID);
 			i_yapClasses[ANY_ARRAY_N_ID - 1] = i_anyArrayN;
+			RegisterOldHandlers();
+		}
+
+		private void RegisterOldHandlers()
+		{
+			ITypeHandler4 stringHandler = HandlerForPrimitiveClass(typeof(string));
+			RegisterHandlerVersion(stringHandler, 0, new StringHandler0(stringHandler));
+			ITypeHandler4 intHandler = HandlerForPrimitiveClass(typeof(int));
+			RegisterHandlerVersion(intHandler, 0, new IntHandler0(_masterStream));
+			ITypeHandler4 dateHandler = HandlerForPrimitiveClass(typeof(Date));
+			RegisterHandlerVersion(dateHandler, 0, new DateHandler0(_masterStream));
+		}
+
+		private void RegisterHandlerVersion(ITypeHandler4 handler, int version, ITypeHandler4
+			 replacement)
+		{
+			_handlerVersions.Put(new HandlerVersionKey(handler, version), replacement);
+		}
+
+		private ITypeHandler4 HandlerForPrimitiveClass(Type clazz)
+		{
+			return ((PrimitiveFieldHandler)ClassMetadataForClass(_reflector.ForClass(clazz)))
+				.i_handler;
+		}
+
+		public ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler, int version)
+		{
+			ITypeHandler4 replacement = (ITypeHandler4)_handlerVersions.Get(new HandlerVersionKey
+				(handler, version));
+			if (replacement != null)
+			{
+				return replacement;
+			}
+			if (handler is MultidimensionalArrayHandler && (version == 0))
+			{
+				return new MultidimensionalArrayHandler0(handler);
+			}
+			if (handler is ArrayHandler && (version == 0))
+			{
+				return new ArrayHandler0(handler);
+			}
+			return handler;
 		}
 
 		internal int ArrayType(object a_object)
@@ -356,7 +402,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return HandlerForClass(a_stream, a_class.GetComponentType());
 			}
-			ClassMetadata yc = GetYapClassStatic(a_class);
+			ClassMetadata yc = ClassMetadataForClass(a_class);
 			if (yc != null)
 			{
 				return ((PrimitiveFieldHandler)yc).i_handler;
@@ -414,7 +460,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		public ClassMetadata GetYapClassStatic(int a_id)
+		public ClassMetadata ClassMetadataForId(int a_id)
 		{
 			if (a_id > 0 && a_id <= i_maxTypeID)
 			{
@@ -423,7 +469,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		internal ClassMetadata GetYapClassStatic(IReflectClass a_class)
+		internal ClassMetadata ClassMetadataForClass(IReflectClass a_class)
 		{
 			if (a_class == null)
 			{
@@ -498,6 +544,11 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			return null;
+		}
+
+		public bool IsVariableLength(ITypeHandler4 handler)
+		{
+			return handler is StringHandler || handler is ArrayHandler;
 		}
 	}
 }

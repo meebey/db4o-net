@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			}
 		}
 
-		public virtual void _testStringItem()
+		public virtual void TestStringItem()
 		{
 			MarshallingContextTestCase.StringItem writtenItem = new MarshallingContextTestCase.StringItem
 				("one");
@@ -93,8 +93,20 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			ObjectMarshaller marshaller = MarshallerFamily.Current()._object;
 			StatefulBuffer buffer = marshaller.MarshallNew(Trans(), @ref, int.MaxValue);
 			buffer.Offset(0);
-			object readObject = @ref.Read(Trans(), buffer, null, imaginativeID, imaginativeID
-				, false);
+			object readObject = null;
+			if (NewTypeHandlerReading.enabled)
+			{
+				UnmarshallingContext context = new UnmarshallingContext(Trans(), @ref, Const4.ADD_TO_ID_TREE
+					, false);
+				context.Buffer(buffer);
+				context.ActivationDepth(5);
+				readObject = context.Read();
+			}
+			else
+			{
+				readObject = @ref.Read(Trans(), buffer, null, imaginativeID, imaginativeID, false
+					);
+			}
 			return readObject;
 		}
 

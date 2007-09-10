@@ -22,6 +22,11 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
+		public sealed override object Read(UnmarshallingContext context)
+		{
+			return null;
+		}
+
 		public override object ReadQuery(Transaction a_trans, MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
 			 a_reader)
 		{

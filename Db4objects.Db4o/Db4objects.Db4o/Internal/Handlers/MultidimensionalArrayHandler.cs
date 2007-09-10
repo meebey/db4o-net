@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -12,16 +13,20 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <summary>n-dimensional array</summary>
 	/// <exclude></exclude>
-	public sealed class MultidimensionalArrayHandler : ArrayHandler
+	public class MultidimensionalArrayHandler : ArrayHandler
 	{
 		public MultidimensionalArrayHandler(ObjectContainerBase stream, ITypeHandler4 a_handler
 			, bool a_isPrimitive) : base(stream, a_handler, a_isPrimitive)
 		{
 		}
 
-		public sealed override object[] AllElements(object a_array)
+		protected MultidimensionalArrayHandler(ITypeHandler4 template) : base(template)
 		{
-			return AllElements(ArrayReflector(), a_array);
+		}
+
+		public sealed override object[] AllElements(object array)
+		{
+			return AllElements(ArrayReflector(), array);
 		}
 
 		public static object[] AllElements(IReflectArray reflectArray, object array)
@@ -68,18 +73,18 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public sealed override object Read1(MarshallerFamily mf, StatefulBuffer reader)
 		{
-			object[] ret = new object[1];
-			int[] dim = Read1Create(reader.GetTransaction(), reader, ret);
-			if (ret[0] != null)
+			IntArrayByRef dimensions = new IntArrayByRef();
+			object arr = ReadCreate(reader.GetTransaction(), reader, dimensions);
+			if (arr != null)
 			{
-				object[] objects = new object[ElementCount(dim)];
+				object[] objects = new object[ElementCount(dimensions.value)];
 				for (int i = 0; i < objects.Length; i++)
 				{
 					objects[i] = _handler.Read(mf, reader, true);
 				}
-				ArrayReflector().Shape(objects, 0, ret[0], dim, 0);
+				ArrayReflector().Shape(objects, 0, arr, dimensions.value, 0);
 			}
-			return ret[0];
+			return arr;
 		}
 
 		protected override int ReadElementsDefrag(BufferPair readers)
@@ -96,11 +101,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public sealed override void Read1Candidates(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
 			 reader, QCandidates candidates)
 		{
-			object[] ret = new object[1];
-			int[] dim = Read1Create(candidates.i_trans, reader, ret);
-			if (ret[0] != null)
+			IntArrayByRef dimensions = new IntArrayByRef();
+			object arr = ReadCreate(candidates.i_trans, reader, dimensions);
+			if (arr != null)
 			{
-				int count = ElementCount(dim);
+				int count = ElementCount(dimensions.value);
 				for (int i = 0; i < count; i++)
 				{
 					QCandidate qc = _handler.ReadSubCandidate(mf, reader, candidates, true);
@@ -115,65 +120,45 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public sealed override object Read1Query(Transaction a_trans, MarshallerFamily mf
 			, Db4objects.Db4o.Internal.Buffer a_bytes)
 		{
-			object[] ret = new object[1];
-			int[] dim = Read1Create(a_trans, a_bytes, ret);
-			if (ret[0] != null)
+			IntArrayByRef dimensions = new IntArrayByRef();
+			object arr = ReadCreate(a_trans, a_bytes, dimensions);
+			if (arr != null)
 			{
-				object[] objects = new object[ElementCount(dim)];
+				object[] objects = new object[ElementCount(dimensions.value)];
 				for (int i = 0; i < objects.Length; i++)
 				{
 					objects[i] = _handler.ReadQuery(a_trans, mf, true, a_bytes, true);
 				}
-				ArrayReflector().Shape(objects, 0, ret[0], dim, 0);
+				ArrayReflector().Shape(objects, 0, arr, dimensions.value, 0);
 			}
-			return ret[0];
+			return arr;
 		}
 
-		private int[] Read1Create(Transaction a_trans, Db4objects.Db4o.Internal.Buffer a_bytes
-			, object[] obj)
+		private object ReadCreate(Transaction trans, IReadBuffer buffer, IntArrayByRef dimensions
+			)
 		{
 			ReflectClassByRef clazz = new ReflectClassByRef();
-			int[] dim = ReadDimensions(a_trans, a_bytes, clazz);
+			dimensions.value = ReadDimensions(trans, buffer, clazz);
 			if (_isPrimitive)
 			{
-				obj[0] = a_trans.Reflector().Array().NewInstance(PrimitiveClassReflector(), dim);
+				return ArrayReflector().NewInstance(PrimitiveClassReflector(), dimensions.value);
 			}
-			else
+			if (clazz.value != null)
 			{
-				if (clazz.value != null)
-				{
-					obj[0] = a_trans.Reflector().Array().NewInstance(clazz.value, dim);
-				}
+				return ArrayReflector().NewInstance(clazz.value, dimensions.value);
 			}
-			return dim;
+			return null;
 		}
 
-		private int[] ReadDimensions(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			 a_bytes, ReflectClassByRef clazz)
+		private int[] ReadDimensions(Transaction trans, IReadBuffer buffer, ReflectClassByRef
+			 clazz)
 		{
-			int[] dim = new int[ReadElementsAndClass(a_trans, a_bytes, clazz)];
+			int[] dim = new int[ReadElementsAndClass(trans, buffer, clazz)];
 			for (int i = 0; i < dim.Length; i++)
 			{
-				dim[i] = a_bytes.ReadInt();
+				dim[i] = buffer.ReadInt();
 			}
 			return dim;
-		}
-
-		public sealed override void WriteNew1(object obj, StatefulBuffer writer)
-		{
-			int[] dim = ArrayReflector().Dimensions(obj);
-			WriteClass(obj, writer);
-			writer.WriteInt(dim.Length);
-			for (int i = 0; i < dim.Length; i++)
-			{
-				writer.WriteInt(dim[i]);
-			}
-			object[] objects = AllElements(obj);
-			MarshallerFamily mf = MarshallerFamily.Current();
-			for (int i = 0; i < objects.Length; i++)
-			{
-				_handler.Write(mf, Element(objects, i), false, writer, true, true);
-			}
 		}
 
 		private object Element(object a_array, int a_position)
@@ -188,14 +173,37 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public override void Write(IWriteContext context, object obj)
-		{
-			throw new NotImplementedException();
-		}
-
 		public override object Read(IReadContext context)
 		{
-			throw new NotImplementedException();
+			IntArrayByRef dimensions = new IntArrayByRef();
+			object array = ReadCreate(context.Transaction(), context, dimensions);
+			if (array != null)
+			{
+				object[] objects = new object[ElementCount(dimensions.value)];
+				for (int i = 0; i < objects.Length; i++)
+				{
+					objects[i] = context.ReadObject(_handler);
+				}
+				ArrayReflector().Shape(objects, 0, array, dimensions.value, 0);
+			}
+			return array;
+		}
+
+		public override void Write(IWriteContext context, object obj)
+		{
+			int classID = ClassID(obj);
+			context.WriteInt(classID);
+			int[] dim = ArrayReflector().Dimensions(obj);
+			context.WriteInt(dim.Length);
+			for (int i = 0; i < dim.Length; i++)
+			{
+				context.WriteInt(dim[i]);
+			}
+			object[] objects = AllElements(obj);
+			for (int i = 0; i < objects.Length; i++)
+			{
+				context.WriteObject(_handler, Element(objects, i));
+			}
 		}
 	}
 }

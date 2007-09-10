@@ -44,27 +44,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			a_bytes.IncrementOffset(LinkLength());
 		}
 
-		public virtual bool HasFixedLength()
-		{
-			return true;
-		}
-
 		public virtual object IndexEntryToObject(Transaction trans, object indexEntry)
 		{
 			return indexEntry;
-		}
-
-		public virtual void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, bool topLevel, object obj, bool withIndirection)
-		{
-			if (topLevel)
-			{
-				header.AddBaseLength(LinkLength());
-			}
-			else
-			{
-				header.AddPayLoadLength(LinkLength());
-			}
 		}
 
 		protected abstract Type PrimitiveJavaClass();
@@ -154,17 +136,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			Write(a_object, a_writer);
 		}
 
-		public virtual object Write(MarshallerFamily mf, object a_object, bool topLevel, 
-			StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkeOffset)
-		{
-			if (a_object == null)
-			{
-				a_object = PrimitiveNull();
-			}
-			Write(a_object, a_bytes);
-			return a_object;
-		}
-
 		public virtual IComparable4 PrepareComparison(object obj)
 		{
 			if (obj == null)
@@ -245,6 +216,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual object Read(IReadContext context)
 		{
 			throw new NotImplementedException();
+		}
+
+		public virtual object NullRepresentationInUntypedArrays()
+		{
+			return PrimitiveNull();
 		}
 
 		public abstract int GetID();

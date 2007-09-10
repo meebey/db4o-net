@@ -3,7 +3,6 @@
 using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -62,13 +61,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return false;
 			}
 			return null;
-		}
-
-		public override object Write(MarshallerFamily mf, object obj, bool topLevel, StatefulBuffer
-			 buffer, bool withIndirection, bool restoreLinkeOffset)
-		{
-			Write(obj, buffer);
-			return obj;
 		}
 
 		public override void Write(object obj, Db4objects.Db4o.Internal.Buffer buffer)
@@ -141,6 +133,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override void Write(IWriteContext context, object obj)
 		{
 			context.WriteByte(GetEncodedByteValue(obj));
+		}
+
+		public override object NullRepresentationInUntypedArrays()
+		{
+			return null;
 		}
 	}
 }

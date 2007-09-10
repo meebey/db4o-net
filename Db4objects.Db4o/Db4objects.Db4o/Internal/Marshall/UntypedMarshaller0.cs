@@ -86,20 +86,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return null;
 		}
 
-		public override object WriteNew(object a_object, bool restoreLinkOffset, StatefulBuffer
-			 a_bytes)
-		{
-			if (a_object == null)
-			{
-				a_bytes.WriteInt(0);
-				return 0;
-			}
-			int id = a_bytes.GetStream().SetInternal(a_bytes.GetTransaction(), a_object, a_bytes
-				.GetUpdateDepth(), true);
-			a_bytes.WriteInt(id);
-			return id;
-		}
-
 		public override void Defrag(BufferPair readers)
 		{
 		}

@@ -1,19 +1,26 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public abstract class ObjectHeaderAttributes : IFieldListInfo
+	public class ObjectHeaderAttributes : IFieldListInfo
 	{
-		public abstract void AddBaseLength(int length);
+		private readonly int _fieldCount;
 
-		public abstract void AddPayLoadLength(int length);
+		private readonly BitMap4 _nullBitMap;
 
-		public abstract void PrepareIndexedPayLoadEntry(Transaction trans);
+		public ObjectHeaderAttributes(Db4objects.Db4o.Internal.Buffer reader)
+		{
+			_fieldCount = reader.ReadInt();
+			_nullBitMap = reader.ReadBitMap(_fieldCount);
+		}
 
-		public abstract bool IsNull(int arg1);
+		public virtual bool IsNull(int fieldIndex)
+		{
+			return _nullBitMap.IsTrue(fieldIndex);
+		}
 	}
 }

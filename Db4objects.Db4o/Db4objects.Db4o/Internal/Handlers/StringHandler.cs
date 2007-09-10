@@ -13,14 +13,20 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public sealed class StringHandler : BuiltinTypeHandler, IIndexableTypeHandler
+	public abstract class StringHandler : BuiltinTypeHandler, IIndexableTypeHandler
 	{
-		public LatinStringIO i_stringIo;
+		private LatinStringIO _stringIO;
 
-		public StringHandler(ObjectContainerBase stream, LatinStringIO stringIO) : base(stream
-			)
+		public StringHandler(ObjectContainerBase container, LatinStringIO stringIO) : base
+			(container)
 		{
-			i_stringIo = stringIO;
+			_stringIO = stringIO;
+		}
+
+		protected StringHandler(ITypeHandler4 template) : this(((Db4objects.Db4o.Internal.Handlers.StringHandler
+			)template).Container(), ((Db4objects.Db4o.Internal.Handlers.StringHandler)template
+			).StringIO())
+		{
 		}
 
 		public override void CascadeActivation(Transaction a_trans, object a_object, int 
@@ -30,7 +36,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override IReflectClass ClassReflector()
 		{
-			return _stream._handlers.ICLASS_STRING;
+			return Container()._handlers.ICLASS_STRING;
 		}
 
 		public override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer buffer)
@@ -47,34 +53,27 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return 9;
 		}
 
-		internal byte GetIdentifier()
+		internal virtual byte GetIdentifier()
 		{
 			return Const4.YAPSTRING;
 		}
 
-		public object IndexEntryToObject(Transaction trans, object indexEntry)
+		public virtual object IndexEntryToObject(Transaction trans, object indexEntry)
 		{
 			if (indexEntry is Slot)
 			{
 				Slot slot = (Slot)indexEntry;
-				indexEntry = _stream.BufferByAddress(slot.Address(), slot.Length());
+				indexEntry = Container().BufferByAddress(slot.Address(), slot.Length());
 			}
 			try
 			{
-				return StringMarshaller.ReadShort(_stream, (Db4objects.Db4o.Internal.Buffer)indexEntry
+				return StringMarshaller.ReadShort(Container(), (Db4objects.Db4o.Internal.Buffer)indexEntry
 					);
 			}
 			catch (CorruptionException)
 			{
 			}
 			return null;
-		}
-
-		public override void CalculateLengths(Transaction trans, ObjectHeaderAttributes header
-			, bool topLevel, object obj, bool withIndirection)
-		{
-			MarshallerFamily.Current()._string.CalculateLengths(trans, header, topLevel, obj, 
-				withIndirection);
 		}
 
 		public override object Read(MarshallerFamily mf, StatefulBuffer a_bytes, bool redirect
@@ -95,7 +94,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				}
 				else
 				{
-					obj = mf._string.Read(_stream, reader);
+					obj = mf._string.Read(Container(), reader);
 				}
 				if (obj != null)
 				{
@@ -114,7 +113,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// TODO: Consider renaming methods in Indexable4 and Typhandler4 to make direction clear.
 		/// </remarks>
 		/// <exception cref="CorruptionException">CorruptionException</exception>
-		public object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer)
+		public virtual object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer
+			)
 		{
 			return mf._string.ReadIndexEntry(a_writer);
 		}
@@ -124,7 +124,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// This readIndexEntry method reads from the actual index in the file.
 		/// TODO: Consider renaming methods in Indexable4 and Typhandler4 to make direction clear.
 		/// </remarks>
-		public object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer reader)
+		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer reader)
 		{
 			Slot s = new Slot(reader.ReadInt(), reader.ReadInt());
 			if (IsInvalidSlot(s))
@@ -155,12 +155,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return reader;
 		}
 
-		public void SetStringIo(LatinStringIO a_io)
+		public virtual void SetStringIo(LatinStringIO a_io)
 		{
-			i_stringIo = a_io;
+			_stringIO = a_io;
 		}
 
-		public void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer writer, object entry)
+		public virtual void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer writer, object
+			 entry)
 		{
 			if (entry == null)
 			{
@@ -185,12 +186,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			throw new ArgumentException();
 		}
 
-		public override object Write(MarshallerFamily mf, object a_object, bool topLevel, 
-			StatefulBuffer a_bytes, bool withIndirection, bool restoreLinkeOffset)
-		{
-			return mf._string.WriteNew(a_object, topLevel, a_bytes, withIndirection);
-		}
-
 		public void WriteShort(string a_string, Db4objects.Db4o.Internal.Buffer a_bytes)
 		{
 			if (a_string == null)
@@ -200,7 +195,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			else
 			{
 				a_bytes.WriteInt(a_string.Length);
-				i_stringIo.Write(a_bytes, a_string);
+				_stringIO.Write(a_bytes, a_string);
 			}
 		}
 
@@ -208,10 +203,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private Db4objects.Db4o.Internal.Buffer Val(object obj)
 		{
-			return Val(obj, _stream);
+			return Val(obj, Container());
 		}
 
-		public Db4objects.Db4o.Internal.Buffer Val(object obj, ObjectContainerBase oc)
+		public virtual Db4objects.Db4o.Internal.Buffer Val(object obj, ObjectContainerBase
+			 oc)
 		{
 			if (obj is Db4objects.Db4o.Internal.Buffer)
 			{
@@ -219,7 +215,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			if (obj is string)
 			{
-				return StringMarshaller.WriteShort(_stream, (string)obj);
+				return StringMarshaller.WriteShort(Container(), (string)obj);
 			}
 			if (obj is Slot)
 			{
@@ -293,7 +289,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return with.Length - compare.Length;
 		}
 
-		public void DefragIndexEntry(BufferPair readers)
+		public virtual void DefragIndexEntry(BufferPair readers)
 		{
 			readers.CopyID(false, true);
 			readers.IncrementIntSize();
@@ -312,12 +308,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public override object Read(IReadContext context)
-		{
-			int length = context.ReadInt();
-			object result = StringIo(context).Read(context, length);
-			return result;
-		}
+		public abstract override object Read(IReadContext context);
 
 		public override void Write(IWriteContext context, object obj)
 		{
@@ -326,12 +317,42 @@ namespace Db4objects.Db4o.Internal.Handlers
 			StringIo(context).Write(context, str);
 		}
 
-		private LatinStringIO StringIo(IContext context)
+		protected virtual LatinStringIO StringIo(IContext context)
 		{
 			IInternalObjectContainer objectContainer = (IInternalObjectContainer)context.ObjectContainer
 				();
 			LatinStringIO stringIO = objectContainer.Container().StringIO();
 			return stringIO;
+		}
+
+		public virtual LatinStringIO StringIO()
+		{
+			return _stringIO;
+		}
+
+		protected virtual string ReadString(IReadContext context, IReadBuffer buffer)
+		{
+			string str = InternalRead(context, buffer);
+			return str;
+		}
+
+		private string InternalRead(IReadContext context, IReadBuffer buffer)
+		{
+			int length = buffer.ReadInt();
+			if (length > 0)
+			{
+				return Intern(context, StringIO().Read(buffer, length));
+			}
+			return string.Empty;
+		}
+
+		protected virtual string Intern(IReadContext context, string str)
+		{
+			if (context.ObjectContainer().Ext().Configure().InternStrings())
+			{
+				return string.Intern(str);
+			}
+			return str;
 		}
 	}
 }

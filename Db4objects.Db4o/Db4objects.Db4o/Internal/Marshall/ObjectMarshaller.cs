@@ -34,14 +34,20 @@ namespace Db4objects.Db4o.Internal.Marshall
 				 containingClass);
 		}
 
+		protected void TraverseFields(IMarshallingInfo context, ObjectMarshaller.TraverseFieldCommand
+			 command)
+		{
+			TraverseFields(context.ClassMetadata(), context.Buffer(), context, command);
+		}
+
 		protected void TraverseFields(ClassMetadata classMetadata, Db4objects.Db4o.Internal.Buffer
-			 reader, IFieldListInfo fieldList, ObjectMarshaller.TraverseFieldCommand command
+			 buffer, IFieldListInfo fieldList, ObjectMarshaller.TraverseFieldCommand command
 			)
 		{
 			int fieldIndex = 0;
 			while (classMetadata != null && !command.Cancelled())
 			{
-				int fieldCount = command.FieldCount(classMetadata, reader);
+				int fieldCount = command.FieldCount(classMetadata, buffer);
 				for (int i = 0; i < fieldCount && !command.Cancelled(); i++)
 				{
 					command.ProcessField(classMetadata.i_fields[i], IsNull(fieldList, fieldIndex), classMetadata
@@ -138,5 +144,49 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 id);
 
 		public abstract void SkipMarshallerInfo(Db4objects.Db4o.Internal.Buffer reader);
+
+		public void InstantiateFields(UnmarshallingContext context)
+		{
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_169(this
+				, context);
+			TraverseFields(context, command);
+		}
+
+		private sealed class _TraverseFieldCommand_169 : ObjectMarshaller.TraverseFieldCommand
+		{
+			public _TraverseFieldCommand_169(ObjectMarshaller _enclosing, UnmarshallingContext
+				 context)
+			{
+				this._enclosing = _enclosing;
+				this.context = context;
+			}
+
+			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
+				 containingClass)
+			{
+				if (isNull)
+				{
+					field.Set(context.PersistentObject(), null);
+					return;
+				}
+				bool ok = false;
+				try
+				{
+					field.Instantiate(context);
+					ok = true;
+				}
+				finally
+				{
+					if (!ok)
+					{
+						this.Cancel();
+					}
+				}
+			}
+
+			private readonly ObjectMarshaller _enclosing;
+
+			private readonly UnmarshallingContext context;
+		}
 	}
 }

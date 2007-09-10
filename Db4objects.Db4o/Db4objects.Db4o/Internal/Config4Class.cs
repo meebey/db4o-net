@@ -19,8 +19,6 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec CLASS_INDEXED = new KeySpec(true);
 
-		private static readonly KeySpec CUSTOM_HANDLER = new KeySpec(null);
-
 		private static readonly KeySpec EXCEPTIONAL_FIELDS = new KeySpec(null);
 
 		private static readonly KeySpec GENERATE_UUIDS = new KeySpec(false);
@@ -65,7 +63,7 @@ namespace Db4objects.Db4o.Internal
 			SetName(a_name);
 		}
 
-		internal virtual int AdjustActivationDepth(int depth)
+		public virtual int AdjustActivationDepth(int depth)
 		{
 			TernaryBool cascadeOnActivate = CascadeOnActivate();
 			if (cascadeOnActivate.DefiniteYes() && depth < 2)
@@ -120,11 +118,6 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			return (Config4Field)exceptionalFields.Get(fieldName);
-		}
-
-		public virtual ICustomClassHandler CustomHandler()
-		{
-			return (ICustomClassHandler)_config.Get(CUSTOM_HANDLER);
 		}
 
 		public virtual object DeepClone(object param)
@@ -199,11 +192,6 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool Indexed()
 		{
 			return _config.GetAsBoolean(CLASS_INDEXED);
-		}
-
-		public virtual void InstallCustomHandler(ICustomClassHandler customClassHandler)
-		{
-			_config.Put(CUSTOM_HANDLER, customClassHandler);
 		}
 
 		internal virtual object Instantiate(ObjectContainerBase a_stream, object a_toTranslate
