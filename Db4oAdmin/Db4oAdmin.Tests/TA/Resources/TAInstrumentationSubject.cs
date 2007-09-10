@@ -6,11 +6,11 @@ using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 using Db4oUnit;
 
-class Project
+abstract class Named
 {
-	private string _name;
+	protected string _name;
 
-	public Project(string name)
+	public Named(string name)
 	{
 		_name = name;
 	}
@@ -19,10 +19,12 @@ class Project
 	{
 		get { return _name;  }
 	}
+}
 
-	public void UseByRef()
+class ProjectItem : Named
+{
+	public ProjectItem(string name) : base(name)
 	{
-		ByRef(ref _name);
 	}
 
 	override public bool Equals(object o)
@@ -38,6 +40,18 @@ class Project
 	{
 		return _name.GetHashCode();
 	}
+}
+
+class Project : ProjectItem
+{
+	public Project(string name) : base(name)
+	{
+	}
+
+	public void UseByRef()
+	{
+		ByRef(ref _name);
+	}
 
 	private void ByRef(ref string name)
 	{
@@ -46,10 +60,6 @@ class Project
 
 struct AValueType
 {	
-}
-
-abstract class AnAbstractType
-{
 }
 
 [CompilerGenerated]
@@ -116,11 +126,6 @@ class TAInstrumentationSubject : ITestCase
 	public void TestValueTypesAreNotInstrumented()
 	{
 		Assert.IsFalse(IsActivatable(typeof(AValueType)));
-	}
-
-	public void TestAbstractClassesAreNotInstrumented()
-	{
-		Assert.IsFalse(IsActivatable(typeof(AnAbstractType)));
 	}
 
 	public void TestCompilerGeneratedClassesAreNotInstrumented()

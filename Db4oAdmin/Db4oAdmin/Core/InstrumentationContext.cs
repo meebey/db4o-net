@@ -16,27 +16,27 @@ namespace Db4oAdmin.Core
 			_assembly = AssemblyFactory.GetAssembly(configuration.AssemblyLocation);
 			_configuration = configuration;
 		}
-		
+
 		public Configuration Configuration
 		{
 			get { return _configuration; }
 		}
-		
+
 		public TraceSwitch TraceSwitch
 		{
-			get { return _configuration.TraceSwitch;  }
+			get { return _configuration.TraceSwitch; }
 		}
-		
+
 		public AssemblyDefinition Assembly
 		{
-			get { return _assembly;  }
+			get { return _assembly; }
 		}
-		
+
 		public string AssemblyLocation
 		{
-			get { return _assembly.MainModule.Image.FileInformation.FullName;  }
+			get { return _assembly.MainModule.Image.FileInformation.FullName; }
 		}
-		
+
 		public TypeReference Import(Type type)
 		{
 			return _assembly.MainModule.Import(type);
@@ -46,12 +46,12 @@ namespace Db4oAdmin.Core
 		{
 			return _assembly.MainModule.Import(method);
 		}
-		
+
 		public void SaveAssembly()
 		{
 			AssemblyFactory.SaveAssembly(_assembly, AssemblyLocation);
 		}
-		
+
 		public void TraceWarning(string message, params object[] args)
 		{
 			if (TraceSwitch.TraceWarning)
@@ -76,9 +76,9 @@ namespace Db4oAdmin.Core
 			}
 		}
 
-        public bool Accept(TypeDefinition typedef)
-        {
-            return _configuration.Accept(typedef);
-        }
-    }
+		public bool Accept(TypeDefinition typedef)
+		{
+			return _configuration.Accept(typedef);
+		}
+	}
 }

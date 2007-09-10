@@ -22,6 +22,7 @@ namespace Db4oAdmin.TA
 		private void MakeActivatable(TypeDefinition type)
 		{
 			if (!RequiresTA(type)) return;
+			if (HasInstrumentedBaseType(type)) return;
 
 			type.Interfaces.Add(Import(typeof(Db4objects.Db4o.TA.IActivatable)));
 
@@ -32,10 +33,18 @@ namespace Db4oAdmin.TA
 			type.Methods.Add(CreateBindMethod(activatorField));
 		}
 
+		private bool HasInstrumentedBaseType(TypeDefinition type)
+		{
+			// is the baseType in the same assembly?
+			TypeDefinition baseType = type.BaseType as TypeDefinition;
+			if (baseType == null) return false;
+			return RequiresTA(baseType);
+		}
+
 		private static bool RequiresTA(TypeDefinition type)
 		{
 			if (type.IsValueType) return false;
-			if (type.IsInterface || type.IsAbstract) return false;
+			if (type.IsInterface) return false;
 			if (type.Name == "<Module>") return false;
 			if (ByAttributeFilter.ContainsCustomAttribute(type, CompilerGeneratedAttribute)) return false;
 			return true;
