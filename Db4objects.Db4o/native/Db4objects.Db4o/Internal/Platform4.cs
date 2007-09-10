@@ -129,7 +129,7 @@ namespace Db4objects.Db4o.Internal
             return new WeakReference(obj, false);
         }
 
-        internal static Object CreateYapRef(Object referenceQueue, Object yapObject, Object obj)
+        internal static Object CreateActiveObjectReference(Object referenceQueue, Object yapObject, Object obj)
         {
             return new WeakReferenceHandler(referenceQueue, yapObject, obj);
         }
