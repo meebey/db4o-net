@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Reflect.Net
 {
 	public class NetReflector : Db4objects.Db4o.Reflect.IReflector
 	{
-		private Db4objects.Db4o.Reflect.IReflector _parent;
+		protected Db4objects.Db4o.Reflect.IReflector _parent;
 
 		private Db4objects.Db4o.Reflect.IReflectArray _array;
 	    
@@ -32,10 +32,15 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public virtual Db4objects.Db4o.Reflect.IReflectClass ForClass(System.Type forType)
 		{
-		    return new Db4objects.Db4o.Reflect.Net.NetClass(_parent, GetUnderlyingType(forType));
+			return CreateClass(GetUnderlyingType(forType));
 		}
 
-        private static Type GetUnderlyingType(Type type)
+		protected virtual Db4objects.Db4o.Reflect.IReflectClass CreateClass(Type type)
+		{
+			return new Db4objects.Db4o.Reflect.Net.NetClass(_parent, type);
+		}
+
+		private static Type GetUnderlyingType(Type type)
         {
 #if NET_2_0 || CF_2_0
             Type underlyingType = Nullable.GetUnderlyingType(type);

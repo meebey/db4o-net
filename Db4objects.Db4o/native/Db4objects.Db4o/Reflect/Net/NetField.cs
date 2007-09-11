@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Reflect.Net
 	{
 		private readonly Db4objects.Db4o.Reflect.IReflector reflector;
 
-		private readonly System.Reflection.FieldInfo field;
+		protected readonly System.Reflection.FieldInfo field;
 
         private static IList _transientMarkers;
 

@@ -1,5 +1,6 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
+using System.Reflection;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Reflect.Net
@@ -8,7 +9,7 @@ namespace Db4objects.Db4o.Reflect.Net
 	/// <remarks>Reflection implementation for Class to map to .NET reflection.</remarks>
 	public class NetClass : Db4objects.Db4o.Reflect.IReflectClass
 	{
-		private readonly Db4objects.Db4o.Reflect.IReflector _reflector;
+		protected readonly Db4objects.Db4o.Reflect.IReflector _reflector;
 
 		private readonly System.Type _type;
 
@@ -67,9 +68,14 @@ namespace Db4objects.Db4o.Reflect.Net
 			Db4objects.Db4o.Reflect.IReflectField[] reflectors = new Db4objects.Db4o.Reflect.IReflectField[fields.Length];
 			for (int i = 0; i < reflectors.Length; i++)
 			{
-				reflectors[i] = new Db4objects.Db4o.Reflect.Net.NetField(_reflector, fields[i]);
+				reflectors[i] = CreateField(fields[i]);
 			}
 			return reflectors;
+		}
+
+		protected virtual IReflectField CreateField(FieldInfo field)
+		{
+			return new Db4objects.Db4o.Reflect.Net.NetField(_reflector, field);
 		}
 
 		public virtual Db4objects.Db4o.Reflect.IReflectClass GetDelegate()
