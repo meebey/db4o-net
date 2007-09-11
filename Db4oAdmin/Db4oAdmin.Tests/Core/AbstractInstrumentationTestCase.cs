@@ -1,5 +1,6 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Db4objects.Db4o;
@@ -104,23 +105,35 @@ namespace Db4oAdmin.Tests.Core
 
 		private TestSuite BuildFromInstrumentedAssembly()
 		{
-			string assemblyPath = EmitAssemblyFromResource();
-			Assert.IsTrue(File.Exists(assemblyPath));
-			InstrumentAssembly(assemblyPath);
-
-			Type type = GetTestCaseType(assemblyPath);
-			TestSuite suite = type.IsSubclassOf(typeof(InstrumentedTestCase))
-			                  	? new InstrumentationTestSuiteBuilder(this, type).Build()
-			                  	: new ReflectionTestSuiteBuilder(type).Build();
-			return new TestSuite(TestSuiteLabel, new ITest[] { suite, new VerifyAssemblyTest(assemblyPath)});
+            return new TestSuite(TestSuiteLabel, new List<ITest>(ProduceTestCases()).ToArray());
 		}
+
+        private IEnumerable<ITest> ProduceTestCases()
+        {
+            Assembly[] references = Dependencies;
+            foreach (string resource in Resources)
+            {
+                string assemblyPath = EmitAssemblyFromResource(resource, references);
+                Assert.IsTrue(File.Exists(assemblyPath));
+                InstrumentAssembly(assemblyPath);
+
+                Type type = GetTestCaseType(assemblyPath, resource);
+                TestSuite suite = type.IsSubclassOf(typeof(InstrumentedTestCase))
+                                    ? new InstrumentationTestSuiteBuilder(this, type).Build()
+                                    : new ReflectionTestSuiteBuilder(type).Build();
+                yield return suite;
+                yield return new VerifyAssemblyTest(assemblyPath);
+
+                references = ArrayServices.Append(references, type.Assembly);
+            }
+        }
 
 		protected string TestSuiteLabel
 		{
 			get { return GetType().FullName;  }
 		}
 		
-		protected abstract string ResourceName { get; }
+		protected abstract string[] Resources { get; }
 
 		protected abstract void InstrumentAssembly(string location);
 
@@ -142,10 +155,10 @@ namespace Db4oAdmin.Tests.Core
 			}
 		}
 		
-		private Type GetTestCaseType(string assemblyName)
+		private Type GetTestCaseType(string assemblyName, string resource)
 		{
 			Assembly assembly = Assembly.LoadFrom(assemblyName);
-			return assembly.GetType(ResourceName, true);
+			return assembly.GetType(resource, true);
 		}
 
 		private IObjectContainer OpenDatabase()
@@ -158,13 +171,13 @@ namespace Db4oAdmin.Tests.Core
 			return container;
 		}
 		
-		protected string EmitAssemblyFromResource()
+		protected string EmitAssemblyFromResource(string resource, Assembly[] references)
 		{
 			CopyDependenciesToTemp();
-			string path = Path.Combine(Path.GetTempPath(), ResourceName + ".dll");
+			string path = Path.Combine(Path.GetTempPath(), resource + ".dll");
 			CompilationServices.EmitAssembly(path,
-											 Dependencies,
-			                                 GetResourceAsString(GetType().Namespace + ".Resources." + ResourceName + ".cs"));
+											 references,
+			                                 GetResourceAsString(GetType().Namespace + ".Resources." + resource + ".cs"));
 			return path;
 		}
 

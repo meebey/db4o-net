@@ -5,7 +5,7 @@ using Db4oUnit;
 
 namespace Db4oAdmin.Tests.NQ
 {
-	public class PredicateBuildTimeOptimizationTestCase : AbstractCommandLineInstrumentationTestCase
+	public class PredicateBuildTimeOptimizationTestCase : SingleResourceTestCase
 	{
 		protected override string ResourceName
 		{

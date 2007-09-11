@@ -1,6 +1,6 @@
 namespace Db4oAdmin.Tests.Core
 {
-	class ByAttributeTestCase : AbstractCommandLineInstrumentationTestCase
+    class ByAttributeTestCase : SingleResourceTestCase
 	{
 		protected override string ResourceName
 		{

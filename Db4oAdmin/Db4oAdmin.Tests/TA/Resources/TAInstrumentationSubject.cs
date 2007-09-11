@@ -6,7 +6,7 @@ using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 using Db4oUnit;
 
-abstract class Named
+public abstract class Named
 {
 	protected string _name;
 
@@ -21,7 +21,7 @@ abstract class Named
 	}
 }
 
-class ProjectItem : Named
+public class ProjectItem : Named
 {
 	public ProjectItem(string name) : base(name)
 	{
@@ -29,7 +29,7 @@ class ProjectItem : Named
 
 	override public bool Equals(object o)
 	{
-		Project other = o as Project;
+		ProjectItem other = o as ProjectItem;
 		if (other == null) return false;
 
 		// foreign field access
@@ -86,6 +86,8 @@ class TAInstrumentationSubject : ITestCase
 {
 	public void TestIsActivatable()
 	{
+        Assert.IsTrue(IsActivatable(typeof(Named)));
+        Assert.IsTrue(IsActivatable(typeof(ProjectItem)));
 		Assert.IsTrue(IsActivatable(typeof(Project)));
 	}
 

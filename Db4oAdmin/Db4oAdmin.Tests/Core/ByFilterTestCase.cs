@@ -12,7 +12,7 @@ namespace Db4oAdmin.Tests.Core
 		}
 	}
 
-	class ByFilterTestCase : AbstractCommandLineInstrumentationTestCase
+    class ByFilterTestCase : SingleResourceTestCase
 	{
 		protected override string ResourceName
 		{

@@ -32,7 +32,7 @@ namespace Db4oAdmin.Tests.Core
 		}
 	}
 
-	class CustomInstrumentationTestCase : AbstractCommandLineInstrumentationTestCase
+    class CustomInstrumentationTestCase : SingleResourceTestCase
 	{
 		protected override string ResourceName
 		{

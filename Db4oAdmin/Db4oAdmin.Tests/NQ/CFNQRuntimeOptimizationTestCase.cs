@@ -6,7 +6,7 @@ namespace Db4oAdmin.Tests.NQ
 {
 	using System;
 
-	public class CFNQRuntimeOptimizationTestCase : AbstractCommandLineInstrumentationTestCase
+	public class CFNQRuntimeOptimizationTestCase : SingleResourceTestCase
 	{
 		protected override string ResourceName
 		{

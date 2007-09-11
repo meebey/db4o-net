@@ -12,9 +12,12 @@ namespace Db4oAdmin.Tests.TA
 			get { return "-ta"; }
 		}
 
-		protected override string ResourceName
+		protected override string[] Resources
 		{
-			get { return "TAInstrumentationSubject";  }
+			get
+            {
+                return new string[] { "TAInstrumentationSubject", "TAAssemblyReferenceSubject" };
+            }
 		}
 
 		protected override Assembly[] Dependencies

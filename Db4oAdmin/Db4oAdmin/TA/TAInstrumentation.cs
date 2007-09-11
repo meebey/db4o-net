@@ -1,4 +1,5 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using System.IO;
 using System.Runtime.CompilerServices;
 using Db4oAdmin.Core;
 using Db4objects.Db4o.Activation;
@@ -6,7 +7,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace Db4oAdmin.TA
-{
+{   
 	public class TAInstrumentation : AbstractAssemblyInstrumentation
 	{
 		private const string ActivateMethodName = "db4o$$ta$$activate";
@@ -34,12 +35,61 @@ namespace Db4oAdmin.TA
 		}
 
 		private bool HasInstrumentedBaseType(TypeDefinition type)
-		{
+		{   
 			// is the baseType in the same assembly?
-			TypeDefinition baseType = type.BaseType as TypeDefinition;
-			if (baseType == null) return false;
+            TypeDefinition baseType = ResolveTypeReference(type.BaseType);
+            if (baseType == null) return false;
 			return RequiresTA(baseType);
 		}
+
+        private TypeDefinition ResolveTypeReference(TypeReference typeRef)
+        {   
+            TypeDefinition type = typeRef as TypeDefinition;
+            if (null != type) return type;
+
+            AssemblyNameReference assemblyRef = typeRef.Scope as AssemblyNameReference;
+            if (IsSystemAssembly(assemblyRef)) return null;
+
+            AssemblyDefinition assembly = LoadAssembly(assemblyRef);
+            if (null == assembly) return null;
+            return FindType(assembly, typeRef);
+        }
+
+        private bool IsSystemAssembly(AssemblyNameReference assemblyRef)
+        {
+            switch (assemblyRef.Name)
+            {
+                case "mscorlib":
+                case "corlib":
+                case "System":
+                    return true;
+            }
+            return false;
+        }
+
+        private AssemblyDefinition LoadAssembly(AssemblyNameReference assemblyRef)
+        {
+            string assemblyPath = Path.Combine(Path.GetDirectoryName(_context.AssemblyLocation), assemblyRef.Name + ".dll");
+            if (!File.Exists(assemblyPath)) return TryAssemblyResolver(assemblyRef);
+            return AssemblyFactory.GetAssembly(assemblyPath);
+        }
+
+        private AssemblyDefinition TryAssemblyResolver(AssemblyNameReference assemblyRef)
+        {
+            return _context.Assembly.Resolver.Resolve(assemblyRef);
+        }
+
+        private TypeDefinition FindType(AssemblyDefinition assembly, TypeReference typeRef)
+        {
+            foreach (ModuleDefinition m in assembly.Modules)
+            {
+                foreach (TypeDefinition t in m.Types)
+                {
+                    if (t.FullName == typeRef.FullName) return t;
+                }
+            }
+            return null;
+        }
 
 		private static bool RequiresTA(TypeDefinition type)
 		{
@@ -52,7 +102,7 @@ namespace Db4oAdmin.TA
 
 		private MethodDefinition CreateActivateMethod(FieldDefinition activatorField)
 		{
-			MethodDefinition activate = new MethodDefinition(ActivateMethodName, MethodAttributes.Family, VoidType());
+			MethodDefinition activate = new MethodDefinition(ActivateMethodName, MethodAttributes.Public, VoidType());
 		
 			CilWorker cil = activate.Body.CilWorker;
 			cil.Emit(OpCodes.Ldarg_0);
@@ -144,7 +194,7 @@ namespace Db4oAdmin.TA
 
 		private MethodReference ActivateMethod(FieldReference field)
 		{	
-			TypeDefinition type = field.DeclaringType as TypeDefinition;
+			TypeDefinition type = ResolveTypeReference(field.DeclaringType);
 			if (type == null) return null;
 
 			MethodDefinition[] methods = type.Methods.GetMethod(ActivateMethodName);

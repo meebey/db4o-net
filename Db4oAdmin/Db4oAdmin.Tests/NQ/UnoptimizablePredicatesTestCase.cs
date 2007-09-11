@@ -10,7 +10,7 @@ namespace Db4oAdmin.Tests.NQ
 	// TODO: generate evaluation based queries for unoptimizable predicates
 	// so they don't need to be analyzed again in runtime
 	// TODO: report unoptimizable through the API as a Warning object
-	public class UnoptimizablePredicatesTestCase : AbstractCommandLineInstrumentationTestCase
+    public class UnoptimizablePredicatesTestCase : SingleResourceTestCase
 	{
 		protected override string ResourceName
 		{

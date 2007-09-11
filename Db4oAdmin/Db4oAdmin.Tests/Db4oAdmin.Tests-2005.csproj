@@ -54,6 +54,7 @@
     <EmbeddedResource Include="Core\Resources\ByFilterInstrumentationSubject.cs" />
     <EmbeddedResource Include="Core\Resources\ByNameInstrumentationSubject.cs" />
     <Compile Include="Core\ShellUtilities.cs" />
+    <Compile Include="Core\SingleResourceTestCase.cs" />
     <Compile Include="Core\VerifyAssemblyTest.cs" />
     <Compile Include="NQ\CFNQRuntimeOptimizationTestCase.cs" />
     <Compile Include="NQ\PredicateBuildTimeOptimizationTestCase.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="TA\Resources\TAInstrumentationSubject.cs" />
+    <EmbeddedResource Include="TA\Resources\TAAssemblyReferenceSubject.cs" />
     <Compile Include="TA\TAInstrumentationTestCase.cs" />
   </ItemGroup>
   <ItemGroup>
