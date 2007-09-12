@@ -14,6 +14,7 @@ namespace Db4oAdmin.Core
 		public InstrumentationContext(Configuration configuration)
 		{
 			_assembly = AssemblyFactory.GetAssembly(configuration.AssemblyLocation);
+			_assembly.MainModule.FullLoad(); // resolves all references
 			_configuration = configuration;
 		}
 

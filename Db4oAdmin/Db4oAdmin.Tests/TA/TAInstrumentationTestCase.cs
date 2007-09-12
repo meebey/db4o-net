@@ -16,7 +16,11 @@ namespace Db4oAdmin.Tests.TA
 		{
 			get
             {
-                return new string[] { "TAInstrumentationSubject", "TAAssemblyReferenceSubject" };
+                return new string[]
+                {
+                	"TAInstrumentationSubject",
+					"TAAssemblyReferenceSubject",
+				};
             }
 		}
 

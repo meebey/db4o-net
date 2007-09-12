@@ -2,7 +2,6 @@
 using System;
 using System.Reflection;
 using Db4oAdmin.Core;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -13,14 +12,8 @@ namespace Db4oAdmin.NQ
 	{
 		private InstrumentationContext _context;
 
-		private TypeReference _System_Predicate;
-		private TypeReference _System_Object;
-		private TypeReference _System_Void;
-
-		private TypeReference _YapStream;
 		private MethodReference _NativeQueryHandler_ExecuteInstrumentedDelegateQuery;
 		private MethodReference _NativeQueryHandler_ExecuteInstrumentedStaticDelegateQuery;
-		private MethodReference _IObjectContainer_Query;
 
 		private ILPattern _staticFieldPattern = CreateStaticFieldPattern();
 
@@ -29,10 +22,6 @@ namespace Db4oAdmin.NQ
 		public QueryInvocationProcessor(InstrumentationContext context)
 		{
 			_context = context;
-			_YapStream = context.Import(typeof(ObjectContainerBase));
-			_System_Predicate = context.Import(typeof(System.Predicate<>));
-			_System_Object = context.Import(typeof(object));
-			_System_Void = context.Import(typeof(void));
 			_NativeQueryHandler_ExecuteInstrumentedDelegateQuery = context.Import(typeof(NativeQueryHandler).GetMethod("ExecuteInstrumentedDelegateQuery", BindingFlags.Public | BindingFlags.Static));
 			_NativeQueryHandler_ExecuteInstrumentedStaticDelegateQuery = context.Import(typeof(NativeQueryHandler).GetMethod("ExecuteInstrumentedStaticDelegateQuery", BindingFlags.Public | BindingFlags.Static));
 		}
@@ -87,16 +76,6 @@ namespace Db4oAdmin.NQ
 			                             InstantiateGenericMethod(
 			                             	_NativeQueryHandler_ExecuteInstrumentedStaticDelegateQuery,
 			                             	GetQueryCallExtent(queryInvocation))));
-		}
-
-		private GenericInstanceType InstantiateGenericType(TypeReference genericTypeDefinition, params TypeReference[] arguments)
-		{
-			GenericInstanceType type = new GenericInstanceType(genericTypeDefinition);
-			foreach (TypeReference argument in arguments)
-			{
-				type.GenericArguments.Add(argument);
-			}
-			return type;
 		}
 
 		private MethodReference GetMethodReferenceFromInlinePredicatePattern(Instruction queryInvocation)

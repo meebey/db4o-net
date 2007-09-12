@@ -12,8 +12,8 @@ public class Task : ProjectItem
         : base(name)
     {
     }
-#if NAH
-    override public bool Equals(object o)
+
+	override public bool Equals(object o)
     {
         Task other = o as Task;
         if (other == null) return false;
@@ -26,7 +26,6 @@ public class Task : ProjectItem
     {
         return _name.GetHashCode();
     }
-#endif
 }
 
 class MockActivator : IActivator
@@ -61,7 +60,7 @@ class TAAssemblyReferenceSubject : ITestCase
         Assert.AreEqual(1, activator.Count);
     }
 
-    public void _TestForeignFieldAccess()
+    public void TestForeignFieldAccess()
     {
         Task p1 = new Task("test");
         Task p2 = new Task("test");

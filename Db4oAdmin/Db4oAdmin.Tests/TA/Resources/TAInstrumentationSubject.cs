@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 
 using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
@@ -82,6 +83,12 @@ class MockActivator : IActivator
 	}
 }
 
+class MockActivatable : IActivatable
+{
+	public void Bind(IActivator activator) { }
+	public void Activate() { }
+}
+
 class TAInstrumentationSubject : ITestCase
 {
 	public void TestIsActivatable()
@@ -89,6 +96,11 @@ class TAInstrumentationSubject : ITestCase
         Assert.IsTrue(IsActivatable(typeof(Named)));
         Assert.IsTrue(IsActivatable(typeof(ProjectItem)));
 		Assert.IsTrue(IsActivatable(typeof(Project)));
+	}
+
+	public void TestIActivatableImplementClassIsNotInstrumented()
+	{
+		Assert.AreEqual(0, typeof(MockActivatable).GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Length);
 	}
 
 	public void TestPropertyGetter()

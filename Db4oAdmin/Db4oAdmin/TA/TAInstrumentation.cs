@@ -1,17 +1,20 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Db4oAdmin.Core;
 using Db4objects.Db4o.Activation;
+using Db4objects.Db4o.TA;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using FieldAttributes=Mono.Cecil.FieldAttributes;
+using MethodAttributes=Mono.Cecil.MethodAttributes;
+using ParameterAttributes=Mono.Cecil.ParameterAttributes;
 
 namespace Db4oAdmin.TA
 {   
 	public class TAInstrumentation : AbstractAssemblyInstrumentation
 	{
-		private const string ActivateMethodName = "db4o$$ta$$activate";
-
 		public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
 
 		protected override void ProcessModule(ModuleDefinition module)
@@ -22,6 +25,8 @@ namespace Db4oAdmin.TA
 
 		private void MakeActivatable(TypeDefinition type)
 		{
+			if (ImplementsActivatable(type)) return;
+
 			if (!RequiresTA(type)) return;
 			if (HasInstrumentedBaseType(type)) return;
 
@@ -100,10 +105,19 @@ namespace Db4oAdmin.TA
 			return true;
 		}
 
+		private static bool ImplementsActivatable(TypeDefinition type)
+		{
+			foreach (TypeReference typeRef in type.Interfaces)
+			{
+				if (typeRef.FullName == typeof(IActivatable).FullName) return true;
+			}
+			return false;
+		}
+
 		private MethodDefinition CreateActivateMethod(FieldDefinition activatorField)
 		{
-			MethodDefinition activate = new MethodDefinition(ActivateMethodName, MethodAttributes.Public, VoidType());
-		
+			MethodDefinition activate = NewExplicitMethod(ActivateMethod());
+
 			CilWorker cil = activate.Body.CilWorker;
 			cil.Emit(OpCodes.Ldarg_0);
 			cil.Emit(OpCodes.Ldfld, activatorField);
@@ -121,6 +135,23 @@ namespace Db4oAdmin.TA
 			return activate;
 		}
 
+		private MethodDefinition NewExplicitMethod(MethodInfo method)
+		{
+			MethodDefinition definition = new MethodDefinition(method.DeclaringType.FullName + "." + method.Name, MethodAttributes.SpecialName|MethodAttributes.Private|MethodAttributes.Virtual, Import(method.ReturnType));
+			definition.Overrides.Add(Import(method));
+			return definition;
+		}
+
+		private static MethodInfo ActivateMethod()
+		{
+			return typeof(IActivatable).GetMethod("Activate");
+		}
+
+		private static MethodInfo BindMethod()
+		{
+			return typeof(IActivatable).GetMethod("Bind");
+		}
+
 		private FieldDefinition CreateActivatorField()
 		{
 			return new FieldDefinition("db4o$$ta$$activator", ActivatorType(), FieldAttributes.Private|FieldAttributes.NotSerialized);
@@ -128,7 +159,7 @@ namespace Db4oAdmin.TA
 
 		private MethodDefinition CreateBindMethod(FieldReference activatorField)
 		{
-			MethodDefinition bind = new MethodDefinition("Bind", MethodAttributes.Public | MethodAttributes.Virtual, VoidType());
+			MethodDefinition bind = NewExplicitMethod(BindMethod());
 			bind.Parameters.Add(new ParameterDefinition("activator", 1, ParameterAttributes.None, ActivatorType()));
 			CilWorker cil = bind.Body.CilWorker;
 
@@ -138,11 +169,6 @@ namespace Db4oAdmin.TA
 
 			cil.Emit(OpCodes.Ret);
 			return bind;
-		}
-
-		private TypeReference VoidType()
-		{
-			return Import(typeof(void));
 		}
 
 		private TypeReference ActivatorType()
@@ -174,33 +200,20 @@ namespace Db4oAdmin.TA
 				return;
 			}
 
-			MethodReference activate = ActivateMethod(field);
-			if (activate == null)
-			{
-				// TODO: better message here
-				TraceWarning("Cant instrument access to field '{0}'", field);
-				return;
-			}
-
 			cil.InsertBefore(instruction, cil.Create(OpCodes.Dup));
-			cil.InsertBefore(instruction, cil.Create(OpCodes.Call, activate));
+			//cil.InsertBefore(instruction, cil.Create(OpCodes.Castclass));
+			cil.InsertBefore(instruction, cil.Create(OpCodes.Callvirt, Import(ActivateMethod())));
 		}
 
 		private bool IsActivatableField(FieldReference field)
 		{
 			// TODO: check for transient here
-			return !field.Name.Contains("$");
-		}
+			if (field.Name.Contains("$")) return false;
 
-		private MethodReference ActivateMethod(FieldReference field)
-		{	
 			TypeDefinition type = ResolveTypeReference(field.DeclaringType);
-			if (type == null) return null;
+			if (type == null) return false;
 
-			MethodDefinition[] methods = type.Methods.GetMethod(ActivateMethodName);
-			if (methods.Length != 1) return null;
-
-			return methods[0];
+			return ImplementsActivatable(type);
 		}
 
 		private static bool IsFieldAccess(Instruction instruction)
