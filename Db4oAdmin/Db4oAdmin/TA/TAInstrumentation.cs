@@ -1,5 +1,4 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
-using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Db4oAdmin.Core;
@@ -8,14 +7,18 @@ using Db4objects.Db4o.TA;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using FieldAttributes=Mono.Cecil.FieldAttributes;
-using MethodAttributes=Mono.Cecil.MethodAttributes;
-using ParameterAttributes=Mono.Cecil.ParameterAttributes;
 
 namespace Db4oAdmin.TA
 {   
 	public class TAInstrumentation : AbstractAssemblyInstrumentation
 	{
 		public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
+		private CecilReflector _reflector;
+
+		protected override void BeforeAssemblyProcessing()
+		{
+			_reflector = new CecilReflector(_context);
+		}
 
 		protected override void ProcessModule(ModuleDefinition module)
 		{
@@ -25,9 +28,8 @@ namespace Db4oAdmin.TA
 
 		private void MakeActivatable(TypeDefinition type)
 		{
-			if (ImplementsActivatable(type)) return;
-
 			if (!RequiresTA(type)) return;
+			if (ImplementsActivatable(type)) return;
 			if (HasInstrumentedBaseType(type)) return;
 
 			type.Interfaces.Add(Import(typeof(Db4objects.Db4o.TA.IActivatable)));
@@ -40,60 +42,16 @@ namespace Db4oAdmin.TA
 		}
 
 		private bool HasInstrumentedBaseType(TypeDefinition type)
-		{   
-			// is the baseType in the same assembly?
-            TypeDefinition baseType = ResolveTypeReference(type.BaseType);
+		{
+			// is the base type defined in the same assembly?
+			TypeDefinition baseType = type.BaseType as TypeDefinition;
             if (baseType == null) return false;
 			return RequiresTA(baseType);
 		}
 
         private TypeDefinition ResolveTypeReference(TypeReference typeRef)
-        {   
-            TypeDefinition type = typeRef as TypeDefinition;
-            if (null != type) return type;
-
-            AssemblyNameReference assemblyRef = typeRef.Scope as AssemblyNameReference;
-            if (IsSystemAssembly(assemblyRef)) return null;
-
-            AssemblyDefinition assembly = LoadAssembly(assemblyRef);
-            if (null == assembly) return null;
-            return FindType(assembly, typeRef);
-        }
-
-        private bool IsSystemAssembly(AssemblyNameReference assemblyRef)
         {
-            switch (assemblyRef.Name)
-            {
-                case "mscorlib":
-                case "corlib":
-                case "System":
-                    return true;
-            }
-            return false;
-        }
-
-        private AssemblyDefinition LoadAssembly(AssemblyNameReference assemblyRef)
-        {
-            string assemblyPath = Path.Combine(Path.GetDirectoryName(_context.AssemblyLocation), assemblyRef.Name + ".dll");
-            if (!File.Exists(assemblyPath)) return TryAssemblyResolver(assemblyRef);
-            return AssemblyFactory.GetAssembly(assemblyPath);
-        }
-
-        private AssemblyDefinition TryAssemblyResolver(AssemblyNameReference assemblyRef)
-        {
-            return _context.Assembly.Resolver.Resolve(assemblyRef);
-        }
-
-        private TypeDefinition FindType(AssemblyDefinition assembly, TypeReference typeRef)
-        {
-            foreach (ModuleDefinition m in assembly.Modules)
-            {
-                foreach (TypeDefinition t in m.Types)
-                {
-                    if (t.FullName == typeRef.FullName) return t;
-                }
-            }
-            return null;
+        	return _reflector.ResolveTypeReference(typeRef);
         }
 
 		private static bool RequiresTA(TypeDefinition type)
@@ -105,51 +63,14 @@ namespace Db4oAdmin.TA
 			return true;
 		}
 
-		private static bool ImplementsActivatable(TypeDefinition type)
+		private bool ImplementsActivatable(TypeDefinition type)
 		{
-			foreach (TypeReference typeRef in type.Interfaces)
-			{
-				if (typeRef.FullName == typeof(IActivatable).FullName) return true;
-			}
-			return false;
+			return _reflector.Implements(type, typeof(IActivatable));
 		}
 
 		private MethodDefinition CreateActivateMethod(FieldDefinition activatorField)
 		{
-			MethodDefinition activate = NewExplicitMethod(ActivateMethod());
-
-			CilWorker cil = activate.Body.CilWorker;
-			cil.Emit(OpCodes.Ldarg_0);
-			cil.Emit(OpCodes.Ldfld, activatorField);
-
-			Instruction ret = cil.Create(OpCodes.Ret);
-
-			cil.Emit(OpCodes.Brfalse, ret);
-
-			cil.Emit(OpCodes.Ldarg_0);
-			cil.Emit(OpCodes.Ldfld, activatorField);
-			cil.Emit(OpCodes.Callvirt, Import(typeof(IActivator).GetMethod("Activate")));
-
-			cil.Append(ret);
-
-			return activate;
-		}
-
-		private MethodDefinition NewExplicitMethod(MethodInfo method)
-		{
-			MethodDefinition definition = new MethodDefinition(method.DeclaringType.FullName + "." + method.Name, MethodAttributes.SpecialName|MethodAttributes.Private|MethodAttributes.Virtual, Import(method.ReturnType));
-			definition.Overrides.Add(Import(method));
-			return definition;
-		}
-
-		private static MethodInfo ActivateMethod()
-		{
-			return typeof(IActivatable).GetMethod("Activate");
-		}
-
-		private static MethodInfo BindMethod()
-		{
-			return typeof(IActivatable).GetMethod("Bind");
+			return new ActivateMethodEmitter(_context, activatorField).Emit();
 		}
 
 		private FieldDefinition CreateActivatorField()
@@ -159,16 +80,7 @@ namespace Db4oAdmin.TA
 
 		private MethodDefinition CreateBindMethod(FieldReference activatorField)
 		{
-			MethodDefinition bind = NewExplicitMethod(BindMethod());
-			bind.Parameters.Add(new ParameterDefinition("activator", 1, ParameterAttributes.None, ActivatorType()));
-			CilWorker cil = bind.Body.CilWorker;
-
-			cil.Emit(OpCodes.Ldarg_0);
-			cil.Emit(OpCodes.Ldarg_1);
-			cil.Emit(OpCodes.Stfld, activatorField);
-
-			cil.Emit(OpCodes.Ret);
-			return bind;
+			return new BindMethodEmitter(_context, activatorField).Emit();
 		}
 
 		private TypeReference ActivatorType()
@@ -177,8 +89,8 @@ namespace Db4oAdmin.TA
 		}
 
 		protected override void ProcessMethod(Mono.Cecil.MethodDefinition method)
-		{	
-			if (!method.HasBody || IsPrivate(method) || method.IsStatic) return;
+		{
+			if (!method.HasBody || method.IsCompilerControlled || method.IsStatic) return;
 
 			CilWorker cil = method.Body.CilWorker;
 			Instruction instruction = method.Body.Instructions[0];
@@ -201,8 +113,12 @@ namespace Db4oAdmin.TA
 			}
 
 			cil.InsertBefore(instruction, cil.Create(OpCodes.Dup));
-			//cil.InsertBefore(instruction, cil.Create(OpCodes.Castclass));
 			cil.InsertBefore(instruction, cil.Create(OpCodes.Callvirt, Import(ActivateMethod())));
+		}
+
+		private static MethodInfo ActivateMethod()
+		{
+			return typeof(IActivatable).GetMethod("Activate");
 		}
 
 		private bool IsActivatableField(FieldReference field)
@@ -220,12 +136,6 @@ namespace Db4oAdmin.TA
 		{
 			return instruction.OpCode == OpCodes.Ldfld
 				|| instruction.OpCode == OpCodes.Ldflda;
-		}
-
-		private static bool IsPrivate(MethodDefinition method)
-		{
-			return method.IsCompilerControlled
-				|| method.IsPrivate;
 		}
 	}
 }
