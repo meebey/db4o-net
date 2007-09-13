@@ -17,7 +17,17 @@ namespace Db4oAdmin.TA
 
 		public bool Implements(TypeDefinition type, Type interfaceType)
 		{
-			return Contains(type.Interfaces, interfaceType.FullName);
+			return Implements(type, interfaceType.FullName);
+		}
+
+		private bool Implements(TypeDefinition type, string interfaceName)
+		{
+			if (Contains(type.Interfaces, interfaceName)) return true;
+
+			TypeDefinition baseType = ResolveTypeReference(type.BaseType);
+			if (null != baseType) return Implements(baseType, interfaceName);
+
+			return false;
 		}
 
 		public TypeDefinition ResolveTypeReference(TypeReference typeRef)

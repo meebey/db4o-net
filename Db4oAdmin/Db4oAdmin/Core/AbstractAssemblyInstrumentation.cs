@@ -47,19 +47,24 @@ namespace Db4oAdmin.Core
 
 		protected virtual void ProcessTypes(TypeDefinitionCollection types, System.Action<TypeDefinition> action)
 		{
+			ProcessTypes(types, _context.Accept, action);
+		}
+
+		protected static bool NoFiltering(TypeDefinition type)
+		{
+			return true;
+		}
+
+		protected virtual void ProcessTypes(TypeDefinitionCollection types, System.Predicate<TypeDefinition> filter, System.Action<TypeDefinition> action)
+		{
 			foreach (TypeDefinition typedef in types)
 			{
-				if (!IsAccepted(typedef)) continue;
+				if (!filter(typedef)) continue;
 
 				TraceVerbose("Entering type '{0}'", typedef);
 				action(typedef);
 				TraceVerbose("Leaving type '{0}'", typedef);
 			}
-		}
-
-		private bool IsAccepted(TypeDefinition typedef)
-		{
-			return _context.Accept(typedef);
 		}
 		
 		protected virtual void ProcessType(TypeDefinition type)

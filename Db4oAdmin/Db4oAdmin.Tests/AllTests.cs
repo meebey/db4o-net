@@ -13,6 +13,7 @@ namespace Db4oAdmin.Tests
 					typeof(Core.ByNameTestCase),
 					typeof(Core.ByAttributeTestCase),
 					typeof(Core.ByFilterTestCase),
+					typeof(Core.ByNotAttributeTestCase),
 					typeof(Core.ILPatternTestCase),
 					typeof(Core.CustomInstrumentationTestCase),
 					typeof(NQ.CFNQRuntimeOptimizationTestCase),

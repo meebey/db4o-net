@@ -8,6 +8,8 @@ using Db4oUnit;
 
 public class Task : ProjectItem
 {
+	public bool Finished;
+
     public Task(string name)
         : base(name)
     {
@@ -43,8 +45,33 @@ class MockActivator : IActivator
     }
 }
 
+// This class is filtered out from the instrumented set
+// by a custom rule.
+//
+// This shouldn't however affect its ability
+// to activate instrumented classes.
+class FilteredOutByName
+{
+	public static bool CheckTask(Task task)
+	{
+		return task.Finished;
+	}
+}
+
 class TAAssemblyReferenceSubject : ITestCase
 {
+	public void TestFilteredOutClassesStillActivateForeignFields()
+	{
+		Assert.IsFalse(IsActivatable(typeof(FilteredOutByName)));
+
+		Task t = new Task("test");
+		MockActivator activator = ActivatorFor(t);
+
+		FilteredOutByName.CheckTask(t);
+
+		Assert.AreEqual(1, activator.Count);
+	}
+
     public void TestIsActivatable()
     {
         Assert.IsTrue(IsActivatable(typeof(Task)));

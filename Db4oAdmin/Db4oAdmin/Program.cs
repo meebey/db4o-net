@@ -12,43 +12,19 @@ namespace Db4oAdmin
 	{
 		public static int Main(string[] args)
 		{
-			ProgramOptions options = new ProgramOptions(args);
-			if (!options.IsValid)
-			{
-				options.DoHelp();
-				return -1;
-			}
-
-			return Run(options);
-		}
-
-		private static int Run(ProgramOptions options)
-		{
 			Trace.Listeners.Add(new TextWriterTraceListener(Console.Error));
+
+			ProgramOptions options = new ProgramOptions();
 			try
-			{
-				InstrumentationPipeline pipeline = new InstrumentationPipeline(GetConfiguration(options));
-				if (options.OptimizePredicates)
+			{	
+				options.ProcessArgs(args);
+				if (!options.IsValid)
 				{
-					pipeline.Add(new PredicateOptimizer());
+					options.DoHelp();
+					return -1;
 				}
-				if (options.EnableCF2DelegateQueries)
-				{
-					pipeline.Add(new CFNQEnabler());
-				}
-				if (options.TransparentActivation)
-				{
-					pipeline.Add(new TAInstrumentation());
-				}
-				foreach (IAssemblyInstrumentation instr in MapToObjects<IAssemblyInstrumentation>(options.CustomInstrumentations))
-				{
-					pipeline.Add(instr);
-				}
-				if (!options.Fake)
-				{
-					pipeline.Add(new SaveAssemblyInstrumentation());
-				}
-				pipeline.Run();
+
+				Run(options);
 			}
 			catch (Exception x)
 			{
@@ -57,13 +33,31 @@ namespace Db4oAdmin
 			}
 			return 0;
 		}
-		
-		private static IEnumerable<T> MapToObjects<T>(IEnumerable<string> typeNames)
-		{
-			foreach (string typeName in typeNames)
+
+		private static void Run(ProgramOptions options)
+		{	
+			InstrumentationPipeline pipeline = new InstrumentationPipeline(GetConfiguration(options));
+			if (options.OptimizePredicates)
 			{
-				yield return (T)Activator.CreateInstance(Type.GetType(typeName, true));
+				pipeline.Add(new PredicateOptimizer());
 			}
+			if (options.EnableCF2DelegateQueries)
+			{
+				pipeline.Add(new CFNQEnabler());
+			}
+			if (options.TransparentActivation)
+			{
+				pipeline.Add(new TAInstrumentation());
+			}
+			foreach (IAssemblyInstrumentation instr in Factory.Instantiate<IAssemblyInstrumentation>(options.CustomInstrumentations))
+			{
+				pipeline.Add(instr);
+			}
+			if (!options.Fake)
+			{
+				pipeline.Add(new SaveAssemblyInstrumentation());
+			}
+			pipeline.Run();
 		}
 
 		private static void ReportError(ProgramOptions options, Exception x)
@@ -86,17 +80,9 @@ namespace Db4oAdmin
 			{
 				configuration.TraceSwitch.Level = options.PrettyVerbose ? TraceLevel.Verbose : TraceLevel.Info;
 			}
-            foreach (string attribute in options.AttributeFilters)
+            foreach (TypeFilterFactory factory in options.Filters)
             {
-                configuration.AddFilter(new ByAttributeFilter(attribute));
-            }
-            foreach (string name in options.NameFilters)
-            {
-                configuration.AddFilter(new ByNameFilter(name));
-            }
-            foreach (ITypeFilter filter in MapToObjects<ITypeFilter>(options.CustomFilters))
-            {
-                configuration.AddFilter(filter);
+                configuration.AddFilter(factory());
             }
 			return configuration;
 		}

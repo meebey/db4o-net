@@ -23,7 +23,7 @@ namespace Db4oAdmin.TA
 		protected override void ProcessModule(ModuleDefinition module)
 		{
 			ProcessTypes(module.Types, MakeActivatable);
-			ProcessTypes(module.Types, ProcessMethods);
+			ProcessTypes(module.Types, NoFiltering, ProcessMethods);
 		}
 
 		private void MakeActivatable(TypeDefinition type)
@@ -90,7 +90,7 @@ namespace Db4oAdmin.TA
 
 		protected override void ProcessMethod(Mono.Cecil.MethodDefinition method)
 		{
-			if (!method.HasBody || method.IsCompilerControlled || method.IsStatic) return;
+			if (!method.HasBody || method.IsCompilerControlled) return;
 
 			CilWorker cil = method.Body.CilWorker;
 			Instruction instruction = method.Body.Instructions[0];
