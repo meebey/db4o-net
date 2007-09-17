@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public static string Db4ojarPath()
 		{
-			string db4oVersion = string.Format("{0}.{1}", Db4oVersion.MAJOR, Db4oVersion.MINOR);
+			string db4oVersion = string.Format("{0}.{1}.{2}.{3}", Db4oVersion.MAJOR, Db4oVersion.MINOR, Db4oVersion.ITERATION, Db4oVersion.REVISION);
 			return WorkspaceServices.WorkspacePath("db4obuild/dist/java/lib/db4o-" + db4oVersion + "-java1.2.jar");
 		}
 
