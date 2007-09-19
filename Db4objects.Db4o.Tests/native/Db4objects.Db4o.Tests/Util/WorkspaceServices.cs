@@ -47,11 +47,16 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public static string MachinePropertiesPath()
 		{
-            string fileName = Environment.GetEnvironmentVariable("DB4O_MACHINE_PROPERTIES");
-            if (fileName == null || fileName.Length == 0)
-            {
-                fileName = "machine.properties";
-            }
+			const string defaultFileName = "machine.properties";
+#if CF_1_0 || CF_2_0
+			const string fileName = defaultFileName;
+#else
+			string fileName = Environment.GetEnvironmentVariable("DB4O_MACHINE_PROPERTIES");
+			if (fileName == null || fileName.Length == 0)
+			{
+				fileName = defaultFileName;
+			}
+#endif
 			string path = WorkspacePath("db4obuild/" + fileName);
 			Assert.IsTrue(File.Exists(path));
 			return path;
