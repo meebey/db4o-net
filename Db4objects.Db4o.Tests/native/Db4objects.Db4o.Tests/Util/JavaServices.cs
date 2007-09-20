@@ -24,7 +24,12 @@ namespace Db4objects.Db4o.Tests.Util
 		public static string Db4ojarPath()
 		{
 			string db4oVersion = string.Format("{0}.{1}", Db4oVersion.MAJOR, Db4oVersion.MINOR);
-			return WorkspaceServices.WorkspacePath("db4obuild/dist/java/lib/db4o-" + db4oVersion + "-java1.2.jar");
+			string distDir = WorkspaceServices.ReadMachineProperty("dir.dist");
+			if(distDir == null || distDir.Length == 0)
+			{
+				distDir = "db4obuild/dist";
+			}
+			return WorkspaceServices.WorkspacePath(distDir + "/java/lib/db4o-" + db4oVersion + "-java1.2.jar");
 		}
 
 		public static string JavaTempPath

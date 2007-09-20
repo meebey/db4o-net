@@ -150,7 +150,7 @@ namespace Sharpen
 #else
 			return key.Equals("line.separator")
 				? Environment.NewLine
-				: null;
+				: Environment.GetEnvironmentVariable(key);
 #endif
 		}
 
