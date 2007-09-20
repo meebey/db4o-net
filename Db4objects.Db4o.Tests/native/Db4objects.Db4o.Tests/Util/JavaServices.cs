@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Util
 		public static string Db4ojarPath()
 		{
 			string db4oVersion = string.Format("{0}.{1}", Db4oVersion.MAJOR, Db4oVersion.MINOR);
-			string distDir = WorkspaceServices.ReadMachineProperty("dir.dist");
+			string distDir = WorkspaceServices.ReadProperty(WorkspaceServices.MachinePropertiesPath(), "dir.dist", true);
 			if(distDir == null || distDir.Length == 0)
 			{
 				distDir = "db4obuild/dist";

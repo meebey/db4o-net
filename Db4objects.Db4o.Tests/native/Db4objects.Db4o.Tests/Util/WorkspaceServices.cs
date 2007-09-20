@@ -29,7 +29,12 @@ namespace Db4objects.Db4o.Tests.Util
 			return path;
 		}
 
-		public static string ReadProperty(string fname, string property)
+		public static string ReadProperty(string fname, string property) 
+		{
+			return ReadProperty(fname, property, false);
+		}
+
+		public static string ReadProperty(string fname, string property, bool lenient)
 		{
 			using (StreamReader reader = File.OpenText(fname))
 			{
@@ -42,7 +47,12 @@ namespace Db4objects.Db4o.Tests.Util
 					}
 				}
 			}
-			throw new ArgumentException("property '" + property + "' not found in '" + fname + "'");
+			if(lenient) {
+				return null;
+			}
+			else {
+				throw new ArgumentException("property '" + property + "' not found in '" + fname + "'");
+			}
 		}
 
 		public static string MachinePropertiesPath()
