@@ -116,11 +116,6 @@ namespace Sharpen
 			return s.Substring(startIndex, endIndex-startIndex);
 		}
 
-		public static char GetCharAt(string str, int index) 
-		{
-			return str[index];
-		}
-
 		public static void GetCharsForString(string str, int start, int end, char[] destination, int destinationStart) 
 		{
 			str.CopyTo(start, destination, 0, end-start);
@@ -150,7 +145,18 @@ namespace Sharpen
 #else
 			return key.Equals("line.separator")
 				? Environment.NewLine
-				: Environment.GetEnvironmentVariable(key);
+				: GetEnvironmentVariable(key, null);
+#endif
+		}
+
+		public static string GetEnvironmentVariable(string variableName, string defaultValue)
+		{
+#if CF_1_0 || CF_2_0
+			return defaultValue;
+#else
+			string value = Environment.GetEnvironmentVariable(variableName);
+			if (value == null || value.Length == 0) return defaultValue;
+			return value;
 #endif
 		}
 
