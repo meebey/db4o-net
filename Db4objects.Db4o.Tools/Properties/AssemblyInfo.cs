@@ -2,6 +2,7 @@
 
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security;
 
 [assembly: AssemblyTitle("db4o - tools")]
 [assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
@@ -15,3 +16,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyDescription("db4o 6.0.001 .NET")]
+
+#if !CF_1_0 && !CF_2_0
+[assembly: AllowPartiallyTrustedCallers]
+#endif

@@ -2,6 +2,7 @@
 
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security;
 
 [assembly: AssemblyTitle("db4o")]
 [assembly: AssemblyDescription("db4o xUnit like unit testing framework")]
@@ -14,3 +15,5 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]
+
+[assembly: AllowPartiallyTrustedCallers]

@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security;
 
 [assembly: AssemblyTitle("Db4oAdmin.Tests")]
 [assembly: AssemblyDescription("")]
@@ -15,3 +16,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 [assembly: AssemblyVersion("5.7.001")]
+
+#if !CF_1_0 && !CF_2_0
+[assembly: AllowPartiallyTrustedCallers]
+#endif

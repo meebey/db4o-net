@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security;
 
 [assembly: AssemblyTitle("Db4objects.Db4o.TA")]
 [assembly: AssemblyDescription("")]
@@ -13,3 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 
 [assembly: AssemblyVersion("1.0.0.0")]
+
+#if !CF_1_0 && !CF_2_0
+[assembly: AllowPartiallyTrustedCallers]
+#endif

@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security;
 
 [assembly: AssemblyTitle("Db4oAdmin")]
 [assembly: AssemblyDescription("Db4o command line utility.")]
@@ -22,3 +23,7 @@ using System.Runtime.InteropServices;
 
 [assembly: Mono.About("")]
 [assembly: Mono.UsageComplement("<assembly>")]
+
+#if !CF_1_0 && !CF_2_0
+[assembly: AllowPartiallyTrustedCallers]
+#endif
