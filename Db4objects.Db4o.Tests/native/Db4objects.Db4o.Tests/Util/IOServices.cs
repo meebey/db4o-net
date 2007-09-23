@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Db4objects.Db4o.Tests.CLI1;
 
 namespace Db4objects.Db4o.Tests.Util
 {
@@ -25,14 +26,19 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public static void WriteFile(string fname, string contents)
 		{
-			Directory.CreateDirectory(Path.GetDirectoryName(fname));
+			CreateParentDirectories(fname);
 			using (StreamWriter writer = new StreamWriter(fname))
 			{
 				writer.Write(contents);
 			}
 		}
 
-        public static string JoinQuotedArgs(string[] args)
+		private static void CreateParentDirectories(string fname)
+		{
+			Directory.CreateDirectory(Path.GetDirectoryName(fname));
+		}
+
+		public static string JoinQuotedArgs(string[] args)
         {
             return JoinQuotedArgs(' ', args);
         }
@@ -82,6 +88,17 @@ namespace Db4objects.Db4o.Tests.Util
 		public static string BuildTempPath(string fname)
 		{
 			return Path.Combine(Path.GetTempPath(), fname);
+		}
+
+		public static void CopyTo(string fname, string targetDirectory)
+		{
+			Directory.CreateDirectory(targetDirectory);
+			File.Copy(fname, Path.Combine(targetDirectory, Path.GetFileName(fname)), true);
+		}
+
+		public static void CopyEnclosingAssemblyTo(Type type, string directory)
+		{
+			CopyTo(type.Assembly.Location, directory);
 		}
 	}
 }

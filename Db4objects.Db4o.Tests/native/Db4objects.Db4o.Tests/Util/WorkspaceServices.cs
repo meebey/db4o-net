@@ -36,6 +36,14 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public static string ReadProperty(string fname, string property, bool lenient)
 		{
+			string value = FindProperty(fname, property);
+			if (value != null) return value;
+			if (lenient) return null;
+			throw new ArgumentException("property '" + property + "' not found in '" + fname + "'");
+		}
+
+		private static string FindProperty(string fname, string property)
+		{
 			using (StreamReader reader = File.OpenText(fname))
 			{
 				string line = null;
@@ -47,31 +55,15 @@ namespace Db4objects.Db4o.Tests.Util
 					}
 				}
 			}
-			if(lenient) {
-				return null;
-			}
-			else {
-				throw new ArgumentException("property '" + property + "' not found in '" + fname + "'");
-			}
+			return null;
 		}
 
 		public static string MachinePropertiesPath()
 		{
-			string fileName = GetEnvironmentVariable("DB4O_MACHINE_PROPERTIES", "machine.properties");
+			string fileName = Sharpen.Runtime.GetEnvironmentVariable("DB4O_MACHINE_PROPERTIES", "machine.properties");
 			string path = WorkspacePath("db4obuild/" + fileName);
 			Assert.IsTrue(File.Exists(path));
 			return path;
-		}
-
-		private static string GetEnvironmentVariable(string variableName, string defaultValue)
-		{
-#if CF_1_0 || CF_2_0
-			return defaultValue;
-#else
-			string value = Environment.GetEnvironmentVariable(variableName);
-			if (value == null || value.Length == 0) return defaultValue;
-			return value;
-#endif
 		}
 
 		public static string WorkspacePath(string fname)

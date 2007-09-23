@@ -140,12 +140,17 @@ namespace Sharpen
 
 		public static String GetProperty(String key) 
 		{
+			return GetProperty(key, null);
+		}
+
+		public static String GetProperty(String key, String defaultValue)
+		{
 #if CF_1_0 || CF_2_0
-			return key.Equals("line.separator") ? "\n" : null;
+			return key.Equals("line.separator") ? "\n" : defaultValue;
 #else
 			return key.Equals("line.separator")
 				? Environment.NewLine
-				: GetEnvironmentVariable(key, null);
+				: GetEnvironmentVariable(key, defaultValue);
 #endif
 		}
 

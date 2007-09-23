@@ -89,16 +89,16 @@ namespace Db4objects.Db4o.Tests.CLI1
             }
         }
 
-        void CopyNecessaryAssembliesTo(string basePath)
+        static void CopyNecessaryAssembliesTo(string basePath)
         {
-            CopyToDir(typeof(Db4oFactory).Assembly.Location, basePath);
-            CopyToDir(typeof(Db4oUnit.Assert).Assembly.Location, basePath);
-            CopyToDir(Assembly.GetExecutingAssembly().Location, basePath);
+        	IOServices.CopyEnclosingAssemblyTo(typeof(Db4oFactory), basePath);
+			IOServices.CopyEnclosingAssemblyTo(typeof(Db4oUnit.Assert), basePath);
+            CopyTo(Assembly.GetExecutingAssembly().Location, basePath);
         }
 
-        void CopyToDir(string fname, string dir)
+    	static void CopyTo(string fname, string dir)
         {
-            File.Copy(fname, Path.Combine(dir, Path.GetFileName(fname)), true);
+            IOServices.CopyTo(fname, dir);
         }
 
         string BaseCode
