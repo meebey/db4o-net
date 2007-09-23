@@ -36,11 +36,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 		{
 			IQuery query = NewQuery(typeof(SimpleGenericType<T>));
 
-			EnsureGenericItem<T>(expectedValue, query.Execute());
+			EnsureGenericItem(expectedValue, query.Execute());
 
 			query = NewQuery(typeof(SimpleGenericType<T>));
 			query.Descend("value").Constrain(expectedValue);
-			EnsureGenericItem<T>(expectedValue, query.Execute());
+			EnsureGenericItem(expectedValue, query.Execute());
 		}
 
 		private static void EnsureGenericItem<T>(T expectedValue, IObjectSet os)
