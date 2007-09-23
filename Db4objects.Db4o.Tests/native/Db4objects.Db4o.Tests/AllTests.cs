@@ -13,7 +13,6 @@ namespace Db4objects.Db4o.Tests
 			return new AllTests().RunSolo();
 //            return new AllTests().RunClientServer();
 #else
-			return new AllTests().RunSolo();
 		    return new AllTests().RunAll();
 #endif
 		}
