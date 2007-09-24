@@ -132,10 +132,15 @@ namespace Db4oAdmin.Tests.Core
             }
         }
 
-		private string CopyAssemblyAndPdbToTemp(string path)
+		private void DeleteAssemblyAndPdb(string path)
 		{	
-			CopyToTemp(Path.ChangeExtension(path, ".pdb"));
-			return CopyToTemp(path);
+			DeleteFile(Path.ChangeExtension(path, ".pdb"));
+			DeleteFile(path);
+		}
+
+		private void DeleteFile(string fname)
+		{
+			if (File.Exists(fname)) File.Delete(fname);
 		}
 
 		protected string TestSuiteLabel
@@ -184,11 +189,11 @@ namespace Db4oAdmin.Tests.Core
 		protected string EmitAssemblyFromResource(string resource, Assembly[] references)
 		{
 			CopyDependenciesToTemp();
-			//string assemblyFileName = Path.Combine(Path.Combine(Path.GetTempPath(), "build"), resource + ".dll");
-			string assemblyFileName = Path.Combine(Path.GetTempPath(), resource + ".dll");
+			string assemblyFileName = Path.Combine(GetTempPath(), resource + ".dll");
 			string resourceName = GetType().Namespace + ".Resources." + resource + ".cs";
 			string sourceFileName = Path.Combine(Path.GetTempPath(), resourceName);
 			File.WriteAllText(sourceFileName, GetResourceAsString(resourceName));
+			DeleteAssemblyAndPdb(assemblyFileName);
 			CompilationServices.EmitAssembly(assemblyFileName, references, sourceFileName);
 			return assemblyFileName;
 		}
@@ -226,7 +231,21 @@ namespace Db4oAdmin.Tests.Core
 
 		private static string CopyToTemp(string fname)
 		{
-			return ShellUtilities.CopyFileToFolder(fname, Path.GetTempPath());
+			return ShellUtilities.CopyFileToFolder(fname, GetTempPath());
+		}
+
+		private static string GetTempPath()
+		{
+			//return Path.GetTempPath();
+
+			// for now, debugging information is only
+			// preserved when the directory name does not contain
+			// UTF character because of some bug, so
+			// let's keep it simple
+			string tempPath = Path.Combine(
+				Directory.GetDirectoryRoot(Directory.GetCurrentDirectory()),
+				"tmp");
+			return tempPath;
 		}
 	}
 }

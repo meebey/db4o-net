@@ -16,10 +16,11 @@ namespace Db4oAdmin.Tests.Core
 			}
 		}
 
-		// FIXME: remove this method and fix the test case
+		// FIXME: remove this method after updating cecil
+		// (waiting for Module.FullLoad patch to be applied)
 		protected override void InstrumentAssembly(string path)
 		{
-			// base.InstrumentAssembly(path);
+			 //base.InstrumentAssembly(path);
 		}
 	}
 }

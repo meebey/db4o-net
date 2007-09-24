@@ -20,7 +20,10 @@ namespace Db4oAdmin.Core
 		private void LoadAssembly()
 		{
 			_assembly = AssemblyFactory.GetAssembly(_configuration.AssemblyLocation);
-			if (PreserveDebugInfo()) _assembly.MainModule.LoadSymbols();
+			if (PreserveDebugInfo())
+			{
+				_assembly.MainModule.LoadSymbols();
+			}
 			_assembly.MainModule.FullLoad(); // resolves all references
 		}
 
@@ -56,7 +59,10 @@ namespace Db4oAdmin.Core
 
 		public void SaveAssembly()
 		{
-			if (PreserveDebugInfo()) _assembly.MainModule.SaveSymbols();
+			if (PreserveDebugInfo())
+			{
+				_assembly.MainModule.SaveSymbols();
+			}
 			AssemblyFactory.SaveAssembly(_assembly, AssemblyLocation);
 		}
 
