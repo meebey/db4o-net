@@ -23,9 +23,14 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 				string db4oLib = FindLibraryFile(directory);
 				if (null == db4oLib) continue;
-				libraries.Add(new Db4oLibrary(db4oLib, EnvironmentFor(db4oLib)));
+				libraries.Add(ForFile(db4oLib));
 			}
 			return (Db4oLibrary[]) libraries.ToArray(typeof(Db4oLibrary));
+		}
+
+		public Db4oLibrary ForFile(string db4oLib)
+		{
+			return new Db4oLibrary(db4oLib, EnvironmentFor(db4oLib));
 		}
 
 		private string FindLibraryFile(string directory)
