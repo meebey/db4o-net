@@ -49,5 +49,21 @@ namespace Sharpen.Util
         {
             this.javaMilliSeconds = javaMilliSeconds;
         }
+
+        public override bool Equals(object obj)
+        {
+            Date date = obj as Date;
+            if (date == null)
+            {
+                return false;
+            }
+            return javaMilliSeconds == date.javaMilliSeconds;
+        }
+
+        public override int GetHashCode()
+        {
+            return javaMilliSeconds.GetHashCode();
+        }
+
     }
 }
