@@ -37,6 +37,10 @@ namespace Db4oAdmin
 		private static void Run(ProgramOptions options)
 		{	
 			InstrumentationPipeline pipeline = new InstrumentationPipeline(GetConfiguration(options));
+			if (options.Debug)
+			{
+				pipeline.Add(new LoadSymbols());
+			}
 			if (options.OptimizePredicates)
 			{
 				pipeline.Add(new PredicateOptimizer());
@@ -55,6 +59,10 @@ namespace Db4oAdmin
 			}
 			if (!options.Fake)
 			{
+				if (options.Debug)
+				{
+					pipeline.Add(new SaveSymbols());
+				}
 				pipeline.Add(new SaveAssemblyInstrumentation());
 			}
 			pipeline.Run();

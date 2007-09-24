@@ -16,6 +16,7 @@ namespace Db4oAdmin.Tests
 					typeof(Core.ByNotAttributeTestCase),
 					typeof(Core.ILPatternTestCase),
 					typeof(Core.CustomInstrumentationTestCase),
+					typeof(Core.PreserveDebugInfoTestCase),
 					typeof(NQ.CFNQRuntimeOptimizationTestCase),
 					typeof(NQ.PredicateBuildTimeOptimizationTestCase),
 					typeof(NQ.UnoptimizablePredicatesTestCase),

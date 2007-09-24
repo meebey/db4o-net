@@ -12,6 +12,9 @@ namespace Db4oAdmin
 	{
 		private bool _prettyVerbose;
 
+		[Option("Preserve debugging information", "debug")]
+		public bool Debug;
+
 		[Option("Optimize predicate subclasses", "optimize-predicates")]
 		public bool OptimizePredicates;
 

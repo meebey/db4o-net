@@ -115,18 +115,26 @@ namespace Db4oAdmin.Tests.Core
             {
                 string assemblyPath = EmitAssemblyFromResource(resource, references);
                 Assert.IsTrue(File.Exists(assemblyPath));
-                InstrumentAssembly(assemblyPath);
 
-                Type type = GetTestCaseType(assemblyPath, resource);
+            	string instrumentedAssembly = CopyAssemblyAndPdbToTemp(assemblyPath);
+				InstrumentAssembly(instrumentedAssembly);
+
+                Type type = GetTestCaseType(instrumentedAssembly, resource);
                 TestSuite suite = type.IsSubclassOf(typeof(InstrumentedTestCase))
                                     ? new InstrumentationTestSuiteBuilder(this, type).Build()
                                     : new ReflectionTestSuiteBuilder(type).Build();
                 yield return suite;
-                yield return new VerifyAssemblyTest(assemblyPath);
+                yield return new VerifyAssemblyTest(instrumentedAssembly);
 
                 references = ArrayServices.Append(references, type.Assembly);
             }
         }
+
+		private string CopyAssemblyAndPdbToTemp(string path)
+		{	
+			CopyToTemp(Path.ChangeExtension(path, ".pdb"));
+			return CopyToTemp(path);
+		}
 
 		protected string TestSuiteLabel
 		{
@@ -174,11 +182,12 @@ namespace Db4oAdmin.Tests.Core
 		protected string EmitAssemblyFromResource(string resource, Assembly[] references)
 		{
 			CopyDependenciesToTemp();
-			string path = Path.Combine(Path.GetTempPath(), resource + ".dll");
-			CompilationServices.EmitAssembly(path,
-											 references,
-			                                 GetResourceAsString(GetType().Namespace + ".Resources." + resource + ".cs"));
-			return path;
+			string assemblyFileName = Path.Combine(Path.Combine(Path.GetTempPath(), "build"), resource + ".dll");
+			string resourceName = GetType().Namespace + ".Resources." + resource + ".cs";
+			string sourceFileName = Path.Combine(Path.GetTempPath(), resourceName);
+			File.WriteAllText(sourceFileName, GetResourceAsString(resourceName));
+			CompilationServices.EmitAssembly(assemblyFileName, references, sourceFileName);
+			return assemblyFileName;
 		}
 
 		virtual protected void CopyDependenciesToTemp()
@@ -209,7 +218,12 @@ namespace Db4oAdmin.Tests.Core
 
 		private static void CopyAssemblyToTemp(Assembly assembly)
 		{
-			ShellUtilities.CopyFileToFolder(assembly.ManifestModule.FullyQualifiedName, Path.GetTempPath());
+			CopyToTemp(assembly.ManifestModule.FullyQualifiedName);
+		}
+
+		private static string CopyToTemp(string fname)
+		{
+			return ShellUtilities.CopyFileToFolder(fname, Path.GetTempPath());
 		}
 	}
 }

@@ -12,11 +12,11 @@ namespace Db4oAdmin.Tests.Core
 	/// </summary>
 	public class CompilationServices
 	{
-		public static void EmitAssembly(string assemblyFileName, Assembly[] references, params string[] code)
+		public static void EmitAssembly(string assemblyFileName, Assembly[] references, params string[] sourceFiles)
 		{
 			string basePath = Path.GetDirectoryName(assemblyFileName);
 			CreateDirectoryIfNeeded(basePath);
-			CompileFromSource(assemblyFileName, references, code);
+			CompileFromFile(assemblyFileName, references, sourceFiles);
 		}
 
 		public static void CreateDirectoryIfNeeded(string directory)
@@ -42,7 +42,7 @@ namespace Db4oAdmin.Tests.Core
 			return GetCSharpCompilerInfo().CreateDefaultCompilerParameters();
 		}
 
-		public static void CompileFromSource(string assemblyFName, Assembly[] references, params string[] sources)
+		public static void CompileFromFile(string assemblyFName, Assembly[] references, params string[] sourceFiles)
 		{
 			using (CodeDomProvider provider = GetCSharpCodeDomProvider())
 			{
@@ -54,7 +54,7 @@ namespace Db4oAdmin.Tests.Core
 				{
 					parameters.ReferencedAssemblies.Add(reference.ManifestModule.FullyQualifiedName);
 				}
-				CompilerResults results = provider.CompileAssemblyFromSource(parameters, sources);
+				CompilerResults results = provider.CompileAssemblyFromFile(parameters, sourceFiles);
 				if (results.Errors.Count > 0)
 				{
 					throw new ApplicationException(GetErrorString(results.Errors));
