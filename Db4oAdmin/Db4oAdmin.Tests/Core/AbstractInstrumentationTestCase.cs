@@ -116,8 +116,10 @@ namespace Db4oAdmin.Tests.Core
                 string assemblyPath = EmitAssemblyFromResource(resource, references);
                 Assert.IsTrue(File.Exists(assemblyPath));
 
-            	string instrumentedAssembly = CopyAssemblyAndPdbToTemp(assemblyPath);
+//            	string instrumentedAssembly = CopyAssemblyAndPdbToTemp(assemblyPath);
+            	string instrumentedAssembly = assemblyPath;
 				InstrumentAssembly(instrumentedAssembly);
+				
 
                 Type type = GetTestCaseType(instrumentedAssembly, resource);
                 TestSuite suite = type.IsSubclassOf(typeof(InstrumentedTestCase))
@@ -182,7 +184,8 @@ namespace Db4oAdmin.Tests.Core
 		protected string EmitAssemblyFromResource(string resource, Assembly[] references)
 		{
 			CopyDependenciesToTemp();
-			string assemblyFileName = Path.Combine(Path.Combine(Path.GetTempPath(), "build"), resource + ".dll");
+			//string assemblyFileName = Path.Combine(Path.Combine(Path.GetTempPath(), "build"), resource + ".dll");
+			string assemblyFileName = Path.Combine(Path.GetTempPath(), resource + ".dll");
 			string resourceName = GetType().Namespace + ".Resources." + resource + ".cs";
 			string sourceFileName = Path.Combine(Path.GetTempPath(), resourceName);
 			File.WriteAllText(sourceFileName, GetResourceAsString(resourceName));

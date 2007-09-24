@@ -3,18 +3,15 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Handlers;
+using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	public abstract class HandlerUpdateTestCaseBase : FormatMigrationTestCaseBase
 	{
-		protected override string[] VersionNames()
-		{
-			return new string[] { "db4o_6.4.000" };
-		}
-
 		public class Holder
 		{
 			public object[] _values;
@@ -22,9 +19,16 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public object _arrays;
 		}
 
+		protected int _handlerVersion;
+
 		protected override string FileNamePrefix()
 		{
 			return "migrate_" + TypeName() + "_";
+		}
+
+		protected override string[] VersionNames()
+		{
+			return new string[] { Db4oFactory.Version() };
 		}
 
 		protected override void Configure(IConfiguration config)
@@ -47,8 +51,15 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			IObjectSet objectSet = q.Execute();
 			HandlerUpdateTestCaseBase.Holder holder = (HandlerUpdateTestCaseBase.Holder)objectSet
 				.Next();
+			InvestigateHandlerVersion(objectContainer, holder);
 			AssertValues(holder._values);
 			AssertArrays(holder._arrays);
+		}
+
+		private void InvestigateHandlerVersion(IExtObjectContainer objectContainer, object
+			 obj)
+		{
+			_handlerVersion = VersionServices.SlotHandlerVersion(objectContainer, obj);
 		}
 
 		protected abstract string TypeName();
@@ -60,5 +71,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		protected abstract void AssertValues(object[] values);
 
 		protected abstract void AssertArrays(object obj);
+
+		protected virtual int[] CastToIntArray(object obj)
+		{
+			ObjectByRef byRef = new ObjectByRef(obj);
+			return (int[])byRef.value;
+		}
 	}
 }

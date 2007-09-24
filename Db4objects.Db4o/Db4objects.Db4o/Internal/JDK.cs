@@ -48,8 +48,8 @@ namespace Db4objects.Db4o.Internal
 		/// <param name="queue"></param>
 		/// <param name="@ref"></param>
 		/// <param name="obj"></param>
-		internal virtual object CreateYapRef(object queue, ObjectReference @ref, object obj
-			)
+		internal virtual object CreateActivateObjectReference(object queue, ObjectReference
+			 @ref, object obj)
 		{
 			return null;
 		}

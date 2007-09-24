@@ -18,10 +18,10 @@ namespace Db4objects.Db4o.Internal
 	{
 		private const int LINK_LENGTH = Const4.LONG_LENGTH + Const4.ID_LENGTH;
 
-		internal UUIDFieldMetadata(ObjectContainerBase stream) : base()
+		internal UUIDFieldMetadata(ObjectContainerBase container) : base(Handlers4.LONG_ID
+			, new LongHandler(container))
 		{
 			SetName(Const4.VIRTUAL_FIELD_PREFIX + "uuid");
-			i_handler = new LongHandler(stream);
 		}
 
 		public override void AddFieldIndex(MarshallerFamily mf, ClassMetadata yapClass, StatefulBuffer
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		private UUIDFieldMetadata.DatabaseIdentityIDAndUUID ReadDatabaseIdentityIDAndUUID
-			(ObjectContainerBase stream, ClassMetadata yapClass, Slot oldSlot, bool checkClass
+			(ObjectContainerBase stream, ClassMetadata classMetadata, Slot oldSlot, bool checkClass
 			)
 		{
 			Db4objects.Db4o.Internal.Buffer reader = stream.BufferByAddress(oldSlot.Address()
@@ -78,12 +78,12 @@ namespace Db4objects.Db4o.Internal
 			if (checkClass)
 			{
 				ClassMetadata realClass = ClassMetadata.ReadClass(stream, reader);
-				if (realClass != yapClass)
+				if (realClass != classMetadata)
 				{
 					return null;
 				}
 			}
-			if (null == yapClass.FindOffset(reader, this))
+			if (classMetadata.FindOffset(reader, this) == HandlerVersion.INVALID)
 			{
 				return null;
 			}
@@ -182,7 +182,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public override int LinkLength()
+		protected override int LinkLength()
 		{
 			return LINK_LENGTH;
 		}

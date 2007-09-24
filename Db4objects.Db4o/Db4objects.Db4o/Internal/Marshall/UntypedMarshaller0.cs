@@ -3,7 +3,6 @@
 using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -35,12 +34,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public override object Read(StatefulBuffer reader)
-		{
-			throw Exceptions4.ShouldNeverBeCalled();
-		}
-
-		public override object ReadQuery(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 reader, bool toArray)
 		{
 			throw Exceptions4.ShouldNeverBeCalled();
 		}
@@ -77,12 +70,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 					}
 				}
 			}
-			return null;
-		}
-
-		public override QCandidate ReadSubCandidate(Db4objects.Db4o.Internal.Buffer reader
-			, QCandidates candidates, bool withIndirection)
-		{
 			return null;
 		}
 

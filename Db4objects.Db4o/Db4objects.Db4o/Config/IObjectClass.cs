@@ -3,7 +3,6 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Config
 {
@@ -42,6 +41,8 @@ namespace Db4objects.Db4o.Config
 		/// This setting may also be set globally for all classes in
 		/// <see cref="IConfiguration.CallConstructors">IConfiguration.CallConstructors</see>
 		/// .<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="flag">
 		/// - specify true, to request calling constructors, specify
@@ -58,6 +59,8 @@ namespace Db4objects.Db4o.Config
 		/// of all member objects if an instance of this class is activated.
 		/// <br /><br />
 		/// The default setting is <b>false</b>.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether activation is to be cascaded to member objects.</param>
 		/// <seealso cref="IObjectField.CascadeOnActivate">IObjectField.CascadeOnActivate</seealso>
@@ -95,6 +98,8 @@ namespace Db4objects.Db4o.Config
 		/// to bar1.
 		/// <br /><br />
 		/// The default setting is <b>false</b>.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether deletes are to be cascaded to member objects.</param>
 		/// <seealso cref="IObjectField.CascadeOnDelete">IObjectField.CascadeOnDelete</seealso>
@@ -112,6 +117,8 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
 		/// .<br /><br />
 		/// The default setting is <b>false</b>.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether updates are to be cascaded to member objects.</param>
 		/// <seealso cref="IObjectField.CascadeOnUpdate">IObjectField.CascadeOnUpdate</seealso>
@@ -125,6 +132,8 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />The query processor will compare the object returned by the
 		/// attribute provider instead of the actual object, both for the constraint
 		/// and the candidate persistent object.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="attributeProvider">the attribute provider to be used</param>
 		void Compare(IObjectAttribute attributeProvider);
@@ -143,12 +152,18 @@ namespace Db4objects.Db4o.Config
 		void EnableReplication(bool setting);
 
 		/// <summary>generate UUIDs for stored objects of this class.</summary>
-		/// <remarks>generate UUIDs for stored objects of this class.</remarks>
+		/// <remarks>
+		/// generate UUIDs for stored objects of this class.
+		/// This setting should be used before the database is first created.<br /><br />
+		/// </remarks>
 		/// <param name="setting"></param>
 		void GenerateUUIDs(bool setting);
 
 		/// <summary>generate version numbers for stored objects of this class.</summary>
-		/// <remarks>generate version numbers for stored objects of this class.</remarks>
+		/// <remarks>
+		/// generate version numbers for stored objects of this class.
+		/// This setting should be used before the database is first created.<br /><br />
+		/// </remarks>
 		/// <param name="setting"></param>
 		void GenerateVersionNumbers(bool setting);
 
@@ -164,43 +179,11 @@ namespace Db4objects.Db4o.Config
 		/// - The application always works with subclasses or superclasses.<br />
 		/// - There are convenient field indexes that will always find instances
 		/// of a class.<br />
-		/// - The application always works with IDs.
+		/// - The application always works with IDs.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		void Indexed(bool flag);
-
-		/// <summary>registers a custom marshaller for this class.</summary>
-		/// <remarks>
-		/// registers a custom marshaller for this class.
-		/// <br /><br />
-		/// Custom marshallers can be used for tuning the performance to store
-		/// and read objects. Instead of letting db4o do all the marshalling
-		/// by detecting the fields on a class and by using reflection, a
-		/// custom
-		/// <see cref="IObjectMarshaller">IObjectMarshaller</see>
-		/// allows the
-		/// application developer to write the logic how the fields of an
-		/// object are converted to a byte[] and back.
-		/// <br /><br />Downside:<br />
-		/// - Indexes and querying can not be used.
-		/// <br /><br />Upsides:<br />
-		/// - Not all fields need to be stored.<br />
-		/// - Reflection does not need to be called.<br />
-		/// <br /><br />As an alternative to using a custom marshallers you may
-		/// want to consider writing an
-		/// <see cref="IObjectTranslator">IObjectTranslator</see>
-		/// or your own
-		/// <see cref="IReflector">IReflector</see>
-		/// .
-		/// <br /><br />The use of an
-		/// <see cref="IObjectMarshaller">IObjectMarshaller</see>
-		/// is not
-		/// compatible with the use of an
-		/// <see cref="IObjectTranslator">IObjectTranslator</see>
-		/// .<br /><br />
-		/// </remarks>
-		/// <param name="marshaller">to be used for this class</param>
-		/// <seealso cref="IObjectMarshaller">IObjectMarshaller</seealso>
-		void MarshallWith(IObjectMarshaller marshaller);
 
 		/// <summary>sets the maximum activation depth to the desired value.</summary>
 		/// <remarks>
@@ -208,6 +191,8 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />A class specific setting overrides the
 		/// <see cref="IConfiguration.ActivationDepth">global setting</see>
 		/// <br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="depth">the desired maximum activation depth</param>
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
@@ -220,6 +205,8 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />A class specific setting overrides the
 		/// <see cref="IConfiguration.ActivationDepth">global setting</see>
 		/// <br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="depth">the desired minimum activation depth</param>
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
@@ -227,7 +214,11 @@ namespace Db4objects.Db4o.Config
 		void MinimumActivationDepth(int depth);
 
 		/// <summary>gets the configured minimum activation depth.</summary>
-		/// <remarks>gets the configured minimum activation depth.</remarks>
+		/// <remarks>
+		/// gets the configured minimum activation depth.
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
+		/// </remarks>
 		/// <returns>the configured minimum activation depth.</returns>
 		int MinimumActivationDepth();
 
@@ -269,6 +260,8 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />Use this setting for constant static object members.
 		/// <br /><br />This option will slow down the process of opening database
 		/// files and the stored objects will occupy space in the database file.
+		/// <br /><br />In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		void PersistStaticFieldValues();
 
@@ -293,7 +286,8 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// renames a stored class.
 		/// <br /><br />Use this method to refactor classes.
-		/// <br /><br />
+		/// <br /><br />In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="newName">the new fully qualified classname.</param>
 		void Rename(string newName);
@@ -302,6 +296,8 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// allows to specify if transient fields are to be stored.
 		/// <br />The default for every class is <code>false</code>.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether or not transient fields are to be stored.</param>
 		void StoreTransientFields(bool flag);
@@ -314,8 +310,10 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="IObjectTranslator">IObjectTranslator</see>
 		/// is not
 		/// compatible with the use of an
-		/// <see cref="IObjectMarshaller">IObjectMarshaller</see>
+		/// <see cref="ObjectMarshaller">ObjectMarshaller</see>
 		/// .<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="translator">
 		/// this may be an
@@ -336,6 +334,8 @@ namespace Db4objects.Db4o.Config
 		/// The default setting is 0: Only the object passed to
 		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
 		/// will be updated.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="depth">the depth of the desired update for this class.</param>
 		/// <seealso cref="IConfiguration.UpdateDepth">IConfiguration.UpdateDepth</seealso>

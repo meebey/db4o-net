@@ -9,12 +9,38 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class Handlers4
 	{
+		public const int INT_ID = 1;
+
+		public const int LONG_ID = 2;
+
+		public const int FLOAT_ID = 3;
+
+		public const int BOOLEAN_ID = 4;
+
+		public const int DOUBLE_ID = 5;
+
+		public const int BYTE_ID = 6;
+
+		public const int CHAR_ID = 7;
+
+		public const int SHORT_ID = 8;
+
+		public const int STRING_ID = 9;
+
+		public const int DATE_ID = 10;
+
+		public const int UNTYPED_ID = 11;
+
+		public const int ANY_ARRAY_ID = 12;
+
+		public const int ANY_ARRAY_N_ID = 13;
+
 		public static bool HandlerCanHold(ITypeHandler4 handler, IReflectClass claxx)
 		{
 			ITypeHandler4 baseTypeHandler = BaseTypeHandler(handler);
-			if (Handlers4.HandlesSimple(baseTypeHandler))
+			if (HandlesSimple(baseTypeHandler))
 			{
-				return claxx.Equals(baseTypeHandler.ClassReflector());
+				return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector());
 			}
 			if (baseTypeHandler is UntypedFieldHandler)
 			{
@@ -59,9 +85,18 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (handler is PrimitiveFieldHandler)
 			{
-				return ((PrimitiveFieldHandler)handler).i_handler;
+				return ((PrimitiveFieldHandler)handler).TypeHandler();
 			}
 			return handler;
+		}
+
+		public static IReflectClass BaseType(IReflectClass clazz)
+		{
+			if (clazz.IsArray())
+			{
+				return BaseType(clazz.GetComponentType());
+			}
+			return clazz;
 		}
 	}
 }

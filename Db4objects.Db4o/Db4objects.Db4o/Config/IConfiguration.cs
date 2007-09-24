@@ -220,6 +220,8 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="IObjectContainer.Deactivate">ObjectContainer#deactivate(Object, depth)
 		/// 	</see>
 		/// can be used to manually free memory by deactivating objects.<br /><br />
+		/// In client/server environment the same setting should be used on both
+		/// client and server<br /><br />.
 		/// </remarks>
 		/// <param name="depth">the desired global activation depth.</param>
 		/// <seealso cref="IObjectClass.MaximumActivationDepth">configuring classes individually
@@ -290,7 +292,8 @@ namespace Db4objects.Db4o.Config
 		/// (or on the server) are not permitted and will throw an exception
 		/// when the database file is opened.
 		/// <br /><br />Aliases should be configured before opening a database file
-		/// or connecting to a server.
+		/// or connecting to a server.<br /><br />
+		/// In client/server environment this setting should be used on the server side.
 		/// </remarks>
 		void AddAlias(IAlias alias);
 
@@ -317,7 +320,9 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />Call this method to turn automatic database file
 		/// version updating on.
 		/// <br /><br />If automatic updating is turned off, db4o will refuse
-		/// to open database files that use an older database file format.
+		/// to open database files that use an older database file format.<br /><br />
+		/// In client-server environment this setting should be used on both client
+		/// and server.
 		/// </remarks>
 		void AllowVersionUpdates(bool flag);
 
@@ -333,6 +338,8 @@ namespace Db4objects.Db4o.Config
 		/// Some JVMs have severe problems with both methods. For these rare cases the
 		/// autoShutDown feature may be turned off.<br /><br />
 		/// The default and recommended setting is <code>true</code>.<br /><br />
+		/// In client-server environment this setting should be used on both client
+		/// and server.
 		/// </remarks>
 		/// <param name="flag">whether db4o should shut down automatically.</param>
 		void AutomaticShutDown(bool flag);
@@ -346,7 +353,10 @@ namespace Db4objects.Db4o.Config
 		/// be lost to padding because the size of some stored objects
 		/// will not be an exact multiple of the block size. A
 		/// recommended setting for large database files is 8, since
-		/// internal pointers have this length.
+		/// internal pointers have this length.<br /><br />
+		/// This setting is only effective when the database is first created, in
+		/// client-server environment in most cases it means that the setting
+		/// should be used on the server side.
 		/// </remarks>
 		/// <param name="bytes">the size in bytes from 1 to 127</param>
 		void BlockSize(int bytes);
@@ -359,7 +369,9 @@ namespace Db4objects.Db4o.Config
 		/// and more efficient reading and writing of small slots.
 		/// <br />Higher values will reduce the overall number of
 		/// read and write operations and allow better performance
-		/// at the cost of more RAM use.
+		/// at the cost of more RAM use.<br /><br />
+		/// This setting should be used on both client and server in
+		/// client-server environment.
 		/// </remarks>
 		/// <param name="size">the number of elements held in one BTree node.</param>
 		void BTreeNodeSize(int size);
@@ -373,7 +385,9 @@ namespace Db4objects.Db4o.Config
 		/// <br />Possible settings: 1, 2 or 3
 		/// <br /><br /> The potential number of cached BTree nodes can be
 		/// calculated with the following forumula:<br />
-		/// maxCachedNodes = bTreeNodeSize ^ bTreeCacheHeight
+		/// maxCachedNodes = bTreeNodeSize ^ bTreeCacheHeight<br /><br />
+		/// This setting should be used on both client and server in
+		/// client-server environment.
 		/// </remarks>
 		/// <param name="height">the height of the cache from the root</param>
 		void BTreeCacheHeight(int height);
@@ -385,6 +399,8 @@ namespace Db4objects.Db4o.Config
 		/// A tuning hint: If callbacks are not used, you can turn this feature off, to
 		/// prevent db4o from looking for callback methods in persistent classes. This will
 		/// increase the performance on system startup.<br /><br />
+		/// In client/server environment this setting should be used on both
+		/// client and server.
 		/// </remarks>
 		/// <param name="flag">false to turn callback methods off</param>
 		/// <seealso cref="IObjectCallbacks">Using callbacks</seealso>
@@ -408,7 +424,9 @@ namespace Db4objects.Db4o.Config
 		/// This setting may also be overridden for individual classes in
 		/// <see cref="IObjectClass.CallConstructor">IObjectClass.CallConstructor</see>
 		/// .
-		/// <br /><br />The default setting depends on the features supported by your current environment.
+		/// <br /><br />The default setting depends on the features supported by your current environment.<br /><br />
+		/// In client/server environment this setting should be used on both
+		/// client and server.
 		/// <br /><br />
 		/// </remarks>
 		/// <param name="flag">
@@ -425,6 +443,8 @@ namespace Db4objects.Db4o.Config
 		/// on
 		/// and off.
 		/// <br /><br />This feature is turned on by default.<br /><br />
+		/// In client/server environment this setting should be used on both
+		/// client and server.<br /><br />
 		/// </summary>
 		/// <param name="flag">
 		/// false to turn the possibility to individually configure class
@@ -442,7 +462,9 @@ namespace Db4objects.Db4o.Config
 		/// startup, for added or removed fields.
 		/// <br /><br />In a production environment this setting can be set to <code>false</code>,
 		/// if all necessary classes have been stored to the database file and none of them
-		/// have been modified since the last use.
+		/// have been modified since the last use.<br /><br />
+		/// In client/server environment this setting should be used on both
+		/// client and server.
 		/// <br /><br />Default value:<br />
 		/// <code>true</code>
 		/// </remarks>
@@ -530,6 +552,8 @@ namespace Db4objects.Db4o.Config
 		/// if an object can not be stored.
 		/// <br /><br />
 		/// The default for this setting is <b>false</b>.<br /><br />
+		/// In client/server environment this setting should be used on both
+		/// client and server.<br /><br />
 		/// </remarks>
 		/// <param name="flag">true to throw Exceptions if objects can not be stored.</param>
 		void ExceptionsOnNotStorable(bool flag);
@@ -562,7 +586,9 @@ namespace Db4objects.Db4o.Config
 		/// buffers after every single one of the above steps during transaction
 		/// commit. Flush calls have a strong impact on performance. It is possible to
 		/// tune an application by turning flushing off, at the risc of less security
-		/// for hardware-, power- or operating system failures.
+		/// for hardware-, power- or operating system failures.<br /><br />
+		/// In client/server environment this setting should be used on both
+		/// client and server.<br /><br />
 		/// </remarks>
 		/// <param name="flag">true for flushing file buffers</param>
 		void FlushFileBuffers(bool flag);
@@ -577,13 +603,17 @@ namespace Db4objects.Db4o.Config
 		/// one of the following values:<br />
 		/// -1 - off<br />
 		/// 1 - configure classes individually<br />
-		/// Integer.MAX_Value - on for all classes
+		/// Integer.MAX_Value - on for all classes<br /><br />
+		/// This setting should be used when the database is first created.
 		/// </param>
 		[System.ObsoleteAttribute(@"Use")]
 		void GenerateUUIDs(int setting);
 
 		/// <summary>configures db4o to generate UUIDs for stored objects.</summary>
-		/// <remarks>configures db4o to generate UUIDs for stored objects.</remarks>
+		/// <remarks>
+		/// configures db4o to generate UUIDs for stored objects.
+		/// This setting should be used when the database is first created.<br /><br />
+		/// </remarks>
 		/// <param name="setting">the scope for UUID generation: disabled, generate for all classes, or configure individually
 		/// 	</param>
 		void GenerateUUIDs(ConfigScope setting);
@@ -594,19 +624,27 @@ namespace Db4objects.Db4o.Config
 		/// one of the following values:<br />
 		/// -1 - off<br />
 		/// 1 - configure classes individually<br />
-		/// Integer.MAX_Value - on for all classes
+		/// Integer.MAX_Value - on for all classes<br /><br />
+		/// This setting should be used when the database is first created.
 		/// </param>
 		[System.ObsoleteAttribute(@"Use")]
 		void GenerateVersionNumbers(int setting);
 
 		/// <summary>configures db4o to generate version numbers for stored objects.</summary>
-		/// <remarks>configures db4o to generate version numbers for stored objects.</remarks>
+		/// <remarks>
+		/// configures db4o to generate version numbers for stored objects.
+		/// This setting should be used when the database is first created.
+		/// </remarks>
 		/// <param name="setting">the scope for version number generation: disabled, generate for all classes, or configure individually
 		/// 	</param>
 		void GenerateVersionNumbers(ConfigScope setting);
 
 		/// <summary>configures db4o to call #intern() on strings upon retrieval.</summary>
-		/// <remarks>configures db4o to call #intern() on strings upon retrieval.</remarks>
+		/// <remarks>
+		/// configures db4o to call #intern() on strings upon retrieval.
+		/// In client/server environment the setting should be used on both
+		/// client and server.
+		/// </remarks>
 		/// <param name="flag">true to intern strings</param>
 		void InternStrings(bool flag);
 
@@ -624,7 +662,9 @@ namespace Db4objects.Db4o.Config
 		/// with a native library, mirrored write to two files, encryption or
 		/// read-on-write fail-safety control.<br /><br />An example of a custom
 		/// io adapter can be found in xtea_db4o community project:<br />
-		/// http://developer.db4o.com/ProjectSpaces/view.aspx/XTEA
+		/// http://developer.db4o.com/ProjectSpaces/view.aspx/XTEA<br /><br />
+		/// In client-server environment this setting should be used on the server
+		/// (adapter class must be available)<br /><br />
 		/// </remarks>
 		/// <param name="adapter">- the IoAdapter</param>
 		void Io(IoAdapter adapter);
@@ -636,6 +676,8 @@ namespace Db4objects.Db4o.Config
 		/// wish to use to mark fields as transient. Multiple transient attributes
 		/// are possible by calling this method multiple times with different
 		/// attribute names.<br /><br />
+		/// In client/server environment the setting should be used on both
+		/// client and server.<br /><br />
 		/// </remarks>
 		/// <param name="attributeName">
 		/// - the fully qualified name of the attribute, including
@@ -655,6 +697,9 @@ namespace Db4objects.Db4o.Config
 		/// Level 2 - messages for new, update and delete<br />
 		/// Level 3 - messages for activate and deactivate<br /><br />
 		/// When using client-server and the level is set to 0, the server will override this and set it to 1.  To get around this you can set the level to -1.  This has the effect of not returning any messages.<br /><br />
+		/// In client-server environment this setting can be used on client or on server
+		/// depending on which information do you want to track (server side provides more
+		/// detailed information).<br /><br />
 		/// </remarks>
 		/// <param name="level">integer from 0 to 3</param>
 		/// <seealso cref="IConfiguration.SetOut">IConfiguration.SetOut</seealso>
@@ -676,6 +721,7 @@ namespace Db4objects.Db4o.Config
 		/// has no effect on open ObjectContainers. It will only affect how
 		/// ObjectContainers are opened.<br /><br />
 		/// The default setting is <code>true</code>.<br /><br />
+		/// In client-server environment this setting should be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="flag"><code>false</code> to turn database file locking off.</param>
 		void LockDatabaseFile(bool flag);
@@ -712,7 +758,8 @@ namespace Db4objects.Db4o.Config
 		/// optimization (db4o-X.x-nqopt.jar, bloat-X.x.jar) have to be
 		/// on the classpath at runtime for this
 		/// switch to have effect.
-		/// <br /><br />The default setting is <code>true</code>.
+		/// <br /><br />The default setting is <code>true</code>.<br /><br />
+		/// In client-server environment this setting should be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="optimizeNQ">
 		/// true, if db4o should try to optimize
@@ -758,7 +805,9 @@ namespace Db4objects.Db4o.Config
 		/// will open files.
 		/// <br /><br />Readonly mode allows to open an unlimited number of reading
 		/// processes on one database file. It is also convenient
-		/// for deploying db4o database files on CD-ROM.<br />
+		/// for deploying db4o database files on CD-ROM.<br /><br />
+		/// In client-server environment this setting should be used on the server side
+		/// in embedded mode and ONLY on client side in networked mode.<br /><br />
 		/// </remarks>
 		/// <param name="flag">
 		/// <code>true</code> for configuring readOnly mode for subsequent
@@ -776,7 +825,9 @@ namespace Db4objects.Db4o.Config
 		/// do not support this package, customized implementations may be written
 		/// to supply all the functionality of the interfaces in the com.db4o.reflect
 		/// package. This method can be used to install a custom reflection
-		/// implementation.
+		/// implementation.<br /><br />
+		/// In client-server environment this setting should be used on the server side
+		/// (reflector class must be available)<br /><br />
 		/// </remarks>
 		void ReflectWith(IReflector reflector);
 
@@ -813,7 +864,9 @@ namespace Db4objects.Db4o.Config
 		/// method should be called before the Defragment run to configure the
 		/// allocation of storage space to be slightly greater than the anticipated
 		/// database file size.
-		/// <br /><br /> Default configuration: 0<br /><br />
+		/// <br /><br />
+		/// In client-server environment this setting should be used on the server side. <br /><br />
+		/// Default configuration: 0<br /><br />
 		/// </remarks>
 		/// <param name="byteCount">the number of bytes to reserve</param>
 		void ReserveStorageSpace(long byteCount);
@@ -826,6 +879,8 @@ namespace Db4objects.Db4o.Config
 		/// configures the path to be used to store and read
 		/// Blob data.
 		/// <br /><br />
+		/// In client-server environment this setting should be used on the
+		/// server side. <br /><br />
 		/// </remarks>
 		/// <param name="path">the path to be used</param>
 		void SetBlobPath(string path);
@@ -850,6 +905,10 @@ namespace Db4objects.Db4o.Config
 		/// to produce more detailed messages.
 		/// <br /><br />Use <code>setOut(System.out)</code> to print messages to the
 		/// console.<br /><br />
+		/// In client-server environment this setting should be used on the same side
+		/// where
+		/// <see cref="IConfiguration.MessageLevel">IConfiguration.MessageLevel</see>
+		/// is used.<br /><br />
 		/// </summary>
 		/// <param name="outStream">the new <code>PrintStream</code> for messages.</param>
 		/// <seealso cref="IConfiguration.MessageLevel">IConfiguration.MessageLevel</seealso>
@@ -864,7 +923,10 @@ namespace Db4objects.Db4o.Config
 		/// of each persistent class on system startup.
 		/// <br /><br />In a production environment this setting can be set to <code>false</code>,
 		/// if all persistent classes have public default constructors.
-		/// <br /><br />Default value:<br />
+		/// <br /><br />
+		/// In client-server environment this setting should be used on both client and server
+		/// side. <br /><br />
+		/// Default value:<br />
 		/// <code>true</code>
 		/// </remarks>
 		/// <param name="flag">the desired setting</param>
@@ -876,6 +938,8 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />This method needs to be called <b>before</b> a database file
 		/// is created with the first
 		/// <see cref="Db4oFactory.OpenFile">Db4oFactory.OpenFile</see>
+		/// or
+		/// <see cref="Db4oFactory.OpenServer">Db4oFactory.OpenServer</see>
 		/// .
 		/// db4o database files keep their string format after creation.<br /><br />
 		/// Turning Unicode support off reduces the file storage space for strings
@@ -898,6 +962,8 @@ namespace Db4objects.Db4o.Config
 		/// The default setting is 1: Only the object passed to
 		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
 		/// will be updated.<br /><br />
+		/// In client-server environment this setting should be used on both client and
+		/// server sides.<br /><br />
 		/// </remarks>
 		/// <param name="depth">the depth of the desired update.</param>
 		/// <seealso cref="IObjectClass.UpdateDepth">IObjectClass.UpdateDepth</seealso>

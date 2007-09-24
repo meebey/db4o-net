@@ -49,6 +49,7 @@ namespace Db4oUnit
 				Assert.AreSame(expected, actual);
 			}
 			Assert.AreEqual(expected.Length, actual.Length);
+			Assert.AreSame(expected.GetType(), actual.GetType());
 			for (int i = 0; i < expected.Length; i++)
 			{
 				Assert.AreEqual(expected[i], actual[i], IndexMessage(i));

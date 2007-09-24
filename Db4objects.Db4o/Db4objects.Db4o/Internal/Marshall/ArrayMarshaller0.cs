@@ -3,7 +3,6 @@
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Marshall
@@ -35,26 +34,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override object Read(ArrayHandler arrayHandler, StatefulBuffer a_bytes)
 		{
 			StatefulBuffer bytes = a_bytes.ReadEmbeddedObject();
-			return arrayHandler.Read1(_family, bytes);
-		}
-
-		public override void ReadCandidates(ArrayHandler arrayHandler, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates)
-		{
-			Db4objects.Db4o.Internal.Buffer bytes = reader.ReadEmbeddedObject(candidates.i_trans
-				);
-			int count = arrayHandler.ElementCount(candidates.i_trans, bytes);
-			for (int i = 0; i < count; i++)
+			if (bytes == null)
 			{
-				candidates.AddByIdentity(new QCandidate(candidates, null, bytes.ReadInt(), true));
+				return null;
 			}
-		}
-
-		public sealed override object ReadQuery(ArrayHandler arrayHandler, Transaction trans
-			, Db4objects.Db4o.Internal.Buffer reader)
-		{
-			Db4objects.Db4o.Internal.Buffer bytes = reader.ReadEmbeddedObject(trans);
-			return arrayHandler.Read1Query(trans, _family, bytes);
+			return arrayHandler.Read1(_family, bytes);
 		}
 
 		protected override Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans

@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return ret;
 		}
 
-		public virtual string ReadFromOwnSlot(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
+		public string ReadFromOwnSlot(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
 			 reader)
 		{
 			try

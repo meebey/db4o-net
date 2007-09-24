@@ -108,9 +108,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			for (int i = 0; i < data.Length; i++)
 			{
 				IntHandlerUpdateTestCase.Item item = (IntHandlerUpdateTestCase.Item)values[i];
-				Assert.AreEqual(item._typedPrimitive, data[i]);
-				Assert.AreEqual(item._typedWrapper, data[i]);
-				Assert.AreEqual(item._untyped, data[i]);
+				AssertAreEqual(data[i], item._typedPrimitive);
+				AssertAreEqual(data[i], item._typedWrapper);
+				AssertAreEqual(data[i], item._untyped);
 			}
 			IntHandlerUpdateTestCase.Item nullItem = (IntHandlerUpdateTestCase.Item)values[values
 				.Length - 1];
@@ -141,7 +141,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		private void AssertPrimitiveArrayInObject(IntHandlerUpdateTestCase.ItemArrays item
 			)
 		{
-			AssertData((int[])item._primitiveArrayInObject);
+			AssertData(CastToIntArray(item._primitiveArrayInObject));
 		}
 
 		private void AssertWrapperArrayInObject(IntHandlerUpdateTestCase.ItemArrays item)
@@ -153,7 +153,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			for (int i = 0; i < data.Length; i++)
 			{
-				Assert.AreEqual(data[i], values[i]);
+				AssertAreEqual(data[i], values[i]);
 			}
 		}
 
@@ -161,8 +161,26 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			for (int i = 0; i < data.Length; i++)
 			{
-				Assert.AreEqual(data[i], values[i]);
+				AssertAreEqual(data[i], values[i]);
 			}
+		}
+
+		private void AssertAreEqual(int expected, int actual)
+		{
+			if (expected == int.MaxValue && _handlerVersion == 0)
+			{
+				expected = 0;
+			}
+			Assert.AreEqual(expected, actual);
+		}
+
+		private void AssertAreEqual(object expected, object actual)
+		{
+			if (int.MaxValue.Equals(expected) && _handlerVersion == 0)
+			{
+				expected = null;
+			}
+			Assert.AreEqual(expected, actual);
 		}
 	}
 }

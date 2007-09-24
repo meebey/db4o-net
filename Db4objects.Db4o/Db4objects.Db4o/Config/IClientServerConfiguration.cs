@@ -11,13 +11,24 @@ namespace Db4objects.Db4o.Config
 	{
 		/// <summary>
 		/// Sets the number of IDs to be pre-allocated in the database for new
-		/// objects created on the client
+		/// objects created on the client.
 		/// </summary>
+		/// <remarks>
+		/// Sets the number of IDs to be pre-allocated in the database for new
+		/// objects created on the client.
+		/// This setting should be used on the client side. In embedded mode this setting
+		/// has no effect.
+		/// </remarks>
 		/// <param name="prefetchIDCount">The number of IDs to be prefetched</param>
 		void PrefetchIDCount(int prefetchIDCount);
 
-		/// <summary>Sets the number of objects to be prefetched for an ObjectSet in C/S mode
+		/// <summary>Sets the number of objects to be prefetched for an ObjectSet in C/S mode.
 		/// 	</summary>
+		/// <remarks>
+		/// Sets the number of objects to be prefetched for an ObjectSet in C/S mode.
+		/// This setting should be used on the server side. In embedded mode this setting
+		/// has no effect.
+		/// </remarks>
 		/// <param name="prefetchObjectCount">The number of objects to be prefetched</param>
 		void PrefetchObjectCount(int prefetchObjectCount);
 
@@ -25,12 +36,16 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// sets the MessageRecipient to receive Client Server messages. <br />
 		/// <br />
+		/// This setting should be used on the server side.<br /><br />
 		/// </remarks>
 		/// <param name="messageRecipient">the MessageRecipient to be used</param>
 		void SetMessageRecipient(IMessageRecipient messageRecipient);
 
 		/// <summary>returns the MessageSender for this Configuration context.</summary>
-		/// <remarks>returns the MessageSender for this Configuration context.</remarks>
+		/// <remarks>
+		/// returns the MessageSender for this Configuration context.
+		/// This setting should be used on the client side.
+		/// </remarks>
 		/// <returns>MessageSender</returns>
 		IMessageSender GetMessageSender();
 
@@ -44,6 +59,7 @@ namespace Db4objects.Db4o.Config
 		/// <br />
 		/// Default value: 300000ms (5 minutes)<br />
 		/// <br />
+		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="milliseconds">time in milliseconds</param>
 		void TimeoutClientSocket(int milliseconds);
@@ -58,6 +74,7 @@ namespace Db4objects.Db4o.Config
 		/// <br />
 		/// Default value: 5000ms (5 seconds)<br />
 		/// <br />
+		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="milliseconds">time in milliseconds</param>
 		void TimeoutServerSocket(int milliseconds);
@@ -79,6 +96,7 @@ namespace Db4objects.Db4o.Config
 		/// <br />
 		/// Default value: 180000ms (3 minutes)<br />
 		/// <br />
+		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="milliseconds">time in milliseconds</param>
 		/// <seealso cref="IClientServerConfiguration.SingleThreadedClient">IClientServerConfiguration.SingleThreadedClient
@@ -93,12 +111,13 @@ namespace Db4objects.Db4o.Config
 		/// configures the client messaging system to be single threaded
 		/// or multithreaded.
 		/// <br /><br />Recommended settings:<br />
-		/// - <code>true</code> for low ressource systems.<br />
+		/// - <code>true</code> for low resource systems.<br />
 		/// - <code>false</code> for best asynchronous performance and fast
 		/// GUI response.
 		/// <br /><br />Default value:<br />
 		/// - .NET Compactframework: <code>true</code><br />
-		/// - all other plaforms: <code>false</code><br /><br />
+		/// - all other platforms: <code>false</code><br /><br />
+		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="flag">the desired setting</param>
 		void SingleThreadedClient(bool flag);
@@ -106,7 +125,8 @@ namespace Db4objects.Db4o.Config
 		/// <summary>Configures to batch messages between client and server.</summary>
 		/// <remarks>
 		/// Configures to batch messages between client and server. By default, batch
-		/// mode is enabled.
+		/// mode is enabled.<br /><br />
+		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="flag">false, to turn message batching off.</param>
 		void BatchMessages(bool flag);
@@ -115,7 +135,8 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// Configures the maximum memory buffer size for batched message. If the
 		/// size of batched messages is greater than <code>maxSize</code>, batched
-		/// messages will be sent to server.
+		/// messages will be sent to server.<br /><br />
+		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="maxSize"></param>
 		void MaxBatchQueueSize(int maxSize);

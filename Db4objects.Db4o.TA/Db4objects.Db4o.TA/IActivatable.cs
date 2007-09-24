@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.TA
 	/// this is not enforced by any interface, it is rather a convention, and
 	/// other implementations are possible.)
 	/// public class Item implements Activatable {
-	/// protected void activate() {
+	/// public void activate() {
 	/// if (_activator == null) return;
 	/// _activator.activate();
 	/// }
@@ -73,5 +73,7 @@ namespace Db4objects.Db4o.TA
 	public interface IActivatable
 	{
 		void Bind(IActivator activator);
+
+		void Activate();
 	}
 }

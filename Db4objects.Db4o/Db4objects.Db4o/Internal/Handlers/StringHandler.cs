@@ -5,7 +5,6 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -13,19 +12,15 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public abstract class StringHandler : BuiltinTypeHandler, IIndexableTypeHandler
+	public abstract class StringHandler : VariableLengthTypeHandler, IIndexableTypeHandler
+		, IBuiltinTypeHandler
 	{
-		private LatinStringIO _stringIO;
-
-		public StringHandler(ObjectContainerBase container, LatinStringIO stringIO) : base
-			(container)
+		public StringHandler(ObjectContainerBase container) : base(container)
 		{
-			_stringIO = stringIO;
 		}
 
 		protected StringHandler(ITypeHandler4 template) : this(((Db4objects.Db4o.Internal.Handlers.StringHandler
-			)template).Container(), ((Db4objects.Db4o.Internal.Handlers.StringHandler)template
-			).StringIO())
+			)template).Container())
 		{
 		}
 
@@ -34,7 +29,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		public override IReflectClass ClassReflector()
+		public virtual IReflectClass ClassReflector()
 		{
 			return Container()._handlers.ICLASS_STRING;
 		}
@@ -46,11 +41,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				buffer.GetTransaction().SlotFreeOnCommit(slot.Address(), slot);
 			}
-		}
-
-		public override int GetID()
-		{
-			return 9;
 		}
 
 		internal virtual byte GetIdentifier()
@@ -80,31 +70,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			return mf._string.ReadFromParentSlot(a_bytes.GetStream(), a_bytes, redirect);
-		}
-
-		public override QCandidate ReadSubCandidate(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates, bool withIndirection)
-		{
-			try
-			{
-				object obj = null;
-				if (withIndirection)
-				{
-					obj = ReadQuery(candidates.i_trans, mf, withIndirection, reader, true);
-				}
-				else
-				{
-					obj = mf._string.Read(Container(), reader);
-				}
-				if (obj != null)
-				{
-					return new QCandidate(candidates, obj, 0, true);
-				}
-			}
-			catch (CorruptionException)
-			{
-			}
-			return null;
 		}
 
 		/// <summary>This readIndexEntry method reads from the parent slot.</summary>
@@ -139,27 +104,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return (slot.Address() == 0) && (slot.Length() == 0);
 		}
 
-		public override object ReadQuery(Transaction a_trans, MarshallerFamily mf, bool withRedirection
-			, Db4objects.Db4o.Internal.Buffer a_reader, bool a_toArray)
-		{
-			if (!withRedirection)
-			{
-				return mf._string.Read(a_trans.Container(), a_reader);
-			}
-			Db4objects.Db4o.Internal.Buffer reader = mf._string.ReadSlotFromParentSlot(a_trans
-				.Container(), a_reader);
-			if (a_toArray)
-			{
-				return mf._string.ReadFromOwnSlot(a_trans.Container(), reader);
-			}
-			return reader;
-		}
-
-		public virtual void SetStringIo(LatinStringIO a_io)
-		{
-			_stringIO = a_io;
-		}
-
 		public virtual void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer writer, object
 			 entry)
 		{
@@ -186,16 +130,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 			throw new ArgumentException();
 		}
 
-		public void WriteShort(string a_string, Db4objects.Db4o.Internal.Buffer a_bytes)
+		public void WriteShort(Transaction trans, string str, Db4objects.Db4o.Internal.Buffer
+			 buffer)
 		{
-			if (a_string == null)
+			if (str == null)
 			{
-				a_bytes.WriteInt(0);
+				buffer.WriteInt(0);
 			}
 			else
 			{
-				a_bytes.WriteInt(a_string.Length);
-				_stringIO.Write(a_bytes, a_string);
+				buffer.WriteInt(str.Length);
+				trans.Container().Handlers().StringIO().Write(buffer, str);
 			}
 		}
 
@@ -317,7 +262,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			StringIo(context).Write(context, str);
 		}
 
-		protected virtual LatinStringIO StringIo(IContext context)
+		protected static LatinStringIO StringIo(IContext context)
 		{
 			IInternalObjectContainer objectContainer = (IInternalObjectContainer)context.ObjectContainer
 				();
@@ -325,28 +270,23 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return stringIO;
 		}
 
-		public virtual LatinStringIO StringIO()
-		{
-			return _stringIO;
-		}
-
-		protected virtual string ReadString(IReadContext context, IReadBuffer buffer)
+		public static string ReadString(IContext context, IReadBuffer buffer)
 		{
 			string str = InternalRead(context, buffer);
 			return str;
 		}
 
-		private string InternalRead(IReadContext context, IReadBuffer buffer)
+		private static string InternalRead(IContext context, IReadBuffer buffer)
 		{
 			int length = buffer.ReadInt();
 			if (length > 0)
 			{
-				return Intern(context, StringIO().Read(buffer, length));
+				return Intern(context, StringIo(context).Read(buffer, length));
 			}
 			return string.Empty;
 		}
 
-		protected virtual string Intern(IReadContext context, string str)
+		protected static string Intern(IContext context, string str)
 		{
 			if (context.ObjectContainer().Ext().Configure().InternStrings())
 			{

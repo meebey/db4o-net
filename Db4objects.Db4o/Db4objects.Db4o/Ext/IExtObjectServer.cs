@@ -63,5 +63,8 @@ namespace Db4objects.Db4o.Ext
 		/// </remarks>
 		/// <param name="userName">the name of the user</param>
 		void RevokeAccess(string userName);
+
+		/// <returns>The local port this server uses, 0 if disconnected or in embedded mode</returns>
+		int Port();
 	}
 }

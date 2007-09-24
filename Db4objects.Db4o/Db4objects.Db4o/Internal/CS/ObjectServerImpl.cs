@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private ServerSocket4 _serverSocket;
 
-		private readonly int _port;
+		private int _port;
 
 		private int i_threadIDGen = 1;
 
@@ -47,9 +47,18 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private readonly INativeSocketFactory _socketFactory;
 
+		private readonly bool _isEmbeddedServer;
+
 		public ObjectServerImpl(LocalObjectContainer container, int port, INativeSocketFactory
-			 socketFactory)
+			 socketFactory) : this(container, (port < 0 ? 0 : port), port == 0, socketFactory
+			)
 		{
+		}
+
+		public ObjectServerImpl(LocalObjectContainer container, int port, bool isEmbeddedServer
+			, INativeSocketFactory socketFactory)
+		{
+			_isEmbeddedServer = isEmbeddedServer;
 			_socketFactory = socketFactory;
 			_container = container;
 			_transactionPool = new ClientTransactionPool(container);
@@ -123,6 +132,7 @@ namespace Db4objects.Db4o.Internal.CS
 			try
 			{
 				_serverSocket = new ServerSocket4(_socketFactory, _port);
+				_port = _serverSocket.GetLocalPort();
 			}
 			catch (IOException e)
 			{
@@ -133,7 +143,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private bool IsEmbeddedServer()
 		{
-			return _port <= 0;
+			return _isEmbeddedServer;
 		}
 
 		private void EnsureLoadStaticClass()
@@ -511,6 +521,11 @@ namespace Db4objects.Db4o.Internal.CS
 				}
 			}
 			return false;
+		}
+
+		public virtual int Port()
+		{
+			return _port;
 		}
 	}
 }

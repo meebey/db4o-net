@@ -16,5 +16,20 @@ namespace Db4objects.Db4o.Internal.Slots
 			_id = id;
 			_slot = slot;
 		}
+
+		public virtual int Address()
+		{
+			return _slot.Address();
+		}
+
+		public virtual int Id()
+		{
+			return _id;
+		}
+
+		public virtual int Length()
+		{
+			return _slot.Length();
+		}
 	}
 }

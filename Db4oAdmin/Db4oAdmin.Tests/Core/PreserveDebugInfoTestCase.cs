@@ -16,10 +16,10 @@ namespace Db4oAdmin.Tests.Core
 			}
 		}
 
-		// TODO: remove this method and fix the test
-		protected override void InstrumentAssembly(string location)
-		{	
-			//base.InstrumentAssembly(location);
+		// FIXME: remove this method and fix the test case
+		protected override void InstrumentAssembly(string path)
+		{
+			// base.InstrumentAssembly(path);
 		}
 	}
 }

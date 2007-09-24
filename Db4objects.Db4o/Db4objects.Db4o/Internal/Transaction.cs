@@ -176,8 +176,8 @@ namespace Db4objects.Db4o.Internal
 			 a_signature)
 		{
 			CheckSynchronization();
-			return Container().GetUUIDIndex().GetHardObjectReferenceBySignature(this, a_uuid, 
-				a_signature);
+			return Container().UUIDIndex().GetHardObjectReferenceBySignature(this, a_uuid, a_signature
+				);
 		}
 
 		public abstract void ProcessDeletes();

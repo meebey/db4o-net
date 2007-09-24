@@ -3,7 +3,6 @@
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -42,20 +41,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			object array = arrayHandler.Read1(_family, reader);
 			reader._offset = linkOffSet;
 			return array;
-		}
-
-		public override void ReadCandidates(ArrayHandler arrayHandler, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates)
-		{
-			reader._offset = reader.ReadInt();
-			arrayHandler.Read1Candidates(_family, reader, candidates);
-		}
-
-		public sealed override object ReadQuery(ArrayHandler arrayHandler, Transaction trans
-			, Db4objects.Db4o.Internal.Buffer reader)
-		{
-			reader._offset = reader.ReadInt();
-			return arrayHandler.Read1Query(trans, _family, reader);
 		}
 
 		protected override Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans

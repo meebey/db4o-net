@@ -10,7 +10,7 @@ using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
-	public sealed class ShortHandler : PrimitiveHandler
+	public class ShortHandler : PrimitiveHandler
 	{
 		internal const int LENGTH = Const4.SHORT_BYTES + Const4.ADDED_LENGTH;
 
@@ -28,11 +28,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override object DefaultValue()
 		{
 			return i_primitive;
-		}
-
-		public override int GetID()
-		{
-			return 8;
 		}
 
 		public override int LinkLength()

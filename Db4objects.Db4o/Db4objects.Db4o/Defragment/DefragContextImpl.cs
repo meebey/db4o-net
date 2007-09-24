@@ -343,7 +343,7 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return null;
 			}
-			return _sourceDb.GetUUIDIndex().GetIndex(SystemTrans());
+			return _sourceDb.UUIDIndex().GetIndex(SystemTrans());
 		}
 
 		public virtual void TargetUuidIndexID(int id)

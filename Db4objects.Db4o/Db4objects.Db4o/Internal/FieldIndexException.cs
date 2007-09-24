@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public FieldIndexException(string msg, Exception cause, FieldMetadata field) : this
-			(msg, cause, field.GetParentYapClass().GetName(), field.GetName())
+			(msg, cause, field.ContainingClass().GetName(), field.GetName())
 		{
 		}
 

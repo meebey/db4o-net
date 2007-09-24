@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 		{
 			if (_stream.Handlers().IsSystemHandler(id))
 			{
-				return _stream.HandlerByID(id).ClassReflector();
+				return _stream.Handlers().ClassForID(id);
 			}
 			EnsureClassAvailability(id);
 			return LookupByID(id);
@@ -88,17 +88,23 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return null;
 			}
-			if (_stream.ClassCollection() != null)
+			if (_stream.ClassCollection() == null)
 			{
-				int classID = _stream.ClassMetadataIdForName(className);
-				if (classID > 0)
-				{
-					clazz = EnsureClassInitialised(classID);
-					_classByName.Put(className, clazz);
-					return clazz;
-				}
+				return null;
 			}
-			return null;
+			int classID = _stream.ClassMetadataIdForName(className);
+			if (classID <= 0)
+			{
+				return null;
+			}
+			return InitializeClass(classID, className);
+		}
+
+		private IReflectClass InitializeClass(int classID, string className)
+		{
+			IReflectClass newClazz = EnsureClassInitialised(classID);
+			_classByName.Put(className, newClazz);
+			return newClazz;
 		}
 
 		private void ReadAll()
@@ -173,42 +179,58 @@ namespace Db4objects.Db4o.Reflect.Generic
 		{
 			if (fieldInfo.IsVirtual())
 			{
-				VirtualFieldMetadata fieldMeta = _stream.Handlers().VirtualFieldByName(fieldInfo.
-					Name());
-				return fieldMeta.GetHandler().ClassReflector();
+				return VirtualFieldByName(fieldInfo.Name()).ClassReflector();
 			}
 			int handlerID = fieldInfo.HandlerID();
-			IReflectClass fieldClass = null;
 			switch (handlerID)
 			{
-				case HandlerRegistry.ANY_ID:
+				case Handlers4.UNTYPED_ID:
 				{
-					fieldClass = _stream.Reflector().ForClass(typeof(object));
-					break;
+					return ObjectClass();
 				}
 
-				case HandlerRegistry.ANY_ARRAY_ID:
+				case Handlers4.ANY_ARRAY_ID:
 				{
-					fieldClass = ArrayClass(_stream.Reflector().ForClass(typeof(object)));
-					break;
+					return ArrayClass(ObjectClass());
 				}
 
 				default:
 				{
-					fieldClass = ForID(handlerID);
-					fieldClass = _stream.Reflector().ForName(fieldClass.GetName());
-					if (fieldInfo.IsPrimitive())
+					IReflectClass fieldClass = ForID(handlerID);
+					if (null != fieldClass)
 					{
-						fieldClass = PrimitiveClass(fieldClass);
+						return NormalizeFieldClass(fieldInfo, fieldClass);
 					}
-					if (fieldInfo.IsArray())
-					{
-						fieldClass = ArrayClass(fieldClass);
-					}
+					break;
 					break;
 				}
 			}
-			return fieldClass;
+			return null;
+		}
+
+		private IReflectClass NormalizeFieldClass(RawFieldSpec fieldInfo, IReflectClass fieldClass
+			)
+		{
+			IReflectClass theClass = _stream.Reflector().ForName(fieldClass.GetName());
+			if (fieldInfo.IsPrimitive())
+			{
+				theClass = PrimitiveClass(theClass);
+			}
+			if (fieldInfo.IsArray())
+			{
+				theClass = ArrayClass(theClass);
+			}
+			return theClass;
+		}
+
+		private IReflectClass ObjectClass()
+		{
+			return _stream.Reflector().ForClass(typeof(object));
+		}
+
+		private VirtualFieldMetadata VirtualFieldByName(string fieldName)
+		{
+			return _stream.Handlers().VirtualFieldByName(fieldName);
 		}
 
 		private Db4objects.Db4o.Internal.Marshall.MarshallerFamily MarshallerFamily()

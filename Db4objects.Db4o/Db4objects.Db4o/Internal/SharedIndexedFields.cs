@@ -4,16 +4,17 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal
 {
-	internal class SharedIndexedFields
+	/// <exclude></exclude>
+	public class SharedIndexedFields
 	{
-		internal readonly VersionFieldMetadata i_fieldVersion;
+		internal readonly VersionFieldMetadata _version;
 
-		internal readonly UUIDFieldMetadata i_fieldUUID;
+		internal readonly UUIDFieldMetadata _uUID;
 
-		internal SharedIndexedFields(ObjectContainerBase stream)
+		public SharedIndexedFields(ObjectContainerBase stream)
 		{
-			i_fieldVersion = new VersionFieldMetadata(stream);
-			i_fieldUUID = new UUIDFieldMetadata(stream);
+			_version = new VersionFieldMetadata(stream);
+			_uUID = new UUIDFieldMetadata(stream);
 		}
 	}
 }

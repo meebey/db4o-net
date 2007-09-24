@@ -24,11 +24,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		public override int GetID()
-		{
-			return 4;
-		}
-
 		public override object DefaultValue()
 		{
 			return i_primitive;

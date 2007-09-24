@@ -14,26 +14,25 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			caseSensitive = caseSensitive_;
 		}
 
-		internal override bool Evaluate(QConObject a_constraint, QCandidate a_candidate, 
-			object a_value)
+		internal override bool Evaluate(QConObject constraint, QCandidate candidate, object
+			 obj)
 		{
-			if (a_value != null)
+			if (obj != null)
 			{
-				if (a_value is Db4objects.Db4o.Internal.Buffer)
+				if (obj is Db4objects.Db4o.Internal.Buffer)
 				{
-					a_value = a_candidate._marshallerFamily._string.ReadFromOwnSlot(a_constraint.i_trans
-						.Container(), ((Db4objects.Db4o.Internal.Buffer)a_value));
+					obj = candidate.ReadString((Db4objects.Db4o.Internal.Buffer)obj);
 				}
-				string candidate = a_value.ToString();
-				string constraint = a_constraint.i_object.ToString();
+				string candidateStringValue = obj.ToString();
+				string stringConstraint = constraint.i_object.ToString();
 				if (!caseSensitive)
 				{
-					candidate = candidate.ToLower();
-					constraint = constraint.ToLower();
+					candidateStringValue = candidateStringValue.ToLower();
+					stringConstraint = stringConstraint.ToLower();
 				}
-				return CompareStrings(candidate, constraint);
+				return CompareStrings(candidateStringValue, stringConstraint);
 			}
-			return a_constraint.i_object == null;
+			return constraint.i_object == null;
 		}
 
 		public override bool SupportsIndex()

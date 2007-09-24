@@ -10,7 +10,7 @@ using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
-	public sealed class FloatHandler : IntHandler
+	public class FloatHandler : IntHandler
 	{
 		private static readonly float i_primitive = System.Convert.ToSingle(0);
 
@@ -26,11 +26,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override object DefaultValue()
 		{
 			return i_primitive;
-		}
-
-		public override int GetID()
-		{
-			return 3;
 		}
 
 		protected override Type PrimitiveJavaClass()

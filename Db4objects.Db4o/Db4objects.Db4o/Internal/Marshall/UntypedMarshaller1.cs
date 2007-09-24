@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -51,27 +50,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return ret;
 		}
 
-		public override object ReadQuery(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 reader, bool toArray)
-		{
-			object ret = null;
-			int payLoadOffSet = reader.ReadInt();
-			if (payLoadOffSet == 0)
-			{
-				return null;
-			}
-			int linkOffSet = reader._offset;
-			reader._offset = payLoadOffSet;
-			int yapClassID = reader.ReadInt();
-			ClassMetadata yc = trans.Container().ClassMetadataForId(yapClassID);
-			if (yc != null)
-			{
-				ret = yc.ReadQuery(trans, _family, false, reader, toArray);
-			}
-			reader._offset = linkOffSet;
-			return ret;
-		}
-
 		public override ITypeHandler4 ReadArrayHandler(Transaction trans, Db4objects.Db4o.Internal.Buffer[]
 			 reader)
 		{
@@ -88,27 +66,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				ret = yc.ReadArrayHandler(trans, _family, reader);
 			}
-			return ret;
-		}
-
-		public override QCandidate ReadSubCandidate(Db4objects.Db4o.Internal.Buffer reader
-			, QCandidates candidates, bool withIndirection)
-		{
-			int payLoadOffSet = reader.ReadInt();
-			if (payLoadOffSet == 0)
-			{
-				return null;
-			}
-			QCandidate ret = null;
-			int linkOffSet = reader._offset;
-			reader._offset = payLoadOffSet;
-			int yapClassID = reader.ReadInt();
-			ClassMetadata yc = candidates.i_trans.Container().ClassMetadataForId(yapClassID);
-			if (yc != null)
-			{
-				ret = yc.ReadSubCandidate(_family, reader, candidates, false);
-			}
-			reader._offset = linkOffSet;
 			return ret;
 		}
 

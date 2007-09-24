@@ -1,0 +1,27 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
+namespace Db4objects.Db4o.Internal.Handlers
+{
+	/// <exclude></exclude>
+	public class HandlerVersion
+	{
+		public readonly int _number;
+
+		public static readonly Db4objects.Db4o.Internal.Handlers.HandlerVersion INVALID = 
+			new Db4objects.Db4o.Internal.Handlers.HandlerVersion(-1);
+
+		public HandlerVersion(int number)
+		{
+			_number = number;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (this == obj)
+			{
+				return true;
+			}
+			return ((Db4objects.Db4o.Internal.Handlers.HandlerVersion)obj)._number == _number;
+		}
+	}
+}

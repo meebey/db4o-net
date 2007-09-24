@@ -37,10 +37,6 @@ namespace Db4oAdmin
 		private static void Run(ProgramOptions options)
 		{	
 			InstrumentationPipeline pipeline = new InstrumentationPipeline(GetConfiguration(options));
-			if (options.Debug)
-			{
-				pipeline.Add(new LoadSymbols());
-			}
 			if (options.OptimizePredicates)
 			{
 				pipeline.Add(new PredicateOptimizer());
@@ -58,11 +54,7 @@ namespace Db4oAdmin
 				pipeline.Add(instr);
 			}
 			if (!options.Fake)
-			{
-				if (options.Debug)
-				{
-					pipeline.Add(new SaveSymbols());
-				}
+			{	
 				pipeline.Add(new SaveAssemblyInstrumentation());
 			}
 			pipeline.Run();
@@ -84,6 +76,7 @@ namespace Db4oAdmin
 		{
 			Configuration configuration = new Configuration(options.Assembly);
 			configuration.CaseSensitive = options.CaseSensitive;
+			configuration.PreserveDebugInfo = options.Debug;
 			if (options.Verbose)
 			{
 				configuration.TraceSwitch.Level = options.PrettyVerbose ? TraceLevel.Verbose : TraceLevel.Info;

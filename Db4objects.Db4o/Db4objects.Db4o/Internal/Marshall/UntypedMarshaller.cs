@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -19,12 +18,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 a_bytes);
 
 		public abstract bool UseNormalClassRead();
-
-		public abstract object ReadQuery(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 reader, bool toArray);
-
-		public abstract QCandidate ReadSubCandidate(Db4objects.Db4o.Internal.Buffer reader
-			, QCandidates candidates, bool withIndirection);
 
 		public abstract void Defrag(BufferPair readers);
 	}

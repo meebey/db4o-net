@@ -6,6 +6,7 @@ namespace Db4objects.Db4o
 {
 	/// <summary>Specifies a socket connection via a socket factory and a port number.</summary>
 	/// <remarks>Specifies a socket connection via a socket factory and a port number.</remarks>
+	/// <exclude></exclude>
 	public class SocketSpec
 	{
 		private readonly int _port;

@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected override IIndexable4 IndexHandler(ObjectContainerBase stream)
 		{
-			return (IIndexable4)i_handler;
+			return (IIndexable4)_handler;
 		}
 	}
 }

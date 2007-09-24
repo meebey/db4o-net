@@ -321,7 +321,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				object[] pair = ((object[])obj);
 				ClassMetadata parentYc = (ClassMetadata)pair[0];
 				FieldMetadata yf = (FieldMetadata)pair[1];
-				ClassMetadata childYc = yf.GetFieldYapClass(this._enclosing.Stream());
+				ClassMetadata childYc = yf.HandlerClassMetadata(this._enclosing.Stream());
 				bool take = true;
 				if (childYc is UntypedFieldHandler)
 				{

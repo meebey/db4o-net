@@ -29,10 +29,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Cecil, Version=0.4.3.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\net-2.0\Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -46,6 +42,7 @@
     <Compile Include="Core\CompilationServices.cs" />
     <Compile Include="Core\ByFilterTestCase.cs" />
     <Compile Include="Core\ByNameTestCase.cs" />
+    <Compile Include="Core\ByNotAttributeTestCase.cs" />
     <Compile Include="Core\CustomInstrumentationTestCase.cs" />
     <Compile Include="Core\ILPatternTestCase.cs" />
     <Compile Include="Core\InstrumentedTestCase.cs" />
@@ -53,6 +50,9 @@
     <EmbeddedResource Include="Core\Resources\ByAttributeInstrumentationSubject.cs" />
     <EmbeddedResource Include="Core\Resources\ByFilterInstrumentationSubject.cs" />
     <EmbeddedResource Include="Core\Resources\ByNameInstrumentationSubject.cs" />
+    <EmbeddedResource Include="Core\Resources\ByNotAttributeInstrumentationSubject.cs" />
+    <EmbeddedResource Include="Core\Resources\PreserveDebugInfoSubject.cs" />
+    <Compile Include="Core\PreserveDebugInfoTestCase.cs" />
     <Compile Include="Core\ShellUtilities.cs" />
     <Compile Include="Core\SingleResourceTestCase.cs" />
     <Compile Include="Core\VerifyAssemblyTest.cs" />
@@ -69,6 +69,14 @@
     <Compile Include="TA\TAInstrumentationTestCase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\projects\mono\cecil\pdb\Mono.Cecil.Pdb.csproj">
+      <Project>{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}</Project>
+      <Name>Mono.Cecil.Pdb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\projects\mono\Mono.Cecil\Mono.Cecil.csproj">
+      <Project>{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}</Project>
+      <Name>Mono.Cecil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o.TA\Db4objects.Db4o.TA-2005.csproj">
       <Project>{A42D3006-F246-4AD0-8A5B-1110D00B41BB}</Project>
       <Name>Db4objects.Db4o.TA-2005</Name>

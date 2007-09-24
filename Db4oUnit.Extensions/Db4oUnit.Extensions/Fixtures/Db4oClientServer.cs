@@ -5,11 +5,9 @@ using System.IO;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
+using Sharpen;
 
 namespace Db4oUnit.Extensions.Fixtures
 {
@@ -35,7 +33,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private string _label;
 
-		protected static readonly int _port = FindFreePort();
+		private int _port;
 
 		public Db4oClientServer(IConfigurationSource configSource, string fileName, bool 
 			embeddedClient, string label) : base(configSource)
@@ -46,38 +44,18 @@ namespace Db4oUnit.Extensions.Fixtures
 		}
 
 		public Db4oClientServer(IConfigurationSource configSource, bool embeddedClient, string
-			 label) : this(configSource, FILE, embeddedClient, label)
+			 label) : this(configSource, FilePath(), embeddedClient, label)
 		{
 		}
 
-		public static int FindFreePort()
+		private static string FilePath()
 		{
-			try
+			string path = Runtime.GetProperty("db4ounit.file.path");
+			if (path == null || path.Length == 0)
 			{
-				return FindFreePort(DEFAULT_PORT);
+				path = ".";
 			}
-			catch (IOException e)
-			{
-				Sharpen.Runtime.PrintStackTrace(e);
-			}
-			try
-			{
-				return FindFreePort(0);
-			}
-			catch (IOException e)
-			{
-				Sharpen.Runtime.PrintStackTrace(e);
-			}
-			throw new InvalidOperationException("Could not allocate a usable port");
-		}
-
-		private static int FindFreePort(int port)
-		{
-			ServerSocket4 server = new ServerSocket4(new PlainSocketFactory(), port);
-			port = server.GetLocalPort();
-			server.Close();
-			Cool.SleepIgnoringInterruption(3);
-			return port;
+			return Path.Combine(path, FILE);
 		}
 
 		public override void Open()
@@ -95,7 +73,8 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private void OpenServer()
 		{
-			_server = Db4oFactory.OpenServer(Config(), _yap.GetAbsolutePath(), _port);
+			_server = Db4oFactory.OpenServer(Config(), _yap.GetAbsolutePath(), -1);
+			_port = _server.Ext().Port();
 			_server.GrantAccess(USERNAME, PASSWORD);
 		}
 
@@ -167,7 +146,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public override void Defragment()
 		{
-			Defragment(FILE);
+			Defragment(FilePath());
 		}
 
 		private IObjectContainer OpenEmbeddedClient()

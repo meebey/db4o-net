@@ -190,7 +190,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			LocalObjectContainer container = (LocalObjectContainer)trans.Container();
 			WriteThis(trans, writer);
-			writer.WriteEncrypt(container, slot.Address(), 0);
+			container.WriteEncrypt(writer, slot.Address(), 0);
 			if (IsActive())
 			{
 				SetStateClean();

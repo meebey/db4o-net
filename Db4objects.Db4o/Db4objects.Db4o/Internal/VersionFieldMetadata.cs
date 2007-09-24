@@ -12,10 +12,10 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class VersionFieldMetadata : VirtualFieldMetadata
 	{
-		internal VersionFieldMetadata(ObjectContainerBase stream) : base()
+		internal VersionFieldMetadata(ObjectContainerBase stream) : base(Handlers4.LONG_ID
+			, new LongHandler(stream))
 		{
 			SetName(VirtualField.VERSION);
-			i_handler = new LongHandler(stream);
 		}
 
 		public override void AddFieldIndex(MarshallerFamily mf, ClassMetadata yapClass, StatefulBuffer
@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public override int LinkLength()
+		protected override int LinkLength()
 		{
 			return Const4.LONG_LENGTH;
 		}

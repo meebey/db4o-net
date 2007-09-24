@@ -725,6 +725,14 @@ namespace Db4objects.Db4o.Internal
 			i_dirty.Clear();
 		}
 
+		public void WriteEncrypt(Db4objects.Db4o.Internal.Buffer buffer, int address, int
+			 addressOffset)
+		{
+			_handlers.Encrypt(buffer);
+			WriteBytes(buffer, address, addressOffset);
+			_handlers.Decrypt(buffer);
+		}
+
 		protected virtual void WriteVariableHeader()
 		{
 			if (!_timeStampIdGenerator.IsDirty())
@@ -734,19 +742,6 @@ namespace Db4objects.Db4o.Internal
 			_systemData.LastTimeStampID(_timeStampIdGenerator.LastTimeStampId());
 			_fileHeader.WriteVariablePart(this, 2);
 			_timeStampIdGenerator.SetClean();
-		}
-
-		public sealed override void WriteEmbedded(StatefulBuffer a_parent, StatefulBuffer
-			 a_child)
-		{
-			Slot slot = GetSlot(a_child.Length());
-			a_child.GetTransaction().SlotFreeOnRollback(slot.Address(), slot);
-			a_child.Address(slot.Address());
-			a_child.WriteEncrypt();
-			int offsetBackup = a_parent._offset;
-			a_parent._offset = a_child.GetID();
-			a_parent.WriteInt(slot.Address());
-			a_parent._offset = offsetBackup;
 		}
 
 		internal virtual void WriteHeader(bool startFileLockingThread, bool shuttingDown)
@@ -767,17 +762,17 @@ namespace Db4objects.Db4o.Internal
 			SyncFiles();
 		}
 
-		public sealed override void WriteNew(ClassMetadata a_yapClass, StatefulBuffer aWriter
-			)
+		public sealed override void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata
+			 classMetadata, Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			aWriter.WriteEncrypt(this, aWriter.GetAddress(), 0);
-			if (a_yapClass == null)
+			WriteEncrypt(buffer, pointer.Address(), 0);
+			if (classMetadata == null)
 			{
 				return;
 			}
 			if (MaintainsIndices())
 			{
-				a_yapClass.AddToIndex(this, aWriter.GetTransaction(), aWriter.GetID());
+				classMetadata.AddToIndex(this, trans, pointer.Id());
 			}
 		}
 
@@ -795,21 +790,27 @@ namespace Db4objects.Db4o.Internal
 
 		public void GetSlotForUpdate(StatefulBuffer buffer)
 		{
-			Transaction trans = buffer.GetTransaction();
-			int id = buffer.GetID();
-			Slot slot = GetSlot(buffer.Length());
+			Slot slot = GetSlotForUpdate(buffer.GetTransaction(), buffer.GetID(), buffer.Length
+				());
 			buffer.Address(slot.Address());
-			trans.ProduceUpdateSlotChange(id, slot);
 		}
 
-		public sealed override void WriteUpdate(ClassMetadata a_yapClass, StatefulBuffer 
-			a_bytes)
+		public Slot GetSlotForUpdate(Transaction trans, int id, int length)
 		{
-			if (a_bytes.GetAddress() == 0)
+			Slot slot = GetSlot(length);
+			trans.ProduceUpdateSlotChange(id, slot);
+			return slot;
+		}
+
+		public sealed override void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
+			 classMetadata, Db4objects.Db4o.Internal.Buffer buffer)
+		{
+			int address = pointer.Address();
+			if (address == 0)
 			{
-				GetSlotForUpdate(a_bytes);
+				address = GetSlotForUpdate(trans, pointer.Id(), pointer.Length()).Address();
 			}
-			a_bytes.WriteEncrypt();
+			WriteEncrypt(buffer, address, 0);
 		}
 
 		public virtual void SetNextTimeStampId(long val)
@@ -842,13 +843,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_760(this, ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_758(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_760 : IVisitor4
+		private sealed class _IVisitor4_758 : IVisitor4
 		{
-			public _IVisitor4_760(LocalObjectContainer _enclosing, IntArrayList ids)
+			public _IVisitor4_758(LocalObjectContainer _enclosing, IntArrayList ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;

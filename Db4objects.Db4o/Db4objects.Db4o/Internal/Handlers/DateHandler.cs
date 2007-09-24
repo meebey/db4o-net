@@ -40,11 +40,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return PROTO;
 		}
 
-		public override int GetID()
-		{
-			return 10;
-		}
-
 		protected override Type PrimitiveJavaClass()
 		{
 			return null;
@@ -53,6 +48,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override object PrimitiveNull()
 		{
 			return null;
+		}
+
+		public override object NullRepresentationInUntypedArrays()
+		{
+			return new Date(0);
 		}
 
 		public override object Read(MarshallerFamily mf, StatefulBuffer writer, bool redirect

@@ -11,7 +11,7 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public sealed class DoubleHandler : LongHandler
+	public class DoubleHandler : LongHandler
 	{
 		private static readonly double DEFAULT_VALUE = System.Convert.ToDouble(0);
 
@@ -27,11 +27,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override object DefaultValue()
 		{
 			return DEFAULT_VALUE;
-		}
-
-		public override int GetID()
-		{
-			return 5;
 		}
 
 		protected override Type PrimitiveJavaClass()

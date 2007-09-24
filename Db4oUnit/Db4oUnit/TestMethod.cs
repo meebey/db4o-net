@@ -8,7 +8,7 @@ namespace Db4oUnit
 {
 	/// <summary>Reflection based db4ounit.Test implementation.</summary>
 	/// <remarks>Reflection based db4ounit.Test implementation.</remarks>
-	public class TestMethod : ITest
+	public class TestMethod : TestAdapter
 	{
 		private sealed class _ILabelProvider_11 : ILabelProvider
 		{
@@ -65,38 +65,14 @@ namespace Db4oUnit
 			return _method;
 		}
 
-		public virtual string GetLabel()
+		public override string GetLabel()
 		{
 			return _labelProvider.GetLabel(this);
 		}
 
-		public virtual void Run(TestResult result)
+		protected override void RunTest()
 		{
-			try
-			{
-				result.TestStarted(this);
-				SetUp();
-				Invoke();
-			}
-			catch (TargetInvocationException e)
-			{
-				result.TestFailed(this, e.InnerException);
-			}
-			catch (Exception e)
-			{
-				result.TestFailed(this, e);
-			}
-			finally
-			{
-				try
-				{
-					TearDown();
-				}
-				catch (TestException e)
-				{
-					result.TestFailed(this, e);
-				}
-			}
+			Invoke();
 		}
 
 		protected virtual void Invoke()
@@ -104,7 +80,7 @@ namespace Db4oUnit
 			_method.Invoke(_subject, new object[0]);
 		}
 
-		protected virtual void TearDown()
+		protected override void TearDown()
 		{
 			if (_subject is ITestLifeCycle)
 			{
@@ -119,7 +95,7 @@ namespace Db4oUnit
 			}
 		}
 
-		protected virtual void SetUp()
+		protected override void SetUp()
 		{
 			if (_subject is ITestLifeCycle)
 			{

@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 
 		private void RebuildUUIDIndex(LocalObjectContainer file)
 		{
-			UUIDFieldMetadata uuid = file.GetUUIDIndex();
+			UUIDFieldMetadata uuid = file.UUIDIndex();
 			ClassMetadataIterator i = file.ClassCollection().Iterator();
 			while (i.MoveNext())
 			{

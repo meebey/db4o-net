@@ -5,14 +5,13 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public abstract class PrimitiveHandler : IIndexableTypeHandler
+	public abstract class PrimitiveHandler : IIndexableTypeHandler, IBuiltinTypeHandler
 	{
 		protected readonly ObjectContainerBase _stream;
 
@@ -53,12 +52,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract object PrimitiveNull();
 
-		public virtual object ReadQuery(Transaction trans, MarshallerFamily mf, bool withRedirection
-			, Db4objects.Db4o.Internal.Buffer reader, bool toArray)
-		{
-			return Read1(reader);
-		}
-
 		public virtual object Read(MarshallerFamily mf, StatefulBuffer buffer, bool redirect
 			)
 		{
@@ -66,23 +59,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		internal abstract object Read1(Db4objects.Db4o.Internal.Buffer reader);
-
-		public virtual QCandidate ReadSubCandidate(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates, bool withIndirection)
-		{
-			try
-			{
-				object obj = ReadQuery(candidates.i_trans, mf, withIndirection, reader, true);
-				if (obj != null)
-				{
-					return new QCandidate(candidates, obj, 0, true);
-				}
-			}
-			catch (CorruptionException)
-			{
-			}
-			return null;
-		}
 
 		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer a_reader)
 		{
@@ -222,7 +198,5 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			return PrimitiveNull();
 		}
-
-		public abstract int GetID();
 	}
 }

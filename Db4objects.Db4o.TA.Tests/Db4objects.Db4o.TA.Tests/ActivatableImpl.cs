@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.TA.Tests
 			_activator = activator;
 		}
 
-		protected virtual void Activate()
+		public virtual void Activate()
 		{
 			if (_activator == null)
 			{

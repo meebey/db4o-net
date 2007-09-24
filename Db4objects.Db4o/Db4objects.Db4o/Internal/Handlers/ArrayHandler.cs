@@ -14,7 +14,7 @@ using Db4objects.Db4o.Reflect.Generic;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public class ArrayHandler : BuiltinTypeHandler, IFirstClassHandler
+	public class ArrayHandler : VariableLengthTypeHandler, IFirstClassHandler
 	{
 		public readonly ITypeHandler4 _handler;
 
@@ -78,9 +78,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public override IReflectClass ClassReflector()
+		public virtual IReflectClass ClassReflector()
 		{
-			return _handler.ClassReflector();
+			if (_handler is IBuiltinTypeHandler)
+			{
+				return ((IBuiltinTypeHandler)_handler).ClassReflector();
+			}
+			if (_handler is ClassMetadata)
+			{
+				return ((ClassMetadata)_handler).ClassReflector();
+			}
+			return Container().Handlers().ClassReflectorForHandler(_handler);
 		}
 
 		public TreeInt CollectIDs(MarshallerFamily mf, TreeInt tree, StatefulBuffer reader
@@ -154,11 +162,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return _isPrimitive ? hc : -hc;
 		}
 
-		public sealed override int GetID()
-		{
-			return _handler.GetID();
-		}
-
 		protected virtual bool HandleAsByteArray(object obj)
 		{
 			return obj.GetType() == typeof(byte[]);
@@ -168,11 +171,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual byte Identifier()
 		{
 			return Const4.YAPARRAY;
-		}
-
-		public virtual int ObjectLength(object obj)
-		{
-			return OwnLength(obj) + (ArrayReflector().GetLength(obj) * _handler.LinkLength());
 		}
 
 		/// <param name="obj"></param>
@@ -195,28 +193,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			 redirect)
 		{
 			return mf._array.Read(this, a_bytes);
-		}
-
-		public sealed override object ReadQuery(Transaction a_trans, MarshallerFamily mf, 
-			bool withRedirection, Db4objects.Db4o.Internal.Buffer a_reader, bool a_toArray)
-		{
-			return mf._array.ReadQuery(this, a_trans, a_reader);
-		}
-
-		public virtual object Read1Query(Transaction a_trans, MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
-			 a_reader)
-		{
-			IntByRef elements = new IntByRef();
-			object ret = ReadCreate(a_trans, a_reader, elements);
-			if (ret != null)
-			{
-				for (int i = 0; i < elements.value; i++)
-				{
-					ArrayReflector().Set(ret, i, _handler.ReadQuery(a_trans, mf, true, a_reader, true
-						));
-				}
-			}
-			return ret;
 		}
 
 		public virtual object Read1(MarshallerFamily mf, StatefulBuffer reader)
@@ -262,35 +238,38 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return this;
 		}
 
-		public virtual void ReadCandidates(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
+		public virtual void ReadCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
 			 reader, QCandidates candidates)
 		{
-			mf._array.ReadCandidates(this, reader, candidates);
+			reader.Seek(reader.ReadInt());
+			ReadSubCandidates(handlerVersion, reader, candidates);
 		}
 
-		public virtual void Read1Candidates(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
+		public virtual void ReadSubCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
 			 reader, QCandidates candidates)
 		{
 			IntByRef elements = new IntByRef();
-			object ret = ReadCreate(candidates.i_trans, reader, elements);
-			if (ret != null)
+			object arr = ReadCreate(candidates.i_trans, reader, elements);
+			if (arr == null)
 			{
-				for (int i = 0; i < elements.value; i++)
-				{
-					QCandidate qc = _handler.ReadSubCandidate(mf, reader, candidates, true);
-					if (qc != null)
-					{
-						candidates.AddByIdentity(qc);
-					}
-				}
+				return;
 			}
+			ReadSubCandidates(handlerVersion, reader, candidates, elements.value);
 		}
 
-		public override QCandidate ReadSubCandidate(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates, bool withIndirection)
+		protected virtual void ReadSubCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
+			 reader, QCandidates candidates, int count)
 		{
-			reader.IncrementOffset(LinkLength());
-			return null;
+			QueryingReadContext context = new QueryingReadContext(candidates.Transaction(), handlerVersion
+				, reader);
+			for (int i = 0; i < count; i++)
+			{
+				QCandidate qc = candidates.ReadSubCandidate(context, _handler);
+				if (qc != null)
+				{
+					candidates.AddByIdentity(qc);
+				}
+			}
 		}
 
 		internal int ReadElementsAndClass(Transaction trans, IReadBuffer buffer, ReflectClassByRef
@@ -304,7 +283,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			else
 			{
-				clazz.value = _handler.ClassReflector();
+				clazz.value = ClassReflector();
 			}
 			if (Debug.ExceedsMaximumArrayEntries(elements, _isPrimitive))
 			{
@@ -348,7 +327,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 						.ClassReflector());
 				}
 			}
-			return _handler.ClassReflector();
+			return ClassReflector();
 		}
 
 		public static object[] ToArray(ObjectContainerBase stream, object obj)
@@ -370,8 +349,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			bool primitive = Deploy.csharp ? false : claxx.IsPrimitive();
 			if (primitive)
 			{
-				claxx = Container()._handlers.HandlerForClass(Container(), claxx).ClassReflector(
-					);
+				claxx = Container()._handlers.ClassMetadataForClass(Container(), claxx).ClassReflector
+					();
 			}
 			ClassMetadata classMetadata = Container().ProduceClassMetadata(claxx);
 			if (classMetadata == null)

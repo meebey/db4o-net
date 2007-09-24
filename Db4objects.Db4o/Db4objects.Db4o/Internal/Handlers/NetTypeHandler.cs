@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public override int GetID()
+		public virtual int GetID()
 		{
 			return TypeID();
 		}

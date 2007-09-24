@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return obj;
 			}
-			return Platform4.CreateYapRef(_queue, a_yo, obj);
+			return Platform4.CreateActiveObjectReference(_queue, a_yo, obj);
 		}
 
 		internal virtual void PollReferenceQueue()

@@ -14,22 +14,6 @@ namespace Db4objects.Db4o.Marshall
 	public interface IWriteContext : IContext, IWriteBuffer
 	{
 		/// <summary>
-		/// writes any type of object, first class objects and primitive
-		/// types.
-		/// </summary>
-		/// <remarks>
-		/// writes any type of object, first class objects and primitive
-		/// types.
-		/// The type information is stored in the slot, to allow it to
-		/// be reconstructed, for instance for objects in untyped fields.
-		/// For first class objects where the type is known, use
-		/// <see cref="IWriteContext.WriteObject">IWriteContext.WriteObject</see>
-		/// instead, since it is more efficient.
-		/// </remarks>
-		/// <param name="obj">the object to write.</param>
-		void WriteAny(object obj);
-
-		/// <summary>
 		/// makes sure the object is stored and writes the ID of
 		/// the object to the context.
 		/// </summary>
@@ -39,7 +23,7 @@ namespace Db4objects.Db4o.Marshall
 		/// Use this method for first class objects only (objects that
 		/// have an identity in the database). If the object can potentially
 		/// be a primitive type, do not use this method bue use
-		/// <see cref="IWriteContext.WriteAny">IWriteContext.WriteAny</see>
+		/// <see cref="#writeAny(Object)">#writeAny(Object)</see>
 		/// instead.
 		/// </remarks>
 		/// <param name="obj">the object to write.</param>

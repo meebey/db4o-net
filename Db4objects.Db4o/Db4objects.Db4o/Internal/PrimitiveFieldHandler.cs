@@ -5,7 +5,6 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
@@ -14,13 +13,14 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class PrimitiveFieldHandler : ClassMetadata
 	{
-		public readonly ITypeHandler4 i_handler;
+		private readonly ITypeHandler4 _handler;
 
 		internal PrimitiveFieldHandler(ObjectContainerBase container, ITypeHandler4 handler
-			) : base(container, handler.ClassReflector())
+			, int handlerID, IReflectClass classReflector) : base(container, classReflector)
 		{
 			i_fields = FieldMetadata.EMPTY_ARRAY;
-			i_handler = handler;
+			_handler = handler;
+			_id = handlerID;
 		}
 
 		internal override void ActivateFields(Transaction trans, object obj, int depth)
@@ -41,11 +41,6 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override IReflectClass ClassReflector()
-		{
-			return i_handler.ClassReflector();
-		}
-
 		public override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes)
 		{
 			if (mf._primitive.UseNormalClassRead())
@@ -58,9 +53,9 @@ namespace Db4objects.Db4o.Internal
 		public override void DeleteEmbedded1(MarshallerFamily mf, StatefulBuffer a_bytes, 
 			int a_id)
 		{
-			if (i_handler is ArrayHandler)
+			if (_handler is ArrayHandler)
 			{
-				ArrayHandler ya = (ArrayHandler)i_handler;
+				ArrayHandler ya = (ArrayHandler)_handler;
 				if (ya._isPrimitive)
 				{
 					ya.DeletePrimitiveEmbedded(a_bytes, this);
@@ -68,13 +63,13 @@ namespace Db4objects.Db4o.Internal
 					return;
 				}
 			}
-			if (i_handler is UntypedFieldHandler)
+			if (_handler is UntypedFieldHandler)
 			{
-				a_bytes.IncrementOffset(i_handler.LinkLength());
+				a_bytes.IncrementOffset(LinkLength());
 			}
 			else
 			{
-				i_handler.DeleteEmbedded(mf, a_bytes);
+				_handler.DeleteEmbedded(mf, a_bytes);
 			}
 			Free(a_bytes, a_id);
 		}
@@ -114,7 +109,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				try
 				{
-					obj = i_handler.Read(mf, buffer, true);
+					obj = _handler.Read(mf, buffer, true);
 				}
 				catch (CorruptionException)
 				{
@@ -132,7 +127,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			try
 			{
-				return i_handler.Read(mf, a_bytes, true);
+				return _handler.Read(mf, a_bytes, true);
 			}
 			catch (CorruptionException)
 			{
@@ -145,7 +140,7 @@ namespace Db4objects.Db4o.Internal
 			object obj = context.PersistentObject();
 			if (obj == null)
 			{
-				obj = context.Read(i_handler);
+				obj = context.Read(_handler);
 				context.SetObjectWeak(obj);
 			}
 			context.SetStateClean();
@@ -154,7 +149,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override object InstantiateTransient(UnmarshallingContext context)
 		{
-			return i_handler.Read(context);
+			return _handler.Read(context);
 		}
 
 		internal override void InstantiateFields(ObjectReference a_yapObject, object a_onObject
@@ -164,29 +159,29 @@ namespace Db4objects.Db4o.Internal
 			object obj = null;
 			try
 			{
-				obj = i_handler.Read(mf, a_bytes, true);
+				obj = _handler.Read(mf, a_bytes, true);
 			}
 			catch (CorruptionException)
 			{
 			}
-			if (obj != null && (i_handler is DateHandler))
+			if (obj != null && (_handler is DateHandler))
 			{
-				((DateHandler)i_handler).CopyValue(obj, a_onObject);
+				((DateHandler)_handler).CopyValue(obj, a_onObject);
 			}
 		}
 
 		internal override void InstantiateFields(UnmarshallingContext context)
 		{
-			object obj = context.Read(i_handler);
-			if (obj != null && (i_handler is DateHandler))
+			object obj = context.Read(_handler);
+			if (obj != null && (_handler is DateHandler))
 			{
-				((DateHandler)i_handler).CopyValue(obj, context.PersistentObject());
+				((DateHandler)_handler).CopyValue(obj, context.PersistentObject());
 			}
 		}
 
 		public override bool IsArray()
 		{
-			return _id == HandlerRegistry.ANY_ARRAY_ID || _id == HandlerRegistry.ANY_ARRAY_N_ID;
+			return _id == Handlers4.ANY_ARRAY_ID || _id == Handlers4.ANY_ARRAY_N_ID;
 		}
 
 		public override bool IsPrimitive()
@@ -201,8 +196,8 @@ namespace Db4objects.Db4o.Internal
 
 		public override IComparable4 PrepareComparison(object a_constraint)
 		{
-			i_handler.PrepareComparison(a_constraint);
-			return i_handler;
+			_handler.PrepareComparison(a_constraint);
+			return _handler;
 		}
 
 		public override object Read(MarshallerFamily mf, StatefulBuffer a_bytes, bool redirect
@@ -212,7 +207,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return base.Read(mf, a_bytes, redirect);
 			}
-			return i_handler.Read(mf, a_bytes, false);
+			return _handler.Read(mf, a_bytes, false);
 		}
 
 		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
@@ -220,25 +215,22 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (IsArray())
 			{
-				return i_handler;
+				return _handler;
 			}
 			return null;
 		}
 
-		public override object ReadQuery(Transaction trans, MarshallerFamily mf, bool withRedirection
-			, Db4objects.Db4o.Internal.Buffer reader, bool toArray)
+		public override ObjectID ReadObjectID(IInternalReadContext context)
 		{
-			if (mf._primitive.UseNormalClassRead())
+			if (_handler is ClassMetadata)
 			{
-				return base.ReadQuery(trans, mf, withRedirection, reader, toArray);
+				return ((ClassMetadata)_handler).ReadObjectID(context);
 			}
-			return i_handler.ReadQuery(trans, mf, withRedirection, reader, toArray);
-		}
-
-		public override QCandidate ReadSubCandidate(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates, bool withIndirection)
-		{
-			return i_handler.ReadSubCandidate(mf, reader, candidates, withIndirection);
+			if (_handler is ArrayHandler)
+			{
+				return ObjectID.IGNORE;
+			}
+			return ObjectID.NOT_POSSIBLE;
 		}
 
 		internal override void RemoveFromIndex(Transaction ta, int id)
@@ -252,7 +244,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override string ToString()
 		{
-			return "Wraps " + i_handler.ToString() + " in YapClassPrimitive";
+			return "Wraps " + _handler.ToString() + " in YapClassPrimitive";
 		}
 
 		public override void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
@@ -264,7 +256,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				i_handler.Defrag(mf, readers, false);
+				_handler.Defrag(mf, readers, false);
 			}
 		}
 
@@ -276,12 +268,17 @@ namespace Db4objects.Db4o.Internal
 
 		public override object Read(IReadContext context)
 		{
-			return i_handler.Read(context);
+			return _handler.Read(context);
 		}
 
 		public override void Write(IWriteContext context, object obj)
 		{
-			i_handler.Write(context, obj);
+			_handler.Write(context, obj);
+		}
+
+		public override ITypeHandler4 TypeHandler()
+		{
+			return _handler;
 		}
 	}
 }

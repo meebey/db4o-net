@@ -16,7 +16,6 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			lock (StreamLock())
 			{
 				ClassMetadata yc = stream.ClassMetadataForId(yapClassId);
-				_payLoad.WriteEmbedded();
 				int id = _payLoad.GetID();
 				Transaction().DontDelete(id);
 				Slot oldSlot = ((LocalTransaction)Transaction()).GetCommittedSlotOfID(id);

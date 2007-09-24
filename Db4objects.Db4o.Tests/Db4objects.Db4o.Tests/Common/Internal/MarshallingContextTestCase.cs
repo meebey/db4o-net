@@ -4,6 +4,7 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Tests.Common.Internal;
 
 namespace Db4objects.Db4o.Tests.Common.Internal
@@ -56,6 +57,10 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		public virtual void TestStringItem()
 		{
+			if (!NewTypeHandlerReading.enabled)
+			{
+				return;
+			}
 			MarshallingContextTestCase.StringItem writtenItem = new MarshallingContextTestCase.StringItem
 				("one");
 			MarshallingContextTestCase.StringItem readItem = (MarshallingContextTestCase.StringItem
@@ -65,6 +70,10 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		public virtual void TestStringIntItem()
 		{
+			if (!NewTypeHandlerReading.enabled)
+			{
+				return;
+			}
 			MarshallingContextTestCase.StringIntItem writtenItem = new MarshallingContextTestCase.StringIntItem
 				("one", 777);
 			MarshallingContextTestCase.StringIntItem readItem = (MarshallingContextTestCase.StringIntItem
@@ -75,6 +84,10 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		public virtual void TestStringIntBooleanItem()
 		{
+			if (!NewTypeHandlerReading.enabled)
+			{
+				return;
+			}
 			MarshallingContextTestCase.StringIntBooleanItem writtenItem = new MarshallingContextTestCase.StringIntBooleanItem
 				("one", 777, true);
 			MarshallingContextTestCase.StringIntBooleanItem readItem = (MarshallingContextTestCase.StringIntBooleanItem
@@ -91,23 +104,18 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 				);
 			@ref.SetObject(obj);
 			ObjectMarshaller marshaller = MarshallerFamily.Current()._object;
-			StatefulBuffer buffer = marshaller.MarshallNew(Trans(), @ref, int.MaxValue);
+			MarshallingContext marshallingContext = new MarshallingContext(Trans(), @ref, int.MaxValue
+				, true);
+			marshaller.Marshall(@ref.GetObject(), marshallingContext);
+			Pointer4 pointer = marshallingContext.AllocateSlot();
+			Db4objects.Db4o.Internal.Buffer buffer = marshallingContext.ToWriteBuffer(pointer
+				);
 			buffer.Offset(0);
-			object readObject = null;
-			if (NewTypeHandlerReading.enabled)
-			{
-				UnmarshallingContext context = new UnmarshallingContext(Trans(), @ref, Const4.ADD_TO_ID_TREE
-					, false);
-				context.Buffer(buffer);
-				context.ActivationDepth(5);
-				readObject = context.Read();
-			}
-			else
-			{
-				readObject = @ref.Read(Trans(), buffer, null, imaginativeID, imaginativeID, false
-					);
-			}
-			return readObject;
+			UnmarshallingContext unmarshallingContext = new UnmarshallingContext(Trans(), @ref
+				, Const4.ADD_TO_ID_TREE, false);
+			unmarshallingContext.Buffer(buffer);
+			unmarshallingContext.ActivationDepth(5);
+			return unmarshallingContext.Read();
 		}
 
 		private ClassMetadata ClassMetadataForObject(object obj)

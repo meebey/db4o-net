@@ -1,12 +1,14 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
@@ -20,7 +22,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Configure(config);
 		}
 
-		protected static readonly string PATH = "./test/db4oVersions/";
+		protected static readonly string PATH = Path.Combine(Path.GetTempPath(), "test/db4oVersions"
+			);
 
 		protected virtual string FileName()
 		{
@@ -34,13 +37,21 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected virtual string OldVersionFileName(string versionName)
 		{
-			return PATH + FileNamePrefix() + versionName.Replace(' ', '_');
+			return Path.Combine(PATH, FileNamePrefix() + versionName.Replace(' ', '_'));
 		}
 
-		public virtual void SetUp()
+		public virtual void CreateDatabase()
 		{
-			Configure();
-			string file = FileName();
+			CreateDatabase(FileName());
+		}
+
+		public virtual void CreateDatabaseFor(string versionName)
+		{
+			CreateDatabase(FileName(versionName));
+		}
+
+		private void CreateDatabase(string file)
+		{
 			System.IO.Directory.CreateDirectory(PATH);
 			if (System.IO.File.Exists(file))
 			{
@@ -57,24 +68,35 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		public virtual void SetUp()
+		{
+			Configure();
+			CreateDatabase();
+		}
+
 		public virtual void Test()
 		{
 			for (int i = 0; i < VersionNames().Length; i++)
 			{
-				string fileName = OldVersionFileName(VersionNames()[i]);
-				if (System.IO.File.Exists(fileName))
-				{
-					string testFileName = FileName(VersionNames()[i]);
-					File4.Delete(testFileName);
-					File4.Copy(fileName, testFileName);
-					CheckDatabaseFile(testFileName);
-					CheckDatabaseFile(testFileName);
-				}
-				else
-				{
-					Sharpen.Runtime.Err.WriteLine("Version upgrade check failed. File not found:");
-					Sharpen.Runtime.Err.WriteLine(fileName);
-				}
+				string versionName = VersionNames()[i];
+				Test(versionName);
+			}
+		}
+
+		public virtual void Test(string versionName)
+		{
+			string testFileName = FileName(versionName);
+			if (System.IO.File.Exists(testFileName))
+			{
+				Sharpen.Runtime.Out.WriteLine("Check database: " + testFileName);
+				InvestigateFileHeaderVersion(testFileName);
+				CheckDatabaseFile(testFileName);
+				CheckDatabaseFile(testFileName);
+			}
+			else
+			{
+				Sharpen.Runtime.Out.WriteLine("Version upgrade check failed. File not found:" + testFileName
+					);
 			}
 		}
 
@@ -95,6 +117,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				objectContainer.Close();
 			}
 		}
+
+		private void InvestigateFileHeaderVersion(string testFile)
+		{
+			_db4oHeaderVersion = VersionServices.FileHeaderVersion(testFile);
+		}
+
+		protected byte _db4oHeaderVersion;
 
 		protected abstract string[] VersionNames();
 

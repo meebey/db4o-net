@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -70,7 +69,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return stream._handlers.VirtualFieldByName(name);
 			}
-			field.Init(field.GetParentYapClass(), name);
+			field.Init(field.ContainingClass(), name);
 			field.Init(spec.HandlerID(), spec.IsPrimitive(), spec.IsArray(), spec.IsNArray());
 			field.LoadHandler(stream);
 			field.Alive();
@@ -89,24 +88,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			ITypeHandler4 handler = field.GetHandler();
 			if (handler is ClassMetadata)
 			{
-				if (handler.GetID() == 0)
+				if (((ClassMetadata)handler).GetID() == 0)
 				{
 					trans.Container().NeedsUpdate(clazz);
 				}
 			}
-			int handlerID = 0;
-			try
-			{
-				handlerID = handler.GetID();
-			}
-			catch (Exception e)
-			{
-			}
-			if (handlerID == 0)
-			{
-				handlerID = field.GetHandlerID();
-			}
-			writer.WriteInt(handlerID);
+			writer.WriteInt(field.HandlerID());
 			BitMap4 bitmap = new BitMap4(3);
 			bitmap.Set(0, field.IsPrimitive());
 			bitmap.Set(1, handler is ArrayHandler);

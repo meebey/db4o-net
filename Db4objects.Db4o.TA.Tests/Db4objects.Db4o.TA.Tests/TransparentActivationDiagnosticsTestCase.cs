@@ -32,6 +32,10 @@ namespace Db4objects.Db4o.TA.Tests
 			{
 			}
 
+			public virtual void Activate()
+			{
+			}
+
 			public SomeOtherTAAwareData(TransparentActivationDiagnosticsTestCase.SomeTAAwareData
 				 data)
 			{
@@ -62,12 +66,12 @@ namespace Db4objects.Db4o.TA.Tests
 
 		public TransparentActivationDiagnosticsTestCase()
 		{
-			_checker = new _IDiagnosticListener_54(this);
+			_checker = new _IDiagnosticListener_57(this);
 		}
 
-		private sealed class _IDiagnosticListener_54 : IDiagnosticListener
+		private sealed class _IDiagnosticListener_57 : IDiagnosticListener
 		{
-			public _IDiagnosticListener_54(TransparentActivationDiagnosticsTestCase _enclosing
+			public _IDiagnosticListener_57(TransparentActivationDiagnosticsTestCase _enclosing
 				)
 			{
 				this._enclosing = _enclosing;

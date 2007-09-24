@@ -11,6 +11,7 @@ namespace Db4oAdmin.Core
 		private readonly string _assemblyLocation;
 		private readonly TraceSwitch _traceSwitch = new TraceSwitch("Db4oAdmin", "Db4oAdmin tracing level");
 	    private readonly List<ITypeFilter> _filters = new List<ITypeFilter>();
+		private bool _preserveDebugInfo;
 		
 		public Configuration(string assemblyLocation)
 		{
@@ -34,7 +35,13 @@ namespace Db4oAdmin.Core
 			get { return _traceSwitch; }
 		}
 
-	    public void AddFilter(ITypeFilter filter)
+		public bool PreserveDebugInfo
+		{
+			get { return _preserveDebugInfo; }
+			set { _preserveDebugInfo = value; }
+		}
+
+		public void AddFilter(ITypeFilter filter)
 	    {
             if (null == filter) throw new ArgumentNullException("filter");
 	        _filters.Add(filter);

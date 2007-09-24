@@ -9,8 +9,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class StringHandler2 : StringHandler
 	{
-		public StringHandler2(ObjectContainerBase container, LatinStringIO stringIO) : base
-			(container, stringIO)
+		public StringHandler2(ObjectContainerBase container) : base(container)
 		{
 		}
 

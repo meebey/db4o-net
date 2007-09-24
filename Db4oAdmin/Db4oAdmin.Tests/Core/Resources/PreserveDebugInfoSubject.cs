@@ -19,6 +19,7 @@ public class PreserveDebugInfoSubject : ITestCase
 		}
 		catch (Exception x)
 		{
+//			Console.Error.WriteLine(x);
 			Assert.IsTrue(x.ToString().Contains("PreserveDebugInfoSubject.cs:line 8"));
 		}
 	}

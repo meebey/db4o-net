@@ -444,6 +444,10 @@ namespace Db4objects.Db4o
 		/// the port to be used, or 0, if the server should not open a port,
 		/// because it will only be used with
 		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
+		/// .
+		/// Specify a value < 0 if an arbitrary free port should be chosen - see
+		/// <see cref="IExtObjectServer.Port">IExtObjectServer.Port</see>
+		/// .
 		/// </param>
 		/// <returns>
 		/// an
@@ -503,6 +507,10 @@ namespace Db4objects.Db4o
 		/// the port to be used, or 0, if the server should not open a port,
 		/// because it will only be used with
 		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
+		/// .
+		/// Specify a value < 0 if an arbitrary free port should be chosen - see
+		/// <see cref="IExtObjectServer.Port">IExtObjectServer.Port</see>
+		/// .
 		/// </param>
 		/// <returns>
 		/// an
@@ -563,6 +571,10 @@ namespace Db4objects.Db4o
 		/// the port to be used, or 0, if the server should not open a port,
 		/// because it will only be used with
 		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
+		/// .
+		/// Specify a value < 0 if an arbitrary free port should be chosen - see
+		/// <see cref="IExtObjectServer.Port">IExtObjectServer.Port</see>
+		/// .
 		/// </param>
 		/// <param name="socketFactory">
 		/// the

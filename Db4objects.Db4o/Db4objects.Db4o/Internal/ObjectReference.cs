@@ -6,6 +6,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Reflect;
 using Sharpen;
 
@@ -131,26 +132,30 @@ namespace Db4objects.Db4o.Internal
 		internal virtual bool ContinueSet(Db4objects.Db4o.Internal.Transaction trans, int
 			 updateDepth)
 		{
-			if (BitIsTrue(Const4.CONTINUE))
+			if (!BitIsTrue(Const4.CONTINUE))
 			{
-				if (!_class.StateOKAndAncestors())
-				{
-					return false;
-				}
-				BitFalse(Const4.CONTINUE);
-				StatefulBuffer writer = MarshallerFamily.Current()._object.MarshallNew(trans, this
-					, updateDepth);
-				ObjectContainerBase container = trans.Container();
-				container.WriteNew(_class, writer);
-				object obj = _object;
-				ObjectOnNew(trans, obj);
-				if (!_class.IsPrimitive())
-				{
-					_object = container._references.CreateYapRef(this, obj);
-				}
-				SetStateClean();
-				EndProcessing();
+				return true;
 			}
+			if (!_class.StateOKAndAncestors())
+			{
+				return false;
+			}
+			BitFalse(Const4.CONTINUE);
+			MarshallingContext context = new MarshallingContext(trans, this, updateDepth, true
+				);
+			MarshallerFamily.Current()._object.Marshall(GetObject(), context);
+			Pointer4 pointer = context.AllocateSlot();
+			Db4objects.Db4o.Internal.Buffer buffer = context.ToWriteBuffer(pointer);
+			ObjectContainerBase container = trans.Container();
+			container.WriteNew(trans, pointer, _class, buffer);
+			object obj = _object;
+			ObjectOnNew(trans, obj);
+			if (!_class.IsPrimitive())
+			{
+				_object = container._references.CreateYapRef(this, obj);
+			}
+			SetStateClean();
+			EndProcessing();
 			return true;
 		}
 
@@ -369,7 +374,8 @@ namespace Db4objects.Db4o.Internal
 				{
 					Platform4.KillYapRef(_object);
 				}
-				_object = Platform4.CreateYapRef(container._references._queue, this, obj);
+				_object = Platform4.CreateActiveObjectReference(container._references._queue, this
+					, obj);
 			}
 			else
 			{
@@ -472,31 +478,38 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public virtual void WriteUpdate(Db4objects.Db4o.Internal.Transaction trans, int updatedepth
-			)
+		public virtual void WriteUpdate(Db4objects.Db4o.Internal.Transaction transaction, 
+			int updatedepth)
 		{
-			ContinueSet(trans, updatedepth);
-			if (BeginProcessing())
+			ContinueSet(transaction, updatedepth);
+			if (!BeginProcessing())
 			{
-				object obj = GetObject();
-				if (ObjectCanUpdate(trans, obj))
-				{
-					if ((!IsActive()) || obj == null)
-					{
-						EndProcessing();
-						return;
-					}
-					LogEvent(trans.Container(), "update", Const4.STATE);
-					SetStateClean();
-					trans.WriteUpdateDeleteMembers(GetID(), _class, trans.Container()._handlers.ArrayType
-						(obj), 0);
-					MarshallerFamily.Current()._object.MarshallUpdate(trans, updatedepth, this, obj);
-				}
-				else
-				{
-					EndProcessing();
-				}
+				return;
 			}
+			object obj = GetObject();
+			if (!ObjectCanUpdate(transaction, obj) || !IsActive() || obj == null)
+			{
+				EndProcessing();
+				return;
+			}
+			ObjectContainerBase container = transaction.Container();
+			LogEvent(container, "update", Const4.STATE);
+			SetStateClean();
+			transaction.WriteUpdateDeleteMembers(GetID(), _class, container._handlers.ArrayType
+				(obj), 0);
+			MarshallingContext context = new MarshallingContext(transaction, this, updatedepth
+				, false);
+			MarshallerFamily.Current()._object.Marshall(obj, context);
+			Pointer4 pointer = context.AllocateSlot();
+			Db4objects.Db4o.Internal.Buffer buffer = context.ToWriteBuffer(pointer);
+			container.WriteUpdate(transaction, pointer, ClassMetadata(), buffer);
+			if (IsActive())
+			{
+				SetStateClean();
+			}
+			EndProcessing();
+			container.Callbacks().ObjectOnUpdate(transaction, obj);
+			ClassMetadata().DispatchEvent(container, obj, EventDispatcher.UPDATE);
 		}
 
 		private bool ObjectCanUpdate(Db4objects.Db4o.Internal.Transaction transaction, object

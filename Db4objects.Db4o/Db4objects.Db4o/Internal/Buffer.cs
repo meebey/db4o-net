@@ -42,6 +42,15 @@ namespace Db4objects.Db4o.Internal
 			WriteBytes(bytes);
 		}
 
+		public virtual void Append(Pointer4 pointer, Db4objects.Db4o.Internal.Buffer buffer
+			)
+		{
+			WriteInt(buffer.Length());
+			WriteInt(pointer.Id());
+			WriteInt(pointer.Address());
+			Append(buffer._buffer);
+		}
+
 		public bool ContainsTheSame(Db4objects.Db4o.Internal.Buffer other)
 		{
 			if (other != null)
@@ -108,7 +117,13 @@ namespace Db4objects.Db4o.Internal
 
 		public Db4objects.Db4o.Internal.Buffer ReadEmbeddedObject(Transaction trans)
 		{
-			return trans.Container().BufferByAddress(ReadInt(), ReadInt());
+			int address = ReadInt();
+			int length = ReadInt();
+			if (address == 0)
+			{
+				return null;
+			}
+			return trans.Container().BufferByAddress(address, length);
 		}
 
 		public virtual void ReadEncrypt(ObjectContainerBase stream, int address)
@@ -181,14 +196,6 @@ namespace Db4objects.Db4o.Internal
 			_buffer[_offset++] = a_byte;
 		}
 
-		public void WriteEncrypt(LocalObjectContainer file, int address, int addressOffset
-			)
-		{
-			file._handlers.Encrypt(this);
-			file.WriteBytes(this, address, addressOffset);
-			file._handlers.Decrypt(this);
-		}
-
 		public virtual void WriteEnd()
 		{
 			if (Deploy.debug && Deploy.brackets)
@@ -253,7 +260,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void WriteShortString(Transaction trans, string a_string)
 		{
-			trans.Container()._handlers.i_stringHandler.WriteShort(a_string, this);
+			trans.Container()._handlers._stringHandler.WriteShort(trans, a_string, this);
 		}
 
 		public virtual void WriteLong(long l)

@@ -58,13 +58,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.YAPARRAYN;
 		}
 
-		public sealed override int ObjectLength(object a_object)
-		{
-			int[] dim = ArrayReflector().Dimensions(a_object);
-			return Const4.OBJECT_LENGTH + (Const4.INT_LENGTH * (2 + dim.Length)) + (ElementCount
-				(dim) * _handler.LinkLength());
-		}
-
 		public override int OwnLength(object obj)
 		{
 			int[] dim = ArrayReflector().Dimensions(obj);
@@ -98,40 +91,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ElementCount(dimensions);
 		}
 
-		public sealed override void Read1Candidates(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
+		public override void ReadSubCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
 			 reader, QCandidates candidates)
 		{
 			IntArrayByRef dimensions = new IntArrayByRef();
 			object arr = ReadCreate(candidates.i_trans, reader, dimensions);
-			if (arr != null)
+			if (arr == null)
 			{
-				int count = ElementCount(dimensions.value);
-				for (int i = 0; i < count; i++)
-				{
-					QCandidate qc = _handler.ReadSubCandidate(mf, reader, candidates, true);
-					if (qc != null)
-					{
-						candidates.AddByIdentity(qc);
-					}
-				}
+				return;
 			}
-		}
-
-		public sealed override object Read1Query(Transaction a_trans, MarshallerFamily mf
-			, Db4objects.Db4o.Internal.Buffer a_bytes)
-		{
-			IntArrayByRef dimensions = new IntArrayByRef();
-			object arr = ReadCreate(a_trans, a_bytes, dimensions);
-			if (arr != null)
-			{
-				object[] objects = new object[ElementCount(dimensions.value)];
-				for (int i = 0; i < objects.Length; i++)
-				{
-					objects[i] = _handler.ReadQuery(a_trans, mf, true, a_bytes, true);
-				}
-				ArrayReflector().Shape(objects, 0, arr, dimensions.value, 0);
-			}
-			return arr;
+			ReadSubCandidates(handlerVersion, reader, candidates, ElementCount(dimensions.value
+				));
 		}
 
 		private object ReadCreate(Transaction trans, IReadBuffer buffer, IntArrayByRef dimensions

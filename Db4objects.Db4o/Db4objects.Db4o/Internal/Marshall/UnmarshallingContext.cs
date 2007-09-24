@@ -1,22 +1,16 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class UnmarshallingContext : IFieldListInfo, IMarshallingInfo, IReadContext
+	public class UnmarshallingContext : AbstractReadContext, IFieldListInfo, IMarshallingInfo
 	{
-		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
-
 		private readonly ObjectReference _reference;
 
 		private object _object;
-
-		private Db4objects.Db4o.Internal.Buffer _buffer;
 
 		private ObjectHeader _objectHeader;
 
@@ -24,28 +18,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private bool _checkIDTree;
 
-		private int _activationDepth;
-
-		public UnmarshallingContext(Db4objects.Db4o.Internal.Transaction transaction, ObjectReference
-			 @ref, int addToIDTree, bool checkIDTree)
+		public UnmarshallingContext(Transaction transaction, ObjectReference @ref, int addToIDTree
+			, bool checkIDTree) : base(transaction)
 		{
-			_transaction = transaction;
 			_reference = @ref;
 			_addToIDTree = addToIDTree;
 			_checkIDTree = checkIDTree;
-		}
-
-		public virtual Db4objects.Db4o.Internal.Buffer Buffer(Db4objects.Db4o.Internal.Buffer
-			 buffer)
-		{
-			Db4objects.Db4o.Internal.Buffer temp = _buffer;
-			_buffer = buffer;
-			return temp;
-		}
-
-		public virtual Db4objects.Db4o.Internal.Buffer Buffer()
-		{
-			return _buffer;
 		}
 
 		public virtual Db4objects.Db4o.Internal.StatefulBuffer StatefulBuffer()
@@ -64,29 +42,19 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _reference.GetID();
 		}
 
-		public virtual ObjectContainerBase Container()
-		{
-			return _transaction.Container();
-		}
-
 		public virtual object Read()
 		{
 			if (!BeginProcessing())
 			{
 				return _object;
 			}
-			if (_buffer == null && ObjectID() > 0)
-			{
-				_buffer = Container().ReadReaderByID(_transaction, ObjectID());
-			}
+			ReadBuffer(ObjectID());
 			if (_buffer == null)
 			{
 				EndProcessing();
 				return _object;
 			}
-			_objectHeader = new ObjectHeader(Container(), _buffer);
-			Db4objects.Db4o.Internal.ClassMetadata classMetadata = _objectHeader.ClassMetadata
-				();
+			Db4objects.Db4o.Internal.ClassMetadata classMetadata = ReadObjectHeader();
 			if (classMetadata == null)
 			{
 				EndProcessing();
@@ -114,6 +82,46 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			EndProcessing();
 			return _object;
+		}
+
+		public virtual object ReadFieldValue(int objectID, FieldMetadata field)
+		{
+			ReadBuffer(objectID);
+			if (_buffer == null)
+			{
+				return null;
+			}
+			Db4objects.Db4o.Internal.ClassMetadata classMetadata = ReadObjectHeader();
+			if (classMetadata == null)
+			{
+				return null;
+			}
+			if (!_objectHeader.ObjectMarshaller().FindOffset(classMetadata, _objectHeader._headerAttributes
+				, _buffer, field))
+			{
+				return null;
+			}
+			return field.Read(this);
+		}
+
+		private Db4objects.Db4o.Internal.ClassMetadata ReadObjectHeader()
+		{
+			_objectHeader = new ObjectHeader(Container(), _buffer);
+			Db4objects.Db4o.Internal.ClassMetadata classMetadata = _objectHeader.ClassMetadata
+				();
+			if (classMetadata == null)
+			{
+				return null;
+			}
+			return classMetadata;
+		}
+
+		private void ReadBuffer(int id)
+		{
+			if (_buffer == null && id > 0)
+			{
+				_buffer = Container().ReadReaderByID(_transaction, id);
+			}
 		}
 
 		public virtual Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
@@ -146,32 +154,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_reference.SetObjectWeak(Container(), obj);
 		}
 
-		public virtual object ReadAny()
-		{
-			int payloadOffset = ReadInt();
-			if (payloadOffset == 0)
-			{
-				return null;
-			}
-			int savedOffSet = Offset();
-			Seek(payloadOffset);
-			Db4objects.Db4o.Internal.ClassMetadata classMetadata = Container().ClassMetadataForId
-				(ReadInt());
-			if (classMetadata == null)
-			{
-				Seek(savedOffSet);
-				return null;
-			}
-			if (classMetadata is PrimitiveFieldHandler && classMetadata.IsArray())
-			{
-				Seek(ReadInt());
-			}
-			object obj = classMetadata.Read(this);
-			Seek(savedOffSet);
-			return obj;
-		}
-
-		public virtual object ReadObject()
+		public override object ReadObject()
 		{
 			int id = ReadInt();
 			int depth = _activationDepth - 1;
@@ -193,8 +176,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _addToIDTree == Const4.TRANSIENT;
 		}
 
-		public virtual object ReadObject(ITypeHandler4 handler)
+		public override object ReadObject(ITypeHandler4 handlerType)
 		{
+			ITypeHandler4 handler = CorrectHandlerVersion(handlerType);
 			if (!IsIndirected(handler))
 			{
 				return handler.Read(this);
@@ -212,36 +196,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return obj;
 		}
 
-		public virtual IObjectContainer ObjectContainer()
-		{
-			return (IObjectContainer)Container();
-		}
-
-		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
-		{
-			return _transaction;
-		}
-
-		public virtual byte ReadByte()
-		{
-			return _buffer.ReadByte();
-		}
-
-		public virtual void ReadBytes(byte[] bytes)
-		{
-			_buffer.ReadBytes(bytes);
-		}
-
-		public virtual int ReadInt()
-		{
-			return _buffer.ReadInt();
-		}
-
-		public virtual long ReadLong()
-		{
-			return _buffer.ReadLong();
-		}
-
 		public virtual void AdjustInstantiationDepth()
 		{
 			Config4Class classConfig = ClassConfig();
@@ -256,16 +210,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return ClassMetadata().Config();
 		}
 
-		public virtual int Offset()
-		{
-			return _buffer.Offset();
-		}
-
-		public virtual void Seek(int offset)
-		{
-			_buffer.Seek(offset);
-		}
-
 		public virtual ObjectReference Reference()
 		{
 			return _reference;
@@ -277,16 +221,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				_reference.AddExistingReferenceToIdTree(Transaction());
 			}
-		}
-
-		public virtual int ActivationDepth()
-		{
-			return _activationDepth;
-		}
-
-		public virtual void ActivationDepth(int depth)
-		{
-			_activationDepth = depth;
 		}
 
 		public virtual void PersistentObject(object obj)
@@ -304,53 +238,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return HeaderAttributes().IsNull(fieldIndex);
 		}
 
-		public virtual object Read(ITypeHandler4 handlerType)
-		{
-			ITypeHandler4 handler = CorrectHandlerVersion(handlerType);
-			if (!IsIndirected(handler))
-			{
-				return handler.Read(this);
-			}
-			int indirectedOffSet = ReadInt();
-			ReadInt();
-			int offset = Offset();
-			Seek(indirectedOffSet);
-			object obj = handler.Read(this);
-			Seek(offset);
-			return obj;
-		}
-
-		private bool IsIndirected(ITypeHandler4 handler)
-		{
-			if (HandlerVersion() == 0)
-			{
-				return false;
-			}
-			return HandlerRegistry().IsVariableLength(handler);
-		}
-
-		private Db4objects.Db4o.Internal.HandlerRegistry HandlerRegistry()
-		{
-			return Container().Handlers();
-		}
-
-		public virtual bool OldHandlerVersion()
-		{
-			return HandlerVersion() != MarshallingContext.HANDLER_VERSION;
-		}
-
-		public virtual int HandlerVersion()
+		public override int HandlerVersion()
 		{
 			return _objectHeader.HandlerVersion();
-		}
-
-		public virtual ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler)
-		{
-			if (!OldHandlerVersion())
-			{
-				return handler;
-			}
-			return Container().Handlers().CorrectHandlerVersion(handler, HandlerVersion());
 		}
 	}
 }

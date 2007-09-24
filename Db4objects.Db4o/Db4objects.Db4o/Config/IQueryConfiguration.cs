@@ -119,6 +119,8 @@ namespace Db4objects.Db4o.Config
 		/// <br />
 		/// -
 		/// <see cref="QueryEvaluationMode.LAZY">QueryEvaluationMode.LAZY</see>
+		/// <br /><br />
+		/// This setting must be issued from the client side.
 		/// </remarks>
 		void EvaluationMode(QueryEvaluationMode mode);
 	}

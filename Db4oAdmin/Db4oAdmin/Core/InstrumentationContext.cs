@@ -13,9 +13,15 @@ namespace Db4oAdmin.Core
 
 		public InstrumentationContext(Configuration configuration)
 		{
-			_assembly = AssemblyFactory.GetAssembly(configuration.AssemblyLocation);
-			_assembly.MainModule.FullLoad(); // resolves all references
 			_configuration = configuration;
+			LoadAssembly();
+		}
+
+		private void LoadAssembly()
+		{
+			_assembly = AssemblyFactory.GetAssembly(_configuration.AssemblyLocation);
+			if (PreserveDebugInfo()) _assembly.MainModule.LoadSymbols();
+			_assembly.MainModule.FullLoad(); // resolves all references
 		}
 
 		public Configuration Configuration
@@ -50,7 +56,13 @@ namespace Db4oAdmin.Core
 
 		public void SaveAssembly()
 		{
+			if (PreserveDebugInfo()) _assembly.MainModule.SaveSymbols();
 			AssemblyFactory.SaveAssembly(_assembly, AssemblyLocation);
+		}
+
+		private bool PreserveDebugInfo()
+		{
+			return _configuration.PreserveDebugInfo;
 		}
 
 		public void TraceWarning(string message, params object[] args)

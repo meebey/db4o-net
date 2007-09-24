@@ -2,7 +2,6 @@
 
 using System.IO;
 using Db4oUnit;
-using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation.IO;
@@ -13,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 {
 	public abstract class StandaloneCSTestCaseBase : ITestCase
 	{
-		private readonly int _port = Db4oClientServer.FindFreePort();
+		private int _port;
 
 		public sealed class Item
 		{
@@ -30,7 +29,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			Configure(config);
 			string fileName = DatabaseFile();
 			File4.Delete(fileName);
-			IObjectServer server = Db4oFactory.OpenServer(config, fileName, _port);
+			IObjectServer server = Db4oFactory.OpenServer(config, fileName, -1);
+			_port = server.Ext().Port();
 			try
 			{
 				server.GrantAccess("db4o", "db4o");

@@ -191,7 +191,11 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				return true;
 			}
-			return ((IServerSideMessage)message).ProcessAtServer();
+			if (IsMessageDispatcherAlive())
+			{
+				return ((IServerSideMessage)message).ProcessAtServer();
+			}
+			return false;
 		}
 
 		private void UpdateLastActiveTime()

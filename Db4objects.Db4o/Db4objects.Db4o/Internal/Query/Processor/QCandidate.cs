@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -9,6 +8,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal FieldMetadata _yapField;
 
-		internal MarshallerFamily _marshallerFamily;
+		private int _handlerVersion;
 
 		private QCandidate(QCandidates qcandidates) : base(0)
 		{
@@ -90,17 +90,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			if (_member is ICompare)
 			{
 				_member = ((ICompare)_member).Compare();
-				LocalObjectContainer stream = GetStream();
+				LocalObjectContainer stream = Container();
 				_yapClass = stream.ClassMetadataForReflectClass(stream.Reflector().ForObject(_member
 					));
-				_key = stream.GetID(GetTransaction(), _member);
+				_key = stream.GetID(Transaction(), _member);
 				if (_key == 0)
 				{
 					SetBytes(null);
 				}
 				else
 				{
-					SetBytes(stream.ReadReaderByID(GetTransaction(), _key));
+					SetBytes(stream.ReadReaderByID(Transaction(), _key));
 				}
 			}
 		}
@@ -136,8 +136,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					ITypeHandler4 tempHandler = null;
 					if (handler is IFirstClassHandler)
 					{
-						tempHandler = ((IFirstClassHandler)handler).ReadArrayHandler(GetTransaction(), _marshallerFamily
-							, arrayBytes);
+						tempHandler = ((IFirstClassHandler)handler).ReadArrayHandler(Transaction(), MarshallerFamily
+							(), arrayBytes);
 					}
 					if (tempHandler != null)
 					{
@@ -158,8 +158,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								qcon.SetCandidates(candidates);
 								if (arrayHandler is IFirstClassHandler)
 								{
-									((IFirstClassHandler)arrayHandler).ReadCandidates(_marshallerFamily, arrayBytes[0
-										], candidates);
+									((IFirstClassHandler)arrayHandler).ReadCandidates(_handlerVersion, arrayBytes[0], 
+										candidates);
 								}
 								arrayBytes[0]._offset = offset;
 								bool isNot = qcon.IsNot();
@@ -170,14 +170,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								candidates.Evaluate();
 								Tree.ByRef pending = new Tree.ByRef();
 								bool[] innerRes = new bool[] { isNot };
-								candidates.Traverse(new _IVisitor4_183(this, innerRes, isNot, pending));
+								candidates.Traverse(new _IVisitor4_184(this, innerRes, isNot, pending));
 								if (isNot)
 								{
 									qcon.Not();
 								}
 								if (pending.value != null)
 								{
-									pending.value.Traverse(new _IVisitor4_252(this));
+									pending.value.Traverse(new _IVisitor4_253(this));
 								}
 								if (!innerRes[0])
 								{
@@ -235,9 +235,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _IVisitor4_183 : IVisitor4
+		private sealed class _IVisitor4_184 : IVisitor4
 		{
-			public _IVisitor4_183(QCandidate _enclosing, bool[] innerRes, bool isNot, Tree.ByRef
+			public _IVisitor4_184(QCandidate _enclosing, bool[] innerRes, bool isNot, Tree.ByRef
 				 pending)
 			{
 				this._enclosing = _enclosing;
@@ -256,13 +256,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (cand._pendingJoins != null)
 				{
-					cand._pendingJoins.Traverse(new _IVisitor4_196(this, pending));
+					cand._pendingJoins.Traverse(new _IVisitor4_197(this, pending));
 				}
 			}
 
-			private sealed class _IVisitor4_196 : IVisitor4
+			private sealed class _IVisitor4_197 : IVisitor4
 			{
-				public _IVisitor4_196(_IVisitor4_183 _enclosing, Tree.ByRef pending)
+				public _IVisitor4_197(_IVisitor4_184 _enclosing, Tree.ByRef pending)
 				{
 					this._enclosing = _enclosing;
 					this.pending = pending;
@@ -286,7 +286,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 
-				private readonly _IVisitor4_183 _enclosing;
+				private readonly _IVisitor4_184 _enclosing;
 
 				private readonly Tree.ByRef pending;
 			}
@@ -300,9 +300,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly Tree.ByRef pending;
 		}
 
-		private sealed class _IVisitor4_252 : IVisitor4
+		private sealed class _IVisitor4_253 : IVisitor4
 		{
-			public _IVisitor4_252(QCandidate _enclosing)
+			public _IVisitor4_253(QCandidate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -378,7 +378,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual IObjectContainer ObjectContainer()
 		{
-			return GetStream();
+			return Container();
 		}
 
 		public virtual object GetObject()
@@ -388,10 +388,15 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				Db4objects.Db4o.Internal.Buffer reader = (Db4objects.Db4o.Internal.Buffer)obj;
 				int offset = reader._offset;
-				obj = _marshallerFamily._string.ReadFromOwnSlot(GetStream(), reader);
+				obj = ReadString(reader);
 				reader._offset = offset;
 			}
 			return obj;
+		}
+
+		public virtual string ReadString(Db4objects.Db4o.Internal.Buffer buffer)
+		{
+			return StringHandler.ReadString(Context(), buffer);
 		}
 
 		internal virtual Db4objects.Db4o.Internal.Query.Processor.QCandidate GetRoot()
@@ -399,14 +404,39 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return _root == null ? this : _root;
 		}
 
-		private LocalObjectContainer GetStream()
+		internal LocalObjectContainer Container()
 		{
-			return GetTransaction().File();
+			return Transaction().File();
 		}
 
-		private LocalTransaction GetTransaction()
+		internal LocalTransaction Transaction()
 		{
 			return _candidates.i_trans;
+		}
+
+		private IContext Context()
+		{
+			return new _IContext_423(this);
+		}
+
+		private sealed class _IContext_423 : IContext
+		{
+			public _IContext_423(QCandidate _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public IObjectContainer ObjectContainer()
+			{
+				return this._enclosing.Container();
+			}
+
+			public Db4objects.Db4o.Internal.Transaction Transaction()
+			{
+				return this._enclosing.Transaction();
+			}
+
+			private readonly QCandidate _enclosing;
 		}
 
 		public virtual bool HasDuplicates()
@@ -446,7 +476,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private IReflectClass MemberClass()
 		{
-			return GetTransaction().Reflector().ForObject(_member);
+			return Transaction().Reflector().ForObject(_member);
 		}
 
 		internal virtual IComparable4 PrepareComparison(ObjectContainerBase a_stream, object
@@ -500,7 +530,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					if (_key > 0)
 					{
-						SetBytes(GetStream().ReadReaderByID(GetTransaction(), _key));
+						SetBytes(Container().ReadReaderByID(Transaction(), _key));
 						if (_bytes == null)
 						{
 							_include = false;
@@ -514,37 +544,47 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
+		private int CurrentOffSet()
+		{
+			return _bytes._offset;
+		}
+
 		private Db4objects.Db4o.Internal.Query.Processor.QCandidate ReadSubCandidate(QCandidates
 			 candidateCollection)
 		{
 			Read();
-			if (_bytes != null)
+			if (_bytes == null || _yapField == null)
 			{
-				Db4objects.Db4o.Internal.Query.Processor.QCandidate subCandidate = null;
-				int offset = _bytes._offset;
-				try
-				{
-					subCandidate = _yapField.GetHandler().ReadSubCandidate(_marshallerFamily, _bytes, 
-						candidateCollection, false);
-				}
-				catch (Exception)
-				{
-					return null;
-				}
-				_bytes._offset = offset;
-				if (subCandidate != null)
-				{
-					subCandidate._root = GetRoot();
-					return subCandidate;
-				}
+				return null;
+			}
+			int offset = CurrentOffSet();
+			QueryingReadContext context = NewQueryingReadContext();
+			ITypeHandler4 handler = context.CorrectHandlerVersion(_yapField.GetHandler());
+			Db4objects.Db4o.Internal.Query.Processor.QCandidate subCandidate = candidateCollection
+				.ReadSubCandidate(context, handler);
+			Seek(offset);
+			if (subCandidate != null)
+			{
+				subCandidate._root = GetRoot();
+				return subCandidate;
 			}
 			return null;
+		}
+
+		private void Seek(int offset)
+		{
+			_bytes._offset = offset;
+		}
+
+		private QueryingReadContext NewQueryingReadContext()
+		{
+			return new QueryingReadContext(Transaction(), _handlerVersion, _bytes);
 		}
 
 		private void ReadThis(bool a_activate)
 		{
 			Read();
-			Transaction trans = GetTransaction();
+			Db4objects.Db4o.Internal.Transaction trans = Transaction();
 			if (trans != null)
 			{
 				_member = trans.Container().GetByID(trans, _key);
@@ -563,8 +603,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				Read();
 				if (_bytes != null)
 				{
-					_bytes._offset = 0;
-					ObjectContainerBase stream = GetStream();
+					Seek(0);
+					ObjectContainerBase stream = Container();
 					ObjectHeader objectHeader = new ObjectHeader(stream, _bytes);
 					_yapClass = objectHeader.ClassMetadata();
 					if (_yapClass != null)
@@ -628,18 +668,31 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return;
 			}
 			_yapField = a_field.GetYapField(_yapClass);
-			_marshallerFamily = _yapClass.FindOffset(_bytes, _yapField);
-			if (_yapField == null || _marshallerFamily == null)
+			if (_yapField == null)
 			{
-				if (_yapClass.HoldsAnyClass())
-				{
-					_yapField = null;
-				}
-				else
-				{
-					_yapField = new NullFieldMetadata();
-				}
+				FieldNotFound();
+				return;
 			}
+			HandlerVersion handlerVersion = _yapClass.FindOffset(_bytes, _yapField);
+			if (handlerVersion == HandlerVersion.INVALID)
+			{
+				FieldNotFound();
+				return;
+			}
+			_handlerVersion = handlerVersion._number;
+		}
+
+		private void FieldNotFound()
+		{
+			if (_yapClass.HoldsAnyClass())
+			{
+				_yapField = null;
+			}
+			else
+			{
+				_yapField = new NullFieldMetadata();
+			}
+			_handlerVersion = MarshallingContext.HANDLER_VERSION;
 		}
 
 		internal virtual object Value()
@@ -657,24 +710,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				else
 				{
-					int offset = _bytes._offset;
-					bool ok = false;
-					try
-					{
-						_member = _yapField.ReadQuery(GetTransaction(), _marshallerFamily, _bytes);
-						ok = true;
-					}
-					catch (CorruptionException)
-					{
-					}
-					finally
-					{
-						if (!ok)
-						{
-							_member = null;
-						}
-					}
-					_bytes._offset = offset;
+					int offset = CurrentOffSet();
+					_member = _yapField.Read(NewQueryingReadContext());
+					Seek(offset);
 					CheckInstanceOfCompare();
 				}
 			}
@@ -684,6 +722,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal virtual void SetBytes(Db4objects.Db4o.Internal.Buffer bytes)
 		{
 			_bytes = bytes;
+		}
+
+		private Db4objects.Db4o.Internal.Marshall.MarshallerFamily MarshallerFamily()
+		{
+			return Db4objects.Db4o.Internal.Marshall.MarshallerFamily.Version(_handlerVersion
+				);
 		}
 	}
 }

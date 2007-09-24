@@ -4,6 +4,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -15,9 +16,23 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
+		public override void ReadCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
+			 reader, QCandidates candidates)
+		{
+			Transaction transaction = candidates.Transaction();
+			Db4objects.Db4o.Internal.Buffer arrayBuffer = reader.ReadEmbeddedObject(transaction
+				);
+			int count = ElementCount(transaction, arrayBuffer);
+			for (int i = 0; i < count; i++)
+			{
+				candidates.AddByIdentity(new QCandidate(candidates, null, arrayBuffer.ReadInt(), 
+					true));
+			}
+		}
+
 		public override object Read(IReadContext readContext)
 		{
-			UnmarshallingContext context = (UnmarshallingContext)readContext;
+			IInternalReadContext context = (IInternalReadContext)readContext;
 			Db4objects.Db4o.Internal.Buffer buffer = ReadIndirectedBuffer(context);
 			if (buffer == null)
 			{

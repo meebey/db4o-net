@@ -15,19 +15,19 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			Unmarshall(_payLoad._offset);
 			lock (StreamLock())
 			{
-				ClassMetadata yc = yapClassId == 0 ? null : stream.ClassMetadataForId(yapClassId);
-				_payLoad.WriteEmbedded();
+				ClassMetadata classMetadata = yapClassId == 0 ? null : stream.ClassMetadataForId(
+					yapClassId);
 				int id = _payLoad.GetID();
 				stream.PrefetchedIDConsumed(id);
 				Transaction().SlotFreePointerOnRollback(id);
 				Slot slot = stream.GetSlot(_payLoad.Length());
 				_payLoad.Address(slot.Address());
 				Transaction().SlotFreeOnRollback(id, slot);
-				if (yc != null)
+				if (classMetadata != null)
 				{
-					yc.AddFieldIndices(_payLoad, null);
+					classMetadata.AddFieldIndices(_payLoad, null);
 				}
-				stream.WriteNew(yc, _payLoad);
+				stream.WriteNew(Transaction(), _payLoad.Pointer(), classMetadata, _payLoad);
 				ServerTransaction().WritePointer(id, slot);
 			}
 			return true;

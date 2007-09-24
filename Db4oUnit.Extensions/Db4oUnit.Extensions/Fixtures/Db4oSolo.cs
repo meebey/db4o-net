@@ -1,8 +1,10 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.IO;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Sharpen;
 
 namespace Db4oUnit.Extensions.Fixtures
 {
@@ -14,8 +16,19 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 		}
 
-		public Db4oSolo(IConfigurationSource configSource) : base(configSource, FILE)
+		public Db4oSolo(IConfigurationSource configSource) : base(configSource, FilePath(
+			))
 		{
+		}
+
+		private static string FilePath()
+		{
+			string path = Runtime.GetProperty("db4ounit.file.path");
+			if (path == null || path.Length == 0)
+			{
+				path = ".";
+			}
+			return Path.Combine(path, FILE);
 		}
 
 		protected override IObjectContainer CreateDatabase(IConfiguration config)
@@ -30,7 +43,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public override void Defragment()
 		{
-			Defragment(FILE);
+			Defragment(FilePath());
 		}
 	}
 }

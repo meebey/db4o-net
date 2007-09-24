@@ -2,12 +2,13 @@
 
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	public class MsgObject : MsgD
 	{
-		private const int LENGTH_FOR_ALL = Const4.ID_LENGTH + (Const4.INT_LENGTH * 3);
+		private const int LENGTH_FOR_ALL = Const4.ID_LENGTH + (Const4.INT_LENGTH * 2);
 
 		private const int LENGTH_FOR_FIRST = LENGTH_FOR_ALL;
 
@@ -15,19 +16,15 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		private int _address;
 
-		internal virtual MsgD GetWriter(StatefulBuffer bytes, int[] prependInts)
+		internal MsgD GetWriter(Transaction trans, Pointer4 pointer, Db4objects.Db4o.Internal.Buffer
+			 buffer, int[] prependInts)
 		{
-			int lengthNeeded = bytes.Length() + LENGTH_FOR_FIRST;
+			int lengthNeeded = buffer.Length() + LENGTH_FOR_FIRST;
 			if (prependInts != null)
 			{
 				lengthNeeded += (prependInts.Length * Const4.INT_LENGTH);
 			}
-			int embeddedCount = bytes.EmbeddedCount();
-			if (embeddedCount > 0)
-			{
-				lengthNeeded += (LENGTH_FOR_ALL * embeddedCount) + bytes.EmbeddedLength();
-			}
-			MsgD message = GetWriterForLength(bytes.GetTransaction(), lengthNeeded);
+			MsgD message = GetWriterForLength(trans, lengthNeeded);
 			if (prependInts != null)
 			{
 				for (int i = 0; i < prependInts.Length; i++)
@@ -35,29 +32,30 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					message._payLoad.WriteInt(prependInts[i]);
 				}
 			}
-			message._payLoad.WriteInt(embeddedCount);
-			bytes.AppendTo(message._payLoad, -1);
+			message._payLoad.Append(pointer, buffer);
 			return message;
 		}
 
-		public override MsgD GetWriter(StatefulBuffer bytes)
+		public sealed override MsgD GetWriter(StatefulBuffer buffer)
 		{
-			return GetWriter(bytes, null);
+			return GetWriter(buffer.GetTransaction(), buffer.Pointer(), buffer, null);
 		}
 
-		public virtual MsgD GetWriter(ClassMetadata a_yapClass, StatefulBuffer bytes)
+		public MsgD GetWriter(Transaction trans, Pointer4 pointer, ClassMetadata classMetadata
+			, Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			if (a_yapClass == null)
+			if (classMetadata == null)
 			{
-				return GetWriter(bytes, new int[] { 0 });
+				return GetWriter(trans, pointer, buffer, new int[] { 0 });
 			}
-			return GetWriter(bytes, new int[] { a_yapClass.GetID() });
+			return GetWriter(trans, pointer, buffer, new int[] { classMetadata.GetID() });
 		}
 
-		public virtual MsgD GetWriter(ClassMetadata a_yapClass, int a_param, StatefulBuffer
-			 bytes)
+		public MsgD GetWriter(Transaction trans, Pointer4 pointer, ClassMetadata classMetadata
+			, int param, Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			return GetWriter(bytes, new int[] { a_yapClass.GetID(), a_param });
+			return GetWriter(trans, pointer, buffer, new int[] { classMetadata.GetID(), param
+				 });
 		}
 
 		public StatefulBuffer Unmarshall()
@@ -68,7 +66,6 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public StatefulBuffer Unmarshall(int addLengthBeforeFirst)
 		{
 			_payLoad.SetTransaction(Transaction());
-			int embeddedCount = _payLoad.ReadInt();
 			int length = _payLoad.ReadInt();
 			if (length == 0)
 			{
@@ -76,18 +73,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			}
 			_id = _payLoad.ReadInt();
 			_address = _payLoad.ReadInt();
-			if (embeddedCount == 0)
-			{
-				_payLoad.RemoveFirstBytes(LENGTH_FOR_FIRST + addLengthBeforeFirst);
-			}
-			else
-			{
-				_payLoad._offset += length;
-				StatefulBuffer[] embedded = new StatefulBuffer[embeddedCount + 1];
-				embedded[0] = _payLoad;
-				new StatefulBuffer(_payLoad, embedded, 1);
-				_payLoad.Trim4(LENGTH_FOR_FIRST + addLengthBeforeFirst, length);
-			}
+			_payLoad.RemoveFirstBytes(LENGTH_FOR_FIRST + addLengthBeforeFirst);
 			_payLoad.UseSlot(_id, _address, length);
 			return _payLoad;
 		}

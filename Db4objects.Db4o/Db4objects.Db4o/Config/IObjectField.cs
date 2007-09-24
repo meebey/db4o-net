@@ -34,6 +34,8 @@ namespace Db4objects.Db4o.Config
 		/// is activated.
 		/// <br /><br />
 		/// The default setting is <b>false</b>.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether activation is to be cascaded to the member object.</param>
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
@@ -61,6 +63,8 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="IObjectClass.CascadeOnDelete">IObjectClass.CascadeOnDelete</see>
 		/// <br /><br />
 		/// The default setting is <b>false</b>.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether deletes are to be cascaded to the member object.</param>
 		/// <seealso cref="IObjectClass.CascadeOnDelete">IObjectClass.CascadeOnDelete</seealso>
@@ -79,6 +83,8 @@ namespace Db4objects.Db4o.Config
 		/// .
 		/// <br /><br />
 		/// The default setting is <b>false</b>.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether updates are to be cascaded to the member object.</param>
 		/// <seealso cref="IObjectContainer.Set">IObjectContainer.Set</seealso>
@@ -100,6 +106,8 @@ namespace Db4objects.Db4o.Config
 		/// setting is set to <code>true</code> and an index does not exist, the index will be
 		/// created. If the setting is set to <code>false</code> and an index does exist the
 		/// index will be dropped.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="flag">
 		/// specify <code>true</code> or <code>false</code> to turn indexing on for
@@ -112,6 +120,8 @@ namespace Db4objects.Db4o.Config
 		/// renames a field of a stored class.
 		/// <br /><br />Use this method to refactor classes.
 		/// <br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="newName">the new fieldname.</param>
 		void Rename(string newName);
@@ -121,6 +131,8 @@ namespace Db4objects.Db4o.Config
 		/// toggles query evaluation.
 		/// <br /><br />All fields are evaluated by default. Use this method to turn query
 		/// evaluation of for specific fields.<br /><br />
+		/// In client-server environment this setting should be used on both
+		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="flag">specify <code>false</code> to ignore this field during query evaluation.
 		/// 	</param>

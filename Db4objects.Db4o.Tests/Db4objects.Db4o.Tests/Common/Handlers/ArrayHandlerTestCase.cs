@@ -48,9 +48,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private ArrayHandler ArrayHandler(Type clazz, bool isPrimitive)
 		{
-			ITypeHandler4 typeHandler = Stream().Handlers().HandlerForClass(Stream(), Reflector
-				().ForClass(clazz));
-			return new ArrayHandler(Stream(), typeHandler, isPrimitive);
+			ClassMetadata classMetadata = Stream().ProduceClassMetadata(Reflector().ForClass(
+				clazz));
+			return new ArrayHandler(Stream(), classMetadata.TypeHandler(), isPrimitive);
 		}
 
 		public virtual void TestIntArrayReadWrite()

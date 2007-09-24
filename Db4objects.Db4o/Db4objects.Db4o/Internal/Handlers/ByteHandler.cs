@@ -24,11 +24,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Coercion4.ToSByte(obj);
 		}
 
-		public override int GetID()
-		{
-			return 6;
-		}
-
 		public override object DefaultValue()
 		{
 			return DEFAULT_VALUE;

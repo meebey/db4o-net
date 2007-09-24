@@ -22,11 +22,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_primitive;
 		}
 
-		public override int GetID()
-		{
-			return 7;
-		}
-
 		public override int LinkLength()
 		{
 			return LENGTH;

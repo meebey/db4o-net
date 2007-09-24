@@ -7,6 +7,7 @@ using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -19,8 +20,12 @@ namespace Db4objects.Db4o.Internal
 	{
 		private static readonly object ANY_OBJECT = new object();
 
-		internal VirtualFieldMetadata() : base(null)
+		private readonly IReflectClass _classReflector;
+
+		internal VirtualFieldMetadata(int handlerID, IBuiltinTypeHandler handler) : base(
+			handlerID, handler)
 		{
+			_classReflector = handler.ClassReflector();
 		}
 
 		public abstract override void AddFieldIndex(MarshallerFamily mf, ClassMetadata yapClass
@@ -39,6 +44,11 @@ namespace Db4objects.Db4o.Internal
 		public override bool CanUseNullBitmap()
 		{
 			return false;
+		}
+
+		public virtual IReflectClass ClassReflector()
+		{
+			return _classReflector;
 		}
 
 		internal override void CollectConstraints(Transaction a_trans, QConObject a_parent
@@ -166,15 +176,15 @@ namespace Db4objects.Db4o.Internal
 
 		internal abstract void MarshallIgnore(IWriteBuffer writer);
 
-		public override void ReadVirtualAttribute(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			 a_reader, ObjectReference a_yapObject)
+		public override void ReadVirtualAttribute(Transaction trans, Db4objects.Db4o.Internal.Buffer
+			 buffer, ObjectReference @ref)
 		{
-			if (!a_trans.SupportsVirtualFields())
+			if (!trans.SupportsVirtualFields())
 			{
-				a_reader.IncrementOffset(LinkLength());
+				IncrementOffset(buffer);
 				return;
 			}
-			Instantiate1(a_trans, a_yapObject, a_reader);
+			Instantiate1(trans, @ref, buffer);
 		}
 
 		public override bool IsVirtual()
@@ -189,7 +199,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected override IIndexable4 IndexHandler(ObjectContainerBase stream)
 		{
-			return (IIndexable4)i_handler;
+			return (IIndexable4)_handler;
 		}
 	}
 }

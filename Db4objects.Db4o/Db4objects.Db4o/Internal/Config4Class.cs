@@ -31,8 +31,6 @@ namespace Db4objects.Db4o.Internal
 		/// </summary>
 		private static readonly KeySpec MAINTAIN_METACLASS = new KeySpec(true);
 
-		private static readonly KeySpec MARSHALLER = new KeySpec(null);
-
 		private static readonly KeySpec MAXIMUM_ACTIVATION_DEPTH = new KeySpec(0);
 
 		private static readonly KeySpec MINIMUM_ACTIVATION_DEPTH = new KeySpec(0);
@@ -204,16 +202,6 @@ namespace Db4objects.Db4o.Internal
 		internal virtual bool Instantiates()
 		{
 			return GetTranslator() is IObjectConstructor;
-		}
-
-		public virtual void MarshallWith(IObjectMarshaller marshaller)
-		{
-			_config.Put(MARSHALLER, marshaller);
-		}
-
-		internal virtual IObjectMarshaller GetMarshaller()
-		{
-			return (IObjectMarshaller)_config.Get(MARSHALLER);
 		}
 
 		public virtual void MaximumActivationDepth(int depth)

@@ -15,6 +15,7 @@ using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.Replication;
+using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
@@ -412,7 +413,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void CreateStringIO(byte encoding)
 		{
-			SetStringIo(LatinStringIO.ForEncoding(encoding));
+			StringIO(LatinStringIO.ForEncoding(encoding));
 		}
 
 		protected void InitializeTransactions()
@@ -652,48 +653,26 @@ namespace Db4objects.Db4o.Internal
 			lock (_lock)
 			{
 				trans = CheckTransaction(trans);
-				ObjectReference yo = trans.ReferenceForObject(obj);
-				if (yo == null)
+				ObjectReference @ref = trans.ReferenceForObject(obj);
+				if (@ref == null)
 				{
 					return null;
 				}
-				object child = null;
 				string fieldName = path[0];
 				if (fieldName == null)
 				{
 					return null;
 				}
-				ClassMetadata yc = yo.ClassMetadata();
+				ClassMetadata classMetadata = @ref.ClassMetadata();
 				FieldMetadata[] field = new FieldMetadata[] { null };
-				yc.ForEachFieldMetadata(new _IVisitor4_581(this, fieldName, field));
+				classMetadata.ForEachFieldMetadata(new _IVisitor4_580(this, fieldName, field));
 				if (field[0] == null)
 				{
 					return null;
 				}
-				if (yo.IsActive())
-				{
-					child = field[0].Get(trans, obj);
-				}
-				else
-				{
-					Db4objects.Db4o.Internal.Buffer reader = ReadReaderByID(trans, yo.GetID());
-					if (reader == null)
-					{
-						return null;
-					}
-					MarshallerFamily mf = yc.FindOffset(reader, field[0]);
-					if (mf == null)
-					{
-						return null;
-					}
-					try
-					{
-						child = field[0].ReadQuery(trans, mf, reader);
-					}
-					catch (CorruptionException)
-					{
-					}
-				}
+				object child = @ref.IsActive() ? field[0].Get(trans, obj) : new UnmarshallingContext
+					(trans, @ref, Const4.ADD_TO_ID_TREE, false).ReadFieldValue(@ref.GetID(), field[0
+					]);
 				if (path.Length == 1)
 				{
 					return child;
@@ -708,9 +687,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_581 : IVisitor4
+		private sealed class _IVisitor4_580 : IVisitor4
 		{
-			public _IVisitor4_581(PartialObjectContainer _enclosing, string fieldName, FieldMetadata[]
+			public _IVisitor4_580(PartialObjectContainer _enclosing, string fieldName, FieldMetadata[]
 				 field)
 			{
 				this._enclosing = _enclosing;
@@ -1040,10 +1019,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			ClassMetadata yc = _handlers.ClassMetadataForClass(claxx);
-			if (yc != null)
+			ClassMetadata classMetadata = _handlers.ClassMetadataForClass(claxx);
+			if (classMetadata != null)
 			{
-				return yc;
+				return classMetadata;
 			}
 			return _classCollection.ProduceClassMetadata(claxx);
 		}
@@ -1317,7 +1296,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_handlers.IsSystemHandler(id))
 			{
-				return _handlers.GetHandler(id);
+				return _handlers.HandlerForID(id);
 			}
 			return ClassMetadataForId(id);
 		}
@@ -1956,9 +1935,9 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract bool SetSemaphore(string name, int timeout);
 
-		internal virtual void SetStringIo(LatinStringIO a_io)
+		internal virtual void StringIO(LatinStringIO io)
 		{
-			_handlers.i_stringHandler.SetStringIo(a_io);
+			_handlers.StringIO(io);
 		}
 
 		internal bool ShowInternalClasses()
@@ -2144,7 +2123,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual LatinStringIO StringIO()
 		{
-			return _handlers.i_stringHandler.StringIO();
+			return _handlers.StringIO();
 		}
 
 		public abstract ISystemInfo SystemInfo();
@@ -2251,15 +2230,13 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract void WriteDirty();
 
-		public abstract void WriteEmbedded(StatefulBuffer a_parent, StatefulBuffer a_child
-			);
+		public abstract void WriteNew(Db4objects.Db4o.Internal.Transaction trans, Pointer4
+			 pointer, ClassMetadata classMetadata, Db4objects.Db4o.Internal.Buffer buffer);
 
-		public abstract void WriteNew(ClassMetadata a_yapClass, StatefulBuffer aWriter);
+		public abstract void WriteTransactionPointer(int address);
 
-		public abstract void WriteTransactionPointer(int a_address);
-
-		public abstract void WriteUpdate(ClassMetadata a_yapClass, StatefulBuffer a_bytes
-			);
+		public abstract void WriteUpdate(Db4objects.Db4o.Internal.Transaction trans, Pointer4
+			 pointer, ClassMetadata classMetadata, Db4objects.Db4o.Internal.Buffer buffer);
 
 		private static ExternalObjectContainer Cast(Db4objects.Db4o.Internal.PartialObjectContainer
 			 obj)
@@ -2286,14 +2263,14 @@ namespace Db4objects.Db4o.Internal
 			return _config;
 		}
 
-		public virtual UUIDFieldMetadata GetUUIDIndex()
+		public virtual UUIDFieldMetadata UUIDIndex()
 		{
-			return _handlers.i_indexes.i_fieldUUID;
+			return _handlers.Indexes()._uUID;
 		}
 
-		public virtual VersionFieldMetadata GetVersionIndex()
+		public virtual VersionFieldMetadata VersionIndex()
 		{
-			return _handlers.i_indexes.i_fieldVersion;
+			return _handlers.Indexes()._version;
 		}
 
 		public virtual ClassMetadataRepository ClassCollection()

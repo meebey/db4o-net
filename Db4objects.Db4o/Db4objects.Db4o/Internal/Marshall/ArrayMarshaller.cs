@@ -3,7 +3,6 @@
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -25,12 +24,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public abstract void DefragIDs(ArrayHandler arrayHandler, BufferPair readers);
 
 		public abstract object Read(ArrayHandler arrayHandler, StatefulBuffer reader);
-
-		public abstract void ReadCandidates(ArrayHandler arrayHandler, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates);
-
-		public abstract object ReadQuery(ArrayHandler arrayHandler, Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 reader);
 
 		protected abstract Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans
 			, Db4objects.Db4o.Internal.Buffer reader);

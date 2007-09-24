@@ -9,8 +9,8 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public interface IFirstClassHandler
 	{
-		void ReadCandidates(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer buffer, 
-			QCandidates candidates);
+		void ReadCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer buffer, QCandidates
+			 candidates);
 
 		ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer[]
 			 a_bytes);

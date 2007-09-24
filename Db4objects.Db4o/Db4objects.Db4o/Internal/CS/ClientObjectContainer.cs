@@ -14,6 +14,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 using Db4objects.Db4o.Internal.Convert;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
+using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Reflect;
 using Sharpen;
 
@@ -715,12 +716,6 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
-		public sealed override void WriteEmbedded(StatefulBuffer a_parent, StatefulBuffer
-			 a_child)
-		{
-			a_parent.AddEmbedded(a_child);
-		}
-
 		public void Write(Msg msg)
 		{
 			WriteMsg(msg, true);
@@ -759,10 +754,10 @@ namespace Db4objects.Db4o.Internal.CS
 			msg.Write(i_socket);
 		}
 
-		public sealed override void WriteNew(ClassMetadata a_yapClass, StatefulBuffer aWriter
-			)
+		public sealed override void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata
+			 classMetadata, Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			MsgD msg = Msg.WRITE_NEW.GetWriter(a_yapClass, aWriter);
+			MsgD msg = Msg.WRITE_NEW.GetWriter(trans, pointer, classMetadata, buffer);
 			WriteBatchedMessage(msg);
 		}
 
@@ -770,10 +765,10 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
-		public sealed override void WriteUpdate(ClassMetadata a_yapClass, StatefulBuffer 
-			a_bytes)
+		public sealed override void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
+			 classMetadata, Db4objects.Db4o.Internal.Buffer buffer)
 		{
-			MsgD msg = Msg.WRITE_UPDATE.GetWriter(a_yapClass, a_bytes);
+			MsgD msg = Msg.WRITE_UPDATE.GetWriter(trans, pointer, classMetadata, buffer);
 			WriteBatchedMessage(msg);
 		}
 

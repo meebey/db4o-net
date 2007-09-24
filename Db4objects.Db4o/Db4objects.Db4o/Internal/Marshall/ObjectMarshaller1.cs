@@ -136,13 +136,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 			private readonly bool isUpdate;
 		}
 
-		public override bool FindOffset(ClassMetadata yc, ObjectHeaderAttributes attributes
-			, Db4objects.Db4o.Internal.Buffer reader, FieldMetadata field)
+		public override bool FindOffset(ClassMetadata yc, IFieldListInfo fieldListInfo, Db4objects.Db4o.Internal.Buffer
+			 reader, FieldMetadata field)
 		{
 			bool[] ret = new bool[] { false };
 			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_62(this
 				, field, ret, reader);
-			TraverseFields(yc, reader, attributes, command);
+			TraverseFields(yc, reader, fieldListInfo, command);
 			return ret[0];
 		}
 
@@ -350,81 +350,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void SkipMarshallerInfo(Db4objects.Db4o.Internal.Buffer reader)
 		{
 			reader.IncrementOffset(1);
-		}
-
-		public override void MarshallUpdate(Transaction trans, int updateDepth, ObjectReference
-			 @ref, object obj)
-		{
-			MarshallingContext context = new MarshallingContext(trans, @ref, updateDepth, false
-				);
-			Marshall(obj, context);
-			MarshallUpdateWrite(trans, @ref, obj, context.ToWriteBuffer());
-		}
-
-		public override StatefulBuffer MarshallNew(Transaction trans, ObjectReference @ref
-			, int updateDepth)
-		{
-			MarshallingContext context = new MarshallingContext(trans, @ref, updateDepth, true
-				);
-			Marshall(@ref.GetObject(), context);
-			return context.ToWriteBuffer();
-		}
-
-		protected virtual void Marshall(object obj, MarshallingContext context)
-		{
-			Transaction trans = context.Transaction();
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_175(this
-				, context, trans, obj);
-			TraverseFields(context, command);
-		}
-
-		private sealed class _TraverseFieldCommand_175 : ObjectMarshaller.TraverseFieldCommand
-		{
-			public _TraverseFieldCommand_175(ObjectMarshaller1 _enclosing, MarshallingContext
-				 context, Transaction trans, object obj)
-			{
-				this._enclosing = _enclosing;
-				this.context = context;
-				this.trans = trans;
-				this.obj = obj;
-			}
-
-			private int fieldIndex = -1;
-
-			public override int FieldCount(ClassMetadata classMetadata, Db4objects.Db4o.Internal.Buffer
-				 buffer)
-			{
-				int fieldCount = classMetadata.i_fields.Length;
-				context.FieldCount(fieldCount);
-				return fieldCount;
-			}
-
-			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
-				 containingClass)
-			{
-				context.NextField();
-				this.fieldIndex++;
-				object child = field.GetOrCreate(trans, obj);
-				if (child == null)
-				{
-					context.IsNull(this.fieldIndex, true);
-					field.AddIndexEntry(trans, context.ObjectID(), null);
-					return;
-				}
-				if (child is IDb4oTypeImpl)
-				{
-					child = ((IDb4oTypeImpl)child).StoredTo(trans);
-				}
-				field.Marshall(context, child);
-			}
-
-			private readonly ObjectMarshaller1 _enclosing;
-
-			private readonly MarshallingContext context;
-
-			private readonly Transaction trans;
-
-			private readonly object obj;
 		}
 	}
 }

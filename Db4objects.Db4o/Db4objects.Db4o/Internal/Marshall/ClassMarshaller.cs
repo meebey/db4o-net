@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return nameBytes;
 		}
 
-		public virtual void Read(ObjectContainerBase stream, ClassMetadata clazz, Db4objects.Db4o.Internal.Buffer
+		public void Read(ObjectContainerBase stream, ClassMetadata clazz, Db4objects.Db4o.Internal.Buffer
 			 reader)
 		{
 			clazz.SetAncestor(stream.ClassMetadataForId(reader.ReadInt()));

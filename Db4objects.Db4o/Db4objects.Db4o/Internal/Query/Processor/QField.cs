@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_yapField != null)
 			{
-				return i_yapField.GetFieldYapClass(i_trans.Container());
+				return i_yapField.HandlerClassMetadata(i_trans.Container());
 			}
 			return null;
 		}

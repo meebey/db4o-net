@@ -1,16 +1,16 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
-	public sealed class UntypedFieldHandler : ClassMetadata
+	public class UntypedFieldHandler : ClassMetadata, IBuiltinTypeHandler
 	{
-		public UntypedFieldHandler(ObjectContainerBase stream) : base(stream, stream._handlers
-			.ICLASS_OBJECT)
+		public UntypedFieldHandler(ObjectContainerBase container) : base(container, container
+			._handlers.ICLASS_OBJECT)
 		{
 		}
 
@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override int GetID()
 		{
-			return 11;
+			return Handlers4.UNTYPED_ID;
 		}
 
 		public override bool HasField(ObjectContainerBase a_stream, string a_path)
@@ -70,24 +70,20 @@ namespace Db4objects.Db4o.Internal
 			return mf._untyped.ReadArrayHandler(a_trans, a_bytes);
 		}
 
-		public override object ReadQuery(Transaction trans, MarshallerFamily mf, bool withRedirection
-			, Db4objects.Db4o.Internal.Buffer reader, bool toArray)
+		public override ObjectID ReadObjectID(IInternalReadContext context)
 		{
-			if (mf._untyped.UseNormalClassRead())
+			int payloadOffset = context.ReadInt();
+			if (payloadOffset == 0)
 			{
-				return base.ReadQuery(trans, mf, withRedirection, reader, toArray);
+				return ObjectID.IS_NULL;
 			}
-			return mf._untyped.ReadQuery(trans, reader, toArray);
-		}
-
-		public override QCandidate ReadSubCandidate(MarshallerFamily mf, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates, bool withIndirection)
-		{
-			if (mf._untyped.UseNormalClassRead())
+			ClassMetadata classMetadata = ReadClassMetadata(context, payloadOffset);
+			if (classMetadata == null)
 			{
-				return base.ReadSubCandidate(mf, reader, candidates, withIndirection);
+				return ObjectID.IS_NULL;
 			}
-			return mf._untyped.ReadSubCandidate(reader, candidates, withIndirection);
+			SeekSecondaryOffset(context, classMetadata);
+			return classMetadata.ReadObjectID(context);
 		}
 
 		public override void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
@@ -100,14 +96,81 @@ namespace Db4objects.Db4o.Internal
 			mf._untyped.Defrag(readers);
 		}
 
-		public override object Read(IReadContext context)
+		private bool IsArray(ITypeHandler4 handler)
 		{
-			return ((UnmarshallingContext)context).ReadAny();
+			if (handler is ClassMetadata)
+			{
+				return ((ClassMetadata)handler).IsArray();
+			}
+			return handler is ArrayHandler;
+		}
+
+		public override object Read(IReadContext readContext)
+		{
+			IInternalReadContext context = (IInternalReadContext)readContext;
+			int payloadOffset = context.ReadInt();
+			if (payloadOffset == 0)
+			{
+				return null;
+			}
+			int savedOffSet = context.Offset();
+			ClassMetadata classMetadata = ReadClassMetadata(context, payloadOffset);
+			if (classMetadata == null)
+			{
+				context.Seek(savedOffSet);
+				return null;
+			}
+			SeekSecondaryOffset(context, classMetadata);
+			object obj = classMetadata.Read(context);
+			context.Seek(savedOffSet);
+			return obj;
+		}
+
+		private ClassMetadata ReadClassMetadata(IInternalReadContext context, int payloadOffset
+			)
+		{
+			context.Seek(payloadOffset);
+			ClassMetadata classMetadata = Container().ClassMetadataForId(context.ReadInt());
+			return classMetadata;
+		}
+
+		private void SeekSecondaryOffset(IInternalReadContext context, ClassMetadata classMetadata
+			)
+		{
+			if (classMetadata is PrimitiveFieldHandler && classMetadata.IsArray())
+			{
+				context.Seek(context.ReadInt());
+			}
 		}
 
 		public override void Write(IWriteContext context, object obj)
 		{
-			((MarshallingContext)context).WriteAny(obj);
+			if (obj == null)
+			{
+				context.WriteInt(0);
+				return;
+			}
+			MarshallingContext marshallingContext = (MarshallingContext)context;
+			ITypeHandler4 handler = ClassMetadata.ForObject(context.Transaction(), obj, true);
+			if (handler == null)
+			{
+				context.WriteInt(0);
+				return;
+			}
+			MarshallingContextState state = marshallingContext.CurrentState();
+			marshallingContext.CreateChildBuffer(false, false);
+			int id = marshallingContext.Container().Handlers().HandlerID(handler);
+			context.WriteInt(id);
+			if (IsArray(handler))
+			{
+				marshallingContext.PrepareIndirectionOfSecondWrite();
+			}
+			else
+			{
+				marshallingContext.DoNotIndirectWrites();
+			}
+			handler.Write(context, obj);
+			marshallingContext.RestoreState(state);
 		}
 	}
 }
