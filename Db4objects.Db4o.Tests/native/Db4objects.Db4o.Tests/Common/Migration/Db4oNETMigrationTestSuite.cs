@@ -14,6 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
             Type[] netTypes = new Type[] {
                 typeof(DateTimeHandlerUpdateTestCase),
+                typeof(DecimalHandlerUpdateTestCase),
             };
 
             list.AddRange(netTypes);
