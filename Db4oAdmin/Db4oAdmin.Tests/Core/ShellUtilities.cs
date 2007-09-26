@@ -29,6 +29,7 @@ namespace Db4oAdmin.Tests.Core
 		public static string CopyFileToFolder(string fname, string path)
 		{
 			string targetFileName = Path.Combine(path, Path.GetFileName(fname));
+            Directory.CreateDirectory(path);
 			File.Copy(fname, targetFileName, true);
 			return targetFileName;
 		}
