@@ -73,7 +73,7 @@ namespace Sharpen.Net
 		}
 	}
 #if CF_1_0 || CF_2_0
-    internal class SocketInputStream : IInputStream
+	internal class SocketInputStream : IInputStream
     {
     	private readonly Socket _socket;
 
@@ -108,7 +108,8 @@ namespace Sharpen.Net
 						throw new IOException("read timeout");
 					}
 				}
-				return UnderlyingSocket.Receive(bytes, offset, length, SocketFlags.None);
+				return InputStream.TranslateReadReturnValue(
+					UnderlyingSocket.Receive(bytes, offset, length, SocketFlags.None));
 			}
 			catch (ObjectDisposedException x)
 			{
