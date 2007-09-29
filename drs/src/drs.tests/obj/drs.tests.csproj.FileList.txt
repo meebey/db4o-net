@@ -1,0 +1,7 @@
+D:\working\trunk\drs\drs.net/bin\drs.test.exe
+D:\working\trunk\drs\drs.net/bin\drs.test.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\drs.test.exe
+obj\Release\drs.test.pdb
+D:\working\trunk\db4o.net\drs/bin\drs.test.exe
+D:\working\trunk\db4o.net\drs/bin\drs.test.pdb

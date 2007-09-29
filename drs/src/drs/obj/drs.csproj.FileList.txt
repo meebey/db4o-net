@@ -1,0 +1,8 @@
+D:\working\trunk\drs\drs.net/bin\drs.dll
+D:\working\trunk\drs\drs.net/bin\drs.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\drs.dll
+obj\Release\drs.pdb
+D:\working\trunk\db4o.net\drs/bin\drs.dll
+D:\working\trunk\db4o.net\drs/bin\drs.pdb
+D:\working\trunk\db4o.net\drs/bin\drs.xml
