@@ -1,7 +1,0 @@
-D:\working\trunk\drs\drs.net/bin\QuickStart.exe
-D:\working\trunk\drs\drs.net/bin\QuickStart.pdb
-obj\Release\ResolveAssemblyReference.cache
-obj\Release\QuickStart.exe
-obj\Release\QuickStart.pdb
-D:\working\trunk\db4o.net\drs/bin\QuickStart.exe
-D:\working\trunk\db4o.net\drs/bin\QuickStart.pdb
