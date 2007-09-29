@@ -18,29 +18,29 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
 	public class DrsTestSuiteBuilder : Db4oUnit.ReflectionTestSuiteBuilder
 	{
-		private Db4objects.Drs.Test.IDrsFixture _a;
+		private Db4objects.Drs.Tests.IDrsFixture _a;
 
-		private Db4objects.Drs.Test.IDrsFixture _b;
+		private Db4objects.Drs.Tests.IDrsFixture _b;
 
-		public DrsTestSuiteBuilder(Db4objects.Drs.Test.IDrsFixture a, Db4objects.Drs.Test.IDrsFixture
+		public DrsTestSuiteBuilder(Db4objects.Drs.Tests.IDrsFixture a, Db4objects.Drs.Tests.IDrsFixture
 			 b, System.Type clazz) : base(clazz)
 		{
 			A(a);
 			B(b);
 		}
 
-		public DrsTestSuiteBuilder(Db4objects.Drs.Test.IDrsFixture a, Db4objects.Drs.Test.IDrsFixture
+		public DrsTestSuiteBuilder(Db4objects.Drs.Tests.IDrsFixture a, Db4objects.Drs.Tests.IDrsFixture
 			 b, System.Type[] classes) : base(classes)
 		{
 			A(a);
 			B(b);
 		}
 
-		private void A(Db4objects.Drs.Test.IDrsFixture fixture)
+		private void A(Db4objects.Drs.Tests.IDrsFixture fixture)
 		{
 			if (null == fixture)
 			{
@@ -49,7 +49,7 @@ namespace Db4objects.Drs.Test
 			_a = fixture;
 		}
 
-		private void B(Db4objects.Drs.Test.IDrsFixture fixture)
+		private void B(Db4objects.Drs.Tests.IDrsFixture fixture)
 		{
 			if (null == fixture)
 			{
@@ -61,9 +61,9 @@ namespace Db4objects.Drs.Test
 		protected override object NewInstance(System.Type clazz)
 		{
 			object instance = base.NewInstance(clazz);
-			if (instance is Db4objects.Drs.Test.DrsTestCase)
+			if (instance is Db4objects.Drs.Tests.DrsTestCase)
 			{
-				Db4objects.Drs.Test.DrsTestCase testCase = (Db4objects.Drs.Test.DrsTestCase)instance;
+				Db4objects.Drs.Tests.DrsTestCase testCase = (Db4objects.Drs.Tests.DrsTestCase)instance;
 				testCase.A(_a);
 				testCase.B(_b);
 			}

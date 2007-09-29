@@ -18,9 +18,9 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
-	public class Db4oClientServerDrsFixture : Db4objects.Drs.Test.Db4oDrsFixture
+	public class Db4oClientServerDrsFixture : Db4objects.Drs.Tests.Db4oDrsFixture
 	{
 		private static readonly string HOST = "localhost";
 

@@ -18,9 +18,9 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
-	public class SimpleParentChild : Db4objects.Drs.Test.DrsTestCase
+	public class SimpleParentChild : Db4objects.Drs.Tests.DrsTestCase
 	{
 		public virtual void Test()
 		{
@@ -32,12 +32,12 @@ namespace Db4objects.Drs.Test
 			ReplicateParentClassStep3();
 		}
 
-		private void EnsureNames(Db4objects.Drs.Test.IDrsFixture fixture, string parentName
+		private void EnsureNames(Db4objects.Drs.Tests.IDrsFixture fixture, string parentName
 			, string childName)
 		{
 			EnsureOneInstanceOfParentAndChild(fixture);
-			Db4objects.Drs.Test.SPCParent parent = (Db4objects.Drs.Test.SPCParent)GetOneInstance
-				(fixture, typeof(Db4objects.Drs.Test.SPCParent));
+			Db4objects.Drs.Tests.SPCParent parent = (Db4objects.Drs.Tests.SPCParent)GetOneInstance
+				(fixture, typeof(Db4objects.Drs.Tests.SPCParent));
 			if (!parent.GetName().Equals(parentName))
 			{
 				Sharpen.Runtime.Out.WriteLine("expected = " + parentName);
@@ -47,19 +47,19 @@ namespace Db4objects.Drs.Test
 			Db4oUnit.Assert.AreEqual(parent.GetChild().GetName(), childName);
 		}
 
-		private void EnsureOneInstanceOfParentAndChild(Db4objects.Drs.Test.IDrsFixture fixture
+		private void EnsureOneInstanceOfParentAndChild(Db4objects.Drs.Tests.IDrsFixture fixture
 			)
 		{
-			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Test.SPCParent));
-			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Test.SPCChild));
+			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Tests.SPCParent));
+			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Tests.SPCChild));
 		}
 
 		private void ModifyParentAndChildInProviderA()
 		{
-			Db4objects.Drs.Test.SPCParent parent = (Db4objects.Drs.Test.SPCParent)GetOneInstance
-				(A(), typeof(Db4objects.Drs.Test.SPCParent));
+			Db4objects.Drs.Tests.SPCParent parent = (Db4objects.Drs.Tests.SPCParent)GetOneInstance
+				(A(), typeof(Db4objects.Drs.Tests.SPCParent));
 			parent.SetName("p3");
-			Db4objects.Drs.Test.SPCChild child = parent.GetChild();
+			Db4objects.Drs.Tests.SPCChild child = parent.GetChild();
 			child.SetName("c3");
 			A().Provider().Update(parent);
 			A().Provider().Update(child);
@@ -69,8 +69,8 @@ namespace Db4objects.Drs.Test
 
 		private void ModifyParentInProviderB()
 		{
-			Db4objects.Drs.Test.SPCParent parent = (Db4objects.Drs.Test.SPCParent)GetOneInstance
-				(B(), typeof(Db4objects.Drs.Test.SPCParent));
+			Db4objects.Drs.Tests.SPCParent parent = (Db4objects.Drs.Tests.SPCParent)GetOneInstance
+				(B(), typeof(Db4objects.Drs.Tests.SPCParent));
 			parent.SetName("p2");
 			B().Provider().Update(parent);
 			B().Provider().Commit();
@@ -93,7 +93,7 @@ namespace Db4objects.Drs.Test
 
 		private void ReplicateParentClassStep3()
 		{
-			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Test.SPCParent)
+			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Tests.SPCParent)
 				);
 			EnsureNames(A(), "p3", "c3");
 			EnsureNames(B(), "p3", "c3");
@@ -101,9 +101,9 @@ namespace Db4objects.Drs.Test
 
 		private void StoreParentAndChildToProviderA()
 		{
-			Db4objects.Drs.Test.SPCChild child = new Db4objects.Drs.Test.SPCChild("c1");
-			Db4objects.Drs.Test.SPCParent parent = new Db4objects.Drs.Test.SPCParent(child, "p1"
-				);
+			Db4objects.Drs.Tests.SPCChild child = new Db4objects.Drs.Tests.SPCChild("c1");
+			Db4objects.Drs.Tests.SPCParent parent = new Db4objects.Drs.Tests.SPCParent(child, 
+				"p1");
 			A().Provider().StoreNew(parent);
 			A().Provider().Commit();
 			EnsureNames(A(), "p1", "c1");

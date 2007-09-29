@@ -18,13 +18,13 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
 	public class SimpleArrayHolder
 	{
 		private string name;
 
-		private Db4objects.Drs.Test.SimpleArrayContent[] arr;
+		private Db4objects.Drs.Tests.SimpleArrayContent[] arr;
 
 		public SimpleArrayHolder()
 		{
@@ -35,12 +35,12 @@ namespace Db4objects.Drs.Test
 			this.name = name;
 		}
 
-		public virtual Db4objects.Drs.Test.SimpleArrayContent[] GetArr()
+		public virtual Db4objects.Drs.Tests.SimpleArrayContent[] GetArr()
 		{
 			return arr;
 		}
 
-		public virtual void SetArr(Db4objects.Drs.Test.SimpleArrayContent[] arr)
+		public virtual void SetArr(Db4objects.Drs.Tests.SimpleArrayContent[] arr)
 		{
 			this.arr = arr;
 		}
@@ -55,15 +55,15 @@ namespace Db4objects.Drs.Test
 			this.name = name;
 		}
 
-		public virtual void Add(Db4objects.Drs.Test.SimpleArrayContent sac)
+		public virtual void Add(Db4objects.Drs.Tests.SimpleArrayContent sac)
 		{
 			if (arr == null)
 			{
-				arr = new Db4objects.Drs.Test.SimpleArrayContent[] { sac };
+				arr = new Db4objects.Drs.Tests.SimpleArrayContent[] { sac };
 				return;
 			}
-			Db4objects.Drs.Test.SimpleArrayContent[] temp = arr;
-			arr = new Db4objects.Drs.Test.SimpleArrayContent[temp.Length + 1];
+			Db4objects.Drs.Tests.SimpleArrayContent[] temp = arr;
+			arr = new Db4objects.Drs.Tests.SimpleArrayContent[temp.Length + 1];
 			System.Array.Copy(temp, 0, arr, 0, temp.Length);
 			arr[temp.Length] = sac;
 		}

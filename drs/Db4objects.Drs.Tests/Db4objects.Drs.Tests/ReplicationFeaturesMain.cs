@@ -18,37 +18,37 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
-	public class ReplicationFeaturesMain : Db4objects.Drs.Test.DrsTestCase
+	public class ReplicationFeaturesMain : Db4objects.Drs.Tests.DrsTestCase
 	{
 		private static readonly string AStuff = "A";
 
 		private static readonly string BStuff = "B";
 
-		private readonly Db4objects.Drs.Test.Foundation.Set4 _setA = new Db4objects.Drs.Test.Foundation.Set4
+		private readonly Db4objects.Drs.Tests.Foundation.Set4 _setA = new Db4objects.Drs.Tests.Foundation.Set4
 			(1);
 
-		private readonly Db4objects.Drs.Test.Foundation.Set4 _setB = new Db4objects.Drs.Test.Foundation.Set4
+		private readonly Db4objects.Drs.Tests.Foundation.Set4 _setB = new Db4objects.Drs.Tests.Foundation.Set4
 			(1);
 
-		private readonly Db4objects.Drs.Test.Foundation.Set4 _setBoth = new Db4objects.Drs.Test.Foundation.Set4
+		private readonly Db4objects.Drs.Tests.Foundation.Set4 _setBoth = new Db4objects.Drs.Tests.Foundation.Set4
 			(2);
 
-		private readonly Db4objects.Drs.Test.Foundation.Set4 _NONE = Db4objects.Drs.Test.Foundation.Set4
+		private readonly Db4objects.Drs.Tests.Foundation.Set4 _NONE = Db4objects.Drs.Tests.Foundation.Set4
 			.EMPTY_SET;
 
-		private Db4objects.Drs.Test.Foundation.Set4 _direction;
+		private Db4objects.Drs.Tests.Foundation.Set4 _direction;
 
-		private Db4objects.Drs.Test.Foundation.Set4 _containersToQueryFrom;
+		private Db4objects.Drs.Tests.Foundation.Set4 _containersToQueryFrom;
 
-		private Db4objects.Drs.Test.Foundation.Set4 _containersWithNewObjects;
+		private Db4objects.Drs.Tests.Foundation.Set4 _containersWithNewObjects;
 
-		private Db4objects.Drs.Test.Foundation.Set4 _containersWithChangedObjects;
+		private Db4objects.Drs.Tests.Foundation.Set4 _containersWithChangedObjects;
 
-		private Db4objects.Drs.Test.Foundation.Set4 _containersWithDeletedObjects;
+		private Db4objects.Drs.Tests.Foundation.Set4 _containersWithDeletedObjects;
 
-		private Db4objects.Drs.Test.Foundation.Set4 _containerStateToPrevail;
+		private Db4objects.Drs.Tests.Foundation.Set4 _containerStateToPrevail;
 
 		private string _intermittentErrors = string.Empty;
 
@@ -147,7 +147,7 @@ namespace Db4objects.Drs.Test
 		private void ChangeObject(Db4objects.Drs.Inside.ITestableReplicationProviderInside
 			 container, string name, string newName)
 		{
-			Db4objects.Drs.Test.Replicated obj = Find(container, name);
+			Db4objects.Drs.Tests.Replicated obj = Find(container, name);
 			if (obj == null)
 			{
 				return;
@@ -160,7 +160,7 @@ namespace Db4objects.Drs.Test
 		private void CheckEmpty(Db4objects.Drs.Inside.ITestableReplicationProviderInside 
 			provider)
 		{
-			if (provider.GetStoredObjects(typeof(Db4objects.Drs.Test.Replicated)).GetEnumerator
+			if (provider.GetStoredObjects(typeof(Db4objects.Drs.Tests.Replicated)).GetEnumerator
 				().MoveNext())
 			{
 				throw new System.Exception(provider.GetName() + " is not empty");
@@ -175,7 +175,7 @@ namespace Db4objects.Drs.Test
 			Out(string.Empty);
 			Out(name + (isExpected ? " " : " NOT") + " expected in container " + ContainerName
 				(container));
-			Db4objects.Drs.Test.Replicated obj = Find(container, name);
+			Db4objects.Drs.Tests.Replicated obj = Find(container, name);
 			Out(checkNameCount.ToString());
 			checkNameCount++;
 			if (isExpected)
@@ -222,7 +222,7 @@ namespace Db4objects.Drs.Test
 		private void DeleteObject(Db4objects.Drs.Inside.ITestableReplicationProviderInside
 			 container, string name)
 		{
-			Db4objects.Drs.Test.Replicated obj = Find(container, name);
+			Db4objects.Drs.Tests.Replicated obj = Find(container, name);
 			container.Delete(obj);
 		}
 
@@ -233,7 +233,7 @@ namespace Db4objects.Drs.Test
 			PerformChanges();
 			PrintProvidersContent("after changes");
 			Db4objects.Drs.IReplicationSession replication = new Db4objects.Drs.Inside.GenericReplicationSession
-				(A().Provider(), B().Provider(), new _IReplicationEventListener_174(this));
+				(A().Provider(), B().Provider(), new _IReplicationEventListener_192(this));
 			if (_direction.Size() == 1)
 			{
 				if (_direction.Contains(AStuff))
@@ -256,9 +256,9 @@ namespace Db4objects.Drs.Test
 			Clean();
 		}
 
-		private sealed class _IReplicationEventListener_174 : Db4objects.Drs.IReplicationEventListener
+		private sealed class _IReplicationEventListener_192 : Db4objects.Drs.IReplicationEventListener
 		{
-			public _IReplicationEventListener_174(ReplicationFeaturesMain _enclosing)
+			public _IReplicationEventListener_192(ReplicationFeaturesMain _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -275,7 +275,7 @@ namespace Db4objects.Drs.Test
 					return;
 				}
 				Db4objects.Drs.IObjectState @override = this._enclosing._containerStateToPrevail.
-					Contains(Db4objects.Drs.Test.ReplicationFeaturesMain.AStuff) ? e.StateInProviderA
+					Contains(Db4objects.Drs.Tests.ReplicationFeaturesMain.AStuff) ? e.StateInProviderA
 					() : e.StateInProviderB();
 				e.OverrideWith(@override);
 			}
@@ -307,7 +307,7 @@ namespace Db4objects.Drs.Test
 			{
 				if (IsDeletionReplicationTriggered())
 				{
-					replication.ReplicateDeletions(typeof(Db4objects.Drs.Test.Replicated));
+					replication.ReplicateDeletions(typeof(Db4objects.Drs.Tests.Replicated));
 				}
 				Db4oUnit.Assert.IsFalse(IsReplicationConflictExceptionExpectedReplicatingDeletions
 					());
@@ -334,16 +334,16 @@ namespace Db4objects.Drs.Test
 			ReplicateQueryingFrom(replication, origin, destination);
 		}
 
-		private Db4objects.Drs.Test.Replicated Find(Db4objects.Drs.Inside.ITestableReplicationProviderInside
+		private Db4objects.Drs.Tests.Replicated Find(Db4objects.Drs.Inside.ITestableReplicationProviderInside
 			 container, string name)
 		{
-			System.Collections.IEnumerator storedObjects = container.GetStoredObjects(typeof(Db4objects.Drs.Test.Replicated)
+			System.Collections.IEnumerator storedObjects = container.GetStoredObjects(typeof(Db4objects.Drs.Tests.Replicated)
 				).GetEnumerator();
 			int resultCount = 0;
-			Db4objects.Drs.Test.Replicated result = null;
+			Db4objects.Drs.Tests.Replicated result = null;
 			while (storedObjects.MoveNext())
 			{
-				Db4objects.Drs.Test.Replicated replicated = (Db4objects.Drs.Test.Replicated)storedObjects
+				Db4objects.Drs.Tests.Replicated replicated = (Db4objects.Drs.Tests.Replicated)storedObjects
 					.Current;
 				if (replicated == null)
 				{
@@ -376,8 +376,8 @@ namespace Db4objects.Drs.Test
 		{
 			CheckEmpty(A().Provider());
 			CheckEmpty(B().Provider());
-			A().Provider().StoreNew(new Db4objects.Drs.Test.Replicated("oldFromA"));
-			B().Provider().StoreNew(new Db4objects.Drs.Test.Replicated("oldFromB"));
+			A().Provider().StoreNew(new Db4objects.Drs.Tests.Replicated("oldFromA"));
+			B().Provider().StoreNew(new Db4objects.Drs.Tests.Replicated("oldFromB"));
 			A().Provider().Commit();
 			B().Provider().Commit();
 			Db4objects.Drs.IReplicationSession replication = new Db4objects.Drs.Inside.GenericReplicationSession
@@ -538,11 +538,11 @@ namespace Db4objects.Drs.Test
 		{
 			if (_containersWithNewObjects.Contains(AStuff))
 			{
-				A().Provider().StoreNew(new Db4objects.Drs.Test.Replicated("newFromA"));
+				A().Provider().StoreNew(new Db4objects.Drs.Tests.Replicated("newFromA"));
 			}
 			if (_containersWithNewObjects.Contains(BStuff))
 			{
-				B().Provider().StoreNew(new Db4objects.Drs.Test.Replicated("newFromB"));
+				B().Provider().StoreNew(new Db4objects.Drs.Tests.Replicated("newFromB"));
 			}
 			if (HasDeletions(AStuff))
 			{
@@ -568,7 +568,7 @@ namespace Db4objects.Drs.Test
 			B().Provider().Commit();
 		}
 
-		private string Print(Db4objects.Drs.Test.Foundation.Set4 containerSet)
+		private string Print(Db4objects.Drs.Tests.Foundation.Set4 containerSet)
 		{
 			if (containerSet == null)
 			{
@@ -585,7 +585,7 @@ namespace Db4objects.Drs.Test
 			return First(containerSet);
 		}
 
-		private string First(Db4objects.Drs.Test.Foundation.Set4 containerSet)
+		private string First(Db4objects.Drs.Tests.Foundation.Set4 containerSet)
 		{
 			return First(containerSet.Iterator());
 		}
@@ -650,7 +650,7 @@ namespace Db4objects.Drs.Test
 			ActualTest();
 		}
 
-		private void TstDirection(Db4objects.Drs.Test.Foundation.Set4 direction)
+		private void TstDirection(Db4objects.Drs.Tests.Foundation.Set4 direction)
 		{
 			_direction = direction;
 			TstQueryingFrom(_setA);
@@ -658,7 +658,7 @@ namespace Db4objects.Drs.Test
 			TstQueryingFrom(_setBoth);
 		}
 
-		private void TstQueryingFrom(Db4objects.Drs.Test.Foundation.Set4 containersToQueryFrom
+		private void TstQueryingFrom(Db4objects.Drs.Tests.Foundation.Set4 containersToQueryFrom
 			)
 		{
 			_containersToQueryFrom = containersToQueryFrom;
@@ -668,7 +668,7 @@ namespace Db4objects.Drs.Test
 			TstWithNewObjectsIn(_setBoth);
 		}
 
-		private void TstWithChangedObjectsIn(Db4objects.Drs.Test.Foundation.Set4 containers
+		private void TstWithChangedObjectsIn(Db4objects.Drs.Tests.Foundation.Set4 containers
 			)
 		{
 			_containersWithChangedObjects = containers;
@@ -678,7 +678,7 @@ namespace Db4objects.Drs.Test
 			TstWithContainerStateToPrevail(null);
 		}
 
-		private void TstWithDeletedObjectsIn(Db4objects.Drs.Test.Foundation.Set4 containers
+		private void TstWithDeletedObjectsIn(Db4objects.Drs.Tests.Foundation.Set4 containers
 			)
 		{
 			_containersWithDeletedObjects = containers;
@@ -687,7 +687,7 @@ namespace Db4objects.Drs.Test
 			TstDirection(_setBoth);
 		}
 
-		private void TstWithNewObjectsIn(Db4objects.Drs.Test.Foundation.Set4 containersWithNewObjects
+		private void TstWithNewObjectsIn(Db4objects.Drs.Tests.Foundation.Set4 containersWithNewObjects
 			)
 		{
 			_containersWithNewObjects = containersWithNewObjects;
@@ -697,8 +697,8 @@ namespace Db4objects.Drs.Test
 			TstWithChangedObjectsIn(_setBoth);
 		}
 
-		private void TstWithContainerStateToPrevail(Db4objects.Drs.Test.Foundation.Set4 containers
-			)
+		private void TstWithContainerStateToPrevail(Db4objects.Drs.Tests.Foundation.Set4 
+			containers)
 		{
 			_containerStateToPrevail = containers;
 			RunCurrentCombination();

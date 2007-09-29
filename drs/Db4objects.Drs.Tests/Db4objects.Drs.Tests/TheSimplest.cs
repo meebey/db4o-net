@@ -18,9 +18,9 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
-	public class TheSimplest : Db4objects.Drs.Test.DrsTestCase
+	public class TheSimplest : Db4objects.Drs.Tests.DrsTestCase
 	{
 		public virtual void Test()
 		{
@@ -34,7 +34,7 @@ namespace Db4objects.Drs.Test
 
 		private void Replicate3()
 		{
-			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Test.SPCChild)
+			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Tests.SPCChild)
 				);
 			EnsureNames(A(), "c3");
 			EnsureNames(B(), "c3");
@@ -42,7 +42,7 @@ namespace Db4objects.Drs.Test
 
 		private void ModifyInA()
 		{
-			Db4objects.Drs.Test.SPCChild child = GetTheObject(A());
+			Db4objects.Drs.Tests.SPCChild child = GetTheObject(A());
 			child.SetName("c3");
 			A().Provider().Update(child);
 			A().Provider().Commit();
@@ -58,7 +58,7 @@ namespace Db4objects.Drs.Test
 
 		private void StoreInA()
 		{
-			Db4objects.Drs.Test.SPCChild child = new Db4objects.Drs.Test.SPCChild("c1");
+			Db4objects.Drs.Tests.SPCChild child = new Db4objects.Drs.Tests.SPCChild("c1");
 			A().Provider().StoreNew(child);
 			A().Provider().Commit();
 			EnsureNames(A(), "c1");
@@ -73,25 +73,25 @@ namespace Db4objects.Drs.Test
 
 		private void ModifyInB()
 		{
-			Db4objects.Drs.Test.SPCChild child = GetTheObject(B());
+			Db4objects.Drs.Tests.SPCChild child = GetTheObject(B());
 			child.SetName("c2");
 			B().Provider().Update(child);
 			B().Provider().Commit();
 			EnsureNames(B(), "c2");
 		}
 
-		private void EnsureNames(Db4objects.Drs.Test.IDrsFixture fixture, string childName
+		private void EnsureNames(Db4objects.Drs.Tests.IDrsFixture fixture, string childName
 			)
 		{
-			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Test.SPCChild));
-			Db4objects.Drs.Test.SPCChild child = GetTheObject(fixture);
+			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Tests.SPCChild));
+			Db4objects.Drs.Tests.SPCChild child = GetTheObject(fixture);
 			Db4oUnit.Assert.AreEqual(childName, child.GetName());
 		}
 
-		private Db4objects.Drs.Test.SPCChild GetTheObject(Db4objects.Drs.Test.IDrsFixture
+		private Db4objects.Drs.Tests.SPCChild GetTheObject(Db4objects.Drs.Tests.IDrsFixture
 			 fixture)
 		{
-			return (Db4objects.Drs.Test.SPCChild)GetOneInstance(fixture, typeof(Db4objects.Drs.Test.SPCChild)
+			return (Db4objects.Drs.Tests.SPCChild)GetOneInstance(fixture, typeof(Db4objects.Drs.Tests.SPCChild)
 				);
 		}
 

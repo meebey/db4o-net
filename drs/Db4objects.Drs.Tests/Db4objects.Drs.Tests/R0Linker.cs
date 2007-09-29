@@ -18,27 +18,27 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
 	internal class R0Linker
 	{
-		internal Db4objects.Drs.Test.R0 r0;
+		internal Db4objects.Drs.Tests.R0 r0;
 
-		internal Db4objects.Drs.Test.R1 r1;
+		internal Db4objects.Drs.Tests.R1 r1;
 
-		internal Db4objects.Drs.Test.R2 r2;
+		internal Db4objects.Drs.Tests.R2 r2;
 
-		internal Db4objects.Drs.Test.R3 r3;
+		internal Db4objects.Drs.Tests.R3 r3;
 
-		internal Db4objects.Drs.Test.R4 r4;
+		internal Db4objects.Drs.Tests.R4 r4;
 
 		internal R0Linker()
 		{
-			r0 = new Db4objects.Drs.Test.R0();
-			r1 = new Db4objects.Drs.Test.R1();
-			r2 = new Db4objects.Drs.Test.R2();
-			r3 = new Db4objects.Drs.Test.R3();
-			r4 = new Db4objects.Drs.Test.R4();
+			r0 = new Db4objects.Drs.Tests.R0();
+			r1 = new Db4objects.Drs.Tests.R1();
+			r2 = new Db4objects.Drs.Tests.R2();
+			r3 = new Db4objects.Drs.Tests.R3();
+			r4 = new Db4objects.Drs.Tests.R4();
 		}
 
 		internal virtual void SetNames(string name)

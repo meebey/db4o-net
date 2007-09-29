@@ -18,7 +18,7 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
 	public abstract class DrsTestCase : Db4oUnit.ITestCase, Db4oUnit.ITestLifeCycle
 	{
@@ -29,17 +29,17 @@ namespace Db4objects.Drs.Test
 
 		static DrsTestCase()
 		{
-			mappings = new System.Type[] { typeof(Db4objects.Drs.Test.Replicated), typeof(Db4objects.Drs.Test.SPCParent)
-				, typeof(Db4objects.Drs.Test.SPCChild), typeof(Db4objects.Drs.Test.ListHolder), 
-				typeof(Db4objects.Drs.Test.ListContent), typeof(Db4objects.Drs.Test.MapContent), 
-				typeof(Db4objects.Drs.Test.SimpleArrayContent), typeof(Db4objects.Drs.Test.SimpleArrayHolder)
-				, typeof(Db4objects.Drs.Test.R0), typeof(Db4objects.Drs.Test.Pilot), typeof(Db4objects.Drs.Test.Car)
-				, typeof(Db4objects.Drs.Test.Student), typeof(Db4objects.Drs.Test.Person) };
+			mappings = new System.Type[] { typeof(Db4objects.Drs.Tests.Replicated), typeof(Db4objects.Drs.Tests.SPCParent)
+				, typeof(Db4objects.Drs.Tests.SPCChild), typeof(Db4objects.Drs.Tests.ListHolder), 
+				typeof(Db4objects.Drs.Tests.ListContent), typeof(Db4objects.Drs.Tests.MapContent), 
+				typeof(Db4objects.Drs.Tests.SimpleArrayContent), typeof(Db4objects.Drs.Tests.SimpleArrayHolder)
+				, typeof(Db4objects.Drs.Tests.R0), typeof(Db4objects.Drs.Tests.Pilot), typeof(Db4objects.Drs.Tests.Car)
+				, typeof(Db4objects.Drs.Tests.Student), typeof(Db4objects.Drs.Tests.Person) };
 		}
 
-		private Db4objects.Drs.Test.IDrsFixture _a;
+		private Db4objects.Drs.Tests.IDrsFixture _a;
 
-		private Db4objects.Drs.Test.IDrsFixture _b;
+		private Db4objects.Drs.Tests.IDrsFixture _b;
 
 		public virtual void SetUp()
 		{
@@ -106,40 +106,40 @@ namespace Db4objects.Drs.Test
 			_b.Close();
 		}
 
-		public virtual void A(Db4objects.Drs.Test.IDrsFixture fixture)
+		public virtual void A(Db4objects.Drs.Tests.IDrsFixture fixture)
 		{
 			_a = fixture;
 		}
 
-		public virtual void B(Db4objects.Drs.Test.IDrsFixture fixture)
+		public virtual void B(Db4objects.Drs.Tests.IDrsFixture fixture)
 		{
 			_b = fixture;
 		}
 
-		public virtual Db4objects.Drs.Test.IDrsFixture A()
+		public virtual Db4objects.Drs.Tests.IDrsFixture A()
 		{
 			return _a;
 		}
 
-		public virtual Db4objects.Drs.Test.IDrsFixture B()
+		public virtual Db4objects.Drs.Tests.IDrsFixture B()
 		{
 			return _b;
 		}
 
-		protected virtual void EnsureOneInstance(Db4objects.Drs.Test.IDrsFixture fixture, 
+		protected virtual void EnsureOneInstance(Db4objects.Drs.Tests.IDrsFixture fixture, 
 			System.Type clazz)
 		{
 			EnsureInstanceCount(fixture, clazz, 1);
 		}
 
-		protected virtual void EnsureInstanceCount(Db4objects.Drs.Test.IDrsFixture fixture
+		protected virtual void EnsureInstanceCount(Db4objects.Drs.Tests.IDrsFixture fixture
 			, System.Type clazz, int count)
 		{
 			Db4objects.Db4o.IObjectSet objectSet = fixture.Provider().GetStoredObjects(clazz);
 			Db4oUnit.Assert.AreEqual(count, objectSet.Count);
 		}
 
-		protected virtual object GetOneInstance(Db4objects.Drs.Test.IDrsFixture fixture, 
+		protected virtual object GetOneInstance(Db4objects.Drs.Tests.IDrsFixture fixture, 
 			System.Type clazz)
 		{
 			System.Collections.IEnumerator objectSet = fixture.Provider().GetStoredObjects(clazz

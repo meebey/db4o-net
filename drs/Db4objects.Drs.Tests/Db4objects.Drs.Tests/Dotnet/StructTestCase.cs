@@ -18,13 +18,13 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test.Dotnet
+namespace Db4objects.Drs.Tests.Dotnet
 {
 	internal class Container
 	{
-		public Db4objects.Drs.Test.Dotnet.Value value;
+		public Db4objects.Drs.Tests.Dotnet.Value value;
 
-		public Container(Db4objects.Drs.Test.Dotnet.Value value)
+		public Container(Db4objects.Drs.Tests.Dotnet.Value value)
 		{
 			this.value = value;
 		}
@@ -41,19 +41,19 @@ namespace Db4objects.Drs.Test.Dotnet
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is Db4objects.Drs.Test.Dotnet.Value))
+			if (!(obj is Db4objects.Drs.Tests.Dotnet.Value))
 			{
 				return false;
 			}
-			Db4objects.Drs.Test.Dotnet.Value other = (Db4objects.Drs.Test.Dotnet.Value)obj;
+			Db4objects.Drs.Tests.Dotnet.Value other = (Db4objects.Drs.Tests.Dotnet.Value)obj;
 			return other.value == value;
 		}
 	}
 
-	public class StructTestCase : Db4objects.Drs.Test.DrsTestCase
+	public class StructTestCase : Db4objects.Drs.Tests.DrsTestCase
 	{
-		internal Db4objects.Drs.Test.Dotnet.Container template = new Db4objects.Drs.Test.Dotnet.Container
-			(new Db4objects.Drs.Test.Dotnet.Value(42));
+		internal Db4objects.Drs.Tests.Dotnet.Container template = new Db4objects.Drs.Tests.Dotnet.Container
+			(new Db4objects.Drs.Tests.Dotnet.Value(42));
 
 		public virtual void Test()
 		{
@@ -76,23 +76,23 @@ namespace Db4objects.Drs.Test.Dotnet
 			EnsureContent(template, B().Provider());
 		}
 
-		private void EnsureContent(Db4objects.Drs.Test.Dotnet.Container container, Db4objects.Drs.Inside.ITestableReplicationProviderInside
+		private void EnsureContent(Db4objects.Drs.Tests.Dotnet.Container container, Db4objects.Drs.Inside.ITestableReplicationProviderInside
 			 provider)
 		{
 			Db4objects.Db4o.IObjectSet result = provider.GetStoredObjects(container.GetType()
 				);
 			Db4oUnit.Assert.AreEqual(1, result.Count);
-			Db4objects.Drs.Test.Dotnet.Container c = Next(result);
+			Db4objects.Drs.Tests.Dotnet.Container c = Next(result);
 			Db4oUnit.Assert.AreEqual(template.value, c.value);
 		}
 
-		private Db4objects.Drs.Test.Dotnet.Container Next(Db4objects.Db4o.IObjectSet result
+		private Db4objects.Drs.Tests.Dotnet.Container Next(Db4objects.Db4o.IObjectSet result
 			)
 		{
 			System.Collections.IEnumerator iterator = result.GetEnumerator();
 			if (iterator.MoveNext())
 			{
-				return (Db4objects.Drs.Test.Dotnet.Container)iterator.Current;
+				return (Db4objects.Drs.Tests.Dotnet.Container)iterator.Current;
 			}
 			return null;
 		}

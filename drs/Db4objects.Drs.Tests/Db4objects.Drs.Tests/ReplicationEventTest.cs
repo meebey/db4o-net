@@ -18,9 +18,9 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
-	public class ReplicationEventTest : Db4objects.Drs.Test.DrsTestCase
+	public class ReplicationEventTest : Db4objects.Drs.Tests.DrsTestCase
 	{
 		private static readonly string IN_A = "in A";
 
@@ -43,19 +43,19 @@ namespace Db4objects.Drs.Test
 
 		private void DeleteInProviderA()
 		{
-			A().Provider().DeleteAllInstances(typeof(Db4objects.Drs.Test.SPCParent));
-			A().Provider().DeleteAllInstances(typeof(Db4objects.Drs.Test.SPCChild));
+			A().Provider().DeleteAllInstances(typeof(Db4objects.Drs.Tests.SPCParent));
+			A().Provider().DeleteAllInstances(typeof(Db4objects.Drs.Tests.SPCChild));
 			A().Provider().Commit();
-			EnsureNotExist(A().Provider(), typeof(Db4objects.Drs.Test.SPCChild));
-			EnsureNotExist(A().Provider(), typeof(Db4objects.Drs.Test.SPCParent));
+			EnsureNotExist(A().Provider(), typeof(Db4objects.Drs.Tests.SPCChild));
+			EnsureNotExist(A().Provider(), typeof(Db4objects.Drs.Tests.SPCParent));
 		}
 
-		private void EnsureNames(Db4objects.Drs.Test.IDrsFixture fixture, string parentName
+		private void EnsureNames(Db4objects.Drs.Tests.IDrsFixture fixture, string parentName
 			, string childName)
 		{
 			EnsureOneInstanceOfParentAndChild(fixture);
-			Db4objects.Drs.Test.SPCParent parent = (Db4objects.Drs.Test.SPCParent)GetOneInstance
-				(fixture, typeof(Db4objects.Drs.Test.SPCParent));
+			Db4objects.Drs.Tests.SPCParent parent = (Db4objects.Drs.Tests.SPCParent)GetOneInstance
+				(fixture, typeof(Db4objects.Drs.Tests.SPCParent));
 			if (!parent.GetName().Equals(parentName))
 			{
 				Sharpen.Runtime.Out.WriteLine("expected = " + parentName);
@@ -72,19 +72,19 @@ namespace Db4objects.Drs.Test
 				));
 		}
 
-		private void EnsureOneInstanceOfParentAndChild(Db4objects.Drs.Test.IDrsFixture fixture
+		private void EnsureOneInstanceOfParentAndChild(Db4objects.Drs.Tests.IDrsFixture fixture
 			)
 		{
-			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Test.SPCParent));
-			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Test.SPCChild));
+			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Tests.SPCParent));
+			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Tests.SPCChild));
 		}
 
 		private void ModifyInProviderA()
 		{
-			Db4objects.Drs.Test.SPCParent parent = (Db4objects.Drs.Test.SPCParent)GetOneInstance
-				(A(), typeof(Db4objects.Drs.Test.SPCParent));
+			Db4objects.Drs.Tests.SPCParent parent = (Db4objects.Drs.Tests.SPCParent)GetOneInstance
+				(A(), typeof(Db4objects.Drs.Tests.SPCParent));
 			parent.SetName(MODIFIED_IN_A);
-			Db4objects.Drs.Test.SPCChild child = parent.GetChild();
+			Db4objects.Drs.Tests.SPCChild child = parent.GetChild();
 			child.SetName(MODIFIED_IN_A);
 			A().Provider().Update(parent);
 			A().Provider().Update(child);
@@ -94,10 +94,10 @@ namespace Db4objects.Drs.Test
 
 		private void ModifyInProviderB()
 		{
-			Db4objects.Drs.Test.SPCParent parent = (Db4objects.Drs.Test.SPCParent)GetOneInstance
-				(B(), typeof(Db4objects.Drs.Test.SPCParent));
+			Db4objects.Drs.Tests.SPCParent parent = (Db4objects.Drs.Tests.SPCParent)GetOneInstance
+				(B(), typeof(Db4objects.Drs.Tests.SPCParent));
 			parent.SetName(MODIFIED_IN_B);
-			Db4objects.Drs.Test.SPCChild child = parent.GetChild();
+			Db4objects.Drs.Tests.SPCChild child = parent.GetChild();
 			child.SetName(MODIFIED_IN_B);
 			B().Provider().Update(parent);
 			B().Provider().Update(child);
@@ -114,9 +114,9 @@ namespace Db4objects.Drs.Test
 
 		private void StoreParentAndChildToProviderA()
 		{
-			Db4objects.Drs.Test.SPCChild child = new Db4objects.Drs.Test.SPCChild(IN_A);
-			Db4objects.Drs.Test.SPCParent parent = new Db4objects.Drs.Test.SPCParent(child, IN_A
-				);
+			Db4objects.Drs.Tests.SPCChild child = new Db4objects.Drs.Tests.SPCChild(IN_A);
+			Db4objects.Drs.Tests.SPCParent parent = new Db4objects.Drs.Tests.SPCParent(child, 
+				IN_A);
 			A().Provider().StoreNew(parent);
 			A().Provider().Commit();
 			EnsureNames(A(), IN_A, IN_A);
@@ -125,20 +125,20 @@ namespace Db4objects.Drs.Test
 		private void TstNewObject()
 		{
 			StoreParentAndChildToProviderA();
-			Db4objects.Drs.Test.ReplicationEventTest.BooleanClosure invoked = new Db4objects.Drs.Test.ReplicationEventTest.BooleanClosure
+			Db4objects.Drs.Tests.ReplicationEventTest.BooleanClosure invoked = new Db4objects.Drs.Tests.ReplicationEventTest.BooleanClosure
 				(false);
-			Db4objects.Drs.IReplicationEventListener listener = new _IReplicationEventListener_221
+			Db4objects.Drs.IReplicationEventListener listener = new _IReplicationEventListener_239
 				(this, invoked);
 			ReplicateAll(A().Provider(), B().Provider(), listener);
 			Db4oUnit.Assert.IsTrue(invoked.GetValue());
 			EnsureNames(A(), IN_A, IN_A);
-			EnsureNotExist(B().Provider(), typeof(Db4objects.Drs.Test.SPCParent));
-			EnsureNotExist(B().Provider(), typeof(Db4objects.Drs.Test.SPCChild));
+			EnsureNotExist(B().Provider(), typeof(Db4objects.Drs.Tests.SPCParent));
+			EnsureNotExist(B().Provider(), typeof(Db4objects.Drs.Tests.SPCChild));
 		}
 
-		private sealed class _IReplicationEventListener_221 : Db4objects.Drs.IReplicationEventListener
+		private sealed class _IReplicationEventListener_239 : Db4objects.Drs.IReplicationEventListener
 		{
-			public _IReplicationEventListener_221(ReplicationEventTest _enclosing, Db4objects.Drs.Test.ReplicationEventTest.BooleanClosure
+			public _IReplicationEventListener_239(ReplicationEventTest _enclosing, Db4objects.Drs.Tests.ReplicationEventTest.BooleanClosure
 				 invoked)
 			{
 				this._enclosing = _enclosing;
@@ -159,7 +159,7 @@ namespace Db4objects.Drs.Test
 
 			private readonly ReplicationEventTest _enclosing;
 
-			private readonly Db4objects.Drs.Test.ReplicationEventTest.BooleanClosure invoked;
+			private readonly Db4objects.Drs.Tests.ReplicationEventTest.BooleanClosure invoked;
 		}
 
 		private void TstNoAction()
@@ -167,16 +167,16 @@ namespace Db4objects.Drs.Test
 			StoreParentAndChildToProviderA();
 			ReplicateAllToProviderBFirstTime();
 			ModifyInProviderB();
-			Db4objects.Drs.IReplicationEventListener listener = new _IReplicationEventListener_252
+			Db4objects.Drs.IReplicationEventListener listener = new _IReplicationEventListener_270
 				(this);
 			ReplicateAll(B().Provider(), A().Provider(), listener);
 			EnsureNames(A(), MODIFIED_IN_B, MODIFIED_IN_B);
 			EnsureNames(B(), MODIFIED_IN_B, MODIFIED_IN_B);
 		}
 
-		private sealed class _IReplicationEventListener_252 : Db4objects.Drs.IReplicationEventListener
+		private sealed class _IReplicationEventListener_270 : Db4objects.Drs.IReplicationEventListener
 		{
-			public _IReplicationEventListener_252(ReplicationEventTest _enclosing)
+			public _IReplicationEventListener_270(ReplicationEventTest _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -194,16 +194,16 @@ namespace Db4objects.Drs.Test
 			ReplicateAllToProviderBFirstTime();
 			ModifyInProviderA();
 			ModifyInProviderB();
-			Db4objects.Drs.IReplicationEventListener listener = new _IReplicationEventListener_272
+			Db4objects.Drs.IReplicationEventListener listener = new _IReplicationEventListener_290
 				(this);
 			ReplicateAll(A().Provider(), B().Provider(), listener);
 			EnsureNames(A(), MODIFIED_IN_B, MODIFIED_IN_B);
 			EnsureNames(B(), MODIFIED_IN_B, MODIFIED_IN_B);
 		}
 
-		private sealed class _IReplicationEventListener_272 : Db4objects.Drs.IReplicationEventListener
+		private sealed class _IReplicationEventListener_290 : Db4objects.Drs.IReplicationEventListener
 		{
-			public _IReplicationEventListener_272(ReplicationEventTest _enclosing)
+			public _IReplicationEventListener_290(ReplicationEventTest _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -225,16 +225,16 @@ namespace Db4objects.Drs.Test
 			StoreParentAndChildToProviderA();
 			ReplicateAllToProviderBFirstTime();
 			ModifyInProviderB();
-			Db4objects.Drs.IReplicationEventListener listener = new _IReplicationEventListener_292
+			Db4objects.Drs.IReplicationEventListener listener = new _IReplicationEventListener_310
 				(this);
 			ReplicateAll(B().Provider(), A().Provider(), listener);
 			EnsureNames(A(), IN_A, IN_A);
 			EnsureNames(B(), IN_A, IN_A);
 		}
 
-		private sealed class _IReplicationEventListener_292 : Db4objects.Drs.IReplicationEventListener
+		private sealed class _IReplicationEventListener_310 : Db4objects.Drs.IReplicationEventListener
 		{
-			public _IReplicationEventListener_292(ReplicationEventTest _enclosing)
+			public _IReplicationEventListener_310(ReplicationEventTest _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -254,16 +254,16 @@ namespace Db4objects.Drs.Test
 			ReplicateAllToProviderBFirstTime();
 			ModifyInProviderA();
 			ModifyInProviderB();
-			Db4objects.Drs.IReplicationEventListener listener = new _IReplicationEventListener_313
+			Db4objects.Drs.IReplicationEventListener listener = new _IReplicationEventListener_331
 				(this);
 			ReplicateAll(A().Provider(), B().Provider(), listener);
 			EnsureNames(A(), MODIFIED_IN_A, MODIFIED_IN_A);
 			EnsureNames(B(), MODIFIED_IN_B, MODIFIED_IN_B);
 		}
 
-		private sealed class _IReplicationEventListener_313 : Db4objects.Drs.IReplicationEventListener
+		private sealed class _IReplicationEventListener_331 : Db4objects.Drs.IReplicationEventListener
 		{
-			public _IReplicationEventListener_313(ReplicationEventTest _enclosing)
+			public _IReplicationEventListener_331(ReplicationEventTest _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

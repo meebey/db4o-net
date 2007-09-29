@@ -18,9 +18,9 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
-	public class ListTest : Db4objects.Drs.Test.DrsTestCase
+	public class ListTest : Db4objects.Drs.Tests.DrsTestCase
 	{
 		public virtual void Test()
 		{
@@ -39,9 +39,9 @@ namespace Db4objects.Drs.Test
 
 		private void StoreListToProviderA()
 		{
-			Db4objects.Drs.Test.ListHolder lh = CreateHolder();
-			Db4objects.Drs.Test.ListContent lc1 = new Db4objects.Drs.Test.ListContent("c1");
-			Db4objects.Drs.Test.ListContent lc2 = new Db4objects.Drs.Test.ListContent("c2");
+			Db4objects.Drs.Tests.ListHolder lh = CreateHolder();
+			Db4objects.Drs.Tests.ListContent lc1 = new Db4objects.Drs.Tests.ListContent("c1");
+			Db4objects.Drs.Tests.ListContent lc2 = new Db4objects.Drs.Tests.ListContent("c2");
 			lh.Add(lc1);
 			lh.Add(lc2);
 			A().Provider().StoreNew(lh);
@@ -49,9 +49,9 @@ namespace Db4objects.Drs.Test
 			EnsureContent(A(), new string[] { "h1" }, new string[] { "c1", "c2" });
 		}
 
-		protected virtual Db4objects.Drs.Test.ListHolder CreateHolder()
+		protected virtual Db4objects.Drs.Tests.ListHolder CreateHolder()
 		{
-			Db4objects.Drs.Test.ListHolder lh = new Db4objects.Drs.Test.ListHolder("h1");
+			Db4objects.Drs.Tests.ListHolder lh = new Db4objects.Drs.Tests.ListHolder("h1");
 			lh.SetList(new System.Collections.ArrayList());
 			return lh;
 		}
@@ -65,14 +65,14 @@ namespace Db4objects.Drs.Test
 
 		private void ModifyInProviderB()
 		{
-			Db4objects.Drs.Test.ListHolder lh = (Db4objects.Drs.Test.ListHolder)GetOneInstance
-				(B(), typeof(Db4objects.Drs.Test.ListHolder));
+			Db4objects.Drs.Tests.ListHolder lh = (Db4objects.Drs.Tests.ListHolder)GetOneInstance
+				(B(), typeof(Db4objects.Drs.Tests.ListHolder));
 			lh.SetName("h2");
 			System.Collections.IEnumerator itor = lh.GetList().GetEnumerator();
             itor.MoveNext();
-			Db4objects.Drs.Test.ListContent lc1 = (Db4objects.Drs.Test.ListContent)itor.Current;
+			Db4objects.Drs.Tests.ListContent lc1 = (Db4objects.Drs.Tests.ListContent)itor.Current;
             itor.MoveNext();
-			Db4objects.Drs.Test.ListContent lc2 = (Db4objects.Drs.Test.ListContent)itor.Current;
+			Db4objects.Drs.Tests.ListContent lc2 = (Db4objects.Drs.Tests.ListContent)itor.Current;
 			lc1.SetName("co1");
 			lc2.SetName("co2");
 			B().Provider().Update(lc1);
@@ -92,10 +92,10 @@ namespace Db4objects.Drs.Test
 
 		private void AddElementInProviderA()
 		{
-			Db4objects.Drs.Test.ListHolder lh = (Db4objects.Drs.Test.ListHolder)GetOneInstance
-				(A(), typeof(Db4objects.Drs.Test.ListHolder));
+			Db4objects.Drs.Tests.ListHolder lh = (Db4objects.Drs.Tests.ListHolder)GetOneInstance
+				(A(), typeof(Db4objects.Drs.Tests.ListHolder));
 			lh.SetName("h3");
-			Db4objects.Drs.Test.ListContent lc3 = new Db4objects.Drs.Test.ListContent("co3");
+			Db4objects.Drs.Tests.ListContent lc3 = new Db4objects.Drs.Tests.ListContent("co3");
 			A().Provider().StoreNew(lc3);
 			lh.GetList().Add(lc3);
 			A().Provider().Update(lh.GetList());
@@ -106,29 +106,29 @@ namespace Db4objects.Drs.Test
 
 		private void ReplicateHolderStep3()
 		{
-			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Test.ListHolder)
+			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Tests.ListHolder)
 				);
 			EnsureContent(A(), new string[] { "h3" }, new string[] { "co1", "co2", "co3" });
 			EnsureContent(B(), new string[] { "h3" }, new string[] { "co1", "co2", "co3" });
 		}
 
-		private void EnsureContent(Db4objects.Drs.Test.IDrsFixture fixture, string[] holderNames
+		private void EnsureContent(Db4objects.Drs.Tests.IDrsFixture fixture, string[] holderNames
 			, string[] contentNames)
 		{
 			int holderCount = holderNames.Length;
-			EnsureInstanceCount(fixture, typeof(Db4objects.Drs.Test.ListHolder), holderCount);
+			EnsureInstanceCount(fixture, typeof(Db4objects.Drs.Tests.ListHolder), holderCount);
 			int i = 0;
-			System.Collections.IEnumerator objectSet = fixture.Provider().GetStoredObjects(typeof(Db4objects.Drs.Test.ListHolder)
+			System.Collections.IEnumerator objectSet = fixture.Provider().GetStoredObjects(typeof(Db4objects.Drs.Tests.ListHolder)
 				).GetEnumerator();
 			while (objectSet.MoveNext())
 			{
-				Db4objects.Drs.Test.ListHolder lh = (Db4objects.Drs.Test.ListHolder)objectSet.Current;
+				Db4objects.Drs.Tests.ListHolder lh = (Db4objects.Drs.Tests.ListHolder)objectSet.Current;
 				Db4oUnit.Assert.AreEqual(holderNames[i], lh.GetName());
 				System.Collections.IEnumerator itor = lh.GetList().GetEnumerator();
 				int idx = 0;
 				while (itor.MoveNext())
 				{
-					Db4oUnit.Assert.AreEqual(contentNames[idx], ((Db4objects.Drs.Test.ListContent)itor
+					Db4oUnit.Assert.AreEqual(contentNames[idx], ((Db4objects.Drs.Tests.ListContent)itor
 						.Current).GetName());
 					idx++;
 				}

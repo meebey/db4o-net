@@ -18,19 +18,19 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test.Foundation
+namespace Db4objects.Drs.Tests.Foundation
 {
 	public class AllTests : Db4oUnit.ReflectionTestSuite
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Drs.Test.Foundation.AllTests().Run();
+			new Db4objects.Drs.Tests.Foundation.AllTests().Run();
 		}
 
 		protected override System.Type[] TestCases()
 		{
-			return new System.Type[] { typeof(Db4objects.Drs.Test.Foundation.ObjectSetCollection4FacadeTestCase)
-				, typeof(Db4objects.Drs.Test.Foundation.Set4Testcase) };
+			return new System.Type[] { typeof(Db4objects.Drs.Tests.Foundation.ObjectSetCollection4FacadeTestCase)
+				, typeof(Db4objects.Drs.Tests.Foundation.Set4Testcase) };
 		}
 	}
 }

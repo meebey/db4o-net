@@ -18,9 +18,9 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
-	public class ReplicationAfterDeletionTest : Db4objects.Drs.Test.DrsTestCase
+	public class ReplicationAfterDeletionTest : Db4objects.Drs.Tests.DrsTestCase
 	{
 		public virtual void Test()
 		{
@@ -32,15 +32,15 @@ namespace Db4objects.Drs.Test
 
 		protected override void Clean()
 		{
-			Delete(new System.Type[] { typeof(Db4objects.Drs.Test.SPCChild), typeof(Db4objects.Drs.Test.SPCParent)
+			Delete(new System.Type[] { typeof(Db4objects.Drs.Tests.SPCChild), typeof(Db4objects.Drs.Tests.SPCParent)
 				 });
 		}
 
 		private void Replicate()
 		{
-			Db4objects.Drs.Test.SPCChild child = new Db4objects.Drs.Test.SPCChild("c1");
-			Db4objects.Drs.Test.SPCParent parent = new Db4objects.Drs.Test.SPCParent(child, "p1"
-				);
+			Db4objects.Drs.Tests.SPCChild child = new Db4objects.Drs.Tests.SPCChild("c1");
+			Db4objects.Drs.Tests.SPCParent parent = new Db4objects.Drs.Tests.SPCParent(child, 
+				"p1");
 			A().Provider().StoreNew(parent);
 			A().Provider().Commit();
 			ReplicateAll(A().Provider(), B().Provider());

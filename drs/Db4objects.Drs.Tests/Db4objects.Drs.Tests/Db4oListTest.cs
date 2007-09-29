@@ -18,9 +18,9 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
-	public class Db4oListTest : Db4objects.Drs.Test.ListTest
+	public class Db4oListTest : Db4objects.Drs.Tests.ListTest
 	{
 		public override void Test()
 		{
@@ -31,9 +31,9 @@ namespace Db4objects.Drs.Test
 			base.ActualTest();
 		}
 
-		protected override Db4objects.Drs.Test.ListHolder CreateHolder()
+		protected override Db4objects.Drs.Tests.ListHolder CreateHolder()
 		{
-			Db4objects.Drs.Test.ListHolder lh = new Db4objects.Drs.Test.ListHolder("h1");
+			Db4objects.Drs.Tests.ListHolder lh = new Db4objects.Drs.Tests.ListHolder("h1");
 			Db4objects.Db4o.Types.IDb4oList list = ((Db4objects.Drs.Db4o.IDb4oReplicationProvider
 				)A().Provider()).GetObjectContainer().Collections().NewLinkedList();
 			lh.SetList(list);

@@ -269,13 +269,13 @@ namespace Db4objects.Drs.Db4o
 		{
 			if (_referencesByObject != null)
 			{
-				_referencesByObject.Traverse(new _IVisitor4_265(this, visitor));
+				_referencesByObject.Traverse(new _IVisitor4_283(this, visitor));
 			}
 		}
 
-		private sealed class _IVisitor4_265 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _IVisitor4_283 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _IVisitor4_265(FileReplicationProvider _enclosing, Db4objects.Db4o.Foundation.IVisitor4
+			public _IVisitor4_283(FileReplicationProvider _enclosing, Db4objects.Db4o.Foundation.IVisitor4
 				 visitor)
 			{
 				this._enclosing = _enclosing;

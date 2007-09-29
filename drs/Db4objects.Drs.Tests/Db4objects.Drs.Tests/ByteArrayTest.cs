@@ -18,7 +18,7 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
 	/// <summary>
 	/// Design of this case is copied from
@@ -28,7 +28,7 @@ namespace Db4objects.Drs.Test
 	/// Design of this case is copied from
 	/// com.db4o.db4ounit.common.types.arrays.ByteArrayTestCase.
 	/// </remarks>
-	public class ByteArrayTest : Db4objects.Drs.Test.DrsTestCase
+	public class ByteArrayTest : Db4objects.Drs.Tests.DrsTestCase
 	{
 		internal const int ARRAY_LENGTH = 5;
 
@@ -50,7 +50,7 @@ namespace Db4objects.Drs.Test
 
 		private void StoreInA()
 		{
-			Db4objects.Drs.Test.IIByteArrayHolder byteArrayHolder = new Db4objects.Drs.Test.ByteArrayHolder
+			Db4objects.Drs.Tests.IIByteArrayHolder byteArrayHolder = new Db4objects.Drs.Tests.ByteArrayHolder
 				(CreateByteArray());
 			A().Provider().StoreNew(byteArrayHolder);
 			A().Provider().Commit();
@@ -66,7 +66,7 @@ namespace Db4objects.Drs.Test
 
 		private void ModifyInB()
 		{
-			Db4objects.Drs.Test.IIByteArrayHolder c = GetTheObject(B());
+			Db4objects.Drs.Tests.IIByteArrayHolder c = GetTheObject(B());
 			c.SetBytes(modInB);
 			B().Provider().Update(c);
 			B().Provider().Commit();
@@ -82,7 +82,7 @@ namespace Db4objects.Drs.Test
 
 		private void ModifyInA()
 		{
-			Db4objects.Drs.Test.IIByteArrayHolder c = GetTheObject(A());
+			Db4objects.Drs.Tests.IIByteArrayHolder c = GetTheObject(A());
 			c.SetBytes(modInA);
 			A().Provider().Update(c);
 			A().Provider().Commit();
@@ -96,17 +96,17 @@ namespace Db4objects.Drs.Test
 			EnsureNames(B(), modInA);
 		}
 
-		private void EnsureNames(Db4objects.Drs.Test.IDrsFixture fixture, byte[] bs)
+		private void EnsureNames(Db4objects.Drs.Tests.IDrsFixture fixture, byte[] bs)
 		{
-			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Test.IIByteArrayHolder));
-			Db4objects.Drs.Test.IIByteArrayHolder c = GetTheObject(fixture);
+			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Tests.IIByteArrayHolder));
+			Db4objects.Drs.Tests.IIByteArrayHolder c = GetTheObject(fixture);
 			Db4oUnit.ArrayAssert.AreEqual(c.GetBytes(), bs);
 		}
 
-		private Db4objects.Drs.Test.IIByteArrayHolder GetTheObject(Db4objects.Drs.Test.IDrsFixture
+		private Db4objects.Drs.Tests.IIByteArrayHolder GetTheObject(Db4objects.Drs.Tests.IDrsFixture
 			 fixture)
 		{
-			return (Db4objects.Drs.Test.IIByteArrayHolder)GetOneInstance(fixture, typeof(Db4objects.Drs.Test.IIByteArrayHolder)
+			return (Db4objects.Drs.Tests.IIByteArrayHolder)GetOneInstance(fixture, typeof(Db4objects.Drs.Tests.IIByteArrayHolder)
 				);
 		}
 

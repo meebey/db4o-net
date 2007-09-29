@@ -18,11 +18,11 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test.Foundation
+namespace Db4objects.Drs.Tests.Foundation
 {
 	public class Set4
 	{
-		public static readonly Db4objects.Drs.Test.Foundation.Set4 EMPTY_SET = new Db4objects.Drs.Test.Foundation.Set4
+		public static readonly Db4objects.Drs.Tests.Foundation.Set4 EMPTY_SET = new Db4objects.Drs.Tests.Foundation.Set4
 			(0);
 
 		private readonly Db4objects.Db4o.Foundation.Hashtable4 _table;
@@ -42,7 +42,7 @@ namespace Db4objects.Drs.Test.Foundation
 			_table.Put(element, element);
 		}
 
-		public virtual void AddAll(Db4objects.Drs.Test.Foundation.Set4 other)
+		public virtual void AddAll(Db4objects.Drs.Tests.Foundation.Set4 other)
 		{
 			System.Collections.IEnumerator i = other._table.Iterator();
 			while (i.MoveNext())
@@ -66,7 +66,7 @@ namespace Db4objects.Drs.Test.Foundation
 			return _table.Get(element) != null;
 		}
 
-		public virtual bool ContainsAll(Db4objects.Drs.Test.Foundation.Set4 other)
+		public virtual bool ContainsAll(Db4objects.Drs.Tests.Foundation.Set4 other)
 		{
 			System.Collections.IEnumerator i = other.Iterator();
 			while (i.MoveNext())

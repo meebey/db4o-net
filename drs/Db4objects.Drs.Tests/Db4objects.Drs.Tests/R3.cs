@@ -18,30 +18,30 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test
+namespace Db4objects.Drs.Tests
 {
-	public class R3 : Db4objects.Drs.Test.R2
+	public class R3 : Db4objects.Drs.Tests.R2
 	{
-		internal Db4objects.Drs.Test.R0 circle3;
+		internal Db4objects.Drs.Tests.R0 circle3;
 
-		internal Db4objects.Drs.Test.R4 r4;
+		internal Db4objects.Drs.Tests.R4 r4;
 
-		public virtual Db4objects.Drs.Test.R0 GetCircle3()
+		public virtual Db4objects.Drs.Tests.R0 GetCircle3()
 		{
 			return circle3;
 		}
 
-		public virtual void SetCircle3(Db4objects.Drs.Test.R0 circle3)
+		public virtual void SetCircle3(Db4objects.Drs.Tests.R0 circle3)
 		{
 			this.circle3 = circle3;
 		}
 
-		public virtual Db4objects.Drs.Test.R4 GetR4()
+		public virtual Db4objects.Drs.Tests.R4 GetR4()
 		{
 			return r4;
 		}
 
-		public virtual void SetR4(Db4objects.Drs.Test.R4 r4)
+		public virtual void SetR4(Db4objects.Drs.Tests.R4 r4)
 		{
 			this.r4 = r4;
 		}

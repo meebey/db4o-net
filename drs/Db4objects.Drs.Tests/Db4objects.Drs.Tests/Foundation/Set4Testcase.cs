@@ -18,13 +18,13 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test.Foundation
+namespace Db4objects.Drs.Tests.Foundation
 {
 	public class Set4Testcase : Db4oUnit.ITestCase
 	{
 		public virtual void TestSingleElementIteration()
 		{
-			Db4objects.Drs.Test.Foundation.Set4 set = new Db4objects.Drs.Test.Foundation.Set4
+			Db4objects.Drs.Tests.Foundation.Set4 set = new Db4objects.Drs.Tests.Foundation.Set4
 				();
 			set.Add("first");
 			Db4oUnit.Assert.AreEqual("first", Db4objects.Db4o.Foundation.Iterators.Next(set.Iterator

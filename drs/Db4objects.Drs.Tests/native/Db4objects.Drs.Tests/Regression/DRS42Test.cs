@@ -18,11 +18,11 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
-namespace Db4objects.Drs.Test.Regression
+namespace Db4objects.Drs.Tests.Regression
 {
-	public class DRS42Test : Db4objects.Drs.Test.DrsTestCase
+	public class DRS42Test : Db4objects.Drs.Tests.DrsTestCase
 	{
-		internal Db4objects.Drs.Test.Regression.NewPilot andrew = new Db4objects.Drs.Test.Regression.NewPilot
+		internal Db4objects.Drs.Tests.Regression.NewPilot andrew = new Db4objects.Drs.Tests.Regression.NewPilot
 			("Andrew", 100, new int[] { 100, 200, 300 });
 
 		public virtual void Test()
@@ -46,13 +46,13 @@ namespace Db4objects.Drs.Test.Regression
 			EnsureContent(andrew, B().Provider());
 		}
 
-		private void EnsureContent(Db4objects.Drs.Test.Regression.NewPilot newPilot, Db4objects.Drs.Inside.ITestableReplicationProviderInside
+		private void EnsureContent(Db4objects.Drs.Tests.Regression.NewPilot newPilot, Db4objects.Drs.Inside.ITestableReplicationProviderInside
 			 provider)
 		{
-			Db4objects.Db4o.IObjectSet result = provider.GetStoredObjects(typeof(Db4objects.Drs.Test.Regression.NewPilot)
+			Db4objects.Db4o.IObjectSet result = provider.GetStoredObjects(typeof(Db4objects.Drs.Tests.Regression.NewPilot)
 				);
 			Db4oUnit.Assert.AreEqual(1, result.Count);
-			Db4objects.Drs.Test.Regression.NewPilot p = (Db4objects.Drs.Test.Regression.NewPilot
+			Db4objects.Drs.Tests.Regression.NewPilot p = (Db4objects.Drs.Tests.Regression.NewPilot
 				)result.Next();
 			Db4oUnit.Assert.AreEqual(newPilot.GetName(), p.GetName());
 			Db4oUnit.Assert.AreEqual(newPilot.GetPoints(), p.GetPoints());
