@@ -26,7 +26,14 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			Type type = Type.GetType(_typeName);
 			MethodInfo method =
 				type.GetMethod(_methodName, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
-			method.Invoke(Activator.CreateInstance(type), _arguments);
+			try
+			{
+				method.Invoke(Activator.CreateInstance(type), _arguments);
+			}
+			catch (Exception x)
+			{
+				throw new Exception(x.ToString());
+			}
 		}
 	}
 
@@ -37,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		private readonly string _assemblyName;
 
 		public InstallAssemblyResolver(string assembly)
-		{
+		{	
 			_assembly = assembly;
 			_assemblyName = Path.GetFileNameWithoutExtension(_assembly);
 		}
@@ -49,7 +56,10 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
-			if (SimpleName(args.Name) == _assemblyName) return Assembly.LoadFrom(_assembly);
+			if (SimpleName(args.Name) == _assemblyName)
+			{
+				return Assembly.LoadFrom(_assembly);
+			}
 			return null;
 		}
 
@@ -65,19 +75,34 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private readonly string _fname;
 
+		private string _version;
+
 		public Db4oLibraryEnvironment(File file)
 		{
 			_fname = file.GetAbsolutePath();
 			_domain = SetUpDomain();
+			SetUpLegacyAdapter();
+		}
+
+		private void SetUpLegacyAdapter()
+		{
+			if (Version().StartsWith("6")) return;
+
+			new LegacyAdapterEmitter(_fname, Version()).Emit(Path.Combine(BaseDirectory(), "Db4objects.Db4o.dll"));
 		}
 
 		private AppDomain SetUpDomain()
 		{
-			string baseDirectory = IOServices.BuildTempPath("migration-domain-" + Version());
+			string baseDirectory = BaseDirectory();
 			CopyAssemblies(baseDirectory);
 			AppDomain domain = CreateDomain(baseDirectory);
 			SetUpAssemblyResolver(domain);
 			return domain;
+		}
+
+		private string BaseDirectory()
+		{
+			return IOServices.BuildTempPath("migration-domain-" + Version());
 		}
 
 		private void SetUpAssemblyResolver(AppDomain domain)
@@ -101,6 +126,12 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		}
 
 		public string Version()
+		{
+			if (null != _version) return _version;
+			return _version = GetVersion();
+		}
+
+		private string GetVersion()
 		{
 #if NET_2_0
 			return System.Reflection.Assembly.ReflectionOnlyLoadFrom(_fname).GetName().Version.ToString();

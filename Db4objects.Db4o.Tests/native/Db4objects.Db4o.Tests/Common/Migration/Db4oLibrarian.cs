@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			ArrayList libraries = new ArrayList();
 			foreach (string directory in Directory.GetDirectories(WorkspaceServices.WorkspacePath("db4o.archives/net-2.0")))
 			{
-				// for now, only 6.X libraries
+				// comment out the next line to run against legacy versions
 				if (!Path.GetFileName(directory).StartsWith("6")) continue;
 
 				string db4oLib = FindLibraryFile(directory);

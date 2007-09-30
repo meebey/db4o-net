@@ -15,11 +15,20 @@ namespace Db4objects.Db4o.Tests.Util
 	{
 		public static void EmitAssembly(string assemblyFileName, params string[] code)
 		{
+			string[] references = {
+				typeof(Db4oFactory).Module.FullyQualifiedName,
+				typeof(CompilationServices).Module.FullyQualifiedName 
+			};
+			EmitAssembly(assemblyFileName, references, code);
+		}
+
+		public static void EmitAssembly(string assemblyFileName, string[] references, params string[] code)
+		{
 			string basePath = Path.GetDirectoryName(assemblyFileName);
 			CreateDirectoryIfNeeded(basePath);
 
 			string[] sourceFiles = WriteSourceFiles(Path.GetTempPath(), code);
-			CompileFiles(assemblyFileName, sourceFiles);
+			CompileFiles(assemblyFileName, references, sourceFiles);
 		}
 
 		public static void CreateDirectoryIfNeeded(string directory)
@@ -76,15 +85,14 @@ namespace Db4objects.Db4o.Tests.Util
 #endif
 		}
 
-		public static void CompileFiles(string assemblyFName, string[] files)
-		{	
+		public static void CompileFiles(string assemblyFName, string[] references, string[] files)
+		{
 			using (CodeDomProvider provider = GetCSharpCodeDomProvider())
 			{
 				CompilerParameters parameters = CreateDefaultCompilerParameters();
 				parameters.IncludeDebugInformation = false;
 				parameters.OutputAssembly = assemblyFName;
-				parameters.ReferencedAssemblies.Add(typeof(Db4oFactory).Module.FullyQualifiedName);
-				parameters.ReferencedAssemblies.Add(typeof(CompilationServices).Module.FullyQualifiedName);
+				parameters.ReferencedAssemblies.AddRange(references);
 
 				ICodeCompiler compiler = provider.CreateCompiler();
 				CompilerResults results = compiler.CompileAssemblyFromFileBatch(parameters, files);

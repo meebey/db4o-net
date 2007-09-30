@@ -25,8 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
             };
 
             list.AddRange(netTypes);
-            Type[] allTypes = (Type[]) list.ToArray(typeof(Type));
-            return allTypes;
+        	return (Type[]) list.ToArray(typeof(Type));
         }
     }
 }
