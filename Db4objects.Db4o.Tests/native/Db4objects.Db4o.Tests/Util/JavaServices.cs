@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Text;
+using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.Util
 {
@@ -56,12 +57,14 @@ namespace Db4objects.Db4o.Tests.Util
 #if CF_1_0 || CF_2_0 
             return null;
 #else
-            return IOServices.Exec(WorkspaceServices.JavacPath(),
+			string jarPath = JavaServices.Db4ojarPath();
+			Assert.IsTrue(File.Exists(jarPath), string.Format("'{0}' not found. Make sure the jar was built before running this test.", jarPath));
+			return IOServices.Exec(WorkspaceServices.JavacPath(),
                     "-classpath",
-                    JavaServices.Db4ojarPath(),
+                    jarPath,
                     srcFile);
 #endif
-        }
+		}
 
 		public static string java(string className, params string[] args)
 		{
