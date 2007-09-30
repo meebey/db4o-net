@@ -236,7 +236,7 @@ namespace Db4oAdmin.Tests.Core
 
 		private static string GetTempPath()
 		{
-			//return Path.GetTempPath();
+//			return Path.GetTempPath();
 
 			// for now, debugging information is only
 			// preserved when the directory name does not contain
@@ -245,6 +245,7 @@ namespace Db4oAdmin.Tests.Core
 			string tempPath = Path.Combine(
 				Directory.GetDirectoryRoot(Directory.GetCurrentDirectory()),
 				"tmp");
+			Directory.CreateDirectory(tempPath);
 			return tempPath;
 		}
 	}
