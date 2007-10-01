@@ -73,13 +73,13 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 	{
 		private readonly AppDomain _domain;
 
-		private readonly string _fname;
+		private readonly string _targetAssembly;
 
 		private string _version;
 
 		public Db4oLibraryEnvironment(File file)
 		{
-			_fname = file.GetAbsolutePath();
+			_targetAssembly = file.GetAbsolutePath();
 			_domain = SetUpDomain();
 			SetUpLegacyAdapter();
 		}
@@ -88,7 +88,8 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		{
 			if (Version().StartsWith("6")) return;
 
-			new LegacyAdapterEmitter(_fname, Version()).Emit(Path.Combine(BaseDirectory(), "Db4objects.Db4o.dll"));
+			string adapterAssembly = Path.Combine(BaseDirectory(), "Db4objects.Db4o.dll");
+			new LegacyAdapterEmitter(_targetAssembly, Version()).Emit(adapterAssembly);
 		}
 
 		private AppDomain SetUpDomain()
@@ -107,7 +108,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private void SetUpAssemblyResolver(AppDomain domain)
 		{
-			domain.DoCallBack(new CrossAppDomainDelegate(new InstallAssemblyResolver(_fname).Execute));
+			domain.DoCallBack(new CrossAppDomainDelegate(new InstallAssemblyResolver(_targetAssembly).Execute));
 		}
 
 		private static AppDomain CreateDomain(string baseDirectory)
@@ -119,7 +120,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private void CopyAssemblies(string domainBase)
 		{
-			IOServices.CopyTo(_fname, domainBase);
+			IOServices.CopyTo(_targetAssembly, domainBase);
 			IOServices.CopyEnclosingAssemblyTo(GetType(), domainBase);
 			IOServices.CopyEnclosingAssemblyTo(typeof(Db4oUnit.ITest), domainBase);
 			IOServices.CopyEnclosingAssemblyTo(typeof(Db4oUnit.Extensions.IDb4oTestCase), domainBase);
@@ -134,7 +135,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		private string GetVersion()
 		{
 #if NET_2_0
-			return System.Reflection.Assembly.ReflectionOnlyLoadFrom(_fname).GetName().Version.ToString();
+			return System.Reflection.Assembly.ReflectionOnlyLoadFrom(_targetAssembly).GetName().Version.ToString();
 #else
 			return System.Reflection.Assembly.LoadFrom(_fname).GetName().Version.ToString();
 #endif
