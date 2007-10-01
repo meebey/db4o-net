@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		public Db4oLibrary[] Libraries()
 		{
 			ArrayList libraries = new ArrayList();
-			foreach (string directory in Directory.GetDirectories(WorkspaceServices.WorkspacePath("db4o.archives/net-2.0")))
+			foreach (string directory in Directory.GetDirectories(LibraryPath()))
 			{
 				// comment out the next line to run against legacy versions
 				if (!Path.GetFileName(directory).StartsWith("6")) continue;
@@ -26,6 +26,16 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				libraries.Add(ForFile(db4oLib));
 			}
 			return (Db4oLibrary[]) libraries.ToArray(typeof(Db4oLibrary));
+		}
+
+		private static string LibraryPath()
+		{
+			return WorkspaceServices.WorkspacePath("db4o.archives/net-2.0");
+		}
+
+		public Db4oLibrary ForVersion(string version)
+		{
+			return ForFile(FindLibraryFile(Path.Combine(LibraryPath(), version)));
 		}
 
 		public Db4oLibrary ForFile(string db4oLib)

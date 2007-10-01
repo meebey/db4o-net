@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private string _version;
 
-		public Db4oLibraryEnvironment(File file)
+		public Db4oLibraryEnvironment(File file, File additionalAssembly)
 		{
 			_targetAssembly = file.GetAbsolutePath();
 			_domain = SetUpDomain();

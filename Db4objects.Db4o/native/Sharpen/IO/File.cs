@@ -8,9 +8,9 @@ namespace Sharpen.IO
 	public class File
 	{
 		public static readonly char separatorChar = Path.DirectorySeparatorChar;
-		public static readonly string separator = ""+Path.DirectorySeparatorChar;
+		public static readonly string separator = separatorChar.ToString();
 		
-		private string _path;
+		private readonly string _path;
 
 		public File(string path)
 		{
