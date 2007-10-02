@@ -230,6 +230,18 @@ namespace Sharpen.Util
 
 	}
 }
+
+namespace Sharpen
+{
+	public class Runtime 
+    {
+		public static string Substring(string s, int startIndex, int endIndex)
+		{
+			return s.Substring(startIndex, endIndex - startIndex);
+		}
+    }
+}
+
 ";
 			}
 		}
