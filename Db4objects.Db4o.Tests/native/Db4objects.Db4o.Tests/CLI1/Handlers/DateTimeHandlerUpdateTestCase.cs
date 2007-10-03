@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;
 
@@ -8,7 +6,6 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
     class DateTimeHandlerUpdateTestCase : HandlerUpdateTestCaseBase
     {
-
         public class Item
         {
             public DateTime _dateTime;

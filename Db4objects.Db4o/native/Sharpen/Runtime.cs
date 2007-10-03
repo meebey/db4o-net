@@ -10,6 +10,9 @@ namespace Sharpen
 {
 	public class Runtime 
 	{
+		private static long DIFFERENCE_IN_TICKS = 62135604000000;
+		private static long RATIO = 10000;
+
 		public static TextWriter Out
 		{
 			get
@@ -88,7 +91,7 @@ namespace Sharpen
 
 		public static long CurrentTimeMillis() 
 		{
-			return Sharpen.Util.Date.ToJavaMilliseconds(DateTime.Now.ToUniversalTime());
+			return Runtime.ToJavaMilliseconds(DateTime.Now.ToUniversalTime());
 		}
 
 		public static int FloatToIntBits(float value) 
@@ -172,7 +175,7 @@ namespace Sharpen
 
 		public static long GetTimeForDate(DateTime dateTime) 
 		{
-			return Sharpen.Util.Date.ToJavaMilliseconds(dateTime);
+			return Runtime.ToJavaMilliseconds(dateTime);
 		}
 
 		public static int IdentityHashCode(object obj) 
@@ -230,5 +233,20 @@ namespace Sharpen
         {
             return TypeReference.FromString(typeName).Resolve();
         }
+
+		public static long ToJavaMilliseconds(DateTime dateTimeNet)
+		{
+			return ToJavaMilliseconds(dateTimeNet.Ticks);
+		}
+
+		public static long ToJavaMilliseconds(long ticks)
+		{
+			return ticks / RATIO - DIFFERENCE_IN_TICKS;
+		}
+
+		public static long ToNetTicks(long javaMilliseconds)
+		{
+			return (javaMilliseconds + Runtime.DIFFERENCE_IN_TICKS) * Runtime.RATIO;
+		}
 	}
 }

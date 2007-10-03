@@ -263,14 +263,14 @@ namespace Db4objects.Db4o.Internal
             }
         }
 
-        internal static String Format(Sharpen.Util.Date date, bool showSeconds)
+        internal static String Format(DateTime date, bool showSeconds)
         {
             String fmt = "yyyy-MM-dd";
             if (showSeconds)
             {
                 fmt += " HH:mm:ss";
             }
-            return new DateTime(date.GetTicks()).ToString(fmt);
+            return date.ToString(fmt);
         }
 
         public static Object GetClassForType(Object obj)
@@ -654,7 +654,6 @@ namespace Db4objects.Db4o.Internal
 		                                        	typeof(Char),
 		                                        	typeof(Int16),
 		                                        	typeof(String),
-		                                        	typeof(Sharpen.Util.Date)
 		                                        };
     }
 }
