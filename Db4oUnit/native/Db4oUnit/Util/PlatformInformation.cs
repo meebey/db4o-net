@@ -3,14 +3,14 @@ namespace Db4oUnit.Util
 {
 	public class PlatformInformation
 	{
-		public static bool IsJava
+		public static bool IsJava()
 		{
-			get { return false; }
+			return false; 
 		}
 
-		public static bool IsDotNet
+		public static bool IsDotNet()
 		{
-			get { return true; }
+			return true;
 		}
 	}
 }
