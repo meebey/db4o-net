@@ -38,12 +38,5 @@ namespace Db4objects.Db4o.Internal
 	    {
 	        return TypeReference.FromType(type).GetUnversionedName();
 	    }
-	    
-		/// <exception cref="Exception"></exception>
-		public static object GetField(object parent, string fieldName) 
-		{
-			FieldInfo field = Sharpen.Runtime.GetDeclaredField(parent.GetType(),fieldName);
-			return field.GetValue(parent);
-		}
 	}
 }
