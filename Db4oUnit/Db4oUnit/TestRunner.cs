@@ -10,13 +10,20 @@ namespace Db4oUnit
 	{
 		private ITestSuiteBuilder _suiteBuilder;
 
-		public TestRunner(TestSuite suite)
+		private bool _reportToFile = true;
+
+		public TestRunner(TestSuite suite) : this(suite, true)
+		{
+		}
+
+		public TestRunner(TestSuite suite, bool reportToFile)
 		{
 			if (null == suite)
 			{
 				throw new ArgumentException("suite");
 			}
 			_suiteBuilder = new NullTestSuiteBuilder(suite);
+			_reportToFile = reportToFile;
 		}
 
 		public TestRunner(ITestSuiteBuilder builder)
@@ -72,7 +79,10 @@ namespace Db4oUnit
 
 		private void Report(TestResult result)
 		{
-			ReportToTextFile(result);
+			if (_reportToFile)
+			{
+				ReportToTextFile(result);
+			}
 			ReportToStdErr(result);
 		}
 

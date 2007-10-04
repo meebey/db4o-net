@@ -671,8 +671,7 @@ namespace Db4objects.Db4o.Internal
 					return null;
 				}
 				object child = @ref.IsActive() ? field[0].Get(trans, obj) : new UnmarshallingContext
-					(trans, @ref, Const4.ADD_TO_ID_TREE, false).ReadFieldValue(@ref.GetID(), field[0
-					]);
+					(trans, @ref, Const4.ADD_TO_ID_TREE, false).ReadFieldValue(field[0]);
 				if (path.Length == 1)
 				{
 					return child;
@@ -1368,16 +1367,14 @@ namespace Db4objects.Db4o.Internal
 				BeginTopLevelCall();
 				try
 				{
-					_justPeeked = null;
 					trans = CheckTransaction(trans);
 					ObjectReference @ref = trans.ReferenceForObject(obj);
 					trans = committed ? _systemTransaction : trans;
 					object cloned = null;
 					if (@ref != null)
 					{
-						cloned = PeekPersisted(trans, @ref.GetID(), depth);
+						cloned = PeekPersisted(trans, @ref.GetID(), depth, true);
 					}
-					_justPeeked = null;
 					CompleteTopLevelCall();
 					return cloned;
 				}
@@ -1394,24 +1391,36 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public object PeekPersisted(Db4objects.Db4o.Internal.Transaction trans, int id, int
-			 depth)
+			 depth, bool resetJustPeeked)
 		{
 			if (depth < 0)
 			{
 				return null;
 			}
-			TreeInt ti = new TreeInt(id);
-			TreeIntObject tio = (TreeIntObject)Tree.Find(_justPeeked, ti);
-			if (tio == null)
+			if (resetJustPeeked)
 			{
-				return new ObjectReference(id).PeekPersisted(trans, depth);
+				_justPeeked = null;
 			}
-			return tio._object;
+			else
+			{
+				TreeInt ti = new TreeInt(id);
+				TreeIntObject tio = (TreeIntObject)Tree.Find(_justPeeked, ti);
+				if (tio != null)
+				{
+					return tio._object;
+				}
+			}
+			object res = new ObjectReference(id).PeekPersisted(trans, depth);
+			if (resetJustPeeked)
+			{
+				_justPeeked = null;
+			}
+			return res;
 		}
 
-		internal virtual void Peeked(int a_id, object a_object)
+		internal virtual void Peeked(int id, object obj)
 		{
-			_justPeeked = Tree.Add(_justPeeked, new TreeIntObject(a_id, a_object));
+			_justPeeked = Tree.Add(_justPeeked, new TreeIntObject(id, obj));
 		}
 
 		public virtual void Purge()

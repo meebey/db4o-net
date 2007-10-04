@@ -49,6 +49,9 @@ namespace Db4objects.Db4o
 				);
 			FREE_ON_ROLLBACK = new Db4objects.Db4o.DTrace(true, true, "trans freeOnRollback", 
 				true);
+			FREE_POINTER_ON_ROLLBACK = new Db4objects.Db4o.DTrace(true, true, "freePointerOnRollback"
+				, true);
+			GET_POINTER_SLOT = new Db4objects.Db4o.DTrace(true, true, "getPointerSlot", true);
 			GET_SLOT = new Db4objects.Db4o.DTrace(true, true, "getSlot", true);
 			GET_FREESPACE = new Db4objects.Db4o.DTrace(true, true, "getFreespace", true);
 			GET_FREESPACE_RAM = new Db4objects.Db4o.DTrace(true, true, "getFreespaceRam", true
@@ -170,7 +173,11 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.DTrace FREE_ON_ROLLBACK;
 
+		public static Db4objects.Db4o.DTrace FREE_POINTER_ON_ROLLBACK;
+
 		public static Db4objects.Db4o.DTrace GET_SLOT;
+
+		public static Db4objects.Db4o.DTrace GET_POINTER_SLOT;
 
 		public static Db4objects.Db4o.DTrace GET_FREESPACE;
 
@@ -247,7 +254,7 @@ namespace Db4objects.Db4o
 			Init();
 		}
 
-		private static Db4objects.Db4o.DTrace all;
+		private static Db4objects.Db4o.DTrace[] all;
 
 		private static int current;
 

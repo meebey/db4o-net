@@ -6,6 +6,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.IX;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
@@ -401,6 +402,31 @@ namespace Db4objects.Db4o.Internal
 				return _objectContainer;
 			}
 			return (IObjectContainer)_container;
+		}
+
+		public virtual IContext Context()
+		{
+			return new _IContext_364(this);
+		}
+
+		private sealed class _IContext_364 : IContext
+		{
+			public _IContext_364(Transaction _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public IObjectContainer ObjectContainer()
+			{
+				return this._enclosing.ObjectContainer();
+			}
+
+			public Db4objects.Db4o.Internal.Transaction Transaction()
+			{
+				return this._enclosing;
+			}
+
+			private readonly Transaction _enclosing;
 		}
 	}
 }

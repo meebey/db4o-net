@@ -310,8 +310,7 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="IObjectTranslator">IObjectTranslator</see>
 		/// is not
 		/// compatible with the use of an
-		/// <see cref="ObjectMarshaller">ObjectMarshaller</see>
-		/// .<br /><br />
+		/// internal class ObjectMarshaller.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
 		/// </remarks>

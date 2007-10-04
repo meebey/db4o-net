@@ -79,7 +79,7 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// See
-		/// <see>openClient()</see>
+		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
 		/// </summary>
 		/// <param name="config">
 		/// a custom

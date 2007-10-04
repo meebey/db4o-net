@@ -24,11 +24,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		public override void CascadeActivation(Transaction a_trans, object a_object, int 
-			a_depth, bool a_activate)
-		{
-		}
-
 		public virtual IReflectClass ClassReflector()
 		{
 			return Container()._handlers.ICLASS_STRING;
@@ -55,21 +50,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				Slot slot = (Slot)indexEntry;
 				indexEntry = Container().BufferByAddress(slot.Address(), slot.Length());
 			}
-			try
-			{
-				return StringMarshaller.ReadShort(Container(), (Db4objects.Db4o.Internal.Buffer)indexEntry
-					);
-			}
-			catch (CorruptionException)
-			{
-			}
-			return null;
-		}
-
-		public override object Read(MarshallerFamily mf, StatefulBuffer a_bytes, bool redirect
-			)
-		{
-			return mf._string.ReadFromParentSlot(a_bytes.GetStream(), a_bytes, redirect);
+			return ReadStringNoDebug(trans.Context(), (IReadBuffer)indexEntry);
 		}
 
 		/// <summary>This readIndexEntry method reads from the parent slot.</summary>
@@ -160,7 +141,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			if (obj is string)
 			{
-				return StringMarshaller.WriteShort(Container(), (string)obj);
+				return WriteToBuffer((IInternalObjectContainer)oc, (string)obj);
 			}
 			if (obj is Slot)
 			{
@@ -257,26 +238,43 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override void Write(IWriteContext context, object obj)
 		{
-			string str = (string)obj;
-			context.WriteInt(str.Length);
-			StringIo(context).Write(context, str);
+			InternalWrite((IInternalObjectContainer)context.ObjectContainer(), context, (string
+				)obj);
+		}
+
+		protected static void InternalWrite(IInternalObjectContainer objectContainer, IWriteBuffer
+			 buffer, string str)
+		{
+			buffer.WriteInt(str.Length);
+			StringIo(objectContainer).Write(buffer, str);
+		}
+
+		public static Db4objects.Db4o.Internal.Buffer WriteToBuffer(IInternalObjectContainer
+			 container, string str)
+		{
+			Db4objects.Db4o.Internal.Buffer buffer = new Db4objects.Db4o.Internal.Buffer(StringIo
+				(container).Length(str));
+			InternalWrite(container, buffer, str);
+			return buffer;
 		}
 
 		protected static LatinStringIO StringIo(IContext context)
 		{
-			IInternalObjectContainer objectContainer = (IInternalObjectContainer)context.ObjectContainer
-				();
-			LatinStringIO stringIO = objectContainer.Container().StringIO();
-			return stringIO;
+			return StringIo((IInternalObjectContainer)context.ObjectContainer());
+		}
+
+		protected static LatinStringIO StringIo(IInternalObjectContainer objectContainer)
+		{
+			return objectContainer.Container().StringIO();
 		}
 
 		public static string ReadString(IContext context, IReadBuffer buffer)
 		{
-			string str = InternalRead(context, buffer);
+			string str = ReadStringNoDebug(context, buffer);
 			return str;
 		}
 
-		private static string InternalRead(IContext context, IReadBuffer buffer)
+		public static string ReadStringNoDebug(IContext context, IReadBuffer buffer)
 		{
 			int length = buffer.ReadInt();
 			if (length > 0)

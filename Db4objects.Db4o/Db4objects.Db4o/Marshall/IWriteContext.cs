@@ -6,11 +6,13 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Marshall
 {
 	/// <summary>
-	/// this interface is passed to
-	/// <see cref="ITypeHandler4">ITypeHandler4</see>
-	/// during marshalling
-	/// and provides methods to marshall objects.
+	/// this interface is passed to internal class com.db4o.internal.TypeHandler4 during marshalling
+	/// and provides methods to marshal objects.
 	/// </summary>
+	/// <remarks>
+	/// this interface is passed to internal class com.db4o.internal.TypeHandler4 during marshalling
+	/// and provides methods to marshal objects.
+	/// </remarks>
 	public interface IWriteContext : IContext, IWriteBuffer
 	{
 		/// <summary>
@@ -22,18 +24,22 @@ namespace Db4objects.Db4o.Marshall
 		/// the object to the context.
 		/// Use this method for first class objects only (objects that
 		/// have an identity in the database). If the object can potentially
-		/// be a primitive type, do not use this method bue use
-		/// <see cref="#writeAny(Object)">#writeAny(Object)</see>
-		/// instead.
+		/// be a primitive type, do not use this method but use
+		/// a matching
+		/// <see cref="IWriteBuffer">IWriteBuffer</see>
+		/// method instead.
 		/// </remarks>
 		/// <param name="obj">the object to write.</param>
 		void WriteObject(object obj);
 
 		/// <summary>
-		/// writes sub-objects, in cases where the
-		/// <see cref="ITypeHandler4">ITypeHandler4</see>
+		/// writes sub-objects, in cases where the TypeHandler4
 		/// is known.
 		/// </summary>
+		/// <remarks>
+		/// writes sub-objects, in cases where the TypeHandler4
+		/// is known.
+		/// </remarks>
 		/// <param name="obj">the object to write</param>
 		void WriteObject(ITypeHandler4 handler, object obj);
 	}

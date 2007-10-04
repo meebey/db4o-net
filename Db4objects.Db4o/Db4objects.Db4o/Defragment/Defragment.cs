@@ -158,8 +158,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 			if (targetIdentityID > 0)
 			{
-				SetIdentity(config.OrigPath(), targetIdentityID, targetUuidIndexID, config.BlockSize
-					());
+				SetIdentity(config, targetIdentityID, targetUuidIndexID);
 			}
 			else
 			{
@@ -200,11 +199,11 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private static void SetIdentity(string targetFile, int targetIdentityID, int targetUuidIndexID
-			, int blockSize)
+		private static void SetIdentity(DefragmentConfig config, int targetIdentityID, int
+			 targetUuidIndexID)
 		{
-			LocalObjectContainer targetDB = (LocalObjectContainer)Db4oFactory.OpenFile(DefragmentConfig
-				.VanillaDb4oConfig(blockSize), targetFile);
+			LocalObjectContainer targetDB = (LocalObjectContainer)Db4oFactory.OpenFile(config
+				.ClonedDb4oConfig(), config.OrigPath());
 			try
 			{
 				Db4oDatabase identity = (Db4oDatabase)targetDB.GetByID(targetIdentityID);
@@ -284,12 +283,12 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessObjectsForYapClass(DefragContextImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			context.TraverseAll(curClass, new _IVisitor4_259(command, context, curClass));
+			context.TraverseAll(curClass, new _IVisitor4_258(command, context, curClass));
 		}
 
-		private sealed class _IVisitor4_259 : IVisitor4
+		private sealed class _IVisitor4_258 : IVisitor4
 		{
-			public _IVisitor4_259(IPassCommand command, DefragContextImpl context, ClassMetadata
+			public _IVisitor4_258(IPassCommand command, DefragContextImpl context, ClassMetadata
 				 curClass)
 			{
 				this.command = command;

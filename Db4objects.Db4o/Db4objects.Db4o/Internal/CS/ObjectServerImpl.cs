@@ -225,6 +225,18 @@ namespace Db4objects.Db4o.Internal.CS
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
 			}
+			i = IterateDispatchers();
+			while (i.MoveNext())
+			{
+				try
+				{
+					((Thread)i.Current).Join();
+				}
+				catch (Exception e)
+				{
+					Sharpen.Runtime.PrintStackTrace(e);
+				}
+			}
 		}
 
 		public virtual IEnumerator IterateDispatchers()

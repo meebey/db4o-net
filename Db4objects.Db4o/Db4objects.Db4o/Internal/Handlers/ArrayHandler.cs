@@ -14,22 +14,22 @@ using Db4objects.Db4o.Reflect.Generic;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public class ArrayHandler : VariableLengthTypeHandler, IFirstClassHandler
+	public class ArrayHandler : VariableLengthTypeHandler, IFirstClassHandler, IComparable4
 	{
 		public readonly ITypeHandler4 _handler;
 
-		public readonly bool _isPrimitive;
+		public readonly bool _usePrimitiveClassReflector;
 
-		public ArrayHandler(ObjectContainerBase container, ITypeHandler4 handler, bool isPrimitive
+		public ArrayHandler(ObjectContainerBase container, ITypeHandler4 handler, bool usePrimitiveClassReflector
 			) : base(container)
 		{
 			_handler = handler;
-			_isPrimitive = isPrimitive;
+			_usePrimitiveClassReflector = usePrimitiveClassReflector;
 		}
 
 		protected ArrayHandler(ITypeHandler4 template) : this(((Db4objects.Db4o.Internal.Handlers.ArrayHandler
 			)template).Container(), ((Db4objects.Db4o.Internal.Handlers.ArrayHandler)template
-			)._handler, ((Db4objects.Db4o.Internal.Handlers.ArrayHandler)template)._isPrimitive
+			)._handler, ((Db4objects.Db4o.Internal.Handlers.ArrayHandler)template)._usePrimitiveClassReflector
 			)
 		{
 		}
@@ -54,26 +54,27 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return all;
 		}
 
-		public sealed override void CascadeActivation(Transaction a_trans, object a_object
-			, int a_depth, bool a_activate)
+		public void CascadeActivation(Transaction trans, object onObject, int depth, bool
+			 activate)
 		{
-			if (_handler is ClassMetadata)
+			if (!(_handler is ClassMetadata))
 			{
-				a_depth--;
-				object[] all = AllElements(a_object);
-				if (a_activate)
+				return;
+			}
+			depth--;
+			object[] all = AllElements(onObject);
+			if (activate)
+			{
+				for (int i = all.Length - 1; i >= 0; i--)
 				{
-					for (int i = all.Length - 1; i >= 0; i--)
-					{
-						Container().StillToActivate(a_trans, all[i], a_depth);
-					}
+					Container().StillToActivate(trans, all[i], depth);
 				}
-				else
+			}
+			else
+			{
+				for (int i = all.Length - 1; i >= 0; i--)
 				{
-					for (int i = all.Length - 1; i >= 0; i--)
-					{
-						Container().StillToDeactivate(a_trans, all[i], a_depth, false);
-					}
+					Container().StillToDeactivate(trans, all[i], depth, false);
 				}
 			}
 		}
@@ -159,7 +160,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override int GetHashCode()
 		{
 			int hc = _handler.GetHashCode() >> 7;
-			return _isPrimitive ? hc : -hc;
+			return _usePrimitiveClassReflector ? hc : -hc;
 		}
 
 		protected virtual bool HandleAsByteArray(object obj)
@@ -189,47 +190,26 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Handlers4.PrimitiveClassReflector(_handler);
 		}
 
-		public sealed override object Read(MarshallerFamily mf, StatefulBuffer a_bytes, bool
-			 redirect)
-		{
-			return mf._array.Read(this, a_bytes);
-		}
-
-		public virtual object Read1(MarshallerFamily mf, StatefulBuffer reader)
-		{
-			IntByRef elements = new IntByRef();
-			object array = ReadCreate(reader.GetTransaction(), reader, elements);
-			if (array != null)
-			{
-				if (HandleAsByteArray(array))
-				{
-					reader.ReadBytes((byte[])array);
-				}
-				else
-				{
-					for (int i = 0; i < elements.value; i++)
-					{
-						ArrayReflector().Set(array, i, _handler.Read(mf, reader, true));
-					}
-				}
-			}
-			return array;
-		}
-
 		protected virtual object ReadCreate(Transaction trans, IReadBuffer buffer, IntByRef
 			 elements)
 		{
-			ReflectClassByRef clazz = new ReflectClassByRef();
-			elements.value = ReadElementsAndClass(trans, buffer, clazz);
-			if (_isPrimitive)
+			ReflectClassByRef classByRef = new ReflectClassByRef();
+			elements.value = ReadElementsAndClass(trans, buffer, classByRef);
+			IReflectClass clazz = NewInstanceReflectClass(classByRef);
+			if (clazz == null)
 			{
-				return ArrayReflector().NewInstance(PrimitiveClassReflector(), elements.value);
+				return null;
 			}
-			if (clazz.value != null)
+			return ArrayReflector().NewInstance(clazz, elements.value);
+		}
+
+		protected virtual IReflectClass NewInstanceReflectClass(ReflectClassByRef byRef)
+		{
+			if (_usePrimitiveClassReflector)
 			{
-				return ArrayReflector().NewInstance(clazz.value, elements.value);
+				return PrimitiveClassReflector();
 			}
-			return null;
+			return byRef.value;
 		}
 
 		public virtual ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
@@ -285,7 +265,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				clazz.value = ClassReflector();
 			}
-			if (Debug.ExceedsMaximumArrayEntries(elements, _isPrimitive))
+			if (Debug.ExceedsMaximumArrayEntries(elements, _usePrimitiveClassReflector))
 			{
 				return 0;
 			}

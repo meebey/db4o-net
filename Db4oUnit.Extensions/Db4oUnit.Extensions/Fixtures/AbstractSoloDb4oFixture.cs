@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -49,6 +50,11 @@ namespace Db4oUnit.Extensions.Fixtures
 		public override LocalObjectContainer FileSession()
 		{
 			return (LocalObjectContainer)_db;
+		}
+
+		public override void ConfigureAtRuntime(IRuntimeConfigureAction action)
+		{
+			action.Apply(Config());
 		}
 	}
 }

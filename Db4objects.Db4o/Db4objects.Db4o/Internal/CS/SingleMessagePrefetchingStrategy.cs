@@ -51,29 +51,29 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			if (toGet > 0)
 			{
-				MsgD msg = Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(container.Transaction()
-					, idsToGet, toGet);
+				Transaction trans = container.Transaction();
+				MsgD msg = Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(trans, idsToGet, toGet);
 				container.Write(msg);
 				MsgD response = (MsgD)container.ExpectedResponse(Msg.READ_MULTIPLE_OBJECTS);
 				int embeddedMessageCount = response.ReadInt();
 				for (int i = 0; i < embeddedMessageCount; i++)
 				{
 					MsgObject mso = (MsgObject)Msg.OBJECT_TO_CLIENT.PublicClone();
-					mso.SetTransaction(container.Transaction());
+					mso.SetTransaction(trans);
 					mso.PayLoad(response.PayLoad().ReadYapBytes());
 					if (mso.PayLoad() != null)
 					{
 						mso.PayLoad().IncrementOffset(Const4.MESSAGE_LENGTH);
 						StatefulBuffer reader = mso.Unmarshall(Const4.MESSAGE_LENGTH);
-						object obj = container.Transaction().ObjectForIdFromCache(idsToGet[i]);
+						object obj = trans.ObjectForIdFromCache(idsToGet[i]);
 						if (obj != null)
 						{
 							prefetched[position[i]] = obj;
 						}
 						else
 						{
-							prefetched[position[i]] = new ObjectReference(idsToGet[i]).ReadPrefetch(container
-								, reader);
+							prefetched[position[i]] = new ObjectReference(idsToGet[i]).ReadPrefetch(trans, reader
+								);
 						}
 					}
 				}

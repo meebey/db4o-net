@@ -104,7 +104,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			DoubleHandlerUpdateTestCase.Item nullItem = (DoubleHandlerUpdateTestCase.Item)values
 				[values.Length - 1];
 			Assert.AreEqual(0, nullItem._typedPrimitive);
-			Assert.IsNull(nullItem._typedWrapper);
 			Assert.IsNull(nullItem._untyped);
 		}
 

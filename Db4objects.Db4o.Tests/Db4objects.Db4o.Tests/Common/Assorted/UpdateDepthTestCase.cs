@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		protected override void Configure(IConfiguration config)
 		{
 			IObjectClass itemClass = config.ObjectClass(typeof(UpdateDepthTestCase.Item));
-			itemClass.UpdateDepth(1);
+			itemClass.UpdateDepth(3);
 			itemClass.MinimumActivationDepth(3);
 		}
 
@@ -183,6 +183,11 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			return ((UpdateDepthTestCase.RootItem)NewQuery(typeof(UpdateDepthTestCase.RootItem)
 				).Execute().Next()).root;
+		}
+
+		public static void Main(string[] arguments)
+		{
+			new UpdateDepthTestCase().RunSolo();
 		}
 	}
 }

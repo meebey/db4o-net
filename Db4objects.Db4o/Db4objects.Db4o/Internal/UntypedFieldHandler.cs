@@ -54,16 +54,6 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override object Read(MarshallerFamily mf, StatefulBuffer a_bytes, bool redirect
-			)
-		{
-			if (mf._untyped.UseNormalClassRead())
-			{
-				return base.Read(mf, a_bytes, redirect);
-			}
-			return mf._untyped.Read(a_bytes);
-		}
-
 		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
 			 mf, Db4objects.Db4o.Internal.Buffer[] a_bytes)
 		{

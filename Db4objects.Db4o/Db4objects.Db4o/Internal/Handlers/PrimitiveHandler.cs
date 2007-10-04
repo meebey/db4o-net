@@ -26,11 +26,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private bool i_compareToIsNull;
 
-		public virtual void CascadeActivation(Transaction a_trans, object a_object, int a_depth
-			, bool a_activate)
-		{
-		}
-
 		public virtual object Coerce(IReflectClass claxx, object obj)
 		{
 			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.INSTANCE;
@@ -52,6 +47,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract object PrimitiveNull();
 
+		/// <param name="mf"></param>
+		/// <param name="buffer"></param>
+		/// <param name="redirect"></param>
 		public virtual object Read(MarshallerFamily mf, StatefulBuffer buffer, bool redirect
 			)
 		{
@@ -60,11 +58,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		internal abstract object Read1(Db4objects.Db4o.Internal.Buffer reader);
 
-		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer a_reader)
+		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer buffer)
 		{
 			try
 			{
-				return Read1(a_reader);
+				return Read1(buffer);
 			}
 			catch (CorruptionException)
 			{
@@ -80,9 +78,21 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual IReflectClass ClassReflector()
 		{
+			EnsureClassReflectorLoaded();
+			return _classReflector;
+		}
+
+		public virtual IReflectClass PrimitiveClassReflector()
+		{
+			EnsureClassReflectorLoaded();
+			return _primitiveClassReflector;
+		}
+
+		private void EnsureClassReflectorLoaded()
+		{
 			if (_classReflector != null)
 			{
-				return _classReflector;
+				return;
 			}
 			_classReflector = _stream.Reflector().ForClass(DefaultValue().GetType());
 			Type clazz = PrimitiveJavaClass();
@@ -90,13 +100,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				_primitiveClassReflector = _stream.Reflector().ForClass(clazz);
 			}
-			return _classReflector;
-		}
-
-		/// <summary>classReflector() has to be called first, before this returns a value</summary>
-		public virtual IReflectClass PrimitiveClassReflector()
-		{
-			return _primitiveClassReflector;
 		}
 
 		public abstract void Write(object a_object, Db4objects.Db4o.Internal.Buffer a_bytes

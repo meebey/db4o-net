@@ -23,8 +23,12 @@ namespace Db4objects.Db4o.Internal
 		public static Db4objects.Db4o.Internal.HardObjectReference PeekPersisted(Transaction
 			 trans, int id, int depth)
 		{
-			ObjectReference @ref = new ObjectReference(id);
-			object obj = @ref.PeekPersisted(trans, depth);
+			object obj = trans.Container().PeekPersisted(trans, id, depth, true);
+			if (obj == null)
+			{
+				return null;
+			}
+			ObjectReference @ref = trans.ReferenceForId(id);
 			return new Db4objects.Db4o.Internal.HardObjectReference(@ref, obj);
 		}
 	}

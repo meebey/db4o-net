@@ -1,24 +1,23 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.IO;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	public abstract class FormatMigrationTestCaseBase : ITestLifeCycle
 	{
+		private string _db4oVersion;
+
 		public virtual void Configure()
 		{
 			IConfiguration config = Db4oFactory.Configure();
-			Reflection4.Invoke(config, "allowVersionUpdates", new Type[] { typeof(bool) }, new 
-				object[] { true });
+			config.AllowVersionUpdates(true);
 			Configure(config);
 		}
 
@@ -27,7 +26,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected virtual string FileName()
 		{
-			return FileName(Db4oFactory.Version());
+			_db4oVersion = Db4oVersion.NAME;
+			return FileName(_db4oVersion);
 		}
 
 		protected virtual string FileName(string versionName)
@@ -47,6 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public virtual void CreateDatabaseFor(string versionName)
 		{
+			_db4oVersion = versionName;
 			CreateDatabase(FileName(versionName));
 		}
 
@@ -85,10 +86,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public virtual void Test(string versionName)
 		{
+			_db4oVersion = versionName;
 			string testFileName = FileName(versionName);
 			if (System.IO.File.Exists(testFileName))
 			{
-				Sharpen.Runtime.Out.WriteLine("Check database: " + testFileName);
 				InvestigateFileHeaderVersion(testFileName);
 				CheckDatabaseFile(testFileName);
 				CheckDatabaseFile(testFileName);
@@ -121,6 +122,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		private void InvestigateFileHeaderVersion(string testFile)
 		{
 			_db4oHeaderVersion = VersionServices.FileHeaderVersion(testFile);
+		}
+
+		protected virtual int Db4oMajorVersion()
+		{
+			return System.Convert.ToInt32(Sharpen.Runtime.Substring(_db4oVersion, 0, 1));
 		}
 
 		protected byte _db4oHeaderVersion;

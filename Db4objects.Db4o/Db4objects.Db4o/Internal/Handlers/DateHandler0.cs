@@ -1,9 +1,9 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Marshall;
-using Sharpen.Util;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
@@ -19,9 +19,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			long value = context.ReadLong();
 			if (value == long.MaxValue)
 			{
-				return null;
+				return PrimitiveNull();
 			}
-			return new Date(value);
+			return new DateTime(value);
 		}
 	}
 }

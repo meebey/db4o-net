@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected override string[] VersionNames()
 		{
-			return new string[] { Db4oFactory.Version() };
+			return new string[] { Sharpen.Runtime.Substring(Db4oFactory.Version(), 5) };
 		}
 
 		protected override void Configure(IConfiguration config)

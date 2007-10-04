@@ -186,10 +186,14 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 				();
 			storedItem._name = CHANGED_NAME;
 			_client1.Set(storedItem);
-			object descendValue = _client1.Descend(storedItem, new string[] { FIELD_NAME });
+			int id = (int)_client1.GetID(storedItem);
+			object retrievedItem = _client2.GetByID(id);
+			Assert.IsNotNull(retrievedItem);
+			object descendValue = _client2.Descend(retrievedItem, new string[] { FIELD_NAME }
+				);
 			Assert.AreEqual(ORIGINAL_NAME, descendValue);
 			_client1.Commit();
-			descendValue = _client1.Descend(storedItem, new string[] { FIELD_NAME });
+			descendValue = _client2.Descend(retrievedItem, new string[] { FIELD_NAME });
 			Assert.AreEqual(CHANGED_NAME, descendValue);
 		}
 

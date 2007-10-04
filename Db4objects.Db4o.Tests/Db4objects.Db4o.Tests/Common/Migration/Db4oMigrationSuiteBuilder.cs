@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		public static readonly string[] CURRENT = new string[0];
 
 		private readonly Db4oLibraryEnvironmentProvider _environmentProvider = new Db4oLibraryEnvironmentProvider
-			();
+			(PathProvider.TestCasePath());
 
 		private readonly string[] _specificLibraries;
 

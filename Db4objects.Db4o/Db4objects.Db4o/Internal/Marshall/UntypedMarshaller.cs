@@ -12,8 +12,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public abstract void DeleteEmbedded(StatefulBuffer reader);
 
-		public abstract object Read(StatefulBuffer reader);
-
 		public abstract ITypeHandler4 ReadArrayHandler(Transaction a_trans, Db4objects.Db4o.Internal.Buffer[]
 			 a_bytes);
 

@@ -15,8 +15,8 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(LazyQueryDeleteTestCase), typeof(SODAClassTypeDescend)
-				 };
+			return new Type[] { typeof(ActivateDepthTestCase), typeof(LazyQueryDeleteTestCase)
+				, typeof(SODAClassTypeDescend) };
 		}
 	}
 }

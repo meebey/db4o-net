@@ -19,12 +19,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 				.ReadInt(), parentSlot.ReadInt());
 		}
 
-		public override Db4objects.Db4o.Internal.Buffer ReadSlotFromParentSlot(ObjectContainerBase
-			 stream, Db4objects.Db4o.Internal.Buffer reader)
-		{
-			return reader.ReadEmbeddedObject(stream.Transaction());
-		}
-
 		public override void Defrag(ISlotBuffer reader)
 		{
 		}

@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -39,22 +38,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return null;
 			}
 			Db4objects.Db4o.Internal.Buffer contextBuffer = context.Buffer(buffer);
-			IntByRef elements = new IntByRef();
-			object array = ReadCreate(context.Transaction(), buffer, elements);
-			if (array != null)
-			{
-				if (HandleAsByteArray(array))
-				{
-					buffer.ReadBytes((byte[])array);
-				}
-				else
-				{
-					for (int i = 0; i < elements.value; i++)
-					{
-						ArrayReflector().Set(array, i, context.ReadObject(_handler));
-					}
-				}
-			}
+			object array = base.Read(context);
 			context.Buffer(contextBuffer);
 			return array;
 		}

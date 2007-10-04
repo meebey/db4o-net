@@ -57,10 +57,6 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		public virtual void TestStringItem()
 		{
-			if (!NewTypeHandlerReading.enabled)
-			{
-				return;
-			}
 			MarshallingContextTestCase.StringItem writtenItem = new MarshallingContextTestCase.StringItem
 				("one");
 			MarshallingContextTestCase.StringItem readItem = (MarshallingContextTestCase.StringItem
@@ -70,10 +66,6 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		public virtual void TestStringIntItem()
 		{
-			if (!NewTypeHandlerReading.enabled)
-			{
-				return;
-			}
 			MarshallingContextTestCase.StringIntItem writtenItem = new MarshallingContextTestCase.StringIntItem
 				("one", 777);
 			MarshallingContextTestCase.StringIntItem readItem = (MarshallingContextTestCase.StringIntItem
@@ -84,10 +76,6 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		public virtual void TestStringIntBooleanItem()
 		{
-			if (!NewTypeHandlerReading.enabled)
-			{
-				return;
-			}
 			MarshallingContextTestCase.StringIntBooleanItem writtenItem = new MarshallingContextTestCase.StringIntBooleanItem
 				("one", 777, true);
 			MarshallingContextTestCase.StringIntBooleanItem readItem = (MarshallingContextTestCase.StringIntBooleanItem

@@ -78,9 +78,9 @@ namespace Db4objects.Db4o.Query
 
 		/// <summary>
 		/// Used in conjunction with
-		/// <see>smaller()</see>
+		/// <see cref="IConstraint.Smaller">IConstraint.Smaller</see>
 		/// or
-		/// <see>greater()</see>
+		/// <see cref="IConstraint.Greater">IConstraint.Greater</see>
 		/// to create constraints
 		/// like "smaller or equal", "greater or equal".
 		/// For example:<br />
@@ -186,7 +186,7 @@ namespace Db4objects.Db4o.Query
 		/// <code>query.descend("pilots").constrain(pilot2).contains();</code><br />
 		/// will return the Team object as it contains pilot2.<br />
 		/// If applied to a String object, this constrain will behave as
-		/// <see>like()</see>
+		/// <see cref="IConstraint.Like">IConstraint.Like</see>
 		/// .
 		/// </remarks>
 		/// <returns>

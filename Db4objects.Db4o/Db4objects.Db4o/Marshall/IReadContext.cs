@@ -6,10 +6,13 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Marshall
 {
 	/// <summary>
-	/// this interface is passed to
-	/// <see cref="ITypeHandler4">ITypeHandler4</see>
+	/// this interface is passed to internal class com.db4o.internal.TypeHandler4
 	/// when instantiating objects.
 	/// </summary>
+	/// <remarks>
+	/// this interface is passed to internal class com.db4o.internal.TypeHandler4
+	/// when instantiating objects.
+	/// </remarks>
 	public interface IReadContext : IContext, IReadBuffer
 	{
 		/// <summary>
@@ -24,10 +27,13 @@ namespace Db4objects.Db4o.Marshall
 		object ReadObject();
 
 		/// <summary>
-		/// reads sub-objects, in cases where the
-		/// <see cref="ITypeHandler4">ITypeHandler4</see>
+		/// reads sub-objects, in cases where the TypeHandler4
 		/// is known.
 		/// </summary>
+		/// <remarks>
+		/// reads sub-objects, in cases where the TypeHandler4
+		/// is known.
+		/// </remarks>
 		object ReadObject(ITypeHandler4 handler);
 	}
 }

@@ -29,6 +29,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Cecil.FlowAnalysis, Version=0.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\net-2.0\Cecil.FlowAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.5.0.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\net-2.0\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.0.1.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\net-2.0\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.GetOptions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\net-2.0\Mono.GetOptions.dll</HintPath>
@@ -65,18 +77,6 @@
     <Compile Include="TA\TAInstrumentation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\projects\mono\cecil\flowanalysis\Cecil.FlowAnalysis\Cecil.FlowAnalysis.csproj">
-      <Project>{ED1BE103-1699-4116-A732-616BEB142EB2}</Project>
-      <Name>Cecil.FlowAnalysis</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\projects\mono\cecil\pdb\Mono.Cecil.Pdb.csproj">
-      <Project>{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}</Project>
-      <Name>Mono.Cecil.Pdb</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\projects\mono\Mono.Cecil\Mono.Cecil.csproj">
-      <Project>{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}</Project>
-      <Name>Mono.Cecil</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o.TA\Db4objects.Db4o.TA-2005.csproj">
       <Project>{A42D3006-F246-4AD0-8A5B-1110D00B41BB}</Project>
       <Name>Db4objects.Db4o.TA-2005</Name>

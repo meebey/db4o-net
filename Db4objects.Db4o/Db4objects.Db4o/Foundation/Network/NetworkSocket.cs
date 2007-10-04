@@ -84,7 +84,9 @@ namespace Db4objects.Db4o.Foundation.Network
 		{
 			try
 			{
-				return _in.Read();
+				int ret = _in.Read();
+				CheckEOF(ret);
+				return ret;
 			}
 			catch (IOException e)
 			{
@@ -96,11 +98,21 @@ namespace Db4objects.Db4o.Foundation.Network
 		{
 			try
 			{
-				return _in.Read(a_bytes, a_offset, a_length);
+				int ret = _in.Read(a_bytes, a_offset, a_length);
+				CheckEOF(ret);
+				return ret;
 			}
 			catch (IOException e)
 			{
 				throw new Db4oIOException(e);
+			}
+		}
+
+		private void CheckEOF(int ret)
+		{
+			if (ret == -1)
+			{
+				throw new Db4oIOException();
 			}
 		}
 

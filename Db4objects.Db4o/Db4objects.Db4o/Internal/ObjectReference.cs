@@ -291,74 +291,18 @@ namespace Db4objects.Db4o.Internal
 		public object Read(Db4objects.Db4o.Internal.Transaction trans, StatefulBuffer buffer
 			, object obj, int instantiationDepth, int addToIDTree, bool checkIDTree)
 		{
-			if (NewTypeHandlerReading.enabled)
-			{
-				UnmarshallingContext context = new UnmarshallingContext(trans, this, addToIDTree, 
-					checkIDTree);
-				context.Buffer(buffer);
-				context.PersistentObject(obj);
-				context.ActivationDepth(instantiationDepth);
-				return context.Read();
-			}
-			if (BeginProcessing())
-			{
-				ObjectContainerBase container = trans.Container();
-				int id = GetID();
-				if (buffer == null && id > 0)
-				{
-					buffer = container.ReadWriterByID(trans, id);
-				}
-				if (buffer != null)
-				{
-					ObjectHeader header = new ObjectHeader(container, buffer);
-					_class = header.ClassMetadata();
-					if (_class == null)
-					{
-						return null;
-					}
-					if (checkIDTree)
-					{
-						object objectInCacheFromClassCreation = trans.ObjectForIdFromCache(GetID());
-						if (objectInCacheFromClassCreation != null)
-						{
-							return objectInCacheFromClassCreation;
-						}
-					}
-					buffer.SetInstantiationDepth(instantiationDepth);
-					buffer.SetUpdateDepth(addToIDTree);
-					if (addToIDTree == Const4.TRANSIENT)
-					{
-						obj = _class.InstantiateTransient(this, obj, header._marshallerFamily, header._headerAttributes
-							, buffer);
-					}
-					else
-					{
-						obj = _class.Instantiate(this, obj, header._marshallerFamily, header._headerAttributes
-							, buffer, addToIDTree == Const4.ADD_TO_ID_TREE);
-					}
-				}
-				EndProcessing();
-			}
-			return obj;
+			UnmarshallingContext context = new UnmarshallingContext(trans, buffer, this, addToIDTree
+				, checkIDTree);
+			context.PersistentObject(obj);
+			context.ActivationDepth(instantiationDepth);
+			return context.Read();
 		}
 
-		public object ReadPrefetch(ObjectContainerBase container, StatefulBuffer buffer)
+		public object ReadPrefetch(Db4objects.Db4o.Internal.Transaction trans, StatefulBuffer
+			 buffer)
 		{
-			object readObject = null;
-			if (BeginProcessing())
-			{
-				ObjectHeader header = new ObjectHeader(container, buffer);
-				_class = header.ClassMetadata();
-				if (_class == null)
-				{
-					return null;
-				}
-				buffer.SetInstantiationDepth(_class.ConfigOrAncestorConfig() == null ? 1 : 0);
-				readObject = _class.Instantiate(this, GetObject(), header._marshallerFamily, header
-					._headerAttributes, buffer, true);
-				EndProcessing();
-			}
-			return readObject;
+			return new UnmarshallingContext(trans, buffer, this, Const4.ADD_TO_ID_TREE, false
+				).ReadPrefetch();
 		}
 
 		public sealed override void ReadThis(Db4objects.Db4o.Internal.Transaction trans, 
@@ -1018,29 +962,15 @@ namespace Db4objects.Db4o.Internal
 			{
 				int id = GetID();
 				string str = "ObjectReference\nID=" + id;
+				object obj = GetObject();
 				if (_class != null)
 				{
 					ObjectContainerBase container = _class.Container();
 					if (container != null && id > 0)
 					{
-						StatefulBuffer writer = container.ReadWriterByID(container.Transaction(), id);
-						if (writer != null)
-						{
-							str += "\nAddress=" + writer.GetAddress();
-						}
-						ObjectHeader oh = new ObjectHeader(Container(), writer);
-						Db4objects.Db4o.Internal.ClassMetadata yc = oh.ClassMetadata();
-						if (yc != _class)
-						{
-							str += "\nYapClass corruption";
-						}
-						else
-						{
-							str += yc.ToString(oh._marshallerFamily, writer, this, 0, 5);
-						}
+						obj = container.PeekPersisted(container.Transaction(), id, 5, true).ToString();
 					}
 				}
-				object obj = GetObject();
 				if (obj == null)
 				{
 					str += "\nfor [null]";

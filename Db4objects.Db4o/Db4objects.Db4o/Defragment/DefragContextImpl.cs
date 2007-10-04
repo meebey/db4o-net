@@ -6,6 +6,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
@@ -35,9 +36,9 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private sealed class _DbSelector_35 : DefragContextImpl.DbSelector
+		private sealed class _DbSelector_36 : DefragContextImpl.DbSelector
 		{
-			public _DbSelector_35()
+			public _DbSelector_36()
 			{
 			}
 
@@ -47,12 +48,12 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragContextImpl.DbSelector SOURCEDB = new _DbSelector_35
+		public static readonly DefragContextImpl.DbSelector SOURCEDB = new _DbSelector_36
 			();
 
-		private sealed class _DbSelector_41 : DefragContextImpl.DbSelector
+		private sealed class _DbSelector_42 : DefragContextImpl.DbSelector
 		{
-			public _DbSelector_41()
+			public _DbSelector_42()
 			{
 			}
 
@@ -62,7 +63,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragContextImpl.DbSelector TARGETDB = new _DbSelector_41
+		public static readonly DefragContextImpl.DbSelector TARGETDB = new _DbSelector_42
 			();
 
 		private const long CLASSCOLLECTION_POINTER_ADDRESS = 2 + 2 * Const4.INT_LENGTH;
@@ -90,16 +91,23 @@ namespace Db4objects.Db4o.Defragment
 			sourceConfig.ReadOnly(true);
 			_sourceDb = (LocalObjectContainer)Db4oFactory.OpenFile(sourceConfig, defragConfig
 				.TempPath()).Ext();
-			_targetDb = FreshYapFile(defragConfig.OrigPath(), defragConfig.BlockSize());
+			_targetDb = FreshYapFile(defragConfig);
 			_mapping = defragConfig.Mapping();
 			_mapping.Open();
 		}
 
 		internal static LocalObjectContainer FreshYapFile(string fileName, int blockSize)
 		{
-			new Sharpen.IO.File(fileName).Delete();
+			File4.Delete(fileName);
 			return (LocalObjectContainer)Db4oFactory.OpenFile(DefragmentConfig.VanillaDb4oConfig
 				(blockSize), fileName).Ext();
+		}
+
+		internal static LocalObjectContainer FreshYapFile(DefragmentConfig config)
+		{
+			File4.Delete(config.OrigPath());
+			return (LocalObjectContainer)Db4oFactory.OpenFile(config.ClonedDb4oConfig(), config
+				.OrigPath()).Ext();
 		}
 
 		public virtual int MappedID(int oldID, int defaultID)

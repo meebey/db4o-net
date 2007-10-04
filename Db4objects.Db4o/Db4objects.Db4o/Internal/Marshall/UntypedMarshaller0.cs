@@ -33,11 +33,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return true;
 		}
 
-		public override object Read(StatefulBuffer reader)
-		{
-			throw Exceptions4.ShouldNeverBeCalled();
-		}
-
 		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, Db4objects.Db4o.Internal.Buffer[]
 			 a_bytes)
 		{

@@ -30,26 +30,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 		}
 
-		public override object Read(StatefulBuffer reader)
-		{
-			object ret = null;
-			int payLoadOffSet = reader.ReadInt();
-			if (payLoadOffSet == 0)
-			{
-				return null;
-			}
-			int linkOffSet = reader._offset;
-			reader._offset = payLoadOffSet;
-			int yapClassID = reader.ReadInt();
-			ClassMetadata yc = reader.GetStream().ClassMetadataForId(yapClassID);
-			if (yc != null)
-			{
-				ret = yc.Read(_family, reader, true);
-			}
-			reader._offset = linkOffSet;
-			return ret;
-		}
-
 		public override ITypeHandler4 ReadArrayHandler(Transaction trans, Db4objects.Db4o.Internal.Buffer[]
 			 reader)
 		{

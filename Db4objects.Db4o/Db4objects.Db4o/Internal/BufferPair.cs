@@ -3,7 +3,6 @@
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Mapping;
-using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal
@@ -134,11 +133,20 @@ namespace Db4objects.Db4o.Internal
 			file.WriteBytes(_target, address, 0);
 		}
 
-		public string ReadShortString(LatinStringIO sio)
+		public void IncrementStringOffset(LatinStringIO sio)
 		{
-			string value = StringMarshaller.ReadShort(sio, false, _source);
-			StringMarshaller.ReadShort(sio, false, _target);
-			return value;
+			IncrementStringOffset(sio, _source);
+			IncrementStringOffset(sio, _target);
+		}
+
+		private void IncrementStringOffset(LatinStringIO sio, Db4objects.Db4o.Internal.Buffer
+			 buffer)
+		{
+			int length = buffer.ReadInt();
+			if (length > 0)
+			{
+				sio.Read(buffer, length);
+			}
 		}
 
 		public Db4objects.Db4o.Internal.Buffer Source()

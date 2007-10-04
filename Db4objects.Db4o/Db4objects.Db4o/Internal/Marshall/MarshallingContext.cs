@@ -288,7 +288,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			else
 			{
-				PrepareIndirectionOfSecondWrite();
+				CreateIndirection(handler);
 				handler.Write(this, obj);
 			}
 			RestoreState(state);

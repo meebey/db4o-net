@@ -17,11 +17,6 @@ namespace Db4objects.Db4o.Internal
 			return Null.INSTANCE;
 		}
 
-		internal override object Read(MarshallerFamily mf, StatefulBuffer a_bytes)
-		{
-			return null;
-		}
-
 		public sealed override object Read(IInternalReadContext context)
 		{
 			return null;

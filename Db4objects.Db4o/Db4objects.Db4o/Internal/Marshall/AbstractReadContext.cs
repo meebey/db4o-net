@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			int depth = ActivationDepth() - 1;
 			if (PeekPersisted())
 			{
-				return Container().PeekPersisted(Transaction(), id, depth);
+				return Container().PeekPersisted(Transaction(), id, depth, false);
 			}
 			object obj = Container().GetByID2(Transaction(), id);
 			if (obj is IDb4oTypeImpl)

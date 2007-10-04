@@ -1,18 +1,23 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 
 namespace Db4objects.Db4o.Config
 {
-	/// <exclude>
+	/// <summary>
+	/// This class provides static constants for the query evaluation
+	/// modes that db4o supports.
+	/// </summary>
+	/// <remarks>
 	/// This class provides static constants for the query evaluation
 	/// modes that db4o supports.
 	/// <br /><br /><b>For detailed documentation please see
 	/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
 	/// 	</see>
 	/// </b>
-	/// </exclude>
+	/// </remarks>
 	public class QueryEvaluationMode
 	{
 		private readonly string _id;
@@ -41,7 +46,7 @@ namespace Db4objects.Db4o.Config
 		/// and creates a snapshot of the index at this point in time. Non-indexed
 		/// constraints are evaluated lazily when the application iterates through
 		/// the
-		/// <see cref="ObjectSet">ObjectSet</see>
+		/// <see cref="IObjectSet">IObjectSet</see>
 		/// resultset of the query.
 		/// <br /><br /><b>For detailed documentation please see
 		/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
@@ -57,7 +62,7 @@ namespace Db4objects.Db4o.Config
 		/// query processor only chooses the best index and creates an iterator on
 		/// this index. Indexes and constraints are evaluated lazily when the
 		/// application iterates through the
-		/// <see cref="ObjectSet">ObjectSet</see>
+		/// <see cref="IObjectSet">IObjectSet</see>
 		/// resultset of the query.
 		/// <br /><br /><b>For detailed documentation please see
 		/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode

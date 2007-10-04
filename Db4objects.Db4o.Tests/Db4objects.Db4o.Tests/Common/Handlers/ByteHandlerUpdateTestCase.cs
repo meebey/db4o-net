@@ -31,8 +31,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public object _wrapperArrayInObject;
 		}
 
-		private static readonly byte[] data = new byte[] { byte.MinValue, byte.MinValue +
-			 1, (byte)unchecked((int)(0xFB)), (byte)unchecked((int)(0xFF)), 0, 1, 5, byte.MaxValue
+		public static readonly byte[] data = new byte[] { byte.MinValue, byte.MinValue + 
+			1, (byte)unchecked((int)(0xFB)), (byte)unchecked((int)(0xFF)), 0, 1, 5, byte.MaxValue
 			 - 1, byte.MaxValue };
 
 		public static void Main(string[] args)
@@ -47,10 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			AssertPrimitiveArray(itemArrays._typedPrimitiveArray);
 			if (_db4oHeaderVersion == VersionServices.HEADER_30_40)
 			{
-				AssertWrapperArray((byte[])itemArrays._primitiveArrayInObject);
 			}
-			AssertWrapperArray(itemArrays._typedWrapperArray);
-			AssertWrapperArray((byte[])itemArrays._wrapperArrayInObject);
 		}
 
 		private void AssertPrimitiveArray(byte[] primitiveArray)
@@ -58,14 +55,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			for (int i = 0; i < data.Length; i++)
 			{
 				AssertAreEqual(data[i], primitiveArray[i]);
-			}
-		}
-
-		private void AssertWrapperArray(byte[] wrapperArray)
-		{
-			for (int i = 0; i < data.Length; i++)
-			{
-				AssertAreEqual(data[i], wrapperArray[i]);
 			}
 		}
 
@@ -81,7 +70,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ByteHandlerUpdateTestCase.Item nullItem = (ByteHandlerUpdateTestCase.Item)values[
 				values.Length - 1];
 			AssertAreEqual((byte)0, nullItem._typedPrimitive);
-			AssertByteWrapperIsNull(nullItem._typedWrapper);
 			Assert.IsNull(nullItem._untyped);
 		}
 
@@ -132,18 +120,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 			values[values.Length - 1] = new ByteHandlerUpdateTestCase.Item();
 			return values;
-		}
-
-		private void AssertByteWrapperIsNull(object obj)
-		{
-			if (_handlerVersion == 0)
-			{
-				Assert.AreEqual((byte)0, obj);
-			}
-			else
-			{
-				Assert.IsNull(obj);
-			}
 		}
 
 		protected override string TypeName()

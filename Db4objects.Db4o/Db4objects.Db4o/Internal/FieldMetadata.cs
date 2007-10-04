@@ -292,20 +292,26 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		internal virtual void CascadeActivation(Transaction a_trans, object a_object, int
-			 a_depth, bool a_activate)
+		internal virtual void CascadeActivation(Transaction trans, object onObject, int depth
+			, bool activate)
 		{
 			if (!Alive())
 			{
 				return;
 			}
+			if (!(_handler is IFirstClassHandler))
+			{
+				return;
+			}
+			IFirstClassHandler firstClassHandler = (IFirstClassHandler)_handler;
 			try
 			{
-				object cascadeTo = GetOrCreate(a_trans, a_object);
-				if (cascadeTo != null && _handler != null)
+				object cascadeTo = GetOrCreate(trans, onObject);
+				if (cascadeTo == null)
 				{
-					_handler.CascadeActivation(a_trans, cascadeTo, a_depth, a_activate);
+					return;
 				}
+				firstClassHandler.CascadeActivation(trans, cascadeTo, depth, activate);
 			}
 			catch (Exception)
 			{
@@ -389,19 +395,32 @@ namespace Db4objects.Db4o.Internal
 				IReflectArray reflectArray = Container().Reflector().Array();
 				_isNArray = reflectArray.IsNDimensional(clazz);
 				_isPrimitive = reflectArray.GetComponentType(clazz).IsPrimitive();
-				if (_isNArray)
-				{
-					_handler = new MultidimensionalArrayHandler(Container(), _handler, _isPrimitive);
-				}
-				else
-				{
-					_handler = new ArrayHandler(Container(), _handler, _isPrimitive);
-				}
+				_handler = WrapHandlerToArrays(Container(), _handler);
 			}
 			else
 			{
 				_isPrimitive = isPrimitive | clazz.IsPrimitive();
 			}
+		}
+
+		private ITypeHandler4 WrapHandlerToArrays(ObjectContainerBase container, ITypeHandler4
+			 handler)
+		{
+			if (_isNArray)
+			{
+				return new MultidimensionalArrayHandler(container, handler, ArraysUsePrimitiveClassReflector
+					());
+			}
+			if (_isArray)
+			{
+				return new ArrayHandler(container, handler, ArraysUsePrimitiveClassReflector());
+			}
+			return handler;
+		}
+
+		private bool ArraysUsePrimitiveClassReflector()
+		{
+			return Deploy.csharp ? false : _isPrimitive;
 		}
 
 		internal virtual void Deactivate(Transaction a_trans, object a_onObject, int a_depth
@@ -526,38 +545,20 @@ namespace Db4objects.Db4o.Internal
 					trans = container.Transaction();
 				}
 				container.CheckClosed();
-				ObjectReference yo = trans.ReferenceForObject(onObject);
-				if (yo == null)
+				ObjectReference @ref = trans.ReferenceForObject(onObject);
+				if (@ref == null)
 				{
 					return null;
 				}
-				int id = yo.GetID();
+				int id = @ref.GetID();
 				if (id <= 0)
 				{
 					return null;
 				}
-				StatefulBuffer writer = container.ReadWriterByID(container.Transaction(), id);
-				if (writer == null)
-				{
-					return null;
-				}
-				writer._offset = 0;
-				ObjectHeader oh = new ObjectHeader(container, writer);
-				bool findOffset = oh.ObjectMarshaller().FindOffset(oh.ClassMetadata(), oh._headerAttributes
-					, writer, this);
-				if (!findOffset)
-				{
-					return null;
-				}
-				try
-				{
-					return Read(oh._marshallerFamily, writer);
-				}
-				catch (CorruptionException e)
-				{
-				}
+				UnmarshallingContext context = new UnmarshallingContext(trans, @ref, Const4.ADD_TO_ID_TREE
+					, false);
+				return context.ReadFieldValue(this);
 			}
-			return null;
 		}
 
 		public virtual string GetName()
@@ -695,25 +696,6 @@ namespace Db4objects.Db4o.Internal
 				_initialized = true;
 				_config.InitOnUp(trans, this);
 			}
-		}
-
-		/// <param name="@ref"></param>
-		public virtual void Instantiate(MarshallerFamily mf, ObjectReference @ref, object
-			 onObject, StatefulBuffer buffer)
-		{
-			if (!CheckAlive(buffer))
-			{
-				return;
-			}
-			object toSet = Read(mf, buffer);
-			if (_db4oType != null)
-			{
-				if (toSet != null)
-				{
-					((IDb4oTypeImpl)toSet).SetTrans(buffer.GetTransaction());
-				}
-			}
-			Set(onObject, toSet);
 		}
 
 		public virtual void Instantiate(UnmarshallingContext context)
@@ -887,15 +869,6 @@ namespace Db4objects.Db4o.Internal
 				yapClassID, _arrayPosition);
 		}
 
-		internal virtual object Read(MarshallerFamily mf, StatefulBuffer buffer)
-		{
-			if (!CheckAlive(buffer))
-			{
-				return null;
-			}
-			return _handler.Read(mf, buffer, true);
-		}
-
 		public virtual object Read(IInternalReadContext context)
 		{
 			if (!CheckAlive(context.Buffer()))
@@ -992,14 +965,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_868(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_839(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_868 : IVisitor4
+		private sealed class _IVisitor4_839 : IVisitor4
 		{
-			public _IVisitor4_868(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_839(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;
@@ -1030,23 +1003,6 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private ITypeHandler4 WrapHandlerToArrays(ObjectContainerBase a_stream, ITypeHandler4
-			 a_handler)
-		{
-			if (_isNArray)
-			{
-				a_handler = new MultidimensionalArrayHandler(a_stream, a_handler, _isPrimitive);
-			}
-			else
-			{
-				if (_isArray)
-				{
-					a_handler = new ArrayHandler(a_stream, a_handler, _isPrimitive);
-				}
-			}
-			return a_handler;
-		}
-
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
@@ -1057,32 +1013,6 @@ namespace Db4objects.Db4o.Internal
 				sb.Append(GetName());
 			}
 			return sb.ToString();
-		}
-
-		public string ToString(MarshallerFamily mf, StatefulBuffer writer)
-		{
-			string str = "\n Field " + _name;
-			if (!CheckAlive(writer))
-			{
-				return str;
-			}
-			object obj = null;
-			try
-			{
-				obj = Read(mf, writer);
-			}
-			catch (Exception)
-			{
-			}
-			if (obj == null)
-			{
-				str += "\n [null]";
-			}
-			else
-			{
-				str += "\n  " + obj.ToString();
-			}
-			return str;
 		}
 
 		private void InitIndex(Transaction systemTrans)
@@ -1116,11 +1046,11 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual IIndexable4 IndexHandler(ObjectContainerBase stream)
 		{
-			IReflectClass indexType = null;
-			if (_javaField != null)
+			if (_javaField == null)
 			{
-				indexType = _javaField.IndexType();
+				return null;
 			}
+			IReflectClass indexType = _javaField.IndexType();
 			ITypeHandler4 classHandler = stream._handlers.HandlerForClass(stream, indexType);
 			if (!(classHandler is IIndexable4))
 			{

@@ -83,7 +83,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			CharHandlerUpdateTestCase.Item nullItem = (CharHandlerUpdateTestCase.Item)values[
 				values.Length - 1];
 			AssertAreEqual((char)0, nullItem._typedPrimitive);
-			AssertCharWrapperIsNull(nullItem._typedWrapper);
 			Assert.IsNull(nullItem._untyped);
 		}
 
@@ -139,18 +138,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		private void AssertAreEqual(object expected, object actual)
 		{
 			Assert.AreEqual(expected, actual);
-		}
-
-		private void AssertCharWrapperIsNull(object obj)
-		{
-			if (_handlerVersion == 0)
-			{
-				Assert.AreEqual(char.MaxValue, obj);
-			}
-			else
-			{
-				Assert.IsNull(obj);
-			}
 		}
 
 		private char[] CastToCharArray(object obj)

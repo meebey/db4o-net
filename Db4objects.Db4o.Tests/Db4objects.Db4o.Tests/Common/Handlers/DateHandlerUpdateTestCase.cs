@@ -1,9 +1,11 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Sharpen;
-using Sharpen.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
@@ -11,23 +13,26 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 	{
 		public class Item
 		{
-			public Date _date;
+			public DateTime _date;
 
 			public object _untyped;
 		}
 
 		public class ItemArrays
 		{
-			public Date[] _dateArray;
+			public DateTime[] _dateArray;
 
 			public object[] _untypedObjectArray;
 
 			public object _arrayInObject;
 		}
 
-		private static readonly Date[] data = new Date[] { new Date(long.MinValue), new Date
-			(long.MinValue + 1), new Date(-1), new Date(0), new Date(1), new Date(long.MaxValue
-			 - 1), new Date(long.MaxValue) };
+		[System.ObsoleteAttribute(@"so we don't have warnings because of the deprecated Date ctor"
+			)]
+		private static readonly DateTime[] data = new DateTime[] { new DateTime(DatePlatform
+			.MIN_DATE), new DateTime(DatePlatform.MIN_DATE + 1), new DateTime(1975, 7, 21, 5
+			, 32, 12), new DateTime(DatePlatform.MAX_DATE - 1), new DateTime(DatePlatform.MAX_DATE
+			) };
 
 		public static void Main(string[] args)
 		{
@@ -38,15 +43,15 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			DateHandlerUpdateTestCase.ItemArrays itemArrays = (DateHandlerUpdateTestCase.ItemArrays
 				)obj;
-			Date[] dateArray = (Date[])itemArrays._arrayInObject;
+			DateTime[] dateArray = (DateTime[])itemArrays._arrayInObject;
 			for (int i = 0; i < data.Length; i++)
 			{
 				AssertAreEqual(data[i], itemArrays._dateArray[i]);
-				AssertAreEqual(data[i], (Date)itemArrays._untypedObjectArray[i]);
+				AssertAreEqual(data[i], (DateTime)itemArrays._untypedObjectArray[i]);
 				AssertAreEqual(data[i], dateArray[i]);
 			}
 			Assert.IsNull(itemArrays._untypedObjectArray[data.Length]);
-			Assert.IsNull(dateArray[data.Length]);
+			Assert.AreEqual(EmptyValue(), dateArray[data.Length]);
 		}
 
 		protected override void AssertValues(object[] values)
@@ -55,19 +60,24 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			{
 				DateHandlerUpdateTestCase.Item item = (DateHandlerUpdateTestCase.Item)values[i];
 				AssertAreEqual(data[i], item._date);
-				AssertAreEqual(data[i], (Date)item._untyped);
+				AssertAreEqual(data[i], (DateTime)item._untyped);
 			}
-			DateHandlerUpdateTestCase.Item nullItem = (DateHandlerUpdateTestCase.Item)values[
-				values.Length - 1];
-			Assert.IsNull(nullItem._date);
-			Assert.IsNull(nullItem._untyped);
+			DateHandlerUpdateTestCase.Item emptyItem = (DateHandlerUpdateTestCase.Item)values
+				[values.Length - 1];
+			Assert.AreEqual(EmptyValue(), emptyItem._date);
+			Assert.IsNull(emptyItem._untyped);
 		}
 
-		private void AssertAreEqual(Date expected, Date actual)
+		private object EmptyValue()
 		{
-			if (expected.Equals(new Date(long.MaxValue)) && _handlerVersion == 0)
+			return new DateHandler(null).PrimitiveNull();
+		}
+
+		private void AssertAreEqual(DateTime expected, DateTime actual)
+		{
+			if (expected.Equals(new DateTime(DatePlatform.MAX_DATE)) && _handlerVersion == 0)
 			{
-				expected = null;
+				expected = MarshallingConstants0.NULL_DATE;
 			}
 			Assert.AreEqual(expected, actual);
 		}
@@ -76,11 +86,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			DateHandlerUpdateTestCase.ItemArrays itemArrays = new DateHandlerUpdateTestCase.ItemArrays
 				();
-			itemArrays._dateArray = new Date[data.Length + 1];
+			itemArrays._dateArray = new DateTime[data.Length + 1];
 			System.Array.Copy(data, 0, itemArrays._dateArray, 0, data.Length);
 			itemArrays._untypedObjectArray = new object[data.Length + 1];
 			System.Array.Copy(data, 0, itemArrays._untypedObjectArray, 0, data.Length);
-			Date[] dateArray = new Date[data.Length + 1];
+			DateTime[] dateArray = new DateTime[data.Length + 1];
 			System.Array.Copy(data, 0, dateArray, 0, data.Length);
 			itemArrays._arrayInObject = dateArray;
 			return itemArrays;

@@ -7,7 +7,14 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 {
 	public class Db4oLibraryEnvironmentProvider
 	{
-		internal readonly Hashtable4 _environments = new Hashtable4();
+		private readonly Hashtable4 _environments = new Hashtable4();
+
+		private readonly Sharpen.IO.File _classPath;
+
+		public Db4oLibraryEnvironmentProvider(Sharpen.IO.File classPath)
+		{
+			_classPath = classPath;
+		}
 
 		public virtual Db4oLibraryEnvironment EnvironmentFor(string path)
 		{
@@ -27,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		private Db4oLibraryEnvironment NewEnvironment(string path)
 		{
 			Db4oLibraryEnvironment env = new Db4oLibraryEnvironment(new Sharpen.IO.File(path)
-				);
+				, _classPath);
 			_environments.Put(path, env);
 			return env;
 		}

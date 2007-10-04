@@ -1,8 +1,8 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -14,9 +14,18 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		public override object Read(IReadContext context)
+		public override object Read(IReadContext readContext)
 		{
-			throw new NotImplementedException();
+			IInternalReadContext context = (IInternalReadContext)readContext;
+			Db4objects.Db4o.Internal.Buffer buffer = ReadIndirectedBuffer(context);
+			if (buffer == null)
+			{
+				return null;
+			}
+			Db4objects.Db4o.Internal.Buffer contextBuffer = context.Buffer(buffer);
+			object array = base.Read(context);
+			context.Buffer(contextBuffer);
+			return array;
 		}
 	}
 }

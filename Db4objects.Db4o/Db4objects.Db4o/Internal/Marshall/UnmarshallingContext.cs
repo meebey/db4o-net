@@ -18,12 +18,18 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private bool _checkIDTree;
 
-		public UnmarshallingContext(Transaction transaction, ObjectReference @ref, int addToIDTree
-			, bool checkIDTree) : base(transaction)
+		public UnmarshallingContext(Transaction transaction, Db4objects.Db4o.Internal.Buffer
+			 buffer, ObjectReference @ref, int addToIDTree, bool checkIDTree) : base(transaction
+			, buffer)
 		{
 			_reference = @ref;
 			_addToIDTree = addToIDTree;
 			_checkIDTree = checkIDTree;
+		}
+
+		public UnmarshallingContext(Transaction transaction, ObjectReference @ref, int addToIDTree
+			, bool checkIDTree) : this(transaction, null, @ref, addToIDTree, checkIDTree)
+		{
 		}
 
 		public virtual Db4objects.Db4o.Internal.StatefulBuffer StatefulBuffer()
@@ -44,6 +50,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual object Read()
 		{
+			return ReadInternal(false);
+		}
+
+		public virtual object ReadPrefetch()
+		{
+			return ReadInternal(true);
+		}
+
+		private object ReadInternal(bool doAdjustActivationDepthForPrefetch)
+		{
 			if (!BeginProcessing())
 			{
 				return _object;
@@ -61,6 +77,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return _object;
 			}
 			_reference.ClassMetadata(classMetadata);
+			if (doAdjustActivationDepthForPrefetch)
+			{
+				AdjustActivationDepthForPrefetch();
+			}
 			if (_checkIDTree)
 			{
 				object objectInCacheFromClassCreation = _transaction.ObjectForIdFromCache(ObjectID
@@ -84,9 +104,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _object;
 		}
 
-		public virtual object ReadFieldValue(int objectID, FieldMetadata field)
+		private void AdjustActivationDepthForPrefetch()
 		{
-			ReadBuffer(objectID);
+			int depth = ClassMetadata().ConfigOrAncestorConfig() == null ? 1 : 0;
+			ActivationDepth(depth);
+		}
+
+		public virtual object ReadFieldValue(FieldMetadata field)
+		{
+			ReadBuffer(ObjectID());
 			if (_buffer == null)
 			{
 				return null;
@@ -160,7 +186,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			int depth = _activationDepth - 1;
 			if (PeekPersisted())
 			{
-				return Container().PeekPersisted(Transaction(), id, depth);
+				return Container().PeekPersisted(Transaction(), id, depth, false);
 			}
 			object obj = Container().GetByID2(Transaction(), id);
 			if (obj is IDb4oTypeImpl)

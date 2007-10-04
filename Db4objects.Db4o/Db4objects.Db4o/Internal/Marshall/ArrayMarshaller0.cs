@@ -31,16 +31,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			trans.SlotFreeOnCommit(slot.Address(), slot);
 		}
 
-		public override object Read(ArrayHandler arrayHandler, StatefulBuffer a_bytes)
-		{
-			StatefulBuffer bytes = a_bytes.ReadEmbeddedObject();
-			if (bytes == null)
-			{
-				return null;
-			}
-			return arrayHandler.Read1(_family, bytes);
-		}
-
 		protected override Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans
 			, Db4objects.Db4o.Internal.Buffer reader)
 		{

@@ -11,7 +11,6 @@ using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Types;
 using Sharpen.Lang;
-using Sharpen.Util;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -73,7 +72,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <param name="showTime"></param>
-		internal virtual string Format(Date date, bool showTime)
+		internal virtual string Format(DateTime date, bool showTime)
 		{
 			return date.ToString();
 		}

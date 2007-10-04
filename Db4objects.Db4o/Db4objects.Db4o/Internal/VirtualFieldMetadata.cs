@@ -79,13 +79,6 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override void Instantiate(MarshallerFamily mf, ObjectReference a_yapObject
-			, object a_onObject, StatefulBuffer a_bytes)
-		{
-			a_yapObject.ProduceVirtualAttributes();
-			Instantiate1(a_bytes.GetTransaction(), a_yapObject, a_bytes);
-		}
-
 		public override void Instantiate(UnmarshallingContext context)
 		{
 			context.Reference().ProduceVirtualAttributes();

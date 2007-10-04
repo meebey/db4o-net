@@ -13,8 +13,7 @@ namespace Db4objects.Db4o.Ext
 	/// db4o exception wrapper: Exceptions occurring during internal processing
 	/// will be proliferated to the client calling code encapsulated in an exception
 	/// of this type. The original exception, if any, is available through
-	/// <see cref="Exception.InnerException">Exception.InnerException</see>
-	/// .
+	/// Db4oException#getCause().
 	/// </remarks>
 	[System.Serializable]
 	public class Db4oException : Exception

@@ -426,8 +426,13 @@ namespace Db4objects.Db4o.Internal
 					depth = AdjustDepthToBorders(depth);
 				}
 			}
-			if ((config != null && (config.CascadeOnDelete() == TernaryBool.YES || config.CascadeOnUpdate
-				() == TernaryBool.YES)))
+			if (config == null)
+			{
+				return depth - 1;
+			}
+			bool cascadeOnDelete = config.CascadeOnDelete() == TernaryBool.YES;
+			bool cascadeOnUpdate = config.CascadeOnUpdate() == TernaryBool.YES;
+			if (cascadeOnDelete || cascadeOnUpdate)
 			{
 				depth = AdjustDepthToBorders(depth);
 			}
@@ -1062,13 +1067,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_895(this, name, yf));
+			ForEachFieldMetadata(new _IVisitor4_901(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_895 : IVisitor4
+		private sealed class _IVisitor4_901 : IVisitor4
 		{
-			public _IVisitor4_895(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
+			public _IVisitor4_901(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
 			{
 				this._enclosing = _enclosing;
 				this.name = name;
@@ -1189,72 +1194,6 @@ namespace Db4objects.Db4o.Internal
 			StoreStaticFieldValues(systemTrans, false);
 		}
 
-		internal virtual object Instantiate(ObjectReference @ref, object obj, MarshallerFamily
-			 mf, ObjectHeaderAttributes attributes, StatefulBuffer buffer, bool addToIDTree)
-		{
-			AdjustInstantiationDepth(buffer);
-			ObjectContainerBase stream = buffer.GetStream();
-			Transaction transaction = buffer.GetTransaction();
-			bool instantiating = (obj == null);
-			if (instantiating)
-			{
-				obj = InstantiateObject(buffer, mf);
-				if (obj == null)
-				{
-					return null;
-				}
-				ShareTransaction(obj, transaction);
-				ShareObjectReference(obj, @ref);
-				@ref.SetObjectWeak(stream, obj);
-				transaction.ReferenceSystem().AddExistingReferenceToObjectTree(@ref);
-				ObjectOnInstantiate(buffer.GetTransaction(), obj);
-			}
-			if (addToIDTree)
-			{
-				@ref.AddExistingReferenceToIdTree(transaction);
-			}
-			if (instantiating)
-			{
-				if (buffer.GetInstantiationDepth() == 0)
-				{
-					@ref.SetStateDeactivated();
-				}
-				else
-				{
-					Activate(buffer, mf, attributes, @ref, obj);
-				}
-			}
-			else
-			{
-				if (ActivatingActiveObject(stream, @ref))
-				{
-					if (buffer.GetInstantiationDepth() > 1)
-					{
-						ActivateFields(buffer.GetTransaction(), obj, buffer.GetInstantiationDepth() - 1);
-					}
-				}
-				else
-				{
-					Activate(buffer, mf, attributes, @ref, obj);
-				}
-			}
-			return obj;
-		}
-
-		/// <param name="obj"></param>
-		internal virtual object InstantiateTransient(ObjectReference @ref, object obj, MarshallerFamily
-			 mf, ObjectHeaderAttributes attributes, StatefulBuffer buffer)
-		{
-			object instantiated = InstantiateObject(buffer, mf);
-			if (instantiated == null)
-			{
-				return null;
-			}
-			buffer.GetStream().Peeked(@ref.GetID(), instantiated);
-			InstantiateFields(@ref, instantiated, mf, attributes, buffer);
-			return instantiated;
-		}
-
 		public virtual object Instantiate(UnmarshallingContext context)
 		{
 			context.AdjustInstantiationDepth();
@@ -1321,24 +1260,6 @@ namespace Db4objects.Db4o.Internal
 			return !container._refreshInsteadOfActivate && @ref.IsActive();
 		}
 
-		private void Activate(StatefulBuffer buffer, MarshallerFamily mf, ObjectHeaderAttributes
-			 attributes, ObjectReference @ref, object obj)
-		{
-			if (ObjectCanActivate(buffer.GetTransaction(), obj))
-			{
-				@ref.SetStateClean();
-				if (buffer.GetInstantiationDepth() > 0 || CascadeOnActivate())
-				{
-					InstantiateFields(@ref, obj, mf, attributes, buffer);
-				}
-				ObjectOnActivate(buffer.GetTransaction(), obj);
-			}
-			else
-			{
-				@ref.SetStateDeactivated();
-			}
-		}
-
 		private void Activate(UnmarshallingContext context)
 		{
 			if (!ObjectCanActivate(context.Transaction(), context.PersistentObject()))
@@ -1357,15 +1278,6 @@ namespace Db4objects.Db4o.Internal
 		private bool ConfigInstantiates()
 		{
 			return Config() != null && Config().Instantiates();
-		}
-
-		private object InstantiateObject(StatefulBuffer buffer, MarshallerFamily mf)
-		{
-			if (ConfigInstantiates())
-			{
-				return InstantiateFromConfig(buffer.GetStream(), buffer, mf);
-			}
-			return InstantiateFromReflector(buffer.GetStream());
 		}
 
 		private object InstantiateObject(UnmarshallingContext context)
@@ -1407,27 +1319,6 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private object InstantiateFromConfig(ObjectContainerBase stream, StatefulBuffer a_bytes
-			, MarshallerFamily mf)
-		{
-			int bytesOffset = a_bytes._offset;
-			a_bytes.IncrementOffset(Const4.INT_LENGTH);
-			try
-			{
-				return i_config.Instantiate(stream, i_fields[0].Read(mf, a_bytes));
-			}
-			catch (CorruptionException e)
-			{
-				Db4objects.Db4o.Internal.Messages.LogErr(stream.ConfigImpl(), 6, ClassReflector()
-					.GetName(), e);
-				return null;
-			}
-			finally
-			{
-				a_bytes._offset = bytesOffset;
-			}
-		}
-
 		private object InstantiateFromConfig(UnmarshallingContext context)
 		{
 			int offset = context.Offset();
@@ -1439,15 +1330,6 @@ namespace Db4objects.Db4o.Internal
 			finally
 			{
 				context.Seek(offset);
-			}
-		}
-
-		private void AdjustInstantiationDepth(StatefulBuffer a_bytes)
-		{
-			if (i_config != null)
-			{
-				a_bytes.SetInstantiationDepth(i_config.AdjustActivationDepth(a_bytes.GetInstantiationDepth
-					()));
 			}
 		}
 
@@ -1484,13 +1366,6 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase container = transaction.Container();
 			return container.Callbacks().ObjectCanActivate(transaction, obj) && DispatchEvent
 				(container, obj, EventDispatcher.CAN_ACTIVATE);
-		}
-
-		internal virtual void InstantiateFields(ObjectReference a_yapObject, object a_onObject
-			, MarshallerFamily mf, ObjectHeaderAttributes attributes, StatefulBuffer a_bytes
-			)
-		{
-			mf._object.InstantiateFields(this, attributes, a_yapObject, a_onObject, a_bytes);
 		}
 
 		internal virtual void InstantiateFields(UnmarshallingContext context)
@@ -1602,30 +1477,6 @@ namespace Db4objects.Db4o.Internal
 			_index.Purge();
 		}
 
-		public virtual object Read(MarshallerFamily mf, StatefulBuffer a_bytes, bool redirect
-			)
-		{
-			int id = a_bytes.ReadInt();
-			int depth = a_bytes.GetInstantiationDepth() - 1;
-			Transaction trans = a_bytes.GetTransaction();
-			ObjectContainerBase stream = trans.Container();
-			if (a_bytes.GetUpdateDepth() == Const4.TRANSIENT)
-			{
-				return stream.PeekPersisted(trans, id, depth);
-			}
-			if (IsValueType())
-			{
-				return ReadValueType(trans, id, depth);
-			}
-			object ret = stream.GetByID2(trans, id);
-			if (ret is IDb4oTypeImpl)
-			{
-				depth = ((IDb4oTypeImpl)ret).AdjustReadDepth(depth);
-			}
-			stream.StillToActivate(trans, ret, depth);
-			return ret;
-		}
-
 		public virtual object ReadValueType(Transaction trans, int id, int depth)
 		{
 			int newDepth = Math.Max(1, depth);
@@ -1702,15 +1553,15 @@ namespace Db4objects.Db4o.Internal
 				if (obj != null)
 				{
 					candidates.i_trans.Container().Activate(trans, obj, 2);
-					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1449(this, candidates, trans
+					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1311(this, candidates, trans
 						));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_1449 : IVisitor4
+		private sealed class _IVisitor4_1311 : IVisitor4
 		{
-			public _IVisitor4_1449(ClassMetadata _enclosing, QCandidates candidates, Transaction
+			public _IVisitor4_1311(ClassMetadata _enclosing, QCandidates candidates, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2089,7 +1940,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, 4);
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1773
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1635
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2098,9 +1949,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1773 : IFunction4
+		private sealed class _IFunction4_1635 : IFunction4
 		{
-			public _IFunction4_1773(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1635(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2141,12 +1992,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1801(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1663(this));
 		}
 
-		private sealed class _IFunction4_1801 : IFunction4
+		private sealed class _IFunction4_1663 : IFunction4
 		{
-			public _IFunction4_1801(ClassMetadata _enclosing)
+			public _IFunction4_1663(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2188,12 +2039,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1831(this));
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1693(this));
 		}
 
-		private sealed class _IPredicate4_1831 : IPredicate4
+		private sealed class _IPredicate4_1693 : IPredicate4
 		{
-			public _IPredicate4_1831(ClassMetadata _enclosing)
+			public _IPredicate4_1693(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2370,22 +2221,6 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			throw new IllegalComparisonException();
-		}
-
-		public virtual string ToString(MarshallerFamily mf, StatefulBuffer writer, ObjectReference
-			 yapObject, int depth, int maxDepth)
-		{
-			int length = ReadFieldCount(writer);
-			string str = string.Empty;
-			for (int i = 0; i < length; i++)
-			{
-				str += i_fields[i].ToString(mf, writer);
-			}
-			if (i_ancestor != null)
-			{
-				str += i_ancestor.ToString(mf, writer, yapObject, depth, maxDepth);
-			}
-			return str;
 		}
 
 		public static void DefragObject(BufferPair readers)

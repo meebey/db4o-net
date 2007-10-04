@@ -118,16 +118,46 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			RemoveAlias();
 			alias = CreateAlias(storedLetter, runtimeLetter);
-			Db().Configure().AddAlias(alias);
+			Fixture().ConfigureAtRuntime(new _IRuntimeConfigureAction_104(this));
+		}
+
+		private sealed class _IRuntimeConfigureAction_104 : IRuntimeConfigureAction
+		{
+			public _IRuntimeConfigureAction_104(AliasesTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Apply(IConfiguration config)
+			{
+				config.AddAlias(this._enclosing.alias);
+			}
+
+			private readonly AliasesTestCase _enclosing;
 		}
 
 		private void RemoveAlias()
 		{
 			if (alias != null)
 			{
-				Db().Configure().RemoveAlias(alias);
+				Fixture().ConfigureAtRuntime(new _IRuntimeConfigureAction_113(this));
 				alias = null;
 			}
+		}
+
+		private sealed class _IRuntimeConfigureAction_113 : IRuntimeConfigureAction
+		{
+			public _IRuntimeConfigureAction_113(AliasesTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Apply(IConfiguration config)
+			{
+				config.RemoveAlias(this._enclosing.alias);
+			}
+
+			private readonly AliasesTestCase _enclosing;
 		}
 
 		private WildcardAlias CreateAlias(string storedLetter, string runtimeLetter)

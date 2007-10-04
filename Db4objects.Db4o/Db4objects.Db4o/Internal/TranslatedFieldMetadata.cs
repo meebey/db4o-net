@@ -54,15 +54,6 @@ namespace Db4objects.Db4o.Internal
 			return GetOn(a_trans, a_OnObject);
 		}
 
-		public override void Instantiate(MarshallerFamily mf, ObjectReference a_yapObject
-			, object a_onObject, StatefulBuffer a_bytes)
-		{
-			object toSet = Read(mf, a_bytes);
-			a_bytes.GetStream().Activate(a_bytes.GetTransaction(), toSet, a_bytes.GetInstantiationDepth
-				());
-			SetOn(a_bytes.GetTransaction(), a_onObject, toSet);
-		}
-
 		public override void Instantiate(UnmarshallingContext context)
 		{
 			object obj = Read(context);

@@ -71,12 +71,12 @@ namespace Db4objects.Db4o.Internal.CS
 					{
 						return true;
 					}
+					_isClosed = true;
 					_transactionHandle.ReleaseTransaction();
 					SendCloseMessage();
 					_transactionHandle.Close();
 					CloseSocket();
 					RemoveFromServer();
-					_isClosed = true;
 					return true;
 				}
 			}
@@ -93,9 +93,9 @@ namespace Db4objects.Db4o.Internal.CS
 						return;
 					}
 					SendCloseMessage();
+					_isClosed = true;
 					CloseSocket();
 					RemoveFromServer();
-					_isClosed = true;
 				}
 			}
 		}

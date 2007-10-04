@@ -129,6 +129,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			CheckOpenTime();
 			Thread thread = new Thread(this);
 			thread.SetName("db4o file lock");
+			thread.SetDaemon(true);
 			thread.Start();
 		}
 

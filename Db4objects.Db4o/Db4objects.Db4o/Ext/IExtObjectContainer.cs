@@ -216,8 +216,11 @@ namespace Db4objects.Db4o.Ext
 		/// </returns>
 		IObjectInfo GetObjectInfo(object obj);
 
-		/// <summary>returns the Db4oDatabase identity object for this ObjectContainer.</summary>
-		/// <remarks>returns the Db4oDatabase identity object for this ObjectContainer.</remarks>
+		/// <summary>
+		/// returns the
+		/// <see cref="Db4oDatabase">Db4oDatabase</see>
+		/// identity object for this ObjectContainer.
+		/// </summary>
 		/// <returns>the Db4oDatabase identity object for this ObjectContainer.</returns>
 		Db4oDatabase Identity();
 

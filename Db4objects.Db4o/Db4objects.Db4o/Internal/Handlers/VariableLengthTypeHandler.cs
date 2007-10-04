@@ -54,13 +54,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return context.Container().BufferByAddress(address, length);
 		}
 
-		public abstract void CascadeActivation(Transaction arg1, object arg2, int arg3, bool
-			 arg4);
-
 		public abstract void DeleteEmbedded(MarshallerFamily arg1, StatefulBuffer arg2);
-
-		public abstract object Read(MarshallerFamily arg1, StatefulBuffer arg2, bool arg3
-			);
 
 		public abstract object Read(IReadContext arg1);
 

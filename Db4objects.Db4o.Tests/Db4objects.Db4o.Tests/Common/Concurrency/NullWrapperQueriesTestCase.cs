@@ -1,12 +1,12 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Concurrency;
-using Sharpen.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Concurrency
 {
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public char m3;
 
-		public Date m4;
+		public DateTime m4;
 
 		public double m5;
 
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			m1 = false;
 			m2 = false;
 			m3 = (char)0;
-			m4 = new Date(0);
+			m4 = new DateTime(0);
 			m5 = System.Convert.ToDouble(0);
 			m6 = System.Convert.ToSingle(0);
 			m7 = 0;
@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			m1 = true;
 			m2 = true;
 			m3 = (char)1;
-			m4 = new Date(1);
+			m4 = new DateTime(1);
 			m5 = System.Convert.ToDouble(1);
 			m6 = System.Convert.ToSingle(1);
 			m7 = 1;

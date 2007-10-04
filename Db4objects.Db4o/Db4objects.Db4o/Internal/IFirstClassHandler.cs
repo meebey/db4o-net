@@ -9,6 +9,8 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public interface IFirstClassHandler
 	{
+		void CascadeActivation(Transaction trans, object obj, int depth, bool activate);
+
 		void ReadCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer buffer, QCandidates
 			 candidates);
 

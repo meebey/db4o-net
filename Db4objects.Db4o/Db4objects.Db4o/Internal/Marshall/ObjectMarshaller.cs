@@ -97,9 +97,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public abstract bool FindOffset(ClassMetadata classMetadata, IFieldListInfo fieldListInfo
 			, Db4objects.Db4o.Internal.Buffer buffer, FieldMetadata field);
 
-		public abstract void InstantiateFields(ClassMetadata yc, ObjectHeaderAttributes attributes
-			, ObjectReference yo, object obj, StatefulBuffer reader);
-
 		public void MarshallUpdateWrite(Transaction trans, Pointer4 pointer, ObjectReference
 			 @ref, object obj, Db4objects.Db4o.Internal.Buffer buffer)
 		{
@@ -141,14 +138,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public void InstantiateFields(UnmarshallingContext context)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_161(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_154(this
 				, context);
 			TraverseFields(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_161 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_154 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_161(ObjectMarshaller _enclosing, UnmarshallingContext
+			public _TraverseFieldCommand_154(ObjectMarshaller _enclosing, UnmarshallingContext
 				 context)
 			{
 				this._enclosing = _enclosing;
@@ -186,14 +183,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual void Marshall(object obj, MarshallingContext context)
 		{
 			Transaction trans = context.Transaction();
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_183(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_176(this
 				, context, trans, obj);
 			TraverseFields(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_183 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_176 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_183(ObjectMarshaller _enclosing, MarshallingContext 
+			public _TraverseFieldCommand_176(ObjectMarshaller _enclosing, MarshallingContext 
 				context, Transaction trans, object obj)
 			{
 				this._enclosing = _enclosing;

@@ -165,55 +165,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return Const4.OBJECT_LENGTH + Const4.ID_LENGTH;
 		}
 
-		public override void InstantiateFields(ClassMetadata yc, ObjectHeaderAttributes attributes
-			, ObjectReference @ref, object onObject, StatefulBuffer writer)
-		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_68(this
-				, @ref, onObject, writer);
-			TraverseFields(yc, writer, attributes, command);
-		}
-
-		private sealed class _TraverseFieldCommand_68 : ObjectMarshaller.TraverseFieldCommand
-		{
-			public _TraverseFieldCommand_68(ObjectMarshaller0 _enclosing, ObjectReference @ref
-				, object onObject, StatefulBuffer writer)
-			{
-				this._enclosing = _enclosing;
-				this.@ref = @ref;
-				this.onObject = onObject;
-				this.writer = writer;
-			}
-
-			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
-				 containingClass)
-			{
-				bool ok = false;
-				try
-				{
-					field.Instantiate(this._enclosing._family, @ref, onObject, writer);
-					ok = true;
-				}
-				catch (CorruptionException)
-				{
-				}
-				finally
-				{
-					if (!ok)
-					{
-						this.Cancel();
-					}
-				}
-			}
-
-			private readonly ObjectMarshaller0 _enclosing;
-
-			private readonly ObjectReference @ref;
-
-			private readonly object onObject;
-
-			private readonly StatefulBuffer writer;
-		}
-
 		/// <param name="yf"></param>
 		/// <param name="yo"></param>
 		protected virtual int MarshalledLength(FieldMetadata yf, ObjectReference yo)
@@ -251,14 +202,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
 			 yo, ObjectHeaderAttributes attributes, Db4objects.Db4o.Internal.Buffer reader)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_115(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_96(this
 				, trans, reader, yo);
 			TraverseFields(yc, reader, attributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_115 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_96 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_115(ObjectMarshaller0 _enclosing, Transaction trans, 
+			public _TraverseFieldCommand_96(ObjectMarshaller0 _enclosing, Transaction trans, 
 				Db4objects.Db4o.Internal.Buffer reader, ObjectReference yo)
 			{
 				this._enclosing = _enclosing;

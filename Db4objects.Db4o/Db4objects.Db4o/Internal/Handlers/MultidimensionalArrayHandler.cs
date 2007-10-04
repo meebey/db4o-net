@@ -4,7 +4,6 @@ using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -43,7 +42,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ElementCount(ReadDimensions(a_trans, a_bytes, ReflectClassByRef.IGNORED));
 		}
 
-		private static int ElementCount(int[] a_dim)
+		protected static int ElementCount(int[] a_dim)
 		{
 			int elements = a_dim[0];
 			for (int i = 1; i < a_dim.Length; i++)
@@ -62,22 +61,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			int[] dim = ArrayReflector().Dimensions(obj);
 			return Const4.OBJECT_LENGTH + (Const4.INT_LENGTH * (2 + dim.Length));
-		}
-
-		public sealed override object Read1(MarshallerFamily mf, StatefulBuffer reader)
-		{
-			IntArrayByRef dimensions = new IntArrayByRef();
-			object arr = ReadCreate(reader.GetTransaction(), reader, dimensions);
-			if (arr != null)
-			{
-				object[] objects = new object[ElementCount(dimensions.value)];
-				for (int i = 0; i < objects.Length; i++)
-				{
-					objects[i] = _handler.Read(mf, reader, true);
-				}
-				ArrayReflector().Shape(objects, 0, arr, dimensions.value, 0);
-			}
-			return arr;
 		}
 
 		protected override int ReadElementsDefrag(BufferPair readers)
@@ -104,20 +87,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 				));
 		}
 
-		private object ReadCreate(Transaction trans, IReadBuffer buffer, IntArrayByRef dimensions
-			)
+		protected virtual object ReadCreate(Transaction trans, IReadBuffer buffer, IntArrayByRef
+			 dimensions)
 		{
-			ReflectClassByRef clazz = new ReflectClassByRef();
-			dimensions.value = ReadDimensions(trans, buffer, clazz);
-			if (_isPrimitive)
+			ReflectClassByRef classByRef = new ReflectClassByRef();
+			dimensions.value = ReadDimensions(trans, buffer, classByRef);
+			IReflectClass clazz = NewInstanceReflectClass(classByRef);
+			if (clazz == null)
 			{
-				return ArrayReflector().NewInstance(PrimitiveClassReflector(), dimensions.value);
+				return null;
 			}
-			if (clazz.value != null)
-			{
-				return ArrayReflector().NewInstance(clazz.value, dimensions.value);
-			}
-			return null;
+			return ArrayReflector().NewInstance(clazz, dimensions.value);
 		}
 
 		private int[] ReadDimensions(Transaction trans, IReadBuffer buffer, ReflectClassByRef

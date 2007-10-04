@@ -24,6 +24,10 @@ namespace Db4objects.Db4o
 		{
 		}
 
+		public Db4oIOException(string message) : base(message)
+		{
+		}
+
 		/// <summary>Constructor allowing to specify the causing exception</summary>
 		/// <param name="cause">exception cause</param>
 		public Db4oIOException(Exception cause) : base(cause.Message, cause)

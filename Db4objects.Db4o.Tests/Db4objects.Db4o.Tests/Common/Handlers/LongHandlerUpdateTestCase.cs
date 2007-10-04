@@ -84,7 +84,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			LongHandlerUpdateTestCase.Item nullItem = (LongHandlerUpdateTestCase.Item)values[
 				values.Length - 1];
 			AssertAreEqual(0, nullItem._typedPrimitive);
-			Assert.IsNull(nullItem._typedWrapper);
 			Assert.IsNull(nullItem._untyped);
 		}
 

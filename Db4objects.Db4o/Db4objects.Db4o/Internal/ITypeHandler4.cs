@@ -9,11 +9,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public interface ITypeHandler4 : IComparable4
 	{
-		void CascadeActivation(Transaction trans, object obj, int depth, bool activate);
-
 		void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer buffer);
-
-		object Read(MarshallerFamily mf, StatefulBuffer buffer, bool redirect);
 
 		void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect);
 

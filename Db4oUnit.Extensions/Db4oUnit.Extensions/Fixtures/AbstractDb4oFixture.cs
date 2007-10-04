@@ -62,6 +62,8 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public abstract void Close();
 
+		public abstract void ConfigureAtRuntime(IRuntimeConfigureAction arg1);
+
 		public abstract IExtObjectContainer Db();
 
 		public abstract void Defragment();

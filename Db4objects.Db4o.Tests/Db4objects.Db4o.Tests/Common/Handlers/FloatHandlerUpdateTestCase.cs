@@ -85,7 +85,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			FloatHandlerUpdateTestCase.Item nullItem = (FloatHandlerUpdateTestCase.Item)values
 				[values.Length - 1];
 			AssertAreEqual((float)0, nullItem._typedPrimitive);
-			Assert.IsNull(nullItem._typedWrapper);
 			Assert.IsNull(nullItem._untyped);
 		}
 

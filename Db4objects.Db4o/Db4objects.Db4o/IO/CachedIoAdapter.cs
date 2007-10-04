@@ -76,7 +76,11 @@ namespace Db4objects.Db4o.IO
 		/// <param name="lockFile">determines if the file should be locked</param>
 		/// <param name="initialLength">initial file length, new writes will start from this point
 		/// 	</param>
-		/// <param name="ioAdapter">delegate IO adapter (RandomAccessFileAdapter by default)</param>
+		/// <param name="readOnly">
+		/// 
+		/// if the file should be used in read-onlyt mode.
+		/// </param>
+		/// <param name="io">delegate IO adapter (RandomAccessFileAdapter by default)</param>
 		/// <param name="pageSize">cache page size</param>
 		/// <param name="pageCount">allocated amount of pages</param>
 		public CachedIoAdapter(string path, bool lockFile, long initialLength, bool readOnly

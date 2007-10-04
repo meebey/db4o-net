@@ -35,14 +35,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 		}
 
-		public override object Read(ArrayHandler arrayHandler, StatefulBuffer reader)
-		{
-			int linkOffSet = reader.PreparePayloadRead();
-			object array = arrayHandler.Read1(_family, reader);
-			reader._offset = linkOffSet;
-			return array;
-		}
-
 		protected override Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans
 			, Db4objects.Db4o.Internal.Buffer reader)
 		{

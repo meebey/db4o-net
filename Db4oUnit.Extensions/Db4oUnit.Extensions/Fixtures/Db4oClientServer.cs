@@ -1,20 +1,18 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
+using Db4oUnit.Extensions.Util;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
-using Sharpen;
 
 namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oClientServer : AbstractDb4oFixture, IDb4oClientServerFixture
 	{
-		private const int DEFAULT_PORT = unchecked((int)(0xdb40));
-
 		protected static readonly string FILE = "Db4oClientServer.yap";
 
 		protected static readonly string HOST = "localhost";
@@ -35,6 +33,8 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private int _port;
 
+		private IConfiguration _serverConfig;
+
 		public Db4oClientServer(IConfigurationSource configSource, string fileName, bool 
 			embeddedClient, string label) : base(configSource)
 		{
@@ -46,16 +46,6 @@ namespace Db4oUnit.Extensions.Fixtures
 		public Db4oClientServer(IConfigurationSource configSource, bool embeddedClient, string
 			 label) : this(configSource, FilePath(), embeddedClient, label)
 		{
-		}
-
-		private static string FilePath()
-		{
-			string path = Runtime.GetProperty("db4ounit.file.path");
-			if (path == null || path.Length == 0)
-			{
-				path = ".";
-			}
-			return Path.Combine(path, FILE);
 		}
 
 		public override void Open()
@@ -73,7 +63,8 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private void OpenServer()
 		{
-			_server = Db4oFactory.OpenServer(Config(), _yap.GetAbsolutePath(), -1);
+			_serverConfig = CloneDb4oConfiguration(Config());
+			_server = Db4oFactory.OpenServer(_serverConfig, _yap.GetAbsolutePath(), -1);
 			_port = _server.Ext().Port();
 			_server.GrantAccess(USERNAME, PASSWORD);
 		}
@@ -131,8 +122,16 @@ namespace Db4oUnit.Extensions.Fixtures
 		/// </returns>
 		public override bool Accept(Type clazz)
 		{
-			if ((typeof(IOptOutCS).IsAssignableFrom(clazz)) || !typeof(AbstractDb4oTestCase).
-				IsAssignableFrom(clazz))
+			if (!typeof(AbstractDb4oTestCase).IsAssignableFrom(clazz))
+			{
+				return false;
+			}
+			if (typeof(IOptOutCS).IsAssignableFrom(clazz))
+			{
+				return false;
+			}
+			if (_embeddedClient && (typeof(IOptOutAllButNetworkingCS).IsAssignableFrom(clazz)
+				))
 			{
 				return false;
 			}
@@ -154,9 +153,9 @@ namespace Db4oUnit.Extensions.Fixtures
 			return _server.OpenClient(Config());
 		}
 
-		private Config4Impl CloneDb4oConfiguration(Config4Impl config)
+		private Config4Impl CloneDb4oConfiguration(IConfiguration config)
 		{
-			return (Config4Impl)config.DeepClone(this);
+			return (Config4Impl)((Config4Impl)config).DeepClone(this);
 		}
 
 		public override string GetLabel()
@@ -167,6 +166,17 @@ namespace Db4oUnit.Extensions.Fixtures
 		public virtual int ServerPort()
 		{
 			return _port;
+		}
+
+		private static string FilePath()
+		{
+			return CrossPlatformServices.DatabasePath(FILE);
+		}
+
+		public override void ConfigureAtRuntime(IRuntimeConfigureAction action)
+		{
+			action.Apply(Config());
+			action.Apply(_serverConfig);
 		}
 	}
 }

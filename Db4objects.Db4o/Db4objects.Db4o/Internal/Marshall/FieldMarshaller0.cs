@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
@@ -29,15 +28,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual RawFieldSpec ReadSpec(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
 			 reader)
 		{
-			string name = null;
-			try
-			{
-				name = StringMarshaller.ReadShort(stream, reader);
-			}
-			catch (CorruptionException)
-			{
-				return null;
-			}
+			string name = StringHandler.ReadStringNoDebug(stream.Transaction().Context(), reader
+				);
 			if (name.IndexOf(Const4.VIRTUAL_FIELD_PREFIX) == 0)
 			{
 				if (stream._handlers.VirtualFieldByName(name) != null)
@@ -104,7 +96,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO
 			 sio, BufferPair readers)
 		{
-			readers.ReadShortString(sio);
+			readers.IncrementStringOffset(sio);
 			if (yapField.IsVirtual())
 			{
 				return;

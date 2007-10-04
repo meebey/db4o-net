@@ -23,8 +23,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public abstract void DefragIDs(ArrayHandler arrayHandler, BufferPair readers);
 
-		public abstract object Read(ArrayHandler arrayHandler, StatefulBuffer reader);
-
 		protected abstract Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans
 			, Db4objects.Db4o.Internal.Buffer reader);
 	}

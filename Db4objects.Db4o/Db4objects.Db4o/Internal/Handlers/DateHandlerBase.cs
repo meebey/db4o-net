@@ -7,15 +7,14 @@ using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
-using Sharpen.Util;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
-	public class DateHandler : LongHandler
+	/// <summary>Shared (java/.net) logic for Date handling.</summary>
+	/// <remarks>Shared (java/.net) logic for Date handling.</remarks>
+	public abstract class DateHandlerBase : LongHandler
 	{
-		private static readonly Date PROTO = new Date(0);
-
-		public DateHandler(ObjectContainerBase container) : base(container)
+		public DateHandlerBase(ObjectContainerBase container) : base(container)
 		{
 		}
 
@@ -24,35 +23,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.INSTANCE;
 		}
 
-		public virtual void CopyValue(object a_from, object a_to)
-		{
-			try
-			{
-				((Date)a_to).SetTime(((Date)a_from).GetTime());
-			}
-			catch (Exception)
-			{
-			}
-		}
+		public abstract object CopyValue(object from, object to);
 
-		public override object DefaultValue()
-		{
-			return PROTO;
-		}
+		public abstract override object DefaultValue();
+
+		public abstract override object PrimitiveNull();
+
+		public abstract override object NullRepresentationInUntypedArrays();
 
 		protected override Type PrimitiveJavaClass()
 		{
 			return null;
-		}
-
-		public override object PrimitiveNull()
-		{
-			return null;
-		}
-
-		public override object NullRepresentationInUntypedArrays()
-		{
-			return new Date(0);
 		}
 
 		public override object Read(MarshallerFamily mf, StatefulBuffer writer, bool redirect
@@ -71,45 +52,45 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			if (a_object == null)
 			{
-				a_object = new Date(0);
+				a_object = new DateTime(0);
 			}
-			a_bytes.WriteLong(((Date)a_object).GetTime());
+			a_bytes.WriteLong(Sharpen.Runtime.ToJavaMilliseconds(((DateTime)a_object)));
 		}
 
 		public static string Now()
 		{
-			return Platform4.Format(new Date(), true);
+			return Platform4.Format(new DateTime(), true);
 		}
 
 		internal override long Val(object obj)
 		{
-			return ((Date)obj).GetTime();
+			return Sharpen.Runtime.ToJavaMilliseconds(((DateTime)obj));
 		}
 
 		internal override bool IsEqual1(object obj)
 		{
-			return obj is Date && Val(obj) == CurrentLong();
+			return obj is DateTime && Val(obj) == CurrentLong();
 		}
 
 		internal override bool IsGreater1(object obj)
 		{
-			return obj is Date && Val(obj) > CurrentLong();
+			return obj is DateTime && Val(obj) > CurrentLong();
 		}
 
 		internal override bool IsSmaller1(object obj)
 		{
-			return obj is Date && Val(obj) < CurrentLong();
+			return obj is DateTime && Val(obj) < CurrentLong();
 		}
 
 		public override object Read(IReadContext context)
 		{
 			long milliseconds = ((long)base.Read(context));
-			return new Date(milliseconds);
+			return new DateTime(milliseconds);
 		}
 
 		public override void Write(IWriteContext context, object obj)
 		{
-			long milliseconds = ((Date)obj).GetTime();
+			long milliseconds = Sharpen.Runtime.ToJavaMilliseconds(((DateTime)obj));
 			base.Write(context, milliseconds);
 		}
 	}

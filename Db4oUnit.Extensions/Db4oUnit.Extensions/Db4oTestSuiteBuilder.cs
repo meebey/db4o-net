@@ -13,15 +13,15 @@ namespace Db4oUnit.Extensions
 
 		public Db4oTestSuiteBuilder(IDb4oFixture fixture, Type clazz) : base(clazz)
 		{
-			SetFixture(fixture);
+			Fixture(fixture);
 		}
 
 		public Db4oTestSuiteBuilder(IDb4oFixture fixture, Type[] classes) : base(classes)
 		{
-			SetFixture(fixture);
+			Fixture(fixture);
 		}
 
-		private void SetFixture(IDb4oFixture fixture)
+		private void Fixture(IDb4oFixture fixture)
 		{
 			if (null == fixture)
 			{

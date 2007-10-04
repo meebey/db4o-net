@@ -235,5 +235,10 @@ namespace Db4objects.Db4o.Defragment
 			config.BlockSize(blockSize);
 			return config;
 		}
+
+		public virtual IConfiguration ClonedDb4oConfig()
+		{
+			return (IConfiguration)((Config4Impl)Db4oConfig()).DeepClone(null);
+		}
 	}
 }

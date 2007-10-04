@@ -26,18 +26,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return parentSlot.ReadPayloadWriter(payLoadOffSet, length);
 		}
 
-		public override Db4objects.Db4o.Internal.Buffer ReadSlotFromParentSlot(ObjectContainerBase
-			 stream, Db4objects.Db4o.Internal.Buffer reader)
-		{
-			int payLoadOffSet = reader.ReadInt();
-			int length = reader.ReadInt();
-			if (payLoadOffSet == 0)
-			{
-				return null;
-			}
-			return reader.ReadPayloadReader(payLoadOffSet, length);
-		}
-
 		public override void Defrag(ISlotBuffer reader)
 		{
 			reader.IncrementOffset(DEFRAGMENT_INCREMENT_OFFSET);

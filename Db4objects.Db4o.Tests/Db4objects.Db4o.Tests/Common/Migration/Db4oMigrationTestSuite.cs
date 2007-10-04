@@ -40,7 +40,8 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return new Type[] { typeof(BooleanHandlerUpdateTestCase), typeof(ByteHandlerUpdateTestCase)
 				, typeof(CharHandlerUpdateTestCase), typeof(DateHandlerUpdateTestCase), typeof(DoubleHandlerUpdateTestCase)
 				, typeof(FloatHandlerUpdateTestCase), typeof(IntHandlerUpdateTestCase), typeof(LongHandlerUpdateTestCase)
-				, typeof(NestedArrayUpdateTestCase), typeof(ObjectArrayUpdateTestCase), typeof(ShortHandlerUpdateTestCase)
+				, typeof(MultiDimensionalArrayHandlerUpdateTestCase), typeof(NestedArrayUpdateTestCase)
+				, typeof(ObjectArrayUpdateTestCase), typeof(ShortHandlerUpdateTestCase), typeof(StringHandlerUpdateTestCase)
 				 };
 		}
 	}

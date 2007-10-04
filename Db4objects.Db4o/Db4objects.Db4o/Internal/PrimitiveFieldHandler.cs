@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
@@ -56,7 +55,7 @@ namespace Db4objects.Db4o.Internal
 			if (_handler is ArrayHandler)
 			{
 				ArrayHandler ya = (ArrayHandler)_handler;
-				if (ya._isPrimitive)
+				if (ya._usePrimitiveClassReflector)
 				{
 					ya.DeletePrimitiveEmbedded(a_bytes, this);
 					a_bytes.SlotDelete();
@@ -102,39 +101,6 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		internal override object Instantiate(ObjectReference @ref, object obj, MarshallerFamily
-			 mf, ObjectHeaderAttributes attributes, StatefulBuffer buffer, bool addToIDTree)
-		{
-			if (obj == null)
-			{
-				try
-				{
-					obj = _handler.Read(mf, buffer, true);
-				}
-				catch (CorruptionException)
-				{
-					return null;
-				}
-				@ref.SetObjectWeak(buffer.GetStream(), obj);
-			}
-			@ref.SetStateClean();
-			return obj;
-		}
-
-		internal override object InstantiateTransient(ObjectReference a_yapObject, object
-			 a_object, MarshallerFamily mf, ObjectHeaderAttributes attributes, StatefulBuffer
-			 a_bytes)
-		{
-			try
-			{
-				return _handler.Read(mf, a_bytes, true);
-			}
-			catch (CorruptionException)
-			{
-				return null;
-			}
-		}
-
 		public override object Instantiate(UnmarshallingContext context)
 		{
 			object obj = context.PersistentObject();
@@ -152,31 +118,19 @@ namespace Db4objects.Db4o.Internal
 			return _handler.Read(context);
 		}
 
-		internal override void InstantiateFields(ObjectReference a_yapObject, object a_onObject
-			, MarshallerFamily mf, ObjectHeaderAttributes attributes, StatefulBuffer a_bytes
-			)
-		{
-			object obj = null;
-			try
-			{
-				obj = _handler.Read(mf, a_bytes, true);
-			}
-			catch (CorruptionException)
-			{
-			}
-			if (obj != null && (_handler is DateHandler))
-			{
-				((DateHandler)_handler).CopyValue(obj, a_onObject);
-			}
-		}
-
 		internal override void InstantiateFields(UnmarshallingContext context)
 		{
 			object obj = context.Read(_handler);
-			if (obj != null && (_handler is DateHandler))
+			if (obj != null && (_handler is Db4objects.Db4o.Internal.Handlers.DateHandler))
 			{
-				((DateHandler)_handler).CopyValue(obj, context.PersistentObject());
+				object existing = context.PersistentObject();
+				context.PersistentObject(DateHandler().CopyValue(obj, existing));
 			}
+		}
+
+		private Db4objects.Db4o.Internal.Handlers.DateHandler DateHandler()
+		{
+			return ((Db4objects.Db4o.Internal.Handlers.DateHandler)_handler);
 		}
 
 		public override bool IsArray()
@@ -198,16 +152,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			_handler.PrepareComparison(a_constraint);
 			return _handler;
-		}
-
-		public override object Read(MarshallerFamily mf, StatefulBuffer a_bytes, bool redirect
-			)
-		{
-			if (mf._primitive.UseNormalClassRead())
-			{
-				return base.Read(mf, a_bytes, redirect);
-			}
-			return _handler.Read(mf, a_bytes, false);
 		}
 
 		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily

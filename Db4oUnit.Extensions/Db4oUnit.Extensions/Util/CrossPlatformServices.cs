@@ -1,7 +1,9 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.IO;
 using Db4objects.Db4o.Internal;
+using Sharpen;
 
 namespace Db4oUnit.Extensions.Util
 {
@@ -20,6 +22,16 @@ namespace Db4oUnit.Extensions.Util
 		public static string FullyQualifiedName(Type klass)
 		{
 			return ReflectPlatform.FullyQualifiedName(klass);
+		}
+
+		public static string DatabasePath(string fileName)
+		{
+			string path = Runtime.GetProperty("db4ounit.file.path");
+			if (path == null || path.Length == 0)
+			{
+				path = ".";
+			}
+			return Path.Combine(path, fileName);
 		}
 	}
 }
