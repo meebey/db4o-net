@@ -1,7 +1,9 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 
 using System;
+using System.Reflection;
 
+using Sharpen;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
@@ -36,5 +38,12 @@ namespace Db4objects.Db4o.Internal
 	    {
 	        return TypeReference.FromType(type).GetUnversionedName();
 	    }
+	    
+		/// <exception cref="Exception"></exception>
+		public static object GetField(object parent, string fieldName) 
+		{
+			FieldInfo field = Sharpen.Runtime.GetDeclaredField(parent.GetType(),fieldName);
+			return field.GetValue(parent);
+		}
 	}
 }
