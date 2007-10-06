@@ -137,7 +137,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 #if NET_2_0
 			return System.Reflection.Assembly.ReflectionOnlyLoadFrom(_targetAssembly).GetName().Version.ToString();
 #else
-			return System.Reflection.Assembly.LoadFrom(_fname).GetName().Version.ToString();
+			return System.Reflection.Assembly.LoadFrom(_targetAssembly).GetName().Version.ToString();
 #endif
 		}
 

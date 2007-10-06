@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;
@@ -14,7 +13,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
             public object _untyped;
 
-            public ulong? _nullablePrimitive;
+#if NET_2_0 || CF_2_0
+			public ulong? _nullablePrimitive;
+#endif
         }
 
         public class ItemArrays
@@ -22,8 +23,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             public ulong[] _typedPrimitiveArray;
 
             public object _primitiveArrayInObject;
-
+#if NET_2_0 || CF_2_0
             public ulong?[] _nullableTypedPrimitiveArray;
+#endif
         }
 
         private static readonly ulong[] data = new ulong[] {
@@ -54,13 +56,17 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Item item = (Item)values[i];
                 AssertAreEqual(data[i], item._typedPrimitive);
                 AssertAreEqual(data[i], (ulong) item._untyped);
+#if NET_2_0 || CF_2_0
                 AssertAreEqual(data[i], (ulong) item._nullablePrimitive);
-            }
+#endif
+				}
             Item nullItem = (Item)values[data.Length];
             AssertAreEqual(0, nullItem._typedPrimitive);
             Assert.IsNull(nullItem._untyped);
+#if NET_2_0 || CF_2_0
             Assert.IsNull(nullItem._nullablePrimitive);
-        }
+#endif
+			}
 
         private void AssertAreEqual(ulong expected, ulong actual)
         {
@@ -77,12 +83,14 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             System.Array.Copy(data, 0, ulongArray, 0, data.Length);
             itemArrays._primitiveArrayInObject = ulongArray;
 
+#if NET_2_0 || CF_2_0
             itemArrays._nullableTypedPrimitiveArray = new ulong?[data.Length + 1];
             for (int i = 0; i < data.Length; i++)
             {
                 itemArrays._nullableTypedPrimitiveArray[i] = data[i];
             }
-            return itemArrays;
+#endif
+			return itemArrays;
         }
 
         protected override object[] CreateValues()
@@ -93,8 +101,10 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Item item = new Item();
                 item._typedPrimitive = data[i];
                 item._untyped = data[i];
+#if NET_2_0 || CF_2_0
                 item._nullablePrimitive = data[i];
-                values[i] = item;
+#endif
+				values[i] = item;
             }
 
             values[data.Length] = new Item();

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Db4objects.Db4o.Tests.Common.Migration;
 using Db4oUnit.Extensions;
