@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -20,6 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			base.Configure(config);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestActivate()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
@@ -39,6 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this.item = item;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
@@ -62,6 +65,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
@@ -84,6 +88,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
@@ -93,6 +98,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly Db4oIOExceptionTestCase _enclosing;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestDelete()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
@@ -110,6 +116,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this.item = item;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
@@ -121,6 +128,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly Db4oIOExceptionTestCase.Item item;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestGet()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
@@ -134,6 +142,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
@@ -143,6 +152,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly Db4oIOExceptionTestCase _enclosing;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestGetAll()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
@@ -156,6 +166,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
@@ -169,6 +180,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly Db4oIOExceptionTestCase _enclosing;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestQuery()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
@@ -182,6 +194,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
@@ -191,6 +204,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly Db4oIOExceptionTestCase _enclosing;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestRollback()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
@@ -204,6 +218,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
@@ -213,6 +228,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly Db4oIOExceptionTestCase _enclosing;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestSet()
 		{
 			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_107(this));
@@ -225,6 +241,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
@@ -234,6 +251,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly Db4oIOExceptionTestCase _enclosing;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestGetByUUID()
 		{
 			Fixture().Config().GenerateUUIDs(ConfigScope.GLOBALLY);
@@ -253,6 +271,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this.uuid = uuid;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;

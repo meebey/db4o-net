@@ -80,6 +80,7 @@ namespace Db4objects.Db4o.Foundation
 			private readonly BlockingQueue _enclosing;
 		}
 
+		/// <exception cref="BlockingQueueStoppedException"></exception>
 		public virtual object Next()
 		{
 			return _lock.Run(new _ISafeClosure4_43(this));

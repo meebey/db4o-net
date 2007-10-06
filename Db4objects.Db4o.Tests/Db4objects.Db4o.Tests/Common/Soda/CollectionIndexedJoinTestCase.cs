@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -46,6 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 				).Indexed(true);
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
 			for (int i = 0; i < NUMENTRIES; i++)

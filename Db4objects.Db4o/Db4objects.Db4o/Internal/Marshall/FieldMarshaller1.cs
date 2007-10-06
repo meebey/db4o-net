@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.IO;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Marshall;
@@ -69,6 +71,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return len + BTREE_ID;
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="IOException"></exception>
 		public override void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO
 			 sio, BufferPair readers)
 		{

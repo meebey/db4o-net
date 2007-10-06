@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -17,11 +18,13 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public CascadeOnDelete.Item[] items;
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
 			NoAccidentalDeletes();
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void NoAccidentalDeletes()
 		{
 			NoAccidentalDeletes1(true, true);
@@ -30,6 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			NoAccidentalDeletes1(false, false);
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void NoAccidentalDeletes1(bool cascadeOnUpdate, bool cascadeOnDelete)
 		{
 			DeleteAll(GetType());

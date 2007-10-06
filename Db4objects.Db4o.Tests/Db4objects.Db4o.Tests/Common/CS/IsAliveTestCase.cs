@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
@@ -37,12 +38,14 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			client.Close();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
 			filePath = Path.GetTempFileName();
 			File4.Delete(filePath);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TearDown()
 		{
 			File4.Delete(filePath);

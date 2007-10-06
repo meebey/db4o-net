@@ -256,12 +256,14 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return Stream().Config();
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		protected static StatefulBuffer ReadMessageBuffer(Db4objects.Db4o.Internal.Transaction
 			 trans, ISocket4 sock)
 		{
 			return ReadMessageBuffer(trans, sock, Const4.MESSAGE_LENGTH);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		protected static StatefulBuffer ReadMessageBuffer(Db4objects.Db4o.Internal.Transaction
 			 trans, ISocket4 sock, int length)
 		{
@@ -280,6 +282,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return buffer;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public static Db4objects.Db4o.Internal.CS.Messages.Msg ReadMessage(IMessageDispatcher
 			 messageDispatcher, Db4objects.Db4o.Internal.Transaction trans, ISocket4 sock)
 		{

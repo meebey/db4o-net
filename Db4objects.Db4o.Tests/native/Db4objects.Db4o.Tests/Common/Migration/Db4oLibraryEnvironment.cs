@@ -6,7 +6,8 @@ using Db4objects.Db4o.Tests.Util;
 using File=Sharpen.IO.File;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
-{	
+{
+
 	[Serializable]
 	class InvokeInstanceMethod
 	{
@@ -35,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				throw new Exception(x.ToString());
 			}
 		}
-	}
+    }
 
 	[Serializable]
 	class InstallAssemblyResolver
@@ -47,8 +48,9 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		{	
 			_assembly = assembly;
 			_assemblyName = Path.GetFileNameWithoutExtension(_assembly);
-		}
+        }
 
+#if !CF_1_0 && !CF_2_0        
 		public void Execute()
 		{
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
@@ -62,8 +64,9 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			}
 			return null;
 		}
+#endif
 
-		private string SimpleName(string name)
+        private string SimpleName(string name)
 		{
 			return name.Split(',')[0];
 		}
@@ -80,19 +83,20 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		public Db4oLibraryEnvironment(File file, File additionalAssembly)
 		{
 			_targetAssembly = file.GetAbsolutePath();
+#if !CF_1_0 && !CF_2_0        
 			_domain = SetUpDomain();
 			SetUpLegacyAdapter();
-		}
+#endif
+        }
 
-		private void SetUpLegacyAdapter()
+
+		private string BaseDirectory()
 		{
-			if (Version().StartsWith("6")) return;
-
-			string adapterAssembly = Path.Combine(BaseDirectory(), "Db4objects.Db4o.dll");
-			new LegacyAdapterEmitter(_targetAssembly, Version()).Emit(adapterAssembly);
+			return IOServices.BuildTempPath("migration-domain-" + Version());
 		}
+#if !CF_1_0 && !CF_2_0        
 
-		private AppDomain SetUpDomain()
+        private AppDomain SetUpDomain()
 		{
 			string baseDirectory = BaseDirectory();
 			CopyAssemblies(baseDirectory);
@@ -101,9 +105,13 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return domain;
 		}
 
-		private string BaseDirectory()
+		private void SetUpLegacyAdapter()
 		{
-			return IOServices.BuildTempPath("migration-domain-" + Version());
+			if (Version().StartsWith("6")) return;
+
+			string adapterAssembly = Path.Combine(BaseDirectory(), "Db4objects.Db4o.dll");
+			new LegacyAdapterEmitter(_targetAssembly, Version()).Emit(adapterAssembly);
+
 		}
 
 		private void SetUpAssemblyResolver(AppDomain domain)
@@ -125,8 +133,9 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			IOServices.CopyEnclosingAssemblyTo(typeof(Db4oUnit.ITest), domainBase);
 			IOServices.CopyEnclosingAssemblyTo(typeof(Db4oUnit.Extensions.IDb4oTestCase), domainBase);
 		}
+#endif
 
-		public string Version()
+        public string Version()
 		{
 			if (null != _version) return _version;
 			return _version = GetVersion();
@@ -143,7 +152,11 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		public void InvokeInstanceMethod(Type type, string methodName, params object[] args)
 		{
+#if !CF_1_0 && !CF_2_0        
 			_domain.DoCallBack(new CrossAppDomainDelegate(new InvokeInstanceMethod(ReflectPlatform.FullyQualifiedName(type), methodName, args).Execute));
-		}
+#endif
+        }
+
 	}
+
 }

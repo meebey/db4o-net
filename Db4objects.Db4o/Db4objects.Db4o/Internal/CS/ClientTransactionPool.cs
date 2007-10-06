@@ -11,11 +11,13 @@ namespace Db4objects.Db4o.Internal.CS
 {
 	public class ClientTransactionPool
 	{
-		private Hashtable4 _transaction2Container;
+		private readonly Hashtable4 _transaction2Container;
 
-		private Hashtable4 _fileName2Container;
+		private readonly Hashtable4 _fileName2Container;
 
 		private readonly LocalObjectContainer _mainContainer;
+
+		private bool _closed;
 
 		public ClientTransactionPool(LocalObjectContainer mainContainer)
 		{
@@ -80,19 +82,18 @@ namespace Db4objects.Db4o.Internal.CS
 					IEntry4 hashEntry = (IEntry4)entryIter.Current;
 					((ClientTransactionPool.ContainerCount)hashEntry.Value()).Close();
 				}
-				_transaction2Container = null;
-				_fileName2Container = null;
+				_closed = true;
 			}
 		}
 
 		public virtual int OpenFileCount()
 		{
-			return (_fileName2Container == null ? 0 : _fileName2Container.Size());
+			return IsClosed() ? 0 : _fileName2Container.Size();
 		}
 
 		public virtual bool IsClosed()
 		{
-			return _mainContainer == null || _mainContainer.IsClosed();
+			return _closed == true || _mainContainer.IsClosed();
 		}
 
 		private class ContainerCount

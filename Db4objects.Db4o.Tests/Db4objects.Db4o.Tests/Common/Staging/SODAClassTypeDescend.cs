@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -25,6 +26,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			public SODAClassTypeDescend.DataC _next;
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
 			SODAClassTypeDescend.DataA objectA = new SODAClassTypeDescend.DataA();

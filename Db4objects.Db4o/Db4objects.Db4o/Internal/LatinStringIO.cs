@@ -8,8 +8,6 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class LatinStringIO
 	{
-		protected char[] chars = new char[0];
-
 		public virtual int BytesPerChar()
 		{
 			return 1;
@@ -37,22 +35,14 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual int Length(string a_string)
+		public virtual int Length(string str)
 		{
-			return a_string.Length + Const4.OBJECT_LENGTH + Const4.INT_LENGTH;
-		}
-
-		protected virtual void CheckBufferLength(int a_length)
-		{
-			if (a_length > chars.Length)
-			{
-				chars = new char[a_length];
-			}
+			return str.Length + Const4.OBJECT_LENGTH + Const4.INT_LENGTH;
 		}
 
 		public virtual string Read(IReadBuffer buffer, int length)
 		{
-			CheckBufferLength(length);
+			char[] chars = new char[length];
 			for (int ii = 0; ii < length; ii++)
 			{
 				chars[ii] = (char)(buffer.ReadByte() & unchecked((int)(0xff)));
@@ -60,43 +50,39 @@ namespace Db4objects.Db4o.Internal
 			return new string(chars, 0, length);
 		}
 
-		public virtual string Read(byte[] a_bytes)
+		public virtual string Read(byte[] bytes)
 		{
-			CheckBufferLength(a_bytes.Length);
-			for (int i = 0; i < a_bytes.Length; i++)
+			char[] chars = new char[bytes.Length];
+			for (int i = 0; i < bytes.Length; i++)
 			{
-				chars[i] = (char)(a_bytes[i] & unchecked((int)(0xff)));
+				chars[i] = (char)(bytes[i] & unchecked((int)(0xff)));
 			}
-			return new string(chars, 0, a_bytes.Length);
+			return new string(chars, 0, bytes.Length);
 		}
 
-		public virtual int ShortLength(string a_string)
+		public virtual int ShortLength(string str)
 		{
-			return a_string.Length + Const4.INT_LENGTH;
+			return str.Length + Const4.INT_LENGTH;
 		}
 
-		protected virtual int MarshalledLength(string str)
+		public virtual void Write(IWriteBuffer buffer, string str)
 		{
-			int len = str.Length;
-			CheckBufferLength(len);
-			Sharpen.Runtime.GetCharsForString(str, 0, len, chars, 0);
-			return len;
-		}
-
-		public virtual void Write(IWriteBuffer buffer, string @string)
-		{
-			int len = MarshalledLength(@string);
-			for (int i = 0; i < len; i++)
+			int length = str.Length;
+			char[] chars = new char[length];
+			Sharpen.Runtime.GetCharsForString(str, 0, length, chars, 0);
+			for (int i = 0; i < length; i++)
 			{
 				buffer.WriteByte((byte)(chars[i] & unchecked((int)(0xff))));
 			}
 		}
 
-		internal virtual byte[] Write(string @string)
+		internal virtual byte[] Write(string str)
 		{
-			int len = MarshalledLength(@string);
-			byte[] bytes = new byte[len];
-			for (int i = 0; i < len; i++)
+			int length = str.Length;
+			char[] chars = new char[length];
+			Sharpen.Runtime.GetCharsForString(str, 0, length, chars, 0);
+			byte[] bytes = new byte[length];
+			for (int i = 0; i < length; i++)
 			{
 				bytes[i] = (byte)(chars[i] & unchecked((int)(0xff)));
 			}

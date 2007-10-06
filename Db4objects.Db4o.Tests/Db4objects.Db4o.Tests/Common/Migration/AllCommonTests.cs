@@ -3,7 +3,6 @@
 using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Tests.Common.Migration;
-using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
@@ -11,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 	{
 		public static void Main(string[] args)
 		{
-			System.Environment.Exit(new AllCommonTests().RunSolo());
+			new AllCommonTests().RunSolo();
 		}
 
 		protected override Type[] TestCases()

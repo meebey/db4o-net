@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
 using Sharpen;
@@ -32,11 +33,13 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private FileHeaderVariablePart1 _variablePart;
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
 			_timerFileLock.Close();
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void InitNew(LocalObjectContainer file)
 		{
 			CommonTasksForNewAndRead(file);

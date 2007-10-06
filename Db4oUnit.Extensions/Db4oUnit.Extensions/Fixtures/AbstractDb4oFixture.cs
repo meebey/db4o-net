@@ -21,6 +21,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			_configSource = configSource;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Reopen()
 		{
 			Close();
@@ -51,6 +52,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			_config = null;
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected virtual void Defragment(string fileName)
 		{
 			string targetFile = fileName + ".defrag.backup";

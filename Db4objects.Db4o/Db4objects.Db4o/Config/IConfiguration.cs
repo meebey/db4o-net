@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -359,6 +360,7 @@ namespace Db4objects.Db4o.Config
 		/// should be used on the server side.
 		/// </remarks>
 		/// <param name="bytes">the size in bytes from 1 to 127</param>
+		/// <exception cref="GlobalOnlyConfigException"></exception>
 		void BlockSize(int bytes);
 
 		/// <summary>configures the size of BTree nodes in indexes.</summary>
@@ -532,6 +534,7 @@ namespace Db4objects.Db4o.Config
 		/// off.
 		/// </param>
 		/// <seealso cref="IConfiguration.Password">IConfiguration.Password</seealso>
+		/// <exception cref="GlobalOnlyConfigException"></exception>
 		[System.ObsoleteAttribute(@"use a custom encrypting")]
 		void Encrypt(bool flag);
 
@@ -667,6 +670,7 @@ namespace Db4objects.Db4o.Config
 		/// (adapter class must be available)<br /><br />
 		/// </remarks>
 		/// <param name="adapter">- the IoAdapter</param>
+		/// <exception cref="GlobalOnlyConfigException"></exception>
 		void Io(IoAdapter adapter);
 
 		/// <summary>allows to mark fields as transient with custom attributes.</summary>
@@ -790,6 +794,7 @@ namespace Db4objects.Db4o.Config
 		/// to read the database file without knowing the password.<br /><br />
 		/// </remarks>
 		/// <param name="pass">the password to be used.</param>
+		/// <exception cref="GlobalOnlyConfigException"></exception>
 		[System.ObsoleteAttribute(@"use a custom encrypting")]
 		void Password(string pass);
 
@@ -869,6 +874,8 @@ namespace Db4objects.Db4o.Config
 		/// Default configuration: 0<br /><br />
 		/// </remarks>
 		/// <param name="byteCount">the number of bytes to reserve</param>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="NotSupportedException"></exception>
 		void ReserveStorageSpace(long byteCount);
 
 		/// <summary>
@@ -883,6 +890,7 @@ namespace Db4objects.Db4o.Config
 		/// server side. <br /><br />
 		/// </remarks>
 		/// <param name="path">the path to be used</param>
+		/// <exception cref="IOException"></exception>
 		void SetBlobPath(string path);
 
 		/// <summary>configures db4o to use a custom ClassLoader.</summary>

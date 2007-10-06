@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
@@ -40,6 +41,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes)
 		{
 			if (mf._primitive.UseNormalClassRead())
@@ -49,6 +51,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void DeleteEmbedded1(MarshallerFamily mf, StatefulBuffer a_bytes, 
 			int a_id)
 		{

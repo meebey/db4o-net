@@ -83,9 +83,15 @@ namespace Db4objects.Db4o.Tests.Util
             if (p.ExitCode != 0) throw new ApplicationException(stdout + stderr);
 			return stdout + stderr;
 		}
+
+        public static void CopyEnclosingAssemblyTo(Type type, string directory)
+		{
+			CopyTo(type.Assembly.Location, directory);
+		}
+
 #endif
 
-		public static string BuildTempPath(string fname)
+        public static string BuildTempPath(string fname)
 		{
 			return Path.Combine(Path.GetTempPath(), fname);
 		}
@@ -96,9 +102,5 @@ namespace Db4objects.Db4o.Tests.Util
 			File.Copy(fname, Path.Combine(targetDirectory, Path.GetFileName(fname)), true);
 		}
 
-		public static void CopyEnclosingAssemblyTo(Type type, string directory)
-		{
-			CopyTo(type.Assembly.Location, directory);
-		}
 	}
 }

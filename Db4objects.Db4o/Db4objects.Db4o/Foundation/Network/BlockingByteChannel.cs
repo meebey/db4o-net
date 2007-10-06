@@ -100,6 +100,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual int Read()
 		{
 			int ret = (int)i_lock.Run(new _ISafeClosure4_73(this));
@@ -124,6 +125,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			private readonly BlockingByteChannel _enclosing;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual int Read(byte[] bytes, int offset, int length)
 		{
 			int ret = (int)i_lock.Run(new _ISafeClosure4_87(this, length, bytes, offset));
@@ -190,11 +192,13 @@ namespace Db4objects.Db4o.Foundation.Network
 			return Runtime.CurrentTimeMillis() - start >= i_timeout;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(byte[] bytes)
 		{
 			Write(bytes, 0, bytes.Length);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
 			i_lock.Run(new _ISafeClosure4_128(this, len, bytes, off));
@@ -231,6 +235,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			private readonly int off;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(int i)
 		{
 			i_lock.Run(new _ISafeClosure4_141(this, i));

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -17,6 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			new ServerPortUsedTestCase().RunAll();
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Db4oTearDownBeforeClean()
 		{
 			File4.Delete(DB);
@@ -36,6 +38,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				this.port = port;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenServer(ServerPortUsedTestCase.DB, port);

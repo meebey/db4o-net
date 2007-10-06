@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.IO;
 using Db4objects.Db4o.Foundation;
 using Sharpen.Net;
 
@@ -9,8 +10,10 @@ namespace Db4objects.Db4o.Config
 	/// <remarks>Create platform native server and client sockets.</remarks>
 	public interface INativeSocketFactory : IDeepClone
 	{
+		/// <exception cref="IOException"></exception>
 		Sharpen.Net.Socket CreateSocket(string hostName, int port);
 
+		/// <exception cref="IOException"></exception>
 		ServerSocket CreateServerSocket(int port);
 	}
 }

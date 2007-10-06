@@ -1,6 +1,8 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
+using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
@@ -116,6 +118,7 @@ namespace Db4objects.Db4o.Defragment
 			return (mapped != 0 ? mapped : defaultID);
 		}
 
+		/// <exception cref="MappingNotFoundException"></exception>
 		public virtual int MappedID(int oldID)
 		{
 			int mapped = InternalMappedID(oldID, false);
@@ -126,6 +129,7 @@ namespace Db4objects.Db4o.Defragment
 			return mapped;
 		}
 
+		/// <exception cref="MappingNotFoundException"></exception>
 		public virtual int MappedID(int id, bool lenient)
 		{
 			if (id == 0)
@@ -142,6 +146,7 @@ namespace Db4objects.Db4o.Defragment
 			return mapped;
 		}
 
+		/// <exception cref="MappingNotFoundException"></exception>
 		private int InternalMappedID(int oldID, bool lenient)
 		{
 			if (oldID == 0)
@@ -174,12 +179,14 @@ namespace Db4objects.Db4o.Defragment
 			return BufferByAddress(selector, slot.Address(), slot.Length());
 		}
 
+		/// <exception cref="IOException"></exception>
 		public virtual Db4objects.Db4o.Internal.Buffer SourceBufferByAddress(int address, 
 			int length)
 		{
 			return BufferByAddress(SOURCEDB, address, length);
 		}
 
+		/// <exception cref="IOException"></exception>
 		public virtual Db4objects.Db4o.Internal.Buffer TargetBufferByAddress(int address, 
 			int length)
 		{
@@ -192,6 +199,7 @@ namespace Db4objects.Db4o.Defragment
 			return selector.Db(this).BufferByAddress(address, length);
 		}
 
+		/// <exception cref="ArgumentException"></exception>
 		public virtual StatefulBuffer TargetStatefulBufferByAddress(int address, int length
 			)
 		{
@@ -249,6 +257,7 @@ namespace Db4objects.Db4o.Defragment
 			return _sourceDb.ClassCollection().GetID();
 		}
 
+		/// <exception cref="IOException"></exception>
 		public static void TargetClassCollectionID(string file, int id)
 		{
 			RandomAccessFile raf = new RandomAccessFile(file, "rw");
@@ -340,6 +349,7 @@ namespace Db4objects.Db4o.Defragment
 			_targetDb.SystemData().ClassCollectionID(newClassCollectionID);
 		}
 
+		/// <exception cref="IOException"></exception>
 		public virtual Db4objects.Db4o.Internal.Buffer SourceBufferByID(int sourceID)
 		{
 			return BufferByID(SOURCEDB, sourceID);

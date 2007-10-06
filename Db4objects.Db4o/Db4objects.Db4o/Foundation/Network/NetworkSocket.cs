@@ -23,6 +23,7 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		private INativeSocketFactory _factory;
 
+		/// <exception cref="Db4oIOException"></exception>
 		public NetworkSocket(INativeSocketFactory factory, string hostName, int port)
 		{
 			_factory = factory;
@@ -38,12 +39,14 @@ namespace Db4objects.Db4o.Foundation.Network
 			_hostName = hostName;
 		}
 
+		/// <exception cref="IOException"></exception>
 		public NetworkSocket(INativeSocketFactory factory, Sharpen.Net.Socket socket)
 		{
 			_factory = factory;
 			InitSocket(socket);
 		}
 
+		/// <exception cref="IOException"></exception>
 		private void InitSocket(Sharpen.Net.Socket socket)
 		{
 			_socket = socket;
@@ -51,6 +54,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			_in = _socket.GetInputStream();
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Close()
 		{
 			try
@@ -63,6 +67,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Flush()
 		{
 			try
@@ -80,6 +85,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			return Platform4.IsConnected(_socket);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual int Read()
 		{
 			try
@@ -94,6 +100,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual int Read(byte[] a_bytes, int a_offset, int a_length)
 		{
 			try
@@ -128,6 +135,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(byte[] bytes)
 		{
 			try
@@ -140,6 +148,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
 			try
@@ -152,6 +161,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(int i)
 		{
 			try
@@ -164,6 +174,7 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual ISocket4 OpenParalellSocket()
 		{
 			if (_hostName == null)

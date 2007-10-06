@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -24,6 +25,7 @@ namespace Db4objects.Db4o.Internal
 			SetName(Const4.VIRTUAL_FIELD_PREFIX + "uuid");
 		}
 
+		/// <exception cref="FieldIndexException"></exception>
 		public override void AddFieldIndex(MarshallerFamily mf, ClassMetadata yapClass, StatefulBuffer
 			 writer, Slot oldSlot)
 		{
@@ -69,6 +71,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private UUIDFieldMetadata.DatabaseIdentityIDAndUUID ReadDatabaseIdentityIDAndUUID
 			(ObjectContainerBase stream, ClassMetadata classMetadata, Slot oldSlot, bool checkClass
 			)
@@ -122,6 +125,7 @@ namespace Db4objects.Db4o.Internal
 			return base.GetIndex(transaction);
 		}
 
+		/// <exception cref="FieldIndexException"></exception>
 		protected override void RebuildIndexForObject(LocalObjectContainer stream, ClassMetadata
 			 yapClass, int objectId)
 		{

@@ -13,13 +13,13 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			ObjectContainerBase stream = Stream();
 			Transaction trans = stream.SystemTransaction();
-			IReflectClass claxx = trans.Reflector().ForName(ReadString());
 			bool ok = false;
 			try
 			{
-				if (claxx != null)
+				lock (StreamLock())
 				{
-					lock (StreamLock())
+					IReflectClass claxx = trans.Reflector().ForName(ReadString());
+					if (claxx != null)
 					{
 						ClassMetadata classMetadata = stream.ProduceClassMetadata(claxx);
 						if (classMetadata != null)

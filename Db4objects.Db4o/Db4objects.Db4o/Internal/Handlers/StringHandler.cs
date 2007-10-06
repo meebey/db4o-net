@@ -59,6 +59,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// TODO: Consider renaming methods in Indexable4 and Typhandler4 to make direction clear.
 		/// </remarks>
 		/// <exception cref="CorruptionException">CorruptionException</exception>
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer
 			)
 		{

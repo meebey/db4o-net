@@ -11,22 +11,25 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 	{
 		public virtual bool ProcessAtServer()
 		{
-			string userName = ReadString();
-			string password = ReadString();
-			ObjectServerImpl server = ServerMessageDispatcher().Server();
-			User found = server.GetUser(userName);
-			if (found != null)
+			lock (StreamLock())
 			{
-				if (found.password.Equals(password))
+				string userName = ReadString();
+				string password = ReadString();
+				ObjectServerImpl server = ServerMessageDispatcher().Server();
+				User found = server.GetUser(userName);
+				if (found != null)
 				{
-					ServerMessageDispatcher().SetDispatcherName(userName);
-					ServerMessageDispatcher().Login();
-					LogMsg(32, userName);
-					int blockSize = Stream().BlockSize();
-					int encrypt = Stream()._handlers.i_encrypt ? 1 : 0;
-					Write(Msg.LOGIN_OK.GetWriterForInts(Transaction(), new int[] { blockSize, encrypt
-						 }));
-					return true;
+					if (found.password.Equals(password))
+					{
+						ServerMessageDispatcher().SetDispatcherName(userName);
+						LogMsg(32, userName);
+						int blockSize = Stream().BlockSize();
+						int encrypt = Stream()._handlers.i_encrypt ? 1 : 0;
+						Write(Msg.LOGIN_OK.GetWriterForInts(Transaction(), new int[] { blockSize, encrypt
+							 }));
+						ServerMessageDispatcher().Login();
+						return true;
+					}
 				}
 			}
 			Write(Msg.FAILED);

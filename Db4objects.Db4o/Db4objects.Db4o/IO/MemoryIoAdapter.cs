@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Sharpen;
@@ -130,6 +131,7 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>for internal processing only.</summary>
 		/// <remarks>for internal processing only.</remarks>
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
 		}
@@ -154,6 +156,7 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>for internal processing only.</summary>
 		/// <remarks>for internal processing only.</remarks>
+		/// <exception cref="Db4oIOException"></exception>
 		public override long GetLength()
 		{
 			return _length;
@@ -161,6 +164,7 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>for internal processing only.</summary>
 		/// <remarks>for internal processing only.</remarks>
+		/// <exception cref="Db4oIOException"></exception>
 		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
 			 readOnly)
 		{
@@ -176,6 +180,7 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>for internal processing only.</summary>
 		/// <remarks>for internal processing only.</remarks>
+		/// <exception cref="Db4oIOException"></exception>
 		public override int Read(byte[] bytes, int length)
 		{
 			System.Array.Copy(_bytes, _seekPos, bytes, 0, length);
@@ -185,6 +190,7 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>for internal processing only.</summary>
 		/// <remarks>for internal processing only.</remarks>
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Seek(long pos)
 		{
 			_seekPos = (int)pos;
@@ -192,12 +198,14 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>for internal processing only.</summary>
 		/// <remarks>for internal processing only.</remarks>
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Sync()
 		{
 		}
 
 		/// <summary>for internal processing only.</summary>
 		/// <remarks>for internal processing only.</remarks>
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Write(byte[] buffer, int length)
 		{
 			if (_seekPos + length > _bytes.Length)

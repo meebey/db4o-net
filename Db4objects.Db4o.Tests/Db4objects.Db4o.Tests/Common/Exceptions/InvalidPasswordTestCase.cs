@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -28,6 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this.port = port;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenClient("127.0.0.1", port, "strangeusername", "invalidPassword");
@@ -52,6 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this.port = port;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenClient("127.0.0.1", port, string.Empty, string.Empty);
@@ -76,6 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this.port = port;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenClient("127.0.0.1", port, string.Empty, null);
@@ -100,6 +104,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this.port = port;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenClient("127.0.0.1", port, null, null);

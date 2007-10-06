@@ -6,6 +6,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -170,6 +171,8 @@ namespace Db4objects.Db4o.Internal
 			return translator;
 		}
 
+		/// <exception cref="InstantiationException"></exception>
+		/// <exception cref="MemberAccessException"></exception>
 		private IObjectTranslator NewTranslatorFromPlatform(string translatorName)
 		{
 			return (IObjectTranslator)System.Activator.CreateInstance(ReflectPlatform.ForName

@@ -60,6 +60,7 @@ namespace Db4oUnit
 			return _failures;
 		}
 
+		/// <exception cref="IOException"></exception>
 		public override void Print(TextWriter writer)
 		{
 			if (Green())

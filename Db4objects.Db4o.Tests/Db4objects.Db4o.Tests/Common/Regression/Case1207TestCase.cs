@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -10,11 +11,13 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 {
 	public class Case1207TestCase : Db4oClientServerTestCase
 	{
+		/// <exception cref="Exception"></exception>
 		public static void Main(string[] args)
 		{
 			new Case1207TestCase().RunClientServer();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
 			IObjectContainer oc1 = OpenNewClient();

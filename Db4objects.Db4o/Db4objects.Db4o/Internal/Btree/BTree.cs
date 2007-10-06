@@ -459,6 +459,8 @@ namespace Db4objects.Db4o.Internal.Btree
 			BTreeNode.DefragIndex(readers, _keyHandler);
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="IOException"></exception>
 		public virtual void DefragBTree(IDefragContext context)
 		{
 			BufferPair.ProcessCopy(context, GetID(), new _ISlotCopyHandler_389(this));
@@ -490,6 +492,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="CorruptionException"></exception>
 			public void ProcessCopy(BufferPair readers)
 			{
 				this._enclosing.DefragIndex(readers);

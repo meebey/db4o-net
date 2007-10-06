@@ -20,6 +20,7 @@ namespace Db4objects.Db4o.IO
 		{
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		protected RandomAccessFileAdapter(string path, bool lockFile, long initialLength, 
 			bool readOnly)
 		{
@@ -52,6 +53,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
 			Platform4.UnlockFile(_path, _delegate);
@@ -79,6 +81,7 @@ namespace Db4objects.Db4o.IO
 			return existingFile.Exists() && existingFile.Length() > 0;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override long GetLength()
 		{
 			try
@@ -91,6 +94,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
 			 readOnly)
 		{
@@ -98,6 +102,7 @@ namespace Db4objects.Db4o.IO
 				, readOnly);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override int Read(byte[] bytes, int length)
 		{
 			try
@@ -110,6 +115,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Seek(long pos)
 		{
 			try
@@ -122,6 +128,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Sync()
 		{
 			try
@@ -134,6 +141,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Write(byte[] buffer, int length)
 		{
 			try

@@ -12,10 +12,13 @@ namespace Db4oUnit.Extensions
 	{
 		string GetLabel();
 
+		/// <exception cref="Exception"></exception>
 		void Open();
 
+		/// <exception cref="Exception"></exception>
 		void Close();
 
+		/// <exception cref="Exception"></exception>
 		void Reopen();
 
 		void Clean();
@@ -28,6 +31,7 @@ namespace Db4oUnit.Extensions
 
 		bool Accept(Type clazz);
 
+		/// <exception cref="Exception"></exception>
 		void Defragment();
 
 		void ConfigureAtRuntime(IRuntimeConfigureAction action);

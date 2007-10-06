@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
@@ -30,6 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
@@ -38,6 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 				"_str"));
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
 			AddItem("1");
@@ -103,6 +106,7 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Commit();

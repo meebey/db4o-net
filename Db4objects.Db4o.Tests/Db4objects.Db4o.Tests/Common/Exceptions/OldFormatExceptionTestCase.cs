@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
@@ -19,6 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			new TestRunner(typeof(OldFormatExceptionTestCase)).Run();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
 			if (WorkspaceServices.WorkspaceRoot == null)
@@ -63,6 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this.oldDatabaseFilePath = oldDatabaseFilePath;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenFile(oldDatabaseFilePath);
@@ -73,6 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly string oldDatabaseFilePath;
 		}
 
+		/// <exception cref="IOException"></exception>
 		protected virtual string OldDatabaseFilePath()
 		{
 			string oldFile = IOServices.BuildTempPath("old_db.yap");

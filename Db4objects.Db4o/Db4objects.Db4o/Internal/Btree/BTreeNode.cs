@@ -886,7 +886,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private BTreeRemove ApplyNewRemovePatch(Transaction trans, object key)
 		{
-			_btree.SizeChanged(trans, -1);
+			SizeDecrement(trans);
 			return new BTreeRemove(trans, key);
 		}
 

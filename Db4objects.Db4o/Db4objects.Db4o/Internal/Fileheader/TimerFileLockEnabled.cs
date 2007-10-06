@@ -59,6 +59,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			WriteOpenTime();
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void CheckIfOtherSessionAlive(LocalObjectContainer container, int
 			 address, int offset, long lastAccessTime)
 		{
@@ -79,6 +80,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
 			WriteAccessTime(true);
@@ -122,6 +124,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			_accessTimeOffset = accessTimeOffset;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Start()
 		{
 			WriteAccessTime(false);
@@ -138,6 +141,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return Runtime.CurrentTimeMillis();
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private bool WriteAccessTime(bool closing)
 		{
 			if (NoAddressSet())
@@ -167,6 +171,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			Sync();
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private bool WriteLong(int address, int offset, long time)
 		{
 			lock (_timerLock)
@@ -182,6 +187,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private long ReadLong(int address, int offset)
 		{
 			lock (_timerLock)
@@ -225,6 +231,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private void Sync()
 		{
 			_timerFile.Sync();

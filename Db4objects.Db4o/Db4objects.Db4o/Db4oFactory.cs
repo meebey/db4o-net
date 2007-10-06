@@ -410,6 +410,9 @@ namespace Db4objects.Db4o
 			return ObjectContainerFactory.OpenObjectContainer(config, databaseFileName);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseFileLockedException"></exception>
+		/// <exception cref="OldFormatException"></exception>
 		protected static IObjectContainer OpenMemoryFile1(IConfiguration config, MemoryFile
 			 memoryFile)
 		{

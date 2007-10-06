@@ -2,6 +2,7 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
+#if !CF_1_0 && !CF_2_0
 	internal class LegacyAdapterEmitter
 	{
 		private string _legacyAssembly;
@@ -180,4 +181,5 @@ namespace Sharpen
 		}
 		#endregion
 	}
+#endif
 }

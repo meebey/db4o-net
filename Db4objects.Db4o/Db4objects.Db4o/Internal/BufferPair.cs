@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.IO;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Mapping;
@@ -174,12 +176,16 @@ namespace Db4objects.Db4o.Internal
 			return _mapping;
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="IOException"></exception>
 		public static void ProcessCopy(IDefragContext context, int sourceID, ISlotCopyHandler
 			 command)
 		{
 			ProcessCopy(context, sourceID, command, false);
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="IOException"></exception>
 		public static void ProcessCopy(IDefragContext context, int sourceID, ISlotCopyHandler
 			 command, bool registerAddressMapping)
 		{
@@ -187,6 +193,8 @@ namespace Db4objects.Db4o.Internal
 			ProcessCopy(context, sourceID, command, registerAddressMapping, sourceReader);
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="IOException"></exception>
 		public static void ProcessCopy(IDefragContext context, int sourceID, ISlotCopyHandler
 			 command, bool registerAddressMapping, Db4objects.Db4o.Internal.Buffer sourceReader
 			)

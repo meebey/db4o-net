@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Ext;
@@ -32,6 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Set
 			Store(item);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
 			IExtObjectContainer oc1 = OpenNewClient();

@@ -91,6 +91,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			private readonly FreespaceManagerTestCaseBase.Item item;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestConsistentSizeOnReopen()
 		{
 			Db().Commit();
@@ -120,6 +121,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			private readonly FileSizeTestCase _enclosing;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestConsistentSizeOnUpdateAndReopen()
 		{
 			ProduceSomeFreeSpace();

@@ -50,12 +50,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// <param name="mf"></param>
 		/// <param name="buffer"></param>
 		/// <param name="redirect"></param>
+		/// <exception cref="CorruptionException"></exception>
 		public virtual object Read(MarshallerFamily mf, StatefulBuffer buffer, bool redirect
 			)
 		{
 			return Read1(buffer);
 		}
 
+		/// <exception cref="CorruptionException"></exception>
 		internal abstract object Read1(Db4objects.Db4o.Internal.Buffer reader);
 
 		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer buffer)
@@ -70,6 +72,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return null;
 		}
 
+		/// <exception cref="CorruptionException"></exception>
 		public virtual object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer
 			)
 		{

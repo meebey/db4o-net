@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -27,6 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Rollback();
@@ -48,6 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Commit();
@@ -69,6 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Set(new Item());
@@ -90,6 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Delete(null);
@@ -111,6 +116,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Query(this.GetType());
@@ -132,6 +138,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Query();
@@ -153,6 +160,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Deactivate(null, 1);
@@ -174,6 +182,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Activate(null, 1);
@@ -195,6 +204,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Get(null);

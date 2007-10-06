@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
@@ -11,6 +12,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	public class MReadBlob : MsgBlob, IServerSideMessage
 	{
+		/// <exception cref="IOException"></exception>
 		public override void ProcessClient(ISocket4 sock)
 		{
 			Msg message = Msg.ReadMessage(MessageDispatcher(), Transaction(), sock);

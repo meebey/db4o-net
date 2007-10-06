@@ -138,11 +138,13 @@ namespace Db4objects.Db4o.Internal
 			return linkOffSet;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public void Read()
 		{
 			Stream().ReadBytes(_buffer, i_address, _addressOffset, i_length);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public Db4objects.Db4o.Internal.StatefulBuffer ReadEmbeddedObject()
 		{
 			int id = ReadInt();

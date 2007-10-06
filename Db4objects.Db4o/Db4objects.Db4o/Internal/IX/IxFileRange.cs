@@ -97,6 +97,7 @@ namespace Db4objects.Db4o.Internal.IX
 			Visit((IVisitor4)obj, null);
 		}
 
+		/// <exception cref="IxException"></exception>
 		public override void Visit(IVisitor4 visitor, int[] lowerUpper)
 		{
 			IxFileRangeReader frr = Reader();
@@ -129,6 +130,7 @@ namespace Db4objects.Db4o.Internal.IX
 			return _entries;
 		}
 
+		/// <exception cref="IxException"></exception>
 		public override void VisitAll(IIntObjectVisitor visitor)
 		{
 			LocalObjectContainer yf = Stream();

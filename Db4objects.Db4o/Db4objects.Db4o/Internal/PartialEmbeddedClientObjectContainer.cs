@@ -3,6 +3,7 @@
 using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Constraints;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Callbacks;
@@ -39,11 +40,16 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <param name="path"></param>
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="NotSupportedException"></exception>
 		public virtual void Backup(string path)
 		{
 			throw new NotSupportedException();
 		}
 
+		/// <exception cref="InvalidIDException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
 		public virtual void Bind(object obj, long id)
 		{
 			_server.Bind(_transaction, obj, id);
@@ -80,6 +86,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="InvalidIDException"></exception>
 		public virtual object GetByID(long id)
 		{
 			lock (Lock())
@@ -89,6 +97,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual object GetByUUID(Db4oUUID uuid)
 		{
 			lock (Lock())
@@ -151,6 +161,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
 		public virtual bool IsStored(object obj)
 		{
 			lock (Lock())
@@ -297,6 +308,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
 		public virtual void Activate(object obj, int depth)
 		{
 			lock (Lock())
@@ -306,6 +319,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual bool Close()
 		{
 			lock (Lock())
@@ -327,6 +341,10 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="UniqueFieldValueConstraintViolationException"></exception>
 		public virtual void Commit()
 		{
 			lock (Lock())
@@ -336,6 +354,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
 		public virtual void Deactivate(object obj, int depth)
 		{
 			lock (Lock())
@@ -345,6 +364,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
 		public virtual void Delete(object obj)
 		{
 			lock (Lock())
@@ -359,6 +381,8 @@ namespace Db4objects.Db4o.Internal
 			return (IExtObjectContainer)this;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
 		public virtual IObjectSet Get(object template)
 		{
 			lock (Lock())
@@ -368,6 +392,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
 		public virtual IQuery Query()
 		{
 			lock (Lock())
@@ -377,6 +402,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
 		public virtual IObjectSet Query(Type clazz)
 		{
 			lock (Lock())
@@ -386,6 +413,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
 		public virtual IObjectSet Query(Predicate predicate)
 		{
 			lock (Lock())
@@ -395,6 +424,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
 		public virtual IObjectSet Query(Predicate predicate, IQueryComparator comparator)
 		{
 			lock (Lock())
@@ -404,6 +435,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
 		public virtual void Rollback()
 		{
 			lock (Lock())
@@ -413,6 +447,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
 		public virtual void Set(object obj)
 		{
 			lock (Lock())

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
@@ -29,12 +30,14 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(StringIndexWithSuperClassTestCase.Item)).ObjectField(FIELD_NAME
 				).Indexed(true);
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
 			Store(new StringIndexWithSuperClassTestCase.Item(FIELD_VALUE));

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
@@ -18,6 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			new FreespaceMigrationTestCase().RunSolo();
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
@@ -25,6 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			configuration = config;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestSwitchingBackAndForth()
 		{
 			ProduceSomeFreeSpace();

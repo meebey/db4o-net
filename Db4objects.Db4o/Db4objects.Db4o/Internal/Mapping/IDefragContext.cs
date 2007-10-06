@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System.Collections;
+using System.IO;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
@@ -16,10 +17,13 @@ namespace Db4objects.Db4o.Internal.Mapping
 	/// <exclude></exclude>
 	public interface IDefragContext : IIDMapping
 	{
+		/// <exception cref="IOException"></exception>
 		Db4objects.Db4o.Internal.Buffer SourceBufferByAddress(int address, int length);
 
+		/// <exception cref="IOException"></exception>
 		Db4objects.Db4o.Internal.Buffer TargetBufferByAddress(int address, int length);
 
+		/// <exception cref="IOException"></exception>
 		Db4objects.Db4o.Internal.Buffer SourceBufferByID(int sourceID);
 
 		Slot AllocateTargetSlot(int targetLength);

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.Acid;
 using Sharpen;
@@ -18,6 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			batch = new CrashSimulatingBatch();
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private CrashSimulatingIoAdapter(IoAdapter delegateAdapter, string path, bool lockFile
 			, long initialLength, bool readOnly, CrashSimulatingBatch batch) : base(delegateAdapter
 			.Open(path, lockFile, initialLength, readOnly))
@@ -25,6 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			this.batch = batch;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
 			 readOnly)
 		{
@@ -32,12 +35,14 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				path, lockFile, initialLength, readOnly, batch);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Seek(long pos)
 		{
 			curPos = pos;
 			base.Seek(pos);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Write(byte[] buffer, int length)
 		{
 			base.Write(buffer, length);
@@ -46,6 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			batch.Add(copy, curPos, length);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Sync()
 		{
 			base.Sync();

@@ -56,6 +56,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				this.sender = sender;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				sender.Send(new PingTestCase.Data());

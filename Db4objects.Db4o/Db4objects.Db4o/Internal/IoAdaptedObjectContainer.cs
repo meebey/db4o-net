@@ -27,6 +27,7 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly IFreespaceFiller _freespaceFiller;
 
+		/// <exception cref="OldFormatException"></exception>
 		internal IoAdaptedObjectContainer(IConfiguration config, string fileName) : base(
 			config, null)
 		{
@@ -36,6 +37,8 @@ namespace Db4objects.Db4o.Internal
 			Open();
 		}
 
+		/// <exception cref="OldFormatException"></exception>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
 		protected sealed override void OpenImpl()
 		{
 			IoAdapter ioAdapter = ConfigImpl().IoAdapter();
@@ -69,6 +72,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Backup(string path)
 		{
 			lock (_lock)
@@ -261,11 +266,13 @@ namespace Db4objects.Db4o.Internal
 			return _fileName;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void ReadBytes(byte[] bytes, int address, int length)
 		{
 			ReadBytes(bytes, address, 0, length);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void ReadBytes(byte[] bytes, int address, int addressOffset, int 
 			length)
 		{
@@ -282,6 +289,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="DatabaseReadOnlyException"></exception>
 		public override void Reserve(int byteCount)
 		{
 			CheckReadOnly();
@@ -403,6 +411,7 @@ namespace Db4objects.Db4o.Internal
 
 		private class XByteFreespaceFiller : IFreespaceFiller
 		{
+			/// <exception cref="IOException"></exception>
 			public virtual void Fill(IoAdapterWindow io)
 			{
 				io.Write(0, XBytes(io.Length()));

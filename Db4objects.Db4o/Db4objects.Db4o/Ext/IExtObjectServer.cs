@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 
@@ -27,6 +28,7 @@ namespace Db4objects.Db4o.Ext
 		/// If a file already exists at the specified path, it will be overwritten.<br /><br />
 		/// </remarks>
 		/// <param name="path">a fully qualified path</param>
+		/// <exception cref="IOException"></exception>
 		void Backup(string path);
 
 		/// <summary>

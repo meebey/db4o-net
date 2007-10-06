@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.IO;
@@ -20,24 +22,28 @@ namespace Db4objects.Db4o.Tests.Common.IO
 
 		private IoAdapter[] _adapters;
 
+		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
 			DeleteAllTestFiles();
 			InitAdapters(false);
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void InitAdapters(bool readOnly)
 		{
 			_adapters = new IoAdapter[] { InitRandomAccessAdapter(readOnly), InitCachedRandomAccessAdapter
 				(readOnly) };
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TearDown()
 		{
 			CloseAdapters();
 			DeleteAllTestFiles();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestReadWrite()
 		{
 			for (int i = 0; i < _adapters.Length; ++i)
@@ -46,6 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			}
 		}
 
+		/// <exception cref="IOException"></exception>
 		private void AssertReadWrite(IoAdapter adapter)
 		{
 			adapter.Seek(0);
@@ -65,6 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestSeek()
 		{
 			for (int i = 0; i < _adapters.Length; ++i)
@@ -73,6 +81,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestReadWriteBytes()
 		{
 			string[] strs = new string[] { "short string", "this is a really long string, just to make sure that all IoAdapters work correctly. "
@@ -86,6 +95,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void AssertReadWriteString(IoAdapter adapter, string str)
 		{
 			byte[] data = Sharpen.Runtime.GetBytesForString(str);
@@ -97,6 +107,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			Assert.AreEqual(str, Sharpen.Runtime.GetStringForBytes(read, 0, data.Length));
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestReadOnly()
 		{
 			CloseAdapters();
@@ -120,6 +131,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 				this.adapter = adapter;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				adapter.Write(new byte[] { 0 });
@@ -130,6 +142,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			private readonly IoAdapter adapter;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void _testReadWriteAheadFileEnd()
 		{
 			string str = "this is a really long string, just to make sure that all IoAdapters work correctly. ";
@@ -139,6 +152,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void AssertReadWriteAheadFileEnd(IoAdapter adapter, string str)
 		{
 			byte[] data = Sharpen.Runtime.GetBytesForString(str);
@@ -170,6 +184,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			Assert.AreEqual(1200 + data.Length, readBytes);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestReopen()
 		{
 			TestReadWrite();
@@ -178,6 +193,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			TestReadWrite();
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void AssertSeek(IoAdapter adapter)
 		{
 			int count = 1024 * 2 + 10;
@@ -216,6 +232,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		private IoAdapter InitCachedRandomAccessAdapter(bool readOnly)
 		{
 			IoAdapter adapter = new CachedIoAdapter(new RandomAccessFileAdapter());
@@ -223,6 +240,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			return adapter;
 		}
 
+		/// <exception cref="Exception"></exception>
 		private IoAdapter InitRandomAccessAdapter(bool readOnly)
 		{
 			IoAdapter adapter = new RandomAccessFileAdapter();
@@ -230,6 +248,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			return adapter;
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void DeleteAllTestFiles()
 		{
 			new Sharpen.IO.File(_cachedIoAdapterFile).Delete();

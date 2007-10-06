@@ -70,11 +70,13 @@ namespace Db4oUnit
 			return _labelProvider.GetLabel(this);
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void RunTest()
 		{
 			Invoke();
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected virtual void Invoke()
 		{
 			_method.Invoke(_subject, new object[0]);

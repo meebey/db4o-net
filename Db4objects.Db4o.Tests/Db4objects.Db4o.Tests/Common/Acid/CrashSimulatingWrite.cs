@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.IO;
 using Sharpen.IO;
 
 namespace Db4objects.Db4o.Tests.Common.Acid
@@ -19,6 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			this.length = length;
 		}
 
+		/// <exception cref="IOException"></exception>
 		public virtual void Write(RandomAccessFile raf)
 		{
 			raf.Seek(offset);

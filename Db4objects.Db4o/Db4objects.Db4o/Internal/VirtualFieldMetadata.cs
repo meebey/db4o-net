@@ -28,6 +28,7 @@ namespace Db4objects.Db4o.Internal
 			_classReflector = handler.ClassReflector();
 		}
 
+		/// <exception cref="FieldIndexException"></exception>
 		public abstract override void AddFieldIndex(MarshallerFamily mf, ClassMetadata yapClass
 			, StatefulBuffer a_writer, Slot oldSlot);
 

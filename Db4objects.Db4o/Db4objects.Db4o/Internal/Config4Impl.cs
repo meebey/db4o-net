@@ -299,6 +299,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(ENCRYPT, false);
 		}
 
+		/// <exception cref="IOException"></exception>
 		internal void EnsureDirExists(string path)
 		{
 			Sharpen.IO.File file = new Sharpen.IO.File(path);
@@ -521,6 +522,7 @@ namespace Db4objects.Db4o.Internal
 			renameCollection.Add(a_rename);
 		}
 
+		/// <exception cref="DatabaseReadOnlyException"></exception>
 		public void ReserveStorageSpace(long byteCount)
 		{
 			int reservedStorageSpace = (int)byteCount;
@@ -544,6 +546,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="IOException"></exception>
 		public void SetBlobPath(string path)
 		{
 			EnsureDirExists(path);

@@ -23,6 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
 			Store(new PersistTypeTestCase.Item(typeof(string)));

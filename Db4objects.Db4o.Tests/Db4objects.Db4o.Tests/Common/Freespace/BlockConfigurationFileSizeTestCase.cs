@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Tests.Common.Freespace;
@@ -23,6 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.BlockSize(8);

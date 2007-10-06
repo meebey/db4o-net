@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
@@ -41,6 +43,7 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenFile(this._enclosing.OldDatabaseFilePath());
@@ -49,6 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 			private readonly COR234TestCase _enclosing;
 		}
 
+		/// <exception cref="IOException"></exception>
 		protected virtual string OldDatabaseFilePath()
 		{
 			string oldFile = IOServices.BuildTempPath("old_db.yap");

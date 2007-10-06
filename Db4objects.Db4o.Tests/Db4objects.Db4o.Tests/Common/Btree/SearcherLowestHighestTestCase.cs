@@ -282,11 +282,13 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			throw new ArgumentException("values");
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
 			_searcher = null;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TearDown()
 		{
 		}

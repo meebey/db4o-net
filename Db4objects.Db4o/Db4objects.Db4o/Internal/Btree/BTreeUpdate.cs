@@ -83,10 +83,19 @@ namespace Db4objects.Db4o.Internal.Btree
 				object obj = patch.GetCommittedObject();
 				ApplyKeyChange(obj);
 			}
+			else
+			{
+				if (patch is BTreeRemove)
+				{
+					RemovedBy(trans, btree);
+					patch.Committed(btree);
+					return No4.INSTANCE;
+				}
+			}
 			return InternalCommit(trans, btree);
 		}
 
-		protected virtual object InternalCommit(Transaction trans, BTree btree)
+		protected object InternalCommit(Transaction trans, BTree btree)
 		{
 			if (_transaction == trans)
 			{
@@ -164,5 +173,19 @@ namespace Db4objects.Db4o.Internal.Btree
 			_next = _next.ReplacePatch(patch, update);
 			return this;
 		}
+
+		public virtual void RemovedBy(Transaction trans, BTree btree)
+		{
+			if (trans != _transaction)
+			{
+				AdjustSizeOnRemovalByOtherTransaction(btree);
+			}
+			if (HasNext())
+			{
+				_next.RemovedBy(trans, btree);
+			}
+		}
+
+		protected abstract void AdjustSizeOnRemovalByOtherTransaction(BTree btree);
 	}
 }

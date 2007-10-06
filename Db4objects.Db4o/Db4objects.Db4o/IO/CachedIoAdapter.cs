@@ -83,6 +83,7 @@ namespace Db4objects.Db4o.IO
 		/// <param name="io">delegate IO adapter (RandomAccessFileAdapter by default)</param>
 		/// <param name="pageSize">cache page size</param>
 		/// <param name="pageCount">allocated amount of pages</param>
+		/// <exception cref="Db4oIOException"></exception>
 		public CachedIoAdapter(string path, bool lockFile, long initialLength, bool readOnly
 			, IoAdapter io, int pageSize, int pageCount)
 		{
@@ -101,6 +102,7 @@ namespace Db4objects.Db4o.IO
 		/// <param name="lockFile">determines if the file should be locked</param>
 		/// <param name="initialLength">initial file length, new writes will start from this point
 		/// 	</param>
+		/// <exception cref="Db4oIOException"></exception>
 		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
 			 readOnly)
 		{
@@ -122,6 +124,7 @@ namespace Db4objects.Db4o.IO
 			return _io.Exists(path);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private void InitIOAdaptor(string path, bool lockFile, long initialLength, bool readOnly
 			, IoAdapter io)
 		{
@@ -151,6 +154,7 @@ namespace Db4objects.Db4o.IO
 		/// </remarks>
 		/// <param name="buffer">destination buffer</param>
 		/// <param name="length">how many bytes to read</param>
+		/// <exception cref="Db4oIOException"></exception>
 		public override int Read(byte[] buffer, int length)
 		{
 			long startAddress = _position;
@@ -178,6 +182,7 @@ namespace Db4objects.Db4o.IO
 		/// <summary>Writes the buffer to cache using pages</summary>
 		/// <param name="buffer">source buffer</param>
 		/// <param name="length">how many bytes to write</param>
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Write(byte[] buffer, int length)
 		{
 			ValidateReadOnly();
@@ -215,6 +220,7 @@ namespace Db4objects.Db4o.IO
 		}
 
 		/// <summary>Flushes cache to a physical storage</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Sync()
 		{
 			ValidateReadOnly();
@@ -223,12 +229,14 @@ namespace Db4objects.Db4o.IO
 		}
 
 		/// <summary>Returns the file length</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public override long GetLength()
 		{
 			return _fileLength;
 		}
 
 		/// <summary>Flushes and closes the file</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
 			FlushAllPages();
@@ -240,6 +248,7 @@ namespace Db4objects.Db4o.IO
 			return _io.DelegatedIoAdapter();
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private CachedIoAdapter.Page GetPage(long startAddress, bool loadFromDisk)
 		{
 			CachedIoAdapter.Page page = GetPageFromCache(startAddress);
@@ -275,6 +284,7 @@ namespace Db4objects.Db4o.IO
 			page.EndAddress(startAddress + _pageSize);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private CachedIoAdapter.Page GetFreePageFromCache()
 		{
 			if (!_tail.IsFree())
@@ -284,6 +294,7 @@ namespace Db4objects.Db4o.IO
 			return _tail;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private CachedIoAdapter.Page GetPageFromCache(long pos)
 		{
 			CachedIoAdapter.Page page = _head;
@@ -298,6 +309,7 @@ namespace Db4objects.Db4o.IO
 			return null;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private void FlushAllPages()
 		{
 			CachedIoAdapter.Page node = _head;
@@ -308,6 +320,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private void FlushPage(CachedIoAdapter.Page page)
 		{
 			if (!page._dirty)
@@ -319,6 +332,7 @@ namespace Db4objects.Db4o.IO
 			return;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private void GetPageFromDisk(CachedIoAdapter.Page page, long pos)
 		{
 			long startAddress = pos - pos % _pageSize;
@@ -335,6 +349,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private int IoRead(CachedIoAdapter.Page page)
 		{
 			int count = _io.Read(page._buffer);
@@ -372,6 +387,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private void WritePageToDisk(CachedIoAdapter.Page page)
 		{
 			_io.Write(page._buffer, page.Size());
@@ -381,11 +397,13 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>Moves the pointer to the specified file position</summary>
 		/// <param name="pos">position within the file</param>
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Seek(long pos)
 		{
 			_position = pos;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private void IoSeek(long pos)
 		{
 			if (_filePointer != pos)

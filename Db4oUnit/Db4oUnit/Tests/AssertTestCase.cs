@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 
 namespace Db4oUnit.Tests
@@ -25,6 +26,7 @@ namespace Db4oUnit.Tests
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Assert.AreEqual(true, false);
@@ -40,6 +42,7 @@ namespace Db4oUnit.Tests
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Assert.AreEqual(42, 43);
@@ -55,6 +58,7 @@ namespace Db4oUnit.Tests
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Assert.AreEqual(new object(), new object());
@@ -70,6 +74,7 @@ namespace Db4oUnit.Tests
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Assert.AreEqual(null, new object());
@@ -91,6 +96,7 @@ namespace Db4oUnit.Tests
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Assert.AreSame(new object(), new object());

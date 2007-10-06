@@ -11,32 +11,35 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			int count = ReadInt();
 			Transaction ta = Transaction();
-			for (int i = 0; i < count; i++)
+			lock (StreamLock())
 			{
-				StatefulBuffer writer = _payLoad.ReadYapBytes();
-				int messageId = writer.ReadInt();
-				Msg message = Msg.GetMessage(messageId);
-				Msg clonedMessage = message.PublicClone();
-				clonedMessage.SetMessageDispatcher(MessageDispatcher());
-				clonedMessage.SetTransaction(ta);
-				if (clonedMessage is MsgD)
+				for (int i = 0; i < count; i++)
 				{
-					MsgD msgd = (MsgD)clonedMessage;
-					msgd.PayLoad(writer);
-					if (msgd.PayLoad() != null)
+					StatefulBuffer writer = _payLoad.ReadYapBytes();
+					int messageId = writer.ReadInt();
+					Msg message = Msg.GetMessage(messageId);
+					Msg clonedMessage = message.PublicClone();
+					clonedMessage.SetMessageDispatcher(MessageDispatcher());
+					clonedMessage.SetTransaction(ta);
+					if (clonedMessage is MsgD)
 					{
-						msgd.PayLoad().IncrementOffset(Const4.INT_LENGTH);
-						Transaction t = CheckParentTransaction(ta, msgd.PayLoad());
-						msgd.SetTransaction(t);
-						((IServerSideMessage)msgd).ProcessAtServer();
+						MsgD msgd = (MsgD)clonedMessage;
+						msgd.PayLoad(writer);
+						if (msgd.PayLoad() != null)
+						{
+							msgd.PayLoad().IncrementOffset(Const4.INT_LENGTH);
+							Transaction t = CheckParentTransaction(ta, msgd.PayLoad());
+							msgd.SetTransaction(t);
+							((IServerSideMessage)msgd).ProcessAtServer();
+						}
+					}
+					else
+					{
+						((IServerSideMessage)clonedMessage).ProcessAtServer();
 					}
 				}
-				else
-				{
-					((IServerSideMessage)clonedMessage).ProcessAtServer();
-				}
+				return true;
 			}
-			return true;
 		}
 	}
 }

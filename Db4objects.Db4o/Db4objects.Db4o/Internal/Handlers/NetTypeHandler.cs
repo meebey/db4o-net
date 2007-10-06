@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 
@@ -77,6 +78,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract object Read(byte[] bytes, int offset);
 
+		/// <exception cref="CorruptionException"></exception>
 		internal override object Read1(Db4objects.Db4o.Internal.Buffer a_bytes)
 		{
 			int offset = a_bytes._offset;

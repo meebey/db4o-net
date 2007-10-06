@@ -26,6 +26,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				this.result = result;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				result.Next();

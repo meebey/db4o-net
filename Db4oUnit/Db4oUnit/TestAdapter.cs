@@ -17,6 +17,7 @@ namespace Db4oUnit
 		{
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected abstract void RunTest();
 
 		protected virtual void SetUp()

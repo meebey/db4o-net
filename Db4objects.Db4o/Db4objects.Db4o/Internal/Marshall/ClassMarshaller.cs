@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.IO;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Sharpen;
@@ -130,6 +132,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return len;
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="IOException"></exception>
 		public virtual void Defrag(ClassMetadata yapClass, LatinStringIO sio, BufferPair 
 			readers, int classIndexID)
 		{

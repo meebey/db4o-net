@@ -45,6 +45,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_primitive;
 		}
 
+		/// <exception cref="CorruptionException"></exception>
 		public override object Read(MarshallerFamily mf, StatefulBuffer buffer, bool redirect
 			)
 		{

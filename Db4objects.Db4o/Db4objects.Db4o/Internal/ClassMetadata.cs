@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -613,6 +614,7 @@ namespace Db4objects.Db4o.Internal
 				.ArrayType(a_object), false);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes)
 		{
 			if (a_bytes.CascadeDeletes() > 0)
@@ -630,6 +632,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <param name="mf"></param>
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void DeleteEmbedded1(MarshallerFamily mf, StatefulBuffer a_bytes, 
 			int a_id)
 		{
@@ -1597,6 +1600,7 @@ namespace Db4objects.Db4o.Internal
 			return a_reader.ReadInt();
 		}
 
+		/// <exception cref="CorruptionException"></exception>
 		public virtual object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer
 			)
 		{
@@ -2245,6 +2249,8 @@ namespace Db4objects.Db4o.Internal
 			readers.IncrementOffset(restLength);
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="IOException"></exception>
 		public virtual void DefragClass(BufferPair readers, int classIndexID)
 		{
 			MarshallerFamily mf = MarshallerFamily.Current();

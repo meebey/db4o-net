@@ -15,6 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			new SerializerTestCase().RunAll();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestMarshall()
 		{
 			ReflectException e = new ReflectException(new ArgumentNullException());

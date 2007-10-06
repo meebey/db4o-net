@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -43,6 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			expectingVisitor.AssertExpectations();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestAllThere()
 		{
 			for (int i = 0; i < FOOS.Length; i++)
@@ -55,6 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestAccessingBTree()
 		{
 			BTree bTree = YapField().GetIndex(Trans());

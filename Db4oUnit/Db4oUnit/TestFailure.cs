@@ -28,6 +28,7 @@ namespace Db4oUnit
 			return _failure;
 		}
 
+		/// <exception cref="IOException"></exception>
 		public override void Print(TextWriter writer)
 		{
 			writer.Write(_test.GetLabel());

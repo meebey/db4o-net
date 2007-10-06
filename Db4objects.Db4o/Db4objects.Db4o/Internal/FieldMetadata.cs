@@ -119,6 +119,7 @@ namespace Db4objects.Db4o.Internal
 
 		/// <param name="classMetadata"></param>
 		/// <param name="oldSlot"></param>
+		/// <exception cref="FieldIndexException"></exception>
 		public virtual void AddFieldIndex(MarshallerFamily mf, ClassMetadata classMetadata
 			, StatefulBuffer buffer, Slot oldSlot)
 		{
@@ -173,6 +174,8 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer writer)
 		{
 			return ((IIndexableTypeHandler)_handler).ReadIndexEntry(mf, writer);
@@ -366,6 +369,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="FieldIndexException"></exception>
 		public TreeInt CollectIDs(MarshallerFamily mf, TreeInt tree, StatefulBuffer a_bytes
 			)
 		{
@@ -450,6 +454,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <param name="isUpdate"></param>
+		/// <exception cref="FieldIndexException"></exception>
 		public virtual void Delete(MarshallerFamily mf, StatefulBuffer a_bytes, bool isUpdate
 			)
 		{
@@ -491,6 +496,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="Db4oIOException"></exception>
 		private void RemoveIndexEntry(MarshallerFamily mf, StatefulBuffer a_bytes)
 		{
 			if (!HasIndex())
@@ -1126,6 +1133,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <param name="classMetadata"></param>
+		/// <exception cref="FieldIndexException"></exception>
 		protected virtual void RebuildIndexForObject(LocalObjectContainer stream, ClassMetadata
 			 classMetadata, int objectId)
 		{

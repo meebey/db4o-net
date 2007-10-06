@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4objects.Db4o.Tests.Common.Migration;
@@ -55,6 +56,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		private TestSuite MigrationTestSuite(Type clazz, Db4oLibrary[] libraries)
 		{
 			ITest[] migrationTests = new ITest[libraries.Length];
@@ -65,6 +67,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return new TestSuite(migrationTests);
 		}
 
+		/// <exception cref="Exception"></exception>
 		private Db4oMigrationSuiteBuilder.Db4oMigrationTest MigrationTest(Db4oLibrary library
 			, Type clazz)
 		{
@@ -73,6 +76,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return new Db4oMigrationSuiteBuilder.Db4oMigrationTest(instance, library);
 		}
 
+		/// <exception cref="Exception"></exception>
 		private Db4oLibrary[] Db4oLibraries()
 		{
 			if (HasSpecificLibraries())
@@ -82,6 +86,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return Librarian().Libraries();
 		}
 
+		/// <exception cref="Exception"></exception>
 		private Db4oLibrary[] SpecificLibraries()
 		{
 			Db4oLibrary[] libraries = new Db4oLibrary[_specificLibraries.Length];
@@ -118,6 +123,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 			private readonly string _version;
 
+			/// <exception cref="Exception"></exception>
 			public Db4oMigrationTest(FormatMigrationTestCaseBase test, Db4oLibrary library)
 			{
 				_library = library;
@@ -130,17 +136,20 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				return "[" + _version + "] " + _test.GetType().FullName;
 			}
 
+			/// <exception cref="Exception"></exception>
 			protected override void RunTest()
 			{
 				CreateDatabase();
 				Test();
 			}
 
+			/// <exception cref="IOException"></exception>
 			private void Test()
 			{
 				_test.Test(_version);
 			}
 
+			/// <exception cref="Exception"></exception>
 			private void CreateDatabase()
 			{
 				Environment().InvokeInstanceMethod(_test.GetType(), "createDatabaseFor", new object

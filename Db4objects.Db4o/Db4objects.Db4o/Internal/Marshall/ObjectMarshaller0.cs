@@ -178,6 +178,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return null;
 		}
 
+		/// <exception cref="FieldIndexException"></exception>
 		public override object ReadIndexEntry(ClassMetadata clazz, ObjectHeaderAttributes
 			 attributes, FieldMetadata field, StatefulBuffer reader)
 		{

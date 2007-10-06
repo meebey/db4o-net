@@ -20,6 +20,7 @@ namespace Db4objects.Db4o.TA.Tests
 			config.Add(new TransparentActivationSupport());
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
 			Project project = new PrioritizedProject("db4o", PRIORITY);

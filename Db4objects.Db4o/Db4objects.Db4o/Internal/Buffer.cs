@@ -115,6 +115,7 @@ namespace Db4objects.Db4o.Internal
 			_offset += length;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public Db4objects.Db4o.Internal.Buffer ReadEmbeddedObject(Transaction trans)
 		{
 			int address = ReadInt();
@@ -126,6 +127,7 @@ namespace Db4objects.Db4o.Internal
 			return trans.Container().BufferByAddress(address, length);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void ReadEncrypt(ObjectContainerBase stream, int address)
 		{
 			stream.ReadBytes(_buffer, address, Length());

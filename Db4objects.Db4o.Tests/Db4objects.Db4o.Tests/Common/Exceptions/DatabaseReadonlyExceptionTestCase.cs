@@ -28,6 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Rollback();
@@ -49,6 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Commit();
@@ -70,6 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Set(new Item());
@@ -91,6 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Delete(null);
@@ -111,6 +115,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Fixture().Close();
@@ -137,6 +142,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Configure().ReserveStorageSpace(1);

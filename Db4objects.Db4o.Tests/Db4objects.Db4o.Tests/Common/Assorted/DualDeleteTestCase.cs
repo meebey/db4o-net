@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -66,6 +67,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Conc1(IExtObjectContainer oc)
 		{
 			IObjectSet os = oc.Query(typeof(DualDeleteTestCase));
@@ -74,11 +76,13 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			oc.Rollback();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Check1(IExtObjectContainer oc)
 		{
 			AssertOccurrences(oc, typeof(Atom), 1);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Conc2(IExtObjectContainer oc)
 		{
 			IObjectSet os = oc.Query(typeof(DualDeleteTestCase));
@@ -87,6 +91,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AssertOccurrences(oc, typeof(Atom), 0);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Check2(IExtObjectContainer oc)
 		{
 			AssertOccurrences(oc, typeof(Atom), 0);

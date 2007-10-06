@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
@@ -15,6 +16,7 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public const byte HEADER_60 = 100;
 
+		/// <exception cref="IOException"></exception>
 		public static byte FileHeaderVersion(string testFile)
 		{
 			RandomAccessFile raf = new RandomAccessFile(testFile, "r");

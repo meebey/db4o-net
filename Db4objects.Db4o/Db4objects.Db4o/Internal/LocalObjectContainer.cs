@@ -472,6 +472,7 @@ namespace Db4objects.Db4o.Internal
 			return _fileHeader != null;
 		}
 
+		/// <exception cref="OldFormatException"></exception>
 		internal virtual void ReadThis()
 		{
 			NewSystemData(AbstractFreespaceManager.FM_LEGACY_RAM);

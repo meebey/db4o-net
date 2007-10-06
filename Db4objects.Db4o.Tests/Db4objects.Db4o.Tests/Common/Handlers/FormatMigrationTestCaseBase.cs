@@ -1,7 +1,9 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.IO;
 using Db4oUnit;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -10,7 +12,7 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
-	public abstract class FormatMigrationTestCaseBase : ITestLifeCycle
+	public abstract class FormatMigrationTestCaseBase : ITestLifeCycle, IOptOutNoFileSystemData
 	{
 		private string _db4oVersion;
 
@@ -69,12 +71,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
 			Configure();
 			CreateDatabase();
 		}
 
+		/// <exception cref="IOException"></exception>
 		public virtual void Test()
 		{
 			for (int i = 0; i < VersionNames().Length; i++)
@@ -84,6 +88,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		/// <exception cref="IOException"></exception>
 		public virtual void Test(string versionName)
 		{
 			_db4oVersion = versionName;
@@ -101,6 +106,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TearDown()
 		{
 		}
@@ -119,6 +125,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		/// <exception cref="IOException"></exception>
 		private void InvestigateFileHeaderVersion(string testFile)
 		{
 			_db4oHeaderVersion = VersionServices.FileHeaderVersion(testFile);

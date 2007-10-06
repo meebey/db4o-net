@@ -108,6 +108,13 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		/// <param name="classLoader"></param>
+		/// <exception cref="TypeLoadException"></exception>
+		public virtual Type LoadClass(string className, object classLoader)
+		{
+			return Sharpen.Runtime.GetType(className);
+		}
+
 		/// <param name="path"></param>
 		/// <param name="file"></param>
 		internal virtual void LockFile(string path, object file)
@@ -154,6 +161,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <param name="obj"></param>
+		/// <exception cref="Exception"></exception>
 		internal virtual byte[] Serialize(object obj)
 		{
 			throw new Db4oException(Db4objects.Db4o.Internal.Messages.NOT_IMPLEMENTED);

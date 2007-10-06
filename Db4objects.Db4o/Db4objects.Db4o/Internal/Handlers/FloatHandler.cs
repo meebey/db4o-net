@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
@@ -38,6 +39,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_primitive;
 		}
 
+		/// <exception cref="CorruptionException"></exception>
 		public override object Read(MarshallerFamily mf, StatefulBuffer writer, bool redirect
 			)
 		{

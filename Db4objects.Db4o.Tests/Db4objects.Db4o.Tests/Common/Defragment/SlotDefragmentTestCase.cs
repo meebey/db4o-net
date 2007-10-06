@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
@@ -10,16 +11,19 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 {
 	public class SlotDefragmentTestCase : ITestLifeCycle
 	{
+		/// <exception cref="Exception"></exception>
 		public virtual void TestPrimitiveIndex()
 		{
 			SlotDefragmentFixture.AssertIndex(SlotDefragmentFixture.PRIMITIVE_FIELDNAME);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestWrapperIndex()
 		{
 			SlotDefragmentFixture.AssertIndex(SlotDefragmentFixture.WRAPPER_FIELDNAME);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestTypedObjectIndex()
 		{
 			SlotDefragmentFixture.ForceIndex();
@@ -36,6 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			db.Close();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestNoForceDelete()
 		{
 			Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.FILENAME
@@ -50,6 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.FILENAME
@@ -59,6 +65,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			private readonly SlotDefragmentTestCase _enclosing;
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
 			new Sharpen.IO.File(SlotDefragmentTestConstants.FILENAME).Delete();
@@ -66,6 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			SlotDefragmentFixture.CreateFile(SlotDefragmentTestConstants.FILENAME);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TearDown()
 		{
 		}

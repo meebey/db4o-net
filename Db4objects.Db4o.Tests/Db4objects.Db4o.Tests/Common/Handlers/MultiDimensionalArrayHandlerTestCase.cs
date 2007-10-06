@@ -83,6 +83,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Assert.AreEqual(expected, actualValue);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TestStoreObject()
 		{
 			MultiDimensionalArrayHandlerTestCase.Item storedItem = new MultiDimensionalArrayHandlerTestCase.Item

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
@@ -56,6 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			Db().Set(cou);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
 			Foreach(GetType(), new _IVisitor4_52(this));

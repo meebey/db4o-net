@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
@@ -23,6 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			new DebugBTreeNodeMarshalledLength().RunSolo();
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
@@ -32,6 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 				).Indexed(true);
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
 			for (int i = 0; i < 50000; i++)

@@ -18,14 +18,14 @@ namespace Db4objects.Db4o.Internal
 			return Const4.UNICODE;
 		}
 
-		public override int Length(string a_string)
+		public override int Length(string str)
 		{
-			return (a_string.Length * 2) + Const4.OBJECT_LENGTH + Const4.INT_LENGTH;
+			return (str.Length * 2) + Const4.OBJECT_LENGTH + Const4.INT_LENGTH;
 		}
 
 		public override string Read(IReadBuffer buffer, int length)
 		{
-			CheckBufferLength(length);
+			char[] chars = new char[length];
 			for (int ii = 0; ii < length; ii++)
 			{
 				chars[ii] = (char)((buffer.ReadByte() & unchecked((int)(0xff))) | ((buffer.ReadByte
@@ -34,40 +34,44 @@ namespace Db4objects.Db4o.Internal
 			return new string(chars, 0, length);
 		}
 
-		public override string Read(byte[] a_bytes)
+		public override string Read(byte[] bytes)
 		{
-			int len = a_bytes.Length / 2;
-			CheckBufferLength(len);
+			int length = bytes.Length / 2;
+			char[] chars = new char[length];
 			int j = 0;
-			for (int ii = 0; ii < len; ii++)
+			for (int ii = 0; ii < length; ii++)
 			{
-				chars[ii] = (char)((a_bytes[j++] & unchecked((int)(0xff))) | ((a_bytes[j++] & unchecked(
+				chars[ii] = (char)((bytes[j++] & unchecked((int)(0xff))) | ((bytes[j++] & unchecked(
 					(int)(0xff))) << 8));
 			}
-			return new string(chars, 0, len);
+			return new string(chars, 0, length);
 		}
 
-		public override int ShortLength(string a_string)
+		public override int ShortLength(string str)
 		{
-			return (a_string.Length * 2) + Const4.INT_LENGTH;
+			return (str.Length * 2) + Const4.INT_LENGTH;
 		}
 
-		public override void Write(IWriteBuffer buffer, string @string)
+		public override void Write(IWriteBuffer buffer, string str)
 		{
-			int len = MarshalledLength(@string);
-			for (int i = 0; i < len; i++)
+			int length = str.Length;
+			char[] chars = new char[length];
+			Sharpen.Runtime.GetCharsForString(str, 0, length, chars, 0);
+			for (int i = 0; i < length; i++)
 			{
 				buffer.WriteByte((byte)(chars[i] & unchecked((int)(0xff))));
 				buffer.WriteByte((byte)(chars[i] >> 8));
 			}
 		}
 
-		internal override byte[] Write(string @string)
+		internal override byte[] Write(string str)
 		{
-			int len = MarshalledLength(@string);
-			byte[] bytes = new byte[len * 2];
+			int length = str.Length;
+			char[] chars = new char[length];
+			Sharpen.Runtime.GetCharsForString(str, 0, length, chars, 0);
+			byte[] bytes = new byte[length * 2];
 			int j = 0;
-			for (int i = 0; i < len; i++)
+			for (int i = 0; i < length; i++)
 			{
 				bytes[j++] = (byte)(chars[i] & unchecked((int)(0xff)));
 				bytes[j++] = (byte)(chars[i] >> 8);

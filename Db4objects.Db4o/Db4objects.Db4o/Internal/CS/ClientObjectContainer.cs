@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private BlockingQueue _messageQueue = new BlockingQueue();
 
-		private string _password;
+		private readonly string _password;
 
 		internal int[] _prefetchedIDs;
 
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private bool _singleThreaded;
 
-		private string _userName;
+		private readonly string _userName;
 
 		private Db4oDatabase i_db;
 
@@ -96,6 +96,7 @@ namespace Db4objects.Db4o.Internal.CS
 			_messageDispatcher.StartDispatcher();
 		}
 
+		/// <exception cref="NotSupportedException"></exception>
 		public override void Backup(string path)
 		{
 			throw new NotSupportedException();
@@ -173,6 +174,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return Converter.VERSION;
 		}
 
+		/// <exception cref="IOException"></exception>
 		internal virtual ISocket4 CreateParalellSocket()
 		{
 			Write(Msg.GET_THREAD_ID);
@@ -448,6 +450,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return true;
 		}
 
+		/// <exception cref="InvalidPasswordException"></exception>
 		private void LoginToServer(ISocket4 a_socket)
 		{
 			UnicodeStringIO stringWriter = new UnicodeStringIO();
@@ -726,17 +729,17 @@ namespace Db4objects.Db4o.Internal.CS
 			WriteMsg(msg, false);
 		}
 
-		private void WriteMsg(Msg a_message, bool flush)
+		private void WriteMsg(Msg msg, bool flush)
 		{
 			if (_config.BatchMessages())
 			{
 				if (flush && _batchedMessages.IsEmpty())
 				{
-					WriteImpl(a_message);
+					WriteMessageToSocket(msg);
 				}
 				else
 				{
-					AddToBatch(a_message);
+					AddToBatch(msg);
 					if (flush || _batchedQueueLength > _config.MaxBatchQueueSize())
 					{
 						WriteBatchedMessages();
@@ -745,11 +748,11 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			else
 			{
-				WriteImpl(a_message);
+				WriteMessageToSocket(msg);
 			}
 		}
 
-		private void WriteImpl(Msg msg)
+		public virtual void WriteMessageToSocket(Msg msg)
 		{
 			msg.Write(i_socket);
 		}
@@ -810,6 +813,7 @@ namespace Db4objects.Db4o.Internal.CS
 			throw new NotImplementedException("Functionality not availble on clients.");
 		}
 
+		/// <exception cref="IOException"></exception>
 		public virtual void WriteBlobTo(Transaction trans, BlobImpl blob, Sharpen.IO.File
 			 file)
 		{
@@ -818,6 +822,7 @@ namespace Db4objects.Db4o.Internal.CS
 			ProcessBlobMessage(msg);
 		}
 
+		/// <exception cref="IOException"></exception>
 		public virtual void ReadBlobFrom(Transaction trans, BlobImpl blob, Sharpen.IO.File
 			 file)
 		{
@@ -900,7 +905,7 @@ namespace Db4objects.Db4o.Internal.CS
 					multibytes.PayLoad().Append(msg.PayLoad()._buffer);
 				}
 			}
-			WriteImpl(multibytes);
+			WriteMessageToSocket(multibytes);
 			ClearBatchedObjects();
 		}
 

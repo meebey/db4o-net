@@ -101,6 +101,25 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			Remove(Trans(), element);
 			AssertEmpty(SystemTrans());
 			AssertEmpty(Trans());
+			_btree.Commit(SystemTrans());
+			_btree.Commit(Trans());
+			AssertEmpty(SystemTrans());
+			AssertEmpty(Trans());
+		}
+
+		public virtual void TestRemoveCommitInDifferentTransactions()
+		{
+			int element = 1;
+			Add(Trans(), element);
+			_btree.Commit(Trans());
+			Remove(SystemTrans(), element);
+			Remove(Trans(), element);
+			AssertEmpty(SystemTrans());
+			AssertEmpty(Trans());
+			_btree.Commit(SystemTrans());
+			_btree.Commit(Trans());
+			AssertEmpty(SystemTrans());
+			AssertEmpty(Trans());
 		}
 
 		public virtual void TestRemoveAddInDifferentTransactions()

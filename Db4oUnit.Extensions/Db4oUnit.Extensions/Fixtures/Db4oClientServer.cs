@@ -48,6 +48,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 		}
 
+		/// <exception cref="Exception"></exception>
 		public override void Open()
 		{
 			OpenServer();
@@ -61,6 +62,7 @@ namespace Db4oUnit.Extensions.Fixtures
 				((Config4Impl)Config()), HOST, _port, USERNAME, PASSWORD).Ext();
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void OpenServer()
 		{
 			_serverConfig = CloneDb4oConfiguration(Config());
@@ -69,6 +71,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			_server.GrantAccess(USERNAME, PASSWORD);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public override void Close()
 		{
 			if (null != _objectContainer)
@@ -79,6 +82,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			CloseServer();
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void CloseServer()
 		{
 			if (null != _server)
@@ -143,6 +147,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			return (LocalObjectContainer)_server.Ext().ObjectContainer();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public override void Defragment()
 		{
 			Defragment(FilePath());

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -61,6 +62,7 @@ namespace Db4objects.Db4o.Defragment
 			Process(context, sourceID, false);
 		}
 
+		/// <exception cref="CorruptionException"></exception>
 		public void ProcessClassCollection(DefragContextImpl context)
 		{
 			Process(context, context.SourceClassCollectionID(), false);

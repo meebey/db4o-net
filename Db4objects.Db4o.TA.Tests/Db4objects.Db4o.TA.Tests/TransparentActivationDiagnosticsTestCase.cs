@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Util;
@@ -98,6 +99,7 @@ namespace Db4objects.Db4o.TA.Tests
 			config.Diagnostic().AddListener(_checker);
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Db4oTearDownBeforeClean()
 		{
 			Db().Ext().Configure().Diagnostic().RemoveAllListeners();

@@ -63,18 +63,23 @@ namespace Db4objects.Db4o.Internal
 		private const int LENGTH = MINIMUM_LENGTH + (Const4.INT_LENGTH * 7) + ENCRYPTION_PASSWORD_LENGTH
 			 + 1;
 
+		/// <exception cref="Db4oIOException"></exception>
 		public static Db4objects.Db4o.Internal.ConfigBlock ForNewFile(LocalObjectContainer
 			 file)
 		{
 			return new Db4objects.Db4o.Internal.ConfigBlock(file, true, 0);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="OldFormatException"></exception>
 		public static Db4objects.Db4o.Internal.ConfigBlock ForExistingFile(LocalObjectContainer
 			 file, int address)
 		{
 			return new Db4objects.Db4o.Internal.ConfigBlock(file, false, address);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="OldFormatException"></exception>
 		private ConfigBlock(LocalObjectContainer stream, bool isNew, int address)
 		{
 			_container = stream;
@@ -132,6 +137,8 @@ namespace Db4objects.Db4o.Internal
 			return _container.SystemData();
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="OldFormatException"></exception>
 		private void Read(int address)
 		{
 			AddressChanged(address);
@@ -303,6 +310,7 @@ namespace Db4objects.Db4o.Internal
 			return _address;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public void Close()
 		{
 			TimerFileLock().Close();

@@ -4,6 +4,7 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
+
 	public class Db4oLibrarian
 	{
 		private Db4oLibraryEnvironmentProvider _provider;
@@ -28,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return (Db4oLibrary[]) libraries.ToArray(typeof(Db4oLibrary));
 		}
 
-		private static string LibraryPath()
+        private static string LibraryPath()
 		{
 			return WorkspaceServices.WorkspacePath("db4o.archives/net-2.0");
 		}
@@ -53,5 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		{
 			return _provider.EnvironmentFor(db4oLib);
 		}
-	}
+
+    }
+
 }

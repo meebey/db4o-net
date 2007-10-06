@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -21,6 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		private static int COUNT = 100;
 
+		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
 			for (int i = 0; i < COUNT; i++)
@@ -29,6 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void ConcUpdateSameObject(IExtObjectContainer oc, int seq)
 		{
 			IQuery query = oc.Query();
@@ -40,6 +43,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			oc.Set(o);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void CheckUpdateSameObject(IExtObjectContainer oc)
 		{
 			IQuery query = oc.Query();
@@ -51,6 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			Assert.IsTrue(COUNT <= i && i < COUNT + ThreadCount());
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void ConcUpdateDifferentObject(IExtObjectContainer oc, int seq)
 		{
 			IQuery query = oc.Query();
@@ -63,6 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			oc.Set(o);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void CheckUpdateDifferentObject(IExtObjectContainer oc)
 		{
 			IObjectSet result = oc.Query(typeof(SimpleObject));

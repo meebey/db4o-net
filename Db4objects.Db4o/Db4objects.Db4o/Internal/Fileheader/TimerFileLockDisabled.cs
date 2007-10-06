@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
 
@@ -51,6 +52,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void CheckIfOtherSessionAlive(LocalObjectContainer container, int
 			 address, int offset, long lastAccessTime)
 		{

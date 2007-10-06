@@ -42,6 +42,8 @@ namespace Db4objects.Db4o.Tests.Util
 			return false;
 		}
 
+		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="ArgumentException"></exception>
 		public virtual object Current(int groupIdx)
 		{
 			if (!_started)

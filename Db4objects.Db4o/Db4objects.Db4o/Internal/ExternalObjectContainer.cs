@@ -18,11 +18,14 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
 		public void Activate(object obj, int depth)
 		{
 			Activate(null, obj, depth);
 		}
 
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentException"></exception>
 		public void Bind(object obj, long id)
 		{
 			Bind(null, obj, id);
@@ -33,11 +36,14 @@ namespace Db4objects.Db4o.Internal
 			return Collections(null);
 		}
 
+		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
 		public void Commit()
 		{
 			Commit(null);
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
 		public void Deactivate(object obj, int depth)
 		{
 			Deactivate(null, obj, depth);
@@ -58,11 +64,14 @@ namespace Db4objects.Db4o.Internal
 			return this;
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
 		public IObjectSet Get(object template)
 		{
 			return Get(null, template);
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="InvalidIDException"></exception>
 		public object GetByID(long id)
 		{
 			return GetByID(null, id);
@@ -98,6 +107,7 @@ namespace Db4objects.Db4o.Internal
 			return IsStored(null, obj);
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
 		public object PeekPersisted(object obj, int depth, bool committed)
 		{
 			return PeekPersisted(null, obj, depth, committed);
@@ -138,11 +148,15 @@ namespace Db4objects.Db4o.Internal
 			Rollback(null);
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
 		public void Set(object obj)
 		{
 			Set(obj, Const4.UNSPECIFIED);
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
 		public void Set(object obj, int depth)
 		{
 			Set(null, obj, depth);
@@ -158,6 +172,9 @@ namespace Db4objects.Db4o.Internal
 			return StoredClasses(null);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="NotSupportedException"></exception>
 		public abstract void Backup(string path);
 
 		public abstract Db4oDatabase Identity();

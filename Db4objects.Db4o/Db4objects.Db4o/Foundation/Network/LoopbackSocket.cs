@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation.Network;
 
 namespace Db4objects.Db4o.Foundation.Network
@@ -32,12 +33,14 @@ namespace Db4objects.Db4o.Foundation.Network
 			_uploadBuffer = affiliate._downloadBuffer;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Close()
 		{
 			CloseAffiliate();
 			CloseSocket();
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private void CloseAffiliate()
 		{
 			if (_affiliate != null)
@@ -63,11 +66,13 @@ namespace Db4objects.Db4o.Foundation.Network
 			return _affiliate != null;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual int Read()
 		{
 			return _downloadBuffer.Read();
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual int Read(byte[] a_bytes, int a_offset, int a_length)
 		{
 			return _downloadBuffer.Read(a_bytes, a_offset, a_length);
@@ -79,21 +84,25 @@ namespace Db4objects.Db4o.Foundation.Network
 			_downloadBuffer.SetTimeout(a_timeout);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(byte[] bytes)
 		{
 			_uploadBuffer.Write(bytes);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
 			_uploadBuffer.Write(bytes, off, len);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(int i)
 		{
 			_uploadBuffer.Write(i);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual ISocket4 OpenParalellSocket()
 		{
 			return _server.OpenClientSocket();

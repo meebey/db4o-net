@@ -37,6 +37,7 @@ namespace Db4objects.Db4o.Internal.IX
 			_reader = new Db4objects.Db4o.Internal.Buffer(_slotLength);
 		}
 
+		/// <exception cref="IxException"></exception>
 		internal virtual Tree Add(IxFileRange fileRange, Tree newTree)
 		{
 			SetFileRange(fileRange);
@@ -152,6 +153,7 @@ namespace Db4objects.Db4o.Internal.IX
 			return _cursor != oldCursor;
 		}
 
+		/// <exception cref="IxException"></exception>
 		internal virtual int Compare(IxFileRange fileRange, int[] matches)
 		{
 			SetFileRange(fileRange);

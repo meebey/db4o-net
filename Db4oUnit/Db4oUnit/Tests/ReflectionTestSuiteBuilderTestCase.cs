@@ -40,6 +40,7 @@ namespace Db4oUnit.Tests
 				this.builder = builder;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				builder.Build();

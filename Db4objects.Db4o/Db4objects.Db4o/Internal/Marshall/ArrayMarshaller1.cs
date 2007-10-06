@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -8,6 +9,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 {
 	internal class ArrayMarshaller1 : ArrayMarshaller
 	{
+		/// <exception cref="Db4oIOException"></exception>
 		public override void DeleteEmbedded(ArrayHandler arrayHandler, StatefulBuffer reader
 			)
 		{

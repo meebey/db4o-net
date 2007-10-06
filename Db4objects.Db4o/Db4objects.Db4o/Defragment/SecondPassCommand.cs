@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.IO;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
@@ -30,6 +32,8 @@ namespace Db4objects.Db4o.Defragment
 			_objectCommitFrequency = objectCommitFrequency;
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="IOException"></exception>
 		public void ProcessClass(DefragContextImpl context, ClassMetadata yapClass, int id
 			, int classIndexID)
 		{
@@ -51,6 +55,8 @@ namespace Db4objects.Db4o.Defragment
 				this.classIndexID = classIndexID;
 			}
 
+			/// <exception cref="CorruptionException"></exception>
+			/// <exception cref="IOException"></exception>
 			public void ProcessCopy(BufferPair readers)
 			{
 				yapClass.DefragClass(readers, classIndexID);
@@ -63,6 +69,8 @@ namespace Db4objects.Db4o.Defragment
 			private readonly int classIndexID;
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="IOException"></exception>
 		public void ProcessObjectSlot(DefragContextImpl context, ClassMetadata yapClass, 
 			int id)
 		{
@@ -102,6 +110,8 @@ namespace Db4objects.Db4o.Defragment
 			private readonly DefragContextImpl context;
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="IOException"></exception>
 		public void ProcessClassCollection(DefragContextImpl context)
 		{
 			BufferPair.ProcessCopy(context, context.SourceClassCollectionID(), new _ISlotCopyHandler_62
@@ -123,6 +133,8 @@ namespace Db4objects.Db4o.Defragment
 			private readonly SecondPassCommand _enclosing;
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="IOException"></exception>
 		public void ProcessBTree(DefragContextImpl context, BTree btree)
 		{
 			btree.DefragBTree(context);

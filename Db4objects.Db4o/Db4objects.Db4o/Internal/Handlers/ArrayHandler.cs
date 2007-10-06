@@ -92,6 +92,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Container().Handlers().ClassReflectorForHandler(_handler);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public TreeInt CollectIDs(MarshallerFamily mf, TreeInt tree, StatefulBuffer reader
 			)
 		{
@@ -113,6 +114,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return tree;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public sealed override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes
 			)
 		{
@@ -218,6 +220,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return this;
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void ReadCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
 			 reader, QCandidates candidates)
 		{

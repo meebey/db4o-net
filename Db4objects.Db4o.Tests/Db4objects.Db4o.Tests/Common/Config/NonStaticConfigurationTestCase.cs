@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -16,11 +17,13 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			new TestRunner(typeof(NonStaticConfigurationTestCase)).Run();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
 			new Sharpen.IO.File(FILENAME).Delete();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void TearDown()
 		{
 			new Sharpen.IO.File(FILENAME).Delete();
@@ -77,6 +80,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				this.config1 = config1;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenFile(config1, NonStaticConfigurationTestCase.FILENAME);
@@ -96,6 +100,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				this.db1 = db1;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				db1.Set(new NonStaticConfigurationTestCase.Data(1));

@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.IO
@@ -26,6 +27,7 @@ namespace Db4objects.Db4o.IO
 		}
 
 		/// <summary>copies a block within a file in block mode</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void BlockCopy(int oldAddress, int oldAddressOffset, int newAddress
 			, int newAddressOffset, int length)
 		{
@@ -34,12 +36,14 @@ namespace Db4objects.Db4o.IO
 		}
 
 		/// <summary>sets the read/write pointer in the file using block mode</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void BlockSeek(int address)
 		{
 			BlockSeek(address, 0);
 		}
 
 		/// <summary>sets the read/write pointer in the file using block mode</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void BlockSeek(int address, int offset)
 		{
 			Seek(RegularAddress(address, offset));
@@ -56,9 +60,11 @@ namespace Db4objects.Db4o.IO
 		}
 
 		/// <summary>implement to close the adapter</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public abstract void Close();
 
 		/// <summary>copies a block within a file in absolute mode</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Copy(long oldAddress, long newAddress, int length)
 		{
 			if (length > COPY_SIZE)
@@ -77,6 +83,7 @@ namespace Db4objects.Db4o.IO
 			Copy(new byte[length], oldAddress, newAddress);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		private void Copy(byte[] buffer, long oldAddress, long newAddress)
 		{
 			Seek(oldAddress);
@@ -92,35 +99,43 @@ namespace Db4objects.Db4o.IO
 		public abstract bool Exists(string path);
 
 		/// <summary>implement to return the absolute length of the file</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public abstract long GetLength();
 
 		/// <summary>implement to open the file</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public abstract IoAdapter Open(string path, bool lockFile, long initialLength, bool
 			 readOnly);
 
 		/// <summary>reads a buffer at the seeked address</summary>
 		/// <returns>the number of bytes read and returned</returns>
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual int Read(byte[] buffer)
 		{
 			return Read(buffer, buffer.Length);
 		}
 
 		/// <summary>implement to read a buffer at the seeked address</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public abstract int Read(byte[] bytes, int length);
 
 		/// <summary>implement to set the read/write pointer in the file, absolute mode</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public abstract void Seek(long pos);
 
 		/// <summary>implement to flush the file contents to storage</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public abstract void Sync();
 
 		/// <summary>writes a buffer to the seeked address</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(byte[] bytes)
 		{
 			Write(bytes, bytes.Length);
 		}
 
 		/// <summary>implement to write a buffer at the seeked address</summary>
+		/// <exception cref="Db4oIOException"></exception>
 		public abstract void Write(byte[] buffer, int length);
 
 		/// <summary>returns the block size currently used</summary>

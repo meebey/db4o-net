@@ -62,6 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this.item = item;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Delete(item);

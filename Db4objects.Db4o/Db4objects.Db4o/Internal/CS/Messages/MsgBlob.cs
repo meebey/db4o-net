@@ -27,6 +27,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return Status.ERROR;
 		}
 
+		/// <exception cref="IOException"></exception>
 		public abstract void ProcessClient(ISocket4 sock);
 
 		internal virtual BlobImpl ServerGetBlobImpl()
@@ -42,6 +43,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return blobImpl;
 		}
 
+		/// <exception cref="IOException"></exception>
 		protected virtual void Copy(ISocket4 sock, IOutputStream rawout, int length, bool
 			 update)
 		{
@@ -68,6 +70,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			@out.Close();
 		}
 
+		/// <exception cref="IOException"></exception>
 		protected virtual void Copy(IInputStream rawin, ISocket4 sock, bool update)
 		{
 			BufferedInputStream @in = new BufferedInputStream(rawin);

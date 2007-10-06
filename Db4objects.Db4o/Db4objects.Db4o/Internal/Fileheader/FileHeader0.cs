@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
 
@@ -15,6 +16,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private PBootRecord _bootRecord;
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
 			_configBlock.Close();
@@ -42,6 +44,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return new FileHeader0();
 		}
 
+		/// <exception cref="OldFormatException"></exception>
 		protected override void ReadFixedPart(LocalObjectContainer file, Db4objects.Db4o.Internal.Buffer
 			 reader)
 		{
@@ -87,6 +90,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void InitNew(LocalObjectContainer file)
 		{
 			_configBlock = ConfigBlock.ForNewFile(file);

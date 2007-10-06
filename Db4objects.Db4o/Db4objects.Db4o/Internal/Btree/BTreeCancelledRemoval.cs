@@ -38,5 +38,9 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			return _newKey;
 		}
+
+		protected override void AdjustSizeOnRemovalByOtherTransaction(BTree btree)
+		{
+		}
 	}
 }

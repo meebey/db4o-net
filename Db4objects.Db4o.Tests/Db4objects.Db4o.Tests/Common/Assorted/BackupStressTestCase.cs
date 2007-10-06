@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -35,6 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private int _commitCounter;
 
+		/// <exception cref="Exception"></exception>
 		public static void Main(string[] args)
 		{
 			verbose = true;
@@ -51,6 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
 			DeleteFile(FILE);
@@ -60,11 +64,13 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				));
 		}
 
+		/// <exception cref="IOException"></exception>
 		public virtual void TearDown()
 		{
 			DeleteFile(FILE);
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
 			OpenDatabase();
@@ -79,6 +85,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			CheckBackups();
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void RunTestIterations()
 		{
 			if (!runOnOldJDK && IsOldJDK())
@@ -147,6 +154,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			_objectContainer = Db4oFactory.OpenFile(FILE);
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void CloseDatabase()
 		{
 			while (_inBackup)
@@ -156,6 +164,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			_objectContainer.Close();
 		}
 
+		/// <exception cref="IOException"></exception>
 		private void CheckBackups()
 		{
 			Stdout("BackupStressTest");

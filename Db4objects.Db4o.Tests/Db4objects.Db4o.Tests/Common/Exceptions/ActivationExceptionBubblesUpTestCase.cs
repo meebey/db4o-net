@@ -52,6 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				());
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
 			Store(new Item());
@@ -70,6 +71,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
+			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
 				IQuery q = this._enclosing.Db().Query();

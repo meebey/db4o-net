@@ -13,11 +13,13 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public class Reflection4
 	{
+		/// <exception cref="ReflectException"></exception>
 		public static object Invoke(object obj, string methodName)
 		{
 			return Invoke(obj.GetType().FullName, methodName, null, null, obj);
 		}
 
+		/// <exception cref="ReflectException"></exception>
 		public static object Invoke(object obj, string methodName, object[] @params)
 		{
 			Type[] paramClasses = new Type[@params.Length];
@@ -28,18 +30,21 @@ namespace Db4objects.Db4o.Internal
 			return Invoke(obj.GetType().FullName, methodName, paramClasses, @params, obj);
 		}
 
+		/// <exception cref="ReflectException"></exception>
 		public static object Invoke(object obj, string methodName, Type[] paramClasses, object[]
 			 @params)
 		{
 			return Invoke(obj.GetType().FullName, methodName, paramClasses, @params, obj);
 		}
 
+		/// <exception cref="ReflectException"></exception>
 		public static object Invoke(Type clazz, string methodName, Type[] paramClasses, object[]
 			 @params)
 		{
 			return Invoke(clazz.FullName, methodName, paramClasses, @params, null);
 		}
 
+		/// <exception cref="ReflectException"></exception>
 		public static object Invoke(string className, string methodName, Type[] paramClasses
 			, object[] @params, object onObject)
 		{
@@ -47,6 +52,7 @@ namespace Db4objects.Db4o.Internal
 			return Invoke(@params, onObject, method);
 		}
 
+		/// <exception cref="ReflectException"></exception>
 		public static object Invoke(object[] @params, object onObject, MethodInfo method)
 		{
 			if (method == null)

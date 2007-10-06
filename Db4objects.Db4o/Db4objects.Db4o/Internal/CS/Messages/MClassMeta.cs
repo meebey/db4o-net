@@ -16,12 +16,12 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			Unmarshall();
 			try
 			{
-				ClassInfo classMeta = (ClassInfo)ReadObjectFromPayLoad();
-				GenericClass genericClass = stream.GetClassMetaHelper().ClassMetaToGenericClass(Stream
-					().Reflector(), classMeta);
-				if (genericClass != null)
+				lock (StreamLock())
 				{
-					lock (StreamLock())
+					ClassInfo classMeta = (ClassInfo)ReadObjectFromPayLoad();
+					GenericClass genericClass = stream.GetClassMetaHelper().ClassMetaToGenericClass(Stream
+						().Reflector(), classMeta);
+					if (genericClass != null)
 					{
 						Transaction trans = stream.SystemTransaction();
 						ClassMetadata yapClass = stream.ProduceClassMetadata(genericClass);

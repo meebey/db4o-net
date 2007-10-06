@@ -15,11 +15,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		{
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		protected ExceptionIOAdapter(string path, bool lockFile, long initialLength)
 		{
 			_delegate = _delegate.Open(path, lockFile, initialLength, false);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
 			if (exception)
@@ -56,6 +58,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override long GetLength()
 		{
 			if (exception)
@@ -68,6 +71,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
 			 readOnly)
 		{
@@ -75,6 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				, initialLength);
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override int Read(byte[] bytes, int length)
 		{
 			if (exception)
@@ -87,6 +92,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Seek(long pos)
 		{
 			if (exception)
@@ -99,6 +105,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Sync()
 		{
 			if (exception)
@@ -111,6 +118,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Write(byte[] buffer, int length)
 		{
 			if (exception)

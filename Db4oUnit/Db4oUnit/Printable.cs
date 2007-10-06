@@ -19,6 +19,7 @@ namespace Db4oUnit
 			return writer.ToString();
 		}
 
+		/// <exception cref="IOException"></exception>
 		public abstract void Print(TextWriter writer);
 	}
 }
