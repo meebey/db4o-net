@@ -16,4 +16,6 @@ using System.Security;
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]
 
+#if !CF_1_0 && !CF_2_0
 [assembly: AllowPartiallyTrustedCallers]
+#endif
