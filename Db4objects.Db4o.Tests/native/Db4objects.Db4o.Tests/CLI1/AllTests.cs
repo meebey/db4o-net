@@ -36,12 +36,13 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(CsValueTypesTestCase),
 					typeof(CultureInfoTestCase),
 					typeof(ImageTestCase),
+					typeof(JavaDateCompatibilityTestCase),
+					typeof(JavaUUIDCompatibilityTestCase),
 					typeof(MDArrayTestCase),
 					typeof(NonSerializedAttributeTestCase),
 					typeof(ObjectInfoMigration52TestCase),
                     typeof(ObjectInfoMigration57TestCase),
 					typeof(ObjectSetAsListTestCase),
-					typeof(UUIDJavaCompatibilityTestCase),
 				};
 		}
 	}
