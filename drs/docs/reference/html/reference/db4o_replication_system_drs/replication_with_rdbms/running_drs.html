@@ -1,0 +1,33 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Running DRS</title>
+    <link rel="stylesheet" type="text/css" href="../../../style.css">
+  </head>
+  <body>
+    <div class="CommonContent">
+      <div class="CommonContentArea">
+        <h1>Running DRS</h1><p><font color="#990000">This topic applies to Java version only</font>&nbsp;</p>
+<p>This section describes how to configure and run dRS.It is crucial to follow
+the sequence of actions so that dRS can detect new/changed objects and
+replicate them during replication sessions.<br></p><code>// Read or create the Configuration as usual</code><br><code>
+Configuration cfg = new Configuration().configure("your-hibernate.cfg.xml");</code><br><code>
+// Let the ReplicationConfigurator adjust the configuration</code><br><code>
+ReplicationConfigurator.configure(cfg);</code><br><code>
+// Create the SessionFactory as usual</code><br><code>
+SessionFactory sessionFactory = cfg.buildSessionFactory();</code><br><code>
+// Create the Session as usual</code><br><code>
+Session session = sessionFactory.openSession();</code><br><code>
+// Let the ReplicationConfigurator install the listeners to the Session</code><br><code>
+ReplicationConfigurator.install(session, cfg);</code><br><code>
+//Update objects as usual</code><br><code>
+Transaction tx = session.beginTransaction();</code><br><code>
+Pilot john = (Pilot) session.createCriteria(Pilot.class)</code><br><br>Some precautions to take into consideration:<br><ol><li>
+Do not open more than one dRS replication session against the same RDBMS concurrently.&nbsp;Otherwise data corruption will occur.</li><li>When dRS is in progress, do not modify the data in the RDBMS by
+using SQL or Hibernate.&nbsp;Otherwise data corruption will occur.</li></ol></div>
+    </div>
+    <div id="footer">
+					This revision (2) was last Modified 2007-07-09T14:56:21 by Tetyana.
+				</div>
+  </body>
+</html>

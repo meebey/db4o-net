@@ -1,0 +1,85 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Hibernate Replication Internals</title>
+    <link rel="stylesheet" type="text/css" href="../../../style.css">
+  </head>
+  <body>
+    <div class="CommonContent">
+      <div class="CommonContentArea">
+        <h1>Hibernate Replication Internals</h1><div id="TOC"><div id="TOCinner"><span class="TOCtitle">Contents</span><div class="TOCcontents"><ul><li><a href ="#ProviderSignature, MySignature and PeerSignature">ProviderSignature, MySignature and PeerSignature</a></li><li><a href ="#Record">Record</a></li><li><a href ="#UUID">UUID</a></li><li><a href ="#ObjectReference">ObjectReference</a></li><li><a href ="#List of dRS tables">List of dRS tables</a></li><li><a href ="#drs_providers">drs_providers</a></li><li><a href ="#drs_history">drs_history</a></li><li><a href ="#drs_objects">drs_objects</a></li></ul></li></ul></div></div></div><p><font color="#990000">This topic applies to Java version only</font>&nbsp;</p>
+
+<p>So far we have seen that dRS allows you to replicate objects between
+db4o and relational database.&nbsp;You maybe curious about how dRS keeps
+track of the identity of objects in relational database and how&nbsp;dRS
+knows which objects are changed since the last round of replication. Read
+on and you will see how&nbsp;dRS does that.</p>
+
+<p>dRS internal objects keep information used by replication. Each internal object
+is associated with a&nbsp;Hibernate mapping file (.hbm.xml). Hibernate reads
+these files and understands &nbsp;how to store / retrieve these internal
+objects to / from the RDBMS. Each type of internal object maps to one
+table in RDBMS. If such table does not exist, Hibernate creates it
+automatically. </p>
+<a name="ProviderSignature, MySignature and PeerSignature"></a><h2>ProviderSignature, MySignature and PeerSignature</h2>
+<p>ProviderSignature uniquely identifies a ReplicationProvider.
+MySignature and PeerSignature are the subclasses of ProviderSignature.
+A HibernateReplicationProvider has a MySignature to serve as its own
+identity. PeerSignature identifies the peer ReplicationProvider during
+a ReplicationSession.</p>
+<a name="Record"></a><h2>Record</h2>
+<p>Record contains the version of the RDBMS during a ReplicationSession.
+Near the end of a ReplicationSession, two ReplicationProviders
+synchronize their versions.</p>
+
+<p>Record allows dRS to detect changed objects. dRS detects changed
+objects by comparing the version of an object (v) with the maximum
+version of all Records (m). An object is updated if v &gt; m.</p>
+<a name="UUID"></a><h2>UUID</h2>
+<p>UUID uniquely identifies a persisted object in dRS.<br>
+Each persisted object is
+identified by a "typed_id" in Hibernate. This "typed_id" is unique only with its
+type of that object (i.e. A car has an "typed_id" of 1534, a Pilot can
+also has an "typed_id" of 1534) and within the current RDBMS.<br>
+How do we identify "a Pilot that is originated from Oracle instance pi2763" ? To do so, we need two parameters:<br>
+&nbsp;&nbsp;&nbsp;1. an id that is unique across types<br>
+&nbsp;&nbsp;&nbsp;2. association between this id and the ProviderSignature of the RDBMS (The RDBMS that owns this object)<br></p>
+
+<p><code>class UUID {</code><br><code>
+&nbsp;&nbsp;&nbsp; long longPart;</code><br>
+<code>
+&nbsp;&nbsp;&nbsp; ProviderSignature provider;</code><br>
+<code>}</code></p>
+
+<p>
+Collectively, 1 and 2 forms the "UUID".</p>
+<a name="ObjectReference"></a><h2>ObjectReference</h2>
+<p>ObjectReference contains the UUID and the version of a persisted
+object. It also contains the className and the typed_id of that
+persisted object.<br>
+UUID forms an 1 to 1 relationship with {className, typedId}.</p>
+<p><code>class ObjectReference {</code><br>
+<code>
+&nbsp;&nbsp;&nbsp; String className;</code><br>
+<code>
+&nbsp;&nbsp;&nbsp; long typedId;</code><br>
+<code>
+&nbsp;&nbsp;&nbsp; Uuid uuid;</code><br>
+<code>
+&nbsp;&nbsp;&nbsp; long version;</code><br>
+<code>}</code><br></p>
+<a name="List of dRS tables"></a><h2>List of dRS tables</h2><a name="drs_providers"></a><h2>drs_providers</h2><table border="1"><tr><td>&nbsp;<b>Column</b></td><td>&nbsp;<b>Type</b></td><td><b>Function</b> <br></td></tr><tr><td>&nbsp;
+id </td><td>&nbsp;long </td><td>&nbsp;synthetic, auto-increment primary key</td></tr><tr><td>&nbsp;
+is_my_sig</td><td>&nbsp;char(1) </td><td>&nbsp;'t' if MySignature, 'f' if PeerSignature</td></tr><tr><td>&nbsp;
+signature</td><td>&nbsp;binary </td><td>&nbsp;holds the unique identifier - byte array</td></tr><tr><td>&nbsp;
+created </td><td>&nbsp;long </td><td>&nbsp;legacy field used by pre-dRS db4o replication code</td></tr></table><a name="drs_history"></a><h2>drs_history</h2><table style="border-width:1px;" border="1"><tr><td><b>&nbsp;Column </b><br></td><td><b>Type</b> <br></td><td><b>Function</b> <br></td></tr><tr><td>&nbsp;
+provider_id </td><td>&nbsp;long</td><td>&nbsp;primary key, same as the PK of a PeerSignature</td></tr><tr><td>&nbsp;
+time</td><td>&nbsp;long</td><td>&nbsp;the version of the RDBMS during a ReplicationSession</td></tr></table><a name="drs_objects"></a><h2>drs_objects</h2><br><table style="border-width:1px;" border="1"><tr><td><b>Column&nbsp;</b></td><td><b>Type</b> <br></td><td><b>Function</b> <br></td></tr><tr><td>id</td><td>&nbsp;long</td><td>&nbsp;synthetic, auto-increment primary key</td></tr><tr><td>created</td><td>&nbsp;long</td><td>&nbsp;the UUID long part of this ObjectReference</td></tr><tr><td>provider_id</td><td>&nbsp;long</td><td>&nbsp;specifies the originating ReplicationProvider of this ObjectReference</td></tr><tr><td>class_name</td><td>&nbsp;varchar</td><td>&nbsp;the type of the referenced object</td></tr><tr><td>
+typed_id</td><td>&nbsp;long</td><td>&nbsp;the id used by Hibernate, which is only unique within its type</td></tr><tr><td>
+modified <br></td><td>&nbsp;long</td><td>&nbsp;the version of the referenced object</td></tr></table></div>
+    </div>
+    <div id="footer">
+					This revision (3) was last Modified 2007-07-09T14:57:51 by Tetyana.
+				</div>
+  </body>
+</html>

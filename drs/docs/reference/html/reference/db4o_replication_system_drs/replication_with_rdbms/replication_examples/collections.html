@@ -1,0 +1,77 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Collections</title>
+    <link rel="stylesheet" type="text/css" href="../../../../style.css">
+  </head>
+  <body>
+    <div class="CommonContent">
+      <div class="CommonContentArea">
+        <h1>Collections</h1><script>
+//We attach this function to a browser object as a variable so that if multiple of these blocks are
+//present on the same page, then they will simply over-write eachother with the same function instead
+//of generating a naming collision.
+window.WikiCodeFormattingCopyToClipboard = function copyToClipboard(sID){
+	var sContent = document.getElementById(sID).innerText;
+	if( window.clipboardData && clipboardData.setData )
+	{
+		clipboardData.setData("Text", sContent);
+	}
+	else
+	{
+		alert("You must enable javascript access to your clipboard for this feature to work. Please referr to your browser documentation or Google search for instructions.");
+	}
+}
+</script><p><font color="#990000">This topic applies to Java version only</font>&nbsp;</p><p>This section covers examples on Collection, including array, Set, List and Map. </p><p>As an experienced db4o user, you may know that db4o treats Collection
+as first class object,&nbsp;which means it assigns unique UUID to each
+Collection. Hence a Collection can be shared among&nbsp;many owners. This is
+different to Hibernate's approach, where Collection does not have a
+unique ID&nbsp;and they cannot be shared among objects.</p><p>To bridge this gap, dRS treats Collections as second class objects and
+does not assign UUIDs to them.&nbsp;When a shared Collection is replicated
+from db4o to Hibernate using dRS, it is automatically cloned.&nbsp;Each
+owner of the Collection receives a copy of the Collection. Further
+modifications to the db4o copy&nbsp;will not be replicated to cloned copies.
+Therefore, you cannot share Collections if you want to&nbsp;perform RDBMS
+replications with dRS.</p><p>In the following examples, we will use Car as the element in the following examples. </p><div class="FormattedSourceCode"><div class="fscHeader"><span class="fscFileName">Car.java</span></div><div class="fscCode"><pre ID="....Hibernate.Zipsf1collectionCar.Java_F1collectionCar.Java_1083_52"><div><!--
+
+Code highlighting produced by Actipro CodeHighlighter (freeware)
+http://www.CodeHighlighter.com/
+
+--><span style="color: #008080;">1</span><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/><span style="color: #0000FF;">package</span><span style="color: #000000;"> f1.collection;
+</span><span style="color: #008080;">2</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>
+</span><span style="color: #008080;">3</span><span style="color: #000000;"><img id="....Hibernate.Zipsf1collectionCar.Java_F1collectionCar.Java_1083_52_41_88_Open_Image" src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ExpandedBlockStart.gif" align="top" onClick="this.style.display='none'; document.getElementById('....Hibernate.Zipsf1collectionCar.Java_F1collectionCar.Java_1083_52_41_88_Open_Text').style.display='none'; document.getElementById('....Hibernate.Zipsf1collectionCar.Java_F1collectionCar.Java_1083_52_41_88_Closed_Image').style.display='inline'; document.getElementById('....Hibernate.Zipsf1collectionCar.Java_F1collectionCar.Java_1083_52_41_88_Closed_Text').style.display='inline';"/><img id="....Hibernate.Zipsf1collectionCar.Java_F1collectionCar.Java_1083_52_41_88_Closed_Image" src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ContractedBlock.gif" align="top" style="display: none;" onClick="this.style.display='none'; document.getElementById('....Hibernate.Zipsf1collectionCar.Java_F1collectionCar.Java_1083_52_41_88_Closed_Text').style.display='none'; document.getElementById('....Hibernate.Zipsf1collectionCar.Java_F1collectionCar.Java_1083_52_41_88_Open_Image').style.display='inline'; document.getElementById('....Hibernate.Zipsf1collectionCar.Java_F1collectionCar.Java_1083_52_41_88_Open_Text').style.display='inline';"/></span><span style="color: #0000FF;">public</span><span style="color: #000000;"> </span><span style="color: #0000FF;">class</span><span style="color: #000000;"> Car </span><span id="....Hibernate.Zipsf1collectionCar.Java_F1collectionCar.Java_1083_52_41_88_Closed_Text" style="border: solid 1px #808080; background-color: #FFFFFF; display: none;">...</span><span id="....Hibernate.Zipsf1collectionCar.Java_F1collectionCar.Java_1083_52_41_88_Open_Text"><span style="color: #000000;">{
+</span><span style="color: #008080;">4</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/InBlock.gif" align="top"/>  </span><span style="color: #0000FF;">public</span><span style="color: #000000;"> String brand;
+</span><span style="color: #008080;">5</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/InBlock.gif" align="top"/>  </span><span style="color: #0000FF;">public</span><span style="color: #000000;"> String model;
+</span><span style="color: #008080;">6</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ExpandedBlockEnd.gif" align="top"/>}</span></span></div></pre></div></div> </p><div class="FormattedSourceCode"><div class="fscHeader"><span class="fscFileName">Car.hbm.xml</span></div><div class="fscCode"><pre ID="....Hibernate.Zipsf1collectionCar.Hbm.Xml_F1collectionCar.Hbm.Xml_1140_55"><div><!--
+
+Code highlighting produced by Actipro CodeHighlighter (freeware)
+http://www.CodeHighlighter.com/
+
+--><span style="color: #008080;">01</span><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/><span style="color: #0000FF;">&lt;?</span><span style="color: #FF00FF;">xml version=&quot;1.0&quot;</span><span style="color: #0000FF;">?&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">02</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>
+</span><span style="color: #008080;">03</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/></span><span style="color: #0000FF;">&lt;!</span><span style="color: #FF00FF;">DOCTYPE hibernate-mapping PUBLIC
+</span><span style="color: #008080;">04</span><span style="color: #FF00FF;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>    &quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
+</span><span style="color: #008080;">05</span><span style="color: #FF00FF;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>    &quot;http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">06</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>
+</span><span style="color: #008080;">07</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/></span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">hibernate-mapping </span><span style="color: #FF0000;">default-access</span><span style="color: #0000FF;">=&quot;field&quot;</span><span style="color: #FF0000;"> default-lazy</span><span style="color: #0000FF;">=&quot;false&quot;</span><span style="color: #FF0000;">
+</span><span style="color: #008080;">08</span><span style="color: #FF0000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>                   default-cascade</span><span style="color: #0000FF;">=&quot;save-update&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">09</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>  </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">class </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;f1.collection.Car&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">10</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>    </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">id </span><span style="color: #FF0000;">column</span><span style="color: #0000FF;">=&quot;typed_id&quot;</span><span style="color: #FF0000;"> type</span><span style="color: #0000FF;">=&quot;long&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">11</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>      </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">generator </span><span style="color: #FF0000;">class</span><span style="color: #0000FF;">=&quot;native&quot;</span><span style="color: #0000FF;">/&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">12</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>    </span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">id</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">13</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>    </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">property </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;brand&quot;</span><span style="color: #0000FF;">/&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">14</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>    </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">property </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;model&quot;</span><span style="color: #0000FF;">/&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">15</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>  </span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">class</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">16</span><span style="color: #000000;"><img src="../../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/></span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">hibernate-mapping</span><span style="color: #0000FF;">&gt;</span></div></pre></div></div>&nbsp; </p><p><div class="childTopicList">More Reading:<ul>
+<li><p><a href="collections/array.html" class="wikiLink">Array</a></p></li>
+<li><p><a href="collections/list.html" class="wikiLink">List</a></p></li>
+<li><p><a href="collections/set.html" class="wikiLink">Set</a></p></li>
+<li><p><a href="collections/map.html" class="wikiLink">Map</a></p></li>
+</ul></div>
+&nbsp;</p></div>
+    </div>
+    <div id="footer">
+					This revision (2) was last Modified 2007-07-09T14:59:13 by Tetyana.
+				</div>
+  </body>
+</html>

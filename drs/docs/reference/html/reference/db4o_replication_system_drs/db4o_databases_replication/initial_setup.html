@@ -1,0 +1,118 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Initial Setup</title>
+    <link rel="stylesheet" type="text/css" href="../../../style.css">
+  </head>
+  <body>
+    <div class="CommonContent">
+      <div class="CommonContentArea">
+        <h1>Initial Setup</h1><script>
+//We attach this function to a browser object as a variable so that if multiple of these blocks are
+//present on the same page, then they will simply over-write eachother with the same function instead
+//of generating a naming collision.
+window.WikiCodeFormattingCopyToClipboard = function copyToClipboard(sID){
+	var sContent = document.getElementById(sID).innerText;
+	if( window.clipboardData && clipboardData.setData )
+	{
+		clipboardData.setData("Text", sContent);
+	}
+	else
+	{
+		alert("You must enable javascript access to your clipboard for this feature to work. Please referr to your browser documentation or Google search for instructions.");
+	}
+}
+</script><p>When replicating objects to and from a db4o database, we
+need to enable UUIDs and VersionNumbers. </p>
+
+<p>UUIDs are object IDs that are unique across all databases
+created with&nbsp;db4o. That is achieved by having the database creation
+timestamp as part&nbsp;of its objects UUIDs. The db4o UUID contains two parts.
+The first part contains an object ID. The second part identifies
+the&nbsp;database that originally created this ID.&nbsp; More information on the UUIDs can be found in the <a href="http://developer.db4o.com/Resources/view.aspx/Reference/Implementation_Strategies/IDs_And_UUIDs/Unique_Universal_IDs">db4o
+reference documentation</a>.<br>
+The replication system will use the version number to invisibly tell when an
+object was last replicated,&nbsp;and if any changes have been made to the
+object since it was last replicated. An object's version number&nbsp;indicates
+the last time an object was modified. It is the database version at the moment
+of the modification. </p>
+
+
+
+<span class="cs"></p>
+
+<div class="FormattedSourceCode"><div class="fscHeader"><span class="fscFileName">ReplicationExample.cs: <span class="fscMemberName">ConfigureReplication</span></span></div><div class="fscCode"><pre ID="....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplication_1037_80"><div><!--
+
+Code highlighting produced by Actipro CodeHighlighter (freeware)
+http://www.CodeHighlighter.com/
+
+--><span style="color: #008080;">1</span><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/><span style="color: #0000FF;">public</span><span style="color: #000000;"> </span><span style="color: #0000FF;">static</span><span style="color: #000000;"> </span><span style="color: #0000FF;">void</span><span style="color: #000000;"> ConfigureReplication()
+</span><span style="color: #008080;">2</span><span style="color: #000000;"><img id="....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplication_1037_80_50_216_Open_Image" src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ExpandedBlockStart.gif" align="top" onClick="this.style.display='none'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplication_1037_80_50_216_Open_Text').style.display='none'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplication_1037_80_50_216_Closed_Image').style.display='inline'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplication_1037_80_50_216_Closed_Text').style.display='inline';"/><img id="....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplication_1037_80_50_216_Closed_Image" src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ContractedBlock.gif" align="top" style="display: none;" onClick="this.style.display='none'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplication_1037_80_50_216_Closed_Text').style.display='none'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplication_1037_80_50_216_Open_Image').style.display='inline'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplication_1037_80_50_216_Open_Text').style.display='inline';"/>        </span><span id="....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplication_1037_80_50_216_Closed_Text" style="border: solid 1px #808080; background-color: #FFFFFF; display: none;">...</span><span id="....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplication_1037_80_50_216_Open_Text"><span style="color: #000000;">{
+</span><span style="color: #008080;">3</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/InBlock.gif" align="top"/>            Db4oFactory.Configure().GenerateUUIDs(ConfigScope.GLOBALLY);
+</span><span style="color: #008080;">4</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/InBlock.gif" align="top"/>            Db4oFactory.Configure().GenerateVersionNumbers(ConfigScope.GLOBALLY);
+</span><span style="color: #008080;">5</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ExpandedBlockEnd.gif" align="top"/>        }</span></span></div></pre></div></div>
+
+<p></span>
+
+<span class="vb"></p>
+
+<div class="FormattedSourceCode"><div class="fscHeader"><span class="fscFileName">ReplicationExample.vb: <span class="fscMemberName">ConfigureReplication</span></span></div><div class="fscCode"><pre ID="....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplication_1160_80"><div><!--
+
+Code highlighting produced by Actipro CodeHighlighter (freeware)
+http://www.CodeHighlighter.com/
+
+--><span style="color: #008080;">1</span><img id="....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplication_1160_80_14_209_Open_Image" src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ExpandedBlockStart.gif" align="top" onClick="this.style.display='none'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplication_1160_80_14_209_Open_Text').style.display='none'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplication_1160_80_14_209_Closed_Image').style.display='inline'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplication_1160_80_14_209_Closed_Text').style.display='inline';"/><img id="....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplication_1160_80_14_209_Closed_Image" src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ContractedBlock.gif" align="top" style="display: none;" onClick="this.style.display='none'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplication_1160_80_14_209_Closed_Text').style.display='none'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplication_1160_80_14_209_Open_Image').style.display='inline'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplication_1160_80_14_209_Open_Text').style.display='inline';"/><span style="color: #0000FF;">Public</span><span style="color: #000000;"> </span><span style="color: #0000FF;">Shared</span><span style="color: #000000;"> </span><span id="....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplication_1160_80_14_209_Closed_Text" style="border: solid 1px #808080; background-color: #FFFFFF; display: none;">Sub ConfigureReplication()</span><span id="....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplication_1160_80_14_209_Open_Text"><span style="color: #0000FF;">Sub</span><span style="color: #000000;"> ConfigureReplication()
+</span><span style="color: #008080;">2</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/InBlock.gif" align="top"/>            Db4oFactory.Configure().GenerateUUIDs(ConfigScope.GLOBALLY)
+</span><span style="color: #008080;">3</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/InBlock.gif" align="top"/>            Db4oFactory.Configure().GenerateVersionNumbers(ConfigScope.GLOBALLY)
+</span><span style="color: #008080;">4</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ExpandedBlockEnd.gif" align="top"/>        </span><span style="color: #0000FF;">End Sub</span></span></div></pre></div></div>
+
+<p></span>
+
+<p>The above settings can also be applied to a specific class
+object, which needs to be replicated. This can help to improve the performance
+if only selected classes need to be replicated:</p>
+
+
+
+<span class="cs"></p>
+
+<div class="FormattedSourceCode"><div class="fscHeader"><span class="fscFileName">ReplicationExample.cs: <span class="fscMemberName">ConfigureReplicationPilot</span></span></div><div class="fscCode"><pre ID="....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplicationPilot_1485_85"><div><!--
+
+Code highlighting produced by Actipro CodeHighlighter (freeware)
+http://www.CodeHighlighter.com/
+
+--><span style="color: #008080;">1</span><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/><span style="color: #0000FF;">public</span><span style="color: #000000;"> </span><span style="color: #0000FF;">static</span><span style="color: #000000;"> </span><span style="color: #0000FF;">void</span><span style="color: #000000;"> ConfigureReplicationPilot()
+</span><span style="color: #008080;">2</span><span style="color: #000000;"><img id="....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplicationPilot_1485_85_55_243_Open_Image" src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ExpandedBlockStart.gif" align="top" onClick="this.style.display='none'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplicationPilot_1485_85_55_243_Open_Text').style.display='none'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplicationPilot_1485_85_55_243_Closed_Image').style.display='inline'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplicationPilot_1485_85_55_243_Closed_Text').style.display='inline';"/><img id="....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplicationPilot_1485_85_55_243_Closed_Image" src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ContractedBlock.gif" align="top" style="display: none;" onClick="this.style.display='none'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplicationPilot_1485_85_55_243_Closed_Text').style.display='none'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplicationPilot_1485_85_55_243_Open_Image').style.display='inline'; document.getElementById('....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplicationPilot_1485_85_55_243_Open_Text').style.display='inline';"/>        </span><span id="....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplicationPilot_1485_85_55_243_Closed_Text" style="border: solid 1px #808080; background-color: #FFFFFF; display: none;">...</span><span id="....ReplicationCS.ZipsReplicationExample.Cs_ReplicationExample.Cs_ConfigureReplicationPilot_1485_85_55_243_Open_Text"><span style="color: #000000;">{
+</span><span style="color: #008080;">3</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/InBlock.gif" align="top"/>            Db4oFactory.Configure().ObjectClass(</span><span style="color: #0000FF;">typeof</span><span style="color: #000000;">(Pilot)).GenerateUUIDs(</span><span style="color: #0000FF;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">4</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/InBlock.gif" align="top"/>            Db4oFactory.Configure().ObjectClass(</span><span style="color: #0000FF;">typeof</span><span style="color: #000000;">(Pilot)).GenerateVersionNumbers(</span><span style="color: #0000FF;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">5</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ExpandedBlockEnd.gif" align="top"/>        }</span></span></div></pre></div></div>
+
+<p></span>
+
+<span class="vb"></p>
+
+<div class="FormattedSourceCode"><div class="fscHeader"><span class="fscFileName">ReplicationExample.vb: <span class="fscMemberName">ConfigureReplicationPilot</span></span></div><div class="fscCode"><pre ID="....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplicationPilot_1613_85"><div><!--
+
+Code highlighting produced by Actipro CodeHighlighter (freeware)
+http://www.CodeHighlighter.com/
+
+--><span style="color: #008080;">1</span><img id="....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplicationPilot_1613_85_14_238_Open_Image" src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ExpandedBlockStart.gif" align="top" onClick="this.style.display='none'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplicationPilot_1613_85_14_238_Open_Text').style.display='none'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplicationPilot_1613_85_14_238_Closed_Image').style.display='inline'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplicationPilot_1613_85_14_238_Closed_Text').style.display='inline';"/><img id="....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplicationPilot_1613_85_14_238_Closed_Image" src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ContractedBlock.gif" align="top" style="display: none;" onClick="this.style.display='none'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplicationPilot_1613_85_14_238_Closed_Text').style.display='none'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplicationPilot_1613_85_14_238_Open_Image').style.display='inline'; document.getElementById('....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplicationPilot_1613_85_14_238_Open_Text').style.display='inline';"/><span style="color: #0000FF;">Public</span><span style="color: #000000;"> </span><span style="color: #0000FF;">Shared</span><span style="color: #000000;"> </span><span id="....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplicationPilot_1613_85_14_238_Closed_Text" style="border: solid 1px #808080; background-color: #FFFFFF; display: none;">Sub ConfigureReplicationPilot()</span><span id="....ReplicationVB.ZipsReplicationExample.Vb_ReplicationExample.Vb_ConfigureReplicationPilot_1613_85_14_238_Open_Text"><span style="color: #0000FF;">Sub</span><span style="color: #000000;"> ConfigureReplicationPilot()
+</span><span style="color: #008080;">2</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/InBlock.gif" align="top"/>            Db4oFactory.Configure().ObjectClass(</span><span style="color: #0000FF;">GetType</span><span style="color: #000000;">(Pilot)).GenerateUUIDs(</span><span style="color: #0000FF;">True</span><span style="color: #000000;">)
+</span><span style="color: #008080;">3</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/InBlock.gif" align="top"/>            Db4oFactory.Configure().ObjectClass(</span><span style="color: #0000FF;">GetType</span><span style="color: #000000;">(Pilot)).GenerateVersionNumbers(</span><span style="color: #0000FF;">True</span><span style="color: #000000;">)
+</span><span style="color: #008080;">4</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/ExpandedBlockEnd.gif" align="top"/>        </span><span style="color: #0000FF;">End Sub</span></span></div></pre></div></div>
+
+<p></span>
+
+
+
+
+
+
+
+</div>
+    </div>
+    <div id="footer">
+					This revision (1) was last Modified 2007-07-08T21:16:16 by Tetyana.
+				</div>
+  </body>
+</html>

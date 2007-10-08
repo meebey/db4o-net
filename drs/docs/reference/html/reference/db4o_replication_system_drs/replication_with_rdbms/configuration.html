@@ -1,0 +1,102 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Configuration</title>
+    <link rel="stylesheet" type="text/css" href="../../../style.css">
+  </head>
+  <body>
+    <div class="CommonContent">
+      <div class="CommonContentArea">
+        <h1>Configuration</h1><div id="TOC"><div id="TOCinner"><span class="TOCtitle">Contents</span><div class="TOCcontents"><ul><li><a href ="#hibernate.cfg.xml">hibernate.cfg.xml</a></li><li><a href ="#Manual Creation of dRS Tables And Columns&nbsp;">Manual Creation of dRS Tables And Columns&nbsp;</a></li><li><a href ="#Hibernate Mapping Files&nbsp;">Hibernate Mapping Files&nbsp;</a></li></ul></li></ul></div></div></div><script>
+//We attach this function to a browser object as a variable so that if multiple of these blocks are
+//present on the same page, then they will simply over-write eachother with the same function instead
+//of generating a naming collision.
+window.WikiCodeFormattingCopyToClipboard = function copyToClipboard(sID){
+	var sContent = document.getElementById(sID).innerText;
+	if( window.clipboardData && clipboardData.setData )
+	{
+		clipboardData.setData("Text", sContent);
+	}
+	else
+	{
+		alert("You must enable javascript access to your clipboard for this feature to work. Please referr to your browser documentation or Google search for instructions.");
+	}
+}
+</script><p><font color="#990000">This topic applies to Java version only</font>&nbsp;</p>
+<a name="hibernate.cfg.xml"></a><h2>hibernate.cfg.xml</h2>
+<p>Hibernate requires a xml configuration file (hibernate.cfg.xml) to run.
+In order to run dRS with Hibernate,&nbsp;the user has to set some parameters
+in the configuration file. </p>
+
+<div class="FormattedSourceCode"><div class="fscHeader"><span class="fscFileName">hibernate.cfg.xml</span></div><div class="fscCode"><pre ID="..Hibernate.Zipshibernate.Cfg.Xml_Hibernate.Cfg.Xml_300_44"><div><!--
+
+Code highlighting produced by Actipro CodeHighlighter (freeware)
+http://www.CodeHighlighter.com/
+
+--><span style="color: #008080;">01</span><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">hibernate-configuration</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">     </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">session-factory</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">02</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> Database connection settings </span><span style="color: #008000;">--&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">03</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">property </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;hibernate.connection.driver_class&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">oracle.jdbc.driver.OracleDriver</span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">property</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">04</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">property </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;hibernate.connection.url&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">jdbc:oracle:thin:@ws-peterv:1521:websys</span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">property</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">05</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">property </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;hibernate.connection.username&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">db4o</span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">property</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">06</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">property </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;hibernate.connection.password&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">db4o</span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">property</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">07</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> JDBC connection pool (use the built-in) </span><span style="color: #008000;">--&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">08</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">property </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;hibernate.connection.pool_size&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">1</span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">property</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">09</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> SQL dialect </span><span style="color: #008000;">--&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">10</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">property </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;hibernate.dialect&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">org.hibernate.dialect.OracleDialect</span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">property</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">11</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> Echo all executed SQL to stdout </span><span style="color: #008000;">--&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">12</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">property </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;hibernate.show_sql&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">false</span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">property</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">13</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> Update the database schema if out of date </span><span style="color: #008000;">--&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">14</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">property </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;hibernate.hbm2ddl.auto&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">update</span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">property</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">15</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        
+</span><span style="color: #008080;">16</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>        </span><span style="color: #0000FF;">&lt;</span><span style="color: #800000;">property </span><span style="color: #FF0000;">name</span><span style="color: #0000FF;">=&quot;hibernate.jdbc.batch_size&quot;</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">0</span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">property</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">17</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/>    </span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">session-factory</span><span style="color: #0000FF;">&gt;</span><span style="color: #000000;">
+</span><span style="color: #008080;">18</span><span style="color: #000000;"><img src="../../../Utility/ActiPro.CodeHighligher/OutliningIndicators/None.gif" align="top"/></span><span style="color: #0000FF;">&lt;/</span><span style="color: #800000;">hibernate-configuration</span><span style="color: #0000FF;">&gt;</span></div></pre></div></div>&nbsp;</p>
+
+<p>For the property "hibernate.connection.pool_size", dRS requires only 1
+connection to the RDBMS,&nbsp;increasing it will not have any effect.
+"hibernate.jdbc.batch_size" is set to 0 is for easier debugging.&nbsp;You
+may increase it to batch SQL statements to potentially increase
+performance.</p>
+
+<p>It is a MUST that "hibernate.hbm2ddl.auto" be set to "update" because
+the system will create some extra tables&nbsp;to store the metadata for
+replication to work properly.<code></code></p>
+
+<p><code>&lt;property name="hibernate.hbm2ddl.auto"&gt;update&lt;/property&gt;</code> </p>
+<a name="Manual Creation of dRS Tables And Columns&nbsp;"></a><h2>Manual Creation of dRS Tables And Columns&nbsp;</h2>
+<p>In some situations, you may not have the privilege to create or alter
+tables. You may need to ask your DBA&nbsp;to create the tables for you
+before using dRS.</p>
+<p>You can turn off the automatic creation of dRS tables and columns by
+changing the "hibernate.hbm2ddl.auto"&nbsp;property to "validate" in
+hibernate.cfg.xml. By doing so, dRS will not create or alter any
+tables. Rather,&nbsp;it will check the existence of the dRS tables before
+starting replication. </p>
+<p>If the required dRS tables do not exist, dRS will throw a RuntimeException notifying the user&nbsp;and the replication will halt. </p>
+<a name="Hibernate Mapping Files&nbsp;"></a><h2>Hibernate Mapping Files&nbsp;</h2>
+<p>Persisted Objects are objects that the user wants to store to the database, e.g. cars, pilots, purchase orders.<br>
+For dRS to operate properly, for each persisted object, the user MUST
+declare the primary key column of the database table in the hbm.xml
+mapping file as follow:</p>
+<p><code>&lt;id column="typed_id" type="long"&gt;</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&lt;generator class="native"/&gt;</code><br>
+<code>&lt;/id&gt;</code> <br></p>
+
+<p><br>
+&nbsp;&nbsp;&nbsp;&nbsp;- column - The name of the primary key column. The value can be well-formed string . "typed_id" is recommended.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;- type - MUST be "long"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;- class - MUST be "native"<br>
+The "typed_id" column stores the id used by Hibernate. It allows dRS to
+identify a persisted object by invoking
+org.hibernate.Session#getIdentifier(Object object).</p>
+<p>If you do not define getter/setter for property, make
+default-access="field". default-lazy="false" default-cascade="save-update"&nbsp;is required for replication to work
+properly. Note, you should not set the cascade style to "delete",
+otherwise deletion replication&nbsp;will not work.<br><a title="outline19" class="" name="outline19"></a></p>
+</div>
+    </div>
+    <div id="footer">
+					This revision (2) was last Modified 2007-07-09T14:55:46 by Tetyana.
+				</div>
+  </body>
+</html>
