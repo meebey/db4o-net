@@ -6,7 +6,7 @@ using Db4oAdmin.Core;
 using SodaExpr=Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Nativequery.Expr.Cmp;
-using Db4objects.Db4o.Nativequery.Expr.Cmp.Field;
+using Db4objects.Db4o.Nativequery.Expr.Cmp.Operand;
 using Db4objects.Db4o.Query;
 using Mono.Cecil;
 using Mono.Cecil.Cil;

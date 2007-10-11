@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using Db4objects.Db4o.Nativequery.Expr;
 using Db4objects.Db4o.Nativequery.Expr.Cmp;
-using Db4objects.Db4o.Nativequery.Expr.Cmp.Field;
+using Db4objects.Db4o.Nativequery.Expr.Cmp.Operand;
 using Db4objects.Db4o.Tests.CLI1.NativeQueries;
 using Db4objects.Db4o.Tools.NativeQueries;
 using Db4oUnit;

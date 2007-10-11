@@ -47,12 +47,12 @@ namespace Db4objects.Db4o.Internal.Query
 
 		public event QueryOptimizationFailureHandler QueryOptimizationFailure;
 
-		private Db4objects.Db4o.Instrumentation.INativeClassFactory _classFactory;
+		private Db4objects.Db4o.Instrumentation.Core.INativeClassFactory _classFactory;
 
 		public NativeQueryHandler(IObjectContainer container)
 		{
 			_container = container;
-			_classFactory = new Db4objects.Db4o.Instrumentation.DefaultNativeClassFactory();
+			_classFactory = new Db4objects.Db4o.Instrumentation.Core.DefaultNativeClassFactory();
 		}
 
         public virtual Db4objects.Db4o.IObjectSet Execute(Db4objects.Db4o.Query.IQuery query, Db4objects.Db4o.Query.Predicate predicate, Db4objects.Db4o.Query.IQueryComparator comparator)
