@@ -1,11 +1,14 @@
 using System;
+using System.IO;
 using Db4objects.Db4o;
 
 namespace Db4objects.Db4o.Tutorial.F1
 {
 	public class Util
 	{
-		public readonly static string YapFileName = "formula1.yap";
+		public readonly static string YapFileName = Path.Combine(  
+                               Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),   
+                               "formula1.yap");  
 		
 		public readonly static int ServerPort = 0xdb40;
 		
