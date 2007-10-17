@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 using Db4objects.Db4o.Activation;
-using Db4objects.Db4o.Tests.Common.TA.Collections.Internal;
+using Db4objects.Db4o.Tests.Common.TA.Collections;
 
 namespace Db4objects.Db4o.Tests.Common.TA
 {
