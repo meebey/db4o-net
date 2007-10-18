@@ -22,6 +22,7 @@ namespace Db4oAdmin.Tests
 					typeof(NQ.PredicateBuildTimeOptimizationTestCase),
 					typeof(NQ.UnoptimizablePredicatesTestCase),
 					typeof(TA.TAInstrumentationTestCase),
+                    typeof(TA.TAInstrumentationAppliedMoreThanOnce),
 				};
 		}
 	}

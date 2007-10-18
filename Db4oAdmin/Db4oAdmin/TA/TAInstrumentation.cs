@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Db4oAdmin.Core;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
+using Db4objects.Db4o.Internal;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using FieldAttributes=Mono.Cecil.FieldAttributes;
@@ -12,21 +13,62 @@ namespace Db4oAdmin.TA
 {   
 	public class TAInstrumentation : AbstractAssemblyInstrumentation
 	{
-		public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
+        private CustomAttribute _instrumentationAttribute;
+        private const string IT_TRANSPARENT_ACTIVATION = "TA";
+        public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
 		private CecilReflector _reflector;
 
-		protected override void BeforeAssemblyProcessing()
+        protected override void BeforeAssemblyProcessing()
 		{
 			_reflector = new CecilReflector(_context);
-		}
+            CreateTagAttribute();
+        }
 
 		protected override void ProcessModule(ModuleDefinition module)
 		{
-			ProcessTypes(module.Types, MakeActivatable);
+            if (AlreadyTAInstrumented())
+            {
+                _context.TraceWarning("Assembly already instrumented for Transparent Activation.");
+                return;
+            }
+            MarkAsInstrumented();
+
+            ProcessTypes(module.Types, MakeActivatable);
 			ProcessTypes(module.Types, NoFiltering, ProcessMethods);
 		}
 
-		private void MakeActivatable(TypeDefinition type)
+        private void CreateTagAttribute()
+        {
+            _instrumentationAttribute = new CustomAttribute(ImportConstructor(typeof(TagAttribute)));
+            _instrumentationAttribute.ConstructorParameters.Add(IT_TRANSPARENT_ACTIVATION);
+        }
+
+        private MethodReference ImportConstructor(System.Type type)
+        {
+            return _context.Import(type.GetConstructor(new System.Type[] { typeof(string) }));
+        }
+
+        private bool IsTATag(CustomAttribute ca)
+        {
+            return ca.Constructor.DeclaringType == _instrumentationAttribute.Constructor.DeclaringType &&
+                   ca.Constructor.Parameters.Count == 1;
+        }
+        private bool AlreadyTAInstrumented()
+        {
+            foreach (CustomAttribute ca in _context.Assembly.CustomAttributes)
+            {
+                if (IsTATag(ca)) return true;
+            }
+
+            return false;
+        }
+
+        private void MarkAsInstrumented()
+        {
+            _context.Assembly.CustomAttributes.Add(_instrumentationAttribute);
+        }
+
+        private void MakeActivatable(TypeDefinition type)
 		{
 			if (!RequiresTA(type)) return;
 			if (ImplementsActivatable(type)) return;

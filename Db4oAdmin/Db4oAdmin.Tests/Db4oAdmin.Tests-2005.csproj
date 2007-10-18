@@ -65,6 +65,7 @@
     <EmbeddedResource Include="Core\Resources\ByNotAttributeInstrumentationSubject.cs" />
     <EmbeddedResource Include="Core\Resources\PreserveDebugInfoSubject.cs" />
     <Compile Include="Core\PreserveDebugInfoTestCase.cs" />
+    <Compile Include="Core\ResourceServices.cs" />
     <Compile Include="Core\ShellUtilities.cs" />
     <Compile Include="Core\SingleResourceTestCase.cs" />
     <Compile Include="Core\VerifyAssemblyTest.cs" />
@@ -78,6 +79,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="TA\Resources\TAInstrumentationSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TAAssemblyReferenceSubject.cs" />
+    <EmbeddedResource Include="TA\Resources\TADoubleInstrumentationSubject.cs" />
+    <Compile Include="TA\TAInstrumentationAppliedMoreThanOnceCOR-918.cs" />
     <Compile Include="TA\TAInstrumentationTestCase.cs" />
   </ItemGroup>
   <ItemGroup>

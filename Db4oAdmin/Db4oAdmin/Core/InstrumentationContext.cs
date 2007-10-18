@@ -11,23 +11,35 @@ namespace Db4oAdmin.Core
 		private AssemblyDefinition _assembly;
 		private Configuration _configuration;
 
-		public InstrumentationContext(Configuration configuration)
+        public InstrumentationContext(Configuration configuration, AssemblyDefinition assembly)
+        {
+            _configuration = configuration;
+            SetupAssembly(assembly);
+
+        }
+
+        public InstrumentationContext(Configuration configuration)
 		{
 			_configuration = configuration;
-			LoadAssembly();
+			SetupAssembly(LoadAssembly());
 		}
 
-		private void LoadAssembly()
+        private AssemblyDefinition LoadAssembly()
 		{
-			_assembly = AssemblyFactory.GetAssembly(_configuration.AssemblyLocation);
-			if (PreserveDebugInfo())
-			{
-				_assembly.MainModule.LoadSymbols();
-			}
-			_assembly.MainModule.FullLoad(); // resolves all references
-		}
+			return AssemblyFactory.GetAssembly(_configuration.AssemblyLocation);
+        }
 
-		public Configuration Configuration
+        private void SetupAssembly(AssemblyDefinition assembly)
+        {
+            _assembly = assembly;
+            if (PreserveDebugInfo())
+            {
+                _assembly.MainModule.LoadSymbols();
+            }
+            _assembly.MainModule.FullLoad(); // resolves all references
+        }
+
+        public Configuration Configuration
 		{
 			get { return _configuration; }
 		}

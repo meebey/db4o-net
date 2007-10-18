@@ -62,7 +62,23 @@ namespace Db4oAdmin.Tests.Core
 			}
 		}
 
-		static string GetErrorString(CompilerErrorCollection errors)
+        public static string EmitAssemblyFromResource(string resourceName, params Assembly[] references)
+        {
+            string assemblyFileName = Path.Combine(ShellUtilities.GetTempPath(), resourceName + ".dll");
+            string sourceFileName = Path.Combine(ShellUtilities.GetTempPath(), resourceName);
+            File.WriteAllText(sourceFileName, ResourceServices.GetResourceAsString(resourceName));
+            DeleteAssemblyAndPdb(assemblyFileName);
+            EmitAssembly(assemblyFileName, references, sourceFileName);
+            return assemblyFileName;
+        }
+
+        private static void DeleteAssemblyAndPdb(string path)
+        {
+            ShellUtilities.DeleteFile(Path.ChangeExtension(path, ".pdb"));
+            ShellUtilities.DeleteFile(path);
+        }
+
+        static string GetErrorString(CompilerErrorCollection errors)
 		{
 			StringBuilder builder = new StringBuilder();
 			foreach (CompilerError error in errors)

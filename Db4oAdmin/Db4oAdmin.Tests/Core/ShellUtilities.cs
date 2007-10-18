@@ -110,5 +110,40 @@ namespace Db4oAdmin.Tests.Core
 			}
 			return args;
 		}
+
+        public static void CopyParentAssemblyToTemp(Type type)
+        {
+            CopyAssemblyToTemp(type.Assembly);
+        }
+
+        public static void CopyAssemblyToTemp(Assembly assembly)
+        {
+            CopyToTemp(assembly.ManifestModule.FullyQualifiedName);
+        }
+
+        public static string CopyToTemp(string fname)
+        {
+            return ShellUtilities.CopyFileToFolder(fname, GetTempPath());
+        }
+
+        public static string GetTempPath()
+        {
+            //			return Path.GetTempPath();
+
+            // for now, debugging information is only
+            // preserved when the directory name does not contain
+            // UTF character because of some bug, so
+            // let's keep it simple
+            string tempPath = Path.Combine(
+                Directory.GetDirectoryRoot(Directory.GetCurrentDirectory()),
+                "tmp");
+            Directory.CreateDirectory(tempPath);
+            return tempPath;
+        }
+
+        public static void DeleteFile(string fname)
+        {
+            if (File.Exists(fname)) File.Delete(fname);
+        }
 	}
 }

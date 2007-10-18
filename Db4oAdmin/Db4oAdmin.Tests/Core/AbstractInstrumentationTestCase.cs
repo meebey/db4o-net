@@ -132,17 +132,6 @@ namespace Db4oAdmin.Tests.Core
             }
         }
 
-		private void DeleteAssemblyAndPdb(string path)
-		{	
-			DeleteFile(Path.ChangeExtension(path, ".pdb"));
-			DeleteFile(path);
-		}
-
-		private void DeleteFile(string fname)
-		{
-			if (File.Exists(fname)) File.Delete(fname);
-		}
-
 		protected string TestSuiteLabel
 		{
 			get { return GetType().FullName;  }
@@ -162,15 +151,7 @@ namespace Db4oAdmin.Tests.Core
 			throw new ApplicationException(args.Reason.Message, args.Reason);
 		}
 
-		private static string GetResourceAsString(string resourceName)
-		{
-			using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
-			{
-				return new StreamReader(stream).ReadToEnd();
-			}
-		}
-		
-		private Type GetTestCaseType(string assemblyName, string resource)
+        private Type GetTestCaseType(string assemblyName, string resource)
 		{
 			Assembly assembly = Assembly.LoadFrom(assemblyName);
 			return assembly.GetType(resource, true);
@@ -185,24 +166,19 @@ namespace Db4oAdmin.Tests.Core
 			handler.QueryOptimizationFailure += OnQueryOptimizationFailure;
 			return container;
 		}
-		
-		protected string EmitAssemblyFromResource(string resource, Assembly[] references)
-		{
-			CopyDependenciesToTemp();
-			string assemblyFileName = Path.Combine(GetTempPath(), resource + ".dll");
-			string resourceName = GetType().Namespace + ".Resources." + resource + ".cs";
-			string sourceFileName = Path.Combine(Path.GetTempPath(), resourceName);
-			File.WriteAllText(sourceFileName, GetResourceAsString(resourceName));
-			DeleteAssemblyAndPdb(assemblyFileName);
-			CompilationServices.EmitAssembly(assemblyFileName, references, sourceFileName);
-			return assemblyFileName;
-		}
+
+        protected string EmitAssemblyFromResource(string resource, Assembly[] references)
+        {
+            CopyDependenciesToTemp();
+            string resourceName = ResourceServices.CompleteResourceName(GetType(), resource);
+            return CompilationServices.EmitAssemblyFromResource(resourceName, references);
+        }
 
 		virtual protected void CopyDependenciesToTemp()
 		{
 			foreach (Assembly dependency in Dependencies)
 			{
-				CopyAssemblyToTemp(dependency);
+				ShellUtilities.CopyAssemblyToTemp(dependency);
 			}
 		}
 
@@ -217,36 +193,6 @@ namespace Db4oAdmin.Tests.Core
 						GetType().Assembly
 					};
 			}
-		}
-
-		protected static void CopyParentAssemblyToTemp(Type type)
-		{
-			CopyAssemblyToTemp(type.Assembly);
-		}
-
-		private static void CopyAssemblyToTemp(Assembly assembly)
-		{
-			CopyToTemp(assembly.ManifestModule.FullyQualifiedName);
-		}
-
-		private static string CopyToTemp(string fname)
-		{
-			return ShellUtilities.CopyFileToFolder(fname, GetTempPath());
-		}
-
-		private static string GetTempPath()
-		{
-//			return Path.GetTempPath();
-
-			// for now, debugging information is only
-			// preserved when the directory name does not contain
-			// UTF character because of some bug, so
-			// let's keep it simple
-			string tempPath = Path.Combine(
-				Directory.GetDirectoryRoot(Directory.GetCurrentDirectory()),
-				"tmp");
-			Directory.CreateDirectory(tempPath);
-			return tempPath;
 		}
 	}
 }
