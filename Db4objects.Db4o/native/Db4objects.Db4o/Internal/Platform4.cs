@@ -414,12 +414,12 @@ namespace Db4objects.Db4o.Internal
             {
                 return false;
             }
-            NetClass netClass = claxx.GetDelegate() as NetClass;
+            System.Type netClass = GetNetType(claxx);
             if (netClass == null)
             {
                 return false;
             }
-            return netClass.GetNetType().IsValueType;
+            return netClass.IsValueType;
         }
 
         internal static void KillYapRef(Object obj)

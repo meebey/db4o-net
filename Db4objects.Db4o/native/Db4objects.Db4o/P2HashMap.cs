@@ -216,11 +216,6 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		public override int ActivationDepth()
-		{
-			return 2;
-		}
-
 		public override int AdjustReadDepth(int i)
 		{
 			return 2;

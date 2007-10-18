@@ -182,7 +182,7 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		private static bool CanCreate(Type type)
 		{
-			return !type.IsAbstract && !type.IsInterface;
+			return !type.IsAbstract;
 		}
 
 		public virtual System.Type GetNetType()
