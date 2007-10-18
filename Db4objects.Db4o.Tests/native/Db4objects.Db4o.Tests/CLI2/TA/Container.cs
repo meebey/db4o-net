@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		}
 	}
 
+#if NET_2_0 || CF_2_0
 	class NullableContainer<T> : Named where T : struct
 	{
 		private T? _value;
@@ -93,4 +94,5 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 			get { return _value; }
 		}
 	}
+#endif
 }
