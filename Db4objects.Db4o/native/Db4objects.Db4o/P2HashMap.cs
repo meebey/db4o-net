@@ -216,11 +216,6 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		public override int AdjustReadDepth(int i)
-		{
-			return 2;
-		}
-
 		public override void CheckActive()
 		{
 			base.CheckActive();

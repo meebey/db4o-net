@@ -264,11 +264,6 @@ namespace Db4objects.Db4o
 			return false;
 		}
 
-		public override int AdjustReadDepth(int i)
-		{
-			return 1;
-		}
-
 		protected void CheckLastAndUpdate(P1ListElement a_previous, P1ListElement a_added)
 		{
 			if (i_last == a_previous)
