@@ -7,7 +7,8 @@ using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.Tests.CLI2.TA
 {
-#if NET_2_0 || CF_2_0
+// FIXME: it should be: #if NET_2_0 || CF_2_0
+#if NET_2_0
 	using StringIntP = Pair<string, int>;
 	using IntC = Container<int>;
 	using IntCStringIntP = Pair<Container<int>, Pair<string, int>>;
@@ -61,9 +62,9 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		public void TestDepth1()
 		{
 			IntCStringIntIntPC root = GetRoot();
-			Assert.AreEqual("root", root.Name, "ta");
-			Assert.IsNotNull(root.Value.First, "ta");
-			Assert.AreEqual(42, root.Value.Second, "ta");
+			Assert.AreEqual("root", root.Name, "root.Name");
+			Assert.IsNotNull(root.Value.First, "root.Value.First");
+			Assert.AreEqual(42, root.Value.Second, "root.Value.Second");
 
 			ValueTypeActivationTestCase.NotActivated(root.Value.First);
 		}
