@@ -409,26 +409,6 @@ namespace Db4objects.Db4o
 			return false;
 		}
 
-		public override void ReplicateFrom(Object obj)
-		{
-			CheckActive();
-			P2ListElementIterator i = Iterator4();
-			while (i.HasNext())
-			{
-				P1ListElement elem = i.NextElement();
-				elem.Delete(false);
-			}
-			i_first = null;
-			i_last = null;
-			P2LinkedList l4 = (P2LinkedList)obj;
-			i = l4.Iterator4();
-			while (i.HasNext())
-			{
-				Add4(i.NextElement());
-			}
-			UpdateInternal();
-		}
-
 		protected int Size4()
 		{
 			int size = 0;
@@ -446,13 +426,6 @@ namespace Db4objects.Db4o
 			if (GetTrans() == null)
 			{
 				SetTrans(transaction);
-			}
-			else
-			{
-				if (transaction != GetTrans())
-				{
-					return Replicate(GetTrans(), transaction);
-				}
 			}
 			return this;
 		}

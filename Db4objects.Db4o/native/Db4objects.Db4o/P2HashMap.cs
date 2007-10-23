@@ -527,13 +527,6 @@ namespace Db4objects.Db4o
 				this.SetTrans(transaction);
 				Modified();
 			}
-			else
-			{
-				if (transaction != this.GetTrans())
-				{
-					return Replicate(GetTrans(), transaction);
-				}
-			}
 			return this;
 		}
 	}
