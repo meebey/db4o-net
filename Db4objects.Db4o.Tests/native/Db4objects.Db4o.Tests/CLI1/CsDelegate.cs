@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Tests.CLI1
         {
             DeleteAllInstances(typeof(OnActivateEventStrategy));
             Store(new OnActivateEventStrategy());
-            Fixture().Reopen();
+            Fixture().Reopen(GetType());
 
             OnActivateEventStrategy.Prepare();
             OnActivateEventStrategy obj = (OnActivateEventStrategy)Db().Get(typeof(OnActivateEventStrategy)).Next();

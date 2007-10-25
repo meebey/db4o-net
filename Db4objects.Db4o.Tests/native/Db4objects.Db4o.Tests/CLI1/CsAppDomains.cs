@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 			finally
 			{
 				AppDomain.Unload(domain);
-				Fixture().Open();
+				Fixture().Open(GetType());
 			}
 		}
 	    
