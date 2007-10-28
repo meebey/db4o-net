@@ -17,11 +17,7 @@ namespace Sharpen
 		{
 			get
 			{
-#if CF_1_0
-				return CompactFramework1Console.Out;
-#else
 				return Console.Out;
-#endif
 			}
 		}
 
@@ -29,11 +25,7 @@ namespace Sharpen
 		{
 			get
 			{
-#if CF_1_0
-				return CompactFramework1Console.Error;
-#else
 				return Console.Error;
-#endif
 			}
 		}
 
@@ -148,7 +140,7 @@ namespace Sharpen
 
 		public static String GetProperty(String key, String defaultValue)
 		{
-#if CF_1_0 || CF_2_0
+#if CF_2_0
 			return key.Equals("line.separator") ? "\n" : defaultValue;
 #else
 			return key.Equals("line.separator")
@@ -159,7 +151,7 @@ namespace Sharpen
 
 		public static string GetEnvironmentVariable(string variableName, string defaultValue)
 		{
-#if CF_1_0 || CF_2_0
+#if CF_2_0
 			return defaultValue;
 #else
 			string value = Environment.GetEnvironmentVariable(variableName);
@@ -190,21 +182,21 @@ namespace Sharpen
 
 		public static void Wait(object obj, long timeout) 
 		{
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 			Monitor.Wait(obj, (int) timeout);
 #endif
 		}
 
 		public static void Notify(object obj) 
 		{
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 			Monitor.Pulse(obj);
 #endif
 		}
 
 		public static void NotifyAll(object obj) 
 		{
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 			Monitor.PulseAll(obj);
 #endif
 		}

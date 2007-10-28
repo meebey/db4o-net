@@ -7,7 +7,7 @@ namespace Db4oUnit
 
 	public class TestPlatform
 	{
-#if CF_1_0 || CF_2_0
+#if CF_2_0
         public static string NEWLINE = "\n";
 #else
 	    public static string NEWLINE = Environment.NewLine;
@@ -18,13 +18,11 @@ namespace Db4oUnit
 
         public static TextWriter Error;
         
-#if !CF_1_0
 		static TestPlatform()
 		{
 			Out = Console.Out;
             Error = Console.Error;
 		}
-#endif
 		
 		public static void PrintStackTrace(TextWriter writer, Exception e)
 		{

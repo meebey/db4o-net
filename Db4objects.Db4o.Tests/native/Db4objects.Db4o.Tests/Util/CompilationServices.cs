@@ -1,7 +1,7 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 namespace Db4objects.Db4o.Tests.Util
 {
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 	using System;
 	using System.CodeDom.Compiler;
 	using System.IO;

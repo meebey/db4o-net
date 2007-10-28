@@ -9,7 +9,7 @@ using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests
 {
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 	public class ShutdownMultipleContainer : ITestLifeCycle
 	{
 		private static readonly string _firstFile = "first.db4o";

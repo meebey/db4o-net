@@ -16,15 +16,7 @@ namespace Sharpen.Lang
 		public static TypeReference FromType(System.Type type)
 		{
 			if (null == type) throw new ArgumentNullException("type");
-#if CF_1_0
-			StringBuilder builder = new StringBuilder();
-			builder.Append(type.FullName);
-			builder.Append(", ");
-			builder.Append(type.Assembly.FullName);
-			return FromString(builder.ToString());
-#else
 			return FromString(type.AssemblyQualifiedName);
-#endif
 		}
 
 		public abstract string SimpleName
@@ -142,7 +134,7 @@ namespace Sharpen.Lang
 
 		private Assembly LoadUnversionedAssembly(AssemblyName unversioned)
 		{	
-#if CF_1_0 || CF_2_0
+#if CF_2_0
             return Assembly.Load(unversioned);
 #else
 			Assembly found = Assembly.LoadWithPartialName(unversioned.FullName);

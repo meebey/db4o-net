@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Util
 	{
 		public static bool CanRunJavaCompatibilityTests()
 		{
-#if CF_1_0 || CF_2_0 
+#if CF_2_0 
 			return false;
 #else
 			if (null == WorkspaceServices.WorkspaceRoot)
@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public static string javac(string srcFile)
 		{
-#if CF_1_0 || CF_2_0 
+#if CF_2_0 
             return null;
 #else
 			string jarPath = JavaServices.Db4ojarPath();
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public static string java(string className, params string[] args)
 		{
-#if CF_1_0 || CF_2_0
+#if CF_2_0
             return null;
 #else
             return IOServices.Exec(WorkspaceServices.JavaPath(),

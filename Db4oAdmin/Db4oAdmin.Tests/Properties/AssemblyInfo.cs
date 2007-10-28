@@ -17,6 +17,6 @@ using System.Security;
 
 [assembly: AssemblyVersion("5.7.001")]
 
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 [assembly: AllowPartiallyTrustedCallers]
 #endif

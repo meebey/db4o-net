@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
     /// </summary>
     public class JavaFromNetAliasesTestCase : BaseAliasesTestCase, IOptOutCS
     {
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
         public void TestAccessingJavaFromDotnet()
         {
             if (!JavaServices.CanRunJavaCompatibilityTests())

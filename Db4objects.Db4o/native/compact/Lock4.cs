@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Db4objects.Db4o.Foundation
 {
-#if CF_1_0 || CF_2_0
+#if CF_2_0
     public class Lock4
     {
         private volatile Thread lockedByThread;

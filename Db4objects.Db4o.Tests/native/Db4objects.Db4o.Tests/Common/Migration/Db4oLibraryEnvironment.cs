@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			_assemblyName = Path.GetFileNameWithoutExtension(_assembly);
         }
 
-#if !CF_1_0 && !CF_2_0        
+#if !CF_2_0        
 		public void Execute()
 		{
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		public Db4oLibraryEnvironment(File file, File additionalAssembly)
 		{
 			_targetAssembly = file.GetAbsolutePath();
-#if !CF_1_0 && !CF_2_0        
+#if !CF_2_0        
 			_domain = SetUpDomain();
 			SetUpLegacyAdapter();
 #endif
@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		{
 			return IOServices.BuildTempPath("migration-domain-" + Version());
 		}
-#if !CF_1_0 && !CF_2_0        
+#if !CF_2_0        
 
         private AppDomain SetUpDomain()
 		{
@@ -152,7 +152,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		public void InvokeInstanceMethod(Type type, string methodName, params object[] args)
 		{
-#if !CF_1_0 && !CF_2_0        
+#if !CF_2_0        
 			_domain.DoCallBack(new CrossAppDomainDelegate(new InvokeInstanceMethod(ReflectPlatform.FullyQualifiedName(type), methodName, args).Execute));
 #endif
         }

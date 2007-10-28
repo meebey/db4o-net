@@ -44,7 +44,7 @@ namespace Sharpen.Lang
 		public void SetName(string name)
 		{
 			this._name = name;
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 			if (_thread != null && name != null)
 			{
 				try
@@ -60,7 +60,7 @@ namespace Sharpen.Lang
 
 		public string GetName()
 		{
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 			return _thread != null ? _thread.Name : _name;
 #else
 			return "";
@@ -73,7 +73,7 @@ namespace Sharpen.Lang
 			if (priority < MIN_PRIORITY || priority > MAX_PRIORITY)
 			{
 				string message = string.Format("Thread priority must be between {0} and {1}", MIN_PRIORITY, MAX_PRIORITY);
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 				throw new ArgumentOutOfRangeException("priority", priority, message);
 #else
 				throw new ArgumentOutOfRangeException(message);
@@ -96,9 +96,7 @@ namespace Sharpen.Lang
 		public void Start()
 		{
 			_thread = new System.Threading.Thread(new System.Threading.ThreadStart(EntryPoint));
-#if !CF_1_0
 			_thread.IsBackground = _isDaemon;
-#endif
 			if (_name != null)
 			{
 				SetName(_name);
@@ -108,9 +106,7 @@ namespace Sharpen.Lang
 
 		public void Join() 
 		{
-#if !CF_1_0
 			_thread.Join();
-#endif		
 		}
 		
 		public void SetDaemon(bool isDaemon)

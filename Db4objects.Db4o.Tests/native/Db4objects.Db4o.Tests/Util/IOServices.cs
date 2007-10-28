@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Util
 	{
 		public static string FindParentDirectory(string path)
 		{
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 			string parent = Path.GetFullPath("..");
 			while (true)
 			{
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Tests.Util
             return "\"" + s + "\"";
         }
 		
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 		public static string Exec(string program, params string[] arguments)
 		{
 			return Exec(program, JoinQuotedArgs(arguments));

@@ -24,7 +24,6 @@ namespace Sharpen.Net
 	    private static IPAddress Resolve(string hostName)
 	    {
 	        IPHostEntry found = Dns.Resolve(hostName);
-#if !CF_1_0
 	        foreach (IPAddress address in found.AddressList)
 	        {
                 if (address.AddressFamily == AddressFamily.InterNetwork)
@@ -33,9 +32,6 @@ namespace Sharpen.Net
                 }
 	        }
 	        throw new IOException("couldn't find suitable address for name '" + hostName + "'");
-#else
-            return found.AddressList[0];
-#endif
 	    }
 
 	    public Socket(NativeSocket socket)
@@ -64,7 +60,7 @@ namespace Sharpen.Net
 
 			NetworkStream stream = new NetworkStream(_delegate);
 
-#if CF_1_0 || CF_2_0
+#if CF_2_0
 			_in = new SocketInputStream(this);
 #else
 			_in = new InputStream(stream);
@@ -72,7 +68,7 @@ namespace Sharpen.Net
 			_out = new OutputStream(stream);
 		}
 	}
-#if CF_1_0 || CF_2_0
+#if CF_2_0
 	internal class SocketInputStream : IInputStream
     {
     	private readonly Socket _socket;

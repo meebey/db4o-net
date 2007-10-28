@@ -5,7 +5,7 @@ using Db4objects.Db4o.Tests.CLI1.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
     class Db4oNETMigrationTestSuite : Db4oMigrationTestSuite
     {
         protected override Type[] TestCases()

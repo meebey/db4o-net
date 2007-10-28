@@ -23,7 +23,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Db4objects.Drs.QuickStart")]
-[assembly: AssemblyDescription("Db4objects.Drs.QuickStart 6.4.11.7775 (.NET 2.0)")]
+[assembly: AssemblyDescription("Db4objects.Drs.QuickStart 6.4.14.8112 (.NET 2.0)")]
 [assembly: AssemblyConfiguration(".NET 2.0")]
 [assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
 [assembly: AssemblyProduct("dRS QuickStart")]
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("6.4.11.7775")]
+[assembly: AssemblyVersion("6.4.14.8112")]

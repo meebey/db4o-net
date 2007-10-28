@@ -11,11 +11,11 @@ using System.Security;
 [assembly: AssemblyCopyright("db4o 2005 - 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]	
-[assembly: AssemblyVersion("6.4.000")]
+[assembly: AssemblyVersion("6.5.000")]
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]
 
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 [assembly: AllowPartiallyTrustedCallers]
 #endif

@@ -25,7 +25,7 @@ namespace Sharpen.Lang
 		{
 			Assembly assembly = typeof(object).Assembly;
 
-	#if CF_1_0 || CF_2_0
+	#if CF_2_0
 			// CompactFramework
 			try
 			{

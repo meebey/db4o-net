@@ -61,9 +61,7 @@ namespace Db4objects.Db4o.Tests.SharpenLang
 			TypeReference voidPointer = TypeReference.FromString("System.Void*");
 			Assert.AreEqual("System.Void", voidPointer.SimpleName);
 			Assert.IsTrue(voidPointer is PointerTypeReference);
-#if !CF_1_0
             Assert.AreEqual(Type.GetType("System.Void*", true), voidPointer.Resolve());
-#endif
         }
 
         public void TestNestedType()
@@ -130,7 +128,7 @@ namespace Db4objects.Db4o.Tests.SharpenLang
             EnsureRoundtrip(typeof(byte[][]));
         }
 
-#if (MONO || CF_1_0)
+#if MONO
         public void _TestJaggedXDArray() { 
 #else
 		public void TestJaggedXDArray() 

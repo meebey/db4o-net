@@ -18,6 +18,6 @@ using System.Security;
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyDescription("db4o 6.0.001 .NET")]
 
-#if !CF_1_0 && !CF_2_0
+#if !CF_2_0
 [assembly: AllowPartiallyTrustedCallers]
 #endif

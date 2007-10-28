@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		private static void NotActivated<T>(NullableContainer<T> container) where T : struct
 		{
 			Assert.IsNull(container.PassThroughName, "depth(0) shouldn't activate ref member");
-			Assert.AreEqual(default(T?), container.PassThroughValue, "depth(0) shouldn't activate nested value types");
+			Assert.IsFalse(container.PassThroughValue.HasValue, "depth(0) shouldn't activate nested value types");
 		}
 	}
 #endif
