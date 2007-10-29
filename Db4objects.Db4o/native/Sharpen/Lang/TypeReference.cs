@@ -208,6 +208,7 @@ namespace Sharpen.Lang
 			if (rank == 1) return elementType.MakeArrayType();
 			return elementType.MakeArrayType(rank);
 #else
+			if (rank == 1) return Array.CreateInstance(elementType, 0).GetType();
 			return Array.CreateInstance(elementType, new int[rank]).GetType();
 #endif
 		}

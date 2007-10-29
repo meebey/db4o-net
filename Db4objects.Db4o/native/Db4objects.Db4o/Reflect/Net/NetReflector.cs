@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		}
 
 		private static Type GetUnderlyingType(Type type)
-        {
+        {	
             Type underlyingType = Nullable.GetUnderlyingType(type);
             if (underlyingType != null)
             {

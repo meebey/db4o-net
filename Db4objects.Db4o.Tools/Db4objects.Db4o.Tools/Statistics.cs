@@ -1,11 +1,11 @@
 ﻿/* Copyright (C) 2004-2006   db4objects Inc.   http://www.db4o.com */
 
+using Db4objects.Db4o.Reflect;
+
 namespace Db4oTools {
 
 	using System;
 	
-	using Sharpen.Lang;
-
 	using Db4objects.Db4o;
 	using Db4objects.Db4o.Ext;
 	using Db4objects.Db4o.Internal;
@@ -61,14 +61,13 @@ namespace Db4oTools {
             IStoredClass[] internalClasses = con.Ext().StoredClasses();
             for (int i1 = 0; i1 < internalClasses.Length; i1++) {
                 try { 
-                    Class clazz1 = Class.ForName(internalClasses[i1].GetName());
+                    IReflectClass clazz1 = con.Ext().Reflector().ForName(internalClasses[i1].GetName());
                     try { 
                         clazz1.NewInstance();
-                                
-                    }  catch (Exception th) { 
+                    }  catch (Exception) { 
                         noConstructor = noConstructor.Add(new TreeString(internalClasses[i1].GetName()));
                     }
-                }  catch (Exception t) { 
+                }  catch (Exception) { 
                     unavailable = unavailable.Add(new TreeString(internalClasses[i1].GetName()));
                                          
                 }
