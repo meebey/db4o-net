@@ -137,7 +137,11 @@ namespace Db4objects.Db4o.Tests.SharpenLang
         {
         }
 
+#if CF_2_0
+		public void _TestDeepGenericTypeName()
+#else
         public void TestDeepGenericTypeName()
+#endif
         {
             EnsureRoundtrip(typeof(Dictionary<string, List<string>>));
             EnsureRoundtrip(typeof(Dictionary<string, List<List<string>>>));
