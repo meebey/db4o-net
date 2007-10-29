@@ -105,8 +105,6 @@ namespace Db4objects.Db4o.Tests.CLI1
         {
             get
             {
-#if NET_2_0
-                #region .NET 2.0 version
                 return @"
 using System;
 using System.IO;
@@ -154,54 +152,6 @@ public class Tester
 	}
 }
             ";
-                #endregion
-#else
-                #region .NET 1.1 version
-				return @"
-using System;
-using System.IO;
-using Db4objects.Db4o;
-
-public class ST
-{
-	public int value;
-
-	public ST(int value)
-	{
-		this.value = value;
-	}
-}
-
-public class Tester
-{
-	public static void Store(string fname)
-	{
-		using (IObjectContainer container = Db4oFactory.OpenFile(fname))
-		{
-			container.Set(new ST(42));
-		}
-	}
-	
-	public static void Load(string fname)
-	{
-		using (IObjectContainer container = Db4oFactory.OpenFile(fname))
-		{
-			IObjectSet os = container.Get(typeof(ST));
-			AssertEquals(1, os.Size());
-		}
-	}
-	
-	static void AssertEquals(object expected, object actual)
-	{
-		if (!Object.Equals(expected, actual))
-		{
-			throw new ApplicationException();
-		}
-	}
-}
-            ";
-                #endregion
-#endif
 
             }
         }

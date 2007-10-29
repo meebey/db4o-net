@@ -190,7 +190,7 @@ namespace Sharpen.Lang
 
 		public override Type Resolve()
 		{
-#if NET_2_0
+#if !CF_2_0
 			return _elementType.Resolve().MakePointerType();
 #else
 			StringBuilder builder = new StringBuilder();
@@ -204,7 +204,7 @@ namespace Sharpen.Lang
 	{
 		public static Type MakeArrayType(Type elementType, int rank)
 		{
-#if NET_2_0
+#if !CF_2_0
 			if (rank == 1) return elementType.MakeArrayType();
 			return elementType.MakeArrayType(rank);
 #else
@@ -259,14 +259,10 @@ namespace Sharpen.Lang
 
 		public override Type Resolve()
 		{
-#if NET_2_0 || CF_2_0
 			Type baseType = base.Resolve();
 			return _genericArguments.Length > 0
 				? baseType.MakeGenericType(Resolve(_genericArguments))
 				: baseType;
-#else
-			throw new System.NotSupportedException();
-#endif
 		}
 
 		Type[] Resolve(TypeReference[] typeRefs)

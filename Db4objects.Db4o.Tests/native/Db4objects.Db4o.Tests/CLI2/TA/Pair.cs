@@ -3,7 +3,6 @@ using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.CLI2.TA
 {
-#if NET_2_0 || CF_2_0
 	struct Pair<T0, T1> where T1: struct
 	{
 		public T0 First;
@@ -15,5 +14,4 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 			Second = second;
 		}
 	}
-#endif
 }

@@ -13,9 +13,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
             public object _untyped;
 
-#if NET_2_0 || CF_2_0
 			public sbyte? _nullablePrimitive;
-#endif
         }
 
         public class ItemArrays
@@ -24,9 +22,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
             public object _primitiveArrayInObject;
 
-#if NET_2_0 || CF_2_0
 			public sbyte?[] _nullableTypedPrimitiveArray;
-#endif
         }
 
         private static readonly sbyte[] data = new sbyte[] {
@@ -61,17 +57,13 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Item item = (Item)values[i];
                 AssertAreEqual(data[i], item._typedPrimitive);
                 AssertAreEqual(data[i], (sbyte) item._untyped);
-#if NET_2_0 || CF_2_0
                 AssertAreEqual(data[i], (sbyte) item._nullablePrimitive);
-#endif
-				}
+            }
             Item nullItem = (Item)values[data.Length];
             AssertAreEqual(0, nullItem._typedPrimitive);
             Assert.IsNull(nullItem._untyped);
-#if NET_2_0 || CF_2_0
             Assert.IsNull(nullItem._nullablePrimitive);
-#endif
-			}
+		}
 
         private void AssertAreEqual(sbyte expected, sbyte actual)
         {
@@ -87,14 +79,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             sbyte[] sbyteArray = new sbyte[data.Length + 1];
             System.Array.Copy(data, 0, sbyteArray, 0, data.Length);
             itemArrays._primitiveArrayInObject = sbyteArray;
-
-#if NET_2_0 || CF_2_0
             itemArrays._nullableTypedPrimitiveArray = new sbyte?[data.Length + 1];
             for (int i = 0; i < data.Length; i++)
             {
                 itemArrays._nullableTypedPrimitiveArray[i] = data[i];
             }
-#endif
 			return itemArrays;
         }
 
@@ -106,9 +95,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Item item = new Item();
                 item._typedPrimitive = data[i];
                 item._untyped = data[i];
-#if NET_2_0 || CF_2_0
                 item._nullablePrimitive = data[i];
-#endif
 				values[i] = item;
             }
 

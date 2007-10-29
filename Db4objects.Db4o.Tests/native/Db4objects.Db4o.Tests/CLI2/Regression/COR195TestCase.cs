@@ -2,7 +2,6 @@
 
 namespace Db4objects.Db4o.Tests.CLI2.Regression
 {
-#if (NET_2_0 || CF_2_0)
 	using System.Collections.Generic;
 
 	using Db4objects.Db4o.Config;
@@ -48,5 +47,4 @@ namespace Db4objects.Db4o.Tests.CLI2.Regression
 			}
 		}
 	}
-#endif
 }

@@ -25,9 +25,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
             public object _untyped;
 
-#if NET_2_0 || CF_2_0
 			public NestedStruct? _nullableNestedStruct;
-#endif
         }
 
         public class ItemArrays
@@ -38,9 +36,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
             public object _arrayInObject;
 
-#if NET_2_0 || CF_2_0
 			public NestedStruct?[] _nullableNestedStructArray;
-#endif
         }
 
         private static readonly NestedStruct[] data = {
@@ -73,17 +69,13 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Item item = (Item)values[i];
                 AssertAreEqual(data[i], item._nestedStruct);
                 AssertAreEqual(data[i], (NestedStruct) item._untyped);
-#if NET_2_0 || CF_2_0
                 AssertAreEqual(data[i], (NestedStruct) item._nullableNestedStruct);
-#endif
-				}
+			}
             Item nullItem = (Item)values[data.Length];
             AssertAreEqual(new NestedStruct(null, Guid.Empty), nullItem._nestedStruct);
             Assert.IsNull(nullItem._untyped);
-#if NET_2_0 || CF_2_0
             Assert.IsNull(nullItem._nullableNestedStruct);
-#endif
-			}
+		}
 
         private void AssertAreEqual(NestedStruct expected, NestedStruct actual)
         {
@@ -102,14 +94,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             NestedStruct[] nestedStructArray = new NestedStruct[data.Length];
             System.Array.Copy(data, 0, nestedStructArray, 0, data.Length);
             itemArrays._arrayInObject = nestedStructArray;
-
-#if NET_2_0 || CF_2_0
             itemArrays._nullableNestedStructArray = new NestedStruct?[data.Length + 1];
             for (int i = 0; i < data.Length; i++)
             {
                 itemArrays._nullableNestedStructArray[i] = data[i];
             }
-#endif
 			return itemArrays;
         }
 
@@ -121,9 +110,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Item item = new Item();
                 item._nestedStruct = data[i];
                 item._untyped = data[i];
-#if NET_2_0 || CF_2_0
                 item._nullableNestedStruct = data[i];
-#endif
 				values[i] = item;
             }
             values[data.Length] = new Item();

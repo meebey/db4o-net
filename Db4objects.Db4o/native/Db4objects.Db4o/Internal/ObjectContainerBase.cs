@@ -28,7 +28,6 @@ namespace Db4objects.Db4o.Internal
 			return Query(null, match, new ComparerAdaptor(comparer));
 		}
 
-#if NET_2_0 || CF_2_0
 		class GenericComparerAdaptor<T> : Db4objects.Db4o.Query.IQueryComparator
 		{
 			private System.Collections.Generic.IComparer<T> _comparer;
@@ -144,7 +143,6 @@ namespace Db4objects.Db4o.Internal
                 return GetNativeQueryHandler().Execute(Query(CheckTransaction(trans)), match, comparator);
             }
         }
-#endif
 
 	}
 }

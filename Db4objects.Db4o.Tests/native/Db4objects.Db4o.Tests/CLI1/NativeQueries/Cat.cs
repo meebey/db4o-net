@@ -71,7 +71,6 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			}
 		}
 
-#if NET_2_0 || CF_2_0
 		public void TestGenericPredicate()
 		{
 			IObjectContainer objectContainer = Db();
@@ -107,8 +106,6 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 				delegate(Cat x, Cat y) { return x.name.CompareTo(y.name); });
 			AssertCatOrder(result, "Fritz", "Garfield", "Occam", "Tom", "Zora");
 		}
-
-#endif
 
 		private void AssertCatOrder(IEnumerable cats, params string[] catNames)
 		{

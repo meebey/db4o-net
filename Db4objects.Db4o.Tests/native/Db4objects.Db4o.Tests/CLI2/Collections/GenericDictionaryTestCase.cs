@@ -2,7 +2,6 @@
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections
 {
-#if NET_2_0 || CF_2_0
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -343,6 +342,4 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
     {
         string Name();
     }
-
-#endif
 }

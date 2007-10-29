@@ -5,7 +5,6 @@ using Db4objects.Db4o.Internal.Query.Result;
 
 namespace Db4objects.Db4o.Internal.Query
 {
-#if NET_2_0 || CF_2_0
     /// <summary>
     /// List based objectSet implementation
     /// </summary>
@@ -187,6 +186,5 @@ namespace Db4objects.Db4o.Internal.Query
         }
         #endregion
     }
-#endif
 }
 

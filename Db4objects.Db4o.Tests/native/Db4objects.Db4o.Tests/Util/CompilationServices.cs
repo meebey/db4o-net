@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Util
 			}
 		}
 
-#if NET_2_0
+#if !CF_2_0
 		static CompilerInfo GetCSharpCompilerInfo()
 		{
 			return CodeDomProvider.GetCompilerInfo(CodeDomProvider.GetLanguageFromExtension(".cs"));
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Util
 
 		static CodeDomProvider GetCSharpCodeDomProvider()
 		{
-#if NET_2_0 && !MONO
+#if !CF_2_0 && !MONO
 			return GetCSharpCompilerInfo().CreateProvider();
 #else
 			Type provider = typeof(System.Uri).Assembly.GetType("Microsoft.CSharp.CSharpCodeProvider");
@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Tests.Util
 
 		static CompilerParameters CreateDefaultCompilerParameters()
 		{
-#if NET_2_0 && !MONO
+#if !CF_2_0 && !MONO
 			return GetCSharpCompilerInfo().CreateDefaultCompilerParameters();
 #else
 			return new CompilerParameters();

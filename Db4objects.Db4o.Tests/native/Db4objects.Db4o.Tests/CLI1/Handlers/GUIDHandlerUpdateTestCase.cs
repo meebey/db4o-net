@@ -14,9 +14,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
             public Object _untyped;
 
-#if NET_2_0 || CF_2_0
 			public Guid? _nullableGuid;
-#endif
         }
 
         public class ItemArrays
@@ -27,9 +25,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
             public object _arrayInObject;
 
-#if NET_2_0 || CF_2_0
 			public Guid?[] _nullableGuidArray;
-#endif
         }
 
         private static readonly Guid[] data = new Guid[] {
@@ -72,19 +68,15 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Item item = (Item)values[i];
                 AssertAreEqual(data[i], item._Guid);
                 AssertAreEqual(data[i], (Guid) item._untyped);
-#if NET_2_0 || CF_2_0
                 AssertAreEqual(data[i], (Guid) item._nullableGuid);
-#endif
-				}
+			}
 
             Item nullItem = (Item) values[values.Length - 1];
 
             AssertAreEqual(Guid.Empty, nullItem._Guid);
             Assert.IsNull(nullItem._untyped);
-#if NET_2_0 || CF_2_0
             Assert.IsNull(nullItem._nullableGuid);
-#endif
-			}
+		}
 
         private void AssertAreEqual(Guid expected, Guid actual)
         {
@@ -103,14 +95,12 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             Guid[] GuidArray = new Guid[data.Length + 1];
             System.Array.Copy(data, 0, GuidArray, 0, data.Length);
             itemArrays._arrayInObject = GuidArray;
-
-#if NET_2_0 || CF_2_0
+            
             itemArrays._nullableGuidArray = new Guid?[data.Length + 1];
             for (int i = 0; i < data.Length; i++)
             {
                 itemArrays._nullableGuidArray[i] = data[i];
             }
-#endif
 			return itemArrays;
         }
 
@@ -122,9 +112,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Item item = new Item();
                 item._Guid = data[i];
                 item._untyped = data[i];
-#if NET_2_0 || CF_2_0
                 item._nullableGuid = data[i];
-#endif
 				values[i] = item;
             }
             values[values.Length - 1] = new Item();

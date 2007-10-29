@@ -10,7 +10,6 @@ using Db4objects.Db4o.Internal.Diagnostic;
 
 namespace Db4objects.Db4o.Internal.Query
 {
-#if NET_2_0 || CF_2_0
 	/// <summary>
 	/// Supplies the information missing in the CompactFramework System.Delegate API: Target and Method.
 	/// </summary>
@@ -33,7 +32,6 @@ namespace Db4objects.Db4o.Internal.Query
 			this.Delegate = delegateRef;
 		}
 	}
-#endif
 
 	public class NativeQueryHandler
 	{
@@ -62,7 +60,6 @@ namespace Db4objects.Db4o.Internal.Query
 			return q.Execute();
 		}
 
-#if NET_2_0 || CF_2_0
         public virtual System.Collections.Generic.IList<Extent> Execute<Extent>(Db4objects.Db4o.Query.IQuery query, System.Predicate<Extent> match,
 																				Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
@@ -76,9 +73,7 @@ namespace Db4objects.Db4o.Internal.Query
 			return ExecuteImpl<Extent>(query, match, match.Target, match.Method, match, comparator);
 #endif
 		}
-#endif
 
-#if NET_2_0 || CF_2_0
 		/// <summary>
 		/// ExecuteMeta should not generally be called by user's code. Calls to ExecuteMeta should
 		/// be inserted by an instrumentation tool.
@@ -164,7 +159,6 @@ namespace Db4objects.Db4o.Internal.Query
 			IQueryResult queryResult = ((QQuery)query).GetQueryResult();
 			return new GenericObjectSetFacade<Extent>(queryResult);
 		}
-#endif
 
         private Db4objects.Db4o.Query.IQuery ConfigureQuery(Db4objects.Db4o.Query.IQuery query, Db4objects.Db4o.Query.Predicate predicate)
 		{
@@ -230,7 +224,6 @@ namespace Db4objects.Db4o.Internal.Query
 		}
 	}
 
-#if NET_2_0 || CF_2_0
 	class GenericPredicateEvaluation<T> : DelegateEnvelope, Db4objects.Db4o.Query.IEvaluation
 	{
 		public GenericPredicateEvaluation(System.Predicate<T> predicate)
@@ -245,7 +238,6 @@ namespace Db4objects.Db4o.Internal.Query
 			candidate.Include(_predicate((T)candidate.GetObject()));
 		}
 	}
-#endif
 }
 
 

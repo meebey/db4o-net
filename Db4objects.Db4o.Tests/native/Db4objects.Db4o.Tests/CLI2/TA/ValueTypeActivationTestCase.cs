@@ -7,7 +7,6 @@ using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.Tests.CLI2.TA
 {
-#if NET_2_0 || CF_2_0
     using StringIntP = Pair<string, int>;
 	using IntC = Container<int>;
 	using IntCStringIntP = Pair<Container<int>, Pair<string, int>>;
@@ -88,5 +87,4 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 			Assert.AreEqual(default(T), container.PassThroughValue, "depth(0) shouldn't activate nested value types");
 		}
 	}
-#endif
 }

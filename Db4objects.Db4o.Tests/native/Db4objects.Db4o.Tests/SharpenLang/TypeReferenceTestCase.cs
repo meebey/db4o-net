@@ -6,9 +6,6 @@ namespace Db4objects.Db4o.Tests.SharpenLang
     using System.Reflection;
     using Db4oUnit;
     using Sharpen.Lang;
-
-#if NET_2_0
-
     using System.Collections.Generic;
 
     class SimpleGenericType<T>
@@ -31,7 +28,6 @@ namespace Db4objects.Db4o.Tests.SharpenLang
             this.Second = second;
         }
     }
-#endif
 
     class TypeReferenceTestCase : ITestCase
     {
@@ -137,9 +133,6 @@ namespace Db4objects.Db4o.Tests.SharpenLang
             EnsureRoundtrip(typeof(byte[][][,]));
         }
 
-
-
-#if NET_2_0
         class NestedGeneric<Key, Value>
         {
         }
@@ -221,6 +214,5 @@ namespace Db4objects.Db4o.Tests.SharpenLang
     	{
     		return Assembly.GetExecutingAssembly().GetName().Name;
     	}
-#endif
     }
 }

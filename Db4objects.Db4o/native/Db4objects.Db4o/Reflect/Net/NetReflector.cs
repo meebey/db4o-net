@@ -42,13 +42,11 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		private static Type GetUnderlyingType(Type type)
         {
-#if NET_2_0 || CF_2_0
             Type underlyingType = Nullable.GetUnderlyingType(type);
             if (underlyingType != null)
             {
                 return underlyingType;
             }
-#endif
             return type;
         }
 

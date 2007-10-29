@@ -5,7 +5,6 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Assorted
 {
-#if NET_2_0 || CF_2_0
 	class SimpleGenericType<T>
 	{
 		public T value;
@@ -15,11 +14,9 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			this.value = value;
 		}
 	}
-#endif
 
 	class SimpleGenericTypeTestCase : AbstractDb4oTestCase
 	{
-#if NET_2_0 || CF_2_0
 		override protected void Store()
 		{
 			Store(new SimpleGenericType<string>("Will it work?"));
@@ -50,6 +47,5 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			SimpleGenericType<T> item = (SimpleGenericType<T>)os.Next();
 			Assert.AreEqual(expectedValue, item.value);
 		}
-#endif
 	}
 }

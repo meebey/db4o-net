@@ -1,7 +1,7 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 namespace Db4objects.Db4o.Tests.CLI2.Regression
 {
-#if (NET_2_0 || CF_2_0) && !MONO
+#if !MONO
     using System.Collections.Generic;
     using Db4oUnit;
     using Db4oUnit.Extensions;

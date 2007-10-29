@@ -38,9 +38,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
             public object _untyped;
 
-#if NET_2_0 || CF_2_0
 			public Foo? _nullableFoo;
-#endif
         }
 
         public class ItemArrays
@@ -51,9 +49,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
             public object _aArrayInObject;
 
-#if NET_2_0 || CF_2_0
 			public Foo?[] _nullableFooArray;
-#endif
         }
 
         private static readonly Foo[] data = new Foo[] {
@@ -94,19 +90,15 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Item item = (Item)values[i];
                 AssertAreEqual(data[i], item._foo);
                 AssertAreEqual(data[i], (Foo) item._untyped);
-#if NET_2_0 || CF_2_0
                 AssertAreEqual(data[i], (Foo) item._nullableFoo);
-#endif
-				}
+			}
 
             Item nullItem = (Item)values[values.Length - 1];
 
             AssertAreEqual(new Foo(null, 0), nullItem._foo);
             Assert.IsNull(nullItem._untyped);
-#if NET_2_0 || CF_2_0
             Assert.IsNull(nullItem._nullableFoo);
-#endif
-			}
+		}
 
         private void AssertAreEqual(Foo expected, Foo actual)
         {
@@ -126,14 +118,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             System.Array.Copy(data, 0, fooArray, 0, data.Length);
 
             itemArrays._aArrayInObject = fooArray;
-
-#if NET_2_0 || CF_2_0
             itemArrays._nullableFooArray = new Foo?[data.Length + 1];
             for (int i = 0; i < data.Length; i++)
             {
                 itemArrays._nullableFooArray[i] = data[i];
             }
-#endif
 			return itemArrays;
         }
 
@@ -145,9 +134,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Item item = new Item();
                 item._foo = data[i];
                 item._untyped = data[i];
-#if NET_2_0 || CF_2_0
                 item._nullableFoo = data[i];
-#endif
 				values[i] = item;
             }
             values[data.Length] = new Item();

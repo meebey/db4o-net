@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 		}
 	}
 
-#if NET_2_0
+#if !CF_2_0
 	class NameContains : Predicate
 	{
 		string _s;
@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			AssertNQResult(new NameStartsWith("R"), _robinson, _round);
 		}
 
-#if NET_2_0
+#if !CF_2_0
 		public void TestContains()
 		{
 			SetUpData();

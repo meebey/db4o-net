@@ -446,7 +446,6 @@ namespace Db4objects.Db4o
 		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
 		void Set(object obj);
 		
-#if NET_2_0 || CF_2_0
         /// <summary>.NET 2.0 Native Query interface.</summary>
         /// <remarks>
         /// Native Query Interface.
@@ -605,6 +604,5 @@ namespace Db4objects.Db4o
 		/// queries for all instances of the type extent sorting with the specified comparer.
 		/// </summary>
 		System.Collections.Generic.IList<Extent> Query<Extent>(System.Collections.Generic.IComparer<Extent> comparer);
-#endif
 	}
 }

@@ -31,9 +31,6 @@ namespace Db4objects.Db4o.Internal
             return _server.Query(_transaction, match, new ComparerAdaptor(comparer));
         }
 
-#if NET_2_0 || CF_2_0
-
-
         public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match)
         {
             return _server.Query(_transaction, match);
@@ -68,7 +65,5 @@ namespace Db4objects.Db4o.Internal
         {
             return Query<Extent>(typeof(Extent), comparer);
         }
-#endif
-
     }
 }

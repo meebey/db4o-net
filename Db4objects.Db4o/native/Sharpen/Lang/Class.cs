@@ -75,14 +75,11 @@ namespace Sharpen.Lang
 				return null;
             }
 
-#if NET_2_0 || CF_2_0
             Type underlyingType = Nullable.GetUnderlyingType(forType);
             if (underlyingType != null)
             {
                 forType = underlyingType;
-            }
-#endif
-			
+            }			
 			lock (_typeToClassMap.SyncRoot)
 			{
 				Class clazz = (Class) _typeToClassMap[forType];

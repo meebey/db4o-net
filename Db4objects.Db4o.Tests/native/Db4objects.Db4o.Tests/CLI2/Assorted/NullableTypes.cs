@@ -9,7 +9,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 	using Db4oUnit;
 	using Db4oUnit.Extensions;
 
-#if NET_2_0 || CF_2_0
 	class NullableContainer
 	{
 		public int? intValue = null;
@@ -25,11 +24,9 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			dateValue = value;
 		}
 	}
-#endif
 
 	class NullableTypes : AbstractDb4oTestCase
 	{
-#if NET_2_0 || CF_2_0
 		static readonly DateTime TheDate = new DateTime(1983, 3, 7);
 
 		protected override void Store()
@@ -115,6 +112,5 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 		{
 			Assert.IsFalse(value.HasValue, "!nullable.HasValue");
 		}
-#endif
 	}
 }
