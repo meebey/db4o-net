@@ -17,6 +17,11 @@ namespace Sharpen.IO
 			_path = path;
 		}
 
+		public static implicit operator string(File file)
+		{
+			return file.GetAbsolutePath();
+		}
+
 		public File(string dir, string file)
 		{
 			if (dir == null)
