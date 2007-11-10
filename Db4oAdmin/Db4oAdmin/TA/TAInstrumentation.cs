@@ -171,10 +171,19 @@ namespace Db4oAdmin.TA
 			TypeDefinition type = ResolveTypeReference(field.DeclaringType);
 			if (type == null) return false;
 
+            if (IsTransient(type, field)) return false;
+
 			return ImplementsActivatable(type);
 		}
 
-		private static bool IsFieldAccess(Instruction instruction)
+	    private bool IsTransient(TypeDefinition type, FieldReference fieldRef)
+	    {
+	        FieldDefinition field = type.Fields.GetField(fieldRef.Name);
+            if (field == null) return true;
+	        return field.IsNotSerialized;
+	    }
+
+	    private static bool IsFieldAccess(Instruction instruction)
 		{
 			return instruction.OpCode == OpCodes.Ldfld
 				|| instruction.OpCode == OpCodes.Ldflda;

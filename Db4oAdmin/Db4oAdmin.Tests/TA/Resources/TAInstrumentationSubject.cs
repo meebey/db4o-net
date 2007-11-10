@@ -68,6 +68,27 @@ class CompilerGeneratedType
 {
 }
 
+class CustomActivatable : IActivatable
+{
+    [NonSerialized]
+    private IActivator _activator;
+
+    [NonSerialized]
+    public int _mustNotInstrumentMe = 1;
+    public int _mustInstrumentAccess = 2;
+
+    public void Bind(IActivator activator)
+    {
+        if (_activator != null || activator == null) throw new InvalidOperationException();
+        _activator = activator;
+    }
+
+    public void Activate()
+    {
+        _activator.Activate();
+    }
+}
+
 class MockActivator : IActivator
 {
 	private int _count;
@@ -147,7 +168,21 @@ class TAInstrumentationSubject : ITestCase
 		Assert.IsFalse(IsActivatable(typeof(CompilerGeneratedType)));
 	}
 
-	private MockActivator ActivatorFor(Project p)
+    public void TestIsTransient()
+    {
+        CustomActivatable ca = new CustomActivatable();
+        MockActivator ma = ActivatorFor(ca);
+
+        Assert.AreEqual(0, ma.Count);
+        
+        int n = ca._mustNotInstrumentMe;        
+        Assert.AreEqual(0, ma.Count);
+
+        n = ca._mustInstrumentAccess;
+        Assert.AreEqual(1, ma.Count);
+    }
+
+	private MockActivator ActivatorFor(object p)
 	{
 		MockActivator activator = new MockActivator();
 		((IActivatable)p).Bind(activator);
