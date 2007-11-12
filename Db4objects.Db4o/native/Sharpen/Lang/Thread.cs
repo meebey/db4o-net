@@ -116,7 +116,16 @@ namespace Sharpen.Lang
 
 		private void EntryPoint()
 		{
-			_target.Run();
+			try
+			{
+				_target.Run();
+			}
+			catch (Exception e)
+			{
+				// don't let an unhandled exception bring
+				// the process down
+				Sharpen.Runtime.PrintStackTrace(e);
+			}
 		}
 	}
 }
