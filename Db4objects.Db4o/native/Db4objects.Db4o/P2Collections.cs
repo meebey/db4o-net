@@ -18,7 +18,8 @@ namespace Db4objects.Db4o {
       
       public IDb4oList NewLinkedList() {
           lock(Lock()){
-              if (Unobfuscated.CreateDb4oList(Container())){
+              if (CanCreateCollection(Container()))
+              {
                   IDb4oList l = new P2LinkedList();
                   Container().Set(_transaction, l);
                   return l;
@@ -29,7 +30,8 @@ namespace Db4objects.Db4o {
       
       public IDb4oMap NewHashMap(int size) {
           lock(Lock()){
-              if (Unobfuscated.CreateDb4oList(Container())){
+              if (CanCreateCollection(Container()))
+              {
                   return new P2HashMap(size);
               }
               return null;
@@ -38,7 +40,8 @@ namespace Db4objects.Db4o {
 
        public IDb4oMap NewIdentityHashMap(int size) {
            lock(Lock()){
-               if(Unobfuscated.CreateDb4oList(Container())){
+               if (CanCreateCollection(Container()))
+               {
                    P2HashMap m = new P2HashMap(size);
                    m.i_type = 1;
                    Container().Set(_transaction, m);
@@ -48,13 +51,20 @@ namespace Db4objects.Db4o {
            }
        }
 
-    private Object Lock(){
-        return Container().Lock();
-    }
-    
-    private ObjectContainerBase Container(){
-        return _transaction.Container();
-    }
+        private Object Lock(){
+            return Container().Lock();
+        }
+        
+        private ObjectContainerBase Container(){
+            return _transaction.Container();
+        }
+
+       private bool CanCreateCollection(ObjectContainerBase container)
+       {
+           container.CheckClosed();
+           return !container.IsInstantiating();
+       }
+
 
 
    }
