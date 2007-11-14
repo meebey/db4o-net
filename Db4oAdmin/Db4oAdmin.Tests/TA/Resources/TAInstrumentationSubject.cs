@@ -68,6 +68,30 @@ class CompilerGeneratedType
 {
 }
 
+class FilteredOut : IActivatable
+{
+	public string foo;
+
+	public FilteredOut(string foo_)
+	{
+		foo = foo_;
+	}
+
+	[NonSerialized]
+	private IActivator _activator;
+
+	public void Bind(IActivator activator)
+	{
+		_activator = activator;
+	}
+
+	public void Activate()
+	{
+		if (null == _activator) return;
+		_activator.Activate();
+	}
+}
+
 class CustomActivatable : IActivatable
 {
     [NonSerialized]
@@ -146,6 +170,19 @@ class TAInstrumentationSubject : ITestCase
 
 		Assert.AreEqual(1, a1.Count);
 		Assert.AreEqual(1, a2.Count);
+	}
+
+	public void TestFilteredOutFieldAccess()
+	{
+		FilteredOut subject = new FilteredOut("test");
+		MockActivator activator = ActivatorFor(subject);
+
+		// TA instrumentation would normally
+		// instrument the field access on the
+		// next line EXCEPT that FilteredOut
+		// was filtered out
+		Assert.AreEqual("test", subject.foo);
+		Assert.AreEqual(0, activator.Count);
 	}
 
 	public void TestFieldByRef()

@@ -9,7 +9,10 @@ namespace Db4oAdmin.Tests.TA
 	{
 		protected override string CommandLine
 		{
-			get { return "-ta -by-name:FilteredOutByName -not"; }
+			get
+			{
+				return "-ta -by-name:FilteredOut -not";
+			}
 		}
 
 		protected override string[] Resources

@@ -1,4 +1,6 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using System;
+
 namespace Db4oAdmin.Core
 {
 	using Mono.Cecil;
@@ -47,7 +49,12 @@ namespace Db4oAdmin.Core
 
 		protected virtual void ProcessTypes(TypeDefinitionCollection types, System.Action<TypeDefinition> action)
 		{
-			ProcessTypes(types, _context.Accept, action);
+			ProcessTypes(types, Accept, action);
+		}
+
+		protected bool Accept(TypeDefinition type)
+		{
+			return _context.Accept(type);
 		}
 
 		protected static bool NoFiltering(TypeDefinition type)

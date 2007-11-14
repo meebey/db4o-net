@@ -13,9 +13,11 @@ namespace Db4oAdmin.TA
 {   
 	public class TAInstrumentation : AbstractAssemblyInstrumentation
 	{
+		public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
+
+		private const string IT_TRANSPARENT_ACTIVATION = "TA";
+
         private CustomAttribute _instrumentationAttribute;
-        private const string IT_TRANSPARENT_ACTIVATION = "TA";
-        public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
 		private CecilReflector _reflector;
 
         protected override void BeforeAssemblyProcessing()
@@ -165,13 +167,14 @@ namespace Db4oAdmin.TA
 
 		private bool IsActivatableField(FieldReference field)
 		{
-			// TODO: check for transient here
 			if (field.Name.Contains("$")) return false;
 
 			TypeDefinition type = ResolveTypeReference(field.DeclaringType);
 			if (type == null) return false;
 
             if (IsTransient(type, field)) return false;
+
+			if (!Accept(type)) return false;
 
 			return ImplementsActivatable(type);
 		}
