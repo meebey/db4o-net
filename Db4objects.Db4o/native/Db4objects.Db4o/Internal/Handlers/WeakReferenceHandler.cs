@@ -8,12 +8,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		public object ObjectReference;
 
-		internal WeakReferenceHandler(Object queue, Object objectRef, Object obj) : base(obj, false){
+		internal WeakReferenceHandler(Object queue, Object objectRef, Object obj)
+			: base(obj, false)
+		{
 			this.ObjectReference = objectRef;
-			((WeakReferenceHandlerQueue) queue).Add(this);
+			((WeakReferenceHandlerQueue)queue).Add(this);
 		}
 
-		public object Get(){
+		public object Get()
+		{
 			return this.Target;
 		}
 	}
