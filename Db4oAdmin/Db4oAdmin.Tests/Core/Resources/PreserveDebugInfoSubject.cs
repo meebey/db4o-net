@@ -1,5 +1,7 @@
 using System;
 using Db4oUnit;
+using System.Globalization;
+using System.Threading;
 
 class Foo
 {
@@ -13,14 +15,23 @@ public class PreserveDebugInfoSubject : ITestCase
 {
 	public void Test()
 	{
-		try
-		{
-			Foo.Bar();
-		}
-		catch (Exception x)
-		{
-//			Console.Error.WriteLine(x);
-			Assert.IsTrue(x.ToString().Contains("PreserveDebugInfoSubject.cs:line 8"));
-		}
+        CultureInfo currentUICulture = Thread.CurrentThread.CurrentUICulture;
+        try
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+            try
+            {
+                Foo.Bar();
+            }
+            catch (Exception x)
+            {
+                string message = x.ToString();
+                Assert.IsTrue(message.Contains("PreserveDebugInfoSubject.cs:line 10"), message);
+            }
+        }
+        finally
+        {
+            Thread.CurrentThread.CurrentUICulture = currentUICulture;
+        }
 	}
 }
