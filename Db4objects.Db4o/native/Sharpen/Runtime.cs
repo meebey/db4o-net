@@ -203,7 +203,7 @@ namespace Sharpen
 
 		public static void PrintStackTrace(Exception exception) 
 		{
-			PrintStackTrace(exception, Sharpen.Runtime.Out);
+			PrintStackTrace(exception, Sharpen.Runtime.Err);
 		}
 
 		public static void PrintStackTrace(Exception exception, System.IO.TextWriter writer) 
