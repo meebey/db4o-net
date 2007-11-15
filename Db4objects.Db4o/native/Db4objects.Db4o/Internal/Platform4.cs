@@ -67,11 +67,6 @@ namespace Db4objects.Db4o.Internal
             return className.StartsWith("Db4objects.Db4o");
         }
 
-        internal static JDK Jdk()
-        {
-            throw new NotSupportedException();
-        }
-
         internal static void AddShutDownHook(PartialObjectContainer container)
         {
             lock (_lock)
@@ -670,5 +665,9 @@ namespace Db4objects.Db4o.Internal
             return DateTime.Now;
         }
 
-    }
+		internal static bool IsEnum(IReflector genericReflector, IReflectClass iReflectClass)
+		{
+			return GetNetType(iReflectClass).IsEnum;
+		}
+	}
 }
