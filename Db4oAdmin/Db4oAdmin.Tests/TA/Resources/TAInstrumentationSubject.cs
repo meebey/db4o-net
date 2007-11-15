@@ -128,6 +128,17 @@ class MockActivator : IActivator
 	}
 }
 
+class VolatileContainer
+{
+	private volatile int _foo;
+
+	public int Foo
+	{
+		get { return _foo; }
+		set { _foo = value; }
+	}
+}
+
 class MockActivatable : IActivatable
 {
 	public void Bind(IActivator activator) { }
@@ -136,6 +147,14 @@ class MockActivatable : IActivatable
 
 class TAInstrumentationSubject : ITestCase
 {
+	public void TestVolatileAccess()
+	{
+		VolatileContainer container = new VolatileContainer();
+		MockActivator a = ActivatorFor(container);
+		Assert.AreEqual(0, container.Foo);
+		Assert.AreEqual(1, a.Count);
+	}
+
 	public void TestIsActivatable()
 	{
         Assert.IsTrue(IsActivatable(typeof(Named)));

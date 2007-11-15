@@ -1,4 +1,5 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Db4oAdmin.Core;
@@ -8,6 +9,7 @@ using Db4objects.Db4o.Internal;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using FieldAttributes=Mono.Cecil.FieldAttributes;
+using MethodBody=Mono.Cecil.Cil.MethodBody;
 
 namespace Db4oAdmin.TA
 {   
@@ -136,13 +138,38 @@ namespace Db4oAdmin.TA
 		{
 			if (!method.HasBody || method.IsCompilerControlled) return;
 
+			if (!HasFieldAccesses(method)) return;
+
+			
+			method.Body.Modify();
+
+			InstrumentFieldAccesses(method);
+
+			method.Body.Optimize();
+		}
+
+		private bool HasFieldAccesses(MethodDefinition method)
+		{
+			return FieldAccesses(method.Body).GetEnumerator().MoveNext();
+		}
+
+		private void InstrumentFieldAccesses(MethodDefinition method)
+		{
 			CilWorker cil = method.Body.CilWorker;
-			Instruction instruction = method.Body.Instructions[0];
+			foreach (Instruction instruction in FieldAccesses(method.Body))
+			{
+				ProcessFieldAccess(cil, instruction);
+			}
+		}
+
+		private IEnumerable<Instruction> FieldAccesses(MethodBody body)
+		{	
+			Instruction instruction = body.Instructions[0];
 			while (instruction != null)
 			{
 				if (IsFieldAccess(instruction))
 				{
-					ProcessFieldAccess(cil, instruction);
+					yield return instruction;
 				}
 				instruction = instruction.Next;
 			}
@@ -156,8 +183,17 @@ namespace Db4oAdmin.TA
 				return;
 			}
 
-			cil.InsertBefore(instruction, cil.Create(OpCodes.Dup));
-			cil.InsertBefore(instruction, cil.Create(OpCodes.Callvirt, Import(ActivateMethod())));
+			Instruction insertionPoint = GetInsertionPoint(instruction);
+
+			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Dup));
+			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Callvirt, Import(ActivateMethod())));
+		}
+
+		private Instruction GetInsertionPoint(Instruction instruction)
+		{
+			return instruction.Previous.OpCode == OpCodes.Volatile
+				? instruction.Previous
+				: instruction;
 		}
 
 		private static MethodInfo ActivateMethod()
