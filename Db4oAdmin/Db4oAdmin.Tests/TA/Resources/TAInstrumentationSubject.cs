@@ -139,6 +139,28 @@ class VolatileContainer
 	}
 }
 
+class GenericContainer<T>
+{
+	private int _foo;
+
+	public int Foo
+	{
+		get { return _foo; }
+		set { _foo = value; }
+	}
+}
+
+class GenericContainerN<T1, T2, TN>
+{
+	private int _foo;
+
+	public int Foo
+	{
+		get { return _foo; }
+		set { _foo = value; }
+	}
+}
+
 class MockActivatable : IActivatable
 {
 	public void Bind(IActivator activator) { }
@@ -147,6 +169,22 @@ class MockActivatable : IActivatable
 
 class TAInstrumentationSubject : ITestCase
 {
+	public void TestGenericInstrumentation()
+	{
+		GenericContainer<int> container = new GenericContainer<int>();
+		MockActivator a = ActivatorFor(container);
+		Assert.AreEqual(0, container.Foo);
+		Assert.AreEqual(1, a.Count);
+	}
+
+	public void TestArbitraryArityGenericInstrumentation()
+	{
+		GenericContainerN<int, string, int> container = new GenericContainerN<int, string, int>();
+		MockActivator a = ActivatorFor(container);
+		Assert.AreEqual(0, container.Foo);
+		Assert.AreEqual(1, a.Count);
+	}
+
 	public void TestVolatileAccess()
 	{
 		VolatileContainer container = new VolatileContainer();

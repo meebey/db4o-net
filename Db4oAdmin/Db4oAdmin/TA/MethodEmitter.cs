@@ -14,7 +14,23 @@ namespace Db4oAdmin.TA
 		public MethodEmitter(InstrumentationContext context, FieldReference field)
 		{	
 			_context = context;
-			_activatorField = field;
+			_activatorField = FieldReferenceFor(field);
+		}
+
+		private static FieldReference FieldReferenceFor(FieldReference field)
+		{
+			if (0 == field.DeclaringType.GenericParameters.Count) return field;
+			return new FieldReference(field.Name, TypeReferenceFor(field.DeclaringType), field.FieldType);
+		}
+
+		private static TypeReference TypeReferenceFor(TypeReference type)
+		{
+			GenericInstanceType instance = new GenericInstanceType(type);
+			foreach (GenericParameter param in type.GenericParameters)
+			{
+				instance.GenericArguments.Add(param);
+			}
+			return instance;
 		}
 
 		protected MethodDefinition NewExplicitMethod(MethodInfo method)

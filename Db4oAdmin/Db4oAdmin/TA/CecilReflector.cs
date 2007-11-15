@@ -34,10 +34,9 @@ namespace Db4oAdmin.TA
 		{
 			TypeDefinition type = typeRef as TypeDefinition;
 			if (null != type) return type;
-
-            //FIXME: We do must be able to instrument generic fields (COR-980).
+            
             GenericInstanceType genericType = typeRef as GenericInstanceType;
-            if (genericType != null) return null;
+            if (genericType != null) return ResolveTypeReference(genericType.ElementType);
 
             AssemblyNameReference assemblyRef = typeRef.Scope as AssemblyNameReference;
 			if (IsSystemAssembly(assemblyRef)) return null;

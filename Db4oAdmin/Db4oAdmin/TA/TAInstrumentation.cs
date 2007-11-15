@@ -167,7 +167,7 @@ namespace Db4oAdmin.TA
 			Instruction instruction = body.Instructions[0];
 			while (instruction != null)
 			{
-				if (IsFieldAccess(instruction))
+				if (IsActivatableFieldAccess(instruction))
 				{
 					yield return instruction;
 				}
@@ -175,14 +175,15 @@ namespace Db4oAdmin.TA
 			}
 		}
 
+		private bool IsActivatableFieldAccess(Instruction instruction)
+		{
+			if (!IsFieldAccess(instruction)) return false;
+			return IsActivatableField((FieldReference) instruction.Operand);
+		}
+
 		private void ProcessFieldAccess(CilWorker cil, Instruction instruction)
 		{
 			FieldReference field = (FieldReference)instruction.Operand;
-			if (!IsActivatableField(field))
-			{
-				return;
-			}
-
 			Instruction insertionPoint = GetInsertionPoint(instruction);
 
 			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Dup));
