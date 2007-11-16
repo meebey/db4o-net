@@ -126,11 +126,16 @@ namespace Db4oAdmin.Tests.Core
                                     ? new InstrumentationTestSuiteBuilder(this, type).Build()
                                     : new ReflectionTestSuiteBuilder(type).Build();
                 yield return suite;
-                yield return new VerifyAssemblyTest(instrumentedAssembly);
+				if (ShouldVerify(resource)) yield return new VerifyAssemblyTest(instrumentedAssembly);
 
                 references = ArrayServices.Append(references, type.Assembly);
             }
         }
+
+		protected virtual bool ShouldVerify(string resource)
+		{
+			return true;
+		}
 
 		protected string TestSuiteLabel
 		{
@@ -167,7 +172,7 @@ namespace Db4oAdmin.Tests.Core
 			return container;
 		}
 
-        protected string EmitAssemblyFromResource(string resource, Assembly[] references)
+        protected virtual string EmitAssemblyFromResource(string resource, Assembly[] references)
         {
             CopyDependenciesToTemp();
             string resourceName = ResourceServices.CompleteResourceName(GetType(), resource);

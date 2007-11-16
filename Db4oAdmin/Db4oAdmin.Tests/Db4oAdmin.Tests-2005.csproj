@@ -55,6 +55,8 @@
     <Compile Include="Core\ByFilterTestCase.cs" />
     <Compile Include="Core\ByNameTestCase.cs" />
     <Compile Include="Core\ByNotAttributeTestCase.cs" />
+    <Compile Include="Core\ContextVariable.cs" />
+    <Compile Include="Core\ContextVariableTestCase.cs" />
     <Compile Include="Core\CustomInstrumentationTestCase.cs" />
     <Compile Include="Core\ILPatternTestCase.cs" />
     <Compile Include="Core\InstrumentedTestCase.cs" />
@@ -80,8 +82,11 @@
     <EmbeddedResource Include="TA\Resources\TAInstrumentationSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TAAssemblyReferenceSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TADoubleInstrumentationSubject.cs" />
+    <Compile Include="TA\MockActivator.cs" />
+    <EmbeddedResource Include="TA\Resources\TAUnsafeInstrumentationSubject.cs" />
     <Compile Include="TA\TAInstrumentationAppliedMoreThanOnceCOR-918.cs" />
     <Compile Include="TA\TAInstrumentationTestCase.cs" />
+    <Compile Include="TA\TANonStorableTypeTestCase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Db4objects.Db4o.Tools\Db4objects.Db4o.Tools-2005.csproj">

@@ -100,11 +100,12 @@ namespace Db4oAdmin.TA
         	return _reflector.ResolveTypeReference(typeRef);
         }
 
-		private static bool RequiresTA(TypeDefinition type)
+		private bool RequiresTA(TypeDefinition type)
 		{
 			if (type.IsValueType) return false;
 			if (type.IsInterface) return false;
 			if (type.Name == "<Module>") return false;
+			if (IsDelegate(type)) return false;
 			if (ByAttributeFilter.ContainsCustomAttribute(type, CompilerGeneratedAttribute)) return false;
 			return true;
 		}
@@ -205,17 +206,43 @@ namespace Db4oAdmin.TA
 		{
 			if (field.Name.Contains("$")) return false;
 
-			TypeDefinition type = ResolveTypeReference(field.DeclaringType);
-			if (type == null) return false;
+			TypeDefinition declaringType = ResolveTypeReference(field.DeclaringType);
+			if (declaringType == null) return false;
 
-            if (IsTransient(type, field)) return false;
+            if (IsTransient(declaringType, field)) return false;
+			if (!Accept(declaringType)) return false;
 
-			if (!Accept(type)) return false;
+			if (!ImplementsActivatable(declaringType)) return false;
 
-			return ImplementsActivatable(type);
+			if (IsPointer(field.FieldType)) return false;
+
+			TypeDefinition fieldType = ResolveTypeReference(field.FieldType);
+			if (null == fieldType)
+			{	
+				// we dont know the field type but it doesn't hurt
+				// to call Activate
+				// filtering would be only an optimization
+				return true;
+			}
+			return !IsDelegate(fieldType);
 		}
 
-	    private bool IsTransient(TypeDefinition type, FieldReference fieldRef)
+		private bool IsPointer(TypeReference type)
+		{
+			return type is PointerType;
+		}
+
+		private bool IsDelegate(TypeDefinition type)
+		{
+			TypeReference baseType = type.BaseType;
+			if (null == baseType) return false;
+
+			string fullName = baseType.FullName;
+			return fullName == "System.Delegate"
+				|| fullName == "System.MulticastDelegate";
+		}
+
+		private bool IsTransient(TypeDefinition type, FieldReference fieldRef)
 	    {
 	        FieldDefinition field = type.Fields.GetField(fieldRef.Name);
             if (field == null) return true;

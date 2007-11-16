@@ -8,13 +8,13 @@ namespace Db4oAdmin.Tests
 	{
 		protected override Type[] TestCases()
 		{
-//			return new Type[] { typeof(TA.TAInstrumentationTestCase), };
 			return new Type[]
 				{
 					typeof(Core.ByNameTestCase),
 					typeof(Core.ByAttributeTestCase),
 					typeof(Core.ByFilterTestCase),
 					typeof(Core.ByNotAttributeTestCase),
+					typeof(Core.ContextVariableTestCase),
 					typeof(Core.ILPatternTestCase),
 					typeof(Core.CustomInstrumentationTestCase),
 					typeof(Core.PreserveDebugInfoTestCase),
@@ -23,6 +23,7 @@ namespace Db4oAdmin.Tests
 					typeof(NQ.UnoptimizablePredicatesTestCase),
 					typeof(TA.TAInstrumentationTestCase),
                     typeof(TA.TAInstrumentationAppliedMoreThanOnce),
+					typeof(TA.TANonStorableTypeTestCase),
 				};
 		}
 	}

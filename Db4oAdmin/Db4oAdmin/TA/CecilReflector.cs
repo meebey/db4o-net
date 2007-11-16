@@ -34,6 +34,9 @@ namespace Db4oAdmin.TA
 		{
 			TypeDefinition type = typeRef as TypeDefinition;
 			if (null != type) return type;
+
+			GenericParameter parameter = typeRef as GenericParameter;
+			if (parameter != null) return null;
             
             GenericInstanceType genericType = typeRef as GenericInstanceType;
             if (genericType != null) return ResolveTypeReference(genericType.ElementType);

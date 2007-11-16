@@ -12,6 +12,8 @@ namespace Db4oAdmin.Tests.Core
 	/// </summary>
 	public class CompilationServices
 	{
+		public static readonly ContextVariable<bool> Unsafe = new ContextVariable<bool>(false);
+
 		public static void EmitAssembly(string assemblyFileName, Assembly[] references, params string[] sourceFiles)
 		{
 			string basePath = Path.GetDirectoryName(assemblyFileName);
@@ -50,6 +52,7 @@ namespace Db4oAdmin.Tests.Core
 				// TODO: run test cases in both modes (optimized and debug)
 				parameters.IncludeDebugInformation = true;
 				parameters.OutputAssembly = assemblyFName;
+				if (Unsafe.Value) parameters.CompilerOptions = "/unsafe";
 				foreach (Assembly reference in references)
 				{
 					parameters.ReferencedAssemblies.Add(reference.ManifestModule.FullyQualifiedName);

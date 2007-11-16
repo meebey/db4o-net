@@ -4,6 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
+using Db4oAdmin.Tests.TA; // MockActivator
 using Db4oUnit;
 
 public class Task : ProjectItem
@@ -27,21 +28,6 @@ public class Task : ProjectItem
     override public int GetHashCode()
     {
         return _name.GetHashCode();
-    }
-}
-
-class MockActivator : IActivator
-{
-    private int _count;
-
-    public int Count
-    {
-        get { return _count; }
-    }
-
-    public void Activate()
-    {
-        ++_count;
     }
 }
 
