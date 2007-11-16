@@ -150,11 +150,44 @@ class GenericContainer<T>
 	}
 }
 
+class GenericInherited : GenericContainer<int>
+{
+	private int _bar;
+
+	public int Bar
+	{
+		get { return _bar; }
+		set { _bar = value; }
+	}
+}
+
 class GenericContainerN<T1, T2, TN>
 {
 	private int _foo;
 
 	public int Foo
+	{
+		get { return _foo; }
+		set { _foo = value; }
+	}
+}
+
+class GenericFieldContainer
+{
+	private int? _foo;
+
+	public int? Foo
+	{
+		get { return _foo; }
+		set { _foo = value; }
+	}
+}
+
+class GenericFieldOnGenericType<T>
+{
+	private T _foo;
+
+	public T Foo
 	{
 		get { return _foo; }
 		set { _foo = value; }
@@ -167,8 +200,60 @@ class MockActivatable : IActivatable
 	public void Activate() { }
 }
 
+class Tagged
+{
+	public string tags;
+
+	public Tagged(string tags_)
+	{
+		tags = tags_;
+	}
+}
+
+class GenericMethods
+{
+	public static string ConstrainedMethod<T>(T value) where T: Tagged
+	{
+		return value.tags;
+	}
+}
+
 class TAInstrumentationSubject : ITestCase
 {
+	public void TestConstrainedGenericMethod()
+	{
+		Tagged obj = new Tagged("foo, bar");
+		MockActivator a = ActivatorFor(obj);
+		Assert.AreEqual("foo, bar", GenericMethods.ConstrainedMethod(obj));
+		Assert.AreEqual(1, a.Count);
+	}
+
+	public void TestGenericFieldOnGenericType()
+	{
+		GenericFieldOnGenericType<int> obj = new GenericFieldOnGenericType<int>();
+		MockActivator a = ActivatorFor(obj);
+		Assert.AreEqual(0, obj.Foo);
+		Assert.AreEqual(1, a.Count);
+	}
+
+	public void TestGenericInherited()
+	{
+		GenericInherited obj = new GenericInherited();
+		MockActivator a = ActivatorFor(obj);
+		Assert.AreEqual(0, obj.Foo);
+		Assert.AreEqual(1, a.Count);
+		Assert.AreEqual(0, obj.Bar);
+		Assert.AreEqual(2, a.Count);
+	}
+
+	public void TestGenericFieldContainer()
+	{
+		GenericFieldContainer container = new GenericFieldContainer();
+		MockActivator a = ActivatorFor(container);
+		Assert.IsNull(container.Foo);
+		Assert.AreEqual(1, a.Count);
+	}
+
 	public void TestGenericInstrumentation()
 	{
 		GenericContainer<int> container = new GenericContainer<int>();

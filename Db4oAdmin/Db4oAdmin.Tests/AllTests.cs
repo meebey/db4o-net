@@ -8,7 +8,7 @@ namespace Db4oAdmin.Tests
 	{
 		protected override Type[] TestCases()
 		{
-//			return new Type[] { typeof(Core.PreserveDebugInfoTestCase), };
+//			return new Type[] { typeof(TA.TAInstrumentationTestCase), };
 			return new Type[]
 				{
 					typeof(Core.ByNameTestCase),

@@ -139,7 +139,6 @@ namespace Db4oAdmin.TA
 			if (!method.HasBody || method.IsCompilerControlled) return;
 
 			if (!HasFieldAccesses(method)) return;
-
 			
 			method.Body.Modify();
 

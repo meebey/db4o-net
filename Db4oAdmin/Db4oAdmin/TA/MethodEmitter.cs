@@ -19,11 +19,16 @@ namespace Db4oAdmin.TA
 
 		private static FieldReference FieldReferenceFor(FieldReference field)
 		{
-			if (0 == field.DeclaringType.GenericParameters.Count) return field;
-			return new FieldReference(field.Name, TypeReferenceFor(field.DeclaringType), field.FieldType);
+			if (!IsGeneric(field.DeclaringType)) return field;
+			return new FieldReference(field.Name, GenericReferenceFor(field.DeclaringType), field.FieldType);
 		}
 
-		private static TypeReference TypeReferenceFor(TypeReference type)
+		private static bool IsGeneric(TypeReference type)
+		{
+			return type.GenericParameters.Count > 0;
+		}
+
+		private static TypeReference GenericReferenceFor(TypeReference type)
 		{
 			GenericInstanceType instance = new GenericInstanceType(type);
 			foreach (GenericParameter param in type.GenericParameters)
