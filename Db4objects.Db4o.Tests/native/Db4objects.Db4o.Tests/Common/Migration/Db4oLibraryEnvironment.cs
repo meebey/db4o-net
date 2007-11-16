@@ -3,7 +3,9 @@ using System.IO;
 using System.Reflection;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Util;
+#if !CF_2_0
 using Mono.Cecil;
+#endif
 using File=Sharpen.IO.File;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
@@ -99,6 +101,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 #endif
         }
 
+#if !CF_2_0 
 		private string SetUpBaseDirectory()
 		{
 			string baseDirectory = BaseDirectory();
@@ -110,7 +113,6 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		{
 			return IOServices.BuildTempPath("migration-domain-" + Version());
 		}
-#if !CF_2_0 
 
 		private void SetUpLegacyAdapter()
 		{
@@ -160,7 +162,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		}
 #endif
 
-        public string Version()
+		public string Version()
 		{
 			if (null != _version) return _version;
 			return _version = GetVersion();
