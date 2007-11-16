@@ -23,6 +23,7 @@ namespace Db4oAdmin.TA
 		private bool Implements(TypeDefinition type, string interfaceName)
 		{
 			if (Contains(type.Interfaces, interfaceName)) return true;
+			if (null == type.BaseType) return false;
 
 			TypeDefinition baseType = ResolveTypeReference(type.BaseType);
 			if (null != baseType) return Implements(baseType, interfaceName);
@@ -32,6 +33,8 @@ namespace Db4oAdmin.TA
 
 		public TypeDefinition ResolveTypeReference(TypeReference typeRef)
 		{
+			if (null == typeRef) throw new ArgumentNullException("typeRef");
+
 			TypeDefinition type = typeRef as TypeDefinition;
 			if (null != type) return type;
 
@@ -42,24 +45,11 @@ namespace Db4oAdmin.TA
             if (genericType != null) return ResolveTypeReference(genericType.ElementType);
 
             AssemblyNameReference assemblyRef = typeRef.Scope as AssemblyNameReference;
-			if (IsSystemAssembly(assemblyRef)) return null;
 
 			AssemblyDefinition assembly = ResolveAssembly(assemblyRef);
 			if (null == assembly) return null;
 
 			return FindType(assembly, typeRef);
-		}
-
-		private bool IsSystemAssembly(AssemblyNameReference assemblyRef)
-		{
-			switch (assemblyRef.Name)
-			{
-				case "mscorlib":
-				case "corlib":
-				case "System":
-					return true;
-			}
-			return false;
 		}
 
 		private AssemblyDefinition ResolveAssembly(AssemblyNameReference assemblyRef)

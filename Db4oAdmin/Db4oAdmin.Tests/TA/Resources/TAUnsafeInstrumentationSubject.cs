@@ -1,3 +1,4 @@
+using System;
 using Db4objects.Db4o.TA;
 using Db4oUnit;
 using Db4oAdmin.Tests.TA; // MockActivator
@@ -12,6 +13,10 @@ public delegate void FooHandler();
 public class DelegateContainer
 {
 	public FooHandler foo;
+
+	public EventHandler<EventArgs> bar;
+
+	public EventHandler baz;
 }
 
 public class TAUnsafeInstrumentationSubject : ITestCase
@@ -32,6 +37,8 @@ public class TAUnsafeInstrumentationSubject : ITestCase
 		DelegateContainer obj = new DelegateContainer();
 		MockActivator a = ActivatorFor(obj);
 		Assert.IsNull(obj.foo);
+		Assert.IsNull(obj.bar);
+		Assert.IsNull(obj.baz);
 		Assert.AreEqual(0, a.Count);
 	}
 
