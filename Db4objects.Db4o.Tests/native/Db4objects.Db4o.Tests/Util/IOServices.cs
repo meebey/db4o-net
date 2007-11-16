@@ -84,9 +84,9 @@ namespace Db4objects.Db4o.Tests.Util
 			return stdout + stderr;
 		}
 
-        public static void CopyEnclosingAssemblyTo(Type type, string directory)
+        public static string CopyEnclosingAssemblyTo(Type type, string directory)
 		{
-			CopyTo(type.Assembly.Location, directory);
+			return CopyTo(type.Assembly.Location, directory);
 		}
 
 #endif
@@ -96,10 +96,12 @@ namespace Db4objects.Db4o.Tests.Util
 			return Path.Combine(Path.GetTempPath(), fname);
 		}
 
-		public static void CopyTo(string fname, string targetDirectory)
+		public static string CopyTo(string fname, string targetDirectory)
 		{
 			Directory.CreateDirectory(targetDirectory);
-			File.Copy(fname, Path.Combine(targetDirectory, Path.GetFileName(fname)), true);
+			string targetFileName = Path.Combine(targetDirectory, Path.GetFileName(fname));
+			File.Copy(fname, targetFileName, true);
+			return targetFileName;
 		}
 
 	}

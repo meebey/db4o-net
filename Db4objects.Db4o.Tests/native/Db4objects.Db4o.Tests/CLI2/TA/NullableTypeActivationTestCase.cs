@@ -1,4 +1,5 @@
 /* Copyright (C) 2004-2007   db4objects Inc.   http://www.db4o.com */
+using System;
 using Db4objects.Db4o.Config;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -49,6 +50,12 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 					)
 				)
 			);
+		}
+
+		public void TestGetunderlyingType()
+		{
+			Assert.AreSame(typeof(int), Nullable.GetUnderlyingType(typeof(int?)));
+			Assert.AreSame(typeof(StringIntP), Nullable.GetUnderlyingType(typeof(StringIntP?)));
 		}
 
 		public void TestDepth0()

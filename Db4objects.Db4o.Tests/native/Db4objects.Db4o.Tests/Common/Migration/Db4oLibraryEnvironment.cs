@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Util;
+using Mono.Cecil;
 using File=Sharpen.IO.File;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
@@ -72,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		}
 	}
 
-	public class Db4oLibraryEnvironment
+	public class Db4oLibraryEnvironment : IDisposable
 	{
 		private readonly AppDomain _domain;
 
@@ -83,27 +84,33 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		public Db4oLibraryEnvironment(File file, File additionalAssembly)
 		{
 			_targetAssembly = file.GetAbsolutePath();
-#if !CF_2_0        
-			_domain = SetUpDomain();
-			SetUpLegacyAdapter();
+#if !CF_2_0
+			_domain = CreateDomain(SetUpBaseDirectory());
+			try
+			{
+				SetUpAssemblyResolver();
+				SetUpLegacyAdapter();
+			}
+			catch (Exception x)
+			{
+				Dispose();
+				throw new Exception("Failed to setup environment for '" + _targetAssembly + "'", x);
+			}
 #endif
         }
 
+		private string SetUpBaseDirectory()
+		{
+			string baseDirectory = BaseDirectory();
+			CopyAssemblies(baseDirectory);
+			return baseDirectory;
+		}
 
 		private string BaseDirectory()
 		{
 			return IOServices.BuildTempPath("migration-domain-" + Version());
 		}
-#if !CF_2_0        
-
-        private AppDomain SetUpDomain()
-		{
-			string baseDirectory = BaseDirectory();
-			CopyAssemblies(baseDirectory);
-			AppDomain domain = CreateDomain(baseDirectory);
-			SetUpAssemblyResolver(domain);
-			return domain;
-		}
+#if !CF_2_0 
 
 		private void SetUpLegacyAdapter()
 		{
@@ -114,9 +121,9 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		}
 
-		private void SetUpAssemblyResolver(AppDomain domain)
+		private void SetUpAssemblyResolver()
 		{
-			domain.DoCallBack(new CrossAppDomainDelegate(new InstallAssemblyResolver(_targetAssembly).Execute));
+			_domain.DoCallBack(new CrossAppDomainDelegate(new InstallAssemblyResolver(_targetAssembly).Execute));
 		}
 
 		private static AppDomain CreateDomain(string baseDirectory)
@@ -128,10 +135,28 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private void CopyAssemblies(string domainBase)
 		{
-			IOServices.CopyTo(_targetAssembly, domainBase);
-			IOServices.CopyEnclosingAssemblyTo(GetType(), domainBase);
-			IOServices.CopyEnclosingAssemblyTo(typeof(Db4oUnit.ITest), domainBase);
-			IOServices.CopyEnclosingAssemblyTo(typeof(Db4oUnit.Extensions.IDb4oTestCase), domainBase);
+			CleanStrongName(IOServices.CopyTo(_targetAssembly, domainBase));
+			CleanStrongName(IOServices.CopyEnclosingAssemblyTo(GetType(), domainBase));
+			CleanStrongName(IOServices.CopyEnclosingAssemblyTo(typeof(Db4oUnit.ITest), domainBase));
+			CleanStrongName(IOServices.CopyEnclosingAssemblyTo(typeof(Db4oUnit.Extensions.IDb4oTestCase), domainBase));
+		}
+
+		private void CleanStrongName(string path)
+		{
+			AssemblyDefinition asm = AssemblyFactory.GetAssembly(path);
+			foreach (ModuleDefinition m in asm.Modules)
+			{
+				foreach (AssemblyNameReference name in m.AssemblyReferences)
+				{
+					if (!name.Name.StartsWith("Db4objects.Db4o")) continue;
+
+					name.Version = new Version();
+					name.PublicKeyToken = new byte[0];
+				}
+			}
+			asm.Name.PublicKey = new byte[0];
+			asm.Name.PublicKeyToken = new byte[0];
+			AssemblyFactory.SaveAssembly(asm, path);
 		}
 #endif
 
@@ -157,6 +182,12 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 #endif
         }
 
+		public void Dispose()
+		{
+#if !CF_2_0 
+			AppDomain.Unload(_domain);
+#endif
+		}
 	}
 
 }

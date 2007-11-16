@@ -4,7 +4,6 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-
 	public class Db4oLibrarian
 	{
 		private Db4oLibraryEnvironmentProvider _provider;
