@@ -5,7 +5,7 @@ using Db4oAdmin;
 
 namespace Db4oAdmin.MSBuild
 {
-    public class Db4oAssemblyEnhancer : Task
+    public class Db4oEnhancerMSBuildTask : Task
     {
         private ITaskItem[] assemblies;
 

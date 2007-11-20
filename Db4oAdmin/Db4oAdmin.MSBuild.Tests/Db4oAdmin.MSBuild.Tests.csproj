@@ -62,12 +62,12 @@
   </Target>
   -->
   
-  <UsingTask AssemblyFile="$(OutputPath)\Db4oAdmin.MSBuild.dll" TaskName="Db4oAdmin.MSBuild.Db4oAssemblyEnhancer" />
+  <UsingTask AssemblyFile="$(OutputPath)\Db4oAdmin.MSBuild.dll" TaskName="Db4oAdmin.MSBuild.Db4oEnhancerMSBuildTask" />
   <ItemGroup>
-    <Assemblies Include="$(TargetPath)" />
+    <Db4oEnhance Include="$(TargetPath)" />
   </ItemGroup>
   <Target Name="AfterBuild">
-    <Db4oAssemblyEnhancer Assemblies="@(Assemblies)" />
+    <Db4oEnhancerMSBuildTask Assemblies="@(Db4oEnhance)" />
   </Target>
   
 </Project>
