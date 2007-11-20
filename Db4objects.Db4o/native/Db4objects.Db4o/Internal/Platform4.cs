@@ -589,11 +589,16 @@ namespace Db4objects.Db4o.Internal
         {
             Type type = GetNetType(clazz);
             if (null == type) return false;
-            return type.IsPointer
-                || type.IsSubclassOf(typeof(Delegate));
+        	return IsTransient(type);
         }
 
-        private static Type GetNetType(IReflectClass clazz)
+    	public static bool IsTransient(Type type)
+    	{
+    		return type.IsPointer
+    		       || type.IsSubclassOf(typeof(Delegate));
+    	}
+
+    	private static Type GetNetType(IReflectClass clazz)
         {
             if (null == clazz)
             {
