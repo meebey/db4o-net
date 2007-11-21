@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.Collections
 {
-	public partial class ArrayDictionary4<K, V> : IDictionary<K, V>
+	public partial class ArrayDictionary4<K, V> : IDictionary<K, V>, IActivatable
 	{
 		public int Count
 		{
@@ -22,31 +24,80 @@ namespace Db4objects.Db4o.Collections
 
 		public void Add(K key, V value)
 		{
-			throw new NotImplementedException();
+            Activate();
+
+            int index = IndexOfKey(key);
+            if (index != -1)
+            {
+                throw new ArgumentException(string.Format("Key {0} already exists", key));
+            }
+            Insert(key, value);
 		}
 
 		public bool Remove(K key)
 		{
-			throw new NotImplementedException();
+            Activate();
+            int index = IndexOfKey(key);
+
+            if (index == -1)
+            {
+                return false;
+            }
+            Delete(index);
+            return true;
 		}
 
 		public bool Contains(KeyValuePair<K, V> pair)
 		{
-			throw new NotImplementedException();
+            Activate();
+            int index = IndexOfKey(pair.Key);
+            if (index == -1)
+            {
+                return false;
+            }
+
+            KeyValuePair<K, V> thisKeyValuePair = new KeyValuePair<K, V>(pair.Key, ValueAt(index));
+            return EqualityComparer<KeyValuePair<K, V>>.Default.Equals(thisKeyValuePair, pair);
 		}
 
 		public void CopyTo(KeyValuePair<K, V>[] array, int count)
 		{
-			throw new NotImplementedException();
+            Activate();
+            if (array == null)
+            {
+                throw new ArgumentNullException();
+            }
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            if ((count >= array.Length) || (Count > (array.Length - count)))
+            {
+                throw new ArgumentException();
+            }
+            for (int i = 0; i < Count; i++)
+            {
+                KeyValuePair<K, V> keyValuePair = new KeyValuePair<K, V>(KeyAt(i), ValueAt(i));
+                array[count + i] = keyValuePair;
+            }
 		}
 
 		public bool Remove(KeyValuePair<K, V> pair)
 		{
-			throw new NotImplementedException();
+            if (!Contains(pair))
+            {
+                return false;
+            }
+
+            int index = IndexOfKey(pair.Key);
+            Delete(index);
+            return true;
 		}
 
 		public bool TryGetValue(K key, out V value)
 		{
+            Activate();
 			int index = IndexOfKey(key);
 			if (index == -1)
 			{
@@ -59,13 +110,40 @@ namespace Db4objects.Db4o.Collections
 
 		public V this[K key]
 		{
-			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+            get
+            {
+                Activate();
+                int index = IndexOfKey(key);
+                if (index == -1)
+                {
+                    throw new KeyNotFoundException();
+                }
+                return ValueAt(index);
+            }
+            set
+            {
+                Activate();
+                int index = IndexOfKey(key);
+                if (index == -1)
+                {
+                    Add(key, value);
+                }
+                else
+                {
+                    Replace(index, value);
+                }
+            }
 		}
 
 		public ICollection<K> Keys
 		{
-			get { throw new NotImplementedException(); }
+            get
+            {
+                Activate();
+                K[] keys = new K[_endIndex - _startIndex];
+                Array.Copy(_keys, keys, _endIndex);
+                return keys;
+            }
 		}
 
 		public bool ContainsKey(K key)
@@ -75,7 +153,12 @@ namespace Db4objects.Db4o.Collections
 
 		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
 		{
-			throw new NotImplementedException();
+            KeyValuePair<K, V>[] keyValuePairs = new KeyValuePair<K, V>[Count];
+            for (int i = 0; i < Count; i++)
+            {
+                keyValuePairs[i] = new KeyValuePair<K, V>(KeyAt(i), ValueAt(i));
+            }
+            return new Enumerator(keyValuePairs);
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -83,9 +166,72 @@ namespace Db4objects.Db4o.Collections
 			return ((IEnumerable<KeyValuePair<K, V>>)this).GetEnumerator();
 		}
 
+        private int IndexOfKey(K key)
+        {
+            if (key == null)
+            {
+                throw new ArgumentNullException();
+            }
+            return IndexOf(_keys, key);
+        }
+
 		private int IndexOf(object[] array, object value)
 		{
 			return System.Array.IndexOf(array, value);
 		}
+
+        public struct Enumerator : IEnumerator<KeyValuePair<K, V>>, IEnumerator
+        {
+            private KeyValuePair<K, V>[] _keyValuePairs;
+
+            private int _currentIndex;
+
+            public Enumerator(KeyValuePair<K, V>[] keyValuePairs)
+            {
+                _keyValuePairs = keyValuePairs;
+                _currentIndex = -1;
+            }
+
+            public KeyValuePair<K, V> Current
+            {
+                get
+                {
+                    return _keyValuePairs[_currentIndex];
+                }
+            }
+
+            public void Dispose()
+            {
+                Array.Clear(_keyValuePairs, 0, _keyValuePairs.Length);
+                _keyValuePairs = null;
+            }
+
+            public bool MoveNext()
+            {
+                if (_currentIndex < _keyValuePairs.Length - 1)
+                {
+                    _currentIndex++;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            void IEnumerator.Reset()
+            {
+                _currentIndex = -1;
+            }
+
+            Object IEnumerator.Current
+            {
+                get
+                {
+                    return Current;
+                }
+            }
+
+        }
 	}
 }
