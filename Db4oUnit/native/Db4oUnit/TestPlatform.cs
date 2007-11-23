@@ -29,15 +29,10 @@ namespace Db4oUnit
 			writer.Write(e);
 		}
 
-		public static void PrintStackTrace(Exception e)
-		{
-			PrintStackTrace (GetStdOut(), e);
-		}
-
-		public static TextWriter GetStdOut()
-		{
-			return Out;
-		}
+        public static TextWriter GetNullWriter()
+        {
+            return new NullTextWriter();
+        }
         
         public static TextWriter GetStdErr()
 		{
