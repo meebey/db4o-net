@@ -6,6 +6,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 		protected override System.Type[] TestCases()
 		{
 			return new System.Type[] { 
+                typeof(ArrayList4TestCase), 
+                typeof(ArrayList4TATestCase), 
                 typeof(GenericDictionaryTestCase),
                 typeof(ArrayDictionary4TestCase),
                 typeof(ArrayDictionary4TATestCase),
