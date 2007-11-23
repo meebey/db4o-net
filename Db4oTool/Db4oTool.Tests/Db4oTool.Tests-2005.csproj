@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{69859DB2-4DE3-4DE4-A0BB-13861418378F}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Db4oTool.Tests</RootNamespace>
+    <AssemblyName>Db4oTool.Tests</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Cecil.FlowAnalysis, Version=0.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\net-2.0\Cecil.FlowAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.5.0.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\net-2.0\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.0.1.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\net-2.0\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AllTests.cs" />
+    <Compile Include="Core\AbstractCommandLineInstrumentationTestCase.cs" />
+    <Compile Include="Core\AbstractInstrumentationTestCase.cs" />
+    <Compile Include="Core\ArrayServices.cs" />
+    <Compile Include="Core\ByAttributeTestCase.cs" />
+    <Compile Include="Core\CompilationServices.cs" />
+    <Compile Include="Core\ByFilterTestCase.cs" />
+    <Compile Include="Core\ByNameTestCase.cs" />
+    <Compile Include="Core\ByNotAttributeTestCase.cs" />
+    <Compile Include="Core\ContextVariable.cs" />
+    <Compile Include="Core\ContextVariableTestCase.cs" />
+    <Compile Include="Core\CustomInstrumentationTestCase.cs" />
+    <Compile Include="Core\ILPatternTestCase.cs" />
+    <Compile Include="Core\InstrumentedTestCase.cs" />
+    <EmbeddedResource Include="Core\Resources\CustomInstrumentationSubject.cs" />
+    <EmbeddedResource Include="Core\Resources\ByAttributeInstrumentationSubject.cs" />
+    <EmbeddedResource Include="Core\Resources\ByFilterInstrumentationSubject.cs" />
+    <EmbeddedResource Include="Core\Resources\ByNameInstrumentationSubject.cs" />
+    <EmbeddedResource Include="Core\Resources\ByNotAttributeInstrumentationSubject.cs" />
+    <EmbeddedResource Include="Core\Resources\PreserveDebugInfoSubject.cs" />
+    <Compile Include="Core\PreserveDebugInfoTestCase.cs" />
+    <Compile Include="Core\ResourceServices.cs" />
+    <Compile Include="Core\ShellUtilities.cs" />
+    <Compile Include="Core\SingleResourceTestCase.cs" />
+    <Compile Include="Core\VerifyAssemblyTest.cs" />
+    <Compile Include="NQ\CFNQRuntimeOptimizationTestCase.cs" />
+    <Compile Include="NQ\PredicateBuildTimeOptimizationTestCase.cs" />
+    <EmbeddedResource Include="NQ\Resources\CFNQSubject.cs" />
+    <EmbeddedResource Include="NQ\Resources\PredicateSubject.cs" />
+    <EmbeddedResource Include="NQ\Resources\UnoptimizablePredicateSubject.cs" />
+    <Compile Include="NQ\UnoptimizablePredicatesTestCase.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="TA\Resources\TAInstrumentationSubject.cs" />
+    <EmbeddedResource Include="TA\Resources\TAAssemblyReferenceSubject.cs" />
+    <EmbeddedResource Include="TA\Resources\TADoubleInstrumentationSubject.cs" />
+    <Compile Include="TA\MockActivator.cs" />
+    <EmbeddedResource Include="TA\Resources\TAUnsafeInstrumentationSubject.cs" />
+    <Compile Include="TA\TAInstrumentationAppliedMoreThanOnceCOR-918.cs" />
+    <Compile Include="TA\TAInstrumentationTestCase.cs" />
+    <Compile Include="TA\TANonStorableTypeTestCase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2005.csproj">
+      <Project>{4FA6645B-E14B-4F18-A2CC-C1925663EFCE}</Project>
+      <Name>Db4objects.Db4o-2005</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Db4oUnit\Db4oUnit-2005.csproj">
+      <Project>{9ABAFC31-D29D-4000-B6A0-C24F0BB221F5}</Project>
+      <Name>Db4oUnit-2005</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Db4oTool\Db4oTool-2005.csproj">
+      <Project>{6F3BE659-0653-4982-94D6-F1D9D8887E09}</Project>
+      <Name>Db4oTool-2005</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
