@@ -7,6 +7,7 @@ namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
 	/// <persistent></persistent>
+	[System.ObsoleteAttribute(@"since 7.0")]
 	public class P1HashElement : P1ListElement
 	{
 		public object i_key;
@@ -24,11 +25,6 @@ namespace Db4objects.Db4o
 		{
 			i_hashCode = a_hashCode;
 			i_key = a_key;
-		}
-
-		public override int AdjustReadDepth(int a_depth)
-		{
-			return 1;
 		}
 
 		internal virtual object ActivatedKey(int a_depth)

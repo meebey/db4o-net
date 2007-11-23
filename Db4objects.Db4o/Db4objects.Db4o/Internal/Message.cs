@@ -35,7 +35,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (header)
 				{
-					stream.WriteLine("[" + Db4oFactory.Version() + "   " + DateHandler.Now() + "] ");
+					stream.WriteLine("[" + Db4oFactory.Version() + "   " + DateHandlerBase.Now() + "] "
+						);
 				}
 				stream.WriteLine(" " + msg);
 			}

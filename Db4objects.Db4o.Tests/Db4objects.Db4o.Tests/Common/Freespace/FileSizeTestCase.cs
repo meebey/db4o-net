@@ -2,12 +2,13 @@
 
 using System;
 using Db4oUnit;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Tests.Common.Freespace;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
-	public class FileSizeTestCase : FreespaceManagerTestCaseBase
+	public class FileSizeTestCase : FreespaceManagerTestCaseBase, IOptOutDefragSolo
 	{
 		private const int ITERATIONS = 100;
 
@@ -20,12 +21,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			StoreSomeItems();
 			ProduceSomeFreeSpace();
-			AssertConsistentSize(new _IRunnable_20(this));
+			AssertConsistentSize(new _IRunnable_21(this));
 		}
 
-		private sealed class _IRunnable_20 : IRunnable
+		private sealed class _IRunnable_21 : IRunnable
 		{
-			public _IRunnable_20(FileSizeTestCase _enclosing)
+			public _IRunnable_21(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -43,12 +44,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			StoreSomeItems();
 			Db().Commit();
-			AssertConsistentSize(new _IRunnable_31(this));
+			AssertConsistentSize(new _IRunnable_32(this));
 		}
 
-		private sealed class _IRunnable_31 : IRunnable
+		private sealed class _IRunnable_32 : IRunnable
 		{
-			public _IRunnable_31(FileSizeTestCase _enclosing)
+			public _IRunnable_32(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -68,12 +69,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			FreespaceManagerTestCaseBase.Item item = new FreespaceManagerTestCaseBase.Item();
 			Store(item);
 			Db().Commit();
-			AssertConsistentSize(new _IRunnable_44(this, item));
+			AssertConsistentSize(new _IRunnable_45(this, item));
 		}
 
-		private sealed class _IRunnable_44 : IRunnable
+		private sealed class _IRunnable_45 : IRunnable
 		{
-			public _IRunnable_44(FileSizeTestCase _enclosing, FreespaceManagerTestCaseBase.Item
+			public _IRunnable_45(FileSizeTestCase _enclosing, FreespaceManagerTestCaseBase.Item
 				 item)
 			{
 				this._enclosing = _enclosing;
@@ -96,12 +97,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			Db().Commit();
 			Reopen();
-			AssertConsistentSize(new _IRunnable_55(this));
+			AssertConsistentSize(new _IRunnable_56(this));
 		}
 
-		private sealed class _IRunnable_55 : IRunnable
+		private sealed class _IRunnable_56 : IRunnable
 		{
-			public _IRunnable_55(FileSizeTestCase _enclosing)
+			public _IRunnable_56(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -127,20 +128,20 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			ProduceSomeFreeSpace();
 			Store(new FreespaceManagerTestCaseBase.Item());
 			Db().Commit();
-			AssertConsistentSize(new _IRunnable_70(this));
+			AssertConsistentSize(new _IRunnable_71(this));
 		}
 
-		private sealed class _IRunnable_70 : IRunnable
+		private sealed class _IRunnable_71 : IRunnable
 		{
-			public _IRunnable_70(FileSizeTestCase _enclosing)
+			public _IRunnable_71(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Run()
 			{
-				this._enclosing.Store(this._enclosing.RetrieveOnlyInstance(typeof(FreespaceManagerTestCaseBase.Item)
-					));
+				this._enclosing.Store(this._enclosing.RetrieveOnlyInstance(typeof(FreespaceManagerTestCaseBase.Item
+					)));
 				this._enclosing.Db().Commit();
 				try
 				{

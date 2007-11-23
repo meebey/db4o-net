@@ -5,7 +5,9 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Replication;
 using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Internal
@@ -18,10 +20,16 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		public void Activate(object obj)
+		{
+			Activate(null, obj);
+		}
+
 		/// <exception cref="DatabaseClosedException"></exception>
 		public void Activate(object obj, int depth)
 		{
-			Activate(null, obj, depth);
+			Activate(null, obj, ActivationDepthProvider().ActivationDepth(depth, ActivationMode
+				.ACTIVATE));
 		}
 
 		/// <exception cref="ArgumentNullException"></exception>
@@ -31,6 +39,7 @@ namespace Db4objects.Db4o.Internal
 			Bind(null, obj, id);
 		}
 
+		[System.ObsoleteAttribute]
 		public virtual IDb4oCollections Collections()
 		{
 			return Collections(null);
@@ -110,7 +119,8 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="DatabaseClosedException"></exception>
 		public object PeekPersisted(object obj, int depth, bool committed)
 		{
-			return PeekPersisted(null, obj, depth, committed);
+			return PeekPersisted(null, obj, ActivationDepthProvider().ActivationDepth(depth, 
+				ActivationMode.PEEK), committed);
 		}
 
 		public void Purge(object obj)
@@ -178,5 +188,14 @@ namespace Db4objects.Db4o.Internal
 		public abstract void Backup(string path);
 
 		public abstract Db4oDatabase Identity();
+
+		/// <param name="peerB"></param>
+		/// <param name="conflictHandler"></param>
+		[System.ObsoleteAttribute]
+		public virtual IReplicationProcess ReplicationBegin(IObjectContainer peerB, IReplicationConflictHandler
+			 conflictHandler)
+		{
+			throw new NotSupportedException();
+		}
 	}
 }

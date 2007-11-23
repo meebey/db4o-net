@@ -7,9 +7,11 @@ using Db4objects.Db4o.Replication;
 
 namespace Db4objects.Db4o.Replication
 {
+	/// <summary>db4o replication interface.</summary>
+	/// <remarks>db4o replication interface.</remarks>
 	/// <seealso cref="IExtObjectContainer.ReplicationBegin">IExtObjectContainer.ReplicationBegin
 	/// 	</seealso>
-	[System.ObsoleteAttribute(@"db4o replication interface.")]
+	[System.ObsoleteAttribute(@"Since db4o-5.2. Use db4o Replication System (dRS)")]
 	public interface IReplicationProcess
 	{
 		/// <summary>

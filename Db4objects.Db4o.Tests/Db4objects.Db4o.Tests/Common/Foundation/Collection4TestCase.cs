@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using Db4oUnit;
+using Db4oUnit.Extensions.Foundation;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Common.Foundation;
 
@@ -78,12 +79,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			IEnumerator i = c.GetEnumerator();
 			Assert.IsTrue(i.MoveNext());
 			c.Add("3");
-			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_73(this, i));
+			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_74(this, i));
 		}
 
-		private sealed class _ICodeBlock_73 : ICodeBlock
+		private sealed class _ICodeBlock_74 : ICodeBlock
 		{
-			public _ICodeBlock_73(Collection4TestCase _enclosing, IEnumerator i)
+			public _ICodeBlock_74(Collection4TestCase _enclosing, IEnumerator i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;

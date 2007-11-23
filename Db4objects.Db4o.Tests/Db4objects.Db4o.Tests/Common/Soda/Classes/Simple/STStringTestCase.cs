@@ -261,8 +261,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 		public virtual void TestCaseInsenstiveContains()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
+				));
 			q.Constrain(new _IEvaluation_199(this));
 			SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
 				("dod"));

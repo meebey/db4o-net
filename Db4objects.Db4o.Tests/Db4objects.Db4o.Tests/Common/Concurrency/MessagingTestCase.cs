@@ -13,6 +13,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 {
 	public class MessagingTestCase : Db4oClientServerTestCase
 	{
+		public static readonly object Lock = new object();
+
 		public static void Main(string[] args)
 		{
 			new Db4objects.Db4o.Tests.Common.Concurrency.MessagingTestCase().RunConcurrency();
@@ -27,13 +29,17 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc(IExtObjectContainer oc, int seq)
 		{
-			if (IsMTOC())
+			IMessageSender sender = null;
+			lock (Lock)
 			{
-				return;
+				if (IsMTOC())
+				{
+					return;
+				}
+				ClientServerFixture().Server().Ext().Configure().ClientServer().SetMessageRecipient
+					(_recipient);
+				sender = oc.Configure().ClientServer().GetMessageSender();
 			}
-			ClientServerFixture().Server().Ext().Configure().ClientServer().SetMessageRecipient
-				(_recipient);
-			IMessageSender sender = oc.Configure().ClientServer().GetMessageSender();
 			sender.Send(new MessagingTestCase.Data(seq));
 		}
 

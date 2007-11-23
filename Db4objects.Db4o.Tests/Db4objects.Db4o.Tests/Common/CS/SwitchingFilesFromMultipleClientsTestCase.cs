@@ -91,8 +91,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private void AssertDataCount(ClientObjectContainer client, int expected)
 		{
-			Assert.AreEqual(expected, client.Query(typeof(SwitchingFilesFromMultipleClientsTestCase.Data)
-				).Size());
+			Assert.AreEqual(expected, client.Query(typeof(SwitchingFilesFromMultipleClientsTestCase.Data
+				)).Size());
 		}
 
 		private void AddData(ClientObjectContainer client)

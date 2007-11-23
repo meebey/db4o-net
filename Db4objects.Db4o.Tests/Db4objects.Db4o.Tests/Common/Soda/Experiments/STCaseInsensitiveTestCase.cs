@@ -29,8 +29,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 		public virtual void Test()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STCaseInsensitiveTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STCaseInsensitiveTestCase
+				));
 			q.Descend("str").Constrain(new _IEvaluation_30(this));
 			Expect(q, new int[] { 1, 2 });
 		}

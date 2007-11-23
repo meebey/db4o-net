@@ -5,7 +5,6 @@ using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Marshall;
@@ -30,12 +29,35 @@ namespace Db4objects.Db4o.Internal
 
 		protected readonly LocalObjectContainer _file;
 
+		private readonly ICommittedCallbackDispatcher _committedCallbackDispatcher;
+
 		public LocalTransaction(ObjectContainerBase container, Transaction parentTransaction
 			, TransactionalReferenceSystem referenceSystem) : base(container, parentTransaction
 			, referenceSystem)
 		{
 			_file = (LocalObjectContainer)container;
 			i_pointerIo = new StatefulBuffer(this, Const4.POINTER_LENGTH);
+			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_38(this);
+		}
+
+		private sealed class _ICommittedCallbackDispatcher_38 : ICommittedCallbackDispatcher
+		{
+			public _ICommittedCallbackDispatcher_38(LocalTransaction _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public bool WillDispatchCommitted()
+			{
+				return this._enclosing.Callbacks().CaresAboutCommitted();
+			}
+
+			public void DispatchCommitted(CallbackObjectInfoCollections committedInfo)
+			{
+				this._enclosing.Callbacks().CommitOnCompleted(this._enclosing, committedInfo);
+			}
+
+			private readonly LocalTransaction _enclosing;
 		}
 
 		public virtual LocalObjectContainer File()
@@ -45,56 +67,51 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Commit()
 		{
-			Commit(null);
+			Commit(_committedCallbackDispatcher);
 		}
 
-		public virtual void Commit(IServerMessageDispatcher dispatcher)
+		public virtual void Commit(ICommittedCallbackDispatcher dispatcher)
 		{
 			lock (Container()._lock)
 			{
 				if (DoCommittingCallbacks())
 				{
-					Callbacks().CommitOnStarted(this, CollectCallbackObjectInfos(dispatcher));
+					Callbacks().CommitOnStarted(this, CollectCallbackObjectInfos());
 				}
 				FreespaceBeginCommit();
 				CommitImpl();
-				CallbackObjectInfoCollections committedInfo = null;
-				if (DoCommittedCallbacks(dispatcher))
-				{
-					committedInfo = CollectCallbackObjectInfos(dispatcher);
-				}
+				CallbackObjectInfoCollections committedInfo = CommittedInfoFor(dispatcher);
 				CommitClearAll();
 				FreespaceEndCommit();
-				if (DoCommittedCallbacks(dispatcher))
+				if (null != committedInfo)
 				{
-					if (dispatcher == null)
-					{
-						Callbacks().CommitOnCompleted(this, committedInfo);
-					}
-					else
-					{
-						dispatcher.CommittedInfo(committedInfo);
-					}
+					dispatcher.DispatchCommitted(committedInfo);
 				}
 			}
 		}
 
-		private bool DoCommittedCallbacks(IServerMessageDispatcher dispatcher)
+		private CallbackObjectInfoCollections CommittedInfoFor(ICommittedCallbackDispatcher
+			 dispatcher)
+		{
+			return DoCommittedCallbacks(dispatcher) ? CollectCallbackObjectInfos() : null;
+		}
+
+		private bool DoCommittedCallbacks(ICommittedCallbackDispatcher dispatcher)
 		{
 			if (IsSystemTransaction())
 			{
 				return false;
 			}
-			if (dispatcher != null)
-			{
-				return dispatcher.Server().CaresAboutCommitted();
-			}
-			return Callbacks().CaresAboutCommitted();
+			return dispatcher.WillDispatchCommitted();
 		}
 
 		private bool DoCommittingCallbacks()
 		{
-			return !IsSystemTransaction() && Callbacks().CaresAboutCommitting();
+			if (IsSystemTransaction())
+			{
+				return false;
+			}
+			return Callbacks().CaresAboutCommitting();
 		}
 
 		public virtual void Enlist(ITransactionParticipant participant)
@@ -112,6 +129,11 @@ namespace Db4objects.Db4o.Internal
 
 		private void CommitImpl()
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.TRANS_COMMIT.LogInfo("server == " + Container().IsServer() + ", systemtrans == "
+					 + IsSystemTransaction());
+			}
 			Commit2Listeners();
 			Commit3Stream();
 			Commit4FieldIndexes();
@@ -126,7 +148,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void FreeSlotChanges(bool forFreespace)
 		{
-			IVisitor4 visitor = new _IVisitor4_121(this, forFreespace);
+			IVisitor4 visitor = new _IVisitor4_130(this, forFreespace);
 			if (IsSystemTransaction())
 			{
 				_slotChanges.TraverseMutable(visitor);
@@ -139,9 +161,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_121 : IVisitor4
+		private sealed class _IVisitor4_130 : IVisitor4
 		{
-			public _IVisitor4_121(LocalTransaction _enclosing, bool forFreespace)
+			public _IVisitor4_130(LocalTransaction _enclosing, bool forFreespace)
 			{
 				this._enclosing = _enclosing;
 				this.forFreespace = forFreespace;
@@ -244,12 +266,12 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void RollbackSlotChanges()
 		{
-			_slotChanges.TraverseLocked(new _IVisitor4_212(this));
+			_slotChanges.TraverseLocked(new _IVisitor4_221(this));
 		}
 
-		private sealed class _IVisitor4_212 : IVisitor4
+		private sealed class _IVisitor4_221 : IVisitor4
 		{
-			public _IVisitor4_212(LocalTransaction _enclosing)
+			public _IVisitor4_221(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -351,6 +373,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void WritePointer(int id, Slot slot)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.WRITE_POINTER.Log(id);
+				DTrace.WRITE_POINTER.LogLength(slot);
+			}
 			CheckSynchronization();
 			i_pointerIo.UseSlot(id);
 			i_pointerIo.WriteSlot(slot);
@@ -364,13 +391,13 @@ namespace Db4objects.Db4o.Internal
 		private bool WriteSlots()
 		{
 			BooleanByRef ret = new BooleanByRef();
-			TraverseSlotChanges(new _IVisitor4_325(this, ret));
+			TraverseSlotChanges(new _IVisitor4_334(this, ret));
 			return ret.value;
 		}
 
-		private sealed class _IVisitor4_325 : IVisitor4
+		private sealed class _IVisitor4_334 : IVisitor4
 		{
-			public _IVisitor4_325(LocalTransaction _enclosing, BooleanByRef ret)
+			public _IVisitor4_334(LocalTransaction _enclosing, BooleanByRef ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -389,6 +416,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void FlushFile()
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.TRANS_FLUSH.Log();
+			}
 			if (_file.ConfigImpl().FlushFileBuffers())
 			{
 				_file.SyncFiles();
@@ -397,6 +428,10 @@ namespace Db4objects.Db4o.Internal
 
 		private SlotChange ProduceSlotChange(int id)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.PRODUCE_SLOT_CHANGE.Log(id);
+			}
 			SlotChange slot = new SlotChange(id);
 			_slotChanges.Add(slot);
 			return (SlotChange)slot.AddedOrExisting();
@@ -477,6 +512,11 @@ namespace Db4objects.Db4o.Internal
 
 		public override void SetPointer(int a_id, Slot slot)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.SLOT_SET_POINTER.Log(a_id);
+				DTrace.SLOT_SET_POINTER.LogLength(slot);
+			}
 			CheckSynchronization();
 			ProduceSlotChange(a_id).SetPointer(slot);
 		}
@@ -498,13 +538,13 @@ namespace Db4objects.Db4o.Internal
 		private int CountSlotChanges()
 		{
 			IntByRef count = new IntByRef();
-			TraverseSlotChanges(new _IVisitor4_449(this, count));
+			TraverseSlotChanges(new _IVisitor4_458(this, count));
 			return count.value;
 		}
 
-		private sealed class _IVisitor4_449 : IVisitor4
+		private sealed class _IVisitor4_458 : IVisitor4
 		{
-			public _IVisitor4_449(LocalTransaction _enclosing, IntByRef count)
+			public _IVisitor4_458(LocalTransaction _enclosing, IntByRef count)
 			{
 				this._enclosing = _enclosing;
 				this.count = count;
@@ -555,12 +595,12 @@ namespace Db4objects.Db4o.Internal
 
 		private void AppendSlotChanges(Db4objects.Db4o.Internal.Buffer writer)
 		{
-			TraverseSlotChanges(new _IVisitor4_484(this, writer));
+			TraverseSlotChanges(new _IVisitor4_493(this, writer));
 		}
 
-		private sealed class _IVisitor4_484 : IVisitor4
+		private sealed class _IVisitor4_493 : IVisitor4
 		{
-			public _IVisitor4_484(LocalTransaction _enclosing, Db4objects.Db4o.Internal.Buffer
+			public _IVisitor4_493(LocalTransaction _enclosing, Db4objects.Db4o.Internal.Buffer
 				 writer)
 			{
 				this._enclosing = _enclosing;
@@ -589,6 +629,11 @@ namespace Db4objects.Db4o.Internal
 		public override void SlotDelete(int id, Slot slot)
 		{
 			CheckSynchronization();
+			if (DTrace.enabled)
+			{
+				DTrace.SLOT_DELETE.Log(id);
+				DTrace.SLOT_DELETE.LogLength(slot);
+			}
 			if (id == 0)
 			{
 				return;
@@ -601,6 +646,11 @@ namespace Db4objects.Db4o.Internal
 		public override void SlotFreeOnCommit(int id, Slot slot)
 		{
 			CheckSynchronization();
+			if (DTrace.enabled)
+			{
+				DTrace.SLOT_FREE_ON_COMMIT.Log(id);
+				DTrace.SLOT_FREE_ON_COMMIT.LogLength(slot);
+			}
 			if (id == 0)
 			{
 				return;
@@ -611,6 +661,11 @@ namespace Db4objects.Db4o.Internal
 		public override void SlotFreeOnRollback(int id, Slot slot)
 		{
 			CheckSynchronization();
+			if (DTrace.enabled)
+			{
+				DTrace.SLOT_FREE_ON_ROLLBACK_ID.Log(id);
+				DTrace.SLOT_FREE_ON_ROLLBACK_ADDRESS.LogLength(slot);
+			}
 			ProduceSlotChange(id).FreeOnRollback(slot);
 		}
 
@@ -623,6 +678,13 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			CheckSynchronization();
+			if (DTrace.enabled)
+			{
+				DTrace.FREE_ON_ROLLBACK.Log(id);
+				DTrace.FREE_ON_ROLLBACK.LogLength(newSlot);
+				DTrace.FREE_ON_COMMIT.Log(id);
+				DTrace.FREE_ON_COMMIT.LogLength(oldSlot);
+			}
 			SlotChange change = ProduceSlotChange(id);
 			change.FreeOnRollbackSetPointer(newSlot);
 			change.FreeOnCommit(_file, oldSlot);
@@ -632,6 +694,11 @@ namespace Db4objects.Db4o.Internal
 		internal override void ProduceUpdateSlotChange(int id, Slot slot)
 		{
 			CheckSynchronization();
+			if (DTrace.enabled)
+			{
+				DTrace.FREE_ON_ROLLBACK.Log(id);
+				DTrace.FREE_ON_ROLLBACK.LogLength(slot);
+			}
 			SlotChange slotChange = ProduceSlotChange(id);
 			slotChange.FreeOnRollbackSetPointer(slot);
 		}
@@ -670,14 +737,14 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = _delete;
 				_delete = null;
-				delete.Traverse(new _IVisitor4_608(this));
+				delete.Traverse(new _IVisitor4_617(this));
 			}
 			_writtenUpdateDeletedMembers = null;
 		}
 
-		private sealed class _IVisitor4_608 : IVisitor4
+		private sealed class _IVisitor4_617 : IVisitor4
 		{
-			public _IVisitor4_608(LocalTransaction _enclosing)
+			public _IVisitor4_617(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -717,6 +784,10 @@ namespace Db4objects.Db4o.Internal
 			, int cascade)
 		{
 			CheckSynchronization();
+			if (DTrace.enabled)
+			{
+				DTrace.WRITE_UPDATE_DELETE_MEMBERS.Log(id);
+			}
 			TreeInt newNode = new TreeInt(id);
 			_writtenUpdateDeletedMembers = Tree.Add(_writtenUpdateDeletedMembers, newNode);
 			if (!newNode.WasAddedToTree())
@@ -757,8 +828,7 @@ namespace Db4objects.Db4o.Internal
 			return Container().Callbacks();
 		}
 
-		private CallbackObjectInfoCollections CollectCallbackObjectInfos(IServerMessageDispatcher
-			 serverMessageDispatcher)
+		private CallbackObjectInfoCollections CollectCallbackObjectInfos()
 		{
 			if (null == _slotChanges)
 			{
@@ -767,15 +837,14 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			_slotChanges.TraverseLocked(new _IVisitor4_699(this, deleted, added, updated));
-			return new CallbackObjectInfoCollections(serverMessageDispatcher, new ObjectInfoCollectionImpl
-				(added), new ObjectInfoCollectionImpl(updated), new ObjectInfoCollectionImpl(deleted
-				));
+			_slotChanges.TraverseLocked(new _IVisitor4_708(this, deleted, added, updated));
+			return new CallbackObjectInfoCollections(new ObjectInfoCollectionImpl(added), new 
+				ObjectInfoCollectionImpl(updated), new ObjectInfoCollectionImpl(deleted));
 		}
 
-		private sealed class _IVisitor4_699 : IVisitor4
+		private sealed class _IVisitor4_708 : IVisitor4
 		{
-			public _IVisitor4_699(LocalTransaction _enclosing, Collection4 deleted, Collection4
+			public _IVisitor4_708(LocalTransaction _enclosing, Collection4 deleted, Collection4
 				 added, Collection4 updated)
 			{
 				this._enclosing = _enclosing;

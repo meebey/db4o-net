@@ -10,7 +10,7 @@ using Db4objects.Db4o.Tests.Common.Internal;
 namespace Db4objects.Db4o.Tests.Common.Internal
 {
 	/// <exclude></exclude>
-	public class PartialObjectContainerTestCase : AbstractDb4oTestCase
+	public class PartialObjectContainerTestCase : AbstractDb4oTestCase, IOptOutTA
 	{
 		public static void Main(string[] arguments)
 		{

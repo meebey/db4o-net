@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -23,13 +24,20 @@ namespace Db4objects.Db4o.Internal
 		public static Db4objects.Db4o.Internal.HardObjectReference PeekPersisted(Transaction
 			 trans, int id, int depth)
 		{
-			object obj = trans.Container().PeekPersisted(trans, id, depth, true);
+			object obj = trans.Container().PeekPersisted(trans, id, ActivationDepthProvider(trans
+				).ActivationDepth(depth, ActivationMode.PEEK), true);
 			if (obj == null)
 			{
 				return null;
 			}
 			ObjectReference @ref = trans.ReferenceForId(id);
 			return new Db4objects.Db4o.Internal.HardObjectReference(@ref, obj);
+		}
+
+		private static IActivationDepthProvider ActivationDepthProvider(Transaction trans
+			)
+		{
+			return trans.Container().ActivationDepthProvider();
 		}
 	}
 }

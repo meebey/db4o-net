@@ -1,10 +1,15 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
+	/// <summary>Wraps the low-level details of reading a Buffer, which in turn is a glorified byte array.
+	/// 	</summary>
+	/// <remarks>Wraps the low-level details of reading a Buffer, which in turn is a glorified byte array.
+	/// 	</remarks>
 	/// <exclude></exclude>
 	public class UnmarshallingContext : AbstractReadContext, IFieldListInfo, IMarshallingInfo
 	{
@@ -77,10 +82,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return _object;
 			}
 			_reference.ClassMetadata(classMetadata);
-			if (doAdjustActivationDepthForPrefetch)
-			{
-				AdjustActivationDepthForPrefetch();
-			}
+			AdjustActivationDepth(doAdjustActivationDepthForPrefetch);
 			if (_checkIDTree)
 			{
 				object objectInCacheFromClassCreation = _transaction.ObjectForIdFromCache(ObjectID
@@ -104,10 +106,30 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _object;
 		}
 
+		private void AdjustActivationDepth(bool doAdjustActivationDepthForPrefetch)
+		{
+			if (doAdjustActivationDepthForPrefetch)
+			{
+				AdjustActivationDepthForPrefetch();
+			}
+			else
+			{
+				if (UnknownActivationDepth.INSTANCE == _activationDepth)
+				{
+					_activationDepth = Container().DefaultActivationDepth(ClassMetadata());
+				}
+			}
+		}
+
 		private void AdjustActivationDepthForPrefetch()
 		{
-			int depth = ClassMetadata().ConfigOrAncestorConfig() == null ? 1 : 0;
-			ActivationDepth(depth);
+			ActivationDepth(ActivationDepthProvider().ActivationDepthFor(ClassMetadata(), ActivationMode
+				.PREFETCH));
+		}
+
+		private IActivationDepthProvider ActivationDepthProvider()
+		{
+			return Container().ActivationDepthProvider();
 		}
 
 		public virtual object ReadFieldValue(FieldMetadata field)
@@ -180,24 +202,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_reference.SetObjectWeak(Container(), obj);
 		}
 
-		public override object ReadObject()
-		{
-			int id = ReadInt();
-			int depth = _activationDepth - 1;
-			if (PeekPersisted())
-			{
-				return Container().PeekPersisted(Transaction(), id, depth, false);
-			}
-			object obj = Container().GetByID2(Transaction(), id);
-			if (obj is IDb4oTypeImpl)
-			{
-				depth = ((IDb4oTypeImpl)obj).AdjustReadDepth(depth);
-			}
-			Container().StillToActivate(Transaction(), obj, depth);
-			return obj;
-		}
-
-		private bool PeekPersisted()
+		protected override bool PeekPersisted()
 		{
 			return _addToIDTree == Const4.TRANSIENT;
 		}
@@ -220,15 +225,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			object obj = handler.Read(this);
 			Seek(savedOffset);
 			return obj;
-		}
-
-		public virtual void AdjustInstantiationDepth()
-		{
-			Config4Class classConfig = ClassConfig();
-			if (classConfig != null)
-			{
-				_activationDepth = classConfig.AdjustActivationDepth(_activationDepth);
-			}
 		}
 
 		public virtual Config4Class ClassConfig()

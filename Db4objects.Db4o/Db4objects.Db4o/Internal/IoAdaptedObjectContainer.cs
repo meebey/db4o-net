@@ -276,6 +276,10 @@ namespace Db4objects.Db4o.Internal
 		public override void ReadBytes(byte[] bytes, int address, int addressOffset, int 
 			length)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.READ_BYTES.LogLength(address + addressOffset, length);
+			}
 			_file.BlockSeek(address, addressOffset);
 			int bytesRead = _file.Read(bytes, length);
 			CheckReadCount(bytesRead, length);
@@ -365,6 +369,10 @@ namespace Db4objects.Db4o.Internal
 					CheckXBytes(address, addressOffset, bytes.Length());
 				}
 			}
+			if (DTrace.enabled)
+			{
+				DTrace.WRITE_BYTES.LogLength(address + addressOffset, bytes.Length());
+			}
 			_file.BlockSeek(address, addressOffset);
 			_file.Write(bytes._buffer, bytes.Length());
 			if (_backupFile != null)
@@ -382,6 +390,10 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (address > 0 && length > 0)
 			{
+				if (DTrace.enabled)
+				{
+					DTrace.WRITE_XBYTES.LogLength(address, length);
+				}
 				IoAdapterWindow window = new IoAdapterWindow(_file, address, length);
 				try
 				{

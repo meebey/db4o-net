@@ -58,8 +58,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void Conc1(IExtObjectContainer oc)
 		{
 			IQuery q = oc.Query();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.IndexedUpdatesWithNullTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.IndexedUpdatesWithNullTestCase
+				));
 			q.Descend("str").Constrain(null);
 			IObjectSet objectSet = q.Execute();
 			Assert.AreEqual(4, objectSet.Size());
@@ -69,8 +69,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void Conc2(IExtObjectContainer oc)
 		{
 			IQuery q = oc.Query();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.IndexedUpdatesWithNullTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.IndexedUpdatesWithNullTestCase
+				));
 			q.Descend("str").Constrain(null);
 			IObjectSet objectSet = q.Execute();
 			if (objectSet.Size() == 0)
@@ -92,14 +92,14 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void Check2(IExtObjectContainer oc)
 		{
 			IQuery q1 = oc.Query();
-			q1.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.IndexedUpdatesWithNullTestCase)
-				);
+			q1.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.IndexedUpdatesWithNullTestCase
+				));
 			q1.Descend("str").Constrain(null);
 			IObjectSet objectSet1 = q1.Execute();
 			Assert.AreEqual(0, objectSet1.Size());
 			IQuery q2 = oc.Query();
-			q2.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.IndexedUpdatesWithNullTestCase)
-				);
+			q2.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.IndexedUpdatesWithNullTestCase
+				));
 			q2.Descend("str").Constrain("hi");
 			IObjectSet objectSet2 = q2.Execute();
 			Assert.AreEqual(4, objectSet2.Size());

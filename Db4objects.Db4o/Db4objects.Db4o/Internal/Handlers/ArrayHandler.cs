@@ -1,21 +1,42 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.Collections;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
-using Db4objects.Db4o.Reflect.Generic;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
 	public class ArrayHandler : VariableLengthTypeHandler, IFirstClassHandler, IComparable4
 	{
+		private sealed class ReflectArrayIterator : IndexedIterator
+		{
+			private readonly object _array;
+
+			private readonly IReflectArray _reflectArray;
+
+			public ReflectArrayIterator(IReflectArray reflectArray, object array) : base(reflectArray
+				.GetLength(array))
+			{
+				_reflectArray = reflectArray;
+				_array = array;
+			}
+
+			protected override object Get(int index)
+			{
+				return _reflectArray.Get(_array, index);
+			}
+		}
+
 		public readonly ITypeHandler4 _handler;
 
 		public readonly bool _usePrimitiveClassReflector;
@@ -27,9 +48,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			_usePrimitiveClassReflector = usePrimitiveClassReflector;
 		}
 
-		protected ArrayHandler(ITypeHandler4 template) : this(((Db4objects.Db4o.Internal.Handlers.ArrayHandler
-			)template).Container(), ((Db4objects.Db4o.Internal.Handlers.ArrayHandler)template
-			)._handler, ((Db4objects.Db4o.Internal.Handlers.ArrayHandler)template)._usePrimitiveClassReflector
+		protected ArrayHandler(ITypeHandler4 template) : this(((ArrayHandler)template).Container
+			(), ((ArrayHandler)template)._handler, ((ArrayHandler)template)._usePrimitiveClassReflector
 			)
 		{
 		}
@@ -39,44 +59,59 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Container().Reflector().Array();
 		}
 
-		public virtual object[] AllElements(object a_object)
+		public virtual IEnumerator AllElements(object a_object)
 		{
 			return AllElements(ArrayReflector(), a_object);
 		}
 
-		public static object[] AllElements(IReflectArray reflectArray, object array)
+		public static IEnumerator AllElements(IReflectArray reflectArray, object array)
 		{
-			object[] all = new object[reflectArray.GetLength(array)];
-			for (int i = all.Length - 1; i >= 0; i--)
-			{
-				all[i] = reflectArray.Get(array, i);
-			}
-			return all;
+			return new ArrayHandler.ReflectArrayIterator(reflectArray, array);
 		}
 
-		public void CascadeActivation(Transaction trans, object onObject, int depth, bool
-			 activate)
+		public void CascadeActivation(Transaction trans, object onObject, IActivationDepth
+			 depth)
 		{
 			if (!(_handler is ClassMetadata))
 			{
 				return;
 			}
-			depth--;
-			object[] all = AllElements(onObject);
-			if (activate)
+			IEnumerator all = AllElements(onObject);
+			while (all.MoveNext())
 			{
-				for (int i = all.Length - 1; i >= 0; i--)
+				object current = all.Current;
+				IActivationDepth elementDepth = Descend(depth, current);
+				if (elementDepth.RequiresActivation())
 				{
-					Container().StillToActivate(trans, all[i], depth);
+					if (depth.Mode().IsDeactivate())
+					{
+						Container().StillToDeactivate(trans, current, elementDepth, false);
+					}
+					else
+					{
+						Container().StillToActivate(trans, current, elementDepth);
+					}
 				}
 			}
-			else
+		}
+
+		private IActivationDepth Descend(IActivationDepth depth, object obj)
+		{
+			if (obj == null)
 			{
-				for (int i = all.Length - 1; i >= 0; i--)
-				{
-					Container().StillToDeactivate(trans, all[i], depth, false);
-				}
+				return new NonDescendingActivationDepth(depth.Mode());
 			}
+			ClassMetadata cm = ClassMetaDataForObject(obj);
+			if (cm.IsPrimitive())
+			{
+				return new NonDescendingActivationDepth(depth.Mode());
+			}
+			return depth.Descend(cm);
+		}
+
+		private ClassMetadata ClassMetaDataForObject(object obj)
+		{
+			return Container().ClassMetadataForObject(obj);
 		}
 
 		public virtual IReflectClass ClassReflector()
@@ -146,17 +181,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is Db4objects.Db4o.Internal.Handlers.ArrayHandler))
+			if (!(obj is ArrayHandler))
 			{
 				return false;
 			}
-			if (((Db4objects.Db4o.Internal.Handlers.ArrayHandler)obj).Identifier() != Identifier
-				())
+			if (((ArrayHandler)obj).Identifier() != Identifier())
 			{
 				return false;
 			}
-			return (_handler.Equals(((Db4objects.Db4o.Internal.Handlers.ArrayHandler)obj)._handler
-				));
+			return (_handler.Equals(((ArrayHandler)obj)._handler));
 		}
 
 		public override int GetHashCode()
@@ -313,17 +346,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ClassReflector();
 		}
 
-		public static object[] ToArray(ObjectContainerBase stream, object obj)
+		public static IEnumerator Iterator(IReflectClass claxx, object obj)
 		{
-			GenericReflector reflector = stream.Reflector();
-			IReflectClass claxx = reflector.ForObject(obj);
-			IReflectArray reflectArray = reflector.Array();
+			IReflectArray reflectArray = claxx.Reflector().Array();
 			if (reflectArray.IsNDimensional(claxx))
 			{
 				return MultidimensionalArrayHandler.AllElements(reflectArray, obj);
 			}
-			return Db4objects.Db4o.Internal.Handlers.ArrayHandler.AllElements(reflectArray, obj
-				);
+			return ArrayHandler.AllElements(reflectArray, obj);
 		}
 
 		protected int ClassID(object obj)
@@ -375,10 +405,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return false;
 			}
-			object[] compareWith = AllElements(obj);
-			for (int j = 0; j < compareWith.Length; j++)
+			IEnumerator compareWith = AllElements(obj);
+			while (compareWith.MoveNext())
 			{
-				if (_handler.CompareTo(compareWith[j]) == 0)
+				if (_handler.CompareTo(compareWith.Current) == 0)
 				{
 					return true;
 				}
@@ -388,10 +418,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual bool IsGreater(object obj)
 		{
-			object[] compareWith = AllElements(obj);
-			for (int j = 0; j < compareWith.Length; j++)
+			IEnumerator compareWith = AllElements(obj);
+			while (compareWith.MoveNext())
 			{
-				if (_handler.CompareTo(compareWith[j]) > 0)
+				if (_handler.CompareTo(compareWith.Current) > 0)
 				{
 					return true;
 				}
@@ -401,10 +431,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual bool IsSmaller(object obj)
 		{
-			object[] compareWith = AllElements(obj);
-			for (int j = 0; j < compareWith.Length; j++)
+			IEnumerator compareWith = AllElements(obj);
+			while (compareWith.MoveNext())
 			{
-				if (_handler.CompareTo(compareWith[j]) < 0)
+				if (_handler.CompareTo(compareWith.Current) < 0)
 				{
 					return true;
 				}

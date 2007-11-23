@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 	{
 		bool IsMessageDispatcherAlive();
 
-		void Write(Msg msg);
+		bool Write(Msg msg);
 
 		bool Close();
 

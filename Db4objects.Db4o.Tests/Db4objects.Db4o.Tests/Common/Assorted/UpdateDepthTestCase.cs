@@ -35,8 +35,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				this.child = child;
 			}
 
-			public Item(string name, UpdateDepthTestCase.Item child, UpdateDepthTestCase.Item[]
-				 childArray) : this(name, child)
+			public Item(string name, UpdateDepthTestCase.Item child, UpdateDepthTestCase.Item
+				[] childArray) : this(name, child)
 			{
 				this.childArray = childArray;
 				this.childVector = new ArrayList();
@@ -171,8 +171,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
-		private void AssertEquals(UpdateDepthTestCase.Item[] expected, UpdateDepthTestCase.Item[]
-			 actual)
+		private void AssertEquals(UpdateDepthTestCase.Item[] expected, UpdateDepthTestCase.Item
+			[] actual)
 		{
 			if (expected == null)
 			{
@@ -189,8 +189,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private UpdateDepthTestCase.Item QueryRoot()
 		{
-			return ((UpdateDepthTestCase.RootItem)NewQuery(typeof(UpdateDepthTestCase.RootItem)
-				).Execute().Next()).root;
+			return ((UpdateDepthTestCase.RootItem)NewQuery(typeof(UpdateDepthTestCase.RootItem
+				)).Execute().Next()).root;
 		}
 
 		public static void Main(string[] arguments)

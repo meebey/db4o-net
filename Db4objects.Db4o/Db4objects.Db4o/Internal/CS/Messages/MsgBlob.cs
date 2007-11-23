@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.CS.Messages;
 using Sharpen.IO;
 
@@ -38,7 +39,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			lock (stream._lock)
 			{
 				blobImpl = (BlobImpl)stream.GetByID(Transaction(), id);
-				stream.Activate(Transaction(), blobImpl, 3);
+				stream.Activate(Transaction(), blobImpl, new FixedActivationDepth(3));
 			}
 			return blobImpl;
 		}

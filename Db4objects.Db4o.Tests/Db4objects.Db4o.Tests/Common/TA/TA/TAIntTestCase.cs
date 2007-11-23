@@ -1,0 +1,36 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
+using System;
+using Db4oUnit;
+using Db4objects.Db4o.Tests.Common.TA.TA;
+
+namespace Db4objects.Db4o.Tests.Common.TA.TA
+{
+	/// <exclude></exclude>
+	public class TAIntTestCase : TAItemTestCaseBase
+	{
+		public static void Main(string[] args)
+		{
+			new TAIntTestCase().RunAll();
+		}
+
+		/// <exception cref="Exception"></exception>
+		protected override object CreateItem()
+		{
+			TAIntItem item = new TAIntItem();
+			item.value = 42;
+			item.i = 1;
+			item.obj = 2;
+			return item;
+		}
+
+		/// <exception cref="Exception"></exception>
+		protected override void AssertItemValue(object obj)
+		{
+			TAIntItem item = (TAIntItem)obj;
+			Assert.AreEqual(42, item.Value());
+			Assert.AreEqual(1, item.IntegerValue());
+			Assert.AreEqual(2, item.Object());
+		}
+	}
+}

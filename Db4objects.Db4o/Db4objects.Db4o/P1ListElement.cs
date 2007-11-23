@@ -8,6 +8,7 @@ namespace Db4objects.Db4o
 	/// <summary>element of linked lists</summary>
 	/// <exclude></exclude>
 	/// <persistent></persistent>
+	[System.ObsoleteAttribute(@"since 7.0")]
 	public class P1ListElement : P1Object
 	{
 		public Db4objects.Db4o.P1ListElement i_next;
@@ -25,18 +26,13 @@ namespace Db4objects.Db4o
 			i_object = a_object;
 		}
 
-		public override int AdjustReadDepth(int a_depth)
-		{
-			if (a_depth >= 1)
-			{
-				return 1;
-			}
-			return 0;
-		}
-
 		internal virtual object ActivatedObject(int a_depth)
 		{
 			CheckActive();
+			if (null == i_object)
+			{
+				return null;
+			}
 			Activate(i_object, a_depth);
 			return i_object;
 		}

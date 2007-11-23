@@ -3,8 +3,8 @@
 using System;
 using System.IO;
 using System.Net.Sockets;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Sharpen.IO;

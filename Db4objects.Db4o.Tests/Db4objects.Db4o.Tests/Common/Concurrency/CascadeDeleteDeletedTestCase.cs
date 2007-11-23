@@ -123,8 +123,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Check(IExtObjectContainer oc)
 		{
-			Assert.AreEqual(0, CountOccurences(oc, typeof(CascadeDeleteDeletedTestCase.CddMember)
-				));
+			Assert.AreEqual(0, CountOccurences(oc, typeof(CascadeDeleteDeletedTestCase.CddMember
+				)));
 		}
 
 		private void TMembersFirst(IExtObjectContainer oc, string name)

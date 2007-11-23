@@ -41,53 +41,43 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 				return;
 			}
 			int j = 0;
-			if (set.Size() == results.Length)
+			Assert.AreEqual(set.Size(), results.Length);
+			while (set.HasNext())
 			{
-				while (set.HasNext())
+				object obj = set.Next();
+				bool found = false;
+				if (ordered)
 				{
-					object obj = set.Next();
-					bool found = false;
-					if (ordered)
+					if (TCompare.IsEqual(results[j], obj))
 					{
-						if (TCompare.IsEqual(results[j], obj))
-						{
-							results[j] = null;
-							found = true;
-						}
-						j++;
+						results[j] = null;
+						found = true;
 					}
-					else
+					j++;
+				}
+				else
+				{
+					for (int i = 0; i < results.Length; i++)
 					{
-						for (int i = 0; i < results.Length; i++)
+						if (results[i] != null)
 						{
-							if (results[i] != null)
+							if (TCompare.IsEqual(results[i], obj))
 							{
-								if (TCompare.IsEqual(results[i], obj))
-								{
-									results[i] = null;
-									found = true;
-									break;
-								}
+								results[i] = null;
+								found = true;
+								break;
 							}
 						}
 					}
-					if (!found)
-					{
-						Assert.Fail("Object not expected: " + obj);
-					}
 				}
-				for (int i = 0; i < results.Length; i++)
-				{
-					if (results[i] != null)
-					{
-						Assert.Fail("Expected object not returned: " + results[i]);
-					}
-				}
+				Assert.IsTrue(found, "Object not expected: " + obj);
 			}
-			else
+			for (int i = 0; i < results.Length; i++)
 			{
-				Assert.Fail("Unexpected size returned.\nExpected: " + results.Length + " Returned: "
-					 + set.Size());
+				if (results[i] != null)
+				{
+					Assert.Fail("Expected object not returned: " + results[i]);
+				}
 			}
 		}
 

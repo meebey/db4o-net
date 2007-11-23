@@ -59,13 +59,13 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		internal const int ARRAY_LENGTH = 1024;
 
-		#if !CF_1_0 && !CF_2_0
+		#if !CF_2_0
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(ByteArrayTestCase.SerializableByteArrayHolder)).Translate
 				(new TSerializable());
 		}
-		#endif // !CF_1_0 && !CF_2_0
+		#endif // !CF_2_0
 
 		protected override void Store()
 		{
@@ -76,22 +76,22 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 			}
 		}
 
-		#if !CF_1_0 && !CF_2_0
+		#if !CF_2_0
 		/// <exception cref="Exception"></exception>
 		public virtual void TestByteArrayHolder()
 		{
 			TimeQueryLoop("raw byte array", typeof(ByteArrayTestCase.ByteArrayHolder));
 		}
-		#endif // !CF_1_0 && !CF_2_0
+		#endif // !CF_2_0
 
-		#if !CF_1_0 && !CF_2_0
+		#if !CF_2_0
 		/// <exception cref="Exception"></exception>
 		public virtual void TestSerializableByteArrayHolder()
 		{
-			TimeQueryLoop("TSerializable", typeof(ByteArrayTestCase.SerializableByteArrayHolder)
-				);
+			TimeQueryLoop("TSerializable", typeof(ByteArrayTestCase.SerializableByteArrayHolder
+				));
 		}
-		#endif // !CF_1_0 && !CF_2_0
+		#endif // !CF_2_0
 
 		/// <exception cref="Exception"></exception>
 		private void TimeQueryLoop(string label, Type clazz)

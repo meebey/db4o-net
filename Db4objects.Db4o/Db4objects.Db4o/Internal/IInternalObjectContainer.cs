@@ -30,5 +30,7 @@ namespace Db4objects.Db4o.Internal
 		ClassMetadata ClassMetadataForId(int id);
 
 		HandlerRegistry Handlers();
+
+		Config4Impl ConfigImpl();
 	}
 }

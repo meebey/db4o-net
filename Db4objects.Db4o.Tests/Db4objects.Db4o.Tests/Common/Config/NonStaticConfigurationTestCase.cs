@@ -5,6 +5,7 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Common.Config;
 
@@ -45,14 +46,14 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		{
 			IConfiguration config1 = Db4oFactory.NewConfiguration();
 			config1.ReadOnly(true);
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_41(this, config1
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_42(this, config1
 				));
 			config1.ReadOnly(false);
 			IObjectContainer db1 = Db4oFactory.OpenFile(config1, FILENAME);
 			config1.ReadOnly(true);
 			try
 			{
-				Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_50(this, db1));
+				Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_51(this, db1));
 			}
 			finally
 			{
@@ -71,9 +72,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _ICodeBlock_41 : ICodeBlock
+		private sealed class _ICodeBlock_42 : ICodeBlock
 		{
-			public _ICodeBlock_41(NonStaticConfigurationTestCase _enclosing, IConfiguration config1
+			public _ICodeBlock_42(NonStaticConfigurationTestCase _enclosing, IConfiguration config1
 				)
 			{
 				this._enclosing = _enclosing;
@@ -91,9 +92,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			private readonly IConfiguration config1;
 		}
 
-		private sealed class _ICodeBlock_50 : ICodeBlock
+		private sealed class _ICodeBlock_51 : ICodeBlock
 		{
-			public _ICodeBlock_50(NonStaticConfigurationTestCase _enclosing, IObjectContainer
+			public _ICodeBlock_51(NonStaticConfigurationTestCase _enclosing, IObjectContainer
 				 db1)
 			{
 				this._enclosing = _enclosing;
@@ -114,13 +115,13 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		public virtual void TestIndependentObjectConfigs()
 		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
-			IObjectClass objectConfig = config.ObjectClass(typeof(NonStaticConfigurationTestCase.Data)
-				);
+			IObjectClass objectConfig = config.ObjectClass(typeof(NonStaticConfigurationTestCase.Data
+				));
 			objectConfig.Translate(new TNull());
 			IConfiguration otherConfig = Db4oFactory.NewConfiguration();
 			Assert.AreNotSame(config, otherConfig);
-			Config4Class otherObjectConfig = (Config4Class)otherConfig.ObjectClass(typeof(NonStaticConfigurationTestCase.Data)
-				);
+			Config4Class otherObjectConfig = (Config4Class)otherConfig.ObjectClass(typeof(NonStaticConfigurationTestCase.Data
+				));
 			Assert.AreNotSame(objectConfig, otherObjectConfig);
 			Assert.IsNull(otherObjectConfig.GetTranslator());
 		}

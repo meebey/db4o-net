@@ -15,12 +15,12 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(CascadedDeleteUpdate), typeof(CascadeDeleteArray), typeof(CascadeDeleteDeleted)
-				, typeof(CascadeDeleteFalse), typeof(CascadeOnActivate), typeof(CascadeOnDelete)
-				, typeof(CascadeOnUpdate), typeof(CascadeToArray), typeof(ConjunctiveQbETestCase)
-				, typeof(IdListQueryResultTestCase), typeof(IndexedQueriesTestCase), typeof(LazyQueryResultTestCase)
-				, typeof(MultiFieldIndexQueryTestCase), typeof(ObjectSetTestCase), typeof(OrderedQueryTestCase)
-				 };
+			return new Type[] { typeof(CascadedDeleteUpdate), typeof(CascadeDeleteArray), typeof(
+				CascadeDeleteDeleted), typeof(CascadeDeleteFalse), typeof(CascadeOnActivate), typeof(
+				CascadeOnDelete), typeof(CascadeOnUpdate), typeof(CascadeToArray), typeof(ConjunctiveQbETestCase
+				), typeof(IdListQueryResultTestCase), typeof(IndexedQueriesTestCase), typeof(LazyQueryResultTestCase
+				), typeof(MultiFieldIndexQueryTestCase), typeof(ObjectSetTestCase), typeof(OrderedQueryTestCase
+				) };
 		}
 	}
 }

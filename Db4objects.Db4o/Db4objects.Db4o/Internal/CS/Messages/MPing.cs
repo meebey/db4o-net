@@ -1,22 +1,15 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MPing : Msg, IServerSideMessage, IClientSideMessage
+	public class MPing : Msg, IServerSideMessage
 	{
 		public virtual bool ProcessAtServer()
 		{
 			Write(Msg.PONG);
-			return true;
-		}
-
-		public virtual bool ProcessAtClient()
-		{
-			((ClientObjectContainer)Stream()).WriteMessageToSocket(Msg.PONG);
 			return true;
 		}
 	}

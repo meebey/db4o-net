@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public object Activate(object obj)
 		{
-			Stream().Activate(_transaction, obj, Config().ActivationDepth());
+			Stream().Activate(_transaction, obj);
 			return obj;
 		}
 

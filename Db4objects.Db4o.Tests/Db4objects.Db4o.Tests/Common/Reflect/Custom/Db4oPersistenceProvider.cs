@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
@@ -101,7 +102,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			{
 				Sharpen.Runtime.PrintStackTrace(e);
 				CloseIgnoringExceptions(metadata);
-				throw new Exception(e.Message);
+				throw new Db4oException(e);
 			}
 		}
 
@@ -258,6 +259,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			Cascade(config, typeof(CustomClassRepository));
 			Cascade(config, typeof(Hashtable4));
 			Cascade(config, typeof(CustomClass));
+			Cascade(config, typeof(CustomField));
+			Cascade(config, typeof(CustomUidField));
 			return config;
 		}
 

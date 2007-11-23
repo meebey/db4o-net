@@ -27,12 +27,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public object _arrayInObject;
 		}
 
-		[System.ObsoleteAttribute(@"so we don't have warnings because of the deprecated Date ctor"
-			)]
 		private static readonly DateTime[] data = new DateTime[] { new DateTime(DatePlatform
-			.MIN_DATE), new DateTime(DatePlatform.MIN_DATE + 1), new DateTime(1975, 7, 21, 5
-			, 32, 12), new DateTime(DatePlatform.MAX_DATE - 1), new DateTime(DatePlatform.MAX_DATE
-			) };
+			.MIN_DATE), new DateTime(DatePlatform.MIN_DATE + 1), new DateTime(1191972104500L
+			), new DateTime(DatePlatform.MAX_DATE - 1), new DateTime(DatePlatform.MAX_DATE) };
 
 		public static void Main(string[] args)
 		{

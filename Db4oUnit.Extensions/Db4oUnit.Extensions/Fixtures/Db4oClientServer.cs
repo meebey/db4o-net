@@ -15,11 +15,11 @@ namespace Db4oUnit.Extensions.Fixtures
 	{
 		protected static readonly string FILE = "Db4oClientServer.yap";
 
-		protected static readonly string HOST = "localhost";
+		public static readonly string HOST = "localhost";
 
-		protected static readonly string USERNAME = "db4o";
+		public static readonly string USERNAME = "db4o";
 
-		protected static readonly string PASSWORD = USERNAME;
+		public static readonly string PASSWORD = USERNAME;
 
 		private IObjectServer _server;
 
@@ -49,11 +49,13 @@ namespace Db4oUnit.Extensions.Fixtures
 		}
 
 		/// <exception cref="Exception"></exception>
-		public override void Open()
+		public override void Open(Type testCaseClass)
 		{
 			OpenServer();
+			IConfiguration config = Config();
+			ApplyFixtureConfiguration(testCaseClass, config);
 			_objectContainer = _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient
-				(Config(), HOST, _port, USERNAME, PASSWORD).Ext();
+				(config, HOST, _port, USERNAME, PASSWORD).Ext();
 		}
 
 		public virtual IExtObjectContainer OpenNewClient()
@@ -134,6 +136,10 @@ namespace Db4oUnit.Extensions.Fixtures
 			{
 				return false;
 			}
+			if (!_embeddedClient && (typeof(IOptOutNetworkingCS).IsAssignableFrom(clazz)))
+			{
+				return false;
+			}
 			if (_embeddedClient && (typeof(IOptOutAllButNetworkingCS).IsAssignableFrom(clazz)
 				))
 			{
@@ -165,7 +171,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public override string GetLabel()
 		{
-			return _label;
+			return BuildLabel(_label);
 		}
 
 		public virtual int ServerPort()

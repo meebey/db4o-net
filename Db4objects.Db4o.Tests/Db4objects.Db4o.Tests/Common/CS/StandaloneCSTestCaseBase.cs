@@ -1,12 +1,13 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.IO;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal.CS;
-using Db4objects.Db4o.Tests.Common.CS;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
@@ -18,11 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 		}
 
-		public interface IClientBlock
-		{
-			void Run(IObjectContainer client);
-		}
-
+		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
@@ -43,17 +40,10 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		protected virtual void WithClient(StandaloneCSTestCaseBase.IClientBlock block)
+		/// <exception cref="Exception"></exception>
+		protected virtual void WithClient(IContainerBlock block)
 		{
-			IObjectContainer client = OpenClient();
-			try
-			{
-				block.Run(client);
-			}
-			finally
-			{
-				client.Close();
-			}
+			ContainerServices.WithContainer(OpenClient(), block);
 		}
 
 		protected virtual ClientObjectContainer OpenClient()
@@ -67,6 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			return _port;
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected abstract void RunTest();
 
 		protected abstract void Configure(IConfiguration config);

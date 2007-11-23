@@ -1,8 +1,10 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Slots;
 using Sharpen;
 
@@ -28,7 +30,7 @@ namespace Db4objects.Db4o.Internal
 
 		private int i_id;
 
-		private int i_instantionDepth;
+		private IActivationDepth i_instantionDepth;
 
 		private int i_length;
 
@@ -86,7 +88,7 @@ namespace Db4objects.Db4o.Internal
 			return i_id;
 		}
 
-		public int GetInstantiationDepth()
+		public IActivationDepth GetInstantiationDepth()
 		{
 			return i_instantionDepth;
 		}
@@ -209,7 +211,7 @@ namespace Db4objects.Db4o.Internal
 			i_id = a_id;
 		}
 
-		public void SetInstantiationDepth(int a_depth)
+		public void SetInstantiationDepth(IActivationDepth a_depth)
 		{
 			i_instantionDepth = a_depth;
 		}

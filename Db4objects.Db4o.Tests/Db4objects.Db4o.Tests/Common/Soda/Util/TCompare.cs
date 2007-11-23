@@ -173,8 +173,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			return a_object;
 		}
 
-		internal static int NormalizeNArray1(object a_object, object a_all, int a_next, int[]
-			 a_dim, int a_index)
+		internal static int NormalizeNArray1(object a_object, object a_all, int a_next, int
+			[] a_dim, int a_index)
 		{
 			if (a_index == a_dim.Length - 1)
 			{

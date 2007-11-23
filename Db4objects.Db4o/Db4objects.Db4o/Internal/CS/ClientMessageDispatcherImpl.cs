@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal.CS;
@@ -39,6 +40,10 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			lock (this)
 			{
+				if (_isClosed)
+				{
+					return true;
+				}
 				_isClosed = true;
 				if (i_socket != null)
 				{
@@ -57,25 +62,39 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override void Run()
 		{
+			MessageLoop();
+			Close();
+		}
+
+		public virtual void MessageLoop()
+		{
 			while (IsMessageDispatcherAlive())
 			{
 				Msg message = null;
 				try
 				{
-					message = Msg.ReadMessage(this, i_stream.Transaction(), i_socket);
-					if (IsClientSideMessage(message))
-					{
-						if (((IClientSideMessage)message).ProcessAtClient())
-						{
-							continue;
-						}
-					}
-					_messageQueue.Add(message);
+					message = Msg.ReadMessage(this, Transaction(), i_socket);
 				}
-				catch (Db4oIOException)
+				catch (Db4oIOException exc)
 				{
-					Close();
+					if (DTrace.enabled)
+					{
+						DTrace.CLIENT_MESSAGE_LOOP_EXCEPTION.Log(exc.ToString());
+					}
+					return;
 				}
+				if (message == null)
+				{
+					continue;
+				}
+				if (IsClientSideMessage(message))
+				{
+					if (((IClientSideMessage)message).ProcessAtClient())
+					{
+						continue;
+					}
+				}
+				_messageQueue.Add(message);
 			}
 		}
 
@@ -84,9 +103,10 @@ namespace Db4objects.Db4o.Internal.CS
 			return message is IClientSideMessage;
 		}
 
-		public virtual void Write(Msg msg)
+		public virtual bool Write(Msg msg)
 		{
 			i_stream.Write(msg);
+			return true;
 		}
 
 		public virtual void SetDispatcherName(string name)
@@ -97,6 +117,11 @@ namespace Db4objects.Db4o.Internal.CS
 		public virtual void StartDispatcher()
 		{
 			Start();
+		}
+
+		private Db4objects.Db4o.Internal.Transaction Transaction()
+		{
+			return i_stream.Transaction();
 		}
 	}
 }

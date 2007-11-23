@@ -31,6 +31,10 @@ namespace Db4objects.Db4o.Ext
 		/// <exception cref="IOException"></exception>
 		void Backup(string path);
 
+		/// <summary>returns the number of connected clients.</summary>
+		/// <remarks>returns the number of connected clients.</remarks>
+		int ClientCount();
+
 		/// <summary>
 		/// returns the
 		/// <see cref="IConfiguration">IConfiguration</see>

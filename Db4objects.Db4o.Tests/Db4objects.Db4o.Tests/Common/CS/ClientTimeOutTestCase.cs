@@ -3,47 +3,74 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Messaging;
 using Db4objects.Db4o.Tests.Common.CS;
+using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
-	public class ClientTimeOutTestCase : Db4oClientServerTestCase
+	public class ClientTimeOutTestCase : Db4oClientServerTestCase, IOptOutAllButNetworkingCS
 	{
+		private const int TIMEOUT = 500;
+
+		internal static bool _clientWasBlocked;
+
+		internal ClientTimeOutTestCase.TestMessageRecipient recipient = new ClientTimeOutTestCase.TestMessageRecipient
+			();
+
 		public static void Main(string[] args)
 		{
 			new ClientTimeOutTestCase().RunAll();
 		}
 
-		protected override void Configure(IConfiguration config)
+		public class Item
 		{
-			config.ClientServer().TimeoutClientSocket(1000);
+			public string _name;
+
+			public Item(string name)
+			{
+				_name = name;
+			}
 		}
 
-		internal ClientTimeOutTestCase.TestMessageRecipient recipient = new ClientTimeOutTestCase.TestMessageRecipient
-			();
-
-		public virtual void Test()
+		protected override void Configure(IConfiguration config)
 		{
-			if (IsMTOC())
-			{
-				return;
-			}
+			config.ClientServer().TimeoutClientSocket(TIMEOUT);
+		}
+
+		public virtual void TestKeptAliveClient()
+		{
+			ClientTimeOutTestCase.Item item = new ClientTimeOutTestCase.Item("one");
+			Store(item);
+			Cool.SleepIgnoringInterruption(TIMEOUT * 2);
+			Assert.AreSame(item, RetrieveOnlyInstance(typeof(ClientTimeOutTestCase.Item)));
+		}
+
+		public virtual void TestTimedoutAndClosedClient()
+		{
+			Store(new ClientTimeOutTestCase.Item("one"));
 			ClientServerFixture().Server().Ext().Configure().ClientServer().SetMessageRecipient
 				(recipient);
 			IExtObjectContainer client = ClientServerFixture().Db();
 			IMessageSender sender = client.Configure().ClientServer().GetMessageSender();
+			_clientWasBlocked = false;
 			sender.Send(new ClientTimeOutTestCase.Data());
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_42(this, client));
+			long start = Runtime.CurrentTimeMillis();
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_59(this, client));
+			long stop = Runtime.CurrentTimeMillis();
+			long duration = stop - start;
+			Assert.IsGreaterOrEqual(TIMEOUT / 2, duration);
+			Assert.IsTrue(_clientWasBlocked);
 		}
 
-		private sealed class _ICodeBlock_42 : ICodeBlock
+		private sealed class _ICodeBlock_59 : ICodeBlock
 		{
-			public _ICodeBlock_42(ClientTimeOutTestCase _enclosing, IExtObjectContainer client
+			public _ICodeBlock_59(ClientTimeOutTestCase _enclosing, IExtObjectContainer client
 				)
 			{
 				this._enclosing = _enclosing;
@@ -53,11 +80,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				IObjectSet os = client.Get(null);
-				while (os.HasNext())
-				{
-					os.Next();
-				}
+				client.Get(null);
 			}
 
 			private readonly ClientTimeOutTestCase _enclosing;
@@ -69,7 +92,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			public virtual void ProcessMessage(IObjectContainer con, object message)
 			{
-				Cool.SleepIgnoringInterruption(3000);
+				_clientWasBlocked = true;
+				Cool.SleepIgnoringInterruption(TIMEOUT * 3);
 			}
 		}
 

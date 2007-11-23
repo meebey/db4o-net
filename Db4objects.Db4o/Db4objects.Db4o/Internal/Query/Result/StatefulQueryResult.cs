@@ -9,7 +9,7 @@ using Db4objects.Db4o.Query;
 namespace Db4objects.Db4o.Internal.Query.Result
 {
 	/// <exclude></exclude>
-	public class StatefulQueryResult
+	public class StatefulQueryResult : IEnumerable
 	{
 		private readonly IQueryResult _delegate;
 
@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			}
 		}
 
-		public virtual IEnumerator Iterator()
+		public virtual IEnumerator GetEnumerator()
 		{
 			lock (Lock())
 			{

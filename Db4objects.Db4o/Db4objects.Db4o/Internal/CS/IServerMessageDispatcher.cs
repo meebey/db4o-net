@@ -8,7 +8,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 namespace Db4objects.Db4o.Internal.CS
 {
 	/// <exclude></exclude>
-	public interface IServerMessageDispatcher : IMessageDispatcher
+	public interface IServerMessageDispatcher : IMessageDispatcher, ICommittedCallbackDispatcher
 	{
 		string Name();
 
@@ -36,16 +36,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		void CloseConnection();
 
-		bool CaresAboutCommitted();
-
 		void CaresAboutCommitted(bool care);
 
-		void WriteIfAlive(Msg msg);
+		bool CaresAboutCommitted();
+
+		bool Write(Msg msg);
 
 		CallbackObjectInfoCollections CommittedInfo();
-
-		void CommittedInfo(CallbackObjectInfoCollections committedInfo);
-
-		bool IsPingTimeout();
 	}
 }

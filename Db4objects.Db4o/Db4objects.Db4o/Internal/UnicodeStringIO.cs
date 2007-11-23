@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal override byte[] Write(string str)
+		public override byte[] Write(string str)
 		{
 			int length = str.Length;
 			char[] chars = new char[length];

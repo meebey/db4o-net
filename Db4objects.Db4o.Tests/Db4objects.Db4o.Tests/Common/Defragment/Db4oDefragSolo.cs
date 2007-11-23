@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 					IConfiguration clonedConfig = (IConfiguration)((IDeepClone)config).DeepClone(null
 						);
 					defragConfig.Db4oConfig(clonedConfig);
-					Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig, new _IDefragmentListener_32
+					Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig, new _IDefragmentListener_35
 						(this));
 				}
 				catch (IOException e)
@@ -42,9 +42,9 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			return base.CreateDatabase(config);
 		}
 
-		private sealed class _IDefragmentListener_32 : IDefragmentListener
+		private sealed class _IDefragmentListener_35 : IDefragmentListener
 		{
-			public _IDefragmentListener_32(Db4oDefragSolo _enclosing)
+			public _IDefragmentListener_35(Db4oDefragSolo _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -60,6 +60,11 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		public override bool Accept(Type clazz)
 		{
 			return base.Accept(clazz) && !typeof(IOptOutDefragSolo).IsAssignableFrom(clazz);
+		}
+
+		public override string GetLabel()
+		{
+			return "Defrag-" + base.GetLabel();
 		}
 	}
 }

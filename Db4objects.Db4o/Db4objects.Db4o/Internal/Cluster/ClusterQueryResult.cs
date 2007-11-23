@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 				IEnumerator[] iterators = new IEnumerator[_objectSets.Length];
 				for (int i = 0; i < _objectSets.Length; i++)
 				{
-					iterators[i] = ((ObjectSetFacade)_objectSets[i])._delegate.Iterator();
+					iterators[i] = ((ObjectSetFacade)_objectSets[i])._delegate.GetEnumerator();
 				}
 				return new CompositeIterator4(iterators);
 			}

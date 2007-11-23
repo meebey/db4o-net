@@ -169,6 +169,23 @@ namespace Db4objects.Db4o.Foundation
 			return null != GetObjectEntry(key.GetHashCode(), key);
 		}
 
+		public virtual bool ContainsAllKeys(IEnumerable collection)
+		{
+			return ContainsAllKeys(collection.GetEnumerator());
+		}
+
+		public virtual bool ContainsAllKeys(IEnumerator iterator)
+		{
+			while (iterator.MoveNext())
+			{
+				if (!ContainsKey(iterator.Current))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
 		public virtual void Put(byte[] key, object value)
 		{
 			PutEntry(new HashtableByteArrayEntry(key, value));
@@ -214,6 +231,11 @@ namespace Db4objects.Db4o.Foundation
 		{
 			int intKey = objectKey.GetHashCode();
 			RemoveObjectEntry(intKey, objectKey);
+		}
+
+		public override string ToString()
+		{
+			return Iterators.Join(Iterator(), "{", "}", ", ");
 		}
 
 		protected virtual Db4objects.Db4o.Foundation.Hashtable4 DeepCloneInternal(Db4objects.Db4o.Foundation.Hashtable4

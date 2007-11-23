@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 
@@ -14,6 +15,10 @@ namespace Db4objects.Db4o.Internal
 
 		public StoredClassImpl(Transaction transaction, ClassMetadata classMetadata)
 		{
+			if (classMetadata == null)
+			{
+				throw new ArgumentException();
+			}
 			_transaction = transaction;
 			_classMetadata = classMetadata;
 		}
@@ -31,6 +36,10 @@ namespace Db4objects.Db4o.Internal
 		public virtual IStoredClass GetParentStoredClass()
 		{
 			ClassMetadata parentClassMetadata = _classMetadata.GetAncestor();
+			if (parentClassMetadata == null)
+			{
+				return null;
+			}
 			return new Db4objects.Db4o.Internal.StoredClassImpl(_transaction, parentClassMetadata
 				);
 		}

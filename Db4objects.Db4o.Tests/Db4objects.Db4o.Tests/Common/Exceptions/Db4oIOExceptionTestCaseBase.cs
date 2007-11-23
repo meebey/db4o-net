@@ -8,7 +8,7 @@ using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class Db4oIOExceptionTestCaseBase : AbstractDb4oTestCase, IOptOutCS
+	public class Db4oIOExceptionTestCaseBase : AbstractDb4oTestCase, IOptOutCS, IOptOutTA
 	{
 		protected override void Configure(IConfiguration config)
 		{

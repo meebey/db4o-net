@@ -3,7 +3,6 @@
 using System;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Classindex;
 using Db4objects.Db4o.Tests.Common.Btree;
 using Db4objects.Db4o.Tests.Common.Classindex;
@@ -57,10 +56,9 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 
 		private void AssertIndex(object[] expected)
 		{
-			ClassMetadata clazz = Stream().ClassMetadataForReflectClass(Reflector().ForClass(
-				typeof(ClassIndexTestCase.Item)));
 			ExpectingVisitor visitor = new ExpectingVisitor(expected);
-			IClassIndexStrategy index = clazz.Index();
+			IClassIndexStrategy index = ClassMetadataFor(typeof(ClassIndexTestCase.Item)).Index
+				();
 			index.TraverseAll(Trans(), visitor);
 			visitor.AssertExpectations();
 		}

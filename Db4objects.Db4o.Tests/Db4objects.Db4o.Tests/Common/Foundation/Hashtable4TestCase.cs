@@ -14,6 +14,15 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			new TestRunner(typeof(Hashtable4TestCase)).Run();
 		}
 
+		public virtual void TestToString()
+		{
+			Hashtable4 table = new Hashtable4();
+			table.Put("foo", "bar");
+			table.Put("bar", "baz");
+			Assert.AreEqual(Iterators.Join(table.Iterator(), "{", "}", ", "), table.ToString(
+				));
+		}
+
 		public virtual void TestContainsKey()
 		{
 			Hashtable4 table = new Hashtable4();

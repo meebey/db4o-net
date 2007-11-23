@@ -8,6 +8,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Classindex;
 using Db4objects.Db4o.Internal.Diagnostic;
 using Db4objects.Db4o.Internal.Handlers;
@@ -108,7 +109,8 @@ namespace Db4objects.Db4o.Internal
 			_classIndexed = true;
 		}
 
-		internal virtual void ActivateFields(Transaction trans, object obj, int depth)
+		internal virtual void ActivateFields(Transaction trans, object obj, IActivationDepth
+			 depth)
 		{
 			if (ObjectCanActivate(trans, obj))
 			{
@@ -116,11 +118,12 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private void ActivateFieldsLoop(Transaction trans, object obj, int depth)
+		private void ActivateFieldsLoop(Transaction trans, object obj, IActivationDepth depth
+			)
 		{
 			for (int i = 0; i < i_fields.Length; i++)
 			{
-				i_fields[i].CascadeActivation(trans, obj, depth, true);
+				i_fields[i].CascadeActivation(trans, obj, depth);
 			}
 			if (i_ancestor != null)
 			{
@@ -332,36 +335,38 @@ namespace Db4objects.Db4o.Internal
 			return HasClassIndex();
 		}
 
-		public virtual void CascadeActivation(Transaction a_trans, object a_object, int a_depth
-			, bool a_activate)
+		public virtual void CascadeActivation(Transaction trans, object onObject, IActivationDepth
+			 depth)
 		{
-			Config4Class config = ConfigOrAncestorConfig();
-			if (config != null)
+			if (DescendOnCascadingActivation())
 			{
-				if (a_activate)
-				{
-					a_depth = config.AdjustActivationDepth(a_depth);
-				}
+				depth = depth.Descend(this);
 			}
-			if (a_depth > 0)
+			if (!depth.RequiresActivation())
 			{
-				ObjectContainerBase stream = a_trans.Container();
-				if (a_activate)
+				return;
+			}
+			ObjectContainerBase stream = trans.Container();
+			if (depth.Mode().IsDeactivate())
+			{
+				stream.StillToDeactivate(trans, onObject, depth, false);
+			}
+			else
+			{
+				if (IsValueType())
 				{
-					if (IsValueType())
-					{
-						ActivateFields(a_trans, a_object, a_depth - 1);
-					}
-					else
-					{
-						stream.StillToActivate(a_trans, a_object, a_depth - 1);
-					}
+					ActivateFields(trans, onObject, depth);
 				}
 				else
 				{
-					stream.StillToDeactivate(a_trans, a_object, a_depth - 1, false);
+					stream.StillToActivate(trans, onObject, depth);
 				}
 			}
+		}
+
+		protected virtual bool DescendOnCascadingActivation()
+		{
+			return true;
 		}
 
 		internal virtual void CheckChanges()
@@ -402,7 +407,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				_unversioned = true;
 			}
-			if (_container._handlers.ICLASS_DB4OTYPEIMPL.IsAssignableFrom(claxx))
+			if (IsDb4oTypeImpl())
 			{
 				IDb4oTypeImpl db4oTypeImpl = (IDb4oTypeImpl)claxx.NewInstance();
 				_classIndexed = (db4oTypeImpl == null || db4oTypeImpl.HasClassIndex());
@@ -414,6 +419,12 @@ namespace Db4objects.Db4o.Internal
 					_classIndexed = i_config.Indexed();
 				}
 			}
+		}
+
+		public virtual bool IsDb4oTypeImpl()
+		{
+			return _container._handlers.ICLASS_DB4OTYPEIMPL.IsAssignableFrom(ClassReflector()
+				);
 		}
 
 		public int AdjustUpdateDepth(Transaction trans, int depth)
@@ -564,11 +575,12 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public virtual void Deactivate(Transaction trans, object obj, int depth)
+		public virtual void Deactivate(Transaction trans, object obj, IActivationDepth depth
+			)
 		{
 			if (ObjectCanDeactivate(trans, obj))
 			{
-				Deactivate1(trans, obj, depth);
+				DeactivateFields(trans, obj, depth);
 				ObjectOnDeactivate(trans, obj);
 			}
 		}
@@ -587,8 +599,8 @@ namespace Db4objects.Db4o.Internal
 				(container, obj, EventDispatcher.CAN_DEACTIVATE);
 		}
 
-		internal virtual void Deactivate1(Transaction a_trans, object a_object, int a_depth
-			)
+		internal virtual void DeactivateFields(Transaction a_trans, object a_object, IActivationDepth
+			 a_depth)
 		{
 			for (int i = 0; i < i_fields.Length; i++)
 			{
@@ -596,7 +608,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (i_ancestor != null)
 			{
-				i_ancestor.Deactivate1(a_trans, a_object, a_depth);
+				i_ancestor.DeactivateFields(a_trans, a_object, a_depth);
 			}
 		}
 
@@ -1070,13 +1082,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_901(this, name, yf));
+			ForEachFieldMetadata(new _IVisitor4_911(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_901 : IVisitor4
+		private sealed class _IVisitor4_911 : IVisitor4
 		{
-			public _IVisitor4_901(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
+			public _IVisitor4_911(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
 			{
 				this._enclosing = _enclosing;
 				this.name = name;
@@ -1135,6 +1147,10 @@ namespace Db4objects.Db4o.Internal
 		internal bool Init(ObjectContainerBase a_stream, ClassMetadata a_ancestor, IReflectClass
 			 claxx)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.YAPCLASS_INIT.Log(GetID());
+			}
 			SetAncestor(a_ancestor);
 			Config4Impl config = a_stream.ConfigImpl();
 			string className = claxx.GetName();
@@ -1199,7 +1215,6 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object Instantiate(UnmarshallingContext context)
 		{
-			context.AdjustInstantiationDepth();
 			object obj = context.PersistentObject();
 			bool instantiating = (obj == null);
 			if (instantiating)
@@ -1219,7 +1234,7 @@ namespace Db4objects.Db4o.Internal
 			context.AddToIDTree();
 			if (instantiating)
 			{
-				if (context.ActivationDepth() == 0)
+				if (!context.ActivationDepth().RequiresActivation())
 				{
 					context.Reference().SetStateDeactivated();
 				}
@@ -1230,11 +1245,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				if (ActivatingActiveObject(context.Container(), context.Reference()))
+				if (ActivatingActiveObject(context.ActivationDepth().Mode(), context.Reference())
+					)
 				{
-					if (context.ActivationDepth() > 1)
+					IActivationDepth child = context.ActivationDepth().Descend(this);
+					if (child.RequiresActivation())
 					{
-						ActivateFields(context.Transaction(), obj, context.ActivationDepth() - 1);
+						ActivateFields(context.Transaction(), obj, child);
 					}
 				}
 				else
@@ -1253,14 +1270,16 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			context.Container().Peeked(context.ObjectID(), obj);
-			InstantiateFields(context);
+			if (context.ActivationDepth().RequiresActivation())
+			{
+				InstantiateFields(context);
+			}
 			return obj;
 		}
 
-		private bool ActivatingActiveObject(ObjectContainerBase container, ObjectReference
-			 @ref)
+		private bool ActivatingActiveObject(ActivationMode mode, ObjectReference @ref)
 		{
-			return !container._refreshInsteadOfActivate && @ref.IsActive();
+			return !mode.IsRefresh() && @ref.IsActive();
 		}
 
 		private void Activate(UnmarshallingContext context)
@@ -1271,7 +1290,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			context.Reference().SetStateClean();
-			if (context.ActivationDepth() > 0 || CascadeOnActivate())
+			if (context.ActivationDepth().RequiresActivation())
 			{
 				InstantiateFields(context);
 			}
@@ -1334,11 +1353,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				context.Seek(offset);
 			}
-		}
-
-		private bool CascadeOnActivate()
-		{
-			return i_config != null && (i_config.CascadeOnActivate() == TernaryBool.YES);
 		}
 
 		private void ShareObjectReference(object obj, ObjectReference @ref)
@@ -1475,14 +1489,19 @@ namespace Db4objects.Db4o.Internal
 			return MarshallerFamily.Current()._class.MarshalledLength(_container, this);
 		}
 
+		public virtual int PrefetchActivationDepth()
+		{
+			return ConfigOrAncestorConfig() == null ? 1 : 0;
+		}
+
 		internal virtual void Purge()
 		{
 			_index.Purge();
 		}
 
-		public virtual object ReadValueType(Transaction trans, int id, int depth)
+		public virtual object ReadValueType(Transaction trans, int id, IActivationDepth depth
+			)
 		{
-			int newDepth = Math.Max(1, depth);
 			ObjectReference @ref = trans.ReferenceForId(id);
 			if (@ref != null)
 			{
@@ -1493,12 +1512,11 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
-					@ref.Activate(trans, obj, newDepth, false);
+					@ref.Activate(trans, obj, depth);
 					return @ref.GetObject();
 				}
 			}
-			return new ObjectReference(id).Read(trans, newDepth, Const4.ADD_TO_ID_TREE, false
-				);
+			return new ObjectReference(id).Read(trans, depth, Const4.ADD_TO_ID_TREE, false);
 		}
 
 		public virtual ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
@@ -1514,6 +1532,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual ITypeHandler4 ReadArrayHandler1(Db4objects.Db4o.Internal.Buffer[] 
 			a_bytes)
 		{
+			if (DTrace.enabled)
+			{
+				if (a_bytes[0] is StatefulBuffer)
+				{
+					DTrace.READ_ARRAY_WRAPPER.Log(((StatefulBuffer)a_bytes[0]).GetID());
+				}
+			}
 			if (IsArray())
 			{
 				if (Platform4.IsCollectionTranslator(this.i_config))
@@ -1555,16 +1580,17 @@ namespace Db4objects.Db4o.Internal
 				object obj = trans.Container().GetByID(trans, id);
 				if (obj != null)
 				{
-					candidates.i_trans.Container().Activate(trans, obj, 2);
-					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1311(this, candidates, trans
+					candidates.i_trans.Container().Activate(trans, obj, ActivationDepthProvider().ActivationDepth
+						(2, ActivationMode.ACTIVATE));
+					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1334(this, candidates, trans
 						));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_1311 : IVisitor4
+		private sealed class _IVisitor4_1334 : IVisitor4
 		{
-			public _IVisitor4_1311(ClassMetadata _enclosing, QCandidates candidates, Transaction
+			public _IVisitor4_1334(ClassMetadata _enclosing, QCandidates candidates, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -1583,6 +1609,11 @@ namespace Db4objects.Db4o.Internal
 			private readonly QCandidates candidates;
 
 			private readonly Transaction trans;
+		}
+
+		private IActivationDepthProvider ActivationDepthProvider()
+		{
+			return Stream().ActivationDepthProvider();
 		}
 
 		public int ReadFieldCount(Db4objects.Db4o.Internal.Buffer buffer)
@@ -1653,7 +1684,7 @@ namespace Db4objects.Db4o.Internal
 				, reader);
 		}
 
-		internal virtual GenericReflector Reflector()
+		public virtual GenericReflector Reflector()
 		{
 			return _container.Reflector();
 		}
@@ -1665,14 +1696,23 @@ namespace Db4objects.Db4o.Internal
 				int tempState = _state;
 				SetStateOK();
 				i_name = newName;
+				i_nameBytes = AsBytes(i_name);
 				SetStateDirty();
 				Write(_container.SystemTransaction());
+				_reflector = Container().Reflector().ForName(newName);
+				Container().ClassCollection().RefreshClassCache(this);
+				Refresh();
 				_state = tempState;
 			}
 			else
 			{
 				Exceptions4.ThrowRuntimeException(58);
 			}
+		}
+
+		private byte[] AsBytes(string str)
+		{
+			return Container().StringIO().Write(str);
 		}
 
 		internal void CreateConfigAndConstructor(Hashtable4 a_byteHashTable, IReflectClass
@@ -1942,9 +1982,9 @@ namespace Db4objects.Db4o.Internal
 		private void UpdateStaticClass(Transaction trans, StaticClass sc)
 		{
 			ObjectContainerBase stream = trans.Container();
-			stream.Activate(trans, sc, 4);
+			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1635
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1671
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -1953,9 +1993,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1635 : IFunction4
+		private sealed class _IFunction4_1671 : IFunction4
 		{
-			public _IFunction4_1635(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1671(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -1996,12 +2036,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1663(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1699(this));
 		}
 
-		private sealed class _IFunction4_1663 : IFunction4
+		private sealed class _IFunction4_1699 : IFunction4
 		{
-			public _IFunction4_1663(ClassMetadata _enclosing)
+			public _IFunction4_1699(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2043,12 +2083,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1693(this));
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1729(this));
 		}
 
-		private sealed class _IPredicate4_1693 : IPredicate4
+		private sealed class _IPredicate4_1729 : IPredicate4
 		{
-			public _IPredicate4_1693(ClassMetadata _enclosing)
+			public _IPredicate4_1729(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2297,8 +2337,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (IsValueType())
 			{
-				return ReadValueType(context.Transaction(), context.ReadInt(), ((UnmarshallingContext
-					)context).ActivationDepth() - 1);
+				IActivationDepth activationDepth = ((UnmarshallingContext)context).ActivationDepth
+					();
+				return ReadValueType(context.Transaction(), context.ReadInt(), activationDepth.Descend
+					(this));
 			}
 			return context.ReadObject();
 		}

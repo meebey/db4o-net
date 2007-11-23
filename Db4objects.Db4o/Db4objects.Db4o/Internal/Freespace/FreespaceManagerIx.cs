@@ -111,6 +111,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
+			if (DTrace.enabled)
+			{
+				DTrace.FREE.LogLength(address, length);
+			}
 			int freedAddress = address;
 			int freedLength = length;
 			_addressIx.Find(address);
@@ -176,6 +180,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 			if (address == 0)
 			{
 				return null;
+			}
+			if (DTrace.enabled)
+			{
+				DTrace.GET_FREESPACE.LogLength(address, length);
 			}
 			return new Slot(address, length);
 		}

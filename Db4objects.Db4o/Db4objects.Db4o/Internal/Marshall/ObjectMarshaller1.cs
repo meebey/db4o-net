@@ -63,8 +63,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private sealed class _TraverseFieldCommand_30 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_30(ObjectMarshaller1 _enclosing, string name, TreeInt[]
-				 ret, StatefulBuffer writer)
+			public _TraverseFieldCommand_30(ObjectMarshaller1 _enclosing, string name, TreeInt
+				[] ret, StatefulBuffer writer)
 			{
 				this._enclosing = _enclosing;
 				this.name = name;

@@ -50,8 +50,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		public static IConfiguration Db4oConfig()
 		{
 			IConfiguration db4oConfig = Db4oFactory.NewConfiguration();
-			db4oConfig.ReflectWith(Platform4.ReflectorForType(typeof(SlotDefragmentFixture.Data)
-				));
+			db4oConfig.ReflectWith(Platform4.ReflectorForType(typeof(SlotDefragmentFixture.Data
+				)));
 			return db4oConfig;
 		}
 
@@ -111,8 +111,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				.FILENAME);
 			try
 			{
-				IStoredClass storedClass = db.Ext().StoredClass(typeof(SlotDefragmentFixture.Data)
-					);
+				IStoredClass storedClass = db.Ext().StoredClass(typeof(SlotDefragmentFixture.Data
+					));
 				if (expected)
 				{
 					Assert.IsNotNull(storedClass);

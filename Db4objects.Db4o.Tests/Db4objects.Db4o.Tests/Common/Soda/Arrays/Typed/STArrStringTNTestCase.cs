@@ -61,8 +61,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 		public virtual void TestDefaultContainsTwo()
 		{
 			IQuery q = NewQuery();
-			string[][][] content = new string[][][] { new string[][] { new string[1] }, new string[]
-				[] { new string[1] } };
+			string[][][] content = new string[][][] { new string[][] { new string[1] }, new string
+				[][] { new string[1] } };
 			content[0][0][0] = "bar";
 			content[1][0][0] = "foo";
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTNTestCase
@@ -73,8 +73,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 		public virtual void TestDescendOne()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTNTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTNTestCase
+				));
 			q.Descend("strArr").Constrain("bar");
 			Expect(q, new int[] { 3, 4 });
 		}
@@ -82,8 +82,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 		public virtual void TestDescendTwo()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTNTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTNTestCase
+				));
 			IQuery qElements = q.Descend("strArr");
 			qElements.Constrain("foo");
 			qElements.Constrain("bar");
@@ -93,8 +93,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 		public virtual void TestDescendOneNot()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTNTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTNTestCase
+				));
 			q.Descend("strArr").Constrain("bar").Not();
 			Expect(q, new int[] { 0, 1, 2 });
 		}
@@ -102,8 +102,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 		public virtual void TestDescendTwoNot()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTNTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTNTestCase
+				));
 			IQuery qElements = q.Descend("strArr");
 			qElements.Constrain("foo").Not();
 			qElements.Constrain("bar").Not();

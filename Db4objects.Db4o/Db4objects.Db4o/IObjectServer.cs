@@ -43,7 +43,7 @@ namespace Db4objects.Db4o
 		/// returns an
 		/// <see cref="IObjectServer"></see>
 		/// with extended functionality.
-		/// <br /><br />Use this method as a convient accessor to extended methods.
+		/// <br /><br />Use this method as a convenient accessor to extended methods.
 		/// Every
 		/// <see cref="IObjectServer"></see>
 		/// can be casted to an

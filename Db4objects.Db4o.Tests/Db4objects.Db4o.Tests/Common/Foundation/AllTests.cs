@@ -10,13 +10,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 	{
 		public virtual TestSuite Build()
 		{
-			return new ReflectionTestSuiteBuilder(new Type[] { typeof(Algorithms4TestCase), typeof(ArrayIterator4TestCase)
-				, typeof(Arrays4TestCase), typeof(BitMap4TestCase), typeof(BlockingQueueTestCase)
-				, typeof(Collection4TestCase), typeof(CompositeIterator4TestCase), typeof(Hashtable4TestCase)
-				, typeof(IntArrayListTestCase), typeof(Iterable4AdaptorTestCase), typeof(IteratorsTestCase)
-				, typeof(NonblockingQueueTestCase), typeof(SortedCollection4TestCase), typeof(Stack4TestCase)
-				, typeof(TreeKeyIteratorTestCase), typeof(TreeNodeIteratorTestCase), typeof(BufferTestCase)
-				 }).Build();
+			return new ReflectionTestSuiteBuilder(new Type[] { typeof(Algorithms4TestCase), typeof(
+				ArrayIterator4TestCase), typeof(Arrays4TestCase), typeof(BitMap4TestCase), typeof(
+				BlockingQueueTestCase), typeof(Collection4TestCase), typeof(CompositeIterator4TestCase
+				), typeof(Hashtable4TestCase), typeof(IntArrayListTestCase), typeof(Iterable4AdaptorTestCase
+				), typeof(IteratorsTestCase), typeof(NonblockingQueueTestCase), typeof(SortedCollection4TestCase
+				), typeof(Stack4TestCase), typeof(TreeKeyIteratorTestCase), typeof(TreeNodeIteratorTestCase
+				), typeof(BufferTestCase) }).Build();
 		}
 
 		public static void Main(string[] args)

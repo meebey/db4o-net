@@ -2,37 +2,33 @@
 
 using System;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
-using Sharpen;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.CS
 {
 	public sealed class ServerMessageDispatcherImpl : Thread, IServerMessageDispatcher
 	{
-		private string i_clientName;
+		private string _clientName;
 
-		private bool i_loggedin;
+		private bool _loggedin;
 
-		private long _lastActiveTime;
+		private bool _closeMessageSent;
 
-		private bool i_sendCloseMessage = true;
+		private readonly ObjectServerImpl _server;
 
-		private readonly ObjectServerImpl i_server;
-
-		private ISocket4 i_socket;
+		private ISocket4 _socket;
 
 		private ClientTransactionHandle _transactionHandle;
 
 		private Hashtable4 _queryResults;
 
-		private Config4Impl i_config;
-
-		internal readonly int i_threadID;
+		internal readonly int _threadID;
 
 		private CallbackObjectInfoCollections _committedInfo;
 
@@ -52,64 +48,69 @@ namespace Db4objects.Db4o.Internal.CS
 			_mainLock = mainLock;
 			_transactionHandle = transactionHandle;
 			SetDaemon(true);
-			i_loggedin = loggedIn;
-			UpdateLastActiveTime();
-			i_server = server;
-			i_config = (Config4Impl)i_server.Configure();
-			i_threadID = threadID;
+			_loggedin = loggedIn;
+			_server = server;
+			_threadID = threadID;
 			SetDispatcherName(string.Empty + threadID);
-			i_socket = socket;
-			i_socket.SetSoTimeout(((Config4Impl)server.Configure()).TimeoutServerSocket());
+			_socket = socket;
+			_socket.SetSoTimeout(((Config4Impl)server.Configure()).TimeoutServerSocket());
 		}
 
 		public bool Close()
 		{
-			lock (_mainLock)
+			lock (_lock)
 			{
-				lock (_lock)
+				if (!IsMessageDispatcherAlive())
 				{
-					if (!IsMessageDispatcherAlive())
-					{
-						return true;
-					}
-					_isClosed = true;
-					_transactionHandle.ReleaseTransaction();
-					SendCloseMessage();
-					_transactionHandle.Close();
-					CloseSocket();
-					RemoveFromServer();
 					return true;
 				}
+				_isClosed = true;
+			}
+			lock (_mainLock)
+			{
+				_transactionHandle.ReleaseTransaction();
+				SendCloseMessage();
+				_transactionHandle.Close();
+				CloseSocket();
+				RemoveFromServer();
+				return true;
 			}
 		}
 
 		public void CloseConnection()
 		{
+			lock (_lock)
+			{
+				if (!IsMessageDispatcherAlive())
+				{
+					return;
+				}
+				_isClosed = true;
+			}
 			lock (_mainLock)
 			{
-				lock (_lock)
-				{
-					if (!IsMessageDispatcherAlive())
-					{
-						return;
-					}
-					SendCloseMessage();
-					_isClosed = true;
-					CloseSocket();
-					RemoveFromServer();
-				}
+				CloseSocket();
+				RemoveFromServer();
 			}
 		}
 
-		public void SendCloseMessage()
+		public bool IsMessageDispatcherAlive()
+		{
+			lock (_lock)
+			{
+				return !_isClosed;
+			}
+		}
+
+		private void SendCloseMessage()
 		{
 			try
 			{
-				if (i_sendCloseMessage)
+				if (!_closeMessageSent)
 				{
+					_closeMessageSent = true;
 					Write(Msg.CLOSE);
 				}
-				i_sendCloseMessage = false;
 			}
 			catch (Exception e)
 			{
@@ -120,7 +121,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			try
 			{
-				i_server.RemoveThread(this);
+				_server.RemoveThread(this);
 			}
 			catch (Exception e)
 			{
@@ -131,21 +132,13 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			try
 			{
-				if (i_socket != null)
+				if (_socket != null)
 				{
-					i_socket.Close();
+					_socket.Close();
 				}
 			}
 			catch (Db4oIOException e)
 			{
-			}
-		}
-
-		public bool IsMessageDispatcherAlive()
-		{
-			lock (this)
-			{
-				return !_isClosed;
 			}
 		}
 
@@ -156,40 +149,41 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override void Run()
 		{
+			MessageLoop();
+			Close();
+		}
+
+		private void MessageLoop()
+		{
 			while (IsMessageDispatcherAlive())
 			{
 				try
 				{
 					if (!MessageProcessor())
 					{
-						break;
+						return;
 					}
 				}
 				catch (Db4oIOException e)
 				{
-					if (_transactionHandle.IsClosed())
+					if (DTrace.enabled)
 					{
-						break;
+						DTrace.ADD_TO_CLASS_INDEX.Log(e.ToString());
 					}
-					if (i_socket == null || !i_socket.IsConnected())
-					{
-						break;
-					}
+					return;
 				}
 			}
-			Close();
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
 		private bool MessageProcessor()
 		{
-			Msg message = Msg.ReadMessage(this, GetTransaction(), i_socket);
+			Msg message = Msg.ReadMessage(this, GetTransaction(), _socket);
 			if (message == null)
 			{
 				return true;
 			}
-			UpdateLastActiveTime();
-			if (!i_loggedin && !Msg.LOGIN.Equals(message))
+			if (!_loggedin && !Msg.LOGIN.Equals(message))
 			{
 				return true;
 			}
@@ -200,14 +194,9 @@ namespace Db4objects.Db4o.Internal.CS
 			return false;
 		}
 
-		private void UpdateLastActiveTime()
-		{
-			_lastActiveTime = Runtime.CurrentTimeMillis();
-		}
-
 		public ObjectServerImpl Server()
 		{
-			return i_server;
+			return _server;
 		}
 
 		public void QueryResultFinalized(int queryResultID)
@@ -260,54 +249,46 @@ namespace Db4objects.Db4o.Internal.CS
 		public void UseTransaction(MUseTransaction message)
 		{
 			int threadID = message.ReadInt();
-			Transaction transToUse = i_server.FindTransaction(threadID);
+			Transaction transToUse = _server.FindTransaction(threadID);
 			_transactionHandle.Transaction(transToUse);
 		}
 
-		public void Write(Msg msg)
+		public bool Write(Msg msg)
 		{
 			lock (_lock)
 			{
-				msg.Write(i_socket);
-				UpdateLastActiveTime();
-			}
-		}
-
-		public void WriteIfAlive(Msg msg)
-		{
-			lock (_lock)
-			{
-				if (IsMessageDispatcherAlive())
+				if (!IsMessageDispatcherAlive())
 				{
-					Write(msg);
+					return false;
 				}
+				return msg.Write(_socket);
 			}
 		}
 
 		public ISocket4 Socket()
 		{
-			return i_socket;
+			return _socket;
 		}
 
 		public string Name()
 		{
-			return i_clientName;
+			return _clientName;
 		}
 
 		public void SetDispatcherName(string name)
 		{
-			i_clientName = name;
+			_clientName = name;
 			SetName("db4o server message dispatcher " + name);
 		}
 
 		public int DispatcherID()
 		{
-			return i_threadID;
+			return _threadID;
 		}
 
 		public void Login()
 		{
-			i_loggedin = true;
+			_loggedin = true;
 		}
 
 		public void StartDispatcher()
@@ -331,15 +312,14 @@ namespace Db4objects.Db4o.Internal.CS
 			return _committedInfo;
 		}
 
-		public void CommittedInfo(CallbackObjectInfoCollections committedInfo)
+		public void DispatchCommitted(CallbackObjectInfoCollections committedInfo)
 		{
 			_committedInfo = committedInfo;
 		}
 
-		public bool IsPingTimeout()
+		public bool WillDispatchCommitted()
 		{
-			long elapsed = Runtime.CurrentTimeMillis() - _lastActiveTime;
-			return i_loggedin && ((elapsed > i_config.PingInterval()));
+			return Server().CaresAboutCommitted();
 		}
 	}
 }

@@ -3,6 +3,7 @@
 using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 using Sharpen.IO;
 
@@ -39,7 +40,7 @@ namespace Db4objects.Db4o.Tests.Util
 				, Const4.TRANSIENT, false);
 			context.Buffer(buffer);
 			context.PersistentObject(obj);
-			context.ActivationDepth(0);
+			context.ActivationDepth(new LegacyActivationDepth(0));
 			context.Read();
 			return context.HandlerVersion();
 		}

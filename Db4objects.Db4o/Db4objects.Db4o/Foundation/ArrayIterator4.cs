@@ -1,48 +1,21 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System.Collections;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
 {
-	public class ArrayIterator4 : IEnumerator
+	public class ArrayIterator4 : IndexedIterator
 	{
-		internal object[] _elements;
+		private readonly object[] _elements;
 
-		internal int _next;
-
-		public ArrayIterator4(object[] elements)
+		public ArrayIterator4(object[] elements) : base(elements.Length)
 		{
 			_elements = elements;
-			_next = -1;
 		}
 
-		public virtual bool MoveNext()
+		protected override object Get(int index)
 		{
-			if (_next < LastIndex())
-			{
-				++_next;
-				return true;
-			}
-			_next = _elements.Length;
-			return false;
-		}
-
-		public virtual object Current
-		{
-			get
-			{
-				return _elements[_next];
-			}
-		}
-
-		public virtual void Reset()
-		{
-			_next = -1;
-		}
-
-		private int LastIndex()
-		{
-			return _elements.Length - 1;
+			return _elements[index];
 		}
 	}
 }

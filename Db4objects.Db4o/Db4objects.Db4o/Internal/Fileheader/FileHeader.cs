@@ -88,8 +88,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public abstract void ReadVariablePart(LocalObjectContainer file);
 
-		protected virtual bool SignatureMatches(Db4objects.Db4o.Internal.Buffer reader, byte[]
-			 signature, byte version)
+		protected virtual bool SignatureMatches(Db4objects.Db4o.Internal.Buffer reader, byte
+			[] signature, byte version)
 		{
 			for (int i = 0; i < signature.Length; i++)
 			{

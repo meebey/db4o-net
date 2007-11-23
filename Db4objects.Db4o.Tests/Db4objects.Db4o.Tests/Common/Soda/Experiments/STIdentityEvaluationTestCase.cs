@@ -41,8 +41,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 			STIdentityEvaluationTestCase.Helper helperA = (STIdentityEvaluationTestCase.Helper
 				)os.Next();
 			q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase
+				));
 			q.Descend("helper").Constrain(helperA).Identity();
 			q.Constrain(new STIdentityEvaluationTestCase.AcceptAllEvaluation());
 			Expect(q, new int[] { 1, 2, 3 });
@@ -51,8 +51,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 		public virtual void TestMemberClassConstraint()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STIdentityEvaluationTestCase
+				));
 			q.Descend("helper").Constrain(typeof(STIdentityEvaluationTestCase.HelperDerivate)
 				);
 			Expect(q, new int[] { 4 });

@@ -1,6 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
+using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
@@ -23,17 +23,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		public sealed override object[] AllElements(object array)
+		public sealed override IEnumerator AllElements(object array)
 		{
 			return AllElements(ArrayReflector(), array);
 		}
 
-		public static object[] AllElements(IReflectArray reflectArray, object array)
+		public static IEnumerator AllElements(IReflectArray reflectArray, object array)
 		{
 			int[] dim = reflectArray.Dimensions(array);
 			object[] flat = new object[ElementCount(dim)];
 			reflectArray.Flatten(array, dim, 0, flat, 0);
-			return flat;
+			return new ArrayIterator4(flat);
 		}
 
 		public int ElementCount(Transaction a_trans, Db4objects.Db4o.Internal.Buffer a_bytes
@@ -111,18 +111,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return dim;
 		}
 
-		private object Element(object a_array, int a_position)
-		{
-			try
-			{
-				return ArrayReflector().Get(a_array, a_position);
-			}
-			catch (Exception)
-			{
-				return null;
-			}
-		}
-
 		public override object Read(IReadContext context)
 		{
 			IntArrayByRef dimensions = new IntArrayByRef();
@@ -149,10 +137,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				context.WriteInt(dim[i]);
 			}
-			object[] objects = AllElements(obj);
-			for (int i = 0; i < objects.Length; i++)
+			IEnumerator objects = AllElements(obj);
+			while (objects.MoveNext())
 			{
-				context.WriteObject(_handler, Element(objects, i));
+				context.WriteObject(_handler, objects.Current);
 			}
 		}
 	}

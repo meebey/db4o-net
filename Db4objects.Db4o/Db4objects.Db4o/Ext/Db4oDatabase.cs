@@ -4,6 +4,7 @@ using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Types;
 using Sharpen;
@@ -66,8 +67,10 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>generates a new Db4oDatabase object with a unique signature.</remarks>
 		public static Db4objects.Db4o.Ext.Db4oDatabase Generate()
 		{
-			return new Db4objects.Db4o.Ext.Db4oDatabase(Unobfuscated.GenerateSignature(), Runtime
-				.CurrentTimeMillis());
+			StatefulBuffer writer = new StatefulBuffer(null, 300);
+			new LatinStringIO().Write(writer, SignatureGenerator.GenerateSignature());
+			return new Db4objects.Db4o.Ext.Db4oDatabase(writer.GetWrittenBytes(), Runtime.CurrentTimeMillis
+				());
 		}
 
 		/// <summary>comparison by signature.</summary>
@@ -225,7 +228,7 @@ namespace Db4objects.Db4o.Ext
 			{
 				Db4objects.Db4o.Ext.Db4oDatabase storedDatabase = (Db4objects.Db4o.Ext.Db4oDatabase
 					)objectSet.Next();
-				stream.Activate(null, storedDatabase, 4);
+				stream.Activate(null, storedDatabase, new FixedActivationDepth(4));
 				if (storedDatabase.Equals(this))
 				{
 					return storedDatabase;

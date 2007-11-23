@@ -120,8 +120,8 @@ namespace Db4objects.Db4o.Reflect.Core
 			}
 		}
 
-		public virtual int Shape(object[] a_flat, int a_flatElement, object a_shaped, int[]
-			 a_dimensions, int a_currentDimension)
+		public virtual int Shape(object[] a_flat, int a_flatElement, object a_shaped, int
+			[] a_dimensions, int a_currentDimension)
 		{
 			if (a_currentDimension == (a_dimensions.Length - 1))
 			{

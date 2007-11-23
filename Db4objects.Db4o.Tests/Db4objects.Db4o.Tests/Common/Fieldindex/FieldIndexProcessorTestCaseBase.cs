@@ -11,7 +11,6 @@ using Db4objects.Db4o.Internal.Classindex;
 using Db4objects.Db4o.Internal.Fieldindex;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Btree;
 using Db4objects.Db4o.Tests.Common.Fieldindex;
 using Db4objects.Db4o.Tests.Common.Foundation;
@@ -70,12 +69,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		private ClassMetadata GetYapClass(Type clazz)
 		{
-			return Stream().ClassMetadataForReflectClass(GetReflectClass(clazz));
-		}
-
-		private IReflectClass GetReflectClass(Type clazz)
-		{
-			return Stream().Reflector().ForClass(clazz);
+			return ClassMetadataFor(clazz);
 		}
 
 		protected virtual BTree ClassIndexBTree(Type clazz)
@@ -139,13 +133,13 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		protected virtual void AssertTreeInt(int[] expectedValues, TreeInt treeInt)
 		{
 			ExpectingVisitor visitor = BTreeAssert.CreateExpectingVisitor(expectedValues);
-			treeInt.Traverse(new _IVisitor4_121(this, visitor));
+			treeInt.Traverse(new _IVisitor4_116(this, visitor));
 			visitor.AssertExpectations();
 		}
 
-		private sealed class _IVisitor4_121 : IVisitor4
+		private sealed class _IVisitor4_116 : IVisitor4
 		{
-			public _IVisitor4_121(FieldIndexProcessorTestCaseBase _enclosing, ExpectingVisitor
+			public _IVisitor4_116(FieldIndexProcessorTestCaseBase _enclosing, ExpectingVisitor
 				 visitor)
 			{
 				this._enclosing = _enclosing;

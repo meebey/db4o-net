@@ -33,8 +33,8 @@ namespace Db4objects.Db4o.Tests.Common.Header
 
 		protected override void Configure(IConfiguration config)
 		{
-			IObjectClass objectClass = config.ObjectClass(typeof(SimpleTimeStampIdTestCase.STSItem)
-				);
+			IObjectClass objectClass = config.ObjectClass(typeof(SimpleTimeStampIdTestCase.STSItem
+				));
 			objectClass.GenerateUUIDs(true);
 			objectClass.GenerateVersionNumbers(true);
 		}

@@ -3,7 +3,6 @@
 using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
 using Db4objects.Db4o.Tests.Common.Btree;
@@ -52,9 +51,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		private BTree Btree()
 		{
-			ClassMetadata clazz = Stream().ClassMetadataForReflectClass(Reflector().ForClass(
-				typeof(DebugBTreeNodeMarshalledLength.Item)));
-			IClassIndexStrategy index = clazz.Index();
+			IClassIndexStrategy index = ClassMetadataFor(typeof(DebugBTreeNodeMarshalledLength.Item
+				)).Index();
 			return ((BTreeClassIndexStrategy)index).Btree();
 		}
 	}

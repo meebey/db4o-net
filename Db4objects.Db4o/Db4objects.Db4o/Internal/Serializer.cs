@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -55,7 +56,7 @@ namespace Db4objects.Db4o.Internal
 			TransportObjectContainer carrier = new TransportObjectContainer(serviceProvider, 
 				memoryFile);
 			object obj = carrier.GetByID(id);
-			carrier.Activate(obj, int.MaxValue);
+			carrier.Activate(carrier.Transaction(), obj, new FullActivationDepth());
 			carrier.Close();
 			return obj;
 		}

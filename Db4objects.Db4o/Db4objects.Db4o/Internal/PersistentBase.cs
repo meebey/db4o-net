@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
@@ -114,6 +115,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void SetID(int a_id)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.YAPMETA_SET_ID.Log(a_id);
+			}
 			_id = a_id;
 		}
 
@@ -188,6 +193,10 @@ namespace Db4objects.Db4o.Internal
 		private void WriteToFile(Transaction trans, Db4objects.Db4o.Internal.Buffer writer
 			, Slot slot)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.YAPMETA_WRITE.Log(GetID());
+			}
 			LocalObjectContainer container = (LocalObjectContainer)trans.Container();
 			WriteThis(trans, writer);
 			container.WriteEncrypt(writer, slot.Address(), 0);

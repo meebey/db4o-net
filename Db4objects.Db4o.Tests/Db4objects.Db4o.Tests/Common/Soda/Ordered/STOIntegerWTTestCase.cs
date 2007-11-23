@@ -31,8 +31,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 		public virtual void TestDescending()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase
+				));
 			q.Descend("i_int").OrderDescending();
 			ExpectOrdered(q, new int[] { 6, 4, 0, 3, 1, 2, 5, 7 });
 		}
@@ -40,8 +40,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 		public virtual void TestAscendingGreater()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase
+				));
 			IQuery qInt = q.Descend("i_int");
 			qInt.Constrain(100).Greater();
 			qInt.OrderAscending();

@@ -16,14 +16,22 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void TestStoreNakedObjects()
 		{
-			try
+			Assert.Expect(typeof(ObjectNotStorableException), new _ICodeBlock_16(this));
+		}
+
+		private sealed class _ICodeBlock_16 : ICodeBlock
+		{
+			public _ICodeBlock_16(NakedObjectTestCase _enclosing)
 			{
-				Db().Set(new NakedObjectTestCase.Item());
-				Assert.Fail("Naked objects can't be stored");
+				this._enclosing = _enclosing;
 			}
-			catch (ObjectNotStorableException)
+
+			public void Run()
 			{
+				this._enclosing.Db().Set(new NakedObjectTestCase.Item());
 			}
+
+			private readonly NakedObjectTestCase _enclosing;
 		}
 	}
 }

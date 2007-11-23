@@ -36,8 +36,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 					);
 				return;
 			}
-			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(OldFormatExceptionTestCase)
-				));
+			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(OldFormatExceptionTestCase
+				)));
 			Db4oFactory.Configure().AllowVersionUpdates(false);
 			string oldDatabaseFilePath = OldDatabaseFilePath();
 			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_44(this, oldDatabaseFilePath

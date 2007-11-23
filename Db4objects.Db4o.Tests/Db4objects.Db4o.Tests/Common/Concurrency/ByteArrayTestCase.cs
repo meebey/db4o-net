@@ -25,13 +25,13 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			new ByteArrayTestCase().RunConcurrency();
 		}
 
-		#if !CF_1_0 && !CF_2_0
+		#if !CF_2_0
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(SerializableByteArrayHolder)).Translate(new TSerializable
 				());
 		}
-		#endif // !CF_1_0 && !CF_2_0
+		#endif // !CF_2_0
 
 		protected override void Store()
 		{

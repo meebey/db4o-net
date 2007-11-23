@@ -8,6 +8,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -33,7 +34,7 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _isPrimitive;
 
-		private IReflectField _javaField;
+		private IReflectField _reflectField;
 
 		internal ITypeHandler4 _handler;
 
@@ -97,8 +98,8 @@ namespace Db4objects.Db4o.Internal
 			 handler, int handlerID) : this(containingClass)
 		{
 			Init(containingClass, field.GetName());
-			_javaField = field;
-			_javaField.SetAccessible();
+			_reflectField = field;
+			_reflectField.SetAccessible();
 			_handler = handler;
 			_handlerID = handlerID;
 			bool isPrimitive = false;
@@ -166,7 +167,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual object IndexEntryFor(object indexEntry)
 		{
-			return _javaField.IndexEntry(indexEntry);
+			return _reflectField.IndexEntry(indexEntry);
 		}
 
 		public virtual bool CanUseNullBitmap()
@@ -213,10 +214,10 @@ namespace Db4objects.Db4o.Internal
 				{
 					_handler = WrapHandlerToArrays(Container(), _handler);
 				}
-				if (_handler == null || _javaField == null)
+				if (_handler == null || _reflectField == null)
 				{
 					_state = UNAVAILABLE;
-					_javaField = null;
+					_reflectField = null;
 				}
 				else
 				{
@@ -295,8 +296,8 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		internal virtual void CascadeActivation(Transaction trans, object onObject, int depth
-			, bool activate)
+		internal void CascadeActivation(Transaction trans, object onObject, IActivationDepth
+			 depth)
 		{
 			if (!Alive())
 			{
@@ -306,29 +307,37 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
+			object cascadeTo = CascadingTarget(trans, depth, onObject);
+			if (cascadeTo == null)
+			{
+				return;
+			}
 			IFirstClassHandler firstClassHandler = (IFirstClassHandler)_handler;
-			try
+			firstClassHandler.CascadeActivation(trans, cascadeTo, depth);
+		}
+
+		protected virtual object CascadingTarget(Transaction trans, IActivationDepth depth
+			, object onObject)
+		{
+			if (depth.Mode().IsDeactivate())
 			{
-				object cascadeTo = GetOrCreate(trans, onObject);
-				if (cascadeTo == null)
+				if (null == _reflectField)
 				{
-					return;
+					return null;
 				}
-				firstClassHandler.CascadeActivation(trans, cascadeTo, depth, activate);
+				return _reflectField.Get(onObject);
 			}
-			catch (Exception)
-			{
-			}
+			return GetOrCreate(trans, onObject);
 		}
 
 		private void CheckDb4oType()
 		{
-			if (_javaField != null)
+			if (_reflectField != null)
 			{
-				if (Container()._handlers.ICLASS_DB4OTYPE.IsAssignableFrom(_javaField.GetFieldType
+				if (Container()._handlers.ICLASS_DB4OTYPE.IsAssignableFrom(_reflectField.GetFieldType
 					()))
 				{
-					_db4oType = HandlerRegistry.GetDb4oType(_javaField.GetFieldType());
+					_db4oType = HandlerRegistry.GetDb4oType(_reflectField.GetFieldType());
 				}
 			}
 		}
@@ -427,8 +436,8 @@ namespace Db4objects.Db4o.Internal
 			return Deploy.csharp ? false : _isPrimitive;
 		}
 
-		internal virtual void Deactivate(Transaction a_trans, object a_onObject, int a_depth
-			)
+		internal virtual void Deactivate(Transaction a_trans, object a_onObject, IActivationDepth
+			 a_depth)
 		{
 			if (!Alive())
 			{
@@ -439,17 +448,17 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (!isEnumClass)
 				{
-					_javaField.Set(a_onObject, ((PrimitiveHandler)_handler).PrimitiveNull());
+					_reflectField.Set(a_onObject, ((PrimitiveHandler)_handler).PrimitiveNull());
 				}
 				return;
 			}
-			if (a_depth > 0)
+			if (a_depth.RequiresActivation())
 			{
-				CascadeActivation(a_trans, a_onObject, a_depth, false);
+				CascadeActivation(a_trans, a_onObject, a_depth);
 			}
 			if (!isEnumClass)
 			{
-				_javaField.Set(a_onObject, null);
+				_reflectField.Set(a_onObject, null);
 			}
 		}
 
@@ -564,6 +573,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				UnmarshallingContext context = new UnmarshallingContext(trans, @ref, Const4.ADD_TO_ID_TREE
 					, false);
+				context.ActivationDepth(new LegacyActivationDepth(1));
 				return context.ReadFieldValue(this);
 			}
 		}
@@ -603,7 +613,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (Alive())
 			{
-				return _javaField.Get(onObject);
+				return _reflectField.Get(onObject);
 			}
 			return null;
 		}
@@ -618,11 +628,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			object obj = _javaField.Get(onObject);
+			object obj = _reflectField.Get(onObject);
 			if (_db4oType != null && obj == null)
 			{
 				obj = _db4oType.CreateDefault(trans);
-				_javaField.Set(onObject, obj);
+				_reflectField.Set(onObject, obj);
 			}
 			return obj;
 		}
@@ -634,11 +644,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IReflectClass GetStoredType()
 		{
-			if (_javaField == null)
+			if (_reflectField == null)
 			{
 				return null;
 			}
-			return Handlers4.BaseType(_javaField.GetFieldType());
+			return Handlers4.BaseType(_reflectField.GetFieldType());
 		}
 
 		public virtual ObjectContainerBase Container()
@@ -767,7 +777,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return ((VariableLengthTypeHandler)_handler).LinkLength();
 			}
-			throw new NotSupportedException();
+			throw new NotImplementedException();
 		}
 
 		public virtual void LoadHandler(ObjectContainerBase a_stream)
@@ -780,7 +790,7 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 handler = LoadJavaField1();
 			if (handler == null || (!handler.Equals(_handler)))
 			{
-				_javaField = null;
+				_reflectField = null;
 				_state = UNAVAILABLE;
 			}
 		}
@@ -792,15 +802,15 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			_javaField = claxx.GetDeclaredField(_name);
-			if (_javaField == null)
+			_reflectField = claxx.GetDeclaredField(_name);
+			if (_reflectField == null)
 			{
 				return null;
 			}
-			_javaField.SetAccessible();
+			_reflectField.SetAccessible();
 			ObjectContainerBase container = Container();
 			container.ShowInternalClasses(true);
-			ITypeHandler4 handlerForClass = container._handlers.HandlerForClass(container, _javaField
+			ITypeHandler4 handlerForClass = container._handlers.HandlerForClass(container, _reflectField
 				.GetFieldType());
 			container.ShowInternalClasses(false);
 			return handlerForClass;
@@ -904,7 +914,7 @@ namespace Db4objects.Db4o.Internal
 					return;
 				}
 			}
-			_javaField = null;
+			_reflectField = null;
 			_state = UNAVAILABLE;
 		}
 
@@ -930,11 +940,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Set(object onObject, object obj)
 		{
-			if (null == _javaField)
+			if (null == _reflectField)
 			{
 				return;
 			}
-			_javaField.Set(onObject, obj);
+			_reflectField.Set(onObject, obj);
 		}
 
 		internal virtual void SetName(string a_name)
@@ -972,14 +982,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_839(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_850(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_839 : IVisitor4
+		private sealed class _IVisitor4_850 : IVisitor4
 		{
-			public _IVisitor4_839(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_850(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;
@@ -1053,11 +1063,11 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual IIndexable4 IndexHandler(ObjectContainerBase stream)
 		{
-			if (_javaField == null)
+			if (_reflectField == null)
 			{
 				return null;
 			}
-			IReflectClass indexType = _javaField.IndexType();
+			IReflectClass indexType = _reflectField.IndexType();
 			ITypeHandler4 classHandler = stream._handlers.HandlerForClass(stream, indexType);
 			if (!(classHandler is IIndexable4))
 			{

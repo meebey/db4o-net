@@ -142,6 +142,10 @@ namespace Db4objects.Db4o.Internal
 					return false;
 				}
 			}
+			if (DTrace.enabled)
+			{
+				DTrace.TRANS_DELETE.Log(id);
+			}
 			DeleteInfo info = (DeleteInfo)TreeInt.Find(_delete, id);
 			if (info == null)
 			{
@@ -159,6 +163,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void DontDelete(int a_id)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.TRANS_DONT_DELETE.Log(a_id);
+			}
 			if (_delete == null)
 			{
 				return;

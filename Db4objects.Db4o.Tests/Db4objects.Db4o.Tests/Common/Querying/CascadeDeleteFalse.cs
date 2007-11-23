@@ -44,8 +44,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		private void CheckHelperCount(int count)
 		{
-			Assert.AreEqual(count, CountOccurences(typeof(CascadeDeleteFalse.CascadeDeleteFalseHelper)
-				));
+			Assert.AreEqual(count, CountOccurences(typeof(CascadeDeleteFalse.CascadeDeleteFalseHelper
+				)));
 		}
 	}
 }

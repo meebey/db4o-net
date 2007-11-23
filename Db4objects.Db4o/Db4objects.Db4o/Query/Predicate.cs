@@ -3,6 +3,7 @@
 using System;
 using System.Reflection;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Query
 {
@@ -84,10 +85,6 @@ namespace Db4objects.Db4o.Query
 	[System.Serializable]
 	public abstract class Predicate
 	{
-		/// <summary>public for implementation reasons, please ignore.</summary>
-		/// <remarks>public for implementation reasons, please ignore.</remarks>
-		public static readonly string PREDICATEMETHOD_NAME = "match";
-
 		internal static readonly Type OBJECT_CLASS = typeof(object);
 
 		private Type _extentType;
@@ -115,7 +112,7 @@ namespace Db4objects.Db4o.Query
 			for (int methodIdx = 0; methodIdx < methods.Length; methodIdx++)
 			{
 				MethodInfo method = methods[methodIdx];
-				if (IsFilterMethod(method))
+				if (PredicatePlatform.IsFilterMethod(method))
 				{
 					if (!OBJECT_CLASS.Equals(Sharpen.Runtime.GetParameterTypes(method)[0]))
 					{
@@ -131,16 +128,6 @@ namespace Db4objects.Db4o.Query
 				return untypedMethod;
 			}
 			throw new ArgumentException("Invalid predicate.");
-		}
-
-		private bool IsFilterMethod(MethodInfo method)
-		{
-			if (Sharpen.Runtime.GetParameterTypes(method).Length != 1)
-			{
-				return false;
-			}
-			return Sharpen.Runtime.EqualsIgnoreCase(method.Name, PREDICATEMETHOD_NAME);
-			return method.Name.Equals(PREDICATEMETHOD_NAME);
 		}
 
 		/// <summary>public for implementation reasons, please ignore.</summary>

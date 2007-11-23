@@ -199,11 +199,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return claxx;
 			}
-			claxx = ForName(ReflectPlatform.FullyQualifiedName(clazz));
-			if (claxx != null)
+			if (!clazz.IsArray)
 			{
-				_classByClass.Put(clazz, claxx);
-				return claxx;
+				claxx = ForName(ReflectPlatform.FullyQualifiedName(clazz));
+				if (claxx != null)
+				{
+					_classByClass.Put(clazz, claxx);
+					return claxx;
+				}
 			}
 			claxx = _delegate.ForClass(clazz);
 			if (claxx == null)
@@ -317,14 +320,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private IReflectClassPredicate ClassPredicate(Type clazz)
 		{
 			IReflectClass collectionClass = ForClass(clazz);
-			IReflectClassPredicate predicate = new _IReflectClassPredicate_309(this, collectionClass
+			IReflectClassPredicate predicate = new _IReflectClassPredicate_311(this, collectionClass
 				);
 			return predicate;
 		}
 
-		private sealed class _IReflectClassPredicate_309 : IReflectClassPredicate
+		private sealed class _IReflectClassPredicate_311 : IReflectClassPredicate
 		{
-			public _IReflectClassPredicate_309(GenericReflector _enclosing, IReflectClass collectionClass
+			public _IReflectClassPredicate_311(GenericReflector _enclosing, IReflectClass collectionClass
 				)
 			{
 				this._enclosing = _enclosing;

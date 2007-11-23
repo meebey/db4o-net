@@ -1,7 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 
@@ -35,8 +35,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return true;
 		}
 
-		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, Db4objects.Db4o.Internal.Buffer[]
-			 a_bytes)
+		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
+			[] a_bytes)
 		{
 			int id = 0;
 			int offset = a_bytes[0]._offset;

@@ -14,6 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public static void Main(string[] arguments)
 		{
 			new ClientDisconnectTestCase().RunConcurrency();
+			new ClientDisconnectTestCase().RunConcurrency();
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -30,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				{
 					client.Socket().Close();
 					Assert.IsFalse(oc.IsClosed());
-					Assert.Expect(typeof(Db4oException), new _ICodeBlock_26(this, client));
+					Assert.Expect(typeof(Db4oException), new _ICodeBlock_27(this, client));
 				}
 			}
 			finally
@@ -40,9 +41,9 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			}
 		}
 
-		private sealed class _ICodeBlock_26 : ICodeBlock
+		private sealed class _ICodeBlock_27 : ICodeBlock
 		{
-			public _ICodeBlock_26(ClientDisconnectTestCase _enclosing, ClientObjectContainer 
+			public _ICodeBlock_27(ClientDisconnectTestCase _enclosing, ClientObjectContainer 
 				client)
 			{
 				this._enclosing = _enclosing;

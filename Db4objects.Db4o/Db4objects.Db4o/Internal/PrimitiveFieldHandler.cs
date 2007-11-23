@@ -1,8 +1,9 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -23,7 +24,8 @@ namespace Db4objects.Db4o.Internal
 			_id = handlerID;
 		}
 
-		internal override void ActivateFields(Transaction trans, object obj, int depth)
+		internal override void ActivateFields(Transaction trans, object obj, IActivationDepth
+			 depth)
 		{
 		}
 
@@ -39,6 +41,11 @@ namespace Db4objects.Db4o.Internal
 
 		internal override void CacheDirty(Collection4 col)
 		{
+		}
+
+		protected override bool DescendOnCascadingActivation()
+		{
+			return false;
 		}
 
 		/// <exception cref="Db4oIOException"></exception>

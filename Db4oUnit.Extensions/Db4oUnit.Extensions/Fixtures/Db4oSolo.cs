@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Extensions.Util;
 using Db4objects.Db4o;
@@ -21,6 +22,11 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 		}
 
+		public Db4oSolo(IFixtureConfiguration fixtureConfiguration) : this()
+		{
+			FixtureConfiguration(fixtureConfiguration);
+		}
+
 		protected override IObjectContainer CreateDatabase(IConfiguration config)
 		{
 			return Db4oFactory.OpenFile(config, GetAbsolutePath());
@@ -28,7 +34,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public override string GetLabel()
 		{
-			return "SOLO";
+			return BuildLabel("SOLO");
 		}
 
 		/// <exception cref="Exception"></exception>

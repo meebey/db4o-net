@@ -50,14 +50,22 @@ namespace Db4objects.Db4o.Config
 		IMessageSender GetMessageSender();
 
 		/// <summary>
-		/// configures the time a client waits for a message response from the
-		/// server.
+		/// configures the time a client waits for a message response
+		/// from the server.
 		/// </summary>
 		/// <remarks>
-		/// configures the time a client waits for a message response from the
-		/// server. <br />
+		/// configures the time a client waits for a message response
+		/// from the server. <br />
 		/// <br />
-		/// Default value: 300000ms (5 minutes)<br />
+		/// Default value: 600000ms (10 minutes)<br />
+		/// <br />
+		/// It is recommended to use the same values for
+		/// <see cref="IClientServerConfiguration.TimeoutClientSocket">IClientServerConfiguration.TimeoutClientSocket
+		/// 	</see>
+		/// and
+		/// <see cref="IClientServerConfiguration.TimeoutServerSocket">IClientServerConfiguration.TimeoutServerSocket
+		/// 	</see>
+		/// .
 		/// <br />
 		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
@@ -68,40 +76,34 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// configures the timeout of the serverside socket. <br />
 		/// <br />
-		/// All server connection threads jump out of the socket read statement on a
-		/// regular interval to check if the server was shut down. Use this method to
-		/// configure the duration of the interval.<br />
+		/// The serverside handler waits for messages to arrive from the client.
+		/// If no more messages arrive for the duration configured in this
+		/// setting, the client will be disconnected.
 		/// <br />
-		/// Default value: 5000ms (5 seconds)<br />
+		/// Clients send PING messages to the server at an interval of
+		/// Math.min(timeoutClientSocket(), timeoutServerSocket()) / 2
+		/// and the server will respond to keep connections alive.
+		/// <br />
+		/// Decrease this setting if you want clients to disconnect faster.
+		/// <br />
+		/// Increase this setting if you have a large number of clients and long
+		/// running queries and you are getting disconnected clients that you
+		/// would like to wait even longer for a response from the server.
+		/// <br />
+		/// Default value: 600000ms (10 minutes)<br />
+		/// <br />
+		/// It is recommended to use the same values for
+		/// <see cref="IClientServerConfiguration.TimeoutClientSocket">IClientServerConfiguration.TimeoutClientSocket
+		/// 	</see>
+		/// and
+		/// <see cref="IClientServerConfiguration.TimeoutServerSocket">IClientServerConfiguration.TimeoutServerSocket
+		/// 	</see>
+		/// .
 		/// <br />
 		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="milliseconds">time in milliseconds</param>
 		void TimeoutServerSocket(int milliseconds);
-
-		/// <summary>
-		/// configures the delay time after which the server starts pinging connected
-		/// clients to check the connection.
-		/// </summary>
-		/// <remarks>
-		/// configures the delay time after which the server starts pinging connected
-		/// clients to check the connection. <br />
-		/// <br />
-		/// If no client messages are received by the server for the configured
-		/// interval, the server sends a "PING" message to the client and wait's for
-		/// an "PONG" response. <br />
-		/// <br />
-		/// This value may need to be increased for single-threaded clients, since
-		/// they can't respond instantaneously. <br />
-		/// <br />
-		/// Default value: 180000ms (3 minutes)<br />
-		/// <br />
-		/// This setting can be used on both client and server.<br /><br />
-		/// </remarks>
-		/// <param name="milliseconds">time in milliseconds</param>
-		/// <seealso cref="IClientServerConfiguration.SingleThreadedClient">IClientServerConfiguration.SingleThreadedClient
-		/// 	</seealso>
-		void PingInterval(int milliseconds);
 
 		/// <summary>
 		/// configures the client messaging system to be single threaded

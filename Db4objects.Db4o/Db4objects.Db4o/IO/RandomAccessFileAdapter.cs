@@ -2,6 +2,7 @@
 
 using System.IO;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Sharpen.IO;
@@ -56,6 +57,16 @@ namespace Db4objects.Db4o.IO
 		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
+			try
+			{
+				if (_delegate != null)
+				{
+					_delegate.Seek(0);
+				}
+			}
+			catch (IOException)
+			{
+			}
 			Platform4.UnlockFile(_path, _delegate);
 			try
 			{
@@ -118,6 +129,10 @@ namespace Db4objects.Db4o.IO
 		/// <exception cref="Db4oIOException"></exception>
 		public override void Seek(long pos)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.REGULAR_SEEK.Log(pos);
+			}
 			try
 			{
 				_delegate.Seek(pos);

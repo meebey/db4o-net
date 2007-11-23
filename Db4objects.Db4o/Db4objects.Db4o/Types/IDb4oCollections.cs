@@ -6,6 +6,7 @@ namespace Db4objects.Db4o.Types
 {
 	/// <summary>factory and other methods for database-aware collections.</summary>
 	/// <remarks>factory and other methods for database-aware collections.</remarks>
+	[System.ObsoleteAttribute(@"since 7.0")]
 	public interface IDb4oCollections
 	{
 		/// <summary>creates a new database-aware linked list.</summary>

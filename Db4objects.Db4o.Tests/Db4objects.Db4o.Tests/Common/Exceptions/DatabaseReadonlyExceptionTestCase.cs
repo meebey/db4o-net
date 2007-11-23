@@ -3,12 +3,12 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class DatabaseReadonlyExceptionTestCase : AbstractDb4oTestCase
+	public class DatabaseReadonlyExceptionTestCase : AbstractDb4oTestCase, IOptOutTA
 	{
 		public static void Main(string[] args)
 		{
@@ -18,12 +18,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestRollback()
 		{
 			ConfigReadOnly();
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_19(this));
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_21(this));
 		}
 
-		private sealed class _ICodeBlock_19 : ICodeBlock
+		private sealed class _ICodeBlock_21 : ICodeBlock
 		{
-			public _ICodeBlock_19(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_21(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -40,12 +40,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestCommit()
 		{
 			ConfigReadOnly();
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_28(this));
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_30(this));
 		}
 
-		private sealed class _ICodeBlock_28 : ICodeBlock
+		private sealed class _ICodeBlock_30 : ICodeBlock
 		{
-			public _ICodeBlock_28(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_30(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -62,12 +62,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestSet()
 		{
 			ConfigReadOnly();
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_37(this));
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_39(this));
 		}
 
-		private sealed class _ICodeBlock_37 : ICodeBlock
+		private sealed class _ICodeBlock_39 : ICodeBlock
 		{
-			public _ICodeBlock_37(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_39(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -84,12 +84,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestDelete()
 		{
 			ConfigReadOnly();
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_46(this));
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_48(this));
 		}
 
-		private sealed class _ICodeBlock_46 : ICodeBlock
+		private sealed class _ICodeBlock_48 : ICodeBlock
 		{
-			public _ICodeBlock_46(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_48(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -105,12 +105,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestNewFile()
 		{
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_54(this));
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_56(this));
 		}
 
-		private sealed class _ICodeBlock_54 : ICodeBlock
+		private sealed class _ICodeBlock_56 : ICodeBlock
 		{
-			public _ICodeBlock_54(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_56(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing.Fixture().Close();
 				this._enclosing.Fixture().Clean();
 				this._enclosing.Fixture().Config().ReadOnly(true);
-				this._enclosing.Fixture().Open();
+				this._enclosing.Fixture().Open(this.GetType());
 			}
 
 			private readonly DatabaseReadonlyExceptionTestCase _enclosing;
@@ -130,14 +130,14 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestReserveStorage()
 		{
 			ConfigReadOnly();
-			Type exceptionType = IsClientServer() && !IsMTOC() ? typeof(NotSupportedException)
-				 : typeof(DatabaseReadOnlyException);
-			Assert.Expect(exceptionType, new _ICodeBlock_68(this));
+			Type exceptionType = IsClientServer() && !IsMTOC() ? typeof(NotSupportedException
+				) : typeof(DatabaseReadOnlyException);
+			Assert.Expect(exceptionType, new _ICodeBlock_70(this));
 		}
 
-		private sealed class _ICodeBlock_68 : ICodeBlock
+		private sealed class _ICodeBlock_70 : ICodeBlock
 		{
-			public _ICodeBlock_68(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_70(DatabaseReadonlyExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

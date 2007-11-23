@@ -66,8 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		private ClassMetadata YapClass()
 		{
-			return Stream().ClassMetadataForReflectClass(Reflector().ForClass(typeof(QueryResultTestCase.Item)
-				));
+			return ClassMetadataFor(typeof(QueryResultTestCase.Item));
 		}
 
 		private IQueryResult ExecuteQuery(IQuery query)

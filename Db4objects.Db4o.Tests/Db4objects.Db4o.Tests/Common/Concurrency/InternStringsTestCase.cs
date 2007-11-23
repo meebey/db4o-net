@@ -43,8 +43,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void Conc(IExtObjectContainer oc)
 		{
 			IQuery query = oc.Query();
-			query.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.InternStringsTestCase)
-				);
+			query.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.InternStringsTestCase
+				));
 			IObjectSet result = query.Execute();
 			Assert.AreEqual(2, result.Size());
 			Db4objects.Db4o.Tests.Common.Concurrency.InternStringsTestCase first = (Db4objects.Db4o.Tests.Common.Concurrency.InternStringsTestCase

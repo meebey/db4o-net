@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
@@ -340,6 +341,10 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		internal void CommitOrRollback(Transaction trans, bool isCommit)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.BTREE_NODE_COMMIT_OR_ROLLBACK.Log(GetID());
+			}
 			if (_dead)
 			{
 				return;
@@ -624,6 +629,10 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private void Remove(int pos)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.BTREE_NODE_REMOVE.Log(GetID());
+			}
 			int len = _count - pos;
 			_count--;
 			System.Array.Copy(_keys, pos + 1, _keys, pos, len);

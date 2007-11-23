@@ -599,8 +599,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 			private sealed class _IVisitor4_485 : IVisitor4
 			{
-				public _IVisitor4_485(_IVisitor4_474 _enclosing, ObjectContainerBase stream, TreeInt[]
-					 idsNew, string fieldName)
+				public _IVisitor4_485(_IVisitor4_474 _enclosing, ObjectContainerBase stream, TreeInt
+					[] idsNew, string fieldName)
 				{
 					this._enclosing = _enclosing;
 					this.stream = stream;

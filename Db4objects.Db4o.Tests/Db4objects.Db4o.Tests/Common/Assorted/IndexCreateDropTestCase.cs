@@ -90,8 +90,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void Indexed(bool flag)
 		{
-			IObjectClass oc = Fixture().Config().ObjectClass(typeof(IndexCreateDropTestCase.IndexCreateDropItem)
-				);
+			IObjectClass oc = Fixture().Config().ObjectClass(typeof(IndexCreateDropTestCase.IndexCreateDropItem
+				));
 			oc.ObjectField("_int").Indexed(flag);
 			oc.ObjectField("_string").Indexed(flag);
 			oc.ObjectField("_date").Indexed(flag);

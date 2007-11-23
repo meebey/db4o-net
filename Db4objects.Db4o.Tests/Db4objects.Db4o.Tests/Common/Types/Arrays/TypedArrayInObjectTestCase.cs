@@ -36,10 +36,10 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		{
 			TypedArrayInObjectTestCase.Data data = (TypedArrayInObjectTestCase.Data)RetrieveOnlyInstance
 				(typeof(TypedArrayInObjectTestCase.Data));
-			Assert.IsTrue(data._obj is AtomData[], "Expected instance of " + typeof(AtomData[])
-				 + ", but got " + data._obj);
-			Assert.IsTrue(data._objArr is AtomData[], "Expected instance of " + typeof(AtomData[])
-				 + ", but got " + data._objArr);
+			Assert.IsTrue(data._obj is AtomData[], "Expected instance of " + typeof(AtomData[]
+				) + ", but got " + data._obj);
+			Assert.IsTrue(data._objArr is AtomData[], "Expected instance of " + typeof(AtomData
+				[]) + ", but got " + data._objArr);
 			ArrayAssert.AreEqual(ARRAY, data._objArr);
 			ArrayAssert.AreEqual(ARRAY, (AtomData[])data._obj);
 		}

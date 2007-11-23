@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Replication;
@@ -57,8 +58,8 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		internal override void Deactivate(Transaction a_trans, object a_onObject, int a_depth
-			)
+		internal override void Deactivate(Transaction a_trans, object a_onObject, IActivationDepth
+			 a_depth)
 		{
 		}
 

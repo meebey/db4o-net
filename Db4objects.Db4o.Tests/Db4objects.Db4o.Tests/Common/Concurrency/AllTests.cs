@@ -15,20 +15,21 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(ArrayNOrderTestCase), typeof(ByteArrayTestCase), typeof(CascadeDeleteDeletedTestCase)
-				, typeof(CascadeDeleteFalseTestCase), typeof(CascadeOnActivateTestCase), typeof(CascadeOnUpdateTestCase)
-				, typeof(CascadeOnUpdate2TestCase), typeof(CascadeToVectorTestCase), typeof(CaseInsensitiveTestCase)
-				, typeof(Circular1TestCase), typeof(ClientDisconnectTestCase), typeof(CreateIndexInheritedTestCase)
-				, typeof(DeepSetTestCase), typeof(DeleteDeepTestCase), typeof(DifferentAccessPathsTestCase)
-				, typeof(ExtMethodsTestCase), typeof(GetAllTestCase), typeof(GreaterOrEqualTestCase)
-				, typeof(IndexedByIdentityTestCase), typeof(IndexedUpdatesWithNullTestCase), typeof(InternStringsTestCase)
-				, typeof(InvalidUUIDTestCase), typeof(IsStoredTestCase), typeof(MessagingTestCase)
-				, typeof(MultiDeleteTestCase), typeof(MultiLevelIndexTestCase), typeof(NestedArraysTestCase)
-				, typeof(NullWrapperQueriesTestCase), typeof(ObjectSetIDsTestCase), typeof(ParameterizedEvaluationTestCase)
-				, typeof(PeekPersistedTestCase), typeof(PersistStaticFieldValuesTestCase), typeof(QueryForUnknownFieldTestCase)
-				, typeof(QueryNonExistantTestCase), typeof(ReadObjectNQTestCase), typeof(ReadObjectQBETestCase)
-				, typeof(ReadObjectSODATestCase), typeof(RefreshTestCase), typeof(UpdateObjectTestCase)
-				 };
+			return new Type[] { typeof(ArrayNOrderTestCase), typeof(ByteArrayTestCase), typeof(
+				CascadeDeleteDeletedTestCase), typeof(CascadeDeleteFalseTestCase), typeof(CascadeOnActivateTestCase
+				), typeof(CascadeOnUpdateTestCase), typeof(CascadeOnUpdate2TestCase), typeof(CascadeToVectorTestCase
+				), typeof(CaseInsensitiveTestCase), typeof(Circular1TestCase), typeof(ClientDisconnectTestCase
+				), typeof(CreateIndexInheritedTestCase), typeof(DeepSetTestCase), typeof(DeleteDeepTestCase
+				), typeof(DifferentAccessPathsTestCase), typeof(ExtMethodsTestCase), typeof(GetAllTestCase
+				), typeof(GreaterOrEqualTestCase), typeof(IndexedByIdentityTestCase), typeof(IndexedUpdatesWithNullTestCase
+				), typeof(InternStringsTestCase), typeof(InvalidUUIDTestCase), typeof(IsStoredTestCase
+				), typeof(MessagingTestCase), typeof(MultiDeleteTestCase), typeof(MultiLevelIndexTestCase
+				), typeof(NestedArraysTestCase), typeof(NullWrapperQueriesTestCase), typeof(ObjectSetIDsTestCase
+				), typeof(ParameterizedEvaluationTestCase), typeof(PeekPersistedTestCase), typeof(
+				PersistStaticFieldValuesTestCase), typeof(QueryForUnknownFieldTestCase), typeof(
+				QueryNonExistantTestCase), typeof(ReadObjectNQTestCase), typeof(ReadObjectQBETestCase
+				), typeof(ReadObjectSODATestCase), typeof(RefreshTestCase), typeof(UpdateObjectTestCase
+				) };
 		}
 	}
 }

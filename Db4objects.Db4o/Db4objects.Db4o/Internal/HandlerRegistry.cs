@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System.Collections;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Diagnostic;
@@ -55,9 +54,6 @@ namespace Db4objects.Db4o.Internal
 		private readonly Hashtable4 _mapHandlerToReflector = new Hashtable4(32);
 
 		private SharedIndexedFields _indexes;
-
-		[System.ObsoleteAttribute]
-		internal ReplicationImpl i_replication;
 
 		internal Db4objects.Db4o.Internal.Replication.MigrationConnection i_migration;
 
@@ -539,18 +535,6 @@ namespace Db4objects.Db4o.Internal
 			()
 		{
 			return i_migration;
-		}
-
-		[System.ObsoleteAttribute]
-		public void Replication(ReplicationImpl impl)
-		{
-			i_replication = impl;
-		}
-
-		[System.ObsoleteAttribute]
-		public ReplicationImpl Replication()
-		{
-			return i_replication;
 		}
 
 		public VirtualFieldMetadata VirtualFieldByName(string name)

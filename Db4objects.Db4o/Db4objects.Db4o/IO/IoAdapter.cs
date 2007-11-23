@@ -2,6 +2,7 @@
 
 using System;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.IO
@@ -67,6 +68,10 @@ namespace Db4objects.Db4o.IO
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Copy(long oldAddress, long newAddress, int length)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.IO_COPY.LogLength(newAddress, length);
+			}
 			if (length > COPY_SIZE)
 			{
 				byte[] buffer = new byte[COPY_SIZE];

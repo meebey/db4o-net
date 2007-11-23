@@ -45,8 +45,8 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 		{
 			IExtObjectContainer oc1 = OpenNewClient();
 			IExtObjectContainer oc2 = OpenNewClient();
-			oc2.Configure().ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Ext.RefreshTestCase)
-				).CascadeOnUpdate(true);
+			oc2.Configure().ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Ext.RefreshTestCase
+				)).CascadeOnUpdate(true);
 			try
 			{
 				Db4objects.Db4o.Tests.Common.Ext.RefreshTestCase r1 = GetRoot(oc1);

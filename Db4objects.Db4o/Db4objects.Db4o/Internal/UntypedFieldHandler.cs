@@ -1,7 +1,8 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -15,13 +16,13 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override void CascadeActivation(Transaction a_trans, object a_object, int 
-			a_depth, bool a_activate)
+		public override void CascadeActivation(Transaction trans, object onObject, IActivationDepth
+			 depth)
 		{
-			ClassMetadata yc = ForObject(a_trans, a_object, false);
-			if (yc != null)
+			ClassMetadata classMetadata = ForObject(trans, onObject, false);
+			if (classMetadata != null)
 			{
-				yc.CascadeActivation(a_trans, a_object, a_depth, a_activate);
+				classMetadata.CascadeActivation(trans, onObject, depth);
 			}
 		}
 

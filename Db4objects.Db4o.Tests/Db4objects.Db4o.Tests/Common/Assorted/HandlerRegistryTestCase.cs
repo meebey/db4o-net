@@ -17,8 +17,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void _testInterfaceHandlerIsSameAsObjectHandler()
 		{
-			Assert.AreSame(HandlerForClass(typeof(object)), HandlerForClass(typeof(HandlerRegistryTestCase.IFooInterface)
-				));
+			Assert.AreSame(HandlerForClass(typeof(object)), HandlerForClass(typeof(HandlerRegistryTestCase.IFooInterface
+				)));
 		}
 
 		private ITypeHandler4 HandlerForClass(Type clazz)

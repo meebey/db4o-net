@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System.Collections;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Classindex;
@@ -31,6 +32,10 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public void Add(Transaction trans, int id)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.ADD_TO_CLASS_INDEX.Log(id);
+			}
 			CheckId(id);
 			InternalAdd(trans, id);
 		}
@@ -39,6 +44,10 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public void Remove(Transaction ta, int id)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.REMOVE_FROM_CLASS_INDEX.Log(id);
+			}
 			CheckId(id);
 			InternalRemove(ta, id);
 		}

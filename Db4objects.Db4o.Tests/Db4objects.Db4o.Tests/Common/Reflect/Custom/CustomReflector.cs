@@ -103,8 +103,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			throw new NotImplementedException();
 		}
 
-		public virtual CustomClass DefineClass(string className, string[] fieldNames, string[]
-			 fieldTypes)
+		public virtual CustomClass DefineClass(string className, string[] fieldNames, string
+			[] fieldTypes)
 		{
 			return _classRepository.DefineClass(className, fieldNames, fieldTypes);
 		}

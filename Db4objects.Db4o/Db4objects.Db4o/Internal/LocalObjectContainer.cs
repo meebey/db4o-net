@@ -190,6 +190,10 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			Slot blockedSlot = ToBlockedLength(slot);
+			if (DTrace.enabled)
+			{
+				DTrace.FILE_FREE.LogLength(blockedSlot.Address(), blockedSlot.Length());
+			}
 			_freespaceManager.Free(blockedSlot);
 		}
 
@@ -261,6 +265,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				return GetPointerSlot();
 			}
+			if (DTrace.enabled)
+			{
+				DTrace.GET_POINTER_SLOT.Log(id);
+			}
 			return id;
 		}
 
@@ -268,6 +276,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			int blocks = BytesToBlocks(length);
 			Slot slot = GetBlockedSlot(blocks);
+			if (DTrace.enabled)
+			{
+				DTrace.GET_SLOT.LogLength(slot.Address(), slot.Length());
+			}
 			return ToNonBlockedLength(slot);
 		}
 
@@ -444,6 +456,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new ArgumentException();
 			}
+			if (DTrace.enabled)
+			{
+				DTrace.READ_ID.Log(a_id);
+			}
 			Slot slot = ((LocalTransaction)a_ta).GetCurrentSlotOfID(a_id);
 			if (slot == null)
 			{
@@ -452,6 +468,10 @@ namespace Db4objects.Db4o.Internal
 			if (slot.Address() == 0)
 			{
 				return null;
+			}
+			if (DTrace.enabled)
+			{
+				DTrace.READ_SLOT.LogLength(slot.Address(), slot.Length());
 			}
 			Db4objects.Db4o.Internal.Buffer reader = null;
 			if (useReader)

@@ -2,6 +2,7 @@
 
 using System;
 using System.Text;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
@@ -69,6 +70,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 			if (address <= 0)
 			{
 				throw new ArgumentException();
+			}
+			if (DTrace.enabled)
+			{
+				DTrace.FREE_RAM.LogLength(address, length);
 			}
 			_finder._key = address;
 			FreeSlotNode sizeNode;
@@ -147,6 +152,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 			else
 			{
 				AddFreeSlotNodes(address + length, remainingBlocks);
+			}
+			if (DTrace.enabled)
+			{
+				DTrace.GET_FREESPACE.LogLength(address, length);
 			}
 			return new Slot(address, length);
 		}

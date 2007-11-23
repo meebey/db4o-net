@@ -6,6 +6,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Constraints;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Query;
@@ -55,9 +56,15 @@ namespace Db4objects.Db4o.Internal
 			_server.Bind(_transaction, obj, id);
 		}
 
+		[System.ObsoleteAttribute]
 		public virtual IDb4oCollections Collections()
 		{
 			return _server.Collections(_transaction);
+		}
+
+		public virtual Config4Impl ConfigImpl()
+		{
+			return _server.ConfigImpl();
 		}
 
 		public virtual IConfiguration Configure()
@@ -196,7 +203,8 @@ namespace Db4objects.Db4o.Internal
 			lock (Lock())
 			{
 				CheckClosed();
-				return _server.PeekPersisted(_transaction, @object, depth, committed);
+				return _server.PeekPersisted(_transaction, @object, ActivationDepthProvider().ActivationDepth
+					(depth, ActivationMode.PEEK), committed);
 			}
 		}
 
@@ -310,13 +318,30 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4oIOException"></exception>
 		/// <exception cref="DatabaseClosedException"></exception>
+		public virtual void Activate(object obj)
+		{
+			lock (Lock())
+			{
+				CheckClosed();
+				_server.Activate(_transaction, obj);
+			}
+		}
+
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
 		public virtual void Activate(object obj, int depth)
 		{
 			lock (Lock())
 			{
 				CheckClosed();
-				_server.Activate(_transaction, obj, depth);
+				_server.Activate(_transaction, obj, ActivationDepthProvider().ActivationDepth(depth
+					, ActivationMode.ACTIVATE));
 			}
+		}
+
+		private IActivationDepthProvider ActivationDepthProvider()
+		{
+			return _server.ActivationDepthProvider();
 		}
 
 		/// <exception cref="Db4oIOException"></exception>

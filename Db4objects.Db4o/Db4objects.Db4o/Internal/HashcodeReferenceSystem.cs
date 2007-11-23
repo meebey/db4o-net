@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 
@@ -55,6 +56,10 @@ namespace Db4objects.Db4o.Internal
 
 		private void IdAdd(ObjectReference @ref)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.ID_TREE_ADD.Log(@ref.GetID());
+			}
 			if (_idTree == null)
 			{
 				@ref.Hc_init();
@@ -66,6 +71,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual ObjectReference ReferenceForId(int id)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.GET_YAPOBJECT.Log(id);
+			}
 			if (_idTree == null)
 			{
 				return null;
@@ -88,6 +97,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void RemoveReference(ObjectReference @ref)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.REFERENCE_REMOVED.Log(@ref.GetID());
+			}
 			if (_hashCodeTree != null)
 			{
 				_hashCodeTree = _hashCodeTree.Hc_remove(@ref);

@@ -11,7 +11,7 @@ using System.Security;
 [assembly: AssemblyCopyright("db4o 2005 - 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]	
-[assembly: AssemblyVersion("6.5.000")]
+[assembly: AssemblyVersion("7.0.18.8494")]
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]

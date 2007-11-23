@@ -4,7 +4,9 @@ using System;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Types;
 using Sharpen;
 using Sharpen.IO;
@@ -47,7 +49,8 @@ namespace Db4objects.Db4o.Internal
 		[System.NonSerialized]
 		private Transaction i_trans;
 
-		public virtual int AdjustReadDepth(int a_depth)
+		/// <param name="depth"></param>
+		public virtual int AdjustReadDepth(int depth)
 		{
 			return 1;
 		}
@@ -71,32 +74,9 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="IOException"></exception>
-		private void Copy(Sharpen.IO.File from, Sharpen.IO.File to)
+		private static void Copy(Sharpen.IO.File from, Sharpen.IO.File to)
 		{
-			to.Delete();
-			BufferedInputStream @in = new BufferedInputStream(new FileInputStream(from));
-			try
-			{
-				BufferedOutputStream @out = new BufferedOutputStream(new FileOutputStream(to));
-				try
-				{
-					byte[] buffer = new byte[COPYBUFFER_LENGTH];
-					int bytesread = -1;
-					while ((bytesread = @in.Read(buffer)) >= 0)
-					{
-						@out.Write(buffer, 0, bytesread);
-					}
-					@out.Flush();
-				}
-				finally
-				{
-					@out.Close();
-				}
-			}
-			finally
-			{
-				@in.Close();
-			}
+			System.IO.File.Copy(from, to);
 		}
 
 		public virtual object CreateDefault(Transaction a_trans)
@@ -216,7 +196,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (i_stream._lock)
 			{
-				i_stream.Activate(i_trans, this, 2);
+				i_stream.Activate(i_trans, this, new FixedActivationDepth(2));
 			}
 			string path = ServerPath();
 			i_stream.ConfigImpl().EnsureDirExists(path);
@@ -315,10 +295,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				WriteLocal(file);
 			}
-		}
-
-		public virtual void ReplicateFrom(object obj)
-		{
 		}
 
 		public virtual object StoredTo(Transaction a_trans)

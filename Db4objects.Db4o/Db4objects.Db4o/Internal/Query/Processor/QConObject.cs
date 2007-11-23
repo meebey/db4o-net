@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -135,7 +136,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return a_candidate.Evaluate(this, i_evaluator);
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
 				return false;
 			}
@@ -170,6 +171,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal override void EvaluateSelf()
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.EVALUATE_SELF.Log(i_id);
+			}
 			if (i_yapClass != null)
 			{
 				if (!(i_yapClass is PrimitiveFieldHandler))
@@ -348,8 +353,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_attributeProvider != null)
 			{
-				i_candidates.i_trans.Container().ActivateDefaultDepth(i_candidates.i_trans, candidate
-					);
+				i_candidates.i_trans.Container().Activate(i_candidates.i_trans, candidate);
 				return i_attributeProvider.Attribute(candidate);
 			}
 			return candidate;

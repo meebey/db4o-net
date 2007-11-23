@@ -52,6 +52,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public QCandidate(QCandidates candidates, object obj, int id, bool include) : base
 			(id)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.CREATE_CANDIDATE.Log(id);
+			}
 			_candidates = candidates;
 			_order = this;
 			_member = obj;
@@ -504,6 +508,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					if (_key > 0)
 					{
+						if (DTrace.enabled)
+						{
+							DTrace.CANDIDATE_READ.Log(_key);
+						}
 						SetBytes(Container().ReadReaderByID(Transaction(), _key));
 						if (_bytes == null)
 						{
@@ -558,15 +566,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		private void ReadThis(bool a_activate)
 		{
 			Read();
-			Db4objects.Db4o.Internal.Transaction trans = Transaction();
-			if (trans != null)
+			ObjectContainerBase container = Transaction().Container();
+			_member = container.GetByID(Transaction(), _key);
+			if (_member != null && (a_activate || _member is ICompare))
 			{
-				_member = trans.Container().GetByID(trans, _key);
-				if (_member != null && (a_activate || _member is ICompare))
-				{
-					trans.Container().ActivateDefaultDepth(trans, _member);
-					CheckInstanceOfCompare();
-				}
+				container.Activate(Transaction(), _member);
+				CheckInstanceOfCompare();
 			}
 		}
 

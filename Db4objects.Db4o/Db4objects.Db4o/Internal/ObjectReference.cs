@@ -1,10 +1,12 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Reflect;
@@ -12,6 +14,13 @@ using Sharpen;
 
 namespace Db4objects.Db4o.Internal
 {
+	/// <summary>A weak reference to an known object.</summary>
+	/// <remarks>
+	/// A weak reference to an known object.
+	/// "Known" ~ has been stored and/or retrieved within a transaction.
+	/// References the corresponding ClassMetaData along with further metadata:
+	/// internal id, UUID/version information, ...
+	/// </remarks>
 	/// <exclude></exclude>
 	public class ObjectReference : PersistentBase, IObjectInfo, IActivator
 	{
@@ -55,55 +64,63 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Activate()
 		{
-			if (IsActive())
+			ActivateOn(Container().Transaction());
+		}
+
+		public virtual void ActivateOn(Db4objects.Db4o.Internal.Transaction transaction)
+		{
+			ObjectContainerBase container = transaction.Container();
+			lock (container.Lock())
 			{
-				return;
+				if (IsActive())
+				{
+					return;
+				}
+				TransparentActivationDepthProvider provider = (TransparentActivationDepthProvider
+					)container.ActivationDepthProvider();
+				Activate(transaction, GetObject(), new DescendingActivationDepth(provider, ActivationMode
+					.ACTIVATE));
 			}
-			Activate(Container().Transaction(), GetObject(), 1, false);
 		}
 
 		public virtual void Activate(Db4objects.Db4o.Internal.Transaction ta, object obj, 
-			int depth, bool isRefresh)
+			IActivationDepth depth)
 		{
-			Activate1(ta, obj, depth, isRefresh);
-			ta.Container().Activate3CheckStill(ta);
+			ActivateInternal(ta, obj, depth);
+			ta.Container().ActivatePending(ta);
 		}
 
-		internal virtual void Activate1(Db4objects.Db4o.Internal.Transaction ta, object obj
-			, int depth, bool isRefresh)
+		internal virtual void ActivateInternal(Db4objects.Db4o.Internal.Transaction ta, object
+			 obj, IActivationDepth depth)
 		{
-			if (obj is IDb4oTypeImpl)
+			if (!depth.RequiresActivation())
 			{
-				depth = ((IDb4oTypeImpl)obj).AdjustReadDepth(depth);
+				return;
 			}
-			if (depth > 0)
+			ObjectContainerBase container = ta.Container();
+			if (depth.Mode().IsRefresh())
 			{
-				ObjectContainerBase container = ta.Container();
-				if (isRefresh)
+				LogActivation(container, "refresh");
+			}
+			else
+			{
+				if (IsActive())
 				{
-					LogActivation(container, "refresh");
-				}
-				else
-				{
-					if (IsActive())
+					if (obj != null)
 					{
-						if (obj != null)
-						{
-							if (depth > 1)
-							{
-								if (_class.Config() != null)
-								{
-									depth = _class.Config().AdjustActivationDepth(depth);
-								}
-								_class.ActivateFields(ta, obj, depth);
-							}
-							return;
-						}
+						_class.ActivateFields(ta, obj, depth);
+						return;
 					}
-					LogActivation(container, "activate");
 				}
-				Read(ta, null, obj, depth, Const4.ADD_MEMBERS_TO_ID_TREE_ONLY, false);
+				LogActivation(container, "activate");
 			}
+			ReadForActivation(ta, obj, depth);
+		}
+
+		private void ReadForActivation(Db4objects.Db4o.Internal.Transaction ta, object obj
+			, IActivationDepth depth)
+		{
+			Read(ta, null, obj, depth, Const4.ADD_MEMBERS_TO_ID_TREE_ONLY, false);
 		}
 
 		private void LogActivation(ObjectContainerBase container, string @event)
@@ -140,6 +157,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				return false;
 			}
+			if (DTrace.enabled)
+			{
+				DTrace.CONTINUESET.Log(GetID());
+			}
 			BitFalse(Const4.CONTINUE);
 			MarshallingContext context = new MarshallingContext(trans, this, updateDepth, true
 				);
@@ -167,24 +188,26 @@ namespace Db4objects.Db4o.Internal
 			_class.DispatchEvent(container, obj, EventDispatcher.NEW);
 		}
 
-		public virtual void Deactivate(Db4objects.Db4o.Internal.Transaction trans, int depth
-			)
+		public virtual void Deactivate(Db4objects.Db4o.Internal.Transaction trans, IActivationDepth
+			 depth)
 		{
-			if (depth > 0)
+			if (!depth.RequiresActivation())
 			{
-				object obj = GetObject();
-				if (obj != null)
-				{
-					if (obj is IDb4oTypeImpl)
-					{
-						((IDb4oTypeImpl)obj).PreDeactivate();
-					}
-					ObjectContainerBase container = trans.Container();
-					LogActivation(container, "deactivate");
-					SetStateDeactivated();
-					_class.Deactivate(trans, obj, depth);
-				}
+				return;
 			}
+			object obj = GetObject();
+			if (obj == null)
+			{
+				return;
+			}
+			if (obj is IDb4oTypeImpl)
+			{
+				((IDb4oTypeImpl)obj).PreDeactivate();
+			}
+			ObjectContainerBase container = trans.Container();
+			LogActivation(container, "deactivate");
+			SetStateDeactivated();
+			_class.Deactivate(trans, obj, depth);
 		}
 
 		public override byte GetIdentifier()
@@ -215,19 +238,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_class == null)
 			{
-				return null;
+				throw new InvalidOperationException();
 			}
 			return _class.Container();
 		}
 
 		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
 		{
-			ObjectContainerBase container = Container();
-			if (container != null)
-			{
-				return container.Transaction();
-			}
-			return null;
+			return Container().Transaction();
 		}
 
 		public virtual Db4oUUID GetUUID()
@@ -276,20 +294,21 @@ namespace Db4objects.Db4o.Internal
 			return _virtualAttributes;
 		}
 
-		internal object PeekPersisted(Db4objects.Db4o.Internal.Transaction trans, int depth
-			)
+		internal object PeekPersisted(Db4objects.Db4o.Internal.Transaction trans, IActivationDepth
+			 depth)
 		{
 			return Read(trans, depth, Const4.TRANSIENT, false);
 		}
 
-		internal object Read(Db4objects.Db4o.Internal.Transaction trans, int instantiationDepth
-			, int addToIDTree, bool checkIDTree)
+		internal object Read(Db4objects.Db4o.Internal.Transaction trans, IActivationDepth
+			 instantiationDepth, int addToIDTree, bool checkIDTree)
 		{
 			return Read(trans, null, null, instantiationDepth, addToIDTree, checkIDTree);
 		}
 
 		public object Read(Db4objects.Db4o.Internal.Transaction trans, StatefulBuffer buffer
-			, object obj, int instantiationDepth, int addToIDTree, bool checkIDTree)
+			, object obj, IActivationDepth instantiationDepth, int addToIDTree, bool checkIDTree
+			)
 		{
 			UnmarshallingContext context = new UnmarshallingContext(trans, buffer, this, addToIDTree
 				, checkIDTree);
@@ -968,7 +987,8 @@ namespace Db4objects.Db4o.Internal
 					ObjectContainerBase container = _class.Container();
 					if (container != null && id > 0)
 					{
-						obj = container.PeekPersisted(container.Transaction(), id, 5, true).ToString();
+						obj = container.PeekPersisted(container.Transaction(), id, container.DefaultActivationDepth
+							(ClassMetadata()), true).ToString();
 					}
 				}
 				if (obj == null)

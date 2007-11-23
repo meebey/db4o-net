@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -16,6 +17,11 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public Db4oInMemory(IConfigurationSource configSource) : base(configSource)
 		{
+		}
+
+		public Db4oInMemory(IFixtureConfiguration fc) : this()
+		{
+			FixtureConfiguration(fc);
 		}
 
 		private MemoryFile _memoryFile;
@@ -36,7 +42,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public override string GetLabel()
 		{
-			return "IN-MEMORY";
+			return BuildLabel("IN-MEMORY");
 		}
 
 		/// <exception cref="Exception"></exception>

@@ -4,6 +4,7 @@ using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Tests.Common.CS;
 
@@ -27,12 +28,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void Test()
 		{
 			int port = ClientServerFixture().ServerPort();
-			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_26(this, port));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_27(this, port));
 		}
 
-		private sealed class _ICodeBlock_26 : ICodeBlock
+		private sealed class _ICodeBlock_27 : ICodeBlock
 		{
-			public _ICodeBlock_26(ServerPortUsedTestCase _enclosing, int port)
+			public _ICodeBlock_27(ServerPortUsedTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;

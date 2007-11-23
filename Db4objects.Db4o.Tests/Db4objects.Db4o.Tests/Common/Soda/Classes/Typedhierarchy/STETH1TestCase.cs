@@ -65,8 +65,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 		public virtual void TestAndClass()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STETH1TestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy.STETH1TestCase
+				));
 			q.Constrain(typeof(STETH4));
 			Expect(q, new int[] { 7, 8, 9 });
 		}

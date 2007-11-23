@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal virtual byte[] Write(string str)
+		public virtual byte[] Write(string str)
 		{
 			int length = str.Length;
 			char[] chars = new char[length];

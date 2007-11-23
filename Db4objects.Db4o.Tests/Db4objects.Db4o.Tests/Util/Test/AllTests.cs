@@ -15,7 +15,8 @@ namespace Db4objects.Db4o.Tests.Util.Test
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(PermutingTestConfigTestCase) };
+			return new Type[] { typeof(JavaServicesTestCase), typeof(PermutingTestConfigTestCase
+				) };
 		}
 	}
 }

@@ -117,8 +117,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ArrayAssert.AreEqual(mixedData, (object[])item._untypedMixedInObject);
 		}
 
-		private ObjectArrayUpdateTestCase.ChildItem[] CastToChildItemArray(ObjectArrayUpdateTestCase.ParentItem[]
-			 array)
+		private ObjectArrayUpdateTestCase.ChildItem[] CastToChildItemArray(ObjectArrayUpdateTestCase.ParentItem
+			[] array)
 		{
 			ObjectArrayUpdateTestCase.ChildItem[] res = new ObjectArrayUpdateTestCase.ChildItem
 				[array.Length];

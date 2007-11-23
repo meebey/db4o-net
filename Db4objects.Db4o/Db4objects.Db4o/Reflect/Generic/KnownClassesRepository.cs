@@ -69,12 +69,15 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual IReflectClass ForID(int id)
 		{
-			if (_stream.Handlers().IsSystemHandler(id))
+			lock (_stream.Lock())
 			{
-				return _stream.Handlers().ClassForID(id);
+				if (_stream.Handlers().IsSystemHandler(id))
+				{
+					return _stream.Handlers().ClassForID(id);
+				}
+				EnsureClassAvailability(id);
+				return LookupByID(id);
 			}
-			EnsureClassAvailability(id);
-			return LookupByID(id);
 		}
 
 		public virtual IReflectClass ForName(string className)
@@ -88,16 +91,19 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return null;
 			}
-			if (_stream.ClassCollection() == null)
+			lock (_stream.Lock())
 			{
-				return null;
+				if (_stream.ClassCollection() == null)
+				{
+					return null;
+				}
+				int classID = _stream.ClassMetadataIdForName(className);
+				if (classID <= 0)
+				{
+					return null;
+				}
+				return InitializeClass(classID, className);
 			}
-			int classID = _stream.ClassMetadataIdForName(className);
-			if (classID <= 0)
-			{
-				return null;
-			}
-			return InitializeClass(classID, className);
 		}
 
 		private IReflectClass InitializeClass(int classID, string className)

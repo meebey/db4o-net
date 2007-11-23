@@ -285,8 +285,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		public virtual void TestKnownClasses()
 		{
 			IReflectClass[] knownClasses = _client1.KnownClasses();
-			IReflectClass itemClass = _client1.Reflector().ForClass(typeof(EmbeddedClientObjectContainerTestCase.Item)
-				);
+			IReflectClass itemClass = _client1.Reflector().ForClass(typeof(EmbeddedClientObjectContainerTestCase.Item
+				));
 			ArrayAssert.Contains(knownClasses, new IReflectClass[] { itemClass });
 		}
 
@@ -388,8 +388,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			_client1.Set(storedItem);
 			EmbeddedClientObjectContainerTestCase.Item retrievedItem = RetrieveItemFromClient2
 				();
-			IStoredClass storedClass = _client2.StoredClass(typeof(EmbeddedClientObjectContainerTestCase.Item)
-				);
+			IStoredClass storedClass = _client2.StoredClass(typeof(EmbeddedClientObjectContainerTestCase.Item
+				));
 			IStoredField storedField = storedClass.StoredField(FIELD_NAME, null);
 			object retrievedName = storedField.Get(retrievedItem);
 			Assert.AreEqual(ORIGINAL_NAME, retrievedName);
@@ -402,8 +402,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		{
 			StoreItemToClient1AndCommit();
 			IStoredClass[] storedClasses = _client1.StoredClasses();
-			IStoredClass storedClass = _client1.StoredClass(typeof(EmbeddedClientObjectContainerTestCase.Item)
-				);
+			IStoredClass storedClass = _client1.StoredClass(typeof(EmbeddedClientObjectContainerTestCase.Item
+				));
 			ArrayAssert.Contains(storedClasses, new object[] { storedClass });
 		}
 
@@ -466,6 +466,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			_client1.Close();
 			_client2.Close();
 			_server.Close();
+			File4.Delete(FILENAME);
 		}
 	}
 }

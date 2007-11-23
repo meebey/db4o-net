@@ -7,6 +7,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Replication;
+using Db4objects.Db4o.TA;
 using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Ext
@@ -25,6 +26,37 @@ namespace Db4objects.Db4o.Ext
 	/// </summary>
 	public interface IExtObjectContainer : IObjectContainer
 	{
+		/// <summary>activates an object with the current activation strategy.</summary>
+		/// <remarks>
+		/// activates an object with the current activation strategy.
+		/// In regular activation mode the object will be activated to the
+		/// global activation depth, ( see
+		/// <see cref="IConfiguration.ActivationDepth">IConfiguration.ActivationDepth</see>
+		/// )
+		/// and all configured settings for
+		/// <see cref="IObjectClass.MaximumActivationDepth">IObjectClass.MaximumActivationDepth
+		/// 	</see>
+		/// 
+		/// and
+		/// <see cref="IObjectClass.MaximumActivationDepth">IObjectClass.MaximumActivationDepth
+		/// 	</see>
+		/// will be respected.<br /><br />
+		/// In Transparent Activation Mode ( see
+		/// <see cref="TransparentActivationSupport">TransparentActivationSupport</see>
+		/// )
+		/// the parameter object will only be activated, if it does not implement
+		/// <see cref="IActivatable">IActivatable</see>
+		/// . All referenced members that do not implement
+		/// <see cref="IActivatable">IActivatable</see>
+		/// will also be activated. Any
+		/// <see cref="IActivatable">IActivatable</see>
+		/// objects
+		/// along the referenced graph will break cascading activation.
+		/// </remarks>
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
+		void Activate(object obj);
+
 		/// <summary>backs up a database file of an open ObjectContainer.</summary>
 		/// <remarks>
 		/// backs up a database file of an open ObjectContainer.
@@ -90,6 +122,8 @@ namespace Db4objects.Db4o.Ext
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// .
 		/// </returns>
+		[System.ObsoleteAttribute(@"since 7.0. Use of old internal collections is discouraged. Please use"
+			)]
 		IDb4oCollections Collections();
 
 		/// <summary>returns the Configuration context for this ObjectContainer.</summary>
@@ -137,6 +171,9 @@ namespace Db4objects.Db4o.Ext
 		/// .
 		/// Objects will not be activated by this method. They will be returned in the
 		/// activation state they are currently in, in the local cache.<br /><br />
+		/// To activate the returned object with the current activation strategy, call
+		/// <see cref="IExtObjectContainer.Activate">IExtObjectContainer.Activate</see>
+		/// .<br /><br />
 		/// </remarks>
 		/// <param name="id">the internal ID</param>
 		/// <returns>
@@ -146,8 +183,7 @@ namespace Db4objects.Db4o.Ext
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
 		/// <exception cref="DatabaseClosedException">db4o database file was closed or failed to open.
 		/// 	</exception>
-		/// <exception cref="InvalidIDException">when the provided id is outside the scope of the
-		/// 	</exception>
+		/// <exception cref="InvalidIDException">when the provided id is not valid.</exception>
 		object GetByID(long id);
 
 		/// <summary>
@@ -285,6 +321,8 @@ namespace Db4objects.Db4o.Ext
 		/// since deadlocks can be produced with just two lines of code.
 		/// </remarks>
 		/// <returns>Object the ObjectContainer lock object</returns>
+		[System.ObsoleteAttribute(@"Use is not recommended. Use your own monitor objects instead."
+			)]
 		object Lock();
 
 		/// <summary>aids migration of objects between ObjectContainers.</summary>

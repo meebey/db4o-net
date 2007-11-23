@@ -89,8 +89,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_delegate.Set(onArray, index, element);
 		}
 
-		public virtual int Shape(object[] a_flat, int a_flatElement, object a_shaped, int[]
-			 a_dimensions, int a_currentDimension)
+		public virtual int Shape(object[] a_flat, int a_flatElement, object a_shaped, int
+			[] a_dimensions, int a_currentDimension)
 		{
 			return _delegate.Shape(a_flat, a_flatElement, a_shaped, a_dimensions, a_currentDimension
 				);

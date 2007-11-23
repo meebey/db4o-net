@@ -53,5 +53,10 @@ namespace Db4objects.Db4o.Foundation
 			return other is Db4objects.Db4o.Foundation.HashtableObjectEntry ? HasKey(((Db4objects.Db4o.Foundation.HashtableObjectEntry
 				)other)._objectKey) : false;
 		}
+
+		public override string ToString()
+		{
+			return string.Empty + _objectKey + ": " + _object;
+		}
 	}
 }

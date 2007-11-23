@@ -27,6 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(this).ObjectField("atom").Indexed(true);
+			config.ObjectClass(typeof(IndexedByIdentityTestCase)).CascadeOnUpdate(true);
 		}
 
 		protected override void Store()
@@ -62,8 +63,6 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		/// <exception cref="Exception"></exception>
 		public virtual void ConcUpdate(IExtObjectContainer oc, int seq)
 		{
-			oc.Configure().ObjectClass(typeof(IndexedByIdentityTestCase)).CascadeOnUpdate(true
-				);
 			IQuery q = oc.Query();
 			q.Constrain(typeof(IndexedByIdentityTestCase));
 			IObjectSet os = q.Execute();

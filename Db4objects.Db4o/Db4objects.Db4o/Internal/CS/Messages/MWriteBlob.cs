@@ -5,6 +5,7 @@ using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.CS.Messages;
 using Sharpen.IO;
 
@@ -32,7 +33,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					if (message.Equals(Msg.OK))
 					{
 						stream.Deactivate(Transaction(), _blob, int.MaxValue);
-						stream.Activate(Transaction(), _blob, int.MaxValue);
+						stream.Activate(Transaction(), _blob, new FullActivationDepth());
 						this._blob.SetStatus(Status.COMPLETED);
 					}
 					else

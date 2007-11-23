@@ -4,7 +4,17 @@ using Db4objects.Db4o.Replication;
 
 namespace Db4objects.Db4o.Replication
 {
-	[System.ObsoleteAttribute(@"will be called by a")]
+	/// <summary>
+	/// will be called by a
+	/// <see cref="IReplicationProcess">IReplicationProcess</see>
+	/// upon
+	/// replication conflicts. Conflicts occur whenever
+	/// <see cref="IReplicationProcess.Replicate">IReplicationProcess.Replicate</see>
+	/// is called with an object that
+	/// was modified in both ObjectContainers since the last replication run between
+	/// the two.
+	/// </summary>
+	[System.ObsoleteAttribute(@"Since db4o-5.2. Use db4o Replication System (dRS)")]
 	public interface IReplicationConflictHandler
 	{
 		/// <summary>the callback method to be implemented to resolve a conflict.</summary>

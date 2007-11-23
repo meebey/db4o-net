@@ -9,6 +9,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
 using Db4objects.Db4o.Internal.Convert;
@@ -58,12 +59,15 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private bool _login;
 
+		private readonly ClientHeartbeat _heartbeat;
+
 		public ClientObjectContainer(IConfiguration config, ISocket4 socket, string user, 
 			string password, bool login) : base(config, null)
 		{
 			_userName = user;
 			_password = password;
 			_login = login;
+			_heartbeat = new ClientHeartbeat(this);
 			SetAndConfigSocket(socket);
 			Open();
 		}
@@ -86,7 +90,13 @@ namespace Db4objects.Db4o.Internal.CS
 				StartDispatcherThread(i_socket, _userName);
 			}
 			LogMsg(36, ToString());
+			StartHeartBeat();
 			ReadThis();
+		}
+
+		private void StartHeartBeat()
+		{
+			_heartbeat.Start();
 		}
 
 		private void StartDispatcherThread(ISocket4 socket, string user)
@@ -122,6 +132,7 @@ namespace Db4objects.Db4o.Internal.CS
 			if ((!_singleThreaded) && (_messageDispatcher == null || !_messageDispatcher.IsMessageDispatcherAlive
 				()))
 			{
+				StopHeartBeat();
 				ShutdownObjectContainer();
 				return;
 			}
@@ -141,6 +152,25 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				Exceptions4.CatchAllExceptDb4oException(e);
 			}
+			ShutDownCommunicationRessources();
+			try
+			{
+				i_socket.Close();
+			}
+			catch (Exception e)
+			{
+				Exceptions4.CatchAllExceptDb4oException(e);
+			}
+			ShutdownObjectContainer();
+		}
+
+		private void StopHeartBeat()
+		{
+			_heartbeat.Stop();
+		}
+
+		private void CloseMessageDispatcher()
+		{
 			try
 			{
 				if (!_singleThreaded)
@@ -152,16 +182,6 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				Exceptions4.CatchAllExceptDb4oException(e);
 			}
-			_messageQueue.Stop();
-			try
-			{
-				i_socket.Close();
-			}
-			catch (Exception e)
-			{
-				Exceptions4.CatchAllExceptDb4oException(e);
-			}
-			ShutdownObjectContainer();
 		}
 
 		public sealed override void Commit1(Transaction trans)
@@ -180,10 +200,7 @@ namespace Db4objects.Db4o.Internal.CS
 			Write(Msg.GET_THREAD_ID);
 			int serverThreadID = ExpectedByteResponse(Msg.ID_LIST).ReadInt();
 			ISocket4 sock = i_socket.OpenParalellSocket();
-			if (!(i_socket is LoopbackSocket))
-			{
-				LoginToServer(sock);
-			}
+			LoginToServer(sock);
 			if (switchedToFile != null)
 			{
 				MsgD message = Msg.SWITCH_TO_FILE.GetWriterForString(SystemTransaction(), switchedToFile
@@ -250,7 +267,7 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			a_yapClass.SetID(message.GetId());
 			a_yapClass.ReadName1(SystemTransaction(), bytes);
-			ClassCollection().AddYapClass(a_yapClass);
+			ClassCollection().AddClassMetadata(a_yapClass);
 			ClassCollection().ReadClassMetadata(a_yapClass, a_class);
 			return true;
 		}
@@ -344,8 +361,12 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				msg = (Msg)_messageQueue.Next();
 			}
-			catch (BlockingQueueStoppedException)
+			catch (BlockingQueueStoppedException e)
 			{
+				if (DTrace.enabled)
+				{
+					DTrace.BLOCKING_QUEUE_STOPPED_EXCEPTION.Log(e.ToString());
+				}
 				msg = Msg.ERROR;
 			}
 			if (msg == Msg.ERROR)
@@ -377,8 +398,9 @@ namespace Db4objects.Db4o.Internal.CS
 					}
 					return message;
 				}
-				catch (Exception)
+				catch (Db4oIOException)
 				{
+					OnMsgError();
 				}
 			}
 			return null;
@@ -435,7 +457,7 @@ namespace Db4objects.Db4o.Internal.CS
 				try
 				{
 					i_db = (Db4oDatabase)GetByID(reader.ReadInt());
-					Activate(SystemTransaction(), i_db, 3);
+					Activate(SystemTransaction(), i_db, new FixedActivationDepth(3));
 				}
 				finally
 				{
@@ -451,19 +473,15 @@ namespace Db4objects.Db4o.Internal.CS
 		}
 
 		/// <exception cref="InvalidPasswordException"></exception>
-		private void LoginToServer(ISocket4 a_socket)
+		private void LoginToServer(ISocket4 socket)
 		{
 			UnicodeStringIO stringWriter = new UnicodeStringIO();
 			int length = stringWriter.Length(_userName) + stringWriter.Length(_password);
 			MsgD message = Msg.LOGIN.GetWriterForLength(SystemTransaction(), length);
 			message.WriteString(_userName);
 			message.WriteString(_password);
-			message.Write(a_socket);
-			Msg msg = Msg.ReadMessage(this, SystemTransaction(), a_socket);
-			if (!Msg.LOGIN_OK.Equals(msg))
-			{
-				throw new InvalidPasswordException();
-			}
+			message.Write(socket);
+			Msg msg = ReadLoginMessage(socket);
 			Db4objects.Db4o.Internal.Buffer payLoad = msg.PayLoad();
 			_blockSize = payLoad.ReadInt();
 			int doEncrypt = payLoad.ReadInt();
@@ -471,6 +489,20 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				_handlers.OldEncryptionOff();
 			}
+		}
+
+		private Msg ReadLoginMessage(ISocket4 socket)
+		{
+			Msg msg = Msg.ReadMessage(this, SystemTransaction(), socket);
+			while (Msg.PONG.Equals(msg))
+			{
+				msg = Msg.ReadMessage(this, SystemTransaction(), socket);
+			}
+			if (!Msg.LOGIN_OK.Equals(msg))
+			{
+				throw new InvalidPasswordException();
+			}
+			return msg;
 		}
 
 		public override bool MaintainsIndices()
@@ -719,9 +751,10 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
-		public void Write(Msg msg)
+		public bool Write(Msg msg)
 		{
 			WriteMsg(msg, true);
+			return true;
 		}
 
 		public void WriteBatchedMessage(Msg msg)
@@ -752,9 +785,9 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		public virtual void WriteMessageToSocket(Msg msg)
+		public virtual bool WriteMessageToSocket(Msg msg)
 		{
-			msg.Write(i_socket);
+			return msg.Write(i_socket);
 		}
 
 		public sealed override void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata
@@ -779,8 +812,8 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			try
 			{
-				Write(Msg.PING);
-				return ExpectedResponse(Msg.PONG) != null;
+				Write(Msg.IS_ALIVE);
+				return ExpectedResponse(Msg.IS_ALIVE) != null;
 			}
 			catch (Db4oException)
 			{
@@ -923,17 +956,19 @@ namespace Db4objects.Db4o.Internal.CS
 
 		internal virtual int Timeout()
 		{
-			return IsEmbeddedClient() ? Const4.CLIENT_EMBEDDED_TIMEOUT : ConfigImpl().TimeoutClientSocket
-				();
-		}
-
-		private bool IsEmbeddedClient()
-		{
-			return i_socket is LoopbackSocket;
+			return ConfigImpl().TimeoutClientSocket();
 		}
 
 		protected override void ShutdownDataStorage()
 		{
+			ShutDownCommunicationRessources();
+		}
+
+		private void ShutDownCommunicationRessources()
+		{
+			StopHeartBeat();
+			CloseMessageDispatcher();
+			_messageQueue.Stop();
 		}
 
 		public virtual void SetDispatcherName(string name)

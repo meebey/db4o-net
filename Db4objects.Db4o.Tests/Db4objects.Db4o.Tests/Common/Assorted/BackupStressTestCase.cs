@@ -60,8 +60,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			DeleteFile(FILE);
 			Db4oFactory.Configure().ObjectClass(typeof(BackupStressItem)).ObjectField("_iteration"
 				).Indexed(true);
-			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(BackupStressItem)
-				));
+			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(BackupStressItem
+				)));
 		}
 
 		/// <exception cref="IOException"></exception>

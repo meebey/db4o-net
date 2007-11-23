@@ -3,6 +3,7 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 
 namespace Db4objects.Db4o.Internal.Fileheader
 {
@@ -63,7 +64,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			LocalObjectContainer file = trans.File();
 			Db4oDatabase identity = Debug.staticIdentity ? Db4oDatabase.STATIC_IDENTITY : (Db4oDatabase
 				)file.GetByID(trans, identityID);
-			file.Activate(trans, identity, 2);
+			file.Activate(trans, identity, new FixedActivationDepth(2));
 			_systemData.Identity(identity);
 		}
 	}

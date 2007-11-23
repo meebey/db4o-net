@@ -40,8 +40,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		{
 			int[] expect = new int[] { 3, 4, 5 };
 			IQuery q = oc.Query();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.GreaterOrEqualTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.GreaterOrEqualTestCase
+				));
 			q.Descend("val").Constrain(3).Greater().Equal();
 			IObjectSet res = q.Execute();
 			while (res.HasNext())

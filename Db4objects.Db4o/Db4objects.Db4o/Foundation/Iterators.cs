@@ -86,19 +86,29 @@ namespace Db4objects.Db4o.Foundation
 
 		public static string ToString(IEnumerator i)
 		{
-			if (!i.MoveNext())
-			{
-				return "[]";
-			}
+			return Join(i, "[", "]", ", ");
+		}
+
+		public static string Join(IEnumerator i, string separator)
+		{
+			return Join(i, string.Empty, string.Empty, separator);
+		}
+
+		public static string Join(IEnumerator i, string prefix, string suffix, string separator
+			)
+		{
 			StringBuilder sb = new StringBuilder();
-			sb.Append("[");
-			sb.Append(i.Current);
-			while (i.MoveNext())
+			sb.Append(prefix);
+			if (i.MoveNext())
 			{
-				sb.Append(", ");
 				sb.Append(i.Current);
+				while (i.MoveNext())
+				{
+					sb.Append(separator);
+					sb.Append(i.Current);
+				}
 			}
-			sb.Append("]");
+			sb.Append(suffix);
 			return sb.ToString();
 		}
 	}

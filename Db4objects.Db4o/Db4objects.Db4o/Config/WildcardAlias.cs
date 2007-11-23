@@ -51,15 +51,20 @@ namespace Db4objects.Db4o.Config
 		/// <summary>resolving is done through simple pattern matching</summary>
 		public virtual string ResolveRuntimeName(string runtimeTypeName)
 		{
-			string match = _runtimePattern.Matches(runtimeTypeName);
-			return match != null ? _storedPattern.Inject(match) : null;
+			return Resolve(_runtimePattern, _storedPattern, runtimeTypeName);
 		}
 
 		/// <summary>resolving is done through simple pattern matching</summary>
 		public virtual string ResolveStoredName(string storedTypeName)
 		{
-			string match = _storedPattern.Matches(storedTypeName);
-			return match != null ? _runtimePattern.Inject(match) : null;
+			return Resolve(_storedPattern, _runtimePattern, storedTypeName);
+		}
+
+		private string Resolve(WildcardAlias.WildcardPattern from, WildcardAlias.WildcardPattern
+			 to, string typeName)
+		{
+			string match = from.Matches(typeName);
+			return match != null ? to.Inject(match) : null;
 		}
 
 		internal class WildcardPattern

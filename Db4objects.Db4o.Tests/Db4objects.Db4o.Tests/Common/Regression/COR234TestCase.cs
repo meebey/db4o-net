@@ -31,8 +31,8 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 				return;
 			}
 			Db4oFactory.Configure().AllowVersionUpdates(false);
-			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(COR234TestCase)
-				));
+			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(COR234TestCase
+				)));
 			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_37(this));
 		}
 

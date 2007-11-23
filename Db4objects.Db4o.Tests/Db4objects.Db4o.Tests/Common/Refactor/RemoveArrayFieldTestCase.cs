@@ -52,10 +52,10 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 				("b", false, new object[0]);
 			Store(dataA);
 			Store(dataB);
-			IObjectClass oc = Fixture().Config().ObjectClass(typeof(RemoveArrayFieldTestCase.DataBefore)
-				);
-			oc.Rename(CrossPlatformServices.FullyQualifiedName(typeof(RemoveArrayFieldTestCase.DataAfter)
+			IObjectClass oc = Fixture().Config().ObjectClass(typeof(RemoveArrayFieldTestCase.DataBefore
 				));
+			oc.Rename(CrossPlatformServices.FullyQualifiedName(typeof(RemoveArrayFieldTestCase.DataAfter
+				)));
 			Reopen();
 			IQuery query = NewQuery(typeof(RemoveArrayFieldTestCase.DataAfter));
 			query.Descend("name").Constrain("a");

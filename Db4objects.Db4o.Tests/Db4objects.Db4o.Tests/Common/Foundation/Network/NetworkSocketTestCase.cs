@@ -2,8 +2,8 @@
 
 using System;
 using Db4oUnit;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Tests.Common.Foundation.Network;
@@ -14,13 +14,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 	/// <exclude></exclude>
 	public class NetworkSocketTestCase : ITestLifeCycle
 	{
-		private ServerSocket4 _server;
+		private ServerSocket4 _serverSocket;
 
 		private int _port;
 
-		internal ISocket4 client;
+		internal ISocket4 _client;
 
-		internal ISocket4 serverSide;
+		internal ISocket4 _server;
 
 		private PlainSocketFactory _plainSocketFactory = new PlainSocketFactory();
 
@@ -32,22 +32,22 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
-			_server = new ServerSocket4(_plainSocketFactory, 0);
-			_port = _server.GetLocalPort();
-			client = new NetworkSocket(_plainSocketFactory, "localhost", _port);
-			serverSide = _server.Accept();
+			_serverSocket = new ServerSocket4(_plainSocketFactory, 0);
+			_port = _serverSocket.GetLocalPort();
+			_client = new NetworkSocket(_plainSocketFactory, "localhost", _port);
+			_server = _serverSocket.Accept();
 		}
 
 		/// <exception cref="Exception"></exception>
 		public virtual void TearDown()
 		{
-			_server.Close();
+			_serverSocket.Close();
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestRead_Close1()
+		public virtual void TestReadIntCloseClient()
 		{
-			AssertReadClose(client, new _ICodeBlock_44(this));
+			AssertReadClose(_client, new _ICodeBlock_44(this));
 		}
 
 		private sealed class _ICodeBlock_44 : ICodeBlock
@@ -59,16 +59,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 
 			public void Run()
 			{
-				this._enclosing.serverSide.Read();
+				this._enclosing._server.Read();
 			}
 
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestRead_Close2()
+		public virtual void TestReadIntCloseServer()
 		{
-			AssertReadClose(serverSide, new _ICodeBlock_52(this));
+			AssertReadClose(_server, new _ICodeBlock_52(this));
 		}
 
 		private sealed class _ICodeBlock_52 : ICodeBlock
@@ -80,16 +80,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 
 			public void Run()
 			{
-				this._enclosing.client.Read();
+				this._enclosing._client.Read();
 			}
 
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestReadBII_Close1()
+		public virtual void TestReadByteArrayCloseClient()
 		{
-			AssertReadClose(client, new _ICodeBlock_60(this));
+			AssertReadClose(_client, new _ICodeBlock_60(this));
 		}
 
 		private sealed class _ICodeBlock_60 : ICodeBlock
@@ -101,16 +101,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 
 			public void Run()
 			{
-				this._enclosing.serverSide.Read(new byte[10], 0, 10);
+				this._enclosing._server.Read(new byte[10], 0, 10);
 			}
 
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestReadBII_Close2()
+		public virtual void TestReadByteArrayCloseServer()
 		{
-			AssertReadClose(serverSide, new _ICodeBlock_68(this));
+			AssertReadClose(_server, new _ICodeBlock_68(this));
 		}
 
 		private sealed class _ICodeBlock_68 : ICodeBlock
@@ -122,16 +122,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 
 			public void Run()
 			{
-				this._enclosing.client.Read(new byte[10], 0, 10);
+				this._enclosing._client.Read(new byte[10], 0, 10);
 			}
 
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestWriteB_Close1()
+		public virtual void TestWriteByteArrayCloseClient()
 		{
-			AssertWriteClose(client, new _ICodeBlock_77(this));
+			AssertWriteClose(_client, new _ICodeBlock_77(this));
 		}
 
 		private sealed class _ICodeBlock_77 : ICodeBlock
@@ -143,152 +143,226 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 
 			public void Run()
 			{
-				this._enclosing.serverSide.Write(new byte[10]);
-				this._enclosing.serverSide.Write(new byte[10]);
+				this._enclosing._server.Write(new byte[10]);
 			}
 
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestWriteB_Close2()
+		public virtual void TestWriteByteArrayCloseServer()
 		{
-			AssertWriteClose(serverSide, new _ICodeBlock_86(this));
+			AssertWriteClose(_server, new _ICodeBlock_85(this));
 		}
 
-		private sealed class _ICodeBlock_86 : ICodeBlock
+		private sealed class _ICodeBlock_85 : ICodeBlock
 		{
-			public _ICodeBlock_86(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_85(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Run()
 			{
-				this._enclosing.client.Write(new byte[10]);
-				this._enclosing.client.Write(new byte[10]);
+				this._enclosing._client.Write(new byte[10]);
 			}
 
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestWriteBII_Close1()
+		public virtual void TestWriteByteArrayPartCloseClient()
 		{
-			AssertWriteClose(client, new _ICodeBlock_95(this));
+			AssertWriteClose(_client, new _ICodeBlock_93(this));
 		}
 
-		private sealed class _ICodeBlock_95 : ICodeBlock
+		private sealed class _ICodeBlock_93 : ICodeBlock
 		{
-			public _ICodeBlock_95(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_93(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Run()
 			{
-				this._enclosing.serverSide.Write(new byte[10], 0, 10);
-				this._enclosing.serverSide.Write(new byte[10], 0, 10);
+				this._enclosing._server.Write(new byte[10], 0, 10);
 			}
 
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestWriteBII_Close2()
+		public virtual void TestWriteByteArrayPartCloseServer()
 		{
-			AssertWriteClose(serverSide, new _ICodeBlock_104(this));
+			AssertWriteClose(_server, new _ICodeBlock_101(this));
 		}
 
-		private sealed class _ICodeBlock_104 : ICodeBlock
+		private sealed class _ICodeBlock_101 : ICodeBlock
 		{
-			public _ICodeBlock_104(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_101(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Run()
 			{
-				this._enclosing.client.Write(new byte[10], 0, 10);
-				this._enclosing.client.Write(new byte[10], 0, 10);
+				this._enclosing._client.Write(new byte[10], 0, 10);
 			}
 
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestWriteI_Close1()
+		public virtual void TestWriteIntCloseClient()
 		{
-			AssertWriteClose(client, new _ICodeBlock_113(this));
+			AssertWriteClose(_client, new _ICodeBlock_109(this));
 		}
 
-		private sealed class _ICodeBlock_113 : ICodeBlock
+		private sealed class _ICodeBlock_109 : ICodeBlock
 		{
-			public _ICodeBlock_113(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_109(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Run()
 			{
-				this._enclosing.serverSide.Write(unchecked((int)(0xff)));
-				this._enclosing.serverSide.Write(unchecked((int)(0xff)));
+				this._enclosing._server.Write(unchecked((int)(0xff)));
 			}
 
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestWriteI_Close2()
+		public virtual void TestWriteIntCloseServer()
 		{
-			AssertWriteClose(serverSide, new _ICodeBlock_122(this));
+			AssertWriteClose(_server, new _ICodeBlock_117(this));
 		}
 
-		private sealed class _ICodeBlock_122 : ICodeBlock
+		private sealed class _ICodeBlock_117 : ICodeBlock
 		{
-			public _ICodeBlock_122(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_117(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Run()
 			{
-				this._enclosing.client.Write(unchecked((int)(0xff)));
-				this._enclosing.client.Write(unchecked((int)(0xff)));
+				this._enclosing._client.Write(unchecked((int)(0xff)));
 			}
 
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void AssertReadClose(ISocket4 socketToBeClosed, ICodeBlock codeBlock)
 		{
-			new _Thread_132(this, socketToBeClosed).Start();
-			Assert.Expect(typeof(Db4oIOException), codeBlock);
-		}
-
-		private sealed class _Thread_132 : Thread
-		{
-			public _Thread_132(NetworkSocketTestCase _enclosing, ISocket4 socketToBeClosed)
-			{
-				this._enclosing = _enclosing;
-				this.socketToBeClosed = socketToBeClosed;
-			}
-
-			public override void Run()
-			{
-				Cool.SleepIgnoringInterruption(500);
-				socketToBeClosed.Close();
-			}
-
-			private readonly NetworkSocketTestCase _enclosing;
-
-			private readonly ISocket4 socketToBeClosed;
+			NetworkSocketTestCase.CatchAllThread thread = new NetworkSocketTestCase.CatchAllThread
+				(codeBlock);
+			thread.EnsureStarted();
+			socketToBeClosed.Close();
+			thread.Join();
+			Assert.IsInstanceOf(typeof(Db4oIOException), thread.Caught());
 		}
 
 		private void AssertWriteClose(ISocket4 socketToBeClosed, ICodeBlock codeBlock)
 		{
 			socketToBeClosed.Close();
-			Assert.Expect(typeof(Db4oIOException), codeBlock);
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_134(this, codeBlock));
+		}
+
+		private sealed class _ICodeBlock_134 : ICodeBlock
+		{
+			public _ICodeBlock_134(NetworkSocketTestCase _enclosing, ICodeBlock codeBlock)
+			{
+				this._enclosing = _enclosing;
+				this.codeBlock = codeBlock;
+			}
+
+			/// <exception cref="Exception"></exception>
+			public void Run()
+			{
+				for (int i = 0; i < 20; i++)
+				{
+					codeBlock.Run();
+				}
+			}
+
+			private readonly NetworkSocketTestCase _enclosing;
+
+			private readonly ICodeBlock codeBlock;
+		}
+
+		internal class CatchAllThread
+		{
+			private readonly Thread _thread;
+
+			internal bool _isRunning;
+
+			internal readonly ICodeBlock _codeBlock;
+
+			internal Exception _throwable;
+
+			public CatchAllThread(ICodeBlock codeBlock)
+			{
+				_thread = new Thread(new _IRunnable_158(this));
+				_codeBlock = codeBlock;
+			}
+
+			private sealed class _IRunnable_158 : IRunnable
+			{
+				public _IRunnable_158(CatchAllThread _enclosing)
+				{
+					this._enclosing = _enclosing;
+				}
+
+				public void Run()
+				{
+					try
+					{
+						lock (this)
+						{
+							this._enclosing._isRunning = true;
+						}
+						this._enclosing._codeBlock.Run();
+					}
+					catch (Exception t)
+					{
+						this._enclosing._throwable = t;
+					}
+				}
+
+				private readonly CatchAllThread _enclosing;
+			}
+
+			/// <exception cref="Exception"></exception>
+			public virtual void Join()
+			{
+				_thread.Join();
+			}
+
+			private bool IsRunning()
+			{
+				lock (this)
+				{
+					return _isRunning;
+				}
+			}
+
+			public virtual void EnsureStarted()
+			{
+				_thread.Start();
+				while (!IsRunning())
+				{
+					Cool.SleepIgnoringInterruption(10);
+				}
+				Cool.SleepIgnoringInterruption(10);
+			}
+
+			public virtual Exception Caught()
+			{
+				return _throwable;
+			}
 		}
 	}
 }

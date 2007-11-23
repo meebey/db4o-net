@@ -503,8 +503,8 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private sealed class _IVisitor4_397 : IVisitor4
 		{
-			public _IVisitor4_397(BTree _enclosing, IDefragContext context, CorruptionException[]
-				 corruptx, IOException[] iox)
+			public _IVisitor4_397(BTree _enclosing, IDefragContext context, CorruptionException
+				[] corruptx, IOException[] iox)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;

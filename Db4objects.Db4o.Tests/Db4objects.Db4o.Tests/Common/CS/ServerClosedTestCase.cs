@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4objects.Db4o;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.CS;
@@ -12,7 +12,7 @@ using Db4objects.Db4o.Tests.Common.CS;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
-	public class ServerClosedTestCase : Db4oClientServerTestCase
+	public class ServerClosedTestCase : Db4oClientServerTestCase, IOptOutAllButNetworkingCS
 	{
 		public static void Main(string[] args)
 		{
@@ -22,10 +22,6 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
-			if (IsMTOC())
-			{
-				return;
-			}
 			IExtObjectContainer db = Fixture().Db();
 			ObjectServerImpl serverImpl = (ObjectServerImpl)ClientServerFixture().Server();
 			try
@@ -36,7 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 					Current;
 				serverDispatcher.Socket().Close();
 				Cool.SleepIgnoringInterruption(1000);
-				Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_34(this, db));
+				Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_31(this, db));
 				Assert.IsTrue(db.IsClosed());
 			}
 			finally
@@ -45,9 +41,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		private sealed class _ICodeBlock_34 : ICodeBlock
+		private sealed class _ICodeBlock_31 : ICodeBlock
 		{
-			public _ICodeBlock_34(ServerClosedTestCase _enclosing, IExtObjectContainer db)
+			public _ICodeBlock_31(ServerClosedTestCase _enclosing, IExtObjectContainer db)
 			{
 				this._enclosing = _enclosing;
 				this.db = db;

@@ -15,10 +15,11 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(BTreeAddRemoveTestCase), typeof(BTreeAsSetTestCase), typeof(BTreeNodeTestCase)
-				, typeof(BTreeFreeTestCase), typeof(BTreePointerTestCase), typeof(BTreeRangeTestCase)
-				, typeof(BTreeRollbackTestCase), typeof(BTreeSearchTestCase), typeof(BTreeSimpleTestCase)
-				, typeof(SearcherLowestHighestTestCase), typeof(SearcherTestCase) };
+			return new Type[] { typeof(BTreeAddRemoveTestCase), typeof(BTreeAsSetTestCase), typeof(
+				BTreeNodeTestCase), typeof(BTreeFreeTestCase), typeof(BTreePointerTestCase), typeof(
+				BTreeRangeTestCase), typeof(BTreeRollbackTestCase), typeof(BTreeSearchTestCase), 
+				typeof(BTreeSimpleTestCase), typeof(SearcherLowestHighestTestCase), typeof(SearcherTestCase
+				) };
 		}
 	}
 }

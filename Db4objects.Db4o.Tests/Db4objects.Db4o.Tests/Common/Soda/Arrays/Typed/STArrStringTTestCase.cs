@@ -47,8 +47,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 		public virtual void TestDescendOne()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTTestCase
+				));
 			q.Descend("strArr").Constrain("bar");
 			Expect(q, new int[] { 3, 4 });
 		}
@@ -56,8 +56,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 		public virtual void TestDescendTwo()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTTestCase
+				));
 			IQuery qElements = q.Descend("strArr");
 			qElements.Constrain("foo");
 			qElements.Constrain("bar");
@@ -67,8 +67,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 		public virtual void TestDescendOneNot()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTTestCase
+				));
 			q.Descend("strArr").Constrain("bar").Not();
 			Expect(q, new int[] { 0, 1, 2 });
 		}
@@ -76,8 +76,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 		public virtual void TestDescendTwoNot()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrStringTTestCase
+				));
 			IQuery qElements = q.Descend("strArr");
 			qElements.Constrain("foo").Not();
 			qElements.Constrain("bar").Not();

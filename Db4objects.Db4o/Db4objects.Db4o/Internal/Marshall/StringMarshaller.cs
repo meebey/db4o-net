@@ -2,6 +2,7 @@
 
 using System;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal.Marshall

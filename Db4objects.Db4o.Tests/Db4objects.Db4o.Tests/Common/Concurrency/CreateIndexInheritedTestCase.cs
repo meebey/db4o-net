@@ -47,8 +47,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		protected override void Configure(IConfiguration config)
 		{
-			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Concurrency.CreateIndexInheritedTestCase)
-				).ObjectField("i_int").Indexed(true);
+			config.ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Concurrency.CreateIndexInheritedTestCase
+				)).ObjectField("i_int").Indexed(true);
 			config.ObjectClass(typeof(CreateIndexInheritedTestCase.CreateIndexFor)).ObjectField
 				("i_name").Indexed(true);
 		}

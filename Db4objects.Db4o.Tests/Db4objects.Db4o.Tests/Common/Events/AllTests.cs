@@ -15,9 +15,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(ActivationEventsTestCase), typeof(ClassRegistrationEventsTestCase)
-				, typeof(DeletionEventExceptionTestCase), typeof(DeletionEventsTestCase), typeof(EventArgsTransactionTestCase)
-				, typeof(InstantiationEventsTestCase) };
+			return new Type[] { typeof(ActivationEventsTestCase), typeof(ClassRegistrationEventsTestCase
+				), typeof(DeletionEventExceptionTestCase), typeof(DeletionEventsTestCase), typeof(
+				EventArgsTransactionTestCase), typeof(InstantiationEventsTestCase) };
 		}
 	}
 }

@@ -86,21 +86,21 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			IStoredClass parentStoredClass = itemClass.GetParentStoredClass();
 			Assert.AreEqual(Reflector().ForClass(typeof(StoredClassTestCase.ItemParent)).GetName
 				(), parentStoredClass.GetName());
-			Assert.AreEqual(parentStoredClass, Db().StoredClass(typeof(StoredClassTestCase.ItemParent)
-				));
+			Assert.AreEqual(parentStoredClass, Db().StoredClass(typeof(StoredClassTestCase.ItemParent
+				)));
 		}
 
 		public virtual void TestGetStoredFields()
 		{
-			AssertStoredField(typeof(StoredClassTestCase.Item), FIELD_NAME, ITEM_NAME, typeof(string)
-				, true, false);
-			AssertStoredField(typeof(StoredClassTestCase.ItemParent), "_array", null, typeof(string)
-				, false, true);
+			AssertStoredField(typeof(StoredClassTestCase.Item), FIELD_NAME, ITEM_NAME, typeof(
+				string), true, false);
+			AssertStoredField(typeof(StoredClassTestCase.ItemParent), "_array", null, typeof(
+				string), false, true);
 			IStoredClass itemStoredClass = ItemStoredClass();
 			IStoredField storedField = itemStoredClass.StoredField(FIELD_NAME, null);
 			IStoredField sameStoredField = itemStoredClass.GetStoredFields()[0];
-			IStoredField otherStoredField = StoredClass(typeof(StoredClassTestCase.ItemParent)
-				).GetStoredFields()[0];
+			IStoredField otherStoredField = StoredClass(typeof(StoredClassTestCase.ItemParent
+				)).GetStoredFields()[0];
 			Assert.EqualsAndHashcode(storedField, sameStoredField, otherStoredField);
 			Assert.IsNull(itemStoredClass.StoredField(string.Empty, null));
 		}

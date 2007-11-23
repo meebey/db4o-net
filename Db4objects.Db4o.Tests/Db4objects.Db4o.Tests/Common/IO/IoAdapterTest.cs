@@ -3,7 +3,7 @@
 using System;
 using System.IO;
 using Db4oUnit;
-using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.IO;
 
@@ -120,12 +120,12 @@ namespace Db4objects.Db4o.Tests.Common.IO
 
 		private void AssertReadOnly(IoAdapter adapter)
 		{
-			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_97(this, adapter));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_98(this, adapter));
 		}
 
-		private sealed class _ICodeBlock_97 : ICodeBlock
+		private sealed class _ICodeBlock_98 : ICodeBlock
 		{
-			public _ICodeBlock_97(IoAdapterTest _enclosing, IoAdapter adapter)
+			public _ICodeBlock_98(IoAdapterTest _enclosing, IoAdapter adapter)
 			{
 				this._enclosing = _enclosing;
 				this.adapter = adapter;

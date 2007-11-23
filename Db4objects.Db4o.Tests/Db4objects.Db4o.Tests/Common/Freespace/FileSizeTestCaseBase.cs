@@ -5,7 +5,7 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
-	public abstract class FileSizeTestCaseBase : AbstractDb4oTestCase
+	public abstract class FileSizeTestCaseBase : AbstractDb4oTestCase, IOptOutTA
 	{
 		protected virtual int DatabaseFileSize()
 		{

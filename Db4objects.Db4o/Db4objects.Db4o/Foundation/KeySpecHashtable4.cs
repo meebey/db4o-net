@@ -5,34 +5,37 @@ using Db4objects.Db4o.Foundation;
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class KeySpecHashtable4 : Hashtable4
+	public class KeySpecHashtable4
 	{
-		private KeySpecHashtable4() : base((IDeepClone)null)
+		private SynchronizedHashtable4 _delegate;
+
+		private KeySpecHashtable4(SynchronizedHashtable4 delegate_)
 		{
+			_delegate = delegate_;
 		}
 
-		public KeySpecHashtable4(int a_size) : base(a_size)
+		public KeySpecHashtable4(int size) : this(new SynchronizedHashtable4(size))
 		{
 		}
 
 		public virtual void Put(KeySpec spec, byte value)
 		{
-			base.Put(spec, value);
+			_delegate.Put(spec, value);
 		}
 
 		public virtual void Put(KeySpec spec, bool value)
 		{
-			base.Put(spec, value);
+			_delegate.Put(spec, value);
 		}
 
 		public virtual void Put(KeySpec spec, int value)
 		{
-			base.Put(spec, value);
+			_delegate.Put(spec, value);
 		}
 
 		public virtual void Put(KeySpec spec, object value)
 		{
-			base.Put(spec, value);
+			_delegate.Put(spec, value);
 		}
 
 		public virtual byte GetAsByte(KeySpec spec)
@@ -62,21 +65,25 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual object Get(KeySpec spec)
 		{
-			object value = base.Get(spec);
-			if (value == null)
+			lock (this)
 			{
-				value = spec.DefaultValue();
-				if (value != null)
+				object value = _delegate.Get(spec);
+				if (value == null)
 				{
-					base.Put(spec, value);
+					value = spec.DefaultValue();
+					if (value != null)
+					{
+						_delegate.Put(spec, value);
+					}
 				}
+				return value;
 			}
-			return value;
 		}
 
-		public override object DeepClone(object obj)
+		public virtual object DeepClone(object obj)
 		{
-			return DeepCloneInternal(new Db4objects.Db4o.Foundation.KeySpecHashtable4(), obj);
+			return new Db4objects.Db4o.Foundation.KeySpecHashtable4((SynchronizedHashtable4)_delegate
+				.DeepClone(obj));
 		}
 	}
 }

@@ -26,11 +26,6 @@ namespace Db4objects.Db4o
 
 		public MetaIndex i_uuidMetaIndex;
 
-		public override int ActivationDepth()
-		{
-			return int.MaxValue;
-		}
-
 		public virtual MetaIndex GetUUIDMetaIndex()
 		{
 			return i_uuidMetaIndex;

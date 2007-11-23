@@ -2,7 +2,7 @@
 
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Replication;
+using Db4objects.Db4o.Internal.Activation;
 
 namespace Db4objects.Db4o
 {
@@ -34,22 +34,12 @@ namespace Db4objects.Db4o
 			}
 			if (a_depth < 0)
 			{
-				Stream().ActivateDefaultDepth(i_trans, a_obj);
+				Stream().Activate(i_trans, a_obj);
 			}
 			else
 			{
-				Stream().Activate(i_trans, a_obj, a_depth);
+				Stream().Activate(i_trans, a_obj, new LegacyActivationDepth(a_depth));
 			}
-		}
-
-		public virtual int ActivationDepth()
-		{
-			return 1;
-		}
-
-		public virtual int AdjustReadDepth(int a_depth)
-		{
-			return a_depth;
 		}
 
 		public virtual bool CanBind()
@@ -74,8 +64,13 @@ namespace Db4objects.Db4o
 			}
 			if (ValidYapObject())
 			{
-				i_yapObject.Activate(i_trans, this, ActivationDepth(), false);
+				i_yapObject.Activate(i_trans, this, ActivationDepth(ActivationMode.ACTIVATE));
 			}
+		}
+
+		private LegacyActivationDepth ActivationDepth(ActivationMode mode)
+		{
+			return new LegacyActivationDepth(3, mode);
 		}
 
 		public virtual object CreateDefault(Transaction a_trans)
@@ -87,7 +82,7 @@ namespace Db4objects.Db4o
 		{
 			if (ValidYapObject())
 			{
-				i_yapObject.Deactivate(i_trans, ActivationDepth());
+				i_yapObject.Deactivate(i_trans, ActivationDepth(ActivationMode.DEACTIVATE));
 			}
 		}
 
@@ -135,47 +130,6 @@ namespace Db4objects.Db4o
 		}
 
 		public virtual void PreDeactivate()
-		{
-		}
-
-		[System.ObsoleteAttribute]
-		protected virtual object Replicate(Transaction fromTrans, Transaction toTrans)
-		{
-			ObjectContainerBase fromStream = fromTrans.Container();
-			ObjectContainerBase toStream = toTrans.Container();
-			MigrationConnection mgc = fromStream._handlers.MigrationConnection();
-			lock (fromStream.Lock())
-			{
-				int id = toStream.OldReplicationHandles(toTrans, this);
-				if (id == -1)
-				{
-					return this;
-				}
-				if (id > 0)
-				{
-					return toStream.GetByID(toTrans, id);
-				}
-				if (mgc != null)
-				{
-					object otherObj = mgc.IdentityFor(this);
-					if (otherObj != null)
-					{
-						return otherObj;
-					}
-				}
-				Db4objects.Db4o.P1Object replica = (Db4objects.Db4o.P1Object)CreateDefault(toTrans
-					);
-				if (mgc != null)
-				{
-					mgc.MapReference(replica, i_yapObject);
-					mgc.MapIdentity(this, replica);
-				}
-				replica.Store(0);
-				return replica;
-			}
-		}
-
-		public virtual void ReplicateFrom(object obj)
 		{
 		}
 
@@ -234,7 +188,7 @@ namespace Db4objects.Db4o
 
 		internal virtual void Update()
 		{
-			Update(ActivationDepth());
+			Update(2);
 		}
 
 		internal virtual void Update(int depth)
@@ -262,7 +216,7 @@ namespace Db4objects.Db4o
 
 		internal virtual void UpdateInternal()
 		{
-			UpdateInternal(ActivationDepth());
+			UpdateInternal(2);
 		}
 
 		internal virtual void UpdateInternal(int depth)

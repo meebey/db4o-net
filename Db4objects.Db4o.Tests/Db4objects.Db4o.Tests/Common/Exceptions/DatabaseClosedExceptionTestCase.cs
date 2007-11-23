@@ -3,7 +3,7 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
@@ -18,12 +18,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestRollback()
 		{
 			Db().Close();
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_17(this));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_18(this));
 		}
 
-		private sealed class _ICodeBlock_17 : ICodeBlock
+		private sealed class _ICodeBlock_18 : ICodeBlock
 		{
-			public _ICodeBlock_17(DatabaseClosedExceptionTestCase _enclosing)
+			public _ICodeBlock_18(DatabaseClosedExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -40,12 +40,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestCommit()
 		{
 			Db().Close();
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_26(this));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_27(this));
 		}
 
-		private sealed class _ICodeBlock_26 : ICodeBlock
+		private sealed class _ICodeBlock_27 : ICodeBlock
 		{
-			public _ICodeBlock_26(DatabaseClosedExceptionTestCase _enclosing)
+			public _ICodeBlock_27(DatabaseClosedExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -62,12 +62,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestSet()
 		{
 			Db().Close();
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_35(this));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_36(this));
 		}
 
-		private sealed class _ICodeBlock_35 : ICodeBlock
+		private sealed class _ICodeBlock_36 : ICodeBlock
 		{
-			public _ICodeBlock_35(DatabaseClosedExceptionTestCase _enclosing)
+			public _ICodeBlock_36(DatabaseClosedExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -84,12 +84,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestDelete()
 		{
 			Db().Close();
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_44(this));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_45(this));
 		}
 
-		private sealed class _ICodeBlock_44 : ICodeBlock
+		private sealed class _ICodeBlock_45 : ICodeBlock
 		{
-			public _ICodeBlock_44(DatabaseClosedExceptionTestCase _enclosing)
+			public _ICodeBlock_45(DatabaseClosedExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -106,12 +106,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestQueryClass()
 		{
 			Db().Close();
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_53(this));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_54(this));
 		}
 
-		private sealed class _ICodeBlock_53 : ICodeBlock
+		private sealed class _ICodeBlock_54 : ICodeBlock
 		{
-			public _ICodeBlock_53(DatabaseClosedExceptionTestCase _enclosing)
+			public _ICodeBlock_54(DatabaseClosedExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -128,12 +128,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestQuery()
 		{
 			Db().Close();
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_62(this));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_63(this));
 		}
 
-		private sealed class _ICodeBlock_62 : ICodeBlock
+		private sealed class _ICodeBlock_63 : ICodeBlock
 		{
-			public _ICodeBlock_62(DatabaseClosedExceptionTestCase _enclosing)
+			public _ICodeBlock_63(DatabaseClosedExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -150,12 +150,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestDeactivate()
 		{
 			Db().Close();
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_71(this));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_72(this));
 		}
 
-		private sealed class _ICodeBlock_71 : ICodeBlock
+		private sealed class _ICodeBlock_72 : ICodeBlock
 		{
-			public _ICodeBlock_71(DatabaseClosedExceptionTestCase _enclosing)
+			public _ICodeBlock_72(DatabaseClosedExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -172,12 +172,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestActivate()
 		{
 			Db().Close();
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_80(this));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_81(this));
 		}
 
-		private sealed class _ICodeBlock_80 : ICodeBlock
+		private sealed class _ICodeBlock_81 : ICodeBlock
 		{
-			public _ICodeBlock_80(DatabaseClosedExceptionTestCase _enclosing)
+			public _ICodeBlock_81(DatabaseClosedExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -194,12 +194,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestGet()
 		{
 			Db().Close();
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_89(this));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_90(this));
 		}
 
-		private sealed class _ICodeBlock_89 : ICodeBlock
+		private sealed class _ICodeBlock_90 : ICodeBlock
 		{
-			public _ICodeBlock_89(DatabaseClosedExceptionTestCase _enclosing)
+			public _ICodeBlock_90(DatabaseClosedExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

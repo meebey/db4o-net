@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Sharpen.Lang;
@@ -35,15 +36,23 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void PollReferenceQueue()
 		{
-			if (_weak)
+			if (!_weak)
 			{
-				Platform4.PollReferenceQueue(_stream, _queue);
+				return;
 			}
+			Platform4.PollReferenceQueue(_stream, _queue);
 		}
 
 		public virtual void Run()
 		{
-			PollReferenceQueue();
+			try
+			{
+				PollReferenceQueue();
+			}
+			catch (Exception e)
+			{
+				Sharpen.Runtime.PrintStackTrace(e);
+			}
 		}
 
 		internal virtual void StartTimer()

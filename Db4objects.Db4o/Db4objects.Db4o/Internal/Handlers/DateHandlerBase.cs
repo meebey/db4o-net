@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public static string Now()
 		{
-			return Platform4.Format(new DateTime(), true);
+			return Platform4.Format(Platform4.Now(), true);
 		}
 
 		internal override long Val(object obj)

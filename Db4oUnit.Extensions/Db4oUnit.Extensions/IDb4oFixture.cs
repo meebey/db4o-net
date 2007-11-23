@@ -13,13 +13,13 @@ namespace Db4oUnit.Extensions
 		string GetLabel();
 
 		/// <exception cref="Exception"></exception>
-		void Open();
+		void Open(Type testCaseClass);
 
 		/// <exception cref="Exception"></exception>
 		void Close();
 
 		/// <exception cref="Exception"></exception>
-		void Reopen();
+		void Reopen(Type testCaseClass);
 
 		void Clean();
 
@@ -35,5 +35,7 @@ namespace Db4oUnit.Extensions
 		void Defragment();
 
 		void ConfigureAtRuntime(IRuntimeConfigureAction action);
+
+		void FixtureConfiguration(IFixtureConfiguration configuration);
 	}
 }

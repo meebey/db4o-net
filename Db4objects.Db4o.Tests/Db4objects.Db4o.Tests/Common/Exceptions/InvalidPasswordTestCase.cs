@@ -3,12 +3,14 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class InvalidPasswordTestCase : Db4oClientServerTestCase
+	public class InvalidPasswordTestCase : Db4oClientServerTestCase, IOptOutAllButNetworkingCS
 	{
 		public static void Main(string[] args)
 		{
@@ -18,12 +20,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestInvalidPassword()
 		{
 			int port = ClientServerFixture().ServerPort();
-			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_17(this, port));
+			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_21(this, port));
 		}
 
-		private sealed class _ICodeBlock_17 : ICodeBlock
+		private sealed class _ICodeBlock_21 : ICodeBlock
 		{
-			public _ICodeBlock_17(InvalidPasswordTestCase _enclosing, int port)
+			public _ICodeBlock_21(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;
@@ -43,12 +45,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestEmptyUserPassword()
 		{
 			int port = ClientServerFixture().ServerPort();
-			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_27(this, port));
+			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_31(this, port));
 		}
 
-		private sealed class _ICodeBlock_27 : ICodeBlock
+		private sealed class _ICodeBlock_31 : ICodeBlock
 		{
-			public _ICodeBlock_27(InvalidPasswordTestCase _enclosing, int port)
+			public _ICodeBlock_31(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;
@@ -68,12 +70,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestEmptyUserNullPassword()
 		{
 			int port = ClientServerFixture().ServerPort();
-			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_36(this, port));
+			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_40(this, port));
 		}
 
-		private sealed class _ICodeBlock_36 : ICodeBlock
+		private sealed class _ICodeBlock_40 : ICodeBlock
 		{
-			public _ICodeBlock_36(InvalidPasswordTestCase _enclosing, int port)
+			public _ICodeBlock_40(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;
@@ -93,12 +95,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestNullPassword()
 		{
 			int port = ClientServerFixture().ServerPort();
-			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_45(this, port));
+			Assert.Expect(typeof(InvalidPasswordException), new _ICodeBlock_49(this, port));
 		}
 
-		private sealed class _ICodeBlock_45 : ICodeBlock
+		private sealed class _ICodeBlock_49 : ICodeBlock
 		{
-			public _ICodeBlock_45(InvalidPasswordTestCase _enclosing, int port)
+			public _ICodeBlock_49(InvalidPasswordTestCase _enclosing, int port)
 			{
 				this._enclosing = _enclosing;
 				this.port = port;

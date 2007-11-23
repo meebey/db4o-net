@@ -86,8 +86,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped
 		public virtual void TestDefaultContainsTwo()
 		{
 			IQuery q = NewQuery();
-			object[][][] content = new object[][][] { new object[][] { new object[1] }, new object[]
-				[] { new object[1] } };
+			object[][][] content = new object[][][] { new object[][] { new object[1] }, new object
+				[][] { new object[1] } };
 			content[0][0][0] = "bar";
 			content[1][0][0] = 12;
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedNTestCase
@@ -98,8 +98,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped
 		public virtual void TestDescendOne()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedNTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedNTestCase
+				));
 			q.Descend("arr").Constrain("bar");
 			Expect(q, new int[] { 3, 4 });
 		}
@@ -107,8 +107,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped
 		public virtual void TestDescendTwo()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedNTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedNTestCase
+				));
 			IQuery qElements = q.Descend("arr");
 			qElements.Constrain("foo");
 			qElements.Constrain("bar");
@@ -118,8 +118,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped
 		public virtual void TestDescendOneNot()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedNTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedNTestCase
+				));
 			q.Descend("arr").Constrain("bar").Not();
 			Expect(q, new int[] { 0, 1, 2 });
 		}
@@ -127,8 +127,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped
 		public virtual void TestDescendTwoNot()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedNTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedNTestCase
+				));
 			IQuery qElements = q.Descend("arr");
 			qElements.Constrain("foo").Not();
 			qElements.Constrain("bar").Not();

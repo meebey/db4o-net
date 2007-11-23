@@ -33,8 +33,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		{
 			oc.Get((new Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase(true
 				)));
-			AssertOccurrences(oc, typeof(Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase)
-				, 0);
+			AssertOccurrences(oc, typeof(Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase
+				), 0);
 			IQuery q = oc.Query();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase
 				(true));

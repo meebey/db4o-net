@@ -15,9 +15,9 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(ArrayNOrderTestCase), typeof(ByteArrayTestCase), typeof(NestedArraysTestCase)
-				, typeof(SimpleStringArrayTestCase), typeof(SimpleTypeArrayInUntypedVariableTestCase)
-				, typeof(TypedArrayInObjectTestCase), typeof(TypedDerivedArrayTestCase) };
+			return new Type[] { typeof(ArrayNOrderTestCase), typeof(ByteArrayTestCase), typeof(
+				NestedArraysTestCase), typeof(SimpleStringArrayTestCase), typeof(SimpleTypeArrayInUntypedVariableTestCase
+				), typeof(TypedArrayInObjectTestCase), typeof(TypedDerivedArrayTestCase) };
 		}
 	}
 }

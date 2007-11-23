@@ -10,8 +10,8 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 	{
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(Case1207TestCase), typeof(COR57TestCase), typeof(COR234TestCase)
-				, typeof(SetRollbackTestCase) };
+			return new Type[] { typeof(Case1207TestCase), typeof(COR57TestCase), typeof(COR234TestCase
+				), typeof(SetRollbackTestCase) };
 		}
 
 		public static void Main(string[] args)

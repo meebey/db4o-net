@@ -20,7 +20,6 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		protected override void Configure(IConfiguration config)
 		{
-			config.ClientServer().PingInterval(1);
 			config.ClientServer().TimeoutClientSocket(1);
 			config.ClientServer().TimeoutServerSocket(1);
 		}

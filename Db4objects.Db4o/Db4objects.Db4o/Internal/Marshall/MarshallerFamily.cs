@@ -6,6 +6,17 @@ using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
+	/// <summary>
+	/// Represents a db4o file format version, assembles all the marshallers
+	/// needed to read/write this specific version.
+	/// </summary>
+	/// <remarks>
+	/// Represents a db4o file format version, assembles all the marshallers
+	/// needed to read/write this specific version.
+	/// A marshaller knows how to read/write certain types of values from/to its
+	/// representation on disk for a given db4o file format version.
+	/// Responsibilities are somewhat overlapping with TypeHandler's.
+	/// </remarks>
 	/// <exclude></exclude>
 	public class MarshallerFamily
 	{

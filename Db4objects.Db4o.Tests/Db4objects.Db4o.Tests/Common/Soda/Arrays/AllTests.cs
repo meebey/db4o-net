@@ -12,12 +12,12 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays
 	{
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(STArrMixedTestCase), typeof(STArrStringOTestCase), typeof(STArrStringONTestCase)
-				, typeof(STArrStringTTestCase), typeof(STArrStringTNTestCase), typeof(STArrStringUTestCase)
-				, typeof(STArrStringUNTestCase), typeof(STArrIntegerOTestCase), typeof(STArrIntegerONTestCase)
-				, typeof(STArrIntegerTTestCase), typeof(STArrIntegerTNTestCase), typeof(STArrIntegerUTestCase)
-				, typeof(STArrIntegerUNTestCase), typeof(STArrIntegerWTTestCase), typeof(STArrIntegerWTONTestCase)
-				, typeof(STArrIntegerWUONTestCase) };
+			return new Type[] { typeof(STArrMixedTestCase), typeof(STArrStringOTestCase), typeof(
+				STArrStringONTestCase), typeof(STArrStringTTestCase), typeof(STArrStringTNTestCase
+				), typeof(STArrStringUTestCase), typeof(STArrStringUNTestCase), typeof(STArrIntegerOTestCase
+				), typeof(STArrIntegerONTestCase), typeof(STArrIntegerTTestCase), typeof(STArrIntegerTNTestCase
+				), typeof(STArrIntegerUTestCase), typeof(STArrIntegerUNTestCase), typeof(STArrIntegerWTTestCase
+				), typeof(STArrIntegerWTONTestCase), typeof(STArrIntegerWUONTestCase) };
 		}
 	}
 }

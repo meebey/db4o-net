@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -246,6 +247,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual void DoNotInclude(QCandidate a_root)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.DONOTINCLUDE.Log(i_id);
+			}
 			if (i_parent != null)
 			{
 				i_parent.Visit1(a_root, this, false);
@@ -278,6 +283,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual void EvaluateCollectChildren()
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.COLLECT_CHILDREN.Log(i_id);
+			}
 			IEnumerator i = i_childrenCandidates.GetEnumerator();
 			while (i.MoveNext())
 			{

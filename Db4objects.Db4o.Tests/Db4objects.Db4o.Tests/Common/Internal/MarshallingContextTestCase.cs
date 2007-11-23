@@ -3,6 +3,7 @@
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Tests.Common.Internal;
@@ -102,7 +103,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			UnmarshallingContext unmarshallingContext = new UnmarshallingContext(Trans(), @ref
 				, Const4.ADD_TO_ID_TREE, false);
 			unmarshallingContext.Buffer(buffer);
-			unmarshallingContext.ActivationDepth(5);
+			unmarshallingContext.ActivationDepth(new LegacyActivationDepth(5));
 			return unmarshallingContext.Read();
 		}
 

@@ -54,8 +54,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void Conc(IExtObjectContainer oc)
 		{
 			Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase nr = (Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase
-				)RetrieveOnlyInstance(oc, typeof(Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase)
-				);
+				)RetrieveOnlyInstance(oc, typeof(Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase
+				));
 			Check((object[])nr._object, DEPTH);
 			Check((object[])nr._objectArray, DEPTH);
 		}

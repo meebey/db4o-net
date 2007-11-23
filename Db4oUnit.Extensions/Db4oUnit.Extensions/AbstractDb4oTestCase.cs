@@ -55,7 +55,7 @@ namespace Db4oUnit.Extensions
 		/// <exception cref="Exception"></exception>
 		protected virtual void Reopen()
 		{
-			_fixture.Reopen();
+			_fixture.Reopen(GetType());
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -63,12 +63,12 @@ namespace Db4oUnit.Extensions
 		{
 			_fixture.Clean();
 			Configure(_fixture.Config());
-			_fixture.Open();
+			_fixture.Open(GetType());
 			Db4oSetupBeforeStore();
 			Store();
 			_fixture.Db().Commit();
 			_fixture.Close();
-			_fixture.Open();
+			_fixture.Open(GetType());
 			Db4oSetupAfterStore();
 		}
 
@@ -255,7 +255,7 @@ namespace Db4oUnit.Extensions
 			return Fixture().FileSession();
 		}
 
-		protected virtual Transaction Trans()
+		public virtual Transaction Trans()
 		{
 			return ((IInternalObjectContainer)Db()).Transaction();
 		}
@@ -282,7 +282,7 @@ namespace Db4oUnit.Extensions
 			return NewQuery(Db());
 		}
 
-		protected virtual IQuery NewQuery(IExtObjectContainer oc)
+		protected static IQuery NewQuery(IExtObjectContainer oc)
 		{
 			return oc.Query();
 		}
@@ -292,7 +292,7 @@ namespace Db4oUnit.Extensions
 			return NewQuery(Db(), clazz);
 		}
 
-		protected virtual IQuery NewQuery(IExtObjectContainer oc, Type clazz)
+		protected static IQuery NewQuery(IExtObjectContainer oc, Type clazz)
 		{
 			IQuery query = NewQuery(oc);
 			query.Constrain(clazz);
@@ -315,12 +315,12 @@ namespace Db4oUnit.Extensions
 			return Stream().NewUserTransaction();
 		}
 
-		protected virtual object RetrieveOnlyInstance(Type clazz)
+		public virtual object RetrieveOnlyInstance(Type clazz)
 		{
 			return RetrieveOnlyInstance(Db(), clazz);
 		}
 
-		protected virtual object RetrieveOnlyInstance(IExtObjectContainer oc, Type clazz)
+		public static object RetrieveOnlyInstance(IExtObjectContainer oc, Type clazz)
 		{
 			IObjectSet result = NewQuery(oc, clazz).Execute();
 			Assert.AreEqual(1, result.Size());
@@ -397,9 +397,14 @@ namespace Db4oUnit.Extensions
 			}
 		}
 
-		protected void Store(object obj)
+		public void Store(object obj)
 		{
 			Db().Set(obj);
+		}
+
+		protected virtual ClassMetadata ClassMetadataFor(Type clazz)
+		{
+			return Stream().ClassMetadataForReflectClass(ReflectClass(clazz));
 		}
 
 		protected virtual IReflectClass ReflectClass(Type clazz)
@@ -412,7 +417,7 @@ namespace Db4oUnit.Extensions
 		{
 			Fixture().Close();
 			Fixture().Defragment();
-			Fixture().Open();
+			Fixture().Open(GetType());
 		}
 
 		public int ThreadCount()

@@ -37,8 +37,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void ConcQueryCaseInsenstive(IExtObjectContainer oc)
 		{
 			IQuery q = oc.Query();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.CaseInsensitiveTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.CaseInsensitiveTestCase
+				));
 			q.Constrain(new CaseInsensitiveTestCase.CaseInsensitiveEvaluation("helloworld"));
 			Assert.AreEqual(1, q.Execute().Size());
 		}

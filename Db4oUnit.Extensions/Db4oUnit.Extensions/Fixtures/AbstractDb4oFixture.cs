@@ -16,16 +16,23 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private IConfiguration _config;
 
+		private IFixtureConfiguration _fixtureConfiguration;
+
 		protected AbstractDb4oFixture(IConfigurationSource configSource)
 		{
 			_configSource = configSource;
 		}
 
+		public virtual void FixtureConfiguration(IFixtureConfiguration fc)
+		{
+			_fixtureConfiguration = fc;
+		}
+
 		/// <exception cref="Exception"></exception>
-		public virtual void Reopen()
+		public virtual void Reopen(Type testCaseClass)
 		{
 			Close();
-			Open();
+			Open(testCaseClass);
 		}
 
 		public virtual IConfiguration Config()
@@ -62,6 +69,25 @@ namespace Db4oUnit.Extensions.Fixtures
 			Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig);
 		}
 
+		protected virtual string BuildLabel(string label)
+		{
+			if (null == _fixtureConfiguration)
+			{
+				return label;
+			}
+			return label + " - " + _fixtureConfiguration.GetLabel();
+		}
+
+		protected virtual void ApplyFixtureConfiguration(Type testCaseClass, IConfiguration
+			 config)
+		{
+			if (null == _fixtureConfiguration)
+			{
+				return;
+			}
+			_fixtureConfiguration.Configure(testCaseClass, config);
+		}
+
 		public abstract void Close();
 
 		public abstract void ConfigureAtRuntime(IRuntimeConfigureAction arg1);
@@ -74,6 +100,6 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public abstract string GetLabel();
 
-		public abstract void Open();
+		public abstract void Open(Type arg1);
 	}
 }

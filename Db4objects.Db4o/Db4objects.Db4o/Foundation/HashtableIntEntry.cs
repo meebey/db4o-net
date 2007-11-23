@@ -62,5 +62,10 @@ namespace Db4objects.Db4o.Foundation
 			}
 			return entry;
 		}
+
+		public override string ToString()
+		{
+			return string.Empty + _key + ": " + _object;
+		}
 	}
 }

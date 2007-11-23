@@ -63,8 +63,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped
 		public virtual void TestDescendOne()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedTestCase
+				));
 			q.Descend("arr").Constrain(17);
 			Expect(q, new int[] { 3, 4 });
 		}
@@ -72,8 +72,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped
 		public virtual void TestDescendTwo()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedTestCase
+				));
 			IQuery qElements = q.Descend("arr");
 			qElements.Constrain(17);
 			qElements.Constrain("bar");
@@ -83,8 +83,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped
 		public virtual void TestDescendSmaller()
 		{
 			IQuery q = NewQuery();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped.STArrMixedTestCase
+				));
 			IQuery qElements = q.Descend("arr");
 			qElements.Constrain(3).Smaller();
 			Expect(q, new int[] { 2, 3 });

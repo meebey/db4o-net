@@ -9,7 +9,7 @@ using Db4objects.Db4o.Tests.Common.Querying;
 
 namespace Db4objects.Db4o.Tests.Common.Querying
 {
-	public class CascadeOnActivate : AbstractDb4oTestCase
+	public class CascadeOnActivate : AbstractDb4oTestCase, IOptOutTA
 	{
 		public string name;
 

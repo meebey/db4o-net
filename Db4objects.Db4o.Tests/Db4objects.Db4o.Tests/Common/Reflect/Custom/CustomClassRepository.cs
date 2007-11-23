@@ -25,8 +25,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			return (CustomClass)_classes.Get(className);
 		}
 
-		public virtual CustomClass DefineClass(string className, string[] fieldNames, string[]
-			 fieldTypes)
+		public virtual CustomClass DefineClass(string className, string[] fieldNames, string
+			[] fieldTypes)
 		{
 			AssertNotDefined(className);
 			CustomClass klass = CreateClass(className, fieldNames, fieldTypes);

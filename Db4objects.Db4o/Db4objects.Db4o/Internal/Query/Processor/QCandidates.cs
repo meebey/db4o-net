@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Text;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Classindex;
@@ -277,6 +278,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal void Execute()
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.QUERY_PROCESS.Log();
+			}
 			FieldIndexProcessorResult result = ProcessFieldIndexes();
 			if (result.FoundIndex())
 			{

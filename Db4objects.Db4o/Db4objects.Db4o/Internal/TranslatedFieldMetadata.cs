@@ -3,6 +3,7 @@
 using System;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal
@@ -24,11 +25,12 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		internal override void Deactivate(Transaction trans, object onObject, int depth)
+		internal override void Deactivate(Transaction trans, object onObject, IActivationDepth
+			 depth)
 		{
-			if (depth > 0)
+			if (depth.RequiresActivation())
 			{
-				CascadeActivation(trans, onObject, depth, false);
+				CascadeActivation(trans, onObject, depth);
 			}
 			SetOn(trans, onObject, null);
 		}

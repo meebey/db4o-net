@@ -34,9 +34,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			Collection4 expectedNames = new Collection4(new ArrayIterator4(new string[] { "_id"
 				, "_name", "_age" }));
-			ClassMetadata clazz = Stream().ClassMetadataForReflectClass(Reflector().ForClass(
-				typeof(ClassMetadataTestCase.SubClazz)));
-			IEnumerator fieldIter = clazz.Fields();
+			IEnumerator fieldIter = ClassMetadataFor(typeof(ClassMetadataTestCase.SubClazz)).
+				Fields();
 			while (fieldIter.MoveNext())
 			{
 				FieldMetadata curField = (FieldMetadata)fieldIter.Current;

@@ -4,12 +4,13 @@ using System;
 using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Tests.Common.CS;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
-	public class ServerRevokeAccessTestCase : Db4oClientServerTestCase
+	public class ServerRevokeAccessTestCase : Db4oClientServerTestCase, IOptOutAllButNetworkingCS
 	{
 		private static readonly string SERVER_HOSTNAME = "127.0.0.1";
 
@@ -18,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			new ServerRevokeAccessTestCase().RunAll();
 		}
 
-		#if !CF_1_0 && !CF_2_0
+		#if !CF_2_0
 		/// <exception cref="IOException"></exception>
 		public virtual void Test()
 		{
@@ -31,13 +32,13 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			Assert.IsNotNull(con);
 			con.Close();
 			server.Ext().RevokeAccess(user);
-			Assert.Expect(typeof(Exception), new _ICodeBlock_36(this, user, password));
+			Assert.Expect(typeof(Exception), new _ICodeBlock_39(this, user, password));
 		}
-		#endif // !CF_1_0 && !CF_2_0
+		#endif // !CF_2_0
 
-		private sealed class _ICodeBlock_36 : ICodeBlock
+		private sealed class _ICodeBlock_39 : ICodeBlock
 		{
-			public _ICodeBlock_36(ServerRevokeAccessTestCase _enclosing, string user, string 
+			public _ICodeBlock_39(ServerRevokeAccessTestCase _enclosing, string user, string 
 				password)
 			{
 				this._enclosing = _enclosing;

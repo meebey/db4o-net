@@ -6,6 +6,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -76,6 +77,10 @@ namespace Db4objects.Db4o.Internal
 			(ObjectContainerBase stream, ClassMetadata classMetadata, Slot oldSlot, bool checkClass
 			)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.REREAD_OLD_UUID.LogLength(oldSlot.Address(), oldSlot.Length());
+			}
 			Db4objects.Db4o.Internal.Buffer reader = stream.BufferByAddress(oldSlot.Address()
 				, oldSlot.Length());
 			if (checkClass)
@@ -174,7 +179,7 @@ namespace Db4objects.Db4o.Internal
 				Db4oDatabase db = (Db4oDatabase)stream.GetByID2(a_trans, dbID);
 				if (db != null && db.i_signature == null)
 				{
-					stream.Activate(a_trans, db, 2);
+					stream.Activate(a_trans, db, new FixedActivationDepth(2));
 				}
 				VirtualAttributes va = a_yapObject.VirtualAttributes();
 				va.i_database = db;

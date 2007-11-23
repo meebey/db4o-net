@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
@@ -13,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		protected Db4objects.Db4o.Internal.Buffer _buffer;
 
-		protected int _activationDepth;
+		protected IActivationDepth _activationDepth = UnknownActivationDepth.INSTANCE;
 
 		protected AbstractReadContext(Db4objects.Db4o.Internal.Transaction transaction)
 		{
@@ -94,21 +95,41 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual object ReadObject()
 		{
 			int id = ReadInt();
-			int depth = ActivationDepth() - 1;
+			if (id == 0)
+			{
+				return null;
+			}
+			ClassMetadata classMetadata = ClassMetadataForId(id);
+			if (null == classMetadata)
+			{
+				return null;
+			}
+			IActivationDepth depth = ActivationDepth().Descend(classMetadata);
 			if (PeekPersisted())
 			{
 				return Container().PeekPersisted(Transaction(), id, depth, false);
 			}
 			object obj = Container().GetByID2(Transaction(), id);
-			if (obj is IDb4oTypeImpl)
+			if (null == obj)
 			{
-				depth = ((IDb4oTypeImpl)obj).AdjustReadDepth(depth);
+				return null;
 			}
 			Container().StillToActivate(Transaction(), obj, depth);
 			return obj;
 		}
 
-		private bool PeekPersisted()
+		private ClassMetadata ClassMetadataForId(int id)
+		{
+			HardObjectReference hardRef = Container().GetHardObjectReferenceById(Transaction(
+				), id);
+			if (null == hardRef || hardRef._reference == null)
+			{
+				return null;
+			}
+			return hardRef._reference.ClassMetadata();
+		}
+
+		protected virtual bool PeekPersisted()
 		{
 			return false;
 		}
@@ -133,12 +154,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return obj;
 		}
 
-		public virtual int ActivationDepth()
+		public virtual IActivationDepth ActivationDepth()
 		{
 			return _activationDepth;
 		}
 
-		public virtual void ActivationDepth(int depth)
+		public virtual void ActivationDepth(IActivationDepth depth)
 		{
 			_activationDepth = depth;
 		}

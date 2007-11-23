@@ -35,13 +35,13 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void Conc(IExtObjectContainer oc)
 		{
 			IQuery q = oc.Query();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.QueryForUnknownFieldTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.QueryForUnknownFieldTestCase
+				));
 			q.Descend("_name").Constrain("name");
 			Assert.AreEqual(1, q.Execute().Size());
 			q = oc.Query();
-			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.QueryForUnknownFieldTestCase)
-				);
+			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.QueryForUnknownFieldTestCase
+				));
 			q.Descend("name").Constrain("name");
 			Assert.AreEqual(0, q.Execute().Size());
 		}

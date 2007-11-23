@@ -131,13 +131,9 @@ namespace Db4objects.Db4o.Internal
 
 		public const int LOCK_TIME_INTERVAL = 1000;
 
-		public const int SERVER_SOCKET_TIMEOUT = Debug.longTimeOuts ? 1000000 : 5000;
+		public const int SERVER_SOCKET_TIMEOUT = Debug.longTimeOuts ? 1000000 : 600000;
 
-		public const int CLIENT_SOCKET_TIMEOUT = 300000;
-
-		public const int CLIENT_EMBEDDED_TIMEOUT = 300000;
-
-		public const int PING_INTERVAL = Debug.longTimeOuts ? 1000000 : 180000;
+		public const int CLIENT_SOCKET_TIMEOUT = SERVER_SOCKET_TIMEOUT;
 
 		public const int MAXIMUM_BLOCK_SIZE = 70000000;
 

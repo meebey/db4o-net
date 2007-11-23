@@ -6,9 +6,11 @@ using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Diagnostic;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Messaging;
@@ -25,6 +27,9 @@ namespace Db4objects.Db4o.Internal
 		private KeySpecHashtable4 _config = new KeySpecHashtable4(50);
 
 		private static readonly KeySpec ACTIVATION_DEPTH = new KeySpec(5);
+
+		private static readonly KeySpec ACTIVATION_DEPTH_PROVIDER = new KeySpec(LegacyActivationDepthProvider
+			.INSTANCE);
 
 		private static readonly KeySpec ALLOW_VERSION_UPDATES = new KeySpec(false);
 
@@ -118,8 +123,6 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec TIMEOUT_CLIENT_SOCKET = new KeySpec(Const4.CLIENT_SOCKET_TIMEOUT
 			);
-
-		private static readonly KeySpec PING_INTERVAL = new KeySpec(Const4.PING_INTERVAL);
 
 		private static readonly KeySpec TIMEOUT_SERVER_SOCKET = new KeySpec(Const4.SERVER_SOCKET_TIMEOUT
 			);
@@ -245,6 +248,21 @@ namespace Db4objects.Db4o.Internal
 		{
 			Config4Class config = (Config4Class)ExceptionalClasses().Get(className);
 			return config;
+		}
+
+		[System.ObsoleteAttribute(@"using deprecated api")]
+		private bool IsIgnoredClass(string className)
+		{
+			Type[] ignore = new Type[] { typeof(P1HashElement), typeof(P1ListElement), typeof(
+				P1Object), typeof(P1Collection), typeof(StaticClass), typeof(StaticField) };
+			for (int i = 0; i < ignore.Length; i++)
+			{
+				if (ignore[i].FullName.Equals(className))
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		public object DeepClone(object param)
@@ -593,11 +611,6 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(TIMEOUT_CLIENT_SOCKET, milliseconds);
 		}
 
-		public void PingInterval(int milliseconds)
-		{
-			_config.Put(PING_INTERVAL, milliseconds);
-		}
-
 		public void TimeoutServerSocket(int milliseconds)
 		{
 			_config.Put(TIMEOUT_SERVER_SOCKET, milliseconds);
@@ -934,11 +947,6 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsInt(TIMEOUT_CLIENT_SOCKET);
 		}
 
-		public int PingInterval()
-		{
-			return _config.GetAsInt(PING_INTERVAL);
-		}
-
 		public int TimeoutServerSocket()
 		{
 			return _config.GetAsInt(TIMEOUT_SERVER_SOCKET);
@@ -1014,6 +1022,16 @@ namespace Db4objects.Db4o.Internal
 		public int MaxBatchQueueSize()
 		{
 			return _config.GetAsInt(MAX_BATCH_QUEUE_SIZE);
+		}
+
+		public void ActivationDepthProvider(IActivationDepthProvider provider)
+		{
+			_config.Put(ACTIVATION_DEPTH_PROVIDER, provider);
+		}
+
+		public IActivationDepthProvider ActivationDepthProvider()
+		{
+			return (IActivationDepthProvider)_config.Get(ACTIVATION_DEPTH_PROVIDER);
 		}
 	}
 }

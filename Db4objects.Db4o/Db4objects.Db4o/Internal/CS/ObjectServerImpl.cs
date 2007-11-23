@@ -15,7 +15,7 @@ using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.CS
 {
-	public class ObjectServerImpl : IObjectServer, IExtObjectServer, IRunnable, ILoopbackSocketServer
+	public class ObjectServerImpl : IObjectServer, IExtObjectServer, IRunnable
 	{
 		private const int START_THREAD_WAIT_TIMEOUT = 5000;
 
@@ -42,8 +42,6 @@ namespace Db4objects.Db4o.Internal.CS
 		private CommittedCallbacksDispatcher _committedCallbacksDispatcher;
 
 		private bool _caresAboutCommitted;
-
-		private SimpleTimer _houseKeepingTimer;
 
 		private readonly INativeSocketFactory _socketFactory;
 
@@ -72,7 +70,6 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				EnsureLoadStaticClass();
 				StartCommittedCallbackThread(_committedInfosQueue);
-				StartHouseKeepingTimer();
 				StartServer();
 				ok = true;
 			}
@@ -83,13 +80,6 @@ namespace Db4objects.Db4o.Internal.CS
 					Close();
 				}
 			}
-		}
-
-		private void StartHouseKeepingTimer()
-		{
-			_houseKeepingTimer = new SimpleTimer(new HouseKeepingTask(this), 1, "HouseKeeping"
-				);
-			_houseKeepingTimer.Start();
 		}
 
 		private void StartServer()
@@ -180,7 +170,6 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				CloseServerSocket();
 				StopCommittedCallbacksDispatcher();
-				StopHouseKeepingTimer();
 				CloseMessageDispatchers();
 				return CloseFile();
 			}
@@ -191,14 +180,6 @@ namespace Db4objects.Db4o.Internal.CS
 			if (_committedCallbacksDispatcher != null)
 			{
 				_committedCallbacksDispatcher.Stop();
-			}
-		}
-
-		private void StopHouseKeepingTimer()
-		{
-			if (_houseKeepingTimer != null)
-			{
-				_houseKeepingTimer.Stop();
 			}
 		}
 
@@ -281,7 +262,7 @@ namespace Db4objects.Db4o.Internal.CS
 				while (i.MoveNext())
 				{
 					ServerMessageDispatcherImpl serverThread = (ServerMessageDispatcherImpl)i.Current;
-					if (serverThread.i_threadID == a_threadID)
+					if (serverThread._threadID == a_threadID)
 					{
 						return serverThread;
 					}
@@ -371,27 +352,6 @@ namespace Db4objects.Db4o.Internal.CS
 					return new EmbeddedClientObjectContainer(_container);
 				}
 			}
-		}
-
-		public virtual LoopbackSocket OpenClientSocket()
-		{
-			int timeout = _config.TimeoutClientSocket();
-			LoopbackSocket clientFake = new LoopbackSocket(this, timeout);
-			LoopbackSocket serverFake = new LoopbackSocket(this, timeout, clientFake);
-			try
-			{
-				IServerMessageDispatcher messageDispatcher = new ServerMessageDispatcherImpl(this
-					, new ClientTransactionHandle(_transactionPool), serverFake, NewThreadId(), true
-					, _container.Lock());
-				AddServerMessageDispatcher(messageDispatcher);
-				messageDispatcher.StartDispatcher();
-				return clientFake;
-			}
-			catch (Exception e)
-			{
-				Sharpen.Runtime.PrintStackTrace(e);
-			}
-			return null;
 		}
 
 		internal virtual void RemoveThread(ServerMessageDispatcherImpl dispatcher)
@@ -507,7 +467,7 @@ namespace Db4objects.Db4o.Internal.CS
 				IServerMessageDispatcher dispatcher = (IServerMessageDispatcher)i.Current;
 				if (filter.Accept(dispatcher))
 				{
-					dispatcher.WriteIfAlive(message);
+					dispatcher.Write(message);
 				}
 			}
 		}
@@ -539,6 +499,14 @@ namespace Db4objects.Db4o.Internal.CS
 		public virtual int Port()
 		{
 			return _port;
+		}
+
+		public virtual int ClientCount()
+		{
+			lock (_dispatchers)
+			{
+				return _dispatchers.Size();
+			}
 		}
 	}
 }

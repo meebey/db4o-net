@@ -23,13 +23,13 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		public virtual void TestClassMetadataForName()
 		{
-			string className = CrossPlatformServices.FullyQualifiedName(typeof(InternalObjectContainerAPITestCase.Item)
-				);
+			string className = CrossPlatformServices.FullyQualifiedName(typeof(InternalObjectContainerAPITestCase.Item
+				));
 			ClassMetadata clazz = ((IInternalObjectContainer)Db()).ClassMetadataForName(className
 				);
 			Assert.AreEqual(className, clazz.GetName());
-			Assert.AreEqual(Reflector().ForClass(typeof(InternalObjectContainerAPITestCase.Item)
-				), clazz.ClassReflector());
+			Assert.AreEqual(Reflector().ForClass(typeof(InternalObjectContainerAPITestCase.Item
+				)), clazz.ClassReflector());
 		}
 
 		public static void Main(string[] args)

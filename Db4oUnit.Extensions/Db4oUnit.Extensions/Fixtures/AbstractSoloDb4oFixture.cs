@@ -20,10 +20,12 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 		}
 
-		public sealed override void Open()
+		public sealed override void Open(Type testCaseClass)
 		{
 			Assert.IsNull(_db);
-			_db = CreateDatabase(Config()).Ext();
+			IConfiguration config = Config();
+			ApplyFixtureConfiguration(testCaseClass, config);
+			_db = CreateDatabase(config).Ext();
 		}
 
 		/// <exception cref="Exception"></exception>
