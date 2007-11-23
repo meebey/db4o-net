@@ -3,12 +3,12 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
 
-[assembly: AssemblyTitle("Db4oAdmin")]
+[assembly: AssemblyTitle("Db4oTool")]
 [assembly: AssemblyDescription("Db4o command line utility.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
-[assembly: AssemblyCopyright("db4o 2005")]
+[assembly: AssemblyCopyright("db4o 2005 - 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

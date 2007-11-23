@@ -1,7 +1,7 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Diagnostics;
-using Db4oAdmin.Core;
+using Db4oTool.Core;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.NativeQueries.Expr;
 using Db4objects.Db4o.Query;
@@ -10,7 +10,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MethodAttributes=Mono.Cecil.MethodAttributes;
 
-namespace Db4oAdmin.NQ
+namespace Db4oTool.NQ
 {
 	public class PredicateOptimizer : AbstractAssemblyInstrumentation
 	{
@@ -102,7 +102,7 @@ namespace Db4oAdmin.NQ
 		{
 			// TODO: make sure importing typeof(void) is ok here for the
 			// following scenario: CF 1.0 assembly being instrumented by
-			// Db4oAdmin running under .net 2.0
+			// Db4oTool running under .net 2.0
 			MethodDefinition method = new MethodDefinition("OptimizeQuery",
 			                                               MethodAttributes.Virtual|MethodAttributes.Public,
 			                                               Import(typeof(void)));

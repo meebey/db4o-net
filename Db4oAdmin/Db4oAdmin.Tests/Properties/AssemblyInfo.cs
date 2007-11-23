@@ -4,18 +4,18 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 
-[assembly: AssemblyTitle("Db4oAdmin.Tests")]
+[assembly: AssemblyTitle("Db4oTool.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
-[assembly: AssemblyCopyright("db4o 2005")]
+[assembly: AssemblyCopyright("db4o 2005 - 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("5.7.001")]
+[assembly: AssemblyVersion("7.0.001")]
 
 #if !CF_2_0
 [assembly: AllowPartiallyTrustedCallers]

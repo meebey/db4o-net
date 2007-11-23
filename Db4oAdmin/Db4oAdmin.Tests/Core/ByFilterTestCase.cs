@@ -1,8 +1,8 @@
 using System;
-using Db4oAdmin.Core;
+using Db4oTool.Core;
 using Mono.Cecil;
 
-namespace Db4oAdmin.Tests.Core
+namespace Db4oTool.Tests.Core
 {
 	public class AcceptNoneFilter : ITypeFilter
 	{
@@ -23,8 +23,8 @@ namespace Db4oAdmin.Tests.Core
 		{
 			get
 			{
-				return "-by-filter:Db4oAdmin.Tests.Core.AcceptNoneFilter,Db4oAdmin.Tests"
-					+ " -instrumentation:Db4oAdmin.Tests.Core.TraceInstrumentation,Db4oAdmin.Tests";
+				return "-by-filter:Db4oTool.Tests.Core.AcceptNoneFilter,Db4oTool.Tests"
+					+ " -instrumentation:Db4oTool.Tests.Core.TraceInstrumentation,Db4oTool.Tests";
 			}
 		}
 	}

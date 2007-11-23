@@ -4,7 +4,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Db4oAdmin.Tests.Core
+namespace Db4oTool.Tests.Core
 {
 	public delegate void Action();
 

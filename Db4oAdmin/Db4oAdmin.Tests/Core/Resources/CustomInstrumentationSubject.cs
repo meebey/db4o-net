@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using Db4oUnit;
-using Db4oAdmin.Tests.Core;
+using Db4oTool.Tests.Core;
 
 public class CustomInstrumentationSubject : ITestCase
 {

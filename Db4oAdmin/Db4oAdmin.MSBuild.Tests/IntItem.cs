@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Db4oAdmin.MSBuild.Tests
+namespace Db4oTool.MSBuild.Tests
 {
     public class IntItem
     {

@@ -1,6 +1,6 @@
 using Db4oUnit;
 
-namespace Db4oAdmin.Tests.Core
+namespace Db4oTool.Tests.Core
 {
 	class ContextVariableTestCase : ITestCase
 	{

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Db4oAdmin
+namespace Db4oTool
 {
 	class Factory
 	{

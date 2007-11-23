@@ -1,10 +1,10 @@
-using Db4oAdmin.Core;
+using Db4oTool.Core;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace Db4oAdmin.TA
+namespace Db4oTool.TA
 {
 	class ActivateMethodEmitter : MethodEmitter
 	{

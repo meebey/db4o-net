@@ -1,13 +1,13 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 
 using Db4oUnit;
-using Db4oAdmin.Tests.Core;
+using Db4oTool.Tests.Core;
 using Mono.Cecil.Cil;
 using System;
 using Mono.Cecil;
-using Db4oAdmin.Core;
+using Db4oTool.Core;
     
-namespace Db4oAdmin.Tests.TA
+namespace Db4oTool.Tests.TA
 {
     class TAInstrumentationAppliedMoreThanOnce : ITestCase
     {
@@ -47,7 +47,7 @@ namespace Db4oAdmin.Tests.TA
         private void InstrumentAssembly(AssemblyDefinition testAssembly)
         {
             InstrumentationContext context = new InstrumentationContext(Configuration(testAssembly.MainModule.Image.FileInformation.FullName), testAssembly);
-            new Db4oAdmin.TA.TAInstrumentation().Run(context);
+            new Db4oTool.TA.TAInstrumentation().Run(context);
         }
 
         private Configuration Configuration(string assemblyLocation)

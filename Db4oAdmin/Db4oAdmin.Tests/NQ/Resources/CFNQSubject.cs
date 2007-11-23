@@ -23,7 +23,7 @@ public class Item
 
 // TODO: query invocation with comparator
 // TODO: query invocation with comparison
-public class CFNQSubject : Db4oAdmin.Tests.Core.InstrumentedTestCase
+public class CFNQSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 {
 	override public void SetUp()
 	{	

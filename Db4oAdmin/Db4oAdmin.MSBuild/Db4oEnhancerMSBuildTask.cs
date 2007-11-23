@@ -1,9 +1,9 @@
 using System;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Db4oAdmin;
+using Db4oTool;
 
-namespace Db4oAdmin.MSBuild
+namespace Db4oTool.MSBuild
 {
     public class Db4oEnhancerMSBuildTask : Task
     {

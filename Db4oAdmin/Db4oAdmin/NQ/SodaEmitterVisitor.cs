@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 using Cecil.FlowAnalysis.CodeStructure;
-using Db4oAdmin.Core;
+using Db4oTool.Core;
 using SodaExpr=Db4objects.Db4o.NativeQueries.Expr;
 using Db4objects.Db4o.NativeQueries.Expr;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp;
@@ -11,7 +11,7 @@ using Db4objects.Db4o.Query;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace Db4oAdmin.NQ
+namespace Db4oTool.NQ
 {
 	// const values
 	// value type candidates

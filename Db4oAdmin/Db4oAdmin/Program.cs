@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Db4oAdmin.Core;
-using Db4oAdmin.NQ;
-using Db4oAdmin.TA;
+using Db4oTool.Core;
+using Db4oTool.NQ;
+using Db4oTool.TA;
 
-namespace Db4oAdmin
+namespace Db4oTool
 {
 	public class Program
 	{

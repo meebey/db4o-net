@@ -1,8 +1,8 @@
 using System;
-using Db4oAdmin.Core;
+using Db4oTool.Core;
 using Mono.Cecil;
 
-namespace Db4oAdmin.TA
+namespace Db4oTool.TA
 {
 	public class CecilReflector
 	{

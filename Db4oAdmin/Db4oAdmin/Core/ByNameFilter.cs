@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using Mono.Cecil;
 
-namespace Db4oAdmin.Core
+namespace Db4oTool.Core
 {
     class ByNameFilter : ITypeFilter
     {

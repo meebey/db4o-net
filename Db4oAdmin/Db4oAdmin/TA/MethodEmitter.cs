@@ -1,10 +1,10 @@
 using System;
 using System.Reflection;
-using Db4oAdmin.Core;
+using Db4oTool.Core;
 using Mono.Cecil;
 using MethodAttributes=Mono.Cecil.MethodAttributes;
 
-namespace Db4oAdmin.TA
+namespace Db4oTool.TA
 {
 	internal class MethodEmitter
 	{

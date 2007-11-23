@@ -1,7 +1,7 @@
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 
-namespace Db4oAdmin.Tests.TA
+namespace Db4oTool.Tests.TA
 {
 	public class MockActivator : IActivator
 	{

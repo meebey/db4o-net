@@ -1,4 +1,4 @@
-namespace Db4oAdmin.Tests.Core
+namespace Db4oTool.Tests.Core
 {
 	class PreserveDebugInfoTestCase : SingleResourceTestCase
 	{
@@ -12,7 +12,7 @@ namespace Db4oAdmin.Tests.Core
 			get
 			{
 				return "-debug"
-					+ " -instrumentation:Db4oAdmin.Tests.Core.TraceInstrumentation,Db4oAdmin.Tests";
+					+ " -instrumentation:Db4oTool.Tests.Core.TraceInstrumentation,Db4oTool.Tests";
 			}
 		}
 

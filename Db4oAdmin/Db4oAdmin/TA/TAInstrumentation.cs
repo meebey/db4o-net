@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Db4oAdmin.Core;
+using Db4oTool.Core;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 using Db4objects.Db4o.Internal;
@@ -11,7 +11,7 @@ using Mono.Cecil.Cil;
 using FieldAttributes=Mono.Cecil.FieldAttributes;
 using MethodBody=Mono.Cecil.Cil.MethodBody;
 
-namespace Db4oAdmin.TA
+namespace Db4oTool.TA
 {   
 	public class TAInstrumentation : AbstractAssemblyInstrumentation
 	{

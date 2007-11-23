@@ -1,10 +1,10 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Collections.Generic;
-using Db4oAdmin.Core;
+using Db4oTool.Core;
 using Mono.GetOptions;
 
-namespace Db4oAdmin
+namespace Db4oTool
 {
 	public delegate ITypeFilter TypeFilterFactory();
 

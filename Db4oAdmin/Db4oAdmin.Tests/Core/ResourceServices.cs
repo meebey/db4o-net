@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 
-namespace Db4oAdmin.Tests.Core
+namespace Db4oTool.Tests.Core
 {
     class ResourceServices
     {

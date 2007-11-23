@@ -1,4 +1,4 @@
-using Db4oAdmin.Tests.Core;
+using Db4oTool.Tests.Core;
 using Db4oUnit;
 
 class MyCustomAttribute : System.Attribute

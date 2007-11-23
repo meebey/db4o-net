@@ -1,11 +1,11 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
-using Db4oAdmin.Core;
-using Db4oAdmin.Tests.Core;
+using Db4oTool.Core;
+using Db4oTool.Tests.Core;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace Db4oAdmin.Tests.Core
+namespace Db4oTool.Tests.Core
 {
 	/// <summary>
 	/// Prepends Console.WriteLine("TRACE: " + method) to every method
@@ -41,7 +41,7 @@ namespace Db4oAdmin.Tests.Core
 
 		protected override string CommandLine
 		{
-			get { return "-instrumentation:Db4oAdmin.Tests.Core.TraceInstrumentation,Db4oAdmin.Tests"; }
+			get { return "-instrumentation:Db4oTool.Tests.Core.TraceInstrumentation,Db4oTool.Tests"; }
 		}
 	}
 }

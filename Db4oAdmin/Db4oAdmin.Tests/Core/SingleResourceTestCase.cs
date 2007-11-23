@@ -1,4 +1,4 @@
-namespace Db4oAdmin.Tests.Core
+namespace Db4oTool.Tests.Core
 {
     public abstract class SingleResourceTestCase : AbstractCommandLineInstrumentationTestCase
     {

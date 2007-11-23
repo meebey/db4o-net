@@ -7,7 +7,7 @@ using Db4objects.Db4o.Reflect;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
-namespace Db4oAdmin.MSBuild.Tests
+namespace Db4oTool.MSBuild.Tests
 {
     class IntItemTestCase : AbstractDb4oTestCase
     {

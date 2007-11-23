@@ -35,7 +35,7 @@ class ByName : Predicate
 	}
 }
 
-public class UnoptimizablePredicateSubject : Db4oAdmin.Tests.Core.InstrumentedTestCase
+public class UnoptimizablePredicateSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 {
 	override public void SetUp()
 	{

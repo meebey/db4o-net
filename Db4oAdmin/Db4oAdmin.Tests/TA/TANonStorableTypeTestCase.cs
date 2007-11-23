@@ -1,7 +1,7 @@
 using System.Reflection;
-using Db4oAdmin.Tests.Core;
+using Db4oTool.Tests.Core;
 
-namespace Db4oAdmin.Tests.TA
+namespace Db4oTool.Tests.TA
 {
 	class TANonStorableTypeTestCase : SingleResourceTestCase
 	{

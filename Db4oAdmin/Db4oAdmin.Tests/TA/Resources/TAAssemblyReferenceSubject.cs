@@ -4,7 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
-using Db4oAdmin.Tests.TA; // MockActivator
+using Db4oTool.Tests.TA; // MockActivator
 using Db4oUnit;
 
 public class Task : ProjectItem

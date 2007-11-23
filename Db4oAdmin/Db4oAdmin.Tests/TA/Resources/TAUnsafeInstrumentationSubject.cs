@@ -1,7 +1,7 @@
 using System;
 using Db4objects.Db4o.TA;
 using Db4oUnit;
-using Db4oAdmin.Tests.TA; // MockActivator
+using Db4oTool.Tests.TA; // MockActivator
 
 unsafe public class PointerContainer
 {

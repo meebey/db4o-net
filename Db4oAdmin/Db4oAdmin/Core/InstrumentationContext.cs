@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Mono.Cecil;
 
-namespace Db4oAdmin.Core
+namespace Db4oTool.Core
 {
 	public class InstrumentationContext
 	{

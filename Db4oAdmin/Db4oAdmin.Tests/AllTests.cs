@@ -2,7 +2,7 @@
 using System;
 using Db4oUnit;
 
-namespace Db4oAdmin.Tests
+namespace Db4oTool.Tests
 {
 	class AllTests : ReflectionTestSuite
 	{

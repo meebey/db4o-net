@@ -8,7 +8,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query;
 using Db4oUnit;
 
-namespace Db4oAdmin.Tests.Core
+namespace Db4oTool.Tests.Core
 {
 	public abstract class AbstractInstrumentationTestCase : ITestSuiteBuilder
 	{

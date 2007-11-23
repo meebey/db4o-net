@@ -1,10 +1,10 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
-using Db4oAdmin.Core;
+using Db4oTool.Core;
 using Db4oUnit;
 using Mono.Cecil.Cil;
 using Mono.Cecil;
 
-namespace Db4oAdmin.Tests.Core
+namespace Db4oTool.Tests.Core
 {
 	public class ILPatternTestCase : ITestCase
 	{

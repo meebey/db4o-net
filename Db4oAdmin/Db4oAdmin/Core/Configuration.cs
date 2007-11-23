@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Db4oAdmin.Core
+namespace Db4oTool.Core
 {
 	public class Configuration
 	{
 		private bool _caseSensitive;
 		private readonly string _assemblyLocation;
-		private readonly TraceSwitch _traceSwitch = new TraceSwitch("Db4oAdmin", "Db4oAdmin tracing level");
+		private readonly TraceSwitch _traceSwitch = new TraceSwitch("Db4oTool", "Db4oTool tracing level");
 	    private readonly List<ITypeFilter> _filters = new List<ITypeFilter>();
 		private bool _preserveDebugInfo;
 		

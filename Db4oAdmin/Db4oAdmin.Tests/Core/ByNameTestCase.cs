@@ -1,4 +1,4 @@
-namespace Db4oAdmin.Tests.Core
+namespace Db4oTool.Tests.Core
 {
     class ByNameTestCase : SingleResourceTestCase
 	{
@@ -11,7 +11,7 @@ namespace Db4oAdmin.Tests.Core
 		{
 			get
 			{
-				return "-by-name:F.+o -instrumentation:Db4oAdmin.Tests.Core.TraceInstrumentation,Db4oAdmin.Tests";
+				return "-by-name:F.+o -instrumentation:Db4oTool.Tests.Core.TraceInstrumentation,Db4oTool.Tests";
 			}
 		}
 	}

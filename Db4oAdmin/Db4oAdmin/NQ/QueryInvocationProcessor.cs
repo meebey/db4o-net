@@ -1,12 +1,12 @@
 /* Copyright (C) 2004 - 2006  db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Reflection;
-using Db4oAdmin.Core;
+using Db4oTool.Core;
 using Db4objects.Db4o.Internal.Query;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace Db4oAdmin.NQ
+namespace Db4oTool.NQ
 {
 	class QueryInvocationProcessor
 	{

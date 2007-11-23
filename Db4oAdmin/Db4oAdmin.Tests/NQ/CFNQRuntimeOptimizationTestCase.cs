@@ -1,8 +1,8 @@
 /* Copyright (C) 2004 - 2006  db4objects Inc.   http://www.db4o.com */
-using Db4oAdmin.Tests.Core;
+using Db4oTool.Tests.Core;
 using Db4objects.Db4o.Internal.Query;
 
-namespace Db4oAdmin.Tests.NQ
+namespace Db4oTool.Tests.NQ
 {
 	using System;
 

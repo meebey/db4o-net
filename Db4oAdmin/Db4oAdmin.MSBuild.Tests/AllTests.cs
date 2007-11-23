@@ -1,7 +1,7 @@
 using System;
 using Db4oUnit.Extensions;
 
-namespace Db4oAdmin.MSBuild.Tests
+namespace Db4oTool.MSBuild.Tests
 {
     public class AllTests : Db4oTestSuite
     {

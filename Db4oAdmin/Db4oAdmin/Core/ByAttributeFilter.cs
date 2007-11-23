@@ -1,6 +1,6 @@
 using Mono.Cecil;
 
-namespace Db4oAdmin.Core
+namespace Db4oTool.Core
 {
 	public class ByAttributeFilter : ITypeFilter
 	{
