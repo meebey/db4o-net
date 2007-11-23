@@ -10,7 +10,7 @@ namespace Sharpen.Util
 			}
 		}
         
-        public static void Fill(object[] array, int fromIndex, int toIndex, object value)
+        public static void Fill<T>(T[] array, int fromIndex, int toIndex, T value)
         {
             for (int i = fromIndex; i < toIndex; ++i)
             {

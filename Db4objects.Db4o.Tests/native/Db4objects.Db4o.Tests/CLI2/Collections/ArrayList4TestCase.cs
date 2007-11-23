@@ -1,17 +1,14 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Db4objects.Db4o.Collections;
 using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections
 {
     internal class ArrayList4TestCase : ITestLifeCycle
     {
-        private delegate void AssertDelegate(int index, int value);
-
-        private const int MULTIPLIER = 3;
-        private const int OFFSET = 10000;
-
         #region ITestLifeCycle Members
 
         public void SetUp()
@@ -24,287 +21,189 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
         #endregion
 
+        #region Test Methods 
+
+        public void TestAddDifferentTypes()
+        {
+            ArrayList4Asserter.TestAddDifferentTypes(ArrayList4Asserter.CreateArrayListAndAssertValues(10), "No way my friend");
+        }
+
         public void TestLowerBound()
         {
-            Assert.Expect(
-                typeof (ArgumentOutOfRangeException),
-                new CodeBlockRunner<int>(
-                        delegate(int len)
-                        {
-                            IList<int> list = CreateArrayList(len);
-                            int i = list[-1];
-                        },
-                        10));
+            ArrayList4Asserter.AssertLowerBound(ArrayList4Asserter.CreateArrayListAndAssertValues(10));
         }
 
         public void TestUpperBound()
         {
-            // 
-            Assert.Expect(
-                typeof(ArgumentOutOfRangeException),
-                new CodeBlockRunner<int>(
-                        delegate(int len)
-                        {
-                            IList<int> list = CreateArrayList(len);
-                            int i = list[list.Count + 1];
-                        },
-                        10));
+            ArrayList4Asserter.AssertUpperBound();
         }
 
         public void TestItems()
         {
-            IList<int> list = CreateArrayListAndAssertValues(10);
-            for (int i = 0; i < list.Count; i++)
-            {
-                Assert.AreEqual(i*3, list[i]);
-            }
+            ArrayList4Asserter.AssertItems();
         }
 
         public void TestAddItems()
         {
-            IList<int> list = CreateArrayListAndAssertValues(10);
-            int index = list.Count;
-            for (int i = 0; i < 3; i++)
-            {
-                list.Add(ValueForIndex(index++));
-            }
-
-            AssertArrayListValues(list);
-            Assert.AreEqual(index, list.Count);
+            ArrayList4Asserter.AssertAddItem();
         }
 
-        public void TestIsReadyOnly()
+        public void TestIsReadOnly()
         {
-            IList<int> list = CreateArrayList(10);
-            Assert.IsFalse(list.IsReadOnly);
+            ArrayList4Asserter.AssertIsReadOnly();
         }
 
         public void TestClear()
         {
-            IList<int> list = CreateArrayListAndAssertValues(10);
-            list.Clear();
-            Assert.AreEqual(0, list.Count);
+            ArrayList4Asserter.AssertClear();
         }
 
         public void TestContains()
         {
-            IList<int> list = CreateArrayList(10);
-
-            ForEach(
-                list,
-                delegate(int index, int value) { Assert.IsTrue(list.Contains(value)); });
-
-            Assert.IsFalse(list.Contains(-1));
-            Assert.IsFalse(list.Contains(ValueForIndex(list.Count) + 1));
+            ArrayList4Asserter.AssertContains(
+                            ArrayList4Asserter.CreateArrayList(10),
+                            -1,
+                            ArrayList4Asserter.ValueForIndex(10) + 1);
         }
 
         public void TestCopyTo()
         {
-            IList<int> list = CreateArrayList(10);
-            AssertArrayListValues(list);
-
-            int[] backup = new int[list.Count];
-            list.CopyTo(backup, 0);
-
-            AssertAreEqual(backup, list, 0, 0, backup.Length);
-
-            backup = new int[list.Count + 1];
-            backup[0] = 0xCC;
-            list.CopyTo(backup, 1);
-            Assert.AreEqual(0xCC, backup[0]);
-            AssertAreEqual(backup, list, 1, 0, backup.Length - 1);
-
-            backup = new int[list.Count + 2];
-            backup[0] = 0xDE;
-            backup[1] = 0xAD;
-            list.CopyTo(backup, 2);
-            Assert.AreEqual(0xDE, backup[0]);
-            Assert.AreEqual(0xAD, backup[1]);
-            AssertAreEqual(backup, list, 2, 0, list.Count);
-        }
-
-        private static void AssertAreEqual(int[] array, IList<int> list, int arrayStartIndex, int listIndex, int count)
-        {
-            Assert.AreEqual(array.Length - arrayStartIndex, list.Count - listIndex);
-            for (int i = arrayStartIndex; i < array.Length; i++)
-            {
-                Assert.AreEqual(array[i], list[listIndex++]);
-            }
+            ArrayList4Asserter.AssertCopyTo(ArrayList4Asserter.CreateArrayList(10));
         }
 
         public void TestCopyToWithInvalidSize()
         {
-            Assert.Expect(
-                typeof (ArgumentException),
-                new CodeBlockRunner<int>(
-                    delegate(int len)
-                    {
-                        IList<int> list = CreateArrayListAndAssertValues(len);
-
-                        int[] backup = new int[list.Count - 1];
-                        list.CopyTo(backup, 0);
-                    },
-                    10));
+            ArrayList4Asserter.AssertCopyToWithInvalidSize(ArrayList4Asserter.CreateArrayList(10));
         }
 
         public void TestCopyToWithNullTarget()
         {
-            Assert.Expect(
-                typeof(ArgumentNullException),
-                new CodeBlockRunner<int>(
-                        delegate(int len)
-                        {
-                            IList<int> list = CreateArrayListAndAssertValues(len);
-                            list.CopyTo(null, 0);
-                        },
-                        10)
-                );
+            ArrayList4Asserter.AssertCopyToWithNullTarget(ArrayList4Asserter.CreateArrayList(10));
+        }
+
+        public void TestCopyToMultiDimensionalArray()
+        {
+            ArrayList4Asserter.AssertCopyToWithMultiDimensionalArray(ArrayList4Asserter.CreateArrayList(10));
         }
 
         public void TestCopyToInvalidIndex()
         {
-            Assert.Expect(
-                typeof (ArgumentException),
-                new CodeBlockRunner<int>(
-                    delegate(int len)
-                        {
-                            IList<int> list = CreateArrayListAndAssertValues(len);
-
-                            int[] backup = new int[len];
-                            list.CopyTo(backup, backup.Length + 1);
-                        },
-                    10
-                    ));
+            ArrayList4Asserter.AssertCopyToInvalidIndex(ArrayList4Asserter.CreateArrayList(10));
         }
 
-        //TODO: Check the documentation
         public void TestRemove()
         {
-            int size = 10;
-            IList<int> list = CreateArrayListAndAssertValues(size);
+            ArrayList4Asserter.AssertRemove<int>(ArrayList4Asserter.CreateArrayListAndAssertValues(10));
+        }
 
-            Assert.IsFalse(list.Remove(ValueForIndex(-1)));
-            Assert.IsFalse(list.Remove(ValueForIndex(size + 1)));
-            Assert.AreEqual(size, list.Count);
-
-            RemoveAndAssert(list, ref size, 0);
-            RemoveAndAssert(list, ref size, size);
+        public void TestRemoveAt()
+        {
+            ArrayList4Asserter.AssertRemoveAt(
+                            ArrayList4Asserter.CreateArrayListAndAssertValues(10),
+                            new IndexOfItems<int, Type>(-1, typeof(ArgumentOutOfRangeException)),
+                            new IndexOfItems<int, Type>(10, typeof(ArgumentOutOfRangeException)),
+                            new IndexOfItems<int, Type>(50, typeof(ArgumentOutOfRangeException)),
+                            new IndexOfItems<int, Type>(5, typeof(int)));
         }
 
         public void TestIndexOf()
         {
-            int size = 10;
-            IList<int> list = CreateArrayListAndAssertValues(size);
-
-            Assert.AreEqual(-1, list.IndexOf(ValueForIndex(-1)));
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                Assert.AreEqual(i, list.IndexOf(list[i]));
-            }
-
-            Assert.AreEqual(-1, list.IndexOf(ValueForIndex(list.Count + 1)));
-
-            Assert.AreEqual(0, list.IndexOf(ValueForIndex(0)));
-            Assert.AreEqual(5, list.IndexOf(ValueForIndex(5)));
-            Assert.AreEqual(-1, list.IndexOf(ValueForIndex(-8)));
+            ArrayList4Asserter.AssertIndexOf(
+                ArrayList4Asserter.CreateArrayListAndAssertValues(10),
+                new IndexOfItems<int, int>(ArrayList4Asserter.ValueForIndex(0), 0),
+                new IndexOfItems<int, int>(ArrayList4Asserter.ValueForIndex(10), -1),
+                new IndexOfItems<int, int>(ArrayList4Asserter.ValueForIndex(-8), -1),
+                new IndexOfItems<int, int>(ArrayList4Asserter.ValueForIndex(5), 5));
+            
         }
 
         public void TestInsert()
         {
-            int size = 10;
-            IList<int> list = CreateArrayListAndAssertValues(size);
-            InsertInList(list, 5);
+            ArrayList4Asserter.AssertInsert(
+                            new ArrayList4<int>(0),
+                            new int[] {1, 2, 3},
+                            new IndexOfItems<int, int>(1,0),
+                            new IndexOfItems<int, int>(2,1),
+                            new IndexOfItems<int, int>(3,2));
+
+            ArrayList4Asserter.AssertInsert(
+                            new ArrayList4<int>(new int[] {3, 2, 1}),
+                            new int[] { 3, 4, 2, 5, 1, 6 },
+                            new IndexOfItems<int, int>(4, 1),
+                            new IndexOfItems<int, int>(5, 3),
+                            new IndexOfItems<int, int>(6, 5));
+        }
+
+        public void TestEnumerator()
+        {
+            ArrayList4Asserter.AssertEnumerable(
+                        ArrayList4Asserter.CreateArrayListAndAssertValues(10),
+                        GetEnumerable(0, 10));
+        }
+
+        public void TestFailEnumerator()
+        {
+            ArrayList4Asserter.AssertFailEnumerator<int>(
+                        ArrayList4Asserter.CreateArrayListAndAssertValues(10),
+                        GetEnumerable(0, 10),
+                        6,
+                        20);
+        }
+
+        public void TestToString()
+        {
+            ArrayList4Asserter.AssertToString(
+                                    ArrayList4Asserter.CreateArrayListAndAssertValues(10), "ArrayList4<Int32> (Count=10)");
             
-            Assert.AreEqual(5, list.IndexOf(ValueWithOffsetForIndex(5)));
-            Assert.AreEqual(6, list.IndexOf(ValueForIndex(5))); // index 5 was moved to 6
+            ArrayList4Asserter.AssertToString(
+                                    new ArrayList4<int>(0), "ArrayList4<Int32> (Count=0)");
+            
+            ArrayList4Asserter.AssertToString(
+                                    new ArrayList4<string>(0), "ArrayList4<String> (Count=0)");
         }
 
-        private static void InsertInList(IList<int> list, int index)
+        public void TestSort()
         {
-            list.Insert(index, ValueWithOffsetForIndex(index));
-        }
+            ArrayList4<int> list = (ArrayList4<int>)ArrayList4Asserter.CreateArrayListAndAssertValues(100);
+            list.Sort(0, list.Count, new InverseComparer());
 
-        private static int ValueWithOffsetForIndex(int index)
-        {
-            return ValueForIndex(index) + OFFSET;
-        }
-
-        private static void RemoveAndAssert(IList<int> list, ref int size, int index)
-        {
-            Assert.IsTrue(list.Remove(ValueForIndex(index)));
-            Assert.AreEqual(--size, list.Count);
-            AssertArrayListValuesOffset(list, 1);
-        }
-
-        private static void AssertArrayListValues(IList<int> list)
-        {
-            AssertArrayListValuesOffset(list, 0);
-        }
-
-        private static void AssertArrayListValuesOffset(IList<int> list, int offset)
-        {
-            for (int i = 0; i < list.Count; i++)
+            Assert.IsGreaterOrEqual(1, list.Count);
+            for (int i = 1; i < list.Count; i++)
             {
-                Assert.AreEqual(ValueForIndex(i + offset), list[i]);
+                if (list[i-1] < list[i])
+                {
+                    Assert.Fail(String.Format("Indexes ({0}, {1}). Values ({2}, {3})", i, i - 1, list[i], list[i - 1]));
+                }
             }
         }
 
-        private static int ValueForIndex(int index)
+        public void TestBinarySearch()
         {
-            return index*MULTIPLIER;
+            ArrayList4Asserter.AssertBinarySearch(
+                (ArrayList4<int>) ArrayList4Asserter.CreateArrayListAndAssertValues(100),
+                new IndexOfItems<int, int>(ArrayList4Asserter.ValueForIndex(0), 0),
+                new IndexOfItems<int, int>(ArrayList4Asserter.ValueForIndex(99), 99),
+                new IndexOfItems<int, int>(ArrayList4Asserter.ValueForIndex(50), 50),
+                new IndexOfItems<int, int>(ArrayList4Asserter.ValueForIndex(100), -1),
+                new IndexOfItems<int, int>(ArrayList4Asserter.ValueForIndex(-1), -1));
         }
 
-        private static IList<int> CreateArrayListAndAssertValues(int size)
+        internal class InverseComparer : IComparer<int>
         {
-            IList<int> list = new List<int>(NewListValues(size));
-            Assert.AreEqual(size, list.Count);
-
-            return list;
-        }
-
-        private static IEnumerable<int> NewListValues(int max)
-        {
-            for (int i = 0; i < max; i++)
+            public int Compare(int x, int y)
             {
-                yield return i*MULTIPLIER;
+                return y - x;
             }
         }
 
-        private static IList<int> CreateArrayList(int count)
+        private static IEnumerable<int> GetEnumerable(int start, int end)
         {
-            List<int> list = new List<int>(count);
-            for (int i = 0; i < list.Count; i++)
+            for(int i = start; i < end; i++)
             {
-                list[i] = ValueForIndex(i);
-            }
-
-            return list;
-        }
-
-        private static void ForEach(IList<int> list, AssertDelegate method)
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                method(i, list[i]);
+                yield return ArrayList4Asserter.ValueForIndex(i);
             }
         }
-    }
 
-    class CodeBlockRunner<T> : ICodeBlock
-    {
-        private readonly Action<T> method;
-        private readonly T value;
-
-        internal CodeBlockRunner(Action<T> method, T value)
-        {
-            this.method = method;
-            this.value = value;
-        }
-
-        public void Run()
-        {
-            method(value);
-        }
+        #endregion
     }
 }
