@@ -9,5 +9,13 @@ namespace Sharpen.Util
 				array[i] = value;
 			}
 		}
-	}
+        
+        public static void Fill(object[] array, int fromIndex, int toIndex, object value)
+        {
+            for (int i = fromIndex; i < toIndex; ++i)
+            {
+                array[i] = value;
+            }
+        }
+    }
 }
