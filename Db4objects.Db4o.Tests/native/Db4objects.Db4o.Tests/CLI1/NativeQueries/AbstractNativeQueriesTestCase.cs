@@ -3,10 +3,10 @@ using System.Collections;
 using System.Reflection;
 using System.Text;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Nativequery.Expr;
-using Db4objects.Db4o.Nativequery.Optimization;
+using Db4objects.Db4o.NativeQueries.Expr;
+using Db4objects.Db4o.NativeQueries.Optimization;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Tools.NativeQueries;
+using Db4objects.Db4o.NativeQueries;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 

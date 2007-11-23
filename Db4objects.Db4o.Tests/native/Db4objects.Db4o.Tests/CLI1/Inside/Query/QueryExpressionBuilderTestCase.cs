@@ -1,11 +1,11 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Reflection;
-using Db4objects.Db4o.Nativequery.Expr;
-using Db4objects.Db4o.Nativequery.Expr.Cmp;
-using Db4objects.Db4o.Nativequery.Expr.Cmp.Operand;
+using Db4objects.Db4o.NativeQueries.Expr;
+using Db4objects.Db4o.NativeQueries.Expr.Cmp;
+using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
 using Db4objects.Db4o.Tests.CLI1.NativeQueries;
-using Db4objects.Db4o.Tools.NativeQueries;
+using Db4objects.Db4o.NativeQueries;
 using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
