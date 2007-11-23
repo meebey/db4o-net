@@ -1,8 +1,5 @@
 /* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 using System;
-using Db4objects.Db4o.Nativequery;
-using Db4objects.Db4o.Nativequery.Expr;
-using Db4objects.Db4o.Nativequery.Optimization;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -37,20 +34,15 @@ namespace Db4objects.Db4o.Internal.Query
 	{
 		private IObjectContainer _container;
 
-		private IDb4oNQOptimizer _enhancer;
-
-		private ExpressionBuilder _builder;
+		private INQOptimizer _builder;
 
 		public event QueryExecutionHandler QueryExecution;
 
 		public event QueryOptimizationFailureHandler QueryOptimizationFailure;
 
-		private Db4objects.Db4o.Instrumentation.Core.INativeClassFactory _classFactory;
-
 		public NativeQueryHandler(IObjectContainer container)
 		{
 			_container = container;
-			_classFactory = new Db4objects.Db4o.Instrumentation.Core.DefaultNativeClassFactory();
 		}
 
         public virtual Db4objects.Db4o.IObjectSet Execute(Db4objects.Db4o.Query.IQuery query, Db4objects.Db4o.Query.Predicate predicate, Db4objects.Db4o.Query.IQueryComparator comparator)
@@ -204,11 +196,9 @@ namespace Db4objects.Db4o.Internal.Query
 		void OptimizeQuery(Db4objects.Db4o.Query.IQuery q, object predicate, System.Reflection.MethodBase filterMethod)
 		{
 			if (_builder == null)
-				_builder = ExpressionBuilderFactory.CreateExpressionBuilder();
+				_builder = NQOptimizerFactory.CreateExpressionBuilder();
 
-			// TODO: cache predicate expressions here
-			IExpression expression = _builder.FromMethod(filterMethod);
-			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate, _classFactory);
+			_builder.Optimize(q, predicate, filterMethod);
 		}
 
 		private void OnQueryExecution(object predicate, QueryExecutionKind kind)

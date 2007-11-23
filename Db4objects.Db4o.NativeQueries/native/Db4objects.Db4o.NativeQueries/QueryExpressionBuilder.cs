@@ -1,7 +1,7 @@
 ﻿/* Copyright (C) 2004-2006   db4objects Inc.   http://www.db4o.com */
 
 
-namespace Db4objects.Db4o.Tools.NativeQueries
+namespace Db4objects.Db4o.NativeQueries
 {
 	using System;
 	using System.Collections;
@@ -14,19 +14,51 @@ namespace Db4objects.Db4o.Tools.NativeQueries
 	using Cecil.FlowAnalysis.CodeStructure;
 	using Ast = Cecil.FlowAnalysis.CodeStructure;
 
-	using Db4objects.Db4o.Nativequery.Expr;	
-	using Db4objects.Db4o.Nativequery.Expr.Cmp;
-	using Db4objects.Db4o.Nativequery.Expr.Cmp.Operand;
-	using NQExpression = Db4objects.Db4o.Nativequery.Expr.IExpression;
+	using Db4objects.Db4o.NativeQueries.Expr;
+	using Db4objects.Db4o.NativeQueries.Expr.Cmp;
+	using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
+	using NQExpression = Db4objects.Db4o.NativeQueries.Expr.IExpression;
 	using Db4objects.Db4o.Internal.Query;
 
 	/// <summary>
 	/// Build a Db4objects.Db4o.Nativequery.Expr tree out of
 	/// a predicate method definition.
 	/// </summary>
-	public class QueryExpressionBuilder : ExpressionBuilder
+	public class QueryExpressionBuilder
 	{
-		public override NQExpression FromMethod(System.Reflection.MethodBase method)
+		protected static ICachingStrategy _assemblyCachingStrategy = new SingleItemCachingStrategy();
+
+		protected static ICachingStrategy _expressionCachingStrategy = new SingleItemCachingStrategy();
+
+		public static ICachingStrategy AssemblyCachingStrategy
+		{
+			get
+			{
+				return _assemblyCachingStrategy;
+			}
+
+			set
+			{
+				if (null == value) throw new ArgumentNullException("AssemblyCachingStrategy");
+				_assemblyCachingStrategy = value;
+			}
+		}
+
+		public static ICachingStrategy ExpressionCachingStrategy
+		{
+			get
+			{
+				return _expressionCachingStrategy;
+			}
+
+			set
+			{
+				if (null == value) throw new ArgumentNullException("ExpressionCachingStrategy");
+				_expressionCachingStrategy = value;
+			}
+		}
+
+		public NQExpression FromMethod(System.Reflection.MethodBase method)
 		{
 			if (method == null) throw new ArgumentNullException("method");
 			

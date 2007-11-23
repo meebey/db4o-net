@@ -57,7 +57,7 @@
     <Reference Include="System"/>
     <Reference Include="System.Xml"/>
   </ItemGroup>
-  <ItemGroup><Compile Include="Db4objects.Db4o.Tools\Defragment.cs"/><Compile Include="Db4objects.Db4o.Tools\NativeQueries\QueryExpressionBuilder.cs"/><Compile Include="Db4objects.Db4o.Tools\NativeQueries\UnsupportedPredicateException.cs"/><Compile Include="Db4objects.Db4o.Tools\Statistics.cs"/><Compile Include="Properties\AssemblyInfo.cs"/></ItemGroup>
+  <ItemGroup><Compile Include="Properties\AssemblyInfo.cs"/><Compile Include="native\Db4objects.Db4o.Tools\Statistics.cs"/></ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-CF-2005.csproj">
       <Project>{95FD1C64-F1A3-4C8A-B170-D518E899B2FE}</Project>

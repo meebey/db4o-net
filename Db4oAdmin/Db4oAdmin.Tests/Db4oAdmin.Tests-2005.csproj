@@ -89,10 +89,6 @@
     <Compile Include="TA\TANonStorableTypeTestCase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Db4objects.Db4o.Tools\Db4objects.Db4o.Tools-2005.csproj">
-      <Project>{7B23B089-806B-44C1-B4C4-D643ED8A9992}</Project>
-      <Name>Db4objects.Db4o.Tools-2005</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2005.csproj">
       <Project>{4FA6645B-E14B-4F18-A2CC-C1925663EFCE}</Project>
       <Name>Db4objects.Db4o-2005</Name>

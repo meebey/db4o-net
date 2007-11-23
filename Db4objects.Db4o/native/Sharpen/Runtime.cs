@@ -221,7 +221,7 @@ namespace Sharpen
 			// do nothing
 		}
 
-        internal static System.Type GetType(string typeName)
+        public static System.Type GetType(string typeName)
         {
             return TypeReference.FromString(typeName).Resolve();
         }
