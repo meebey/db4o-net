@@ -903,6 +903,12 @@ namespace Db4objects.Db4o.Internal
 			IncrementOffset(buffer);
 		}
 
+		public virtual void RefreshActivated()
+		{
+			_state = AVAILABLE;
+			Refresh();
+		}
+
 		internal virtual void Refresh()
 		{
 			ITypeHandler4 handler = LoadJavaField1();
@@ -982,14 +988,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_850(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_855(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_850 : IVisitor4
+		private sealed class _IVisitor4_855 : IVisitor4
 		{
-			public _IVisitor4_850(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_855(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;

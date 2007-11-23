@@ -41,17 +41,17 @@ namespace Db4oUnit
 
 		public virtual int Run()
 		{
-			return Run(true);
+			return Run(TestPlatform.GetStdErr());
 		}
 
-		private int Run(bool printLabels)
+		public virtual int Run(TextWriter writer)
 		{
 			TestSuite suite = BuildTestSuite();
 			if (null == suite)
 			{
 				return 1;
 			}
-			TestResult result = new TestResult(printLabels);
+			TestResult result = new TestResult(writer);
 			result.RunStarted();
 			suite.Run(result);
 			result.RunFinished();

@@ -15,14 +15,14 @@ namespace Db4oUnit
 
 		private readonly StopWatch _watch = new StopWatch();
 
-		private readonly TextWriter _stdout;
+		private readonly TextWriter _writer;
 
-		public TestResult(bool printLabels)
+		public TestResult(TextWriter writer)
 		{
-			_stdout = printLabels ? TestPlatform.GetStdErr() : null;
+			_writer = writer;
 		}
 
-		public TestResult() : this(false)
+		public TestResult() : this(TestPlatform.GetNullWriter())
 		{
 		}
 
@@ -96,17 +96,14 @@ namespace Db4oUnit
 
 		private void Print(string message)
 		{
-			if (null != _stdout)
+			try
 			{
-				try
-				{
-					_stdout.Write(message + TestPlatform.NEWLINE);
-					_stdout.Flush();
-				}
-				catch (IOException x)
-				{
-					TestPlatform.PrintStackTrace(x);
-				}
+				_writer.Write(message + TestPlatform.NEWLINE);
+				_writer.Flush();
+			}
+			catch (IOException x)
+			{
+				TestPlatform.PrintStackTrace(_writer, x);
 			}
 		}
 	}
