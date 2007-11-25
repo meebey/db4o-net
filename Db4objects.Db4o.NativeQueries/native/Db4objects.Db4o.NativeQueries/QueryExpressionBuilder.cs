@@ -1,6 +1,8 @@
 ﻿/* Copyright (C) 2004-2006   db4objects Inc.   http://www.db4o.com */
 
 
+using Db4objects.Db4o.Instrumentation.Cecil;
+
 namespace Db4objects.Db4o.NativeQueries
 {
 	using System;
@@ -643,7 +645,7 @@ namespace Db4objects.Db4o.NativeQueries
 				{
 					case CodeElementType.ArgumentReferenceExpression:
 						//IArgumentReferenceExpression arg = (IArgumentReferenceExpression)target;
-						Push(new FieldValue(CandidateFieldRoot.INSTANCE, node.Field.Name, node));
+						PushFieldValue(CandidateFieldRoot.INSTANCE, node.Field);
 						break;
 
 					case CodeElementType.ThisReferenceExpression:
@@ -652,29 +654,34 @@ namespace Db4objects.Db4o.NativeQueries
 							if (_current != null)
 							{
 								FieldValue current = PopFieldValue(node);
-								Push(new FieldValue(current, node.Field.Name, node));
+								PushFieldValue(current, node.Field);
 							}
 							else
 							{
-								Push(new FieldValue(CandidateFieldRoot.INSTANCE, node.Field.Name, node));
+								PushFieldValue(CandidateFieldRoot.INSTANCE, node.Field);
 							}
 						}
 						else
 						{
-							Push(new FieldValue(PredicateFieldRoot.INSTANCE, node.Field.Name, node));
+							PushFieldValue(PredicateFieldRoot.INSTANCE, node.Field);
 						}
 						break;
 
 					case CodeElementType.MethodInvocationExpression:
 					case CodeElementType.FieldReferenceExpression:
 						FieldValue value = ToFieldValue(target);
-						Push(new FieldValue(value, node.Field.Name, node));
+						PushFieldValue(value, node.Field);
 						break;
 
 					default:
 						UnsupportedExpression(node);
 						break;
 				}
+			}
+
+			private void PushFieldValue(IComparisonOperandAnchor value, FieldReference field)
+			{
+				Push(new FieldValue(value, new CecilFieldRef(field)));
 			}
 
 			public override void Visit(LiteralExpression node)
@@ -772,7 +779,7 @@ namespace Db4objects.Db4o.NativeQueries
 
 		private static TypeReference GetFieldType(FieldValue field)
 		{
-			return ((FieldReferenceExpression) field.Tag()).Field.FieldType;
+			return ((CecilFieldRef) field.Field).FieldType;
 		}
 
 		private void AdjustConstValue(TypeReference typeRef, ConstValue constValue)

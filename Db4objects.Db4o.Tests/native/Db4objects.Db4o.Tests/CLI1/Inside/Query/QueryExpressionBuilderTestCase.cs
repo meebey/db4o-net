@@ -6,6 +6,7 @@ using Db4objects.Db4o.NativeQueries.Expr.Cmp;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
 using Db4objects.Db4o.Tests.CLI1.NativeQueries;
 using Db4objects.Db4o.NativeQueries;
+using Db4objects.Db4o.Tests.NativeQueries.Mocks;
 using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
@@ -17,12 +18,17 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 			IExpression expression = ExpressionFromPredicate(typeof(NameEqualsTo));
 			Assert.AreEqual(
 				new ComparisonExpression(
-				new FieldValue(CandidateFieldRoot.INSTANCE, "name"),
-				new FieldValue(PredicateFieldRoot.INSTANCE, "_name"),
+				NewFieldValue(CandidateFieldRoot.INSTANCE, "name", typeof(string)),
+				NewFieldValue(PredicateFieldRoot.INSTANCE, "_name", typeof(string)),
 				ComparisonOperator.EQUALS),
-				NullifyTags(expression));
+				expression);
 		}
-	
+
+		private FieldValue NewFieldValue(IComparisonOperandAnchor anchor, string name, Type type)
+		{
+			return new FieldValue(anchor, new MockFieldRef(name, new MockTypeRef(type)));
+		}
+
 		public void TestHasPreviousWithPrevious()
 		{
 			// candidate.HasPrevious && candidate.Previous.HasPrevious
@@ -31,18 +37,19 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 				new AndExpression(
 				new NotExpression(
 				new ComparisonExpression(
-				new FieldValue(CandidateFieldRoot.INSTANCE, "previous"), 
+				NewFieldValue(CandidateFieldRoot.INSTANCE, "previous", typeof(Data)), 
 				new ConstValue(null),
 				ComparisonOperator.EQUALS)),
 				new NotExpression(
 				new ComparisonExpression(
-				new FieldValue(
-					new FieldValue(CandidateFieldRoot.INSTANCE, "previous"),
-					"previous"),
+				NewFieldValue(
+					NewFieldValue(CandidateFieldRoot.INSTANCE, "previous", typeof(Data)),
+					"previous",
+					typeof(Data)),
 				new ConstValue(null),
 				ComparisonOperator.EQUALS)));
 
-			Assert.AreEqual(expected, NullifyTags(expression));
+			Assert.AreEqual(expected, expression);
 		}
 		
 		enum MessagePriority
@@ -73,32 +80,12 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 		{
 			IExpression expression = ExpressionFromMethod("MatchEnumConstrain");
 			IExpression expected = new ComparisonExpression(
-				new FieldValue(CandidateFieldRoot.INSTANCE, "_priority"),
+				NewFieldValue(CandidateFieldRoot.INSTANCE, "_priority", typeof(MessagePriority)),
 				new ConstValue(MessagePriority.High),
 				ComparisonOperator.EQUALS);
-			Assert.AreEqual(expected, NullifyTags(expression));
+			Assert.AreEqual(expected, expression);
 		}
 		
-		class TagNullifier : TraversingExpressionVisitor 
-		{
-			override public void Visit(FieldValue operand)
-			{
-				base.Visit(operand);
-				operand.Tag(null);
-			}
-		}
-
-		/// <summary>
-		/// Set FieldValue.Tag to null so that Equals ignores it.
-		/// </summary>
-		/// <param name="expression"></param>
-		/// <returns></returns>
-		private IExpression NullifyTags(IExpression expression)
-		{
-			expression.Accept(new TagNullifier());
-			return expression;
-		}
-
 		private IExpression ExpressionFromMethod(string methodName)
 		{
 			return new QueryExpressionBuilder().FromMethod(GetType().GetMethod(methodName, BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance|BindingFlags.Static));

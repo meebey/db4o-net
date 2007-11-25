@@ -1,4 +1,6 @@
 using System.Reflection;
+using Db4objects.Db4o.Instrumentation.Api;
+using Db4objects.Db4o.Instrumentation.Cecil;
 using Db4objects.Db4o.Instrumentation.Core;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.NativeQueries.Expr;
@@ -17,7 +19,7 @@ namespace Db4objects.Db4o.NativeQueries
 		{
 			// TODO: cache predicate expressions here
 			IExpression expression = _builder.FromMethod(filterMethod);
-			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate, _classFactory);
+			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate, _classFactory, new CecilReferenceResolver());
 		}
 	}
 }
