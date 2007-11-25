@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Db4objects.Db4o.Instrumentation.Core
+namespace Db4objects.Db4o.Instrumentation.Api
 {
 	/// <exclude></exclude>
 	public interface INativeClassFactory

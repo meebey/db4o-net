@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.IO;
 using System.Reflection;
 using Db4objects.Db4o.Instrumentation.Api;
@@ -11,7 +10,10 @@ namespace Db4objects.Db4o.Instrumentation.Api
 	/// <remarks>Cross platform interface for bytecode emission.</remarks>
 	public interface IMethodBuilder
 	{
-		IReferenceProvider References();
+		IReferenceProvider References
+		{
+			get;
+		}
 
 		void Ldc(object value);
 
@@ -19,15 +21,15 @@ namespace Db4objects.Db4o.Instrumentation.Api
 
 		void Pop();
 
-		void LoadArrayElement(Type elementType);
+		void LoadArrayElement(ITypeRef elementType);
 
-		void Add(Type operandType);
+		void Add(ITypeRef operandType);
 
-		void Subtract(Type operandType);
+		void Subtract(ITypeRef operandType);
 
-		void Multiply(Type operandType);
+		void Multiply(ITypeRef operandType);
 
-		void Divide(Type operandType);
+		void Divide(ITypeRef operandType);
 
 		void Invoke(IMethodRef method);
 
@@ -37,7 +39,7 @@ namespace Db4objects.Db4o.Instrumentation.Api
 
 		void LoadStaticField(IFieldRef fieldRef);
 
-		void Box(Type boxedType);
+		void Box(ITypeRef boxedType);
 
 		void EndMethod();
 

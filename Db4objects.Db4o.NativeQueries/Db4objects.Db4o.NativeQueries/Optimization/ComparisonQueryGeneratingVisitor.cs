@@ -2,7 +2,7 @@
 
 using System;
 using System.Reflection;
-using Db4objects.Db4o.Instrumentation.Core;
+using Db4objects.Db4o.Instrumentation.Api;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
 using Db4objects.Db4o.NativeQueries.Optimization;
@@ -16,7 +16,9 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 
 		private object _value = null;
 
-		private INativeClassFactory classSource;
+		private readonly INativeClassFactory _classSource;
+
+		private readonly IReferenceResolver _resolver;
 
 		public object Value()
 		{
@@ -159,7 +161,7 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 		{
 			try
 			{
-				_value = classSource.ForName(root.ClassName());
+				_value = _classSource.ForName(root.Type.Name);
 			}
 			catch (TypeLoadException e)
 			{
@@ -180,22 +182,10 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 		{
 			operand.Parent().Accept(this);
 			object receiver = _value;
-			object[] @params = new object[operand.Args().Length];
-			for (int paramIdx = 0; paramIdx < operand.Args().Length; paramIdx++)
-			{
-				operand.Args()[paramIdx].Accept(this);
-				@params[paramIdx] = _value;
-			}
-			Type clazz = receiver.GetType();
-			if (operand.Parent().Root() is StaticFieldRoot && clazz.Equals(typeof(Type)))
-			{
-				clazz = (Type)receiver;
-			}
-			MethodInfo method = ReflectUtil.MethodFor(clazz, operand.MethodName(), operand.ParamTypes
-				());
+			MethodInfo method = _resolver.Resolve(operand.Method);
 			try
 			{
-				_value = method.Invoke(receiver, @params);
+				_value = method.Invoke(IsStatic(method) ? null : receiver, Args(operand));
 			}
 			catch (Exception exc)
 			{
@@ -204,11 +194,29 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 			}
 		}
 
-		public ComparisonQueryGeneratingVisitor(object predicate, INativeClassFactory classSource
-			) : base()
+		private object[] Args(MethodCallValue operand)
 		{
-			this._predicate = predicate;
-			this.classSource = classSource;
+			IComparisonOperand[] args = operand.Args;
+			object[] @params = new object[args.Length];
+			for (int paramIdx = 0; paramIdx < args.Length; paramIdx++)
+			{
+				args[paramIdx].Accept(this);
+				@params[paramIdx] = _value;
+			}
+			return @params;
+		}
+
+		private bool IsStatic(MethodInfo method)
+		{
+			return NativeQueriesPlatform.IsStatic(method);
+		}
+
+		public ComparisonQueryGeneratingVisitor(object predicate, INativeClassFactory classSource
+			, IReferenceResolver resolver) : base()
+		{
+			_predicate = predicate;
+			_classSource = classSource;
+			_resolver = resolver;
 		}
 	}
 }

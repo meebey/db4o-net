@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.Instrumentation.Api;
 
 namespace Db4objects.Db4o.Instrumentation.Api
@@ -9,15 +8,19 @@ namespace Db4objects.Db4o.Instrumentation.Api
 	/// <remarks>Cross platform interface for type instrumentation.</remarks>
 	public interface ITypeEditor
 	{
-		Type ActualType();
+		ITypeRef Type
+		{
+			get;
+		}
 
-		ITypeLoader Loader();
+		IReferenceProvider References
+		{
+			get;
+		}
 
-		IReferenceProvider References();
+		void AddInterface(ITypeRef type);
 
-		void AddInterface(Type type);
-
-		IMethodBuilder NewPublicMethod(string methodName, Type returnType, Type[] parameterTypes
-			);
+		IMethodBuilder NewPublicMethod(string methodName, ITypeRef returnType, ITypeRef[]
+			 parameterTypes);
 	}
 }

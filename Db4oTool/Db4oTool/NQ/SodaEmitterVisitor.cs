@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 using Cecil.FlowAnalysis.CodeStructure;
+using Db4objects.Db4o.Instrumentation.Cecil;
 using Db4oTool.Core;
 using SodaExpr=Db4objects.Db4o.NativeQueries.Expr;
 using Db4objects.Db4o.NativeQueries.Expr;
@@ -229,7 +230,7 @@ namespace Db4oTool.NQ
 
 		private static FieldReference GetFieldReference(FieldValue operand)
 		{
-			return (FieldReference)((FieldReferenceExpression) operand.Tag()).Field;
+			return ((CecilFieldRef) operand.Field).Field;
 		}
 
 		public void Visit(CandidateFieldRoot root)

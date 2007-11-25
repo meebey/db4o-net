@@ -1,25 +1,22 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
-using System.Reflection;
 using Db4objects.Db4o.Instrumentation.Api;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
-using Db4objects.Db4o.NativeQueries.Optimization;
 
 namespace Db4objects.Db4o.NativeQueries.Instrumentation
 {
 	internal class TypeDeducingVisitor : IComparisonOperandVisitor
 	{
-		private Type _predicateClass;
+		private ITypeRef _predicateClass;
 
-		private Type _clazz;
+		private ITypeRef _clazz;
 
-		private ITypeLoader _typeLoader;
+		private IReferenceProvider _referenceProvider;
 
-		public TypeDeducingVisitor(Type predicateClass, ITypeLoader typeLoader)
+		public TypeDeducingVisitor(IReferenceProvider provider, ITypeRef predicateClass)
 		{
 			this._predicateClass = predicateClass;
-			this._typeLoader = typeLoader;
+			this._referenceProvider = provider;
 			_clazz = null;
 		}
 
@@ -34,17 +31,10 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		public virtual void Visit(StaticFieldRoot root)
 		{
-			try
-			{
-				_clazz = _typeLoader.LoadType(root.ClassName());
-			}
-			catch (InstrumentationException e)
-			{
-				Sharpen.Runtime.PrintStackTrace(e);
-			}
+			_clazz = root.Type;
 		}
 
-		public virtual Type OperandClass()
+		public virtual ITypeRef OperandClass()
 		{
 			return _clazz;
 		}
@@ -55,46 +45,25 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		public virtual void Visit(ConstValue operand)
 		{
-			_clazz = operand.Value().GetType();
+			_clazz = _referenceProvider.ForType(operand.Value().GetType());
 		}
 
 		public virtual void Visit(FieldValue operand)
 		{
 			operand.Parent().Accept(this);
-			try
-			{
-				_clazz = FieldFor(_clazz, operand.FieldName()).GetType();
-			}
-			catch (Exception e)
-			{
-				Sharpen.Runtime.PrintStackTrace(e);
-			}
+			_clazz = operand.Field.Type;
 		}
 
 		public virtual void Visit(ArrayAccessValue operand)
 		{
 			operand.Parent().Accept(this);
-			_clazz = _clazz.GetElementType();
-		}
-
-		internal virtual FieldInfo FieldFor(Type clazz, string fieldName)
-		{
-			try
-			{
-				return Sharpen.Runtime.GetDeclaredField(clazz, fieldName);
-			}
-			catch (Exception)
-			{
-			}
-			return null;
+			_clazz = _clazz.ElementType;
 		}
 
 		public virtual void Visit(MethodCallValue operand)
 		{
 			operand.Parent().Accept(this);
-			MethodInfo method = ReflectUtil.MethodFor(_clazz, operand.MethodName(), operand.ParamTypes
-				());
-			_clazz = method.ReturnType;
+			_clazz = operand.Method.ReturnType;
 		}
 	}
 }

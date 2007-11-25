@@ -1,21 +1,25 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Instrumentation.Api;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
 
 namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 {
 	public class StaticFieldRoot : ComparisonOperandRoot
 	{
-		private string _className;
+		private ITypeRef _type;
 
-		public StaticFieldRoot(string className)
+		public StaticFieldRoot(ITypeRef type)
 		{
-			this._className = className;
+			_type = type;
 		}
 
-		public virtual string ClassName()
+		public virtual ITypeRef Type
 		{
-			return _className;
+			get
+			{
+				return _type;
+			}
 		}
 
 		public override bool Equals(object obj)
@@ -30,17 +34,17 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 			}
 			Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand.StaticFieldRoot casted = (Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand.StaticFieldRoot
 				)obj;
-			return _className.Equals(casted._className);
+			return _type.Equals(casted._type);
 		}
 
 		public override int GetHashCode()
 		{
-			return _className.GetHashCode();
+			return _type.GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			return _className;
+			return _type.ToString();
 		}
 
 		public override void Accept(IComparisonOperandVisitor visitor)

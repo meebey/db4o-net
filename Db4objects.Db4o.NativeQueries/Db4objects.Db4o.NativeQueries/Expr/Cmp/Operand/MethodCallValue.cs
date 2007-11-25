@@ -1,23 +1,21 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Instrumentation.Api;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
 
 namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 {
 	public class MethodCallValue : ComparisonOperandDescendant
 	{
-		private string _methodName;
+		private readonly IMethodRef _method;
 
-		private Type[] _paramTypes;
+		private readonly IComparisonOperand[] _args;
 
-		private IComparisonOperand[] _args;
-
-		public MethodCallValue(IComparisonOperandAnchor parent, string name, Type[] paramTypes
-			, IComparisonOperand[] args) : base(parent)
+		public MethodCallValue(IComparisonOperandAnchor parent, IMethodRef method, IComparisonOperand
+			[] args) : base(parent)
 		{
-			_methodName = name;
-			_paramTypes = paramTypes;
+			_method = method;
 			_args = args;
 		}
 
@@ -26,19 +24,12 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 			visitor.Visit(this);
 		}
 
-		public virtual string MethodName()
+		public virtual IComparisonOperand[] Args
 		{
-			return _methodName;
-		}
-
-		public virtual Type[] ParamTypes()
-		{
-			return _paramTypes;
-		}
-
-		public virtual IComparisonOperand[] Args()
-		{
-			return _args;
+			get
+			{
+				return _args;
+			}
 		}
 
 		public override bool Equals(object obj)
@@ -49,48 +40,29 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 			}
 			Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand.MethodCallValue casted = (Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand.MethodCallValue
 				)obj;
-			return _methodName.Equals(casted._methodName) && ArrayCmp(_paramTypes, casted._paramTypes
-				) && ArrayCmp(_args, casted._args);
+			return _method.Equals(casted._method);
 		}
 
 		public override int GetHashCode()
 		{
 			int hc = base.GetHashCode();
-			hc *= 29 + _methodName.GetHashCode();
-			hc *= 29 + _paramTypes.GetHashCode();
+			hc *= 29 + _method.GetHashCode();
 			hc *= 29 + _args.GetHashCode();
 			return hc;
 		}
 
 		public override string ToString()
 		{
-			string str = base.ToString() + "." + _methodName + "(";
-			for (int paramIdx = 0; paramIdx < _paramTypes.Length; paramIdx++)
-			{
-				if (paramIdx > 0)
-				{
-					str += ",";
-				}
-				str += _paramTypes[paramIdx] + ":" + _args[paramIdx];
-			}
-			str += ")";
-			return str;
+			return base.ToString() + "." + _method.Name + Iterators.Join(Iterators.Iterate(_args
+				), "(", ")", ", ");
 		}
 
-		private bool ArrayCmp(object[] a, object[] b)
+		public virtual IMethodRef Method
 		{
-			if (a.Length != b.Length)
+			get
 			{
-				return false;
+				return _method;
 			}
-			for (int paramIdx = 0; paramIdx < a.Length; paramIdx++)
-			{
-				if (!a[paramIdx].Equals(b[paramIdx]))
-				{
-					return false;
-				}
-			}
-			return true;
 		}
 	}
 }

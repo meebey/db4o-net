@@ -1,12 +1,10 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.Reflection;
 using Db4objects.Db4o.Instrumentation.Api;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
 using Db4objects.Db4o.NativeQueries.Instrumentation;
-using Db4objects.Db4o.NativeQueries.Optimization;
 
 namespace Db4objects.Db4o.NativeQueries.Instrumentation
 {
@@ -14,20 +12,17 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 	{
 		private IMethodBuilder _methodBuilder;
 
-		private Type _predicateClass;
+		private ITypeRef _predicateClass;
 
 		private bool _inArithmetic = false;
 
-		private Type _opClass = null;
+		private ITypeRef _opClass = null;
 
-		private Type _staticRoot = null;
+		private ITypeRef _staticRoot = null;
 
-		private ITypeLoader _typeLoader;
-
-		public ComparisonBytecodeGeneratingVisitor(ITypeLoader typeLoader, IMethodBuilder
-			 methodBuilder, Type predicateClass)
+		public ComparisonBytecodeGeneratingVisitor(IMethodBuilder methodBuilder, ITypeRef
+			 predicateClass)
 		{
-			this._typeLoader = typeLoader;
 			this._methodBuilder = methodBuilder;
 			this._predicateClass = predicateClass;
 		}
@@ -37,31 +32,32 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 			object value = operand.Value();
 			if (value != null)
 			{
-				_opClass = value.GetType();
+				_opClass = TypeRef(value.GetType());
 			}
 			_methodBuilder.Ldc(value);
 			if (value != null)
 			{
-				Box(value.GetType(), !_inArithmetic);
+				Box(_opClass, !_inArithmetic);
 			}
+		}
+
+		private ITypeRef TypeRef(Type type)
+		{
+			return _methodBuilder.References.ForType(type);
 		}
 
 		public virtual void Visit(FieldValue fieldValue)
 		{
-			Type lastFieldClass = DeduceFieldClass(fieldValue);
-			Type parentClass = DeduceFieldClass(fieldValue.Parent());
+			ITypeRef lastFieldClass = fieldValue.Field.Type;
 			bool needConversion = lastFieldClass.IsPrimitive;
 			fieldValue.Parent().Accept(this);
 			if (_staticRoot != null)
 			{
-				_methodBuilder.LoadStaticField(FieldReference(_staticRoot, lastFieldClass, fieldValue
-					.FieldName()));
+				_methodBuilder.LoadStaticField(fieldValue.Field);
 				_staticRoot = null;
 				return;
 			}
-			IFieldRef fieldRef = FieldReference(parentClass, lastFieldClass, fieldValue.FieldName
-				());
-			_methodBuilder.LoadField(fieldRef);
+			_methodBuilder.LoadField(fieldValue.Field);
 			Box(lastFieldClass, !_inArithmetic && needConversion);
 		}
 
@@ -77,12 +73,12 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		public virtual void Visit(StaticFieldRoot root)
 		{
-			_staticRoot = _typeLoader.LoadType(root.ClassName());
+			_staticRoot = root.Type;
 		}
 
 		public virtual void Visit(ArrayAccessValue operand)
 		{
-			Type cmpType = DeduceFieldClass(operand.Parent()).GetElementType();
+			ITypeRef cmpType = DeduceFieldClass(operand.Parent()).ElementType;
 			operand.Parent().Accept(this);
 			bool outerInArithmetic = _inArithmetic;
 			_inArithmetic = true;
@@ -94,17 +90,15 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		public virtual void Visit(MethodCallValue operand)
 		{
-			Type rcvType = DeduceFieldClass(operand.Parent());
-			MethodInfo method = ReflectUtil.MethodFor(rcvType, operand.MethodName(), operand.
-				ParamTypes());
-			Type retType = method.ReturnType;
+			IMethodRef method = operand.Method;
+			ITypeRef retType = method.ReturnType;
 			bool needConversion = retType.IsPrimitive;
 			operand.Parent().Accept(this);
 			bool oldInArithmetic = _inArithmetic;
-			for (int paramIdx = 0; paramIdx < operand.Args().Length; paramIdx++)
+			for (int paramIdx = 0; paramIdx < operand.Args.Length; paramIdx++)
 			{
-				_inArithmetic = operand.ParamTypes()[paramIdx].IsPrimitive;
-				operand.Args()[paramIdx].Accept(this);
+				_inArithmetic = operand.Method.ParamTypes[paramIdx].IsPrimitive;
+				operand.Args[paramIdx].Accept(this);
 			}
 			_inArithmetic = oldInArithmetic;
 			_methodBuilder.Invoke(method);
@@ -117,7 +111,7 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 			_inArithmetic = true;
 			operand.Left().Accept(this);
 			operand.Right().Accept(this);
-			Type operandType = ArithmeticType(operand);
+			ITypeRef operandType = ArithmeticType(operand);
 			switch (operand.Op().Id())
 			{
 				case ArithmeticOperator.ADD_ID:
@@ -154,7 +148,7 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 			_inArithmetic = oldInArithmetic;
 		}
 
-		private void Box(Type boxedType, bool canApply)
+		private void Box(ITypeRef boxedType, bool canApply)
 		{
 			if (!canApply)
 			{
@@ -163,24 +157,19 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 			_methodBuilder.Box(boxedType);
 		}
 
-		private Type DeduceFieldClass(IComparisonOperand fieldValue)
+		private ITypeRef DeduceFieldClass(IComparisonOperand fieldValue)
 		{
-			TypeDeducingVisitor visitor = new TypeDeducingVisitor(_predicateClass, _typeLoader
-				);
+			TypeDeducingVisitor visitor = new TypeDeducingVisitor(_methodBuilder.References, 
+				_predicateClass);
 			fieldValue.Accept(visitor);
 			return visitor.OperandClass();
 		}
 
-		private IFieldRef FieldReference(Type parentClass, Type fieldClass, string name)
-		{
-			return _methodBuilder.References().ForField(parentClass, fieldClass, name);
-		}
-
-		private Type ArithmeticType(IComparisonOperand operand)
+		private ITypeRef ArithmeticType(IComparisonOperand operand)
 		{
 			if (operand is ConstValue)
 			{
-				return ((ConstValue)operand).Value().GetType();
+				return TypeRef(((ConstValue)operand).Value().GetType());
 			}
 			if (operand is FieldValue)
 			{
@@ -197,23 +186,38 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 			if (operand is ArithmeticExpression)
 			{
 				ArithmeticExpression expr = (ArithmeticExpression)operand;
-				Type left = ArithmeticType(expr.Left());
-				Type right = ArithmeticType(expr.Right());
-				if (left == typeof(double) || right == typeof(double))
+				ITypeRef left = ArithmeticType(expr.Left());
+				ITypeRef right = ArithmeticType(expr.Right());
+				if (left == DoubleRef() || right == DoubleRef())
 				{
-					return typeof(double);
+					return DoubleRef();
 				}
-				if (left == typeof(float) || right == typeof(float))
+				if (left == FloatRef() || right == FloatRef())
 				{
-					return typeof(float);
+					return FloatRef();
 				}
-				if (left == typeof(long) || right == typeof(long))
+				if (left == LongRef() || right == LongRef())
 				{
-					return typeof(long);
+					return LongRef();
 				}
-				return typeof(int);
+				return TypeRef(typeof(int));
 			}
 			return null;
+		}
+
+		private ITypeRef LongRef()
+		{
+			return TypeRef(typeof(long));
+		}
+
+		private ITypeRef FloatRef()
+		{
+			return TypeRef(typeof(float));
+		}
+
+		private ITypeRef DoubleRef()
+		{
+			return TypeRef(typeof(double));
 		}
 	}
 }

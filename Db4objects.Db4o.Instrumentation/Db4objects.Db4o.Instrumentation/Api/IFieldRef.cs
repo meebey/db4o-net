@@ -7,10 +7,19 @@ namespace Db4objects.Db4o.Instrumentation.Api
 	/// <summary>A reference to a field.</summary>
 	/// <remarks>
 	/// A reference to a field. See
-	/// <see cref="IReferenceProvider.ForField">IReferenceProvider.ForField</see>
+	/// <see cref="ReferenceProvider#forField">ReferenceProvider#forField</see>
 	/// .
 	/// </remarks>
 	public interface IFieldRef
 	{
+		ITypeRef Type
+		{
+			get;
+		}
+
+		string Name
+		{
+			get;
+		}
 	}
 }

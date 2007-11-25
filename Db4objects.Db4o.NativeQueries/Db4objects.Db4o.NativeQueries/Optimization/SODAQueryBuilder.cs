@@ -3,7 +3,7 @@
 using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Instrumentation.Core;
+using Db4objects.Db4o.Instrumentation.Api;
 using Db4objects.Db4o.NativeQueries.Expr;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
@@ -24,12 +24,15 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 
 			private INativeClassFactory _classSource;
 
+			private IReferenceResolver _referenceResolver;
+
 			internal SODAQueryVisitor(IQuery query, object predicate, INativeClassFactory classSource
-				)
+				, IReferenceResolver referenceResolver)
 			{
 				_query = query;
 				_predicate = predicate;
 				_classSource = classSource;
+				_referenceResolver = referenceResolver;
 			}
 
 			public virtual void Visit(AndExpression expression)
@@ -56,14 +59,9 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 
 			public virtual void Visit(ComparisonExpression expression)
 			{
-				IQuery subQuery = _query;
-				IEnumerator fieldNameIterator = FieldNames(expression.Left());
-				while (fieldNameIterator.MoveNext())
-				{
-					subQuery = subQuery.Descend((string)fieldNameIterator.Current);
-				}
+				IQuery subQuery = Descend(expression.Left());
 				ComparisonQueryGeneratingVisitor visitor = new ComparisonQueryGeneratingVisitor(_predicate
-					, _classSource);
+					, _classSource, _referenceResolver);
 				expression.Right().Accept(visitor);
 				_constraint = subQuery.Constrain(visitor.Value());
 				ComparisonOperator op = expression.Op();
@@ -104,6 +102,17 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 				throw new Exception("Can't handle constraint: " + op);
 			}
 
+			private IQuery Descend(FieldValue left)
+			{
+				IQuery subQuery = _query;
+				IEnumerator fieldNameIterator = FieldNames(left);
+				while (fieldNameIterator.MoveNext())
+				{
+					subQuery = subQuery.Descend((string)fieldNameIterator.Current);
+				}
+				return subQuery;
+			}
+
 			public virtual void Visit(NotExpression expression)
 			{
 				expression.Expr().Accept(this);
@@ -125,9 +134,10 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 		}
 
 		public virtual void OptimizeQuery(IExpression expr, IQuery query, object predicate
-			, INativeClassFactory classSource)
+			, INativeClassFactory classSource, IReferenceResolver referenceResolver)
 		{
-			expr.Accept(new SODAQueryBuilder.SODAQueryVisitor(query, predicate, classSource));
+			expr.Accept(new SODAQueryBuilder.SODAQueryVisitor(query, predicate, classSource, 
+				referenceResolver));
 		}
 	}
 }

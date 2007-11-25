@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr
 
 		protected virtual void VisitArgs(MethodCallValue value)
 		{
-			IComparisonOperand[] args = value.Args();
+			IComparisonOperand[] args = value.Args;
 			for (int i = 0; i < args.Length; ++i)
 			{
 				args[i].Accept(this);

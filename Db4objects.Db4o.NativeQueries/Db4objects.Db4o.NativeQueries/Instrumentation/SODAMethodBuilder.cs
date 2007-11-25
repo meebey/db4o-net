@@ -44,11 +44,14 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		private IMethodBuilder _builder;
 
+		public static readonly string OPTIMIZE_QUERY_METHOD_NAME = "optimizeQuery";
+
 		private class SODAExpressionBuilder : IExpressionVisitor
 		{
-			private Type predicateClass;
+			private ITypeRef predicateClass;
 
-			public SODAExpressionBuilder(SODAMethodBuilder _enclosing, Type predicateClass)
+			public SODAExpressionBuilder(SODAMethodBuilder _enclosing, ITypeRef predicateClass
+				)
 			{
 				this._enclosing = _enclosing;
 				this.predicateClass = predicateClass;
@@ -96,8 +99,8 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 			private ComparisonBytecodeGeneratingVisitor ComparisonEmitter()
 			{
-				return new ComparisonBytecodeGeneratingVisitor(this._enclosing._editor.Loader(), 
-					this._enclosing._builder, this.predicateClass);
+				return new ComparisonBytecodeGeneratingVisitor(this._enclosing._builder, this.predicateClass
+					);
 			}
 
 			private void Constrain(ComparisonOperator op)
@@ -178,13 +181,23 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		public virtual void InjectOptimization(IExpression expr)
 		{
-			_editor.AddInterface(typeof(IDb4oEnhancedFilter));
-			_builder = _editor.NewPublicMethod(NativeQueriesPlatform.OPTIMIZE_QUERY_METHOD_NAME
-				, typeof(void), new Type[] { typeof(IQuery) });
-			Type predicateClass = _editor.ActualType();
+			_editor.AddInterface(TypeRef(typeof(IDb4oEnhancedFilter)));
+			_builder = _editor.NewPublicMethod(PlatformName(OPTIMIZE_QUERY_METHOD_NAME), TypeRef
+				(typeof(void)), new ITypeRef[] { TypeRef(typeof(IQuery)) });
+			ITypeRef predicateClass = _editor.Type;
 			expr.Accept(new SODAMethodBuilder.SODAExpressionBuilder(this, predicateClass));
 			_builder.Pop();
 			_builder.EndMethod();
+		}
+
+		private ITypeRef TypeRef(Type type)
+		{
+			return _editor.References.ForType(type);
+		}
+
+		private string PlatformName(string name)
+		{
+			return NativeQueriesPlatform.ToPlatformName(name);
 		}
 
 		private void LoadArgument(int index)
@@ -231,7 +244,14 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 		private IMethodRef CreateMethodReference(Type parent, string name, Type[] args, Type
 			 ret)
 		{
-			return _editor.References().ForMethod(parent, name, args, ret);
+			try
+			{
+				return _editor.References.ForMethod(parent.GetMethod(PlatformName(name), args));
+			}
+			catch (Exception e)
+			{
+				throw new InstrumentationException(e);
+			}
 		}
 	}
 }
