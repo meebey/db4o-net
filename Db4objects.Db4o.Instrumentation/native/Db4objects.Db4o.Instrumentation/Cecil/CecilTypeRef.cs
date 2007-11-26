@@ -13,15 +13,14 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 		public bool IsPrimitive
 		{
 			get
-			{
-				return _reference.IsValueType;
-//				switch (_reference.FullName)
-//				{
-//					case "System.Int32":
-//					case "System.Boolean":
-//						return true;
-//				}
-//				return false;
+			{	
+				switch (_reference.FullName)
+				{
+					case "System.Int32":
+					case "System.Boolean":
+						return true;
+				}
+				return false;
 			}
 		}
 
