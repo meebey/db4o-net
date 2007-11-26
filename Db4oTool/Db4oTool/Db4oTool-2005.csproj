@@ -65,7 +65,6 @@
     <Compile Include="NQ\CFNQEnabler.cs" />
     <Compile Include="NQ\PredicateOptimizer.cs" />
     <Compile Include="NQ\QueryInvocationProcessor.cs" />
-    <Compile Include="NQ\SodaEmitterVisitor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgramOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
