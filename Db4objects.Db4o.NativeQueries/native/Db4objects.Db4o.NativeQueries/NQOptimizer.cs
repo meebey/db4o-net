@@ -10,15 +10,14 @@ using Db4objects.Db4o.Query;
 namespace Db4objects.Db4o.NativeQueries
 {
 	public class NQOptimizer : INQOptimizer
-	{
-		private readonly QueryExpressionBuilder _builder = new QueryExpressionBuilder();
-
+	{	
 		private readonly INativeClassFactory _classFactory = new DefaultNativeClassFactory();
 
 		public void Optimize(IQuery q, object predicate, MethodBase filterMethod)
 		{
 			// TODO: cache predicate expressions here
-			IExpression expression = _builder.FromMethod(filterMethod);
+			QueryExpressionBuilder builder = new QueryExpressionBuilder();
+			IExpression expression = builder.FromMethod(filterMethod);
 			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate, _classFactory, new CecilReferenceResolver());
 		}
 	}

@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 				operand.Args[paramIdx].Accept(this);
 			}
 			_inArithmetic = oldInArithmetic;
-			_methodBuilder.Invoke(method);
+			_methodBuilder.Invoke(method, operand.CallingConvention);
 			Box(retType, !_inArithmetic && needConversion);
 		}
 
@@ -169,53 +169,72 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 		{
 			if (operand is ConstValue)
 			{
-				return TypeRef(((ConstValue)operand).Value().GetType());
+				return PrimitiveType(((ConstValue)operand).Value().GetType());
 			}
 			if (operand is FieldValue)
 			{
-				try
-				{
-					return DeduceFieldClass(operand);
-				}
-				catch (Exception e)
-				{
-					Sharpen.Runtime.PrintStackTrace(e);
-					return null;
-				}
+				return ((FieldValue)operand).Field.Type;
 			}
 			if (operand is ArithmeticExpression)
 			{
 				ArithmeticExpression expr = (ArithmeticExpression)operand;
 				ITypeRef left = ArithmeticType(expr.Left());
 				ITypeRef right = ArithmeticType(expr.Right());
-				if (left == DoubleRef() || right == DoubleRef())
+				if (left == DoubleType() || right == DoubleType())
 				{
-					return DoubleRef();
+					return DoubleType();
 				}
-				if (left == FloatRef() || right == FloatRef())
+				if (left == FloatType() || right == FloatType())
 				{
-					return FloatRef();
+					return FloatType();
 				}
-				if (left == LongRef() || right == LongRef())
+				if (left == LongType() || right == LongType())
 				{
-					return LongRef();
+					return LongType();
 				}
-				return TypeRef(typeof(int));
+				return IntType();
 			}
 			return null;
 		}
 
-		private ITypeRef LongRef()
+		private ITypeRef PrimitiveType(Type klass)
+		{
+			if (klass == typeof(int) || klass == typeof(short) || klass == typeof(bool) || klass
+				 == typeof(byte))
+			{
+				return IntType();
+			}
+			if (klass == typeof(double))
+			{
+				return DoubleType();
+			}
+			if (klass == typeof(float))
+			{
+				return FloatType();
+			}
+			if (klass == typeof(long))
+			{
+				return LongType();
+			}
+			return TypeRef(klass);
+		}
+
+		private ITypeRef IntType()
+		{
+			return TypeRef(typeof(int));
+		}
+
+		private ITypeRef LongType()
 		{
 			return TypeRef(typeof(long));
 		}
 
-		private ITypeRef FloatRef()
+		private ITypeRef FloatType()
 		{
 			return TypeRef(typeof(float));
 		}
 
-		private ITypeRef DoubleRef()
+		private ITypeRef DoubleType()
 		{
 			return TypeRef(typeof(double));
 		}

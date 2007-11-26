@@ -50,7 +50,6 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		public virtual void Visit(FieldValue operand)
 		{
-			operand.Parent().Accept(this);
 			_clazz = operand.Field.Type;
 		}
 
@@ -62,7 +61,6 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		public virtual void Visit(MethodCallValue operand)
 		{
-			operand.Parent().Accept(this);
 			_clazz = operand.Method.ReturnType;
 		}
 	}

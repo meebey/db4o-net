@@ -49,6 +49,7 @@
     <Compile Include="AllTests.cs" />
     <Compile Include="Core\AbstractCommandLineInstrumentationTestCase.cs" />
     <Compile Include="Core\AbstractInstrumentationTestCase.cs" />
+    <Compile Include="Core\AllTests.cs" />
     <Compile Include="Core\ArrayServices.cs" />
     <Compile Include="Core\ByAttributeTestCase.cs" />
     <Compile Include="Core\CompilationServices.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Core\ShellUtilities.cs" />
     <Compile Include="Core\SingleResourceTestCase.cs" />
     <Compile Include="Core\VerifyAssemblyTest.cs" />
+    <Compile Include="NQ\AllTests.cs" />
     <Compile Include="NQ\CFNQRuntimeOptimizationTestCase.cs" />
     <Compile Include="NQ\PredicateBuildTimeOptimizationTestCase.cs" />
     <EmbeddedResource Include="NQ\Resources\CFNQSubject.cs" />
@@ -82,6 +84,7 @@
     <EmbeddedResource Include="TA\Resources\TAInstrumentationSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TAAssemblyReferenceSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TADoubleInstrumentationSubject.cs" />
+    <Compile Include="TA\AllTests.cs" />
     <Compile Include="TA\MockActivator.cs" />
     <EmbeddedResource Include="TA\Resources\TAUnsafeInstrumentationSubject.cs" />
     <Compile Include="TA\TAInstrumentationAppliedMoreThanOnceCOR-918.cs" />

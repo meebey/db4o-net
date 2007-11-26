@@ -252,11 +252,14 @@ namespace Db4objects.Db4o.NativeQueries
 			private int _insideCandidate = 0;
 			Hashtable _assemblies = new Hashtable();
 			IList _methodDefinitionStack = new ArrayList();
+			private readonly CecilReferenceProvider _referenceProvider;
 
 			public Visitor(MethodDefinition topLevelMethod)
 			{
 				EnterMethodDefinition(topLevelMethod);
-				RegisterAssembly(topLevelMethod.DeclaringType.Module.Assembly);
+				AssemblyDefinition assembly = topLevelMethod.DeclaringType.Module.Assembly;
+				RegisterAssembly(assembly);
+				_referenceProvider = CecilReferenceProvider.ForModule(assembly.MainModule);
 			}
 
 			private void EnterMethodDefinition(MethodDefinition method)
@@ -680,8 +683,8 @@ namespace Db4objects.Db4o.NativeQueries
 			}
 
 			private void PushFieldValue(IComparisonOperandAnchor value, FieldReference field)
-			{
-				Push(new FieldValue(value, new CecilFieldRef(field)));
+			{	
+				Push(new FieldValue(value, _referenceProvider.ForCecilField(field)));
 			}
 
 			public override void Visit(LiteralExpression node)

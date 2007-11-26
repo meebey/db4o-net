@@ -207,7 +207,7 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		private void Invoke(IMethodRef method)
 		{
-			_builder.Invoke(method);
+			_builder.Invoke(method, CallingConvention.INTERFACE);
 		}
 
 		private void Ldc(object value)
@@ -217,32 +217,24 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		private void BuildMethodReferences()
 		{
-			descendRef = CreateMethodReference(typeof(IQuery), "descend", new Type[] { typeof(
-				string) }, typeof(IQuery));
-			constrainRef = CreateMethodReference(typeof(IQuery), "constrain", new Type[] { typeof(
-				object) }, typeof(IConstraint));
-			greaterRef = CreateMethodReference(typeof(IConstraint), "greater", new Type[] {  }
-				, typeof(IConstraint));
-			smallerRef = CreateMethodReference(typeof(IConstraint), "smaller", new Type[] {  }
-				, typeof(IConstraint));
-			containsRef = CreateMethodReference(typeof(IConstraint), "contains", new Type[] { 
-				 }, typeof(IConstraint));
-			startsWithRef = CreateMethodReference(typeof(IConstraint), "startsWith", new Type
-				[] { typeof(bool) }, typeof(IConstraint));
-			endsWithRef = CreateMethodReference(typeof(IConstraint), "endsWith", new Type[] { 
-				typeof(bool) }, typeof(IConstraint));
-			notRef = CreateMethodReference(typeof(IConstraint), "not", new Type[] {  }, typeof(
-				IConstraint));
-			andRef = CreateMethodReference(typeof(IConstraint), "and", new Type[] { typeof(IConstraint
-				) }, typeof(IConstraint));
-			orRef = CreateMethodReference(typeof(IConstraint), "or", new Type[] { typeof(IConstraint
-				) }, typeof(IConstraint));
-			identityRef = CreateMethodReference(typeof(IConstraint), "identity", new Type[] { 
-				 }, typeof(IConstraint));
+			descendRef = MethodRef(typeof(IQuery), "descend", new Type[] { typeof(string) });
+			constrainRef = MethodRef(typeof(IQuery), "constrain", new Type[] { typeof(object)
+				 });
+			greaterRef = MethodRef(typeof(IConstraint), "greater", new Type[] {  });
+			smallerRef = MethodRef(typeof(IConstraint), "smaller", new Type[] {  });
+			containsRef = MethodRef(typeof(IConstraint), "contains", new Type[] {  });
+			startsWithRef = MethodRef(typeof(IConstraint), "startsWith", new Type[] { typeof(
+				bool) });
+			endsWithRef = MethodRef(typeof(IConstraint), "endsWith", new Type[] { typeof(bool
+				) });
+			notRef = MethodRef(typeof(IConstraint), "not", new Type[] {  });
+			andRef = MethodRef(typeof(IConstraint), "and", new Type[] { typeof(IConstraint) }
+				);
+			orRef = MethodRef(typeof(IConstraint), "or", new Type[] { typeof(IConstraint) });
+			identityRef = MethodRef(typeof(IConstraint), "identity", new Type[] {  });
 		}
 
-		private IMethodRef CreateMethodReference(Type parent, string name, Type[] args, Type
-			 ret)
+		private IMethodRef MethodRef(Type parent, string name, Type[] args)
 		{
 			try
 			{

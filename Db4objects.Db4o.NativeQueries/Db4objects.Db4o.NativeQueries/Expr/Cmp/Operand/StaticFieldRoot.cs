@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Instrumentation.Api;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
 
@@ -11,6 +12,10 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 
 		public StaticFieldRoot(ITypeRef type)
 		{
+			if (null == type)
+			{
+				throw new ArgumentNullException();
+			}
 			_type = type;
 		}
 

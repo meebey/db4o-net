@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Instrumentation.Api
 
 		void Divide(ITypeRef operandType);
 
-		void Invoke(IMethodRef method);
+		void Invoke(IMethodRef method, CallingConvention convention);
 
 		void Invoke(MethodInfo method);
 

@@ -12,11 +12,15 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 
 		private readonly IComparisonOperand[] _args;
 
-		public MethodCallValue(IComparisonOperandAnchor parent, IMethodRef method, IComparisonOperand
-			[] args) : base(parent)
+		private readonly Db4objects.Db4o.Instrumentation.Api.CallingConvention _callingConvention;
+
+		public MethodCallValue(IMethodRef method, Db4objects.Db4o.Instrumentation.Api.CallingConvention
+			 callingConvention, IComparisonOperandAnchor parent, IComparisonOperand[] args) : 
+			base(parent)
 		{
 			_method = method;
 			_args = args;
+			_callingConvention = callingConvention;
 		}
 
 		public override void Accept(IComparisonOperandVisitor visitor)
@@ -40,7 +44,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 			}
 			Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand.MethodCallValue casted = (Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand.MethodCallValue
 				)obj;
-			return _method.Equals(casted._method);
+			return _method.Equals(casted._method) && _callingConvention == casted._callingConvention;
 		}
 
 		public override int GetHashCode()
@@ -48,6 +52,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 			int hc = base.GetHashCode();
 			hc *= 29 + _method.GetHashCode();
 			hc *= 29 + _args.GetHashCode();
+			hc *= 29 + _callingConvention.GetHashCode();
 			return hc;
 		}
 
@@ -62,6 +67,14 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 			get
 			{
 				return _method;
+			}
+		}
+
+		public virtual Db4objects.Db4o.Instrumentation.Api.CallingConvention CallingConvention
+		{
+			get
+			{
+				return _callingConvention;
 			}
 		}
 	}

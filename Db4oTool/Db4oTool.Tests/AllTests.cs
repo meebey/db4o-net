@@ -10,20 +10,9 @@ namespace Db4oTool.Tests
 		{
 			return new Type[]
 				{
-					typeof(Core.ByNameTestCase),
-					typeof(Core.ByAttributeTestCase),
-					typeof(Core.ByFilterTestCase),
-					typeof(Core.ByNotAttributeTestCase),
-					typeof(Core.ContextVariableTestCase),
-					typeof(Core.ILPatternTestCase),
-					typeof(Core.CustomInstrumentationTestCase),
-					typeof(Core.PreserveDebugInfoTestCase),
-					typeof(NQ.CFNQRuntimeOptimizationTestCase),
-					typeof(NQ.PredicateBuildTimeOptimizationTestCase),
-					typeof(NQ.UnoptimizablePredicatesTestCase),
-					typeof(TA.TAInstrumentationTestCase),
-                    typeof(TA.TAInstrumentationAppliedMoreThanOnce),
-					typeof(TA.TANonStorableTypeTestCase),
+					typeof(Core.AllTests),
+					typeof(NQ.AllTests),
+					typeof(TA.AllTests),
 				};
 		}
 	}

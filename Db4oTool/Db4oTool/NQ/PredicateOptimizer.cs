@@ -1,14 +1,12 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Diagnostics;
+using Db4objects.Db4o.Instrumentation.Cecil;
+using Db4objects.Db4o.NativeQueries.Instrumentation;
 using Db4oTool.Core;
-using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.NativeQueries.Expr;
-using Db4objects.Db4o.Query;
 using Db4objects.Db4o.NativeQueries;
 using Mono.Cecil;
-using Mono.Cecil.Cil;
-using MethodAttributes=Mono.Cecil.MethodAttributes;
 
 namespace Db4oTool.NQ
 {
@@ -51,20 +49,8 @@ namespace Db4oTool.NQ
 		private void OptimizePredicate(TypeDefinition type, MethodDefinition match, IExpression e)
 		{
 			TraceInfo("Optimizing '{0}' ({1})", type, e);
-			
-			MethodDefinition optimizeQuery = CreateOptimizeQueryMethod();
 
-			TypeReference extent = match.Parameters[0].ParameterType;
-			EmitPrologue(optimizeQuery, extent);
-
-			e.Accept(new SodaEmitterVisitor(_context, optimizeQuery));
-
-			EmitEpilogue(optimizeQuery);
-
-			type.Methods.Add(optimizeQuery);
-			type.Interfaces.Add(Import(typeof(IDb4oEnhancedFilter)));
-
-			TraceMethodBody(optimizeQuery);
+			new SODAMethodBuilder(new CecilTypeEditor(type)).InjectOptimization(e);
 		}
 
 		private IExpression GetExpression(MethodDefinition match)
@@ -79,36 +65,6 @@ namespace Db4oTool.NQ
 				TraceVerbose("{0}", x);
 			}
 			return null;
-		}
-
-		private static void EmitEpilogue(MethodDefinition method)
-		{
-			method.Body.CilWorker.Emit(OpCodes.Ret);
-		}
-
-		private void EmitPrologue(MethodDefinition method, TypeReference extent)
-		{
-			CilWorker worker = method.Body.CilWorker;
-			
-			// query.Constrain(extent);
-			worker.Emit(OpCodes.Ldarg_1);
-			worker.Emit(OpCodes.Ldtoken, extent);
-			worker.Emit(OpCodes.Call, Import(typeof(Type).GetMethod("GetTypeFromHandle")));
-			worker.Emit(OpCodes.Callvirt, Import(typeof(IQuery).GetMethod("Constrain")));
-			worker.Emit(OpCodes.Pop);
-		}
-
-		private MethodDefinition CreateOptimizeQueryMethod()
-		{
-			// TODO: make sure importing typeof(void) is ok here for the
-			// following scenario: CF 1.0 assembly being instrumented by
-			// Db4oTool running under .net 2.0
-			MethodDefinition method = new MethodDefinition("OptimizeQuery",
-			                                               MethodAttributes.Virtual|MethodAttributes.Public,
-			                                               Import(typeof(void)));
-			method.Parameters.Add(new ParameterDefinition(Import(typeof(IQuery))));
-			
-			return method;
 		}
 
 		private MethodDefinition GetMatchMethod(TypeDefinition type)

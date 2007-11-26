@@ -6,6 +6,7 @@ namespace Db4oTool.Tests
 	{
 		public static int Main(string[] args)
 		{
+//			return new NQ.AllTests().Run();
 			return new AllTests().Run();
 		}
 	}
