@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Db4objects.Db4o.Instrumentation_CF_2005.csproj</RootNamespace>
-    <AssemblyName>Db4objects.Db4o.Instrumentation-CF-2005</AssemblyName>
+    <AssemblyName>Db4objects.Db4o.Instrumentation</AssemblyName>
     <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <PlatformFamilyName>PocketPC</PlatformFamilyName>
     <PlatformID>3C41C503-53EF-4c2a-8DD4-A8217CAD115E</PlatformID>
@@ -44,21 +45,29 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\compact-2.0\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Db4objects.Db4o.Instrumentation\Api\CallingConvention.cs" />
     <Compile Include="Db4objects.Db4o.Instrumentation\Api\IFieldRef.cs" />
     <Compile Include="Db4objects.Db4o.Instrumentation\Api\IMethodBuilder.cs" />
     <Compile Include="Db4objects.Db4o.Instrumentation\Api\IMethodRef.cs" />
+    <Compile Include="Db4objects.Db4o.Instrumentation\Api\INativeClassFactory.cs" />
     <Compile Include="Db4objects.Db4o.Instrumentation\Api\IReferenceProvider.cs" />
+    <Compile Include="Db4objects.Db4o.Instrumentation\Api\IReferenceResolver.cs" />
     <Compile Include="Db4objects.Db4o.Instrumentation\Api\ITypeEditor.cs" />
-    <Compile Include="Db4objects.Db4o.Instrumentation\Api\ITypeLoader.cs" />
+    <Compile Include="Db4objects.Db4o.Instrumentation\Api\ITypeRef.cs" />
     <Compile Include="Db4objects.Db4o.Instrumentation\Api\InstrumentationException.cs" />
     <Compile Include="Db4objects.Db4o.Instrumentation\Core\DefaultNativeClassFactory.cs" />
-    <Compile Include="Db4objects.Db4o.Instrumentation\Core\INativeClassFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="native\CompactFramework.cs" />
+    <Compile Include="native\Db4objects.Db4o.Instrumentation\Cecil\CecilFieldRef.cs" />
+    <Compile Include="native\Db4objects.Db4o.Instrumentation\Cecil\CecilReferenceResolver.cs" />
     <Compile Include="native\Db4objects.Db4o.Instrumentation\Cecil\CecilTypeEditor.cs" />
   </ItemGroup>
   <ItemGroup>
