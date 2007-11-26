@@ -4,6 +4,7 @@ using System.Reflection;
 using Db4objects.Db4o.NativeQueries.Expr;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
+using Db4objects.Db4o.TA;
 using Db4objects.Db4o.Tests.CLI1.NativeQueries;
 using Db4objects.Db4o.NativeQueries;
 using Db4objects.Db4o.Tests.NativeQueries.Mocks;
@@ -13,6 +14,28 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 {	
 	public class QueryExpressionBuilderTestCase : ITestCase
 	{
+		public class Item
+		{
+			public string name;
+		}
+
+		bool MatchWithActivate(Item item)
+		{
+			((IActivatable) item).Activate();
+			return item.name.StartsWith("foo");
+		}
+
+		public void _TestActivateCallsAreIgnored()
+		{
+			IExpression expression = ExpressionFromMethod("MatchWithActivate");
+			Assert.AreEqual(
+				new ComparisonExpression(
+					NewFieldValue(CandidateFieldRoot.INSTANCE, "name", typeof(string)),
+					new ConstValue("foo"),
+					ComparisonOperator.STARTSWITH),
+				expression);
+		}
+
 		public void TestNameEqualsTo()
 		{
 			IExpression expression = ExpressionFromPredicate(typeof(NameEqualsTo));
@@ -22,11 +45,6 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 				NewFieldValue(PredicateFieldRoot.INSTANCE, "_name", typeof(string)),
 				ComparisonOperator.EQUALS),
 				expression);
-		}
-
-		private FieldValue NewFieldValue(IComparisonOperandAnchor anchor, string name, Type type)
-		{
-			return new FieldValue(anchor, new MockFieldRef(name, new MockTypeRef(type)));
 		}
 
 		public void TestHasPreviousWithPrevious()
@@ -96,5 +114,13 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 			// XXX: move knowledge about IMethodDefinition to QueryExpressionBuilder
 			return (new QueryExpressionBuilder()).FromMethod(type.GetMethod("Match"));
 		}
+
+		private FieldValue NewFieldValue(IComparisonOperandAnchor anchor, string name, Type type)
+		{
+			return new FieldValue(anchor,
+				new MockFieldRef(name,
+					new MockTypeRef(type)));
+		}
+
 	}
 }
