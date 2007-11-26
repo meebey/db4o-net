@@ -2,6 +2,7 @@
 
 
 using Db4objects.Db4o.Instrumentation.Cecil;
+using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.NativeQueries
 {
@@ -203,7 +204,14 @@ namespace Db4objects.Db4o.NativeQueries
 				switch (block.ActionType)
 				{
 					case ActionType.Invoke:
-						UnsupportedExpression(((InvokeActionBlock)block).Expression);
+						InvokeActionBlock invokeBlock = (InvokeActionBlock)block;
+						MethodInvocationExpression invocation = invokeBlock.Expression;
+						if (IsActivateInvocation(invocation))
+						{
+							block = invokeBlock.Next;
+							break;
+						}
+						UnsupportedExpression(invocation);
 						break;
 
 					case ActionType.ConditionalBranch:
@@ -244,6 +252,19 @@ namespace Db4objects.Db4o.NativeQueries
 				}
 			}
 			return null;
+		}
+
+		private static bool IsActivateInvocation(MethodInvocationExpression invocation)
+		{
+			MethodReferenceExpression methodRef = invocation.Target as MethodReferenceExpression;
+			if (null == methodRef) return false;
+			return IsActivateMethod(methodRef.Method);
+		}
+
+		private static bool IsActivateMethod(MethodReference method)
+		{
+			if (method.Name != "Activate") return false;
+			return method.DeclaringType.FullName == typeof(IActivatable).FullName;
 		}
 
 		class Visitor : AbstractCodeStructureVisitor

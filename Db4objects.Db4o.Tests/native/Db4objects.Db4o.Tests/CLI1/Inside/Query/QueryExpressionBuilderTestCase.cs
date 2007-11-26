@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 			return item.name.StartsWith("foo");
 		}
 
-		public void _TestActivateCallsAreIgnored()
+		public void TestActivateCallsAreIgnored()
 		{
 			IExpression expression = ExpressionFromMethod("MatchWithActivate");
 			Assert.AreEqual(
