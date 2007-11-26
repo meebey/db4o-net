@@ -125,6 +125,13 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
                                     GetEnumerable(SIZE));
         }
 
+        public void TestIndexer()
+        {
+            ArrayList4<string> list = RetrieveOnlyInstance<string>();
+            AssertRetrievedItem(list);
+            Assert.AreEqual("10", list[10]);
+        }
+
         private static IEnumerable<string> GetEnumerable(int size)
         {
             for(int i = 0 ; i < size; i++)
