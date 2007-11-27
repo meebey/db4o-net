@@ -30,6 +30,9 @@ namespace Db4oTool
 		[Option("Verbose operation mode", 'v', "verbose")]
 		public bool Verbose;
 
+		[Option("Optimize all native queries", "nq")]
+		public bool NQ;
+
 		[Option("Pretty verbose operation mode", "vv")]
 		public bool PrettyVerbose
 		{
@@ -99,6 +102,7 @@ namespace Db4oTool
 			{
 				return Assembly != null
 					   && (OptimizePredicates
+						   || NQ
 						   || EnableCF2DelegateQueries
 						   || TransparentActivation
 						   || CustomInstrumentations.Count > 0);

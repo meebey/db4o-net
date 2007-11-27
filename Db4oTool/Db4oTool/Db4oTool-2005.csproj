@@ -62,7 +62,10 @@
     <Compile Include="Core\NotFilter.cs" />
     <Compile Include="Core\SaveAssemblyInstrumentation.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="NQ\AbstractOptimizer.cs" />
     <Compile Include="NQ\CFNQEnabler.cs" />
+    <Compile Include="NQ\DelegateQueryProcessor.cs" />
+    <Compile Include="NQ\DelegateOptimizer.cs" />
     <Compile Include="NQ\PredicateOptimizer.cs" />
     <Compile Include="NQ\QueryInvocationProcessor.cs" />
     <Compile Include="Program.cs" />

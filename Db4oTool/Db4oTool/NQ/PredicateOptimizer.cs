@@ -10,7 +10,7 @@ using Mono.Cecil;
 
 namespace Db4oTool.NQ
 {
-	public class PredicateOptimizer : AbstractAssemblyInstrumentation
+	public class PredicateOptimizer : AbstractOptimizer
 	{
 		int _predicateCount;
 
@@ -44,27 +44,6 @@ namespace Db4oTool.NQ
 			if (null == e) return;
 
 			OptimizePredicate(type, match, e);
-		}
-
-		private void OptimizePredicate(TypeDefinition type, MethodDefinition match, IExpression e)
-		{
-			TraceInfo("Optimizing '{0}' ({1})", type, e);
-
-			new SODAMethodBuilder(new CecilTypeEditor(type)).InjectOptimization(e);
-		}
-
-		private IExpression GetExpression(MethodDefinition match)
-		{
-			try
-			{
-				return QueryExpressionBuilder.FromMethodDefinition(match);
-			}
-			catch (Exception x)
-			{	
-				TraceWarning("WARNING: Predicate '{0}' could not be optimized. {1}", match.DeclaringType, x.Message);
-				TraceVerbose("{0}", x);
-			}
-			return null;
 		}
 
 		private MethodDefinition GetMatchMethod(TypeDefinition type)

@@ -26,7 +26,7 @@ namespace Db4oTool.Tests.NQ
 		{
 			base.CheckInstrumentationOutput(output);
 			Assert.AreEqual(
-				"WARNING: Predicate 'ByUpperNameUnoptimizable' could not be optimized. Unsupported expression: candidate.get_Name().ToUpper",
+				"WARNING: Predicate 'System.Boolean ByUpperNameUnoptimizable::Match(Item)' could not be optimized. Unsupported expression: candidate.get_Name().ToUpper",
 				output.StdErr.Trim());
 			Assert.AreEqual("", output.StdOut);
 		}

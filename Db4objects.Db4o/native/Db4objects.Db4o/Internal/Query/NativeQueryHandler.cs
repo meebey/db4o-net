@@ -79,6 +79,20 @@ namespace Db4objects.Db4o.Internal.Query
 			return ExecuteImpl<Extent>(query, predicate, predicate.Target, predicate.Method, predicate.Delegate, comparator);
 		}
 
+		public static System.Collections.Generic.IList<Extent> ExecuteEnhancedFilter<Extent>(IObjectContainer container, IDb4oEnhancedFilter predicate)
+		{
+			return NQHandler(container).ExecuteEnhancedFilter<Extent>(predicate);
+		}
+
+		public System.Collections.Generic.IList<T> ExecuteEnhancedFilter<T>(IDb4oEnhancedFilter filter)
+		{
+			IQuery query = _container.Query();
+			query.Constrain(typeof(T));
+			filter.OptimizeQuery(query);
+			OnQueryExecution(filter, QueryExecutionKind.PreOptimized);
+			return WrapQueryResult<T>(query);
+		}
+
 		// WARNING: DONT CHANGE THE SIGNATURES OF THE FOLLOWING METHOD
 		// THE Admin INSTRUMENTATION RELIES ON THEM
 		// THE CONTAINER PASSED IN IS ALWAYS THE CONTAINER WITH THE RIGHT TRANSACTION
@@ -97,13 +111,18 @@ namespace Db4objects.Db4o.Internal.Query
 																					System.Predicate<Extent> predicate,
 																					RuntimeMethodHandle predicateMethodHandle)
 		{
-			return ((ObjectContainerBase)container).GetNativeQueryHandler().ExecuteMeta(
+			return NQHandler(container).ExecuteMeta(
                 container.Query(), 
 				new MetaDelegate<Predicate<Extent>>(
 					target,
 					predicate,
 					System.Reflection.MethodBase.GetMethodFromHandle(predicateMethodHandle)),
 				null);
+		}
+
+		private static NativeQueryHandler NQHandler(IObjectContainer container)
+		{
+			return ((ObjectContainerBase)container).GetNativeQueryHandler();
 		}
 
 		private System.Collections.Generic.IList<Extent> ExecuteImpl<Extent>(

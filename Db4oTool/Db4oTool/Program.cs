@@ -41,6 +41,10 @@ namespace Db4oTool
 			{
 				pipeline.Add(new PredicateOptimizer());
 			}
+			if (options.NQ)
+			{
+				pipeline.Add(new DelegateOptimizer());
+			}
 			if (options.EnableCF2DelegateQueries)
 			{
 				pipeline.Add(new CFNQEnabler());
