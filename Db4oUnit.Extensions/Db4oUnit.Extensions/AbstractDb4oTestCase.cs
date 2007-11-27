@@ -185,7 +185,7 @@ namespace Db4oUnit.Extensions
 			return RunConcurrencyAll(true);
 		}
 
-		private int RunEmbeddedClientServer(bool independentConfig)
+		protected virtual int RunEmbeddedClientServer(bool independentConfig)
 		{
 			return new TestRunner(EmbeddedClientServerSuite(independentConfig)).Run();
 		}
@@ -214,32 +214,33 @@ namespace Db4oUnit.Extensions
 				).Build() })).Run();
 		}
 
-		private Db4oTestSuiteBuilder SoloSuite(bool independentConfig)
+		protected virtual Db4oTestSuiteBuilder SoloSuite(bool independentConfig)
 		{
 			return new Db4oTestSuiteBuilder(new Db4oSolo(ConfigSource(independentConfig)), TestCases
 				());
 		}
 
-		private Db4oTestSuiteBuilder ClientServerSuite(bool independentConfig)
+		protected virtual Db4oTestSuiteBuilder ClientServerSuite(bool independentConfig)
 		{
 			return new Db4oTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
 				), false, "C/S"), TestCases());
 		}
 
-		private Db4oTestSuiteBuilder EmbeddedClientServerSuite(bool independentConfig)
+		protected virtual Db4oTestSuiteBuilder EmbeddedClientServerSuite(bool independentConfig
+			)
 		{
 			return new Db4oTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
 				), true, "C/S EMBEDDED"), TestCases());
 		}
 
-		private Db4oTestSuiteBuilder ConcurrenyClientServerSuite(bool independentConfig, 
-			bool embedded, string label)
+		protected virtual Db4oTestSuiteBuilder ConcurrenyClientServerSuite(bool independentConfig
+			, bool embedded, string label)
 		{
 			return new Db4oConcurrencyTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
 				), embedded, label), TestCases());
 		}
 
-		private IConfigurationSource ConfigSource(bool independentConfig)
+		protected virtual IConfigurationSource ConfigSource(bool independentConfig)
 		{
 			return (independentConfig ? (IConfigurationSource)new IndependentConfigurationSource
 				() : new GlobalConfigurationSource());

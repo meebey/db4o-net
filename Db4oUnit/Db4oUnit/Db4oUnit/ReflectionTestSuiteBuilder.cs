@@ -11,13 +11,8 @@ namespace Db4oUnit
 	{
 		private Type[] _classes;
 
-		public ReflectionTestSuiteBuilder(Type clazz)
+		public ReflectionTestSuiteBuilder(Type clazz) : this(new Type[] { clazz })
 		{
-			if (null == clazz)
-			{
-				throw new ArgumentException("clazz");
-			}
-			_classes = new Type[] { clazz };
 		}
 
 		public ReflectionTestSuiteBuilder(Type[] classes)

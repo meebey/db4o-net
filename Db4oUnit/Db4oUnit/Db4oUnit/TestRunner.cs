@@ -55,7 +55,7 @@ namespace Db4oUnit
 			result.RunStarted();
 			suite.Run(result);
 			result.RunFinished();
-			Report(result);
+			ReportResult(result, writer);
 			return result.Failures().Size();
 		}
 
@@ -77,13 +77,13 @@ namespace Db4oUnit
 			TestPlatform.PrintStackTrace(TestPlatform.GetStdErr(), x);
 		}
 
-		private void Report(TestResult result)
+		private void ReportResult(TestResult result, TextWriter writer)
 		{
 			if (_reportToFile)
 			{
 				ReportToTextFile(result);
 			}
-			ReportToStdErr(result);
+			Report(result, writer);
 		}
 
 		private void ReportToTextFile(TestResult result)
@@ -93,7 +93,7 @@ namespace Db4oUnit
 				TextWriter writer = TestPlatform.OpenTextFile("db4ounit.log");
 				try
 				{
-					Report(writer, result);
+					Report(result, writer);
 				}
 				finally
 				{
@@ -106,12 +106,7 @@ namespace Db4oUnit
 			}
 		}
 
-		private void ReportToStdErr(TestResult result)
-		{
-			Report(TestPlatform.GetStdErr(), result);
-		}
-
-		private void Report(TextWriter writer, TestResult result)
+		private void Report(TestResult result, TextWriter writer)
 		{
 			try
 			{

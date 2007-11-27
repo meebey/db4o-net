@@ -15,7 +15,7 @@ namespace Db4oUnit.Extensions.Fixtures
 	{
 		protected static readonly string FILE = "Db4oClientServer.yap";
 
-		public static readonly string HOST = "localhost";
+		public static readonly string HOST = "127.0.0.1";
 
 		public static readonly string USERNAME = "db4o";
 

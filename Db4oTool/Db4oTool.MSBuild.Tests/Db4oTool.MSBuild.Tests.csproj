@@ -62,7 +62,6 @@
   </Target>
   -->
 
-<!-- cr: Commenting out for the move for now  
   <UsingTask AssemblyFile="$(OutputPath)\Db4oTool.MSBuild.dll" TaskName="Db4oTool.MSBuild.Db4oEnhancerMSBuildTask" />
   <ItemGroup>
     <Db4oEnhance Include="$(TargetPath)" />
@@ -70,6 +69,6 @@
   <Target Name="AfterBuild">
     <Db4oEnhancerMSBuildTask Assemblies="@(Db4oEnhance)" />
   </Target>
--->
+
 
 </Project>

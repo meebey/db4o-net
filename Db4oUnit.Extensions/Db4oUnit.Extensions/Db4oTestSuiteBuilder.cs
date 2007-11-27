@@ -11,9 +11,9 @@ namespace Db4oUnit.Extensions
 	{
 		private IDb4oFixture _fixture;
 
-		public Db4oTestSuiteBuilder(IDb4oFixture fixture, Type clazz) : base(clazz)
+		public Db4oTestSuiteBuilder(IDb4oFixture fixture, Type clazz) : this(fixture, new 
+			Type[] { clazz })
 		{
-			Fixture(fixture);
 		}
 
 		public Db4oTestSuiteBuilder(IDb4oFixture fixture, Type[] classes) : base(classes)
