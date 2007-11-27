@@ -1,4 +1,5 @@
-﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2004 - 2007   db4objects Inc.   http://www.db4o.com */
+
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -14,7 +15,7 @@ using System.Security;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("5.7.001")]
+[assembly: AssemblyVersion("7.0.0.001")]
 
 [assembly: Mono.Author("Jean Baptiste Evain")]
 [assembly: Mono.Author("Rodrigo B. de Oliveira")]

@@ -1,4 +1,5 @@
-﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -15,7 +16,7 @@ using System.Security;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("7.0.001")]
+[assembly: AssemblyVersion("7.0.0.001")]
 
 #if !CF_2_0
 [assembly: AllowPartiallyTrustedCallers]
