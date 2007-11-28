@@ -44,6 +44,15 @@ namespace Db4oTool
 		[Option("Fake operation mode, assembly won't be written", "fake")]
 		public bool Fake;
 
+        public List<string> StatisticsFileNames = new List<string>();
+
+        [Option("Print statistics for database file PARAM", "statistics")]
+        public WhatToDoNext StatisticsFileName(string fileName)
+        {
+            StatisticsFileNames.Add(fileName);
+            return WhatToDoNext.GoAhead;
+        }
+
 		public List<string> CustomInstrumentations = new List<string>();
 
 		[Option("Custom instrumentation type", "instrumentation", MaxOccurs = -1)]
@@ -100,12 +109,13 @@ namespace Db4oTool
 		{
 			get
 			{
-				return Assembly != null
+				return StatisticsFileNames.Count > 0 ||
+                    (Assembly != null
 					   && (OptimizePredicates
 						   || NQ
 						   || EnableCF2DelegateQueries
 						   || TransparentActivation
-						   || CustomInstrumentations.Count > 0);
+						   || CustomInstrumentations.Count > 0));
 			}
 		}
 

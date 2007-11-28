@@ -35,8 +35,17 @@ namespace Db4oTool
 		}
 
 		private static void Run(ProgramOptions options)
-		{	
-			InstrumentationPipeline pipeline = new InstrumentationPipeline(GetConfiguration(options));
+		{
+            foreach (string fileName in options.StatisticsFileNames)
+            {
+                new Statistics().Run(fileName);
+            }
+            if (options.Assembly == null)
+            {
+                return;
+            }
+
+            InstrumentationPipeline pipeline = new InstrumentationPipeline(GetConfiguration(options));
 			if (options.OptimizePredicates)
 			{
 				pipeline.Add(new PredicateOptimizer());

@@ -71,6 +71,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="ProgramOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\Statistics.cs" />
     <Compile Include="TA\ActivateMethodEmitter.cs" />
     <Compile Include="TA\BindMethodEmitter.cs" />
     <Compile Include="TA\MethodEmitter.cs" />
