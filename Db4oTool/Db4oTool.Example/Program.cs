@@ -27,8 +27,7 @@ namespace Db4oShell.Example
 	
 	/// <summary>
 	/// IMPORTANT: Look at Project Properties/Build Events. The whole point of this example is
-	/// to show how to configure a CompactFramework project to be instrumented by the
-	/// CFNativeQueriesEnabler tool.
+	/// to show how to configure a CompactFramework project to be instrumented.
 	/// </summary>
 	class Program
 	{
