@@ -171,7 +171,7 @@ namespace Db4objects.Db4o.Collections
 		/// </remarks>
 		/// <seealso cref="ArrayList"></seealso>
 		/// <seealso cref="IActivatable">IActivatable</seealso>
-		internal virtual E Get(int index)
+		public virtual E Get(int index)
 		{
 			CheckIndex(index, 0, Count - 1);
 			return elements[index];

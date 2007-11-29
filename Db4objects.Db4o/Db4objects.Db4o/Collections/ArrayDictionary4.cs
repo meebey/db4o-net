@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Collections
 		[System.NonSerialized]
 		private IActivator _activator;
 
-		public ArrayDictionary4() : this(16)
+		public ArrayDictionary4()
 		{
 		}
 
@@ -66,6 +66,24 @@ namespace Db4objects.Db4o.Collections
 			_activator = activator;
 		}
 
+		private object[] GetKeysArray()
+		{
+			if (_keys == null)
+			{
+				InitializeBackingArray(16);
+			}
+			return _keys;
+		}
+
+		private object[] GetValuesArray()
+		{
+			if (_values == null)
+			{
+				InitializeBackingArray(16);
+			}
+			return _values;
+		}
+
 		/// <summary>
 		/// java.util.Map implementation but transparently
 		/// activates the members as required.
@@ -81,8 +99,8 @@ namespace Db4objects.Db4o.Collections
 			Activate();
 			_startIndex = 0;
 			_endIndex = 0;
-			Arrays.Fill(_keys, null);
-			Arrays.Fill(_values, null);
+			Arrays.Fill(GetKeysArray(), null);
+			Arrays.Fill(GetValuesArray(), null);
 		}
 
 		private bool ContainsKeyImpl(K key)
@@ -99,17 +117,17 @@ namespace Db4objects.Db4o.Collections
 
 		private int IndexOfValue(V value)
 		{
-			return IndexOf(_values, value);
+			return IndexOf(GetValuesArray(), value);
 		}
 
 		private V ValueAt(int index)
 		{
-			return (V)_values[index];
+			return (V)GetValuesArray()[index];
 		}
 
 		private K KeyAt(int i)
 		{
-			return (K)_keys[i];
+			return (K)GetKeysArray()[i];
 		}
 
 		private V Replace(int index, V value)
@@ -198,6 +216,10 @@ namespace Db4objects.Db4o.Collections
 
 		private void EnsureCapacity()
 		{
+			if (_keys == null)
+			{
+				InitializeBackingArray(16);
+			}
 			if (_endIndex == _keys.Length)
 			{
 				object[] newKeys = new object[_keys.Length * 2];
