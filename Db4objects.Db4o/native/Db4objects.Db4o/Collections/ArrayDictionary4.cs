@@ -172,7 +172,7 @@ namespace Db4objects.Db4o.Collections
             {
                 throw new ArgumentNullException();
             }
-            return IndexOf(_keys, key);
+            return IndexOf(GetKeysArray(), key);
         }
 
 		private int IndexOf(object[] array, object value)
