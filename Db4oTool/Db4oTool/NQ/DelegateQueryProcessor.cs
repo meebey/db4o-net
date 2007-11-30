@@ -32,12 +32,14 @@ namespace Db4oTool.NQ
 		private readonly ILPattern _predicateCreationPattern = ILPattern.Sequence(OpCodes.Newobj, OpCodes.Ldftn);
 
 		private readonly DelegateOptimizer _optimizer;
+	    private CecilReflector _reflector;
 
-		public DelegateQueryProcessor(InstrumentationContext context, DelegateOptimizer optimizer)
+	    public DelegateQueryProcessor(InstrumentationContext context, DelegateOptimizer optimizer)
 		{
 			_context = context;
 			_optimizer = optimizer;
-		}
+            _reflector = new CecilReflector(_context);
+        }
 
 		public void Process(MethodDefinition parent, Instruction queryInvocation)
 		{
@@ -129,7 +131,7 @@ namespace Db4oTool.NQ
 	        return fields.Count > 0;
 	    }
 
-	    private static void InjectSyntheticPredicateInstantiation(Instruction queryInvocation, CilWorker cil, TypeDefinition syntheticPredicate, ICollection<FieldReference> fieldValuesReferences, TypeReference closureType)
+	    private void InjectSyntheticPredicateInstantiation(Instruction queryInvocation, CilWorker cil, TypeDefinition syntheticPredicate, ICollection<FieldReference> fieldValuesReferences, TypeReference closureType)
 	    {
             VariableDefinition closureObjVar = new VariableDefinition(closureType);
             cil.GetBody().Variables.Add(closureObjVar);
@@ -148,16 +150,50 @@ namespace Db4oTool.NQ
             cil.InsertBefore(queryInvocation, newObj);
 	    }
 
-	    private static void PushParameters(CilWorker worker, VariableDefinition closureObj, Instruction ip, IEnumerable<FieldReference> fieldValuesReferences)
+	    private void PushParameters(CilWorker worker, VariableDefinition closureObj, Instruction ip, IEnumerable<FieldReference> fieldValuesReferences)
 	    {
 	        foreach (FieldReference fieldReference in fieldValuesReferences)
 	        {
 	            Instruction instruction = worker.Create(OpCodes.Ldloc, closureObj);
 	            worker.InsertAfter(ip, instruction);
-	            worker.InsertAfter(instruction, worker.Create(OpCodes.Ldfld, fieldReference));
 
+                if (IsPublicField(fieldReference))
+                {
+                    worker.InsertAfter(instruction, worker.Create(OpCodes.Ldfld, fieldReference));
+                }
+                else
+                {
+                    ip = PushFieldContentsUsingReflection(fieldReference, worker, instruction);
+                }
 	            ip = ip.Next.Next;
 	        }
+	    }
+
+	    private bool IsPublicField(FieldReference reference)
+	    {
+	        TypeDefinition parentType = _reflector.ResolveTypeReference(reference.DeclaringType);
+	        return (parentType.Fields.GetField(reference.Name).Attributes & FieldAttributes.Public) == FieldAttributes.Public;
+	    }
+
+	    /**
+         * Expects that the object reference is already in the stack
+         */
+        private Instruction PushFieldContentsUsingReflection(FieldReference fieldReference, CilWorker cil, Instruction ip)
+	    {
+            Instruction ldstr = cil.Create(OpCodes.Ldstr, fieldReference.Name);
+            cil.InsertAfter(ip, ldstr);
+            cil.InsertAfter(
+                    ldstr, 
+                    cil.Create(OpCodes.Call, ImportReflectionGetter(fieldReference.FieldType)));
+
+            return ip;
+	    }
+
+	    private MethodReference ImportReflectionGetter(TypeReference extent)
+	    {
+            Type queryPlatformType = typeof(Db4objects.Db4o.Query.PredicatePlatform);
+	        MethodReference getFieldMethod =  _context.Import(queryPlatformType.GetMethod("GetField", new Type[] {typeof (Object), typeof (string)}));
+            return InstantiateGenericMethod(getFieldMethod, extent);
 	    }
 
 	    private static void RemovePreviousInstrunctions(CilWorker worker, Instruction instruction, int n)
@@ -307,6 +343,11 @@ namespace Db4oTool.NQ
 		{
 			return (MethodDefinition) reference;
 		}
+
+        private static TypeDefinition Resolve(TypeReference type)
+        {
+            return (TypeDefinition) type;
+        }
 
 		private static MethodReference GetMethodReferenceFromInlinePredicatePattern(Instruction queryInvocation)
 		{

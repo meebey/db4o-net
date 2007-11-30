@@ -38,6 +38,8 @@ public class Item
 // TODO: query invocation with comparison
 public class DelegateSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 {
+    //private static int staticValue;
+
 	override public void SetUp()
 	{	
 		_container.Set(new Item("foo", 1));
@@ -62,6 +64,19 @@ public class DelegateSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 		});
 		CheckResult(items);
 	}
+
+    public void TestInlineClosureDelegateWithStaticField()
+    {
+        /*
+        string name = "foo";
+        staticValue = 1;
+        IList<Item> items = _container.Query<Item>(delegate(Item candidate)
+        {
+            return candidate.Name == name && staticValue == candidate.Value;
+        });
+        CheckResult(items);
+         */
+    }
 
     public void TestInlineClosureDelegateWithMultipleFields()
     {
@@ -98,12 +113,17 @@ public class DelegateSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 		}));
 	}
 
-	public void _TestInstanceMemberDelegate()
+	public void TestInstanceMemberDelegate()
 	{
-		/*IList<Item> items = _container.Query<Item>(new QueryItemByName("foo").Match);
+		IList<Item> items = _container.Query<Item>(new QueryItemByName("foo").Match);
 		CheckResult(items);
-         */ 
 	}
+
+    public void TestIntInstanceMemberDelegate()
+    {
+        IList<Item> items = _container.Query<Item>(new QueryItemByValue(1).Match);
+        CheckResult(items);
+    }
 
 	private void CheckResult(IList<Item> items)
 	{
@@ -129,5 +149,21 @@ public class DelegateSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 		{
 			return candidate.Name == _name;
 		}
+
 	}
+
+    class QueryItemByValue
+    {
+        private int _value;
+
+        public QueryItemByValue(int value)
+        {
+            _value = value;
+        }
+
+        public bool Match(Item candidate)
+        {
+            return candidate.Value == _value;
+        }
+    }
 }
