@@ -11,9 +11,9 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 		}
 
 		private readonly CecilReferenceProvider _provider;
-		protected readonly T _reference;
+		protected T _reference;
 
-		public CecilRef(CecilReferenceProvider provider, T reference)
+	    public CecilRef(CecilReferenceProvider provider, T reference)
 		{
 			_provider = provider;
 			_reference = reference;
@@ -27,6 +27,7 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 		public T Reference
 		{
 			get { return _reference; }
+		    set { _reference = value; }
 		}
 
 		public virtual string Name
