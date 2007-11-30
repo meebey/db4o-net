@@ -39,9 +39,20 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
         private void AssertRetrievedItem<T>(IList<T> list)
         {
+#if CF_2_0
+            object[] elements = (object[]) GetField(Reflector(), list, "elements");
+            Assert.AreEqual(10, elements.Length);
+            foreach (object obj in elements)
+            {
+                Assert.IsNull(obj);
+            }
+            Assert.AreEqual(10, GetField(Reflector(), list, "capacity"));
+            Assert.AreEqual(10, GetField(Reflector(), list, "listSize"));
+#else 
             Assert.IsNull(GetField(Reflector(), list, "elements"));
             Assert.AreEqual(default(int), GetField(Reflector(), list, "capacity"));
             Assert.AreEqual(default(int), GetField(Reflector(), list, "listSize"));
+#endif
         }
 
         public void TestIndexOf()
