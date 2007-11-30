@@ -32,9 +32,11 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandlineTestCase.cs" />
     <Compile Include="IntItem.cs" />
     <Compile Include="IntItemTestCase.cs" />
     <Compile Include="AllTests.cs" />
+    <Compile Include="NonTAItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,14 +63,11 @@
   <Target Name="BeforeBuild">
   </Target>
   -->
-
   <UsingTask AssemblyFile="$(OutputPath)\Db4oTool.MSBuild.dll" TaskName="Db4oTool.MSBuild.Db4oEnhancerMSBuildTask" />
   <ItemGroup>
     <Db4oEnhance Include="$(TargetPath)" />
   </ItemGroup>
   <Target Name="AfterBuild">
-    <Db4oEnhancerMSBuildTask Assemblies="@(Db4oEnhance)" />
+    <Db4oEnhancerMSBuildTask Assemblies="@(Db4oEnhance)" CommandLine="-by-name:IntItem" />
   </Target>
-
-
 </Project>

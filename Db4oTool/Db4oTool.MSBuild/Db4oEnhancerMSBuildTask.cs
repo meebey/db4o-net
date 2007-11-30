@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Db4oTool;
@@ -24,13 +25,29 @@ namespace Db4oTool.MSBuild
             set { projectDir = value; }
         }
 
+        private string commandLine;
+
+        public string CommandLine
+        {
+            get { return commandLine; }
+            set { commandLine = value; }
+        }
+
         public override bool Execute()
         {
+            List<string> list = new List<string>();
+            list.Add("-ta");
+            if (commandLine != null)
+            {
+                list.Add(commandLine);
+            }
             foreach (ITaskItem assembly in assemblies)
             {
                 string assemblyFile = projectDir + assembly.ItemSpec;
                 Log.LogWarning(string.Format("Enhancing assembly: {0}", assemblyFile));
-                int ret = Enhance(assemblyFile);
+                list.Add(assemblyFile);
+
+                int ret = Enhance(list.ToArray());
                 if (ret != 0)
                 {
                     string errorMsg = string.Format("Fail to enhance assembly: {0} with return value {1}", assemblyFile, ret);
@@ -43,9 +60,8 @@ namespace Db4oTool.MSBuild
             return true;
         }
 
-        private int Enhance(string assembly)
+        private int Enhance(string[] options)
         {
-            string[] options = new string[] { "-ta", assembly };
             int ret = Program.Main(options);
             return ret;
         }

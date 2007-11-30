@@ -14,6 +14,7 @@ namespace Db4oTool.MSBuild.Tests
         {
             return new Type[] { 
                 typeof(IntItemTestCase),
+                typeof(CommandlineTestCase),
             };
         }
     }
