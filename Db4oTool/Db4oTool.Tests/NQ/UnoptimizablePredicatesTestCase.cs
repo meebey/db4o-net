@@ -19,7 +19,7 @@ namespace Db4oTool.Tests.NQ
 
 		protected override string CommandLine
 		{
-			get { return "-optimize-predicates"; }
+			get { return "-nq"; }
 		}
 
 		protected override void CheckInstrumentationOutput(ShellUtilities.ProcessOutput output)

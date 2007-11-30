@@ -73,10 +73,8 @@
     <Compile Include="Core\SingleResourceTestCase.cs" />
     <Compile Include="Core\VerifyAssemblyTest.cs" />
     <Compile Include="NQ\AllTests.cs" />
-    <Compile Include="NQ\CFNQRuntimeOptimizationTestCase.cs" />
     <Compile Include="NQ\DelegateBuildTimeOptimizationTestCase.cs" />
     <Compile Include="NQ\PredicateBuildTimeOptimizationTestCase.cs" />
-    <EmbeddedResource Include="NQ\Resources\CFNQSubject.cs" />
     <EmbeddedResource Include="NQ\Resources\PredicateSubject.cs" />
     <EmbeddedResource Include="NQ\Resources\UnoptimizablePredicateSubject.cs" />
     <EmbeddedResource Include="NQ\Resources\DelegateSubject.cs" />

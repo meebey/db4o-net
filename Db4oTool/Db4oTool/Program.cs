@@ -46,17 +46,10 @@ namespace Db4oTool
             }
 
             InstrumentationPipeline pipeline = new InstrumentationPipeline(GetConfiguration(options));
-			if (options.OptimizePredicates)
-			{
-				pipeline.Add(new PredicateOptimizer());
-			}
 			if (options.NQ)
 			{
 				pipeline.Add(new DelegateOptimizer());
-			}
-			if (options.EnableCF2DelegateQueries)
-			{
-				pipeline.Add(new CFNQEnabler());
+				pipeline.Add(new PredicateOptimizer());
 			}
 			if (options.TransparentActivation)
 			{

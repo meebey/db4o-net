@@ -7,29 +7,6 @@ using Db4objects.Db4o.Internal.Diagnostic;
 
 namespace Db4objects.Db4o.Internal.Query
 {
-	/// <summary>
-	/// Supplies the information missing in the CompactFramework System.Delegate API: Target and Method.
-	/// </summary>
-	/// <typeparam name="DelegateType"></typeparam>
-	public class MetaDelegate<DelegateType>
-	{
-		public readonly DelegateType Delegate;
-		public readonly object Target;
-		public readonly System.Reflection.MethodBase Method;
-
-		// IMPORTANT: don't change the order of parameters here because it is
-		// assumed by the instrumentation tool to be exactly like this:
-		//  1) target object
-		//  2) delegate reference
-		//  3) method info object
-		public MetaDelegate(object target, DelegateType delegateRef, System.Reflection.MethodBase method)
-		{
-			this.Target = target;
-			this.Method = method;
-			this.Delegate = delegateRef;
-		}
-	}
-
 	public class NativeQueryHandler
 	{
 		private IObjectContainer _container;
@@ -66,19 +43,6 @@ namespace Db4objects.Db4o.Internal.Query
 #endif
 		}
 
-		/// <summary>
-		/// ExecuteMeta should not generally be called by user's code. Calls to ExecuteMeta should
-		/// be inserted by an instrumentation tool.
-		/// </summary>
-		/// <typeparam name="Extent"></typeparam>
-		/// <param name="predicate"></param>
-		/// <param name="comparator"></param>
-		/// <returns></returns>
-        public System.Collections.Generic.IList<Extent> ExecuteMeta<Extent>(Db4objects.Db4o.Query.IQuery query, MetaDelegate<System.Predicate<Extent>> predicate, Db4objects.Db4o.Query.IQueryComparator comparator)
-		{
-			return ExecuteImpl<Extent>(query, predicate, predicate.Target, predicate.Method, predicate.Delegate, comparator);
-		}
-
 		public static System.Collections.Generic.IList<Extent> ExecuteEnhancedFilter<Extent>(IObjectContainer container, IDb4oEnhancedFilter predicate)
 		{
 			return NQHandler(container).ExecuteEnhancedFilter<Extent>(predicate);
@@ -91,33 +55,6 @@ namespace Db4objects.Db4o.Internal.Query
 			filter.OptimizeQuery(query);
 			OnQueryExecution(filter, QueryExecutionKind.PreOptimized);
 			return WrapQueryResult<T>(query);
-		}
-
-		// WARNING: DONT CHANGE THE SIGNATURES OF THE FOLLOWING METHOD
-		// THE Admin INSTRUMENTATION RELIES ON THEM
-		// THE CONTAINER PASSED IN IS ALWAYS THE CONTAINER WITH THE RIGHT TRANSACTION
-		public static System.Collections.Generic.IList<Extent> ExecuteInstrumentedStaticDelegateQuery<Extent>(IObjectContainer container, 
-																					System.Predicate<Extent> predicate,
-																					RuntimeMethodHandle predicateMethodHandle)
-		{
-			return ExecuteInstrumentedDelegateQuery(container, null, predicate, predicateMethodHandle);
-		}
-
-		// WARNING: DONT CHANGE THE SIGNATURES OF THE FOLLOWING METHOD
-		// THE Admin INSTRUMENTATION RELIES ON THEM
-		// THE CONTAINER PASSED IN IS ALWAYS THE CONTAINER WITH THE RIGHT TRANSACTION
-		public static System.Collections.Generic.IList<Extent> ExecuteInstrumentedDelegateQuery<Extent>(IObjectContainer container,
-																					object target,
-																					System.Predicate<Extent> predicate,
-																					RuntimeMethodHandle predicateMethodHandle)
-		{
-			return NQHandler(container).ExecuteMeta(
-                container.Query(), 
-				new MetaDelegate<Predicate<Extent>>(
-					target,
-					predicate,
-					System.Reflection.MethodBase.GetMethodFromHandle(predicateMethodHandle)),
-				null);
 		}
 
 		private static NativeQueryHandler NQHandler(IObjectContainer container)

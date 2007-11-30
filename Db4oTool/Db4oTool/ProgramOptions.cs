@@ -15,14 +15,8 @@ namespace Db4oTool
 		[Option("Preserve debugging information", "debug")]
 		public bool Debug;
 
-		[Option("Optimize predicate subclasses", "optimize-predicates")]
-		public bool OptimizePredicates;
-
 		[Option("Implement Transparent Activation Support", "ta")]
 		public bool TransparentActivation;
-
-		[Option("Enable delegate style queries for CompactFramework 2", "cf2-delegates")]
-		public bool EnableCF2DelegateQueries;
 
 		[Option("Case sensitive queries", "case-sensitive")]
 		public bool CaseSensitive;
@@ -111,9 +105,7 @@ namespace Db4oTool
 			{
 				return StatisticsFileNames.Count > 0 ||
                     (Assembly != null
-					   && (OptimizePredicates
-						   || NQ
-						   || EnableCF2DelegateQueries
+					   && (NQ
 						   || TransparentActivation
 						   || CustomInstrumentations.Count > 0));
 			}

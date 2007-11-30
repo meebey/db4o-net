@@ -9,7 +9,6 @@ namespace Db4oTool.Tests.NQ
 		{
 			return new Type[]
 				{
-					typeof(CFNQRuntimeOptimizationTestCase),
 					typeof(DelegateBuildTimeOptimizationTestCase),
 					typeof(PredicateBuildTimeOptimizationTestCase),
 					typeof(UnoptimizablePredicatesTestCase),
