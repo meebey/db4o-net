@@ -75,8 +75,8 @@
     <Compile Include="TA\ActivateMethodEmitter.cs" />
     <Compile Include="TA\BindMethodEmitter.cs" />
     <Compile Include="TA\MethodEmitter.cs" />
-    <Compile Include="TA\RelativeAssemblyResolver.cs" />
-    <Compile Include="TA\CecilReflector.cs" />
+    <Compile Include="Core\RelativeAssemblyResolver.cs" />
+    <Compile Include="Core\CecilReflector.cs" />
     <Compile Include="TA\TAInstrumentation.cs" />
   </ItemGroup>
   <ItemGroup>
