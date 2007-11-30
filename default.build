@@ -23,7 +23,7 @@
 		</exec>
 	</target>
 	
-	<target name="Db4objects.Db4o.Tests" depends="Db4objects.Db4o, Db4objects.Db4o.Tools, Db4oUnit.Extensions">
+	<target name="Db4objects.Db4o.Tests" depends="Db4objects.Db4o, Db4oUnit.Extensions">
 		<csc
 			output="${build.dir}/Db4objects.Db4o.Tests.exe"
 			main="Db4objects.Db4o.Tests.AllTests"
@@ -37,28 +37,8 @@
 			
 			<references basedir="${build.dir}">
 				<include name="Db4objects.Db4o.dll" />
-				<include name="Db4objects.Db4o.Tools.dll" />
 				<include name="Db4oUnit.Extensions.dll" />
 				<include name="Db4oUnit.dll" />
-			</references>
-		</csc>
-	</target>
-	
-	<target name="Db4objects.Db4o.Tools" depends="Db4objects.Db4o">
-		<csc
-			output="${build.dir}/Db4objects.Db4o.Tools.dll"
-			target="library"
-			debug="${debug}"
-			define="${csc.define}" >
-			
-			<sources basedir="Db4objects.Db4o.Tools">
-				<include name="**/*.cs" />
-			</sources>
-			
-			<references basedir="${build.dir}">
-				<include name="Db4objects.Db4o.dll" />
-				<include name="Mono.Cecil.dll" />
-				<include name="Cecil.FlowAnalysis.dll" />
 			</references>
 		</csc>
 	</target>

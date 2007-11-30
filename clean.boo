@@ -3,7 +3,6 @@ import System.IO
 folders = (
 	"Db4objects.Db4o",
 	"Db4objects.Db4o.Tests",
-	"Db4objects.Db4o.Tools",
 	"Db4objects.Db4o",
 	"Db4oUnit",
 	"Db4oUnit.Extensions",

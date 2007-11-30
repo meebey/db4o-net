@@ -7,8 +7,6 @@ del Db4objects.Db4o.TA\bin /S /Q
 del Db4objects.Db4o.TA\obj /S /Q
 del Db4objects.Db4o.TA.Tests\bin /S /Q
 del Db4objects.Db4o.TA.Tests\obj /S /Q
-del Db4objects.Db4o.Tools\bin /S /Q
-del Db4objects.Db4o.Tools\obj /S /Q
 del Db4oUnit\bin /S /Q
 del Db4oUnit\obj /S /Q
 del Db4oUnit.Extensions\bin /S /Q

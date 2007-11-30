@@ -11,9 +11,6 @@
     <monolipse.core.internal.AssemblySourceReference-Remembrance>
       <path>/db4o.net/Db4objects.Db4o</path>
     </monolipse.core.internal.AssemblySourceReference-Remembrance>
-    <monolipse.core.internal.AssemblySourceReference-Remembrance>
-      <path>/db4o.net/Db4objects.Db4o.Tools</path>
-    </monolipse.core.internal.AssemblySourceReference-Remembrance>
     <monolipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
       <name>System.Drawing</name>
       <version>1.0.5000.0</version>

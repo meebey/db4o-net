@@ -95,6 +95,3 @@ def replaceNamespaces(contents as string):
 #	Path: "../db4o.net/Db4objects.Db4o/native",
 #	Function: replaceInterfaces).run()
 
-FileReplacer(
-	Path: "../db4o.net/Db4objects.Db4o.Tools/Db4objects.Db4o.Tools",
-	Function: replaceNamespaces).run()
