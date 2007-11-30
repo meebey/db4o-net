@@ -35,11 +35,29 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
         private void AssertRetrievedItem(IDictionary<string, int> dict)
         {
+#if CF_2_0
+            object[] keys = (object[]) GetField(Reflector(), dict, "_keys");
+            AssertInitalArray(keys, 16);
+            object[] values = (object[]) GetField(Reflector(), dict, "_values");
+            AssertInitalArray(values, 16);
+#else
             Assert.IsNull(GetField(Reflector(), dict, "_keys"));
             Assert.IsNull(GetField(Reflector(), dict, "_values"));
+#endif
             Assert.AreEqual(default(int), GetField(Reflector(), dict, "_startIndex"));
             Assert.AreEqual(default(int), GetField(Reflector(), dict, "_endIndex"));
         }
+
+#if CF_2_0
+        private void AssertInitalArray(object[] array, int length)
+        {
+            Assert.AreEqual(length, array.Length);
+            foreach (object obj in array)
+            {
+                Assert.IsNull(obj);
+            }
+        }
+#endif
 
         public void TestItemGet()
         {
