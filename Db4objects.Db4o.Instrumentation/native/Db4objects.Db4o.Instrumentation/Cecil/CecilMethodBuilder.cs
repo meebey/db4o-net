@@ -58,7 +58,9 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 					_worker.Emit(OpCodes.Ldarg_1);
 					break;
 				default:
-					_worker.Emit(OpCodes.Ldarg, index);
+					// TODO: This is wrong. Emit expects an VariableDefinition for a Ldarg .
+                    //       But actually no code passes idexes other than 0 and 1 
+                    _worker.Emit(OpCodes.Ldarg, index);
 					break;
 			}
 		}
