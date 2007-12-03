@@ -161,7 +161,7 @@ namespace Db4objects.Db4o.Collections
             return new Enumerator(keyValuePairs);
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return ((IEnumerable<KeyValuePair<K, V>>)this).GetEnumerator();
 		}
@@ -172,15 +172,10 @@ namespace Db4objects.Db4o.Collections
             {
                 throw new ArgumentNullException();
             }
-            return IndexOf(_keys, key);
+            return Array.IndexOf(_keys, key);
         }
 
-		private int IndexOf(object[] array, object value)
-		{
-			return System.Array.IndexOf(array, value);
-		}
-
-        public struct Enumerator : IEnumerator<KeyValuePair<K, V>>, IEnumerator
+        public struct Enumerator : IEnumerator<KeyValuePair<K, V>>
         {
             private KeyValuePair<K, V>[] _keyValuePairs;
 
@@ -231,7 +226,30 @@ namespace Db4objects.Db4o.Collections
                     return Current;
                 }
             }
-
         }
-	}
+
+        #region Sharpen Helpers
+
+        private static K DefaultKeyValue()
+        {
+            return default(K);
+        }
+
+        private static V DefaultValue()
+        {
+            return default(V);    
+        }
+                
+        private static K[] AllocateKeyStorage(int length)
+        {
+            return new K[length];
+        }
+
+        private static V[] AllocateValueStorage(int length)
+        {
+            return new V[length];
+        }
+
+        #endregion
+    }
 }

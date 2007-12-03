@@ -36,9 +36,10 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
         private void AssertRetrievedItem(IDictionary<string, int> dict)
         {
 #if CF_2_0
-            object[] keys = (object[]) GetField(Reflector(), dict, "_keys");
+            Assert.IsFalse(Db().IsActive(dict));
+            string[] keys = (string[]) GetField(Reflector(), dict, "_keys");
             AssertInitalArray(keys, 16);
-            object[] values = (object[]) GetField(Reflector(), dict, "_values");
+            int[] values = (int[]) GetField(Reflector(), dict, "_values");
             AssertInitalArray(values, 16);
 #else
             Assert.IsNull(GetField(Reflector(), dict, "_keys"));
@@ -49,12 +50,12 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
         }
 
 #if CF_2_0
-        private void AssertInitalArray(object[] array, int length)
+        private void AssertInitalArray<T>(T[] array, int length)
         {
             Assert.AreEqual(length, array.Length);
-            foreach (object obj in array)
+            foreach (T value in array)
             {
-                Assert.IsNull(obj);
+                Assert.AreEqual(default(T), value);
             }
         }
 #endif
