@@ -56,6 +56,8 @@ namespace Db4oTool.MSBuild
                 }
                 string message = string.Format("Assembly {0} is enhanced successfully.", assemblyFile);
                 Log.LogWarning(message);
+
+                list.Remove(assemblyFile);
             }
             return true;
         }

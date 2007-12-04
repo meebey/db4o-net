@@ -56,6 +56,10 @@
       <Project>{03E2AD50-7A21-4D03-8504-3E190AE5361F}</Project>
       <Name>Db4oTool.MSBuild</Name>
     </ProjectReference>
+    <ProjectReference Include="Db4oTool.MSBuild.Tests.Project\Db4oTool.MSBuild.Tests.Project.csproj">
+      <Project>{D073735B-C148-46A8-A6F6-A26AA5C78C0F}</Project>
+      <Name>Db4oTool.MSBuild.Tests.Project</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -66,6 +70,7 @@
   <UsingTask AssemblyFile="$(OutputPath)\Db4oTool.MSBuild.dll" TaskName="Db4oTool.MSBuild.Db4oEnhancerMSBuildTask" />
   <ItemGroup>
     <Db4oEnhance Include="$(TargetPath)" />
+    <Db4oEnhance Include="$(OutputPath)\Db4oTool.MSBuild.Tests.Project.dll" />
   </ItemGroup>
   <Target Name="AfterBuild">
     <Db4oEnhancerMSBuildTask Assemblies="@(Db4oEnhance)" CommandLine="-by-name:IntItem" />

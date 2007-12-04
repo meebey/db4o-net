@@ -9,11 +9,21 @@ namespace Db4oTool.MSBuild.Tests
     {
         public void testByName()
         {
-            Type type = typeof(IntItem);
-            Assert.IsTrue(IsInstrumented(type));
+            Type intItemType = typeof(IntItem);
+            Assert.IsTrue(IsInstrumented(intItemType));
 
-            type = typeof(NonTAItem);
-            Assert.IsFalse(IsInstrumented(type));
+            Type nonTAItemType = typeof(NonTAItem);
+            Assert.IsFalse(IsInstrumented(nonTAItemType));
+        }
+
+        public void testByName2()
+        {
+            Type taIntItemType = Type.GetType("Db4oTool.MSBuild.Tests.Project.TAIntItem, Db4oTool.MSBuild.Tests.Project", true);
+
+            Assert.IsTrue(IsInstrumented(taIntItemType));
+
+            Type stringItemType = Type.GetType("Db4oTool.MSBuild.Tests.Project.StringItem, Db4oTool.MSBuild.Tests.Project", true);
+            Assert.IsFalse(IsInstrumented(stringItemType));
         }
 
         private bool IsInstrumented(Type type)
