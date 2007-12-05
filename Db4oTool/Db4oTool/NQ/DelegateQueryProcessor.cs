@@ -495,12 +495,6 @@ namespace Db4oTool.NQ
 
     internal class UpdateFieldReferences : AbstractExpressionVisitor
     {
-        /*
-        public UpdateFieldReferences(IDictionary<FieldReference, FieldDefinition> fields, CecilReflector reflector)
-        {
-            _fields = fields;
-            _reflector = reflector;
-        }*/
         public UpdateFieldReferences(IDictionary<FieldReference, FieldDefinition> fields)
         {
             _fields = fields;
@@ -509,15 +503,9 @@ namespace Db4oTool.NQ
         public override void Visit(FieldValue operand)
         {
             CecilFieldRef cecilFieldRef = (CecilFieldRef)operand.Field;
-            /*TypeDefinition parentType = _reflector.ResolveTypeReference(cecilFieldRef.Reference.DeclaringType);
-            FieldDefinition field = parentType.Fields.GetField(cecilFieldRef.Name);
-            if ( (field.Attributes & FieldAttributes.Private) == FieldAttributes.Private)
-            {
-                field.Attributes = FieldAttributes.Public;
-            }*/
             cecilFieldRef.Reference = _fields[Resolve(operand.Field)];
         }
-        
+
         private static FieldReference Resolve(IFieldRef fieldRef)
         {
             return ((CecilFieldRef) fieldRef).Field;
