@@ -2352,5 +2352,35 @@ namespace Db4objects.Db4o.Internal
 		{
 			return _this;
 		}
+
+		public virtual void DeleteByID(Transaction transaction, int id, int cascadeDeleteDepth
+			)
+		{
+			if (id <= 0)
+			{
+				return;
+			}
+			if (cascadeDeleteDepth <= 0)
+			{
+				return;
+			}
+			object obj = GetByID2(transaction, id);
+			if (obj == null)
+			{
+				return;
+			}
+			cascadeDeleteDepth--;
+			IReflectClass claxx = Reflector().ForObject(obj);
+			if (claxx.IsCollection())
+			{
+				cascadeDeleteDepth += Reflector().CollectionUpdateDepth(claxx) - 1;
+			}
+			ObjectReference @ref = transaction.ReferenceForId(id);
+			if (@ref == null)
+			{
+				return;
+			}
+			Delete2(transaction, @ref, obj, cascadeDeleteDepth, false);
+		}
 	}
 }

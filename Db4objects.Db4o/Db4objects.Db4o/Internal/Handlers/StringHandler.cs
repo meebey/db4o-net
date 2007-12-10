@@ -30,13 +30,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Container()._handlers.ICLASS_STRING;
 		}
 
-		public override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer buffer)
+		public override void Delete(IDeleteContext context)
 		{
-			Slot slot = buffer.ReadSlot();
-			if (slot.Address() > 0 && !mf._string.InlinedStrings())
-			{
-				buffer.GetTransaction().SlotFreeOnCommit(slot.Address(), slot);
-			}
+			context.ReadSlot();
 		}
 
 		internal virtual byte GetIdentifier()
@@ -223,16 +219,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 			readers.IncrementIntSize();
 		}
 
-		public override void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
-			)
+		public override void Defragment(DefragmentContext context)
 		{
-			if (!redirect)
+			if (!context.Redirect())
 			{
-				readers.IncrementOffset(LinkLength());
+				context.Readers().IncrementOffset(LinkLength());
 			}
 			else
 			{
-				mf._string.Defrag(readers);
+				context.MarshallerFamily()._string.Defrag(context.Readers());
 			}
 		}
 

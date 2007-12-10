@@ -4,35 +4,11 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	internal class ArrayMarshaller0 : ArrayMarshaller
 	{
-		/// <exception cref="Db4oIOException"></exception>
-		public override void DeleteEmbedded(ArrayHandler arrayHandler, StatefulBuffer reader
-			)
-		{
-			Slot slot = reader.ReadSlot();
-			if (slot.Address() <= 0)
-			{
-				return;
-			}
-			Transaction trans = reader.GetTransaction();
-			if (reader.CascadeDeletes() > 0 && arrayHandler._handler is ClassMetadata)
-			{
-				StatefulBuffer bytes = reader.GetStream().ReadWriterByAddress(trans, slot.Address
-					(), slot.Length());
-				bytes.SetCascadeDeletes(reader.CascadeDeletes());
-				for (int i = arrayHandler.ElementCount(trans, bytes); i > 0; i--)
-				{
-					arrayHandler._handler.DeleteEmbedded(_family, bytes);
-				}
-			}
-			trans.SlotFreeOnCommit(slot.Address(), slot);
-		}
-
 		/// <exception cref="Db4oIOException"></exception>
 		protected override Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans
 			, Db4objects.Db4o.Internal.Buffer reader)

@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 
@@ -12,24 +11,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override bool UseNormalClassRead()
 		{
 			return false;
-		}
-
-		/// <exception cref="Db4oIOException"></exception>
-		public override void DeleteEmbedded(StatefulBuffer reader)
-		{
-			int payLoadOffset = reader.ReadInt();
-			if (payLoadOffset > 0)
-			{
-				int linkOffset = reader._offset;
-				reader._offset = payLoadOffset;
-				int yapClassID = reader.ReadInt();
-				ClassMetadata yc = reader.GetStream().ClassMetadataForId(yapClassID);
-				if (yc != null)
-				{
-					yc.DeleteEmbedded(_family, reader);
-				}
-				reader._offset = linkOffset;
-			}
 		}
 
 		public override ITypeHandler4 ReadArrayHandler(Transaction trans, Db4objects.Db4o.Internal.Buffer
@@ -64,7 +45,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			ClassMetadata yc = readers.Context().YapClass(yapClassID);
 			if (yc != null)
 			{
-				yc.Defrag(_family, readers, false);
+				yc.Defragment(new DefragmentContext(_family, readers, false));
 			}
 			readers.Offset(linkOffSet);
 		}

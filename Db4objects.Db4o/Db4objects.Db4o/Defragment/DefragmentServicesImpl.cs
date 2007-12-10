@@ -21,7 +21,7 @@ using Sharpen.IO;
 namespace Db4objects.Db4o.Defragment
 {
 	/// <exclude></exclude>
-	public class DefragContextImpl : IDefragContext
+	public class DefragmentServicesImpl : IDefragmentServices
 	{
 		public abstract class DbSelector
 		{
@@ -29,43 +29,43 @@ namespace Db4objects.Db4o.Defragment
 			{
 			}
 
-			internal abstract LocalObjectContainer Db(DefragContextImpl context);
+			internal abstract LocalObjectContainer Db(DefragmentServicesImpl context);
 
-			internal virtual Db4objects.Db4o.Internal.Transaction Transaction(DefragContextImpl
+			internal virtual Db4objects.Db4o.Internal.Transaction Transaction(DefragmentServicesImpl
 				 context)
 			{
 				return Db(context).SystemTransaction();
 			}
 		}
 
-		private sealed class _DbSelector_36 : DefragContextImpl.DbSelector
+		private sealed class _DbSelector_36 : DefragmentServicesImpl.DbSelector
 		{
 			public _DbSelector_36()
 			{
 			}
 
-			internal override LocalObjectContainer Db(DefragContextImpl context)
+			internal override LocalObjectContainer Db(DefragmentServicesImpl context)
 			{
 				return context._sourceDb;
 			}
 		}
 
-		public static readonly DefragContextImpl.DbSelector SOURCEDB = new _DbSelector_36
+		public static readonly DefragmentServicesImpl.DbSelector SOURCEDB = new _DbSelector_36
 			();
 
-		private sealed class _DbSelector_42 : DefragContextImpl.DbSelector
+		private sealed class _DbSelector_42 : DefragmentServicesImpl.DbSelector
 		{
 			public _DbSelector_42()
 			{
 			}
 
-			internal override LocalObjectContainer Db(DefragContextImpl context)
+			internal override LocalObjectContainer Db(DefragmentServicesImpl context)
 			{
 				return context._targetDb;
 			}
 		}
 
-		public static readonly DefragContextImpl.DbSelector TARGETDB = new _DbSelector_42
+		public static readonly DefragmentServicesImpl.DbSelector TARGETDB = new _DbSelector_42
 			();
 
 		private const long CLASSCOLLECTION_POINTER_ADDRESS = 2 + 2 * Const4.INT_LENGTH;
@@ -82,8 +82,10 @@ namespace Db4objects.Db4o.Defragment
 
 		private readonly Hashtable4 _hasFieldIndexCache = new Hashtable4();
 
-		public DefragContextImpl(DefragmentConfig defragConfig, IDefragmentListener listener
-			)
+		private DefragmentConfig _defragConfig;
+
+		public DefragmentServicesImpl(DefragmentConfig defragConfig, IDefragmentListener 
+			listener)
 		{
 			_listener = listener;
 			Config4Impl originalConfig = (Config4Impl)defragConfig.Db4oConfig();
@@ -96,6 +98,7 @@ namespace Db4objects.Db4o.Defragment
 			_targetDb = FreshYapFile(defragConfig);
 			_mapping = defragConfig.Mapping();
 			_mapping.Open();
+			_defragConfig = defragConfig;
 		}
 
 		internal static LocalObjectContainer FreshYapFile(string fileName, int blockSize)
@@ -172,7 +175,7 @@ namespace Db4objects.Db4o.Defragment
 			_mapping.Close();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer BufferByID(DefragContextImpl.DbSelector
+		public virtual Db4objects.Db4o.Internal.Buffer BufferByID(DefragmentServicesImpl.DbSelector
 			 selector, int id)
 		{
 			Slot slot = ReadPointer(selector, id);
@@ -193,7 +196,7 @@ namespace Db4objects.Db4o.Defragment
 			return BufferByAddress(TARGETDB, address, length);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer BufferByAddress(DefragContextImpl.DbSelector
+		public virtual Db4objects.Db4o.Internal.Buffer BufferByAddress(DefragmentServicesImpl.DbSelector
 			 selector, int address, int length)
 		{
 			return selector.Db(this).BufferByAddress(address, length);
@@ -222,7 +225,7 @@ namespace Db4objects.Db4o.Defragment
 			_targetDb.WriteBytes(reader, address, 0);
 		}
 
-		public virtual IStoredClass[] StoredClasses(DefragContextImpl.DbSelector selector
+		public virtual IStoredClass[] StoredClasses(DefragmentServicesImpl.DbSelector selector
 			)
 		{
 			LocalObjectContainer db = selector.Db(this);
@@ -311,7 +314,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public virtual int DatabaseIdentityID(DefragContextImpl.DbSelector selector)
+		public virtual int DatabaseIdentityID(DefragmentServicesImpl.DbSelector selector)
 		{
 			LocalObjectContainer db = selector.Db(this);
 			Db4oDatabase identity = db.Identity();
@@ -395,7 +398,7 @@ namespace Db4objects.Db4o.Defragment
 			return new ObjectHeader(_sourceDb, buffer);
 		}
 
-		private Slot ReadPointer(DefragContextImpl.DbSelector selector, int id)
+		private Slot ReadPointer(DefragmentServicesImpl.DbSelector selector, int id)
 		{
 			Db4objects.Db4o.Internal.Buffer reader = BufferByAddress(selector, id, Const4.POINTER_LENGTH
 				);
@@ -434,6 +437,11 @@ namespace Db4objects.Db4o.Defragment
 		public virtual int SourceAddressByID(int sourceID)
 		{
 			return ReadPointer(SOURCEDB, sourceID).Address();
+		}
+
+		public virtual bool Accept(IStoredClass klass)
+		{
+			return this._defragConfig.StoredClassFilter().Accept(klass);
 		}
 	}
 }

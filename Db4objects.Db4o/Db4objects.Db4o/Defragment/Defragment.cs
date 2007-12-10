@@ -133,7 +133,7 @@ namespace Db4objects.Db4o.Defragment
 			{
 				UpgradeFile(config);
 			}
-			DefragContextImpl context = new DefragContextImpl(config, listener);
+			DefragmentServicesImpl context = new DefragmentServicesImpl(config, listener);
 			int newClassCollectionID = 0;
 			int targetIdentityID = 0;
 			int targetUuidIndexID = 0;
@@ -144,7 +144,8 @@ namespace Db4objects.Db4o.Defragment
 				DefragUnindexed(context);
 				newClassCollectionID = context.MappedID(context.SourceClassCollectionID());
 				context.TargetClassCollectionID(newClassCollectionID);
-				int sourceIdentityID = context.DatabaseIdentityID(DefragContextImpl.SOURCEDB);
+				int sourceIdentityID = context.DatabaseIdentityID(DefragmentServicesImpl.SOURCEDB
+					);
 				targetIdentityID = context.MappedID(sourceIdentityID, 0);
 				targetUuidIndexID = context.MappedID(context.SourceUuidIndexID(), 0);
 			}
@@ -180,7 +181,7 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		private static void DefragUnindexed(DefragContextImpl context)
+		private static void DefragUnindexed(DefragmentServicesImpl context)
 		{
 			IEnumerator unindexedIDs = context.UnindexedIDs();
 			while (unindexedIDs.MoveNext())
@@ -222,14 +223,15 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		private static void FirstPass(DefragContextImpl context, DefragmentConfig config)
+		private static void FirstPass(DefragmentServicesImpl context, DefragmentConfig config
+			)
 		{
 			Pass(context, config, new FirstPassCommand());
 		}
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		private static void SecondPass(DefragContextImpl context, DefragmentConfig config
+		private static void SecondPass(DefragmentServicesImpl context, DefragmentConfig config
 			)
 		{
 			Pass(context, config, new SecondPassCommand(config.ObjectCommitFrequency()));
@@ -237,11 +239,11 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		private static void Pass(DefragContextImpl context, DefragmentConfig config, IPassCommand
-			 command)
+		private static void Pass(DefragmentServicesImpl context, DefragmentConfig config, 
+			IPassCommand command)
 		{
 			command.ProcessClassCollection(context);
-			IStoredClass[] classes = context.StoredClasses(DefragContextImpl.SOURCEDB);
+			IStoredClass[] classes = context.StoredClasses(DefragmentServicesImpl.SOURCEDB);
 			for (int classIdx = 0; classIdx < classes.Length; classIdx++)
 			{
 				ClassMetadata yapClass = (ClassMetadata)classes[classIdx];
@@ -267,8 +269,8 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		private static void ProcessYapClass(DefragContextImpl context, ClassMetadata curClass
-			, IPassCommand command)
+		private static void ProcessYapClass(DefragmentServicesImpl context, ClassMetadata
+			 curClass, IPassCommand command)
 		{
 			ProcessClassIndex(context, curClass, command);
 			if (!ParentHasIndex(curClass))
@@ -292,7 +294,7 @@ namespace Db4objects.Db4o.Defragment
 			return false;
 		}
 
-		private static void ProcessObjectsForYapClass(DefragContextImpl context, ClassMetadata
+		private static void ProcessObjectsForYapClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
 			context.TraverseAll(curClass, new _IVisitor4_258(command, context, curClass));
@@ -300,7 +302,7 @@ namespace Db4objects.Db4o.Defragment
 
 		private sealed class _IVisitor4_258 : IVisitor4
 		{
-			public _IVisitor4_258(IPassCommand command, DefragContextImpl context, ClassMetadata
+			public _IVisitor4_258(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
 				 curClass)
 			{
 				this.command = command;
@@ -327,15 +329,15 @@ namespace Db4objects.Db4o.Defragment
 
 			private readonly IPassCommand command;
 
-			private readonly DefragContextImpl context;
+			private readonly DefragmentServicesImpl context;
 
 			private readonly ClassMetadata curClass;
 		}
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		private static void ProcessYapClassAndFieldIndices(DefragContextImpl context, ClassMetadata
-			 curClass, IPassCommand command)
+		private static void ProcessYapClassAndFieldIndices(DefragmentServicesImpl context
+			, ClassMetadata curClass, IPassCommand command)
 		{
 			int sourceClassIndexID = 0;
 			int targetClassIndexID = 0;
@@ -349,8 +351,8 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		private static void ProcessClassIndex(DefragContextImpl context, ClassMetadata curClass
-			, IPassCommand command)
+		private static void ProcessClassIndex(DefragmentServicesImpl context, ClassMetadata
+			 curClass, IPassCommand command)
 		{
 			if (curClass.HasClassIndex())
 			{

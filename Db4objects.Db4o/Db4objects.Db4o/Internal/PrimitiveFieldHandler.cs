@@ -49,38 +49,13 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		public override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes)
+		public override void Delete(IDeleteContext context)
 		{
-			if (mf._primitive.UseNormalClassRead())
+			if (context.IsLegacyHandlerVersion())
 			{
-				base.DeleteEmbedded(mf, a_bytes);
-				return;
+				context.ReadInt();
+				context.DefragmentRecommended();
 			}
-		}
-
-		/// <exception cref="Db4oIOException"></exception>
-		public override void DeleteEmbedded1(MarshallerFamily mf, StatefulBuffer a_bytes, 
-			int a_id)
-		{
-			if (_handler is ArrayHandler)
-			{
-				ArrayHandler ya = (ArrayHandler)_handler;
-				if (ya._usePrimitiveClassReflector)
-				{
-					ya.DeletePrimitiveEmbedded(a_bytes, this);
-					a_bytes.SlotDelete();
-					return;
-				}
-			}
-			if (_handler is UntypedFieldHandler)
-			{
-				a_bytes.IncrementOffset(LinkLength());
-			}
-			else
-			{
-				_handler.DeleteEmbedded(mf, a_bytes);
-			}
-			Free(a_bytes, a_id);
 		}
 
 		internal override void DeleteMembers(MarshallerFamily mf, ObjectHeaderAttributes 
@@ -201,16 +176,16 @@ namespace Db4objects.Db4o.Internal
 			return "Wraps " + _handler.ToString() + " in YapClassPrimitive";
 		}
 
-		public override void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
-			)
+		public override void Defragment(DefragmentContext context)
 		{
-			if (mf._primitive.UseNormalClassRead())
+			if (context.MarshallerFamily()._primitive.UseNormalClassRead())
 			{
-				base.Defrag(mf, readers, redirect);
+				base.Defragment(context);
 			}
 			else
 			{
-				_handler.Defrag(mf, readers, false);
+				_handler.Defragment(new DefragmentContext(context.MarshallerFamily(), context.Readers
+					(), false));
 			}
 		}
 

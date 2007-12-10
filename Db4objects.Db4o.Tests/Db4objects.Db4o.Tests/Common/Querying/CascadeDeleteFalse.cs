@@ -47,5 +47,10 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			Assert.AreEqual(count, CountOccurences(typeof(CascadeDeleteFalse.CascadeDeleteFalseHelper
 				)));
 		}
+
+		public static void Main(string[] args)
+		{
+			new CascadeDeleteFalse().RunSolo();
+		}
 	}
 }

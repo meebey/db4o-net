@@ -47,22 +47,25 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private readonly int _converterVersion;
 
+		private readonly int _handlerVersion;
+
 		private static readonly MarshallerFamily[] allVersions = new MarshallerFamily[] { 
-			new MarshallerFamily(0, new ArrayMarshaller0(), new ClassMarshaller0(), new FieldMarshaller0
+			new MarshallerFamily(0, 0, new ArrayMarshaller0(), new ClassMarshaller0(), new FieldMarshaller0
 			(), new ObjectMarshaller0(), new PrimitiveMarshaller0(), new StringMarshaller0()
 			, new UntypedMarshaller0()), new MarshallerFamily(ClassIndexesToBTrees_5_5.VERSION
-			, new ArrayMarshaller1(), new ClassMarshaller1(), new FieldMarshaller0(), new ObjectMarshaller1
-			(), new PrimitiveMarshaller1(), new StringMarshaller1(), new UntypedMarshaller1(
-			)), new MarshallerFamily(FieldIndexesToBTrees_5_7.VERSION, new ArrayMarshaller1(
-			), new ClassMarshaller2(), new FieldMarshaller1(), new ObjectMarshaller1(), new 
+			, 1, new ArrayMarshaller1(), new ClassMarshaller1(), new FieldMarshaller0(), new 
+			ObjectMarshaller1(), new PrimitiveMarshaller1(), new StringMarshaller1(), new UntypedMarshaller1
+			()), new MarshallerFamily(FieldIndexesToBTrees_5_7.VERSION, 2, new ArrayMarshaller1
+			(), new ClassMarshaller2(), new FieldMarshaller1(), new ObjectMarshaller1(), new 
 			PrimitiveMarshaller1(), new StringMarshaller1(), new UntypedMarshaller1()) };
 
-		public MarshallerFamily(int converterVersion, ArrayMarshaller arrayMarshaller, ClassMarshaller
-			 classMarshaller, IFieldMarshaller fieldMarshaller, ObjectMarshaller objectMarshaller
-			, PrimitiveMarshaller primitiveMarshaller, StringMarshaller stringMarshaller, UntypedMarshaller
-			 untypedMarshaller)
+		public MarshallerFamily(int converterVersion, int handlerVersion, ArrayMarshaller
+			 arrayMarshaller, ClassMarshaller classMarshaller, IFieldMarshaller fieldMarshaller
+			, ObjectMarshaller objectMarshaller, PrimitiveMarshaller primitiveMarshaller, StringMarshaller
+			 stringMarshaller, UntypedMarshaller untypedMarshaller)
 		{
 			_converterVersion = converterVersion;
+			_handlerVersion = handlerVersion;
 			_array = arrayMarshaller;
 			_array._family = this;
 			_class = classMarshaller;
@@ -104,6 +107,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 				result = allVersions[i];
 			}
 			return result;
+		}
+
+		public virtual int HandlerVersion()
+		{
+			return _handlerVersion;
 		}
 	}
 }

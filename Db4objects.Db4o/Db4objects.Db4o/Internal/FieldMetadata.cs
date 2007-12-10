@@ -464,38 +464,33 @@ namespace Db4objects.Db4o.Internal
 
 		/// <param name="isUpdate"></param>
 		/// <exception cref="FieldIndexException"></exception>
-		public virtual void Delete(MarshallerFamily mf, StatefulBuffer a_bytes, bool isUpdate
+		public virtual void Delete(MarshallerFamily mf, StatefulBuffer buffer, bool isUpdate
 			)
 		{
-			if (!CheckAlive(a_bytes))
+			if (!CheckAlive(buffer))
 			{
 				return;
 			}
+			DeleteContextImpl context = new DeleteContextImpl(buffer, mf.HandlerVersion());
 			try
 			{
-				RemoveIndexEntry(mf, a_bytes);
+				RemoveIndexEntry(mf, buffer);
 				bool dotnetValueType = false;
 				dotnetValueType = Platform4.IsValueType(GetStoredType());
 				if ((_config != null && _config.CascadeOnDelete().DefiniteYes()) || dotnetValueType
 					)
 				{
-					int preserveCascade = a_bytes.CascadeDeletes();
-					a_bytes.SetCascadeDeletes(1);
-					_handler.DeleteEmbedded(mf, a_bytes);
-					a_bytes.SetCascadeDeletes(preserveCascade);
+					DeleteWithCascadeDepth(context, 1);
 				}
 				else
 				{
 					if (_config != null && _config.CascadeOnDelete().DefiniteNo())
 					{
-						int preserveCascade = a_bytes.CascadeDeletes();
-						a_bytes.SetCascadeDeletes(0);
-						_handler.DeleteEmbedded(mf, a_bytes);
-						a_bytes.SetCascadeDeletes(preserveCascade);
+						DeleteWithCascadeDepth(context, 0);
 					}
 					else
 					{
-						_handler.DeleteEmbedded(mf, a_bytes);
+						context.CorrectHandlerVersion(_handler).Delete(context);
 					}
 				}
 			}
@@ -503,6 +498,14 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new FieldIndexException(exc, this);
 			}
+		}
+
+		private void DeleteWithCascadeDepth(DeleteContextImpl context, int depth)
+		{
+			int preservedCascadeDepth = context.CascadeDeleteDepth();
+			context.CascadeDeleteDepth(depth);
+			context.CorrectHandlerVersion(_handler).Delete(context);
+			context.CascadeDeleteDepth(preservedCascadeDepth);
 		}
 
 		/// <exception cref="CorruptionException"></exception>
@@ -988,14 +991,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_855(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_858(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_855 : IVisitor4
+		private sealed class _IVisitor4_858 : IVisitor4
 		{
-			public _IVisitor4_855(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_858(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;
@@ -1193,7 +1196,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void DefragField(MarshallerFamily mf, BufferPair readers)
 		{
-			GetHandler().Defrag(mf, readers, true);
+			GetHandler().Defragment(new DefragmentContext(mf, readers, true));
 		}
 
 		public virtual void CreateIndex()

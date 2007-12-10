@@ -57,9 +57,9 @@ namespace Db4objects.Db4o.Collections
 			_activator = activator;
 		}
 
-		/// <summary>Same behaviour as java.util.ArrayList</summary>
+		/// <summary>Same behavior as java.util.ArrayList</summary>
 		/// <seealso cref="ArrayList"></seealso>
-		public ArrayList4()
+		public ArrayList4() : this(10)
 		{
 		}
 
@@ -77,11 +77,6 @@ namespace Db4objects.Db4o.Collections
 		/// <summary>Same behaviour as java.util.ArrayList</summary>
 		/// <seealso cref="ArrayList"></seealso>
 		public ArrayList4(int initialCapacity)
-		{
-			Initialize(initialCapacity);
-		}
-
-		private void Initialize(int initialCapacity)
 		{
 			if (initialCapacity < 0)
 			{
@@ -106,20 +101,10 @@ namespace Db4objects.Db4o.Collections
 		{
 			CheckIndex(index, 0, Count);
 			EnsureCapacity(Count + 1);
-			E[] array = GetElementsLazy();
-			System.Array.Copy(array, index, array, index + 1, listSize - index);
-			array[index] = element;
+			System.Array.Copy(elements, index, elements, index + 1, listSize - index);
+			elements[index] = element;
 			IncreaseSize(1);
 			MarkModified();
-		}
-
-		private E[] GetElementsLazy()
-		{
-			if (elements == null)
-			{
-				Initialize(10);
-			}
-			return elements;
 		}
 
 		internal bool AddAllImpl(int index, E[] toBeAdded)
@@ -131,9 +116,8 @@ namespace Db4objects.Db4o.Collections
 				return false;
 			}
 			EnsureCapacity(Count + length);
-			E[] array = GetElementsLazy();
-			System.Array.Copy(array, index, array, index + length, Count - index);
-			System.Array.Copy(toBeAdded, 0, array, index, length);
+			System.Array.Copy(elements, index, elements, index + length, Count - index);
+			System.Array.Copy(toBeAdded, 0, elements, index, length);
 			IncreaseSize(length);
 			MarkModified();
 			return true;
@@ -152,12 +136,9 @@ namespace Db4objects.Db4o.Collections
 		public virtual void Clear()
 		{
 			int size = Count;
-			if (size > 0)
-			{
-				Arrays.Fill(elements, 0, size, DefaultValue());
-				SetSize(0);
-				MarkModified();
-			}
+			Arrays.Fill(elements, 0, size, DefaultValue());
+			SetSize(0);
+			MarkModified();
 		}
 
 		/// <summary>
@@ -196,32 +177,6 @@ namespace Db4objects.Db4o.Collections
 			return elements[index];
 		}
 
-		private int IndexOfImpl(E o)
-		{
-			for (int index = 0; index < Count; ++index)
-			{
-				E element = Get(index);
-				if (o == null ? element == null : o.Equals(element))
-				{
-					return index;
-				}
-			}
-			return -1;
-		}
-
-		private int LastIndexOf(E o)
-		{
-			for (int index = Count - 1; index >= 0; --index)
-			{
-				E element = Get(index);
-				if (o == null ? element == null : o.Equals(element))
-				{
-					return index;
-				}
-			}
-			return -1;
-		}
-
 		/// <summary>
 		/// same as java.util.ArrayList but transparently
 		/// activates the members as required.
@@ -256,9 +211,8 @@ namespace Db4objects.Db4o.Collections
 			{
 				return;
 			}
-			E[] array = GetElementsLazy();
-			System.Array.Copy(array, toIndex, array, fromIndex, size - toIndex);
-			Arrays.Fill(array, size - count, size, DefaultValue());
+			System.Array.Copy(elements, toIndex, elements, fromIndex, size - toIndex);
+			Arrays.Fill(elements, size - count, size, DefaultValue());
 			DecreaseSize(count);
 			MarkModified();
 		}
@@ -318,7 +272,7 @@ namespace Db4objects.Db4o.Collections
 		{
 			MarkModified();
 			E[] temp = AllocateStorage(minCapacity);
-			System.Array.Copy(GetElementsLazy(), 0, temp, 0, Count);
+			System.Array.Copy(elements, 0, temp, 0, Count);
 			elements = temp;
 			capacity = minCapacity;
 		}

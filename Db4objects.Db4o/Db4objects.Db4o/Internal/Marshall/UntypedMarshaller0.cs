@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 
@@ -10,26 +9,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public class UntypedMarshaller0 : UntypedMarshaller
 	{
-		/// <exception cref="Db4oIOException"></exception>
-		public override void DeleteEmbedded(StatefulBuffer parentBytes)
-		{
-			int objectID = parentBytes.ReadInt();
-			if (objectID > 0)
-			{
-				StatefulBuffer reader = parentBytes.GetStream().ReadWriterByID(parentBytes.GetTransaction
-					(), objectID);
-				if (reader != null)
-				{
-					reader.SetCascadeDeletes(parentBytes.CascadeDeletes());
-					ObjectHeader oh = new ObjectHeader(reader);
-					if (oh.ClassMetadata() != null)
-					{
-						oh.ClassMetadata().DeleteEmbedded1(_family, reader, objectID);
-					}
-				}
-			}
-		}
-
 		public override bool UseNormalClassRead()
 		{
 			return true;

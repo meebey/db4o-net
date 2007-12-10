@@ -102,5 +102,15 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			return ((IInternalObjectContainer)_objectContainer).Container();
 		}
+
+		public virtual int Offset()
+		{
+			return _current.Offset();
+		}
+
+		public virtual void Seek(int offset)
+		{
+			_current.Seek(offset);
+		}
 	}
 }

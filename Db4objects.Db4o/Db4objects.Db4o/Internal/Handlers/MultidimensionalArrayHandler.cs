@@ -36,10 +36,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return new ArrayIterator4(flat);
 		}
 
-		public int ElementCount(Transaction a_trans, Db4objects.Db4o.Internal.Buffer a_bytes
-			)
+		public sealed override int ElementCount(Transaction trans, IReadBuffer buffer)
 		{
-			return ElementCount(ReadDimensions(a_trans, a_bytes, ReflectClassByRef.IGNORED));
+			return ElementCount(ReadDimensions(trans, buffer, ReflectClassByRef.IGNORED));
 		}
 
 		protected static int ElementCount(int[] a_dim)

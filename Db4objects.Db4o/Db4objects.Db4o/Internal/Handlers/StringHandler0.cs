@@ -22,5 +22,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			return ReadString(context, buffer);
 		}
+
+		public override void Delete(IDeleteContext context)
+		{
+			base.Delete(context);
+			context.DefragmentRecommended();
+		}
 	}
 }

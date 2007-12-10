@@ -23,9 +23,9 @@ namespace Db4objects.Db4o.Collections
 	/// <seealso cref="IActivatable">IActivatable</seealso>
 	public partial class ArrayDictionary4<K, V>
 	{
-		private object[] _keys;
+		private K[] _keys;
 
-		private object[] _values;
+		private V[] _values;
 
 		private int _startIndex;
 
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Collections
 		[System.NonSerialized]
 		private IActivator _activator;
 
-		public ArrayDictionary4()
+		public ArrayDictionary4() : this(16)
 		{
 		}
 
@@ -66,24 +66,6 @@ namespace Db4objects.Db4o.Collections
 			_activator = activator;
 		}
 
-		private object[] GetKeysArray()
-		{
-			if (_keys == null)
-			{
-				InitializeBackingArray(16);
-			}
-			return _keys;
-		}
-
-		private object[] GetValuesArray()
-		{
-			if (_values == null)
-			{
-				InitializeBackingArray(16);
-			}
-			return _values;
-		}
-
 		/// <summary>
 		/// java.util.Map implementation but transparently
 		/// activates the members as required.
@@ -99,8 +81,8 @@ namespace Db4objects.Db4o.Collections
 			Activate();
 			_startIndex = 0;
 			_endIndex = 0;
-			Arrays.Fill(GetKeysArray(), null);
-			Arrays.Fill(GetValuesArray(), null);
+			Arrays.Fill(_keys, DefaultKeyValue());
+			Arrays.Fill(_values, DefaultValue());
 		}
 
 		private bool ContainsKeyImpl(K key)
@@ -109,25 +91,14 @@ namespace Db4objects.Db4o.Collections
 			return IndexOfKey(key) != -1;
 		}
 
-		private bool ContainsValueImpl(V value)
-		{
-			Activate();
-			return IndexOfValue(value) != -1;
-		}
-
-		private int IndexOfValue(V value)
-		{
-			return IndexOf(GetValuesArray(), value);
-		}
-
 		private V ValueAt(int index)
 		{
-			return (V)GetValuesArray()[index];
+			return _values[index];
 		}
 
 		private K KeyAt(int i)
 		{
-			return (K)GetKeysArray()[i];
+			return _keys[i];
 		}
 
 		private V Replace(int index, V value)
@@ -202,8 +173,8 @@ namespace Db4objects.Db4o.Collections
 
 		private void InitializeBackingArray(int length)
 		{
-			_keys = new object[length];
-			_values = new object[length];
+			_keys = AllocateKeyStorage(length);
+			_values = AllocateValueStorage(length);
 		}
 
 		private void Insert(K key, V value)
@@ -216,18 +187,15 @@ namespace Db4objects.Db4o.Collections
 
 		private void EnsureCapacity()
 		{
-			if (_keys == null)
-			{
-				InitializeBackingArray(16);
-			}
 			if (_endIndex == _keys.Length)
 			{
-				object[] newKeys = new object[_keys.Length * 2];
-				object[] newValues = new object[_values.Length * 2];
+				int count = _keys.Length * 2;
+				K[] newKeys = AllocateKeyStorage(count);
+				V[] newValues = AllocateValueStorage(count);
 				System.Array.Copy(_keys, _startIndex, newKeys, 0, _endIndex - _startIndex);
 				System.Array.Copy(_values, _startIndex, newValues, 0, _endIndex - _startIndex);
-				Arrays.Fill(_keys, null);
-				Arrays.Fill(_values, null);
+				Arrays.Fill(_keys, DefaultKeyValue());
+				Arrays.Fill(_values, DefaultValue());
 				_keys = newKeys;
 				_values = newValues;
 			}
@@ -242,8 +210,8 @@ namespace Db4objects.Db4o.Collections
 				_values[i] = _values[i + 1];
 			}
 			_endIndex--;
-			_keys[_endIndex] = null;
-			_values[_endIndex] = null;
+			_keys[_endIndex] = DefaultKeyValue();
+			_values[_endIndex] = DefaultValue();
 			return value;
 		}
 	}

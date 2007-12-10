@@ -34,8 +34,8 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public void ProcessClass(DefragContextImpl context, ClassMetadata yapClass, int id
-			, int classIndexID)
+		public void ProcessClass(DefragmentServicesImpl context, ClassMetadata yapClass, 
+			int id, int classIndexID)
 		{
 			if (context.MappedID(id, -1) == -1)
 			{
@@ -71,8 +71,8 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public void ProcessObjectSlot(DefragContextImpl context, ClassMetadata yapClass, 
-			int id)
+		public void ProcessObjectSlot(DefragmentServicesImpl context, ClassMetadata yapClass
+			, int id)
 		{
 			Db4objects.Db4o.Internal.Buffer sourceBuffer = context.SourceBufferByID(id);
 			ObjectHeader objHead = context.SourceObjectHeader(sourceBuffer);
@@ -84,8 +84,8 @@ namespace Db4objects.Db4o.Defragment
 
 		private sealed class _ISlotCopyHandler_47 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_47(SecondPassCommand _enclosing, DefragContextImpl context
-				)
+			public _ISlotCopyHandler_47(SecondPassCommand _enclosing, DefragmentServicesImpl 
+				context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -107,40 +107,77 @@ namespace Db4objects.Db4o.Defragment
 
 			private readonly SecondPassCommand _enclosing;
 
-			private readonly DefragContextImpl context;
+			private readonly DefragmentServicesImpl context;
 		}
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public void ProcessClassCollection(DefragContextImpl context)
+		public void ProcessClassCollection(DefragmentServicesImpl context)
 		{
 			BufferPair.ProcessCopy(context, context.SourceClassCollectionID(), new _ISlotCopyHandler_62
-				(this));
+				(this, context));
 		}
 
 		private sealed class _ISlotCopyHandler_62 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_62(SecondPassCommand _enclosing)
+			public _ISlotCopyHandler_62(SecondPassCommand _enclosing, DefragmentServicesImpl 
+				context)
 			{
 				this._enclosing = _enclosing;
+				this.context = context;
 			}
 
 			public void ProcessCopy(BufferPair readers)
 			{
-				ClassMetadataRepository.Defrag(readers);
+				int acceptedClasses = 0;
+				int numClassesOffset = readers.Target().Offset();
+				acceptedClasses = this.CopyAcceptedClasses(readers, acceptedClasses);
+				this.WriteIntAt(readers.Target(), numClassesOffset, acceptedClasses);
+			}
+
+			private int CopyAcceptedClasses(BufferPair readers, int acceptedClasses)
+			{
+				int numClasses = readers.ReadInt();
+				for (int classIdx = 0; classIdx < numClasses; classIdx++)
+				{
+					int classId = readers.Source().ReadInt();
+					if (!this.Accept(classId))
+					{
+						continue;
+					}
+					++acceptedClasses;
+					readers.WriteMappedID(classId);
+				}
+				return acceptedClasses;
+			}
+
+			private void WriteIntAt(Db4objects.Db4o.Internal.Buffer target, int offset, int value
+				)
+			{
+				int currentOffset = target.Offset();
+				target.Seek(offset);
+				target.WriteInt(value);
+				target.Seek(currentOffset);
+			}
+
+			private bool Accept(int classId)
+			{
+				return context.Accept(context.YapClass(classId));
 			}
 
 			private readonly SecondPassCommand _enclosing;
+
+			private readonly DefragmentServicesImpl context;
 		}
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public void ProcessBTree(DefragContextImpl context, BTree btree)
+		public void ProcessBTree(DefragmentServicesImpl context, BTree btree)
 		{
 			btree.DefragBTree(context);
 		}
 
-		public void Flush(DefragContextImpl context)
+		public void Flush(DefragmentServicesImpl context)
 		{
 		}
 	}

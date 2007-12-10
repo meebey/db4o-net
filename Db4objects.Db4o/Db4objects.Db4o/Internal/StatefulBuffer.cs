@@ -64,11 +64,6 @@ namespace Db4objects.Db4o.Internal
 			i_id = pointer._id;
 		}
 
-		public int CascadeDeletes()
-		{
-			return i_cascadeDelete;
-		}
-
 		public void DebugCheckBytes()
 		{
 		}
@@ -199,11 +194,6 @@ namespace Db4objects.Db4o.Internal
 		public void Address(int a_address)
 		{
 			i_address = a_address;
-		}
-
-		public void SetCascadeDeletes(int depth)
-		{
-			i_cascadeDelete = depth;
 		}
 
 		public void SetID(int a_id)
@@ -394,6 +384,16 @@ namespace Db4objects.Db4o.Internal
 		public Pointer4 Pointer()
 		{
 			return new Pointer4(i_id, Slot());
+		}
+
+		public int CascadeDeletes()
+		{
+			return i_cascadeDelete;
+		}
+
+		public void SetCascadeDeletes(int depth)
+		{
+			i_cascadeDelete = depth;
 		}
 	}
 }

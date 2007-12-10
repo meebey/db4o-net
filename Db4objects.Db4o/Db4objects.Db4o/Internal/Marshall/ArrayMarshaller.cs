@@ -13,10 +13,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public MarshallerFamily _family;
 
 		/// <exception cref="Db4oIOException"></exception>
-		public abstract void DeleteEmbedded(ArrayHandler arrayHandler, StatefulBuffer reader
-			);
-
-		/// <exception cref="Db4oIOException"></exception>
 		public TreeInt CollectIDs(ArrayHandler arrayHandler, TreeInt tree, StatefulBuffer
 			 reader)
 		{

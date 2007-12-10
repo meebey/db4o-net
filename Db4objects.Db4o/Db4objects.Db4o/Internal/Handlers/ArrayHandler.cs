@@ -150,10 +150,27 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		public sealed override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes
-			)
+		public override void Delete(IDeleteContext context)
 		{
-			mf._array.DeleteEmbedded(this, a_bytes);
+			int address = context.ReadInt();
+			context.ReadInt();
+			if (address <= 0)
+			{
+				return;
+			}
+			int linkOffSet = context.Offset();
+			if (context.CascadeDeleteDepth() > 0 && _handler is ClassMetadata)
+			{
+				context.Seek(address);
+				for (int i = ElementCount(context.Transaction(), context); i > 0; i--)
+				{
+					_handler.Delete(context);
+				}
+			}
+			if (linkOffSet > 0)
+			{
+				context.Seek(linkOffSet);
+			}
 		}
 
 		/// <param name="classPrimitive"></param>
@@ -169,7 +186,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		/// <param name="trans"></param>
-		public virtual int ElementCount(Transaction trans, ISlotBuffer reader)
+		public virtual int ElementCount(Transaction trans, IReadBuffer reader)
 		{
 			int typeOrLength = reader.ReadInt();
 			if (typeOrLength >= 0)
@@ -442,25 +459,24 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return false;
 		}
 
-		public sealed override void Defrag(MarshallerFamily mf, BufferPair readers, bool 
-			redirect)
+		public sealed override void Defragment(DefragmentContext context)
 		{
 			if (Handlers4.HandlesSimple(_handler))
 			{
-				readers.IncrementOffset(LinkLength());
+				context.Readers().IncrementOffset(LinkLength());
 			}
 			else
 			{
-				mf._array.DefragIDs(this, readers);
+				context.MarshallerFamily()._array.DefragIDs(this, context.Readers());
 			}
 		}
 
-		public virtual void Defrag1(MarshallerFamily mf, BufferPair readers)
+		public virtual void Defrag1(DefragmentContext context)
 		{
-			int elements = ReadElementsDefrag(readers);
+			int elements = ReadElementsDefrag(context.Readers());
 			for (int i = 0; i < elements; i++)
 			{
-				_handler.Defrag(mf, readers, true);
+				_handler.Defragment(context);
 			}
 		}
 

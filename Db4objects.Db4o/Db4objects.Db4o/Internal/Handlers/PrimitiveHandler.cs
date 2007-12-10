@@ -33,9 +33,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract object DefaultValue();
 
-		public virtual void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes)
+		public virtual void Delete(IDeleteContext context)
 		{
-			a_bytes.IncrementOffset(LinkLength());
+			context.Seek(context.Offset() + LinkLength());
 		}
 
 		public virtual object IndexEntryToObject(Transaction trans, object indexEntry)
@@ -165,10 +165,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract int LinkLength();
 
-		public void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect)
+		public void Defragment(DefragmentContext context)
 		{
 			int linkLength = LinkLength();
-			readers.IncrementOffset(linkLength);
+			context.Readers().IncrementOffset(linkLength);
 		}
 
 		public virtual void DefragIndexEntry(BufferPair readers)

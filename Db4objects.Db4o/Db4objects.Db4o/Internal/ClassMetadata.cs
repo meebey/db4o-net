@@ -627,54 +627,18 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		public virtual void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer a_bytes)
+		public virtual void Delete(IDeleteContext context)
 		{
-			if (a_bytes.CascadeDeletes() > 0)
-			{
-				int id = a_bytes.ReadInt();
-				if (id > 0)
-				{
-					DeleteEmbedded1(mf, a_bytes, id);
-				}
-			}
-			else
-			{
-				a_bytes.IncrementOffset(LinkLength());
-			}
-		}
-
-		/// <param name="mf"></param>
-		/// <exception cref="Db4oIOException"></exception>
-		public virtual void DeleteEmbedded1(MarshallerFamily mf, StatefulBuffer a_bytes, 
-			int a_id)
-		{
-			if (a_bytes.CascadeDeletes() > 0)
-			{
-				ObjectContainerBase stream = a_bytes.GetStream();
-				Transaction transaction = a_bytes.GetTransaction();
-				object obj = stream.GetByID2(transaction, a_id);
-				int cascade = a_bytes.CascadeDeletes() - 1;
-				if (obj != null)
-				{
-					if (IsCollection(obj))
-					{
-						cascade += Reflector().CollectionUpdateDepth(Reflector().ForObject(obj)) - 1;
-					}
-				}
-				ObjectReference yo = transaction.ReferenceForId(a_id);
-				if (yo != null)
-				{
-					a_bytes.GetStream().Delete2(transaction, yo, obj, cascade, false);
-				}
-			}
+			((ObjectContainerBase)context.ObjectContainer()).DeleteByID(context.Transaction()
+				, context.ReadInt(), context.CascadeDeleteDepth());
 		}
 
 		internal virtual void DeleteMembers(MarshallerFamily mf, ObjectHeaderAttributes attributes
 			, StatefulBuffer a_bytes, int a_type, bool isUpdate)
 		{
+			Config4Class config = ConfigOrAncestorConfig();
 			try
 			{
-				Config4Class config = ConfigOrAncestorConfig();
 				if (config != null && (config.CascadeOnDelete() == TernaryBool.YES))
 				{
 					int preserveCascade = a_bytes.CascadeDeletes();
@@ -702,6 +666,11 @@ namespace Db4objects.Db4o.Internal
 			}
 			catch (Exception e)
 			{
+				DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
+				if (dp.Enabled())
+				{
+					dp.DeletionFailed();
+				}
 			}
 		}
 
@@ -1082,13 +1051,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_911(this, name, yf));
+			ForEachFieldMetadata(new _IVisitor4_887(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_911 : IVisitor4
+		private sealed class _IVisitor4_887 : IVisitor4
 		{
-			public _IVisitor4_911(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
+			public _IVisitor4_887(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
 			{
 				this._enclosing = _enclosing;
 				this.name = name;
@@ -1582,15 +1551,15 @@ namespace Db4objects.Db4o.Internal
 				{
 					candidates.i_trans.Container().Activate(trans, obj, ActivationDepthProvider().ActivationDepth
 						(2, ActivationMode.ACTIVATE));
-					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1334(this, candidates, trans
+					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1310(this, candidates, trans
 						));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_1334 : IVisitor4
+		private sealed class _IVisitor4_1310 : IVisitor4
 		{
-			public _IVisitor4_1334(ClassMetadata _enclosing, QCandidates candidates, Transaction
+			public _IVisitor4_1310(ClassMetadata _enclosing, QCandidates candidates, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -1699,8 +1668,9 @@ namespace Db4objects.Db4o.Internal
 				i_nameBytes = AsBytes(i_name);
 				SetStateDirty();
 				Write(_container.SystemTransaction());
+				IReflectClass oldReflector = _reflector;
 				_reflector = Container().Reflector().ForName(newName);
-				Container().ClassCollection().RefreshClassCache(this);
+				Container().ClassCollection().RefreshClassCache(this, oldReflector);
 				Refresh();
 				_state = tempState;
 			}
@@ -1984,7 +1954,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1671
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1648
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -1993,9 +1963,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1671 : IFunction4
+		private sealed class _IFunction4_1648 : IFunction4
 		{
-			public _IFunction4_1671(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1648(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2036,12 +2006,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1699(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1676(this));
 		}
 
-		private sealed class _IFunction4_1699 : IFunction4
+		private sealed class _IFunction4_1676 : IFunction4
 		{
-			public _IFunction4_1699(ClassMetadata _enclosing)
+			public _IFunction4_1676(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2083,12 +2053,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1729(this));
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1706(this));
 		}
 
-		private sealed class _IPredicate4_1729 : IPredicate4
+		private sealed class _IPredicate4_1706 : IPredicate4
 		{
-			public _IPredicate4_1729(ClassMetadata _enclosing)
+			public _IPredicate4_1706(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2274,19 +2244,18 @@ namespace Db4objects.Db4o.Internal
 				);
 		}
 
-		public virtual void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
-			)
+		public virtual void Defragment(DefragmentContext context)
 		{
 			if (HasClassIndex())
 			{
-				readers.CopyID();
+				context.Readers().CopyID();
 			}
 			else
 			{
-				readers.CopyUnindexedID();
+				context.Readers().CopyUnindexedID();
 			}
 			int restLength = (LinkLength() - Const4.INT_LENGTH);
-			readers.IncrementOffset(restLength);
+			context.Readers().IncrementOffset(restLength);
 		}
 
 		/// <exception cref="CorruptionException"></exception>

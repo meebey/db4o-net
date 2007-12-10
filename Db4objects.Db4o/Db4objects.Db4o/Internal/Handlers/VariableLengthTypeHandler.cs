@@ -33,8 +33,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract int CompareTo(object obj);
 
-		public abstract void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
-			);
+		public abstract void Defragment(DefragmentContext context);
 
 		public virtual ObjectContainerBase Container()
 		{
@@ -54,7 +53,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return context.Container().BufferByAddress(address, length);
 		}
 
-		public abstract void DeleteEmbedded(MarshallerFamily arg1, StatefulBuffer arg2);
+		public abstract void Delete(IDeleteContext arg1);
 
 		public abstract object Read(IReadContext arg1);
 

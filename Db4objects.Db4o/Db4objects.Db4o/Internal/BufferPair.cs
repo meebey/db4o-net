@@ -16,12 +16,12 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Internal.Buffer _target;
 
-		private IDefragContext _mapping;
+		private IDefragmentServices _mapping;
 
 		private Transaction _systemTrans;
 
-		public BufferPair(Db4objects.Db4o.Internal.Buffer source, IDefragContext mapping, 
-			Transaction systemTrans)
+		public BufferPair(Db4objects.Db4o.Internal.Buffer source, IDefragmentServices mapping
+			, Transaction systemTrans)
 		{
 			_source = source;
 			_mapping = mapping;
@@ -72,9 +72,8 @@ namespace Db4objects.Db4o.Internal
 
 		public int CopyID()
 		{
-			int mapped = _mapping.MappedID(_source.ReadInt(), false);
-			_target.WriteInt(mapped);
-			return mapped;
+			int id = _source.ReadInt();
+			return WriteMappedID(id);
 		}
 
 		public int CopyID(bool flipNegative, bool lenient)
@@ -171,14 +170,14 @@ namespace Db4objects.Db4o.Internal
 			return _systemTrans;
 		}
 
-		public IDefragContext Context()
+		public IDefragmentServices Context()
 		{
 			return _mapping;
 		}
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public static void ProcessCopy(IDefragContext context, int sourceID, ISlotCopyHandler
+		public static void ProcessCopy(IDefragmentServices context, int sourceID, ISlotCopyHandler
 			 command)
 		{
 			ProcessCopy(context, sourceID, command, false);
@@ -186,7 +185,7 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public static void ProcessCopy(IDefragContext context, int sourceID, ISlotCopyHandler
+		public static void ProcessCopy(IDefragmentServices context, int sourceID, ISlotCopyHandler
 			 command, bool registerAddressMapping)
 		{
 			Db4objects.Db4o.Internal.Buffer sourceReader = context.SourceBufferByID(sourceID);
@@ -195,7 +194,7 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public static void ProcessCopy(IDefragContext context, int sourceID, ISlotCopyHandler
+		public static void ProcessCopy(IDefragmentServices context, int sourceID, ISlotCopyHandler
 			 command, bool registerAddressMapping, Db4objects.Db4o.Internal.Buffer sourceReader
 			)
 		{
@@ -262,6 +261,13 @@ namespace Db4objects.Db4o.Internal
 			int linkOffSet = Offset();
 			Offset(newPayLoadOffset);
 			return linkOffSet;
+		}
+
+		public int WriteMappedID(int originalID)
+		{
+			int mapped = _mapping.MappedID(originalID, false);
+			_target.WriteInt(mapped);
+			return mapped;
 		}
 	}
 }

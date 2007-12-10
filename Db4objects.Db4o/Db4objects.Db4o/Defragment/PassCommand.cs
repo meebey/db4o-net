@@ -15,21 +15,22 @@ namespace Db4objects.Db4o.Defragment
 	{
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		void ProcessObjectSlot(DefragContextImpl context, ClassMetadata yapClass, int id);
+		void ProcessObjectSlot(DefragmentServicesImpl context, ClassMetadata yapClass, int
+			 id);
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		void ProcessClass(DefragContextImpl context, ClassMetadata yapClass, int id, int 
-			classIndexID);
+		void ProcessClass(DefragmentServicesImpl context, ClassMetadata yapClass, int id, 
+			int classIndexID);
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		void ProcessClassCollection(DefragContextImpl context);
+		void ProcessClassCollection(DefragmentServicesImpl context);
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		void ProcessBTree(DefragContextImpl context, BTree btree);
+		void ProcessBTree(DefragmentServicesImpl context, BTree btree);
 
-		void Flush(DefragContextImpl context);
+		void Flush(DefragmentServicesImpl context);
 	}
 }

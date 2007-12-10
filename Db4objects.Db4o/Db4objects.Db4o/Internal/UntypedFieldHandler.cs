@@ -27,9 +27,28 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		public override void DeleteEmbedded(MarshallerFamily mf, StatefulBuffer reader)
+		public override void Delete(IDeleteContext context)
 		{
-			mf._untyped.DeleteEmbedded(reader);
+			int payLoadOffset = context.ReadInt();
+			if (context.IsLegacyHandlerVersion())
+			{
+				context.DefragmentRecommended();
+				return;
+			}
+			if (payLoadOffset <= 0)
+			{
+				return;
+			}
+			int linkOffset = context.Offset();
+			context.Seek(payLoadOffset);
+			int classMetadataID = context.ReadInt();
+			ClassMetadata classMetadata = ((ObjectContainerBase)context.ObjectContainer()).ClassMetadataForId
+				(classMetadataID);
+			if (classMetadata != null)
+			{
+				classMetadata.Delete(context);
+			}
+			context.Seek(linkOffset);
 		}
 
 		public override int GetID()
@@ -79,14 +98,13 @@ namespace Db4objects.Db4o.Internal
 			return classMetadata.ReadObjectID(context);
 		}
 
-		public override void Defrag(MarshallerFamily mf, BufferPair readers, bool redirect
-			)
+		public override void Defragment(DefragmentContext context)
 		{
-			if (mf._untyped.UseNormalClassRead())
+			if (context.MarshallerFamily()._untyped.UseNormalClassRead())
 			{
-				base.Defrag(mf, readers, redirect);
+				base.Defragment(context);
 			}
-			mf._untyped.Defrag(readers);
+			context.MarshallerFamily()._untyped.Defrag(context.Readers());
 		}
 
 		private bool IsArray(ITypeHandler4 handler)

@@ -461,7 +461,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public virtual void DefragBTree(IDefragContext context)
+		public virtual void DefragBTree(IDefragmentServices context)
 		{
 			BufferPair.ProcessCopy(context, GetID(), new _ISlotCopyHandler_389(this));
 			CorruptionException[] corruptx = new CorruptionException[] { null };
@@ -503,7 +503,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private sealed class _IVisitor4_397 : IVisitor4
 		{
-			public _IVisitor4_397(BTree _enclosing, IDefragContext context, CorruptionException
+			public _IVisitor4_397(BTree _enclosing, IDefragmentServices context, CorruptionException
 				[] corruptx, IOException[] iox)
 			{
 				this._enclosing = _enclosing;
@@ -548,7 +548,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 			private readonly BTree _enclosing;
 
-			private readonly IDefragContext context;
+			private readonly IDefragmentServices context;
 
 			private readonly CorruptionException[] corruptx;
 

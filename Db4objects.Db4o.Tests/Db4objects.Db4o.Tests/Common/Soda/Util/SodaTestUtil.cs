@@ -70,7 +70,15 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 						}
 					}
 				}
-				Assert.IsTrue(found, "Object not expected: " + obj);
+				if (ordered)
+				{
+					Assert.IsTrue(found, "Expected '" + results[j - 1] + "' but got '" + obj + "' at index "
+						 + (j - 1));
+				}
+				else
+				{
+					Assert.IsTrue(found, "Object not expected: " + obj);
+				}
 			}
 			for (int i = 0; i < results.Length; i++)
 			{

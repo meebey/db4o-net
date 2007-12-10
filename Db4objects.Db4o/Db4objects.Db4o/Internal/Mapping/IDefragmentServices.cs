@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Mapping
 	/// <remarks>Encapsulates services involving source and target database files during defragmenting.
 	/// 	</remarks>
 	/// <exclude></exclude>
-	public interface IDefragContext : IIDMapping
+	public interface IDefragmentServices : IIDMapping
 	{
 		/// <exception cref="IOException"></exception>
 		Db4objects.Db4o.Internal.Buffer SourceBufferByAddress(int address, int length);

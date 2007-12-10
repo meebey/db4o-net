@@ -2,10 +2,20 @@
 
 namespace Db4objects.Db4o.Marshall
 {
-	/// <summary>a buffer interface with methods to read.</summary>
-	/// <remarks>a buffer interface with methods to read.</remarks>
+	/// <summary>
+	/// a buffer interface with methods to read and to position
+	/// the read pointer in the buffer.
+	/// </summary>
+	/// <remarks>
+	/// a buffer interface with methods to read and to position
+	/// the read pointer in the buffer.
+	/// </remarks>
 	public interface IReadBuffer
 	{
+		/// <summary>returns the current offset in the buffer</summary>
+		/// <returns>the offset</returns>
+		int Offset();
+
 		/// <summary>reads a byte from the buffer.</summary>
 		/// <remarks>reads a byte from the buffer.</remarks>
 		/// <returns>the byte</returns>
@@ -30,5 +40,9 @@ namespace Db4objects.Db4o.Marshall
 		/// <remarks>reads a long from the buffer.</remarks>
 		/// <returns>the long</returns>
 		long ReadLong();
+
+		/// <summary>positions the read pointer at the specified position</summary>
+		/// <param name="offset">the desired position in the buffer</param>
+		void Seek(int offset);
 	}
 }

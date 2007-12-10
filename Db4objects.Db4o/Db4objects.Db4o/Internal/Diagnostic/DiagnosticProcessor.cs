@@ -67,6 +67,17 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 				());
 		}
 
+		public virtual void DeletionFailed()
+		{
+			OnDiagnostic(new Db4objects.Db4o.Diagnostic.DeletionFailed());
+		}
+
+		public virtual void DefragmentRecommended(DefragmentRecommendation.DefragmentRecommendationReason
+			 reason)
+		{
+			OnDiagnostic(new DefragmentRecommendation(reason));
+		}
+
 		private Collection4 CloneListeners()
 		{
 			return _listeners != null ? new Collection4(_listeners) : null;

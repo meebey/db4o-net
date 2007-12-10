@@ -17,6 +17,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
+		public override void Delete(IDeleteContext context)
+		{
+			context.ReadSlot();
+			context.DefragmentRecommended();
+		}
+
+		/// <exception cref="Db4oIOException"></exception>
 		public override void ReadCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
 			 reader, QCandidates candidates)
 		{

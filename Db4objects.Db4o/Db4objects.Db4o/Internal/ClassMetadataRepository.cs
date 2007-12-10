@@ -68,15 +68,15 @@ namespace Db4objects.Db4o.Internal
 				ClassMetadata classMetadata = i.CurrentClass();
 				if (!classMetadata.IsInternal())
 				{
-					classMetadata.ForEachFieldMetadata(new _IVisitor4_60(this, fieldName, visitor, classMetadata
+					classMetadata.ForEachFieldMetadata(new _IVisitor4_59(this, fieldName, visitor, classMetadata
 						));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_60 : IVisitor4
+		private sealed class _IVisitor4_59 : IVisitor4
 		{
-			public _IVisitor4_60(ClassMetadataRepository _enclosing, string fieldName, IVisitor4
+			public _IVisitor4_59(ClassMetadataRepository _enclosing, string fieldName, IVisitor4
 				 visitor, ClassMetadata classMetadata)
 			{
 				this._enclosing = _enclosing;
@@ -143,15 +143,6 @@ namespace Db4objects.Db4o.Internal
 			_classMetadataCreationDepth--;
 			InitClassMetadataOnUp();
 			return ret;
-		}
-
-		public static void Defrag(BufferPair readers)
-		{
-			int numClasses = readers.ReadInt();
-			for (int classIdx = 0; classIdx < numClasses; classIdx++)
-			{
-				readers.CopyID();
-			}
 		}
 
 		private void EnsureAllClassesRead()
@@ -572,11 +563,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				_classes.Add(clazz);
 				_classMetadataByID.Put(clazz.GetID(), clazz);
-				RefreshClassCache(clazz);
+				RefreshClassCache(clazz, null);
 			}
 		}
 
-		public void RefreshClassCache(ClassMetadata clazz)
+		public void RefreshClassCache(ClassMetadata clazz, IReflectClass oldReflector)
 		{
 			if (clazz.StateUnread())
 			{
@@ -584,6 +575,10 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
+				if (oldReflector != null)
+				{
+					_classMetadataByClass.Remove(oldReflector);
+				}
 				_classMetadataByClass.Put(clazz.ClassReflector(), clazz);
 			}
 		}

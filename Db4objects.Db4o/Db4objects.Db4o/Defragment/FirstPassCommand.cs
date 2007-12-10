@@ -28,7 +28,8 @@ namespace Db4objects.Db4o.Defragment
 
 		private TreeInt _ids;
 
-		internal void Process(DefragContextImpl context, int objectID, bool isClassID)
+		internal void Process(DefragmentServicesImpl context, int objectID, bool isClassID
+			)
 		{
 			if (BatchFull())
 			{
@@ -42,8 +43,8 @@ namespace Db4objects.Db4o.Defragment
 			return _ids != null && _ids.Size() == ID_BATCH_SIZE;
 		}
 
-		public void ProcessClass(DefragContextImpl context, ClassMetadata yapClass, int id
-			, int classIndexID)
+		public void ProcessClass(DefragmentServicesImpl context, ClassMetadata yapClass, 
+			int id, int classIndexID)
 		{
 			Process(context, id, true);
 			for (int fieldIdx = 0; fieldIdx < yapClass.i_fields.Length; fieldIdx++)
@@ -56,19 +57,19 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public void ProcessObjectSlot(DefragContextImpl context, ClassMetadata yapClass, 
-			int sourceID)
+		public void ProcessObjectSlot(DefragmentServicesImpl context, ClassMetadata yapClass
+			, int sourceID)
 		{
 			Process(context, sourceID, false);
 		}
 
 		/// <exception cref="CorruptionException"></exception>
-		public void ProcessClassCollection(DefragContextImpl context)
+		public void ProcessClassCollection(DefragmentServicesImpl context)
 		{
 			Process(context, context.SourceClassCollectionID(), false);
 		}
 
-		public void ProcessBTree(DefragContextImpl context, BTree btree)
+		public void ProcessBTree(DefragmentServicesImpl context, BTree btree)
 		{
 			Process(context, btree.GetID(), false);
 			context.TraverseAllIndexSlots(btree, new _IVisitor4_54(this, context));
@@ -76,7 +77,7 @@ namespace Db4objects.Db4o.Defragment
 
 		private sealed class _IVisitor4_54 : IVisitor4
 		{
-			public _IVisitor4_54(FirstPassCommand _enclosing, DefragContextImpl context)
+			public _IVisitor4_54(FirstPassCommand _enclosing, DefragmentServicesImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -90,10 +91,10 @@ namespace Db4objects.Db4o.Defragment
 
 			private readonly FirstPassCommand _enclosing;
 
-			private readonly DefragContextImpl context;
+			private readonly DefragmentServicesImpl context;
 		}
 
-		public void Flush(DefragContextImpl context)
+		public void Flush(DefragmentServicesImpl context)
 		{
 			if (_ids == null)
 			{
