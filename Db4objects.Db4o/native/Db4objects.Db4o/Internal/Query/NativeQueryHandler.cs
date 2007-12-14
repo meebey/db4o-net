@@ -1,5 +1,8 @@
 /* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 using System;
+using System.IO;
+using System.Reflection;
+using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -81,14 +84,37 @@ namespace Db4objects.Db4o.Internal.Query
 					return WrapQueryResult<Extent>(q);
 				}
 			}
-			catch (System.Exception e)
+            catch(FileNotFoundException fnfe)
+            {
+                NativeQueryOptimizerNotLoaded(fnfe);
+            }
+            catch(TargetInvocationException tie)
+		    {
+                NativeQueryOptimizerNotLoaded(tie);
+		    }
+            catch (System.Exception e)
 			{
 				OnQueryOptimizationFailure(e);
+			    
+                NativeQueryUnoptimized(e);
 			}
-			return ExecuteUnoptimized(q, match);
+            
+            return ExecuteUnoptimized(q, match);
 		}
 
-		private System.Collections.Generic.IList<Extent> ExecuteUnoptimized<Extent>(IQuery q, Predicate<Extent> match)
+	    private void NativeQueryUnoptimized(Exception e)
+	    {
+            DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
+            if (dp.Enabled()) dp.NativeQueryUnoptimized(null, e);
+	    }
+
+	    private void NativeQueryOptimizerNotLoaded(Exception exception)
+	    {
+	        DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
+	        if (dp.Enabled()) dp.NativeQueryOptimizerNotLoaded(Db4o.Diagnostic.NativeQueryOptimizerNotLoaded.NQ_NOT_PRESENT, exception);
+	    }
+
+	    private System.Collections.Generic.IList<Extent> ExecuteUnoptimized<Extent>(IQuery q, Predicate<Extent> match)
 		{
 			q.Constrain(new GenericPredicateEvaluation<Extent>(match));
 			OnQueryExecution(match, QueryExecutionKind.Unoptimized);
@@ -132,19 +158,25 @@ namespace Db4objects.Db4o.Internal.Query
 			catch (System.Exception e)
 			{
 				OnQueryOptimizationFailure(e);
-			}
-			if (OptimizeNativeQueries())
-			{
-				DiagnosticProcessor dp = ((ObjectContainerBase)_container)._handlers._diagnosticProcessor;
-				if (dp.Enabled()) dp.NativeQueryUnoptimized(predicate);
 
-			}
+                if (OptimizeNativeQueries())
+                {
+                    DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
+                    if (dp.Enabled()) dp.NativeQueryUnoptimized(predicate, e);
+                }
+            }
+
 			query.Constrain(new Db4objects.Db4o.Internal.Query.PredicateEvaluation(predicate));
 			OnQueryExecution(predicate, QueryExecutionKind.Unoptimized);
 			return query;
 		}
 
-		private bool OptimizeNativeQueries()
+	    private ObjectContainerBase Container()
+	    {
+	        return ((ObjectContainerBase)_container);
+	    }
+
+	    private bool OptimizeNativeQueries()
 		{
 			return _container.Ext().Configure().OptimizeNativeQueries();
 		}
