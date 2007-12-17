@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _valueHandler.LinkLength() + Const4.INT_LENGTH;
 		}
 
-		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer a_reader)
+		public virtual object ReadIndexEntry(BufferImpl a_reader)
 		{
 			int parentID = ReadParentID(a_reader);
 			object objPart = _valueHandler.ReadIndexEntry(a_reader);
@@ -37,13 +37,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			return new FieldIndexKey(parentID, objPart);
 		}
 
-		private int ReadParentID(Db4objects.Db4o.Internal.Buffer a_reader)
+		private int ReadParentID(BufferImpl a_reader)
 		{
 			return ((int)_parentIdHandler.ReadIndexEntry(a_reader));
 		}
 
-		public virtual void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer writer, object
-			 obj)
+		public virtual void WriteIndexEntry(BufferImpl writer, object obj)
 		{
 			FieldIndexKey composite = (FieldIndexKey)obj;
 			int parentID = composite.ParentID();
@@ -90,10 +89,10 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _parentIdHandler.CompareTo(composite.ParentID());
 		}
 
-		public virtual void DefragIndexEntry(BufferPair readers)
+		public virtual void DefragIndexEntry(DefragmentContextImpl context)
 		{
-			_parentIdHandler.DefragIndexEntry(readers);
-			_valueHandler.DefragIndexEntry(readers);
+			_parentIdHandler.DefragIndexEntry(context);
+			_valueHandler.DefragIndexEntry(context);
 		}
 	}
 }

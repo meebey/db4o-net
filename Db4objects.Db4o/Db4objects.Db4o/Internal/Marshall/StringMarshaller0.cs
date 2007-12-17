@@ -16,15 +16,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="Db4oIOException"></exception>
-		public override Db4objects.Db4o.Internal.Buffer ReadIndexEntry(StatefulBuffer parentSlot
-			)
+		public override BufferImpl ReadIndexEntry(StatefulBuffer parentSlot)
 		{
 			return parentSlot.GetStream().ReadWriterByAddress(parentSlot.GetTransaction(), parentSlot
 				.ReadInt(), parentSlot.ReadInt());
-		}
-
-		public override void Defrag(ISlotBuffer reader)
-		{
 		}
 	}
 }

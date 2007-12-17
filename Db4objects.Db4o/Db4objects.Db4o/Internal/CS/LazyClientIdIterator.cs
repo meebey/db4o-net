@@ -2,6 +2,7 @@
 
 using System;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
 
 namespace Db4objects.Db4o.Internal.CS
@@ -69,8 +70,7 @@ namespace Db4objects.Db4o.Internal.CS
 			_current = -1;
 		}
 
-		public virtual void LoadFromIdReader(Db4objects.Db4o.Internal.Buffer reader, int 
-			count)
+		public virtual void LoadFromIdReader(BufferImpl reader, int count)
 		{
 			for (int i = 0; i < count; i++)
 			{

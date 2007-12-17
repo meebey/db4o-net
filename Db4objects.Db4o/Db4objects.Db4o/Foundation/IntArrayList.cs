@@ -24,6 +24,20 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Add(int a_value)
 		{
+			EnsureCapacity();
+			i_content[i_count++] = a_value;
+		}
+
+		public virtual void Add(int index, int a_value)
+		{
+			EnsureCapacity();
+			System.Array.Copy(i_content, index, i_content, index + 1, i_count - index);
+			i_content[index] = a_value;
+			i_count++;
+		}
+
+		private void EnsureCapacity()
+		{
 			if (i_count >= i_content.Length)
 			{
 				int inc = i_content.Length / 2;
@@ -35,7 +49,6 @@ namespace Db4objects.Db4o.Foundation
 				System.Array.Copy(i_content, 0, temp, 0, i_content.Length);
 				i_content = temp;
 			}
-			i_content[i_count++] = a_value;
 		}
 
 		public virtual int IndexOf(int a_value)

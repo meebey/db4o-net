@@ -5,6 +5,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Diagnostic;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
@@ -215,6 +216,10 @@ namespace Db4objects.Db4o.Internal
 
 		public ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler, int version)
 		{
+			if (version == MarshallingContext.HANDLER_VERSION)
+			{
+				return handler;
+			}
 			ITypeHandler4 replacement = (ITypeHandler4)_handlerVersions.Get(new HandlerVersionKey
 				(handler, version));
 			if (replacement != null)
@@ -334,7 +339,7 @@ namespace Db4objects.Db4o.Internal
 			return sortedConstructors;
 		}
 
-		public void Decrypt(Db4objects.Db4o.Internal.Buffer reader)
+		public void Decrypt(BufferImpl reader)
 		{
 			if (i_encrypt)
 			{
@@ -355,7 +360,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public void Encrypt(Db4objects.Db4o.Internal.Buffer reader)
+		public void Encrypt(BufferImpl reader)
 		{
 			if (i_encrypt)
 			{

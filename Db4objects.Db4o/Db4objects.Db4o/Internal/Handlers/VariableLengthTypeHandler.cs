@@ -33,15 +33,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract int CompareTo(object obj);
 
-		public abstract void Defragment(DefragmentContext context);
+		public abstract void Defragment(IDefragmentContext context);
 
 		public virtual ObjectContainerBase Container()
 		{
 			return _container;
 		}
 
-		protected virtual Db4objects.Db4o.Internal.Buffer ReadIndirectedBuffer(IReadContext
-			 readContext)
+		protected virtual BufferImpl ReadIndirectedBuffer(IReadContext readContext)
 		{
 			IInternalReadContext context = (IInternalReadContext)readContext;
 			int address = context.ReadInt();

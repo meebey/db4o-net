@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal byte[] i_nameBytes;
 
-		private Db4objects.Db4o.Internal.Buffer i_reader;
+		private BufferImpl i_reader;
 
 		private bool _classIndexed;
 
@@ -765,8 +765,7 @@ namespace Db4objects.Db4o.Internal
 			return new ClassMetadata.FieldMetadataIterator(this);
 		}
 
-		public HandlerVersion FindOffset(Db4objects.Db4o.Internal.Buffer buffer, FieldMetadata
-			 field)
+		public HandlerVersion FindOffset(BufferImpl buffer, FieldMetadata field)
 		{
 			if (buffer == null)
 			{
@@ -1103,8 +1102,7 @@ namespace Db4objects.Db4o.Internal
 			return ClassReflector().IsCollection();
 		}
 
-		internal virtual void IncrementFieldsOffset1(Db4objects.Db4o.Internal.Buffer a_bytes
-			)
+		internal virtual void IncrementFieldsOffset1(BufferImpl a_bytes)
 		{
 			int length = ReadFieldCount(a_bytes);
 			for (int i = 0; i < length; i++)
@@ -1489,7 +1487,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public virtual ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.Buffer[] a_bytes)
+			 mf, BufferImpl[] a_bytes)
 		{
 			if (IsArray())
 			{
@@ -1498,8 +1496,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		public virtual ITypeHandler4 ReadArrayHandler1(Db4objects.Db4o.Internal.Buffer[] 
-			a_bytes)
+		public virtual ITypeHandler4 ReadArrayHandler1(BufferImpl[] a_bytes)
 		{
 			if (DTrace.enabled)
 			{
@@ -1530,8 +1527,8 @@ namespace Db4objects.Db4o.Internal
 			return id == 0 ? ObjectID.IS_NULL : new ObjectID(id);
 		}
 
-		public virtual void ReadCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
-			 buffer, QCandidates candidates)
+		public virtual void ReadCandidates(int handlerVersion, BufferImpl buffer, QCandidates
+			 candidates)
 		{
 			int id = 0;
 			int offset = buffer._offset;
@@ -1585,7 +1582,7 @@ namespace Db4objects.Db4o.Internal
 			return Stream().ActivationDepthProvider();
 		}
 
-		public int ReadFieldCount(Db4objects.Db4o.Internal.Buffer buffer)
+		public int ReadFieldCount(BufferImpl buffer)
 		{
 			int count = buffer.ReadInt();
 			if (count > i_fields.Length)
@@ -1595,7 +1592,7 @@ namespace Db4objects.Db4o.Internal
 			return count;
 		}
 
-		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer a_reader)
+		public virtual object ReadIndexEntry(BufferImpl a_reader)
 		{
 			return a_reader.ReadInt();
 		}
@@ -1613,8 +1610,7 @@ namespace Db4objects.Db4o.Internal
 			return ReadName1(a_trans, i_reader);
 		}
 
-		public byte[] ReadName1(Transaction trans, Db4objects.Db4o.Internal.Buffer reader
-			)
+		public byte[] ReadName1(Transaction trans, BufferImpl reader)
 		{
 			if (reader == null)
 			{
@@ -1647,7 +1643,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			int id = a_yapObject.GetID();
 			ObjectContainerBase stream = a_trans.Container();
-			Db4objects.Db4o.Internal.Buffer reader = stream.ReadReaderByID(a_trans, id);
+			BufferImpl reader = stream.ReadReaderByID(a_trans, id);
 			ObjectHeader oh = new ObjectHeader(stream, this, reader);
 			oh.ObjectMarshaller().ReadVirtualAttributes(a_trans, this, a_yapObject, oh._headerAttributes
 				, reader);
@@ -1745,8 +1741,7 @@ namespace Db4objects.Db4o.Internal
 			BitFalse(Const4.READING);
 		}
 
-		public override void ReadThis(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			 a_reader)
+		public override void ReadThis(Transaction a_trans, BufferImpl a_reader)
 		{
 			throw Exceptions4.VirtualException();
 		}
@@ -2161,8 +2156,7 @@ namespace Db4objects.Db4o.Internal
 			return base.WriteObjectBegin();
 		}
 
-		public virtual void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer a_writer, object
-			 a_object)
+		public virtual void WriteIndexEntry(BufferImpl a_writer, object a_object)
 		{
 			if (a_object == null)
 			{
@@ -2172,8 +2166,7 @@ namespace Db4objects.Db4o.Internal
 			a_writer.WriteInt(((int)a_object));
 		}
 
-		public sealed override void WriteThis(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 writer)
+		public sealed override void WriteThis(Transaction trans, BufferImpl writer)
 		{
 			MarshallerFamily.Current()._class.Write(trans, this, writer);
 		}
@@ -2237,37 +2230,37 @@ namespace Db4objects.Db4o.Internal
 			throw new IllegalComparisonException();
 		}
 
-		public static void DefragObject(BufferPair readers)
+		public static void DefragObject(DefragmentContextImpl context)
 		{
-			ObjectHeader header = ObjectHeader.Defrag(readers);
-			header._marshallerFamily._object.DefragFields(header.ClassMetadata(), header, readers
+			ObjectHeader header = ObjectHeader.Defrag(context);
+			header._marshallerFamily._object.DefragFields(header.ClassMetadata(), header, context
 				);
 		}
 
-		public virtual void Defragment(DefragmentContext context)
+		public virtual void Defragment(IDefragmentContext context)
 		{
 			if (HasClassIndex())
 			{
-				context.Readers().CopyID();
+				context.CopyID();
 			}
 			else
 			{
-				context.Readers().CopyUnindexedID();
+				context.CopyUnindexedID();
 			}
 			int restLength = (LinkLength() - Const4.INT_LENGTH);
-			context.Readers().IncrementOffset(restLength);
+			context.IncrementOffset(restLength);
 		}
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public virtual void DefragClass(BufferPair readers, int classIndexID)
+		public virtual void DefragClass(DefragmentContextImpl context, int classIndexID)
 		{
 			MarshallerFamily mf = MarshallerFamily.Current();
-			mf._class.Defrag(this, _container.StringIO(), readers, classIndexID);
+			mf._class.Defrag(this, _container.StringIO(), context, classIndexID);
 		}
 
-		public static ClassMetadata ReadClass(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public static ClassMetadata ReadClass(ObjectContainerBase stream, BufferImpl reader
+			)
 		{
 			ObjectHeader oh = new ObjectHeader(stream, reader);
 			return oh.ClassMetadata();
@@ -2278,9 +2271,9 @@ namespace Db4objects.Db4o.Internal
 			return ClassReflector().IsAssignableFrom(other.ClassReflector());
 		}
 
-		public void DefragIndexEntry(BufferPair readers)
+		public void DefragIndexEntry(DefragmentContextImpl context)
 		{
-			readers.CopyID();
+			context.CopyID();
 		}
 
 		public virtual void SetAncestor(ClassMetadata ancestor)

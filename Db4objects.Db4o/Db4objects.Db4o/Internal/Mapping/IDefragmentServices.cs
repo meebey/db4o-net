@@ -18,26 +18,25 @@ namespace Db4objects.Db4o.Internal.Mapping
 	public interface IDefragmentServices : IIDMapping
 	{
 		/// <exception cref="IOException"></exception>
-		Db4objects.Db4o.Internal.Buffer SourceBufferByAddress(int address, int length);
+		BufferImpl SourceBufferByAddress(int address, int length);
 
 		/// <exception cref="IOException"></exception>
-		Db4objects.Db4o.Internal.Buffer TargetBufferByAddress(int address, int length);
+		BufferImpl TargetBufferByAddress(int address, int length);
 
 		/// <exception cref="IOException"></exception>
-		Db4objects.Db4o.Internal.Buffer SourceBufferByID(int sourceID);
+		BufferImpl SourceBufferByID(int sourceID);
 
 		Slot AllocateTargetSlot(int targetLength);
 
-		void TargetWriteBytes(Db4objects.Db4o.Internal.Buffer targetPointerReader, int targetID
-			);
+		void TargetWriteBytes(BufferImpl targetPointerReader, int targetID);
 
 		Transaction SystemTrans();
 
-		void TargetWriteBytes(BufferPair readers, int targetAddress);
+		void TargetWriteBytes(DefragmentContextImpl context, int targetAddress);
 
 		void TraverseAllIndexSlots(BTree tree, IVisitor4 visitor4);
 
-		ClassMetadata YapClass(int id);
+		ClassMetadata ClassMetadataForId(int id);
 
 		int MappedID(int id, bool lenient);
 

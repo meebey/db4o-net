@@ -13,8 +13,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return false;
 		}
 
-		public override ITypeHandler4 ReadArrayHandler(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			[] reader)
+		public override ITypeHandler4 ReadArrayHandler(Transaction trans, BufferImpl[] reader
+			)
 		{
 			int payLoadOffSet = reader[0].ReadInt();
 			if (payLoadOffSet == 0)
@@ -32,22 +32,22 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return ret;
 		}
 
-		public override void Defrag(BufferPair readers)
+		public override void Defrag(IDefragmentContext context)
 		{
-			int payLoadOffSet = readers.ReadInt();
+			int payLoadOffSet = context.ReadInt();
 			if (payLoadOffSet == 0)
 			{
 				return;
 			}
-			int linkOffSet = readers.Offset();
-			readers.Offset(payLoadOffSet);
-			int yapClassID = readers.CopyIDAndRetrieveMapping().Orig();
-			ClassMetadata yc = readers.Context().YapClass(yapClassID);
-			if (yc != null)
+			int linkOffSet = context.Offset();
+			context.Seek(payLoadOffSet);
+			int classMetadataID = context.CopyIDReturnOriginalID();
+			ClassMetadata classMetadata = context.ClassMetadataForId(classMetadataID);
+			if (classMetadata != null)
 			{
-				yc.Defragment(new DefragmentContext(_family, readers, false));
+				classMetadata.Defragment(context);
 			}
-			readers.Offset(linkOffSet);
+			context.Seek(linkOffSet);
 		}
 	}
 }

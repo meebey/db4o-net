@@ -17,5 +17,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			return ReadString(context, context);
 		}
+
+		public override void Defragment(IDefragmentContext context)
+		{
+			context.IncrementOffset(LinkLength());
+		}
 	}
 }

@@ -14,8 +14,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			private bool _cancelled = false;
 
-			public virtual int FieldCount(ClassMetadata classMetadata, Db4objects.Db4o.Internal.Buffer
-				 reader)
+			public virtual int FieldCount(ClassMetadata classMetadata, BufferImpl reader)
 			{
 				return classMetadata.ReadFieldCount(reader);
 			}
@@ -37,12 +36,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 		protected void TraverseFields(IMarshallingInfo context, ObjectMarshaller.TraverseFieldCommand
 			 command)
 		{
-			TraverseFields(context.ClassMetadata(), context.Buffer(), context, command);
+			TraverseFields(context.ClassMetadata(), (BufferImpl)context.Buffer(), context, command
+				);
 		}
 
-		protected void TraverseFields(ClassMetadata classMetadata, Db4objects.Db4o.Internal.Buffer
-			 buffer, IFieldListInfo fieldList, ObjectMarshaller.TraverseFieldCommand command
-			)
+		protected void TraverseFields(ClassMetadata classMetadata, BufferImpl buffer, IFieldListInfo
+			 fieldList, ObjectMarshaller.TraverseFieldCommand command)
 		{
 			int fieldIndex = 0;
 			while (classMetadata != null && !command.Cancelled())
@@ -95,10 +94,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			, StatefulBuffer writer, int a_type, bool isUpdate);
 
 		public abstract bool FindOffset(ClassMetadata classMetadata, IFieldListInfo fieldListInfo
-			, Db4objects.Db4o.Internal.Buffer buffer, FieldMetadata field);
+			, BufferImpl buffer, FieldMetadata field);
 
 		public void MarshallUpdateWrite(Transaction trans, Pointer4 pointer, ObjectReference
-			 @ref, object obj, Db4objects.Db4o.Internal.Buffer buffer)
+			 @ref, object obj, BufferImpl buffer)
 		{
 			ClassMetadata classMetadata = @ref.ClassMetadata();
 			ObjectContainerBase container = trans.Container();
@@ -122,19 +121,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public abstract object ReadIndexEntry(ClassMetadata yc, ObjectHeaderAttributes attributes
 			, FieldMetadata yf, StatefulBuffer reader);
 
-		public abstract ObjectHeaderAttributes ReadHeaderAttributes(Db4objects.Db4o.Internal.Buffer
-			 reader);
+		public abstract ObjectHeaderAttributes ReadHeaderAttributes(BufferImpl reader);
 
 		public abstract void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
-			 yo, ObjectHeaderAttributes attributes, Db4objects.Db4o.Internal.Buffer reader);
+			 yo, ObjectHeaderAttributes attributes, BufferImpl reader);
 
-		public abstract void DefragFields(ClassMetadata yapClass, ObjectHeader header, BufferPair
-			 readers);
+		public abstract void DefragFields(ClassMetadata yapClass, ObjectHeader header, DefragmentContextImpl
+			 context);
 
-		public abstract void WriteObjectClassID(Db4objects.Db4o.Internal.Buffer reader, int
-			 id);
+		public abstract void WriteObjectClassID(BufferImpl reader, int id);
 
-		public abstract void SkipMarshallerInfo(Db4objects.Db4o.Internal.Buffer reader);
+		public abstract void SkipMarshallerInfo(BufferImpl reader);
 
 		public void InstantiateFields(UnmarshallingContext context)
 		{
@@ -197,12 +194,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 				this.context = context;
 				this.trans = trans;
 				this.obj = obj;
+				this.fieldIndex = -1;
 			}
 
-			private int fieldIndex = -1;
+			private int fieldIndex;
 
-			public override int FieldCount(ClassMetadata classMetadata, Db4objects.Db4o.Internal.Buffer
-				 buffer)
+			public override int FieldCount(ClassMetadata classMetadata, BufferImpl buffer)
 			{
 				int fieldCount = classMetadata.i_fields.Length;
 				context.FieldCount(fieldCount);

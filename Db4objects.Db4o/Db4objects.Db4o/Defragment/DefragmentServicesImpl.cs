@@ -175,29 +175,27 @@ namespace Db4objects.Db4o.Defragment
 			_mapping.Close();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer BufferByID(DefragmentServicesImpl.DbSelector
-			 selector, int id)
+		public virtual BufferImpl BufferByID(DefragmentServicesImpl.DbSelector selector, 
+			int id)
 		{
 			Slot slot = ReadPointer(selector, id);
 			return BufferByAddress(selector, slot.Address(), slot.Length());
 		}
 
 		/// <exception cref="IOException"></exception>
-		public virtual Db4objects.Db4o.Internal.Buffer SourceBufferByAddress(int address, 
-			int length)
+		public virtual BufferImpl SourceBufferByAddress(int address, int length)
 		{
 			return BufferByAddress(SOURCEDB, address, length);
 		}
 
 		/// <exception cref="IOException"></exception>
-		public virtual Db4objects.Db4o.Internal.Buffer TargetBufferByAddress(int address, 
-			int length)
+		public virtual BufferImpl TargetBufferByAddress(int address, int length)
 		{
 			return BufferByAddress(TARGETDB, address, length);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer BufferByAddress(DefragmentServicesImpl.DbSelector
-			 selector, int address, int length)
+		public virtual BufferImpl BufferByAddress(DefragmentServicesImpl.DbSelector selector
+			, int address, int length)
 		{
 			return selector.Db(this).BufferByAddress(address, length);
 		}
@@ -214,13 +212,12 @@ namespace Db4objects.Db4o.Defragment
 			return _targetDb.GetSlot(length);
 		}
 
-		public virtual void TargetWriteBytes(BufferPair readers, int address)
+		public virtual void TargetWriteBytes(DefragmentContextImpl context, int address)
 		{
-			readers.Write(_targetDb, address);
+			context.Write(_targetDb, address);
 		}
 
-		public virtual void TargetWriteBytes(Db4objects.Db4o.Internal.Buffer reader, int 
-			address)
+		public virtual void TargetWriteBytes(BufferImpl reader, int address)
 		{
 			_targetDb.WriteBytes(reader, address, 0);
 		}
@@ -266,8 +263,7 @@ namespace Db4objects.Db4o.Defragment
 			RandomAccessFile raf = new RandomAccessFile(file, "rw");
 			try
 			{
-				Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(Const4
-					.INT_LENGTH);
+				BufferImpl reader = new BufferImpl(Const4.INT_LENGTH);
 				raf.Seek(CLASSCOLLECTION_POINTER_ADDRESS);
 				reader._offset = 0;
 				reader.WriteInt(id);
@@ -353,7 +349,7 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		/// <exception cref="IOException"></exception>
-		public virtual Db4objects.Db4o.Internal.Buffer SourceBufferByID(int sourceID)
+		public virtual BufferImpl SourceBufferByID(int sourceID)
 		{
 			return BufferByID(SOURCEDB, sourceID);
 		}
@@ -377,7 +373,7 @@ namespace Db4objects.Db4o.Defragment
 			return _sourceDb.SystemData().UuidIndexId();
 		}
 
-		public virtual ClassMetadata YapClass(int id)
+		public virtual ClassMetadata ClassMetadataForId(int id)
 		{
 			return _sourceDb.ClassMetadataForId(id);
 		}
@@ -392,16 +388,14 @@ namespace Db4objects.Db4o.Defragment
 			return _unindexed.Iterator();
 		}
 
-		public virtual ObjectHeader SourceObjectHeader(Db4objects.Db4o.Internal.Buffer buffer
-			)
+		public virtual ObjectHeader SourceObjectHeader(BufferImpl buffer)
 		{
 			return new ObjectHeader(_sourceDb, buffer);
 		}
 
 		private Slot ReadPointer(DefragmentServicesImpl.DbSelector selector, int id)
 		{
-			Db4objects.Db4o.Internal.Buffer reader = BufferByAddress(selector, id, Const4.POINTER_LENGTH
-				);
+			BufferImpl reader = BufferByAddress(selector, id, Const4.POINTER_LENGTH);
 			int address = reader.ReadInt();
 			int length = reader.ReadInt();
 			return new Slot(address, length);

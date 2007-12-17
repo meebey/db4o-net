@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 
 namespace Db4objects.Db4o.Internal.Btree
@@ -50,10 +51,10 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
-		private readonly Db4objects.Db4o.Internal.Buffer _nodeReader;
+		private readonly BufferImpl _nodeReader;
 
-		public BTreePointer(Db4objects.Db4o.Internal.Transaction transaction, Db4objects.Db4o.Internal.Buffer
-			 nodeReader, BTreeNode node, int index)
+		public BTreePointer(Db4objects.Db4o.Internal.Transaction transaction, BufferImpl 
+			nodeReader, BTreeNode node, int index)
 		{
 			if (transaction == null || node == null)
 			{
@@ -85,7 +86,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return Node().Key(Transaction(), NodeReader(), Index());
 		}
 
-		private Db4objects.Db4o.Internal.Buffer NodeReader()
+		private BufferImpl NodeReader()
 		{
 			return _nodeReader;
 		}
@@ -104,7 +105,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			int newIndex = -1;
 			BTreeNode nextNode = Node();
-			Db4objects.Db4o.Internal.Buffer nextReader = null;
+			BufferImpl nextReader = null;
 			while (newIndex == -1)
 			{
 				nextNode = nextNode.NextNode();
@@ -133,7 +134,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			int newIndex = -1;
 			BTreeNode previousNode = Node();
-			Db4objects.Db4o.Internal.Buffer previousReader = null;
+			BufferImpl previousReader = null;
 			while (newIndex == -1)
 			{
 				previousNode = previousNode.PreviousNode();

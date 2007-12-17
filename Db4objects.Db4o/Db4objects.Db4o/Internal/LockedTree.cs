@@ -36,8 +36,7 @@ namespace Db4objects.Db4o.Internal
 			return TreeInt.Find(_tree, key);
 		}
 
-		public virtual void Read(Db4objects.Db4o.Internal.Buffer buffer, IReadable template
-			)
+		public virtual void Read(BufferImpl buffer, IReadable template)
 		{
 			Clear();
 			_tree = new TreeReader(buffer, template).Read();

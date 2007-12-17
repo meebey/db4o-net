@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
@@ -10,48 +9,27 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public abstract class BufferContext : IReadBuffer
 	{
+		protected IBuffer _buffer;
+
 		protected readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
-		protected Db4objects.Db4o.Internal.Buffer _buffer;
-
-		public BufferContext(Db4objects.Db4o.Internal.Transaction transaction)
-		{
-			_transaction = transaction;
-		}
-
-		public BufferContext(Db4objects.Db4o.Internal.Transaction transaction, Db4objects.Db4o.Internal.Buffer
-			 buffer)
+		public BufferContext(Db4objects.Db4o.Internal.Transaction transaction, IBuffer buffer
+			)
 		{
 			_transaction = transaction;
 			_buffer = buffer;
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer Buffer(Db4objects.Db4o.Internal.Buffer
-			 buffer)
+		public virtual IBuffer Buffer(IBuffer buffer)
 		{
-			Db4objects.Db4o.Internal.Buffer temp = _buffer;
+			IBuffer temp = _buffer;
 			_buffer = buffer;
 			return temp;
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer Buffer()
+		public virtual IBuffer Buffer()
 		{
 			return _buffer;
-		}
-
-		public virtual ObjectContainerBase Container()
-		{
-			return _transaction.Container();
-		}
-
-		public virtual IObjectContainer ObjectContainer()
-		{
-			return (IObjectContainer)Container();
-		}
-
-		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
-		{
-			return _transaction;
 		}
 
 		public virtual byte ReadByte()
@@ -84,20 +62,31 @@ namespace Db4objects.Db4o.Internal
 			_buffer.Seek(offset);
 		}
 
-		public virtual bool OldHandlerVersion()
+		public virtual ObjectContainerBase Container()
 		{
-			return HandlerVersion() != MarshallingContext.HANDLER_VERSION;
+			return _transaction.Container();
+		}
+
+		public virtual IObjectContainer ObjectContainer()
+		{
+			return (IObjectContainer)Container();
+		}
+
+		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
+		{
+			return _transaction;
 		}
 
 		public virtual ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler)
 		{
-			if (!OldHandlerVersion())
-			{
-				return handler;
-			}
 			return Container().Handlers().CorrectHandlerVersion(handler, HandlerVersion());
 		}
 
 		public abstract int HandlerVersion();
+
+		public virtual bool IsLegacyHandlerVersion()
+		{
+			return HandlerVersion() == 0;
+		}
 	}
 }

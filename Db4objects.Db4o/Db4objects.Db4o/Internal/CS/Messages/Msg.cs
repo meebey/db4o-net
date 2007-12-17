@@ -214,7 +214,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		/// dummy method to allow clean override handling
 		/// without casting
 		/// </summary>
-		public virtual Db4objects.Db4o.Internal.Buffer GetByteLoad()
+		public virtual BufferImpl GetByteLoad()
 		{
 			return null;
 		}
@@ -297,7 +297,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		/// <param name="sock"></param>
 		internal virtual Db4objects.Db4o.Internal.CS.Messages.Msg ReadPayLoad(IMessageDispatcher
 			 messageDispatcher, Db4objects.Db4o.Internal.Transaction a_trans, ISocket4 sock, 
-			Db4objects.Db4o.Internal.Buffer reader)
+			BufferImpl reader)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.Msg msg = PublicClone();
 			msg.SetMessageDispatcher(messageDispatcher);
@@ -306,7 +306,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		}
 
 		protected Db4objects.Db4o.Internal.Transaction CheckParentTransaction(Db4objects.Db4o.Internal.Transaction
-			 a_trans, Db4objects.Db4o.Internal.Buffer reader)
+			 a_trans, BufferImpl reader)
 		{
 			if (reader.ReadByte() == Const4.SYSTEM_TRANS && a_trans.ParentTransaction() != null
 				)

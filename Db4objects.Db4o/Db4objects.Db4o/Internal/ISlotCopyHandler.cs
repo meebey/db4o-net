@@ -11,6 +11,6 @@ namespace Db4objects.Db4o.Internal
 	{
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		void ProcessCopy(BufferPair readers);
+		void ProcessCopy(DefragmentContextImpl context);
 	}
 }

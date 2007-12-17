@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Marshall;
@@ -15,7 +16,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object Read(IReadContext context)
 		{
-			Db4objects.Db4o.Internal.Buffer buffer = ReadIndirectedBuffer(context);
+			BufferImpl buffer = ReadIndirectedBuffer(context);
 			if (buffer == null)
 			{
 				return null;
@@ -27,6 +28,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			base.Delete(context);
 			context.DefragmentRecommended();
+		}
+
+		public override void Defragment(IDefragmentContext context)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

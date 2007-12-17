@@ -1,13 +1,14 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class Null : IIndexable4
+	public class Null : IIndexable4, IPreparedComparison
 	{
-		public static readonly IIndexable4 INSTANCE = new Null();
+		public static readonly Null INSTANCE = new Null();
 
 		public virtual int CompareTo(object a_obj)
 		{
@@ -28,17 +29,16 @@ namespace Db4objects.Db4o.Internal
 			return this;
 		}
 
-		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer a_reader)
+		public virtual object ReadIndexEntry(BufferImpl a_reader)
 		{
 			return null;
 		}
 
-		public virtual void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer a_writer, object
-			 a_object)
+		public virtual void WriteIndexEntry(BufferImpl a_writer, object a_object)
 		{
 		}
 
-		public virtual void DefragIndexEntry(BufferPair readers)
+		public virtual void DefragIndexEntry(DefragmentContextImpl context)
 		{
 		}
 	}

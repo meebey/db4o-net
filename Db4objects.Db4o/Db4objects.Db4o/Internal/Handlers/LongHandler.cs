@@ -52,12 +52,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return mf._primitive.ReadLong(buffer);
 		}
 
-		internal override object Read1(Db4objects.Db4o.Internal.Buffer a_bytes)
+		internal override object Read1(BufferImpl a_bytes)
 		{
 			return a_bytes.ReadLong();
 		}
 
-		public override void Write(object obj, Db4objects.Db4o.Internal.Buffer buffer)
+		public override void Write(object obj, BufferImpl buffer)
 		{
 			WriteLong(buffer, ((long)obj));
 		}

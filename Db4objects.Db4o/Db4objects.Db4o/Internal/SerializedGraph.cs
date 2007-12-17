@@ -27,15 +27,14 @@ namespace Db4objects.Db4o.Internal
 			return (Const4.INT_LENGTH * 2) + Length();
 		}
 
-		public virtual void Write(Db4objects.Db4o.Internal.Buffer buffer)
+		public virtual void Write(BufferImpl buffer)
 		{
 			buffer.WriteInt(_id);
 			buffer.WriteInt(Length());
 			buffer.Append(_bytes);
 		}
 
-		public static Db4objects.Db4o.Internal.SerializedGraph Read(Db4objects.Db4o.Internal.Buffer
-			 buffer)
+		public static Db4objects.Db4o.Internal.SerializedGraph Read(BufferImpl buffer)
 		{
 			int id = buffer.ReadInt();
 			int length = buffer.ReadInt();

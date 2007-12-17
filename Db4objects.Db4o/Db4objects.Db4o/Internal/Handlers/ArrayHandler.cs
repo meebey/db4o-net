@@ -7,7 +7,6 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
@@ -134,8 +133,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return mf._array.CollectIDs(this, tree, reader);
 		}
 
-		public TreeInt CollectIDs1(Transaction trans, TreeInt tree, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public TreeInt CollectIDs1(Transaction trans, TreeInt tree, BufferImpl reader)
 		{
 			if (reader == null)
 			{
@@ -265,21 +263,21 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		public virtual ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.Buffer[] a_bytes)
+			 mf, BufferImpl[] a_bytes)
 		{
 			return this;
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		public virtual void ReadCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates)
+		public virtual void ReadCandidates(int handlerVersion, BufferImpl reader, QCandidates
+			 candidates)
 		{
 			reader.Seek(reader.ReadInt());
 			ReadSubCandidates(handlerVersion, reader, candidates);
 		}
 
-		public virtual void ReadSubCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates)
+		public virtual void ReadSubCandidates(int handlerVersion, BufferImpl reader, QCandidates
+			 candidates)
 		{
 			IntByRef elements = new IntByRef();
 			object arr = ReadCreate(candidates.i_trans, reader, elements);
@@ -290,8 +288,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			ReadSubCandidates(handlerVersion, reader, candidates, elements.value);
 		}
 
-		protected virtual void ReadSubCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates, int count)
+		protected virtual void ReadSubCandidates(int handlerVersion, BufferImpl reader, QCandidates
+			 candidates, int count)
 		{
 			QueryingReadContext context = new QueryingReadContext(candidates.Transaction(), handlerVersion
 				, reader);
@@ -325,7 +323,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return elements;
 		}
 
-		protected int MapElementsEntry(int orig, IIDMapping mapping)
+		protected int MapElementsEntry(IDefragmentContext context, int orig)
 		{
 			if (orig >= 0 || orig == Const4.IGNORE_ID)
 			{
@@ -337,7 +335,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				orig -= Const4.PRIMITIVE;
 			}
 			int origID = -orig;
-			int mappedID = mapping.MappedID(origID);
+			int mappedID = context.MappedID(origID);
 			int mapped = -mappedID;
 			if (primitive)
 			{
@@ -459,34 +457,50 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return false;
 		}
 
-		public sealed override void Defragment(DefragmentContext context)
+		public override void Defragment(IDefragmentContext context)
 		{
 			if (Handlers4.HandlesSimple(_handler))
 			{
-				context.Readers().IncrementOffset(LinkLength());
+				context.IncrementOffset(LinkLength());
 			}
 			else
 			{
-				context.MarshallerFamily()._array.DefragIDs(this, context.Readers());
+				DefragIDs(context);
 			}
 		}
 
-		public virtual void Defrag1(DefragmentContext context)
+		private void DefragIDs(IDefragmentContext context)
 		{
-			int elements = ReadElementsDefrag(context.Readers());
+			int offset = PreparePayloadRead(context);
+			Defrag1(context);
+			context.Seek(offset);
+		}
+
+		private int PreparePayloadRead(IDefragmentContext context)
+		{
+			int newPayLoadOffset = context.ReadInt();
+			context.ReadInt();
+			int linkOffSet = context.Offset();
+			context.Seek(newPayLoadOffset);
+			return linkOffSet;
+		}
+
+		public virtual void Defrag1(IDefragmentContext context)
+		{
+			int elements = ReadElementsDefrag(context);
 			for (int i = 0; i < elements; i++)
 			{
 				_handler.Defragment(context);
 			}
 		}
 
-		protected virtual int ReadElementsDefrag(BufferPair readers)
+		protected virtual int ReadElementsDefrag(IDefragmentContext context)
 		{
-			int elements = readers.Source().ReadInt();
-			readers.Target().WriteInt(MapElementsEntry(elements, readers.Mapping()));
+			int elements = context.SourceBuffer().ReadInt();
+			context.TargetBuffer().WriteInt(MapElementsEntry(context, elements));
 			if (elements < 0)
 			{
-				elements = readers.ReadInt();
+				elements = context.ReadInt();
 			}
 			return elements;
 		}

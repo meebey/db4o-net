@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// <exclude></exclude>
 	public class QCandidate : TreeInt, ICandidate, IOrderable
 	{
-		internal Db4objects.Db4o.Internal.Buffer _bytes;
+		internal BufferImpl _bytes;
 
 		internal readonly QCandidates _candidates;
 
@@ -134,8 +134,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				ITypeHandler4 handler = _yapField.GetHandler();
 				if (handler != null)
 				{
-					Db4objects.Db4o.Internal.Buffer[] arrayBytes = new Db4objects.Db4o.Internal.Buffer
-						[] { _bytes };
+					BufferImpl[] arrayBytes = new BufferImpl[] { _bytes };
 					ITypeHandler4 tempHandler = null;
 					if (handler is IFirstClassHandler)
 					{
@@ -387,9 +386,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public virtual object GetObject()
 		{
 			object obj = Value(true);
-			if (obj is Db4objects.Db4o.Internal.Buffer)
+			if (obj is BufferImpl)
 			{
-				Db4objects.Db4o.Internal.Buffer reader = (Db4objects.Db4o.Internal.Buffer)obj;
+				BufferImpl reader = (BufferImpl)obj;
 				int offset = reader._offset;
 				obj = ReadString(reader);
 				reader._offset = offset;
@@ -397,7 +396,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return obj;
 		}
 
-		public virtual string ReadString(Db4objects.Db4o.Internal.Buffer buffer)
+		public virtual string ReadString(BufferImpl buffer)
 		{
 			return StringHandler.ReadString(Transaction().Context(), buffer);
 		}
@@ -698,7 +697,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return _member;
 		}
 
-		internal virtual void SetBytes(Db4objects.Db4o.Internal.Buffer bytes)
+		internal virtual void SetBytes(BufferImpl bytes)
 		{
 			_bytes = bytes;
 		}

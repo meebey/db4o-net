@@ -181,13 +181,14 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		private static void DefragUnindexed(DefragmentServicesImpl context)
+		private static void DefragUnindexed(DefragmentServicesImpl services)
 		{
-			IEnumerator unindexedIDs = context.UnindexedIDs();
+			IEnumerator unindexedIDs = services.UnindexedIDs();
 			while (unindexedIDs.MoveNext())
 			{
 				int origID = ((int)unindexedIDs.Current);
-				BufferPair.ProcessCopy(context, origID, new _ISlotCopyHandler_167(), true);
+				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_167(), 
+					true);
 			}
 		}
 
@@ -198,9 +199,9 @@ namespace Db4objects.Db4o.Defragment
 			}
 
 			/// <exception cref="CorruptionException"></exception>
-			public void ProcessCopy(BufferPair readers)
+			public void ProcessCopy(DefragmentContextImpl context)
 			{
-				ClassMetadata.DefragObject(readers);
+				ClassMetadata.DefragObject(context);
 			}
 		}
 

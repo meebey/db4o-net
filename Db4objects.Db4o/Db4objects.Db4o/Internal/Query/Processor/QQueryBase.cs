@@ -498,9 +498,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				base(baseArg1)
 			{
 				this._enclosing = _enclosing;
+				this.ids = new TreeInt(0);
 			}
 
-			private TreeInt ids = new TreeInt(0);
+			private TreeInt ids;
 
 			protected override object Map(object current)
 			{

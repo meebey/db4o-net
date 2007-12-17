@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		private readonly int _handlerVersion;
 
-		public QueryingReadContext(Transaction transaction, int handlerVersion, Db4objects.Db4o.Internal.Buffer
+		public QueryingReadContext(Transaction transaction, int handlerVersion, BufferImpl
 			 buffer) : base(transaction, buffer)
 		{
 			_handlerVersion = handlerVersion;

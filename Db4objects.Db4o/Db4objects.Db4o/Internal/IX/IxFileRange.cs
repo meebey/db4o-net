@@ -63,8 +63,7 @@ namespace Db4objects.Db4o.Internal.IX
 		public override string ToString()
 		{
 			return base.ToString();
-			Db4objects.Db4o.Internal.Buffer fileReader = new Db4objects.Db4o.Internal.Buffer(
-				SlotLength());
+			BufferImpl fileReader = new BufferImpl(SlotLength());
 			StringBuilder sb = new StringBuilder();
 			sb.Append("IxFileRange");
 			VisitAll(new _IIntObjectVisitor_62(this, sb));
@@ -108,8 +107,7 @@ namespace Db4objects.Db4o.Internal.IX
 			int count = lowerUpper[1] - lowerUpper[0] + 1;
 			if (count > 0)
 			{
-				Db4objects.Db4o.Internal.Buffer fileReader = new Db4objects.Db4o.Internal.Buffer(
-					count * frr._slotLength);
+				BufferImpl fileReader = new BufferImpl(count * frr._slotLength);
 				int offset = _addressOffset + (lowerUpper[0] * frr._slotLength);
 				fileReader.Read(Stream(), _address, offset);
 				for (int i = lowerUpper[0]; i <= lowerUpper[1]; i++)
@@ -135,8 +133,7 @@ namespace Db4objects.Db4o.Internal.IX
 		{
 			LocalObjectContainer yf = Stream();
 			Transaction transaction = Trans();
-			Db4objects.Db4o.Internal.Buffer fileReader = new Db4objects.Db4o.Internal.Buffer(
-				SlotLength());
+			BufferImpl fileReader = new BufferImpl(SlotLength());
 			for (int i = 0; i < _entries; i++)
 			{
 				int address = _address + (i * SlotLength());
@@ -177,8 +174,7 @@ namespace Db4objects.Db4o.Internal.IX
 		public override void FreespaceVisit(FreespaceVisitor visitor, int index)
 		{
 			IxFileRangeReader frr = Reader();
-			Db4objects.Db4o.Internal.Buffer fileReader = new Db4objects.Db4o.Internal.Buffer(
-				frr._slotLength);
+			BufferImpl fileReader = new BufferImpl(frr._slotLength);
 			fileReader.Read(Stream(), _address, _addressOffset + (index * frr._slotLength));
 			int val = fileReader.ReadInt();
 			int parentID = fileReader.ReadInt();

@@ -112,11 +112,11 @@ namespace Db4objects.Db4o.Internal.Classindex
 		{
 		}
 
-		public override void DefragReference(ClassMetadata yapClass, BufferPair readers, 
-			int classIndexID)
+		public override void DefragReference(ClassMetadata classMetadata, DefragmentContextImpl
+			 context, int classIndexID)
 		{
 			int newID = -classIndexID;
-			readers.WriteInt(newID);
+			context.WriteInt(newID);
 		}
 
 		public override int Id()
@@ -129,9 +129,9 @@ namespace Db4objects.Db4o.Internal.Classindex
 			return _btreeIndex.AllNodeIds(trans);
 		}
 
-		public override void DefragIndex(BufferPair readers)
+		public override void DefragIndex(DefragmentContextImpl context)
 		{
-			_btreeIndex.DefragIndex(readers);
+			_btreeIndex.DefragIndex(context);
 		}
 
 		public static BTree Btree(ClassMetadata clazz)

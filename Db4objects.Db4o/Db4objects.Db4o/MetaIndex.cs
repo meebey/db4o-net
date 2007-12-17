@@ -26,7 +26,7 @@ namespace Db4objects.Db4o
 
 		private const int patchLength = 0;
 
-		public virtual void Read(Db4objects.Db4o.Internal.Buffer reader)
+		public virtual void Read(BufferImpl reader)
 		{
 			indexAddress = reader.ReadInt();
 			indexEntries = reader.ReadInt();
@@ -36,7 +36,7 @@ namespace Db4objects.Db4o
 			reader.ReadInt();
 		}
 
-		public virtual void Write(Db4objects.Db4o.Internal.Buffer writer)
+		public virtual void Write(BufferImpl writer)
 		{
 			writer.WriteInt(indexAddress);
 			writer.WriteInt(indexEntries);

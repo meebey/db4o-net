@@ -443,14 +443,13 @@ namespace Db4objects.Db4o.Internal
 			return yapWriters;
 		}
 
-		public override Db4objects.Db4o.Internal.Buffer ReadReaderByID(Transaction a_ta, 
-			int a_id)
+		public override BufferImpl ReadReaderByID(Transaction a_ta, int a_id)
 		{
 			return ReadReaderOrWriterByID(a_ta, a_id, true);
 		}
 
-		private Db4objects.Db4o.Internal.Buffer ReadReaderOrWriterByID(Transaction a_ta, 
-			int a_id, bool useReader)
+		private BufferImpl ReadReaderOrWriterByID(Transaction a_ta, int a_id, bool useReader
+			)
 		{
 			if (a_id <= 0)
 			{
@@ -473,10 +472,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				DTrace.READ_SLOT.LogLength(slot.Address(), slot.Length());
 			}
-			Db4objects.Db4o.Internal.Buffer reader = null;
+			BufferImpl reader = null;
 			if (useReader)
 			{
-				reader = new Db4objects.Db4o.Internal.Buffer(slot.Length());
+				reader = new BufferImpl(slot.Length());
 			}
 			else
 			{
@@ -725,8 +724,8 @@ namespace Db4objects.Db4o.Internal
 			_transaction.Commit();
 		}
 
-		public abstract void WriteBytes(Db4objects.Db4o.Internal.Buffer a_Bytes, int address
-			, int addressOffset);
+		public abstract void WriteBytes(BufferImpl a_Bytes, int address, int addressOffset
+			);
 
 		public sealed override void WriteDirty()
 		{
@@ -746,8 +745,7 @@ namespace Db4objects.Db4o.Internal
 			i_dirty.Clear();
 		}
 
-		public void WriteEncrypt(Db4objects.Db4o.Internal.Buffer buffer, int address, int
-			 addressOffset)
+		public void WriteEncrypt(BufferImpl buffer, int address, int addressOffset)
 		{
 			_handlers.Encrypt(buffer);
 			WriteBytes(buffer, address, addressOffset);
@@ -784,7 +782,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public sealed override void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, Db4objects.Db4o.Internal.Buffer buffer)
+			 classMetadata, BufferImpl buffer)
 		{
 			WriteEncrypt(buffer, pointer.Address(), 0);
 			if (classMetadata == null)
@@ -824,7 +822,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public sealed override void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, Db4objects.Db4o.Internal.Buffer buffer)
+			 classMetadata, BufferImpl buffer)
 		{
 			int address = pointer.Address();
 			if (address == 0)

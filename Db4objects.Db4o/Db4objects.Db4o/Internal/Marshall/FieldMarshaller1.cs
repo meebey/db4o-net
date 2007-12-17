@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public override void Write(Transaction trans, ClassMetadata clazz, FieldMetadata 
-			field, Db4objects.Db4o.Internal.Buffer writer)
+			field, BufferImpl writer)
 		{
 			base.Write(trans, clazz, field, writer);
 			if (!HasBTreeIndex(field))
@@ -27,8 +27,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			writer.WriteIDOf(trans, field.GetIndex(trans));
 		}
 
-		public override RawFieldSpec ReadSpec(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public override RawFieldSpec ReadSpec(ObjectContainerBase stream, BufferImpl reader
+			)
 		{
 			RawFieldSpec spec = base.ReadSpec(stream, reader);
 			if (spec == null)
@@ -74,25 +74,25 @@ namespace Db4objects.Db4o.Internal.Marshall
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
 		public override void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO
-			 sio, BufferPair readers)
+			 sio, DefragmentContextImpl context)
 		{
-			base.Defrag(yapClass, yapField, sio, readers);
+			base.Defrag(yapClass, yapField, sio, context);
 			if (yapField.IsVirtual())
 			{
 				return;
 			}
 			if (yapField.HasIndex())
 			{
-				BTree index = yapField.GetIndex(readers.SystemTrans());
-				int targetIndexID = readers.CopyID();
+				BTree index = yapField.GetIndex(context.SystemTrans());
+				int targetIndexID = context.CopyID();
 				if (targetIndexID != 0)
 				{
-					index.DefragBTree(readers.Context());
+					index.DefragBTree(context.Services());
 				}
 			}
 			else
 			{
-				readers.WriteInt(0);
+				context.WriteInt(0);
 			}
 		}
 	}

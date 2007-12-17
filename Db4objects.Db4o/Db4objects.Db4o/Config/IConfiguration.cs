@@ -462,11 +462,13 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// tuning feature: configures whether db4o checks all persistent classes upon system
 		/// startup, for added or removed fields.
-		/// <br /><br />In a production environment this setting can be set to <code>false</code>,
-		/// if all necessary classes have been stored to the database file and none of them
-		/// have been modified since the last use.<br /><br />
-		/// In client/server environment this setting should be used on both
-		/// client and server.
+		/// <br /><br />If this configuration setting is set to false while a database is
+		/// being created, members of classes will not be detected and stored.
+		/// <br /><br />This setting can be set to false in a production environment after
+		/// all persistent classes have been stored at least once and classes will not
+		/// be modified any further in the future.<br /><br />
+		/// In a client/server environment this setting should be configured both on the
+		/// client and and on the server.
 		/// <br /><br />Default value:<br />
 		/// <code>true</code>
 		/// </remarks>

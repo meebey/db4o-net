@@ -54,8 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public virtual void TestIndexMarshalling()
 		{
-			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(2 * 
-				Const4.INT_LENGTH);
+			BufferImpl reader = new BufferImpl(2 * Const4.INT_LENGTH);
 			Slot original = new Slot(unchecked((int)(0xdb)), unchecked((int)(0x40)));
 			StringHandler().WriteIndexEntry(reader, original);
 			reader._offset = 0;

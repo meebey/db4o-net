@@ -5,11 +5,11 @@ using Db4objects.Db4o.Foundation;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public interface ISlotBuffer
+	public interface IBuffer
 	{
 		int Offset();
 
-		void Offset(int offset);
+		void Seek(int offset);
 
 		void IncrementOffset(int numBytes);
 
@@ -33,6 +33,8 @@ namespace Db4objects.Db4o.Internal
 
 		BitMap4 ReadBitMap(int bitCount);
 
-		void CopyBytes(byte[] target, int sourceOffset, int targetOffset, int length);
+		int Length();
+
+		void ReadBytes(byte[] bytes);
 	}
 }

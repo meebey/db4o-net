@@ -319,8 +319,8 @@ namespace Db4objects.Db4o.Internal.Classindex
 		{
 		}
 
-		public override void DefragReference(ClassMetadata yapClass, BufferPair readers, 
-			int classIndexID)
+		public override void DefragReference(ClassMetadata yapClass, DefragmentContextImpl
+			 context, int classIndexID)
 		{
 		}
 
@@ -334,7 +334,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			throw new NotImplementedException();
 		}
 
-		public override void DefragIndex(BufferPair readers)
+		public override void DefragIndex(DefragmentContextImpl context)
 		{
 		}
 	}

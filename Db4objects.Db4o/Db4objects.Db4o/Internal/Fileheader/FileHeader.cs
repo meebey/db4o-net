@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		/// <exception cref="OldFormatException"></exception>
 		public static FileHeader ReadFixedPart(LocalObjectContainer file)
 		{
-			Db4objects.Db4o.Internal.Buffer reader = PrepareFileHeaderReader(file);
+			BufferImpl reader = PrepareFileHeaderReader(file);
 			FileHeader header = DetectFileHeader(file, reader);
 			if (header == null)
 			{
@@ -41,17 +41,15 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return header;
 		}
 
-		private static Db4objects.Db4o.Internal.Buffer PrepareFileHeaderReader(LocalObjectContainer
-			 file)
+		private static BufferImpl PrepareFileHeaderReader(LocalObjectContainer file)
 		{
-			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(ReaderLength
-				());
+			BufferImpl reader = new BufferImpl(ReaderLength());
 			reader.Read(file, 0, 0);
 			return reader;
 		}
 
-		private static FileHeader DetectFileHeader(LocalObjectContainer file, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		private static FileHeader DetectFileHeader(LocalObjectContainer file, BufferImpl 
+			reader)
 		{
 			for (int i = 0; i < AVAILABLE_FILE_HEADERS.Length; i++)
 			{
@@ -75,7 +73,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public abstract int Length();
 
-		protected abstract FileHeader NewOnSignatureMatch(LocalObjectContainer file, Db4objects.Db4o.Internal.Buffer
+		protected abstract FileHeader NewOnSignatureMatch(LocalObjectContainer file, BufferImpl
 			 reader);
 
 		protected virtual long TimeToWrite(long time, bool shuttingDown)
@@ -83,13 +81,13 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return shuttingDown ? 0 : time;
 		}
 
-		protected abstract void ReadFixedPart(LocalObjectContainer file, Db4objects.Db4o.Internal.Buffer
-			 reader);
+		protected abstract void ReadFixedPart(LocalObjectContainer file, BufferImpl reader
+			);
 
 		public abstract void ReadVariablePart(LocalObjectContainer file);
 
-		protected virtual bool SignatureMatches(Db4objects.Db4o.Internal.Buffer reader, byte
-			[] signature, byte version)
+		protected virtual bool SignatureMatches(BufferImpl reader, byte[] signature, byte
+			 version)
 		{
 			for (int i = 0; i < signature.Length; i++)
 			{
@@ -125,7 +123,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public abstract void WriteVariablePart(LocalObjectContainer file, int part);
 
 		protected virtual void ReadClassCollectionAndFreeSpace(LocalObjectContainer file, 
-			Db4objects.Db4o.Internal.Buffer reader)
+			BufferImpl reader)
 		{
 			SystemData systemData = file.SystemData();
 			systemData.ClassCollectionID(reader.ReadInt());

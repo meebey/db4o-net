@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.Foundation;
@@ -108,15 +109,16 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 				), fieldName));
 		}
 
-		public virtual void NativeQueryUnoptimized(Predicate predicate)
+		public virtual void NativeQueryUnoptimized(Predicate predicate, Exception exception
+			)
 		{
-			OnDiagnostic(new NativeQueryNotOptimized(predicate));
+			OnDiagnostic(new NativeQueryNotOptimized(predicate, exception));
 		}
 
-		public virtual void NativeQueryOptimizerNotLoaded(int reason)
+		public virtual void NativeQueryOptimizerNotLoaded(int reason, Exception e)
 		{
-			OnDiagnostic(new Db4objects.Db4o.Diagnostic.NativeQueryOptimizerNotLoaded(reason)
-				);
+			OnDiagnostic(new Db4objects.Db4o.Diagnostic.NativeQueryOptimizerNotLoaded(reason, 
+				e));
 		}
 
 		public virtual void OnDiagnostic(IDiagnostic d)

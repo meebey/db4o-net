@@ -28,11 +28,6 @@ namespace Db4objects.Db4o.Internal
 			return ((StatefulBuffer)_buffer).CascadeDeletes();
 		}
 
-		public virtual bool IsLegacyHandlerVersion()
-		{
-			return HandlerVersion() == 0;
-		}
-
 		public virtual void DefragmentRecommended()
 		{
 			DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
@@ -45,7 +40,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual Slot ReadSlot()
 		{
-			return _buffer.ReadSlot();
+			return new Slot(_buffer.ReadInt(), _buffer.ReadInt());
 		}
 
 		public override int HandlerVersion()

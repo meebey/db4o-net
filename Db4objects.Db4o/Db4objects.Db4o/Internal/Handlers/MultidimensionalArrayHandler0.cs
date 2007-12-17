@@ -17,12 +17,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override object Read(IReadContext readContext)
 		{
 			IInternalReadContext context = (IInternalReadContext)readContext;
-			Db4objects.Db4o.Internal.Buffer buffer = ReadIndirectedBuffer(context);
+			BufferImpl buffer = ReadIndirectedBuffer(context);
 			if (buffer == null)
 			{
 				return null;
 			}
-			Db4objects.Db4o.Internal.Buffer contextBuffer = context.Buffer(buffer);
+			IBuffer contextBuffer = context.Buffer(buffer);
 			object array = base.Read(context);
 			context.Buffer(contextBuffer);
 			return array;

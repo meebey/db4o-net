@@ -1,0 +1,94 @@
+/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+
+using System.Text;
+using Db4oUnit;
+using Db4oUnit.Extensions;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Diagnostic;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.NativeQueries.Diagnostics;
+
+namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
+{
+	public partial class NativeQueryOptimizerDiagnosticsTestCase : AbstractDb4oTestCase
+	{
+		private bool _failed = false;
+
+		protected override void Configure(IConfiguration config)
+		{
+			config.ObjectClass(typeof(NativeQueryOptimizerDiagnosticsTestCase.Subject)).ObjectField
+				("_name").Indexed(true);
+			config.Diagnostic().AddListener(new _IDiagnosticListener_23(this));
+		}
+
+		private sealed class _IDiagnosticListener_23 : IDiagnosticListener
+		{
+			public _IDiagnosticListener_23(NativeQueryOptimizerDiagnosticsTestCase _enclosing
+				)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void OnDiagnostic(IDiagnostic d)
+			{
+				if (d.GetType() == typeof(NativeQueryNotOptimized))
+				{
+					this._enclosing._failed = true;
+				}
+			}
+
+			private readonly NativeQueryOptimizerDiagnosticsTestCase _enclosing;
+		}
+
+		protected override void Store()
+		{
+			Db().Set(new NativeQueryOptimizerDiagnosticsTestCase.Subject(this, "Test"));
+			Db().Set(new NativeQueryOptimizerDiagnosticsTestCase.Subject(this, "Test2"));
+		}
+
+		public virtual void TestNativeQueryNotOptimized()
+		{
+			IObjectSet items = Db().Query(new _Predicate_39(this));
+			Assert.IsTrue(_failed);
+		}
+
+		private sealed class _Predicate_39 : Predicate
+		{
+			public _Predicate_39(NativeQueryOptimizerDiagnosticsTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public bool Match(NativeQueryOptimizerDiagnosticsTestCase.Subject subject)
+			{
+				return subject.ComplexName().StartsWith("Test");
+			}
+
+			private readonly NativeQueryOptimizerDiagnosticsTestCase _enclosing;
+		}
+
+		private class Subject
+		{
+			private string _name;
+
+			public Subject(NativeQueryOptimizerDiagnosticsTestCase _enclosing, string name)
+			{
+				this._enclosing = _enclosing;
+				this._name = name;
+			}
+
+			public virtual string ComplexName()
+			{
+				StringBuilder sb = new StringBuilder(this._name);
+				for (int i = 0; i < 10; i++)
+				{
+					sb.Append(i);
+				}
+				return sb.ToString();
+			}
+
+			private readonly NativeQueryOptimizerDiagnosticsTestCase _enclosing;
+		}
+	}
+}

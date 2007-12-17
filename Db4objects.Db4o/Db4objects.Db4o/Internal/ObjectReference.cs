@@ -166,7 +166,7 @@ namespace Db4objects.Db4o.Internal
 				);
 			MarshallerFamily.Current()._object.Marshall(GetObject(), context);
 			Pointer4 pointer = context.AllocateSlot();
-			Db4objects.Db4o.Internal.Buffer buffer = context.ToWriteBuffer(pointer);
+			BufferImpl buffer = context.ToWriteBuffer(pointer);
 			ObjectContainerBase container = trans.Container();
 			container.WriteNew(trans, pointer, _class, buffer);
 			object obj = _object;
@@ -325,7 +325,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public sealed override void ReadThis(Db4objects.Db4o.Internal.Transaction trans, 
-			Db4objects.Db4o.Internal.Buffer buffer)
+			BufferImpl buffer)
 		{
 		}
 
@@ -436,7 +436,7 @@ namespace Db4objects.Db4o.Internal
 			_virtualAttributes = at;
 		}
 
-		public override void WriteThis(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Buffer
+		public override void WriteThis(Db4objects.Db4o.Internal.Transaction trans, BufferImpl
 			 buffer)
 		{
 		}
@@ -464,7 +464,7 @@ namespace Db4objects.Db4o.Internal
 				, false);
 			MarshallerFamily.Current()._object.Marshall(obj, context);
 			Pointer4 pointer = context.AllocateSlot();
-			Db4objects.Db4o.Internal.Buffer buffer = context.ToWriteBuffer(pointer);
+			BufferImpl buffer = context.ToWriteBuffer(pointer);
 			container.WriteUpdate(transaction, pointer, ClassMetadata(), buffer);
 			if (IsActive())
 			{

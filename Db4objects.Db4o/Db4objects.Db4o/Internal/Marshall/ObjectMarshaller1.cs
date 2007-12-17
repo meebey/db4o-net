@@ -136,7 +136,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			private readonly bool isUpdate;
 		}
 
-		public override bool FindOffset(ClassMetadata yc, IFieldListInfo fieldListInfo, Db4objects.Db4o.Internal.Buffer
+		public override bool FindOffset(ClassMetadata yc, IFieldListInfo fieldListInfo, BufferImpl
 			 reader, FieldMetadata field)
 		{
 			bool[] ret = new bool[] { false };
@@ -149,7 +149,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private sealed class _TraverseFieldCommand_62 : ObjectMarshaller.TraverseFieldCommand
 		{
 			public _TraverseFieldCommand_62(ObjectMarshaller1 _enclosing, FieldMetadata field
-				, bool[] ret, Db4objects.Db4o.Internal.Buffer reader)
+				, bool[] ret, BufferImpl reader)
 			{
 				this._enclosing = _enclosing;
 				this.field = field;
@@ -178,11 +178,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly bool[] ret;
 
-			private readonly Db4objects.Db4o.Internal.Buffer reader;
+			private readonly BufferImpl reader;
 		}
 
-		public override ObjectHeaderAttributes ReadHeaderAttributes(Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public override ObjectHeaderAttributes ReadHeaderAttributes(BufferImpl reader)
 		{
 			return new ObjectHeaderAttributes(reader);
 		}
@@ -210,7 +209,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public override void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
-			 yo, ObjectHeaderAttributes attributes, Db4objects.Db4o.Internal.Buffer reader)
+			 yo, ObjectHeaderAttributes attributes, BufferImpl reader)
 		{
 			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_99(this
 				, trans, reader, yo);
@@ -220,7 +219,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private sealed class _TraverseFieldCommand_99 : ObjectMarshaller.TraverseFieldCommand
 		{
 			public _TraverseFieldCommand_99(ObjectMarshaller1 _enclosing, Transaction trans, 
-				Db4objects.Db4o.Internal.Buffer reader, ObjectReference yo)
+				BufferImpl reader, ObjectReference yo)
 			{
 				this._enclosing = _enclosing;
 				this.trans = trans;
@@ -241,7 +240,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly Transaction trans;
 
-			private readonly Db4objects.Db4o.Internal.Buffer reader;
+			private readonly BufferImpl reader;
 
 			private readonly ObjectReference yo;
 		}
@@ -251,27 +250,26 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return fieldList.IsNull(fieldIndex);
 		}
 
-		public override void DefragFields(ClassMetadata yc, ObjectHeader header, BufferPair
-			 readers)
+		public override void DefragFields(ClassMetadata yc, ObjectHeader header, DefragmentContextImpl
+			 context)
 		{
 			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_114(this
-				, readers);
+				, context);
 			TraverseFields(yc, null, header._headerAttributes, command);
 		}
 
 		private sealed class _TraverseFieldCommand_114 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_114(ObjectMarshaller1 _enclosing, BufferPair readers
-				)
+			public _TraverseFieldCommand_114(ObjectMarshaller1 _enclosing, DefragmentContextImpl
+				 context)
 			{
 				this._enclosing = _enclosing;
-				this.readers = readers;
+				this.context = context;
 			}
 
-			public override int FieldCount(ClassMetadata yapClass, Db4objects.Db4o.Internal.Buffer
-				 reader)
+			public override int FieldCount(ClassMetadata yapClass, BufferImpl reader)
 			{
-				return readers.ReadInt();
+				return context.ReadInt();
 			}
 
 			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
@@ -279,22 +277,21 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				if (!isNull)
 				{
-					field.DefragField(this._enclosing._family, readers);
+					field.DefragField(this._enclosing._family, context);
 				}
 			}
 
 			private readonly ObjectMarshaller1 _enclosing;
 
-			private readonly BufferPair readers;
+			private readonly DefragmentContextImpl context;
 		}
 
-		public override void WriteObjectClassID(Db4objects.Db4o.Internal.Buffer reader, int
-			 id)
+		public override void WriteObjectClassID(BufferImpl reader, int id)
 		{
 			reader.WriteInt(-id);
 		}
 
-		public override void SkipMarshallerInfo(Db4objects.Db4o.Internal.Buffer reader)
+		public override void SkipMarshallerInfo(BufferImpl reader)
 		{
 			reader.IncrementOffset(1);
 		}

@@ -10,11 +10,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		internal MarshallerFamily _family;
 
-		public abstract ITypeHandler4 ReadArrayHandler(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			[] a_bytes);
+		public abstract ITypeHandler4 ReadArrayHandler(Transaction a_trans, BufferImpl[] 
+			a_bytes);
 
 		public abstract bool UseNormalClassRead();
 
-		public abstract void Defrag(BufferPair readers);
+		public abstract void Defrag(IDefragmentContext context);
 	}
 }

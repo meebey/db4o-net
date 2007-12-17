@@ -52,22 +52,22 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return mf._primitive.ReadInteger(writer);
 		}
 
-		internal override object Read1(Db4objects.Db4o.Internal.Buffer a_bytes)
+		internal override object Read1(BufferImpl a_bytes)
 		{
 			return a_bytes.ReadInt();
 		}
 
-		public override void Write(object obj, Db4objects.Db4o.Internal.Buffer writer)
+		public override void Write(object obj, BufferImpl writer)
 		{
 			Write(((int)obj), writer);
 		}
 
-		public virtual void Write(int intValue, Db4objects.Db4o.Internal.Buffer writer)
+		public virtual void Write(int intValue, BufferImpl writer)
 		{
 			WriteInt(intValue, writer);
 		}
 
-		public static void WriteInt(int a_int, Db4objects.Db4o.Internal.Buffer a_bytes)
+		public static void WriteInt(int a_int, BufferImpl a_bytes)
 		{
 			a_bytes.WriteInt(a_int);
 		}
@@ -114,9 +114,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return obj is int && Val(obj) < i_compareTo;
 		}
 
-		public override void DefragIndexEntry(BufferPair readers)
+		public override void DefragIndexEntry(DefragmentContextImpl context)
 		{
-			readers.IncrementIntSize();
+			context.IncrementIntSize();
 		}
 
 		public override object Read(IReadContext context)
@@ -127,6 +127,29 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override void Write(IWriteContext context, object obj)
 		{
 			context.WriteInt(((int)obj));
+		}
+
+		public override IPreparedComparison InternalPrepareComparison(object obj)
+		{
+			return new IntHandler.IntComparable(this, ((int)obj));
+		}
+
+		private sealed class IntComparable : IPreparedComparison
+		{
+			private readonly int _source;
+
+			public IntComparable(IntHandler _enclosing, int i)
+			{
+				this._enclosing = _enclosing;
+				this._source = i;
+			}
+
+			public int CompareTo(object target)
+			{
+				return this._source - ((int)target);
+			}
+
+			private readonly IntHandler _enclosing;
 		}
 	}
 }

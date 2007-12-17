@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Diagnostic;
 
 namespace Db4objects.Db4o.Diagnostic
@@ -8,13 +9,16 @@ namespace Db4objects.Db4o.Diagnostic
 	{
 		private int _reason;
 
+		private readonly Exception _details;
+
 		public const int NQ_NOT_PRESENT = 1;
 
 		public const int NQ_CONSTRUCTION_FAILED = 2;
 
-		public NativeQueryOptimizerNotLoaded(int reason)
+		public NativeQueryOptimizerNotLoaded(int reason, Exception details)
 		{
 			_reason = reason;
+			_details = details;
 		}
 
 		public override string Problem()
@@ -28,17 +32,17 @@ namespace Db4objects.Db4o.Diagnostic
 			{
 				case NQ_NOT_PRESENT:
 				{
-					return "Native query not present.";
+					return AppendDetails("Native query not present.");
 				}
 
 				case NQ_CONSTRUCTION_FAILED:
 				{
-					return "Native query couldn't be instantiated.";
+					return AppendDetails("Native query couldn't be instantiated.");
 				}
 
 				default:
 				{
-					return "Reason not specified.";
+					return AppendDetails("Reason not specified.");
 					break;
 				}
 			}
@@ -47,6 +51,15 @@ namespace Db4objects.Db4o.Diagnostic
 		public override string Solution()
 		{
 			return "If you to have the native queries optimized, please check that the native query jar is present in the class-path.";
+		}
+
+		private object AppendDetails(string reason)
+		{
+			if (_details == null)
+			{
+				return reason;
+			}
+			return reason + "\n" + _details.ToString();
 		}
 	}
 }

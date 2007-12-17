@@ -304,8 +304,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return _doFinalize;
 		}
 
-		internal Db4objects.Db4o.Internal.Buffer ExpectedByteResponse(Msg expectedMessage
-			)
+		internal BufferImpl ExpectedByteResponse(Msg expectedMessage)
 		{
 			Msg msg = ExpectedResponse(expectedMessage);
 			if (msg == null)
@@ -452,7 +451,7 @@ namespace Db4objects.Db4o.Internal.CS
 			if (i_db == null)
 			{
 				Write(Msg.IDENTITY);
-				Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.ID_LIST);
+				BufferImpl reader = ExpectedByteResponse(Msg.ID_LIST);
 				ShowInternalClasses(true);
 				try
 				{
@@ -482,7 +481,7 @@ namespace Db4objects.Db4o.Internal.CS
 			message.WriteString(_password);
 			message.Write(socket);
 			Msg msg = ReadLoginMessage(socket);
-			Db4objects.Db4o.Internal.Buffer payLoad = msg.PayLoad();
+			BufferImpl payLoad = msg.PayLoad();
 			_blockSize = payLoad.ReadInt();
 			int doEncrypt = payLoad.ReadInt();
 			if (doEncrypt == 0)
@@ -514,7 +513,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			int prefetchIDCount = Config().PrefetchIDCount();
 			EnsureIDCacheAllocated(prefetchIDCount);
-			Db4objects.Db4o.Internal.Buffer reader = null;
+			BufferImpl reader = null;
 			if (remainingIDs < 1)
 			{
 				MsgD msg = Msg.PREFETCH_IDS.GetWriterForInt(_transaction, prefetchIDCount);
@@ -563,7 +562,7 @@ namespace Db4objects.Db4o.Internal.CS
 			MsgD msg = Msg.READ_BYTES.GetWriterForInts(_transaction, new int[] { a_address, a_length
 				 });
 			Write(msg);
-			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.READ_BYTES);
+			BufferImpl reader = ExpectedByteResponse(Msg.READ_BYTES);
 			System.Array.Copy(reader._buffer, 0, a_bytes, 0, a_length);
 		}
 
@@ -609,8 +608,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return yapWriters;
 		}
 
-		public sealed override Db4objects.Db4o.Internal.Buffer ReadReaderByID(Transaction
-			 a_ta, int a_id)
+		public sealed override BufferImpl ReadReaderByID(Transaction a_ta, int a_id)
 		{
 			return ReadWriterByID(a_ta, a_id);
 		}
@@ -618,7 +616,7 @@ namespace Db4objects.Db4o.Internal.CS
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			AbstractQueryResult queryResult = null;
-			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.QUERY_RESULT);
+			BufferImpl reader = ExpectedByteResponse(Msg.QUERY_RESULT);
 			int queryResultID = reader.ReadInt();
 			if (queryResultID > 0)
 			{
@@ -635,7 +633,7 @@ namespace Db4objects.Db4o.Internal.CS
 		internal virtual void ReadThis()
 		{
 			Write(Msg.GET_CLASSES.GetWriter(SystemTransaction()));
-			Db4objects.Db4o.Internal.Buffer bytes = ExpectedByteResponse(Msg.GET_CLASSES);
+			BufferImpl bytes = ExpectedByteResponse(Msg.GET_CLASSES);
 			ClassCollection().SetID(bytes.ReadInt());
 			CreateStringIO(bytes.ReadByte());
 			ClassCollection().Read(SystemTransaction());
@@ -791,7 +789,7 @@ namespace Db4objects.Db4o.Internal.CS
 		}
 
 		public sealed override void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, Db4objects.Db4o.Internal.Buffer buffer)
+			 classMetadata, BufferImpl buffer)
 		{
 			MsgD msg = Msg.WRITE_NEW.GetWriter(trans, pointer, classMetadata, buffer);
 			WriteBatchedMessage(msg);
@@ -802,7 +800,7 @@ namespace Db4objects.Db4o.Internal.CS
 		}
 
 		public sealed override void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, Db4objects.Db4o.Internal.Buffer buffer)
+			 classMetadata, BufferImpl buffer)
 		{
 			MsgD msg = Msg.WRITE_UPDATE.GetWriter(trans, pointer, classMetadata, buffer);
 			WriteBatchedMessage(msg);
@@ -882,7 +880,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			MsgD msg = Msg.GET_INTERNAL_IDS.GetWriterForInt(trans, clazz.GetID());
 			Write(msg);
-			Db4objects.Db4o.Internal.Buffer reader = ExpectedByteResponse(Msg.ID_LIST);
+			BufferImpl reader = ExpectedByteResponse(Msg.ID_LIST);
 			int size = reader.ReadInt();
 			long[] ids = new long[size];
 			for (int i = 0; i < size; i++)

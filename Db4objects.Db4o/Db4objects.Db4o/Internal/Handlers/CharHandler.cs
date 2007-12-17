@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_primitive;
 		}
 
-		internal override object Read1(Db4objects.Db4o.Internal.Buffer a_bytes)
+		internal override object Read1(BufferImpl a_bytes)
 		{
 			byte b1 = a_bytes.ReadByte();
 			byte b2 = a_bytes.ReadByte();
@@ -46,8 +46,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ret;
 		}
 
-		public override void Write(object a_object, Db4objects.Db4o.Internal.Buffer a_bytes
-			)
+		public override void Write(object a_object, BufferImpl a_bytes)
 		{
 			char char_ = ((char)a_object);
 			a_bytes.WriteByte((byte)(char_ & unchecked((int)(0xff))));

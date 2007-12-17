@@ -13,8 +13,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		public MarshallerFamily _family;
 
-		public virtual RawClassSpec ReadSpec(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public virtual RawClassSpec ReadSpec(Transaction trans, BufferImpl reader)
 		{
 			byte[] nameBytes = ReadName(trans, reader);
 			string className = trans.Container().StringIO().Read(nameBytes);
@@ -25,8 +24,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return new RawClassSpec(className, ancestorID, numFields);
 		}
 
-		public virtual void Write(Transaction trans, ClassMetadata clazz, Db4objects.Db4o.Internal.Buffer
-			 writer)
+		public virtual void Write(Transaction trans, ClassMetadata clazz, BufferImpl writer
+			)
 		{
 			writer.WriteShortString(trans, clazz.NameToWrite());
 			int intFormerlyKnownAsMetaClassID = 0;
@@ -46,7 +45,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 		}
 
-		protected virtual void WriteIndex(Transaction trans, ClassMetadata clazz, Db4objects.Db4o.Internal.Buffer
+		protected virtual void WriteIndex(Transaction trans, ClassMetadata clazz, BufferImpl
 			 writer)
 		{
 			int indexID = clazz.Index().Write(trans);
@@ -55,20 +54,18 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		protected abstract int IndexIDForWriting(int indexID);
 
-		public virtual byte[] ReadName(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public virtual byte[] ReadName(Transaction trans, BufferImpl reader)
 		{
 			byte[] name = ReadName(trans.Container().StringIO(), reader);
 			return name;
 		}
 
-		public virtual int ReadMetaClassID(Db4objects.Db4o.Internal.Buffer reader)
+		public virtual int ReadMetaClassID(BufferImpl reader)
 		{
 			return reader.ReadInt();
 		}
 
-		private byte[] ReadName(LatinStringIO sio, Db4objects.Db4o.Internal.Buffer reader
-			)
+		private byte[] ReadName(LatinStringIO sio, BufferImpl reader)
 		{
 			int len = reader.ReadInt();
 			len = len * sio.BytesPerChar();
@@ -79,8 +76,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return nameBytes;
 		}
 
-		public void Read(ObjectContainerBase stream, ClassMetadata clazz, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public void Read(ObjectContainerBase stream, ClassMetadata clazz, BufferImpl reader
+			)
 		{
 			clazz.SetAncestor(stream.ClassMetadataForId(reader.ReadInt()));
 			if (clazz.CallConstructor())
@@ -94,7 +91,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		protected abstract void ReadIndex(ObjectContainerBase stream, ClassMetadata clazz
-			, Db4objects.Db4o.Internal.Buffer reader);
+			, BufferImpl reader);
 
 		private FieldMetadata[] CreateFields(ClassMetadata clazz, int fieldCount)
 		{
@@ -107,8 +104,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return fields;
 		}
 
-		private void ReadFields(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
-			 reader, FieldMetadata[] fields)
+		private void ReadFields(ObjectContainerBase stream, BufferImpl reader, FieldMetadata
+			[] fields)
 		{
 			for (int i = 0; i < fields.Length; i++)
 			{
@@ -134,20 +131,20 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public virtual void Defrag(ClassMetadata yapClass, LatinStringIO sio, BufferPair 
-			readers, int classIndexID)
+		public virtual void Defrag(ClassMetadata classMetadata, LatinStringIO sio, DefragmentContextImpl
+			 context, int classIndexID)
 		{
-			ReadName(sio, readers.Source());
-			ReadName(sio, readers.Target());
+			ReadName(sio, context.SourceBuffer());
+			ReadName(sio, context.TargetBuffer());
 			int metaClassID = 0;
-			readers.WriteInt(metaClassID);
-			readers.CopyID();
-			readers.WriteInt(IndexIDForWriting(classIndexID));
-			readers.IncrementIntSize();
-			FieldMetadata[] fields = yapClass.i_fields;
+			context.WriteInt(metaClassID);
+			context.CopyID();
+			context.WriteInt(IndexIDForWriting(classIndexID));
+			context.IncrementIntSize();
+			FieldMetadata[] fields = classMetadata.i_fields;
 			for (int fieldIdx = 0; fieldIdx < fields.Length; fieldIdx++)
 			{
-				_family._field.Defrag(yapClass, fields[fieldIdx], sio, readers);
+				_family._field.Defrag(classMetadata, fields[fieldIdx], sio, context);
 			}
 		}
 	}

@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Internal
 			_object = obj;
 		}
 
-		public override object Read(Db4objects.Db4o.Internal.Buffer a_bytes)
+		public override object Read(BufferImpl a_bytes)
 		{
 			int key = a_bytes.ReadInt();
 			object obj = null;
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Internal
 			return new Db4objects.Db4o.Internal.TreeIntObject(key, obj);
 		}
 
-		public override void Write(Db4objects.Db4o.Internal.Buffer a_writer)
+		public override void Write(BufferImpl a_writer)
 		{
 			a_writer.WriteInt(_key);
 			if (_object == null)

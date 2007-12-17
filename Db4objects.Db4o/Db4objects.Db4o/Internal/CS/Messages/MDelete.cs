@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 	{
 		public bool ProcessAtServer()
 		{
-			Db4objects.Db4o.Internal.Buffer bytes = this.GetByteLoad();
+			BufferImpl bytes = this.GetByteLoad();
 			ObjectContainerBase stream = Stream();
 			lock (StreamLock())
 			{

@@ -140,7 +140,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.Buffer[] a_bytes)
+			 mf, BufferImpl[] a_bytes)
 		{
 			if (IsArray())
 			{
@@ -176,16 +176,15 @@ namespace Db4objects.Db4o.Internal
 			return "Wraps " + _handler.ToString() + " in YapClassPrimitive";
 		}
 
-		public override void Defragment(DefragmentContext context)
+		public override void Defragment(IDefragmentContext context)
 		{
-			if (context.MarshallerFamily()._primitive.UseNormalClassRead())
+			if (context.IsLegacyHandlerVersion())
 			{
 				base.Defragment(context);
 			}
 			else
 			{
-				_handler.Defragment(new DefragmentContext(context.MarshallerFamily(), context.Readers
-					(), false));
+				_handler.Defragment(context);
 			}
 		}
 

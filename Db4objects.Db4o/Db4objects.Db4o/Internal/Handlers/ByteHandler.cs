@@ -44,14 +44,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return DEFAULT_VALUE;
 		}
 
-		internal override object Read1(Db4objects.Db4o.Internal.Buffer a_bytes)
+		internal override object Read1(BufferImpl a_bytes)
 		{
 			byte ret = a_bytes.ReadByte();
 			return ret;
 		}
 
-		public override void Write(object a_object, Db4objects.Db4o.Internal.Buffer a_bytes
-			)
+		public override void Write(object a_object, BufferImpl a_bytes)
 		{
 			a_bytes.WriteByte(((byte)a_object));
 		}

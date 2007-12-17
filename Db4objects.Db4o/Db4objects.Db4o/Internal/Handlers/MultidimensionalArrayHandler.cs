@@ -62,19 +62,19 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.OBJECT_LENGTH + (Const4.INT_LENGTH * (2 + dim.Length));
 		}
 
-		protected override int ReadElementsDefrag(BufferPair readers)
+		protected override int ReadElementsDefrag(IDefragmentContext context)
 		{
-			int numDimensions = base.ReadElementsDefrag(readers);
+			int numDimensions = base.ReadElementsDefrag(context);
 			int[] dimensions = new int[numDimensions];
 			for (int i = 0; i < numDimensions; i++)
 			{
-				dimensions[i] = readers.ReadInt();
+				dimensions[i] = context.ReadInt();
 			}
 			return ElementCount(dimensions);
 		}
 
-		public override void ReadSubCandidates(int handlerVersion, Db4objects.Db4o.Internal.Buffer
-			 reader, QCandidates candidates)
+		public override void ReadSubCandidates(int handlerVersion, BufferImpl reader, QCandidates
+			 candidates)
 		{
 			IntArrayByRef dimensions = new IntArrayByRef();
 			object arr = ReadCreate(candidates.i_trans, reader, dimensions);

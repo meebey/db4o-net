@@ -673,9 +673,9 @@ namespace Db4objects.Db4o.Internal
 			return _index != null;
 		}
 
-		public void IncrementOffset(Db4objects.Db4o.Internal.Buffer buffer)
+		public void IncrementOffset(IBuffer buffer)
 		{
-			buffer.IncrementOffset(LinkLength());
+			buffer.Seek(buffer.Offset() + LinkLength());
 		}
 
 		public void Init(ClassMetadata containingClass, string name)
@@ -729,7 +729,7 @@ namespace Db4objects.Db4o.Internal
 			Set(context.PersistentObject(), toSet);
 		}
 
-		private bool CheckAlive(Db4objects.Db4o.Internal.Buffer buffer)
+		private bool CheckAlive(IBuffer buffer)
 		{
 			bool alive = Alive();
 			if (!alive)
@@ -900,8 +900,8 @@ namespace Db4objects.Db4o.Internal
 
 		/// <param name="trans"></param>
 		/// <param name="@ref"></param>
-		public virtual void ReadVirtualAttribute(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 buffer, ObjectReference @ref)
+		public virtual void ReadVirtualAttribute(Transaction trans, BufferImpl buffer, ObjectReference
+			 @ref)
 		{
 			IncrementOffset(buffer);
 		}
@@ -1194,9 +1194,11 @@ namespace Db4objects.Db4o.Internal
 			_index = null;
 		}
 
-		public virtual void DefragField(MarshallerFamily mf, BufferPair readers)
+		public virtual void DefragField(MarshallerFamily mf, DefragmentContextImpl context
+			)
 		{
-			GetHandler().Defragment(new DefragmentContext(mf, readers, true));
+			context.HandlerVersion(mf.HandlerVersion());
+			context.CorrectHandlerVersion(GetHandler()).Defragment(context);
 		}
 
 		public virtual void CreateIndex()

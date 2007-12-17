@@ -8,9 +8,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public interface IInternalReadContext : IReadContext
 	{
-		Db4objects.Db4o.Internal.Buffer Buffer(Db4objects.Db4o.Internal.Buffer buffer);
+		IBuffer Buffer(IBuffer buffer);
 
-		Db4objects.Db4o.Internal.Buffer Buffer();
+		IBuffer Buffer();
 
 		ObjectContainerBase Container();
 

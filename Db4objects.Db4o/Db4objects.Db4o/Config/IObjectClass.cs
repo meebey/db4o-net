@@ -280,6 +280,7 @@ namespace Db4objects.Db4o.Config
 		/// information for clazz.
 		/// </remarks>
 		/// <param name="clazz">class name, Class object, or example object.<br /><br /></param>
+		[System.ObsoleteAttribute(@"use")]
 		void ReadAs(object clazz);
 
 		/// <summary>renames a stored class.</summary>

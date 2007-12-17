@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		internal override void Instantiate1(Transaction a_trans, ObjectReference a_yapObject
-			, Db4objects.Db4o.Internal.Buffer a_bytes)
+			, IBuffer a_bytes)
 		{
 			a_yapObject.VirtualAttributes().i_version = a_bytes.ReadLong();
 		}

@@ -10,20 +10,19 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public interface IFieldMarshaller
 	{
-		void Write(Transaction trans, ClassMetadata clazz, FieldMetadata field, Db4objects.Db4o.Internal.Buffer
+		void Write(Transaction trans, ClassMetadata clazz, FieldMetadata field, BufferImpl
 			 writer);
 
-		RawFieldSpec ReadSpec(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
-			 reader);
+		RawFieldSpec ReadSpec(ObjectContainerBase stream, BufferImpl reader);
 
-		FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, Db4objects.Db4o.Internal.Buffer
-			 reader);
+		FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, BufferImpl reader
+			);
 
 		int MarshalledLength(ObjectContainerBase stream, FieldMetadata field);
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO sio, BufferPair
-			 readers);
+		void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO sio, DefragmentContextImpl
+			 context);
 	}
 }

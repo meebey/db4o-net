@@ -62,9 +62,10 @@ namespace Db4objects.Db4o.Foundation
 			{
 				this._enclosing = _enclosing;
 				this.array = array;
+				this.i = 0;
 			}
 
-			internal int i = 0;
+			internal int i;
 
 			public void Visit(object obj)
 			{

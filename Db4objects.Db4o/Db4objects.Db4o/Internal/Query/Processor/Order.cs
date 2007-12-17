@@ -1,8 +1,8 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.Query.Processor;
-using Sharpen;
 
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
@@ -10,9 +10,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	{
 		private int i_major;
 
-		private int[] i_minors = new int[8];
-
-		private int minorsSize;
+		private IntArrayList i_minors = new IntArrayList();
 
 		public virtual int CompareTo(object obj)
 		{
@@ -24,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					return res;
 				}
-				return CompareMinors(other);
+				return CompareMinors(other.i_minors);
 			}
 			return -1;
 		}
@@ -49,9 +47,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public override string ToString()
 		{
 			string str = "Order " + i_major;
-			for (int i = 0; i < minorsSize; i++)
+			for (int i = 0; i < i_minors.Size(); i++)
 			{
-				str = str + " " + i_minors[i];
+				str = str + " " + i_minors.Get(i);
 			}
 			return str;
 		}
@@ -64,46 +62,31 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private void AppendMinor(int minor)
 		{
-			EnsureMinorsCapacity();
-			i_minors[minorsSize] = minor;
-			minorsSize++;
+			i_minors.Add(minor);
 		}
 
 		private void InsertMinor(int minor)
 		{
-			EnsureMinorsCapacity();
-			System.Array.Copy(i_minors, 0, i_minors, 1, minorsSize);
-			i_minors[0] = minor;
-			minorsSize++;
+			i_minors.Add(0, minor);
 		}
 
-		private void EnsureMinorsCapacity()
+		private int CompareMinors(IntArrayList other)
 		{
-			if (minorsSize == i_minors.Length)
+			if (i_minors.Size() != other.Size())
 			{
-				int[] newMinors = new int[minorsSize * 2];
-				System.Array.Copy(i_minors, 0, newMinors, 0, minorsSize);
-				i_minors = newMinors;
-			}
-		}
-
-		private int CompareMinors(Order other)
-		{
-			if (minorsSize != other.minorsSize)
-			{
-				throw new Exception("Unexpected exception: this.minorsSize=" + minorsSize + ", other.minorsSize="
-					 + other.minorsSize);
+				throw new Exception("Unexpected exception: this..size()=" + i_minors.Size() + ", other.size()="
+					 + other.Size());
 			}
 			int result = 0;
-			for (int i = 0; i < minorsSize; i++)
+			for (int i = 0; i < i_minors.Size(); i++)
 			{
-				if (i_minors[i] == other.i_minors[i])
+				if (i_minors.Get(i) == other.Get(i))
 				{
 					continue;
 				}
 				else
 				{
-					return (i_minors[i] - other.i_minors[i]);
+					return (i_minors.Get(i) - other.Get(i));
 				}
 			}
 			return result;

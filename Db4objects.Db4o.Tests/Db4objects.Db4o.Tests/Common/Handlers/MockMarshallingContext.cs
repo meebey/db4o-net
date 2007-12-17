@@ -10,23 +10,23 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 	{
 		private readonly IObjectContainer _objectContainer;
 
-		internal readonly Db4objects.Db4o.Internal.Buffer _header;
+		internal readonly BufferImpl _header;
 
-		internal readonly Db4objects.Db4o.Internal.Buffer _payLoad;
+		internal readonly BufferImpl _payLoad;
 
-		protected Db4objects.Db4o.Internal.Buffer _current;
+		protected BufferImpl _current;
 
 		public MockMarshallingContext(IObjectContainer objectContainer)
 		{
 			_objectContainer = objectContainer;
-			_header = new Db4objects.Db4o.Internal.Buffer(1000);
-			_payLoad = new Db4objects.Db4o.Internal.Buffer(1000);
+			_header = new BufferImpl(1000);
+			_payLoad = new BufferImpl(1000);
 			_current = _header;
 		}
 
 		public virtual IWriteBuffer NewBuffer(int length)
 		{
-			return new Db4objects.Db4o.Internal.Buffer(length);
+			return new BufferImpl(length);
 		}
 
 		public virtual IObjectContainer ObjectContainer()

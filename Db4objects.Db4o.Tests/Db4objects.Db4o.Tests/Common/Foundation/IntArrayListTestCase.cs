@@ -2,12 +2,18 @@
 
 using Db4oUnit;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Tests.Common.Foundation;
 
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
 	/// <exclude></exclude>
 	public class IntArrayListTestCase : ITestCase
 	{
+		public static void Main(string[] args)
+		{
+			new TestRunner(typeof(IntArrayListTestCase)).Run();
+		}
+
 		public virtual void TestIteratorGoesForwards()
 		{
 			IntArrayList list = new IntArrayList();
@@ -27,6 +33,21 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				Assert.AreEqual(expected[i], iterator.Current);
 			}
 			Assert.IsFalse(iterator.MoveNext());
+		}
+
+		public virtual void TestAddAtIndex()
+		{
+			IntArrayList list = new IntArrayList();
+			for (int i = 0; i < 10; i++)
+			{
+				list.Add(i);
+			}
+			list.Add(3, 100);
+			Assert.AreEqual(100, list.Get(3));
+			for (int i = 4; i < 11; i++)
+			{
+				Assert.AreEqual(i - 1, list.Get(i));
+			}
 		}
 	}
 }

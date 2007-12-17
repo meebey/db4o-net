@@ -16,8 +16,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		private int _address;
 
-		internal MsgD GetWriter(Transaction trans, Pointer4 pointer, Db4objects.Db4o.Internal.Buffer
-			 buffer, int[] prependInts)
+		internal MsgD GetWriter(Transaction trans, Pointer4 pointer, BufferImpl buffer, int
+			[] prependInts)
 		{
 			int lengthNeeded = buffer.Length() + LENGTH_FOR_FIRST;
 			if (prependInts != null)
@@ -32,8 +32,17 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					message._payLoad.WriteInt(prependInts[i]);
 				}
 			}
-			message._payLoad.Append(pointer, buffer);
+			AppendPayLoad(message._payLoad, pointer, buffer);
 			return message;
+		}
+
+		private void AppendPayLoad(StatefulBuffer target, Pointer4 pointer, BufferImpl payLoad
+			)
+		{
+			target.WriteInt(payLoad.Length());
+			target.WriteInt(pointer.Id());
+			target.WriteInt(pointer.Address());
+			target.Append(payLoad._buffer);
 		}
 
 		public sealed override MsgD GetWriter(StatefulBuffer buffer)
@@ -42,7 +51,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		}
 
 		public MsgD GetWriter(Transaction trans, Pointer4 pointer, ClassMetadata classMetadata
-			, Db4objects.Db4o.Internal.Buffer buffer)
+			, BufferImpl buffer)
 		{
 			if (classMetadata == null)
 			{
@@ -52,7 +61,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		}
 
 		public MsgD GetWriter(Transaction trans, Pointer4 pointer, ClassMetadata classMetadata
-			, int param, Db4objects.Db4o.Internal.Buffer buffer)
+			, int param, BufferImpl buffer)
 		{
 			return GetWriter(trans, pointer, buffer, new int[] { classMetadata.GetID(), param
 				 });

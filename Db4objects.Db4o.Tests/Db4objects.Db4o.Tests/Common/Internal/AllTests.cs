@@ -15,10 +15,10 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(EmbeddedClientObjectContainerTestCase), typeof(InternalObjectContainerAPITestCase
-				), typeof(MarshallingBufferTestCase), typeof(MarshallingContextTestCase), typeof(
-				PartialObjectContainerTestCase), typeof(SerializerTestCase), typeof(StoredClassTestCase
-				), typeof(TransactionTestCase) };
+			return new Type[] { typeof(Comparable4TestCase), typeof(EmbeddedClientObjectContainerTestCase
+				), typeof(InternalObjectContainerAPITestCase), typeof(MarshallingBufferTestCase)
+				, typeof(MarshallingContextTestCase), typeof(PartialObjectContainerTestCase), typeof(
+				SerializerTestCase), typeof(StoredClassTestCase), typeof(TransactionTestCase) };
 		}
 	}
 }

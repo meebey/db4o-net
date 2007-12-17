@@ -8,16 +8,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 {
 	public class StringMarshaller1 : StringMarshaller
 	{
-		private const int DEFRAGMENT_INCREMENT_OFFSET = Const4.INT_LENGTH * 2;
-
 		public override bool InlinedStrings()
 		{
 			return true;
 		}
 
 		/// <exception cref="CorruptionException"></exception>
-		public override Db4objects.Db4o.Internal.Buffer ReadIndexEntry(StatefulBuffer parentSlot
-			)
+		public override BufferImpl ReadIndexEntry(StatefulBuffer parentSlot)
 		{
 			int payLoadOffSet = parentSlot.ReadInt();
 			int length = parentSlot.ReadInt();
@@ -26,11 +23,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return null;
 			}
 			return parentSlot.ReadPayloadWriter(payLoadOffSet, length);
-		}
-
-		public override void Defrag(ISlotBuffer reader)
-		{
-			reader.IncrementOffset(DEFRAGMENT_INCREMENT_OFFSET);
 		}
 	}
 }

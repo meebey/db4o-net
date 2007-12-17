@@ -448,8 +448,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public sealed override void ReadThis(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 buffer)
+		public sealed override void ReadThis(Transaction trans, BufferImpl buffer)
 		{
 			int classCount = buffer.ReadInt();
 			InitTables(classCount);
@@ -622,8 +621,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public override void WriteThis(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 buffer)
+		public override void WriteThis(Transaction trans, BufferImpl buffer)
 		{
 			buffer.WriteInt(_classes.Size());
 			IEnumerator i = _classes.GetEnumerator();

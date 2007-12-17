@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 	{
 		protected Slot _current;
 
-		public virtual void DefragIndexEntry(BufferPair readers)
+		public virtual void DefragIndexEntry(DefragmentContextImpl context)
 		{
 			throw new NotImplementedException();
 		}
@@ -21,13 +21,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return Slot.MARSHALLED_LENGTH;
 		}
 
-		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer reader)
+		public virtual object ReadIndexEntry(BufferImpl reader)
 		{
 			return new Slot(reader.ReadInt(), reader.ReadInt());
 		}
 
-		public virtual void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer writer, object
-			 obj)
+		public virtual void WriteIndexEntry(BufferImpl writer, object obj)
 		{
 			Slot slot = (Slot)obj;
 			writer.WriteInt(slot.Address());

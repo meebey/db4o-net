@@ -51,8 +51,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			}
 			Slot slot = ((LocalTransaction)ta).GetCurrentSlotOfID(GetID());
 			int length = Const4.INT_LENGTH;
-			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(length
-				);
+			BufferImpl reader = new BufferImpl(length);
 			reader.ReadEncrypt(ta.Container(), slot.Address());
 			return reader.ReadInt();
 		}
@@ -72,13 +71,12 @@ namespace Db4objects.Db4o.Internal.Classindex
 			return Const4.OBJECT_LENGTH + MarshalledLength();
 		}
 
-		public object Read(Db4objects.Db4o.Internal.Buffer a_reader)
+		public object Read(BufferImpl a_reader)
 		{
 			throw Exceptions4.VirtualException();
 		}
 
-		public sealed override void ReadThis(Transaction a_trans, Db4objects.Db4o.Internal.Buffer
-			 a_reader)
+		public sealed override void ReadThis(Transaction a_trans, BufferImpl a_reader)
 		{
 			i_root = (TreeInt)new TreeReader(a_reader, new TreeInt(0)).Read();
 		}
@@ -93,13 +91,12 @@ namespace Db4objects.Db4o.Internal.Classindex
 			a_stream.SetDirtyInSystemTransaction(this);
 		}
 
-		public virtual void Write(Db4objects.Db4o.Internal.Buffer a_writer)
+		public virtual void Write(BufferImpl a_writer)
 		{
 			WriteThis(null, a_writer);
 		}
 
-		public sealed override void WriteThis(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 a_writer)
+		public sealed override void WriteThis(Transaction trans, BufferImpl a_writer)
 		{
 			TreeInt.Write(a_writer, i_root);
 		}

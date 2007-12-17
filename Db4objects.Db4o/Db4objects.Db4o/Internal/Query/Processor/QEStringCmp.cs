@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query.Processor;
 
 namespace Db4objects.Db4o.Internal.Query.Processor
@@ -19,9 +20,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (obj != null)
 			{
-				if (obj is Db4objects.Db4o.Internal.Buffer)
+				if (obj is BufferImpl)
 				{
-					obj = candidate.ReadString((Db4objects.Db4o.Internal.Buffer)obj);
+					obj = candidate.ReadString((BufferImpl)obj);
 				}
 				string candidateStringValue = obj.ToString();
 				string stringConstraint = constraint.i_object.ToString();

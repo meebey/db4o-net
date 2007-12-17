@@ -11,12 +11,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		protected IActivationDepth _activationDepth = UnknownActivationDepth.INSTANCE;
 
-		protected AbstractReadContext(Transaction transaction) : base(transaction)
+		protected AbstractReadContext(Transaction transaction, BufferImpl buffer) : base(
+			transaction, buffer)
 		{
 		}
 
-		protected AbstractReadContext(Transaction transaction, Db4objects.Db4o.Internal.Buffer
-			 buffer) : base(transaction, buffer)
+		protected AbstractReadContext(Transaction transaction) : this(transaction, null)
 		{
 		}
 

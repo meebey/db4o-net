@@ -102,8 +102,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			try
 			{
-				Db4objects.Db4o.Internal.Buffer reader = trans.Container().ReadReaderByID(trans, 
-					GetID());
+				BufferImpl reader = trans.Container().ReadReaderByID(trans, GetID());
 				ReadThis(trans, reader);
 				SetStateOnRead(reader);
 			}
@@ -139,7 +138,7 @@ namespace Db4objects.Db4o.Internal
 			BitFalse(Const4.CLEAN);
 		}
 
-		internal virtual void SetStateOnRead(Db4objects.Db4o.Internal.Buffer reader)
+		internal virtual void SetStateOnRead(BufferImpl reader)
 		{
 			if (BitIsTrue(Const4.CACHED_DIRTY))
 			{
@@ -162,8 +161,7 @@ namespace Db4objects.Db4o.Internal
 				LocalObjectContainer stream = (LocalObjectContainer)trans.Container();
 				int length = OwnLength();
 				length = stream.BlockAlignedBytes(length);
-				Db4objects.Db4o.Internal.Buffer writer = new Db4objects.Db4o.Internal.Buffer(length
-					);
+				BufferImpl writer = new BufferImpl(length);
 				Slot slot;
 				if (IsNew())
 				{
@@ -190,8 +188,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		private void WriteToFile(Transaction trans, Db4objects.Db4o.Internal.Buffer writer
-			, Slot slot)
+		private void WriteToFile(Transaction trans, BufferImpl writer, Slot slot)
 		{
 			if (DTrace.enabled)
 			{
@@ -215,8 +212,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public virtual void WriteOwnID(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 writer)
+		public virtual void WriteOwnID(Transaction trans, BufferImpl writer)
 		{
 			Write(trans);
 			writer.WriteInt(GetID());
@@ -235,10 +231,8 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract int OwnLength();
 
-		public abstract void ReadThis(Transaction arg1, Db4objects.Db4o.Internal.Buffer arg2
-			);
+		public abstract void ReadThis(Transaction arg1, BufferImpl arg2);
 
-		public abstract void WriteThis(Transaction arg1, Db4objects.Db4o.Internal.Buffer 
-			arg2);
+		public abstract void WriteThis(Transaction arg1, BufferImpl arg2);
 	}
 }

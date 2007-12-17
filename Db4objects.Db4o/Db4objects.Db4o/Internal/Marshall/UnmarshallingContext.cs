@@ -23,9 +23,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private bool _checkIDTree;
 
-		public UnmarshallingContext(Transaction transaction, Db4objects.Db4o.Internal.Buffer
-			 buffer, ObjectReference @ref, int addToIDTree, bool checkIDTree) : base(transaction
-			, buffer)
+		public UnmarshallingContext(Transaction transaction, BufferImpl buffer, ObjectReference
+			 @ref, int addToIDTree, bool checkIDTree) : base(transaction, buffer)
 		{
 			_reference = @ref;
 			_addToIDTree = addToIDTree;
@@ -43,8 +42,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 				(_transaction, _buffer.Length());
 			buffer.SetID(ObjectID());
 			buffer.SetInstantiationDepth(ActivationDepth());
-			_buffer.CopyTo(buffer, 0, 0, _buffer.Length());
-			buffer.Offset(_buffer.Offset());
+			((BufferImpl)_buffer).CopyTo(buffer, 0, 0, _buffer.Length());
+			buffer.Seek(_buffer.Offset());
 			return buffer;
 		}
 
@@ -145,7 +144,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return null;
 			}
 			if (!_objectHeader.ObjectMarshaller().FindOffset(classMetadata, _objectHeader._headerAttributes
-				, _buffer, field))
+				, (BufferImpl)_buffer, field))
 			{
 				return null;
 			}

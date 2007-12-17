@@ -27,8 +27,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return len;
 		}
 
-		public virtual RawFieldSpec ReadSpec(ObjectContainerBase stream, Db4objects.Db4o.Internal.Buffer
-			 reader)
+		public virtual RawFieldSpec ReadSpec(ObjectContainerBase stream, BufferImpl reader
+			)
 		{
 			string name = StringHandler.ReadStringNoDebug(stream.Transaction().Context(), reader
 				);
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return new RawFieldSpec(name, handlerID, attribs);
 		}
 
-		public FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, Db4objects.Db4o.Internal.Buffer
+		public FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, BufferImpl
 			 reader)
 		{
 			RawFieldSpec spec = ReadSpec(stream, reader);
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public virtual void Write(Transaction trans, ClassMetadata clazz, FieldMetadata field
-			, Db4objects.Db4o.Internal.Buffer writer)
+			, BufferImpl writer)
 		{
 			field.Alive();
 			writer.WriteShortString(trans, field.GetName());
@@ -98,15 +98,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
 		public virtual void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO
-			 sio, BufferPair readers)
+			 sio, DefragmentContextImpl context)
 		{
-			readers.IncrementStringOffset(sio);
+			context.IncrementStringOffset(sio);
 			if (yapField.IsVirtual())
 			{
 				return;
 			}
-			readers.CopyID();
-			readers.IncrementOffset(1);
+			context.CopyID();
+			context.IncrementOffset(1);
 		}
 	}
 }

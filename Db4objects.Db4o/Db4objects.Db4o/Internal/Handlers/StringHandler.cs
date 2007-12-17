@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// This readIndexEntry method reads from the actual index in the file.
 		/// TODO: Consider renaming methods in Indexable4 and Typhandler4 to make direction clear.
 		/// </remarks>
-		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer reader)
+		public virtual object ReadIndexEntry(BufferImpl reader)
 		{
 			Slot s = new Slot(reader.ReadInt(), reader.ReadInt());
 			if (IsInvalidSlot(s))
@@ -83,8 +83,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return (slot.Address() == 0) && (slot.Length() == 0);
 		}
 
-		public virtual void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer writer, object
-			 entry)
+		public virtual void WriteIndexEntry(BufferImpl writer, object entry)
 		{
 			if (entry == null)
 			{
@@ -109,8 +108,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			throw new ArgumentException();
 		}
 
-		public void WriteShort(Transaction trans, string str, Db4objects.Db4o.Internal.Buffer
-			 buffer)
+		public void WriteShort(Transaction trans, string str, BufferImpl buffer)
 		{
 			if (str == null)
 			{
@@ -123,19 +121,18 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		private Db4objects.Db4o.Internal.Buffer i_compareTo;
+		private BufferImpl i_compareTo;
 
-		private Db4objects.Db4o.Internal.Buffer Val(object obj)
+		private BufferImpl Val(object obj)
 		{
 			return Val(obj, Container());
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer Val(object obj, ObjectContainerBase
-			 oc)
+		public virtual BufferImpl Val(object obj, ObjectContainerBase oc)
 		{
-			if (obj is Db4objects.Db4o.Internal.Buffer)
+			if (obj is BufferImpl)
 			{
-				return (Db4objects.Db4o.Internal.Buffer)obj;
+				return (BufferImpl)obj;
 			}
 			if (obj is string)
 			{
@@ -181,8 +178,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// returns: -x for left is greater and +x for right is greater
 		/// TODO: You will need collators here for different languages.
 		/// </remarks>
-		internal int Compare(Db4objects.Db4o.Internal.Buffer a_compare, Db4objects.Db4o.Internal.Buffer
-			 a_with)
+		internal int Compare(BufferImpl a_compare, BufferImpl a_with)
 		{
 			if (a_compare == null)
 			{
@@ -213,23 +209,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return with.Length - compare.Length;
 		}
 
-		public virtual void DefragIndexEntry(BufferPair readers)
+		public virtual void DefragIndexEntry(DefragmentContextImpl context)
 		{
-			readers.CopyID(false, true);
-			readers.IncrementIntSize();
+			context.CopyID(false, true);
+			context.IncrementIntSize();
 		}
 
-		public override void Defragment(DefragmentContext context)
-		{
-			if (!context.Redirect())
-			{
-				context.Readers().IncrementOffset(LinkLength());
-			}
-			else
-			{
-				context.MarshallerFamily()._string.Defrag(context.Readers());
-			}
-		}
+		public abstract override void Defragment(IDefragmentContext context);
 
 		public abstract override object Read(IReadContext context);
 
@@ -246,11 +232,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			StringIo(objectContainer).Write(buffer, str);
 		}
 
-		public static Db4objects.Db4o.Internal.Buffer WriteToBuffer(IInternalObjectContainer
-			 container, string str)
+		public static BufferImpl WriteToBuffer(IInternalObjectContainer container, string
+			 str)
 		{
-			Db4objects.Db4o.Internal.Buffer buffer = new Db4objects.Db4o.Internal.Buffer(StringIo
-				(container).Length(str));
+			BufferImpl buffer = new BufferImpl(StringIo(container).Length(str));
 			InternalWrite(container, buffer, str);
 			return buffer;
 		}

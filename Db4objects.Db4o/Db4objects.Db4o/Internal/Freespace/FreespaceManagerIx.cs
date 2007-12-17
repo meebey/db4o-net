@@ -270,8 +270,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_slotAddress = slotAddress;
 			MetaIndex miAddress = new MetaIndex();
 			MetaIndex miLength = new MetaIndex();
-			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(SlotLength
-				());
+			BufferImpl reader = new BufferImpl(SlotLength());
 			reader.Read(_file, slotAddress, 0);
 			miAddress.Read(reader);
 			miLength.Read(reader);

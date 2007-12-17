@@ -14,9 +14,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="Db4oIOException"></exception>
-		public abstract Db4objects.Db4o.Internal.Buffer ReadIndexEntry(StatefulBuffer parentSlot
-			);
-
-		public abstract void Defrag(ISlotBuffer reader);
+		public abstract BufferImpl ReadIndexEntry(StatefulBuffer parentSlot);
 	}
 }

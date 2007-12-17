@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 	{
 		public bool ProcessAtServer()
 		{
-			Db4objects.Db4o.Internal.Buffer bytes = this.GetByteLoad();
+			BufferImpl bytes = this.GetByteLoad();
 			long[] ids;
 			lock (StreamLock())
 			{
@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			int size = ids.Length;
 			MsgD message = Msg.ID_LIST.GetWriterForLength(Transaction(), Const4.ID_LENGTH * (
 				size + 1));
-			Db4objects.Db4o.Internal.Buffer writer = message.PayLoad();
+			BufferImpl writer = message.PayLoad();
 			writer.WriteInt(size);
 			for (int i = 0; i < size; i++)
 			{

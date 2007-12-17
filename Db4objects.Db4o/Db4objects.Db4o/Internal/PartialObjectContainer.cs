@@ -1577,11 +1577,10 @@ namespace Db4objects.Db4o.Internal
 			length);
 
 		/// <exception cref="Db4oIOException"></exception>
-		public Db4objects.Db4o.Internal.Buffer BufferByAddress(int address, int length)
+		public BufferImpl BufferByAddress(int address, int length)
 		{
 			CheckAddress(address);
-			Db4objects.Db4o.Internal.Buffer reader = new Db4objects.Db4o.Internal.Buffer(length
-				);
+			BufferImpl reader = new BufferImpl(length);
 			ReadBytes(reader._buffer, address, length);
 			_handlers.Decrypt(reader);
 			return reader;
@@ -1608,8 +1607,7 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id);
 
-		public abstract Db4objects.Db4o.Internal.Buffer ReadReaderByID(Transaction a_ta, 
-			int a_id);
+		public abstract BufferImpl ReadReaderByID(Transaction a_ta, int a_id);
 
 		public abstract StatefulBuffer[] ReadWritersByIDs(Transaction a_ta, int[] ids);
 
@@ -2278,12 +2276,12 @@ namespace Db4objects.Db4o.Internal
 		public abstract void WriteDirty();
 
 		public abstract void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata 
-			classMetadata, Db4objects.Db4o.Internal.Buffer buffer);
+			classMetadata, BufferImpl buffer);
 
 		public abstract void WriteTransactionPointer(int address);
 
 		public abstract void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, Db4objects.Db4o.Internal.Buffer buffer);
+			 classMetadata, BufferImpl buffer);
 
 		private static ExternalObjectContainer Cast(PartialObjectContainer obj)
 		{

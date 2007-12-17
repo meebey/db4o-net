@@ -18,9 +18,9 @@ namespace Db4objects.Db4o.IO
 
 		/// <exception cref="Db4oIOException"></exception>
 		protected VanillaIoAdapter(IoAdapter delegateAdapter, string path, bool lockFile, 
-			long initialLength, bool readOnly)
+			long initialLength, bool readOnly) : this(delegateAdapter.Open(path, lockFile, initialLength
+			, readOnly))
 		{
-			_delegate = delegateAdapter.Open(path, lockFile, initialLength, readOnly);
 		}
 
 		/// <exception cref="Db4oIOException"></exception>

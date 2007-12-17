@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingBuffer buffer = new MarshallingBuffer();
 			buffer.WriteInt(DATA_1);
 			buffer.WriteByte(DATA_2);
-			Db4objects.Db4o.Internal.Buffer content = InspectContent(buffer);
+			BufferImpl content = InspectContent(buffer);
 			Assert.AreEqual(DATA_1, content.ReadInt());
 			Assert.AreEqual(DATA_2, content.ReadByte());
 		}
@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingBuffer other = new MarshallingBuffer();
 			buffer.TransferLastWriteTo(other, true);
 			Assert.AreEqual(lastOffset, Offset(buffer));
-			Db4objects.Db4o.Internal.Buffer content = InspectContent(other);
+			BufferImpl content = InspectContent(other);
 			Assert.AreEqual(DATA_2, content.ReadByte());
 		}
 
@@ -45,10 +45,10 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			return buffer.TestDelegate().Offset();
 		}
 
-		private Db4objects.Db4o.Internal.Buffer InspectContent(MarshallingBuffer buffer)
+		private BufferImpl InspectContent(MarshallingBuffer buffer)
 		{
-			Db4objects.Db4o.Internal.Buffer bufferDelegate = buffer.TestDelegate();
-			bufferDelegate.Offset(0);
+			BufferImpl bufferDelegate = buffer.TestDelegate();
+			bufferDelegate.Seek(0);
 			return bufferDelegate;
 		}
 
@@ -61,11 +61,11 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			child.WriteInt(DATA_3);
 			child.WriteInt(DATA_4);
 			buffer.MergeChildren(null, 0, 0);
-			Db4objects.Db4o.Internal.Buffer content = InspectContent(buffer);
+			BufferImpl content = InspectContent(buffer);
 			Assert.AreEqual(DATA_1, content.ReadInt());
 			Assert.AreEqual(DATA_2, content.ReadByte());
 			int address = content.ReadInt();
-			content.Offset(address);
+			content.Seek(address);
 			Assert.AreEqual(DATA_3, content.ReadInt());
 			Assert.AreEqual(DATA_4, content.ReadInt());
 		}
@@ -81,15 +81,15 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingBuffer grandChild = child.AddChild();
 			grandChild.WriteInt(DATA_5);
 			buffer.MergeChildren(null, 0, 0);
-			Db4objects.Db4o.Internal.Buffer content = InspectContent(buffer);
+			BufferImpl content = InspectContent(buffer);
 			Assert.AreEqual(DATA_1, content.ReadInt());
 			Assert.AreEqual(DATA_2, content.ReadByte());
 			int address = content.ReadInt();
-			content.Offset(address);
+			content.Seek(address);
 			Assert.AreEqual(DATA_3, content.ReadInt());
 			Assert.AreEqual(DATA_4, content.ReadInt());
 			address = content.ReadInt();
-			content.Offset(address);
+			content.Seek(address);
 			Assert.AreEqual(DATA_5, content.ReadInt());
 		}
 
@@ -105,19 +105,18 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingBuffer grandChild = child.AddChild();
 			grandChild.WriteInt(DATA_5);
 			buffer.MergeChildren(null, 0, linkOffset);
-			Db4objects.Db4o.Internal.Buffer content = InspectContent(buffer);
-			Db4objects.Db4o.Internal.Buffer extendedBuffer = new Db4objects.Db4o.Internal.Buffer
-				(content.Length() + linkOffset);
+			BufferImpl content = InspectContent(buffer);
+			BufferImpl extendedBuffer = new BufferImpl(content.Length() + linkOffset);
 			content.CopyTo(extendedBuffer, 0, linkOffset, content.Length());
-			extendedBuffer.Offset(linkOffset);
+			extendedBuffer.Seek(linkOffset);
 			Assert.AreEqual(DATA_1, extendedBuffer.ReadInt());
 			Assert.AreEqual(DATA_2, extendedBuffer.ReadByte());
 			int address = extendedBuffer.ReadInt();
-			extendedBuffer.Offset(address);
+			extendedBuffer.Seek(address);
 			Assert.AreEqual(DATA_3, extendedBuffer.ReadInt());
 			Assert.AreEqual(DATA_4, extendedBuffer.ReadInt());
 			address = extendedBuffer.ReadInt();
-			extendedBuffer.Offset(address);
+			extendedBuffer.Seek(address);
 			Assert.AreEqual(DATA_5, extendedBuffer.ReadInt());
 		}
 
@@ -130,7 +129,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			buffer.WriteByte(DATA_2);
 			child.WriteInt(DATA_4);
 			buffer.MergeChildren(null, 0, 0);
-			Db4objects.Db4o.Internal.Buffer content = InspectContent(buffer);
+			BufferImpl content = InspectContent(buffer);
 			Assert.AreEqual(DATA_1, content.ReadInt());
 			int address = content.ReadInt();
 			content.ReadInt();

@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
@@ -10,14 +11,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		public virtual void TestCopy()
 		{
-			Db4objects.Db4o.Internal.Buffer from = new Db4objects.Db4o.Internal.Buffer(READERLENGTH
-				);
+			BufferImpl from = new BufferImpl(READERLENGTH);
 			for (int i = 0; i < READERLENGTH; i++)
 			{
 				from.WriteByte((byte)i);
 			}
-			Db4objects.Db4o.Internal.Buffer to = new Db4objects.Db4o.Internal.Buffer(READERLENGTH
-				 - 1);
+			BufferImpl to = new BufferImpl(READERLENGTH - 1);
 			from.CopyTo(to, 1, 2, 10);
 			Assert.AreEqual(0, to.ReadByte());
 			Assert.AreEqual(0, to.ReadByte());

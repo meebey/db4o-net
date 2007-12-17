@@ -10,24 +10,22 @@ using Db4objects.Db4o.Internal.Slots;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public sealed class BufferPair : ISlotBuffer
+	public sealed class DefragmentContextImpl : IBuffer, IDefragmentContext
 	{
-		private Db4objects.Db4o.Internal.Buffer _source;
+		private BufferImpl _source;
 
-		private Db4objects.Db4o.Internal.Buffer _target;
+		private BufferImpl _target;
 
-		private IDefragmentServices _mapping;
+		private IDefragmentServices _services;
 
-		private Transaction _systemTrans;
+		private int _handlerVersion;
 
-		public BufferPair(Db4objects.Db4o.Internal.Buffer source, IDefragmentServices mapping
-			, Transaction systemTrans)
+		public DefragmentContextImpl(BufferImpl source, IDefragmentServices services)
 		{
 			_source = source;
-			_mapping = mapping;
-			_target = new Db4objects.Db4o.Internal.Buffer(source.Length());
-			_source.CopyTo(_target, 0, 0, _source.Length());
-			_systemTrans = systemTrans;
+			_services = services;
+			_target = new BufferImpl(Length());
+			_source.CopyTo(_target, 0, 0, Length());
 		}
 
 		public int Offset()
@@ -35,10 +33,10 @@ namespace Db4objects.Db4o.Internal
 			return _source.Offset();
 		}
 
-		public void Offset(int offset)
+		public void Seek(int offset)
 		{
-			_source.Offset(offset);
-			_target.Offset(offset);
+			_source.Seek(offset);
+			_target.Seek(offset);
 		}
 
 		public void IncrementOffset(int numBytes)
@@ -58,13 +56,13 @@ namespace Db4objects.Db4o.Internal
 			int mapped = -1;
 			try
 			{
-				mapped = _mapping.MappedID(orig);
+				mapped = _services.MappedID(orig);
 			}
 			catch (MappingNotFoundException)
 			{
-				mapped = _mapping.AllocateTargetSlot(Const4.POINTER_LENGTH).Address();
-				_mapping.MapIDs(orig, mapped, false);
-				_mapping.RegisterUnindexed(orig);
+				mapped = _services.AllocateTargetSlot(Const4.POINTER_LENGTH).Address();
+				_services.MapIDs(orig, mapped, false);
+				_services.RegisterUnindexed(orig);
 			}
 			_target.WriteInt(mapped);
 			return mapped;
@@ -82,10 +80,11 @@ namespace Db4objects.Db4o.Internal
 			return InternalCopyID(flipNegative, lenient, id);
 		}
 
-		public MappedIDPair CopyIDAndRetrieveMapping()
+		public int CopyIDReturnOriginalID()
 		{
 			int id = _source.ReadInt();
-			return new MappedIDPair(id, InternalCopyID(false, false, id));
+			InternalCopyID(false, false, id);
+			return id;
 		}
 
 		private int InternalCopyID(bool flipNegative, bool lenient, int id)
@@ -94,7 +93,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				id = -id;
 			}
-			int mapped = _mapping.MappedID(id, lenient);
+			int mapped = _services.MappedID(id, lenient);
 			if (flipNegative && id < 0)
 			{
 				mapped = -mapped;
@@ -114,6 +113,12 @@ namespace Db4objects.Db4o.Internal
 			byte value = _source.ReadByte();
 			_target.IncrementOffset(1);
 			return value;
+		}
+
+		public void ReadBytes(byte[] bytes)
+		{
+			_source.ReadBytes(bytes);
+			_target.IncrementOffset(bytes.Length);
 		}
 
 		public int ReadInt()
@@ -140,8 +145,7 @@ namespace Db4objects.Db4o.Internal
 			IncrementStringOffset(sio, _target);
 		}
 
-		private void IncrementStringOffset(LatinStringIO sio, Db4objects.Db4o.Internal.Buffer
-			 buffer)
+		private void IncrementStringOffset(LatinStringIO sio, BufferImpl buffer)
 		{
 			int length = buffer.ReadInt();
 			if (length > 0)
@@ -150,37 +154,37 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public Db4objects.Db4o.Internal.Buffer Source()
+		public BufferImpl SourceBuffer()
 		{
 			return _source;
 		}
 
-		public Db4objects.Db4o.Internal.Buffer Target()
+		public BufferImpl TargetBuffer()
 		{
 			return _target;
 		}
 
 		public IIDMapping Mapping()
 		{
-			return _mapping;
+			return _services;
 		}
 
-		public Transaction SystemTrans()
+		public Db4objects.Db4o.Internal.Transaction SystemTrans()
 		{
-			return _systemTrans;
+			return Transaction();
 		}
 
-		public IDefragmentServices Context()
+		public IDefragmentServices Services()
 		{
-			return _mapping;
+			return _services;
 		}
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public static void ProcessCopy(IDefragmentServices context, int sourceID, ISlotCopyHandler
+		public static void ProcessCopy(IDefragmentServices services, int sourceID, ISlotCopyHandler
 			 command)
 		{
-			ProcessCopy(context, sourceID, command, false);
+			ProcessCopy(services, sourceID, command, false);
 		}
 
 		/// <exception cref="CorruptionException"></exception>
@@ -188,32 +192,30 @@ namespace Db4objects.Db4o.Internal
 		public static void ProcessCopy(IDefragmentServices context, int sourceID, ISlotCopyHandler
 			 command, bool registerAddressMapping)
 		{
-			Db4objects.Db4o.Internal.Buffer sourceReader = context.SourceBufferByID(sourceID);
+			BufferImpl sourceReader = context.SourceBufferByID(sourceID);
 			ProcessCopy(context, sourceID, command, registerAddressMapping, sourceReader);
 		}
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
-		public static void ProcessCopy(IDefragmentServices context, int sourceID, ISlotCopyHandler
-			 command, bool registerAddressMapping, Db4objects.Db4o.Internal.Buffer sourceReader
-			)
+		public static void ProcessCopy(IDefragmentServices services, int sourceID, ISlotCopyHandler
+			 command, bool registerAddressMapping, BufferImpl sourceReader)
 		{
-			int targetID = context.MappedID(sourceID);
-			Slot targetSlot = context.AllocateTargetSlot(sourceReader.Length());
+			int targetID = services.MappedID(sourceID);
+			Slot targetSlot = services.AllocateTargetSlot(sourceReader.Length());
 			if (registerAddressMapping)
 			{
-				int sourceAddress = context.SourceAddressByID(sourceID);
-				context.MapIDs(sourceAddress, targetSlot.Address(), false);
+				int sourceAddress = services.SourceAddressByID(sourceID);
+				services.MapIDs(sourceAddress, targetSlot.Address(), false);
 			}
-			Db4objects.Db4o.Internal.Buffer targetPointerReader = new Db4objects.Db4o.Internal.Buffer
-				(Const4.POINTER_LENGTH);
+			BufferImpl targetPointerReader = new BufferImpl(Const4.POINTER_LENGTH);
 			targetPointerReader.WriteInt(targetSlot.Address());
 			targetPointerReader.WriteInt(targetSlot.Length());
-			context.TargetWriteBytes(targetPointerReader, targetID);
-			Db4objects.Db4o.Internal.BufferPair readers = new Db4objects.Db4o.Internal.BufferPair
-				(sourceReader, context, context.SystemTrans());
-			command.ProcessCopy(readers);
-			context.TargetWriteBytes(readers, targetSlot.Address());
+			services.TargetWriteBytes(targetPointerReader, targetID);
+			Db4objects.Db4o.Internal.DefragmentContextImpl context = new Db4objects.Db4o.Internal.DefragmentContextImpl
+				(sourceReader, services);
+			command.ProcessCopy(context);
+			services.TargetWriteBytes(context, targetSlot.Address());
 		}
 
 		public void WriteByte(byte value)
@@ -242,32 +244,67 @@ namespace Db4objects.Db4o.Internal
 			return value;
 		}
 
-		public void CopyBytes(byte[] target, int sourceOffset, int targetOffset, int length
-			)
-		{
-			_source.CopyBytes(target, sourceOffset, targetOffset, length);
-		}
-
 		public void ReadEnd()
 		{
 			_source.ReadEnd();
 			_target.ReadEnd();
 		}
 
-		public int PreparePayloadRead()
-		{
-			int newPayLoadOffset = ReadInt();
-			ReadInt();
-			int linkOffSet = Offset();
-			Offset(newPayLoadOffset);
-			return linkOffSet;
-		}
-
 		public int WriteMappedID(int originalID)
 		{
-			int mapped = _mapping.MappedID(originalID, false);
+			int mapped = _services.MappedID(originalID, false);
 			_target.WriteInt(mapped);
 			return mapped;
+		}
+
+		public int Length()
+		{
+			return _source.Length();
+		}
+
+		public Db4objects.Db4o.Internal.Transaction Transaction()
+		{
+			return Services().SystemTrans();
+		}
+
+		private ObjectContainerBase Container()
+		{
+			return Transaction().Container();
+		}
+
+		public ClassMetadata ClassMetadataForId(int id)
+		{
+			return Container().ClassMetadataForId(id);
+		}
+
+		private int HandlerVersion()
+		{
+			return _handlerVersion;
+		}
+
+		public bool IsLegacyHandlerVersion()
+		{
+			return HandlerVersion() == 0;
+		}
+
+		public int MappedID(int origID)
+		{
+			return Mapping().MappedID(origID);
+		}
+
+		public IObjectContainer ObjectContainer()
+		{
+			return (IObjectContainer)Container();
+		}
+
+		public void HandlerVersion(int version)
+		{
+			_handlerVersion = version;
+		}
+
+		public ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler)
+		{
+			return Container().Handlers().CorrectHandlerVersion(handler, HandlerVersion());
 		}
 	}
 }

@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, Db4objects.Db4o.Internal.Buffer[] a_bytes)
+			 mf, BufferImpl[] a_bytes)
 		{
 			return mf._untyped.ReadArrayHandler(a_trans, a_bytes);
 		}
@@ -98,13 +98,22 @@ namespace Db4objects.Db4o.Internal
 			return classMetadata.ReadObjectID(context);
 		}
 
-		public override void Defragment(DefragmentContext context)
+		public override void Defragment(IDefragmentContext context)
 		{
-			if (context.MarshallerFamily()._untyped.UseNormalClassRead())
+			int payLoadOffSet = context.ReadInt();
+			if (payLoadOffSet == 0)
 			{
-				base.Defragment(context);
+				return;
 			}
-			context.MarshallerFamily()._untyped.Defrag(context.Readers());
+			int linkOffSet = context.Offset();
+			context.Seek(payLoadOffSet);
+			int classMetadataID = context.CopyIDReturnOriginalID();
+			ClassMetadata classMetadata = context.ClassMetadataForId(classMetadataID);
+			if (classMetadata != null)
+			{
+				classMetadata.Defragment(context);
+			}
+			context.Seek(linkOffSet);
 		}
 
 		private bool IsArray(ITypeHandler4 handler)

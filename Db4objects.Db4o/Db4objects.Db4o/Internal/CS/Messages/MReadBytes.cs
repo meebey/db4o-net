@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	public sealed class MReadBytes : MsgD, IServerSideMessage
 	{
-		public sealed override Db4objects.Db4o.Internal.Buffer GetByteLoad()
+		public sealed override BufferImpl GetByteLoad()
 		{
 			int address = _payLoad.ReadInt();
 			int length = _payLoad.Length() - (Const4.INT_LENGTH);

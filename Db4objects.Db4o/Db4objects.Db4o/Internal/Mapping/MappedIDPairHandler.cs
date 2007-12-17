@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal.Mapping
 			_mappedHandler = new IntHandler(stream);
 		}
 
-		public virtual void DefragIndexEntry(BufferPair readers)
+		public virtual void DefragIndexEntry(DefragmentContextImpl context)
 		{
 			throw new NotImplementedException();
 		}
@@ -30,15 +30,14 @@ namespace Db4objects.Db4o.Internal.Mapping
 			return _origHandler.LinkLength() + _mappedHandler.LinkLength();
 		}
 
-		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer reader)
+		public virtual object ReadIndexEntry(BufferImpl reader)
 		{
 			int origID = ReadID(reader);
 			int mappedID = ReadID(reader);
 			return new MappedIDPair(origID, mappedID);
 		}
 
-		public virtual void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer reader, object
-			 obj)
+		public virtual void WriteIndexEntry(BufferImpl reader, object obj)
 		{
 			MappedIDPair mappedIDs = (MappedIDPair)obj;
 			_origHandler.WriteIndexEntry(reader, mappedIDs.Orig());
@@ -58,7 +57,7 @@ namespace Db4objects.Db4o.Internal.Mapping
 			return this;
 		}
 
-		private int ReadID(Db4objects.Db4o.Internal.Buffer a_reader)
+		private int ReadID(BufferImpl a_reader)
 		{
 			return ((int)_origHandler.ReadIndexEntry(a_reader));
 		}

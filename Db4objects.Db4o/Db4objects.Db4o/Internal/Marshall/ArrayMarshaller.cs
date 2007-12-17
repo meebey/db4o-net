@@ -20,10 +20,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return arrayHandler.CollectIDs1(trans, tree, PrepareIDReader(trans, reader));
 		}
 
-		public abstract void DefragIDs(ArrayHandler arrayHandler, BufferPair readers);
-
 		/// <exception cref="Db4oIOException"></exception>
-		protected abstract Db4objects.Db4o.Internal.Buffer PrepareIDReader(Transaction trans
-			, Db4objects.Db4o.Internal.Buffer reader);
+		protected abstract BufferImpl PrepareIDReader(Transaction trans, BufferImpl reader
+			);
 	}
 }

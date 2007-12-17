@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	public class ClassMarshaller0 : ClassMarshaller
 	{
 		protected override void ReadIndex(ObjectContainerBase stream, ClassMetadata clazz
-			, Db4objects.Db4o.Internal.Buffer reader)
+			, BufferImpl reader)
 		{
 			int indexID = reader.ReadInt();
 			if (!stream.MaintainsIndices() || !(stream is LocalObjectContainer))

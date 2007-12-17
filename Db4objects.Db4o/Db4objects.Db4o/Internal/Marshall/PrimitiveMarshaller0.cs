@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return true;
 		}
 
-		public override DateTime ReadDate(Db4objects.Db4o.Internal.Buffer bytes)
+		public override DateTime ReadDate(BufferImpl bytes)
 		{
 			long value = bytes.ReadLong();
 			if (value == long.MaxValue)
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return new DateTime(value);
 		}
 
-		public override object ReadInteger(Db4objects.Db4o.Internal.Buffer bytes)
+		public override object ReadInteger(BufferImpl bytes)
 		{
 			int value = bytes.ReadInt();
 			if (value == int.MaxValue)
@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return value;
 		}
 
-		public override object ReadFloat(Db4objects.Db4o.Internal.Buffer bytes)
+		public override object ReadFloat(BufferImpl bytes)
 		{
 			float value = UnmarshallFloat(bytes);
 			if (float.IsNaN(value))
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return value;
 		}
 
-		public override object ReadDouble(Db4objects.Db4o.Internal.Buffer buffer)
+		public override object ReadDouble(BufferImpl buffer)
 		{
 			double value = UnmarshalDouble(buffer);
 			if (double.IsNaN(value))
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return value;
 		}
 
-		public override object ReadLong(Db4objects.Db4o.Internal.Buffer buffer)
+		public override object ReadLong(BufferImpl buffer)
 		{
 			long value = buffer.ReadLong();
 			if (value == long.MaxValue)
@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return value;
 		}
 
-		public override object ReadShort(Db4objects.Db4o.Internal.Buffer buffer)
+		public override object ReadShort(BufferImpl buffer)
 		{
 			short value = UnmarshallShort(buffer);
 			if (value == short.MaxValue)
@@ -73,17 +73,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return value;
 		}
 
-		public static double UnmarshalDouble(Db4objects.Db4o.Internal.Buffer buffer)
+		public static double UnmarshalDouble(BufferImpl buffer)
 		{
 			return Platform4.LongToDouble(buffer.ReadLong());
 		}
 
-		public static float UnmarshallFloat(Db4objects.Db4o.Internal.Buffer buffer)
+		public static float UnmarshallFloat(BufferImpl buffer)
 		{
 			return Sharpen.Runtime.IntBitsToFloat(buffer.ReadInt());
 		}
 
-		public static short UnmarshallShort(Db4objects.Db4o.Internal.Buffer buffer)
+		public static short UnmarshallShort(BufferImpl buffer)
 		{
 			int ret = 0;
 			for (int i = 0; i < Const4.SHORT_BYTES; i++)

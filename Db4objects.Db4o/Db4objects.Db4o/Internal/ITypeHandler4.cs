@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4oIOException"></exception>
 		void Delete(IDeleteContext context);
 
-		void Defragment(DefragmentContext context);
+		void Defragment(IDefragmentContext context);
 
 		object Read(IReadContext context);
 

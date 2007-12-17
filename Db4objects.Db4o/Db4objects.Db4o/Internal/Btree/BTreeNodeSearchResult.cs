@@ -30,16 +30,16 @@ namespace Db4objects.Db4o.Internal.Btree
 			_foundMatch = foundMatch;
 		}
 
-		internal BTreeNodeSearchResult(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 nodeReader, BTree btree, BTreeNode node, int cursor, bool foundMatch) : this(trans
-			, btree, PointerOrNull(trans, nodeReader, node, cursor), foundMatch)
+		internal BTreeNodeSearchResult(Transaction trans, BufferImpl nodeReader, BTree btree
+			, BTreeNode node, int cursor, bool foundMatch) : this(trans, btree, PointerOrNull
+			(trans, nodeReader, node, cursor), foundMatch)
 		{
 		}
 
-		internal BTreeNodeSearchResult(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 nodeReader, BTree btree, Searcher searcher, BTreeNode node) : this(trans, btree
-			, NextPointerIf(PointerOrNull(trans, nodeReader, node, searcher.Cursor()), searcher
-			.IsGreater()), searcher.FoundMatch())
+		internal BTreeNodeSearchResult(Transaction trans, BufferImpl nodeReader, BTree btree
+			, Searcher searcher, BTreeNode node) : this(trans, btree, NextPointerIf(PointerOrNull
+			(trans, nodeReader, node, searcher.Cursor()), searcher.IsGreater()), searcher.FoundMatch
+			())
 		{
 		}
 
@@ -56,8 +56,8 @@ namespace Db4objects.Db4o.Internal.Btree
 			return pointer;
 		}
 
-		private static BTreePointer PointerOrNull(Transaction trans, Db4objects.Db4o.Internal.Buffer
-			 nodeReader, BTreeNode node, int cursor)
+		private static BTreePointer PointerOrNull(Transaction trans, BufferImpl nodeReader
+			, BTreeNode node, int cursor)
 		{
 			return node == null ? null : new BTreePointer(trans, nodeReader, node, cursor);
 		}

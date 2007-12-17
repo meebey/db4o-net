@@ -58,9 +58,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		/// <exception cref="CorruptionException"></exception>
-		internal abstract object Read1(Db4objects.Db4o.Internal.Buffer reader);
+		internal abstract object Read1(BufferImpl reader);
 
-		public virtual object ReadIndexEntry(Db4objects.Db4o.Internal.Buffer buffer)
+		public virtual object ReadIndexEntry(BufferImpl buffer)
 		{
 			try
 			{
@@ -105,11 +105,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public abstract void Write(object a_object, Db4objects.Db4o.Internal.Buffer a_bytes
-			);
+		public abstract void Write(object a_object, BufferImpl a_bytes);
 
-		public virtual void WriteIndexEntry(Db4objects.Db4o.Internal.Buffer a_writer, object
-			 a_object)
+		public virtual void WriteIndexEntry(BufferImpl a_writer, object a_object)
 		{
 			if (a_object == null)
 			{
@@ -165,18 +163,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract int LinkLength();
 
-		public void Defragment(DefragmentContext context)
+		public void Defragment(IDefragmentContext context)
 		{
-			int linkLength = LinkLength();
-			context.Readers().IncrementOffset(linkLength);
+			context.IncrementOffset(LinkLength());
 		}
 
-		public virtual void DefragIndexEntry(BufferPair readers)
+		public virtual void DefragIndexEntry(DefragmentContextImpl context)
 		{
 			try
 			{
-				Read1(readers.Source());
-				Read1(readers.Target());
+				Read1(context.SourceBuffer());
+				Read1(context.TargetBuffer());
 			}
 			catch (CorruptionException)
 			{
@@ -203,6 +200,21 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual object NullRepresentationInUntypedArrays()
 		{
 			return PrimitiveNull();
+		}
+
+		public virtual IPreparedComparison NewPrepareCompare(object obj)
+		{
+			if (obj == null)
+			{
+				return Null.INSTANCE;
+			}
+			return InternalPrepareComparison(obj);
+		}
+
+		/// <summary>FIXME: make abstract when all derived handlers are implemented</summary>
+		public virtual IPreparedComparison InternalPrepareComparison(object obj)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

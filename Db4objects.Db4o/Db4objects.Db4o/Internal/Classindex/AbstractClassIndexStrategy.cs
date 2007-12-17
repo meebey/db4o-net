@@ -58,10 +58,10 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public abstract IEnumerator AllSlotIDs(Transaction arg1);
 
-		public abstract void DefragIndex(BufferPair arg1);
+		public abstract void DefragIndex(DefragmentContextImpl arg1);
 
-		public abstract void DefragReference(ClassMetadata arg1, BufferPair arg2, int arg3
-			);
+		public abstract void DefragReference(ClassMetadata arg1, DefragmentContextImpl arg2
+			, int arg3);
 
 		public abstract void DontDelete(Transaction arg1, int arg2);
 

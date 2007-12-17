@@ -380,7 +380,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			CheckSynchronization();
 			i_pointerIo.UseSlot(id);
-			i_pointerIo.WriteSlot(slot);
+			i_pointerIo.WriteInt(slot.Address());
+			i_pointerIo.WriteInt(slot.Length());
 			if (Debug.xbytes && Deploy.overwrite)
 			{
 				i_pointerIo.SetID(Const4.IGNORE_ID);
@@ -391,13 +392,13 @@ namespace Db4objects.Db4o.Internal
 		private bool WriteSlots()
 		{
 			BooleanByRef ret = new BooleanByRef();
-			TraverseSlotChanges(new _IVisitor4_334(this, ret));
+			TraverseSlotChanges(new _IVisitor4_335(this, ret));
 			return ret.value;
 		}
 
-		private sealed class _IVisitor4_334 : IVisitor4
+		private sealed class _IVisitor4_335 : IVisitor4
 		{
-			public _IVisitor4_334(LocalTransaction _enclosing, BooleanByRef ret)
+			public _IVisitor4_335(LocalTransaction _enclosing, BooleanByRef ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -538,13 +539,13 @@ namespace Db4objects.Db4o.Internal
 		private int CountSlotChanges()
 		{
 			IntByRef count = new IntByRef();
-			TraverseSlotChanges(new _IVisitor4_458(this, count));
+			TraverseSlotChanges(new _IVisitor4_459(this, count));
 			return count.value;
 		}
 
-		private sealed class _IVisitor4_458 : IVisitor4
+		private sealed class _IVisitor4_459 : IVisitor4
 		{
-			public _IVisitor4_458(LocalTransaction _enclosing, IntByRef count)
+			public _IVisitor4_459(LocalTransaction _enclosing, IntByRef count)
 			{
 				this._enclosing = _enclosing;
 				this.count = count;
@@ -593,15 +594,14 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private void AppendSlotChanges(Db4objects.Db4o.Internal.Buffer writer)
+		private void AppendSlotChanges(BufferImpl writer)
 		{
-			TraverseSlotChanges(new _IVisitor4_493(this, writer));
+			TraverseSlotChanges(new _IVisitor4_494(this, writer));
 		}
 
-		private sealed class _IVisitor4_493 : IVisitor4
+		private sealed class _IVisitor4_494 : IVisitor4
 		{
-			public _IVisitor4_493(LocalTransaction _enclosing, Db4objects.Db4o.Internal.Buffer
-				 writer)
+			public _IVisitor4_494(LocalTransaction _enclosing, BufferImpl writer)
 			{
 				this._enclosing = _enclosing;
 				this.writer = writer;
@@ -614,7 +614,7 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly LocalTransaction _enclosing;
 
-			private readonly Db4objects.Db4o.Internal.Buffer writer;
+			private readonly BufferImpl writer;
 		}
 
 		private void TraverseSlotChanges(IVisitor4 visitor)
@@ -737,14 +737,14 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = _delete;
 				_delete = null;
-				delete.Traverse(new _IVisitor4_617(this));
+				delete.Traverse(new _IVisitor4_618(this));
 			}
 			_writtenUpdateDeletedMembers = null;
 		}
 
-		private sealed class _IVisitor4_617 : IVisitor4
+		private sealed class _IVisitor4_618 : IVisitor4
 		{
-			public _IVisitor4_617(LocalTransaction _enclosing)
+			public _IVisitor4_618(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -837,14 +837,14 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			_slotChanges.TraverseLocked(new _IVisitor4_708(this, deleted, added, updated));
+			_slotChanges.TraverseLocked(new _IVisitor4_709(this, deleted, added, updated));
 			return new CallbackObjectInfoCollections(new ObjectInfoCollectionImpl(added), new 
 				ObjectInfoCollectionImpl(updated), new ObjectInfoCollectionImpl(deleted));
 		}
 
-		private sealed class _IVisitor4_708 : IVisitor4
+		private sealed class _IVisitor4_709 : IVisitor4
 		{
-			public _IVisitor4_708(LocalTransaction _enclosing, Collection4 deleted, Collection4
+			public _IVisitor4_709(LocalTransaction _enclosing, Collection4 deleted, Collection4
 				 added, Collection4 updated)
 			{
 				this._enclosing = _enclosing;
@@ -889,7 +889,7 @@ namespace Db4objects.Db4o.Internal
 			i_address = a_address;
 		}
 
-		public static Transaction ReadInterruptedTransaction(LocalObjectContainer file, Db4objects.Db4o.Internal.Buffer
+		public static Transaction ReadInterruptedTransaction(LocalObjectContainer file, BufferImpl
 			 reader)
 		{
 			int transactionID1 = reader.ReadInt();

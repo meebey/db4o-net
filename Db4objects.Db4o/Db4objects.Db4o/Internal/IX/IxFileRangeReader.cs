@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.IX
 
 		private int _cursor;
 
-		private readonly Db4objects.Db4o.Internal.Buffer _reader;
+		private readonly BufferImpl _reader;
 
 		internal readonly int _slotLength;
 
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Internal.IX
 			_handler = handler;
 			_linkLegth = handler.LinkLength();
 			_slotLength = _linkLegth + Const4.INT_LENGTH;
-			_reader = new Db4objects.Db4o.Internal.Buffer(_slotLength);
+			_reader = new BufferImpl(_slotLength);
 		}
 
 		/// <exception cref="IxException"></exception>

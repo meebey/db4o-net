@@ -81,8 +81,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				DTrace.REREAD_OLD_UUID.LogLength(oldSlot.Address(), oldSlot.Length());
 			}
-			Db4objects.Db4o.Internal.Buffer reader = stream.BufferByAddress(oldSlot.Address()
-				, oldSlot.Length());
+			BufferImpl reader = stream.BufferByAddress(oldSlot.Address(), oldSlot.Length());
 			if (checkClass)
 			{
 				ClassMetadata realClass = ClassMetadata.ReadClass(stream, reader);
@@ -169,7 +168,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		internal override void Instantiate1(Transaction a_trans, ObjectReference a_yapObject
-			, Db4objects.Db4o.Internal.Buffer a_bytes)
+			, IBuffer a_bytes)
 		{
 			int dbID = a_bytes.ReadInt();
 			ObjectContainerBase stream = a_trans.Container();
@@ -290,10 +289,11 @@ namespace Db4objects.Db4o.Internal
 			return hardRef;
 		}
 
-		public override void DefragField(MarshallerFamily mf, BufferPair readers)
+		public override void DefragField(MarshallerFamily mf, DefragmentContextImpl context
+			)
 		{
-			readers.CopyID();
-			readers.IncrementOffset(Const4.LONG_LENGTH);
+			context.CopyID();
+			context.IncrementOffset(Const4.LONG_LENGTH);
 		}
 	}
 }

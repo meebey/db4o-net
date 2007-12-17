@@ -5,24 +5,23 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class Buffer : IReadBuffer, ISlotBuffer, IWriteBuffer
+	public class BufferImpl : IReadBuffer, IBuffer, IWriteBuffer
 	{
 		public byte[] _buffer;
 
 		public int _offset;
 
-		internal Buffer()
+		internal BufferImpl()
 		{
 		}
 
-		public Buffer(int a_length)
+		public BufferImpl(int a_length)
 		{
 			_buffer = new byte[a_length];
 		}
@@ -43,16 +42,7 @@ namespace Db4objects.Db4o.Internal
 			WriteBytes(bytes);
 		}
 
-		public virtual void Append(Pointer4 pointer, Db4objects.Db4o.Internal.Buffer buffer
-			)
-		{
-			WriteInt(buffer.Length());
-			WriteInt(pointer.Id());
-			WriteInt(pointer.Address());
-			Append(buffer._buffer);
-		}
-
-		public bool ContainsTheSame(Db4objects.Db4o.Internal.Buffer other)
+		public bool ContainsTheSame(Db4objects.Db4o.Internal.BufferImpl other)
 		{
 			if (other != null)
 			{
@@ -61,8 +51,8 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public virtual void CopyTo(Db4objects.Db4o.Internal.Buffer to, int fromOffset, int
-			 toOffset, int length)
+		public virtual void CopyTo(Db4objects.Db4o.Internal.BufferImpl to, int fromOffset
+			, int toOffset, int length)
 		{
 			System.Array.Copy(_buffer, fromOffset, to._buffer, toOffset, length);
 		}
@@ -117,7 +107,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		public Db4objects.Db4o.Internal.Buffer ReadEmbeddedObject(Transaction trans)
+		public Db4objects.Db4o.Internal.BufferImpl ReadEmbeddedObject(Transaction trans)
 		{
 			int address = ReadInt();
 			int length = ReadInt();
@@ -151,18 +141,13 @@ namespace Db4objects.Db4o.Internal
 			return LongHandler.ReadLong(this);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer ReadPayloadReader(int offset, int 
-			length)
+		public virtual Db4objects.Db4o.Internal.BufferImpl ReadPayloadReader(int offset, 
+			int length)
 		{
-			Db4objects.Db4o.Internal.Buffer payLoad = new Db4objects.Db4o.Internal.Buffer(length
-				);
+			Db4objects.Db4o.Internal.BufferImpl payLoad = new Db4objects.Db4o.Internal.BufferImpl
+				(length);
 			System.Array.Copy(_buffer, offset, payLoad._buffer, 0, length);
 			return payLoad;
-		}
-
-		public virtual Slot ReadSlot()
-		{
-			return new Slot(ReadInt(), ReadInt());
 		}
 
 		internal virtual void ReplaceWith(byte[] a_bytes)
@@ -250,12 +235,6 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public void WriteSlot(Slot slot)
-		{
-			WriteInt(slot.Address());
-			WriteInt(slot.Length());
-		}
-
 		protected virtual bool CanWritePersistentBase()
 		{
 			return true;
@@ -279,17 +258,6 @@ namespace Db4objects.Db4o.Internal
 		public virtual int Offset()
 		{
 			return _offset;
-		}
-
-		public virtual void Offset(int offset)
-		{
-			_offset = offset;
-		}
-
-		public virtual void CopyBytes(byte[] target, int sourceOffset, int targetOffset, 
-			int length)
-		{
-			System.Array.Copy(_buffer, sourceOffset, target, targetOffset, length);
 		}
 	}
 }

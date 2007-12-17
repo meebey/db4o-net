@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal
 
 		private const int NO_PARENT = -int.MaxValue;
 
-		private Db4objects.Db4o.Internal.Buffer _delegate;
+		private BufferImpl _delegate;
 
 		private int _lastOffSet;
 
@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_delegate == null)
 			{
-				_delegate = new Db4objects.Db4o.Internal.Buffer(sizeNeeded);
+				_delegate = new BufferImpl(sizeNeeded);
 			}
 			_lastOffSet = _delegate.Offset();
 			if (RemainingSize() < sizeNeeded)
@@ -95,9 +95,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				newSize += sizeNeeded;
 			}
-			Db4objects.Db4o.Internal.Buffer temp = new Db4objects.Db4o.Internal.Buffer(newSize
-				);
-			temp.Offset(_lastOffSet);
+			BufferImpl temp = new BufferImpl(newSize);
+			temp.Seek(_lastOffSet);
 			_delegate.CopyTo(temp, 0, 0, _delegate.Length());
 			_delegate = temp;
 		}
@@ -111,8 +110,8 @@ namespace Db4objects.Db4o.Internal
 			int otherOffset = other._delegate.Offset();
 			System.Array.Copy(_delegate._buffer, _lastOffSet, other._delegate._buffer, otherOffset
 				, length);
-			_delegate.Offset(_lastOffSet);
-			other._delegate.Offset(otherOffset + length);
+			_delegate.Seek(_lastOffSet);
+			other._delegate.Seek(otherOffset + length);
 			other._lastOffSet = otherOffset;
 		}
 
@@ -121,19 +120,18 @@ namespace Db4objects.Db4o.Internal
 			_addressInParent = storeLengthInLink ? offset : -offset;
 		}
 
-		public virtual void TransferContentTo(Db4objects.Db4o.Internal.Buffer buffer)
+		public virtual void TransferContentTo(BufferImpl buffer)
 		{
 			TransferContentTo(buffer, Length());
 		}
 
-		public virtual void TransferContentTo(Db4objects.Db4o.Internal.Buffer buffer, int
-			 length)
+		public virtual void TransferContentTo(BufferImpl buffer, int length)
 		{
 			System.Array.Copy(_delegate._buffer, 0, buffer._buffer, buffer._offset, length);
 			buffer._offset += length;
 		}
 
-		public virtual Db4objects.Db4o.Internal.Buffer TestDelegate()
+		public virtual BufferImpl TestDelegate()
 		{
 			return _delegate;
 		}
@@ -202,25 +200,25 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Seek(int offset)
 		{
-			_delegate.Offset(offset);
+			_delegate.Seek(offset);
 		}
 
 		private void Reserve(int length)
 		{
 			PrepareWrite(length);
-			_delegate.Offset(_delegate.Offset() + length);
+			_delegate.Seek(_delegate.Offset() + length);
 		}
 
 		private void WriteLink(MarshallingBuffer child, int position, int length)
 		{
 			int offset = Offset();
-			_delegate.Offset(child.AddressInParent());
+			_delegate.Seek(child.AddressInParent());
 			_delegate.WriteInt(position);
 			if (child.StoreLengthInLink())
 			{
 				_delegate.WriteInt(length);
 			}
-			_delegate.Offset(offset);
+			_delegate.Seek(offset);
 		}
 
 		private void WriteIndex(MarshallingContext context, int masterAddress, int position
@@ -326,7 +324,7 @@ namespace Db4objects.Db4o.Internal
 				int sizeNeeded = length - _delegate.Offset();
 				PrepareWrite(sizeNeeded);
 			}
-			_delegate.Offset(length);
+			_delegate.Seek(length);
 		}
 
 		private bool DoBlockAlign()

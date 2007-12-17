@@ -172,7 +172,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			return _shared.Slot();
 		}
 
-		public override object Read(Db4objects.Db4o.Internal.Buffer reader)
+		public override object Read(BufferImpl reader)
 		{
 			Db4objects.Db4o.Internal.Slots.SlotChange change = new Db4objects.Db4o.Internal.Slots.SlotChange
 				(reader.ReadInt());
@@ -212,7 +212,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			_newSlot = slot;
 		}
 
-		public override void Write(Db4objects.Db4o.Internal.Buffer writer)
+		public override void Write(BufferImpl writer)
 		{
 			if (IsSetPointer())
 			{
