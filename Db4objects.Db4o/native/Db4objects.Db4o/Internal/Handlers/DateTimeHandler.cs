@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007   db4objects Inc.   http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Marshall;
 using Sharpen;
 
@@ -63,5 +64,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			long ticks = ((DateTime)obj).Ticks;
 			context.WriteLong(ticks);
 		}
+
+        public override IPreparedComparison InternalPrepareComparison(object obj)
+        {
+            return new PreparedComparasionFor<DateTime>(((DateTime)obj));
+        }
 	}
 }
