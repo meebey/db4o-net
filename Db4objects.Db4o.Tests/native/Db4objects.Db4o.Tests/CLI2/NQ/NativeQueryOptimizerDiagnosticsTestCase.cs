@@ -15,6 +15,7 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
             Assert.IsTrue(_failed);
         }
 
+#if !CF_2_0
         public void TestNQOptimizerLoadFailure()
         {
             string code = @"
@@ -124,6 +125,7 @@ internal class ListenForNQOptimizerLoadFailures : IDiagnosticListener
 
             return directory;
         }
+#endif
     }
 
     public interface INQTestRunner
