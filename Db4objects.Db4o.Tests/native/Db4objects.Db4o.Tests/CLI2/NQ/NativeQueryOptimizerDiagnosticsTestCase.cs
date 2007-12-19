@@ -8,6 +8,7 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 {
     public partial class NativeQueryOptimizerDiagnosticsTestCase
     {
+#if !CF_2_0
         public void TesteInlineClosureComplexQueryFails()
         {
             _failed = false;
@@ -15,7 +16,6 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
             Assert.IsTrue(_failed);
         }
 
-#if !CF_2_0
         public void TestNQOptimizerLoadFailure()
         {
             string code = @"
