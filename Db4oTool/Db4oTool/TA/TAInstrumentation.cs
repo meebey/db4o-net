@@ -1,4 +1,5 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -47,9 +48,9 @@ namespace Db4oTool.TA
             _instrumentationAttribute.ConstructorParameters.Add(IT_TRANSPARENT_ACTIVATION);
         }
 
-        private MethodReference ImportConstructor(System.Type type)
+        private MethodReference ImportConstructor(Type type)
         {
-            return _context.Import(type.GetConstructor(new System.Type[] { typeof(string) }));
+            return _context.Import(type.GetConstructor(new Type[] { typeof(string) }));
         }
 
         private bool IsTATag(CustomAttribute ca)
@@ -78,7 +79,7 @@ namespace Db4oTool.TA
 			if (ImplementsActivatable(type)) return;
 			if (HasInstrumentedBaseType(type)) return;
 
-			type.Interfaces.Add(Import(typeof(Db4objects.Db4o.TA.IActivatable)));
+			type.Interfaces.Add(Import(typeof(IActivatable)));
 
 			FieldDefinition activatorField = CreateActivatorField();
 			type.Fields.Add(activatorField);
@@ -87,7 +88,7 @@ namespace Db4oTool.TA
 			type.Methods.Add(CreateBindMethod(activatorField));
 		}
 
-		private bool HasInstrumentedBaseType(TypeDefinition type)
+		private static bool HasInstrumentedBaseType(TypeDefinition type)
 		{
 			// is the base type defined in the same assembly?
 			TypeDefinition baseType = type.BaseType as TypeDefinition;
@@ -100,7 +101,7 @@ namespace Db4oTool.TA
         	return _reflector.ResolveTypeReference(typeRef);
         }
 
-		private bool RequiresTA(TypeDefinition type)
+		private static bool RequiresTA(TypeDefinition type)
 		{
 			if (type.IsValueType) return false;
 			if (type.IsInterface) return false;
@@ -135,7 +136,7 @@ namespace Db4oTool.TA
 			return Import(typeof(IActivator));
 		}
 
-		protected override void ProcessMethod(Mono.Cecil.MethodDefinition method)
+		protected override void ProcessMethod(MethodDefinition method)
 		{
 			if (!method.HasBody || method.IsCompilerControlled) return;
 
@@ -183,14 +184,62 @@ namespace Db4oTool.TA
 
 		private void ProcessFieldAccess(CilWorker cil, Instruction instruction)
 		{
-			FieldReference field = (FieldReference)instruction.Operand;
-			Instruction insertionPoint = GetInsertionPoint(instruction);
-
-			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Dup));
-			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Callvirt, Import(ActivateMethod())));
+            if (IsFieldGetter(instruction))
+            {
+                ProcessFieldGetter(instruction, cil);
+            }
+            else
+            {
+                ProcessFieldSetter(instruction, cil);
+            }
 		}
 
-		private Instruction GetInsertionPoint(Instruction instruction)
+	    private void ProcessFieldSetter(Instruction instruction, CilWorker cil)
+	    {
+            VariableDefinition oldStackTop = SaveStackTop(cil, instruction);
+
+	        instruction = GetInsertionPoint(instruction);
+            cil.InsertBefore(instruction, cil.Create(OpCodes.Dup));
+            cil.InsertBefore(instruction, cil.Create(OpCodes.Callvirt, Import(ActivateMethod())));
+            cil.InsertBefore(instruction, cil.Create(OpCodes.Ldloc, oldStackTop));
+
+        }
+
+	    private static VariableDefinition SaveStackTop(CilWorker cil, Instruction instruction)
+	    {
+            MethodBody methodBody = cil.GetBody();
+            if (methodBody.Variables.Count == 0)
+            {
+                methodBody.InitLocals = true;
+            }
+
+            VariableDefinition oldStackTop = new VariableDefinition(Resolve(instruction).FieldType);
+            methodBody.Variables.Add(oldStackTop);
+
+	        cil.InsertBefore(GetInsertionPoint(instruction), cil.Create(OpCodes.Stloc, oldStackTop));
+
+            return oldStackTop;
+	    }
+
+	    private static FieldReference Resolve(Instruction instruction)
+	    {
+	        return (FieldReference)instruction.Operand;
+	    }
+
+	    private static bool IsFieldGetter(Instruction instruction)
+	    {
+	        return instruction.OpCode == OpCodes.Ldfld || instruction.OpCode == OpCodes.Ldflda;
+	    }
+
+	    private void ProcessFieldGetter(Instruction instruction, CilWorker cil)
+	    {
+	        Instruction insertionPoint = GetInsertionPoint(instruction);
+
+	        cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Dup));
+	        cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Callvirt, Import(ActivateMethod())));
+	    }
+
+	    private static Instruction GetInsertionPoint(Instruction instruction)
 		{
 			return instruction.Previous.OpCode == OpCodes.Volatile
 				? instruction.Previous
@@ -227,12 +276,12 @@ namespace Db4oTool.TA
 			return !IsDelegate(fieldType);
 		}
 
-		private bool IsPointer(TypeReference type)
+		private static bool IsPointer(TypeReference type)
 		{
 			return type is PointerType;
 		}
 
-		private bool IsDelegate(TypeDefinition type)
+		private static bool IsDelegate(TypeDefinition type)
 		{
 			TypeReference baseType = type.BaseType;
 			if (null == baseType) return false;
@@ -242,7 +291,7 @@ namespace Db4oTool.TA
 				|| fullName == "System.MulticastDelegate";
 		}
 
-		private bool IsTransient(TypeDefinition type, FieldReference fieldRef)
+		private static bool IsTransient(TypeDefinition type, IMemberReference fieldRef)
 	    {
 	        FieldDefinition field = type.Fields.GetField(fieldRef.Name);
             if (field == null) return true;
@@ -251,8 +300,9 @@ namespace Db4oTool.TA
 
 	    private static bool IsFieldAccess(Instruction instruction)
 		{
-			return instruction.OpCode == OpCodes.Ldfld
-				|| instruction.OpCode == OpCodes.Ldflda;
+	        return instruction.OpCode == OpCodes.Ldfld
+	               || instruction.OpCode == OpCodes.Ldflda
+	               || instruction.OpCode == OpCodes.Stfld;
 		}
 	}
 }

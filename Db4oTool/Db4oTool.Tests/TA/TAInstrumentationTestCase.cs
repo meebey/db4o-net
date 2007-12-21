@@ -23,6 +23,7 @@ namespace Db4oTool.Tests.TA
                 {
                 	"TAInstrumentationSubject",
 					"TAAssemblyReferenceSubject",
+                    "TAFieldSetterSubject",
 				};
             }
 		}
