@@ -15,16 +15,18 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 	{
 		private bool _failed = false;
 
+		private object _reason = null;
+
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(NativeQueryOptimizerDiagnosticsTestCase.Subject)).ObjectField
 				("_name").Indexed(true);
-			config.Diagnostic().AddListener(new _IDiagnosticListener_23(this));
+			config.Diagnostic().AddListener(new _IDiagnosticListener_24(this));
 		}
 
-		private sealed class _IDiagnosticListener_23 : IDiagnosticListener
+		private sealed class _IDiagnosticListener_24 : IDiagnosticListener
 		{
-			public _IDiagnosticListener_23(NativeQueryOptimizerDiagnosticsTestCase _enclosing
+			public _IDiagnosticListener_24(NativeQueryOptimizerDiagnosticsTestCase _enclosing
 				)
 			{
 				this._enclosing = _enclosing;
@@ -34,6 +36,7 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 			{
 				if (d.GetType() == typeof(NativeQueryNotOptimized))
 				{
+					this._enclosing._reason = ((NativeQueryNotOptimized)d).Reason();
 					this._enclosing._failed = true;
 				}
 			}
@@ -49,13 +52,13 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 
 		public virtual void TestNativeQueryNotOptimized()
 		{
-			IObjectSet items = Db().Query(new _Predicate_39(this));
+			IObjectSet items = Db().Query(new _Predicate_41(this));
 			Assert.IsTrue(_failed);
 		}
 
-		private sealed class _Predicate_39 : Predicate
+		private sealed class _Predicate_41 : Predicate
 		{
-			public _Predicate_39(NativeQueryOptimizerDiagnosticsTestCase _enclosing)
+			public _Predicate_41(NativeQueryOptimizerDiagnosticsTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

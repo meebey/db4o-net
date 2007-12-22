@@ -3,6 +3,7 @@
 using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -13,8 +14,7 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public abstract class StringHandler : VariableLengthTypeHandler, IIndexableTypeHandler
-		, IBuiltinTypeHandler
+	public class StringHandler : VariableLengthTypeHandler, IIndexableTypeHandler, IBuiltinTypeHandler
 	{
 		public StringHandler(ObjectContainerBase container) : base(container)
 		{
@@ -172,10 +172,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		/// <summary>
 		/// returns: -x for left is greater and +x for right is greater
-		/// TODO: You will need collators here for different languages.
+		/// FIXME: The returned value is the wrong way around.
 		/// </summary>
 		/// <remarks>
 		/// returns: -x for left is greater and +x for right is greater
+		/// FIXME: The returned value is the wrong way around.
 		/// TODO: You will need collators here for different languages.
 		/// </remarks>
 		internal int Compare(BufferImpl a_compare, BufferImpl a_with)
@@ -214,10 +215,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.CopyID(false, true);
 			context.IncrementIntSize();
 		}
-
-		public abstract override void Defragment(IDefragmentContext context);
-
-		public abstract override object Read(IReadContext context);
 
 		public override void Write(IWriteContext context, object obj)
 		{
@@ -273,6 +270,42 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return string.Intern(str);
 			}
 			return str;
+		}
+
+		public override object Read(IReadContext context)
+		{
+			return ReadString(context, context);
+		}
+
+		public override void Defragment(IDefragmentContext context)
+		{
+			context.IncrementOffset(LinkLength());
+		}
+
+		public override IPreparedComparison NewPrepareCompare(object obj)
+		{
+			BufferImpl sourceBuffer = Val(obj);
+			return new _IPreparedComparison_254(this, sourceBuffer);
+		}
+
+		private sealed class _IPreparedComparison_254 : IPreparedComparison
+		{
+			public _IPreparedComparison_254(StringHandler _enclosing, BufferImpl sourceBuffer
+				)
+			{
+				this._enclosing = _enclosing;
+				this.sourceBuffer = sourceBuffer;
+			}
+
+			public int CompareTo(object target)
+			{
+				BufferImpl targetBuffer = this._enclosing.Val(target);
+				return -this._enclosing.Compare(sourceBuffer, targetBuffer);
+			}
+
+			private readonly StringHandler _enclosing;
+
+			private readonly BufferImpl sourceBuffer;
 		}
 	}
 }

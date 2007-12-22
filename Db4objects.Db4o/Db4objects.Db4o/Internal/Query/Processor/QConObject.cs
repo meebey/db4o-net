@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public QField i_field;
 
 		[System.NonSerialized]
-		internal IComparable4 i_comparator;
+		internal IPreparedComparison _preparedComparison;
 
 		public IObjectAttribute i_attributeProvider;
 
@@ -49,16 +49,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			i_object = a_object;
 			i_field = a_field;
-			AssociateYapClass(a_trans, a_object);
 		}
 
 		private void AssociateYapClass(Transaction a_trans, object a_object)
 		{
 			if (a_object == null)
 			{
-				i_object = null;
-				i_comparator = Null.INSTANCE;
-				i_yapClass = null;
 			}
 			else
 			{
@@ -106,6 +102,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override bool CanBeIndexLeaf()
 		{
+			ByIdentity();
 			return (i_yapClass != null && i_yapClass.IsPrimitive()) || Evaluator().Identity();
 		}
 
@@ -185,7 +182,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 					object transactionalObject = i_yapClass.WrapWithTransactionContext(Transaction(), 
 						i_object);
-					i_comparator = i_yapClass.PrepareComparison(transactionalObject);
+					_preparedComparison = i_yapClass.NewPrepareCompare(transactionalObject);
 				}
 			}
 			base.EvaluateSelf();
@@ -211,13 +208,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual IComparable4 GetComparator(QCandidate a_candidate)
+		internal virtual IPreparedComparison PrepareComparison(QCandidate candidate)
 		{
-			if (i_comparator == null)
+			if (_preparedComparison != null)
 			{
-				return a_candidate.PrepareComparison(i_trans.Container(), i_object);
+				return _preparedComparison;
 			}
-			return i_comparator;
+			return candidate.PrepareComparison(Container(), i_object);
 		}
 
 		internal override ClassMetadata GetYapClass()
@@ -305,11 +302,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (IsNullConstraint() & !a_field.IsArray())
 			{
-				i_comparator = Null.INSTANCE;
+				_preparedComparison = Null.INSTANCE;
 			}
 			else
 			{
-				i_comparator = a_field.PrepareComparison(i_object);
+				_preparedComparison = a_field.PrepareComparison(i_object);
 			}
 		}
 
@@ -366,7 +363,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				base.Unmarshall(trans);
 				if (i_object == null)
 				{
-					i_comparator = Null.INSTANCE;
+					_preparedComparison = Null.INSTANCE;
 				}
 				if (i_yapClassID != 0)
 				{
@@ -410,10 +407,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				object cmp = qc.Value();
 				if (cmp != null && i_field != null)
 				{
-					IComparable4 comparatorBackup = i_comparator;
-					i_comparator = i_field.PrepareComparison(qc.Value());
+					IPreparedComparison preparedComparisonBackup = _preparedComparison;
+					_preparedComparison = i_field.PrepareComparison(qc.Value());
 					i_candidates.AddOrder(new QOrder(this, qc));
-					i_comparator = comparatorBackup.PrepareComparison(i_object);
+					_preparedComparison = preparedComparisonBackup;
 				}
 			}
 			Visit1(qc.GetRoot(), this, res);
@@ -471,6 +468,49 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				RemoveChildrenJoins();
 				i_evaluator = i_evaluator.Add(new QEIdentity());
 				return this;
+			}
+		}
+
+		public override IConstraint ByExample()
+		{
+			lock (StreamLock())
+			{
+				AssociateYapClass(i_trans, i_object);
+				return this;
+			}
+		}
+
+		internal virtual void ByIdentity()
+		{
+			if (i_object == null)
+			{
+				if (_children != null)
+				{
+					IEnumerator children = IterateChildren();
+					while (children.MoveNext())
+					{
+						object child = children.Current;
+						if (child is Db4objects.Db4o.Internal.Query.Processor.QConObject)
+						{
+							((Db4objects.Db4o.Internal.Query.Processor.QConObject)child).ByIdentity();
+						}
+					}
+				}
+				return;
+			}
+			int id = GetObjectID();
+			if (id < 0)
+			{
+				if (i_yapClass == null)
+				{
+					AssociateYapClass(i_trans, i_object);
+				}
+			}
+			else
+			{
+				i_yapClass = i_trans.Container().ProduceClassMetadata(i_trans.Reflector().ForObject
+					(i_object));
+				Identity();
 			}
 		}
 

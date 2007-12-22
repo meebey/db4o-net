@@ -32,14 +32,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AssertFreespaceInfo(FileSession().SystemInfo());
 		}
 
-		/// <exception cref="Exception"></exception>
-		public virtual void TestIndexBasedFreespaceInfo()
-		{
-			Db4oFactory.Configure().Freespace().UseIndexSystem();
-			Reopen();
-			AssertFreespaceInfo(FileSession().SystemInfo());
-		}
-
 		private void AssertFreespaceInfo(ISystemInfo info)
 		{
 			Assert.IsNotNull(info);

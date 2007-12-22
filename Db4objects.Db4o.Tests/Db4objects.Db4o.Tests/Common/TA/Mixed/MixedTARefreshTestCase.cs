@@ -86,6 +86,8 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 				Assert.AreEqual(i, next2.GetValue());
 				next2 = next2.Next();
 			}
+			client1.Close();
+			client2.Close();
 		}
 
 		private MixedTARefreshTestCase.Item RetrieveInstance(IExtObjectContainer client)

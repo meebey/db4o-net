@@ -152,6 +152,15 @@ namespace Db4objects.Db4o.Query
 		/// </returns>
 		IConstraint Identity();
 
+		/// <summary>set the evaluation mode to object comparison (query by example).</summary>
+		/// <remarks>set the evaluation mode to object comparison (query by example).</remarks>
+		/// <returns>
+		/// this
+		/// <see cref="IConstraint">IConstraint</see>
+		/// to allow the chaining of method calls.
+		/// </returns>
+		IConstraint ByExample();
+
 		/// <summary>sets the evaluation mode to "like" comparison.</summary>
 		/// <remarks>
 		/// sets the evaluation mode to "like" comparison. This mode will include

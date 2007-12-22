@@ -159,7 +159,7 @@ namespace Db4objects.Db4o.Internal
 			ShortHandler shortHandler = new ShortHandler(_container);
 			RegisterBuiltinHandler(Handlers4.SHORT_ID, shortHandler);
 			RegisterHandlerVersion(shortHandler, 0, new ShortHandler0(_container));
-			_stringHandler = new StringHandler2(_container);
+			_stringHandler = new StringHandler(_container);
 			RegisterBuiltinHandler(Handlers4.STRING_ID, _stringHandler);
 			RegisterHandlerVersion(_stringHandler, 0, new StringHandler0(_stringHandler));
 			DateHandler dateHandler = new DateHandler(_container);

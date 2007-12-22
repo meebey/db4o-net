@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Handlers;
@@ -93,6 +94,51 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			_parentIdHandler.DefragIndexEntry(context);
 			_valueHandler.DefragIndexEntry(context);
+		}
+
+		public virtual IPreparedComparison NewPrepareCompare(object obj)
+		{
+			FieldIndexKey source = (FieldIndexKey)obj;
+			IPreparedComparison preparedValueComparison = _valueHandler.NewPrepareCompare(source
+				.Value());
+			IPreparedComparison preparedParentIdComparison = _parentIdHandler.NewPrepareCompare
+				(source.ParentID());
+			return new _IPreparedComparison_90(this, preparedValueComparison, preparedParentIdComparison
+				);
+		}
+
+		private sealed class _IPreparedComparison_90 : IPreparedComparison
+		{
+			public _IPreparedComparison_90(FieldIndexKeyHandler _enclosing, IPreparedComparison
+				 preparedValueComparison, IPreparedComparison preparedParentIdComparison)
+			{
+				this._enclosing = _enclosing;
+				this.preparedValueComparison = preparedValueComparison;
+				this.preparedParentIdComparison = preparedParentIdComparison;
+			}
+
+			public int CompareTo(object obj)
+			{
+				FieldIndexKey target = (FieldIndexKey)obj;
+				try
+				{
+					int delegateResult = preparedValueComparison.CompareTo(target.Value());
+					if (delegateResult != 0)
+					{
+						return delegateResult;
+					}
+				}
+				catch (IllegalComparisonException)
+				{
+				}
+				return preparedParentIdComparison.CompareTo(target.ParentID());
+			}
+
+			private readonly FieldIndexKeyHandler _enclosing;
+
+			private readonly IPreparedComparison preparedValueComparison;
+
+			private readonly IPreparedComparison preparedParentIdComparison;
 		}
 	}
 }

@@ -94,5 +94,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			context.WriteLong(Platform4.DoubleToLong(((double)obj)));
 		}
+
+		public override IPreparedComparison InternalPrepareComparison(object source)
+		{
+			double sourceDouble = ((double)source);
+			return new _IPreparedComparison_89(this, sourceDouble);
+		}
+
+		private sealed class _IPreparedComparison_89 : IPreparedComparison
+		{
+			public _IPreparedComparison_89(DoubleHandler _enclosing, double sourceDouble)
+			{
+				this._enclosing = _enclosing;
+				this.sourceDouble = sourceDouble;
+			}
+
+			public int CompareTo(object target)
+			{
+				double targetDouble = ((double)target);
+				return sourceDouble == targetDouble ? 0 : (sourceDouble < targetDouble ? -1 : 1);
+			}
+
+			private readonly DoubleHandler _enclosing;
+
+			private readonly double sourceDouble;
+		}
 	}
 }

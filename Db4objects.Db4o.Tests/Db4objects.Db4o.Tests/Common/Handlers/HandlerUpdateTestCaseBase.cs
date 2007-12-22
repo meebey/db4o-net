@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Query;
@@ -29,10 +28,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		protected override string[] VersionNames()
 		{
 			return new string[] { Sharpen.Runtime.Substring(Db4oFactory.Version(), 5) };
-		}
-
-		protected override void Configure(IConfiguration config)
-		{
 		}
 
 		protected override void Store(IExtObjectContainer objectContainer)

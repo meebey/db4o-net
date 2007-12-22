@@ -109,6 +109,18 @@ namespace Db4objects.Db4o.Internal.Cluster
 			}
 		}
 
+		public virtual IConstraint ByExample()
+		{
+			lock (_cluster)
+			{
+				for (int i = 0; i < _constraints.Length; i++)
+				{
+					_constraints[i].ByExample();
+				}
+				return this;
+			}
+		}
+
 		public virtual IConstraint Like()
 		{
 			lock (_cluster)

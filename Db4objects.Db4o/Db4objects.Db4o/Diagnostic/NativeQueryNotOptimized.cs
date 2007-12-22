@@ -26,7 +26,8 @@ namespace Db4objects.Db4o.Diagnostic
 			{
 				return _predicate;
 			}
-			return _predicate.ToString() + "\n" + _details.Message;
+			return _predicate != null ? _predicate.ToString() : string.Empty + "\n" + _details
+				.Message;
 		}
 
 		public override string Problem()

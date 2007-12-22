@@ -681,7 +681,8 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				if (obj != null)
 				{
-					Write(Msg.USER_MESSAGE.GetWriter(Serializer.Marshall(_transaction, obj)));
+					MUserMessage message = Msg.USER_MESSAGE;
+					Write(message.MarshallUserMessage(_transaction, obj));
 				}
 			}
 		}

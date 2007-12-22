@@ -83,6 +83,8 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 				AssertItemValue(i, next2);
 				next2 = next2.Next();
 			}
+			client1.Close();
+			client2.Close();
 		}
 
 		private void AssertItemValue(int expectedValue, TARefreshTestCase.TAItem item)

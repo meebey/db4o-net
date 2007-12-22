@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Marshall;
@@ -94,6 +95,31 @@ namespace Db4objects.Db4o.Internal.Handlers
 			char charValue = ((char)obj);
 			context.WriteBytes(new byte[] { (byte)(charValue & unchecked((int)(0xff))), (byte
 				)(charValue >> 8) });
+		}
+
+		public override IPreparedComparison InternalPrepareComparison(object source)
+		{
+			char sourceChar = ((char)source);
+			return new _IPreparedComparison_123(this, sourceChar);
+		}
+
+		private sealed class _IPreparedComparison_123 : IPreparedComparison
+		{
+			public _IPreparedComparison_123(CharHandler _enclosing, char sourceChar)
+			{
+				this._enclosing = _enclosing;
+				this.sourceChar = sourceChar;
+			}
+
+			public int CompareTo(object target)
+			{
+				char targetChar = ((char)target);
+				return sourceChar == targetChar ? 0 : (sourceChar < targetChar ? -1 : 1);
+			}
+
+			private readonly CharHandler _enclosing;
+
+			private readonly char sourceChar;
 		}
 	}
 }

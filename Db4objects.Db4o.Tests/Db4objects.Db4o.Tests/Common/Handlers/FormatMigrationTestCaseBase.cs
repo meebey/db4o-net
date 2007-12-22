@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			IConfiguration config = Db4oFactory.Configure();
 			config.AllowVersionUpdates(true);
-			Configure(config);
+			ConfigureForTest(config);
 		}
 
 		protected static readonly string PATH = Path.Combine(Path.GetTempPath(), "test/db4oVersions"
@@ -50,6 +50,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		public virtual void CreateDatabaseFor(string versionName)
 		{
 			_db4oVersion = versionName;
+			IConfiguration config = Db4oFactory.Configure();
+			try
+			{
+				ConfigureForStore(config);
+			}
+			catch
+			{
+			}
 			CreateDatabase(FileName(versionName));
 		}
 
@@ -142,7 +150,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected abstract string FileNamePrefix();
 
-		protected abstract void Configure(IConfiguration config);
+		protected virtual void ConfigureForTest(IConfiguration config)
+		{
+		}
+
+		protected virtual void ConfigureForStore(IConfiguration config)
+		{
+		}
 
 		protected abstract void Store(IExtObjectContainer objectContainer);
 

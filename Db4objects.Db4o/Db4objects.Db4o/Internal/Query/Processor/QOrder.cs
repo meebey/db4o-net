@@ -61,8 +61,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private int InternalCompare()
 		{
-			int comparisonResult = _constraint.i_comparator.CompareTo(_candidate.Value());
-			if (comparisonResult < 0)
+			int comparisonResult = _constraint._preparedComparison.CompareTo(_candidate.Value
+				());
+			if (comparisonResult > 0)
 			{
 				return -_constraint.Ordering();
 			}

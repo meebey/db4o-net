@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
 
@@ -40,5 +41,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 		}
 
 		public abstract int CompareTo(object arg1);
+
+		public abstract IPreparedComparison NewPrepareCompare(object arg1);
 	}
 }

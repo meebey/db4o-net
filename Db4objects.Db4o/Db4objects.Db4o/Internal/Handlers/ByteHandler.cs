@@ -92,5 +92,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			context.WriteByte(((byte)obj));
 		}
+
+		public override IPreparedComparison InternalPrepareComparison(object source)
+		{
+			byte sourceByte = ((byte)source);
+			return new _IPreparedComparison_115(this, sourceByte);
+		}
+
+		private sealed class _IPreparedComparison_115 : IPreparedComparison
+		{
+			public _IPreparedComparison_115(ByteHandler _enclosing, byte sourceByte)
+			{
+				this._enclosing = _enclosing;
+				this.sourceByte = sourceByte;
+			}
+
+			public int CompareTo(object target)
+			{
+				byte targetByte = ((byte)target);
+				return sourceByte == targetByte ? 0 : (sourceByte < targetByte ? -1 : 1);
+			}
+
+			private readonly ByteHandler _enclosing;
+
+			private readonly byte sourceByte;
+		}
 	}
 }

@@ -137,5 +137,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			context.WriteLong(((long)obj));
 		}
+
+		public override IPreparedComparison InternalPrepareComparison(object source)
+		{
+			long sourceLong = ((long)source);
+			return new _IPreparedComparison_133(this, sourceLong);
+		}
+
+		private sealed class _IPreparedComparison_133 : IPreparedComparison
+		{
+			public _IPreparedComparison_133(LongHandler _enclosing, long sourceLong)
+			{
+				this._enclosing = _enclosing;
+				this.sourceLong = sourceLong;
+			}
+
+			public int CompareTo(object target)
+			{
+				long targetLong = ((long)target);
+				return sourceLong == targetLong ? 0 : (sourceLong < targetLong ? -1 : 1);
+			}
+
+			private readonly LongHandler _enclosing;
+
+			private readonly long sourceLong;
+		}
 	}
 }

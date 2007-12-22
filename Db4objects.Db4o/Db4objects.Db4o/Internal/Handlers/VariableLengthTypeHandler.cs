@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -51,6 +52,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			return context.Container().BufferByAddress(address, length);
 		}
+
+		public abstract IPreparedComparison NewPrepareCompare(object arg1);
 
 		public abstract void Delete(IDeleteContext arg1);
 

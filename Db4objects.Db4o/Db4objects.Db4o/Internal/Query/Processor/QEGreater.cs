@@ -1,7 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Query.Processor;
 
 namespace Db4objects.Db4o.Internal.Query.Processor
@@ -16,12 +16,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return false;
 			}
-			IComparable4 comparator = constraint.GetComparator(candidate);
-			if (comparator is ArrayHandler)
+			IPreparedComparison preparedComparison = constraint.PrepareComparison(candidate);
+			if (preparedComparison is PreparedArrayContainsComparison)
 			{
-				return ((ArrayHandler)comparator).IsGreater(obj);
+				return ((PreparedArrayContainsComparison)preparedComparison).IsSmallerThan(obj);
 			}
-			return comparator.CompareTo(obj) > 0;
+			return preparedComparison.CompareTo(obj) < 0;
 		}
 
 		public override void IndexBitMap(bool[] bits)

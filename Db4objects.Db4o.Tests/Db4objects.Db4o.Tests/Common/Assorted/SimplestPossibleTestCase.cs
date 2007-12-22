@@ -17,18 +17,38 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		protected override void Store()
 		{
-			Db().Set(new SimplestPossibleItem("one"));
+			Db().Set(new SimplestPossibleTestCase.Item("one"));
 		}
 
 		public virtual void Test()
 		{
 			IQuery q = Db().Query();
-			q.Constrain(typeof(SimplestPossibleItem));
+			q.Constrain(typeof(SimplestPossibleTestCase.Item));
 			q.Descend("name").Constrain("one");
 			IObjectSet objectSet = q.Execute();
-			SimplestPossibleItem item = (SimplestPossibleItem)objectSet.Next();
+			SimplestPossibleTestCase.Item item = (SimplestPossibleTestCase.Item)objectSet.Next
+				();
 			Assert.IsNotNull(item);
 			Assert.AreEqual("one", item.GetName());
+		}
+
+		public class Item
+		{
+			public string name;
+
+			public Item()
+			{
+			}
+
+			public Item(string name_)
+			{
+				this.name = name_;
+			}
+
+			public virtual string GetName()
+			{
+				return name;
+			}
 		}
 	}
 }

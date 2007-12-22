@@ -4,7 +4,6 @@ using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.IX;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -15,8 +14,6 @@ namespace Db4objects.Db4o.Internal
 	public abstract class Transaction
 	{
 		protected Tree _delete;
-
-		private List4 _dirtyFieldIndexes;
 
 		protected readonly Db4objects.Db4o.Internal.Transaction _systemTransaction;
 
@@ -53,11 +50,6 @@ namespace Db4objects.Db4o.Internal
 			_referenceSystem = referenceSystem;
 		}
 
-		public virtual void AddDirtyFieldIndex(IndexTransaction indexTransaction)
-		{
-			_dirtyFieldIndexes = new List4(_dirtyFieldIndexes, indexTransaction);
-		}
-
 		public void CheckSynchronization()
 		{
 		}
@@ -70,7 +62,6 @@ namespace Db4objects.Db4o.Internal
 		protected void ClearAll()
 		{
 			Clear();
-			_dirtyFieldIndexes = null;
 			_transactionListeners = null;
 		}
 
@@ -94,22 +85,6 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public abstract void Commit();
-
-		protected virtual void Commit4FieldIndexes()
-		{
-			if (_systemTransaction != null)
-			{
-				_systemTransaction.Commit4FieldIndexes();
-			}
-			if (_dirtyFieldIndexes != null)
-			{
-				IEnumerator i = new Iterator4Impl(_dirtyFieldIndexes);
-				while (i.MoveNext())
-				{
-					((IndexTransaction)i.Current).Commit();
-				}
-			}
-		}
 
 		protected virtual void CommitTransactionListeners()
 		{
@@ -206,18 +181,6 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public abstract void Rollback();
-
-		protected virtual void RollbackFieldIndexes()
-		{
-			if (_dirtyFieldIndexes != null)
-			{
-				IEnumerator i = new Iterator4Impl(_dirtyFieldIndexes);
-				while (i.MoveNext())
-				{
-					((IndexTransaction)i.Current).Rollback();
-				}
-			}
-		}
 
 		protected virtual void RollBackTransactionListeners()
 		{
@@ -414,12 +377,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IContext Context()
 		{
-			return new _IContext_364(this);
+			return new _IContext_334(this);
 		}
 
-		private sealed class _IContext_364 : IContext
+		private sealed class _IContext_334 : IContext
 		{
-			public _IContext_364(Transaction _enclosing)
+			public _IContext_334(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

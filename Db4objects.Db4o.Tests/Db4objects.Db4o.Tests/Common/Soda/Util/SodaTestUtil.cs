@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 				return;
 			}
 			int j = 0;
-			Assert.AreEqual(set.Size(), results.Length);
+			Assert.AreEqual(results.Length, set.Size());
 			while (set.HasNext())
 			{
 				object obj = set.Next();

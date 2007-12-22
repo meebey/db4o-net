@@ -509,7 +509,7 @@ namespace Db4objects.Db4o.Internal
 				_freespaceManager.Read(_systemData.FreespaceID());
 				_freespaceManager.Start(_systemData.FreespaceAddress());
 			}
-			if (NeedFreespaceMigration())
+			if (FreespaceMigrationRequired())
 			{
 				MigrateFreespace();
 			}
@@ -534,12 +534,23 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private bool NeedFreespaceMigration()
+		private bool FreespaceMigrationRequired()
 		{
+			if (_freespaceManager == null)
+			{
+				return false;
+			}
 			byte readSystem = _systemData.FreespaceSystem();
 			byte configuredSystem = ConfigImpl().FreespaceSystem();
-			return (configuredSystem != 0 || readSystem == AbstractFreespaceManager.FM_LEGACY_RAM
-				) && (_freespaceManager.SystemType() != configuredSystem);
+			if (_freespaceManager.SystemType() == configuredSystem)
+			{
+				return false;
+			}
+			if (configuredSystem != 0)
+			{
+				return true;
+			}
+			return AbstractFreespaceManager.MigrationRequired(readSystem);
 		}
 
 		private void MigrateFreespace()
@@ -609,15 +620,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_559(this, semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_567(this, semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_559 : IVisitor4
+		private sealed class _IVisitor4_567 : IVisitor4
 		{
-			public _IVisitor4_559(LocalObjectContainer _enclosing, Hashtable4 semaphores)
+			public _IVisitor4_567(LocalObjectContainer _enclosing, Hashtable4 semaphores)
 			{
 				this._enclosing = _enclosing;
 				this.semaphores = semaphores;
@@ -862,13 +873,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_762(this, ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_770(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_762 : IVisitor4
+		private sealed class _IVisitor4_770 : IVisitor4
 		{
-			public _IVisitor4_762(LocalObjectContainer _enclosing, IntArrayList ids)
+			public _IVisitor4_770(LocalObjectContainer _enclosing, IntArrayList ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;

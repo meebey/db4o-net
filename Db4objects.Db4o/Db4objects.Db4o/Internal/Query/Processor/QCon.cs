@@ -545,6 +545,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			throw NotSupported();
 		}
 
+		public virtual IConstraint ByExample()
+		{
+			throw NotSupported();
+		}
+
 		public virtual int IdentityID()
 		{
 			return 0;

@@ -41,6 +41,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 		}
 
+		public virtual string GetClassName()
+		{
+			return _claxx.GetName();
+		}
+
 		public override bool CanBeIndexLeaf()
 		{
 			return false;

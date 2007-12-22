@@ -644,7 +644,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void UseIndexSystem()
 		{
-			_config.Put(FREESPACE_SYSTEM, AbstractFreespaceManager.FM_IX);
+			throw new NotSupportedException();
 		}
 
 		public void WeakReferenceCollectionInterval(int milliseconds)

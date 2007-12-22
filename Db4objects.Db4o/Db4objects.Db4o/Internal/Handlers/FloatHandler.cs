@@ -92,5 +92,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			context.WriteInt(Sharpen.Runtime.FloatToIntBits(((float)obj)));
 		}
+
+		public override IPreparedComparison InternalPrepareComparison(object source)
+		{
+			float sourceFloat = ((float)source);
+			return new _IPreparedComparison_90(this, sourceFloat);
+		}
+
+		private sealed class _IPreparedComparison_90 : IPreparedComparison
+		{
+			public _IPreparedComparison_90(FloatHandler _enclosing, float sourceFloat)
+			{
+				this._enclosing = _enclosing;
+				this.sourceFloat = sourceFloat;
+			}
+
+			public int CompareTo(object target)
+			{
+				float targetFloat = ((float)target);
+				return sourceFloat == targetFloat ? 0 : (sourceFloat < targetFloat ? -1 : 1);
+			}
+
+			private readonly FloatHandler _enclosing;
+
+			private readonly float sourceFloat;
+		}
 	}
 }

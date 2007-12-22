@@ -11,7 +11,6 @@ using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Acid;
-using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Acid
 {
@@ -183,7 +182,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		{
 			for (int i = 0; i < 10; i++)
 			{
-				container.Set(new SimplestPossibleItem("delme"));
+				container.Set(new CrashSimulatingTestCase.Item("delme"));
 			}
 			CrashSimulatingTestCase.CrashData one = new CrashSimulatingTestCase.CrashData(null
 				, "one");
@@ -195,10 +194,34 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			container.Set(two);
 			container.Set(three);
 			container.Commit();
-			IObjectSet objectSet = container.Query(typeof(SimplestPossibleItem));
+			IObjectSet objectSet = container.Query(typeof(CrashSimulatingTestCase.Item));
 			while (objectSet.HasNext())
 			{
 				container.Delete(objectSet.Next());
+			}
+		}
+
+		public class Item
+		{
+			public string name;
+
+			public Item()
+			{
+			}
+
+			public Item(string name_)
+			{
+				this.name = name_;
+			}
+
+			public virtual string GetName()
+			{
+				return name;
+			}
+
+			public virtual void SetName(string name_)
+			{
+				name = name_;
 			}
 		}
 	}

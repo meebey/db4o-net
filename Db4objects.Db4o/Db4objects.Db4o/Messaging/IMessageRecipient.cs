@@ -23,14 +23,16 @@ namespace Db4objects.Db4o.Messaging
 	/// ,<br />
 	/// <see cref="IClientServerConfiguration.GetMessageSender">IClientServerConfiguration.GetMessageSender
 	/// 	</see>
+	/// ,<br />
+	/// <see cref="MessageRecipientWithContext">MessageRecipientWithContext</see>
 	/// <br />
 	/// </remarks>
 	public interface IMessageRecipient
 	{
 		/// <summary>the method called upon the arrival of messages.</summary>
 		/// <remarks>the method called upon the arrival of messages.</remarks>
-		/// <param name="con">the ObjectContainer the message was sent to.</param>
+		/// <param name="container">the ObjectContainer the message was sent to.</param>
 		/// <param name="message">the message received.</param>
-		void ProcessMessage(IObjectContainer con, object message);
+		void ProcessMessage(IObjectContainer container, object message);
 	}
 }

@@ -211,10 +211,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return InternalPrepareComparison(obj);
 		}
 
-		/// <summary>FIXME: make abstract when all derived handlers are implemented</summary>
-		public virtual IPreparedComparison InternalPrepareComparison(object obj)
-		{
-			throw new NotImplementedException();
-		}
+		public abstract IPreparedComparison InternalPrepareComparison(object obj);
 	}
 }

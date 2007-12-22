@@ -68,16 +68,9 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		void UseBTreeSystem();
 
-		/// <summary>configures db4o to use an index-based freespace system.</summary>
-		/// <remarks>
-		/// configures db4o to use an index-based freespace system.
-		/// <br /><br /><b>Advantages</b><br />
-		/// - ACID, no freespace is lost on abnormal system termination<br />
-		/// - low memory consumption<br />
-		/// <br /><b>Disadvantages</b><br />
-		/// - slower than the RAM-based system, since freespace information
-		/// is written during every commit<br />
-		/// </remarks>
+		/// <summary>discontinued freespace system, only available before db4o 7.0.</summary>
+		/// <remarks>discontinued freespace system, only available before db4o 7.0.</remarks>
+		[System.ObsoleteAttribute(@"Please use the BTree freespace system instead by")]
 		void UseIndexSystem();
 
 		/// <summary>configures db4o to use a RAM-based freespace system.</summary>

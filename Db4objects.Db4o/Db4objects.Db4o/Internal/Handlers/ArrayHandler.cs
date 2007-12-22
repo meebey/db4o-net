@@ -414,49 +414,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return -1;
 		}
 
-		public virtual bool IsEqual(object obj)
-		{
-			if (obj == null)
-			{
-				return false;
-			}
-			IEnumerator compareWith = AllElements(obj);
-			while (compareWith.MoveNext())
-			{
-				if (_handler.CompareTo(compareWith.Current) == 0)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public virtual bool IsGreater(object obj)
-		{
-			IEnumerator compareWith = AllElements(obj);
-			while (compareWith.MoveNext())
-			{
-				if (_handler.CompareTo(compareWith.Current) > 0)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public virtual bool IsSmaller(object obj)
-		{
-			IEnumerator compareWith = AllElements(obj);
-			while (compareWith.MoveNext())
-			{
-				if (_handler.CompareTo(compareWith.Current) < 0)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
 		public override void Defragment(IDefragmentContext context)
 		{
 			if (Handlers4.HandlesSimple(_handler))
@@ -543,6 +500,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 					context.WriteObject(_handler, ArrayReflector().Get(obj, i));
 				}
 			}
+		}
+
+		public override IPreparedComparison NewPrepareCompare(object obj)
+		{
+			return new PreparedArrayContainsComparison(this, _handler, obj);
 		}
 	}
 }

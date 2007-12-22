@@ -2,6 +2,7 @@
 
 using System;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 
@@ -127,6 +128,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return Compare(i_compareTo, obj) < 0;
 			}
 			return false;
+		}
+
+		public override IPreparedComparison InternalPrepareComparison(object obj)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

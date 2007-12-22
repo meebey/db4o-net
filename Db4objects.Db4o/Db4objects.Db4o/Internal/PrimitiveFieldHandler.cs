@@ -139,6 +139,11 @@ namespace Db4objects.Db4o.Internal
 			return _handler;
 		}
 
+		public override IPreparedComparison NewPrepareCompare(object source)
+		{
+			return _handler.NewPrepareCompare(source);
+		}
+
 		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
 			 mf, BufferImpl[] a_bytes)
 		{

@@ -94,5 +94,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 			long milliseconds = Sharpen.Runtime.ToJavaMilliseconds(((DateTime)obj));
 			base.Write(context, milliseconds);
 		}
+
+		public override IPreparedComparison InternalPrepareComparison(object source)
+		{
+			long sourceDate = Sharpen.Runtime.ToJavaMilliseconds(((DateTime)source));
+			return new _IPreparedComparison_86(this, sourceDate);
+		}
+
+		private sealed class _IPreparedComparison_86 : IPreparedComparison
+		{
+			public _IPreparedComparison_86(DateHandlerBase _enclosing, long sourceDate)
+			{
+				this._enclosing = _enclosing;
+				this.sourceDate = sourceDate;
+			}
+
+			public int CompareTo(object target)
+			{
+				long targetDate = Sharpen.Runtime.ToJavaMilliseconds(((DateTime)target));
+				return sourceDate == targetDate ? 0 : (sourceDate < targetDate ? -1 : 1);
+			}
+
+			private readonly DateHandlerBase _enclosing;
+
+			private readonly long sourceDate;
+		}
 	}
 }

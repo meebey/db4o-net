@@ -15,16 +15,21 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 	{
 		private bool _failed;
 
-		protected override void Configure(IConfiguration config)
+		protected override void ConfigureForStore(IConfiguration config)
 		{
 			config.ObjectClass(typeof(CascadedDeleteFileFormatUpdateTestCase.ParentItem)).CascadeOnDelete
 				(true);
-			config.Diagnostic().AddListener(new _IDiagnosticListener_23(this));
 		}
 
-		private sealed class _IDiagnosticListener_23 : IDiagnosticListener
+		protected override void ConfigureForTest(IConfiguration config)
 		{
-			public _IDiagnosticListener_23(CascadedDeleteFileFormatUpdateTestCase _enclosing)
+			ConfigureForStore(config);
+			config.Diagnostic().AddListener(new _IDiagnosticListener_27(this));
+		}
+
+		private sealed class _IDiagnosticListener_27 : IDiagnosticListener
+		{
+			public _IDiagnosticListener_27(CascadedDeleteFileFormatUpdateTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

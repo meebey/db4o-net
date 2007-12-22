@@ -456,47 +456,48 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return Transaction().Reflector().ForObject(_member);
 		}
 
-		internal virtual IComparable4 PrepareComparison(ObjectContainerBase a_stream, object
-			 a_constraint)
+		internal virtual IPreparedComparison PrepareComparison(ObjectContainerBase container
+			, object constraint)
 		{
 			if (_yapField != null)
 			{
-				return _yapField.PrepareComparison(a_constraint);
+				return _yapField.PrepareComparison(constraint);
 			}
-			if (_yapClass == null)
+			if (_yapClass != null)
 			{
-				ClassMetadata yc = null;
-				if (_bytes != null)
-				{
-					yc = a_stream.ProduceClassMetadata(a_stream.Reflector().ForObject(a_constraint));
-				}
-				else
-				{
-					if (_member != null)
-					{
-						yc = a_stream.ClassMetadataForReflectClass(a_stream.Reflector().ForObject(_member
-							));
-					}
-				}
-				if (yc != null)
-				{
-					if (_member != null && _member.GetType().IsArray)
-					{
-						ITypeHandler4 ydt = (ITypeHandler4)yc.PrepareComparison(a_constraint);
-						if (a_stream.Reflector().Array().IsNDimensional(MemberClass()))
-						{
-							MultidimensionalArrayHandler yan = new MultidimensionalArrayHandler(a_stream, ydt
-								, false);
-							return yan;
-						}
-						ArrayHandler ya = new ArrayHandler(a_stream, ydt, false);
-						return ya;
-					}
-					return yc.PrepareComparison(a_constraint);
-				}
-				return null;
+				return _yapClass.NewPrepareCompare(constraint);
 			}
-			return _yapClass.PrepareComparison(a_constraint);
+			IReflector reflector = container.Reflector();
+			ClassMetadata classMetadata = null;
+			if (_bytes != null)
+			{
+				classMetadata = container.ProduceClassMetadata(reflector.ForObject(constraint));
+			}
+			else
+			{
+				if (_member != null)
+				{
+					classMetadata = container.ClassMetadataForReflectClass(reflector.ForObject(_member
+						));
+				}
+			}
+			if (classMetadata != null)
+			{
+				if (_member != null && _member.GetType().IsArray)
+				{
+					ITypeHandler4 arrayElementTypehandler = classMetadata.TypeHandler();
+					if (reflector.Array().IsNDimensional(MemberClass()))
+					{
+						MultidimensionalArrayHandler mah = new MultidimensionalArrayHandler(container, arrayElementTypehandler
+							, false);
+						return mah.NewPrepareCompare(_member);
+					}
+					ArrayHandler ya = new ArrayHandler(container, arrayElementTypehandler, false);
+					return ya.NewPrepareCompare(_member);
+				}
+				return classMetadata.NewPrepareCompare(constraint);
+			}
+			return null;
 		}
 
 		private void Read()

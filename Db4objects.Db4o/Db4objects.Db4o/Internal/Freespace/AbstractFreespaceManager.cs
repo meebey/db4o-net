@@ -209,6 +209,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return (LocalTransaction)_file.SystemTransaction();
 		}
 
+		public static bool MigrationRequired(byte systemType)
+		{
+			return systemType == FM_LEGACY_RAM || systemType == FM_IX;
+		}
+
 		public abstract Slot AllocateTransactionLogSlot(int arg1);
 
 		public abstract void Commit();

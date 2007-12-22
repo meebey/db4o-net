@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Tests.Common.Handlers;
@@ -37,15 +38,15 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		public virtual void TestComparison()
 		{
 			AssertComparison(0, 1.1, 1.1);
-			AssertComparison(1, 1.0, 1.1);
-			AssertComparison(-1, 1.1, 0.5);
+			AssertComparison(-1, 1.0, 1.1);
+			AssertComparison(1, 1.1, 0.5);
 		}
 
 		private void AssertComparison(int expected, double prepareWith, double compareTo)
 		{
-			_handler.PrepareComparison(prepareWith);
+			IPreparedComparison preparedComparison = _handler.NewPrepareCompare(prepareWith);
 			double doubleCompareTo = compareTo;
-			Assert.AreEqual(expected, _handler.CompareTo(doubleCompareTo));
+			Assert.AreEqual(expected, preparedComparison.CompareTo(doubleCompareTo));
 		}
 
 		public virtual void TestReadWrite()

@@ -371,7 +371,9 @@ namespace Db4objects.Db4o.Internal
 						}
 						if (!a_parent.HasObjectInParentPath(obj))
 						{
-							a_visitor.Visit(new QConObject(a_trans, a_parent, QField(a_trans), obj));
+							QConObject constraint = new QConObject(a_trans, a_parent, QField(a_trans), obj);
+							constraint.ByExample();
+							a_visitor.Visit(constraint);
 						}
 					}
 				}
@@ -867,14 +869,13 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		public virtual IComparable4 PrepareComparison(object obj)
+		public virtual IPreparedComparison PrepareComparison(object obj)
 		{
-			if (Alive())
+			if (!Alive())
 			{
-				_handler.PrepareComparison(obj);
-				return _handler;
+				return null;
 			}
-			return null;
+			return _handler.NewPrepareCompare(obj);
 		}
 
 		public virtual Db4objects.Db4o.Internal.Query.Processor.QField QField(Transaction
@@ -991,14 +992,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_858(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_859(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_858 : IVisitor4
+		private sealed class _IVisitor4_859 : IVisitor4
 		{
-			public _IVisitor4_858(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_859(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;

@@ -69,6 +69,8 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 				Assert.AreEqual(i, next2.Value());
 				next2 = next2.Next();
 			}
+			client1.Close();
+			client2.Close();
 		}
 
 		private void UpdateAscendingWithRange(NonTARefreshTestCase.TAItem item, int startingValue

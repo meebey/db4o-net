@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.Internal
 			return new BTreeClassIndexStrategy(this);
 		}
 
-		internal ClassMetadata(ObjectContainerBase container, IReflectClass reflector)
+		public ClassMetadata(ObjectContainerBase container, IReflectClass reflector)
 		{
 			_container = container;
 			_reflector = reflector;
@@ -2228,6 +2228,91 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			throw new IllegalComparisonException();
+		}
+
+		public virtual IPreparedComparison NewPrepareCompare(object source)
+		{
+			if (source == null)
+			{
+				return new _IPreparedComparison_1866(this);
+			}
+			int id = 0;
+			IReflectClass claxx = null;
+			if (source is int)
+			{
+				id = ((int)source);
+			}
+			else
+			{
+				if (source is TransactionContext)
+				{
+					TransactionContext tc = (TransactionContext)source;
+					object obj = tc._object;
+					id = _container.GetID(tc._transaction, obj);
+					claxx = Reflector().ForObject(obj);
+				}
+				else
+				{
+					throw new IllegalComparisonException();
+				}
+			}
+			return new ClassMetadata.PreparedClassMetadataComparison(this, id, claxx);
+		}
+
+		private sealed class _IPreparedComparison_1866 : IPreparedComparison
+		{
+			public _IPreparedComparison_1866(ClassMetadata _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public int CompareTo(object obj)
+			{
+				if (obj == null)
+				{
+					return 0;
+				}
+				return -1;
+			}
+
+			private readonly ClassMetadata _enclosing;
+		}
+
+		public sealed class PreparedClassMetadataComparison : IPreparedComparison
+		{
+			private readonly int _id;
+
+			private readonly IReflectClass _claxx;
+
+			public PreparedClassMetadataComparison(ClassMetadata _enclosing, int id, IReflectClass
+				 claxx)
+			{
+				this._enclosing = _enclosing;
+				this._id = id;
+				this._claxx = claxx;
+			}
+
+			public int CompareTo(object obj)
+			{
+				if (obj is TransactionContext)
+				{
+					obj = ((TransactionContext)obj)._object;
+				}
+				if (obj is int)
+				{
+					return this._id - ((int)obj);
+				}
+				if (this._claxx != null)
+				{
+					if (this._claxx.IsAssignableFrom(this._enclosing.Reflector().ForObject(obj)))
+					{
+						return 0;
+					}
+				}
+				throw new IllegalComparisonException();
+			}
+
+			private readonly ClassMetadata _enclosing;
 		}
 
 		public static void DefragObject(DefragmentContextImpl context)

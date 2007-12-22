@@ -129,24 +129,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.WriteInt(((int)obj));
 		}
 
-		public override IPreparedComparison InternalPrepareComparison(object obj)
+		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
-			return new IntHandler.IntComparable(this, ((int)obj));
+			return NewPrepareCompare(((int)source));
 		}
 
-		private sealed class IntComparable : IPreparedComparison
+		public virtual IPreparedComparison NewPrepareCompare(int i)
 		{
-			private readonly int _source;
+			return new IntHandler.PreparedIntComparison(this, i);
+		}
 
-			public IntComparable(IntHandler _enclosing, int i)
+		public sealed class PreparedIntComparison : IPreparedComparison
+		{
+			private readonly int _sourceInt;
+
+			public PreparedIntComparison(IntHandler _enclosing, int sourceInt)
 			{
 				this._enclosing = _enclosing;
-				this._source = i;
+				this._sourceInt = sourceInt;
 			}
 
 			public int CompareTo(object target)
 			{
-				return this._source - ((int)target);
+				int targetInt = ((int)target);
+				return this._sourceInt == targetInt ? 0 : (this._sourceInt < targetInt ? -1 : 1);
 			}
 
 			private readonly IntHandler _enclosing;

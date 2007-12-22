@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Marshall;
@@ -133,6 +134,31 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override object NullRepresentationInUntypedArrays()
 		{
 			return null;
+		}
+
+		public override IPreparedComparison InternalPrepareComparison(object source)
+		{
+			bool sourceBoolean = ((bool)source);
+			return new _IPreparedComparison_151(this, sourceBoolean);
+		}
+
+		private sealed class _IPreparedComparison_151 : IPreparedComparison
+		{
+			public _IPreparedComparison_151(BooleanHandler _enclosing, bool sourceBoolean)
+			{
+				this._enclosing = _enclosing;
+				this.sourceBoolean = sourceBoolean;
+			}
+
+			public int CompareTo(object target)
+			{
+				bool targetBoolean = ((bool)target);
+				return sourceBoolean == targetBoolean ? 0 : (sourceBoolean ? 1 : -1);
+			}
+
+			private readonly BooleanHandler _enclosing;
+
+			private readonly bool sourceBoolean;
 		}
 	}
 }

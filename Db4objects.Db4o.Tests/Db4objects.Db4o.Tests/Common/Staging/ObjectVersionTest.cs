@@ -4,7 +4,7 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Tests.Common.Assorted;
+using Db4objects.Db4o.Tests.Common.Staging;
 
 namespace Db4objects.Db4o.Tests.Common.Staging
 {
@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		public virtual void Test()
 		{
 			IExtObjectContainer oc = this.Db();
-			SimplestPossibleItem @object = new SimplestPossibleItem("c1");
+			ObjectVersionTest.Item @object = new ObjectVersionTest.Item("c1");
 			oc.Set(@object);
 			IObjectInfo objectInfo1 = oc.GetObjectInfo(@object);
 			long oldVer = objectInfo1.GetVersion();
@@ -33,6 +33,30 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			Assert.IsTrue(newVer > 0);
 			Assert.AreEqual(objectInfo1.GetUUID(), objectInfo2.GetUUID());
 			Assert.IsTrue(newVer > oldVer);
+		}
+
+		public class Item
+		{
+			public string name;
+
+			public Item()
+			{
+			}
+
+			public Item(string name_)
+			{
+				this.name = name_;
+			}
+
+			public virtual string GetName()
+			{
+				return name;
+			}
+
+			public virtual void SetName(string name_)
+			{
+				name = name_;
+			}
 		}
 	}
 }

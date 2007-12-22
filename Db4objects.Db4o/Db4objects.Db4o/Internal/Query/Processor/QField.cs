@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return i_yapField != null && Handlers4.HandlesSimple(i_yapField.GetHandler());
 		}
 
-		internal virtual IComparable4 PrepareComparison(object obj)
+		internal virtual IPreparedComparison PrepareComparison(object obj)
 		{
 			if (i_yapField != null)
 			{

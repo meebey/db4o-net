@@ -1,7 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System.Collections;
 using Db4oUnit.Extensions;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.CS;
 
 namespace Db4objects.Db4o.Tests.Common.CS
@@ -11,10 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		protected virtual IServerMessageDispatcher ServerDispatcher()
 		{
 			ObjectServerImpl serverImpl = (ObjectServerImpl)ClientServerFixture().Server();
-			IEnumerator iter = serverImpl.IterateDispatchers();
-			iter.MoveNext();
-			IServerMessageDispatcher dispatcher = (IServerMessageDispatcher)iter.Current;
-			return dispatcher;
+			return (IServerMessageDispatcher)Iterators.Next(serverImpl.IterateDispatchers());
 		}
 
 		protected virtual ClientObjectContainer Client()

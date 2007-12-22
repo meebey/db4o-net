@@ -111,5 +111,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 			int shortValue = ((short)obj);
 			context.WriteBytes(new byte[] { (byte)(shortValue >> 8), (byte)shortValue });
 		}
+
+		public override IPreparedComparison InternalPrepareComparison(object source)
+		{
+			short sourceShort = ((short)source);
+			return new _IPreparedComparison_119(this, sourceShort);
+		}
+
+		private sealed class _IPreparedComparison_119 : IPreparedComparison
+		{
+			public _IPreparedComparison_119(ShortHandler _enclosing, short sourceShort)
+			{
+				this._enclosing = _enclosing;
+				this.sourceShort = sourceShort;
+			}
+
+			public int CompareTo(object target)
+			{
+				short targetShort = ((short)target);
+				return sourceShort == targetShort ? 0 : (sourceShort < targetShort ? -1 : 1);
+			}
+
+			private readonly ShortHandler _enclosing;
+
+			private readonly short sourceShort;
+		}
 	}
 }

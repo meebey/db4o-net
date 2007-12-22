@@ -41,5 +41,33 @@ namespace Db4objects.Db4o.Internal
 		public virtual void DefragIndexEntry(DefragmentContextImpl context)
 		{
 		}
+
+		public virtual IPreparedComparison NewPrepareCompare(object obj)
+		{
+			return new _IPreparedComparison_44(this);
+		}
+
+		private sealed class _IPreparedComparison_44 : IPreparedComparison
+		{
+			public _IPreparedComparison_44(Null _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public int CompareTo(object obj)
+			{
+				if (obj == null)
+				{
+					return 0;
+				}
+				if (obj is Null)
+				{
+					return 0;
+				}
+				return -1;
+			}
+
+			private readonly Null _enclosing;
+		}
 	}
 }
