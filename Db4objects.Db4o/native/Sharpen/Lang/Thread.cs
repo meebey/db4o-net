@@ -32,9 +32,17 @@ namespace Sharpen.Lang
 			this._thread = thread;
 		}
 
+		private static readonly LocalDataStoreSlot _current = System.Threading.Thread.AllocateDataSlot();
+
 		public static Thread CurrentThread()
 		{
-			return new Thread(System.Threading.Thread.CurrentThread);
+			Thread current = (Thread)System.Threading.Thread.GetData(_current);
+			if (current == null)
+			{
+				current = new Thread(System.Threading.Thread.CurrentThread);
+				System.Threading.Thread.SetData(_current, current);
+			}
+			return current;
 		}
 
 		public virtual void Run()
