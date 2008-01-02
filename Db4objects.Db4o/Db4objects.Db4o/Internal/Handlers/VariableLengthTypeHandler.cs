@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return context.Container().BufferByAddress(address, length);
 		}
 
-		public abstract IPreparedComparison NewPrepareCompare(object arg1);
+		public abstract IPreparedComparison PrepareComparison(object arg1);
 
 		public abstract void Delete(IDeleteContext arg1);
 

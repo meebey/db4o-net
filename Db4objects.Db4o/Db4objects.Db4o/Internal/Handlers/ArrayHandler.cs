@@ -521,7 +521,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public override IPreparedComparison NewPrepareCompare(object obj)
+		public override IPreparedComparison PrepareComparison(object obj)
 		{
 			return new PreparedArrayContainsComparison(this, _handler, obj);
 		}

@@ -465,7 +465,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			if (_yapClass != null)
 			{
-				return _yapClass.NewPrepareCompare(constraint);
+				return _yapClass.PrepareComparison(constraint);
 			}
 			IReflector reflector = container.Reflector();
 			ClassMetadata classMetadata = null;
@@ -490,12 +490,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					{
 						MultidimensionalArrayHandler mah = new MultidimensionalArrayHandler(container, arrayElementTypehandler
 							, false);
-						return mah.NewPrepareCompare(_member);
+						return mah.PrepareComparison(_member);
 					}
 					ArrayHandler ya = new ArrayHandler(container, arrayElementTypehandler, false);
-					return ya.NewPrepareCompare(_member);
+					return ya.PrepareComparison(_member);
 				}
-				return classMetadata.NewPrepareCompare(constraint);
+				return classMetadata.PrepareComparison(constraint);
 			}
 			return null;
 		}

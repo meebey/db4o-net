@@ -256,7 +256,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.IncrementOffset(LinkLength());
 		}
 
-		public override IPreparedComparison NewPrepareCompare(object obj)
+		public override IPreparedComparison PrepareComparison(object obj)
 		{
 			BufferImpl sourceBuffer = Val(obj);
 			return new _IPreparedComparison_231(this, sourceBuffer);

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return _current.CompareByAddress((Slot)obj);
 		}
 
-		public override IPreparedComparison NewPrepareCompare(object obj)
+		public override IPreparedComparison PrepareComparison(object obj)
 		{
 			Slot sourceSlot = (Slot)obj;
 			return new _IPreparedComparison_20(this, sourceSlot);

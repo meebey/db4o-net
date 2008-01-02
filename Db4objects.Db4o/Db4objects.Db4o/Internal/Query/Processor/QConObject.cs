@@ -181,7 +181,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 					object transactionalObject = i_yapClass.WrapWithTransactionContext(Transaction(), 
 						i_object);
-					_preparedComparison = i_yapClass.NewPrepareCompare(transactionalObject);
+					_preparedComparison = i_yapClass.PrepareComparison(transactionalObject);
 				}
 			}
 			base.EvaluateSelf();

@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertComparison(int expected, double prepareWith, double compareTo)
 		{
-			IPreparedComparison preparedComparison = _handler.NewPrepareCompare(prepareWith);
+			IPreparedComparison preparedComparison = _handler.PrepareComparison(prepareWith);
 			double doubleCompareTo = compareTo;
 			Assert.AreEqual(expected, preparedComparison.CompareTo(doubleCompareTo));
 		}

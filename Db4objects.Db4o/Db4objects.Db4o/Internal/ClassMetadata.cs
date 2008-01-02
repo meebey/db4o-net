@@ -2189,7 +2189,7 @@ namespace Db4objects.Db4o.Internal
 			MarshallerFamily.Current()._class.Write(trans, this, writer);
 		}
 
-		public virtual IPreparedComparison NewPrepareCompare(object source)
+		public virtual IPreparedComparison PrepareComparison(object source)
 		{
 			if (source == null)
 			{

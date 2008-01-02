@@ -34,6 +34,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 			writer.WriteInt(slot.Length());
 		}
 
-		public abstract IPreparedComparison NewPrepareCompare(object arg1);
+		public abstract IPreparedComparison PrepareComparison(object arg1);
 	}
 }

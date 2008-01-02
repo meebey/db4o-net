@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public virtual IPreparedComparison NewPrepareCompare(object obj)
+		public virtual IPreparedComparison PrepareComparison(object obj)
 		{
 			return new _IPreparedComparison_39(this);
 		}

@@ -155,7 +155,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return PrimitiveNull();
 		}
 
-		public virtual IPreparedComparison NewPrepareCompare(object obj)
+		public virtual IPreparedComparison PrepareComparison(object obj)
 		{
 			if (obj == null)
 			{

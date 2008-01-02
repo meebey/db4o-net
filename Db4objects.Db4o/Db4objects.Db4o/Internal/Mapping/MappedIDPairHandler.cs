@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Internal.Mapping
 			return ((int)_origHandler.ReadIndexEntry(a_reader));
 		}
 
-		public virtual IPreparedComparison NewPrepareCompare(object source)
+		public virtual IPreparedComparison PrepareComparison(object source)
 		{
 			MappedIDPair sourceIDPair = (MappedIDPair)source;
 			int sourceID = sourceIDPair.Orig();

@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal
 			, object obj)
 		{
 			_arrayHandler = arrayHandler;
-			_preparedComparison = typeHandler.NewPrepareCompare(obj);
+			_preparedComparison = typeHandler.PrepareComparison(obj);
 		}
 
 		public virtual int CompareTo(object obj)

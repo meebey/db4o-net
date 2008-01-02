@@ -7,6 +7,6 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public interface IComparable4
 	{
-		IPreparedComparison NewPrepareCompare(object obj);
+		IPreparedComparison PrepareComparison(object obj);
 	}
 }

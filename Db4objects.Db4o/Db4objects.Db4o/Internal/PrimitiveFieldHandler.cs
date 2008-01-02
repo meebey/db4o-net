@@ -140,9 +140,9 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override IPreparedComparison NewPrepareCompare(object source)
+		public override IPreparedComparison PrepareComparison(object source)
 		{
-			return _handler.NewPrepareCompare(source);
+			return _handler.PrepareComparison(source);
 		}
 
 		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily

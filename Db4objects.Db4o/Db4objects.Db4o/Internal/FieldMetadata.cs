@@ -875,7 +875,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			return _handler.NewPrepareCompare(obj);
+			return _handler.PrepareComparison(obj);
 		}
 
 		public virtual Db4objects.Db4o.Internal.Query.Processor.QField QField(Transaction

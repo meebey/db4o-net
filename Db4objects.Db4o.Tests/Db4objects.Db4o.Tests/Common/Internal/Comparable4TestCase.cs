@@ -71,15 +71,15 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			)
 		{
 			ITypeHandler4 handler = (ITypeHandler4)NewInstance(handlerClass);
-			IPreparedComparison comparable = handler.NewPrepareCompare(smaller);
+			IPreparedComparison comparable = handler.PrepareComparison(smaller);
 			Assert.IsNotNull(comparable);
 			Assert.AreEqual(0, comparable.CompareTo(smaller));
 			Assert.IsSmaller(0, comparable.CompareTo(greater));
-			comparable = handler.NewPrepareCompare(greater);
+			comparable = handler.PrepareComparison(greater);
 			Assert.IsNotNull(comparable);
 			Assert.AreEqual(0, comparable.CompareTo(greater));
 			Assert.IsGreater(0, comparable.CompareTo(smaller));
-			comparable = handler.NewPrepareCompare(null);
+			comparable = handler.PrepareComparison(null);
 			Assert.IsNotNull(comparable);
 			Assert.AreEqual(0, comparable.CompareTo(null));
 			Assert.IsSmaller(0, comparable.CompareTo(smaller));

@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		public virtual void Add(Transaction trans, object key)
 		{
 			KeyCantBeNull(key);
-			IPreparedComparison preparedComparison = _keyHandler.NewPrepareCompare(key);
+			IPreparedComparison preparedComparison = _keyHandler.PrepareComparison(key);
 			EnsureDirty(trans);
 			BTreeNode rootOrSplit = _root.Add(trans, preparedComparison, key);
 			if (rootOrSplit != null && rootOrSplit != _root)
@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		public virtual void Remove(Transaction trans, object key)
 		{
 			KeyCantBeNull(key);
-			IPreparedComparison preparedComparison = KeyHandler().NewPrepareCompare(key);
+			IPreparedComparison preparedComparison = KeyHandler().PrepareComparison(key);
 			IEnumerator pointers = Search(trans, preparedComparison, key).Pointers();
 			if (!pointers.MoveNext())
 			{
@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		public virtual IBTreeRange Search(Transaction trans, object key)
 		{
 			KeyCantBeNull(key);
-			IPreparedComparison preparedComparison = KeyHandler().NewPrepareCompare(key);
+			IPreparedComparison preparedComparison = KeyHandler().PrepareComparison(key);
 			return Search(trans, preparedComparison, key);
 		}
 
@@ -147,7 +147,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			 target)
 		{
 			EnsureActive(trans);
-			IPreparedComparison preparedComparison = _keyHandler.NewPrepareCompare(key);
+			IPreparedComparison preparedComparison = _keyHandler.PrepareComparison(key);
 			return _root.SearchLeaf(trans, preparedComparison, target);
 		}
 
@@ -566,7 +566,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual int CompareKeys(object key1, object key2)
 		{
-			IPreparedComparison preparedComparison = _keyHandler.NewPrepareCompare(key1);
+			IPreparedComparison preparedComparison = _keyHandler.PrepareComparison(key1);
 			return preparedComparison.CompareTo(key2);
 		}
 
