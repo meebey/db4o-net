@@ -6,6 +6,7 @@ using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Tests.Util;
@@ -123,7 +124,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			string backupFileName = Path.GetTempFileName();
 			try
 			{
-				Db4objects.Db4o.Defragment.Defragment.Defrag(testFileName, backupFileName);
+				DefragmentConfig defragConfig = new DefragmentConfig(testFileName, backupFileName
+					);
+				defragConfig.ForceBackupDelete(true);
+				Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig);
 			}
 			finally
 			{

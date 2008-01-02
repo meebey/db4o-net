@@ -17,10 +17,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private int i_linkLength;
 
-		private object i_compareTo;
-
-		public abstract int Compare(object compare, object with);
-
 		public virtual string DotNetClassName()
 		{
 			string className = this.GetType().FullName;
@@ -31,8 +27,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			return DefaultValue().GetType().FullName;
 		}
-
-		public abstract bool IsEqual(object compare, object with);
 
 		public virtual void Initialize()
 		{
@@ -100,34 +94,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				Write(a_object, a_bytes._buffer, a_bytes._offset);
 			}
 			a_bytes._offset = offset + LinkLength();
-		}
-
-		internal override void PrepareComparison1(object obj)
-		{
-			i_compareTo = obj;
-		}
-
-		internal override bool IsEqual1(object obj)
-		{
-			return IsEqual(i_compareTo, obj);
-		}
-
-		internal override bool IsGreater1(object obj)
-		{
-			if (ClassReflector().IsInstance(obj) && !IsEqual(i_compareTo, obj))
-			{
-				return Compare(i_compareTo, obj) > 0;
-			}
-			return false;
-		}
-
-		internal override bool IsSmaller1(object obj)
-		{
-			if (ClassReflector().IsInstance(obj) && !IsEqual(i_compareTo, obj))
-			{
-				return Compare(i_compareTo, obj) < 0;
-			}
-			return false;
 		}
 
 		public override IPreparedComparison InternalPrepareComparison(object obj)

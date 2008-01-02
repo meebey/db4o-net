@@ -11,10 +11,5 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
         }
 
-        public override bool IsEqual(Object compare, Object with){
-            // TODO: Does == work here? Check !
-            return compare.Equals(with);
-        }
-
     }
 }

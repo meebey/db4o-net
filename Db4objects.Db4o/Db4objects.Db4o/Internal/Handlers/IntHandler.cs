@@ -72,48 +72,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			a_bytes.WriteInt(a_int);
 		}
 
-		private int i_compareTo;
-
-		protected int Val(object obj)
-		{
-			return ((int)obj);
-		}
-
-		public virtual int CompareTo(int other)
-		{
-			return other - i_compareTo;
-		}
-
-		public virtual void PrepareComparison(int i)
-		{
-			i_compareTo = i;
-		}
-
-		internal override void PrepareComparison1(object obj)
-		{
-			PrepareComparison(Val(obj));
-		}
-
-		public virtual int CurrentInt()
-		{
-			return i_compareTo;
-		}
-
-		internal override bool IsEqual1(object obj)
-		{
-			return obj is int && Val(obj) == i_compareTo;
-		}
-
-		internal override bool IsGreater1(object obj)
-		{
-			return obj is int && Val(obj) > i_compareTo;
-		}
-
-		internal override bool IsSmaller1(object obj)
-		{
-			return obj is int && Val(obj) < i_compareTo;
-		}
-
 		public override void DefragIndexEntry(DefragmentContextImpl context)
 		{
 			context.IncrementIntSize();
@@ -151,6 +109,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 			public int CompareTo(object target)
 			{
+				if (target == null)
+				{
+					return 1;
+				}
 				int targetInt = ((int)target);
 				return this._sourceInt == targetInt ? 0 : (this._sourceInt < targetInt ? -1 : 1);
 			}

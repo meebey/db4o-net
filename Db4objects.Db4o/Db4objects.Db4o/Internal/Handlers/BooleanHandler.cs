@@ -77,41 +77,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return FALSE;
 		}
 
-		private bool i_compareTo;
-
-		private bool Val(object obj)
-		{
-			return ((bool)obj);
-		}
-
-		internal override void PrepareComparison1(object obj)
-		{
-			i_compareTo = Val(obj);
-		}
-
-		internal override bool IsEqual1(object obj)
-		{
-			return obj is bool && Val(obj) == i_compareTo;
-		}
-
-		internal override bool IsGreater1(object obj)
-		{
-			if (i_compareTo)
-			{
-				return false;
-			}
-			return obj is bool && Val(obj);
-		}
-
-		internal override bool IsSmaller1(object obj)
-		{
-			if (!i_compareTo)
-			{
-				return false;
-			}
-			return obj is bool && !Val(obj);
-		}
-
 		public override object Read(IReadContext context)
 		{
 			byte ret = context.ReadByte();
@@ -139,12 +104,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			bool sourceBoolean = ((bool)source);
-			return new _IPreparedComparison_151(this, sourceBoolean);
+			return new _IPreparedComparison_120(this, sourceBoolean);
 		}
 
-		private sealed class _IPreparedComparison_151 : IPreparedComparison
+		private sealed class _IPreparedComparison_120 : IPreparedComparison
 		{
-			public _IPreparedComparison_151(BooleanHandler _enclosing, bool sourceBoolean)
+			public _IPreparedComparison_120(BooleanHandler _enclosing, bool sourceBoolean)
 			{
 				this._enclosing = _enclosing;
 				this.sourceBoolean = sourceBoolean;
@@ -152,6 +117,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 			public int CompareTo(object target)
 			{
+				if (target == null)
+				{
+					return 1;
+				}
 				bool targetBoolean = ((bool)target);
 				return sourceBoolean == targetBoolean ? 0 : (sourceBoolean ? 1 : -1);
 			}

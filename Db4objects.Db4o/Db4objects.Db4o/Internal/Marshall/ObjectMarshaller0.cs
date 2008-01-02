@@ -13,14 +13,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void AddFieldIndices(ClassMetadata yc, ObjectHeaderAttributes attributes
 			, StatefulBuffer writer, Slot oldSlot)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_17(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_15(this
 				, yc, writer, oldSlot);
 			TraverseFields(yc, writer, attributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_17 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_15 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_17(ObjectMarshaller0 _enclosing, ClassMetadata yc, StatefulBuffer
+			public _TraverseFieldCommand_15(ObjectMarshaller0 _enclosing, ClassMetadata yc, StatefulBuffer
 				 writer, Slot oldSlot)
 			{
 				this._enclosing = _enclosing;
@@ -48,15 +48,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 attributes, StatefulBuffer writer, string name)
 		{
 			TreeInt[] ret = new TreeInt[] { tree };
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_27(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_25(this
 				, name, ret, writer);
 			TraverseFields(yc, writer, attributes, command);
 			return ret[0];
 		}
 
-		private sealed class _TraverseFieldCommand_27 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_25 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_27(ObjectMarshaller0 _enclosing, string name, TreeInt
+			public _TraverseFieldCommand_25(ObjectMarshaller0 _enclosing, string name, TreeInt
 				[] ret, StatefulBuffer writer)
 			{
 				this._enclosing = _enclosing;
@@ -90,14 +90,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void DeleteMembers(ClassMetadata yc, ObjectHeaderAttributes attributes
 			, StatefulBuffer writer, int type, bool isUpdate)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_41(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_39(this
 				, writer, isUpdate);
 			TraverseFields(yc, writer, attributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_41 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_39 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_41(ObjectMarshaller0 _enclosing, StatefulBuffer writer
+			public _TraverseFieldCommand_39(ObjectMarshaller0 _enclosing, StatefulBuffer writer
 				, bool isUpdate)
 			{
 				this._enclosing = _enclosing;
@@ -122,15 +122,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 buffer, FieldMetadata field)
 		{
 			bool[] ret = new bool[] { false };
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_51(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_49(this
 				, field, ret, buffer);
 			TraverseFields(yc, buffer, fieldListInfo, command);
 			return ret[0];
 		}
 
-		private sealed class _TraverseFieldCommand_51 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_49 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_51(ObjectMarshaller0 _enclosing, FieldMetadata field
+			public _TraverseFieldCommand_49(ObjectMarshaller0 _enclosing, FieldMetadata field
 				, bool[] ret, BufferImpl buffer)
 			{
 				this._enclosing = _enclosing;
@@ -202,14 +202,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
 			 yo, ObjectHeaderAttributes attributes, BufferImpl reader)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_98(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_96(this
 				, trans, reader, yo);
 			TraverseFields(yc, reader, attributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_98 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_96 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_98(ObjectMarshaller0 _enclosing, Transaction trans, 
+			public _TraverseFieldCommand_96(ObjectMarshaller0 _enclosing, Transaction trans, 
 				BufferImpl reader, ObjectReference yo)
 			{
 				this._enclosing = _enclosing;
@@ -241,14 +241,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void DefragFields(ClassMetadata clazz, ObjectHeader header, DefragmentContextImpl
 			 context)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_112(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_110(this
 				, context);
 			TraverseFields(clazz, null, header._headerAttributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_112 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_110 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_112(ObjectMarshaller0 _enclosing, DefragmentContextImpl
+			public _TraverseFieldCommand_110(ObjectMarshaller0 _enclosing, DefragmentContextImpl
 				 context)
 			{
 				this._enclosing = _enclosing;

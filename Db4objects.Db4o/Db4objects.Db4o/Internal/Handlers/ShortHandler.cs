@@ -72,33 +72,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		private short i_compareTo;
-
-		private short Val(object obj)
-		{
-			return ((short)obj);
-		}
-
-		internal override void PrepareComparison1(object obj)
-		{
-			i_compareTo = Val(obj);
-		}
-
-		internal override bool IsEqual1(object obj)
-		{
-			return obj is short && Val(obj) == i_compareTo;
-		}
-
-		internal override bool IsGreater1(object obj)
-		{
-			return obj is short && Val(obj) > i_compareTo;
-		}
-
-		internal override bool IsSmaller1(object obj)
-		{
-			return obj is short && Val(obj) < i_compareTo;
-		}
-
 		public override object Read(IReadContext context)
 		{
 			int value = ((context.ReadByte() & unchecked((int)(0xff))) << 8) + (context.ReadByte
@@ -115,12 +88,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			short sourceShort = ((short)source);
-			return new _IPreparedComparison_119(this, sourceShort);
+			return new _IPreparedComparison_95(this, sourceShort);
 		}
 
-		private sealed class _IPreparedComparison_119 : IPreparedComparison
+		private sealed class _IPreparedComparison_95 : IPreparedComparison
 		{
-			public _IPreparedComparison_119(ShortHandler _enclosing, short sourceShort)
+			public _IPreparedComparison_95(ShortHandler _enclosing, short sourceShort)
 			{
 				this._enclosing = _enclosing;
 				this.sourceShort = sourceShort;
@@ -128,6 +101,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 			public int CompareTo(object target)
 			{
+				if (target == null)
+				{
+					return 1;
+				}
 				short targetShort = ((short)target);
 				return sourceShort == targetShort ? 0 : (sourceShort < targetShort ? -1 : 1);
 			}

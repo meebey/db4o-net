@@ -403,17 +403,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Container().Reflector();
 		}
 
-		public override IComparable4 PrepareComparison(object obj)
-		{
-			_handler.PrepareComparison(obj);
-			return this;
-		}
-
-		public override int CompareTo(object a_obj)
-		{
-			return -1;
-		}
-
 		public override void Defragment(IDefragmentContext context)
 		{
 			if (Handlers4.HandlesSimple(_handler))
@@ -444,7 +433,37 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void Defrag1(IDefragmentContext context)
 		{
+			Defrag2(context);
+		}
+
+		public virtual void Defrag2(IDefragmentContext context)
+		{
+			if (!(_handler is UntypedFieldHandler))
+			{
+				DefragElements(context);
+				return;
+			}
+			ReflectClassByRef clazzRef = new ReflectClassByRef();
+			int offset = context.Offset();
+			int numElements = ReadElementsAndClass(context.Transaction(), context, clazzRef);
+			if (!(context.Transaction().Reflector().ForClass(typeof(byte)).Equals(clazzRef.value
+				)))
+			{
+				context.Seek(offset);
+				DefragElements(context);
+				return;
+			}
+			context.IncrementOffset(numElements);
+		}
+
+		private void DefragElements(IDefragmentContext context)
+		{
 			int elements = ReadElementsDefrag(context);
+			DefragElements(context, elements);
+		}
+
+		private void DefragElements(IDefragmentContext context, int elements)
+		{
 			for (int i = 0; i < elements; i++)
 			{
 				_handler.Defragment(context);

@@ -81,5 +81,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.TargetBuffer().WriteInt(slot.Address());
 			context.TargetBuffer().WriteInt(length);
 		}
+
+		public override void Defrag1(IDefragmentContext context)
+		{
+			int elements = ReadElementsDefrag(context);
+			for (int i = 0; i < elements; i++)
+			{
+				_handler.Defragment(context);
+			}
+		}
 	}
 }

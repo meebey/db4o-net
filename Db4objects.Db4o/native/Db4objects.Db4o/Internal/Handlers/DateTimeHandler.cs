@@ -14,19 +14,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		public override int Compare(object o1, object o2)
-		{
-			return ((DateTime)o2 > (DateTime)o1) ? 1 : -1;
-		}
-
 		public override Object DefaultValue()
 		{
 			return DateTime.MinValue;
-		}
-
-		public override bool IsEqual(Object o1, Object o2)
-		{
-			return o1.Equals(o2);
 		}
 
 		public override Object Read(byte[] bytes, int offset)

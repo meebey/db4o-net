@@ -108,22 +108,6 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			AssertAndOverOrQuery(false);
 		}
 
-		private void AssertAndOverOrQuery(bool explicitAnd)
-		{
-			IQuery query = CreateItemQuery();
-			IConstraint c1 = query.Descend("foo").Constrain(3);
-			IConstraint c2 = query.Descend("foo").Constrain(9);
-			IConstraint c3 = query.Descend("foo").Constrain(3);
-			IConstraint c4 = query.Descend("foo").Constrain(7);
-			IConstraint cc1 = c1.Or(c2);
-			IConstraint cc2 = c3.Or(c4);
-			if (explicitAnd)
-			{
-				cc1.And(cc2);
-			}
-			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 3 }, query);
-		}
-
 		public virtual void TestSingleIndexOrRange()
 		{
 			IQuery query = CreateItemQuery();
@@ -193,12 +177,6 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			AssertCantOptimize(query);
 		}
 
-		private void AssertCantOptimize(IQuery query)
-		{
-			FieldIndexProcessorResult result = ExecuteProcessor(query);
-			Assert.AreSame(FieldIndexProcessorResult.NO_INDEX_FOUND, result);
-		}
-
 		public virtual void TestIndexSelection()
 		{
 			IQuery query = CreateComplexItemQuery();
@@ -209,12 +187,6 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			query.Descend("foo").Constrain(3);
 			query.Descend("bar").Constrain(2);
 			AssertBestIndex("foo", query);
-		}
-
-		private void AssertBestIndex(string expectedFieldIndex, IQuery query)
-		{
-			IIndexedNode node = SelectBestIndex(query);
-			AssertComplexItemIndex(expectedFieldIndex, node);
 		}
 
 		public virtual void TestDoubleDescendingOnQuery()
@@ -290,6 +262,34 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		public virtual void TestSingleIndexGreater()
 		{
 			AssertGreater(new int[] { 4, 7, 9 }, 3);
+		}
+
+		private void AssertCantOptimize(IQuery query)
+		{
+			FieldIndexProcessorResult result = ExecuteProcessor(query);
+			Assert.AreSame(FieldIndexProcessorResult.NO_INDEX_FOUND, result);
+		}
+
+		private void AssertBestIndex(string expectedFieldIndex, IQuery query)
+		{
+			IIndexedNode node = SelectBestIndex(query);
+			AssertComplexItemIndex(expectedFieldIndex, node);
+		}
+
+		private void AssertAndOverOrQuery(bool explicitAnd)
+		{
+			IQuery query = CreateItemQuery();
+			IConstraint c1 = query.Descend("foo").Constrain(3);
+			IConstraint c2 = query.Descend("foo").Constrain(9);
+			IConstraint c3 = query.Descend("foo").Constrain(3);
+			IConstraint c4 = query.Descend("foo").Constrain(7);
+			IConstraint cc1 = c1.Or(c2);
+			IConstraint cc2 = c3.Or(c4);
+			if (explicitAnd)
+			{
+				cc1.And(cc2);
+			}
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 3 }, query);
 		}
 
 		private void AssertGreater(int[] expectedFoos, int greaterThan)

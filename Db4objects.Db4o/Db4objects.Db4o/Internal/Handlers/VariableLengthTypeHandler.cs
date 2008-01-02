@@ -30,10 +30,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.INT_LENGTH + Const4.ID_LENGTH;
 		}
 
-		public abstract IComparable4 PrepareComparison(object obj);
-
-		public abstract int CompareTo(object obj);
-
 		public abstract void Defragment(IDefragmentContext context);
 
 		public virtual ObjectContainerBase Container()

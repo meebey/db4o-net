@@ -121,8 +121,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		private BufferImpl i_compareTo;
-
 		private BufferImpl Val(object obj)
 		{
 			return Val(obj, Container());
@@ -144,30 +142,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return oc.BufferByAddress(s.Address(), s.Length());
 			}
 			return null;
-		}
-
-		public override IComparable4 PrepareComparison(object obj)
-		{
-			if (obj == null)
-			{
-				i_compareTo = null;
-				return Null.INSTANCE;
-			}
-			i_compareTo = Val(obj);
-			return this;
-		}
-
-		public override int CompareTo(object obj)
-		{
-			if (i_compareTo == null)
-			{
-				if (obj == null)
-				{
-					return 0;
-				}
-				return 1;
-			}
-			return Compare(i_compareTo, Val(obj));
 		}
 
 		/// <summary>
@@ -285,12 +259,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison NewPrepareCompare(object obj)
 		{
 			BufferImpl sourceBuffer = Val(obj);
-			return new _IPreparedComparison_254(this, sourceBuffer);
+			return new _IPreparedComparison_231(this, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_254 : IPreparedComparison
+		private sealed class _IPreparedComparison_231 : IPreparedComparison
 		{
-			public _IPreparedComparison_254(StringHandler _enclosing, BufferImpl sourceBuffer
+			public _IPreparedComparison_231(StringHandler _enclosing, BufferImpl sourceBuffer
 				)
 			{
 				this._enclosing = _enclosing;

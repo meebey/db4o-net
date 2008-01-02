@@ -24,8 +24,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			_stream = stream;
 		}
 
-		private bool i_compareToIsNull;
-
 		public virtual object Coerce(IReflectClass claxx, object obj)
 		{
 			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.INSTANCE;
@@ -115,51 +113,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			Write(a_object, a_writer);
 		}
-
-		public virtual IComparable4 PrepareComparison(object obj)
-		{
-			if (obj == null)
-			{
-				i_compareToIsNull = true;
-				return Null.INSTANCE;
-			}
-			i_compareToIsNull = false;
-			PrepareComparison1(obj);
-			return this;
-		}
-
-		internal abstract void PrepareComparison1(object obj);
-
-		public virtual int CompareTo(object obj)
-		{
-			if (i_compareToIsNull)
-			{
-				if (obj == null)
-				{
-					return 0;
-				}
-				return 1;
-			}
-			if (obj == null)
-			{
-				return -1;
-			}
-			if (IsEqual1(obj))
-			{
-				return 0;
-			}
-			if (IsGreater1(obj))
-			{
-				return 1;
-			}
-			return -1;
-		}
-
-		internal abstract bool IsEqual1(object obj);
-
-		internal abstract bool IsGreater1(object obj);
-
-		internal abstract bool IsSmaller1(object obj);
 
 		public abstract int LinkLength();
 

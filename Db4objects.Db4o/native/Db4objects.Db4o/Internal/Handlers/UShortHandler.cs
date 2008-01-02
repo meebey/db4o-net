@@ -14,10 +14,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
         }
 
-        public override int Compare(Object o1, Object o2){
-            return ((ushort)o2 > (ushort)o1) ? 1 : -1;
-        }
-
         public override Object DefaultValue(){
             return (ushort)0;
         }

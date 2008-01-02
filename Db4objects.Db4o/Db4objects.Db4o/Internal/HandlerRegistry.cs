@@ -420,7 +420,12 @@ namespace Db4objects.Db4o.Internal
 		public ITypeHandler4 HandlerForClass(ObjectContainerBase container, IReflectClass
 			 clazz)
 		{
-			return ClassMetadataForClass(container, clazz).TypeHandler();
+			ClassMetadata classMetadata = ClassMetadataForClass(container, clazz);
+			if (classMetadata == null)
+			{
+				return null;
+			}
+			return classMetadata.TypeHandler();
 		}
 
 		public ClassMetadata ClassMetadataForClass(ObjectContainerBase container, IReflectClass

@@ -140,12 +140,6 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override IComparable4 PrepareComparison(object a_constraint)
-		{
-			_handler.PrepareComparison(a_constraint);
-			return _handler;
-		}
-
 		public override IPreparedComparison NewPrepareCompare(object source)
 		{
 			return _handler.NewPrepareCompare(source);

@@ -24,11 +24,6 @@ namespace Db4objects.Db4o.Internal
 			return 0;
 		}
 
-		public virtual IComparable4 PrepareComparison(object obj)
-		{
-			return this;
-		}
-
 		public virtual object ReadIndexEntry(BufferImpl a_reader)
 		{
 			return null;
@@ -44,12 +39,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IPreparedComparison NewPrepareCompare(object obj)
 		{
-			return new _IPreparedComparison_44(this);
+			return new _IPreparedComparison_39(this);
 		}
 
-		private sealed class _IPreparedComparison_44 : IPreparedComparison
+		private sealed class _IPreparedComparison_39 : IPreparedComparison
 		{
-			public _IPreparedComparison_44(Null _enclosing)
+			public _IPreparedComparison_39(Null _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

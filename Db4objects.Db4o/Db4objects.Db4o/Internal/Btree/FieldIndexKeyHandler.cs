@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
@@ -61,35 +60,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _valueHandler;
 		}
 
-		public virtual IComparable4 PrepareComparison(object obj)
-		{
-			FieldIndexKey composite = (FieldIndexKey)obj;
-			_valueHandler.PrepareComparison(composite.Value());
-			_parentIdHandler.PrepareComparison(composite.ParentID());
-			return this;
-		}
-
-		public virtual int CompareTo(object obj)
-		{
-			if (null == obj)
-			{
-				throw new ArgumentNullException();
-			}
-			FieldIndexKey composite = (FieldIndexKey)obj;
-			try
-			{
-				int delegateResult = _valueHandler.CompareTo(composite.Value());
-				if (delegateResult != 0)
-				{
-					return delegateResult;
-				}
-			}
-			catch (IllegalComparisonException)
-			{
-			}
-			return _parentIdHandler.CompareTo(composite.ParentID());
-		}
-
 		public virtual void DefragIndexEntry(DefragmentContextImpl context)
 		{
 			_parentIdHandler.DefragIndexEntry(context);
@@ -103,13 +73,13 @@ namespace Db4objects.Db4o.Internal.Btree
 				.Value());
 			IPreparedComparison preparedParentIdComparison = _parentIdHandler.NewPrepareCompare
 				(source.ParentID());
-			return new _IPreparedComparison_90(this, preparedValueComparison, preparedParentIdComparison
+			return new _IPreparedComparison_67(this, preparedValueComparison, preparedParentIdComparison
 				);
 		}
 
-		private sealed class _IPreparedComparison_90 : IPreparedComparison
+		private sealed class _IPreparedComparison_67 : IPreparedComparison
 		{
-			public _IPreparedComparison_90(FieldIndexKeyHandler _enclosing, IPreparedComparison
+			public _IPreparedComparison_67(FieldIndexKeyHandler _enclosing, IPreparedComparison
 				 preparedValueComparison, IPreparedComparison preparedParentIdComparison)
 			{
 				this._enclosing = _enclosing;

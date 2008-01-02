@@ -57,8 +57,6 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _unversioned;
 
-		private int i_lastID;
-
 		private TernaryBool _canUpdateFast = TernaryBool.UNSPECIFIED;
 
 		public ObjectContainerBase Stream()
@@ -1070,13 +1068,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_905(this, name, yf));
+			ForEachFieldMetadata(new _IVisitor4_901(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_905 : IVisitor4
+		private sealed class _IVisitor4_901 : IVisitor4
 		{
-			public _IVisitor4_905(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
+			public _IVisitor4_901(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
 			{
 				this._enclosing = _enclosing;
 				this.name = name;
@@ -1568,15 +1566,15 @@ namespace Db4objects.Db4o.Internal
 				{
 					candidates.i_trans.Container().Activate(trans, obj, ActivationDepthProvider().ActivationDepth
 						(2, ActivationMode.ACTIVATE));
-					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1328(this, candidates, trans
+					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1324(this, candidates, trans
 						));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_1328 : IVisitor4
+		private sealed class _IVisitor4_1324 : IVisitor4
 		{
-			public _IVisitor4_1328(ClassMetadata _enclosing, QCandidates candidates, Transaction
+			public _IVisitor4_1324(ClassMetadata _enclosing, QCandidates candidates, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -1969,7 +1967,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1666
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1662
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -1978,9 +1976,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1666 : IFunction4
+		private sealed class _IFunction4_1662 : IFunction4
 		{
-			public _IFunction4_1666(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1662(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2021,12 +2019,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1694(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1690(this));
 		}
 
-		private sealed class _IFunction4_1694 : IFunction4
+		private sealed class _IFunction4_1690 : IFunction4
 		{
-			public _IFunction4_1694(ClassMetadata _enclosing)
+			public _IFunction4_1690(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2068,12 +2066,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1724(this));
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1720(this));
 		}
 
-		private sealed class _IPredicate4_1724 : IPredicate4
+		private sealed class _IPredicate4_1720 : IPredicate4
 		{
-			public _IPredicate4_1724(ClassMetadata _enclosing)
+			public _IPredicate4_1720(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2191,70 +2189,11 @@ namespace Db4objects.Db4o.Internal
 			MarshallerFamily.Current()._class.Write(trans, this, writer);
 		}
 
-		private IReflectClass i_compareTo;
-
-		public virtual IComparable4 PrepareComparison(object obj)
-		{
-			if (obj == null)
-			{
-				i_lastID = 0;
-				i_compareTo = null;
-				return this;
-			}
-			if (obj is int)
-			{
-				i_lastID = ((int)obj);
-			}
-			else
-			{
-				if (obj is TransactionContext)
-				{
-					TransactionContext tc = (TransactionContext)obj;
-					obj = tc._object;
-					i_lastID = _container.GetID(tc._transaction, obj);
-				}
-				else
-				{
-					throw new IllegalComparisonException();
-				}
-			}
-			i_compareTo = Reflector().ForObject(obj);
-			return this;
-		}
-
-		public virtual int CompareTo(object obj)
-		{
-			if (obj is TransactionContext)
-			{
-				obj = ((TransactionContext)obj)._object;
-			}
-			if (obj is int)
-			{
-				return ((int)obj) - i_lastID;
-			}
-			if (obj == null)
-			{
-				if (i_compareTo == null)
-				{
-					return 0;
-				}
-				return -1;
-			}
-			if (i_compareTo != null)
-			{
-				if (i_compareTo.IsAssignableFrom(Reflector().ForObject(obj)))
-				{
-					return 0;
-				}
-			}
-			throw new IllegalComparisonException();
-		}
-
 		public virtual IPreparedComparison NewPrepareCompare(object source)
 		{
 			if (source == null)
 			{
-				return new _IPreparedComparison_1884(this);
+				return new _IPreparedComparison_1832(this);
 			}
 			int id = 0;
 			IReflectClass claxx = null;
@@ -2279,9 +2218,9 @@ namespace Db4objects.Db4o.Internal
 			return new ClassMetadata.PreparedClassMetadataComparison(this, id, claxx);
 		}
 
-		private sealed class _IPreparedComparison_1884 : IPreparedComparison
+		private sealed class _IPreparedComparison_1832 : IPreparedComparison
 		{
-			public _IPreparedComparison_1884(ClassMetadata _enclosing)
+			public _IPreparedComparison_1832(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2318,9 +2257,14 @@ namespace Db4objects.Db4o.Internal
 				{
 					obj = ((TransactionContext)obj)._object;
 				}
+				if (obj == null)
+				{
+					return 1;
+				}
 				if (obj is int)
 				{
-					return this._id - ((int)obj);
+					int targetInt = ((int)obj);
+					return this._id == targetInt ? 0 : (this._id < targetInt ? -1 : 1);
 				}
 				if (this._claxx != null)
 				{

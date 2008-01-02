@@ -34,14 +34,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 			writer.WriteInt(slot.Length());
 		}
 
-		public virtual IComparable4 PrepareComparison(object obj)
-		{
-			_current = (Slot)obj;
-			return this;
-		}
-
-		public abstract int CompareTo(object arg1);
-
 		public abstract IPreparedComparison NewPrepareCompare(object arg1);
 	}
 }

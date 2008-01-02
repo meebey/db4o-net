@@ -13,10 +13,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
         }
 
-        public override int Compare(Object o1, Object o2){
-            return ((decimal)o2 > (decimal)o1) ? 1 : -1;
-        }
-
         public override Object DefaultValue(){
             return (decimal)0;
         }

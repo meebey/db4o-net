@@ -45,19 +45,6 @@ namespace Db4objects.Db4o.Internal.Mapping
 			_mappedHandler.WriteIndexEntry(reader, mappedIDs.Mapped());
 		}
 
-		public virtual int CompareTo(object obj)
-		{
-			return _origHandler.CompareTo(((MappedIDPair)obj).Orig());
-		}
-
-		public virtual IComparable4 PrepareComparison(object obj)
-		{
-			MappedIDPair mappedIDs = (MappedIDPair)obj;
-			_origHandler.PrepareComparison(mappedIDs.Orig());
-			_mappedHandler.PrepareComparison(mappedIDs.Mapped());
-			return this;
-		}
-
 		private int ReadID(BufferImpl a_reader)
 		{
 			return ((int)_origHandler.ReadIndexEntry(a_reader));
@@ -67,12 +54,12 @@ namespace Db4objects.Db4o.Internal.Mapping
 		{
 			MappedIDPair sourceIDPair = (MappedIDPair)source;
 			int sourceID = sourceIDPair.Orig();
-			return new _IPreparedComparison_60(this, sourceID);
+			return new _IPreparedComparison_49(this, sourceID);
 		}
 
-		private sealed class _IPreparedComparison_60 : IPreparedComparison
+		private sealed class _IPreparedComparison_49 : IPreparedComparison
 		{
-			public _IPreparedComparison_60(MappedIDPairHandler _enclosing, int sourceID)
+			public _IPreparedComparison_49(MappedIDPairHandler _enclosing, int sourceID)
 			{
 				this._enclosing = _enclosing;
 				this.sourceID = sourceID;

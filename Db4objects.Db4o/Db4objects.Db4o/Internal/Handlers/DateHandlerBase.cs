@@ -63,26 +63,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Platform4.Format(Platform4.Now(), true);
 		}
 
-		internal override long Val(object obj)
-		{
-			return Sharpen.Runtime.ToJavaMilliseconds(((DateTime)obj));
-		}
-
-		internal override bool IsEqual1(object obj)
-		{
-			return obj is DateTime && Val(obj) == CurrentLong();
-		}
-
-		internal override bool IsGreater1(object obj)
-		{
-			return obj is DateTime && Val(obj) > CurrentLong();
-		}
-
-		internal override bool IsSmaller1(object obj)
-		{
-			return obj is DateTime && Val(obj) < CurrentLong();
-		}
-
 		public override object Read(IReadContext context)
 		{
 			long milliseconds = ((long)base.Read(context));
@@ -98,12 +78,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			long sourceDate = Sharpen.Runtime.ToJavaMilliseconds(((DateTime)source));
-			return new _IPreparedComparison_86(this, sourceDate);
+			return new _IPreparedComparison_70(this, sourceDate);
 		}
 
-		private sealed class _IPreparedComparison_86 : IPreparedComparison
+		private sealed class _IPreparedComparison_70 : IPreparedComparison
 		{
-			public _IPreparedComparison_86(DateHandlerBase _enclosing, long sourceDate)
+			public _IPreparedComparison_70(DateHandlerBase _enclosing, long sourceDate)
 			{
 				this._enclosing = _enclosing;
 				this.sourceDate = sourceDate;
@@ -111,6 +91,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 			public int CompareTo(object target)
 			{
+				if (target == null)
+				{
+					return 1;
+				}
 				long targetDate = Sharpen.Runtime.ToJavaMilliseconds(((DateTime)target));
 				return sourceDate == targetDate ? 0 : (sourceDate < targetDate ? -1 : 1);
 			}

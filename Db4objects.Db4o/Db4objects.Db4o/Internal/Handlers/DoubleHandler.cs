@@ -57,33 +57,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			a_bytes.WriteLong(Platform4.DoubleToLong(((double)a_object)));
 		}
 
-		private double i_compareToDouble;
-
-		private double Dval(object obj)
-		{
-			return ((double)obj);
-		}
-
-		internal override void PrepareComparison1(object obj)
-		{
-			i_compareToDouble = Dval(obj);
-		}
-
-		internal override bool IsEqual1(object obj)
-		{
-			return obj is double && Dval(obj) == i_compareToDouble;
-		}
-
-		internal override bool IsGreater1(object obj)
-		{
-			return obj is double && Dval(obj) > i_compareToDouble;
-		}
-
-		internal override bool IsSmaller1(object obj)
-		{
-			return obj is double && Dval(obj) < i_compareToDouble;
-		}
-
 		public override object Read(IReadContext context)
 		{
 			long l = (long)base.Read(context);
@@ -98,12 +71,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			double sourceDouble = ((double)source);
-			return new _IPreparedComparison_89(this, sourceDouble);
+			return new _IPreparedComparison_64(this, sourceDouble);
 		}
 
-		private sealed class _IPreparedComparison_89 : IPreparedComparison
+		private sealed class _IPreparedComparison_64 : IPreparedComparison
 		{
-			public _IPreparedComparison_89(DoubleHandler _enclosing, double sourceDouble)
+			public _IPreparedComparison_64(DoubleHandler _enclosing, double sourceDouble)
 			{
 				this._enclosing = _enclosing;
 				this.sourceDouble = sourceDouble;
@@ -111,6 +84,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 			public int CompareTo(object target)
 			{
+				if (target == null)
+				{
+					return 1;
+				}
 				double targetDouble = ((double)target);
 				return sourceDouble == targetDouble ? 0 : (sourceDouble < targetDouble ? -1 : 1);
 			}

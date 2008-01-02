@@ -56,33 +56,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			WriteInt(Sharpen.Runtime.FloatToIntBits(((float)a_object)), a_bytes);
 		}
 
-		private float i_compareTo;
-
-		private float Valu(object obj)
-		{
-			return ((float)obj);
-		}
-
-		internal override void PrepareComparison1(object obj)
-		{
-			i_compareTo = Valu(obj);
-		}
-
-		internal override bool IsEqual1(object obj)
-		{
-			return obj is float && Valu(obj) == i_compareTo;
-		}
-
-		internal override bool IsGreater1(object obj)
-		{
-			return obj is float && Valu(obj) > i_compareTo;
-		}
-
-		internal override bool IsSmaller1(object obj)
-		{
-			return obj is float && Valu(obj) < i_compareTo;
-		}
-
 		public override object Read(IReadContext context)
 		{
 			return Sharpen.Runtime.IntBitsToFloat(context.ReadInt());
@@ -96,12 +69,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			float sourceFloat = ((float)source);
-			return new _IPreparedComparison_90(this, sourceFloat);
+			return new _IPreparedComparison_65(this, sourceFloat);
 		}
 
-		private sealed class _IPreparedComparison_90 : IPreparedComparison
+		private sealed class _IPreparedComparison_65 : IPreparedComparison
 		{
-			public _IPreparedComparison_90(FloatHandler _enclosing, float sourceFloat)
+			public _IPreparedComparison_65(FloatHandler _enclosing, float sourceFloat)
 			{
 				this._enclosing = _enclosing;
 				this.sourceFloat = sourceFloat;
@@ -109,6 +82,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 			public int CompareTo(object target)
 			{
+				if (target == null)
+				{
+					return 1;
+				}
 				float targetFloat = ((float)target);
 				return sourceFloat == targetFloat ? 0 : (sourceFloat < targetFloat ? -1 : 1);
 			}
