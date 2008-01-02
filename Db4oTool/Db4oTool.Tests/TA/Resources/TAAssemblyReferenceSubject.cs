@@ -55,7 +55,7 @@ class TAAssemblyReferenceSubject : ITestCase
 
 		FilteredOutByName.CheckTask(t);
 
-		Assert.AreEqual(1, activator.Count);
+		Assert.AreEqual(1, activator.ReadCount);
 	}
 
     public void TestIsActivatable()
@@ -68,9 +68,9 @@ class TAAssemblyReferenceSubject : ITestCase
         Task p = new Task("test");
         MockActivator activator = ActivatorFor(p);
 
-        Assert.AreEqual(0, activator.Count);
+        Assert.AreEqual(0, activator.ReadCount);
         Assert.AreEqual("test", p.Name);
-        Assert.AreEqual(1, activator.Count);
+        Assert.AreEqual(1, activator.ReadCount);
     }
 
     public void TestForeignFieldAccess()
@@ -83,8 +83,8 @@ class TAAssemblyReferenceSubject : ITestCase
 
         Assert.IsTrue(p1.Equals(p2));
 
-        Assert.AreEqual(1, a1.Count, "a1");
-        Assert.AreEqual(1, a2.Count, "a2");
+        Assert.AreEqual(1, a1.ReadCount, "a1");
+        Assert.AreEqual(1, a2.ReadCount, "a2");
     }
 
     private MockActivator ActivatorFor(Task p)

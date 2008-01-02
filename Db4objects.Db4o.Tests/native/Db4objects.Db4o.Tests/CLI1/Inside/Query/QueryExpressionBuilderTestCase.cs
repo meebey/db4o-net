@@ -1,6 +1,7 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Reflection;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.NativeQueries.Expr;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
@@ -21,7 +22,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 
 		bool MatchWithActivate(Item item)
 		{
-			((IActivatable) item).Activate();
+			((IActivatable) item).Activate(ActivationPurpose.READ);
 			return item.name.StartsWith("foo");
 		}
 

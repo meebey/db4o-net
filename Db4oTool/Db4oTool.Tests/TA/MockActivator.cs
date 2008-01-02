@@ -12,16 +12,30 @@ namespace Db4oTool.Tests.TA
 			return activator;
 		}
 
-		private int _count;
+		private int _readCount;
 
-		public int Count
+		private int _writeCount;
+
+		public int ReadCount
 		{
-			get { return _count; }
+			get { return _readCount; }
 		}
 
-		public void Activate()
+		public int WriteCount
 		{
-			++_count;
+			get { return _writeCount;  }
+		}
+
+		public void Activate(ActivationPurpose purpose)
+		{
+			if (ActivationPurpose.READ == purpose)
+			{
+				++_readCount;
+			}
+			else
+			{
+				++_writeCount;
+			}
 		}
 	}
 

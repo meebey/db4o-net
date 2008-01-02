@@ -330,14 +330,18 @@ namespace Db4oUnit.Extensions
 
 		protected virtual int CountOccurences(Type clazz)
 		{
-			IObjectSet result = NewQuery(clazz).Execute();
-			return result.Size();
+			return CountOccurences(Db(), clazz);
 		}
 
 		protected virtual int CountOccurences(IExtObjectContainer oc, Type clazz)
 		{
 			IObjectSet result = NewQuery(oc, clazz).Execute();
 			return result.Size();
+		}
+
+		protected virtual void AssertOccurrences(Type clazz, int expected)
+		{
+			AssertOccurrences(Db(), clazz, expected);
 		}
 
 		protected virtual void AssertOccurrences(IExtObjectContainer oc, Type clazz, int 
@@ -364,12 +368,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_299(this, oc));
+			Foreach(clazz, new _IVisitor4_302(this, oc));
 		}
 
-		private sealed class _IVisitor4_299 : IVisitor4
+		private sealed class _IVisitor4_302 : IVisitor4
 		{
-			public _IVisitor4_299(AbstractDb4oTestCase _enclosing, IExtObjectContainer oc)
+			public _IVisitor4_302(AbstractDb4oTestCase _enclosing, IExtObjectContainer oc)
 			{
 				this._enclosing = _enclosing;
 				this.oc = oc;

@@ -17,7 +17,6 @@ namespace Db4oTool.TA
 		public MethodDefinition Emit()
 		{
 			MethodDefinition bind = NewExplicitMethod(typeof(IActivatable).GetMethod("Bind"));
-			bind.Parameters.Add(new ParameterDefinition("activator", 1, ParameterAttributes.None, ActivatorType()));
 			CilWorker cil = bind.Body.CilWorker;
 
 			cil.Emit(OpCodes.Ldarg_0);

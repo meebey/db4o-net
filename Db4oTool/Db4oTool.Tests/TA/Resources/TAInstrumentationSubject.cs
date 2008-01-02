@@ -86,10 +86,10 @@ class FilteredOut : IActivatable
 		_activator = activator;
 	}
 
-	public void Activate()
+	public void Activate(ActivationPurpose purpose)
 	{
 		if (null == _activator) return;
-		_activator.Activate();
+		_activator.Activate(purpose);
 	}
 }
 
@@ -108,9 +108,9 @@ class CustomActivatable : IActivatable
         _activator = activator;
     }
 
-    public void Activate()
+    public void Activate(ActivationPurpose purpose)
     {
-        _activator.Activate();
+        _activator.Activate(purpose);
     }
 }
 
@@ -183,7 +183,7 @@ class GenericFieldOnGenericType<T>
 class MockActivatable : IActivatable
 {
 	public void Bind(IActivator activator) { }
-	public void Activate() { }
+	public void Activate(ActivationPurpose purpose) { }
 }
 
 class Tagged
@@ -211,7 +211,7 @@ class TAInstrumentationSubject : ITestCase
 		Tagged obj = new Tagged("foo, bar");
 		MockActivator a = ActivatorFor(obj);
 		Assert.AreEqual("foo, bar", GenericMethods.ConstrainedMethod(obj));
-		Assert.AreEqual(1, a.Count);
+		Assert.AreEqual(1, a.ReadCount);
 	}
 
 	public void TestGenericFieldOnGenericType()
@@ -219,7 +219,7 @@ class TAInstrumentationSubject : ITestCase
 		GenericFieldOnGenericType<int> obj = new GenericFieldOnGenericType<int>();
 		MockActivator a = ActivatorFor(obj);
 		Assert.AreEqual(0, obj.Foo);
-		Assert.AreEqual(1, a.Count);
+		Assert.AreEqual(1, a.ReadCount);
 	}
 
 	public void TestGenericInherited()
@@ -227,9 +227,9 @@ class TAInstrumentationSubject : ITestCase
 		GenericInherited obj = new GenericInherited();
 		MockActivator a = ActivatorFor(obj);
 		Assert.AreEqual(0, obj.Foo);
-		Assert.AreEqual(1, a.Count);
+		Assert.AreEqual(1, a.ReadCount);
 		Assert.AreEqual(0, obj.Bar);
-		Assert.AreEqual(2, a.Count);
+		Assert.AreEqual(2, a.ReadCount);
 	}
 
 	public void TestGenericFieldContainer()
@@ -237,7 +237,7 @@ class TAInstrumentationSubject : ITestCase
 		GenericFieldContainer container = new GenericFieldContainer();
 		MockActivator a = ActivatorFor(container);
 		Assert.IsNull(container.Foo);
-		Assert.AreEqual(1, a.Count);
+		Assert.AreEqual(1, a.ReadCount);
 	}
 
 	public void TestGenericInstrumentation()
@@ -245,7 +245,7 @@ class TAInstrumentationSubject : ITestCase
 		GenericContainer<int> container = new GenericContainer<int>();
 		MockActivator a = ActivatorFor(container);
 		Assert.AreEqual(0, container.Foo);
-		Assert.AreEqual(1, a.Count);
+		Assert.AreEqual(1, a.ReadCount);
 	}
 
 	public void TestArbitraryArityGenericInstrumentation()
@@ -253,7 +253,7 @@ class TAInstrumentationSubject : ITestCase
 		GenericContainerN<int, string, int> container = new GenericContainerN<int, string, int>();
 		MockActivator a = ActivatorFor(container);
 		Assert.AreEqual(0, container.Foo);
-		Assert.AreEqual(1, a.Count);
+		Assert.AreEqual(1, a.ReadCount);
 	}
 
 	public void TestVolatileAccess()
@@ -261,7 +261,7 @@ class TAInstrumentationSubject : ITestCase
 		VolatileContainer container = new VolatileContainer();
 		MockActivator a = ActivatorFor(container);
 		Assert.AreEqual(0, container.Foo);
-		Assert.AreEqual(1, a.Count);
+		Assert.AreEqual(1, a.ReadCount);
 	}
 
 	public void TestIsActivatable()
@@ -281,9 +281,9 @@ class TAInstrumentationSubject : ITestCase
 		Project p = new Project("test");
 		MockActivator activator = ActivatorFor(p);
 
-		Assert.AreEqual(0, activator.Count);
+		Assert.AreEqual(0, activator.ReadCount);
 		Assert.AreEqual("test", p.Name);
-		Assert.AreEqual(1, activator.Count);
+		Assert.AreEqual(1, activator.ReadCount);
 	}
 
 	public void TestForeignFieldAccess()
@@ -296,8 +296,8 @@ class TAInstrumentationSubject : ITestCase
 
 		Assert.IsTrue(p1.Equals(p2));
 
-		Assert.AreEqual(1, a1.Count);
-		Assert.AreEqual(1, a2.Count);
+		Assert.AreEqual(1, a1.ReadCount);
+		Assert.AreEqual(1, a2.ReadCount);
 	}
 
 	public void TestFilteredOutFieldAccess()
@@ -310,7 +310,7 @@ class TAInstrumentationSubject : ITestCase
 		// next line EXCEPT that FilteredOut
 		// was filtered out
 		Assert.AreEqual("test", subject.foo);
-		Assert.AreEqual(0, activator.Count);
+		Assert.AreEqual(0, activator.ReadCount);
 	}
 
 	public void TestFieldByRef()
@@ -320,7 +320,7 @@ class TAInstrumentationSubject : ITestCase
 
 		p1.UseByRef();
 
-		Assert.AreEqual(1, a1.Count);
+		Assert.AreEqual(1, a1.ReadCount);
 	}
 
 	public void TestValueTypesAreNotInstrumented()
@@ -338,13 +338,13 @@ class TAInstrumentationSubject : ITestCase
         CustomActivatable ca = new CustomActivatable();
         MockActivator ma = ActivatorFor(ca);
 
-        Assert.AreEqual(0, ma.Count);
+        Assert.AreEqual(0, ma.ReadCount);
         
         int n = ca._mustNotInstrumentMe;        
-        Assert.AreEqual(0, ma.Count);
+        Assert.AreEqual(0, ma.ReadCount);
 
         n = ca._mustInstrumentAccess;
-        Assert.AreEqual(1, ma.Count);
+        Assert.AreEqual(1, ma.ReadCount);
     }
 
 	private MockActivator ActivatorFor(object p)

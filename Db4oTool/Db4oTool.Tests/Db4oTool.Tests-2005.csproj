@@ -87,6 +87,7 @@
     <Compile Include="TA\AllTests.cs" />
     <Compile Include="TA\MockActivator.cs" />
     <EmbeddedResource Include="TA\Resources\TAUnsafeInstrumentationSubject.cs" />
+    <EmbeddedResource Include="TA\Resources\TAFieldSetterSubject.cs" />
     <Compile Include="TA\TAInstrumentationAppliedMoreThanOnceCOR-918.cs" />
     <Compile Include="TA\TAInstrumentationTestCase.cs" />
     <Compile Include="TA\TANonStorableTypeTestCase.cs" />

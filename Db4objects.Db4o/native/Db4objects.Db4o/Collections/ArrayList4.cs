@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.Collections
@@ -295,7 +296,7 @@ namespace Db4objects.Db4o.Collections
 
         private E[] GetElements()
         {
- 	        Activate();
+			Activate(ActivationPurpose.READ);
             return elements;
         }
 

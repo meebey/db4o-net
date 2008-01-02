@@ -1,4 +1,5 @@
 /* Copyright (C) 2004-2007   db4objects Inc.   http://www.db4o.com */
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.CLI2.TA
@@ -20,7 +21,7 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		{
 			get
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return _name;
 			}
 		}
@@ -49,7 +50,7 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		{
 			get
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return _value;
 			}
 		}
@@ -80,7 +81,7 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		{
 			get
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return _value;
 			}
 		}

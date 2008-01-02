@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.Collections
@@ -24,7 +25,7 @@ namespace Db4objects.Db4o.Collections
 
 		public void Add(K key, V value)
 		{
-            Activate();
+            Activate(ActivationPurpose.READ);
 
             int index = IndexOfKey(key);
             if (index != -1)
@@ -36,7 +37,7 @@ namespace Db4objects.Db4o.Collections
 
 		public bool Remove(K key)
 		{
-            Activate();
+			Activate(ActivationPurpose.READ);
             int index = IndexOfKey(key);
 
             if (index == -1)
@@ -49,7 +50,7 @@ namespace Db4objects.Db4o.Collections
 
 		public bool Contains(KeyValuePair<K, V> pair)
 		{
-            Activate();
+			Activate(ActivationPurpose.READ);
             int index = IndexOfKey(pair.Key);
             if (index == -1)
             {
@@ -62,7 +63,7 @@ namespace Db4objects.Db4o.Collections
 
 		public void CopyTo(KeyValuePair<K, V>[] array, int count)
 		{
-            Activate();
+			Activate(ActivationPurpose.READ);
             if (array == null)
             {
                 throw new ArgumentNullException();
@@ -97,7 +98,7 @@ namespace Db4objects.Db4o.Collections
 
 		public bool TryGetValue(K key, out V value)
 		{
-            Activate();
+			Activate(ActivationPurpose.READ);
 			int index = IndexOfKey(key);
 			if (index == -1)
 			{
@@ -112,7 +113,7 @@ namespace Db4objects.Db4o.Collections
 		{
             get
             {
-                Activate();
+				Activate(ActivationPurpose.READ);
                 int index = IndexOfKey(key);
                 if (index == -1)
                 {
@@ -122,7 +123,7 @@ namespace Db4objects.Db4o.Collections
             }
             set
             {
-                Activate();
+				Activate(ActivationPurpose.READ);
                 int index = IndexOfKey(key);
                 if (index == -1)
                 {
@@ -139,7 +140,7 @@ namespace Db4objects.Db4o.Collections
 		{
             get
             {
-                Activate();
+				Activate(ActivationPurpose.READ);
                 K[] keys = new K[_endIndex - _startIndex];
                 Array.Copy(_keys, keys, _endIndex);
                 return keys;

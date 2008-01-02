@@ -21,9 +21,10 @@ namespace Db4oTool.TA
 		private const string IT_TRANSPARENT_ACTIVATION = "TA";
 
         private CustomAttribute _instrumentationAttribute;
+
 		private CecilReflector _reflector;
 
-        protected override void BeforeAssemblyProcessing()
+		protected override void BeforeAssemblyProcessing()
 		{
 			_reflector = new CecilReflector(_context);
             CreateTagAttribute();
@@ -199,8 +200,7 @@ namespace Db4oTool.TA
             VariableDefinition oldStackTop = SaveStackTop(cil, instruction);
 
 	        instruction = GetInsertionPoint(instruction);
-            cil.InsertBefore(instruction, cil.Create(OpCodes.Dup));
-            cil.InsertBefore(instruction, cil.Create(OpCodes.Callvirt, Import(ActivateMethod())));
+            InsertActivateCall(cil, instruction, ActivationPurpose.WRITE);
             cil.InsertBefore(instruction, cil.Create(OpCodes.Ldloc, oldStackTop));
 
         }
@@ -235,11 +235,27 @@ namespace Db4oTool.TA
 	    {
 	        Instruction insertionPoint = GetInsertionPoint(instruction);
 
-	        cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Dup));
-	        cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Callvirt, Import(ActivateMethod())));
+	    	InsertActivateCall(cil, insertionPoint, ActivationPurpose.READ);
 	    }
 
-	    private static Instruction GetInsertionPoint(Instruction instruction)
+		private void InsertActivateCall(CilWorker cil, Instruction insertionPoint, ActivationPurpose activationPurpose)
+		{
+			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Dup));
+			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Ldc_I4, (int)activationPurpose));
+			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Callvirt, ActivateMethodRef()));
+		}
+
+		private MethodReference ActivateMethodRef()
+		{
+			return Import(ActivateMethod());
+		}
+
+		public FieldReference Import(FieldInfo field)
+		{
+			return _context.Assembly.MainModule.Import(field);
+		}
+
+		private static Instruction GetInsertionPoint(Instruction instruction)
 		{
 			return instruction.Previous.OpCode == OpCodes.Volatile
 				? instruction.Previous
@@ -248,7 +264,7 @@ namespace Db4oTool.TA
 
 		private static MethodInfo ActivateMethod()
 		{
-			return typeof(IActivatable).GetMethod("Activate");
+			return typeof(IActivatable).GetMethod("Activate", new Type[] { typeof(ActivationPurpose) });
 		}
 
 		private bool IsActivatableField(FieldReference field)

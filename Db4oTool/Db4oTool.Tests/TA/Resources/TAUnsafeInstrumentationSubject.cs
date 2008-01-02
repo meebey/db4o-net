@@ -29,7 +29,7 @@ public class TAUnsafeInstrumentationSubject : ITestCase
 		{	
 			Assert.IsTrue(null == obj.foo);
 		}
-		Assert.AreEqual(0, a.Count);
+		Assert.AreEqual(0, a.ReadCount);
 	}
 
 	public void TestDelegateDoesntCauseActivation()
@@ -39,7 +39,7 @@ public class TAUnsafeInstrumentationSubject : ITestCase
 		Assert.IsNull(obj.foo);
 		Assert.IsNull(obj.bar);
 		Assert.IsNull(obj.baz);
-		Assert.AreEqual(0, a.Count);
+		Assert.AreEqual(0, a.ReadCount);
 	}
 
 	public void TestDelegateIsNotInstrumented()

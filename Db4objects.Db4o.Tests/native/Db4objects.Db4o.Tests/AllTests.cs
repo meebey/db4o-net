@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests
 		
 		protected override Type[] TestCases()
 		{
-//			return new Type[] {typeof(CLI1.Inside.Query.QueryExpressionBuilderTestCase) };
+			//return new Type[] { typeof(Common.Foundation.ContextVariableTestCase) };
 			return new Type[]
 				{	
 //					typeof(Db4objects.Db4o.Tests.CLI2.TA.NullableTypeActivationTestCase),

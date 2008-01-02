@@ -1,3 +1,4 @@
+using System;
 using Db4oTool.Core;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
@@ -14,7 +15,7 @@ namespace Db4oTool.TA
 
 		public MethodDefinition Emit()
 		{
-			MethodDefinition activate = NewExplicitMethod(typeof(IActivatable).GetMethod("Activate"));
+			MethodDefinition activate = NewExplicitMethod(typeof(IActivatable).GetMethod("Activate", new Type[] { typeof(ActivationPurpose) }));
 
 			CilWorker cil = activate.Body.CilWorker;
 			cil.Emit(OpCodes.Ldarg_0);
@@ -26,7 +27,8 @@ namespace Db4oTool.TA
 
 			cil.Emit(OpCodes.Ldarg_0);
 			cil.Emit(OpCodes.Ldfld, _activatorField);
-			cil.Emit(OpCodes.Callvirt, _context.Import(typeof(IActivator).GetMethod("Activate")));
+			cil.Emit(OpCodes.Ldarg_1);
+			cil.Emit(OpCodes.Callvirt, _context.Import(typeof(IActivator).GetMethod("Activate", new Type[] { typeof(ActivationPurpose) })));
 
 			cil.Append(ret);
 

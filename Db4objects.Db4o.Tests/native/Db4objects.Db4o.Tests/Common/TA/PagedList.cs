@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 		public int Add(object value)
 		{
 			// TA BEGIN
-			Activate();
+			Activate(ActivationPurpose.READ);
 			// TA END
 			_store.Add(value);
 			return _store.Size() - 1;
@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			get
 			{
 				// TA BEGIN
-				Activate();
+				Activate(ActivationPurpose.READ);
 				// TA END
 				return _store.Get(index);
 			}
@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			get
 			{
 				// TA BEGIN
-				Activate();
+				Activate(ActivationPurpose.READ);
 				// TA END
 				return _store.Size();
 			}

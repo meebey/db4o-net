@@ -39,26 +39,28 @@ class TAFieldSetterSubject : ITestCase
     {
         FieldSetterTestSubject obj = new FieldSetterTestSubject();
         MockActivator a = ActivatorFor(obj);
-        Assert.AreEqual(0, a.Count);
+        Assert.AreEqual(0, a.ReadCount);
      
         obj.intValue = 10;
-        int activationCount = 1;
-        Assert.AreEqual(activationCount++, a.Count);
+        int writeCount = 1;
+		Assert.AreEqual(writeCount++, a.WriteCount);
 
         obj.refValue = null;
-        Assert.AreEqual(activationCount++, a.Count);
+		Assert.AreEqual(writeCount++, a.WriteCount);
 
         obj.volatileByte = 3;
-        Assert.AreEqual(activationCount++, a.Count);
-
+		Assert.AreEqual(writeCount++, a.WriteCount);
+		
+		Assert.AreEqual(0, a.ReadCount);
         obj.valueType.intValue = 4;
-        Assert.AreEqual(activationCount++, a.Count);
+		Assert.AreEqual(1, a.ReadCount);
 
         obj.valueType = new ValueTypeSubject(5);
-        Assert.AreEqual(activationCount++, a.Count);
+		Assert.AreEqual(writeCount++, a.WriteCount);
 
         obj.intList = new List<int>(6);
-        Assert.AreEqual(activationCount++, a.Count);
+		Assert.AreEqual(writeCount++, a.WriteCount);
+		Assert.AreEqual(1, a.ReadCount);
     }
 
     private static MockActivator ActivatorFor(object p)

@@ -3,6 +3,7 @@ using System.Reflection;
 using Db4oTool.Core;
 using Mono.Cecil;
 using MethodAttributes=Mono.Cecil.MethodAttributes;
+using MethodImplAttributes=Mono.Cecil.MethodImplAttributes;
 
 namespace Db4oTool.TA
 {
@@ -42,6 +43,11 @@ namespace Db4oTool.TA
 		{
 			MethodAttributes attributes = MethodAttributes.SpecialName|MethodAttributes.Private|MethodAttributes.Virtual;
 			MethodDefinition definition = new MethodDefinition(method.DeclaringType.FullName + "." + method.Name, attributes, Import(method.ReturnType));
+			int parameterIndex = 0;
+			foreach (ParameterInfo pi in method.GetParameters())
+			{
+				definition.Parameters.Add(new ParameterDefinition(pi.Name, ++parameterIndex, Mono.Cecil.ParameterAttributes.None, Import(pi.ParameterType)));
+			}
 			definition.Overrides.Add(_context.Import(method));
 			return definition;
 		}
