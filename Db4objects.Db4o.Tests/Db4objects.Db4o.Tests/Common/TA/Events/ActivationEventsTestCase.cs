@@ -46,9 +46,9 @@ namespace Db4objects.Db4o.Tests.Common.TA.Events
 			{
 			}
 
-			public virtual void Activate()
+			public virtual void Activate(ActivationPurpose purpose)
 			{
-				_activator.Activate();
+				_activator.Activate(purpose);
 			}
 
 			public virtual void Bind(IActivator activator)
@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Events
 		{
 			AddCancelAnyListener();
 			ActivationEventsTestCase.ActivatableItem item = QueryActivatableItem();
-			item.Activate();
+			item.Activate(ActivationPurpose.READ);
 			Assert.IsNull(item.name);
 		}
 
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Events
 		{
 			AddCancelNonActivatableListener();
 			ActivationEventsTestCase.ActivatableItem item = QueryActivatableItem();
-			item.Activate();
+			item.Activate(ActivationPurpose.READ);
 			Assert.IsNotNull(item.name);
 			Assert.IsNotNull(item.child);
 			Assert.IsNull(item.child.name);

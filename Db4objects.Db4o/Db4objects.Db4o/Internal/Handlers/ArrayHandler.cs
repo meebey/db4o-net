@@ -47,9 +47,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			_usePrimitiveClassReflector = usePrimitiveClassReflector;
 		}
 
-		protected ArrayHandler(ITypeHandler4 template) : this(((ArrayHandler)template).Container
-			(), ((ArrayHandler)template)._handler, ((ArrayHandler)template)._usePrimitiveClassReflector
-			)
+		protected ArrayHandler(ArrayHandler template, HandlerRegistry registry, int version
+			) : this(template.Container(), registry.CorrectHandlerVersion(template._handler, 
+			version), template._usePrimitiveClassReflector)
 		{
 		}
 

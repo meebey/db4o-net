@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 {
 	public class QueryByExampleTestCase : AbstractDb4oTestCase
 	{
-		internal const int COUNT = 100;
+		internal const int COUNT = 10;
 
 		internal static QueryByExampleTestCase.LinkedList list = QueryByExampleTestCase.LinkedList
 			.NewLongCircularList();
@@ -41,6 +41,30 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			QueryByExampleTestCase.Item itemTwo = new QueryByExampleTestCase.Item("two");
 			Store(itemOne);
 			Store(itemTwo);
+			itemOne._name = "two";
+			IQuery q = Db().Query();
+			q.Constrain(itemOne);
+			IObjectSet objectSet = q.Execute();
+			Assert.AreEqual(1, objectSet.Size());
+			QueryByExampleTestCase.Item retrievedItem = (QueryByExampleTestCase.Item)objectSet
+				.Next();
+			Assert.AreSame(itemOne, retrievedItem);
+		}
+
+		public virtual void TestQueryByExample()
+		{
+			QueryByExampleTestCase.Item itemOne = new QueryByExampleTestCase.Item("one");
+			QueryByExampleTestCase.Item itemTwo = new QueryByExampleTestCase.Item("two");
+			Store(itemOne);
+			Store(itemTwo);
+			itemOne._name = "two";
+			IQuery q = Db().Query();
+			q.Constrain(itemOne).ByExample();
+			IObjectSet objectSet = q.Execute();
+			Assert.AreEqual(1, objectSet.Size());
+			QueryByExampleTestCase.Item retrievedItem = (QueryByExampleTestCase.Item)objectSet
+				.Next();
+			Assert.AreSame(itemTwo, retrievedItem);
 		}
 
 		public virtual void TestByExample()
@@ -83,7 +107,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			q = Db().Query();
 			q.Constrain(typeof(QueryByExampleTestCase.LinkedList)).ByExample();
 			result = q.Execute();
-			Assert.AreEqual(100, result.Size());
+			Assert.AreEqual(COUNT, result.Size());
 		}
 
 		public class LinkedList

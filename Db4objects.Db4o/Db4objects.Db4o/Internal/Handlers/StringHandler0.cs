@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
+using System.IO;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Marshall;
@@ -32,7 +33,25 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override void Defragment(IDefragmentContext context)
 		{
-			throw new NotImplementedException();
+			int sourceAddress = context.SourceBuffer().ReadInt();
+			int length = context.SourceBuffer().ReadInt();
+			if (sourceAddress == 0 && length == 0)
+			{
+				context.TargetBuffer().WriteInt(0);
+				context.TargetBuffer().WriteInt(0);
+				return;
+			}
+			int targetAddress = 0;
+			try
+			{
+				targetAddress = context.CopySlotToNewMapped(sourceAddress, length);
+			}
+			catch (IOException exc)
+			{
+				throw new Db4oIOException(exc);
+			}
+			context.TargetBuffer().WriteInt(targetAddress);
+			context.TargetBuffer().WriteInt(length);
 		}
 	}
 }

@@ -51,6 +51,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public override void Defrag(IDefragmentContext context)
 		{
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -24,6 +24,13 @@ namespace Db4objects.Db4o.Internal
 			_id = handlerID;
 		}
 
+		internal PrimitiveFieldHandler(Db4objects.Db4o.Internal.PrimitiveFieldHandler prototype
+			, HandlerRegistry registry, int version) : this(prototype.Container(), registry.
+			CorrectHandlerVersion(prototype._handler, version), prototype._id, prototype.ClassReflector
+			())
+		{
+		}
+
 		internal override void ActivateFields(Transaction trans, object obj, IActivationDepth
 			 depth)
 		{
@@ -183,14 +190,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Defragment(IDefragmentContext context)
 		{
-			if (context.IsLegacyHandlerVersion())
-			{
-				base.Defragment(context);
-			}
-			else
-			{
-				_handler.Defragment(context);
-			}
+			_handler.Defragment(context);
 		}
 
 		public override object WrapWithTransactionContext(Transaction transaction, object

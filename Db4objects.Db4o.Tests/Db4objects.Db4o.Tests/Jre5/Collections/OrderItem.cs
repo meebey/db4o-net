@@ -21,21 +21,21 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 
 		public virtual Db4objects.Db4o.Tests.Jre5.Collections.Product Product()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _product;
 		}
 
 		public virtual int Quantity()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _quantity;
 		}
 
-		public virtual void Activate()
+		public virtual void Activate(ActivationPurpose purpose)
 		{
 			if (_activator != null)
 			{
-				_activator.Activate();
+				_activator.Activate(purpose);
 			}
 		}
 

@@ -62,16 +62,21 @@ namespace Db4objects.Db4o.Internal
 			_id = id;
 		}
 
-		public virtual void Activate()
+		public virtual void Activate(ActivationPurpose purpose)
 		{
-			ActivateOn(Container().Transaction());
+			ActivateOn(Container().Transaction(), purpose);
 		}
 
-		public virtual void ActivateOn(Db4objects.Db4o.Internal.Transaction transaction)
+		public virtual void ActivateOn(Db4objects.Db4o.Internal.Transaction transaction, 
+			ActivationPurpose purpose)
 		{
 			ObjectContainerBase container = transaction.Container();
 			lock (container.Lock())
 			{
+				if (ActivationPurpose.WRITE == purpose)
+				{
+					EnlistForUpdate(transaction);
+				}
 				if (IsActive())
 				{
 					return;
@@ -81,6 +86,42 @@ namespace Db4objects.Db4o.Internal
 				Activate(transaction, GetObject(), new DescendingActivationDepth(provider, ActivationMode
 					.ACTIVATE));
 			}
+		}
+
+		[System.NonSerialized]
+		private ITransactionListener _updateListener;
+
+		private void EnlistForUpdate(Db4objects.Db4o.Internal.Transaction transaction)
+		{
+			if (null != _updateListener)
+			{
+				return;
+			}
+			_updateListener = new _ITransactionListener_78(this, transaction);
+			transaction.AddTransactionListener(_updateListener);
+		}
+
+		private sealed class _ITransactionListener_78 : ITransactionListener
+		{
+			public _ITransactionListener_78(ObjectReference _enclosing, Db4objects.Db4o.Internal.Transaction
+				 transaction)
+			{
+				this._enclosing = _enclosing;
+				this.transaction = transaction;
+			}
+
+			public void PostRollback()
+			{
+			}
+
+			public void PreCommit()
+			{
+				this._enclosing.Container().Set(transaction, this._enclosing.GetObject());
+			}
+
+			private readonly ObjectReference _enclosing;
+
+			private readonly Db4objects.Db4o.Internal.Transaction transaction;
 		}
 
 		public virtual void Activate(Db4objects.Db4o.Internal.Transaction ta, object obj, 

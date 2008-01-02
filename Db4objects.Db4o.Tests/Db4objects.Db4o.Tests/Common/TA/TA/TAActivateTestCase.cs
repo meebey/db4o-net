@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Common.TA.TA;
@@ -121,19 +122,19 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 			public virtual string GetName()
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return _name;
 			}
 
 			public virtual int GetValue()
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return _value;
 			}
 
 			public virtual TAActivateTestCase.TAItem Next()
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return _next;
 			}
 		}

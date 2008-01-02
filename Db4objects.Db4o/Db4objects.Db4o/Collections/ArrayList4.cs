@@ -37,11 +37,11 @@ namespace Db4objects.Db4o.Collections
 		/// <summary>activate basic implementation.</summary>
 		/// <remarks>activate basic implementation.</remarks>
 		/// <seealso cref="IActivatable">IActivatable</seealso>
-		public virtual void Activate()
+		public virtual void Activate(ActivationPurpose purpose)
 		{
 			if (_activator != null)
 			{
-				_activator.Activate();
+				_activator.Activate(purpose);
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace Db4objects.Db4o.Collections
 		/// <seealso cref="IActivatable">IActivatable</seealso>
 		public virtual void EnsureCapacity(int minCapacity)
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			if (minCapacity <= capacity)
 			{
 				return;
@@ -248,7 +248,7 @@ namespace Db4objects.Db4o.Collections
 		{
 			get
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return listSize;
 			}
 		}

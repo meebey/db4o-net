@@ -36,6 +36,7 @@ namespace Db4objects.Db4o.Config
 		/// The default setting is <b>false</b>.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether activation is to be cascaded to the member object.</param>
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
@@ -65,6 +66,7 @@ namespace Db4objects.Db4o.Config
 		/// The default setting is <b>false</b>.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether deletes are to be cascaded to the member object.</param>
 		/// <seealso cref="IObjectClass.CascadeOnDelete">IObjectClass.CascadeOnDelete</seealso>
@@ -85,6 +87,7 @@ namespace Db4objects.Db4o.Config
 		/// The default setting is <b>false</b>.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether updates are to be cascaded to the member object.</param>
 		/// <seealso cref="IObjectContainer.Set">IObjectContainer.Set</seealso>
@@ -108,6 +111,8 @@ namespace Db4objects.Db4o.Config
 		/// index will be dropped.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// If this setting is applied to an open ObjectContainer it will take an effect on the next
+		/// time ObjectContainer is opened.<br /><br />
 		/// </remarks>
 		/// <param name="flag">
 		/// specify <code>true</code> or <code>false</code> to turn indexing on for
@@ -122,6 +127,7 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can NOT be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="newName">the new fieldname.</param>
 		void Rename(string newName);
@@ -130,7 +136,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// toggles query evaluation.
 		/// <br /><br />All fields are evaluated by default. Use this method to turn query
-		/// evaluation of for specific fields.<br /><br />
+		/// evaluation off for specific fields.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
 		/// </remarks>

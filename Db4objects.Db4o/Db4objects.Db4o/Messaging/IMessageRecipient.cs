@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Messaging;
 
@@ -31,8 +30,8 @@ namespace Db4objects.Db4o.Messaging
 	{
 		/// <summary>the method called upon the arrival of messages.</summary>
 		/// <remarks>the method called upon the arrival of messages.</remarks>
-		/// <param name="container">the ObjectContainer the message was sent to.</param>
+		/// <param name="context">contextual information for the message.</param>
 		/// <param name="message">the message received.</param>
-		void ProcessMessage(IObjectContainer container, object message);
+		void ProcessMessage(IMessageContext context, object message);
 	}
 }

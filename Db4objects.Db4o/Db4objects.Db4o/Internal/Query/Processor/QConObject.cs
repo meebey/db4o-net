@@ -102,7 +102,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override bool CanBeIndexLeaf()
 		{
-			ByIdentity();
 			return (i_yapClass != null && i_yapClass.IsPrimitive()) || Evaluator().Identity();
 		}
 
@@ -480,31 +479,16 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual void ByIdentity()
+		internal virtual void SetEvaluationMode()
 		{
-			if (i_object == null)
+			if ((i_object == null) || EvaluationModeAlreadySet())
 			{
-				if (_children != null)
-				{
-					IEnumerator children = IterateChildren();
-					while (children.MoveNext())
-					{
-						object child = children.Current;
-						if (child is Db4objects.Db4o.Internal.Query.Processor.QConObject)
-						{
-							((Db4objects.Db4o.Internal.Query.Processor.QConObject)child).ByIdentity();
-						}
-					}
-				}
 				return;
 			}
 			int id = GetObjectID();
 			if (id < 0)
 			{
-				if (i_yapClass == null)
-				{
-					AssociateYapClass(i_trans, i_object);
-				}
+				ByExample();
 			}
 			else
 			{
@@ -512,6 +496,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					(i_object));
 				Identity();
 			}
+		}
+
+		internal virtual bool EvaluationModeAlreadySet()
+		{
+			return i_yapClass != null;
 		}
 
 		public override IConstraint Like()

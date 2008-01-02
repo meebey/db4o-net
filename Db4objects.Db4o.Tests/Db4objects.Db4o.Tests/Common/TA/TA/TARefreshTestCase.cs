@@ -4,6 +4,7 @@ using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.TA;
@@ -140,7 +141,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 			public virtual int Value()
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return _value;
 			}
 
@@ -151,7 +152,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 			public virtual TARefreshTestCase.TAItem Next()
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return _next;
 			}
 		}

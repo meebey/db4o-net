@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.Common.TA.TA
@@ -40,19 +41,19 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 		public virtual int Value()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return value;
 		}
 
 		public virtual Db4objects.Db4o.Tests.Common.TA.TA.TALinkedList Next()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return next;
 		}
 
 		public override bool Equals(object other)
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			Db4objects.Db4o.Tests.Common.TA.TA.TALinkedList otherList = (Db4objects.Db4o.Tests.Common.TA.TA.TALinkedList
 				)other;
 			if (value != otherList.Value())

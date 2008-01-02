@@ -19,7 +19,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		protected MultidimensionalArrayHandler(ITypeHandler4 template) : base(template)
+		protected MultidimensionalArrayHandler(ArrayHandler template, HandlerRegistry registry
+			, int version) : base(template, registry, version)
 		{
 		}
 

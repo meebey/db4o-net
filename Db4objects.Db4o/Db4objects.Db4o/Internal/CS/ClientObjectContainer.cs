@@ -350,7 +350,19 @@ namespace Db4objects.Db4o.Internal.CS
 		/// </remarks>
 		public virtual Msg GetResponse()
 		{
-			return _singleThreaded ? GetResponseSingleThreaded() : GetResponseMultiThreaded();
+			while (true)
+			{
+				Msg msg = _singleThreaded ? GetResponseSingleThreaded() : GetResponseMultiThreaded
+					();
+				if (IsClientSideTask(msg))
+				{
+					if (((IClientSideTask)msg).RunOnClient())
+					{
+						continue;
+					}
+				}
+				return msg;
+			}
 		}
 
 		private Msg GetResponseMultiThreaded()
@@ -373,6 +385,11 @@ namespace Db4objects.Db4o.Internal.CS
 				OnMsgError();
 			}
 			return msg;
+		}
+
+		private bool IsClientSideTask(Msg message)
+		{
+			return message is IClientSideTask;
 		}
 
 		private void OnMsgError()

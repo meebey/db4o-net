@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Collections
@@ -24,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual bool Add(object obj)
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			_dirty = true;
 			_data[_top++] = obj;
 			return true;
@@ -32,13 +33,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual int Size()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _top;
 		}
 
 		public virtual object Get(int indexInPage)
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			_dirty = true;
 			return _data[indexInPage];
 		}
@@ -55,7 +56,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual int GetPageIndex()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _pageIndex;
 		}
 
@@ -66,7 +67,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual int Capacity()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return Db4objects.Db4o.Tests.Common.TA.Collections.Page.PAGESIZE - Size();
 		}
 	}

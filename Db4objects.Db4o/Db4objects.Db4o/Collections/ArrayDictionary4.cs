@@ -46,11 +46,11 @@ namespace Db4objects.Db4o.Collections
 		/// <summary>activate basic implementation.</summary>
 		/// <remarks>activate basic implementation.</remarks>
 		/// <seealso cref="IActivatable">IActivatable</seealso>
-		public virtual void Activate()
+		public virtual void Activate(ActivationPurpose purpose)
 		{
 			if (_activator != null)
 			{
-				_activator.Activate();
+				_activator.Activate(purpose);
 			}
 		}
 
@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Collections
 		/// <seealso cref="IActivatable">IActivatable</seealso>
 		public virtual void Clear()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			_startIndex = 0;
 			_endIndex = 0;
 			Arrays.Fill(_keys, DefaultKeyValue());
@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Collections
 
 		private bool ContainsKeyImpl(K key)
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return IndexOfKey(key) != -1;
 		}
 
@@ -122,7 +122,7 @@ namespace Db4objects.Db4o.Collections
 		{
 			get
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return _endIndex - _startIndex;
 			}
 		}
@@ -141,7 +141,7 @@ namespace Db4objects.Db4o.Collections
 		{
 			get
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				List<V> list = new List<V>();
 				for (int i = _startIndex; i < _endIndex; i++)
 				{

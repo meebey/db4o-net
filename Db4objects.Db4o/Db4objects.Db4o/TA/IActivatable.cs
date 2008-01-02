@@ -104,6 +104,7 @@ namespace Db4objects.Db4o.TA
 		/// <see cref="IActivatable.Bind">IActivatable.Bind</see>
 		/// .
 		/// </remarks>
-		void Activate();
+		/// <param name="purpose">TODO</param>
+		void Activate(ActivationPurpose purpose);
 	}
 }

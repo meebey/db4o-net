@@ -17,10 +17,11 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		{
 			return new Type[] { typeof(CascadedDeleteUpdate), typeof(CascadeDeleteArray), typeof(
 				CascadeDeleteDeleted), typeof(CascadeDeleteFalse), typeof(CascadeOnActivate), typeof(
-				CascadeOnDelete), typeof(CascadeOnUpdate), typeof(CascadeToArray), typeof(ConjunctiveQbETestCase
-				), typeof(IdListQueryResultTestCase), typeof(IndexedQueriesTestCase), typeof(LazyQueryResultTestCase
-				), typeof(MultiFieldIndexQueryTestCase), typeof(ObjectSetTestCase), typeof(OrderedQueryTestCase
-				), typeof(QueryByExampleTestCase) };
+				CascadeOnDelete), typeof(CascadeOnDeleteHierarchyTestCase), typeof(CascadeOnUpdate
+				), typeof(CascadeToArray), typeof(ConjunctiveQbETestCase), typeof(IdListQueryResultTestCase
+				), typeof(IndexedQueriesTestCase), typeof(LazyQueryResultTestCase), typeof(MultiFieldIndexQueryTestCase
+				), typeof(ObjectSetTestCase), typeof(OrderedQueryTestCase), typeof(QueryByExampleTestCase
+				) };
 		}
 	}
 }

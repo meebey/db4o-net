@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System.Collections;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Query;
@@ -118,6 +119,19 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				if (_className != null)
 				{
 					_claxx = a_trans.Reflector().ForName(_className);
+				}
+			}
+		}
+
+		internal override void SetEvaluationMode()
+		{
+			IEnumerator children = IterateChildren();
+			while (children.MoveNext())
+			{
+				object child = children.Current;
+				if (child is QConObject)
+				{
+					((QConObject)child).SetEvaluationMode();
 				}
 			}
 		}

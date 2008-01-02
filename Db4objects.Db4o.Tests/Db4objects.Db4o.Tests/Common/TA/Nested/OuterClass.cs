@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Common.TA.Nested;
 
@@ -11,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nested
 
 		public virtual int Foo()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _foo;
 		}
 
@@ -24,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nested
 		{
 			public virtual OuterClass GetOuterObject()
 			{
-				this.Activate();
+				this.Activate(ActivationPurpose.READ);
 				return this._enclosing;
 			}
 

@@ -250,12 +250,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return fieldList.IsNull(fieldIndex);
 		}
 
-		public override void DefragFields(ClassMetadata yc, ObjectHeader header, DefragmentContextImpl
+		public override void DefragFields(ClassMetadata clazz, ObjectHeader header, DefragmentContextImpl
 			 context)
 		{
 			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_114(this
 				, context);
-			TraverseFields(yc, null, header._headerAttributes, command);
+			TraverseFields(clazz, null, header._headerAttributes, command);
 		}
 
 		private sealed class _TraverseFieldCommand_114 : ObjectMarshaller.TraverseFieldCommand

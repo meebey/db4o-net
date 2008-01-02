@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Diagnostics
 			{
 			}
 
-			public virtual void Activate()
+			public virtual void Activate(ActivationPurpose purpose)
 			{
 			}
 

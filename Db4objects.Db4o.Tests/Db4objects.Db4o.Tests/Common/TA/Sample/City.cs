@@ -13,11 +13,11 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 		[System.NonSerialized]
 		private IActivator _activator;
 
-		public virtual void Activate()
+		public virtual void Activate(ActivationPurpose purpose)
 		{
 			if (_activator != null)
 			{
-				_activator.Activate();
+				_activator.Activate(purpose);
 			}
 		}
 

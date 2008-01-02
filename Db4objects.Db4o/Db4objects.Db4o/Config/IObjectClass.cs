@@ -43,6 +43,7 @@ namespace Db4objects.Db4o.Config
 		/// .<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="flag">
 		/// - specify true, to request calling constructors, specify
@@ -61,6 +62,7 @@ namespace Db4objects.Db4o.Config
 		/// The default setting is <b>false</b>.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// Can be applied to an open ObjectContainer.<br /><br />
 		/// </remarks>
 		/// <param name="flag">whether activation is to be cascaded to member objects.</param>
 		/// <seealso cref="IObjectField.CascadeOnActivate">IObjectField.CascadeOnActivate</seealso>
@@ -100,6 +102,7 @@ namespace Db4objects.Db4o.Config
 		/// The default setting is <b>false</b>.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether deletes are to be cascaded to member objects.</param>
 		/// <seealso cref="IObjectField.CascadeOnDelete">IObjectField.CascadeOnDelete</seealso>
@@ -119,6 +122,7 @@ namespace Db4objects.Db4o.Config
 		/// The default setting is <b>false</b>.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether updates are to be cascaded to member objects.</param>
 		/// <seealso cref="IObjectField.CascadeOnUpdate">IObjectField.CascadeOnUpdate</seealso>
@@ -136,6 +140,7 @@ namespace Db4objects.Db4o.Config
 		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="attributeProvider">the attribute provider to be used</param>
+		[System.ObsoleteAttribute(@"since version 7.0")]
 		void Compare(IObjectAttribute attributeProvider);
 
 		/// <summary>
@@ -182,6 +187,7 @@ namespace Db4objects.Db4o.Config
 		/// - The application always works with IDs.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		void Indexed(bool flag);
 
@@ -193,6 +199,7 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="depth">the desired maximum activation depth</param>
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
@@ -207,6 +214,7 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="depth">the desired minimum activation depth</param>
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
@@ -262,6 +270,7 @@ namespace Db4objects.Db4o.Config
 		/// files and the stored objects will occupy space in the database file.
 		/// <br /><br />In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can NOT be applied to an open object container. <br /><br />
 		/// </remarks>
 		void PersistStaticFieldValues();
 
@@ -289,6 +298,7 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />Use this method to refactor classes.
 		/// <br /><br />In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can NOT be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="newName">the new fully qualified classname.</param>
 		void Rename(string newName);
@@ -299,6 +309,7 @@ namespace Db4objects.Db4o.Config
 		/// <br />The default for every class is <code>false</code>.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether or not transient fields are to be stored.</param>
 		void StoreTransientFields(bool flag);
@@ -314,6 +325,7 @@ namespace Db4objects.Db4o.Config
 		/// internal class ObjectMarshaller.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
+		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="translator">
 		/// this may be an

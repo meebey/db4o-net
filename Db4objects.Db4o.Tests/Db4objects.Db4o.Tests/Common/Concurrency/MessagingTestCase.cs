@@ -3,7 +3,6 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Messaging;
 using Db4objects.Db4o.Tests.Common.Concurrency;
@@ -65,7 +64,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				processed = new bool[threadCount];
 			}
 
-			public virtual void ProcessMessage(IObjectContainer con, object message)
+			public virtual void ProcessMessage(IMessageContext con, object message)
 			{
 				Assert.IsTrue(message is MessagingTestCase.Data);
 				int value = ((MessagingTestCase.Data)message).value;

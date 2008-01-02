@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Internal.Mapping
 
 		Slot AllocateTargetSlot(int targetLength);
 
-		void TargetWriteBytes(BufferImpl targetPointerReader, int targetID);
+		void TargetWriteBytes(BufferImpl targetPointerReader, int targetAddress);
 
 		Transaction SystemTrans();
 

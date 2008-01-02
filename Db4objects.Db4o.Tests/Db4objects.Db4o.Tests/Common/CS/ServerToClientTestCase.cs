@@ -17,9 +17,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		internal sealed class AutoReplyRecipient : IMessageRecipient
 		{
-			public void ProcessMessage(IObjectContainer container, object message)
+			public void ProcessMessage(IMessageContext context, object message)
 			{
-				IMessageSender sender = MessageContext.Current.Sender;
+				IMessageSender sender = context.Sender;
 				sender.Send("reply: " + message);
 			}
 		}
@@ -70,6 +70,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		private void WaitForMessagesToBeDispatched(IObjectContainer client1, IObjectContainer
 			 client2)
 		{
+			client2.Commit();
+			client1.Commit();
 			Cool.SleepIgnoringInterruption(500);
 		}
 
@@ -87,12 +89,6 @@ namespace Db4objects.Db4o.Tests.Common.CS
 					odd.Send(message);
 				}
 			}
-		}
-
-		private void SetMessageRecipient(IObjectContainer container, MessagingTestCaseBase.MessageCollector
-			 recipient)
-		{
-			container.Ext().Configure().ClientServer().SetMessageRecipient(recipient);
 		}
 	}
 }

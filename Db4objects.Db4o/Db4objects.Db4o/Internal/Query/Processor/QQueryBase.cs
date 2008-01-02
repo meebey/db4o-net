@@ -271,12 +271,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			lock (StreamLock())
 			{
 				QQuery query = new QQuery(_trans, _this, a_field);
-				int[] run = new int[] { 1 };
+				IntByRef run = new IntByRef(1);
 				if (!Descend1(query, a_field, run))
 				{
-					if (run[0] == 1)
+					if (run.value == 1)
 					{
-						run[0] = 2;
+						run.value = 2;
 						if (!Descend1(query, a_field, run))
 						{
 							new QConUnconditional(_trans, false).Attach(query, a_field);
@@ -287,31 +287,31 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		private bool Descend1(QQuery query, string a_field, int[] run)
+		private bool Descend1(QQuery query, string a_field, IntByRef run)
 		{
-			bool[] foundClass = new bool[] { false };
-			if (run[0] == 2 || i_constraints.Size() == 0)
+			if (run.value == 2 || i_constraints.Size() == 0)
 			{
-				run[0] = 0;
-				bool[] anyClassCollected = new bool[] { false };
-				Stream().ClassCollection().AttachQueryNode(a_field, new _IVisitor4_257(this, anyClassCollected
+				run.value = 0;
+				BooleanByRef anyClassCollected = new BooleanByRef(false);
+				Stream().ClassCollection().AttachQueryNode(a_field, new _IVisitor4_256(this, anyClassCollected
 					));
 			}
-			LoadConstraints();
+			CheckConstraintsEvaluationMode();
+			BooleanByRef foundClass = new BooleanByRef(false);
 			IEnumerator i = IterateConstraints();
 			while (i.MoveNext())
 			{
 				if (((QCon)i.Current).Attach(query, a_field))
 				{
-					foundClass[0] = true;
+					foundClass.value = true;
 				}
 			}
-			return foundClass[0];
+			return foundClass.value;
 		}
 
-		private sealed class _IVisitor4_257 : IVisitor4
+		private sealed class _IVisitor4_256 : IVisitor4
 		{
-			public _IVisitor4_257(QQueryBase _enclosing, bool[] anyClassCollected)
+			public _IVisitor4_256(QQueryBase _enclosing, BooleanByRef anyClassCollected)
 			{
 				this._enclosing = _enclosing;
 				this.anyClassCollected = anyClassCollected;
@@ -326,13 +326,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				bool take = true;
 				if (childYc is UntypedFieldHandler)
 				{
-					if (anyClassCollected[0])
+					if (anyClassCollected.value)
 					{
 						take = false;
 					}
 					else
 					{
-						anyClassCollected[0] = true;
+						anyClassCollected.value = true;
 					}
 				}
 				if (take)
@@ -345,7 +345,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 			private readonly QQueryBase _enclosing;
 
-			private readonly bool[] anyClassCollected;
+			private readonly BooleanByRef anyClassCollected;
 		}
 
 		public virtual IObjectSet Execute()
@@ -456,7 +456,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual IEnumerator ExecuteLazy()
 		{
-			LoadConstraints();
+			CheckConstraintsEvaluationMode();
 			QQueryBase.CreateCandidateCollectionResult r = CreateCandidateCollection();
 			Collection4 executionPath = ExecutionPath(r);
 			IEnumerator candidateCollection = new Iterator4Impl(r.candidateCollection);
@@ -524,18 +524,18 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return r.topLevel ? null : FieldPathFromTop();
 		}
 
-		private void LoadConstraints()
+		public virtual void CheckConstraintsEvaluationMode()
 		{
 			IEnumerator constraints = IterateConstraints();
 			while (constraints.MoveNext())
 			{
-				((QConObject)constraints.Current).ByIdentity();
+				((QConObject)constraints.Current).SetEvaluationMode();
 			}
 		}
 
 		public virtual void ExecuteLocal(IdListQueryResult result)
 		{
-			LoadConstraints();
+			CheckConstraintsEvaluationMode();
 			QQueryBase.CreateCandidateCollectionResult r = CreateCandidateCollection();
 			bool checkDuplicates = r.checkDuplicates;
 			bool topLevel = r.topLevel;
@@ -591,17 +591,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				if (candidate.Include())
 				{
 					TreeInt ids = new TreeInt(candidate._key);
-					TreeInt[] idsNew = new TreeInt[1];
+					ObjectByRef idsNew = new ObjectByRef(null);
 					IEnumerator itPath = executionPath.GetEnumerator();
 					while (itPath.MoveNext())
 					{
-						idsNew[0] = null;
+						idsNew.value = null;
 						string fieldName = (string)(itPath.Current);
 						if (ids != null)
 						{
 							ids.Traverse(new _IVisitor4_500(this, stream, idsNew, fieldName));
 						}
-						ids = idsNew[0];
+						ids = (TreeInt)idsNew.value;
 					}
 					if (ids != null)
 					{
@@ -612,8 +612,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 			private sealed class _IVisitor4_500 : IVisitor4
 			{
-				public _IVisitor4_500(_IVisitor4_489 _enclosing, ObjectContainerBase stream, TreeInt
-					[] idsNew, string fieldName)
+				public _IVisitor4_500(_IVisitor4_489 _enclosing, ObjectContainerBase stream, ObjectByRef
+					 idsNew, string fieldName)
 				{
 					this._enclosing = _enclosing;
 					this.stream = stream;
@@ -629,8 +629,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					if (reader != null)
 					{
 						ObjectHeader oh = new ObjectHeader(stream, reader);
-						idsNew[0] = oh.ClassMetadata().CollectFieldIDs(oh._marshallerFamily, oh._headerAttributes
-							, idsNew[0], reader, fieldName);
+						idsNew.value = oh.ClassMetadata().CollectFieldIDs(oh._marshallerFamily, oh._headerAttributes
+							, (TreeInt)idsNew.value, reader, fieldName);
 					}
 				}
 
@@ -638,7 +638,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 				private readonly ObjectContainerBase stream;
 
-				private readonly TreeInt[] idsNew;
+				private readonly ObjectByRef idsNew;
 
 				private readonly string fieldName;
 			}
@@ -784,7 +784,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual void Marshall()
 		{
-			LoadConstraints();
+			CheckConstraintsEvaluationMode();
 			_evaluationModeAsInt = _evaluationMode.AsInt();
 			IEnumerator i = IterateConstraints();
 			while (i.MoveNext())

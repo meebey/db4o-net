@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 					Current;
 				serverDispatcher.Socket().Close();
 				Cool.SleepIgnoringInterruption(1000);
-				Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_31(this, db));
+				Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_30(this, db));
 				Assert.IsTrue(db.IsClosed());
 			}
 			finally
@@ -41,9 +41,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		private sealed class _ICodeBlock_31 : ICodeBlock
+		private sealed class _ICodeBlock_30 : ICodeBlock
 		{
-			public _ICodeBlock_31(ServerClosedTestCase _enclosing, IExtObjectContainer db)
+			public _ICodeBlock_30(ServerClosedTestCase _enclosing, IExtObjectContainer db)
 			{
 				this._enclosing = _enclosing;
 				this.db = db;

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Common.TA.Collections;
 using Sharpen;
@@ -23,19 +24,19 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual bool Add(object item)
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return GetPageForAdd().Add(item);
 		}
 
 		public virtual int Size()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _top * Page.PAGESIZE - LastPage().Capacity();
 		}
 
 		public virtual object Get(int itemIndex)
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			Page page = PageHolding(itemIndex);
 			return page.Get(IndexInPage(itemIndex));
 		}

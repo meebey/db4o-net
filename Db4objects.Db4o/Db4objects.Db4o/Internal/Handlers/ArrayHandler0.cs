@@ -1,11 +1,12 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
+using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -13,7 +14,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class ArrayHandler0 : ArrayHandler
 	{
-		public ArrayHandler0(ITypeHandler4 template) : base(template)
+		public ArrayHandler0(ArrayHandler template, HandlerRegistry registry, int version
+			) : base(template, registry, version)
 		{
 		}
 
@@ -54,7 +56,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override void Defragment(IDefragmentContext context)
 		{
-			throw new NotImplementedException();
+			int sourceAddress = context.SourceBuffer().ReadInt();
+			int length = context.SourceBuffer().ReadInt();
+			if (sourceAddress == 0 && length == 0)
+			{
+				context.TargetBuffer().WriteInt(0);
+				context.TargetBuffer().WriteInt(0);
+				return;
+			}
+			Slot slot = context.AllocateMappedTargetSlot(sourceAddress, length);
+			BufferImpl sourceBuffer = null;
+			try
+			{
+				sourceBuffer = context.SourceBufferByAddress(sourceAddress, length);
+			}
+			catch (IOException exc)
+			{
+				throw new Db4oIOException(exc);
+			}
+			DefragmentContextImpl payloadContext = new DefragmentContextImpl(sourceBuffer, (DefragmentContextImpl
+				)context);
+			Defrag1(payloadContext);
+			payloadContext.WriteToTarget(slot.Address());
+			context.TargetBuffer().WriteInt(slot.Address());
+			context.TargetBuffer().WriteInt(length);
 		}
 	}
 }

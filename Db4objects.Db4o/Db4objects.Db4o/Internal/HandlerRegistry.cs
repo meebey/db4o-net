@@ -228,11 +228,15 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (handler is MultidimensionalArrayHandler && (version == 0))
 			{
-				return new MultidimensionalArrayHandler0(handler);
+				return new MultidimensionalArrayHandler0((ArrayHandler)handler, this, version);
 			}
 			if (handler is ArrayHandler && (version == 0))
 			{
-				return new ArrayHandler0(handler);
+				return new ArrayHandler0((ArrayHandler)handler, this, version);
+			}
+			if (handler is PrimitiveFieldHandler && (version == 0))
+			{
+				return new PrimitiveFieldHandler((PrimitiveFieldHandler)handler, this, version);
 			}
 			return handler;
 		}

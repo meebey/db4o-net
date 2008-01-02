@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
@@ -22,13 +23,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 
 		public virtual string GetName()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _name;
 		}
 
 		public virtual long TimeSpent()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _finished.Ticks - _started.Ticks;
 		}
 	}

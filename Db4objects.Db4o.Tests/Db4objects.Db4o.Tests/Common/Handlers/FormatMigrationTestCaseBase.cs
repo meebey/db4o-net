@@ -114,6 +114,23 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		/// <exception cref="IOException"></exception>
+		private void RunDefrag(string testFileName)
+		{
+			Db4oFactory.Configure().AllowVersionUpdates(true);
+			IObjectContainer oc = Db4oFactory.OpenFile(testFileName);
+			oc.Close();
+			string backupFileName = Path.GetTempFileName();
+			try
+			{
+				Db4objects.Db4o.Defragment.Defragment.Defrag(testFileName, backupFileName);
+			}
+			finally
+			{
+				File4.Delete(backupFileName);
+			}
+		}
+
 		/// <exception cref="Exception"></exception>
 		public virtual void TearDown()
 		{

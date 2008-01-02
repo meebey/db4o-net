@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 
 		public class TestMessageRecipient : IMessageRecipient
 		{
-			public virtual void ProcessMessage(IObjectContainer con, object message)
+			public virtual void ProcessMessage(IMessageContext con, object message)
 			{
 				Cool.SleepIgnoringInterruption(3000);
 			}

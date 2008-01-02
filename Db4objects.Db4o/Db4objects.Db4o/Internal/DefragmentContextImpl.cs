@@ -20,6 +20,11 @@ namespace Db4objects.Db4o.Internal
 
 		private int _handlerVersion;
 
+		public DefragmentContextImpl(BufferImpl source, Db4objects.Db4o.Internal.DefragmentContextImpl
+			 context) : this(source, context._services)
+		{
+		}
+
 		public DefragmentContextImpl(BufferImpl source, IDefragmentServices services)
 		{
 			_source = source;
@@ -305,6 +310,51 @@ namespace Db4objects.Db4o.Internal
 		public ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler)
 		{
 			return Container().Handlers().CorrectHandlerVersion(handler, HandlerVersion());
+		}
+
+		public Slot AllocateTargetSlot(int length)
+		{
+			return _services.AllocateTargetSlot(length);
+		}
+
+		public Slot AllocateMappedTargetSlot(int sourceAddress, int length)
+		{
+			Slot slot = AllocateTargetSlot(length);
+			_services.MapIDs(sourceAddress, slot.Address(), false);
+			return slot;
+		}
+
+		/// <exception cref="IOException"></exception>
+		public int CopySlotToNewMapped(int sourceAddress, int length)
+		{
+			Slot slot = AllocateMappedTargetSlot(sourceAddress, length);
+			BufferImpl sourceBuffer = SourceBufferByAddress(sourceAddress, length);
+			TargetWriteBytes(slot.Address(), sourceBuffer);
+			return slot.Address();
+		}
+
+		public void TargetWriteBytes(int address, BufferImpl buffer)
+		{
+			_services.TargetWriteBytes(buffer, address);
+		}
+
+		/// <exception cref="IOException"></exception>
+		public BufferImpl SourceBufferByAddress(int sourceAddress, int length)
+		{
+			BufferImpl sourceBuffer = _services.SourceBufferByAddress(sourceAddress, length);
+			return sourceBuffer;
+		}
+
+		/// <exception cref="IOException"></exception>
+		public BufferImpl SourceBufferById(int sourceId)
+		{
+			BufferImpl sourceBuffer = _services.SourceBufferByID(sourceId);
+			return sourceBuffer;
+		}
+
+		public void WriteToTarget(int address)
+		{
+			_services.TargetWriteBytes(this, address);
 		}
 	}
 }

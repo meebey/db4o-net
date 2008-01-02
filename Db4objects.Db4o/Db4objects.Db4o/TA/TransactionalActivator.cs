@@ -25,9 +25,9 @@ namespace Db4objects.Db4o.TA
 			_transaction = transaction;
 		}
 
-		public void Activate()
+		public void Activate(ActivationPurpose purpose)
 		{
-			_objectReference.ActivateOn(_transaction);
+			_objectReference.ActivateOn(_transaction, purpose);
 		}
 	}
 }

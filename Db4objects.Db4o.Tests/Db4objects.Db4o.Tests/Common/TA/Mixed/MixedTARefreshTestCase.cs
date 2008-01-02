@@ -169,23 +169,23 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 
 			public override int GetValue()
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return _value;
 			}
 
 			public override MixedTARefreshTestCase.Item Next()
 			{
-				Activate();
+				Activate(ActivationPurpose.READ);
 				return _next;
 			}
 
-			public virtual void Activate()
+			public virtual void Activate(ActivationPurpose purpose)
 			{
 				if (_activator == null)
 				{
 					return;
 				}
-				_activator.Activate();
+				_activator.Activate(purpose);
 			}
 
 			public virtual void Bind(IActivator activator)

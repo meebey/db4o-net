@@ -52,6 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			QQueryBase.CreateCandidateCollectionResult result = ((QQuery)query).CreateCandidateCollection
 				();
+			((QQuery)query).CheckConstraintsEvaluationMode();
 			QCandidates candidates = (QCandidates)result.candidateCollection._element;
 			return candidates;
 		}
@@ -133,13 +134,13 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		protected virtual void AssertTreeInt(int[] expectedValues, TreeInt treeInt)
 		{
 			ExpectingVisitor visitor = BTreeAssert.CreateExpectingVisitor(expectedValues);
-			treeInt.Traverse(new _IVisitor4_116(this, visitor));
+			treeInt.Traverse(new _IVisitor4_117(this, visitor));
 			visitor.AssertExpectations();
 		}
 
-		private sealed class _IVisitor4_116 : IVisitor4
+		private sealed class _IVisitor4_117 : IVisitor4
 		{
-			public _IVisitor4_116(FieldIndexProcessorTestCaseBase _enclosing, ExpectingVisitor
+			public _IVisitor4_117(FieldIndexProcessorTestCaseBase _enclosing, ExpectingVisitor
 				 visitor)
 			{
 				this._enclosing = _enclosing;

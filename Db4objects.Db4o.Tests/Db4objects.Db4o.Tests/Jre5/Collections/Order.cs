@@ -19,27 +19,27 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 
 		public virtual void AddItem(OrderItem item)
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			_items.Add(item);
 		}
 
 		public virtual OrderItem Item(int i)
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _items.Get(i);
 		}
 
 		public virtual int Size()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _items.Count;
 		}
 
-		public virtual void Activate()
+		public virtual void Activate(ActivationPurpose purpose)
 		{
 			if (_activator != null)
 			{
-				_activator.Activate();
+				_activator.Activate(purpose);
 			}
 		}
 

@@ -47,12 +47,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="Exception"></exception>
 		public virtual void TestReadIntCloseClient()
 		{
-			AssertReadClose(_client, new _ICodeBlock_44(this));
+			AssertReadClose(_client, new _ICodeBlock_43(this));
 		}
 
-		private sealed class _ICodeBlock_44 : ICodeBlock
+		private sealed class _ICodeBlock_43 : ICodeBlock
 		{
-			public _ICodeBlock_44(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_43(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -68,12 +68,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="Exception"></exception>
 		public virtual void TestReadIntCloseServer()
 		{
-			AssertReadClose(_server, new _ICodeBlock_52(this));
+			AssertReadClose(_server, new _ICodeBlock_51(this));
 		}
 
-		private sealed class _ICodeBlock_52 : ICodeBlock
+		private sealed class _ICodeBlock_51 : ICodeBlock
 		{
-			public _ICodeBlock_52(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_51(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -89,12 +89,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="Exception"></exception>
 		public virtual void TestReadByteArrayCloseClient()
 		{
-			AssertReadClose(_client, new _ICodeBlock_60(this));
+			AssertReadClose(_client, new _ICodeBlock_59(this));
 		}
 
-		private sealed class _ICodeBlock_60 : ICodeBlock
+		private sealed class _ICodeBlock_59 : ICodeBlock
 		{
-			public _ICodeBlock_60(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_59(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -110,12 +110,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="Exception"></exception>
 		public virtual void TestReadByteArrayCloseServer()
 		{
-			AssertReadClose(_server, new _ICodeBlock_68(this));
+			AssertReadClose(_server, new _ICodeBlock_67(this));
 		}
 
-		private sealed class _ICodeBlock_68 : ICodeBlock
+		private sealed class _ICodeBlock_67 : ICodeBlock
 		{
-			public _ICodeBlock_68(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_67(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -131,12 +131,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="Exception"></exception>
 		public virtual void TestWriteByteArrayCloseClient()
 		{
-			AssertWriteClose(_client, new _ICodeBlock_77(this));
+			AssertWriteClose(_client, new _ICodeBlock_76(this));
 		}
 
-		private sealed class _ICodeBlock_77 : ICodeBlock
+		private sealed class _ICodeBlock_76 : ICodeBlock
 		{
-			public _ICodeBlock_77(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_76(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -152,12 +152,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="Exception"></exception>
 		public virtual void TestWriteByteArrayCloseServer()
 		{
-			AssertWriteClose(_server, new _ICodeBlock_85(this));
+			AssertWriteClose(_server, new _ICodeBlock_84(this));
 		}
 
-		private sealed class _ICodeBlock_85 : ICodeBlock
+		private sealed class _ICodeBlock_84 : ICodeBlock
 		{
-			public _ICodeBlock_85(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_84(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -173,12 +173,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="Exception"></exception>
 		public virtual void TestWriteByteArrayPartCloseClient()
 		{
-			AssertWriteClose(_client, new _ICodeBlock_93(this));
+			AssertWriteClose(_client, new _ICodeBlock_92(this));
 		}
 
-		private sealed class _ICodeBlock_93 : ICodeBlock
+		private sealed class _ICodeBlock_92 : ICodeBlock
 		{
-			public _ICodeBlock_93(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_92(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -194,12 +194,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="Exception"></exception>
 		public virtual void TestWriteByteArrayPartCloseServer()
 		{
-			AssertWriteClose(_server, new _ICodeBlock_101(this));
+			AssertWriteClose(_server, new _ICodeBlock_100(this));
 		}
 
-		private sealed class _ICodeBlock_101 : ICodeBlock
+		private sealed class _ICodeBlock_100 : ICodeBlock
 		{
-			public _ICodeBlock_101(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_100(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -215,12 +215,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="Exception"></exception>
 		public virtual void TestWriteIntCloseClient()
 		{
-			AssertWriteClose(_client, new _ICodeBlock_109(this));
+			AssertWriteClose(_client, new _ICodeBlock_108(this));
 		}
 
-		private sealed class _ICodeBlock_109 : ICodeBlock
+		private sealed class _ICodeBlock_108 : ICodeBlock
 		{
-			public _ICodeBlock_109(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_108(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -236,12 +236,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="Exception"></exception>
 		public virtual void TestWriteIntCloseServer()
 		{
-			AssertWriteClose(_server, new _ICodeBlock_117(this));
+			AssertWriteClose(_server, new _ICodeBlock_116(this));
 		}
 
-		private sealed class _ICodeBlock_117 : ICodeBlock
+		private sealed class _ICodeBlock_116 : ICodeBlock
 		{
-			public _ICodeBlock_117(NetworkSocketTestCase _enclosing)
+			public _ICodeBlock_116(NetworkSocketTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -268,12 +268,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		private void AssertWriteClose(ISocket4 socketToBeClosed, ICodeBlock codeBlock)
 		{
 			socketToBeClosed.Close();
-			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_134(this, codeBlock));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_133(this, codeBlock));
 		}
 
-		private sealed class _ICodeBlock_134 : ICodeBlock
+		private sealed class _ICodeBlock_133 : ICodeBlock
 		{
-			public _ICodeBlock_134(NetworkSocketTestCase _enclosing, ICodeBlock codeBlock)
+			public _ICodeBlock_133(NetworkSocketTestCase _enclosing, ICodeBlock codeBlock)
 			{
 				this._enclosing = _enclosing;
 				this.codeBlock = codeBlock;
@@ -305,13 +305,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 
 			public CatchAllThread(ICodeBlock codeBlock)
 			{
-				_thread = new Thread(new _IRunnable_158(this));
+				_thread = new Thread(new _IRunnable_157(this));
 				_codeBlock = codeBlock;
 			}
 
-			private sealed class _IRunnable_158 : IRunnable
+			private sealed class _IRunnable_157 : IRunnable
 			{
-				public _IRunnable_158(CatchAllThread _enclosing)
+				public _IRunnable_157(CatchAllThread _enclosing)
 				{
 					this._enclosing = _enclosing;
 				}

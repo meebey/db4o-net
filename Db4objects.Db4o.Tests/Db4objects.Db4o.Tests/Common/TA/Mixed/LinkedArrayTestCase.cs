@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit.Extensions;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Query;
@@ -101,11 +102,11 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 		{
 			LinkedArrays root = QueryForRoot();
 			LinkedArrays.ActivatableItem activatableItem = root._activatableItemArray[0];
-			activatableItem.Activate();
+			activatableItem.Activate(ActivationPurpose.READ);
 			LinkedArrays descendant = activatableItem._linkedArrays;
 			descendant.AssertActivationDepth(TESTED_DEPTH - 3, true);
 			Db().Deactivate(activatableItem, 1);
-			activatableItem.Activate();
+			activatableItem.Activate(ActivationPurpose.READ);
 			descendant.AssertActivationDepth(TESTED_DEPTH - 3, true);
 		}
 

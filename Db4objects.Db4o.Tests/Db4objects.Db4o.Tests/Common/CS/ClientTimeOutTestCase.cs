@@ -4,7 +4,6 @@ using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
@@ -61,16 +60,16 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			_clientWasBlocked = false;
 			sender.Send(new ClientTimeOutTestCase.Data());
 			long start = Runtime.CurrentTimeMillis();
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_59(this, client));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_58(this, client));
 			long stop = Runtime.CurrentTimeMillis();
 			long duration = stop - start;
 			Assert.IsGreaterOrEqual(TIMEOUT / 2, duration);
 			Assert.IsTrue(_clientWasBlocked);
 		}
 
-		private sealed class _ICodeBlock_59 : ICodeBlock
+		private sealed class _ICodeBlock_58 : ICodeBlock
 		{
-			public _ICodeBlock_59(ClientTimeOutTestCase _enclosing, IExtObjectContainer client
+			public _ICodeBlock_58(ClientTimeOutTestCase _enclosing, IExtObjectContainer client
 				)
 			{
 				this._enclosing = _enclosing;
@@ -90,7 +89,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public class TestMessageRecipient : IMessageRecipient
 		{
-			public virtual void ProcessMessage(IObjectContainer con, object message)
+			public virtual void ProcessMessage(IMessageContext con, object message)
 			{
 				_clientWasBlocked = true;
 				Cool.SleepIgnoringInterruption(TIMEOUT * 3);

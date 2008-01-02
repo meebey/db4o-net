@@ -20,19 +20,19 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 
 		public virtual string Code()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _code;
 		}
 
 		public virtual string Description()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			return _description;
 		}
 
 		public override bool Equals(object p)
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			if (p == null)
 			{
 				return false;
@@ -46,11 +46,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 			return rhs._code == _code;
 		}
 
-		public virtual void Activate()
+		public virtual void Activate(ActivationPurpose purpose)
 		{
 			if (_activator != null)
 			{
-				_activator.Activate();
+				_activator.Activate(purpose);
 			}
 		}
 

@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 
 		public sealed class TAAware : IActivatable
 		{
-			public void Activate()
+			public void Activate(ActivationPurpose purpose)
 			{
 			}
 

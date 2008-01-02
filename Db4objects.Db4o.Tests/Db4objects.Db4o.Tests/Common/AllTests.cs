@@ -25,8 +25,8 @@ namespace Db4objects.Db4o.Tests.Common
 				), typeof(Db4objects.Db4o.Tests.Common.Regression.AllTests), typeof(Db4objects.Db4o.Tests.Common.Querying.AllTests
 				), typeof(Db4objects.Db4o.Tests.Common.Set.AllTests), typeof(Db4objects.Db4o.Tests.Common.Soda.AllTests
 				), typeof(Db4objects.Db4o.Tests.Common.Stored.AllTests), typeof(AllCommonTATests
-				), typeof(Db4objects.Db4o.Tests.Common.Types.AllTests), typeof(Db4objects.Db4o.Tests.Util.Test.AllTests
-				) };
+				), typeof(Db4objects.Db4o.Tests.Common.TP.AllTests), typeof(Db4objects.Db4o.Tests.Common.Types.AllTests
+				), typeof(Db4objects.Db4o.Tests.Util.Test.AllTests) };
 		}
 	}
 }

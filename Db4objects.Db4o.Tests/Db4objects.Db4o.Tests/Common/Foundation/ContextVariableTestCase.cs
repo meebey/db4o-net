@@ -9,17 +9,17 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 {
 	public class ContextVariableTestCase : ITestCase
 	{
-		public virtual void _testSingleThread()
+		public virtual void TestSingleThread()
 		{
 			ContextVariable variable = new ContextVariable();
 			Assert.IsNull(variable.Value);
-			variable.With("foo", new _IRunnable_15(this, variable));
+			variable.With("foo", new _IRunnable_14(this, variable));
 			Assert.IsNull(variable.Value);
 		}
 
-		private sealed class _IRunnable_15 : IRunnable
+		private sealed class _IRunnable_14 : IRunnable
 		{
-			public _IRunnable_15(ContextVariableTestCase _enclosing, ContextVariable variable
+			public _IRunnable_14(ContextVariableTestCase _enclosing, ContextVariable variable
 				)
 			{
 				this._enclosing = _enclosing;
@@ -29,13 +29,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			public void Run()
 			{
 				Assert.AreEqual("foo", variable.Value);
-				variable.With("bar", new _IRunnable_18(this, variable));
+				variable.With("bar", new _IRunnable_17(this, variable));
 				Assert.AreEqual("foo", variable.Value);
 			}
 
-			private sealed class _IRunnable_18 : IRunnable
+			private sealed class _IRunnable_17 : IRunnable
 			{
-				public _IRunnable_18(_IRunnable_15 _enclosing, ContextVariable variable)
+				public _IRunnable_17(_IRunnable_14 _enclosing, ContextVariable variable)
 				{
 					this._enclosing = _enclosing;
 					this.variable = variable;
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 					Assert.AreEqual("bar", variable.Value);
 				}
 
-				private readonly _IRunnable_15 _enclosing;
+				private readonly _IRunnable_14 _enclosing;
 
 				private readonly ContextVariable variable;
 			}
@@ -56,22 +56,18 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			private readonly ContextVariable variable;
 		}
 
-		public virtual void TestMultipleThreads()
-		{
-		}
-
 		public virtual void TestTypeChecking()
 		{
-			IRunnable emptyBlock = new _IRunnable_35(this);
+			IRunnable emptyBlock = new _IRunnable_30(this);
 			ContextVariable stringVar = new ContextVariable(typeof(string));
 			stringVar.With("foo", emptyBlock);
-			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_43(this, stringVar, emptyBlock
+			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_38(this, stringVar, emptyBlock
 				));
 		}
 
-		private sealed class _IRunnable_35 : IRunnable
+		private sealed class _IRunnable_30 : IRunnable
 		{
-			public _IRunnable_35(ContextVariableTestCase _enclosing)
+			public _IRunnable_30(ContextVariableTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -83,9 +79,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			private readonly ContextVariableTestCase _enclosing;
 		}
 
-		private sealed class _ICodeBlock_43 : ICodeBlock
+		private sealed class _ICodeBlock_38 : ICodeBlock
 		{
-			public _ICodeBlock_43(ContextVariableTestCase _enclosing, ContextVariable stringVar
+			public _ICodeBlock_38(ContextVariableTestCase _enclosing, ContextVariable stringVar
 				, IRunnable emptyBlock)
 			{
 				this._enclosing = _enclosing;

@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			public readonly Collection4 messages = new Collection4();
 
-			public void ProcessMessage(IObjectContainer container, object message)
+			public void ProcessMessage(IMessageContext context, object message)
 			{
 				messages.Add(message);
 			}
@@ -40,6 +40,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			config.Io(new MemoryIoAdapter());
 			config.ClientServer().SetMessageRecipient(recipient);
 			return Db4oFactory.OpenServer(config, "nofile", unchecked((int)(0xdb40)));
+		}
+
+		protected virtual void SetMessageRecipient(IObjectContainer container, IMessageRecipient
+			 recipient)
+		{
+			container.Ext().Configure().ClientServer().SetMessageRecipient(recipient);
 		}
 	}
 }

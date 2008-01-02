@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System.Collections;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Common.TA.Collections;
 using Db4objects.Db4o.Tests.Common.TA.Hierarchy;
@@ -22,13 +23,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 
 		public virtual void LogWorkDone(UnitOfWork work)
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			_workLog.Add(work);
 		}
 
 		public virtual long TotalTimeSpent()
 		{
-			Activate();
+			Activate(ActivationPurpose.READ);
 			long total = 0;
 			IEnumerator i = _workLog.GetEnumerator();
 			while (i.MoveNext())
