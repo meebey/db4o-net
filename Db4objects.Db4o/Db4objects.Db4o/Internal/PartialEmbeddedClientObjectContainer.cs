@@ -273,7 +273,7 @@ namespace Db4objects.Db4o.Internal
 			lock (Lock())
 			{
 				CheckClosed();
-				_server.Set(_transaction, obj, depth);
+				_server.Store(_transaction, obj, depth);
 			}
 		}
 
@@ -501,7 +501,7 @@ namespace Db4objects.Db4o.Internal
 			lock (Lock())
 			{
 				CheckClosed();
-				_server.Set(_transaction, obj);
+				_server.Store(_transaction, obj);
 			}
 		}
 

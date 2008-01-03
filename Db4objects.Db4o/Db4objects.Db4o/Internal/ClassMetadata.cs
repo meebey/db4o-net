@@ -2050,7 +2050,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void SetStaticClass(Transaction trans, StaticClass sc)
 		{
-			trans.Container().SetInternal(trans, sc, true);
+			trans.Container().StoreInternal(trans, sc, true);
 		}
 
 		private StaticField[] ToStaticFieldArray(IEnumerator iterator4)

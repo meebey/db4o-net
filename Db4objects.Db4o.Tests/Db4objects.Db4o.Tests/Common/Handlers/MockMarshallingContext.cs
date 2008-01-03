@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public virtual void WriteObject(object obj)
 		{
-			int id = Container().SetInternal(Transaction(), obj, false);
+			int id = Container().StoreInternal(Transaction(), obj, false);
 			WriteInt(id);
 		}
 

@@ -271,7 +271,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual void WriteObject(object obj)
 		{
-			int id = Container().SetInternal(Transaction(), obj, _updateDepth, true);
+			int id = Container().StoreInternal(Transaction(), obj, _updateDepth, true);
 			WriteInt(id);
 			_currentMarshalledObject = obj;
 			_currentIndexEntry = id;

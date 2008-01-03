@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		protected virtual void Add(Transaction transaction, string itemName)
 		{
-			Stream().Set(transaction, new StringIndexTestCaseBase.Item(itemName));
+			Stream().Store(transaction, new StringIndexTestCaseBase.Item(itemName));
 		}
 
 		protected virtual void AssertExists(Transaction transaction, string itemName)
@@ -114,7 +114,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			StringIndexTestCaseBase.Item item = Query(transaction, from);
 			Assert.IsNotNull(item);
 			item.name = to;
-			Stream().Set(transaction, item);
+			Stream().Store(transaction, item);
 		}
 
 		protected virtual void Rename(string from, string to)

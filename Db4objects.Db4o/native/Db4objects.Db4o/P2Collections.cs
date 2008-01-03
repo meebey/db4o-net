@@ -21,7 +21,7 @@ namespace Db4objects.Db4o {
               if (CanCreateCollection(Container()))
               {
                   IDb4oList l = new P2LinkedList();
-                  Container().Set(_transaction, l);
+                  Container().Store(_transaction, l);
                   return l;
               }
               return null;
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o {
                {
                    P2HashMap m = new P2HashMap(size);
                    m.i_type = 1;
-                   Container().Set(_transaction, m);
+                   Container().Store(_transaction, m);
                    return m;
                }
                return null;

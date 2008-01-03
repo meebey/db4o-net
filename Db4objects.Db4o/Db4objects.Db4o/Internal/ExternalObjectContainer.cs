@@ -192,7 +192,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="DatabaseReadOnlyException"></exception>
 		public void Store(object obj, int depth)
 		{
-			Set(null, obj, depth);
+			Store(null, obj, depth);
 		}
 
 		public IStoredClass StoredClass(object clazz)

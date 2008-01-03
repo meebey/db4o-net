@@ -58,7 +58,7 @@ namespace Db4objects.Db4o
 				i_yapObject = i_trans.ReferenceForObject(this);
 				if (i_yapObject == null)
 				{
-					Stream().Set(i_trans, this);
+					Stream().Store(i_trans, this);
 					i_yapObject = i_trans.ReferenceForObject(this);
 				}
 			}
@@ -147,7 +147,7 @@ namespace Db4objects.Db4o
 		{
 			if (i_trans != null)
 			{
-				Stream().SetInternal(i_trans, a_obj, true);
+				Stream().StoreInternal(i_trans, a_obj, true);
 			}
 		}
 
@@ -178,7 +178,7 @@ namespace Db4objects.Db4o
 				i_yapObject = i_trans.ReferenceForObject(this);
 				if (i_yapObject == null)
 				{
-					i_trans.Container().SetInternal(i_trans, this, true);
+					i_trans.Container().StoreInternal(i_trans, this, true);
 					i_yapObject = i_trans.ReferenceForObject(this);
 					return;
 				}

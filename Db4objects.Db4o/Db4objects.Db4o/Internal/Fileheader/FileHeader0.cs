@@ -103,7 +103,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			try
 			{
 				_bootRecord = new PBootRecord();
-				file.SetInternal(file.SystemTransaction(), _bootRecord, false);
+				file.StoreInternal(file.SystemTransaction(), _bootRecord, false);
 				_configBlock._bootRecordID = file.GetID(file.SystemTransaction(), _bootRecord);
 				WriteVariablePart(file, 1);
 			}

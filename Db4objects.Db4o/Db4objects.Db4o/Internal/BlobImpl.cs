@@ -182,7 +182,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (i_stream._lock)
 			{
-				i_stream.SetInternal(i_trans, this, false);
+				i_stream.StoreInternal(i_trans, this, false);
 			}
 			i_status = Status.Completed;
 		}
@@ -226,7 +226,7 @@ namespace Db4objects.Db4o.Internal
 					fileName = tryPath;
 					lock (i_stream._lock)
 					{
-						i_stream.SetInternal(i_trans, this, false);
+						i_stream.StoreInternal(i_trans, this, false);
 					}
 				}
 			}
@@ -327,7 +327,7 @@ namespace Db4objects.Db4o.Internal
 			SetStatus(Status.Unused);
 			lock (i_stream._lock)
 			{
-				i_stream.SetInternal(i_trans, this, false);
+				i_stream.StoreInternal(i_trans, this, false);
 			}
 		}
 	}

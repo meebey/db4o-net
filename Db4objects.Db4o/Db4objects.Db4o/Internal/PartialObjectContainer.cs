@@ -1724,7 +1724,7 @@ namespace Db4objects.Db4o.Internal
 						{
 							Delete(SystemTransaction(), backren.Next());
 						}
-						Set(SystemTransaction(), ren);
+						Store(SystemTransaction(), ren);
 					}
 				}
 			}
@@ -1759,31 +1759,31 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="DatabaseReadOnlyException"></exception>
-		public void Set(Transaction trans, object obj)
+		public void Store(Transaction trans, object obj)
 		{
-			Set(trans, obj, Const4.Unspecified);
+			Store(trans, obj, Const4.Unspecified);
 		}
 
 		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="DatabaseReadOnlyException"></exception>
-		public void Set(Transaction trans, object obj, int depth)
+		public void Store(Transaction trans, object obj, int depth)
 		{
 			lock (_lock)
 			{
-				SetInternal(trans, obj, depth, true);
+				StoreInternal(trans, obj, depth, true);
 			}
 		}
 
 		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="DatabaseReadOnlyException"></exception>
-		public int SetInternal(Transaction trans, object obj, bool checkJustSet)
+		public int StoreInternal(Transaction trans, object obj, bool checkJustSet)
 		{
-			return SetInternal(trans, obj, Const4.Unspecified, checkJustSet);
+			return StoreInternal(trans, obj, Const4.Unspecified, checkJustSet);
 		}
 
 		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="DatabaseReadOnlyException"></exception>
-		public int SetInternal(Transaction trans, object obj, int depth, bool checkJustSet
+		public int StoreInternal(Transaction trans, object obj, int depth, bool checkJustSet
 			)
 		{
 			trans = CheckTransaction(trans);
@@ -1791,7 +1791,7 @@ namespace Db4objects.Db4o.Internal
 			BeginTopLevelSet();
 			try
 			{
-				int id = SetAfterReplication(trans, obj, depth, checkJustSet);
+				int id = StoreAfterReplication(trans, obj, depth, checkJustSet);
 				CompleteTopLevelSet();
 				return id;
 			}
@@ -1806,7 +1806,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public int SetAfterReplication(Transaction trans, object obj, int depth, bool checkJust
+		public int StoreAfterReplication(Transaction trans, object obj, int depth, bool checkJust
 			)
 		{
 			if (obj is IDb4oType)
@@ -1817,25 +1817,25 @@ namespace Db4objects.Db4o.Internal
 					return GetID(trans, db4oType);
 				}
 			}
-			return Set2(trans, obj, depth, checkJust);
+			return Store2(trans, obj, depth, checkJust);
 		}
 
-		public void SetByNewReplication(IDb4oReplicationReferenceProvider referenceProvider
+		public void StoreByNewReplication(IDb4oReplicationReferenceProvider referenceProvider
 			, object obj)
 		{
 			lock (_lock)
 			{
 				_replicationCallState = Const4.New;
 				_handlers._replicationReferenceProvider = referenceProvider;
-				Set2(CheckTransaction(), obj, 1, false);
+				Store2(CheckTransaction(), obj, 1, false);
 				_replicationCallState = Const4.None;
 				_handlers._replicationReferenceProvider = null;
 			}
 		}
 
-		private int Set2(Transaction trans, object obj, int depth, bool checkJust)
+		private int Store2(Transaction trans, object obj, int depth, bool checkJust)
 		{
-			int id = Set3(trans, obj, depth, checkJust);
+			int id = Store3(trans, obj, depth, checkJust);
 			if (StackIsSmall())
 			{
 				CheckStillToSet();
@@ -1881,7 +1881,7 @@ namespace Db4objects.Db4o.Internal
 			throw new ObjectNotStorableException(obj.ToString());
 		}
 
-		public int Set3(Transaction trans, object obj, int updateDepth, bool checkJustSet
+		public int Store3(Transaction trans, object obj, int updateDepth, bool checkJustSet
 			)
 		{
 			if (obj == null || (obj is ITransientClass))

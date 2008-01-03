@@ -46,7 +46,7 @@ namespace Db4objects.Db4o
 			try
 			{
 				Transaction trans = container.CheckTransaction();
-				container.SetAfterReplication(trans, this, 1, false);
+				container.StoreAfterReplication(trans, this, 1, false);
 				container.Commit(trans);
 			}
 			finally

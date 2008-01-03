@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.Internal
 
 			public void PreCommit()
 			{
-				this._enclosing.Container().Set(transaction, this._enclosing.GetObject());
+				this._enclosing.Container().Store(transaction, this._enclosing.GetObject());
 			}
 
 			private readonly ObjectReference _enclosing;

@@ -334,7 +334,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		private void Store(Transaction trans, FieldIndexItem item)
 		{
-			Stream().Set(trans, item);
+			Stream().Store(trans, item);
 		}
 
 		private void FillTransactionWith(Transaction trans, int bar)
