@@ -187,8 +187,8 @@ public class Program {
 		{
 			using (IObjectContainer container = Db4oFactory.OpenFile(DataFile))
 			{
-				container.Set(new Item("1) all null arrays", null, null, null));
-				container.Set(
+				container.Store(new Item("1) all null arrays", null, null, null));
+				container.Store(
 					new Item(
 						"2) non null arrays",
 						ByteArray(),

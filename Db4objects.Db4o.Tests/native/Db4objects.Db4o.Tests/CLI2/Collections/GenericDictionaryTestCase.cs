@@ -35,10 +35,10 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			dh3._name = "identity";
 			dh3.CreateDicts();
         	
-        	Db().Set(dh1);
-			Db().Set(dh2);
-			Db().Set(dh1_2);
-			Db().Set(dh3);
+        	Db().Store(dh1);
+			Db().Store(dh2);
+			Db().Store(dh1_2);
+			Db().Store(dh3);
         }
     	
     	public void TestQuery()
@@ -131,10 +131,10 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
         public void StoreDicts(IObjectContainer oc)
         {
-            oc.Set(nDict1);
-            oc.Set(nDict2);
-            oc.Set(gDict1);
-            oc.Set(gDict2);
+            oc.Store(nDict1);
+            oc.Store(nDict2);
+            oc.Store(gDict1);
+            oc.Store(gDict2);
         }
 
         public void CheckDictsBeforeUpdate()

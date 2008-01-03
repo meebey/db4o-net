@@ -74,6 +74,14 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		}
 
 		/// <exception cref="Exception"></exception>
+		public virtual void TestActivateOnWrite()
+		{
+			TransparentPersistenceTestCase.Item foo = ItemByName("Foo");
+			foo.SetName("Foo*");
+			Assert.AreEqual("Foo*", foo.GetName());
+		}
+
+		/// <exception cref="Exception"></exception>
 		public virtual void TestTransparentUpdate()
 		{
 			TransparentPersistenceTestCase.Item foo = ItemByName("Foo");
@@ -107,15 +115,15 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		private Collection4 CommitCapturingUpdatedObjects()
 		{
 			Collection4 updated = new Collection4();
-			EventRegistry().Updated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_97
+			EventRegistry().Updated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_104
 				(this, updated).OnEvent);
 			Commit();
 			return updated;
 		}
 
-		private sealed class _IEventListener4_97
+		private sealed class _IEventListener4_104
 		{
-			public _IEventListener4_97(TransparentPersistenceTestCase _enclosing, Collection4
+			public _IEventListener4_104(TransparentPersistenceTestCase _enclosing, Collection4
 				 updated)
 			{
 				this._enclosing = _enclosing;

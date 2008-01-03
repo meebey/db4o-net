@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 			test.sk = new CultureInfo("sk");
 			test.invariant = CultureInfo.InvariantCulture;
 			
-			Db().Set(test);
+			Db().Store(test);
 		}
 		
 		public void TestRetrieveCultureInfo()

@@ -31,8 +31,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
 		protected override void Store()
 		{
-			Db().Set(new NullableContainer(42));
-			Db().Set(new NullableContainer(TheDate));
+			Db().Store(new NullableContainer(42));
+			Db().Store(new NullableContainer(TheDate));
 		}
 
 		public void TestGlobalQuery()

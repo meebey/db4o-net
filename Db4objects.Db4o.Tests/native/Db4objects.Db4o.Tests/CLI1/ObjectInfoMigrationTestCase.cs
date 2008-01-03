@@ -162,7 +162,7 @@ namespace Db4objects.Db4o.Tests.CLI1
             for (int i = 0; i < 3; ++i)
             {
                 Db4o52Regression.Item newItem = new Db4o52Regression.Item("New " + i);
-                _container.Set(newItem);
+                _container.Store(newItem);
                 WriteItemString(writer, newItem);
                 WriteItemString(Sharpen.Runtime.Out, newItem);
             }

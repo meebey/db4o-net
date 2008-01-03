@@ -43,8 +43,8 @@ namespace Db4objects.Db4o.Tests.CLI1
 
 		protected override void Store()
 		{
-			Db().Set(new Item(42));
-			Db().Set(new Item(1));
+			Db().Store(new Item(42));
+			Db().Store(new Item(1));
 		}
 
 		public void TestEnumerable()

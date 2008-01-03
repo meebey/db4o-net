@@ -75,13 +75,13 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
             {
                 string newName = person.Name + "*";
                 person.Name = newName;
-                container.Set(person);
+                container.Store(person);
                 newNames.Add(newName);
             }
 
             // new item
             string newItemName = "orestes";
-            container.Set(CreateAliasedData(newItemName));
+            container.Store(CreateAliasedData(newItemName));
             newNames.Add(newItemName);
 
             container.Commit();

@@ -11,8 +11,8 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 	{
 		public void TestTypeAlias()
 		{
-		    Db().Set(new Person1("Homer Simpson"));
-			Db().Set(new Person1("John Cleese"));
+		    Db().Store(new Person1("Homer Simpson"));
+			Db().Store(new Person1("John Cleese"));
 
 			Reopen();
 			Fixture().ConfigureAtRuntime(new AddAliasAction());

@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 		protected override void Store()
 		{
 			Bitmap b = new Bitmap(width, height);
-			Db().Set(b);
+			Db().Store(b);
 		}
 
 		public void _TestImage()

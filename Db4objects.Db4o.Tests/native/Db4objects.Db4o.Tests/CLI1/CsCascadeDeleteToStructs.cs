@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.CLI1
             EnsureOccurrences(1, myStruct);
             myStruct.foo = 44;
             myStruct.bar = "cool";
-            Db().Set(this);
+            Db().Store(this);
             EnsureOccurrences(1, myStruct);
 
             Db().Delete(this);

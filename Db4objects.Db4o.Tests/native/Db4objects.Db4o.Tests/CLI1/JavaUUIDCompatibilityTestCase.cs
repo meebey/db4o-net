@@ -72,10 +72,10 @@ public class Program {
 		protected override void PopulateContainer(IObjectContainer container)
 		{
 			MyTestClass test1 = new MyTestClass();
-			container.Set(test1);
+			container.Store(test1);
 
 			MyTestClass test2 = new MyTestClass();
-			container.Set(test2);
+			container.Store(test2);
 		}
 
 		protected override IConfiguration GetConfiguration()

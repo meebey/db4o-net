@@ -99,7 +99,7 @@ public class Program {
 		protected override void PopulateContainer(IObjectContainer container)
 		{
 			DateCompatibilityItem test1 = new DateCompatibilityItem(DateTime.MinValue, DateTime.MaxValue, new DateTime(2007, 10, 07, 11, 23, 42, 1));
-			container.Set(test1);
+			container.Store(test1);
 		}
 	}
 }
