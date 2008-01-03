@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
         {
             get
             {
-                Activate();
+				Activate(ActivationPurpose.Read);
                 return _car;
             }
         }
@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
         {
             get
             {
-                Activate();
+                Activate(ActivationPurpose.Read);
                 return _time;
             }
         }
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
         {
             get
             {
-                Activate();
+				Activate(ActivationPurpose.Read);
                 return _description;
             }
         }
@@ -53,14 +53,14 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
         {
             get
             {
-                Activate();
+				Activate(ActivationPurpose.Read);
                 return _next;
             }
         }
 
         public void Append(SensorReadout readout)
         {
-            Activate();
+            Activate(ActivationPurpose.Write);
             if (_next == null)
             {
                 _next = readout;
@@ -73,21 +73,21 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
 
         public int CountElements()
         {
-            Activate();
+			Activate(ActivationPurpose.Read);
             return (_next == null ? 1 : _next.CountElements() + 1);
         }
 
         public override String ToString()
         {
-            Activate();
+			Activate(ActivationPurpose.Read);
             return String.Format("{0} : {1} : {2}", _car, _time, _description);
         }
 
-        public void Activate()
+        public void Activate(ActivationPurpose purpose)
         {
             if (_activator != null)
             {
-                _activator.Activate();
+                _activator.Activate(purpose);
             }
         }
 

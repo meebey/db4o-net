@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Foundation
 
 			IConvertible convertible = obj as IConvertible;
 			if (null != convertible) return convertible.ToSByte(null);
-			return Db4objects.Db4o.Foundation.No4.INSTANCE;
+			return Db4objects.Db4o.Foundation.No4.Instance;
 		}
 
 		public static object ToShort(object obj)
@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Foundation
 
 			IConvertible convertible = obj as IConvertible;
 			if (null != convertible) return convertible.ToInt16(null);
-			return Db4objects.Db4o.Foundation.No4.INSTANCE;
+			return Db4objects.Db4o.Foundation.No4.Instance;
 		}
 
 		public static object ToInt(object obj)
@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Foundation
 
 			IConvertible convertible = obj as IConvertible;
 			if (null != convertible) return convertible.ToInt32(null);
-			return Db4objects.Db4o.Foundation.No4.INSTANCE;
+			return Db4objects.Db4o.Foundation.No4.Instance;
 		}
 
 		public static object ToLong(object obj)
@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Foundation
 
 			IConvertible convertible = obj as IConvertible;
 			if (null != convertible) return convertible.ToInt64(null);
-			return Db4objects.Db4o.Foundation.No4.INSTANCE;
+			return Db4objects.Db4o.Foundation.No4.Instance;
 		}
 
 		public static object ToFloat(object obj)
@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Foundation
 
 			IConvertible convertible = obj as IConvertible;
 			if (null != convertible) return convertible.ToSingle(null);
-			return Db4objects.Db4o.Foundation.No4.INSTANCE;
+			return Db4objects.Db4o.Foundation.No4.Instance;
 		}
 
 		public static object ToDouble(object obj)
@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Foundation
 
 			IConvertible convertible = obj as IConvertible;
 			if (null != convertible) return convertible.ToDouble(null);
-			return Db4objects.Db4o.Foundation.No4.INSTANCE;
+			return Db4objects.Db4o.Foundation.No4.Instance;
 		}
 	}
 }

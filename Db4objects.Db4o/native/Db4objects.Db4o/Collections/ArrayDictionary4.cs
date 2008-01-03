@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Collections
 
 		public void Add(K key, V value)
 		{
-            Activate(ActivationPurpose.READ);
+            Activate(ActivationPurpose.Read);
 
             int index = IndexOfKey(key);
             if (index != -1)
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Collections
 
 		public bool Remove(K key)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
             int index = IndexOfKey(key);
 
             if (index == -1)
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Collections
 
 		public bool Contains(KeyValuePair<K, V> pair)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
             int index = IndexOfKey(pair.Key);
             if (index == -1)
             {
@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Collections
 
 		public void CopyTo(KeyValuePair<K, V>[] array, int count)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
             if (array == null)
             {
                 throw new ArgumentNullException();
@@ -98,7 +98,7 @@ namespace Db4objects.Db4o.Collections
 
 		public bool TryGetValue(K key, out V value)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			int index = IndexOfKey(key);
 			if (index == -1)
 			{
@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Collections
 		{
             get
             {
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
                 int index = IndexOfKey(key);
                 if (index == -1)
                 {
@@ -123,7 +123,7 @@ namespace Db4objects.Db4o.Collections
             }
             set
             {
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
                 int index = IndexOfKey(key);
                 if (index == -1)
                 {
@@ -140,7 +140,7 @@ namespace Db4objects.Db4o.Collections
 		{
             get
             {
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
                 K[] keys = new K[_endIndex - _startIndex];
                 Array.Copy(_keys, keys, _endIndex);
                 return keys;

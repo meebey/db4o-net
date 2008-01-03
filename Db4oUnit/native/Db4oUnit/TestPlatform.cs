@@ -8,9 +8,9 @@ namespace Db4oUnit
 	public class TestPlatform
 	{
 #if CF_2_0
-        public static string NEWLINE = "\n";
+        public static string NewLine = "\n";
 #else
-	    public static string NEWLINE = Environment.NewLine;
+	    public static string NewLine = Environment.NewLine;
 #endif
 
 		// will be assigned from the outside on CF

@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Tests.Util
 		
 		public static string WorkspaceTestFilePath(string fname)
 		{
-			string testFolder = WorkspaceLocations.TEST_FOLDER;
+			string testFolder = WorkspaceLocations.TestFolder;
 			if (testFolder == null) return null;
 			return Path.Combine(testFolder, fname);
 		}

@@ -22,13 +22,13 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
         {
             get
             {
-                Activate();
+				Activate(ActivationPurpose.Read);
                 return _points;
             }
 
             set
             {
-                Activate();
+				Activate(ActivationPurpose.Write);
                 _points += value;
             }
         }
@@ -37,22 +37,22 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
         {
             get
             {
-                Activate();
+				Activate(ActivationPurpose.Read);
                 return _name;
             }
         }
 
         public override string  ToString()
         {
-            Activate();
+			Activate(ActivationPurpose.Read);
             return String.Format("{0}/{1}", _name, _points);
         }
         
-        public void Activate() 
+        public void Activate(ActivationPurpose purpose) 
         {
             if(_activator != null) 
             {
-                _activator.Activate();
+                _activator.Activate(purpose);
             }
         }
 

@@ -1,4 +1,5 @@
 using System;
+using Db4objects.Db4o.Activation;
 
 namespace Db4objects.Db4o.Tutorial.F1.Chapter7
 {
@@ -16,14 +17,14 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
         {
             get
             {
-                Activate();
+				Activate(ActivationPurpose.Read);
                 return _temperature;
             }
         }
 
         public override String ToString()
         {
-            Activate();
+			Activate(ActivationPurpose.Read);
             return string.Format("{0} temp : {1}", base.ToString(), _temperature);
         }
     }

@@ -25,13 +25,13 @@ public class Car : IActivatable
     {
         get
         {
-            Activate();
+			Activate(ActivationPurpose.Read);
             return _pilot;
         }
 
         set
         {
-            Activate();
+			Activate(ActivationPurpose.Write);
             this._pilot = value;
         }
     }
@@ -45,7 +45,7 @@ public class Car : IActivatable
     {
         get
         {
-            Activate();
+			Activate(ActivationPurpose.Read);
             return _model;
         }
     }
@@ -54,14 +54,13 @@ public class Car : IActivatable
     {
         get
         {
-            Activate();
+			Activate(ActivationPurpose.Read);
             return _history;
         }
     }
     
     public void snapshot() 
-    {
-        Activate();
+    {   
         AppendToHistory(new TemperatureSensorReadout(DateTime.Now,this,"oil", PollOilTemperature()));
         AppendToHistory(new TemperatureSensorReadout(DateTime.Now, this, "water", PollWaterTemperature()));
         AppendToHistory(new PressureSensorReadout(DateTime.Now, this, "oil", PollOilPressure()));
@@ -69,13 +68,11 @@ public class Car : IActivatable
 
     protected double PollOilTemperature() 
     {
-        Activate();
-        return 0.1* CountHistoryElements();
+	    return 0.1* CountHistoryElements();
     }
 
     protected double PollWaterTemperature() 
     {
-        Activate();
         return 0.2* CountHistoryElements();
     }
 
@@ -86,19 +83,19 @@ public class Car : IActivatable
 
     public override String ToString() 
     {
-        Activate();
+		Activate(ActivationPurpose.Read);
         return string.Format("{0}[{1}]/{2}", _model, _pilot, CountHistoryElements());
     }
     
     private int CountHistoryElements() 
     {
-        Activate();
+		Activate(ActivationPurpose.Read);
         return (_history==null ? 0 : _history.CountElements());
     }
     
     private void AppendToHistory(SensorReadout readout) 
     {
-        Activate();
+		Activate(ActivationPurpose.Write);
         if(_history==null) 
         {
             _history=readout;
@@ -109,11 +106,11 @@ public class Car : IActivatable
         }
     }
 
-    public void Activate() 
+    public void Activate(ActivationPurpose purpose) 
     {
         if(_activator != null) 
         {
-            _activator.Activate();
+            _activator.Activate(purpose);
         }
     }
 

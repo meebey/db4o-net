@@ -296,7 +296,7 @@ namespace Db4objects.Db4o.Collections
 
         private E[] GetElements()
         {
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
             return elements;
         }
 

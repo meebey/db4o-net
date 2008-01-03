@@ -200,7 +200,7 @@ namespace Db4oTool.TA
             VariableDefinition oldStackTop = SaveStackTop(cil, instruction);
 
 	        instruction = GetInsertionPoint(instruction);
-            InsertActivateCall(cil, instruction, ActivationPurpose.WRITE);
+            InsertActivateCall(cil, instruction, ActivationPurpose.Write);
             cil.InsertBefore(instruction, cil.Create(OpCodes.Ldloc, oldStackTop));
 
         }
@@ -235,7 +235,7 @@ namespace Db4oTool.TA
 	    {
 	        Instruction insertionPoint = GetInsertionPoint(instruction);
 
-	    	InsertActivateCall(cil, insertionPoint, ActivationPurpose.READ);
+	    	InsertActivateCall(cil, insertionPoint, ActivationPurpose.Read);
 	    }
 
 		private void InsertActivateCall(CilWorker cil, Instruction insertionPoint, ActivationPurpose activationPurpose)

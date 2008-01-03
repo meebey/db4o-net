@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.Internal.Query
 	    private void NativeQueryOptimizerNotLoaded(Exception exception)
 	    {
 	        DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
-	        if (dp.Enabled()) dp.NativeQueryOptimizerNotLoaded(Db4o.Diagnostic.NativeQueryOptimizerNotLoaded.NQ_NOT_PRESENT, exception);
+	        if (dp.Enabled()) dp.NativeQueryOptimizerNotLoaded(Db4o.Diagnostic.NativeQueryOptimizerNotLoaded.NqNotPresent, exception);
 	    }
 
 	    private System.Collections.Generic.IList<Extent> ExecuteUnoptimized<Extent>(IQuery q, Predicate<Extent> match)

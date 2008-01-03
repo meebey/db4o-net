@@ -28,7 +28,7 @@ namespace Db4oTool.Tests.TA
 
 		public void Activate(ActivationPurpose purpose)
 		{
-			if (ActivationPurpose.READ == purpose)
+			if (ActivationPurpose.Read == purpose)
 			{
 				++_readCount;
 			}

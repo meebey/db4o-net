@@ -1,4 +1,5 @@
 using System;
+using Db4objects.Db4o.Activation;
 
 namespace Db4objects.Db4o.Tutorial.F1.Chapter7
 {    public class PressureSensorReadout : SensorReadout
@@ -15,7 +16,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
         {
             get
             {
-                Activate();
+				Activate(ActivationPurpose.Read);
                 return _pressure;
             }
         }

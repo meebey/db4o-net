@@ -326,8 +326,8 @@ namespace Db4objects.Db4o.NativeQueries
 
 		    private NQExpression ToNQExpression(ConstValue value)
 		    {
-                if (IsTrue(value.Value())) return BoolConstExpression.TRUE;
-		        return BoolConstExpression.FALSE;
+                if (IsTrue(value.Value())) return BoolConstExpression.True;
+		        return BoolConstExpression.False;
 		    }
 
 		    private bool IsTrue(object o)
@@ -375,29 +375,29 @@ namespace Db4objects.Db4o.NativeQueries
 				switch (node.Operator)
 				{
 					case BinaryOperator.ValueEquality:
-						PushComparison(node.Left, node.Right, ComparisonOperator.EQUALS);
+						PushComparison(node.Left, node.Right, ComparisonOperator.ValueEquality);
 						break;
 
 					case BinaryOperator.ValueInequality:
-						PushComparison(node.Left, node.Right, ComparisonOperator.EQUALS);
+						PushComparison(node.Left, node.Right, ComparisonOperator.ValueEquality);
 						Negate();
 						break;
 
 					case BinaryOperator.LessThan:
-						PushComparison(node.Left, node.Right, ComparisonOperator.SMALLER);
+						PushComparison(node.Left, node.Right, ComparisonOperator.Smaller);
 						break;
 
 					case BinaryOperator.GreaterThan:
-						PushComparison(node.Left, node.Right, ComparisonOperator.GREATER);
+						PushComparison(node.Left, node.Right, ComparisonOperator.Greater);
 						break;
 
 					case BinaryOperator.GreaterThanOrEqual:
-						PushComparison(node.Left, node.Right, ComparisonOperator.SMALLER);
+						PushComparison(node.Left, node.Right, ComparisonOperator.Smaller);
 						Negate();
 						break;
 
 					case BinaryOperator.LessThanOrEqual:
-						PushComparison(node.Left, node.Right, ComparisonOperator.GREATER);
+						PushComparison(node.Left, node.Right, ComparisonOperator.Greater);
 						Negate();
 						break;
 
@@ -500,19 +500,19 @@ namespace Db4objects.Db4o.NativeQueries
 				switch (method.Name)
 				{
 					case "Contains":
-						PushComparison(methodRef.Target, node.Arguments[0], ComparisonOperator.CONTAINS);
+						PushComparison(methodRef.Target, node.Arguments[0], ComparisonOperator.Contains);
 						break;
 
 					case "StartsWith":
-						PushComparison(methodRef.Target, node.Arguments[0], ComparisonOperator.STARTSWITH);
+						PushComparison(methodRef.Target, node.Arguments[0], ComparisonOperator.StartsWith);
 						break;
 
 					case "EndsWith":
-						PushComparison(methodRef.Target, node.Arguments[0], ComparisonOperator.ENDSWITH);
+						PushComparison(methodRef.Target, node.Arguments[0], ComparisonOperator.EndsWith);
 						break;
 
 					case "Equals":
-						PushComparison(methodRef.Target, node.Arguments[0], ComparisonOperator.EQUALS);
+						PushComparison(methodRef.Target, node.Arguments[0], ComparisonOperator.ValueEquality);
 						break;
 
 					default:
@@ -551,32 +551,32 @@ namespace Db4objects.Db4o.NativeQueries
 				switch (method.Name)
 				{
 					case "op_Equality":
-						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.EQUALS);
+						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.ValueEquality);
 						break;
 
 					case "op_Inequality":
-						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.EQUALS);
+						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.ValueEquality);
 						Negate();
 						break;
 
 					// XXX: check if the operations below are really supported for the
 					// data types in question
 					case "op_GreaterThanOrEqual":
-						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.SMALLER);
+						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.Smaller);
 						Negate();
 						break;
 
 					case "op_LessThanOrEqual":
-						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.GREATER);
+						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.Greater);
 						Negate();
 						break;
 
 					case "op_LessThan":
-						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.SMALLER);
+						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.Smaller);
 						break;
 
 					case "op_GreaterThan":
-						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.GREATER);
+						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.Greater);
 						break;
 
 					default:
@@ -669,7 +669,7 @@ namespace Db4objects.Db4o.NativeQueries
 				{
 					case CodeElementType.ArgumentReferenceExpression:
 						//IArgumentReferenceExpression arg = (IArgumentReferenceExpression)target;
-						PushFieldValue(CandidateFieldRoot.INSTANCE, node.Field);
+						PushFieldValue(CandidateFieldRoot.Instance, node.Field);
 						break;
 
 					case CodeElementType.ThisReferenceExpression:
@@ -682,12 +682,12 @@ namespace Db4objects.Db4o.NativeQueries
 							}
 							else
 							{
-								PushFieldValue(CandidateFieldRoot.INSTANCE, node.Field);
+								PushFieldValue(CandidateFieldRoot.Instance, node.Field);
 							}
 						}
 						else
 						{
-							PushFieldValue(PredicateFieldRoot.INSTANCE, node.Field);
+							PushFieldValue(PredicateFieldRoot.Instance, node.Field);
 						}
 						break;
 
@@ -735,7 +735,7 @@ namespace Db4objects.Db4o.NativeQueries
 						new ComparisonExpression(
 							fieldValue,
 							new ConstValue(null),
-							ComparisonOperator.EQUALS));
+							ComparisonOperator.ValueEquality));
 			}
 
 			FieldValue ToFieldValue(Expression node)

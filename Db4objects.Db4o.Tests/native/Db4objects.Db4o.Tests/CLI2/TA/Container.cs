@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		{
 			get
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _name;
 			}
 		}
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		{
 			get
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _value;
 			}
 		}
@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		{
 			get
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _value;
 			}
 		}

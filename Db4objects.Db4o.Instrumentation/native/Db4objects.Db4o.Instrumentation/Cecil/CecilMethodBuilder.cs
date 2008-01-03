@@ -102,7 +102,7 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 
 		private static OpCode OpCodeForConvention(CallingConvention convention)
 		{
-			return convention == CallingConvention.STATIC
+			return convention == CallingConvention.Static
 			       	? OpCodes.Call
 			       	: OpCodes.Callvirt;
 		}

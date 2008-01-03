@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 
 		bool MatchWithActivate(Item item)
 		{
-			((IActivatable) item).Activate(ActivationPurpose.READ);
+			((IActivatable) item).Activate(ActivationPurpose.Read);
 			return item.name.StartsWith("foo");
 		}
 
@@ -31,9 +31,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 			IExpression expression = ExpressionFromMethod("MatchWithActivate");
 			Assert.AreEqual(
 				new ComparisonExpression(
-					NewFieldValue(CandidateFieldRoot.INSTANCE, "name", typeof(string)),
+					NewFieldValue(CandidateFieldRoot.Instance, "name", typeof(string)),
 					new ConstValue("foo"),
-					ComparisonOperator.STARTSWITH),
+					ComparisonOperator.StartsWith),
 				expression);
 		}
 
@@ -42,9 +42,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 			IExpression expression = ExpressionFromPredicate(typeof(NameEqualsTo));
 			Assert.AreEqual(
 				new ComparisonExpression(
-				NewFieldValue(CandidateFieldRoot.INSTANCE, "name", typeof(string)),
-				NewFieldValue(PredicateFieldRoot.INSTANCE, "_name", typeof(string)),
-				ComparisonOperator.EQUALS),
+				NewFieldValue(CandidateFieldRoot.Instance, "name", typeof(string)),
+				NewFieldValue(PredicateFieldRoot.Instance, "_name", typeof(string)),
+				ComparisonOperator.ValueEquality),
 				expression);
 		}
 
@@ -56,17 +56,17 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 				new AndExpression(
 				new NotExpression(
 				new ComparisonExpression(
-				NewFieldValue(CandidateFieldRoot.INSTANCE, "previous", typeof(Data)), 
+				NewFieldValue(CandidateFieldRoot.Instance, "previous", typeof(Data)), 
 				new ConstValue(null),
-				ComparisonOperator.EQUALS)),
+				ComparisonOperator.ValueEquality)),
 				new NotExpression(
 				new ComparisonExpression(
 				NewFieldValue(
-					NewFieldValue(CandidateFieldRoot.INSTANCE, "previous", typeof(Data)),
+					NewFieldValue(CandidateFieldRoot.Instance, "previous", typeof(Data)),
 					"previous",
 					typeof(Data)),
 				new ConstValue(null),
-				ComparisonOperator.EQUALS)));
+				ComparisonOperator.ValueEquality)));
 
 			Assert.AreEqual(expected, expression);
 		}
@@ -99,9 +99,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 		{
 			IExpression expression = ExpressionFromMethod("MatchEnumConstrain");
 			IExpression expected = new ComparisonExpression(
-				NewFieldValue(CandidateFieldRoot.INSTANCE, "_priority", typeof(MessagePriority)),
+				NewFieldValue(CandidateFieldRoot.Instance, "_priority", typeof(MessagePriority)),
 				new ConstValue(MessagePriority.High),
-				ComparisonOperator.EQUALS);
+				ComparisonOperator.ValueEquality);
 			Assert.AreEqual(expected, expression);
 		}
 		

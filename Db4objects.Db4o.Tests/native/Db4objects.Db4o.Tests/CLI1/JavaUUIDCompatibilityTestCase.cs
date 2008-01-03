@@ -81,7 +81,7 @@ public class Program {
 		protected override IConfiguration GetConfiguration()
 		{
 			IConfiguration config = base.GetConfiguration();
-			config.GenerateUUIDs(ConfigScope.GLOBALLY);
+			config.GenerateUUIDs(ConfigScope.Globally);
 			return config;
 		}
 	}
