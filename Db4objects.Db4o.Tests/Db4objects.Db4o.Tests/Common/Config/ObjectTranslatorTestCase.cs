@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			Db().Set(new ObjectTranslatorTestCase.Thing("jbe"));
+			Db().Store(new ObjectTranslatorTestCase.Thing("jbe"));
 		}
 
 		public virtual void _testTranslationCount()

@@ -22,8 +22,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		protected override void Store()
 		{
-			Db().Set(new UUIDTestItem("one"));
-			Db().Set(new UUIDTestItem("two"));
+			Db().Store(new UUIDTestItem("one"));
+			Db().Store(new UUIDTestItem("two"));
 		}
 
 		/// <exception cref="Exception"></exception>

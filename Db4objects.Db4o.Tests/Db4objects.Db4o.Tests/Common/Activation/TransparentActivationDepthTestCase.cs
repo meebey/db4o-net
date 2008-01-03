@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 
 		public virtual void TestSpecificActivationDepth()
 		{
-			IActivationDepth depth = Provider().ActivationDepth(3, ActivationMode.ACTIVATE);
+			IActivationDepth depth = Provider().ActivationDepth(3, ActivationMode.Activate);
 			AssertDescendingDepth(3, depth, typeof(TransparentActivationDepthTestCase.TAAware
 				));
 			AssertDescendingDepth(3, depth, typeof(TransparentActivationDepthTestCase.NonTAAware
@@ -78,8 +78,8 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 
 		public virtual void TestIntegerMaxValueMeansFull()
 		{
-			AssertFullActivationDepthForMaxValue(ActivationMode.PEEK);
-			AssertFullActivationDepthForMaxValue(ActivationMode.ACTIVATE);
+			AssertFullActivationDepthForMaxValue(ActivationMode.Peek);
+			AssertFullActivationDepthForMaxValue(ActivationMode.Activate);
 		}
 
 		private void AssertFullActivationDepthForMaxValue(ActivationMode mode)
@@ -109,7 +109,7 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 
 		private IActivationDepth TransparentActivationDepthFor(Type clazz)
 		{
-			return Provider().ActivationDepthFor(ClassMetadataFor(clazz), ActivationMode.ACTIVATE
+			return Provider().ActivationDepthFor(ClassMetadataFor(clazz), ActivationMode.Activate
 				);
 		}
 

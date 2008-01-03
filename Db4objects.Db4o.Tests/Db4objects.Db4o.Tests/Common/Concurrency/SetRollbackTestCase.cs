@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				for (int i = 0; i < 1000; i++)
 				{
 					SimpleObject c = new SimpleObject("oc " + i, i);
-					oc.Set(c);
+					oc.Store(c);
 				}
 			}
 			else
@@ -30,10 +30,10 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				for (int i = 0; i < 1000; i++)
 				{
 					SimpleObject c = new SimpleObject("oc " + i, i);
-					oc.Set(c);
+					oc.Store(c);
 					oc.Rollback();
 					c = new SimpleObject("oc2.2 " + i, i);
-					oc.Set(c);
+					oc.Store(c);
 				}
 				oc.Rollback();
 			}

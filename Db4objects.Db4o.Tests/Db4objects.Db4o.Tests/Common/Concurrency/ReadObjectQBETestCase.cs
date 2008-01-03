@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		{
 			int mid = ThreadCount() / 2;
 			SimpleObject example = new SimpleObject(testString + mid, mid);
-			IObjectSet result = oc.Get(example);
+			IObjectSet result = oc.QueryByExample(example);
 			Assert.AreEqual(1, result.Size());
 			Assert.AreEqual(example, result.Next());
 		}
@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void ConcReadDifferentObject(IExtObjectContainer oc, int seq)
 		{
 			SimpleObject example = new SimpleObject(testString + seq, seq);
-			IObjectSet result = oc.Get(example);
+			IObjectSet result = oc.QueryByExample(example);
 			Assert.AreEqual(1, result.Size());
 			Assert.AreEqual(example, result.Next());
 		}

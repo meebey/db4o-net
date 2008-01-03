@@ -17,13 +17,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 		public virtual string Value()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return value;
 		}
 
 		public virtual object Object()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return obj;
 		}
 	}

@@ -65,36 +65,36 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 				expression.Right().Accept(visitor);
 				_constraint = subQuery.Constrain(visitor.Value());
 				ComparisonOperator op = expression.Op();
-				if (op.Equals(ComparisonOperator.EQUALS))
+				if (op.Equals(ComparisonOperator.ValueEquality))
 				{
 					return;
 				}
-				if (op.Equals(ComparisonOperator.IDENTITY))
+				if (op.Equals(ComparisonOperator.ReferenceEquality))
 				{
 					_constraint.Identity();
 					return;
 				}
-				if (op.Equals(ComparisonOperator.GREATER))
+				if (op.Equals(ComparisonOperator.Greater))
 				{
 					_constraint.Greater();
 					return;
 				}
-				if (op.Equals(ComparisonOperator.SMALLER))
+				if (op.Equals(ComparisonOperator.Smaller))
 				{
 					_constraint.Smaller();
 					return;
 				}
-				if (op.Equals(ComparisonOperator.CONTAINS))
+				if (op.Equals(ComparisonOperator.Contains))
 				{
 					_constraint.Contains();
 					return;
 				}
-				if (op.Equals(ComparisonOperator.STARTSWITH))
+				if (op.Equals(ComparisonOperator.StartsWith))
 				{
 					_constraint.StartsWith(true);
 					return;
 				}
-				if (op.Equals(ComparisonOperator.ENDSWITH))
+				if (op.Equals(ComparisonOperator.EndsWith))
 				{
 					_constraint.EndsWith(true);
 					return;

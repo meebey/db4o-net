@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nested
 
 		public virtual int Foo()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _foo;
 		}
 
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nested
 		{
 			public virtual OuterClass GetOuterObject()
 			{
-				this.Activate(ActivationPurpose.READ);
+				this.Activate(ActivationPurpose.Read);
 				return this._enclosing;
 			}
 

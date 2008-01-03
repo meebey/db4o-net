@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 	{
 		protected virtual void DoTestStoreObject(object storedItem)
 		{
-			Db().Set(storedItem);
+			Db().Store(storedItem);
 			Db().Purge(storedItem);
 			object readItem = RetrieveOnlyInstance(storedItem.GetType());
 			Assert.AreNotSame(storedItem, readItem);

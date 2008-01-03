@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 						{
 							stream.CheckStillToSet();
 							StatefulBuffer returnBytes = stream.ReadWriterByID(trans, classMetadata.GetID());
-							MsgD createdClass = Msg.OBJECT_TO_CLIENT.GetWriter(returnBytes);
+							MsgD createdClass = Msg.ObjectToClient.GetWriter(returnBytes);
 							Write(createdClass);
 							ok = true;
 						}
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				if (!ok)
 				{
-					Write(Msg.FAILED);
+					Write(Msg.Failed);
 				}
 			}
 			return true;

@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				db.Get(null);
+				db.QueryByExample(null);
 			}
 
 			private readonly ServerClosedTestCase _enclosing;

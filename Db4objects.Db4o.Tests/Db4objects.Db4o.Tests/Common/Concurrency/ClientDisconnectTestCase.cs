@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			{
 				if (seq % 2 == 0)
 				{
-					client.Get(null);
+					client.QueryByExample(null);
 				}
 				else
 				{
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				client.Get(null);
+				client.QueryByExample(null);
 			}
 
 			private readonly ClientDisconnectTestCase _enclosing;

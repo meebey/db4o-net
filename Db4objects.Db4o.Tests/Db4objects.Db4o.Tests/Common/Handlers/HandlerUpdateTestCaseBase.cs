@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			HandlerUpdateTestCaseBase.Holder holder = new HandlerUpdateTestCaseBase.Holder();
 			holder._values = CreateValues();
 			holder._arrays = CreateArrays();
-			objectContainer.Set(holder);
+			StoreObject(objectContainer, holder);
 		}
 
 		protected override void AssertObjectsAreReadable(IExtObjectContainer objectContainer

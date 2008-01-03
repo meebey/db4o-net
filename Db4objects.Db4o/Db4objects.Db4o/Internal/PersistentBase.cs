@@ -17,11 +17,11 @@ namespace Db4objects.Db4o.Internal
 
 		public bool BeginProcessing()
 		{
-			if (BitIsTrue(Const4.PROCESSING))
+			if (BitIsTrue(Const4.Processing))
 			{
 				return false;
 			}
-			BitTrue(Const4.PROCESSING);
+			BitTrue(Const4.Processing);
 			return true;
 		}
 
@@ -47,16 +47,16 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void CacheDirty(Collection4 col)
 		{
-			if (!BitIsTrue(Const4.CACHED_DIRTY))
+			if (!BitIsTrue(Const4.CachedDirty))
 			{
-				BitTrue(Const4.CACHED_DIRTY);
+				BitTrue(Const4.CachedDirty);
 				col.Add(this);
 			}
 		}
 
 		public virtual void EndProcessing()
 		{
-			BitFalse(Const4.PROCESSING);
+			BitFalse(Const4.Processing);
 		}
 
 		public virtual void Free(Transaction trans)
@@ -71,12 +71,12 @@ namespace Db4objects.Db4o.Internal
 
 		public bool IsActive()
 		{
-			return BitIsTrue(Const4.ACTIVE);
+			return BitIsTrue(Const4.Active);
 		}
 
 		public virtual bool IsDirty()
 		{
-			return BitIsTrue(Const4.ACTIVE) && (!BitIsTrue(Const4.CLEAN));
+			return BitIsTrue(Const4.Active) && (!BitIsTrue(Const4.Clean));
 		}
 
 		public bool IsNew()
@@ -86,12 +86,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int LinkLength()
 		{
-			return Const4.ID_LENGTH;
+			return Const4.IdLength;
 		}
 
 		internal void NotCachedDirty()
 		{
-			BitFalse(Const4.CACHED_DIRTY);
+			BitFalse(Const4.CachedDirty);
 		}
 
 		public virtual void Read(Transaction trans)
@@ -116,31 +116,31 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.YAPMETA_SET_ID.Log(a_id);
+				DTrace.YapmetaSetId.Log(a_id);
 			}
 			_id = a_id;
 		}
 
 		public void SetStateClean()
 		{
-			BitTrue(Const4.ACTIVE);
-			BitTrue(Const4.CLEAN);
+			BitTrue(Const4.Active);
+			BitTrue(Const4.Clean);
 		}
 
 		public void SetStateDeactivated()
 		{
-			BitFalse(Const4.ACTIVE);
+			BitFalse(Const4.Active);
 		}
 
 		public virtual void SetStateDirty()
 		{
-			BitTrue(Const4.ACTIVE);
-			BitFalse(Const4.CLEAN);
+			BitTrue(Const4.Active);
+			BitFalse(Const4.Clean);
 		}
 
 		internal virtual void SetStateOnRead(BufferImpl reader)
 		{
-			if (BitIsTrue(Const4.CACHED_DIRTY))
+			if (BitIsTrue(Const4.CachedDirty))
 			{
 				SetStateDirty();
 			}
@@ -192,7 +192,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.YAPMETA_WRITE.Log(GetID());
+				DTrace.YapmetaWrite.Log(GetID());
 			}
 			LocalObjectContainer container = (LocalObjectContainer)trans.Container();
 			WriteThis(trans, writer);

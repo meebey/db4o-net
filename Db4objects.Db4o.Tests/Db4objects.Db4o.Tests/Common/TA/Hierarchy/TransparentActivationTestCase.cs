@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 			new TransparentActivationTestCase().RunAll();
 		}
 
-		private const int PRIORITY = 42;
+		private const int Priority = 42;
 
 		protected override void Configure(IConfiguration config)
 		{
@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			Project project = new PrioritizedProject("db4o", PRIORITY);
+			Project project = new PrioritizedProject("db4o", Priority);
 			project.LogWorkDone(new UnitOfWork("ta kick-off", new DateTime(1000), new DateTime
 				(2000)));
 			Store(project);
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 		{
 			PrioritizedProject project = (PrioritizedProject)RetrieveOnlyInstance(typeof(Project
 				));
-			Assert.AreEqual(PRIORITY, project.GetPriority());
+			Assert.AreEqual(Priority, project.GetPriority());
 			Assert.AreEqual(1000, project.TotalTimeSpent());
 		}
 	}

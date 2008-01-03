@@ -15,14 +15,14 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual byte EncodingByte()
 		{
-			return Const4.ISO8859;
+			return Const4.Iso8859;
 		}
 
 		internal static LatinStringIO ForEncoding(byte encodingByte)
 		{
 			switch (encodingByte)
 			{
-				case Const4.ISO8859:
+				case Const4.Iso8859:
 				{
 					return new LatinStringIO();
 				}
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int Length(string str)
 		{
-			return str.Length + Const4.OBJECT_LENGTH + Const4.INT_LENGTH;
+			return str.Length + Const4.ObjectLength + Const4.IntLength;
 		}
 
 		public virtual string Read(IReadBuffer buffer, int length)
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int ShortLength(string str)
 		{
-			return str.Length + Const4.INT_LENGTH;
+			return str.Length + Const4.IntLength;
 		}
 
 		public virtual void Write(IWriteBuffer buffer, string str)

@@ -9,8 +9,8 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public sealed class ObjectInfoCollectionImpl : IObjectInfoCollection
 	{
-		public static readonly IObjectInfoCollection EMPTY = new Db4objects.Db4o.Internal.ObjectInfoCollectionImpl
-			(Iterators.EMPTY_ITERABLE);
+		public static readonly IObjectInfoCollection Empty = new Db4objects.Db4o.Internal.ObjectInfoCollectionImpl
+			(Iterators.EmptyIterable);
 
 		public IEnumerable _collection;
 

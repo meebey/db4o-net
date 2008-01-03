@@ -22,17 +22,17 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		public virtual bool TakeGreater()
 		{
-			return _bitmap[QE.GREATER];
+			return _bitmap[QE.Greater];
 		}
 
 		public virtual bool TakeEqual()
 		{
-			return _bitmap[QE.EQUAL];
+			return _bitmap[QE.Equal];
 		}
 
 		public virtual bool TakeSmaller()
 		{
-			return _bitmap[QE.SMALLER];
+			return _bitmap[QE.Smaller];
 		}
 	}
 }

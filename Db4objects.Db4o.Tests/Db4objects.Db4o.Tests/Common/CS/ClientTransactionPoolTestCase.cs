@@ -18,18 +18,18 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.Io(new MemoryIoAdapter());
 			LocalObjectContainer db = (LocalObjectContainer)Db4oFactory.OpenFile(config, SwitchingFilesFromClientUtil
-				.MAINFILE_NAME);
+				.MainfileName);
 			ClientTransactionPool pool = new ClientTransactionPool(db);
 			try
 			{
 				Assert.AreEqual(1, pool.OpenFileCount());
-				Transaction trans1 = pool.Acquire(SwitchingFilesFromClientUtil.MAINFILE_NAME);
+				Transaction trans1 = pool.Acquire(SwitchingFilesFromClientUtil.MainfileName);
 				Assert.AreEqual(db, trans1.Container());
 				Assert.AreEqual(1, pool.OpenFileCount());
-				Transaction trans2 = pool.Acquire(SwitchingFilesFromClientUtil.FILENAME_A);
+				Transaction trans2 = pool.Acquire(SwitchingFilesFromClientUtil.FilenameA);
 				Assert.AreNotEqual(db, trans2.Container());
 				Assert.AreEqual(2, pool.OpenFileCount());
-				Transaction trans3 = pool.Acquire(SwitchingFilesFromClientUtil.FILENAME_A);
+				Transaction trans3 = pool.Acquire(SwitchingFilesFromClientUtil.FilenameA);
 				Assert.AreEqual(trans2.Container(), trans3.Container());
 				Assert.AreEqual(2, pool.OpenFileCount());
 				pool.Release(trans3, true);

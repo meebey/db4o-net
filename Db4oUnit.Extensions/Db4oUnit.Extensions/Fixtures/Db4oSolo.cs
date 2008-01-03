@@ -11,7 +11,7 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oSolo : AbstractFileBasedDb4oFixture
 	{
-		private static readonly string FILE = "db4oSoloTest.yap";
+		private static readonly string File = "db4oSoloTest.yap";
 
 		public Db4oSolo() : this(new IndependentConfigurationSource())
 		{
@@ -45,7 +45,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private static string FilePath()
 		{
-			return CrossPlatformServices.DatabasePath(FILE);
+			return CrossPlatformServices.DatabasePath(File);
 		}
 	}
 }

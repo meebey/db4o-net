@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Foundation
 
 		protected override object Map(object current)
 		{
-			return _filter.Match(current) ? current : MappingIterator.SKIP;
+			return _filter.Match(current) ? current : MappingIterator.Skip;
 		}
 	}
 }

@@ -100,7 +100,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			BufferImpl buffer = marshallingContext.ToWriteBuffer(pointer);
 			buffer.Seek(0);
 			UnmarshallingContext unmarshallingContext = new UnmarshallingContext(Trans(), @ref
-				, Const4.ADD_TO_ID_TREE, false);
+				, Const4.AddToIdTree, false);
 			unmarshallingContext.Buffer(buffer);
 			unmarshallingContext.ActivationDepth(new LegacyActivationDepth(5));
 			return unmarshallingContext.Read();

@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Internal
 		public void Activate(object obj, int depth)
 		{
 			Activate(null, obj, ActivationDepthProvider().ActivationDepth(depth, ActivationMode
-				.ACTIVATE));
+				.Activate));
 		}
 
 		/// <exception cref="ArgumentNullException"></exception>
@@ -74,7 +74,14 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="DatabaseClosedException"></exception>
+		[System.ObsoleteAttribute(@"Use")]
 		public IObjectSet Get(object template)
+		{
+			return QueryByExample(template);
+		}
+
+		/// <exception cref="DatabaseClosedException"></exception>
+		public IObjectSet QueryByExample(object template)
 		{
 			return Get(null, template);
 		}
@@ -120,7 +127,7 @@ namespace Db4objects.Db4o.Internal
 		public object PeekPersisted(object obj, int depth, bool committed)
 		{
 			return PeekPersisted(null, obj, ActivationDepthProvider().ActivationDepth(depth, 
-				ActivationMode.PEEK), committed);
+				ActivationMode.Peek), committed);
 		}
 
 		public void Purge(object obj)
@@ -135,7 +142,7 @@ namespace Db4objects.Db4o.Internal
 
 		public IObjectSet Query(Type clazz)
 		{
-			return Get(clazz);
+			return QueryByExample(clazz);
 		}
 
 		public IObjectSet Query(Predicate predicate)
@@ -160,14 +167,30 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="DatabaseReadOnlyException"></exception>
+		[System.ObsoleteAttribute(@"Use")]
 		public void Set(object obj)
 		{
-			Set(obj, Const4.UNSPECIFIED);
+			Store(obj);
 		}
 
 		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="DatabaseReadOnlyException"></exception>
+		public void Store(object obj)
+		{
+			Store(obj, Const4.Unspecified);
+		}
+
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
+		[System.ObsoleteAttribute(@"Use")]
 		public void Set(object obj, int depth)
+		{
+			Store(obj, depth);
+		}
+
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
+		public void Store(object obj, int depth)
 		{
 			Set(null, obj, depth);
 		}

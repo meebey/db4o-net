@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			ArrayHandlerTestCase.IntArrayHolder expectedItem = new ArrayHandlerTestCase.IntArrayHolder
 				(new int[] { 1, 2, 3 });
-			Db().Set(expectedItem);
+			Db().Store(expectedItem);
 			Db().Purge(expectedItem);
 			ArrayHandlerTestCase.IntArrayHolder readItem = (ArrayHandlerTestCase.IntArrayHolder
 				)RetrieveOnlyInstance(typeof(ArrayHandlerTestCase.IntArrayHolder));
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			ArrayHandlerTestCase.StringArrayHolder expectedItem = new ArrayHandlerTestCase.StringArrayHolder
 				(new string[] { "one", "two", "three" });
-			Db().Set(expectedItem);
+			Db().Store(expectedItem);
 			Db().Purge(expectedItem);
 			ArrayHandlerTestCase.StringArrayHolder readItem = (ArrayHandlerTestCase.StringArrayHolder
 				)RetrieveOnlyInstance(typeof(ArrayHandlerTestCase.StringArrayHolder));

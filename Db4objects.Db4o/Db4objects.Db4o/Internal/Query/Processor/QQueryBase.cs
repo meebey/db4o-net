@@ -175,7 +175,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private IConstraint AddClassConstraint(IReflectClass claxx)
 		{
-			if (claxx.Equals(Stream()._handlers.ICLASS_OBJECT))
+			if (claxx.Equals(Stream()._handlers.IclassObject))
 			{
 				return null;
 			}
@@ -510,7 +510,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				int id = ((int)current);
 				if (this.ids.Find(id) != null)
 				{
-					return MappingIterator.SKIP;
+					return MappingIterator.Skip;
 				}
 				this.ids = (TreeInt)this.ids.Add(new TreeInt(id));
 				return current;

@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 				r2.name = "o21";
 				r2.child.name = "o22";
 				r2.child.child.name = "o23";
-				oc2.Set(r2);
+				oc2.Store(r2);
 				oc2.Commit();
 				oc1.Refresh(r1, 3);
 				Assert.AreEqual("o21", r1.name);

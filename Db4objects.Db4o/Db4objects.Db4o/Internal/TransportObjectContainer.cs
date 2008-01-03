@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override int ConverterVersion()
 		{
-			return Converter.VERSION;
+			return Converter.Version;
 		}
 
 		protected override void DropReferences()

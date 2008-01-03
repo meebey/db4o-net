@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			FloatHandlerUpdateTestCase.ItemArrays itemArrays = (FloatHandlerUpdateTestCase.ItemArrays
 				)obj;
 			AssertPrimitiveArray(itemArrays._typedPrimitiveArray);
-			if (_db4oHeaderVersion == VersionServices.HEADER_30_40)
+			if (_db4oHeaderVersion == VersionServices.Header3040)
 			{
 				AssertWrapperArray((float[])itemArrays._primitiveArrayInObject);
 			}

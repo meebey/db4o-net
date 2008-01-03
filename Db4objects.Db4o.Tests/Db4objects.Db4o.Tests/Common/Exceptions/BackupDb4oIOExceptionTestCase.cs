@@ -15,20 +15,20 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			new BackupDb4oIOExceptionTestCase().RunAll();
 		}
 
-		private static readonly string BACKUP_FILE = "backup.db4o";
+		private static readonly string BackupFile = "backup.db4o";
 
 		/// <exception cref="Exception"></exception>
 		protected override void Db4oSetupBeforeStore()
 		{
 			base.Db4oSetupBeforeStore();
-			File4.Delete(BACKUP_FILE);
+			File4.Delete(BackupFile);
 		}
 
 		/// <exception cref="Exception"></exception>
 		protected override void Db4oTearDownBeforeClean()
 		{
 			base.Db4oTearDownBeforeClean();
-			File4.Delete(BACKUP_FILE);
+			File4.Delete(BackupFile);
 		}
 
 		public virtual void TestBackup()
@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
-				this._enclosing.Db().Backup(BackupDb4oIOExceptionTestCase.BACKUP_FILE);
+				this._enclosing.Db().Backup(BackupDb4oIOExceptionTestCase.BackupFile);
 			}
 
 			private readonly BackupDb4oIOExceptionTestCase _enclosing;

@@ -66,10 +66,10 @@ namespace Db4oUnit.Extensions.Tests
 				), typeof(FixtureConfigurationTestCase.TestCase2) }).Build().Run(new TestResult(
 				));
 			configuration.Verify(new MethodCall[] { new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase1
-				), MethodCall.IGNORED_ARGUMENT), new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase1
-				), MethodCall.IGNORED_ARGUMENT), new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase2
-				), MethodCall.IGNORED_ARGUMENT), new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase2
-				), MethodCall.IGNORED_ARGUMENT) });
+				), MethodCall.IgnoredArgument), new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase1
+				), MethodCall.IgnoredArgument), new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase2
+				), MethodCall.IgnoredArgument), new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase2
+				), MethodCall.IgnoredArgument) });
 		}
 	}
 }

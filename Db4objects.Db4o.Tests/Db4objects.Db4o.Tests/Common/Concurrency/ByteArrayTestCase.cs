@@ -14,11 +14,11 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 {
 	public class ByteArrayTestCase : Db4oClientServerTestCase
 	{
-		internal const int ITERATIONS = 15;
+		internal const int Iterations = 15;
 
-		internal const int INSTANCES = 2;
+		internal const int Instances = 2;
 
-		internal const int ARRAY_LENGTH = 1024 * 512;
+		internal const int ArrayLength = 1024 * 512;
 
 		public static void Main(string[] args)
 		{
@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		protected override void Store()
 		{
-			for (int i = 0; i < INSTANCES; ++i)
+			for (int i = 0; i < Instances; ++i)
 			{
 				Store(new ByteArrayHolder(CreateByteArray()));
 				Store(new SerializableByteArrayHolder(CreateByteArray()));
@@ -54,22 +54,22 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		private void TimeQueryLoop(IExtObjectContainer oc, string label, Type clazz)
 		{
-			for (int i = 0; i < ITERATIONS; ++i)
+			for (int i = 0; i < Iterations; ++i)
 			{
 				IQuery query = oc.Query();
 				query.Constrain(clazz);
 				IObjectSet os = query.Execute();
-				Assert.AreEqual(INSTANCES, os.Size());
+				Assert.AreEqual(Instances, os.Size());
 				while (os.HasNext())
 				{
-					Assert.AreEqual(ARRAY_LENGTH, ((IIByteArrayHolder)os.Next()).GetBytes().Length);
+					Assert.AreEqual(ArrayLength, ((IIByteArrayHolder)os.Next()).GetBytes().Length);
 				}
 			}
 		}
 
 		internal virtual byte[] CreateByteArray()
 		{
-			byte[] bytes = new byte[ARRAY_LENGTH];
+			byte[] bytes = new byte[ArrayLength];
 			for (int i = 0; i < bytes.Length; ++i)
 			{
 				bytes[i] = (byte)(i % 256);

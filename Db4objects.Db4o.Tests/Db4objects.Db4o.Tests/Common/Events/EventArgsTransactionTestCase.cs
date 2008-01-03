@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			ObjectByRef foundTrans = new ObjectByRef();
 			factory.Creating += new Db4objects.Db4o.Events.CancellableObjectEventHandler(new 
 				_IEventListener4_20(this, called, foundTrans).OnEvent);
-			Db().Set(new EventArgsTransactionTestCase.Item());
+			Db().Store(new EventArgsTransactionTestCase.Item());
 			Db().Commit();
 			Assert.IsTrue(called.value);
 			Assert.AreSame(Trans(), foundTrans.value);

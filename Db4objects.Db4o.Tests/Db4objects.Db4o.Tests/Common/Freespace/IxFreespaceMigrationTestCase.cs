@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			{
 				IxFreespaceMigrationTestCase.Item storedItem = new IxFreespaceMigrationTestCase.Item
 					("item" + i, nextItem);
-				objectContainer.Set(storedItem);
+				StoreObject(objectContainer, storedItem);
 				nextItem = storedItem;
 			}
 			objectContainer.Commit();

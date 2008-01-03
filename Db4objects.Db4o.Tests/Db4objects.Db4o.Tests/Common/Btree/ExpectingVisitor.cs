@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 {
 	public class ExpectingVisitor : IVisitor4
 	{
-		private const bool DEBUG = false;
+		private const bool Debug = false;
 
 		private readonly object[] _expected;
 
@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			}
 		}
 
-		private static readonly object FOUND = new _object_24();
+		private static readonly object Found = new _object_24();
 
 		public ExpectingVisitor(object[] results, bool obeyOrder, bool ignoreUnexpected)
 		{
@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 				if (AreEqual(_expected[_cursor], obj))
 				{
 					Ods("Expected OK: " + obj.ToString());
-					_expected[_cursor] = FOUND;
+					_expected[_cursor] = Found;
 					_cursor++;
 					return;
 				}
@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 				if (AreEqual(obj, expectedItem))
 				{
 					Ods("Expected OK: " + obj);
-					_expected[i] = FOUND;
+					_expected[i] = Found;
 					return;
 				}
 			}
@@ -126,7 +126,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			}
 			for (int i = 0; i < _expected.Length; i++)
 			{
-				Assert.AreSame(FOUND, _expected[i]);
+				Assert.AreSame(Found, _expected[i]);
 			}
 		}
 	}

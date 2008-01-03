@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			CascadeOnUpdate cou = new CascadeOnUpdate();
 			cou.child = new CascadeOnUpdate.Atom(new CascadeOnUpdate.Atom("storedChild"), "stored"
 				);
-			Db().Set(cou);
+			Db().Store(cou);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 				CascadeOnUpdate cou = (CascadeOnUpdate)obj;
 				((CascadeOnUpdate.Atom)cou.child).name = "updated";
 				((CascadeOnUpdate.Atom)cou.child).child.name = "updated";
-				this._enclosing.Db().Set(cou);
+				this._enclosing.Db().Store(cou);
 			}
 
 			private readonly CascadeOnUpdate _enclosing;

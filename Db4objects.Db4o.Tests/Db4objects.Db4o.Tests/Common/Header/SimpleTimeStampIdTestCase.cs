@@ -41,21 +41,21 @@ namespace Db4objects.Db4o.Tests.Common.Header
 
 		protected override void Store()
 		{
-			Db().Set(new SimpleTimeStampIdTestCase.STSItem("one"));
+			Db().Store(new SimpleTimeStampIdTestCase.STSItem("one"));
 		}
 
 		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
 			SimpleTimeStampIdTestCase.STSItem item = (SimpleTimeStampIdTestCase.STSItem)Db().
-				Get(typeof(SimpleTimeStampIdTestCase.STSItem)).Next();
+				QueryByExample(typeof(SimpleTimeStampIdTestCase.STSItem)).Next();
 			long version = Db().GetObjectInfo(item).GetVersion();
 			Assert.IsGreater(0, version);
 			Assert.IsGreaterOrEqual(version, CurrentVersion());
 			Reopen();
 			SimpleTimeStampIdTestCase.STSItem item2 = new SimpleTimeStampIdTestCase.STSItem("two"
 				);
-			Db().Set(item2);
+			Db().Store(item2);
 			long secondVersion = Db().GetObjectInfo(item2).GetVersion();
 			Assert.IsGreater(version, secondVersion);
 			Assert.IsGreaterOrEqual(secondVersion, CurrentVersion());

@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			string className = trans.Container().StringIO().Read(nameBytes);
 			ReadMetaClassID(reader);
 			int ancestorID = reader.ReadInt();
-			reader.IncrementOffset(Const4.INT_LENGTH);
+			reader.IncrementOffset(Const4.IntLength);
 			int numFields = reader.ReadInt();
 			return new RawClassSpec(className, ancestorID, numFields);
 		}
@@ -116,8 +116,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual int MarshalledLength(ObjectContainerBase stream, ClassMetadata clazz
 			)
 		{
-			int len = stream.StringIO().ShortLength(clazz.NameToWrite()) + Const4.OBJECT_LENGTH
-				 + (Const4.INT_LENGTH * 2) + (Const4.ID_LENGTH);
+			int len = stream.StringIO().ShortLength(clazz.NameToWrite()) + Const4.ObjectLength
+				 + (Const4.IntLength * 2) + (Const4.IdLength);
 			len += clazz.Index().OwnLength();
 			if (clazz.i_fields != null)
 			{

@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Config
 		/// <b>Caution !</b><br />
 		/// This setting will also trigger deletion of old member objects, on
 		/// calls to
-		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
+		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
 		/// .<br /><br />
 		/// An example of the behaviour:<br />
 		/// <code>
@@ -117,7 +117,7 @@ namespace Db4objects.Db4o.Config
 		/// Setting cascadeOnUpdate to true will result in the update
 		/// of all member objects if a stored instance of this class is passed
 		/// to
-		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
+		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
 		/// .<br /><br />
 		/// The default setting is <b>false</b>.<br /><br />
 		/// In client-server environment this setting should be used on both
@@ -341,10 +341,10 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// specifies the updateDepth for this class.
 		/// <br /><br />see the documentation of
-		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
+		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
 		/// for further details.<br /><br />
 		/// The default setting is 0: Only the object passed to
-		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
+		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
 		/// will be updated.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />

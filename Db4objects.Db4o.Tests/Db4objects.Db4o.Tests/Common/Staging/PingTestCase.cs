@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 				return;
 			}
 			sender.Send(new PingTestCase.Data());
-			IObjectSet os = client.Get(null);
+			IObjectSet os = client.QueryByExample(null);
 			while (os.HasNext())
 			{
 				os.Next();

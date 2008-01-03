@@ -20,12 +20,12 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		private static string testString = "simple test string";
 
-		private static int COUNT = 100;
+		private static int Count = 100;
 
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			for (int i = 0; i < COUNT; i++)
+			for (int i = 0; i < Count; i++)
 			{
 				Store(new SimpleObject(testString + i, i));
 			}
@@ -35,24 +35,24 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void ConcUpdateSameObject(IExtObjectContainer oc, int seq)
 		{
 			IQuery query = oc.Query();
-			query.Descend("_s").Constrain(testString + COUNT / 2);
+			query.Descend("_s").Constrain(testString + Count / 2);
 			IObjectSet result = query.Execute();
 			Assert.AreEqual(1, result.Size());
 			SimpleObject o = (SimpleObject)result.Next();
-			o.SetI(COUNT + seq);
-			oc.Set(o);
+			o.SetI(Count + seq);
+			oc.Store(o);
 		}
 
 		/// <exception cref="Exception"></exception>
 		public virtual void CheckUpdateSameObject(IExtObjectContainer oc)
 		{
 			IQuery query = oc.Query();
-			query.Descend("_s").Constrain(testString + COUNT / 2);
+			query.Descend("_s").Constrain(testString + Count / 2);
 			IObjectSet result = query.Execute();
 			Assert.AreEqual(1, result.Size());
 			SimpleObject o = (SimpleObject)result.Next();
 			int i = o.GetI();
-			Assert.IsTrue(COUNT <= i && i < COUNT + ThreadCount());
+			Assert.IsTrue(Count <= i && i < Count + ThreadCount());
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -64,22 +64,22 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IObjectSet result = query.Execute();
 			Assert.AreEqual(1, result.Size());
 			SimpleObject o = (SimpleObject)result.Next();
-			o.SetI(seq + COUNT);
-			oc.Set(o);
+			o.SetI(seq + Count);
+			oc.Store(o);
 		}
 
 		/// <exception cref="Exception"></exception>
 		public virtual void CheckUpdateDifferentObject(IExtObjectContainer oc)
 		{
 			IObjectSet result = oc.Query(typeof(SimpleObject));
-			Assert.AreEqual(COUNT, result.Size());
+			Assert.AreEqual(Count, result.Size());
 			while (result.HasNext())
 			{
 				SimpleObject o = (SimpleObject)result.Next();
 				int i = o.GetI();
-				if (i >= COUNT)
+				if (i >= Count)
 				{
-					i -= COUNT;
+					i -= Count;
 				}
 				Assert.AreEqual(testString + i, o.GetS());
 			}

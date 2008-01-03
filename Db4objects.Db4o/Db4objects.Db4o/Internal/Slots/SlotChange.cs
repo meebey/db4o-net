@@ -15,17 +15,17 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		private ReferencedSlot _shared;
 
-		private const int FREE_ON_COMMIT_BIT = 1;
+		private const int FreeOnCommitBit = 1;
 
-		private const int FREE_ON_ROLLBACK_BIT = 2;
+		private const int FreeOnRollbackBit = 2;
 
-		private const int SET_POINTER_BIT = 3;
+		private const int SetPointerBit = 3;
 
-		private const int FREE_POINTER_ON_COMMIT_BIT = 4;
+		private const int FreePointerOnCommitBit = 4;
 
-		private const int FREE_POINTER_ON_ROLLBACK_BIT = 5;
+		private const int FreePointerOnRollbackBit = 5;
 
-		private const int FREESPACE_BIT = 6;
+		private const int FreespaceBit = 6;
 
 		public SlotChange(int id) : base(id)
 		{
@@ -43,27 +43,27 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		private void DoFreeOnCommit()
 		{
-			SetBit(FREE_ON_COMMIT_BIT);
+			SetBit(FreeOnCommitBit);
 		}
 
 		private void DoFreeOnRollback()
 		{
-			SetBit(FREE_ON_ROLLBACK_BIT);
+			SetBit(FreeOnRollbackBit);
 		}
 
 		private void DoFreePointerOnCommit()
 		{
-			SetBit(FREE_POINTER_ON_COMMIT_BIT);
+			SetBit(FreePointerOnCommitBit);
 		}
 
 		private void DoFreePointerOnRollback()
 		{
-			SetBit(FREE_POINTER_ON_ROLLBACK_BIT);
+			SetBit(FreePointerOnRollbackBit);
 		}
 
 		private void DoSetPointer()
 		{
-			SetBit(SET_POINTER_BIT);
+			SetBit(SetPointerBit);
 		}
 
 		public virtual void FreeDuringCommit(LocalObjectContainer file, bool forFreespace
@@ -130,22 +130,22 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		private bool IsForFreeSpace()
 		{
-			return IsBitSet(FREESPACE_BIT);
+			return IsBitSet(FreespaceBit);
 		}
 
 		private bool IsFreeOnCommit()
 		{
-			return IsBitSet(FREE_ON_COMMIT_BIT);
+			return IsBitSet(FreeOnCommitBit);
 		}
 
 		private bool IsFreeOnRollback()
 		{
-			return IsBitSet(FREE_ON_ROLLBACK_BIT);
+			return IsBitSet(FreeOnRollbackBit);
 		}
 
 		public bool IsSetPointer()
 		{
-			return IsBitSet(SET_POINTER_BIT);
+			return IsBitSet(SetPointerBit);
 		}
 
 		/// <summary>FIXME:	Check where pointers should be freed on commit.</summary>
@@ -155,7 +155,7 @@ namespace Db4objects.Db4o.Internal.Slots
 		/// </remarks>
 		public bool IsFreePointerOnRollback()
 		{
-			return IsBitSet(FREE_POINTER_ON_ROLLBACK_BIT);
+			return IsBitSet(FreePointerOnRollbackBit);
 		}
 
 		public virtual Slot NewSlot()
@@ -195,9 +195,9 @@ namespace Db4objects.Db4o.Internal.Slots
 			{
 				if (DTrace.enabled)
 				{
-					DTrace.FREE_POINTER_ON_ROLLBACK.LogLength(_key, Const4.POINTER_LENGTH);
+					DTrace.FreePointerOnRollback.LogLength(_key, Const4.PointerLength);
 				}
-				yapFile.Free(_key, Const4.POINTER_LENGTH);
+				yapFile.Free(_key, Const4.PointerLength);
 			}
 		}
 
@@ -234,7 +234,7 @@ namespace Db4objects.Db4o.Internal.Slots
 		{
 			if (flag)
 			{
-				SetBit(FREESPACE_BIT);
+				SetBit(FreespaceBit);
 			}
 		}
 	}

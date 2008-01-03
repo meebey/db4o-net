@@ -16,23 +16,23 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public override void ProcessClient(ISocket4 sock)
 		{
 			Msg message = Msg.ReadMessage(MessageDispatcher(), Transaction(), sock);
-			if (message.Equals(Msg.LENGTH))
+			if (message.Equals(Msg.Length))
 			{
 				try
 				{
 					_currentByte = 0;
 					_length = message.PayLoad().ReadInt();
 					_blob.GetStatusFrom(this);
-					_blob.SetStatus(Status.PROCESSING);
+					_blob.SetStatus(Status.Processing);
 					Copy(sock, this._blob.GetClientOutputStream(), _length, true);
 					message = Msg.ReadMessage(MessageDispatcher(), Transaction(), sock);
-					if (message.Equals(Msg.OK))
+					if (message.Equals(Msg.Ok))
 					{
-						this._blob.SetStatus(Status.COMPLETED);
+						this._blob.SetStatus(Status.Completed);
 					}
 					else
 					{
-						this._blob.SetStatus(Status.ERROR);
+						this._blob.SetStatus(Status.Error);
 					}
 				}
 				catch (Exception)
@@ -41,9 +41,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			}
 			else
 			{
-				if (message.Equals(Msg.ERROR))
+				if (message.Equals(Msg.Error))
 				{
-					this._blob.SetStatus(Status.ERROR);
+					this._blob.SetStatus(Status.Error);
 				}
 			}
 		}
@@ -59,16 +59,16 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					Sharpen.IO.File file = blobImpl.ServerFile(null, false);
 					int length = (int)file.Length();
 					ISocket4 sock = ServerMessageDispatcher().Socket();
-					Msg.LENGTH.GetWriterForInt(Transaction(), length).Write(sock);
+					Msg.Length.GetWriterForInt(Transaction(), length).Write(sock);
 					FileInputStream fin = new FileInputStream(file);
 					Copy(fin, sock, false);
 					sock.Flush();
-					Msg.OK.Write(sock);
+					Msg.Ok.Write(sock);
 				}
 			}
 			catch (Exception)
 			{
-				Write(Msg.ERROR);
+				Write(Msg.Error);
 			}
 			return true;
 		}

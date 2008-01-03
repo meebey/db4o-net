@@ -154,8 +154,8 @@ namespace Db4objects.Db4o.Internal.Query.Result
 				if (yapClass.GetName() != null)
 				{
 					IReflectClass claxx = yapClass.ClassReflector();
-					if (claxx == null || !(Stream()._handlers.ICLASS_INTERNAL.IsAssignableFrom(claxx)
-						))
+					if (claxx == null || !(Stream()._handlers.IclassInternal.IsAssignableFrom(claxx))
+						)
 					{
 						IClassIndexStrategy index = yapClass.Index();
 						index.TraverseAll(_transaction, new _IVisitor4_115(this, duplicates));

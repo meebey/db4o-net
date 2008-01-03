@@ -117,7 +117,7 @@ namespace Db4objects.Db4o
 			try
 			{
 				IQuery q = container.Query(trans);
-				q.Constrain(Const4.CLASS_REPLICATIONRECORD);
+				q.Constrain(Const4.ClassReplicationrecord);
 				q.Descend("_youngerPeer").Constrain(younger).Identity();
 				q.Descend("_olderPeer").Constrain(older).Identity();
 				IObjectSet objectSet = q.Execute();

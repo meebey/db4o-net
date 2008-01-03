@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.FREE_RAM.LogLength(address, length);
+				DTrace.FreeRam.LogLength(address, length);
 			}
 			_finder._key = address;
 			FreeSlotNode sizeNode;
@@ -155,7 +155,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.GET_FREESPACE.LogLength(address, length);
+				DTrace.GetFreespace.LogLength(address, length);
 			}
 			return new Slot(address, length);
 		}
@@ -238,7 +238,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 				return;
 			}
 			Read(reader);
-			_file.Free(freeSlotsID, Const4.POINTER_LENGTH);
+			_file.Free(freeSlotsID, Const4.PointerLength);
 			FreeReader(reader);
 		}
 
@@ -259,7 +259,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override byte SystemType()
 		{
-			return FM_RAM;
+			return FmRam;
 		}
 
 		public override string ToString()

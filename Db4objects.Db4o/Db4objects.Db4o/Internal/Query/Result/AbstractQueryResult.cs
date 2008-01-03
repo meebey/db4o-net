@@ -77,14 +77,14 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			{
 				if (current == null)
 				{
-					return MappingIterator.SKIP;
+					return MappingIterator.Skip;
 				}
 				lock (this._enclosing.Lock())
 				{
 					object obj = this._enclosing.ActivatedObject(((int)current));
 					if (obj == null)
 					{
-						return MappingIterator.SKIP;
+						return MappingIterator.Skip;
 					}
 					return obj;
 				}

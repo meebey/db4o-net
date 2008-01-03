@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					name = yapClass.GetName();
 				}
 			}
-			Write(Msg.CLASS_NAME_FOR_ID.GetWriterForString(Transaction(), name));
+			Write(Msg.ClassNameForId.GetWriterForString(Transaction(), name));
 			return true;
 		}
 	}

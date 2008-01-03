@@ -8,9 +8,9 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 {
 	public class NestedArraysTestCase : AbstractDb4oTestCase
 	{
-		private const int DEPTH = 5;
+		private const int Depth = 5;
 
-		private const int ELEMENTS = 3;
+		private const int Elements = 3;
 
 		public class Data
 		{
@@ -27,11 +27,11 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		protected override void Store()
 		{
-			object[] obj = new object[ELEMENTS];
-			Fill(obj, DEPTH);
-			object[] arr = new object[ELEMENTS];
-			Fill(arr, DEPTH);
-			Db().Set(new NestedArraysTestCase.Data(obj, arr));
+			object[] obj = new object[Elements];
+			Fill(obj, Depth);
+			object[] arr = new object[Elements];
+			Fill(arr, Depth);
+			Db().Store(new NestedArraysTestCase.Data(obj, arr));
 		}
 
 		private void Fill(object[] arr, int depth)
@@ -43,9 +43,9 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 				return;
 			}
 			depth--;
-			for (int i = 0; i < ELEMENTS; i++)
+			for (int i = 0; i < Elements; i++)
 			{
-				arr[i] = new object[ELEMENTS];
+				arr[i] = new object[Elements];
 				Fill((object[])arr[i], depth);
 			}
 		}
@@ -55,8 +55,8 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 			NestedArraysTestCase.Data data = (NestedArraysTestCase.Data)RetrieveOnlyInstance(
 				typeof(NestedArraysTestCase.Data));
 			Db().Activate(data, int.MaxValue);
-			Check((object[])data._obj, DEPTH);
-			Check(data._arr, DEPTH);
+			Check((object[])data._obj, Depth);
+			Check(data._arr, Depth);
 		}
 
 		private void Check(object[] arr, int depth)
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 				return;
 			}
 			depth--;
-			for (int i = 0; i < ELEMENTS; i++)
+			for (int i = 0; i < Elements; i++)
 			{
 				Check((object[])arr[i], depth);
 			}

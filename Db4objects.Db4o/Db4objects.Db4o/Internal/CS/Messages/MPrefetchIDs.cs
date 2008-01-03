@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public bool ProcessAtServer()
 		{
 			int prefetchIDCount = ReadInt();
-			MsgD reply = Msg.ID_LIST.GetWriterForLength(Transaction(), Const4.INT_LENGTH * prefetchIDCount
+			MsgD reply = Msg.IdList.GetWriterForLength(Transaction(), Const4.IntLength * prefetchIDCount
 				);
 			lock (StreamLock())
 			{

@@ -90,11 +90,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 				BeginDelegation();
 				if (DTrace.enabled)
 				{
-					DTrace.FREE.LogLength(slot.Address(), slot.Length());
+					DTrace.Free.LogLength(slot.Address(), slot.Length());
 				}
 				Slot[] remove = new Slot[2];
 				Slot newFreeSlot = slot;
-				BTreePointer pointer = SearchBTree(_slotsByAddress, slot, SearchTarget.LOWEST);
+				BTreePointer pointer = SearchBTree(_slotsByAddress, slot, SearchTarget.Lowest);
 				BTreePointer previousPointer = pointer != null ? pointer.Previous() : _slotsByAddress
 					.LastPointer(Transaction());
 				if (previousPointer != null)
@@ -159,7 +159,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				BeginDelegation();
 				BTreePointer pointer = SearchBTree(_slotsByLength, new Slot(0, length), SearchTarget
-					.HIGHEST);
+					.Highest);
 				if (pointer == null)
 				{
 					return null;
@@ -174,7 +174,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 				}
 				if (DTrace.enabled)
 				{
-					DTrace.GET_FREESPACE.LogLength(slot.Address(), slot.Length());
+					DTrace.GetFreespace.LogLength(slot.Address(), slot.Length());
 				}
 				return slot;
 			}
@@ -273,7 +273,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override byte SystemType()
 		{
-			return FM_BTREE;
+			return FmBtree;
 		}
 
 		public override string ToString()

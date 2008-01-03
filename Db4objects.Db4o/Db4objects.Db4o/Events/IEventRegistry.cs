@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Events
 		/// </remarks>
 		/// <returns>event</returns>
 		/// <seealso cref="CancellableObjectEventArgs">CancellableObjectEventArgs</seealso>
-		/// <seealso cref="IObjectContainer.Set">IObjectContainer.Set</seealso>
+		/// <seealso cref="IObjectContainer.Store">IObjectContainer.Store</seealso>
 		event Db4objects.Db4o.Events.CancellableObjectEventHandler Creating;
 
 		/// <summary>This event is fired before an object is activated.</summary>
@@ -107,7 +107,7 @@ namespace Db4objects.Db4o.Events
 		/// </remarks>
 		/// <returns>event</returns>
 		/// <seealso cref="CancellableObjectEventArgs">CancellableObjectEventArgs</seealso>
-		/// <seealso cref="IObjectContainer.Set">IObjectContainer.Set</seealso>
+		/// <seealso cref="IObjectContainer.Store">IObjectContainer.Store</seealso>
 		event Db4objects.Db4o.Events.CancellableObjectEventHandler Updating;
 
 		/// <summary>This event is fired before an object is deleted.</summary>
@@ -162,7 +162,7 @@ namespace Db4objects.Db4o.Events
 		/// </remarks>
 		/// <returns>event</returns>
 		/// <seealso cref="ObjectEventArgs">ObjectEventArgs</seealso>
-		/// <seealso cref="IObjectContainer.Set">IObjectContainer.Set</seealso>
+		/// <seealso cref="IObjectContainer.Store">IObjectContainer.Store</seealso>
 		event Db4objects.Db4o.Events.ObjectEventHandler Created;
 
 		/// <summary>This event is fired after an object is updated.</summary>
@@ -176,7 +176,7 @@ namespace Db4objects.Db4o.Events
 		/// </remarks>
 		/// <returns>event</returns>
 		/// <seealso cref="ObjectEventArgs">ObjectEventArgs</seealso>
-		/// <seealso cref="IObjectContainer.Set">IObjectContainer.Set</seealso>
+		/// <seealso cref="IObjectContainer.Store">IObjectContainer.Store</seealso>
 		event Db4objects.Db4o.Events.ObjectEventHandler Updated;
 
 		/// <summary>This event is fired after an object is deleted.</summary>

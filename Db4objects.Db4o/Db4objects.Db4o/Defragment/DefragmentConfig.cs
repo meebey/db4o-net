@@ -14,9 +14,9 @@ namespace Db4objects.Db4o.Defragment
 	/// 	</seealso>
 	public class DefragmentConfig
 	{
-		public const bool DEBUG = false;
+		public const bool Debug = false;
 
-		public static readonly string BACKUP_SUFFIX = "backup";
+		public static readonly string BackupSuffix = "backup";
 
 		private string _origPath;
 
@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Defragment
 		/// The path to the file to be defragmented. Must exist and must be
 		/// a valid yap file.
 		/// </param>
-		public DefragmentConfig(string origPath) : this(origPath, origPath + "." + BACKUP_SUFFIX
+		public DefragmentConfig(string origPath) : this(origPath, origPath + "." + BackupSuffix
 			)
 		{
 		}
@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Defragment
 		/// </returns>
 		public virtual IStoredClassFilter StoredClassFilter()
 		{
-			return (_storedClassFilter == null ? NULLFILTER : _storedClassFilter);
+			return (_storedClassFilter == null ? Nullfilter : _storedClassFilter);
 		}
 
 		/// <param name="storedClassFilter">
@@ -225,7 +225,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private static readonly IStoredClassFilter NULLFILTER = new DefragmentConfig.NullFilter
+		private static readonly IStoredClassFilter Nullfilter = new DefragmentConfig.NullFilter
 			();
 
 		public static IConfiguration VanillaDb4oConfig(int blockSize)

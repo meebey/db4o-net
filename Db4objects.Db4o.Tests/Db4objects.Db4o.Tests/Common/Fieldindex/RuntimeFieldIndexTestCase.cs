@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
 	public class RuntimeFieldIndexTestCase : AbstractDb4oTestCase, IOptOutCS
 	{
-		private static readonly string FIELDNAME = "_id";
+		private static readonly string Fieldname = "_id";
 
 		public class Data
 		{
@@ -37,12 +37,12 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		public virtual void TestCreateIndexAtRuntime()
 		{
 			IStoredField field = Db().StoredClass(typeof(RuntimeFieldIndexTestCase.Data)).StoredField
-				(FIELDNAME, null);
+				(Fieldname, null);
 			Assert.IsFalse(field.HasIndex());
 			field.CreateIndex();
 			Assert.IsTrue(field.HasIndex());
 			IQuery query = NewQuery(typeof(RuntimeFieldIndexTestCase.Data));
-			query.Descend(FIELDNAME).Constrain(2);
+			query.Descend(Fieldname).Constrain(2);
 			IObjectSet result = query.Execute();
 			Assert.AreEqual(1, result.Size());
 			field.CreateIndex();

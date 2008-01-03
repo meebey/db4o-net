@@ -16,9 +16,9 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 {
 	public class StoredClassFilterTestCase : ITestCase
 	{
-		private static readonly string DB4O_BACKUP = BuildTempPath("defrag.db4o.backup");
+		private static readonly string Db4oBackup = BuildTempPath("defrag.db4o.backup");
 
-		private static readonly string DB4O_FILE = BuildTempPath("defrag.db4o");
+		private static readonly string Db4oFile = BuildTempPath("defrag.db4o");
 
 		public class SimpleClass
 		{
@@ -51,8 +51,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private void DeleteAllFiles()
 		{
-			File4.Delete(DB4O_FILE);
-			File4.Delete(DB4O_BACKUP);
+			File4.Delete(Db4oFile);
+			File4.Delete(Db4oBackup);
 		}
 
 		private void AssertStoredClasses(string fname)
@@ -117,11 +117,11 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private string CreateDatabase()
 		{
-			string fname = DB4O_FILE;
+			string fname = Db4oFile;
 			IObjectContainer db = Db4oFactory.OpenFile(fname);
 			try
 			{
-				db.Set(new StoredClassFilterTestCase.SimpleClass("verySimple"));
+				db.Store(new StoredClassFilterTestCase.SimpleClass("verySimple"));
 				db.Commit();
 			}
 			finally

@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				return (double)_currentByte / (double)_length;
 			}
-			return Status.ERROR;
+			return Status.Error;
 		}
 
 		/// <exception cref="IOException"></exception>
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			 update)
 		{
 			BufferedOutputStream @out = new BufferedOutputStream(rawout);
-			byte[] buffer = new byte[BlobImpl.COPYBUFFER_LENGTH];
+			byte[] buffer = new byte[BlobImpl.CopybufferLength];
 			int totalread = 0;
 			while (totalread < length)
 			{
@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		protected virtual void Copy(IInputStream rawin, ISocket4 sock, bool update)
 		{
 			BufferedInputStream @in = new BufferedInputStream(rawin);
-			byte[] buffer = new byte[BlobImpl.COPYBUFFER_LENGTH];
+			byte[] buffer = new byte[BlobImpl.CopybufferLength];
 			int bytesread = -1;
 			while ((bytesread = rawin.Read(buffer)) >= 0)
 			{

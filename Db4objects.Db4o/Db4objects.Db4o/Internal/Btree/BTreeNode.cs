@@ -25,9 +25,9 @@ namespace Db4objects.Db4o.Internal.Btree
 	/// <exclude></exclude>
 	public sealed class BTreeNode : PersistentBase
 	{
-		private const int COUNT_LEAF_AND_3_LINK_LENGTH = (Const4.INT_LENGTH * 4) + 1;
+		private const int CountLeafAnd3LinkLength = (Const4.IntLength * 4) + 1;
 
-		private const int SLOT_LEADING_LENGTH = Const4.LEADING_LENGTH + COUNT_LEAF_AND_3_LINK_LENGTH;
+		private const int SlotLeadingLength = Const4.LeadingLength + CountLeafAnd3LinkLength;
 
 		internal readonly BTree _btree;
 
@@ -191,12 +191,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return Child(reader, s.Cursor()).SearchLeaf(trans, preparedComparison, target);
 			}
-			if (!s.FoundMatch() || target == SearchTarget.ANY || target == SearchTarget.HIGHEST
+			if (!s.FoundMatch() || target == SearchTarget.Any || target == SearchTarget.Highest
 				)
 			{
 				return new BTreeNodeSearchResult(trans, reader, Btree(), s, this);
 			}
-			if (target == SearchTarget.LOWEST)
+			if (target == SearchTarget.Lowest)
 			{
 				BTreeNodeSearchResult res = FindLowestLeafMatch(trans, preparedComparison, s.Cursor
 					() - 1);
@@ -348,7 +348,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.BTREE_NODE_COMMIT_OR_ROLLBACK.Log(GetID());
+				DTrace.BtreeNodeCommitOrRollback.Log(GetID());
 			}
 			if (_dead)
 			{
@@ -374,7 +374,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				{
 					key = isCommit ? patch.Commit(trans, _btree) : patch.Rollback(trans, _btree);
 				}
-				if (key != No4.INSTANCE)
+				if (key != No4.Instance)
 				{
 					tempKeys[count] = key;
 					count++;
@@ -559,7 +559,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			int len = KeyHandler().LinkLength();
 			if (!_isLeaf)
 			{
-				len += Const4.ID_LENGTH;
+				len += Const4.IdLength;
 			}
 			return len;
 		}
@@ -599,7 +599,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return true;
 			}
-			return patch.Key(trans) != No4.INSTANCE;
+			return patch.Key(trans) != No4.Instance;
 		}
 
 		private object FirstKey(Transaction trans)
@@ -607,14 +607,14 @@ namespace Db4objects.Db4o.Internal.Btree
 			int index = FirstKeyIndex(trans);
 			if (-1 == index)
 			{
-				return No4.INSTANCE;
+				return No4.Instance;
 			}
 			return Key(trans, index);
 		}
 
 		public override byte GetIdentifier()
 		{
-			return Const4.BTREE_NODE;
+			return Const4.BtreeNode;
 		}
 
 		private void PrepareInsert(int pos)
@@ -637,7 +637,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.BTREE_NODE_REMOVE.Log(GetID());
+				DTrace.BtreeNodeRemove.Log(GetID());
 			}
 			int len = _count - pos;
 			_count--;
@@ -730,7 +730,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public override int OwnLength()
 		{
-			return SLOT_LEADING_LENGTH + (_count * EntryLength()) + Const4.BRACKETS_BYTES;
+			return SlotLeadingLength + (_count * EntryLength()) + Const4.BracketsBytes;
 		}
 
 		internal BufferImpl PrepareRead(Transaction trans)
@@ -920,7 +920,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		private Searcher Search(IPreparedComparison preparedComparison, BufferImpl reader
 			)
 		{
-			return Search(preparedComparison, reader, SearchTarget.ANY);
+			return Search(preparedComparison, reader, SearchTarget.Any);
 		}
 
 		private Searcher Search(IPreparedComparison preparedComparison, BufferImpl reader
@@ -957,7 +957,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private void SeekKey(BufferImpl reader, int ix)
 		{
-			reader._offset = SLOT_LEADING_LENGTH + (EntryLength() * ix);
+			reader._offset = SlotLeadingLength + (EntryLength() * ix);
 		}
 
 		private Db4objects.Db4o.Internal.Btree.BTreeNode Split(Transaction trans)
@@ -1153,7 +1153,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				for (int i = 0; i < _count; i++)
 				{
 					object obj = Key(trans, reader, i);
-					if (obj != No4.INSTANCE)
+					if (obj != No4.Instance)
 					{
 						visitor.Visit(obj);
 					}
@@ -1185,13 +1185,13 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			int count = 0;
 			int startOffset = a_writer._offset;
-			a_writer.IncrementOffset(COUNT_LEAF_AND_3_LINK_LENGTH);
+			a_writer.IncrementOffset(CountLeafAnd3LinkLength);
 			if (_isLeaf)
 			{
 				for (int i = 0; i < _count; i++)
 				{
 					object obj = Key(trans, i);
-					if (obj != No4.INSTANCE)
+					if (obj != No4.Instance)
 					{
 						count++;
 						KeyHandler().WriteIndexEntry(a_writer, obj);
@@ -1207,7 +1207,7 @@ namespace Db4objects.Db4o.Internal.Btree
 						Db4objects.Db4o.Internal.Btree.BTreeNode child = (Db4objects.Db4o.Internal.Btree.BTreeNode
 							)_children[i];
 						object childKey = child.FirstKey(trans);
-						if (childKey != No4.INSTANCE)
+						if (childKey != No4.Instance)
 						{
 							count++;
 							KeyHandler().WriteIndexEntry(a_writer, childKey);

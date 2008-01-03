@@ -14,9 +14,9 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 {
 	public class COR775TestCase : ITestLifeCycle
 	{
-		private static readonly string ORIGINAL = "cor775.yap";
+		private static readonly string Original = "cor775.yap";
 
-		private static readonly string DEFGARED = ORIGINAL + ".bk";
+		private static readonly string Defgared = Original + ".bk";
 
 		internal IConfiguration db4oConfig;
 
@@ -34,8 +34,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private void Cleanup()
 		{
-			File4.Delete(ORIGINAL);
-			File4.Delete(DEFGARED);
+			File4.Delete(Original);
+			File4.Delete(Defgared);
 		}
 
 		public static void Main(string[] args)
@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		{
 			Prepare();
 			VerifyDB();
-			DefragmentConfig config = new DefragmentConfig(ORIGINAL, DEFGARED);
+			DefragmentConfig config = new DefragmentConfig(Original, Defgared);
 			config.ForceBackupDelete(true);
 			config.Db4oConfig(GetConfiguration());
 			Db4objects.Db4o.Defragment.Defragment.Defrag(config);
@@ -57,21 +57,21 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private void Prepare()
 		{
-			Sharpen.IO.File file = new Sharpen.IO.File(ORIGINAL);
+			Sharpen.IO.File file = new Sharpen.IO.File(Original);
 			if (file.Exists())
 			{
 				file.Delete();
 			}
 			IObjectContainer testDB = OpenDB();
 			COR775TestCase.Item item = new COR775TestCase.Item("richard", 100);
-			testDB.Set(item);
+			testDB.Store(item);
 			testDB.Close();
 		}
 
 		private void VerifyDB()
 		{
 			IObjectContainer testDB = OpenDB();
-			IObjectSet result = testDB.Get(typeof(COR775TestCase.Item));
+			IObjectSet result = testDB.QueryByExample(typeof(COR775TestCase.Item));
 			if (result.HasNext())
 			{
 				COR775TestCase.Item retrievedItem = (COR775TestCase.Item)result.Next();
@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		private IObjectContainer OpenDB()
 		{
 			IConfiguration db4oConfig = GetConfiguration();
-			IObjectContainer testDB = Db4oFactory.OpenFile(db4oConfig, ORIGINAL);
+			IObjectContainer testDB = Db4oFactory.OpenFile(db4oConfig, Original);
 			return testDB;
 		}
 

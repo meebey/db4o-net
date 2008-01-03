@@ -11,9 +11,9 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 	/// <remarks>Shared implementation for a paged collection.</remarks>
 	public class PagedBackingStore : ActivatableImpl
 	{
-		public const int INITIAL_PAGE_COUNT = 16;
+		public const int InitialPageCount = 16;
 
-		private Page[] _pages = new Page[INITIAL_PAGE_COUNT];
+		private Page[] _pages = new Page[InitialPageCount];
 
 		private int _top = 0;
 
@@ -24,19 +24,19 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual bool Add(object item)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return GetPageForAdd().Add(item);
 		}
 
 		public virtual int Size()
 		{
-			Activate(ActivationPurpose.READ);
-			return _top * Page.PAGESIZE - LastPage().Capacity();
+			Activate(ActivationPurpose.Read);
+			return _top * Page.Pagesize - LastPage().Capacity();
 		}
 
 		public virtual object Get(int itemIndex)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			Page page = PageHolding(itemIndex);
 			return page.Get(IndexInPage(itemIndex));
 		}
@@ -89,12 +89,12 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		private int PageIndex(int itemIndex)
 		{
-			return itemIndex / Page.PAGESIZE;
+			return itemIndex / Page.Pagesize;
 		}
 
 		private int IndexInPage(int itemIndex)
 		{
-			return itemIndex % Page.PAGESIZE;
+			return itemIndex % Page.Pagesize;
 		}
 	}
 }

@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		private void AssertPrimitiveArrayInObject(DoubleHandlerUpdateTestCase.ItemArrays 
 			item)
 		{
-			if (_db4oHeaderVersion == VersionServices.HEADER_30_40)
+			if (_db4oHeaderVersion == VersionServices.Header3040)
 			{
 				AssertWrapperData((double[])item._primitiveArrayInObject);
 			}

@@ -127,7 +127,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			if (obj == null)
 			{
-				return Null.INSTANCE;
+				return Null.Instance;
 			}
 			ClassMetadata yc = i_trans.Container().ProduceClassMetadata(i_trans.Reflector().ForObject
 				(obj));

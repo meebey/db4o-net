@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			AbstractQueryResult queryResult = QueryResult(ReadInt());
 			int id = queryResult.IndexOf(ReadInt());
-			Write(Msg.OBJECTSET_INDEXOF.GetWriterForInt(Transaction(), id));
+			Write(Msg.ObjectsetIndexof.GetWriterForInt(Transaction(), id));
 			return true;
 		}
 	}

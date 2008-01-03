@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Ext
 		/// reference with the object parameter. The method may be used to replace
 		/// objects or to reassociate an object with it's stored instance
 		/// after closing and opening a database file. A subsequent call to
-		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
+		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
 		/// is
 		/// necessary to update the stored object.<br /><br />
 		/// <b>Requirements:</b><br />- The ID needs to be a valid internal object ID,
@@ -275,8 +275,8 @@ namespace Db4objects.Db4o.Ext
 		/// tests if an object with this ID is currently cached.
 		/// <br /><br />
 		/// </remarks>
-		/// <param name="ID">the internal ID</param>
-		bool IsCached(long ID);
+		/// <param name="Id">the internal ID</param>
+		bool IsCached(long Id);
 
 		/// <summary>tests if this <code>ObjectContainer</code> is closed.</summary>
 		/// <remarks>
@@ -355,7 +355,7 @@ namespace Db4objects.Db4o.Ext
 		/// With the <code>committed</code> parameter it is possible to specify,
 		/// whether the desired object should contain the committed values or the
 		/// values that were set by the running transaction with
-		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
+		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
 		/// .
 		/// <br /><br />A possible usecase for this feature:<br />
 		/// An application might want to check all changes applied to an object
@@ -450,14 +450,28 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>
 		/// deep update interface to store or update objects.
 		/// <br /><br />In addition to the normal storage interface,
-		/// <see cref="IObjectContainer.Set">IObjectContainer.Set</see>
+		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
 		/// ,
 		/// this method allows a manual specification of the depth, the passed object is to be updated.<br /><br />
 		/// </remarks>
 		/// <param name="obj">the object to be stored or updated.</param>
 		/// <param name="depth">the depth to which the object is to be updated</param>
-		/// <seealso cref="IObjectContainer.Set">IObjectContainer.Set</seealso>
+		/// <seealso cref="IObjectContainer.Store">IObjectContainer.Store</seealso>
+		[System.ObsoleteAttribute(@"Use")]
 		void Set(object obj, int depth);
+
+		/// <summary>deep update interface to store or update objects.</summary>
+		/// <remarks>
+		/// deep update interface to store or update objects.
+		/// <br /><br />In addition to the normal storage interface,
+		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
+		/// ,
+		/// this method allows a manual specification of the depth, the passed object is to be updated.<br /><br />
+		/// </remarks>
+		/// <param name="obj">the object to be stored or updated.</param>
+		/// <param name="depth">the depth to which the object is to be updated</param>
+		/// <seealso cref="IObjectContainer.Store">IObjectContainer.Store</seealso>
+		void Store(object obj, int depth);
 
 		/// <summary>attempts to set a semaphore.</summary>
 		/// <remarks>

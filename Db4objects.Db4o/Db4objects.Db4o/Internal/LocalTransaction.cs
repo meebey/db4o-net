@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class LocalTransaction : Transaction
 	{
-		private readonly byte[] _pointerBuffer = new byte[Const4.POINTER_LENGTH];
+		private readonly byte[] _pointerBuffer = new byte[Const4.PointerLength];
 
 		protected readonly StatefulBuffer i_pointerIo;
 
@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Internal
 			, referenceSystem)
 		{
 			_file = (LocalObjectContainer)container;
-			i_pointerIo = new StatefulBuffer(this, Const4.POINTER_LENGTH);
+			i_pointerIo = new StatefulBuffer(this, Const4.PointerLength);
 			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_38(this);
 		}
 
@@ -131,7 +131,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.TRANS_COMMIT.LogInfo("server == " + Container().IsServer() + ", systemtrans == "
+				DTrace.TransCommit.LogInfo("server == " + Container().IsServer() + ", systemtrans == "
 					 + IsSystemTransaction());
 			}
 			Commit2Listeners();
@@ -308,7 +308,7 @@ namespace Db4objects.Db4o.Internal
 
 		private int TransactionLogSlotLength()
 		{
-			return ((CountSlotChanges() * 3) + 2) * Const4.INT_LENGTH;
+			return ((CountSlotChanges() * 3) + 2) * Const4.IntLength;
 		}
 
 		private bool SlotLongEnoughForLog(Slot slot)
@@ -361,7 +361,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void WriteZeroPointer(int id)
 		{
-			WritePointer(id, Slot.ZERO);
+			WritePointer(id, Slot.Zero);
 		}
 
 		public virtual void WritePointer(Pointer4 pointer)
@@ -373,8 +373,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.WRITE_POINTER.Log(id);
-				DTrace.WRITE_POINTER.LogLength(slot);
+				DTrace.WritePointer.Log(id);
+				DTrace.WritePointer.LogLength(slot);
 			}
 			CheckSynchronization();
 			i_pointerIo.UseSlot(id);
@@ -382,7 +382,7 @@ namespace Db4objects.Db4o.Internal
 			i_pointerIo.WriteInt(slot.Length());
 			if (Debug.xbytes && Deploy.overwrite)
 			{
-				i_pointerIo.SetID(Const4.IGNORE_ID);
+				i_pointerIo.SetID(Const4.IgnoreId);
 			}
 			i_pointerIo.Write();
 		}
@@ -417,7 +417,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.TRANS_FLUSH.Log();
+				DTrace.TransFlush.Log();
 			}
 			if (_file.ConfigImpl().FlushFileBuffers())
 			{
@@ -429,7 +429,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.PRODUCE_SLOT_CHANGE.Log(id);
+				DTrace.ProduceSlotChange.Log(id);
 			}
 			SlotChange slot = new SlotChange(id);
 			_slotChanges.Add(slot);
@@ -496,7 +496,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual Pointer4 ReadPointer(int id)
 		{
-			_file.ReadBytes(_pointerBuffer, id, Const4.POINTER_LENGTH);
+			_file.ReadBytes(_pointerBuffer, id, Const4.PointerLength);
 			int address = (_pointerBuffer[3] & 255) | (_pointerBuffer[2] & 255) << 8 | (_pointerBuffer
 				[1] & 255) << 16 | _pointerBuffer[0] << 24;
 			int length = (_pointerBuffer[7] & 255) | (_pointerBuffer[6] & 255) << 8 | (_pointerBuffer
@@ -513,8 +513,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.SLOT_SET_POINTER.Log(a_id);
-				DTrace.SLOT_SET_POINTER.LogLength(slot);
+				DTrace.SlotSetPointer.Log(a_id);
+				DTrace.SlotSetPointer.LogLength(slot);
 			}
 			CheckSynchronization();
 			ProduceSlotChange(a_id).SetPointer(slot);
@@ -574,7 +574,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					StatefulBuffer bytes = new StatefulBuffer(this, i_address, length);
 					bytes.Read();
-					bytes.IncrementOffset(Const4.INT_LENGTH);
+					bytes.IncrementOffset(Const4.IntLength);
 					_slotChanges.Read(bytes, new SlotChange(0));
 					if (WriteSlots())
 					{
@@ -629,8 +629,8 @@ namespace Db4objects.Db4o.Internal
 			CheckSynchronization();
 			if (DTrace.enabled)
 			{
-				DTrace.SLOT_DELETE.Log(id);
-				DTrace.SLOT_DELETE.LogLength(slot);
+				DTrace.SlotDelete.Log(id);
+				DTrace.SlotDelete.LogLength(slot);
 			}
 			if (id == 0)
 			{
@@ -638,7 +638,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			SlotChange slotChange = ProduceSlotChange(id);
 			slotChange.FreeOnCommit(_file, slot);
-			slotChange.SetPointer(Slot.ZERO);
+			slotChange.SetPointer(Slot.Zero);
 		}
 
 		public override void SlotFreeOnCommit(int id, Slot slot)
@@ -646,8 +646,8 @@ namespace Db4objects.Db4o.Internal
 			CheckSynchronization();
 			if (DTrace.enabled)
 			{
-				DTrace.SLOT_FREE_ON_COMMIT.Log(id);
-				DTrace.SLOT_FREE_ON_COMMIT.LogLength(slot);
+				DTrace.SlotFreeOnCommit.Log(id);
+				DTrace.SlotFreeOnCommit.LogLength(slot);
 			}
 			if (id == 0)
 			{
@@ -661,8 +661,8 @@ namespace Db4objects.Db4o.Internal
 			CheckSynchronization();
 			if (DTrace.enabled)
 			{
-				DTrace.SLOT_FREE_ON_ROLLBACK_ID.Log(id);
-				DTrace.SLOT_FREE_ON_ROLLBACK_ADDRESS.LogLength(slot);
+				DTrace.SlotFreeOnRollbackId.Log(id);
+				DTrace.SlotFreeOnRollbackAddress.LogLength(slot);
 			}
 			ProduceSlotChange(id).FreeOnRollback(slot);
 		}
@@ -678,10 +678,10 @@ namespace Db4objects.Db4o.Internal
 			CheckSynchronization();
 			if (DTrace.enabled)
 			{
-				DTrace.FREE_ON_ROLLBACK.Log(id);
-				DTrace.FREE_ON_ROLLBACK.LogLength(newSlot);
-				DTrace.FREE_ON_COMMIT.Log(id);
-				DTrace.FREE_ON_COMMIT.LogLength(oldSlot);
+				DTrace.FreeOnRollback.Log(id);
+				DTrace.FreeOnRollback.LogLength(newSlot);
+				DTrace.FreeOnCommit.Log(id);
+				DTrace.FreeOnCommit.LogLength(oldSlot);
 			}
 			SlotChange change = ProduceSlotChange(id);
 			change.FreeOnRollbackSetPointer(newSlot);
@@ -694,8 +694,8 @@ namespace Db4objects.Db4o.Internal
 			CheckSynchronization();
 			if (DTrace.enabled)
 			{
-				DTrace.FREE_ON_ROLLBACK.Log(id);
-				DTrace.FREE_ON_ROLLBACK.LogLength(slot);
+				DTrace.FreeOnRollback.Log(id);
+				DTrace.FreeOnRollback.LogLength(slot);
 			}
 			SlotChange slotChange = ProduceSlotChange(id);
 			slotChange.FreeOnRollbackSetPointer(slot);
@@ -763,7 +763,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					HardObjectReference hardRef = this._enclosing.Container().GetHardObjectReferenceById
 						(this._enclosing, info._key);
-					if (hardRef == HardObjectReference.INVALID)
+					if (hardRef == HardObjectReference.Invalid)
 					{
 						return;
 					}
@@ -784,7 +784,7 @@ namespace Db4objects.Db4o.Internal
 			CheckSynchronization();
 			if (DTrace.enabled)
 			{
-				DTrace.WRITE_UPDATE_DELETE_MEMBERS.Log(id);
+				DTrace.WriteUpdateDeleteMembers.Log(id);
 			}
 			TreeInt newNode = new TreeInt(id);
 			_writtenUpdateDeletedMembers = Tree.Add(_writtenUpdateDeletedMembers, newNode);
@@ -830,7 +830,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (null == _slotChanges)
 			{
-				return CallbackObjectInfoCollections.EMTPY;
+				return CallbackObjectInfoCollections.Emtpy;
 			}
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();

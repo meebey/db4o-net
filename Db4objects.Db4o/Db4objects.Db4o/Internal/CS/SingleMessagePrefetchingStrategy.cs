@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.CS
 	/// <exclude></exclude>
 	public class SingleMessagePrefetchingStrategy : IPrefetchingStrategy
 	{
-		public static readonly IPrefetchingStrategy INSTANCE = new Db4objects.Db4o.Internal.CS.SingleMessagePrefetchingStrategy
+		public static readonly IPrefetchingStrategy Instance = new Db4objects.Db4o.Internal.CS.SingleMessagePrefetchingStrategy
 			();
 
 		private SingleMessagePrefetchingStrategy()
@@ -52,19 +52,19 @@ namespace Db4objects.Db4o.Internal.CS
 			if (toGet > 0)
 			{
 				Transaction trans = container.Transaction();
-				MsgD msg = Msg.READ_MULTIPLE_OBJECTS.GetWriterForIntArray(trans, idsToGet, toGet);
+				MsgD msg = Msg.ReadMultipleObjects.GetWriterForIntArray(trans, idsToGet, toGet);
 				container.Write(msg);
-				MsgD response = (MsgD)container.ExpectedResponse(Msg.READ_MULTIPLE_OBJECTS);
+				MsgD response = (MsgD)container.ExpectedResponse(Msg.ReadMultipleObjects);
 				int embeddedMessageCount = response.ReadInt();
 				for (int i = 0; i < embeddedMessageCount; i++)
 				{
-					MsgObject mso = (MsgObject)Msg.OBJECT_TO_CLIENT.PublicClone();
+					MsgObject mso = (MsgObject)Msg.ObjectToClient.PublicClone();
 					mso.SetTransaction(trans);
 					mso.PayLoad(response.PayLoad().ReadYapBytes());
 					if (mso.PayLoad() != null)
 					{
-						mso.PayLoad().IncrementOffset(Const4.MESSAGE_LENGTH);
-						StatefulBuffer reader = mso.Unmarshall(Const4.MESSAGE_LENGTH);
+						mso.PayLoad().IncrementOffset(Const4.MessageLength);
+						StatefulBuffer reader = mso.Unmarshall(Const4.MessageLength);
 						object obj = trans.ObjectForIdFromCache(idsToGet[i]);
 						if (obj != null)
 						{

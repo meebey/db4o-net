@@ -70,9 +70,9 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 			for (int i = 0; i < 5; i++)
 			{
 				string name = i.ToString();
-				Db().Set(new COR57TestCase.Base(name));
-				Db().Set(new COR57TestCase.BaseExt(name));
-				Db().Set(new COR57TestCase.BaseExtExt(name));
+				Db().Store(new COR57TestCase.Base(name));
+				Db().Store(new COR57TestCase.BaseExt(name));
+				Db().Store(new COR57TestCase.BaseExtExt(name));
 			}
 		}
 
@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 
 		private void AssertQBE(int expectedCount, COR57TestCase.Base template)
 		{
-			AssertQueryResult(expectedCount, template, Db().Get(template));
+			AssertQueryResult(expectedCount, template, Db().QueryByExample(template));
 		}
 
 		private void AssertQueryResult(int expectedCount, COR57TestCase.Base expectedTemplate

@@ -26,142 +26,142 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		private IMessageDispatcher _messageDispatcher;
 
-		public static readonly MRuntimeException RUNTIME_EXCEPTION = new MRuntimeException
+		public static readonly MRuntimeException RuntimeException = new MRuntimeException
 			();
 
-		public static readonly MClassID CLASS_ID = new MClassID();
+		public static readonly MClassID ClassId = new MClassID();
 
-		public static readonly MClassMetadataIdForName CLASS_METADATA_ID_FOR_NAME = new MClassMetadataIdForName
+		public static readonly MClassMetadataIdForName ClassMetadataIdForName = new MClassMetadataIdForName
 			();
 
-		public static readonly MClassNameForID CLASS_NAME_FOR_ID = new MClassNameForID();
+		public static readonly MClassNameForID ClassNameForId = new MClassNameForID();
 
-		public static readonly MClose CLOSE = new MClose();
+		public static readonly MClose Close = new MClose();
 
-		public static readonly MCloseSocket CLOSE_SOCKET = new MCloseSocket();
+		public static readonly MCloseSocket CloseSocket = new MCloseSocket();
 
-		public static readonly MCommit COMMIT = new MCommit();
+		public static readonly MCommit Commit = new MCommit();
 
-		public static readonly MCommittedCallBackRegistry COMMITTED_CALLBACK_REGISTER = new 
+		public static readonly MCommittedCallBackRegistry CommittedCallbackRegister = new 
 			MCommittedCallBackRegistry();
 
-		public static readonly MCommittedInfo COMMITTED_INFO = new MCommittedInfo();
+		public static readonly MCommittedInfo CommittedInfo = new MCommittedInfo();
 
-		public static readonly MCommitSystemTransaction COMMIT_SYSTEMTRANS = new MCommitSystemTransaction
+		public static readonly MCommitSystemTransaction CommitSystemtrans = new MCommitSystemTransaction
 			();
 
-		public static readonly MCreateClass CREATE_CLASS = new MCreateClass();
+		public static readonly MCreateClass CreateClass = new MCreateClass();
 
-		public static readonly MClassMeta CLASS_META = new MClassMeta();
+		public static readonly MClassMeta ClassMeta = new MClassMeta();
 
-		public static readonly MVersion CURRENT_VERSION = new MVersion();
+		public static readonly MVersion CurrentVersion = new MVersion();
 
-		public static readonly MDelete DELETE = new MDelete();
+		public static readonly MDelete Delete = new MDelete();
 
-		public static readonly MError ERROR = new MError();
+		public static readonly MError Error = new MError();
 
-		public static readonly MFailed FAILED = new MFailed();
+		public static readonly MFailed Failed = new MFailed();
 
-		public static readonly MGetAll GET_ALL = new MGetAll();
+		public static readonly MGetAll GetAll = new MGetAll();
 
-		public static readonly MGetClasses GET_CLASSES = new MGetClasses();
+		public static readonly MGetClasses GetClasses = new MGetClasses();
 
-		public static readonly MGetInternalIDs GET_INTERNAL_IDS = new MGetInternalIDs();
+		public static readonly MGetInternalIDs GetInternalIds = new MGetInternalIDs();
 
-		public static readonly MGetThreadID GET_THREAD_ID = new MGetThreadID();
+		public static readonly MGetThreadID GetThreadId = new MGetThreadID();
 
-		public static readonly MIDList ID_LIST = new MIDList();
+		public static readonly MIDList IdList = new MIDList();
 
-		public static readonly MIdentity IDENTITY = new MIdentity();
+		public static readonly MIdentity Identity = new MIdentity();
 
-		public static readonly MIsAlive IS_ALIVE = new MIsAlive();
+		public static readonly MIsAlive IsAlive = new MIsAlive();
 
-		public static readonly MLength LENGTH = new MLength();
+		public static readonly MLength Length = new MLength();
 
-		public static readonly MLogin LOGIN = new MLogin();
+		public static readonly MLogin Login = new MLogin();
 
-		public static readonly MLoginOK LOGIN_OK = new MLoginOK();
+		public static readonly MLoginOK LoginOk = new MLoginOK();
 
-		public static readonly MNull NULL = new MNull();
+		public static readonly MNull Null = new MNull();
 
-		public static readonly MObjectByUuid OBJECT_BY_UUID = new MObjectByUuid();
+		public static readonly MObjectByUuid ObjectByUuid = new MObjectByUuid();
 
-		public static readonly MsgObject OBJECT_TO_CLIENT = new MsgObject();
+		public static readonly MsgObject ObjectToClient = new MsgObject();
 
-		public static readonly MObjectSetFetch OBJECTSET_FETCH = new MObjectSetFetch();
+		public static readonly MObjectSetFetch ObjectsetFetch = new MObjectSetFetch();
 
-		public static readonly MObjectSetFinalized OBJECTSET_FINALIZED = new MObjectSetFinalized
+		public static readonly MObjectSetFinalized ObjectsetFinalized = new MObjectSetFinalized
 			();
 
-		public static readonly MObjectSetGetId OBJECTSET_GET_ID = new MObjectSetGetId();
+		public static readonly MObjectSetGetId ObjectsetGetId = new MObjectSetGetId();
 
-		public static readonly MObjectSetIndexOf OBJECTSET_INDEXOF = new MObjectSetIndexOf
+		public static readonly MObjectSetIndexOf ObjectsetIndexof = new MObjectSetIndexOf
 			();
 
-		public static readonly MObjectSetReset OBJECTSET_RESET = new MObjectSetReset();
+		public static readonly MObjectSetReset ObjectsetReset = new MObjectSetReset();
 
-		public static readonly MObjectSetSize OBJECTSET_SIZE = new MObjectSetSize();
+		public static readonly MObjectSetSize ObjectsetSize = new MObjectSetSize();
 
-		public static readonly MOK OK = new MOK();
+		public static readonly MOK Ok = new MOK();
 
-		public static readonly MPing PING = new MPing();
+		public static readonly MPing Ping = new MPing();
 
-		public static readonly MPong PONG = new MPong();
+		public static readonly MPong Pong = new MPong();
 
-		public static readonly MPrefetchIDs PREFETCH_IDS = new MPrefetchIDs();
+		public static readonly MPrefetchIDs PrefetchIds = new MPrefetchIDs();
 
-		public static readonly MProcessDeletes PROCESS_DELETES = new MProcessDeletes();
+		public static readonly MProcessDeletes ProcessDeletes = new MProcessDeletes();
 
-		public static readonly MQueryExecute QUERY_EXECUTE = new MQueryExecute();
+		public static readonly MQueryExecute QueryExecute = new MQueryExecute();
 
-		public static readonly MQueryResult QUERY_RESULT = new MQueryResult();
+		public static readonly MQueryResult QueryResult = new MQueryResult();
 
-		public static readonly MRaiseVersion RAISE_VERSION = new MRaiseVersion();
+		public static readonly MRaiseVersion RaiseVersion = new MRaiseVersion();
 
-		public static readonly MReadBlob READ_BLOB = new MReadBlob();
+		public static readonly MReadBlob ReadBlob = new MReadBlob();
 
-		public static readonly MReadBytes READ_BYTES = new MReadBytes();
+		public static readonly MReadBytes ReadBytes = new MReadBytes();
 
-		public static readonly MReadMultipleObjects READ_MULTIPLE_OBJECTS = new MReadMultipleObjects
+		public static readonly MReadMultipleObjects ReadMultipleObjects = new MReadMultipleObjects
 			();
 
-		public static readonly MReadObject READ_OBJECT = new MReadObject();
+		public static readonly MReadObject ReadObject = new MReadObject();
 
-		public static readonly MReleaseSemaphore RELEASE_SEMAPHORE = new MReleaseSemaphore
+		public static readonly MReleaseSemaphore ReleaseSemaphore = new MReleaseSemaphore
 			();
 
-		public static readonly MRollback ROLLBACK = new MRollback();
+		public static readonly MRollback Rollback = new MRollback();
 
-		public static readonly MSetSemaphore SET_SEMAPHORE = new MSetSemaphore();
+		public static readonly MSetSemaphore SetSemaphore = new MSetSemaphore();
 
-		public static readonly MSuccess SUCCESS = new MSuccess();
+		public static readonly MSuccess Success = new MSuccess();
 
-		public static readonly MSwitchToFile SWITCH_TO_FILE = new MSwitchToFile();
+		public static readonly MSwitchToFile SwitchToFile = new MSwitchToFile();
 
-		public static readonly MSwitchToMainFile SWITCH_TO_MAIN_FILE = new MSwitchToMainFile
+		public static readonly MSwitchToMainFile SwitchToMainFile = new MSwitchToMainFile
 			();
 
-		public static readonly MTaDelete TA_DELETE = new MTaDelete();
+		public static readonly MTaDelete TaDelete = new MTaDelete();
 
-		public static readonly MTaIsDeleted TA_IS_DELETED = new MTaIsDeleted();
+		public static readonly MTaIsDeleted TaIsDeleted = new MTaIsDeleted();
 
-		public static readonly MUserMessage USER_MESSAGE = new MUserMessage();
+		public static readonly MUserMessage UserMessage = new MUserMessage();
 
-		public static readonly MUseTransaction USE_TRANSACTION = new MUseTransaction();
+		public static readonly MUseTransaction UseTransaction = new MUseTransaction();
 
-		public static readonly MWriteBlob WRITE_BLOB = new MWriteBlob();
+		public static readonly MWriteBlob WriteBlob = new MWriteBlob();
 
-		public static readonly MWriteNew WRITE_NEW = new MWriteNew();
+		public static readonly MWriteNew WriteNew = new MWriteNew();
 
-		public static readonly MWriteUpdate WRITE_UPDATE = new MWriteUpdate();
+		public static readonly MWriteUpdate WriteUpdate = new MWriteUpdate();
 
-		public static readonly MWriteUpdateDeleteMembers WRITE_UPDATE_DELETE_MEMBERS = new 
-			MWriteUpdateDeleteMembers();
-
-		public static readonly MWriteBatchedMessages WRITE_BATCHED_MESSAGES = new MWriteBatchedMessages
+		public static readonly MWriteUpdateDeleteMembers WriteUpdateDeleteMembers = new MWriteUpdateDeleteMembers
 			();
 
-		public static readonly MsgBlob DELETE_BLOB_FILE = new MDeleteBlobFile();
+		public static readonly MWriteBatchedMessages WriteBatchedMessages = new MWriteBatchedMessages
+			();
+
+		public static readonly MsgBlob DeleteBlobFile = new MDeleteBlobFile();
 
 		internal Msg()
 		{
@@ -262,7 +262,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		protected static StatefulBuffer ReadMessageBuffer(Db4objects.Db4o.Internal.Transaction
 			 trans, ISocket4 sock)
 		{
-			return ReadMessageBuffer(trans, sock, Const4.MESSAGE_LENGTH);
+			return ReadMessageBuffer(trans, sock, Const4.MessageLength);
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
@@ -308,7 +308,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		protected Db4objects.Db4o.Internal.Transaction CheckParentTransaction(Db4objects.Db4o.Internal.Transaction
 			 a_trans, BufferImpl reader)
 		{
-			if (reader.ReadByte() == Const4.SYSTEM_TRANS && a_trans.ParentTransaction() != null
+			if (reader.ReadByte() == Const4.SystemTrans && a_trans.ParentTransaction() != null
 				)
 			{
 				return a_trans.ParentTransaction();
@@ -333,12 +333,12 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public virtual void WriteException(Exception e)
 		{
-			Write(RUNTIME_EXCEPTION.GetWriterForSingleObject(Transaction(), e));
+			Write(RuntimeException.GetWriterForSingleObject(Transaction(), e));
 		}
 
 		public virtual void RespondInt(int response)
 		{
-			Write(ID_LIST.GetWriterForInt(Transaction(), response));
+			Write(IdList.GetWriterForInt(Transaction(), response));
 		}
 
 		public virtual bool Write(ISocket4 sock)
@@ -364,7 +364,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public virtual StatefulBuffer PayLoad()
 		{
-			StatefulBuffer writer = new StatefulBuffer(Transaction(), Const4.MESSAGE_LENGTH);
+			StatefulBuffer writer = new StatefulBuffer(Transaction(), Const4.MessageLength);
 			writer.WriteInt(_msgID);
 			return writer;
 		}

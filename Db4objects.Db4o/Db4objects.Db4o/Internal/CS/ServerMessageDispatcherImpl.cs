@@ -109,7 +109,7 @@ namespace Db4objects.Db4o.Internal.CS
 				if (!_closeMessageSent)
 				{
 					_closeMessageSent = true;
-					Write(Msg.CLOSE);
+					Write(Msg.Close);
 				}
 			}
 			catch (Exception e)
@@ -168,7 +168,7 @@ namespace Db4objects.Db4o.Internal.CS
 				{
 					if (DTrace.enabled)
 					{
-						DTrace.ADD_TO_CLASS_INDEX.Log(e.ToString());
+						DTrace.AddToClassIndex.Log(e.ToString());
 					}
 					return;
 				}
@@ -183,7 +183,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				return true;
 			}
-			if (!_loggedin && !Msg.LOGIN.Equals(message))
+			if (!_loggedin && !Msg.Login.Equals(message))
 			{
 				return true;
 			}
@@ -227,12 +227,12 @@ namespace Db4objects.Db4o.Internal.CS
 				{
 					_transactionHandle.ReleaseTransaction();
 					_transactionHandle.AcquireTransactionForFile(fileName);
-					Write(Msg.OK);
+					Write(Msg.Ok);
 				}
 				catch (Exception e)
 				{
 					_transactionHandle.ReleaseTransaction();
-					Write(Msg.ERROR);
+					Write(Msg.Error);
 				}
 			}
 		}
@@ -242,7 +242,7 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (_mainLock)
 			{
 				_transactionHandle.ReleaseTransaction();
-				Write(Msg.OK);
+				Write(Msg.Ok);
 			}
 		}
 

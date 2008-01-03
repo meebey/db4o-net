@@ -20,12 +20,12 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			new MixedTARefreshTestCase().RunClientServer();
 		}
 
-		private const int ITEM_DEPTH = 10;
+		private const int ItemDepth = 10;
 
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			MixedTARefreshTestCase.Item item = MixedTARefreshTestCase.TAItem.NewItem(ITEM_DEPTH
+			MixedTARefreshTestCase.Item item = MixedTARefreshTestCase.TAItem.NewItem(ItemDepth
 				);
 			item._isRoot = true;
 			Store(item);
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			}
 			item1.SetValue(100);
 			item1.Next().SetValue(200);
-			client1.Set(item1, 2);
+			client1.Store(item1, 2);
 			client1.Commit();
 			Assert.AreEqual(100, item1.GetValue());
 			Assert.AreEqual(200, item1.Next().GetValue());
@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 				next1 = next1.Next();
 				value++;
 			}
-			client1.Set(item1, 5);
+			client1.Store(item1, 5);
 			client1.Commit();
 			client2.Refresh(item2, 5);
 			next2 = item2;
@@ -169,13 +169,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 
 			public override int GetValue()
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _value;
 			}
 
 			public override MixedTARefreshTestCase.Item Next()
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _next;
 			}
 

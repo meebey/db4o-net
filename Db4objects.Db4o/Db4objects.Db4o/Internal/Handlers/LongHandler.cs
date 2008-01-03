@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override int LinkLength()
 		{
-			return Const4.LONG_LENGTH;
+			return Const4.LongLength;
 		}
 
 		public override object PrimitiveNull()
@@ -68,13 +68,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				string l_s = "                                " + val;
 				new LatinStringIO().Write(buffer, Sharpen.Runtime.Substring(l_s, l_s.Length - Const4
-					.LONG_BYTES));
+					.LongBytes));
 			}
 			else
 			{
-				for (int i = 0; i < Const4.LONG_BYTES; i++)
+				for (int i = 0; i < Const4.LongBytes; i++)
 				{
-					buffer.WriteByte((byte)(val >> ((Const4.LONG_BYTES - 1 - i) * 8)));
+					buffer.WriteByte((byte)(val >> ((Const4.LongBytes - 1 - i) * 8)));
 				}
 			}
 		}
@@ -84,11 +84,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 			long ret = 0;
 			if (Deploy.debug && Deploy.debugLong)
 			{
-				ret = long.Parse(new LatinStringIO().Read(buffer, Const4.LONG_BYTES).Trim());
+				ret = long.Parse(new LatinStringIO().Read(buffer, Const4.LongBytes).Trim());
 			}
 			else
 			{
-				for (int i = 0; i < Const4.LONG_BYTES; i++)
+				for (int i = 0; i < Const4.LongBytes; i++)
 				{
 					ret = (ret << 8) + (buffer.ReadByte() & unchecked((int)(0xff)));
 				}

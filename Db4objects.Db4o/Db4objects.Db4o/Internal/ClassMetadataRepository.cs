@@ -135,7 +135,7 @@ namespace Db4objects.Db4o.Internal
 			IReflectClass parentReflectClazz = reflectClazz.GetSuperclass();
 			ClassMetadata parentClazz = null;
 			if (parentReflectClazz != null && !parentReflectClazz.Equals(Container()._handlers
-				.ICLASS_OBJECT))
+				.IclassObject))
 			{
 				parentClazz = ProduceClassMetadata(parentReflectClazz);
 			}
@@ -230,7 +230,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override byte GetIdentifier()
 		{
-			return Const4.YAPCLASSCOLLECTION;
+			return Const4.Yapclasscollection;
 		}
 
 		internal ClassMetadata GetActiveClassMetadata(IReflectClass reflectClazz)
@@ -435,7 +435,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override int OwnLength()
 		{
-			return Const4.OBJECT_LENGTH + Const4.INT_LENGTH + (_classes.Size() * Const4.ID_LENGTH
+			return Const4.ObjectLength + Const4.IntLength + (_classes.Size() * Const4.IdLength
 				);
 		}
 
@@ -590,10 +590,10 @@ namespace Db4objects.Db4o.Internal
 				clazz.ReadName(_systemTransaction);
 				clazz.ForceRead();
 				clazz.SetStateClean();
-				clazz.BitFalse(Const4.CHECKED_CHANGES);
-				clazz.BitFalse(Const4.READING);
-				clazz.BitFalse(Const4.CONTINUE);
-				clazz.BitFalse(Const4.DEAD);
+				clazz.BitFalse(Const4.CheckedChanges);
+				clazz.BitFalse(Const4.Reading);
+				clazz.BitFalse(Const4.Continue);
+				clazz.BitFalse(Const4.Dead);
 				clazz.CheckChanges();
 			}
 		}

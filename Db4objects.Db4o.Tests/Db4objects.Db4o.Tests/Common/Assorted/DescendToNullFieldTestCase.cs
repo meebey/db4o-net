@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 {
 	public class DescendToNullFieldTestCase : AbstractDb4oTestCase
 	{
-		private static int COUNT = 2;
+		private static int Count = 2;
 
 		public class ParentItem
 		{
@@ -43,12 +43,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			for (int i = 0; i < COUNT; i++)
+			for (int i = 0; i < Count; i++)
 			{
 				Store(new DescendToNullFieldTestCase.ParentItem("one", new DescendToNullFieldTestCase.ChildItem
 					("one"), null));
 			}
-			for (int i = 0; i < COUNT; i++)
+			for (int i = 0; i < Count; i++)
 			{
 				Store(new DescendToNullFieldTestCase.ParentItem("two", null, new DescendToNullFieldTestCase.ChildItem
 					("two")));
@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			IQuery query = NewQuery(typeof(DescendToNullFieldTestCase.ParentItem));
 			query.Descend(name).Descend("_name").Constrain(name);
 			IObjectSet objectSet = query.Execute();
-			Assert.AreEqual(COUNT, objectSet.Size());
+			Assert.AreEqual(Count, objectSet.Size());
 			while (objectSet.HasNext())
 			{
 				DescendToNullFieldTestCase.ParentItem parentItem = (DescendToNullFieldTestCase.ParentItem

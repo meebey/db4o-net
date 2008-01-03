@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 {
 	public class STCharTestCase : SodaBaseTestCase
 	{
-		internal static readonly string DESCENDANT = "i_char";
+		internal static readonly string Descendant = "i_char";
 
 		public char i_char;
 
@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STCharTestCase((
 				char)0));
-			q.Descend(DESCENDANT).Constrain((char)0);
+			q.Descend(Descendant).Constrain((char)0);
 			SodaTestUtil.ExpectOne(q, _array[0]);
 		}
 
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 		{
 			IQuery q = NewQuery();
 			q.Constrain(_array[0]);
-			q.Descend(DESCENDANT).Constrain((char)0).Not();
+			q.Descend(Descendant).Constrain((char)0).Not();
 			Expect(q, new int[] { 1, 2, 3 });
 		}
 
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STCharTestCase((
 				char)9));
-			q.Descend(DESCENDANT).Constraints().Greater();
+			q.Descend(Descendant).Constraints().Greater();
 			Expect(q, new int[] { 2, 3 });
 		}
 
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STCharTestCase((
 				char)1));
-			q.Descend(DESCENDANT).Constraints().Smaller();
+			q.Descend(Descendant).Constraints().Smaller();
 			SodaTestUtil.ExpectOne(q, _array[0]);
 		}
 

@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			}
 		}
 
-		internal const bool LOG = false;
+		internal const bool Log = false;
 
 		private bool HasLockFileThread()
 		{
@@ -64,20 +64,20 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			IConfiguration recordConfig = BaseConfig();
 			recordConfig.Io(adapterFactory);
 			IObjectContainer oc = Db4oFactory.OpenFile(recordConfig, fileName);
-			IObjectSet objectSet = oc.Get(new CrashSimulatingTestCase.CrashData(null, "three"
-				));
+			IObjectSet objectSet = oc.QueryByExample(new CrashSimulatingTestCase.CrashData(null
+				, "three"));
 			oc.Delete(objectSet.Next());
-			oc.Set(new CrashSimulatingTestCase.CrashData(null, "four"));
-			oc.Set(new CrashSimulatingTestCase.CrashData(null, "five"));
-			oc.Set(new CrashSimulatingTestCase.CrashData(null, "six"));
-			oc.Set(new CrashSimulatingTestCase.CrashData(null, "seven"));
-			oc.Set(new CrashSimulatingTestCase.CrashData(null, "eight"));
-			oc.Set(new CrashSimulatingTestCase.CrashData(null, "nine"));
-			oc.Set(new CrashSimulatingTestCase.CrashData(null, "10"));
-			oc.Set(new CrashSimulatingTestCase.CrashData(null, "11"));
-			oc.Set(new CrashSimulatingTestCase.CrashData(null, "12"));
-			oc.Set(new CrashSimulatingTestCase.CrashData(null, "13"));
-			oc.Set(new CrashSimulatingTestCase.CrashData(null, "14"));
+			oc.Store(new CrashSimulatingTestCase.CrashData(null, "four"));
+			oc.Store(new CrashSimulatingTestCase.CrashData(null, "five"));
+			oc.Store(new CrashSimulatingTestCase.CrashData(null, "six"));
+			oc.Store(new CrashSimulatingTestCase.CrashData(null, "seven"));
+			oc.Store(new CrashSimulatingTestCase.CrashData(null, "eight"));
+			oc.Store(new CrashSimulatingTestCase.CrashData(null, "nine"));
+			oc.Store(new CrashSimulatingTestCase.CrashData(null, "10"));
+			oc.Store(new CrashSimulatingTestCase.CrashData(null, "11"));
+			oc.Store(new CrashSimulatingTestCase.CrashData(null, "12"));
+			oc.Store(new CrashSimulatingTestCase.CrashData(null, "13"));
+			oc.Store(new CrashSimulatingTestCase.CrashData(null, "14"));
 			oc.Commit();
 			IQuery q = oc.Query();
 			q.Constrain(typeof(CrashSimulatingTestCase.CrashData));
@@ -182,7 +182,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		{
 			for (int i = 0; i < 10; i++)
 			{
-				container.Set(new CrashSimulatingTestCase.Item("delme"));
+				container.Store(new CrashSimulatingTestCase.Item("delme"));
 			}
 			CrashSimulatingTestCase.CrashData one = new CrashSimulatingTestCase.CrashData(null
 				, "one");
@@ -190,9 +190,9 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				, "two");
 			CrashSimulatingTestCase.CrashData three = new CrashSimulatingTestCase.CrashData(one
 				, "three");
-			container.Set(one);
-			container.Set(two);
-			container.Set(three);
+			container.Store(one);
+			container.Store(two);
+			container.Store(three);
 			container.Commit();
 			IObjectSet objectSet = container.Query(typeof(CrashSimulatingTestCase.Item));
 			while (objectSet.HasNext())

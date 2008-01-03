@@ -17,11 +17,11 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private readonly object _timerLock;
 
-		private byte[] _longBytes = new byte[Const4.LONG_LENGTH];
+		private byte[] _longBytes = new byte[Const4.LongLength];
 
-		private byte[] _intBytes = new byte[Const4.INT_LENGTH];
+		private byte[] _intBytes = new byte[Const4.IntLength];
 
-		private int _headerLockOffset = 2 + Const4.INT_LENGTH;
+		private int _headerLockOffset = 2 + Const4.IntLength;
 
 		private readonly long _opentime;
 
@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			{
 				return;
 			}
-			long waitTime = Const4.LOCK_TIME_INTERVAL * 5;
+			long waitTime = Const4.LockTimeInterval * 5;
 			long currentTime = Runtime.CurrentTimeMillis();
 			while (Runtime.CurrentTimeMillis() < currentTime + waitTime)
 			{
@@ -112,7 +112,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 					}
 					WriteAccessTime(false);
 				}
-				Cool.SleepIgnoringInterruption(Const4.LOCK_TIME_INTERVAL);
+				Cool.SleepIgnoringInterruption(Const4.LockTimeInterval);
 			}
 		}
 

@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 			public void Run()
 			{
-				this._enclosing.Db().Set(new NakedObjectTestCase.Item());
+				this._enclosing.Db().Store(new NakedObjectTestCase.Item());
 			}
 
 			private readonly NakedObjectTestCase _enclosing;

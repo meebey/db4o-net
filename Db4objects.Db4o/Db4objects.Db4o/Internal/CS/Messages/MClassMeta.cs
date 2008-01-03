@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 							yapClass.Write(trans);
 							trans.Commit();
 							StatefulBuffer returnBytes = stream.ReadWriterByID(trans, yapClass.GetID());
-							Write(Msg.OBJECT_TO_CLIENT.GetWriter(returnBytes));
+							Write(Msg.ObjectToClient.GetWriter(returnBytes));
 							return true;
 						}
 					}
@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			catch (Exception e)
 			{
 			}
-			Write(Msg.FAILED);
+			Write(Msg.Failed);
 			return true;
 		}
 	}

@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				{
 				}
 			}
-			Write(Msg.OBJECT_BY_UUID.GetWriterForInt(trans, id));
+			Write(Msg.ObjectByUuid.GetWriterForInt(trans, id));
 			return true;
 		}
 	}

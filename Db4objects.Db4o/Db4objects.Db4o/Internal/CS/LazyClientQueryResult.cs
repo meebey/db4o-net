@@ -12,13 +12,13 @@ namespace Db4objects.Db4o.Internal.CS
 	/// <exclude></exclude>
 	public class LazyClientQueryResult : AbstractQueryResult
 	{
-		private const int SIZE_NOT_SET = -1;
+		private const int SizeNotSet = -1;
 
 		private readonly ClientObjectContainer _client;
 
 		private readonly int _queryResultID;
 
-		private int _size = SIZE_NOT_SET;
+		private int _size = SizeNotSet;
 
 		private readonly LazyClientIdIterator _iterator;
 
@@ -40,12 +40,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override int GetId(int index)
 		{
-			return AskServer(Msg.OBJECTSET_GET_ID, index);
+			return AskServer(Msg.ObjectsetGetId, index);
 		}
 
 		public override int IndexOf(int id)
 		{
-			return AskServer(Msg.OBJECTSET_INDEXOF, id);
+			return AskServer(Msg.ObjectsetIndexof, id);
 		}
 
 		private int AskServer(MsgD message, int param)
@@ -67,17 +67,17 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override int Size()
 		{
-			if (_size == SIZE_NOT_SET)
+			if (_size == SizeNotSet)
 			{
-				_client.Write(Msg.OBJECTSET_SIZE.GetWriterForInt(_transaction, _queryResultID));
-				_size = ((MsgD)_client.ExpectedResponse(Msg.OBJECTSET_SIZE)).ReadInt();
+				_client.Write(Msg.ObjectsetSize.GetWriterForInt(_transaction, _queryResultID));
+				_size = ((MsgD)_client.ExpectedResponse(Msg.ObjectsetSize)).ReadInt();
 			}
 			return _size;
 		}
 
 		~LazyClientQueryResult()
 		{
-			_client.Write(Msg.OBJECTSET_FINALIZED.GetWriterForInt(_transaction, _queryResultID
+			_client.Write(Msg.ObjectsetFinalized.GetWriterForInt(_transaction, _queryResultID
 				));
 		}
 
@@ -88,14 +88,14 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public virtual void Reset()
 		{
-			_client.Write(Msg.OBJECTSET_RESET.GetWriterForInt(_transaction, _queryResultID));
+			_client.Write(Msg.ObjectsetReset.GetWriterForInt(_transaction, _queryResultID));
 		}
 
 		public virtual void FetchIDs(int batchSize)
 		{
-			_client.Write(Msg.OBJECTSET_FETCH.GetWriterForInts(_transaction, new int[] { _queryResultID
+			_client.Write(Msg.ObjectsetFetch.GetWriterForInts(_transaction, new int[] { _queryResultID
 				, batchSize }));
-			BufferImpl reader = _client.ExpectedByteResponse(Msg.ID_LIST);
+			BufferImpl reader = _client.ExpectedByteResponse(Msg.IdList);
 			LoadFromIdReader(reader);
 		}
 	}

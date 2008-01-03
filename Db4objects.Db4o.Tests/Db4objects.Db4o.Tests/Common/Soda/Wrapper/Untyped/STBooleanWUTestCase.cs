@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 {
 	public class STBooleanWUTestCase : SodaBaseTestCase
 	{
-		internal static readonly string DESCENDANT = "i_boolean";
+		internal static readonly string Descendant = "i_boolean";
 
 		public object i_boolean;
 
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				(false));
-			q.Descend(DESCENDANT).Constrain(false);
+			q.Descend(Descendant).Constrain(false);
 			Expect(q, new int[] { 0, 2, 3 });
 		}
 
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				());
-			q.Descend(DESCENDANT).Constrain(null);
+			q.Descend(Descendant).Constrain(null);
 			SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				());
 		}
@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				());
-			IQuery qd = q.Descend(DESCENDANT);
+			IQuery qd = q.Descend(Descendant);
 			qd.Constrain(null).Or(qd.Constrain(true));
 			Expect(q, new int[] { 1, 4 });
 		}
@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STBooleanWUTestCase
 				());
-			IQuery qd = q.Descend(DESCENDANT);
+			IQuery qd = q.Descend(Descendant);
 			qd.Constrain(null).Not().And(qd.Constrain(false));
 			Expect(q, new int[] { 0, 2, 3 });
 		}

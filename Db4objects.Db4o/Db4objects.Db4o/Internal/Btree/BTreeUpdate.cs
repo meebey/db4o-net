@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				{
 					RemovedBy(trans, btree);
 					patch.Committed(btree);
-					return No4.INSTANCE;
+					return No4.Instance;
 				}
 			}
 			return InternalCommit(trans, btree);
@@ -153,7 +153,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			if (patch.IsRemove())
 			{
-				return No4.INSTANCE;
+				return No4.Instance;
 			}
 			return patch.GetObject();
 		}

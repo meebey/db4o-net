@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		protected virtual object RolledBack(BTree btree)
 		{
 			btree.NotifyRemoveListener(GetObject());
-			return No4.INSTANCE;
+			return No4.Instance;
 		}
 
 		public override string ToString()
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			if (_transaction != trans)
 			{
-				return No4.INSTANCE;
+				return No4.Instance;
 			}
 			return GetObject();
 		}

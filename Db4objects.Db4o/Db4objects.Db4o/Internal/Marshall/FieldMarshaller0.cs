@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			if (field.NeedsHandlerId())
 			{
-				len += Const4.ID_LENGTH;
+				len += Const4.IdLength;
 			}
 			return len;
 		}
@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			string name = StringHandler.ReadStringNoDebug(stream.Transaction().Context(), reader
 				);
-			if (name.IndexOf(Const4.VIRTUAL_FIELD_PREFIX) == 0)
+			if (name.IndexOf(Const4.VirtualFieldPrefix) == 0)
 			{
 				if (stream._handlers.VirtualFieldByName(name) != null)
 				{

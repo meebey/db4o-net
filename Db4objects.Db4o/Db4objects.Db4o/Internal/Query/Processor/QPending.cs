@@ -15,17 +15,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal int _result;
 
-		internal const int FALSE = -4;
+		internal const int False = -4;
 
-		internal const int BOTH = 1;
+		internal const int Both = 1;
 
-		internal const int TRUE = 2;
+		internal const int True = 2;
 
 		internal QPending(QConJoin a_join, QCon a_constraint, bool a_firstResult)
 		{
 			_join = a_join;
 			_constraint = a_constraint;
-			_result = a_firstResult ? TRUE : FALSE;
+			_result = a_firstResult ? True : False;
 		}
 
 		public override int Compare(Tree a_to)

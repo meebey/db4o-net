@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			COR756TestCase.B b = new COR756TestCase.B();
 			b.a = a;
 			IObjectContainer oc = Db();
-			oc.Set(b);
+			oc.Store(b);
 			oc.Commit();
 			Assert.AreEqual(1, oc.Query(new COR756TestCase.BReferencedFromAPredicate(a)).Size
 				());

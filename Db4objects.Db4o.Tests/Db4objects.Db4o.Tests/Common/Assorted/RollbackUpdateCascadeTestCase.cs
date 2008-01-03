@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				Assert.AreEqual(1, os1.Size());
 				Atom o1 = (Atom)os1.Next();
 				o1.child.child.name = "o1";
-				oc1.Set(o1);
+				oc1.Store(o1);
 				IQuery query2 = oc2.Query();
 				query2.Descend("name").Constrain("root");
 				IObjectSet os2 = query2.Execute();
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				Assert.AreEqual(1, os2.Size());
 				o2 = (Atom)os2.Next();
 				Assert.AreEqual("child.child", o2.child.child.name);
-				oc1.Set(o1);
+				oc1.Store(o1);
 				oc1.Commit();
 				os2 = query2.Execute();
 				Assert.AreEqual(1, os2.Size());

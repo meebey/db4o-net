@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 					atom.child.name = "updated";
 				}
 			}
-			oc.Set(ctv);
+			oc.Store(ctv);
 		}
 
 		public virtual void Check(IExtObjectContainer oc)

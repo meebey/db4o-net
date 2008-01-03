@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object Coerce(IReflectClass claxx, object obj)
 		{
-			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.INSTANCE;
+			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.Instance;
 		}
 
 		public abstract object CopyValue(object from, object to);

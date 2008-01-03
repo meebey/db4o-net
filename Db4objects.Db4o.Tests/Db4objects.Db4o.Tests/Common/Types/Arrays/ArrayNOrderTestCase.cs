@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 			objArr[0][1] = "01";
 			objArr[1][0] = System.Convert.ToSingle(10);
 			objArr[1][1] = 1.1;
-			Db().Set(new ArrayNOrderTestCase.Data(strArr, objArr));
+			Db().Store(new ArrayNOrderTestCase.Data(strArr, objArr));
 		}
 
 		public virtual void Test()

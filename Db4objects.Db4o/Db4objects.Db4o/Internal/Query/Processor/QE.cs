@@ -14,15 +14,15 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// <exclude></exclude>
 	public class QE : IUnversioned
 	{
-		internal static readonly QE DEFAULT = new QE();
+		internal static readonly QE Default = new QE();
 
-		public const int NULLS = 0;
+		public const int Nulls = 0;
 
-		public const int SMALLER = 1;
+		public const int Smaller = 1;
 
-		public const int EQUAL = 2;
+		public const int Equal = 2;
 
-		public const int GREATER = 3;
+		public const int Greater = 3;
 
 		internal virtual QE Add(QE evaluator)
 		{
@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		/// <param name="bits"></param>
 		public virtual void IndexBitMap(bool[] bits)
 		{
-			bits[QE.EQUAL] = true;
+			bits[QE.Equal] = true;
 		}
 
 		public virtual bool SupportsIndex()

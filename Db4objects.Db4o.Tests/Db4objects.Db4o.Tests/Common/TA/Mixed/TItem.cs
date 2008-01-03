@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 
 		public virtual int Value()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return value;
 		}
 	}

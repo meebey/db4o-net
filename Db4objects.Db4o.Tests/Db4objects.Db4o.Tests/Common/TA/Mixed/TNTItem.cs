@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 
 		public virtual NTItem Value()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return ntItem;
 		}
 	}

@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc(IExtObjectContainer oc)
 		{
-			Assert.AreEqual(2, oc.Get(null).Size());
+			Assert.AreEqual(2, oc.QueryByExample(null).Size());
 		}
 
 		public virtual void ConcSODA(IExtObjectContainer oc)

@@ -36,13 +36,13 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			AssertDataCount(clientA, clientB, 1, 0);
 			clientA.Commit();
 			AssertDataCount(clientA, clientB, 1, 1);
-			clientA.SwitchToFile(SwitchingFilesFromClientUtil.FILENAME_A);
+			clientA.SwitchToFile(SwitchingFilesFromClientUtil.FilenameA);
 			AssertDataCount(clientA, clientB, 0, 1);
 			AddData(clientA);
 			AssertDataCount(clientA, clientB, 1, 1);
 			clientA.Commit();
 			AssertDataCount(clientA, clientB, 1, 1);
-			clientB.SwitchToFile(SwitchingFilesFromClientUtil.FILENAME_B);
+			clientB.SwitchToFile(SwitchingFilesFromClientUtil.FilenameB);
 			AssertDataCount(clientA, clientB, 1, 0);
 			AddData(clientA);
 			AssertDataCount(clientA, clientB, 2, 0);
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			AssertDataCount(clientA, clientB, 2, 0);
 			AddData(clientB);
 			AssertDataCount(clientA, clientB, 2, 1);
-			clientA.SwitchToFile(SwitchingFilesFromClientUtil.FILENAME_B);
+			clientA.SwitchToFile(SwitchingFilesFromClientUtil.FilenameB);
 			AssertDataCount(clientA, clientB, 0, 1);
 			clientB.Commit();
 			AssertDataCount(clientA, clientB, 1, 1);
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			AddData(clientB);
 			clientB.Commit();
 			AssertDataCount(clientA, clientB, 3, 3);
-			clientB.SwitchToFile(SwitchingFilesFromClientUtil.FILENAME_A);
+			clientB.SwitchToFile(SwitchingFilesFromClientUtil.FilenameA);
 			AssertDataCount(clientA, clientB, 3, 2);
 			clientA.SwitchToMainFile();
 			AssertDataCount(clientA, clientB, 1, 2);
@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private void AddData(ClientObjectContainer client)
 		{
-			client.Set(new SwitchingFilesFromMultipleClientsTestCase.Data(_counter++));
+			client.Store(new SwitchingFilesFromMultipleClientsTestCase.Data(_counter++));
 		}
 	}
 }

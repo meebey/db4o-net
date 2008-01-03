@@ -18,14 +18,14 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 			new NonTARefreshTestCase().RunClientServer();
 		}
 
-		private const int ITEM_DEPTH = 10;
+		private const int ItemDepth = 10;
 
 		private Type _class;
 
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			NonTARefreshTestCase.TAItem item = NonTARefreshTestCase.TAItem.NewTAItem(ITEM_DEPTH
+			NonTARefreshTestCase.TAItem item = NonTARefreshTestCase.TAItem.NewTAItem(ItemDepth
 				);
 			item._isRoot = true;
 			_class = item.GetType();
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 			AssertDescendingRange(10, item2);
 			item1.Value(100);
 			item1.Next().Value(200);
-			client1.Set(item1, 2);
+			client1.Store(item1, 2);
 			client1.Commit();
 			Assert.AreEqual(100, item1.Value());
 			Assert.AreEqual(200, item1.Next().Value());
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 			Assert.AreEqual(100, item2.Value());
 			Assert.AreEqual(200, item2.Next().Value());
 			UpdateAscendingWithRange(item1, 1000);
-			client1.Set(item1, 5);
+			client1.Store(item1, 5);
 			client1.Commit();
 			client2.Refresh(item2, 5);
 			NonTARefreshTestCase.TAItem next2 = item2;

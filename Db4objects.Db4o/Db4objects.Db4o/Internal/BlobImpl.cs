@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class BlobImpl : IBlob, Sharpen.Lang.ICloneable, IDb4oTypeImpl
 	{
-		public const int COPYBUFFER_LENGTH = 4096;
+		public const int CopybufferLength = 4096;
 
 		public string fileName;
 
@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Internal
 		public int i_length;
 
 		[System.NonSerialized]
-		private double i_status = Status.UNUSED;
+		private double i_status = Status.Unused;
 
 		[System.NonSerialized]
 		private ObjectContainerBase i_stream;
@@ -118,15 +118,15 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual double GetStatus()
 		{
-			if (i_status == Status.PROCESSING && i_getStatusFrom != null)
+			if (i_status == Status.Processing && i_getStatusFrom != null)
 			{
 				return i_getStatusFrom.GetStatus();
 			}
-			if (i_status == Status.UNUSED)
+			if (i_status == Status.Unused)
 			{
 				if (i_length > 0)
 				{
-					i_status = Status.AVAILABLE;
+					i_status = Status.Available;
 				}
 			}
 			return i_status;
@@ -184,7 +184,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				i_stream.SetInternal(i_trans, this, false);
 			}
-			i_status = Status.COMPLETED;
+			i_status = Status.Completed;
 		}
 
 		public virtual void PreDeactivate()
@@ -219,7 +219,7 @@ namespace Db4objects.Db4o.Internal
 						tryPath = fileName + "_" + i++ + i_ext;
 						if (i == 99)
 						{
-							i_status = Status.ERROR;
+							i_status = Status.Error;
 							throw new IOException(Messages.Get(40));
 						}
 					}
@@ -275,20 +275,20 @@ namespace Db4objects.Db4o.Internal
 		public virtual void WriteLocal(Sharpen.IO.File file)
 		{
 			Copy(ServerFile(null, false), file);
-			i_status = Status.COMPLETED;
+			i_status = Status.Completed;
 		}
 
 		/// <exception cref="IOException"></exception>
 		public virtual void WriteTo(Sharpen.IO.File file)
 		{
-			if (GetStatus() == Status.UNUSED)
+			if (GetStatus() == Status.Unused)
 			{
 				throw new IOException(Messages.Get(43));
 			}
 			if (i_stream.IsClient())
 			{
 				i_file = file;
-				i_status = Status.QUEUED;
+				i_status = Status.Queued;
 				((IBlobTransport)i_stream).WriteBlobTo(i_trans, this, file);
 			}
 			else
@@ -309,7 +309,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="IOException"></exception>
 		public virtual void DeleteFile()
 		{
-			if (GetStatus() == Status.UNUSED)
+			if (GetStatus() == Status.Unused)
 			{
 				throw new IOException(Messages.Get(43));
 			}
@@ -324,7 +324,7 @@ namespace Db4objects.Db4o.Internal
 			fileName = null;
 			i_ext = null;
 			i_length = 0;
-			SetStatus(Status.UNUSED);
+			SetStatus(Status.Unused);
 			lock (i_stream._lock)
 			{
 				i_stream.SetInternal(i_trans, this, false);

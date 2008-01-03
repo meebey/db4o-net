@@ -15,11 +15,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			bool res = stream.SetSemaphore(Transaction(), name, timeout);
 			if (res)
 			{
-				Write(Msg.SUCCESS);
+				Write(Msg.Success);
 			}
 			else
 			{
-				Write(Msg.FAILED);
+				Write(Msg.Failed);
 			}
 			return true;
 		}

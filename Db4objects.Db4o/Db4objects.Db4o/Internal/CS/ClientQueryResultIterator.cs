@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.CS
 	internal class ClientQueryResultIterator : IEnumerator
 	{
 		private static readonly IPrefetchingStrategy _prefetchingStrategy = SingleMessagePrefetchingStrategy
-			.INSTANCE;
+			.Instance;
 
 		private object[] _prefetchedObjects;
 

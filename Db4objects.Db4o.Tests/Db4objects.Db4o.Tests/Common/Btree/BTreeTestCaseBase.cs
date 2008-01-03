@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 {
 	public abstract class BTreeTestCaseBase : AbstractDb4oTestCase, IOptOutCS
 	{
-		protected const int BTREE_NODE_SIZE = 4;
+		protected const int BtreeNodeSize = 4;
 
 		protected BTree _btree;
 
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		protected virtual BTree NewBTree()
 		{
-			return BTreeAssert.CreateIntKeyBTree(Stream(), 0, BTREE_NODE_SIZE);
+			return BTreeAssert.CreateIntKeyBTree(Stream(), 0, BtreeNodeSize);
 		}
 
 		protected virtual IBTreeRange Range(int lower, int upper)

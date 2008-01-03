@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public sealed override int ElementCount(Transaction trans, IReadBuffer buffer)
 		{
-			return ElementCount(ReadDimensions(trans, buffer, ReflectClassByRef.IGNORED));
+			return ElementCount(ReadDimensions(trans, buffer, ReflectClassByRef.Ignored));
 		}
 
 		protected static int ElementCount(int[] a_dim)
@@ -54,13 +54,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public sealed override byte Identifier()
 		{
-			return Const4.YAPARRAYN;
+			return Const4.Yaparrayn;
 		}
 
 		public override int OwnLength(object obj)
 		{
 			int[] dim = ArrayReflector().Dimensions(obj);
-			return Const4.OBJECT_LENGTH + (Const4.INT_LENGTH * (2 + dim.Length));
+			return Const4.ObjectLength + (Const4.IntLength * (2 + dim.Length));
 		}
 
 		protected override int ReadElementsDefrag(IDefragmentContext context)

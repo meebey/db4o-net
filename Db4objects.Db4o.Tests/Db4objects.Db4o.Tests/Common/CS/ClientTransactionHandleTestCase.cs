@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.Io(new MemoryIoAdapter());
 			LocalObjectContainer db = (LocalObjectContainer)Db4oFactory.OpenFile(config, SwitchingFilesFromClientUtil
-				.MAINFILE_NAME);
+				.MainfileName);
 			ClientTransactionPool pool = new ClientTransactionPool(db);
 			try
 			{
@@ -28,10 +28,10 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				Assert.AreNotEqual(handleA.Transaction(), handleB.Transaction());
 				Assert.AreEqual(db, handleB.Transaction().Container());
 				Assert.AreEqual(1, pool.OpenFileCount());
-				handleA.AcquireTransactionForFile(SwitchingFilesFromClientUtil.FILENAME_A);
+				handleA.AcquireTransactionForFile(SwitchingFilesFromClientUtil.FilenameA);
 				Assert.AreEqual(2, pool.OpenFileCount());
 				Assert.AreNotEqual(db, handleA.Transaction().Container());
-				handleB.AcquireTransactionForFile(SwitchingFilesFromClientUtil.FILENAME_A);
+				handleB.AcquireTransactionForFile(SwitchingFilesFromClientUtil.FilenameA);
 				Assert.AreEqual(2, pool.OpenFileCount());
 				Assert.AreNotEqual(handleA.Transaction(), handleB.Transaction());
 				Assert.AreEqual(handleA.Transaction().Container(), handleB.Transaction().Container

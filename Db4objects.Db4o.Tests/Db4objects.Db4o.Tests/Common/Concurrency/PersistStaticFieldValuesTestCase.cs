@@ -15,13 +15,13 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			new PersistStaticFieldValuesTestCase().RunConcurrency();
 		}
 
-		public static readonly PersistStaticFieldValuesTestCase.PsfvHelper ONE = new PersistStaticFieldValuesTestCase.PsfvHelper
+		public static readonly PersistStaticFieldValuesTestCase.PsfvHelper One = new PersistStaticFieldValuesTestCase.PsfvHelper
 			();
 
-		public static readonly PersistStaticFieldValuesTestCase.PsfvHelper TWO = new PersistStaticFieldValuesTestCase.PsfvHelper
+		public static readonly PersistStaticFieldValuesTestCase.PsfvHelper Two = new PersistStaticFieldValuesTestCase.PsfvHelper
 			();
 
-		public static readonly PersistStaticFieldValuesTestCase.PsfvHelper THREE = new PersistStaticFieldValuesTestCase.PsfvHelper
+		public static readonly PersistStaticFieldValuesTestCase.PsfvHelper Three = new PersistStaticFieldValuesTestCase.PsfvHelper
 			();
 
 		public PersistStaticFieldValuesTestCase.PsfvHelper one;
@@ -39,9 +39,9 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		protected override void Store()
 		{
 			PersistStaticFieldValuesTestCase psfv = new PersistStaticFieldValuesTestCase();
-			psfv.one = ONE;
-			psfv.two = TWO;
-			psfv.three = THREE;
+			psfv.one = One;
+			psfv.two = Two;
+			psfv.three = Three;
 			Store(psfv);
 		}
 
@@ -49,9 +49,9 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		{
 			PersistStaticFieldValuesTestCase psfv = (PersistStaticFieldValuesTestCase)RetrieveOnlyInstance
 				(oc, typeof(PersistStaticFieldValuesTestCase));
-			Assert.AreSame(ONE, psfv.one);
-			Assert.AreSame(TWO, psfv.two);
-			Assert.AreSame(THREE, psfv.three);
+			Assert.AreSame(One, psfv.one);
+			Assert.AreSame(Two, psfv.two);
+			Assert.AreSame(Three, psfv.three);
 		}
 
 		public class PsfvHelper

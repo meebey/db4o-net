@@ -58,12 +58,24 @@ namespace Db4oTool.Tests.Core
 					parameters.ReferencedAssemblies.Add(reference.ManifestModule.FullyQualifiedName);
 				}
 				CompilerResults results = provider.CompileAssemblyFromFile(parameters, sourceFiles);
-				if (results.Errors.Count > 0)
-				{
+                if (ContainsErrors(results.Errors))
+                {
 					throw new ApplicationException(GetErrorString(results.Errors));
 				}
 			}
 		}
+
+        private static Boolean ContainsErrors(CompilerErrorCollection errors)
+        {
+            foreach (CompilerError error in errors)
+            {
+                if (!error.IsWarning)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public static string EmitAssemblyFromResource(string resourceName, params Assembly[] references)
         {

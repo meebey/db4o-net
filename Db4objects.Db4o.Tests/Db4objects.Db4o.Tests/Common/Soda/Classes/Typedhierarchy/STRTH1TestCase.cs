@@ -183,7 +183,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 		public virtual void TestDeleteAll()
 		{
 			IExtObjectContainer oc = Fixture().Db();
-			IObjectSet os = oc.Get(null);
+			IObjectSet os = oc.QueryByExample(null);
 			while (os.HasNext())
 			{
 				oc.Delete(os.Next());
@@ -191,7 +191,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 			Db().Commit();
 			Fixture().Reopen(GetType());
 			oc = Fixture().Db();
-			os = oc.Get(null);
+			os = oc.QueryByExample(null);
 			Assert.AreEqual(0, os.Size());
 		}
 

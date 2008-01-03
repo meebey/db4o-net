@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
-		internal static readonly IComparison4 INTEGER_COMPARISON = new _IComparison4_14();
+		internal static readonly IComparison4 IntegerComparison = new _IComparison4_14();
 
 		public virtual void TestAddAllAndToArray()
 		{
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private SortedCollection4 NewSortedCollection()
 		{
-			return new SortedCollection4(INTEGER_COMPARISON);
+			return new SortedCollection4(IntegerComparison);
 		}
 	}
 }

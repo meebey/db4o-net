@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 {
 	public class MixedActivateTestCase : ItemTestCaseBase
 	{
-		private const int ITEM_DEPTH = 10;
+		private const int ItemDepth = 10;
 
 		public static void Main(string[] args)
 		{
@@ -22,17 +22,17 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 		/// <exception cref="Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
-			AssertActivatedItemByMethod((MixedActivateTestCase.Item)obj, ITEM_DEPTH);
+			AssertActivatedItemByMethod((MixedActivateTestCase.Item)obj, ItemDepth);
 		}
 
 		internal virtual void AssertActivatedItemByMethod(MixedActivateTestCase.Item item
 			, int level)
 		{
-			for (int i = 0; i < ITEM_DEPTH; i++)
+			for (int i = 0; i < ItemDepth; i++)
 			{
-				Assert.AreEqual("Item " + (ITEM_DEPTH - i), item.GetName());
-				Assert.AreEqual(ITEM_DEPTH - i, item.GetValue());
-				if (i < ITEM_DEPTH - 1)
+				Assert.AreEqual("Item " + (ItemDepth - i), item.GetName());
+				Assert.AreEqual(ItemDepth - i, item.GetValue());
+				if (i < ItemDepth - 1)
 				{
 					Assert.IsNotNull(item.Next());
 				}
@@ -48,9 +48,9 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 		protected override void AssertRetrievedItem(object obj)
 		{
 			MixedActivateTestCase.Item item = (MixedActivateTestCase.Item)obj;
-			for (int i = 0; i < ITEM_DEPTH; i++)
+			for (int i = 0; i < ItemDepth; i++)
 			{
-				AssertNullItem(item, ITEM_DEPTH - i);
+				AssertNullItem(item, ItemDepth - i);
 				item = item.Next();
 			}
 		}
@@ -110,9 +110,9 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 		{
 			for (int i = 0; i < level; i++)
 			{
-				Assert.AreEqual("Item " + (ITEM_DEPTH - i), item._name);
-				Assert.AreEqual(ITEM_DEPTH - i, item._value);
-				if (i < ITEM_DEPTH - 1)
+				Assert.AreEqual("Item " + (ItemDepth - i), item._name);
+				Assert.AreEqual(ItemDepth - i, item._value);
+				if (i < ItemDepth - 1)
 				{
 					Assert.IsNotNull(item._next);
 				}
@@ -122,7 +122,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 				}
 				item = item._next;
 			}
-			if (level < ITEM_DEPTH)
+			if (level < ItemDepth)
 			{
 				Assert.IsNull(item._name);
 				Assert.IsNull(item._next);
@@ -209,19 +209,19 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 
 			public override string GetName()
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _name;
 			}
 
 			public override int GetValue()
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _value;
 			}
 
 			public override MixedActivateTestCase.Item Next()
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _next;
 			}
 

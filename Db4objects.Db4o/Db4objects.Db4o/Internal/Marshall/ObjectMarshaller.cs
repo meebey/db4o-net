@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			ObjectContainerBase container = transaction.Container();
 			container.Callbacks().ObjectOnUpdate(transaction, obj);
-			yc.DispatchEvent(container, obj, EventDispatcher.UPDATE);
+			yc.DispatchEvent(container, obj, EventDispatcher.Update);
 		}
 
 		public abstract object ReadIndexEntry(ClassMetadata yc, ObjectHeaderAttributes attributes

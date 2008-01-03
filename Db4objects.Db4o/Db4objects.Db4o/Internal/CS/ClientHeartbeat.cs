@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public virtual void Run()
 		{
-			_container.WriteMessageToSocket(Msg.PING);
+			_container.WriteMessageToSocket(Msg.Ping);
 		}
 
 		public virtual void Start()

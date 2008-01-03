@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 				public void Send(object message)
 				{
-					this._enclosing._enclosing.ServerMessageDispatcher().Write(Msg.USER_MESSAGE.MarshallUserMessage
+					this._enclosing._enclosing.ServerMessageDispatcher().Write(Msg.UserMessage.MarshallUserMessage
 						(this._enclosing._enclosing.Transaction(), message));
 				}
 

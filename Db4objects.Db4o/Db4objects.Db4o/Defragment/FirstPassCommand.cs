@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Defragment
 	/// <exclude></exclude>
 	internal sealed class FirstPassCommand : IPassCommand
 	{
-		private const int ID_BATCH_SIZE = 4096;
+		private const int IdBatchSize = 4096;
 
 		private TreeInt _ids;
 
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Defragment
 
 		private bool BatchFull()
 		{
-			return _ids != null && _ids.Size() == ID_BATCH_SIZE;
+			return _ids != null && _ids.Size() == IdBatchSize;
 		}
 
 		public void ProcessClass(DefragmentServicesImpl context, ClassMetadata yapClass, 
@@ -101,9 +101,9 @@ namespace Db4objects.Db4o.Defragment
 				return;
 			}
 			int blockSize = context.BlockSize();
-			int blockLength = Math.Max(Const4.POINTER_LENGTH, blockSize);
-			bool overlapping = (Const4.POINTER_LENGTH % blockSize > 0);
-			int blocksPerPointer = Const4.POINTER_LENGTH / blockSize;
+			int blockLength = Math.Max(Const4.PointerLength, blockSize);
+			bool overlapping = (Const4.PointerLength % blockSize > 0);
+			int blocksPerPointer = Const4.PointerLength / blockSize;
 			if (overlapping)
 			{
 				blocksPerPointer++;

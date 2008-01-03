@@ -17,32 +17,32 @@ namespace Db4objects.Db4o.Config
 	[System.Serializable]
 	public sealed class ConfigScope
 	{
-		public const int DISABLED_ID = -1;
+		public const int DisabledId = -1;
 
-		public const int INDIVIDUALLY_ID = 1;
+		public const int IndividuallyId = 1;
 
-		public const int GLOBALLY_ID = int.MaxValue;
+		public const int GloballyId = int.MaxValue;
 
-		private static readonly string DISABLED_NAME = "disabled";
+		private static readonly string DisabledName = "disabled";
 
-		private static readonly string INDIVIDUALLY_NAME = "individually";
+		private static readonly string IndividuallyName = "individually";
 
-		private static readonly string GLOBALLY_NAME = "globally";
+		private static readonly string GloballyName = "globally";
 
 		/// <summary>Marks a configuration feature as globally disabled.</summary>
 		/// <remarks>Marks a configuration feature as globally disabled.</remarks>
-		public static readonly Db4objects.Db4o.Config.ConfigScope DISABLED = new Db4objects.Db4o.Config.ConfigScope
-			(DISABLED_ID, DISABLED_NAME);
+		public static readonly Db4objects.Db4o.Config.ConfigScope Disabled = new Db4objects.Db4o.Config.ConfigScope
+			(DisabledId, DisabledName);
 
 		/// <summary>Marks a configuration feature as individually configurable.</summary>
 		/// <remarks>Marks a configuration feature as individually configurable.</remarks>
-		public static readonly Db4objects.Db4o.Config.ConfigScope INDIVIDUALLY = new Db4objects.Db4o.Config.ConfigScope
-			(INDIVIDUALLY_ID, INDIVIDUALLY_NAME);
+		public static readonly Db4objects.Db4o.Config.ConfigScope Individually = new Db4objects.Db4o.Config.ConfigScope
+			(IndividuallyId, IndividuallyName);
 
 		/// <summary>Marks a configuration feature as globally enabled.</summary>
 		/// <remarks>Marks a configuration feature as globally enabled.</remarks>
-		public static readonly Db4objects.Db4o.Config.ConfigScope GLOBALLY = new Db4objects.Db4o.Config.ConfigScope
-			(GLOBALLY_ID, GLOBALLY_NAME);
+		public static readonly Db4objects.Db4o.Config.ConfigScope Globally = new Db4objects.Db4o.Config.ConfigScope
+			(GloballyId, GloballyName);
 
 		private readonly int _value;
 
@@ -71,12 +71,12 @@ namespace Db4objects.Db4o.Config
 		{
 			switch (_value)
 			{
-				case DISABLED_ID:
+				case DisabledId:
 				{
 					return false;
 				}
 
-				case GLOBALLY_ID:
+				case GloballyId:
 				{
 					return true;
 				}
@@ -94,17 +94,17 @@ namespace Db4objects.Db4o.Config
 		{
 			switch (id)
 			{
-				case DISABLED_ID:
+				case DisabledId:
 				{
-					return DISABLED;
+					return Disabled;
 				}
 
-				case INDIVIDUALLY_ID:
+				case IndividuallyId:
 				{
-					return INDIVIDUALLY;
+					return Individually;
 				}
 			}
-			return GLOBALLY;
+			return Globally;
 		}
 
 		public override bool Equals(object obj)
@@ -130,19 +130,19 @@ namespace Db4objects.Db4o.Config
 		{
 			switch (_value)
 			{
-				case DISABLED_ID:
+				case DisabledId:
 				{
-					return DISABLED;
+					return Disabled;
 				}
 
-				case INDIVIDUALLY_ID:
+				case IndividuallyId:
 				{
-					return INDIVIDUALLY;
+					return Individually;
 				}
 
 				default:
 				{
-					return GLOBALLY;
+					return Globally;
 					break;
 				}
 			}

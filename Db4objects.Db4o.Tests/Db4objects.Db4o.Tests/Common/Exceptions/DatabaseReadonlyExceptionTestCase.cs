@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				this._enclosing.Db().Set(new Item());
+				this._enclosing.Db().Store(new Item());
 			}
 
 			private readonly DatabaseReadonlyExceptionTestCase _enclosing;

@@ -133,7 +133,7 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			return ActivationDepthProvider().ActivationDepthFor(classMetadata, ActivationMode
-				.ACTIVATE);
+				.Activate);
 		}
 
 		public virtual IActivationDepthProvider ActivationDepthProvider()
@@ -228,7 +228,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				if (DTrace.enabled)
 				{
-					DTrace.BIND.Log(id, " ihc " + Runtime.IdentityHashCode(obj));
+					DTrace.Bind.Log(id, " ihc " + Runtime.IdentityHashCode(obj));
 				}
 				trans = CheckTransaction(trans);
 				int intID = (int)id;
@@ -363,7 +363,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (DTrace.enabled)
 				{
-					DTrace.CLOSE_CALLED.LogStack(this.ToString());
+					DTrace.CloseCalled.LogStack(this.ToString());
 				}
 				Close1();
 				return true;
@@ -396,7 +396,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.CLOSE.Log();
+				DTrace.Close.Log();
 			}
 			LogMsg(3, ToString());
 			lock (_lock)
@@ -425,7 +425,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (DTrace.enabled)
 				{
-					DTrace.COMMIT.Log();
+					DTrace.Commit.Log();
 				}
 				trans = CheckTransaction(trans);
 				CheckReadOnly();
@@ -530,7 +530,7 @@ namespace Db4objects.Db4o.Internal
 				try
 				{
 					DeactivateInternal(trans, obj, ActivationDepthProvider().ActivationDepth(depth, ActivationMode
-						.DEACTIVATE));
+						.Deactivate));
 					CompleteTopLevelCall();
 				}
 				catch (Db4oException e)
@@ -657,12 +657,12 @@ namespace Db4objects.Db4o.Internal
 			@ref.BeginProcessing();
 			if (DTrace.enabled)
 			{
-				DTrace.DELETE.Log(@ref.GetID());
+				DTrace.Delete.Log(@ref.GetID());
 			}
 			if (Delete4(trans, @ref, cascade, userCall))
 			{
 				ObjectOnDelete(trans, yc, obj);
-				if (ConfigImpl().MessageLevel() > Const4.STATE)
+				if (ConfigImpl().MessageLevel() > Const4.State)
 				{
 					Message(string.Empty + @ref.GetID() + " delete " + @ref.ClassMetadata().GetName()
 						);
@@ -683,27 +683,27 @@ namespace Db4objects.Db4o.Internal
 		private bool CaresAboutDeleting(ClassMetadata yc)
 		{
 			return this._callbacks.CaresAboutDeleting() || yc.HasEventRegistered(_this, EventDispatcher
-				.CAN_DELETE);
+				.CanDelete);
 		}
 
 		private bool CaresAboutDeleted(ClassMetadata yc)
 		{
 			return this._callbacks.CaresAboutDeleted() || yc.HasEventRegistered(_this, EventDispatcher
-				.DELETE);
+				.Delete);
 		}
 
 		private bool ObjectCanDelete(Transaction transaction, ClassMetadata yc, object obj
 			)
 		{
 			return _this.Callbacks().ObjectCanDelete(transaction, obj) && yc.DispatchEvent(_this
-				, obj, EventDispatcher.CAN_DELETE);
+				, obj, EventDispatcher.CanDelete);
 		}
 
 		private void ObjectOnDelete(Transaction transaction, ClassMetadata yc, object obj
 			)
 		{
 			_this.Callbacks().ObjectOnDelete(transaction, obj);
-			yc.DispatchEvent(_this, obj, EventDispatcher.DELETE);
+			yc.DispatchEvent(_this, obj, EventDispatcher.Delete);
 		}
 
 		public abstract bool Delete4(Transaction ta, ObjectReference yapObject, int a_cascade
@@ -776,10 +776,10 @@ namespace Db4objects.Db4o.Internal
 		private UnmarshallingContext DescendMarshallingContext(Transaction trans, ObjectReference
 			 @ref)
 		{
-			UnmarshallingContext context = new UnmarshallingContext(trans, @ref, Const4.ADD_TO_ID_TREE
+			UnmarshallingContext context = new UnmarshallingContext(trans, @ref, Const4.AddToIdTree
 				, false);
 			context.ActivationDepth(ActivationDepthProvider().ActivationDepth(1, ActivationMode
-				.ACTIVATE));
+				.Activate));
 			return context;
 		}
 
@@ -836,17 +836,17 @@ namespace Db4objects.Db4o.Internal
 
 		internal void FatalException(Exception t)
 		{
-			FatalException(t, Db4objects.Db4o.Internal.Messages.FATAL_MSG_ID);
+			FatalException(t, Db4objects.Db4o.Internal.Messages.FatalMsgId);
 		}
 
 		internal void FatalException(Exception t, int msgID)
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.FATAL_EXCEPTION.Log(t.ToString());
+				DTrace.FatalException.Log(t.ToString());
 			}
 			Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl(), (msgID == Db4objects.Db4o.Internal.Messages
-				.FATAL_MSG_ID ? 18 : msgID), null, t);
+				.FatalMsgId ? 18 : msgID), null, t);
 			if (!IsClosed())
 			{
 				ShutdownObjectContainer();
@@ -890,7 +890,7 @@ namespace Db4objects.Db4o.Internal
 
 		private IQueryResult GetInternal(Transaction trans, object template)
 		{
-			if (template == null || template.GetType() == Const4.CLASS_OBJECT)
+			if (template == null || template.GetType() == Const4.ClassObject)
 			{
 				return GetAll(trans);
 			}
@@ -939,7 +939,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return obj;
 			}
-			return new ObjectReference(id).Read(ta, new LegacyActivationDepth(0), Const4.ADD_TO_ID_TREE
+			return new ObjectReference(id).Read(ta, new LegacyActivationDepth(0), Const4.AddToIdTree
 				, true);
 		}
 
@@ -960,7 +960,7 @@ namespace Db4objects.Db4o.Internal
 			BeginTopLevelCall();
 			try
 			{
-				obj = new ObjectReference(id).Read(ta, UnknownActivationDepth.INSTANCE, Const4.ADD_TO_ID_TREE
+				obj = new ObjectReference(id).Read(ta, UnknownActivationDepth.Instance, Const4.AddToIdTree
 					, true);
 				CompleteTopLevelCall();
 			}
@@ -1023,7 +1023,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (id <= 0)
 			{
-				return HardObjectReference.INVALID;
+				return HardObjectReference.Invalid;
 			}
 			ObjectReference @ref = trans.ReferenceForId(id);
 			if (@ref != null)
@@ -1036,11 +1036,11 @@ namespace Db4objects.Db4o.Internal
 				trans.RemoveReference(@ref);
 			}
 			@ref = new ObjectReference(id);
-			object readObject = @ref.Read(trans, new LegacyActivationDepth(0), Const4.ADD_TO_ID_TREE
+			object readObject = @ref.Read(trans, new LegacyActivationDepth(0), Const4.AddToIdTree
 				, true);
 			if (readObject == null)
 			{
-				return HardObjectReference.INVALID;
+				return HardObjectReference.Invalid;
 			}
 			if (readObject != @ref.GetObject())
 			{
@@ -1132,8 +1132,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return true;
 			}
-			if ((!ShowInternalClasses()) && _handlers.ICLASS_INTERNAL.IsAssignableFrom(claxx)
-				)
+			if ((!ShowInternalClasses()) && _handlers.IclassInternal.IsAssignableFrom(claxx))
 			{
 				return true;
 			}
@@ -1154,7 +1153,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.YAPCLASS_BY_ID.Log(id);
+				DTrace.YapclassById.Log(id);
 			}
 			if (id == 0)
 			{
@@ -1264,9 +1263,9 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void InitializeEssentialClasses()
 		{
-			for (int i = 0; i < Const4.ESSENTIAL_CLASSES.Length; i++)
+			for (int i = 0; i < Const4.EssentialClasses.Length; i++)
 			{
-				ProduceClassMetadata(Reflector().ForClass(Const4.ESSENTIAL_CLASSES[i]));
+				ProduceClassMetadata(Reflector().ForClass(Const4.EssentialClasses[i]));
 			}
 		}
 
@@ -1398,11 +1397,11 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (objectContainer == null)
 			{
-				if (_replicationCallState == Const4.NONE)
+				if (_replicationCallState == Const4.None)
 				{
 					return;
 				}
-				_replicationCallState = Const4.NONE;
+				_replicationCallState = Const4.None;
 				if (_handlers.i_migration != null)
 				{
 					_handlers.i_migration.Terminate();
@@ -1412,8 +1411,8 @@ namespace Db4objects.Db4o.Internal
 			else
 			{
 				ObjectContainerBase peer = (ObjectContainerBase)objectContainer;
-				_replicationCallState = Const4.OLD;
-				peer._replicationCallState = Const4.OLD;
+				_replicationCallState = Const4.Old;
+				peer._replicationCallState = Const4.Old;
 				_handlers.i_migration = new MigrationConnection(_this, (ObjectContainerBase)objectContainer
 					);
 				peer._handlers.i_migration = _handlers.i_migration;
@@ -1633,7 +1632,7 @@ namespace Db4objects.Db4o.Internal
 
 		private IActivationDepth RefreshActivationDepth(int depth)
 		{
-			return ActivationDepthProvider().ActivationDepth(depth, ActivationMode.REFRESH);
+			return ActivationDepthProvider().ActivationDepth(depth, ActivationMode.Refresh);
 		}
 
 		internal void RefreshClasses()
@@ -1762,7 +1761,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="DatabaseReadOnlyException"></exception>
 		public void Set(Transaction trans, object obj)
 		{
-			Set(trans, obj, Const4.UNSPECIFIED);
+			Set(trans, obj, Const4.Unspecified);
 		}
 
 		/// <exception cref="DatabaseClosedException"></exception>
@@ -1779,7 +1778,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="DatabaseReadOnlyException"></exception>
 		public int SetInternal(Transaction trans, object obj, bool checkJustSet)
 		{
-			return SetInternal(trans, obj, Const4.UNSPECIFIED, checkJustSet);
+			return SetInternal(trans, obj, Const4.Unspecified, checkJustSet);
 		}
 
 		/// <exception cref="DatabaseClosedException"></exception>
@@ -1826,10 +1825,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
-				_replicationCallState = Const4.NEW;
+				_replicationCallState = Const4.New;
 				_handlers._replicationReferenceProvider = referenceProvider;
 				Set2(CheckTransaction(), obj, 1, false);
-				_replicationCallState = Const4.NONE;
+				_replicationCallState = Const4.None;
 				_handlers._replicationReferenceProvider = null;
 			}
 		}
@@ -1914,7 +1913,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					((IDb4oTypeImpl)obj).SetTrans(trans);
 				}
-				if (ConfigImpl().MessageLevel() > Const4.STATE)
+				if (ConfigImpl().MessageLevel() > Const4.State)
 				{
 					Message(string.Empty + @ref.GetID() + " new " + @ref.ClassMetadata().GetName());
 				}
@@ -1945,13 +1944,13 @@ namespace Db4objects.Db4o.Internal
 
 		private bool UpdateDepthSufficient(int updateDepth)
 		{
-			return (updateDepth == Const4.UNSPECIFIED) || (updateDepth > 0);
+			return (updateDepth == Const4.Unspecified) || (updateDepth > 0);
 		}
 
 		private bool ObjectCanNew(Transaction transaction, ClassMetadata yc, object obj)
 		{
 			return Callbacks().ObjectCanNew(transaction, obj) && yc.DispatchEvent(_this, obj, 
-				EventDispatcher.CAN_NEW);
+				EventDispatcher.CanNew);
 		}
 
 		public abstract void SetDirtyInSystemTransaction(PersistentBase a_object);
@@ -1998,7 +1997,7 @@ namespace Db4objects.Db4o.Internal
 
 		private bool StackIsSmall()
 		{
-			return _stackDepth < Const4.MAX_STACK_DEPTH;
+			return _stackDepth < Const4.MaxStackDepth;
 		}
 
 		internal virtual bool StateMessages()
@@ -2168,7 +2167,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.BEGIN_TOP_LEVEL_CALL.Log();
+				DTrace.BeginTopLevelCall.Log();
 			}
 			GenerateCallIDOnTopLevel();
 			if (_stackDepth == 0)
@@ -2213,7 +2212,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.END_TOP_LEVEL_CALL.Log();
+				DTrace.EndTopLevelCall.Log();
 			}
 			_stackDepth--;
 			GenerateCallIDOnTopLevel();

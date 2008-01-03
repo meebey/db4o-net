@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 	/// <exclude></exclude>
 	public class FileHeader0 : FileHeader
 	{
-		internal const int LENGTH = 2 + (Const4.INT_LENGTH * 4);
+		internal const int HeaderLength = 2 + (Const4.IntLength * 4);
 
 		private ConfigBlock _configBlock;
 
@@ -26,9 +26,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			 reader)
 		{
 			byte firstFileByte = reader.ReadByte();
-			if (firstFileByte != Const4.YAPBEGIN)
+			if (firstFileByte != Const4.Yapbegin)
 			{
-				if (firstFileByte != Const4.YAPFILEVERSION)
+				if (firstFileByte != Const4.Yapfileversion)
 				{
 					return null;
 				}
@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 			else
 			{
-				if (reader.ReadByte() != Const4.YAPFILE)
+				if (reader.ReadByte() != Const4.Yapfile)
 				{
 					return null;
 				}
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private void SkipConfigurationLockTime(BufferImpl reader)
 		{
-			reader.IncrementOffset(Const4.ID_LENGTH);
+			reader.IncrementOffset(Const4.IdLength);
 		}
 
 		public override void ReadVariablePart(LocalObjectContainer file)
@@ -122,7 +122,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			)
 		{
 			WriteTransactionPointer(systemTransaction, transactionAddress, _configBlock.Address
-				(), ConfigBlock.TRANSACTION_OFFSET);
+				(), ConfigBlock.TransactionOffset);
 		}
 
 		public virtual MetaIndex GetUUIDMetaIndex()
@@ -132,13 +132,13 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public override int Length()
 		{
-			return LENGTH;
+			return HeaderLength;
 		}
 
 		public override void WriteFixedPart(LocalObjectContainer file, bool startFileLockingThread
 			, bool shuttingDown, StatefulBuffer writer, int blockSize_, int freespaceID)
 		{
-			writer.WriteByte(Const4.YAPFILEVERSION);
+			writer.WriteByte(Const4.Yapfileversion);
 			writer.WriteByte((byte)blockSize_);
 			writer.WriteInt(_configBlock.Address());
 			writer.WriteInt((int)TimeToWrite(_configBlock.OpenTime(), shuttingDown));
@@ -146,7 +146,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			writer.WriteInt(freespaceID);
 			if (Debug.xbytes && Deploy.overwrite)
 			{
-				writer.SetID(Const4.IGNORE_ID);
+				writer.SetID(Const4.IgnoreId);
 			}
 			writer.Write();
 			file.SyncFiles();

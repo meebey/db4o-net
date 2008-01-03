@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Internal
 			if (dp.Enabled())
 			{
 				dp.DefragmentRecommended(DefragmentRecommendation.DefragmentRecommendationReason.
-					DELETE_EMBEDED);
+					DeleteEmbeded);
 			}
 		}
 

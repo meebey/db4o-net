@@ -10,16 +10,16 @@ namespace Db4objects.Db4o.Internal
 	{
 		protected KeySpecHashtable4 _config;
 
-		private static readonly KeySpec CASCADE_ON_ACTIVATE = new KeySpec(TernaryBool.UNSPECIFIED
+		private static readonly KeySpec CascadeOnActivateKey = new KeySpec(TernaryBool.Unspecified
 			);
 
-		private static readonly KeySpec CASCADE_ON_DELETE = new KeySpec(TernaryBool.UNSPECIFIED
+		private static readonly KeySpec CascadeOnDeleteKey = new KeySpec(TernaryBool.Unspecified
 			);
 
-		private static readonly KeySpec CASCADE_ON_UPDATE = new KeySpec(TernaryBool.UNSPECIFIED
+		private static readonly KeySpec CascadeOnUpdateKey = new KeySpec(TernaryBool.Unspecified
 			);
 
-		private static readonly KeySpec NAME = new KeySpec(null);
+		private static readonly KeySpec NameKey = new KeySpec(null);
 
 		public Config4Abstract() : this(new KeySpecHashtable4(10))
 		{
@@ -32,17 +32,17 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void CascadeOnActivate(bool flag)
 		{
-			PutThreeValued(CASCADE_ON_ACTIVATE, flag);
+			PutThreeValued(CascadeOnActivateKey, flag);
 		}
 
 		public virtual void CascadeOnDelete(bool flag)
 		{
-			PutThreeValued(CASCADE_ON_DELETE, flag);
+			PutThreeValued(CascadeOnDeleteKey, flag);
 		}
 
 		public virtual void CascadeOnUpdate(bool flag)
 		{
-			PutThreeValued(CASCADE_ON_UPDATE, flag);
+			PutThreeValued(CascadeOnUpdateKey, flag);
 		}
 
 		protected virtual void PutThreeValued(KeySpec spec, bool flag)
@@ -57,17 +57,17 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual TernaryBool CascadeOnActivate()
 		{
-			return Cascade(CASCADE_ON_ACTIVATE);
+			return Cascade(CascadeOnActivateKey);
 		}
 
 		public virtual TernaryBool CascadeOnDelete()
 		{
-			return Cascade(CASCADE_ON_DELETE);
+			return Cascade(CascadeOnDeleteKey);
 		}
 
 		public virtual TernaryBool CascadeOnUpdate()
 		{
-			return Cascade(CASCADE_ON_UPDATE);
+			return Cascade(CascadeOnUpdateKey);
 		}
 
 		private TernaryBool Cascade(KeySpec spec)
@@ -106,12 +106,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual string GetName()
 		{
-			return _config.GetAsString(NAME);
+			return _config.GetAsString(NameKey);
 		}
 
 		protected virtual void SetName(string name)
 		{
-			_config.Put(NAME, name);
+			_config.Put(NameKey, name);
 		}
 	}
 }

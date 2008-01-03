@@ -29,11 +29,11 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 				{
 					SimpleObject obj1 = new SimpleObject("oc " + i, i);
 					SimpleObject obj2 = new SimpleObject("oc2 " + i, i);
-					oc1.Set(obj1);
-					oc2.Set(obj2);
+					oc1.Store(obj1);
+					oc2.Store(obj2);
 					oc2.Rollback();
 					obj2 = new SimpleObject("oc2.2 " + i, i);
-					oc2.Set(obj2);
+					oc2.Store(obj2);
 				}
 				oc1.Commit();
 				oc2.Rollback();

@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 	/// <exclude></exclude>
 	public class GenericClass : IReflectClass, IDeepClone
 	{
-		private static readonly GenericField[] NO_FIELDS = new GenericField[0];
+		private static readonly GenericField[] NoFields = new GenericField[0];
 
 		private readonly GenericReflector _reflector;
 
@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private IGenericConverter _converter;
 
-		private GenericField[] _fields = NO_FIELDS;
+		private GenericField[] _fields = NoFields;
 
 		private int _declaredFieldCount = -1;
 

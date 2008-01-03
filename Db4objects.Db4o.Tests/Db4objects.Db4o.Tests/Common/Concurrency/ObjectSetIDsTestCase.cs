@@ -16,11 +16,11 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			new ObjectSetIDsTestCase().RunConcurrency();
 		}
 
-		internal const int COUNT = 11;
+		internal const int Count = 11;
 
 		protected override void Store()
 		{
-			for (int i = 0; i < COUNT; i++)
+			for (int i = 0; i < Count; i++)
 			{
 				Store(new ObjectSetIDsTestCase());
 			}
@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IQuery q = oc.Query();
 			q.Constrain(this.GetType());
 			IObjectSet res = q.Execute();
-			Assert.AreEqual(COUNT, res.Size());
+			Assert.AreEqual(Count, res.Size());
 			long[] ids1 = new long[res.Size()];
 			int i = 0;
 			while (res.HasNext())
@@ -40,8 +40,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			}
 			res.Reset();
 			long[] ids2 = res.Ext().GetIDs();
-			Assert.AreEqual(COUNT, ids1.Length);
-			Assert.AreEqual(COUNT, ids2.Length);
+			Assert.AreEqual(Count, ids1.Length);
+			Assert.AreEqual(Count, ids2.Length);
 			for (int j = 0; j < ids1.Length; j++)
 			{
 				bool found = false;

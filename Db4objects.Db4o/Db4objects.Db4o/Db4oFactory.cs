@@ -643,7 +643,7 @@ namespace Db4objects.Db4o
 		/// <returns>version information as a <code>String</code>.</returns>
 		public static string Version()
 		{
-			return "db4o " + Db4oVersion.NAME;
+			return "db4o " + Db4oVersion.Name;
 		}
 	}
 }

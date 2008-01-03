@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected override void Store(IExtObjectContainer objectContainer)
 		{
-			objectContainer.Set(CascadedDeleteFileFormatUpdateTestCase.ParentItem.NewTestInstance
+			StoreObject(objectContainer, CascadedDeleteFileFormatUpdateTestCase.ParentItem.NewTestInstance
 				());
 		}
 

@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual int LinkLength()
 		{
-			return _valueHandler.LinkLength() + Const4.INT_LENGTH;
+			return _valueHandler.LinkLength() + Const4.IntLength;
 		}
 
 		public virtual object ReadIndexEntry(BufferImpl a_reader)

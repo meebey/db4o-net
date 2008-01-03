@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		public virtual void Insert(PersistenceContext context, PersistentEntry entry)
 		{
 			LogMethodCall("insert", context, entry);
-			DataContainer(context).Set(Clone(entry));
+			DataContainer(context).Store(Clone(entry));
 		}
 
 		public virtual IEnumerator Select(PersistenceContext context, PersistentEntryTemplate
@@ -136,7 +136,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		{
 			PersistentEntry existing = SelectByUid(context, entry.className, entry.uid);
 			existing.fieldValues = entry.fieldValues;
-			DataContainer(context).Set(existing);
+			DataContainer(context).Store(existing);
 		}
 
 		private PersistentEntry SelectByUid(PersistenceContext context, string className, 
@@ -328,7 +328,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		private void Store(IObjectContainer container, object obj)
 		{
-			container.Set(obj);
+			container.Store(obj);
 			container.Commit();
 		}
 

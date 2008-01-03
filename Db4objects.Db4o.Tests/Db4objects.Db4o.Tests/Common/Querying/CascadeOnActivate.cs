@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			coa.child.name = "2";
 			coa.child.child = new CascadeOnActivate();
 			coa.child.child.name = "3";
-			Db().Set(coa);
+			Db().Store(coa);
 		}
 
 		public virtual void Test()

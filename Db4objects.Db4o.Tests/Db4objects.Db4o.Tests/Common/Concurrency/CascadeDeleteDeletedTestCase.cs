@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				);
 			item.untypedMember = new CascadeDeleteDeletedTestCase.CddMember();
 			item.typedMember = new CascadeDeleteDeletedTestCase.CddMember();
-			oc.Set(item);
+			oc.Store(item);
 		}
 
 		private void TwoRef(IExtObjectContainer oc, string name)
@@ -74,8 +74,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				);
 			item2.untypedMember = item1.untypedMember;
 			item2.typedMember = item1.typedMember;
-			oc.Set(item1);
-			oc.Set(item2);
+			oc.Store(item1);
+			oc.Store(item2);
 		}
 
 		public virtual void Conc(IExtObjectContainer oc, int seq)

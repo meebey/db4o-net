@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Reflect
 	{
 		/// <summary>Useful whenever an "out" parameter is to be ignored.</summary>
 		/// <remarks>Useful whenever an "out" parameter is to be ignored.</remarks>
-		public static readonly Db4objects.Db4o.Reflect.ReflectClassByRef IGNORED = new Db4objects.Db4o.Reflect.ReflectClassByRef
+		public static readonly Db4objects.Db4o.Reflect.ReflectClassByRef Ignored = new Db4objects.Db4o.Reflect.ReflectClassByRef
 			();
 
 		public IReflectClass value;

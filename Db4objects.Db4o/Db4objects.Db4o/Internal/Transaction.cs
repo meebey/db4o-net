@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.TRANS_DELETE.Log(id);
+				DTrace.TransDelete.Log(id);
 			}
 			DeleteInfo info = (DeleteInfo)TreeInt.Find(_delete, id);
 			if (info == null)
@@ -140,7 +140,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.TRANS_DONT_DELETE.Log(a_id);
+				DTrace.TransDontDelete.Log(a_id);
 			}
 			if (_delete == null)
 			{

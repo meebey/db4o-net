@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 	{
 		public virtual bool ProcessAtServer()
 		{
-			Write(Msg.PONG);
+			Write(Msg.Pong);
 			return true;
 		}
 	}

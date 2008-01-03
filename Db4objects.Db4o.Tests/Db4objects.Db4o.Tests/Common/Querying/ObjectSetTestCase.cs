@@ -40,9 +40,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			Db().Set(new ObjectSetTestCase.Item("foo"));
-			Db().Set(new ObjectSetTestCase.Item("bar"));
-			Db().Set(new ObjectSetTestCase.Item("baz"));
+			Db().Store(new ObjectSetTestCase.Item("foo"));
+			Db().Store(new ObjectSetTestCase.Item("bar"));
+			Db().Store(new ObjectSetTestCase.Item("baz"));
 		}
 
 		public virtual void TestObjectsCantBeSeenAfterDelete()

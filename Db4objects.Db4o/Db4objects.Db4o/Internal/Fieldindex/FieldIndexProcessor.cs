@@ -20,18 +20,18 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 			IIndexedNode bestIndex = SelectBestIndex();
 			if (null == bestIndex)
 			{
-				return FieldIndexProcessorResult.NO_INDEX_FOUND;
+				return FieldIndexProcessorResult.NoIndexFound;
 			}
 			if (bestIndex.ResultSize() > 0)
 			{
 				IIndexedNode resolved = ResolveFully(bestIndex);
 				if (null == resolved)
 				{
-					return FieldIndexProcessorResult.NO_INDEX_FOUND;
+					return FieldIndexProcessorResult.NoIndexFound;
 				}
 				return new FieldIndexProcessorResult(resolved);
 			}
-			return FieldIndexProcessorResult.FOUND_INDEX_BUT_NO_MATCH;
+			return FieldIndexProcessorResult.FoundIndexButNoMatch;
 		}
 
 		private IIndexedNode ResolveFully(IIndexedNode bestIndex)

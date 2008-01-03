@@ -13,13 +13,13 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oClientServer : AbstractDb4oFixture, IDb4oClientServerFixture
 	{
-		protected static readonly string FILE = "Db4oClientServer.yap";
+		protected static readonly string File = "Db4oClientServer.yap";
 
-		public static readonly string HOST = "127.0.0.1";
+		public static readonly string Host = "127.0.0.1";
 
-		public static readonly string USERNAME = "db4o";
+		public static readonly string Username = "db4o";
 
-		public static readonly string PASSWORD = USERNAME;
+		public static readonly string Password = Username;
 
 		private IObjectServer _server;
 
@@ -55,13 +55,13 @@ namespace Db4oUnit.Extensions.Fixtures
 			IConfiguration config = Config();
 			ApplyFixtureConfiguration(testCaseClass, config);
 			_objectContainer = _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient
-				(config, HOST, _port, USERNAME, PASSWORD).Ext();
+				(config, Host, _port, Username, Password).Ext();
 		}
 
 		public virtual IExtObjectContainer OpenNewClient()
 		{
 			return _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient(CloneDb4oConfiguration
-				((Config4Impl)Config()), HOST, _port, USERNAME, PASSWORD).Ext();
+				((Config4Impl)Config()), Host, _port, Username, Password).Ext();
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -70,7 +70,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			_serverConfig = CloneDb4oConfiguration(Config());
 			_server = Db4oFactory.OpenServer(_serverConfig, _yap.GetAbsolutePath(), -1);
 			_port = _server.Ext().Port();
-			_server.GrantAccess(USERNAME, PASSWORD);
+			_server.GrantAccess(Username, Password);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -181,7 +181,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private static string FilePath()
 		{
-			return CrossPlatformServices.DatabasePath(FILE);
+			return CrossPlatformServices.DatabasePath(File);
 		}
 
 		public override void ConfigureAtRuntime(IRuntimeConfigureAction action)

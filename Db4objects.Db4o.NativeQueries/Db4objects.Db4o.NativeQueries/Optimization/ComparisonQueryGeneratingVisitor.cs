@@ -122,25 +122,25 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 			object right = _value;
 			switch (operand.Op().Id())
 			{
-				case ArithmeticOperator.ADD_ID:
+				case ArithmeticOperator.AddId:
 				{
 					_value = Add(left, right);
 					break;
 				}
 
-				case ArithmeticOperator.SUBTRACT_ID:
+				case ArithmeticOperator.SubtractId:
 				{
 					_value = Subtract(left, right);
 					break;
 				}
 
-				case ArithmeticOperator.MULTIPLY_ID:
+				case ArithmeticOperator.MultiplyId:
 				{
 					_value = Multiply(left, right);
 					break;
 				}
 
-				case ArithmeticOperator.DIVIDE_ID:
+				case ArithmeticOperator.DivideId:
 				{
 					_value = Divide(left, right);
 					break;

@@ -24,12 +24,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ConfigureForTest(config);
 		}
 
-		protected static readonly string PATH = Path.Combine(Path.GetTempPath(), "test/db4oVersions"
+		protected static readonly string TempPath = Path.Combine(Path.GetTempPath(), "test/db4oVersions"
 			);
 
 		protected virtual string FileName()
 		{
-			_db4oVersion = Db4oVersion.NAME;
+			_db4oVersion = Db4oVersion.Name;
 			return FileName(_db4oVersion);
 		}
 
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected virtual string OldVersionFileName(string versionName)
 		{
-			return Path.Combine(PATH, FileNamePrefix() + versionName.Replace(' ', '_'));
+			return Path.Combine(TempPath, FileNamePrefix() + versionName.Replace(' ', '_'));
 		}
 
 		public virtual void CreateDatabase()
@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CreateDatabase(string file)
 		{
-			System.IO.Directory.CreateDirectory(PATH);
+			System.IO.Directory.CreateDirectory(TempPath);
 			if (System.IO.File.Exists(file))
 			{
 				File4.Delete(file);
@@ -180,6 +180,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		}
 
 		protected abstract void Store(IExtObjectContainer objectContainer);
+
+		protected virtual void StoreObject(IExtObjectContainer objectContainer, object obj
+			)
+		{
+			objectContainer.Set(obj);
+		}
 
 		protected abstract void AssertObjectsAreReadable(IExtObjectContainer objectContainer
 			);

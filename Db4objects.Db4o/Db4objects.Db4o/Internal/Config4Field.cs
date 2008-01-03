@@ -10,9 +10,9 @@ namespace Db4objects.Db4o.Internal
 	{
 		private readonly Config4Class _configClass;
 
-		private static readonly KeySpec QUERY_EVALUATION = new KeySpec(true);
+		private static readonly KeySpec QueryEvaluationKey = new KeySpec(true);
 
-		private static readonly KeySpec INDEXED = new KeySpec(TernaryBool.UNSPECIFIED);
+		private static readonly KeySpec IndexedKey = new KeySpec(TernaryBool.Unspecified);
 
 		protected Config4Field(Config4Class a_class, KeySpecHashtable4 config) : base(config
 			)
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void QueryEvaluation(bool flag)
 		{
-			_config.Put(QUERY_EVALUATION, flag);
+			_config.Put(QueryEvaluationKey, flag);
 		}
 
 		public virtual void Rename(string newName)
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Indexed(bool flag)
 		{
-			PutThreeValued(INDEXED, flag);
+			PutThreeValued(IndexedKey, flag);
 		}
 
 		public virtual void InitOnUp(Transaction systemTrans, FieldMetadata yapField)
@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Indexed(false);
 			}
-			TernaryBool indexedFlag = _config.GetAsTernaryBool(INDEXED);
+			TernaryBool indexedFlag = _config.GetAsTernaryBool(IndexedKey);
 			if (indexedFlag.DefiniteNo())
 			{
 				yapField.DropIndex(systemTrans);
@@ -93,7 +93,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual bool QueryEvaluation()
 		{
-			return _config.GetAsBoolean(QUERY_EVALUATION);
+			return _config.GetAsBoolean(QueryEvaluationKey);
 		}
 	}
 }

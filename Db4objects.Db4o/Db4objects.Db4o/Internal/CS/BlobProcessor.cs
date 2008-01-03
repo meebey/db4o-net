@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal.CS
 		internal BlobProcessor(ClientObjectContainer aStream)
 		{
 			stream = aStream;
-			SetPriority(MIN_PRIORITY);
+			SetPriority(MinPriority);
 		}
 
 		internal virtual void Add(MsgBlob msg)
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Internal.CS
 						if (msg == null)
 						{
 							terminated = true;
-							Msg.CLOSE_SOCKET.Write(socket);
+							Msg.CloseSocket.Write(socket);
 							try
 							{
 								socket.Close();

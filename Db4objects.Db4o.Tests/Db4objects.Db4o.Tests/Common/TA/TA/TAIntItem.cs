@@ -19,19 +19,19 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 		public virtual int Value()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return value;
 		}
 
 		public virtual int IntegerValue()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return i;
 		}
 
 		public virtual object Object()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return obj;
 		}
 	}

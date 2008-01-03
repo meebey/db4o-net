@@ -22,14 +22,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		public class FamilyVersion
 		{
-			public const int PRE_MARSHALLER = 0;
+			public const int PreMarshaller = 0;
 
-			public const int MARSHALLER = 1;
+			public const int Marshaller = 1;
 
-			public const int BTREE_FIELD_INDEXES = 2;
+			public const int BtreeFieldIndexes = 2;
 		}
 
-		private static int FAMILY_VERSION = MarshallerFamily.FamilyVersion.BTREE_FIELD_INDEXES;
+		private static int CurrentVersion = MarshallerFamily.FamilyVersion.BtreeFieldIndexes;
 
 		public readonly ArrayMarshaller _array;
 
@@ -52,10 +52,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private static readonly MarshallerFamily[] allVersions = new MarshallerFamily[] { 
 			new MarshallerFamily(0, 0, new ArrayMarshaller0(), new ClassMarshaller0(), new FieldMarshaller0
 			(), new ObjectMarshaller0(), new PrimitiveMarshaller0(), new StringMarshaller0()
-			, new UntypedMarshaller0()), new MarshallerFamily(ClassIndexesToBTrees_5_5.VERSION
+			, new UntypedMarshaller0()), new MarshallerFamily(ClassIndexesToBTrees_5_5.Version
 			, 1, new ArrayMarshaller1(), new ClassMarshaller1(), new FieldMarshaller0(), new 
 			ObjectMarshaller1(), new PrimitiveMarshaller1(), new StringMarshaller1(), new UntypedMarshaller1
-			()), new MarshallerFamily(FieldIndexesToBTrees_5_7.VERSION, 2, new ArrayMarshaller1
+			()), new MarshallerFamily(FieldIndexesToBTrees_5_7.Version, 2, new ArrayMarshaller1
 			(), new ClassMarshaller2(), new FieldMarshaller1(), new ObjectMarshaller1(), new 
 			PrimitiveMarshaller1(), new StringMarshaller1(), new UntypedMarshaller1()) };
 
@@ -87,12 +87,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public static MarshallerFamily Current()
 		{
-			if (FAMILY_VERSION < MarshallerFamily.FamilyVersion.BTREE_FIELD_INDEXES)
+			if (CurrentVersion < MarshallerFamily.FamilyVersion.BtreeFieldIndexes)
 			{
 				throw new InvalidOperationException("Using old marshaller versions to write database files is not supported, source code has been removed."
 					);
 			}
-			return Version(FAMILY_VERSION);
+			return Version(CurrentVersion);
 		}
 
 		public static MarshallerFamily ForConverterVersion(int n)

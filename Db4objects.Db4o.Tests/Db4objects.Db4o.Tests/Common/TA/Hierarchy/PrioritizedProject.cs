@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 
 		public virtual int GetPriority()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _priority;
 		}
 	}

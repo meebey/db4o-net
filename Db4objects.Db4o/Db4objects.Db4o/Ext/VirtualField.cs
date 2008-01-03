@@ -20,6 +20,6 @@ namespace Db4objects.Db4o.Ext
 		/// the field name of the virtual version field, to be used
 		/// for querying.
 		/// </remarks>
-		public static readonly string VERSION = Const4.VIRTUAL_FIELD_PREFIX + "version";
+		public static readonly string Version = Const4.VirtualFieldPrefix + "version";
 	}
 }

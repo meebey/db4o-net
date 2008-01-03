@@ -14,9 +14,9 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 {
 	public class StoredClassTestCase : AbstractDb4oTestCase
 	{
-		private static readonly string FIELD_NAME = "_name";
+		private static readonly string FieldName = "_name";
 
-		private static readonly string ITEM_NAME = "item";
+		private static readonly string ItemName = "item";
 
 		public class ItemParent
 		{
@@ -38,14 +38,14 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			config.ObjectClass(typeof(StoredClassTestCase.Item)).ObjectField(FIELD_NAME).Indexed
+			config.ObjectClass(typeof(StoredClassTestCase.Item)).ObjectField(FieldName).Indexed
 				(true);
 		}
 
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			StoredClassTestCase.Item item = new StoredClassTestCase.Item(ITEM_NAME);
+			StoredClassTestCase.Item item = new StoredClassTestCase.Item(ItemName);
 			Store(item);
 		}
 
@@ -92,12 +92,12 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		public virtual void TestGetStoredFields()
 		{
-			AssertStoredField(typeof(StoredClassTestCase.Item), FIELD_NAME, ITEM_NAME, typeof(
-				string), true, false);
+			AssertStoredField(typeof(StoredClassTestCase.Item), FieldName, ItemName, typeof(string
+				), true, false);
 			AssertStoredField(typeof(StoredClassTestCase.ItemParent), "_array", null, typeof(
 				string), false, true);
 			IStoredClass itemStoredClass = ItemStoredClass();
-			IStoredField storedField = itemStoredClass.StoredField(FIELD_NAME, null);
+			IStoredField storedField = itemStoredClass.StoredField(FieldName, null);
 			IStoredField sameStoredField = itemStoredClass.GetStoredFields()[0];
 			IStoredField otherStoredField = StoredClass(typeof(StoredClassTestCase.ItemParent
 				)).GetStoredFields()[0];

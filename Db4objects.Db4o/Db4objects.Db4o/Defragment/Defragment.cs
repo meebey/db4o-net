@@ -144,7 +144,7 @@ namespace Db4objects.Db4o.Defragment
 				DefragUnindexed(context);
 				newClassCollectionID = context.MappedID(context.SourceClassCollectionID());
 				context.TargetClassCollectionID(newClassCollectionID);
-				int sourceIdentityID = context.DatabaseIdentityID(DefragmentServicesImpl.SOURCEDB
+				int sourceIdentityID = context.DatabaseIdentityID(DefragmentServicesImpl.Sourcedb
 					);
 				targetIdentityID = context.MappedID(sourceIdentityID, 0);
 				targetUuidIndexID = context.MappedID(context.SourceUuidIndexID(), 0);
@@ -244,7 +244,7 @@ namespace Db4objects.Db4o.Defragment
 			IPassCommand command)
 		{
 			command.ProcessClassCollection(context);
-			IStoredClass[] classes = context.StoredClasses(DefragmentServicesImpl.SOURCEDB);
+			IStoredClass[] classes = context.StoredClasses(DefragmentServicesImpl.Sourcedb);
 			for (int classIdx = 0; classIdx < classes.Length; classIdx++)
 			{
 				ClassMetadata yapClass = (ClassMetadata)classes[classIdx];

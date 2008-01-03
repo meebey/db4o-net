@@ -188,7 +188,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (Deploy.debug && Deploy.brackets)
 			{
-				WriteByte(Const4.YAPEND);
+				WriteByte(Const4.Yapend);
 			}
 		}
 
@@ -252,7 +252,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void IncrementIntSize()
 		{
-			IncrementOffset(Const4.INT_LENGTH);
+			IncrementOffset(Const4.IntLength);
 		}
 
 		public virtual int Offset()

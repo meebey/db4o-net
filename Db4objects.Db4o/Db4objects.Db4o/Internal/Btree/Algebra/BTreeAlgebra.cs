@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.Internal.Btree.Algebra
 
 		private static SortedCollection4 NewBTreeRangeSingleCollection()
 		{
-			return new SortedCollection4(BTreeRangeSingle.COMPARISON);
+			return new SortedCollection4(BTreeRangeSingle.Comparison);
 		}
 
 		public static IBTreeRange Union(BTreeRangeSingle single1, BTreeRangeSingle single2

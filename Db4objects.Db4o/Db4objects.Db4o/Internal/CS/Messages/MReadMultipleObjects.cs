@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			int size = ReadInt();
 			MsgD[] ret = new MsgD[size];
-			int length = (1 + size) * Const4.INT_LENGTH;
+			int length = (1 + size) * Const4.IntLength;
 			lock (StreamLock())
 			{
 				for (int i = 0; i < size; i++)
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 						StatefulBuffer bytes = Stream().ReadWriterByID(Transaction(), id);
 						if (bytes != null)
 						{
-							ret[i] = Msg.OBJECT_TO_CLIENT.GetWriter(bytes);
+							ret[i] = Msg.ObjectToClient.GetWriter(bytes);
 							length += ret[i]._payLoad.Length();
 						}
 					}
@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					}
 				}
 			}
-			MsgD multibytes = Msg.READ_MULTIPLE_OBJECTS.GetWriterForLength(Transaction(), length
+			MsgD multibytes = Msg.ReadMultipleObjects.GetWriterForLength(Transaction(), length
 				);
 			multibytes.WriteInt(size);
 			for (int i = 0; i < size; i++)

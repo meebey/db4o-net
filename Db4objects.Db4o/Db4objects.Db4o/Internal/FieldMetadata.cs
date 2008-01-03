@@ -42,11 +42,11 @@ namespace Db4objects.Db4o.Internal
 
 		private int _state;
 
-		private const int NOT_LOADED = 0;
+		private const int NotLoaded = 0;
 
-		private const int UNAVAILABLE = -1;
+		private const int Unavailable = -1;
 
-		private const int AVAILABLE = 1;
+		private const int Available = 1;
 
 		private Config4Field _config;
 
@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Internal
 
 		private BTree _index;
 
-		internal static readonly Db4objects.Db4o.Internal.FieldMetadata[] EMPTY_ARRAY = new 
+		internal static readonly Db4objects.Db4o.Internal.FieldMetadata[] EmptyArray = new 
 			Db4objects.Db4o.Internal.FieldMetadata[0];
 
 		public FieldMetadata(ClassMetadata classMetadata)
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Internal
 			) : this(containingClass)
 		{
 			Init(containingClass, translator.GetType().FullName);
-			_state = AVAILABLE;
+			_state = Available;
 			ObjectContainerBase stream = Container();
 			_handler = stream._handlers.HandlerForClass(stream, stream.Reflector().ForClass(TranslatorStoredClass
 				(translator)));
@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Internal
 			) : this(containingClass)
 		{
 			Init(containingClass, marshaller.GetType().FullName);
-			_state = AVAILABLE;
+			_state = Available;
 			_handler = Container()._handlers.UntypedHandler();
 		}
 
@@ -109,7 +109,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			Configure(field.GetFieldType(), isPrimitive);
 			CheckDb4oType();
-			_state = AVAILABLE;
+			_state = Available;
 		}
 
 		protected FieldMetadata(int handlerID, ITypeHandler4 handler)
@@ -198,11 +198,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual bool Alive()
 		{
-			if (_state == AVAILABLE)
+			if (_state == Available)
 			{
 				return true;
 			}
-			if (_state == NOT_LOADED)
+			if (_state == NotLoaded)
 			{
 				if (_handler == null)
 				{
@@ -216,16 +216,16 @@ namespace Db4objects.Db4o.Internal
 				}
 				if (_handler == null || _reflectField == null)
 				{
-					_state = UNAVAILABLE;
+					_state = Unavailable;
 					_reflectField = null;
 				}
 				else
 				{
-					_state = AVAILABLE;
+					_state = Available;
 					CheckDb4oType();
 				}
 			}
-			return _state == AVAILABLE;
+			return _state == Available;
 		}
 
 		private void CheckHandlerID()
@@ -270,7 +270,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (claxx == null || obj == null)
 			{
-				return _isPrimitive ? No4.INSTANCE : obj;
+				return _isPrimitive ? No4.Instance : obj;
 			}
 			if (_handler is PrimitiveHandler)
 			{
@@ -278,7 +278,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (!CanHold(claxx))
 			{
-				return No4.INSTANCE;
+				return No4.Instance;
 			}
 			return obj;
 		}
@@ -334,7 +334,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_reflectField != null)
 			{
-				if (Container()._handlers.ICLASS_DB4OTYPE.IsAssignableFrom(_reflectField.GetFieldType
+				if (Container()._handlers.IclassDb4otype.IsAssignableFrom(_reflectField.GetFieldType
 					()))
 				{
 					_db4oType = HandlerRegistry.GetDb4oType(_reflectField.GetFieldType());
@@ -576,7 +576,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					return null;
 				}
-				UnmarshallingContext context = new UnmarshallingContext(trans, @ref, Const4.ADD_TO_ID_TREE
+				UnmarshallingContext context = new UnmarshallingContext(trans, @ref, Const4.AddToIdTree
 					, false);
 				context.ActivationDepth(new LegacyActivationDepth(1));
 				return context.ReadFieldValue(this);
@@ -768,7 +768,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_handler == null)
 			{
-				return Const4.ID_LENGTH;
+				return Const4.IdLength;
 			}
 			if (_handler is PersistentBase)
 			{
@@ -796,7 +796,7 @@ namespace Db4objects.Db4o.Internal
 			if (handler == null || (!handler.Equals(_handler)))
 			{
 				_reflectField = null;
-				_state = UNAVAILABLE;
+				_state = Unavailable;
 			}
 		}
 
@@ -909,7 +909,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void RefreshActivated()
 		{
-			_state = AVAILABLE;
+			_state = Available;
 			Refresh();
 		}
 
@@ -925,7 +925,7 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			_reflectField = null;
-			_state = UNAVAILABLE;
+			_state = Unavailable;
 		}
 
 		public virtual void Rename(string newName)
@@ -987,7 +987,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = transaction.Container();
 			if (stream.IsClient())
 			{
-				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.CLIENT_SERVER_UNSUPPORTED
+				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.ClientServerUnsupported
 					);
 			}
 			lock (stream.Lock())
@@ -1025,7 +1025,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (!HasIndex())
 			{
-				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.ONLY_FOR_INDEXED_FIELDS
+				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.OnlyForIndexedFields
 					);
 			}
 		}
@@ -1138,7 +1138,7 @@ namespace Db4objects.Db4o.Internal
 			object keyPart)
 		{
 			return GetIndex(transaction).SearchLeaf(transaction, CreateFieldIndexKey(parentID
-				, keyPart), SearchTarget.LOWEST);
+				, keyPart), SearchTarget.Lowest);
 		}
 
 		public virtual bool RebuildIndexForClass(LocalObjectContainer stream, ClassMetadata
@@ -1186,7 +1186,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			ObjectContainerBase stream = systemTrans.Container();
-			if (stream.ConfigImpl().MessageLevel() > Const4.NONE)
+			if (stream.ConfigImpl().MessageLevel() > Const4.None)
 			{
 				stream.Message("dropping index " + ToString());
 			}
@@ -1209,7 +1209,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			LocalObjectContainer container = (LocalObjectContainer)Container();
-			if (container.ConfigImpl().MessageLevel() > Const4.NONE)
+			if (container.ConfigImpl().MessageLevel() > Const4.None)
 			{
 				container.Message("creating index " + ToString());
 			}

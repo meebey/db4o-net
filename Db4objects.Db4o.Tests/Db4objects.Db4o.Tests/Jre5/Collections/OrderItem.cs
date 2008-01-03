@@ -21,13 +21,13 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 
 		public virtual Db4objects.Db4o.Tests.Jre5.Collections.Product Product()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _product;
 		}
 
 		public virtual int Quantity()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _quantity;
 		}
 

@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			CanUpdateFalseRefreshTestCase.Item item = (CanUpdateFalseRefreshTestCase.Item)RetrieveOnlyInstance
 				(typeof(CanUpdateFalseRefreshTestCase.Item));
 			item._name = "two";
-			Db().Set(item);
+			Db().Store(item);
 			Assert.AreEqual("two", item._name);
 			Db().Refresh(item, 2);
 			Assert.AreEqual("one", item._name);

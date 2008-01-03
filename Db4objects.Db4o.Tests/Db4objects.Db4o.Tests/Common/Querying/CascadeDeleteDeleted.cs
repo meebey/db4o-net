@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			CascadeDeleteDeleted cdd = new CascadeDeleteDeleted(name);
 			cdd.untypedMember = new CascadeDeleteDeleted.CddMember();
 			cdd.typedMember = new CascadeDeleteDeleted.CddMember();
-			Db().Set(cdd);
+			Db().Store(cdd);
 		}
 
 		private void TwoRef(string name)
@@ -62,8 +62,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			CascadeDeleteDeleted cdd2 = new CascadeDeleteDeleted(name);
 			cdd2.untypedMember = cdd.untypedMember;
 			cdd2.typedMember = cdd.typedMember;
-			Db().Set(cdd);
-			Db().Set(cdd2);
+			Db().Store(cdd);
+			Db().Store(cdd2);
 		}
 
 		public virtual void Test()

@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class Null : IIndexable4, IPreparedComparison
 	{
-		public static readonly Null INSTANCE = new Null();
+		public static readonly Null Instance = new Null();
 
 		public virtual int CompareTo(object a_obj)
 		{

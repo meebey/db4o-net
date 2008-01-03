@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.Convert
 	/// <exclude></exclude>
 	public class Converter
 	{
-		public const int VERSION = FieldIndexesToBTrees_5_7.VERSION;
+		public const int Version = FieldIndexesToBTrees_5_7.Version;
 
 		private static Db4objects.Db4o.Internal.Convert.Converter _converter;
 
@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Internal.Convert
 
 		private static bool NeedsConversion(SystemData systemData)
 		{
-			return systemData.ConverterVersion() < VERSION;
+			return systemData.ConverterVersion() < Version;
 		}
 
 		public virtual void Register(int idx, Conversion conversion)
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Internal.Convert
 			{
 				return false;
 			}
-			for (int i = systemData.ConverterVersion(); i <= VERSION; i++)
+			for (int i = systemData.ConverterVersion(); i <= Version; i++)
 			{
 				Conversion conversion = (Conversion)_conversions.Get(i);
 				if (conversion != null)

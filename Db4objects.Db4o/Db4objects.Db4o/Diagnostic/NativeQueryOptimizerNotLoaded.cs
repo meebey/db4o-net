@@ -11,9 +11,9 @@ namespace Db4objects.Db4o.Diagnostic
 
 		private readonly Exception _details;
 
-		public const int NQ_NOT_PRESENT = 1;
+		public const int NqNotPresent = 1;
 
-		public const int NQ_CONSTRUCTION_FAILED = 2;
+		public const int NqConstructionFailed = 2;
 
 		public NativeQueryOptimizerNotLoaded(int reason, Exception details)
 		{
@@ -30,12 +30,12 @@ namespace Db4objects.Db4o.Diagnostic
 		{
 			switch (_reason)
 			{
-				case NQ_NOT_PRESENT:
+				case NqNotPresent:
 				{
 					return AppendDetails("Native query not present.");
 				}
 
-				case NQ_CONSTRUCTION_FAILED:
+				case NqConstructionFailed:
 				{
 					return AppendDetails("Native query couldn't be instantiated.");
 				}

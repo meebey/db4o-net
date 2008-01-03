@@ -17,7 +17,7 @@ namespace Db4oUnit.Extensions.Concurrency
 		private Exception[] failures;
 
 		public ConcurrencyTestMethod(object instance, MethodInfo method) : base(instance, 
-			method, Db4oFixtureLabelProvider.DEFAULT)
+			method, Db4oFixtureLabelProvider.Default)
 		{
 		}
 
@@ -69,10 +69,10 @@ namespace Db4oUnit.Extensions.Concurrency
 		private void CheckConcurrencyMethod(AbstractDb4oTestCase toTest, string testMethodName
 			)
 		{
-			int testPrefixLength = ConcurrenyConst.COCURRENCY_TEST_PREFIX.Length;
+			int testPrefixLength = ConcurrenyConst.CocurrencyTestPrefix.Length;
 			string subMethodName = Sharpen.Runtime.Substring(testMethodName, testPrefixLength
 				);
-			string checkMethodName = ConcurrenyConst.COCURRENCY_CHECK_PREFIX + subMethodName;
+			string checkMethodName = ConcurrenyConst.CocurrencyCheckPrefix + subMethodName;
 			MethodInfo checkMethod = null;
 			try
 			{

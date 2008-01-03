@@ -7,13 +7,13 @@ namespace Db4objects.Db4o.Internal
 	{
 		public readonly int _id;
 
-		public static readonly Db4objects.Db4o.Internal.ObjectID IS_NULL = new Db4objects.Db4o.Internal.ObjectID
+		public static readonly Db4objects.Db4o.Internal.ObjectID IsNull = new Db4objects.Db4o.Internal.ObjectID
 			(-1);
 
-		public static readonly Db4objects.Db4o.Internal.ObjectID NOT_POSSIBLE = new Db4objects.Db4o.Internal.ObjectID
+		public static readonly Db4objects.Db4o.Internal.ObjectID NotPossible = new Db4objects.Db4o.Internal.ObjectID
 			(-2);
 
-		public static readonly Db4objects.Db4o.Internal.ObjectID IGNORE = new Db4objects.Db4o.Internal.ObjectID
+		public static readonly Db4objects.Db4o.Internal.ObjectID Ignore = new Db4objects.Db4o.Internal.ObjectID
 			(-3);
 
 		public ObjectID(int id)

@@ -14,11 +14,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 {
 	public class CollectionIndexedJoinTestCase : AbstractDb4oTestCase
 	{
-		private static readonly string COLLECTIONFIELDNAME = "_data";
+		private static readonly string Collectionfieldname = "_data";
 
-		private static readonly string IDFIELDNAME = "_id";
+		private static readonly string Idfieldname = "_id";
 
-		private const int NUMENTRIES = 3;
+		private const int Numentries = 3;
 
 		public class DataHolder
 		{
@@ -43,14 +43,14 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 
 		protected override void Configure(IConfiguration config)
 		{
-			config.ObjectClass(typeof(CollectionIndexedJoinTestCase.Data)).ObjectField(IDFIELDNAME
+			config.ObjectClass(typeof(CollectionIndexedJoinTestCase.Data)).ObjectField(Idfieldname
 				).Indexed(true);
 		}
 
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			for (int i = 0; i < NUMENTRIES; i++)
+			for (int i = 0; i < Numentries; i++)
 			{
 				Store(new CollectionIndexedJoinTestCase.DataHolder(i));
 			}
@@ -80,11 +80,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 		public virtual void TestTwoJoinLegs()
 		{
 			IQuery query = NewQuery(typeof(CollectionIndexedJoinTestCase.DataHolder)).Descend
-				(COLLECTIONFIELDNAME);
-			IConstraint left = query.Descend(IDFIELDNAME).Constrain(0);
-			left.Or(query.Descend(IDFIELDNAME).Constrain(1));
-			IConstraint right = query.Descend(IDFIELDNAME).Constrain(2);
-			right.Or(query.Descend(IDFIELDNAME).Constrain(-1));
+				(Collectionfieldname);
+			IConstraint left = query.Descend(Idfieldname).Constrain(0);
+			left.Or(query.Descend(Idfieldname).Constrain(1));
+			IConstraint right = query.Descend(Idfieldname).Constrain(2);
+			right.Or(query.Descend(Idfieldname).Constrain(-1));
 			left.Or(right);
 			IObjectSet result = query.Execute();
 			Assert.AreEqual(3, result.Size());
@@ -94,13 +94,13 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			, bool connectLeft)
 		{
 			IQuery query = NewQuery(typeof(CollectionIndexedJoinTestCase.DataHolder)).Descend
-				(COLLECTIONFIELDNAME);
-			IConstraint constraint = query.Descend(IDFIELDNAME).Constrain(values[rootIdx]);
+				(Collectionfieldname);
+			IConstraint constraint = query.Descend(Idfieldname).Constrain(values[rootIdx]);
 			for (int idx = 0; idx < values.Length; idx++)
 			{
 				if (idx != rootIdx)
 				{
-					IConstraint curConstraint = query.Descend(IDFIELDNAME).Constrain(values[idx]);
+					IConstraint curConstraint = query.Descend(Idfieldname).Constrain(values[idx]);
 					if (connectLeft)
 					{
 						constraint.Or(curConstraint);

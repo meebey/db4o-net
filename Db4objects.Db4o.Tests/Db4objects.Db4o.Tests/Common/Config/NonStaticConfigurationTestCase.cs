@@ -21,13 +21,13 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
-			new Sharpen.IO.File(FILENAME).Delete();
+			new Sharpen.IO.File(Filename).Delete();
 		}
 
 		/// <exception cref="Exception"></exception>
 		public virtual void TearDown()
 		{
-			new Sharpen.IO.File(FILENAME).Delete();
+			new Sharpen.IO.File(Filename).Delete();
 		}
 
 		public class Data
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private static readonly string FILENAME = "nonstaticcfg.yap";
+		private static readonly string Filename = "nonstaticcfg.yap";
 
 		public virtual void TestOpenWithNonStaticConfiguration()
 		{
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_42(this, config1
 				));
 			config1.ReadOnly(false);
-			IObjectContainer db1 = Db4oFactory.OpenFile(config1, FILENAME);
+			IObjectContainer db1 = Db4oFactory.OpenFile(config1, Filename);
 			config1.ReadOnly(true);
 			try
 			{
@@ -60,10 +60,10 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				db1.Close();
 			}
 			IConfiguration config2 = Db4oFactory.NewConfiguration();
-			IObjectContainer db2 = Db4oFactory.OpenFile(config2, FILENAME);
+			IObjectContainer db2 = Db4oFactory.OpenFile(config2, Filename);
 			try
 			{
-				db2.Set(new NonStaticConfigurationTestCase.Data(2));
+				db2.Store(new NonStaticConfigurationTestCase.Data(2));
 				Assert.AreEqual(1, db2.Query(typeof(NonStaticConfigurationTestCase.Data)).Size());
 			}
 			finally
@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				Db4oFactory.OpenFile(config1, NonStaticConfigurationTestCase.FILENAME);
+				Db4oFactory.OpenFile(config1, NonStaticConfigurationTestCase.Filename);
 			}
 
 			private readonly NonStaticConfigurationTestCase _enclosing;
@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				db1.Set(new NonStaticConfigurationTestCase.Data(1));
+				db1.Store(new NonStaticConfigurationTestCase.Data(1));
 			}
 
 			private readonly NonStaticConfigurationTestCase _enclosing;

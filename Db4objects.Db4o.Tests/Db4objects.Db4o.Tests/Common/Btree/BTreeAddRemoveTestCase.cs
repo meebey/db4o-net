@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 	{
 		public virtual void TestFirstPointerMultiTransactional()
 		{
-			int count = BTREE_NODE_SIZE + 1;
+			int count = BtreeNodeSize + 1;
 			for (int i = 0; i < count; i++)
 			{
 				Add(count + i + 1);

@@ -215,7 +215,60 @@ namespace Db4objects.Db4o
 		/// </returns>
 		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?</seealso>
 		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
+        [System.ObsoleteAttribute(@"Use QueryByExample")]
 		Db4objects.Db4o.IObjectSet Get(object template);
+
+        /// <summary>Query-By-Example interface to retrieve objects.</summary>
+        /// <remarks>
+        /// Query-By-Example interface to retrieve objects.
+        /// <br /><br /><code>Get()</code> creates an
+        /// <see cref="Db4objects.Db4o.IObjectSet">IObjectSet</see>
+        /// containing
+        /// all objects in the <code>IObjectContainer</code> that match the passed
+        /// template object.<br /><br />
+        /// Calling <code>Get(NULL)</code> returns all objects stored in the
+        /// <code>IObjectContainer</code>.<br /><br /><br />
+        /// <b>Query IEvaluation</b>
+        /// <br />All non-null members of the template object are compared against
+        /// all stored objects of the same class.
+        /// Primitive type members are ignored if they are 0 or false respectively.
+        /// <br /><br />Arrays and all supported <code>Collection</code> classes are
+        /// evaluated for containment. Differences in <code>length/Size()</code> are
+        /// ignored.
+        /// <br /><br />Consult the documentation of the IConfiguration package to
+        /// configure class-specific behaviour.<br /><br /><br />
+        /// <b>Returned Objects</b><br />
+        /// The objects returned in the
+        /// <see cref="Db4objects.Db4o.IObjectSet">IObjectSet</see>
+        /// are instantiated
+        /// and activated to the preconfigured depth of 5. The
+        /// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">activation depth</see>
+        /// may be configured
+        /// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">globally</see>
+        /// or
+        /// <see cref="Db4objects.Db4o.Config.ObjectClass">individually for classes</see>
+        /// .
+        /// <br /><br />
+        /// db4o keeps track of all instantiatied objects. Queries will return
+        /// references to these objects instead of instantiating them a second time.
+        /// <br /><br />
+        /// Objects newly activated by <code>Get()</code> can respond to the callback
+        /// method
+        /// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnActivate">objectOnActivate</see>
+        /// .
+        /// <br /><br />
+        /// </remarks>
+        /// <param name="template">object to be used as an example to find all matching objects.<br /><br />
+        /// 	</param>
+        /// <returns>
+        /// 
+        /// <see cref="Db4objects.Db4o.IObjectSet">IObjectSet</see>
+        /// containing all found objects.<br /><br />
+        /// </returns>
+        /// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?</seealso>
+        /// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
+        Db4objects.Db4o.IObjectSet QueryByExample(object template);
+
 
 		/// <summary>
 		/// creates a new SODA
@@ -444,8 +497,55 @@ namespace Db4objects.Db4o
 		/// <seealso cref="Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate">Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
+        [System.ObsoleteAttribute(@"Use Store")]
 		void Set(object obj);
-		
+
+        /// <summary>newly stores objects or updates stored objects.</summary>
+        /// <remarks>
+        /// newly stores objects or updates stored objects.
+        /// <br /><br />An object not yet stored in the <code>IObjectContainer</code> will be
+        /// stored when it is passed to <code>Store()</code>. An object already stored
+        /// in the <code>IObjectContainer</code> will be updated.
+        /// <br /><br /><b>Updates</b><br />
+        /// - will affect all simple type object members.<br />
+        /// - links to object members that are already stored will be updated.<br />
+        /// - new object members will be newly stored. The algorithm traverses down
+        /// new members, as long as further new members are found.<br />
+        /// - object members that are already stored will <b>not</b> be updated
+        /// themselves.<br />Every object member needs to be updated individually with a
+        /// call to <code>Store()</code> unless a deep
+        /// <see cref="Db4objects.Db4o.Config.IConfiguration.UpdateDepth">global</see>
+        /// or
+        /// <see cref="Db4objects.Db4o.Config.ObjectClass.UpdateDepth">class-specific</see>
+        /// update depth was configured or cascaded updates were
+        /// <see cref="Db4objects.Db4o.Config.ObjectClass.CascadeOnUpdate">defined in the class</see>
+        /// or in
+        /// <see cref="Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate">one of the member fields</see>
+        /// .
+        /// <br /><br /><b>Examples: ../com/db4o/samples/update.</b><br /><br />
+        /// Depending if the passed object is newly stored or updated, the
+        /// callback method
+        /// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnNew">objectOnNew</see>
+        /// or
+        /// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnUpdate">objectOnUpdate</see>
+        /// is triggered.
+        /// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnUpdate">objectOnUpdate</see>
+        /// might also be used for cascaded updates.<br /><br />
+        /// </remarks>
+        /// <param name="obj">the object to be stored or updated.</param>
+        /// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.Store">IExtObjectContainer#Store(object, depth)
+        /// 	</seealso>
+        /// <seealso cref="Db4objects.Db4o.Config.IConfiguration.UpdateDepth">Db4objects.Db4o.Config.IConfiguration.UpdateDepth
+        /// 	</seealso>
+        /// <seealso cref="Db4objects.Db4o.Config.ObjectClass.UpdateDepth">Db4objects.Db4o.Config.ObjectClass.UpdateDepth
+        /// 	</seealso>
+        /// <seealso cref="Db4objects.Db4o.Config.ObjectClass.CascadeOnUpdate">Db4objects.Db4o.Config.ObjectClass.CascadeOnUpdate
+        /// 	</seealso>
+        /// <seealso cref="Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate">Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate
+        /// 	</seealso>
+        /// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
+        void Store(object obj);
+
         /// <summary>.NET 2.0 Native Query interface.</summary>
         /// <remarks>
         /// Native Query Interface.

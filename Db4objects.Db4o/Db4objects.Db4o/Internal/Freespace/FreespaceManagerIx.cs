@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override byte SystemType()
 		{
-			return FM_IX;
+			return FmIx;
 		}
 
 		public override int Write()

@@ -4,47 +4,47 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp
 {
 	public sealed class ComparisonOperator
 	{
-		public const int EQUALS_ID = 0;
+		public const int EqualsId = 0;
 
-		public const int SMALLER_ID = 1;
+		public const int SmallerId = 1;
 
-		public const int GREATER_ID = 2;
+		public const int GreaterId = 2;
 
-		public const int CONTAINS_ID = 3;
+		public const int ContainsId = 3;
 
-		public const int STARTSWITH_ID = 4;
+		public const int StartswithId = 4;
 
-		public const int ENDSWITH_ID = 5;
+		public const int EndswithId = 5;
 
-		public const int IDENTITY_ID = 6;
+		public const int IdentityId = 6;
 
 		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator 
-			EQUALS = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(EQUALS_ID
+			ValueEquality = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(EqualsId
 			, "==", true);
 
 		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator 
-			SMALLER = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(SMALLER_ID
+			Smaller = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(SmallerId
 			, "<", false);
 
 		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator 
-			GREATER = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(GREATER_ID
+			Greater = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(GreaterId
 			, ">", false);
 
 		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator 
-			CONTAINS = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(CONTAINS_ID
+			Contains = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(ContainsId
 			, "<CONTAINS>", false);
 
 		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator 
-			STARTSWITH = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(STARTSWITH_ID
+			StartsWith = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(StartswithId
 			, "<STARTSWITH>", false);
 
 		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator 
-			ENDSWITH = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(ENDSWITH_ID
+			EndsWith = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(EndswithId
 			, "<ENDSWITH>", false);
 
 		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator 
-			IDENTITY = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator(IDENTITY_ID
-			, "===", true);
+			ReferenceEquality = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ComparisonOperator
+			(IdentityId, "===", true);
 
 		private int _id;
 

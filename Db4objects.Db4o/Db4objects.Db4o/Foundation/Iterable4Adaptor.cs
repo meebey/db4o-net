@@ -16,15 +16,15 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class Iterable4Adaptor
 	{
-		private static readonly object EOF = new object();
+		private static readonly object EofMarker = new object();
 
-		private static readonly object MOVE_NEXT = new object();
+		private static readonly object MoveNextMarker = new object();
 
 		private readonly IEnumerable _delegate;
 
 		private IEnumerator _iterator;
 
-		private object _current = MOVE_NEXT;
+		private object _current = MoveNextMarker;
 
 		public Iterable4Adaptor(IEnumerable delegate_)
 		{
@@ -33,11 +33,11 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual bool HasNext()
 		{
-			if (_current == MOVE_NEXT)
+			if (_current == MoveNextMarker)
 			{
 				return MoveNext();
 			}
-			return _current != EOF;
+			return _current != EofMarker;
 		}
 
 		public virtual object Next()
@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Foundation
 				throw new InvalidOperationException();
 			}
 			object returnValue = _current;
-			_current = MOVE_NEXT;
+			_current = MoveNextMarker;
 			return returnValue;
 		}
 
@@ -62,14 +62,14 @@ namespace Db4objects.Db4o.Foundation
 				_current = _iterator.Current;
 				return true;
 			}
-			_current = EOF;
+			_current = EofMarker;
 			return false;
 		}
 
 		public virtual void Reset()
 		{
 			_iterator = null;
-			_current = MOVE_NEXT;
+			_current = MoveNextMarker;
 		}
 	}
 }

@@ -20,19 +20,19 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 
 		public virtual string Code()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _code;
 		}
 
 		public virtual string Description()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _description;
 		}
 
 		public override bool Equals(object p)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			if (p == null)
 			{
 				return false;

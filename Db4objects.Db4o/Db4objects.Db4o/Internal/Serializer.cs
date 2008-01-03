@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal
 			TransportObjectContainer carrier = new TransportObjectContainer(serviceProvider, 
 				memoryFile);
 			carrier.ProduceClassMetadata(carrier.Reflector().ForObject(obj));
-			carrier.Set(obj);
+			carrier.Store(obj);
 			int id = (int)carrier.GetID(obj);
 			carrier.Close();
 			return new SerializedGraph(id, memoryFile.GetBytes());

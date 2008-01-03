@@ -16,19 +16,19 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			new TestRunner(typeof(TreeNodeIteratorTestCase)).Run();
 		}
 
-		private static int[] VALUES = new int[] { 1, 3, 5, 7, 9, 10, 11, 13, 24, 76 };
+		private static int[] Values = new int[] { 1, 3, 5, 7, 9, 10, 11, 13, 24, 76 };
 
 		public virtual void TestIterate()
 		{
-			for (int i = 1; i <= VALUES.Length; i++)
+			for (int i = 1; i <= Values.Length; i++)
 			{
-				AssertIterateValues(VALUES, i);
+				AssertIterateValues(Values, i);
 			}
 		}
 
 		public virtual void TestMoveNextAfterCompletion()
 		{
-			IEnumerator i = new TreeNodeIterator(CreateTree(VALUES));
+			IEnumerator i = new TreeNodeIterator(CreateTree(Values));
 			while (i.MoveNext())
 			{
 			}
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private void AssertIterateValues(int[] values)
 		{
-			Tree tree = CreateTree(VALUES);
+			Tree tree = CreateTree(Values);
 			IEnumerator i = new TreeNodeIterator(tree);
 			tree.Traverse(new _IVisitor4_47(this, i));
 		}

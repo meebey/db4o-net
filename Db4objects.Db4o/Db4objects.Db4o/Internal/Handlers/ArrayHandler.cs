@@ -221,7 +221,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual byte Identifier()
 		{
-			return Const4.YAPARRAY;
+			return Const4.Yaparray;
 		}
 
 		/// <param name="obj"></param>
@@ -232,7 +232,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private int OwnLength()
 		{
-			return Const4.OBJECT_LENGTH + Const4.INT_LENGTH * 2;
+			return Const4.ObjectLength + Const4.IntLength * 2;
 		}
 
 		public virtual IReflectClass PrimitiveClassReflector()
@@ -325,21 +325,21 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		protected int MapElementsEntry(IDefragmentContext context, int orig)
 		{
-			if (orig >= 0 || orig == Const4.IGNORE_ID)
+			if (orig >= 0 || orig == Const4.IgnoreId)
 			{
 				return orig;
 			}
-			bool primitive = !Deploy.csharp && orig < Const4.PRIMITIVE;
+			bool primitive = !Deploy.csharp && orig < Const4.Primitive;
 			if (primitive)
 			{
-				orig -= Const4.PRIMITIVE;
+				orig -= Const4.Primitive;
 			}
 			int origID = -orig;
 			int mappedID = context.MappedID(origID);
 			int mapped = -mappedID;
 			if (primitive)
 			{
-				mapped += Const4.PRIMITIVE;
+				mapped += Const4.Primitive;
 			}
 			return mapped;
 		}
@@ -347,7 +347,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		private IReflectClass ReflectClassFromElementsEntry(Transaction trans, int elements
 			)
 		{
-			if (elements != Const4.IGNORE_ID)
+			if (elements != Const4.IgnoreId)
 			{
 				bool primitive = false;
 				int classID = -elements;
@@ -383,12 +383,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			ClassMetadata classMetadata = Container().ProduceClassMetadata(claxx);
 			if (classMetadata == null)
 			{
-				return Const4.IGNORE_ID;
+				return Const4.IgnoreId;
 			}
 			int classID = classMetadata.GetID();
 			if (primitive)
 			{
-				classID -= Const4.PRIMITIVE;
+				classID -= Const4.Primitive;
 			}
 			return -classID;
 		}

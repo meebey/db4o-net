@@ -85,7 +85,7 @@ namespace Db4objects.Db4o.Query
 	[System.Serializable]
 	public abstract class Predicate
 	{
-		internal static readonly Type OBJECT_CLASS = typeof(object);
+		internal static readonly Type ObjectClass = typeof(object);
 
 		private Type _extentType;
 
@@ -114,7 +114,7 @@ namespace Db4objects.Db4o.Query
 				MethodInfo method = methods[methodIdx];
 				if (PredicatePlatform.IsFilterMethod(method))
 				{
-					if (!OBJECT_CLASS.Equals(Sharpen.Runtime.GetParameterTypes(method)[0]))
+					if (!ObjectClass.Equals(Sharpen.Runtime.GetParameterTypes(method)[0]))
 					{
 						cachedFilterMethod = method;
 						return method;

@@ -11,25 +11,25 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public sealed class Messages
 	{
-		public const int INCOMPATIBLE_FORMAT = 17;
+		public const int IncompatibleFormat = 17;
 
-		public const int CLOSED_OR_OPEN_FAILED = 20;
+		public const int ClosedOrOpenFailed = 20;
 
-		public const int FAILED_TO_SHUTDOWN = 28;
+		public const int FailedToShutdown = 28;
 
-		public const int FATAL_MSG_ID = 44;
+		public const int FatalMsgId = 44;
 
-		public const int NOT_IMPLEMENTED = 49;
+		public const int NotImplemented = 49;
 
-		public const int OLD_DATABASE_FORMAT = 65;
+		public const int OldDatabaseFormat = 65;
 
-		public const int ONLY_FOR_INDEXED_FIELDS = 66;
+		public const int OnlyForIndexedFields = 66;
 
-		public const int CLIENT_SERVER_UNSUPPORTED = 67;
+		public const int ClientServerUnsupported = 67;
 
-		public const int COULD_NOT_OPEN_PORT = 30;
+		public const int CouldNotOpenPort = 30;
 
-		public const int SERVER_LISTENING_ON_PORT = 31;
+		public const int ServerListeningOnPort = 31;
 
 		private static string[] i_messages;
 
@@ -75,8 +75,8 @@ namespace Db4objects.Db4o.Internal
 					, "Uncaught Exception. Engine closed.", "writing log for %", "% is closed. close() was called or open() failed."
 					, "Filename not specified.", "The database file is locked by another process.", 
 					"Class not available: %. Check CLASSPATH settings.", "finalized while performing a task.\n DO NOT USE CTRL + C OR System.exit() TO STOP THE ENGINE."
-					, "Please mail the following to exception@db4o.com:\n <db4o " + Db4oVersion.NAME
-					 + " stacktrace>", "</db4o " + Db4oVersion.NAME + " stacktrace>", "Creation of lock file failed: %"
+					, "Please mail the following to exception@db4o.com:\n <db4o " + Db4oVersion.Name
+					 + " stacktrace>", "</db4o " + Db4oVersion.Name + " stacktrace>", "Creation of lock file failed: %"
 					, "Previous session was not shut down correctly", "This method call is only possible on stored objects"
 					, "Could not open port: %", "Server listening on port: %", "Client % connected."
 					, "Client % timed out and closed.", "Connection closed by client %.", "Connection closed by server. %."
@@ -123,7 +123,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				c4i = (Config4Impl)Db4oFactory.Configure();
 			}
-			if (c4i.MessageLevel() > Const4.NONE)
+			if (c4i.MessageLevel() > Const4.None)
 			{
 				new Message(msg, code, c4i.OutStream());
 			}

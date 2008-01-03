@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 	{
 		public virtual void Test()
 		{
-			IObjectSet result = Db().Get(new double[] { 0.6, 0.4 });
+			IObjectSet result = Db().QueryByExample(new double[] { 0.6, 0.4 });
 			Assert.IsFalse(result.HasNext());
 			Assert.IsFalse(result.HasNext());
 			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_17(this, result)

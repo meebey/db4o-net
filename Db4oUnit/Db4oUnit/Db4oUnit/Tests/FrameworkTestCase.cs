@@ -9,7 +9,7 @@ namespace Db4oUnit.Tests
 {
 	public class FrameworkTestCase : ITestCase
 	{
-		public static readonly Exception EXCEPTION = new Exception();
+		public static readonly Exception Exception = new Exception();
 
 		public virtual void TestRunsGreen()
 		{
@@ -21,19 +21,19 @@ namespace Db4oUnit.Tests
 		public virtual void TestRunsRed()
 		{
 			TestResult result = new TestResult();
-			new RunsRed(EXCEPTION).Run(result);
+			new RunsRed(Exception).Run(result);
 			Assert.IsTrue(result.Failures().Size() == 1, "not red");
 		}
 
 		public virtual void TestTestSuite()
 		{
 			RunTestAndExpect(new TestSuite(new ITest[] { new RunsGreen() }), 0);
-			RunTestAndExpect(new TestSuite(new ITest[] { new RunsRed(EXCEPTION) }), 1);
-			RunTestAndExpect(new TestSuite(new ITest[] { new RunsGreen(), new RunsRed(EXCEPTION
+			RunTestAndExpect(new TestSuite(new ITest[] { new RunsRed(Exception) }), 1);
+			RunTestAndExpect(new TestSuite(new ITest[] { new RunsGreen(), new RunsRed(Exception
 				) }), 1);
-			RunTestAndExpect(new TestSuite(new ITest[] { new RunsRed(EXCEPTION), new RunsRed(
-				EXCEPTION) }), 2);
-			RunTestAndExpect(new TestSuite(new ITest[] { new RunsRed(EXCEPTION), new RunsGreen
+			RunTestAndExpect(new TestSuite(new ITest[] { new RunsRed(Exception), new RunsRed(
+				Exception) }), 2);
+			RunTestAndExpect(new TestSuite(new ITest[] { new RunsRed(Exception), new RunsGreen
 				() }), 1);
 			RunTestAndExpect(new TestSuite(new ITest[] { new RunsGreen(), new RunsGreen() }), 
 				0);
@@ -58,7 +58,7 @@ namespace Db4oUnit.Tests
 				for (IEnumerator iter = result.Failures().Iterator(); iter.MoveNext(); )
 				{
 					TestFailure failure = (TestFailure)iter.Current;
-					Assert.IsTrue(EXCEPTION.Equals(failure.GetFailure()));
+					Assert.IsTrue(Exception.Equals(failure.GetFailure()));
 				}
 			}
 		}

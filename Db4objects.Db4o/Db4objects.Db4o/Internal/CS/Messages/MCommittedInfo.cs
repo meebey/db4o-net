@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public virtual CallbackObjectInfoCollections Decode()
 		{
-			CallbackObjectInfoCollections callbackInfo = CallbackObjectInfoCollections.EMTPY;
+			CallbackObjectInfoCollections callbackInfo = CallbackObjectInfoCollections.Emtpy;
 			ByteArrayInputStream @is = new ByteArrayInputStream(_payLoad._buffer);
 			callbackInfo.added = DecodeObjectInfoCollection(@is);
 			callbackInfo.deleted = DecodeObjectInfoCollection(@is);

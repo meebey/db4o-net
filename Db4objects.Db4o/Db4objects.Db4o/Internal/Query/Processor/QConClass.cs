@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			if (claxx != null)
 			{
 				i_yapClass = a_trans.Container().ProduceClassMetadata(claxx);
-				if (claxx.Equals(a_trans.Container()._handlers.ICLASS_OBJECT))
+				if (claxx.Equals(a_trans.Container()._handlers.IclassObject))
 				{
 					i_yapClass = (ClassMetadata)i_yapClass.TypeHandler();
 				}

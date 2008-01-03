@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 
 		public virtual State GetState(string zipCode)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _states[0];
 		}
 

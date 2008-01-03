@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 {
 	public class QueryByExampleTestCase : AbstractDb4oTestCase
 	{
-		internal const int COUNT = 10;
+		internal const int Count = 10;
 
 		internal static QueryByExampleTestCase.LinkedList list = QueryByExampleTestCase.LinkedList
 			.NewLongCircularList();
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			IQuery q = Db().Query();
 			q.Constrain(list).ByExample();
 			IObjectSet result = q.Execute();
-			Assert.AreEqual(COUNT, result.Size());
+			Assert.AreEqual(Count, result.Size());
 		}
 
 		public virtual void TestByIdentity()
@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			IQuery q = Db().Query();
 			q.Constrain(typeof(QueryByExampleTestCase.LinkedList));
 			IObjectSet result = q.Execute();
-			Assert.AreEqual(COUNT, result.Size());
+			Assert.AreEqual(Count, result.Size());
 			while (result.HasNext())
 			{
 				Db().Delete(result.Next());
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			Assert.AreEqual(0, result.Size());
 			QueryByExampleTestCase.LinkedList newList = QueryByExampleTestCase.LinkedList.NewLongCircularList
 				();
-			Db().Set(newList);
+			Db().Store(newList);
 			q = Db().Query();
 			q.Constrain(newList);
 			result = q.Execute();
@@ -103,11 +103,11 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			IQuery q = Db().Query();
 			q.Constrain(typeof(QueryByExampleTestCase.LinkedList));
 			IObjectSet result = q.Execute();
-			Assert.AreEqual(COUNT, result.Size());
+			Assert.AreEqual(Count, result.Size());
 			q = Db().Query();
 			q.Constrain(typeof(QueryByExampleTestCase.LinkedList)).ByExample();
 			result = q.Execute();
-			Assert.AreEqual(COUNT, result.Size());
+			Assert.AreEqual(Count, result.Size());
 		}
 
 		public class LinkedList
@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			{
 				QueryByExampleTestCase.LinkedList head = new QueryByExampleTestCase.LinkedList();
 				QueryByExampleTestCase.LinkedList tail = head;
-				for (int i = 1; i < COUNT; i++)
+				for (int i = 1; i < Count; i++)
 				{
 					tail._next = new QueryByExampleTestCase.LinkedList();
 					tail = tail._next;

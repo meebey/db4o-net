@@ -49,7 +49,7 @@ namespace Db4oUnit.Extensions
 		{
 			if (instance is AbstractDb4oTestCase)
 			{
-				return new TestMethod(instance, method, Db4oFixtureLabelProvider.DEFAULT);
+				return new TestMethod(instance, method, Db4oFixtureLabelProvider.Default);
 			}
 			return base.CreateTest(instance, method);
 		}

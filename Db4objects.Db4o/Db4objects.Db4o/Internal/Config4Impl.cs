@@ -26,122 +26,122 @@ namespace Db4objects.Db4o.Internal
 	{
 		private KeySpecHashtable4 _config = new KeySpecHashtable4(50);
 
-		private static readonly KeySpec ACTIVATION_DEPTH = new KeySpec(5);
+		private static readonly KeySpec ActivationDepthKey = new KeySpec(5);
 
-		private static readonly KeySpec ACTIVATION_DEPTH_PROVIDER = new KeySpec(LegacyActivationDepthProvider
-			.INSTANCE);
+		private static readonly KeySpec ActivationDepthProviderKey = new KeySpec(LegacyActivationDepthProvider
+			.Instance);
 
-		private static readonly KeySpec ALLOW_VERSION_UPDATES = new KeySpec(false);
+		private static readonly KeySpec AllowVersionUpdatesKey = new KeySpec(false);
 
-		private static readonly KeySpec AUTOMATIC_SHUTDOWN = new KeySpec(true);
+		private static readonly KeySpec AutomaticShutdownKey = new KeySpec(true);
 
-		private static readonly KeySpec BLOCKSIZE = new KeySpec((byte)1);
+		private static readonly KeySpec BlocksizeKey = new KeySpec((byte)1);
 
-		private static readonly KeySpec BLOBPATH = new KeySpec(null);
+		private static readonly KeySpec BlobPathKey = new KeySpec(null);
 
-		private static readonly KeySpec BTREE_NODE_SIZE = new KeySpec(119);
+		private static readonly KeySpec BtreeNodeSizeKey = new KeySpec(119);
 
-		private static readonly KeySpec BTREE_CACHE_HEIGHT = new KeySpec(1);
+		private static readonly KeySpec BtreeCacheHeightKey = new KeySpec(1);
 
-		private static readonly KeySpec CALLBACKS = new KeySpec(true);
+		private static readonly KeySpec CallbacksKey = new KeySpec(true);
 
-		private static readonly KeySpec CALL_CONSTRUCTORS = new KeySpec(TernaryBool.UNSPECIFIED
+		private static readonly KeySpec CallConstructorsKey = new KeySpec(TernaryBool.Unspecified
 			);
 
-		private static readonly KeySpec CONFIGURATION_ITEMS = new KeySpec(null);
+		private static readonly KeySpec ConfigurationItemsKey = new KeySpec(null);
 
-		private static readonly KeySpec CLASS_ACTIVATION_DEPTH_CONFIGURABLE = new KeySpec
+		private static readonly KeySpec ClassActivationDepthConfigurableKey = new KeySpec
 			(true);
 
-		private static readonly KeySpec CLASSLOADER = new KeySpec(null);
+		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
-		private static readonly KeySpec DETECT_SCHEMA_CHANGES = new KeySpec(true);
+		private static readonly KeySpec DetectSchemaChangesKey = new KeySpec(true);
 
-		private static readonly KeySpec DIAGNOSTIC = new KeySpec(new Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor
+		private static readonly KeySpec DiagnosticKey = new KeySpec(new Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor
 			());
 
-		private static readonly KeySpec DISABLE_COMMIT_RECOVERY = new KeySpec(false);
+		private static readonly KeySpec DisableCommitRecoveryKey = new KeySpec(false);
 
-		private static readonly KeySpec DISCARD_FREESPACE = new KeySpec(0);
+		private static readonly KeySpec DiscardFreespaceKey = new KeySpec(0);
 
-		private static readonly KeySpec ENCODING = new KeySpec(Const4.UNICODE);
+		private static readonly KeySpec EncodingKey = new KeySpec(Const4.Unicode);
 
-		private static readonly KeySpec ENCRYPT = new KeySpec(false);
+		private static readonly KeySpec EncryptKey = new KeySpec(false);
 
-		private static readonly KeySpec EXCEPTIONAL_CLASSES = new KeySpec(null);
+		private static readonly KeySpec ExceptionalClassesKey = new KeySpec(null);
 
-		private static readonly KeySpec EXCEPTIONS_ON_NOT_STORABLE = new KeySpec(false);
+		private static readonly KeySpec ExceptionsOnNotStorableKey = new KeySpec(false);
 
-		private static readonly KeySpec FLUSH_FILE_BUFFERS = new KeySpec(true);
+		private static readonly KeySpec FlushFileBuffersKey = new KeySpec(true);
 
-		private static readonly KeySpec FREESPACE_FILLER = new KeySpec(null);
+		private static readonly KeySpec FreespaceFillerKey = new KeySpec(null);
 
-		private static readonly KeySpec FREESPACE_SYSTEM = new KeySpec(AbstractFreespaceManager
-			.FM_DEFAULT);
+		private static readonly KeySpec FreespaceSystemKey = new KeySpec(AbstractFreespaceManager
+			.FmDefault);
 
-		private static readonly KeySpec GENERATE_UUIDS = new KeySpec(ConfigScope.INDIVIDUALLY
+		private static readonly KeySpec GenerateUuidsKey = new KeySpec(ConfigScope.Individually
 			);
 
-		private static readonly KeySpec GENERATE_VERSION_NUMBERS = new KeySpec(ConfigScope
-			.INDIVIDUALLY);
+		private static readonly KeySpec GenerateVersionNumbersKey = new KeySpec(ConfigScope
+			.Individually);
 
-		private static readonly KeySpec IS_SERVER = new KeySpec(false);
+		private static readonly KeySpec IsServerKey = new KeySpec(false);
 
-		private static readonly KeySpec QUERY_EVALUATION_MODE = new KeySpec(Db4objects.Db4o.Config.QueryEvaluationMode
-			.IMMEDIATE);
+		private static readonly KeySpec QueryEvaluationModeKey = new KeySpec(Db4objects.Db4o.Config.QueryEvaluationMode
+			.Immediate);
 
-		private static readonly KeySpec LOCK_FILE = new KeySpec(true);
+		private static readonly KeySpec LockFileKey = new KeySpec(true);
 
-		private static readonly KeySpec MESSAGE_RECIPIENT = new KeySpec(null);
+		private static readonly KeySpec MessageRecipientKey = new KeySpec(null);
 
-		private static readonly KeySpec OPTIMIZE_NQ = new KeySpec(true);
+		private static readonly KeySpec OptimizeNqKey = new KeySpec(true);
 
-		private static readonly KeySpec OUTSTREAM = new KeySpec(null);
+		private static readonly KeySpec OutstreamKey = new KeySpec(null);
 
-		private static readonly KeySpec PASSWORD = new KeySpec((string)null);
+		private static readonly KeySpec PasswordKey = new KeySpec((string)null);
 
-		private static readonly KeySpec CLIENT_QUERY_RESULT_ITERATOR_FACTORY = new KeySpec
+		private static readonly KeySpec ClientQueryResultIteratorFactoryKey = new KeySpec
 			(null);
 
-		private static readonly KeySpec PREFETCH_ID_COUNT = new KeySpec(10);
+		private static readonly KeySpec PrefetchIdCountKey = new KeySpec(10);
 
-		private static readonly KeySpec PREFETCH_OBJECT_COUNT = new KeySpec(10);
+		private static readonly KeySpec PrefetchObjectCountKey = new KeySpec(10);
 
-		private static readonly KeySpec READ_AS = new KeySpec(new Hashtable4(16));
+		private static readonly KeySpec ReadAsKey = new KeySpec(new Hashtable4(16));
 
-		private static readonly KeySpec CONFIGURED_REFLECTOR = new KeySpec(null);
+		private static readonly KeySpec ConfiguredReflectorKey = new KeySpec(null);
 
-		private static readonly KeySpec REFLECTOR = new KeySpec(null);
+		private static readonly KeySpec ReflectorKey = new KeySpec(null);
 
-		private static readonly KeySpec RENAME = new KeySpec(null);
+		private static readonly KeySpec RenameKey = new KeySpec(null);
 
-		private static readonly KeySpec RESERVED_STORAGE_SPACE = new KeySpec(0);
+		private static readonly KeySpec ReservedStorageSpaceKey = new KeySpec(0);
 
-		private static readonly KeySpec SINGLE_THREADED_CLIENT = new KeySpec(false);
+		private static readonly KeySpec SingleThreadedClientKey = new KeySpec(false);
 
-		private static readonly KeySpec TEST_CONSTRUCTORS = new KeySpec(true);
+		private static readonly KeySpec TestConstructorsKey = new KeySpec(true);
 
-		private static readonly KeySpec TIMEOUT_CLIENT_SOCKET = new KeySpec(Const4.CLIENT_SOCKET_TIMEOUT
+		private static readonly KeySpec TimeoutClientSocketKey = new KeySpec(Const4.ClientSocketTimeout
 			);
 
-		private static readonly KeySpec TIMEOUT_SERVER_SOCKET = new KeySpec(Const4.SERVER_SOCKET_TIMEOUT
+		private static readonly KeySpec TimeoutServerSocketKey = new KeySpec(Const4.ServerSocketTimeout
 			);
 
-		private static readonly KeySpec UPDATE_DEPTH = new KeySpec(0);
+		private static readonly KeySpec UpdateDepthKey = new KeySpec(0);
 
-		private static readonly KeySpec WEAK_REFERENCE_COLLECTION_INTERVAL = new KeySpec(
+		private static readonly KeySpec WeakReferenceCollectionIntervalKey = new KeySpec(
 			1000);
 
-		private static readonly KeySpec WEAK_REFERENCES = new KeySpec(true);
+		private static readonly KeySpec WeakReferencesKey = new KeySpec(true);
 
-		private static readonly KeySpec IOADAPTER = new KeySpec(new CachedIoAdapter(new RandomAccessFileAdapter
-			()));
+		private static readonly KeySpec IoadapterKey = new KeySpec(new CachedIoAdapter(new 
+			RandomAccessFileAdapter()));
 
-		private static readonly KeySpec ALIASES = new KeySpec(null);
+		private static readonly KeySpec AliasesKey = new KeySpec(null);
 
-		private static readonly KeySpec BATCH_MESSAGES = new KeySpec(true);
+		private static readonly KeySpec BatchMessagesKey = new KeySpec(true);
 
-		private static readonly KeySpec MAX_BATCH_QUEUE_SIZE = new KeySpec(int.MaxValue);
+		private static readonly KeySpec MaxBatchQueueSizeKey = new KeySpec(int.MaxValue);
 
 		private ObjectContainerBase i_stream;
 
@@ -153,12 +153,12 @@ namespace Db4objects.Db4o.Internal
 
 		public int ActivationDepth()
 		{
-			return _config.GetAsInt(ACTIVATION_DEPTH);
+			return _config.GetAsInt(ActivationDepthKey);
 		}
 
 		public void ActivationDepth(int depth)
 		{
-			_config.Put(ACTIVATION_DEPTH, depth);
+			_config.Put(ActivationDepthKey, depth);
 		}
 
 		public void Add(IConfigurationItem item)
@@ -173,19 +173,19 @@ namespace Db4objects.Db4o.Internal
 			if (items == null)
 			{
 				items = new Hashtable4(16);
-				_config.Put(CONFIGURATION_ITEMS, items);
+				_config.Put(ConfigurationItemsKey, items);
 			}
 			return items;
 		}
 
 		public void AllowVersionUpdates(bool flag)
 		{
-			_config.Put(ALLOW_VERSION_UPDATES, flag);
+			_config.Put(AllowVersionUpdatesKey, flag);
 		}
 
 		private Hashtable4 ConfigurationItems()
 		{
-			return (Hashtable4)_config.Get(CONFIGURATION_ITEMS);
+			return (Hashtable4)_config.Get(ConfigurationItemsKey);
 		}
 
 		public void ApplyConfigurationItems(IInternalObjectContainer container)
@@ -206,7 +206,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void AutomaticShutDown(bool flag)
 		{
-			_config.Put(AUTOMATIC_SHUTDOWN, flag);
+			_config.Put(AutomaticShutdownKey, flag);
 		}
 
 		public void BlockSize(int bytes)
@@ -216,32 +216,32 @@ namespace Db4objects.Db4o.Internal
 				throw new ArgumentException();
 			}
 			GlobalSettingOnly();
-			_config.Put(BLOCKSIZE, (byte)bytes);
+			_config.Put(BlocksizeKey, (byte)bytes);
 		}
 
 		public void BTreeNodeSize(int size)
 		{
-			_config.Put(BTREE_NODE_SIZE, size);
+			_config.Put(BtreeNodeSizeKey, size);
 		}
 
 		public void BTreeCacheHeight(int height)
 		{
-			_config.Put(BTREE_CACHE_HEIGHT, height);
+			_config.Put(BtreeCacheHeightKey, height);
 		}
 
 		public void Callbacks(bool turnOn)
 		{
-			_config.Put(CALLBACKS, turnOn);
+			_config.Put(CallbacksKey, turnOn);
 		}
 
 		public void CallConstructors(bool flag)
 		{
-			_config.Put(CALL_CONSTRUCTORS, TernaryBool.ForBoolean(flag));
+			_config.Put(CallConstructorsKey, TernaryBool.ForBoolean(flag));
 		}
 
 		public void ClassActivationDepthConfigurable(bool turnOn)
 		{
-			_config.Put(CLASS_ACTIVATION_DEPTH_CONFIGURABLE, turnOn);
+			_config.Put(ClassActivationDepthConfigurableKey, turnOn);
 		}
 
 		internal Config4Class ConfigClass(string className)
@@ -282,12 +282,12 @@ namespace Db4objects.Db4o.Internal
 
 		public void DetectSchemaChanges(bool flag)
 		{
-			_config.Put(DETECT_SCHEMA_CHANGES, flag);
+			_config.Put(DetectSchemaChangesKey, flag);
 		}
 
 		public void DisableCommitRecovery()
 		{
-			_config.Put(DISABLE_COMMIT_RECOVERY, true);
+			_config.Put(DisableCommitRecoveryKey, true);
 		}
 
 		[System.ObsoleteAttribute]
@@ -297,7 +297,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new ArgumentException();
 			}
-			_config.Put(DISCARD_FREESPACE, bytes);
+			_config.Put(DiscardFreespaceKey, bytes);
 		}
 
 		public void DiscardSmallerThan(int byteCount)
@@ -309,12 +309,12 @@ namespace Db4objects.Db4o.Internal
 		public void Encrypt(bool flag)
 		{
 			GlobalSettingOnly();
-			_config.Put(ENCRYPT, flag);
+			_config.Put(EncryptKey, flag);
 		}
 
 		internal void OldEncryptionOff()
 		{
-			_config.Put(ENCRYPT, false);
+			_config.Put(EncryptKey, false);
 		}
 
 		/// <exception cref="IOException"></exception>
@@ -342,12 +342,12 @@ namespace Db4objects.Db4o.Internal
 
 		public void ExceptionsOnNotStorable(bool flag)
 		{
-			_config.Put(EXCEPTIONS_ON_NOT_STORABLE, flag);
+			_config.Put(ExceptionsOnNotStorableKey, flag);
 		}
 
 		public void FlushFileBuffers(bool flag)
 		{
-			_config.Put(FLUSH_FILE_BUFFERS, flag);
+			_config.Put(FlushFileBuffersKey, flag);
 		}
 
 		public IFreespaceConfiguration Freespace()
@@ -357,12 +357,12 @@ namespace Db4objects.Db4o.Internal
 
 		public void FreespaceFiller(IFreespaceFiller freespaceFiller)
 		{
-			_config.Put(FREESPACE_FILLER, freespaceFiller);
+			_config.Put(FreespaceFillerKey, freespaceFiller);
 		}
 
 		public IFreespaceFiller FreespaceFiller()
 		{
-			return (IFreespaceFiller)_config.Get(FREESPACE_FILLER);
+			return (IFreespaceFiller)_config.Get(FreespaceFillerKey);
 		}
 
 		[System.ObsoleteAttribute(@"Use")]
@@ -373,7 +373,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void GenerateUUIDs(ConfigScope scope)
 		{
-			_config.Put(GENERATE_UUIDS, scope);
+			_config.Put(GenerateUuidsKey, scope);
 		}
 
 		[System.ObsoleteAttribute(@"Use")]
@@ -384,7 +384,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void GenerateVersionNumbers(ConfigScope scope)
 		{
-			_config.Put(GENERATE_VERSION_NUMBERS, scope);
+			_config.Put(GenerateVersionNumbersKey, scope);
 		}
 
 		public IMessageSender GetMessageSender()
@@ -408,12 +408,12 @@ namespace Db4objects.Db4o.Internal
 		public void Io(Db4objects.Db4o.IO.IoAdapter adapter)
 		{
 			GlobalSettingOnly();
-			_config.Put(IOADAPTER, adapter);
+			_config.Put(IoadapterKey, adapter);
 		}
 
 		public void LockDatabaseFile(bool flag)
 		{
-			_config.Put(LOCK_FILE, flag);
+			_config.Put(LockFileKey, flag);
 		}
 
 		public void MarkTransient(string marker)
@@ -432,12 +432,12 @@ namespace Db4objects.Db4o.Internal
 
 		public void OptimizeNativeQueries(bool optimizeNQ)
 		{
-			_config.Put(OPTIMIZE_NQ, optimizeNQ);
+			_config.Put(OptimizeNqKey, optimizeNQ);
 		}
 
 		public bool OptimizeNativeQueries()
 		{
-			return _config.GetAsBoolean(OPTIMIZE_NQ);
+			return _config.GetAsBoolean(OptimizeNqKey);
 		}
 
 		public IObjectClass ObjectClass(object clazz)
@@ -468,7 +468,7 @@ namespace Db4objects.Db4o.Internal
 
 		private TextWriter OutStreamOrNull()
 		{
-			return (TextWriter)_config.Get(OUTSTREAM);
+			return (TextWriter)_config.Get(OutstreamKey);
 		}
 
 		internal TextWriter OutStream()
@@ -481,7 +481,7 @@ namespace Db4objects.Db4o.Internal
 		public void Password(string pw)
 		{
 			GlobalSettingOnly();
-			_config.Put(PASSWORD, pw);
+			_config.Put(PasswordKey, pw);
 		}
 
 		public void ReadOnly(bool flag)
@@ -491,17 +491,17 @@ namespace Db4objects.Db4o.Internal
 
 		public GenericReflector Reflector()
 		{
-			GenericReflector reflector = (GenericReflector)_config.Get(REFLECTOR);
+			GenericReflector reflector = (GenericReflector)_config.Get(ReflectorKey);
 			if (reflector == null)
 			{
-				IReflector configuredReflector = (IReflector)_config.Get(CONFIGURED_REFLECTOR);
+				IReflector configuredReflector = (IReflector)_config.Get(ConfiguredReflectorKey);
 				if (configuredReflector == null)
 				{
 					configuredReflector = Platform4.CreateReflector(ClassLoader());
-					_config.Put(CONFIGURED_REFLECTOR, configuredReflector);
+					_config.Put(ConfiguredReflectorKey, configuredReflector);
 				}
 				reflector = new GenericReflector(null, configuredReflector);
-				_config.Put(REFLECTOR, reflector);
+				_config.Put(ReflectorKey, reflector);
 				configuredReflector.SetParent(reflector);
 			}
 			return reflector;
@@ -517,8 +517,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new ArgumentNullException();
 			}
-			_config.Put(CONFIGURED_REFLECTOR, reflect);
-			_config.Put(REFLECTOR, null);
+			_config.Put(ConfiguredReflectorKey, reflect);
+			_config.Put(ReflectorKey, null);
 		}
 
 		public void RefreshClasses()
@@ -535,7 +535,7 @@ namespace Db4objects.Db4o.Internal
 			if (renameCollection == null)
 			{
 				renameCollection = new Collection4();
-				_config.Put(RENAME, renameCollection);
+				_config.Put(RenameKey, renameCollection);
 			}
 			renameCollection.Add(a_rename);
 		}
@@ -548,7 +548,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				reservedStorageSpace = 0;
 			}
-			_config.Put(RESERVED_STORAGE_SPACE, reservedStorageSpace);
+			_config.Put(ReservedStorageSpaceKey, reservedStorageSpace);
 			if (i_stream != null)
 			{
 				i_stream.Reserve(reservedStorageSpace);
@@ -568,7 +568,7 @@ namespace Db4objects.Db4o.Internal
 		public void SetBlobPath(string path)
 		{
 			EnsureDirExists(path);
-			_config.Put(BLOBPATH, path);
+			_config.Put(BlobPathKey, path);
 		}
 
 		[System.ObsoleteAttribute]
@@ -579,12 +579,12 @@ namespace Db4objects.Db4o.Internal
 
 		public void SetMessageRecipient(IMessageRecipient messageRecipient)
 		{
-			_config.Put(MESSAGE_RECIPIENT, messageRecipient);
+			_config.Put(MessageRecipientKey, messageRecipient);
 		}
 
 		public void SetOut(TextWriter outStream)
 		{
-			_config.Put(OUTSTREAM, outStream);
+			_config.Put(OutstreamKey, outStream);
 			if (i_stream != null)
 			{
 				i_stream.LogMsg(19, Db4oFactory.Version());
@@ -598,27 +598,27 @@ namespace Db4objects.Db4o.Internal
 
 		public void SingleThreadedClient(bool flag)
 		{
-			_config.Put(SINGLE_THREADED_CLIENT, flag);
+			_config.Put(SingleThreadedClientKey, flag);
 		}
 
 		public void TestConstructors(bool flag)
 		{
-			_config.Put(TEST_CONSTRUCTORS, flag);
+			_config.Put(TestConstructorsKey, flag);
 		}
 
 		public void TimeoutClientSocket(int milliseconds)
 		{
-			_config.Put(TIMEOUT_CLIENT_SOCKET, milliseconds);
+			_config.Put(TimeoutClientSocketKey, milliseconds);
 		}
 
 		public void TimeoutServerSocket(int milliseconds)
 		{
-			_config.Put(TIMEOUT_SERVER_SOCKET, milliseconds);
+			_config.Put(TimeoutServerSocketKey, milliseconds);
 		}
 
 		public void Unicode(bool unicodeOn)
 		{
-			_config.Put(ENCODING, (unicodeOn ? Const4.UNICODE : Const4.ISO8859));
+			_config.Put(EncodingKey, (unicodeOn ? Const4.Unicode : Const4.Iso8859));
 		}
 
 		public void UpdateDepth(int depth)
@@ -629,17 +629,17 @@ namespace Db4objects.Db4o.Internal
 			{
 				dp.CheckUpdateDepth(depth);
 			}
-			_config.Put(UPDATE_DEPTH, depth);
+			_config.Put(UpdateDepthKey, depth);
 		}
 
 		public void UseBTreeSystem()
 		{
-			_config.Put(FREESPACE_SYSTEM, AbstractFreespaceManager.FM_BTREE);
+			_config.Put(FreespaceSystemKey, AbstractFreespaceManager.FmBtree);
 		}
 
 		public void UseRamSystem()
 		{
-			_config.Put(FREESPACE_SYSTEM, AbstractFreespaceManager.FM_RAM);
+			_config.Put(FreespaceSystemKey, AbstractFreespaceManager.FmRam);
 		}
 
 		public void UseIndexSystem()
@@ -649,21 +649,21 @@ namespace Db4objects.Db4o.Internal
 
 		public void WeakReferenceCollectionInterval(int milliseconds)
 		{
-			_config.Put(WEAK_REFERENCE_COLLECTION_INTERVAL, milliseconds);
+			_config.Put(WeakReferenceCollectionIntervalKey, milliseconds);
 		}
 
 		public void WeakReferences(bool flag)
 		{
-			_config.Put(WEAK_REFERENCES, flag);
+			_config.Put(WeakReferencesKey, flag);
 		}
 
 		private Collection4 Aliases()
 		{
-			Collection4 aliasesCollection = (Collection4)_config.Get(ALIASES);
+			Collection4 aliasesCollection = (Collection4)_config.Get(AliasesKey);
 			if (null == aliasesCollection)
 			{
 				aliasesCollection = new Collection4();
-				_config.Put(ALIASES, aliasesCollection);
+				_config.Put(AliasesKey, aliasesCollection);
 			}
 			return aliasesCollection;
 		}
@@ -731,125 +731,125 @@ namespace Db4objects.Db4o.Internal
 
 		public bool AllowVersionUpdates()
 		{
-			return _config.GetAsBoolean(ALLOW_VERSION_UPDATES);
+			return _config.GetAsBoolean(AllowVersionUpdatesKey);
 		}
 
 		internal bool AutomaticShutDown()
 		{
-			return _config.GetAsBoolean(AUTOMATIC_SHUTDOWN);
+			return _config.GetAsBoolean(AutomaticShutdownKey);
 		}
 
 		public byte BlockSize()
 		{
-			return _config.GetAsByte(BLOCKSIZE);
+			return _config.GetAsByte(BlocksizeKey);
 		}
 
 		public int BTreeNodeSize()
 		{
-			return _config.GetAsInt(BTREE_NODE_SIZE);
+			return _config.GetAsInt(BtreeNodeSizeKey);
 		}
 
 		public int BTreeCacheHeight()
 		{
-			return _config.GetAsInt(BTREE_CACHE_HEIGHT);
+			return _config.GetAsInt(BtreeCacheHeightKey);
 		}
 
 		internal string BlobPath()
 		{
-			return _config.GetAsString(BLOBPATH);
+			return _config.GetAsString(BlobPathKey);
 		}
 
 		internal bool Callbacks()
 		{
-			return _config.GetAsBoolean(CALLBACKS);
+			return _config.GetAsBoolean(CallbacksKey);
 		}
 
 		internal TernaryBool CallConstructors()
 		{
-			return _config.GetAsTernaryBool(CALL_CONSTRUCTORS);
+			return _config.GetAsTernaryBool(CallConstructorsKey);
 		}
 
 		internal bool ClassActivationDepthConfigurable()
 		{
-			return _config.GetAsBoolean(CLASS_ACTIVATION_DEPTH_CONFIGURABLE);
+			return _config.GetAsBoolean(ClassActivationDepthConfigurableKey);
 		}
 
 		internal object ClassLoader()
 		{
-			return _config.Get(CLASSLOADER);
+			return _config.Get(ClassloaderKey);
 		}
 
 		internal bool DetectSchemaChanges()
 		{
-			return _config.GetAsBoolean(DETECT_SCHEMA_CHANGES);
+			return _config.GetAsBoolean(DetectSchemaChangesKey);
 		}
 
 		internal bool CommitRecoveryDisabled()
 		{
-			return _config.GetAsBoolean(DISABLE_COMMIT_RECOVERY);
+			return _config.GetAsBoolean(DisableCommitRecoveryKey);
 		}
 
 		public IDiagnosticConfiguration Diagnostic()
 		{
-			return (IDiagnosticConfiguration)_config.Get(DIAGNOSTIC);
+			return (IDiagnosticConfiguration)_config.Get(DiagnosticKey);
 		}
 
 		public Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor DiagnosticProcessor
 			()
 		{
-			return (Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor)_config.Get(DIAGNOSTIC
+			return (Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor)_config.Get(DiagnosticKey
 				);
 		}
 
 		public int DiscardFreeSpace()
 		{
-			return _config.GetAsInt(DISCARD_FREESPACE);
+			return _config.GetAsInt(DiscardFreespaceKey);
 		}
 
 		internal byte Encoding()
 		{
-			return _config.GetAsByte(ENCODING);
+			return _config.GetAsByte(EncodingKey);
 		}
 
 		internal bool Encrypt()
 		{
-			return _config.GetAsBoolean(ENCRYPT);
+			return _config.GetAsBoolean(EncryptKey);
 		}
 
 		public Hashtable4 ExceptionalClasses()
 		{
-			Hashtable4 exceptionalClasses = (Hashtable4)_config.Get(EXCEPTIONAL_CLASSES);
+			Hashtable4 exceptionalClasses = (Hashtable4)_config.Get(ExceptionalClassesKey);
 			if (exceptionalClasses == null)
 			{
 				exceptionalClasses = new Hashtable4(16);
-				_config.Put(EXCEPTIONAL_CLASSES, exceptionalClasses);
+				_config.Put(ExceptionalClassesKey, exceptionalClasses);
 			}
 			return exceptionalClasses;
 		}
 
 		public bool ExceptionsOnNotStorable()
 		{
-			return _config.GetAsBoolean(EXCEPTIONS_ON_NOT_STORABLE);
+			return _config.GetAsBoolean(ExceptionsOnNotStorableKey);
 		}
 
 		public bool FlushFileBuffers()
 		{
-			return _config.GetAsBoolean(FLUSH_FILE_BUFFERS);
+			return _config.GetAsBoolean(FlushFileBuffersKey);
 		}
 
 		internal byte FreespaceSystem()
 		{
-			return _config.GetAsByte(FREESPACE_SYSTEM);
+			return _config.GetAsByte(FreespaceSystemKey);
 		}
 
 		public ConfigScope GenerateUUIDs()
 		{
-			return (ConfigScope)_config.Get(GENERATE_UUIDS);
+			return (ConfigScope)_config.Get(GenerateUuidsKey);
 		}
 
 		public ConfigScope GenerateVersionNumbers()
 		{
-			return (ConfigScope)_config.Get(GENERATE_VERSION_NUMBERS);
+			return (ConfigScope)_config.Get(GenerateVersionNumbersKey);
 		}
 
 		public bool InternStrings()
@@ -859,17 +859,17 @@ namespace Db4objects.Db4o.Internal
 
 		public void IsServer(bool flag)
 		{
-			_config.Put(IS_SERVER, flag);
+			_config.Put(IsServerKey, flag);
 		}
 
 		internal bool IsServer()
 		{
-			return _config.GetAsBoolean(IS_SERVER);
+			return _config.GetAsBoolean(IsServerKey);
 		}
 
 		internal bool LockFile()
 		{
-			return _config.GetAsBoolean(LOCK_FILE);
+			return _config.GetAsBoolean(LockFileKey);
 		}
 
 		internal int MessageLevel()
@@ -879,42 +879,42 @@ namespace Db4objects.Db4o.Internal
 
 		public IMessageRecipient MessageRecipient()
 		{
-			return (IMessageRecipient)_config.Get(MESSAGE_RECIPIENT);
+			return (IMessageRecipient)_config.Get(MessageRecipientKey);
 		}
 
 		internal bool OptimizeNQ()
 		{
-			return _config.GetAsBoolean(OPTIMIZE_NQ);
+			return _config.GetAsBoolean(OptimizeNqKey);
 		}
 
 		internal string Password()
 		{
-			return _config.GetAsString(PASSWORD);
+			return _config.GetAsString(PasswordKey);
 		}
 
 		public void PrefetchIDCount(int prefetchIDCount)
 		{
-			_config.Put(PREFETCH_ID_COUNT, prefetchIDCount);
+			_config.Put(PrefetchIdCountKey, prefetchIDCount);
 		}
 
 		public int PrefetchIDCount()
 		{
-			return _config.GetAsInt(PREFETCH_ID_COUNT);
+			return _config.GetAsInt(PrefetchIdCountKey);
 		}
 
 		public void PrefetchObjectCount(int prefetchObjectCount)
 		{
-			_config.Put(PREFETCH_OBJECT_COUNT, prefetchObjectCount);
+			_config.Put(PrefetchObjectCountKey, prefetchObjectCount);
 		}
 
 		public int PrefetchObjectCount()
 		{
-			return _config.GetAsInt(PREFETCH_OBJECT_COUNT);
+			return _config.GetAsInt(PrefetchObjectCountKey);
 		}
 
 		internal Hashtable4 ReadAs()
 		{
-			return (Hashtable4)_config.Get(READ_AS);
+			return (Hashtable4)_config.Get(ReadAsKey);
 		}
 
 		public bool IsReadOnly()
@@ -924,52 +924,52 @@ namespace Db4objects.Db4o.Internal
 
 		internal Collection4 Rename()
 		{
-			return (Collection4)_config.Get(RENAME);
+			return (Collection4)_config.Get(RenameKey);
 		}
 
 		internal int ReservedStorageSpace()
 		{
-			return _config.GetAsInt(RESERVED_STORAGE_SPACE);
+			return _config.GetAsInt(ReservedStorageSpaceKey);
 		}
 
 		public bool SingleThreadedClient()
 		{
-			return _config.GetAsBoolean(SINGLE_THREADED_CLIENT);
+			return _config.GetAsBoolean(SingleThreadedClientKey);
 		}
 
 		internal bool TestConstructors()
 		{
-			return _config.GetAsBoolean(TEST_CONSTRUCTORS);
+			return _config.GetAsBoolean(TestConstructorsKey);
 		}
 
 		public int TimeoutClientSocket()
 		{
-			return _config.GetAsInt(TIMEOUT_CLIENT_SOCKET);
+			return _config.GetAsInt(TimeoutClientSocketKey);
 		}
 
 		public int TimeoutServerSocket()
 		{
-			return _config.GetAsInt(TIMEOUT_SERVER_SOCKET);
+			return _config.GetAsInt(TimeoutServerSocketKey);
 		}
 
 		internal int UpdateDepth()
 		{
-			return _config.GetAsInt(UPDATE_DEPTH);
+			return _config.GetAsInt(UpdateDepthKey);
 		}
 
 		internal int WeakReferenceCollectionInterval()
 		{
-			return _config.GetAsInt(WEAK_REFERENCE_COLLECTION_INTERVAL);
+			return _config.GetAsInt(WeakReferenceCollectionIntervalKey);
 		}
 
 		internal bool WeakReferences()
 		{
-			return _config.GetAsBoolean(WEAK_REFERENCES);
+			return _config.GetAsBoolean(WeakReferencesKey);
 		}
 
 		internal Db4objects.Db4o.IO.IoAdapter IoAdapter()
 		{
-			return (Db4objects.Db4o.IO.IoAdapter)_config.Get(IOADAPTER);
+			return (Db4objects.Db4o.IO.IoAdapter)_config.Get(IoadapterKey);
 		}
 
 		public IQueryConfiguration Queries()
@@ -979,23 +979,23 @@ namespace Db4objects.Db4o.Internal
 
 		public void EvaluationMode(Db4objects.Db4o.Config.QueryEvaluationMode mode)
 		{
-			_config.Put(QUERY_EVALUATION_MODE, mode);
+			_config.Put(QueryEvaluationModeKey, mode);
 		}
 
 		public Db4objects.Db4o.Config.QueryEvaluationMode QueryEvaluationMode()
 		{
-			return (Db4objects.Db4o.Config.QueryEvaluationMode)_config.Get(QUERY_EVALUATION_MODE
+			return (Db4objects.Db4o.Config.QueryEvaluationMode)_config.Get(QueryEvaluationModeKey
 				);
 		}
 
 		public void QueryResultIteratorFactory(IQueryResultIteratorFactory factory)
 		{
-			_config.Put(CLIENT_QUERY_RESULT_ITERATOR_FACTORY, factory);
+			_config.Put(ClientQueryResultIteratorFactoryKey, factory);
 		}
 
 		public IQueryResultIteratorFactory QueryResultIteratorFactory()
 		{
-			return (IQueryResultIteratorFactory)_config.Get(CLIENT_QUERY_RESULT_ITERATOR_FACTORY
+			return (IQueryResultIteratorFactory)_config.Get(ClientQueryResultIteratorFactoryKey
 				);
 		}
 
@@ -1006,32 +1006,32 @@ namespace Db4objects.Db4o.Internal
 
 		public void BatchMessages(bool flag)
 		{
-			_config.Put(BATCH_MESSAGES, flag);
+			_config.Put(BatchMessagesKey, flag);
 		}
 
 		public bool BatchMessages()
 		{
-			return _config.GetAsBoolean(BATCH_MESSAGES);
+			return _config.GetAsBoolean(BatchMessagesKey);
 		}
 
 		public void MaxBatchQueueSize(int maxSize)
 		{
-			_config.Put(MAX_BATCH_QUEUE_SIZE, maxSize);
+			_config.Put(MaxBatchQueueSizeKey, maxSize);
 		}
 
 		public int MaxBatchQueueSize()
 		{
-			return _config.GetAsInt(MAX_BATCH_QUEUE_SIZE);
+			return _config.GetAsInt(MaxBatchQueueSizeKey);
 		}
 
 		public void ActivationDepthProvider(IActivationDepthProvider provider)
 		{
-			_config.Put(ACTIVATION_DEPTH_PROVIDER, provider);
+			_config.Put(ActivationDepthProviderKey, provider);
 		}
 
 		public IActivationDepthProvider ActivationDepthProvider()
 		{
-			return (IActivationDepthProvider)_config.Get(ACTIVATION_DEPTH_PROVIDER);
+			return (IActivationDepthProvider)_config.Get(ActivationDepthProviderKey);
 		}
 	}
 }

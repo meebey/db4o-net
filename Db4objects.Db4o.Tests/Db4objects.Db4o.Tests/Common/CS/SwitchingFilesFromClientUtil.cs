@@ -6,11 +6,11 @@ namespace Db4objects.Db4o.Tests.Common.CS
 {
 	public sealed class SwitchingFilesFromClientUtil
 	{
-		internal static readonly string FILENAME_A = "switchto.a.db4o";
+		internal static readonly string FilenameA = "switchto.a.db4o";
 
-		internal static readonly string FILENAME_B = "switchto.b.db4o";
+		internal static readonly string FilenameB = "switchto.b.db4o";
 
-		public static readonly string MAINFILE_NAME = "mainfile";
+		public static readonly string MainfileName = "mainfile";
 
 		private SwitchingFilesFromClientUtil()
 		{
@@ -18,9 +18,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		internal static void DeleteFiles()
 		{
-			File4.Delete(MAINFILE_NAME);
-			File4.Delete(FILENAME_A);
-			File4.Delete(FILENAME_B);
+			File4.Delete(MainfileName);
+			File4.Delete(FilenameA);
+			File4.Delete(FilenameB);
 		}
 	}
 }

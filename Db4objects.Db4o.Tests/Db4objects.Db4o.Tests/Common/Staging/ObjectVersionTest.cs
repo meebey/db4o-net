@@ -12,19 +12,19 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 	{
 		protected override void Configure(IConfiguration config)
 		{
-			config.GenerateUUIDs(ConfigScope.GLOBALLY);
-			config.GenerateVersionNumbers(ConfigScope.GLOBALLY);
+			config.GenerateUUIDs(ConfigScope.Globally);
+			config.GenerateVersionNumbers(ConfigScope.Globally);
 		}
 
 		public virtual void Test()
 		{
 			IExtObjectContainer oc = this.Db();
 			ObjectVersionTest.Item @object = new ObjectVersionTest.Item("c1");
-			oc.Set(@object);
+			oc.Store(@object);
 			IObjectInfo objectInfo1 = oc.GetObjectInfo(@object);
 			long oldVer = objectInfo1.GetVersion();
 			@object.SetName("c3");
-			oc.Set(@object);
+			oc.Store(@object);
 			IObjectInfo objectInfo2 = oc.GetObjectInfo(@object);
 			long newVer = objectInfo2.GetVersion();
 			Assert.IsNotNull(objectInfo1.GetUUID());

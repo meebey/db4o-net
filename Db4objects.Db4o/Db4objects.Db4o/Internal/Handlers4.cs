@@ -9,31 +9,31 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class Handlers4
 	{
-		public const int INT_ID = 1;
+		public const int IntId = 1;
 
-		public const int LONG_ID = 2;
+		public const int LongId = 2;
 
-		public const int FLOAT_ID = 3;
+		public const int FloatId = 3;
 
-		public const int BOOLEAN_ID = 4;
+		public const int BooleanId = 4;
 
-		public const int DOUBLE_ID = 5;
+		public const int DoubleId = 5;
 
-		public const int BYTE_ID = 6;
+		public const int ByteId = 6;
 
-		public const int CHAR_ID = 7;
+		public const int CharId = 7;
 
-		public const int SHORT_ID = 8;
+		public const int ShortId = 8;
 
-		public const int STRING_ID = 9;
+		public const int StringId = 9;
 
-		public const int DATE_ID = 10;
+		public const int DateId = 10;
 
-		public const int UNTYPED_ID = 11;
+		public const int UntypedId = 11;
 
-		public const int ANY_ARRAY_ID = 12;
+		public const int AnyArrayId = 12;
 
-		public const int ANY_ARRAY_N_ID = 13;
+		public const int AnyArrayNId = 13;
 
 		public static bool HandlerCanHold(ITypeHandler4 handler, IReflectClass claxx)
 		{

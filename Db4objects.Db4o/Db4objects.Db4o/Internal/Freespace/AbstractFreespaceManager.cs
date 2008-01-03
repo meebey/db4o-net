@@ -12,19 +12,19 @@ namespace Db4objects.Db4o.Internal.Freespace
 	{
 		internal readonly LocalObjectContainer _file;
 
-		public const byte FM_DEBUG = 127;
+		public const byte FmDebug = 127;
 
-		public const byte FM_DEFAULT = 0;
+		public const byte FmDefault = 0;
 
-		public const byte FM_LEGACY_RAM = 1;
+		public const byte FmLegacyRam = 1;
 
-		public const byte FM_RAM = 2;
+		public const byte FmRam = 2;
 
-		public const byte FM_IX = 3;
+		public const byte FmIx = 3;
 
-		public const byte FM_BTREE = 4;
+		public const byte FmBtree = 4;
 
-		private const int INTS_IN_SLOT = 12;
+		private const int IntsInSlot = 12;
 
 		public AbstractFreespaceManager(LocalObjectContainer file)
 		{
@@ -33,9 +33,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public static byte CheckType(byte systemType)
 		{
-			if (systemType == FM_DEFAULT)
+			if (systemType == FmDefault)
 			{
-				return FM_RAM;
+				return FmRam;
 			}
 			return systemType;
 		}
@@ -54,12 +54,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			systemType = CheckType(systemType);
 			switch (systemType)
 			{
-				case FM_IX:
+				case FmIx:
 				{
 					return new FreespaceManagerIx(file);
 				}
 
-				case FM_BTREE:
+				case FmBtree:
 				{
 					return new BTreeFreespaceManager(file);
 				}
@@ -106,7 +106,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			StatefulBuffer writer = new StatefulBuffer(file.SystemTransaction(), address, SlotLength
 				());
-			for (int i = 0; i < INTS_IN_SLOT; i++)
+			for (int i = 0; i < IntsInSlot; i++)
 			{
 				writer.WriteInt(0);
 			}
@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		internal static int SlotLength()
 		{
-			return Const4.INT_LENGTH * INTS_IN_SLOT;
+			return Const4.IntLength * IntsInSlot;
 		}
 
 		public virtual int TotalFreespace()
@@ -211,7 +211,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public static bool MigrationRequired(byte systemType)
 		{
-			return systemType == FM_LEGACY_RAM || systemType == FM_IX;
+			return systemType == FmLegacyRam || systemType == FmIx;
 		}
 
 		public abstract Slot AllocateTransactionLogSlot(int arg1);

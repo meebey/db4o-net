@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 {
 	public class LazyQueryDeleteTestCase : AbstractDb4oTestCase
 	{
-		private const int COUNT = 3;
+		private const int Count = 3;
 
 		public class Item
 		{
@@ -24,13 +24,13 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 
 		protected override void Configure(IConfiguration config)
 		{
-			config.Queries().EvaluationMode(QueryEvaluationMode.LAZY);
+			config.Queries().EvaluationMode(QueryEvaluationMode.Lazy);
 		}
 
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			for (int i = 0; i < COUNT; i++)
+			for (int i = 0; i < Count; i++)
 			{
 				Store(new LazyQueryDeleteTestCase.Item(i.ToString()));
 				Db().Commit();
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		public virtual void Test()
 		{
 			IObjectSet objectSet = NewQuery(typeof(LazyQueryDeleteTestCase.Item)).Execute();
-			for (int i = 0; i < COUNT; i++)
+			for (int i = 0; i < Count; i++)
 			{
 				Db().Delete(objectSet.Next());
 				Db().Commit();

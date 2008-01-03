@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		private readonly int _length;
 
-		public static readonly Db4objects.Db4o.Internal.Slots.Slot ZERO = new Db4objects.Db4o.Internal.Slots.Slot
+		public static readonly Db4objects.Db4o.Internal.Slots.Slot Zero = new Db4objects.Db4o.Internal.Slots.Slot
 			(0, 0);
 
 		public Slot(int address, int length)
@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			return new Db4objects.Db4o.Internal.Slots.Slot(_address, requiredLength);
 		}
 
-		public static int MARSHALLED_LENGTH = Const4.INT_LENGTH * 2;
+		public static int MarshalledLength = Const4.IntLength * 2;
 
 		public virtual int CompareByAddress(Db4objects.Db4o.Internal.Slots.Slot slot)
 		{

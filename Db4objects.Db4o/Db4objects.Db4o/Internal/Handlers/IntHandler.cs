@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override int LinkLength()
 		{
-			return Const4.INT_LENGTH;
+			return Const4.IntLength;
 		}
 
 		public override object PrimitiveNull()

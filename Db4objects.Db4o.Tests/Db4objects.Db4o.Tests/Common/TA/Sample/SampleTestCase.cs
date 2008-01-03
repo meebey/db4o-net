@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 		protected override void Configure(IConfiguration config)
 		{
 			config.Add(new TransparentActivationSupport());
-			config.GenerateUUIDs(ConfigScope.GLOBALLY);
+			config.GenerateUUIDs(ConfigScope.Globally);
 		}
 
 		protected override void Store()
@@ -339,7 +339,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 				IReflectField field = (IReflectField)current;
 				if (field.GetFieldType() != stringClass)
 				{
-					return MappingIterator.SKIP;
+					return MappingIterator.Skip;
 				}
 				return new SampleTestCase.FieldOnObject(field, obj);
 			}
@@ -403,7 +403,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 				IReflectField field = (IReflectField)current;
 				if (field.IsTransient() || field.IsStatic())
 				{
-					return MappingIterator.SKIP;
+					return MappingIterator.Skip;
 				}
 				return field;
 			}

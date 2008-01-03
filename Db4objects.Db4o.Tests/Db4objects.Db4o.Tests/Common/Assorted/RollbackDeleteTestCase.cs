@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			try
 			{
 				SimpleObject o1 = (SimpleObject)RetrieveOnlyInstance(oc1, typeof(SimpleObject));
-				oc1.Set(o1);
+				oc1.Store(o1);
 				SimpleObject o2 = (SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject));
 				Assert.AreEqual("hello", o2.GetS());
 				oc1.Rollback();

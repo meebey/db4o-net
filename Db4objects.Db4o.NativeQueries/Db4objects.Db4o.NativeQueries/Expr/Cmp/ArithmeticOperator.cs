@@ -4,28 +4,28 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp
 {
 	public sealed class ArithmeticOperator
 	{
-		public const int ADD_ID = 0;
+		public const int AddId = 0;
 
-		public const int SUBTRACT_ID = 1;
+		public const int SubtractId = 1;
 
-		public const int MULTIPLY_ID = 2;
+		public const int MultiplyId = 2;
 
-		public const int DIVIDE_ID = 3;
-
-		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator 
-			ADD = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator(ADD_ID, "+");
+		public const int DivideId = 3;
 
 		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator 
-			SUBTRACT = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator(SUBTRACT_ID
+			Add = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator(AddId, "+");
+
+		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator 
+			Subtract = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator(SubtractId
 			, "-");
 
 		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator 
-			MULTIPLY = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator(MULTIPLY_ID
+			Multiply = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator(MultiplyId
 			, "*");
 
 		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator 
-			DIVIDE = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator(DIVIDE_ID
-			, "/");
+			Divide = new Db4objects.Db4o.NativeQueries.Expr.Cmp.ArithmeticOperator(DivideId, 
+			"/");
 
 		private string _op;
 

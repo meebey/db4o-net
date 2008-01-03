@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class Hashtable4 : IDeepClone
 	{
-		private const float FILL = 0.5F;
+		private const float Fill = 0.5F;
 
 		public int _tableSize;
 
@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Foundation
 				_tableSize = _tableSize << 1;
 			}
 			_mask = _tableSize - 1;
-			_maximumSize = (int)(_tableSize * FILL);
+			_maximumSize = (int)(_tableSize * Fill);
 			_table = new HashtableIntEntry[_tableSize];
 		}
 
@@ -322,7 +322,7 @@ namespace Db4objects.Db4o.Foundation
 
 		private int NewSize(int size)
 		{
-			return (int)(size / FILL);
+			return (int)(size / Fill);
 		}
 
 		private void PutEntry(HashtableIntEntry newEntry)

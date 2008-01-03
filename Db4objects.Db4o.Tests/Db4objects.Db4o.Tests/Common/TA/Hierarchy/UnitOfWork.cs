@@ -23,13 +23,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 
 		public virtual string GetName()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _name;
 		}
 
 		public virtual long TimeSpent()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _finished.Ticks - _started.Ticks;
 		}
 	}

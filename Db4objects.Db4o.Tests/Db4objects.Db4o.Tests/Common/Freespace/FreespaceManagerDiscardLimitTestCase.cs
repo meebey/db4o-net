@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			for (int i = 0; i < fm.Length; i++)
 			{
-				if (fm[i].SystemType() == AbstractFreespaceManager.FM_IX)
+				if (fm[i].SystemType() == AbstractFreespaceManager.FmIx)
 				{
 					continue;
 				}

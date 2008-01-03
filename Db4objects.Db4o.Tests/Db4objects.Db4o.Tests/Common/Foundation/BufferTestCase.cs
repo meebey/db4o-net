@@ -7,16 +7,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 {
 	public class BufferTestCase : ITestCase
 	{
-		private const int READERLENGTH = 64;
+		private const int Readerlength = 64;
 
 		public virtual void TestCopy()
 		{
-			BufferImpl from = new BufferImpl(READERLENGTH);
-			for (int i = 0; i < READERLENGTH; i++)
+			BufferImpl from = new BufferImpl(Readerlength);
+			for (int i = 0; i < Readerlength; i++)
 			{
 				from.WriteByte((byte)i);
 			}
-			BufferImpl to = new BufferImpl(READERLENGTH - 1);
+			BufferImpl to = new BufferImpl(Readerlength - 1);
 			from.CopyTo(to, 1, 2, 10);
 			Assert.AreEqual(0, to.ReadByte());
 			Assert.AreEqual(0, to.ReadByte());
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			{
 				Assert.AreEqual((byte)i, to.ReadByte());
 			}
-			for (int i = 12; i < READERLENGTH - 1; i++)
+			for (int i = 12; i < Readerlength - 1; i++)
 			{
 				Assert.AreEqual(0, to.ReadByte());
 			}

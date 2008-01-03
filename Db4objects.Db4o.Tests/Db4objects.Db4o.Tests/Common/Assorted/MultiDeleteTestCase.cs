@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			md.SetMembers();
 			md.child = new MultiDeleteTestCase.Item();
 			md.child.SetMembers();
-			Db().Set(md);
+			Db().Store(md);
 		}
 
 		public virtual void TestDeleteCanBeCalledTwice()

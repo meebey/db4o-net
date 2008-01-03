@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 	/// <exclude></exclude>
 	public class ClassIndexesToBTrees_5_5 : Conversion
 	{
-		public const int VERSION = 5;
+		public const int Version = 5;
 
 		public virtual void Convert(LocalObjectContainer yapFile, int classIndexId, BTree
 			 bTree)

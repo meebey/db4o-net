@@ -28,8 +28,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		}
 
 		private static readonly DateTime[] data = new DateTime[] { new DateTime(DatePlatform
-			.MIN_DATE), new DateTime(DatePlatform.MIN_DATE + 1), new DateTime(1191972104500L
-			), new DateTime(DatePlatform.MAX_DATE - 1), new DateTime(DatePlatform.MAX_DATE) };
+			.MinDate), new DateTime(DatePlatform.MinDate + 1), new DateTime(1191972104500L), 
+			new DateTime(DatePlatform.MaxDate - 1), new DateTime(DatePlatform.MaxDate) };
 
 		public static void Main(string[] args)
 		{
@@ -72,9 +72,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(DateTime expected, DateTime actual)
 		{
-			if (expected.Equals(new DateTime(DatePlatform.MAX_DATE)) && _handlerVersion == 0)
+			if (expected.Equals(new DateTime(DatePlatform.MaxDate)) && _handlerVersion == 0)
 			{
-				expected = MarshallingConstants0.NULL_DATE;
+				expected = MarshallingConstants0.NullDate;
 			}
 			Assert.AreEqual(expected, actual);
 		}

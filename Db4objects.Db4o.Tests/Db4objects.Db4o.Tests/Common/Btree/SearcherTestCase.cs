@@ -10,21 +10,21 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 	{
 		private Searcher _searcher;
 
-		private const int FIRST = 4;
+		private const int First = 4;
 
-		private const int LAST = 11;
+		private const int Last = 11;
 
-		private readonly int[] EVEN_VALUES = new int[] { 4, 7, 9, 11 };
+		private readonly int[] EvenValues = new int[] { 4, 7, 9, 11 };
 
-		private readonly int[] ODD_VALUES = new int[] { 4, 7, 8, 9, 11 };
+		private readonly int[] OddValues = new int[] { 4, 7, 8, 9, 11 };
 
-		private readonly int[] NON_MATCHES = new int[] { 3, 5, 6, 10, 12 };
+		private readonly int[] NonMatches = new int[] { 3, 5, 6, 10, 12 };
 
-		private readonly int[] MATCHES = new int[] { 4, 7, 9, 11 };
+		private readonly int[] Matches = new int[] { 4, 7, 9, 11 };
 
-		private const int BEFORE = FIRST - 1;
+		private const int Before = First - 1;
 
-		private const int BEYOND = LAST + 1;
+		private const int Beyond = Last + 1;
 
 		public virtual void TtestPrintResults()
 		{
@@ -39,75 +39,75 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void TestCursorEndsOnSmaller()
 		{
-			Assert.AreEqual(0, Search(EVEN_VALUES, 6));
-			Assert.AreEqual(0, Search(ODD_VALUES, 6));
-			Assert.AreEqual(2, Search(EVEN_VALUES, 10));
-			Assert.AreEqual(3, Search(ODD_VALUES, 10));
+			Assert.AreEqual(0, Search(EvenValues, 6));
+			Assert.AreEqual(0, Search(OddValues, 6));
+			Assert.AreEqual(2, Search(EvenValues, 10));
+			Assert.AreEqual(3, Search(OddValues, 10));
 		}
 
 		public virtual void TestMatchEven()
 		{
-			AssertMatch(EVEN_VALUES);
+			AssertMatch(EvenValues);
 		}
 
 		public virtual void TestMatchOdd()
 		{
-			AssertMatch(ODD_VALUES);
+			AssertMatch(OddValues);
 		}
 
 		public virtual void TestNoMatchEven()
 		{
-			AssertNoMatch(EVEN_VALUES);
+			AssertNoMatch(EvenValues);
 		}
 
 		public virtual void TestNoMatchOdd()
 		{
-			AssertNoMatch(ODD_VALUES);
+			AssertNoMatch(OddValues);
 		}
 
 		public virtual void TestBeyondEven()
 		{
-			AssertBeyond(EVEN_VALUES);
+			AssertBeyond(EvenValues);
 		}
 
 		public virtual void TestBeyondOdd()
 		{
-			AssertBeyond(ODD_VALUES);
+			AssertBeyond(OddValues);
 		}
 
 		public virtual void TestNotBeyondEven()
 		{
-			AssertNotBeyond(EVEN_VALUES);
+			AssertNotBeyond(EvenValues);
 		}
 
 		public virtual void TestNotBeyondOdd()
 		{
-			AssertNotBeyond(ODD_VALUES);
+			AssertNotBeyond(OddValues);
 		}
 
 		public virtual void TestBeforeEven()
 		{
-			AssertBefore(EVEN_VALUES);
+			AssertBefore(EvenValues);
 		}
 
 		public virtual void TestBeforeOdd()
 		{
-			AssertBefore(ODD_VALUES);
+			AssertBefore(OddValues);
 		}
 
 		public virtual void TestNotBeforeEven()
 		{
-			AssertNotBefore(EVEN_VALUES);
+			AssertNotBefore(EvenValues);
 		}
 
 		public virtual void TestNotBeforeOdd()
 		{
-			AssertNotBefore(ODD_VALUES);
+			AssertNotBefore(OddValues);
 		}
 
 		public virtual void TestEmptySet()
 		{
-			_searcher = new Searcher(SearchTarget.ANY, 0);
+			_searcher = new Searcher(SearchTarget.Any, 0);
 			if (_searcher.Incomplete())
 			{
 				Assert.Fail();
@@ -117,53 +117,53 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		private void AssertMatch(int[] values)
 		{
-			for (int i = 0; i < MATCHES.Length; i++)
+			for (int i = 0; i < Matches.Length; i++)
 			{
-				Search(values, MATCHES[i]);
+				Search(values, Matches[i]);
 				Assert.IsTrue(_searcher.FoundMatch());
 			}
 		}
 
 		private void AssertNoMatch(int[] values)
 		{
-			for (int i = 0; i < NON_MATCHES.Length; i++)
+			for (int i = 0; i < NonMatches.Length; i++)
 			{
-				Search(values, NON_MATCHES[i]);
+				Search(values, NonMatches[i]);
 				Assert.IsFalse(_searcher.FoundMatch());
 			}
 		}
 
 		private void AssertBeyond(int[] values)
 		{
-			int res = Search(values, BEYOND);
+			int res = Search(values, Beyond);
 			Assert.AreEqual(values.Length - 1, res);
 			Assert.IsTrue(_searcher.AfterLast());
 		}
 
 		private void AssertNotBeyond(int[] values)
 		{
-			int res = Search(values, LAST);
+			int res = Search(values, Last);
 			Assert.AreEqual(values.Length - 1, res);
 			Assert.IsFalse(_searcher.AfterLast());
 		}
 
 		private void AssertBefore(int[] values)
 		{
-			int res = Search(values, BEFORE);
+			int res = Search(values, Before);
 			Assert.AreEqual(0, res);
 			Assert.IsTrue(_searcher.BeforeFirst());
 		}
 
 		private void AssertNotBefore(int[] values)
 		{
-			int res = Search(values, FIRST);
+			int res = Search(values, First);
 			Assert.AreEqual(0, res);
 			Assert.IsFalse(_searcher.BeforeFirst());
 		}
 
 		private int Search(int[] values, int value)
 		{
-			_searcher = new Searcher(SearchTarget.ANY, values.Length);
+			_searcher = new Searcher(SearchTarget.Any, values.Length);
 			while (_searcher.Incomplete())
 			{
 				_searcher.ResultIs(values[_searcher.Cursor()] - value);

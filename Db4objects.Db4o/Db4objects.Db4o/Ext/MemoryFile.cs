@@ -20,11 +20,11 @@ namespace Db4objects.Db4o.Ext
 	{
 		private byte[] i_bytes;
 
-		private const int INITIAL_SIZE_AND_INC = 1024 * 64;
+		private const int InitialSizeAndInc = 1024 * 64;
 
-		private int i_initialSize = INITIAL_SIZE_AND_INC;
+		private int i_initialSize = InitialSizeAndInc;
 
-		private int i_incrementSizeBy = INITIAL_SIZE_AND_INC;
+		private int i_incrementSizeBy = InitialSizeAndInc;
 
 		/// <summary>constructs a new MemoryFile without any data.</summary>
 		/// <remarks>constructs a new MemoryFile without any data.</remarks>

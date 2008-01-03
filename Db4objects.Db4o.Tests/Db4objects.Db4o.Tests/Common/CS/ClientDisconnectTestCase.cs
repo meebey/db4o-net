@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				client1.Socket().Close();
 				Assert.IsFalse(oc1.IsClosed());
 				Assert.Expect(typeof(Db4oException), new _ICodeBlock_27(this, client1));
-				client2.Get(null);
+				client2.QueryByExample(null);
 			}
 			finally
 			{
@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				client1.Get(null);
+				client1.QueryByExample(null);
 			}
 
 			private readonly ClientDisconnectTestCase _enclosing;

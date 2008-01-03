@@ -93,7 +93,7 @@ namespace Db4objects.Db4o
 
 		public static bool ExceedsMaximumBlockSize(int a_length)
 		{
-			if (a_length > Const4.MAXIMUM_BLOCK_SIZE)
+			if (a_length > Const4.MaximumBlockSize)
 			{
 				return true;
 			}
@@ -102,7 +102,7 @@ namespace Db4objects.Db4o
 
 		public static bool ExceedsMaximumArrayEntries(int a_entries, bool a_primitive)
 		{
-			if (a_entries > (a_primitive ? Const4.MAXIMUM_ARRAY_ENTRIES_PRIMITIVE : Const4.MAXIMUM_ARRAY_ENTRIES
+			if (a_entries > (a_primitive ? Const4.MaximumArrayEntriesPrimitive : Const4.MaximumArrayEntries
 				))
 			{
 				return true;
@@ -118,7 +118,7 @@ namespace Db4objects.Db4o
 		{
 			if (Deploy.debug && Deploy.brackets)
 			{
-				if (buffer.ReadByte() != Const4.YAPEND)
+				if (buffer.ReadByte() != Const4.Yapend)
 				{
 					throw new Exception("Debug.readEnd() YAPEND expected");
 				}
@@ -135,10 +135,10 @@ namespace Db4objects.Db4o
 			{
 				if (buffer is MarshallingContext)
 				{
-					((MarshallingContext)buffer).DebugWriteEnd(Const4.YAPEND);
+					((MarshallingContext)buffer).DebugWriteEnd(Const4.Yapend);
 					return;
 				}
-				buffer.WriteByte(Const4.YAPEND);
+				buffer.WriteByte(Const4.Yapend);
 			}
 		}
 	}

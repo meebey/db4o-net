@@ -11,9 +11,9 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
 	public class StringIndexWithSuperClassTestCase : AbstractDb4oTestCase
 	{
-		private static readonly string FIELD_NAME = "_name";
+		private static readonly string FieldName = "_name";
 
-		private static readonly string FIELD_VALUE = "test";
+		private static readonly string FieldValue = "test";
 
 		public class ItemParent
 		{
@@ -33,21 +33,21 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			config.ObjectClass(typeof(StringIndexWithSuperClassTestCase.Item)).ObjectField(FIELD_NAME
+			config.ObjectClass(typeof(StringIndexWithSuperClassTestCase.Item)).ObjectField(FieldName
 				).Indexed(true);
 		}
 
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			Store(new StringIndexWithSuperClassTestCase.Item(FIELD_VALUE));
-			Store(new StringIndexWithSuperClassTestCase.Item(FIELD_VALUE + "X"));
+			Store(new StringIndexWithSuperClassTestCase.Item(FieldValue));
+			Store(new StringIndexWithSuperClassTestCase.Item(FieldValue + "X"));
 		}
 
 		public virtual void TestIndexAccess()
 		{
 			IQuery query = NewQuery(typeof(StringIndexWithSuperClassTestCase.Item));
-			query.Descend(FIELD_NAME).Constrain(FIELD_VALUE);
+			query.Descend(FieldName).Constrain(FieldValue);
 			Assert.AreEqual(1, query.Execute().Size());
 		}
 	}

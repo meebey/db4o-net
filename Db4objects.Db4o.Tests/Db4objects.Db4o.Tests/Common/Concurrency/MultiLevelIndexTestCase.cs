@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			MultiLevelIndexTestCase mli = (MultiLevelIndexTestCase)objectSet.Next();
 			Assert.AreEqual(102 - seq, mli._i);
 			mli._child._i = -(seq + 201);
-			oc.Set(mli);
+			oc.Store(mli);
 		}
 
 		public virtual void Check2(IExtObjectContainer oc)

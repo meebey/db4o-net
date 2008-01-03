@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 				return true;
 			}
 			IReflectClass claxx = yapClass.ClassReflector();
-			if (Stream()._handlers.ICLASS_INTERNAL.IsAssignableFrom(claxx))
+			if (Stream()._handlers.IclassInternal.IsAssignableFrom(claxx))
 			{
 				return true;
 			}
@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 					ClassMetadata yapClass = (ClassMetadata)current;
 					if (this._enclosing._enclosing.SkipClass(yapClass))
 					{
-						return MappingIterator.SKIP;
+						return MappingIterator.Skip;
 					}
 					return this._enclosing._enclosing.ClassIndexIterator(yapClass);
 				}

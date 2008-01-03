@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 {
 	public class ClassRenameByStoredClassTestCase : AbstractDb4oTestCase, IOptOutNetworkingCS
 	{
-		private static string NAME = "test";
+		private static string Name = "test";
 
 		public static void Main(string[] args)
 		{
@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			Store(new ClassRenameByStoredClassTestCase.Original(NAME));
+			Store(new ClassRenameByStoredClassTestCase.Original(Name));
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 			}
 			ClassRenameByStoredClassTestCase.Changed changedObject = (ClassRenameByStoredClassTestCase.Changed
 				)RetrieveOnlyInstance(typeof(ClassRenameByStoredClassTestCase.Changed));
-			Assert.AreEqual(NAME, changedObject._name);
+			Assert.AreEqual(Name, changedObject._name);
 			Assert.IsNull(changedObject._otherName);
 		}
 	}

@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		private int StoreItem()
 		{
 			Comparable4TestCase.Item item = new Comparable4TestCase.Item();
-			Db().Set(item);
+			Db().Store(item);
 			return (int)Db().GetID(item);
 		}
 

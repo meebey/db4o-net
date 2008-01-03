@@ -19,14 +19,14 @@ namespace Db4objects.Db4o.Foundation
 		{
 			_first = first;
 			_next = first;
-			_current = Iterators.NO_ELEMENT;
+			_current = Iterators.NoElement;
 		}
 
 		public virtual bool MoveNext()
 		{
 			if (_next == null)
 			{
-				_current = Iterators.NO_ELEMENT;
+				_current = Iterators.NoElement;
 				return false;
 			}
 			_current = _next._element;
@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			get
 			{
-				if (Iterators.NO_ELEMENT == _current)
+				if (Iterators.NoElement == _current)
 				{
 					throw new InvalidOperationException();
 				}
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Foundation
 		public virtual void Reset()
 		{
 			_next = _first;
-			_current = Iterators.NO_ELEMENT;
+			_current = Iterators.NoElement;
 		}
 	}
 }

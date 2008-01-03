@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 {
 	public class TypedDerivedArrayTestCase : AbstractDb4oTestCase
 	{
-		private static readonly MoleculeData[] ARRAY = new MoleculeData[] { new MoleculeData
+		private static readonly MoleculeData[] Array = new MoleculeData[] { new MoleculeData
 			("TypedDerivedArray") };
 
 		public class Data
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		protected override void Store()
 		{
-			Db().Set(new TypedDerivedArrayTestCase.Data(ARRAY));
+			Db().Store(new TypedDerivedArrayTestCase.Data(Array));
 		}
 
 		public virtual void Test()
@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 				(typeof(TypedDerivedArrayTestCase.Data));
 			Assert.IsTrue(data._array is MoleculeData[], "Expected instance of " + typeof(MoleculeData
 				[]) + ", but got " + data._array);
-			ArrayAssert.AreEqual(ARRAY, data._array);
+			ArrayAssert.AreEqual(Array, data._array);
 		}
 	}
 }

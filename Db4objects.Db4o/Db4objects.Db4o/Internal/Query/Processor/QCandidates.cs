@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public QCandidate ReadSubCandidate(QueryingReadContext context, ITypeHandler4 handler
 			)
 		{
-			ObjectID objectID = ObjectID.NOT_POSSIBLE;
+			ObjectID objectID = ObjectID.NotPossible;
 			try
 			{
 				int offset = context.Offset();
@@ -128,7 +128,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					return new QCandidate(this, null, objectID._id, true);
 				}
-				if (objectID == ObjectID.NOT_POSSIBLE)
+				if (objectID == ObjectID.NotPossible)
 				{
 					context.Seek(offset);
 					object obj = context.Read(handler);
@@ -280,7 +280,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.QUERY_PROCESS.Log();
+				DTrace.QueryProcess.Log();
 			}
 			FieldIndexProcessorResult result = ProcessFieldIndexes();
 			if (result.FoundIndex())
@@ -326,7 +326,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				this._enclosing.Evaluate();
 				if (!candidate.Include())
 				{
-					return MappingIterator.SKIP;
+					return MappingIterator.Skip;
 				}
 				return current;
 			}
@@ -345,7 +345,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (result.NoMatch())
 			{
-				return Iterators.EMPTY_ITERATOR;
+				return Iterators.EmptyIterator;
 			}
 			if (result.FoundIndex())
 			{
@@ -353,7 +353,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			if (i_yapClass.IsPrimitive())
 			{
-				return Iterators.EMPTY_ITERATOR;
+				return Iterators.EmptyIterator;
 			}
 			return BTreeClassIndexStrategy.Iterate(i_yapClass, i_trans);
 		}
@@ -393,7 +393,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					, id);
 				if (reader == null)
 				{
-					return MappingIterator.SKIP;
+					return MappingIterator.Skip;
 				}
 				ObjectHeader oh = new ObjectHeader(this._enclosing.Stream(), reader);
 				Tree idTree = oh.ClassMetadata().CollectFieldIDs(oh._marshallerFamily, oh._headerAttributes
@@ -420,7 +420,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_constraints == null)
 			{
-				return FieldIndexProcessorResult.NO_INDEX_FOUND;
+				return FieldIndexProcessorResult.NoIndexFound;
 			}
 			return new FieldIndexProcessor(this).Run();
 		}
@@ -531,7 +531,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_constraints == null)
 			{
-				return Iterators.EMPTY_ITERATOR;
+				return Iterators.EmptyIterator;
 			}
 			return new Iterator4Impl(i_constraints);
 		}

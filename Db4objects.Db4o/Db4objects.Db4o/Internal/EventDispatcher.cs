@@ -12,29 +12,29 @@ namespace Db4objects.Db4o.Internal
 			, "objectOnActivate", "objectOnDeactivate", "objectOnNew", "objectOnUpdate", "objectCanActivate"
 			, "objectCanDeactivate", "objectCanNew", "objectCanUpdate" };
 
-		internal const int CAN_DELETE = 0;
+		internal const int CanDelete = 0;
 
-		internal const int DELETE = 1;
+		internal const int Delete = 1;
 
-		internal const int SERVER_COUNT = 2;
+		internal const int ServerCount = 2;
 
-		internal const int ACTIVATE = 2;
+		internal const int Activate = 2;
 
-		internal const int DEACTIVATE = 3;
+		internal const int Deactivate = 3;
 
-		internal const int NEW = 4;
+		internal const int New = 4;
 
-		public const int UPDATE = 5;
+		public const int Update = 5;
 
-		internal const int CAN_ACTIVATE = 6;
+		internal const int CanActivate = 6;
 
-		internal const int CAN_DEACTIVATE = 7;
+		internal const int CanDeactivate = 7;
 
-		internal const int CAN_NEW = 8;
+		internal const int CanNew = 8;
 
-		internal const int CAN_UPDATE = 9;
+		internal const int CanUpdate = 9;
 
-		internal const int COUNT = 10;
+		internal const int Count = 10;
 
 		private readonly IReflectMethod[] methods;
 
@@ -80,21 +80,21 @@ namespace Db4objects.Db4o.Internal
 			int count = 0;
 			if (a_stream.ConfigImpl().Callbacks())
 			{
-				count = COUNT;
+				count = Count;
 			}
 			else
 			{
 				if (a_stream.ConfigImpl().IsServer())
 				{
-					count = SERVER_COUNT;
+					count = ServerCount;
 				}
 			}
 			if (count > 0)
 			{
-				IReflectClass[] parameterClasses = new IReflectClass[] { a_stream._handlers.ICLASS_OBJECTCONTAINER
+				IReflectClass[] parameterClasses = new IReflectClass[] { a_stream._handlers.IclassObjectcontainer
 					 };
-				IReflectMethod[] methods = new IReflectMethod[COUNT];
-				for (int i = COUNT - 1; i >= 0; i--)
+				IReflectMethod[] methods = new IReflectMethod[Count];
+				for (int i = Count - 1; i >= 0; i--)
 				{
 					IReflectMethod method = classReflector.GetMethod(events[i], parameterClasses);
 					if (null == method)

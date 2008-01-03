@@ -32,20 +32,20 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		{
 			DeepSetTestCase example = new DeepSetTestCase();
 			example.name = "1";
-			DeepSetTestCase ds = (DeepSetTestCase)oc.Get(example).Next();
+			DeepSetTestCase ds = (DeepSetTestCase)oc.QueryByExample(example).Next();
 			Assert.AreEqual("1", ds.name);
 			Assert.AreEqual("3", ds.child.child.name);
 			ds.name = "1";
 			ds.child.name = "12" + seq;
 			ds.child.child.name = "13" + seq;
-			oc.Set(ds, 2);
+			oc.Store(ds, 2);
 		}
 
 		public virtual void Check(IExtObjectContainer oc)
 		{
 			DeepSetTestCase example = new DeepSetTestCase();
 			example.name = "1";
-			DeepSetTestCase ds = (DeepSetTestCase)oc.Get(example).Next();
+			DeepSetTestCase ds = (DeepSetTestCase)oc.QueryByExample(example).Next();
 			Assert.IsTrue(ds.child.name.StartsWith("12"));
 			Assert.IsTrue(ds.child.name.Length > "12".Length);
 			Assert.AreEqual("3", ds.child.child.name);

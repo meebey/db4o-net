@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 		protected override void Configure(IConfiguration config)
 		{
 			config.Add(new TransparentActivationSupport());
-			config.GenerateUUIDs(ConfigScope.GLOBALLY);
+			config.GenerateUUIDs(ConfigScope.Globally);
 		}
 	}
 }

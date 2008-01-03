@@ -19,7 +19,7 @@ namespace Db4oUnit.Extensions.Mocking
 			}
 		}
 
-		public static readonly object IGNORED_ARGUMENT = new _object_8();
+		public static readonly object IgnoredArgument = new _object_8();
 
 		public readonly string methodName;
 
@@ -68,7 +68,7 @@ namespace Db4oUnit.Extensions.Mocking
 			}
 			for (int i = 0; i < args.Length; ++i)
 			{
-				if (args[i] == IGNORED_ARGUMENT)
+				if (args[i] == IgnoredArgument)
 				{
 					continue;
 				}

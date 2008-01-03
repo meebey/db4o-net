@@ -12,9 +12,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public sealed override BufferImpl GetByteLoad()
 		{
 			int address = _payLoad.ReadInt();
-			int length = _payLoad.Length() - (Const4.INT_LENGTH);
+			int length = _payLoad.Length() - (Const4.IntLength);
 			Slot slot = new Slot(address, length);
-			_payLoad.RemoveFirstBytes(Const4.INT_LENGTH);
+			_payLoad.RemoveFirstBytes(Const4.IntLength);
 			_payLoad.UseSlot(slot);
 			return this._payLoad;
 		}
@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public sealed override MsgD GetWriter(StatefulBuffer bytes)
 		{
 			MsgD message = GetWriterForLength(bytes.GetTransaction(), bytes.Length() + Const4
-				.INT_LENGTH);
+				.IntLength);
 			message._payLoad.WriteInt(bytes.GetAddress());
 			message._payLoad.Append(bytes._buffer);
 			return message;
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				}
 				catch (Exception)
 				{
-					Write(Msg.NULL);
+					Write(Msg.Null);
 				}
 			}
 			return true;

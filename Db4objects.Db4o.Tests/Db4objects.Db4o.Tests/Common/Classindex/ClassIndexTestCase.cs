@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 			int id = (int)Db().GetID(item);
 			AssertID(id);
 			Reopen();
-			item = (ClassIndexTestCase.Item)Db().Get(item).Next();
+			item = (ClassIndexTestCase.Item)Db().QueryByExample(item).Next();
 			id = (int)Db().GetID(item);
 			AssertID(id);
 			Db().Delete(item);

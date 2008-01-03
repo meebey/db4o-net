@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 {
 	public class LinkedArrayTestCase : AbstractDb4oTestCase, IOptOutTA
 	{
-		internal static int TESTED_DEPTH = 7;
+		internal static int TestedDepth = 7;
 
 		public static void Main(string[] args)
 		{
@@ -26,21 +26,21 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			config.GenerateUUIDs(ConfigScope.GLOBALLY);
+			config.GenerateUUIDs(ConfigScope.Globally);
 			config.Add(new TransparentActivationSupport());
 		}
 
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			LinkedArrays linkedArrays = LinkedArrays.NewLinkedArrayRoot(TESTED_DEPTH);
+			LinkedArrays linkedArrays = LinkedArrays.NewLinkedArrayRoot(TestedDepth);
 			Store(linkedArrays);
 			_linkedArraysUUID = Db().GetObjectInfo(linkedArrays).GetUUID();
 		}
 
 		public virtual void TestTheTest()
 		{
-			for (int depth = 1; depth < TESTED_DEPTH; depth++)
+			for (int depth = 1; depth < TestedDepth; depth++)
 			{
 				LinkedArrays linkedArrays = LinkedArrays.NewLinkedArrays(depth);
 				linkedArrays.AssertActivationDepth(depth - 1, false);
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 		public virtual void TestActivateFixedDepth()
 		{
 			LinkedArrays linkedArrays = Root();
-			for (int depth = 0; depth < TESTED_DEPTH; depth++)
+			for (int depth = 0; depth < TestedDepth; depth++)
 			{
 				Db().Activate(linkedArrays, depth);
 				linkedArrays.AssertActivationDepth(depth, false);
@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 		public virtual void TestActivatingActive()
 		{
 			LinkedArrays linkedArrays = Root();
-			for (int secondActivationDepth = 2; secondActivationDepth < TESTED_DEPTH; secondActivationDepth
+			for (int secondActivationDepth = 2; secondActivationDepth < TestedDepth; secondActivationDepth
 				++)
 			{
 				for (int firstActivationDepth = 1; firstActivationDepth < secondActivationDepth; 
@@ -79,13 +79,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 		{
 			LinkedArrays linkedArrays = Root();
 			Db().Activate(linkedArrays);
-			linkedArrays.AssertActivationDepth(TESTED_DEPTH - 1, true);
+			linkedArrays.AssertActivationDepth(TestedDepth - 1, true);
 		}
 
 		public virtual void TestPeekPersisted()
 		{
 			LinkedArrays linkedArrays = Root();
-			for (int depth = 0; depth < TESTED_DEPTH; depth++)
+			for (int depth = 0; depth < TestedDepth; depth++)
 			{
 				LinkedArrays peeked = (LinkedArrays)Db().PeekPersisted(linkedArrays, depth, true);
 				peeked.AssertActivationDepth(depth, false);
@@ -95,19 +95,19 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 		public virtual void TestTransparentActivationQuery()
 		{
 			LinkedArrays linkedArray = QueryForRoot();
-			linkedArray.AssertActivationDepth(TESTED_DEPTH - 1, true);
+			linkedArray.AssertActivationDepth(TestedDepth - 1, true);
 		}
 
 		public virtual void TestTransparentActivationTraversal()
 		{
 			LinkedArrays root = QueryForRoot();
 			LinkedArrays.ActivatableItem activatableItem = root._activatableItemArray[0];
-			activatableItem.Activate(ActivationPurpose.READ);
+			activatableItem.Activate(ActivationPurpose.Read);
 			LinkedArrays descendant = activatableItem._linkedArrays;
-			descendant.AssertActivationDepth(TESTED_DEPTH - 3, true);
+			descendant.AssertActivationDepth(TestedDepth - 3, true);
 			Db().Deactivate(activatableItem, 1);
-			activatableItem.Activate(ActivationPurpose.READ);
-			descendant.AssertActivationDepth(TESTED_DEPTH - 3, true);
+			activatableItem.Activate(ActivationPurpose.Read);
+			descendant.AssertActivationDepth(TestedDepth - 3, true);
 		}
 
 		private LinkedArrays QueryForRoot()

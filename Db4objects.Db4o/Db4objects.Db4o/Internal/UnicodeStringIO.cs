@@ -15,12 +15,12 @@ namespace Db4objects.Db4o.Internal
 
 		public override byte EncodingByte()
 		{
-			return Const4.UNICODE;
+			return Const4.Unicode;
 		}
 
 		public override int Length(string str)
 		{
-			return (str.Length * 2) + Const4.OBJECT_LENGTH + Const4.INT_LENGTH;
+			return (str.Length * 2) + Const4.ObjectLength + Const4.IntLength;
 		}
 
 		public override string Read(IReadBuffer buffer, int length)
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override int ShortLength(string str)
 		{
-			return (str.Length * 2) + Const4.INT_LENGTH;
+			return (str.Length * 2) + Const4.IntLength;
 		}
 
 		public override void Write(IWriteBuffer buffer, string str)

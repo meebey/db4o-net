@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				IObjectSet os = this._enclosing.Db().Get(null);
+				IObjectSet os = this._enclosing.Db().QueryByExample(null);
 				os.Next();
 			}
 

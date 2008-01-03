@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 	{
 		private readonly object _lock = new object();
 
-		private const int COUNT = 1;
+		private const int Count = 1;
 
 		public class Item
 		{
@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		protected override void Store()
 		{
-			for (int i = 0; i < COUNT; i++)
+			for (int i = 0; i < Count; i++)
 			{
 				string name = "original" + i;
 				Store(new CommittedCallbackRefreshTestCase.Item(name, new CommittedCallbackRefreshTestCase.SubItem
@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			EventRegistry(oc).Committed += new Db4objects.Db4o.Events.CommitEventHandler(new 
 				_IEventListener4_74(this, oc).OnEvent);
 			CommittedCallbackRefreshTestCase.Item[] items = new CommittedCallbackRefreshTestCase.Item
-				[COUNT];
+				[Count];
 			IObjectSet objectSet = NewQuery(typeof(CommittedCallbackRefreshTestCase.Item)).Execute
 				();
 			int count = 0;

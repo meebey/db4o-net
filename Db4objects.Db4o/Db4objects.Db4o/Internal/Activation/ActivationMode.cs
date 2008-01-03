@@ -4,19 +4,19 @@ namespace Db4objects.Db4o.Internal.Activation
 {
 	public sealed class ActivationMode
 	{
-		public static readonly Db4objects.Db4o.Internal.Activation.ActivationMode ACTIVATE
+		public static readonly Db4objects.Db4o.Internal.Activation.ActivationMode Activate
 			 = new Db4objects.Db4o.Internal.Activation.ActivationMode();
 
-		public static readonly Db4objects.Db4o.Internal.Activation.ActivationMode DEACTIVATE
+		public static readonly Db4objects.Db4o.Internal.Activation.ActivationMode Deactivate
 			 = new Db4objects.Db4o.Internal.Activation.ActivationMode();
 
-		public static readonly Db4objects.Db4o.Internal.Activation.ActivationMode PEEK = 
+		public static readonly Db4objects.Db4o.Internal.Activation.ActivationMode Peek = 
 			new Db4objects.Db4o.Internal.Activation.ActivationMode();
 
-		public static readonly Db4objects.Db4o.Internal.Activation.ActivationMode PREFETCH
+		public static readonly Db4objects.Db4o.Internal.Activation.ActivationMode Prefetch
 			 = new Db4objects.Db4o.Internal.Activation.ActivationMode();
 
-		public static readonly Db4objects.Db4o.Internal.Activation.ActivationMode REFRESH
+		public static readonly Db4objects.Db4o.Internal.Activation.ActivationMode Refresh
 			 = new Db4objects.Db4o.Internal.Activation.ActivationMode();
 
 		private ActivationMode()
@@ -46,27 +46,27 @@ namespace Db4objects.Db4o.Internal.Activation
 
 		public bool IsDeactivate()
 		{
-			return this == DEACTIVATE;
+			return this == Deactivate;
 		}
 
 		public bool IsActivate()
 		{
-			return this == ACTIVATE;
+			return this == Activate;
 		}
 
 		public bool IsPeek()
 		{
-			return this == PEEK;
+			return this == Peek;
 		}
 
 		public bool IsPrefetch()
 		{
-			return this == PREFETCH;
+			return this == Prefetch;
 		}
 
 		public bool IsRefresh()
 		{
-			return this == REFRESH;
+			return this == Refresh;
 		}
 	}
 }

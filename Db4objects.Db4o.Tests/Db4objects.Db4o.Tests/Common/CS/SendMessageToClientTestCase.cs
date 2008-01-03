@@ -19,9 +19,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			{
 				return;
 			}
-			ServerDispatcher().Write(Msg.OK);
+			ServerDispatcher().Write(Msg.Ok);
 			Msg msg = Client().GetResponse();
-			Assert.AreEqual(Msg.OK, msg);
+			Assert.AreEqual(Msg.Ok, msg);
 		}
 	}
 }

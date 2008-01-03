@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 {
 	public class SimpleStringArrayTestCase : AbstractDb4oTestCase
 	{
-		private static readonly string[] ARRAY = new string[] { "hi", "babe" };
+		private static readonly string[] Array = new string[] { "hi", "babe" };
 
 		public class Data
 		{
@@ -24,14 +24,14 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			Db().Set(new SimpleStringArrayTestCase.Data(ARRAY));
+			Db().Store(new SimpleStringArrayTestCase.Data(Array));
 		}
 
 		public virtual void TestRetrieve()
 		{
 			SimpleStringArrayTestCase.Data data = (SimpleStringArrayTestCase.Data)RetrieveOnlyInstance
 				(typeof(SimpleStringArrayTestCase.Data));
-			ArrayAssert.AreEqual(ARRAY, data._arr);
+			ArrayAssert.AreEqual(Array, data._arr);
 		}
 	}
 }

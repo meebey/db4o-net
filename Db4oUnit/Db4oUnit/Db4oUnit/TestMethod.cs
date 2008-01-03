@@ -22,7 +22,7 @@ namespace Db4oUnit
 			}
 		}
 
-		public static ILabelProvider DEFAULT_LABEL_PROVIDER = new _ILabelProvider_10();
+		public static ILabelProvider DefaultLabelProvider = new _ILabelProvider_10();
 
 		private readonly object _subject;
 
@@ -30,7 +30,7 @@ namespace Db4oUnit
 
 		private readonly ILabelProvider _labelProvider;
 
-		public TestMethod(object instance, MethodInfo method) : this(instance, method, DEFAULT_LABEL_PROVIDER
+		public TestMethod(object instance, MethodInfo method) : this(instance, method, DefaultLabelProvider
 			)
 		{
 		}

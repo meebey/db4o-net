@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			}
 		}
 
-		private static readonly SortMultipleTestCase.Data[] DATA = new SortMultipleTestCase.Data
+		private static readonly SortMultipleTestCase.Data[] TestData = new SortMultipleTestCase.Data
 			[] { new SortMultipleTestCase.Data(1, 2, 4), new SortMultipleTestCase.Data(1, 4, 
 			3), new SortMultipleTestCase.Data(2, 4, 2), new SortMultipleTestCase.Data(3, 1, 
 			4), new SortMultipleTestCase.Data(4, 3, 1), new SortMultipleTestCase.Data(4, 1, 
@@ -103,9 +103,9 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			for (int dataIdx = 0; dataIdx < DATA.Length; dataIdx++)
+			for (int dataIdx = 0; dataIdx < TestData.Length; dataIdx++)
 			{
-				Store(DATA[dataIdx]);
+				Store(TestData[dataIdx]);
 			}
 		}
 
@@ -155,7 +155,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			Assert.AreEqual(expectedIndexes.Length, result.Size());
 			for (int i = 0; i < expectedIndexes.Length; i++)
 			{
-				Assert.AreEqual(DATA[expectedIndexes[i]], result.Next());
+				Assert.AreEqual(TestData[expectedIndexes[i]], result.Next());
 			}
 		}
 	}

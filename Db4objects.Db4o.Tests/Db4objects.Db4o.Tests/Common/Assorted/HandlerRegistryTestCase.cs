@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestClassForID()
 		{
 			IReflectClass byReflector = Reflector().ForClass(typeof(int));
-			IReflectClass byID = Handlers().ClassForID(Handlers4.INT_ID);
+			IReflectClass byID = Handlers().ClassForID(Handlers4.IntId);
 			Assert.IsNotNull(byID);
 			Assert.AreEqual(byReflector, byID);
 		}
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestClassReflectorForHandler()
 		{
 			IReflectClass byReflector = Reflector().ForClass(typeof(int));
-			IReflectClass byID = Handlers().ClassForID(Handlers4.INT_ID);
+			IReflectClass byID = Handlers().ClassForID(Handlers4.IntId);
 			Assert.IsNotNull(byID);
 			Assert.AreEqual(byReflector, byID);
 		}

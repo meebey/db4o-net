@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual IReflectClass ClassReflector()
 		{
-			return Container()._handlers.ICLASS_STRING;
+			return Container()._handlers.IclassString;
 		}
 
 		public override void Delete(IDeleteContext context)
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		internal virtual byte GetIdentifier()
 		{
-			return Const4.YAPSTRING;
+			return Const4.Yapstring;
 		}
 
 		public virtual object IndexEntryToObject(Transaction trans, object indexEntry)
@@ -173,7 +173,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public static int Compare(byte[] compare, byte[] with)
 		{
 			int min = compare.Length < with.Length ? compare.Length : with.Length;
-			int start = Const4.INT_LENGTH;
+			int start = Const4.IntLength;
 			for (int i = start; i < min; i++)
 			{
 				if (compare[i] != with[i])

@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 	[System.Serializable]
 	public class STByteWUTestCase : SodaBaseTestCase
 	{
-		internal static readonly string DESCENDANT = "i_byte";
+		internal static readonly string Descendant = "i_byte";
 
 		public object i_byte;
 
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 		{
 			IQuery q = NewQuery();
 			q.Constrain(_array[0]);
-			q.Descend(DESCENDANT).Constraints().Not();
+			q.Descend(Descendant).Constraints().Not();
 			Expect(q, new int[] { 1, 2, 3 });
 		}
 
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase
 				((byte)9));
-			q.Descend(DESCENDANT).Constraints().Greater();
+			q.Descend(Descendant).Constraints().Greater();
 			Expect(q, new int[] { 2, 3 });
 		}
 
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase
 				((byte)1));
-			q.Descend(DESCENDANT).Constraints().Smaller();
+			q.Descend(Descendant).Constraints().Smaller();
 			SodaTestUtil.ExpectOne(q, _array[0]);
 		}
 
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase
 				((byte)9));
-			q.Descend(DESCENDANT).Constraints().Contains();
+			q.Descend(Descendant).Constraints().Contains();
 			Expect(q, new int[] { 2 });
 		}
 
@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase
 				((byte)0));
-			q.Descend(DESCENDANT).Constraints().Contains().Not();
+			q.Descend(Descendant).Constraints().Contains().Not();
 			Expect(q, new int[] { 1, 2, 3 });
 		}
 
@@ -89,13 +89,13 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase
 				((byte)11));
-			q.Descend(DESCENDANT).Constraints().Like();
+			q.Descend(Descendant).Constraints().Like();
 			SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase
 				((byte)113));
 			q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase
 				((byte)10));
-			q.Descend(DESCENDANT).Constraints().Like();
+			q.Descend(Descendant).Constraints().Like();
 			Expect(q, new int[] {  });
 		}
 
@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STByteWUTestCase
 				((byte)1));
-			q.Descend(DESCENDANT).Constraints().Like().Not();
+			q.Descend(Descendant).Constraints().Like().Not();
 			Expect(q, new int[] { 0, 2 });
 		}
 

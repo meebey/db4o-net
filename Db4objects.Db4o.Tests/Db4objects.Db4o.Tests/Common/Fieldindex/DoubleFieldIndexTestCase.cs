@@ -40,9 +40,9 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			Db().Set(new DoubleFieldIndexTestCase.Item(0.5));
-			Db().Set(new DoubleFieldIndexTestCase.Item(1.1));
-			Db().Set(new DoubleFieldIndexTestCase.Item(2));
+			Db().Store(new DoubleFieldIndexTestCase.Item(0.5));
+			Db().Store(new DoubleFieldIndexTestCase.Item(1.1));
+			Db().Store(new DoubleFieldIndexTestCase.Item(2));
 		}
 
 		public virtual void TestEqual()

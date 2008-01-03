@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase container = transaction.Container();
 			lock (container.Lock())
 			{
-				if (ActivationPurpose.WRITE == purpose)
+				if (ActivationPurpose.Write == purpose)
 				{
 					EnlistForUpdate(transaction);
 				}
@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Internal
 				TransparentActivationDepthProvider provider = (TransparentActivationDepthProvider
 					)container.ActivationDepthProvider();
 				Activate(transaction, GetObject(), new DescendingActivationDepth(provider, ActivationMode
-					.ACTIVATE));
+					.Activate));
 			}
 		}
 
@@ -161,12 +161,12 @@ namespace Db4objects.Db4o.Internal
 		private void ReadForActivation(Db4objects.Db4o.Internal.Transaction ta, object obj
 			, IActivationDepth depth)
 		{
-			Read(ta, null, obj, depth, Const4.ADD_MEMBERS_TO_ID_TREE_ONLY, false);
+			Read(ta, null, obj, depth, Const4.AddMembersToIdTreeOnly, false);
 		}
 
 		private void LogActivation(ObjectContainerBase container, string @event)
 		{
-			LogEvent(container, @event, Const4.ACTIVATION);
+			LogEvent(container, @event, Const4.Activation);
 		}
 
 		private void LogEvent(ObjectContainerBase container, string @event, int level)
@@ -190,7 +190,7 @@ namespace Db4objects.Db4o.Internal
 		internal virtual bool ContinueSet(Db4objects.Db4o.Internal.Transaction trans, int
 			 updateDepth)
 		{
-			if (!BitIsTrue(Const4.CONTINUE))
+			if (!BitIsTrue(Const4.Continue))
 			{
 				return true;
 			}
@@ -200,9 +200,9 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.CONTINUESET.Log(GetID());
+				DTrace.Continueset.Log(GetID());
 			}
-			BitFalse(Const4.CONTINUE);
+			BitFalse(Const4.Continue);
 			MarshallingContext context = new MarshallingContext(trans, this, updateDepth, true
 				);
 			MarshallerFamily.Current()._object.Marshall(GetObject(), context);
@@ -226,7 +226,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			ObjectContainerBase container = transaction.Container();
 			container.Callbacks().ObjectOnNew(transaction, obj);
-			_class.DispatchEvent(container, obj, EventDispatcher.NEW);
+			_class.DispatchEvent(container, obj, EventDispatcher.New);
 		}
 
 		public virtual void Deactivate(Db4objects.Db4o.Internal.Transaction trans, IActivationDepth
@@ -253,7 +253,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override byte GetIdentifier()
 		{
-			return Const4.YAPOBJECT;
+			return Const4.Yapobject;
 		}
 
 		public virtual long GetInternalID()
@@ -338,7 +338,7 @@ namespace Db4objects.Db4o.Internal
 		internal object PeekPersisted(Db4objects.Db4o.Internal.Transaction trans, IActivationDepth
 			 depth)
 		{
-			return Read(trans, depth, Const4.TRANSIENT, false);
+			return Read(trans, depth, Const4.Transient, false);
 		}
 
 		internal object Read(Db4objects.Db4o.Internal.Transaction trans, IActivationDepth
@@ -361,8 +361,8 @@ namespace Db4objects.Db4o.Internal
 		public object ReadPrefetch(Db4objects.Db4o.Internal.Transaction trans, StatefulBuffer
 			 buffer)
 		{
-			return new UnmarshallingContext(trans, buffer, this, Const4.ADD_TO_ID_TREE, false
-				).ReadPrefetch();
+			return new UnmarshallingContext(trans, buffer, this, Const4.AddToIdTree, false).ReadPrefetch
+				();
 		}
 
 		public sealed override void ReadThis(Db4objects.Db4o.Internal.Transaction trans, 
@@ -402,7 +402,7 @@ namespace Db4objects.Db4o.Internal
 			trans.SlotFreePointerOnRollback(id);
 			SetID(id);
 			BeginProcessing();
-			BitTrue(Const4.CONTINUE);
+			BitTrue(Const4.Continue);
 		}
 
 		public virtual void FlagForDelete(int callId)
@@ -497,7 +497,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			ObjectContainerBase container = transaction.Container();
-			LogEvent(container, "update", Const4.STATE);
+			LogEvent(container, "update", Const4.State);
 			SetStateClean();
 			transaction.WriteUpdateDeleteMembers(GetID(), _class, container._handlers.ArrayType
 				(obj), 0);
@@ -513,7 +513,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			EndProcessing();
 			container.Callbacks().ObjectOnUpdate(transaction, obj);
-			ClassMetadata().DispatchEvent(container, obj, EventDispatcher.UPDATE);
+			ClassMetadata().DispatchEvent(container, obj, EventDispatcher.Update);
 		}
 
 		private bool ObjectCanUpdate(Db4objects.Db4o.Internal.Transaction transaction, object
@@ -521,7 +521,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			ObjectContainerBase container = transaction.Container();
 			return container.Callbacks().ObjectCanUpdate(transaction, obj) && _class.DispatchEvent
-				(container, obj, EventDispatcher.CAN_UPDATE);
+				(container, obj, EventDispatcher.CanUpdate);
 		}
 
 		/// <summary>HCTREE ****</summary>

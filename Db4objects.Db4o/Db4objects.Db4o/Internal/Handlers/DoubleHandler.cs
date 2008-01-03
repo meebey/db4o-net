@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class DoubleHandler : LongHandler
 	{
-		private static readonly double DEFAULT_VALUE = System.Convert.ToDouble(0);
+		private static readonly double DefaultDoubleValue = System.Convert.ToDouble(0);
 
 		public DoubleHandler(ObjectContainerBase stream) : base(stream)
 		{
@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object DefaultValue()
 		{
-			return DEFAULT_VALUE;
+			return DefaultDoubleValue;
 		}
 
 		protected override Type PrimitiveJavaClass()
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object PrimitiveNull()
 		{
-			return DEFAULT_VALUE;
+			return DefaultDoubleValue;
 		}
 
 		/// <exception cref="CorruptionException"></exception>

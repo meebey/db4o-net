@@ -388,7 +388,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				Db4objects.Db4o.Reflect.Generic.GenericClass clazz = (Db4objects.Db4o.Reflect.Generic.GenericClass
 					)i.Current;
-				if (!_stream._handlers.ICLASS_INTERNAL.IsAssignableFrom(clazz))
+				if (!_stream._handlers.IclassInternal.IsAssignableFrom(clazz))
 				{
 					if (!clazz.IsSecondClass())
 					{

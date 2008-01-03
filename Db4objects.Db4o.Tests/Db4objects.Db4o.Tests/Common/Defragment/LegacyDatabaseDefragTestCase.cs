@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 	/// <summary>test case for COR-785</summary>
 	public class LegacyDatabaseDefragTestCase : ITestCase
 	{
-		private const int ITEM_COUNT = 50;
+		private const int ItemCount = 50;
 
 		public sealed class Item
 		{
@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			try
 			{
 				IObjectSet found = QueryItems(container);
-				for (int i = 1; i < ITEM_COUNT; i += 2)
+				for (int i = 1; i < ItemCount; i += 2)
 				{
 					Assert.IsTrue(found.HasNext());
 					Assert.AreEqual(i, ((LegacyDatabaseDefragTestCase.Item)found.Next()).value);
@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			LegacyDatabaseDefragTestCase.Item[] items = CreateItems();
 			for (int i = 0; i < items.Length; ++i)
 			{
-				container.Set(items[i]);
+				container.Store(items[i]);
 			}
 			for (int i = 0; i < items.Length; i += 2)
 			{
@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		private LegacyDatabaseDefragTestCase.Item[] CreateItems()
 		{
 			LegacyDatabaseDefragTestCase.Item[] items = new LegacyDatabaseDefragTestCase.Item
-				[LegacyDatabaseDefragTestCase.ITEM_COUNT];
+				[LegacyDatabaseDefragTestCase.ItemCount];
 			for (int i = 0; i < items.Length; ++i)
 			{
 				items[i] = new LegacyDatabaseDefragTestCase.Item(i);

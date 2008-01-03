@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		protected override object GetCommittedObject()
 		{
-			return No4.INSTANCE;
+			return No4.Instance;
 		}
 
 		protected override void AdjustSizeOnRemovalByOtherTransaction(BTree btree)

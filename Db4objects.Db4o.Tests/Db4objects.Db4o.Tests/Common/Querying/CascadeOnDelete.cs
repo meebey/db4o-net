@@ -45,13 +45,13 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			CascadeOnDelete.Item i = new CascadeOnDelete.Item();
 			CascadeOnDelete cod = new CascadeOnDelete();
 			cod.items = new CascadeOnDelete.Item[] { i };
-			Db().Set(cod);
+			Db().Store(cod);
 			Db().Commit();
 			cod.items[0].item = "abrakadabra";
-			Db().Set(cod);
+			Db().Store(cod);
 			if (!cascadeOnDelete && !cascadeOnUpdate)
 			{
-				Db().Set(cod.items[0]);
+				Db().Store(cod.items[0]);
 			}
 			Assert.AreEqual(1, CountOccurences(typeof(CascadeOnDelete.Item)));
 			Db().Commit();

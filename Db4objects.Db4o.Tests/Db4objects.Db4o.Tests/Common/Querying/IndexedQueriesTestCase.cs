@@ -58,12 +58,12 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			string[] strings = new string[] { "a", "c", "b", "f", "e" };
 			for (int i = 0; i < strings.Length; i++)
 			{
-				Db().Set(new IndexedQueriesTestCase.IndexedQueriesItem(strings[i]));
+				Db().Store(new IndexedQueriesTestCase.IndexedQueriesItem(strings[i]));
 			}
 			int[] ints = new int[] { 1, 5, 7, 3, 2, 3 };
 			for (int i = 0; i < ints.Length; i++)
 			{
-				Db().Set(new IndexedQueriesTestCase.IndexedQueriesItem(ints[i]));
+				Db().Store(new IndexedQueriesTestCase.IndexedQueriesItem(ints[i]));
 			}
 		}
 
@@ -76,11 +76,11 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		public virtual void TestStringQuery()
 		{
 			AssertNullNameCount(6);
-			Db().Set(new IndexedQueriesTestCase.IndexedQueriesItem("d"));
+			Db().Store(new IndexedQueriesTestCase.IndexedQueriesItem("d"));
 			AssertQuery(1, "b");
 			UpdateB();
-			Db().Set(new IndexedQueriesTestCase.IndexedQueriesItem("z"));
-			Db().Set(new IndexedQueriesTestCase.IndexedQueriesItem("y"));
+			Db().Store(new IndexedQueriesTestCase.IndexedQueriesItem("z"));
+			Db().Store(new IndexedQueriesTestCase.IndexedQueriesItem("y"));
 			Reopen();
 			AssertQuery(1, "b");
 			AssertInts(8);
@@ -207,13 +207,13 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			IndexedQueriesTestCase.IndexedQueriesItem ci = (IndexedQueriesTestCase.IndexedQueriesItem
 				)res.Next();
 			ci._name = "j";
-			Db().Set(ci);
+			Db().Store(ci);
 			res = QueryForName("b");
 			Assert.AreEqual(0, res.Size());
 			res = QueryForName("j");
 			Assert.AreEqual(1, res.Size());
 			ci._name = "b";
-			Db().Set(ci);
+			Db().Store(ci);
 			AssertQuery(1, "b");
 		}
 

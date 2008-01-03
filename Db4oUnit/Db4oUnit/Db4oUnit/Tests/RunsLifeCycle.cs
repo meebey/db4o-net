@@ -37,7 +37,7 @@ namespace Db4oUnit.Tests
 		{
 			Assert.IsTrue(_setupCalled);
 			Assert.IsTrue(!_tearDownCalled);
-			throw FrameworkTestCase.EXCEPTION;
+			throw FrameworkTestCase.Exception;
 		}
 	}
 }

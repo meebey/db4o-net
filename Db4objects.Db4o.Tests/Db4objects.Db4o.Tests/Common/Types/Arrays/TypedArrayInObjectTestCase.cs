@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 {
 	public class TypedArrayInObjectTestCase : AbstractDb4oTestCase
 	{
-		private static readonly AtomData[] ARRAY = new AtomData[] { new AtomData("TypedArrayInObject"
+		private static readonly AtomData[] Array = new AtomData[] { new AtomData("TypedArrayInObject"
 			) };
 
 		public class Data
@@ -27,9 +27,9 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		protected override void Store()
 		{
-			TypedArrayInObjectTestCase.Data data = new TypedArrayInObjectTestCase.Data(ARRAY, 
-				ARRAY);
-			Db().Set(data);
+			TypedArrayInObjectTestCase.Data data = new TypedArrayInObjectTestCase.Data(Array, 
+				Array);
+			Db().Store(data);
 		}
 
 		public virtual void TestRetrieve()
@@ -40,8 +40,8 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 				) + ", but got " + data._obj);
 			Assert.IsTrue(data._objArr is AtomData[], "Expected instance of " + typeof(AtomData
 				[]) + ", but got " + data._objArr);
-			ArrayAssert.AreEqual(ARRAY, data._objArr);
-			ArrayAssert.AreEqual(ARRAY, (AtomData[])data._obj);
+			ArrayAssert.AreEqual(Array, data._objArr);
+			ArrayAssert.AreEqual(Array, (AtomData[])data._obj);
 		}
 	}
 }

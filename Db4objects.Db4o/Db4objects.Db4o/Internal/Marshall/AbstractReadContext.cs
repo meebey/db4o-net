@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public abstract class AbstractReadContext : BufferContext, IInternalReadContext
 	{
-		protected IActivationDepth _activationDepth = UnknownActivationDepth.INSTANCE;
+		protected IActivationDepth _activationDepth = UnknownActivationDepth.Instance;
 
 		protected AbstractReadContext(Transaction transaction, BufferImpl buffer) : base(
 			transaction, buffer)

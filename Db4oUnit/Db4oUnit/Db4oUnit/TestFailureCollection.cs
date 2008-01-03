@@ -42,7 +42,7 @@ namespace Db4oUnit
 				writer.Write(index.ToString());
 				writer.Write(") ");
 				writer.Write(((TestFailure)e.Current).GetTest().GetLabel());
-				writer.Write(TestPlatform.NEWLINE);
+				writer.Write(TestPlatform.NewLine);
 				++index;
 			}
 		}
@@ -54,11 +54,11 @@ namespace Db4oUnit
 			IEnumerator e = Iterator();
 			while (e.MoveNext())
 			{
-				writer.Write(TestPlatform.NEWLINE);
+				writer.Write(TestPlatform.NewLine);
 				writer.Write(index.ToString());
 				writer.Write(") ");
 				((Printable)e.Current).Print(writer);
-				writer.Write(TestPlatform.NEWLINE);
+				writer.Write(TestPlatform.NewLine);
 				++index;
 			}
 		}

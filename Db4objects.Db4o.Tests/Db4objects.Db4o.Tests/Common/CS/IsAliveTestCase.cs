@@ -12,9 +12,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 {
 	public class IsAliveTestCase : ITestLifeCycle
 	{
-		private static readonly string USERNAME = "db4o";
+		private static readonly string Username = "db4o";
 
-		private static readonly string PASSWORD = "db4o";
+		private static readonly string Password = "db4o";
 
 		private string filePath;
 
@@ -59,14 +59,14 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		private IObjectServer OpenServer()
 		{
 			IObjectServer server = Db4oFactory.OpenServer(Config(), filePath, -1);
-			server.GrantAccess(USERNAME, PASSWORD);
+			server.GrantAccess(Username, Password);
 			return server;
 		}
 
 		private ClientObjectContainer OpenClient(int port)
 		{
 			ClientObjectContainer client = (ClientObjectContainer)Db4oFactory.OpenClient(Config
-				(), "localhost", port, USERNAME, PASSWORD);
+				(), "localhost", port, Username, Password);
 			return client;
 		}
 	}

@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal
 		internal PrimitiveFieldHandler(ObjectContainerBase container, ITypeHandler4 handler
 			, int handlerID, IReflectClass classReflector) : base(container, classReflector)
 		{
-			i_fields = FieldMetadata.EMPTY_ARRAY;
+			i_fields = FieldMetadata.EmptyArray;
 			_handler = handler;
 			_id = handlerID;
 		}
@@ -68,14 +68,14 @@ namespace Db4objects.Db4o.Internal
 		internal override void DeleteMembers(MarshallerFamily mf, ObjectHeaderAttributes 
 			attributes, StatefulBuffer a_bytes, int a_type, bool isUpdate)
 		{
-			if (a_type == Const4.TYPE_ARRAY)
+			if (a_type == Const4.TypeArray)
 			{
 				new ArrayHandler(a_bytes.GetStream(), this, true).DeletePrimitiveEmbedded(a_bytes
 					, this);
 			}
 			else
 			{
-				if (a_type == Const4.TYPE_NARRAY)
+				if (a_type == Const4.TypeNarray)
 				{
 					new MultidimensionalArrayHandler(a_bytes.GetStream(), this, true).DeletePrimitiveEmbedded
 						(a_bytes, this);
@@ -127,7 +127,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override bool IsArray()
 		{
-			return _id == Handlers4.ANY_ARRAY_ID || _id == Handlers4.ANY_ARRAY_N_ID;
+			return _id == Handlers4.AnyArrayId || _id == Handlers4.AnyArrayNId;
 		}
 
 		public override bool IsPrimitive()
@@ -163,9 +163,9 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_handler is ArrayHandler)
 			{
-				return ObjectID.IGNORE;
+				return ObjectID.Ignore;
 			}
-			return ObjectID.NOT_POSSIBLE;
+			return ObjectID.NotPossible;
 		}
 
 		internal override void RemoveFromIndex(Transaction ta, int id)

@@ -10,9 +10,9 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 	{
 		public static void Register(Converter converter)
 		{
-			converter.Register(ClassIndexesToBTrees_5_5.VERSION, new ClassIndexesToBTrees_5_5
+			converter.Register(ClassIndexesToBTrees_5_5.Version, new ClassIndexesToBTrees_5_5
 				());
-			converter.Register(FieldIndexesToBTrees_5_7.VERSION, new FieldIndexesToBTrees_5_7
+			converter.Register(FieldIndexesToBTrees_5_7.Version, new FieldIndexesToBTrees_5_7
 				());
 		}
 	}

@@ -62,20 +62,20 @@ namespace Db4objects.Db4o.Internal.Btree
 				}
 				return;
 			}
-			if (_target == SearchTarget.ANY)
+			if (_target == SearchTarget.Any)
 			{
 				_lower = _cursor;
 				_upper = _cursor;
 			}
 			else
 			{
-				if (_target == SearchTarget.HIGHEST)
+				if (_target == SearchTarget.Highest)
 				{
 					_lower = _cursor;
 				}
 				else
 				{
-					if (_target == SearchTarget.LOWEST)
+					if (_target == SearchTarget.Lowest)
 					{
 						_upper = _cursor;
 					}
@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			int oldCursor = _cursor;
 			if (_upper - _lower <= 1)
 			{
-				if ((_target == SearchTarget.LOWEST) && (_cmp == 0))
+				if ((_target == SearchTarget.Lowest) && (_cmp == 0))
 				{
 					_cursor = _lower;
 				}

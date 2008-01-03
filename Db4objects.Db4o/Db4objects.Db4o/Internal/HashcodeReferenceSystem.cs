@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.ID_TREE_ADD.Log(@ref.GetID());
+				DTrace.IdTreeAdd.Log(@ref.GetID());
 			}
 			if (_idTree == null)
 			{
@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.GET_YAPOBJECT.Log(id);
+				DTrace.GetYapobject.Log(id);
 			}
 			if (_idTree == null)
 			{
@@ -99,7 +99,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.REFERENCE_REMOVED.Log(@ref.GetID());
+				DTrace.ReferenceRemoved.Log(@ref.GetID());
 			}
 			if (_hashCodeTree != null)
 			{

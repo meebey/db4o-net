@@ -96,12 +96,24 @@ namespace Db4objects.Db4o.Tests.Util
 
 				ICodeCompiler compiler = provider.CreateCompiler();
 				CompilerResults results = compiler.CompileAssemblyFromFileBatch(parameters, files);
-				if (results.Errors.Count > 0)
-				{
-					throw new ApplicationException(GetErrorString(results.Errors));
-				}
+                if(ContainsErrors(results.Errors))
+                {
+                    throw new ApplicationException(GetErrorString(results.Errors));
+                }
 			}
 		}
+
+        private static Boolean ContainsErrors(CompilerErrorCollection errors)
+        {
+            foreach (CompilerError error in errors)
+            {
+                if (! error.IsWarning)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
 		static string GetErrorString(CompilerErrorCollection errors)
 		{

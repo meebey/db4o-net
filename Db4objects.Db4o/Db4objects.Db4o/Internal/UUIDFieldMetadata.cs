@@ -18,12 +18,10 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class UUIDFieldMetadata : VirtualFieldMetadata
 	{
-		private const int LINK_LENGTH = Const4.LONG_LENGTH + Const4.ID_LENGTH;
-
-		internal UUIDFieldMetadata(ObjectContainerBase container) : base(Handlers4.LONG_ID
+		internal UUIDFieldMetadata(ObjectContainerBase container) : base(Handlers4.LongId
 			, new LongHandler(container))
 		{
-			SetName(Const4.VIRTUAL_FIELD_PREFIX + "uuid");
+			SetName(Const4.VirtualFieldPrefix + "uuid");
 		}
 
 		/// <exception cref="FieldIndexException"></exception>
@@ -79,7 +77,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.REREAD_OLD_UUID.LogLength(oldSlot.Address(), oldSlot.Length());
+				DTrace.RereadOldUuid.LogLength(oldSlot.Address(), oldSlot.Length());
 			}
 			BufferImpl reader = stream.BufferByAddress(oldSlot.Address(), oldSlot.Length());
 			if (checkClass)
@@ -90,7 +88,7 @@ namespace Db4objects.Db4o.Internal
 					return null;
 				}
 			}
-			if (classMetadata.FindOffset(reader, this) == HandlerVersion.INVALID)
+			if (classMetadata.FindOffset(reader, this) == HandlerVersion.Invalid)
 			{
 				return null;
 			}
@@ -106,7 +104,7 @@ namespace Db4objects.Db4o.Internal
 				a_bytes.IncrementOffset(LinkLength());
 				return;
 			}
-			a_bytes.IncrementOffset(Const4.INT_LENGTH);
+			a_bytes.IncrementOffset(Const4.IntLength);
 			long longPart = a_bytes.ReadLong();
 			if (longPart > 0)
 			{
@@ -192,7 +190,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected override int LinkLength()
 		{
-			return LINK_LENGTH;
+			return Const4.LongLength + Const4.IdLength;
 		}
 
 		internal override void Marshall(Transaction trans, ObjectReference @ref, IWriteBuffer
@@ -269,7 +267,7 @@ namespace Db4objects.Db4o.Internal
 					return hardRef;
 				}
 			}
-			return HardObjectReference.INVALID;
+			return HardObjectReference.Invalid;
 		}
 
 		protected HardObjectReference GetHardObjectReferenceById(Transaction transaction, 
@@ -293,7 +291,7 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			context.CopyID();
-			context.IncrementOffset(Const4.LONG_LENGTH);
+			context.IncrementOffset(Const4.LongLength);
 		}
 	}
 }

@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					serverTransaction.Commit(dispatcher);
 					committedInfo = dispatcher.CommittedInfo();
 				}
-				Write(Msg.OK);
+				Write(Msg.Ok);
 				if (committedInfo != null)
 				{
 					AddCommittedInfoMsg(committedInfo, serverTransaction);
@@ -37,8 +37,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		private void AddCommittedInfoMsg(CallbackObjectInfoCollections committedInfo, LocalTransaction
 			 serverTransaction)
 		{
-			Msg.COMMITTED_INFO.SetTransaction(serverTransaction);
-			MCommittedInfo message = Msg.COMMITTED_INFO.Encode(committedInfo);
+			Msg.CommittedInfo.SetTransaction(serverTransaction);
+			MCommittedInfo message = Msg.CommittedInfo.Encode(committedInfo);
 			message.SetMessageDispatcher(ServerMessageDispatcher());
 			ServerMessageDispatcher().Server().AddCommittedInfoMsg(message);
 		}

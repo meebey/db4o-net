@@ -66,11 +66,11 @@ namespace Db4oUnit
 			if (Green())
 			{
 				writer.Write("GREEN (" + _testCount + " tests) - " + ElapsedString() + TestPlatform
-					.NEWLINE);
+					.NewLine);
 				return;
 			}
 			writer.Write("RED (" + _failures.Size() + " out of " + _testCount + " tests failed) - "
-				 + ElapsedString() + TestPlatform.NEWLINE);
+				 + ElapsedString() + TestPlatform.NewLine);
 			_failures.Print(writer);
 		}
 
@@ -98,7 +98,7 @@ namespace Db4oUnit
 		{
 			try
 			{
-				_writer.Write(message + TestPlatform.NEWLINE);
+				_writer.Write(message + TestPlatform.NewLine);
 				_writer.Flush();
 			}
 			catch (IOException x)

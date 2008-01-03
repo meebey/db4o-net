@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="Exception"></exception>
 		public virtual void TestDepth0()
 		{
-			Db().Set(PokeName(QueryRoot()), 0);
+			Db().Store(PokeName(QueryRoot()), 0);
 			Expect(NewGraph());
 		}
 
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestDepth1()
 		{
 			UpdateDepthTestCase.Item item = PokeChild(PokeName(QueryRoot()));
-			Db().Set(item, 1);
+			Db().Store(item, 1);
 			Expect(PokeName(NewGraph()));
 		}
 
@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			UpdateDepthTestCase.Item root = PokeChild(PokeName(QueryRoot()));
 			PokeChild(root.child);
-			Db().Set(root, 2);
+			Db().Store(root, 2);
 			Expect(PokeChild(PokeName(NewGraph())));
 		}
 
@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			UpdateDepthTestCase.Item item = PokeChild(PokeName(QueryRoot()));
 			PokeChild(item.child);
-			Db().Set(item, 3);
+			Db().Store(item, 3);
 			Expect(item);
 		}
 

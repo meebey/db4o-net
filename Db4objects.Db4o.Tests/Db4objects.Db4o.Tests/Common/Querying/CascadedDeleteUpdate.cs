@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			child.parent2 = parentItem2;
 			parentItem1.child = child;
 			parentItem2.child = child;
-			Db().Set(parentItem1);
+			Db().Store(parentItem1);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			IObjectSet objectSet = q.Execute();
 			while (objectSet.HasNext())
 			{
-				Db().Set(objectSet.Next());
+				Db().Store(objectSet.Next());
 			}
 			Db().Commit();
 			AssertAllObjectStored();

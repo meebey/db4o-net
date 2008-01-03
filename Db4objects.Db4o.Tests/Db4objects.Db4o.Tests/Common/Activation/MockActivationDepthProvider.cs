@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 
 		public MockActivationDepthProvider()
 		{
-			_delegate = LegacyActivationDepthProvider.INSTANCE;
+			_delegate = LegacyActivationDepthProvider.Instance;
 		}
 
 		public virtual IActivationDepth ActivationDepthFor(ClassMetadata classMetadata, ActivationMode

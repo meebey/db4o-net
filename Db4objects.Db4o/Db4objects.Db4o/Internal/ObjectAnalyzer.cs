@@ -80,8 +80,8 @@ namespace Db4objects.Db4o.Internal
 		private bool IsPlainObjectOrPrimitive(Db4objects.Db4o.Internal.ClassMetadata classMetadata
 			)
 		{
-			return classMetadata.GetID() == Handlers4.UNTYPED_ID || classMetadata.IsPrimitive
-				();
+			return classMetadata.GetID() == Handlers4.UntypedId || classMetadata.IsPrimitive(
+				);
 		}
 
 		internal virtual Db4objects.Db4o.Internal.ObjectReference ObjectReference()

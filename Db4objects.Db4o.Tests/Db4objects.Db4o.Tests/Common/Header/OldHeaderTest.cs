@@ -10,24 +10,24 @@ namespace Db4objects.Db4o.Tests.Common.Header
 {
 	public class OldHeaderTest : ITestCase
 	{
-		private static readonly string ORIGINAL_FILE = WorkspaceServices.WorkspaceTestFilePath
+		private static readonly string OriginalFile = WorkspaceServices.WorkspaceTestFilePath
 			("db4oVersions/db4o_5.5.2");
 
-		private static readonly string DB_FILE = WorkspaceServices.WorkspaceTestFilePath(
-			"db4oVersions/db4o_5.5.2.yap");
+		private static readonly string DbFile = WorkspaceServices.WorkspaceTestFilePath("db4oVersions/db4o_5.5.2.yap"
+			);
 
 		/// <exception cref="IOException"></exception>
 		public virtual void Test()
 		{
-			if (!System.IO.File.Exists(ORIGINAL_FILE))
+			if (!System.IO.File.Exists(OriginalFile))
 			{
-				TestPlatform.EmitWarning(ORIGINAL_FILE + " does not exist. Can not run " + GetType
+				TestPlatform.EmitWarning(OriginalFile + " does not exist. Can not run " + GetType
 					().FullName);
 				return;
 			}
-			File4.Copy(ORIGINAL_FILE, DB_FILE);
+			File4.Copy(OriginalFile, DbFile);
 			Db4oFactory.Configure().AllowVersionUpdates(true);
-			IObjectContainer oc = Db4oFactory.OpenFile(DB_FILE);
+			IObjectContainer oc = Db4oFactory.OpenFile(DbFile);
 			try
 			{
 				Assert.IsNotNull(oc);

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal
 
 		public IObjectInfoCollection deleted;
 
-		public static readonly Db4objects.Db4o.Internal.CallbackObjectInfoCollections EMTPY
+		public static readonly Db4objects.Db4o.Internal.CallbackObjectInfoCollections Emtpy
 			 = Empty();
 
 		public CallbackObjectInfoCollections(IObjectInfoCollection added_, IObjectInfoCollection
@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Internal
 		private static Db4objects.Db4o.Internal.CallbackObjectInfoCollections Empty()
 		{
 			return new Db4objects.Db4o.Internal.CallbackObjectInfoCollections(ObjectInfoCollectionImpl
-				.EMPTY, ObjectInfoCollectionImpl.EMPTY, ObjectInfoCollectionImpl.EMPTY);
+				.Empty, ObjectInfoCollectionImpl.Empty, ObjectInfoCollectionImpl.Empty);
 		}
 	}
 }

@@ -19,14 +19,14 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			new TestRunner(typeof(IncompatibleFileFormatExceptionTestCase)).Run();
 		}
 
-		private static readonly string INCOMPATIBLE_FILE_FORMAT = "IncompatibleFileFormatExceptionTestCase";
+		private static readonly string IncompatibleFileFormat = "IncompatibleFileFormatExceptionTestCase";
 
 		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
-			File4.Delete(INCOMPATIBLE_FILE_FORMAT);
+			File4.Delete(IncompatibleFileFormat);
 			IoAdapter adapter = new RandomAccessFileAdapter();
-			adapter = adapter.Open(INCOMPATIBLE_FILE_FORMAT, false, 0, false);
+			adapter = adapter.Open(IncompatibleFileFormat, false, 0, false);
 			adapter.Write(new byte[] { 1, 2, 3 }, 3);
 			adapter.Close();
 		}
@@ -34,15 +34,15 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		/// <exception cref="Exception"></exception>
 		public virtual void TearDown()
 		{
-			File4.Delete(INCOMPATIBLE_FILE_FORMAT);
+			File4.Delete(IncompatibleFileFormat);
 		}
 
 		public virtual void Test()
 		{
 			Assert.Expect(typeof(IncompatibleFileFormatException), new _ICodeBlock_33(this));
-			File4.Delete(INCOMPATIBLE_FILE_FORMAT);
+			File4.Delete(IncompatibleFileFormat);
 			IoAdapter adapter = new RandomAccessFileAdapter();
-			Assert.IsFalse(adapter.Exists(INCOMPATIBLE_FILE_FORMAT));
+			Assert.IsFalse(adapter.Exists(IncompatibleFileFormat));
 		}
 
 		private sealed class _ICodeBlock_33 : ICodeBlock
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				Db4oFactory.OpenFile(IncompatibleFileFormatExceptionTestCase.INCOMPATIBLE_FILE_FORMAT
+				Db4oFactory.OpenFile(IncompatibleFileFormatExceptionTestCase.IncompatibleFileFormat
 					);
 			}
 

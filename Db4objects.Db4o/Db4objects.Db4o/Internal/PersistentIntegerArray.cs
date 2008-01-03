@@ -23,12 +23,12 @@ namespace Db4objects.Db4o.Internal
 
 		public override byte GetIdentifier()
 		{
-			return Const4.INTEGER_ARRAY;
+			return Const4.IntegerArray;
 		}
 
 		public override int OwnLength()
 		{
-			return (Const4.INT_LENGTH * (Size() + 1)) + Const4.ADDED_LENGTH;
+			return (Const4.IntLength * (Size() + 1)) + Const4.AddedLength;
 		}
 
 		public override void ReadThis(Transaction trans, BufferImpl reader)

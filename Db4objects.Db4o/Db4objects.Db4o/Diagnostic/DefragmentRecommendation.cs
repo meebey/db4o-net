@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Diagnostic
 				_message = reason;
 			}
 
-			public static readonly DefragmentRecommendation.DefragmentRecommendationReason DELETE_EMBEDED
+			public static readonly DefragmentRecommendation.DefragmentRecommendationReason DeleteEmbeded
 				 = new DefragmentRecommendation.DefragmentRecommendationReason("Delete Embedded not supported on old file format."
 				);
 		}

@@ -10,21 +10,21 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 	{
 		public virtual void Test()
 		{
-			Assert.IsTrue(IntMatcher.ZERO.Match(0));
-			Assert.IsFalse(IntMatcher.ZERO.Match(-1));
-			Assert.IsFalse(IntMatcher.ZERO.Match(1));
-			Assert.IsFalse(IntMatcher.ZERO.Match(int.MinValue));
-			Assert.IsFalse(IntMatcher.ZERO.Match(int.MaxValue));
-			Assert.IsFalse(IntMatcher.POSITIVE.Match(0));
-			Assert.IsFalse(IntMatcher.POSITIVE.Match(-1));
-			Assert.IsTrue(IntMatcher.POSITIVE.Match(1));
-			Assert.IsFalse(IntMatcher.POSITIVE.Match(int.MinValue));
-			Assert.IsTrue(IntMatcher.POSITIVE.Match(int.MaxValue));
-			Assert.IsFalse(IntMatcher.NEGATIVE.Match(0));
-			Assert.IsTrue(IntMatcher.NEGATIVE.Match(-1));
-			Assert.IsFalse(IntMatcher.NEGATIVE.Match(1));
-			Assert.IsTrue(IntMatcher.NEGATIVE.Match(int.MinValue));
-			Assert.IsFalse(IntMatcher.NEGATIVE.Match(int.MaxValue));
+			Assert.IsTrue(IntMatcher.Zero.Match(0));
+			Assert.IsFalse(IntMatcher.Zero.Match(-1));
+			Assert.IsFalse(IntMatcher.Zero.Match(1));
+			Assert.IsFalse(IntMatcher.Zero.Match(int.MinValue));
+			Assert.IsFalse(IntMatcher.Zero.Match(int.MaxValue));
+			Assert.IsFalse(IntMatcher.Positive.Match(0));
+			Assert.IsFalse(IntMatcher.Positive.Match(-1));
+			Assert.IsTrue(IntMatcher.Positive.Match(1));
+			Assert.IsFalse(IntMatcher.Positive.Match(int.MinValue));
+			Assert.IsTrue(IntMatcher.Positive.Match(int.MaxValue));
+			Assert.IsFalse(IntMatcher.Negative.Match(0));
+			Assert.IsTrue(IntMatcher.Negative.Match(-1));
+			Assert.IsFalse(IntMatcher.Negative.Match(1));
+			Assert.IsTrue(IntMatcher.Negative.Match(int.MinValue));
+			Assert.IsFalse(IntMatcher.Negative.Match(int.MaxValue));
 		}
 	}
 }

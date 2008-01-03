@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Activation
 			_depth = depth;
 		}
 
-		public FixedActivationDepth(int depth) : this(depth, ActivationMode.ACTIVATE)
+		public FixedActivationDepth(int depth) : this(depth, ActivationMode.Activate)
 		{
 		}
 

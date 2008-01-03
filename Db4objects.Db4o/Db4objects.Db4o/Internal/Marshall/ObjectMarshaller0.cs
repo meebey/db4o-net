@@ -162,7 +162,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		protected int HeaderLength()
 		{
-			return Const4.OBJECT_LENGTH + Const4.ID_LENGTH;
+			return Const4.ObjectLength + Const4.IdLength;
 		}
 
 		/// <param name="yf"></param>

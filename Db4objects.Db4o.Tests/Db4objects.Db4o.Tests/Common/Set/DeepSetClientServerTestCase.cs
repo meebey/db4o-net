@@ -43,31 +43,31 @@ namespace Db4objects.Db4o.Tests.Common.Set
 			example.name = "1";
 			try
 			{
-				DeepSetClientServerTestCase.Item item1 = (DeepSetClientServerTestCase.Item)oc1.Get
+				DeepSetClientServerTestCase.Item item1 = (DeepSetClientServerTestCase.Item)oc1.QueryByExample
 					(example).Next();
 				Assert.AreEqual("1", item1.name);
 				Assert.AreEqual("2", item1.child.name);
 				Assert.AreEqual("3", item1.child.child.name);
-				DeepSetClientServerTestCase.Item item2 = (DeepSetClientServerTestCase.Item)oc2.Get
+				DeepSetClientServerTestCase.Item item2 = (DeepSetClientServerTestCase.Item)oc2.QueryByExample
 					(example).Next();
 				Assert.AreEqual("1", item2.name);
 				Assert.AreEqual("2", item2.child.name);
 				Assert.AreEqual("3", item2.child.child.name);
 				item1.child.name = "12";
 				item1.child.child.name = "13";
-				oc1.Set(item1, 2);
+				oc1.Store(item1, 2);
 				oc1.Commit();
-				DeepSetClientServerTestCase.Item item = (DeepSetClientServerTestCase.Item)oc1.Get
+				DeepSetClientServerTestCase.Item item = (DeepSetClientServerTestCase.Item)oc1.QueryByExample
 					(example).Next();
 				Assert.AreEqual("1", item.name);
 				Assert.AreEqual("12", item.child.name);
 				Assert.AreEqual("13", item.child.child.name);
-				item = (DeepSetClientServerTestCase.Item)oc2.Get(example).Next();
+				item = (DeepSetClientServerTestCase.Item)oc2.QueryByExample(example).Next();
 				oc2.Refresh(item, 3);
 				Assert.AreEqual("1", item.name);
 				Assert.AreEqual("12", item.child.name);
 				Assert.AreEqual("3", item.child.child.name);
-				item = (DeepSetClientServerTestCase.Item)oc3.Get(example).Next();
+				item = (DeepSetClientServerTestCase.Item)oc3.QueryByExample(example).Next();
 				Assert.AreEqual("1", item.name);
 				Assert.AreEqual("12", item.child.name);
 				Assert.AreEqual("3", item.child.child.name);

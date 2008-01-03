@@ -13,15 +13,15 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class MarshallingBuffer : IWriteBuffer
 	{
-		private const int SIZE_NEEDED = Const4.LONG_LENGTH;
+		private const int SizeNeeded = Const4.LongLength;
 
-		private const int NO_PARENT = -int.MaxValue;
+		private const int NoParent = -int.MaxValue;
 
 		private BufferImpl _delegate;
 
 		private int _lastOffSet;
 
-		private int _addressInParent = NO_PARENT;
+		private int _addressInParent = NoParent;
 
 		private List4 _children;
 
@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void PrepareWrite()
 		{
-			PrepareWrite(SIZE_NEEDED);
+			PrepareWrite(SizeNeeded);
 		}
 
 		private void PrepareWrite(int sizeNeeded)
@@ -156,7 +156,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void ReserveChildLinkSpace(bool storeLengthInLink)
 		{
-			int length = storeLengthInLink ? Const4.INT_LENGTH * 2 : Const4.INT_LENGTH;
+			int length = storeLengthInLink ? Const4.IntLength * 2 : Const4.IntLength;
 			PrepareWrite(length);
 			_delegate.IncrementOffset(length);
 		}
@@ -257,7 +257,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual bool HasParent()
 		{
-			return _addressInParent != NO_PARENT;
+			return _addressInParent != NoParent;
 		}
 
 		private bool StoreLengthInLink()

@@ -11,15 +11,15 @@ namespace Db4objects.Db4o.Internal.Fileheader
 	/// <exclude></exclude>
 	public abstract class FileHeader
 	{
-		private static readonly FileHeader[] AVAILABLE_FILE_HEADERS = new FileHeader[] { 
-			new FileHeader0(), new FileHeader1() };
+		private static readonly FileHeader[] AvailableFileHeaders = new FileHeader[] { new 
+			FileHeader0(), new FileHeader1() };
 
 		private static int ReaderLength()
 		{
-			int length = AVAILABLE_FILE_HEADERS[0].Length();
-			for (int i = 1; i < AVAILABLE_FILE_HEADERS.Length; i++)
+			int length = AvailableFileHeaders[0].Length();
+			for (int i = 1; i < AvailableFileHeaders.Length; i++)
 			{
-				length = Math.Max(length, AVAILABLE_FILE_HEADERS[i].Length());
+				length = Math.Max(length, AvailableFileHeaders[i].Length());
 			}
 			return length;
 		}
@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			FileHeader header = DetectFileHeader(file, reader);
 			if (header == null)
 			{
-				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.INCOMPATIBLE_FORMAT
+				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.IncompatibleFormat
 					);
 			}
 			else
@@ -51,10 +51,10 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private static FileHeader DetectFileHeader(LocalObjectContainer file, BufferImpl 
 			reader)
 		{
-			for (int i = 0; i < AVAILABLE_FILE_HEADERS.Length; i++)
+			for (int i = 0; i < AvailableFileHeaders.Length; i++)
 			{
 				reader.Seek(0);
-				FileHeader result = AVAILABLE_FILE_HEADERS[i].NewOnSignatureMatch(file, reader);
+				FileHeader result = AvailableFileHeaders[i].NewOnSignatureMatch(file, reader);
 				if (result != null)
 				{
 					return result;
@@ -108,14 +108,14 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		protected virtual void WriteTransactionPointer(Transaction systemTransaction, int
 			 transactionAddress, int address, int offset)
 		{
-			StatefulBuffer bytes = new StatefulBuffer(systemTransaction, address, Const4.INT_LENGTH
+			StatefulBuffer bytes = new StatefulBuffer(systemTransaction, address, Const4.IntLength
 				 * 2);
 			bytes.MoveForward(offset);
 			bytes.WriteInt(transactionAddress);
 			bytes.WriteInt(transactionAddress);
 			if (Debug.xbytes && Deploy.overwrite)
 			{
-				bytes.SetID(Const4.IGNORE_ID);
+				bytes.SetID(Const4.IgnoreId);
 			}
 			bytes.Write();
 		}

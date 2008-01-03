@@ -29,17 +29,17 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual bool IsEqual(object array)
 		{
-			return IsMatch(array, IntMatcher.ZERO);
+			return IsMatch(array, IntMatcher.Zero);
 		}
 
 		public virtual bool IsGreaterThan(object array)
 		{
-			return IsMatch(array, IntMatcher.POSITIVE);
+			return IsMatch(array, IntMatcher.Positive);
 		}
 
 		public virtual bool IsSmallerThan(object array)
 		{
-			return IsMatch(array, IntMatcher.NEGATIVE);
+			return IsMatch(array, IntMatcher.Negative);
 		}
 
 		private bool IsMatch(object array, IntMatcher matcher)

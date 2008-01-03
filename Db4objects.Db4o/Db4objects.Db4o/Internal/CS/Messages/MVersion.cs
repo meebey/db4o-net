@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				ver = stream.CurrentVersion();
 			}
-			Write(Msg.ID_LIST.GetWriterForLong(Transaction(), ver));
+			Write(Msg.IdList.GetWriterForLong(Transaction(), ver));
 			return true;
 		}
 	}

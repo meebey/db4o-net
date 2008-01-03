@@ -23,13 +23,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 
 		public virtual void LogWorkDone(UnitOfWork work)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			_workLog.Add(work);
 		}
 
 		public virtual long TotalTimeSpent()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			long total = 0;
 			IEnumerator i = _workLog.GetEnumerator();
 			while (i.MoveNext())

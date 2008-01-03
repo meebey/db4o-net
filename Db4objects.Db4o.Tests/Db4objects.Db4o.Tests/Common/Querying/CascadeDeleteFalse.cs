@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			cdf.h1 = new CascadeDeleteFalse.CascadeDeleteFalseHelper();
 			cdf.h2 = new CascadeDeleteFalse.CascadeDeleteFalseHelper();
 			cdf.h3 = new CascadeDeleteFalse.CascadeDeleteFalseHelper();
-			Db().Set(cdf);
+			Db().Store(cdf);
 		}
 
 		public virtual void Test()

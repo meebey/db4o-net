@@ -106,15 +106,15 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 				("Neil", "Notwanted");
 			MultiFieldIndexQueryTestCase.Person nat = new MultiFieldIndexQueryTestCase.Person
 				("Nat", "Neverwanted");
-			Db().Set(new MultiFieldIndexQueryTestCase.Book("Persistence possibilities", new MultiFieldIndexQueryTestCase.Person
-				[] { aaron, bill, chris }));
-			Db().Set(new MultiFieldIndexQueryTestCase.Book("Persistence using S.O.D.A.", new 
+			Db().Store(new MultiFieldIndexQueryTestCase.Book("Persistence possibilities", new 
+				MultiFieldIndexQueryTestCase.Person[] { aaron, bill, chris }));
+			Db().Store(new MultiFieldIndexQueryTestCase.Book("Persistence using S.O.D.A.", new 
 				MultiFieldIndexQueryTestCase.Person[] { aaron }));
-			Db().Set(new MultiFieldIndexQueryTestCase.Book("Persistence using JDO", new MultiFieldIndexQueryTestCase.Person
+			Db().Store(new MultiFieldIndexQueryTestCase.Book("Persistence using JDO", new MultiFieldIndexQueryTestCase.Person
 				[] { bill, dave }));
-			Db().Set(new MultiFieldIndexQueryTestCase.Book("Don't want to find Phil", new MultiFieldIndexQueryTestCase.Person
+			Db().Store(new MultiFieldIndexQueryTestCase.Book("Don't want to find Phil", new MultiFieldIndexQueryTestCase.Person
 				[] { aaron, bill, neil }));
-			Db().Set(new MultiFieldIndexQueryTestCase.Book("Persistence by Jeff", new MultiFieldIndexQueryTestCase.Person
+			Db().Store(new MultiFieldIndexQueryTestCase.Book("Persistence by Jeff", new MultiFieldIndexQueryTestCase.Person
 				[] { nat }));
 		}
 

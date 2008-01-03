@@ -146,7 +146,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
-				this._enclosing.Db().Get(typeof(Db4oIOExceptionTestCase.Item));
+				this._enclosing.Db().QueryByExample(typeof(Db4oIOExceptionTestCase.Item));
 			}
 
 			private readonly Db4oIOExceptionTestCase _enclosing;
@@ -170,7 +170,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
-				IObjectSet os = this._enclosing.Db().Get(null);
+				IObjectSet os = this._enclosing.Db().QueryByExample(null);
 				while (os.HasNext())
 				{
 					os.Next();
@@ -245,7 +245,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			public void Run()
 			{
 				ExceptionIOAdapter.exception = true;
-				this._enclosing.Db().Set(new Db4oIOExceptionTestCase.Item(3));
+				this._enclosing.Db().Store(new Db4oIOExceptionTestCase.Item(3));
 			}
 
 			private readonly Db4oIOExceptionTestCase _enclosing;
@@ -254,7 +254,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		/// <exception cref="Exception"></exception>
 		public virtual void TestGetByUUID()
 		{
-			Fixture().Config().GenerateUUIDs(ConfigScope.GLOBALLY);
+			Fixture().Config().GenerateUUIDs(ConfigScope.Globally);
 			Fixture().Reopen(GetType());
 			Db4oIOExceptionTestCase.Item item = new Db4oIOExceptionTestCase.Item(1);
 			Store(item);

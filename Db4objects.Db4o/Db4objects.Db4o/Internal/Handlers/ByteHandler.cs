@@ -11,9 +11,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	public sealed class ByteHandler : PrimitiveHandler
 	{
-		internal const int LENGTH = 1 + Const4.ADDED_LENGTH;
+		internal const int Length = 1 + Const4.AddedLength;
 
-		private static readonly byte DEFAULT_VALUE = (byte)0;
+		private static readonly byte DefaultByteValue = (byte)0;
 
 		public ByteHandler(ObjectContainerBase stream) : base(stream)
 		{
@@ -26,12 +26,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object DefaultValue()
 		{
-			return DEFAULT_VALUE;
+			return DefaultByteValue;
 		}
 
 		public override int LinkLength()
 		{
-			return LENGTH;
+			return Length;
 		}
 
 		protected override Type PrimitiveJavaClass()
@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object PrimitiveNull()
 		{
-			return DEFAULT_VALUE;
+			return DefaultByteValue;
 		}
 
 		internal override object Read1(BufferImpl a_bytes)

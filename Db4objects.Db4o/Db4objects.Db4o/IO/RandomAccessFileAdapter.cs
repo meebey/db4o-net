@@ -131,7 +131,7 @@ namespace Db4objects.Db4o.IO
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.REGULAR_SEEK.Log(pos);
+				DTrace.RegularSeek.Log(pos);
 			}
 			try
 			{

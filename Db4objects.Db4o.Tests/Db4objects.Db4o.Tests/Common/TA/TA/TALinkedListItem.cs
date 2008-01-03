@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 		public virtual TALinkedList List()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return list;
 		}
 	}

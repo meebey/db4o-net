@@ -26,28 +26,27 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 	/// </remarks>
 	public class CustomReflectorTestCase : ITestCase, ITestLifeCycle
 	{
-		private static readonly string CAT_CLASS = "Cat";
+		private static readonly string CatClass = "Cat";
 
-		private static readonly string[] CAT_FIELD_NAMES = new string[] { "name", "troubleMakingScore"
+		private static readonly string[] CatFieldNames = new string[] { "name", "troubleMakingScore"
 			 };
 
-		private static readonly string[] CAT_FIELD_TYPES = new string[] { "string", "int"
-			 };
+		private static readonly string[] CatFieldTypes = new string[] { "string", "int" };
 
-		private static readonly string PERSON_CLASS = "Person";
+		private static readonly string PersonClass = "Person";
 
-		private static readonly string[] PERSON_FIELD_NAMES = new string[] { "name" };
+		private static readonly string[] PersonFieldNames = new string[] { "name" };
 
-		private static readonly string[] PERSON_FIELD_TYPES = new string[] { "string" };
+		private static readonly string[] PersonFieldTypes = new string[] { "string" };
 
-		private static readonly PersistentEntry[] CAT_ENTRIES = new PersistentEntry[] { new 
-			PersistentEntry(CAT_CLASS, "0", new object[] { "Biro-Biro", 9 }), new PersistentEntry
-			(CAT_CLASS, "1", new object[] { "Samira", 4 }), new PersistentEntry(CAT_CLASS, "2"
+		private static readonly PersistentEntry[] CatEntries = new PersistentEntry[] { new 
+			PersistentEntry(CatClass, "0", new object[] { "Biro-Biro", 9 }), new PersistentEntry
+			(CatClass, "1", new object[] { "Samira", 4 }), new PersistentEntry(CatClass, "2"
 			, new object[] { "Ivo", 2 }) };
 
-		private static readonly PersistentEntry[] PERSON_ENTRIES = new PersistentEntry[] 
-			{ new PersistentEntry(PERSON_CLASS, "10", new object[] { "Eric Idle" }), new PersistentEntry
-			(PERSON_CLASS, "11", new object[] { "John Cleese" }) };
+		private static readonly PersistentEntry[] PersonEntries = new PersistentEntry[] { 
+			new PersistentEntry(PersonClass, "10", new object[] { "Eric Idle" }), new PersistentEntry
+			(PersonClass, "11", new object[] { "John Cleese" }) };
 
 		internal PersistenceContext _context;
 
@@ -58,10 +57,10 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			Purge();
 			InitializeContext();
 			InitializeProvider();
-			CreateEntryClass(CAT_CLASS, CAT_FIELD_NAMES, CAT_FIELD_TYPES);
-			CreateIndex(CAT_CLASS, CAT_FIELD_NAMES[0]);
+			CreateEntryClass(CatClass, CatFieldNames, CatFieldTypes);
+			CreateIndex(CatClass, CatFieldNames[0]);
 			RestartProvider();
-			CreateEntryClass(PERSON_CLASS, PERSON_FIELD_NAMES, PERSON_FIELD_TYPES);
+			CreateEntryClass(PersonClass, PersonFieldNames, PersonFieldTypes);
 			RestartProvider();
 			InsertEntries();
 			RestartProvider();
@@ -69,56 +68,56 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public virtual void TestUpdate()
 		{
-			PersistentEntry entry = new PersistentEntry(CAT_CLASS, CAT_ENTRIES[0].uid, new object
+			PersistentEntry entry = new PersistentEntry(CatClass, CatEntries[0].uid, new object
 				[] { "Birinho", 10 });
 			Update(entry);
 			RestartProvider();
-			PersistentEntry[] expected = Copy(CAT_ENTRIES);
+			PersistentEntry[] expected = Copy(CatEntries);
 			expected[0] = entry;
-			AssertEntries(expected, SelectAll(CAT_CLASS));
+			AssertEntries(expected, SelectAll(CatClass));
 		}
 
 		public virtual void TestSelectAll()
 		{
-			AssertEntries(PERSON_ENTRIES, SelectAll(PERSON_CLASS));
-			AssertEntries(CAT_ENTRIES, SelectAll(CAT_CLASS));
+			AssertEntries(PersonEntries, SelectAll(PersonClass));
+			AssertEntries(CatEntries, SelectAll(CatClass));
 		}
 
 		public virtual void TestSelectByField()
 		{
-			ExerciseSelectByField(CAT_ENTRIES, CAT_FIELD_NAMES);
-			ExerciseSelectByField(PERSON_ENTRIES, PERSON_FIELD_NAMES);
+			ExerciseSelectByField(CatEntries, CatFieldNames);
+			ExerciseSelectByField(PersonEntries, PersonFieldNames);
 		}
 
 		public virtual void TestSelectByFields()
 		{
-			PersistentEntry existing = CAT_ENTRIES[0];
-			PersistentEntry newEntry = new PersistentEntry(CAT_CLASS, existing.uid, new object
+			PersistentEntry existing = CatEntries[0];
+			PersistentEntry newEntry = new PersistentEntry(CatClass, existing.uid, new object
 				[] { existing.fieldValues[0], 10 });
 			Insert(newEntry);
-			IEnumerator found = SelectByField(existing.className, CAT_FIELD_NAMES[0], existing
-				.fieldValues[0]);
+			IEnumerator found = SelectByField(existing.className, CatFieldNames[0], existing.
+				fieldValues[0]);
 			AssertEntries(new PersistentEntry[] { existing, newEntry }, found);
-			AssertSingleEntry(existing, Select(existing.className, CAT_FIELD_NAMES, existing.
-				fieldValues));
-			AssertSingleEntry(newEntry, Select(newEntry.className, CAT_FIELD_NAMES, newEntry.
-				fieldValues));
+			AssertSingleEntry(existing, Select(existing.className, CatFieldNames, existing.fieldValues
+				));
+			AssertSingleEntry(newEntry, Select(newEntry.className, CatFieldNames, newEntry.fieldValues
+				));
 		}
 
 		public virtual void TestDropIndex()
 		{
-			DropIndex(CAT_CLASS, CAT_FIELD_NAMES[0]);
-			Db4objects.Db4o.Internal.FieldMetadata field = FieldMetadata(CAT_CLASS, CAT_FIELD_NAMES
+			DropIndex(CatClass, CatFieldNames[0]);
+			Db4objects.Db4o.Internal.FieldMetadata field = FieldMetadata(CatClass, CatFieldNames
 				[0]);
 			Assert.IsFalse(field.HasIndex());
 		}
 
 		public virtual void TestFieldIndex()
 		{
-			Db4objects.Db4o.Internal.FieldMetadata field0 = FieldMetadata(CAT_CLASS, CAT_FIELD_NAMES
+			Db4objects.Db4o.Internal.FieldMetadata field0 = FieldMetadata(CatClass, CatFieldNames
 				[0]);
 			Assert.IsTrue(field0.HasIndex());
-			Db4objects.Db4o.Internal.FieldMetadata field1 = FieldMetadata(CAT_CLASS, CAT_FIELD_NAMES
+			Db4objects.Db4o.Internal.FieldMetadata field1 = FieldMetadata(CatClass, CatFieldNames
 				[1]);
 			Assert.IsFalse(field1.HasIndex());
 		}
@@ -215,8 +214,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		private void InsertEntries()
 		{
-			InsertEntries(CAT_ENTRIES);
-			InsertEntries(PERSON_ENTRIES);
+			InsertEntries(CatEntries);
+			InsertEntries(PersonEntries);
 		}
 
 		private void InsertEntries(PersistentEntry[] entries)

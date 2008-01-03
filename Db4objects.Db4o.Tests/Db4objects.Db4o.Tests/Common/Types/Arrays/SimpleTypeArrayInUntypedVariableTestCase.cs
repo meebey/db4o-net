@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 {
 	public class SimpleTypeArrayInUntypedVariableTestCase : AbstractDb4oTestCase
 	{
-		private static readonly int[] ARRAY = new int[] { 1, 2, 3 };
+		private static readonly int[] Array = new int[] { 1, 2, 3 };
 
 		public class Data
 		{
@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		protected override void Store()
 		{
-			Db().Set(new SimpleTypeArrayInUntypedVariableTestCase.Data(ARRAY));
+			Db().Store(new SimpleTypeArrayInUntypedVariableTestCase.Data(Array));
 		}
 
 		public virtual void TestRetrieval()
@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 				)RetrieveOnlyInstance(typeof(SimpleTypeArrayInUntypedVariableTestCase.Data));
 			Assert.IsTrue(data._arr is int[]);
 			int[] arri = (int[])data._arr;
-			ArrayAssert.AreEqual(ARRAY, arri);
+			ArrayAssert.AreEqual(Array, arri);
 		}
 	}
 }

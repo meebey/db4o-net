@@ -228,8 +228,8 @@ namespace Db4objects.Db4o.Foundation
 		/// <returns></returns>
 		public IEnumerator GetEnumerator()
 		{
-			return _first == null ? Iterators.EMPTY_ITERATOR : new Collection4Iterator(this, 
-				_first);
+			return _first == null ? Iterators.EmptyIterator : new Collection4Iterator(this, _first
+				);
 		}
 
 		/// <summary>

@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	public class ShortHandler : PrimitiveHandler
 	{
-		internal const int LENGTH = Const4.SHORT_BYTES + Const4.ADDED_LENGTH;
+		internal const int Length = Const4.ShortBytes + Const4.AddedLength;
 
 		private static readonly short i_primitive = (short)0;
 
@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override int LinkLength()
 		{
-			return LENGTH;
+			return Length;
 		}
 
 		protected override Type PrimitiveJavaClass()
@@ -65,10 +65,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		internal static void WriteShort(int a_short, BufferImpl a_bytes)
 		{
-			for (int i = 0; i < Const4.SHORT_BYTES; i++)
+			for (int i = 0; i < Const4.ShortBytes; i++)
 			{
-				a_bytes._buffer[a_bytes._offset++] = (byte)(a_short >> ((Const4.SHORT_BYTES - 1 -
-					 i) * 8));
+				a_bytes._buffer[a_bytes._offset++] = (byte)(a_short >> ((Const4.ShortBytes - 1 - 
+					i) * 8));
 			}
 		}
 

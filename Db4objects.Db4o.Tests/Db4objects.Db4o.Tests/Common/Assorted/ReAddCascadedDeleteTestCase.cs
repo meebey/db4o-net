@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		protected override void Store()
 		{
-			Db().Set(new ReAddCascadedDeleteTestCase.Item("parent", new ReAddCascadedDeleteTestCase.Item
+			Db().Store(new ReAddCascadedDeleteTestCase.Item("parent", new ReAddCascadedDeleteTestCase.Item
 				("child")));
 		}
 
@@ -63,13 +63,14 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			ReAddCascadedDeleteTestCase.Item i = Query("parent");
 			Db().Delete(i);
-			Db().Set(i._member);
+			Db().Store(i._member);
 			Db().Commit();
 		}
 
 		private ReAddCascadedDeleteTestCase.Item Query(string name)
 		{
-			IObjectSet objectSet = Db().Get(new ReAddCascadedDeleteTestCase.Item(name));
+			IObjectSet objectSet = Db().QueryByExample(new ReAddCascadedDeleteTestCase.Item(name
+				));
 			if (!objectSet.HasNext())
 			{
 				return null;

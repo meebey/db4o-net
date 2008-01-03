@@ -4,7 +4,7 @@ namespace Db4objects.Db4o.Activation
 {
 	public enum ActivationPurpose
 	{
-		READ,
-		WRITE
+		Read,
+		Write
 	}
 }

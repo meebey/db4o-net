@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.CS
 {
 	public class ObjectServerImpl : IObjectServer, IExtObjectServer, IRunnable
 	{
-		private const int START_THREAD_WAIT_TIMEOUT = 5000;
+		private const int StartThreadWaitTimeout = 5000;
 
 		private readonly string _name;
 
@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Internal.CS
 				{
 					try
 					{
-						Sharpen.Runtime.Wait(_startupLock, START_THREAD_WAIT_TIMEOUT);
+						Sharpen.Runtime.Wait(_startupLock, StartThreadWaitTimeout);
 						started = true;
 					}
 					catch (Exception)
@@ -138,7 +138,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void EnsureLoadStaticClass()
 		{
-			_container.ProduceClassMetadata(_container._handlers.ICLASS_STATICCLASS);
+			_container.ProduceClassMetadata(_container._handlers.IclassStaticclass);
 		}
 
 		private void ConfigureObjectServer()
@@ -158,7 +158,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if (_container == null)
 			{
-				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.CLOSED_OR_OPEN_FAILED
+				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.ClosedOrOpenFailed
 					, _name);
 			}
 			_container.CheckClosed();
@@ -300,13 +300,13 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void AddUser(string userName, string password)
 		{
-			_container.Set(new User(userName, password));
+			_container.Store(new User(userName, password));
 		}
 
 		private void SetPassword(User existing, string password)
 		{
 			existing.password = password;
-			_container.Set(existing);
+			_container.Store(existing);
 		}
 
 		public virtual User GetUser(string userName)
@@ -324,7 +324,7 @@ namespace Db4objects.Db4o.Internal.CS
 			_container.ShowInternalClasses(true);
 			try
 			{
-				return _container.Get(new User(userName, null));
+				return _container.QueryByExample(new User(userName, null));
 			}
 			finally
 			{
@@ -436,7 +436,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void LogListeningOnPort()
 		{
-			_container.LogMsg(Db4objects.Db4o.Internal.Messages.SERVER_LISTENING_ON_PORT, string.Empty
+			_container.LogMsg(Db4objects.Db4o.Internal.Messages.ServerListeningOnPort, string.Empty
 				 + _serverSocket.GetLocalPort());
 		}
 

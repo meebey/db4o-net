@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.References
 
 		private IReferenceSystem _referenceSystem2;
 
-		private static int TEST_ID = 5;
+		private static int TestId = 5;
 
 		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.References
 		public virtual void TestRemoveId()
 		{
 			AddTestReference();
-			_registry.RemoveId(TEST_ID);
+			_registry.RemoveId(TestId);
 			AssertTestReferenceNotPresent();
 		}
 
@@ -61,20 +61,20 @@ namespace Db4objects.Db4o.Tests.Common.References
 		{
 			AddTestReference();
 			_registry.RemoveReferenceSystem(_referenceSystem1);
-			_registry.RemoveId(TEST_ID);
-			Assert.IsNotNull(_referenceSystem1.ReferenceForId(TEST_ID));
-			Assert.IsNull(_referenceSystem2.ReferenceForId(TEST_ID));
+			_registry.RemoveId(TestId);
+			Assert.IsNotNull(_referenceSystem1.ReferenceForId(TestId));
+			Assert.IsNull(_referenceSystem2.ReferenceForId(TestId));
 		}
 
 		private void AssertTestReferenceNotPresent()
 		{
-			Assert.IsNull(_referenceSystem1.ReferenceForId(TEST_ID));
-			Assert.IsNull(_referenceSystem2.ReferenceForId(TEST_ID));
+			Assert.IsNull(_referenceSystem1.ReferenceForId(TestId));
+			Assert.IsNull(_referenceSystem2.ReferenceForId(TestId));
 		}
 
 		private ObjectReference AddTestReference()
 		{
-			ObjectReference @ref = new ObjectReference(TEST_ID);
+			ObjectReference @ref = new ObjectReference(TestId);
 			@ref.SetObject(new object());
 			_referenceSystem1.AddExistingReference(@ref);
 			_referenceSystem2.AddExistingReference(@ref);

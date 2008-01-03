@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
-		private readonly int[] VALUES = new int[] { 4, 7, 6, 6, 5, 4, 0, 0 };
+		private readonly int[] Values = new int[] { 4, 7, 6, 6, 5, 4, 0, 0 };
 
 		public static void Main(string[] arguments)
 		{
@@ -65,9 +65,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		protected override void Store()
 		{
-			for (int i = 0; i < VALUES.Length; i++)
+			for (int i = 0; i < Values.Length; i++)
 			{
-				Db().Set(new IndexCreateDropTestCase.IndexCreateDropItem(VALUES[i]));
+				Db().Store(new IndexCreateDropTestCase.IndexCreateDropItem(Values[i]));
 			}
 		}
 

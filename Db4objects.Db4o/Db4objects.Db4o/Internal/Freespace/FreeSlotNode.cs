@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public sealed override int OwnLength()
 		{
-			return Const4.INT_LENGTH * 2;
+			return Const4.IntLength * 2;
 		}
 
 		internal static Tree RemoveGreaterOrEqual(Db4objects.Db4o.Internal.Freespace.FreeSlotNode

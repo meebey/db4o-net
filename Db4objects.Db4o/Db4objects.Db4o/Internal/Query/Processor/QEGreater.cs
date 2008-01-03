@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override void IndexBitMap(bool[] bits)
 		{
-			bits[QE.GREATER] = true;
+			bits[QE.Greater] = true;
 		}
 	}
 }

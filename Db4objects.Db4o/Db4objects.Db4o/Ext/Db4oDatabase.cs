@@ -21,11 +21,11 @@ namespace Db4objects.Db4o.Ext
 	/// <exclude></exclude>
 	public class Db4oDatabase : IDb4oType, IInternal4
 	{
-		public static readonly Db4objects.Db4o.Ext.Db4oDatabase STATIC_IDENTITY = Debug.staticIdentity
+		public static readonly Db4objects.Db4o.Ext.Db4oDatabase StaticIdentity = Debug.staticIdentity
 			 ? new Db4objects.Db4o.Ext.Db4oDatabase(new byte[] { (byte)'d', (byte)'e', (byte
 			)'b', (byte)'u', (byte)'g' }, 1) : null;
 
-		public const int STATIC_ID = -1;
+		public const int StaticId = -1;
 
 		/// <summary>Field is public for implementation reasons, DO NOT TOUCH!</summary>
 		public byte[] i_signature;
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Ext
 		/// </remarks>
 		public long i_uuid;
 
-		private static readonly string CREATIONTIME_FIELD = "i_uuid";
+		private static readonly string CreationtimeField = "i_uuid";
 
 		/// <summary>cached ObjectContainer for getting the own ID.</summary>
 		/// <remarks>cached ObjectContainer for getting the own ID.</remarks>
@@ -221,7 +221,7 @@ namespace Db4objects.Db4o.Ext
 			q.Constrain(GetType());
 			if (constrainByUUID)
 			{
-				q.Descend(CREATIONTIME_FIELD).Constrain(i_uuid);
+				q.Descend(CreationtimeField).Constrain(i_uuid);
 			}
 			IObjectSet objectSet = q.Execute();
 			while (objectSet.HasNext())

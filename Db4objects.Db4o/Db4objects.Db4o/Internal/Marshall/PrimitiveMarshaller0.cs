@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			long value = bytes.ReadLong();
 			if (value == long.MaxValue)
 			{
-				return MarshallingConstants0.NULL_DATE;
+				return MarshallingConstants0.NullDate;
 			}
 			return new DateTime(value);
 		}
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public static short UnmarshallShort(BufferImpl buffer)
 		{
 			int ret = 0;
-			for (int i = 0; i < Const4.SHORT_BYTES; i++)
+			for (int i = 0; i < Const4.ShortBytes; i++)
 			{
 				ret = (ret << 8) + (buffer._buffer[buffer._offset++] & unchecked((int)(0xff)));
 			}

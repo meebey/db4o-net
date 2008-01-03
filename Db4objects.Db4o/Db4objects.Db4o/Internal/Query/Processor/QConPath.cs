@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return null;
 			}
 			object obj = i_field.Coerce(a_object);
-			if (obj == No4.INSTANCE)
+			if (obj == No4.Instance)
 			{
 				QCon falseConstraint = new QConUnconditional(i_trans, false);
 				Morph(removeExisting, falseConstraint, ReflectClassForObject(obj));

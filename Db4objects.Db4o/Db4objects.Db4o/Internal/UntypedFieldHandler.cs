@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal
 	public class UntypedFieldHandler : ClassMetadata, IBuiltinTypeHandler
 	{
 		public UntypedFieldHandler(ObjectContainerBase container) : base(container, container
-			._handlers.ICLASS_OBJECT)
+			._handlers.IclassObject)
 		{
 		}
 
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override int GetID()
 		{
-			return Handlers4.UNTYPED_ID;
+			return Handlers4.UntypedId;
 		}
 
 		public override bool HasField(ObjectContainerBase a_stream, string a_path)
@@ -87,12 +87,12 @@ namespace Db4objects.Db4o.Internal
 			int payloadOffset = context.ReadInt();
 			if (payloadOffset == 0)
 			{
-				return ObjectID.IS_NULL;
+				return ObjectID.IsNull;
 			}
 			ClassMetadata classMetadata = ReadClassMetadata(context, payloadOffset);
 			if (classMetadata == null)
 			{
-				return ObjectID.IS_NULL;
+				return ObjectID.IsNull;
 			}
 			SeekSecondaryOffset(context, classMetadata);
 			return classMetadata.ReadObjectID(context);

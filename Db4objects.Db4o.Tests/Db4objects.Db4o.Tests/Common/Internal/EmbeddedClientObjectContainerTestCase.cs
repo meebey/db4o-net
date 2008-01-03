@@ -16,9 +16,9 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 {
 	public class EmbeddedClientObjectContainerTestCase : ITestLifeCycle
 	{
-		private static readonly string FIELD_NAME = "_name";
+		private static readonly string FieldName = "_name";
 
-		private static readonly string FILENAME = "mtoc.db4o";
+		private static readonly string Filename = "mtoc.db4o";
 
 		private LocalObjectContainer _server;
 
@@ -26,9 +26,9 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		protected EmbeddedClientObjectContainer _client2;
 
-		private static readonly string ORIGINAL_NAME = "original";
+		private static readonly string OriginalName = "original";
 
-		private static readonly string CHANGED_NAME = "changed";
+		private static readonly string ChangedName = "changed";
 
 		public class ItemHolder
 		{
@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		{
 			EmbeddedClientObjectContainerTestCase.Item item = new EmbeddedClientObjectContainerTestCase.Item
 				("one");
-			_client1.Set(item);
+			_client1.Store(item);
 			AssertItemCount(_client2, 0);
 			_client1.Commit();
 			AssertItemCount(_client2, 1);
@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			Assert.IsNull(retrievedItem._name);
 			Assert.IsFalse(_client2.IsActive(retrievedItem));
 			_client2.Activate(retrievedItem, 1);
-			Assert.AreEqual(ORIGINAL_NAME, retrievedItem._name);
+			Assert.AreEqual(OriginalName, retrievedItem._name);
 			Assert.IsTrue(_client2.IsActive(retrievedItem));
 		}
 
@@ -107,7 +107,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			EmbeddedClientObjectContainerTestCase.Item retrievedItem = RetrieveItemFromClient2
 				();
 			EmbeddedClientObjectContainerTestCase.Item boundItem = new EmbeddedClientObjectContainerTestCase.Item
-				(CHANGED_NAME);
+				(ChangedName);
 			_client1.Bind(boundItem, id);
 			Assert.AreSame(boundItem, _client1.GetByID(id));
 			Assert.AreSame(retrievedItem, _client2.GetByID(id));
@@ -149,12 +149,12 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		{
 			EmbeddedClientObjectContainerTestCase.Item storedItem = StoreItemToClient1AndCommit
 				();
-			storedItem._name = CHANGED_NAME;
-			_client1.Set(storedItem);
+			storedItem._name = ChangedName;
+			_client1.Store(storedItem);
 			_client1.Close();
 			EmbeddedClientObjectContainerTestCase.Item retrievedItem = RetrieveItemFromClient2
 				();
-			Assert.AreEqual(CHANGED_NAME, retrievedItem._name);
+			Assert.AreEqual(ChangedName, retrievedItem._name);
 		}
 
 		public virtual void TestConfigure()
@@ -167,7 +167,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			EmbeddedClientObjectContainerTestCase.Item item = StoreItemToClient1AndCommit();
 			EmbeddedClientObjectContainerTestCase.ItemHolder holder = new EmbeddedClientObjectContainerTestCase.ItemHolder
 				(item);
-			_client1.Set(holder);
+			_client1.Store(holder);
 			_client1.Commit();
 			_client1.Deactivate(holder, 1);
 			Assert.IsNull(holder._item);
@@ -185,17 +185,16 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		{
 			EmbeddedClientObjectContainerTestCase.Item storedItem = StoreItemToClient1AndCommit
 				();
-			storedItem._name = CHANGED_NAME;
-			_client1.Set(storedItem);
+			storedItem._name = ChangedName;
+			_client1.Store(storedItem);
 			int id = (int)_client1.GetID(storedItem);
 			object retrievedItem = _client2.GetByID(id);
 			Assert.IsNotNull(retrievedItem);
-			object descendValue = _client2.Descend(retrievedItem, new string[] { FIELD_NAME }
-				);
-			Assert.AreEqual(ORIGINAL_NAME, descendValue);
+			object descendValue = _client2.Descend(retrievedItem, new string[] { FieldName });
+			Assert.AreEqual(OriginalName, descendValue);
 			_client1.Commit();
-			descendValue = _client2.Descend(retrievedItem, new string[] { FIELD_NAME });
-			Assert.AreEqual(CHANGED_NAME, descendValue);
+			descendValue = _client2.Descend(retrievedItem, new string[] { FieldName });
+			Assert.AreEqual(ChangedName, descendValue);
 		}
 
 		public virtual void TestExt()
@@ -207,7 +206,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		{
 			EmbeddedClientObjectContainerTestCase.Item storedItem = StoreItemToClient1AndCommit
 				();
-			object retrievedItem = _client1.Get(new EmbeddedClientObjectContainerTestCase.Item
+			object retrievedItem = _client1.QueryByExample(new EmbeddedClientObjectContainerTestCase.Item
 				()).Next();
 			Assert.AreSame(storedItem, retrievedItem);
 		}
@@ -299,25 +298,25 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		{
 			EmbeddedClientObjectContainerTestCase.Item storedItem = StoreItemToClient1AndCommit
 				();
-			storedItem._name = CHANGED_NAME;
-			_client1.Set(storedItem);
+			storedItem._name = ChangedName;
+			_client1.Store(storedItem);
 			EmbeddedClientObjectContainerTestCase.Item peekedItem = (EmbeddedClientObjectContainerTestCase.Item
 				)_client1.PeekPersisted(storedItem, 2, true);
 			Assert.IsNotNull(peekedItem);
 			Assert.AreNotSame(peekedItem, storedItem);
-			Assert.AreEqual(ORIGINAL_NAME, peekedItem._name);
+			Assert.AreEqual(OriginalName, peekedItem._name);
 			peekedItem = (EmbeddedClientObjectContainerTestCase.Item)_client1.PeekPersisted(storedItem
 				, 2, false);
 			Assert.IsNotNull(peekedItem);
 			Assert.AreNotSame(peekedItem, storedItem);
-			Assert.AreEqual(CHANGED_NAME, peekedItem._name);
+			Assert.AreEqual(ChangedName, peekedItem._name);
 			EmbeddedClientObjectContainerTestCase.Item retrievedItem = RetrieveItemFromClient2
 				();
 			peekedItem = (EmbeddedClientObjectContainerTestCase.Item)_client2.PeekPersisted(retrievedItem
 				, 2, false);
 			Assert.IsNotNull(peekedItem);
 			Assert.AreNotSame(peekedItem, retrievedItem);
-			Assert.AreEqual(ORIGINAL_NAME, peekedItem._name);
+			Assert.AreEqual(OriginalName, peekedItem._name);
 		}
 
 		public virtual void TestPurge()
@@ -338,22 +337,22 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		{
 			EmbeddedClientObjectContainerTestCase.Item storedItem = StoreItemToClient1AndCommit
 				();
-			storedItem._name = CHANGED_NAME;
+			storedItem._name = ChangedName;
 			_client1.Refresh(storedItem, 2);
-			Assert.AreEqual(ORIGINAL_NAME, storedItem._name);
+			Assert.AreEqual(OriginalName, storedItem._name);
 		}
 
 		public virtual void TestRollback()
 		{
 			EmbeddedClientObjectContainerTestCase.Item storedItem = StoreItemToClient1AndCommit
 				();
-			storedItem._name = CHANGED_NAME;
-			_client1.Set(storedItem);
+			storedItem._name = ChangedName;
+			_client1.Store(storedItem);
 			_client1.Rollback();
 			_client1.Commit();
 			EmbeddedClientObjectContainerTestCase.Item retrievedItem = RetrieveItemFromClient2
 				();
-			Assert.AreEqual(ORIGINAL_NAME, retrievedItem._name);
+			Assert.AreEqual(OriginalName, retrievedItem._name);
 		}
 
 		public virtual void TestSetSemaphore()
@@ -372,30 +371,30 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			EmbeddedClientObjectContainerTestCase.Item item = StoreItemToClient1AndCommit();
 			EmbeddedClientObjectContainerTestCase.ItemHolder holder = new EmbeddedClientObjectContainerTestCase.ItemHolder
 				(item);
-			_client1.Set(holder);
+			_client1.Store(holder);
 			_client1.Commit();
-			item._name = CHANGED_NAME;
-			_client1.Set(holder, 3);
+			item._name = ChangedName;
+			_client1.Store(holder, 3);
 			_client1.Refresh(holder, 3);
-			Assert.AreEqual(CHANGED_NAME, item._name);
+			Assert.AreEqual(ChangedName, item._name);
 		}
 
 		public virtual void TestStoredFieldIsolation()
 		{
 			EmbeddedClientObjectContainerTestCase.Item storedItem = StoreItemToClient1AndCommit
 				();
-			storedItem._name = CHANGED_NAME;
-			_client1.Set(storedItem);
+			storedItem._name = ChangedName;
+			_client1.Store(storedItem);
 			EmbeddedClientObjectContainerTestCase.Item retrievedItem = RetrieveItemFromClient2
 				();
 			IStoredClass storedClass = _client2.StoredClass(typeof(EmbeddedClientObjectContainerTestCase.Item
 				));
-			IStoredField storedField = storedClass.StoredField(FIELD_NAME, null);
+			IStoredField storedField = storedClass.StoredField(FieldName, null);
 			object retrievedName = storedField.Get(retrievedItem);
-			Assert.AreEqual(ORIGINAL_NAME, retrievedName);
+			Assert.AreEqual(OriginalName, retrievedName);
 			_client1.Commit();
 			retrievedName = storedField.Get(retrievedItem);
-			Assert.AreEqual(CHANGED_NAME, retrievedName);
+			Assert.AreEqual(ChangedName, retrievedName);
 		}
 
 		public virtual void TestStoredClasses()
@@ -432,8 +431,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			()
 		{
 			EmbeddedClientObjectContainerTestCase.Item storedItem = new EmbeddedClientObjectContainerTestCase.Item
-				(ORIGINAL_NAME);
-			_client1.Set(storedItem);
+				(OriginalName);
+			_client1.Store(storedItem);
 			_client1.Commit();
 			return storedItem;
 		}
@@ -451,11 +450,11 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
-			File4.Delete(FILENAME);
+			File4.Delete(Filename);
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.ObjectClass(typeof(EmbeddedClientObjectContainerTestCase.Item)).GenerateUUIDs
 				(true);
-			_server = (LocalObjectContainer)Db4oFactory.OpenFile(config, FILENAME);
+			_server = (LocalObjectContainer)Db4oFactory.OpenFile(config, Filename);
 			_client1 = new EmbeddedClientObjectContainer(_server);
 			_client2 = new EmbeddedClientObjectContainer(_server);
 		}
@@ -466,7 +465,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			_client1.Close();
 			_client2.Close();
 			_server.Close();
-			File4.Delete(FILENAME);
+			File4.Delete(Filename);
 		}
 	}
 }

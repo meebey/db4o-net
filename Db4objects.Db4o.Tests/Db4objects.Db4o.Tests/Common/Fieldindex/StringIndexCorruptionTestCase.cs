@@ -30,11 +30,11 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			for (int i = 0; i < itemCount; ++i)
 			{
 				StringIndexTestCaseBase.Item item = new StringIndexTestCaseBase.Item(ItemName(i));
-				container.Set(item);
-				container.Set(item);
+				container.Store(item);
+				container.Store(item);
 				container.Commit();
-				container.Set(item);
-				container.Set(item);
+				container.Store(item);
+				container.Store(item);
 				container.Commit();
 			}
 			for (int i = 0; i < itemCount; ++i)

@@ -13,11 +13,11 @@ namespace Db4objects.Db4o.Reflect.Generic
 	/// <exclude></exclude>
 	public class KnownClassesRepository
 	{
-		private static readonly Hashtable4 PRIMITIVES;
+		private static readonly Hashtable4 Primitives;
 
 		static KnownClassesRepository()
 		{
-			PRIMITIVES = new Hashtable4();
+			Primitives = new Hashtable4();
 			RegisterPrimitive(typeof(bool), typeof(bool));
 			RegisterPrimitive(typeof(byte), typeof(byte));
 			RegisterPrimitive(typeof(short), typeof(short));
@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private static void RegisterPrimitive(Type wrapper, Type primitive)
 		{
-			PRIMITIVES.Put(wrapper.FullName, primitive);
+			Primitives.Put(wrapper.FullName, primitive);
 		}
 
 		private ObjectContainerBase _stream;
@@ -190,12 +190,12 @@ namespace Db4objects.Db4o.Reflect.Generic
 			int handlerID = fieldInfo.HandlerID();
 			switch (handlerID)
 			{
-				case Handlers4.UNTYPED_ID:
+				case Handlers4.UntypedId:
 				{
 					return ObjectClass();
 				}
 
-				case Handlers4.ANY_ARRAY_ID:
+				case Handlers4.AnyArrayId:
 				{
 					return ArrayClass(ObjectClass());
 				}
@@ -290,7 +290,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private IReflectClass PrimitiveClass(IReflectClass baseClass)
 		{
-			Type primitive = (Type)PRIMITIVES.Get(baseClass.GetName());
+			Type primitive = (Type)Primitives.Get(baseClass.GetName());
 			if (primitive != null)
 			{
 				return baseClass.Reflector().ForClass(primitive);

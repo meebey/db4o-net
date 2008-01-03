@@ -204,7 +204,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				CheckClosed();
 				return _server.PeekPersisted(_transaction, @object, ActivationDepthProvider().ActivationDepth
-					(depth, ActivationMode.PEEK), committed);
+					(depth, ActivationMode.Peek), committed);
 			}
 		}
 
@@ -262,7 +262,13 @@ namespace Db4objects.Db4o.Internal
 			throw new NotSupportedException();
 		}
 
+		[System.ObsoleteAttribute(@"Use")]
 		public virtual void Set(object obj, int depth)
+		{
+			Store(obj, depth);
+		}
+
+		public virtual void Store(object obj, int depth)
 		{
 			lock (Lock())
 			{
@@ -335,7 +341,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				CheckClosed();
 				_server.Activate(_transaction, obj, ActivationDepthProvider().ActivationDepth(depth
-					, ActivationMode.ACTIVATE));
+					, ActivationMode.Activate));
 			}
 		}
 
@@ -408,7 +414,15 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4oIOException"></exception>
 		/// <exception cref="DatabaseClosedException"></exception>
+		[System.ObsoleteAttribute(@"Use")]
 		public virtual IObjectSet Get(object template)
+		{
+			return QueryByExample(template);
+		}
+
+		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="DatabaseClosedException"></exception>
+		public virtual IObjectSet QueryByExample(object template)
 		{
 			lock (Lock())
 			{
@@ -474,7 +488,15 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="DatabaseReadOnlyException"></exception>
+		[System.ObsoleteAttribute(@"Use")]
 		public virtual void Set(object obj)
+		{
+			Store(obj);
+		}
+
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
+		public virtual void Store(object obj)
 		{
 			lock (Lock())
 			{

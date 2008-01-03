@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 {
 	public class ServerRevokeAccessTestCase : Db4oClientServerTestCase, IOptOutAllButNetworkingCS
 	{
-		private static readonly string SERVER_HOSTNAME = "127.0.0.1";
+		private static readonly string ServerHostname = "127.0.0.1";
 
 		public static void Main(string[] args)
 		{
@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			string password = "hohoho";
 			IObjectServer server = ClientServerFixture().Server();
 			server.GrantAccess(user, password);
-			IObjectContainer con = Db4oFactory.OpenClient(SERVER_HOSTNAME, ClientServerFixture
+			IObjectContainer con = Db4oFactory.OpenClient(ServerHostname, ClientServerFixture
 				().ServerPort(), user, password);
 			Assert.IsNotNull(con);
 			con.Close();
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				Db4oFactory.OpenClient(ServerRevokeAccessTestCase.SERVER_HOSTNAME, this._enclosing
+				Db4oFactory.OpenClient(ServerRevokeAccessTestCase.ServerHostname, this._enclosing
 					.ClientServerFixture().ServerPort(), user, password);
 			}
 

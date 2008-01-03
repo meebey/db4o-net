@@ -11,11 +11,11 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 	public class Db4oMigrationSuiteBuilder : ReflectionTestSuiteBuilder
 	{
 		/// <summary>Runs the tests against all archived libraries + the current one</summary>
-		public static readonly string[] ALL = null;
+		public static readonly string[] All = null;
 
 		/// <summary>Runs the tests against the current version only.</summary>
 		/// <remarks>Runs the tests against the current version only.</remarks>
-		public static readonly string[] CURRENT = new string[0];
+		public static readonly string[] Current = new string[0];
 
 		private readonly Db4oLibraryEnvironmentProvider _environmentProvider = new Db4oLibraryEnvironmentProvider
 			(PathProvider.TestCasePath());

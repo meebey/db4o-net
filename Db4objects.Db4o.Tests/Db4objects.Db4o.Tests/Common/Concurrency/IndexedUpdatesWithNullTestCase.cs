@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				Db4objects.Db4o.Tests.Common.Concurrency.IndexedUpdatesWithNullTestCase iuwn = (Db4objects.Db4o.Tests.Common.Concurrency.IndexedUpdatesWithNullTestCase
 					)objectSet.Next();
 				iuwn.str = "hi";
-				oc.Set(iuwn);
+				oc.Store(iuwn);
 				Thread.Sleep(100);
 			}
 		}

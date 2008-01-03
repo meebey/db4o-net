@@ -46,8 +46,8 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 
 		protected override void Store()
 		{
-			Db().Set(new NativeQueryOptimizerDiagnosticsTestCase.Subject(this, "Test"));
-			Db().Set(new NativeQueryOptimizerDiagnosticsTestCase.Subject(this, "Test2"));
+			Db().Store(new NativeQueryOptimizerDiagnosticsTestCase.Subject(this, "Test"));
+			Db().Store(new NativeQueryOptimizerDiagnosticsTestCase.Subject(this, "Test2"));
 		}
 
 		public virtual void TestNativeQueryNotOptimized()

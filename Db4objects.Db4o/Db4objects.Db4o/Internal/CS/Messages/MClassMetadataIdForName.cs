@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				lock (StreamLock())
 				{
 					int id = stream.ClassMetadataIdForName(name);
-					MsgD msg = Msg.CLASS_ID.GetWriterForInt(trans, id);
+					MsgD msg = Msg.ClassId.GetWriterForInt(trans, id);
 					Write(msg);
 					ok = true;
 				}
@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				if (!ok)
 				{
-					Write(Msg.FAILED);
+					Write(Msg.Failed);
 				}
 			}
 			return true;

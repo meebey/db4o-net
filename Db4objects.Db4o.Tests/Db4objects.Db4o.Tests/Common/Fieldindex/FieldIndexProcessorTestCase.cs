@@ -267,7 +267,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		private void AssertCantOptimize(IQuery query)
 		{
 			FieldIndexProcessorResult result = ExecuteProcessor(query);
-			Assert.AreSame(FieldIndexProcessorResult.NO_INDEX_FOUND, result);
+			Assert.AreSame(FieldIndexProcessorResult.NoIndexFound, result);
 		}
 
 		private void AssertBestIndex(string expectedFieldIndex, IQuery query)
@@ -311,7 +311,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			FieldIndexProcessorResult result = ExecuteProcessor(query);
 			if (expectedIds.Length == 0)
 			{
-				Assert.AreSame(FieldIndexProcessorResult.FOUND_INDEX_BUT_NO_MATCH, result);
+				Assert.AreSame(FieldIndexProcessorResult.FoundIndexButNoMatch, result);
 				return;
 			}
 			AssertTreeInt(expectedIds, result.ToTreeInt());

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			int queryResultID = ReadInt();
 			int fetchSize = ReadInt();
 			IIntIterator4 idIterator = Stub(queryResultID).IdIterator();
-			MsgD message = ID_LIST.GetWriterForLength(Transaction(), BufferLength(fetchSize));
+			MsgD message = IdList.GetWriterForLength(Transaction(), BufferLength(fetchSize));
 			StatefulBuffer writer = message.PayLoad();
 			writer.WriteIDs(idIterator, fetchSize);
 			Write(message);
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		private int BufferLength(int fetchSize)
 		{
-			return Const4.INT_LENGTH * (fetchSize + 1);
+			return Const4.IntLength * (fetchSize + 1);
 		}
 	}
 }

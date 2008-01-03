@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		{
 			if (true)
 			{
-				return Db4oMigrationSuiteBuilder.ALL;
+				return Db4oMigrationSuiteBuilder.All;
 			}
 			if (true)
 			{
@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 					), WorkspaceServices.WorkspacePath("db4o.archives/java1.2/db4o-4.0-java1.1.jar")
 					 };
 			}
-			return Db4oMigrationSuiteBuilder.CURRENT;
+			return Db4oMigrationSuiteBuilder.Current;
 		}
 
 		protected virtual Type[] TestCases()

@@ -55,11 +55,11 @@ namespace Db4oUnit.Tests
 
 		public class ConstructorThrows : ITestCase
 		{
-			public static readonly Exception ERROR = new Exception("no way");
+			public static readonly Exception Error = new Exception("no way");
 
 			public ConstructorThrows()
 			{
-				throw ERROR;
+				throw Error;
 			}
 
 			public virtual void Test1()
@@ -76,7 +76,7 @@ namespace Db4oUnit.Tests
 			ReflectionTestSuiteBuilder builder = new ReflectionTestSuiteBuilder(typeof(ReflectionTestSuiteBuilderTestCase.ConstructorThrows
 				));
 			Exception cause = AssertFailingTestCase(typeof(TestException), builder);
-			Assert.AreSame(ReflectionTestSuiteBuilderTestCase.ConstructorThrows.ERROR, ((TestException
+			Assert.AreSame(ReflectionTestSuiteBuilderTestCase.ConstructorThrows.Error, ((TestException
 				)cause).GetReason());
 		}
 

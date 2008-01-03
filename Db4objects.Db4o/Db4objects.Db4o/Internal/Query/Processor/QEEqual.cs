@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	{
 		public override void IndexBitMap(bool[] bits)
 		{
-			bits[QE.EQUAL] = true;
+			bits[QE.Equal] = true;
 		}
 	}
 }

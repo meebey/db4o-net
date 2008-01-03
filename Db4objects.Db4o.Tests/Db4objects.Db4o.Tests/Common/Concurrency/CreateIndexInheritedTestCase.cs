@@ -62,11 +62,11 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc2(IExtObjectContainer oc)
 		{
-			oc.Set(new CreateIndexInheritedTestCase.CreateIndexFor("d"));
+			oc.Store(new CreateIndexInheritedTestCase.CreateIndexFor("d"));
 			TQueryB(oc);
 			TUpdateB(oc);
-			oc.Set(new CreateIndexInheritedTestCase.CreateIndexFor("z"));
-			oc.Set(new CreateIndexInheritedTestCase.CreateIndexFor("y"));
+			oc.Store(new CreateIndexInheritedTestCase.CreateIndexFor("z"));
+			oc.Store(new CreateIndexInheritedTestCase.CreateIndexFor("y"));
 		}
 
 		public virtual void Check2(IExtObjectContainer oc)
@@ -193,13 +193,13 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			CreateIndexInheritedTestCase.CreateIndexFor ci = (CreateIndexInheritedTestCase.CreateIndexFor
 				)res.Next();
 			ci.i_name = "j";
-			oc.Set(ci);
+			oc.Store(ci);
 			res = Query(oc, "b");
 			Assert.AreEqual(0, res.Size());
 			res = Query(oc, "j");
 			Assert.AreEqual(1, res.Size());
 			ci.i_name = "b";
-			oc.Set(ci);
+			oc.Store(ci);
 			TQueryB(oc);
 		}
 

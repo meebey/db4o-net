@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			else
 			{
-				if (UnknownActivationDepth.INSTANCE == _activationDepth)
+				if (UnknownActivationDepth.Instance == _activationDepth)
 				{
 					_activationDepth = Container().DefaultActivationDepth(ClassMetadata());
 				}
@@ -123,7 +123,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private void AdjustActivationDepthForPrefetch()
 		{
 			ActivationDepth(ActivationDepthProvider().ActivationDepthFor(ClassMetadata(), ActivationMode
-				.PREFETCH));
+				.Prefetch));
 		}
 
 		private IActivationDepthProvider ActivationDepthProvider()
@@ -203,7 +203,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		protected override bool PeekPersisted()
 		{
-			return _addToIDTree == Const4.TRANSIENT;
+			return _addToIDTree == Const4.Transient;
 		}
 
 		public override object ReadObject(ITypeHandler4 handlerType)
@@ -238,7 +238,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual void AddToIDTree()
 		{
-			if (_addToIDTree == Const4.ADD_TO_ID_TREE)
+			if (_addToIDTree == Const4.AddToIdTree)
 			{
 				_reference.AddExistingReferenceToIdTree(Transaction());
 			}

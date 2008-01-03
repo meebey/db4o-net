@@ -39,9 +39,9 @@ namespace Db4objects.Db4o.IO
 
 		private bool _readOnly;
 
-		private static int DEFAULT_PAGE_SIZE = 1024;
+		private static int DefaultPageSize = 1024;
 
-		private static int DEFAULT_PAGE_COUNT = 64;
+		private static int DefaultPageCount = 64;
 
 		/// <summary>
 		/// Creates an instance of CachedIoAdapter with the default page size and
@@ -52,8 +52,8 @@ namespace Db4objects.Db4o.IO
 		/// page count.
 		/// </remarks>
 		/// <param name="ioAdapter">delegate IO adapter (RandomAccessFileAdapter by default)</param>
-		public CachedIoAdapter(IoAdapter ioAdapter) : this(ioAdapter, DEFAULT_PAGE_SIZE, 
-			DEFAULT_PAGE_COUNT)
+		public CachedIoAdapter(IoAdapter ioAdapter) : this(ioAdapter, DefaultPageSize, DefaultPageCount
+			)
 		{
 		}
 
@@ -275,7 +275,7 @@ namespace Db4objects.Db4o.IO
 
 		private bool ContainsHeaderBlock(CachedIoAdapter.Page page)
 		{
-			return page.StartAddress() <= FileHeader1.LENGTH;
+			return page.StartAddress() <= FileHeader1.HeaderLength;
 		}
 
 		private void ResetPageAddress(CachedIoAdapter.Page page, long startAddress)

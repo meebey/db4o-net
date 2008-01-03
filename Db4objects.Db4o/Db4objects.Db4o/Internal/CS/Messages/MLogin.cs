@@ -25,14 +25,14 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 						LogMsg(32, userName);
 						int blockSize = Stream().BlockSize();
 						int encrypt = Stream()._handlers.i_encrypt ? 1 : 0;
-						Write(Msg.LOGIN_OK.GetWriterForInts(Transaction(), new int[] { blockSize, encrypt
-							 }));
+						Write(Msg.LoginOk.GetWriterForInts(Transaction(), new int[] { blockSize, encrypt }
+							));
 						ServerMessageDispatcher().Login();
 						return true;
 					}
 				}
 			}
-			Write(Msg.FAILED);
+			Write(Msg.Failed);
 			return true;
 		}
 	}

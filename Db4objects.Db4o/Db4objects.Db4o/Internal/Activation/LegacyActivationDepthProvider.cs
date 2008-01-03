@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Internal.Activation
 {
 	public class LegacyActivationDepthProvider : IActivationDepthProvider
 	{
-		public static readonly IActivationDepthProvider INSTANCE = new LegacyActivationDepthProvider
+		public static readonly IActivationDepthProvider Instance = new LegacyActivationDepthProvider
 			();
 
 		public virtual IActivationDepth ActivationDepthFor(ClassMetadata classMetadata, ActivationMode

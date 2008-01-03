@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 	/// <exclude></exclude>
 	public class FieldIndexesToBTrees_5_7 : Conversion
 	{
-		public const int VERSION = 6;
+		public const int Version = 6;
 
 		public override void Convert(ConversionStage.SystemUpStage stage)
 		{

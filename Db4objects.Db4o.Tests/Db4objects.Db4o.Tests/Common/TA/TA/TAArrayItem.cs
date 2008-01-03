@@ -21,25 +21,25 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 		public virtual int[] Value()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return value;
 		}
 
 		public virtual object Object()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return obj;
 		}
 
 		public virtual LinkedList[] Lists()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return lists;
 		}
 
 		public virtual object ListsObject()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return listsObject;
 		}
 	}

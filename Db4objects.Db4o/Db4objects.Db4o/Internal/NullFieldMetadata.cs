@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override IPreparedComparison PrepareComparison(object obj)
 		{
-			return Null.INSTANCE;
+			return Null.Instance;
 		}
 
 		public sealed override object Read(IInternalReadContext context)

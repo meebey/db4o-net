@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public virtual int LinkLength()
 		{
-			return Slot.MARSHALLED_LENGTH;
+			return Slot.MarshalledLength;
 		}
 
 		public virtual object ReadIndexEntry(BufferImpl reader)

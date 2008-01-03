@@ -15,40 +15,40 @@ namespace Db4objects.Db4o.Internal
 	{
 		private readonly Config4Impl _configImpl;
 
-		private static readonly KeySpec CALL_CONSTRUCTOR = new KeySpec(TernaryBool.UNSPECIFIED
+		private static readonly KeySpec CallConstructorKey = new KeySpec(TernaryBool.Unspecified
 			);
 
-		private static readonly KeySpec CLASS_INDEXED = new KeySpec(true);
+		private static readonly KeySpec ClassIndexedKey = new KeySpec(true);
 
-		private static readonly KeySpec EXCEPTIONAL_FIELDS = new KeySpec(null);
+		private static readonly KeySpec ExceptionalFieldsKey = new KeySpec(null);
 
-		private static readonly KeySpec GENERATE_UUIDS = new KeySpec(false);
+		private static readonly KeySpec GenerateUuidsKey = new KeySpec(false);
 
-		private static readonly KeySpec GENERATE_VERSION_NUMBERS = new KeySpec(false);
+		private static readonly KeySpec GenerateVersionNumbersKey = new KeySpec(false);
 
 		/// <summary>
 		/// We are running into cyclic dependancies on reading the PBootRecord
 		/// object, if we maintain MetaClass information there
 		/// </summary>
-		private static readonly KeySpec MAINTAIN_METACLASS = new KeySpec(true);
+		private static readonly KeySpec MaintainMetaclassKey = new KeySpec(true);
 
-		private static readonly KeySpec MAXIMUM_ACTIVATION_DEPTH = new KeySpec(0);
+		private static readonly KeySpec MaximumActivationDepthKey = new KeySpec(0);
 
-		private static readonly KeySpec MINIMUM_ACTIVATION_DEPTH = new KeySpec(0);
+		private static readonly KeySpec MinimumActivationDepthKey = new KeySpec(0);
 
-		private static readonly KeySpec PERSIST_STATIC_FIELD_VALUES = new KeySpec(false);
+		private static readonly KeySpec PersistStaticFieldValuesKey = new KeySpec(false);
 
-		private static readonly KeySpec QUERY_ATTRIBUTE_PROVIDER = new KeySpec(null);
+		private static readonly KeySpec QueryAttributeProviderKey = new KeySpec(null);
 
-		private static readonly KeySpec STORE_TRANSIENT_FIELDS = new KeySpec(false);
+		private static readonly KeySpec StoreTransientFieldsKey = new KeySpec(false);
 
-		private static readonly KeySpec TRANSLATOR = new KeySpec(null);
+		private static readonly KeySpec TranslatorKey = new KeySpec(null);
 
-		private static readonly KeySpec TRANSLATOR_NAME = new KeySpec((string)null);
+		private static readonly KeySpec TranslatorNameKey = new KeySpec((string)null);
 
-		private static readonly KeySpec UPDATE_DEPTH = new KeySpec(0);
+		private static readonly KeySpec UpdateDepthKey = new KeySpec(0);
 
-		private static readonly KeySpec WRITE_AS = new KeySpec((string)null);
+		private static readonly KeySpec WriteAsKey = new KeySpec((string)null);
 
 		protected Config4Class(Config4Impl configuration, KeySpecHashtable4 config) : base
 			(config)
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void CallConstructor(bool flag)
 		{
-			PutThreeValued(CALL_CONSTRUCTOR, flag);
+			PutThreeValued(CallConstructorKey, flag);
 		}
 
 		internal override string ClassName()
@@ -106,7 +106,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Compare(IObjectAttribute comparator)
 		{
-			_config.Put(QUERY_ATTRIBUTE_PROVIDER, comparator);
+			_config.Put(QueryAttributeProviderKey, comparator);
 		}
 
 		internal virtual Config4Field ConfigField(string fieldName)
@@ -132,22 +132,22 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void GenerateUUIDs(bool setting)
 		{
-			_config.Put(GENERATE_UUIDS, setting);
+			_config.Put(GenerateUuidsKey, setting);
 		}
 
 		public virtual void GenerateVersionNumbers(bool setting)
 		{
-			_config.Put(GENERATE_VERSION_NUMBERS, setting);
+			_config.Put(GenerateVersionNumbersKey, setting);
 		}
 
 		public virtual IObjectTranslator GetTranslator()
 		{
-			IObjectTranslator translator = (IObjectTranslator)_config.Get(TRANSLATOR);
+			IObjectTranslator translator = (IObjectTranslator)_config.Get(TranslatorKey);
 			if (translator != null)
 			{
 				return translator;
 			}
-			string translatorName = _config.GetAsString(TRANSLATOR_NAME);
+			string translatorName = _config.GetAsString(TranslatorNameKey);
 			if (translatorName == null)
 			{
 				return null;
@@ -187,18 +187,18 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Indexed(bool flag)
 		{
-			_config.Put(CLASS_INDEXED, flag);
+			_config.Put(ClassIndexedKey, flag);
 		}
 
 		public virtual bool Indexed()
 		{
-			return _config.GetAsBoolean(CLASS_INDEXED);
+			return _config.GetAsBoolean(ClassIndexedKey);
 		}
 
 		internal virtual object Instantiate(ObjectContainerBase a_stream, object a_toTranslate
 			)
 		{
-			return ((IObjectConstructor)_config.Get(TRANSLATOR)).OnInstantiate((IInternalObjectContainer
+			return ((IObjectConstructor)_config.Get(TranslatorKey)).OnInstantiate((IInternalObjectContainer
 				)a_stream, a_toTranslate);
 		}
 
@@ -209,36 +209,36 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void MaximumActivationDepth(int depth)
 		{
-			_config.Put(MAXIMUM_ACTIVATION_DEPTH, depth);
+			_config.Put(MaximumActivationDepthKey, depth);
 		}
 
 		internal virtual int MaximumActivationDepth()
 		{
-			return _config.GetAsInt(MAXIMUM_ACTIVATION_DEPTH);
+			return _config.GetAsInt(MaximumActivationDepthKey);
 		}
 
 		public virtual void MinimumActivationDepth(int depth)
 		{
-			_config.Put(MINIMUM_ACTIVATION_DEPTH, depth);
+			_config.Put(MinimumActivationDepthKey, depth);
 		}
 
 		public virtual int MinimumActivationDepth()
 		{
-			return _config.GetAsInt(MINIMUM_ACTIVATION_DEPTH);
+			return _config.GetAsInt(MinimumActivationDepthKey);
 		}
 
 		public virtual TernaryBool CallConstructor()
 		{
-			if (_config.Get(TRANSLATOR) != null)
+			if (_config.Get(TranslatorKey) != null)
 			{
-				return TernaryBool.YES;
+				return TernaryBool.Yes;
 			}
-			return _config.GetAsTernaryBool(CALL_CONSTRUCTOR);
+			return _config.GetAsTernaryBool(CallConstructorKey);
 		}
 
 		private Hashtable4 ExceptionalFieldsOrNull()
 		{
-			return (Hashtable4)_config.Get(EXCEPTIONAL_FIELDS);
+			return (Hashtable4)_config.Get(ExceptionalFieldsKey);
 		}
 
 		private Hashtable4 ExceptionalFields()
@@ -247,7 +247,7 @@ namespace Db4objects.Db4o.Internal
 			if (exceptionalFieldsCollection == null)
 			{
 				exceptionalFieldsCollection = new Hashtable4(16);
-				_config.Put(EXCEPTIONAL_FIELDS, exceptionalFieldsCollection);
+				_config.Put(ExceptionalFieldsKey, exceptionalFieldsCollection);
 			}
 			return exceptionalFieldsCollection;
 		}
@@ -266,7 +266,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void PersistStaticFieldValues()
 		{
-			_config.Put(PERSIST_STATIC_FIELD_VALUES, true);
+			_config.Put(PersistStaticFieldValuesKey, true);
 		}
 
 		internal virtual bool QueryEvaluation(string fieldName)
@@ -291,7 +291,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			_config.Put(WRITE_AS, GetName());
+			_config.Put(WriteAsKey, GetName());
 			configRef.ReadAs().Put(GetName(), claxx.GetName());
 		}
 
@@ -303,26 +303,26 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void StoreTransientFields(bool flag)
 		{
-			_config.Put(STORE_TRANSIENT_FIELDS, flag);
+			_config.Put(StoreTransientFieldsKey, flag);
 		}
 
 		public virtual void Translate(IObjectTranslator translator)
 		{
 			if (translator == null)
 			{
-				_config.Put(TRANSLATOR_NAME, null);
+				_config.Put(TranslatorNameKey, null);
 			}
-			_config.Put(TRANSLATOR, translator);
+			_config.Put(TranslatorKey, translator);
 		}
 
 		internal virtual void TranslateOnDemand(string a_translatorName)
 		{
-			_config.Put(TRANSLATOR_NAME, a_translatorName);
+			_config.Put(TranslatorNameKey, a_translatorName);
 		}
 
 		public virtual void UpdateDepth(int depth)
 		{
-			_config.Put(UPDATE_DEPTH, depth);
+			_config.Put(UpdateDepthKey, depth);
 		}
 
 		internal virtual Config4Impl Config()
@@ -332,42 +332,42 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual bool GenerateUUIDs()
 		{
-			return _config.GetAsBoolean(GENERATE_UUIDS);
+			return _config.GetAsBoolean(GenerateUuidsKey);
 		}
 
 		internal virtual bool GenerateVersionNumbers()
 		{
-			return _config.GetAsBoolean(GENERATE_VERSION_NUMBERS);
+			return _config.GetAsBoolean(GenerateVersionNumbersKey);
 		}
 
 		internal virtual void MaintainMetaClass(bool flag)
 		{
-			_config.Put(MAINTAIN_METACLASS, flag);
+			_config.Put(MaintainMetaclassKey, flag);
 		}
 
 		internal virtual bool StaticFieldValuesArePersisted()
 		{
-			return _config.GetAsBoolean(PERSIST_STATIC_FIELD_VALUES);
+			return _config.GetAsBoolean(PersistStaticFieldValuesKey);
 		}
 
 		public virtual IObjectAttribute QueryAttributeProvider()
 		{
-			return (IObjectAttribute)_config.Get(QUERY_ATTRIBUTE_PROVIDER);
+			return (IObjectAttribute)_config.Get(QueryAttributeProviderKey);
 		}
 
 		internal virtual bool StoreTransientFields()
 		{
-			return _config.GetAsBoolean(STORE_TRANSIENT_FIELDS);
+			return _config.GetAsBoolean(StoreTransientFieldsKey);
 		}
 
 		internal virtual int UpdateDepth()
 		{
-			return _config.GetAsInt(UPDATE_DEPTH);
+			return _config.GetAsInt(UpdateDepthKey);
 		}
 
 		internal virtual string WriteAs()
 		{
-			return _config.GetAsString(WRITE_AS);
+			return _config.GetAsString(WriteAsKey);
 		}
 	}
 }

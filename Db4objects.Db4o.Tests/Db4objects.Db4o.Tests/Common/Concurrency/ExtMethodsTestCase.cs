@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void Conc(IExtObjectContainer oc)
 		{
 			ExtMethodsTestCase em = new ExtMethodsTestCase();
-			oc.Set(em);
+			oc.Store(em);
 			Assert.IsFalse(oc.IsClosed());
 			Assert.IsTrue(oc.IsActive(em));
 			Assert.IsTrue(oc.IsStored(em));

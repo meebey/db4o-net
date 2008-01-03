@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.Activation
 		{
 		}
 
-		public FullActivationDepth() : this(ActivationMode.ACTIVATE)
+		public FullActivationDepth() : this(ActivationMode.Activate)
 		{
 		}
 

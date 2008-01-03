@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		public readonly int _number;
 
-		public static readonly Db4objects.Db4o.Internal.Handlers.HandlerVersion INVALID = 
+		public static readonly Db4objects.Db4o.Internal.Handlers.HandlerVersion Invalid = 
 			new Db4objects.Db4o.Internal.Handlers.HandlerVersion(-1);
 
 		public HandlerVersion(int number)

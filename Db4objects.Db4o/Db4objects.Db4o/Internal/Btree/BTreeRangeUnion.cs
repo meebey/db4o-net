@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				throw new ArgumentNullException();
 			}
-			SortedCollection4 collection = new SortedCollection4(BTreeRangeSingle.COMPARISON);
+			SortedCollection4 collection = new SortedCollection4(BTreeRangeSingle.Comparison);
 			for (int i = 0; i < ranges.Length; i++)
 			{
 				BTreeRangeSingle range = ranges[i];

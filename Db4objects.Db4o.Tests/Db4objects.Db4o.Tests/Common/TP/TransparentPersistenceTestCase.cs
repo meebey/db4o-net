@@ -34,13 +34,13 @@ namespace Db4objects.Db4o.Tests.Common.TP
 
 			public virtual string GetName()
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return name;
 			}
 
 			public virtual void SetName(string newName)
 			{
-				Activate(ActivationPurpose.WRITE);
+				Activate(ActivationPurpose.Write);
 				name = newName;
 			}
 

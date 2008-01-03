@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			object item = RetrieveOnlyInstance(typeof(DeleteSetTestCase.Item));
 			Db().Delete(item);
-			Db().Set(item);
+			Db().Store(item);
 			Db().Commit();
 			AssertOccurrences(typeof(DeleteSetTestCase.Item), 1);
 		}

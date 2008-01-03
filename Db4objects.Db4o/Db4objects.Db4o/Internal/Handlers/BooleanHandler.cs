@@ -11,13 +11,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public sealed class BooleanHandler : PrimitiveHandler
 	{
-		internal const int LENGTH = 1 + Const4.ADDED_LENGTH;
+		internal const int Length = 1 + Const4.AddedLength;
 
-		private const byte TRUE = (byte)'T';
+		private const byte True = (byte)'T';
 
-		private const byte FALSE = (byte)'F';
+		private const byte False = (byte)'F';
 
-		private const byte NULL = (byte)'N';
+		private const byte Null = (byte)'N';
 
 		private static readonly bool i_primitive = false;
 
@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override int LinkLength()
 		{
-			return LENGTH;
+			return Length;
 		}
 
 		protected override Type PrimitiveJavaClass()
@@ -48,11 +48,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		internal override object Read1(BufferImpl a_bytes)
 		{
 			byte ret = a_bytes.ReadByte();
-			if (ret == TRUE)
+			if (ret == True)
 			{
 				return true;
 			}
-			if (ret == FALSE)
+			if (ret == False)
 			{
 				return false;
 			}
@@ -68,23 +68,23 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			if (obj == null)
 			{
-				return NULL;
+				return Null;
 			}
 			if (((bool)obj))
 			{
-				return TRUE;
+				return True;
 			}
-			return FALSE;
+			return False;
 		}
 
 		public override object Read(IReadContext context)
 		{
 			byte ret = context.ReadByte();
-			if (ret == TRUE)
+			if (ret == True)
 			{
 				return true;
 			}
-			if (ret == FALSE)
+			if (ret == False)
 			{
 				return false;
 			}

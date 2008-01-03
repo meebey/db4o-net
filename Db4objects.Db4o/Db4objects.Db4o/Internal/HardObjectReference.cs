@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class HardObjectReference
 	{
-		public static readonly Db4objects.Db4o.Internal.HardObjectReference INVALID = new 
+		public static readonly Db4objects.Db4o.Internal.HardObjectReference Invalid = new 
 			Db4objects.Db4o.Internal.HardObjectReference(null, null);
 
 		public readonly ObjectReference _reference;
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal
 			 trans, int id, int depth)
 		{
 			object obj = trans.Container().PeekPersisted(trans, id, ActivationDepthProvider(trans
-				).ActivationDepth(depth, ActivationMode.PEEK), true);
+				).ActivationDepth(depth, ActivationMode.Peek), true);
 			if (obj == null)
 			{
 				return null;

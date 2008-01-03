@@ -153,7 +153,7 @@ namespace Db4objects.Db4o.Collections
 		/// <seealso cref="IActivatable">IActivatable</seealso>
 		public virtual void EnsureCapacity(int minCapacity)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			if (minCapacity <= capacity)
 			{
 				return;
@@ -248,7 +248,7 @@ namespace Db4objects.Db4o.Collections
 		{
 			get
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return listSize;
 			}
 		}

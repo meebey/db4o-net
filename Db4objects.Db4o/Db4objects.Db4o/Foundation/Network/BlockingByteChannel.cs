@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Foundation.Network
 	/// </remarks>
 	internal class BlockingByteChannel
 	{
-		private const int DISCARD_BUFFER_SIZE = 500;
+		private const int DiscardBufferSize = 500;
 
 		protected byte[] i_cache;
 
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		protected virtual void CheckDiscardCache()
 		{
-			if (i_readOffset == i_writeOffset && i_cache.Length > DISCARD_BUFFER_SIZE)
+			if (i_readOffset == i_writeOffset && i_cache.Length > DiscardBufferSize)
 			{
 				i_cache = null;
 				i_readOffset = 0;

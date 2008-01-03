@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Internal.CS
 				{
 					if (DTrace.enabled)
 					{
-						DTrace.CLIENT_MESSAGE_LOOP_EXCEPTION.Log(exc.ToString());
+						DTrace.ClientMessageLoopException.Log(exc.ToString());
 					}
 					return;
 				}

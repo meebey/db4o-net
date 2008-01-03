@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 {
 	public class BTreeFreeTestCase : BTreeTestCaseBase
 	{
-		private static readonly int[] VALUES = new int[] { 1, 2, 5, 7, 8, 9, 12 };
+		private static readonly int[] Values = new int[] { 1, 2, 5, 7, 8, 9, 12 };
 
 		public static void Main(string[] args)
 		{
@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void Test()
 		{
-			Add(VALUES);
+			Add(Values);
 			IEnumerator allSlotIDs = _btree.AllNodeIds(SystemTrans());
 			Collection4 allSlots = new Collection4();
 			while (allSlotIDs.MoveNext())

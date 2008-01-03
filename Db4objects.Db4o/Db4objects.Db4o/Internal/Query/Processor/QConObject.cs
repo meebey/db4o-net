@@ -169,7 +169,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.EVALUATE_SELF.Log(i_id);
+				DTrace.EvaluateSelf.Log(i_id);
 			}
 			if (i_yapClass != null)
 			{
@@ -301,7 +301,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (IsNullConstraint() & !a_field.IsArray())
 			{
-				_preparedComparison = Null.INSTANCE;
+				_preparedComparison = Null.Instance;
 			}
 			else
 			{
@@ -322,7 +322,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return null;
 			}
 			object obj = i_field.Coerce(a_object);
-			if (obj == No4.INSTANCE)
+			if (obj == No4.Instance)
 			{
 				return null;
 			}
@@ -362,7 +362,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				base.Unmarshall(trans);
 				if (i_object == null)
 				{
-					_preparedComparison = Null.INSTANCE;
+					_preparedComparison = Null.Instance;
 				}
 				if (i_yapClassID != 0)
 				{

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 {
 	public class ClientTimeOutTestCase : Db4oClientServerTestCase, IOptOutAllButNetworkingCS
 	{
-		private const int TIMEOUT = 500;
+		private const int Timeout = 500;
 
 		internal static bool _clientWasBlocked;
 
@@ -39,14 +39,14 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		protected override void Configure(IConfiguration config)
 		{
-			config.ClientServer().TimeoutClientSocket(TIMEOUT);
+			config.ClientServer().TimeoutClientSocket(Timeout);
 		}
 
 		public virtual void TestKeptAliveClient()
 		{
 			ClientTimeOutTestCase.Item item = new ClientTimeOutTestCase.Item("one");
 			Store(item);
-			Cool.SleepIgnoringInterruption(TIMEOUT * 2);
+			Cool.SleepIgnoringInterruption(Timeout * 2);
 			Assert.AreSame(item, RetrieveOnlyInstance(typeof(ClientTimeOutTestCase.Item)));
 		}
 
@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_58(this, client));
 			long stop = Runtime.CurrentTimeMillis();
 			long duration = stop - start;
-			Assert.IsGreaterOrEqual(TIMEOUT / 2, duration);
+			Assert.IsGreaterOrEqual(Timeout / 2, duration);
 			Assert.IsTrue(_clientWasBlocked);
 		}
 
@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				client.Get(null);
+				client.QueryByExample(null);
 			}
 
 			private readonly ClientTimeOutTestCase _enclosing;
@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			public virtual void ProcessMessage(IMessageContext con, object message)
 			{
 				_clientWasBlocked = true;
-				Cool.SleepIgnoringInterruption(TIMEOUT * 3);
+				Cool.SleepIgnoringInterruption(Timeout * 3);
 			}
 		}
 

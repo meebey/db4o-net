@@ -13,12 +13,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public class MarshallingContext : IFieldListInfo, IMarshallingInfo, IWriteContext
 	{
-		private const int HEADER_LENGTH = Const4.LEADING_LENGTH + Const4.ID_LENGTH + 1 + 
-			Const4.INT_LENGTH;
+		private const int HeaderLength = Const4.LeadingLength + Const4.IdLength + 1 + Const4
+			.IntLength;
 
-		public const byte HANDLER_VERSION = (byte)2;
+		public const byte HandlerVersion = (byte)2;
 
-		private const int NO_INDIRECTION = 3;
+		private const int NoIndirection = 3;
 
 		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
@@ -118,7 +118,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			BufferImpl buffer = new BufferImpl(pointer.Length());
 			_writeBuffer.MergeChildren(this, pointer.Address(), WriteBufferOffset());
 			WriteObjectClassID(buffer, ClassMetadata().GetID());
-			buffer.WriteByte(HANDLER_VERSION);
+			buffer.WriteByte(HandlerVersion);
 			buffer.WriteInt(FieldCount());
 			buffer.WriteBitMap(_nullBitMap);
 			_writeBuffer.TransferContentTo(buffer);
@@ -127,14 +127,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int WriteBufferOffset()
 		{
-			return HEADER_LENGTH + _nullBitMap.MarshalledLength();
+			return HeaderLength + _nullBitMap.MarshalledLength();
 		}
 
 		private int MarshalledLength()
 		{
 			int length = WriteBufferOffset();
 			_writeBuffer.CheckBlockAlignment(this, null, new IntByRef(length));
-			return length + _writeBuffer.MarshalledLength() + Const4.BRACKETS_BYTES;
+			return length + _writeBuffer.MarshalledLength() + Const4.BracketsBytes;
 		}
 
 		public virtual int RequiredLength(MarshallingBuffer buffer, bool align)
@@ -333,7 +333,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual void DoNotIndirectWrites()
 		{
-			_fieldWriteCount = NO_INDIRECTION;
+			_fieldWriteCount = NoIndirection;
 		}
 
 		public virtual void PrepareIndirectionOfSecondWrite()

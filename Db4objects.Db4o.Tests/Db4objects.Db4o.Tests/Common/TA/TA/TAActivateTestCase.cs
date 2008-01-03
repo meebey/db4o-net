@@ -16,16 +16,16 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			new TAActivateTestCase().RunAll();
 		}
 
-		private const int ITEM_DEPTH = 10;
+		private const int ItemDepth = 10;
 
 		/// <exception cref="Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
 			TAActivateTestCase.TAItem taItem = (TAActivateTestCase.TAItem)obj;
-			for (int i = 0; i < ITEM_DEPTH - 1; i++)
+			for (int i = 0; i < ItemDepth - 1; i++)
 			{
-				Assert.AreEqual("TAItem " + (ITEM_DEPTH - i), taItem.GetName());
-				Assert.AreEqual(ITEM_DEPTH - i, taItem.GetValue());
+				Assert.AreEqual("TAItem " + (ItemDepth - i), taItem.GetName());
+				Assert.AreEqual(ItemDepth - i, taItem.GetValue());
 				Assert.IsNotNull(taItem.Next());
 				taItem = taItem.Next();
 			}
@@ -45,29 +45,29 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			AssertActivatedItem(taItem, 0, 1);
 			Db().Activate(taItem, 5);
 			AssertActivatedItem(taItem, 0, 5);
-			Db().Activate(taItem, ITEM_DEPTH + 100);
-			AssertActivatedItem(taItem, 0, ITEM_DEPTH);
+			Db().Activate(taItem, ItemDepth + 100);
+			AssertActivatedItem(taItem, 0, ItemDepth);
 		}
 
 		private void AssertActivatedItem(TAActivateTestCase.TAItem item, int from, int depth
 			)
 		{
-			if (depth > ITEM_DEPTH)
+			if (depth > ItemDepth)
 			{
 				throw new ArgumentException("depth should not be greater than ITEM_DEPTH.");
 			}
 			TAActivateTestCase.TAItem next = item;
 			for (int i = from; i < depth; i++)
 			{
-				Assert.AreEqual("TAItem " + (ITEM_DEPTH - i), next._name);
-				Assert.AreEqual(ITEM_DEPTH - i, next._value);
-				if (i < ITEM_DEPTH - 1)
+				Assert.AreEqual("TAItem " + (ItemDepth - i), next._name);
+				Assert.AreEqual(ItemDepth - i, next._value);
+				if (i < ItemDepth - 1)
 				{
 					Assert.IsNotNull(next._next);
 				}
 				next = next._next;
 			}
-			if (depth < ITEM_DEPTH)
+			if (depth < ItemDepth)
 			{
 				AssertNullItem(next);
 			}
@@ -91,8 +91,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 		/// <exception cref="Exception"></exception>
 		protected override object CreateItem()
 		{
-			TAActivateTestCase.TAItem taItem = TAActivateTestCase.TAItem.NewTAItem(ITEM_DEPTH
-				);
+			TAActivateTestCase.TAItem taItem = TAActivateTestCase.TAItem.NewTAItem(ItemDepth);
 			taItem._isRoot = true;
 			return taItem;
 		}
@@ -122,19 +121,19 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 			public virtual string GetName()
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _name;
 			}
 
 			public virtual int GetValue()
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _value;
 			}
 
 			public virtual TAActivateTestCase.TAItem Next()
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _next;
 			}
 		}

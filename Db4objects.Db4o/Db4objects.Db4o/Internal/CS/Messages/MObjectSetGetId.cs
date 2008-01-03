@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			try
 			{
 				int id = queryResult.GetId(ReadInt());
-				Write(Msg.OBJECTSET_GET_ID.GetWriterForInt(Transaction(), id));
+				Write(Msg.ObjectsetGetId.GetWriterForInt(Transaction(), id));
 			}
 			catch (IndexOutOfRangeException e)
 			{

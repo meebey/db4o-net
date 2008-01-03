@@ -10,21 +10,21 @@ namespace Db4objects.Db4o.Tests.Util.Test
 	{
 		public class ShortProgram
 		{
-			public static readonly string OUTPUT = "XXshortXX";
+			public static readonly string Output = "XXshortXX";
 
 			public static void Main(string[] arguments)
 			{
-				Sharpen.Runtime.Out.WriteLine(OUTPUT);
+				Sharpen.Runtime.Out.WriteLine(Output);
 			}
 		}
 
 		public class LongProgram
 		{
-			public static readonly string OUTPUT = "XXlongXX";
+			public static readonly string Output = "XXlongXX";
 
 			public static void Main(string[] arguments)
 			{
-				Sharpen.Runtime.Out.WriteLine(OUTPUT);
+				Sharpen.Runtime.Out.WriteLine(Output);
 				try
 				{
 					Thread.Sleep(long.MaxValue);

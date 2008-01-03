@@ -24,8 +24,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				}
 			}
 			int size = ids.Length;
-			MsgD message = Msg.ID_LIST.GetWriterForLength(Transaction(), Const4.ID_LENGTH * (
-				size + 1));
+			MsgD message = Msg.IdList.GetWriterForLength(Transaction(), Const4.IdLength * (size
+				 + 1));
 			BufferImpl writer = message.PayLoad();
 			writer.WriteInt(size);
 			for (int i = 0; i < size; i++)

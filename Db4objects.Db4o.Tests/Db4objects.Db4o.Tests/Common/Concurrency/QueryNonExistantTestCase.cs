@@ -31,8 +31,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc(IExtObjectContainer oc)
 		{
-			oc.Get((new Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase(true
-				)));
+			oc.QueryByExample((new Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase
+				(true)));
 			AssertOccurrences(oc, typeof(Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase
 				), 0);
 			IQuery q = oc.Query();

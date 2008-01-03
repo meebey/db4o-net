@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public Atom atom;
 
-		internal const int COUNT = 10;
+		internal const int Count = 10;
 
 		protected override void Configure(IConfiguration config)
 		{
@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		protected override void Store()
 		{
-			for (int i = 0; i < COUNT; i++)
+			for (int i = 0; i < Count; i++)
 			{
 				IndexedByIdentityTestCase ibi = new IndexedByIdentityTestCase();
 				ibi.atom = new Atom("ibi" + i);
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void ConcRead(IExtObjectContainer oc)
 		{
-			for (int i = 0; i < COUNT; i++)
+			for (int i = 0; i < Count; i++)
 			{
 				IQuery q = oc.Query();
 				q.Constrain(typeof(Atom));
@@ -66,12 +66,12 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IQuery q = oc.Query();
 			q.Constrain(typeof(IndexedByIdentityTestCase));
 			IObjectSet os = q.Execute();
-			Assert.AreEqual(COUNT, os.Size());
+			Assert.AreEqual(Count, os.Size());
 			while (os.HasNext())
 			{
 				IndexedByIdentityTestCase idi = (IndexedByIdentityTestCase)os.Next();
 				idi.atom.name = "updated" + seq;
-				oc.Set(idi);
+				oc.Store(idi);
 				Thread.Sleep(100);
 			}
 		}
@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IQuery q = oc.Query();
 			q.Constrain(typeof(IndexedByIdentityTestCase));
 			IObjectSet os = q.Execute();
-			Assert.AreEqual(COUNT, os.Size());
+			Assert.AreEqual(Count, os.Size());
 			string expected = null;
 			while (os.HasNext())
 			{

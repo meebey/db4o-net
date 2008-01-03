@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			object[] data = CreateData();
 			for (int idx = 0; idx < data.Length; idx++)
 			{
-				Db().Set(data[idx]);
+				Db().Store(data[idx]);
 			}
 		}
 

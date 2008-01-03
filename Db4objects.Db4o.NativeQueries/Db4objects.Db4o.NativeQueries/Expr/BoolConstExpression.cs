@@ -6,10 +6,10 @@ namespace Db4objects.Db4o.NativeQueries.Expr
 {
 	public class BoolConstExpression : IExpression
 	{
-		public static readonly Db4objects.Db4o.NativeQueries.Expr.BoolConstExpression TRUE
+		public static readonly Db4objects.Db4o.NativeQueries.Expr.BoolConstExpression True
 			 = new Db4objects.Db4o.NativeQueries.Expr.BoolConstExpression(true);
 
-		public static readonly Db4objects.Db4o.NativeQueries.Expr.BoolConstExpression FALSE
+		public static readonly Db4objects.Db4o.NativeQueries.Expr.BoolConstExpression False
 			 = new Db4objects.Db4o.NativeQueries.Expr.BoolConstExpression(false);
 
 		private bool _value;
@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr
 		public static Db4objects.Db4o.NativeQueries.Expr.BoolConstExpression Expr(bool value
 			)
 		{
-			return (value ? TRUE : FALSE);
+			return (value ? True : False);
 		}
 
 		public virtual void Accept(IExpressionVisitor visitor)
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr
 
 		public virtual IExpression Negate()
 		{
-			return (_value ? FALSE : TRUE);
+			return (_value ? False : True);
 		}
 	}
 }

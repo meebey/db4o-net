@@ -19,12 +19,12 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			new TARefreshTestCase().RunClientServer();
 		}
 
-		private const int ITEM_DEPTH = 10;
+		private const int ItemDepth = 10;
 
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			TARefreshTestCase.TAItem item = TARefreshTestCase.TAItem.NewGraph(ITEM_DEPTH);
+			TARefreshTestCase.TAItem item = TARefreshTestCase.TAItem.NewGraph(ItemDepth);
 			Store(item);
 		}
 
@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			}
 			item1.Value(100);
 			item1.Next().Value(200);
-			client1.Set(item1, 2);
+			client1.Store(item1, 2);
 			client1.Commit();
 			AssertItemValue(100, item1);
 			AssertItemValue(200, item1.Next());
@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 				next1 = next1.Next();
 				value++;
 			}
-			client1.Set(item1, 5);
+			client1.Store(item1, 5);
 			client1.Commit();
 			client2.Refresh(item2, 5);
 			next2 = item2;
@@ -141,7 +141,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 			public virtual int Value()
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _value;
 			}
 
@@ -152,7 +152,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 			public virtual TARefreshTestCase.TAItem Next()
 			{
-				Activate(ActivationPurpose.READ);
+				Activate(ActivationPurpose.Read);
 				return _next;
 			}
 		}

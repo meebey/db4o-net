@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	public sealed class CharHandler : PrimitiveHandler
 	{
-		internal const int LENGTH = Const4.CHAR_BYTES + Const4.ADDED_LENGTH;
+		internal const int Length = Const4.CharBytes + Const4.AddedLength;
 
 		private static readonly char i_primitive = (char)0;
 
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override int LinkLength()
 		{
-			return LENGTH;
+			return Length;
 		}
 
 		protected override Type PrimitiveJavaClass()

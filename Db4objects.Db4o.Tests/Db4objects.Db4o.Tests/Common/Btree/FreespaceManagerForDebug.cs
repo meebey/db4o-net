@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public override byte SystemType()
 		{
-			return FM_DEBUG;
+			return FmDebug;
 		}
 
 		public override void Traverse(IVisitor4 visitor)

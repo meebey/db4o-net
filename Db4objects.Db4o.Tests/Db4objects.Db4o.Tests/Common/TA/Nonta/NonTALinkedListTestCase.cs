@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 	/// <exclude></exclude>
 	public class NonTALinkedListTestCase : NonTAItemTestCaseBase
 	{
-		private static readonly LinkedList LIST = LinkedList.NewList(10);
+		private static readonly LinkedList List = LinkedList.NewList(10);
 
 		public static void Main(string[] args)
 		{
@@ -19,13 +19,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 
 		protected override void AssertItemValue(object obj)
 		{
-			Assert.AreEqual(LIST, ((LinkedListItem)obj).list);
+			Assert.AreEqual(List, ((LinkedListItem)obj).list);
 		}
 
 		protected override object CreateItem()
 		{
 			LinkedListItem item = new LinkedListItem();
-			item.list = LIST;
+			item.list = List;
 			return item;
 		}
 

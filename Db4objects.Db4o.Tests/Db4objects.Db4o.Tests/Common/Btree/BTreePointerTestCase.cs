@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		private BTree NewBTreeWithNoNodeCaching()
 		{
-			return BTreeAssert.CreateIntKeyBTree(Stream(), 0, 0, BTREE_NODE_SIZE);
+			return BTreeAssert.CreateIntKeyBTree(Stream(), 0, 0, BtreeNodeSize);
 		}
 	}
 }

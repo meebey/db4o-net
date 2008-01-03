@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			cda.array = new CascadeDeleteArray.ArrayElem[] { new CascadeDeleteArray.ArrayElem
 				("one"), new CascadeDeleteArray.ArrayElem("two"), new CascadeDeleteArray.ArrayElem
 				("three") };
-			Db().Set(cda);
+			Db().Store(cda);
 		}
 
 		public virtual void Test()

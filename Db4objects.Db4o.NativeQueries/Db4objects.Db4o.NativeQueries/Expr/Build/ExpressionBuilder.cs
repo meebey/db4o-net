@@ -10,13 +10,13 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Build
 		/// <summary>Optimizations: !(Bool)->(!Bool), !!X->X, !(X==Bool)->(X==!Bool)</summary>
 		public virtual IExpression Not(IExpression expr)
 		{
-			if (expr.Equals(BoolConstExpression.TRUE))
+			if (expr.Equals(BoolConstExpression.True))
 			{
-				return BoolConstExpression.FALSE;
+				return BoolConstExpression.False;
 			}
-			if (expr.Equals(BoolConstExpression.FALSE))
+			if (expr.Equals(BoolConstExpression.False))
 			{
-				return BoolConstExpression.TRUE;
+				return BoolConstExpression.True;
 			}
 			if (expr is NotExpression)
 			{
@@ -42,16 +42,16 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Build
 		/// <summary>Optimizations: f&&X->f, t&&X->X, X&&X->X, X&&!X->f</summary>
 		public virtual IExpression And(IExpression left, IExpression right)
 		{
-			if (left.Equals(BoolConstExpression.FALSE) || right.Equals(BoolConstExpression.FALSE
+			if (left.Equals(BoolConstExpression.False) || right.Equals(BoolConstExpression.False
 				))
 			{
-				return BoolConstExpression.FALSE;
+				return BoolConstExpression.False;
 			}
-			if (left.Equals(BoolConstExpression.TRUE))
+			if (left.Equals(BoolConstExpression.True))
 			{
 				return right;
 			}
-			if (right.Equals(BoolConstExpression.TRUE))
+			if (right.Equals(BoolConstExpression.True))
 			{
 				return left;
 			}
@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Build
 			}
 			if (Negatives(left, right))
 			{
-				return BoolConstExpression.FALSE;
+				return BoolConstExpression.False;
 			}
 			return new AndExpression(left, right);
 		}
@@ -69,16 +69,16 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Build
 		/// <summary>Optimizations: X||t->t, f||X->X, X||X->X, X||!X->t</summary>
 		public virtual IExpression Or(IExpression left, IExpression right)
 		{
-			if (left.Equals(BoolConstExpression.TRUE) || right.Equals(BoolConstExpression.TRUE
+			if (left.Equals(BoolConstExpression.True) || right.Equals(BoolConstExpression.True
 				))
 			{
-				return BoolConstExpression.TRUE;
+				return BoolConstExpression.True;
 			}
-			if (left.Equals(BoolConstExpression.FALSE))
+			if (left.Equals(BoolConstExpression.False))
 			{
 				return right;
 			}
-			if (right.Equals(BoolConstExpression.FALSE))
+			if (right.Equals(BoolConstExpression.False))
 			{
 				return left;
 			}
@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Build
 			}
 			if (Negatives(left, right))
 			{
-				return BoolConstExpression.TRUE;
+				return BoolConstExpression.True;
 			}
 			return new OrExpression(left, right);
 		}
@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Build
 			}
 			if (trueExpr is BoolConstExpression)
 			{
-				bool leftNegative = trueExpr.Equals(BoolConstExpression.FALSE);
+				bool leftNegative = trueExpr.Equals(BoolConstExpression.False);
 				if (!leftNegative)
 				{
 					return Or(cmp, falseExpr);
@@ -131,7 +131,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Build
 			}
 			if (falseExpr is BoolConstExpression)
 			{
-				bool rightNegative = falseExpr.Equals(BoolConstExpression.FALSE);
+				bool rightNegative = falseExpr.Equals(BoolConstExpression.False);
 				if (!rightNegative)
 				{
 					return And(cmp, trueExpr);

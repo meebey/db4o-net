@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public static readonly IntMatcher ZERO = new _IntMatcher_13();
+		public static readonly IntMatcher Zero = new _IntMatcher_13();
 
 		private sealed class _IntMatcher_19 : IntMatcher
 		{
@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public static readonly IntMatcher POSITIVE = new _IntMatcher_19();
+		public static readonly IntMatcher Positive = new _IntMatcher_19();
 
 		private sealed class _IntMatcher_25 : IntMatcher
 		{
@@ -49,6 +49,6 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public static readonly IntMatcher NEGATIVE = new _IntMatcher_25();
+		public static readonly IntMatcher Negative = new _IntMatcher_25();
 	}
 }

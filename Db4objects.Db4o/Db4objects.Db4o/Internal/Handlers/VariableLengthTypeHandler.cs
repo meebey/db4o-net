@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public int LinkLength()
 		{
-			return Const4.INT_LENGTH + Const4.ID_LENGTH;
+			return Const4.IntLength + Const4.IdLength;
 		}
 
 		public abstract void Defragment(IDefragmentContext context);

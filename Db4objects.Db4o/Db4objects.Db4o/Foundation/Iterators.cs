@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class Iterators
 	{
-		public static readonly IEnumerator EMPTY_ITERATOR = new Iterator4Impl(null);
+		public static readonly IEnumerator EmptyIterator = new Iterator4Impl(null);
 
 		private sealed class _IEnumerable_15 : IEnumerable
 		{
@@ -22,13 +22,13 @@ namespace Db4objects.Db4o.Foundation
 
 			public IEnumerator GetEnumerator()
 			{
-				return Iterators.EMPTY_ITERATOR;
+				return Iterators.EmptyIterator;
 			}
 		}
 
-		public static readonly IEnumerable EMPTY_ITERABLE = new _IEnumerable_15();
+		public static readonly IEnumerable EmptyIterable = new _IEnumerable_15();
 
-		internal static readonly object NO_ELEMENT = new object();
+		internal static readonly object NoElement = new object();
 
 		public static IEnumerator Concat(IEnumerator iterators)
 		{

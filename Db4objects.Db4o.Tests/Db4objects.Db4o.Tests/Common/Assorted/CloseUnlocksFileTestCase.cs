@@ -8,16 +8,16 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 {
 	public class CloseUnlocksFileTestCase : ITestCase
 	{
-		private static readonly string FILE = "unlocked.db4o";
+		private static readonly string File = "unlocked.db4o";
 
 		public virtual void Test()
 		{
-			File4.Delete(FILE);
-			Assert.IsFalse(System.IO.File.Exists(FILE));
-			IObjectContainer oc = Db4oFactory.OpenFile(FILE);
+			File4.Delete(File);
+			Assert.IsFalse(System.IO.File.Exists(File));
+			IObjectContainer oc = Db4oFactory.OpenFile(File);
 			oc.Close();
-			File4.Delete(FILE);
-			Assert.IsFalse(System.IO.File.Exists(FILE));
+			File4.Delete(File);
+			Assert.IsFalse(System.IO.File.Exists(File));
 		}
 	}
 }

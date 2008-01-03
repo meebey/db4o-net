@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 {
 	public class BTreeSimpleTestCase : AbstractDb4oTestCase, IOptOutDefragSolo, IOptOutCS
 	{
-		protected const int BTREE_NODE_SIZE = 4;
+		protected const int BtreeNodeSize = 4;
 
 		internal int[] _keys = new int[] { 3, 234, 55, 87, 2, 1, 101, 59, 70, 300, 288 };
 
@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		/// <exception cref="Exception"></exception>
 		public virtual void TestIntKeys()
 		{
-			BTree btree = BTreeAssert.CreateIntKeyBTree(Stream(), 0, BTREE_NODE_SIZE);
+			BTree btree = BTreeAssert.CreateIntKeyBTree(Stream(), 0, BtreeNodeSize);
 			for (int i = 0; i < 5; i++)
 			{
 				btree = CycleIntKeys(btree);
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			ExpectKeys(btree, _sortedKeys);
 			int id = btree.GetID();
 			Reopen();
-			btree = BTreeAssert.CreateIntKeyBTree(Stream(), id, BTREE_NODE_SIZE);
+			btree = BTreeAssert.CreateIntKeyBTree(Stream(), id, BtreeNodeSize);
 			ExpectKeys(btree, _sortedKeys);
 			RemoveKeys(btree);
 			ExpectKeys(btree, _keysOnRemoval);

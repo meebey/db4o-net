@@ -11,11 +11,11 @@ namespace Db4objects.Db4o.Tests.Util
 {
 	public class VersionServices
 	{
-		public const byte HEADER_30_40 = 123;
+		public const byte Header3040 = 123;
 
-		public const byte HEADER_46_57 = 4;
+		public const byte Header4657 = 4;
 
-		public const byte HEADER_60 = 100;
+		public const byte Header60 = 100;
 
 		/// <exception cref="IOException"></exception>
 		public static byte FileHeaderVersion(string testFile)
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Util
 			Transaction trans = container.Transaction();
 			BufferImpl buffer = container.ReadReaderByID(trans, id);
 			UnmarshallingContext context = new UnmarshallingContext(trans, (ObjectReference)objectInfo
-				, Const4.TRANSIENT, false);
+				, Const4.Transient, false);
 			context.Buffer(buffer);
 			context.PersistentObject(obj);
 			context.ActivationDepth(new LegacyActivationDepth(0));

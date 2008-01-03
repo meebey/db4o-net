@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public int MarshalledLength()
 		{
-			return Const4.INT_LENGTH * (Tree.Size(i_root) + 1);
+			return Const4.IntLength * (Tree.Size(i_root) + 1);
 		}
 
 		public void Clear()
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 				return Tree.Size(i_root);
 			}
 			Slot slot = ((LocalTransaction)ta).GetCurrentSlotOfID(GetID());
-			int length = Const4.INT_LENGTH;
+			int length = Const4.IntLength;
 			BufferImpl reader = new BufferImpl(length);
 			reader.ReadEncrypt(ta.Container(), slot.Address());
 			return reader.ReadInt();
@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public sealed override byte GetIdentifier()
 		{
-			return Const4.YAPINDEX;
+			return Const4.Yapindex;
 		}
 
 		internal virtual TreeInt GetRoot()
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public sealed override int OwnLength()
 		{
-			return Const4.OBJECT_LENGTH + MarshalledLength();
+			return Const4.ObjectLength + MarshalledLength();
 		}
 
 		public object Read(BufferImpl a_reader)

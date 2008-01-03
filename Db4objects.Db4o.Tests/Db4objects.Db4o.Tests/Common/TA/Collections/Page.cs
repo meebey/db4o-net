@@ -7,9 +7,9 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 {
 	public class Page : ActivatableImpl
 	{
-		public const int PAGESIZE = 100;
+		public const int Pagesize = 100;
 
-		private object[] _data = new object[PAGESIZE];
+		private object[] _data = new object[Pagesize];
 
 		private int _top = 0;
 
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual bool Add(object obj)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			_dirty = true;
 			_data[_top++] = obj;
 			return true;
@@ -33,13 +33,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual int Size()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _top;
 		}
 
 		public virtual object Get(int indexInPage)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			_dirty = true;
 			return _data[indexInPage];
 		}
@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual int GetPageIndex()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _pageIndex;
 		}
 
@@ -67,8 +67,8 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual int Capacity()
 		{
-			Activate(ActivationPurpose.READ);
-			return Db4objects.Db4o.Tests.Common.TA.Collections.Page.PAGESIZE - Size();
+			Activate(ActivationPurpose.Read);
+			return Db4objects.Db4o.Tests.Common.TA.Collections.Page.Pagesize - Size();
 		}
 	}
 }

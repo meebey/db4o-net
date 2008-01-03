@@ -4,13 +4,13 @@ namespace Db4objects.Db4o.Instrumentation.Api
 {
 	public sealed class CallingConvention
 	{
-		public static readonly Db4objects.Db4o.Instrumentation.Api.CallingConvention STATIC
+		public static readonly Db4objects.Db4o.Instrumentation.Api.CallingConvention Static
 			 = new Db4objects.Db4o.Instrumentation.Api.CallingConvention();
 
-		public static readonly Db4objects.Db4o.Instrumentation.Api.CallingConvention VIRTUAL
+		public static readonly Db4objects.Db4o.Instrumentation.Api.CallingConvention Virtual
 			 = new Db4objects.Db4o.Instrumentation.Api.CallingConvention();
 
-		public static readonly Db4objects.Db4o.Instrumentation.Api.CallingConvention INTERFACE
+		public static readonly Db4objects.Db4o.Instrumentation.Api.CallingConvention Interface
 			 = new Db4objects.Db4o.Instrumentation.Api.CallingConvention();
 
 		private CallingConvention()

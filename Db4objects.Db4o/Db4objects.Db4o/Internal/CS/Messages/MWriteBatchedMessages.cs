@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 						msgd.PayLoad(writer);
 						if (msgd.PayLoad() != null)
 						{
-							msgd.PayLoad().IncrementOffset(Const4.INT_LENGTH);
+							msgd.PayLoad().IncrementOffset(Const4.IntLength);
 							Transaction t = CheckParentTransaction(ta, msgd.PayLoad());
 							msgd.SetTransaction(t);
 							((IServerSideMessage)msgd).ProcessAtServer();

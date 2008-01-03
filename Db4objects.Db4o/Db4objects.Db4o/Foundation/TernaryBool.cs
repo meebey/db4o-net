@@ -7,20 +7,20 @@ namespace Db4objects.Db4o.Foundation
 	[System.Serializable]
 	public sealed class TernaryBool
 	{
-		private const int NO_ID = -1;
+		private const int NoId = -1;
 
-		private const int YES_ID = 1;
+		private const int YesId = 1;
 
-		private const int UNSPECIFIED_ID = 0;
+		private const int UnspecifiedId = 0;
 
-		public static readonly Db4objects.Db4o.Foundation.TernaryBool NO = new Db4objects.Db4o.Foundation.TernaryBool
-			(NO_ID);
+		public static readonly Db4objects.Db4o.Foundation.TernaryBool No = new Db4objects.Db4o.Foundation.TernaryBool
+			(NoId);
 
-		public static readonly Db4objects.Db4o.Foundation.TernaryBool YES = new Db4objects.Db4o.Foundation.TernaryBool
-			(YES_ID);
+		public static readonly Db4objects.Db4o.Foundation.TernaryBool Yes = new Db4objects.Db4o.Foundation.TernaryBool
+			(YesId);
 
-		public static readonly Db4objects.Db4o.Foundation.TernaryBool UNSPECIFIED = new Db4objects.Db4o.Foundation.TernaryBool
-			(UNSPECIFIED_ID);
+		public static readonly Db4objects.Db4o.Foundation.TernaryBool Unspecified = new Db4objects.Db4o.Foundation.TernaryBool
+			(UnspecifiedId);
 
 		private readonly int _value;
 
@@ -33,12 +33,12 @@ namespace Db4objects.Db4o.Foundation
 		{
 			switch (_value)
 			{
-				case NO_ID:
+				case NoId:
 				{
 					return false;
 				}
 
-				case YES_ID:
+				case YesId:
 				{
 					return true;
 				}
@@ -51,24 +51,24 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		public bool Unspecified()
+		public bool IsUnspecified()
 		{
-			return this == UNSPECIFIED;
+			return this == Unspecified;
 		}
 
 		public bool DefiniteYes()
 		{
-			return this == YES;
+			return this == Yes;
 		}
 
 		public bool DefiniteNo()
 		{
-			return this == NO;
+			return this == No;
 		}
 
 		public static Db4objects.Db4o.Foundation.TernaryBool ForBoolean(bool value)
 		{
-			return (value ? YES : NO);
+			return (value ? Yes : No);
 		}
 
 		public override bool Equals(object obj)
@@ -95,19 +95,19 @@ namespace Db4objects.Db4o.Foundation
 		{
 			switch (_value)
 			{
-				case NO_ID:
+				case NoId:
 				{
-					return NO;
+					return No;
 				}
 
-				case YES_ID:
+				case YesId:
 				{
-					return YES;
+					return Yes;
 				}
 
 				default:
 				{
-					return UNSPECIFIED;
+					return Unspecified;
 					break;
 				}
 			}

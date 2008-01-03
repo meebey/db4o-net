@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void IncrementIntSize()
 		{
-			IncrementOffset(Const4.INT_LENGTH);
+			IncrementOffset(Const4.IntLength);
 		}
 
 		public int CopyUnindexedID()
@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			catch (MappingNotFoundException)
 			{
-				mapped = _services.AllocateTargetSlot(Const4.POINTER_LENGTH).Address();
+				mapped = _services.AllocateTargetSlot(Const4.PointerLength).Address();
 				_services.MapIDs(orig, mapped, false);
 				_services.RegisterUnindexed(orig);
 			}
@@ -129,13 +129,13 @@ namespace Db4objects.Db4o.Internal
 		public int ReadInt()
 		{
 			int value = _source.ReadInt();
-			_target.IncrementOffset(Const4.INT_LENGTH);
+			_target.IncrementOffset(Const4.IntLength);
 			return value;
 		}
 
 		public void WriteInt(int value)
 		{
-			_source.IncrementOffset(Const4.INT_LENGTH);
+			_source.IncrementOffset(Const4.IntLength);
 			_target.WriteInt(value);
 		}
 
@@ -213,7 +213,7 @@ namespace Db4objects.Db4o.Internal
 				int sourceAddress = services.SourceAddressByID(sourceID);
 				services.MapIDs(sourceAddress, targetSlot.Address(), false);
 			}
-			BufferImpl targetPointerReader = new BufferImpl(Const4.POINTER_LENGTH);
+			BufferImpl targetPointerReader = new BufferImpl(Const4.PointerLength);
 			targetPointerReader.WriteInt(targetSlot.Address());
 			targetPointerReader.WriteInt(targetSlot.Length());
 			services.TargetWriteBytes(targetPointerReader, targetID);
@@ -232,13 +232,13 @@ namespace Db4objects.Db4o.Internal
 		public long ReadLong()
 		{
 			long value = _source.ReadLong();
-			_target.IncrementOffset(Const4.LONG_LENGTH);
+			_target.IncrementOffset(Const4.LongLength);
 			return value;
 		}
 
 		public void WriteLong(long value)
 		{
-			_source.IncrementOffset(Const4.LONG_LENGTH);
+			_source.IncrementOffset(Const4.LongLength);
 			_target.WriteLong(value);
 		}
 

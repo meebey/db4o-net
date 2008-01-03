@@ -14,13 +14,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 		public virtual DateTime[] GetTyped()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _typed;
 		}
 
 		public virtual object[] GetUntyped()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return _untyped;
 		}
 	}

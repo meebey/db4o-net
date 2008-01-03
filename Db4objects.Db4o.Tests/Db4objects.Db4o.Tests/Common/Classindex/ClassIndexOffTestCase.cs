@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 
 		public virtual void Test()
 		{
-			Db().Set(new ClassIndexOffTestCase.Item("1"));
+			Db().Store(new ClassIndexOffTestCase.Item("1"));
 			IStoredClass yc = Db().StoredClass(typeof(ClassIndexOffTestCase.Item));
 			Assert.IsFalse(yc.HasClassIndex());
 			AssertNoItemFound();

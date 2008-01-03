@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 	/// <exclude></exclude>
 	public class ClientServerPingTestCase : ClientServerTestCaseBase
 	{
-		private const int ITEM_COUNT = 100;
+		private const int ItemCount = 100;
 
 		public static void Main(string[] arguments)
 		{
@@ -38,13 +38,13 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			ClientServerPingTestCase.PingThread pingThread = new ClientServerPingTestCase.PingThread
 				(dispatcher);
 			pingThread.Start();
-			for (int i = 0; i < ITEM_COUNT; i++)
+			for (int i = 0; i < ItemCount; i++)
 			{
 				ClientServerPingTestCase.Item item = new ClientServerPingTestCase.Item(i);
 				Store(item);
 			}
-			Assert.AreEqual(ITEM_COUNT, Db().Get(typeof(ClientServerPingTestCase.Item)).Size(
-				));
+			Assert.AreEqual(ItemCount, Db().QueryByExample(typeof(ClientServerPingTestCase.Item
+				)).Size());
 			pingThread.Close();
 		}
 
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			{
 				while (NotStopped())
 				{
-					_dispatcher.Write(Msg.PING);
+					_dispatcher.Write(Msg.Ping);
 					Cool.SleepIgnoringInterruption(1);
 				}
 			}

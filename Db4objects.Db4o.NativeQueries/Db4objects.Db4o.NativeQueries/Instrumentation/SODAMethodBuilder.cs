@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 {
 	public class SODAMethodBuilder
 	{
-		private const bool LOG_BYTECODE = false;
+		private const bool LogBytecode = false;
 
 		private IMethodRef descendRef;
 
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		private IMethodBuilder _builder;
 
-		public static readonly string OPTIMIZE_QUERY_METHOD_NAME = "optimizeQuery";
+		public static readonly string OptimizeQueryMethodName = "optimizeQuery";
 
 		private class SODAExpressionBuilder : IExpressionVisitor
 		{
@@ -106,37 +106,37 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 			private void Constrain(ComparisonOperator op)
 			{
 				this._enclosing.Invoke(this._enclosing.constrainRef);
-				if (op.Equals(ComparisonOperator.EQUALS))
+				if (op.Equals(ComparisonOperator.ValueEquality))
 				{
 					return;
 				}
-				if (op.Equals(ComparisonOperator.IDENTITY))
+				if (op.Equals(ComparisonOperator.ReferenceEquality))
 				{
 					this._enclosing.Invoke(this._enclosing.identityRef);
 					return;
 				}
-				if (op.Equals(ComparisonOperator.GREATER))
+				if (op.Equals(ComparisonOperator.Greater))
 				{
 					this._enclosing.Invoke(this._enclosing.greaterRef);
 					return;
 				}
-				if (op.Equals(ComparisonOperator.SMALLER))
+				if (op.Equals(ComparisonOperator.Smaller))
 				{
 					this._enclosing.Invoke(this._enclosing.smallerRef);
 					return;
 				}
-				if (op.Equals(ComparisonOperator.CONTAINS))
+				if (op.Equals(ComparisonOperator.Contains))
 				{
 					this._enclosing.Invoke(this._enclosing.containsRef);
 					return;
 				}
-				if (op.Equals(ComparisonOperator.STARTSWITH))
+				if (op.Equals(ComparisonOperator.StartsWith))
 				{
 					this._enclosing.Ldc(1);
 					this._enclosing.Invoke(this._enclosing.startsWithRef);
 					return;
 				}
-				if (op.Equals(ComparisonOperator.ENDSWITH))
+				if (op.Equals(ComparisonOperator.EndsWith))
 				{
 					this._enclosing.Ldc(1);
 					this._enclosing.Invoke(this._enclosing.endsWithRef);
@@ -182,7 +182,7 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 		public virtual void InjectOptimization(IExpression expr)
 		{
 			_editor.AddInterface(TypeRef(typeof(IDb4oEnhancedFilter)));
-			_builder = _editor.NewPublicMethod(PlatformName(OPTIMIZE_QUERY_METHOD_NAME), TypeRef
+			_builder = _editor.NewPublicMethod(PlatformName(OptimizeQueryMethodName), TypeRef
 				(typeof(void)), new ITypeRef[] { TypeRef(typeof(IQuery)) });
 			ITypeRef predicateClass = _editor.Type;
 			expr.Accept(new SODAMethodBuilder.SODAExpressionBuilder(this, predicateClass));
@@ -207,7 +207,7 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		private void Invoke(IMethodRef method)
 		{
-			_builder.Invoke(method, CallingConvention.INTERFACE);
+			_builder.Invoke(method, CallingConvention.Interface);
 		}
 
 		private void Ldc(object value)

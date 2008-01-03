@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		protected override void Store()
 		{
-			Db().Set(new SimplestPossibleTestCase.Item("one"));
+			Db().Store(new SimplestPossibleTestCase.Item("one"));
 		}
 
 		public virtual void Test()

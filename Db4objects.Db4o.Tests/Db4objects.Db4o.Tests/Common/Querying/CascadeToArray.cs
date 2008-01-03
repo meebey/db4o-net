@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			CascadeToArray cta = new CascadeToArray();
 			cta.objects = new object[] { new CascadeToArray.Atom("stored1"), new CascadeToArray.Atom
 				(new CascadeToArray.Atom("storedChild1"), "stored2") };
-			Db().Set(cta);
+			Db().Store(cta);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 						atom.child.name = "updated";
 					}
 				}
-				this._enclosing.Db().Set(cta);
+				this._enclosing.Db().Store(cta);
 			}
 
 			private readonly CascadeToArray _enclosing;

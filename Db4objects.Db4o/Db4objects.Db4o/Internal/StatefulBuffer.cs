@@ -286,9 +286,9 @@ namespace Db4objects.Db4o.Internal
 		private void CheckMinimumPayLoadOffsetAndWritePointerAndLength(int length, bool alignToBlockSize
 			)
 		{
-			if (_payloadOffset <= _offset + (Const4.INT_LENGTH * 2))
+			if (_payloadOffset <= _offset + (Const4.IntLength * 2))
 			{
-				_payloadOffset = _offset + (Const4.INT_LENGTH * 2);
+				_payloadOffset = _offset + (Const4.IntLength * 2);
 			}
 			if (alignToBlockSize)
 			{
@@ -352,7 +352,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (Debug.xbytes && Deploy.overwrite)
 			{
-				SetID(Const4.IGNORE_ID);
+				SetID(Const4.IgnoreId);
 			}
 		}
 

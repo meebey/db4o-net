@@ -41,11 +41,11 @@ namespace Db4objects.Db4o.Internal
 
 		private Hashtable4 _ids = new Hashtable4(16);
 
-		private int _highestBuiltinTypeID = Handlers4.ANY_ARRAY_N_ID + 1;
+		private int _highestBuiltinTypeID = Handlers4.AnyArrayNId + 1;
 
-		private const int PRIMITIVECOUNT = 8;
+		private const int Primitivecount = 8;
 
-		public const int ANY_ID = 11;
+		public const int AnyId = 11;
 
 		private readonly VirtualFieldMetadata[] _virtualFields = new VirtualFieldMetadata
 			[2];
@@ -74,25 +74,25 @@ namespace Db4objects.Db4o.Internal
 
 		private LatinStringIO _stringIO;
 
-		public IReflectClass ICLASS_COMPARE;
+		public IReflectClass IclassCompare;
 
-		internal IReflectClass ICLASS_DB4OTYPE;
+		internal IReflectClass IclassDb4otype;
 
-		internal IReflectClass ICLASS_DB4OTYPEIMPL;
+		internal IReflectClass IclassDb4otypeimpl;
 
-		public IReflectClass ICLASS_INTERNAL;
+		public IReflectClass IclassInternal;
 
-		internal IReflectClass ICLASS_UNVERSIONED;
+		internal IReflectClass IclassUnversioned;
 
-		public IReflectClass ICLASS_OBJECT;
+		public IReflectClass IclassObject;
 
-		internal IReflectClass ICLASS_OBJECTCONTAINER;
+		internal IReflectClass IclassObjectcontainer;
 
-		public IReflectClass ICLASS_STATICCLASS;
+		public IReflectClass IclassStaticclass;
 
-		public IReflectClass ICLASS_STRING;
+		public IReflectClass IclassString;
 
-		internal IReflectClass ICLASS_TRANSIENTCLASS;
+		internal IReflectClass IclassTransientclass;
 
 		internal HandlerRegistry(ObjectContainerBase container, byte stringEncoding, GenericReflector
 			 reflector)
@@ -116,11 +116,11 @@ namespace Db4objects.Db4o.Internal
 			UntypedFieldHandler handler = UntypedHandler();
 			IReflectClass classReflector = handler.ClassReflector();
 			i_anyArray = new PrimitiveFieldHandler(_container, new ArrayHandler(_container, handler
-				, false), Handlers4.ANY_ARRAY_ID, classReflector);
-			_classMetadata.Put(Handlers4.ANY_ARRAY_ID, i_anyArray);
+				, false), Handlers4.AnyArrayId, classReflector);
+			_classMetadata.Put(Handlers4.AnyArrayId, i_anyArray);
 			i_anyArrayN = new PrimitiveFieldHandler(_container, new MultidimensionalArrayHandler
-				(_container, handler, false), Handlers4.ANY_ARRAY_N_ID, classReflector);
-			_classMetadata.Put(Handlers4.ANY_ARRAY_N_ID, i_anyArrayN);
+				(_container, handler, false), Handlers4.AnyArrayNId, classReflector);
+			_classMetadata.Put(Handlers4.AnyArrayNId, i_anyArrayN);
 		}
 
 		private void RegisterPlatformTypes()
@@ -139,34 +139,34 @@ namespace Db4objects.Db4o.Internal
 		private void RegisterBuiltinHandlers()
 		{
 			IntHandler intHandler = new IntHandler(_container);
-			RegisterBuiltinHandler(Handlers4.INT_ID, intHandler);
+			RegisterBuiltinHandler(Handlers4.IntId, intHandler);
 			RegisterHandlerVersion(intHandler, 0, new IntHandler0(_container));
 			LongHandler longHandler = new LongHandler(_container);
-			RegisterBuiltinHandler(Handlers4.LONG_ID, longHandler);
+			RegisterBuiltinHandler(Handlers4.LongId, longHandler);
 			RegisterHandlerVersion(longHandler, 0, new LongHandler0(_container));
 			FloatHandler floatHandler = new FloatHandler(_container);
-			RegisterBuiltinHandler(Handlers4.FLOAT_ID, floatHandler);
+			RegisterBuiltinHandler(Handlers4.FloatId, floatHandler);
 			RegisterHandlerVersion(floatHandler, 0, new FloatHandler0(_container));
 			BooleanHandler booleanHandler = new BooleanHandler(_container);
-			RegisterBuiltinHandler(Handlers4.BOOLEAN_ID, booleanHandler);
+			RegisterBuiltinHandler(Handlers4.BooleanId, booleanHandler);
 			DoubleHandler doubleHandler = new DoubleHandler(_container);
-			RegisterBuiltinHandler(Handlers4.DOUBLE_ID, doubleHandler);
+			RegisterBuiltinHandler(Handlers4.DoubleId, doubleHandler);
 			RegisterHandlerVersion(doubleHandler, 0, new DoubleHandler0(_container));
 			ByteHandler byteHandler = new ByteHandler(_container);
-			RegisterBuiltinHandler(Handlers4.BYTE_ID, byteHandler);
+			RegisterBuiltinHandler(Handlers4.ByteId, byteHandler);
 			CharHandler charHandler = new CharHandler(_container);
-			RegisterBuiltinHandler(Handlers4.CHAR_ID, charHandler);
+			RegisterBuiltinHandler(Handlers4.CharId, charHandler);
 			ShortHandler shortHandler = new ShortHandler(_container);
-			RegisterBuiltinHandler(Handlers4.SHORT_ID, shortHandler);
+			RegisterBuiltinHandler(Handlers4.ShortId, shortHandler);
 			RegisterHandlerVersion(shortHandler, 0, new ShortHandler0(_container));
 			_stringHandler = new StringHandler(_container);
-			RegisterBuiltinHandler(Handlers4.STRING_ID, _stringHandler);
+			RegisterBuiltinHandler(Handlers4.StringId, _stringHandler);
 			RegisterHandlerVersion(_stringHandler, 0, new StringHandler0(_stringHandler));
 			DateHandler dateHandler = new DateHandler(_container);
-			RegisterBuiltinHandler(Handlers4.DATE_ID, dateHandler);
+			RegisterBuiltinHandler(Handlers4.DateId, dateHandler);
 			RegisterHandlerVersion(dateHandler, 0, new DateHandler0(_container));
 			UntypedFieldHandler untypedFieldHandler = new UntypedFieldHandler(_container);
-			RegisterBuiltinHandler(Handlers4.UNTYPED_ID, untypedFieldHandler, false, null, null
+			RegisterBuiltinHandler(Handlers4.UntypedId, untypedFieldHandler, false, null, null
 				);
 			RegisterHandlerVersion(untypedFieldHandler, 0, new UntypedFieldHandler0(_container
 				));
@@ -216,7 +216,7 @@ namespace Db4objects.Db4o.Internal
 
 		public ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler, int version)
 		{
-			if (version == MarshallingContext.HANDLER_VERSION)
+			if (version == MarshallingContext.HandlerVersion)
 			{
 				return handler;
 			}
@@ -250,9 +250,9 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_container.Reflector().Array().IsNDimensional(claxx))
 			{
-				return Const4.TYPE_NARRAY;
+				return Const4.TypeNarray;
 			}
-			return Const4.TYPE_ARRAY;
+			return Const4.TypeArray;
 		}
 
 		internal bool CreateConstructor(IReflectClass claxx, bool skipConstructor)
@@ -318,7 +318,7 @@ namespace Db4objects.Db4o.Internal
 
 		private object NullValue(IReflectClass clazz)
 		{
-			for (int k = 1; k <= PRIMITIVECOUNT; k++)
+			for (int k = 1; k <= Primitivecount; k++)
 			{
 				PrimitiveHandler handler = (PrimitiveHandler)HandlerForID(k);
 				if (clazz.Equals(handler.PrimitiveClassReflector()))
@@ -446,21 +446,21 @@ namespace Db4objects.Db4o.Internal
 
 		public UntypedFieldHandler UntypedHandler()
 		{
-			return (UntypedFieldHandler)HandlerForID(Handlers4.UNTYPED_ID);
+			return (UntypedFieldHandler)HandlerForID(Handlers4.UntypedId);
 		}
 
 		private void InitClassReflectors(GenericReflector reflector)
 		{
-			ICLASS_COMPARE = reflector.ForClass(Const4.CLASS_COMPARE);
-			ICLASS_DB4OTYPE = reflector.ForClass(Const4.CLASS_DB4OTYPE);
-			ICLASS_DB4OTYPEIMPL = reflector.ForClass(Const4.CLASS_DB4OTYPEIMPL);
-			ICLASS_INTERNAL = reflector.ForClass(Const4.CLASS_INTERNAL);
-			ICLASS_UNVERSIONED = reflector.ForClass(Const4.CLASS_UNVERSIONED);
-			ICLASS_OBJECT = reflector.ForClass(Const4.CLASS_OBJECT);
-			ICLASS_OBJECTCONTAINER = reflector.ForClass(Const4.CLASS_OBJECTCONTAINER);
-			ICLASS_STATICCLASS = reflector.ForClass(Const4.CLASS_STATICCLASS);
-			ICLASS_STRING = reflector.ForClass(typeof(string));
-			ICLASS_TRANSIENTCLASS = reflector.ForClass(Const4.CLASS_TRANSIENTCLASS);
+			IclassCompare = reflector.ForClass(Const4.ClassCompare);
+			IclassDb4otype = reflector.ForClass(Const4.ClassDb4otype);
+			IclassDb4otypeimpl = reflector.ForClass(Const4.ClassDb4otypeimpl);
+			IclassInternal = reflector.ForClass(Const4.ClassInternal);
+			IclassUnversioned = reflector.ForClass(Const4.ClassUnversioned);
+			IclassObject = reflector.ForClass(Const4.ClassObject);
+			IclassObjectcontainer = reflector.ForClass(Const4.ClassObjectcontainer);
+			IclassStaticclass = reflector.ForClass(Const4.ClassStaticclass);
+			IclassString = reflector.ForClass(typeof(string));
+			IclassTransientclass = reflector.ForClass(Const4.ClassTransientclass);
 			Platform4.RegisterCollections(reflector);
 		}
 

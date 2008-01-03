@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		{
 			IsStoredTestCase isStored = new IsStoredTestCase();
 			isStored.myString = "isStored";
-			oc.Set(isStored);
+			oc.Store(isStored);
 			Assert.IsTrue(oc.IsStored(isStored));
 			oc.Commit();
 			oc.Delete(isStored);

@@ -19,13 +19,13 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private static bool runOnOldJDK = false;
 
-		private static readonly string FILE = "backupstress.yap";
+		private static readonly string File = "backupstress.yap";
 
-		private const int ITERATIONS = 5;
+		private const int Iterations = 5;
 
-		private const int OBJECTS = 50;
+		private const int Objects = 50;
 
-		private const int COMMITS = 10;
+		private const int Commits = 10;
 
 		private IObjectContainer _objectContainer;
 
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
-			DeleteFile(FILE);
+			DeleteFile(File);
 			Db4oFactory.Configure().ObjectClass(typeof(BackupStressItem)).ObjectField("_iteration"
 				).Indexed(true);
 			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(BackupStressItem
@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="IOException"></exception>
 		public virtual void TearDown()
 		{
-			DeleteFile(FILE);
+			DeleteFile(File);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -95,23 +95,23 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				return;
 			}
 			BackupStressIteration iteration = new BackupStressIteration();
-			_objectContainer.Set(iteration);
+			_objectContainer.Store(iteration);
 			_objectContainer.Commit();
 			Thread backupThread = StartBackupThread();
-			for (int i = 1; i <= ITERATIONS; i++)
+			for (int i = 1; i <= Iterations; i++)
 			{
-				for (int obj = 0; obj < OBJECTS; obj++)
+				for (int obj = 0; obj < Objects; obj++)
 				{
-					_objectContainer.Set(new BackupStressItem("i" + obj, i));
+					_objectContainer.Store(new BackupStressItem("i" + obj, i));
 					_commitCounter++;
-					if (_commitCounter >= COMMITS)
+					if (_commitCounter >= Commits)
 					{
 						_objectContainer.Commit();
 						_commitCounter = 0;
 					}
 				}
 				iteration.SetCount(i);
-				_objectContainer.Set(iteration);
+				_objectContainer.Store(iteration);
 				_objectContainer.Commit();
 			}
 			_noMoreBackups = true;
@@ -150,8 +150,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void OpenDatabase()
 		{
-			DeleteFile(FILE);
-			_objectContainer = Db4oFactory.OpenFile(FILE);
+			DeleteFile(File);
+			_objectContainer = Db4oFactory.OpenFile(File);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -187,7 +187,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 						q.Constrain(typeof(BackupStressItem));
 						q.Descend("_iteration").Constrain(iteration.GetCount());
 						IObjectSet items = q.Execute();
-						Assert.AreEqual(OBJECTS, items.Size());
+						Assert.AreEqual(Objects, items.Size());
 						while (items.HasNext())
 						{
 							BackupStressItem item = (BackupStressItem)items.Next();
@@ -221,7 +221,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private string BackupFile(int count)
 		{
-			return string.Empty + count + FILE;
+			return string.Empty + count + File;
 		}
 
 		private void Stdout(string @string)

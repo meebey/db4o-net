@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 {
 	public class LongLinkedListTestCase : AbstractDb4oTestCase
 	{
-		private const int COUNT = 1000;
+		private const int Count = 1000;
 
 		public class LinkedList
 		{
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			LongLinkedListTestCase.LinkedList head = new LongLinkedListTestCase.LinkedList();
 			LongLinkedListTestCase.LinkedList tail = head;
-			for (int i = 1; i < COUNT; i++)
+			for (int i = 1; i < Count; i++)
 			{
 				tail._next = new LongLinkedListTestCase.LinkedList();
 				tail = tail._next;
@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				count++;
 				tail = tail._next;
 			}
-			Assert.AreEqual(COUNT, count);
+			Assert.AreEqual(Count, count);
 		}
 	}
 }

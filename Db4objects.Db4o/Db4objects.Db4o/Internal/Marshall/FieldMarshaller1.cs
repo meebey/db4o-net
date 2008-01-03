@@ -67,8 +67,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return len;
 			}
-			int BTREE_ID = Const4.ID_LENGTH;
-			return len + BTREE_ID;
+			int BtreeId = Const4.IdLength;
+			return len + BtreeId;
 		}
 
 		/// <exception cref="CorruptionException"></exception>

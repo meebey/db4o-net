@@ -48,16 +48,16 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			Db4objects.Db4o.Internal.CS.Messages.MsgD message = (Db4objects.Db4o.Internal.CS.Messages.MsgD
 				)PublicClone();
 			message.SetTransaction(trans);
-			message._payLoad = new StatefulBuffer(trans, length + Const4.MESSAGE_LENGTH);
+			message._payLoad = new StatefulBuffer(trans, length + Const4.MessageLength);
 			message.WriteInt(_msgID);
 			message.WriteInt(length);
 			if (trans.ParentTransaction() == null)
 			{
-				message._payLoad.WriteByte(Const4.SYSTEM_TRANS);
+				message._payLoad.WriteByte(Const4.SystemTrans);
 			}
 			else
 			{
-				message._payLoad.WriteByte(Const4.USER_TRANS);
+				message._payLoad.WriteByte(Const4.UserTrans);
 			}
 			return message;
 		}
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			, int[] ints)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.MsgD message = GetWriterForLength(trans, Const4
-				.INT_LENGTH * ints.Length);
+				.IntLength * ints.Length);
 			for (int i = 0; i < ints.Length; i++)
 			{
 				message.WriteInt(ints[i]);
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			 a_trans, int[] ints, int length)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.MsgD message = GetWriterForLength(a_trans, Const4
-				.INT_LENGTH * (length + 1));
+				.IntLength * (length + 1));
 			message.WriteInt(length);
 			for (int i = 0; i < length; i++)
 			{
@@ -96,7 +96,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			, int id)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.MsgD message = GetWriterForLength(a_trans, Const4
-				.INT_LENGTH);
+				.IntLength);
 			message.WriteInt(id);
 			return message;
 		}
@@ -105,7 +105,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			 a_trans, int anInt, string str)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.MsgD message = GetWriterForLength(a_trans, Const4
-				.stringIO.Length(str) + Const4.INT_LENGTH * 2);
+				.stringIO.Length(str) + Const4.IntLength * 2);
 			message.WriteInt(anInt);
 			message.WriteString(str);
 			return message;
@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			, long a_long)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.MsgD message = GetWriterForLength(a_trans, Const4
-				.LONG_LENGTH);
+				.LongLength);
 			message.WriteLong(a_long);
 			return message;
 		}
@@ -134,7 +134,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			, string str)
 		{
 			Db4objects.Db4o.Internal.CS.Messages.MsgD message = GetWriterForLength(a_trans, Const4
-				.stringIO.Length(str) + Const4.INT_LENGTH);
+				.stringIO.Length(str) + Const4.IntLength);
 			message.WriteString(str);
 			return message;
 		}

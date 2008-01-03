@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.BLOCKING_QUEUE_STOPPED_EXCEPTION.Log();
+				DTrace.BlockingQueueStoppedException.Log();
 			}
 		}
 	}

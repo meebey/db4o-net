@@ -40,13 +40,13 @@ namespace Db4objects.Db4o.Tests.Common.Set
 		{
 			IExtObjectContainer oc = Db();
 			_item.name = "1";
-			DeepSetTestCase.Item item = (DeepSetTestCase.Item)oc.Get(_item).Next();
+			DeepSetTestCase.Item item = (DeepSetTestCase.Item)oc.QueryByExample(_item).Next();
 			item.name = "11";
 			item.child.name = "12";
-			oc.Set(item, 2);
+			oc.Store(item, 2);
 			oc.Deactivate(item, int.MaxValue);
 			item.name = "11";
-			item = (DeepSetTestCase.Item)oc.Get(item).Next();
+			item = (DeepSetTestCase.Item)oc.QueryByExample(item).Next();
 			Assert.AreEqual("12", item.child.name);
 			Assert.AreEqual("3", item.child.child.name);
 		}

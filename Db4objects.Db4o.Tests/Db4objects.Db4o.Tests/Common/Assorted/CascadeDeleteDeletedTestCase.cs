@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				(name);
 			cdd.untypedMember = new CascadeDeleteDeletedTestCase.CddMember();
 			cdd.typedMember = new CascadeDeleteDeletedTestCase.CddMember();
-			oc.Set(cdd);
+			oc.Store(cdd);
 		}
 
 		private void TwoRef(IExtObjectContainer oc, string name)
@@ -66,15 +66,15 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				(name);
 			cdd2.untypedMember = cdd.untypedMember;
 			cdd2.typedMember = cdd.typedMember;
-			oc.Set(cdd);
-			oc.Set(cdd2);
+			oc.Store(cdd);
+			oc.Store(cdd2);
 		}
 
 		/// <exception cref="Exception"></exception>
 		public virtual void _testDeleteDeleted()
 		{
 			int total = 10;
-			int CDD_MEMBER_COUNT = 12;
+			int CddMemberCount = 12;
 			IExtObjectContainer[] containers = new IExtObjectContainer[total];
 			IExtObjectContainer oc = null;
 			try
@@ -83,14 +83,14 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				{
 					containers[i] = OpenNewClient();
 					AssertOccurrences(containers[i], typeof(CascadeDeleteDeletedTestCase.CddMember), 
-						CDD_MEMBER_COUNT);
+						CddMemberCount);
 				}
 				for (int i = 0; i < total; i++)
 				{
 					DeleteAll(containers[i], typeof(CascadeDeleteDeletedTestCase.CddMember));
 				}
 				oc = OpenNewClient();
-				AssertOccurrences(oc, typeof(CascadeDeleteDeletedTestCase.CddMember), CDD_MEMBER_COUNT
+				AssertOccurrences(oc, typeof(CascadeDeleteDeletedTestCase.CddMember), CddMemberCount
 					);
 				containers[0].Commit();
 				containers[0].Close();

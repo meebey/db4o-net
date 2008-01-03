@@ -234,7 +234,7 @@ namespace Db4objects.Db4o.Internal
 					_file.Read(checkXBytes);
 					for (int i = 0; i < checkXBytes.Length; i++)
 					{
-						if (checkXBytes[i] != Const4.XBYTE)
+						if (checkXBytes[i] != Const4.Xbyte)
 						{
 							string msg = "XByte corruption adress:" + newAddress + " length:" + length + " starting:"
 								 + i;
@@ -278,7 +278,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.READ_BYTES.LogLength(address + addressOffset, length);
+				DTrace.ReadBytes.LogLength(address + addressOffset, length);
 			}
 			_file.BlockSeek(address, addressOffset);
 			int bytesRead = _file.Read(bytes, length);
@@ -358,7 +358,7 @@ namespace Db4objects.Db4o.Internal
 				if (bytes is StatefulBuffer)
 				{
 					StatefulBuffer writer = (StatefulBuffer)bytes;
-					if (writer.GetID() == Const4.IGNORE_ID)
+					if (writer.GetID() == Const4.IgnoreId)
 					{
 						doCheck = false;
 					}
@@ -370,7 +370,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.WRITE_BYTES.LogLength(address + addressOffset, bytes.Length());
+				DTrace.WriteBytes.LogLength(address + addressOffset, bytes.Length());
 			}
 			_file.BlockSeek(address, addressOffset);
 			_file.Write(bytes._buffer, bytes.Length());
@@ -391,7 +391,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (DTrace.enabled)
 				{
-					DTrace.WRITE_XBYTES.LogLength(address, length);
+					DTrace.WriteXbytes.LogLength(address, length);
 				}
 				IoAdapterWindow window = new IoAdapterWindow(_file, address, length);
 				try
@@ -433,7 +433,7 @@ namespace Db4objects.Db4o.Internal
 				byte[] bytes = new byte[len];
 				for (int i = 0; i < len; i++)
 				{
-					bytes[i] = Const4.XBYTE;
+					bytes[i] = Const4.Xbyte;
 				}
 				return bytes;
 			}

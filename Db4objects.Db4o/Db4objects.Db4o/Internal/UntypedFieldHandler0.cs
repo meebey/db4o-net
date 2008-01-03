@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal
 		public override ObjectID ReadObjectID(IInternalReadContext context)
 		{
 			int id = context.ReadInt();
-			return id == 0 ? ObjectID.IS_NULL : new ObjectID(id);
+			return id == 0 ? ObjectID.IsNull : new ObjectID(id);
 		}
 
 		public override void Defragment(IDefragmentContext context)
@@ -53,10 +53,10 @@ namespace Db4objects.Db4o.Internal
 			try
 			{
 				BufferImpl sourceBuffer = context.SourceBufferById(sourceId);
-				Slot targetPointerSlot = context.AllocateMappedTargetSlot(sourceId, Const4.POINTER_LENGTH
+				Slot targetPointerSlot = context.AllocateMappedTargetSlot(sourceId, Const4.PointerLength
 					);
 				Slot targetPayloadSlot = context.AllocateTargetSlot(sourceBuffer.Length());
-				BufferImpl pointerBuffer = new BufferImpl(Const4.POINTER_LENGTH);
+				BufferImpl pointerBuffer = new BufferImpl(Const4.PointerLength);
 				pointerBuffer.WriteInt(targetPayloadSlot.Address());
 				pointerBuffer.WriteInt(targetPayloadSlot.Length());
 				context.TargetWriteBytes(targetPointerSlot.Address(), pointerBuffer);

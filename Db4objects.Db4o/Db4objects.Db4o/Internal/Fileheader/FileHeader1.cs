@@ -10,21 +10,21 @@ namespace Db4objects.Db4o.Internal.Fileheader
 	/// <exclude></exclude>
 	public class FileHeader1 : FileHeader
 	{
-		private static readonly byte[] SIGNATURE = new byte[] { (byte)'d', (byte)'b', (byte
+		private static readonly byte[] Signature = new byte[] { (byte)'d', (byte)'b', (byte
 			)'4', (byte)'o' };
 
-		private static byte VERSION = 1;
+		private static byte Version = 1;
 
-		private static readonly int HEADER_LOCK_OFFSET = SIGNATURE.Length + 1;
+		private static readonly int HeaderLockOffset = Signature.Length + 1;
 
-		private static readonly int OPEN_TIME_OFFSET = HEADER_LOCK_OFFSET + Const4.INT_LENGTH;
+		private static readonly int OpenTimeOffset = HeaderLockOffset + Const4.IntLength;
 
-		private static readonly int ACCESS_TIME_OFFSET = OPEN_TIME_OFFSET + Const4.LONG_LENGTH;
+		private static readonly int AccessTimeOffset = OpenTimeOffset + Const4.LongLength;
 
-		private static readonly int TRANSACTION_POINTER_OFFSET = ACCESS_TIME_OFFSET + Const4
-			.LONG_LENGTH;
+		private static readonly int TransactionPointerOffset = AccessTimeOffset + Const4.
+			LongLength;
 
-		public static readonly int LENGTH = TRANSACTION_POINTER_OFFSET + (Const4.INT_LENGTH
+		public static readonly int HeaderLength = TransactionPointerOffset + (Const4.IntLength
 			 * 6);
 
 		private TimerFileLock _timerFileLock;
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		protected override FileHeader NewOnSignatureMatch(LocalObjectContainer file, BufferImpl
 			 reader)
 		{
-			if (SignatureMatches(reader, SIGNATURE, VERSION))
+			if (SignatureMatches(reader, Signature, Version))
 			{
 				return new FileHeader1();
 			}
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private void NewTimerFileLock(LocalObjectContainer file)
 		{
 			_timerFileLock = TimerFileLock.ForFile(file);
-			_timerFileLock.SetAddresses(0, OPEN_TIME_OFFSET, ACCESS_TIME_OFFSET);
+			_timerFileLock.SetAddresses(0, OpenTimeOffset, AccessTimeOffset);
 		}
 
 		public override Transaction InterruptedTransaction()
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public override int Length()
 		{
-			return LENGTH;
+			return HeaderLength;
 		}
 
 		protected override void ReadFixedPart(LocalObjectContainer file, BufferImpl reader
@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 			CommonTasksForNewAndRead(file);
 			CheckThreadFileLock(file, reader);
-			reader.Seek(TRANSACTION_POINTER_OFFSET);
+			reader.Seek(TransactionPointerOffset);
 			_interruptedTransaction = LocalTransaction.ReadInterruptedTransaction(file, reader
 				);
 			file.BlockSizeReadFromFile(reader.ReadInt());
@@ -89,11 +89,11 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private void CheckThreadFileLock(LocalObjectContainer container, BufferImpl reader
 			)
 		{
-			reader.Seek(ACCESS_TIME_OFFSET);
+			reader.Seek(AccessTimeOffset);
 			long lastAccessTime = reader.ReadLong();
 			if (FileHeader.LockedByOtherSession(container, lastAccessTime))
 			{
-				_timerFileLock.CheckIfOtherSessionAlive(container, 0, ACCESS_TIME_OFFSET, lastAccessTime
+				_timerFileLock.CheckIfOtherSessionAlive(container, 0, AccessTimeOffset, lastAccessTime
 					);
 			}
 		}
@@ -112,8 +112,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override void WriteFixedPart(LocalObjectContainer file, bool startFileLockingThread
 			, bool shuttingDown, StatefulBuffer writer, int blockSize, int freespaceID)
 		{
-			writer.Append(SIGNATURE);
-			writer.WriteByte(VERSION);
+			writer.Append(Signature);
+			writer.WriteByte(Version);
 			writer.WriteInt((int)TimeToWrite(_timerFileLock.OpenTime(), shuttingDown));
 			writer.WriteLong(TimeToWrite(_timerFileLock.OpenTime(), shuttingDown));
 			writer.WriteLong(TimeToWrite(Runtime.CurrentTimeMillis(), shuttingDown));
@@ -135,7 +135,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override void WriteTransactionPointer(Transaction systemTransaction, int transactionAddress
 			)
 		{
-			WriteTransactionPointer(systemTransaction, transactionAddress, 0, TRANSACTION_POINTER_OFFSET
+			WriteTransactionPointer(systemTransaction, transactionAddress, 0, TransactionPointerOffset
 				);
 		}
 

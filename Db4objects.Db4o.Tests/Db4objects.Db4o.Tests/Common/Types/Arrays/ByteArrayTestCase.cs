@@ -55,9 +55,9 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 			}
 		}
 
-		internal const int INSTANCES = 2;
+		internal const int Instances = 2;
 
-		internal const int ARRAY_LENGTH = 1024;
+		internal const int ArrayLength = 1024;
 
 		#if !CF_2_0
 		protected override void Configure(IConfiguration config)
@@ -69,10 +69,10 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		protected override void Store()
 		{
-			for (int i = 0; i < INSTANCES; ++i)
+			for (int i = 0; i < Instances; ++i)
 			{
-				Db().Set(new ByteArrayTestCase.ByteArrayHolder(CreateByteArray()));
-				Db().Set(new ByteArrayTestCase.SerializableByteArrayHolder(CreateByteArray()));
+				Db().Store(new ByteArrayTestCase.ByteArrayHolder(CreateByteArray()));
+				Db().Store(new ByteArrayTestCase.SerializableByteArrayHolder(CreateByteArray()));
 			}
 		}
 
@@ -98,17 +98,17 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		{
 			IQuery query = NewQuery(clazz);
 			IObjectSet os = query.Execute();
-			Assert.AreEqual(INSTANCES, os.Size());
+			Assert.AreEqual(Instances, os.Size());
 			while (os.HasNext())
 			{
-				Assert.AreEqual(ARRAY_LENGTH, ((ByteArrayTestCase.IIByteArrayHolder)os.Next()).GetBytes
+				Assert.AreEqual(ArrayLength, ((ByteArrayTestCase.IIByteArrayHolder)os.Next()).GetBytes
 					().Length, label);
 			}
 		}
 
 		internal virtual byte[] CreateByteArray()
 		{
-			byte[] bytes = new byte[ARRAY_LENGTH];
+			byte[] bytes = new byte[ArrayLength];
 			for (int i = 0; i < bytes.Length; ++i)
 			{
 				bytes[i] = (byte)(i % 256);

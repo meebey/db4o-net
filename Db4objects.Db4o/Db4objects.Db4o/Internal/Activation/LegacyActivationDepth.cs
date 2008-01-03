@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Internal.Activation
 	{
 		private readonly int _depth;
 
-		public LegacyActivationDepth(int depth) : this(depth, ActivationMode.ACTIVATE)
+		public LegacyActivationDepth(int depth) : this(depth, ActivationMode.Activate)
 		{
 		}
 

@@ -17,12 +17,12 @@ namespace Db4objects.Db4o.Tests.Common.Header
 		{
 			Fixture().Config().GenerateUUIDs(0);
 			Reopen();
-			Assert.AreEqual(ConfigScope.GLOBALLY, GenerateUUIDs());
+			Assert.AreEqual(ConfigScope.Globally, GenerateUUIDs());
 			Db().Configure().GenerateUUIDs(-1);
-			Assert.AreEqual(ConfigScope.DISABLED, GenerateUUIDs());
+			Assert.AreEqual(ConfigScope.Disabled, GenerateUUIDs());
 			Fixture().Config().GenerateUUIDs(0);
 			Reopen();
-			Assert.AreEqual(ConfigScope.GLOBALLY, GenerateUUIDs());
+			Assert.AreEqual(ConfigScope.Globally, GenerateUUIDs());
 		}
 
 		private ConfigScope GenerateUUIDs()

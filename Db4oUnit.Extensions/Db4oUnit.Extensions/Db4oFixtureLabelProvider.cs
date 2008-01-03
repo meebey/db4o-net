@@ -15,8 +15,8 @@ namespace Db4oUnit.Extensions
 
 			public string GetLabel(TestMethod method)
 			{
-				return "[" + this.FixtureLabel(method) + "] " + TestMethod.DEFAULT_LABEL_PROVIDER
-					.GetLabel(method);
+				return "[" + this.FixtureLabel(method) + "] " + TestMethod.DefaultLabelProvider.GetLabel
+					(method);
 			}
 
 			private string FixtureLabel(TestMethod method)
@@ -25,6 +25,6 @@ namespace Db4oUnit.Extensions
 			}
 		}
 
-		public static readonly ILabelProvider DEFAULT = new _ILabelProvider_8();
+		public static readonly ILabelProvider Default = new _ILabelProvider_8();
 	}
 }

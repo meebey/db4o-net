@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public virtual bool ProcessAtServer()
 		{
 			AbstractQueryResult queryResult = QueryResult(ReadInt());
-			Write(Msg.OBJECTSET_SIZE.GetWriterForInt(Transaction(), queryResult.Size()));
+			Write(Msg.ObjectsetSize.GetWriterForInt(Transaction(), queryResult.Size()));
 			return true;
 		}
 	}

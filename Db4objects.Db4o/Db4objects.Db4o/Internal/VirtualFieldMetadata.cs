@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public abstract class VirtualFieldMetadata : FieldMetadata
 	{
-		private static readonly object ANY_OBJECT = new object();
+		private static readonly object AnyObject = new object();
 
 		private readonly IReflectClass _classReflector;
 
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override object GetOrCreate(Transaction a_trans, object a_OnObject)
 		{
-			return ANY_OBJECT;
+			return AnyObject;
 		}
 
 		public override bool NeedsArrayAndPrimitiveInfo()
@@ -111,9 +111,9 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			HandlerRegistry handlers = stream._handlers;
 			bool migrating = false;
-			if (stream._replicationCallState != Const4.NONE)
+			if (stream._replicationCallState != Const4.None)
 			{
-				if (stream._replicationCallState == Const4.OLD)
+				if (stream._replicationCallState == Const4.Old)
 				{
 					migrating = true;
 					if (@ref.VirtualAttributes() == null)

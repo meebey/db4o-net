@@ -17,28 +17,28 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public override void ProcessClient(ISocket4 sock)
 		{
 			Msg message = Msg.ReadMessage(MessageDispatcher(), Transaction(), sock);
-			if (message.Equals(Msg.OK))
+			if (message.Equals(Msg.Ok))
 			{
 				try
 				{
 					_currentByte = 0;
 					_length = this._blob.GetLength();
 					_blob.GetStatusFrom(this);
-					_blob.SetStatus(Status.PROCESSING);
+					_blob.SetStatus(Status.Processing);
 					FileInputStream inBlob = this._blob.GetClientInputStream();
 					Copy(inBlob, sock, true);
 					sock.Flush();
 					ObjectContainerBase stream = Stream();
 					message = Msg.ReadMessage(MessageDispatcher(), Transaction(), sock);
-					if (message.Equals(Msg.OK))
+					if (message.Equals(Msg.Ok))
 					{
 						stream.Deactivate(Transaction(), _blob, int.MaxValue);
 						stream.Activate(Transaction(), _blob, new FullActivationDepth());
-						this._blob.SetStatus(Status.COMPLETED);
+						this._blob.SetStatus(Status.Completed);
 					}
 					else
 					{
-						this._blob.SetStatus(Status.ERROR);
+						this._blob.SetStatus(Status.Error);
 					}
 				}
 				catch (Exception e)
@@ -58,10 +58,10 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					blobImpl.SetTrans(Transaction());
 					Sharpen.IO.File file = blobImpl.ServerFile(null, true);
 					ISocket4 sock = ServerMessageDispatcher().Socket();
-					Msg.OK.Write(sock);
+					Msg.Ok.Write(sock);
 					FileOutputStream fout = new FileOutputStream(file);
 					Copy(sock, fout, blobImpl.GetLength(), false);
-					Msg.OK.Write(sock);
+					Msg.Ok.Write(sock);
 				}
 			}
 			catch (Exception)

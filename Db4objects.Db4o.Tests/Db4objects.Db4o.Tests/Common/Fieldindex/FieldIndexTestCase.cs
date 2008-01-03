@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
 	public class FieldIndexTestCase : FieldIndexTestCaseBase
 	{
-		private static readonly int[] FOOS = new int[] { 3, 7, 9, 4 };
+		private static readonly int[] Foos = new int[] { 3, 7, 9, 4 };
 
 		public static void Main(string[] arguments)
 		{
@@ -31,14 +31,14 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		protected override void Store()
 		{
-			StoreItems(FOOS);
+			StoreItems(Foos);
 		}
 
 		public virtual void TestTraverseValues()
 		{
 			IStoredField field = YapField();
 			ExpectingVisitor expectingVisitor = new ExpectingVisitor(IntArrays4.ToObjectArray
-				(FOOS));
+				(Foos));
 			field.TraverseValues(expectingVisitor);
 			expectingVisitor.AssertExpectations();
 		}
@@ -46,13 +46,13 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		/// <exception cref="Exception"></exception>
 		public virtual void TestAllThere()
 		{
-			for (int i = 0; i < FOOS.Length; i++)
+			for (int i = 0; i < Foos.Length; i++)
 			{
-				IQuery q = CreateQuery(FOOS[i]);
+				IQuery q = CreateQuery(Foos[i]);
 				IObjectSet objectSet = q.Execute();
 				Assert.AreEqual(1, objectSet.Size());
 				FieldIndexItem fii = (FieldIndexItem)objectSet.Next();
-				Assert.AreEqual(FOOS[i], fii.foo);
+				Assert.AreEqual(Foos[i], fii.foo);
 			}
 		}
 
@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			BTree bTree = YapField().GetIndex(Trans());
 			Assert.IsNotNull(bTree);
-			ExpectKeysSearch(bTree, FOOS);
+			ExpectKeysSearch(bTree, Foos);
 		}
 
 		private void ExpectKeysSearch(BTree btree, int[] values)
@@ -112,9 +112,9 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			)
 		{
 			BTreeNodeSearchResult start = btree.SearchLeaf(trans, FieldIndexKey(0, key), SearchTarget
-				.LOWEST);
+				.Lowest);
 			BTreeNodeSearchResult end = btree.SearchLeaf(trans, FieldIndexKey(int.MaxValue, key
-				), SearchTarget.LOWEST);
+				), SearchTarget.Lowest);
 			return start.CreateIncludingRange(end);
 		}
 

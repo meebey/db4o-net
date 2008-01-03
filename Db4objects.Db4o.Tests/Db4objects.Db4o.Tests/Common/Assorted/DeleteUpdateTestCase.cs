@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				SimpleObject o2 = (SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject));
 				Assert.AreEqual("hello", o2.GetS());
 				o2.SetS("o2");
-				oc2.Set(o2);
+				oc2.Store(o2);
 				oc1.Commit();
 				oc2.Commit();
 				o1 = (SimpleObject)RetrieveOnlyInstance(oc1, typeof(SimpleObject));
@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				SimpleObject o2 = (SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject));
 				Assert.AreEqual("hello", o2.GetS());
 				o2.SetS("o2");
-				oc2.Set(o2);
+				oc2.Store(o2);
 				oc2.Commit();
 				oc1.Commit();
 				AssertOccurrences(oc1, typeof(SimpleObject), 0);

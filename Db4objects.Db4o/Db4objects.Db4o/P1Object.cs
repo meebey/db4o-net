@@ -64,7 +64,7 @@ namespace Db4objects.Db4o
 			}
 			if (ValidYapObject())
 			{
-				i_yapObject.Activate(i_trans, this, ActivationDepth(ActivationMode.ACTIVATE));
+				i_yapObject.Activate(i_trans, this, ActivationDepth(ActivationMode.Activate));
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace Db4objects.Db4o
 		{
 			if (ValidYapObject())
 			{
-				i_yapObject.Deactivate(i_trans, ActivationDepth(ActivationMode.DEACTIVATE));
+				i_yapObject.Deactivate(i_trans, ActivationDepth(ActivationMode.Deactivate));
 			}
 		}
 

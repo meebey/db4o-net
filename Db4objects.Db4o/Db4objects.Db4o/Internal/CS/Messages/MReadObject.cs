@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				bytes = new StatefulBuffer(Transaction(), 0, 0);
 			}
-			Write(Msg.OBJECT_TO_CLIENT.GetWriter(bytes));
+			Write(Msg.ObjectToClient.GetWriter(bytes));
 			return true;
 		}
 	}

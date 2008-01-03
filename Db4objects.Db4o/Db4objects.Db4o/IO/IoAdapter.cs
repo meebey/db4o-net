@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.IO
 	/// 	</remarks>
 	public abstract class IoAdapter
 	{
-		private const int COPY_SIZE = 4096;
+		private const int CopySize = 4096;
 
 		private int _blockSize;
 
@@ -70,16 +70,16 @@ namespace Db4objects.Db4o.IO
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.IO_COPY.LogLength(newAddress, length);
+				DTrace.IoCopy.LogLength(newAddress, length);
 			}
-			if (length > COPY_SIZE)
+			if (length > CopySize)
 			{
-				byte[] buffer = new byte[COPY_SIZE];
+				byte[] buffer = new byte[CopySize];
 				int pos = 0;
-				while (pos + COPY_SIZE < length)
+				while (pos + CopySize < length)
 				{
 					Copy(buffer, oldAddress + pos, newAddress + pos);
-					pos += COPY_SIZE;
+					pos += CopySize;
 				}
 				oldAddress += pos;
 				newAddress += pos;

@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int MarshalledLength()
 		{
-			return (Const4.INT_LENGTH * 2) + Length();
+			return (Const4.IntLength * 2) + Length();
 		}
 
 		public virtual void Write(BufferImpl buffer)

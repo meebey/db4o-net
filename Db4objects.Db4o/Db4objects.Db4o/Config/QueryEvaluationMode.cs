@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Config
 		/// 	</see>
 		/// </b>
 		/// </remarks>
-		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode IMMEDIATE = new 
+		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode Immediate = new 
 			Db4objects.Db4o.Config.QueryEvaluationMode("IMMEDIATE");
 
 		/// <summary>Constant for snapshot query evaluation.</summary>
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Config
 		/// 	</see>
 		/// </b>
 		/// </remarks>
-		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode SNAPSHOT = new 
+		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode Snapshot = new 
 			Db4objects.Db4o.Config.QueryEvaluationMode("SNAPSHOT");
 
 		/// <summary>Constant for lazy query evaluation.</summary>
@@ -69,21 +69,21 @@ namespace Db4objects.Db4o.Config
 		/// 	</see>
 		/// </b>
 		/// </remarks>
-		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode LAZY = new Db4objects.Db4o.Config.QueryEvaluationMode
+		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode Lazy = new Db4objects.Db4o.Config.QueryEvaluationMode
 			("LAZY");
 
-		private static readonly Db4objects.Db4o.Config.QueryEvaluationMode[] MODES = new 
+		private static readonly Db4objects.Db4o.Config.QueryEvaluationMode[] Modes = new 
 			Db4objects.Db4o.Config.QueryEvaluationMode[] { Db4objects.Db4o.Config.QueryEvaluationMode
-			.IMMEDIATE, Db4objects.Db4o.Config.QueryEvaluationMode.SNAPSHOT, Db4objects.Db4o.Config.QueryEvaluationMode
-			.LAZY };
+			.Immediate, Db4objects.Db4o.Config.QueryEvaluationMode.Snapshot, Db4objects.Db4o.Config.QueryEvaluationMode
+			.Lazy };
 
 		/// <summary>internal method, ignore please.</summary>
 		/// <remarks>internal method, ignore please.</remarks>
 		public virtual int AsInt()
 		{
-			for (int i = 0; i < MODES.Length; i++)
+			for (int i = 0; i < Modes.Length; i++)
 			{
-				if (MODES[i] == this)
+				if (Modes[i] == this)
 				{
 					return i;
 				}
@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>internal method, ignore please.</remarks>
 		public static Db4objects.Db4o.Config.QueryEvaluationMode FromInt(int i)
 		{
-			return MODES[i];
+			return Modes[i];
 		}
 
 		public override string ToString()

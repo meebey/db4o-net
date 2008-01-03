@@ -15,9 +15,9 @@ namespace Db4objects.Db4o.Internal.Btree
 	/// <exclude></exclude>
 	public class BTree : PersistentBase, ITransactionParticipant
 	{
-		private const byte BTREE_VERSION = (byte)1;
+		private const byte BtreeVersion = (byte)1;
 
-		private const int DEFRAGMENT_INCREMENT_OFFSET = 1 + Const4.INT_LENGTH * 2;
+		private const int DefragmentIncrementOffset = 1 + Const4.IntLength * 2;
 
 		private readonly IIndexable4 _keyHandler;
 
@@ -125,8 +125,8 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			KeyCantBeNull(key);
 			EnsureActive(trans);
-			BTreeNodeSearchResult start = SearchLeaf(trans, key, SearchTarget.LOWEST);
-			BTreeNodeSearchResult end = SearchLeaf(trans, key, SearchTarget.HIGHEST);
+			BTreeNodeSearchResult start = SearchLeaf(trans, key, SearchTarget.Lowest);
+			BTreeNodeSearchResult end = SearchLeaf(trans, key, SearchTarget.Highest);
 			return start.CreateIncludingRange(end);
 		}
 
@@ -314,7 +314,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public override byte GetIdentifier()
 		{
-			return Const4.BTREE;
+			return Const4.Btree;
 		}
 
 		public virtual void SetRemoveListener(IVisitor4 vis)
@@ -324,7 +324,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public override int OwnLength()
 		{
-			return 1 + Const4.OBJECT_LENGTH + (Const4.INT_LENGTH * 2) + Const4.ID_LENGTH;
+			return 1 + Const4.ObjectLength + (Const4.IntLength * 2) + Const4.IdLength;
 		}
 
 		internal virtual BTreeNode ProduceNode(int id)
@@ -380,7 +380,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public override void WriteThis(Transaction trans, BufferImpl a_writer)
 		{
-			a_writer.WriteByte(BTREE_VERSION);
+			a_writer.WriteByte(BtreeVersion);
 			a_writer.WriteInt(_size);
 			a_writer.WriteInt(NodeSize());
 			a_writer.WriteIDOf(trans, _root);
@@ -458,7 +458,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual void DefragIndex(DefragmentContextImpl context)
 		{
-			context.IncrementOffset(DEFRAGMENT_INCREMENT_OFFSET);
+			context.IncrementOffset(DefragmentIncrementOffset);
 			context.CopyID();
 		}
 

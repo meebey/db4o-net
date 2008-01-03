@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	public abstract class MsgQuery : MsgObject
 	{
-		private const int ID_AND_SIZE = 2;
+		private const int IdAndSize = 2;
 
 		private static int nextID;
 
@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			int queryResultId = 0;
 			int maxCount = 0;
-			if (evaluationMode == QueryEvaluationMode.IMMEDIATE)
+			if (evaluationMode == QueryEvaluationMode.Immediate)
 			{
 				maxCount = queryResult.Size();
 			}
@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				queryResultId = GenerateID();
 				maxCount = Config().PrefetchObjectCount();
 			}
-			MsgD message = QUERY_RESULT.GetWriterForLength(Transaction(), BufferLength(maxCount
+			MsgD message = QueryResult.GetWriterForLength(Transaction(), BufferLength(maxCount
 				));
 			StatefulBuffer writer = message.PayLoad();
 			writer.WriteInt(queryResultId);
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		private int BufferLength(int maxCount)
 		{
-			return Const4.INT_LENGTH * (maxCount + ID_AND_SIZE);
+			return Const4.IntLength * (maxCount + IdAndSize);
 		}
 
 		private static int GenerateID()

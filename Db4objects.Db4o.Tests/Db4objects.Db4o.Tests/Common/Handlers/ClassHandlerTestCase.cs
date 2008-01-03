@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			ClassHandlerTestCase.Item expectedItem = new ClassHandlerTestCase.Item("parent", 
 				new ClassHandlerTestCase.Item("child", null));
-			Db().Set(expectedItem);
+			Db().Store(expectedItem);
 			Db().Purge(expectedItem);
 			IQuery q = Db().Query();
 			q.Constrain(typeof(ClassHandlerTestCase.Item));

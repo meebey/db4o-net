@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public List4 _children;
 
-		public QE i_evaluator = QE.DEFAULT;
+		public QE i_evaluator = QE.Default;
 
 		public int i_id;
 
@@ -249,7 +249,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.DONOTINCLUDE.Log(i_id);
+				DTrace.Donotinclude.Log(i_id);
 			}
 			if (i_parent != null)
 			{
@@ -285,7 +285,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.COLLECT_CHILDREN.Log(i_id);
+				DTrace.CollectChildren.Log(i_id);
 			}
 			IEnumerator i = i_childrenCandidates.GetEnumerator();
 			while (i.MoveNext())
@@ -569,7 +569,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_joins == null)
 			{
-				return Iterators.EMPTY_ITERATOR;
+				return Iterators.EmptyIterator;
 			}
 			return i_joins.GetEnumerator();
 		}
@@ -578,7 +578,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (_children == null)
 			{
-				return Iterators.EMPTY_ITERATOR;
+				return Iterators.EmptyIterator;
 			}
 			return new Iterator4Impl(_children);
 		}

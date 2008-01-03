@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.CREATE_CANDIDATE.Log(id);
+				DTrace.CreateCandidate.Log(id);
 			}
 			_candidates = candidates;
 			_order = this;
@@ -279,7 +279,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					{
 						if (oldPending._result != newPending._result)
 						{
-							oldPending._result = QPending.BOTH;
+							oldPending._result = QPending.Both;
 						}
 					}
 					else
@@ -510,7 +510,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					{
 						if (DTrace.enabled)
 						{
-							DTrace.CANDIDATE_READ.Log(_key);
+							DTrace.CandidateRead.Log(_key);
 						}
 						SetBytes(Container().ReadReaderByID(Transaction(), _key));
 						if (_bytes == null)
@@ -588,7 +588,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					_yapClass = objectHeader.ClassMetadata();
 					if (_yapClass != null)
 					{
-						if (stream._handlers.ICLASS_COMPARE.IsAssignableFrom(_yapClass.ClassReflector()))
+						if (stream._handlers.IclassCompare.IsAssignableFrom(_yapClass.ClassReflector()))
 						{
 							ReadThis(false);
 						}
@@ -653,7 +653,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return;
 			}
 			HandlerVersion handlerVersion = _yapClass.FindOffset(_bytes, _yapField);
-			if (handlerVersion == HandlerVersion.INVALID)
+			if (handlerVersion == HandlerVersion.Invalid)
 			{
 				FieldNotFound();
 				return;
@@ -671,7 +671,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				_yapField = new NullFieldMetadata();
 			}
-			_handlerVersion = MarshallingContext.HANDLER_VERSION;
+			_handlerVersion = MarshallingContext.HandlerVersion;
 		}
 
 		internal virtual object Value()

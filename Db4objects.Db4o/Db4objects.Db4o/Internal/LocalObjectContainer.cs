@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public abstract class LocalObjectContainer : ExternalObjectContainer, IInternalObjectContainer
 	{
-		private const int DEFAULT_FREESPACE_ID = 0;
+		private const int DefaultFreespaceId = 0;
 
 		protected FileHeader _fileHeader;
 
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Internal
 		internal virtual void ConfigureNewFile()
 		{
 			NewSystemData(ConfigImpl().FreespaceSystem());
-			SystemData().ConverterVersion(Converter.VERSION);
+			SystemData().ConverterVersion(Converter.Version);
 			CreateStringIO(_systemData.StringEncoding());
 			GenerateNewIdentity();
 			_freespaceManager = AbstractFreespaceManager.CreateNew(this);
@@ -143,7 +143,7 @@ namespace Db4objects.Db4o.Internal
 		public sealed override AbstractQueryResult NewQueryResult(Transaction trans, QueryEvaluationMode
 			 mode)
 		{
-			if (mode == QueryEvaluationMode.IMMEDIATE)
+			if (mode == QueryEvaluationMode.Immediate)
 			{
 				return new IdListQueryResult(trans);
 			}
@@ -160,7 +160,7 @@ namespace Db4objects.Db4o.Internal
 				object obj = yo.GetObject();
 				if (obj != null)
 				{
-					if ((!ShowInternalClasses()) && Const4.CLASS_INTERNAL.IsAssignableFrom(obj.GetType
+					if ((!ShowInternalClasses()) && Const4.ClassInternal.IsAssignableFrom(obj.GetType
 						()))
 					{
 						return false;
@@ -192,7 +192,7 @@ namespace Db4objects.Db4o.Internal
 			Slot blockedSlot = ToBlockedLength(slot);
 			if (DTrace.enabled)
 			{
-				DTrace.FILE_FREE.LogLength(blockedSlot.Address(), blockedSlot.Length());
+				DTrace.FileFree.LogLength(blockedSlot.Address(), blockedSlot.Length());
 			}
 			_freespaceManager.Free(blockedSlot);
 		}
@@ -230,7 +230,7 @@ namespace Db4objects.Db4o.Internal
 
 			public void Visit(object a_object)
 			{
-				this._enclosing.Free(((TreeInt)a_object)._key, Const4.POINTER_LENGTH);
+				this._enclosing.Free(((TreeInt)a_object)._key, Const4.PointerLength);
 			}
 
 			private readonly LocalObjectContainer _enclosing;
@@ -259,7 +259,7 @@ namespace Db4objects.Db4o.Internal
 
 		public int GetPointerSlot()
 		{
-			int id = GetSlot(Const4.POINTER_LENGTH).Address();
+			int id = GetSlot(Const4.PointerLength).Address();
 			((LocalTransaction)SystemTransaction()).WriteZeroPointer(id);
 			if (_handlers.IsSystemHandler(id))
 			{
@@ -267,7 +267,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.GET_POINTER_SLOT.Log(id);
+				DTrace.GetPointerSlot.Log(id);
 			}
 			return id;
 		}
@@ -278,7 +278,7 @@ namespace Db4objects.Db4o.Internal
 			Slot slot = GetBlockedSlot(blocks);
 			if (DTrace.enabled)
 			{
-				DTrace.GET_SLOT.LogLength(slot.Address(), slot.Length());
+				DTrace.GetSlot.LogLength(slot.Address(), slot.Length());
 			}
 			return ToNonBlockedLength(slot);
 		}
@@ -457,7 +457,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.READ_ID.Log(a_id);
+				DTrace.ReadId.Log(a_id);
 			}
 			Slot slot = ((LocalTransaction)a_ta).GetCurrentSlotOfID(a_id);
 			if (slot == null)
@@ -470,7 +470,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.READ_SLOT.LogLength(slot.Address(), slot.Length());
+				DTrace.ReadSlot.LogLength(slot.Address(), slot.Length());
 			}
 			BufferImpl reader = null;
 			if (useReader)
@@ -494,7 +494,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="OldFormatException"></exception>
 		internal virtual void ReadThis()
 		{
-			NewSystemData(AbstractFreespaceManager.FM_LEGACY_RAM);
+			NewSystemData(AbstractFreespaceManager.FmLegacyRam);
 			BlockSizeReadFromFile(1);
 			_fileHeader = FileHeader.ReadFixedPart(this);
 			CreateStringIO(_systemData.StringEncoding());
@@ -528,7 +528,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (Converter.Convert(new ConversionStage.SystemUpStage(this)))
 			{
-				_systemData.ConverterVersion(Converter.VERSION);
+				_systemData.ConverterVersion(Converter.Version);
 				_fileHeader.WriteVariablePart(this, 1);
 				Transaction().Commit();
 			}
@@ -776,7 +776,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void WriteHeader(bool startFileLockingThread, bool shuttingDown)
 		{
-			int freespaceID = DEFAULT_FREESPACE_ID;
+			int freespaceID = DefaultFreespaceId;
 			if (shuttingDown)
 			{
 				freespaceID = _freespaceManager.Write();

@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 			public void Run(IObjectContainer client)
 			{
-				client.Set(new StandaloneCSTestCaseBase.Item());
+				client.Store(new StandaloneCSTestCaseBase.Item());
 			}
 
 			private readonly CallConstructorsConfigTestCase _enclosing;

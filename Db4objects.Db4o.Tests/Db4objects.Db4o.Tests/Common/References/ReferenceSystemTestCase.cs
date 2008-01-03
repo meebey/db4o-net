@@ -9,9 +9,9 @@ namespace Db4objects.Db4o.Tests.Common.References
 {
 	public class ReferenceSystemTestCase : AbstractDb4oTestCase
 	{
-		private static readonly int[] IDS = new int[] { 100, 134, 689, 666, 775 };
+		private static readonly int[] Ids = new int[] { 100, 134, 689, 666, 775 };
 
-		private static readonly object[] REFERENCES = CreateReferences();
+		private static readonly object[] References = CreateReferences();
 
 		public static void Main(string[] args)
 		{
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.References
 
 		private void AssertAllReferencesAvailable(IReferenceSystem referenceSystem)
 		{
-			AssertContains(referenceSystem, REFERENCES);
+			AssertContains(referenceSystem, References);
 		}
 
 		private void AssertContains(IReferenceSystem referenceSystem, object[] objects)
@@ -67,19 +67,19 @@ namespace Db4objects.Db4o.Tests.Common.References
 
 		private void FillReferenceSystem(IReferenceSystem referenceSystem)
 		{
-			for (int i = 0; i < REFERENCES.Length; i++)
+			for (int i = 0; i < References.Length; i++)
 			{
-				referenceSystem.AddNewReference((ObjectReference)REFERENCES[i]);
+				referenceSystem.AddNewReference((ObjectReference)References[i]);
 			}
 		}
 
 		private static object[] CreateReferences()
 		{
-			object[] references = new object[IDS.Length];
-			for (int i = 0; i < IDS.Length; i++)
+			object[] references = new object[Ids.Length];
+			for (int i = 0; i < Ids.Length; i++)
 			{
-				ObjectReference @ref = new ObjectReference(IDS[i]);
-				@ref.SetObject(IDS[i].ToString());
+				ObjectReference @ref = new ObjectReference(Ids[i]);
+				@ref.SetObject(Ids[i].ToString());
 				references[i] = @ref;
 			}
 			return references;

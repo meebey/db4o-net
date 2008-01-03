@@ -12,11 +12,11 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 	public class FieldIndexProcessorResult
 	{
 		public static readonly Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult
-			 NO_INDEX_FOUND = new Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult
+			 NoIndexFound = new Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult
 			(null);
 
 		public static readonly Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult
-			 FOUND_INDEX_BUT_NO_MATCH = new Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult
+			 FoundIndexButNoMatch = new Db4objects.Db4o.Internal.Fieldindex.FieldIndexProcessorResult
 			(null);
 
 		private readonly IIndexedNode _indexedNode;
@@ -47,12 +47,12 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		public virtual bool FoundIndex()
 		{
-			return this != NO_INDEX_FOUND;
+			return this != NoIndexFound;
 		}
 
 		public virtual bool NoMatch()
 		{
-			return this == FOUND_INDEX_BUT_NO_MATCH;
+			return this == FoundIndexButNoMatch;
 		}
 
 		public virtual IEnumerator IterateIDs()

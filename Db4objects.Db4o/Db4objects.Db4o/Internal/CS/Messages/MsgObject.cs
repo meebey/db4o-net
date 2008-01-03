@@ -8,9 +8,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	public class MsgObject : MsgD
 	{
-		private const int LENGTH_FOR_ALL = Const4.ID_LENGTH + (Const4.INT_LENGTH * 2);
+		private const int LengthForAll = Const4.IdLength + (Const4.IntLength * 2);
 
-		private const int LENGTH_FOR_FIRST = LENGTH_FOR_ALL;
+		private const int LengthForFirst = LengthForAll;
 
 		private int _id;
 
@@ -19,10 +19,10 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		internal MsgD GetWriter(Transaction trans, Pointer4 pointer, BufferImpl buffer, int
 			[] prependInts)
 		{
-			int lengthNeeded = buffer.Length() + LENGTH_FOR_FIRST;
+			int lengthNeeded = buffer.Length() + LengthForFirst;
 			if (prependInts != null)
 			{
-				lengthNeeded += (prependInts.Length * Const4.INT_LENGTH);
+				lengthNeeded += (prependInts.Length * Const4.IntLength);
 			}
 			MsgD message = GetWriterForLength(trans, lengthNeeded);
 			if (prependInts != null)
@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			}
 			_id = _payLoad.ReadInt();
 			_address = _payLoad.ReadInt();
-			_payLoad.RemoveFirstBytes(LENGTH_FOR_FIRST + addLengthBeforeFirst);
+			_payLoad.RemoveFirstBytes(LengthForFirst + addLengthBeforeFirst);
 			_payLoad.UseSlot(_id, _address, length);
 			return _payLoad;
 		}

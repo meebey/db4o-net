@@ -17,9 +17,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 {
 	public abstract class QueryResultTestCase : AbstractDb4oTestCase, IOptOutCS, IOptOutDefragSolo
 	{
-		private static readonly int[] VALUES = new int[] { 1, 5, 6, 7, 9 };
+		private static readonly int[] Values = new int[] { 1, 5, 6, 7, 9 };
 
-		private readonly int[] itemIds = new int[VALUES.Length];
+		private readonly int[] itemIds = new int[Values.Length];
 
 		private int idForGetAll;
 
@@ -102,7 +102,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			StoreItems(VALUES);
+			StoreItems(Values);
 			QueryResultTestCase.ItemForGetAll ifga = new QueryResultTestCase.ItemForGetAll();
 			Store(ifga);
 			idForGetAll = (int)Db().GetID(ifga);

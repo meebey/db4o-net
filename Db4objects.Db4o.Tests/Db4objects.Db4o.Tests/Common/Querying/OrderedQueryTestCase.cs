@@ -30,9 +30,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			Db().Set(new OrderedQueryTestCase.Item(1));
-			Db().Set(new OrderedQueryTestCase.Item(3));
-			Db().Set(new OrderedQueryTestCase.Item(2));
+			Db().Store(new OrderedQueryTestCase.Item(1));
+			Db().Store(new OrderedQueryTestCase.Item(3));
+			Db().Store(new OrderedQueryTestCase.Item(2));
 		}
 
 		public virtual void TestOrderAscending()

@@ -26,12 +26,12 @@ namespace Db4objects.Db4o.Internal.CS
 			ClearAll();
 			if (IsSystemTransaction())
 			{
-				i_client.Write(Msg.COMMIT_SYSTEMTRANS);
+				i_client.Write(Msg.CommitSystemtrans);
 			}
 			else
 			{
-				i_client.Write(Msg.COMMIT);
-				i_client.ExpectedResponse(Msg.OK);
+				i_client.Write(Msg.Commit);
+				i_client.ExpectedResponse(Msg.Ok);
 			}
 		}
 
@@ -71,34 +71,34 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				return false;
 			}
-			MsgD msg = Msg.TA_DELETE.GetWriterForInts(this, new int[] { id, cascade });
+			MsgD msg = Msg.TaDelete.GetWriterForInts(this, new int[] { id, cascade });
 			i_client.WriteBatchedMessage(msg);
 			return true;
 		}
 
 		public override bool IsDeleted(int a_id)
 		{
-			MsgD msg = Msg.TA_IS_DELETED.GetWriterForInt(this, a_id);
+			MsgD msg = Msg.TaIsDeleted.GetWriterForInt(this, a_id);
 			i_client.Write(msg);
-			int res = i_client.ExpectedByteResponse(Msg.TA_IS_DELETED).ReadInt();
+			int res = i_client.ExpectedByteResponse(Msg.TaIsDeleted).ReadInt();
 			return res == 1;
 		}
 
 		public sealed override HardObjectReference GetHardReferenceBySignature(long a_uuid
 			, byte[] a_signature)
 		{
-			int messageLength = Const4.LONG_LENGTH + Const4.INT_LENGTH + a_signature.Length;
-			MsgD message = Msg.OBJECT_BY_UUID.GetWriterForLength(this, messageLength);
+			int messageLength = Const4.LongLength + Const4.IntLength + a_signature.Length;
+			MsgD message = Msg.ObjectByUuid.GetWriterForLength(this, messageLength);
 			message.WriteLong(a_uuid);
 			message.WriteBytes(a_signature);
 			i_client.Write(message);
-			message = (MsgD)i_client.ExpectedResponse(Msg.OBJECT_BY_UUID);
+			message = (MsgD)i_client.ExpectedResponse(Msg.ObjectByUuid);
 			int id = message.ReadInt();
 			if (id > 0)
 			{
 				return Container().GetHardObjectReferenceById(this, id);
 			}
-			return HardObjectReference.INVALID;
+			return HardObjectReference.Invalid;
 		}
 
 		public override void ProcessDeletes()
@@ -108,7 +108,7 @@ namespace Db4objects.Db4o.Internal.CS
 				_delete.Traverse(new _IVisitor4_86(this));
 			}
 			_delete = null;
-			i_client.WriteBatchedMessage(Msg.PROCESS_DELETES);
+			i_client.WriteBatchedMessage(Msg.ProcessDeletes);
 		}
 
 		private sealed class _IVisitor4_86 : IVisitor4
@@ -141,8 +141,8 @@ namespace Db4objects.Db4o.Internal.CS
 		public override void WriteUpdateDeleteMembers(int a_id, ClassMetadata a_yc, int a_type
 			, int a_cascade)
 		{
-			MsgD msg = Msg.WRITE_UPDATE_DELETE_MEMBERS.GetWriterForInts(this, new int[] { a_id
-				, a_yc.GetID(), a_type, a_cascade });
+			MsgD msg = Msg.WriteUpdateDeleteMembers.GetWriterForInts(this, new int[] { a_id, 
+				a_yc.GetID(), a_type, a_cascade });
 			i_client.WriteBatchedMessage(msg);
 		}
 	}

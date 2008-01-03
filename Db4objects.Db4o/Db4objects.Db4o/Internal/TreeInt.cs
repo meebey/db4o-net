@@ -144,7 +144,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int OwnLength()
 		{
-			return Const4.INT_LENGTH;
+			return Const4.IntLength;
 		}
 
 		internal virtual bool VariableLength()
@@ -197,7 +197,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (a_tree == null)
 			{
-				return Const4.INT_LENGTH;
+				return Const4.IntLength;
 			}
 			return a_tree.MarshalledLength();
 		}
@@ -206,11 +206,11 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (VariableLength())
 			{
-				IntByRef mint = new IntByRef(Const4.INT_LENGTH);
+				IntByRef mint = new IntByRef(Const4.IntLength);
 				Traverse(new _IVisitor4_152(this, mint));
 				return mint.value;
 			}
-			return Const4.INT_LENGTH + (Size() * OwnLength());
+			return Const4.IntLength + (Size() * OwnLength());
 		}
 
 		private sealed class _IVisitor4_152 : IVisitor4

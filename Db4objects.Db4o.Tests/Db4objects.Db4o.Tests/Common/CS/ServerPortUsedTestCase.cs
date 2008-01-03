@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 {
 	public class ServerPortUsedTestCase : Db4oClientServerTestCase
 	{
-		private static readonly string DB = "PortUsed.db";
+		private static readonly string DatabaseFile = "PortUsed.db";
 
 		public static void Main(string[] args)
 		{
@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		/// <exception cref="Exception"></exception>
 		protected override void Db4oTearDownBeforeClean()
 		{
-			File4.Delete(DB);
+			File4.Delete(DatabaseFile);
 		}
 
 		public virtual void Test()
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				Db4oFactory.OpenServer(ServerPortUsedTestCase.DB, port);
+				Db4oFactory.OpenServer(ServerPortUsedTestCase.DatabaseFile, port);
 			}
 
 			private readonly ServerPortUsedTestCase _enclosing;

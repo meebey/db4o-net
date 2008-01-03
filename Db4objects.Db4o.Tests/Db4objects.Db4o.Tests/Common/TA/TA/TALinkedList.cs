@@ -41,19 +41,19 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 		public virtual int Value()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return value;
 		}
 
 		public virtual Db4objects.Db4o.Tests.Common.TA.TA.TALinkedList Next()
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			return next;
 		}
 
 		public override bool Equals(object other)
 		{
-			Activate(ActivationPurpose.READ);
+			Activate(ActivationPurpose.Read);
 			Db4objects.Db4o.Tests.Common.TA.TA.TALinkedList otherList = (Db4objects.Db4o.Tests.Common.TA.TA.TALinkedList
 				)other;
 			if (value != otherList.Value())

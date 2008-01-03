@@ -21,10 +21,10 @@ namespace Db4oUnit.Extensions
 		[System.NonSerialized]
 		private IDb4oFixture _fixture;
 
-		private const int DEFAULT_CONCURRENCY_THREAD_COUNT = 10;
+		private const int DefaultConcurrencyThreadCount = 10;
 
 		[System.NonSerialized]
-		private int _threadCount = DEFAULT_CONCURRENCY_THREAD_COUNT;
+		private int _threadCount = DefaultConcurrencyThreadCount;
 
 		public virtual void Fixture(IDb4oFixture fixture)
 		{
@@ -404,7 +404,7 @@ namespace Db4oUnit.Extensions
 
 		public void Store(object obj)
 		{
-			Db().Set(obj);
+			Db().Store(obj);
 		}
 
 		protected virtual ClassMetadata ClassMetadataFor(Type clazz)

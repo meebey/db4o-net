@@ -11,22 +11,22 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			new BTreeRollbackTestCase().RunSolo();
 		}
 
-		private static readonly int[] COMMITTED_VALUES = new int[] { 6, 8, 15, 45, 43, 9, 
+		private static readonly int[] CommittedValues = new int[] { 6, 8, 15, 45, 43, 9, 
 			23, 25, 7, 3, 2 };
 
-		private static readonly int[] ROLLED_BACK_VALUES = new int[] { 16, 18, 115, 19, 17
-			, 13, 12 };
+		private static readonly int[] RolledBackValues = new int[] { 16, 18, 115, 19, 17, 
+			13, 12 };
 
 		public virtual void Test()
 		{
-			Add(COMMITTED_VALUES);
+			Add(CommittedValues);
 			CommitBTree();
 			for (int i = 0; i < 5; i++)
 			{
-				Add(ROLLED_BACK_VALUES);
+				Add(RolledBackValues);
 				RollbackBTree();
 			}
-			BTreeAssert.AssertKeys(Trans(), _btree, COMMITTED_VALUES);
+			BTreeAssert.AssertKeys(Trans(), _btree, CommittedValues);
 		}
 
 		private void CommitBTree()

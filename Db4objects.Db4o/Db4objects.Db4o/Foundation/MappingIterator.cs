@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Foundation
 
 		private object _current;
 
-		public static readonly object SKIP = new object();
+		public static readonly object Skip = new object();
 
 		public MappingIterator(IEnumerator iterator)
 		{
@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Foundation
 				throw new ArgumentNullException();
 			}
 			_iterator = iterator;
-			_current = Iterators.NO_ELEMENT;
+			_current = Iterators.NoElement;
 		}
 
 		protected abstract object Map(object current);
@@ -33,18 +33,18 @@ namespace Db4objects.Db4o.Foundation
 			{
 				if (!_iterator.MoveNext())
 				{
-					_current = Iterators.NO_ELEMENT;
+					_current = Iterators.NoElement;
 					return false;
 				}
 				_current = Map(_iterator.Current);
 			}
-			while (_current == SKIP);
+			while (_current == Skip);
 			return true;
 		}
 
 		public virtual void Reset()
 		{
-			_current = Iterators.NO_ELEMENT;
+			_current = Iterators.NoElement;
 			_iterator.Reset();
 		}
 
@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			get
 			{
-				if (Iterators.NO_ELEMENT == _current)
+				if (Iterators.NoElement == _current)
 				{
 					throw new InvalidOperationException();
 				}

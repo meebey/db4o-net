@@ -28,14 +28,15 @@ namespace Db4oUnit.Extensions.Tests
 		{
 			Assert.IsTrue(EverythingCalledBefore(1));
 			_everythingCalled[1] = true;
-			Fixture().Db().Set(new SimpleDb4oTestCase.Data());
+			Fixture().Db().Store(new SimpleDb4oTestCase.Data());
 		}
 
 		public virtual void TestResultSize()
 		{
 			Assert.IsTrue(EverythingCalledBefore(2));
 			_everythingCalled[2] = true;
-			Assert.AreEqual(1, Fixture().Db().Get(typeof(SimpleDb4oTestCase.Data)).Size());
+			Assert.AreEqual(1, Fixture().Db().QueryByExample(typeof(SimpleDb4oTestCase.Data))
+				.Size());
 		}
 
 		public virtual bool EverythingCalled()

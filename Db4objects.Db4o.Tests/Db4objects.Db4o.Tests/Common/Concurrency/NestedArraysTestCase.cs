@@ -18,9 +18,9 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public object[] _objectArray;
 
-		private const int DEPTH = 5;
+		private const int Depth = 5;
 
-		private const int ELEMENTS = 3;
+		private const int Elements = 3;
 
 		public NestedArraysTestCase()
 		{
@@ -28,10 +28,10 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		protected override void Store()
 		{
-			_object = new object[ELEMENTS];
-			Fill((object[])_object, DEPTH);
-			_objectArray = new object[ELEMENTS];
-			Fill(_objectArray, DEPTH);
+			_object = new object[Elements];
+			Fill((object[])_object, Depth);
+			_objectArray = new object[Elements];
+			Fill(_objectArray, Depth);
 			Store(this);
 		}
 
@@ -44,9 +44,9 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				return;
 			}
 			depth--;
-			for (int i = 0; i < ELEMENTS; i++)
+			for (int i = 0; i < Elements; i++)
 			{
-				arr[i] = new object[ELEMENTS];
+				arr[i] = new object[Elements];
 				Fill((object[])arr[i], depth);
 			}
 		}
@@ -56,8 +56,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase nr = (Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase
 				)RetrieveOnlyInstance(oc, typeof(Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase
 				));
-			Check((object[])nr._object, DEPTH);
-			Check((object[])nr._objectArray, DEPTH);
+			Check((object[])nr._object, Depth);
+			Check((object[])nr._objectArray, Depth);
 		}
 
 		private void Check(object[] arr, int depth)
@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				return;
 			}
 			depth--;
-			for (int i = 0; i < ELEMENTS; i++)
+			for (int i = 0; i < Elements; i++)
 			{
 				Check((object[])arr[i], depth);
 			}

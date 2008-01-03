@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			Assert.IsNotNull(info);
 			SystemInfoTestCase.Item item = new SystemInfoTestCase.Item();
-			Db().Set(item);
+			Db().Store(item);
 			Db().Commit();
 			Db().Delete(item);
 			Db().Commit();

@@ -74,8 +74,8 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 			ResetProvider();
 			QueryItem();
 			AssertProviderCalled(new MethodCall[] { new MethodCall("activationDepthFor", ItemRootMetadata
-				(), ActivationMode.PREFETCH), new MethodCall("activationDepthFor", ItemRootMetadata
-				(), ActivationMode.ACTIVATE) });
+				(), ActivationMode.Prefetch), new MethodCall("activationDepthFor", ItemRootMetadata
+				(), ActivationMode.Activate) });
 		}
 
 		public virtual void TestSoloActivationDepthFor()
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 			}
 			ResetProvider();
 			QueryItem();
-			AssertProviderCalled("activationDepthFor", ItemRootMetadata(), ActivationMode.ACTIVATE
+			AssertProviderCalled("activationDepthFor", ItemRootMetadata(), ActivationMode.Activate
 				);
 		}
 
@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 			ActivationDepthProviderConfigTestCase.Item item = QueryItem();
 			ResetProvider();
 			Db().Activate(item, 3);
-			AssertProviderCalled("activationDepth", 3, ActivationMode.ACTIVATE);
+			AssertProviderCalled("activationDepth", 3, ActivationMode.Activate);
 		}
 
 		private bool IsNetworkCS()

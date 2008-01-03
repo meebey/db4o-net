@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				bool isDeleted = Transaction().IsDeleted(ReadInt());
 				int ret = isDeleted ? 1 : 0;
-				Write(Msg.TA_IS_DELETED.GetWriterForInt(Transaction(), ret));
+				Write(Msg.TaIsDeleted.GetWriterForInt(Transaction(), ret));
 			}
 			return true;
 		}

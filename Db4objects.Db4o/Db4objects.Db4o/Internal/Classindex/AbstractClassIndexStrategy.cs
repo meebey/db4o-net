@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public virtual int OwnLength()
 		{
-			return Const4.ID_LENGTH;
+			return Const4.IdLength;
 		}
 
 		protected abstract void InternalAdd(Transaction trans, int id);
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.ADD_TO_CLASS_INDEX.Log(id);
+				DTrace.AddToClassIndex.Log(id);
 			}
 			CheckId(id);
 			InternalAdd(trans, id);
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.REMOVE_FROM_CLASS_INDEX.Log(id);
+				DTrace.RemoveFromClassIndex.Log(id);
 			}
 			CheckId(id);
 			InternalRemove(ta, id);

@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Diagnostic
 
 		public override string ToString()
 		{
-			return ":: db4o " + Db4oVersion.NAME + " Diagnostics ::\n  " + Reason() + " :: " 
+			return ":: db4o " + Db4oVersion.Name + " Diagnostics ::\n  " + Reason() + " :: " 
 				+ Problem() + "\n    " + Solution();
 		}
 	}

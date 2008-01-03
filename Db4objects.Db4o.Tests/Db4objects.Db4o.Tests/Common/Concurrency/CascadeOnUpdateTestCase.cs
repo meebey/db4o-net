@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			new CascadeOnUpdateTestCase().RunConcurrency();
 		}
 
-		private const int ATOM_COUNT = 10;
+		private const int AtomCount = 10;
 
 		public class Item
 		{
@@ -32,8 +32,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		protected override void Store()
 		{
 			CascadeOnUpdateTestCase.Item item = new CascadeOnUpdateTestCase.Item();
-			item.child = new Atom[ATOM_COUNT];
-			for (int i = 0; i < ATOM_COUNT; i++)
+			item.child = new Atom[AtomCount];
+			for (int i = 0; i < AtomCount; i++)
 			{
 				item.child[i] = new Atom(new Atom("storedChild"), "stored");
 			}
@@ -44,11 +44,11 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		{
 			CascadeOnUpdateTestCase.Item item = (CascadeOnUpdateTestCase.Item)RetrieveOnlyInstance
 				(oc, typeof(CascadeOnUpdateTestCase.Item));
-			for (int i = 0; i < ATOM_COUNT; i++)
+			for (int i = 0; i < AtomCount; i++)
 			{
 				item.child[i].name = "updated" + seq;
 				item.child[i].child.name = "updated" + seq;
-				oc.Set(item);
+				oc.Store(item);
 			}
 		}
 
@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				(typeof(CascadeOnUpdateTestCase.Item));
 			string name = item.child[0].name;
 			Assert.IsTrue(name.StartsWith("updated"));
-			for (int i = 0; i < ATOM_COUNT; i++)
+			for (int i = 0; i < AtomCount; i++)
 			{
 				Assert.AreEqual(name, item.child[i].name);
 				Assert.AreEqual(name, item.child[i].child.name);

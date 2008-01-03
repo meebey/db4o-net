@@ -114,25 +114,25 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 			ITypeRef operandType = ArithmeticType(operand);
 			switch (operand.Op().Id())
 			{
-				case ArithmeticOperator.ADD_ID:
+				case ArithmeticOperator.AddId:
 				{
 					_methodBuilder.Add(operandType);
 					break;
 				}
 
-				case ArithmeticOperator.SUBTRACT_ID:
+				case ArithmeticOperator.SubtractId:
 				{
 					_methodBuilder.Subtract(operandType);
 					break;
 				}
 
-				case ArithmeticOperator.MULTIPLY_ID:
+				case ArithmeticOperator.MultiplyId:
 				{
 					_methodBuilder.Multiply(operandType);
 					break;
 				}
 
-				case ArithmeticOperator.DIVIDE_ID:
+				case ArithmeticOperator.DivideId:
 				{
 					_methodBuilder.Divide(operandType);
 					break;

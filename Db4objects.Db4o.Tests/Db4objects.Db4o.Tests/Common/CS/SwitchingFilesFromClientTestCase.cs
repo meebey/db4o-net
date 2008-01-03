@@ -13,11 +13,11 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			{
 				return;
 			}
-			Client().SwitchToFile(SwitchingFilesFromClientUtil.FILENAME_A);
-			Client().SwitchToFile(SwitchingFilesFromClientUtil.FILENAME_B);
+			Client().SwitchToFile(SwitchingFilesFromClientUtil.FilenameA);
+			Client().SwitchToFile(SwitchingFilesFromClientUtil.FilenameB);
 			Client().SwitchToMainFile();
-			Client().SwitchToFile(SwitchingFilesFromClientUtil.FILENAME_A);
-			Client().SwitchToFile(SwitchingFilesFromClientUtil.FILENAME_A);
+			Client().SwitchToFile(SwitchingFilesFromClientUtil.FilenameA);
+			Client().SwitchToFile(SwitchingFilesFromClientUtil.FilenameA);
 		}
 
 		/// <exception cref="Exception"></exception>

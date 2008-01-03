@@ -12,22 +12,22 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 {
 	public class ArrayList4SODATestCase : TransparentActivationTestCaseBase
 	{
-		private static readonly Product PRODUCT_BATERY = new Product("BATE", "Batery 9v");
+		private static readonly Product ProductBatery = new Product("BATE", "Batery 9v");
 
-		private static readonly Product PRODUCT_KEYBOARD = new Product("KEYB", "Wireless keyboard"
+		private static readonly Product ProductKeyboard = new Product("KEYB", "Wireless keyboard"
 			);
 
-		private static readonly Product PRODUCT_CHOCOLATE = new Product("CHOC", "Chocolate"
+		private static readonly Product ProductChocolate = new Product("CHOC", "Chocolate"
 			);
 
-		private static readonly Product PRODUCT_MOUSE = new Product("MOUS", "Wireless Mouse"
+		private static readonly Product ProductMouse = new Product("MOUS", "Wireless Mouse"
 			);
 
-		private static readonly Product PRODUCT_NOTE = new Product("NOTE", "Core Quad notebook with 1 Tb memory"
+		private static readonly Product ProductNote = new Product("NOTE", "Core Quad notebook with 1 Tb memory"
 			);
 
-		private static readonly Product[] products = new Product[] { PRODUCT_BATERY, PRODUCT_CHOCOLATE
-			, PRODUCT_KEYBOARD, PRODUCT_MOUSE, PRODUCT_NOTE };
+		private static readonly Product[] products = new Product[] { ProductBatery, ProductChocolate
+			, ProductKeyboard, ProductMouse, ProductNote };
 
 		public virtual void TestSODAAutodescend()
 		{

@@ -24,11 +24,11 @@ namespace Db4objects.Db4o.Internal.Query.Result
 		private static AbstractQueryResult ForMode(Transaction transaction, QueryEvaluationMode
 			 mode)
 		{
-			if (mode == QueryEvaluationMode.LAZY)
+			if (mode == QueryEvaluationMode.Lazy)
 			{
 				return new LazyQueryResult(transaction);
 			}
-			if (mode == QueryEvaluationMode.SNAPSHOT)
+			if (mode == QueryEvaluationMode.Snapshot)
 			{
 				return new SnapShotQueryResult(transaction);
 			}

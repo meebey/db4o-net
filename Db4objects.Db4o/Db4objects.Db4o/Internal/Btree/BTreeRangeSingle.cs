@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		public static readonly IComparison4 COMPARISON = new _IComparison4_14();
+		public static readonly IComparison4 Comparison = new _IComparison4_14();
 
 		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
