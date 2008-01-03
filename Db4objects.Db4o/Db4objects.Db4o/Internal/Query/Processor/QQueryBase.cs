@@ -366,7 +366,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				if (i_constraints.Size() == 0)
 				{
-					return Stream().GetAll(_trans);
+					return Stream().QueryAllObjects(_trans);
 				}
 				IQueryResult result = ClassOnlyQuery();
 				if (result != null)

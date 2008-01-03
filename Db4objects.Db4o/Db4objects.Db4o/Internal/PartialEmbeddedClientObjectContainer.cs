@@ -427,7 +427,7 @@ namespace Db4objects.Db4o.Internal
 			lock (Lock())
 			{
 				CheckClosed();
-				return _server.Get(_transaction, template);
+				return _server.QueryByExample(_transaction, template);
 			}
 		}
 

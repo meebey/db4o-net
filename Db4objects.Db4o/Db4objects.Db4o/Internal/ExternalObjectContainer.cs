@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="DatabaseClosedException"></exception>
 		public IObjectSet QueryByExample(object template)
 		{
-			return Get(null, template);
+			return QueryByExample(null, template);
 		}
 
 		/// <exception cref="DatabaseClosedException"></exception>

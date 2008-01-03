@@ -864,7 +864,7 @@ namespace Db4objects.Db4o.Internal
 			_references.PollReferenceQueue();
 		}
 
-		public IObjectSet Get(Transaction trans, object template)
+		public IObjectSet QueryByExample(Transaction trans, object template)
 		{
 			lock (_lock)
 			{
@@ -873,7 +873,7 @@ namespace Db4objects.Db4o.Internal
 				try
 				{
 					BeginTopLevelCall();
-					res = GetInternal(trans, template);
+					res = QueryByExampleInternal(trans, template);
 					CompleteTopLevelCall();
 				}
 				catch (Db4oException e)
@@ -888,18 +888,18 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private IQueryResult GetInternal(Transaction trans, object template)
+		private IQueryResult QueryByExampleInternal(Transaction trans, object template)
 		{
 			if (template == null || template.GetType() == Const4.ClassObject)
 			{
-				return GetAll(trans);
+				return QueryAllObjects(trans);
 			}
 			IQuery q = Query(trans);
 			q.Constrain(template);
 			return ExecuteQuery((QQuery)q);
 		}
 
-		public abstract AbstractQueryResult GetAll(Transaction ta);
+		public abstract AbstractQueryResult QueryAllObjects(Transaction ta);
 
 		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="InvalidIDException"></exception>
@@ -1558,7 +1558,7 @@ namespace Db4objects.Db4o.Internal
 
 		public IObjectSet Query(Transaction trans, Type clazz)
 		{
-			return Get(trans, clazz);
+			return QueryByExample(trans, clazz);
 		}
 
 		public IQuery Query(Transaction ta)
@@ -1687,7 +1687,7 @@ namespace Db4objects.Db4o.Internal
 			while (i.MoveNext())
 			{
 				Rename ren = (Rename)i.Current;
-				if (Get(SystemTransaction(), ren).Size() == 0)
+				if (QueryByExample(SystemTransaction(), ren).Size() == 0)
 				{
 					bool renamed = false;
 					bool isField = ren.rClass.Length > 0;
@@ -1718,8 +1718,8 @@ namespace Db4objects.Db4o.Internal
 						renamedOne = true;
 						SetDirtyInSystemTransaction(yapClass);
 						LogMsg(8, ren.rFrom + " to " + ren.rTo);
-						IObjectSet backren = Get(SystemTransaction(), new Rename(ren.rClass, null, ren.rFrom
-							));
+						IObjectSet backren = QueryByExample(SystemTransaction(), new Rename(ren.rClass, null
+							, ren.rFrom));
 						while (backren.HasNext())
 						{
 							Delete(SystemTransaction(), backren.Next());

@@ -333,7 +333,7 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		public override AbstractQueryResult GetAll(Transaction trans)
+		public override AbstractQueryResult QueryAllObjects(Transaction trans)
 		{
 			int mode = Config().QueryEvaluationMode().AsInt();
 			MsgD msg = Msg.GetAll.GetWriterForInt(trans, mode);
