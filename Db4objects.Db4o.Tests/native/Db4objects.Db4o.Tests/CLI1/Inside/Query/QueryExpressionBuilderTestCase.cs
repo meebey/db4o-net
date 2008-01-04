@@ -20,15 +20,59 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 			public string name;
 		}
 
+		public class ActivatableItem : Item, IActivatable
+		{
+			public void Bind(IActivator activator) {}
+			public void Activate(ActivationPurpose purpose){}
+			public void Activate(string str) {}
+		}
+
 		bool MatchWithActivate(Item item)
 		{
 			((IActivatable) item).Activate(ActivationPurpose.Read);
 			return item.name.StartsWith("foo");
 		}
 
+		bool MatchActivateableCall(ActivatableItem item)
+		{
+			item.Activate(ActivationPurpose.Read);
+			return item.name.StartsWith("foo");
+		}
+		
+		bool NotMatchWrongActivateCall(ActivatableItem item)
+		{
+			item.Activate("foo");
+			return item.name.StartsWith("foo");
+		}
+
 		public void TestActivateCallsAreIgnored()
 		{
-			IExpression expression = ExpressionFromMethod("MatchWithActivate");
+			AssertActivatableCallsAreIgnored("MatchWithActivate");
+		}
+
+		public void TestActivateCallsOnOverridenActivateMethodsAreIgnored()
+		{
+			AssertActivatableCallsAreIgnored("MatchActivateableCall");
+		}
+		
+		public void TestWrongActivateCallAreNotIngnored()
+		{
+			bool exceptionRaised = false;
+			try
+			{
+				AssertActivatableCallsAreIgnored("NotMatchWrongActivateCall");
+			}
+			catch(UnsupportedPredicateException upe)
+			{
+				exceptionRaised = true;
+			}
+
+			Assert.IsTrue(exceptionRaised, "Unoptimized predicate exception not raised");
+		}
+
+		private void AssertActivatableCallsAreIgnored(string methodName)
+		{
+			IExpression expression = ExpressionFromMethod(methodName);
 			Assert.AreEqual(
 				new ComparisonExpression(
 					NewFieldValue(CandidateFieldRoot.Instance, "name", typeof(string)),

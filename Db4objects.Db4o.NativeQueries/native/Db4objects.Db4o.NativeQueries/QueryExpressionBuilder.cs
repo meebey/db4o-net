@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2004-2006   db4objects Inc.   http://www.db4o.com */
 
 
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Instrumentation.Cecil;
 using Db4objects.Db4o.TA;
 
@@ -264,7 +265,31 @@ namespace Db4objects.Db4o.NativeQueries
 		private static bool IsActivateMethod(MethodReference method)
 		{
 			if (method.Name != "Activate") return false;
-			return method.DeclaringType.FullName == typeof(IActivatable).FullName;
+			return method.DeclaringType.FullName == typeof(IActivatable).FullName ||
+				   IsOverridenActivateMethod(method);
+		}
+
+		private static bool IsOverridenActivateMethod(MethodReference method)
+		{
+			TypeDefinition declaringType = FindTypeDefinition(method.DeclaringType.Module, method.DeclaringType.FullName);
+			if (!DeclaringTypeImplementsIActivatable(declaringType)) return false;
+			if (method.Parameters.Count != 1 || 
+				method.Parameters[0].ParameterType.FullName != typeof(ActivationPurpose).FullName) return false;
+
+			return true;
+		}
+
+		private static bool DeclaringTypeImplementsIActivatable(TypeDefinition type)
+		{
+			foreach (TypeReference itf in type.Interfaces)
+			{
+				if (itf.FullName == typeof (IActivatable).FullName)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		class Visitor : AbstractCodeStructureVisitor
