@@ -11,12 +11,13 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
     class ArrayList4TATestCase : TransparentActivationTestCaseBase
     {
         private const int SIZE = 50;
+
         protected override void Store()
         {
-            IList<string> list = new ArrayList4<string>(SIZE);
-            for(int i =0; i < list.Count; i++)
+            IList<string> list = new ArrayList4<string>();
+            for(int i=0; i < SIZE; i++)
             {
-                list[i] = i.ToString();
+            	list.Add(i.ToString());
             }
             Store(list);
         }

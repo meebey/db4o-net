@@ -23,6 +23,13 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
         #region Test Methods 
 
+		public void TestInitialCapacityDoesntImplyCount()
+		{
+			ArrayList4<int> list = new ArrayList4<int>(10);
+			Assert.AreEqual(0, list.Count);
+			Assert.Expect(typeof(ArgumentOutOfRangeException), delegate { list[0] = 42; });
+		}
+
         public void TestAddDifferentTypes()
         {
             ArrayList4Asserter.TestAddDifferentTypes(ArrayList4Asserter.CreateArrayListAndAssertValues(10), "No way my friend");

@@ -256,16 +256,16 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
         public static void AssertEnumerable<T>(IList<T> list, IEnumerable<T> expected)
         {
-            int count = list.Count;
+        	int count = 0;
             IEnumerator<T> expectedEnum = expected.GetEnumerator();
             foreach (T item in list)
             {
                 Assert.IsTrue(expectedEnum.MoveNext());
                 Assert.AreEqual(item, expectedEnum.Current);
-                count--;
+            	++count;
             }
 
-            Assert.AreEqual(0, count);
+            Assert.AreEqual(count, list.Count);
             Assert.IsFalse(expectedEnum.MoveNext());
         }
 
@@ -301,24 +301,16 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
         {
             IList<int> list = CreateArrayList(size);
             Assert.AreEqual(size, list.Count);
-
             return list;
         }
 
-        private static IList<T> CreateEmptyArrayList<T>(int len)
-        {
-            return new ArrayList4<T>(len);
-        }
-
         public static IList<int> CreateArrayList(int count)
-        {
-            //List<int> list = new List<int>(count);
-            IList<int> list = CreateEmptyArrayList<int>(count);
-            for (int i = 0; i < list.Count; i++)
+        {   
+        	IList<int> list = new ArrayList4<int>();
+            for (int i = 0; i < count; i++)
             {
-                list[i] = ValueForIndex(i);
+            	list.Add(ValueForIndex(i));
             }
-
             return list;
         }
 

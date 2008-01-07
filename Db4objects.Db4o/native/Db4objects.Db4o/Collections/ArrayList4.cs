@@ -137,16 +137,18 @@ namespace Db4objects.Db4o.Collections
 
         IEnumerator<E> IEnumerable<E>.GetEnumerator()
         {
+			Activate(ActivationPurpose.Read);
             int version = modCount;
-            foreach (E item in elements)
-            {
-                if (version != modCount)
-                {
-                    throw new InvalidOperationException();
-                }
+        	int size = listSize;
+			for (int i = 0; i < size; ++i)
+			{
+				if (version != modCount)
+				{
+					throw new InvalidOperationException();
+				}
 
-                yield return item;
-            };
+				yield return elements[i];
+			};
         }
 
         public IEnumerator GetEnumerator()
@@ -265,11 +267,6 @@ namespace Db4objects.Db4o.Collections
             {
                 throw new ArgumentOutOfRangeException(String.Format("Index {0} must be in the range[{1} - {2}]", index, from, to));
             }
-        }
-        
-        private static int AdjustSize(int initialCapacity)
-        {
-            return initialCapacity;
         }
 
         private static E[] AllocateStorage(int size)
