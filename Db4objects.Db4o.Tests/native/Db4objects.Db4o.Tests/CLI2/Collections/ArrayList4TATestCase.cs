@@ -51,7 +51,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
             Assert.AreEqual(10, GetField(Reflector(), list, "listSize"));
 #else 
             Assert.IsNull(GetField(Reflector(), list, "elements"));
-            Assert.AreEqual(default(int), GetField(Reflector(), list, "capacity"));
             Assert.AreEqual(default(int), GetField(Reflector(), list, "listSize"));
 #endif
         }
