@@ -27,8 +27,6 @@ namespace Db4objects.Db4o.Collections
 	{
 		private E[] elements;
 
-		private int capacity;
-
 		private int listSize;
 
 		[System.NonSerialized]
@@ -50,7 +48,11 @@ namespace Db4objects.Db4o.Collections
 		/// <seealso cref="IActivatable">IActivatable</seealso>
 		public virtual void Bind(IActivator activator)
 		{
-			if (_activator != null || activator == null)
+			if (_activator == activator)
+			{
+				return;
+			}
+			if (activator != null && _activator != null)
 			{
 				throw new InvalidOperationException();
 			}
@@ -68,8 +70,7 @@ namespace Db4objects.Db4o.Collections
 		public ArrayList4(ICollection<E> c)
 		{
 			E[] data = CollectionToArray(c);
-			capacity = data.Length;
-			elements = AllocateStorage(capacity);
+			elements = AllocateStorage(data.Length);
 			listSize = data.Length;
 			System.Array.Copy(data, 0, elements, 0, data.Length);
 		}
@@ -82,9 +83,8 @@ namespace Db4objects.Db4o.Collections
 			{
 				throw new ArgumentException();
 			}
-			capacity = initialCapacity;
 			elements = AllocateStorage(initialCapacity);
-			listSize = AdjustSize(initialCapacity);
+			listSize = 0;
 		}
 
 		/// <summary>
@@ -101,10 +101,16 @@ namespace Db4objects.Db4o.Collections
 		{
 			CheckIndex(index, 0, Count);
 			EnsureCapacity(Count + 1);
-			System.Array.Copy(elements, index, elements, index + 1, listSize - index);
+			ArrayCopyElements(index, index + 1, listSize - index);
 			elements[index] = element;
 			IncreaseSize(1);
 			MarkModified();
+		}
+
+		private void ArrayCopyElements(int sourceIndex, int targetIndex, int length)
+		{
+			ActivateForWrite();
+			System.Array.Copy(elements, sourceIndex, elements, targetIndex, length);
 		}
 
 		internal bool AddAllImpl(int index, E[] toBeAdded)
@@ -116,7 +122,7 @@ namespace Db4objects.Db4o.Collections
 				return false;
 			}
 			EnsureCapacity(Count + length);
-			System.Array.Copy(elements, index, elements, index + length, Count - index);
+			ArrayCopyElements(index, index + length, Count - index);
 			System.Array.Copy(toBeAdded, 0, elements, index, length);
 			IncreaseSize(length);
 			MarkModified();
@@ -136,6 +142,7 @@ namespace Db4objects.Db4o.Collections
 		public virtual void Clear()
 		{
 			int size = Count;
+			ActivateForWrite();
 			Arrays.Fill(elements, 0, size, DefaultValue());
 			SetSize(0);
 			MarkModified();
@@ -154,11 +161,16 @@ namespace Db4objects.Db4o.Collections
 		public virtual void EnsureCapacity(int minCapacity)
 		{
 			Activate(ActivationPurpose.Read);
-			if (minCapacity <= capacity)
+			if (minCapacity <= Capacity())
 			{
 				return;
 			}
 			Resize(minCapacity);
+		}
+
+		private int Capacity()
+		{
+			return elements.Length;
 		}
 
 		/// <summary>
@@ -191,7 +203,7 @@ namespace Db4objects.Db4o.Collections
 		{
 			int size = Count;
 			E element = Get(index);
-			System.Array.Copy(elements, index + 1, elements, index, size - index - 1);
+			ArrayCopyElements(index + 1, index, size - index - 1);
 			elements[size - 1] = DefaultValue();
 			DecreaseSize(1);
 			MarkModified();
@@ -230,6 +242,7 @@ namespace Db4objects.Db4o.Collections
 		internal virtual E Set(int index, E element)
 		{
 			E oldValue = Get(index);
+			ActivateForWrite();
 			elements[index] = element;
 			return oldValue;
 		}
@@ -265,6 +278,7 @@ namespace Db4objects.Db4o.Collections
 		/// <seealso cref="IActivatable">IActivatable</seealso>
 		public virtual void TrimExcess()
 		{
+			ActivateForWrite();
 			Resize(Count);
 		}
 
@@ -274,7 +288,6 @@ namespace Db4objects.Db4o.Collections
 			E[] temp = AllocateStorage(minCapacity);
 			System.Array.Copy(elements, 0, temp, 0, Count);
 			elements = temp;
-			capacity = minCapacity;
 		}
 
 		internal virtual void SetSize(int count)
@@ -295,6 +308,11 @@ namespace Db4objects.Db4o.Collections
 		internal virtual void MarkModified()
 		{
 			++modCount;
+		}
+
+		private void ActivateForWrite()
+		{
+			Activate(ActivationPurpose.Write);
 		}
 	}
 }

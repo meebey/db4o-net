@@ -113,7 +113,6 @@ namespace Db4objects.Db4o.Internal
 					Initialize1(_config);
 					OpenImpl();
 					InitializePostOpen();
-					Platform4.PostOpen(Cast(_this));
 					ok = true;
 				}
 				finally
@@ -361,6 +360,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
+				Callbacks().CloseOnStarted(Cast(this));
 				if (DTrace.enabled)
 				{
 					DTrace.CloseCalled.LogStack(this.ToString());
@@ -381,7 +381,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			Platform4.PreClose(Cast(_this));
 			ProcessPendingClassUpdates();
 			if (StateMessages())
 			{
@@ -726,7 +725,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				FieldMetadata[] field = new FieldMetadata[] { null };
-				classMetadata.ForEachFieldMetadata(new _IVisitor4_610(this, fieldName, field));
+				classMetadata.ForEachFieldMetadata(new _IVisitor4_609(this, fieldName, field));
 				if (field[0] == null)
 				{
 					return null;
@@ -747,9 +746,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_610 : IVisitor4
+		private sealed class _IVisitor4_609 : IVisitor4
 		{
-			public _IVisitor4_610(PartialObjectContainer _enclosing, string fieldName, FieldMetadata
+			public _IVisitor4_609(PartialObjectContainer _enclosing, string fieldName, FieldMetadata
 				[] field)
 			{
 				this._enclosing = _enclosing;

@@ -21,8 +21,6 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nested
 	/// </remarks>
 	public class NestedClassesTestCase : AbstractDb4oTestCase, IOptOutTA
 	{
-		private OuterClass _outerObject;
-
 		public static void Main(string[] args)
 		{
 			new NestedClassesTestCase().RunSolo();
@@ -31,11 +29,11 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nested
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			_outerObject = new OuterClass();
-			_outerObject._foo = 10;
-			IActivatable objOne = (IActivatable)_outerObject.CreateInnerObject();
+			OuterClass outerObject = new OuterClass();
+			outerObject._foo = 42;
+			IActivatable objOne = (IActivatable)outerObject.CreateInnerObject();
 			Store(objOne);
-			IActivatable objTwo = (IActivatable)_outerObject.CreateInnerObject();
+			IActivatable objTwo = (IActivatable)outerObject.CreateInnerObject();
 			Store(objTwo);
 		}
 
@@ -53,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nested
 			{
 				OuterClass.InnerClass innerObject = (OuterClass.InnerClass)query.Next();
 				Assert.IsNull(innerObject.GetOuterObjectWithoutActivation());
-				Assert.AreEqual(_outerObject.Foo(), innerObject.GetOuterObject().Foo());
+				Assert.AreEqual(42, innerObject.GetOuterObject().Foo());
 			}
 		}
 	}

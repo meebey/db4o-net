@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Query;
@@ -97,6 +98,10 @@ namespace Db4objects.Db4o.Internal.Callbacks
 		public virtual bool CaresAboutDeleted()
 		{
 			return false;
+		}
+
+		public virtual void CloseOnStarted(IObjectContainer container)
+		{
 		}
 	}
 }

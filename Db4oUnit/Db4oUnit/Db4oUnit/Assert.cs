@@ -5,7 +5,7 @@ using Db4oUnit;
 
 namespace Db4oUnit
 {
-	public sealed class Assert
+	public sealed partial class Assert
 	{
 		public static Exception Expect(Type exception, ICodeBlock block)
 		{

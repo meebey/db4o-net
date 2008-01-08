@@ -437,12 +437,17 @@ namespace Db4oUnit.Extensions
 
 		protected virtual IEventRegistry EventRegistry()
 		{
-			return EventRegistryFactory.ForObjectContainer(Db());
+			return EventRegistryFor(Db());
+		}
+
+		protected virtual IEventRegistry EventRegistryFor(IExtObjectContainer container)
+		{
+			return EventRegistryFactory.ForObjectContainer(container);
 		}
 
 		protected virtual IEventRegistry ServerEventRegistry()
 		{
-			return EventRegistryFactory.ForObjectContainer(FileSession());
+			return EventRegistryFor(FileSession());
 		}
 	}
 }

@@ -3,6 +3,7 @@
 using System;
 using System.Reflection;
 using Db4objects.Db4o.Internal;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -16,7 +17,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="ReflectException"></exception>
 		public static object Invoke(object obj, string methodName)
 		{
-			return Invoke(obj.GetType().FullName, methodName, null, null, obj);
+			return Invoke(obj.GetType(), methodName, null, null, obj);
 		}
 
 		/// <exception cref="ReflectException"></exception>
@@ -27,21 +28,27 @@ namespace Db4objects.Db4o.Internal
 			{
 				paramClasses[i] = @params[i].GetType();
 			}
-			return Invoke(obj.GetType().FullName, methodName, paramClasses, @params, obj);
+			return Invoke(obj.GetType(), methodName, paramClasses, @params, obj);
 		}
 
 		/// <exception cref="ReflectException"></exception>
 		public static object Invoke(object obj, string methodName, Type[] paramClasses, object
 			[] @params)
 		{
-			return Invoke(obj.GetType().FullName, methodName, paramClasses, @params, obj);
+			return Invoke(obj.GetType(), methodName, paramClasses, @params, obj);
 		}
 
 		/// <exception cref="ReflectException"></exception>
 		public static object Invoke(Type clazz, string methodName, Type[] paramClasses, object
 			[] @params)
 		{
-			return Invoke(clazz.FullName, methodName, paramClasses, @params, null);
+			return Invoke(clazz, methodName, paramClasses, @params, null);
+		}
+
+		private static object Invoke(Type clazz, string methodName, Type[] paramClasses, 
+			object[] @params, object onObject)
+		{
+			return Invoke(@params, onObject, GetMethod(clazz, methodName, paramClasses));
 		}
 
 		/// <exception cref="ReflectException"></exception>
@@ -59,6 +66,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
+			Platform4.SetAccessible(method);
 			try
 			{
 				return method.Invoke(onObject, @params);
@@ -87,14 +95,59 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			try
+			return GetMethod(clazz, methodName, paramClasses);
+		}
+
+		public static MethodInfo GetMethod(Type clazz, string methodName, Type[] paramClasses
+			)
+		{
+			Type curclazz = clazz;
+			while (curclazz != null)
 			{
-				return clazz.GetMethod(methodName, paramClasses);
-			}
-			catch (Exception)
-			{
+				try
+				{
+					return Sharpen.Runtime.GetDeclaredMethod(curclazz, methodName, paramClasses);
+				}
+				catch (Exception)
+				{
+				}
+				curclazz = curclazz.BaseType;
 			}
 			return null;
+		}
+
+		/// <exception cref="NoSuchMethodException"></exception>
+		/// <exception cref="MemberAccessException"></exception>
+		/// <exception cref="TargetInvocationException"></exception>
+		public static object Invoke(object obj, string methodName, Type signature, object
+			 value)
+		{
+			return Invoke(obj, methodName, new Type[] { signature }, new object[] { value });
+		}
+
+		public static FieldInfo GetField(Type clazz, string name)
+		{
+			Type curclazz = clazz;
+			while (curclazz != null)
+			{
+				try
+				{
+					FieldInfo field = Sharpen.Runtime.GetDeclaredField(curclazz, name);
+					Platform4.SetAccessible(field);
+					return field;
+				}
+				catch (Exception)
+				{
+				}
+				curclazz = curclazz.BaseType;
+			}
+			return null;
+		}
+
+		/// <exception cref="MemberAccessException"></exception>
+		public static object GetFieldValue(object obj, string fieldName)
+		{
+			return GetField(obj.GetType(), fieldName).GetValue(obj);
 		}
 	}
 }

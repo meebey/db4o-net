@@ -1,12 +1,11 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.Activation;
-using Db4objects.Db4o.TA;
+using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections
 {
-	public class Product : IActivatable
+	public class Product : ActivatableImpl
 	{
 		private string _code;
 
@@ -45,25 +44,5 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 				)p;
 			return rhs._code == _code;
 		}
-
-		public virtual void Activate(ActivationPurpose purpose)
-		{
-			if (_activator != null)
-			{
-				_activator.Activate(purpose);
-			}
-		}
-
-		public virtual void Bind(IActivator activator)
-		{
-			if (activator == null || _activator != null)
-			{
-				throw new ArgumentNullException();
-			}
-			_activator = activator;
-		}
-
-		[System.NonSerialized]
-		private IActivator _activator;
 	}
 }

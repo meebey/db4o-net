@@ -9,8 +9,6 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 	/// <exclude></exclude>
 	public class TALinkedListTestCase : TAItemTestCaseBase
 	{
-		private static readonly TALinkedList List = TALinkedList.NewList(10);
-
 		public static void Main(string[] args)
 		{
 			new TALinkedListTestCase().RunAll();
@@ -20,15 +18,20 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 		protected override object CreateItem()
 		{
 			TALinkedListItem item = new TALinkedListItem();
-			item.list = List;
+			item.list = NewList();
 			return item;
+		}
+
+		private TALinkedList NewList()
+		{
+			return TALinkedList.NewList(10);
 		}
 
 		/// <exception cref="Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
 			TALinkedListItem item = (TALinkedListItem)obj;
-			Assert.AreEqual(List, item.List());
+			Assert.AreEqual(NewList(), item.List());
 		}
 
 		/// <exception cref="Exception"></exception>

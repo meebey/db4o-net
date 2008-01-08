@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Events;
@@ -22,58 +23,50 @@ namespace Db4objects.Db4o.TA
 		{
 			container.ConfigImpl().ActivationDepthProvider(new TransparentActivationDepthProvider
 				());
-			IEventRegistry registry = EventRegistryFactory.ForObjectContainer(container);
-			registry.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_23
+			IEventRegistry registry = EventRegistryFor(container);
+			registry.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_24
+				(this).OnEvent);
+			registry.Created += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_29
 				(this).OnEvent);
 			TransparentActivationSupport.TADiagnosticProcessor processor = new TransparentActivationSupport.TADiagnosticProcessor
 				(this, container);
-			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_50
+			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_36
 				(this, processor).OnEvent);
 		}
 
-		private sealed class _IEventListener4_23
+		private sealed class _IEventListener4_24
 		{
-			public _IEventListener4_23(TransparentActivationSupport _enclosing)
+			public _IEventListener4_24(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
 			{
-				this.BindActivatableToActivator((ObjectEventArgs)args);
-			}
-
-			private void BindActivatableToActivator(ObjectEventArgs oea)
-			{
-				object obj = oea.Object;
-				if (obj is IActivatable)
-				{
-					Transaction transaction = (Transaction)oea.Transaction();
-					((IActivatable)obj).Bind(this.ActivatorForObject(transaction, obj));
-				}
-			}
-
-			private IActivator ActivatorForObject(Transaction transaction, object obj)
-			{
-				ObjectReference objectReference = transaction.ReferenceForObject(obj);
-				if (this.IsEmbeddedClient(transaction))
-				{
-					return new TransactionalActivator(transaction, objectReference);
-				}
-				return objectReference;
-			}
-
-			private bool IsEmbeddedClient(Transaction transaction)
-			{
-				return transaction.ObjectContainer() is EmbeddedClientObjectContainer;
+				this._enclosing.BindActivatableToActivator((ObjectEventArgs)args);
 			}
 
 			private readonly TransparentActivationSupport _enclosing;
 		}
 
-		private sealed class _IEventListener4_50
+		private sealed class _IEventListener4_29
 		{
-			public _IEventListener4_50(TransparentActivationSupport _enclosing, TransparentActivationSupport.TADiagnosticProcessor
+			public _IEventListener4_29(TransparentActivationSupport _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			{
+				this._enclosing.BindActivatableToActivator((ObjectEventArgs)args);
+			}
+
+			private readonly TransparentActivationSupport _enclosing;
+		}
+
+		private sealed class _IEventListener4_36
+		{
+			public _IEventListener4_36(TransparentActivationSupport _enclosing, TransparentActivationSupport.TADiagnosticProcessor
 				 processor)
 			{
 				this._enclosing = _enclosing;
@@ -89,6 +82,76 @@ namespace Db4objects.Db4o.TA
 			private readonly TransparentActivationSupport _enclosing;
 
 			private readonly TransparentActivationSupport.TADiagnosticProcessor processor;
+		}
+
+		private IEventRegistry EventRegistryFor(IObjectContainer container)
+		{
+			return EventRegistryFactory.ForObjectContainer(container);
+		}
+
+		private void BindActivatableToActivator(ObjectEventArgs oea)
+		{
+			object obj = oea.Object;
+			if (obj is IActivatable)
+			{
+				Transaction transaction = (Transaction)oea.Transaction();
+				ObjectReference objectReference = transaction.ReferenceForObject(obj);
+				Bind(obj, ActivatorForObject(transaction, objectReference));
+				UnbindActivatableUponClosing(transaction, objectReference);
+			}
+		}
+
+		private void Bind(object activatable, IActivator activator)
+		{
+			((IActivatable)activatable).Bind(activator);
+		}
+
+		private void UnbindActivatableUponClosing(Transaction transaction, ObjectReference
+			 objectReference)
+		{
+			IEventRegistry eventRegistry = EventRegistryFor(transaction.ObjectContainer());
+			eventRegistry.Closing += new Db4objects.Db4o.Events.ObjectContainerEventHandler(new 
+				_IEventListener4_64(this, objectReference).OnEvent);
+		}
+
+		private sealed class _IEventListener4_64
+		{
+			public _IEventListener4_64(TransparentActivationSupport _enclosing, ObjectReference
+				 objectReference)
+			{
+				this._enclosing = _enclosing;
+				this.objectReference = objectReference;
+			}
+
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectContainerEventArgs
+				 args)
+			{
+				object obj = objectReference.GetObject();
+				if (obj == null)
+				{
+					return;
+				}
+				this._enclosing.Bind(obj, null);
+			}
+
+			private readonly TransparentActivationSupport _enclosing;
+
+			private readonly ObjectReference objectReference;
+		}
+
+		private IActivator ActivatorForObject(Transaction transaction, ObjectReference objectReference
+			)
+		{
+			if (IsEmbeddedClient(transaction))
+			{
+				return new TransactionalActivator(transaction, objectReference);
+			}
+			return objectReference;
+		}
+
+		private bool IsEmbeddedClient(Transaction transaction)
+		{
+			return transaction.ObjectContainer() is EmbeddedClientObjectContainer;
 		}
 
 		private sealed class TADiagnosticProcessor

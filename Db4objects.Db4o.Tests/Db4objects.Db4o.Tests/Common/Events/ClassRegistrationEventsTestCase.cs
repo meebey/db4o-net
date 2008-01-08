@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private class EventFlag
 		{
-			public bool _eventOccurred = false;
+			public bool eventOccurred = false;
 		}
 
 		public virtual void TestClassRegistrationEvents()
@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_23
 				(this, eventFlag).OnEvent);
 			Store(new ClassRegistrationEventsTestCase.Data());
-			Assert.IsTrue(eventFlag._eventOccurred);
+			Assert.IsTrue(eventFlag.eventOccurred);
 		}
 
 		private sealed class _IEventListener4_23
@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				ClassEventArgs classEventArgs = (ClassEventArgs)args;
 				Assert.AreEqual(typeof(ClassRegistrationEventsTestCase.Data).FullName, CrossPlatformServices
 					.SimpleName(classEventArgs.ClassMetadata().GetName()));
-				eventFlag._eventOccurred = true;
+				eventFlag.eventOccurred = true;
 			}
 
 			private readonly ClassRegistrationEventsTestCase _enclosing;

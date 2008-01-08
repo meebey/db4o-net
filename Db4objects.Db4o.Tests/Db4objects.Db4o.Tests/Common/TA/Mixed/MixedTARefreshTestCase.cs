@@ -190,10 +190,6 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 
 			public virtual void Bind(IActivator activator)
 			{
-				if (null != _activator)
-				{
-					throw new InvalidOperationException();
-				}
 				_activator = activator;
 			}
 		}

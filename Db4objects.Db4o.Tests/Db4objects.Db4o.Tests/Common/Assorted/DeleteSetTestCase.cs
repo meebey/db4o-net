@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Tests.Common.Assorted;
 
@@ -15,22 +16,49 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public class Item
 		{
+			public Item()
+			{
+			}
+
+			public Item(int v)
+			{
+				value = v;
+			}
+
+			public int value;
 		}
 
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			Store(new DeleteSetTestCase.Item());
+			Store(new DeleteSetTestCase.Item(1));
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void Test()
+		public virtual void TestDeleteStore()
 		{
 			object item = RetrieveOnlyInstance(typeof(DeleteSetTestCase.Item));
 			Db().Delete(item);
 			Db().Store(item);
 			Db().Commit();
 			AssertOccurrences(typeof(DeleteSetTestCase.Item), 1);
+		}
+
+		/// <exception cref="Exception"></exception>
+		public virtual void TestDeleteStoreStore()
+		{
+			DeleteSetTestCase.Item item = (DeleteSetTestCase.Item)RetrieveOnlyInstance(typeof(
+				DeleteSetTestCase.Item));
+			Db().Delete(item);
+			item.value = 2;
+			Db().Store(item);
+			item.value = 3;
+			Db().Store(item);
+			Db().Commit();
+			AssertOccurrences(typeof(DeleteSetTestCase.Item), 1);
+			item = (DeleteSetTestCase.Item)RetrieveOnlyInstance(typeof(DeleteSetTestCase.Item
+				));
+			Assert.AreEqual(3, item.value);
 		}
 	}
 }

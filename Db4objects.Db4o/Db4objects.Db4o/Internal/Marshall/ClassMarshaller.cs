@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
@@ -140,9 +141,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 			context.WriteInt(metaClassID);
 			context.CopyID();
 			context.WriteInt(IndexIDForWriting(classIndexID));
-			context.IncrementIntSize();
+			int numFields = context.ReadInt();
 			FieldMetadata[] fields = classMetadata.i_fields;
-			for (int fieldIdx = 0; fieldIdx < fields.Length; fieldIdx++)
+			if (numFields > fields.Length)
+			{
+				throw new InvalidOperationException();
+			}
+			for (int fieldIdx = 0; fieldIdx < numFields; fieldIdx++)
 			{
 				_family._field.Defrag(classMetadata, fields[fieldIdx], sio, context);
 			}

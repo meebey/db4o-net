@@ -7,20 +7,19 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.TA;
+using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Common.TP;
 
 namespace Db4objects.Db4o.Tests.Common.TP
 {
 	public class TransparentPersistenceTestCase : AbstractDb4oTestCase
 	{
-		public class Item : IActivatable
+		public class Item : ActivatableImpl
 		{
-			[System.NonSerialized]
-			private IActivator _activator;
-
 			public string name;
 
 			public Item()
@@ -42,16 +41,6 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			{
 				Activate(ActivationPurpose.Write);
 				name = newName;
-			}
-
-			public virtual void Activate(ActivationPurpose purpose)
-			{
-				_activator.Activate(purpose);
-			}
-
-			public virtual void Bind(IActivator activator)
-			{
-				_activator = activator;
 			}
 
 			public override string ToString()
@@ -82,6 +71,37 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		}
 
 		/// <exception cref="Exception"></exception>
+		public virtual void TestConcurrentClientModification()
+		{
+			if (!IsClientServer())
+			{
+				return;
+			}
+			IExtObjectContainer client1 = Db();
+			IExtObjectContainer client2 = OpenNewClient();
+			try
+			{
+				TransparentPersistenceTestCase.Item foo1 = ItemByName(client1, "Foo");
+				foo1.SetName("Foo*");
+				TransparentPersistenceTestCase.Item foo2 = ItemByName(client2, "Foo");
+				foo2.SetName("Foo**");
+				AssertUpdatedObjects(client1, foo1);
+				AssertUpdatedObjects(client2, foo2);
+				client1.Refresh(foo1, 1);
+				Assert.AreEqual(foo2.GetName(), foo1.GetName());
+			}
+			finally
+			{
+				client2.Close();
+			}
+		}
+
+		private IExtObjectContainer OpenNewClient()
+		{
+			return ((IDb4oClientServerFixture)this.Fixture()).OpenNewClient();
+		}
+
+		/// <exception cref="Exception"></exception>
 		public virtual void TestTransparentUpdate()
 		{
 			TransparentPersistenceTestCase.Item foo = ItemByName("Foo");
@@ -107,23 +127,29 @@ namespace Db4objects.Db4o.Tests.Common.TP
 
 		private void AssertUpdatedObjects(TransparentPersistenceTestCase.Item expected)
 		{
-			Collection4 updated = CommitCapturingUpdatedObjects();
+			AssertUpdatedObjects(Db(), expected);
+		}
+
+		private void AssertUpdatedObjects(IExtObjectContainer container, TransparentPersistenceTestCase.Item
+			 expected)
+		{
+			Collection4 updated = CommitCapturingUpdatedObjects(container);
 			Assert.AreEqual(1, updated.Size(), updated.ToString());
 			Assert.AreSame(expected, updated.SingleElement());
 		}
 
-		private Collection4 CommitCapturingUpdatedObjects()
+		private Collection4 CommitCapturingUpdatedObjects(IExtObjectContainer container)
 		{
 			Collection4 updated = new Collection4();
-			EventRegistry().Updated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_104
-				(this, updated).OnEvent);
-			Commit();
+			EventRegistryFor(container).Updated += new Db4objects.Db4o.Events.ObjectEventHandler
+				(new _IEventListener4_129(this, updated).OnEvent);
+			container.Commit();
 			return updated;
 		}
 
-		private sealed class _IEventListener4_104
+		private sealed class _IEventListener4_129
 		{
-			public _IEventListener4_104(TransparentPersistenceTestCase _enclosing, Collection4
+			public _IEventListener4_129(TransparentPersistenceTestCase _enclosing, Collection4
 				 updated)
 			{
 				this._enclosing = _enclosing;
@@ -141,14 +167,15 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			private readonly Collection4 updated;
 		}
 
-		private void Commit()
-		{
-			Db().Commit();
-		}
-
 		private TransparentPersistenceTestCase.Item ItemByName(string name)
 		{
-			IQuery q = NewQuery(typeof(TransparentPersistenceTestCase.Item));
+			return ItemByName(Db(), name);
+		}
+
+		private TransparentPersistenceTestCase.Item ItemByName(IExtObjectContainer container
+			, string name)
+		{
+			IQuery q = NewQuery(container, typeof(TransparentPersistenceTestCase.Item));
 			q.Descend("name").Constrain(name);
 			IObjectSet result = q.Execute();
 			if (result.HasNext())

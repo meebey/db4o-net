@@ -20,6 +20,9 @@ namespace Db4objects.Db4o.Events
 	public delegate void ClassEventHandler(object sender, Db4objects.Db4o.Events.ClassEventArgs
 		 args);
 
+	public delegate void ObjectContainerEventHandler(object sender, Db4objects.Db4o.Events.ObjectContainerEventArgs
+		 args);
+
 	/// <summary>
 	/// Provides a way to register event handlers for specific <see cref="IObjectContainer">IObjectContainer</see> events.<br/>
 	/// EventRegistry methods represent events available for registering callbacks.
@@ -257,5 +260,14 @@ namespace Db4objects.Db4o.Events
 		/// <returns>event</returns>
 		/// <seealso cref="ClassEventArgs">ClassEventArgs</seealso>
 		event Db4objects.Db4o.Events.ClassEventHandler ClassRegistered;
+
+		/// <summary>
+		/// This event is fired when the
+		/// <see cref="IObjectContainer.Close">IObjectContainer.Close</see>
+		/// is
+		/// called.
+		/// </summary>
+		/// <returns>event</returns>
+		event Db4objects.Db4o.Events.ObjectContainerEventHandler Closing;
 	}
 }

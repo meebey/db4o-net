@@ -381,9 +381,10 @@ namespace Db4objects.Db4o.Internal
 					if (_reflector != null)
 					{
 						AddMembers(_container);
-						if (!_container.IsClient())
+						Transaction trans = _container.SystemTransaction();
+						if (!_container.IsClient() && !IsReadOnlyContainer(trans))
 						{
-							Write(_container.SystemTransaction());
+							Write(trans);
 						}
 					}
 				}
@@ -1067,13 +1068,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_901(this, name, yf));
+			ForEachFieldMetadata(new _IVisitor4_902(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_901 : IVisitor4
+		private sealed class _IVisitor4_902 : IVisitor4
 		{
-			public _IVisitor4_901(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
+			public _IVisitor4_902(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
 			{
 				this._enclosing = _enclosing;
 				this.name = name;
@@ -1565,15 +1566,15 @@ namespace Db4objects.Db4o.Internal
 				{
 					candidates.i_trans.Container().Activate(trans, obj, ActivationDepthProvider().ActivationDepth
 						(2, ActivationMode.Activate));
-					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1324(this, candidates, trans
+					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1325(this, candidates, trans
 						));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_1324 : IVisitor4
+		private sealed class _IVisitor4_1325 : IVisitor4
 		{
-			public _IVisitor4_1324(ClassMetadata _enclosing, QCandidates candidates, Transaction
+			public _IVisitor4_1325(ClassMetadata _enclosing, QCandidates candidates, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -1957,8 +1958,13 @@ namespace Db4objects.Db4o.Internal
 
 		private bool ShouldStoreStaticFields(Transaction trans)
 		{
-			return !trans.Container().Config().IsReadOnly() && (StaticFieldValuesArePersisted
-				() || Platform4.StoreStaticFieldValues(trans.Reflector(), ClassReflector()));
+			return !IsReadOnlyContainer(trans) && (StaticFieldValuesArePersisted() || Platform4
+				.StoreStaticFieldValues(trans.Reflector(), ClassReflector()));
+		}
+
+		private bool IsReadOnlyContainer(Transaction trans)
+		{
+			return trans.Container().Config().IsReadOnly();
 		}
 
 		private void UpdateStaticClass(Transaction trans, StaticClass sc)
@@ -1966,7 +1972,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1662
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1667
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -1975,9 +1981,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1662 : IFunction4
+		private sealed class _IFunction4_1667 : IFunction4
 		{
-			public _IFunction4_1662(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1667(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2018,12 +2024,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1690(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1695(this));
 		}
 
-		private sealed class _IFunction4_1690 : IFunction4
+		private sealed class _IFunction4_1695 : IFunction4
 		{
-			public _IFunction4_1690(ClassMetadata _enclosing)
+			public _IFunction4_1695(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2065,12 +2071,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1720(this));
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1725(this));
 		}
 
-		private sealed class _IPredicate4_1720 : IPredicate4
+		private sealed class _IPredicate4_1725 : IPredicate4
 		{
-			public _IPredicate4_1720(ClassMetadata _enclosing)
+			public _IPredicate4_1725(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2192,7 +2198,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (source == null)
 			{
-				return new _IPreparedComparison_1832(this);
+				return new _IPreparedComparison_1837(this);
 			}
 			int id = 0;
 			IReflectClass claxx = null;
@@ -2217,9 +2223,9 @@ namespace Db4objects.Db4o.Internal
 			return new ClassMetadata.PreparedClassMetadataComparison(this, id, claxx);
 		}
 
-		private sealed class _IPreparedComparison_1832 : IPreparedComparison
+		private sealed class _IPreparedComparison_1837 : IPreparedComparison
 		{
-			public _IPreparedComparison_1832(ClassMetadata _enclosing)
+			public _IPreparedComparison_1837(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

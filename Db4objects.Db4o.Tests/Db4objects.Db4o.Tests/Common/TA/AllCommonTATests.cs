@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			return new Type[] { typeof(Db4objects.Db4o.Tests.Common.TA.Events.AllTests), typeof(
 				Db4objects.Db4o.Tests.Common.TA.Mixed.AllTests), typeof(Db4objects.Db4o.Tests.Common.TA.Nonta.AllTests
 				), typeof(Db4objects.Db4o.Tests.Common.TA.Sample.AllTests), typeof(Db4objects.Db4o.Tests.Common.TA.TA.AllTests
-				) };
+				), typeof(ActivatableTestCase) };
 		}
 	}
 }

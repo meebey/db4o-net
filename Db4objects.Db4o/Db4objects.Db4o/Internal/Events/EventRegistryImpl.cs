@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Callbacks;
@@ -44,6 +45,8 @@ namespace Db4objects.Db4o.Internal.Events
 		protected Db4objects.Db4o.Events.ObjectEventHandler _instantiated;
 
 		protected Db4objects.Db4o.Events.ClassEventHandler _classRegistered;
+
+		protected Db4objects.Db4o.Events.ObjectContainerEventHandler _closing;
 
 		public EventRegistryImpl(IInternalObjectContainer container)
 		{
@@ -135,6 +138,11 @@ namespace Db4objects.Db4o.Internal.Events
 			 objectInfoCollections)
 		{
 			EventPlatform.TriggerCommitEvent(transaction, _committed, objectInfoCollections);
+		}
+
+		public virtual void CloseOnStarted(IObjectContainer container)
+		{
+			EventPlatform.TriggerObjectContainerEvent(container, _closing);
 		}
 
 		public virtual event Db4objects.Db4o.Events.QueryEventHandler QueryFinished
@@ -359,6 +367,20 @@ namespace Db4objects.Db4o.Internal.Events
 			{
 				_instantiated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Remove
 					(_instantiated, value);
+			}
+		}
+
+		public virtual event Db4objects.Db4o.Events.ObjectContainerEventHandler Closing
+		{
+			add
+			{
+				_closing = (Db4objects.Db4o.Events.ObjectContainerEventHandler)System.Delegate.Combine
+					(_closing, value);
+			}
+			remove
+			{
+				_closing = (Db4objects.Db4o.Events.ObjectContainerEventHandler)System.Delegate.Remove
+					(_closing, value);
 			}
 		}
 

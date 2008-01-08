@@ -17,7 +17,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		{
 			return new Type[] { typeof(ActivationEventsTestCase), typeof(ClassRegistrationEventsTestCase
 				), typeof(DeletionEventExceptionTestCase), typeof(DeletionEventsTestCase), typeof(
-				EventArgsTransactionTestCase), typeof(InstantiationEventsTestCase) };
+				EventArgsTransactionTestCase), typeof(InstantiationEventsTestCase), typeof(ObjectContainerEventsTestCase
+				) };
 		}
 	}
 }

@@ -3,6 +3,7 @@
 using System;
 using System.Reflection;
 using Db4objects.Db4o.Instrumentation.Api;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
 using Db4objects.Db4o.NativeQueries.Optimization;
@@ -37,7 +38,7 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 				());
 			try
 			{
-				FieldInfo field = ReflectUtil.FieldFor(clazz, operand.FieldName());
+				FieldInfo field = Reflection4.GetField(clazz, operand.FieldName());
 				_value = field.GetValue(_value);
 			}
 			catch (Exception exc)

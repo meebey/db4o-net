@@ -1,14 +1,13 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Collections;
-using Db4objects.Db4o.TA;
+using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Jre5.Collections;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections
 {
-	public class Order : IActivatable
+	public class Order : ActivatableImpl
 	{
 		private ArrayList4<OrderItem> _items;
 
@@ -34,25 +33,5 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 			Activate(ActivationPurpose.Read);
 			return _items.Count;
 		}
-
-		public virtual void Activate(ActivationPurpose purpose)
-		{
-			if (_activator != null)
-			{
-				_activator.Activate(purpose);
-			}
-		}
-
-		public virtual void Bind(IActivator activator)
-		{
-			if (activator == null || _activator != null)
-			{
-				throw new ArgumentNullException();
-			}
-			_activator = activator;
-		}
-
-		[System.NonSerialized]
-		private IActivator _activator;
 	}
 }

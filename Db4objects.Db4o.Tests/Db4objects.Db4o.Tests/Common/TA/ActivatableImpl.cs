@@ -13,7 +13,11 @@ namespace Db4objects.Db4o.Tests.Common.TA
 
 		public virtual void Bind(IActivator activator)
 		{
-			if (null != _activator)
+			if (_activator == activator)
+			{
+				return;
+			}
+			if (activator != null && _activator != null)
 			{
 				throw new InvalidOperationException();
 			}

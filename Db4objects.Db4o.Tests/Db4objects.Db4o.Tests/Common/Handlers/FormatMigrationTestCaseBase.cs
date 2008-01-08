@@ -105,6 +105,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			if (System.IO.File.Exists(testFileName))
 			{
 				InvestigateFileHeaderVersion(testFileName);
+				RunDefrag(testFileName);
 				CheckDatabaseFile(testFileName);
 				CheckDatabaseFile(testFileName);
 			}

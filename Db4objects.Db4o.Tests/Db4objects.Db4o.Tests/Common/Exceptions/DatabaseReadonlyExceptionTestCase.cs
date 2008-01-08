@@ -151,6 +151,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly DatabaseReadonlyExceptionTestCase _enclosing;
 		}
 
+		public virtual void TestStoredClasses()
+		{
+			ConfigReadOnly();
+			Db().StoredClasses();
+		}
+
 		private void ConfigReadOnly()
 		{
 			Db().Configure().ReadOnly(true);

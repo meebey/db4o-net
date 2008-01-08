@@ -69,6 +69,22 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal override void EvaluateSelf()
 		{
+			if (i_candidates.WasLoadedFromClassIndex())
+			{
+				if (i_evaluator.IsDefault())
+				{
+					if (!HasOrdering() && !HasJoins())
+					{
+						if (i_yapClass != null && i_candidates.i_yapClass != null)
+						{
+							if (i_yapClass.GetHigherHierarchy(i_candidates.i_yapClass) == i_yapClass)
+							{
+								return;
+							}
+						}
+					}
+				}
+			}
 			i_candidates.Filter(this);
 		}
 
