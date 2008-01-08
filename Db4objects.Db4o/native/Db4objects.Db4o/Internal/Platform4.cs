@@ -471,14 +471,6 @@ namespace Db4objects.Db4o.Internal
             ((WeakReferenceHandlerQueue)referenceQueue).Poll((IExtObjectContainer)stream);
         }
 
-        internal static void PostOpen(IObjectContainer objectContainer)
-        {
-        }
-
-        internal static void PreClose(IObjectContainer objectContainer)
-        {
-        }
-
         public static void RegisterCollections(GenericReflector reflector)
         {
             reflector.RegisterCollectionUpdateDepth(

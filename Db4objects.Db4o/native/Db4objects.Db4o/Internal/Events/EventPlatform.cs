@@ -55,5 +55,11 @@ namespace Db4objects.Db4o.Internal.Events
 		{
 			return null != e;
 		}
+
+		public static void TriggerObjectContainerEvent(IObjectContainer container, ObjectContainerEventHandler e)
+		{
+			if (null == e) return;
+			e(container, new ObjectContainerEventArgs(container));
+		}
 	}
 }
