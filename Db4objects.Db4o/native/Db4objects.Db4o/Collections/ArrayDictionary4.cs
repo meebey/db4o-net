@@ -25,8 +25,7 @@ namespace Db4objects.Db4o.Collections
 
 		public void Add(K key, V value)
 		{
-            Activate(ActivationPurpose.Read);
-
+            Activate(ActivationPurpose.Write);
             int index = IndexOfKey(key);
             if (index != -1)
             {
