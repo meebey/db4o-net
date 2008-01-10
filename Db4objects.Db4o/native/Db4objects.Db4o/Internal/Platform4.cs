@@ -666,5 +666,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			return GetNetType(iReflectClass).IsEnum;
 		}
+
+        public static bool UseNativeSerialization() 
+        {
+            return false;
+        }
 	}
 }

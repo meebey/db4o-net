@@ -170,5 +170,45 @@ namespace Db4objects.Db4o.Internal
 		protected override void WriteVariableHeader()
 		{
 		}
+
+		public class KnownObjectIdentity
+		{
+			internal int _id;
+
+			public KnownObjectIdentity(int id)
+			{
+				_id = id;
+			}
+		}
+
+		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="DatabaseReadOnlyException"></exception>
+		public override int StoreInternal(Transaction trans, object obj, int depth, bool 
+			checkJustSet)
+		{
+			int id = _parent.GetID(null, obj);
+			if (id > 0)
+			{
+				return base.StoreInternal(trans, new TransportObjectContainer.KnownObjectIdentity
+					(id), depth, checkJustSet);
+			}
+			else
+			{
+				return base.StoreInternal(trans, obj, depth, checkJustSet);
+			}
+		}
+
+		public override object GetByID2(Transaction ta, int id)
+		{
+			object obj = base.GetByID2(ta, id);
+			if (obj is TransportObjectContainer.KnownObjectIdentity)
+			{
+				TransportObjectContainer.KnownObjectIdentity oi = (TransportObjectContainer.KnownObjectIdentity
+					)obj;
+				Activate(oi);
+				obj = _parent.GetByID(null, oi._id);
+			}
+			return obj;
+		}
 	}
 }

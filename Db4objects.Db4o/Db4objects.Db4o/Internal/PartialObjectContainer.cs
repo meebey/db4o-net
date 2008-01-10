@@ -931,7 +931,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public object GetByID2(Transaction ta, int id)
+		public virtual object GetByID2(Transaction ta, int id)
 		{
 			object obj = ta.ObjectForIdFromCache(id);
 			if (obj != null)
@@ -1782,7 +1782,7 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="DatabaseReadOnlyException"></exception>
-		public int StoreInternal(Transaction trans, object obj, int depth, bool checkJustSet
+		public virtual int StoreInternal(Transaction trans, object obj, int depth, bool checkJustSet
 			)
 		{
 			trans = CheckTransaction(trans);

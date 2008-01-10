@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -54,7 +55,21 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal override void Marshall()
 		{
 			base.Marshall();
-			MarshallUsingDb4oFormat();
+			if (Deploy.csharp || !Platform4.UseNativeSerialization())
+			{
+				MarshallUsingDb4oFormat();
+			}
+			else
+			{
+				try
+				{
+					i_marshalledEvaluation = Platform4.Serialize(i_evaluation);
+				}
+				catch (Exception)
+				{
+					MarshallUsingDb4oFormat();
+				}
+			}
 		}
 
 		private void MarshallUsingDb4oFormat()
@@ -69,8 +84,23 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			if (i_trans == null)
 			{
 				base.Unmarshall(a_trans);
-				i_evaluation = Serializer.Unmarshall(Container(), i_marshalledEvaluation, i_marshalledID
-					);
+				if (Deploy.csharp || !Platform4.UseNativeSerialization())
+				{
+					i_evaluation = Serializer.Unmarshall(Container(), i_marshalledEvaluation, i_marshalledID
+						);
+				}
+				else
+				{
+					if (i_marshalledID > 0)
+					{
+						i_evaluation = Serializer.Unmarshall(Container(), i_marshalledEvaluation, i_marshalledID
+							);
+					}
+					else
+					{
+						i_evaluation = Platform4.Deserialize(i_marshalledEvaluation);
+					}
+				}
 			}
 		}
 
