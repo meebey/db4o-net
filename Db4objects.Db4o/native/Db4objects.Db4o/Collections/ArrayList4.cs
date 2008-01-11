@@ -10,6 +10,7 @@ namespace Db4objects.Db4o.Collections
     {
         #region Instance Variables
 
+		[NonSerialized]
         private int modCount;
 
         #endregion
