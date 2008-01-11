@@ -3,47 +3,54 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Foundation;
 using Db4objects.Db4o.Events;
-using Db4objects.Db4o.Tests.Common.Events;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Tests.Common.Events
 {
 	public class ObjectContainerEventsTestCase : AbstractDb4oTestCase
 	{
-		private class EventFlag
-		{
-			public bool eventOccurred = false;
-		}
-
 		/// <exception cref="Exception"></exception>
-		public virtual void TestClassRegistrationEvents()
+		public virtual void TestClose()
 		{
-			ObjectContainerEventsTestCase.EventFlag eventFlag = new ObjectContainerEventsTestCase.EventFlag
-				();
+			IExtObjectContainer container = Db();
+			LocalObjectContainer session = FileSession();
+			Collection4 actual = new Collection4();
 			EventRegistry().Closing += new Db4objects.Db4o.Events.ObjectContainerEventHandler
-				(new _IEventListener4_18(this, eventFlag).OnEvent);
+				(new _IEventListener4_21(this, actual).OnEvent);
 			Fixture().Close();
-			Assert.IsTrue(eventFlag.eventOccurred);
+			if (IsEmbeddedClientServer())
+			{
+				Iterator4Assert.AreEqual(new object[] { container, session }, actual.GetEnumerator
+					());
+			}
+			else
+			{
+				Assert.AreSame(container, actual.SingleElement());
+			}
 		}
 
-		private sealed class _IEventListener4_18
+		private sealed class _IEventListener4_21
 		{
-			public _IEventListener4_18(ObjectContainerEventsTestCase _enclosing, ObjectContainerEventsTestCase.EventFlag
-				 eventFlag)
+			public _IEventListener4_21(ObjectContainerEventsTestCase _enclosing, Collection4 
+				actual)
 			{
 				this._enclosing = _enclosing;
-				this.eventFlag = eventFlag;
+				this.actual = actual;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectContainerEventArgs
 				 args)
 			{
-				eventFlag.eventOccurred = true;
+				actual.Add(((ObjectContainerEventArgs)args).ObjectContainer);
 			}
 
 			private readonly ObjectContainerEventsTestCase _enclosing;
 
-			private readonly ObjectContainerEventsTestCase.EventFlag eventFlag;
+			private readonly Collection4 actual;
 		}
 	}
 }

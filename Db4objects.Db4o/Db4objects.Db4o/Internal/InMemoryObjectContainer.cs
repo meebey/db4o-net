@@ -130,12 +130,13 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override void WriteBytes(BufferImpl bytes, int address, int addressOffset)
+		public override void WriteBytes(BufferImpl buffer, int address, int addressOffset
+			)
 		{
 			int fullAddress = address + addressOffset;
-			int length = bytes.Length();
+			int length = buffer.Length();
 			EnsureMemoryFileSize(fullAddress + length);
-			System.Array.Copy(bytes._buffer, 0, _memoryFile.GetBytes(), fullAddress, length);
+			System.Array.Copy(buffer._buffer, 0, _memoryFile.GetBytes(), fullAddress, length);
 		}
 
 		private void EnsureMemoryFileSize(int last)

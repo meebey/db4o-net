@@ -455,6 +455,33 @@ namespace Db4objects.Db4o.Config
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
 		void ClassActivationDepthConfigurable(bool flag);
 
+		/// <summary>returns client/server configuration interface.</summary>
+		/// <remarks>returns client/server configuration interface.</remarks>
+		IClientServerConfiguration ClientServer();
+
+		/// <summary>
+		/// configures the size database files should grow in bytes, when no
+		/// free slot is found within.
+		/// </summary>
+		/// <remarks>
+		/// configures the size database files should grow in bytes, when no
+		/// free slot is found within.
+		/// <br /><br />Tuning setting.
+		/// <br /><br />Whenever no free slot of sufficient length can be found
+		/// within the current database file, the database file's length
+		/// is extended. This configuration setting configures by how much
+		/// it should be extended, in bytes.<br /><br />
+		/// This configuration setting is intended to reduce fragmentation.
+		/// Higher values will produce bigger database files and less
+		/// fragmentation.<br /><br />
+		/// To extend the database file, a single byte array is created
+		/// and written to the end of the file in one write operation. Be
+		/// aware that a high setting will require allocating memory for
+		/// this byte array.
+		/// </remarks>
+		/// <param name="bytes">amount of bytes</param>
+		void DatabaseGrowthSize(int bytes);
+
 		/// <summary>
 		/// tuning feature: configures whether db4o checks all persistent classes upon system
 		/// startup, for added or removed fields.
@@ -1010,9 +1037,5 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <param name="milliseconds">the time in milliseconds</param>
 		void WeakReferenceCollectionInterval(int milliseconds);
-
-		/// <summary>returns client/server configuration interface.</summary>
-		/// <remarks>returns client/server configuration interface.</remarks>
-		IClientServerConfiguration ClientServer();
 	}
 }

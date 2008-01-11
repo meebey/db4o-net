@@ -366,6 +366,7 @@ namespace Db4objects.Db4o.Internal
 						Commit();
 					}
 				}
+				_server.Callbacks().CloseOnStarted(Cast(this));
 				_transaction.Close(false);
 				_closed = true;
 				return true;

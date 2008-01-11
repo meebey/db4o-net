@@ -1,15 +1,16 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4oUnit.Extensions.Mocking;
 using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit.Extensions.Mocking
 {
 	public class MethodCall
 	{
-		private sealed class _object_8 : object
+		private sealed class _object_9 : object
 		{
-			public _object_8()
+			public _object_9()
 			{
 			}
 
@@ -19,7 +20,12 @@ namespace Db4oUnit.Extensions.Mocking
 			}
 		}
 
-		public static readonly object IgnoredArgument = new _object_8();
+		public static readonly object IgnoredArgument = new _object_9();
+
+		public interface IArgumentCondition
+		{
+			void Verify(object argument);
+		}
 
 		public readonly string methodName;
 
@@ -56,8 +62,7 @@ namespace Db4oUnit.Extensions.Mocking
 			{
 				return false;
 			}
-			Db4oUnit.Extensions.Mocking.MethodCall other = (Db4oUnit.Extensions.Mocking.MethodCall
-				)obj;
+			MethodCall other = (MethodCall)obj;
 			if (!methodName.Equals(other.methodName))
 			{
 				return false;
@@ -68,11 +73,18 @@ namespace Db4oUnit.Extensions.Mocking
 			}
 			for (int i = 0; i < args.Length; ++i)
 			{
-				if (args[i] == IgnoredArgument)
+				object expectedArg = args[i];
+				if (expectedArg == IgnoredArgument)
 				{
 					continue;
 				}
-				if (!Check.ObjectsAreEqual(args[i], other.args[i]))
+				object actualArg = other.args[i];
+				if (expectedArg is MethodCall.IArgumentCondition)
+				{
+					((MethodCall.IArgumentCondition)expectedArg).Verify(actualArg);
+					continue;
+				}
+				if (!Check.ObjectsAreEqual(expectedArg, actualArg))
 				{
 					return false;
 				}

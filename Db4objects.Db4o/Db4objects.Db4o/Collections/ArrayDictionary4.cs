@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Collections
 		/// <seealso cref="IActivatable">IActivatable</seealso>
 		public virtual void Clear()
 		{
-			Activate(ActivationPurpose.Read);
+			Activate(ActivationPurpose.Write);
 			_startIndex = 0;
 			_endIndex = 0;
 			Arrays.Fill(_keys, DefaultKeyValue());

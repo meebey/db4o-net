@@ -55,6 +55,8 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
+		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
+
 		private static readonly KeySpec DetectSchemaChangesKey = new KeySpec(true);
 
 		private static readonly KeySpec DiagnosticKey = new KeySpec(new Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor
@@ -278,6 +280,16 @@ namespace Db4objects.Db4o.Internal
 		public void Stream(ObjectContainerBase stream)
 		{
 			i_stream = stream;
+		}
+
+		public void DatabaseGrowthSize(int bytes)
+		{
+			_config.Put(DatabaseGrowthSizeKey, bytes);
+		}
+
+		public int DatabaseGrowthSize()
+		{
+			return _config.GetAsInt(DatabaseGrowthSizeKey);
 		}
 
 		public void DetectSchemaChanges(bool flag)

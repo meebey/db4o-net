@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Diagnostic;
@@ -24,19 +25,21 @@ namespace Db4objects.Db4o.TA
 			container.ConfigImpl().ActivationDepthProvider(new TransparentActivationDepthProvider
 				());
 			IEventRegistry registry = EventRegistryFor(container);
-			registry.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_24
+			registry.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_25
 				(this).OnEvent);
-			registry.Created += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_29
+			registry.Created += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_30
+				(this).OnEvent);
+			registry.Closing += new Db4objects.Db4o.Events.ObjectContainerEventHandler(new _IEventListener4_36
 				(this).OnEvent);
 			TransparentActivationSupport.TADiagnosticProcessor processor = new TransparentActivationSupport.TADiagnosticProcessor
 				(this, container);
-			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_36
+			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_43
 				(this, processor).OnEvent);
 		}
 
-		private sealed class _IEventListener4_24
+		private sealed class _IEventListener4_25
 		{
-			public _IEventListener4_24(TransparentActivationSupport _enclosing)
+			public _IEventListener4_25(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -49,9 +52,9 @@ namespace Db4objects.Db4o.TA
 			private readonly TransparentActivationSupport _enclosing;
 		}
 
-		private sealed class _IEventListener4_29
+		private sealed class _IEventListener4_30
 		{
-			public _IEventListener4_29(TransparentActivationSupport _enclosing)
+			public _IEventListener4_30(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -66,7 +69,24 @@ namespace Db4objects.Db4o.TA
 
 		private sealed class _IEventListener4_36
 		{
-			public _IEventListener4_36(TransparentActivationSupport _enclosing, TransparentActivationSupport.TADiagnosticProcessor
+			public _IEventListener4_36(TransparentActivationSupport _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectContainerEventArgs
+				 args)
+			{
+				this._enclosing.UnbindAll((IInternalObjectContainer)((ObjectContainerEventArgs)args
+					).ObjectContainer);
+			}
+
+			private readonly TransparentActivationSupport _enclosing;
+		}
+
+		private sealed class _IEventListener4_43
+		{
+			public _IEventListener4_43(TransparentActivationSupport _enclosing, TransparentActivationSupport.TADiagnosticProcessor
 				 processor)
 			{
 				this._enclosing = _enclosing;
@@ -89,6 +109,37 @@ namespace Db4objects.Db4o.TA
 			return EventRegistryFactory.ForObjectContainer(container);
 		}
 
+		private void UnbindAll(IInternalObjectContainer container)
+		{
+			container.Transaction().ReferenceSystem().TraverseReferences(new _IVisitor4_56(this
+				));
+		}
+
+		private sealed class _IVisitor4_56 : IVisitor4
+		{
+			public _IVisitor4_56(TransparentActivationSupport _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Visit(object obj)
+			{
+				this._enclosing.Unbind((ObjectReference)obj);
+			}
+
+			private readonly TransparentActivationSupport _enclosing;
+		}
+
+		private void Unbind(ObjectReference objectReference)
+		{
+			object obj = objectReference.GetObject();
+			if (obj == null || !(obj is IActivatable))
+			{
+				return;
+			}
+			Bind(obj, null);
+		}
+
 		private void BindActivatableToActivator(ObjectEventArgs oea)
 		{
 			object obj = oea.Object;
@@ -97,46 +148,12 @@ namespace Db4objects.Db4o.TA
 				Transaction transaction = (Transaction)oea.Transaction();
 				ObjectReference objectReference = transaction.ReferenceForObject(obj);
 				Bind(obj, ActivatorForObject(transaction, objectReference));
-				UnbindActivatableUponClosing(transaction, objectReference);
 			}
 		}
 
 		private void Bind(object activatable, IActivator activator)
 		{
 			((IActivatable)activatable).Bind(activator);
-		}
-
-		private void UnbindActivatableUponClosing(Transaction transaction, ObjectReference
-			 objectReference)
-		{
-			IEventRegistry eventRegistry = EventRegistryFor(transaction.ObjectContainer());
-			eventRegistry.Closing += new Db4objects.Db4o.Events.ObjectContainerEventHandler(new 
-				_IEventListener4_64(this, objectReference).OnEvent);
-		}
-
-		private sealed class _IEventListener4_64
-		{
-			public _IEventListener4_64(TransparentActivationSupport _enclosing, ObjectReference
-				 objectReference)
-			{
-				this._enclosing = _enclosing;
-				this.objectReference = objectReference;
-			}
-
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectContainerEventArgs
-				 args)
-			{
-				object obj = objectReference.GetObject();
-				if (obj == null)
-				{
-					return;
-				}
-				this._enclosing.Bind(obj, null);
-			}
-
-			private readonly TransparentActivationSupport _enclosing;
-
-			private readonly ObjectReference objectReference;
 		}
 
 		private IActivator ActivatorForObject(Transaction transaction, ObjectReference objectReference

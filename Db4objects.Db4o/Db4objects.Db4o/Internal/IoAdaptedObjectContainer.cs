@@ -346,7 +346,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public override void WriteBytes(BufferImpl bytes, int address, int addressOffset)
+		public override void WriteBytes(BufferImpl buffer, int blockedAddress, int addressOffset
+			)
 		{
 			if (Deploy.debug && !Deploy.flush)
 			{
@@ -355,9 +356,9 @@ namespace Db4objects.Db4o.Internal
 			if (Debug.xbytes && Deploy.overwrite)
 			{
 				bool doCheck = true;
-				if (bytes is StatefulBuffer)
+				if (buffer is StatefulBuffer)
 				{
-					StatefulBuffer writer = (StatefulBuffer)bytes;
+					StatefulBuffer writer = (StatefulBuffer)buffer;
 					if (writer.GetID() == Const4.IgnoreId)
 					{
 						doCheck = false;
@@ -365,19 +366,19 @@ namespace Db4objects.Db4o.Internal
 				}
 				if (doCheck)
 				{
-					CheckXBytes(address, addressOffset, bytes.Length());
+					CheckXBytes(blockedAddress, addressOffset, buffer.Length());
 				}
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.WriteBytes.LogLength(address + addressOffset, bytes.Length());
+				DTrace.WriteBytes.LogLength(blockedAddress + addressOffset, buffer.Length());
 			}
-			_file.BlockSeek(address, addressOffset);
-			_file.Write(bytes._buffer, bytes.Length());
+			_file.BlockSeek(blockedAddress, addressOffset);
+			_file.Write(buffer._buffer, buffer.Length());
 			if (_backupFile != null)
 			{
-				_backupFile.BlockSeek(address, addressOffset);
-				_backupFile.Write(bytes._buffer, bytes.Length());
+				_backupFile.BlockSeek(blockedAddress, addressOffset);
+				_backupFile.Write(buffer._buffer, buffer.Length());
 			}
 		}
 

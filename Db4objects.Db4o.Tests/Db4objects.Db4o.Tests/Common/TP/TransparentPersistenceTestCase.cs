@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			config.Add(new TransparentActivationSupport());
+			config.Add(new TransparentPersistenceSupport());
 		}
 
 		/// <exception cref="Exception"></exception>

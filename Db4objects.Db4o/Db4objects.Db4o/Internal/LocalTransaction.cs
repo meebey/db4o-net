@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Callbacks;
@@ -37,12 +38,12 @@ namespace Db4objects.Db4o.Internal
 		{
 			_file = (LocalObjectContainer)container;
 			i_pointerIo = new StatefulBuffer(this, Const4.PointerLength);
-			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_38(this);
+			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_39(this);
 		}
 
-		private sealed class _ICommittedCallbackDispatcher_38 : ICommittedCallbackDispatcher
+		private sealed class _ICommittedCallbackDispatcher_39 : ICommittedCallbackDispatcher
 		{
-			public _ICommittedCallbackDispatcher_38(LocalTransaction _enclosing)
+			public _ICommittedCallbackDispatcher_39(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -147,7 +148,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void FreeSlotChanges(bool forFreespace)
 		{
-			IVisitor4 visitor = new _IVisitor4_128(this, forFreespace);
+			IVisitor4 visitor = new _IVisitor4_129(this, forFreespace);
 			if (IsSystemTransaction())
 			{
 				_slotChanges.TraverseMutable(visitor);
@@ -160,9 +161,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_128 : IVisitor4
+		private sealed class _IVisitor4_129 : IVisitor4
 		{
-			public _IVisitor4_128(LocalTransaction _enclosing, bool forFreespace)
+			public _IVisitor4_129(LocalTransaction _enclosing, bool forFreespace)
 			{
 				this._enclosing = _enclosing;
 				this.forFreespace = forFreespace;
@@ -264,12 +265,12 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void RollbackSlotChanges()
 		{
-			_slotChanges.TraverseLocked(new _IVisitor4_217(this));
+			_slotChanges.TraverseLocked(new _IVisitor4_218(this));
 		}
 
-		private sealed class _IVisitor4_217 : IVisitor4
+		private sealed class _IVisitor4_218 : IVisitor4
 		{
-			public _IVisitor4_217(LocalTransaction _enclosing)
+			public _IVisitor4_218(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -390,13 +391,13 @@ namespace Db4objects.Db4o.Internal
 		private bool WriteSlots()
 		{
 			BooleanByRef ret = new BooleanByRef();
-			TraverseSlotChanges(new _IVisitor4_331(this, ret));
+			TraverseSlotChanges(new _IVisitor4_332(this, ret));
 			return ret.value;
 		}
 
-		private sealed class _IVisitor4_331 : IVisitor4
+		private sealed class _IVisitor4_332 : IVisitor4
 		{
-			public _IVisitor4_331(LocalTransaction _enclosing, BooleanByRef ret)
+			public _IVisitor4_332(LocalTransaction _enclosing, BooleanByRef ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -496,12 +497,33 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual Pointer4 ReadPointer(int id)
 		{
+			if (!IsValidId(id))
+			{
+				throw new InvalidIDException(id);
+			}
 			_file.ReadBytes(_pointerBuffer, id, Const4.PointerLength);
 			int address = (_pointerBuffer[3] & 255) | (_pointerBuffer[2] & 255) << 8 | (_pointerBuffer
 				[1] & 255) << 16 | _pointerBuffer[0] << 24;
 			int length = (_pointerBuffer[7] & 255) | (_pointerBuffer[6] & 255) << 8 | (_pointerBuffer
 				[5] & 255) << 16 | _pointerBuffer[4] << 24;
+			if (!IsValidSlot(address, length))
+			{
+				throw new InvalidSlotException(address, length, id);
+			}
 			return new Pointer4(id, new Slot(address, length));
+		}
+
+		private bool IsValidId(int id)
+		{
+			return _file.FileLength() >= id;
+		}
+
+		private bool IsValidSlot(int address, int length)
+		{
+			bool validAddress = _file.FileLength() >= address;
+			bool validLength = _file.FileLength() >= length;
+			bool validSlot = _file.FileLength() >= (address + length);
+			return validAddress && validLength && validSlot;
 		}
 
 		private Pointer4 DebugReadPointer(int id)
@@ -537,13 +559,13 @@ namespace Db4objects.Db4o.Internal
 		private int CountSlotChanges()
 		{
 			IntByRef count = new IntByRef();
-			TraverseSlotChanges(new _IVisitor4_455(this, count));
+			TraverseSlotChanges(new _IVisitor4_477(this, count));
 			return count.value;
 		}
 
-		private sealed class _IVisitor4_455 : IVisitor4
+		private sealed class _IVisitor4_477 : IVisitor4
 		{
-			public _IVisitor4_455(LocalTransaction _enclosing, IntByRef count)
+			public _IVisitor4_477(LocalTransaction _enclosing, IntByRef count)
 			{
 				this._enclosing = _enclosing;
 				this.count = count;
@@ -594,12 +616,12 @@ namespace Db4objects.Db4o.Internal
 
 		private void AppendSlotChanges(BufferImpl writer)
 		{
-			TraverseSlotChanges(new _IVisitor4_490(this, writer));
+			TraverseSlotChanges(new _IVisitor4_512(this, writer));
 		}
 
-		private sealed class _IVisitor4_490 : IVisitor4
+		private sealed class _IVisitor4_512 : IVisitor4
 		{
-			public _IVisitor4_490(LocalTransaction _enclosing, BufferImpl writer)
+			public _IVisitor4_512(LocalTransaction _enclosing, BufferImpl writer)
 			{
 				this._enclosing = _enclosing;
 				this.writer = writer;
@@ -735,14 +757,14 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = _delete;
 				_delete = null;
-				delete.Traverse(new _IVisitor4_614(this));
+				delete.Traverse(new _IVisitor4_636(this));
 			}
 			_writtenUpdateDeletedMembers = null;
 		}
 
-		private sealed class _IVisitor4_614 : IVisitor4
+		private sealed class _IVisitor4_636 : IVisitor4
 		{
-			public _IVisitor4_614(LocalTransaction _enclosing)
+			public _IVisitor4_636(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -835,14 +857,14 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			_slotChanges.TraverseLocked(new _IVisitor4_705(this, deleted, added, updated));
+			_slotChanges.TraverseLocked(new _IVisitor4_727(this, deleted, added, updated));
 			return new CallbackObjectInfoCollections(new ObjectInfoCollectionImpl(added), new 
 				ObjectInfoCollectionImpl(updated), new ObjectInfoCollectionImpl(deleted));
 		}
 
-		private sealed class _IVisitor4_705 : IVisitor4
+		private sealed class _IVisitor4_727 : IVisitor4
 		{
-			public _IVisitor4_705(LocalTransaction _enclosing, Collection4 deleted, Collection4
+			public _IVisitor4_727(LocalTransaction _enclosing, Collection4 deleted, Collection4
 				 added, Collection4 updated)
 			{
 				this._enclosing = _enclosing;

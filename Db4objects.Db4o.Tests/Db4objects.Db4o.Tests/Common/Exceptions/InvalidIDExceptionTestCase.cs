@@ -15,12 +15,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			new InvalidIDExceptionTestCase().RunAll();
 		}
 
-		public virtual void Test()
+		public virtual void TestBigId()
 		{
 			Item item = new Item();
 			Store(item);
 			long id = Db().GetID(item);
-			Assert.Expect(typeof(InvalidIDException), new _ICodeBlock_18(this, id));
+			Assert.Expect(typeof(InvalidIDException), typeof(InvalidIDException), new _ICodeBlock_18
+				(this, id));
 		}
 
 		private sealed class _ICodeBlock_18 : ICodeBlock
@@ -40,6 +41,28 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly InvalidIDExceptionTestCase _enclosing;
 
 			private readonly long id;
+		}
+
+		/// <exception cref="Exception"></exception>
+		public virtual void TestSmallId()
+		{
+			Assert.Expect(typeof(InvalidIDException), new _ICodeBlock_34(this));
+		}
+
+		private sealed class _ICodeBlock_34 : ICodeBlock
+		{
+			public _ICodeBlock_34(InvalidIDExceptionTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			/// <exception cref="Exception"></exception>
+			public void Run()
+			{
+				this._enclosing.Db().GetByID(1000);
+			}
+
+			private readonly InvalidIDExceptionTestCase _enclosing;
 		}
 	}
 }
