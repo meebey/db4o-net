@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Db4objects.Db4o.Collections;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4oUnit;
@@ -22,16 +24,12 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
             Store(list);
         }
 
-        private static object GetField(IReflector reflector, object obj, string fieldName)
+        private static object GetField(object obj, string fieldName)
         {
-            IReflectClass clazz = reflector.ForObject(obj);
-            IReflectField field = clazz.GetDeclaredField(fieldName);
-            field.SetAccessible();
-
-            return field.Get(obj);
+        	return Reflection4.GetFieldValue(obj, fieldName);
         }
 
-        private ArrayList4<T> RetrieveOnlyInstance<T>()
+    	private ArrayList4<T> RetrieveOnlyInstance<T>()
         {
             ArrayList4<T> list = (ArrayList4<T>)RetrieveOnlyInstance(typeof(ArrayList4<T>));
             AssertRetrievedItem(list);
@@ -41,18 +39,16 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
         private void AssertRetrievedItem<T>(IList<T> list)
         {
 #if CF_2_0
-            object[] elements = (object[]) GetField(Reflector(), list, "elements");
+            object[] elements = (object[]) GetField(list, "elements");
             Assert.AreEqual(10, elements.Length);
             foreach (object obj in elements)
             {
                 Assert.IsNull(obj);
             }
-            Assert.AreEqual(10, GetField(Reflector(), list, "capacity"));
-            Assert.AreEqual(10, GetField(Reflector(), list, "listSize"));
 #else 
-            Assert.IsNull(GetField(Reflector(), list, "elements"));
-            Assert.AreEqual(default(int), GetField(Reflector(), list, "listSize"));
+            Assert.IsNull(GetField(list, "elements"));
 #endif
+			Assert.AreEqual(0, GetField(list, "listSize"));
         }
 
         public void TestIndexOf()
