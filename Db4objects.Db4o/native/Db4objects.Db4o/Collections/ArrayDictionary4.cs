@@ -25,12 +25,13 @@ namespace Db4objects.Db4o.Collections
 
 		public void Add(K key, V value)
 		{
-            Activate(ActivationPurpose.Write);
+            Activate(ActivationPurpose.Read);
             int index = IndexOfKey(key);
             if (index != -1)
             {
                 throw new ArgumentException(string.Format("Key {0} already exists", key));
             }
+            Activate(ActivationPurpose.Write);
             Insert(key, value);
 		}
 
@@ -38,11 +39,9 @@ namespace Db4objects.Db4o.Collections
 		{
 			Activate(ActivationPurpose.Read);
             int index = IndexOfKey(key);
-
-            if (index == -1)
-            {
-                return false;
-            }
+            if (index == -1) return false;
+            
+			Activate(ActivationPurpose.Write);
             Delete(index);
             return true;
 		}
@@ -51,27 +50,16 @@ namespace Db4objects.Db4o.Collections
 		{
 			Activate(ActivationPurpose.Read);
             int index = IndexOfKey(pair.Key);
-            if (index == -1)
-            {
-                return false;
-            }
+            if (index == -1) return false;
 
             KeyValuePair<K, V> thisKeyValuePair = new KeyValuePair<K, V>(pair.Key, ValueAt(index));
             return EqualityComparer<KeyValuePair<K, V>>.Default.Equals(thisKeyValuePair, pair);
 		}
 
 		public void CopyTo(KeyValuePair<K, V>[] array, int count)
-		{
-			Activate(ActivationPurpose.Read);
-            if (array == null)
-            {
-                throw new ArgumentNullException();
-            }
-            if (count < 0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-
+		{	
+            if (array == null) throw new ArgumentNullException();
+            if (count < 0) throw new ArgumentOutOfRangeException();
             if ((count >= array.Length) || (Count > (array.Length - count)))
             {
                 throw new ArgumentException();
@@ -85,11 +73,9 @@ namespace Db4objects.Db4o.Collections
 
 		public bool Remove(KeyValuePair<K, V> pair)
 		{
-            if (!Contains(pair))
-            {
-                return false;
-            }
+            if (!Contains(pair)) return false;
 
+			Activate(ActivationPurpose.Write);
             int index = IndexOfKey(pair.Key);
             Delete(index);
             return true;
