@@ -5,6 +5,7 @@ using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Collections;
 using Db4objects.Db4o.Reflect;
 using Db4oUnit;
+using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections
 {
@@ -24,29 +25,19 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
             return dict;
         }
 
-        private object GetField(IReflector reflector, object obj, string fieldName)
-        {
-            IReflectClass clazz = reflector.ForObject(obj);
-            IReflectField field = clazz.GetDeclaredField(fieldName);
-            field.SetAccessible();
-
-            return field.Get(obj);
-        }
-
         private void AssertRetrievedItem(IDictionary<string, int> dict)
         {
 #if CF_2_0
             Assert.IsFalse(Db().IsActive(dict));
-            string[] keys = (string[]) GetField(Reflector(), dict, "_keys");
+            string[] keys = (string[])  Reflection4.GetFieldValue(dict, "_keys");
             AssertInitalArray(keys, 16);
-            int[] values = (int[]) GetField(Reflector(), dict, "_values");
+            int[] values = (int[])  Reflection4.GetFieldValue(dict, "_values");
             AssertInitalArray(values, 16);
 #else
-            Assert.IsNull(GetField(Reflector(), dict, "_keys"));
-            Assert.IsNull(GetField(Reflector(), dict, "_values"));
+            Assert.IsNull( Reflection4.GetFieldValue(dict, "_keys"));
+            Assert.IsNull( Reflection4.GetFieldValue(dict, "_values"));
 #endif
-            Assert.AreEqual(default(int), GetField(Reflector(), dict, "_startIndex"));
-            Assert.AreEqual(default(int), GetField(Reflector(), dict, "_endIndex"));
+            Assert.AreEqual(default(int),  Reflection4.GetFieldValue(dict, "_size"));
         }
 
 #if CF_2_0

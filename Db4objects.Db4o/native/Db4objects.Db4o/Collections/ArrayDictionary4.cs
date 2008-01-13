@@ -140,8 +140,8 @@ namespace Db4objects.Db4o.Collections
             get
             {
 				Activate(ActivationPurpose.Read);
-                K[] keys = new K[_endIndex - _startIndex];
-                Array.Copy(_keys, keys, _endIndex);
+                K[] keys = new K[_size];
+                Array.Copy(_keys, keys, _size);
                 return keys;
             }
 		}
