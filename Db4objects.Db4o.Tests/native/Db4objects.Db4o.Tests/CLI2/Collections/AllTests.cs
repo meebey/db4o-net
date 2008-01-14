@@ -5,12 +5,14 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 	{
 		protected override System.Type[] TestCases()
 		{
-			return new System.Type[] { 
-                typeof(ArrayList4TestCase), 
-                typeof(ArrayList4TATestCase), 
-                typeof(GenericDictionaryTestCase),
+			return new System.Type[]
+			{ 
                 typeof(ArrayDictionary4TestCase),
                 typeof(ArrayDictionary4TATestCase),
+				typeof(ArrayDictionary4TransparentPersistenceTestCase),
+				typeof(ArrayList4TestCase), 
+                typeof(ArrayList4TATestCase), 
+                typeof(GenericDictionaryTestCase),
             };
 		}
 	}

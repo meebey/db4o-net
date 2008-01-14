@@ -15,9 +15,9 @@ namespace Db4objects.Db4o.Collections
 
         #endregion
 
-        int IList<E>.IndexOf(E item)
+        public int IndexOf(E item)
         {
-            return Array.IndexOf(elements, item);
+            return Array.IndexOf(GetElements(), item, 0, listSize);
         }
 
         public void Insert(int index, E item)

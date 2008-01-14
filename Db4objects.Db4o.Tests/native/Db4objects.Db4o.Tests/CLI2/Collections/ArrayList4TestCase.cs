@@ -113,7 +113,13 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
                             new IndexOfItems<int, Type>(5, typeof(int)));
         }
 
-        public void TestIndexOf()
+		public void TestIndexOfOnEmptyList()
+		{
+			ArrayList4<int> list = new ArrayList4<int>();
+			Assert.AreEqual(-1, list.IndexOf(0));
+		}
+
+    	public void TestIndexOf()
         {
             ArrayList4Asserter.AssertIndexOf(
                 ArrayList4Asserter.CreateArrayListAndAssertValues(10),
