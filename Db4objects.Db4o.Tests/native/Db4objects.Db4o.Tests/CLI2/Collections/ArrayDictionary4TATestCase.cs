@@ -50,7 +50,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
             }
         }
 #endif
-
         public void TestItemGet()
         {
             IDictionary<string, int> dict = RetrieveOnlyInstance();

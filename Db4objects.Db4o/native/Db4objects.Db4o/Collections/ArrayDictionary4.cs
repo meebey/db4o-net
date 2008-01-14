@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Collections
 			get { return false;  }
 		}
 
-		public void Add(KeyValuePair<K, V> item)
+		void ICollection<KeyValuePair<K, V>>.Add(KeyValuePair<K, V> item)
 		{
 			Add(item.Key, item.Value);
 		}
@@ -40,13 +40,13 @@ namespace Db4objects.Db4o.Collections
 			Activate(ActivationPurpose.Read);
             int index = IndexOfKey(key);
             if (index == -1) return false;
-            
+
 			Activate(ActivationPurpose.Write);
             Delete(index);
             return true;
 		}
 
-		public bool Contains(KeyValuePair<K, V> pair)
+		bool ICollection<KeyValuePair<K, V>>.Contains(KeyValuePair<K, V> pair)
 		{
 			Activate(ActivationPurpose.Read);
             int index = IndexOfKey(pair.Key);
@@ -56,29 +56,24 @@ namespace Db4objects.Db4o.Collections
             return EqualityComparer<KeyValuePair<K, V>>.Default.Equals(thisKeyValuePair, pair);
 		}
 
-		public void CopyTo(KeyValuePair<K, V>[] array, int count)
+		void ICollection<KeyValuePair<K, V>>.CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
 		{	
             if (array == null) throw new ArgumentNullException();
-            if (count < 0) throw new ArgumentOutOfRangeException();
-            if ((count >= array.Length) || (Count > (array.Length - count)))
-            {
-                throw new ArgumentException();
-            }
+            if (arrayIndex < 0) throw new ArgumentOutOfRangeException();
+            if (arrayIndex >= array.Length || Count > (array.Length - arrayIndex)) throw new ArgumentException();
+
             for (int i = 0; i < Count; i++)
             {
                 KeyValuePair<K, V> keyValuePair = new KeyValuePair<K, V>(KeyAt(i), ValueAt(i));
-                array[count + i] = keyValuePair;
+                array[arrayIndex + i] = keyValuePair;
             }
 		}
 
-		public bool Remove(KeyValuePair<K, V> pair)
+		bool ICollection<KeyValuePair<K, V>>.Remove(KeyValuePair<K, V> pair)
 		{
-            if (!Contains(pair)) return false;
+            if (!((ICollection<KeyValuePair<K, V>>)this).Contains(pair)) return false;
 
-			Activate(ActivationPurpose.Write);
-            int index = IndexOfKey(pair.Key);
-            Delete(index);
-            return true;
+			return Remove(pair.Key);
 		}
 
 		public bool TryGetValue(K key, out V value)
@@ -100,14 +95,11 @@ namespace Db4objects.Db4o.Collections
             {
 				Activate(ActivationPurpose.Read);
                 int index = IndexOfKey(key);
-                if (index == -1)
-                {
-                    throw new KeyNotFoundException();
-                }
+                if (index == -1) throw new KeyNotFoundException();
                 return ValueAt(index);
             }
             set
-            {
+            {	
 				Activate(ActivationPurpose.Read);
                 int index = IndexOfKey(key);
                 if (index == -1)
@@ -116,6 +108,7 @@ namespace Db4objects.Db4o.Collections
                 }
                 else
                 {
+					Activate(ActivationPurpose.Write);
                     Replace(index, value);
                 }
             }
@@ -139,12 +132,11 @@ namespace Db4objects.Db4o.Collections
 
 		public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
 		{
-            KeyValuePair<K, V>[] keyValuePairs = new KeyValuePair<K, V>[Count];
-            for (int i = 0; i < Count; i++)
-            {
-                keyValuePairs[i] = new KeyValuePair<K, V>(KeyAt(i), ValueAt(i));
-            }
-            return new Enumerator(keyValuePairs);
+			Activate(ActivationPurpose.Read);
+			for (int i = 0; i < _size; ++i)
+			{
+				yield return new KeyValuePair<K, V>(KeyAt(i), ValueAt(i));
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -154,68 +146,11 @@ namespace Db4objects.Db4o.Collections
 
         private int IndexOfKey(K key)
         {
-            if (key == null)
-            {
-                throw new ArgumentNullException();
-            }
+            if (key == null) throw new ArgumentNullException();
             return Array.IndexOf(_keys, key);
         }
-
-        public struct Enumerator : IEnumerator<KeyValuePair<K, V>>
-        {
-            private KeyValuePair<K, V>[] _keyValuePairs;
-
-            private int _currentIndex;
-
-            public Enumerator(KeyValuePair<K, V>[] keyValuePairs)
-            {
-                _keyValuePairs = keyValuePairs;
-                _currentIndex = -1;
-            }
-
-            public KeyValuePair<K, V> Current
-            {
-                get
-                {
-                    return _keyValuePairs[_currentIndex];
-                }
-            }
-
-            public void Dispose()
-            {
-                Array.Clear(_keyValuePairs, 0, _keyValuePairs.Length);
-                _keyValuePairs = null;
-            }
-
-            public bool MoveNext()
-            {
-                if (_currentIndex < _keyValuePairs.Length - 1)
-                {
-                    _currentIndex++;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            void IEnumerator.Reset()
-            {
-                _currentIndex = -1;
-            }
-
-            Object IEnumerator.Current
-            {
-                get
-                {
-                    return Current;
-                }
-            }
-        }
-
+        
         #region Sharpen Helpers
-
         private static K DefaultKeyValue()
         {
             return default(K);

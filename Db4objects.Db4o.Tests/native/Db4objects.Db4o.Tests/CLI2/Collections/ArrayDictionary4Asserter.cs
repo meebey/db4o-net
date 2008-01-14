@@ -356,6 +356,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
                 Assert.AreEqual(index, enumerator.Current.Value);
                 index++;
             }
+			Assert.AreEqual(dict.Count, index);
         }
 
     }
