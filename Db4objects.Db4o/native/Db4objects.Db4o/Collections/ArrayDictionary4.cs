@@ -41,7 +41,6 @@ namespace Db4objects.Db4o.Collections
             int index = IndexOfKey(key);
             if (index == -1) return false;
 
-			Activate(ActivationPurpose.Write);
             Delete(index);
             return true;
 		}
