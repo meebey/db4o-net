@@ -10,6 +10,7 @@ namespace Db4oTool.Tests
 		{
 			return new Type[]
 				{
+					typeof(ProgramOptionsTestCase),
 					typeof(Core.AllTests),
 					typeof(NQ.AllTests),
 					typeof(TA.AllTests),

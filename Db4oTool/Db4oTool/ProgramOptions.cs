@@ -15,8 +15,8 @@ namespace Db4oTool
 		[Option("Preserve debugging information", "debug")]
 		public bool Debug;
 
-		[Option("Implement Transparent Activation Support", "ta")]
-		public bool TransparentActivation;
+		[Option("Implement Transparent Persistence Support", "tp")]
+		public bool TransparentPersistence;
 
 		[Option("Case sensitive queries", "case-sensitive")]
 		public bool CaseSensitive;
@@ -90,6 +90,13 @@ namespace Db4oTool
 			return WhatToDoNext.GoAhead;
 		}
 
+		[Option("Same as 'tp'", "ta")]
+		public WhatToDoNext TA()
+		{
+			TransparentPersistence = true;
+			return WhatToDoNext.GoAhead;
+		}
+
 		public string Assembly
 		{
 			get
@@ -106,7 +113,7 @@ namespace Db4oTool
 				return StatisticsFileNames.Count > 0 ||
                     (Assembly != null
 					   && (NQ
-						   || TransparentActivation
+						   || TransparentPersistence
 						   || CustomInstrumentations.Count > 0));
 			}
 		}

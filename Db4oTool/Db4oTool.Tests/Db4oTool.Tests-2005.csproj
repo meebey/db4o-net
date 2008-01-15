@@ -41,6 +41,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\net-2.0\Mono.Cecil.Pdb.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.GetOptions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\net-2.0\Mono.GetOptions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -80,6 +84,7 @@
     <EmbeddedResource Include="NQ\Resources\DelegateSubject.cs" />
     <Compile Include="NQ\UnoptimizablePredicatesTestCase.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProgramOptionsTestCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="TA\Resources\TAInstrumentationSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TAAssemblyReferenceSubject.cs" />

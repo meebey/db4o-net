@@ -51,7 +51,7 @@ namespace Db4oTool
 				pipeline.Add(new DelegateOptimizer());
 				pipeline.Add(new PredicateOptimizer());
 			}
-			if (options.TransparentActivation)
+			if (options.TransparentPersistence)
 			{
 				pipeline.Add(new TAInstrumentation());
 			}
