@@ -10,6 +10,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
                 typeof(ArrayDictionary4TestCase),
                 typeof(ArrayDictionary4TATestCase),
 				typeof(ArrayDictionary4TransparentPersistenceTestCase),
+
+				typeof(ArrayList4ActivatableTestCase), 
 				typeof(ArrayList4TestCase), 
                 typeof(ArrayList4TATestCase), 
                 typeof(GenericDictionaryTestCase),

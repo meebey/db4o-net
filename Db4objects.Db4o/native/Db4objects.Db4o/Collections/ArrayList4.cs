@@ -85,22 +85,14 @@ namespace Db4objects.Db4o.Collections
         }
 
         public void CopyTo(E[] array, int arrayIndex)
-        {
-            if (array == null)
-            {
-                throw  new ArgumentNullException("array");
-            }
-
-            CopyTo((Array ) array, arrayIndex);
+        {   
+            CopyTo((Array) array, arrayIndex);
         }
 
         public bool Remove(E item)
         {
             int index = IndexOf(item);
-            if (index == -1)
-            {
-                return false;
-            }
+            if (index == -1) return false;
             
             RemoveAt(index);
             return true;
@@ -108,7 +100,10 @@ namespace Db4objects.Db4o.Collections
 
         public void CopyTo(Array array, int index)
         {
-            elements.CopyTo(array, index);
+			if (null == array) throw new ArgumentNullException();
+			if (array.Rank != 1) throw new ArgumentException();
+
+			Array.Copy(GetElements(), 0, array, index, listSize);
         }
 
         public int Count
