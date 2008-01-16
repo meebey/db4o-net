@@ -7,6 +7,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 {
 	class UninitializedObjectsWithFinalizerTestCase : ITestCase
 	{
+#if !CF_2_0
 		private const string DatabaseFileName = "TestUnitializedObjects.odb";
 		public void TestUninitilizedObjects()
 		{
@@ -19,7 +20,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 				{
 					db.Store(new TestSubject("Test"));
 					
-					GC.Collect(GC.MaxGeneration);
+					GC.Collect();
 					GC.WaitForPendingFinalizers();
 				}
 
@@ -30,7 +31,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 					Assert.AreEqual(1, result.Count);
 					db.Activate(result[0], 2);
 					Assert.AreEqual("Test", result[0].name);
-				}
+                }
 
 				File.Delete(DatabaseFileName);
 			}
@@ -46,6 +47,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 	internal class TestSubject
 	{
 		public string name;
+
 		public TestSubject(string _name)
 		{
 			name = _name;
@@ -53,8 +55,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 
 		~TestSubject()
 		{
-			// just do something stupid.
-			name = name.ToUpper();
+            // Just access an object method...
+            name = name.ToUpper();
 		}
-	}
+#endif
+    }
 }
