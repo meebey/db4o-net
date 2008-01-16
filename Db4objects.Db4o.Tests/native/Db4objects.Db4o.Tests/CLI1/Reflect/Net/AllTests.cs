@@ -10,6 +10,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 			return new System.Type[]
 				{
                     typeof(NetFieldTestCase),
+					typeof(UninitializedObjectsWithFinalizerTestCase),
 				};
 		}
 	}

@@ -203,17 +203,8 @@ namespace Db4objects.Db4o.Reflect.Net
 				IReflectConstructor constructor = new SerializationConstructor(GetNetType());
 				try
 				{
-					bool serializationIsOk = true;
-					if(testConstructor)
-					{
-						object o = constructor.NewInstance(null);
-						serializationIsOk = ( o != null);
-					}
-					if (serializationIsOk)
-					{
-						UseConstructor(constructor, null);
-						return true;
-					}
+					UseConstructor(constructor, null);
+					return true;
 				}
 				catch
 				{
