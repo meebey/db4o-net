@@ -11,6 +11,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public bool ProcessAtServer()
 		{
 			StatefulBuffer bytes = null;
+			// readObjectByID may fail in certain cases, for instance if
+			// and object was deleted by another client
 			lock (StreamLock())
 			{
 				try

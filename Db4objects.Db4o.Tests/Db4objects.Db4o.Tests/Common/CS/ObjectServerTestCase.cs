@@ -44,6 +44,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private void AssertClientCount(int count)
 		{
+			// closing is asynchronous, relying on completion is hard
+			// That's why there is no test here. 
+			// ClientProcessesTestCase tests closing.
 			Assert.AreEqual(count, server.ClientCount());
 		}
 

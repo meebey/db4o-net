@@ -37,6 +37,7 @@ namespace Db4oUnit.Extensions.Concurrency
 			bool hasSequenceParameter = false;
 			if (parameters.Length == 2)
 			{
+				// ExtObjectContainer, seq
 				hasSequenceParameter = true;
 			}
 			int threadCount = toTest.ThreadCount();
@@ -47,21 +48,26 @@ namespace Db4oUnit.Extensions.Concurrency
 				threads[i] = new Thread(new ConcurrencyTestMethod.RunnableTestMethod(this, toTest
 					, method, i, hasSequenceParameter));
 			}
+			// start threads simultaneously
 			for (int i = 0; i < threadCount; ++i)
 			{
 				threads[i].Start();
 			}
+			// wait for the threads to end
 			for (int i = 0; i < threadCount; ++i)
 			{
 				threads[i].Join();
 			}
+			// check if any of the threads ended abnormally
 			for (int i = 0; i < threadCount; ++i)
 			{
 				if (failures[i] != null)
 				{
+					// TODO: show all failures by throwing another kind of exception.
 					throw failures[i];
 				}
 			}
+			// check test result
 			CheckConcurrencyMethod(toTest, method.Name);
 		}
 
@@ -82,8 +88,10 @@ namespace Db4oUnit.Extensions.Concurrency
 			}
 			catch (Exception)
 			{
+				// if checkMethod is not availble, return as success
 				return;
 			}
+			// pass ExtObjectContainer as a param to check method
 			IExtObjectContainer oc = toTest.Fixture().Db();
 			object[] args = new object[] { oc };
 			try

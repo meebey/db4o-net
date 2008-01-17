@@ -27,6 +27,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual object ReadIndexEntry(BufferImpl a_reader)
 		{
+			// TODO: could read int directly here with a_reader.readInt()
 			int parentID = ReadParentID(a_reader);
 			object objPart = _valueHandler.ReadIndexEntry(a_reader);
 			if (parentID < 0)
@@ -101,6 +102,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				catch (IllegalComparisonException)
 				{
 				}
+				// can happen, is expected
 				return preparedParentIdComparison.CompareTo(target.ParentID());
 			}
 

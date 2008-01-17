@@ -13,9 +13,11 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Messaging;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -153,8 +155,19 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _readOnly;
 
+		private Collection4 _registeredTypeHandlers;
+
 		public int ActivationDepth()
 		{
+			//  TODO: consider setting default to 8, it's more efficient with freespace.
+			// for playing with different strategies of prefetching
+			// object
+			//	private final static KeySpec IOADAPTER_KEY=new KeySpec(new RandomAccessFileAdapter());
+			// NOTE: activate this config to trigger the defragment failure
+			//= new NIOFileAdapter(512,3);
+			//  is null in the global configuration until deepClone is called
+			// The following are very frequently being asked for, so they show up in the profiler. 
+			// Let's keep them out of the Hashtable.
 			return _config.GetAsInt(ActivationDepthKey);
 		}
 
@@ -167,6 +180,24 @@ namespace Db4objects.Db4o.Internal
 		{
 			item.Prepare(this);
 			SafeConfigurationItems().Put(item, item);
+		}
+
+		/// <summary>
+		/// Returns an iterator for all
+		/// <see cref="IConfigurationItem">IConfigurationItem</see>
+		/// instances
+		/// added.
+		/// </summary>
+		/// <seealso cref="Config4Impl.Add">Config4Impl.Add</seealso>
+		/// <returns>the iterator</returns>
+		public IEnumerator ConfigurationItemsIterator()
+		{
+			Hashtable4 items = ConfigurationItems();
+			if (items == null)
+			{
+				return Iterators.EmptyIterator;
+			}
+			return items.Keys();
 		}
 
 		private Hashtable4 SafeConfigurationItems()
@@ -257,6 +288,9 @@ namespace Db4objects.Db4o.Internal
 		{
 			Type[] ignore = new Type[] { typeof(P1HashElement), typeof(P1ListElement), typeof(
 				P1Object), typeof(P1Collection), typeof(StaticClass), typeof(StaticField) };
+			// XXX You may need the following for indexing tests. 
+			//                        P2HashMap.class,
+			//                        P2LinkedList.class,
 			for (int i = 0; i < ignore.Length; i++)
 			{
 				if (ignore[i].FullName.Equals(className))
@@ -274,6 +308,11 @@ namespace Db4objects.Db4o.Internal
 			ret._internStrings = _internStrings;
 			ret._messageLevel = _messageLevel;
 			ret._readOnly = _readOnly;
+			if (_registeredTypeHandlers != null)
+			{
+				ret._registeredTypeHandlers = (Collection4)_registeredTypeHandlers.DeepClone(this
+					);
+			}
 			return ret;
 		}
 
@@ -516,6 +555,11 @@ namespace Db4objects.Db4o.Internal
 				_config.Put(ReflectorKey, reflector);
 				configuredReflector.SetParent(reflector);
 			}
+			// TODO: transaction assignment has been moved to YapStreamBase#initialize1().
+			// implement better, more generic solution as described in COR-288
+			//		if(! reflector.hasTransaction() && i_stream != null){
+			//			reflector.setTransaction(i_stream.getSystemTransaction());
+			//		}
 			return reflector;
 		}
 
@@ -525,6 +569,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Exceptions4.ThrowRuntimeException(46);
 			}
+			// see readable message for code in Messages.java
 			if (reflect == null)
 			{
 				throw new ArgumentNullException();
@@ -1044,6 +1089,35 @@ namespace Db4objects.Db4o.Internal
 		public IActivationDepthProvider ActivationDepthProvider()
 		{
 			return (IActivationDepthProvider)_config.Get(ActivationDepthProviderKey);
+		}
+
+		public void RegisterTypeHandler(ITypeHandlerPredicate predicate, ITypeHandler4 typeHandler
+			)
+		{
+			if (_registeredTypeHandlers == null)
+			{
+				_registeredTypeHandlers = new Collection4();
+			}
+			_registeredTypeHandlers.Add(new TypeHandlerPredicatePair(predicate, typeHandler));
+		}
+
+		public ITypeHandler4 TypeHandlerForClass(IReflectClass classReflector, byte handlerVersion
+			)
+		{
+			if (_registeredTypeHandlers == null)
+			{
+				return null;
+			}
+			IEnumerator i = _registeredTypeHandlers.GetEnumerator();
+			while (i.MoveNext())
+			{
+				TypeHandlerPredicatePair pair = (TypeHandlerPredicatePair)i.Current;
+				if (pair._predicate.Match(classReflector, handlerVersion))
+				{
+					return pair._typeHandler;
+				}
+			}
+			return null;
 		}
 	}
 }

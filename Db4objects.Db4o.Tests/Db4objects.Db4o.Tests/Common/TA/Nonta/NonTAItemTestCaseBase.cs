@@ -9,6 +9,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 	{
 		protected override void AssertRetrievedItem(object obj)
 		{
+			//do nothing for non-TA tests
 			return;
 		}
 

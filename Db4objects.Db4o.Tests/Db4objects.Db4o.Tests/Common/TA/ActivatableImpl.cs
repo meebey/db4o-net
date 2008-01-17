@@ -13,6 +13,9 @@ namespace Db4objects.Db4o.Tests.Common.TA
 
 		public virtual void Bind(IActivator activator)
 		{
+			// TA BEGIN
+			// TA END
+			//	 TA BEGIN
 			if (_activator == activator)
 			{
 				return;

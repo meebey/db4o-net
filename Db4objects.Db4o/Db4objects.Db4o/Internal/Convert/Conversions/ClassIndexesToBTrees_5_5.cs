@@ -29,6 +29,9 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 
 		public override void Convert(ConversionStage.SystemUpStage stage)
 		{
+			// calling #storedClasses forces reading all classes
+			// That's good enough to load them all and to call the
+			// above convert method.
 			stage.File().StoredClasses();
 		}
 	}

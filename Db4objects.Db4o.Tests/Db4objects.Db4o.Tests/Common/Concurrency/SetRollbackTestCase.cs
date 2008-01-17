@@ -19,6 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		{
 			if (seq % 2 == 0)
 			{
+				// if the thread sequence is even, store something
 				for (int i = 0; i < 1000; i++)
 				{
 					SimpleObject c = new SimpleObject("oc " + i, i);
@@ -27,6 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			}
 			else
 			{
+				// if the thread sequence is odd, rollback
 				for (int i = 0; i < 1000; i++)
 				{
 					SimpleObject c = new SimpleObject("oc " + i, i);

@@ -43,6 +43,10 @@ namespace Db4objects.Db4o.Internal
 
 		internal override bool AllowsQueries()
 		{
+			// Override
+			// do nothing
+			// Override
+			// Primitive Indices will be created later.
 			return false;
 		}
 
@@ -52,6 +56,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected override bool DescendOnCascadingActivation()
 		{
+			// do nothing
 			return false;
 		}
 
@@ -163,6 +168,9 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_handler is ArrayHandler)
 			{
+				// TODO: Here we should theoretically read through the array and collect candidates.
+				// The respective construct is wild: "Contains query through an array in an array."
+				// Ignore for now.
 				return ObjectID.Ignore;
 			}
 			return ObjectID.NotPossible;
@@ -174,6 +182,7 @@ namespace Db4objects.Db4o.Internal
 
 		public sealed override bool WriteObjectBegin()
 		{
+			// do nothing
 			return false;
 		}
 

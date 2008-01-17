@@ -45,6 +45,7 @@ namespace Db4objects.Db4o.Internal
 		public Transaction(ObjectContainerBase container, Db4objects.Db4o.Internal.Transaction
 			 systemTransaction, TransactionalReferenceSystem referenceSystem)
 		{
+			// contains DeleteInfo nodes
 			_container = container;
 			_systemTransaction = systemTransaction;
 			_referenceSystem = referenceSystem;
@@ -151,6 +152,8 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void DontRemoveFromClassIndex(int a_yapClassID, int a_id)
 		{
+			// If objects are deleted and rewritten during a cascade
+			// on delete, we dont want them to be gone.        
 			CheckSynchronization();
 			ClassMetadata yapClass = Container().ClassMetadataForId(a_yapClassID);
 			yapClass.Index().Add(this, a_id);
@@ -348,6 +351,8 @@ namespace Db4objects.Db4o.Internal
 		public void RemoveReference(ObjectReference @ref)
 		{
 			ReferenceSystem().RemoveReference(@ref);
+			// setting the ID to minus 1 ensures that the
+			// gc mechanism does not kill the new YapObject
 			@ref.SetID(-1);
 			Platform4.KillYapRef(@ref.GetObjectReference());
 		}

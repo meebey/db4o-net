@@ -30,6 +30,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			}
 			finally
 			{
+				// TODO: send the exception to the client
 				if (!ok)
 				{
 					Write(Msg.Failed);

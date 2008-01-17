@@ -18,6 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 
 			public Data(int id)
 			{
+				// replace with Data.class -> green
 				_id = id;
 			}
 		}

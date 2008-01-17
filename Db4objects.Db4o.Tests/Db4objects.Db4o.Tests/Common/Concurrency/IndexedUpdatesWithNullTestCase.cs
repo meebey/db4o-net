@@ -75,9 +75,11 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IObjectSet objectSet = q.Execute();
 			if (objectSet.Size() == 0)
 			{
+				// already set by other threads
 				return;
 			}
 			Assert.AreEqual(4, objectSet.Size());
+			// wait for other threads
 			Thread.Sleep(500);
 			while (objectSet.HasNext())
 			{

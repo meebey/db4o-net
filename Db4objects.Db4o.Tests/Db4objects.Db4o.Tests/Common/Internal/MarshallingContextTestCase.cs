@@ -99,6 +99,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			Pointer4 pointer = marshallingContext.AllocateSlot();
 			BufferImpl buffer = marshallingContext.ToWriteBuffer(pointer);
 			buffer.Seek(0);
+			//        String str = new String(buffer._buffer);
+			//        System.out.println(str);
 			UnmarshallingContext unmarshallingContext = new UnmarshallingContext(Trans(), @ref
 				, Const4.AddToIdTree, false);
 			unmarshallingContext.Buffer(buffer);

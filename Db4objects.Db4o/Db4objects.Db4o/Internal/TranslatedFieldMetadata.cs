@@ -59,6 +59,9 @@ namespace Db4objects.Db4o.Internal
 		public override void Instantiate(UnmarshallingContext context)
 		{
 			object obj = Read(context);
+			// Activation of members is necessary on purpose here.
+			// Classes like Hashtable need fully activated members
+			// to be able to calculate hashCode()
 			context.Container().Activate(context.Transaction(), obj, context.ActivationDepth(
 				));
 			SetOn(context.Transaction(), context.PersistentObject(), obj);
@@ -70,6 +73,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void SetOn(Transaction trans, object a_onObject, object toSet)
 		{
+			// do nothing
 			try
 			{
 				i_translator.OnActivate(trans.ObjectContainer(), a_onObject, toSet);

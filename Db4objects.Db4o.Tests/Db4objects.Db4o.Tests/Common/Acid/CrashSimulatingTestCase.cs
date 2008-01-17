@@ -24,6 +24,8 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 
 			public CrashData(CrashSimulatingTestCase.CrashData next_, string name)
 			{
+				// TODO: survives commenting out invocations of IoAdaptedObjectContainer#syncFiles() other
+				// than the one in LocalTransaction#flushFile()
 				_next = next_;
 				_name = name;
 			}

@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 			public Parent(STInnerClassesTestCase _enclosing, object o)
 			{
 				this._enclosing = _enclosing;
+				// Generierter package-Name
 				this.child = o;
 			}
 

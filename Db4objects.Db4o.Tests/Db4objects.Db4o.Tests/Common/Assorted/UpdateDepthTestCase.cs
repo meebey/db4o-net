@@ -78,6 +78,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="Exception"></exception>
 		public virtual void TestDepth0()
 		{
+			//		itemClass.cascadeOnDelete(true);
 			Db().Store(PokeName(QueryRoot()), 0);
 			Expect(NewGraph());
 		}
@@ -95,6 +96,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			UpdateDepthTestCase.Item root = PokeChild(PokeName(QueryRoot()));
 			PokeChild(root.child);
+			// one level too many
 			Db().Store(root, 2);
 			Expect(PokeChild(PokeName(NewGraph())));
 		}

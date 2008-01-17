@@ -49,6 +49,8 @@ namespace Db4objects.Db4o.Internal.Btree
 		public BTree(Transaction trans, int id, IIndexable4 keyHandler, int treeNodeSize, 
 			int treeCacheHeight)
 		{
+			// version byte
+			// size, node size  
 			if (null == keyHandler)
 			{
 				throw new ArgumentNullException();
@@ -100,6 +102,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual void Remove(Transaction trans, object key)
 		{
+			// FIXME: Change the signature to return true, if object could be removed.
 			KeyCantBeNull(key);
 			IPreparedComparison preparedComparison = KeyHandler().PrepareComparison(key);
 			IEnumerator pointers = Search(trans, preparedComparison, key).Pointers();
@@ -125,6 +128,10 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			KeyCantBeNull(key);
 			EnsureActive(trans);
+			// TODO: Optimize the following.
+			//       Part of the search operates against the same nodes.
+			//       As long as the bounds are on one node, the search
+			//       should walk the nodes in one go.
 			BTreeNodeSearchResult start = SearchLeaf(trans, key, SearchTarget.Lowest);
 			BTreeNodeSearchResult end = SearchLeaf(trans, key, SearchTarget.Highest);
 			return start.CreateIncludingRange(end);
@@ -372,6 +379,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		public override void ReadThis(Transaction a_trans, BufferImpl a_reader)
 		{
 			a_reader.IncrementOffset(1);
+			// first byte is version, for possible future format changes
 			_size = a_reader.ReadInt();
 			_nodeSize = a_reader.ReadInt();
 			_halfNodeSize = NodeSize() / 2;
@@ -424,6 +432,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual BTreePointer FirstPointer(Transaction trans)
 		{
+			// nothing to do here
 			EnsureActive(trans);
 			if (null == _root)
 			{

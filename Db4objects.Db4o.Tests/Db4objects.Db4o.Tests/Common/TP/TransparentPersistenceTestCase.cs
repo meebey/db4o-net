@@ -96,24 +96,31 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			}
 		}
 
-		private IExtObjectContainer OpenNewClient()
-		{
-			return ((IDb4oClientServerFixture)this.Fixture()).OpenNewClient();
-		}
-
 		/// <exception cref="Exception"></exception>
 		public virtual void TestTransparentUpdate()
 		{
 			TransparentPersistenceTestCase.Item foo = ItemByName("Foo");
 			foo.SetName("Bar");
+			// changing more than once shouldn't be a problem
 			foo.SetName("Foo*");
 			TransparentPersistenceTestCase.Item bar = ItemByName("Bar");
 			Assert.AreEqual("Bar", bar.GetName());
+			// accessed but not changed
 			AssertUpdatedObjects(foo);
 			Reopen();
 			Assert.IsNotNull(ItemByName("Foo*"));
 			Assert.IsNull(ItemByName("Foo"));
 			Assert.IsNotNull(ItemByName("Bar"));
+		}
+
+		/// <exception cref="Exception"></exception>
+		public virtual void TestChangedAfterCommit()
+		{
+			TransparentPersistenceTestCase.Item item = ItemByName("Foo");
+			item.SetName("Bar");
+			AssertUpdatedObjects(item);
+			item.SetName("Foo");
+			AssertUpdatedObjects(item);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -142,14 +149,14 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		{
 			Collection4 updated = new Collection4();
 			EventRegistryFor(container).Updated += new Db4objects.Db4o.Events.ObjectEventHandler
-				(new _IEventListener4_129(this, updated).OnEvent);
+				(new _IEventListener4_134(this, updated).OnEvent);
 			container.Commit();
 			return updated;
 		}
 
-		private sealed class _IEventListener4_129
+		private sealed class _IEventListener4_134
 		{
-			public _IEventListener4_129(TransparentPersistenceTestCase _enclosing, Collection4
+			public _IEventListener4_134(TransparentPersistenceTestCase _enclosing, Collection4
 				 updated)
 			{
 				this._enclosing = _enclosing;
@@ -183,6 +190,11 @@ namespace Db4objects.Db4o.Tests.Common.TP
 				return (TransparentPersistenceTestCase.Item)result.Next();
 			}
 			return null;
+		}
+
+		private IExtObjectContainer OpenNewClient()
+		{
+			return ((IDb4oClientServerFixture)this.Fixture()).OpenNewClient();
 		}
 	}
 }

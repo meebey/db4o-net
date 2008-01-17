@@ -101,7 +101,6 @@ namespace Db4objects.Db4o.Internal
 			InitNewClassCollection();
 			InitializeEssentialClasses();
 			_fileHeader.InitNew(this);
-			_freespaceManager.OnNew(this);
 			_freespaceManager.Start(_systemData.FreespaceAddress());
 		}
 
@@ -127,6 +126,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void InitNewClassCollection()
 		{
+			// overridden in YapObjectCarrier to do nothing
 			ClassCollection().InitTables(1);
 		}
 
@@ -170,6 +170,12 @@ namespace Db4objects.Db4o.Internal
 				reader.SlotDelete();
 				ClassMetadata yc = yo.ClassMetadata();
 				yc.Delete(reader, obj);
+				// The following will not work with this approach.
+				// Free blocks are identified in the Transaction by their ID.
+				// TODO: Add a second tree specifically to free pointers.
+				//			if(SecondClass.class.isAssignableFrom(yc.getJavaClass())){
+				//				ta.freePointer(id);
+				//			}
 				return true;
 			}
 			return false;
@@ -185,8 +191,13 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
+			// TODO: This should really be an IllegalArgumentException but old database files 
+			//       with index-based FreespaceManagers appear to deliver zeroed slots.
+			// throw new IllegalArgumentException();
 			if (_freespaceManager == null)
 			{
+				// Can happen on early free before freespacemanager
+				// is up, during conversion.
 				return;
 			}
 			Slot blockedSlot = ToBlockedLength(slot);
@@ -216,14 +227,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _IVisitor4_212(this));
+				i_prefetchedIDs.Traverse(new _IVisitor4_211(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _IVisitor4_212 : IVisitor4
+		private sealed class _IVisitor4_211 : IVisitor4
 		{
-			public _IVisitor4_212(LocalObjectContainer _enclosing)
+			public _IVisitor4_211(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -260,7 +271,11 @@ namespace Db4objects.Db4o.Internal
 		public int GetPointerSlot()
 		{
 			int id = GetSlot(Const4.PointerLength).Address();
+			// write a zero pointer first
+			// to prevent delete interaction trouble
 			((LocalTransaction)SystemTransaction()).WriteZeroPointer(id);
+			// We have to make sure that object IDs do not collide
+			// with built-in type IDs.
 			if (_handlers.IsSystemHandler(id))
 			{
 				return GetPointerSlot();
@@ -367,6 +382,12 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void EnsureLastSlotWritten()
 		{
+			// When a file gets opened, it uses the file size to determine where 
+			// new slots can be appended. If this method would not be called, the
+			// freespace system could already contain a slot that points beyond
+			// the end of the file and this space could be allocated and used twice,
+			// for instance if a slot was allocated and freed without ever being
+			// written to file.
 			if (_blockEndAddress > BytesToBlocks(FileLength()))
 			{
 				StatefulBuffer writer = GetWriter(SystemTransaction(), _blockEndAddress - 1, BlockSize
@@ -383,6 +404,9 @@ namespace Db4objects.Db4o.Internal
 		public virtual void SetIdentity(Db4oDatabase identity)
 		{
 			_systemData.Identity(identity);
+			// The dirty TimeStampIdGenerator triggers writing of
+			// the variable part of the systemdata. We need to
+			// make it dirty here, so the new identity is persisted:
 			_timeStampIdGenerator.Next();
 		}
 
@@ -587,11 +611,12 @@ namespace Db4objects.Db4o.Internal
 		private void MigrateFreespace()
 		{
 			IFreespaceManager oldFreespaceManager = _freespaceManager;
-			_freespaceManager = AbstractFreespaceManager.CreateNew(this, ConfigImpl().FreespaceSystem
-				());
+			IFreespaceManager newFreespaceManager = AbstractFreespaceManager.CreateNew(this, 
+				ConfigImpl().FreespaceSystem());
+			newFreespaceManager.Start(0);
 			SystemData().FreespaceAddress(0);
 			SystemData().FreespaceSystem(ConfigImpl().FreespaceSystem());
-			_freespaceManager.Start(_freespaceManager.OnNew(this));
+			_freespaceManager = newFreespaceManager;
 			AbstractFreespaceManager.Migrate(oldFreespaceManager, _freespaceManager);
 			_fileHeader.WriteVariablePart(this, 1);
 		}
@@ -651,15 +676,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_591(this, semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_595(this, semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_591 : IVisitor4
+		private sealed class _IVisitor4_595 : IVisitor4
 		{
-			public _IVisitor4_591(LocalObjectContainer _enclosing, Hashtable4 semaphores)
+			public _IVisitor4_595(LocalObjectContainer _enclosing, Hashtable4 semaphores)
 			{
 				this._enclosing = _enclosing;
 				this.semaphores = semaphores;
@@ -728,6 +753,7 @@ namespace Db4objects.Db4o.Internal
 					catch (Exception)
 					{
 					}
+					// ignore
 					if (ClassCollection() == null)
 					{
 						return false;
@@ -841,6 +867,8 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void OverwriteDeletedBlockedSlot(Slot slot)
 		{
+			// This is a reroute of writeBytes to write the free blocks
+			// unchecked.
 			OverwriteDeletedBytes(slot.Address(), BlocksToBytes(slot.Length()));
 		}
 
@@ -904,13 +932,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_794(this, ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_798(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_794 : IVisitor4
+		private sealed class _IVisitor4_798 : IVisitor4
 		{
-			public _IVisitor4_794(LocalObjectContainer _enclosing, IntArrayList ids)
+			public _IVisitor4_798(LocalObjectContainer _enclosing, IntArrayList ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;
@@ -931,6 +959,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (!clazz.HasClassIndex())
 			{
+				// TODO: If the class does not have an index, we won't be
+				//       able to get objects for it, so why not return an
+				//       empty QueryResult here, to signal that no further
+				//       processing needs to take place?
 				return null;
 			}
 			AbstractQueryResult queryResult = NewQueryResult(trans);

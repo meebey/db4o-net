@@ -80,6 +80,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				return null;
 			}
+			// does this happen ?
 			_id = _payLoad.ReadInt();
 			_address = _payLoad.ReadInt();
 			_payLoad.RemoveFirstBytes(LengthForFirst + addLengthBeforeFirst);

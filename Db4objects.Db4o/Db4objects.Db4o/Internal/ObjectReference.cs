@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Ext;
@@ -10,6 +11,7 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.TA;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal
@@ -52,6 +54,7 @@ namespace Db4objects.Db4o.Internal
 
 		public ObjectReference(int a_id)
 		{
+			// redundant hashCode
 			_id = a_id;
 		}
 
@@ -97,13 +100,19 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			_updateListener = new _ITransactionListener_78(this, transaction);
+			if (!IsTransparentPersistenceEnabled())
+			{
+				// don't check for update again for this object
+				_updateListener = NullTransactionListener.Instance;
+				return;
+			}
+			_updateListener = new _ITransactionListener_84(this, transaction);
 			transaction.AddTransactionListener(_updateListener);
 		}
 
-		private sealed class _ITransactionListener_78 : ITransactionListener
+		private sealed class _ITransactionListener_84 : ITransactionListener
 		{
-			public _ITransactionListener_78(ObjectReference _enclosing, Db4objects.Db4o.Internal.Transaction
+			public _ITransactionListener_84(ObjectReference _enclosing, Db4objects.Db4o.Internal.Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;
@@ -112,16 +121,36 @@ namespace Db4objects.Db4o.Internal
 
 			public void PostRollback()
 			{
+				this._enclosing.ResetListener();
 			}
 
 			public void PreCommit()
 			{
+				this._enclosing.ResetListener();
 				this._enclosing.Container().Store(transaction, this._enclosing.GetObject());
 			}
 
 			private readonly ObjectReference _enclosing;
 
 			private readonly Db4objects.Db4o.Internal.Transaction transaction;
+		}
+
+		private void ResetListener()
+		{
+			_updateListener = null;
+		}
+
+		private bool IsTransparentPersistenceEnabled()
+		{
+			IEnumerator iterator = Container().Config().ConfigurationItemsIterator();
+			while (iterator.MoveNext())
+			{
+				if (iterator.Current is TransparentPersistenceSupport)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		public virtual void Activate(Db4objects.Db4o.Internal.Transaction ta, object obj, 
@@ -401,6 +430,7 @@ namespace Db4objects.Db4o.Internal
 			int id = trans.Container().NewUserObject();
 			trans.SlotFreePointerOnRollback(id);
 			SetID(id);
+			// will be ended in continueset()
 			BeginProcessing();
 			BitTrue(Const4.Continue);
 		}
@@ -486,6 +516,9 @@ namespace Db4objects.Db4o.Internal
 			int updatedepth)
 		{
 			ContinueSet(transaction, updatedepth);
+			// make sure, a concurrent new, possibly triggered by objectOnNew
+			// is written to the file
+			// preventing recursive
 			if (!BeginProcessing())
 			{
 				return;
@@ -780,6 +813,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				_hcSubsequent.Hc_traverse(visitor);
 			}
+			// Traversing the leaves first allows to add ObjectReference 
+			// nodes to different ReferenceSystem trees during commit
 			visitor.Visit(this);
 		}
 
@@ -1054,6 +1089,7 @@ namespace Db4objects.Db4o.Internal
 			catch (Exception)
 			{
 			}
+			// e.printStackTrace();
 			return "Exception in YapObject analyzer";
 		}
 	}

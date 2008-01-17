@@ -47,6 +47,23 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal QCon(Db4objects.Db4o.Internal.Transaction a_trans)
 		{
+			//Used for query debug only.
+			// our candidate object tree
+			// collection of QCandidates to collect children elements and to
+			// execute children. For convenience we hold them in the constraint,
+			// so we can do collection and execution in two steps
+			// all subconstraints
+			// for evaluation
+			// ID handling for fast find of QConstraint objects in 
+			// pending OR evaluations
+			// ANDs and ORs on this constraint
+			// positive indicates ascending, negative indicates descending
+			// value indicates ID supplied by ID generator.
+			// lower IDs are applied first
+			// the parent of this constraint or null, if this is a root
+			// prevents circular calls on removal
+			// our transaction to get a stream object anywhere
+			// C/S only
 			i_id = idGenerator.Next();
 			i_trans = a_trans;
 		}
@@ -206,6 +223,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual bool CanLoadByIndex()
 		{
+			// virtual
 			return false;
 		}
 
@@ -224,6 +242,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual IConstraint Contains()
 		{
+			// virtual
 			throw NotSupported();
 		}
 
@@ -324,11 +343,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual void EvaluateSelf()
 		{
+			// virtual
 			i_candidates.Filter(this);
 		}
 
 		internal virtual void EvaluateSimpleChildren()
 		{
+			// TODO: sort the constraints for YapFields first,
+			// so we stay with the same YapField
 			if (_children == null)
 			{
 				return;
@@ -355,6 +377,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal virtual void ExchangeConstraint(Db4objects.Db4o.Internal.Query.Processor.QCon
 			 a_exchange, Db4objects.Db4o.Internal.Query.Processor.QCon a_with)
 		{
+			// virtual
 			List4 previous = null;
 			List4 current = _children;
 			while (current != null)
@@ -587,6 +610,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (!(a_with is Db4objects.Db4o.Internal.Query.Processor.QCon))
 			{
+				// TODO: one of our STOr test cases somehow carries 
+				// the same constraint twice. This may be a result
+				// of a funny AND. Check!
 				return null;
 			}
 			if (a_with == this)
@@ -622,6 +648,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			Db4objects.Db4o.Internal.Query.Processor.QCon otherHook = a_with.JoinHook();
 			if (myHook == otherHook)
 			{
+				// You might like to check out, what happens, if you
+				// remove this line. It seems to open a bug in an
+				// StOr testcase.
 				return myHook;
 			}
 			QConJoin cj = new QConJoin(i_trans, myHook, otherHook, a_and);
@@ -656,6 +685,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual string LogObject()
 		{
+			// System.out.println(indent + "JOINS");
+			// joins += join.i_id + " ";
+			//		System.out.println(joins);
+			//		System.out.println(indent + getClass().getName() + " " + i_id + " " + i_debugField + " " + joins );
+			// System.out.println(indent + "CONSTRAINTS");
 			return string.Empty;
 		}
 
@@ -769,6 +803,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal virtual Db4objects.Db4o.Internal.Query.Processor.QCon ShareParent(object
 			 obj, bool[] removeExisting)
 		{
+			// virtual
 			return null;
 		}
 
@@ -777,6 +812,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal virtual QConClass ShareParentForClass(IReflectClass claxx, bool[] removeExisting
 			)
 		{
+			// virtual
 			return null;
 		}
 
@@ -851,8 +887,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal virtual void Visit1(QCandidate root, Db4objects.Db4o.Internal.Query.Processor.QCon
 			 reason, bool res)
 		{
+			// The a_reason parameter makes it eays to distinguish
+			// between calls from above (a_reason == this) and below.
 			if (HasJoins())
 			{
+				// this should probably be on the Join
 				IEnumerator i = IterateJoins();
 				while (i.MoveNext())
 				{
@@ -870,6 +909,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal void VisitOnNull(QCandidate a_root)
 		{
+			// TODO: It may be more efficient to rule out 
+			// all possible keepOnNull issues when starting
+			// evaluation.
 			IEnumerator i = IterateChildren();
 			while (i.MoveNext())
 			{

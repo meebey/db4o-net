@@ -42,6 +42,9 @@ namespace Db4objects.Db4o.Internal
 
 		public StatefulBuffer(Transaction a_trans, int a_initialBufferSize)
 		{
+			// carries instantiation depth through the reading process
+			// carries updatedepth depth through the update process
+			// and carries instantiation information through the reading process 
 			i_trans = a_trans;
 			i_length = a_initialBufferSize;
 			_buffer = new byte[i_length];
@@ -70,6 +73,9 @@ namespace Db4objects.Db4o.Internal
 
 		public int GetAddress()
 		{
+			// Db4o.log("!!! YapBytes.debugCheckBytes not all bytes used");
+			// This is normal for writing The FreeSlotArray, becauce one
+			// slot is possibly reserved by it's own pointer.
 			return i_address;
 		}
 
@@ -237,6 +243,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void UseSlot(int address, int length)
 		{
+			// FIXME: FB remove
 			UseSlot(new Db4objects.Db4o.Internal.Slots.Slot(address, length));
 		}
 
@@ -253,6 +260,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void UseSlot(int a_id, int a_adress, int a_length)
 		{
+			// FIXME: FB remove
 			i_id = a_id;
 			UseSlot(a_adress, a_length);
 		}
@@ -295,6 +303,13 @@ namespace Db4objects.Db4o.Internal
 				_payloadOffset = Stream().BlockAlignedBytes(_payloadOffset);
 			}
 			WriteInt(_payloadOffset);
+			// TODO: This length is here for historical reasons. 
+			//       It's actually never really needed during reading.
+			//       It's only necessary because array and string used
+			//       to consist of a double pointer in marshaller family 0
+			//       and it was not considered a good idea to change
+			//       their linkLength() values for compatibility reasons
+			//       with marshaller family 0.
 			WriteInt(length);
 		}
 

@@ -79,6 +79,9 @@ namespace Db4objects.Db4o.Internal.Slots
 		{
 			if (_shared != null)
 			{
+				// second call or later.
+				// The object has already been rewritten once, so we can free
+				// directly
 				file.Free(slot);
 				return;
 			}
@@ -155,6 +158,9 @@ namespace Db4objects.Db4o.Internal.Slots
 		/// </remarks>
 		public bool IsFreePointerOnRollback()
 		{
+			//	private final boolean isFreePointerOnCommit() {
+			//		return isBitSet(FREE_POINTER_ON_COMMIT_BIT);
+			//	}
 			return IsBitSet(FreePointerOnRollbackBit);
 		}
 

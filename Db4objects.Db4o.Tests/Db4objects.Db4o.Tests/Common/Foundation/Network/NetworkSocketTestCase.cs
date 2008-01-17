@@ -282,6 +282,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
+				// This is a magic number: 
+				// On my machine all tests start to pass when I write at least 7 times.
+				// Trying with 20 on the build machine.
 				for (int i = 0; i < 20; i++)
 				{
 					codeBlock.Run();

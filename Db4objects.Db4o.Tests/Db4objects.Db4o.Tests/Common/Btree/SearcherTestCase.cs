@@ -28,6 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public virtual void TtestPrintResults()
 		{
+			// not a test, but nice to visualize
 			int[] evenValues = new int[] { 4, 7, 9, 11 };
 			int[] searches = new int[] { 3, 4, 5, 7, 10, 11, 12 };
 			for (int i = 0; i < searches.Length; i++)

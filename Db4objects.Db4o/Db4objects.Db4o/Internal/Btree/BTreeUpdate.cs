@@ -51,6 +51,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			if (_transaction == patch._transaction)
 			{
+				// don't allow two patches for the same transaction
 				throw new ArgumentException();
 			}
 			if (!HasNext())

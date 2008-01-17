@@ -36,6 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		private void AddNodes(int count)
 		{
+			// config.objectClass(DeleteDeepTestCase.class).cascadeOnActivate(true);
 			if (count > 0)
 			{
 				child = new DeleteDeepTestCase();
@@ -53,6 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IObjectSet os = q.Execute();
 			if (os.Size() == 0)
 			{
+				// already deleted
 				return;
 			}
 			Assert.AreEqual(1, os.Size());
@@ -61,6 +63,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				return;
 			}
 			DeleteDeepTestCase root = (DeleteDeepTestCase)os.Next();
+			// wait for other threads
+			// Thread.sleep(500);
 			oc.Delete(root);
 			oc.Commit();
 			AssertOccurrences(oc, typeof(DeleteDeepTestCase), 0);

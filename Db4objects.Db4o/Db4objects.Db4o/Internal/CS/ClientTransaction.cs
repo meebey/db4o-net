@@ -78,6 +78,10 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override bool IsDeleted(int a_id)
 		{
+			// This one really is a hack.
+			// It only helps to get information about the current
+			// transaction.
+			// We need a better strategy for C/S concurrency behaviour.
 			MsgD msg = Msg.TaIsDeleted.GetWriterForInt(this, a_id);
 			i_client.Write(msg);
 			int res = i_client.ExpectedByteResponse(Msg.TaIsDeleted).ReadInt();

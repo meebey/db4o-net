@@ -186,7 +186,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void DefragIndexEntry(DefragmentContextImpl context)
 		{
+			// address
 			context.CopyID(false, true);
+			// length
 			context.IncrementIntSize();
 		}
 
@@ -274,6 +276,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			public int CompareTo(object target)
 			{
 				BufferImpl targetBuffer = this._enclosing.Val(target);
+				// FIXME: Fix the compare method to return the right result  
+				//        after it is no longer referenced elsewhere.
 				return -this._enclosing.Compare(sourceBuffer, targetBuffer);
 			}
 

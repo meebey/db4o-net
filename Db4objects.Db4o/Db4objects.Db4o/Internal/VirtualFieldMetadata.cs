@@ -68,6 +68,13 @@ namespace Db4objects.Db4o.Internal
 
 		public override object GetOrCreate(Transaction a_trans, object a_OnObject)
 		{
+			// QBE constraint collection call
+			// There isn't anything useful to do here, since virtual fields
+			// are not on the actual object.
+			// do nothing
+			// This is the first part of marshalling
+			// Virtual fields do it all in #marshall(), the object is never used.
+			// Returning any object here prevents triggering null handling.
 			return AnyObject;
 		}
 
@@ -96,6 +103,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Marshall(MarshallingContext context, object obj)
 		{
+			// do nothing
 			context.DoNotIndirectWrites();
 			Marshall(context.Transaction(), context.Reference(), context, context.IsNew());
 		}
@@ -115,6 +123,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (stream._replicationCallState == Const4.Old)
 				{
+					// old replication code 
 					migrating = true;
 					if (@ref.VirtualAttributes() == null)
 					{
@@ -144,6 +153,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
+					// new dRS replication
 					IDb4oReplicationReferenceProvider provider = handlers._replicationReferenceProvider;
 					object parentObject = @ref.GetObject();
 					IDb4oReplicationReference replicationReference = provider.ReferenceFor(parentObject

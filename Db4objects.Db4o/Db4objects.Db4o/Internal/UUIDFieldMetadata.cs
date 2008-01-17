@@ -155,6 +155,7 @@ namespace Db4objects.Db4o.Internal
 			SystemData sd = file.SystemData();
 			if (sd == null)
 			{
+				// too early, in new file, try again later.
 				return;
 			}
 			InitIndex(transaction, sd.UuidIndexId());
@@ -206,6 +207,7 @@ namespace Db4objects.Db4o.Internal
 				Db4oDatabase db = ((IInternalObjectContainer)container).Identity();
 				if (db == null)
 				{
+					// can happen on early classes like Metaxxx, no problem
 					attr = null;
 				}
 				else
@@ -213,6 +215,7 @@ namespace Db4objects.Db4o.Internal
 					if (attr.i_database == null)
 					{
 						attr.i_database = db;
+						// TODO: Should be check for ! client instead of instanceof
 						if (container is LocalObjectContainer)
 						{
 							attr.i_uuid = container.GenerateTimeStampId();
@@ -290,7 +293,9 @@ namespace Db4objects.Db4o.Internal
 		public override void DefragField(MarshallerFamily mf, DefragmentContextImpl context
 			)
 		{
+			// database id
 			context.CopyID();
+			// uuid
 			context.IncrementOffset(Const4.LongLength);
 		}
 	}

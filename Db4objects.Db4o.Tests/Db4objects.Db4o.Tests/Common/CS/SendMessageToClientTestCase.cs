@@ -17,6 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			if (IsMTOC())
 			{
+				// No sending messages back and forth on MTOC.
 				return;
 			}
 			ServerDispatcher().Write(Msg.Ok);

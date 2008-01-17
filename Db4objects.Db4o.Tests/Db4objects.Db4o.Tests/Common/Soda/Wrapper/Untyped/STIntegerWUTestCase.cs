@@ -35,6 +35,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STIntegerWUTestCase
 				(0));
+			// Primitive default values are ignored, so we need an 
+			// additional constraint:
 			q.Descend("i_int").Constrain(0);
 			SodaTestUtil.ExpectOne(q, _array[0]);
 		}

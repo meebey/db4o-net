@@ -46,6 +46,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override void Free(Slot slot)
 		{
+			// Should no longer be used: Should not happen.
 			throw new InvalidOperationException();
 		}
 
@@ -55,6 +56,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override Slot GetSlot(int length)
 		{
+			// do nothing, freespace is dropped.
 			throw new InvalidOperationException();
 		}
 
@@ -64,12 +66,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override void Traverse(IVisitor4 visitor)
 		{
+			// do nothing, freespace is dropped.
 			throw new InvalidOperationException();
-		}
-
-		public override int OnNew(LocalObjectContainer file)
-		{
-			return file.EnsureFreespaceSlot();
 		}
 
 		public override void Read(int freespaceID)

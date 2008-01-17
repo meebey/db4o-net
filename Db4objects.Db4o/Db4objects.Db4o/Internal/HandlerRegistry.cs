@@ -5,7 +5,6 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Diagnostic;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
@@ -22,6 +21,8 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public sealed class HandlerRegistry
 	{
+		public const byte HandlerVersion = (byte)2;
+
 		private readonly ObjectContainerBase _container;
 
 		private static readonly IDb4oTypeImpl[] _db4oTypes = new IDb4oTypeImpl[] { new BlobImpl
@@ -97,6 +98,8 @@ namespace Db4objects.Db4o.Internal
 		internal HandlerRegistry(ObjectContainerBase container, byte stringEncoding, GenericReflector
 			 reflector)
 		{
+			// this is the master container and not valid
+			// for TransportObjectContainer
 			_stringIO = LatinStringIO.ForEncoding(stringEncoding);
 			_container = container;
 			container._handlers = this;
@@ -149,13 +152,16 @@ namespace Db4objects.Db4o.Internal
 			RegisterHandlerVersion(floatHandler, 0, new FloatHandler0(_container));
 			BooleanHandler booleanHandler = new BooleanHandler(_container);
 			RegisterBuiltinHandler(Handlers4.BooleanId, booleanHandler);
+			// TODO: Are we missing a boolean handler version?
 			DoubleHandler doubleHandler = new DoubleHandler(_container);
 			RegisterBuiltinHandler(Handlers4.DoubleId, doubleHandler);
 			RegisterHandlerVersion(doubleHandler, 0, new DoubleHandler0(_container));
 			ByteHandler byteHandler = new ByteHandler(_container);
 			RegisterBuiltinHandler(Handlers4.ByteId, byteHandler);
+			// TODO: Are we missing a byte handler version?
 			CharHandler charHandler = new CharHandler(_container);
 			RegisterBuiltinHandler(Handlers4.CharId, charHandler);
+			// TODO: Are we missing a char handler version?
 			ShortHandler shortHandler = new ShortHandler(_container);
 			RegisterBuiltinHandler(Handlers4.ShortId, shortHandler);
 			RegisterHandlerVersion(shortHandler, 0, new ShortHandler0(_container));
@@ -216,7 +222,7 @@ namespace Db4objects.Db4o.Internal
 
 		public ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler, int version)
 		{
-			if (version == MarshallingContext.HandlerVersion)
+			if (version == Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion)
 			{
 				return handler;
 			}
@@ -333,6 +339,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			IReflectConstructor[] constructors = claxx.GetDeclaredConstructors();
 			Tree sortedConstructors = null;
+			// sort constructors by parameter count
 			for (int i = 0; i < constructors.Length; i++)
 			{
 				constructors[i].SetAccessible();
@@ -420,6 +427,8 @@ namespace Db4objects.Db4o.Internal
 		public ITypeHandler4 HandlerForClass(ObjectContainerBase container, IReflectClass
 			 clazz)
 		{
+			// TODO: Interfaces should be handled by the ANY handler but we
+			// need to write the code to migrate from the old field handler to the new
 			ClassMetadata classMetadata = ClassMetadataForClass(container, clazz);
 			if (classMetadata == null)
 			{

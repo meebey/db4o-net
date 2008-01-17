@@ -27,6 +27,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public int LinkLength()
 		{
+			// TODO:  Now that array and string are embedded into their parent
+			//        object from marshaller family 1 on, the length part is no
+			//        longer needed. To stay compatible with marshaller family 0
+			//        it was considered a bad idea to change this value.
 			return Const4.IntLength + Const4.IdLength;
 		}
 
@@ -34,6 +38,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual ObjectContainerBase Container()
 		{
+			// redundant, only added to make Sun JDK 1.2's java happy :(
 			return _container;
 		}
 

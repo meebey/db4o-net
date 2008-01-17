@@ -39,6 +39,7 @@ namespace Db4objects.Db4o.Constraints
 		/// <remarks>internal method, public for implementation reasons.</remarks>
 		public virtual void Apply(IInternalObjectContainer objectContainer)
 		{
+			// Nothing to do...
 			EventRegistryFactory.ForObjectContainer(objectContainer).Committing += new Db4objects.Db4o.Events.CommitEventHandler
 				(new _IEventListener4_41(this, objectContainer).OnEvent);
 		}
@@ -61,6 +62,8 @@ namespace Db4objects.Db4o.Constraints
 				{
 					IObjectInfo info = (IObjectInfo)i.Current;
 					int id = (int)info.GetInternalID();
+					// TODO: check if the object is of the appropriate
+					// type before going further?
 					HardObjectReference @ref = HardObjectReference.PeekPersisted(trans, id, 1);
 					object fieldValue = this.FieldMetadata().GetOn(trans, @ref._object);
 					if (fieldValue == null)

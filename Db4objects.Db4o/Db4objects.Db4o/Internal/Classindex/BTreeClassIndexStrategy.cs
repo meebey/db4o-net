@@ -54,6 +54,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public override void TraverseAll(Transaction ta, IVisitor4 command)
 		{
+			// better alternatives for this null check? (has been moved as is from YapFile)
 			if (_btreeIndex != null)
 			{
 				_btreeIndex.TraverseKeys(ta, command);

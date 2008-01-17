@@ -23,6 +23,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal QPending(QConJoin a_join, QCon a_constraint, bool a_firstResult)
 		{
+			// Constants, so QConJoin.evaluatePending is made easy:
 			_join = a_join;
 			_constraint = a_constraint;
 			_result = a_firstResult ? True : False;

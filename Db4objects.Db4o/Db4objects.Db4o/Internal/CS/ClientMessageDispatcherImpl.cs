@@ -87,6 +87,7 @@ namespace Db4objects.Db4o.Internal.CS
 				{
 					continue;
 				}
+				// TODO are there possibly messages that have to be processed *and* passed on?
 				if (IsClientSideMessage(message))
 				{
 					if (((IClientSideMessage)message).ProcessAtClient())

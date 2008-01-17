@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.Internal
 		internal IoAdaptedObjectContainer(IConfiguration config, string fileName) : base(
 			config, null)
 		{
+			//This is necessary as a separate File because access is not synchronized with access for normal data read/write so the seek pointer can get lost.
 			_fileLock = new object();
 			_fileName = fileName;
 			_freespaceFiller = CreateFreespaceFiller();

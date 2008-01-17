@@ -63,6 +63,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Rename(string newName)
 		{
+			// TODO: Write test case.
 			_classMetadata.Rename(newName);
 		}
 

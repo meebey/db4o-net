@@ -88,7 +88,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				long time = Runtime.CurrentTimeMillis();
 				Assert.IsTrue(_client.SetSemaphore("hi", 50000));
 				time = Runtime.CurrentTimeMillis() - time;
+				// System.out.println("Time to get semaphore: " + time);
 				EnsureMessageProcessed(_client);
+				// System.out.println("About to release semaphore.");
 				_client.ReleaseSemaphore("hi");
 			}
 		}

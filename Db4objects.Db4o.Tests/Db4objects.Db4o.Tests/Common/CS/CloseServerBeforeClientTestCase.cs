@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				catch (Db4oException)
 				{
 				}
+				// database may have been closed
 				try
 				{
 					Fixture().Close();

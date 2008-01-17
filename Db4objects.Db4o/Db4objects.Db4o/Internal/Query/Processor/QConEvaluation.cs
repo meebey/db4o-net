@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -24,6 +23,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public QConEvaluation(Transaction a_trans, object a_evaluation) : base(a_trans)
 		{
+			// C/S only
 			i_evaluation = a_evaluation;
 		}
 
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal override void Marshall()
 		{
 			base.Marshall();
-			if (Deploy.csharp || !Platform4.UseNativeSerialization())
+			if (!Platform4.UseNativeSerialization())
 			{
 				MarshallUsingDb4oFormat();
 			}
@@ -84,22 +84,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			if (i_trans == null)
 			{
 				base.Unmarshall(a_trans);
-				if (Deploy.csharp || !Platform4.UseNativeSerialization())
+				if (i_marshalledID > 0 || !Platform4.UseNativeSerialization())
 				{
 					i_evaluation = Serializer.Unmarshall(Container(), i_marshalledEvaluation, i_marshalledID
 						);
 				}
 				else
 				{
-					if (i_marshalledID > 0)
-					{
-						i_evaluation = Serializer.Unmarshall(Container(), i_marshalledEvaluation, i_marshalledID
-							);
-					}
-					else
-					{
-						i_evaluation = Platform4.Deserialize(i_marshalledEvaluation);
-					}
+					i_evaluation = Platform4.Deserialize(i_marshalledEvaluation);
 				}
 			}
 		}
@@ -107,6 +99,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public override void Visit(object obj)
 		{
 			QCandidate candidate = (QCandidate)obj;
+			// force activation outside the try block
+			// so any activation errors bubble up
 			ForceActivation(candidate);
 			try
 			{
@@ -116,6 +110,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				candidate.Include(false);
 			}
+			// TODO: implement Exception callback for the user coder
+			// at least for test cases
 			if (!candidate._include)
 			{
 				DoNotInclude(candidate.GetRoot());

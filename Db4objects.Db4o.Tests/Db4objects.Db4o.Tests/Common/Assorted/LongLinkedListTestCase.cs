@@ -66,6 +66,11 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void AssertListIsComplete(LongLinkedListTestCase.LinkedList head)
 		{
+			// TODO: The following produces a stack overflow. That's OK for now, peekPersisted is rarely
+			//		 used and users can control behaviour with the depth parameter. 
+			// 		 
+			//		LinkedList peeked = (LinkedList) db().ext().peekPersisted(head, Integer.MAX_VALUE, true);
+			//		assertListIsComplete(peeked);
 			int count = 1;
 			LongLinkedListTestCase.LinkedList tail = head._next;
 			while (tail != head)

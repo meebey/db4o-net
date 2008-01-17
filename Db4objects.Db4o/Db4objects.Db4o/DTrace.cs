@@ -29,6 +29,8 @@ namespace Db4objects.Db4o
 
 		public static RandomAccessFile _logFile;
 
+		private static int Unused = -1;
+
 		private static void BreakPoint()
 		{
 			if (enabled)
@@ -40,15 +42,33 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
+				// breakOnEvent(5);
+				// addRange(4874);
+				// addRangeWithEnd(3835808, 3836267);
+				//        	 addRangeWithLength(6539,1);
+				//        	addRangeWithLength(17673,1);
+				//            addRangeWithLength(455404,1);
+				//            
+				//            addRangeWithLength(455570,1);
+				//            
+				//            addRangeWithLength(455926,1);
+				//
+				// addRangeWithLength(20161,1);
 				TrackEventsWithoutRange();
-				TurnAllOffExceptFor(new Db4objects.Db4o.DTrace[] { BlockingQueueStoppedException, 
-					ClientMessageLoopException, Close, CloseCalled, FatalException, ServerMessageLoopException
-					 });
+				//            turnAllOffExceptFor(new DTrace[] {YAPMETA_SET_ID});
+				TurnAllOffExceptFor(new Db4objects.Db4o.DTrace[] { PersistentOwnLength });
 			}
 		}
 
 		private static void Init()
 		{
+			//            turnAllOffExceptFor(new DTrace[] {
+			//                FREESPACEMANAGER_GET_SLOT,
+			//                FREESPACEMANAGER_RAM_FREE,
+			//                FREESPACEMANAGER_BTREE_FREE,
+			//                });
+			//          turnAllOffExceptFor(new DTrace[] {BTREE_NODE_COMMIT_OR_ROLLBACK });
+			//            turnAllOffExceptFor(new DTrace[] {BTREE_NODE_REMOVE, BTREE_NODE_COMMIT_OR_ROLLBACK YAPMETA_SET_ID});
 			if (enabled)
 			{
 				AddToClassIndex = new Db4objects.Db4o.DTrace(true, true, "add to class index tree"
@@ -81,7 +101,12 @@ namespace Db4objects.Db4o
 				FatalException = new Db4objects.Db4o.DTrace(true, true, "fatal exception", true);
 				Free = new Db4objects.Db4o.DTrace(true, true, "free", true);
 				FileFree = new Db4objects.Db4o.DTrace(true, true, "fileFree", true);
-				FreeRam = new Db4objects.Db4o.DTrace(true, true, "freeRAM", true);
+				FreespacemanagerGetSlot = new Db4objects.Db4o.DTrace(true, true, "FreespaceManager getSlot"
+					, true);
+				FreespacemanagerRamFree = new Db4objects.Db4o.DTrace(true, true, "RamFreeSpaceManager free"
+					, true);
+				FreespacemanagerBtreeFree = new Db4objects.Db4o.DTrace(true, true, "BTreeFreeSpaceManager free"
+					, true);
 				FreeOnCommit = new Db4objects.Db4o.DTrace(true, true, "trans freeOnCommit", true);
 				FreeOnRollback = new Db4objects.Db4o.DTrace(true, true, "trans freeOnRollback", true
 					);
@@ -89,7 +114,6 @@ namespace Db4objects.Db4o
 					, true);
 				GetPointerSlot = new Db4objects.Db4o.DTrace(true, true, "getPointerSlot", true);
 				GetSlot = new Db4objects.Db4o.DTrace(true, true, "getSlot", true);
-				GetFreespace = new Db4objects.Db4o.DTrace(true, true, "getFreespace", true);
 				GetFreespaceRam = new Db4objects.Db4o.DTrace(true, true, "getFreespaceRam", true);
 				GetYapobject = new Db4objects.Db4o.DTrace(true, true, "get yapObject", true);
 				IdTreeAdd = new Db4objects.Db4o.DTrace(true, true, "id tree add", true);
@@ -97,6 +121,8 @@ namespace Db4objects.Db4o
 				IoCopy = new Db4objects.Db4o.DTrace(true, true, "io copy", true);
 				JustSet = new Db4objects.Db4o.DTrace(true, true, "just set", true);
 				NewInstance = new Db4objects.Db4o.DTrace(true, true, "newInstance", true);
+				PersistentOwnLength = new Db4objects.Db4o.DTrace(true, true, "Persistent own length"
+					, true);
 				ProduceSlotChange = new Db4objects.Db4o.DTrace(true, true, "produce slot change", 
 					true);
 				QueryProcess = new Db4objects.Db4o.DTrace(true, true, "query process", true);
@@ -224,7 +250,11 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.DTrace Free;
 
-		public static Db4objects.Db4o.DTrace FreeRam;
+		public static Db4objects.Db4o.DTrace FreespacemanagerGetSlot;
+
+		public static Db4objects.Db4o.DTrace FreespacemanagerRamFree;
+
+		public static Db4objects.Db4o.DTrace FreespacemanagerBtreeFree;
 
 		public static Db4objects.Db4o.DTrace FreeOnCommit;
 
@@ -235,8 +265,6 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.DTrace GetSlot;
 
 		public static Db4objects.Db4o.DTrace GetPointerSlot;
-
-		public static Db4objects.Db4o.DTrace GetFreespace;
 
 		public static Db4objects.Db4o.DTrace GetFreespaceRam;
 
@@ -251,6 +279,8 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.DTrace JustSet;
 
 		public static Db4objects.Db4o.DTrace NewInstance;
+
+		public static Db4objects.Db4o.DTrace PersistentOwnLength;
 
 		public static Db4objects.Db4o.DTrace ProduceSlotChange;
 
@@ -321,7 +351,7 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
-				Log(-1);
+				Log(Unused);
 			}
 		}
 
@@ -338,7 +368,7 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
-				Log(-1, msg);
+				Log(Unused, msg);
 			}
 		}
 
@@ -354,7 +384,7 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
-				LogEnd(-1, 0, info);
+				LogEnd(Unused, 0, info);
 			}
 		}
 
@@ -405,6 +435,7 @@ namespace Db4objects.Db4o
 				}
 				for (int i = 0; i < _rangeCount; i++)
 				{
+					// Case 1 start in range
 					if (start >= _rangeStart[i] && start <= _rangeEnd[i])
 					{
 						inRange = true;
@@ -412,11 +443,13 @@ namespace Db4objects.Db4o
 					}
 					if (end != 0)
 					{
+						// Case 2 end in range
 						if (end >= _rangeStart[i] && end <= _rangeEnd[i])
 						{
 							inRange = true;
 							break;
 						}
+						// Case 3 start before range, end after range
 						if (start <= _rangeStart[i] && end >= _rangeEnd[i])
 						{
 							inRange = true;
@@ -424,7 +457,7 @@ namespace Db4objects.Db4o
 						}
 					}
 				}
-				if (inRange || (_trackEventsWithoutRange && (start == -1)))
+				if (inRange || (_trackEventsWithoutRange && (start == Unused)))
 				{
 					if (_log)
 					{
@@ -432,11 +465,8 @@ namespace Db4objects.Db4o
 						StringBuilder sb = new StringBuilder(":");
 						sb.Append(FormatInt(_eventNr, 6));
 						sb.Append(":");
-						if (start != 0)
-						{
-							sb.Append(FormatInt(start));
-							sb.Append(":");
-						}
+						sb.Append(FormatInt(start));
+						sb.Append(":");
 						if (end != 0 && start != end)
 						{
 							sb.Append(FormatInt(end));
@@ -445,7 +475,9 @@ namespace Db4objects.Db4o
 						}
 						else
 						{
-							sb.Append(FormatInt(0));
+							sb.Append(FormatUnused());
+							sb.Append(":");
+							sb.Append(FormatUnused());
 						}
 						sb.Append(":");
 						if (info != null)
@@ -477,6 +509,11 @@ namespace Db4objects.Db4o
 					}
 				}
 			}
+		}
+
+		private string FormatUnused()
+		{
+			return FormatInt(Unused);
 		}
 
 		private static void LogToOutput(string msg)
@@ -602,7 +639,7 @@ namespace Db4objects.Db4o
 			if (enabled)
 			{
 				string str = "              ";
-				if (i != 0)
+				if (i != Unused)
 				{
 					str += i + " ";
 				}

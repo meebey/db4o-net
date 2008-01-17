@@ -57,6 +57,8 @@ namespace Db4objects.Db4o.IO
 		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
+			// FIXME: This is a temporary quickfix for a bug in Android.
+			//        Remove after Android has been fixed.
 			try
 			{
 				if (_delegate != null)
@@ -67,6 +69,7 @@ namespace Db4objects.Db4o.IO
 			catch (IOException)
 			{
 			}
+			// ignore
 			Platform4.UnlockFile(_path, _delegate);
 			try
 			{

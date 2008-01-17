@@ -17,6 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public CustomClassRepository()
 		{
+			// fields must be public so test works on less capable runtimes
 			_classes = new Hashtable4();
 		}
 

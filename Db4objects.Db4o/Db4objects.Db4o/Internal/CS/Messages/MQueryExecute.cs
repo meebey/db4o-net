@@ -30,6 +30,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			lock (StreamLock())
 			{
+				// TODO: The following used to run outside of the
+				// synchronisation block for better performance but
+				// produced inconsistent results, cause unknown.
 				QQuery query = (QQuery)ReadObjectFromPayLoad();
 				query.Unmarshall(Transaction());
 				_evaluationMode = query.EvaluationMode();

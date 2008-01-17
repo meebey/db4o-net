@@ -59,6 +59,8 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>constructor for comparison and to store new ones</summary>
 		public Db4oDatabase(byte[] signature, long creationTime)
 		{
+			// TODO: change to _creationTime with PersistentFormatUpdater
+			// FIXME: make sure signature is null
 			i_signature = signature;
 			i_uuid = creationTime;
 		}
@@ -138,6 +140,12 @@ namespace Db4objects.Db4o.Ext
 			{
 				return i_uuid < peer.i_uuid;
 			}
+			// the above logic has failed, both are the same
+			// age but we still want to distinguish in some 
+			// way, to have an order in the ReplicationRecord
+			// The following is arbitrary, it only needs to
+			// be repeatable.
+			// Let's distinguish by signature length 
 			if (i_signature.Length != peer.i_signature.Length)
 			{
 				return i_signature.Length < peer.i_signature.Length;
@@ -149,6 +157,9 @@ namespace Db4objects.Db4o.Ext
 					return i_signature[i] < peer.i_signature[i];
 				}
 			}
+			// This should never happen.
+			// FIXME: Add a message and move to Messages.
+			// 
 			throw new Exception();
 		}
 
@@ -202,14 +213,17 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>find a Db4oDatabase with the same signature as this one</summary>
 		public virtual Db4objects.Db4o.Ext.Db4oDatabase Query(Transaction trans)
 		{
+			// showInternalClasses(true);  has to be set for this method to be successful
 			if (i_uuid > 0)
 			{
+				// try fast query over uuid (creation time) first
 				Db4objects.Db4o.Ext.Db4oDatabase res = Query(trans, true);
 				if (res != null)
 				{
 					return res;
 				}
 			}
+			// if not found, try to find with signature
 			return Query(trans, false);
 		}
 

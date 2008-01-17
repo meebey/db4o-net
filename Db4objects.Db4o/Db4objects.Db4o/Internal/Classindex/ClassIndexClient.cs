@@ -35,6 +35,9 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public sealed override void WriteOwnID(Transaction trans, BufferImpl a_writer)
 		{
+			// do nothing
+			// do nothing
+			// do nothing
 			a_writer.WriteInt(0);
 		}
 	}

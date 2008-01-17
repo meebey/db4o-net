@@ -10,6 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public static void LogMethodCall(object target, string methodName)
 		{
+			//		System.err.println(s);
 			Log(target.ToString() + "." + methodName + "()");
 		}
 

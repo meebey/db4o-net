@@ -51,6 +51,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			catch (Exception e)
 			{
+				// don't bring down the thread
 				Sharpen.Runtime.PrintStackTrace(e);
 			}
 		}

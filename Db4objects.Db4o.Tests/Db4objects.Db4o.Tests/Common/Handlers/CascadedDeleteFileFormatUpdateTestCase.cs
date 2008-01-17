@@ -38,6 +38,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			{
 				if (d is DeletionFailed)
 				{
+					// Can't assert directly here, db4o eats the exception. :/
 					this._enclosing._failed = true;
 				}
 			}

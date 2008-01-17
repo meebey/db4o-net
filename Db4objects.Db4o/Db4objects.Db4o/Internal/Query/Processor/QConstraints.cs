@@ -30,6 +30,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					return null;
 				}
+				// resolving multiple constraints happens in QCon for
+				// a_with, so we simply turn things around
 				return ((QCon)a_with).Join1(this, a_and);
 			}
 		}

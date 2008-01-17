@@ -61,6 +61,9 @@ namespace Db4objects.Db4o.Internal
 					NotStorable(_obj, claxx);
 					return false;
 				}
+				// The following may return a reference if the object is held
+				// in a static variable somewhere ( often: Enums) that gets
+				// stored or associated on initialization of the ClassMetadata.
 				_ref = trans.ReferenceForObject(_obj);
 			}
 			return true;

@@ -126,6 +126,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 				return;
 			}
 			Assert.AreEqual(hasIndex, storedField.HasIndex());
+			// FIXME: test rename
 			if (!hasIndex)
 			{
 				Assert.Expect(typeof(Exception), new _ICodeBlock_113(this, storedField));

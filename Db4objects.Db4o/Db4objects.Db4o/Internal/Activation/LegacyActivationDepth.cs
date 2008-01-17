@@ -42,6 +42,7 @@ namespace Db4objects.Db4o.Internal.Activation
 			int depth = ConfiguredActivationDepth(metadata) - 1;
 			if (metadata.IsValueType())
 			{
+				// 	We also have to instantiate structs completely every time.
 				return Math.Max(1, depth);
 			}
 			return depth;

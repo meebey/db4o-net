@@ -22,6 +22,8 @@ namespace Db4objects.Db4o.TA
 
 		public virtual void Apply(IInternalObjectContainer container)
 		{
+			// TODO: unbindOnClose should be configurable
+			// Nothing to do...
 			container.ConfigImpl().ActivationDepthProvider(new TransparentActivationDepthProvider
 				());
 			IEventRegistry registry = EventRegistryFor(container);
@@ -111,13 +113,19 @@ namespace Db4objects.Db4o.TA
 
 		private void UnbindAll(IInternalObjectContainer container)
 		{
-			container.Transaction().ReferenceSystem().TraverseReferences(new _IVisitor4_56(this
-				));
+			Transaction transaction = container.Transaction();
+			// FIXME should that ever happen?
+			if (transaction == null)
+			{
+				return;
+			}
+			IReferenceSystem referenceSystem = transaction.ReferenceSystem();
+			referenceSystem.TraverseReferences(new _IVisitor4_62(this));
 		}
 
-		private sealed class _IVisitor4_56 : IVisitor4
+		private sealed class _IVisitor4_62 : IVisitor4
 		{
-			public _IVisitor4_56(TransparentActivationSupport _enclosing)
+			public _IVisitor4_62(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -184,6 +192,9 @@ namespace Db4objects.Db4o.TA
 
 			public void OnClassRegistered(ClassMetadata clazz)
 			{
+				// if(Platform4.isDb4oClass(clazz.getName())) {
+				// return;
+				// }
 				IReflectClass reflectClass = clazz.ClassReflector();
 				if (this.ActivatableClass().IsAssignableFrom(reflectClass))
 				{

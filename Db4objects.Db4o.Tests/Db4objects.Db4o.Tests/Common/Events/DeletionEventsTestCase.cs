@@ -19,6 +19,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		{
 			if (IsEmbeddedClientServer())
 			{
+				// TODO: something wrong when embedded c/s is run as part
+				// of the full test suite
 				return;
 			}
 			EventsTestCaseBase.EventLog deletionLog = new EventsTestCaseBase.EventLog();

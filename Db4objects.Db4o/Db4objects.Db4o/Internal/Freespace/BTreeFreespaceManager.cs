@@ -42,6 +42,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override void BeginCommit()
 		{
+			BeginDelegation();
 		}
 
 		private void BeginDelegation()
@@ -51,7 +52,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override void Commit()
 		{
-			BeginDelegation();
 			_slotsByAddress.Commit(Transaction());
 			_slotsByLength.Commit(Transaction());
 		}
@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 				BeginDelegation();
 				if (DTrace.enabled)
 				{
-					DTrace.Free.LogLength(slot.Address(), slot.Length());
+					DTrace.FreespacemanagerBtreeFree.LogLength(slot.Address(), slot.Length());
 				}
 				Slot[] remove = new Slot[2];
 				Slot newFreeSlot = slot;
@@ -174,7 +174,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 				}
 				if (DTrace.enabled)
 				{
-					DTrace.GetFreespace.LogLength(slot.Address(), slot.Length());
+					DTrace.FreespacemanagerGetSlot.LogLength(slot.Address(), slot.Length());
 				}
 				return slot;
 			}
@@ -219,17 +219,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return _delegationRequests > 0;
 		}
 
-		public override int OnNew(LocalObjectContainer file)
-		{
-			return 0;
-		}
-
 		public override void Read(int freeSpaceID)
 		{
 		}
 
 		private void RemoveSlot(Slot slot)
 		{
+			// do nothing
 			_slotsByLength.Remove(Transaction(), slot);
 			_slotsByAddress.Remove(Transaction(), slot);
 		}

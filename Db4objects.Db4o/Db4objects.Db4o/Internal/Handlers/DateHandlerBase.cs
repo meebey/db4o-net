@@ -51,6 +51,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override void Write(object a_object, BufferImpl a_bytes)
 		{
+			// TODO: This is a temporary fix to prevent exceptions with
+			// Marshaller.LEGACY.  
 			if (a_object == null)
 			{
 				a_object = new DateTime(0);

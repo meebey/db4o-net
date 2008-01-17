@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Defragment;
@@ -101,14 +100,14 @@ namespace Db4objects.Db4o.Defragment
 				return;
 			}
 			int blockSize = context.BlockSize();
-			int blockLength = Math.Max(Const4.PointerLength, blockSize);
 			bool overlapping = (Const4.PointerLength % blockSize > 0);
 			int blocksPerPointer = Const4.PointerLength / blockSize;
 			if (overlapping)
 			{
 				blocksPerPointer++;
 			}
-			int batchSize = _ids.Size() * blockLength;
+			int bytesPerPointer = blocksPerPointer * blockSize;
+			int batchSize = _ids.Size() * bytesPerPointer;
 			Slot pointerSlot = context.AllocateTargetSlot(batchSize);
 			int pointerAddress = pointerSlot.Address();
 			IEnumerator idIter = new TreeKeyIterator(_ids);
@@ -121,6 +120,7 @@ namespace Db4objects.Db4o.Defragment
 					objectID = -objectID;
 					isClassID = true;
 				}
+				// seen object ids don't come by here anymore - any other candidates?
 				context.MapIDs(objectID, pointerAddress, isClassID);
 				pointerAddress += blocksPerPointer;
 			}

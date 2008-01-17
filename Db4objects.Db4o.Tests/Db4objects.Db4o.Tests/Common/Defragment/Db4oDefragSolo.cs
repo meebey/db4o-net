@@ -25,9 +25,13 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				{
 					string backupFile = GetAbsolutePath() + ".defrag.backup";
 					IContextIDMapping mapping = new TreeIDMapping();
+					// new
+					// BTreeIDMapping(getAbsolutePath()+".defrag.mapping",4096,1,1000);
 					DefragmentConfig defragConfig = new DefragmentConfig(GetAbsolutePath(), backupFile
 						, mapping);
 					defragConfig.ForceBackupDelete(true);
+					// FIXME Cloning is ugly - wrap original in Decorator within
+					// DefragContext instead?
 					IConfiguration clonedConfig = (IConfiguration)((IDeepClone)config).DeepClone(null
 						);
 					defragConfig.Db4oConfig(clonedConfig);

@@ -26,9 +26,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				), typeof(MultiDeleteTestCase), typeof(NakedObjectTestCase), typeof(ObjectNotStorableExceptionTestCase
 				), typeof(PeekPersistedTestCase), typeof(PersistentIntegerArrayTestCase), typeof(
 				PersistStaticFieldValuesTestCase), typeof(PersistTypeTestCase), typeof(PreventMultipleOpenTestCase
-				), typeof(ReAddCascadedDeleteTestCase), typeof(RollbackDeleteTestCase), typeof(RollbackTestCase
-				), typeof(RollbackUpdateTestCase), typeof(RollbackUpdateCascadeTestCase), typeof(
-				SimplestPossibleTestCase), typeof(SystemInfoTestCase), typeof(UpdateDepthTestCase
+				), typeof(QueryByInterface), typeof(ReAddCascadedDeleteTestCase), typeof(RollbackDeleteTestCase
+				), typeof(RollbackTestCase), typeof(RollbackUpdateTestCase), typeof(RollbackUpdateCascadeTestCase
+				), typeof(SimplestPossibleTestCase), typeof(SystemInfoTestCase), typeof(UpdateDepthTestCase
 				) };
 		}
 	}

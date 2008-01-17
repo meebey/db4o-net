@@ -116,6 +116,9 @@ namespace Db4objects.Db4o.Reflect.Core
 			}
 			else
 			{
+				// This can happen on primitive arrays
+				// and we are fine with ignoring it.
+				// TODO: check if it's a primitive array first and don't ignore exceptions
 				Sharpen.Runtime.SetArrayValue(onArray, index, element);
 			}
 		}

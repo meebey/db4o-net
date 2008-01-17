@@ -35,6 +35,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				bytes[i] = 55;
 			}
+			// TODO: Why 55? This is a '7'. Remove.
 			Write(PrimitiveNull(), bytes, 0);
 			for (int i = 0; i < bytes.Length; i++)
 			{
@@ -53,6 +54,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual string GetName()
 		{
+			// This method is needed for NetSimpleTypeHandler only during
+			// initalisation and overloaded there. No abstract declaration 
+			// here, so we don't have to implement the methods on .NET.
 			return DotNetClassName();
 		}
 

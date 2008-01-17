@@ -46,6 +46,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private QCandidate(QCandidates qcandidates) : base(0)
 		{
+			// db4o ID is stored in _key;
+			// db4o byte stream storing the object
+			// Dependant candidates
+			// whether to include in the result set
+			// may use id for optimisation ???
+			// Comparable
+			// Possible pending joins on children
+			// The evaluation root to compare all ORs
+			// the YapClass of this object
+			// temporary yapField and member for one field during evaluation
+			// null denotes null object
 			_candidates = qcandidates;
 		}
 
@@ -146,6 +157,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						ITypeHandler4 arrayHandler = tempHandler;
 						int offset = arrayBytes[0]._offset;
 						bool outerRes = true;
+						// The following construct is worse than not ideal.
+						// For each constraint it completely reads the
+						// underlying structure again. The structure could b
+						// kept fairly easy. TODO: Optimize!
 						IEnumerator i = a_candidates.IterateConstraints();
 						while (i.MoveNext())
 						{
@@ -173,16 +188,42 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								Tree.ByRef pending = new Tree.ByRef();
 								bool[] innerRes = new bool[] { isNot };
 								candidates.Traverse(new _IVisitor4_183(this, innerRes, isNot, pending));
+								// Collect all pending subresults.
+								// We need to change
+								// the
+								// constraint here, so
+								// our
+								// pending collector
+								// uses
+								// the right
+								// comparator.
+								// We only keep one
+								// pending result
+								// for
+								// all array
+								// elements.
+								// and memorize,
+								// whether we had a
+								// true or a false
+								// result.
+								// or both.
 								if (isNot)
 								{
 									qcon.Not();
 								}
+								// In case we had pending subresults, we
+								// need to communicate
+								// them up to our root.
 								if (pending.value != null)
 								{
 									pending.value.Traverse(new _IVisitor4_252(this));
 								}
 								if (!innerRes[0])
 								{
+									// Again this could be double triggering.
+									// 
+									// We want to clean up the "No route"
+									// at some stage.
 									qcon.Visit(GetRoot(), qcon.Evaluator().Not(false));
 									outerRes = false;
 								}
@@ -191,6 +232,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						}
 						return outerRes;
 					}
+					// We may get simple types here too, if the YapField was null
+					// in the higher level simple evaluation. Evaluate these
+					// immediately.
 					if (Handlers4.HandlesSimple(handler))
 					{
 						a_candidates.i_currentConstraint.Visit(this);
@@ -209,6 +253,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return false;
 			}
+			// fast early check for YapClass
 			if (a_candidates.i_yapClass != null && a_candidates.i_yapClass.IsStrongTyped())
 			{
 				if (_yapField != null)
@@ -380,6 +425,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual IObjectContainer ObjectContainer()
 		{
+			// / ***<Candidate interface code>***
 			return Container();
 		}
 
@@ -418,6 +464,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual bool HasDuplicates()
 		{
+			// Subcandidates are evaluated along with their constraints
+			// in one big QCandidates object. The tree can have duplicates
+			// so evaluation can be cascaded up to different roots.
 			return _root != null;
 		}
 
@@ -442,6 +491,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		/// </remarks>
 		public virtual void Include(bool flag)
 		{
+			// TODO:
+			// Internal and external flag may need to be handled seperately.
 			_include = flag;
 		}
 
@@ -665,13 +716,15 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (_yapClass.HoldsAnyClass())
 			{
+				// retry finding the field on reading the value 
 				_yapField = null;
 			}
 			else
 			{
+				// we can't get a value for the field, comparisons should definitely run against null
 				_yapField = new NullFieldMetadata();
 			}
-			_handlerVersion = MarshallingContext.HandlerVersion;
+			_handlerVersion = HandlerRegistry.HandlerVersion;
 		}
 
 		internal virtual object Value()
@@ -681,6 +734,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual object Value(bool a_activate)
 		{
+			// TODO: This is only used for Evaluations. Handling may need
+			// to be different for collections also.
 			if (_member == null)
 			{
 				if (_yapField == null)

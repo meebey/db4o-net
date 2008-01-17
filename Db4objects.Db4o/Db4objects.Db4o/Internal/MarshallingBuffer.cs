@@ -226,6 +226,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_indexedField != null)
 			{
+				// for now this is a String index only, it takes the entire slot.
 				StatefulBuffer buffer = new StatefulBuffer(context.Transaction(), UnblockedLength
 					());
 				int blockedPosition = context.Container().BytesToBlocks(position);
@@ -334,11 +335,13 @@ namespace Db4objects.Db4o.Internal
 
 		private int BlockedLength()
 		{
+			// For now we block align every linked entry. Indexes could be created late.
 			return Length();
 		}
 
 		private int UnblockedLength()
 		{
+			// This is only valid after checkBlockAlignMent has been called. 
 			return _lastOffSet;
 		}
 	}

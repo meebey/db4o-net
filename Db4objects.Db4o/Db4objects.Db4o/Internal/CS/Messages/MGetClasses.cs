@@ -15,6 +15,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				try
 				{
+					// Since every new Client reads the class
+					// collection from the file, we have to 
+					// make sure, it has been written.
 					stream.ClassCollection().Write(Transaction());
 				}
 				catch (Exception)

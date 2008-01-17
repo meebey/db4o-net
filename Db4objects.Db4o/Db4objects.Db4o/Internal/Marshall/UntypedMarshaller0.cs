@@ -46,6 +46,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 					}
 				}
 			}
+			// TODO: Check Exception Types
+			// Errors typically occur, if classes don't match
 			return null;
 		}
 

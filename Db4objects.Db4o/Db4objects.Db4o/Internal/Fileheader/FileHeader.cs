@@ -108,6 +108,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		protected virtual void WriteTransactionPointer(Transaction systemTransaction, int
 			 transactionAddress, int address, int offset)
 		{
+			// TODO: freespaceID should not be passed here, it should be taken from SystemData
 			StatefulBuffer bytes = new StatefulBuffer(systemTransaction, address, Const4.IntLength
 				 * 2);
 			bytes.MoveForward(offset);

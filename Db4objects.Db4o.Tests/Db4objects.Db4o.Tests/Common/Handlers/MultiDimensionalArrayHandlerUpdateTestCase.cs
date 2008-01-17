@@ -50,6 +50,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 			public Item(string name)
 			{
+				// TODO: make asymmetrical once we support
+				// TODO: make asymmetrical once we support
+				// TODO: make asymmetrical once we support
+				// TODO: make asymmetrical once we support
 				_name = name;
 			}
 
@@ -153,6 +157,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected override object[] CreateValues()
 		{
+			// Bug in the oldest format: 
+			// It accidentally converted int[][] arrays to Integer[][] arrays.
+			// not used
 			return null;
 		}
 
@@ -162,6 +169,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected override string TypeName()
 		{
+			// not used
 			return "multidimensional_array";
 		}
 	}

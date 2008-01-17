@@ -31,6 +31,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			public int CompareTo(object obj)
 			{
 				Slot targetSlot = (Slot)obj;
+				// FIXME: The comparison method in #compareByAddress is the wrong way around.
+				// Fix there and here after other references are fixed.
 				return -sourceSlot.CompareByAddress(targetSlot);
 			}
 

@@ -16,8 +16,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private const int HeaderLength = Const4.LeadingLength + Const4.IdLength + 1 + Const4
 			.IntLength;
 
-		public const byte HandlerVersion = (byte)2;
-
 		private const int NoIndirection = 3;
 
 		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
@@ -45,6 +43,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public MarshallingContext(Db4objects.Db4o.Internal.Transaction trans, ObjectReference
 			 @ref, int updateDepth, bool isNew)
 		{
+			// YapClass ID
+			// Marshaller Version
+			// number of fields
+			// and number above 2 
 			_transaction = trans;
 			_reference = @ref;
 			_nullBitMap = new BitMap4(FieldCount());
@@ -71,6 +73,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual bool IsNull(int fieldIndex)
 		{
+			// TODO Auto-generated method stub
 			return false;
 		}
 
@@ -118,7 +121,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			BufferImpl buffer = new BufferImpl(pointer.Length());
 			_writeBuffer.MergeChildren(this, pointer.Address(), WriteBufferOffset());
 			WriteObjectClassID(buffer, ClassMetadata().GetID());
-			buffer.WriteByte(HandlerVersion);
+			buffer.WriteByte(Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion);
 			buffer.WriteInt(FieldCount());
 			buffer.WriteBitMap(_nullBitMap);
 			_writeBuffer.TransferContentTo(buffer);
@@ -178,6 +181,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual object CurrentIndexEntry()
 		{
+			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -282,6 +286,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 			MarshallingContextState state = CurrentState();
 			if (obj == null)
 			{
+				// TODO: This should never happen. All handlers should take care
+				//       of nulls on a higher level, otherwise primitive wrappers
+				//       default to their primitive values.
+				//       Consider to throw an IllegalArgumentException here to
+				//       prevent users from calling with null arguments.
 				WriteNullObject(handler);
 			}
 			else
@@ -357,6 +366,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual IBuffer Buffer()
 		{
+			// FIXME: This method was just temporarily added to fulfill contract of MarshallingInfo
+			//        It will go, the buffer is never needed in new marshalling. 
 			return null;
 		}
 

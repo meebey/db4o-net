@@ -17,6 +17,8 @@ namespace Db4objects.Db4o.Internal
 
 		public bool BeginProcessing()
 		{
+			// UID and address of pointer to the object in our file
+			// DIRTY and ACTIVE
 			if (BitIsTrue(Const4.Processing))
 			{
 				return false;
@@ -159,6 +161,10 @@ namespace Db4objects.Db4o.Internal
 			try
 			{
 				LocalObjectContainer stream = (LocalObjectContainer)trans.Container();
+				if (DTrace.enabled)
+				{
+					DTrace.PersistentOwnLength.Log(GetID());
+				}
 				int length = OwnLength();
 				length = stream.BlockAlignedBytes(length);
 				BufferImpl writer = new BufferImpl(length);
@@ -172,6 +178,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
+					// FIXME: Free everything on rollback here too?
 					slot = stream.GetSlot(length);
 					trans.SlotFreeOnRollbackCommitSetPointer(_id, slot, IsFreespaceComponent());
 				}

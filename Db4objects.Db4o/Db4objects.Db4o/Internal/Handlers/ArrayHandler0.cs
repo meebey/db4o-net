@@ -48,8 +48,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return null;
 			}
+			// With the following line we ask the context to work with 
+			// a different buffer. Should this logic ever be needed by
+			// a user handler, it should be implemented by using a Queue
+			// in the UnmarshallingContext.
+			// The buffer has to be set back from the outside!  See below
 			IBuffer contextBuffer = context.Buffer(buffer);
 			object array = base.Read(context);
+			// The context buffer has to be set back.
 			context.Buffer(contextBuffer);
 			return array;
 		}
@@ -84,6 +90,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override void Defrag1(IDefragmentContext context)
 		{
+			// FIXME copied from ArrayHandler
 			int elements = ReadElementsDefrag(context);
 			for (int i = 0; i < elements; i++)
 			{

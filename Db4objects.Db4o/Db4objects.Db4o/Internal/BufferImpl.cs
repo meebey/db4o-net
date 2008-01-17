@@ -23,6 +23,7 @@ namespace Db4objects.Db4o.Internal
 
 		public BufferImpl(int a_length)
 		{
+			// for coding convenience, we allow objects to grab into the buffer
 			_buffer = new byte[a_length];
 		}
 
@@ -39,6 +40,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Append(byte[] bytes)
 		{
+			// TODO: Change all callers to call writeBytes directly.
 			WriteBytes(bytes);
 		}
 

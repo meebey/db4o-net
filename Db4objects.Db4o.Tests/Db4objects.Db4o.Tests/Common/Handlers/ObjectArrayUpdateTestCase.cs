@@ -131,6 +131,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected override object[] CreateValues()
 		{
+			// not used
 			return null;
 		}
 
@@ -140,6 +141,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected override string TypeName()
 		{
+			// not used
 			return "object-array";
 		}
 	}

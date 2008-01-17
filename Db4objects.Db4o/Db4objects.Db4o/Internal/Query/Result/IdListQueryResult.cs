@@ -147,6 +147,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public override void LoadFromClassIndexes(ClassMetadataIterator iter)
 		{
+			// duplicates because of inheritance hierarchies
 			Tree.ByRef duplicates = new Tree.ByRef();
 			while (iter.MoveNext())
 			{

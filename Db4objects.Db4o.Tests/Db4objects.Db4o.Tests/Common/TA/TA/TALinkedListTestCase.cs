@@ -46,6 +46,8 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			Db().Deactivate(list, 4);
 			Assert.IsNull(list.next);
 			Assert.AreEqual(0, list.value);
+			// FIXME: test fails if uncomenting the following assertion.
+			//	    	Assert.isNull(next3.next);
 			Assert.IsNotNull(next5.next);
 		}
 	}

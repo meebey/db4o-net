@@ -269,6 +269,8 @@ namespace Db4objects.Db4o.Internal
 				_creating.Remove(reflectClazz);
 				return null;
 			}
+			// ObjectContainerBase#createClassMetadata may add the ClassMetadata already,
+			// so we have to check again
 			bool addMembers = false;
 			if (_classMetadataByClass.Get(reflectClazz) == null)
 			{

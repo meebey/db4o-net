@@ -39,10 +39,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 		{
 			TAActivateTestCase.TAItem taItem = (TAActivateTestCase.TAItem)obj;
 			AssertNullItem(taItem);
+			// depth = 0, no effect
 			Db().Activate(taItem, 0);
 			AssertNullItem(taItem);
+			// depth = 1
 			Db().Activate(taItem, 1);
 			AssertActivatedItem(taItem, 0, 1);
+			// depth = 5
 			Db().Activate(taItem, 5);
 			AssertActivatedItem(taItem, 0, 5);
 			Db().Activate(taItem, ItemDepth + 100);

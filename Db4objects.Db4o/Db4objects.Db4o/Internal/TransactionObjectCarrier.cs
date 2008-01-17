@@ -28,6 +28,9 @@ namespace Db4objects.Db4o.Internal
 
 		internal override void ProduceUpdateSlotChange(int id, Slot slot)
 		{
+			// do nothing
+			//      do nothing
+			//      do nothing
 			SetPointer(id, slot);
 		}
 
@@ -47,6 +50,8 @@ namespace Db4objects.Db4o.Internal
 
 		public override void SetPointer(int a_id, Slot slot)
 		{
+			//      do nothing
+			// do nothing
 			WritePointer(a_id, slot);
 		}
 

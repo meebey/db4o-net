@@ -28,9 +28,15 @@ namespace Db4objects.Db4o
 
 		public virtual void Read(BufferImpl reader)
 		{
+			// The number of entries an the length are redundant, because the handler should
+			// return a fixed length, but we absolutely want to make sure, we don't free
+			// a slot into nowhere.
+			// TODO: make sure this aren't really needed
+			// and remove them 
 			indexAddress = reader.ReadInt();
 			indexEntries = reader.ReadInt();
 			indexLength = reader.ReadInt();
+			// no longer used apparently
 			reader.ReadInt();
 			reader.ReadInt();
 			reader.ReadInt();

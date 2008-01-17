@@ -47,13 +47,17 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IObjectSet os = oc.Query(typeof(CascadeDeleteFalseTestCase.Item));
 			if (os.Size() == 0)
 			{
+				// the object has been deleted
 				return;
 			}
 			if (!os.HasNext())
 			{
+				// object can be deleted after query 
 				return;
 			}
 			CascadeDeleteFalseTestCase.Item cdf = (CascadeDeleteFalseTestCase.Item)os.Next();
+			// sleep 1000 ms, waiting for other threads.
+			// Thread.sleep(500);
 			oc.Delete(cdf);
 			oc.Commit();
 			AssertOccurrences(oc, typeof(CascadeDeleteFalseTestCase.Item), 0);

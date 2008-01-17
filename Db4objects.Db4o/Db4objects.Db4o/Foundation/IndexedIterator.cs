@@ -33,6 +33,7 @@ namespace Db4objects.Db4o.Foundation
 				++_next;
 				return true;
 			}
+			// force exception on unexpected call to current
 			_next = _length;
 			return false;
 		}

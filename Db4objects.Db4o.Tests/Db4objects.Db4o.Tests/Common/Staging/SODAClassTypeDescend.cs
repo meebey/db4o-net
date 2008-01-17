@@ -29,11 +29,14 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
+			// COR-471
 			SODAClassTypeDescend.DataA objectA = new SODAClassTypeDescend.DataA();
 			SODAClassTypeDescend.DataB objectB = new SODAClassTypeDescend.DataB();
 			objectA._val = objectB;
 			objectB._val = objectA;
 			Store(objectB);
+			// just to show that the descend to "_val" actually is
+			// recognized - this one doesn't show up in the result
 			Store(new SODAClassTypeDescend.DataC());
 		}
 

@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public static void Main(string[] args)
 		{
-			new QueryByExampleTestCase().RunSolo();
+			new QueryByExampleTestCase().RunAll();
 		}
 
 		protected override void Store()
@@ -41,10 +41,13 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			QueryByExampleTestCase.Item itemTwo = new QueryByExampleTestCase.Item("two");
 			Store(itemOne);
 			Store(itemTwo);
+			// Change the name of the "sample"
 			itemOne._name = "two";
+			// Query by Identity
 			IQuery q = Db().Query();
 			q.Constrain(itemOne);
 			IObjectSet objectSet = q.Execute();
+			// Expect to get the sample 
 			Assert.AreEqual(1, objectSet.Size());
 			QueryByExampleTestCase.Item retrievedItem = (QueryByExampleTestCase.Item)objectSet
 				.Next();
@@ -57,10 +60,13 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			QueryByExampleTestCase.Item itemTwo = new QueryByExampleTestCase.Item("two");
 			Store(itemOne);
 			Store(itemTwo);
+			// Change the name of the "sample"
 			itemOne._name = "two";
+			// Query by Example
 			IQuery q = Db().Query();
 			q.Constrain(itemOne).ByExample();
 			IObjectSet objectSet = q.Execute();
+			// Expect to get the other 
 			Assert.AreEqual(1, objectSet.Size());
 			QueryByExampleTestCase.Item retrievedItem = (QueryByExampleTestCase.Item)objectSet
 				.Next();

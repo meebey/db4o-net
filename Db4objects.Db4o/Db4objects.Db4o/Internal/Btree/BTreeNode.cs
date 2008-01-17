@@ -387,6 +387,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				return;
 			}
 			SetStateDirty();
+			// TODO: Merge nodes here on low _count value.
 			if (_keys[0] != keyZero)
 			{
 				TellParentAboutChangedKey(trans);
@@ -486,6 +487,7 @@ namespace Db4objects.Db4o.Internal.Btree
 					}
 					if (_count == 0)
 					{
+						// root node empty case only, have to turn it into a leaf
 						_isLeaf = true;
 					}
 					return;
@@ -818,6 +820,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			PrepareWrite(trans);
 			BTreePatch patch = KeyPatch(index);
+			// no patch, no problem, can remove
 			if (patch == null)
 			{
 				_keys[index] = NewRemovePatch(trans, obj);
@@ -842,12 +845,15 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			else
 			{
+				// If the patch is a removal of a cancelled removal for another
+				// transaction, we need one for this transaction also.
 				if (!patch.IsAdd())
 				{
 					((BTreeUpdate)patch).Append(NewRemovePatch(trans, obj));
 					return;
 				}
 			}
+			// now we try if removal is OK for the next element in this node
 			if (index != LastIndex())
 			{
 				if (CompareInWriteMode(preparedComparison, index + 1) != 0)
@@ -857,6 +863,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				Remove(trans, preparedComparison, obj, index + 1);
 				return;
 			}
+			// nothing else worked so far, move on to the next node, try there
 			Db4objects.Db4o.Internal.Btree.BTreeNode node = NextNode();
 			if (node == null)
 			{
@@ -1286,12 +1293,17 @@ namespace Db4objects.Db4o.Internal.Btree
 		public static void DefragIndex(DefragmentContextImpl context, IIndexable4 keyHandler
 			)
 		{
+			// count
 			int count = context.ReadInt();
+			// leafByte
 			byte leafByte = context.ReadByte();
 			bool isLeaf = (leafByte == 1);
 			context.CopyID();
+			// parent ID
 			context.CopyID();
+			// previous ID
 			context.CopyID();
+			// next ID
 			for (int i = 0; i < count; i++)
 			{
 				keyHandler.DefragIndexEntry(context);

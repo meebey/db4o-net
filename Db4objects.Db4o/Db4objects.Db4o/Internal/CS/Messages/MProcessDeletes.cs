@@ -19,6 +19,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				{
 				}
 			}
+			// Don't send the exception to the user because delete is asynchronous
 			return true;
 		}
 	}

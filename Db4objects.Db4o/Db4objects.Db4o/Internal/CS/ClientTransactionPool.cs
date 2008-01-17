@@ -21,6 +21,8 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public ClientTransactionPool(LocalObjectContainer mainContainer)
 		{
+			// Transaction -> ContainerCount
+			// String -> ContainerCount
 			ClientTransactionPool.ContainerCount mainEntry = new ClientTransactionPool.ContainerCount
 				(mainContainer, 1);
 			_transaction2Container = new Hashtable4();

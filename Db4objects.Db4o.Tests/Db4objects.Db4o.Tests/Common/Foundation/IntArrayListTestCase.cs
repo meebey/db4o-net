@@ -37,6 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		public virtual void TestAddAtIndex()
 		{
+			//test mthod add(int,int)
 			IntArrayList list = new IntArrayList();
 			for (int i = 0; i < 10; i++)
 			{

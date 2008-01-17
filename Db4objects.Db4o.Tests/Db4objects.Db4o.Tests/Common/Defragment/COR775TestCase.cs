@@ -50,6 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			VerifyDB();
 			DefragmentConfig config = new DefragmentConfig(Original, Defgared);
 			config.ForceBackupDelete(true);
+			//config.storedClassFilter(new AvailableClassFilter());
 			config.Db4oConfig(GetConfiguration());
 			Db4objects.Db4o.Defragment.Defragment.Defrag(config);
 			VerifyDB();

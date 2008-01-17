@@ -32,6 +32,8 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		{
 			if (IsMTOC())
 			{
+				// This test really doesn't make sense for MTOC, there
+				// is no client to ping.
 				return;
 			}
 			IServerMessageDispatcher dispatcher = ServerDispatcher();

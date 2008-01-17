@@ -76,6 +76,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			}
 			catch (Exception x)
 			{
+				// TODO: use MessageContext.sender() to send
+				// error back to client
 				Sharpen.Runtime.PrintStackTrace(x);
 			}
 			return true;

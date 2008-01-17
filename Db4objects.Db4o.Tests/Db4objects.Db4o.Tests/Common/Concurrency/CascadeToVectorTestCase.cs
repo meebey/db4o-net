@@ -49,6 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				atom.name = "updated";
 				if (atom.child != null)
 				{
+					// This one should NOT cascade
 					atom.child.name = "updated";
 				}
 			}
@@ -77,16 +78,19 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IObjectSet os = oc.Query(typeof(CascadeToVectorTestCase));
 			if (os.Size() == 0)
 			{
+				// already deleted
 				return;
 			}
 			Assert.AreEqual(1, os.Size());
 			CascadeToVectorTestCase ctv = (CascadeToVectorTestCase)os.Next();
+			// wait for other threads
 			Thread.Sleep(500);
 			oc.Delete(ctv);
 		}
 
 		public virtual void CheckDelete(IExtObjectContainer oc)
 		{
+			// Cascade-On-Delete Test: We only want one atom to remain.
 			AssertOccurrences(oc, typeof(Atom), 1);
 		}
 	}

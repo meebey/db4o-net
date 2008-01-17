@@ -78,6 +78,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			ExpectKeys(btree, _keysOnRemoval);
 			btree.Commit(Trans());
 			ExpectKeys(btree, _keysOnRemoval);
+			// remove all but 1
 			for (int i = 1; i < _keysOnRemoval.Length; i++)
 			{
 				btree.Remove(Trans(), _keysOnRemoval[i]);

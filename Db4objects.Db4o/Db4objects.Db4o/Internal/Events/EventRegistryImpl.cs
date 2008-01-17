@@ -55,6 +55,7 @@ namespace Db4objects.Db4o.Internal.Events
 
 		public virtual void QueryOnFinished(Transaction transaction, IQuery query)
 		{
+			// Callbacks implementation
 			EventPlatform.TriggerQueryEvent(transaction, _queryFinished, query);
 		}
 
@@ -386,6 +387,8 @@ namespace Db4objects.Db4o.Internal.Events
 
 		protected virtual void OnCommittedListener()
 		{
+			// TODO: notify the server that we are interested in 
+			// committed callbacks
 			_container.OnCommittedListener();
 		}
 

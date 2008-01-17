@@ -75,6 +75,10 @@ namespace Db4objects.Db4o.Internal
 
 		public int CopyID()
 		{
+			// This code is slightly redundant. 
+			// The profiler shows it's a hotspot.
+			// The following would be non-redudant. 
+			// return copy(false, false);
 			int id = _source.ReadInt();
 			return WriteMappedID(id);
 		}

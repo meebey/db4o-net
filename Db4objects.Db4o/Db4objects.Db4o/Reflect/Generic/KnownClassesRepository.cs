@@ -17,6 +17,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		static KnownClassesRepository()
 		{
+			// FIXME very java-centric, what about .NET?
 			Primitives = new Hashtable4();
 			RegisterPrimitive(typeof(bool), typeof(bool));
 			RegisterPrimitive(typeof(byte), typeof(byte));
@@ -149,6 +150,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			}
 			ret = _builder.CreateClass(className, EnsureClassAvailability(spec.SuperClassID()
 				), spec.NumFields());
+			// step 1 only add to _classByID, keep the class out of _classByName and _classes
 			_classByID.Put(id, ret);
 			_pendingClasses.Add(id);
 			return ret;
@@ -161,10 +163,15 @@ namespace Db4objects.Db4o.Reflect.Generic
 			ClassMarshaller classMarshaller = MarshallerFamily()._class;
 			RawClassSpec classInfo = classMarshaller.ReadSpec(_trans, classreader);
 			string className = classInfo.Name();
+			// Having the class in the _classByName Map for now indicates
+			// that the class is fully read. This is breakable if we start
+			// returning GenericClass'es in other methods like forName
+			// even if a native class has not been found
 			if (_classByName.Get(className) != null)
 			{
 				return;
 			}
+			// step 2 add the class to _classByName and _classes to denote reading is completed
 			_classByName.Put(className, clazz);
 			_classes.Add(clazz);
 			int numFields = classInfo.NumFields();
@@ -192,6 +199,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				case Handlers4.UntypedId:
 				{
+					// need to take care of special handlers here
 					return ObjectClass();
 				}
 
@@ -217,6 +225,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private IReflectClass NormalizeFieldClass(RawFieldSpec fieldInfo, IReflectClass fieldClass
 			)
 		{
+			// TODO: why the following line is necessary?
 			IReflectClass theClass = _stream.Reflector().ForName(fieldClass.GetName());
 			if (fieldInfo.IsPrimitive())
 			{

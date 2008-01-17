@@ -24,6 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public QueryNonExistantTestCase(bool createMembers)
 		{
+			// db4o constructor
 			member = new QueryNonExistantTestCase.QueryNonExistant1();
 			member.member = new QueryNonExistantTestCase.QueryNonExistant2();
 			member.member.member = this;
@@ -31,6 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc(IExtObjectContainer oc)
 		{
+			// db4o constructor
 			oc.QueryByExample((new Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase
 				(true)));
 			AssertOccurrences(oc, typeof(Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase

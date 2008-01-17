@@ -42,6 +42,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				}
 				catch (Exception)
 				{
+					// TODO: not nicely handled on the client side yet
 					Write(Msg.Null);
 				}
 			}

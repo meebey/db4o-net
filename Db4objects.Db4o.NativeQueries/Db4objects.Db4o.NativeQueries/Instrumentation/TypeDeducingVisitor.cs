@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		public virtual void Visit(StaticFieldRoot root)
 		{
+			//		_clazz=_candidateClass;
 			_clazz = root.Type;
 		}
 

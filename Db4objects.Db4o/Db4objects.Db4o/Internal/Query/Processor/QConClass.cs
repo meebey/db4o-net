@@ -26,6 +26,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal QConClass(Transaction a_trans, QCon a_parent, QField a_field, IReflectClass
 			 claxx) : base(a_trans, a_parent, a_field, null)
 		{
+			// C/S
 			if (claxx != null)
 			{
 				i_yapClass = a_trans.Container().ProduceClassMetadata(claxx);
@@ -69,6 +70,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal override void EvaluateSelf()
 		{
+			// optimization for simple class queries: 
+			// No instantiation of objects, if not necessary.
+			// Does not handle the special comparison of the
+			// Compare interface.
+			//
 			if (i_candidates.WasLoadedFromClassIndex())
 			{
 				if (i_evaluator.IsDefault())

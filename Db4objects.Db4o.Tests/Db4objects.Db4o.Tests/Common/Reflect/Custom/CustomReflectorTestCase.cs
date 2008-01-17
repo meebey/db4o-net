@@ -72,6 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 				[] { "Birinho", 10 });
 			Update(entry);
 			RestartProvider();
+			//exerciseSelectByField(entry, CAT_FIELD_NAMES);
 			PersistentEntry[] expected = Copy(CatEntries);
 			expected[0] = entry;
 			AssertEntries(expected, SelectAll(CatClass));
@@ -226,6 +227,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 				entry.className = entries[i].className;
 				entry.uid = entries[i].uid;
 				entry.fieldValues = entries[i].fieldValues;
+				// reuse entries so the provider can't assume
+				// anything about identity
 				Insert(entry);
 			}
 		}

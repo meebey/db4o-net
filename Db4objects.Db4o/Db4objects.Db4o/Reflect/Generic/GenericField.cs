@@ -38,6 +38,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual object Get(object onObject)
 		{
+			//TODO Consider: Do we need to check that onObject is an instance of the DataClass this field is a member of? 
 			return ((GenericObject)onObject).Get(_index);
 		}
 
@@ -63,6 +64,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual bool IsStatic()
 		{
+			//FIXME Consider static fields.
 			return false;
 		}
 
@@ -73,6 +75,9 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual void Set(object onObject, object value)
 		{
+			// FIXME: Consider enabling type checking.
+			// The following will fail with arrays.
+			// if (!_type.isInstance(value)) throw new RuntimeException(); //TODO Consider: is this checking really necessary?
 			((GenericObject)onObject).Set(_index, value);
 		}
 
@@ -82,6 +87,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		internal virtual void SetIndex(int index)
 		{
+			// do nothing
 			_index = index;
 		}
 

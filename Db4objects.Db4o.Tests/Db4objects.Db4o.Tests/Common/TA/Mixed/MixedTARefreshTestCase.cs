@@ -61,14 +61,19 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			Assert.AreEqual(200, item1.Next().GetValue());
 			Assert.AreEqual(10, item2.GetValue());
 			Assert.AreEqual(9, item2.Next().GetValue());
+			//refresh 0
 			client2.Refresh(item2, 0);
 			Assert.AreEqual(10, item2.GetValue());
 			Assert.AreEqual(9, item2.Next().GetValue());
+			//refresh 1
 			client2.Refresh(item2, 1);
 			Assert.AreEqual(100, item2.GetValue());
 			Assert.AreEqual(9, item2.Next().GetValue());
+			//refresh 2
 			client2.Refresh(item2, 2);
 			Assert.AreEqual(100, item2.GetValue());
+			//FIXME: maybe a bug
+			//Assert.areEqual(200, item2.next().getValue());
 			next1 = item1;
 			value = 1000;
 			while (next1 != null)
@@ -117,6 +122,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 
 			public Item(int value)
 			{
+				//
 				_value = value;
 			}
 

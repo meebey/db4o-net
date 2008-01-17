@@ -66,6 +66,25 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return 0;
 			}
+			// TODO: This was an attempt to improve size calculation.
+			//       Since all nodes are read, there is no improvement.        
+			//        BTreeNode currentNode = _first.node();
+			//        int sizeOnFirst = currentNode.count() - _first.index();
+			//
+			//        BTreeNode endNode = _end == null ? null : _end.node();
+			//        int substractForEnd = 
+			//            (endNode == null) ? 0 : (endNode.count() -  _end.index());
+			//        
+			//        int size = sizeOnFirst - substractForEnd;
+			//        while(! currentNode.equals(endNode)){
+			//            currentNode = currentNode.nextNode();
+			//            if(currentNode == null){
+			//                break;
+			//            }
+			//            currentNode.prepareRead(transaction());
+			//            size += currentNode.count(); 
+			//        }
+			//        return size;
 			int size = 0;
 			IEnumerator i = Keys();
 			while (i.MoveNext())

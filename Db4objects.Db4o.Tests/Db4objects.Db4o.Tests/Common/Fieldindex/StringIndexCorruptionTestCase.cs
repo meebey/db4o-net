@@ -25,6 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestStressSet()
 		{
+			// this just make the test faster
 			IExtObjectContainer container = Db();
 			int itemCount = 300;
 			for (int i = 0; i < itemCount; ++i)

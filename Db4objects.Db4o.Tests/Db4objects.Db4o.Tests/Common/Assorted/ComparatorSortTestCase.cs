@@ -68,6 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			public virtual bool Match(ComparatorSortTestCase.Item candidate)
 			{
+				// FIXME: #COR-736 The test fails if we use Object as the parameter type.
 				return candidate._id < 3;
 			}
 		}

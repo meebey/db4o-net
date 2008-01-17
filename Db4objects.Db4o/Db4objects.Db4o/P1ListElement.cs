@@ -28,6 +28,7 @@ namespace Db4objects.Db4o
 
 		internal virtual object ActivatedObject(int a_depth)
 		{
+			// TODO: It may be possible to optimise away the following call
 			CheckActive();
 			if (null == i_object)
 			{

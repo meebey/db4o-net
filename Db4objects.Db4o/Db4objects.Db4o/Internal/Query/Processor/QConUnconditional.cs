@@ -16,6 +16,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public QConUnconditional(Transaction trans, bool value) : base(trans)
 		{
+			// cannot be final for C/S unmarshalling
+			// C/S only
 			_value = value;
 		}
 

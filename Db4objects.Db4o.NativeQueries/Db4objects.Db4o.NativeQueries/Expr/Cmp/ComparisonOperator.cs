@@ -54,6 +54,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp
 
 		private ComparisonOperator(int id, string op, bool symmetric)
 		{
+			// TODO: switch to individual classes and visitor dispatch?
 			_id = id;
 			_op = op;
 			_symmetric = symmetric;

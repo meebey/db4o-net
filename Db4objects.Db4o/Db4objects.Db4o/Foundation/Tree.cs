@@ -292,6 +292,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				return a_in;
 			}
+			// the highest node in the hierarchy !!!
 			if (cmp > 0)
 			{
 				Tree node = FindGreaterOrEqual(a_in._preceding, a_finder);
@@ -586,6 +587,24 @@ namespace Db4objects.Db4o.Foundation
 
 		protected virtual Tree ShallowCloneInternal(Tree tree)
 		{
+			// Keep the debug methods to debug the depth	
+			//	final void debugDepth(){
+			//	    System.out.println("Tree depth: " + debugDepth(0));
+			//	}
+			//	
+			//	final int debugDepth(int d){
+			//	    int max = d + 1;
+			//	    if (i_preceding != null){
+			//	        max = i_preceding.debugDepth(d + 1);
+			//	    }
+			//	    if(i_subsequent != null){
+			//	        int ms = i_subsequent.debugDepth(d + 1);
+			//	        if(ms > max){
+			//	            max = ms;
+			//	        }
+			//	    }
+			//	    return max;
+			//	}
 			tree._preceding = _preceding;
 			tree._size = _size;
 			tree._subsequent = _subsequent;

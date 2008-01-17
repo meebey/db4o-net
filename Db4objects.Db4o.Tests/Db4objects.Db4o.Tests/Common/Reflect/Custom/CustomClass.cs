@@ -23,6 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		public CustomClass(CustomClassRepository repository, string name, string[] fieldNames
 			, Type[] fieldTypes)
 		{
+			// fields must be public so test works on less capable runtimes
 			_repository = repository;
 			_name = name;
 			_fields = CreateFields(fieldNames, fieldTypes);
@@ -98,6 +99,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public virtual bool IsAbstract()
 		{
+			//		return _repository.reflectClass(java.lang.Object.class);
 			return false;
 		}
 

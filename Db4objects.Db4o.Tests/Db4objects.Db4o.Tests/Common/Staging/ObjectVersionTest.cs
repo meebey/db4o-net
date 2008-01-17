@@ -23,6 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			oc.Store(@object);
 			IObjectInfo objectInfo1 = oc.GetObjectInfo(@object);
 			long oldVer = objectInfo1.GetVersion();
+			//Update
 			@object.SetName("c3");
 			oc.Store(@object);
 			IObjectInfo objectInfo2 = oc.GetObjectInfo(@object);

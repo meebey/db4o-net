@@ -24,6 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
+			// It is also regression test for COR-634.
 			if (WorkspaceServices.WorkspaceRoot == null)
 			{
 				Sharpen.Runtime.Err.WriteLine("Build environment not available. Skipping test case..."

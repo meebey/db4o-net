@@ -111,6 +111,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		private IBTreeRange FieldIndexKeySearch(Transaction trans, BTree btree, object key
 			)
 		{
+			// SearchTarget should not make a difference, HIGHEST is faster
 			BTreeNodeSearchResult start = btree.SearchLeaf(trans, FieldIndexKey(0, key), SearchTarget
 				.Lowest);
 			BTreeNodeSearchResult end = btree.SearchLeaf(trans, FieldIndexKey(int.MaxValue, key

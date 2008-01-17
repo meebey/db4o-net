@@ -58,6 +58,9 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public bool Close()
 		{
+			// TODO: Experiment with packetsize and noDelay
+			// i_socket.setSendBufferSize(100);
+			// i_socket.setTcpNoDelay(true);
 			lock (_lock)
 			{
 				if (!IsMessageDispatcherAlive())
@@ -187,6 +190,8 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				return true;
 			}
+			// TODO: COR-885 - message may process against closed server
+			// Checking aliveness just makes the issue less likely to occur. Naive synchronization against main lock is prohibitive.        
 			if (IsMessageDispatcherAlive())
 			{
 				return ((IServerSideMessage)message).ProcessAtServer();
@@ -278,6 +283,7 @@ namespace Db4objects.Db4o.Internal.CS
 		public void SetDispatcherName(string name)
 		{
 			_clientName = name;
+			// set thread name
 			SetName("db4o server message dispatcher " + name);
 		}
 

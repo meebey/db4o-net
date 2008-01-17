@@ -241,6 +241,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void DefragFields(ClassMetadata clazz, ObjectHeader header, DefragmentContextImpl
 			 context)
 		{
+			// FIXME copied from ObjectMarshaller1
 			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_110(this
 				, context);
 			TraverseFields(clazz, null, header._headerAttributes, command);

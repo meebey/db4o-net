@@ -47,7 +47,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				AssertAreEqual(data[i], (DateTime)itemArrays._untypedObjectArray[i]);
 				AssertAreEqual(data[i], dateArray[i]);
 			}
+			// Assert.isNull(itemArrays._dateArray[data.length]);
 			Assert.IsNull(itemArrays._untypedObjectArray[data.Length]);
+			// FIXME: We are not signalling null for Dates in typed arrays in 
+			//        the current handler format:        
 			Assert.AreEqual(EmptyValue(), dateArray[data.Length]);
 		}
 
@@ -74,6 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			if (expected.Equals(new DateTime(DatePlatform.MaxDate)) && _handlerVersion == 0)
 			{
+				// Bug in the oldest format: It treats a Long.MAX_VALUE date as null. 
 				expected = MarshallingConstants0.NullDate;
 			}
 			Assert.AreEqual(expected, actual);

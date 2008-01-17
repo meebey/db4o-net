@@ -95,6 +95,27 @@ namespace Db4objects.Db4o.Internal
 		protected PartialObjectContainer(IConfiguration config, ObjectContainerBase parent
 			)
 		{
+			// Collection of all classes
+			// if (i_classCollection == null) the engine is down.
+			// the Configuration context for this ObjectContainer
+			// Counts the number of toplevel calls into YapStream
+			// currently used to resolve self-linking concurrency problems
+			// in cylic links, stores only YapClass objects
+			//  the parent ObjectContainer for TransportObjectContainer or this for all
+			//  others. Allows identifying the responsible Objectcontainer for IDs
+			// a value greater than 0 indicates class implementing the
+			// "Internal" interface are visible in queries and can
+			// be used.
+			// used for ClassMetadata and ClassMetadataRepository
+			// may be parent or equal to i_trans
+			// used for Objects
+			// all the per-YapStream references that we don't
+			// want created in YapobjectCarrier
+			// One of three constants in ReplicationHandler: NONE, OLD, NEW
+			// Detailed replication variables are stored in i_handlers.
+			// Call state has to be maintained here, so YapObjectCarrier (who shares i_handlers) does
+			// not accidentally think it operates in a replication call. 
+			// weak reference management
 			_this = Cast(this);
 			_parent = parent == null ? _this : parent;
 			_lock = parent == null ? new object() : parent._lock;
@@ -195,6 +216,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			while (_stillToActivate != null)
 			{
+				// TODO: Optimize!  A lightweight int array would be faster.
 				IEnumerator i = new Iterator4Impl(_stillToActivate);
 				_stillToActivate = null;
 				while (i.MoveNext())
@@ -377,6 +399,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void Close1()
 		{
+			// this is set to null in close2 and is therefore our check for down.
 			if (_classCollection == null)
 			{
 				return;
@@ -612,6 +635,7 @@ namespace Db4objects.Db4o.Internal
 		public void Delete2(Transaction trans, ObjectReference @ref, object obj, int cascade
 			, bool userCall)
 		{
+			// This check is performed twice, here and in delete3, intentionally.
 			if (BreakDeleteForEnum(@ref, userCall))
 			{
 				return;
@@ -631,10 +655,12 @@ namespace Db4objects.Db4o.Internal
 		internal void Delete3(Transaction trans, ObjectReference @ref, int cascade, bool 
 			userCall)
 		{
+			// The passed reference can be null, when calling from Transaction.
 			if (@ref == null || !@ref.BeginProcessing())
 			{
 				return;
 			}
+			// This check is performed twice, here and in delete2, intentionally.
 			if (BreakDeleteForEnum(@ref, userCall))
 			{
 				@ref.EndProcessing();
@@ -647,6 +673,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			ClassMetadata yc = @ref.ClassMetadata();
 			object obj = @ref.GetObject();
+			// We have to end processing temporarily here, otherwise the can delete callback
+			// can't do anything at all with this object.
 			@ref.EndProcessing();
 			ActivateForDeletionCallback(trans, yc, obj);
 			if (!ObjectCanDelete(trans, yc, obj))
@@ -675,6 +703,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (!IsActive(trans, obj) && (CaresAboutDeleting(yc) || CaresAboutDeleted(yc)))
 			{
+				// Activate Objects for Callbacks, because in C/S mode Objects are not activated on the Server
+				// FIXME: [TA] review activation depth
 				Activate(trans, obj, new FixedActivationDepth(1));
 			}
 		}
@@ -784,6 +814,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual bool DetectSchemaChanges()
 		{
+			// overriden in YapClient
 			return ConfigImpl().DetectSchemaChanges();
 		}
 
@@ -927,6 +958,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					EndTopLevelCall();
 				}
+				// only to make the compiler happy
 				return null;
 			}
 		}
@@ -936,6 +968,9 @@ namespace Db4objects.Db4o.Internal
 			object obj = ta.ObjectForIdFromCache(id);
 			if (obj != null)
 			{
+				// Take care about handling the returned candidate reference.
+				// If you loose the reference, weak reference management might
+				// also.
 				return obj;
 			}
 			return new ObjectReference(id).Read(ta, new LegacyActivationDepth(0), Const4.AddToIdTree
@@ -1027,6 +1062,8 @@ namespace Db4objects.Db4o.Internal
 			ObjectReference @ref = trans.ReferenceForId(id);
 			if (@ref != null)
 			{
+				// Take care about handling the returned candidate reference.
+				// If you loose the reference, weak reference management might also.
 				object candidate = @ref.GetObject();
 				if (candidate != null)
 				{
@@ -1041,6 +1078,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				return HardObjectReference.Invalid;
 			}
+			// check class creation side effect and simply retry recursively
+			// if it hits:
 			if (readObject != @ref.GetObject())
 			{
 				return GetHardObjectReferenceById(trans, id);
@@ -1083,6 +1122,8 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual ClassMetadata ProduceClassMetadata(IReflectClass claxx)
 		{
+			// TODO: Some ReflectClass implementations could hold a 
+			// reference to ClassMetadata to improve lookup performance here.
 			if (CantGetClassMetadata(claxx))
 			{
 				return null;
@@ -1434,6 +1475,7 @@ namespace Db4objects.Db4o.Internal
 		public object PeekPersisted(Transaction trans, object obj, IActivationDepth depth
 			, bool committed)
 		{
+			// TODO: peekPersisted is not stack overflow safe, if depth is too high. 
 			lock (_lock)
 			{
 				CheckClosed();
@@ -1717,12 +1759,15 @@ namespace Db4objects.Db4o.Internal
 						renamedOne = true;
 						SetDirtyInSystemTransaction(yapClass);
 						LogMsg(8, ren.rFrom + " to " + ren.rTo);
+						// delete all that rename from the new name
+						// to allow future backswitching
 						IObjectSet backren = QueryByExample(SystemTransaction(), new Rename(ren.rClass, null
 							, ren.rFrom));
 						while (backren.HasNext())
 						{
 							Delete(SystemTransaction(), backren.Next());
 						}
+						// store the rename, so we only do it once
 						Store(SystemTransaction(), ren);
 					}
 				}
@@ -1753,6 +1798,7 @@ namespace Db4objects.Db4o.Internal
 		/// <param name="obj"></param>
 		public virtual void Send(object obj)
 		{
+			// TODO: implement
 			throw new NotSupportedException();
 		}
 
@@ -1869,6 +1915,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
+			// FIXME:   Exceptions configuration setting cant be modified
+			//          from running ObjectContainer. 
+			//          Right now all tests fail, if we don't jump out here.
+			//          The StorePrimitiveDirectly test case documents the err.
 			if (true)
 			{
 				return;
@@ -2007,6 +2057,7 @@ namespace Db4objects.Db4o.Internal
 		internal List4 StillTo1(Transaction trans, List4 still, object obj, IActivationDepth
 			 depth, bool forceUnknownDeactivate)
 		{
+			// overridden to do nothing in YapObjectCarrier
 			if (obj == null || !depth.RequiresActivation())
 			{
 				return still;
@@ -2052,6 +2103,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					if (forceUnknownDeactivate)
 					{
+						// Special handling to deactivate Top-Level unknown objects only.
 						ClassMetadata yc = ClassMetadataForObject(obj);
 						if (yc != null)
 						{
@@ -2066,12 +2118,19 @@ namespace Db4objects.Db4o.Internal
 		public void StillToActivate(Transaction trans, object a_object, IActivationDepth 
 			a_depth)
 		{
+			// TODO: We don't want the simple classes to search the hc_tree
+			// Kick them out here.
+			//		if (a_object != null) {
+			//			Class clazz = a_object.getClass();
+			//			if(! clazz.isPrimitive()){
 			_stillToActivate = StillTo1(trans, _stillToActivate, a_object, a_depth, false);
 		}
 
 		public void StillToDeactivate(Transaction trans, object a_object, IActivationDepth
 			 a_depth, bool a_forceUnknownDeactivate)
 		{
+			//			}
+			//		}
 			_stillToDeactivate = StillTo1(trans, _stillToDeactivate, a_object, a_depth, a_forceUnknownDeactivate
 				);
 		}
@@ -2283,6 +2342,7 @@ namespace Db4objects.Db4o.Internal
 
 		private static ExternalObjectContainer Cast(PartialObjectContainer obj)
 		{
+			// cheat emulating '(YapStream)this'
 			return (ExternalObjectContainer)obj;
 		}
 

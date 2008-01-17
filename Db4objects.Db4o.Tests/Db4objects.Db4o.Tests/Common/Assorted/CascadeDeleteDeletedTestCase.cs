@@ -92,8 +92,10 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				oc = OpenNewClient();
 				AssertOccurrences(oc, typeof(CascadeDeleteDeletedTestCase.CddMember), CddMemberCount
 					);
+				// ocs[0] deleted all CddMember objects, and committed the change
 				containers[0].Commit();
 				containers[0].Close();
+				// FIXME: following assertion fails
 				AssertOccurrences(oc, typeof(CascadeDeleteDeletedTestCase.CddMember), 0);
 				for (int i = 1; i < total; i++)
 				{

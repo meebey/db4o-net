@@ -27,6 +27,8 @@ namespace Db4objects.Db4o.Internal
 	public class ClassMetadata : PersistentBase, IIndexableTypeHandler, IFirstClassHandler
 		, IStoredClass
 	{
+		private ITypeHandler4 _typeHandler;
+
 		public Db4objects.Db4o.Internal.ClassMetadata i_ancestor;
 
 		private Config4Class i_config;
@@ -47,7 +49,7 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _classIndexed;
 
-		private IReflectClass _reflector;
+		private IReflectClass _classReflector;
 
 		private bool _isEnum;
 
@@ -99,10 +101,11 @@ namespace Db4objects.Db4o.Internal
 			return new BTreeClassIndexStrategy(this);
 		}
 
-		public ClassMetadata(ObjectContainerBase container, IReflectClass reflector)
+		public ClassMetadata(ObjectContainerBase container, IReflectClass claxx)
 		{
+			_typeHandler = new FirstClassObjectHandler(this);
 			_container = container;
-			_reflector = reflector;
+			ClassReflector(claxx);
 			_index = CreateIndexStrategy();
 			_classIndexed = true;
 		}
@@ -280,8 +283,18 @@ namespace Db4objects.Db4o.Internal
 			}
 			i_fields = new FieldMetadata[fieldCount];
 			i_fields[0] = customFieldMetadata;
+			// Some explanation on the thoughts here:
+			// Since i_fields for the translator are generated every time,
+			// we want to make sure that the order of fields is consistent.
+			// Therefore it's easier to implement with fixed index places in
+			// the i_fields array:
+			// [0] is the translator
+			// [1] is the version
+			// [2] is the UUID
 			if (versions || uuids)
 			{
+				// We don't want to have a null field, so let's add the version
+				// number, if we have a UUID, even if it's not needed.
 				i_fields[1] = ocb.VersionIndex();
 			}
 			if (uuids)
@@ -351,6 +364,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
+				// FIXME: [TA] do we need to check for isValueType here?
 				if (IsValueType())
 				{
 					ActivateFields(trans, onObject, depth);
@@ -378,7 +392,9 @@ namespace Db4objects.Db4o.Internal
 					{
 						i_ancestor.CheckChanges();
 					}
-					if (_reflector != null)
+					// Ancestor first, so the object length calculates
+					// correctly
+					if (_classReflector != null)
 					{
 						AddMembers(_container);
 						Transaction trans = _container.SystemTransaction();
@@ -528,49 +544,63 @@ namespace Db4objects.Db4o.Internal
 			return CreateConstructor(container, claxx, className, true);
 		}
 
-		public virtual bool CreateConstructor(ObjectContainerBase a_stream, IReflectClass
-			 a_class, string a_name, bool errMessages)
+		public virtual bool CreateConstructor(ObjectContainerBase container, IReflectClass
+			 claxx, string name, bool errMessages)
 		{
-			_reflector = a_class;
-			_eventDispatcher = EventDispatcher.ForClass(a_stream, a_class);
+			ClassReflector(claxx);
+			_eventDispatcher = EventDispatcher.ForClass(container, claxx);
 			if (CustomizedNewInstance())
 			{
 				return true;
 			}
-			if (a_class != null)
+			if (claxx != null)
 			{
-				if (a_stream._handlers.IclassTransientclass.IsAssignableFrom(a_class) || Platform4
-					.IsTransient(a_class))
+				if (container._handlers.IclassTransientclass.IsAssignableFrom(claxx) || Platform4
+					.IsTransient(claxx))
 				{
-					a_class = null;
+					claxx = null;
 				}
 			}
-			if (a_class == null)
+			if (claxx == null)
 			{
-				if (a_name == null || !Platform4.IsDb4oClass(a_name))
+				if (name == null || !Platform4.IsDb4oClass(name))
 				{
 					if (errMessages)
 					{
-						a_stream.LogMsg(23, a_name);
+						container.LogMsg(23, name);
 					}
 				}
 				SetStateDead();
 				return false;
 			}
-			if (a_stream._handlers.CreateConstructor(a_class, !CallConstructor()))
+			if (container._handlers.CreateConstructor(claxx, !CallConstructor()))
 			{
 				return true;
 			}
 			SetStateDead();
 			if (errMessages)
 			{
-				a_stream.LogMsg(7, a_name);
+				container.LogMsg(7, name);
 			}
-			if (a_stream.ConfigImpl().ExceptionsOnNotStorable())
+			if (container.ConfigImpl().ExceptionsOnNotStorable())
 			{
-				throw new ObjectNotStorableException(a_class);
+				throw new ObjectNotStorableException(claxx);
 			}
 			return false;
+		}
+
+		private void ClassReflector(IReflectClass claxx)
+		{
+			_classReflector = claxx;
+			if (claxx == null)
+			{
+				_typeHandler = null;
+				return;
+			}
+			ITypeHandler4 registeredTypeHandler4 = Container().ConfigImpl().TypeHandlerForClass
+				(claxx, HandlerRegistry.HandlerVersion);
+			_typeHandler = registeredTypeHandler4 != null ? registeredTypeHandler4 : new FirstClassObjectHandler
+				(this);
 		}
 
 		public virtual void Deactivate(Transaction trans, object obj, IActivationDepth depth
@@ -627,8 +657,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Delete(IDeleteContext context)
 		{
-			((ObjectContainerBase)context.ObjectContainer()).DeleteByID(context.Transaction()
-				, context.ReadInt(), context.CascadeDeleteDepth());
+			_typeHandler.Delete(context);
 		}
 
 		internal virtual void DeleteMembers(MarshallerFamily mf, ObjectHeaderAttributes attributes
@@ -663,6 +692,10 @@ namespace Db4objects.Db4o.Internal
 			}
 			catch (Exception e)
 			{
+				// This a catch for changed class hierarchies.
+				// It's very ugly to catch all here but it does
+				// help to heal migration from earlier db4o
+				// versions.
 				DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
 				if (dp.Enabled())
 				{
@@ -785,6 +818,8 @@ namespace Db4objects.Db4o.Internal
 
 		public HandlerVersion FindOffset(BufferImpl buffer, FieldMetadata field)
 		{
+			// Scrolls offset in passed reader to the offset the passed field should
+			// be read at.
 			if (buffer == null)
 			{
 				return HandlerVersion.Invalid;
@@ -819,6 +854,7 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			IReflectClass reflectClass = trans.Reflector().ForObject(obj);
+			// TODO: The following conditions look strange. Check !
 			if (reflectClass != null && reflectClass.GetSuperclass() == null && obj != null)
 			{
 				throw new ObjectNotStorableException(obj.ToString());
@@ -1026,16 +1062,16 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IReflectClass ClassReflector()
 		{
-			return _reflector;
+			return _classReflector;
 		}
 
 		public virtual string GetName()
 		{
 			if (i_name == null)
 			{
-				if (_reflector != null)
+				if (_classReflector != null)
 				{
-					i_name = _reflector.GetName();
+					i_name = _classReflector.GetName();
 				}
 			}
 			return i_name;
@@ -1068,13 +1104,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_902(this, name, yf));
+			ForEachFieldMetadata(new _IVisitor4_915(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_902 : IVisitor4
+		private sealed class _IVisitor4_915 : IVisitor4
 		{
-			public _IVisitor4_902(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
+			public _IVisitor4_915(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
 			{
 				this._enclosing = _enclosing;
 				this.name = name;
@@ -1157,7 +1193,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal void InitConfigOnUp(Transaction systemTrans)
 		{
-			Config4Class extendedConfig = Platform4.ExtendConfiguration(_reflector, _container
+			Config4Class extendedConfig = Platform4.ExtendConfiguration(_classReflector, _container
 				.Configure(), i_config);
 			if (extendedConfig != null)
 			{
@@ -1200,6 +1236,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object Instantiate(UnmarshallingContext context)
 		{
+			// overridden in YapClassPrimitive
+			// never called for primitive YapAny
+			// FIXME: [TA] no longer necessary?
+			//        context.adjustInstantiationDepth();
 			object obj = context.PersistentObject();
 			bool instantiating = (obj == null);
 			if (instantiating)
@@ -1249,6 +1289,8 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object InstantiateTransient(UnmarshallingContext context)
 		{
+			// overridden in YapClassPrimitive
+			// never called for primitive YapAny
 			object obj = InstantiateObject(context);
 			if (obj == null)
 			{
@@ -1302,14 +1344,14 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual object InstantiateFromReflector(ObjectContainerBase stream)
 		{
-			if (_reflector == null)
+			if (_classReflector == null)
 			{
 				return null;
 			}
 			stream.Instantiating(true);
 			try
 			{
-				return _reflector.NewInstance();
+				return _classReflector.NewInstance();
 			}
 			catch (MissingMethodException)
 			{
@@ -1318,6 +1360,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			catch (Exception)
 			{
+				// TODO: be more helpful here
 				return null;
 			}
 			finally
@@ -1329,6 +1372,7 @@ namespace Db4objects.Db4o.Internal
 		private object InstantiateFromConfig(UnmarshallingContext context)
 		{
 			int offset = context.Offset();
+			// Field length is always 1
 			context.Seek(offset + Const4.IntLength);
 			try
 			{
@@ -1441,6 +1485,7 @@ namespace Db4objects.Db4o.Internal
 		public bool CallConstructor()
 		{
 			TernaryBool specialized = CallConstructorSpecialized();
+			// FIXME: If specified, return yes?!?
 			if (!specialized.IsUnspecified())
 			{
 				return specialized.DefiniteYes();
@@ -1476,6 +1521,14 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int PrefetchActivationDepth()
 		{
+			// We only allow prefetching, if there is no special configuration for the class. 
+			// This was a fix for a problem instantiating Hashtables. There may be a better 
+			// workaround that also works for configured objects.
+			//
+			// An instantiation depth of 1 makes use of possibly prefetched strings and 
+			// arrays that are carried around in the buffer anyway
+			//
+			// TODO: optimize
 			return ConfigOrAncestorConfig() == null ? 1 : 0;
 		}
 
@@ -1487,6 +1540,15 @@ namespace Db4objects.Db4o.Internal
 		public virtual object ReadValueType(Transaction trans, int id, IActivationDepth depth
 			)
 		{
+			// TODO: may want to add manual purge to Btree
+			//       indexes here
+			// FIXME: [TA] ActivationDepth review
+			// for C# value types only:
+			// they need to be instantiated fully before setting them
+			// on the parent object because the set call modifies identity.
+			// TODO: Do we want value types in the ID tree?
+			// Shouldn't we treat them like strings and update
+			// them every time ???		
 			ObjectReference @ref = trans.ReferenceForId(id);
 			if (@ref != null)
 			{
@@ -1564,17 +1626,18 @@ namespace Db4objects.Db4o.Internal
 				object obj = trans.Container().GetByID(trans, id);
 				if (obj != null)
 				{
+					// FIXME: [TA] review activation depth 
 					candidates.i_trans.Container().Activate(trans, obj, ActivationDepthProvider().ActivationDepth
 						(2, ActivationMode.Activate));
-					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1325(this, candidates, trans
+					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1338(this, candidates, trans
 						));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_1325 : IVisitor4
+		private sealed class _IVisitor4_1338 : IVisitor4
 		{
-			public _IVisitor4_1325(ClassMetadata _enclosing, QCandidates candidates, Transaction
+			public _IVisitor4_1338(ClassMetadata _enclosing, QCandidates candidates, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -1682,8 +1745,8 @@ namespace Db4objects.Db4o.Internal
 				i_nameBytes = AsBytes(i_name);
 				SetStateDirty();
 				Write(_container.SystemTransaction());
-				IReflectClass oldReflector = _reflector;
-				_reflector = Container().Reflector().ForName(newName);
+				IReflectClass oldReflector = _classReflector;
+				ClassReflector(Container().Reflector().ForName(newName));
 				Container().ClassCollection().RefreshClassCache(this, oldReflector);
 				Refresh();
 				_state = tempState;
@@ -1696,6 +1759,7 @@ namespace Db4objects.Db4o.Internal
 
 		private byte[] AsBytes(string str)
 		{
+			//TODO: duplicates ClassMetadataRepository#asBytes
 			return Container().StringIO().Write(str);
 		}
 
@@ -1821,6 +1885,9 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
+			// The configuration can be set by a ObjectClass#readAs setting
+			// from YapClassCollection, right after reading the meta information
+			// for the first time. In that case we never change the setting
 			if (i_config == null)
 			{
 				i_config = config;
@@ -1913,6 +1980,7 @@ namespace Db4objects.Db4o.Internal
 					{
 						if (i_fields[i].GetName().Equals(name))
 						{
+							// FIXME: The == comparison in the following line could be wrong. 
 							if (classMetadata == null || classMetadata == i_fields[i].HandlerClassMetadata(_container
 								))
 							{
@@ -1921,6 +1989,7 @@ namespace Db4objects.Db4o.Internal
 						}
 					}
 				}
+				//TODO: implement field creation
 				return null;
 			}
 		}
@@ -1972,7 +2041,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1667
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1680
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -1981,9 +2050,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1667 : IFunction4
+		private sealed class _IFunction4_1680 : IFunction4
 		{
-			public _IFunction4_1667(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1680(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2024,12 +2093,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1695(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1708(this));
 		}
 
-		private sealed class _IFunction4_1695 : IFunction4
+		private sealed class _IFunction4_1708 : IFunction4
 		{
-			public _IFunction4_1695(ClassMetadata _enclosing)
+			public _IFunction4_1708(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2056,6 +2125,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void SetStaticClass(Transaction trans, StaticClass sc)
 		{
+			// TODO: we should probably use a specific update depth here, 4?
 			trans.Container().StoreInternal(trans, sc, true);
 		}
 
@@ -2071,12 +2141,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1725(this));
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1738(this));
 		}
 
-		private sealed class _IPredicate4_1725 : IPredicate4
+		private sealed class _IPredicate4_1738 : IPredicate4
 		{
-			public _IPredicate4_1725(ClassMetadata _enclosing)
+			public _IPredicate4_1738(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2107,7 +2177,12 @@ namespace Db4objects.Db4o.Internal
 				{
 					if (existingField.value != newValue)
 					{
+						// This is the clue:
+						// Bind the current static member to it's old database identity,
+						// so constants and enums will work with '=='
 						stream.Bind(trans, newValue, id);
+						// This may produce unwanted side effects if the static field object
+						// was modified in the current session. TODO:Add documentation case.
 						stream.Refresh(trans, newValue, int.MaxValue);
 						existingField.value = newValue;
 					}
@@ -2123,6 +2198,8 @@ namespace Db4objects.Db4o.Internal
 				catch (Exception)
 				{
 				}
+				// fail silently
+				// TODO: why?
 				return;
 			}
 			existingField.value = newValue;
@@ -2196,92 +2273,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IPreparedComparison PrepareComparison(object source)
 		{
-			if (source == null)
-			{
-				return new _IPreparedComparison_1837(this);
-			}
-			int id = 0;
-			IReflectClass claxx = null;
-			if (source is int)
-			{
-				id = ((int)source);
-			}
-			else
-			{
-				if (source is TransactionContext)
-				{
-					TransactionContext tc = (TransactionContext)source;
-					object obj = tc._object;
-					id = _container.GetID(tc._transaction, obj);
-					claxx = Reflector().ForObject(obj);
-				}
-				else
-				{
-					throw new IllegalComparisonException();
-				}
-			}
-			return new ClassMetadata.PreparedClassMetadataComparison(this, id, claxx);
-		}
-
-		private sealed class _IPreparedComparison_1837 : IPreparedComparison
-		{
-			public _IPreparedComparison_1837(ClassMetadata _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public int CompareTo(object obj)
-			{
-				if (obj == null)
-				{
-					return 0;
-				}
-				return -1;
-			}
-
-			private readonly ClassMetadata _enclosing;
-		}
-
-		public sealed class PreparedClassMetadataComparison : IPreparedComparison
-		{
-			private readonly int _id;
-
-			private readonly IReflectClass _claxx;
-
-			public PreparedClassMetadataComparison(ClassMetadata _enclosing, int id, IReflectClass
-				 claxx)
-			{
-				this._enclosing = _enclosing;
-				this._id = id;
-				this._claxx = claxx;
-			}
-
-			public int CompareTo(object obj)
-			{
-				if (obj is TransactionContext)
-				{
-					obj = ((TransactionContext)obj)._object;
-				}
-				if (obj == null)
-				{
-					return 1;
-				}
-				if (obj is int)
-				{
-					int targetInt = ((int)obj);
-					return this._id == targetInt ? 0 : (this._id < targetInt ? -1 : 1);
-				}
-				if (this._claxx != null)
-				{
-					if (this._claxx.IsAssignableFrom(this._enclosing.Reflector().ForObject(obj)))
-					{
-						return 0;
-					}
-				}
-				throw new IllegalComparisonException();
-			}
-
-			private readonly ClassMetadata _enclosing;
+			return _typeHandler.PrepareComparison(source);
 		}
 
 		public static void DefragObject(DefragmentContextImpl context)
@@ -2293,16 +2285,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Defragment(IDefragmentContext context)
 		{
-			if (HasClassIndex())
-			{
-				context.CopyID();
-			}
-			else
-			{
-				context.CopyUnindexedID();
-			}
-			int restLength = (LinkLength() - Const4.IntLength);
-			context.IncrementOffset(restLength);
+			_typeHandler.Defragment(context);
 		}
 
 		/// <exception cref="CorruptionException"></exception>
@@ -2351,24 +2334,55 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object Read(IReadContext context)
 		{
-			if (IsValueType())
-			{
-				IActivationDepth activationDepth = ((UnmarshallingContext)context).ActivationDepth
-					();
-				return ReadValueType(context.Transaction(), context.ReadInt(), activationDepth.Descend
-					(this));
-			}
-			return context.ReadObject();
+			return _typeHandler.Read(context);
 		}
 
 		public virtual void Write(IWriteContext context, object obj)
 		{
-			context.WriteObject(obj);
+			_typeHandler.Write(context, obj);
 		}
 
 		public virtual ITypeHandler4 TypeHandler()
 		{
 			return this;
+		}
+
+		public sealed class PreparedComparisonImpl : IPreparedComparison
+		{
+			private readonly int _id;
+
+			private readonly IReflectClass _claxx;
+
+			public PreparedComparisonImpl(int id, IReflectClass claxx)
+			{
+				_id = id;
+				_claxx = claxx;
+			}
+
+			public int CompareTo(object obj)
+			{
+				if (obj is TransactionContext)
+				{
+					obj = ((TransactionContext)obj)._object;
+				}
+				if (obj == null)
+				{
+					return 1;
+				}
+				if (obj is int)
+				{
+					int targetInt = ((int)obj);
+					return _id == targetInt ? 0 : (_id < targetInt ? -1 : 1);
+				}
+				if (_claxx != null)
+				{
+					if (_claxx.IsAssignableFrom(_claxx.Reflector().ForObject(obj)))
+					{
+						return 0;
+					}
+				}
+				throw new IllegalComparisonException();
+			}
 		}
 	}
 }

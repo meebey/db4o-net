@@ -103,6 +103,8 @@ namespace Db4objects.Db4o.Query
 
 		internal virtual MethodInfo GetFilterMethod()
 		{
+			// IMPORTANT: must have package visibility because it is used as
+			// internal on the .net side
 			if (cachedFilterMethod != null)
 			{
 				return cachedFilterMethod;
@@ -151,6 +153,9 @@ namespace Db4objects.Db4o.Query
 			}
 			catch (Exception)
 			{
+				// FIXME: Exceptions should be logged for app developers,
+				// but we can't print them out here.
+				// e.printStackTrace();
 				return false;
 			}
 		}

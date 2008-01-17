@@ -45,6 +45,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			AssertPrimitiveArray(itemArrays._typedPrimitiveArray);
 			if (_db4oHeaderVersion == VersionServices.Header3040)
 			{
+				// Bug in the oldest format: It accidentally boolean[] arrays to
+				// Boolean[] arrays.
 				AssertWrapperArray((bool[])itemArrays._primitiveArrayInObject);
 			}
 			else
@@ -73,6 +75,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected override void AssertValues(object[] values)
 		{
+			// FIXME: Arrays should also get a null Bitmap to fix.
+			// Assert.isNull(wrapperArray[wrapperArray.length - 1]);
 			for (int i = 0; i < data.Length; i++)
 			{
 				BooleanHandlerUpdateTestCase.Item item = (BooleanHandlerUpdateTestCase.Item)values

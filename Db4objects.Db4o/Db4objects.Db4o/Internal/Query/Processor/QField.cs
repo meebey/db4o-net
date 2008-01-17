@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public QField(Transaction a_trans, string name, FieldMetadata a_yapField, int a_yapClassID
 			, int a_index)
 		{
+			// C/S only	
 			i_trans = a_trans;
 			i_name = name;
 			i_yapField = a_yapField;

@@ -16,6 +16,7 @@ namespace Db4objects.Db4o.Internal.Query
 
 		public PredicateEvaluation(Predicate predicate)
 		{
+			// CS
 			_predicate = predicate;
 		}
 

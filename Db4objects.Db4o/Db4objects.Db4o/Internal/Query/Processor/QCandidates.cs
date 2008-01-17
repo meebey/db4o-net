@@ -51,6 +51,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal QCandidates(LocalTransaction a_trans, ClassMetadata a_yapClass, QField a_field
 			)
 		{
+			// Transaction necessary as reference to stream
+			// root of the QCandidate tree
+			// collection of all constraints
+			// possible class information
+			// possible field information
+			// current executing constraint, only set where needed
+			// QOrder tree
+			// 
 			i_trans = a_trans;
 			i_yapClass = a_yapClass;
 			i_field = a_field;
@@ -79,6 +87,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			i_root = Tree.Add(i_root, candidate);
 			if (candidate._size == 0)
 			{
+				// This means that the candidate was already present
+				// and QCandidate does not allow duplicates.
+				// In this case QCandidate#isDuplicateOf will have
+				// placed the existing QCandidate in the i_root
+				// variable of the new candidate. We return it here: 
 				return candidate.GetRoot();
 			}
 			return candidate;
@@ -143,6 +156,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			catch (Exception)
 			{
 			}
+			// FIXME: Catchall
 			return null;
 		}
 
@@ -599,6 +613,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal bool TryAddConstraint(QCon a_constraint)
 		{
+			// FIXME: This method should go completely.
+			//        We changed the code to create the QCandidates graph in two steps:
+			//        (1) call fitsIntoExistingConstraintHierarchy to determine whether
+			//            or not we need more QCandidates objects
+			//        (2) add all constraints
+			//        This method tries to do both in one, which results in missing
+			//        constraints. Not all are added to all QCandiates.
+			//        Right methodology is in 
+			//        QQueryBase#createCandidateCollection
+			//        and
+			//        QQueryBase#createQCandidatesList
 			if (i_field != null)
 			{
 				QField qf = a_constraint.GetField();
@@ -626,6 +651,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					return true;
 				}
 			}
+			AddConstraint(a_constraint);
 			return false;
 		}
 
@@ -636,6 +662,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return;
 			}
+			// No object found.
+			// All children constraints are necessarily false.
+			// Check immediately.
 			IEnumerator i = IterateConstraints();
 			while (i.MoveNext())
 			{
@@ -646,13 +675,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
-			i_root.Traverse(new _IVisitor4_501(this, sb));
+			i_root.Traverse(new _IVisitor4_513(this, sb));
 			return sb.ToString();
 		}
 
-		private sealed class _IVisitor4_501 : IVisitor4
+		private sealed class _IVisitor4_513 : IVisitor4
 		{
-			public _IVisitor4_501(QCandidates _enclosing, StringBuilder sb)
+			public _IVisitor4_513(QCandidates _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -683,6 +712,37 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public bool WasLoadedFromClassIndex()
 		{
 			return _loadedFromClassIndex;
+		}
+
+		public bool FitsIntoExistingConstraintHierarchy(QCon constraint)
+		{
+			if (i_field != null)
+			{
+				QField qf = constraint.GetField();
+				if (qf != null)
+				{
+					if (i_field.i_name != null && !i_field.i_name.Equals(qf.i_name))
+					{
+						return false;
+					}
+				}
+			}
+			if (i_yapClass == null || constraint.IsNullConstraint())
+			{
+				return true;
+			}
+			ClassMetadata classMetadata = constraint.GetYapClass();
+			if (classMetadata == null)
+			{
+				return false;
+			}
+			classMetadata = i_yapClass.GetHigherOrCommonHierarchy(classMetadata);
+			if (classMetadata == null)
+			{
+				return false;
+			}
+			i_yapClass = classMetadata;
+			return true;
 		}
 	}
 }

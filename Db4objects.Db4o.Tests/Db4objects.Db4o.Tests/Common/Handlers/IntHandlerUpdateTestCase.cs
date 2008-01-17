@@ -65,6 +65,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				();
 			CreateTypedPrimitiveArray(item);
 			CreateTypedWrapperArray(item);
+			// Will be removed for .NET by sharpen.
 			CreatePrimitiveArrayInObject(item);
 			CreateWrapperArrayInObject(item);
 			return item;
@@ -123,6 +124,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			IntHandlerUpdateTestCase.ItemArrays item = (IntHandlerUpdateTestCase.ItemArrays)obj;
 			AssertTypedPrimitiveArray(item);
 			AssertTypedWrapperArray(item);
+			// Will be removed for .NET by sharpen.
 			AssertPrimitiveArrayInObject(item);
 			AssertWrapperArrayInObject(item);
 		}
@@ -166,8 +168,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(int expected, int actual)
 		{
+			// FIXME: The following fails as is because of a deficiency 
+			//        in the storage format of arrays.
+			//        Arrays should also get a null Bitmap to fix.
+			// Assert.isNull(values[data.length]);
 			if (expected == int.MaxValue && _handlerVersion == 0)
 			{
+				// Bug in the oldest format: It treats Integer.MAX_VALUE as null. 
 				expected = 0;
 			}
 			Assert.AreEqual(expected, actual);
@@ -177,6 +184,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			if (int.MaxValue.Equals(expected) && _handlerVersion == 0)
 			{
+				// Bug in the oldest format: It treats Integer.MAX_VALUE as null.
 				expected = null;
 			}
 			Assert.AreEqual(expected, actual);

@@ -64,11 +64,15 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual Config4Impl ConfigImpl()
 		{
+			// internal interface method doesn't need to lock
 			return _server.ConfigImpl();
 		}
 
 		public virtual IConfiguration Configure()
 		{
+			// FIXME: Consider allowing configuring
+			// throw new NotSupportedException();
+			// FIXME: Consider throwing NotSupportedException here.
 			lock (Lock())
 			{
 				CheckClosed();
@@ -135,6 +139,9 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual Db4oDatabase Identity()
 		{
+			// TODO: Db4oDatabase is shared between embedded clients.
+			// This should work, since there is an automatic bind
+			// replacement. Replication test cases will tell.
 			lock (Lock())
 			{
 				CheckClosed();
@@ -550,6 +557,7 @@ namespace Db4objects.Db4o.Internal
 		private static IObjectContainer Cast(Db4objects.Db4o.Internal.PartialEmbeddedClientObjectContainer
 			 container)
 		{
+			// do nothing
 			return (IObjectContainer)container;
 		}
 

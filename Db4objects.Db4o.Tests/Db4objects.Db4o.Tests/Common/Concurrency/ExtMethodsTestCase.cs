@@ -37,6 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			Assert.IsTrue(oc.IsActive(em));
 			ExtMethodsTestCase em2 = (ExtMethodsTestCase)oc.GetByID(id);
 			Assert.AreSame(em, em2);
+			// Purge all and try again
 			oc.Purge();
 			Assert.IsTrue(oc.IsCached(id));
 			Assert.IsTrue(oc.IsStored(em));
@@ -48,6 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			Assert.IsFalse(oc.IsCached(id));
 			Assert.IsFalse(oc.IsStored(em2));
 			Assert.IsFalse(oc.IsActive(em2));
+			// Null checks
 			Assert.IsFalse(oc.IsStored(null));
 			Assert.IsFalse(oc.IsActive(null));
 			Assert.IsFalse(oc.IsCached(0));

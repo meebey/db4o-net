@@ -109,6 +109,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void StartServerThread()
 		{
+			// not specialized to InterruptException for .NET conversion
 			lock (_startupLock)
 			{
 				Thread thread = new Thread(this);
@@ -145,6 +146,8 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			_config.Callbacks(false);
 			_config.IsServer(true);
+			// the minium activation depth of com.db4o.User.class should be 1.
+			// Otherwise, we may get null password.
 			_config.ObjectClass(typeof(User)).MinimumActivationDepth(1);
 		}
 
@@ -356,6 +359,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		internal virtual void RemoveThread(ServerMessageDispatcherImpl dispatcher)
 		{
+			//      The following uses old embedded C/S mode:      
+			//		ClientObjectContainer client = new ClientObjectContainer(config,
+			//				openClientSocket(), Const4.EMBEDDED_CLIENT_USER
+			//						+ (i_threadIDGen - 1), "", false);
+			//		client.blockSize(_container.blockSize());
+			//		return client;
 			lock (_dispatchers)
 			{
 				_dispatchers.Remove(dispatcher);
@@ -428,6 +437,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void NotifyThreadStarted()
 		{
+			//				e.printStackTrace();
 			lock (_startupLock)
 			{
 				Sharpen.Runtime.NotifyAll(_startupLock);

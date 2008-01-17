@@ -19,8 +19,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			byte[] nameBytes = ReadName(trans, reader);
 			string className = trans.Container().StringIO().Read(nameBytes);
 			ReadMetaClassID(reader);
+			// skip
 			int ancestorID = reader.ReadInt();
 			reader.IncrementOffset(Const4.IntLength);
+			// index ID
 			int numFields = reader.ReadInt();
 			return new RawClassSpec(className, ancestorID, numFields);
 		}
@@ -83,6 +85,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			clazz.SetAncestor(stream.ClassMetadataForId(reader.ReadInt()));
 			if (clazz.CallConstructor())
 			{
+				// The logic further down checks the ancestor YapClass, whether
+				// or not it is allowed, not to call constructors. The ancestor
+				// YapClass may possibly have not been loaded yet.
 				clazz.CreateConstructor(stream, clazz.ClassReflector(), clazz.GetName(), true);
 			}
 			clazz.CheckType();
@@ -139,8 +144,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			ReadName(sio, context.TargetBuffer());
 			int metaClassID = 0;
 			context.WriteInt(metaClassID);
+			// ancestor ID
 			context.CopyID();
 			context.WriteInt(IndexIDForWriting(classIndexID));
+			// field length
 			int numFields = context.ReadInt();
 			FieldMetadata[] fields = classMetadata.i_fields;
 			if (numFields > fields.Length)

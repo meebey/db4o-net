@@ -48,6 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			if (Fixture() is AbstractFileBasedDb4oFixture)
 			{
+				// assuming YapFile only
 				AbstractFileBasedDb4oFixture fixture = (AbstractFileBasedDb4oFixture)Fixture();
 				Sharpen.IO.File f = new Sharpen.IO.File(fixture.GetAbsolutePath());
 				long expectedSize = f.Length();

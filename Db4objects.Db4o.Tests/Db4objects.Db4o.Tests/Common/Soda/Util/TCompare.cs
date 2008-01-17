@@ -36,6 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			{
 				return a_compare.Equals(a_with);
 			}
+			// takes care of repeating calls to the same object
 			if (a_list.Contains(a_compare))
 			{
 				return true;
@@ -98,6 +99,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			}
 			catch (MemberAccessException)
 			{
+				// probably JDK 1
+				// never mind this field
 				return null;
 			}
 		}

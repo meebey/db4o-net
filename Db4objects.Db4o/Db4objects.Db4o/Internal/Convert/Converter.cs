@@ -20,6 +20,9 @@ namespace Db4objects.Db4o.Internal.Convert
 		private Converter()
 		{
 			_conversions = new Hashtable4();
+			// TODO: There probably will be Java and .NET conversions
+			//       Create Platform4.registerConversions() method ann
+			//       call from here when needed.
 			CommonConversions.Register(this);
 		}
 

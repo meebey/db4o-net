@@ -18,6 +18,13 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public FileHeaderVariablePart1(int id, Db4objects.Db4o.Internal.SystemData systemData
 			)
 		{
+			// The variable part format is:
+			// (int) converter version
+			// (byte) freespace system used
+			// (int)  freespace address
+			// (int) identity ID
+			// (long) versionGenerator
+			// (int) uuid index ID
 			SetID(id);
 			_systemData = systemData;
 		}

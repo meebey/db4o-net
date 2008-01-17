@@ -36,6 +36,21 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
+			// The header format is:
+			// (byte) 'd'
+			// (byte) 'b'
+			// (byte) '4'
+			// (byte) 'o'
+			// (byte) headerVersion
+			// (int) headerLock
+			// (long) openTime
+			// (long) accessTime
+			// (int) Transaction pointer 1
+			// (int) Transaction pointer 2
+			// (int) blockSize
+			// (int) classCollectionID
+			// (int) freespaceID
+			// (int) variablePartID
 			_timerFileLock.Close();
 		}
 
@@ -118,7 +133,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			writer.WriteLong(TimeToWrite(_timerFileLock.OpenTime(), shuttingDown));
 			writer.WriteLong(TimeToWrite(Runtime.CurrentTimeMillis(), shuttingDown));
 			writer.WriteInt(0);
+			// transaction pointer 1 for "in-commit-mode"
 			writer.WriteInt(0);
+			// transaction pointer 2
 			writer.WriteInt(blockSize);
 			writer.WriteInt(file.SystemData().ClassCollectionID());
 			writer.WriteInt(freespaceID);

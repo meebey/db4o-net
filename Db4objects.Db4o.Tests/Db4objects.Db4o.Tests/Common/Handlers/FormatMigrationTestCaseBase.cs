@@ -59,6 +59,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			catch
 			{
 			}
+			// Some old database engines may throw NoSuchMethodError
+			// for configuration methods they don't know yet. Ignore,
+			// but tell the implementor:
+			// System.out.println("Exception in configureForStore for " + versionName + " in " + getClass().getName());
 			CreateDatabase(FileName(versionName));
 		}
 
@@ -104,9 +108,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			string testFileName = FileName(versionName);
 			if (System.IO.File.Exists(testFileName))
 			{
+				//		    System.out.println("Check database: " + testFileName);
 				InvestigateFileHeaderVersion(testFileName);
 				RunDefrag(testFileName);
 				CheckDatabaseFile(testFileName);
+				// Twice, to ensure everything is fine after opening, converting and closing.
 				CheckDatabaseFile(testFileName);
 			}
 			else
@@ -119,6 +125,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		/// <exception cref="IOException"></exception>
 		private void RunDefrag(string testFileName)
 		{
+			// FIXME: The following fails the CC build since not all files are there on .NET.
+			//        Change back when we have all files.
+			// Assert.fail("Version upgrade check failed. File not found:" + testFileName);
 			Db4oFactory.Configure().AllowVersionUpdates(true);
 			IObjectContainer oc = Db4oFactory.OpenFile(testFileName);
 			oc.Close();
@@ -143,6 +152,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CheckDatabaseFile(string testFile)
 		{
+			// do nothing
 			Configure();
 			IExtObjectContainer objectContainer = Db4oFactory.OpenFile(testFile).Ext();
 			try
@@ -185,6 +195,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		protected virtual void StoreObject(IExtObjectContainer objectContainer, object obj
 			)
 		{
+			// Override for special testing configuration.
+			// Override for special storage configuration.
 			objectContainer.Set(obj);
 		}
 

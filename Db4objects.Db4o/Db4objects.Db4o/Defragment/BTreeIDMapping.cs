@@ -61,6 +61,7 @@ namespace Db4objects.Db4o.Defragment
 		private BTreeIDMapping(string fileName, BTreeIDMapping.BTreeSpec treeSpec, int commitFrequency
 			)
 		{
+			// <=0 : never commit
 			_fileName = fileName;
 			_treeSpec = treeSpec;
 			_commitFrequency = commitFrequency;

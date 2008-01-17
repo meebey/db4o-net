@@ -57,6 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Set
 				item1.child.child.name = "13";
 				oc1.Store(item1, 2);
 				oc1.Commit();
+				// check result
 				DeepSetClientServerTestCase.Item item = (DeepSetClientServerTestCase.Item)oc1.QueryByExample
 					(example).Next();
 				Assert.AreEqual("1", item.name);

@@ -80,8 +80,10 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 			else
 			{
+				// doesn't fit
 				if (i_writeOffset + length > i_cache.Length)
 				{
+					// move, if possible
 					if (i_writeOffset + length - i_readOffset <= i_cache.Length)
 					{
 						byte[] temp = new byte[i_cache.Length];
@@ -92,6 +94,7 @@ namespace Db4objects.Db4o.Foundation.Network
 					}
 					else
 					{
+						// else append
 						byte[] temp = new byte[i_writeOffset + length];
 						System.Array.Copy(i_cache, 0, temp, 0, i_cache.Length);
 						i_cache = temp;

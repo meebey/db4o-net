@@ -55,6 +55,10 @@ namespace Db4objects.Db4o.Internal
 
 		internal override bool CanUpdate()
 		{
+			// do nothing
+			// do nothing
+			// do nothing
+			// do nothing
 			return false;
 		}
 
@@ -69,6 +73,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override int ConverterVersion()
 		{
+			// do nothing
 			return Converter.Version;
 		}
 
@@ -84,6 +89,7 @@ namespace Db4objects.Db4o.Internal
 		public sealed override Transaction NewTransaction(Transaction parentTransaction, 
 			TransactionalReferenceSystem referenceSystem)
 		{
+			// do nothing here
 			if (null != parentTransaction)
 			{
 				return parentTransaction;
@@ -120,6 +126,9 @@ namespace Db4objects.Db4o.Internal
 
 		public override Slot GetSlot(int length)
 		{
+			// do nothing
+			// do nothing
+			// do nothing
 			return AppendBlocks(length);
 		}
 
@@ -139,6 +148,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override ClassMetadata ProduceClassMetadata(IReflectClass claxx)
 		{
+			// do nothing
 			return _parent.ProduceClassMetadata(claxx);
 		}
 
@@ -152,11 +162,14 @@ namespace Db4objects.Db4o.Internal
 
 		internal override bool StateMessages()
 		{
+			// do nothing
+			// do nothing
 			return false;
 		}
 
 		public override void Shutdown()
 		{
+			// overridden to do nothing in YapObjectCarrier
 			ProcessPendingClassUpdates();
 			WriteDirty();
 			Transaction().Commit();
@@ -173,10 +186,11 @@ namespace Db4objects.Db4o.Internal
 
 		public class KnownObjectIdentity
 		{
-			internal int _id;
+			public int _id;
 
 			public KnownObjectIdentity(int id)
 			{
+				// do nothing
 				_id = id;
 			}
 		}

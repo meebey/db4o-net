@@ -54,6 +54,8 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 			Store(dataB);
 			IObjectClass oc = Fixture().Config().ObjectClass(typeof(RemoveArrayFieldTestCase.DataBefore
 				));
+			// we must use ReflectPlatform here as the string must include
+			// the assembly name in .net
 			oc.Rename(CrossPlatformServices.FullyQualifiedName(typeof(RemoveArrayFieldTestCase.DataAfter
 				)));
 			Reopen();

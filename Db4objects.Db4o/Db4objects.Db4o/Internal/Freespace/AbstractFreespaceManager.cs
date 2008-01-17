@@ -46,8 +46,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return CreateNew(file, file.SystemData().FreespaceSystem());
 		}
 
-		public abstract int OnNew(LocalObjectContainer file);
-
 		public static Db4objects.Db4o.Internal.Freespace.AbstractFreespaceManager CreateNew
 			(LocalObjectContainer file, byte systemType)
 		{
@@ -81,12 +79,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public virtual void MigrateTo(IFreespaceManager fm)
 		{
-			Traverse(new _IVisitor4_59(this, fm));
+			Traverse(new _IVisitor4_57(this, fm));
 		}
 
-		private sealed class _IVisitor4_59 : IVisitor4
+		private sealed class _IVisitor4_57 : IVisitor4
 		{
-			public _IVisitor4_59(AbstractFreespaceManager _enclosing, IFreespaceManager fm)
+			public _IVisitor4_57(AbstractFreespaceManager _enclosing, IFreespaceManager fm)
 			{
 				this._enclosing = _enclosing;
 				this.fm = fm;
@@ -110,6 +108,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				writer.WriteInt(0);
 			}
+			// no XBytes check
 			writer.WriteEncrypt();
 		}
 
@@ -121,13 +120,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public virtual int TotalFreespace()
 		{
 			IntByRef mint = new IntByRef();
-			Traverse(new _IVisitor4_84(this, mint));
+			Traverse(new _IVisitor4_82(this, mint));
 			return mint.value;
 		}
 
-		private sealed class _IVisitor4_84 : IVisitor4
+		private sealed class _IVisitor4_82 : IVisitor4
 		{
-			public _IVisitor4_84(AbstractFreespaceManager _enclosing, IntByRef mint)
+			public _IVisitor4_82(AbstractFreespaceManager _enclosing, IntByRef mint)
 			{
 				this._enclosing = _enclosing;
 				this.mint = mint;
@@ -165,20 +164,18 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			oldFM.MigrateTo(newFM);
 			oldFM.FreeSelf();
-			newFM.BeginCommit();
-			newFM.EndCommit();
 		}
 
 		public virtual void DebugCheckIntegrity()
 		{
 			IntByRef lastStart = new IntByRef();
 			IntByRef lastEnd = new IntByRef();
-			Traverse(new _IVisitor4_117(this, lastEnd, lastStart));
+			Traverse(new _IVisitor4_113(this, lastEnd, lastStart));
 		}
 
-		private sealed class _IVisitor4_117 : IVisitor4
+		private sealed class _IVisitor4_113 : IVisitor4
 		{
-			public _IVisitor4_117(AbstractFreespaceManager _enclosing, IntByRef lastEnd, IntByRef
+			public _IVisitor4_113(AbstractFreespaceManager _enclosing, IntByRef lastEnd, IntByRef
 				 lastStart)
 			{
 				this._enclosing = _enclosing;

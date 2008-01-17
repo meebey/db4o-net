@@ -41,6 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				)obj;
 			AssertTypedPrimitiveArray(item);
 			AssertTypedWrapperArray(item);
+			// Will be removed for .NET by sharpen.
 			AssertPrimitiveArrayInObject(item);
 			AssertWrapperArrayInObject(item);
 		}
@@ -61,6 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			if (_db4oHeaderVersion == VersionServices.Header3040)
 			{
+				// Bug in the oldest format: It accidentally double[] arrays to Double[] arrays.
 				AssertWrapperData((double[])item._primitiveArrayInObject);
 			}
 			else
@@ -93,6 +95,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected override void AssertValues(object[] values)
 		{
+			// FIXME: The following fails as is because of a deficiency 
+			//        in the storage format of arrays.
+			//        Arrays should also get a null Bitmap to fix.
+			// Assert.isNull(values[values.length - 1]);
 			for (int i = 0; i < data.Length; i++)
 			{
 				DoubleHandlerUpdateTestCase.Item item = (DoubleHandlerUpdateTestCase.Item)values[
@@ -129,6 +135,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				();
 			CreateTypedPrimitiveArray(item);
 			CreateTypedWrapperArray(item);
+			// Will be removed for .NET by sharpen.
 			CreatePrimitiveArrayInObject(item);
 			CreateWrapperArrayInObject(item);
 			return item;

@@ -139,6 +139,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 			q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
 				("dodo"));
+			// COR-413
 			q.Descend("str").Constraints().EndsWith(false);
 			Expect(q, new int[] {  });
 		}

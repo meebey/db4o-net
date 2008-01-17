@@ -20,6 +20,9 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 
 		private STMagicTestCase(string str)
 		{
+			// JDK 1.4.x only
+			// import java.util.regex.*;
+			// dependant on the previous run of some other test classes
 			this.str = str;
 		}
 
@@ -96,6 +99,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 			IQuery q = NewQuery();
 			q.Constrain(new STTH1TestCase().CreateData()[5]);
 			q = q.Descend("h2").Descend("h3");
+			//	We only get one STTH3 here, because the query is
+			//	constrained by the STTH2 with the "str2" member.
 			SodaTestUtil.ExpectOne(q, new STTH3("str3"));
 		}
 
@@ -111,6 +116,18 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 		/// </remarks>
 		public virtual void TestInterface()
 		{
+			//	public void testRegularExpression() {
+			//		Query q = newQuery();
+			//		q.constrain(STMagicTestCase.class);
+			//		Query qStr = q.descend("str");
+			//		final Pattern pattern = Pattern.compile("a*x");
+			//		qStr.constrain(new Evaluation() {
+			//			public void evaluate(Candidate candidate) {
+			//				candidate.include(pattern.matcher(((String) candidate.getObject())).matches());
+			//			}
+			//		});
+			//		com.db4o.db4ounit.common.soda.util.SodaTestUtil.expectOne(q, _array[1]);
+			//	}
 			IQuery q = NewQuery();
 			q.Constrain(typeof(ISTInterface));
 			q.Constrain(new _IEvaluation_117(this));

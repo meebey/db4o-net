@@ -50,6 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 				next2 = next2.Next();
 				value--;
 			}
+			//update depth = 1
 			item1.Value(100);
 			item1.Next().Value(200);
 			client1.Store(item1, 2);
@@ -58,12 +59,15 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			AssertItemValue(200, item1.Next());
 			AssertItemValue(10, item2);
 			AssertItemValue(9, item2.Next());
+			//refresh 0
 			client2.Refresh(item2, 0);
 			AssertItemValue(10, item2);
 			AssertItemValue(9, item2.Next());
+			//refresh 1
 			client2.Refresh(item2, 1);
 			AssertItemValue(100, item2);
 			AssertItemValue(9, item2.Next());
+			//refresh 2
 			client2.Refresh(item2, 2);
 			AssertItemValue(100, item2);
 			AssertItemValue(200, item2.Next());

@@ -123,6 +123,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual IReflectField GetDeclaredField(string name)
 		{
+			// TODO: consider that classes may have two fields of
+			// the same name after refactoring.
 			if (_delegate != null)
 			{
 				return _delegate.GetDeclaredField(name);
@@ -228,6 +230,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual bool IsAbstract()
 		{
+			// TODO: Consider: Will this method still be necessary 
+			// once constructor logic is pushed into the reflectors?
 			if (_delegate != null)
 			{
 				return _delegate.IsAbstract();
@@ -396,6 +400,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual object[] ToArray(object obj)
 		{
+			// ignore, we always create a generic object
 			if (!IsCollection())
 			{
 				return new object[] { obj };

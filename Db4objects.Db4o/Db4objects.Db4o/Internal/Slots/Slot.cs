@@ -70,6 +70,8 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		public virtual int CompareByAddress(Db4objects.Db4o.Internal.Slots.Slot slot)
 		{
+			// FIXME: This is the wrong way around !!!
+			// Fix here and in all referers.
 			int res = slot._address - _address;
 			if (res != 0)
 			{
@@ -80,6 +82,8 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		public virtual int CompareByLength(Db4objects.Db4o.Internal.Slots.Slot slot)
 		{
+			// FIXME: This is the wrong way around !!!
+			// Fix here and in all referers.
 			int res = slot.Length() - Length();
 			if (res != 0)
 			{

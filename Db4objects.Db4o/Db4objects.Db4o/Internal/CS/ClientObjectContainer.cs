@@ -64,6 +64,9 @@ namespace Db4objects.Db4o.Internal.CS
 		public ClientObjectContainer(IConfiguration config, ISocket4 socket, string user, 
 			string password, bool login) : base(config, null)
 		{
+			// null denotes password not necessary
+			// initial value of _batchedQueueLength is YapConst.INT_LENGTH, which is
+			// used for to write the number of messages.
 			_userName = user;
 			_password = password;
 			_login = login;
@@ -81,6 +84,10 @@ namespace Db4objects.Db4o.Internal.CS
 		protected sealed override void OpenImpl()
 		{
 			_singleThreaded = ConfigImpl().SingleThreadedClient();
+			// TODO: Experiment with packetsize and noDelay
+			// socket.setSendBufferSize(100);
+			// socket.setTcpNoDelay(true);
+			// System.out.println(socket.getSendBufferSize());
 			if (_login)
 			{
 				LoginToServer(i_socket);
@@ -238,6 +245,7 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			if (resp.Equals(Msg.Failed))
 			{
+				// if the class can not be created on the server, send class meta to the server.
 				SendClassMeta(a_class);
 				resp = GetResponse();
 			}
@@ -308,6 +316,8 @@ namespace Db4objects.Db4o.Internal.CS
 			Msg msg = ExpectedResponse(expectedMessage);
 			if (msg == null)
 			{
+				// TODO: throw Exception to allow
+				// smooth shutdown
 				return null;
 			}
 			return msg.GetByteLoad();
@@ -449,6 +459,7 @@ namespace Db4objects.Db4o.Internal.CS
 					return ProduceClassMetadata(claxx);
 				}
 			}
+			// TODO inform client class not present
 			return null;
 		}
 
@@ -626,6 +637,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public sealed override BufferImpl ReadReaderByID(Transaction a_ta, int a_id)
 		{
+			// TODO: read lightweight reader instead
 			return ReadWriterByID(a_ta, a_id);
 		}
 
@@ -675,6 +687,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void ReReadAll(IConfiguration config)
 		{
+			// do nothing
 			remainingIDs = 0;
 			Initialize1(config);
 			InitializeTransactions();
@@ -709,6 +722,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override bool SetSemaphore(string name, int timeout)
 		{
+			// do nothing
 			lock (_lock)
 			{
 				CheckClosed();
@@ -731,6 +745,7 @@ namespace Db4objects.Db4o.Internal.CS
 				MsgD msg = Msg.SwitchToFile.GetWriterForString(_transaction, fileName);
 				Write(msg);
 				ExpectedResponse(Msg.Ok);
+				// FIXME NSC
 				ReReadAll(Db4oFactory.CloneConfiguration());
 				switchedToFile = fileName;
 			}
@@ -743,6 +758,7 @@ namespace Db4objects.Db4o.Internal.CS
 				Commit();
 				Write(Msg.SwitchToMainFile);
 				ExpectedResponse(Msg.Ok);
+				// FIXME NSC
 				ReReadAll(Db4oFactory.CloneConfiguration());
 				switchedToFile = null;
 			}
@@ -755,6 +771,9 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override string ToString()
 		{
+			// if(i_classCollection != null){
+			// return i_classCollection.toString();
+			// }
 			return "Client Connection " + _userName;
 		}
 
@@ -768,6 +787,8 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public bool Write(Msg msg)
 		{
+			// do nothing
+			// do nothing
 			WriteMsg(msg, true);
 			return true;
 		}
@@ -783,6 +804,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				if (flush && _batchedMessages.IsEmpty())
 				{
+					// if there's nothing batched, just send this message directly
 					WriteMessageToSocket(msg);
 				}
 				else
@@ -819,6 +841,7 @@ namespace Db4objects.Db4o.Internal.CS
 		public sealed override void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
 			 classMetadata, BufferImpl buffer)
 		{
+			// do nothing
 			MsgD msg = Msg.WriteUpdate.GetWriter(trans, pointer, classMetadata, buffer);
 			WriteBatchedMessage(msg);
 		}
@@ -838,6 +861,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public virtual ISocket4 Socket()
 		{
+			// Remove, for testing purposes only
 			return i_socket;
 		}
 
@@ -960,12 +984,15 @@ namespace Db4objects.Db4o.Internal.CS
 		public void AddToBatch(Msg msg)
 		{
 			_batchedMessages.Add(msg);
+			// the first INT_LENGTH is for buffer.length, and then buffer content.
 			_batchedQueueLength += Const4.IntLength + msg.PayLoad().Length();
 		}
 
 		private void ClearBatchedObjects()
 		{
 			_batchedMessages.Clear();
+			// initial value of _batchedQueueLength is YapConst.INT_LENGTH, which is
+			// used for to write the number of messages.
 			_batchedQueueLength = Const4.IntLength;
 		}
 
@@ -996,6 +1023,8 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public virtual IClientMessageDispatcher MessageDispatcher()
 		{
+			// do nothing here		
+			// do nothing here for single thread, ClientObjectContainer is already running
 			return _singleThreaded ? this : _messageDispatcher;
 		}
 

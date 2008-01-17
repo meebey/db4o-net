@@ -25,7 +25,9 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual bool Add(object obj)
 		{
+			// TA BEGIN
 			Activate(ActivationPurpose.Read);
+			// TA END
 			_dirty = true;
 			_data[_top++] = obj;
 			return true;
@@ -33,30 +35,44 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual int Size()
 		{
+			// TA BEGIN
 			Activate(ActivationPurpose.Read);
+			// TA END
 			return _top;
 		}
 
 		public virtual object Get(int indexInPage)
 		{
+			// TA BEGIN
 			Activate(ActivationPurpose.Read);
+			// TA END
+			//		System.out.println("got from page: " + _pageIndex);
 			_dirty = true;
+			// just to be safe, we'll mark things as dirty if they are used.
 			return _data[indexInPage];
 		}
 
 		public virtual bool IsDirty()
 		{
+			// TA BEGIN
+			//		activate();
+			// TA END
 			return _dirty;
 		}
 
 		public virtual void SetDirty(bool dirty)
 		{
+			// TA BEGIN
+			//		activate();
+			// TA END
 			_dirty = dirty;
 		}
 
 		public virtual int GetPageIndex()
 		{
+			// TA BEGIN
 			Activate(ActivationPurpose.Read);
+			// TA END
 			return _pageIndex;
 		}
 
@@ -67,7 +83,9 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual int Capacity()
 		{
+			// TA BEGIN
 			Activate(ActivationPurpose.Read);
+			// TA END
 			return Db4objects.Db4o.Tests.Common.TA.Collections.Page.Pagesize - Size();
 		}
 	}

@@ -29,6 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			}
 			if (true)
 			{
+				// run against specific libraries + the current one
 				return new string[] { WorkspaceServices.WorkspacePath("db4o.archives/java1.2/db4o-3.0.jar"
 					), WorkspaceServices.WorkspacePath("db4o.archives/java1.2/db4o-4.0-java1.1.jar")
 					 };

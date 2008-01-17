@@ -24,19 +24,25 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 
 		public virtual bool Add(object item)
 		{
+			// TA BEGIN
 			Activate(ActivationPurpose.Read);
+			// TA END
 			return GetPageForAdd().Add(item);
 		}
 
 		public virtual int Size()
 		{
+			// TA BEGIN
 			Activate(ActivationPurpose.Read);
+			// TA END
 			return _top * Page.Pagesize - LastPage().Capacity();
 		}
 
 		public virtual object Get(int itemIndex)
 		{
+			// TA BEGIN
 			Activate(ActivationPurpose.Read);
+			// TA END
 			Page page = PageHolding(itemIndex);
 			return page.Get(IndexInPage(itemIndex));
 		}

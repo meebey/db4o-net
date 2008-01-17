@@ -42,9 +42,14 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 			Store(new ClassRenameByConfigTestCase.Original("original"));
 			Db().Commit();
 			Assert.AreEqual(1, CountOccurences(typeof(ClassRenameByConfigTestCase.Original)));
+			// Rename messages are visible at level 1
+			// fixture().config().messageLevel(1);
 			IObjectClass oc = Fixture().Config().ObjectClass(typeof(ClassRenameByConfigTestCase.Original
 				));
+			// allways rename fields first
 			oc.ObjectField("originalName").Rename("changedName");
+			// we must use ReflectPlatform here as the string must include
+			// the assembly name in .net
 			oc.Rename(CrossPlatformServices.FullyQualifiedName(typeof(ClassRenameByConfigTestCase.Changed
 				)));
 			Reopen();

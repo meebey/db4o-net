@@ -28,6 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				client1.Socket().Close();
 				Assert.IsFalse(oc1.IsClosed());
 				Assert.Expect(typeof(Db4oException), new _ICodeBlock_27(this, client1));
+				// It's ok for client2 to get something.
 				client2.QueryByExample(null);
 			}
 			finally

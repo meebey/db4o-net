@@ -45,6 +45,11 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 		{
 			IExtObjectContainer oc1 = OpenNewClient();
 			IExtObjectContainer oc2 = OpenNewClient();
+			// FIXME: Setting cascadeOnUpdate on an open ObjectContainer only works
+			//        by accident, if the class has not been used before.
+			//        Moving the configuration method here gets MTOC to pass, but
+			//        configuration methods should really tell the users direclty 
+			//        what works and what doesn't.
 			oc2.Configure().ObjectClass(typeof(Db4objects.Db4o.Tests.Common.Ext.RefreshTestCase
 				)).CascadeOnUpdate(true);
 			try
@@ -66,7 +71,10 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 				r2.child.child.name = "o23";
 				oc2.Store(r2);
 				oc2.Commit();
+				// the next line is failing
 				oc1.Refresh(r1, 3);
+				// but the following works
+				// r1 = getByName(oc1, "o21");
 				Assert.AreEqual("o21", r1.name);
 				Assert.AreEqual("o22", r1.child.name);
 				Assert.AreEqual("o23", r1.child.child.name);

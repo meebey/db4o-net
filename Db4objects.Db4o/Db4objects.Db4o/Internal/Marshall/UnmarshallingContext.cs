@@ -215,6 +215,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			int payLoadOffset = ReadInt();
 			ReadInt();
+			// length - never used
 			if (payLoadOffset == 0)
 			{
 				return null;

@@ -28,6 +28,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public Collection4(object[] elements)
 		{
+			// FIELDS ARE PUBLIC SO THEY CAN BE REFLECTED ON IN JDKs <= 1.1
 			AddAll(elements);
 		}
 

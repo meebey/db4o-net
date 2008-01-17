@@ -35,6 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		public CustomField(CustomClassRepository repository, int index, string name, Type
 			 type)
 		{
+			// fields must be public so test works on less capable runtimes
 			_repository = repository;
 			_index = index;
 			_name = name;

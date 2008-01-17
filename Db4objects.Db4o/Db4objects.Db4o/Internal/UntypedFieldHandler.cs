@@ -159,6 +159,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (classMetadata is PrimitiveFieldHandler && classMetadata.IsArray())
 			{
+				// unnecessary secondary offset, consistent with old format
 				context.Seek(context.ReadInt());
 			}
 		}
@@ -183,6 +184,9 @@ namespace Db4objects.Db4o.Internal
 			context.WriteInt(id);
 			if (IsArray(handler))
 			{
+				// TODO: This indirection is unneccessary, but it is required by the 
+				// current old reading format. 
+				// Remove in the next version of UntypedFieldHandler  
 				marshallingContext.PrepareIndirectionOfSecondWrite();
 			}
 			else

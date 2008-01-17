@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public static IEnumerator AllElements(IReflectArray reflectArray, object array)
 		{
+			// TODO: replace array copying code with iteration
 			int[] dim = reflectArray.Dimensions(array);
 			object[] flat = new object[ElementCount(dim)];
 			reflectArray.Flatten(array, dim, 0, flat, 0);

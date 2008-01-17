@@ -118,6 +118,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public void Defragment(IDefragmentContext context)
 		{
+			// redundant, only added to make Sun JDK 1.2's java happy :(
 			context.IncrementOffset(LinkLength());
 		}
 

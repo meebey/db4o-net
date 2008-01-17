@@ -41,6 +41,8 @@ namespace Db4objects.Db4o.Events
 				container.Callbacks(impl);
 				return impl;
 			}
+			// TODO: create a MulticastingCallbacks and register both
+			// the current one and the new one
 			throw new ArgumentException();
 		}
 	}

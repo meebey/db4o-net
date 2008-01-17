@@ -32,6 +32,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 					message = Msg.ReadMessage(MessageDispatcher(), Transaction(), sock);
 					if (message.Equals(Msg.Ok))
 					{
+						// make sure to load the filename to i_blob
+						// to allow client databasefile switching
 						stream.Deactivate(Transaction(), _blob, int.MaxValue);
 						stream.Activate(Transaction(), _blob, new FullActivationDepth());
 						this._blob.SetStatus(Status.Completed);

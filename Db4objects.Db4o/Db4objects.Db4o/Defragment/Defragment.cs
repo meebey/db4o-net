@@ -227,6 +227,7 @@ namespace Db4objects.Db4o.Defragment
 		private static void FirstPass(DefragmentServicesImpl context, DefragmentConfig config
 			)
 		{
+			// System.out.println("FIRST");
 			Pass(context, config, new FirstPassCommand());
 		}
 
@@ -235,6 +236,7 @@ namespace Db4objects.Db4o.Defragment
 		private static void SecondPass(DefragmentServicesImpl context, DefragmentConfig config
 			)
 		{
+			// System.out.println("SECOND");
 			Pass(context, config, new SecondPassCommand(config.ObjectCommitFrequency()));
 		}
 
@@ -273,6 +275,13 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessYapClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
+			// TODO order of class index/object slot processing is crucial:
+			// - object slots before field indices (object slots register addresses for
+			// use by string indices)
+			// - class index before object slots, otherwise phantom btree entries from
+			// deletions appear in the source class index?!?
+			// reproducable with SelectiveCascadingDeleteTestCase and ObjectSetTestCase
+			// - investigate.
 			ProcessClassIndex(context, curClass, command);
 			if (!ParentHasIndex(curClass))
 			{
@@ -316,6 +325,7 @@ namespace Db4objects.Db4o.Defragment
 				int id = ((int)obj);
 				try
 				{
+					// FIXME bubble up exceptions
 					command.ProcessObjectSlot(context, curClass, id);
 				}
 				catch (CorruptionException e)

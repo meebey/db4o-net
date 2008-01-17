@@ -357,6 +357,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				}
 				catch (Exception)
 				{
+					// TODO: .NET convert SocketException to Db4oIOException
+					// and let Db4oIOException bubble up.
+					//e.printStackTrace();
 					return false;
 				}
 			}

@@ -43,6 +43,7 @@ namespace Db4objects.Db4o.NativeQueries.Optimization
 			}
 			catch (Exception exc)
 			{
+				// arg is ignored for static
 				Sharpen.Runtime.PrintStackTrace(exc);
 			}
 		}

@@ -21,6 +21,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public List4(object element)
 		{
+			// TODO: encapsulate field access
 			_element = element;
 		}
 

@@ -92,6 +92,7 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 		{
 			IMethodRef method = operand.Method;
 			ITypeRef retType = method.ReturnType;
+			// FIXME: this should be handled within conversions
 			bool needConversion = retType.IsPrimitive;
 			operand.Parent().Accept(this);
 			bool oldInArithmetic = _inArithmetic;
@@ -150,6 +151,7 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 
 		private void Box(ITypeRef boxedType, bool canApply)
 		{
+			// FIXME: need to map dX,fX,...
 			if (!canApply)
 			{
 				return;

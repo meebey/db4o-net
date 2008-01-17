@@ -64,6 +64,24 @@ namespace Db4objects.Db4o.Internal
 		public static Db4objects.Db4o.Internal.ConfigBlock ForNewFile(LocalObjectContainer
 			 file)
 		{
+			// ConfigBlock Format
+			// int    length of the config block
+			// long   last access time for timer lock
+			// long   last access time for timer lock (duplicate for atomicity)
+			// byte   unicode or not
+			// int    transaction-in-process address
+			// int    transaction-in-process address (duplicate for atomicity)
+			// int    id of PBootRecord
+			// int    unused (and lost)
+			// 5 bytes of the encryption password
+			// byte   freespace system used
+			// int    freespace address
+			// int    converter versions
+			// own length
+			// candidate ID and last access time
+			// Unicode byte
+			// complete possible data in config block
+			// (two transaction pointers, PDB ID, lost int, freespace address, converter_version, index id)
 			return new Db4objects.Db4o.Internal.ConfigBlock(file, true, 0);
 		}
 
@@ -123,9 +141,12 @@ namespace Db4objects.Db4o.Internal
 				}
 				catch (Exception exc)
 				{
+					// should never happen
+					//if(Debug.atHome) {
 					Sharpen.Runtime.PrintStackTrace(exc);
 				}
 			}
+			//}
 			return pwdtoken;
 		}
 
@@ -150,6 +171,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (oldLength != Length)
 			{
+				// TODO: instead of bailing out, somehow trigger wrapping the stream's io adapter in
+				// a readonly decorator, issue a  notification and continue?
 				if (!AllowVersionUpdate())
 				{
 					if (AllowAutomaticShutdown())
@@ -160,6 +183,7 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			reader.ReadLong();
+			// open time 
 			long lastAccessTime = reader.ReadLong();
 			SystemData().StringEncoding(reader.ReadByte());
 			if (oldLength > TransactionOffset)
@@ -173,6 +197,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (oldLength > IntFormerlyKnownAsBlockOffset)
 			{
+				// this one is dead.
+				// Blocksize is in the very first bytes
 				reader.ReadInt();
 			}
 			if (oldLength > PasswordOffset)
@@ -189,6 +215,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				if (!nonZeroByte)
 				{
+					// no password in the databasefile, work without encryption
 					_container._handlers.OldEncryptionOff();
 				}
 				else
@@ -231,6 +258,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_container.NeedsLockFileThread())
 			{
+				// We give the other process a chance to 
+				// write its lock.
 				Cool.SleepIgnoringInterruption(100);
 				_container.SyncFiles();
 				TimerFileLock().CheckOpenTime();
@@ -273,6 +302,7 @@ namespace Db4objects.Db4o.Internal
 			IntHandler.WriteInt(0, writer);
 			IntHandler.WriteInt(_bootRecordID, writer);
 			IntHandler.WriteInt(0, writer);
+			// dead byte from wrong attempt for blocksize
 			writer.Append(PasswordToken());
 			writer.WriteByte(SystemData().FreespaceSystem());
 			_container.EnsureFreespaceSlot();

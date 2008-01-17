@@ -64,6 +64,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			, ObjectMarshaller objectMarshaller, PrimitiveMarshaller primitiveMarshaller, StringMarshaller
 			 stringMarshaller, UntypedMarshaller untypedMarshaller)
 		{
+			// LEGACY => before 5.4
 			_converterVersion = converterVersion;
 			_handlerVersion = handlerVersion;
 			_array = arrayMarshaller;

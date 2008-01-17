@@ -37,6 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IObjectSet os = oc.Query(typeof(InvalidUUIDTestCase));
 			if (os.Size() == 0)
 			{
+				// already deleted by other threads
 				return;
 			}
 			Assert.AreEqual(1, os.Size());

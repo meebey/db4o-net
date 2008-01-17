@@ -33,6 +33,8 @@ namespace Db4oUnit
 		{
 			writer.Write(_test.GetLabel());
 			writer.Write(": ");
+			// TODO: don't print the first stack trace elements
+			// which reference db4ounit.Assert methods
 			TestPlatform.PrintStackTrace(writer, _failure);
 		}
 	}

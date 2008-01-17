@@ -27,9 +27,7 @@ namespace Db4objects.Db4o.Collections
 
 		private V[] _values;
 
-		private int _startIndex;
-
-		private int _endIndex;
+		private int _size;
 
 		[System.NonSerialized]
 		private IActivator _activator;
@@ -83,8 +81,7 @@ namespace Db4objects.Db4o.Collections
 		public virtual void Clear()
 		{
 			Activate(ActivationPurpose.Write);
-			_startIndex = 0;
-			_endIndex = 0;
+			_size = 0;
 			Arrays.Fill(_keys, DefaultKeyValue());
 			Arrays.Fill(_values, DefaultValue());
 		}
@@ -127,7 +124,7 @@ namespace Db4objects.Db4o.Collections
 			get
 			{
 				Activate(ActivationPurpose.Read);
-				return _endIndex - _startIndex;
+				return _size;
 			}
 		}
 
@@ -147,7 +144,7 @@ namespace Db4objects.Db4o.Collections
 			{
 				Activate(ActivationPurpose.Read);
 				List<V> list = new List<V>();
-				for (int i = _startIndex; i < _endIndex; i++)
+				for (int i = 0; i < _size; i++)
 				{
 					list.Add(ValueAt(i));
 				}
@@ -184,22 +181,20 @@ namespace Db4objects.Db4o.Collections
 		private void Insert(K key, V value)
 		{
 			EnsureCapacity();
-			_keys[_endIndex] = key;
-			_values[_endIndex] = value;
-			_endIndex++;
+			_keys[_size] = key;
+			_values[_size] = value;
+			_size++;
 		}
 
 		private void EnsureCapacity()
 		{
-			if (_endIndex == _keys.Length)
+			if (_size == _keys.Length)
 			{
 				int count = _keys.Length * 2;
 				K[] newKeys = AllocateKeyStorage(count);
 				V[] newValues = AllocateValueStorage(count);
-				System.Array.Copy(_keys, _startIndex, newKeys, 0, _endIndex - _startIndex);
-				System.Array.Copy(_values, _startIndex, newValues, 0, _endIndex - _startIndex);
-				Arrays.Fill(_keys, DefaultKeyValue());
-				Arrays.Fill(_values, DefaultValue());
+				System.Array.Copy(_keys, 0, newKeys, 0, _size);
+				System.Array.Copy(_values, 0, newValues, 0, _size);
 				_keys = newKeys;
 				_values = newValues;
 			}
@@ -207,15 +202,16 @@ namespace Db4objects.Db4o.Collections
 
 		private V Delete(int index)
 		{
+			Activate(ActivationPurpose.Write);
 			V value = ValueAt(index);
-			for (int i = index; i < _endIndex - 1; i++)
+			for (int i = index; i < _size - 1; i++)
 			{
 				_keys[i] = _keys[i + 1];
 				_values[i] = _values[i + 1];
 			}
-			_endIndex--;
-			_keys[_endIndex] = DefaultKeyValue();
-			_values[_endIndex] = DefaultValue();
+			_size--;
+			_keys[_size] = DefaultKeyValue();
+			_values[_size] = DefaultValue();
 			return value;
 		}
 	}

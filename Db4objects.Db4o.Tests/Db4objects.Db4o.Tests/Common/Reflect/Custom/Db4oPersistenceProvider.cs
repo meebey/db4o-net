@@ -79,6 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		public virtual int Delete(PersistenceContext context, string className, object uid
 			)
 		{
+			// TODO Auto-generated method stub
 			return 0;
 		}
 
@@ -88,6 +89,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public virtual void InitContext(PersistenceContext context)
 		{
+			// TODO Auto-generated method stub
 			LogMethodCall("initContext", context);
 			IObjectContainer metadata = OpenMetadata(context.Url());
 			try
@@ -101,7 +103,11 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			catch (Exception e)
 			{
 				Sharpen.Runtime.PrintStackTrace(e);
+				// make sure metadata container is not left open
+				// in case something goes wrong with the setup
 				CloseIgnoringExceptions(metadata);
+				// cant use exception chaining here because the
+				// the must run in jdk 1.1
 				throw new Db4oException(e);
 			}
 		}
@@ -121,6 +127,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		public virtual void Insert(PersistenceContext context, PersistentEntry entry)
 		{
 			LogMethodCall("insert", context, entry);
+			// clone the entry because clients are allowed to reuse
+			// entry objects
 			DataContainer(context).Store(Clone(entry));
 		}
 
@@ -255,10 +263,16 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.ExceptionsOnNotStorable(true);
+			// the following line is only necessary for the tests to run
+			// in OSGi environment
 			config.ReflectWith(Platform4.ReflectorForType(typeof(CustomClassRepository)));
 			Cascade(config, typeof(CustomClassRepository));
 			Cascade(config, typeof(Hashtable4));
 			Cascade(config, typeof(CustomClass));
+			// FIXME: [TA] this is necessary because the behavior
+			// on .net differs with regards to cascade activation
+			// remove the following two lines and run the test
+			// on .net to see it fail
 			Cascade(config, typeof(CustomField));
 			Cascade(config, typeof(CustomUidField));
 			return config;

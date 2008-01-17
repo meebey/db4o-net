@@ -44,6 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			byte[] key1 = new byte[] { 1, 2, 3 };
 			byte[] key2 = new byte[] { 3, 2, 1 };
 			byte[] key3 = new byte[] { 3, 2, 1 };
+			// same values as key2
 			Hashtable4 table = new Hashtable4(2);
 			table.Put(key1, "foo");
 			table.Put(key2, "bar");

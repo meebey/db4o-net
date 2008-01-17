@@ -116,10 +116,14 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		public virtual void TestClose()
 		{
 			BooleanByRef closed = new BooleanByRef();
+			// FIXME: Sharpen doesn't understand the null parameter (the third one), we had to add a cast
+			//        to get sharpen to run through.
 			Transaction trans = new _LocalTransaction_102(this, closed, _server, _server.SystemTransaction
 				(), (TransactionalReferenceSystem)null);
 			EmbeddedClientObjectContainer client = new EmbeddedClientObjectContainer(_server, 
 				trans);
+			// FIXME: close needs to unregister reference system
+			//        also for crashed clients 
 			client.Close();
 			Assert.IsTrue(closed.value);
 		}
@@ -252,6 +256,9 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			Assert.IsNotNull(identity1);
 			Db4oDatabase identity2 = _client2.Identity();
 			Assert.IsNotNull(identity2);
+			// TODO: Db4oDatabase is shared between embedded clients.
+			// This should work, since there is an automatic bind
+			// replacement. Replication test cases will tell.
 			Assert.AreSame(identity1, identity2);
 		}
 
@@ -454,6 +461,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.ObjectClass(typeof(EmbeddedClientObjectContainerTestCase.Item)).GenerateUUIDs
 				(true);
+			// ExtObjectServer server = Db4o.openServer(config, FILENAME, 0);
+			// EmbeddedClientObjectContainer container = server.openClient();
 			_server = (LocalObjectContainer)Db4oFactory.OpenFile(config, Filename);
 			_client1 = new EmbeddedClientObjectContainer(_server);
 			_client2 = new EmbeddedClientObjectContainer(_server);

@@ -51,6 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			Db().Store(cod);
 			if (!cascadeOnDelete && !cascadeOnUpdate)
 			{
+				// the only case, where we don't cascade
 				Db().Store(cod.items[0]);
 			}
 			Assert.AreEqual(1, CountOccurences(typeof(CascadeOnDelete.Item)));

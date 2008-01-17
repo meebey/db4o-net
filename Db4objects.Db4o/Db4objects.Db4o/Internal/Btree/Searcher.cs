@@ -117,6 +117,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return false;
 			}
+			// _cursor is 0: not after last
 			return (_cursor == _count - 1) && _cmp < 0;
 		}
 

@@ -23,6 +23,7 @@ namespace Db4objects.Db4o.Tests.Util
 			RandomAccessFile raf = new RandomAccessFile(testFile, "r");
 			byte[] bytes = new byte[1];
 			raf.Read(bytes);
+			// readByte() doesn't convert to .NET.
 			byte db4oHeaderVersion = bytes[0];
 			raf.Close();
 			return db4oHeaderVersion;

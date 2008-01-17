@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9ABAFC31-D29D-4000-B6A0-C24F0BB221F5}</ProjectGuid>
+    <ProjectGuid>{8F82F8B0-95B6-4553-BDA8-BD9A954E682F}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyName>Db4oUnit</AssemblyName>

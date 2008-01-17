@@ -42,6 +42,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public QConObject(Transaction a_trans, QCon a_parent, QField a_field, object a_object
 			) : base(a_trans)
 		{
+			// the constraining object
+			// cache for the db4o object ID
+			// the YapClass
+			// needed for marshalling the request
+			// C/S only
 			i_parent = a_parent;
 			if (a_object is ICompare)
 			{
@@ -58,6 +63,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			else
 			{
+				//It seems that we need not result the following field
+				//i_object = null;
+				//i_comparator = Null.INSTANCE;
+				//i_yapClass = null;
+				// FIXME: Setting the YapClass to null will prevent index use
+				// If the field is typed we can guess the right one with the
+				// following line. However this does break some SODA test cases.
+				// Revisit!
+				//            if(i_field != null){
+				//                i_yapClass = i_field.getYapClass();
+				//            }
 				i_yapClass = a_trans.Container().ProduceClassMetadata(a_trans.Reflector().ForObject
 					(a_object));
 				if (i_yapClass != null)
@@ -177,6 +193,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					if (!i_evaluator.Identity())
 					{
+						//                	TODO: consider another strategy to avoid reevaluating the class constraint when
+						//                	the candidate collection is loaded from the class index
+						//                    if (i_yapClass == i_candidates.i_yapClass) {
+						//                        if (i_evaluator.isDefault() && (! hasJoins())) {
+						//                            return;
+						//                        }
+						//                    }
 						i_selfComparison = true;
 					}
 					object transactionalObject = i_yapClass.WrapWithTransactionContext(Transaction(), 
@@ -199,6 +222,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal override void EvaluateSimpleExec(QCandidates a_candidates)
 		{
+			// TODO: The following can be skipped if we used the index on
+			//       this field to load the objects, if hasOrdering() is false
 			if (i_field.IsSimple() || IsNullConstraint())
 			{
 				a_candidates.Traverse(i_field);
@@ -464,6 +489,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					i_objectID = 0;
 					Exceptions4.ThrowRuntimeException(51);
 				}
+				// TODO: this may not be correct for NOT
+				// It may be necessary to add an if(i_evaluator.identity())
 				RemoveChildrenJoins();
 				i_evaluator = i_evaluator.Add(new QEIdentity());
 				return this;

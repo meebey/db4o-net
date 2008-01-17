@@ -93,10 +93,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			Assert.IsNull(item._name);
 			Assert.IsNull(item._next);
 			Assert.AreEqual(0, item._value);
+			// depth = 0;
 			Db().Activate(item, 0);
 			Assert.IsNull(item._name);
 			Assert.IsNull(item._next);
 			Assert.AreEqual(0, item._value);
+			// depth = 1;
+			// item.next();
 			Db().Activate(item, 1);
 			AssertActivatedItemByField(item, 1);
 			Db().Activate(item, 5);
@@ -154,6 +157,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 
 			public Item(string name, int value)
 			{
+				//
 				_name = name;
 				_value = value;
 			}

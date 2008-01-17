@@ -102,6 +102,23 @@ namespace Db4objects.Db4o.Internal
 		public static void LogErr(IConfiguration config, int code, string msg, Exception 
 			t)
 		{
+			// unused
+			// 5
+			// 10
+			// 15
+			// 20
+			// 25
+			// 30
+			// 35
+			// 40
+			// 45
+			// 50
+			// 55
+			// 60
+			// 65
+			// 66
+			// 67
+			// 69
 			if (config == null)
 			{
 				config = Db4oFactory.Configure();

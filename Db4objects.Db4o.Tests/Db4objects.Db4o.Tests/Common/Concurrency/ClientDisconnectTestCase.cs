@@ -25,6 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			{
 				if (seq % 2 == 0)
 				{
+					// ok to get something
 					client.QueryByExample(null);
 				}
 				else

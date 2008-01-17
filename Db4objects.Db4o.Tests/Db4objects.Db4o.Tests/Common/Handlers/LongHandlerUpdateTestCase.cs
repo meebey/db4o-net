@@ -46,6 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			AssertPrimitiveArray(itemArrays._typedPrimitiveArray);
 			if (_db4oHeaderVersion == VersionServices.Header3040)
 			{
+				// Bug in the oldest format: It accidentally long[] arrays to Long[] arrays.
 				AssertWrapperArray((long[])itemArrays._primitiveArrayInObject);
 			}
 			else
@@ -74,6 +75,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected override void AssertValues(object[] values)
 		{
+			//FIXME: Arrays should also get a null Bitmap to fix.
+			//Assert.isNull(wrapperArray[wrapperArray.length - 1]);
 			for (int i = 0; i < data.Length; i++)
 			{
 				LongHandlerUpdateTestCase.Item item = (LongHandlerUpdateTestCase.Item)values[i];
@@ -91,6 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			if (expected == long.MaxValue && _handlerVersion == 0)
 			{
+				// Bug in the oldest format: It treats Long.MAX_VALUE as null.
 				expected = 0;
 			}
 			Assert.AreEqual(expected, actual);
@@ -100,6 +104,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			if (long.MaxValue.Equals(expected) && _handlerVersion == 0)
 			{
+				// Bug in the oldest format: It treats Long.MAX_VALUE as null.
 				expected = null;
 			}
 			Assert.AreEqual(expected, actual);

@@ -403,6 +403,7 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual bool HasFieldIndex(ClassMetadata clazz)
 		{
+			// actually only two states are used here, the third is implicit in null
 			TernaryBool cachedHasFieldIndex = ((TernaryBool)_hasFieldIndexCache.Get(clazz));
 			if (cachedHasFieldIndex != null)
 			{

@@ -64,6 +64,8 @@ namespace Db4objects.Db4o.Internal
 
 		protected override void ShutdownDataStorage()
 		{
+			// do nothing, blocksize is always 1
+			// nothing to do here
 			if (!_closed)
 			{
 				byte[] temp = new byte[_length];
@@ -81,6 +83,7 @@ namespace Db4objects.Db4o.Internal
 		public override void Copy(int oldAddress, int oldAddressOffset, int newAddress, int
 			 newAddressOffset, int length)
 		{
+			// do nothing
 			int fullNewAddress = newAddress + newAddressOffset;
 			EnsureMemoryFileSize(fullNewAddress + length);
 			byte[] bytes = _memoryFile.GetBytes();

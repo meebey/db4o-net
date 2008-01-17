@@ -15,6 +15,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal QENot(QE a_evaluator)
 		{
+			// CS
 			i_evaluator = a_evaluator;
 		}
 

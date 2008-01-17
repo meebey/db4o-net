@@ -36,6 +36,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public TimerFileLockEnabled(IoAdaptedObjectContainer file)
 		{
 			_timerLock = file.Lock();
+			// FIXME: No reason to sync over the big master lock.
+			//        A local lock should be OK.
+			// _timerLock = new Object();
 			_timerFile = file.TimerFile();
 			_opentime = UniqueOpenTime();
 		}
@@ -65,10 +68,12 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 			if (_timerFile == null)
 			{
+				// need to check? 
 				return;
 			}
 			long waitTime = Const4.LockTimeInterval * 5;
 			long currentTime = Runtime.CurrentTimeMillis();
+			// If someone changes the system clock here, he is out of luck.
 			while (Runtime.CurrentTimeMillis() < currentTime + waitTime)
 			{
 				Cool.SleepIgnoringInterruption(waitTime);
@@ -144,6 +149,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		/// <exception cref="Db4oIOException"></exception>
 		private bool WriteAccessTime(bool closing)
 		{
+			// TODO: More security is possible here to make this time unique
+			// to other processes. 
 			if (NoAddressSet())
 			{
 				return true;

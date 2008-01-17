@@ -43,7 +43,10 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			TNItem tnItem = item.tnItem;
 			tnItem.Value();
 			Assert.IsNotNull(tnItem.list);
+			// item.tnItem.list
 			Db().Deactivate(item, 2);
+			// FIXME: failure 
+			// Assert.isNull(tnItem.list);
 			Db().Activate(item, 42);
 			Db().Deactivate(item, 10);
 			Assert.IsNull(tnItem.list);

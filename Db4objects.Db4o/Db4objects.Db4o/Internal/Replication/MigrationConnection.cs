@@ -27,6 +27,13 @@ namespace Db4objects.Db4o.Internal.Replication
 
 		public virtual void MapReference(object obj, ObjectReference @ref)
 		{
+			// FIXME: Identityhashcode is not unique
+			// ignored for now, since it is on most VMs.
+			// This should be fixed by adding 
+			// putIdentity and getIdentity methods to Hashtable4,
+			// using the actual object as the parameter and 
+			// checking for object identity in addition to the
+			// hashcode
 			_referenceMap.Put(Runtime.IdentityHashCode(obj), @ref);
 		}
 

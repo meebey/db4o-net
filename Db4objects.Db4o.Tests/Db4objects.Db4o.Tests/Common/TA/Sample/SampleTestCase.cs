@@ -242,6 +242,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 
 		internal virtual IEnumerator IterateGraph(object obj)
 		{
+			// A small evil multimethod hack to have "Do What I mean" behaviour. 
 			if (obj is IEnumerator)
 			{
 				return (IEnumerator)obj;

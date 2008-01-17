@@ -114,6 +114,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Diagnostics
 
 		private void WorkaroundOsgiConfigCloningBehavior()
 		{
+			// fix for Osgi config cloning behavior - see Db4oOSGiBundleFixture
 			_diagnostic.RemoveAllListeners();
 		}
 

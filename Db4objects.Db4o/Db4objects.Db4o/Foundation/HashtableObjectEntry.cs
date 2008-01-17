@@ -12,6 +12,7 @@ namespace Db4objects.Db4o.Foundation
 		internal HashtableObjectEntry(int a_hash, object a_key, object a_object) : base(a_hash
 			, a_object)
 		{
+			// FIELDS ARE PUBLIC SO THEY CAN BE REFLECTED ON IN JDKs <= 1.1
 			_objectKey = a_key;
 		}
 

@@ -66,6 +66,7 @@ namespace Db4objects.Db4o.IO
 		/// <param name="pageCount">allocated amount of pages</param>
 		public CachedIoAdapter(IoAdapter ioAdapter, int pageSize, int pageCount)
 		{
+			// private Hashtable4 _posPageMap = new Hashtable4(PAGE_COUNT);
 			_io = ioAdapter;
 			_pageSize = pageSize;
 			_pageCount = pageCount;
@@ -193,6 +194,7 @@ namespace Db4objects.Db4o.IO
 			int bufferOffset = 0;
 			while (bytesToWrite > 0)
 			{
+				// page doesn't need to loadFromDisk if the whole page is dirty
 				bool loadFromDisk = (bytesToWrite < _pageSize) || (startAddress % _pageSize != 0);
 				page = GetPage(startAddress, loadFromDisk);
 				page.EnsureEndAddress(GetLength());
@@ -261,6 +263,7 @@ namespace Db4objects.Db4o.IO
 				page.EnsureEndAddress(_fileLength);
 				return page;
 			}
+			// in case that page is not found in the cache
 			page = GetFreePageFromCache();
 			if (loadFromDisk)
 			{
@@ -291,6 +294,7 @@ namespace Db4objects.Db4o.IO
 			{
 				FlushPage(_tail);
 			}
+			// _posPageMap.remove(new Long(tail.startPosition / PAGE_SIZE));
 			return _tail;
 		}
 
@@ -312,6 +316,8 @@ namespace Db4objects.Db4o.IO
 		/// <exception cref="Db4oIOException"></exception>
 		private void FlushAllPages()
 		{
+			// Page page = (Page) _posPageMap.get(new Long(pos/PAGE_SIZE));
+			// return page;
 			CachedIoAdapter.Page node = _head;
 			while (node != null)
 			{
@@ -352,6 +358,7 @@ namespace Db4objects.Db4o.IO
 		/// <exception cref="Db4oIOException"></exception>
 		private int IoRead(CachedIoAdapter.Page page)
 		{
+			// _posPageMap.put(new Long(page.startPosition / PAGE_SIZE), page);
 			int count = _io.Read(page._buffer);
 			if (count > 0)
 			{
@@ -486,6 +493,7 @@ namespace Db4objects.Db4o.IO
 				int readBytes = Math.Min(pageAvailbeDataSize, length);
 				if (readBytes <= 0)
 				{
+					// meaning reach EOF
 					return -1;
 				}
 				System.Array.Copy(_buffer, bufferOffset, @out, outOffset, readBytes);

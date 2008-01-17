@@ -29,6 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void Conc(IExtObjectContainer oc, int seq)
 		{
 			IMessageSender sender = null;
+			// Configuration is not threadsafe.
 			lock (Lock)
 			{
 				if (IsMTOC())

@@ -33,6 +33,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STDoubleWUTestCase
 				(0));
+			// Primitive default values are ignored, so we need an 
+			// additional constraint:
 			q.Descend("i_double").Constrain(System.Convert.ToDouble(0));
 			Expect(q, new int[] { 0, 1 });
 		}

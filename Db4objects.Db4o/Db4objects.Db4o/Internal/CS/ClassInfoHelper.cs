@@ -57,6 +57,7 @@ namespace Db4objects.Db4o.Internal.CS
 				IReflectClass fieldClass = isArray ? field.GetFieldType().GetComponentType() : field
 					.GetFieldType();
 				bool isPrimitive = fieldClass.IsPrimitive();
+				// TODO: need to handle NArray, currently it ignores NArray and alway sets NArray flag false.
 				fieldsMeta[i] = new FieldInfo(field.GetName(), GetClassMeta(fieldClass), isPrimitive
 					, isArray, false);
 			}
@@ -65,6 +66,11 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private static bool IsSystemClass(string className)
 		{
+			// TODO: We should send the whole class meta if we'd like to support
+			// java and .net communication (We have this request in our user forum
+			// http://developer.db4o.com/forums/thread/31504.aspx). If we only want
+			// to support java & .net platform separately, then this method should
+			// be moved to Platform4.
 			return className.StartsWith("java");
 		}
 
@@ -86,6 +92,7 @@ namespace Db4objects.Db4o.Internal.CS
 				return (GenericClass)reflector.ForName(classMeta.GetClassName());
 			}
 			string className = classMeta.GetClassName();
+			// look up from generic class table.
 			GenericClass genericClass = LookupGenericClass(className);
 			if (genericClass != null)
 			{

@@ -26,6 +26,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public static void Main(string[] arguments)
 		{
+			//		new CascadedDeleteUpdate().runSolo();
 			new CascadedDeleteUpdate().RunClientServer();
 		}
 

@@ -135,6 +135,7 @@ namespace Db4objects.Db4o
 
 		public virtual void SetTrans(Transaction a_trans)
 		{
+			// virtual, do nothing
 			i_trans = a_trans;
 		}
 
@@ -188,11 +189,13 @@ namespace Db4objects.Db4o
 
 		internal virtual void Update()
 		{
+			// FIXME: [TA] normalize update depth usage as well?
 			Update(2);
 		}
 
 		internal virtual void Update(int depth)
 		{
+			// activationDepth());
 			if (ValidYapObject())
 			{
 				ObjectContainerBase stream = Stream();
@@ -216,11 +219,13 @@ namespace Db4objects.Db4o
 
 		internal virtual void UpdateInternal()
 		{
+			// FIXME: [TA] consider ActivationDepth approach for update too
 			UpdateInternal(2);
 		}
 
 		internal virtual void UpdateInternal(int depth)
 		{
+			//activationDepth());
 			if (ValidYapObject())
 			{
 				i_yapObject.WriteUpdate(i_trans, depth);

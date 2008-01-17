@@ -85,6 +85,7 @@ namespace Db4oUnit
 
 		private TestSuite FromMethods(Type clazz)
 		{
+			// just removing the 'parameter not used' warning
 			ArrayList tests = new ArrayList();
 			MethodInfo[] methods = clazz.GetMethods();
 			for (int i = 0; i < methods.Length; i++)

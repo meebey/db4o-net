@@ -194,6 +194,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="IOException"></exception>
 		public virtual Sharpen.IO.File ServerFile(string promptName, bool writeToServer)
 		{
+			// do nothing
 			lock (i_stream._lock)
 			{
 				i_stream.Activate(i_trans, this, new FixedActivationDepth(2));
@@ -219,6 +220,7 @@ namespace Db4objects.Db4o.Internal
 						tryPath = fileName + "_" + i++ + i_ext;
 						if (i == 99)
 						{
+							// should never happen
 							i_status = Status.Error;
 							throw new IOException(Messages.Get(40));
 						}
@@ -309,6 +311,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="IOException"></exception>
 		public virtual void DeleteFile()
 		{
+			// not necessary
 			if (GetStatus() == Status.Unused)
 			{
 				throw new IOException(Messages.Get(43));

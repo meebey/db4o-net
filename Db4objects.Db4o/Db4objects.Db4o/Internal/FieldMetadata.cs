@@ -61,12 +61,14 @@ namespace Db4objects.Db4o.Internal
 
 		public FieldMetadata(ClassMetadata classMetadata)
 		{
+			//  position in ClassMetadata i_fields
 			_containingClass = classMetadata;
 		}
 
 		internal FieldMetadata(ClassMetadata containingClass, IObjectTranslator translator
 			) : this(containingClass)
 		{
+			// for TranslatedFieldMetadata only
 			Init(containingClass, translator.GetType().FullName);
 			_state = Available;
 			ObjectContainerBase stream = Container();
@@ -89,6 +91,7 @@ namespace Db4objects.Db4o.Internal
 		internal FieldMetadata(ClassMetadata containingClass, ObjectMarshaller marshaller
 			) : this(containingClass)
 		{
+			// for CustomMarshallerFieldMetadata only
 			Init(containingClass, marshaller.GetType().FullName);
 			_state = Available;
 			_handler = Container()._handlers.UntypedHandler();
@@ -102,6 +105,7 @@ namespace Db4objects.Db4o.Internal
 			_reflectField.SetAccessible();
 			_handler = handler;
 			_handlerID = handlerID;
+			// TODO: beautify !!!  possibly pull up isPrimitive to ReflectField
 			bool isPrimitive = false;
 			if (field is GenericField)
 			{
@@ -152,6 +156,9 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			BTree index = GetIndex(trans);
+			// Although we checked hasIndex() already, we have to check
+			// again here since index creation in YapFieldUUID can be
+			// unsuccessful if it's called too early for PBootRecord.
 			if (index == null)
 			{
 				return;
@@ -179,6 +186,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer writer)
 		{
+			// alive() checked
 			return ((IIndexableTypeHandler)_handler).ReadIndexEntry(mf, writer);
 		}
 
@@ -206,12 +214,23 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (_handler == null)
 				{
+					// this may happen if the local ClassMetadataRepository
+					// has not been updated from the server and presumably 
+					// in some refactoring cases. 
+					// We try to heal the problem by re-reading the class.
+					// This could be dangerous, if the class type of a field
+					// has been modified.
+					// TODO: add class refactoring features
 					_handler = LoadJavaField1();
 					CheckHandlerID();
 				}
 				LoadJavaField();
 				if (_handler != null)
 				{
+					// TODO: This part is not quite correct.
+					// We are using the old array information read from file to wrap.
+					// If a schema evolution changes an array to a different variable,
+					// we are in trouble here.
 					_handler = WrapHandlerToArrays(Container(), _handler);
 				}
 				if (_handler == null || _reflectField == null)
@@ -243,6 +262,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (id > 0 && id != _handlerID)
 			{
+				// wrong type, refactoring, field should be turned off
+				// TODO: it would be cool to log something here
 				_handler = null;
 			}
 		}
@@ -259,6 +280,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual bool CanHold(IReflectClass claxx)
 		{
+			// alive() is checked in QField caller
 			if (claxx == null)
 			{
 				return !_isPrimitive;
@@ -268,6 +290,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object Coerce(IReflectClass claxx, object obj)
 		{
+			// alive() is checked in QField caller
 			if (claxx == null || obj == null)
 			{
 				return _isPrimitive ? No4.Instance : obj;
@@ -561,6 +584,10 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (container._lock)
 			{
+				// FIXME: The following is not really transactional.
+				//        This will work OK for normal C/S and for
+				//        single local mode but the transaction will
+				//        be wrong for MTOC.
 				if (trans == null)
 				{
 					trans = container.Transaction();
@@ -590,6 +617,7 @@ namespace Db4objects.Db4o.Internal
 
 		public ClassMetadata HandlerClassMetadata(ObjectContainerBase container)
 		{
+			// alive needs to be checked by all callers: Done
 			ITypeHandler4 handler = BaseTypeHandler();
 			if (Handlers4.HandlesSimple(handler))
 			{
@@ -605,11 +633,13 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual ITypeHandler4 GetHandler()
 		{
+			// alive needs to be checked by all callers: Done
 			return _handler;
 		}
 
 		public virtual int HandlerID()
 		{
+			// alive needs to be checked by all callers: Done
 			return _handlerID;
 		}
 
@@ -644,6 +674,7 @@ namespace Db4objects.Db4o.Internal
 
 		public ClassMetadata ContainingClass()
 		{
+			// alive needs to be checked by all callers: Done
 			return _containingClass;
 		}
 
@@ -672,6 +703,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual bool HasIndex()
 		{
+			// alive needs to be checked by all callers: Done
 			return _index != null;
 		}
 
@@ -768,6 +800,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_handler == null)
 			{
+				// must be ClassMetadata
 				return Const4.IdLength;
 			}
 			if (_handler is PersistentBase)
@@ -782,6 +815,14 @@ namespace Db4objects.Db4o.Internal
 			{
 				return ((VariableLengthTypeHandler)_handler).LinkLength();
 			}
+			// TODO: For custom handlers there will have to be a way 
+			//       to calculate the length in the slot.
+			//        Options:
+			//        (1) Remember when the first object is marshalled.
+			//        (2) Add a #defaultValue() method to TypeHandler4,
+			//            marshall the default value and check.
+			//        (3) Add a way to test the custom handler when it
+			//            is installed and remember the length there. 
 			throw new NotImplementedException();
 		}
 
@@ -845,6 +886,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Marshall(MarshallingContext context, object obj)
 		{
+			// alive needs to be checked by all callers: Done
 			int updateDepth = context.UpdateDepth();
 			if (obj != null && CascadeOnUpdate(context.ClassConfiguration()))
 			{
@@ -930,6 +972,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Rename(string newName)
 		{
+			// FIXME: needs test case
 			ObjectContainerBase container = Container();
 			if (!container.IsClient())
 			{
@@ -950,6 +993,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Set(object onObject, object obj)
 		{
+			// TODO: remove the following if and check callers
 			if (null == _reflectField)
 			{
 				return;
@@ -1144,6 +1188,7 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool RebuildIndexForClass(LocalObjectContainer stream, ClassMetadata
 			 yapClass)
 		{
+			// FIXME: BTree traversal over index here.
 			long[] ids = yapClass.GetIDs();
 			for (int i = 0; i < ids.Length; i++)
 			{

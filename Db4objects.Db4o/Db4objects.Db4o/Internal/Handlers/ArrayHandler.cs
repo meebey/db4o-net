@@ -152,6 +152,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			int address = context.ReadInt();
 			context.ReadInt();
+			// length, not needed
 			if (address <= 0)
 			{
 				return;
@@ -175,8 +176,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public void DeletePrimitiveEmbedded(StatefulBuffer a_bytes, PrimitiveFieldHandler
 			 classPrimitive)
 		{
+			// FIXME: This code has not been called in any test case when the 
+			//        new ArrayMarshaller was written.
+			//        Apparently it only frees slots.
+			//        For now the code simply returns without freeing.
 			a_bytes.ReadInt();
+			//int address = a_bytes.readInt();
 			a_bytes.ReadInt();
+			//int length = a_bytes.readInt();
 			if (true)
 			{
 				return;
@@ -347,6 +354,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 		private IReflectClass ReflectClassFromElementsEntry(Transaction trans, int elements
 			)
 		{
+			// TODO: Here is a low-frequency mistake, extremely unlikely.
+			// If YapClass-ID == 99999 by accident then we will get ignore.
 			if (elements != Const4.IgnoreId)
 			{
 				bool primitive = false;
@@ -383,6 +392,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			ClassMetadata classMetadata = Container().ProduceClassMetadata(claxx);
 			if (classMetadata == null)
 			{
+				// TODO: This one is a terrible low-frequency blunder !!!
+				// If YapClass-ID == 99999 then we will get IGNORE back.
+				// Discovered on adding the primitives
 				return Const4.IgnoreId;
 			}
 			int classID = classMetadata.GetID();
@@ -426,6 +438,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			int newPayLoadOffset = context.ReadInt();
 			context.ReadInt();
+			// skip length, not needed
 			int linkOffSet = context.Offset();
 			context.Seek(newPayLoadOffset);
 			return linkOffSet;
@@ -449,6 +462,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (!(context.Transaction().Reflector().ForClass(typeof(byte)).Equals(clazzRef.value
 				)))
 			{
+				// FIXME behavior should be identical to seek/defrag below - why failure?
+				// defragElements(context, numElements);
 				context.Seek(offset);
 				DefragElements(context);
 				return;
@@ -493,6 +508,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				}
 				else
 				{
+					// byte[] performance optimisation
 					for (int i = 0; i < elements.value; i++)
 					{
 						ArrayReflector().Set(array, i, context.ReadObject(_handler));
@@ -514,6 +530,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			else
 			{
+				// byte[] performance optimisation
 				for (int i = 0; i < elementCount; i++)
 				{
 					context.WriteObject(_handler, ArrayReflector().Get(obj, i));

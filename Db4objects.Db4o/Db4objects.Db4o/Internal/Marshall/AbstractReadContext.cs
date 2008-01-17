@@ -29,6 +29,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			int indirectedOffSet = ReadInt();
 			ReadInt();
+			// length, not needed
 			int offset = Offset();
 			Seek(indirectedOffSet);
 			object obj = handler.Read(this);
@@ -58,6 +59,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return null;
 			}
+			// this is OK for primitive YapAnys. They will not be added
+			// to the list, since they will not be found in the ID tree.
 			Container().StillToActivate(Transaction(), obj, depth);
 			return obj;
 		}
@@ -68,6 +71,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				), id);
 			if (null == hardRef || hardRef._reference == null)
 			{
+				// com.db4o.db4ounit.common.querying.CascadeDeleteDeleted
 				return null;
 			}
 			return hardRef._reference.ClassMetadata();
@@ -87,6 +91,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			int payLoadOffset = ReadInt();
 			ReadInt();
+			// length - never used
 			if (payLoadOffset == 0)
 			{
 				return null;

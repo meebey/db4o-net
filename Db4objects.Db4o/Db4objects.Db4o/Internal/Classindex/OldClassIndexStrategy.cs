@@ -326,6 +326,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public override int Id()
 		{
+			// nothing to do
 			return _index.GetID();
 		}
 

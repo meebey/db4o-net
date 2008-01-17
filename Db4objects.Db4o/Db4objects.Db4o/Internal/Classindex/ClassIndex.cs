@@ -88,6 +88,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		internal virtual void SetDirty(ObjectContainerBase a_stream)
 		{
+			// TODO: get rid of the setDirty call
 			a_stream.SetDirtyInSystemTransaction(this);
 		}
 

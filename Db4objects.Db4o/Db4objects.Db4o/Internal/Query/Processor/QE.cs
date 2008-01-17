@@ -66,6 +66,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual bool Not(bool res)
 		{
+			// overridden in QENot 
 			return res;
 		}
 

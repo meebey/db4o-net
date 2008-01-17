@@ -56,6 +56,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IObjectSet objectSet = q.Execute();
 			if (objectSet.Size() == 0)
 			{
+				// already deleted by other threads
 				return;
 			}
 			Assert.AreEqual(1, objectSet.Size());

@@ -26,6 +26,16 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 
 		public virtual void TestFirstAndSecondFieldsAreIrrelevant()
 		{
+			// 0
+			// 1
+			// 2
+			// 3
+			// 4
+			// 5
+			// 6
+			// 7
+			// 8
+			// 9
 			IQuery q = NewQuery();
 			q.Constrain(typeof(OrderTestSubject));
 			q.Descend("_seniority").OrderAscending();

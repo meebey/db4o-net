@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
+			// configured depth should be ignored by ta provider
 			config.ObjectClass(typeof(TransparentActivationDepthTestCase.TAAware)).MinimumActivationDepth
 				(42);
 			config.ObjectClass(typeof(TransparentActivationDepthTestCase.NonTAAware)).MinimumActivationDepth

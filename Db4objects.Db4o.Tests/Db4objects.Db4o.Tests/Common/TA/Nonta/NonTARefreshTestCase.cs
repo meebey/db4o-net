@@ -50,12 +50,15 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 			Assert.AreEqual(200, item1.Next().Value());
 			Assert.AreEqual(10, item2.Value());
 			Assert.AreEqual(9, item2.Next().Value());
+			//refresh 0
 			client2.Refresh(item2, 0);
 			Assert.AreEqual(10, item2.Value());
 			Assert.AreEqual(9, item2.Next().Value());
+			//refresh 1
 			client2.Refresh(item2, 1);
 			Assert.AreEqual(100, item2.Value());
 			Assert.AreEqual(9, item2.Next().Value());
+			//refresh 2
 			client2.Refresh(item2, 2);
 			Assert.AreEqual(100, item2.Value());
 			Assert.AreEqual(200, item2.Next().Value());

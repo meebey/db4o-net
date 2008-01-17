@@ -82,6 +82,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			ITypeHandler4 handler = field.GetHandler();
 			if (handler is ClassMetadata)
 			{
+				// TODO: ensure there is a test case, to make this happen 
 				if (((ClassMetadata)handler).GetID() == 0)
 				{
 					trans.Container().NeedsUpdate(clazz);
@@ -92,6 +93,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			bitmap.Set(0, field.IsPrimitive());
 			bitmap.Set(1, handler is ArrayHandler);
 			bitmap.Set(2, handler is MultidimensionalArrayHandler);
+			// keep the order
 			writer.WriteByte(bitmap.GetByte(0));
 		}
 
@@ -105,7 +107,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return;
 			}
+			// handler ID
 			context.CopyID();
+			// skip primitive/array/narray attributes
 			context.IncrementOffset(1);
 		}
 	}

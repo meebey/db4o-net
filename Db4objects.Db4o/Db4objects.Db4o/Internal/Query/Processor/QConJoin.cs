@@ -24,6 +24,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal QConJoin(Transaction a_trans, QCon a_c1, QCon a_c2, bool a_and) : base(a_trans
 			)
 		{
+			// FIELDS MUST BE PUBLIC TO BE REFLECTED ON UNDER JDK <= 1.1
+			// C/S
 			i_constraint1 = a_c1;
 			i_constraint2 = a_c2;
 			i_and = a_and;
@@ -100,6 +102,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				QCon other = GetOtherConstraint(a_constraint);
 				other.RemoveJoin(this);
+				// prevents circular call
 				other.Remove();
 				return true;
 			}

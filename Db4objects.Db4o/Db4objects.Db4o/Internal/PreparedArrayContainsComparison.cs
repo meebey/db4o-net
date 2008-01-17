@@ -24,6 +24,9 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int CompareTo(object obj)
 		{
+			// We never expect this call
+			// TODO: The callers of this class should be refactored to pass a matcher and
+			//       to expect a PreparedArrayComparison.
 			throw new InvalidOperationException();
 		}
 

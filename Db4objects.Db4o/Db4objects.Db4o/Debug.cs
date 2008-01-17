@@ -18,6 +18,14 @@ namespace Db4objects.Db4o
 		/// <summary>prints query graph information to the console</summary>
 		public const bool queries = false;
 
+		/// <summary>
+		/// allows faking the Db4oDatabase identity object, so the first
+		/// stored object in the debugger is the actually persisted object
+		/// Changing this setting to true will fail some tests that expect
+		/// database files to have identity
+		/// </summary>
+		public const bool staticIdentity = queries;
+
 		/// <summary>prints more stack traces</summary>
 		public const bool atHome = false;
 
@@ -62,12 +70,6 @@ namespace Db4objects.Db4o
 
 		/// <summary>allows overriding the file locking mechanism to turn it off</summary>
 		public const bool lockFile = true;
-
-		/// <summary>
-		/// allows faking the Db4oDatabase identity object, so the first
-		/// stored object in the debugger is the actually persisted object
-		/// </summary>
-		public const bool staticIdentity = false;
 
 		/// <summary>
 		/// turn to false, to prevent reading old PBootRecord object

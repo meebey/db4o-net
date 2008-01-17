@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Build
 					if (rightConst.Value() is bool)
 					{
 						bool boolVal = (bool)rightConst.Value();
+						// new Boolean() instead of Boolean.valueOf() for .NET conversion
 						return new ComparisonExpression(cmpExpr.Left(), new ConstValue(!boolVal), cmpExpr
 							.Op());
 					}

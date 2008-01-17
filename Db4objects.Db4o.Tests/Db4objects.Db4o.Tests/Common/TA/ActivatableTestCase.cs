@@ -48,6 +48,8 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			Db().Commit();
 			MockActivatable mock2 = RetrieveMockFromNewClientAndClose();
 			AssertBindUnbindCalls(mock2);
+			// mock1 has only be bound by store so far
+			// client.close should have no effect on it
 			mock1.Recorder().Verify(new MethodCall[] { new MethodCall("bind", new _IArgumentCondition_51
 				(this)) });
 		}

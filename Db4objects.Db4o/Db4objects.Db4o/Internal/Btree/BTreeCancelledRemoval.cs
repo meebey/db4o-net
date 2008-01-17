@@ -26,6 +26,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public override bool IsCancelledRemoval()
 		{
+			// do nothing
 			return true;
 		}
 

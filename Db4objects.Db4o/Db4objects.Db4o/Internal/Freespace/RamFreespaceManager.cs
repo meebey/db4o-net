@@ -37,6 +37,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return null;
 			}
+			// We can just be appending to the end of the file, using one
+			// really big contigous slot that keeps growing. Let's limit.
 			int limit = length + 100;
 			if (sizeNode._key > limit)
 			{
@@ -65,6 +67,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override void Free(Slot slot)
 		{
+			// do nothing
+			// do nothing
+			// do nothing
 			int address = slot.Address();
 			int length = slot.Length();
 			if (address <= 0)
@@ -73,7 +78,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.FreeRam.LogLength(address, length);
+				DTrace.FreespacemanagerRamFree.LogLength(address, length);
 			}
 			_finder._key = address;
 			FreeSlotNode sizeNode;
@@ -127,6 +132,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private void FreeReader(StatefulBuffer reader)
 		{
+			// Do nothing.
+			// The RAM manager frees itself on reading.
 			_file.Free(reader.GetAddress(), reader.Length());
 		}
 
@@ -155,7 +162,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.GetFreespace.LogLength(address, length);
+				DTrace.FreespacemanagerGetSlot.LogLength(address, length);
 			}
 			return new Slot(address, length);
 		}
@@ -163,11 +170,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 		internal virtual int MarshalledLength()
 		{
 			return TreeInt.MarshalledLength((TreeInt)_freeBySize);
-		}
-
-		public override int OnNew(LocalObjectContainer file)
-		{
-			return 0;
 		}
 
 		public override void Read(int freeSlotsID)
@@ -182,14 +184,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 			Tree.ByRef addressTree = new Tree.ByRef();
 			if (_freeBySize != null)
 			{
-				_freeBySize.Traverse(new _IVisitor4_173(this, addressTree));
+				_freeBySize.Traverse(new _IVisitor4_168(this, addressTree));
 			}
 			_freeByAddress = addressTree.value;
 		}
 
-		private sealed class _IVisitor4_173 : IVisitor4
+		private sealed class _IVisitor4_168 : IVisitor4
 		{
-			public _IVisitor4_173(RamFreespaceManager _enclosing, Tree.ByRef addressTree)
+			public _IVisitor4_168(RamFreespaceManager _enclosing, Tree.ByRef addressTree)
 			{
 				this._enclosing = _enclosing;
 				this.addressTree = addressTree;
@@ -259,6 +261,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override byte SystemType()
 		{
+			// this is done in read(), nothing to do here
 			return FmRam;
 		}
 
@@ -267,15 +270,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 			StringBuilder sb = new StringBuilder();
 			sb.Append("RAM FreespaceManager\n");
 			sb.Append("Address Index\n");
-			_freeByAddress.Traverse(new _IVisitor4_236(this, sb));
+			_freeByAddress.Traverse(new _IVisitor4_231(this, sb));
 			sb.Append("Length Index\n");
-			_freeBySize.Traverse(new _IVisitor4_244(this, sb));
+			_freeBySize.Traverse(new _IVisitor4_239(this, sb));
 			return sb.ToString();
 		}
 
-		private sealed class _IVisitor4_236 : IVisitor4
+		private sealed class _IVisitor4_231 : IVisitor4
 		{
-			public _IVisitor4_236(RamFreespaceManager _enclosing, StringBuilder sb)
+			public _IVisitor4_231(RamFreespaceManager _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -292,9 +295,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly StringBuilder sb;
 		}
 
-		private sealed class _IVisitor4_244 : IVisitor4
+		private sealed class _IVisitor4_239 : IVisitor4
 		{
-			public _IVisitor4_244(RamFreespaceManager _enclosing, StringBuilder sb)
+			public _IVisitor4_239(RamFreespaceManager _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;
@@ -317,12 +320,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			_freeByAddress.Traverse(new _IVisitor4_257(this, visitor));
+			_freeByAddress.Traverse(new _IVisitor4_252(this, visitor));
 		}
 
-		private sealed class _IVisitor4_257 : IVisitor4
+		private sealed class _IVisitor4_252 : IVisitor4
 		{
-			public _IVisitor4_257(RamFreespaceManager _enclosing, IVisitor4 visitor)
+			public _IVisitor4_252(RamFreespaceManager _enclosing, IVisitor4 visitor)
 			{
 				this._enclosing = _enclosing;
 				this.visitor = visitor;

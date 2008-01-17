@@ -58,8 +58,10 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		public virtual void Test()
 		{
 			Foreach(GetType(), new _IVisitor4_52(this));
+			// This one should NOT cascade
 			Reopen();
 			Foreach(GetType(), new _IVisitor4_69(this));
+			// Cascade-On-Delete Test: We only want one Atom to remain.
 			Db().Commit();
 			Reopen();
 			IObjectSet os = NewQuery(GetType()).Execute();

@@ -35,6 +35,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		protected override void AdjustSizeOnRemovalByOtherTransaction(BTree btree)
 		{
+			// The size was reduced for this entry, let's change back.
 			btree.SizeChanged(_transaction, +1);
 		}
 	}

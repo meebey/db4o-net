@@ -65,6 +65,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// </param>
 		public GenericReflector(Transaction trans, IReflector delegateReflector)
 		{
+			// todo: Why have this when there is already the _repository by name? Redundant
 			_repository = new KnownClassesRepository(new GenericClassBuilder(this, delegateReflector
 				));
 			SetTransaction(trans);
@@ -86,6 +87,16 @@ namespace Db4objects.Db4o.Reflect.Generic
 				);
 			myClone._collectionUpdateDepths = (Collection4)_collectionUpdateDepths.DeepClone(
 				myClone);
+			// Interesting, adding the following messes things up.
+			// Keep the code, since it may make sense to carry the
+			// global reflectors into a running db4o session.
+			//        Iterator4 i = _classes.iterator();
+			//        while(i.hasNext()){
+			//            GenericClass clazz = (GenericClass)i.next();
+			//            clazz = (GenericClass)clazz.deepClone(myClone);
+			//            myClone._classByName.put(clazz.getName(), clazz);
+			//            myClone._classes.add(clazz);
+			//        }
 			return myClone;
 		}
 
@@ -148,6 +159,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// <seealso cref="IConfiguration.Callbacks">IConfiguration.Callbacks</seealso>
 		public virtual bool ConstructorCallsSupported()
 		{
+			//TODO: will need knowledge for .NET collections here
 			return _delegate.ConstructorCallsSupported();
 		}
 
@@ -162,6 +174,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 				)_repository.LookupByName(clazz.GetName());
 			if (claxx == null)
 			{
+				//  We don't have to worry about the superclass, it can be null
+				//  because handling is delegated anyway
 				claxx = GenericClass(clazz);
 				_repository.Register(claxx);
 			}
@@ -175,6 +189,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			string name = clazz.GetName();
 			if (name.Equals(typeof(GenericArray).FullName))
 			{
+				// special case, comparing name because can't compare class == class directly with ReflectClass
 				ret = new GenericArrayClass(this, clazz, name, null);
 			}
 			else
@@ -273,6 +288,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 				_repository.Register(claxx);
 				return claxx;
 			}
+			// TODO: Using .equals() here would be more consistent with 
+			//       the equals() method in GenericClass.
 			if (existingClass != claxx)
 			{
 				throw new InvalidOperationException();
@@ -292,6 +309,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// <returns>true  if a candidate ReflectClass is a collection.</returns>
 		public virtual bool IsCollection(IReflectClass candidate)
 		{
+			//candidate = candidate.getDelegate(); 
 			IEnumerator i = _collectionPredicates.GetEnumerator();
 			while (i.MoveNext())
 			{
@@ -307,6 +325,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// <param name="clazz">class to be registered</param>
 		public virtual void RegisterCollection(Type clazz)
 		{
+			//TODO: will need knowledge for .NET collections here
+			// possibility: call registercollection with strings
 			RegisterCollection(ClassPredicate(clazz));
 		}
 

@@ -11,6 +11,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			if (IsMTOC())
 			{
+				// Cast to ExtClient won't work and switching files is 
+				// not supported.
 				return;
 			}
 			Client().SwitchToFile(SwitchingFilesFromClientUtil.FilenameA);

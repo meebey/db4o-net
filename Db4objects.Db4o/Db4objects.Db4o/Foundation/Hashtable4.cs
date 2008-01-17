@@ -23,7 +23,9 @@ namespace Db4objects.Db4o.Foundation
 
 		public Hashtable4(int size)
 		{
+			// FIELDS ARE PUBLIC SO THEY CAN BE REFLECTED ON IN JDKs <= 1.1
 			size = NewSize(size);
+			// legacy for .NET conversion
 			_tableSize = 1;
 			while (_tableSize < size)
 			{

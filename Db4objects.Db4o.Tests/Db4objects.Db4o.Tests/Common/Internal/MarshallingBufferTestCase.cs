@@ -133,6 +133,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			Assert.AreEqual(Data1, content.ReadInt());
 			int address = content.ReadInt();
 			content.ReadInt();
+			// length
 			Assert.AreEqual(Data2, content.ReadByte());
 			content.Seek(address);
 			Assert.AreEqual(Data3, content.ReadInt());

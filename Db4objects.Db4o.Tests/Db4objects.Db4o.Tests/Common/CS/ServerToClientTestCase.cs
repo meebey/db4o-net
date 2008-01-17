@@ -72,6 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			client2.Commit();
 			client1.Commit();
+			// give some time for all the message to be processed...
 			Cool.SleepIgnoringInterruption(500);
 		}
 
