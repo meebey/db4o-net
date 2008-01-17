@@ -58,11 +58,6 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			return null;
 		}
 
-		public override int OnNew(LocalObjectContainer file)
-		{
-			return 0;
-		}
-
 		public override void Read(int freeSlotsID)
 		{
 		}

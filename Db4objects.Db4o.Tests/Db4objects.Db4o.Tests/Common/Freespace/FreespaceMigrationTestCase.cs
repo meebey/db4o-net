@@ -32,19 +32,49 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			ProduceSomeFreeSpace();
 			Db().Commit();
-			for (int i = 0; i < 5; i++)
+			int maximumFreespace = StabilizeFreespaceManagerAlterationEffects();
+			for (int i = 0; i < 10; i++)
 			{
-				int oldFreespace = CurrentFreespaceManager().TotalFreespace();
+				AssertFreespaceSmallerThan(maximumFreespace);
 				configuration.Freespace().UseRamSystem();
 				Reopen();
-				Assert.IsInstanceOf(typeof(RamFreespaceManager), CurrentFreespaceManager());
-				int newFreespace = CurrentFreespaceManager().TotalFreespace();
-				if (i > 2)
-				{
-					Assert.AreEqual(oldFreespace, newFreespace);
-				}
+				AssertFreespaceManagerClass(typeof(RamFreespaceManager));
+				AssertFreespaceSmallerThan(maximumFreespace);
 				configuration.Freespace().UseBTreeSystem();
+				Reopen();
+				AssertFreespaceManagerClass(typeof(BTreeFreespaceManager));
 			}
+		}
+
+		private void AssertFreespaceManagerClass(Type clazz)
+		{
+			Assert.IsInstanceOf(clazz, CurrentFreespaceManager());
+		}
+
+		private void AssertFreespaceSmallerThan(int maximumFreespace)
+		{
+			Assert.IsSmaller(maximumFreespace, CurrentFreespace());
+		}
+
+		private int CurrentFreespace()
+		{
+			return CurrentFreespaceManager().TotalFreespace();
+		}
+
+		/// <exception cref="Exception"></exception>
+		private int StabilizeFreespaceManagerAlterationEffects()
+		{
+			int maximumFreespace = 0;
+			for (int i = 0; i < 3; i++)
+			{
+				configuration.Freespace().UseRamSystem();
+				Reopen();
+				maximumFreespace = Math.Max(maximumFreespace, CurrentFreespace());
+				configuration.Freespace().UseBTreeSystem();
+				Reopen();
+				maximumFreespace = Math.Max(maximumFreespace, CurrentFreespace());
+			}
+			return maximumFreespace;
 		}
 	}
 }

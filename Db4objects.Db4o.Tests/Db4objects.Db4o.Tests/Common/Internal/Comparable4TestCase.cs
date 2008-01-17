@@ -57,7 +57,9 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			int id2 = StoreItem();
 			int smallerID = Math.Min(id1, id2);
 			int biggerID = Math.Max(id1, id2);
-			AssertHandlerComparison(typeof(ClassMetadata), smallerID, biggerID);
+			ClassMetadata classMetadata = new ClassMetadata(Stream(), Reflector().ForClass(typeof(
+				Comparable4TestCase.Item)));
+			AssertHandlerComparison(classMetadata, smallerID, biggerID);
 		}
 
 		private int StoreItem()
@@ -71,6 +73,12 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			)
 		{
 			ITypeHandler4 handler = (ITypeHandler4)NewInstance(handlerClass);
+			AssertHandlerComparison(handler, smaller, greater);
+		}
+
+		private void AssertHandlerComparison(ITypeHandler4 handler, object smaller, object
+			 greater)
+		{
 			IPreparedComparison comparable = handler.PrepareComparison(smaller);
 			Assert.IsNotNull(comparable);
 			Assert.AreEqual(0, comparable.CompareTo(smaller));

@@ -7,7 +7,9 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Config
 {
@@ -1037,5 +1039,21 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <param name="milliseconds">the time in milliseconds</param>
 		void WeakReferenceCollectionInterval(int milliseconds);
+
+		/// <summary>
+		/// allows registering special TypeHandlers for customized marshalling
+		/// and customized comparisons.
+		/// </summary>
+		/// <remarks>
+		/// allows registering special TypeHandlers for customized marshalling
+		/// and customized comparisons.
+		/// </remarks>
+		/// <param name="predicate">
+		/// to specify for which classes and versions the
+		/// TypeHandler is to be used.
+		/// </param>
+		/// <param name="typeHandler">to be used for the classes that match the predicate.</param>
+		void RegisterTypeHandler(ITypeHandlerPredicate predicate, ITypeHandler4 typeHandler
+			);
 	}
 }
