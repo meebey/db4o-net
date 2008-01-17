@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oUnit-2005", "..\Db4oUni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oUnit.Extensions-2005", "..\Db4oUnit.Extensions\Db4oUnit.Extensions-2005.csproj", "{9ABAFC31-D29D-4000-B6A0-C24F0BB221F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.NativeQueries", "..\Db4objects.Db4o.NativeQueries\Db4objects.Db4o.NativeQueries.csproj", "{B72796C1-6F2D-41B8-BC42-BF0E54BA4575}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.NativeQueries-2005", "..\Db4objects.Db4o.NativeQueries\Db4objects.Db4o.NativeQueries-2005.csproj", "{B72796C1-6F2D-41B8-BC42-BF0E54BA4575}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Instrumentation", "..\Db4objects.Db4o.Instrumentation\Db4objects.Db4o.Instrumentation.csproj", "{C12D551F-7969-4BC8-9096-CEF2A9B8DDBD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Instrumentation-2005", "..\Db4objects.Db4o.Instrumentation\Db4objects.Db4o.Instrumentation-2005.csproj", "{C12D551F-7969-4BC8-9096-CEF2A9B8DDBD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oTool-2005", "Db4oTool\Db4oTool-2005.csproj", "{6F3BE659-0653-4982-94D6-F1D9D8887E09}"
 EndProject
