@@ -80,13 +80,13 @@
     <Compile Include="TA\TAInstrumentation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Db4objects.Db4o.Instrumentation\Db4objects.Db4o.Instrumentation.csproj">
-      <Project>{C12D551F-7969-4BC8-9096-CEF2A9B8DDBD}</Project>
-      <Name>Db4objects.Db4o.Instrumentation</Name>
+    <ProjectReference Include="..\..\Db4objects.Db4o.Instrumentation\Db4objects.Db4o.Instrumentation-2005.csproj">
+      <Project>{A13714E1-678F-4C59-B550-A1637615D145}</Project>
+      <Name>Db4objects.Db4o.Instrumentation-2005</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Db4objects.Db4o.NativeQueries\Db4objects.Db4o.NativeQueries.csproj">
-      <Project>{B72796C1-6F2D-41B8-BC42-BF0E54BA4575}</Project>
-      <Name>Db4objects.Db4o.NativeQueries</Name>
+    <ProjectReference Include="..\..\Db4objects.Db4o.NativeQueries\Db4objects.Db4o.NativeQueries-2005.csproj">
+      <Project>{B681E4AD-036E-4431-AF5C-C75E8578C063}</Project>
+      <Name>Db4objects.Db4o.NativeQueries-2005</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2005.csproj">
       <Project>{4FA6645B-E14B-4F18-A2CC-C1925663EFCE}</Project>
