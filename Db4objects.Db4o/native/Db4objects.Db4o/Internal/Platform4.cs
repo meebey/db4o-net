@@ -671,5 +671,10 @@ namespace Db4objects.Db4o.Internal
         {
             return false;
         }
+
+        public static long NanoTime()
+        {
+            throw new NotImplementedException();
+        }
 	}
 }
