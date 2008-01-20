@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return (Db4oLibrary[]) libraries.ToArray(typeof(Db4oLibrary));
 		}
 
-        private static string LibraryPath()
+        public static string LibraryPath()
 		{
 			return WorkspaceServices.WorkspacePath("db4o.archives/net-2.0");
 		}
