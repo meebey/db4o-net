@@ -2,13 +2,12 @@ using System;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter7
+namespace Db4objects.Db4o.Tutorial.F1.Chapter8
 {
 
 public class Car : IActivatable 
 {
     private readonly String _model;
-    private Pilot _pilot;
     private SensorReadout _history;
     
     [Transient]
@@ -17,28 +16,7 @@ public class Car : IActivatable
     public Car(String model) 
     {
         this._model=model;
-        this._pilot=null;
         this._history=null;
-    }
-
-    public Pilot Pilot
-    {
-        get
-        {
-			Activate(ActivationPurpose.Read);
-            return _pilot;
-        }
-
-        set
-        {
-			Activate(ActivationPurpose.Write);
-            this._pilot = value;
-        }
-    }
-    
-    public Pilot PilotWithoutActivation
-    {
-        get { return _pilot; }
     }
 
     public String Model
@@ -63,7 +41,6 @@ public class Car : IActivatable
     {   
         AppendToHistory(new TemperatureSensorReadout(DateTime.Now,this,"oil", PollOilTemperature()));
         AppendToHistory(new TemperatureSensorReadout(DateTime.Now, this, "water", PollWaterTemperature()));
-        AppendToHistory(new PressureSensorReadout(DateTime.Now, this, "oil", PollOilPressure()));
     }
 
     protected double PollOilTemperature() 
@@ -76,15 +53,10 @@ public class Car : IActivatable
         return 0.2* CountHistoryElements();
     }
 
-    protected double PollOilPressure() 
-    {
-        return 0.3* CountHistoryElements();
-    }
-
     public override String ToString() 
     {
 		Activate(ActivationPurpose.Read);
-        return string.Format("{0}[{1}]/{2}", _model, _pilot, CountHistoryElements());
+        return string.Format("{0}/{1}", _model, CountHistoryElements());
     }
     
     private int CountHistoryElements() 

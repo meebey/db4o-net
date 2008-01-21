@@ -58,9 +58,13 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
 
         public void Bind(IActivator activator) 
         {
-            if(_activator != null || activator == null) 
+            if (_activator == activator)
             {
-                throw new InvalidOperationException();
+                return;
+            }
+            if (activator != null && null != _activator)
+            {
+                throw new System.InvalidOperationException();
             }
             _activator = activator;
         }

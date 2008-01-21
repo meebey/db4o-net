@@ -200,6 +200,10 @@
     <Compile Include="F1\Chapter7\SensorReadout.cs" />
     <Compile Include="F1\Chapter7\TemperatureSensorReadout.cs" />
     <Compile Include="F1\Chapter7\TransparentActivationExample.cs" />
+    <Compile Include="F1\Chapter8\Car.cs" />
+    <Compile Include="F1\Chapter8\SensorReadout.cs" />
+    <Compile Include="F1\Chapter8\TemperatureSensorReadout.cs" />
+    <Compile Include="F1\Chapter8\TransparentPersistenceExample.cs" />
     <Compile Include="F1\Util.cs">
       <SubType>Code</SubType>
     </Compile>
