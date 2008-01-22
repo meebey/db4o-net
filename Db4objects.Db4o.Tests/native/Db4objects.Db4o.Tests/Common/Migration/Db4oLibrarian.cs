@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Globalization;
 using System.IO;
 using Db4objects.Db4o.Tests.Util;
 
@@ -6,6 +8,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 {
 	public class Db4oLibrarian
 	{
+		private const double MinimunVersionToTest = 6.0;
 		private Db4oLibraryEnvironmentProvider _provider;
 
 		public Db4oLibrarian(Db4oLibraryEnvironmentProvider provider)
@@ -19,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			foreach (string directory in Directory.GetDirectories(LibraryPath()))
 			{
 				// comment out the next line to run against legacy versions
-				if (!Path.GetFileName(directory).StartsWith("6")) continue;
+				if (!IsVersionOrGreater(directory, MinimunVersionToTest)) continue;
 
 				string db4oLib = FindLibraryFile(directory);
 				if (null == db4oLib) continue;
@@ -28,7 +31,33 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return (Db4oLibrary[]) libraries.ToArray(typeof(Db4oLibrary));
 		}
 
-        public static string LibraryPath()
+		private static bool IsVersionOrGreater(string versionName, double minimumVersion)
+		{
+#if !CF_2_0
+			double currentVersion;
+			if (!Double.TryParse(Path.GetFileName(versionName), NumberStyles.AllowDecimalPoint | NumberStyles.Float, NumberFormatInfo.InvariantInfo, out currentVersion))
+			{
+				return false;
+			}
+
+			return currentVersion >= minimumVersion;
+#else
+			return false;
+#endif
+		}
+
+		public static bool IsLegacyVersion(string versionName)
+		{
+			return VersionFromVersionName(versionName) < MinimunVersionToTest;
+		}
+
+		private static double VersionFromVersionName(string versionName)
+		{
+			Version version = new Version(versionName);
+			return version.Major + version.Minor / 10;
+		}
+
+		public static string LibraryPath()
 		{
 			return WorkspaceServices.WorkspacePath("db4o.archives/net-2.0");
 		}

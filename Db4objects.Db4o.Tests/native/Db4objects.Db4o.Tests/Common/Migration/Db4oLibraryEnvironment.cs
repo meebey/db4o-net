@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private void SetUpLegacyAdapter()
 		{
-			if (Version().StartsWith("6")) return;
+			if (!Db4oLibrarian.IsLegacyVersion(Version())) return;
 
 			string adapterAssembly = Path.Combine(BaseDirectory(), "Db4objects.Db4o.dll");
 			new LegacyAdapterEmitter(_targetAssembly, Version()).Emit(adapterAssembly);
