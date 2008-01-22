@@ -20,7 +20,9 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
         {
             string code = @"
 using System;
+using System.IO;
 
+using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o;
@@ -34,11 +36,14 @@ public class TestNQOptimizerLoadFailure : MarshalByRefObject, INQTestRunner
         ListenForNQOptimizerLoadFailures listener = new ListenForNQOptimizerLoadFailures();
         config.Diagnostic().AddListener(listener);
 
-        using(IObjectContainer db = Db4oFactory.OpenFile(""test.odb""))
+		string databaseFile = Path.GetTempFileName();
+        using(IObjectContainer db = Db4oFactory.OpenFile(databaseFile))
         {
             db.Set(new Object());
             db.Query<Object>(delegate { return true; });
         }
+
+		File4.Delete(databaseFile);
 
         return listener.UnableToLoadNQOptimizer;
     }
