@@ -347,6 +347,43 @@ class TAInstrumentationSubject : ITestCase
         Assert.AreEqual(1, ma.ReadCount);
     }
 
+	public void TestBindToNull()
+	{
+		Tagged obj = new Tagged("test");
+		MockActivator ma = ActivatorFor(obj);
+		IActivatable activatable = (IActivatable)obj;
+		activatable.Bind(null);
+
+		string tags = obj.tags;
+		Assert.AreEqual(0, ma.ReadCount);
+	}
+
+	public void TestBindSameActivator()
+	{
+		Tagged obj = new Tagged("test");
+		MockActivator ma = ActivatorFor(obj);
+		IActivatable activatable = (IActivatable)obj;
+		activatable.Bind(ma);
+
+		string tags = obj.tags;
+		Assert.AreEqual(1, ma.ReadCount);
+	}
+
+	public void TestBindDifferentActivator()
+	{
+		Tagged obj = new Tagged("test");
+		MockActivator ma = ActivatorFor(obj);
+		IActivatable activatable = (IActivatable)obj;
+
+		Assert.Expect(
+			typeof (InvalidOperationException),
+			delegate
+				{
+					activatable.Bind(ActivatorFor(obj));
+				});
+	}
+
+
 	private MockActivator ActivatorFor(object p)
 	{
 		return MockActivator.ActivatorFor(p);

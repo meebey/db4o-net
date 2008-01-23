@@ -1,10 +1,8 @@
-using System.Reflection;
+using System;
 using Db4oTool.Core;
-using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using ParameterAttributes=Mono.Cecil.ParameterAttributes;
 
 namespace Db4oTool.TA
 {
@@ -19,17 +17,44 @@ namespace Db4oTool.TA
 			MethodDefinition bind = NewExplicitMethod(typeof(IActivatable).GetMethod("Bind"));
 			CilWorker cil = bind.Body.CilWorker;
 
-			cil.Emit(OpCodes.Ldarg_0);
+			Instruction activatorSetting = cil.Create(OpCodes.Ldarg_0);
+
+			// if (_activator == activator) {
+			//   return;
+			// }
+			LoadActivatorField(cil);
+			cil.Emit(OpCodes.Ldarg_1);
+
+			Instruction isParameterNullInstruction = cil.Create(OpCodes.Ldarg_1);
+
+			cil.Emit(OpCodes.Bne_Un, isParameterNullInstruction);
+			cil.Emit(OpCodes.Ret);
+
+			// if (activator != null && _activator != null) {
+			//   throw new InvalidOperationException();
+			// }
+			cil.Append(isParameterNullInstruction);
+			cil.Emit(OpCodes.Brfalse, activatorSetting);
+			LoadActivatorField(cil);
+			cil.Emit(OpCodes.Brfalse, activatorSetting);
+
+			cil.Emit(OpCodes.Newobj, _context.Import(typeof(InvalidOperationException).GetConstructor(new Type[0])));
+			cil.Emit(OpCodes.Throw);
+			
+			// _activator = activator;
+			cil.Append(activatorSetting);
 			cil.Emit(OpCodes.Ldarg_1);
 			cil.Emit(OpCodes.Stfld, _activatorField);
 
 			cil.Emit(OpCodes.Ret);
+
 			return bind;
 		}
 
-		private TypeReference ActivatorType()
+		private void LoadActivatorField(CilWorker cil)
 		{
-			return Import(typeof(IActivator));
+			cil.Emit(OpCodes.Ldarg_0);
+			cil.Emit(OpCodes.Ldfld, _activatorField);
 		}
 	}
 }
