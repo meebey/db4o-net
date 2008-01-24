@@ -672,5 +672,10 @@ namespace Db4objects.Db4o.Internal
             return false;
         }
 
+        public static void RegisterPlatformHandlers(ObjectContainerBase container)
+        {
+            // do nothgin
+        }
+
 	}
 }
