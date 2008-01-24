@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Internal.Marshall;
+
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
@@ -24,6 +26,14 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool IsValid()
 		{
 			return _id > 0;
+		}
+
+		public static Db4objects.Db4o.Internal.ObjectID Read(IInternalReadContext context
+			)
+		{
+			int id = context.ReadInt();
+			return id == 0 ? Db4objects.Db4o.Internal.ObjectID.IsNull : new Db4objects.Db4o.Internal.ObjectID
+				(id);
 		}
 	}
 }

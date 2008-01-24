@@ -23,13 +23,13 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				), typeof(GetByUUIDTestCase), typeof(GetSingleSimpleArrayTestCase), typeof(HandlerRegistryTestCase
 				), typeof(IndexCreateDropTestCase), typeof(IndexedBlockSizeQueryTestCase), typeof(
 				LazyObjectReferenceTestCase), typeof(LockedTreeTestCase), typeof(LongLinkedListTestCase
-				), typeof(MultiDeleteTestCase), typeof(NakedObjectTestCase), typeof(ObjectNotStorableExceptionTestCase
-				), typeof(PeekPersistedTestCase), typeof(PersistentIntegerArrayTestCase), typeof(
-				PersistStaticFieldValuesTestCase), typeof(PersistTypeTestCase), typeof(PreventMultipleOpenTestCase
-				), typeof(QueryByInterface), typeof(ReAddCascadedDeleteTestCase), typeof(RollbackDeleteTestCase
-				), typeof(RollbackTestCase), typeof(RollbackUpdateTestCase), typeof(RollbackUpdateCascadeTestCase
-				), typeof(SimplestPossibleTestCase), typeof(SystemInfoTestCase), typeof(UpdateDepthTestCase
-				) };
+				), typeof(MultiDeleteTestCase), typeof(PlainObjectTestCase), typeof(PeekPersistedTestCase
+				), typeof(PersistentIntegerArrayTestCase), typeof(PersistStaticFieldValuesTestCase
+				), typeof(PersistTypeTestCase), typeof(PreventMultipleOpenTestCase), typeof(QueryByInterface
+				), typeof(ReAddCascadedDeleteTestCase), typeof(RepeatDeleteReaddTestCase), typeof(
+				RollbackDeleteTestCase), typeof(RollbackTestCase), typeof(RollbackUpdateTestCase
+				), typeof(RollbackUpdateCascadeTestCase), typeof(SimplestPossibleTestCase), typeof(
+				SystemInfoTestCase), typeof(UpdateDepthTestCase) };
 		}
 	}
 }

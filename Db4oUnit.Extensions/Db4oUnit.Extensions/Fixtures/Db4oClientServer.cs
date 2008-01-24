@@ -23,7 +23,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private IObjectServer _server;
 
-		private readonly Sharpen.IO.File _yap;
+		private readonly Sharpen.IO.File _file;
 
 		private bool _embeddedClient;
 
@@ -38,7 +38,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		public Db4oClientServer(IConfigurationSource configSource, string fileName, bool 
 			embeddedClient, string label) : base(configSource)
 		{
-			_yap = new Sharpen.IO.File(fileName);
+			_file = new Sharpen.IO.File(fileName);
 			_embeddedClient = embeddedClient;
 			_label = label;
 		}
@@ -68,7 +68,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		private void OpenServer()
 		{
 			_serverConfig = CloneDb4oConfiguration(Config());
-			_server = Db4oFactory.OpenServer(_serverConfig, _yap.GetAbsolutePath(), -1);
+			_server = Db4oFactory.OpenServer(_serverConfig, _file.GetAbsolutePath(), -1);
 			_port = _server.Ext().Port();
 			_server.GrantAccess(Username, Password);
 		}
@@ -101,7 +101,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		protected override void DoClean()
 		{
-			_yap.Delete();
+			_file.Delete();
 		}
 
 		public virtual IObjectServer Server()

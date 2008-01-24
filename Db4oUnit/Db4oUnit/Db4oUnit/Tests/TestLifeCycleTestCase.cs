@@ -10,8 +10,9 @@ namespace Db4oUnit.Tests
 		public virtual void TestLifeCycle()
 		{
 			TestSuite suite = new ReflectionTestSuiteBuilder(typeof(RunsLifeCycle)).Build();
+			RunsLifeCycle testSubject = GetTestSubject(suite);
 			FrameworkTestCase.RunTestAndExpect(suite, 1);
-			Assert.IsTrue(GetTestSubject(suite).TearDownCalled());
+			Assert.IsTrue(testSubject.TearDownCalled());
 		}
 
 		private RunsLifeCycle GetTestSubject(TestSuite suite)

@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -19,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			new TestRunner(typeof(IncompatibleFileFormatExceptionTestCase)).Run();
 		}
 
-		private static readonly string IncompatibleFileFormat = "IncompatibleFileFormatExceptionTestCase";
+		private static readonly string IncompatibleFileFormat = Path.GetTempFileName();
 
 		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()

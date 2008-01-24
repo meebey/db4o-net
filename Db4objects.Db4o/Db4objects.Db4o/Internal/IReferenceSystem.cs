@@ -12,10 +12,6 @@ namespace Db4objects.Db4o.Internal
 
 		void AddExistingReference(ObjectReference @ref);
 
-		void AddExistingReferenceToObjectTree(ObjectReference @ref);
-
-		void AddExistingReferenceToIdTree(ObjectReference @ref);
-
 		void Commit();
 
 		ObjectReference ReferenceForId(int id);

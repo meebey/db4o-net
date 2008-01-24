@@ -4,6 +4,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
+using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -12,7 +13,7 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class PrimitiveFieldHandler : ClassMetadata
+	public class PrimitiveFieldHandler : ClassMetadata, IFieldHandler
 	{
 		private readonly ITypeHandler4 _handler;
 

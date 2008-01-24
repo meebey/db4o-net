@@ -751,16 +751,24 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return;
 			}
-			IEnumerator i = IterateJoins();
-			while (i.MoveNext())
+			Collection4 toBeRemoved = CollectJoinsToBeRemoved();
+			i_joins.RemoveAll(toBeRemoved);
+			CheckLastJoinRemoved();
+		}
+
+		private Collection4 CollectJoinsToBeRemoved()
+		{
+			Collection4 toBeRemoved = new Collection4();
+			IEnumerator joinIter = IterateJoins();
+			while (joinIter.MoveNext())
 			{
-				QConJoin qcj = (QConJoin)i.Current;
-				if (qcj.RemoveForParent(this))
+				QConJoin join = (QConJoin)joinIter.Current;
+				if (join.RemoveForParent(this))
 				{
-					i_joins.Remove(qcj);
+					toBeRemoved.Add(join);
 				}
 			}
-			CheckLastJoinRemoved();
+			return toBeRemoved;
 		}
 
 		internal virtual void RemoveJoin(QConJoin a_join)

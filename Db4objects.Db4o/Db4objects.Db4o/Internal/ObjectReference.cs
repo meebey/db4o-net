@@ -100,28 +100,33 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (!IsTransparentPersistenceEnabled())
+			TransparentPersistenceSupport transparentPersistence = ConfiguredTransparentPersistence
+				();
+			if (null == transparentPersistence)
 			{
 				// don't check for update again for this object
 				_updateListener = NullTransactionListener.Instance;
 				return;
 			}
-			_updateListener = new _ITransactionListener_84(this, transaction);
+			_updateListener = new _ITransactionListener_85(this, transparentPersistence, transaction
+				);
 			transaction.AddTransactionListener(_updateListener);
 		}
 
-		private sealed class _ITransactionListener_84 : ITransactionListener
+		private sealed class _ITransactionListener_85 : ITransactionListener
 		{
-			public _ITransactionListener_84(ObjectReference _enclosing, Db4objects.Db4o.Internal.Transaction
-				 transaction)
+			public _ITransactionListener_85(ObjectReference _enclosing, TransparentPersistenceSupport
+				 transparentPersistence, Db4objects.Db4o.Internal.Transaction transaction)
 			{
 				this._enclosing = _enclosing;
+				this.transparentPersistence = transparentPersistence;
 				this.transaction = transaction;
 			}
 
 			public void PostRollback()
 			{
 				this._enclosing.ResetListener();
+				transparentPersistence.Rollback(transaction.ObjectContainer(), this._enclosing);
 			}
 
 			public void PreCommit()
@@ -132,6 +137,8 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly ObjectReference _enclosing;
 
+			private readonly TransparentPersistenceSupport transparentPersistence;
+
 			private readonly Db4objects.Db4o.Internal.Transaction transaction;
 		}
 
@@ -140,17 +147,17 @@ namespace Db4objects.Db4o.Internal
 			_updateListener = null;
 		}
 
-		private bool IsTransparentPersistenceEnabled()
+		private TransparentPersistenceSupport ConfiguredTransparentPersistence()
 		{
 			IEnumerator iterator = Container().Config().ConfigurationItemsIterator();
 			while (iterator.MoveNext())
 			{
 				if (iterator.Current is TransparentPersistenceSupport)
 				{
-					return true;
+					return (TransparentPersistenceSupport)iterator.Current;
 				}
 			}
-			return false;
+			return null;
 		}
 
 		public virtual void Activate(Db4objects.Db4o.Internal.Transaction ta, object obj, 
@@ -203,15 +210,6 @@ namespace Db4objects.Db4o.Internal
 			if (container.ConfigImpl().MessageLevel() > level)
 			{
 				container.Message(string.Empty + GetID() + " " + @event + " " + _class.GetName());
-			}
-		}
-
-		public void AddExistingReferenceToIdTree(Db4objects.Db4o.Internal.Transaction trans
-			)
-		{
-			if (!(_class is PrimitiveFieldHandler))
-			{
-				trans.ReferenceSystem().AddExistingReferenceToIdTree(this);
 			}
 		}
 
@@ -557,6 +555,12 @@ namespace Db4objects.Db4o.Internal
 				(container, obj, EventDispatcher.CanUpdate);
 		}
 
+		public virtual void Ref_init()
+		{
+			Hc_init();
+			Id_init();
+		}
+
 		/// <summary>HCTREE ****</summary>
 		public virtual Db4objects.Db4o.Internal.ObjectReference Hc_add(Db4objects.Db4o.Internal.ObjectReference
 			 newRef)
@@ -569,7 +573,7 @@ namespace Db4objects.Db4o.Internal
 			return Hc_add1(newRef);
 		}
 
-		public virtual void Hc_init()
+		private void Hc_init()
 		{
 			_hcPreceding = null;
 			_hcSubsequent = null;
@@ -838,10 +842,15 @@ namespace Db4objects.Db4o.Internal
 		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_add(Db4objects.Db4o.Internal.ObjectReference
 			 newRef)
 		{
-			newRef._idPreceding = null;
-			newRef._idSubsequent = null;
-			newRef._idSize = 1;
+			newRef.Id_init();
 			return Id_add1(newRef);
+		}
+
+		private void Id_init()
+		{
+			_idPreceding = null;
+			_idSubsequent = null;
+			_idSize = 1;
 		}
 
 		private Db4objects.Db4o.Internal.ObjectReference Id_add1(Db4objects.Db4o.Internal.ObjectReference

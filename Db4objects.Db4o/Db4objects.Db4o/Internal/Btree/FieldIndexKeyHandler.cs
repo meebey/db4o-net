@@ -67,9 +67,9 @@ namespace Db4objects.Db4o.Internal.Btree
 			_valueHandler.DefragIndexEntry(context);
 		}
 
-		public virtual IPreparedComparison PrepareComparison(object obj)
+		public virtual IPreparedComparison PrepareComparison(object fieldIndexKey)
 		{
-			FieldIndexKey source = (FieldIndexKey)obj;
+			FieldIndexKey source = (FieldIndexKey)fieldIndexKey;
 			IPreparedComparison preparedValueComparison = _valueHandler.PrepareComparison(source
 				.Value());
 			IPreparedComparison preparedParentIdComparison = _parentIdHandler.NewPrepareCompare

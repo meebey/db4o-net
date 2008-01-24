@@ -50,10 +50,5 @@ namespace Db4objects.Db4o.Internal.Marshall
 			// Errors typically occur, if classes don't match
 			return null;
 		}
-
-		public override void Defrag(IDefragmentContext context)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

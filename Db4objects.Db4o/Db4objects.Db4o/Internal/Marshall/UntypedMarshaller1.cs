@@ -31,23 +31,5 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			return ret;
 		}
-
-		public override void Defrag(IDefragmentContext context)
-		{
-			int payLoadOffSet = context.ReadInt();
-			if (payLoadOffSet == 0)
-			{
-				return;
-			}
-			int linkOffSet = context.Offset();
-			context.Seek(payLoadOffSet);
-			int classMetadataID = context.CopyIDReturnOriginalID();
-			ClassMetadata classMetadata = context.ClassMetadataForId(classMetadataID);
-			if (classMetadata != null)
-			{
-				classMetadata.Defragment(context);
-			}
-			context.Seek(linkOffSet);
-		}
 	}
 }

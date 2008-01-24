@@ -11,8 +11,9 @@ namespace Db4oUnit.Tests
 		public virtual TestSuite Build()
 		{
 			return new ReflectionTestSuiteBuilder(new Type[] { typeof(FrameworkTestCase), typeof(
-				AssertTestCase), typeof(TestLifeCycleTestCase), typeof(ReflectionTestSuiteBuilderTestCase
-				), typeof(ReinstantiatePerMethodTest) }).Build();
+				AssertTestCase), typeof(TestLifeCycleTestCase), typeof(TestSuiteTestCase), typeof(
+				ReflectionTestSuiteBuilderTestCase), typeof(ReinstantiatePerMethodTest) }).Build
+				();
 		}
 
 		public static void Main(string[] args)

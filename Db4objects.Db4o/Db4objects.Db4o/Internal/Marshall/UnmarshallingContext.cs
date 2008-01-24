@@ -237,14 +237,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _reference;
 		}
 
-		public virtual void AddToIDTree()
-		{
-			if (_addToIDTree == Const4.AddToIdTree)
-			{
-				_reference.AddExistingReferenceToIdTree(Transaction());
-			}
-		}
-
 		public virtual void PersistentObject(object obj)
 		{
 			_object = obj;

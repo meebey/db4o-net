@@ -2,32 +2,29 @@
 
 using System.IO;
 using Db4oUnit;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Header
 {
-	public class OldHeaderTest : ITestCase
+	public class OldHeaderTest : ITestCase, IOptOutNoFileSystemData
 	{
-		private static readonly string OriginalFile = WorkspaceServices.WorkspaceTestFilePath
-			("db4oVersions/db4o_5.5.2");
-
-		private static readonly string DbFile = WorkspaceServices.WorkspaceTestFilePath("db4oVersions/db4o_5.5.2.yap"
-			);
-
 		/// <exception cref="IOException"></exception>
 		public virtual void Test()
 		{
-			if (!System.IO.File.Exists(OriginalFile))
+			string originalFilePath = OriginalFilePath();
+			string dbFilePath = DbFilePath();
+			if (!System.IO.File.Exists(originalFilePath))
 			{
-				TestPlatform.EmitWarning(OriginalFile + " does not exist. Can not run " + GetType
+				TestPlatform.EmitWarning(originalFilePath + " does not exist. Can not run " + GetType
 					().FullName);
 				return;
 			}
-			File4.Copy(OriginalFile, DbFile);
+			File4.Copy(originalFilePath, dbFilePath);
 			Db4oFactory.Configure().AllowVersionUpdates(true);
-			IObjectContainer oc = Db4oFactory.OpenFile(DbFile);
+			IObjectContainer oc = Db4oFactory.OpenFile(dbFilePath);
 			try
 			{
 				Assert.IsNotNull(oc);
@@ -37,6 +34,16 @@ namespace Db4objects.Db4o.Tests.Common.Header
 				oc.Close();
 				Db4oFactory.Configure().AllowVersionUpdates(false);
 			}
+		}
+
+		private static string OriginalFilePath()
+		{
+			return WorkspaceServices.WorkspaceTestFilePath("db4oVersions/db4o_5.5.2");
+		}
+
+		private static string DbFilePath()
+		{
+			return WorkspaceServices.WorkspaceTestFilePath("db4oVersions/db4o_5.5.2.yap");
 		}
 	}
 }

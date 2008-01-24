@@ -4,6 +4,7 @@ using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Diagnostic;
+using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Reflect;
@@ -28,19 +29,19 @@ namespace Db4objects.Db4o.Internal
 		private static readonly IDb4oTypeImpl[] _db4oTypes = new IDb4oTypeImpl[] { new BlobImpl
 			() };
 
-		private ClassMetadata i_anyArray;
+		private ClassMetadata _untypedArrayHandler;
 
-		private ClassMetadata i_anyArrayN;
+		private ClassMetadata _untypedMultiDimensionalArrayHandler;
 
 		public StringHandler _stringHandler;
 
-		private Hashtable4 _handlers = new Hashtable4(16);
+		private Hashtable4 _mapIdToTypeInfo = NewHashtable();
 
-		private Hashtable4 _classes = new Hashtable4(16);
+		private Hashtable4 _mapFieldHandlerToId = NewHashtable();
 
-		private Hashtable4 _classMetadata = new Hashtable4(16);
+		private Hashtable4 _mapTypeHandlerToId = NewHashtable();
 
-		private Hashtable4 _ids = new Hashtable4(16);
+		private Hashtable4 _mapReflectorToClassMetadata = NewHashtable();
 
 		private int _highestBuiltinTypeID = Handlers4.AnyArrayNId + 1;
 
@@ -51,9 +52,11 @@ namespace Db4objects.Db4o.Internal
 		private readonly VirtualFieldMetadata[] _virtualFields = new VirtualFieldMetadata
 			[2];
 
-		private readonly Hashtable4 _mapReflectorToHandler = new Hashtable4(32);
+		private readonly Hashtable4 _mapReflectorToFieldHandler = NewHashtable();
 
-		private readonly Hashtable4 _mapHandlerToReflector = new Hashtable4(32);
+		private readonly Hashtable4 _mapReflectorToTypeHandler = NewHashtable();
+
+		private readonly Hashtable4 _mapFieldHandlerToReflector = NewHashtable();
 
 		private SharedIndexedFields _indexes;
 
@@ -71,7 +74,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal readonly GenericReflector _reflector;
 
-		private readonly Hashtable4 _handlerVersions = new Hashtable4(16);
+		private readonly Hashtable4 _handlerVersions = NewHashtable();
 
 		private LatinStringIO _stringIO;
 
@@ -116,19 +119,21 @@ namespace Db4objects.Db4o.Internal
 
 		private void InitArrayHandlers()
 		{
-			UntypedFieldHandler handler = UntypedHandler();
-			IReflectClass classReflector = handler.ClassReflector();
-			i_anyArray = new PrimitiveFieldHandler(_container, new ArrayHandler(_container, handler
-				, false), Handlers4.AnyArrayId, classReflector);
-			_classMetadata.Put(Handlers4.AnyArrayId, i_anyArray);
-			i_anyArrayN = new PrimitiveFieldHandler(_container, new MultidimensionalArrayHandler
-				(_container, handler, false), Handlers4.AnyArrayNId, classReflector);
-			_classMetadata.Put(Handlers4.AnyArrayNId, i_anyArrayN);
+			ITypeHandler4 handler = (ITypeHandler4)FieldHandlerForId(Handlers4.UntypedId);
+			_untypedArrayHandler = new PrimitiveFieldHandler(Container(), new ArrayHandler(Container
+				(), handler, false), Handlers4.AnyArrayId, IclassObject);
+			MapTypeInfo(Handlers4.AnyArrayId, _untypedArrayHandler, new UntypedArrayFieldHandler
+				(), _untypedArrayHandler, null);
+			_untypedMultiDimensionalArrayHandler = new PrimitiveFieldHandler(Container(), new 
+				MultidimensionalArrayHandler(Container(), handler, false), Handlers4.AnyArrayNId
+				, IclassObject);
+			MapTypeInfo(Handlers4.AnyArrayNId, _untypedMultiDimensionalArrayHandler, new UntypedMultidimensionalArrayFieldHandler
+				(), _untypedMultiDimensionalArrayHandler, null);
 		}
 
 		private void RegisterPlatformTypes()
 		{
-			NetTypeHandler[] handlers = Platform4.Types(_container);
+			NetTypeHandler[] handlers = Platform4.Types(Container());
 			for (int i = 0; i < handlers.Length; i++)
 			{
 				handlers[i].Initialize();
@@ -141,41 +146,49 @@ namespace Db4objects.Db4o.Internal
 
 		private void RegisterBuiltinHandlers()
 		{
-			IntHandler intHandler = new IntHandler(_container);
+			IntHandler intHandler = new IntHandler(Container());
 			RegisterBuiltinHandler(Handlers4.IntId, intHandler);
-			RegisterHandlerVersion(intHandler, 0, new IntHandler0(_container));
-			LongHandler longHandler = new LongHandler(_container);
+			RegisterHandlerVersion(intHandler, 0, new IntHandler0(Container()));
+			LongHandler longHandler = new LongHandler(Container());
 			RegisterBuiltinHandler(Handlers4.LongId, longHandler);
-			RegisterHandlerVersion(longHandler, 0, new LongHandler0(_container));
-			FloatHandler floatHandler = new FloatHandler(_container);
+			RegisterHandlerVersion(longHandler, 0, new LongHandler0(Container()));
+			FloatHandler floatHandler = new FloatHandler(Container());
 			RegisterBuiltinHandler(Handlers4.FloatId, floatHandler);
-			RegisterHandlerVersion(floatHandler, 0, new FloatHandler0(_container));
-			BooleanHandler booleanHandler = new BooleanHandler(_container);
+			RegisterHandlerVersion(floatHandler, 0, new FloatHandler0(Container()));
+			BooleanHandler booleanHandler = new BooleanHandler(Container());
 			RegisterBuiltinHandler(Handlers4.BooleanId, booleanHandler);
 			// TODO: Are we missing a boolean handler version?
-			DoubleHandler doubleHandler = new DoubleHandler(_container);
+			DoubleHandler doubleHandler = new DoubleHandler(Container());
 			RegisterBuiltinHandler(Handlers4.DoubleId, doubleHandler);
-			RegisterHandlerVersion(doubleHandler, 0, new DoubleHandler0(_container));
-			ByteHandler byteHandler = new ByteHandler(_container);
+			RegisterHandlerVersion(doubleHandler, 0, new DoubleHandler0(Container()));
+			ByteHandler byteHandler = new ByteHandler(Container());
 			RegisterBuiltinHandler(Handlers4.ByteId, byteHandler);
 			// TODO: Are we missing a byte handler version?
-			CharHandler charHandler = new CharHandler(_container);
+			CharHandler charHandler = new CharHandler(Container());
 			RegisterBuiltinHandler(Handlers4.CharId, charHandler);
 			// TODO: Are we missing a char handler version?
-			ShortHandler shortHandler = new ShortHandler(_container);
+			ShortHandler shortHandler = new ShortHandler(Container());
 			RegisterBuiltinHandler(Handlers4.ShortId, shortHandler);
-			RegisterHandlerVersion(shortHandler, 0, new ShortHandler0(_container));
-			_stringHandler = new StringHandler(_container);
+			RegisterHandlerVersion(shortHandler, 0, new ShortHandler0(Container()));
+			_stringHandler = new StringHandler(Container());
 			RegisterBuiltinHandler(Handlers4.StringId, _stringHandler);
 			RegisterHandlerVersion(_stringHandler, 0, new StringHandler0(_stringHandler));
-			DateHandler dateHandler = new DateHandler(_container);
+			DateHandler dateHandler = new DateHandler(Container());
 			RegisterBuiltinHandler(Handlers4.DateId, dateHandler);
-			RegisterHandlerVersion(dateHandler, 0, new DateHandler0(_container));
-			UntypedFieldHandler untypedFieldHandler = new UntypedFieldHandler(_container);
-			RegisterBuiltinHandler(Handlers4.UntypedId, untypedFieldHandler, false, null, null
+			RegisterHandlerVersion(dateHandler, 0, new DateHandler0(Container()));
+			RegisterUntypedHandlers();
+		}
+
+		private void RegisterUntypedHandlers()
+		{
+			int id = Handlers4.UntypedId;
+			UntypedFieldHandler untypedFieldHandler = new UntypedFieldHandler(Container());
+			PrimitiveFieldHandler classMetadata = new PrimitiveFieldHandler(Container(), untypedFieldHandler
+				, id, IclassObject);
+			Map(id, classMetadata, untypedFieldHandler, new PlainObjectHandler(), IclassObject
 				);
-			RegisterHandlerVersion(untypedFieldHandler, 0, new UntypedFieldHandler0(_container
-				));
+			RegisterHandlerVersion(untypedFieldHandler, 0, new UntypedFieldHandler0(Container
+				()));
 		}
 
 		private void RegisterBuiltinHandler(int id, IBuiltinTypeHandler handler)
@@ -184,33 +197,53 @@ namespace Db4objects.Db4o.Internal
 				);
 		}
 
-		private void RegisterBuiltinHandler(int id, IBuiltinTypeHandler handler, bool registerPrimitiveClass
-			, string primitiveName, IGenericConverter converter)
+		private void RegisterBuiltinHandler(int id, IBuiltinTypeHandler typeHandler, bool
+			 registerPrimitiveClass, string primitiveName, IGenericConverter converter)
 		{
 			if (registerPrimitiveClass)
 			{
 				_reflector.RegisterPrimitiveClass(id, primitiveName, converter);
 			}
-			IReflectClass classReflector = handler.ClassReflector();
-			_handlers.Put(id, handler);
-			_classes.Put(id, classReflector);
-			PrimitiveFieldHandler primitiveFieldHandler = new PrimitiveFieldHandler(_container
-				, handler, id, classReflector);
-			_classMetadata.Put(id, primitiveFieldHandler);
-			Map(id, primitiveFieldHandler, classReflector);
+			IReflectClass classReflector = typeHandler.ClassReflector();
+			PrimitiveFieldHandler classMetadata = new PrimitiveFieldHandler(Container(), typeHandler
+				, id, classReflector);
+			Map(id, classMetadata, typeHandler, typeHandler, classReflector);
+		}
+
+		private void Map(int id, ClassMetadata classMetadata, IFieldHandler fieldHandler, 
+			ITypeHandler4 typeHandler, IReflectClass classReflector)
+		{
+			// TODO: remove when _mapIdToClassMetadata is gone 
+			MapTypeInfo(id, classMetadata, fieldHandler, typeHandler, classReflector);
+			MapPrimitive(id, classMetadata, fieldHandler, typeHandler, classReflector);
 			if (id > _highestBuiltinTypeID)
 			{
 				_highestBuiltinTypeID = id;
 			}
 		}
 
-		private void Map(int id, ITypeHandler4 handler, IReflectClass classReflector)
+		private void MapTypeInfo(int id, ClassMetadata classMetadata, IFieldHandler fieldHandler
+			, ITypeHandler4 typeHandler, IReflectClass classReflector)
 		{
-			_mapReflectorToHandler.Put(classReflector, handler);
-			_mapHandlerToReflector.Put(handler, classReflector);
+			_mapIdToTypeInfo.Put(id, new TypeInfo(classMetadata, fieldHandler, typeHandler, classReflector
+				));
+		}
+
+		private void MapPrimitive(int id, ClassMetadata classMetadata, IFieldHandler fieldHandler
+			, ITypeHandler4 typeHandler, IReflectClass classReflector)
+		{
+			_mapFieldHandlerToReflector.Put(fieldHandler, classReflector);
+			_mapReflectorToFieldHandler.Put(classReflector, fieldHandler);
+			_mapReflectorToTypeHandler.Put(classReflector, typeHandler);
+			if (classReflector != null)
+			{
+				_mapReflectorToClassMetadata.Put(classReflector, classMetadata);
+			}
 			if (id != 0)
 			{
-				_ids.Put(handler, id);
+				int wrappedID = id;
+				_mapFieldHandlerToId.Put(fieldHandler, wrappedID);
+				_mapTypeHandlerToId.Put(typeHandler, wrappedID);
 			}
 		}
 
@@ -247,14 +280,14 @@ namespace Db4objects.Db4o.Internal
 			return handler;
 		}
 
-		internal int ArrayType(object a_object)
+		internal int ArrayType(object obj)
 		{
-			IReflectClass claxx = _container.Reflector().ForObject(a_object);
+			IReflectClass claxx = Reflector().ForObject(obj);
 			if (!claxx.IsArray())
 			{
 				return 0;
 			}
-			if (_container.Reflector().Array().IsNDimensional(claxx))
+			if (Reflector().Array().IsNDimensional(claxx))
 			{
 				return Const4.TypeNarray;
 			}
@@ -273,13 +306,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (!Platform4.CallConstructor())
 			{
-				if (claxx.SkipConstructor(skipConstructor, _container.Config().TestConstructors()
-					))
+				if (claxx.SkipConstructor(skipConstructor, Container().Config().TestConstructors(
+					)))
 				{
 					return true;
 				}
 			}
-			if (!_container.ConfigImpl().TestConstructors())
+			if (!Container().ConfigImpl().TestConstructors())
 			{
 				return true;
 			}
@@ -287,7 +320,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return true;
 			}
-			if (_container.Reflector().ConstructorCallsSupported())
+			if (Reflector().ConstructorCallsSupported())
 			{
 				Tree sortedConstructors = SortConstructorsByParamsCount(claxx);
 				return FindConstructor(claxx, sortedConstructors);
@@ -326,7 +359,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			for (int k = 1; k <= Primitivecount; k++)
 			{
-				PrimitiveHandler handler = (PrimitiveHandler)HandlerForID(k);
+				PrimitiveHandler handler = (PrimitiveHandler)TypeHandlerForID(k);
 				if (clazz.Equals(handler.PrimitiveClassReflector()))
 				{
 					return handler.PrimitiveNull();
@@ -397,65 +430,46 @@ namespace Db4objects.Db4o.Internal
 			i_encrypt = false;
 			i_encryptor = null;
 			i_lastEncryptorByte = 0;
-			_container.ConfigImpl().OldEncryptionOff();
+			Container().ConfigImpl().OldEncryptionOff();
 		}
 
 		public IReflectClass ClassForID(int id)
 		{
-			return (IReflectClass)_classes.Get(id);
+			TypeInfo typeInfo = TypeInfoForID(id);
+			if (typeInfo == null)
+			{
+				return null;
+			}
+			return typeInfo.classReflector;
 		}
 
-		public ITypeHandler4 HandlerForID(int id)
+		public ITypeHandler4 TypeHandlerForID(int id)
 		{
-			return (ITypeHandler4)_handlers.Get(id);
+			TypeInfo typeInfo = TypeInfoForID(id);
+			if (typeInfo == null)
+			{
+				return null;
+			}
+			return typeInfo.typeHandler;
 		}
 
-		public int HandlerID(ITypeHandler4 handler)
+		private TypeInfo TypeInfoForID(int id)
+		{
+			return (TypeInfo)_mapIdToTypeInfo.Get(id);
+		}
+
+		public int TypeHandlerID(ITypeHandler4 handler)
 		{
 			if (handler is ClassMetadata)
 			{
 				return ((ClassMetadata)handler).GetID();
 			}
-			object idAsInt = _ids.Get(handler);
+			object idAsInt = _mapTypeHandlerToId.Get(handler);
 			if (idAsInt == null)
 			{
 				return 0;
 			}
 			return ((int)idAsInt);
-		}
-
-		public ITypeHandler4 HandlerForClass(ObjectContainerBase container, IReflectClass
-			 clazz)
-		{
-			// TODO: Interfaces should be handled by the ANY handler but we
-			// need to write the code to migrate from the old field handler to the new
-			ClassMetadata classMetadata = ClassMetadataForClass(container, clazz);
-			if (classMetadata == null)
-			{
-				return null;
-			}
-			return classMetadata.TypeHandler();
-		}
-
-		public ClassMetadata ClassMetadataForClass(ObjectContainerBase container, IReflectClass
-			 clazz)
-		{
-			if (clazz == null)
-			{
-				return null;
-			}
-			IReflectClass baseType = Handlers4.BaseType(clazz);
-			ClassMetadata classMetadata = ClassMetadataForClass(baseType);
-			if (classMetadata != null)
-			{
-				return classMetadata;
-			}
-			return container.ProduceClassMetadata(baseType);
-		}
-
-		public UntypedFieldHandler UntypedHandler()
-		{
-			return (UntypedFieldHandler)HandlerForID(Handlers4.UntypedId);
 		}
 
 		private void InitClassReflectors(GenericReflector reflector)
@@ -504,7 +518,40 @@ namespace Db4objects.Db4o.Internal
 
 		public ClassMetadata ClassMetadataForId(int id)
 		{
-			return (ClassMetadata)_classMetadata.Get(id);
+			TypeInfo typeInfo = TypeInfoForID(id);
+			if (typeInfo == null)
+			{
+				return null;
+			}
+			return typeInfo.classMetadata;
+		}
+
+		public IFieldHandler FieldHandlerForId(int id)
+		{
+			TypeInfo typeInfo = TypeInfoForID(id);
+			if (typeInfo == null)
+			{
+				return null;
+			}
+			return typeInfo.fieldHandler;
+		}
+
+		public IFieldHandler FieldHandlerForClass(IReflectClass clazz)
+		{
+			// TODO: maybe need special handling for arrays here?
+			if (clazz == null)
+			{
+				return null;
+			}
+			if (clazz.IsArray())
+			{
+				if (Reflector().Array().IsNDimensional(clazz))
+				{
+					return _untypedMultiDimensionalArrayHandler;
+				}
+				return _untypedArrayHandler;
+			}
+			return (IFieldHandler)_mapReflectorToFieldHandler.Get(clazz);
 		}
 
 		internal ClassMetadata ClassMetadataForClass(IReflectClass clazz)
@@ -515,26 +562,44 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (clazz.IsArray())
 			{
-				if (_container.Reflector().Array().IsNDimensional(clazz))
-				{
-					return i_anyArrayN;
-				}
-				return i_anyArray;
+				return (ClassMetadata)UntypedArrayHandler(clazz);
 			}
-			return (ClassMetadata)_mapReflectorToHandler.Get(clazz);
+			return (ClassMetadata)_mapReflectorToClassMetadata.Get(clazz);
+		}
+
+		public ITypeHandler4 UntypedArrayHandler(IReflectClass clazz)
+		{
+			if (clazz.IsArray())
+			{
+				if (Reflector().Array().IsNDimensional(clazz))
+				{
+					return _untypedMultiDimensionalArrayHandler;
+				}
+				return _untypedArrayHandler;
+			}
+			return null;
+		}
+
+		public ITypeHandler4 TypeHandlerForClass(IReflectClass clazz)
+		{
+			if (clazz == null)
+			{
+				return null;
+			}
+			return (ITypeHandler4)_mapReflectorToTypeHandler.Get(clazz);
 		}
 
 		public IReflectClass ClassReflectorForHandler(ITypeHandler4 handler)
 		{
-			return (IReflectClass)_mapHandlerToReflector.Get(handler);
+			return (IReflectClass)_mapFieldHandlerToReflector.Get(handler);
 		}
 
 		public bool IsSecondClass(object a_object)
 		{
 			if (a_object != null)
 			{
-				IReflectClass claxx = _container.Reflector().ForObject(a_object);
-				if (_mapReflectorToHandler.Get(claxx) != null)
+				IReflectClass claxx = Reflector().ForObject(a_object);
+				if (_mapReflectorToFieldHandler.Get(claxx) != null)
 				{
 					return true;
 				}
@@ -590,6 +655,31 @@ namespace Db4objects.Db4o.Internal
 		public void StringIO(LatinStringIO io)
 		{
 			_stringIO = io;
+		}
+
+		private GenericReflector Reflector()
+		{
+			return Container().Reflector();
+		}
+
+		private ObjectContainerBase Container()
+		{
+			return _container;
+		}
+
+		private static Hashtable4 NewHashtable()
+		{
+			return new Hashtable4(32);
+		}
+
+		public int FieldHandlerIdForFieldHandler(IFieldHandler fieldHandler)
+		{
+			int wrappedId = (int)_mapFieldHandlerToId.Get(fieldHandler);
+			if (wrappedId != null)
+			{
+				return wrappedId;
+			}
+			return 0;
 		}
 	}
 }

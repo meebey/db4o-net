@@ -14,7 +14,5 @@ namespace Db4objects.Db4o.Internal.Marshall
 			a_bytes);
 
 		public abstract bool UseNormalClassRead();
-
-		public abstract void Defrag(IDefragmentContext context);
 	}
 }

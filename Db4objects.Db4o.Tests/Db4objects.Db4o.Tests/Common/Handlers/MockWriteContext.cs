@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public virtual void WriteAny(object obj)
 		{
-			ClassMetadata classMetadata = ClassMetadata.ForObject(Transaction(), obj, false);
+			ClassMetadata classMetadata = Container().ClassMetadataForObject(obj);
 			WriteInt(classMetadata.GetID());
 			classMetadata.Write(this, obj);
 		}

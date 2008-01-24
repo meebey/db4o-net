@@ -118,7 +118,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.YapmetaSetId.Log(a_id);
+				DTrace.PersistentbaseSetId.Log(a_id);
 			}
 			_id = a_id;
 		}
@@ -199,7 +199,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.YapmetaWrite.Log(GetID());
+				DTrace.PersistentbaseWrite.Log(GetID());
 			}
 			LocalObjectContainer container = (LocalObjectContainer)trans.Container();
 			WriteThis(trans, writer);

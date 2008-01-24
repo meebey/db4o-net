@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private static bool runOnOldJDK = false;
 
-		private static readonly string File = "backupstress.yap";
+		private static readonly string File = Path.GetTempFileName();
 
 		private const int Iterations = 5;
 
@@ -221,7 +221,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private string BackupFile(int count)
 		{
-			return string.Empty + count + File;
+			return File + count;
 		}
 
 		private void Stdout(string @string)

@@ -234,6 +234,37 @@ namespace Db4objects.Db4o.Foundation
 		}
 
 		/// <summary>
+		/// Removes all the elements from this collection that are returned by
+		/// iterable.
+		/// </summary>
+		/// <remarks>
+		/// Removes all the elements from this collection that are returned by
+		/// iterable.
+		/// </remarks>
+		/// <param name="iterable"></param>
+		public virtual void RemoveAll(IEnumerable iterable)
+		{
+			RemoveAll(iterable.GetEnumerator());
+		}
+
+		/// <summary>
+		/// Removes all the elements from this collection that are returned by
+		/// iterator.
+		/// </summary>
+		/// <remarks>
+		/// Removes all the elements from this collection that are returned by
+		/// iterator.
+		/// </remarks>
+		/// <param name="iterable"></param>
+		public virtual void RemoveAll(IEnumerator iterator)
+		{
+			while (iterator.MoveNext())
+			{
+				Remove(iterator.Current);
+			}
+		}
+
+		/// <summary>
 		/// removes an object from the Collection equals() comparison returns the
 		/// removed object or null, if none found
 		/// </summary>

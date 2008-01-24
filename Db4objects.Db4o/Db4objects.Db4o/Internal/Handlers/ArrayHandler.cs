@@ -386,8 +386,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			bool primitive = Deploy.csharp ? false : claxx.IsPrimitive();
 			if (primitive)
 			{
-				claxx = Container()._handlers.ClassMetadataForClass(Container(), claxx).ClassReflector
-					();
+				claxx = Container().ProduceClassMetadata(claxx).ClassReflector();
 			}
 			ClassMetadata classMetadata = Container().ProduceClassMetadata(claxx);
 			if (classMetadata == null)

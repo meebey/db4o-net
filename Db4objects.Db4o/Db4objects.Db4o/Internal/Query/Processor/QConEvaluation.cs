@@ -32,14 +32,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (rereadObject)
 			{
-				a_candidates.Traverse(new _IVisitor4_32(this));
+				a_candidates.Traverse(new _IVisitor4_31(this));
 			}
 			a_candidates.Filter(this);
 		}
 
-		private sealed class _IVisitor4_32 : IVisitor4
+		private sealed class _IVisitor4_31 : IVisitor4
 		{
-			public _IVisitor4_32(QConEvaluation _enclosing)
+			public _IVisitor4_31(QConEvaluation _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

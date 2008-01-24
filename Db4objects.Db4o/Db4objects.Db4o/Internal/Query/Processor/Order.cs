@@ -84,10 +84,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					continue;
 				}
-				else
-				{
-					return (i_minors.Get(i) - other.Get(i));
-				}
+				return (i_minors.Get(i) - other.Get(i));
 			}
 			return result;
 		}

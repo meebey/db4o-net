@@ -249,7 +249,7 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual ITypeHandler4 SourceHandler(int id)
 		{
-			return _sourceDb.HandlerByID(id);
+			return _sourceDb.TypeHandlerForId(id);
 		}
 
 		public virtual int SourceClassCollectionID()

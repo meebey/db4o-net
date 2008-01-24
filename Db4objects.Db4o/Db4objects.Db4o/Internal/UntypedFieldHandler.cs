@@ -3,13 +3,15 @@
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
+using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
 {
-	public class UntypedFieldHandler : ClassMetadata, IBuiltinTypeHandler
+	public class UntypedFieldHandler : ClassMetadata, IBuiltinTypeHandler, IFieldHandler
 	{
 		public UntypedFieldHandler(ObjectContainerBase container) : base(container, container
 			._handlers.IclassObject)
@@ -19,11 +21,16 @@ namespace Db4objects.Db4o.Internal
 		public override void CascadeActivation(Transaction trans, object onObject, IActivationDepth
 			 depth)
 		{
-			ClassMetadata classMetadata = ForObject(trans, onObject, false);
-			if (classMetadata != null)
+			ITypeHandler4 typeHandler = TypeHandlerForObject(onObject);
+			if (typeHandler is IFirstClassHandler)
 			{
-				classMetadata.CascadeActivation(trans, onObject, depth);
+				((IFirstClassHandler)typeHandler).CascadeActivation(trans, onObject, depth);
 			}
+		}
+
+		private Db4objects.Db4o.Internal.HandlerRegistry HandlerRegistry()
+		{
+			return Container()._handlers;
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
@@ -42,11 +49,11 @@ namespace Db4objects.Db4o.Internal
 			int linkOffset = context.Offset();
 			context.Seek(payLoadOffset);
 			int classMetadataID = context.ReadInt();
-			ClassMetadata classMetadata = ((ObjectContainerBase)context.ObjectContainer()).ClassMetadataForId
+			ITypeHandler4 typeHandler = ((ObjectContainerBase)context.ObjectContainer()).TypeHandlerForId
 				(classMetadataID);
-			if (classMetadata != null)
+			if (typeHandler != null)
 			{
-				classMetadata.Delete(context);
+				typeHandler.Delete(context);
 			}
 			context.Seek(linkOffset);
 		}
@@ -89,13 +96,17 @@ namespace Db4objects.Db4o.Internal
 			{
 				return ObjectID.IsNull;
 			}
-			ClassMetadata classMetadata = ReadClassMetadata(context, payloadOffset);
-			if (classMetadata == null)
+			ITypeHandler4 typeHandler = ReadTypeHandler(context, payloadOffset);
+			if (typeHandler == null)
 			{
 				return ObjectID.IsNull;
 			}
-			SeekSecondaryOffset(context, classMetadata);
-			return classMetadata.ReadObjectID(context);
+			SeekSecondaryOffset(context, typeHandler);
+			if (typeHandler is IReadsObjectIds)
+			{
+				return ((IReadsObjectIds)typeHandler).ReadObjectID(context);
+			}
+			return ObjectID.NotPossible;
 		}
 
 		public override void Defragment(IDefragmentContext context)
@@ -107,11 +118,12 @@ namespace Db4objects.Db4o.Internal
 			}
 			int linkOffSet = context.Offset();
 			context.Seek(payLoadOffSet);
-			int classMetadataID = context.CopyIDReturnOriginalID();
-			ClassMetadata classMetadata = context.ClassMetadataForId(classMetadataID);
-			if (classMetadata != null)
+			int typeHandlerId = context.CopyIDReturnOriginalID();
+			ITypeHandler4 typeHandler = context.TypeHandlerForId(typeHandlerId);
+			if (typeHandler != null)
 			{
-				classMetadata.Defragment(context);
+				// TODO: correct handler version here.
+				typeHandler.Defragment(context);
 			}
 			context.Seek(linkOffSet);
 		}
@@ -125,6 +137,26 @@ namespace Db4objects.Db4o.Internal
 			return handler is ArrayHandler;
 		}
 
+		private ITypeHandler4 ReadTypeHandler(IInternalReadContext context, int payloadOffset
+			)
+		{
+			context.Seek(payloadOffset);
+			ITypeHandler4 typeHandler = Container().TypeHandlerForId(context.ReadInt());
+			// TODO: Correct handler version here?
+			return typeHandler;
+		}
+
+		private void SeekSecondaryOffset(IInternalReadContext context, ITypeHandler4 classMetadata
+			)
+		{
+			if (classMetadata is PrimitiveFieldHandler && ((PrimitiveFieldHandler)classMetadata
+				).IsArray())
+			{
+				// unnecessary secondary offset, consistent with old format
+				context.Seek(context.ReadInt());
+			}
+		}
+
 		public override object Read(IReadContext readContext)
 		{
 			IInternalReadContext context = (IInternalReadContext)readContext;
@@ -134,34 +166,16 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			int savedOffSet = context.Offset();
-			ClassMetadata classMetadata = ReadClassMetadata(context, payloadOffset);
-			if (classMetadata == null)
+			ITypeHandler4 typeHandler = ReadTypeHandler(context, payloadOffset);
+			if (typeHandler == null)
 			{
 				context.Seek(savedOffSet);
 				return null;
 			}
-			SeekSecondaryOffset(context, classMetadata);
-			object obj = classMetadata.Read(context);
+			SeekSecondaryOffset(context, typeHandler);
+			object obj = typeHandler.Read(context);
 			context.Seek(savedOffSet);
 			return obj;
-		}
-
-		private ClassMetadata ReadClassMetadata(IInternalReadContext context, int payloadOffset
-			)
-		{
-			context.Seek(payloadOffset);
-			ClassMetadata classMetadata = Container().ClassMetadataForId(context.ReadInt());
-			return classMetadata;
-		}
-
-		private void SeekSecondaryOffset(IInternalReadContext context, ClassMetadata classMetadata
-			)
-		{
-			if (classMetadata is PrimitiveFieldHandler && classMetadata.IsArray())
-			{
-				// unnecessary secondary offset, consistent with old format
-				context.Seek(context.ReadInt());
-			}
 		}
 
 		public override void Write(IWriteContext context, object obj)
@@ -172,17 +186,17 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			MarshallingContext marshallingContext = (MarshallingContext)context;
-			ITypeHandler4 handler = ClassMetadata.ForObject(context.Transaction(), obj, true);
-			if (handler == null)
+			ITypeHandler4 typeHandler = TypeHandlerForObject(obj);
+			if (typeHandler == null)
 			{
 				context.WriteInt(0);
 				return;
 			}
+			int id = HandlerRegistry().TypeHandlerID(typeHandler);
 			MarshallingContextState state = marshallingContext.CurrentState();
 			marshallingContext.CreateChildBuffer(false, false);
-			int id = marshallingContext.Container().Handlers().HandlerID(handler);
 			context.WriteInt(id);
-			if (IsArray(handler))
+			if (IsArray(typeHandler))
 			{
 				// TODO: This indirection is unneccessary, but it is required by the 
 				// current old reading format. 
@@ -193,8 +207,18 @@ namespace Db4objects.Db4o.Internal
 			{
 				marshallingContext.DoNotIndirectWrites();
 			}
-			handler.Write(context, obj);
+			typeHandler.Write(context, obj);
 			marshallingContext.RestoreState(state);
+		}
+
+		private ITypeHandler4 TypeHandlerForObject(object obj)
+		{
+			IReflectClass claxx = Reflector().ForObject(obj);
+			if (claxx.IsArray())
+			{
+				return HandlerRegistry().UntypedArrayHandler(claxx);
+			}
+			return Container().TypeHandlerForObject(obj);
 		}
 	}
 }

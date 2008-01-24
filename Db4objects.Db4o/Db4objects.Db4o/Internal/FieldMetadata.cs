@@ -72,8 +72,9 @@ namespace Db4objects.Db4o.Internal
 			Init(containingClass, translator.GetType().FullName);
 			_state = Available;
 			ObjectContainerBase stream = Container();
-			_handler = stream._handlers.HandlerForClass(stream, stream.Reflector().ForClass(TranslatorStoredClass
-				(translator)));
+			IReflectClass claxx = stream.Reflector().ForClass(TranslatorStoredClass(translator
+				));
+			_handler = FieldHandlerForClass(stream, claxx);
 		}
 
 		protected Type TranslatorStoredClass(IObjectTranslator translator)
@@ -86,15 +87,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new ReflectException(e);
 			}
-		}
-
-		internal FieldMetadata(ClassMetadata containingClass, ObjectMarshaller marshaller
-			) : this(containingClass)
-		{
-			// for CustomMarshallerFieldMetadata only
-			Init(containingClass, marshaller.GetType().FullName);
-			_state = Available;
-			_handler = Container()._handlers.UntypedHandler();
 		}
 
 		internal FieldMetadata(ClassMetadata containingClass, IReflectField field, ITypeHandler4
@@ -221,10 +213,10 @@ namespace Db4objects.Db4o.Internal
 					// This could be dangerous, if the class type of a field
 					// has been modified.
 					// TODO: add class refactoring features
-					_handler = LoadJavaField1();
+					_handler = DetectHandlerForField();
 					CheckHandlerID();
 				}
-				LoadJavaField();
+				CheckCorrectHandlerForField();
 				if (_handler != null)
 				{
 					// TODO: This part is not quite correct.
@@ -826,22 +818,12 @@ namespace Db4objects.Db4o.Internal
 			throw new NotImplementedException();
 		}
 
-		public virtual void LoadHandler(ObjectContainerBase a_stream)
+		public virtual void LoadHandlerById(ObjectContainerBase container)
 		{
-			_handler = a_stream.HandlerByID(_handlerID);
+			_handler = (ITypeHandler4)container.FieldHandlerForId(_handlerID);
 		}
 
-		private void LoadJavaField()
-		{
-			ITypeHandler4 handler = LoadJavaField1();
-			if (handler == null || (!handler.Equals(_handler)))
-			{
-				_reflectField = null;
-				_state = Unavailable;
-			}
-		}
-
-		private ITypeHandler4 LoadJavaField1()
+		private ITypeHandler4 DetectHandlerForField()
 		{
 			IReflectClass claxx = _containingClass.ClassReflector();
 			if (claxx == null)
@@ -854,12 +836,27 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			_reflectField.SetAccessible();
-			ObjectContainerBase container = Container();
+			return FieldHandlerForClass(Container(), _reflectField.GetFieldType());
+		}
+
+		private ITypeHandler4 FieldHandlerForClass(ObjectContainerBase container, IReflectClass
+			 fieldType)
+		{
 			container.ShowInternalClasses(true);
-			ITypeHandler4 handlerForClass = container._handlers.HandlerForClass(container, _reflectField
-				.GetFieldType());
+			ITypeHandler4 handlerForClass = (ITypeHandler4)container.FieldHandlerForClass(Handlers4
+				.BaseType(fieldType));
 			container.ShowInternalClasses(false);
 			return handlerForClass;
+		}
+
+		private void CheckCorrectHandlerForField()
+		{
+			ITypeHandler4 handler = DetectHandlerForField();
+			if (handler == null || (!handler.Equals(_handler)))
+			{
+				_reflectField = null;
+				_state = Unavailable;
+			}
 		}
 
 		private int AdjustUpdateDepth(object obj, int updateDepth)
@@ -957,7 +954,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void Refresh()
 		{
-			ITypeHandler4 handler = LoadJavaField1();
+			ITypeHandler4 handler = DetectHandlerForField();
 			if (handler != null)
 			{
 				handler = WrapHandlerToArrays(Container(), handler);
@@ -1036,14 +1033,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_859(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_854(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_859 : IVisitor4
+		private sealed class _IVisitor4_854 : IVisitor4
 		{
-			public _IVisitor4_859(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_854(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;
@@ -1122,7 +1119,7 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			IReflectClass indexType = _reflectField.IndexType();
-			ITypeHandler4 classHandler = stream._handlers.HandlerForClass(stream, indexType);
+			ITypeHandler4 classHandler = FieldHandlerForClass(stream, indexType);
 			if (!(classHandler is IIndexable4))
 			{
 				return null;

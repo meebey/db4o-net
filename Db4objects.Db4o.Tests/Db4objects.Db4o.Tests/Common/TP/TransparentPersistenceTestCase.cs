@@ -4,51 +4,18 @@ using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.TA;
-using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Common.TP;
 
 namespace Db4objects.Db4o.Tests.Common.TP
 {
 	public class TransparentPersistenceTestCase : AbstractDb4oTestCase
 	{
-		public class Item : ActivatableImpl
-		{
-			public string name;
-
-			public Item()
-			{
-			}
-
-			public Item(string initialName)
-			{
-				name = initialName;
-			}
-
-			public virtual string GetName()
-			{
-				Activate(ActivationPurpose.Read);
-				return name;
-			}
-
-			public virtual void SetName(string newName)
-			{
-				Activate(ActivationPurpose.Write);
-				name = newName;
-			}
-
-			public override string ToString()
-			{
-				return "Item(" + GetName() + ")";
-			}
-		}
-
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
@@ -58,14 +25,14 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			Store(new TransparentPersistenceTestCase.Item("Foo"));
-			Store(new TransparentPersistenceTestCase.Item("Bar"));
+			Store(new Item("Foo"));
+			Store(new Item("Bar"));
 		}
 
 		/// <exception cref="Exception"></exception>
 		public virtual void TestActivateOnWrite()
 		{
-			TransparentPersistenceTestCase.Item foo = ItemByName("Foo");
+			Item foo = ItemByName("Foo");
 			foo.SetName("Foo*");
 			Assert.AreEqual("Foo*", foo.GetName());
 		}
@@ -81,9 +48,9 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			IExtObjectContainer client2 = OpenNewClient();
 			try
 			{
-				TransparentPersistenceTestCase.Item foo1 = ItemByName(client1, "Foo");
+				Item foo1 = ItemByName(client1, "Foo");
 				foo1.SetName("Foo*");
-				TransparentPersistenceTestCase.Item foo2 = ItemByName(client2, "Foo");
+				Item foo2 = ItemByName(client2, "Foo");
 				foo2.SetName("Foo**");
 				AssertUpdatedObjects(client1, foo1);
 				AssertUpdatedObjects(client2, foo2);
@@ -99,11 +66,11 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		/// <exception cref="Exception"></exception>
 		public virtual void TestTransparentUpdate()
 		{
-			TransparentPersistenceTestCase.Item foo = ItemByName("Foo");
+			Item foo = ItemByName("Foo");
 			foo.SetName("Bar");
 			// changing more than once shouldn't be a problem
 			foo.SetName("Foo*");
-			TransparentPersistenceTestCase.Item bar = ItemByName("Bar");
+			Item bar = ItemByName("Bar");
 			Assert.AreEqual("Bar", bar.GetName());
 			// accessed but not changed
 			AssertUpdatedObjects(foo);
@@ -116,7 +83,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		/// <exception cref="Exception"></exception>
 		public virtual void TestChangedAfterCommit()
 		{
-			TransparentPersistenceTestCase.Item item = ItemByName("Foo");
+			Item item = ItemByName("Foo");
 			item.SetName("Bar");
 			AssertUpdatedObjects(item);
 			item.SetName("Foo");
@@ -126,19 +93,18 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		/// <exception cref="Exception"></exception>
 		public virtual void TestUpdateAfterActivation()
 		{
-			TransparentPersistenceTestCase.Item foo = ItemByName("Foo");
+			Item foo = ItemByName("Foo");
 			Assert.AreEqual("Foo", foo.GetName());
 			foo.SetName("Foo*");
 			AssertUpdatedObjects(foo);
 		}
 
-		private void AssertUpdatedObjects(TransparentPersistenceTestCase.Item expected)
+		private void AssertUpdatedObjects(Item expected)
 		{
 			AssertUpdatedObjects(Db(), expected);
 		}
 
-		private void AssertUpdatedObjects(IExtObjectContainer container, TransparentPersistenceTestCase.Item
-			 expected)
+		private void AssertUpdatedObjects(IExtObjectContainer container, Item expected)
 		{
 			Collection4 updated = CommitCapturingUpdatedObjects(container);
 			Assert.AreEqual(1, updated.Size(), updated.ToString());
@@ -149,14 +115,14 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		{
 			Collection4 updated = new Collection4();
 			EventRegistryFor(container).Updated += new Db4objects.Db4o.Events.ObjectEventHandler
-				(new _IEventListener4_134(this, updated).OnEvent);
+				(new _IEventListener4_104(this, updated).OnEvent);
 			container.Commit();
 			return updated;
 		}
 
-		private sealed class _IEventListener4_134
+		private sealed class _IEventListener4_104
 		{
-			public _IEventListener4_134(TransparentPersistenceTestCase _enclosing, Collection4
+			public _IEventListener4_104(TransparentPersistenceTestCase _enclosing, Collection4
 				 updated)
 			{
 				this._enclosing = _enclosing;
@@ -174,20 +140,19 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			private readonly Collection4 updated;
 		}
 
-		private TransparentPersistenceTestCase.Item ItemByName(string name)
+		private Item ItemByName(string name)
 		{
 			return ItemByName(Db(), name);
 		}
 
-		private TransparentPersistenceTestCase.Item ItemByName(IExtObjectContainer container
-			, string name)
+		private Item ItemByName(IExtObjectContainer container, string name)
 		{
-			IQuery q = NewQuery(container, typeof(TransparentPersistenceTestCase.Item));
+			IQuery q = NewQuery(container, typeof(Item));
 			q.Descend("name").Constrain(name);
 			IObjectSet result = q.Execute();
 			if (result.HasNext())
 			{
-				return (TransparentPersistenceTestCase.Item)result.Next();
+				return (Item)result.Next();
 			}
 			return null;
 		}

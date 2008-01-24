@@ -83,6 +83,10 @@ namespace Db4objects.Db4o
 				BtreeNodeCommitOrRollback = new Db4objects.Db4o.DTrace(true, true, "btreenode commit or rollback"
 					, true);
 				CandidateRead = new Db4objects.Db4o.DTrace(true, true, "candidate read", true);
+				ClassmetadataById = new Db4objects.Db4o.DTrace(true, true, "classmetadata by id", 
+					true);
+				ClassmetadataInit = new Db4objects.Db4o.DTrace(true, true, "classmetadata init", 
+					true);
 				ClientMessageLoopException = new Db4objects.Db4o.DTrace(true, true, "client message loop exception"
 					, true);
 				Close = new Db4objects.Db4o.DTrace(true, true, "close", true);
@@ -123,6 +127,10 @@ namespace Db4objects.Db4o
 				NewInstance = new Db4objects.Db4o.DTrace(true, true, "newInstance", true);
 				PersistentOwnLength = new Db4objects.Db4o.DTrace(true, true, "Persistent own length"
 					, true);
+				PersistentbaseWrite = new Db4objects.Db4o.DTrace(true, true, "persistentbase write"
+					, true);
+				PersistentbaseSetId = new Db4objects.Db4o.DTrace(true, true, "persistentbase setid"
+					, true);
 				ProduceSlotChange = new Db4objects.Db4o.DTrace(true, true, "produce slot change", 
 					true);
 				QueryProcess = new Db4objects.Db4o.DTrace(true, true, "query process", true);
@@ -152,10 +160,6 @@ namespace Db4objects.Db4o
 				TransDontDelete = new Db4objects.Db4o.DTrace(true, true, "trans dontDelete", true
 					);
 				TransFlush = new Db4objects.Db4o.DTrace(true, true, "trans flush", true);
-				YapmetaWrite = new Db4objects.Db4o.DTrace(true, true, "yapmeta write", true);
-				YapclassById = new Db4objects.Db4o.DTrace(true, true, "yapclass by id", true);
-				YapclassInit = new Db4objects.Db4o.DTrace(true, true, "yapclass init", true);
-				YapmetaSetId = new Db4objects.Db4o.DTrace(true, true, "yapmeta setid", true);
 				WriteBytes = new Db4objects.Db4o.DTrace(true, true, "writeBytes", true);
 				WritePointer = new Db4objects.Db4o.DTrace(true, true, "write pointer", true);
 				WriteUpdateDeleteMembers = new Db4objects.Db4o.DTrace(true, true, "trans writeUpdateDeleteMembers"
@@ -222,6 +226,10 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.DTrace CandidateRead;
 
+		public static Db4objects.Db4o.DTrace ClassmetadataById;
+
+		public static Db4objects.Db4o.DTrace ClassmetadataInit;
+
 		public static Db4objects.Db4o.DTrace ClientMessageLoopException;
 
 		public static Db4objects.Db4o.DTrace Close;
@@ -282,6 +290,10 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.DTrace PersistentOwnLength;
 
+		public static Db4objects.Db4o.DTrace PersistentbaseSetId;
+
+		public static Db4objects.Db4o.DTrace PersistentbaseWrite;
+
 		public static Db4objects.Db4o.DTrace ProduceSlotChange;
 
 		public static Db4objects.Db4o.DTrace QueryProcess;
@@ -321,14 +333,6 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.DTrace TransDelete;
 
 		public static Db4objects.Db4o.DTrace TransFlush;
-
-		public static Db4objects.Db4o.DTrace YapclassById;
-
-		public static Db4objects.Db4o.DTrace YapclassInit;
-
-		public static Db4objects.Db4o.DTrace YapmetaSetId;
-
-		public static Db4objects.Db4o.DTrace YapmetaWrite;
 
 		public static Db4objects.Db4o.DTrace WriteBytes;
 

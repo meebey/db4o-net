@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private ITypeHandler4 ClassMetadataHandler()
 		{
-			return Stream().Handlers().HandlerForClass(Stream(), ItemClass());
+			return (ITypeHandler4)Stream().FieldHandlerForClass(ItemClass());
 		}
 
 		private IReflectClass ItemClass()

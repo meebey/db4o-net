@@ -15,8 +15,9 @@ namespace Db4objects.Db4o.Tests.Common.References
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(HardObjectReferenceTestCase), typeof(ReferenceSystemTestCase
-				), typeof(ReferenceSystemRegistryTestCase) };
+			return new Type[] { typeof(HardObjectReferenceTestCase), typeof(ReferenceSystemIntegrationTestCase
+				), typeof(ReferenceSystemRegistryTestCase), typeof(HashcodeReferenceSystemTestCase
+				), typeof(TransactionalReferenceSystemTestCase) };
 		}
 	}
 }

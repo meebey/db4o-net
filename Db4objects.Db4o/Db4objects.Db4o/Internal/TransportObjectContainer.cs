@@ -206,10 +206,7 @@ namespace Db4objects.Db4o.Internal
 				return base.StoreInternal(trans, new TransportObjectContainer.KnownObjectIdentity
 					(id), depth, checkJustSet);
 			}
-			else
-			{
-				return base.StoreInternal(trans, obj, depth, checkJustSet);
-			}
+			return base.StoreInternal(trans, obj, depth, checkJustSet);
 		}
 
 		public override object GetByID2(Transaction ta, int id)

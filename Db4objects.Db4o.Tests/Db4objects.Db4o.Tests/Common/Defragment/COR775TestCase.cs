@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -14,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 {
 	public class COR775TestCase : ITestLifeCycle
 	{
-		private static readonly string Original = "cor775.yap";
+		private static readonly string Original = Path.GetTempFileName();
 
 		private static readonly string Defgared = Original + ".bk";
 

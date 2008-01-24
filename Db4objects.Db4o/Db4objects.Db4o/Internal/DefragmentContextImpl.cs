@@ -55,7 +55,17 @@ namespace Db4objects.Db4o.Internal
 			IncrementOffset(Const4.IntLength);
 		}
 
+		public int CopySlotlessID()
+		{
+			return CopyUnindexedId(false);
+		}
+
 		public int CopyUnindexedID()
+		{
+			return CopyUnindexedId(true);
+		}
+
+		private int CopyUnindexedId(bool doRegister)
 		{
 			int orig = _source.ReadInt();
 			int mapped = -1;
@@ -67,7 +77,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				mapped = _services.AllocateTargetSlot(Const4.PointerLength).Address();
 				_services.MapIDs(orig, mapped, false);
-				_services.RegisterUnindexed(orig);
+				if (doRegister)
+				{
+					_services.RegisterUnindexed(orig);
+				}
 			}
 			_target.WriteInt(mapped);
 			return mapped;
@@ -281,9 +294,9 @@ namespace Db4objects.Db4o.Internal
 			return Transaction().Container();
 		}
 
-		public ClassMetadata ClassMetadataForId(int id)
+		public ITypeHandler4 TypeHandlerForId(int id)
 		{
-			return Container().ClassMetadataForId(id);
+			return Container().TypeHandlerForId(id);
 		}
 
 		private int HandlerVersion()

@@ -23,16 +23,6 @@ namespace Db4objects.Db4o.Internal
 			_committedReferences.AddExistingReference(@ref);
 		}
 
-		public virtual void AddExistingReferenceToIdTree(ObjectReference @ref)
-		{
-			_committedReferences.AddExistingReferenceToIdTree(@ref);
-		}
-
-		public virtual void AddExistingReferenceToObjectTree(ObjectReference @ref)
-		{
-			_committedReferences.AddExistingReferenceToObjectTree(@ref);
-		}
-
 		public virtual void AddNewReference(ObjectReference @ref)
 		{
 			_newReferences.AddNewReference(@ref);
@@ -40,13 +30,13 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Commit()
 		{
-			TraveseNewReferences(new _IVisitor4_38(this));
+			TraveseNewReferences(new _IVisitor4_30(this));
 			CreateNewReferences();
 		}
 
-		private sealed class _IVisitor4_38 : IVisitor4
+		private sealed class _IVisitor4_30 : IVisitor4
 		{
-			public _IVisitor4_38(TransactionalReferenceSystem _enclosing)
+			public _IVisitor4_30(TransactionalReferenceSystem _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -40,20 +41,20 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private static readonly string Filename = "nonstaticcfg.yap";
+		private static readonly string Filename = Path.GetTempFileName();
 
 		public virtual void TestOpenWithNonStaticConfiguration()
 		{
 			IConfiguration config1 = Db4oFactory.NewConfiguration();
 			config1.ReadOnly(true);
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_42(this, config1
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_43(this, config1
 				));
 			config1.ReadOnly(false);
 			IObjectContainer db1 = Db4oFactory.OpenFile(config1, Filename);
 			config1.ReadOnly(true);
 			try
 			{
-				Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_51(this, db1));
+				Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_52(this, db1));
 			}
 			finally
 			{
@@ -72,9 +73,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _ICodeBlock_42 : ICodeBlock
+		private sealed class _ICodeBlock_43 : ICodeBlock
 		{
-			public _ICodeBlock_42(NonStaticConfigurationTestCase _enclosing, IConfiguration config1
+			public _ICodeBlock_43(NonStaticConfigurationTestCase _enclosing, IConfiguration config1
 				)
 			{
 				this._enclosing = _enclosing;
@@ -92,9 +93,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			private readonly IConfiguration config1;
 		}
 
-		private sealed class _ICodeBlock_51 : ICodeBlock
+		private sealed class _ICodeBlock_52 : ICodeBlock
 		{
-			public _ICodeBlock_51(NonStaticConfigurationTestCase _enclosing, IObjectContainer
+			public _ICodeBlock_52(NonStaticConfigurationTestCase _enclosing, IObjectContainer
 				 db1)
 			{
 				this._enclosing = _enclosing;

@@ -63,9 +63,10 @@ namespace Db4objects.Db4o.Internal
 				DefragmentContextImpl payloadContext = new DefragmentContextImpl(sourceBuffer, (DefragmentContextImpl
 					)context);
 				int clazzId = payloadContext.CopyIDReturnOriginalID();
-				ClassMetadata payloadClazz = payloadContext.ClassMetadataForId(clazzId);
-				ITypeHandler4 payloadHandler = payloadContext.CorrectHandlerVersion(payloadClazz);
-				payloadHandler.Defragment(payloadContext);
+				ITypeHandler4 payloadHandler = payloadContext.TypeHandlerForId(clazzId);
+				ITypeHandler4 versionedPayloadHandler = payloadContext.CorrectHandlerVersion(payloadHandler
+					);
+				versionedPayloadHandler.Defragment(payloadContext);
 				payloadContext.WriteToTarget(targetPayloadSlot.Address());
 				return targetPointerSlot.Address();
 			}

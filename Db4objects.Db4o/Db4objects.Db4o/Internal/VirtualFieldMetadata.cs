@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Internal
 		internal abstract void Instantiate1(Transaction trans, ObjectReference @ref, IBuffer
 			 buffer);
 
-		public override void LoadHandler(ObjectContainerBase a_stream)
+		public override void LoadHandlerById(ObjectContainerBase container)
 		{
 		}
 

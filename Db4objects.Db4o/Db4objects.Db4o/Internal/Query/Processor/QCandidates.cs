@@ -134,10 +134,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			try
 			{
 				int offset = context.Offset();
-				if (handler is ClassMetadata)
+				if (handler is IReadsObjectIds)
 				{
-					ClassMetadata classMetadata = (ClassMetadata)handler;
-					objectID = classMetadata.ReadObjectID(context);
+					objectID = ((IReadsObjectIds)handler).ReadObjectID(context);
 				}
 				if (objectID.IsValid())
 				{
@@ -179,13 +178,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		private Collection4 CollectCandidates()
 		{
 			Collection4 col = new Collection4();
-			i_root.Traverse(new _IVisitor4_167(this, col));
+			i_root.Traverse(new _IVisitor4_166(this, col));
 			return col;
 		}
 
-		private sealed class _IVisitor4_167 : IVisitor4
+		private sealed class _IVisitor4_166 : IVisitor4
 		{
-			public _IVisitor4_167(QCandidates _enclosing, Collection4 col)
+			public _IVisitor4_166(QCandidates _enclosing, Collection4 col)
 			{
 				this._enclosing = _enclosing;
 				this.col = col;
@@ -206,13 +205,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			int[] currentOrder = new int[] { 0 };
 			QOrder[] lastOrder = new QOrder[] { null };
-			orderedCandidates.Traverse(new _IVisitor4_180(this, lastOrder, currentOrder, major
+			orderedCandidates.Traverse(new _IVisitor4_179(this, lastOrder, currentOrder, major
 				));
 		}
 
-		private sealed class _IVisitor4_180 : IVisitor4
+		private sealed class _IVisitor4_179 : IVisitor4
 		{
-			public _IVisitor4_180(QCandidates _enclosing, QOrder[] lastOrder, int[] currentOrder
+			public _IVisitor4_179(QCandidates _enclosing, QOrder[] lastOrder, int[] currentOrder
 				, bool major)
 			{
 				this._enclosing = _enclosing;
@@ -244,12 +243,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private void SwapMajorOrderToMinor()
 		{
-			i_root.Traverse(new _IVisitor4_194(this));
+			i_root.Traverse(new _IVisitor4_193(this));
 		}
 
-		private sealed class _IVisitor4_194 : IVisitor4
+		private sealed class _IVisitor4_193 : IVisitor4
 		{
-			public _IVisitor4_194(QCandidates _enclosing)
+			public _IVisitor4_193(QCandidates _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -323,12 +322,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private IEnumerator SingleObjectSodaProcessor(IEnumerator indexIterator)
 		{
-			return new _MappingIterator_247(this, indexIterator);
+			return new _MappingIterator_246(this, indexIterator);
 		}
 
-		private sealed class _MappingIterator_247 : MappingIterator
+		private sealed class _MappingIterator_246 : MappingIterator
 		{
-			public _MappingIterator_247(QCandidates _enclosing, IEnumerator baseArg1) : base(
+			public _MappingIterator_246(QCandidates _enclosing, IEnumerator baseArg1) : base(
 				baseArg1)
 			{
 				this._enclosing = _enclosing;
@@ -386,16 +385,16 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			while (executionPathIterator.MoveNext())
 			{
 				string fieldName = (string)executionPathIterator.Current;
-				IEnumerator mapIdToFieldIdsIterator = new _MappingIterator_293(this, fieldName, res
+				IEnumerator mapIdToFieldIdsIterator = new _MappingIterator_292(this, fieldName, res
 					);
 				res = new CompositeIterator4(mapIdToFieldIdsIterator);
 			}
 			return res;
 		}
 
-		private sealed class _MappingIterator_293 : MappingIterator
+		private sealed class _MappingIterator_292 : MappingIterator
 		{
-			public _MappingIterator_293(QCandidates _enclosing, string fieldName, IEnumerator
+			public _MappingIterator_292(QCandidates _enclosing, string fieldName, IEnumerator
 				 baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
@@ -484,13 +483,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal bool IsEmpty()
 		{
 			bool[] ret = new bool[] { true };
-			Traverse(new _IVisitor4_378(this, ret));
+			Traverse(new _IVisitor4_377(this, ret));
 			return ret[0];
 		}
 
-		private sealed class _IVisitor4_378 : IVisitor4
+		private sealed class _IVisitor4_377 : IVisitor4
 		{
-			public _IVisitor4_378(QCandidates _enclosing, bool[] ret)
+			public _IVisitor4_377(QCandidates _enclosing, bool[] ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -514,14 +513,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			if (i_root != null)
 			{
 				i_root.Traverse(a_host);
-				i_root = i_root.Filter(new _IPredicate4_391(this));
+				i_root = i_root.Filter(new _IPredicate4_390(this));
 			}
 			return i_root != null;
 		}
 
-		private sealed class _IPredicate4_391 : IPredicate4
+		private sealed class _IPredicate4_390 : IPredicate4
 		{
-			public _IPredicate4_391(QCandidates _enclosing)
+			public _IPredicate4_390(QCandidates _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -570,7 +569,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			QCandidates.TreeIntBuilder result = new QCandidates.TreeIntBuilder();
 			IClassIndexStrategy index = i_yapClass.Index();
-			index.TraverseAll(i_trans, new _IVisitor4_429(this, result));
+			index.TraverseAll(i_trans, new _IVisitor4_428(this, result));
 			i_root = result.tree;
 			DiagnosticProcessor dp = i_trans.Container()._handlers._diagnosticProcessor;
 			if (dp.Enabled())
@@ -580,9 +579,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_loadedFromClassIndex = true;
 		}
 
-		private sealed class _IVisitor4_429 : IVisitor4
+		private sealed class _IVisitor4_428 : IVisitor4
 		{
-			public _IVisitor4_429(QCandidates _enclosing, QCandidates.TreeIntBuilder result)
+			public _IVisitor4_428(QCandidates _enclosing, QCandidates.TreeIntBuilder result)
 			{
 				this._enclosing = _enclosing;
 				this.result = result;
@@ -675,13 +674,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
-			i_root.Traverse(new _IVisitor4_513(this, sb));
+			i_root.Traverse(new _IVisitor4_512(this, sb));
 			return sb.ToString();
 		}
 
-		private sealed class _IVisitor4_513 : IVisitor4
+		private sealed class _IVisitor4_512 : IVisitor4
 		{
-			public _IVisitor4_513(QCandidates _enclosing, StringBuilder sb)
+			public _IVisitor4_512(QCandidates _enclosing, StringBuilder sb)
 			{
 				this._enclosing = _enclosing;
 				this.sb = sb;

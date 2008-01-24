@@ -10,6 +10,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.Callbacks;
+using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query;
@@ -258,14 +259,14 @@ namespace Db4objects.Db4o.Internal
 				{
 					throw new ArgumentException("id");
 				}
-				ObjectReference yo = trans.ReferenceForId(intID);
-				if (yo == null)
+				ObjectReference @ref = trans.ReferenceForId(intID);
+				if (@ref == null)
 				{
 					throw new ArgumentException("obj");
 				}
-				if (trans.Reflector().ForObject(obj) == yo.ClassMetadata().ClassReflector())
+				if (ReflectorForObject(obj) == @ref.ClassMetadata().ClassReflector())
 				{
-					ObjectReference newRef = Bind2(trans, yo, obj);
+					ObjectReference newRef = Bind2(trans, @ref, obj);
 					newRef.VirtualAttributes(trans);
 				}
 				else
@@ -289,7 +290,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual ClassMetadata ClassMetadataForObject(object obj)
 		{
-			return ClassMetadataForReflectClass(Reflector().ForObject(obj));
+			return ClassMetadataForReflectClass(ReflectorForObject(obj));
 		}
 
 		public abstract byte BlockSize();
@@ -755,7 +756,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				FieldMetadata[] field = new FieldMetadata[] { null };
-				classMetadata.ForEachFieldMetadata(new _IVisitor4_609(this, fieldName, field));
+				classMetadata.ForEachFieldMetadata(new _IVisitor4_610(this, fieldName, field));
 				if (field[0] == null)
 				{
 					return null;
@@ -776,9 +777,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_609 : IVisitor4
+		private sealed class _IVisitor4_610 : IVisitor4
 		{
-			public _IVisitor4_609(PartialObjectContainer _enclosing, string fieldName, FieldMetadata
+			public _IVisitor4_610(PartialObjectContainer _enclosing, string fieldName, FieldMetadata
 				[] field)
 			{
 				this._enclosing = _enclosing;
@@ -1108,23 +1109,47 @@ namespace Db4objects.Db4o.Internal
 
 		public ClassMetadata ClassMetadataForReflectClass(IReflectClass claxx)
 		{
-			if (CantGetClassMetadata(claxx))
+			if (HideClassForExternalUse(claxx))
 			{
 				return null;
 			}
-			ClassMetadata yc = _handlers.ClassMetadataForClass(claxx);
-			if (yc != null)
+			ClassMetadata classMetadata = _handlers.ClassMetadataForClass(claxx);
+			if (classMetadata != null)
 			{
-				return yc;
+				return classMetadata;
 			}
 			return _classCollection.ClassMetadataForReflectClass(claxx);
+		}
+
+		public ITypeHandler4 TypeHandlerForObject(object obj)
+		{
+			return TypeHandlerForReflectClass(ReflectorForObject(obj));
+		}
+
+		public ITypeHandler4 TypeHandlerForReflectClass(IReflectClass claxx)
+		{
+			if (HideClassForExternalUse(claxx))
+			{
+				return null;
+			}
+			ITypeHandler4 typeHandler = _handlers.TypeHandlerForClass(claxx);
+			if (typeHandler != null)
+			{
+				return typeHandler;
+			}
+			ClassMetadata classMetadata = _classCollection.ProduceClassMetadata(claxx);
+			if (classMetadata == null)
+			{
+				return null;
+			}
+			return classMetadata.TypeHandler();
 		}
 
 		public virtual ClassMetadata ProduceClassMetadata(IReflectClass claxx)
 		{
 			// TODO: Some ReflectClass implementations could hold a 
 			// reference to ClassMetadata to improve lookup performance here.
-			if (CantGetClassMetadata(claxx))
+			if (HideClassForExternalUse(claxx))
 			{
 				return null;
 			}
@@ -1137,14 +1162,14 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <summary>
-		/// Differentiating getActiveYapClass from getYapClass is a tuning
+		/// Differentiating getActiveClassMetadata from getYapClass is a tuning
 		/// optimization: If we initialize a YapClass, #set3() has to check for
 		/// the possibility that class initialization associates the currently
 		/// stored object with a previously stored static object, causing the
 		/// object to be known afterwards.
 		/// </summary>
 		/// <remarks>
-		/// Differentiating getActiveYapClass from getYapClass is a tuning
+		/// Differentiating getActiveClassMetadata from getYapClass is a tuning
 		/// optimization: If we initialize a YapClass, #set3() has to check for
 		/// the possibility that class initialization associates the currently
 		/// stored object with a previously stored static object, causing the
@@ -1154,19 +1179,14 @@ namespace Db4objects.Db4o.Internal
 		/// </remarks>
 		internal ClassMetadata GetActiveClassMetadata(IReflectClass claxx)
 		{
-			if (CantGetClassMetadata(claxx))
+			if (HideClassForExternalUse(claxx))
 			{
 				return null;
-			}
-			ClassMetadata yc = _handlers.ClassMetadataForClass(claxx);
-			if (yc != null)
-			{
-				return yc;
 			}
 			return _classCollection.GetActiveClassMetadata(claxx);
 		}
 
-		private bool CantGetClassMetadata(IReflectClass claxx)
+		private bool HideClassForExternalUse(IReflectClass claxx)
 		{
 			if (claxx == null)
 			{
@@ -1193,16 +1213,16 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.YapclassById.Log(id);
+				DTrace.ClassmetadataById.Log(id);
 			}
 			if (id == 0)
 			{
 				return null;
 			}
-			ClassMetadata yc = _handlers.ClassMetadataForId(id);
-			if (yc != null)
+			ClassMetadata classMetadata = _handlers.ClassMetadataForId(id);
+			if (classMetadata != null)
 			{
-				return yc;
+				return classMetadata;
 			}
 			return _classCollection.GetClassMetadata(id);
 		}
@@ -1400,7 +1420,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual ITypeHandler4 HandlerByID(int id)
+		public virtual IFieldHandler FieldHandlerForId(int id)
 		{
 			if (id < 1)
 			{
@@ -1408,9 +1428,50 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_handlers.IsSystemHandler(id))
 			{
-				return _handlers.HandlerForID(id);
+				return _handlers.FieldHandlerForId(id);
 			}
 			return ClassMetadataForId(id);
+		}
+
+		public virtual int FieldHandlerIdForFieldHandler(IFieldHandler fieldHandler)
+		{
+			if (fieldHandler is ClassMetadata)
+			{
+				return ((ClassMetadata)fieldHandler).GetID();
+			}
+			return _handlers.FieldHandlerIdForFieldHandler(fieldHandler);
+		}
+
+		public virtual IFieldHandler FieldHandlerForClass(IReflectClass claxx)
+		{
+			if (HideClassForExternalUse(claxx))
+			{
+				return null;
+			}
+			IFieldHandler fieldHandler = _handlers.FieldHandlerForClass(claxx);
+			if (fieldHandler != null)
+			{
+				return fieldHandler;
+			}
+			return _classCollection.ProduceClassMetadata(claxx);
+		}
+
+		public virtual ITypeHandler4 TypeHandlerForId(int id)
+		{
+			if (id < 1)
+			{
+				return null;
+			}
+			if (_handlers.IsSystemHandler(id))
+			{
+				return _handlers.TypeHandlerForID(id);
+			}
+			ClassMetadata classMetadata = ClassMetadataForId(id);
+			if (classMetadata == null)
+			{
+				return null;
+			}
+			return classMetadata.TypeHandler();
 		}
 
 		public virtual object Lock()
@@ -2073,7 +2134,7 @@ namespace Db4objects.Db4o.Internal
 				return new List4(still, new PartialObjectContainer.PendingActivation(@ref, depth)
 					);
 			}
-			IReflectClass clazz = Reflector().ForObject(obj);
+			IReflectClass clazz = ReflectorForObject(obj);
 			if (clazz.IsArray())
 			{
 				if (!clazz.GetComponentType().IsPrimitive())
@@ -2426,7 +2487,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			cascadeDeleteDepth--;
-			IReflectClass claxx = Reflector().ForObject(obj);
+			IReflectClass claxx = ReflectorForObject(obj);
 			if (claxx.IsCollection())
 			{
 				cascadeDeleteDepth += Reflector().CollectionUpdateDepth(claxx) - 1;
@@ -2437,6 +2498,11 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			Delete2(transaction, @ref, obj, cascadeDeleteDepth, false);
+		}
+
+		internal virtual IReflectClass ReflectorForObject(object obj)
+		{
+			return Reflector().ForObject(obj);
 		}
 	}
 }

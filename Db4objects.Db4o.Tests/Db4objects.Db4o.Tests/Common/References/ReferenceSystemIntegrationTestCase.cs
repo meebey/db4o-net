@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.References;
 
 namespace Db4objects.Db4o.Tests.Common.References
 {
-	public class ReferenceSystemTestCase : AbstractDb4oTestCase
+	public class ReferenceSystemIntegrationTestCase : AbstractDb4oTestCase
 	{
 		private static readonly int[] Ids = new int[] { 100, 134, 689, 666, 775 };
 
@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.References
 
 		public static void Main(string[] args)
 		{
-			new ReferenceSystemTestCase().RunSolo();
+			new ReferenceSystemIntegrationTestCase().RunSolo();
 		}
 
 		public virtual void TestTransactionalReferenceSystem()

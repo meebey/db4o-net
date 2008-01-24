@@ -9,11 +9,13 @@ namespace Db4objects.Db4o.Internal
 {
 	public interface IDefragmentContext : IContext, IReadBuffer
 	{
-		ClassMetadata ClassMetadataForId(int id);
+		ITypeHandler4 TypeHandlerForId(int id);
 
 		int CopyID();
 
 		int CopyIDReturnOriginalID();
+
+		int CopySlotlessID();
 
 		int CopyUnindexedID();
 

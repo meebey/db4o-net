@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			field.Init(field.ContainingClass(), name);
 			field.Init(spec.HandlerID(), spec.IsPrimitive(), spec.IsArray(), spec.IsNArray());
-			field.LoadHandler(stream);
+			field.LoadHandlerById(stream);
 			field.Alive();
 			return field;
 		}

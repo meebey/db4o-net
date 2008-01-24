@@ -25,18 +25,9 @@ namespace Db4objects.Db4o.Internal
 
 		private void AddReference(ObjectReference @ref)
 		{
+			@ref.Ref_init();
 			IdAdd(@ref);
 			HashCodeAdd(@ref);
-		}
-
-		public virtual void AddExistingReferenceToObjectTree(ObjectReference @ref)
-		{
-			HashCodeAdd(@ref);
-		}
-
-		public virtual void AddExistingReferenceToIdTree(ObjectReference @ref)
-		{
-			IdAdd(@ref);
 		}
 
 		public virtual void Commit()
@@ -48,7 +39,6 @@ namespace Db4objects.Db4o.Internal
 			// do nothing
 			if (_hashCodeTree == null)
 			{
-				@ref.Hc_init();
 				_hashCodeTree = @ref;
 				return;
 			}
@@ -63,7 +53,6 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_idTree == null)
 			{
-				@ref.Hc_init();
 				_idTree = @ref;
 				return;
 			}
