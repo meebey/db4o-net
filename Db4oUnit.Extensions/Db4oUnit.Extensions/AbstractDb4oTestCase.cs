@@ -16,7 +16,7 @@ using Db4objects.Db4o.Reflect;
 
 namespace Db4oUnit.Extensions
 {
-	public class AbstractDb4oTestCase : IDb4oTestCase
+	public partial class AbstractDb4oTestCase : IDb4oTestCase
 	{
 		[System.NonSerialized]
 		private IDb4oFixture _fixture;
@@ -371,12 +371,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_302(this, oc));
+			Foreach(clazz, new _IVisitor4_305(this, oc));
 		}
 
-		private sealed class _IVisitor4_302 : IVisitor4
+		private sealed class _IVisitor4_305 : IVisitor4
 		{
-			public _IVisitor4_302(AbstractDb4oTestCase _enclosing, IExtObjectContainer oc)
+			public _IVisitor4_305(AbstractDb4oTestCase _enclosing, IExtObjectContainer oc)
 			{
 				this._enclosing = _enclosing;
 				this.oc = oc;
