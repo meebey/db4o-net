@@ -6,7 +6,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 		protected override System.Type[] TestCases()
 		{
 			return new System.Type[] {
-				typeof(Db4objects.Db4o.Tests.CLI2.Assorted.NullableTypes),
+				typeof(NullableTypes),
+				typeof(NullableArraysElementsTestCase),
 				typeof(SimpleGenericTypeTestCase),
 			};
 		}
