@@ -142,7 +142,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter1
     
         public static void ClearDatabase(IObjectContainer db)
         {
-            IObjectSet result = db.Get(typeof(Pilot));
+            IObjectSet result = db.QueryByExample(typeof(Pilot));
             foreach (object item in result)
             {
                 db.Delete(item);

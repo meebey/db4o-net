@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         
         public static void TakeManySnapshots(IObjectContainer db)
         {
-            IObjectSet result = db.Get(typeof(Car));
+            IObjectSet result = db.QueryByExample(typeof(Car));
             Car car = (Car)result.Next();
             for (int i=0; i<5; i++)
             {
@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         
         public static void RetrieveAllSnapshots(IObjectContainer db)
         {
-            IObjectSet result = db.Get(typeof(SensorReadout));
+            IObjectSet result = db.QueryByExample(typeof(SensorReadout));
             while (result.HasNext())
             {
                 Console.WriteLine(result.Next());
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         
         public static void RetrieveSnapshotsSequentially(IObjectContainer db)
         {
-            IObjectSet result = db.Get(typeof(Car));
+            IObjectSet result = db.QueryByExample(typeof(Car));
             Car car = (Car)result.Next();
             SensorReadout readout = car.GetHistory();
             while (readout != null)
@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         
         public static void RetrieveSnapshotsSequentiallyImproved(IObjectContainer db)
         {
-            IObjectSet result = db.Get(typeof(Car));
+            IObjectSet result = db.QueryByExample(typeof(Car));
             Car car = (Car)result.Next();
             SensorReadout readout = car.GetHistory();
             while (readout != null)

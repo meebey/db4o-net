@@ -121,13 +121,13 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
         
 		public static void RetrieveAllPilots(IObjectContainer db) 
 		{
-			IObjectSet results = db.Get(typeof(Pilot));
+			IObjectSet results = db.QueryByExample(typeof(Pilot));
 			ListResult(results);
 		}
 
 		public static void RetrieveAllCars(IObjectContainer db) 
 		{
-			IObjectSet results = db.Get(typeof(Car));
+			IObjectSet results = db.QueryByExample(typeof(Car));
 			ListResult(results);
 		}
     

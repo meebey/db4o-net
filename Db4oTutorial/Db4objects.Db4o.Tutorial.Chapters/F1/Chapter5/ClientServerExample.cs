@@ -104,8 +104,8 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             ListResult(client1.QueryByExample(new Car(null)));
             ListResult(client2.QueryByExample(new Car(null)));
             client1.Commit();
-            ListResult(client1.Get(typeof(Car)));			
-            ListRefreshedResult(client2, client2.Get(typeof(Car)), 2);
+            ListResult(client1.QueryByExample(typeof(Car)));			
+            ListRefreshedResult(client2, client2.QueryByExample(typeof(Car)), 2);
             client1.Close();
             client2.Close();
         }

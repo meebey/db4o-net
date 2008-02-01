@@ -37,13 +37,13 @@ namespace Db4objects.Db4o.Tutorial.F1
 		
 		public static void RetrieveAll(IObjectContainer db) 
 		{
-			IObjectSet result = db.Get(typeof(Object));
+			IObjectSet result = db.QueryByExample(typeof(Object));
 			ListResult(result);
 		}
 		
 		public static void DeleteAll(IObjectContainer db) 
 		{
-			IObjectSet result = db.Get(typeof(Object));
+			IObjectSet result = db.QueryByExample(typeof(Object));
 			foreach (object item in result)
 			{
 				db.Delete(item);

@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter6
             db = Db4oFactory.OpenFile(Util.YapFileName);
             try
             {
-                IObjectSet result = db.Get(typeof(LocalizedItemList));
+                IObjectSet result = db.QueryByExample(typeof(LocalizedItemList));
                 while (result.HasNext())
                 {
                     LocalizedItemList LocalizedItemList = (LocalizedItemList)result.Next();

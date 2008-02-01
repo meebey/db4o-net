@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter4
         
         public static void RetrieveAllSensorReadoutsQBEAlternative(IObjectContainer db)
         {
-            IObjectSet result = db.Get(typeof(SensorReadout));
+            IObjectSet result = db.QueryByExample(typeof(SensorReadout));
             ListResult(result);
         }
         

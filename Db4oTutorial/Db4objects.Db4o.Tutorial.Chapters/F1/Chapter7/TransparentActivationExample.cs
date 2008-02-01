@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
 
         public static void RetrieveSnapshotsSequentially(IObjectContainer db)
         {
-            IObjectSet result = db.Get(typeof (Car));
+            IObjectSet result = db.QueryByExample(typeof (Car));
             Car car = (Car) result.Next();
             SensorReadout readout = car.History;
             while (readout != null)
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
 
         public static void DemonstrateTransparentActivation(IObjectContainer db)
         {
-            IObjectSet result = db.Get(typeof (Car));
+            IObjectSet result = db.QueryByExample(typeof (Car));
             Car car = (Car) result.Next();
 
             Console.WriteLine("#PilotWithoutActivation before the car is activated");

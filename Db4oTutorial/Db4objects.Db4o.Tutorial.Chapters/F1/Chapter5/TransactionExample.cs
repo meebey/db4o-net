@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
     
         public static void ListAllCars(IObjectContainer db)
         {
-            IObjectSet result = db.Get(typeof(Car));
+            IObjectSet result = db.QueryByExample(typeof(Car));
             ListResult(result);
         }
         
