@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _valueHandler.LinkLength() + Const4.IntLength;
 		}
 
-		public virtual object ReadIndexEntry(BufferImpl a_reader)
+		public virtual object ReadIndexEntry(ByteArrayBuffer a_reader)
 		{
 			// TODO: could read int directly here with a_reader.readInt()
 			int parentID = ReadParentID(a_reader);
@@ -38,12 +38,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			return new FieldIndexKey(parentID, objPart);
 		}
 
-		private int ReadParentID(BufferImpl a_reader)
+		private int ReadParentID(ByteArrayBuffer a_reader)
 		{
 			return ((int)_parentIdHandler.ReadIndexEntry(a_reader));
 		}
 
-		public virtual void WriteIndexEntry(BufferImpl writer, object obj)
+		public virtual void WriteIndexEntry(ByteArrayBuffer writer, object obj)
 		{
 			FieldIndexKey composite = (FieldIndexKey)obj;
 			int parentID = composite.ParentID();

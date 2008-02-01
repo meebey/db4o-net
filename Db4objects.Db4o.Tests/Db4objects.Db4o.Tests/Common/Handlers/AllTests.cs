@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Handlers.AllTests().RunSolo();
+			new Db4objects.Db4o.Tests.Common.Handlers.AllTests().RunAll();
 		}
 
 		protected override Type[] TestCases()
@@ -20,8 +20,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				), typeof(ClassMetadataTypehandlerTestCase), typeof(CustomTypeHandlerTestCase), 
 				typeof(DoubleHandlerTestCase), typeof(FloatHandlerTestCase), typeof(IntHandlerTestCase
 				), typeof(LongHandlerTestCase), typeof(MultiDimensionalArrayHandlerTestCase), typeof(
-				StringHandlerTestCase), typeof(ShortHandlerTestCase), typeof(UntypedHandlerTestCase
-				) };
+				StringBufferTypeHandlerTestCase), typeof(StringHandlerTestCase), typeof(ShortHandlerTestCase
+				), typeof(UntypedHandlerTestCase) };
 		}
 	}
 }

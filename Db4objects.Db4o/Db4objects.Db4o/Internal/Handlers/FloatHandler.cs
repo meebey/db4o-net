@@ -46,12 +46,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return mf._primitive.ReadFloat(writer);
 		}
 
-		internal override object Read1(BufferImpl a_bytes)
+		internal override object Read1(ByteArrayBuffer a_bytes)
 		{
 			return PrimitiveMarshaller().ReadFloat(a_bytes);
 		}
 
-		public override void Write(object a_object, BufferImpl a_bytes)
+		public override void Write(object a_object, ByteArrayBuffer a_bytes)
 		{
 			WriteInt(Sharpen.Runtime.FloatToIntBits(((float)a_object)), a_bytes);
 		}

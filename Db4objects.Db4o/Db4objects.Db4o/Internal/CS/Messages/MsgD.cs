@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 		}
 
-		public override BufferImpl GetByteLoad()
+		public override ByteArrayBuffer GetByteLoad()
 		{
 			return _payLoad;
 		}
@@ -174,7 +174,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		}
 
 		internal sealed override Msg ReadPayLoad(IMessageDispatcher messageDispatcher, Transaction
-			 a_trans, ISocket4 sock, BufferImpl reader)
+			 a_trans, ISocket4 sock, ByteArrayBuffer reader)
 		{
 			int length = reader.ReadInt();
 			a_trans = CheckParentTransaction(a_trans, reader);

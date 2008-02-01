@@ -311,7 +311,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return _doFinalize;
 		}
 
-		internal BufferImpl ExpectedByteResponse(Msg expectedMessage)
+		internal ByteArrayBuffer ExpectedByteResponse(Msg expectedMessage)
 		{
 			Msg msg = ExpectedResponse(expectedMessage);
 			if (msg == null)
@@ -374,6 +374,30 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
+		private Msg GetResponseSingleThreaded()
+		{
+			while (IsMessageDispatcherAlive())
+			{
+				try
+				{
+					Msg message = Msg.ReadMessage(this, _transaction, i_socket);
+					if (message is IClientSideMessage)
+					{
+						if (((IClientSideMessage)message).ProcessAtClient())
+						{
+							continue;
+						}
+					}
+					return message;
+				}
+				catch (Db4oIOException)
+				{
+					OnMsgError();
+				}
+			}
+			return null;
+		}
+
 		private Msg GetResponseMultiThreaded()
 		{
 			Msg msg;
@@ -405,30 +429,6 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			Close();
 			throw new DatabaseClosedException();
-		}
-
-		private Msg GetResponseSingleThreaded()
-		{
-			while (IsMessageDispatcherAlive())
-			{
-				try
-				{
-					Msg message = Msg.ReadMessage(this, _transaction, i_socket);
-					if (message is IClientSideMessage)
-					{
-						if (((IClientSideMessage)message).ProcessAtClient())
-						{
-							continue;
-						}
-					}
-					return message;
-				}
-				catch (Db4oIOException)
-				{
-					OnMsgError();
-				}
-			}
-			return null;
 		}
 
 		public virtual bool IsMessageDispatcherAlive()
@@ -478,7 +478,7 @@ namespace Db4objects.Db4o.Internal.CS
 			if (i_db == null)
 			{
 				Write(Msg.Identity);
-				BufferImpl reader = ExpectedByteResponse(Msg.IdList);
+				ByteArrayBuffer reader = ExpectedByteResponse(Msg.IdList);
 				ShowInternalClasses(true);
 				try
 				{
@@ -508,7 +508,7 @@ namespace Db4objects.Db4o.Internal.CS
 			message.WriteString(_password);
 			message.Write(socket);
 			Msg msg = ReadLoginMessage(socket);
-			BufferImpl payLoad = msg.PayLoad();
+			ByteArrayBuffer payLoad = msg.PayLoad();
 			_blockSize = payLoad.ReadInt();
 			int doEncrypt = payLoad.ReadInt();
 			if (doEncrypt == 0)
@@ -540,7 +540,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			int prefetchIDCount = Config().PrefetchIDCount();
 			EnsureIDCacheAllocated(prefetchIDCount);
-			BufferImpl reader = null;
+			ByteArrayBuffer reader = null;
 			if (remainingIDs < 1)
 			{
 				MsgD msg = Msg.PrefetchIds.GetWriterForInt(_transaction, prefetchIDCount);
@@ -589,7 +589,7 @@ namespace Db4objects.Db4o.Internal.CS
 			MsgD msg = Msg.ReadBytes.GetWriterForInts(_transaction, new int[] { a_address, a_length
 				 });
 			Write(msg);
-			BufferImpl reader = ExpectedByteResponse(Msg.ReadBytes);
+			ByteArrayBuffer reader = ExpectedByteResponse(Msg.ReadBytes);
 			System.Array.Copy(reader._buffer, 0, a_bytes, 0, a_length);
 		}
 
@@ -635,7 +635,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return yapWriters;
 		}
 
-		public sealed override BufferImpl ReadReaderByID(Transaction a_ta, int a_id)
+		public sealed override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id)
 		{
 			// TODO: read lightweight reader instead
 			return ReadWriterByID(a_ta, a_id);
@@ -644,7 +644,7 @@ namespace Db4objects.Db4o.Internal.CS
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			AbstractQueryResult queryResult = null;
-			BufferImpl reader = ExpectedByteResponse(Msg.QueryResult);
+			ByteArrayBuffer reader = ExpectedByteResponse(Msg.QueryResult);
 			int queryResultID = reader.ReadInt();
 			if (queryResultID > 0)
 			{
@@ -661,7 +661,7 @@ namespace Db4objects.Db4o.Internal.CS
 		internal virtual void ReadThis()
 		{
 			Write(Msg.GetClasses.GetWriter(SystemTransaction()));
-			BufferImpl bytes = ExpectedByteResponse(Msg.GetClasses);
+			ByteArrayBuffer bytes = ExpectedByteResponse(Msg.GetClasses);
 			ClassCollection().SetID(bytes.ReadInt());
 			CreateStringIO(bytes.ReadByte());
 			ClassCollection().Read(SystemTransaction());
@@ -828,7 +828,7 @@ namespace Db4objects.Db4o.Internal.CS
 		}
 
 		public sealed override void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, BufferImpl buffer)
+			 classMetadata, ByteArrayBuffer buffer)
 		{
 			MsgD msg = Msg.WriteNew.GetWriter(trans, pointer, classMetadata, buffer);
 			WriteBatchedMessage(msg);
@@ -839,7 +839,7 @@ namespace Db4objects.Db4o.Internal.CS
 		}
 
 		public sealed override void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, BufferImpl buffer)
+			 classMetadata, ByteArrayBuffer buffer)
 		{
 			// do nothing
 			MsgD msg = Msg.WriteUpdate.GetWriter(trans, pointer, classMetadata, buffer);
@@ -921,7 +921,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			MsgD msg = Msg.GetInternalIds.GetWriterForInt(trans, clazz.GetID());
 			Write(msg);
-			BufferImpl reader = ExpectedByteResponse(Msg.IdList);
+			ByteArrayBuffer reader = ExpectedByteResponse(Msg.IdList);
 			int size = reader.ReadInt();
 			long[] ids = new long[size];
 			for (int i = 0; i < size; i++)
@@ -1044,6 +1044,60 @@ namespace Db4objects.Db4o.Internal.CS
 			msg.Write(i_socket);
 			MsgD response = (MsgD)ExpectedResponse(Msg.ClassId);
 			return response.ReadInt();
+		}
+
+		public virtual void DispatchPendingMessages(long maxTimeSlice)
+		{
+			lock (_lock)
+			{
+				Cool.LoopWithTimeout(maxTimeSlice, new _IConditionalBlock_856(this));
+			}
+		}
+
+		private sealed class _IConditionalBlock_856 : IConditionalBlock
+		{
+			public _IConditionalBlock_856(ClientObjectContainer _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public bool Run()
+			{
+				return this._enclosing.DispatchPendingMessage();
+			}
+
+			private readonly ClientObjectContainer _enclosing;
+		}
+
+		private bool DispatchPendingMessage()
+		{
+			IClientSideTask task = NextClientSideTask();
+			if (null == task)
+			{
+				return false;
+			}
+			task.RunOnClient();
+			return true;
+		}
+
+		private IClientSideTask NextClientSideTask()
+		{
+			return (IClientSideTask)_messageQueue.NextMatching(new _IPredicate4_874(this));
+		}
+
+		private sealed class _IPredicate4_874 : IPredicate4
+		{
+			public _IPredicate4_874(ClientObjectContainer _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public bool Match(object message)
+			{
+				return message is IClientSideTask;
+			}
+
+			private readonly ClientObjectContainer _enclosing;
 		}
 	}
 }

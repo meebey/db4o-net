@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Internal
 			return (Const4.IntLength * (Size() + 1)) + Const4.AddedLength;
 		}
 
-		public override void ReadThis(Transaction trans, BufferImpl reader)
+		public override void ReadThis(Transaction trans, ByteArrayBuffer reader)
 		{
 			int length = reader.ReadInt();
 			_ints = new int[length];
@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public override void WriteThis(Transaction trans, BufferImpl writer)
+		public override void WriteThis(Transaction trans, ByteArrayBuffer writer)
 		{
 			writer.WriteInt(Size());
 			for (int i = 0; i < _ints.Length; i++)

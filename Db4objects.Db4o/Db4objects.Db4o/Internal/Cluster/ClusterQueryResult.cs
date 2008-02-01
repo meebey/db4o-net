@@ -162,7 +162,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 		}
 
 		/// <param name="r"></param>
-		public virtual void LoadFromIdReader(BufferImpl r)
+		public virtual void LoadFromIdReader(ByteArrayBuffer r)
 		{
 			throw new NotSupportedException();
 		}

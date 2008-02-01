@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 			 bTree)
 		{
 			Transaction trans = yapFile.SystemTransaction();
-			BufferImpl reader = yapFile.ReadReaderByID(trans, classIndexId);
+			ByteArrayBuffer reader = yapFile.ReadReaderByID(trans, classIndexId);
 			if (reader == null)
 			{
 				return;

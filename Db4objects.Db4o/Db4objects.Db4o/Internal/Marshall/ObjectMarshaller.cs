@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
@@ -14,7 +15,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			private bool _cancelled = false;
 
-			public virtual int FieldCount(ClassMetadata classMetadata, BufferImpl reader)
+			public virtual int FieldCount(ClassMetadata classMetadata, ByteArrayBuffer reader
+				)
 			{
 				return classMetadata.ReadFieldCount(reader);
 			}
@@ -36,12 +38,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 		protected void TraverseFields(IMarshallingInfo context, ObjectMarshaller.TraverseFieldCommand
 			 command)
 		{
-			TraverseFields(context.ClassMetadata(), (BufferImpl)context.Buffer(), context, command
-				);
+			TraverseFields(context.ClassMetadata(), (ByteArrayBuffer)context.Buffer(), context
+				, command);
 		}
 
-		protected void TraverseFields(ClassMetadata classMetadata, BufferImpl buffer, IFieldListInfo
-			 fieldList, ObjectMarshaller.TraverseFieldCommand command)
+		protected void TraverseFields(ClassMetadata classMetadata, ByteArrayBuffer buffer
+			, IFieldListInfo fieldList, ObjectMarshaller.TraverseFieldCommand command)
 		{
 			int fieldIndex = 0;
 			while (classMetadata != null && !command.Cancelled())
@@ -94,10 +96,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			, StatefulBuffer writer, int a_type, bool isUpdate);
 
 		public abstract bool FindOffset(ClassMetadata classMetadata, IFieldListInfo fieldListInfo
-			, BufferImpl buffer, FieldMetadata field);
+			, ByteArrayBuffer buffer, FieldMetadata field);
 
 		public void MarshallUpdateWrite(Transaction trans, Pointer4 pointer, ObjectReference
-			 @ref, object obj, BufferImpl buffer)
+			 @ref, object obj, ByteArrayBuffer buffer)
 		{
 			ClassMetadata classMetadata = @ref.ClassMetadata();
 			ObjectContainerBase container = trans.Container();
@@ -121,37 +123,51 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public abstract object ReadIndexEntry(ClassMetadata yc, ObjectHeaderAttributes attributes
 			, FieldMetadata yf, StatefulBuffer reader);
 
-		public abstract ObjectHeaderAttributes ReadHeaderAttributes(BufferImpl reader);
+		public abstract ObjectHeaderAttributes ReadHeaderAttributes(ByteArrayBuffer reader
+			);
 
 		public abstract void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
-			 yo, ObjectHeaderAttributes attributes, BufferImpl reader);
+			 yo, ObjectHeaderAttributes attributes, ByteArrayBuffer reader);
 
 		public abstract void DefragFields(ClassMetadata yapClass, ObjectHeader header, DefragmentContextImpl
 			 context);
 
-		public abstract void WriteObjectClassID(BufferImpl reader, int id);
+		public abstract void WriteObjectClassID(ByteArrayBuffer reader, int id);
 
-		public abstract void SkipMarshallerInfo(BufferImpl reader);
+		public abstract void SkipMarshallerInfo(ByteArrayBuffer reader);
 
 		public void InstantiateFields(UnmarshallingContext context)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_154(this
-				, context);
+			BooleanByRef updateFieldFound = new BooleanByRef();
+			int savedOffset = context.Offset();
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_160(this
+				, updateFieldFound, context);
 			TraverseFields(context, command);
+			if (updateFieldFound.value)
+			{
+				context.Seek(savedOffset);
+				command = new _TraverseFieldCommand_184(this, context);
+				TraverseFields(context, command);
+			}
 		}
 
-		private sealed class _TraverseFieldCommand_154 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_160 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_154(ObjectMarshaller _enclosing, UnmarshallingContext
-				 context)
+			public _TraverseFieldCommand_160(ObjectMarshaller _enclosing, BooleanByRef updateFieldFound
+				, UnmarshallingContext context)
 			{
 				this._enclosing = _enclosing;
+				this.updateFieldFound = updateFieldFound;
 				this.context = context;
 			}
 
 			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
 				 containingClass)
 			{
+				if (field.Updating())
+				{
+					updateFieldFound.value = true;
+				}
 				if (isNull)
 				{
 					field.Set(context.PersistentObject(), null);
@@ -174,20 +190,42 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly ObjectMarshaller _enclosing;
 
+			private readonly BooleanByRef updateFieldFound;
+
+			private readonly UnmarshallingContext context;
+		}
+
+		private sealed class _TraverseFieldCommand_184 : ObjectMarshaller.TraverseFieldCommand
+		{
+			public _TraverseFieldCommand_184(ObjectMarshaller _enclosing, UnmarshallingContext
+				 context)
+			{
+				this._enclosing = _enclosing;
+				this.context = context;
+			}
+
+			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
+				 containingClass)
+			{
+				field.AttemptUpdate(context);
+			}
+
+			private readonly ObjectMarshaller _enclosing;
+
 			private readonly UnmarshallingContext context;
 		}
 
 		public virtual void Marshall(object obj, MarshallingContext context)
 		{
 			Transaction trans = context.Transaction();
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_176(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_196(this
 				, context, trans, obj);
 			TraverseFields(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_176 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_196 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_176(ObjectMarshaller _enclosing, MarshallingContext 
+			public _TraverseFieldCommand_196(ObjectMarshaller _enclosing, MarshallingContext 
 				context, Transaction trans, object obj)
 			{
 				this._enclosing = _enclosing;
@@ -199,7 +237,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private int fieldIndex;
 
-			public override int FieldCount(ClassMetadata classMetadata, BufferImpl buffer)
+			public override int FieldCount(ClassMetadata classMetadata, ByteArrayBuffer buffer
+				)
 			{
 				int fieldCount = classMetadata.i_fields.Length;
 				context.FieldCount(fieldCount);

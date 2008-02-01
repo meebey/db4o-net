@@ -2,7 +2,6 @@
 
 using System;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -10,7 +9,7 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
-	public abstract class Debug : Debug4
+	public abstract class Debug
 	{
 		/// <summary>indexes all fields</summary>
 		public const bool indexAllFields = false;

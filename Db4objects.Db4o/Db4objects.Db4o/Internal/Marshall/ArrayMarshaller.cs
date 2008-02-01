@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		protected abstract BufferImpl PrepareIDReader(Transaction trans, BufferImpl reader
-			);
+		protected abstract ByteArrayBuffer PrepareIDReader(Transaction trans, ByteArrayBuffer
+			 reader);
 	}
 }

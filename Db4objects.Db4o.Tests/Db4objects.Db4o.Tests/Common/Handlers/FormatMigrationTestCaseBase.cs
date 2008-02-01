@@ -8,6 +8,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Tests.Util;
 
@@ -114,6 +115,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				CheckDatabaseFile(testFileName);
 				// Twice, to ensure everything is fine after opening, converting and closing.
 				CheckDatabaseFile(testFileName);
+				UpdateDatabaseFile(testFileName);
+				CheckUpdatedDatabaseFile(testFileName);
 			}
 			else
 			{
@@ -153,11 +156,74 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		private void CheckDatabaseFile(string testFile)
 		{
 			// do nothing
+			WithDatabase(testFile, new _IFunction4_138(this));
+		}
+
+		private sealed class _IFunction4_138 : IFunction4
+		{
+			public _IFunction4_138(FormatMigrationTestCaseBase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Apply(object objectContainer)
+			{
+				this._enclosing.AssertObjectsAreReadable((IExtObjectContainer)objectContainer);
+				return null;
+			}
+
+			private readonly FormatMigrationTestCaseBase _enclosing;
+		}
+
+		private void UpdateDatabaseFile(string testFile)
+		{
+			WithDatabase(testFile, new _IFunction4_147(this));
+		}
+
+		private sealed class _IFunction4_147 : IFunction4
+		{
+			public _IFunction4_147(FormatMigrationTestCaseBase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Apply(object objectContainer)
+			{
+				this._enclosing.Update((IExtObjectContainer)objectContainer);
+				return null;
+			}
+
+			private readonly FormatMigrationTestCaseBase _enclosing;
+		}
+
+		private void CheckUpdatedDatabaseFile(string testFile)
+		{
+			WithDatabase(testFile, new _IFunction4_157(this));
+		}
+
+		private sealed class _IFunction4_157 : IFunction4
+		{
+			public _IFunction4_157(FormatMigrationTestCaseBase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Apply(object objectContainer)
+			{
+				this._enclosing.AssertObjectsAreUpdated((IExtObjectContainer)objectContainer);
+				return null;
+			}
+
+			private readonly FormatMigrationTestCaseBase _enclosing;
+		}
+
+		private void WithDatabase(string file, IFunction4 function)
+		{
 			Configure();
-			IExtObjectContainer objectContainer = Db4oFactory.OpenFile(testFile).Ext();
+			IExtObjectContainer objectContainer = Db4oFactory.OpenFile(file).Ext();
 			try
 			{
-				AssertObjectsAreReadable(objectContainer);
+				function.Apply(objectContainer);
 			}
 			finally
 			{
@@ -176,7 +242,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return System.Convert.ToInt32(Sharpen.Runtime.Substring(_db4oVersion, 0, 1));
 		}
 
-		protected byte _db4oHeaderVersion;
+		private byte _db4oHeaderVersion;
 
 		protected abstract string[] VersionNames();
 
@@ -197,10 +263,26 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			// Override for special testing configuration.
 			// Override for special storage configuration.
+			// code MUST use the deprecated API here
+			// because it will be run against old db4o versions
 			objectContainer.Set(obj);
 		}
 
 		protected abstract void AssertObjectsAreReadable(IExtObjectContainer objectContainer
 			);
+
+		protected virtual byte Db4oHeaderVersion()
+		{
+			return _db4oHeaderVersion;
+		}
+
+		protected virtual void Update(IExtObjectContainer objectContainer)
+		{
+		}
+
+		protected virtual void AssertObjectsAreUpdated(IExtObjectContainer objectContainer
+			)
+		{
+		}
 	}
 }

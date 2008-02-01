@@ -11,17 +11,17 @@ using Sharpen;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class BufferImpl : IReadBuffer, IBuffer, IWriteBuffer
+	public class ByteArrayBuffer : IReadBuffer, IReadWriteBuffer, IWriteBuffer
 	{
 		public byte[] _buffer;
 
 		public int _offset;
 
-		internal BufferImpl()
+		internal ByteArrayBuffer()
 		{
 		}
 
-		public BufferImpl(int a_length)
+		public ByteArrayBuffer(int a_length)
 		{
 			// for coding convenience, we allow objects to grab into the buffer
 			_buffer = new byte[a_length];
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Internal
 			WriteBytes(bytes);
 		}
 
-		public bool ContainsTheSame(Db4objects.Db4o.Internal.BufferImpl other)
+		public bool ContainsTheSame(Db4objects.Db4o.Internal.ByteArrayBuffer other)
 		{
 			if (other != null)
 			{
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public virtual void CopyTo(Db4objects.Db4o.Internal.BufferImpl to, int fromOffset
+		public virtual void CopyTo(Db4objects.Db4o.Internal.ByteArrayBuffer to, int fromOffset
 			, int toOffset, int length)
 		{
 			System.Array.Copy(_buffer, fromOffset, to._buffer, toOffset, length);
@@ -109,7 +109,8 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		public Db4objects.Db4o.Internal.BufferImpl ReadEmbeddedObject(Transaction trans)
+		public Db4objects.Db4o.Internal.ByteArrayBuffer ReadEmbeddedObject(Transaction trans
+			)
 		{
 			int address = ReadInt();
 			int length = ReadInt();
@@ -143,10 +144,10 @@ namespace Db4objects.Db4o.Internal
 			return LongHandler.ReadLong(this);
 		}
 
-		public virtual Db4objects.Db4o.Internal.BufferImpl ReadPayloadReader(int offset, 
-			int length)
+		public virtual Db4objects.Db4o.Internal.ByteArrayBuffer ReadPayloadReader(int offset
+			, int length)
 		{
-			Db4objects.Db4o.Internal.BufferImpl payLoad = new Db4objects.Db4o.Internal.BufferImpl
+			Db4objects.Db4o.Internal.ByteArrayBuffer payLoad = new Db4objects.Db4o.Internal.ByteArrayBuffer
 				(length);
 			System.Array.Copy(_buffer, offset, payLoad._buffer, 0, length);
 			return payLoad;

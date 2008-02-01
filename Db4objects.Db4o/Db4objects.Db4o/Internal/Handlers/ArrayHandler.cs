@@ -15,7 +15,7 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public class ArrayHandler : VariableLengthTypeHandler, IFirstClassHandler, IComparable4
+	public class ArrayHandler : IFirstClassHandler, IComparable4, ITypeHandler4, IVariableLengthTypeHandler
 	{
 		private sealed class ReflectArrayIterator : IndexedIterator
 		{
@@ -40,9 +40,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public readonly bool _usePrimitiveClassReflector;
 
+		private readonly ObjectContainerBase _container;
+
 		public ArrayHandler(ObjectContainerBase container, ITypeHandler4 handler, bool usePrimitiveClassReflector
-			) : base(container)
+			)
 		{
+			_container = container;
 			_handler = handler;
 			_usePrimitiveClassReflector = usePrimitiveClassReflector;
 		}
@@ -94,6 +97,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
+		public virtual ObjectContainerBase Container()
+		{
+			return _container;
+		}
+
 		private IActivationDepth Descend(IActivationDepth depth, object obj)
 		{
 			if (obj == null)
@@ -133,7 +141,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return mf._array.CollectIDs(this, tree, reader);
 		}
 
-		public TreeInt CollectIDs1(Transaction trans, TreeInt tree, BufferImpl reader)
+		public TreeInt CollectIDs1(Transaction trans, TreeInt tree, ByteArrayBuffer reader
+			)
 		{
 			if (reader == null)
 			{
@@ -148,7 +157,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		public override void Delete(IDeleteContext context)
+		public virtual void Delete(IDeleteContext context)
 		{
 			int address = context.ReadInt();
 			context.ReadInt();
@@ -270,21 +279,21 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		public virtual ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, BufferImpl[] a_bytes)
+			 mf, ByteArrayBuffer[] a_bytes)
 		{
 			return this;
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		public virtual void ReadCandidates(int handlerVersion, BufferImpl reader, QCandidates
+		public virtual void ReadCandidates(int handlerVersion, ByteArrayBuffer reader, QCandidates
 			 candidates)
 		{
 			reader.Seek(reader.ReadInt());
 			ReadSubCandidates(handlerVersion, reader, candidates);
 		}
 
-		public virtual void ReadSubCandidates(int handlerVersion, BufferImpl reader, QCandidates
-			 candidates)
+		public virtual void ReadSubCandidates(int handlerVersion, ByteArrayBuffer reader, 
+			QCandidates candidates)
 		{
 			IntByRef elements = new IntByRef();
 			object arr = ReadCreate(candidates.i_trans, reader, elements);
@@ -295,8 +304,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			ReadSubCandidates(handlerVersion, reader, candidates, elements.value);
 		}
 
-		protected virtual void ReadSubCandidates(int handlerVersion, BufferImpl reader, QCandidates
-			 candidates, int count)
+		protected virtual void ReadSubCandidates(int handlerVersion, ByteArrayBuffer reader
+			, QCandidates candidates, int count)
 		{
 			QueryingReadContext context = new QueryingReadContext(candidates.Transaction(), handlerVersion
 				, reader);
@@ -314,7 +323,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			 clazz)
 		{
 			int elements = buffer.ReadInt();
-			if (elements < 0)
+			if (NewerArrayFormat(elements))
 			{
 				clazz.value = ReflectClassFromElementsEntry(trans, elements);
 				elements = buffer.ReadInt();
@@ -328,6 +337,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return 0;
 			}
 			return elements;
+		}
+
+		private bool NewerArrayFormat(int elements)
+		{
+			return elements < 0;
 		}
 
 		protected int MapElementsEntry(IDefragmentContext context, int orig)
@@ -414,7 +428,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Container().Reflector();
 		}
 
-		public override void Defragment(IDefragmentContext context)
+		public virtual void Defragment(IDefragmentContext context)
 		{
 			if (Handlers4.HandlesSimple(_handler))
 			{
@@ -495,7 +509,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return elements;
 		}
 
-		public override object Read(IReadContext context)
+		public virtual object Read(IReadContext context)
 		{
 			IntByRef elements = new IntByRef();
 			object array = ReadCreate(context.Transaction(), context, elements);
@@ -517,7 +531,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return array;
 		}
 
-		public override void Write(IWriteContext context, object obj)
+		public virtual void Write(IWriteContext context, object obj)
 		{
 			int classID = ClassID(obj);
 			context.WriteInt(classID);
@@ -537,9 +551,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public override IPreparedComparison PrepareComparison(object obj)
+		public virtual IPreparedComparison PrepareComparison(object obj)
 		{
 			return new PreparedArrayContainsComparison(this, _handler, obj);
+		}
+
+		public virtual int LinkLength()
+		{
+			return Const4.IndirectionLength;
 		}
 	}
 }

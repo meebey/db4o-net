@@ -450,7 +450,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public sealed override void ReadThis(Transaction trans, BufferImpl buffer)
+		public sealed override void ReadThis(Transaction trans, ByteArrayBuffer buffer)
 		{
 			int classCount = buffer.ReadInt();
 			InitTables(classCount);
@@ -623,7 +623,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public override void WriteThis(Transaction trans, BufferImpl buffer)
+		public override void WriteThis(Transaction trans, ByteArrayBuffer buffer)
 		{
 			buffer.WriteInt(_classes.Size());
 			IEnumerator i = _classes.GetEnumerator();
@@ -635,7 +635,6 @@ namespace Db4objects.Db4o.Internal
 
 		public override string ToString()
 		{
-			return base.ToString();
 			string str = "Active:\n";
 			IEnumerator i = _classes.GetEnumerator();
 			while (i.MoveNext())

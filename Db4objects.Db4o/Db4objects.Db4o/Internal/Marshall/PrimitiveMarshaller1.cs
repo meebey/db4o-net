@@ -13,32 +13,32 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return false;
 		}
 
-		public override DateTime ReadDate(BufferImpl bytes)
+		public override DateTime ReadDate(ByteArrayBuffer bytes)
 		{
 			return new DateTime(bytes.ReadLong());
 		}
 
-		public override object ReadInteger(BufferImpl bytes)
+		public override object ReadInteger(ByteArrayBuffer bytes)
 		{
 			return bytes.ReadInt();
 		}
 
-		public override object ReadFloat(BufferImpl bytes)
+		public override object ReadFloat(ByteArrayBuffer bytes)
 		{
 			return PrimitiveMarshaller0.UnmarshallFloat(bytes);
 		}
 
-		public override object ReadDouble(BufferImpl buffer)
+		public override object ReadDouble(ByteArrayBuffer buffer)
 		{
 			return PrimitiveMarshaller0.UnmarshalDouble(buffer);
 		}
 
-		public override object ReadLong(BufferImpl buffer)
+		public override object ReadLong(ByteArrayBuffer buffer)
 		{
 			return buffer.ReadLong();
 		}
 
-		public override object ReadShort(BufferImpl buffer)
+		public override object ReadShort(ByteArrayBuffer buffer)
 		{
 			return PrimitiveMarshaller0.UnmarshallShort(buffer);
 		}

@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Collections
 	/// <summary>Transparent activatable Map implementation.</summary>
 	/// <remarks>
 	/// Transparent activatable Map implementation.
-	/// Implements Map interface using two arrays to store keys and values.<br /><br />
+	/// Implements Map interface using two arrays to store keys and values.&lt;br&gt;&lt;br&gt;
 	/// When instantiated as a result of a query, all the internal members
 	/// are NOT activated at all. When internal members are required to
 	/// perform an operation, the instance transparently activates all

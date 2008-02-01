@@ -52,22 +52,22 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return mf._primitive.ReadInteger(writer);
 		}
 
-		internal override object Read1(BufferImpl a_bytes)
+		internal override object Read1(ByteArrayBuffer a_bytes)
 		{
 			return a_bytes.ReadInt();
 		}
 
-		public override void Write(object obj, BufferImpl writer)
+		public override void Write(object obj, ByteArrayBuffer writer)
 		{
 			Write(((int)obj), writer);
 		}
 
-		public virtual void Write(int intValue, BufferImpl writer)
+		public virtual void Write(int intValue, ByteArrayBuffer writer)
 		{
 			WriteInt(intValue, writer);
 		}
 
-		public static void WriteInt(int a_int, BufferImpl a_bytes)
+		public static void WriteInt(int a_int, ByteArrayBuffer a_bytes)
 		{
 			a_bytes.WriteInt(a_int);
 		}

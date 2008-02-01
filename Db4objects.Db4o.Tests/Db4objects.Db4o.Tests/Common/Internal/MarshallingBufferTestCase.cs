@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingBuffer buffer = new MarshallingBuffer();
 			buffer.WriteInt(Data1);
 			buffer.WriteByte(Data2);
-			BufferImpl content = InspectContent(buffer);
+			ByteArrayBuffer content = InspectContent(buffer);
 			Assert.AreEqual(Data1, content.ReadInt());
 			Assert.AreEqual(Data2, content.ReadByte());
 		}
@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingBuffer other = new MarshallingBuffer();
 			buffer.TransferLastWriteTo(other, true);
 			Assert.AreEqual(lastOffset, Offset(buffer));
-			BufferImpl content = InspectContent(other);
+			ByteArrayBuffer content = InspectContent(other);
 			Assert.AreEqual(Data2, content.ReadByte());
 		}
 
@@ -45,9 +45,9 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			return buffer.TestDelegate().Offset();
 		}
 
-		private BufferImpl InspectContent(MarshallingBuffer buffer)
+		private ByteArrayBuffer InspectContent(MarshallingBuffer buffer)
 		{
-			BufferImpl bufferDelegate = buffer.TestDelegate();
+			ByteArrayBuffer bufferDelegate = buffer.TestDelegate();
 			bufferDelegate.Seek(0);
 			return bufferDelegate;
 		}
@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			child.WriteInt(Data3);
 			child.WriteInt(Data4);
 			buffer.MergeChildren(null, 0, 0);
-			BufferImpl content = InspectContent(buffer);
+			ByteArrayBuffer content = InspectContent(buffer);
 			Assert.AreEqual(Data1, content.ReadInt());
 			Assert.AreEqual(Data2, content.ReadByte());
 			int address = content.ReadInt();
@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingBuffer grandChild = child.AddChild();
 			grandChild.WriteInt(Data5);
 			buffer.MergeChildren(null, 0, 0);
-			BufferImpl content = InspectContent(buffer);
+			ByteArrayBuffer content = InspectContent(buffer);
 			Assert.AreEqual(Data1, content.ReadInt());
 			Assert.AreEqual(Data2, content.ReadByte());
 			int address = content.ReadInt();
@@ -105,8 +105,9 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingBuffer grandChild = child.AddChild();
 			grandChild.WriteInt(Data5);
 			buffer.MergeChildren(null, 0, linkOffset);
-			BufferImpl content = InspectContent(buffer);
-			BufferImpl extendedBuffer = new BufferImpl(content.Length() + linkOffset);
+			ByteArrayBuffer content = InspectContent(buffer);
+			ByteArrayBuffer extendedBuffer = new ByteArrayBuffer(content.Length() + linkOffset
+				);
 			content.CopyTo(extendedBuffer, 0, linkOffset, content.Length());
 			extendedBuffer.Seek(linkOffset);
 			Assert.AreEqual(Data1, extendedBuffer.ReadInt());
@@ -129,7 +130,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			buffer.WriteByte(Data2);
 			child.WriteInt(Data4);
 			buffer.MergeChildren(null, 0, 0);
-			BufferImpl content = InspectContent(buffer);
+			ByteArrayBuffer content = InspectContent(buffer);
 			Assert.AreEqual(Data1, content.ReadInt());
 			int address = content.ReadInt();
 			content.ReadInt();

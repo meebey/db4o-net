@@ -31,21 +31,21 @@ namespace Db4objects.Db4o.Internal.Mapping
 			return _origHandler.LinkLength() + _mappedHandler.LinkLength();
 		}
 
-		public virtual object ReadIndexEntry(BufferImpl reader)
+		public virtual object ReadIndexEntry(ByteArrayBuffer reader)
 		{
 			int origID = ReadID(reader);
 			int mappedID = ReadID(reader);
 			return new MappedIDPair(origID, mappedID);
 		}
 
-		public virtual void WriteIndexEntry(BufferImpl reader, object obj)
+		public virtual void WriteIndexEntry(ByteArrayBuffer reader, object obj)
 		{
 			MappedIDPair mappedIDs = (MappedIDPair)obj;
 			_origHandler.WriteIndexEntry(reader, mappedIDs.Orig());
 			_mappedHandler.WriteIndexEntry(reader, mappedIDs.Mapped());
 		}
 
-		private int ReadID(BufferImpl a_reader)
+		private int ReadID(ByteArrayBuffer a_reader)
 		{
 			return ((int)_origHandler.ReadIndexEntry(a_reader));
 		}

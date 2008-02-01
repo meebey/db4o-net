@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		private void AssertPrimitiveArrayInObject(DoubleHandlerUpdateTestCase.ItemArrays 
 			item)
 		{
-			if (_db4oHeaderVersion == VersionServices.Header3040)
+			if (Db4oHeaderVersion() == VersionServices.Header3040)
 			{
 				// Bug in the oldest format: It accidentally double[] arrays to Double[] arrays.
 				AssertWrapperData((double[])item._primitiveArrayInObject);
@@ -183,7 +183,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(double expected, double actual)
 		{
-			if (double.IsNaN(expected) && _handlerVersion == 0)
+			if (double.IsNaN(expected) && Db4oHandlerVersion() == 0)
 			{
 				expected = 0;
 			}
@@ -196,7 +196,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(object expected, object actual)
 		{
-			if (double.IsNaN(((double)expected)) && _handlerVersion == 0)
+			if (double.IsNaN(((double)expected)) && Db4oHandlerVersion() == 0)
 			{
 				expected = null;
 			}

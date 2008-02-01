@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			_configBlock.Close();
 		}
 
-		protected override FileHeader NewOnSignatureMatch(LocalObjectContainer file, BufferImpl
+		protected override FileHeader NewOnSignatureMatch(LocalObjectContainer file, ByteArrayBuffer
 			 reader)
 		{
 			byte firstFileByte = reader.ReadByte();
@@ -62,15 +62,15 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		}
 
 		/// <exception cref="OldFormatException"></exception>
-		protected override void ReadFixedPart(LocalObjectContainer file, BufferImpl reader
-			)
+		protected override void ReadFixedPart(LocalObjectContainer file, ByteArrayBuffer 
+			reader)
 		{
 			_configBlock = ConfigBlock.ForExistingFile(file, reader.ReadInt());
 			SkipConfigurationLockTime(reader);
 			ReadClassCollectionAndFreeSpace(file, reader);
 		}
 
-		private void SkipConfigurationLockTime(BufferImpl reader)
+		private void SkipConfigurationLockTime(ByteArrayBuffer reader)
 		{
 			reader.IncrementOffset(Const4.IdLength);
 		}

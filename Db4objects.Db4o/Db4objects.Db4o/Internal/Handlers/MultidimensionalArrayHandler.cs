@@ -75,8 +75,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ElementCount(dimensions);
 		}
 
-		public override void ReadSubCandidates(int handlerVersion, BufferImpl reader, QCandidates
-			 candidates)
+		public override void ReadSubCandidates(int handlerVersion, ByteArrayBuffer reader
+			, QCandidates candidates)
 		{
 			IntArrayByRef dimensions = new IntArrayByRef();
 			object arr = ReadCreate(candidates.i_trans, reader, dimensions);

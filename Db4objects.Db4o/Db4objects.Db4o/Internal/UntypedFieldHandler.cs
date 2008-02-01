@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, BufferImpl[] a_bytes)
+			 mf, ByteArrayBuffer[] a_bytes)
 		{
 			return mf._untyped.ReadArrayHandler(a_trans, a_bytes);
 		}
@@ -218,7 +218,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return HandlerRegistry().UntypedArrayHandler(claxx);
 			}
-			return Container().TypeHandlerForObject(obj);
+			return Container().TypeHandlerForReflectClass(claxx);
 		}
 	}
 }

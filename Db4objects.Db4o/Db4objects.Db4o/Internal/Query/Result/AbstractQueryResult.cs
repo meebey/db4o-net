@@ -178,7 +178,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 		}
 
 		/// <param name="r"></param>
-		public virtual void LoadFromIdReader(BufferImpl r)
+		public virtual void LoadFromIdReader(ByteArrayBuffer r)
 		{
 			throw new NotImplementedException();
 		}

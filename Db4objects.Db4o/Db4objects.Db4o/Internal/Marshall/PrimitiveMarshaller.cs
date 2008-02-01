@@ -12,16 +12,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public abstract bool UseNormalClassRead();
 
-		public abstract DateTime ReadDate(BufferImpl bytes);
+		public abstract DateTime ReadDate(ByteArrayBuffer bytes);
 
-		public abstract object ReadShort(BufferImpl buffer);
+		public abstract object ReadShort(ByteArrayBuffer buffer);
 
-		public abstract object ReadInteger(BufferImpl buffer);
+		public abstract object ReadInteger(ByteArrayBuffer buffer);
 
-		public abstract object ReadFloat(BufferImpl buffer);
+		public abstract object ReadFloat(ByteArrayBuffer buffer);
 
-		public abstract object ReadDouble(BufferImpl buffer);
+		public abstract object ReadDouble(ByteArrayBuffer buffer);
 
-		public abstract object ReadLong(BufferImpl buffer);
+		public abstract object ReadLong(ByteArrayBuffer buffer);
 	}
 }

@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal
 	/// variables needed for the respective usecase.
 	/// </remarks>
 	/// <exclude></exclude>
-	public sealed class StatefulBuffer : BufferImpl
+	public sealed class StatefulBuffer : ByteArrayBuffer
 	{
 		private int i_address;
 
@@ -322,7 +322,7 @@ namespace Db4objects.Db4o.Internal
 			return linkOffset;
 		}
 
-		public BufferImpl ReadPayloadWriter(int offset, int length)
+		public ByteArrayBuffer ReadPayloadWriter(int offset, int length)
 		{
 			Db4objects.Db4o.Internal.StatefulBuffer payLoad = new Db4objects.Db4o.Internal.StatefulBuffer
 				(i_trans, 0, length);
@@ -359,7 +359,6 @@ namespace Db4objects.Db4o.Internal
 
 		public override string ToString()
 		{
-			return base.ToString();
 			return "id " + i_id + " adr " + i_address + " len " + i_length;
 		}
 

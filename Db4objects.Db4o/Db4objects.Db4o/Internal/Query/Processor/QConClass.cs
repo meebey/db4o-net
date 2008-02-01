@@ -124,7 +124,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override string ToString()
 		{
-			return base.ToString();
 			string str = "QConClass ";
 			if (_claxx != null)
 			{

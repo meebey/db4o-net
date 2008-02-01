@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return Length;
 		}
 
-		public override void ReadThis(Transaction trans, BufferImpl reader)
+		public override void ReadThis(Transaction trans, ByteArrayBuffer reader)
 		{
 			_systemData.ConverterVersion(reader.ReadInt());
 			_systemData.FreespaceSystem(reader.ReadByte());
@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			_systemData.UuidIndexId(reader.ReadInt());
 		}
 
-		public override void WriteThis(Transaction trans, BufferImpl writer)
+		public override void WriteThis(Transaction trans, ByteArrayBuffer writer)
 		{
 			writer.WriteInt(_systemData.ConverterVersion());
 			writer.WriteByte(_systemData.FreespaceSystem());

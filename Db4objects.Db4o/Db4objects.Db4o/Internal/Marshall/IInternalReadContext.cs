@@ -8,15 +8,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public interface IInternalReadContext : IReadContext
 	{
-		IBuffer Buffer(IBuffer buffer);
+		IReadWriteBuffer Buffer(IReadWriteBuffer buffer);
 
-		IBuffer Buffer();
+		IReadWriteBuffer Buffer();
 
 		ObjectContainerBase Container();
 
 		int Offset();
 
 		object Read(ITypeHandler4 handler);
+
+		IReadWriteBuffer ReadIndirectedBuffer();
 
 		void Seek(int offset);
 	}

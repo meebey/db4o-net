@@ -1,11 +1,8 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -21,7 +18,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override object Read(IReadContext readContext)
 		{
 			IInternalReadContext context = (IInternalReadContext)readContext;
-			BufferImpl buffer = ReadIndirectedBuffer(context);
+			ByteArrayBuffer buffer = (ByteArrayBuffer)context.ReadIndirectedBuffer();
 			if (buffer == null)
 			{
 				return null;
@@ -31,7 +28,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			// a user handler, it should be implemented by using a Queue
 			// in the UnmarshallingContext.
 			// The buffer has to be set back from the outside!  See below
-			IBuffer contextBuffer = context.Buffer(buffer);
+			IReadWriteBuffer contextBuffer = context.Buffer(buffer);
 			object array = base.Read(context);
 			// The context buffer has to be set back.
 			context.Buffer(contextBuffer);
@@ -40,31 +37,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override void Defragment(IDefragmentContext context)
 		{
-			// FIXME copied from ArrayHandler0
-			int sourceAddress = context.SourceBuffer().ReadInt();
-			int length = context.SourceBuffer().ReadInt();
-			if (sourceAddress == 0 && length == 0)
-			{
-				context.TargetBuffer().WriteInt(0);
-				context.TargetBuffer().WriteInt(0);
-				return;
-			}
-			Slot slot = context.AllocateMappedTargetSlot(sourceAddress, length);
-			BufferImpl sourceBuffer = null;
-			try
-			{
-				sourceBuffer = context.SourceBufferByAddress(sourceAddress, length);
-			}
-			catch (IOException exc)
-			{
-				throw new Db4oIOException(exc);
-			}
-			DefragmentContextImpl payloadContext = new DefragmentContextImpl(sourceBuffer, (DefragmentContextImpl
-				)context);
-			Defrag1(payloadContext);
-			payloadContext.WriteToTarget(slot.Address());
-			context.TargetBuffer().WriteInt(slot.Address());
-			context.TargetBuffer().WriteInt(length);
+			ArrayHandler0.Defragment(context, this);
 		}
 	}
 }

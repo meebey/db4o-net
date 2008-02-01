@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal
 
 		private const int NoParent = -int.MaxValue;
 
-		private BufferImpl _delegate;
+		private ByteArrayBuffer _delegate;
 
 		private int _lastOffSet;
 
@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_delegate == null)
 			{
-				_delegate = new BufferImpl(sizeNeeded);
+				_delegate = new ByteArrayBuffer(sizeNeeded);
 			}
 			_lastOffSet = _delegate.Offset();
 			if (RemainingSize() < sizeNeeded)
@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				newSize += sizeNeeded;
 			}
-			BufferImpl temp = new BufferImpl(newSize);
+			ByteArrayBuffer temp = new ByteArrayBuffer(newSize);
 			temp.Seek(_lastOffSet);
 			_delegate.CopyTo(temp, 0, 0, _delegate.Length());
 			_delegate = temp;
@@ -120,18 +120,18 @@ namespace Db4objects.Db4o.Internal
 			_addressInParent = storeLengthInLink ? offset : -offset;
 		}
 
-		public virtual void TransferContentTo(BufferImpl buffer)
+		public virtual void TransferContentTo(ByteArrayBuffer buffer)
 		{
 			TransferContentTo(buffer, Length());
 		}
 
-		public virtual void TransferContentTo(BufferImpl buffer, int length)
+		public virtual void TransferContentTo(ByteArrayBuffer buffer, int length)
 		{
 			System.Array.Copy(_delegate._buffer, 0, buffer._buffer, buffer._offset, length);
 			buffer._offset += length;
 		}
 
-		public virtual BufferImpl TestDelegate()
+		public virtual ByteArrayBuffer TestDelegate()
 		{
 			return _delegate;
 		}

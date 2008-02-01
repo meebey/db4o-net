@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private readonly BitMap4 _nullBitMap;
 
-		public ObjectHeaderAttributes(BufferImpl reader)
+		public ObjectHeaderAttributes(ByteArrayBuffer reader)
 		{
 			_fieldCount = reader.ReadInt();
 			_nullBitMap = reader.ReadBitMap(_fieldCount);

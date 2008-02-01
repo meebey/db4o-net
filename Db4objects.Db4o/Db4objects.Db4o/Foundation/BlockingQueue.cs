@@ -136,5 +136,28 @@ namespace Db4objects.Db4o.Foundation
 
 			private readonly BlockingQueue _enclosing;
 		}
+
+		public virtual object NextMatching(IPredicate4 condition)
+		{
+			return _lock.Run(new _ISafeClosure4_72(this, condition));
+		}
+
+		private sealed class _ISafeClosure4_72 : ISafeClosure4
+		{
+			public _ISafeClosure4_72(BlockingQueue _enclosing, IPredicate4 condition)
+			{
+				this._enclosing = _enclosing;
+				this.condition = condition;
+			}
+
+			public object Run()
+			{
+				return this._enclosing._queue.NextMatching(condition);
+			}
+
+			private readonly BlockingQueue _enclosing;
+
+			private readonly IPredicate4 condition;
+		}
 	}
 }

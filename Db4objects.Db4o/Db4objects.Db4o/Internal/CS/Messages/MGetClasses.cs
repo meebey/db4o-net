@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			}
 			MsgD message = Msg.GetClasses.GetWriterForLength(Transaction(), Const4.IntLength 
 				+ 1);
-			BufferImpl writer = message.PayLoad();
+			ByteArrayBuffer writer = message.PayLoad();
 			writer.WriteInt(stream.ClassCollection().GetID());
 			writer.WriteByte(stream.StringIO().EncodingByte());
 			Write(message);

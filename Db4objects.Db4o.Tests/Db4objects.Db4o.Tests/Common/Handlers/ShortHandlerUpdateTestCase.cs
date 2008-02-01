@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ShortHandlerUpdateTestCase.ItemArrays itemArrays = (ShortHandlerUpdateTestCase.ItemArrays
 				)obj;
 			AssertPrimitiveArray(itemArrays._typedPrimitiveArray);
-			if (_db4oHeaderVersion == VersionServices.Header3040)
+			if (Db4oHeaderVersion() == VersionServices.Header3040)
 			{
 				// Bug in the oldest format: It accidentally short[] arrays to Short[] arrays.
 				AssertWrapperArray((short[])itemArrays._primitiveArrayInObject);
@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(short expected, short actual)
 		{
-			if (expected == short.MaxValue && _handlerVersion == 0)
+			if (expected == short.MaxValue && Db4oHandlerVersion() == 0)
 			{
 				// Bug in the oldest format: It treats Short.MAX_VALUE as null.
 				expected = 0;
@@ -102,7 +102,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(object expected, object actual)
 		{
-			if (short.MaxValue.Equals(expected) && _handlerVersion == 0)
+			if (short.MaxValue.Equals(expected) && Db4oHandlerVersion() == 0)
 			{
 				// Bug in the oldest format: It treats Short.MAX_VALUE as null.
 				expected = null;

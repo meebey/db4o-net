@@ -5,11 +5,11 @@ using Db4objects.Db4o.Config;
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>
-	/// Defines a scope of applicability of a config setting.<br /><br />
-	/// Some of the configuration settings can be either: <br /><br />
-	/// - enabled globally; <br />
-	/// - enabled individually for a specified class; <br />
-	/// - disabled.<br /><br />
+	/// Defines a scope of applicability of a config setting.&lt;br&gt;&lt;br&gt;
+	/// Some of the configuration settings can be either: &lt;br&gt;&lt;br&gt;
+	/// - enabled globally; &lt;br&gt;
+	/// - enabled individually for a specified class; &lt;br&gt;
+	/// - disabled.&lt;br&gt;&lt;br&gt;
 	/// </summary>
 	/// <seealso cref="IConfiguration.GenerateUUIDs">IConfiguration.GenerateUUIDs</seealso>
 	/// <seealso cref="IConfiguration.GenerateVersionNumbers">IConfiguration.GenerateVersionNumbers

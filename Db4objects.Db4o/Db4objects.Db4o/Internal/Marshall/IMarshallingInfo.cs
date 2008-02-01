@@ -10,6 +10,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		Db4objects.Db4o.Internal.ClassMetadata ClassMetadata();
 
-		IBuffer Buffer();
+		IReadWriteBuffer Buffer();
 	}
 }

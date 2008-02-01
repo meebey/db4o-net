@@ -9,25 +9,25 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public abstract class BufferContext : IReadBuffer
 	{
-		protected IBuffer _buffer;
+		protected IReadWriteBuffer _buffer;
 
 		protected readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
-		public BufferContext(Db4objects.Db4o.Internal.Transaction transaction, IBuffer buffer
-			)
+		public BufferContext(Db4objects.Db4o.Internal.Transaction transaction, IReadWriteBuffer
+			 buffer)
 		{
 			_transaction = transaction;
 			_buffer = buffer;
 		}
 
-		public virtual IBuffer Buffer(IBuffer buffer)
+		public virtual IReadWriteBuffer Buffer(IReadWriteBuffer buffer)
 		{
-			IBuffer temp = _buffer;
+			IReadWriteBuffer temp = _buffer;
 			_buffer = buffer;
 			return temp;
 		}
 
-		public virtual IBuffer Buffer()
+		public virtual IReadWriteBuffer Buffer()
 		{
 			return _buffer;
 		}

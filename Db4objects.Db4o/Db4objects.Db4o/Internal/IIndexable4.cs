@@ -9,9 +9,9 @@ namespace Db4objects.Db4o.Internal
 	{
 		int LinkLength();
 
-		object ReadIndexEntry(BufferImpl reader);
+		object ReadIndexEntry(ByteArrayBuffer reader);
 
-		void WriteIndexEntry(BufferImpl writer, object obj);
+		void WriteIndexEntry(ByteArrayBuffer writer, object obj);
 
 		void DefragIndexEntry(DefragmentContextImpl context);
 	}

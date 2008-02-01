@@ -132,8 +132,8 @@ namespace Db4objects.Db4o.Internal
 				try
 				{
 					byte[] pwdbytes = new LatinStringIO().Write(fullpwd);
-					BufferImpl encwriter = new StatefulBuffer(_container.Transaction(), pwdbytes.Length
-						 + EncryptionPasswordLength);
+					ByteArrayBuffer encwriter = new StatefulBuffer(_container.Transaction(), pwdbytes
+						.Length + EncryptionPasswordLength);
 					encwriter.Append(pwdbytes);
 					encwriter.Append(new byte[EncryptionPasswordLength]);
 					_container._handlers.Decrypt(encwriter);

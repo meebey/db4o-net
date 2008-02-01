@@ -7,6 +7,6 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public interface IReadWriteable : IReadable
 	{
-		void Write(BufferImpl a_writer);
+		void Write(ByteArrayBuffer a_writer);
 	}
 }

@@ -403,6 +403,12 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		/// <exception cref="DatabaseClosedException"></exception>
+		public virtual void Deactivate(object obj)
+		{
+			Deactivate(obj, 1);
+		}
+
 		/// <exception cref="Db4oIOException"></exception>
 		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="DatabaseReadOnlyException"></exception>

@@ -7,7 +7,8 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Build
 {
 	public class ExpressionBuilder
 	{
-		/// <summary>Optimizations: !(Bool)->(!Bool), !!X->X, !(X==Bool)->(X==!Bool)</summary>
+		/// <summary>Optimizations: !(Bool)-&gt;(!Bool), !!X-&gt;X, !(X==Bool)-&gt;(X==!Bool)
+		/// 	</summary>
 		public virtual IExpression Not(IExpression expr)
 		{
 			if (expr.Equals(BoolConstExpression.True))
@@ -40,7 +41,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Build
 			return new NotExpression(expr);
 		}
 
-		/// <summary>Optimizations: f&&X->f, t&&X->X, X&&X->X, X&&!X->f</summary>
+		/// <summary>Optimizations: f&&X-&gt;f, t&&X-&gt;X, X&&X-&gt;X, X&&!X-&gt;f</summary>
 		public virtual IExpression And(IExpression left, IExpression right)
 		{
 			if (left.Equals(BoolConstExpression.False) || right.Equals(BoolConstExpression.False
@@ -67,7 +68,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Build
 			return new AndExpression(left, right);
 		}
 
-		/// <summary>Optimizations: X||t->t, f||X->X, X||X->X, X||!X->t</summary>
+		/// <summary>Optimizations: X||t-&gt;t, f||X-&gt;X, X||X-&gt;X, X||!X-&gt;t</summary>
 		public virtual IExpression Or(IExpression left, IExpression right)
 		{
 			if (left.Equals(BoolConstExpression.True) || right.Equals(BoolConstExpression.True

@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_primitive;
 		}
 
-		internal override object Read1(BufferImpl a_bytes)
+		internal override object Read1(ByteArrayBuffer a_bytes)
 		{
 			byte ret = a_bytes.ReadByte();
 			if (ret == True)
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return null;
 		}
 
-		public override void Write(object obj, BufferImpl buffer)
+		public override void Write(object obj, ByteArrayBuffer buffer)
 		{
 			buffer.WriteByte(GetEncodedByteValue(obj));
 		}

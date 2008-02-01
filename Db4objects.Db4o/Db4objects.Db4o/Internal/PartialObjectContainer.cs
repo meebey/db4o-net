@@ -170,6 +170,14 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		public void Deactivate(Db4objects.Db4o.Internal.Transaction trans, object obj)
+		{
+			lock (_lock)
+			{
+				Deactivate(CheckTransaction(trans), obj, 1);
+			}
+		}
+
 		private IActivationDepth DefaultActivationDepthForObject(object obj)
 		{
 			ClassMetadata classMetadata = ClassMetadataForObject(obj);
@@ -756,7 +764,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				FieldMetadata[] field = new FieldMetadata[] { null };
-				classMetadata.ForEachFieldMetadata(new _IVisitor4_610(this, fieldName, field));
+				classMetadata.ForEachFieldMetadata(new _IVisitor4_616(this, fieldName, field));
 				if (field[0] == null)
 				{
 					return null;
@@ -777,9 +785,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_610 : IVisitor4
+		private sealed class _IVisitor4_616 : IVisitor4
 		{
-			public _IVisitor4_610(PartialObjectContainer _enclosing, string fieldName, FieldMetadata
+			public _IVisitor4_616(PartialObjectContainer _enclosing, string fieldName, FieldMetadata
 				[] field)
 			{
 				this._enclosing = _enclosing;
@@ -1678,10 +1686,10 @@ namespace Db4objects.Db4o.Internal
 			length);
 
 		/// <exception cref="Db4oIOException"></exception>
-		public BufferImpl BufferByAddress(int address, int length)
+		public ByteArrayBuffer BufferByAddress(int address, int length)
 		{
 			CheckAddress(address);
-			BufferImpl reader = new BufferImpl(length);
+			ByteArrayBuffer reader = new ByteArrayBuffer(length);
 			ReadBytes(reader._buffer, address, length);
 			_handlers.Decrypt(reader);
 			return reader;
@@ -1708,7 +1716,7 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id);
 
-		public abstract BufferImpl ReadReaderByID(Transaction a_ta, int a_id);
+		public abstract ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id);
 
 		public abstract StatefulBuffer[] ReadWritersByIDs(Transaction a_ta, int[] ids);
 
@@ -1973,14 +1981,6 @@ namespace Db4objects.Db4o.Internal
 		internal virtual void NotStorable(IReflectClass claxx, object obj)
 		{
 			if (!ConfigImpl().ExceptionsOnNotStorable())
-			{
-				return;
-			}
-			// FIXME:   Exceptions configuration setting cant be modified
-			//          from running ObjectContainer. 
-			//          Right now all tests fail, if we don't jump out here.
-			//          The StorePrimitiveDirectly test case documents the err.
-			if (true)
 			{
 				return;
 			}
@@ -2394,12 +2394,12 @@ namespace Db4objects.Db4o.Internal
 		public abstract void WriteDirty();
 
 		public abstract void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata 
-			classMetadata, BufferImpl buffer);
+			classMetadata, ByteArrayBuffer buffer);
 
 		public abstract void WriteTransactionPointer(int address);
 
 		public abstract void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, BufferImpl buffer);
+			 classMetadata, ByteArrayBuffer buffer);
 
 		private static ExternalObjectContainer Cast(PartialObjectContainer obj)
 		{

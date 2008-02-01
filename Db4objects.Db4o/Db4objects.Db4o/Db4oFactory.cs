@@ -14,19 +14,19 @@ namespace Db4objects.Db4o
 	/// <summary>factory class to start db4o database engines.</summary>
 	/// <remarks>
 	/// factory class to start db4o database engines.
-	/// <br /><br />This class provides static methods to<br />
+	/// &lt;br&gt;&lt;br&gt;This class provides static methods to&lt;br&gt;
 	/// - open single-user databases
 	/// <see cref="Db4oFactory.OpenFile">Db4oFactory.OpenFile</see>
-	/// <br />
+	/// &lt;br&gt;
 	/// - open db4o servers
 	/// <see cref="Db4oFactory.OpenServer">Db4oFactory.OpenServer</see>
-	/// <br />
+	/// &lt;br&gt;
 	/// - connect to db4o servers
 	/// <see cref="Db4oFactory.OpenClient">Db4oFactory.OpenClient</see>
-	/// <br />
+	/// &lt;br&gt;
 	/// - provide access to the global configuration context
 	/// <see cref="Db4oFactory.Configure">Db4oFactory.Configure</see>
-	/// <br />
+	/// &lt;br&gt;
 	/// - print the version number of this db4o version
 	/// <see cref="Db4oFactory.Main">Db4oFactory.Main</see>
 	/// 
@@ -41,9 +41,9 @@ namespace Db4objects.Db4o
 			Platform4.GetDefaultConfiguration(i_config);
 		}
 
-		/// <summary>prints the version name of this db4o version to <code>System.out</code>.
+		/// <summary>prints the version name of this db4o version to &lt;code&gt;System.out&lt;/code&gt;.
 		/// 	</summary>
-		/// <remarks>prints the version name of this db4o version to <code>System.out</code>.
+		/// <remarks>prints the version name of this db4o version to &lt;code&gt;System.out&lt;/code&gt;.
 		/// 	</remarks>
 		public static void Main(string[] args)
 		{
@@ -111,11 +111,11 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// client and connects it to the specified named server and port.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// The server needs to
 		/// <see cref="IObjectServer.GrantAccess">allow access</see>
 		/// for the specified user and password.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// A client
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// can be cast to
@@ -126,7 +126,7 @@ namespace Db4objects.Db4o
 		/// and
 		/// <see cref="IExtClient">IExtClient</see>
 		/// methods.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// </summary>
 		/// <param name="hostName">the host name</param>
 		/// <param name="port">the port the server is using</param>
@@ -162,11 +162,11 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// client and connects it to the specified named server and port.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// The server needs to
 		/// <see cref="IObjectServer.GrantAccess">allow access</see>
 		/// for the specified user and password.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// A client
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// can be cast to
@@ -177,7 +177,7 @@ namespace Db4objects.Db4o
 		/// and
 		/// <see cref="IExtClient">IExtClient</see>
 		/// methods.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// </summary>
 		/// <param name="config">
 		/// a custom
@@ -219,11 +219,11 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// client and connects it to the specified named server and port.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// The server needs to
 		/// <see cref="IObjectServer.GrantAccess">allow access</see>
 		/// for the specified user and password.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// A client
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// can be cast to
@@ -234,7 +234,7 @@ namespace Db4objects.Db4o
 		/// and
 		/// <see cref="IExtClient">IExtClient</see>
 		/// methods.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// </summary>
 		/// <param name="config">
 		/// a custom
@@ -435,7 +435,7 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="IObjectServer">IObjectServer</see>
 		/// on the specified database file and port.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// If the server does not need to listen on a port because it will only be used
 		/// in embedded mode with
 		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
@@ -448,7 +448,7 @@ namespace Db4objects.Db4o
 		/// because it will only be used with
 		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
 		/// .
-		/// Specify a value < 0 if an arbitrary free port should be chosen - see
+		/// Specify a value &lt; 0 if an arbitrary free port should be chosen - see
 		/// <see cref="IExtObjectServer.Port">IExtObjectServer.Port</see>
 		/// .
 		/// </param>
@@ -492,7 +492,7 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="IObjectServer">IObjectServer</see>
 		/// on the specified database file and port.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// If the server does not need to listen on a port because it will only be used
 		/// in embedded mode with
 		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
@@ -511,7 +511,7 @@ namespace Db4objects.Db4o
 		/// because it will only be used with
 		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
 		/// .
-		/// Specify a value < 0 if an arbitrary free port should be chosen - see
+		/// Specify a value &lt; 0 if an arbitrary free port should be chosen - see
 		/// <see cref="IExtObjectServer.Port">IExtObjectServer.Port</see>
 		/// .
 		/// </param>
@@ -556,7 +556,7 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="IObjectServer">IObjectServer</see>
 		/// on the specified database file and port.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// If the server does not need to listen on a port because it will only be used
 		/// in embedded mode with
 		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
@@ -575,7 +575,7 @@ namespace Db4objects.Db4o
 		/// because it will only be used with
 		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
 		/// .
-		/// Specify a value < 0 if an arbitrary free port should be chosen - see
+		/// Specify a value &lt; 0 if an arbitrary free port should be chosen - see
 		/// <see cref="IExtObjectServer.Port">IExtObjectServer.Port</see>
 		/// .
 		/// </param>
@@ -638,9 +638,9 @@ namespace Db4objects.Db4o
 		/// <summary>returns the version name of the used db4o version.</summary>
 		/// <remarks>
 		/// returns the version name of the used db4o version.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// </remarks>
-		/// <returns>version information as a <code>String</code>.</returns>
+		/// <returns>version information as a &lt;code&gt;String&lt;/code&gt;.</returns>
 		public static string Version()
 		{
 			return "db4o " + Db4oVersion.Name;

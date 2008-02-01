@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Internal
 			Instantiate1(context.Transaction(), context.Reference(), context.Buffer());
 		}
 
-		internal abstract void Instantiate1(Transaction trans, ObjectReference @ref, IBuffer
+		internal abstract void Instantiate1(Transaction trans, ObjectReference @ref, IReadWriteBuffer
 			 buffer);
 
 		public override void LoadHandlerById(ObjectContainerBase container)
@@ -181,8 +181,8 @@ namespace Db4objects.Db4o.Internal
 
 		internal abstract void MarshallIgnore(IWriteBuffer writer);
 
-		public override void ReadVirtualAttribute(Transaction trans, BufferImpl buffer, ObjectReference
-			 @ref)
+		public override void ReadVirtualAttribute(Transaction trans, ByteArrayBuffer buffer
+			, ObjectReference @ref)
 		{
 			if (!trans.SupportsVirtualFields())
 			{

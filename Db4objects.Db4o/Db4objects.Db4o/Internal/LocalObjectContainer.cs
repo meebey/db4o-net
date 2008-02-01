@@ -339,7 +339,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				WriteBytes(new BufferImpl(reservedBytes), _blockEndAddress, 0);
+				WriteBytes(new ByteArrayBuffer(reservedBytes), _blockEndAddress, 0);
 			}
 			_freespaceManager.Free(slot);
 			_blockEndAddress += reservedBlocks;
@@ -498,12 +498,12 @@ namespace Db4objects.Db4o.Internal
 			return yapWriters;
 		}
 
-		public override BufferImpl ReadReaderByID(Transaction a_ta, int a_id)
+		public override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id)
 		{
 			return ReadReaderOrWriterByID(a_ta, a_id, true);
 		}
 
-		private BufferImpl ReadReaderOrWriterByID(Transaction a_ta, int a_id, bool useReader
+		private ByteArrayBuffer ReadReaderOrWriterByID(Transaction a_ta, int a_id, bool useReader
 			)
 		{
 			if (a_id <= 0)
@@ -527,10 +527,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				DTrace.ReadSlot.LogLength(slot.Address(), slot.Length());
 			}
-			BufferImpl reader = null;
+			ByteArrayBuffer reader = null;
 			if (useReader)
 			{
-				reader = new BufferImpl(slot.Length());
+				reader = new ByteArrayBuffer(slot.Length());
 			}
 			else
 			{
@@ -792,7 +792,7 @@ namespace Db4objects.Db4o.Internal
 			_transaction.Commit();
 		}
 
-		public abstract void WriteBytes(BufferImpl buffer, int blockedAddress, int addressOffset
+		public abstract void WriteBytes(ByteArrayBuffer buffer, int blockedAddress, int addressOffset
 			);
 
 		public sealed override void WriteDirty()
@@ -813,7 +813,7 @@ namespace Db4objects.Db4o.Internal
 			i_dirty.Clear();
 		}
 
-		public void WriteEncrypt(BufferImpl buffer, int address, int addressOffset)
+		public void WriteEncrypt(ByteArrayBuffer buffer, int address, int addressOffset)
 		{
 			_handlers.Encrypt(buffer);
 			WriteBytes(buffer, address, addressOffset);
@@ -850,7 +850,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public sealed override void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, BufferImpl buffer)
+			 classMetadata, ByteArrayBuffer buffer)
 		{
 			WriteEncrypt(buffer, pointer.Address(), 0);
 			if (classMetadata == null)
@@ -892,7 +892,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public sealed override void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, BufferImpl buffer)
+			 classMetadata, ByteArrayBuffer buffer)
 		{
 			int address = pointer.Address();
 			if (address == 0)
@@ -932,13 +932,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_798(this, ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_795(this, ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_798 : IVisitor4
+		private sealed class _IVisitor4_795 : IVisitor4
 		{
-			public _IVisitor4_798(LocalObjectContainer _enclosing, IntArrayList ids)
+			public _IVisitor4_795(LocalObjectContainer _enclosing, IntArrayList ids)
 			{
 				this._enclosing = _enclosing;
 				this.ids = ids;

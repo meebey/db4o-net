@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			FloatHandlerUpdateTestCase.ItemArrays itemArrays = (FloatHandlerUpdateTestCase.ItemArrays
 				)obj;
 			AssertPrimitiveArray(itemArrays._typedPrimitiveArray);
-			if (_db4oHeaderVersion == VersionServices.Header3040)
+			if (Db4oHeaderVersion() == VersionServices.Header3040)
 			{
 				// Bug in the oldest format: It accidentally float[] arrays to Float[] arrays.
 				AssertWrapperArray((float[])itemArrays._primitiveArrayInObject);
@@ -93,7 +93,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(float expected, float actual)
 		{
-			if (float.IsNaN(expected) && _handlerVersion == 0)
+			if (float.IsNaN(expected) && Db4oHandlerVersion() == 0)
 			{
 				expected = 0;
 			}
@@ -106,7 +106,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(object expected, object actual)
 		{
-			if (float.IsNaN(((float)expected)) && _handlerVersion == 0)
+			if (float.IsNaN(((float)expected)) && Db4oHandlerVersion() == 0)
 			{
 				expected = null;
 			}

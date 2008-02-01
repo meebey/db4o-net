@@ -47,12 +47,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return mf._primitive.ReadDouble(buffer);
 		}
 
-		internal override object Read1(BufferImpl buffer)
+		internal override object Read1(ByteArrayBuffer buffer)
 		{
 			return PrimitiveMarshaller().ReadDouble(buffer);
 		}
 
-		public override void Write(object a_object, BufferImpl a_bytes)
+		public override void Write(object a_object, ByteArrayBuffer a_bytes)
 		{
 			a_bytes.WriteLong(Platform4.DoubleToLong(((double)a_object)));
 		}

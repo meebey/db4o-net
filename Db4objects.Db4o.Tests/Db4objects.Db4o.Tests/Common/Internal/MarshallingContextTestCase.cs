@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 				, true);
 			marshaller.Marshall(@ref.GetObject(), marshallingContext);
 			Pointer4 pointer = marshallingContext.AllocateSlot();
-			BufferImpl buffer = marshallingContext.ToWriteBuffer(pointer);
+			ByteArrayBuffer buffer = marshallingContext.ToWriteBuffer(pointer);
 			buffer.Seek(0);
 			//        String str = new String(buffer._buffer);
 			//        System.out.println(str);

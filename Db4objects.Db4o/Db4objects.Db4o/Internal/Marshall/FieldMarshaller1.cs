@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public override void Write(Transaction trans, ClassMetadata clazz, FieldMetadata 
-			field, BufferImpl writer)
+			field, ByteArrayBuffer writer)
 		{
 			base.Write(trans, clazz, field, writer);
 			if (!HasBTreeIndex(field))
@@ -27,8 +27,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			writer.WriteIDOf(trans, field.GetIndex(trans));
 		}
 
-		public override RawFieldSpec ReadSpec(ObjectContainerBase stream, BufferImpl reader
-			)
+		public override RawFieldSpec ReadSpec(ObjectContainerBase stream, ByteArrayBuffer
+			 reader)
 		{
 			RawFieldSpec spec = base.ReadSpec(stream, reader);
 			if (spec == null)

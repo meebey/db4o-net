@@ -14,13 +14,14 @@ namespace Db4objects.Db4o.Replication
 	/// was modified in both ObjectContainers since the last replication run between
 	/// the two.
 	/// </summary>
-	[System.ObsoleteAttribute(@"Since db4o-5.2. Use db4o Replication System (dRS)")]
+	[System.ObsoleteAttribute(@"Since db4o-5.2. Use db4o Replication System (dRS) instead.<br><br>"
+		)]
 	public interface IReplicationConflictHandler
 	{
 		/// <summary>the callback method to be implemented to resolve a conflict.</summary>
 		/// <remarks>
-		/// the callback method to be implemented to resolve a conflict. <br />
-		/// <br />
+		/// the callback method to be implemented to resolve a conflict. &lt;br&gt;
+		/// &lt;br&gt;
 		/// </remarks>
 		/// <param name="replicationProcess">
 		/// the

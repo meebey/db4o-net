@@ -21,7 +21,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Stop()
 		{
-			_elapsed = Runtime.CurrentTimeMillis() - _started;
+			_elapsed = Peek();
+		}
+
+		public virtual long Peek()
+		{
+			return Runtime.CurrentTimeMillis() - _started;
 		}
 
 		public virtual long Elapsed()

@@ -1,17 +1,17 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Fieldhandlers;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	public class HandlerVersionKey
 	{
-		private readonly ITypeHandler4 _handler;
+		private readonly IFieldHandler _handler;
 
 		private readonly int _version;
 
-		public HandlerVersionKey(ITypeHandler4 handler, int version)
+		public HandlerVersionKey(IFieldHandler handler, int version)
 		{
 			_handler = handler;
 			_version = version;

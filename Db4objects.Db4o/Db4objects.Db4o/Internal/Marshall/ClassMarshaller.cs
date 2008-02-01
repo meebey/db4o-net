@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		public MarshallerFamily _family;
 
-		public virtual RawClassSpec ReadSpec(Transaction trans, BufferImpl reader)
+		public virtual RawClassSpec ReadSpec(Transaction trans, ByteArrayBuffer reader)
 		{
 			byte[] nameBytes = ReadName(trans, reader);
 			string className = trans.Container().StringIO().Read(nameBytes);
@@ -27,8 +27,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return new RawClassSpec(className, ancestorID, numFields);
 		}
 
-		public virtual void Write(Transaction trans, ClassMetadata clazz, BufferImpl writer
-			)
+		public virtual void Write(Transaction trans, ClassMetadata clazz, ByteArrayBuffer
+			 writer)
 		{
 			writer.WriteShortString(trans, clazz.NameToWrite());
 			int intFormerlyKnownAsMetaClassID = 0;
@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 		}
 
-		protected virtual void WriteIndex(Transaction trans, ClassMetadata clazz, BufferImpl
+		protected virtual void WriteIndex(Transaction trans, ClassMetadata clazz, ByteArrayBuffer
 			 writer)
 		{
 			int indexID = clazz.Index().Write(trans);
@@ -57,18 +57,18 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		protected abstract int IndexIDForWriting(int indexID);
 
-		public virtual byte[] ReadName(Transaction trans, BufferImpl reader)
+		public virtual byte[] ReadName(Transaction trans, ByteArrayBuffer reader)
 		{
 			byte[] name = ReadName(trans.Container().StringIO(), reader);
 			return name;
 		}
 
-		public virtual int ReadMetaClassID(BufferImpl reader)
+		public virtual int ReadMetaClassID(ByteArrayBuffer reader)
 		{
 			return reader.ReadInt();
 		}
 
-		private byte[] ReadName(LatinStringIO sio, BufferImpl reader)
+		private byte[] ReadName(LatinStringIO sio, ByteArrayBuffer reader)
 		{
 			int len = reader.ReadInt();
 			len = len * sio.BytesPerChar();
@@ -79,8 +79,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return nameBytes;
 		}
 
-		public void Read(ObjectContainerBase stream, ClassMetadata clazz, BufferImpl reader
-			)
+		public void Read(ObjectContainerBase stream, ClassMetadata clazz, ByteArrayBuffer
+			 reader)
 		{
 			clazz.SetAncestor(stream.ClassMetadataForId(reader.ReadInt()));
 			if (clazz.CallConstructor())
@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		protected abstract void ReadIndex(ObjectContainerBase stream, ClassMetadata clazz
-			, BufferImpl reader);
+			, ByteArrayBuffer reader);
 
 		private FieldMetadata[] CreateFields(ClassMetadata clazz, int fieldCount)
 		{
@@ -110,7 +110,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return fields;
 		}
 
-		private void ReadFields(ObjectContainerBase stream, BufferImpl reader, FieldMetadata
+		private void ReadFields(ObjectContainerBase stream, ByteArrayBuffer reader, FieldMetadata
 			[] fields)
 		{
 			for (int i = 0; i < fields.Length; i++)

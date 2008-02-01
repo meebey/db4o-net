@@ -137,7 +137,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return ret;
 			}
-			BufferImpl classreader = _stream.ReadWriterByID(_trans, id);
+			ByteArrayBuffer classreader = _stream.ReadWriterByID(_trans, id);
 			ClassMarshaller marshaller = MarshallerFamily()._class;
 			RawClassSpec spec = marshaller.ReadSpec(_trans, classreader);
 			string className = spec.Name();
@@ -159,7 +159,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private void EnsureClassRead(int id)
 		{
 			IReflectClass clazz = LookupByID(id);
-			BufferImpl classreader = _stream.ReadWriterByID(_trans, id);
+			ByteArrayBuffer classreader = _stream.ReadWriterByID(_trans, id);
 			ClassMarshaller classMarshaller = MarshallerFamily()._class;
 			RawClassSpec classInfo = classMarshaller.ReadSpec(_trans, classreader);
 			string className = classInfo.Name();

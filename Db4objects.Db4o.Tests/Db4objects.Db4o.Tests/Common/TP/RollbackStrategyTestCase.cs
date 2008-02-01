@@ -26,17 +26,10 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			StoreItem("baz");
 			Change(item1);
 			Change(item2);
-			object item1Ref = ReferenceForObject(item1);
-			object item2Ref = ReferenceForObject(item2);
 			_mock.Verify(new MethodCall[0]);
 			Db().Rollback();
-			_mock.Verify(new MethodCall[] { new MethodCall("rollback", Db(), item2Ref), new MethodCall
-				("rollback", Db(), item1Ref) });
-		}
-
-		private object ReferenceForObject(Item item1)
-		{
-			return Trans().ReferenceForObject(item1);
+			_mock.Verify(new MethodCall[] { new MethodCall("rollback", Db(), item2), new MethodCall
+				("rollback", Db(), item1) });
 		}
 
 		private void Change(Item item)
@@ -49,6 +42,11 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			Item item = new Item(name);
 			Store(item);
 			return item;
+		}
+
+		public static void Main(string[] args)
+		{
+			new RollbackStrategyTestCase().RunAll();
 		}
 	}
 }

@@ -4,6 +4,7 @@ using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -17,7 +18,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object Read(IReadContext context)
 		{
-			BufferImpl buffer = ReadIndirectedBuffer(context);
+			ByteArrayBuffer buffer = (ByteArrayBuffer)((IInternalReadContext)context).ReadIndirectedBuffer
+				();
 			if (buffer == null)
 			{
 				return null;

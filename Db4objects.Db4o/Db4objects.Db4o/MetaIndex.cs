@@ -26,7 +26,7 @@ namespace Db4objects.Db4o
 
 		private const int patchLength = 0;
 
-		public virtual void Read(BufferImpl reader)
+		public virtual void Read(ByteArrayBuffer reader)
 		{
 			// The number of entries an the length are redundant, because the handler should
 			// return a fixed length, but we absolutely want to make sure, we don't free
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o
 			reader.ReadInt();
 		}
 
-		public virtual void Write(BufferImpl writer)
+		public virtual void Write(ByteArrayBuffer writer)
 		{
 			writer.WriteInt(indexAddress);
 			writer.WriteInt(indexEntries);

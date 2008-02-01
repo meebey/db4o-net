@@ -5,12 +5,12 @@ using Db4objects.Db4o.Diagnostic;
 namespace Db4objects.Db4o.Diagnostic
 {
 	/// <summary>
-	/// Marker interface for Diagnostic messages<br /><br />
+	/// Marker interface for Diagnostic messages&lt;br&gt;&lt;br&gt;
 	/// Diagnostic system can be enabled on a running db4o database
 	/// to notify a user about possible problems or misconfigurations.
 	/// </summary>
 	/// <remarks>
-	/// Marker interface for Diagnostic messages<br /><br />
+	/// Marker interface for Diagnostic messages&lt;br&gt;&lt;br&gt;
 	/// Diagnostic system can be enabled on a running db4o database
 	/// to notify a user about possible problems or misconfigurations. Diagnostic
 	/// messages must implement this interface and are usually derived from

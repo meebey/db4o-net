@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Foundation
 		/// <summary>
 		/// return a negative int, zero or a positive int if
 		/// the object being held in 'this' is smaller, equal
-		/// or greater than the passed object.<br /><br />
+		/// or greater than the passed object.&lt;br&gt;&lt;br&gt;
 		/// Typical implementation: return this.object - obj;
 		/// </summary>
 		int CompareTo(object obj);

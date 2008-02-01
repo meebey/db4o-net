@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			IFreespaceManager fm = CurrentFreespaceManager();
 			int length = 300;
 			Slot slot = Container().GetSlot(length);
-			BufferImpl buffer = new BufferImpl(length);
+			ByteArrayBuffer buffer = new ByteArrayBuffer(length);
 			Container().WriteBytes(buffer, slot.Address(), 0);
 			fm.Free(slot);
 		}

@@ -111,7 +111,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override string ToString()
 		{
-			return base.ToString();
 			string str = "QConJoin " + (i_and ? "AND " : "OR");
 			if (i_constraint1 != null)
 			{

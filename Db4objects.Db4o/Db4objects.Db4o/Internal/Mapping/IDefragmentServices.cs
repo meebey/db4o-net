@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System.Collections;
 using System.IO;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -18,17 +17,17 @@ namespace Db4objects.Db4o.Internal.Mapping
 	public interface IDefragmentServices : IIDMapping
 	{
 		/// <exception cref="IOException"></exception>
-		BufferImpl SourceBufferByAddress(int address, int length);
+		ByteArrayBuffer SourceBufferByAddress(int address, int length);
 
 		/// <exception cref="IOException"></exception>
-		BufferImpl TargetBufferByAddress(int address, int length);
+		ByteArrayBuffer TargetBufferByAddress(int address, int length);
 
 		/// <exception cref="IOException"></exception>
-		BufferImpl SourceBufferByID(int sourceID);
+		ByteArrayBuffer SourceBufferByID(int sourceID);
 
 		Slot AllocateTargetSlot(int targetLength);
 
-		void TargetWriteBytes(BufferImpl targetPointerReader, int targetAddress);
+		void TargetWriteBytes(ByteArrayBuffer targetPointerReader, int targetAddress);
 
 		Transaction SystemTrans();
 
@@ -42,7 +41,7 @@ namespace Db4objects.Db4o.Internal.Mapping
 
 		void RegisterUnindexed(int id);
 
-		IEnumerator UnindexedIDs();
+		IdSource UnindexedIDs();
 
 		int SourceAddressByID(int sourceID);
 	}

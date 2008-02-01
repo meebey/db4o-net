@@ -18,13 +18,18 @@ namespace Db4oUnit.Extensions.Foundation
 			Assert.IsNotNull(actual);
 			while (expected.MoveNext())
 			{
-				Assert.IsTrue(actual.MoveNext(), "'" + expected.Current + "' expected.");
-				Assert.AreEqual(expected.Current, actual.Current);
+				AssertNext(expected.Current, actual);
 			}
 			if (actual.MoveNext())
 			{
 				Assert.Fail("Unexpected element: " + actual.Current);
 			}
+		}
+
+		public static void AssertNext(object expected, IEnumerator iterator)
+		{
+			Assert.IsTrue(iterator.MoveNext(), "'" + expected + "' expected.");
+			Assert.AreEqual(expected, iterator.Current);
 		}
 
 		public static void AreEqual(object[] expected, IEnumerator iterator)

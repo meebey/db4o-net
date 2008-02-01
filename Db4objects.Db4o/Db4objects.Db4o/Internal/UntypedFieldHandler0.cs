@@ -52,11 +52,11 @@ namespace Db4objects.Db4o.Internal
 		{
 			try
 			{
-				BufferImpl sourceBuffer = context.SourceBufferById(sourceId);
+				ByteArrayBuffer sourceBuffer = context.SourceBufferById(sourceId);
 				Slot targetPointerSlot = context.AllocateMappedTargetSlot(sourceId, Const4.PointerLength
 					);
 				Slot targetPayloadSlot = context.AllocateTargetSlot(sourceBuffer.Length());
-				BufferImpl pointerBuffer = new BufferImpl(Const4.PointerLength);
+				ByteArrayBuffer pointerBuffer = new ByteArrayBuffer(Const4.PointerLength);
 				pointerBuffer.WriteInt(targetPayloadSlot.Address());
 				pointerBuffer.WriteInt(targetPayloadSlot.Length());
 				context.TargetWriteBytes(targetPointerSlot.Address(), pointerBuffer);

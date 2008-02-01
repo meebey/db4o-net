@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public object _arrays;
 		}
 
-		protected int _handlerVersion;
+		private int _handlerVersion;
 
 		protected override string FileNamePrefix()
 		{
@@ -41,14 +41,37 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		protected override void AssertObjectsAreReadable(IExtObjectContainer objectContainer
 			)
 		{
+			HandlerUpdateTestCaseBase.Holder holder = RetrieveHolderInstance(objectContainer);
+			AssertValues(holder._values);
+			AssertArrays(holder._arrays);
+		}
+
+		private HandlerUpdateTestCaseBase.Holder RetrieveHolderInstance(IExtObjectContainer
+			 objectContainer)
+		{
 			IQuery q = objectContainer.Query();
 			q.Constrain(typeof(HandlerUpdateTestCaseBase.Holder));
 			IObjectSet objectSet = q.Execute();
 			HandlerUpdateTestCaseBase.Holder holder = (HandlerUpdateTestCaseBase.Holder)objectSet
 				.Next();
 			InvestigateHandlerVersion(objectContainer, holder);
-			AssertValues(holder._values);
-			AssertArrays(holder._arrays);
+			return holder;
+		}
+
+		protected override void Update(IExtObjectContainer objectContainer)
+		{
+			HandlerUpdateTestCaseBase.Holder holder = RetrieveHolderInstance(objectContainer);
+			UpdateValues(holder._values);
+			UpdateArrays(holder._arrays);
+			objectContainer.Store(holder, int.MaxValue);
+		}
+
+		protected override void AssertObjectsAreUpdated(IExtObjectContainer objectContainer
+			)
+		{
+			HandlerUpdateTestCaseBase.Holder holder = RetrieveHolderInstance(objectContainer);
+			AssertUpdatedValues(holder._values);
+			AssertUpdatedArrays(holder._arrays);
 		}
 
 		private void InvestigateHandlerVersion(IExtObjectContainer objectContainer, object
@@ -71,6 +94,29 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			ObjectByRef byRef = new ObjectByRef(obj);
 			return (int[])byRef.value;
+		}
+
+		protected virtual int Db4oHandlerVersion()
+		{
+			// Bug in the oldest format: 
+			// It accidentally converted int[] arrays to Integer[] arrays.
+			return _handlerVersion;
+		}
+
+		protected virtual void UpdateValues(object[] values)
+		{
+		}
+
+		protected virtual void UpdateArrays(object obj)
+		{
+		}
+
+		protected virtual void AssertUpdatedValues(object[] values)
+		{
+		}
+
+		protected virtual void AssertUpdatedArrays(object obj)
+		{
 		}
 	}
 }

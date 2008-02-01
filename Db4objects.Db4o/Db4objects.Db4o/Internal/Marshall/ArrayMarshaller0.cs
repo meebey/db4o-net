@@ -9,8 +9,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 	internal class ArrayMarshaller0 : ArrayMarshaller
 	{
 		/// <exception cref="Db4oIOException"></exception>
-		protected override BufferImpl PrepareIDReader(Transaction trans, BufferImpl reader
-			)
+		protected override ByteArrayBuffer PrepareIDReader(Transaction trans, ByteArrayBuffer
+			 reader)
 		{
 			return reader.ReadEmbeddedObject(trans);
 		}

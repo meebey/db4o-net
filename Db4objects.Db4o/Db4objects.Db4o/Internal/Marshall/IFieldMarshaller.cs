@@ -10,13 +10,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public interface IFieldMarshaller
 	{
-		void Write(Transaction trans, ClassMetadata clazz, FieldMetadata field, BufferImpl
+		void Write(Transaction trans, ClassMetadata clazz, FieldMetadata field, ByteArrayBuffer
 			 writer);
 
-		RawFieldSpec ReadSpec(ObjectContainerBase stream, BufferImpl reader);
+		RawFieldSpec ReadSpec(ObjectContainerBase stream, ByteArrayBuffer reader);
 
-		FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, BufferImpl reader
-			);
+		FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, ByteArrayBuffer
+			 reader);
 
 		int MarshalledLength(ObjectContainerBase stream, FieldMetadata field);
 

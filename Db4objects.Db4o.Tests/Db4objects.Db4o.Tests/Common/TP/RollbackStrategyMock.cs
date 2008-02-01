@@ -2,7 +2,6 @@
 
 using Db4oUnit.Extensions.Mocking;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.Tests.Common.TP
@@ -11,9 +10,9 @@ namespace Db4objects.Db4o.Tests.Common.TP
 	{
 		private MethodCallRecorder _recorder = new MethodCallRecorder();
 
-		public virtual void Rollback(IObjectContainer container, IObjectInfo o)
+		public virtual void Rollback(IObjectContainer container, object obj)
 		{
-			_recorder.Record(new MethodCall("rollback", container, o));
+			_recorder.Record(new MethodCall("rollback", container, obj));
 		}
 
 		public virtual void Verify(MethodCall[] expectedCalls)

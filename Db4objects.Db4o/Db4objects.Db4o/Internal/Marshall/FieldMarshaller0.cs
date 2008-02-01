@@ -27,8 +27,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return len;
 		}
 
-		public virtual RawFieldSpec ReadSpec(ObjectContainerBase stream, BufferImpl reader
-			)
+		public virtual RawFieldSpec ReadSpec(ObjectContainerBase stream, ByteArrayBuffer 
+			reader)
 		{
 			string name = StringHandler.ReadStringNoDebug(stream.Transaction().Context(), reader
 				);
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return new RawFieldSpec(name, handlerID, attribs);
 		}
 
-		public FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, BufferImpl
+		public FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, ByteArrayBuffer
 			 reader)
 		{
 			RawFieldSpec spec = ReadSpec(stream, reader);
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public virtual void Write(Transaction trans, ClassMetadata clazz, FieldMetadata field
-			, BufferImpl writer)
+			, ByteArrayBuffer writer)
 		{
 			field.Alive();
 			writer.WriteShortString(trans, field.GetName());

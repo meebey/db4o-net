@@ -2,8 +2,8 @@
 
 namespace Db4objects.Db4o.Foundation
 {
-	public class Debug4
+	public interface IConditionalBlock
 	{
-		public const bool prettyToStrings = false;
+		bool Run();
 	}
 }

@@ -16,13 +16,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int _handlerVersion;
 
-		public ObjectHeader(ObjectContainerBase stream, IBuffer reader) : this(stream, null
-			, reader)
+		public ObjectHeader(ObjectContainerBase stream, IReadWriteBuffer reader) : this(stream
+			, null, reader)
 		{
 		}
 
-		public ObjectHeader(Db4objects.Db4o.Internal.ClassMetadata yapClass, IBuffer reader
-			) : this(null, yapClass, reader)
+		public ObjectHeader(Db4objects.Db4o.Internal.ClassMetadata yapClass, IReadWriteBuffer
+			 reader) : this(null, yapClass, reader)
 		{
 		}
 
@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public ObjectHeader(ObjectContainerBase stream, Db4objects.Db4o.Internal.ClassMetadata
-			 yc, IBuffer reader)
+			 yc, IReadWriteBuffer reader)
 		{
 			int classID = reader.ReadInt();
 			_marshallerFamily = ReadMarshallerFamily(reader, classID);
@@ -47,8 +47,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public static Db4objects.Db4o.Internal.Marshall.ObjectHeader Defrag(DefragmentContextImpl
 			 context)
 		{
-			BufferImpl source = context.SourceBuffer();
-			BufferImpl target = context.TargetBuffer();
+			ByteArrayBuffer source = context.SourceBuffer();
+			ByteArrayBuffer target = context.TargetBuffer();
 			Db4objects.Db4o.Internal.Marshall.ObjectHeader header = new Db4objects.Db4o.Internal.Marshall.ObjectHeader
 				(context.Services().SystemTrans().Container(), null, source);
 			int newID = context.Mapping().MappedID(header.ClassMetadata().GetID());
@@ -63,7 +63,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _marshallerFamily._object;
 		}
 
-		private MarshallerFamily ReadMarshallerFamily(IBuffer reader, int classID)
+		private MarshallerFamily ReadMarshallerFamily(IReadWriteBuffer reader, int classID
+			)
 		{
 			bool marshallerAware = MarshallerAware(classID);
 			_handlerVersion = 0;
@@ -76,9 +77,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		private static ObjectHeaderAttributes ReadAttributes(MarshallerFamily marshallerFamily
-			, IBuffer reader)
+			, IReadWriteBuffer reader)
 		{
-			return marshallerFamily._object.ReadHeaderAttributes((BufferImpl)reader);
+			return marshallerFamily._object.ReadHeaderAttributes((ByteArrayBuffer)reader);
 		}
 
 		private bool MarshallerAware(int id)

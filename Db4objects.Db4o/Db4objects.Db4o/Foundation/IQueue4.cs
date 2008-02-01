@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System.Collections;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
 {
@@ -11,6 +12,16 @@ namespace Db4objects.Db4o.Foundation
 		object Next();
 
 		bool HasNext();
+
+		/// <summary>Returns the next object in the queue that matches the specified condition.
+		/// 	</summary>
+		/// <remarks>
+		/// Returns the next object in the queue that matches the specified condition.
+		/// The operation is always NON-BLOCKING.
+		/// </remarks>
+		/// <param name="predicate">condition the object must satisfy to be returned</param>
+		/// <returns>the object satisfying the condition or null if none does</returns>
+		object NextMatching(IPredicate4 condition);
 
 		IEnumerator Iterator();
 	}

@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class Iterator4Impl : IEnumerator
 	{
-		private List4 _first;
+		private readonly List4 _first;
 
 		private List4 _next;
 

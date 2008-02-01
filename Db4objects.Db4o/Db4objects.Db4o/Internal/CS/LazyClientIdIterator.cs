@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Internal.CS
 			_current = -1;
 		}
 
-		public virtual void LoadFromIdReader(BufferImpl reader, int count)
+		public virtual void LoadFromIdReader(ByteArrayBuffer reader, int count)
 		{
 			for (int i = 0; i < count; i++)
 			{

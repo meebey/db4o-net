@@ -13,8 +13,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return false;
 		}
 
-		public override ITypeHandler4 ReadArrayHandler(Transaction trans, BufferImpl[] reader
-			)
+		public override ITypeHandler4 ReadArrayHandler(Transaction trans, ByteArrayBuffer
+			[] reader)
 		{
 			int payLoadOffSet = reader[0].ReadInt();
 			if (payLoadOffSet == 0)

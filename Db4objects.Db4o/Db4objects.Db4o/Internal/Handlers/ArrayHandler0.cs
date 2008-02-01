@@ -27,11 +27,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		public override void ReadCandidates(int handlerVersion, BufferImpl reader, QCandidates
+		public override void ReadCandidates(int handlerVersion, ByteArrayBuffer reader, QCandidates
 			 candidates)
 		{
 			Transaction transaction = candidates.Transaction();
-			BufferImpl arrayBuffer = reader.ReadEmbeddedObject(transaction);
+			ByteArrayBuffer arrayBuffer = reader.ReadEmbeddedObject(transaction);
 			int count = ElementCount(transaction, arrayBuffer);
 			for (int i = 0; i < count; i++)
 			{
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override object Read(IReadContext readContext)
 		{
 			IInternalReadContext context = (IInternalReadContext)readContext;
-			BufferImpl buffer = ReadIndirectedBuffer(context);
+			ByteArrayBuffer buffer = (ByteArrayBuffer)context.ReadIndirectedBuffer();
 			if (buffer == null)
 			{
 				return null;
@@ -53,14 +53,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			// a user handler, it should be implemented by using a Queue
 			// in the UnmarshallingContext.
 			// The buffer has to be set back from the outside!  See below
-			IBuffer contextBuffer = context.Buffer(buffer);
+			IReadWriteBuffer contextBuffer = context.Buffer(buffer);
 			object array = base.Read(context);
 			// The context buffer has to be set back.
 			context.Buffer(contextBuffer);
 			return array;
 		}
 
-		public override void Defragment(IDefragmentContext context)
+		public static void Defragment(IDefragmentContext context, ArrayHandler handler)
 		{
 			int sourceAddress = context.SourceBuffer().ReadInt();
 			int length = context.SourceBuffer().ReadInt();
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return;
 			}
 			Slot slot = context.AllocateMappedTargetSlot(sourceAddress, length);
-			BufferImpl sourceBuffer = null;
+			ByteArrayBuffer sourceBuffer = null;
 			try
 			{
 				sourceBuffer = context.SourceBufferByAddress(sourceAddress, length);
@@ -82,15 +82,19 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			DefragmentContextImpl payloadContext = new DefragmentContextImpl(sourceBuffer, (DefragmentContextImpl
 				)context);
-			Defrag1(payloadContext);
+			handler.Defrag1(payloadContext);
 			payloadContext.WriteToTarget(slot.Address());
 			context.TargetBuffer().WriteInt(slot.Address());
 			context.TargetBuffer().WriteInt(length);
 		}
 
-		public override void Defrag1(IDefragmentContext context)
+		public override void Defragment(IDefragmentContext context)
 		{
-			// FIXME copied from ArrayHandler
+			Defragment(context, this);
+		}
+
+		public override void Defrag2(IDefragmentContext context)
+		{
 			int elements = ReadElementsDefrag(context);
 			for (int i = 0; i < elements; i++)
 			{

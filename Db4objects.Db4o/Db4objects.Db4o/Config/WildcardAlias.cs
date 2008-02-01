@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Config
 	/// Wildcard Alias functionality to create aliases for packages,
 	/// namespaces or multiple similar named classes. One single '*'
 	/// wildcard character is supported in the names.
-	/// <br /><br />See
+	/// &lt;br&gt;&lt;br&gt;See
 	/// <see cref="IAlias">IAlias</see>
 	/// for concrete examples.
 	/// </remarks>

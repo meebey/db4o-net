@@ -20,9 +20,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (obj != null)
 			{
-				if (obj is BufferImpl)
+				if (obj is ByteArrayBuffer)
 				{
-					obj = candidate.ReadString((BufferImpl)obj);
+					obj = candidate.ReadString((ByteArrayBuffer)obj);
 				}
 				string candidateStringValue = obj.ToString();
 				string stringConstraint = constraint.i_object.ToString();

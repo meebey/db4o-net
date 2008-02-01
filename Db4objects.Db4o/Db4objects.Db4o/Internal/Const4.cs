@@ -91,6 +91,8 @@ namespace Db4objects.Db4o.Internal
 
 		public const int LongLength = LongBytes + AddedLength;
 
+		public const int IndirectionLength = IntLength + IdLength;
+
 		public const int WriteLoop = (IntegerBytes - 1) * 8;
 
 		public const int ObjectLength = AddedLength;

@@ -9,16 +9,16 @@ namespace Db4objects.Db4o
 	/// <summary>the db4o server interface.</summary>
 	/// <remarks>
 	/// the db4o server interface.
-	/// <br /><br />- db4o servers can be opened with
+	/// &lt;br&gt;&lt;br&gt;- db4o servers can be opened with
 	/// <see cref="Db4oFactory.OpenServer">Db4oFactory.OpenServer</see>
-	/// .<br />
+	/// .&lt;br&gt;
 	/// - Direct in-memory connections to servers can be made with
 	/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
-	/// <br />
+	/// &lt;br&gt;
 	/// - TCP connections are available through
 	/// <see cref="Db4oFactory.OpenClient">Db4oFactory.OpenClient</see>
 	/// .
-	/// <br /><br />Before connecting clients over TCP, you have to
+	/// &lt;br&gt;&lt;br&gt;Before connecting clients over TCP, you have to
 	/// <see cref="IObjectServer.GrantAccess">IObjectServer.GrantAccess</see>
 	/// to the username and password combination
 	/// that you want to use.
@@ -31,7 +31,7 @@ namespace Db4objects.Db4o
 		/// closes the
 		/// <see cref="IObjectServer"></see>
 		/// and writes all cached data.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// </summary>
 		/// <returns>
 		/// true - denotes that the last instance connected to the
@@ -43,13 +43,13 @@ namespace Db4objects.Db4o
 		/// returns an
 		/// <see cref="IObjectServer"></see>
 		/// with extended functionality.
-		/// <br /><br />Use this method as a convenient accessor to extended methods.
+		/// &lt;br&gt;&lt;br&gt;Use this method as a convenient accessor to extended methods.
 		/// Every
 		/// <see cref="IObjectServer"></see>
 		/// can be casted to an
 		/// <see cref="IExtObjectServer">IExtObjectServer</see>
 		/// .
-		/// <br /><br />The functionality is split to two interfaces to allow newcomers to
+		/// &lt;br&gt;&lt;br&gt;The functionality is split to two interfaces to allow newcomers to
 		/// focus on the essential methods.
 		/// </summary>
 		IExtObjectServer Ext();
@@ -57,8 +57,8 @@ namespace Db4objects.Db4o
 		/// <summary>grants client access to the specified user with the specified password.</summary>
 		/// <remarks>
 		/// grants client access to the specified user with the specified password.
-		/// <br /><br />If the user already exists, the password is changed to
-		/// the specified password.<br /><br />
+		/// &lt;br&gt;&lt;br&gt;If the user already exists, the password is changed to
+		/// the specified password.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="userName">the name of the user</param>
 		/// <param name="password">the password to be used</param>
@@ -67,12 +67,12 @@ namespace Db4objects.Db4o
 		/// <summary>opens a client against this server.</summary>
 		/// <remarks>
 		/// opens a client against this server.
-		/// <br /><br />A client opened with this method operates within the same VM
+		/// &lt;br&gt;&lt;br&gt;A client opened with this method operates within the same VM
 		/// as the server. Since an embedded client can use direct communication, without
 		/// an in-between socket connection, performance will be better than a client
 		/// opened with
 		/// <see cref="Db4oFactory.OpenClient">Db4oFactory.OpenClient</see>
-		/// <br /><br />Every client has it's own transaction and uses it's own cache
+		/// &lt;br&gt;&lt;br&gt;Every client has it's own transaction and uses it's own cache
 		/// for it's own version of all peristent objects.
 		/// </remarks>
 		IObjectContainer OpenClient();

@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		public virtual void TestMarshalling()
 		{
 			double expected = 1.1;
-			BufferImpl buffer = new BufferImpl(_handler.LinkLength());
+			ByteArrayBuffer buffer = new ByteArrayBuffer(_handler.LinkLength());
 			_handler.WriteIndexEntry(buffer, expected);
 			buffer.Seek(0);
 			object actual = _handler.ReadIndexEntry(buffer);

@@ -2,6 +2,7 @@
 
 using Db4oUnit;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Messaging;
 using Db4objects.Db4o.Tests.Common.CS;
@@ -24,7 +25,83 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		public virtual void Test()
+		internal interface IClientWaitLogic
+		{
+			void Wait(IObjectContainer client1, IObjectContainer client2);
+		}
+
+		public virtual void TestDispatchPendingMessages()
+		{
+			AssertReplyBehavior(new _IClientWaitLogic_30(this));
+		}
+
+		private sealed class _IClientWaitLogic_30 : ServerToClientTestCase.IClientWaitLogic
+		{
+			public _IClientWaitLogic_30(ServerToClientTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Wait(IObjectContainer client1, IObjectContainer client2)
+			{
+				int timeout = 100;
+				Cool.LoopWithTimeout(timeout, new _IConditionalBlock_34(this, client1, timeout, client2
+					));
+			}
+
+			private sealed class _IConditionalBlock_34 : IConditionalBlock
+			{
+				public _IConditionalBlock_34(_IClientWaitLogic_30 _enclosing, IObjectContainer client1
+					, int timeout, IObjectContainer client2)
+				{
+					this._enclosing = _enclosing;
+					this.client1 = client1;
+					this.timeout = timeout;
+					this.client2 = client2;
+				}
+
+				public bool Run()
+				{
+					((IExtClient)client1).DispatchPendingMessages(timeout);
+					((IExtClient)client2).DispatchPendingMessages(timeout);
+					return true;
+				}
+
+				private readonly _IClientWaitLogic_30 _enclosing;
+
+				private readonly IObjectContainer client1;
+
+				private readonly int timeout;
+
+				private readonly IObjectContainer client2;
+			}
+
+			private readonly ServerToClientTestCase _enclosing;
+		}
+
+		public virtual void TestInterleavedCommits()
+		{
+			AssertReplyBehavior(new _IClientWaitLogic_47(this));
+		}
+
+		private sealed class _IClientWaitLogic_47 : ServerToClientTestCase.IClientWaitLogic
+		{
+			public _IClientWaitLogic_47(ServerToClientTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Wait(IObjectContainer client1, IObjectContainer client2)
+			{
+				client2.Commit();
+				client1.Commit();
+			}
+
+			private readonly ServerToClientTestCase _enclosing;
+		}
+
+		private void AssertReplyBehavior(ServerToClientTestCase.IClientWaitLogic clientWaitLogic
+			)
 		{
 			MessagingTestCaseBase.MessageCollector collector1 = new MessagingTestCaseBase.MessageCollector
 				();
@@ -45,7 +122,11 @@ namespace Db4objects.Db4o.Tests.Common.CS
 						SetMessageRecipient(client2, collector2);
 						IMessageSender sender2 = MessageSender(client2);
 						SendEvenOddMessages(sender1, sender2);
-						WaitForMessagesToBeDispatched(client1, client2);
+						clientWaitLogic.Wait(client1, client2);
+						Assert.AreEqual("[reply: 0, reply: 2, reply: 4, reply: 6, reply: 8]", collector1.
+							messages.ToString());
+						Assert.AreEqual("[reply: 1, reply: 3, reply: 5, reply: 7, reply: 9]", collector2.
+							messages.ToString());
 					}
 					finally
 					{
@@ -61,19 +142,6 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			{
 				server.Close();
 			}
-			Assert.AreEqual("[reply: 0, reply: 2, reply: 4, reply: 6, reply: 8]", collector1.
-				messages.ToString());
-			Assert.AreEqual("[reply: 1, reply: 3, reply: 5, reply: 7, reply: 9]", collector2.
-				messages.ToString());
-		}
-
-		private void WaitForMessagesToBeDispatched(IObjectContainer client1, IObjectContainer
-			 client2)
-		{
-			client2.Commit();
-			client1.Commit();
-			// give some time for all the message to be processed...
-			Cool.SleepIgnoringInterruption(500);
 		}
 
 		private void SendEvenOddMessages(IMessageSender even, IMessageSender odd)

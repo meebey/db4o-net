@@ -14,10 +14,10 @@ namespace Db4objects.Db4o.Internal
 		void CascadeActivation(Transaction trans, object obj, IActivationDepth depth);
 
 		/// <exception cref="Db4oIOException"></exception>
-		void ReadCandidates(int handlerVersion, BufferImpl buffer, QCandidates candidates
+		void ReadCandidates(int handlerVersion, ByteArrayBuffer buffer, QCandidates candidates
 			);
 
-		ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily mf, BufferImpl
+		ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily mf, ByteArrayBuffer
 			[] a_bytes);
 	}
 }

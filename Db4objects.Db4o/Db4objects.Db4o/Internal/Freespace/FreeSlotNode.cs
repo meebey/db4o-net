@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return a_in;
 		}
 
-		public override object Read(BufferImpl buffer)
+		public override object Read(ByteArrayBuffer buffer)
 		{
 			int size = buffer.ReadInt();
 			int address = buffer.ReadInt();
@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return null;
 		}
 
-		private void DebugCheckBuffer(BufferImpl buffer, Db4objects.Db4o.Internal.Freespace.FreeSlotNode
+		private void DebugCheckBuffer(ByteArrayBuffer buffer, Db4objects.Db4o.Internal.Freespace.FreeSlotNode
 			 node)
 		{
 			if (!(buffer is StatefulBuffer))
@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 		}
 
-		public sealed override void Write(BufferImpl a_writer)
+		public sealed override void Write(ByteArrayBuffer a_writer)
 		{
 			// byte order: size, address
 			a_writer.WriteInt(_key);

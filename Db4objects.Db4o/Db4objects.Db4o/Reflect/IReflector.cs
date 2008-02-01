@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Reflect
 		/// <summary>specifiy whether parameterized Constructors are supported.</summary>
 		/// <remarks>
 		/// specifiy whether parameterized Constructors are supported.
-		/// <br /><br />The support of Constructors is optional. If Constructors
+		/// &lt;br&gt;&lt;br&gt;The support of Constructors is optional. If Constructors
 		/// are not supported, every persistent class needs a public default
 		/// constructor with zero parameters.
 		/// </remarks>

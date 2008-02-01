@@ -16,11 +16,11 @@ namespace Db4objects.Db4o.Ext
 	/// extended functionality for the
 	/// <see cref="IObjectContainer">IObjectContainer</see>
 	/// interface.
-	/// <br /><br />Every db4o
+	/// &lt;br&gt;&lt;br&gt;Every db4o
 	/// <see cref="IObjectContainer">IObjectContainer</see>
-	/// always is an <code>ExtObjectContainer</code> so a cast is possible.<br /><br />
+	/// always is an &lt;code&gt;ExtObjectContainer&lt;/code&gt; so a cast is possible.&lt;br&gt;&lt;br&gt;
 	/// <see cref="IObjectContainer.Ext">IObjectContainer.Ext</see>
-	/// is a convenient method to perform the cast.<br /><br />
+	/// is a convenient method to perform the cast.&lt;br&gt;&lt;br&gt;
 	/// The ObjectContainer functionality is split to two interfaces to allow newcomers to
 	/// focus on the essential methods.
 	/// </summary>
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Ext
 		/// and
 		/// <see cref="IObjectClass.MaximumActivationDepth">IObjectClass.MaximumActivationDepth
 		/// 	</see>
-		/// will be respected.<br /><br />
+		/// will be respected.&lt;br&gt;&lt;br&gt;
 		/// In Transparent Activation Mode ( see
 		/// <see cref="TransparentActivationSupport">TransparentActivationSupport</see>
 		/// )
@@ -57,16 +57,25 @@ namespace Db4objects.Db4o.Ext
 		/// <exception cref="DatabaseClosedException"></exception>
 		void Activate(object obj);
 
+		/// <summary>deactivates an object.</summary>
+		/// <remarks>
+		/// deactivates an object.
+		/// Only the passed object will be deactivated, i.e, no object referenced by this
+		/// object will be deactivated.
+		/// </remarks>
+		/// <param name="obj">the object to be deactivated.</param>
+		void Deactivate(object obj);
+
 		/// <summary>backs up a database file of an open ObjectContainer.</summary>
 		/// <remarks>
 		/// backs up a database file of an open ObjectContainer.
-		/// <br /><br />While the backup is running, the ObjectContainer can continue to be
+		/// &lt;br&gt;&lt;br&gt;While the backup is running, the ObjectContainer can continue to be
 		/// used. Changes that are made while the backup is in progress, will be applied to
-		/// the open ObjectContainer and to the backup.<br /><br />
-		/// While the backup is running, the ObjectContainer should not be closed.<br /><br />
-		/// If a file already exists at the specified path, it will be overwritten.<br /><br />
+		/// the open ObjectContainer and to the backup.&lt;br&gt;&lt;br&gt;
+		/// While the backup is running, the ObjectContainer should not be closed.&lt;br&gt;&lt;br&gt;
+		/// If a file already exists at the specified path, it will be overwritten.&lt;br&gt;&lt;br&gt;
 		/// The backup call may be started in a seperated thread by the application,
-		/// if concurrent execution with normal database access is desired.<br /><br />
+		/// if concurrent execution with normal database access is desired.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="path">a fully qualified path</param>
 		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
@@ -82,19 +91,19 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>binds an object to an internal object ID.</summary>
 		/// <remarks>
 		/// binds an object to an internal object ID.
-		/// <br /><br />This method uses the ID parameter to load the
+		/// &lt;br&gt;&lt;br&gt;This method uses the ID parameter to load the
 		/// correspondig stored object into memory and replaces this memory
 		/// reference with the object parameter. The method may be used to replace
 		/// objects or to reassociate an object with it's stored instance
 		/// after closing and opening a database file. A subsequent call to
 		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
 		/// is
-		/// necessary to update the stored object.<br /><br />
-		/// <b>Requirements:</b><br />- The ID needs to be a valid internal object ID,
+		/// necessary to update the stored object.&lt;br&gt;&lt;br&gt;
+		/// &lt;b&gt;Requirements:&lt;/b&gt;&lt;br&gt;- The ID needs to be a valid internal object ID,
 		/// previously retrieved with
 		/// <see cref="IExtObjectContainer.GetID">IExtObjectContainer.GetID</see>
-		/// .<br />
-		/// - The object parameter needs to be of the same class as the stored object.<br /><br />
+		/// .&lt;br&gt;
+		/// - The object parameter needs to be of the same class as the stored object.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <seealso cref="IExtObjectContainer.GetID">IExtObjectContainer.GetID</seealso>
 		/// <param name="obj">the object that is to be bound</param>
@@ -113,7 +122,7 @@ namespace Db4objects.Db4o.Ext
 		/// interface to create or modify database-aware
 		/// collections for this
 		/// <see cref="IObjectContainer">IObjectContainer</see>
-		/// .<br /><br />
+		/// .&lt;br&gt;&lt;br&gt;
 		/// </summary>
 		/// <returns>
 		/// the
@@ -122,14 +131,14 @@ namespace Db4objects.Db4o.Ext
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// .
 		/// </returns>
-		[System.ObsoleteAttribute(@"since 7.0. Use of old internal collections is discouraged. Please use"
+		[System.ObsoleteAttribute(@"since 7.0. Use of old internal collections is discouraged. Please use  com.db4o.collections.ArrayList4 and com.db4o.collections.ArrayMap4 instead."
 			)]
 		IDb4oCollections Collections();
 
 		/// <summary>returns the Configuration context for this ObjectContainer.</summary>
 		/// <remarks>
 		/// returns the Configuration context for this ObjectContainer.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// Upon opening an ObjectContainer with any of the factory methods in the
 		/// <see cref="Db4oFactory">Db4oFactory</see>
 		/// class, the global
@@ -138,7 +147,7 @@ namespace Db4objects.Db4o.Ext
 		/// is copied into the ObjectContainer. The
 		/// <see cref="IConfiguration">IConfiguration</see>
 		/// can be modified individually for
-		/// each ObjectContainer without any effects on the global settings.<br /><br />
+		/// each ObjectContainer without any effects on the global settings.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <returns>
 		/// 
@@ -153,7 +162,7 @@ namespace Db4objects.Db4o.Ext
 		/// 	</summary>
 		/// <remarks>
 		/// returns a member at the specific path without activating intermediate objects.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// This method allows navigating from a persistent object to it's members in a
 		/// performant way without activating or instantiating intermediate objects.
 		/// </remarks>
@@ -165,20 +174,20 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>returns the stored object for an internal ID.</summary>
 		/// <remarks>
 		/// returns the stored object for an internal ID.
-		/// <br /><br />This is the fastest method for direct access to objects. Internal
+		/// &lt;br&gt;&lt;br&gt;This is the fastest method for direct access to objects. Internal
 		/// IDs can be obtained with
 		/// <see cref="IExtObjectContainer.GetID">IExtObjectContainer.GetID</see>
 		/// .
 		/// Objects will not be activated by this method. They will be returned in the
-		/// activation state they are currently in, in the local cache.<br /><br />
+		/// activation state they are currently in, in the local cache.&lt;br&gt;&lt;br&gt;
 		/// To activate the returned object with the current activation strategy, call
 		/// <see cref="IExtObjectContainer.Activate">IExtObjectContainer.Activate</see>
-		/// .<br /><br />
+		/// .&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="id">the internal ID</param>
 		/// <returns>
-		/// the object associated with the passed ID or <code>null</code>,
-		/// if no object is associated with this ID in this <code>ObjectContainer</code>.
+		/// the object associated with the passed ID or &lt;code&gt;null&lt;/code&gt;,
+		/// if no object is associated with this ID in this &lt;code&gt;ObjectContainer&lt;/code&gt;.
 		/// </returns>
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
 		/// <exception cref="DatabaseClosedException">db4o database file was closed or failed to open.
@@ -190,7 +199,7 @@ namespace Db4objects.Db4o.Ext
 		/// returns a stored object for a
 		/// <see cref="Db4oUUID">Db4oUUID</see>
 		/// .
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// This method is intended for replication and for long-term
 		/// external references to objects. To get a
 		/// <see cref="Db4oUUID">Db4oUUID</see>
@@ -199,9 +208,9 @@ namespace Db4objects.Db4o.Ext
 		/// <see cref="IExtObjectContainer.GetObjectInfo">IExtObjectContainer.GetObjectInfo</see>
 		/// and
 		/// <see cref="IObjectInfo.GetUUID">IObjectInfo.GetUUID</see>
-		/// .<br /><br />
+		/// .&lt;br&gt;&lt;br&gt;
 		/// Objects will not be activated by this method. They will be returned in the
-		/// activation state they are currently in, in the local cache.<br /><br />
+		/// activation state they are currently in, in the local cache.&lt;br&gt;&lt;br&gt;
 		/// </summary>
 		/// <param name="uuid">the UUID</param>
 		/// <returns>the object for the UUID</returns>
@@ -215,12 +224,12 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>returns the internal unique object ID.</summary>
 		/// <remarks>
 		/// returns the internal unique object ID.
-		/// <br /><br />db4o assigns an internal ID to every object that is stored. IDs are
-		/// guaranteed to be unique within one <code>ObjectContainer</code>.
+		/// &lt;br&gt;&lt;br&gt;db4o assigns an internal ID to every object that is stored. IDs are
+		/// guaranteed to be unique within one &lt;code&gt;ObjectContainer&lt;/code&gt;.
 		/// An object carries the same ID in every db4o session. Internal IDs can
 		/// be used to look up objects with the very fast
 		/// <see cref="IExtObjectContainer.GetByID">IExtObjectContainer.GetByID</see>
-		/// method.<br /><br />
+		/// method.&lt;br&gt;&lt;br&gt;
 		/// Internal IDs will change when a database is defragmented. Use
 		/// <see cref="IExtObjectContainer.GetObjectInfo">IExtObjectContainer.GetObjectInfo</see>
 		/// ,
@@ -228,12 +237,12 @@ namespace Db4objects.Db4o.Ext
 		/// and
 		/// <see cref="IExtObjectContainer.GetByUUID">IExtObjectContainer.GetByUUID</see>
 		/// for long-term external references to
-		/// objects.<br /><br />
+		/// objects.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="obj">any object</param>
 		/// <returns>
-		/// the associated internal ID or <code>0</code>, if the passed
-		/// object is not stored in this <code>ObjectContainer</code>.
+		/// the associated internal ID or &lt;code&gt;0&lt;/code&gt;, if the passed
+		/// object is not stored in this &lt;code&gt;ObjectContainer&lt;/code&gt;.
 		/// </returns>
 		long GetID(object obj);
 
@@ -241,8 +250,8 @@ namespace Db4objects.Db4o.Ext
 		/// returns the
 		/// <see cref="IObjectInfo">IObjectInfo</see>
 		/// for a stored object.
-		/// <br /><br />This method will return null, if the passed
-		/// object is not stored to this <code>ObjectContainer</code>.<br /><br />
+		/// &lt;br&gt;&lt;br&gt;This method will return null, if the passed
+		/// object is not stored to this &lt;code&gt;ObjectContainer&lt;/code&gt;.&lt;br&gt;&lt;br&gt;
 		/// </summary>
 		/// <param name="obj">the stored object</param>
 		/// <returns>
@@ -263,36 +272,38 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>tests if an object is activated.</summary>
 		/// <remarks>
 		/// tests if an object is activated.
-		/// <br /><br /><code>isActive</code> returns <code>false</code> if an object is not
-		/// stored within the <code>ObjectContainer</code>.<br /><br />
+		/// &lt;br&gt;&lt;br&gt;&lt;code&gt;isActive&lt;/code&gt; returns &lt;code&gt;false&lt;/code&gt; if an object is not
+		/// stored within the &lt;code&gt;ObjectContainer&lt;/code&gt;.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
-		/// <param name="obj">to be tested<br /><br /></param>
-		/// <returns><code>true</code> if the passed object is active.</returns>
+		/// <param name="obj">to be tested&lt;br&gt;&lt;br&gt;</param>
+		/// <returns>&lt;code&gt;true&lt;/code&gt; if the passed object is active.</returns>
 		bool IsActive(object obj);
 
 		/// <summary>tests if an object with this ID is currently cached.</summary>
 		/// <remarks>
 		/// tests if an object with this ID is currently cached.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="Id">the internal ID</param>
 		bool IsCached(long Id);
 
-		/// <summary>tests if this <code>ObjectContainer</code> is closed.</summary>
+		/// <summary>tests if this &lt;code&gt;ObjectContainer&lt;/code&gt; is closed.</summary>
 		/// <remarks>
-		/// tests if this <code>ObjectContainer</code> is closed.
-		/// <br /><br />
+		/// tests if this &lt;code&gt;ObjectContainer&lt;/code&gt; is closed.
+		/// &lt;br&gt;&lt;br&gt;
 		/// </remarks>
-		/// <returns><code>true</code> if this <code>ObjectContainer</code> is closed.</returns>
+		/// <returns>&lt;code&gt;true&lt;/code&gt; if this &lt;code&gt;ObjectContainer&lt;/code&gt; is closed.
+		/// 	</returns>
 		bool IsClosed();
 
-		/// <summary>tests if an object is stored in this <code>ObjectContainer</code>.</summary>
+		/// <summary>tests if an object is stored in this &lt;code&gt;ObjectContainer&lt;/code&gt;.
+		/// 	</summary>
 		/// <remarks>
-		/// tests if an object is stored in this <code>ObjectContainer</code>.
-		/// <br /><br />
+		/// tests if an object is stored in this &lt;code&gt;ObjectContainer&lt;/code&gt;.
+		/// &lt;br&gt;&lt;br&gt;
 		/// </remarks>
-		/// <param name="obj">to be tested<br /><br /></param>
-		/// <returns><code>true</code> if the passed object is stored.</returns>
+		/// <param name="obj">to be tested&lt;br&gt;&lt;br&gt;</param>
+		/// <returns>&lt;code&gt;true&lt;/code&gt; if the passed object is stored.</returns>
 		/// <exception cref="DatabaseClosedException">db4o database file was closed or failed to open.
 		/// 	</exception>
 		bool IsStored(object obj);
@@ -314,9 +325,9 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>returns the main synchronisation lock.</summary>
 		/// <remarks>
 		/// returns the main synchronisation lock.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// Synchronize over this object to ensure exclusive access to
-		/// the ObjectContainer.<br /><br />
+		/// the ObjectContainer.&lt;br&gt;&lt;br&gt;
 		/// Handle the use of this functionality with extreme care,
 		/// since deadlocks can be produced with just two lines of code.
 		/// </remarks>
@@ -328,18 +339,18 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>aids migration of objects between ObjectContainers.</summary>
 		/// <remarks>
 		/// aids migration of objects between ObjectContainers.
-		/// <br /><br />When objects are migrated from one ObjectContainer to another, it is
+		/// &lt;br&gt;&lt;br&gt;When objects are migrated from one ObjectContainer to another, it is
 		/// desirable to preserve virtual object attributes such as the object version number
 		/// or the UUID. Use this method to signal to an ObjectContainer that it should read
 		/// existing version numbers and UUIDs from another ObjectContainer. This method should
 		/// also be used during the Defragment. It is included in the default
-		/// implementation supplied in Defragment.java/Defragment.cs.<br /><br />
+		/// implementation supplied in Defragment.java/Defragment.cs.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="objectContainer">
 		/// the
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// objects are to be migrated
-		/// from or <code>null</code> to denote that migration is completed.
+		/// from or &lt;code&gt;null&lt;/code&gt; to denote that migration is completed.
 		/// </param>
 		void MigrateFrom(IObjectContainer objectContainer);
 
@@ -350,16 +361,16 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>
 		/// returns a transient copy of a persistent object with all members set
 		/// to the values that are currently stored to the database.
-		/// <br /><br />
-		/// The returned objects have no connection to the database.<br /><br />
-		/// With the <code>committed</code> parameter it is possible to specify,
+		/// &lt;br&gt;&lt;br&gt;
+		/// The returned objects have no connection to the database.&lt;br&gt;&lt;br&gt;
+		/// With the &lt;code&gt;committed&lt;/code&gt; parameter it is possible to specify,
 		/// whether the desired object should contain the committed values or the
 		/// values that were set by the running transaction with
 		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
 		/// .
-		/// <br /><br />A possible usecase for this feature:<br />
+		/// &lt;br&gt;&lt;br&gt;A possible usecase for this feature:&lt;br&gt;
 		/// An application might want to check all changes applied to an object
-		/// by the running transaction.<br /><br />
+		/// by the running transaction.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="@object">the object that is to be cloned</param>
 		/// <param name="depth">the member depth to which the object is to be instantiated</param>
@@ -370,7 +381,7 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>unloads all clean indices from memory and frees unused objects.</summary>
 		/// <remarks>
 		/// unloads all clean indices from memory and frees unused objects.
-		/// <br /><br />Call commit() and purge() consecutively to achieve the best
+		/// &lt;br&gt;&lt;br&gt;Call commit() and purge() consecutively to achieve the best
 		/// result possible. This method can have a negative impact
 		/// on performance since indices will have to be reread before further
 		/// inserts, updates or queries can take place.
@@ -380,17 +391,17 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>unloads a specific object from the db4o reference mechanism.</summary>
 		/// <remarks>
 		/// unloads a specific object from the db4o reference mechanism.
-		/// <br /><br />db4o keeps references to all newly stored and
+		/// &lt;br&gt;&lt;br&gt;db4o keeps references to all newly stored and
 		/// instantiated objects in memory, to be able to manage object identities.
-		/// <br /><br />With calls to this method it is possible to remove an object from the
+		/// &lt;br&gt;&lt;br&gt;With calls to this method it is possible to remove an object from the
 		/// reference mechanism, to allow it to be garbage collected. You are not required to
 		/// call this method in the .NET and JDK 1.2 versions, since objects are
 		/// referred to by weak references and garbage collection happens
-		/// automatically.<br /><br />An object removed with  <code>purge(Object)</code> is not
-		/// "known" to the <code>ObjectContainer</code> afterwards, so this method may also be
-		/// used to create multiple copies of  objects.<br /><br /> <code>purge(Object)</code> has
+		/// automatically.&lt;br&gt;&lt;br&gt;An object removed with  &lt;code&gt;purge(Object)&lt;/code&gt; is not
+		/// "known" to the &lt;code&gt;ObjectContainer&lt;/code&gt; afterwards, so this method may also be
+		/// used to create multiple copies of  objects.&lt;br&gt;&lt;br&gt; &lt;code&gt;purge(Object)&lt;/code&gt; has
 		/// no influence on the persistence state of objects. "Purged" objects can be
-		/// reretrieved with queries.<br /><br />
+		/// reretrieved with queries.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="obj">the object to be removed from the reference mechanism.</param>
 		void Purge(object obj);
@@ -403,9 +414,9 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>refreshs all members on a stored object to the specified depth.</summary>
 		/// <remarks>
 		/// refreshs all members on a stored object to the specified depth.
-		/// <br /><br />If a member object is not activated, it will be activated by this method.
-		/// <br /><br />The isolation used is READ COMMITTED. This method will read all objects
-		/// and values that have been committed by other transactions.<br /><br />
+		/// &lt;br&gt;&lt;br&gt;If a member object is not activated, it will be activated by this method.
+		/// &lt;br&gt;&lt;br&gt;The isolation used is READ COMMITTED. This method will read all objects
+		/// and values that have been committed by other transactions.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="obj">the object to be refreshed.</param>
 		/// <param name="depth">
@@ -442,17 +453,18 @@ namespace Db4objects.Db4o.Ext
 		/// <see cref="IReplicationProcess">IReplicationProcess</see>
 		/// interface for this replication process.
 		/// </returns>
-		[System.ObsoleteAttribute(@"Since db4o-5.2. Use db4o Replication System (dRS)")]
+		[System.ObsoleteAttribute(@"Since db4o-5.2. Use db4o Replication System (dRS) instead.<br><br> prepares for replication with another"
+			)]
 		IReplicationProcess ReplicationBegin(IObjectContainer peerB, IReplicationConflictHandler
 			 conflictHandler);
 
 		/// <summary>deep update interface to store or update objects.</summary>
 		/// <remarks>
 		/// deep update interface to store or update objects.
-		/// <br /><br />In addition to the normal storage interface,
+		/// &lt;br&gt;&lt;br&gt;In addition to the normal storage interface,
 		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
 		/// ,
-		/// this method allows a manual specification of the depth, the passed object is to be updated.<br /><br />
+		/// this method allows a manual specification of the depth, the passed object is to be updated.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="obj">the object to be stored or updated.</param>
 		/// <param name="depth">the depth to which the object is to be updated</param>
@@ -463,10 +475,10 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>deep update interface to store or update objects.</summary>
 		/// <remarks>
 		/// deep update interface to store or update objects.
-		/// <br /><br />In addition to the normal storage interface,
+		/// &lt;br&gt;&lt;br&gt;In addition to the normal storage interface,
 		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
 		/// ,
-		/// this method allows a manual specification of the depth, the passed object is to be updated.<br /><br />
+		/// this method allows a manual specification of the depth, the passed object is to be updated.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="obj">the object to be stored or updated.</param>
 		/// <param name="depth">the depth to which the object is to be updated</param>
@@ -476,46 +488,46 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>attempts to set a semaphore.</summary>
 		/// <remarks>
 		/// attempts to set a semaphore.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// Semaphores are transient multi-purpose named flags for
 		/// <see cref="IObjectContainer">ObjectContainers</see>
 		/// .
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// A transaction that successfully sets a semaphore becomes
 		/// the owner of the semaphore. Semaphores can only be owned
-		/// by a single transaction at one point in time.<br /><br />
+		/// by a single transaction at one point in time.&lt;br&gt;&lt;br&gt;
 		/// This method returns true, if the transaction already owned
 		/// the semaphore before the method call or if it successfully
-		/// acquires ownership of the semaphore.<br /><br />
+		/// acquires ownership of the semaphore.&lt;br&gt;&lt;br&gt;
 		/// The waitForAvailability parameter allows to specify a time
 		/// in milliseconds to wait for other transactions to release
 		/// the semaphore, in case the semaphore is already owned by
-		/// another transaction.<br /><br />
+		/// another transaction.&lt;br&gt;&lt;br&gt;
 		/// Semaphores are released by the first occurence of one of the
-		/// following:<br />
+		/// following:&lt;br&gt;
 		/// - the transaction releases the semaphore with
 		/// <see cref="IExtObjectContainer.ReleaseSemaphore">IExtObjectContainer.ReleaseSemaphore
 		/// 	</see>
-		/// <br /> - the transaction is closed with
+		/// &lt;br&gt; - the transaction is closed with
 		/// <see cref="IObjectContainer.Close">IObjectContainer.Close</see>
-		/// <br /> - C/S only: the corresponding
+		/// &lt;br&gt; - C/S only: the corresponding
 		/// <see cref="IObjectServer">IObjectServer</see>
 		/// is
-		/// closed.<br /> - C/S only: the client
+		/// closed.&lt;br&gt; - C/S only: the client
 		/// <see cref="IObjectContainer">IObjectContainer</see>
 		/// looses the connection and is timed
-		/// out.<br /><br /> Semaphores are set immediately. They are independant of calling
+		/// out.&lt;br&gt;&lt;br&gt; Semaphores are set immediately. They are independant of calling
 		/// <see cref="IObjectContainer.Commit">IObjectContainer.Commit</see>
 		/// or
 		/// <see cref="IObjectContainer.Rollback">IObjectContainer.Rollback</see>
-		/// .<br /><br /> <b>Possible usecases
-		/// for semaphores:</b><br /> - prevent other clients from inserting a singleton at the same time.
-		/// A suggested name for the semaphore:  "SINGLETON_" + Object#getClass().getName().<br />  - lock
+		/// .&lt;br&gt;&lt;br&gt; &lt;b&gt;Possible usecases
+		/// for semaphores:&lt;/b&gt;&lt;br&gt; - prevent other clients from inserting a singleton at the same time.
+		/// A suggested name for the semaphore:  "SINGLETON_" + Object#getClass().getName().&lt;br&gt;  - lock
 		/// objects. A suggested name:   "LOCK_" +
 		/// <see cref="IExtObjectContainer.GetID">getID(Object)</see>
-		/// <br /> -
+		/// &lt;br&gt; -
 		/// generate a unique client ID. A suggested name:  "CLIENT_" +
-		/// currentTime.<br /><br />
+		/// currentTime.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="name">the name of the semaphore to be set</param>
 		/// <param name="waitForAvailability">
@@ -525,9 +537,9 @@ namespace Db4objects.Db4o.Ext
 		/// </param>
 		/// <returns>
 		/// boolean flag
-		/// <br /><code>true</code>, if the semaphore could be set or if the
+		/// &lt;br&gt;&lt;code&gt;true&lt;/code&gt;, if the semaphore could be set or if the
 		/// calling transaction already owned the semaphore.
-		/// <br /><code>false</code>, if the semaphore is owned by another
+		/// &lt;br&gt;&lt;code&gt;false&lt;/code&gt;, if the semaphore is owned by another
 		/// transaction.
 		/// </returns>
 		bool SetSemaphore(string name, int waitForAvailability);
@@ -536,14 +548,15 @@ namespace Db4objects.Db4o.Ext
 		/// returns a
 		/// <see cref="IStoredClass">IStoredClass</see>
 		/// meta information object.
-		/// <br /><br />
-		/// There are three options how to use this method.<br />
-		/// Any of the following parameters are possible:<br />
-		/// - a fully qualified classname.<br />
-		/// - a Class object.<br />
-		/// - any object to be used as a template.<br /><br />
+		/// &lt;br&gt;&lt;br&gt;
+		/// There are three options how to use this method.&lt;br&gt;
+		/// Any of the following parameters are possible:&lt;br&gt;
+		/// - a fully qualified classname.&lt;br&gt;
+		/// - a Class object.&lt;br&gt;
+		/// - any object to be used as a template.&lt;br&gt;&lt;br&gt;
 		/// </summary>
-		/// <param name="clazz">class name, Class object, or example object.<br /><br /></param>
+		/// <param name="clazz">class name, Class object, or example object.&lt;br&gt;&lt;br&gt;
+		/// 	</param>
 		/// <returns>
 		/// an instance of an
 		/// <see cref="IStoredClass">IStoredClass</see>
@@ -562,7 +575,7 @@ namespace Db4objects.Db4o.Ext
 		/// returns the
 		/// <see cref="ISystemInfo">ISystemInfo</see>
 		/// for this ObjectContainer.
-		/// <br /><br />The
+		/// &lt;br&gt;&lt;br&gt;The
 		/// <see cref="ISystemInfo">ISystemInfo</see>
 		/// supplies methods that provide
 		/// information about system state and system settings of this
@@ -578,7 +591,7 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>returns the current transaction serial number.</summary>
 		/// <remarks>
 		/// returns the current transaction serial number.
-		/// <br /><br />This serial number can be used to query for modified objects
+		/// &lt;br&gt;&lt;br&gt;This serial number can be used to query for modified objects
 		/// and for replication purposes.
 		/// </remarks>
 		/// <returns>the current transaction serial number.</returns>

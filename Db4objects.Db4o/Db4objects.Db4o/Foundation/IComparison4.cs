@@ -6,9 +6,9 @@ namespace Db4objects.Db4o.Foundation
 	public interface IComparison4
 	{
 		/// <summary>
-		/// Returns negative number if x < y
+		/// Returns negative number if x &lt; y
 		/// Returns zero if x == y
-		/// Returns positive number if x > y
+		/// Returns positive number if x &gt; y
 		/// </summary>
 		int Compare(object x, object y);
 	}

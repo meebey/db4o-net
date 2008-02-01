@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.Ext
 {
@@ -9,10 +10,10 @@ namespace Db4objects.Db4o.Ext
 	/// extended client functionality for the
 	/// <see cref="IExtObjectContainer">IExtObjectContainer</see>
 	/// interface.
-	/// <br /><br />Both
+	/// &lt;br&gt;&lt;br&gt;Both
 	/// <see cref="Db4oFactory.OpenClient">Db4o.openClient()</see>
 	/// methods always
-	/// return an <code>ExtClient</code> object so a cast is possible.<br /><br />
+	/// return an &lt;code&gt;ExtClient&lt;/code&gt; object so a cast is possible.&lt;br&gt;&lt;br&gt;
 	/// The ObjectContainer functionality is split into multiple interfaces to allow newcomers to
 	/// focus on the essential methods.
 	/// </summary>
@@ -22,42 +23,42 @@ namespace Db4objects.Db4o.Ext
 		/// 	</summary>
 		/// <remarks>
 		/// requests opening a different server database file for this client session.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// This method can be used to switch between database files from the client
 		/// side while not having to open a new socket connection or closing the
 		/// current one.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// If the database file does not exist on the server, it will be created.
-		/// <br /><br />
-		/// A typical usecase:<br />
+		/// &lt;br&gt;&lt;br&gt;
+		/// A typical usecase:&lt;br&gt;
 		/// The main database file is used for login, user and rights management only.
 		/// Only one single db4o server session needs to be run. Multiple satellite
 		/// database files are used for different applications or multiple user circles.
-		/// Storing the data to multiple database files has the following advantages:<br />
-		/// - easier rights management<br />
-		/// - easier backup<br />
-		/// - possible later load balancing to multiple servers<br />
-		/// - better performance of smaller individual database files<br />
+		/// Storing the data to multiple database files has the following advantages:&lt;br&gt;
+		/// - easier rights management&lt;br&gt;
+		/// - easier backup&lt;br&gt;
+		/// - possible later load balancing to multiple servers&lt;br&gt;
+		/// - better performance of smaller individual database files&lt;br&gt;
 		/// - special debugging database files can be used
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// User authorization to the alternative database file will not be checked.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// All persistent references to objects that are currently in memory
-		/// are discarded during the switching process.<br /><br />
+		/// are discarded during the switching process.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="fileName">the fully qualified path of the requested database file.</param>
 		void SwitchToFile(string fileName);
 
 		/// <summary>
 		/// requests switching back to the main database file after a previous call
-		/// to <code>switchToFile(String fileName)</code>.
+		/// to &lt;code&gt;switchToFile(String fileName)&lt;/code&gt;.
 		/// </summary>
 		/// <remarks>
 		/// requests switching back to the main database file after a previous call
-		/// to <code>switchToFile(String fileName)</code>.
-		/// <br /><br />
+		/// to &lt;code&gt;switchToFile(String fileName)&lt;/code&gt;.
+		/// &lt;br&gt;&lt;br&gt;
 		/// All persistent references to objects that are currently in memory
-		/// are discarded during the switching process.<br /><br />
+		/// are discarded during the switching process.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		void SwitchToMainFile();
 
@@ -65,5 +66,15 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>checks if the client is currently connected to a server.</remarks>
 		/// <returns>true if the client is alive.</returns>
 		bool IsAlive();
+
+		/// <summary>
+		/// Dispatches any pending messages to
+		/// the currently configured
+		/// <see cref="IMessageRecipient">IMessageRecipient</see>
+		/// .
+		/// </summary>
+		/// <param name="maxTimeSlice">how long before the method returns leaving messages on the queue for later dispatching
+		/// 	</param>
+		void DispatchPendingMessages(long maxTimeSlice);
 	}
 }

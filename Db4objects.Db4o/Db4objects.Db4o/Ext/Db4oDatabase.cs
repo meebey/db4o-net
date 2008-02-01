@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Ext
 	/// <summary>Class to identify a database by it's signature.</summary>
 	/// <remarks>
 	/// Class to identify a database by it's signature.
-	/// <br /><br />db4o UUID handling uses a reference to the Db4oDatabase object, that
+	/// &lt;br&gt;&lt;br&gt;db4o UUID handling uses a reference to the Db4oDatabase object, that
 	/// represents the database an object was created on.
 	/// </remarks>
 	/// <persistent></persistent>

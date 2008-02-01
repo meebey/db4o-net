@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			WriteVariablePart(file, 0);
 		}
 
-		protected override FileHeader NewOnSignatureMatch(LocalObjectContainer file, BufferImpl
+		protected override FileHeader NewOnSignatureMatch(LocalObjectContainer file, ByteArrayBuffer
 			 reader)
 		{
 			if (SignatureMatches(reader, Signature, Version))
@@ -88,8 +88,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return HeaderLength;
 		}
 
-		protected override void ReadFixedPart(LocalObjectContainer file, BufferImpl reader
-			)
+		protected override void ReadFixedPart(LocalObjectContainer file, ByteArrayBuffer 
+			reader)
 		{
 			CommonTasksForNewAndRead(file);
 			CheckThreadFileLock(file, reader);
@@ -101,8 +101,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			_variablePart = new FileHeaderVariablePart1(reader.ReadInt(), file.SystemData());
 		}
 
-		private void CheckThreadFileLock(LocalObjectContainer container, BufferImpl reader
-			)
+		private void CheckThreadFileLock(LocalObjectContainer container, ByteArrayBuffer 
+			reader)
 		{
 			reader.Seek(AccessTimeOffset);
 			long lastAccessTime = reader.ReadLong();

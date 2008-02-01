@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			BooleanHandlerUpdateTestCase.ItemArrays itemArrays = (BooleanHandlerUpdateTestCase.ItemArrays
 				)obj;
 			AssertPrimitiveArray(itemArrays._typedPrimitiveArray);
-			if (_db4oHeaderVersion == VersionServices.Header3040)
+			if (Db4oHeaderVersion() == VersionServices.Header3040)
 			{
 				// Bug in the oldest format: It accidentally boolean[] arrays to
 				// Boolean[] arrays.

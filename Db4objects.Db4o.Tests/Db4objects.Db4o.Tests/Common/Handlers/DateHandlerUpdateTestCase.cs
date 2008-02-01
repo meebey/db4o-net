@@ -75,7 +75,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(DateTime expected, DateTime actual)
 		{
-			if (expected.Equals(new DateTime(DatePlatform.MaxDate)) && _handlerVersion == 0)
+			if (expected.Equals(new DateTime(DatePlatform.MaxDate)) && Db4oHandlerVersion() ==
+				 0)
 			{
 				// Bug in the oldest format: It treats a Long.MAX_VALUE date as null. 
 				expected = MarshallingConstants0.NullDate;

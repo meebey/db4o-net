@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int _fieldWriteCount;
 
-		private BufferImpl _debugPrepend;
+		private ByteArrayBuffer _debugPrepend;
 
 		private object _currentMarshalledObject;
 
@@ -116,9 +116,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return new Pointer4(ObjectID(), slot);
 		}
 
-		public virtual BufferImpl ToWriteBuffer(Pointer4 pointer)
+		public virtual ByteArrayBuffer ToWriteBuffer(Pointer4 pointer)
 		{
-			BufferImpl buffer = new BufferImpl(pointer.Length());
+			ByteArrayBuffer buffer = new ByteArrayBuffer(pointer.Length());
 			_writeBuffer.MergeChildren(this, pointer.Address(), WriteBufferOffset());
 			WriteObjectClassID(buffer, ClassMetadata().GetID());
 			buffer.WriteByte(Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion);
@@ -149,7 +149,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return Container().BlockAlignedBytes(buffer.Length());
 		}
 
-		private void WriteObjectClassID(BufferImpl reader, int id)
+		private void WriteObjectClassID(ByteArrayBuffer reader, int id)
 		{
 			reader.WriteInt(-id);
 		}
@@ -264,7 +264,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_writeBuffer.WriteInt(fieldCount);
 		}
 
-		public virtual void DebugPrependNextWrite(BufferImpl prepend)
+		public virtual void DebugPrependNextWrite(ByteArrayBuffer prepend)
 		{
 		}
 
@@ -364,7 +364,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 		}
 
-		public virtual IBuffer Buffer()
+		public virtual IReadWriteBuffer Buffer()
 		{
 			// FIXME: This method was just temporarily added to fulfill contract of MarshallingInfo
 			//        It will go, the buffer is never needed in new marshalling. 

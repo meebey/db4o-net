@@ -133,7 +133,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override void WriteBytes(BufferImpl buffer, int address, int addressOffset
+		public override void WriteBytes(ByteArrayBuffer buffer, int address, int addressOffset
 			)
 		{
 			int fullAddress = address + addressOffset;

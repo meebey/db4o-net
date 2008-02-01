@@ -44,12 +44,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return mf._primitive.ReadDate(writer);
 		}
 
-		internal override object Read1(BufferImpl a_bytes)
+		internal override object Read1(ByteArrayBuffer a_bytes)
 		{
 			return PrimitiveMarshaller().ReadDate(a_bytes);
 		}
 
-		public override void Write(object a_object, BufferImpl a_bytes)
+		public override void Write(object a_object, ByteArrayBuffer a_bytes)
 		{
 			// TODO: This is a temporary fix to prevent exceptions with
 			// Marshaller.LEGACY.  

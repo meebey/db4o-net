@@ -136,7 +136,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			private readonly bool isUpdate;
 		}
 
-		public override bool FindOffset(ClassMetadata yc, IFieldListInfo fieldListInfo, BufferImpl
+		public override bool FindOffset(ClassMetadata yc, IFieldListInfo fieldListInfo, ByteArrayBuffer
 			 reader, FieldMetadata field)
 		{
 			bool[] ret = new bool[] { false };
@@ -149,7 +149,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private sealed class _TraverseFieldCommand_62 : ObjectMarshaller.TraverseFieldCommand
 		{
 			public _TraverseFieldCommand_62(ObjectMarshaller1 _enclosing, FieldMetadata field
-				, bool[] ret, BufferImpl reader)
+				, bool[] ret, ByteArrayBuffer reader)
 			{
 				this._enclosing = _enclosing;
 				this.field = field;
@@ -178,10 +178,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly bool[] ret;
 
-			private readonly BufferImpl reader;
+			private readonly ByteArrayBuffer reader;
 		}
 
-		public override ObjectHeaderAttributes ReadHeaderAttributes(BufferImpl reader)
+		public override ObjectHeaderAttributes ReadHeaderAttributes(ByteArrayBuffer reader
+			)
 		{
 			return new ObjectHeaderAttributes(reader);
 		}
@@ -209,7 +210,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public override void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
-			 yo, ObjectHeaderAttributes attributes, BufferImpl reader)
+			 yo, ObjectHeaderAttributes attributes, ByteArrayBuffer reader)
 		{
 			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_99(this
 				, trans, reader, yo);
@@ -219,7 +220,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private sealed class _TraverseFieldCommand_99 : ObjectMarshaller.TraverseFieldCommand
 		{
 			public _TraverseFieldCommand_99(ObjectMarshaller1 _enclosing, Transaction trans, 
-				BufferImpl reader, ObjectReference yo)
+				ByteArrayBuffer reader, ObjectReference yo)
 			{
 				this._enclosing = _enclosing;
 				this.trans = trans;
@@ -240,7 +241,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly Transaction trans;
 
-			private readonly BufferImpl reader;
+			private readonly ByteArrayBuffer reader;
 
 			private readonly ObjectReference yo;
 		}
@@ -267,7 +268,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				this.context = context;
 			}
 
-			public override int FieldCount(ClassMetadata yapClass, BufferImpl reader)
+			public override int FieldCount(ClassMetadata yapClass, ByteArrayBuffer reader)
 			{
 				return context.ReadInt();
 			}
@@ -286,12 +287,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			private readonly DefragmentContextImpl context;
 		}
 
-		public override void WriteObjectClassID(BufferImpl reader, int id)
+		public override void WriteObjectClassID(ByteArrayBuffer reader, int id)
 		{
 			reader.WriteInt(-id);
 		}
 
-		public override void SkipMarshallerInfo(BufferImpl reader)
+		public override void SkipMarshallerInfo(ByteArrayBuffer reader)
 		{
 			reader.IncrementOffset(1);
 		}

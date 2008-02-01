@@ -14,8 +14,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return true;
 		}
 
-		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, BufferImpl[] 
-			a_bytes)
+		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, ByteArrayBuffer
+			[] a_bytes)
 		{
 			int id = 0;
 			int offset = a_bytes[0]._offset;

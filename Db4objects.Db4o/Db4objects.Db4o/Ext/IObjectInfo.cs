@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>returns the object that is referenced.</summary>
 		/// <remarks>
 		/// returns the object that is referenced.
-		/// <br /><br />This method may return null, if the object has
+		/// &lt;br&gt;&lt;br&gt;This method may return null, if the object has
 		/// been garbage collected.
 		/// </remarks>
 		/// <returns>

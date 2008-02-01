@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Config
 		/// <summary>db4o calls this method when a stored object needs to be instantiated.</summary>
 		/// <remarks>
 		/// db4o calls this method when a stored object needs to be instantiated.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="container">the ObjectContainer used</param>
 		/// <param name="storedObject">

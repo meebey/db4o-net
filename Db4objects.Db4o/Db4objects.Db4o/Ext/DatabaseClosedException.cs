@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Ext
 {
 	/// <summary>db4o-specific exception.</summary>
 	/// <remarks>
-	/// db4o-specific exception. <br /><br />
+	/// db4o-specific exception. &lt;br&gt;&lt;br&gt;
 	/// This exception is thrown when the object container required for
 	/// the current operation was closed or failed to open.
 	/// </remarks>

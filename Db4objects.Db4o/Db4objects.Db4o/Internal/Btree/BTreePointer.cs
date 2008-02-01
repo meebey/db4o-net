@@ -51,10 +51,10 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
-		private readonly BufferImpl _nodeReader;
+		private readonly ByteArrayBuffer _nodeReader;
 
-		public BTreePointer(Db4objects.Db4o.Internal.Transaction transaction, BufferImpl 
-			nodeReader, BTreeNode node, int index)
+		public BTreePointer(Db4objects.Db4o.Internal.Transaction transaction, ByteArrayBuffer
+			 nodeReader, BTreeNode node, int index)
 		{
 			if (transaction == null || node == null)
 			{
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return Node().Key(Transaction(), NodeReader(), Index());
 		}
 
-		private BufferImpl NodeReader()
+		private ByteArrayBuffer NodeReader()
 		{
 			return _nodeReader;
 		}
@@ -105,7 +105,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			int newIndex = -1;
 			BTreeNode nextNode = Node();
-			BufferImpl nextReader = null;
+			ByteArrayBuffer nextReader = null;
 			while (newIndex == -1)
 			{
 				nextNode = nextNode.NextNode();
@@ -134,7 +134,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			int newIndex = -1;
 			BTreeNode previousNode = Node();
-			BufferImpl previousReader = null;
+			ByteArrayBuffer previousReader = null;
 			while (newIndex == -1)
 			{
 				previousNode = previousNode.PreviousNode();

@@ -113,8 +113,8 @@ namespace Db4objects.Db4o.IO
 		/// </summary>
 		/// <remarks>
 		/// configures the length a memory file should grow, if no more free slots
-		/// are found within. <br />
-		/// <br />
+		/// are found within. &lt;br&gt;
+		/// &lt;br&gt;
 		/// Specify a large value (100,000 or more) for best performance. Specify a
 		/// small value (100) for the smallest memory consumption. The default
 		/// setting is 10,000.

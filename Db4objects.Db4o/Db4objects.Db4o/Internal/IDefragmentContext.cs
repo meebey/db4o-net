@@ -25,9 +25,9 @@ namespace Db4objects.Db4o.Internal
 
 		int MappedID(int origID);
 
-		BufferImpl SourceBuffer();
+		ByteArrayBuffer SourceBuffer();
 
-		BufferImpl TargetBuffer();
+		ByteArrayBuffer TargetBuffer();
 
 		Slot AllocateTargetSlot(int length);
 
@@ -37,11 +37,11 @@ namespace Db4objects.Db4o.Internal
 		int CopySlotToNewMapped(int sourceAddress, int length);
 
 		/// <exception cref="IOException"></exception>
-		BufferImpl SourceBufferByAddress(int sourceAddress, int length);
+		ByteArrayBuffer SourceBufferByAddress(int sourceAddress, int length);
 
 		/// <exception cref="IOException"></exception>
-		BufferImpl SourceBufferById(int sourceId);
+		ByteArrayBuffer SourceBufferById(int sourceId);
 
-		void TargetWriteBytes(int address, BufferImpl buffer);
+		void TargetWriteBytes(int address, ByteArrayBuffer buffer);
 	}
 }

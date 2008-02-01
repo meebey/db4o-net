@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal
 	{
 		private readonly IReadable i_template;
 
-		private readonly BufferImpl i_bytes;
+		private readonly ByteArrayBuffer i_bytes;
 
 		private int i_current = 0;
 
@@ -20,12 +20,13 @@ namespace Db4objects.Db4o.Internal
 
 		private bool i_orderOnRead;
 
-		public TreeReader(BufferImpl a_bytes, IReadable a_template) : this(a_bytes, a_template
-			, false)
+		public TreeReader(ByteArrayBuffer a_bytes, IReadable a_template) : this(a_bytes, 
+			a_template, false)
 		{
 		}
 
-		public TreeReader(BufferImpl a_bytes, IReadable a_template, bool a_orderOnRead)
+		public TreeReader(ByteArrayBuffer a_bytes, IReadable a_template, bool a_orderOnRead
+			)
 		{
 			i_template = a_template;
 			i_bytes = a_bytes;

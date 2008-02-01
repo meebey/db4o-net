@@ -14,6 +14,7 @@ using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 
@@ -40,13 +41,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected int _handlerID;
 
-		private int _state;
-
-		private const int NotLoaded = 0;
-
-		private const int Unavailable = -1;
-
-		private const int Available = 1;
+		private FieldMetadataState _state = FieldMetadataState.NotLoaded;
 
 		private Config4Field _config;
 
@@ -70,7 +65,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			// for TranslatedFieldMetadata only
 			Init(containingClass, translator.GetType().FullName);
-			_state = Available;
+			_state = FieldMetadataState.Available;
 			ObjectContainerBase stream = Container();
 			IReflectClass claxx = stream.Reflector().ForClass(TranslatorStoredClass(translator
 				));
@@ -105,7 +100,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			Configure(field.GetFieldType(), isPrimitive);
 			CheckDb4oType();
-			_state = Available;
+			_state = FieldMetadataState.Available;
 		}
 
 		protected FieldMetadata(int handlerID, ITypeHandler4 handler)
@@ -198,11 +193,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual bool Alive()
 		{
-			if (_state == Available)
+			if (_state == FieldMetadataState.Available)
 			{
 				return true;
 			}
-			if (_state == NotLoaded)
+			if (_state == FieldMetadataState.NotLoaded)
 			{
 				if (_handler == null)
 				{
@@ -217,26 +212,31 @@ namespace Db4objects.Db4o.Internal
 					CheckHandlerID();
 				}
 				CheckCorrectHandlerForField();
-				if (_handler != null)
-				{
-					// TODO: This part is not quite correct.
-					// We are using the old array information read from file to wrap.
-					// If a schema evolution changes an array to a different variable,
-					// we are in trouble here.
-					_handler = WrapHandlerToArrays(Container(), _handler);
-				}
+				// TODO: This part is not quite correct.
+				// We are using the old array information read from file to wrap.
+				// If a schema evolution changes an array to a different variable,
+				// we are in trouble here.
+				_handler = WrapHandlerToArrays(Container(), _handler);
 				if (_handler == null || _reflectField == null)
 				{
-					_state = Unavailable;
+					_state = FieldMetadataState.Unavailable;
 					_reflectField = null;
 				}
 				else
 				{
-					_state = Available;
-					CheckDb4oType();
+					if (!Updating())
+					{
+						_state = FieldMetadataState.Available;
+						CheckDb4oType();
+					}
 				}
 			}
-			return _state == Available;
+			return _state == FieldMetadataState.Available;
+		}
+
+		public virtual bool Updating()
+		{
+			return _state == FieldMetadataState.Updating;
 		}
 
 		private void CheckHandlerID()
@@ -436,6 +436,10 @@ namespace Db4objects.Db4o.Internal
 		private ITypeHandler4 WrapHandlerToArrays(ObjectContainerBase container, ITypeHandler4
 			 handler)
 		{
+			if (handler == null)
+			{
+				return null;
+			}
 			if (_isNArray)
 			{
 				return new MultidimensionalArrayHandler(container, handler, ArraysUsePrimitiveClassReflector
@@ -699,7 +703,7 @@ namespace Db4objects.Db4o.Internal
 			return _index != null;
 		}
 
-		public void IncrementOffset(IBuffer buffer)
+		public void IncrementOffset(IReadBuffer buffer)
 		{
 			buffer.Seek(buffer.Offset() + LinkLength());
 		}
@@ -755,7 +759,31 @@ namespace Db4objects.Db4o.Internal
 			Set(context.PersistentObject(), toSet);
 		}
 
-		private bool CheckAlive(IBuffer buffer)
+		public virtual void AttemptUpdate(UnmarshallingContext context)
+		{
+			if (!Updating())
+			{
+				IncrementOffset(context);
+				return;
+			}
+			int savedOffset = context.Offset();
+			try
+			{
+				object toSet = context.Read(_handler);
+				if (toSet != null)
+				{
+					Set(context.PersistentObject(), toSet);
+				}
+			}
+			catch (Exception)
+			{
+				// FIXME: COR-547 Diagnostics here please.
+				context.Buffer().Seek(savedOffset);
+				IncrementOffset(context);
+			}
+		}
+
+		private bool CheckAlive(IReadWriteBuffer buffer)
 		{
 			bool alive = Alive();
 			if (!alive)
@@ -790,6 +818,9 @@ namespace Db4objects.Db4o.Internal
 
 		private int CalculateLinkLength()
 		{
+			// TODO: Clean up here by creating a common interface
+			//       for the Typehandlers that have a "linkLength"
+			//       concept.
 			if (_handler == null)
 			{
 				// must be ClassMetadata
@@ -803,9 +834,9 @@ namespace Db4objects.Db4o.Internal
 			{
 				return ((PrimitiveHandler)_handler).LinkLength();
 			}
-			if (_handler is VariableLengthTypeHandler)
+			if (_handler is IVariableLengthTypeHandler)
 			{
-				return ((VariableLengthTypeHandler)_handler).LinkLength();
+				return Const4.IndirectionLength;
 			}
 			// TODO: For custom handlers there will have to be a way 
 			//       to calculate the length in the slot.
@@ -852,10 +883,16 @@ namespace Db4objects.Db4o.Internal
 		private void CheckCorrectHandlerForField()
 		{
 			ITypeHandler4 handler = DetectHandlerForField();
-			if (handler == null || (!handler.Equals(_handler)))
+			if (handler == null)
 			{
 				_reflectField = null;
-				_state = Unavailable;
+				_state = FieldMetadataState.Unavailable;
+				return;
+			}
+			if (!handler.Equals(_handler))
+			{
+				// FIXME: COR-547 Diagnostics here please.
+				_state = FieldMetadataState.Updating;
 			}
 		}
 
@@ -940,15 +977,16 @@ namespace Db4objects.Db4o.Internal
 
 		/// <param name="trans"></param>
 		/// <param name="@ref"></param>
-		public virtual void ReadVirtualAttribute(Transaction trans, BufferImpl buffer, ObjectReference
-			 @ref)
+		public virtual void ReadVirtualAttribute(Transaction trans, ByteArrayBuffer buffer
+			, ObjectReference @ref)
 		{
 			IncrementOffset(buffer);
 		}
 
+		/// <summary>never called but keep for Rickie</summary>
 		public virtual void RefreshActivated()
 		{
-			_state = Available;
+			_state = FieldMetadataState.Available;
 			Refresh();
 		}
 
@@ -964,7 +1002,7 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			_reflectField = null;
-			_state = Unavailable;
+			_state = FieldMetadataState.Unavailable;
 		}
 
 		public virtual void Rename(string newName)
@@ -1033,14 +1071,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_854(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_888(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_854 : IVisitor4
+		private sealed class _IVisitor4_888 : IVisitor4
 		{
-			public _IVisitor4_854(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_888(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;

@@ -14,10 +14,10 @@ namespace Db4objects.Db4o.IO
 	/// </summary>
 	/// <remarks>
 	/// CachedIoAdapter is an IOAdapter for random access files, which caches data
-	/// for IO access. Its functionality is similar to OS cache.<br />
-	/// Example:<br />
-	/// <code>delegateAdapter = new RandomAccessFileAdapter();</code><br />
-	/// <code>Db4o.configure().io(new CachedIoAdapter(delegateAdapter));</code><br />
+	/// for IO access. Its functionality is similar to OS cache.&lt;br&gt;
+	/// Example:&lt;br&gt;
+	/// &lt;code&gt;delegateAdapter = new RandomAccessFileAdapter();&lt;/code&gt;&lt;br&gt;
+	/// &lt;code&gt;Db4o.configure().io(new CachedIoAdapter(delegateAdapter));&lt;/code&gt;&lt;br&gt;
 	/// </remarks>
 	public class CachedIoAdapter : IoAdapter
 	{
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>
 		/// Creates an instance of CachedIoAdapter with a custom page size and page
-		/// count.<br />
+		/// count.&lt;br&gt;
 		/// </summary>
 		/// <param name="ioAdapter">delegate IO adapter (RandomAccessFileAdapter by default)</param>
 		/// <param name="pageSize">cache page size</param>
@@ -72,7 +72,8 @@ namespace Db4objects.Db4o.IO
 			_pageCount = pageCount;
 		}
 
-		/// <summary>Creates an instance of CachedIoAdapter with extended parameters.<br /></summary>
+		/// <summary>Creates an instance of CachedIoAdapter with extended parameters.&lt;br&gt;
+		/// 	</summary>
 		/// <param name="path">database file path</param>
 		/// <param name="lockFile">determines if the file should be locked</param>
 		/// <param name="initialLength">initial file length, new writes will start from this point
@@ -98,7 +99,7 @@ namespace Db4objects.Db4o.IO
 			_fileLength = _io.GetLength();
 		}
 
-		/// <summary>Creates and returns a new CachedIoAdapter <br /></summary>
+		/// <summary>Creates and returns a new CachedIoAdapter &lt;br&gt;</summary>
 		/// <param name="path">database file path</param>
 		/// <param name="lockFile">determines if the file should be locked</param>
 		/// <param name="initialLength">initial file length, new writes will start from this point

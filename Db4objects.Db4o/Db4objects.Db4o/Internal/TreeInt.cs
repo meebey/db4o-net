@@ -99,24 +99,24 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		public virtual object Read(BufferImpl a_bytes)
+		public virtual object Read(ByteArrayBuffer a_bytes)
 		{
 			return new Db4objects.Db4o.Internal.TreeInt(a_bytes.ReadInt());
 		}
 
-		public virtual void Write(BufferImpl a_writer)
+		public virtual void Write(ByteArrayBuffer a_writer)
 		{
 			a_writer.WriteInt(_key);
 		}
 
-		public static void Write(BufferImpl a_writer, Db4objects.Db4o.Internal.TreeInt a_tree
-			)
+		public static void Write(ByteArrayBuffer a_writer, Db4objects.Db4o.Internal.TreeInt
+			 a_tree)
 		{
 			Write(a_writer, a_tree, a_tree == null ? 0 : a_tree.Size());
 		}
 
-		public static void Write(BufferImpl a_writer, Db4objects.Db4o.Internal.TreeInt a_tree
-			, int size)
+		public static void Write(ByteArrayBuffer a_writer, Db4objects.Db4o.Internal.TreeInt
+			 a_tree, int size)
 		{
 			if (a_tree == null)
 			{
@@ -129,7 +129,7 @@ namespace Db4objects.Db4o.Internal
 
 		private sealed class _IVisitor4_97 : IVisitor4
 		{
-			public _IVisitor4_97(BufferImpl a_writer)
+			public _IVisitor4_97(ByteArrayBuffer a_writer)
 			{
 				this.a_writer = a_writer;
 			}
@@ -139,7 +139,7 @@ namespace Db4objects.Db4o.Internal
 				((Db4objects.Db4o.Internal.TreeInt)a_object).Write(a_writer);
 			}
 
-			private readonly BufferImpl a_writer;
+			private readonly ByteArrayBuffer a_writer;
 		}
 
 		public virtual int OwnLength()

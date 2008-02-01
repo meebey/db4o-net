@@ -118,8 +118,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		/// <summary>Search for slot that corresponds to class.</summary>
 		/// <remarks>
-		/// Search for slot that corresponds to class. <br />If not found add it.
-		/// <br />Constrain it. <br />
+		/// Search for slot that corresponds to class. &lt;br&gt;If not found add it.
+		/// &lt;br&gt;Constrain it. &lt;br&gt;
 		/// </remarks>
 		public virtual IConstraint Constrain(object example)
 		{

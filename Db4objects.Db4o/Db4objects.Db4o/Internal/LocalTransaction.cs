@@ -619,14 +619,14 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private void AppendSlotChanges(BufferImpl writer)
+		private void AppendSlotChanges(ByteArrayBuffer writer)
 		{
 			TraverseSlotChanges(new _IVisitor4_517(this, writer));
 		}
 
 		private sealed class _IVisitor4_517 : IVisitor4
 		{
-			public _IVisitor4_517(LocalTransaction _enclosing, BufferImpl writer)
+			public _IVisitor4_517(LocalTransaction _enclosing, ByteArrayBuffer writer)
 			{
 				this._enclosing = _enclosing;
 				this.writer = writer;
@@ -639,7 +639,7 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly LocalTransaction _enclosing;
 
-			private readonly BufferImpl writer;
+			private readonly ByteArrayBuffer writer;
 		}
 
 		private void TraverseSlotChanges(IVisitor4 visitor)
@@ -927,7 +927,7 @@ namespace Db4objects.Db4o.Internal
 			i_address = a_address;
 		}
 
-		public static Transaction ReadInterruptedTransaction(LocalObjectContainer file, BufferImpl
+		public static Transaction ReadInterruptedTransaction(LocalObjectContainer file, ByteArrayBuffer
 			 reader)
 		{
 			int transactionID1 = reader.ReadInt();

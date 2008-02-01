@@ -17,9 +17,9 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>returns the field value on the passed object.</summary>
 		/// <remarks>
 		/// returns the field value on the passed object.
-		/// <br /><br />This method will also work, if the field is not present in the current
+		/// &lt;br&gt;&lt;br&gt;This method will also work, if the field is not present in the current
 		/// version of the class.
-		/// <br /><br />It is recommended to use this method for refactoring purposes, if fields
+		/// &lt;br&gt;&lt;br&gt;It is recommended to use this method for refactoring purposes, if fields
 		/// are removed and the field values need to be copied to other fields.
 		/// </remarks>
 		object Get(object onObject);
@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>returns the Class (Java) / Type (.NET) of the field.</summary>
 		/// <remarks>
 		/// returns the Class (Java) / Type (.NET) of the field.
-		/// <br /><br />For array fields this method will return the type of the array.
+		/// &lt;br&gt;&lt;br&gt;For array fields this method will return the type of the array.
 		/// Use
 		/// <see cref="IStoredField.IsArray">IStoredField.IsArray</see>
 		/// to detect arrays.
@@ -45,8 +45,8 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>modifies the name of this stored field.</summary>
 		/// <remarks>
 		/// modifies the name of this stored field.
-		/// <br /><br />After renaming one or multiple fields the ObjectContainer has
-		/// to be closed and reopened to allow internal caches to be refreshed.<br /><br />
+		/// &lt;br&gt;&lt;br&gt;After renaming one or multiple fields the ObjectContainer has
+		/// to be closed and reopened to allow internal caches to be refreshed.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="name">the new name</param>
 		void Rename(string name);
@@ -58,9 +58,9 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>
 		/// specialized highspeed API to collect all values of a field for all instances
 		/// of a class, if the field is indexed.
-		/// <br /><br />The field values will be taken directly from the index without the
+		/// &lt;br&gt;&lt;br&gt;The field values will be taken directly from the index without the
 		/// detour through class indexes or object instantiation.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// If this method is used to get the values of a first class object index,
 		/// deactivated objects will be passed to the visitor.
 		/// </remarks>

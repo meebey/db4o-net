@@ -19,23 +19,23 @@ namespace Db4objects.Db4o.Reflect.Generic
 	/// db4o provides GenericReflector as a wrapper around specific
 	/// reflector (delegate). GenericReflector is set when an
 	/// ObjectContainer is opened. All subsequent reflector
-	/// calls are routed through this interface.<br /><br />
+	/// calls are routed through this interface.&lt;br&gt;&lt;br&gt;
 	/// An instance of GenericReflector can be obtained through
 	/// <see cref="IExtObjectContainer.Reflector">IExtObjectContainer.Reflector</see>
-	/// .<br /><br />
+	/// .&lt;br&gt;&lt;br&gt;
 	/// GenericReflector keeps list of known classes in memory.
 	/// When the GenericReflector is called, it first checks its list of
 	/// known classes. If the class cannot be found, the task is
 	/// transferred to the delegate reflector. If the delegate fails as
 	/// well, generic objects are created, which hold simulated
-	/// "field values" in an array of objects.<br /><br />
-	/// Generic reflector makes possible the following usecases:<ul>
-	/// <li>running a db4o server without deploying application classes;</li>
-	/// <li>running db4o on Java dialects without reflection (J2ME CLDC, MIDP);</li>
-	/// <li>easier access to stored objects where classes or fields are not available;</li>
-	/// <li>running refactorings in the reflector;</li>
-	/// <li>building interfaces to db4o from any programming language.</li></ul>
-	/// <br /><br />
+	/// "field values" in an array of objects.&lt;br&gt;&lt;br&gt;
+	/// Generic reflector makes possible the following usecases:&lt;ul&gt;
+	/// &lt;li&gt;running a db4o server without deploying application classes;&lt;/li&gt;
+	/// &lt;li&gt;running db4o on Java dialects without reflection (J2ME CLDC, MIDP);&lt;/li&gt;
+	/// &lt;li&gt;easier access to stored objects where classes or fields are not available;&lt;/li&gt;
+	/// &lt;li&gt;running refactorings in the reflector;&lt;/li&gt;
+	/// &lt;li&gt;building interfaces to db4o from any programming language.&lt;/li&gt;&lt;/ul&gt;
+	/// &lt;br&gt;&lt;br&gt;
 	/// One of the live usecases is ObjectManager, which uses GenericReflector
 	/// to read C# objects from Java.
 	/// </remarks>

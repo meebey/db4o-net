@@ -6,11 +6,11 @@ namespace Db4objects.Db4o.Ext
 {
 	/// <summary>a unique universal identify for an object.</summary>
 	/// <remarks>
-	/// a unique universal identify for an object. <br /><br />The db4o UUID consists of
-	/// two parts:<br /> - an indexed long for fast access,<br /> - the signature of the
+	/// a unique universal identify for an object. &lt;br&gt;&lt;br&gt;The db4o UUID consists of
+	/// two parts:&lt;br&gt; - an indexed long for fast access,&lt;br&gt; - the signature of the
 	/// <see cref="IObjectContainer">IObjectContainer</see>
 	/// the object was created with.
-	/// <br /><br />Db4oUUIDs are valid representations of objects over multiple
+	/// &lt;br&gt;&lt;br&gt;Db4oUUIDs are valid representations of objects over multiple
 	/// ObjectContainers
 	/// </remarks>
 	public class Db4oUUID
@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Ext
 
 		/// <summary>returns the long part of this UUID.</summary>
 		/// <remarks>
-		/// returns the long part of this UUID. <br /><br />To uniquely identify an object
+		/// returns the long part of this UUID. &lt;br&gt;&lt;br&gt;To uniquely identify an object
 		/// universally, db4o uses an indexed long and a reference to the
 		/// Db4oDatabase object it was created on.
 		/// </remarks>
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Ext
 
 		/// <summary>returns the signature part of this UUID.</summary>
 		/// <remarks>
-		/// returns the signature part of this UUID. <br /><br /> <br /><br />To uniquely
+		/// returns the signature part of this UUID. &lt;br&gt;&lt;br&gt; &lt;br&gt;&lt;br&gt;To uniquely
 		/// identify an object universally, db4o uses an indexed long and a reference to
 		/// the Db4oDatabase singleton object of the
 		/// <see cref="IObjectContainer">IObjectContainer</see>
@@ -96,7 +96,6 @@ namespace Db4objects.Db4o.Ext
 
 		public override string ToString()
 		{
-			return base.ToString();
 			string sig = string.Empty;
 			for (int i = 0; i < signaturePart.Length; i++)
 			{

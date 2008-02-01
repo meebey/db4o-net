@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	public class ClassMarshaller2 : ClassMarshaller
 	{
 		protected override void ReadIndex(ObjectContainerBase stream, ClassMetadata clazz
-			, BufferImpl reader)
+			, ByteArrayBuffer reader)
 		{
 			int indexID = reader.ReadInt();
 			if (indexID == 0)

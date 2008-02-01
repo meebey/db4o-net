@@ -13,17 +13,17 @@ namespace Db4objects.Db4o.Types
 	/// <remarks>
 	/// the db4o Blob type to store blobs independent of the main database
 	/// file and allows to perform asynchronous upload and download operations.
-	/// <br /><br />
-	/// <b>Usage:</b><br />
-	/// - Define Blob fields on your user classes.<br />
+	/// &lt;br&gt;&lt;br&gt;
+	/// &lt;b&gt;Usage:&lt;/b&gt;&lt;br&gt;
+	/// - Define Blob fields on your user classes.&lt;br&gt;
 	/// - As soon as an object of your class is stored, db4o automatically
-	/// takes care that the Blob field is set.<br />
-	/// - Call readFrom to read a blob file into the db4o system.<br />
-	/// - Call writeTo to write a blob file from within the db4o system.<br />
+	/// takes care that the Blob field is set.&lt;br&gt;
+	/// - Call readFrom to read a blob file into the db4o system.&lt;br&gt;
+	/// - Call writeTo to write a blob file from within the db4o system.&lt;br&gt;
 	/// - getStatus may help you to determine, whether data has been
 	/// previously stored. It may also help you to track the completion
 	/// of the current process.
-	/// <br /><br />
+	/// &lt;br&gt;&lt;br&gt;
 	/// db4o client/server carries out all blob operations in a separate
 	/// thread on a specially dedicated socket. One socket is used for
 	/// all blob operations and operations are queued. Your application
@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Types
 		/// <summary>returns the name of the file the blob was stored to.</summary>
 		/// <remarks>
 		/// returns the name of the file the blob was stored to.
-		/// <br /><br />The method may return null, if the file was never
+		/// &lt;br&gt;&lt;br&gt;The method may return null, if the file was never
 		/// stored.
 		/// </remarks>
 		/// <returns>String the name of the file.</returns>
@@ -44,16 +44,16 @@ namespace Db4objects.Db4o.Types
 		/// <summary>returns the status after the last read- or write-operation.</summary>
 		/// <remarks>
 		/// returns the status after the last read- or write-operation.
-		/// <br /><br />The status value returned may be any of the following:<br />
-		/// Status.UNUSED  no data was ever stored to the Blob field.<br />
-		/// Status.AVAILABLE available data was previously stored to the Blob field.<br />
-		/// Status.QUEUED an operation was triggered and is waiting for it's turn in the Blob queue.<br />
-		/// Status.COMPLETED the last operation on this field was completed successfully.<br />
-		/// Status.PROCESSING for internal use only.<br />
-		/// Status.ERROR the last operation failed.<br />
+		/// &lt;br&gt;&lt;br&gt;The status value returned may be any of the following:&lt;br&gt;
+		/// Status.UNUSED  no data was ever stored to the Blob field.&lt;br&gt;
+		/// Status.AVAILABLE available data was previously stored to the Blob field.&lt;br&gt;
+		/// Status.QUEUED an operation was triggered and is waiting for it's turn in the Blob queue.&lt;br&gt;
+		/// Status.COMPLETED the last operation on this field was completed successfully.&lt;br&gt;
+		/// Status.PROCESSING for internal use only.&lt;br&gt;
+		/// Status.ERROR the last operation failed.&lt;br&gt;
 		/// or a double between 0 and 1 that signifies the current completion percentage of the currently
-		/// running operation.<br /><br /> the five STATUS constants defined in this interface or a double
-		/// between 0 and 1 that signifies the completion of the currently running operation.<br /><br />
+		/// running operation.&lt;br&gt;&lt;br&gt; the five STATUS constants defined in this interface or a double
+		/// between 0 and 1 that signifies the completion of the currently running operation.&lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <returns>status - the current status</returns>
 		/// <seealso cref="Status">STATUS constants</seealso>
@@ -62,10 +62,10 @@ namespace Db4objects.Db4o.Types
 		/// <summary>reads a file into the db4o system and stores it as a blob.</summary>
 		/// <remarks>
 		/// reads a file into the db4o system and stores it as a blob.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// In Client/Server mode db4o will open an additional socket and
 		/// process writing data in an additional thread.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="file">the file the blob is to be read from.</param>
 		/// <exception cref="IOException">in case of errors</exception>
@@ -74,9 +74,9 @@ namespace Db4objects.Db4o.Types
 		/// <summary>reads a file into the db4o system and stores it as a blob.</summary>
 		/// <remarks>
 		/// reads a file into the db4o system and stores it as a blob.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// db4o will use the local file system in Client/Server mode also.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <param name="file">the file the blob is to be read from.</param>
 		/// <exception cref="IOException">in case of errors</exception>
@@ -85,9 +85,9 @@ namespace Db4objects.Db4o.Types
 		/// <summary>writes stored blob data to a file.</summary>
 		/// <remarks>
 		/// writes stored blob data to a file.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// db4o will use the local file system in Client/Server mode also.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <exception cref="IOException">
 		/// in case of errors and in case no blob
@@ -99,10 +99,10 @@ namespace Db4objects.Db4o.Types
 		/// <summary>writes stored blob data to a file.</summary>
 		/// <remarks>
 		/// writes stored blob data to a file.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// In Client/Server mode db4o will open an additional socket and
 		/// process writing data in an additional thread.
-		/// <br /><br />
+		/// &lt;br&gt;&lt;br&gt;
 		/// </remarks>
 		/// <exception cref="IOException">
 		/// in case of errors and in case no blob

@@ -381,7 +381,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		public override void ReadThis(Transaction a_trans, BufferImpl a_reader)
+		public override void ReadThis(Transaction a_trans, ByteArrayBuffer a_reader)
 		{
 			a_reader.IncrementOffset(1);
 			// first byte is version, for possible future format changes
@@ -391,7 +391,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			_root = ProduceNode(a_reader.ReadInt());
 		}
 
-		public override void WriteThis(Transaction trans, BufferImpl a_writer)
+		public override void WriteThis(Transaction trans, ByteArrayBuffer a_writer)
 		{
 			a_writer.WriteByte(BtreeVersion);
 			a_writer.WriteInt(_size);

@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal byte[] i_nameBytes;
 
-		private BufferImpl i_reader;
+		private ByteArrayBuffer i_reader;
 
 		private bool _classIndexed;
 
@@ -64,6 +64,8 @@ namespace Db4objects.Db4o.Internal
 
 		public ObjectContainerBase Stream()
 		{
+			// FIXME: remove this again. We solved more nicely by directly
+			//        passing out configured Field Handlers from HandlerRegistry. 
 			return _container;
 		}
 
@@ -817,7 +819,7 @@ namespace Db4objects.Db4o.Internal
 			return new ClassMetadata.FieldMetadataIterator(this);
 		}
 
-		public HandlerVersion FindOffset(BufferImpl buffer, FieldMetadata field)
+		public HandlerVersion FindOffset(ByteArrayBuffer buffer, FieldMetadata field)
 		{
 			// Scrolls offset in passed reader to the offset the passed field should
 			// be read at.
@@ -1089,13 +1091,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_903(this, name, yf));
+			ForEachFieldMetadata(new _IVisitor4_905(this, name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_903 : IVisitor4
+		private sealed class _IVisitor4_905 : IVisitor4
 		{
-			public _IVisitor4_903(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
+			public _IVisitor4_905(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
 			{
 				this._enclosing = _enclosing;
 				this.name = name;
@@ -1141,7 +1143,7 @@ namespace Db4objects.Db4o.Internal
 			return ClassReflector().IsCollection();
 		}
 
-		internal virtual void IncrementFieldsOffset1(BufferImpl a_bytes)
+		internal virtual void IncrementFieldsOffset1(ByteArrayBuffer a_bytes)
 		{
 			int length = ReadFieldCount(a_bytes);
 			for (int i = 0; i < length; i++)
@@ -1547,7 +1549,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public virtual ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, BufferImpl[] a_bytes)
+			 mf, ByteArrayBuffer[] a_bytes)
 		{
 			if (IsArray())
 			{
@@ -1556,7 +1558,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		public virtual ITypeHandler4 ReadArrayHandler1(BufferImpl[] a_bytes)
+		public virtual ITypeHandler4 ReadArrayHandler1(ByteArrayBuffer[] a_bytes)
 		{
 			if (DTrace.enabled)
 			{
@@ -1586,7 +1588,7 @@ namespace Db4objects.Db4o.Internal
 			return ObjectID.Read(context);
 		}
 
-		public virtual void ReadCandidates(int handlerVersion, BufferImpl buffer, QCandidates
+		public virtual void ReadCandidates(int handlerVersion, ByteArrayBuffer buffer, QCandidates
 			 candidates)
 		{
 			int id = 0;
@@ -1608,15 +1610,15 @@ namespace Db4objects.Db4o.Internal
 					// FIXME: [TA] review activation depth 
 					candidates.i_trans.Container().Activate(trans, obj, ActivationDepthProvider().ActivationDepth
 						(2, ActivationMode.Activate));
-					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1323(this, candidates, trans
+					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1325(this, candidates, trans
 						));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_1323 : IVisitor4
+		private sealed class _IVisitor4_1325 : IVisitor4
 		{
-			public _IVisitor4_1323(ClassMetadata _enclosing, QCandidates candidates, Transaction
+			public _IVisitor4_1325(ClassMetadata _enclosing, QCandidates candidates, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -1642,7 +1644,7 @@ namespace Db4objects.Db4o.Internal
 			return Stream().ActivationDepthProvider();
 		}
 
-		public int ReadFieldCount(BufferImpl buffer)
+		public int ReadFieldCount(ByteArrayBuffer buffer)
 		{
 			int count = buffer.ReadInt();
 			if (count > i_fields.Length)
@@ -1652,7 +1654,7 @@ namespace Db4objects.Db4o.Internal
 			return count;
 		}
 
-		public virtual object ReadIndexEntry(BufferImpl a_reader)
+		public virtual object ReadIndexEntry(ByteArrayBuffer a_reader)
 		{
 			return a_reader.ReadInt();
 		}
@@ -1670,7 +1672,7 @@ namespace Db4objects.Db4o.Internal
 			return ReadName1(a_trans, i_reader);
 		}
 
-		public byte[] ReadName1(Transaction trans, BufferImpl reader)
+		public byte[] ReadName1(Transaction trans, ByteArrayBuffer reader)
 		{
 			if (reader == null)
 			{
@@ -1703,7 +1705,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			int id = a_yapObject.GetID();
 			ObjectContainerBase stream = a_trans.Container();
-			BufferImpl reader = stream.ReadReaderByID(a_trans, id);
+			ByteArrayBuffer reader = stream.ReadReaderByID(a_trans, id);
 			ObjectHeader oh = new ObjectHeader(stream, this, reader);
 			oh.ObjectMarshaller().ReadVirtualAttributes(a_trans, this, a_yapObject, oh._headerAttributes
 				, reader);
@@ -1802,7 +1804,7 @@ namespace Db4objects.Db4o.Internal
 			BitFalse(Const4.Reading);
 		}
 
-		public override void ReadThis(Transaction a_trans, BufferImpl a_reader)
+		public override void ReadThis(Transaction a_trans, ByteArrayBuffer a_reader)
 		{
 			throw Exceptions4.VirtualException();
 		}
@@ -2020,7 +2022,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1665
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1667
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2029,9 +2031,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1665 : IFunction4
+		private sealed class _IFunction4_1667 : IFunction4
 		{
-			public _IFunction4_1665(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1667(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2072,12 +2074,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1693(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1695(this));
 		}
 
-		private sealed class _IFunction4_1693 : IFunction4
+		private sealed class _IFunction4_1695 : IFunction4
 		{
-			public _IFunction4_1693(ClassMetadata _enclosing)
+			public _IFunction4_1695(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2120,12 +2122,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1723(this));
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1725(this));
 		}
 
-		private sealed class _IPredicate4_1723 : IPredicate4
+		private sealed class _IPredicate4_1725 : IPredicate4
 		{
-			public _IPredicate4_1723(ClassMetadata _enclosing)
+			public _IPredicate4_1725(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2235,7 +2237,7 @@ namespace Db4objects.Db4o.Internal
 			return base.WriteObjectBegin();
 		}
 
-		public virtual void WriteIndexEntry(BufferImpl a_writer, object a_object)
+		public virtual void WriteIndexEntry(ByteArrayBuffer a_writer, object a_object)
 		{
 			if (a_object == null)
 			{
@@ -2245,7 +2247,7 @@ namespace Db4objects.Db4o.Internal
 			a_writer.WriteInt(((int)a_object));
 		}
 
-		public sealed override void WriteThis(Transaction trans, BufferImpl writer)
+		public sealed override void WriteThis(Transaction trans, ByteArrayBuffer writer)
 		{
 			MarshallerFamily.Current()._class.Write(trans, this, writer);
 		}
@@ -2275,8 +2277,8 @@ namespace Db4objects.Db4o.Internal
 			mf._class.Defrag(this, _container.StringIO(), context, classIndexID);
 		}
 
-		public static ClassMetadata ReadClass(ObjectContainerBase stream, BufferImpl reader
-			)
+		public static ClassMetadata ReadClass(ObjectContainerBase stream, ByteArrayBuffer
+			 reader)
 		{
 			ObjectHeader oh = new ObjectHeader(stream, reader);
 			return oh.ClassMetadata();

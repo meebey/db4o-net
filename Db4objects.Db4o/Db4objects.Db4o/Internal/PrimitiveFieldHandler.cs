@@ -152,7 +152,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, BufferImpl[] a_bytes)
+			 mf, ByteArrayBuffer[] a_bytes)
 		{
 			if (IsArray())
 			{

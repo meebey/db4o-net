@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ByteHandlerUpdateTestCase.ItemArrays itemArrays = (ByteHandlerUpdateTestCase.ItemArrays
 				)obj;
 			AssertPrimitiveArray(itemArrays._typedPrimitiveArray);
-			if (_db4oHeaderVersion == VersionServices.Header3040)
+			if (Db4oHeaderVersion() == VersionServices.Header3040)
 			{
 			}
 		}

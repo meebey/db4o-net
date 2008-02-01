@@ -32,6 +32,11 @@ namespace Db4objects.Db4o.Internal
 				.Activate));
 		}
 
+		public void Deactivate(object obj)
+		{
+			Deactivate(null, obj);
+		}
+
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		public void Bind(object obj, long id)

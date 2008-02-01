@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
-using System.Collections;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -11,6 +10,7 @@ using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
+using Db4objects.Db4o.Internal.Mapping;
 
 namespace Db4objects.Db4o.Defragment
 {
@@ -183,18 +183,18 @@ namespace Db4objects.Db4o.Defragment
 		/// <exception cref="IOException"></exception>
 		private static void DefragUnindexed(DefragmentServicesImpl services)
 		{
-			IEnumerator unindexedIDs = services.UnindexedIDs();
-			while (unindexedIDs.MoveNext())
+			IdSource unindexedIDs = services.UnindexedIDs();
+			while (unindexedIDs.HasMoreIds())
 			{
-				int origID = ((int)unindexedIDs.Current);
-				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_167(), 
+				int origID = unindexedIDs.NextId();
+				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_168(), 
 					true);
 			}
 		}
 
-		private sealed class _ISlotCopyHandler_167 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_168 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_167()
+			public _ISlotCopyHandler_168()
 			{
 			}
 
@@ -307,12 +307,12 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessObjectsForYapClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			context.TraverseAll(curClass, new _IVisitor4_258(command, context, curClass));
+			context.TraverseAll(curClass, new _IVisitor4_259(command, context, curClass));
 		}
 
-		private sealed class _IVisitor4_258 : IVisitor4
+		private sealed class _IVisitor4_259 : IVisitor4
 		{
-			public _IVisitor4_258(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
+			public _IVisitor4_259(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
 				 curClass)
 			{
 				this.command = command;

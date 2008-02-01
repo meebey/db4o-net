@@ -347,7 +347,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public override void WriteBytes(BufferImpl buffer, int blockedAddress, int addressOffset
+		public override void WriteBytes(ByteArrayBuffer buffer, int blockedAddress, int addressOffset
 			)
 		{
 			if (Deploy.debug && !Deploy.flush)

@@ -126,7 +126,8 @@ namespace Db4objects.Db4o.Internal
 			public void PostRollback()
 			{
 				this._enclosing.ResetListener();
-				transparentPersistence.Rollback(transaction.ObjectContainer(), this._enclosing);
+				transparentPersistence.Rollback(transaction.ObjectContainer(), this._enclosing.GetObject
+					());
 			}
 
 			public void PreCommit()
@@ -234,7 +235,7 @@ namespace Db4objects.Db4o.Internal
 				);
 			MarshallerFamily.Current()._object.Marshall(GetObject(), context);
 			Pointer4 pointer = context.AllocateSlot();
-			BufferImpl buffer = context.ToWriteBuffer(pointer);
+			ByteArrayBuffer buffer = context.ToWriteBuffer(pointer);
 			ObjectContainerBase container = trans.Container();
 			container.WriteNew(trans, pointer, _class, buffer);
 			object obj = _object;
@@ -393,7 +394,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public sealed override void ReadThis(Db4objects.Db4o.Internal.Transaction trans, 
-			BufferImpl buffer)
+			ByteArrayBuffer buffer)
 		{
 		}
 
@@ -505,7 +506,7 @@ namespace Db4objects.Db4o.Internal
 			_virtualAttributes = at;
 		}
 
-		public override void WriteThis(Db4objects.Db4o.Internal.Transaction trans, BufferImpl
+		public override void WriteThis(Db4objects.Db4o.Internal.Transaction trans, ByteArrayBuffer
 			 buffer)
 		{
 		}
@@ -536,7 +537,7 @@ namespace Db4objects.Db4o.Internal
 				, false);
 			MarshallerFamily.Current()._object.Marshall(obj, context);
 			Pointer4 pointer = context.AllocateSlot();
-			BufferImpl buffer = context.ToWriteBuffer(pointer);
+			ByteArrayBuffer buffer = context.ToWriteBuffer(pointer);
 			container.WriteUpdate(transaction, pointer, ClassMetadata(), buffer);
 			if (IsActive())
 			{
@@ -1061,7 +1062,6 @@ namespace Db4objects.Db4o.Internal
 
 		public override string ToString()
 		{
-			return base.ToString();
 			try
 			{
 				int id = GetID();
@@ -1098,8 +1098,7 @@ namespace Db4objects.Db4o.Internal
 			catch (Exception)
 			{
 			}
-			// e.printStackTrace();
-			return "Exception in YapObject analyzer";
+			return "ObjectReference " + GetID();
 		}
 	}
 }

@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Foundation;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Foundation
@@ -21,6 +22,30 @@ namespace Db4objects.Db4o.Foundation
 			catch (Exception)
 			{
 			}
+		}
+
+		/// <summary>
+		/// Keeps executing a block of code until it either returns false or millisecondsTimeout
+		/// elapses.
+		/// </summary>
+		/// <remarks>
+		/// Keeps executing a block of code until it either returns false or millisecondsTimeout
+		/// elapses.
+		/// </remarks>
+		/// <param name="millisecondsTimeout"></param>
+		/// <param name="block"></param>
+		public static void LoopWithTimeout(long millisecondsTimeout, IConditionalBlock block
+			)
+		{
+			StopWatch watch = new AutoStopWatch();
+			do
+			{
+				if (!block.Run())
+				{
+					break;
+				}
+			}
+			while (watch.Peek() < millisecondsTimeout);
 		}
 	}
 }

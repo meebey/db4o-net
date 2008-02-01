@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Defragment
 		public void ProcessObjectSlot(DefragmentServicesImpl services, ClassMetadata yapClass
 			, int id)
 		{
-			BufferImpl sourceBuffer = services.SourceBufferByID(id);
+			ByteArrayBuffer sourceBuffer = services.SourceBufferByID(id);
 			ObjectHeader objHead = services.SourceObjectHeader(sourceBuffer);
 			sourceBuffer._offset = 0;
 			bool registerAddresses = services.HasFieldIndex(objHead.ClassMetadata());
@@ -152,7 +152,7 @@ namespace Db4objects.Db4o.Defragment
 				return acceptedClasses;
 			}
 
-			private void WriteIntAt(BufferImpl target, int offset, int value)
+			private void WriteIntAt(ByteArrayBuffer target, int offset, int value)
 			{
 				int currentOffset = target.Offset();
 				target.Seek(offset);

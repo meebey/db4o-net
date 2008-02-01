@@ -11,12 +11,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		public virtual void TestCopy()
 		{
-			BufferImpl from = new BufferImpl(Readerlength);
+			ByteArrayBuffer from = new ByteArrayBuffer(Readerlength);
 			for (int i = 0; i < Readerlength; i++)
 			{
 				from.WriteByte((byte)i);
 			}
-			BufferImpl to = new BufferImpl(Readerlength - 1);
+			ByteArrayBuffer to = new ByteArrayBuffer(Readerlength - 1);
 			from.CopyTo(to, 1, 2, 10);
 			Assert.AreEqual(0, to.ReadByte());
 			Assert.AreEqual(0, to.ReadByte());

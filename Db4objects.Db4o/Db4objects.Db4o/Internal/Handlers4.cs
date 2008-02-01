@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			ITypeHandler4 baseTypeHandler = BaseTypeHandler(handler);
 			return (baseTypeHandler is PrimitiveHandler) || (baseTypeHandler is StringHandler
-				);
+				) || (baseTypeHandler is ISecondClassTypeHandler);
 		}
 
 		public static bool HandlesClass(ITypeHandler4 handler)

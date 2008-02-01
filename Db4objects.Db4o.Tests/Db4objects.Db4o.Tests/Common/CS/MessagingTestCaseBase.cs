@@ -36,16 +36,33 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		protected virtual IObjectServer OpenServerWith(IMessageRecipient recipient)
 		{
+			IConfiguration config = MemoryIoConfiguration();
+			SetMessageRecipient(config, recipient);
+			return OpenServer(config);
+		}
+
+		protected virtual IConfiguration MemoryIoConfiguration()
+		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.Io(new MemoryIoAdapter());
-			config.ClientServer().SetMessageRecipient(recipient);
+			return config;
+		}
+
+		protected virtual IObjectServer OpenServer(IConfiguration config)
+		{
 			return Db4oFactory.OpenServer(config, "nofile", unchecked((int)(0xdb40)));
 		}
 
 		protected virtual void SetMessageRecipient(IObjectContainer container, IMessageRecipient
 			 recipient)
 		{
-			container.Ext().Configure().ClientServer().SetMessageRecipient(recipient);
+			SetMessageRecipient(container.Ext().Configure(), recipient);
+		}
+
+		private void SetMessageRecipient(IConfiguration config, IMessageRecipient recipient
+			)
+		{
+			config.ClientServer().SetMessageRecipient(recipient);
 		}
 	}
 }

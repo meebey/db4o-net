@@ -189,7 +189,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			private readonly Tree.ByRef duplicates;
 		}
 
-		public override void LoadFromIdReader(BufferImpl reader)
+		public override void LoadFromIdReader(ByteArrayBuffer reader)
 		{
 			int size = reader.ReadInt();
 			for (int i = 0; i < size; i++)

@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public abstract object Read(byte[] bytes, int offset);
 
 		/// <exception cref="CorruptionException"></exception>
-		internal override object Read1(BufferImpl a_bytes)
+		internal override object Read1(ByteArrayBuffer a_bytes)
 		{
 			int offset = a_bytes._offset;
 			object ret = Read(a_bytes._buffer, a_bytes._offset);
@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract void Write(object obj, byte[] bytes, int offset);
 
-		public override void Write(object a_object, BufferImpl a_bytes)
+		public override void Write(object a_object, ByteArrayBuffer a_bytes)
 		{
 			int offset = a_bytes._offset;
 			if (a_object != null)

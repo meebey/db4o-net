@@ -172,7 +172,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			//        in the storage format of arrays.
 			//        Arrays should also get a null Bitmap to fix.
 			// Assert.isNull(values[data.length]);
-			if (expected == int.MaxValue && _handlerVersion == 0)
+			if (expected == int.MaxValue && Db4oHandlerVersion() == 0)
 			{
 				// Bug in the oldest format: It treats Integer.MAX_VALUE as null. 
 				expected = 0;
@@ -182,7 +182,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(object expected, object actual)
 		{
-			if (int.MaxValue.Equals(expected) && _handlerVersion == 0)
+			if (int.MaxValue.Equals(expected) && Db4oHandlerVersion() == 0)
 			{
 				// Bug in the oldest format: It treats Integer.MAX_VALUE as null.
 				expected = null;

@@ -11,8 +11,8 @@ namespace Db4objects.Db4o.Internal
 
 		int OwnLength();
 
-		void ReadThis(Transaction trans, BufferImpl reader);
+		void ReadThis(Transaction trans, ByteArrayBuffer reader);
 
-		void WriteThis(Transaction trans, BufferImpl writer);
+		void WriteThis(Transaction trans, ByteArrayBuffer writer);
 	}
 }

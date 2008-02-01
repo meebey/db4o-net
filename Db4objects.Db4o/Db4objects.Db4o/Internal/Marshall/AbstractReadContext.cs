@@ -11,8 +11,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		protected IActivationDepth _activationDepth = UnknownActivationDepth.Instance;
 
-		protected AbstractReadContext(Transaction transaction, BufferImpl buffer) : base(
-			transaction, buffer)
+		protected AbstractReadContext(Transaction transaction, ByteArrayBuffer buffer) : 
+			base(transaction, buffer)
 		{
 		}
 
@@ -125,6 +125,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private Db4objects.Db4o.Internal.HandlerRegistry HandlerRegistry()
 		{
 			return Container().Handlers();
+		}
+
+		public virtual IReadWriteBuffer ReadIndirectedBuffer()
+		{
+			int address = ReadInt();
+			int length = ReadInt();
+			if (address == 0)
+			{
+				return null;
+			}
+			return Container().BufferByAddress(address, length);
 		}
 	}
 }

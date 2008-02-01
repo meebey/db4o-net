@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return true;
 		}
 
-		public override DateTime ReadDate(BufferImpl bytes)
+		public override DateTime ReadDate(ByteArrayBuffer bytes)
 		{
 			long value = bytes.ReadLong();
 			if (value == long.MaxValue)
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return new DateTime(value);
 		}
 
-		public override object ReadInteger(BufferImpl bytes)
+		public override object ReadInteger(ByteArrayBuffer bytes)
 		{
 			int value = bytes.ReadInt();
 			if (value == int.MaxValue)
@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return value;
 		}
 
-		public override object ReadFloat(BufferImpl bytes)
+		public override object ReadFloat(ByteArrayBuffer bytes)
 		{
 			float value = UnmarshallFloat(bytes);
 			if (float.IsNaN(value))
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return value;
 		}
 
-		public override object ReadDouble(BufferImpl buffer)
+		public override object ReadDouble(ByteArrayBuffer buffer)
 		{
 			double value = UnmarshalDouble(buffer);
 			if (double.IsNaN(value))
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return value;
 		}
 
-		public override object ReadLong(BufferImpl buffer)
+		public override object ReadLong(ByteArrayBuffer buffer)
 		{
 			long value = buffer.ReadLong();
 			if (value == long.MaxValue)
@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return value;
 		}
 
-		public override object ReadShort(BufferImpl buffer)
+		public override object ReadShort(ByteArrayBuffer buffer)
 		{
 			short value = UnmarshallShort(buffer);
 			if (value == short.MaxValue)
@@ -73,17 +73,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return value;
 		}
 
-		public static double UnmarshalDouble(BufferImpl buffer)
+		public static double UnmarshalDouble(ByteArrayBuffer buffer)
 		{
 			return Platform4.LongToDouble(buffer.ReadLong());
 		}
 
-		public static float UnmarshallFloat(BufferImpl buffer)
+		public static float UnmarshallFloat(ByteArrayBuffer buffer)
 		{
 			return Sharpen.Runtime.IntBitsToFloat(buffer.ReadInt());
 		}
 
-		public static short UnmarshallShort(BufferImpl buffer)
+		public static short UnmarshallShort(ByteArrayBuffer buffer)
 		{
 			int ret = 0;
 			for (int i = 0; i < Const4.ShortBytes; i++)

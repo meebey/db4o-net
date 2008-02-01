@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			_delegate.LoadFromClassIndexes(iterator);
 		}
 
-		public override void LoadFromIdReader(BufferImpl reader)
+		public override void LoadFromIdReader(ByteArrayBuffer reader)
 		{
 			_delegate.LoadFromIdReader(reader);
 		}

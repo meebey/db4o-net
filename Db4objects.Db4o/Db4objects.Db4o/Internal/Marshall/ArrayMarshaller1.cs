@@ -7,8 +7,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 {
 	internal class ArrayMarshaller1 : ArrayMarshaller
 	{
-		protected override BufferImpl PrepareIDReader(Transaction trans, BufferImpl reader
-			)
+		protected override ByteArrayBuffer PrepareIDReader(Transaction trans, ByteArrayBuffer
+			 reader)
 		{
 			reader._offset = reader.ReadInt();
 			return reader;

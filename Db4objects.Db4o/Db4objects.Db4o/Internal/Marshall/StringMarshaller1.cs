@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		/// <exception cref="CorruptionException"></exception>
-		public override BufferImpl ReadIndexEntry(StatefulBuffer parentSlot)
+		public override ByteArrayBuffer ReadIndexEntry(StatefulBuffer parentSlot)
 		{
 			int payLoadOffSet = parentSlot.ReadInt();
 			int length = parentSlot.ReadInt();

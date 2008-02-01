@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.TA;
 
@@ -32,13 +31,13 @@ namespace Db4objects.Db4o.TA
 			configuration.Add(new TransparentActivationSupport());
 		}
 
-		public virtual void Rollback(IObjectContainer container, IObjectInfo objectInfo)
+		public virtual void Rollback(IObjectContainer container, object obj)
 		{
 			if (null == _rollbackStrategy)
 			{
 				return;
 			}
-			_rollbackStrategy.Rollback(container, objectInfo);
+			_rollbackStrategy.Rollback(container, obj);
 		}
 	}
 }

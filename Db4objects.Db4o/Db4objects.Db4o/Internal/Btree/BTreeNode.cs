@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		public Db4objects.Db4o.Internal.Btree.BTreeNode Add(Transaction trans, IPreparedComparison
 			 preparedComparison, object obj)
 		{
-			BufferImpl reader = PrepareRead(trans);
+			ByteArrayBuffer reader = PrepareRead(trans);
 			Searcher s = Search(preparedComparison, reader);
 			if (_isLeaf)
 			{
@@ -185,7 +185,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		internal BTreeNodeSearchResult SearchLeaf(Transaction trans, IPreparedComparison 
 			preparedComparison, SearchTarget target)
 		{
-			BufferImpl reader = PrepareRead(trans);
+			ByteArrayBuffer reader = PrepareRead(trans);
 			Searcher s = Search(preparedComparison, reader, target);
 			if (!_isLeaf)
 			{
@@ -216,7 +216,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		}
 
 		private BTreeNodeSearchResult FindLowestLeafMatch(Transaction trans, IPreparedComparison
-			 preparedComparison, BufferImpl reader, int index)
+			 preparedComparison, ByteArrayBuffer reader, int index)
 		{
 			if (index >= 0)
 			{
@@ -238,7 +238,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			Db4objects.Db4o.Internal.Btree.BTreeNode node = PreviousNode();
 			if (node != null)
 			{
-				BufferImpl nodeReader = node.PrepareRead(trans);
+				ByteArrayBuffer nodeReader = node.PrepareRead(trans);
 				BTreeNodeSearchResult res = node.FindLowestLeafMatch(trans, preparedComparison, nodeReader
 					, node.LastIndex());
 				if (res != null)
@@ -253,8 +253,8 @@ namespace Db4objects.Db4o.Internal.Btree
 			return CreateMatchingSearchResult(trans, reader, index);
 		}
 
-		private bool CompareEquals(IPreparedComparison preparedComparison, BufferImpl reader
-			, int index)
+		private bool CompareEquals(IPreparedComparison preparedComparison, ByteArrayBuffer
+			 reader, int index)
 		{
 			if (CanWrite())
 			{
@@ -263,7 +263,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return CompareInReadMode(preparedComparison, reader, index) == 0;
 		}
 
-		private BTreeNodeSearchResult CreateMatchingSearchResult(Transaction trans, BufferImpl
+		private BTreeNodeSearchResult CreateMatchingSearchResult(Transaction trans, ByteArrayBuffer
 			 reader, int index)
 		{
 			return new BTreeNodeSearchResult(trans, reader, Btree(), this, index, true);
@@ -283,8 +283,8 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _btree.ProduceNode(((int)_children[index]));
 		}
 
-		internal Db4objects.Db4o.Internal.Btree.BTreeNode Child(BufferImpl reader, int index
-			)
+		internal Db4objects.Db4o.Internal.Btree.BTreeNode Child(ByteArrayBuffer reader, int
+			 index)
 		{
 			if (ChildLoaded(index))
 			{
@@ -302,7 +302,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return child;
 		}
 
-		private int ChildID(BufferImpl reader, int index)
+		private int ChildID(ByteArrayBuffer reader, int index)
 		{
 			if (_children == null)
 			{
@@ -544,8 +544,8 @@ namespace Db4objects.Db4o.Internal.Btree
 			return -preparedComparison.CompareTo(Key(index));
 		}
 
-		private int CompareInReadMode(IPreparedComparison preparedComparison, BufferImpl 
-			reader, int index)
+		private int CompareInReadMode(IPreparedComparison preparedComparison, ByteArrayBuffer
+			 reader, int index)
 		{
 			SeekKey(reader, index);
 			return -preparedComparison.CompareTo(KeyHandler().ReadIndexEntry(reader));
@@ -662,7 +662,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return obj;
 		}
 
-		internal object Key(Transaction trans, BufferImpl reader, int index)
+		internal object Key(Transaction trans, ByteArrayBuffer reader, int index)
 		{
 			if (CanWrite())
 			{
@@ -735,7 +735,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return SlotLeadingLength + (_count * EntryLength()) + Const4.BracketsBytes;
 		}
 
-		internal BufferImpl PrepareRead(Transaction trans)
+		internal ByteArrayBuffer PrepareRead(Transaction trans)
 		{
 			if (CanWrite())
 			{
@@ -751,7 +751,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				_btree.AddToProcessing(this);
 				return null;
 			}
-			BufferImpl reader = ((LocalTransaction)trans).File().ReadReaderByID(trans.SystemTransaction
+			ByteArrayBuffer reader = ((LocalTransaction)trans).File().ReadReaderByID(trans.SystemTransaction
 				(), GetID());
 			ReadNodeHeader(reader);
 			return reader;
@@ -786,7 +786,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		private void ReadNodeHeader(BufferImpl reader)
+		private void ReadNodeHeader(ByteArrayBuffer reader)
 		{
 			_count = reader.ReadInt();
 			byte leafByte = reader.ReadByte();
@@ -796,7 +796,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			_nextID = reader.ReadInt();
 		}
 
-		public override void ReadThis(Transaction trans, BufferImpl reader)
+		public override void ReadThis(Transaction trans, ByteArrayBuffer reader)
 		{
 			ReadNodeHeader(reader);
 			PrepareArrays();
@@ -924,13 +924,13 @@ namespace Db4objects.Db4o.Internal.Btree
 			CommitOrRollback(trans, false);
 		}
 
-		private Searcher Search(IPreparedComparison preparedComparison, BufferImpl reader
+		private Searcher Search(IPreparedComparison preparedComparison, ByteArrayBuffer reader
 			)
 		{
 			return Search(preparedComparison, reader, SearchTarget.Any);
 		}
 
-		private Searcher Search(IPreparedComparison preparedComparison, BufferImpl reader
+		private Searcher Search(IPreparedComparison preparedComparison, ByteArrayBuffer reader
 			, SearchTarget target)
 		{
 			Searcher s = new Searcher(target, _count);
@@ -951,18 +951,18 @@ namespace Db4objects.Db4o.Internal.Btree
 			return s;
 		}
 
-		private void SeekAfterKey(BufferImpl reader, int ix)
+		private void SeekAfterKey(ByteArrayBuffer reader, int ix)
 		{
 			SeekKey(reader, ix);
 			reader._offset += KeyHandler().LinkLength();
 		}
 
-		private void SeekChild(BufferImpl reader, int ix)
+		private void SeekChild(ByteArrayBuffer reader, int ix)
 		{
 			SeekAfterKey(reader, ix);
 		}
 
-		private void SeekKey(BufferImpl reader, int ix)
+		private void SeekKey(ByteArrayBuffer reader, int ix)
 		{
 			reader._offset = SlotLeadingLength + (EntryLength() * ix);
 		}
@@ -1043,7 +1043,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		internal BTreePointer FirstPointer(Transaction trans)
 		{
-			BufferImpl reader = PrepareRead(trans);
+			ByteArrayBuffer reader = PrepareRead(trans);
 			if (_isLeaf)
 			{
 				return LeafFirstPointer(trans, reader);
@@ -1051,7 +1051,8 @@ namespace Db4objects.Db4o.Internal.Btree
 			return BranchFirstPointer(trans, reader);
 		}
 
-		private BTreePointer BranchFirstPointer(Transaction trans, BufferImpl reader)
+		private BTreePointer BranchFirstPointer(Transaction trans, ByteArrayBuffer reader
+			)
 		{
 			for (int i = 0; i < _count; i++)
 			{
@@ -1064,7 +1065,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return null;
 		}
 
-		private BTreePointer LeafFirstPointer(Transaction trans, BufferImpl reader)
+		private BTreePointer LeafFirstPointer(Transaction trans, ByteArrayBuffer reader)
 		{
 			int index = FirstKeyIndex(trans);
 			if (index == -1)
@@ -1076,7 +1077,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public BTreePointer LastPointer(Transaction trans)
 		{
-			BufferImpl reader = PrepareRead(trans);
+			ByteArrayBuffer reader = PrepareRead(trans);
 			if (_isLeaf)
 			{
 				return LeafLastPointer(trans, reader);
@@ -1084,7 +1085,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return BranchLastPointer(trans, reader);
 		}
 
-		private BTreePointer BranchLastPointer(Transaction trans, BufferImpl reader)
+		private BTreePointer BranchLastPointer(Transaction trans, ByteArrayBuffer reader)
 		{
 			for (int i = _count - 1; i >= 0; i--)
 			{
@@ -1097,7 +1098,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return null;
 		}
 
-		private BTreePointer LeafLastPointer(Transaction trans, BufferImpl reader)
+		private BTreePointer LeafLastPointer(Transaction trans, ByteArrayBuffer reader)
 		{
 			int index = LastKeyIndex(trans);
 			if (index == -1)
@@ -1154,7 +1155,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public void TraverseKeys(Transaction trans, IVisitor4 visitor)
 		{
-			BufferImpl reader = PrepareRead(trans);
+			ByteArrayBuffer reader = PrepareRead(trans);
 			if (_isLeaf)
 			{
 				for (int i = 0; i < _count; i++)
@@ -1188,7 +1189,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return base.WriteObjectBegin();
 		}
 
-		public override void WriteThis(Transaction trans, BufferImpl a_writer)
+		public override void WriteThis(Transaction trans, ByteArrayBuffer a_writer)
 		{
 			int count = 0;
 			int startOffset = a_writer._offset;
@@ -1327,7 +1328,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		/// <summary>This traversal goes over all nodes, not just leafs</summary>
 		internal void TraverseAllNodes(Transaction trans, IVisitor4 command)
 		{
-			BufferImpl reader = PrepareRead(trans);
+			ByteArrayBuffer reader = PrepareRead(trans);
 			command.Visit(this);
 			if (_isLeaf)
 			{

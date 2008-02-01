@@ -10,26 +10,27 @@ using Db4objects.Db4o.Internal.Slots;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public sealed class DefragmentContextImpl : IBuffer, IDefragmentContext
+	public sealed class DefragmentContextImpl : IReadWriteBuffer, IDefragmentContext
 	{
-		private BufferImpl _source;
+		private ByteArrayBuffer _source;
 
-		private BufferImpl _target;
+		private ByteArrayBuffer _target;
 
 		private IDefragmentServices _services;
 
 		private int _handlerVersion;
 
-		public DefragmentContextImpl(BufferImpl source, Db4objects.Db4o.Internal.DefragmentContextImpl
+		public DefragmentContextImpl(ByteArrayBuffer source, Db4objects.Db4o.Internal.DefragmentContextImpl
 			 context) : this(source, context._services)
 		{
 		}
 
-		public DefragmentContextImpl(BufferImpl source, IDefragmentServices services)
+		public DefragmentContextImpl(ByteArrayBuffer source, IDefragmentServices services
+			)
 		{
 			_source = source;
 			_services = services;
-			_target = new BufferImpl(Length());
+			_target = new ByteArrayBuffer(Length());
 			_source.CopyTo(_target, 0, 0, Length());
 		}
 
@@ -167,7 +168,7 @@ namespace Db4objects.Db4o.Internal
 			IncrementStringOffset(sio, _target);
 		}
 
-		private void IncrementStringOffset(LatinStringIO sio, BufferImpl buffer)
+		private void IncrementStringOffset(LatinStringIO sio, ByteArrayBuffer buffer)
 		{
 			int length = buffer.ReadInt();
 			if (length > 0)
@@ -176,12 +177,12 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public BufferImpl SourceBuffer()
+		public ByteArrayBuffer SourceBuffer()
 		{
 			return _source;
 		}
 
-		public BufferImpl TargetBuffer()
+		public ByteArrayBuffer TargetBuffer()
 		{
 			return _target;
 		}
@@ -214,14 +215,14 @@ namespace Db4objects.Db4o.Internal
 		public static void ProcessCopy(IDefragmentServices context, int sourceID, ISlotCopyHandler
 			 command, bool registerAddressMapping)
 		{
-			BufferImpl sourceReader = context.SourceBufferByID(sourceID);
+			ByteArrayBuffer sourceReader = context.SourceBufferByID(sourceID);
 			ProcessCopy(context, sourceID, command, registerAddressMapping, sourceReader);
 		}
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
 		public static void ProcessCopy(IDefragmentServices services, int sourceID, ISlotCopyHandler
-			 command, bool registerAddressMapping, BufferImpl sourceReader)
+			 command, bool registerAddressMapping, ByteArrayBuffer sourceReader)
 		{
 			int targetID = services.MappedID(sourceID);
 			Slot targetSlot = services.AllocateTargetSlot(sourceReader.Length());
@@ -230,7 +231,7 @@ namespace Db4objects.Db4o.Internal
 				int sourceAddress = services.SourceAddressByID(sourceID);
 				services.MapIDs(sourceAddress, targetSlot.Address(), false);
 			}
-			BufferImpl targetPointerReader = new BufferImpl(Const4.PointerLength);
+			ByteArrayBuffer targetPointerReader = new ByteArrayBuffer(Const4.PointerLength);
 			targetPointerReader.WriteInt(targetSlot.Address());
 			targetPointerReader.WriteInt(targetSlot.Length());
 			services.TargetWriteBytes(targetPointerReader, targetID);
@@ -345,33 +346,40 @@ namespace Db4objects.Db4o.Internal
 		public int CopySlotToNewMapped(int sourceAddress, int length)
 		{
 			Slot slot = AllocateMappedTargetSlot(sourceAddress, length);
-			BufferImpl sourceBuffer = SourceBufferByAddress(sourceAddress, length);
+			ByteArrayBuffer sourceBuffer = SourceBufferByAddress(sourceAddress, length);
 			TargetWriteBytes(slot.Address(), sourceBuffer);
 			return slot.Address();
 		}
 
-		public void TargetWriteBytes(int address, BufferImpl buffer)
+		public void TargetWriteBytes(int address, ByteArrayBuffer buffer)
 		{
 			_services.TargetWriteBytes(buffer, address);
 		}
 
 		/// <exception cref="IOException"></exception>
-		public BufferImpl SourceBufferByAddress(int sourceAddress, int length)
+		public ByteArrayBuffer SourceBufferByAddress(int sourceAddress, int length)
 		{
-			BufferImpl sourceBuffer = _services.SourceBufferByAddress(sourceAddress, length);
+			ByteArrayBuffer sourceBuffer = _services.SourceBufferByAddress(sourceAddress, length
+				);
 			return sourceBuffer;
 		}
 
 		/// <exception cref="IOException"></exception>
-		public BufferImpl SourceBufferById(int sourceId)
+		public ByteArrayBuffer SourceBufferById(int sourceId)
 		{
-			BufferImpl sourceBuffer = _services.SourceBufferByID(sourceId);
+			ByteArrayBuffer sourceBuffer = _services.SourceBufferByID(sourceId);
 			return sourceBuffer;
 		}
 
 		public void WriteToTarget(int address)
 		{
 			_services.TargetWriteBytes(this, address);
+		}
+
+		public void WriteBytes(byte[] bytes)
+		{
+			_target.WriteBytes(bytes);
+			_source.IncrementOffset(bytes.Length);
 		}
 	}
 }

@@ -7,12 +7,12 @@ using Db4objects.Db4o.Ext;
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>
-	/// db4o-specific exception.<br /><br />
+	/// db4o-specific exception.&lt;br&gt;&lt;br&gt;
 	/// this Exception is thrown during any of the db4o open calls
 	/// if the database file is locked by another process.
 	/// </summary>
 	/// <remarks>
-	/// db4o-specific exception.<br /><br />
+	/// db4o-specific exception.&lt;br&gt;&lt;br&gt;
 	/// this Exception is thrown during any of the db4o open calls
 	/// if the database file is locked by another process.
 	/// </remarks>

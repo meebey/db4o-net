@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Defragment
 		/// <param name="fileName">The location where the BTree file should be created.</param>
 		/// <param name="nodeSize">The size of a BTree node</param>
 		/// <param name="cacheHeight">The height of the BTree node cache</param>
-		/// <param name="commitFrequency">The number of inserts after which a commit should be issued (<=0: never commit)
+		/// <param name="commitFrequency">The number of inserts after which a commit should be issued (&lt;=0: never commit)
 		/// 	</param>
 		public BTreeIDMapping(string fileName, int nodeSize, int cacheHeight, int commitFrequency
 			) : this(fileName, new BTreeIDMapping.BTreeSpec(nodeSize, cacheHeight), commitFrequency

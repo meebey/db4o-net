@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
@@ -55,6 +56,11 @@ namespace Db4objects.Db4o.Internal
 			_classMetadata = _container.GetActiveClassMetadata(claxx);
 			if (_classMetadata == null)
 			{
+				IFieldHandler fieldHandler = _container.FieldHandlerForClass(claxx);
+				if (fieldHandler is ISecondClassTypeHandler)
+				{
+					NotStorable(_obj, claxx);
+				}
 				_classMetadata = _container.ProduceClassMetadata(claxx);
 				if (_classMetadata == null)
 				{

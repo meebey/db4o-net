@@ -79,7 +79,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				DTrace.RereadOldUuid.LogLength(oldSlot.Address(), oldSlot.Length());
 			}
-			BufferImpl reader = stream.BufferByAddress(oldSlot.Address(), oldSlot.Length());
+			ByteArrayBuffer reader = stream.BufferByAddress(oldSlot.Address(), oldSlot.Length
+				());
 			if (checkClass)
 			{
 				ClassMetadata realClass = ClassMetadata.ReadClass(stream, reader);
@@ -167,7 +168,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		internal override void Instantiate1(Transaction a_trans, ObjectReference a_yapObject
-			, IBuffer a_bytes)
+			, IReadWriteBuffer a_bytes)
 		{
 			int dbID = a_bytes.ReadInt();
 			ObjectContainerBase stream = a_trans.Container();

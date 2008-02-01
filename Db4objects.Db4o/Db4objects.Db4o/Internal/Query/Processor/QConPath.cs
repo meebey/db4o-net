@@ -156,7 +156,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override string ToString()
 		{
-			return base.ToString();
 			return "QConPath " + base.ToString();
 		}
 	}

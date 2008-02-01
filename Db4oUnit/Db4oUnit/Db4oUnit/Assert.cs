@@ -249,6 +249,15 @@ namespace Db4oUnit
 			Fail(FailureMessage(expected, actual, "smaller than ", null));
 		}
 
+		public static void IsSmallerOrEqual(long expected, long actual)
+		{
+			if (actual <= expected)
+			{
+				return;
+			}
+			Fail(expected, actual, "smaller than or equal to ");
+		}
+
 		private static void Fail(long expected, long actual, string @operator)
 		{
 			Fail(FailureMessage(expected, actual, @operator, null));

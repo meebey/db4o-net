@@ -24,12 +24,12 @@ namespace Db4objects.Db4o.Internal
 			return 0;
 		}
 
-		public virtual object ReadIndexEntry(BufferImpl a_reader)
+		public virtual object ReadIndexEntry(ByteArrayBuffer a_reader)
 		{
 			return null;
 		}
 
-		public virtual void WriteIndexEntry(BufferImpl a_writer, object a_object)
+		public virtual void WriteIndexEntry(ByteArrayBuffer a_writer, object a_object)
 		{
 		}
 

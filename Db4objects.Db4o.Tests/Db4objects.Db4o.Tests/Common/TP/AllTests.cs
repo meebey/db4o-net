@@ -15,8 +15,8 @@ namespace Db4objects.Db4o.Tests.Common.TP
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(RollbackStrategyTestCase), typeof(TransparentPersistenceTestCase
-				) };
+			return new Type[] { typeof(DeactivateDeletedObjectOnRollbackStrategyTestCase), typeof(
+				RollbackStrategyTestCase), typeof(TransparentPersistenceTestCase) };
 		}
 	}
 }
