@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
             {
                 car.snapshot();
             }
-            db.Set(car);
+            db.Store(car);
         }
 
         public static void RetrieveSnapshotsSequentially(IObjectContainer db)

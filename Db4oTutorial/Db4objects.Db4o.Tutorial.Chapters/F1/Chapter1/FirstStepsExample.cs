@@ -47,21 +47,21 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter1
 		public static void StoreFirstPilot(IObjectContainer db)
 		{
 			Pilot pilot1 = new Pilot("Michael Schumacher", 100);
-			db.Set(pilot1);
+			db.Store(pilot1);
 			Console.WriteLine("Stored {0}", pilot1);
 		}
     
 		public static void StoreSecondPilot(IObjectContainer db)
 		{
 			Pilot pilot2 = new Pilot("Rubens Barrichello", 99);
-			db.Set(pilot2);
+			db.Store(pilot2);
 			Console.WriteLine("Stored {0}", pilot2);
 		}
     
 		public static void RetrieveAllPilotQBE(IObjectContainer db) 
 		{
 			Pilot proto = new Pilot(null, 0);
-			IObjectSet result = db.Get(proto);
+			IObjectSet result = db.QueryByExample(proto);
 			ListResult(result);
 		}
     
@@ -74,30 +74,30 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter1
 		public static void RetrievePilotByName(IObjectContainer db)
 		{
 			Pilot proto = new Pilot("Michael Schumacher", 0);
-			IObjectSet result = db.Get(proto);
+			IObjectSet result = db.QueryByExample(proto);
 			ListResult(result);
 		}
         
 		public static void RetrievePilotByExactPoints(IObjectContainer db)
 		{
 			Pilot proto = new Pilot(null, 100);
-			IObjectSet result = db.Get(proto);
+			IObjectSet result = db.QueryByExample(proto);
 			ListResult(result);
 		}
     
 		public static void UpdatePilot(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Pilot("Michael Schumacher", 0));
+			IObjectSet result = db.QueryByExample(new Pilot("Michael Schumacher", 0));
 			Pilot found = (Pilot)result.Next();
 			found.AddPoints(11);
-			db.Set(found);
+			db.Store(found);
 			Console.WriteLine("Added 11 points for {0}", found);
 			RetrieveAllPilots(db);
 		}
     
 		public static void DeleteFirstPilotByName(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Pilot("Michael Schumacher", 0));
+			IObjectSet result = db.QueryByExample(new Pilot("Michael Schumacher", 0));
 			Pilot found = (Pilot)result.Next();
 			db.Delete(found);
 			Console.WriteLine("Deleted {0}", found);
@@ -106,7 +106,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter1
     
 		public static void DeleteSecondPilotByName(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Pilot("Rubens Barrichello", 0));
+			IObjectSet result = db.QueryByExample(new Pilot("Rubens Barrichello", 0));
 			Pilot found = (Pilot)result.Next();
 			db.Delete(found);
 			Console.WriteLine("Deleted {0}", found);

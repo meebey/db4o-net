@@ -36,14 +36,14 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter1
         public static void StoreFirstPilot(IObjectContainer db)
         {
             Pilot pilot1 = new Pilot("Michael Schumacher", 100);
-            db.Set(pilot1);
+            db.Store(pilot1);
             Console.WriteLine("Stored {0}", pilot1);
         }
     
         public static void StoreSecondPilot(IObjectContainer db)
         {
             Pilot pilot2 = new Pilot("Rubens Barrichello", 99);
-            db.Set(pilot2);
+            db.Store(pilot2);
             Console.WriteLine("Stored {0}", pilot2);
         }
     
@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter1
         public static void RetrieveByDefaultFieldValue(IObjectContainer db)
         {
             Pilot somebody = new Pilot("Somebody else", 0);
-            db.Set(somebody);
+            db.Store(somebody);
             IQuery query = db.Query();
             query.Constrain(typeof(Pilot));
             query.Descend("_points").Constrain(0);

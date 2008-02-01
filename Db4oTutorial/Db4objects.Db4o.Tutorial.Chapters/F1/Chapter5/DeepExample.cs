@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             Pilot pilot = new Pilot("Rubens Barrichello", 99);
             Car car = new Car("BMW");
             car.Pilot = pilot;
-            db.Set(car);
+            db.Store(car);
         }
         
         public static void SetCascadeOnUpdate()
@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             {
                 car.Snapshot();
             }
-            db.Set(car);
+            db.Store(car);
         }
         
         public static void RetrieveAllSnapshots(IObjectContainer db)

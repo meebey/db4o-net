@@ -54,29 +54,29 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
 			Car car1 = new Car("Ferrari");
 			Pilot pilot1 = new Pilot("Michael Schumacher", 100);
 			car1.Pilot = pilot1;
-			db.Set(car1);
+			db.Store(car1);
 		}
         
 		public static void StoreSecondCar(IObjectContainer db)
 		{
 			Pilot pilot2 = new Pilot("Rubens Barrichello", 99);
-			db.Set(pilot2);
+			db.Store(pilot2);
 			Car car2 = new Car("BMW");
 			car2.Pilot = pilot2;
-			db.Set(car2);
+			db.Store(car2);
 		}
 
 		public static void RetrieveAllCarsQBE(IObjectContainer db)
 		{
 			Car proto = new Car(null);
-			IObjectSet result = db.Get(proto);
+			IObjectSet result = db.QueryByExample(proto);
 			ListResult(result);
 		}
         
 		public static void RetrieveAllPilotsQBE(IObjectContainer db)
 		{
 			Pilot proto = new Pilot(null, 0);
-			IObjectSet result = db.Get(proto);
+			IObjectSet result = db.QueryByExample(proto);
 			ListResult(result);
 		}
         
@@ -85,7 +85,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
 			Pilot pilotproto = new Pilot("Rubens Barrichello",0);
 			Car carproto = new Car(null);
 			carproto.Pilot = pilotproto;
-			IObjectSet result = db.Get(carproto);
+			IObjectSet result = db.QueryByExample(carproto);
 			ListResult(result);
 		}
         
@@ -155,35 +155,35 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
   		
 		public static void UpdateCar(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Car("Ferrari"));
+			IObjectSet result = db.QueryByExample(new Car("Ferrari"));
 			Car found = (Car)result.Next();
 			found.Pilot = new Pilot("Somebody else", 0);
-			db.Set(found);
-			result = db.Get(new Car("Ferrari"));
+			db.Store(found);
+			result = db.QueryByExample(new Car("Ferrari"));
 			ListResult(result);
 		}
         
 		public static void UpdatePilotSingleSession(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Car("Ferrari"));
+			IObjectSet result = db.QueryByExample(new Car("Ferrari"));
 			Car found = (Car)result.Next();
 			found.Pilot.AddPoints(1);
-			db.Set(found);
-			result = db.Get(new Car("Ferrari"));
+			db.Store(found);
+			result = db.QueryByExample(new Car("Ferrari"));
 			ListResult(result);
 		}
         
 		public static void UpdatePilotSeparateSessionsPart1(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Car("Ferrari"));
+			IObjectSet result = db.QueryByExample(new Car("Ferrari"));
 			Car found = (Car)result.Next();
 			found.Pilot.AddPoints(1);
-			db.Set(found);
+			db.Store(found);
 		}
         
 		public static void UpdatePilotSeparateSessionsPart2(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Car("Ferrari"));
+			IObjectSet result = db.QueryByExample(new Car("Ferrari"));
 			ListResult(result);
 		}
         
@@ -195,24 +195,24 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
         
 		public static void UpdatePilotSeparateSessionsImprovedPart2(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Car("Ferrari"));
+			IObjectSet result = db.QueryByExample(new Car("Ferrari"));
 			Car found = (Car)result.Next();
 			found.Pilot.AddPoints(1);
-			db.Set(found);
+			db.Store(found);
 		}
         
 		public static void UpdatePilotSeparateSessionsImprovedPart3(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Car("Ferrari"));
+			IObjectSet result = db.QueryByExample(new Car("Ferrari"));
 			ListResult(result);
 		}
         
 		public static void DeleteFlat(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Car("Ferrari"));
+			IObjectSet result = db.QueryByExample(new Car("Ferrari"));
 			Car found = (Car)result.Next();
 			db.Delete(found);
-			result = db.Get(new Car(null));
+			result = db.QueryByExample(new Car(null));
 			ListResult(result);
 		}
         
@@ -224,25 +224,25 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
         
 		public static void DeleteDeepPart2(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Car("BMW"));
+			IObjectSet result = db.QueryByExample(new Car("BMW"));
 			Car found = (Car)result.Next();
 			db.Delete(found);
-			result = db.Get(new Car(null));
+			result = db.QueryByExample(new Car(null));
 			ListResult(result);
 		}
         
 		public static void DeleteDeepRevisited(IObjectContainer db)
 		{
-			IObjectSet result = db.Get(new Pilot("Michael Schumacher", 0));
+			IObjectSet result = db.QueryByExample(new Pilot("Michael Schumacher", 0));
 			Pilot pilot = (Pilot)result.Next();
 			Car car1 = new Car("Ferrari");
 			Car car2 = new Car("BMW");
 			car1.Pilot = pilot;
 			car2.Pilot = pilot;
-			db.Set(car1);
-			db.Set(car2);
+			db.Store(car1);
+			db.Store(car2);
 			db.Delete(car2);
-			result = db.Get(new Car(null));
+			result = db.QueryByExample(new Car(null));
 			ListResult(result);
 		}
 	}    

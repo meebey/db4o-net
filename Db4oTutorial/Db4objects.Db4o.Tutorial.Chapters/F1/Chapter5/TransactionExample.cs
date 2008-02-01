@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             Pilot pilot = new Pilot("Rubens Barrichello", 99);
             Car car = new Car("BMW");
             car.Pilot = pilot;
-            db.Set(car);
+            db.Store(car);
             db.Commit();
         }
     
@@ -49,26 +49,26 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             Pilot pilot = new Pilot("Michael Schumacher", 100);
             Car car = new Car("Ferrari");
             car.Pilot = pilot;
-            db.Set(car);
+            db.Store(car);
             db.Rollback();
         }
     
         public static void CarSnapshotRollback(IObjectContainer db)
         {
-            IObjectSet result = db.Get(new Car("BMW"));
+            IObjectSet result = db.QueryByExample(new Car("BMW"));
             Car car = (Car)result.Next();
             car.Snapshot();
-            db.Set(car);
+            db.Store(car);
             db.Rollback();
             Console.WriteLine(car);
         }
     
         public static void CarSnapshotRollbackRefresh(IObjectContainer db)
         {
-            IObjectSet result=db.Get(new Car("BMW"));
+            IObjectSet result=db.QueryByExample(new Car("BMW"));
             Car car=(Car)result.Next();
             car.Snapshot();
-            db.Set(car);
+            db.Store(car);
             db.Rollback();
             db.Ext().Refresh(car, int.MaxValue);
             Console.WriteLine(car);

@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter6
                 string[] champs = new string[] { "Ayrton Senna", "Nelson Piquet" };
                 LocalizedItemList LocalizedItemList = new LocalizedItemList(CultureInfo.CreateSpecificCulture("pt-BR"), champs);
                 System.Console.WriteLine("ORIGINAL: {0}", LocalizedItemList);
-                db.Set(LocalizedItemList);
+                db.Store(LocalizedItemList);
             }
             catch (Exception x)
             {

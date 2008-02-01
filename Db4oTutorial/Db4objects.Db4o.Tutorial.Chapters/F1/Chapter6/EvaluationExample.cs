@@ -29,13 +29,13 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter6
 			Car car1 = new Car("Ferrari");
 			car1.Pilot = pilot1;
 			car1.Snapshot();
-			db.Set(car1);
+			db.Store(car1);
 			Pilot pilot2 = new Pilot("Rubens Barrichello", 99);
 			Car car2 = new Car("BMW");
 			car2.Pilot = pilot2;
 			car2.Snapshot();
 			car2.Snapshot();
-			db.Set(car2);
+			db.Store(car2);
 		}
 
 		public static void QueryWithEvaluation(IObjectContainer db)

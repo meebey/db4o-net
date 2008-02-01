@@ -26,8 +26,8 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter1
     
 		public static void StorePilots(IObjectContainer db)
 		{
-			db.Set(new Pilot("Michael Schumacher", 100));
-			db.Set(new Pilot("Rubens Barrichello", 99));
+			db.Store(new Pilot("Michael Schumacher", 100));
+			db.Store(new Pilot("Rubens Barrichello", 99));
 		}
     
 		public static void RetrieveComplexSODA(IObjectContainer db)

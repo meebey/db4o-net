@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             Pilot pilot = new Pilot("Rubens Barrichello", 99);
             Car car = new Car("BMW");
             car.Pilot = pilot;
-            db.Set(car);
+            db.Store(car);
         }
     
         public static void SetSecondCar(IObjectContainer db)
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             Pilot pilot = new Pilot("Michael Schumacher", 100);
             Car car = new Car("Ferrari");
             car.Pilot = pilot;
-            db.Set(car);
+            db.Store(car);
         }
     
         public static void AccessLocalServer()
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         public static void QueryLocalServer(IObjectServer server)
         {
             IObjectContainer client = server.OpenClient();
-            ListResult(client.Get(new Car(null)));
+            ListResult(client.QueryByExample(new Car(null)));
             client.Close();
         }
         
@@ -97,12 +97,12 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             IObjectContainer client1 =server.OpenClient();
             IObjectContainer client2 =server.OpenClient();
             Pilot pilot = new Pilot("David Coulthard", 98);
-            IObjectSet result = client1.Get(new Car("BMW"));
+            IObjectSet result = client1.QueryByExample(new Car("BMW"));
             Car car = (Car)result.Next();
             car.Pilot = pilot;
-            client1.Set(car);
-            ListResult(client1.Get(new Car(null)));
-            ListResult(client2.Get(new Car(null)));
+            client1.Store(car);
+            ListResult(client1.QueryByExample(new Car(null)));
+            ListResult(client2.QueryByExample(new Car(null)));
             client1.Commit();
             ListResult(client1.Get(typeof(Car)));			
             ListRefreshedResult(client2, client2.Get(typeof(Car)), 2);
@@ -114,16 +114,16 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         {
             IObjectContainer client1 = server.OpenClient();
             IObjectContainer client2 = server.OpenClient();
-            IObjectSet result = client1.Get(new Car("BMW"));
+            IObjectSet result = client1.QueryByExample(new Car("BMW"));
             Car car = (Car)result.Next();
             car.Pilot = new Pilot("Someone else", 0);
-            client1.Set(car);
-            ListResult(client1.Get(new Car(null)));
-            ListResult(client2.Get(new Car(null)));
+            client1.Store(car);
+            ListResult(client1.QueryByExample(new Car(null)));
+            ListResult(client2.QueryByExample(new Car(null)));
             client1.Rollback();
             client1.Ext().Refresh(car, 2);
-            ListResult(client1.Get(new Car(null)));
-            ListResult(client2.Get(new Car(null)));
+            ListResult(client1.QueryByExample(new Car(null)));
+            ListResult(client2.QueryByExample(new Car(null)));
             client1.Close();
             client2.Close();
         }
@@ -147,7 +147,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         public static void QueryRemoteServer(int port, string user, string password)
         {
             IObjectContainer client = Db4oFactory.OpenClient("localhost", port, user, password);
-            ListResult(client.Get(new Car(null)));
+            ListResult(client.QueryByExample(new Car(null)));
             client.Close();
         }
     
@@ -156,15 +156,15 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             IObjectContainer client1 = Db4oFactory.OpenClient("localhost", port, user, password);
             IObjectContainer client2 = Db4oFactory.OpenClient("localhost", port, user, password);
             Pilot pilot = new Pilot("Jenson Button", 97);
-            IObjectSet result = client1.Get(new Car(null));
+            IObjectSet result = client1.QueryByExample(new Car(null));
             Car car = (Car)result.Next();
             car.Pilot = pilot;
-            client1.Set(car);
-            ListResult(client1.Get(new Car(null)));
-            ListResult(client2.Get(new Car(null)));
+            client1.Store(car);
+            ListResult(client1.QueryByExample(new Car(null)));
+            ListResult(client2.QueryByExample(new Car(null)));
             client1.Commit();
-            ListResult(client1.Get(new Car(null)));
-            ListResult(client2.Get(new Car(null)));
+            ListResult(client1.QueryByExample(new Car(null)));
+            ListResult(client2.QueryByExample(new Car(null)));
             client1.Close();
             client2.Close();
         }
@@ -173,16 +173,16 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         {
             IObjectContainer client1 = Db4oFactory.OpenClient("localhost", port, user, password);
             IObjectContainer client2 = Db4oFactory.OpenClient("localhost", port, user, password);
-            IObjectSet result = client1.Get(new Car(null));
+            IObjectSet result = client1.QueryByExample(new Car(null));
             Car car = (Car)result.Next();
             car.Pilot = new Pilot("Someone else", 0);
-            client1.Set(car);
-            ListResult(client1.Get(new Car(null)));
-            ListResult(client2.Get(new Car(null)));
+            client1.Store(car);
+            ListResult(client1.QueryByExample(new Car(null)));
+            ListResult(client2.QueryByExample(new Car(null)));
             client1.Rollback();
             client1.Ext().Refresh(car,2);
-            ListResult(client1.Get(new Car(null)));
-            ListResult(client2.Get(new Car(null)));
+            ListResult(client1.QueryByExample(new Car(null)));
+            ListResult(client2.QueryByExample(new Car(null)));
             client1.Close();
             client2.Close();
         }
