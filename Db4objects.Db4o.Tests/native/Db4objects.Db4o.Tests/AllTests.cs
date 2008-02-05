@@ -23,7 +23,8 @@ namespace Db4objects.Db4o.Tests
 		
 		protected override Type[] TestCases()
 		{
-//			return new Type[] { typeof(CLI2.Collections.AllTests) };
+			return new Type[] { typeof(Common.CS.ServerToClientTestCase) };
+			//return new Type[] { typeof(CLI2.Types.ArrayAsGenericListTestCase) };
 			return new Type[]
 				{	
 //					typeof(Db4objects.Db4o.Tests.CLI2.TA.NullableTypeActivationTestCase),

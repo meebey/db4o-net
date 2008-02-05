@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{23531440-0922-43EB-A483-6592FFC2F093}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Db4objects.Db4o.Linq</RootNamespace>
+    <AssemblyName>Db4objects.Db4o.Linq</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Cecil.FlowAnalysis, Version=0.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\db4o.net\Libs\net-2.0\Cecil.FlowAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\db4o.net\Libs\net-2.0\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Db4objects.Db4o.Linq\Caching\AllItemsCachingStrategy.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Caching\SingleItemCachingStrategy.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Caching\NullCachingStrategy.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Caching\ICachingStrategy.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\CodeAnalysis\CodeQueryBuilder.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\CodeAnalysis\QueryExpressionFinder.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\CodeAnalysis\MethodAnalyser.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\CodeAnalysis\MetadataResolver.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\EnumerableExtensions.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionComparison.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionEnumeration.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionEqualityComparer.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionTransformer.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionVisitor.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\HashCodeCalculation.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\QueryBuilderRecorder.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\QueryBuilderContext.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionQueryBuilder.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\OrderByClauseVisitor.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\OrderByDirection.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\SubtreeEvaluator.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\ObjectSetWrapper.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\QueryOptimizationException.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\WhereClauseVisitor.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Db4oQuery.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Db4oLinqQueryExtensions.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\IDb4oLinqQuery.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\ObjectContainerExtensions.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\ObjectSequence.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\UnoptimizedQuery.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-2008.csproj">
+      <Project>{600CD3BF-2ED2-4183-87F7-ADD78A968AE0}</Project>
+      <Name>Db4objects.Db4o-2008</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
