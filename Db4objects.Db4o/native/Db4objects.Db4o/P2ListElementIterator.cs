@@ -7,6 +7,7 @@ using Sharpen.Util;
 
 namespace Db4objects.Db4o {
 
+	[Obsolete("since 7.0")]
     internal class P2ListElementIterator : IEnumerator{
 
         private P2LinkedList i_list;

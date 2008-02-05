@@ -8,6 +8,7 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o
 {
+	[Obsolete("since 7.0")]
 	internal class P2HashMap : P1Collection, IDb4oMap, ITransactionListener
 	{
 		protected static float FILL = 0.6F;

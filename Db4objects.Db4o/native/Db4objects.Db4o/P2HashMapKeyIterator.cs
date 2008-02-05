@@ -5,6 +5,7 @@ using System.Collections;
 
 namespace Db4objects.Db4o
 {
+	[Obsolete("since 7.0")]
 	internal class P2HashMapKeyIterator : P2HashMapIterator, IEnumerator
 	{
 		internal P2HashMapKeyIterator(P2HashMap hm) : base(hm){

@@ -7,6 +7,7 @@ using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o
 {
+	[Obsolete("since 7.0")]
 	internal class P2LinkedList : P1Collection, IDb4oList
 	{
 		public P1ListElement i_first;

@@ -2,11 +2,10 @@
 
 using System;
 using System.Collections;
-using Sharpen.Lang;
-using Sharpen.Util;
 
 namespace Db4objects.Db4o {
 
+	[Obsolete("since 7.0")]
     internal class P2HashMapIterator : IDictionaryEnumerator  {
 
         private P1HashElement i_previous;
