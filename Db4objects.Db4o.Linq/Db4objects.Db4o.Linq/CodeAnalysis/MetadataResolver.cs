@@ -24,7 +24,16 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 
 		private AssemblyDefinition GetAssembly(Assembly assembly)
 		{
-			return Resolve(assembly.FullName);
+			try
+			{
+				return Resolve(assembly.FullName);
+			}
+			catch (System.IO.FileNotFoundException)
+			{
+				var definition = AssemblyFactory.GetAssembly(assembly.ManifestModule.FullyQualifiedName);
+				RegisterAssembly(definition);
+				return definition;
+			}
 		}
 
 		private static string GetFullName(Type type)
