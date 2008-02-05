@@ -23,7 +23,7 @@ namespace Sharpen.Net
 
 	    private static IPAddress Resolve(string hostName)
 	    {
-	        IPHostEntry found = Dns.Resolve(hostName);
+	    	IPHostEntry found = Dns.GetHostEntry(hostName);
 	        foreach (IPAddress address in found.AddressList)
 	        {
                 if (address.AddressFamily == AddressFamily.InterNetwork)
