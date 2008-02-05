@@ -34,26 +34,25 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		protected void AssertQuery(string expected, Action action)
 		{
-			using (var recorder = new QueryRecorder(Db()))
+			using (var recorder = new QueryStringRecorder(Db()))
 			{
 				action();
 
-				Assert.IsNotNull(recorder.Query);
-				Assert.AreEqual(expected, recorder.Query.ToQueryString());
+				Assert.AreEqual(expected, recorder.QueryString);
 			}
 		}
 
-		private class QueryRecorder : IDisposable
+		private class QueryStringRecorder : IDisposable
 		{
-			private IQuery _query;
+			private string _queryString;
 			private IEventRegistry _registry;
 
-			public IQuery Query
+			public string QueryString
 			{
-				get { return _query; }
+				get { return _queryString; }
 			}
 
-			public QueryRecorder(IObjectContainer container)
+			public QueryStringRecorder(IObjectContainer container)
 			{
 				_registry = EventRegistryFactory.ForObjectContainer(container);
 				_registry.QueryStarted += OnQueryStarted;
@@ -61,7 +60,7 @@ namespace Db4objects.Db4o.Linq.Tests
 
 			private void OnQueryStarted(object sender, QueryEventArgs args)
 			{
-				_query = args.Query;
+				_queryString = args.Query.ToQueryString();
 			}
 
 			public void Dispose()
