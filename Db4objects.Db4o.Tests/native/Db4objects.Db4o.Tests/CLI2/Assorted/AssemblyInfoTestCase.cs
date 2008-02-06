@@ -18,6 +18,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			{
 				AssemblyName assemblyName = type.Assembly.GetName();
 				Assert.AreEqual(ExpectedVersion(), assemblyName.Version, assemblyName.FullName);
+				Assert.AreNotEqual(0, assemblyName.GetPublicKeyToken().Length, assemblyName.FullName);
 			}
 		}
 
