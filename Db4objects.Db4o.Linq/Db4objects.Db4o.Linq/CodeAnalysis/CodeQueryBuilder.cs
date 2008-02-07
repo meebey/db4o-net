@@ -13,6 +13,7 @@ using Cecil.FlowAnalysis.Utilities;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Db4objects.Db4o.Linq.Internals;
 
 namespace Db4objects.Db4o.Linq.CodeAnalysis
 {

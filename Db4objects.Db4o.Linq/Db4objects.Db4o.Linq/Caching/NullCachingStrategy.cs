@@ -2,7 +2,7 @@
 
 namespace Db4objects.Db4o.Linq.Caching
 {
-	internal class NullCachingStrategy : ICachingStrategy<object, object>
+	public class NullCachingStrategy : ICachingStrategy<object, object>
 	{
 		public void Add(object key, object value)
 		{

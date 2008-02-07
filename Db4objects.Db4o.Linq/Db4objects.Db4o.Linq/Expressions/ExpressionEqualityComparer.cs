@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace Db4objects.Db4o.Linq.Expressions
 {
-	internal class ExpressionEqualityComparer : IEqualityComparer<Expression>
+	public class ExpressionEqualityComparer : IEqualityComparer<Expression>
 	{
 		public static ExpressionEqualityComparer Instance = new ExpressionEqualityComparer();
 

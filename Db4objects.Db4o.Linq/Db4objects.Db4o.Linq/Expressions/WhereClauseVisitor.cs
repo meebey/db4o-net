@@ -8,6 +8,7 @@ using System.Reflection;
 
 using Db4objects.Db4o.Linq.Caching;
 using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Linq.Internals;
 
 namespace Db4objects.Db4o.Linq.Expressions
 {

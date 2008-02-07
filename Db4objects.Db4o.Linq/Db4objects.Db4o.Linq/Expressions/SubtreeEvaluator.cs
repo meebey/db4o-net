@@ -8,7 +8,7 @@ using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Linq.Expressions
 {
-	internal class SubtreeEvaluator : ExpressionTransformer
+	public class SubtreeEvaluator : ExpressionTransformer
 	{
 		private HashSet<Expression> _candidates;
 

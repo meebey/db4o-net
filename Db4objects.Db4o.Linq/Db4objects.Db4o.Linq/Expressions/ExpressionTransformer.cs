@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace Db4objects.Db4o.Linq.Expressions
 {
-	internal abstract class ExpressionTransformer
+	public abstract class ExpressionTransformer
 	{
 		protected virtual Expression Visit(Expression exp)
 		{

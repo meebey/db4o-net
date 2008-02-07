@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Db4objects.Db4o.Linq.Caching
 {
-	internal class AllItemsCachingStrategy<TKey, TValue> : ICachingStrategy<TKey, TValue>
+	public class AllItemsCachingStrategy<TKey, TValue> : ICachingStrategy<TKey, TValue>
 	{
 		private Dictionary<TKey, TValue> _cache;
 

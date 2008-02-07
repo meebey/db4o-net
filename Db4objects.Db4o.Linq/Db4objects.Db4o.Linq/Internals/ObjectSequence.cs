@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 using Db4objects.Db4o;
 
-namespace Db4objects.Db4o.Linq
+namespace Db4objects.Db4o.Linq.Internals
 {
 	/// <summary>
 	/// A generic wrapper around a not generic IEnumerable,
@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Linq
 	/// ClassCastException on access.
 	/// </summary>
 	/// <typeparam name="T">The type of the items</typeparam>
-	internal class ObjectSequence<T> : IEnumerable<T>
+	public class ObjectSequence<T> : IEnumerable<T>
 	{
 		private IEnumerable _enumerable;
 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 
 using Db4objects.Db4o.Linq.Expressions;
+using Db4objects.Db4o.Linq.Internals;
 
 namespace Db4objects.Db4o.Linq
 {

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -12,6 +12,8 @@
     <AssemblyName>Db4objects.Db4o.Linq</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Cecil.FlowAnalysis, Version=0.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
@@ -53,28 +57,28 @@
     <Compile Include="Db4objects.Db4o.Linq\CodeAnalysis\QueryExpressionFinder.cs" />
     <Compile Include="Db4objects.Db4o.Linq\CodeAnalysis\MethodAnalyser.cs" />
     <Compile Include="Db4objects.Db4o.Linq\CodeAnalysis\MetadataResolver.cs" />
-    <Compile Include="Db4objects.Db4o.Linq\EnumerableExtensions.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Internals\EnumerableExtensions.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionComparison.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionEnumeration.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionEqualityComparer.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionTransformer.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionVisitor.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Expressions\HashCodeCalculation.cs" />
-    <Compile Include="Db4objects.Db4o.Linq\QueryBuilderRecorder.cs" />
-    <Compile Include="Db4objects.Db4o.Linq\QueryBuilderContext.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionQueryBuilder.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Expressions\OrderByClauseVisitor.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Expressions\OrderByDirection.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Expressions\SubtreeEvaluator.cs" />
-    <Compile Include="Db4objects.Db4o.Linq\ObjectSetWrapper.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Internals\ObjectSequence.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Internals\ObjectSetWrapper.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Internals\QueryBuilderContext.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Internals\QueryBuilderRecorder.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Internals\UnoptimizedQuery.cs" />
     <Compile Include="Db4objects.Db4o.Linq\QueryOptimizationException.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Expressions\WhereClauseVisitor.cs" />
-    <Compile Include="Db4objects.Db4o.Linq\Db4oQuery.cs" />
+    <Compile Include="Db4objects.Db4o.Linq\Internals\Db4oQuery.cs" />
     <Compile Include="Db4objects.Db4o.Linq\Db4oLinqQueryExtensions.cs" />
     <Compile Include="Db4objects.Db4o.Linq\IDb4oLinqQuery.cs" />
     <Compile Include="Db4objects.Db4o.Linq\ObjectContainerExtensions.cs" />
-    <Compile Include="Db4objects.Db4o.Linq\ObjectSequence.cs" />
-    <Compile Include="Db4objects.Db4o.Linq\UnoptimizedQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

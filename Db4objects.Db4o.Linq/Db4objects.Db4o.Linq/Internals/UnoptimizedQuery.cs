@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Db4objects.Db4o.Linq
+namespace Db4objects.Db4o.Linq.Internals
 {
 	internal class UnoptimizedQuery<T> : IDb4oLinqQuery<T>
 	{

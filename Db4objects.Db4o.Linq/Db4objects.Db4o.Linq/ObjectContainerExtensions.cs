@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Linq
 		/// <returns>A <see cref="Db4objects.Db4o.Linq.IDb4oLinqQuery">IDb4oLinqQuery</see> marker interface</returns>
 		public static IDb4oLinqQuery<T> Cast<T>(this IObjectContainer container)
 		{
-			return new Db4oQuery<T>(container);
+			return new Db4objects.Db4o.Linq.Internals.Db4oQuery<T>(container);
 		}
 	}
 }

@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 using Db4objects.Db4o;
 
-namespace Db4objects.Db4o.Linq
+namespace Db4objects.Db4o.Linq.Internals
 {
-	internal class ObjectSetWrapper<T> : ObjectSequence<T>
+	public class ObjectSetWrapper<T> : ObjectSequence<T>
 	{
 		private IObjectSet _set;
 

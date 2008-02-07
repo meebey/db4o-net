@@ -2,7 +2,7 @@
 
 namespace Db4objects.Db4o.Linq.Caching
 {
-	internal interface ICachingStrategy<TKey, TValue>
+	public interface ICachingStrategy<TKey, TValue>
 	{
 		void Add(TKey key, TValue value);
 		TValue Get(TKey key);
