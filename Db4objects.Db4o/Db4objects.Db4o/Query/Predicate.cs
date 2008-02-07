@@ -101,10 +101,10 @@ namespace Db4objects.Db4o.Query
 			_extentType = extentType;
 		}
 
+		// IMPORTANT: must have package visibility because it is used as
+		// internal on the .net side
 		internal virtual MethodInfo GetFilterMethod()
 		{
-			// IMPORTANT: must have package visibility because it is used as
-			// internal on the .net side
 			if (cachedFilterMethod != null)
 			{
 				return cachedFilterMethod;

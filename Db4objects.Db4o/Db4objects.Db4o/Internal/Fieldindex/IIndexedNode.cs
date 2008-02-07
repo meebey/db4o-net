@@ -17,6 +17,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		int ResultSize();
 
+		//FIXME: do we need this?
 		TreeInt ToTreeInt();
 	}
 }

@@ -93,12 +93,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		// FIXME: The following fails as is because of a deficiency 
+		//        in the storage format of arrays.
+		//        Arrays should also get a null Bitmap to fix.
+		// Assert.isNull(values[values.length - 1]);
 		protected override void AssertValues(object[] values)
 		{
-			// FIXME: The following fails as is because of a deficiency 
-			//        in the storage format of arrays.
-			//        Arrays should also get a null Bitmap to fix.
-			// Assert.isNull(values[values.length - 1]);
 			for (int i = 0; i < data.Length; i++)
 			{
 				DoubleHandlerUpdateTestCase.Item item = (DoubleHandlerUpdateTestCase.Item)values[

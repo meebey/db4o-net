@@ -314,11 +314,11 @@ namespace Db4objects.Db4o.IO
 			return null;
 		}
 
+		// Page page = (Page) _posPageMap.get(new Long(pos/PAGE_SIZE));
+		// return page;
 		/// <exception cref="Db4oIOException"></exception>
 		private void FlushAllPages()
 		{
-			// Page page = (Page) _posPageMap.get(new Long(pos/PAGE_SIZE));
-			// return page;
 			CachedIoAdapter.Page node = _head;
 			while (node != null)
 			{
@@ -356,10 +356,10 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
+		// _posPageMap.put(new Long(page.startPosition / PAGE_SIZE), page);
 		/// <exception cref="Db4oIOException"></exception>
 		private int IoRead(CachedIoAdapter.Page page)
 		{
-			// _posPageMap.put(new Long(page.startPosition / PAGE_SIZE), page);
 			int count = _io.Read(page._buffer);
 			if (count > 0)
 			{

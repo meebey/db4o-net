@@ -270,18 +270,18 @@ namespace Db4objects.Db4o.Defragment
 			context.TargetCommit();
 		}
 
+		// TODO order of class index/object slot processing is crucial:
+		// - object slots before field indices (object slots register addresses for
+		// use by string indices)
+		// - class index before object slots, otherwise phantom btree entries from
+		// deletions appear in the source class index?!?
+		// reproducable with SelectiveCascadingDeleteTestCase and ObjectSetTestCase
+		// - investigate.
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="IOException"></exception>
 		private static void ProcessYapClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			// TODO order of class index/object slot processing is crucial:
-			// - object slots before field indices (object slots register addresses for
-			// use by string indices)
-			// - class index before object slots, otherwise phantom btree entries from
-			// deletions appear in the source class index?!?
-			// reproducable with SelectiveCascadingDeleteTestCase and ObjectSetTestCase
-			// - investigate.
 			ProcessClassIndex(context, curClass, command);
 			if (!ParentHasIndex(curClass))
 			{

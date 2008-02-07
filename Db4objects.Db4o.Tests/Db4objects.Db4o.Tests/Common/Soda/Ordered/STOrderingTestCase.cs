@@ -24,18 +24,18 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 				3), new OrderTestSubject("Liza", 25, 3), new OrderTestSubject("Gregory", 25, 4) };
 		}
 
+		// 0
+		// 1
+		// 2
+		// 3
+		// 4
+		// 5
+		// 6
+		// 7
+		// 8
+		// 9
 		public virtual void TestFirstAndSecondFieldsAreIrrelevant()
 		{
-			// 0
-			// 1
-			// 2
-			// 3
-			// 4
-			// 5
-			// 6
-			// 7
-			// 8
-			// 9
 			IQuery q = NewQuery();
 			q.Constrain(typeof(OrderTestSubject));
 			q.Descend("_seniority").OrderAscending();

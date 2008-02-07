@@ -685,9 +685,9 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
+		// do nothing
 		private void ReReadAll(IConfiguration config)
 		{
-			// do nothing
 			remainingIDs = 0;
 			Initialize1(config);
 			InitializeTransactions();
@@ -720,9 +720,9 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
+		// do nothing
 		public override bool SetSemaphore(string name, int timeout)
 		{
-			// do nothing
 			lock (_lock)
 			{
 				CheckClosed();
@@ -781,14 +781,14 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
+		// do nothing
 		public sealed override void WriteDirty()
 		{
 		}
 
+		// do nothing
 		public bool Write(Msg msg)
 		{
-			// do nothing
-			// do nothing
 			WriteMsg(msg, true);
 			return true;
 		}
@@ -838,10 +838,10 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
+		// do nothing
 		public sealed override void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
 			 classMetadata, ByteArrayBuffer buffer)
 		{
-			// do nothing
 			MsgD msg = Msg.WriteUpdate.GetWriter(trans, pointer, classMetadata, buffer);
 			WriteBatchedMessage(msg);
 		}
@@ -859,9 +859,9 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
+		// Remove, for testing purposes only
 		public virtual ISocket4 Socket()
 		{
-			// Remove, for testing purposes only
 			return i_socket;
 		}
 
@@ -1017,14 +1017,14 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
+		// do nothing here		
 		public virtual void StartDispatcher()
 		{
 		}
 
+		// do nothing here for single thread, ClientObjectContainer is already running
 		public virtual IClientMessageDispatcher MessageDispatcher()
 		{
-			// do nothing here		
-			// do nothing here for single thread, ClientObjectContainer is already running
 			return _singleThreaded ? this : _messageDispatcher;
 		}
 

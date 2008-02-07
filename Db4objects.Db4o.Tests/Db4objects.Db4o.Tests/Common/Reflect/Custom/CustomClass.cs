@@ -97,9 +97,9 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			return null;
 		}
 
+		//		return _repository.reflectClass(java.lang.Object.class);
 		public virtual bool IsAbstract()
 		{
-			//		return _repository.reflectClass(java.lang.Object.class);
 			return false;
 		}
 

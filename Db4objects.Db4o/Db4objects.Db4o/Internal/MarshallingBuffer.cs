@@ -333,9 +333,9 @@ namespace Db4objects.Db4o.Internal
 			return HasParent();
 		}
 
+		// For now we block align every linked entry. Indexes could be created late.
 		private int BlockedLength()
 		{
-			// For now we block align every linked entry. Indexes could be created late.
 			return Length();
 		}
 

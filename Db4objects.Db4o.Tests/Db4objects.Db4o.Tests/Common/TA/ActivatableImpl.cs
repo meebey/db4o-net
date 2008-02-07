@@ -11,11 +11,11 @@ namespace Db4objects.Db4o.Tests.Common.TA
 		[System.NonSerialized]
 		private IActivator _activator;
 
+		// TA BEGIN
+		// TA END
+		//	 TA BEGIN
 		public virtual void Bind(IActivator activator)
 		{
-			// TA BEGIN
-			// TA END
-			//	 TA BEGIN
 			if (_activator == activator)
 			{
 				return;
@@ -35,5 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			}
 			_activator.Activate(purpose);
 		}
+		// clone must remember to reset the _activator field
+		// TA END
 	}
 }

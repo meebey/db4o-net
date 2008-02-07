@@ -67,5 +67,14 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 			foo.Constrain("str1").Or(foo.Constrain(null)).Or(foo.Constrain("str2"));
 			Expect(q, new int[] { 0, 1, 2, 3, 4, 5 });
 		}
+		// work in progress
+		//	public void testOverConstrainedByClass(){
+		//		Query q = SodaTenewQuery();
+		//		q.constrain(STSDFT1TestCase.class).or(q.constrain(STSDFT2.class));
+		//		Query foo = q.descend("foo");
+		//		foo.constrain("str1").or(foo.constrain(null)).or(foo.constrain("str2"));
+		//		
+		//		SodaTeexpect(q, new int[] {0, 1, 2,3, 4, 5});
+		//	}
 	}
 }

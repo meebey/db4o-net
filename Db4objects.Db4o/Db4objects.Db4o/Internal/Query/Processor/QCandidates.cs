@@ -610,19 +610,19 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
+		// FIXME: This method should go completely.
+		//        We changed the code to create the QCandidates graph in two steps:
+		//        (1) call fitsIntoExistingConstraintHierarchy to determine whether
+		//            or not we need more QCandidates objects
+		//        (2) add all constraints
+		//        This method tries to do both in one, which results in missing
+		//        constraints. Not all are added to all QCandiates.
+		//        Right methodology is in 
+		//        QQueryBase#createCandidateCollection
+		//        and
+		//        QQueryBase#createQCandidatesList
 		internal bool TryAddConstraint(QCon a_constraint)
 		{
-			// FIXME: This method should go completely.
-			//        We changed the code to create the QCandidates graph in two steps:
-			//        (1) call fitsIntoExistingConstraintHierarchy to determine whether
-			//            or not we need more QCandidates objects
-			//        (2) add all constraints
-			//        This method tries to do both in one, which results in missing
-			//        constraints. Not all are added to all QCandiates.
-			//        Right methodology is in 
-			//        QQueryBase#createCandidateCollection
-			//        and
-			//        QQueryBase#createQCandidatesList
 			if (i_field != null)
 			{
 				QField qf = a_constraint.GetField();

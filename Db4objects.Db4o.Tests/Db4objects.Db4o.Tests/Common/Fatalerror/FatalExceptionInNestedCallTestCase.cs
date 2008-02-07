@@ -48,5 +48,8 @@ namespace Db4objects.Db4o.Tests.Common.Fatalerror
 		public virtual void Test()
 		{
 		}
+		//	private EventRegistry eventRegistry() {
+		//		return EventRegistryFactory.forObjectContainer(db());
+		//	}
 	}
 }

@@ -169,11 +169,11 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
+		// alive() checked
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer writer)
 		{
-			// alive() checked
 			return ((IIndexableTypeHandler)_handler).ReadIndexEntry(mf, writer);
 		}
 
@@ -1005,9 +1005,9 @@ namespace Db4objects.Db4o.Internal
 			_state = FieldMetadataState.Unavailable;
 		}
 
+		// FIXME: needs test case
 		public virtual void Rename(string newName)
 		{
-			// FIXME: needs test case
 			ObjectContainerBase container = Container();
 			if (!container.IsClient())
 			{

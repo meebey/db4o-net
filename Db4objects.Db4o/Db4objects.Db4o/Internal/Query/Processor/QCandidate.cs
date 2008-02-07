@@ -423,9 +423,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return ClassReflector() != null;
 		}
 
+		// / ***<Candidate interface code>***
 		public virtual IObjectContainer ObjectContainer()
 		{
-			// / ***<Candidate interface code>***
 			return Container();
 		}
 
@@ -731,10 +731,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return Value(false);
 		}
 
+		// TODO: This is only used for Evaluations. Handling may need
+		// to be different for collections also.
 		internal virtual object Value(bool a_activate)
 		{
-			// TODO: This is only used for Evaluations. Handling may need
-			// to be different for collections also.
 			if (_member == null)
 			{
 				if (_yapField == null)

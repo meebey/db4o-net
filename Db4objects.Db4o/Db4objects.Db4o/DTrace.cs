@@ -60,15 +60,15 @@ namespace Db4objects.Db4o
 			}
 		}
 
+		//            turnAllOffExceptFor(new DTrace[] {
+		//                FREESPACEMANAGER_GET_SLOT,
+		//                FREESPACEMANAGER_RAM_FREE,
+		//                FREESPACEMANAGER_BTREE_FREE,
+		//                });
+		//          turnAllOffExceptFor(new DTrace[] {BTREE_NODE_COMMIT_OR_ROLLBACK });
+		//            turnAllOffExceptFor(new DTrace[] {BTREE_NODE_REMOVE, BTREE_NODE_COMMIT_OR_ROLLBACK YAPMETA_SET_ID});
 		private static void Init()
 		{
-			//            turnAllOffExceptFor(new DTrace[] {
-			//                FREESPACEMANAGER_GET_SLOT,
-			//                FREESPACEMANAGER_RAM_FREE,
-			//                FREESPACEMANAGER_BTREE_FREE,
-			//                });
-			//          turnAllOffExceptFor(new DTrace[] {BTREE_NODE_COMMIT_OR_ROLLBACK });
-			//            turnAllOffExceptFor(new DTrace[] {BTREE_NODE_REMOVE, BTREE_NODE_COMMIT_OR_ROLLBACK YAPMETA_SET_ID});
 			if (enabled)
 			{
 				AddToClassIndex = new Db4objects.Db4o.DTrace(true, true, "add to class index tree"

@@ -47,11 +47,11 @@ namespace Db4oUnit.Extensions
 				);
 		}
 
+		// TODO: The following code is only a temporary addition until MTOC
+		//       is part of the core. When it is, all occurences of this 
+		//       method should be replaced with    isEmbeddedClientServer() 
 		protected virtual bool IsMTOC()
 		{
-			// TODO: The following code is only a temporary addition until MTOC
-			//       is part of the core. When it is, all occurences of this 
-			//       method should be replaced with    isEmbeddedClientServer() 
 			return Fixture().Db() is EmbeddedClientObjectContainer;
 		}
 

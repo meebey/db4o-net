@@ -30,9 +30,9 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			member.member.member = this;
 		}
 
+		// db4o constructor
 		public virtual void Conc(IExtObjectContainer oc)
 		{
-			// db4o constructor
 			oc.QueryByExample((new Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase
 				(true)));
 			AssertOccurrences(oc, typeof(Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase

@@ -49,5 +49,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		public override void Defragment()
 		{
 		}
+		// do nothing
+		// defragment is file-based for now
 	}
 }

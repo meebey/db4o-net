@@ -237,7 +237,7 @@ namespace Db4oUnit
 			{
 				return;
 			}
-			Fail(expected, actual, "greater than or equal to ");
+			Fail(expected, actual, "greater than or equal to ", null);
 		}
 
 		public static void IsSmaller(long expected, long actual)
@@ -255,21 +255,27 @@ namespace Db4oUnit
 			{
 				return;
 			}
-			Fail(expected, actual, "smaller than or equal to ");
+			Fail(expected, actual, "smaller than or equal to ", null);
 		}
 
-		private static void Fail(long expected, long actual, string @operator)
+		private static void Fail(long expected, long actual, string @operator, string customMessage
+			)
 		{
 			Fail(FailureMessage(expected, actual, @operator, null));
 		}
 
 		public static void AreNotEqual(long expected, long actual)
 		{
+			AreNotEqual(expected, actual, null);
+		}
+
+		public static void AreNotEqual(long expected, long actual, string customMessage)
+		{
 			if (actual != expected)
 			{
 				return;
 			}
-			Fail(expected, actual, "not equal to ");
+			Fail(expected, actual, "not equal to ", customMessage);
 		}
 
 		public static void AreNotEqual(object notExpected, object actual)

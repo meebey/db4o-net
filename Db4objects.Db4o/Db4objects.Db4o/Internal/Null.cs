@@ -33,14 +33,14 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		public virtual void DefragIndexEntry(DefragmentContextImpl context)
 		{
 		}
 
+		// do nothing
 		public virtual IPreparedComparison PrepareComparison(object obj_)
 		{
-			// do nothing
-			// do nothing
 			return new _IPreparedComparison_39(this);
 		}
 

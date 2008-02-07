@@ -45,5 +45,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 		public override void Set(object onObject, object value)
 		{
 		}
+		// do nothing
 	}
 }

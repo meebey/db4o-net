@@ -11,9 +11,9 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 {
 	public class SortMultipleTestCase : AbstractDb4oTestCase
 	{
+		// COR-18
 		public static void Main(string[] arguments)
 		{
-			// COR-18
 			new SortMultipleTestCase().RunSolo();
 		}
 
@@ -101,15 +101,15 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			4), new SortMultipleTestCase.Data(4, 3, 1), new SortMultipleTestCase.Data(4, 1, 
 			3) };
 
+		// 0
+		// 1
+		// 2
+		// 3
+		// 4
+		// 5
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			// 0
-			// 1
-			// 2
-			// 3
-			// 4
-			// 5
 			for (int dataIdx = 0; dataIdx < TestData.Length; dataIdx++)
 			{
 				Store(TestData[dataIdx]);

@@ -63,11 +63,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return ArrayHandler(typeof(int), true);
 		}
 
+		//    private ArrayHandler stringArrayHandler(){
+		//        return arrayHandler(String.class, false);
+		//    }
 		private ArrayHandler ArrayHandler(Type clazz, bool isPrimitive)
 		{
-			//    private ArrayHandler stringArrayHandler(){
-			//        return arrayHandler(String.class, false);
-			//    }
 			ITypeHandler4 typeHandler = (ITypeHandler4)Stream().FieldHandlerForClass(Reflector
 				().ForClass(clazz));
 			return new MultidimensionalArrayHandler(Stream(), typeHandler, isPrimitive);

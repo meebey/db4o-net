@@ -137,11 +137,11 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		// TODO: Db4oDatabase is shared between embedded clients.
+		// This should work, since there is an automatic bind
+		// replacement. Replication test cases will tell.
 		public virtual Db4oDatabase Identity()
 		{
-			// TODO: Db4oDatabase is shared between embedded clients.
-			// This should work, since there is an automatic bind
-			// replacement. Replication test cases will tell.
 			lock (Lock())
 			{
 				CheckClosed();
@@ -560,10 +560,10 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		private static IObjectContainer Cast(Db4objects.Db4o.Internal.PartialEmbeddedClientObjectContainer
 			 container)
 		{
-			// do nothing
 			return (IObjectContainer)container;
 		}
 

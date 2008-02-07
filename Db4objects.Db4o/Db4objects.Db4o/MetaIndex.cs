@@ -26,13 +26,13 @@ namespace Db4objects.Db4o
 
 		private const int patchLength = 0;
 
+		// The number of entries an the length are redundant, because the handler should
+		// return a fixed length, but we absolutely want to make sure, we don't free
+		// a slot into nowhere.
+		// TODO: make sure this aren't really needed
+		// and remove them 
 		public virtual void Read(ByteArrayBuffer reader)
 		{
-			// The number of entries an the length are redundant, because the handler should
-			// return a fixed length, but we absolutely want to make sure, we don't free
-			// a slot into nowhere.
-			// TODO: make sure this aren't really needed
-			// and remove them 
 			indexAddress = reader.ReadInt();
 			indexEntries = reader.ReadInt();
 			indexLength = reader.ReadInt();
@@ -58,5 +58,8 @@ namespace Db4objects.Db4o
 			indexAddress = 0;
 			indexLength = 0;
 		}
+		//        file.free(patchAddress, patchLength);
+		//        patchAddress = 0;
+		//        patchLength = 0;
 	}
 }

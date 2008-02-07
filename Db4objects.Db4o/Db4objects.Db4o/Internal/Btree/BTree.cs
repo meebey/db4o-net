@@ -100,9 +100,9 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
+		// FIXME: Change the signature to return true, if object could be removed.
 		public virtual void Remove(Transaction trans, object key)
 		{
-			// FIXME: Change the signature to return true, if object could be removed.
 			KeyCantBeNull(key);
 			IPreparedComparison preparedComparison = KeyHandler().PrepareComparison(key);
 			IEnumerator pointers = Search(trans, preparedComparison).Pointers();
@@ -435,9 +435,9 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 		}
 
+		// nothing to do here
 		public virtual BTreePointer FirstPointer(Transaction trans)
 		{
-			// nothing to do here
 			EnsureActive(trans);
 			if (null == _root)
 			{

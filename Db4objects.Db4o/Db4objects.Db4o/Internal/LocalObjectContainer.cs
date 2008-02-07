@@ -380,14 +380,14 @@ namespace Db4objects.Db4o.Internal
 			_config.ReadOnly(true);
 		}
 
+		// When a file gets opened, it uses the file size to determine where 
+		// new slots can be appended. If this method would not be called, the
+		// freespace system could already contain a slot that points beyond
+		// the end of the file and this space could be allocated and used twice,
+		// for instance if a slot was allocated and freed without ever being
+		// written to file.
 		internal virtual void EnsureLastSlotWritten()
 		{
-			// When a file gets opened, it uses the file size to determine where 
-			// new slots can be appended. If this method would not be called, the
-			// freespace system could already contain a slot that points beyond
-			// the end of the file and this space could be allocated and used twice,
-			// for instance if a slot was allocated and freed without ever being
-			// written to file.
 			if (_blockEndAddress > BytesToBlocks(FileLength()))
 			{
 				StatefulBuffer writer = GetWriter(SystemTransaction(), _blockEndAddress - 1, BlockSize
@@ -863,12 +863,12 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		// This is a reroute of writeBytes to write the free blocks
+		// unchecked.
 		public abstract void OverwriteDeletedBytes(int address, int length);
 
 		public virtual void OverwriteDeletedBlockedSlot(Slot slot)
 		{
-			// This is a reroute of writeBytes to write the free blocks
-			// unchecked.
 			OverwriteDeletedBytes(slot.Address(), BlocksToBytes(slot.Length()));
 		}
 
@@ -985,5 +985,6 @@ namespace Db4objects.Db4o.Internal
 		public override void OnCommittedListener()
 		{
 		}
+		// do nothing
 	}
 }

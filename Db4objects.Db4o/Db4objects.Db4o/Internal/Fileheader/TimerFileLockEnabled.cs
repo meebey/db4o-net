@@ -146,11 +146,11 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return Runtime.CurrentTimeMillis();
 		}
 
+		// TODO: More security is possible here to make this time unique
+		// to other processes. 
 		/// <exception cref="Db4oIOException"></exception>
 		private bool WriteAccessTime(bool closing)
 		{
-			// TODO: More security is possible here to make this time unique
-			// to other processes. 
 			if (NoAddressSet())
 			{
 				return true;

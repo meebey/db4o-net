@@ -43,15 +43,15 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly long id;
 		}
 
+		//		Assert.expect(InvalidIDException.class, new CodeBlock() {
+		//			public void run() throws Throwable {
+		//				db().getByID(id + 1);
+		//			}
+		//			
+		//		});
 		/// <exception cref="Exception"></exception>
 		public virtual void TestSmallId()
 		{
-			//		Assert.expect(InvalidIDException.class, new CodeBlock() {
-			//			public void run() throws Throwable {
-			//				db().getByID(id + 1);
-			//			}
-			//			
-			//		});
 			Assert.Expect(typeof(InvalidIDException), new _ICodeBlock_34(this));
 		}
 

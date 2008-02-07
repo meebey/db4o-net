@@ -54,9 +54,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 		}
 
+		// do nothing, freespace is dropped.
 		public override Slot GetSlot(int length)
 		{
-			// do nothing, freespace is dropped.
 			throw new InvalidOperationException();
 		}
 
@@ -64,9 +64,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 		}
 
+		// do nothing, freespace is dropped.
 		public override void Traverse(IVisitor4 visitor)
 		{
-			// do nothing, freespace is dropped.
 			throw new InvalidOperationException();
 		}
 

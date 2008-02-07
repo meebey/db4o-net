@@ -51,5 +51,6 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 		public virtual void Prepare(IConfiguration configuration)
 		{
 		}
+		// Nothing to do...
 	}
 }

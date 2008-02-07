@@ -125,12 +125,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		// FIXME: The following fails the CC build since not all files are there on .NET.
+		//        Change back when we have all files.
+		// Assert.fail("Version upgrade check failed. File not found:" + testFileName);
 		/// <exception cref="IOException"></exception>
 		private void RunDefrag(string testFileName)
 		{
-			// FIXME: The following fails the CC build since not all files are there on .NET.
-			//        Change back when we have all files.
-			// Assert.fail("Version upgrade check failed. File not found:" + testFileName);
 			Db4oFactory.Configure().AllowVersionUpdates(true);
 			IObjectContainer oc = Db4oFactory.OpenFile(testFileName);
 			oc.Close();
@@ -153,9 +153,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 		}
 
+		// do nothing
 		private void CheckDatabaseFile(string testFile)
 		{
-			// do nothing
 			WithDatabase(testFile, new _IFunction4_138(this));
 		}
 
@@ -252,17 +252,17 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 		}
 
+		// Override for special testing configuration.
 		protected virtual void ConfigureForStore(IConfiguration config)
 		{
 		}
 
+		// Override for special storage configuration.
 		protected abstract void Store(IExtObjectContainer objectContainer);
 
 		protected virtual void StoreObject(IExtObjectContainer objectContainer, object obj
 			)
 		{
-			// Override for special testing configuration.
-			// Override for special storage configuration.
 			// code MUST use the deprecated API here
 			// because it will be run against old db4o versions
 			objectContainer.Set(obj);
@@ -280,9 +280,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 		}
 
+		// Override to do updates also
 		protected virtual void AssertObjectsAreUpdated(IExtObjectContainer objectContainer
 			)
 		{
 		}
+		// Override to check updates also
 	}
 }

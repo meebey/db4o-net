@@ -53,9 +53,9 @@ namespace Db4objects.Db4o.Internal.Events
 			_container = container;
 		}
 
+		// Callbacks implementation
 		public virtual void QueryOnFinished(Transaction transaction, IQuery query)
 		{
-			// Callbacks implementation
 			EventPlatform.TriggerQueryEvent(transaction, _queryFinished, query);
 		}
 

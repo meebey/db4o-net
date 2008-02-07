@@ -71,5 +71,13 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>Returns whether this field has an index or not.</remarks>
 		/// <returns>true if this field has an index.</returns>
 		bool HasIndex();
+		//  will need for replication. Requested for 3.0 
+		//	
+		//	/**
+		//	 * sets the field value on the passed object.
+		//	 * @param onObject
+		//	 * @param fieldValue
+		//	 */
+		//	public void set(Object onObject, Object fieldValue);
 	}
 }

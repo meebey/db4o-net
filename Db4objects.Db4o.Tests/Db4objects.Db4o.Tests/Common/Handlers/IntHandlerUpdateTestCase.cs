@@ -166,12 +166,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		// FIXME: The following fails as is because of a deficiency 
+		//        in the storage format of arrays.
+		//        Arrays should also get a null Bitmap to fix.
+		// Assert.isNull(values[data.length]);
 		private void AssertAreEqual(int expected, int actual)
 		{
-			// FIXME: The following fails as is because of a deficiency 
-			//        in the storage format of arrays.
-			//        Arrays should also get a null Bitmap to fix.
-			// Assert.isNull(values[data.length]);
 			if (expected == int.MaxValue && Db4oHandlerVersion() == 0)
 			{
 				// Bug in the oldest format: It treats Integer.MAX_VALUE as null. 

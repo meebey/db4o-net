@@ -16,26 +16,26 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private PBootRecord _bootRecord;
 
+		// The header format is:
+		// Old format
+		// -------------------------
+		// {
+		// Y
+		// [Rest]
+		// New format
+		// -------------------------
+		// (byte)4
+		// block size in bytes 1 to 127
+		// [Rest]
+		// Rest (only ints)
+		// -------------------
+		// address of the extended configuration block, see YapConfigBlock
+		// headerLock
+		// YapClassCollection ID
+		// FreeBySize ID
 		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
-			// The header format is:
-			// Old format
-			// -------------------------
-			// {
-			// Y
-			// [Rest]
-			// New format
-			// -------------------------
-			// (byte)4
-			// block size in bytes 1 to 127
-			// [Rest]
-			// Rest (only ints)
-			// -------------------
-			// address of the extended configuration block, see YapConfigBlock
-			// headerLock
-			// YapClassCollection ID
-			// FreeBySize ID
 			_configBlock.Close();
 		}
 

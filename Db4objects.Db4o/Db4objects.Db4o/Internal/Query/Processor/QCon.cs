@@ -240,9 +240,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 		}
 
+		// virtual
 		public virtual IConstraint Contains()
 		{
-			// virtual
 			throw NotSupported();
 		}
 
@@ -341,9 +341,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 		}
 
+		// virtual
 		internal virtual void EvaluateSelf()
 		{
-			// virtual
 			i_candidates.Filter(this);
 		}
 
@@ -374,10 +374,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 		}
 
+		// virtual
 		internal virtual void ExchangeConstraint(Db4objects.Db4o.Internal.Query.Processor.QCon
 			 a_exchange, Db4objects.Db4o.Internal.Query.Processor.QCon a_with)
 		{
-			// virtual
 			List4 previous = null;
 			List4 current = _children;
 			while (current != null)
@@ -493,56 +493,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public virtual Db4objects.Db4o.Internal.Query.Processor.QCon Parent()
 		{
 			return i_parent;
-		}
-
-		public virtual bool HasOrJoins()
-		{
-			Collection4 lookedAt = new Collection4();
-			return HasOrJoins(lookedAt);
-		}
-
-		internal virtual bool HasOrJoins(Collection4 lookedAt)
-		{
-			if (lookedAt.ContainsByIdentity(this))
-			{
-				return false;
-			}
-			lookedAt.Add(this);
-			if (i_joins == null)
-			{
-				return false;
-			}
-			IEnumerator i = IterateJoins();
-			while (i.MoveNext())
-			{
-				QConJoin join = (QConJoin)i.Current;
-				if (join.IsOr())
-				{
-					return true;
-				}
-				if (join.HasOrJoins(lookedAt))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public virtual bool HasOrJoinWith(QConObject y)
-		{
-			IEnumerator i = IterateJoins();
-			while (i.MoveNext())
-			{
-				QConJoin join = (QConJoin)i.Current;
-				if (join.IsOr())
-				{
-					if (y == join.GetOtherConstraint(this))
-					{
-						return true;
-					}
-				}
-			}
-			return false;
 		}
 
 		public virtual bool HasJoins()
@@ -683,13 +633,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 		}
 
+		// System.out.println(indent + "JOINS");
+		// joins += join.i_id + " ";
+		//		System.out.println(joins);
+		//		System.out.println(indent + getClass().getName() + " " + i_id + " " + i_debugField + " " + joins );
+		// System.out.println(indent + "CONSTRAINTS");
 		internal virtual string LogObject()
 		{
-			// System.out.println(indent + "JOINS");
-			// joins += join.i_id + " ";
-			//		System.out.println(joins);
-			//		System.out.println(indent + getClass().getName() + " " + i_id + " " + i_debugField + " " + joins );
-			// System.out.println(indent + "CONSTRAINTS");
 			return string.Empty;
 		}
 

@@ -210,9 +210,9 @@ namespace Db4objects.Db4o.Events
 		/// <seealso cref="IObjectContainer.Delete">IObjectContainer.Delete</seealso>
 		event Db4objects.Db4o.Events.ObjectEventHandler Deactivated;
 
-		/// <summary>This event is fired after a transaction has been committed.</summary>
+		/// <summary>This event is fired just before a transaction is committed.</summary>
 		/// <remarks>
-		/// This event is fired after a transaction has been committed.
+		/// This event is fired just before a transaction is committed.
 		/// The transaction and a list of the modified objects can
 		/// be obtained from the
 		/// <see cref="CommitEventArgs">CommitEventArgs</see>

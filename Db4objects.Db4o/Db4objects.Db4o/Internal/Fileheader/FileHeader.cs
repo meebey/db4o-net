@@ -99,6 +99,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return reader.ReadByte() == version;
 		}
 
+		// TODO: freespaceID should not be passed here, it should be taken from SystemData
 		public abstract void WriteFixedPart(LocalObjectContainer file, bool startFileLockingThread
 			, bool shuttingDown, StatefulBuffer writer, int blockSize, int freespaceID);
 
@@ -108,7 +109,6 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		protected virtual void WriteTransactionPointer(Transaction systemTransaction, int
 			 transactionAddress, int address, int offset)
 		{
-			// TODO: freespaceID should not be passed here, it should be taken from SystemData
 			StatefulBuffer bytes = new StatefulBuffer(systemTransaction, address, Const4.IntLength
 				 * 2);
 			bytes.MoveForward(offset);

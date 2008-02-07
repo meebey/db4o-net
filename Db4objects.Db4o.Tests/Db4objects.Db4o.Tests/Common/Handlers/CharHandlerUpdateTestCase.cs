@@ -71,10 +71,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		//FIXME: Arrays should also get a null Bitmap to fix.
+		//Assert.isNull(wrapperArray[wrapperArray.length - 1]);
 		protected override void AssertValues(object[] values)
 		{
-			//FIXME: Arrays should also get a null Bitmap to fix.
-			//Assert.isNull(wrapperArray[wrapperArray.length - 1]);
 			for (int i = 0; i < data.Length; i++)
 			{
 				CharHandlerUpdateTestCase.Item item = (CharHandlerUpdateTestCase.Item)values[i];
@@ -142,12 +142,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Assert.AreEqual(expected, actual);
 		}
 
+		// Bug when reading old format:
+		// Null wrappers are converted to Character.MAX_VALUE
 		private char[] CastToCharArray(object obj)
 		{
-			// Bug when reading old format:
-			// Null wrappers are converted to Character.MAX_VALUE
 			ObjectByRef byRef = new ObjectByRef(obj);
 			return (char[])byRef.value;
 		}
+		// Bug in the oldest format: 
+		// It accidentally converted char[] arrays to Character[] arrays.
 	}
 }

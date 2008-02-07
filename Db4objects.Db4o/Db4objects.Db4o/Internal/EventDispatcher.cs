@@ -43,16 +43,17 @@ namespace Db4objects.Db4o.Internal
 			methods = methods_;
 		}
 
-		internal bool Dispatch(ObjectContainerBase stream, object obj, int eventID)
+		internal bool Dispatch(Transaction trans, object obj, int eventID)
 		{
 			if (methods[eventID] == null)
 			{
 				return true;
 			}
-			object[] parameters = new object[] { stream };
-			int stackDepth = stream.StackDepth();
-			int topLevelCallId = stream.TopLevelCallId();
-			stream.StackDepth(0);
+			object[] parameters = new object[] { trans.ObjectContainer() };
+			ObjectContainerBase container = trans.Container();
+			int stackDepth = container.StackDepth();
+			int topLevelCallId = container.TopLevelCallId();
+			container.StackDepth(0);
 			try
 			{
 				object res = methods[eventID].Invoke(obj, parameters);
@@ -63,8 +64,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			finally
 			{
-				stream.StackDepth(stackDepth);
-				stream.TopLevelCallId(topLevelCallId);
+				container.StackDepth(stackDepth);
+				container.TopLevelCallId(topLevelCallId);
 			}
 			return true;
 		}

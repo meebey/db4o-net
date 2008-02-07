@@ -8,9 +8,9 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		{
 		}
 
+		//		System.err.println(s);
 		public static void LogMethodCall(object target, string methodName)
 		{
-			//		System.err.println(s);
 			Log(target.ToString() + "." + methodName + "()");
 		}
 

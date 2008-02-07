@@ -223,9 +223,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 		}
 
+		// do nothing
 		private void RemoveSlot(Slot slot)
 		{
-			// do nothing
 			_slotsByLength.Remove(Transaction(), slot);
 			_slotsByAddress.Remove(Transaction(), slot);
 		}

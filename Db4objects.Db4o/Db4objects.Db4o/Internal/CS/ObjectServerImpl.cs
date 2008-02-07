@@ -107,9 +107,9 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
+		// not specialized to InterruptException for .NET conversion
 		private void StartServerThread()
 		{
-			// not specialized to InterruptException for .NET conversion
 			lock (_startupLock)
 			{
 				Thread thread = new Thread(this);
@@ -357,14 +357,14 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
+		//      The following uses old embedded C/S mode:      
+		//		ClientObjectContainer client = new ClientObjectContainer(config,
+		//				openClientSocket(), Const4.EMBEDDED_CLIENT_USER
+		//						+ (i_threadIDGen - 1), "", false);
+		//		client.blockSize(_container.blockSize());
+		//		return client;
 		internal virtual void RemoveThread(ServerMessageDispatcherImpl dispatcher)
 		{
-			//      The following uses old embedded C/S mode:      
-			//		ClientObjectContainer client = new ClientObjectContainer(config,
-			//				openClientSocket(), Const4.EMBEDDED_CLIENT_USER
-			//						+ (i_threadIDGen - 1), "", false);
-			//		client.blockSize(_container.blockSize());
-			//		return client;
 			lock (_dispatchers)
 			{
 				_dispatchers.Remove(dispatcher);
@@ -435,9 +435,9 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
+		//				e.printStackTrace();
 		private void NotifyThreadStarted()
 		{
-			//				e.printStackTrace();
 			lock (_startupLock)
 			{
 				Sharpen.Runtime.NotifyAll(_startupLock);

@@ -104,6 +104,18 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 			SodaTestUtil.ExpectOne(q, new STTH3("str3"));
 		}
 
+		//	public void testRegularExpression() {
+		//		Query q = newQuery();
+		//		q.constrain(STMagicTestCase.class);
+		//		Query qStr = q.descend("str");
+		//		final Pattern pattern = Pattern.compile("a*x");
+		//		qStr.constrain(new Evaluation() {
+		//			public void evaluate(Candidate candidate) {
+		//				candidate.include(pattern.matcher(((String) candidate.getObject())).matches());
+		//			}
+		//		});
+		//		com.db4o.db4ounit.common.soda.util.SodaTestUtil.expectOne(q, _array[1]);
+		//	}
 		/// <summary>
 		/// Magic:
 		/// Querying for an implemented Interface.
@@ -116,18 +128,6 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 		/// </remarks>
 		public virtual void TestInterface()
 		{
-			//	public void testRegularExpression() {
-			//		Query q = newQuery();
-			//		q.constrain(STMagicTestCase.class);
-			//		Query qStr = q.descend("str");
-			//		final Pattern pattern = Pattern.compile("a*x");
-			//		qStr.constrain(new Evaluation() {
-			//			public void evaluate(Candidate candidate) {
-			//				candidate.include(pattern.matcher(((String) candidate.getObject())).matches());
-			//			}
-			//		});
-			//		com.db4o.db4ounit.common.soda.util.SodaTestUtil.expectOne(q, _array[1]);
-			//	}
 			IQuery q = NewQuery();
 			q.Constrain(typeof(ISTInterface));
 			q.Constrain(new _IEvaluation_117(this));

@@ -17,12 +17,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public sealed class Item
 		{
+			// TODO fix db4ounit call logic - this should actually be run in C/S mode
 		}
 
 		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
-			// TODO fix db4ounit call logic - this should actually be run in C/S mode
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			Configure(config);
 			string fileName = DatabaseFile();

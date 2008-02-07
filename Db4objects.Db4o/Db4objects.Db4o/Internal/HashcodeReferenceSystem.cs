@@ -34,9 +34,9 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		private void HashCodeAdd(ObjectReference @ref)
 		{
-			// do nothing
 			if (_hashCodeTree == null)
 			{
 				_hashCodeTree = @ref;
@@ -105,9 +105,9 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		public virtual void TraverseReferences(IVisitor4 visitor)
 		{
-			// do nothing
 			if (_hashCodeTree == null)
 			{
 				return;

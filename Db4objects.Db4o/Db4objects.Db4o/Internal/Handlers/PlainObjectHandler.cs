@@ -21,9 +21,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
+		// do nothing
 		public virtual object Read(IReadContext context)
 		{
-			// do nothing
 			int id = context.ReadInt();
 			Transaction transaction = context.Transaction();
 			object obj = transaction.ObjectForIdFromCache(id);

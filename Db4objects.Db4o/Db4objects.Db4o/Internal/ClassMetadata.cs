@@ -62,10 +62,10 @@ namespace Db4objects.Db4o.Internal
 
 		private TernaryBool _canUpdateFast = TernaryBool.Unspecified;
 
+		// FIXME: remove this again. We solved more nicely by directly
+		//        passing out configured Field Handlers from HandlerRegistry. 
 		public ObjectContainerBase Stream()
 		{
-			// FIXME: remove this again. We solved more nicely by directly
-			//        passing out configured Field Handlers from HandlerRegistry. 
 			return _container;
 		}
 
@@ -620,14 +620,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			ObjectContainerBase container = transaction.Container();
 			container.Callbacks().ObjectOnDeactivate(transaction, obj);
-			DispatchEvent(container, obj, EventDispatcher.Deactivate);
+			DispatchEvent(transaction, obj, EventDispatcher.Deactivate);
 		}
 
 		private bool ObjectCanDeactivate(Transaction transaction, object obj)
 		{
 			ObjectContainerBase container = transaction.Container();
 			return container.Callbacks().ObjectCanDeactivate(transaction, obj) && DispatchEvent
-				(container, obj, EventDispatcher.CanDeactivate);
+				(transaction, obj, EventDispatcher.CanDeactivate);
 		}
 
 		internal virtual void DeactivateFields(Transaction a_trans, object a_object, IActivationDepth
@@ -728,23 +728,23 @@ namespace Db4objects.Db4o.Internal
 			return CascadeOnDeleteTernary() == TernaryBool.Yes;
 		}
 
-		public bool DispatchEvent(ObjectContainerBase stream, object obj, int message)
+		public bool DispatchEvent(Transaction trans, object obj, int message)
 		{
-			if (!DispatchingEvents(stream))
+			if (!DispatchingEvents(trans))
 			{
 				return true;
 			}
-			return _eventDispatcher.Dispatch(stream, obj, message);
+			return _eventDispatcher.Dispatch(trans, obj, message);
 		}
 
-		private bool DispatchingEvents(ObjectContainerBase stream)
+		private bool DispatchingEvents(Transaction trans)
 		{
-			return _eventDispatcher != null && stream.DispatchsEvents();
+			return _eventDispatcher != null && trans.Container().DispatchsEvents();
 		}
 
-		public virtual bool HasEventRegistered(ObjectContainerBase stream, int eventID)
+		public bool HasEventRegistered(Transaction trans, int eventID)
 		{
-			if (!DispatchingEvents(stream))
+			if (!DispatchingEvents(trans))
 			{
 				return true;
 			}
@@ -819,10 +819,10 @@ namespace Db4objects.Db4o.Internal
 			return new ClassMetadata.FieldMetadataIterator(this);
 		}
 
+		// Scrolls offset in passed reader to the offset the passed field should
+		// be read at.
 		public HandlerVersion FindOffset(ByteArrayBuffer buffer, FieldMetadata field)
 		{
-			// Scrolls offset in passed reader to the offset the passed field should
-			// be read at.
 			if (buffer == null)
 			{
 				return HandlerVersion.Invalid;
@@ -1386,14 +1386,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			ObjectContainerBase container = transaction.Container();
 			container.Callbacks().ObjectOnActivate(transaction, obj);
-			DispatchEvent(container, obj, EventDispatcher.Activate);
+			DispatchEvent(transaction, obj, EventDispatcher.Activate);
 		}
 
 		private bool ObjectCanActivate(Transaction transaction, object obj)
 		{
 			ObjectContainerBase container = transaction.Container();
 			return container.Callbacks().ObjectCanActivate(transaction, obj) && DispatchEvent
-				(container, obj, EventDispatcher.CanActivate);
+				(transaction, obj, EventDispatcher.CanActivate);
 		}
 
 		internal virtual void InstantiateFields(UnmarshallingContext context)
@@ -1519,12 +1519,12 @@ namespace Db4objects.Db4o.Internal
 			_index.Purge();
 		}
 
+		// TODO: may want to add manual purge to Btree
+		//       indexes here
+		// FIXME: [TA] ActivationDepth review
 		public virtual object ReadValueType(Transaction trans, int id, IActivationDepth depth
 			)
 		{
-			// TODO: may want to add manual purge to Btree
-			//       indexes here
-			// FIXME: [TA] ActivationDepth review
 			// for C# value types only:
 			// they need to be instantiated fully before setting them
 			// on the parent object because the set call modifies identity.
@@ -1738,9 +1738,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		//TODO: duplicates ClassMetadataRepository#asBytes
 		private byte[] AsBytes(string str)
 		{
-			//TODO: duplicates ClassMetadataRepository#asBytes
 			return Container().StringIO().Write(str);
 		}
 

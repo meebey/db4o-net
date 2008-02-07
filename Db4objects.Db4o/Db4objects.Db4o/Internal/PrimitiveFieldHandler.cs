@@ -37,17 +37,17 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// Override
+		// do nothing
 		internal sealed override void AddToIndex(LocalObjectContainer container, Transaction
 			 trans, int id)
 		{
 		}
 
+		// Override
+		// Primitive Indices will be created later.
 		internal override bool AllowsQueries()
 		{
-			// Override
-			// do nothing
-			// Override
-			// Primitive Indices will be created later.
 			return false;
 		}
 
@@ -55,9 +55,9 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		protected override bool DescendOnCascadingActivation()
 		{
-			// do nothing
 			return false;
 		}
 
@@ -181,9 +181,9 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		public sealed override bool WriteObjectBegin()
 		{
-			// do nothing
 			return false;
 		}
 

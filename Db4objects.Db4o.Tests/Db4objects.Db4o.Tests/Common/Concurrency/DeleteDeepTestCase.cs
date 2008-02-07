@@ -34,9 +34,9 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			config.ObjectClass(typeof(DeleteDeepTestCase)).CascadeOnDelete(true);
 		}
 
+		// config.objectClass(DeleteDeepTestCase.class).cascadeOnActivate(true);
 		private void AddNodes(int count)
 		{
-			// config.objectClass(DeleteDeepTestCase.class).cascadeOnActivate(true);
 			if (count > 0)
 			{
 				child = new DeleteDeepTestCase();

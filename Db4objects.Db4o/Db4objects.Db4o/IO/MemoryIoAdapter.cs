@@ -136,9 +136,9 @@ namespace Db4objects.Db4o.IO
 		{
 		}
 
+		// do nothing
 		public override void Delete(string path)
 		{
-			// do nothing
 			_memoryFiles.Remove(path);
 		}
 

@@ -149,9 +149,9 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 			_inArithmetic = oldInArithmetic;
 		}
 
+		// FIXME: need to map dX,fX,...
 		private void Box(ITypeRef boxedType, bool canApply)
 		{
-			// FIXME: need to map dX,fX,...
 			if (!canApply)
 			{
 				return;

@@ -18,19 +18,19 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		public override void SlotFreeOnCommit(int id, Slot slot)
 		{
 		}
 
+		//      do nothing
 		public override void SlotFreeOnRollback(int id, Slot slot)
 		{
 		}
 
+		//      do nothing
 		internal override void ProduceUpdateSlotChange(int id, Slot slot)
 		{
-			// do nothing
-			//      do nothing
-			//      do nothing
 			SetPointer(id, slot);
 		}
 
@@ -44,14 +44,14 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		//      do nothing
 		public override void SlotFreePointerOnCommit(int a_id)
 		{
 		}
 
+		// do nothing
 		public override void SetPointer(int a_id, Slot slot)
 		{
-			//      do nothing
-			// do nothing
 			WritePointer(a_id, slot);
 		}
 

@@ -104,22 +104,22 @@ namespace Db4objects.Db4o.Internal.CS
 			return _prefetchedObjects[_prefetchRight - _remainingObjects - 1];
 		}
 
+		// TODO: open this as an external tuning interface in ExtObjectSet
+		//	public void prefetch(int count){
+		//		if(count < 1){
+		//			count = 1;
+		//		}
+		//		i_prefetchCount = count;
+		//		Object[] temp = new Object[i_prefetchCount];
+		//		if(i_remainingObjects > 0){
+		//			// Potential problem here: 
+		//			// On reducing the prefetch size, this will crash.
+		//			System.arraycopy(i_prefetched, 0, temp, 0, i_remainingObjects);
+		//		}
+		//		i_prefetched = temp;
+		//	}
 		private void EnsureObjectCacheAllocated(int prefetchObjectCount)
 		{
-			// TODO: open this as an external tuning interface in ExtObjectSet
-			//	public void prefetch(int count){
-			//		if(count < 1){
-			//			count = 1;
-			//		}
-			//		i_prefetchCount = count;
-			//		Object[] temp = new Object[i_prefetchCount];
-			//		if(i_remainingObjects > 0){
-			//			// Potential problem here: 
-			//			// On reducing the prefetch size, this will crash.
-			//			System.arraycopy(i_prefetched, 0, temp, 0, i_remainingObjects);
-			//		}
-			//		i_prefetched = temp;
-			//	}
 			if (_prefetchedObjects == null)
 			{
 				_prefetchedObjects = new object[prefetchObjectCount];

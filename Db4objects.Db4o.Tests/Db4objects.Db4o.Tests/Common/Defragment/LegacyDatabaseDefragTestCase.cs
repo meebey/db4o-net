@@ -30,10 +30,10 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			}
 		}
 
+		// FIXME: solve the workspacePath issue and uncomment this
 		/// <exception cref="Exception"></exception>
 		public virtual void _test()
 		{
-			// FIXME: solve the workspacePath issue and uncomment this
 			string dbFile = GetTempFile();
 			CreateLegacyDatabase(dbFile);
 			Defrag(dbFile);

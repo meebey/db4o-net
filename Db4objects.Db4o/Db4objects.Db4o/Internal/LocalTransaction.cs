@@ -751,10 +751,10 @@ namespace Db4objects.Db4o.Internal
 			SlotFreeOnCommit(a_id, slot);
 		}
 
+		// FIXME: It should rather work like this:
+		// produceSlotChange(a_id).freePointerOnCommit();
 		public override void SlotFreePointerOnRollback(int id)
 		{
-			// FIXME: It should rather work like this:
-			// produceSlotChange(a_id).freePointerOnCommit();
 			ProduceSlotChange(id).FreePointerOnRollback();
 		}
 

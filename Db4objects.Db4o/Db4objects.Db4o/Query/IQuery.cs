@@ -172,5 +172,13 @@ namespace Db4objects.Db4o.Query
 		/// object to allow the chaining of method calls.
 		/// </returns>
 		IQuery SortBy(IQueryComparator comparator);
+		//    /**
+		//     * defines a Query node to be represented as a column in the array
+		//     * returned in every element of the ObjectSet upon query execution. 
+		//     * @param node the Query node to be represented
+		//     * @param column the column in the result array 
+		//     */
+		//    public void result(Query node, int column);
+		//
 	}
 }

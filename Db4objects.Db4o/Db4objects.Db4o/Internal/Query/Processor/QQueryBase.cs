@@ -386,6 +386,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					return result;
 				}
+				OptimizeJoins();
 				return Stream().ExecuteQuery(_this);
 			}
 		}
@@ -473,7 +474,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			QQueryBase.CreateCandidateCollectionResult r = CreateCandidateCollection();
 			Collection4 executionPath = ExecutionPath(r);
 			IEnumerator candidateCollection = new Iterator4Impl(r.candidateCollection);
-			MappingIterator executeCandidates = new _MappingIterator_410(this, executionPath, 
+			MappingIterator executeCandidates = new _MappingIterator_411(this, executionPath, 
 				candidateCollection);
 			CompositeIterator4 resultingIDs = new CompositeIterator4(executeCandidates);
 			if (!r.checkDuplicates)
@@ -483,9 +484,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return CheckDuplicates(resultingIDs);
 		}
 
-		private sealed class _MappingIterator_410 : MappingIterator
+		private sealed class _MappingIterator_411 : MappingIterator
 		{
-			public _MappingIterator_410(QQueryBase _enclosing, Collection4 executionPath, IEnumerator
+			public _MappingIterator_411(QQueryBase _enclosing, Collection4 executionPath, IEnumerator
 				 baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
@@ -504,12 +505,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private MappingIterator CheckDuplicates(CompositeIterator4 executeAllCandidates)
 		{
-			return new _MappingIterator_426(this, executeAllCandidates);
+			return new _MappingIterator_427(this, executeAllCandidates);
 		}
 
-		private sealed class _MappingIterator_426 : MappingIterator
+		private sealed class _MappingIterator_427 : MappingIterator
 		{
-			public _MappingIterator_426(QQueryBase _enclosing, CompositeIterator4 baseArg1) : 
+			public _MappingIterator_427(QQueryBase _enclosing, CompositeIterator4 baseArg1) : 
 				base(baseArg1)
 			{
 				this._enclosing = _enclosing;
@@ -580,16 +581,16 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 					else
 					{
-						candidates.Traverse(new _IVisitor4_491(this, executionPath, stream, result));
+						candidates.Traverse(new _IVisitor4_492(this, executionPath, stream, result));
 					}
 				}
 			}
 			Sort(result);
 		}
 
-		private sealed class _IVisitor4_491 : IVisitor4
+		private sealed class _IVisitor4_492 : IVisitor4
 		{
-			public _IVisitor4_491(QQueryBase _enclosing, Collection4 executionPath, ObjectContainerBase
+			public _IVisitor4_492(QQueryBase _enclosing, Collection4 executionPath, ObjectContainerBase
 				 stream, IdListQueryResult result)
 			{
 				this._enclosing = _enclosing;
@@ -612,20 +613,20 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						string fieldName = (string)(itPath.Current);
 						if (ids != null)
 						{
-							ids.Traverse(new _IVisitor4_502(this, stream, idsNew, fieldName));
+							ids.Traverse(new _IVisitor4_503(this, stream, idsNew, fieldName));
 						}
 						ids = (TreeInt)idsNew.value;
 					}
 					if (ids != null)
 					{
-						ids.Traverse(new _IVisitor4_522(this, result));
+						ids.Traverse(new _IVisitor4_523(this, result));
 					}
 				}
 			}
 
-			private sealed class _IVisitor4_502 : IVisitor4
+			private sealed class _IVisitor4_503 : IVisitor4
 			{
-				public _IVisitor4_502(_IVisitor4_491 _enclosing, ObjectContainerBase stream, ObjectByRef
+				public _IVisitor4_503(_IVisitor4_492 _enclosing, ObjectContainerBase stream, ObjectByRef
 					 idsNew, string fieldName)
 				{
 					this._enclosing = _enclosing;
@@ -647,7 +648,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 
-				private readonly _IVisitor4_491 _enclosing;
+				private readonly _IVisitor4_492 _enclosing;
 
 				private readonly ObjectContainerBase stream;
 
@@ -656,9 +657,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				private readonly string fieldName;
 			}
 
-			private sealed class _IVisitor4_522 : IVisitor4
+			private sealed class _IVisitor4_523 : IVisitor4
 			{
-				public _IVisitor4_522(_IVisitor4_491 _enclosing, IdListQueryResult result)
+				public _IVisitor4_523(_IVisitor4_492 _enclosing, IdListQueryResult result)
 				{
 					this._enclosing = _enclosing;
 					this.result = result;
@@ -669,7 +670,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					result.AddKeyCheckDuplicates(((TreeInt)treeInt)._key);
 				}
 
-				private readonly _IVisitor4_491 _enclosing;
+				private readonly _IVisitor4_492 _enclosing;
 
 				private readonly IdListQueryResult result;
 			}
@@ -785,7 +786,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return _trans;
 		}
 
-		internal virtual IEnumerator IterateConstraints()
+		public virtual IEnumerator IterateConstraints()
 		{
 			// clone the collection first to avoid
 			// InvalidIteratorException as i_constraints might be 
@@ -884,9 +885,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
+		// cheat emulating '(QQuery)this'
 		private static QQuery Cast(QQueryBase obj)
 		{
-			// cheat emulating '(QQuery)this'
 			return (QQuery)obj;
 		}
 
@@ -921,6 +922,96 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public virtual void EvaluationMode(QueryEvaluationMode mode)
 		{
 			_evaluationMode = mode;
+		}
+
+		private void OptimizeJoins()
+		{
+			if (!HasOrJoins())
+			{
+				RemoveJoins();
+			}
+		}
+
+		private bool HasOrJoins()
+		{
+			return ForEachConstraintRecursively(new _IFunction4_740(this));
+		}
+
+		private sealed class _IFunction4_740 : IFunction4
+		{
+			public _IFunction4_740(QQueryBase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Apply(object obj)
+			{
+				QCon constr = (QCon)obj;
+				IEnumerator joinIter = constr.IterateJoins();
+				while (joinIter.MoveNext())
+				{
+					QConJoin join = (QConJoin)joinIter.Current;
+					if (join.IsOr())
+					{
+						return true;
+					}
+				}
+				return false;
+			}
+
+			private readonly QQueryBase _enclosing;
+		}
+
+		private void RemoveJoins()
+		{
+			ForEachConstraintRecursively(new _IFunction4_756(this));
+		}
+
+		private sealed class _IFunction4_756 : IFunction4
+		{
+			public _IFunction4_756(QQueryBase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Apply(object obj)
+			{
+				QCon constr = (QCon)obj;
+				constr.i_joins = null;
+				return false;
+			}
+
+			private readonly QQueryBase _enclosing;
+		}
+
+		private bool ForEachConstraintRecursively(IFunction4 block)
+		{
+			IQueue4 queue = new NoDuplicatesQueue(new NonblockingQueue());
+			IEnumerator constrIter = IterateConstraints();
+			while (constrIter.MoveNext())
+			{
+				queue.Add(constrIter.Current);
+			}
+			while (queue.HasNext())
+			{
+				QCon constr = (QCon)queue.Next();
+				bool cancel = (bool)block.Apply(constr);
+				if (cancel)
+				{
+					return true;
+				}
+				IEnumerator childIter = constr.IterateChildren();
+				while (childIter.MoveNext())
+				{
+					queue.Add(childIter.Current);
+				}
+				IEnumerator joinIter = constr.IterateJoins();
+				while (joinIter.MoveNext())
+				{
+					queue.Add(joinIter.Current);
+				}
+			}
+			return false;
 		}
 
 		public override string ToString()

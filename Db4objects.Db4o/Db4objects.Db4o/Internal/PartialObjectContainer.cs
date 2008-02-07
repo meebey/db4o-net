@@ -720,20 +720,20 @@ namespace Db4objects.Db4o.Internal
 
 		private bool CaresAboutDeleting(ClassMetadata yc)
 		{
-			return this._callbacks.CaresAboutDeleting() || yc.HasEventRegistered(_this, EventDispatcher
-				.CanDelete);
+			return this._callbacks.CaresAboutDeleting() || yc.HasEventRegistered(SystemTransaction
+				(), EventDispatcher.CanDelete);
 		}
 
 		private bool CaresAboutDeleted(ClassMetadata yc)
 		{
-			return this._callbacks.CaresAboutDeleted() || yc.HasEventRegistered(_this, EventDispatcher
-				.Delete);
+			return this._callbacks.CaresAboutDeleted() || yc.HasEventRegistered(SystemTransaction
+				(), EventDispatcher.Delete);
 		}
 
 		private bool ObjectCanDelete(Transaction transaction, ClassMetadata yc, object obj
 			)
 		{
-			return _this.Callbacks().ObjectCanDelete(transaction, obj) && yc.DispatchEvent(_this
+			return _this.Callbacks().ObjectCanDelete(transaction, obj) && yc.DispatchEvent(transaction
 				, obj, EventDispatcher.CanDelete);
 		}
 
@@ -741,7 +741,7 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			_this.Callbacks().ObjectOnDelete(transaction, obj);
-			yc.DispatchEvent(_this, obj, EventDispatcher.Delete);
+			yc.DispatchEvent(transaction, obj, EventDispatcher.Delete);
 		}
 
 		public abstract bool Delete4(Transaction ta, ObjectReference yapObject, int a_cascade
@@ -1153,10 +1153,10 @@ namespace Db4objects.Db4o.Internal
 			return classMetadata.TypeHandler();
 		}
 
+		// TODO: Some ReflectClass implementations could hold a 
+		// reference to ClassMetadata to improve lookup performance here.
 		public virtual ClassMetadata ProduceClassMetadata(IReflectClass claxx)
 		{
-			// TODO: Some ReflectClass implementations could hold a 
-			// reference to ClassMetadata to improve lookup performance here.
 			if (HideClassForExternalUse(claxx))
 			{
 				return null;
@@ -2059,8 +2059,8 @@ namespace Db4objects.Db4o.Internal
 
 		private bool ObjectCanNew(Transaction transaction, ClassMetadata yc, object obj)
 		{
-			return Callbacks().ObjectCanNew(transaction, obj) && yc.DispatchEvent(_this, obj, 
-				EventDispatcher.CanNew);
+			return Callbacks().ObjectCanNew(transaction, obj) && yc.DispatchEvent(transaction
+				, obj, EventDispatcher.CanNew);
 		}
 
 		public abstract void SetDirtyInSystemTransaction(PersistentBase a_object);
@@ -2115,10 +2115,10 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
+		// overridden to do nothing in YapObjectCarrier
 		internal List4 StillTo1(Transaction trans, List4 still, object obj, IActivationDepth
 			 depth, bool forceUnknownDeactivate)
 		{
-			// overridden to do nothing in YapObjectCarrier
 			if (obj == null || !depth.RequiresActivation())
 			{
 				return still;
@@ -2187,11 +2187,11 @@ namespace Db4objects.Db4o.Internal
 			_stillToActivate = StillTo1(trans, _stillToActivate, a_object, a_depth, false);
 		}
 
+		//			}
+		//		}
 		public void StillToDeactivate(Transaction trans, object a_object, IActivationDepth
 			 a_depth, bool a_forceUnknownDeactivate)
 		{
-			//			}
-			//		}
 			_stillToDeactivate = StillTo1(trans, _stillToDeactivate, a_object, a_depth, a_forceUnknownDeactivate
 				);
 		}
@@ -2401,9 +2401,9 @@ namespace Db4objects.Db4o.Internal
 		public abstract void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
 			 classMetadata, ByteArrayBuffer buffer);
 
+		// cheat emulating '(YapStream)this'
 		private static ExternalObjectContainer Cast(PartialObjectContainer obj)
 		{
-			// cheat emulating '(YapStream)this'
 			return (ExternalObjectContainer)obj;
 		}
 

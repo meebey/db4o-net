@@ -8,5 +8,6 @@ namespace Db4objects.Db4o
 	[System.Serializable]
 	public class CorruptionException : Exception
 	{
+		// TODO implement exception basics (message, etc.)
 	}
 }

@@ -70,6 +70,7 @@ namespace Db4objects.Db4o.Reflect
 
 		void UseConstructor(IReflectConstructor constructor, object[] @params);
 
+		// FIXME: remove. Reintroduced since OM depends on it - refactor OM.
 		object[] ToArray(object obj);
 	}
 }

@@ -25,20 +25,20 @@ namespace Db4objects.Db4o.Internal.Classindex
 		{
 		}
 
+		// do nothing
 		public override void Read(Transaction a_trans)
 		{
 		}
 
+		// do nothing
 		internal override void SetDirty(ObjectContainerBase a_stream)
 		{
 		}
 
+		// do nothing
 		public sealed override void WriteOwnID(Transaction trans, ByteArrayBuffer a_writer
 			)
 		{
-			// do nothing
-			// do nothing
-			// do nothing
 			a_writer.WriteInt(0);
 		}
 	}

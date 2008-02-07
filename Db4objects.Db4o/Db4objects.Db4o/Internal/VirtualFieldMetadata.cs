@@ -58,20 +58,20 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// QBE constraint collection call
+		// There isn't anything useful to do here, since virtual fields
+		// are not on the actual object.
 		internal override void Deactivate(Transaction a_trans, object a_onObject, IActivationDepth
 			 a_depth)
 		{
 		}
 
+		// do nothing
 		public abstract override void Delete(MarshallerFamily mf, StatefulBuffer a_bytes, 
 			bool isUpdate);
 
 		public override object GetOrCreate(Transaction a_trans, object a_OnObject)
 		{
-			// QBE constraint collection call
-			// There isn't anything useful to do here, since virtual fields
-			// are not on the actual object.
-			// do nothing
 			// This is the first part of marshalling
 			// Virtual fields do it all in #marshall(), the object is never used.
 			// Returning any object here prevents triggering null handling.
@@ -101,9 +101,9 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		public override void Marshall(MarshallingContext context, object obj)
 		{
-			// do nothing
 			context.DoNotIndirectWrites();
 			Marshall(context.Transaction(), context.Reference(), context, context.IsNew());
 		}

@@ -41,5 +41,6 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				}
 			}
 		}
+		// database may have been closed
 	}
 }

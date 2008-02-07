@@ -52,9 +52,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 		}
 
+		// do nothing
 		internal override bool IsNullConstraint()
 		{
-			// do nothing
 			return !HasChildren();
 		}
 
@@ -97,13 +97,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return i_trans.Reflector().ForObject(obj);
 		}
 
+		// Our QConPath objects are just placeholders to fields,
+		// so the parents are reachable.
+		// If we find a "real" constraint, we throw the QPath
+		// out and replace it with the other constraint. 
 		private void Morph(bool[] removeExisting, QCon newConstraint, IReflectClass claxx
 			)
 		{
-			// Our QConPath objects are just placeholders to fields,
-			// so the parents are reachable.
-			// If we find a "real" constraint, we throw the QPath
-			// out and replace it with the other constraint. 
 			bool mayMorph = true;
 			if (claxx != null)
 			{

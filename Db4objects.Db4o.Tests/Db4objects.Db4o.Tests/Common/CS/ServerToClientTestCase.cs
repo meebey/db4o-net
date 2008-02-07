@@ -44,14 +44,14 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 			public void Wait(IObjectContainer client1, IObjectContainer client2)
 			{
-				int timeout = 100;
-				Cool.LoopWithTimeout(timeout, new _IConditionalBlock_34(this, client1, timeout, client2
+				int timeout = 500;
+				Cool.LoopWithTimeout(timeout, new _IConditionalBlock_33(this, client1, timeout, client2
 					));
 			}
 
-			private sealed class _IConditionalBlock_34 : IConditionalBlock
+			private sealed class _IConditionalBlock_33 : IConditionalBlock
 			{
-				public _IConditionalBlock_34(_IClientWaitLogic_30 _enclosing, IObjectContainer client1
+				public _IConditionalBlock_33(_IClientWaitLogic_30 _enclosing, IObjectContainer client1
 					, int timeout, IObjectContainer client2)
 				{
 					this._enclosing = _enclosing;
@@ -81,12 +81,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public virtual void TestInterleavedCommits()
 		{
-			AssertReplyBehavior(new _IClientWaitLogic_47(this));
+			AssertReplyBehavior(new _IClientWaitLogic_46(this));
 		}
 
-		private sealed class _IClientWaitLogic_47 : ServerToClientTestCase.IClientWaitLogic
+		private sealed class _IClientWaitLogic_46 : ServerToClientTestCase.IClientWaitLogic
 		{
-			public _IClientWaitLogic_47(ServerToClientTestCase _enclosing)
+			public _IClientWaitLogic_46(ServerToClientTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

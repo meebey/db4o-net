@@ -16,14 +16,14 @@ namespace Db4objects.Db4o.TA
 {
 	public class TransparentActivationSupport : IConfigurationItem
 	{
+		// TODO: unbindOnClose should be configurable
 		public virtual void Prepare(IConfiguration configuration)
 		{
 		}
 
+		// Nothing to do...
 		public virtual void Apply(IInternalObjectContainer container)
 		{
-			// TODO: unbindOnClose should be configurable
-			// Nothing to do...
 			container.ConfigImpl().ActivationDepthProvider(new TransparentActivationDepthProvider
 				());
 			IEventRegistry registry = EventRegistryFor(container);

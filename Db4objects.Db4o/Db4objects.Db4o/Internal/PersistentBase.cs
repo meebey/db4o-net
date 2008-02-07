@@ -15,10 +15,10 @@ namespace Db4objects.Db4o.Internal
 
 		protected int _state = 2;
 
+		// UID and address of pointer to the object in our file
+		// DIRTY and ACTIVE
 		public bool BeginProcessing()
 		{
-			// UID and address of pointer to the object in our file
-			// DIRTY and ACTIVE
 			if (BitIsTrue(Const4.Processing))
 			{
 				return false;

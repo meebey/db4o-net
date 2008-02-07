@@ -181,14 +181,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
+		// FIXME: This code has not been called in any test case when the 
+		//        new ArrayMarshaller was written.
+		//        Apparently it only frees slots.
+		//        For now the code simply returns without freeing.
 		/// <param name="classPrimitive"></param>
 		public void DeletePrimitiveEmbedded(StatefulBuffer a_bytes, PrimitiveFieldHandler
 			 classPrimitive)
 		{
-			// FIXME: This code has not been called in any test case when the 
-			//        new ArrayMarshaller was written.
-			//        Apparently it only frees slots.
-			//        For now the code simply returns without freeing.
 			a_bytes.ReadInt();
 			//int address = a_bytes.readInt();
 			a_bytes.ReadInt();

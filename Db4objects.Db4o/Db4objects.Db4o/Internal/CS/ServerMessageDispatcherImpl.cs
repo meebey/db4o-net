@@ -56,11 +56,11 @@ namespace Db4objects.Db4o.Internal.CS
 			_socket.SetSoTimeout(((Config4Impl)server.Configure()).TimeoutServerSocket());
 		}
 
+		// TODO: Experiment with packetsize and noDelay
+		// i_socket.setSendBufferSize(100);
+		// i_socket.setTcpNoDelay(true);
 		public bool Close()
 		{
-			// TODO: Experiment with packetsize and noDelay
-			// i_socket.setSendBufferSize(100);
-			// i_socket.setTcpNoDelay(true);
 			lock (_lock)
 			{
 				if (!IsMessageDispatcherAlive())

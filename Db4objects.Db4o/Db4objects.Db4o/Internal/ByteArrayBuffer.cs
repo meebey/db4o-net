@@ -38,9 +38,9 @@ namespace Db4objects.Db4o.Internal
 			_offset += bytes.Length;
 		}
 
+		// TODO: Change all callers to call writeBytes directly.
 		public virtual void Append(byte[] bytes)
 		{
-			// TODO: Change all callers to call writeBytes directly.
 			WriteBytes(bytes);
 		}
 

@@ -42,6 +42,7 @@ namespace Db4objects.Db4o.Ext
 		/// <param name="name">the new name</param>
 		void Rename(string name);
 
+		// TODO: add field creation
 		/// <summary>returns an existing stored field of this stored class.</summary>
 		/// <remarks>returns an existing stored field of this stored class.</remarks>
 		/// <param name="name">the name of the field</param>

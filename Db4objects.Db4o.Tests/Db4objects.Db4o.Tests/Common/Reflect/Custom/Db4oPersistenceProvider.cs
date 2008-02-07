@@ -87,9 +87,9 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		{
 		}
 
+		// TODO Auto-generated method stub
 		public virtual void InitContext(PersistenceContext context)
 		{
-			// TODO Auto-generated method stub
 			LogMethodCall("initContext", context);
 			IObjectContainer metadata = OpenMetadata(context.Url());
 			try

@@ -47,5 +47,6 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			Assert.AreEqual(1, result.Size());
 			field.CreateIndex();
 		}
+		// ensure that second call is ignored
 	}
 }

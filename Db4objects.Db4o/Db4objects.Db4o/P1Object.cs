@@ -133,9 +133,9 @@ namespace Db4objects.Db4o
 		{
 		}
 
+		// virtual, do nothing
 		public virtual void SetTrans(Transaction a_trans)
 		{
-			// virtual, do nothing
 			i_trans = a_trans;
 		}
 
@@ -193,9 +193,9 @@ namespace Db4objects.Db4o
 			Update(2);
 		}
 
+		// activationDepth());
 		internal virtual void Update(int depth)
 		{
-			// activationDepth());
 			if (ValidYapObject())
 			{
 				ObjectContainerBase stream = Stream();
@@ -223,9 +223,9 @@ namespace Db4objects.Db4o
 			UpdateInternal(2);
 		}
 
+		//activationDepth());
 		internal virtual void UpdateInternal(int depth)
 		{
-			//activationDepth());
 			if (ValidYapObject())
 			{
 				i_yapObject.WriteUpdate(i_trans, depth);

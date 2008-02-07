@@ -35,5 +35,6 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 		private void FreeOldUUIDMetaIndex(LocalObjectContainer file)
 		{
 		}
+		// updating removed here to allow removing MetaIndex class
 	}
 }

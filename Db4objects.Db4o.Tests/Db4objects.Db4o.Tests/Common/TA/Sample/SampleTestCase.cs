@@ -240,9 +240,9 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 			return (Country)Db().GetByID(countryID);
 		}
 
+		// A small evil multimethod hack to have "Do What I mean" behaviour. 
 		internal virtual IEnumerator IterateGraph(object obj)
 		{
-			// A small evil multimethod hack to have "Do What I mean" behaviour. 
 			if (obj is IEnumerator)
 			{
 				return (IEnumerator)obj;

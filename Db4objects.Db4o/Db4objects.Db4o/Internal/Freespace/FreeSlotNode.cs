@@ -126,17 +126,17 @@ namespace Db4objects.Db4o.Internal.Freespace
 			a_writer.WriteInt(_peer._key);
 		}
 
+		// public static final void debug(FreeSlotNode a_node){
+		// if(a_node == null){
+		// return;
+		// }
+		// System.out.println("Address:" + a_node.i_key);
+		// System.out.println("Length:" + a_node.i_peer.i_key);
+		// debug((FreeSlotNode)a_node.i_preceding);
+		// debug((FreeSlotNode)a_node.i_subsequent);
+		// }
 		public override string ToString()
 		{
-			// public static final void debug(FreeSlotNode a_node){
-			// if(a_node == null){
-			// return;
-			// }
-			// System.out.println("Address:" + a_node.i_key);
-			// System.out.println("Length:" + a_node.i_peer.i_key);
-			// debug((FreeSlotNode)a_node.i_preceding);
-			// debug((FreeSlotNode)a_node.i_subsequent);
-			// }
 			return base.ToString();
 			string str = "FreeSlotNode " + _key;
 			if (_peer != null)

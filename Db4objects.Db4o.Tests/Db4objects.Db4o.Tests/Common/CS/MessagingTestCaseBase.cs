@@ -31,7 +31,15 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			)
 		{
 			server.GrantAccess(clientId, "p");
-			return Db4oFactory.OpenClient("127.0.0.1", server.Ext().Port(), clientId, "p");
+			return Db4oFactory.OpenClient(MultithreadedClientConfig(), "127.0.0.1", server.Ext
+				().Port(), clientId, "p");
+		}
+
+		private IConfiguration MultithreadedClientConfig()
+		{
+			IConfiguration config = Db4oFactory.NewConfiguration();
+			config.ClientServer().SingleThreadedClient(false);
+			return config;
 		}
 
 		protected virtual IObjectServer OpenServerWith(IMessageRecipient recipient)

@@ -15,9 +15,10 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				BlockingQueueTestCase), typeof(Collection4TestCase), typeof(CompositeIterator4TestCase
 				), typeof(ContextVariableTestCase), typeof(CoolTestCase), typeof(Hashtable4TestCase
 				), typeof(IntArrayListTestCase), typeof(IntMatcherTestCase), typeof(Iterable4AdaptorTestCase
-				), typeof(IteratorsTestCase), typeof(NonblockingQueueTestCase), typeof(Path4TestCase
-				), typeof(SortedCollection4TestCase), typeof(Stack4TestCase), typeof(TreeKeyIteratorTestCase
-				), typeof(TreeNodeIteratorTestCase), typeof(BufferTestCase) }).Build();
+				), typeof(IteratorsTestCase), typeof(NoDuplicatesQueueTestCase), typeof(NonblockingQueueTestCase
+				), typeof(Path4TestCase), typeof(SortedCollection4TestCase), typeof(Stack4TestCase
+				), typeof(TreeKeyIteratorTestCase), typeof(TreeNodeIteratorTestCase), typeof(BufferTestCase
+				) }).Build();
 		}
 
 		public static void Main(string[] args)

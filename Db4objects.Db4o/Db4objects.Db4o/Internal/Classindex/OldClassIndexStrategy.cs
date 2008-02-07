@@ -319,6 +319,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 		{
 		}
 
+		// nothing to do
 		public override void DefragReference(ClassMetadata yapClass, DefragmentContextImpl
 			 context, int classIndexID)
 		{
@@ -326,7 +327,6 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public override int Id()
 		{
-			// nothing to do
 			return _index.GetID();
 		}
 

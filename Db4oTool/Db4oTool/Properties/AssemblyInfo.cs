@@ -8,14 +8,14 @@ using System.Security;
 [assembly: AssemblyDescription("Db4o command line utility.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
-[assembly: AssemblyProduct("Db4oTool")]
+[assembly: AssemblyProduct("db4o - database for objects")]
 [assembly: AssemblyCopyright("db4o 2005 - 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("7.1.29.9219")]
+[assembly: AssemblyVersion("7.1.29.9601")]
 
 [assembly: Mono.Author("Jean Baptiste Evain")]
 [assembly: Mono.Author("Rodrigo B. de Oliveira")]

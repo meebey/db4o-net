@@ -75,10 +75,10 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			itemClass.MinimumActivationDepth(3);
 		}
 
+		//		itemClass.cascadeOnDelete(true);
 		/// <exception cref="Exception"></exception>
 		public virtual void TestDepth0()
 		{
-			//		itemClass.cascadeOnDelete(true);
 			Db().Store(PokeName(QueryRoot()), 0);
 			Expect(NewGraph());
 		}

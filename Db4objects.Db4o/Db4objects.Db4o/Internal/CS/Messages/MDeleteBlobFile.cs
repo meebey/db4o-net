@@ -30,5 +30,6 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public override void ProcessClient(ISocket4 sock)
 		{
 		}
+		// nothing to do here
 	}
 }

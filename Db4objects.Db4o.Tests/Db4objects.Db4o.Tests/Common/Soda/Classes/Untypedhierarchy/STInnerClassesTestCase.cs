@@ -89,5 +89,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 			q.Descend("child");
 			SodaTestUtil.Expect(q, _array);
 		}
+		//SodaTest.log(q);
+		// STSomeClasses
 	}
 }

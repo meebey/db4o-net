@@ -71,9 +71,9 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		private void SetOn(Transaction trans, object a_onObject, object toSet)
 		{
-			// do nothing
 			try
 			{
 				i_translator.OnActivate(trans.ObjectContainer(), a_onObject, toSet);

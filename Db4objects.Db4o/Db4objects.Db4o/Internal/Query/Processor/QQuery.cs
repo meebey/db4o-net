@@ -22,5 +22,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public QQuery() : base()
 		{
 		}
+		// C/S only
 	}
 }

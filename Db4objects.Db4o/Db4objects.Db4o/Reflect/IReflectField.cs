@@ -38,6 +38,7 @@ namespace Db4objects.Db4o.Reflect
 
 		void SetAccessible();
 
+		//TODO Refactoring suggestion: Let the set(onObject, value) method take care of this.
 		/// <summary>
 		/// The ReflectClass returned by this method should have been
 		/// provided by the parent reflector.

@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		{
 			StopWatch watch = new AutoStopWatch();
 			Cool.LoopWithTimeout(500, new _IConditionalBlock_14(this));
-			Assert.IsTrue(watch.Peek() < 500);
+			Assert.IsSmaller(500, watch.Peek());
 		}
 
 		private sealed class _IConditionalBlock_14 : IConditionalBlock
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			StopWatch watch = new AutoStopWatch();
 			Cool.LoopWithTimeout(500, new _IConditionalBlock_24(this));
 			watch.Stop();
-			Assert.IsTrue(watch.Elapsed() >= 500 && watch.Elapsed() <= 600);
+			Assert.IsGreaterOrEqual(500, watch.Elapsed());
 		}
 
 		private sealed class _IConditionalBlock_24 : IConditionalBlock

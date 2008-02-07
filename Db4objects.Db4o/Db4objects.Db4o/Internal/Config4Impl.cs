@@ -157,17 +157,17 @@ namespace Db4objects.Db4o.Internal
 
 		private Collection4 _registeredTypeHandlers;
 
+		//  TODO: consider setting default to 8, it's more efficient with freespace.
+		// for playing with different strategies of prefetching
+		// object
+		//	private final static KeySpec IOADAPTER_KEY=new KeySpec(new RandomAccessFileAdapter());
+		// NOTE: activate this config to trigger the defragment failure
+		//= new NIOFileAdapter(512,3);
+		//  is null in the global configuration until deepClone is called
+		// The following are very frequently being asked for, so they show up in the profiler. 
+		// Let's keep them out of the Hashtable.
 		public int ActivationDepth()
 		{
-			//  TODO: consider setting default to 8, it's more efficient with freespace.
-			// for playing with different strategies of prefetching
-			// object
-			//	private final static KeySpec IOADAPTER_KEY=new KeySpec(new RandomAccessFileAdapter());
-			// NOTE: activate this config to trigger the defragment failure
-			//= new NIOFileAdapter(512,3);
-			//  is null in the global configuration until deepClone is called
-			// The following are very frequently being asked for, so they show up in the profiler. 
-			// Let's keep them out of the Hashtable.
 			return _config.GetAsInt(ActivationDepthKey);
 		}
 

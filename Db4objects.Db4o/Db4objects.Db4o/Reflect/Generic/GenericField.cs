@@ -85,9 +85,9 @@ namespace Db4objects.Db4o.Reflect.Generic
 		{
 		}
 
+		// do nothing
 		internal virtual void SetIndex(int index)
 		{
-			// do nothing
 			_index = index;
 		}
 

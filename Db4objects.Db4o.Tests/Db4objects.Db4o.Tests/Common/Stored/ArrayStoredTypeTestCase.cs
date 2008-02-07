@@ -55,5 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Stored
 			Assert.AreEqual(type.FullName, CrossPlatformServices.SimpleName(field.GetStoredType
 				().GetName()));
 		}
+		// getName() also contains the assembly name in .net
+		// so we better remove it for comparison
 	}
 }

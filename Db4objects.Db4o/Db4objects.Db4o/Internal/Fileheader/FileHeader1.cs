@@ -33,24 +33,24 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private FileHeaderVariablePart1 _variablePart;
 
+		// The header format is:
+		// (byte) 'd'
+		// (byte) 'b'
+		// (byte) '4'
+		// (byte) 'o'
+		// (byte) headerVersion
+		// (int) headerLock
+		// (long) openTime
+		// (long) accessTime
+		// (int) Transaction pointer 1
+		// (int) Transaction pointer 2
+		// (int) blockSize
+		// (int) classCollectionID
+		// (int) freespaceID
+		// (int) variablePartID
 		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
-			// The header format is:
-			// (byte) 'd'
-			// (byte) 'b'
-			// (byte) '4'
-			// (byte) 'o'
-			// (byte) headerVersion
-			// (int) headerLock
-			// (long) openTime
-			// (long) accessTime
-			// (int) Transaction pointer 1
-			// (int) Transaction pointer 2
-			// (int) blockSize
-			// (int) classCollectionID
-			// (int) freespaceID
-			// (int) variablePartID
 			_timerFileLock.Close();
 		}
 

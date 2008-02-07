@@ -50,23 +50,23 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		// Bug in the oldest format: It accidentally byte[] arrays to Byte[]
+		// arrays.
+		// FIXME: Bug of store/retrieve byte[] as object.
+		// assertPrimitiveArray((byte[])
+		// itemArrays._primitiveArrayInObject);
 		private void AssertPrimitiveArray(byte[] primitiveArray)
 		{
-			// Bug in the oldest format: It accidentally byte[] arrays to Byte[]
-			// arrays.
-			// FIXME: Bug of store/retrieve byte[] as object.
-			// assertPrimitiveArray((byte[])
-			// itemArrays._primitiveArrayInObject);
 			for (int i = 0; i < data.Length; i++)
 			{
 				AssertAreEqual(data[i], primitiveArray[i]);
 			}
 		}
 
+		// FIXME: Arrays should also get a null Bitmap to fix.
+		// Assert.isNull(wrapperArray[wrapperArray.length - 1]);
 		protected override void AssertValues(object[] values)
 		{
-			// FIXME: Arrays should also get a null Bitmap to fix.
-			// Assert.isNull(wrapperArray[wrapperArray.length - 1]);
 			for (int i = 0; i < data.Length; i++)
 			{
 				ByteHandlerUpdateTestCase.Item item = (ByteHandlerUpdateTestCase.Item)values[i];
@@ -129,10 +129,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return values;
 		}
 
+		// Bug when reading old format:
+		// Null wrappers are converted to 0
 		protected override string TypeName()
 		{
-			// Bug when reading old format:
-			// Null wrappers are converted to 0
 			return "byte";
 		}
 	}

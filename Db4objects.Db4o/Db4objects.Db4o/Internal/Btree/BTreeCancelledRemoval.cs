@@ -24,9 +24,9 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 		}
 
+		// do nothing
 		public override bool IsCancelledRemoval()
 		{
-			// do nothing
 			return true;
 		}
 
@@ -43,5 +43,6 @@ namespace Db4objects.Db4o.Internal.Btree
 		protected override void AdjustSizeOnRemovalByOtherTransaction(BTree btree)
 		{
 		}
+		// The other transaction reduces the size, this entry ignores.
 	}
 }

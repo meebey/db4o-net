@@ -57,19 +57,19 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 		}
 
+		// do nothing
 		public override void Commit()
 		{
 		}
 
+		// do nothing
 		public override void EndCommit()
 		{
 		}
 
+		// do nothing
 		public override void Free(Slot slot)
 		{
-			// do nothing
-			// do nothing
-			// do nothing
 			int address = slot.Address();
 			int length = slot.Length();
 			if (address <= 0)
@@ -130,10 +130,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 		}
 
+		// Do nothing.
+		// The RAM manager frees itself on reading.
 		private void FreeReader(StatefulBuffer reader)
 		{
-			// Do nothing.
-			// The RAM manager frees itself on reading.
 			_file.Free(reader.GetAddress(), reader.Length());
 		}
 
@@ -259,9 +259,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 		}
 
+		// this is done in read(), nothing to do here
 		public override byte SystemType()
 		{
-			// this is done in read(), nothing to do here
 			return FmRam;
 		}
 

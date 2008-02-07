@@ -153,13 +153,13 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return 2;
 		}
 
+		//TODO: will need knowledge for .NET collections here
 		/// <summary>Defines if constructor calls are supported.</summary>
 		/// <remarks>Defines if constructor calls are supported.</remarks>
 		/// <returns>true if constructor calls are supported.</returns>
 		/// <seealso cref="IConfiguration.Callbacks">IConfiguration.Callbacks</seealso>
 		public virtual bool ConstructorCallsSupported()
 		{
-			//TODO: will need knowledge for .NET collections here
 			return _delegate.ConstructorCallsSupported();
 		}
 
@@ -321,12 +321,12 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _delegate.IsCollection(candidate.GetDelegate());
 		}
 
+		//TODO: will need knowledge for .NET collections here
+		// possibility: call registercollection with strings
 		/// <summary>Register a class as a collection</summary>
 		/// <param name="clazz">class to be registered</param>
 		public virtual void RegisterCollection(Type clazz)
 		{
-			//TODO: will need knowledge for .NET collections here
-			// possibility: call registercollection with strings
 			RegisterCollection(ClassPredicate(clazz));
 		}
 
@@ -464,5 +464,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 		public virtual void SetParent(IReflector reflector)
 		{
 		}
+		// do nothing, the generic reflector does not have a parant
 	}
 }

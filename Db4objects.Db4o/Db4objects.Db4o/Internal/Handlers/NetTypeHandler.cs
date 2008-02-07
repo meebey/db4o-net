@@ -52,11 +52,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return TypeID();
 		}
 
+		// This method is needed for NetSimpleTypeHandler only during
+		// initalisation and overloaded there. No abstract declaration 
+		// here, so we don't have to implement the methods on .NET.
 		public virtual string GetName()
 		{
-			// This method is needed for NetSimpleTypeHandler only during
-			// initalisation and overloaded there. No abstract declaration 
-			// here, so we don't have to implement the methods on .NET.
 			return DotNetClassName();
 		}
 

@@ -73,10 +73,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
+		//FIXME: Arrays should also get a null Bitmap to fix.
+		//Assert.isNull(wrapperArray[wrapperArray.length - 1]);
 		protected override void AssertValues(object[] values)
 		{
-			//FIXME: Arrays should also get a null Bitmap to fix.
-			//Assert.isNull(wrapperArray[wrapperArray.length - 1]);
 			for (int i = 0; i < data.Length; i++)
 			{
 				ShortHandlerUpdateTestCase.Item item = (ShortHandlerUpdateTestCase.Item)values[i];

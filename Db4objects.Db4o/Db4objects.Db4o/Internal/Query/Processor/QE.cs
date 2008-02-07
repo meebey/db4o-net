@@ -64,9 +64,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return GetType().GetHashCode();
 		}
 
+		// overridden in QENot 
 		internal virtual bool Not(bool res)
 		{
-			// overridden in QENot 
 			return res;
 		}
 

@@ -71,11 +71,11 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// Db4o.log("!!! YapBytes.debugCheckBytes not all bytes used");
+		// This is normal for writing The FreeSlotArray, becauce one
+		// slot is possibly reserved by it's own pointer.
 		public int GetAddress()
 		{
-			// Db4o.log("!!! YapBytes.debugCheckBytes not all bytes used");
-			// This is normal for writing The FreeSlotArray, becauce one
-			// slot is possibly reserved by it's own pointer.
 			return i_address;
 		}
 
@@ -241,9 +241,9 @@ namespace Db4objects.Db4o.Internal
 			_offset = 0;
 		}
 
+		// FIXME: FB remove
 		public void UseSlot(int address, int length)
 		{
-			// FIXME: FB remove
 			UseSlot(new Db4objects.Db4o.Internal.Slots.Slot(address, length));
 		}
 
@@ -258,9 +258,9 @@ namespace Db4objects.Db4o.Internal
 			i_length = slot.Length();
 		}
 
+		// FIXME: FB remove
 		public void UseSlot(int a_id, int a_adress, int a_length)
 		{
-			// FIXME: FB remove
 			i_id = a_id;
 			UseSlot(a_adress, a_length);
 		}

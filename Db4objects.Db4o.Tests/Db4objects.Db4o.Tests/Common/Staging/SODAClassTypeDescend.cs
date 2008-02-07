@@ -14,6 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		public class DataA
 		{
 			public SODAClassTypeDescend.DataB _val;
+			// COR-471
 		}
 
 		public class DataB
@@ -29,7 +30,6 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
-			// COR-471
 			SODAClassTypeDescend.DataA objectA = new SODAClassTypeDescend.DataA();
 			SODAClassTypeDescend.DataB objectB = new SODAClassTypeDescend.DataB();
 			objectA._val = objectB;

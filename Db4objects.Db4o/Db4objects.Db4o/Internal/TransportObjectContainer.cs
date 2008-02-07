@@ -41,24 +41,24 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		internal override void InitializeEssentialClasses()
 		{
 		}
 
+		// do nothing
 		protected override void InitializePostOpenExcludingTransportObjectContainer()
 		{
 		}
 
+		// do nothing
 		internal override void InitNewClassCollection()
 		{
 		}
 
+		// do nothing
 		internal override bool CanUpdate()
 		{
-			// do nothing
-			// do nothing
-			// do nothing
-			// do nothing
 			return false;
 		}
 
@@ -71,9 +71,9 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		public override int ConverterVersion()
 		{
-			// do nothing
 			return Converter.Version;
 		}
 
@@ -86,10 +86,10 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing here
 		public sealed override Transaction NewTransaction(Transaction parentTransaction, 
 			TransactionalReferenceSystem referenceSystem)
 		{
-			// do nothing here
 			if (null != parentTransaction)
 			{
 				return parentTransaction;
@@ -116,19 +116,19 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		public sealed override void Free(int a_address, int a_length)
 		{
 		}
 
+		// do nothing
 		public sealed override void Free(Slot slot)
 		{
 		}
 
+		// do nothing
 		public override Slot GetSlot(int length)
 		{
-			// do nothing
-			// do nothing
-			// do nothing
 			return AppendBlocks(length);
 		}
 
@@ -146,9 +146,9 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		public override ClassMetadata ProduceClassMetadata(IReflectClass claxx)
 		{
-			// do nothing
 			return _parent.ProduceClassMetadata(claxx);
 		}
 
@@ -156,20 +156,20 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		internal override void ReadThis()
 		{
 		}
 
+		// do nothing
 		internal override bool StateMessages()
 		{
-			// do nothing
-			// do nothing
 			return false;
 		}
 
+		// overridden to do nothing in YapObjectCarrier
 		public override void Shutdown()
 		{
-			// overridden to do nothing in YapObjectCarrier
 			ProcessPendingClassUpdates();
 			WriteDirty();
 			Transaction().Commit();
@@ -180,6 +180,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
+		// do nothing
 		protected override void WriteVariableHeader()
 		{
 		}
@@ -190,7 +191,6 @@ namespace Db4objects.Db4o.Internal
 
 			public KnownObjectIdentity(int id)
 			{
-				// do nothing
 				_id = id;
 			}
 		}

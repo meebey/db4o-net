@@ -198,5 +198,31 @@ namespace Db4objects.Db4o.Internal
 		public static readonly string VirtualFieldPrefix = "v4o";
 
 		public const int MaxStackDepth = 20;
+		// make sure we don't fall over the -1 cliff
+		// TODO: Is this the right place for the knowledge, that an indirection
+		//       within a slot is an address and a length?
+		// debug constants
+		// TODO: This one is a terrible low-frequency blunder in YapArray.writeClass!!!
+		// If YapClass-ID == 99999 (not very likely) then we will get IGNORE_ID. Change
+		// to -Integer.MAX_VALUE or protect 99999 in YapFile.getPointerSlot() 
+		// This is a hard coded 2 Gig-Limit for YapClass-IDs.
+		// TODO: get rid of magic numbers like this one
+		// array type information
+		// message levels
+		// Use if > NONE: normal messages
+		// if > STATE: state messages
+		// if > ACTIVATION: activation messages
+		// String Encoding
+		// Timings
+		// 10 minutes until clients are disconnected, (5 minutes until they get pinged) 
+		// TODO: Consider to make configurable
+		// 70 MB   
+		// 7 Million 
+		// 70 MB for byte arrays
+		// bits in YapMeta.i_state
+		// and reuse in other classes 
+		// system classes that need to get loaded first
+		// StaticClass should load Staticfield
+		// TODO: remove unnecessary
 	}
 }

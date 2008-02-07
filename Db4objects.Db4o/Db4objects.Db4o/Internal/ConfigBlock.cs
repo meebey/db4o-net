@@ -60,28 +60,28 @@ namespace Db4objects.Db4o.Internal
 		private const int Length = MinimumLength + (Const4.IntLength * 7) + EncryptionPasswordLength
 			 + 1;
 
+		// ConfigBlock Format
+		// int    length of the config block
+		// long   last access time for timer lock
+		// long   last access time for timer lock (duplicate for atomicity)
+		// byte   unicode or not
+		// int    transaction-in-process address
+		// int    transaction-in-process address (duplicate for atomicity)
+		// int    id of PBootRecord
+		// int    unused (and lost)
+		// 5 bytes of the encryption password
+		// byte   freespace system used
+		// int    freespace address
+		// int    converter versions
+		// own length
+		// candidate ID and last access time
+		// Unicode byte
+		// complete possible data in config block
+		// (two transaction pointers, PDB ID, lost int, freespace address, converter_version, index id)
 		/// <exception cref="Db4oIOException"></exception>
 		public static Db4objects.Db4o.Internal.ConfigBlock ForNewFile(LocalObjectContainer
 			 file)
 		{
-			// ConfigBlock Format
-			// int    length of the config block
-			// long   last access time for timer lock
-			// long   last access time for timer lock (duplicate for atomicity)
-			// byte   unicode or not
-			// int    transaction-in-process address
-			// int    transaction-in-process address (duplicate for atomicity)
-			// int    id of PBootRecord
-			// int    unused (and lost)
-			// 5 bytes of the encryption password
-			// byte   freespace system used
-			// int    freespace address
-			// int    converter versions
-			// own length
-			// candidate ID and last access time
-			// Unicode byte
-			// complete possible data in config block
-			// (two transaction pointers, PDB ID, lost int, freespace address, converter_version, index id)
 			return new Db4objects.Db4o.Internal.ConfigBlock(file, true, 0);
 		}
 

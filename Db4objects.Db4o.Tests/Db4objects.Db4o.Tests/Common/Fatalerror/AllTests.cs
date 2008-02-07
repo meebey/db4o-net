@@ -17,5 +17,6 @@ namespace Db4objects.Db4o.Tests.Common.Fatalerror
 		{
 			return new Type[] { typeof(NativeQueryTestCase) };
 		}
+		//TODO FatalExceptionInNestedCallTestCase.class,
 	}
 }

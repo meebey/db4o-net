@@ -69,9 +69,9 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 				this.LoadQuery();
 			}
 
+			//throw new RuntimeException("No boolean constants expected in parsed expression tree");
 			private void LoadQuery()
 			{
-				//throw new RuntimeException("No boolean constants expected in parsed expression tree");
 				this._enclosing.LoadArgument(1);
 			}
 

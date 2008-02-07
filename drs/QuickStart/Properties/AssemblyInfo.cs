@@ -26,11 +26,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Db4objects.Drs.QuickStart 6.4.14.8112 (.NET 2.0)")]
 [assembly: AssemblyConfiguration(".NET 2.0")]
 [assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
-[assembly: AssemblyProduct("dRS QuickStart")]
-[assembly: AssemblyCopyright("db4o 2005 - 2007")]
+[assembly: AssemblyProduct("db4o - database for objects")]
+[assembly: AssemblyCopyright("db4o 2005 - 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("6.4.14.8112")]
+[assembly: AssemblyVersion("7.1.29.9601")]

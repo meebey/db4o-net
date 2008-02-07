@@ -96,10 +96,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return (int[])byRef.value;
 		}
 
+		// Bug in the oldest format: 
+		// It accidentally converted int[] arrays to Integer[] arrays.
 		protected virtual int Db4oHandlerVersion()
 		{
-			// Bug in the oldest format: 
-			// It accidentally converted int[] arrays to Integer[] arrays.
 			return _handlerVersion;
 		}
 
@@ -107,16 +107,20 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 		}
 
+		// Override to check updates also
 		protected virtual void UpdateArrays(object obj)
 		{
 		}
 
+		// Override to check updates also
 		protected virtual void AssertUpdatedValues(object[] values)
 		{
 		}
 
+		// Override to check updates also
 		protected virtual void AssertUpdatedArrays(object obj)
 		{
 		}
+		// Override to check updates also
 	}
 }
