@@ -11,29 +11,38 @@ using Mono.Cecil;
 
 namespace Db4objects.Db4o.Linq.CodeAnalysis
 {
-	internal class MetadataResolver : DefaultAssemblyResolver
+	internal class MetadataResolver
 	{
 		public static MetadataResolver Instance = new MetadataResolver();
 
+		private ICachingStrategy<Assembly, AssemblyDefinition> _assemblyCache;
 		private ICachingStrategy<MethodInfo, MethodDefinition> _methodCache;
 
 		private MetadataResolver()
 		{
+			_assemblyCache = new AllItemsCachingStrategy<Assembly, AssemblyDefinition>();
 			_methodCache = new SingleItemCachingStrategy<MethodInfo, MethodDefinition>();
+		}
+
+		private AssemblyDefinition GetCachedAssembly(Assembly assembly)
+		{
+			return _assemblyCache.Get(assembly);
+		}
+
+		private void CacheAssembly(Assembly assembly, AssemblyDefinition asm)
+		{
+			_assemblyCache.Add(assembly, asm);
 		}
 
 		private AssemblyDefinition GetAssembly(Assembly assembly)
 		{
-			try
-			{
-				return Resolve(assembly.FullName);
-			}
-			catch (System.IO.FileNotFoundException)
-			{
-				var definition = AssemblyFactory.GetAssembly(assembly.ManifestModule.FullyQualifiedName);
-				RegisterAssembly(definition);
-				return definition;
-			}
+			var asm = GetCachedAssembly(assembly);
+			if (asm != null)
+				return asm;
+
+			asm = AssemblyFactory.GetAssembly(assembly.ManifestModule.FullyQualifiedName);
+			CacheAssembly(assembly, asm);
+			return asm;
 		}
 
 		private static string GetFullName(Type type)
