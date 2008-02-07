@@ -11,7 +11,10 @@ CORE = Db4objects.Db4o.dll
 TESTS = Db4objects.Db4o.Tests.exe
 UNIT = Db4oUnit.dll
 UNIT_EXT = Db4oUnit.Extensions.dll
-ADMIN = Db4oAdmin.exe
+INSTR = Db4objects.Db4o.Instrumentation.dll
+NQ = Db4objects.Db4o.NativeQueries.dll
+LINQ = Db4objects.Db4o.Linq.dll
+LINQ_TESTS = Db4objects.Db4o.Linq.Tests.exe
 
 CECIL = Mono.Cecil.dll
 FLOWANALYSIS = Cecil.FlowAnalysis.dll
