@@ -146,19 +146,41 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		private void CleanStrongName(string path)
 		{
 			AssemblyDefinition asm = AssemblyFactory.GetAssembly(path);
-			foreach (ModuleDefinition m in asm.Modules)
-			{
-				foreach (AssemblyNameReference name in m.AssemblyReferences)
-				{
-					if (!name.Name.StartsWith("Db4objects.Db4o")) continue;
+			CleanStrongNames(asm.Modules);
+			CleanStrongName(asm.Name);
+			AssemblyFactory.SaveAssembly(asm, path);
+		}
 
-					name.Version = new Version();
-					name.PublicKeyToken = new byte[0];
+		private static void CleanStrongNames(ModuleDefinitionCollection modules)
+		{
+			foreach (ModuleDefinition m in modules)
+			{
+				CleanStrongNames(m.AssemblyReferences);
+			}
+		}
+
+		private static void CleanStrongNames(AssemblyNameReferenceCollection references)
+		{
+			foreach (AssemblyNameReference name in references)
+			{
+				if (name.Name.StartsWith("Db4objects.Db4o")
+				    || name.Name.StartsWith("Db4oUnit"))
+				{
+					CleanStrongName(name);
 				}
 			}
-			asm.Name.PublicKey = new byte[0];
-			asm.Name.PublicKeyToken = new byte[0];
-			AssemblyFactory.SaveAssembly(asm, path);
+		}
+
+		private static void CleanStrongName(AssemblyNameDefinition nameDefinition)
+		{
+			nameDefinition.PublicKey = new byte[0];
+			nameDefinition.PublicKeyToken = new byte[0];
+		}
+
+		private static void CleanStrongName(AssemblyNameReference name)
+		{
+			name.Version = new Version();
+			name.PublicKeyToken = new byte[0];
 		}
 #endif
 
