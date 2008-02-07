@@ -6,13 +6,13 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("db4objects Inc.")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("db4objects 2004 - 2007")]
+[assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
+[assembly: AssemblyProduct("db4o - database for objects")]
+[assembly: AssemblyCopyright("db4o 2005 - 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: AssemblyVersion("7.0.0.001")]
+[assembly: AssemblyVersion("7.1.29.9601")]
 
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
