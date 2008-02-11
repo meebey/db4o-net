@@ -7,7 +7,7 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI1
 {
-#if !CF_2_0
+#if !CF
 	/// <summary>
 	/// Summary description for CsImage.
 	/// </summary>

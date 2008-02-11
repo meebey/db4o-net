@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Reflect.Net
             {
                 throw new Db4objects.Db4o.Internal.ReflectException(e.InnerException);
             }
-#if CF_2_0
+#if CF
             catch (System.Exception e)
 			{
                 throw new Db4objects.Db4o.Internal.ReflectException(e);

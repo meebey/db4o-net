@@ -8,6 +8,9 @@ namespace System
 	}
 }
 
+#endif
+
+#if CF
 namespace Db4objects.Db4o.Tests
 {
 	class WindowWriter : System.IO.TextWriter 

@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Internal.Query
         private void Marshal()
         {
             _delegateType = _content.GetType();
-#if !CF_2_0
+#if !CF
             _target = _content.Target;
             _method = _content.Method.Name;
             _type = _content.Method.DeclaringType;
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Internal.Query
 
         private Delegate Unmarshal()
         {
-#if CF_2_0
+#if CF
             throw new NotSupportedException();
 #else
             return (null == _target)

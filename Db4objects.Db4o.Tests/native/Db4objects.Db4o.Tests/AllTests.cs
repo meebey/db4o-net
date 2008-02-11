@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Tests
 	{
 		public static int Main(string[] args)
 		{
-#if CF_2_0
+#if CF
 			return new AllTests().RunSolo();
 //            return new AllTests().RunClientServer();
 #else
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests
 		
 		protected override Type[] TestCases()
 		{
-			//return new Type[] { typeof(Common.CS.ServerToClientTestCase) };
+			//return new Type[] { typeof(Common.CS.IsAliveTestCase) };
 			//return new Type[] { typeof(CLI2.Types.ArrayAsGenericListTestCase) };
 			return new Type[]
 				{	

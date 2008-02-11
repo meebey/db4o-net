@@ -1,7 +1,7 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 namespace Db4objects.Db4o.Diagnostic
 {
-#if !CF_2_0
+#if !CF
     /// <summary>prints Diagnostic messsages to the Console.</summary>
     /// <remarks>
     /// prints Diagnostic messsages to System.Diagnostics.Trace.

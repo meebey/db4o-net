@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
         private void AssertRetrievedItem<T>(IList<T> list)
         {
-#if CF_2_0
+#if CF
             object[] elements = (object[]) GetField(list, "elements");
             Assert.AreEqual(10, elements.Length);
             foreach (object obj in elements)

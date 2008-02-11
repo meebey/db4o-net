@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
         protected override Type[] TestCases()
         {
             return new Type[] {
-#if !CF_2_0
+#if !CF
                 typeof(Db4oNETMigrationTestSuite),
 #endif
             };

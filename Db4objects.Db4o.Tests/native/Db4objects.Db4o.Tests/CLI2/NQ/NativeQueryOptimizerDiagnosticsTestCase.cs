@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 {
     public partial class NativeQueryOptimizerDiagnosticsTestCase
     {
-#if !CF_2_0
+#if !CF
         public void TesteInlineClosureComplexQueryFails()
         {
             _failed = false;

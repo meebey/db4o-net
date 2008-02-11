@@ -11,7 +11,7 @@ namespace Sharpen.IO
     {
         private FileStream _stream;
 
-#if !CF_2_0
+#if !CF
         [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
         static extern int FlushFileBuffers(IntPtr fileHandle);
 #endif
@@ -63,7 +63,7 @@ namespace Sharpen.IO
         {
             _stream.Flush();
 
-#if !CF_2_0 
+#if !CF 
             FlushFileBuffers(_stream.SafeFileHandle.DangerousGetHandle());
 #endif
 

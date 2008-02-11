@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
         private void AssertRetrievedItem(IDictionary<string, int> dict)
         {
-#if CF_2_0
+#if CF
             Assert.IsFalse(Db().IsActive(dict));
             string[] keys = (string[])  Reflection4.GetFieldValue(dict, "_keys");
             AssertInitalArray(keys, 16);
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
             Assert.AreEqual(default(int),  Reflection4.GetFieldValue(dict, "_size"));
         }
 
-#if CF_2_0
+#if CF
         private void AssertInitalArray<T>(T[] array, int length)
         {
             Assert.AreEqual(length, array.Length);

@@ -134,7 +134,7 @@ namespace Sharpen.Lang
 
 		private Assembly LoadUnversionedAssembly(AssemblyName unversioned)
 		{	
-#if CF_2_0
+#if CF
             return Assembly.Load(unversioned);
 #else
 			Assembly found = Assembly.LoadWithPartialName(unversioned.FullName);
@@ -190,7 +190,7 @@ namespace Sharpen.Lang
 
 		public override Type Resolve()
 		{
-#if !CF_2_0
+#if !CF
 			return _elementType.Resolve().MakePointerType();
 #else
 			StringBuilder builder = new StringBuilder();
@@ -204,7 +204,7 @@ namespace Sharpen.Lang
 	{
 		public static Type MakeArrayType(Type elementType, int rank)
 		{
-#if !CF_2_0
+#if !CF
 			if (rank == 1) return elementType.MakeArrayType();
 			return elementType.MakeArrayType(rank);
 #else

@@ -7,7 +7,7 @@ using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI1
 {
-#if !CF_2_0
+#if !CF
     /// <summary>
     /// This test emits an assembly with a version in one app domain
     /// and then unloads it.

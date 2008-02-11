@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 				typeof(Cat),
 				typeof(DoubleNQTestCase),
 				typeof(ListElementByIdentity),
-#if !CF_2_0
+#if !CF
 				typeof(MultipleAssemblySupportTestCase),
 #endif
 				typeof(NativeQueriesTestCase),

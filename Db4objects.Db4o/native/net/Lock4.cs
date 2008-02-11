@@ -3,7 +3,7 @@
 using System;
 using System.Threading;
 
-#if !CF_2_0
+#if !CF
 namespace Db4objects.Db4o.Foundation
 {
     public class Lock4

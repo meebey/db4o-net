@@ -52,7 +52,7 @@ namespace Sharpen.Lang
 		public void SetName(string name)
 		{
 			this._name = name;
-#if !CF_2_0
+#if !CF
 			if (_thread != null && name != null)
 			{
 				try
@@ -68,7 +68,7 @@ namespace Sharpen.Lang
 
 		public string GetName()
 		{
-#if !CF_2_0
+#if !CF
 			return _thread != null ? _thread.Name : _name;
 #else
 			return "";
@@ -81,7 +81,7 @@ namespace Sharpen.Lang
 			if (priority < MinPriority || priority > MaxPriority)
 			{
 				string message = string.Format("Thread priority must be between {0} and {1}", MinPriority, MaxPriority);
-#if !CF_2_0
+#if !CF
 				throw new ArgumentOutOfRangeException("priority", priority, message);
 #else
 				throw new ArgumentOutOfRangeException(message);

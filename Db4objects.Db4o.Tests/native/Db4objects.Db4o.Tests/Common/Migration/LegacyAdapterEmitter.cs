@@ -2,7 +2,7 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-#if !CF_2_0
+#if !CF
 	internal class LegacyAdapterEmitter
 	{
 		private string _legacyAssembly;

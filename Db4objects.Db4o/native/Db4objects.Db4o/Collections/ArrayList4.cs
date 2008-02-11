@@ -178,7 +178,7 @@ namespace Db4objects.Db4o.Collections
             return Array.BinarySearch(GetElements(), index, count, item, comparer);
         }
 
-        #if !CF_2_0
+        #if !CF
 
         public ArrayList4<TOutput> ConvertAll<TOutput>(Converter<E, TOutput> converter)
         {

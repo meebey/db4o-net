@@ -10,7 +10,7 @@ using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 {
-#if !CF_2_0
+#if !CF
 	public class Author
 	{
 		private int _id;

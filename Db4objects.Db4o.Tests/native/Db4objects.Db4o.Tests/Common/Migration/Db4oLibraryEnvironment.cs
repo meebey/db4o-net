@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Util;
-#if !CF_2_0
+#if !CF
 using Mono.Cecil;
 #endif
 using File=Sharpen.IO.File;
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			_assemblyName = Path.GetFileNameWithoutExtension(_assembly);
         }
 
-#if !CF_2_0        
+#if !CF        
 		public void Execute()
 		{
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		public Db4oLibraryEnvironment(File file, File additionalAssembly)
 		{
 			_targetAssembly = file.GetAbsolutePath();
-#if !CF_2_0
+#if !CF
 			_domain = CreateDomain(SetUpBaseDirectory());
 			try
 			{
@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 #endif
         }
 
-#if !CF_2_0 
+#if !CF
 		private string SetUpBaseDirectory()
 		{
 			string baseDirectory = BaseDirectory();
@@ -192,7 +192,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private string GetVersion()
 		{
-#if !CF_2_0
+#if !CF
 			return System.Reflection.Assembly.ReflectionOnlyLoadFrom(_targetAssembly).GetName().Version.ToString();
 #else
 			return System.Reflection.Assembly.LoadFrom(_targetAssembly).GetName().Version.ToString();
@@ -201,14 +201,14 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		public void InvokeInstanceMethod(Type type, string methodName, params object[] args)
 		{
-#if !CF_2_0        
+#if !CF
 			_domain.DoCallBack(new CrossAppDomainDelegate(new InvokeInstanceMethod(ReflectPlatform.FullyQualifiedName(type), methodName, args).Execute));
 #endif
         }
 
 		public void Dispose()
 		{
-#if !CF_2_0 
+#if !CF
 			AppDomain.Unload(_domain);
 #endif
 		}

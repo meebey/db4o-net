@@ -7,7 +7,7 @@ using Db4objects.Db4o.Config;
 
 namespace Db4objects.Db4o.Config
 {
-#if !CF_2_0
+#if !CF
 	using System.Runtime.Serialization;
 	using System.Runtime.Serialization.Formatters.Binary;
 

@@ -5,67 +5,73 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AB1BF369-A9C4-4876-9797-178DB8AD437F}</ProjectGuid>
+    <ProjectGuid>{84DA1E13-9FBB-4A5D-B657-04973B40B48C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Db4objects.Db4o.NativeQueries</RootNamespace>
+    <RootNamespace>Db4objects.Db4o.NativeQueries_CF_2008</RootNamespace>
     <AssemblyName>Db4objects.Db4o.NativeQueries</AssemblyName>
+    <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PlatformFamilyName>PocketPC</PlatformFamilyName>
+    <PlatformID>3C41C503-53EF-4c2a-8DD4-A8217CAD115E</PlatformID>
+    <OSVersion>4.20</OSVersion>
+    <DeployDirSuffix>Db4objects.Db4o.NativeQueries_CF_2008</DeployDirSuffix>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FormFactorID>
+    </FormFactorID>
+    <StartupObject>
+    </StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
+    <NativePlatformName>Pocket PC 2003</NativePlatformName>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    
-    
   <SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile></PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CF_3_5;CF;$(PlatformFamilyName)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>Db4objects.Db4o.NativeQueries.xml</DocumentationFile>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;CF_3_5;CF;$(PlatformFamilyName)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>Db4objects.Db4o.NativeQueries.xml</DocumentationFile>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Cecil.FlowAnalysis, Version=0.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libs\net-2.0\Cecil.FlowAnalysis.dll</HintPath>
+      <HintPath>..\Libs\compact-2.0\Cecil.FlowAnalysis.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libs\net-2.0\Mono.Cecil.dll</HintPath>
+      <HintPath>..\Libs\compact-2.0\Mono.Cecil.dll</HintPath>
     </Reference>
+    <Reference Include="mscorlib"/>
     <Reference Include="System"/>
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data"/>
-    <Reference Include="System.Xml"/>
   </ItemGroup>
   <ItemGroup><Compile Include="Db4objects.Db4o.NativeQueries\Expr\AndExpression.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\BinaryExpression.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\BoolConstExpression.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Build\ExpressionBuilder.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\ArithmeticOperator.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\ComparisonOperator.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\ArithmeticExpression.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\ArrayAccessValue.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\CandidateFieldRoot.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\ComparisonOperandDescendant.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\ComparisonOperandRoot.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\ConstValue.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\FieldValue.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\IComparisonOperand.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\IComparisonOperandAnchor.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\IComparisonOperandVisitor.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\MethodCallValue.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\PredicateFieldRoot.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\StaticFieldRoot.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\Cmp\Operand\ThreeWayComparison.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\ComparisonExpression.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\IExpression.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\IExpressionVisitor.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\NotExpression.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\OrExpression.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Expr\TraversingExpressionVisitor.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Instrumentation\ComparisonBytecodeGeneratingVisitor.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Instrumentation\SODAMethodBuilder.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Instrumentation\TypeDeducingVisitor.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Optimization\ComparisonQueryGeneratingVisitor.cs"/><Compile Include="Db4objects.Db4o.NativeQueries\Optimization\SODAQueryBuilder.cs"/><Compile Include="Properties\AssemblyInfo.cs"/><Compile Include="native\Db4objects.Db4o.NativeQueries\ICachingStrategy.cs"/><Compile Include="native\Db4objects.Db4o.NativeQueries\NQOptimizer.cs"/><Compile Include="native\Db4objects.Db4o.NativeQueries\Optimization\NativeQueriesPlatform.cs"/><Compile Include="native\Db4objects.Db4o.NativeQueries\QueryExpressionBuilder.cs"/><Compile Include="native\Db4objects.Db4o.NativeQueries\SingleItemCachingStrategy.cs"/><Compile Include="native\Db4objects.Db4o.NativeQueries\UnsupportedPredicateException.cs"/></ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Db4objects.Db4o.Instrumentation\Db4objects.Db4o.Instrumentation-2008.csproj">
-      <Project>{FFA59708-14D1-4C22-B9A4-1A389EE796D5}</Project>
-      <Name>Db4objects.Db4o.Instrumentation-2008</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-2008.csproj">
-      <Project>{600CD3BF-2ED2-4183-87F7-ADD78A968AE0}</Project>
-      <Name>Db4objects.Db4o-2008</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets"/>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
+        <HostingProcess disable="1"/>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -73,4 +79,15 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\Db4objects.Db4o.Instrumentation\Db4objects.Db4o.Instrumentation-CF-2008.csproj">
+      <Project>{F266671C-596C-486B-B9E2-CE456FBC40D7}</Project>
+      <Name>Db4objects.Db4o.Instrumentation-CF-2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-CF-2008.csproj">
+      <Project>{95FD1C64-F1A3-4C8A-B170-D518E899B2FE}</Project>
+      <Name>Db4objects.Db4o-CF-2008</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v3.5'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets"/>
 </Project>

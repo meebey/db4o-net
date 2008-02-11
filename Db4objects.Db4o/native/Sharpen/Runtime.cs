@@ -140,7 +140,7 @@ namespace Sharpen
 
 		public static String GetProperty(String key, String defaultValue)
 		{
-#if CF_2_0
+#if CF
 			return key.Equals("line.separator") ? "\n" : defaultValue;
 #else
 			return key.Equals("line.separator")
@@ -151,7 +151,7 @@ namespace Sharpen
 
 		public static string GetEnvironmentVariable(string variableName, string defaultValue)
 		{
-#if CF_2_0
+#if CF
 			return defaultValue;
 #else
 			string value = Environment.GetEnvironmentVariable(variableName);
@@ -182,21 +182,21 @@ namespace Sharpen
 
 		public static void Wait(object obj, long timeout) 
 		{
-#if !CF_2_0
+#if !CF
 			Monitor.Wait(obj, (int) timeout);
 #endif
 		}
 
 		public static void Notify(object obj) 
 		{
-#if !CF_2_0
+#if !CF
 			Monitor.Pulse(obj);
 #endif
 		}
 
 		public static void NotifyAll(object obj) 
 		{
-#if !CF_2_0
+#if !CF
 			Monitor.PulseAll(obj);
 #endif
 		}

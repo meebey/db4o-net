@@ -7,7 +7,7 @@ namespace Sharpen.Lang
 {
 	public class IdentityHashCodeProvider
 	{
-#if !CF_2_0
+#if !CF
 		public static int IdentityHashCode(object obj)
 		{
 			return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);

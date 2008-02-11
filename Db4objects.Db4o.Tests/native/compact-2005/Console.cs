@@ -1,12 +1,9 @@
 /* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 
-#if CF_2_0
+#if CF
 
 using System;
-using System.Drawing;
-using System.Collections;
 using System.Windows.Forms;
-using System.Data;
 using System.IO;
 
 namespace Db4objects.Db4o.Tests

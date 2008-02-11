@@ -197,7 +197,7 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public virtual bool SkipConstructor(bool flag, bool testConstructor)
 		{
-#if !CF_2_0
+#if !CF
 			if (flag)
 			{
 				IReflectConstructor constructor = new SerializationConstructor(GetNetType());

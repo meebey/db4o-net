@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private static bool IsVersionOrGreater(string versionName, double minimumVersion)
 		{
-#if !CF_2_0
+#if !CF
 			double currentVersion;
 			if (!Double.TryParse(Path.GetFileName(versionName), NumberStyles.AllowDecimalPoint | NumberStyles.Float, NumberFormatInfo.InvariantInfo, out currentVersion))
 			{

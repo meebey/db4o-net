@@ -123,7 +123,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 			Expect(new GetterNull());
 			Expect(new StartsWith(), "Achat", "Acrobat");
 
-#if !CF_2_0
+#if !CF
 
 			Expect<Cat>(delegate(Cat cat)
 			{
@@ -228,7 +228,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 			Expect(Db().Query(predicate), names);
 		}
 
-#if !CF_2_0
+#if !CF
 		private void Expect<Extent>(System.Predicate<Extent> match, params string[] names)
 		{
 			System.Collections.Generic.IList<Extent> list = Db().Query(match);

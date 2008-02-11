@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 {
 	class NetArrayFromJavaTestCase : ITestCase
 	{
-#if !CF_2_0
+#if !CF
 		public class Item
 		{
 			private string _description;

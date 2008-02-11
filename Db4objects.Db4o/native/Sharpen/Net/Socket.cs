@@ -60,7 +60,7 @@ namespace Sharpen.Net
 
 			NetworkStream stream = new NetworkStream(_delegate);
 
-#if CF_2_0
+#if CF
 			_in = new SocketInputStream(this);
 #else
 			_in = new InputStream(stream);
@@ -68,7 +68,7 @@ namespace Sharpen.Net
 			_out = new OutputStream(stream);
 		}
 	}
-#if CF_2_0
+#if CF
 	internal class SocketInputStream : IInputStream
     {
     	private readonly Socket _socket;

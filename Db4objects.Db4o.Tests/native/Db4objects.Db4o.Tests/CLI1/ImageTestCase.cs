@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 {
 	public class ImageTestCase : AbstractDb4oTestCase
 	{
-#if !CF_2_0
+#if !CF
 		public class ImageTranslator : IObjectConstructor
 		{
 			public object OnInstantiate(IObjectContainer container, object obj)

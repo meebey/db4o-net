@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 {
 	class UninitializedObjectsWithFinalizerTestCase : ITestCase
 	{
-#if !CF_2_0
+#if !CF
 		private const string DatabaseFileName = "TestUnitializedObjects.odb";
 		public void TestUninitilizedObjects()
 		{

@@ -1,7 +1,7 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 namespace Db4objects.Db4o.Tests.Util
 {
-#if !CF_2_0
+#if !CF
 	using System;
 	using System.CodeDom.Compiler;
 	using System.IO;
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Util
 			}
 		}
 
-#if !CF_2_0
+#if !CF
 		static CompilerInfo GetCSharpCompilerInfo()
 		{
 			return CodeDomProvider.GetCompilerInfo(CodeDomProvider.GetLanguageFromExtension(".cs"));
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Util
 
 		static CodeDomProvider GetCSharpCodeDomProvider()
 		{
-#if !CF_2_0 && !MONO
+#if !CF && !MONO
 			return GetCSharpCompilerInfo().CreateProvider();
 #else
 			Type provider = typeof(System.Uri).Assembly.GetType("Microsoft.CSharp.CSharpCodeProvider");
@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Tests.Util
 
 		static CompilerParameters CreateDefaultCompilerParameters()
 		{
-#if !CF_2_0 && !MONO
+#if !CF && !MONO
 			return GetCSharpCompilerInfo().CreateDefaultCompilerParameters();
 #else
 			return new CompilerParameters();

@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 			return new System.Type[]
 				{
                     typeof(Aliases.AllTests),
-#if !CF_2_0
+#if !CF
 					typeof(CsAppDomains),
 					typeof(CsAssemblyVersionChange),
 					typeof(CsImage),

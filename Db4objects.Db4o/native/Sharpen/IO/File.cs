@@ -77,7 +77,7 @@ namespace Sharpen.IO
 
 		public bool IsDirectory()
 		{
-#if CF_2_0
+#if CF
 			return System.IO.Directory.Exists(_path);
 #else
 			return (System.IO.File.GetAttributes(_path) & FileAttributes.Directory) != 0;

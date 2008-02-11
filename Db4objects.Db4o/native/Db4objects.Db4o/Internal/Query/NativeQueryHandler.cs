@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal.Query
         public virtual System.Collections.Generic.IList<Extent> Execute<Extent>(Db4objects.Db4o.Query.IQuery query, System.Predicate<Extent> match,
 																				Db4objects.Db4o.Query.IQueryComparator comparator)
 		{
-#if CF_2_0
+#if CF
 			return ExecuteUnoptimized<Extent>(QueryForExtent<Extent>(query, comparator), match);
 #else
 			// XXX: check GetDelegateList().Length

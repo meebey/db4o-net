@@ -7,7 +7,7 @@ namespace Db4oUnit
 
 	public class TestPlatform
 	{
-#if CF_2_0
+#if CF
         public static string NewLine = "\n";
 #else
 	    public static string NewLine = Environment.NewLine;

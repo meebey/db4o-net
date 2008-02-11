@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Internal
                 if (shutDownStreams == null)
                 {
                     shutDownStreams = new ArrayList();
-#if !CF_2_0
+#if !CF
 					EventHandler handler = new EventHandler(OnShutDown);
 					AppDomain.CurrentDomain.ProcessExit += handler;
 					AppDomain.CurrentDomain.DomainUnload += handler;
@@ -131,7 +131,7 @@ namespace Db4objects.Db4o.Internal
 
         internal static long DoubleToLong(double a_double)
         {
-#if CF_2_0
+#if CF
             byte[] bytes = BitConverter.GetBytes(a_double);
             return BitConverter.ToInt64(bytes, 0);
 #else
@@ -299,7 +299,7 @@ namespace Db4objects.Db4o.Internal
             Translate(config, typeof(Type), new TType()); // TODO: unnecessary?
             Translate(config, typeof(Type).GetType(), new TType());
 
-#if !CF_2_0
+#if !CF
             if (IsMono())
             {
 
@@ -321,7 +321,7 @@ namespace Db4objects.Db4o.Internal
 
         public static bool IsCompact()
         {
-#if CF_2_0
+#if CF
 			return true;
 #else
             return false;
@@ -428,7 +428,7 @@ namespace Db4objects.Db4o.Internal
 
         internal static double LongToDouble(long l)
         {
-#if CF_2_0
+#if CF
             byte[] bytes = BitConverter.GetBytes(l);
             return BitConverter.ToDouble(bytes, 0);
 #else
@@ -438,7 +438,7 @@ namespace Db4objects.Db4o.Internal
 
         internal static void LockFile(string path, object file)
         {
-#if !CF_2_0
+#if !CF
             try
             {
                 FileStream stream = ((RandomAccessFile) file).Stream;
@@ -567,7 +567,7 @@ namespace Db4objects.Db4o.Internal
 
         internal static object WrapEvaluation(object evaluation)
         {
-#if CF_2_0
+#if CF
 			// FIXME: How to better support EvaluationDelegate on the CompactFramework?
 			return evaluation;
 #else
@@ -650,7 +650,7 @@ namespace Db4objects.Db4o.Internal
 
         public static String StackTrace()
         {
-#if CF_1_0 || CF_2_0
+#if CF_1_0 || CF
             throw new NotImplementedException();
 #else
             return Environment.StackTrace;
