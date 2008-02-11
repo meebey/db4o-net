@@ -45,7 +45,15 @@ namespace Db4oTool
                 return;
             }
 
-            InstrumentationPipeline pipeline = new InstrumentationPipeline(GetConfiguration(options));
+			using (new CurrentDirectoryAssemblyResolver())
+			{
+				RunPipeline(options);
+			}
+		}
+
+		private static void RunPipeline(ProgramOptions options)
+		{
+			InstrumentationPipeline pipeline = new InstrumentationPipeline(GetConfiguration(options));
 			if (options.NQ)
 			{
 				pipeline.Add(new DelegateOptimizer());
@@ -60,7 +68,7 @@ namespace Db4oTool
 				pipeline.Add(instr);
 			}
 			if (!options.Fake)
-			{	
+			{
 				pipeline.Add(new SaveAssemblyInstrumentation());
 			}
 			pipeline.Run();
