@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
 using Db4oUnit;
@@ -17,12 +17,12 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
-			config.Add(new TransparentPersistenceSupport(new _IRollbackStrategy_21(this)));
+			config.Add(new TransparentPersistenceSupport(new _IRollbackStrategy_23(this)));
 		}
 
-		private sealed class _IRollbackStrategy_21 : IRollbackStrategy
+		private sealed class _IRollbackStrategy_23 : IRollbackStrategy
 		{
-			public _IRollbackStrategy_21(DeactivateDeletedObjectOnRollbackStrategyTestCase _enclosing
+			public _IRollbackStrategy_23(DeactivateDeletedObjectOnRollbackStrategyTestCase _enclosing
 				)
 			{
 				this._enclosing = _enclosing;

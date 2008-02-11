@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
 using Db4oUnit;
@@ -25,13 +25,13 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			new ByteArrayTestCase().RunConcurrency();
 		}
 
-		#if !CF_2_0
+		#if !CF
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(SerializableByteArrayHolder)).Translate(new TSerializable
 				());
 		}
-		#endif // !CF_2_0
+		#endif // !CF
 
 		protected override void Store()
 		{

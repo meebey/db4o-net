@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
 using Db4oUnit;
@@ -59,13 +59,13 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		internal const int ArrayLength = 1024;
 
-		#if !CF_2_0
+		#if !CF
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(ByteArrayTestCase.SerializableByteArrayHolder)).Translate
 				(new TSerializable());
 		}
-		#endif // !CF_2_0
+		#endif // !CF
 
 		protected override void Store()
 		{
@@ -76,22 +76,22 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 			}
 		}
 
-		#if !CF_2_0
+		#if !CF
 		/// <exception cref="Exception"></exception>
 		public virtual void TestByteArrayHolder()
 		{
 			TimeQueryLoop("raw byte array", typeof(ByteArrayTestCase.ByteArrayHolder));
 		}
-		#endif // !CF_2_0
+		#endif // !CF
 
-		#if !CF_2_0
+		#if !CF
 		/// <exception cref="Exception"></exception>
 		public virtual void TestSerializableByteArrayHolder()
 		{
 			TimeQueryLoop("TSerializable", typeof(ByteArrayTestCase.SerializableByteArrayHolder
 				));
 		}
-		#endif // !CF_2_0
+		#endif // !CF
 
 		/// <exception cref="Exception"></exception>
 		private void TimeQueryLoop(string label, Type clazz)

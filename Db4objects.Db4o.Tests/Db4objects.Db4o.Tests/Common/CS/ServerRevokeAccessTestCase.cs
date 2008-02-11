@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
 using System.IO;
@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			new ServerRevokeAccessTestCase().RunAll();
 		}
 
-		#if !CF_2_0
+		#if !CF
 		/// <exception cref="IOException"></exception>
 		public virtual void Test()
 		{
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			server.Ext().RevokeAccess(user);
 			Assert.Expect(typeof(Exception), new _ICodeBlock_39(this, user, password));
 		}
-		#endif // !CF_2_0
+		#endif // !CF
 
 		private sealed class _ICodeBlock_39 : ICodeBlock
 		{

@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System.Collections;
 using Db4objects.Db4o.Foundation;
@@ -710,9 +710,10 @@ namespace Db4objects.Db4o.Internal
 
 		public int FieldHandlerIdForFieldHandler(IFieldHandler fieldHandler)
 		{
-			int wrappedId = (int)_mapFieldHandlerToId.Get(fieldHandler);
-			if (wrappedId != null)
+			object wrappedIdObj = _mapFieldHandlerToId.Get(fieldHandler);
+			if (wrappedIdObj != null)
 			{
+				int wrappedId = (int)wrappedIdObj;
 				return wrappedId;
 			}
 			return 0;

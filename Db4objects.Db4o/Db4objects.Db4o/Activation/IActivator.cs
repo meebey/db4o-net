@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Activation;
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Activation
 		/// <remarks>Method to be called to activate the host object.</remarks>
 		/// <param name="purpose">
 		/// for which purpose is the object being activated?
-		/// <see cref="ActivationPurpose.WRITE">ActivationPurpose.WRITE</see>
+		/// <see cref="ActivationPurpose.Write">ActivationPurpose.Write</see>
 		/// will cause the object
 		/// to be saved on the next
 		/// <see cref="IObjectContainer.Commit">IObjectContainer.Commit</see>

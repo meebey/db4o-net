@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -112,13 +112,13 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="QueryEvaluationMode">QueryEvaluationMode</see>
 		/// class to this method:&lt;br&gt;
 		/// -
-		/// <see cref="QueryEvaluationMode.IMMEDIATE">QueryEvaluationMode.IMMEDIATE</see>
+		/// <see cref="QueryEvaluationMode.Immediate">QueryEvaluationMode.Immediate</see>
 		/// &lt;br&gt;
 		/// -
-		/// <see cref="QueryEvaluationMode.SNAPSHOT">QueryEvaluationMode.SNAPSHOT</see>
+		/// <see cref="QueryEvaluationMode.Snapshot">QueryEvaluationMode.Snapshot</see>
 		/// &lt;br&gt;
 		/// -
-		/// <see cref="QueryEvaluationMode.LAZY">QueryEvaluationMode.LAZY</see>
+		/// <see cref="QueryEvaluationMode.Lazy">QueryEvaluationMode.Lazy</see>
 		/// &lt;br&gt;&lt;br&gt;
 		/// This setting must be issued from the client side.
 		/// </remarks>
