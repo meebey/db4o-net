@@ -34,8 +34,11 @@ namespace Db4oTool.Tests.Core
 
 		void VerifyAssembly()
 		{
+            Console.WriteLine("Db4oTool.Tests.Core.VerifyAssemblyTest _assemblyPath: " + _assemblyPath);
 			ShellUtilities.ProcessOutput output = ShellUtilities.shell("peverify.exe", _assemblyPath);
 			string stdout = output.ToString();
+            Console.WriteLine("Db4oTool.Tests.Core.VerifyAssemblyTest stdout: " + stdout);
+            Console.WriteLine("Db4oTool.Tests.Core.VerifyAssemblyTest output.ExitCode: " + output.ExitCode);
 			if (stdout.Contains("1.1.4322.573")) return; // ignore older peverify version errors
 			if (output.ExitCode == 0 && !stdout.ToUpper().Contains("WARNING")) return;
 			Assert.Fail(stdout);
