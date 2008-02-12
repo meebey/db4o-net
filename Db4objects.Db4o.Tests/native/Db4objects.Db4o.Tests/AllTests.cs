@@ -23,10 +23,12 @@ namespace Db4objects.Db4o.Tests
 		
 		protected override Type[] TestCases()
 		{
-			//return new Type[] { typeof(Common.CS.IsAliveTestCase) };
-			//return new Type[] { typeof(CLI2.Types.ArrayAsGenericListTestCase) };
+			//return new Type[] { typeof(Compact.UnoptimizedLinqTestCase), };
 			return new Type[]
 				{	
+#if CF_3_5
+					typeof(Compact.AllTests),
+#endif
 //					typeof(Db4objects.Db4o.Tests.CLI2.TA.NullableTypeActivationTestCase),
 					typeof(Db4objects.Db4o.Tests.Common.Migration.AllTests),
                     typeof(Db4objects.Db4o.Tests.Common.TA.AllTests),
