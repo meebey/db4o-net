@@ -12,7 +12,17 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			Store(new TestSubject<object>(CreateNullableObjectArray(), 0xDB40, new VTTestSubject(0x04BD, "bar", true)));
 		}
 
-		public void TestNullableItemsInUntypeArray()
+        public void TestArrayType()
+        {
+            if (Db4objects.Db4o.Internal.NullableArrayHandling.Disabled())
+            {
+                return;
+            }
+            TestSubject<int?> testSubject = (TestSubject<int?>)RetrieveOnlyInstance(typeof(TestSubject<int?>));
+            Assert.IsInstanceOf(typeof(int?[]), testSubject._elements);
+        }
+
+		public void _TestNullableItemsInUntypeArray()
 		{
 			TestSubject<object> testSubject = (TestSubject<object>) RetrieveOnlyInstance(typeof(TestSubject<object>));
 			AssertNullableType(testSubject, "bar");

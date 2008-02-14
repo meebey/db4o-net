@@ -674,7 +674,40 @@ namespace Db4objects.Db4o.Internal
 
         public static void RegisterPlatformHandlers(ObjectContainerBase container)
         {
-            // do nothgin
+            // do nothing
+        }
+
+        public static Type NullableTypeFor(Type primitiveType) 
+        {
+        
+            // FIXME: create a Hashtable for all types
+        
+            if(primitiveType == typeof(int))
+            {
+                return typeof(int?);
+            }
+
+            if(primitiveType == typeof(bool))
+            {
+                return typeof(bool?);
+            }
+
+            if (primitiveType == typeof(Single))
+            {
+                return typeof(Single?);
+            }
+
+            if (primitiveType == typeof(float))
+            {
+                return typeof(float?);
+            }
+
+            if (NullableArrayHandling.UseOldNetHandling())
+            {
+                return primitiveType;
+            }
+        
+            throw new NotImplementedException();
         }
 
 	}

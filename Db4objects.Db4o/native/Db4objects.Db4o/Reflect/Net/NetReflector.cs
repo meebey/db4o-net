@@ -32,7 +32,11 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public virtual Db4objects.Db4o.Reflect.IReflectClass ForClass(System.Type forType)
 		{
-			return CreateClass(GetUnderlyingType(forType));
+            if (Db4objects.Db4o.Internal.NullableArrayHandling.UseOldNetHandling())
+            {
+                return CreateClass(GetUnderlyingType(forType));
+            }
+            return CreateClass(forType);
 		}
 
 		protected virtual Db4objects.Db4o.Reflect.IReflectClass CreateClass(Type type)
