@@ -33,6 +33,31 @@ namespace Db4objects.Db4o.Linq.Tests
 			}
 		}
 
+		public enum Kind
+		{
+			Other = 0,
+			Plane = 1,
+			Car = 2,
+		}
+
+		public class Thing
+		{
+			public Kind Kind;
+
+			public override bool Equals(object obj)
+			{
+				Thing t = obj as Thing;
+				if (t == null) return false;
+
+				return t.Kind == this.Kind;
+			}
+
+			public override int GetHashCode()
+			{
+				return this.Kind.GetHashCode();
+			}
+		}
+
 		protected override void Store()
 		{
 			Store(new Person { Name = "jb", Age = 24 });
@@ -42,6 +67,11 @@ namespace Db4objects.Db4o.Linq.Tests
 			Store(new Person { Name = "jb", Age = 7 });
 			Store(new Person { Name = "jb", Age = 28 });
 			Store(new Person { Name = "jb", Age = 34 });
+
+			Store(new Thing { Kind = Kind.Plane });
+			Store(new Thing { Kind = Kind.Car });
+			Store(new Thing { Kind = Kind.Plane });
+			Store(new Thing { Kind = Kind.Other });
 		}
 
 		public void TestEqualsInWhere()
@@ -60,6 +90,23 @@ namespace Db4objects.Db4o.Linq.Tests
 							new Person { Name = "jb", Age = 28 },
 							new Person { Name = "jb", Age = 34 },
 						}, jbs);
+				});
+		}
+
+		//TODO: not working
+		public void _TestEqualsEnum()
+		{
+			AssertQuery ("(Thing(Kind = 1))",
+				delegate {
+					var planes = from Thing t in Db ()
+								 where t.Kind == Kind.Plane
+								 select t;
+
+					AssertSet (new []
+					    {
+					        new Thing { Kind = Kind.Plane },
+					        new Thing { Kind = Kind.Plane },
+					    }, planes);
 				});
 		}
 
