@@ -7,8 +7,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 using Db4objects.Db4o.Linq.Caching;
-using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Linq.Internals;
+using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Linq.Expressions
 {
@@ -142,6 +142,11 @@ namespace Db4objects.Db4o.Linq.Expressions
 			{
 				Visit(u.Operand);
 				RecordConstraintApplication(c => c.Not());
+				return;
+			}
+			else if (u.NodeType == ExpressionType.Convert)
+			{
+				Visit(u.Operand);
 				return;
 			}
 

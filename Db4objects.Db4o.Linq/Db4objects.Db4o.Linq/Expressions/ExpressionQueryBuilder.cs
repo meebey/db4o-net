@@ -6,8 +6,8 @@ using System.Reflection;
 
 using Db4objects.Db4o.Linq.Caching;
 using Db4objects.Db4o.Linq.CodeAnalysis;
-using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Linq.Internals;
+using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Linq.Expressions
 {
@@ -67,6 +67,9 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		protected static bool IsParameterReference(Expression expression)
 		{
+			UnaryExpression unary = expression as UnaryExpression;
+			if (unary != null) return IsParameterReference(unary.Operand);
+
 			MemberExpression me = expression as MemberExpression;
 			if (me != null) return IsParameter(me.Expression);
 
