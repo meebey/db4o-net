@@ -63,5 +63,26 @@ namespace Db4objects.Db4o.Linq.Tests
 						}, jbs);
 				});
 		}
+
+		public void TestRetrieveAllObjects()
+		{
+			AssertQuery("",
+				delegate
+				{
+					var all = from object o in Db ()
+							  select o;
+
+					AssertSet(new[]
+						{
+							new Person { Name = "jb", Age = 24 },
+							new Person { Name = "ana", Age = 20 },
+							new Person { Name = "reg", Age = 25 },
+							new Person { Name = "ro", Age = 32 },
+							new Person { Name = "jb", Age = 7 },
+							new Person { Name = "jb", Age = 28 },
+							new Person { Name = "jb", Age = 34 },
+						}, all);
+				});
+		}
 	}
 }
