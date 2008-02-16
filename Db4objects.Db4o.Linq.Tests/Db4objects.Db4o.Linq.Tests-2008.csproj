@@ -51,6 +51,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Db4objects.Db4o.Linq.Tests\ComposedQueryTestCase.cs" />
+    <Compile Include="Db4objects.Db4o.Linq.Tests\VisualBasicTestCase.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\Expressions\ExpressionEqualityComparerTestCase.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\Queries\QueryExtensions.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\StringMethodTestCase.cs" />
