@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Linq.Internals
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			yield break;
+			return new ObjectSequence<T>(_container.Query(typeof(T))).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
