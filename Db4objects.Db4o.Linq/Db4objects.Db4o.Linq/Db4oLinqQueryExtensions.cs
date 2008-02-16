@@ -108,5 +108,12 @@ namespace Db4objects.Db4o.Linq
 					throw new NotSupportedException("Cannot fallback in a thenby");
 				});
 		}
+
+		public static IDb4oLinqQuery<TRet> Select<TSource, TRet>(this IDb4oLinqQuery<TSource> self, Func<TSource, TRet> selector)
+		{
+			var temp = self as PlaceHolderQuery<TSource>;
+			if (temp == null) return new UnoptimizedQuery<TRet>(Enumerable.Select(self, selector));
+			return new Db4oQuery<TRet>(temp.Container);
+		}
 	}
 }

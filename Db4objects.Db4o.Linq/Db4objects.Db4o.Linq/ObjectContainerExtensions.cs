@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2007 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Linq.Internals;
 
 namespace Db4objects.Db4o.Linq
 {
@@ -17,7 +18,8 @@ namespace Db4objects.Db4o.Linq
 		/// <returns>A <see cref="Db4objects.Db4o.Linq.IDb4oLinqQuery">IDb4oLinqQuery</see> marker interface</returns>
 		public static IDb4oLinqQuery<T> Cast<T>(this IObjectContainer container)
 		{
-			return new Db4objects.Db4o.Linq.Internals.Db4oQuery<T>(container);
+			if (typeof(T) == typeof(object)) return new PlaceHolderQuery<T>(container);
+			return new Db4oQuery<T>(container);
 		}
 	}
 }
