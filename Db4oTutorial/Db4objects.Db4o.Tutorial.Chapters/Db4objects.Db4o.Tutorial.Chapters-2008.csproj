@@ -42,6 +42,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -92,6 +93,9 @@
   <ItemGroup>
     <Reference Include="System">
       <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
@@ -216,6 +220,9 @@
     <Compile Include="F1\Chapter8\SensorReadout.cs" />
     <Compile Include="F1\Chapter8\TemperatureSensorReadout.cs" />
     <Compile Include="F1\Chapter8\TransparentPersistenceExample.cs" />
+    <Compile Include="F1\Chapter9\Car.cs" />
+    <Compile Include="F1\Chapter9\LinqExample.cs" />
+    <Compile Include="F1\Chapter9\Pilot.cs" />
     <Compile Include="F1\Util.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -238,6 +245,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Db4objects.Db4o.Linq\Db4objects.Db4o.Linq-2008.csproj">
+      <Project>{23531440-0922-43EB-A483-6592FFC2F093}</Project>
+      <Name>Db4objects.Db4o.Linq-2008</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2008.csproj">
       <Project>{600CD3BF-2ED2-4183-87F7-ADD78A968AE0}</Project>
       <Name>Db4objects.Db4o-2008</Name>
