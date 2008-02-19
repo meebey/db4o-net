@@ -70,6 +70,7 @@
     <Compile Include="Db4objects.Db4o.Linq\Expressions\SubtreeEvaluator.cs"/>
     <Compile Include="Db4objects.Db4o.Linq\Internals\ObjectSequence.cs"/>
     <Compile Include="Db4objects.Db4o.Linq\Internals\ObjectSetWrapper.cs"/>
+    <Compile Include="Db4objects.Db4o.Linq\Internals\PlaceholderQuery.cs"/>
     <Compile Include="Db4objects.Db4o.Linq\Internals\QueryBuilderContext.cs"/>
     <Compile Include="Db4objects.Db4o.Linq\Internals\QueryBuilderRecorder.cs"/>
     <Compile Include="Db4objects.Db4o.Linq\Internals\UnoptimizedQuery.cs"/>
