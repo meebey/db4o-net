@@ -1,4 +1,4 @@
-/* Copyright (C) 2008   db4objects Inc.   http://www.db4o.com */
+﻿/* Copyright (C) 2008   db4objects Inc.   http://www.db4o.com */
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security;
@@ -16,4 +16,4 @@ using System.Security;
 [assembly: AssemblyVersion("7.2.31.10277")]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyConfiguration(".NET")]
-[assembly: AssemblyDescription("Db4oUnit 7.2.31.10277 (.NET)")]
+[assembly: AssemblyDescription("Db4oUnit.Extensions 7.2.31.10277 (.NET)")]
