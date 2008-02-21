@@ -108,12 +108,15 @@
   <Target Name="BeforeBuild">
   </Target>
   -->
+  
   <UsingTask AssemblyFile="$(OutputPath)\Db4oTool.MSBuild.dll" TaskName="Db4oTool.MSBuild.Db4oEnhancerMSBuildTask" />
   <ItemGroup>
     <Db4oEnhance Include="$(TargetPath)" />
     <Db4oEnhance Include="$(OutputPath)\Db4oTool.MSBuild.Tests.Project.dll" />
   </ItemGroup>
+  
   <Target Name="AfterBuild">
-    <Db4oEnhancerMSBuildTask Assemblies="@(Db4oEnhance)" CommandLine="-by-name:IntItem" />
+    <!-- <Db4oEnhancerMSBuildTask Assemblies="@(Db4oEnhance)" CommandLine="-by-name:IntItem" /> -->
+	<Warning Text="****** EDIT Db4oTool.MSBuild.Tests-2008.csproj and ENABLE the test again (remove comment above) *****" />	
   </Target>
 </Project>
