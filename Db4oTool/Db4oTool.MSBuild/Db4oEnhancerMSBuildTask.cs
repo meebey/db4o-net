@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Db4oTool;
@@ -36,7 +37,8 @@ namespace Db4oTool.MSBuild
         public override bool Execute()
         {
             List<string> list = new List<string>();
-            list.Add("-ta");
+            list.Add("-v");
+			list.Add("-ta");
             if (commandLine != null)
             {
                 list.Add(commandLine);
@@ -50,8 +52,7 @@ namespace Db4oTool.MSBuild
                 int ret = Enhance(list.ToArray());
                 if (ret != 0)
                 {
-                    string errorMsg = string.Format("Fail to enhance assembly: {0} with return value {1}", assemblyFile, ret);
-                    Log.LogError(errorMsg);
+                	Log.LogError(string.Format("Fail to enhance assembly: {0} with return value {1}", assemblyFile, ret));
                     return false;
                 }
                 string message = string.Format("Assembly {0} is enhanced successfully.", assemblyFile);
@@ -64,8 +65,26 @@ namespace Db4oTool.MSBuild
 
         private int Enhance(string[] options)
         {
-            int ret = Program.Main(options);
-            return ret;
+        	int ret;
+			StringWriter consoleOut = new StringWriter();
+			try
+			{
+				Console.SetOut(consoleOut);
+
+				ret = Program.Main(options);
+				if (ret != 0)
+				{
+					Log.LogError(consoleOut.ToString());
+				}
+			}
+			finally
+			{
+				StreamWriter originalOut = new StreamWriter(Console.OpenStandardOutput());
+				originalOut.AutoFlush = true;
+				Console.SetOut(originalOut);
+			}
+
+        	return ret;
         }
     }
 }
