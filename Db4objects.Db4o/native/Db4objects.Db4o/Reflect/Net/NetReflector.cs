@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			return claxx;
 		}
 
-		internal static System.Type[] ToNative(Db4objects.Db4o.Reflect.IReflectClass[] claxx)
+		public static System.Type[] ToNative(Db4objects.Db4o.Reflect.IReflectClass[] claxx)
 		{
 			System.Type[] clazz = null;
 			if (claxx != null)
@@ -125,11 +125,17 @@ namespace Db4objects.Db4o.Reflect.Net
 				{
 					if (claxx[i] != null)
 					{
-						clazz[i] = ((Db4objects.Db4o.Reflect.Net.NetClass)claxx[i].GetDelegate()).GetNetType();
+						IReflectClass reflectClass = claxx[i];
+						clazz[i] = ToNative(reflectClass);
 					}
 				}
 			}
 			return clazz;
+		}
+
+		public static Type ToNative(IReflectClass reflectClass)
+		{
+			return ((Db4objects.Db4o.Reflect.Net.NetClass)reflectClass.GetDelegate()).GetNetType();
 		}
 
 		public virtual void SetParent(IReflector reflector)

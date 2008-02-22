@@ -1,5 +1,6 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -91,7 +92,7 @@ namespace Db4oTool.Tests.Core
 			}
 		}
 
-		public TestSuite Build()
+		public IEnumerator Build()
 		{
 			try
 			{
@@ -99,13 +100,13 @@ namespace Db4oTool.Tests.Core
 			}
 			catch (Exception x)
 			{
-				return new TestSuite(TestSuiteLabel, new ITest[] { new FailingTest(TestSuiteLabel, x) });
+				return new ITest[] { new FailingTest(TestSuiteLabel, x) }.GetEnumerator();
 			}
 		}
 
-		private TestSuite BuildFromInstrumentedAssembly()
+		private IEnumerator BuildFromInstrumentedAssembly()
 		{
-            return new TestSuite(TestSuiteLabel, new List<ITest>(ProduceTestCases()).ToArray());
+			return ProduceTestCases().GetEnumerator();
 		}
 
         private IEnumerable<ITest> ProduceTestCases()
@@ -122,10 +123,13 @@ namespace Db4oTool.Tests.Core
 				
 
                 Type type = GetTestCaseType(instrumentedAssembly, resource);
-                TestSuite suite = type.IsSubclassOf(typeof(InstrumentedTestCase))
+                IEnumerator suite = type.IsSubclassOf(typeof(InstrumentedTestCase))
                                     ? new InstrumentationTestSuiteBuilder(this, type).Build()
                                     : new ReflectionTestSuiteBuilder(type).Build();
-                yield return suite;
+                while (suite.MoveNext())
+                {
+                	yield return (ITest)suite.Current;
+                }
 				if (ShouldVerify(resource)) yield return new VerifyAssemblyTest(instrumentedAssembly);
 
                 references = ArrayServices.Append(references, type.Assembly);
