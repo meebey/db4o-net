@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{284229B6-B6B2-4E1C-BFD2-B2D417E263DE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Db4objects.Db4o.Foundation</RootNamespace>
+    <AssemblyName>Db4objects.Db4o.Foundation</AssemblyName>
+    <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PlatformFamilyName>PocketPC</PlatformFamilyName>
+    <PlatformID>3C41C503-53EF-4c2a-8DD4-A8217CAD115E</PlatformID>
+    <OSVersion>4.20</OSVersion>
+    <DeployDirSuffix>Db4objects.Db4o.Foundation</DeployDirSuffix>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FormFactorID>
+    </FormFactorID>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;$(PlatformFamilyName)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;$(PlatformFamilyName)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib"/>
+    <Reference Include="System"/>
+    <Reference Include="System.Data"/>
+    <Reference Include="System.Xml"/>
+  </ItemGroup>
+  <ItemGroup><Compile Include="Db4objects.Db4o.Foundation\AbstractTreeIterator.cs"/><Compile Include="Db4objects.Db4o.Foundation\Algorithms4.cs"/><Compile Include="Db4objects.Db4o.Foundation\ArrayIterator4.cs"/><Compile Include="Db4objects.Db4o.Foundation\Arrays4.cs"/><Compile Include="Db4objects.Db4o.Foundation\AutoStopWatch.cs"/><Compile Include="Db4objects.Db4o.Foundation\BitMap4.cs"/><Compile Include="Db4objects.Db4o.Foundation\BlockingQueue.cs"/><Compile Include="Db4objects.Db4o.Foundation\BlockingQueueStoppedException.cs"/><Compile Include="Db4objects.Db4o.Foundation\BooleanByRef.cs"/><Compile Include="Db4objects.Db4o.Foundation\Collection4.cs"/><Compile Include="Db4objects.Db4o.Foundation\Collection4Iterator.cs"/><Compile Include="Db4objects.Db4o.Foundation\CompositeIterable4.cs"/><Compile Include="Db4objects.Db4o.Foundation\CompositeIterator4.cs"/><Compile Include="Db4objects.Db4o.Foundation\ContextVariable.cs"/><Compile Include="Db4objects.Db4o.Foundation\Cool.cs"/><Compile Include="Db4objects.Db4o.Foundation\FilteredIterator.cs"/><Compile Include="Db4objects.Db4o.Foundation\FlatteningIterator.cs"/><Compile Include="Db4objects.Db4o.Foundation\FunctionApplicationIterator.cs"/><Compile Include="Db4objects.Db4o.Foundation\Hashtable4.cs"/><Compile Include="Db4objects.Db4o.Foundation\HashtableByteArrayEntry.cs"/><Compile Include="Db4objects.Db4o.Foundation\HashtableIntEntry.cs"/><Compile Include="Db4objects.Db4o.Foundation\HashtableIterator.cs"/><Compile Include="Db4objects.Db4o.Foundation\HashtableObjectEntry.cs"/><Compile Include="Db4objects.Db4o.Foundation\IArrayFactory.cs"/><Compile Include="Db4objects.Db4o.Foundation\IClosure4.cs"/><Compile Include="Db4objects.Db4o.Foundation\IComparison4.cs"/><Compile Include="Db4objects.Db4o.Foundation\IConditionalBlock.cs"/><Compile Include="Db4objects.Db4o.Foundation\IDeepClone.cs"/><Compile Include="Db4objects.Db4o.Foundation\IEntry4.cs"/><Compile Include="Db4objects.Db4o.Foundation\IFunction4.cs"/><Compile Include="Db4objects.Db4o.Foundation\IIntIterator4.cs"/><Compile Include="Db4objects.Db4o.Foundation\IIntObjectVisitor.cs"/><Compile Include="Db4objects.Db4o.Foundation\IPredicate4.cs"/><Compile Include="Db4objects.Db4o.Foundation\IPreparedComparison.cs"/><Compile Include="Db4objects.Db4o.Foundation\IQueue4.cs"/><Compile Include="Db4objects.Db4o.Foundation\IQuickSortable4.cs"/><Compile Include="Db4objects.Db4o.Foundation\ISafeClosure4.cs"/><Compile Include="Db4objects.Db4o.Foundation\IShallowClone.cs"/><Compile Include="Db4objects.Db4o.Foundation\IVisitor4.cs"/><Compile Include="Db4objects.Db4o.Foundation\IndexedIterator.cs"/><Compile Include="Db4objects.Db4o.Foundation\IntArrayByRef.cs"/><Compile Include="Db4objects.Db4o.Foundation\IntArrayList.cs"/><Compile Include="Db4objects.Db4o.Foundation\IntByRef.cs"/><Compile Include="Db4objects.Db4o.Foundation\IntIdGenerator.cs"/><Compile Include="Db4objects.Db4o.Foundation\IntIterator4Adaptor.cs"/><Compile Include="Db4objects.Db4o.Foundation\IntIterator4Impl.cs"/><Compile Include="Db4objects.Db4o.Foundation\InvalidIteratorException.cs"/><Compile Include="Db4objects.Db4o.Foundation\Iterable4Adaptor.cs"/><Compile Include="Db4objects.Db4o.Foundation\Iterator4Impl.cs"/><Compile Include="Db4objects.Db4o.Foundation\Iterators.cs"/><Compile Include="Db4objects.Db4o.Foundation\KeySpec.cs"/><Compile Include="Db4objects.Db4o.Foundation\KeySpecHashtable4.cs"/><Compile Include="Db4objects.Db4o.Foundation\List4.cs"/><Compile Include="Db4objects.Db4o.Foundation\MappingIterator.cs"/><Compile Include="Db4objects.Db4o.Foundation\Network\BlockingByteChannel.cs"/><Compile Include="Db4objects.Db4o.Foundation\Network\ISocket4.cs"/><Compile Include="Db4objects.Db4o.Foundation\Network\NetworkSocket.cs"/><Compile Include="Db4objects.Db4o.Foundation\Network\ServerSocket4.cs"/><Compile Include="Db4objects.Db4o.Foundation\No4.cs"/><Compile Include="Db4objects.Db4o.Foundation\NoDuplicatesQueue.cs"/><Compile Include="Db4objects.Db4o.Foundation\NonblockingQueue.cs"/><Compile Include="Db4objects.Db4o.Foundation\ObjectByRef.cs"/><Compile Include="Db4objects.Db4o.Foundation\PersistentTimeStampIdGenerator.cs"/><Compile Include="Db4objects.Db4o.Foundation\PrimitiveCodec.cs"/><Compile Include="Db4objects.Db4o.Foundation\SingleValueIterator.cs"/><Compile Include="Db4objects.Db4o.Foundation\SortedCollection4.cs"/><Compile Include="Db4objects.Db4o.Foundation\Stack4.cs"/><Compile Include="Db4objects.Db4o.Foundation\StopWatch.cs"/><Compile Include="Db4objects.Db4o.Foundation\SynchronizedHashtable4.cs"/><Compile Include="Db4objects.Db4o.Foundation\TernaryBool.cs"/><Compile Include="Db4objects.Db4o.Foundation\TimeStampIdGenerator.cs"/><Compile Include="Db4objects.Db4o.Foundation\Tree.cs"/><Compile Include="Db4objects.Db4o.Foundation\TreeKeyIterator.cs"/><Compile Include="Db4objects.Db4o.Foundation\TreeNodeIterator.cs"/><Compile Include="Db4objects.Db4o.Foundation\TreeObject.cs"/><Compile Include="Db4objects.Db4o.Foundation\Visitor4Dispatch.cs"/><Compile Include="Properties\AssemblyInfo.cs"/></ItemGroup>
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets"/>
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets"/>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
+        <HostingProcess disable="1"/>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
