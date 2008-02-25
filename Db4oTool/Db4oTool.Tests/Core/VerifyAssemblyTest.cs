@@ -19,17 +19,9 @@ namespace Db4oTool.Tests.Core
 			return string.Format("peverify \"{0}\"", Path.GetFileNameWithoutExtension(_assemblyPath));
 		}
 
-		public void Run(TestResult result)
+		public void Run()
 		{
-			result.TestStarted(this);
-			try
-			{
-				VerifyAssembly();
-			}
-			catch (Exception x)
-			{
-				result.TestFailed(this, x);
-			}
+			VerifyAssembly();
 		}
 
 		void VerifyAssembly()
