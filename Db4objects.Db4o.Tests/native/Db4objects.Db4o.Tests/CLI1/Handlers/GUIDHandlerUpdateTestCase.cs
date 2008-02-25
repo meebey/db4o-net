@@ -36,11 +36,6 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             new Guid("9d33da58-44ae-44c3-b719-4c006be0cb44"),
         };
 
-        public static void Main(string[] args)
-        {
-            new TestRunner(typeof(DateHandlerUpdateTestCase)).Run();
-        }
-
         protected override void AssertArrays(object obj)
         {
             ItemArrays itemArrays = (ItemArrays)obj;

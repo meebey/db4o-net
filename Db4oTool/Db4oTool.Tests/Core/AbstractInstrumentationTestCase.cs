@@ -92,7 +92,7 @@ namespace Db4oTool.Tests.Core
 			}
 		}
 
-		public IEnumerator Build()
+		public IEnumerator GetEnumerator()
 		{
 			try
 			{
@@ -117,20 +117,22 @@ namespace Db4oTool.Tests.Core
                 string assemblyPath = EmitAssemblyFromResource(resource, references);
                 Assert.IsTrue(File.Exists(assemblyPath));
 
-//            	string instrumentedAssembly = CopyAssemblyAndPdbToTemp(assemblyPath);
-            	string instrumentedAssembly = assemblyPath;
-				InstrumentAssembly(instrumentedAssembly);
-				
+            	InstrumentAssembly(assemblyPath);
 
-                Type type = GetTestCaseType(instrumentedAssembly, resource);
-                IEnumerator suite = type.IsSubclassOf(typeof(InstrumentedTestCase))
-                                    ? new InstrumentationTestSuiteBuilder(this, type).Build()
-                                    : new ReflectionTestSuiteBuilder(type).Build();
-                while (suite.MoveNext())
+                Type type = GetTestCaseType(assemblyPath, resource);
+                IEnumerable suite = type.IsSubclassOf(typeof(InstrumentedTestCase))
+                                    ? new InstrumentationTestSuiteBuilder(this, type)
+                                    : new ReflectionTestSuiteBuilder(type);
+
+                foreach (Object test in suite)
                 {
-                	yield return (ITest)suite.Current;
+                	yield return (ITest)test;
                 }
-				if (ShouldVerify(resource)) yield return new VerifyAssemblyTest(instrumentedAssembly);
+
+				if (ShouldVerify(resource))
+				{
+					yield return new VerifyAssemblyTest(assemblyPath);
+				}
 
                 references = ArrayServices.Append(references, type.Assembly);
             }

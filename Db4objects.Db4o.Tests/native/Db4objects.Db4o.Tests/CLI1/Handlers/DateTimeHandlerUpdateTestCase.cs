@@ -31,11 +31,6 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             new DateTime(DateTime.MaxValue.Ticks - 1), new DateTime(DateTime.MaxValue.Ticks),
         };
 
-        public static void Main(string[] args)
-        {
-            new TestRunner(typeof(DateHandlerUpdateTestCase)).Run();
-        }
-
         protected override void AssertArrays(object obj)
         {
             ItemArrays itemArrays = (ItemArrays)obj;
