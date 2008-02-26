@@ -9,11 +9,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	public class DateTimeHandler : StructHandler
 	{
-		public DateTimeHandler(ObjectContainerBase containerBase)
-			: base(containerBase)
-		{
-		}
-
 		public override Object DefaultValue()
 		{
 			return DateTime.MinValue;

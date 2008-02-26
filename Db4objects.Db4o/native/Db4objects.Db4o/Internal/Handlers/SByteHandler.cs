@@ -8,11 +8,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	public class SByteHandler : IntegralTypeHandler
 	{
-		public SByteHandler(ObjectContainerBase containerBase)
-			: base(containerBase)
-		{
-        }
-
         public override Object DefaultValue(){
             return (sbyte)0;
         }

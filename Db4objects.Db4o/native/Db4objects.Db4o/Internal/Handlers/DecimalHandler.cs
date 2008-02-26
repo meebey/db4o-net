@@ -8,11 +8,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	public class DecimalHandler : IntegralTypeHandler
 	{
-		public DecimalHandler(ObjectContainerBase containerBase)
-			: base(containerBase)
-		{
-        }
-
         public override Object DefaultValue(){
             return (decimal)0;
         }

@@ -6,10 +6,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	abstract public class IntegralTypeHandler : NetTypeHandler
 	{
-		public IntegralTypeHandler(ObjectContainerBase containerBase)
-			: base(containerBase)
-		{
-		}
 
 	}
 }

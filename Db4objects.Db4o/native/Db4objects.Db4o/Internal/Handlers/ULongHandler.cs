@@ -8,11 +8,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
     public class ULongHandler : IntegralTypeHandler {
 
-		public ULongHandler(ObjectContainerBase containerBase)
-			: base(containerBase)
-		{
-        }
-
         public override Object DefaultValue(){
             return (ulong)0;
         }

@@ -9,11 +9,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	public class UShortHandler : IntegralTypeHandler
 	{
-		public UShortHandler(ObjectContainerBase containerBase)
-			: base(containerBase)
-		{
-        }
-
         public override Object DefaultValue(){
             return (ushort)0;
         }

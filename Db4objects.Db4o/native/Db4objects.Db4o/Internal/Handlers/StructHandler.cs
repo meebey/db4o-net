@@ -6,10 +6,5 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
     abstract public class StructHandler : NetTypeHandler {
 
-		public StructHandler(ObjectContainerBase containerBase)
-			: base(containerBase)
-		{
-        }
-
     }
 }

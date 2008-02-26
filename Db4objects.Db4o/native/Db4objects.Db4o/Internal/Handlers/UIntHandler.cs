@@ -8,11 +8,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	public class UIntHandler : IntegralTypeHandler
 	{
-		public UIntHandler(ObjectContainerBase containerBase)
-			: base(containerBase)
-		{
-        }
-
         public override Object DefaultValue(){
             return (uint)0;
         }

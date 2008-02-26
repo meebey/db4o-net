@@ -616,12 +616,12 @@ namespace Db4objects.Db4o.Internal
 			return new NetTypeHandler[]
 				{
 					//new DoubleHandler(stream),
-					new SByteHandler(stream),
-					new DecimalHandler(stream),
-					new UIntHandler(stream),
-					new ULongHandler(stream),
-					new UShortHandler(stream),
-					new DateTimeHandler(stream),
+					new SByteHandler(),
+					new DecimalHandler(),
+					new UIntHandler(),
+					new ULongHandler(),
+					new UShortHandler(),
+					new DateTimeHandler(),
 				};
         }
 
