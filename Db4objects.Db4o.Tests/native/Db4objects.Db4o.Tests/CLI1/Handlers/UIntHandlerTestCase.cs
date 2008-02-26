@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         private Db4objects.Db4o.Internal.Handlers.UIntHandler UIntHandler()
         {
-            return new Db4objects.Db4o.Internal.Handlers.UIntHandler(Stream());
+            return new Db4objects.Db4o.Internal.Handlers.UIntHandler();
         }
 
         public class Item

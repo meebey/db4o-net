@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         private Db4objects.Db4o.Internal.Handlers.UShortHandler UShortHandler()
         {
-            return new Db4objects.Db4o.Internal.Handlers.UShortHandler(Stream());
+            return new Db4objects.Db4o.Internal.Handlers.UShortHandler();
         }
 
         public class Item

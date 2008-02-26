@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         private Db4objects.Db4o.Internal.Handlers.DateTimeHandler DateTimeHandler()
         {
-            return new Db4objects.Db4o.Internal.Handlers.DateTimeHandler(Stream());
+            return new Db4objects.Db4o.Internal.Handlers.DateTimeHandler();
         }
 
         public class Item

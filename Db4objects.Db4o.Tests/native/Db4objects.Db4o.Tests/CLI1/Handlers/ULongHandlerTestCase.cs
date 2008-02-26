@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         private Db4objects.Db4o.Internal.Handlers.ULongHandler ULongHandler()
         {
-            return new Db4objects.Db4o.Internal.Handlers.ULongHandler(Stream());
+            return new Db4objects.Db4o.Internal.Handlers.ULongHandler();
         }
 
         public class Item
