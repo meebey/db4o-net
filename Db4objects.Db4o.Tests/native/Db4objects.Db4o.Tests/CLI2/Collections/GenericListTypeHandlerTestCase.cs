@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				throw new NotImplementedException();
 			}
 
-			public IPreparedComparison PrepareComparison(object obj)
+			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
 				throw new NotImplementedException();
 			}
