@@ -62,14 +62,14 @@ namespace Db4objects.Db4o.Linq.Internals
 
 		#region IDb4oLinqQueryInternal<T> Members
 
-		public IEnumerable<T> ThenBy<TKey>(Func<T, TKey> function)
+		public IEnumerable<T> UnoptimizedThenBy<TKey>(Func<T, TKey> function)
 		{
-			throw new NotImplementedException("cannot fallback on ThenBy");
+			throw new NotImplementedException("cannot fallback on UnoptimizedThenBy");
 		}
 
-		public IEnumerable<T> ThenByDescending<TKey>(Func<T, TKey> function)
+		public IEnumerable<T> UnoptimizedThenByDescending<TKey>(Func<T, TKey> function)
 		{
-			throw new NotImplementedException("cannot fallback on ThenBy");
+			throw new NotImplementedException("cannot fallback on UnoptimizedThenBy");
 		}
 
 		public IEnumerable<T> UnoptimizedWhere(Func<T, bool> func)

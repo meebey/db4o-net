@@ -36,12 +36,12 @@ namespace Db4objects.Db4o.Linq.Internals
 
 		#region IDb4oLinqQueryInternal<T> Members
 
-		public IEnumerable<T> ThenBy<TKey>(Func<T, TKey> function)
+		public IEnumerable<T> UnoptimizedThenBy<TKey>(Func<T, TKey> function)
 		{
 			return ((IOrderedEnumerable<T>)_result).ThenBy(function);
 		}
 
-		public IEnumerable<T> ThenByDescending<TKey>(Func<T, TKey> function)
+		public IEnumerable<T> UnoptimizedThenByDescending<TKey>(Func<T, TKey> function)
 		{
 			return ((IOrderedEnumerable<T>)_result).ThenByDescending(function);
 		}

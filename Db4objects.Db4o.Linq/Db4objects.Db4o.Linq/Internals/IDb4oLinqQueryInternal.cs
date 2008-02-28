@@ -5,8 +5,8 @@
 
 	interface IDb4oLinqQueryInternal<T> : IDb4oLinqQuery<T>
 	{
-		IEnumerable<T> ThenBy<TKey>(Func<T, TKey> function);
-		IEnumerable<T> ThenByDescending<TKey>(Func<T, TKey> function);
+		IEnumerable<T> UnoptimizedThenBy<TKey>(Func<T, TKey> function);
+		IEnumerable<T> UnoptimizedThenByDescending<TKey>(Func<T, TKey> function);
 
 		IEnumerable<T> UnoptimizedWhere(Func<T, bool> func);
 	}

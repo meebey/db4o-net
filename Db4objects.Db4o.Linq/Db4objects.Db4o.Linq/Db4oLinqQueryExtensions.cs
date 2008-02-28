@@ -22,9 +22,8 @@ namespace Db4objects.Db4o.Linq
 				query => {
 					new WhereClauseVisitor(query.GetUnderlyingQuery()).Process(expression);
 				},
-				data => {
-					return ((IDb4oLinqQueryInternal<TSource>)data).UnoptimizedWhere(expression.Compile());
-				});
+				data => data.UnoptimizedWhere(expression.Compile())
+			);
 		}
 
 		public static int Count<TSource>(this IDb4oLinqQuery<TSource> self)
@@ -39,10 +38,12 @@ namespace Db4objects.Db4o.Linq
 			return Enumerable.Count(self);
 		}
 
+		delegate IEnumerable<T> FallbackProcessor<T>(IDb4oLinqQueryInternal<T> query);
+
 		private static IDb4oLinqQuery<TSource> Process<TSource>(
 			IDb4oLinqQuery<TSource> query,
 			Action<Db4oQuery<TSource>> queryProcessor,
-			Func<IDb4oLinqQuery<TSource>, IEnumerable<TSource>> fallbackProcessor)
+			FallbackProcessor<TSource> fallbackProcessor)
 		{
 			if (query == null)
 				throw new ArgumentNullException("query");
@@ -50,7 +51,7 @@ namespace Db4objects.Db4o.Linq
 			var candidate = query as Db4oQuery<TSource>;
 
 			if (candidate == null)
-				return new UnoptimizedQuery<TSource>(fallbackProcessor(query));
+				return new UnoptimizedQuery<TSource>(fallbackProcessor((IDb4oLinqQueryInternal<TSource>)query));
 
 			try
 			{
@@ -63,7 +64,7 @@ namespace Db4objects.Db4o.Linq
 			}
 		}
 
-		private static IDb4oLinqQuery<TSource> ProcessOrderBy<TSource, TKey>(IDb4oLinqQuery<TSource> query, OrderByDirection direction, Expression<Func<TSource, TKey>> expression, Func<IDb4oLinqQuery<TSource>, IEnumerable<TSource>> fallbackProcessor)
+		private static IDb4oLinqQuery<TSource> ProcessOrderBy<TSource, TKey>(IDb4oLinqQuery<TSource> query, OrderByDirection direction, Expression<Func<TSource, TKey>> expression, FallbackProcessor<TSource> fallbackProcessor)
 		{
 			return Process(query,
 				q => {
@@ -90,18 +91,15 @@ namespace Db4objects.Db4o.Linq
 		public static IDb4oLinqQuery<TSource> ThenBy<TSource, TKey>(this IDb4oLinqQuery<TSource> self, Expression<Func<TSource, TKey>> expression)
 		{
 			return ProcessOrderBy(self, OrderByDirection.Ascending, expression,
-				data =>
-				{
-					return ((IDb4oLinqQueryInternal<TSource>)data).ThenBy(expression.Compile());
-				});	
+				data => data.UnoptimizedThenBy(expression.Compile())
+			);	
 		}
 
 		public static IDb4oLinqQuery<TSource> ThenByDescending<TSource, TKey>(this IDb4oLinqQuery<TSource> self, Expression<Func<TSource, TKey>> expression)
 		{
 			return ProcessOrderBy(self, OrderByDirection.Descending, expression,
-				data => {
-					return ((IDb4oLinqQueryInternal<TSource>)data).ThenByDescending(expression.Compile());
-				});
+				data => data.UnoptimizedThenByDescending(expression.Compile())
+			);
 		}
 
 		public static IDb4oLinqQuery<TRet> Select<TSource, TRet>(this IDb4oLinqQuery<TSource> self, Func<TSource, TRet> selector)
