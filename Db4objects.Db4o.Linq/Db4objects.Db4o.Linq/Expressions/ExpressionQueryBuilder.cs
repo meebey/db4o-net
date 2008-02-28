@@ -117,7 +117,14 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		protected void AnalyseMethod(QueryBuilderRecorder recorder, MethodInfo method, object[] parameters)
 		{
-			MethodAnalyser.FromMethod(method, parameters).AugmentQuery(recorder);
+			try
+			{
+				MethodAnalyser.FromMethod(method, parameters).AugmentQuery(recorder);
+			}
+			catch (Exception e)
+			{
+				throw new QueryOptimizationException(e.Message, e);
+			}
 		}
 
 		protected static void CannotOptimize(Expression e)

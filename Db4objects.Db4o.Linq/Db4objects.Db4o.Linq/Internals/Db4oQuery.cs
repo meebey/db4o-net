@@ -3,13 +3,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Linq.Internals
 {
-	internal class Db4oQuery<T> : IDb4oLinqQuery<T>
+	internal class Db4oQuery<T> : IDb4oLinqQueryInternal<T>
 	{
 		private IObjectContainer _container;
 		private IQuery _query;
@@ -58,5 +59,24 @@ namespace Db4objects.Db4o.Linq.Internals
 		{
 			return GetEnumerator();
 		}
+
+		#region IDb4oLinqQueryInternal<T> Members
+
+		public IEnumerable<T> ThenBy<TKey>(Func<T, TKey> function)
+		{
+			throw new NotImplementedException("cannot fallback on ThenBy");
+		}
+
+		public IEnumerable<T> ThenByDescending<TKey>(Func<T, TKey> function)
+		{
+			throw new NotImplementedException("cannot fallback on ThenBy");
+		}
+
+		public IEnumerable<T> UnoptimizedWhere(Func<T, bool> func)
+		{
+			return GetExtentResult().Where(func);
+		}
+
+		#endregion
 	}
 }

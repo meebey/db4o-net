@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		public static void AssertSequence<T>(IEnumerable<T> expected, IEnumerable<T> candidate)
 		{
-			Assert.IsTrue(expected.SequenceEqual(candidate));
+			Iterator4Assert.AreEqual(expected.GetEnumerator(), candidate.GetEnumerator());
 		}
 
 		protected void AssertQuery(string expected, Action action)

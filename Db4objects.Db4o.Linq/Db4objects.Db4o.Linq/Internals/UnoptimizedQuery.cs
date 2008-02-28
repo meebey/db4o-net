@@ -3,12 +3,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Db4objects.Db4o.Linq.Internals
 {
-	internal class UnoptimizedQuery<T> : IDb4oLinqQuery<T>
+	internal class UnoptimizedQuery<T> : IDb4oLinqQueryInternal<T>
 	{
-		IEnumerable<T> _result;
+		private IEnumerable<T> _result;
 
 		public UnoptimizedQuery(IEnumerable<T> result)
 		{
@@ -16,6 +17,11 @@ namespace Db4objects.Db4o.Linq.Internals
 				throw new ArgumentNullException("result");
 
 			_result = result;
+		}
+
+		public IEnumerable<T> Result
+		{
+			get { return _result; }
 		}
 
 		public IEnumerator<T> GetEnumerator()
@@ -27,5 +33,24 @@ namespace Db4objects.Db4o.Linq.Internals
 		{
 			return GetEnumerator();
 		}
+
+		#region IDb4oLinqQueryInternal<T> Members
+
+		public IEnumerable<T> ThenBy<TKey>(Func<T, TKey> function)
+		{
+			return ((IOrderedEnumerable<T>)_result).ThenBy(function);
+		}
+
+		public IEnumerable<T> ThenByDescending<TKey>(Func<T, TKey> function)
+		{
+			return ((IOrderedEnumerable<T>)_result).ThenByDescending(function);
+		}
+
+		public IEnumerable<T> UnoptimizedWhere(Func<T, bool> func)
+		{
+			return _result.Where(func);
+		}
+
+		#endregion
 	}
 }
