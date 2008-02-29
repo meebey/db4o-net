@@ -37,6 +37,8 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Db4objects.Db4o.Linq.Tests\AbstractDb4oLinqTestCase.cs" />
@@ -66,6 +68,7 @@
     <Compile Include="Db4objects.Db4o.Linq.Tests\Queries\QueryPrettyPrinter.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\WhereTestCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Db4objects.Db4o.Linq.Tests\QueryReuseTestCase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Db4objects.Db4o.Linq\Db4objects.Db4o.Linq-2008.csproj">

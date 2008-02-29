@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		protected override Type[] TestCases()
 		{
-			//return new[] { typeof(OrderByTestCase) };
+			//return new[] { typeof(WhereTestCase), typeof(QueryReuseTestCase) };
 			return new [] {
 				typeof(Caching.AllTests),
 				typeof(CodeAnalysis.AllTests),
@@ -27,6 +27,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				typeof(OrderByTestCase),
 				typeof(ParameterizedWhereTestCase),
 				typeof(PartiallyOptimizedQueryTestCase),
+				typeof(QueryReuseTestCase),
 				typeof(StringMethodTestCase),
 				typeof(VisualBasicTestCase),
 				typeof(WhereTestCase),

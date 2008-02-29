@@ -13,51 +13,48 @@ namespace Db4objects.Db4o.Linq.Expressions
 {
 	internal abstract class ExpressionQueryBuilder : ExpressionVisitor
 	{
-		private IQuery _query;
-
 		private QueryBuilderRecorder _recorder;
 
-		protected QueryBuilderRecorder Recorder
+		public QueryBuilderRecorder Recorder
 		{
 			get { return _recorder; }
 		}
 
-		public ExpressionQueryBuilder(IQuery query)
+		public ExpressionQueryBuilder()
 		{
-			_query = query;
 		}
 
-		public void Process(Expression expression)
+		public IQueryBuilderRecord Process(Expression expression)
 		{
-			ProcessExpression(SubtreeEvaluator.Evaluate(expression));
+			return ProcessExpression(SubtreeEvaluator.Evaluate(expression));
 		}
 
-		private bool IsRecorderCached(Expression expression, out QueryBuilderRecorder recorder)
+		private bool IsRecorderCached(Expression expression, out IQueryBuilderRecord record)
 		{
 			var cache = GetCachingStrategy();
-			recorder = cache.Get(expression);
-			return recorder != null;
+			record = cache.Get(expression);
+			return record != null;
 		}
 
-		private void CacheRecorder(Expression expression, QueryBuilderRecorder recorder)
+		private void CacheRecorder(Expression expression, IQueryBuilderRecord record)
 		{
-			GetCachingStrategy().Add(expression, recorder);
+			GetCachingStrategy().Add(expression, record);
 		}
 
-		protected abstract ICachingStrategy<Expression, QueryBuilderRecorder> GetCachingStrategy();
+		protected abstract ICachingStrategy<Expression, IQueryBuilderRecord> GetCachingStrategy();
 
-		private void ProcessExpression(Expression expression)
+		private IQueryBuilderRecord ProcessExpression(Expression expression)
 		{
-			if (IsRecorderCached(expression, out _recorder))
+			IQueryBuilderRecord record;
+			if (IsRecorderCached(expression, out record))
 			{
-				_recorder.Execute(_query);
-				return;
+				return record;
 			}
 
 			_recorder = new QueryBuilderRecorder();
 			Visit(expression);
-			_recorder.Execute(_query);
-			CacheRecorder(expression, _recorder);
+			CacheRecorder(expression, _recorder.Record);
+			return _recorder.Record;
 		}
 
 		private static bool IsParameter(Expression expression)

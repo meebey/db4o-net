@@ -14,15 +14,15 @@ namespace Db4objects.Db4o.Linq.Expressions
 	{
 		private OrderByDirection _direction;
 
-		private static ICachingStrategy<Expression, QueryBuilderRecorder> _cache =
-			new SingleItemCachingStrategy<Expression, QueryBuilderRecorder>(ExpressionEqualityComparer.Instance);
+		private static ICachingStrategy<Expression, IQueryBuilderRecord> _cache =
+			new SingleItemCachingStrategy<Expression, IQueryBuilderRecord>(ExpressionEqualityComparer.Instance);
 
-		public OrderByClauseVisitor(IQuery query, OrderByDirection direction) : base(query)
+		public OrderByClauseVisitor(OrderByDirection direction)
 		{
 			_direction = direction;
 		}
 
-		protected override ICachingStrategy<Expression, QueryBuilderRecorder> GetCachingStrategy()
+		protected override ICachingStrategy<Expression, IQueryBuilderRecord> GetCachingStrategy()
 		{
 			return _cache;
 		}

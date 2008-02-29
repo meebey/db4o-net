@@ -19,9 +19,7 @@ namespace Db4objects.Db4o.Linq
 		public static IDb4oLinqQuery<TSource> Where<TSource>(this IDb4oLinqQuery<TSource> self, Expression<Func<TSource, bool>> expression)
 		{
 			return Process(self,
-				query => {
-					new WhereClauseVisitor(query.GetUnderlyingQuery()).Process(expression);
-				},
+				query => new WhereClauseVisitor().Process(expression),
 				data => data.UnoptimizedWhere(expression.Compile())
 			);
 		}
@@ -33,7 +31,7 @@ namespace Db4objects.Db4o.Linq
 
 			var query = self as Db4oQuery<TSource>;
 			if (query != null)
-				return query.GetResult().Count;
+				return query.Count;
 
 			return Enumerable.Count(self);
 		}
@@ -42,7 +40,7 @@ namespace Db4objects.Db4o.Linq
 
 		private static IDb4oLinqQuery<TSource> Process<TSource>(
 			IDb4oLinqQuery<TSource> query,
-			Action<Db4oQuery<TSource>> queryProcessor,
+			Func<Db4oQuery<TSource>, IQueryBuilderRecord> queryProcessor,
 			FallbackProcessor<TSource> fallbackProcessor)
 		{
 			if (query == null)
@@ -55,8 +53,8 @@ namespace Db4objects.Db4o.Linq
 
 			try
 			{
-				queryProcessor(candidate);
-				return candidate;
+				IQueryBuilderRecord record = queryProcessor(candidate);
+				return new Db4oQuery<TSource>(candidate, record);
 			}
 			catch (QueryOptimizationException)
 			{
@@ -67,9 +65,8 @@ namespace Db4objects.Db4o.Linq
 		private static IDb4oLinqQuery<TSource> ProcessOrderBy<TSource, TKey>(IDb4oLinqQuery<TSource> query, OrderByDirection direction, Expression<Func<TSource, TKey>> expression, FallbackProcessor<TSource> fallbackProcessor)
 		{
 			return Process(query,
-				q => {
-					new OrderByClauseVisitor(q.GetUnderlyingQuery(), direction).Process(expression);
-				}, fallbackProcessor);
+				q => new OrderByClauseVisitor(direction).Process(expression),
+				fallbackProcessor);
 		}
 
 		public static IDb4oLinqQuery<TSource> OrderBy<TSource, TKey>(this IDb4oLinqQuery<TSource> self, Expression<Func<TSource, TKey>> expression)

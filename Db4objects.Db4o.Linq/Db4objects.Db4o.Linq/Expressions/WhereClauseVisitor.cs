@@ -14,14 +14,14 @@ namespace Db4objects.Db4o.Linq.Expressions
 {
 	internal class WhereClauseVisitor : ExpressionQueryBuilder
 	{
-		private static ICachingStrategy<Expression, QueryBuilderRecorder> _cache =
-			new SingleItemCachingStrategy<Expression, QueryBuilderRecorder>(ExpressionEqualityComparer.Instance);
+		private static ICachingStrategy<Expression, IQueryBuilderRecord> _cache =
+			new SingleItemCachingStrategy<Expression, IQueryBuilderRecord>(ExpressionEqualityComparer.Instance);
 
-		public WhereClauseVisitor(IQuery query) : base(query)
+		public WhereClauseVisitor()
 		{
 		}
 
-		protected override ICachingStrategy<Expression, QueryBuilderRecorder> GetCachingStrategy()
+		protected override ICachingStrategy<Expression, IQueryBuilderRecord> GetCachingStrategy()
 		{
 			return _cache;
 		}

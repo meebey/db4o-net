@@ -7,24 +7,91 @@ using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Linq.Internals
 {
+	internal interface IQueryBuilderRecord
+	{
+		void Playback(IQuery query);
+		void Playback(QueryBuilderContext context);
+	}
+
+	internal class NullQueryBuilderRecord : IQueryBuilderRecord
+	{
+		public static readonly NullQueryBuilderRecord Instance = new NullQueryBuilderRecord();
+
+		private NullQueryBuilderRecord()
+		{
+		}
+
+		public void Playback(IQuery query)
+		{
+		}
+
+		public void Playback(QueryBuilderContext context)
+		{
+		}
+	}
+
+	internal class CompositeQueryBuilderRecord : IQueryBuilderRecord
+	{
+		private readonly IQueryBuilderRecord _first;
+		private readonly IQueryBuilderRecord _second;
+
+		public CompositeQueryBuilderRecord(IQueryBuilderRecord first, IQueryBuilderRecord second)
+		{
+			_first = first;
+			_second = second;
+		}
+
+		public void Playback(IQuery query)
+		{
+			Playback(new QueryBuilderContext(query));
+		}
+
+		public void Playback(QueryBuilderContext context)
+		{
+			_first.Playback(context);
+			_second.Playback(context);
+		}
+	}
+
+	internal class QueryBuilderRecord : IQueryBuilderRecord
+	{
+		private readonly Action<QueryBuilderContext> _action;
+		private readonly IQueryBuilderRecord _next;
+
+		public QueryBuilderRecord(IQueryBuilderRecord next, Action<QueryBuilderContext> action)
+		{
+			_next = next;
+			_action = action;
+		}
+
+		public void Playback(IQuery query)
+		{
+			Playback(new QueryBuilderContext(query));
+		}
+
+		public void Playback(QueryBuilderContext context)
+		{
+			_next.Playback(context);
+			_action(context);
+		}
+	}
+
 	internal class QueryBuilderRecorder
 	{
-		private List<Action<QueryBuilderContext>> _actions = new List<Action<QueryBuilderContext>>();
+		private IQueryBuilderRecord _last = NullQueryBuilderRecord.Instance;
 
 		public QueryBuilderRecorder()
 		{
 		}
 
-		public void Add(Action<QueryBuilderContext> action)
+		public IQueryBuilderRecord Record
 		{
-			_actions.Add(action);
+			get { return _last; }
 		}
 
-		public void Execute(IQuery root)
+		public void Add(Action<QueryBuilderContext> action)
 		{
-			var context = new QueryBuilderContext(root);
-			foreach (var action in _actions)
-				action(context);
+			_last = new QueryBuilderRecord(_last, action);
 		}
 	}
 }

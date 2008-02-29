@@ -12,37 +12,48 @@ namespace Db4objects.Db4o.Linq.Internals
 {
 	internal class Db4oQuery<T> : IDb4oLinqQueryInternal<T>
 	{
-		private IObjectContainer _container;
-		private IQuery _query;
-		private ObjectSetWrapper<T> _result;
+		private readonly IObjectContainer _container;
+		private readonly IQueryBuilderRecord _record;
 
 		public Db4oQuery(IObjectContainer container)
 		{
-			if (container == null)
-				throw new ArgumentNullException("container");
-
+			if (container == null) throw new ArgumentNullException("container");
 			_container = container;
-			_query = container.Query();
-			_query.Constrain(typeof(T));
+			_record = NullQueryBuilderRecord.Instance;
 		}
 
-		public IQuery GetUnderlyingQuery()
-		{
-			return _query;
+		public Db4oQuery(Db4oQuery<T> parent, IQueryBuilderRecord record)
+		{			
+			_container = parent.Container;
+			_record = new CompositeQueryBuilderRecord(parent.Record, record);
 		}
 
-		public ObjectSetWrapper<T> GetResult()
+		public IObjectContainer Container
 		{
-			if (_result != null) return _result;
+			get { return _container; }
+		}
 
-			return _result = Wrap(_query.Execute());
+		public IQueryBuilderRecord Record
+		{
+			get { return _record; }
+		}
+
+		public int Count
+		{
+			get { return Execute().Count; }
 		}
 
 		public ObjectSetWrapper<T> GetExtentResult()
 		{
+			var query = NewQuery();
+			return Wrap(query.Execute());
+		}
+
+		private IQuery NewQuery()
+		{
 			var query = _container.Query();
 			query.Constrain(typeof(T));
-			return Wrap(query.Execute());
+			return query;
 		}
 
 		static ObjectSetWrapper<T> Wrap(IObjectSet set)
@@ -52,7 +63,14 @@ namespace Db4objects.Db4o.Linq.Internals
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			return GetResult().GetEnumerator();
+			return Wrap(Execute()).GetEnumerator();
+		}
+
+		private IObjectSet Execute()
+		{
+			var query = NewQuery();
+			_record.Playback(query);
+			return query.Execute();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
