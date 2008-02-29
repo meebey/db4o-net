@@ -7,6 +7,11 @@ namespace Db4oUnit.Extensions
 {
 	public class Db4oUnitPlatform
 	{
+		public static bool IsPascalCase()
+		{
+			return true;
+		}
+
 	    public static bool IsUserField(FieldInfo field)
 	    {
 	        if (field.IsStatic) return false;
