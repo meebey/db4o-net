@@ -24,7 +24,7 @@ namespace Db4objects.Drs.Tests.Foundation
 	{
 		public static void Main(string[] args)
 		{
-			new Db4oUnit.TestRunner(typeof(Db4objects.Drs.Tests.Foundation.ObjectSetCollection4FacadeTestCase)
+			new Db4oUnit.ConsoleTestRunner(typeof(Db4objects.Drs.Tests.Foundation.ObjectSetCollection4FacadeTestCase)
 				).Run();
 		}
 
