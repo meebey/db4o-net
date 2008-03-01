@@ -28,19 +28,6 @@ namespace Db4objects.Db4o.Foundation
                 AwakeClosure();
             }
         }
-        
-        public Object Run(ISafeClosure4 closure4)
-        {
-        	EnterClosure();
-            try
-            {
-                return closure4.Run();
-            }
-            finally
-            {
-                AwakeClosure();
-            }
-        }
 
         public void Snooze(long l)
         {

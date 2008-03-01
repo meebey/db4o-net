@@ -20,14 +20,6 @@ namespace Db4objects.Db4o.Foundation
                 return closure.Run();
             }
         }
-        
-        public Object Run(ISafeClosure4 closure)
-        {
-            lock (this)
-            {
-                return closure.Run();
-            }
-        }
     
         public void Snooze(long timeout)
         {
