@@ -30,7 +30,17 @@ namespace Db4objects.Db4o.Linq.Internals
 		}
 	}
 
-	internal class CompositeQueryBuilderRecord : IQueryBuilderRecord
+	internal abstract class QueryBuilderRecordImpl : IQueryBuilderRecord
+	{
+		public void Playback(IQuery query)
+		{
+			Playback(new QueryBuilderContext(query));
+		}
+
+		public abstract void Playback(QueryBuilderContext context);
+	}
+
+	internal class CompositeQueryBuilderRecord : QueryBuilderRecordImpl
 	{
 		private readonly IQueryBuilderRecord _first;
 		private readonly IQueryBuilderRecord _second;
@@ -41,35 +51,25 @@ namespace Db4objects.Db4o.Linq.Internals
 			_second = second;
 		}
 
-		public void Playback(IQuery query)
-		{
-			Playback(new QueryBuilderContext(query));
-		}
-
-		public void Playback(QueryBuilderContext context)
+		override public void Playback(QueryBuilderContext context)
 		{
 			_first.Playback(context);
 			_second.Playback(context);
 		}
 	}
 
-	internal class QueryBuilderRecord : IQueryBuilderRecord
+	internal class ChainedQueryBuilderRecord : QueryBuilderRecordImpl
 	{
 		private readonly Action<QueryBuilderContext> _action;
 		private readonly IQueryBuilderRecord _next;
 
-		public QueryBuilderRecord(IQueryBuilderRecord next, Action<QueryBuilderContext> action)
+		public ChainedQueryBuilderRecord(IQueryBuilderRecord next, Action<QueryBuilderContext> action)
 		{
 			_next = next;
 			_action = action;
 		}
 
-		public void Playback(IQuery query)
-		{
-			Playback(new QueryBuilderContext(query));
-		}
-
-		public void Playback(QueryBuilderContext context)
+		override public void Playback(QueryBuilderContext context)
 		{
 			_next.Playback(context);
 			_action(context);
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Linq.Internals
 
 		public void Add(Action<QueryBuilderContext> action)
 		{
-			_last = new QueryBuilderRecord(_last, action);
+			_last = new ChainedQueryBuilderRecord(_last, action);
 		}
 	}
 }
