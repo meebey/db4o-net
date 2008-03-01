@@ -116,6 +116,22 @@ namespace Db4objects.Db4o.Linq.Tests
 				});
 		}
 
+		public void TestOrderByDescendingOnWhere()
+		{
+			AssertQuery("(Person(Name == 'jb')(orderby Age desc))",
+				delegate
+				{
+					var jbs = from Person p in Db()
+							  where p.Name == "jb"
+							  orderby p.Age descending
+							  select p;
+					AssertSequence(new[] {
+						new Person { Name = "jb", Age = 24 },
+						new Person { Name = "jb", Age = 7 },
+					}, jbs);
+				});
+		}
+
 		public void TestOrderByDescendingOnUnoptimizableProperty()
 		{
 			AssertQuery("(Person(Name == 'jb'))",

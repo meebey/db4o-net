@@ -125,6 +125,17 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 			AssertQueryString("(Person(orderby Age asc))", query);
 		}
 
+		public void TestOrderByAscendingGreaterOnSameField()
+		{
+			var query = CreateQuery();
+			query.Constrain(typeof(Person));
+			
+			query.Descend("Age").Constrain(21).Greater();
+			query.Descend("Age").OrderAscending();
+
+			AssertQueryString("(Person(Age > 21)(orderby Age asc))", query);
+		}
+
 		public void TestOrderByDescending()
 		{
 			var query = CreateQuery();

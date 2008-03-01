@@ -14,6 +14,7 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 	internal class QueryPrettyPrinter
 	{
 		private StringBuilder _builder = new StringBuilder();
+		private StringBuilder _orderBy = new StringBuilder();
 		private HashSet<QConJoin> _visitedJoins = new HashSet<QConJoin>();
 
 		public QueryPrettyPrinter(IQuery query)
@@ -50,8 +51,14 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 			{
 				ConsumeList<IConstraint>(klass._children, cons => Visit(cons));
 			}
-
+			FlushOrderBy();
 			_builder.Append(")");
+		}
+
+		private void FlushOrderBy()
+		{
+			_builder.Append(_orderBy);
+			_orderBy.Length = 0;
 		}
 
 		private static void ConsumeList<TElement>(List4 list, Action<TElement> action)
@@ -65,19 +72,21 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 
 		protected virtual void Visit(QConPath path)
 		{
+			PrintOrderBy(path);
+		}
+
+		private void PrintOrderBy(QConObject path)
+		{
 			if (path.i_orderID == 0) return;
 
-			_builder.AppendFormat("(orderby {0} {1})",
+			_orderBy.AppendFormat("(orderby {0} {1})",
 				path.i_field.i_name,
 				OrderIdToString(path.i_orderID));
 		}
 
 		private static string OrderIdToString(int order)
 		{
-			if (order < 0)
-				return "desc";
-			else
-				return "asc";
+			return order < 0 ? "desc" : "asc";
 		}
 
 		protected virtual void Visit(QConJoin join)
@@ -118,12 +127,12 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 				}
 				return;
 			}
-
 			PrintQConObject(obj);
 		}
 
 		private void PrintQConObject(QConObject obj)
 		{
+			PrintOrderBy(obj);
 			_builder.AppendFormat("({0} {1} {2})",
 				obj.GetField().i_name,
 				EvaluatorToString(obj.i_evaluator),
@@ -157,9 +166,8 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 		}
 
 		private static string ValueToString(object value)
-		{
-			if (value is string)
-				return string.Format("'{0}'", value);
+		{	
+			if (value is string) return string.Format("'{0}'", value);
 
 			return value.ToString();
 		}
@@ -188,7 +196,7 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 
 		public override string ToString()
 		{
-			return _builder.ToString();
+			return _builder.ToString() + _orderBy.ToString();
 		}
 	}
 }
