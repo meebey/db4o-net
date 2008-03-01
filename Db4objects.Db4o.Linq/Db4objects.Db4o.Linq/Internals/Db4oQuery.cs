@@ -88,6 +88,17 @@ namespace Db4objects.Db4o.Linq.Internals
 		public IEnumerable<T> UnoptimizedThenByDescending<TKey>(Func<T, TKey> function)
 		{
 			throw new NotImplementedException("cannot fallback on UnoptimizedThenBy");
+			/*
+			IOrderByRecord record = _orderByRecord;
+			IOrderedEnumerable<T> ordered = record.OrderBy(this);
+
+			record = record.Next;
+			while (record != null)
+			{
+				ordered = record.ThenBy(record);
+			}
+			return ordered.ThenByDescending(function);
+			 * */
 		}
 
 		public IEnumerable<T> UnoptimizedWhere(Func<T, bool> func)
