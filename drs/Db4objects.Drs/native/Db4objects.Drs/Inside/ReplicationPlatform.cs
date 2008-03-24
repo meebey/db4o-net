@@ -32,15 +32,14 @@ namespace Db4objects.Drs.Inside
         public static void CopyCollectionState(object original, object destination, Db4objects.Drs.Inside.ICounterpartFinder
 			 counterpartFinder)
 		{
-			System.Collections.IList originalCollection = (System.Collections.IList
+			System.Collections.IEnumerable originalCollection = (System.Collections.IEnumerable
 				)original;
 			System.Collections.IList destinationCollection = (System.Collections.IList
 				)destination;
 			destinationCollection.Clear();
-			System.Collections.IEnumerator it = originalCollection.GetEnumerator();
-			while (it.MoveNext())
+
+			foreach (object element in originalCollection)
 			{
-				object element = it.Current;
 				object counterpart = counterpartFinder.FindCounterpart(element);
 				destinationCollection.Add(counterpart);
 			}
