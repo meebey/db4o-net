@@ -89,7 +89,7 @@ namespace Db4oTool.TA
 			type.Methods.Add(CreateBindMethod(activatorField));
 		}
 
-		private static bool HasInstrumentedBaseType(TypeDefinition type)
+		private bool HasInstrumentedBaseType(TypeDefinition type)
 		{
 			// is the base type defined in the same assembly?
 			TypeDefinition baseType = type.BaseType as TypeDefinition;
@@ -102,14 +102,51 @@ namespace Db4oTool.TA
         	return _reflector.ResolveTypeReference(typeRef);
         }
 
-		private static bool RequiresTA(TypeDefinition type)
+		private bool RequiresTA(TypeDefinition type)
 		{
 			if (type.IsValueType) return false;
 			if (type.IsInterface) return false;
 			if (type.Name == "<Module>") return false;
 			if (IsDelegate(type)) return false;
 			if (ByAttributeFilter.ContainsCustomAttribute(type, CompilerGeneratedAttribute)) return false;
+			if (!HasSerializableFields(type)) return false;
 			return true;
+		}
+
+		private bool HasSerializableFields(TypeDefinition type)
+		{
+			foreach (FieldDefinition field in type.Fields)
+			{
+				if (IsSerializable(field))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private bool IsSerializable(FieldDefinition field)
+		{
+			TypeDefinition fieldType = ResolveTypeReference(field.FieldType);
+			if (field.IsNotSerialized || (fieldType != null && (IsDelegate(fieldType) || IsWin32Handle(fieldType))))
+			{
+				return false;
+			}
+			return !IsPointer(field.FieldType);
+		}
+
+		private static bool IsWin32Handle(TypeReference type)
+		{
+			if (type == null) return false;
+
+			if (type.FullName == "System.Runtime.InteropServices.SafeHandle" || type.FullName == "System.IntPtr") return true;
+
+			TypeDefinition typeDefinition = type as TypeDefinition;
+			if (typeDefinition == null) return false;
+
+			TypeReference baseType = typeDefinition.BaseType;
+			return IsWin32Handle(baseType);
 		}
 
 		private bool ImplementsActivatable(TypeDefinition type)
