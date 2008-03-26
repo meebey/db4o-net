@@ -64,13 +64,13 @@ namespace Db4objects.Db4o.Collections
 
         object IList.this[int index]
         {
-            get { return Get(index); }
+            get { return This(index); }
             set { Set(index, (E) value); }
         }
 
         public E this[int index]
         {
-            get { return Get(index); }
+            get { return This(index); }
             set { Set(index, value); }
         }
 
