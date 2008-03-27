@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Config
 	/// <remarks>
 	/// a simple Alias for a single Class or Type, using #equals() on
 	/// the names in the resolve method.
-	/// &lt;br&gt;&lt;br&gt;See
+	/// <br /><br />See
 	/// <see cref="IAlias">IAlias</see>
 	/// for concrete examples.
 	/// </remarks>

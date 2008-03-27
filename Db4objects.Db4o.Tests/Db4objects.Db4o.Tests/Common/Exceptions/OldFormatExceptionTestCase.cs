@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 	{
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(OldFormatExceptionTestCase)).Run();
+			new ConsoleTestRunner(typeof(OldFormatExceptionTestCase)).Run();
 		}
 
 		// It is also regression test for COR-634.
@@ -41,8 +41,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				)));
 			Db4oFactory.Configure().AllowVersionUpdates(false);
 			string oldDatabaseFilePath = OldDatabaseFilePath();
-			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_44(this, oldDatabaseFilePath
-				));
+			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_44(oldDatabaseFilePath)
+				);
 			Db4oFactory.Configure().AllowVersionUpdates(true);
 			IObjectContainer container = null;
 			try
@@ -60,10 +60,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		private sealed class _ICodeBlock_44 : ICodeBlock
 		{
-			public _ICodeBlock_44(OldFormatExceptionTestCase _enclosing, string oldDatabaseFilePath
-				)
+			public _ICodeBlock_44(string oldDatabaseFilePath)
 			{
-				this._enclosing = _enclosing;
 				this.oldDatabaseFilePath = oldDatabaseFilePath;
 			}
 
@@ -72,8 +70,6 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			{
 				Db4oFactory.OpenFile(oldDatabaseFilePath);
 			}
-
-			private readonly OldFormatExceptionTestCase _enclosing;
 
 			private readonly string oldDatabaseFilePath;
 		}

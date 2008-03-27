@@ -16,16 +16,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Iterable4Adaptor adaptor = NewAdaptor(new int[] {  });
 			Assert.IsFalse(adaptor.HasNext());
 			Assert.IsFalse(adaptor.HasNext());
-			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_20(this, adaptor
-				));
+			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_20(adaptor));
 		}
 
 		private sealed class _ICodeBlock_20 : ICodeBlock
 		{
-			public _ICodeBlock_20(Iterable4AdaptorTestCase _enclosing, Iterable4Adaptor adaptor
-				)
+			public _ICodeBlock_20(Iterable4Adaptor adaptor)
 			{
-				this._enclosing = _enclosing;
 				this.adaptor = adaptor;
 			}
 
@@ -34,8 +31,6 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			{
 				adaptor.Next();
 			}
-
-			private readonly Iterable4AdaptorTestCase _enclosing;
 
 			private readonly Iterable4Adaptor adaptor;
 		}

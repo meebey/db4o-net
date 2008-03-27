@@ -8,10 +8,6 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class IDHandler : IntHandler
 	{
-		public IDHandler(ObjectContainerBase stream) : base(stream)
-		{
-		}
-
 		public override void DefragIndexEntry(DefragmentContextImpl context)
 		{
 			context.CopyID(true, false);

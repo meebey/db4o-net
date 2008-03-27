@@ -9,8 +9,8 @@ namespace Db4objects.Db4o.Diagnostic
 	/// prints Diagnostic messsages to the Console.
 	/// Install this
 	/// <see cref="IDiagnosticListener">IDiagnosticListener</see>
-	/// with: &lt;br&gt;
-	/// &lt;code&gt;Db4o.configure().diagnostic().addListener(new DiagnosticToConsole());&lt;/code&gt;&lt;br&gt;
+	/// with: <br />
+	/// <code>Db4o.configure().diagnostic().addListener(new DiagnosticToConsole());</code><br />
 	/// </remarks>
 	/// <seealso cref="IDiagnosticConfiguration">IDiagnosticConfiguration</seealso>
 	public class DiagnosticToConsole : IDiagnosticListener

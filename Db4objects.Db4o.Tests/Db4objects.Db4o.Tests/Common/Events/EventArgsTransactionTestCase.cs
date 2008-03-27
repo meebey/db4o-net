@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			BooleanByRef called = new BooleanByRef();
 			ObjectByRef foundTrans = new ObjectByRef();
 			factory.Creating += new Db4objects.Db4o.Events.CancellableObjectEventHandler(new 
-				_IEventListener4_20(this, called, foundTrans).OnEvent);
+				_IEventListener4_20(called, foundTrans).OnEvent);
 			Db().Store(new EventArgsTransactionTestCase.Item());
 			Db().Commit();
 			Assert.IsTrue(called.value);
@@ -30,10 +30,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private sealed class _IEventListener4_20
 		{
-			public _IEventListener4_20(EventArgsTransactionTestCase _enclosing, BooleanByRef 
-				called, ObjectByRef foundTrans)
+			public _IEventListener4_20(BooleanByRef called, ObjectByRef foundTrans)
 			{
-				this._enclosing = _enclosing;
 				this.called = called;
 				this.foundTrans = foundTrans;
 			}
@@ -44,8 +42,6 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				called.value = true;
 				foundTrans.value = ((TransactionalEventArgs)args).Transaction();
 			}
-
-			private readonly EventArgsTransactionTestCase _enclosing;
 
 			private readonly BooleanByRef called;
 

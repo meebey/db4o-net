@@ -68,15 +68,13 @@ namespace Db4objects.Db4o.Internal.Classindex
 				return;
 			}
 			_btreeIndex = ((LocalObjectContainer)stream).CreateBTreeClassIndex(btreeID);
-			_btreeIndex.SetRemoveListener(new _IVisitor4_61(this, stream));
+			_btreeIndex.SetRemoveListener(new _IVisitor4_61(stream));
 		}
 
 		private sealed class _IVisitor4_61 : IVisitor4
 		{
-			public _IVisitor4_61(BTreeClassIndexStrategy _enclosing, ObjectContainerBase stream
-				)
+			public _IVisitor4_61(ObjectContainerBase stream)
 			{
-				this._enclosing = _enclosing;
 				this.stream = stream;
 			}
 
@@ -85,8 +83,6 @@ namespace Db4objects.Db4o.Internal.Classindex
 				int id = ((int)obj);
 				stream.ReferenceSystemRegistry().RemoveId(id);
 			}
-
-			private readonly BTreeClassIndexStrategy _enclosing;
 
 			private readonly ObjectContainerBase stream;
 		}

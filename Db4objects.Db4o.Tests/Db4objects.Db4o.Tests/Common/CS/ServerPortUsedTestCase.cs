@@ -28,14 +28,13 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void Test()
 		{
 			int port = ClientServerFixture().ServerPort();
-			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_27(this, port));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_27(port));
 		}
 
 		private sealed class _ICodeBlock_27 : ICodeBlock
 		{
-			public _ICodeBlock_27(ServerPortUsedTestCase _enclosing, int port)
+			public _ICodeBlock_27(int port)
 			{
-				this._enclosing = _enclosing;
 				this.port = port;
 			}
 
@@ -44,8 +43,6 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			{
 				Db4oFactory.OpenServer(ServerPortUsedTestCase.DatabaseFile, port);
 			}
-
-			private readonly ServerPortUsedTestCase _enclosing;
 
 			private readonly int port;
 		}

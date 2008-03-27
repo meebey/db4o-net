@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 	{
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(ServerToClientTestCase)).Run();
+			new ConsoleTestRunner(typeof(ServerToClientTestCase)).Run();
 		}
 
 		internal sealed class AutoReplyRecipient : IMessageRecipient
@@ -32,29 +32,27 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public virtual void TestDispatchPendingMessages()
 		{
-			AssertReplyBehavior(new _IClientWaitLogic_30(this));
+			AssertReplyBehavior(new _IClientWaitLogic_30());
 		}
 
 		private sealed class _IClientWaitLogic_30 : ServerToClientTestCase.IClientWaitLogic
 		{
-			public _IClientWaitLogic_30(ServerToClientTestCase _enclosing)
+			public _IClientWaitLogic_30()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Wait(IObjectContainer client1, IObjectContainer client2)
 			{
-				int timeout = 500;
-				Cool.LoopWithTimeout(timeout, new _IConditionalBlock_33(this, client1, timeout, client2
+				int timeout = 2000;
+				Cool.LoopWithTimeout(timeout, new _IConditionalBlock_33(client1, timeout, client2
 					));
 			}
 
 			private sealed class _IConditionalBlock_33 : IConditionalBlock
 			{
-				public _IConditionalBlock_33(_IClientWaitLogic_30 _enclosing, IObjectContainer client1
-					, int timeout, IObjectContainer client2)
+				public _IConditionalBlock_33(IObjectContainer client1, int timeout, IObjectContainer
+					 client2)
 				{
-					this._enclosing = _enclosing;
 					this.client1 = client1;
 					this.timeout = timeout;
 					this.client2 = client2;
@@ -67,28 +65,23 @@ namespace Db4objects.Db4o.Tests.Common.CS
 					return true;
 				}
 
-				private readonly _IClientWaitLogic_30 _enclosing;
-
 				private readonly IObjectContainer client1;
 
 				private readonly int timeout;
 
 				private readonly IObjectContainer client2;
 			}
-
-			private readonly ServerToClientTestCase _enclosing;
 		}
 
 		public virtual void TestInterleavedCommits()
 		{
-			AssertReplyBehavior(new _IClientWaitLogic_46(this));
+			AssertReplyBehavior(new _IClientWaitLogic_46());
 		}
 
 		private sealed class _IClientWaitLogic_46 : ServerToClientTestCase.IClientWaitLogic
 		{
-			public _IClientWaitLogic_46(ServerToClientTestCase _enclosing)
+			public _IClientWaitLogic_46()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Wait(IObjectContainer client1, IObjectContainer client2)
@@ -96,8 +89,6 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				client2.Commit();
 				client1.Commit();
 			}
-
-			private readonly ServerToClientTestCase _enclosing;
 		}
 
 		private void AssertReplyBehavior(ServerToClientTestCase.IClientWaitLogic clientWaitLogic

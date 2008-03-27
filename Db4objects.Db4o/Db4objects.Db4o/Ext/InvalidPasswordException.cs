@@ -5,12 +5,12 @@ using Db4objects.Db4o.Ext;
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>
-	/// db4o-specific exception.&lt;br&gt;&lt;br&gt;
+	/// db4o-specific exception.<br /><br />
 	/// This exception is thrown when a client tries to connect
 	/// to a server with a wrong password or null password.
 	/// </summary>
 	/// <remarks>
-	/// db4o-specific exception.&lt;br&gt;&lt;br&gt;
+	/// db4o-specific exception.<br /><br />
 	/// This exception is thrown when a client tries to connect
 	/// to a server with a wrong password or null password.
 	/// </remarks>

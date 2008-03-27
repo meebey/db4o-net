@@ -86,5 +86,10 @@ namespace Db4objects.Db4o.Foundation
 		{
 			return _bits[index];
 		}
+
+		public byte[] Bytes()
+		{
+			return _bits;
+		}
 	}
 }

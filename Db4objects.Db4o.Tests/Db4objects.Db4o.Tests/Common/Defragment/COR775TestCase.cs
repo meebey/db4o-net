@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(COR775TestCase)).Run();
+			new ConsoleTestRunner(typeof(COR775TestCase)).Run();
 		}
 
 		/// <exception cref="Exception"></exception>

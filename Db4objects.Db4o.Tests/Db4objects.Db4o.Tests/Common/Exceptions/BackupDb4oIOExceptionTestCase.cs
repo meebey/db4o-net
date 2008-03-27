@@ -33,12 +33,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestBackup()
 		{
-			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_29(this));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_28(this));
 		}
 
-		private sealed class _ICodeBlock_29 : ICodeBlock
+		private sealed class _ICodeBlock_28 : ICodeBlock
 		{
-			public _ICodeBlock_29(BackupDb4oIOExceptionTestCase _enclosing)
+			public _ICodeBlock_28(BackupDb4oIOExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -211,18 +211,18 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 
 		public virtual IEnumerator IterateGraphStringFields(object obj)
 		{
-			return new CompositeIterator4(new _MappingIterator_146(this, IterateGraph(obj)));
+			return Iterators.Concat(Iterators.Map(IterateGraph(obj), new _IFunction4_146(this
+				)));
 		}
 
-		private sealed class _MappingIterator_146 : MappingIterator
+		private sealed class _IFunction4_146 : IFunction4
 		{
-			public _MappingIterator_146(SampleTestCase _enclosing, IEnumerator baseArg1) : base
-				(baseArg1)
+			public _IFunction4_146(SampleTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
-			protected override object Map(object current)
+			public object Apply(object current)
 			{
 				return this._enclosing.IterateStringFieldsOnObject(current);
 			}
@@ -321,31 +321,26 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 		internal virtual IEnumerator IterateStringFieldsOnObject(object obj)
 		{
 			IReflectClass stringClass = Reflector().ForClass(typeof(string));
-			return new _MappingIterator_236(this, stringClass, obj, IteratePersistentFields(obj
-				));
+			return MapPersistentFields(obj, new _IFunction4_236(stringClass, obj));
 		}
 
-		private sealed class _MappingIterator_236 : MappingIterator
+		private sealed class _IFunction4_236 : IFunction4
 		{
-			public _MappingIterator_236(SampleTestCase _enclosing, IReflectClass stringClass, 
-				object obj, IEnumerator baseArg1) : base(baseArg1)
+			public _IFunction4_236(IReflectClass stringClass, object obj)
 			{
-				this._enclosing = _enclosing;
 				this.stringClass = stringClass;
 				this.obj = obj;
 			}
 
-			protected override object Map(object current)
+			public object Apply(object current)
 			{
 				IReflectField field = (IReflectField)current;
 				if (field.GetFieldType() != stringClass)
 				{
-					return MappingIterator.Skip;
+					return Iterators.Skip;
 				}
 				return new SampleTestCase.FieldOnObject(field, obj);
 			}
-
-			private readonly SampleTestCase _enclosing;
 
 			private readonly IReflectClass stringClass;
 
@@ -354,19 +349,17 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 
 		private IEnumerator IterateFieldValues(object obj)
 		{
-			return new _MappingIterator_248(this, obj, IteratePersistentFields(obj));
+			return MapPersistentFields(obj, new _IFunction4_248(obj));
 		}
 
-		private sealed class _MappingIterator_248 : MappingIterator
+		private sealed class _IFunction4_248 : IFunction4
 		{
-			public _MappingIterator_248(SampleTestCase _enclosing, object obj, IEnumerator baseArg1
-				) : base(baseArg1)
+			public _IFunction4_248(object obj)
 			{
-				this._enclosing = _enclosing;
 				this.obj = obj;
 			}
 
-			protected override object Map(object current)
+			public object Apply(object current)
 			{
 				IReflectField field = (IReflectField)current;
 				try
@@ -379,37 +372,36 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 				}
 			}
 
-			private readonly SampleTestCase _enclosing;
-
 			private readonly object obj;
+		}
+
+		private IEnumerator MapPersistentFields(object obj, IFunction4 function)
+		{
+			return Iterators.Map(IteratePersistentFields(obj), function);
 		}
 
 		private IEnumerator IteratePersistentFields(object obj)
 		{
-			IReflectClass claxx = Reflector().ForObject(obj);
-			IReflectField[] fields = claxx.GetDeclaredFields();
-			return new _MappingIterator_263(this, new ArrayIterator4(fields));
+			return Iterators.Filter(DeclaredFields(obj), new _IPredicate4_266());
 		}
 
-		private sealed class _MappingIterator_263 : MappingIterator
+		private sealed class _IPredicate4_266 : IPredicate4
 		{
-			public _MappingIterator_263(SampleTestCase _enclosing, ArrayIterator4 baseArg1) : 
-				base(baseArg1)
+			public _IPredicate4_266()
 			{
-				this._enclosing = _enclosing;
 			}
 
-			protected override object Map(object current)
+			public bool Match(object candidate)
 			{
-				IReflectField field = (IReflectField)current;
-				if (field.IsTransient() || field.IsStatic())
-				{
-					return MappingIterator.Skip;
-				}
-				return field;
+				IReflectField field = (IReflectField)candidate;
+				return !field.IsTransient() && !field.IsStatic();
 			}
+		}
 
-			private readonly SampleTestCase _enclosing;
+		private IReflectField[] DeclaredFields(object obj)
+		{
+			IReflectClass claxx = Reflector().ForObject(obj);
+			return claxx.GetDeclaredFields();
 		}
 
 		/// <exception cref="Exception"></exception>

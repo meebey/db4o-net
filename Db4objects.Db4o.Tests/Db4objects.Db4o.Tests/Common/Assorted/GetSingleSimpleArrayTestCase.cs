@@ -14,15 +14,13 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			IObjectSet result = Db().QueryByExample(new double[] { 0.6, 0.4 });
 			Assert.IsFalse(result.HasNext());
 			Assert.IsFalse(result.HasNext());
-			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_17(this, result)
-				);
+			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_17(result));
 		}
 
 		private sealed class _ICodeBlock_17 : ICodeBlock
 		{
-			public _ICodeBlock_17(GetSingleSimpleArrayTestCase _enclosing, IObjectSet result)
+			public _ICodeBlock_17(IObjectSet result)
 			{
-				this._enclosing = _enclosing;
 				this.result = result;
 			}
 
@@ -31,8 +29,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			{
 				result.Next();
 			}
-
-			private readonly GetSingleSimpleArrayTestCase _enclosing;
 
 			private readonly IObjectSet result;
 		}

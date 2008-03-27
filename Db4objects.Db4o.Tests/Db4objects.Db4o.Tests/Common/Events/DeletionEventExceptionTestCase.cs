@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		public virtual void TestDeletionEvents()
 		{
 			ServerEventRegistry().Deleting += new Db4objects.Db4o.Events.CancellableObjectEventHandler
-				(new _IEventListener4_25(this).OnEvent);
+				(new _IEventListener4_25().OnEvent);
 			object item = RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item));
 			if (IsMTOC())
 			{
@@ -40,9 +40,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private sealed class _IEventListener4_25
 		{
-			public _IEventListener4_25(DeletionEventExceptionTestCase _enclosing)
+			public _IEventListener4_25()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.CancellableObjectEventArgs
@@ -50,8 +49,6 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			{
 				throw new Exception();
 			}
-
-			private readonly DeletionEventExceptionTestCase _enclosing;
 		}
 
 		private sealed class _ICodeBlock_32 : ICodeBlock

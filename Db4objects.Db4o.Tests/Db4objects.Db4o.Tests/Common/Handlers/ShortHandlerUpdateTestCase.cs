@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(ShortHandlerUpdateTestCase)).Run();
+			new ConsoleTestRunner(typeof(ShortHandlerUpdateTestCase)).Run();
 		}
 
 		protected override void AssertArrays(object obj)

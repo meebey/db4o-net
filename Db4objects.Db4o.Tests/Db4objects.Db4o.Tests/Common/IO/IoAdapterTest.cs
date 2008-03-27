@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 	{
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(IoAdapterTest)).Run();
+			new ConsoleTestRunner(typeof(IoAdapterTest)).Run();
 		}
 
 		private string _cachedIoAdapterFile = Path.GetTempFileName();
@@ -120,14 +120,13 @@ namespace Db4objects.Db4o.Tests.Common.IO
 
 		private void AssertReadOnly(IoAdapter adapter)
 		{
-			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_98(this, adapter));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_98(adapter));
 		}
 
 		private sealed class _ICodeBlock_98 : ICodeBlock
 		{
-			public _ICodeBlock_98(IoAdapterTest _enclosing, IoAdapter adapter)
+			public _ICodeBlock_98(IoAdapter adapter)
 			{
-				this._enclosing = _enclosing;
 				this.adapter = adapter;
 			}
 
@@ -136,8 +135,6 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			{
 				adapter.Write(new byte[] { 0 });
 			}
-
-			private readonly IoAdapterTest _enclosing;
 
 			private readonly IoAdapter adapter;
 		}

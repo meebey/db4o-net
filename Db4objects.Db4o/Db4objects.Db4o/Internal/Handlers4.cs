@@ -35,12 +35,23 @@ namespace Db4objects.Db4o.Internal
 
 		public const int AnyArrayNId = 13;
 
-		public static bool HandlerCanHold(ITypeHandler4 handler, IReflectClass claxx)
+		public static bool HandlerCanHold(ITypeHandler4 handler, IReflector reflector, IReflectClass
+			 claxx)
 		{
 			ITypeHandler4 baseTypeHandler = BaseTypeHandler(handler);
 			if (HandlesSimple(baseTypeHandler))
 			{
-				return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector());
+				if (!NullableArrayHandling.Disabled())
+				{
+					if (baseTypeHandler is PrimitiveHandler)
+					{
+						return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector(reflector
+							)) || claxx.Equals(((PrimitiveHandler)baseTypeHandler).PrimitiveClassReflector(reflector
+							));
+					}
+				}
+				return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector(reflector
+					));
 			}
 			if (baseTypeHandler is UntypedFieldHandler)
 			{
@@ -67,12 +78,13 @@ namespace Db4objects.Db4o.Internal
 			return BaseTypeHandler(handler) is ClassMetadata;
 		}
 
-		public static IReflectClass PrimitiveClassReflector(ITypeHandler4 handler)
+		public static IReflectClass PrimitiveClassReflector(ITypeHandler4 handler, IReflector
+			 reflector)
 		{
 			ITypeHandler4 baseTypeHandler = BaseTypeHandler(handler);
 			if (baseTypeHandler is PrimitiveHandler)
 			{
-				return ((PrimitiveHandler)baseTypeHandler).PrimitiveClassReflector();
+				return ((PrimitiveHandler)baseTypeHandler).PrimitiveClassReflector(reflector);
 			}
 			return null;
 		}
@@ -81,7 +93,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (handler is ArrayHandler)
 			{
-				return ((ArrayHandler)handler)._handler;
+				return ((ArrayHandler)handler).DelegateTypeHandler();
 			}
 			if (handler is PrimitiveFieldHandler)
 			{

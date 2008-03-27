@@ -1,23 +1,5 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-This file is part of the db4o open source object database.
-
-db4o is free software; you can redistribute it and/or modify it under
-the terms of version 2 of the GNU General Public License as published
-by the Free Software Foundation and as clarified by db4objects' GPL 
-interpretation policy, available at
-http://www.db4o.com/about/company/legalpolicies/gplinterpretation/
-Alternatively you can write to db4objects, Inc., 1900 S Norfolk Street,
-Suite 350, San Mateo, CA 94403, USA.
-
-db4o is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 namespace Db4objects.Drs.Tests
 {
 	public class ReplicationFeaturesMain : Db4objects.Drs.Tests.DrsTestCase
@@ -35,8 +17,8 @@ namespace Db4objects.Drs.Tests
 		private readonly Db4objects.Drs.Tests.Foundation.Set4 _setBoth = new Db4objects.Drs.Tests.Foundation.Set4
 			(2);
 
-		private readonly Db4objects.Drs.Tests.Foundation.Set4 _NONE = Db4objects.Drs.Tests.Foundation.Set4
-			.EMPTY_SET;
+		private readonly Db4objects.Drs.Tests.Foundation.Set4 None = Db4objects.Drs.Tests.Foundation.Set4
+			.EmptySet;
 
 		private Db4objects.Drs.Tests.Foundation.Set4 _direction;
 
@@ -116,7 +98,7 @@ namespace Db4objects.Drs.Tests
 
 		private string FirstContainerWithDeletedObjects()
 		{
-			return First(_containersWithDeletedObjects.Iterator());
+			return First(_containersWithDeletedObjects.GetEnumerator());
 		}
 
 		private bool IsDefaultReplicationBehaviorAllowed()
@@ -132,7 +114,7 @@ namespace Db4objects.Drs.Tests
 			_setBoth.AddAll(_setA);
 			_setBoth.AddAll(_setB);
 			_testCombination = 0;
-			TstWithDeletedObjectsIn(_NONE);
+			TstWithDeletedObjectsIn(None);
 			TstWithDeletedObjectsIn(_setA);
 			TstWithDeletedObjectsIn(_setB);
 			TstWithDeletedObjectsIn(_setBoth);
@@ -144,6 +126,9 @@ namespace Db4objects.Drs.Tests
 			}
 		}
 
+		//	protected void clean() {
+		//		delete(new Class[]{Replicated.class});
+		//	}
 		private void ChangeObject(Db4objects.Drs.Inside.ITestableReplicationProviderInside
 			 container, string name, string newName)
 		{
@@ -213,6 +198,10 @@ namespace Db4objects.Drs.Tests
 				(origin, inspected));
 		}
 
+		//	public void configure() {
+		//		Db4o.configure().generateUUIDs(Integer.MAX_VALUE);
+		//		Db4o.configure().generateVersionNumbers(Integer.MAX_VALUE);
+		//	}
 		private Db4objects.Drs.Inside.ITestableReplicationProviderInside Container(string
 			 aOrB)
 		{
@@ -233,7 +222,8 @@ namespace Db4objects.Drs.Tests
 			PerformChanges();
 			PrintProvidersContent("after changes");
 			Db4objects.Drs.IReplicationSession replication = new Db4objects.Drs.Inside.GenericReplicationSession
-				(A().Provider(), B().Provider(), new _IReplicationEventListener_192(this));
+				(A().Provider(), B().Provider(), new _IReplicationEventListener_174(this));
+			//Default replication behaviour.
 			if (_direction.Size() == 1)
 			{
 				if (_direction.Contains(AStuff))
@@ -256,9 +246,9 @@ namespace Db4objects.Drs.Tests
 			Clean();
 		}
 
-		private sealed class _IReplicationEventListener_192 : Db4objects.Drs.IReplicationEventListener
+		private sealed class _IReplicationEventListener_174 : Db4objects.Drs.IReplicationEventListener
 		{
-			public _IReplicationEventListener_192(ReplicationFeaturesMain _enclosing)
+			public _IReplicationEventListener_174(ReplicationFeaturesMain _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -287,6 +277,17 @@ namespace Db4objects.Drs.Tests
 		{
 		}
 
+		//		System.out.println("*** "+msg);
+		//		printProviderContent(a().provider());
+		//		printProviderContent(b().provider());
+		//	private void printProviderContent(TestableReplicationProviderInside provider) {
+		//		ObjectContainer db=((Db4oReplicationProvider)provider).objectContainer();
+		//		ObjectSet result=db.query(Replicated.class);
+		//		System.out.println("PROVIDER: "+provider);
+		//		while(result.hasNext()) {
+		//			System.out.println(result.next());
+		//		}
+		//	}
 		private bool TryToReplicate(Db4objects.Drs.IReplicationSession replication)
 		{
 			try
@@ -337,8 +338,8 @@ namespace Db4objects.Drs.Tests
 		private Db4objects.Drs.Tests.Replicated Find(Db4objects.Drs.Inside.ITestableReplicationProviderInside
 			 container, string name)
 		{
-			System.Collections.IEnumerator storedObjects = container.GetStoredObjects(typeof(Db4objects.Drs.Tests.Replicated)
-				).GetEnumerator();
+			System.Collections.IEnumerator storedObjects = container.GetStoredObjects(typeof(
+				Db4objects.Drs.Tests.Replicated)).GetEnumerator();
 			int resultCount = 0;
 			Db4objects.Drs.Tests.Replicated result = null;
 			while (storedObjects.MoveNext())
@@ -436,10 +437,12 @@ namespace Db4objects.Drs.Tests
 				}
 				return false;
 			}
+			//No override to prevail. Default replication behavior.
 			if (HasChanges(inspectedContainer))
 			{
 				return false;
 			}
+			//A conflict would have been ignored long ago.
 			return IsModificationReplicationTriggered();
 		}
 
@@ -484,6 +487,7 @@ namespace Db4objects.Drs.Tests
 			{
 				return HasDeletions(other);
 			}
+			//_containerStateToPrevail is empty (default replication behaviour)
 			return IsDeletionReplicationTriggered();
 		}
 
@@ -587,7 +591,7 @@ namespace Db4objects.Drs.Tests
 
 		private string First(Db4objects.Drs.Tests.Foundation.Set4 containerSet)
 		{
-			return First(containerSet.Iterator());
+			return First(containerSet.GetEnumerator());
 		}
 
 		private string First(System.Collections.IEnumerator iterator)
@@ -613,6 +617,7 @@ namespace Db4objects.Drs.Tests
 			PrintCombination();
 			if (_testCombination < 0)
 			{
+				//Use this when debugging to skip some combinations and avoid waiting.
 				return;
 			}
 			int _errors = 0;
@@ -645,6 +650,7 @@ namespace Db4objects.Drs.Tests
 		{
 		}
 
+		//System.out.println(string);
 		public virtual void Test()
 		{
 			ActualTest();
@@ -662,7 +668,7 @@ namespace Db4objects.Drs.Tests
 			)
 		{
 			_containersToQueryFrom = containersToQueryFrom;
-			TstWithNewObjectsIn(_NONE);
+			TstWithNewObjectsIn(None);
 			TstWithNewObjectsIn(_setA);
 			TstWithNewObjectsIn(_setB);
 			TstWithNewObjectsIn(_setBoth);
@@ -672,7 +678,7 @@ namespace Db4objects.Drs.Tests
 			)
 		{
 			_containersWithChangedObjects = containers;
-			TstWithContainerStateToPrevail(_NONE);
+			TstWithContainerStateToPrevail(None);
 			TstWithContainerStateToPrevail(_setA);
 			TstWithContainerStateToPrevail(_setB);
 			TstWithContainerStateToPrevail(null);
@@ -691,7 +697,7 @@ namespace Db4objects.Drs.Tests
 			)
 		{
 			_containersWithNewObjects = containersWithNewObjects;
-			TstWithChangedObjectsIn(_NONE);
+			TstWithChangedObjectsIn(None);
 			TstWithChangedObjectsIn(_setA);
 			TstWithChangedObjectsIn(_setB);
 			TstWithChangedObjectsIn(_setBoth);

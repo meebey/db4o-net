@@ -29,6 +29,7 @@ namespace Db4objects.Db4o.Internal
 			ThrowRuntimeException(code, msg, cause, true);
 		}
 
+		[System.ObsoleteAttribute]
 		public static void ThrowRuntimeException(int code, string msg, Exception cause, bool
 			 doLog)
 		{

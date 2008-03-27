@@ -124,7 +124,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			Db4objects.Db4o.Internal.Query.Processor.QCon qcon = this;
 			ClassMetadata yc = GetYapClass();
 			bool[] foundField = new bool[] { false };
-			ForEachChildField(a_field, new _IVisitor4_112(this, foundField, query));
+			ForEachChildField(a_field, new _IVisitor4_112(foundField, query));
 			if (foundField[0])
 			{
 				return true;
@@ -135,7 +135,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				int[] count = new int[] { 0 };
 				FieldMetadata[] yfs = new FieldMetadata[] { null };
 				i_trans.Container().ClassCollection().AttachQueryNode(a_field, new _IVisitor4_130
-					(this, yfs, count));
+					(yfs, count));
 				if (count[0] == 0)
 				{
 					return false;
@@ -174,9 +174,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private sealed class _IVisitor4_112 : IVisitor4
 		{
-			public _IVisitor4_112(QCon _enclosing, bool[] foundField, QQuery query)
+			public _IVisitor4_112(bool[] foundField, QQuery query)
 			{
-				this._enclosing = _enclosing;
 				this.foundField = foundField;
 				this.query = query;
 			}
@@ -187,8 +186,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				query.AddConstraint((Db4objects.Db4o.Internal.Query.Processor.QCon)obj);
 			}
 
-			private readonly QCon _enclosing;
-
 			private readonly bool[] foundField;
 
 			private readonly QQuery query;
@@ -196,9 +193,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private sealed class _IVisitor4_130 : IVisitor4
 		{
-			public _IVisitor4_130(QCon _enclosing, FieldMetadata[] yfs, int[] count)
+			public _IVisitor4_130(FieldMetadata[] yfs, int[] count)
 			{
-				this._enclosing = _enclosing;
 				this.yfs = yfs;
 				this.count = count;
 			}
@@ -208,8 +204,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				yfs[0] = (FieldMetadata)((object[])obj)[1];
 				count[0]++;
 			}
-
-			private readonly QCon _enclosing;
 
 			private readonly FieldMetadata[] yfs;
 

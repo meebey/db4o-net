@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 		private object EmptyValue()
 		{
-			return new DateHandler(null).PrimitiveNull();
+			return new DateHandler().PrimitiveNull();
 		}
 
 		/// <exception cref="Exception"></exception>

@@ -121,15 +121,14 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped.STCharWUTestCase
 				());
-			q.Constrain(new _IEvaluation_104(this));
+			q.Constrain(new _IEvaluation_104());
 			Expect(q, new int[] { 2, 3 });
 		}
 
 		private sealed class _IEvaluation_104 : IEvaluation
 		{
-			public _IEvaluation_104(STCharWUTestCase _enclosing)
+			public _IEvaluation_104()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Evaluate(ICandidate candidate)
@@ -138,8 +137,6 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Wrapper.Untyped
 					)candidate.GetObject();
 				candidate.Include((((char)sts.i_char) + 2) > 100);
 			}
-
-			private readonly STCharWUTestCase _enclosing;
 		}
 	}
 }

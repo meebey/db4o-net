@@ -44,5 +44,11 @@ namespace Db4objects.Db4o.Marshall
 		/// <summary>positions the read pointer at the specified position</summary>
 		/// <param name="offset">the desired position in the buffer</param>
 		void Seek(int offset);
+
+		/// <summary>
+		/// reads and int from the current offset position and
+		/// seeks the
+		/// </summary>
+		void SeekCurrentInt();
 	}
 }

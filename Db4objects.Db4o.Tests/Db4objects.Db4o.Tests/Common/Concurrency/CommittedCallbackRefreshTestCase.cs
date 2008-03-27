@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void Conc(IExtObjectContainer oc, int seq)
 		{
 			EventRegistry(oc).Committed += new Db4objects.Db4o.Events.CommitEventHandler(new 
-				_IEventListener4_74(this, oc).OnEvent);
+				_IEventListener4_74(oc).OnEvent);
 			CommittedCallbackRefreshTestCase.Item[] items = new CommittedCallbackRefreshTestCase.Item
 				[Count];
 			IObjectSet objectSet = NewQuery(typeof(CommittedCallbackRefreshTestCase.Item)).Execute
@@ -115,10 +115,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		private sealed class _IEventListener4_74
 		{
-			public _IEventListener4_74(CommittedCallbackRefreshTestCase _enclosing, IExtObjectContainer
-				 oc)
+			public _IEventListener4_74(IExtObjectContainer oc)
 			{
-				this._enclosing = _enclosing;
 				this.oc = oc;
 			}
 
@@ -137,8 +135,6 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 					oc.Refresh(obj, 2);
 				}
 			}
-
-			private readonly CommittedCallbackRefreshTestCase _enclosing;
 
 			private readonly IExtObjectContainer oc;
 		}

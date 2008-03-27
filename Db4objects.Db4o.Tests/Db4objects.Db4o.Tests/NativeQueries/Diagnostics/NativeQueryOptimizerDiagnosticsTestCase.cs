@@ -52,23 +52,20 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 
 		public virtual void TestNativeQueryNotOptimized()
 		{
-			IObjectSet items = Db().Query(new _Predicate_41(this));
+			IObjectSet items = Db().Query(new _Predicate_41());
 			Assert.IsTrue(_failed);
 		}
 
 		private sealed class _Predicate_41 : Predicate
 		{
-			public _Predicate_41(NativeQueryOptimizerDiagnosticsTestCase _enclosing)
+			public _Predicate_41()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public bool Match(NativeQueryOptimizerDiagnosticsTestCase.Subject subject)
 			{
 				return subject.ComplexName().StartsWith("Test");
 			}
-
-			private readonly NativeQueryOptimizerDiagnosticsTestCase _enclosing;
 		}
 
 		private class Subject

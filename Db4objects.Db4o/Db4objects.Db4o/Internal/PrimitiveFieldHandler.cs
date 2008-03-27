@@ -13,11 +13,13 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class PrimitiveFieldHandler : ClassMetadata, IFieldHandler
+	public class PrimitiveFieldHandler : ClassMetadata, IFieldHandler, ICompositeTypeHandler
 	{
+		private const int HashcodeForNull = 283636383;
+
 		private readonly ITypeHandler4 _handler;
 
-		internal PrimitiveFieldHandler(ObjectContainerBase container, ITypeHandler4 handler
+		public PrimitiveFieldHandler(ObjectContainerBase container, ITypeHandler4 handler
 			, int handlerID, IReflectClass classReflector) : base(container, classReflector)
 		{
 			i_fields = FieldMetadata.EmptyArray;
@@ -25,11 +27,9 @@ namespace Db4objects.Db4o.Internal
 			_id = handlerID;
 		}
 
-		internal PrimitiveFieldHandler(Db4objects.Db4o.Internal.PrimitiveFieldHandler prototype
-			, HandlerRegistry registry, int version) : this(prototype.Container(), registry.
-			CorrectHandlerVersion(prototype._handler, version), prototype._id, prototype.ClassReflector
-			())
+		public PrimitiveFieldHandler() : base(null, null)
 		{
+			_handler = null;
 		}
 
 		internal override void ActivateFields(Transaction trans, object obj, IActivationDepth
@@ -76,15 +76,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (a_type == Const4.TypeArray)
 			{
-				new ArrayHandler(a_bytes.GetStream(), this, true).DeletePrimitiveEmbedded(a_bytes
-					, this);
+				new ArrayHandler(this, true).DeletePrimitiveEmbedded(a_bytes, this);
 			}
 			else
 			{
 				if (a_type == Const4.TypeNarray)
 				{
-					new MultidimensionalArrayHandler(a_bytes.GetStream(), this, true).DeletePrimitiveEmbedded
-						(a_bytes, this);
+					new MultidimensionalArrayHandler(this, true).DeletePrimitiveEmbedded(a_bytes, this
+						);
 				}
 			}
 		}
@@ -116,14 +115,18 @@ namespace Db4objects.Db4o.Internal
 			return _handler.Read(context);
 		}
 
-		internal override void InstantiateFields(UnmarshallingContext context)
+		internal override object InstantiateFields(UnmarshallingContext context)
 		{
 			object obj = context.Read(_handler);
-			if (obj != null && (_handler is Db4objects.Db4o.Internal.Handlers.DateHandler))
+			if (obj == null || !(_handler is Db4objects.Db4o.Internal.Handlers.DateHandler))
 			{
-				object existing = context.PersistentObject();
-				context.PersistentObject(DateHandler().CopyValue(obj, existing));
+				return obj;
 			}
+			object existing = context.PersistentObject();
+			object newValue = DateHandler().CopyValue(obj, existing);
+			// FIXME: It should not be necessary to set persistentObject here
+			context.PersistentObject(newValue);
+			return newValue;
 		}
 
 		private Db4objects.Db4o.Internal.Handlers.DateHandler DateHandler()
@@ -146,9 +149,10 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override IPreparedComparison PrepareComparison(object source)
+		public override IPreparedComparison PrepareComparison(IContext context, object source
+			)
 		{
-			return _handler.PrepareComparison(source);
+			return _handler.PrepareComparison(context, source);
 		}
 
 		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
@@ -216,6 +220,51 @@ namespace Db4objects.Db4o.Internal
 		public override ITypeHandler4 TypeHandler()
 		{
 			return _handler;
+		}
+
+		public override ITypeHandler4 DelegateTypeHandler()
+		{
+			return _handler;
+		}
+
+		public virtual ITypeHandler4 GenericTemplate()
+		{
+			return new Db4objects.Db4o.Internal.PrimitiveFieldHandler(null, null, 0, null);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (!(obj is Db4objects.Db4o.Internal.PrimitiveFieldHandler))
+			{
+				return false;
+			}
+			Db4objects.Db4o.Internal.PrimitiveFieldHandler other = (Db4objects.Db4o.Internal.PrimitiveFieldHandler
+				)obj;
+			if (_handler == null)
+			{
+				return other._handler == null;
+			}
+			return _handler.Equals(other._handler);
+		}
+
+		public override int GetHashCode()
+		{
+			if (_handler == null)
+			{
+				return HashcodeForNull;
+			}
+			return _handler.GetHashCode();
+		}
+
+		public virtual object DeepClone(object context)
+		{
+			TypeHandlerCloneContext typeHandlerCloneContext = (TypeHandlerCloneContext)context;
+			Db4objects.Db4o.Internal.PrimitiveFieldHandler original = (Db4objects.Db4o.Internal.PrimitiveFieldHandler
+				)typeHandlerCloneContext.original;
+			ITypeHandler4 delegateTypeHandler = typeHandlerCloneContext.CorrectHandlerVersion
+				(original.DelegateTypeHandler());
+			return new Db4objects.Db4o.Internal.PrimitiveFieldHandler(original.Container(), delegateTypeHandler
+				, original._id, original.ClassReflector());
 		}
 	}
 }

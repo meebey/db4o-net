@@ -6,12 +6,12 @@ using Db4objects.Db4o.Ext;
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>
-	/// db4o-specific exception.&lt;br&gt;&lt;br&gt;
+	/// db4o-specific exception.<br /><br />
 	/// This exception is thrown when a system IO exception
 	/// is encounted by db4o process.
 	/// </summary>
 	/// <remarks>
-	/// db4o-specific exception.&lt;br&gt;&lt;br&gt;
+	/// db4o-specific exception.<br /><br />
 	/// This exception is thrown when a system IO exception
 	/// is encounted by db4o process.
 	/// </remarks>

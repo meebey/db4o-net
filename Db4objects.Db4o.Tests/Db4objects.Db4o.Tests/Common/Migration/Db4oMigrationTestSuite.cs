@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o.Tests.Common.Freespace;
 using Db4objects.Db4o.Tests.Common.Handlers;
@@ -13,12 +14,12 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 	{
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(Db4oMigrationTestSuite)).Run();
+			new ConsoleTestRunner(typeof(Db4oMigrationTestSuite)).Run();
 		}
 
-		public virtual TestSuite Build()
+		public virtual IEnumerator GetEnumerator()
 		{
-			return new Db4oMigrationSuiteBuilder(TestCases(), Libraries()).Build();
+			return new Db4oMigrationSuiteBuilder(TestCases(), Libraries()).GetEnumerator();
 		}
 
 		private string[] Libraries()
@@ -30,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			if (true)
 			{
 				// run against specific libraries + the current one
-				return new string[] { WorkspaceServices.WorkspacePath("db4o.archives/java1.2/db4o-4.0-java1.1.jar"
+				return new string[] { WorkspaceServices.WorkspacePath("db4o.archives/java1.2/db4o-7.2.31.10304-java1.2.jar"
 					) };
 			}
 			// WorkspaceServices.workspacePath("db4o.archives/java1.2/db4o-3.0.jar"),

@@ -639,6 +639,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(MessageRecipientKey, messageRecipient);
 		}
 
+		[System.ObsoleteAttribute]
 		public void SetOut(TextWriter outStream)
 		{
 			_config.Put(OutstreamKey, outStream);
@@ -648,8 +649,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				Db4objects.Db4o.Internal.Messages.LogMsg(Db4oFactory.Configure(), 19, Db4oFactory
-					.Version());
+				Db4objects.Db4o.Internal.Messages.LogMsg(this, 19, Db4oFactory.Version());
 			}
 		}
 
@@ -699,6 +699,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(FreespaceSystemKey, AbstractFreespaceManager.FmRam);
 		}
 
+		[System.ObsoleteAttribute]
 		public void UseIndexSystem()
 		{
 			throw new NotSupportedException();

@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private BooleanHandler BooleanHandler()
 		{
-			return new BooleanHandler(Stream());
+			return new BooleanHandler();
 		}
 
 		public virtual void TestReadWriteTrue()

@@ -5,6 +5,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Mapping;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Mapping
 {
@@ -15,10 +16,10 @@ namespace Db4objects.Db4o.Internal.Mapping
 
 		private readonly IntHandler _mappedHandler;
 
-		public MappedIDPairHandler(ObjectContainerBase stream)
+		public MappedIDPairHandler()
 		{
-			_origHandler = new IntHandler(stream);
-			_mappedHandler = new IntHandler(stream);
+			_origHandler = new IntHandler();
+			_mappedHandler = new IntHandler();
 		}
 
 		public virtual void DefragIndexEntry(DefragmentContextImpl context)
@@ -50,18 +51,18 @@ namespace Db4objects.Db4o.Internal.Mapping
 			return ((int)_origHandler.ReadIndexEntry(a_reader));
 		}
 
-		public virtual IPreparedComparison PrepareComparison(object source)
+		public virtual IPreparedComparison PrepareComparison(IContext context, object source
+			)
 		{
 			MappedIDPair sourceIDPair = (MappedIDPair)source;
 			int sourceID = sourceIDPair.Orig();
-			return new _IPreparedComparison_49(this, sourceID);
+			return new _IPreparedComparison_50(sourceID);
 		}
 
-		private sealed class _IPreparedComparison_49 : IPreparedComparison
+		private sealed class _IPreparedComparison_50 : IPreparedComparison
 		{
-			public _IPreparedComparison_49(MappedIDPairHandler _enclosing, int sourceID)
+			public _IPreparedComparison_50(int sourceID)
 			{
-				this._enclosing = _enclosing;
 				this.sourceID = sourceID;
 			}
 
@@ -71,8 +72,6 @@ namespace Db4objects.Db4o.Internal.Mapping
 				int targetID = targetIDPair.Orig();
 				return sourceID == targetID ? 0 : (sourceID < targetID ? -1 : 1);
 			}
-
-			private readonly MappedIDPairHandler _enclosing;
 
 			private readonly int sourceID;
 		}

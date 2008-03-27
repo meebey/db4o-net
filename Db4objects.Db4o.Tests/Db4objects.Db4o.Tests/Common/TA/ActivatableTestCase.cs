@@ -3,7 +3,7 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4oUnit.Extensions.Mocking;
+using Db4oUnit.Mocking;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.TA;
 
@@ -51,22 +51,19 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			// mock1 has only be bound by store so far
 			// client.close should have no effect on it
 			mock1.Recorder().Verify(new MethodCall[] { new MethodCall("bind", new _IArgumentCondition_51
-				(this)) });
+				()) });
 		}
 
 		private sealed class _IArgumentCondition_51 : MethodCall.IArgumentCondition
 		{
-			public _IArgumentCondition_51(ActivatableTestCase _enclosing)
+			public _IArgumentCondition_51()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Verify(object argument)
 			{
 				Assert.IsNotNull(argument);
 			}
-
-			private readonly ActivatableTestCase _enclosing;
 		}
 
 		private MockActivatable RetrieveMockFromNewClientAndClose()

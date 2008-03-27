@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Query
 	/// candidate for
 	/// <see cref="IEvaluation">IEvaluation</see>
 	/// callbacks.
-	/// &lt;br&gt;&lt;br&gt;
+	/// <br /><br />
 	/// During
 	/// <see cref="IQuery.Execute">query execution</see>
 	/// all registered
@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Query
 	/// meet all other
 	/// <see cref="IQuery">IQuery</see>
 	/// criteria.
-	/// &lt;br&gt;&lt;br&gt;
+	/// <br /><br />
 	/// A
 	/// <see cref="ICandidate">ICandidate</see>
 	/// provides access to the persistent object it
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Query
 		/// specify whether the Candidate is to be included in the
 		/// <see cref="IObjectSet">IObjectSet</see>
 		/// resultset.
-		/// &lt;br&gt;&lt;br&gt;
+		/// <br /><br />
 		/// This method may be called multiple times. The last call prevails.
 		/// </summary>
 		/// <param name="flag">inclusion.</param>

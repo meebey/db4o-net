@@ -181,18 +181,20 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				RawFieldSpec fieldInfo = fieldMarshaller.ReadSpec(_stream, classreader);
 				string fieldName = fieldInfo.Name();
-				IReflectClass fieldClass = ReflectClassForFieldSpec(fieldInfo);
+				IReflectClass fieldClass = ReflectClassForFieldSpec(fieldInfo, _stream.Reflector(
+					));
 				fields[i] = _builder.CreateField(clazz, fieldName, fieldClass, fieldInfo.IsVirtual
 					(), fieldInfo.IsPrimitive(), fieldInfo.IsArray(), fieldInfo.IsNArray());
 			}
 			_builder.InitFields(clazz, fields);
 		}
 
-		private IReflectClass ReflectClassForFieldSpec(RawFieldSpec fieldInfo)
+		private IReflectClass ReflectClassForFieldSpec(RawFieldSpec fieldInfo, IReflector
+			 reflector)
 		{
 			if (fieldInfo.IsVirtual())
 			{
-				return VirtualFieldByName(fieldInfo.Name()).ClassReflector();
+				return VirtualFieldByName(fieldInfo.Name()).ClassReflector(reflector);
 			}
 			int handlerID = fieldInfo.HandlerID();
 			switch (handlerID)

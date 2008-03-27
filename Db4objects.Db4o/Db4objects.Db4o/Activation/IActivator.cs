@@ -7,15 +7,15 @@ using Db4objects.Db4o.TA;
 namespace Db4objects.Db4o.Activation
 {
 	/// <summary>
-	/// Activator interface.&lt;br&gt;
-	/// &lt;br&gt;&lt;br&gt;
+	/// Activator interface.<br />
+	/// <br /><br />
 	/// <see cref="IActivatable">IActivatable</see>
 	/// objects need to have a reference to
 	/// an Activator implementation, which is called
 	/// by Transparent Activation, when a request is received to
 	/// activate the host object.
 	/// </summary>
-	/// <seealso>&lt;a href="http://developer.db4o.com/resources/view.aspx/reference/Object_Lifecycle/Activation/Transparent_Activation_Framework"&gt;Transparent Activation framework.&lt;/a&gt;
+	/// <seealso>&lt;a href="http://developer.db4o.com/resources/view.aspx/reference/Object_Lifecycle/Activation/Transparent_Activation_Framework"&gt;Transparent Activation framework.</a>
 	/// 	</seealso>
 	public interface IActivator
 	{

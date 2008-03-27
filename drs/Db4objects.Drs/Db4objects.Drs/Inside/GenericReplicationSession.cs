@@ -1,28 +1,10 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-This file is part of the db4o open source object database.
-
-db4o is free software; you can redistribute it and/or modify it under
-the terms of version 2 of the GNU General Public License as published
-by the Free Software Foundation and as clarified by db4objects' GPL 
-interpretation policy, available at
-http://www.db4o.com/about/company/legalpolicies/gplinterpretation/
-Alternatively you can write to db4objects, Inc., 1900 S Norfolk Street,
-Suite 350, San Mateo, CA 94403, USA.
-
-db4o is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 namespace Db4objects.Drs.Inside
 {
 	public sealed class GenericReplicationSession : Db4objects.Drs.IReplicationSession
 	{
-		private const int SIZE = 10000;
+		private const int Size = 10000;
 
 		private readonly Db4objects.Drs.Inside.ReplicationReflector _reflector;
 
@@ -53,6 +35,7 @@ namespace Db4objects.Drs.Inside
 		public GenericReplicationSession(Db4objects.Drs.IReplicationProvider providerA, Db4objects.Drs.IReplicationProvider
 			 providerB, Db4objects.Drs.IReplicationEventListener listener)
 		{
+			//null means bidirectional replication.
 			_reflector = Db4objects.Drs.Inside.ReplicationReflector.GetInstance();
 			_collectionHandler = new Db4objects.Drs.Inside.CollectionHandlerImpl(_reflector.Reflector
 				());
@@ -203,6 +186,7 @@ namespace Db4objects.Drs.Inside
 			int[] dimensions = _reflector.ArrayDimensions(original);
 			object result = _reflector.NewArrayInstance(componentType, dimensions);
 			object[] flatContents = _reflector.ArrayContents(original);
+			//TODO Optimize: Copy the structure without flattening. Do this in ReflectArray.
 			if (!(claxx.IsSecondClass() || componentType.IsSecondClass()))
 			{
 				ReplaceWithCounterparts(flatContents, sourceProvider);
@@ -228,6 +212,7 @@ namespace Db4objects.Drs.Inside
 					continue;
 				}
 				field.SetAccessible();
+				//TODO Optimization: Do this in the field constructor;
 				object value = field.Get(src);
 				field.Set(dest, FindCounterpart(value, sourceProvider));
 			}
@@ -246,12 +231,12 @@ namespace Db4objects.Drs.Inside
 			{
 				return;
 			}
-			sourceProvider.VisitCachedReferences(new _IVisitor4_212(this, sourceProvider));
+			sourceProvider.VisitCachedReferences(new _IVisitor4_207(this, sourceProvider));
 		}
 
-		private sealed class _IVisitor4_212 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _IVisitor4_207 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _IVisitor4_212(GenericReplicationSession _enclosing, Db4objects.Drs.Inside.IReplicationProviderInside
+			public _IVisitor4_207(GenericReplicationSession _enclosing, Db4objects.Drs.Inside.IReplicationProviderInside
 				 sourceProvider)
 			{
 				this._enclosing = _enclosing;
@@ -303,6 +288,8 @@ namespace Db4objects.Drs.Inside
 			{
 				return null;
 			}
+			// TODO: need to clone and findCounterpart of each reference object in the
+			// struct
 			if (Db4objects.Drs.Inside.ReplicationPlatform.IsValueType(value))
 			{
 				return value;
@@ -320,6 +307,7 @@ namespace Db4objects.Drs.Inside
 			{
 				return CollectionClone(value, claxx, sourceProvider);
 			}
+			//if value is a Collection, result should be found by passing in just the value
 			Db4objects.Drs.Inside.IReplicationReference @ref = sourceProvider.ProduceReference
 				(value, null, null);
 			if (@ref == null)
@@ -339,13 +327,13 @@ namespace Db4objects.Drs.Inside
 		private object CollectionClone(object original, Db4objects.Db4o.Reflect.IReflectClass
 			 claxx, Db4objects.Drs.Inside.IReplicationProviderInside sourceProvider)
 		{
-			return _collectionHandler.CloneWithCounterparts(original, claxx, new _ICounterpartFinder_261
+			return _collectionHandler.CloneWithCounterparts(original, claxx, new _ICounterpartFinder_256
 				(this, sourceProvider));
 		}
 
-		private sealed class _ICounterpartFinder_261 : Db4objects.Drs.Inside.ICounterpartFinder
+		private sealed class _ICounterpartFinder_256 : Db4objects.Drs.Inside.ICounterpartFinder
 		{
-			public _ICounterpartFinder_261(GenericReplicationSession _enclosing, Db4objects.Drs.Inside.IReplicationProviderInside
+			public _ICounterpartFinder_256(GenericReplicationSession _enclosing, Db4objects.Drs.Inside.IReplicationProviderInside
 				 sourceProvider)
 			{
 				this._enclosing = _enclosing;
@@ -390,13 +378,15 @@ namespace Db4objects.Drs.Inside
 
 		private void ResetProcessedUuids()
 		{
-			_processedUuids = new Db4objects.Db4o.Foundation.Hashtable4(SIZE);
+			_processedUuids = new Db4objects.Db4o.Foundation.Hashtable4(Size);
 		}
 
 		private void StoreChangedCounterpartInDestination(Db4objects.Drs.Inside.IReplicationReference
 			 reference, Db4objects.Drs.Inside.IReplicationProviderInside destination)
 		{
+			//System.out.println("reference = " + reference);
 			bool markedForReplicating = reference.IsMarkedForReplicating();
+			//System.out.println("markedForReplicating = " + markedForReplicating);
 			if (!markedForReplicating)
 			{
 				return;
@@ -412,13 +402,13 @@ namespace Db4objects.Drs.Inside
 			{
 				return;
 			}
-			destination.VisitCachedReferences(new _IVisitor4_303(this, destination));
-			source.VisitCachedReferences(new _IVisitor4_309(this, destination));
+			destination.VisitCachedReferences(new _IVisitor4_298(this, destination));
+			source.VisitCachedReferences(new _IVisitor4_304(this, destination));
 		}
 
-		private sealed class _IVisitor4_303 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _IVisitor4_298 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _IVisitor4_303(GenericReplicationSession _enclosing, Db4objects.Drs.Inside.IReplicationProviderInside
+			public _IVisitor4_298(GenericReplicationSession _enclosing, Db4objects.Drs.Inside.IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;
@@ -436,9 +426,9 @@ namespace Db4objects.Drs.Inside
 			private readonly Db4objects.Drs.Inside.IReplicationProviderInside destination;
 		}
 
-		private sealed class _IVisitor4_309 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _IVisitor4_304 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _IVisitor4_309(GenericReplicationSession _enclosing, Db4objects.Drs.Inside.IReplicationProviderInside
+			public _IVisitor4_304(GenericReplicationSession _enclosing, Db4objects.Drs.Inside.IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;

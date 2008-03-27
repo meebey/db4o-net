@@ -29,9 +29,9 @@ namespace Db4oUnit
 			return _error;
 		}
 
-		public virtual void Run(TestResult result)
+		public virtual void Run()
 		{
-			result.TestFailed(this, _error);
+			throw new TestException(_error);
 		}
 	}
 }

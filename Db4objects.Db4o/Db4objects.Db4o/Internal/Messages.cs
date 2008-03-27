@@ -136,10 +136,6 @@ namespace Db4objects.Db4o.Internal
 		public static void LogMsg(IConfiguration config, int code, string msg)
 		{
 			Config4Impl c4i = (Config4Impl)config;
-			if (c4i == null)
-			{
-				c4i = (Config4Impl)Db4oFactory.Configure();
-			}
 			if (c4i.MessageLevel() > Const4.None)
 			{
 				new Message(msg, code, c4i.OutStream());

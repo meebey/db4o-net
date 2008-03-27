@@ -1,9 +1,12 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using System.Reflection;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Fixtures;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit.Extensions
 {
@@ -35,23 +38,44 @@ namespace Db4oUnit.Extensions
 			return _fixture.Accept(clazz);
 		}
 
-		protected override object NewInstance(Type clazz)
+		protected override IEnumerator FromClass(Type clazz)
 		{
-			object instance = base.NewInstance(clazz);
-			if (instance is AbstractDb4oTestCase)
-			{
-				((AbstractDb4oTestCase)instance).Fixture(_fixture);
-			}
-			return instance;
+			return (IEnumerator)AbstractDb4oTestCase.FixtureVariable.With(_fixture, new _IClosure4_38
+				(this, clazz));
 		}
 
-		protected override ITest CreateTest(object instance, MethodInfo method)
+		private sealed class _IClosure4_38 : IClosure4
 		{
-			if (instance is AbstractDb4oTestCase)
+			public _IClosure4_38(Db4oTestSuiteBuilder _enclosing, Type clazz)
 			{
-				return new TestMethod(instance, method, Db4oFixtureLabelProvider.Default);
+				this._enclosing = _enclosing;
+				this.clazz = clazz;
 			}
-			return base.CreateTest(instance, method);
+
+			public object Run()
+			{
+				return this._enclosing.BaseFromClass(clazz);
+			}
+
+			private readonly Db4oTestSuiteBuilder _enclosing;
+
+			private readonly Type clazz;
+		}
+
+		protected override ITest FromMethod(Type clazz, MethodInfo method)
+		{
+			ITest test = base.FromMethod(clazz, method);
+			if (typeof(AbstractDb4oTestCase).IsAssignableFrom(clazz))
+			{
+				return new FixtureDecoration(test, null, AbstractDb4oTestCase.FixtureVariable, _fixture
+					);
+			}
+			return test;
+		}
+
+		private IEnumerator BaseFromClass(Type clazz)
+		{
+			return base.FromClass(clazz);
 		}
 	}
 }

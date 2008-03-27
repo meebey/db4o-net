@@ -7,26 +7,22 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
 	public abstract class PrimitiveHandler : IIndexableTypeHandler, IBuiltinTypeHandler
+		, IEmbeddedTypeHandler
 	{
-		protected readonly ObjectContainerBase _stream;
-
 		protected IReflectClass _classReflector;
 
 		private IReflectClass _primitiveClassReflector;
 
-		public PrimitiveHandler(ObjectContainerBase stream)
+		public virtual object Coerce(IReflector reflector, IReflectClass claxx, object obj
+			)
 		{
-			_stream = stream;
-		}
-
-		public virtual object Coerce(IReflectClass claxx, object obj)
-		{
-			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.Instance;
+			return Handlers4.HandlerCanHold(this, reflector, claxx) ? obj : No4.Instance;
 		}
 
 		public abstract object DefaultValue();
@@ -42,6 +38,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		protected abstract Type PrimitiveJavaClass();
+
+		protected virtual Type JavaClass()
+		{
+			if (NullableArrayHandling.Disabled())
+			{
+				return DefaultValue().GetType();
+			}
+			return Platform4.NullableTypeFor(PrimitiveJavaClass());
+		}
 
 		public abstract object PrimitiveNull();
 
@@ -77,29 +82,29 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Read(mf, a_writer, true);
 		}
 
-		public virtual IReflectClass ClassReflector()
+		public virtual IReflectClass ClassReflector(IReflector reflector)
 		{
-			EnsureClassReflectorLoaded();
+			EnsureClassReflectorLoaded(reflector);
 			return _classReflector;
 		}
 
-		public virtual IReflectClass PrimitiveClassReflector()
+		public virtual IReflectClass PrimitiveClassReflector(IReflector reflector)
 		{
-			EnsureClassReflectorLoaded();
+			EnsureClassReflectorLoaded(reflector);
 			return _primitiveClassReflector;
 		}
 
-		private void EnsureClassReflectorLoaded()
+		private void EnsureClassReflectorLoaded(IReflector reflector)
 		{
 			if (_classReflector != null)
 			{
 				return;
 			}
-			_classReflector = _stream.Reflector().ForClass(DefaultValue().GetType());
+			_classReflector = reflector.ForClass(JavaClass());
 			Type clazz = PrimitiveJavaClass();
 			if (clazz != null)
 			{
-				_primitiveClassReflector = _stream.Reflector().ForClass(clazz);
+				_primitiveClassReflector = reflector.ForClass(clazz);
 			}
 		}
 
@@ -156,7 +161,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return PrimitiveNull();
 		}
 
-		public virtual IPreparedComparison PrepareComparison(object obj)
+		public virtual IPreparedComparison PrepareComparison(IContext context, object obj
+			)
 		{
 			if (obj == null)
 			{

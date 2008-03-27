@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		/// <exception cref="Exception"></exception>
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(IncompatibleFileFormatExceptionTestCase)).Run();
+			new ConsoleTestRunner(typeof(IncompatibleFileFormatExceptionTestCase)).Run();
 		}
 
 		private static readonly string IncompatibleFileFormat = Path.GetTempFileName();
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void Test()
 		{
-			Assert.Expect(typeof(IncompatibleFileFormatException), new _ICodeBlock_33(this));
+			Assert.Expect(typeof(IncompatibleFileFormatException), new _ICodeBlock_33());
 			File4.Delete(IncompatibleFileFormat);
 			IoAdapter adapter = new RandomAccessFileAdapter();
 			Assert.IsFalse(adapter.Exists(IncompatibleFileFormat));
@@ -48,9 +48,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		private sealed class _ICodeBlock_33 : ICodeBlock
 		{
-			public _ICodeBlock_33(IncompatibleFileFormatExceptionTestCase _enclosing)
+			public _ICodeBlock_33()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			/// <exception cref="Exception"></exception>
@@ -59,8 +58,6 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				Db4oFactory.OpenFile(IncompatibleFileFormatExceptionTestCase.IncompatibleFileFormat
 					);
 			}
-
-			private readonly IncompatibleFileFormatExceptionTestCase _enclosing;
 		}
 	}
 }

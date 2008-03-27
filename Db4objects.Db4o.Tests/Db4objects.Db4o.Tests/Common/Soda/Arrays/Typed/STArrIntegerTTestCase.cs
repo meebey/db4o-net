@@ -9,6 +9,12 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 	{
 		public int[] intArr;
 
+		public static void Main(string[] args)
+		{
+			new Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrIntegerTTestCase().RunSolo
+				();
+		}
+
 		public STArrIntegerTTestCase()
 		{
 		}
@@ -28,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 				(new int[] { 3, 17, 25, int.MaxValue - 2 }) };
 		}
 
-		public virtual void TestDefaultContainsOne()
+		public virtual void _testDefaultContainsOne()
 		{
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrIntegerTTestCase
@@ -36,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed
 			Expect(q, new int[] { 3, 4 });
 		}
 
-		public virtual void TestDefaultContainsTwo()
+		public virtual void _testDefaultContainsTwo()
 		{
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed.STArrIntegerTTestCase

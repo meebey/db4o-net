@@ -60,13 +60,24 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 				).Indexed(true);
 			config.ObjectClass(typeof(SecondLevelIndexTestCase.ItemPair)).ObjectField("item2"
 				).Indexed(true);
-			base.Configure(config);
 		}
 
 		/// <exception cref="Exception"></exception>
 		protected override void Db4oTearDownBeforeClean()
 		{
-			Db4oFactory.Configure().Diagnostic().RemoveAllListeners();
+			Fixture().ConfigureAtRuntime(new _IRuntimeConfigureAction_56());
+		}
+
+		private sealed class _IRuntimeConfigureAction_56 : IRuntimeConfigureAction
+		{
+			public _IRuntimeConfigureAction_56()
+			{
+			}
+
+			public void Apply(IConfiguration config)
+			{
+				config.Diagnostic().RemoveAllListeners();
+			}
 		}
 
 		public virtual void Test()

@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			BooleanByRef closed = new BooleanByRef();
 			// FIXME: Sharpen doesn't understand the null parameter (the third one), we had to add a cast
 			//        to get sharpen to run through.
-			Transaction trans = new _LocalTransaction_102(this, closed, _server, _server.SystemTransaction
+			Transaction trans = new _LocalTransaction_102(closed, _server, _server.SystemTransaction
 				(), (TransactionalReferenceSystem)null);
 			EmbeddedClientObjectContainer client = new EmbeddedClientObjectContainer(_server, 
 				trans);
@@ -131,11 +131,10 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		private sealed class _LocalTransaction_102 : LocalTransaction
 		{
-			public _LocalTransaction_102(EmbeddedClientObjectContainerTestCase _enclosing, BooleanByRef
-				 closed, LocalObjectContainer baseArg1, Transaction baseArg2, TransactionalReferenceSystem
-				 baseArg3) : base(baseArg1, baseArg2, baseArg3)
+			public _LocalTransaction_102(BooleanByRef closed, LocalObjectContainer baseArg1, 
+				Transaction baseArg2, TransactionalReferenceSystem baseArg3) : base(baseArg1, baseArg2
+				, baseArg3)
 			{
-				this._enclosing = _enclosing;
 				this.closed = closed;
 			}
 
@@ -144,8 +143,6 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 				base.Close(rollbackOnClose);
 				closed.value = true;
 			}
-
-			private readonly EmbeddedClientObjectContainerTestCase _enclosing;
 
 			private readonly BooleanByRef closed;
 		}

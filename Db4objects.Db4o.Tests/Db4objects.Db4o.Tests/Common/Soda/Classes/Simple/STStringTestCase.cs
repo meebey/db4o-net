@@ -237,16 +237,15 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 			IQuery q = NewQuery();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
 				(null));
-			q.Constrain(new _IEvaluation_187(this));
+			q.Constrain(new _IEvaluation_187());
 			SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
 				("dod"));
 		}
 
 		private sealed class _IEvaluation_187 : IEvaluation
 		{
-			public _IEvaluation_187(STStringTestCase _enclosing)
+			public _IEvaluation_187()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Evaluate(ICandidate candidate)
@@ -255,8 +254,6 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 					)candidate.GetObject();
 				candidate.Include(sts.str.IndexOf("od") == 1);
 			}
-
-			private readonly STStringTestCase _enclosing;
 		}
 
 		public virtual void TestCaseInsenstiveContains()
@@ -264,16 +261,15 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 			IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
 				));
-			q.Constrain(new _IEvaluation_199(this));
+			q.Constrain(new _IEvaluation_199());
 			SodaTestUtil.ExpectOne(q, new Db4objects.Db4o.Tests.Common.Soda.Classes.Simple.STStringTestCase
 				("dod"));
 		}
 
 		private sealed class _IEvaluation_199 : IEvaluation
 		{
-			public _IEvaluation_199(STStringTestCase _enclosing)
+			public _IEvaluation_199()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Evaluate(ICandidate candidate)
@@ -282,8 +278,6 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Simple
 					)candidate.GetObject();
 				candidate.Include(sts.str.ToLower().IndexOf("od") >= 0);
 			}
-
-			private readonly STStringTestCase _enclosing;
 		}
 	}
 }

@@ -207,7 +207,7 @@ namespace Db4objects.Db4o.Internal
 			if (VariableLength())
 			{
 				IntByRef mint = new IntByRef(Const4.IntLength);
-				Traverse(new _IVisitor4_152(this, mint));
+				Traverse(new _IVisitor4_152(mint));
 				return mint.value;
 			}
 			return Const4.IntLength + (Size() * OwnLength());
@@ -215,9 +215,8 @@ namespace Db4objects.Db4o.Internal
 
 		private sealed class _IVisitor4_152 : IVisitor4
 		{
-			public _IVisitor4_152(TreeInt _enclosing, IntByRef mint)
+			public _IVisitor4_152(IntByRef mint)
 			{
-				this._enclosing = _enclosing;
 				this.mint = mint;
 			}
 
@@ -225,8 +224,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				mint.value += ((Db4objects.Db4o.Internal.TreeInt)obj).OwnLength();
 			}
-
-			private readonly TreeInt _enclosing;
 
 			private readonly IntByRef mint;
 		}

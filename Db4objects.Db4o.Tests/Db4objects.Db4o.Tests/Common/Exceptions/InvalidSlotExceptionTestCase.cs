@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				object byID = this._enclosing.Db().GetByID(1);
+				this._enclosing.Db().GetByID(1);
 			}
 
 			private readonly InvalidSlotExceptionTestCase _enclosing;

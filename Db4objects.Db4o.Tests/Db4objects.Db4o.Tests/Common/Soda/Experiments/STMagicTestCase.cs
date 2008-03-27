@@ -130,16 +130,15 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 		{
 			IQuery q = NewQuery();
 			q.Constrain(typeof(ISTInterface));
-			q.Constrain(new _IEvaluation_117(this));
+			q.Constrain(new _IEvaluation_117());
 			SodaTestUtil.Expect(q, new object[] { new Db4objects.Db4o.Tests.Common.Soda.Experiments.STMagicTestCase
 				("aaa"), new STStringTestCase("aaa") });
 		}
 
 		private sealed class _IEvaluation_117 : IEvaluation
 		{
-			public _IEvaluation_117(STMagicTestCase _enclosing)
+			public _IEvaluation_117()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Evaluate(ICandidate candidate)
@@ -147,8 +146,6 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 				ISTInterface sti = (ISTInterface)candidate.GetObject();
 				candidate.Include(sti.ReturnSomething().Equals("aaa"));
 			}
-
-			private readonly STMagicTestCase _enclosing;
 		}
 	}
 }

@@ -6,14 +6,13 @@ using System.Collections.Generic;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 using Sharpen;
-using Sharpen.Util;
 
 namespace Db4objects.Db4o.Collections
 {
 	/// <summary>Transparent activatable Map implementation.</summary>
 	/// <remarks>
 	/// Transparent activatable Map implementation.
-	/// Implements Map interface using two arrays to store keys and values.&lt;br&gt;&lt;br&gt;
+	/// Implements Map interface using two arrays to store keys and values.<br /><br />
 	/// When instantiated as a result of a query, all the internal members
 	/// are NOT activated at all. When internal members are required to
 	/// perform an operation, the instance transparently activates all
@@ -82,8 +81,8 @@ namespace Db4objects.Db4o.Collections
 		{
 			Activate(ActivationPurpose.Write);
 			_size = 0;
-			Arrays.Fill(_keys, DefaultKeyValue());
-			Arrays.Fill(_values, DefaultValue());
+			Sharpen.Util.Arrays.Fill(_keys, DefaultKeyValue());
+			Sharpen.Util.Arrays.Fill(_values, DefaultValue());
 		}
 
 		private bool ContainsKeyImpl(K key)

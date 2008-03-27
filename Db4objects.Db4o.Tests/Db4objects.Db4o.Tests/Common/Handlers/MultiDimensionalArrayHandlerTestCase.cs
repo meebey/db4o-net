@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			ITypeHandler4 typeHandler = (ITypeHandler4)Stream().FieldHandlerForClass(Reflector
 				().ForClass(clazz));
-			return new MultidimensionalArrayHandler(Stream(), typeHandler, isPrimitive);
+			return new MultidimensionalArrayHandler(typeHandler, isPrimitive);
 		}
 
 		public virtual void TestReadWrite()

@@ -13,8 +13,6 @@ namespace Db4objects.Db4o.Foundation
 
 		private object _current;
 
-		public static readonly object Skip = new object();
-
 		public MappingIterator(IEnumerator iterator)
 		{
 			if (null == iterator)
@@ -38,7 +36,7 @@ namespace Db4objects.Db4o.Foundation
 				}
 				_current = Map(_iterator.Current);
 			}
-			while (_current == Skip);
+			while (_current == Iterators.Skip);
 			return true;
 		}
 

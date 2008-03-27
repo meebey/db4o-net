@@ -12,8 +12,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class VersionFieldMetadata : VirtualFieldMetadata
 	{
-		internal VersionFieldMetadata(ObjectContainerBase stream) : base(Handlers4.LongId
-			, new LongHandler(stream))
+		internal VersionFieldMetadata() : base(Handlers4.LongId, new LongHandler())
 		{
 			SetName(VirtualField.Version);
 		}

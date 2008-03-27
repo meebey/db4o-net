@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 	{
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(PrimitiveMessageTestCase)).Run();
+			new ConsoleTestRunner(typeof(PrimitiveMessageTestCase)).Run();
 		}
 
 		public virtual void Test()

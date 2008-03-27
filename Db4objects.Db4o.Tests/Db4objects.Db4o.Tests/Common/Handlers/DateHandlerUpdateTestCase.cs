@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(DateHandlerUpdateTestCase)).Run();
+			new ConsoleTestRunner(typeof(DateHandlerUpdateTestCase)).Run();
 		}
 
 		protected override void AssertArrays(object obj)
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private object EmptyValue()
 		{
-			return new DateHandler(null).PrimitiveNull();
+			return new DateHandler().PrimitiveNull();
 		}
 
 		private void AssertAreEqual(DateTime expected, DateTime actual)

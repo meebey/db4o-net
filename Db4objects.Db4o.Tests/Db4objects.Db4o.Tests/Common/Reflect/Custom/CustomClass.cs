@@ -166,22 +166,19 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public virtual IEnumerator CustomFields()
 		{
-			return Iterators.Filter(_fields, new _IPredicate4_129(this));
+			return Iterators.Filter(_fields, new _IPredicate4_129());
 		}
 
 		private sealed class _IPredicate4_129 : IPredicate4
 		{
-			public _IPredicate4_129(CustomClass _enclosing)
+			public _IPredicate4_129()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public bool Match(object candidate)
 			{
 				return candidate is Db4objects.Db4o.Tests.Common.Reflect.Custom.CustomField;
 			}
-
-			private readonly CustomClass _enclosing;
 		}
 	}
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Tests;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit.Tests
 {
@@ -14,29 +15,15 @@ namespace Db4oUnit.Tests
 		public virtual void TestRunsGreen()
 		{
 			TestResult result = new TestResult();
-			new RunsGreen().Run(result);
-			Assert.IsTrue(result.Failures().Size() == 0, "not green");
+			new TestRunner(Iterators.Cons(new RunsGreen())).Run(result);
+			Assert.IsTrue(result.Failures.Size() == 0, "not green");
 		}
 
 		public virtual void TestRunsRed()
 		{
 			TestResult result = new TestResult();
-			new RunsRed(Exception).Run(result);
-			Assert.IsTrue(result.Failures().Size() == 1, "not red");
-		}
-
-		public virtual void TestTestSuite()
-		{
-			RunTestAndExpect(new TestSuite(new ITest[] { new RunsGreen() }), 0);
-			RunTestAndExpect(new TestSuite(new ITest[] { new RunsRed(Exception) }), 1);
-			RunTestAndExpect(new TestSuite(new ITest[] { new RunsGreen(), new RunsRed(Exception
-				) }), 1);
-			RunTestAndExpect(new TestSuite(new ITest[] { new RunsRed(Exception), new RunsRed(
-				Exception) }), 2);
-			RunTestAndExpect(new TestSuite(new ITest[] { new RunsRed(Exception), new RunsGreen
-				() }), 1);
-			RunTestAndExpect(new TestSuite(new ITest[] { new RunsGreen(), new RunsGreen() }), 
-				0);
+			new TestRunner(Iterators.Cons(new RunsRed(Exception))).Run(result);
+			Assert.IsTrue(result.Failures.Size() == 1, "not red");
 		}
 
 		public static void RunTestAndExpect(ITest test, int expFailures)
@@ -47,18 +34,24 @@ namespace Db4oUnit.Tests
 		public static void RunTestAndExpect(ITest test, int expFailures, bool checkException
 			)
 		{
+			RunTestAndExpect(Iterators.Cons(test), expFailures, checkException);
+		}
+
+		public static void RunTestAndExpect(IEnumerable tests, int expFailures, bool checkException
+			)
+		{
 			TestResult result = new TestResult();
-			test.Run(result);
-			if (expFailures != result.Failures().Size())
+			new TestRunner(tests).Run(result);
+			if (expFailures != result.Failures.Size())
 			{
-				Assert.Fail(result.Failures().ToString());
+				Assert.Fail(result.Failures.ToString());
 			}
 			if (checkException)
 			{
-				for (IEnumerator iter = result.Failures().Iterator(); iter.MoveNext(); )
+				for (IEnumerator iter = result.Failures.GetEnumerator(); iter.MoveNext(); )
 				{
 					TestFailure failure = (TestFailure)iter.Current;
-					Assert.IsTrue(Exception.Equals(failure.GetFailure()));
+					Assert.AreEqual(Exception, failure.GetFailure());
 				}
 			}
 		}

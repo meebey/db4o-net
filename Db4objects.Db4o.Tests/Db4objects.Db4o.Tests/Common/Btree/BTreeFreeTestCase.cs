@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			LocalObjectContainer container = (LocalObjectContainer)Stream();
 			Collection4 freedSlots = new Collection4();
 			container.InstallDebugFreespaceManager(new FreespaceManagerForDebug(container, new 
-				_ISlotListener_43(this, freedSlots, container)));
+				_ISlotListener_43(freedSlots, container)));
 			_btree.Free(SystemTrans());
 			SystemTrans().Commit();
 			Assert.IsTrue(freedSlots.ContainsAll(allSlots.GetEnumerator()));
@@ -42,10 +42,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		private sealed class _ISlotListener_43 : ISlotListener
 		{
-			public _ISlotListener_43(BTreeFreeTestCase _enclosing, Collection4 freedSlots, LocalObjectContainer
-				 container)
+			public _ISlotListener_43(Collection4 freedSlots, LocalObjectContainer container)
 			{
-				this._enclosing = _enclosing;
 				this.freedSlots = freedSlots;
 				this.container = container;
 			}
@@ -54,8 +52,6 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			{
 				freedSlots.Add(container.ToNonBlockedLength(slot));
 			}
-
-			private readonly BTreeFreeTestCase _enclosing;
 
 			private readonly Collection4 freedSlots;
 

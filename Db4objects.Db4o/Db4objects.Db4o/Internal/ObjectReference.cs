@@ -233,7 +233,7 @@ namespace Db4objects.Db4o.Internal
 			BitFalse(Const4.Continue);
 			MarshallingContext context = new MarshallingContext(trans, this, updateDepth, true
 				);
-			MarshallerFamily.Current()._object.Marshall(GetObject(), context);
+			ClassMetadata().Write(context, GetObject());
 			Pointer4 pointer = context.AllocateSlot();
 			ByteArrayBuffer buffer = context.ToWriteBuffer(pointer);
 			ObjectContainerBase container = trans.Container();

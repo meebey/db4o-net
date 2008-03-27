@@ -8,13 +8,13 @@ namespace Db4objects.Db4o.Query
 	/// set of
 	/// <see cref="IConstraint">IConstraint</see>
 	/// objects.
-	/// &lt;br&gt;&lt;br&gt;This extension of the
+	/// <br /><br />This extension of the
 	/// <see cref="IConstraint">IConstraint</see>
 	/// interface allows
 	/// setting the evaluation mode of all contained
 	/// <see cref="IConstraint">IConstraint</see>
 	/// objects with single calls.
-	/// &lt;br&gt;&lt;br&gt;
+	/// <br /><br />
 	/// See also
 	/// <see cref="IQuery.Constraints">IQuery.Constraints</see>
 	/// .

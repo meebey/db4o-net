@@ -26,17 +26,15 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				();
 			IEventRegistry registry = EventRegistryFactory.ForObjectContainer(Db());
 			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_23
-				(this, eventFlag).OnEvent);
+				(eventFlag).OnEvent);
 			Store(new ClassRegistrationEventsTestCase.Data());
 			Assert.IsTrue(eventFlag.eventOccurred);
 		}
 
 		private sealed class _IEventListener4_23
 		{
-			public _IEventListener4_23(ClassRegistrationEventsTestCase _enclosing, ClassRegistrationEventsTestCase.EventFlag
-				 eventFlag)
+			public _IEventListener4_23(ClassRegistrationEventsTestCase.EventFlag eventFlag)
 			{
-				this._enclosing = _enclosing;
 				this.eventFlag = eventFlag;
 			}
 
@@ -47,8 +45,6 @@ namespace Db4objects.Db4o.Tests.Common.Events
 					.SimpleName(classEventArgs.ClassMetadata().GetName()));
 				eventFlag.eventOccurred = true;
 			}
-
-			private readonly ClassRegistrationEventsTestCase _enclosing;
 
 			private readonly ClassRegistrationEventsTestCase.EventFlag eventFlag;
 		}

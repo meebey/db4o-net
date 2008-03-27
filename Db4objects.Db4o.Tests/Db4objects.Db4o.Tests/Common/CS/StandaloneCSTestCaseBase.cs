@@ -23,11 +23,11 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
+			IConfiguration config = Db4oFactory.Configure();
 			Configure(config);
 			string fileName = DatabaseFile();
 			File4.Delete(fileName);
-			IObjectServer server = Db4oFactory.OpenServer(config, fileName, -1);
+			IObjectServer server = Db4oFactory.OpenServer(fileName, -1);
 			_port = server.Ext().Port();
 			try
 			{

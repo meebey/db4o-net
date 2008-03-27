@@ -14,8 +14,7 @@ namespace Db4objects.Db4o.Internal
 			databaseFileName)
 		{
 			IObjectContainer oc = new IoAdaptedObjectContainer(config, databaseFileName);
-			Db4objects.Db4o.Internal.Messages.LogMsg(Db4oFactory.Configure(), 5, databaseFileName
-				);
+			Db4objects.Db4o.Internal.Messages.LogMsg(config, 5, databaseFileName);
 			return oc;
 		}
 	}

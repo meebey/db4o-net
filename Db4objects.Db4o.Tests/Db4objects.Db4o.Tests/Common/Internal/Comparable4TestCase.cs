@@ -7,6 +7,7 @@ using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Internal;
 
@@ -79,18 +80,23 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		private void AssertHandlerComparison(ITypeHandler4 handler, object smaller, object
 			 greater)
 		{
-			IPreparedComparison comparable = handler.PrepareComparison(smaller);
+			IPreparedComparison comparable = handler.PrepareComparison(Context(), smaller);
 			Assert.IsNotNull(comparable);
 			Assert.AreEqual(0, comparable.CompareTo(smaller));
 			Assert.IsSmaller(0, comparable.CompareTo(greater));
-			comparable = handler.PrepareComparison(greater);
+			comparable = handler.PrepareComparison(Context(), greater);
 			Assert.IsNotNull(comparable);
 			Assert.AreEqual(0, comparable.CompareTo(greater));
 			Assert.IsGreater(0, comparable.CompareTo(smaller));
-			comparable = handler.PrepareComparison(null);
+			comparable = handler.PrepareComparison(Context(), null);
 			Assert.IsNotNull(comparable);
 			Assert.AreEqual(0, comparable.CompareTo(null));
 			Assert.IsSmaller(0, comparable.CompareTo(smaller));
+		}
+
+		private IContext Context()
+		{
+			return Stream().Transaction().Context();
 		}
 
 		private object NewInstance(Type clazz)

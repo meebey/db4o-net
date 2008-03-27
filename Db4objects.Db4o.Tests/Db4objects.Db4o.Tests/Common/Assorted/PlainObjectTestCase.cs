@@ -70,16 +70,15 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			PlainObjectTestCase.Item itemOne = RetrieveItem("one");
 			object plainObject = itemOne._plainObject;
 			IQuery q = NewQuery(typeof(PlainObjectTestCase.Item));
-			q.Constrain(new _IEvaluation_65(this, plainObject));
+			q.Constrain(new _IEvaluation_65(plainObject));
 			IObjectSet objectSet = q.Execute();
 			Assert.AreEqual(2, objectSet.Size());
 		}
 
 		private sealed class _IEvaluation_65 : IEvaluation
 		{
-			public _IEvaluation_65(PlainObjectTestCase _enclosing, object plainObject)
+			public _IEvaluation_65(object plainObject)
 			{
-				this._enclosing = _enclosing;
 				this.plainObject = plainObject;
 			}
 
@@ -88,8 +87,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				PlainObjectTestCase.Item item = (PlainObjectTestCase.Item)candidate.GetObject();
 				candidate.Include(item._plainObject == plainObject);
 			}
-
-			private readonly PlainObjectTestCase _enclosing;
 
 			private readonly object plainObject;
 		}

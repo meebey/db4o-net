@@ -51,11 +51,11 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>returns the raw byte data.</summary>
 		/// <remarks>
 		/// returns the raw byte data.
-		/// &lt;br&gt;&lt;br&gt;Use this method to get the byte data from the MemoryFile
+		/// <br /><br />Use this method to get the byte data from the MemoryFile
 		/// to store it to other media or databases, for backup purposes or
 		/// to create other MemoryFile sessions.
-		/// &lt;br&gt;&lt;br&gt;The byte data from a MemoryFile should only be used
-		/// after it is closed.&lt;br&gt;&lt;br&gt;
+		/// <br /><br />The byte data from a MemoryFile should only be used
+		/// after it is closed.<br /><br />
 		/// </remarks>
 		/// <returns>bytes the raw byte data.</returns>
 		public virtual byte[] GetBytes()
@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>sets the raw byte data.</summary>
 		/// <remarks>
 		/// sets the raw byte data.
-		/// &lt;br&gt;&lt;br&gt;&lt;b&gt;Caution!&lt;/b&gt;&lt;br&gt;Calling this method during a running
+		/// <br /><br /><b>Caution!</b><br />Calling this method during a running
 		/// Memory File session may produce unpreditable results.
 		/// </remarks>
 		/// <param name="bytes">the raw byte data.</param>
@@ -108,13 +108,13 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>
 		/// configures the size the MemoryFile is to be enlarged by, if it grows
 		/// beyond the current size.
-		/// &lt;br&gt;&lt;br&gt;Call this method before passing the MemoryFile to
+		/// <br /><br />Call this method before passing the MemoryFile to
 		/// <see cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</see>
 		/// .
-		/// &lt;br&gt;&lt;br&gt;
+		/// <br /><br />
 		/// This parameter can be modified to tune the maximum performance of
 		/// a MemoryFile for a specific usecase. To produce the best results,
-		/// test the speed of your application with real data.&lt;br&gt;&lt;br&gt;
+		/// test the speed of your application with real data.<br /><br />
 		/// </remarks>
 		/// <param name="byteCount">the desired size in bytes</param>
 		public virtual void SetIncrementSizeBy(int byteCount)
@@ -125,14 +125,14 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>configures the initial size of the MemoryFile.</summary>
 		/// <remarks>
 		/// configures the initial size of the MemoryFile.
-		/// &lt;br&gt;&lt;br&gt;Call this method before passing the MemoryFile to
+		/// <br /><br />Call this method before passing the MemoryFile to
 		/// <see cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</see>
 		/// .
-		/// &lt;br&gt;&lt;br&gt;
+		/// <br /><br />
 		/// This parameter can be modified to tune the maximum performance of
 		/// a MemoryFile for a specific usecase. To produce the best results,
 		/// test speed and memory consumption of your application with
-		/// real data.&lt;br&gt;&lt;br&gt;
+		/// real data.<br /><br />
 		/// </remarks>
 		/// <param name="byteCount">the desired size in bytes</param>
 		public virtual void SetInitialSize(int byteCount)

@@ -21,12 +21,11 @@ namespace Db4objects.Db4o.Internal
 	{
 		private static readonly object AnyObject = new object();
 
-		private readonly IReflectClass _classReflector;
+		private IReflectClass _classReflector;
 
 		internal VirtualFieldMetadata(int handlerID, IBuiltinTypeHandler handler) : base(
 			handlerID, handler)
 		{
-			_classReflector = handler.ClassReflector();
 		}
 
 		/// <exception cref="FieldIndexException"></exception>
@@ -48,8 +47,12 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public virtual IReflectClass ClassReflector()
+		public virtual IReflectClass ClassReflector(IReflector reflector)
 		{
+			if (_classReflector == null)
+			{
+				_classReflector = ((IBuiltinTypeHandler)GetHandler()).ClassReflector(reflector);
+			}
 			return _classReflector;
 		}
 

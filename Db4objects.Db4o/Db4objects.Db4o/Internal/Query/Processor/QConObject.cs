@@ -7,6 +7,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 
@@ -87,7 +88,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 					if (i_yapClass != null)
 					{
-						i_yapClass.CollectConstraints(a_trans, this, i_object, new _IVisitor4_82(this));
+						i_yapClass.CollectConstraints(a_trans, this, i_object, new _IVisitor4_83(this));
 					}
 					else
 					{
@@ -101,9 +102,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		private sealed class _IVisitor4_82 : IVisitor4
+		private sealed class _IVisitor4_83 : IVisitor4
 		{
-			public _IVisitor4_82(QConObject _enclosing)
+			public _IVisitor4_83(QConObject _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -204,11 +205,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 					object transactionalObject = i_yapClass.WrapWithTransactionContext(Transaction(), 
 						i_object);
-					_preparedComparison = i_yapClass.PrepareComparison(transactionalObject);
+					_preparedComparison = i_yapClass.PrepareComparison(Context(), transactionalObject
+						);
 				}
 			}
 			base.EvaluateSelf();
 			i_selfComparison = false;
+		}
+
+		private IContext Context()
+		{
+			return Transaction().Context();
 		}
 
 		internal override void Collect(QCandidates a_candidates)
@@ -330,7 +337,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			else
 			{
-				_preparedComparison = a_field.PrepareComparison(i_object);
+				_preparedComparison = a_field.PrepareComparison(Context(), i_object);
 			}
 		}
 
@@ -432,7 +439,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				if (cmp != null && i_field != null)
 				{
 					IPreparedComparison preparedComparisonBackup = _preparedComparison;
-					_preparedComparison = i_field.PrepareComparison(qc.Value());
+					_preparedComparison = i_field.PrepareComparison(Context(), qc.Value());
 					i_candidates.AddOrder(new QOrder(this, qc));
 					_preparedComparison = preparedComparisonBackup;
 				}

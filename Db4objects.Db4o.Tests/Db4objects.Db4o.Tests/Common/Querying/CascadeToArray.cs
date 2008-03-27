@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			Foreach(GetType(), new _IVisitor4_52(this));
 			// This one should NOT cascade
 			Reopen();
-			Foreach(GetType(), new _IVisitor4_69(this));
+			Foreach(GetType(), new _IVisitor4_69());
 			// Cascade-On-Delete Test: We only want one Atom to remain.
 			Db().Commit();
 			Reopen();
@@ -99,9 +99,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		private sealed class _IVisitor4_69 : IVisitor4
 		{
-			public _IVisitor4_69(CascadeToArray _enclosing)
+			public _IVisitor4_69()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Visit(object obj)
@@ -117,8 +116,6 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 					}
 				}
 			}
-
-			private readonly CascadeToArray _enclosing;
 		}
 	}
 }

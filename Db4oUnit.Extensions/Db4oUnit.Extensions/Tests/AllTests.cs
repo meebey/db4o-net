@@ -10,7 +10,7 @@ namespace Db4oUnit.Extensions.Tests
 	{
 		public static void Main(string[] args)
 		{
-			new AllTests().Run();
+			new Db4oUnit.Extensions.Tests.AllTests().Run();
 		}
 
 		protected override Type[] TestCases()

@@ -262,5 +262,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			return _offset;
 		}
+
+		public virtual void SeekCurrentInt()
+		{
+			Seek(ReadInt());
+		}
 	}
 }

@@ -207,7 +207,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 			Tree.ByRef tree = new Tree.ByRef(Tree.DeepClone(ci.GetRoot(), null));
 			OldClassIndexStrategy.TransactionState context = GetState(transaction);
 			context.TraverseAdded(new _IVisitor4_150(this, tree));
-			context.TraverseRemoved(new _IVisitor4_155(this, tree));
+			context.TraverseRemoved(new _IVisitor4_155(tree));
 			return tree.value;
 		}
 
@@ -231,9 +231,8 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		private sealed class _IVisitor4_155 : IVisitor4
 		{
-			public _IVisitor4_155(OldClassIndexStrategy _enclosing, Tree.ByRef tree)
+			public _IVisitor4_155(Tree.ByRef tree)
 			{
-				this._enclosing = _enclosing;
 				this.tree = tree;
 			}
 
@@ -241,8 +240,6 @@ namespace Db4objects.Db4o.Internal.Classindex
 			{
 				tree.value = Tree.RemoveLike(tree.value, (TreeInt)obj);
 			}
-
-			private readonly OldClassIndexStrategy _enclosing;
 
 			private readonly Tree.ByRef tree;
 		}

@@ -3,7 +3,6 @@
 using System;
 using System.Collections;
 using Db4oUnit;
-using Db4oUnit.Extensions.Foundation;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Common.Foundation;
 
@@ -13,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 	{
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(Collection4TestCase)).Run();
+			new ConsoleTestRunner(typeof(Collection4TestCase)).Run();
 		}
 
 		public virtual void TestRemoveAll()
@@ -91,14 +90,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			IEnumerator i = c.GetEnumerator();
 			Assert.IsTrue(i.MoveNext());
 			c.Add("3");
-			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_88(this, i));
+			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_87(i));
 		}
 
-		private sealed class _ICodeBlock_88 : ICodeBlock
+		private sealed class _ICodeBlock_87 : ICodeBlock
 		{
-			public _ICodeBlock_88(Collection4TestCase _enclosing, IEnumerator i)
+			public _ICodeBlock_87(IEnumerator i)
 			{
-				this._enclosing = _enclosing;
 				this.i = i;
 			}
 
@@ -107,8 +105,6 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			{
 				Sharpen.Runtime.Out.WriteLine(i.Current);
 			}
-
-			private readonly Collection4TestCase _enclosing;
 
 			private readonly IEnumerator i;
 		}

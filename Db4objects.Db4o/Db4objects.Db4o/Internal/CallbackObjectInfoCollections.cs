@@ -8,11 +8,11 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class CallbackObjectInfoCollections
 	{
-		public IObjectInfoCollection added;
+		public readonly IObjectInfoCollection added;
 
-		public IObjectInfoCollection updated;
+		public readonly IObjectInfoCollection updated;
 
-		public IObjectInfoCollection deleted;
+		public readonly IObjectInfoCollection deleted;
 
 		public static readonly Db4objects.Db4o.Internal.CallbackObjectInfoCollections Emtpy
 			 = Empty();

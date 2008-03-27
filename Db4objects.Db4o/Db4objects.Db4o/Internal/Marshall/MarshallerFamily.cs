@@ -55,9 +55,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			, new UntypedMarshaller0()), new MarshallerFamily(ClassIndexesToBTrees_5_5.Version
 			, 1, new ArrayMarshaller1(), new ClassMarshaller1(), new FieldMarshaller0(), new 
 			ObjectMarshaller1(), new PrimitiveMarshaller1(), new StringMarshaller1(), new UntypedMarshaller1
-			()), new MarshallerFamily(FieldIndexesToBTrees_5_7.Version, 2, new ArrayMarshaller1
-			(), new ClassMarshaller2(), new FieldMarshaller1(), new ObjectMarshaller1(), new 
-			PrimitiveMarshaller1(), new StringMarshaller1(), new UntypedMarshaller1()) };
+			()), LatestFamily(2), LatestFamily(3) };
 
 		public MarshallerFamily(int converterVersion, int handlerVersion, ArrayMarshaller
 			 arrayMarshaller, ClassMarshaller classMarshaller, IFieldMarshaller fieldMarshaller
@@ -79,6 +77,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_string = stringMarshaller;
 			_untyped = untypedMarshaller;
 			_untyped._family = this;
+		}
+
+		public static MarshallerFamily LatestFamily(int version)
+		{
+			return new MarshallerFamily(FieldIndexesToBTrees_5_7.Version, version, new ArrayMarshaller1
+				(), new ClassMarshaller2(), new FieldMarshaller1(), new ObjectMarshaller1(), new 
+				PrimitiveMarshaller1(), new StringMarshaller1(), new UntypedMarshaller1());
 		}
 
 		public static MarshallerFamily Version(int n)

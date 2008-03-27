@@ -18,8 +18,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		object Read(ITypeHandler4 handler);
 
+		object ReadAtCurrentSeekPosition(ITypeHandler4 handler);
+
 		IReadWriteBuffer ReadIndirectedBuffer();
 
 		void Seek(int offset);
+
+		int HandlerVersion();
 	}
 }

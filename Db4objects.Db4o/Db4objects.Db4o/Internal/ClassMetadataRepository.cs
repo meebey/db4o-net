@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Internal
 				ClassMetadata classMetadata = i.CurrentClass();
 				if (!classMetadata.IsInternal())
 				{
-					classMetadata.ForEachFieldMetadata(new _IVisitor4_59(this, fieldName, visitor, classMetadata
+					classMetadata.ForEachFieldMetadata(new _IVisitor4_59(fieldName, visitor, classMetadata
 						));
 				}
 			}
@@ -76,10 +76,9 @@ namespace Db4objects.Db4o.Internal
 
 		private sealed class _IVisitor4_59 : IVisitor4
 		{
-			public _IVisitor4_59(ClassMetadataRepository _enclosing, string fieldName, IVisitor4
-				 visitor, ClassMetadata classMetadata)
+			public _IVisitor4_59(string fieldName, IVisitor4 visitor, ClassMetadata classMetadata
+				)
 			{
-				this._enclosing = _enclosing;
 				this.fieldName = fieldName;
 				this.visitor = visitor;
 				this.classMetadata = classMetadata;
@@ -93,8 +92,6 @@ namespace Db4objects.Db4o.Internal
 					visitor.Visit(new object[] { classMetadata, field });
 				}
 			}
-
-			private readonly ClassMetadataRepository _enclosing;
 
 			private readonly string fieldName;
 

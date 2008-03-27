@@ -10,32 +10,23 @@ using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
 	public class StringHandler : IIndexableTypeHandler, IBuiltinTypeHandler, IVariableLengthTypeHandler
+		, IEmbeddedTypeHandler
 	{
-		private readonly ObjectContainerBase _container;
+		private IReflectClass _classReflector;
 
-		public StringHandler(ObjectContainerBase container)
+		public virtual IReflectClass ClassReflector(IReflector reflector)
 		{
-			_container = container;
-		}
-
-		protected StringHandler(ITypeHandler4 template) : this(((Db4objects.Db4o.Internal.Handlers.StringHandler
-			)template).Container())
-		{
-		}
-
-		public virtual IReflectClass ClassReflector()
-		{
-			return Container()._handlers.IclassString;
-		}
-
-		public virtual ObjectContainerBase Container()
-		{
-			return _container;
+			if (_classReflector == null)
+			{
+				_classReflector = reflector.ForClass(typeof(string));
+			}
+			return _classReflector;
 		}
 
 		public virtual void Delete(IDeleteContext context)
@@ -53,7 +44,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (indexEntry is Slot)
 			{
 				Slot slot = (Slot)indexEntry;
-				indexEntry = Container().BufferByAddress(slot.Address(), slot.Length());
+				indexEntry = trans.Container().BufferByAddress(slot.Address(), slot.Length());
 			}
 			return ReadStringNoDebug(trans.Context(), (IReadBuffer)indexEntry);
 		}
@@ -129,17 +120,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		private ByteArrayBuffer Val(object obj)
-		{
-			return Val(obj, Container());
-		}
-
-		public virtual ByteArrayBuffer Val(object obj, ObjectContainerBase oc)
+		internal virtual ByteArrayBuffer Val(object obj, IContext context)
 		{
 			if (obj is ByteArrayBuffer)
 			{
 				return (ByteArrayBuffer)obj;
 			}
+			ObjectContainerBase oc = context.Transaction().Container();
 			if (obj is string)
 			{
 				return WriteToBuffer((IInternalObjectContainer)oc, (string)obj);
@@ -266,30 +253,34 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.IncrementOffset(LinkLength());
 		}
 
-		public virtual IPreparedComparison PrepareComparison(object obj)
+		public virtual IPreparedComparison PrepareComparison(IContext context, object obj
+			)
 		{
-			ByteArrayBuffer sourceBuffer = Val(obj);
-			return new _IPreparedComparison_236(this, sourceBuffer);
+			ByteArrayBuffer sourceBuffer = Val(obj, context);
+			return new _IPreparedComparison_228(this, context, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_236 : IPreparedComparison
+		private sealed class _IPreparedComparison_228 : IPreparedComparison
 		{
-			public _IPreparedComparison_236(StringHandler _enclosing, ByteArrayBuffer sourceBuffer
-				)
+			public _IPreparedComparison_228(StringHandler _enclosing, IContext context, ByteArrayBuffer
+				 sourceBuffer)
 			{
 				this._enclosing = _enclosing;
+				this.context = context;
 				this.sourceBuffer = sourceBuffer;
 			}
 
 			public int CompareTo(object target)
 			{
-				ByteArrayBuffer targetBuffer = this._enclosing.Val(target);
+				ByteArrayBuffer targetBuffer = this._enclosing.Val(target, context);
 				// FIXME: Fix the compare method to return the right result  
 				//        after it is no longer referenced elsewhere.
 				return -this._enclosing.Compare(sourceBuffer, targetBuffer);
 			}
 
 			private readonly StringHandler _enclosing;
+
+			private readonly IContext context;
 
 			private readonly ByteArrayBuffer sourceBuffer;
 		}

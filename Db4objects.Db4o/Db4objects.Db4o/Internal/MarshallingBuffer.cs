@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Internal
 			PrepareWrite(SizeNeeded);
 		}
 
-		private void PrepareWrite(int sizeNeeded)
+		public virtual void PrepareWrite(int sizeNeeded)
 		{
 			if (_delegate == null)
 			{
@@ -203,10 +203,33 @@ namespace Db4objects.Db4o.Internal
 			_delegate.Seek(offset);
 		}
 
-		private void Reserve(int length)
+		public virtual IReservedBuffer Reserve(int length)
 		{
 			PrepareWrite(length);
+			IReservedBuffer reservedBuffer = new _IReservedBuffer_175(this);
 			_delegate.Seek(_delegate.Offset() + length);
+			return reservedBuffer;
+		}
+
+		private sealed class _IReservedBuffer_175 : IReservedBuffer
+		{
+			public _IReservedBuffer_175(MarshallingBuffer _enclosing)
+			{
+				this._enclosing = _enclosing;
+				this.reservedOffset = this._enclosing._delegate.Offset();
+			}
+
+			private readonly int reservedOffset;
+
+			public void WriteBytes(byte[] bytes)
+			{
+				int currentOffset = this._enclosing._delegate.Offset();
+				this._enclosing._delegate.Seek(this.reservedOffset);
+				this._enclosing._delegate.WriteBytes(bytes);
+				this._enclosing._delegate.Seek(currentOffset);
+			}
+
+			private readonly MarshallingBuffer _enclosing;
 		}
 
 		private void WriteLink(MarshallingBuffer child, int position, int length)

@@ -29,7 +29,7 @@ namespace Db4oUnit.Extensions.Concurrency
 		protected override bool IsTestMethod(MethodInfo method)
 		{
 			string name = method.Name;
-			return StartsWithIgnoreCase(name, ConcurrenyConst.CocurrencyTestPrefix) && TestPlatform
+			return StartsWithIgnoreCase(name, ConcurrencyConventions.TestPrefix()) && TestPlatform
 				.IsPublic(method) && !TestPlatform.IsStatic(method) && HasValidParameter(method);
 		}
 

@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 						);
 					defragConfig.Db4oConfig(clonedConfig);
 					Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig, new _IDefragmentListener_35
-						(this));
+						());
 				}
 				catch (IOException e)
 				{
@@ -48,17 +48,14 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private sealed class _IDefragmentListener_35 : IDefragmentListener
 		{
-			public _IDefragmentListener_35(Db4oDefragSolo _enclosing)
+			public _IDefragmentListener_35()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void NotifyDefragmentInfo(DefragmentInfo info)
 			{
 				Sharpen.Runtime.Err.WriteLine(info);
 			}
-
-			private readonly Db4oDefragSolo _enclosing;
 		}
 
 		public override bool Accept(Type clazz)

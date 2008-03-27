@@ -2,7 +2,7 @@
 
 using System;
 using Db4oUnit.Extensions;
-using Db4oUnit.Extensions.Mocking;
+using Db4oUnit.Mocking;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;

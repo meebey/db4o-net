@@ -35,23 +35,20 @@ namespace Db4objects.Db4o.Internal.CS
 				{
 					break;
 				}
-				_server.BroadcastMsg(committedInfos, new _IBroadcastFilter_28(this));
+				_server.BroadcastMsg(committedInfos, new _IBroadcastFilter_28());
 			}
 		}
 
 		private sealed class _IBroadcastFilter_28 : IBroadcastFilter
 		{
-			public _IBroadcastFilter_28(CommittedCallbacksDispatcher _enclosing)
+			public _IBroadcastFilter_28()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public bool Accept(IServerMessageDispatcher dispatcher)
 			{
 				return dispatcher.CaresAboutCommitted();
 			}
-
-			private readonly CommittedCallbacksDispatcher _enclosing;
 		}
 
 		public virtual void Stop()

@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		/// <exception cref="Exception"></exception>
 		protected override void Db4oSetupBeforeStore()
 		{
-			_handler = new DoubleHandler(Stream());
+			_handler = new DoubleHandler();
 		}
 
 		public virtual void TestMarshalling()
@@ -44,7 +44,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertComparison(int expected, double prepareWith, double compareTo)
 		{
-			IPreparedComparison preparedComparison = _handler.PrepareComparison(prepareWith);
+			IPreparedComparison preparedComparison = _handler.PrepareComparison(Stream().Transaction
+				().Context(), prepareWith);
 			double doubleCompareTo = compareTo;
 			Assert.AreEqual(expected, preparedComparison.CompareTo(doubleCompareTo));
 		}

@@ -188,7 +188,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				throw new ArgumentException();
 			}
-			return Btree().CompareKeys(Key(), y.Key());
+			return Btree().CompareKeys(Transaction().Context(), Key(), y.Key());
 		}
 
 		private BTree Btree()

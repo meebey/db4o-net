@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private IntHandler IntHandler()
 		{
-			return new IntHandler(Stream());
+			return new IntHandler();
 		}
 
 		public virtual void TestReadWrite()

@@ -123,7 +123,7 @@ namespace Db4objects.Db4o.Defragment
 		public override void Open()
 		{
 			_mappingDb = DefragmentServicesImpl.FreshYapFile(_fileName, 1);
-			IIndexable4 handler = new MappedIDPairHandler(_mappingDb);
+			IIndexable4 handler = new MappedIDPairHandler();
 			_idTree = (_treeSpec == null ? new BTree(Trans(), 0, handler) : new BTree(Trans()
 				, 0, handler, _treeSpec.NodeSize(), _treeSpec.CacheHeight()));
 		}

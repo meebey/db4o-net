@@ -5,12 +5,12 @@ using Db4objects.Db4o.Ext;
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>
-	/// db4o-specific exception.&lt;br&gt;&lt;br&gt;
+	/// db4o-specific exception.<br /><br />
 	/// This exception is thrown when the database file format
 	/// is not compatible with the applied configuration.
 	/// </summary>
 	/// <remarks>
-	/// db4o-specific exception.&lt;br&gt;&lt;br&gt;
+	/// db4o-specific exception.<br /><br />
 	/// This exception is thrown when the database file format
 	/// is not compatible with the applied configuration.
 	/// </remarks>

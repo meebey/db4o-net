@@ -66,15 +66,13 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			}
 			IoAdaptedObjectContainer file = ((IoAdaptedObjectContainer)Db());
 			IFreespaceManager fm = file.FreespaceManager();
-			fm.Traverse(new _IVisitor4_61(this, file));
+			fm.Traverse(new _IVisitor4_61(file));
 		}
 
 		private sealed class _IVisitor4_61 : IVisitor4
 		{
-			public _IVisitor4_61(StringIndexTestCaseBase _enclosing, IoAdaptedObjectContainer
-				 file)
+			public _IVisitor4_61(IoAdaptedObjectContainer file)
 			{
-				this._enclosing = _enclosing;
 				this.file = file;
 			}
 
@@ -83,8 +81,6 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 				Slot slot = (Slot)obj;
 				file.OverwriteDeletedBlockedSlot(slot);
 			}
-
-			private readonly StringIndexTestCaseBase _enclosing;
 
 			private readonly IoAdaptedObjectContainer file;
 		}

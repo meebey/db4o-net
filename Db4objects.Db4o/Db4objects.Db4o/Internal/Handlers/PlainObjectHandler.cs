@@ -6,10 +6,11 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
-	public class PlainObjectHandler : ITypeHandler4, IReadsObjectIds
+	public class PlainObjectHandler : ITypeHandler4, IReadsObjectIds, IEmbeddedTypeHandler
 	{
 		public virtual void Defragment(IDefragmentContext context)
 		{
@@ -58,7 +59,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			transaction.AddNewReference(@ref);
 		}
 
-		public virtual IPreparedComparison PrepareComparison(object obj)
+		public virtual IPreparedComparison PrepareComparison(IContext context, object obj
+			)
 		{
 			throw new NotImplementedException();
 		}

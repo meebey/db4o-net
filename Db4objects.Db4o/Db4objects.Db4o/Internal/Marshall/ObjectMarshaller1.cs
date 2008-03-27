@@ -140,18 +140,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 reader, FieldMetadata field)
 		{
 			bool[] ret = new bool[] { false };
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_62(this
-				, field, ret, reader);
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_62(field
+				, ret, reader);
 			TraverseFields(yc, reader, fieldListInfo, command);
 			return ret[0];
 		}
 
 		private sealed class _TraverseFieldCommand_62 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_62(ObjectMarshaller1 _enclosing, FieldMetadata field
-				, bool[] ret, ByteArrayBuffer reader)
+			public _TraverseFieldCommand_62(FieldMetadata field, bool[] ret, ByteArrayBuffer 
+				reader)
 			{
-				this._enclosing = _enclosing;
 				this.field = field;
 				this.ret = ret;
 				this.reader = reader;
@@ -171,8 +170,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 					curField.IncrementOffset(reader);
 				}
 			}
-
-			private readonly ObjectMarshaller1 _enclosing;
 
 			private readonly FieldMetadata field;
 
@@ -212,17 +209,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
 			 yo, ObjectHeaderAttributes attributes, ByteArrayBuffer reader)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_99(this
-				, trans, reader, yo);
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_99(trans
+				, reader, yo);
 			TraverseFields(yc, reader, attributes, command);
 		}
 
 		private sealed class _TraverseFieldCommand_99 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_99(ObjectMarshaller1 _enclosing, Transaction trans, 
-				ByteArrayBuffer reader, ObjectReference yo)
+			public _TraverseFieldCommand_99(Transaction trans, ByteArrayBuffer reader, ObjectReference
+				 yo)
 			{
-				this._enclosing = _enclosing;
 				this.trans = trans;
 				this.reader = reader;
 				this.yo = yo;
@@ -236,8 +232,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 					field.ReadVirtualAttribute(trans, reader, yo);
 				}
 			}
-
-			private readonly ObjectMarshaller1 _enclosing;
 
 			private readonly Transaction trans;
 

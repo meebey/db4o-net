@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Sharpen.Lang;
 
@@ -24,16 +23,19 @@ namespace Db4objects.Db4o.Foundation
 
 			public readonly object value;
 
-			public ThreadSlot(object value_)
+			public ContextVariable.ThreadSlot next;
+
+			public ThreadSlot(object value_, ContextVariable.ThreadSlot next_)
 			{
 				thread = Thread.CurrentThread();
 				value = value_;
+				next = next_;
 			}
 		}
 
 		private readonly Type _expectedType;
 
-		private readonly Collection4 _values = new Collection4();
+		private ContextVariable.ThreadSlot _values = null;
 
 		public ContextVariable() : this(null)
 		{
@@ -44,39 +46,57 @@ namespace Db4objects.Db4o.Foundation
 			_expectedType = expectedType;
 		}
 
-		public virtual object Value
+		public virtual object Value()
 		{
-			get
+			Thread current = Thread.CurrentThread();
+			lock (this)
 			{
-				Thread current = Thread.CurrentThread();
-				lock (this)
+				ContextVariable.ThreadSlot slot = _values;
+				while (null != slot)
 				{
-					IEnumerator iterator = _values.GetEnumerator();
-					while (iterator.MoveNext())
+					if (slot.thread == current)
 					{
-						ContextVariable.ThreadSlot slot = (ContextVariable.ThreadSlot)iterator.Current;
-						if (slot.thread == current)
-						{
-							return slot.value;
-						}
+						return slot.value;
 					}
+					slot = slot.next;
 				}
-				return null;
 			}
+			return null;
 		}
 
-		public virtual void With(object value, IRunnable block)
+		public virtual object With(object value, IClosure4 block)
 		{
 			Validate(value);
 			ContextVariable.ThreadSlot slot = PushValue(value);
 			try
 			{
-				block.Run();
+				return block.Run();
 			}
 			finally
 			{
 				PopValue(slot);
 			}
+		}
+
+		public virtual void With(object value, IRunnable block)
+		{
+			With(value, new _IClosure4_62(block));
+		}
+
+		private sealed class _IClosure4_62 : IClosure4
+		{
+			public _IClosure4_62(IRunnable block)
+			{
+				this.block = block;
+			}
+
+			public object Run()
+			{
+				block.Run();
+				return null;
+			}
+
+			private readonly IRunnable block;
 		}
 
 		private void Validate(object value)
@@ -97,18 +117,34 @@ namespace Db4objects.Db4o.Foundation
 		{
 			lock (this)
 			{
-				_values.Remove(slot);
+				if (slot == _values)
+				{
+					_values = _values.next;
+					return;
+				}
+				ContextVariable.ThreadSlot previous = _values;
+				ContextVariable.ThreadSlot current = _values.next;
+				while (current != null)
+				{
+					if (current == slot)
+					{
+						previous.next = current.next;
+						return;
+					}
+					previous = current;
+					current = current.next;
+				}
 			}
 		}
 
 		private ContextVariable.ThreadSlot PushValue(object value)
 		{
-			ContextVariable.ThreadSlot slot = new ContextVariable.ThreadSlot(value);
 			lock (this)
 			{
-				_values.Prepend(slot);
+				ContextVariable.ThreadSlot slot = new ContextVariable.ThreadSlot(value, _values);
+				_values = slot;
+				return slot;
 			}
-			return slot;
 		}
 	}
 }

@@ -22,14 +22,15 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				), typeof(DatabaseUnicityTest), typeof(DeleteUpdateTestCase), typeof(DescendToNullFieldTestCase
 				), typeof(DualDeleteTestCase), typeof(GetSingleSimpleArrayTestCase), typeof(HandlerRegistryTestCase
 				), typeof(IndexCreateDropTestCase), typeof(IndexedBlockSizeQueryTestCase), typeof(
-				LazyObjectReferenceTestCase), typeof(LockedTreeTestCase), typeof(LongLinkedListTestCase
-				), typeof(MultiDeleteTestCase), typeof(PlainObjectTestCase), typeof(PeekPersistedTestCase
-				), typeof(PersistentIntegerArrayTestCase), typeof(PersistStaticFieldValuesTestCase
-				), typeof(PersistTypeTestCase), typeof(PreventMultipleOpenTestCase), typeof(QueryByInterface
-				), typeof(ReAddCascadedDeleteTestCase), typeof(RepeatDeleteReaddTestCase), typeof(
-				RollbackDeleteTestCase), typeof(RollbackTestCase), typeof(RollbackUpdateTestCase
-				), typeof(RollbackUpdateCascadeTestCase), typeof(SimplestPossibleTestCase), typeof(
-				SystemInfoTestCase), typeof(UpdateDepthTestCase) };
+				InMemoryObjectContainerTestCase), typeof(LazyObjectReferenceTestCase), typeof(LockedTreeTestCase
+				), typeof(LongLinkedListTestCase), typeof(MultiDeleteTestCase), typeof(PlainObjectTestCase
+				), typeof(PeekPersistedTestCase), typeof(PersistentIntegerArrayTestCase), typeof(
+				PersistStaticFieldValuesTestCase), typeof(PersistTypeTestCase), typeof(PreventMultipleOpenTestCase
+				), typeof(QueryByInterface), typeof(ReAddCascadedDeleteTestCase), typeof(RepeatDeleteReaddTestCase
+				), typeof(RollbackDeleteTestCase), typeof(RollbackTestCase), typeof(RollbackUpdateTestCase
+				), typeof(RollbackUpdateCascadeTestCase), typeof(SimplestPossibleNullMemberTestCase
+				), typeof(SimplestPossibleTestCase), typeof(SimplestPossibleParentChildTestCase)
+				, typeof(SystemInfoTestCase), typeof(UpdateDepthTestCase) };
 		}
 		// FIXME: COR-1060
 		//            DeleteSetTestCase.class,

@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			_clientWasBlocked = false;
 			sender.Send(new ClientTimeOutTestCase.Data());
 			long start = Runtime.CurrentTimeMillis();
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_58(this, client));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_58(client));
 			long stop = Runtime.CurrentTimeMillis();
 			long duration = stop - start;
 			Assert.IsGreaterOrEqual(Timeout / 2, duration);
@@ -69,10 +69,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private sealed class _ICodeBlock_58 : ICodeBlock
 		{
-			public _ICodeBlock_58(ClientTimeOutTestCase _enclosing, IExtObjectContainer client
-				)
+			public _ICodeBlock_58(IExtObjectContainer client)
 			{
-				this._enclosing = _enclosing;
 				this.client = client;
 			}
 
@@ -81,8 +79,6 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			{
 				client.QueryByExample(null);
 			}
-
-			private readonly ClientTimeOutTestCase _enclosing;
 
 			private readonly IExtObjectContainer client;
 		}

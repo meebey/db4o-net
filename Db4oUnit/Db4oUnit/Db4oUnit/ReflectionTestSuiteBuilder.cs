@@ -4,11 +4,26 @@ using System;
 using System.Collections;
 using System.Reflection;
 using Db4oUnit;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit
 {
 	public class ReflectionTestSuiteBuilder : ITestSuiteBuilder
 	{
+		public static object GetTestSubject(ITest test)
+		{
+			return ((TestMethod)Undecorate(test)).GetSubject();
+		}
+
+		private static ITest Undecorate(ITest test)
+		{
+			while (test is ITestDecoration)
+			{
+				test = ((ITestDecoration)test).Test();
+			}
+			return test;
+		}
+
 		private Type[] _classes;
 
 		public ReflectionTestSuiteBuilder(Type clazz) : this(new Type[] { clazz })
@@ -24,26 +39,27 @@ namespace Db4oUnit
 			_classes = classes;
 		}
 
-		public virtual TestSuite Build()
+		public virtual IEnumerator GetEnumerator()
 		{
-			return (1 == _classes.Length) ? FromClass(_classes[0]) : FromClasses(_classes);
+			return Iterators.Flatten(Iterators.Map(_classes, new _IFunction4_35(this)));
 		}
 
-		protected virtual TestSuite FromClasses(Type[] classes)
+		private sealed class _IFunction4_35 : IFunction4
 		{
-			ArrayList suites = new ArrayList(classes.Length);
-			for (int i = 0; i < classes.Length; i++)
+			public _IFunction4_35(ReflectionTestSuiteBuilder _enclosing)
 			{
-				TestSuite suite = FromClass(classes[i]);
-				if (suite.GetTests().Length > 0)
-				{
-					suites.Add(suite);
-				}
+				this._enclosing = _enclosing;
 			}
-			return new TestSuite(ToTestArray(suites));
+
+			public object Apply(object arg)
+			{
+				return this._enclosing.FromClass((Type)arg);
+			}
+
+			private readonly ReflectionTestSuiteBuilder _enclosing;
 		}
 
-		protected virtual TestSuite FromClass(Type clazz)
+		protected virtual IEnumerator FromClass(Type clazz)
 		{
 			try
 			{
@@ -51,31 +67,36 @@ namespace Db4oUnit
 			}
 			catch (Exception e)
 			{
-				return new TestSuite(new FailingTest(clazz.FullName, e));
+				return Iterators.Cons(new FailingTest(clazz.FullName, e)).GetEnumerator();
 			}
 		}
 
-		private TestSuite SuiteFor(Type clazz)
+		private IEnumerator SuiteFor(Type clazz)
 		{
 			if (!IsApplicable(clazz))
 			{
 				TestPlatform.EmitWarning("DISABLED: " + clazz.FullName);
-				return new TestSuite(new ITest[0]);
+				return Iterators.EmptyIterator;
 			}
 			if (typeof(ITestSuiteBuilder).IsAssignableFrom(clazz))
 			{
-				return ((ITestSuiteBuilder)NewInstance(clazz)).Build();
+				return ((ITestSuiteBuilder)NewInstance(clazz)).GetEnumerator();
 			}
 			if (typeof(ITest).IsAssignableFrom(clazz))
 			{
-				return new TestSuite(clazz.FullName, new ITest[] { (ITest)NewInstance(clazz) });
+				return Iterators.IterateSingle(NewInstance(clazz));
 			}
+			ValidateTestClass(clazz);
+			return FromMethods(clazz);
+		}
+
+		private void ValidateTestClass(Type clazz)
+		{
 			if (!(typeof(ITestCase).IsAssignableFrom(clazz)))
 			{
 				throw new ArgumentException(string.Empty + clazz + " is not marked as " + typeof(
 					ITestCase));
 			}
-			return FromMethods(clazz);
 		}
 
 		protected virtual bool IsApplicable(Type clazz)
@@ -84,31 +105,43 @@ namespace Db4oUnit
 		}
 
 		// just removing the 'parameter not used' warning
-		private TestSuite FromMethods(Type clazz)
+		private IEnumerator FromMethods(Type clazz)
 		{
-			ArrayList tests = new ArrayList();
-			MethodInfo[] methods = clazz.GetMethods();
-			for (int i = 0; i < methods.Length; i++)
-			{
-				object instance = NewInstance(clazz);
-				MethodInfo method = methods[i];
-				if (!IsTestMethod(method))
-				{
-					EmitWarningOnIgnoredTestMethod(instance, method);
-					continue;
-				}
-				tests.Add(CreateTest(instance, method));
-			}
-			return new TestSuite(clazz.FullName, ToTestArray(tests));
+			return Iterators.Map(clazz.GetMethods(), new _IFunction4_77(this, clazz));
 		}
 
-		private void EmitWarningOnIgnoredTestMethod(object subject, MethodInfo method)
+		private sealed class _IFunction4_77 : IFunction4
+		{
+			public _IFunction4_77(ReflectionTestSuiteBuilder _enclosing, Type clazz)
+			{
+				this._enclosing = _enclosing;
+				this.clazz = clazz;
+			}
+
+			public object Apply(object arg)
+			{
+				MethodInfo method = (MethodInfo)arg;
+				if (!this._enclosing.IsTestMethod(method))
+				{
+					this._enclosing.EmitWarningOnIgnoredTestMethod(clazz, method);
+					return Iterators.Skip;
+				}
+				return this._enclosing.FromMethod(clazz, method);
+			}
+
+			private readonly ReflectionTestSuiteBuilder _enclosing;
+
+			private readonly Type clazz;
+		}
+
+		private void EmitWarningOnIgnoredTestMethod(Type clazz, MethodInfo method)
 		{
 			if (!StartsWithIgnoreCase(method.Name, "_test"))
 			{
 				return;
 			}
-			TestPlatform.EmitWarning("IGNORED: " + CreateTest(subject, method).GetLabel());
+			TestPlatform.EmitWarning("IGNORED: " + CreateTest(NewInstance(clazz), method).GetLabel
+				());
 		}
 
 		protected virtual bool IsTestMethod(MethodInfo method)
@@ -127,13 +160,6 @@ namespace Db4oUnit
 			return s.ToUpper().StartsWith(prefix.ToUpper());
 		}
 
-		private static ITest[] ToTestArray(ArrayList tests)
-		{
-			ITest[] array = new ITest[tests.Count];
-			tests.CopyTo(array);
-			return array;
-		}
-
 		protected virtual object NewInstance(Type clazz)
 		{
 			try
@@ -149,6 +175,33 @@ namespace Db4oUnit
 		protected virtual ITest CreateTest(object instance, MethodInfo method)
 		{
 			return new TestMethod(instance, method);
+		}
+
+		protected virtual ITest FromMethod(Type clazz, MethodInfo method)
+		{
+			return new DeferredTest(new _ITestFactory_124(this, clazz, method));
+		}
+
+		private sealed class _ITestFactory_124 : ITestFactory
+		{
+			public _ITestFactory_124(ReflectionTestSuiteBuilder _enclosing, Type clazz, MethodInfo
+				 method)
+			{
+				this._enclosing = _enclosing;
+				this.clazz = clazz;
+				this.method = method;
+			}
+
+			public ITest NewInstance()
+			{
+				return this._enclosing.CreateTest(this._enclosing.NewInstance(clazz), method);
+			}
+
+			private readonly ReflectionTestSuiteBuilder _enclosing;
+
+			private readonly Type clazz;
+
+			private readonly MethodInfo method;
 		}
 	}
 }

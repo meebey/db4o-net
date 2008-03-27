@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -39,16 +40,16 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// do nothing
-		public virtual IPreparedComparison PrepareComparison(object obj_)
+		public virtual IPreparedComparison PrepareComparison(IContext context, object obj_
+			)
 		{
-			return new _IPreparedComparison_39(this);
+			return new _IPreparedComparison_40();
 		}
 
-		private sealed class _IPreparedComparison_39 : IPreparedComparison
+		private sealed class _IPreparedComparison_40 : IPreparedComparison
 		{
-			public _IPreparedComparison_39(Null _enclosing)
+			public _IPreparedComparison_40()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public int CompareTo(object obj)
@@ -63,8 +64,6 @@ namespace Db4objects.Db4o.Internal
 				}
 				return -1;
 			}
-
-			private readonly Null _enclosing;
 		}
 	}
 }

@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			/// </remarks>
 			private static DateTime NullDate()
 			{
-				return (DateTime)new DateHandler(null).PrimitiveNull();
+				return (DateTime)new DateHandler().PrimitiveNull();
 			}
 		}
 

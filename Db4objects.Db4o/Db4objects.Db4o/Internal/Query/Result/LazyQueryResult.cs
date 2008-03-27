@@ -27,14 +27,13 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public override void LoadFromQuery(QQuery query)
 		{
-			_iterable = new _IEnumerable_28(this, query);
+			_iterable = new _IEnumerable_28(query);
 		}
 
 		private sealed class _IEnumerable_28 : IEnumerable
 		{
-			public _IEnumerable_28(LazyQueryResult _enclosing, QQuery query)
+			public _IEnumerable_28(QQuery query)
 			{
-				this._enclosing = _enclosing;
 				this.query = query;
 			}
 
@@ -42,8 +41,6 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			{
 				return query.ExecuteLazy();
 			}
-
-			private readonly LazyQueryResult _enclosing;
 
 			private readonly QQuery query;
 		}

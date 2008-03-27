@@ -1,122 +1,43 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
+using System.Collections;
 using Db4oUnit;
 
 namespace Db4oUnit
 {
 	public class TestRunner
 	{
-		private ITestSuiteBuilder _suiteBuilder;
+		private readonly IEnumerable _tests;
 
-		private bool _reportToFile = true;
-
-		public TestRunner(TestSuite suite) : this(suite, true)
+		public TestRunner(IEnumerable tests)
 		{
+			_tests = tests;
 		}
 
-		public TestRunner(TestSuite suite, bool reportToFile)
+		public virtual void Run(ITestListener listener)
 		{
-			if (null == suite)
+			listener.RunStarted();
+			IEnumerator iterator = _tests.GetEnumerator();
+			while (iterator.MoveNext())
 			{
-				throw new ArgumentException("suite");
-			}
-			_suiteBuilder = new NullTestSuiteBuilder(suite);
-			_reportToFile = reportToFile;
-		}
-
-		public TestRunner(ITestSuiteBuilder builder)
-		{
-			if (null == builder)
-			{
-				throw new ArgumentException("suite");
-			}
-			_suiteBuilder = builder;
-		}
-
-		public TestRunner(Type clazz) : this(new ReflectionTestSuiteBuilder(clazz))
-		{
-		}
-
-		public virtual int Run()
-		{
-			return Run(TestPlatform.GetStdErr());
-		}
-
-		public virtual int Run(TextWriter writer)
-		{
-			TestSuite suite = BuildTestSuite();
-			if (null == suite)
-			{
-				return 1;
-			}
-			TestResult result = new TestResult(writer);
-			result.RunStarted();
-			suite.Run(result);
-			result.RunFinished();
-			ReportResult(result, writer);
-			return result.Failures().Size();
-		}
-
-		private TestSuite BuildTestSuite()
-		{
-			try
-			{
-				return _suiteBuilder.Build();
-			}
-			catch (Exception x)
-			{
-				Report(x);
-			}
-			return null;
-		}
-
-		private void Report(Exception x)
-		{
-			TestPlatform.PrintStackTrace(TestPlatform.GetStdErr(), x);
-		}
-
-		private void ReportResult(TestResult result, TextWriter writer)
-		{
-			if (_reportToFile)
-			{
-				ReportToTextFile(result);
-			}
-			Report(result, writer);
-		}
-
-		private void ReportToTextFile(TestResult result)
-		{
-			try
-			{
-				TextWriter writer = TestPlatform.OpenTextFile("db4ounit.log");
+				ITest test = (ITest)iterator.Current;
+				listener.TestStarted(test);
 				try
 				{
-					Report(result, writer);
+					test.Run();
 				}
-				finally
+				catch (TestException x)
 				{
-					writer.Close();
+					Exception reason = x.GetReason();
+					listener.TestFailed(test, reason == null ? x : reason);
+				}
+				catch (Exception failure)
+				{
+					listener.TestFailed(test, failure);
 				}
 			}
-			catch (IOException e)
-			{
-				Report(e);
-			}
-		}
-
-		private void Report(TestResult result, TextWriter writer)
-		{
-			try
-			{
-				result.Print(writer);
-				writer.Flush();
-			}
-			catch (IOException e)
-			{
-				Report(e);
-			}
+			listener.RunFinished();
 		}
 	}
 }

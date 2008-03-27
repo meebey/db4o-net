@@ -13,10 +13,10 @@ namespace Db4objects.Db4o.Config
 	/// <remarks>
 	/// This class provides static constants for the query evaluation
 	/// modes that db4o supports.
-	/// &lt;br&gt;&lt;br&gt;&lt;b&gt;For detailed documentation please see
+	/// <br /><br /><b>For detailed documentation please see
 	/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
 	/// 	</see>
-	/// &lt;/b&gt;
+	/// </b>
 	/// </remarks>
 	public class QueryEvaluationMode
 	{
@@ -31,10 +31,10 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// Constant for immediate query evaluation. The query is executed fully
 		/// when Query#execute() is called.
-		/// &lt;br&gt;&lt;br&gt;&lt;b&gt;For detailed documentation please see
+		/// <br /><br /><b>For detailed documentation please see
 		/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
 		/// 	</see>
-		/// &lt;/b&gt;
+		/// </b>
 		/// </remarks>
 		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode Immediate = new 
 			Db4objects.Db4o.Config.QueryEvaluationMode("IMMEDIATE");
@@ -48,10 +48,10 @@ namespace Db4objects.Db4o.Config
 		/// the
 		/// <see cref="IObjectSet">IObjectSet</see>
 		/// resultset of the query.
-		/// &lt;br&gt;&lt;br&gt;&lt;b&gt;For detailed documentation please see
+		/// <br /><br /><b>For detailed documentation please see
 		/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
 		/// 	</see>
-		/// &lt;/b&gt;
+		/// </b>
 		/// </remarks>
 		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode Snapshot = new 
 			Db4objects.Db4o.Config.QueryEvaluationMode("SNAPSHOT");
@@ -64,10 +64,10 @@ namespace Db4objects.Db4o.Config
 		/// application iterates through the
 		/// <see cref="IObjectSet">IObjectSet</see>
 		/// resultset of the query.
-		/// &lt;br&gt;&lt;br&gt;&lt;b&gt;For detailed documentation please see
+		/// <br /><br /><b>For detailed documentation please see
 		/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
 		/// 	</see>
-		/// &lt;/b&gt;
+		/// </b>
 		/// </remarks>
 		public static readonly Db4objects.Db4o.Config.QueryEvaluationMode Lazy = new Db4objects.Db4o.Config.QueryEvaluationMode
 			("LAZY");

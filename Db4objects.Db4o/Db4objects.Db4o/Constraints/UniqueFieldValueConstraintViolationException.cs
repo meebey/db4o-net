@@ -6,7 +6,7 @@ using Db4objects.Db4o.Constraints;
 namespace Db4objects.Db4o.Constraints
 {
 	/// <summary>
-	/// db4o-specific exception.&lt;br&gt;&lt;br&gt;
+	/// db4o-specific exception.<br /><br />
 	/// This exception can be thrown by a
 	/// <see cref="UniqueFieldValueConstraint">UniqueFieldValueConstraint</see>
 	/// on commit.

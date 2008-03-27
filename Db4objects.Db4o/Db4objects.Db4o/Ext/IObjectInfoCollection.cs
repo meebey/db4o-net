@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Ext
 	/// <summary>
 	/// Interface to an iterable collection
 	/// <see cref="IObjectInfo">IObjectInfo</see>
-	/// objects.&lt;br&gt;&lt;br&gt;
+	/// objects.<br /><br />
 	/// ObjectInfoCollection is used reference a number of stored objects.
 	/// </summary>
 	/// <seealso cref="IObjectInfo">IObjectInfo</seealso>

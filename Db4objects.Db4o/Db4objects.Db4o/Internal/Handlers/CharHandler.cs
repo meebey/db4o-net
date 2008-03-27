@@ -14,10 +14,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private static readonly char i_primitive = (char)0;
 
-		public CharHandler(ObjectContainerBase stream) : base(stream)
-		{
-		}
-
 		public override object DefaultValue()
 		{
 			return i_primitive;
@@ -73,14 +69,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			char sourceChar = ((char)source);
-			return new _IPreparedComparison_99(this, sourceChar);
+			return new _IPreparedComparison_95(sourceChar);
 		}
 
-		private sealed class _IPreparedComparison_99 : IPreparedComparison
+		private sealed class _IPreparedComparison_95 : IPreparedComparison
 		{
-			public _IPreparedComparison_99(CharHandler _enclosing, char sourceChar)
+			public _IPreparedComparison_95(char sourceChar)
 			{
-				this._enclosing = _enclosing;
 				this.sourceChar = sourceChar;
 			}
 
@@ -93,8 +88,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				char targetChar = ((char)target);
 				return sourceChar == targetChar ? 0 : (sourceChar < targetChar ? -1 : 1);
 			}
-
-			private readonly CharHandler _enclosing;
 
 			private readonly char sourceChar;
 		}

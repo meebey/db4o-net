@@ -35,9 +35,9 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>renames this stored class.</summary>
 		/// <remarks>
 		/// renames this stored class.
-		/// &lt;br&gt;&lt;br&gt;After renaming one or multiple classes the ObjectContainer has
+		/// <br /><br />After renaming one or multiple classes the ObjectContainer has
 		/// to be closed and reopened to allow internal caches to be refreshed.
-		/// &lt;br&gt;&lt;br&gt;.NET: As the name you should provide [Classname, Assemblyname]&lt;br&gt;&lt;br&gt;
+		/// <br /><br />.NET: As the name you should provide [Classname, Assemblyname]<br /><br />
 		/// </remarks>
 		/// <param name="name">the new name</param>
 		void Rename(string name);
@@ -48,10 +48,10 @@ namespace Db4objects.Db4o.Ext
 		/// <param name="name">the name of the field</param>
 		/// <param name="type">
 		/// the type of the field.
-		/// There are four possibilities how to supply the type:&lt;br&gt;
-		/// - a Class object.  (.NET: a Type object)&lt;br&gt;
-		/// - a fully qualified classname.&lt;br&gt;
-		/// - any object to be used as a template.&lt;br&gt;&lt;br&gt;
+		/// There are four possibilities how to supply the type:<br />
+		/// - a Class object.  (.NET: a Type object)<br />
+		/// - a fully qualified classname.<br />
+		/// - any object to be used as a template.<br /><br />
 		/// - null, if the first found field should be returned.
 		/// </param>
 		/// <returns>

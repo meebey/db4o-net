@@ -14,38 +14,32 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		/// <exception cref="Exception"></exception>
 		protected override void RunTest()
 		{
-			WithClient(new _IContainerBlock_15(this));
-			WithClient(new _IContainerBlock_21(this));
+			WithClient(new _IContainerBlock_15());
+			WithClient(new _IContainerBlock_21());
 		}
 
 		private sealed class _IContainerBlock_15 : IContainerBlock
 		{
-			public _IContainerBlock_15(CallConstructorsConfigTestCase _enclosing)
+			public _IContainerBlock_15()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Run(IObjectContainer client)
 			{
 				client.Store(new StandaloneCSTestCaseBase.Item());
 			}
-
-			private readonly CallConstructorsConfigTestCase _enclosing;
 		}
 
 		private sealed class _IContainerBlock_21 : IContainerBlock
 		{
-			public _IContainerBlock_21(CallConstructorsConfigTestCase _enclosing)
+			public _IContainerBlock_21()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Run(IObjectContainer client)
 			{
 				Assert.AreEqual(1, client.Query(typeof(StandaloneCSTestCaseBase.Item)).Size());
 			}
-
-			private readonly CallConstructorsConfigTestCase _enclosing;
 		}
 
 		protected override void Configure(IConfiguration config)

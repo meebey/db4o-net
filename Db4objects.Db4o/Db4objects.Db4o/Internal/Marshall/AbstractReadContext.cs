@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
@@ -20,24 +21,55 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 		}
 
-		public virtual object Read(ITypeHandler4 handlerType)
+		public object Read(ITypeHandler4 handlerType)
 		{
-			ITypeHandler4 handler = CorrectHandlerVersion(handlerType);
-			if (!IsIndirected(handler))
-			{
-				return handler.Read(this);
-			}
-			int indirectedOffSet = ReadInt();
-			ReadInt();
-			// length, not needed
-			int offset = Offset();
-			Seek(indirectedOffSet);
-			object obj = handler.Read(this);
-			Seek(offset);
-			return obj;
+			return ReadObject(handlerType);
 		}
 
-		public virtual object ReadObject()
+		public object ReadObject(ITypeHandler4 handlerType)
+		{
+			ITypeHandler4 handler = CorrectHandlerVersion(handlerType);
+			return SlotFormat.ForHandlerVersion(HandlerVersion()).DoWithSlotIndirection(this, 
+				handler, new _IClosure4_31(this, handler));
+		}
+
+		private sealed class _IClosure4_31 : IClosure4
+		{
+			public _IClosure4_31(AbstractReadContext _enclosing, ITypeHandler4 handler)
+			{
+				this._enclosing = _enclosing;
+				this.handler = handler;
+			}
+
+			public object Run()
+			{
+				return this._enclosing.ReadAtCurrentSeekPosition(handler);
+			}
+
+			private readonly AbstractReadContext _enclosing;
+
+			private readonly ITypeHandler4 handler;
+		}
+
+		public virtual object ReadAtCurrentSeekPosition(ITypeHandler4 handler)
+		{
+			if (handler is ClassMetadata)
+			{
+				ClassMetadata classMetadata = (ClassMetadata)handler;
+				if (classMetadata.IsValueType())
+				{
+					return classMetadata.ReadValueType(Transaction(), ReadInt(), ActivationDepth().Descend
+						(classMetadata));
+				}
+			}
+			if (FieldMetadata.UseDedicatedSlot(this, handler))
+			{
+				return ReadObject();
+			}
+			return handler.Read(this);
+		}
+
+		public object ReadObject()
 		{
 			int id = ReadInt();
 			if (id == 0)
@@ -67,6 +99,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private ClassMetadata ClassMetadataForId(int id)
 		{
+			// TODO: This method is *very* costly as is, since it reads
+			//       the whole slot once and doesn't reuse it. Optimize.
 			HardObjectReference hardRef = Container().GetHardObjectReferenceById(Transaction(
 				), id);
 			if (null == hardRef || hardRef._reference == null)
@@ -82,27 +116,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return false;
 		}
 
-		public virtual object ReadObject(ITypeHandler4 handlerType)
-		{
-			ITypeHandler4 handler = CorrectHandlerVersion(handlerType);
-			if (!IsIndirected(handler))
-			{
-				return handler.Read(this);
-			}
-			int payLoadOffset = ReadInt();
-			ReadInt();
-			// length - never used
-			if (payLoadOffset == 0)
-			{
-				return null;
-			}
-			int savedOffset = Offset();
-			Seek(payLoadOffset);
-			object obj = handler.Read(this);
-			Seek(savedOffset);
-			return obj;
-		}
-
 		public virtual IActivationDepth ActivationDepth()
 		{
 			return _activationDepth;
@@ -111,20 +124,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual void ActivationDepth(IActivationDepth depth)
 		{
 			_activationDepth = depth;
-		}
-
-		public virtual bool IsIndirected(ITypeHandler4 handler)
-		{
-			if (HandlerVersion() == 0)
-			{
-				return false;
-			}
-			return HandlerRegistry().IsVariableLength(handler);
-		}
-
-		private Db4objects.Db4o.Internal.HandlerRegistry HandlerRegistry()
-		{
-			return Container().Handlers();
 		}
 
 		public virtual IReadWriteBuffer ReadIndirectedBuffer()

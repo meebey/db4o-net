@@ -100,15 +100,15 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public static BTree CreateIntKeyBTree(ObjectContainerBase stream, int id, int nodeSize
 			)
 		{
-			return new BTree(stream.SystemTransaction(), id, new IntHandler(stream), nodeSize
-				, stream.ConfigImpl().BTreeCacheHeight());
+			return new BTree(stream.SystemTransaction(), id, new IntHandler(), nodeSize, stream
+				.ConfigImpl().BTreeCacheHeight());
 		}
 
 		public static BTree CreateIntKeyBTree(ObjectContainerBase stream, int id, int treeCacheHeight
 			, int nodeSize)
 		{
-			return new BTree(stream.SystemTransaction(), id, new IntHandler(stream), nodeSize
-				, treeCacheHeight);
+			return new BTree(stream.SystemTransaction(), id, new IntHandler(), nodeSize, treeCacheHeight
+				);
 		}
 
 		public static void AssertSingleElement(Transaction trans, BTree btree, object element

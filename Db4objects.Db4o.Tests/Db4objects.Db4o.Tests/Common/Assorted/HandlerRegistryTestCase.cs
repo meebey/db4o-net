@@ -17,7 +17,95 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 		}
 
-		public virtual void _testInterfaceHandlerIsSameAsObjectHandler()
+		public class Item
+		{
+		}
+
+		/// <exception cref="Exception"></exception>
+		protected override void Store()
+		{
+			Store(new HandlerRegistryTestCase.Item());
+		}
+
+		public virtual void TestCorrectHandlerVersion()
+		{
+			UntypedFieldHandler untypedFieldHandler = new UntypedFieldHandler(Stream());
+			Type untypedFieldHandler2Class = MarshallingLogicSimplification.enabled ? typeof(
+				UntypedFieldHandler2) : typeof(UntypedFieldHandler);
+			Type arrayHandler2Class = MarshallingLogicSimplification.enabled ? typeof(ArrayHandler2
+				) : typeof(ArrayHandler);
+			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler0), untypedFieldHandler, 
+				-1);
+			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler0), untypedFieldHandler, 
+				0);
+			AssertCorrectedHandlerVersion(untypedFieldHandler2Class, untypedFieldHandler, 1);
+			AssertCorrectedHandlerVersion(untypedFieldHandler2Class, untypedFieldHandler, 2);
+			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler), untypedFieldHandler, HandlerRegistry
+				.HandlerVersion);
+			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler), untypedFieldHandler, HandlerRegistry
+				.HandlerVersion + 1);
+			FirstClassObjectHandler firstClassObjectHandler = new FirstClassObjectHandler(ItemClassMetadata
+				());
+			AssertCorrectedHandlerVersion(typeof(FirstClassObjectHandler0), firstClassObjectHandler
+				, 0);
+			AssertCorrectedHandlerVersion(typeof(FirstClassObjectHandler), firstClassObjectHandler
+				, 2);
+			PrimitiveFieldHandler primitiveFieldHandler = new PrimitiveFieldHandler(null, untypedFieldHandler
+				, 0, null);
+			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler0), primitiveFieldHandler
+				, 0);
+			AssertPrimitiveFieldHandlerDelegate(untypedFieldHandler2Class, primitiveFieldHandler
+				, 1);
+			AssertPrimitiveFieldHandlerDelegate(untypedFieldHandler2Class, primitiveFieldHandler
+				, 2);
+			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler), primitiveFieldHandler
+				, HandlerRegistry.HandlerVersion);
+			ArrayHandler arrayHandler = new ArrayHandler(untypedFieldHandler, false);
+			AssertCorrectedHandlerVersion(typeof(ArrayHandler0), arrayHandler, 0);
+			AssertCorrectedHandlerVersion(arrayHandler2Class, arrayHandler, 1);
+			AssertCorrectedHandlerVersion(arrayHandler2Class, arrayHandler, 2);
+			AssertCorrectedHandlerVersion(typeof(ArrayHandler), arrayHandler, HandlerRegistry
+				.HandlerVersion);
+			ArrayHandler multidimensionalArrayHandler = new MultidimensionalArrayHandler(untypedFieldHandler
+				, false);
+			AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler0), multidimensionalArrayHandler
+				, 0);
+			AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler), multidimensionalArrayHandler
+				, 1);
+			AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler), multidimensionalArrayHandler
+				, 2);
+			AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler), multidimensionalArrayHandler
+				, HandlerRegistry.HandlerVersion);
+		}
+
+		private void AssertPrimitiveFieldHandlerDelegate(Type fieldHandlerClass, PrimitiveFieldHandler
+			 primitiveFieldHandler, int version)
+		{
+			PrimitiveFieldHandler primitiveFieldHandler0 = (PrimitiveFieldHandler)CorrectHandlerVersion
+				(primitiveFieldHandler, version);
+			Assert.AreSame(fieldHandlerClass, primitiveFieldHandler0.DelegateTypeHandler().GetType
+				());
+		}
+
+		private ClassMetadata ItemClassMetadata()
+		{
+			return Stream().ClassMetadataForObject(new HandlerRegistryTestCase.Item());
+		}
+
+		private void AssertCorrectedHandlerVersion(Type expectedClass, ITypeHandler4 typeHandler
+			, int version)
+		{
+			Assert.AreSame(expectedClass, CorrectHandlerVersion(typeHandler, version).GetType
+				());
+		}
+
+		private ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 typeHandler, int version
+			)
+		{
+			return Handlers().CorrectHandlerVersion(typeHandler, version);
+		}
+
+		public virtual void TestInterfaceHandlerIsSameAsObjectHandler()
 		{
 			Assert.AreSame(HandlerForClass(typeof(object)), HandlerForClass(typeof(HandlerRegistryTestCase.IFooInterface
 				)));
@@ -104,7 +192,14 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private IReflectClass IntegerClassReflector()
 		{
-			return ReflectorFor(typeof(int));
+			if (NullableArrayHandling.Disabled())
+			{
+				return ReflectorFor(typeof(int));
+			}
+			else
+			{
+				return ReflectorFor(Platform4.NullableTypeFor(typeof(int)));
+			}
 		}
 
 		private IReflectClass ReflectorFor(Type clazz)

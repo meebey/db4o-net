@@ -110,6 +110,8 @@ namespace Db4objects.Db4o.Internal
 			// used for ClassMetadata and ClassMetadataRepository
 			// may be parent or equal to i_trans
 			// used for Objects
+			// This is a hack for P2Collection
+			// Remove when P2Collection is no longer used.
 			// all the per-YapStream references that we don't
 			// want created in YapobjectCarrier
 			// One of three constants in ReplicationHandler: NONE, OLD, NEW
@@ -764,7 +766,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				FieldMetadata[] field = new FieldMetadata[] { null };
-				classMetadata.ForEachFieldMetadata(new _IVisitor4_616(this, fieldName, field));
+				classMetadata.ForEachFieldMetadata(new _IVisitor4_618(fieldName, field));
 				if (field[0] == null)
 				{
 					return null;
@@ -785,12 +787,10 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_616 : IVisitor4
+		private sealed class _IVisitor4_618 : IVisitor4
 		{
-			public _IVisitor4_616(PartialObjectContainer _enclosing, string fieldName, FieldMetadata
-				[] field)
+			public _IVisitor4_618(string fieldName, FieldMetadata[] field)
 			{
-				this._enclosing = _enclosing;
 				this.fieldName = fieldName;
 				this.field = field;
 			}
@@ -803,8 +803,6 @@ namespace Db4objects.Db4o.Internal
 					field[0] = yapField;
 				}
 			}
-
-			private readonly PartialObjectContainer _enclosing;
 
 			private readonly string fieldName;
 
@@ -1150,6 +1148,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
+			// TODO: consider to return classMetadata
 			return classMetadata.TypeHandler();
 		}
 
@@ -1479,6 +1478,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
+			// TODO: consider to return classMetadata
 			return classMetadata.TypeHandler();
 		}
 

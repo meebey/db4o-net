@@ -5,6 +5,7 @@ using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -15,11 +16,14 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly IPreparedComparison _preparedComparison;
 
-		public PreparedArrayContainsComparison(ArrayHandler arrayHandler, ITypeHandler4 typeHandler
-			, object obj)
+		private ObjectContainerBase _container;
+
+		public PreparedArrayContainsComparison(IContext context, ArrayHandler arrayHandler
+			, ITypeHandler4 typeHandler, object obj)
 		{
 			_arrayHandler = arrayHandler;
-			_preparedComparison = typeHandler.PrepareComparison(obj);
+			_preparedComparison = typeHandler.PrepareComparison(context, obj);
+			_container = context.Transaction().Container();
 		}
 
 		public virtual int CompareTo(object obj)
@@ -51,7 +55,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return false;
 			}
-			IEnumerator i = _arrayHandler.AllElements(array);
+			IEnumerator i = _arrayHandler.AllElements(_container, array);
 			while (i.MoveNext())
 			{
 				if (matcher.Match(_preparedComparison.CompareTo(i.Current)))

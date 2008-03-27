@@ -4,8 +4,8 @@ using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
-using Db4oUnit.Extensions.Mocking;
 using Db4oUnit.Extensions.Tests;
+using Db4oUnit.Mocking;
 using Db4objects.Db4o.Config;
 
 namespace Db4oUnit.Extensions.Tests
@@ -62,9 +62,8 @@ namespace Db4oUnit.Extensions.Tests
 			fixture.FixtureConfiguration(configuration);
 			Assert.IsTrue(fixture.GetLabel().EndsWith(" - " + configuration.GetLabel()), "FixtureConfiguration label must be part of Fixture label."
 				);
-			new Db4oTestSuiteBuilder(fixture, new Type[] { typeof(FixtureConfigurationTestCase.TestCase1
-				), typeof(FixtureConfigurationTestCase.TestCase2) }).Build().Run(new TestResult(
-				));
+			new TestRunner(new Db4oTestSuiteBuilder(fixture, new Type[] { typeof(FixtureConfigurationTestCase.TestCase1
+				), typeof(FixtureConfigurationTestCase.TestCase2) })).Run(new TestResult());
 			configuration.Verify(new MethodCall[] { new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase1
 				), MethodCall.IgnoredArgument), new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase1
 				), MethodCall.IgnoredArgument), new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase2

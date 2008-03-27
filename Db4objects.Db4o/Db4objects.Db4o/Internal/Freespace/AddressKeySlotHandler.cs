@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Freespace
 {
@@ -14,17 +15,17 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return _current.CompareByAddress((Slot)obj);
 		}
 
-		public override IPreparedComparison PrepareComparison(object slot)
+		public override IPreparedComparison PrepareComparison(IContext context, object slot
+			)
 		{
 			Slot sourceSlot = (Slot)slot;
-			return new _IPreparedComparison_20(this, sourceSlot);
+			return new _IPreparedComparison_21(sourceSlot);
 		}
 
-		private sealed class _IPreparedComparison_20 : IPreparedComparison
+		private sealed class _IPreparedComparison_21 : IPreparedComparison
 		{
-			public _IPreparedComparison_20(AddressKeySlotHandler _enclosing, Slot sourceSlot)
+			public _IPreparedComparison_21(Slot sourceSlot)
 			{
-				this._enclosing = _enclosing;
 				this.sourceSlot = sourceSlot;
 			}
 
@@ -35,8 +36,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 				// Fix there and here after other references are fixed.
 				return -sourceSlot.CompareByAddress(targetSlot);
 			}
-
-			private readonly AddressKeySlotHandler _enclosing;
 
 			private readonly Slot sourceSlot;
 		}

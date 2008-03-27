@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private CharHandler CharHandler()
 		{
-			return new CharHandler(Stream());
+			return new CharHandler();
 		}
 
 		public virtual void TestReadWrite()

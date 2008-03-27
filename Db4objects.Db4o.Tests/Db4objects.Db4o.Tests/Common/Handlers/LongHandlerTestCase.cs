@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private Db4objects.Db4o.Internal.Handlers.LongHandler LongHandler()
 		{
-			return new Db4objects.Db4o.Internal.Handlers.LongHandler(Stream());
+			return new Db4objects.Db4o.Internal.Handlers.LongHandler();
 		}
 
 		public virtual void TestReadWrite()

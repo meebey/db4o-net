@@ -15,6 +15,7 @@ namespace Db4objects.Db4o.Internal
 
 		public long i_uuid;
 
+		// FIXME: should be named "uuidLongPart" or even better "creationTime" 
 		public virtual object ShallowClone()
 		{
 			VirtualAttributes va = new VirtualAttributes();

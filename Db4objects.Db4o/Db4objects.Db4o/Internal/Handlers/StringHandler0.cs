@@ -12,10 +12,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class StringHandler0 : StringHandler
 	{
-		public StringHandler0(ITypeHandler4 template) : base(template)
-		{
-		}
-
 		public override object Read(IReadContext context)
 		{
 			ByteArrayBuffer buffer = (ByteArrayBuffer)((IInternalReadContext)context).ReadIndirectedBuffer

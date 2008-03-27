@@ -42,5 +42,17 @@ namespace Db4objects.Db4o.Marshall
 		/// </remarks>
 		/// <param name="obj">the object to write</param>
 		void WriteObject(ITypeHandler4 handler, object obj);
+
+		/// <summary>
+		/// reserves a buffer with a specific length at the current
+		/// position, to be written in a later step.
+		/// </summary>
+		/// <remarks>
+		/// reserves a buffer with a specific length at the current
+		/// position, to be written in a later step.
+		/// </remarks>
+		/// <param name="length">the length to be reserved.</param>
+		/// <returns>the ReservedBuffer</returns>
+		IReservedBuffer Reserve(int length);
 	}
 }

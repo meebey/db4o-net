@@ -15,11 +15,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private static readonly byte DefaultByteValue = (byte)0;
 
-		public ByteHandler(ObjectContainerBase stream) : base(stream)
-		{
-		}
-
-		public override object Coerce(IReflectClass claxx, object obj)
+		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
+			)
 		{
 			return Coercion4.ToSByte(obj);
 		}
@@ -69,14 +66,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			byte sourceByte = ((byte)source);
-			return new _IPreparedComparison_91(this, sourceByte);
+			return new _IPreparedComparison_87(sourceByte);
 		}
 
-		private sealed class _IPreparedComparison_91 : IPreparedComparison
+		private sealed class _IPreparedComparison_87 : IPreparedComparison
 		{
-			public _IPreparedComparison_91(ByteHandler _enclosing, byte sourceByte)
+			public _IPreparedComparison_87(byte sourceByte)
 			{
-				this._enclosing = _enclosing;
 				this.sourceByte = sourceByte;
 			}
 
@@ -89,8 +85,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				byte targetByte = ((byte)target);
 				return sourceByte == targetByte ? 0 : (sourceByte < targetByte ? -1 : 1);
 			}
-
-			private readonly ByteHandler _enclosing;
 
 			private readonly byte sourceByte;
 		}

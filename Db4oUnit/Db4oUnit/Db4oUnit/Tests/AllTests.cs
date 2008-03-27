@@ -6,19 +6,19 @@ using Db4oUnit.Tests;
 
 namespace Db4oUnit.Tests
 {
-	public class AllTests : ITestSuiteBuilder
+	public class AllTests : ReflectionTestSuite
 	{
-		public virtual TestSuite Build()
+		protected override Type[] TestCases()
 		{
-			return new ReflectionTestSuiteBuilder(new Type[] { typeof(FrameworkTestCase), typeof(
-				AssertTestCase), typeof(TestLifeCycleTestCase), typeof(TestSuiteTestCase), typeof(
-				ReflectionTestSuiteBuilderTestCase), typeof(ReinstantiatePerMethodTest) }).Build
-				();
+			return new Type[] { typeof(AssertTestCase), typeof(CompositeTestListenerTestCase)
+				, typeof(FrameworkTestCase), typeof(ReflectionTestSuiteBuilderTestCase), typeof(
+				ReinstantiatePerMethodTest), typeof(TestLifeCycleTestCase), typeof(TestRunnerTestCase
+				), typeof(Db4oUnit.Tests.Fixtures.AllTests) };
 		}
 
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(AllTests)).Run();
+			new ConsoleTestRunner(typeof(Db4oUnit.Tests.AllTests)).Run();
 		}
 	}
 }

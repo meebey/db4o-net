@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 	/// I changed the behaviour to neglect all fields that
 	/// contain a "$".
 	/// </remarks>
-	/// <author>&lt;a href="mailto:Paul-Ebermann@gmx.de"&gt;Paul Ebermann&lt;/a&gt;</author>
+	/// <author>&lt;a href="mailto:Paul-Ebermann@gmx.de"&gt;Paul Ebermann</a></author>
 	/// <version>0.1</version>
 	public class STInnerClassesTestCase : SodaBaseTestCase
 	{

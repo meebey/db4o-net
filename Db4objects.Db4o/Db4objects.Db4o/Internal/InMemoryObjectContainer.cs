@@ -155,7 +155,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			int increment = _memoryFile.GetIncrementSizeBy();
-			while (last > increment)
+			while (last > (increment + bytes.Length))
 			{
 				increment <<= 1;
 			}

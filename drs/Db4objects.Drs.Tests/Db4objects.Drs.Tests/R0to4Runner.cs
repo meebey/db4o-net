@@ -1,33 +1,17 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-This file is part of the db4o open source object database.
-
-db4o is free software; you can redistribute it and/or modify it under
-the terms of version 2 of the GNU General Public License as published
-by the Free Software Foundation and as clarified by db4objects' GPL 
-interpretation policy, available at
-http://www.db4o.com/about/company/legalpolicies/gplinterpretation/
-Alternatively you can write to db4objects, Inc., 1900 S Norfolk Street,
-Suite 350, San Mateo, CA 94403, USA.
-
-db4o is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 namespace Db4objects.Drs.Tests
 {
 	public class R0to4Runner : Db4objects.Drs.Tests.DrsTestCase
 	{
-		private const int LINKERS = 4;
+		private const int Linkers = 4;
 
 		public R0to4Runner() : base()
 		{
 		}
 
+		//	 ------------------------------ FIELDS ------------------------------
+		// --------------------------- CONSTRUCTORS ---------------------------
 		protected override void Clean()
 		{
 			Delete(A().Provider());
@@ -38,8 +22,8 @@ namespace Db4objects.Drs.Tests
 			 provider)
 		{
 			System.Collections.ArrayList toDelete = new System.Collections.ArrayList();
-			System.Collections.IEnumerator rr = provider.GetStoredObjects(typeof(Db4objects.Drs.Tests.R0)
-				).GetEnumerator();
+			System.Collections.IEnumerator rr = provider.GetStoredObjects(typeof(Db4objects.Drs.Tests.R0
+				)).GetEnumerator();
 			while (rr.MoveNext())
 			{
 				object o = rr.Current;
@@ -52,6 +36,7 @@ namespace Db4objects.Drs.Tests
 				.MoveNext(); )
 			{
 				object o = iterator.Current;
+				//System.out.println("o = " + o);
 				provider.Delete(o);
 			}
 			provider.Commit();
@@ -61,13 +46,13 @@ namespace Db4objects.Drs.Tests
 			, Db4objects.Drs.Inside.ITestableReplicationProviderInside b, bool isSameExpected
 			)
 		{
-			System.Collections.IEnumerator it = a.GetStoredObjects(typeof(Db4objects.Drs.Tests.R4)
-				).GetEnumerator();
+			System.Collections.IEnumerator it = a.GetStoredObjects(typeof(Db4objects.Drs.Tests.R4
+				)).GetEnumerator();
 			while (it.MoveNext())
 			{
 				string name = ((Db4objects.Drs.Tests.R4)it.Current).name;
-				System.Collections.IEnumerator it2 = b.GetStoredObjects(typeof(Db4objects.Drs.Tests.R4)
-					).GetEnumerator();
+				System.Collections.IEnumerator it2 = b.GetStoredObjects(typeof(Db4objects.Drs.Tests.R4
+					)).GetEnumerator();
 				bool found = false;
 				while (it2.MoveNext())
 				{
@@ -84,7 +69,7 @@ namespace Db4objects.Drs.Tests
 		private void CopyAllToB(Db4objects.Drs.Inside.ITestableReplicationProviderInside 
 			peerA, Db4objects.Drs.Inside.ITestableReplicationProviderInside peerB)
 		{
-			Db4oUnit.Assert.IsTrue(ReplicateAll(peerA, peerB, false) == LINKERS * 5);
+			Db4oUnit.Assert.IsTrue(ReplicateAll(peerA, peerB, false) == Linkers * 5);
 		}
 
 		private void EnsureCount(Db4objects.Drs.Inside.ITestableReplicationProviderInside
@@ -148,8 +133,8 @@ namespace Db4objects.Drs.Tests
 		private void ModifyR4(Db4objects.Drs.Inside.ITestableReplicationProviderInside provider
 			)
 		{
-			System.Collections.IEnumerator it = provider.GetStoredObjects(typeof(Db4objects.Drs.Tests.R4)
-				).GetEnumerator();
+			System.Collections.IEnumerator it = provider.GetStoredObjects(typeof(Db4objects.Drs.Tests.R4
+				)).GetEnumerator();
 			while (it.MoveNext())
 			{
 				Db4objects.Drs.Tests.R4 r4 = (Db4objects.Drs.Tests.R4)it.Current;
@@ -172,8 +157,8 @@ namespace Db4objects.Drs.Tests
 			Db4objects.Drs.IReplicationSession replication = Db4objects.Drs.Replication.Begin
 				(peerA, peerB);
 			System.Collections.IEnumerator it = modifiedOnly ? peerA.ObjectsChangedSinceLastReplication
-				(typeof(Db4objects.Drs.Tests.R0)).GetEnumerator() : peerA.GetStoredObjects(typeof(Db4objects.Drs.Tests.R0)
-				).GetEnumerator();
+				(typeof(Db4objects.Drs.Tests.R0)).GetEnumerator() : peerA.GetStoredObjects(typeof(
+				Db4objects.Drs.Tests.R0)).GetEnumerator();
 			int replicated = 0;
 			while (it.MoveNext())
 			{
@@ -182,8 +167,8 @@ namespace Db4objects.Drs.Tests
 				replicated++;
 			}
 			replication.Commit();
-			EnsureCount(peerA, LINKERS);
-			EnsureCount(peerB, LINKERS);
+			EnsureCount(peerA, Linkers);
+			EnsureCount(peerB, Linkers);
 			return replicated;
 		}
 
@@ -197,7 +182,7 @@ namespace Db4objects.Drs.Tests
 			 peerA, Db4objects.Drs.Inside.ITestableReplicationProviderInside peerB)
 		{
 			int replicatedObjectsCount = ReplicateAll(peerA, peerB, true);
-			Db4oUnit.Assert.IsTrue(replicatedObjectsCount == LINKERS);
+			Db4oUnit.Assert.IsTrue(replicatedObjectsCount == Linkers);
 		}
 
 		private void SetFieldsToNull(object @object, Db4objects.Db4o.Reflect.IReflectClass
@@ -235,7 +220,7 @@ namespace Db4objects.Drs.Tests
 		protected virtual void ActualTest()
 		{
 			Init(A().Provider());
-			EnsureCount(A().Provider(), LINKERS);
+			EnsureCount(A().Provider(), Linkers);
 			CopyAllToB(A().Provider(), B().Provider());
 			ReplicateNoneModified(A().Provider(), B().Provider());
 			ModifyR4(A().Provider());

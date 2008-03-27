@@ -1,23 +1,5 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-This file is part of the db4o open source object database.
-
-db4o is free software; you can redistribute it and/or modify it under
-the terms of version 2 of the GNU General Public License as published
-by the Free Software Foundation and as clarified by db4objects' GPL 
-interpretation policy, available at
-http://www.db4o.com/about/company/legalpolicies/gplinterpretation/
-Alternatively you can write to db4objects, Inc., 1900 S Norfolk Street,
-Suite 350, San Mateo, CA 94403, USA.
-
-db4o is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 namespace Db4objects.Drs.Inside
 {
 	internal class InstanceReplicationPreparer : Db4objects.Drs.Inside.Traversal.IVisitor
@@ -116,6 +98,7 @@ namespace Db4objects.Drs.Inside
 		private bool PrepareObjectToBeReplicated(object obj, object referencingObject, string
 			 fieldName)
 		{
+			//TODO Optimization: keep track of the peer we are traversing to avoid having to look in both.
 			_obj = obj;
 			_referencingObject = referencingObject;
 			_fieldName = fieldName;
@@ -128,11 +111,13 @@ namespace Db4objects.Drs.Inside
 				throw new System.Exception(string.Empty + _obj.GetType() + " " + _obj + " must be stored in one of the databases being replicated."
 					);
 			}
+			//FIXME: Use db4o's standard for throwing exceptions.
 			if (refA != null && refB != null)
 			{
 				throw new System.Exception(string.Empty + _obj.GetType() + " " + _obj + " cannot be referenced by both databases being replicated."
 					);
 			}
+			//FIXME: Use db4o's standard for throwing exceptions.
 			Db4objects.Drs.Inside.IReplicationProviderInside owner = refA == null ? _providerB
 				 : _providerA;
 			Db4objects.Drs.Inside.IReplicationReference ownerRef = refA == null ? refB : refA;
@@ -148,8 +133,11 @@ namespace Db4objects.Drs.Inside
 			{
 				refB = otherRef;
 			}
+			//TODO for circular referenced object, otherRef should not be null in the subsequent pass.
+			//But db4o always return null. A bug. check!
 			if (otherRef == null)
 			{
+				//Object is only present in one ReplicationProvider. Missing in the other. Could have been deleted or never replicated.
 				if (WasProcessed(uuid))
 				{
 					return false;
@@ -158,6 +146,7 @@ namespace Db4objects.Drs.Inside
 				long creationTime = ownerRef.Uuid().GetLongPart();
 				if (creationTime > _lastReplicationVersion)
 				{
+					//if it was created after the last time two ReplicationProviders were replicated it has to be treated as new.
 					if (_isReplicatingOnlyDeletions)
 					{
 						return false;
@@ -167,6 +156,7 @@ namespace Db4objects.Drs.Inside
 				}
 				else
 				{
+					// if it was created before the last time two ReplicationProviders were replicated it has to be treated as deleted.
 					return HandleMissingObjectInOther(_obj, ownerRef, owner, other, _referencingObject
 						, _fieldName);
 				}
@@ -180,11 +170,14 @@ namespace Db4objects.Drs.Inside
 			{
 				return false;
 			}
+			//Has to be done AFTER the counterpart is set because object yet to be replicated might reference the current one, replicated previously.
 			MarkAsProcessed(uuid);
 			object objectA = refA.Object();
 			object objectB = refB.Object();
 			bool changedInA = _providerA.WasModifiedSinceLastReplication(refA);
+			//System.out.println("changedInA = " + changedInA);
 			bool changedInB = _providerB.WasModifiedSinceLastReplication(refB);
+			//System.out.println("changedInB = " + changedInB);
 			if (!changedInA && !changedInB)
 			{
 				return false;
@@ -272,6 +265,7 @@ namespace Db4objects.Drs.Inside
 			{
 				prevailingPeer.Activate(prevailing);
 			}
+			//Already activated if there was a conflict.
 			if (prevailing != _obj)
 			{
 				otherRef.SetCounterpart(_obj);
@@ -281,6 +275,7 @@ namespace Db4objects.Drs.Inside
 			}
 			else
 			{
+				//Now we start traversing objects on the other peer! Is that cool or what? ;)
 				ownerRef.MarkForReplicating();
 			}
 			return !_event._actionShouldStopTraversal;
@@ -300,6 +295,7 @@ namespace Db4objects.Drs.Inside
 			_uuidsProcessedInSession.Put(uuid, uuid);
 		}
 
+		//Using this Hashtable4 as a Set.
 		private bool WasProcessed(Db4objects.Db4o.Ext.Db4oUUID uuid)
 		{
 			return _uuidsProcessedInSession.Get(uuid) != null;
@@ -326,6 +322,7 @@ namespace Db4objects.Drs.Inside
 				isConflict = true;
 			}
 			object prevailing = null;
+			//by default, deletion prevails
 			if (isConflict)
 			{
 				owner.Activate(obj);
@@ -343,6 +340,7 @@ namespace Db4objects.Drs.Inside
 			}
 			else
 			{
+				//owner == _providerB
 				_stateInA.SetAll(null, false, false, -1);
 				_stateInB.SetAll(obj, false, wasModified, modificationDate);
 			}
@@ -368,6 +366,7 @@ namespace Db4objects.Drs.Inside
 			}
 			if (prevailing == null)
 			{
+				//Deletion has prevailed.
 				if (_directionTo == other)
 				{
 					return false;
@@ -376,6 +375,7 @@ namespace Db4objects.Drs.Inside
 				return !_event._actionShouldStopTraversal;
 			}
 			bool needsToBeActivated = !isConflict;
+			//Already activated if there was a conflict.
 			return HandleNewObject(obj, ownerRef, owner, other, referencingObject, fieldName, 
 				needsToBeActivated, true);
 		}
@@ -449,24 +449,29 @@ namespace Db4objects.Drs.Inside
 				return null;
 			}
 			Db4objects.Db4o.Reflect.IReflectClass claxx = ReflectClass(obj);
+			//		if (claxx.isSecondClass()) return obj;
 			if (claxx.IsSecondClass())
 			{
 				throw new System.Exception("IllegalState");
 			}
+			//		if (claxx.isArray()) return arrayClone(obj, claxx, sourceProvider); //Copy arrayClone() from GenericReplicationSession if necessary.
 			if (claxx.IsArray())
 			{
 				throw new System.Exception("IllegalState");
 			}
+			//Copy arrayClone() from GenericReplicationSession if necessary.
 			if (_collectionHandler.CanHandle(claxx))
 			{
 				return CollectionClone(obj, claxx);
 			}
 			claxx.SkipConstructor(true, true);
+			// FIXME This is ridiculously slow to do every time. Should ALWAYS be done automatically in the reflector.
 			object result = claxx.NewInstance();
 			if (result == null)
 			{
 				throw new System.Exception("Unable to create a new instance of " + obj.GetType());
 			}
+			//FIXME Use db4o's standard for throwing exceptions.
 			return result;
 		}
 

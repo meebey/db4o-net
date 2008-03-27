@@ -1,6 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4oUnit.Extensions.Mocking;
+using Db4oUnit.Mocking;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 

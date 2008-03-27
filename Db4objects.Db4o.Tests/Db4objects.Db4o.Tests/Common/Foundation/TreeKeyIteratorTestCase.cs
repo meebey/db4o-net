@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 	{
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(TreeKeyIteratorTestCase)).Run();
+			new ConsoleTestRunner(typeof(TreeKeyIteratorTestCase)).Run();
 		}
 
 		private static int[] Values = new int[] { 1, 3, 5, 7, 9, 10, 11, 13, 24, 76 };

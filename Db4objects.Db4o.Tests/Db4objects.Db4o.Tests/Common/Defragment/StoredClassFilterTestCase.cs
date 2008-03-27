@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(StoredClassFilterTestCase)).Run();
+			new ConsoleTestRunner(typeof(StoredClassFilterTestCase)).Run();
 		}
 
 		private static string BuildTempPath(string fname)

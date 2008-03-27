@@ -21,10 +21,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private static readonly bool i_primitive = false;
 
-		public BooleanHandler(ObjectContainerBase stream) : base(stream)
-		{
-		}
-
 		public override object DefaultValue()
 		{
 			return i_primitive;
@@ -104,14 +100,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			bool sourceBoolean = ((bool)source);
-			return new _IPreparedComparison_120(this, sourceBoolean);
+			return new _IPreparedComparison_116(sourceBoolean);
 		}
 
-		private sealed class _IPreparedComparison_120 : IPreparedComparison
+		private sealed class _IPreparedComparison_116 : IPreparedComparison
 		{
-			public _IPreparedComparison_120(BooleanHandler _enclosing, bool sourceBoolean)
+			public _IPreparedComparison_116(bool sourceBoolean)
 			{
-				this._enclosing = _enclosing;
 				this.sourceBoolean = sourceBoolean;
 			}
 
@@ -124,8 +119,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				bool targetBoolean = ((bool)target);
 				return sourceBoolean == targetBoolean ? 0 : (sourceBoolean ? 1 : -1);
 			}
-
-			private readonly BooleanHandler _enclosing;
 
 			private readonly bool sourceBoolean;
 		}

@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 	{
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(Hashtable4TestCase)).Run();
+			new ConsoleTestRunner(typeof(Hashtable4TestCase)).Run();
 		}
 
 		public virtual void TestToString()

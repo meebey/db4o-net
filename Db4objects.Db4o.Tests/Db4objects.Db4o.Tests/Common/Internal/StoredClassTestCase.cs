@@ -129,55 +129,47 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			// FIXME: test rename
 			if (!hasIndex)
 			{
-				Assert.Expect(typeof(Exception), new _ICodeBlock_113(this, storedField));
+				Assert.Expect(typeof(Exception), new _ICodeBlock_113(storedField));
 			}
 			else
 			{
 				IntByRef count = new IntByRef();
-				storedField.TraverseValues(new _IVisitor4_123(this, count, expectedFieldValue));
+				storedField.TraverseValues(new _IVisitor4_123(count, expectedFieldValue));
 				Assert.AreEqual(1, count.value);
 			}
 		}
 
 		private sealed class _ICodeBlock_113 : ICodeBlock
 		{
-			public _ICodeBlock_113(StoredClassTestCase _enclosing, IStoredField storedField)
+			public _ICodeBlock_113(IStoredField storedField)
 			{
-				this._enclosing = _enclosing;
 				this.storedField = storedField;
 			}
 
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				storedField.TraverseValues(new _IVisitor4_115(this));
+				storedField.TraverseValues(new _IVisitor4_115());
 			}
 
 			private sealed class _IVisitor4_115 : IVisitor4
 			{
-				public _IVisitor4_115(_ICodeBlock_113 _enclosing)
+				public _IVisitor4_115()
 				{
-					this._enclosing = _enclosing;
 				}
 
 				public void Visit(object obj)
 				{
 				}
-
-				private readonly _ICodeBlock_113 _enclosing;
 			}
-
-			private readonly StoredClassTestCase _enclosing;
 
 			private readonly IStoredField storedField;
 		}
 
 		private sealed class _IVisitor4_123 : IVisitor4
 		{
-			public _IVisitor4_123(StoredClassTestCase _enclosing, IntByRef count, object expectedFieldValue
-				)
+			public _IVisitor4_123(IntByRef count, object expectedFieldValue)
 			{
-				this._enclosing = _enclosing;
 				this.count = count;
 				this.expectedFieldValue = expectedFieldValue;
 			}
@@ -187,8 +179,6 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 				count.value++;
 				Assert.AreEqual(expectedFieldValue, obj);
 			}
-
-			private readonly StoredClassTestCase _enclosing;
 
 			private readonly IntByRef count;
 

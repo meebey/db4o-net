@@ -24,5 +24,32 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			WriteInt(classMetadata.GetID());
 			classMetadata.Write(this, obj);
 		}
+
+		public virtual IReservedBuffer Reserve(int length)
+		{
+			IReservedBuffer reservedBuffer = new _IReservedBuffer_27(this);
+			return reservedBuffer;
+		}
+
+		private sealed class _IReservedBuffer_27 : IReservedBuffer
+		{
+			public _IReservedBuffer_27(MockWriteContext _enclosing)
+			{
+				this._enclosing = _enclosing;
+				this.reservedBufferOffset = this._enclosing.Offset();
+			}
+
+			internal readonly int reservedBufferOffset;
+
+			public void WriteBytes(byte[] bytes)
+			{
+				int currentOffset = this._enclosing.Offset();
+				this._enclosing.Seek(this.reservedBufferOffset);
+				this._enclosing.WriteBytes(bytes);
+				this._enclosing.Seek(currentOffset);
+			}
+
+			private readonly MockWriteContext _enclosing;
+		}
 	}
 }

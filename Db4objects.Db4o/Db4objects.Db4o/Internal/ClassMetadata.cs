@@ -62,8 +62,6 @@ namespace Db4objects.Db4o.Internal
 
 		private TernaryBool _canUpdateFast = TernaryBool.Unspecified;
 
-		// FIXME: remove this again. We solved more nicely by directly
-		//        passing out configured Field Handlers from HandlerRegistry. 
 		public ObjectContainerBase Stream()
 		{
 			return _container;
@@ -106,11 +104,16 @@ namespace Db4objects.Db4o.Internal
 
 		public ClassMetadata(ObjectContainerBase container, IReflectClass claxx)
 		{
-			_typeHandler = new FirstClassObjectHandler(this);
+			_typeHandler = CreateDefaultTypeHandler();
 			_container = container;
 			ClassReflector(claxx);
 			_index = CreateIndexStrategy();
 			_classIndexed = true;
+		}
+
+		private ITypeHandler4 CreateDefaultTypeHandler()
+		{
+			return new FirstClassObjectHandler(this);
 		}
 
 		internal virtual void ActivateFields(Transaction trans, object obj, IActivationDepth
@@ -140,8 +143,11 @@ namespace Db4objects.Db4o.Internal
 			if (HasClassIndex() || HasVirtualAttributes())
 			{
 				ObjectHeader oh = new ObjectHeader(_container, this, a_writer);
-				oh._marshallerFamily._object.AddFieldIndices(this, oh._headerAttributes, a_writer
-					, oldSlot);
+				if (_typeHandler is FirstClassObjectHandler)
+				{
+					oh._marshallerFamily._object.AddFieldIndices(this, oh._headerAttributes, a_writer
+						, oldSlot);
+				}
 			}
 		}
 
@@ -602,8 +608,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			ITypeHandler4 registeredTypeHandler4 = Container().ConfigImpl().TypeHandlerForClass
 				(claxx, HandlerRegistry.HandlerVersion);
-			_typeHandler = registeredTypeHandler4 != null ? registeredTypeHandler4 : new FirstClassObjectHandler
-				(this);
+			_typeHandler = registeredTypeHandler4 != null ? registeredTypeHandler4 : CreateDefaultTypeHandler
+				();
 		}
 
 		public virtual void Deactivate(Transaction trans, object obj, IActivationDepth depth
@@ -1091,15 +1097,14 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_905(this, name, yf));
+			ForEachFieldMetadata(new _IVisitor4_909(name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_905 : IVisitor4
+		private sealed class _IVisitor4_909 : IVisitor4
 		{
-			public _IVisitor4_905(ClassMetadata _enclosing, string name, FieldMetadata[] yf)
+			public _IVisitor4_909(string name, FieldMetadata[] yf)
 			{
-				this._enclosing = _enclosing;
 				this.name = name;
 				this.yf = yf;
 			}
@@ -1111,8 +1116,6 @@ namespace Db4objects.Db4o.Internal
 					yf[0] = (FieldMetadata)obj;
 				}
 			}
-
-			private readonly ClassMetadata _enclosing;
 
 			private readonly string name;
 
@@ -1247,7 +1250,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
-					Activate(context);
+					obj = Activate(context);
 				}
 			}
 			else
@@ -1263,7 +1266,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
-					Activate(context);
+					obj = Activate(context);
 				}
 			}
 			return obj;
@@ -1281,7 +1284,7 @@ namespace Db4objects.Db4o.Internal
 			context.Container().Peeked(context.ObjectID(), obj);
 			if (context.ActivationDepth().RequiresActivation())
 			{
-				InstantiateFields(context);
+				obj = InstantiateFields(context);
 			}
 			return obj;
 		}
@@ -1291,19 +1294,21 @@ namespace Db4objects.Db4o.Internal
 			return !mode.IsRefresh() && @ref.IsActive();
 		}
 
-		private void Activate(UnmarshallingContext context)
+		private object Activate(UnmarshallingContext context)
 		{
-			if (!ObjectCanActivate(context.Transaction(), context.PersistentObject()))
+			object obj = context.PersistentObject();
+			if (!ObjectCanActivate(context.Transaction(), obj))
 			{
 				context.Reference().SetStateDeactivated();
-				return;
+				return obj;
 			}
 			context.Reference().SetStateClean();
 			if (context.ActivationDepth().RequiresActivation())
 			{
-				InstantiateFields(context);
+				obj = InstantiateFields(context);
 			}
-			ObjectOnActivate(context.Transaction(), context.PersistentObject());
+			ObjectOnActivate(context.Transaction(), obj);
+			return obj;
 		}
 
 		private bool ConfigInstantiates()
@@ -1324,7 +1329,7 @@ namespace Db4objects.Db4o.Internal
 			transaction.Container().Callbacks().ObjectOnInstantiate(transaction, instance);
 		}
 
-		internal virtual object InstantiateFromReflector(ObjectContainerBase stream)
+		public object InstantiateFromReflector(ObjectContainerBase stream)
 		{
 			if (_classReflector == null)
 			{
@@ -1396,10 +1401,9 @@ namespace Db4objects.Db4o.Internal
 				(transaction, obj, EventDispatcher.CanActivate);
 		}
 
-		internal virtual void InstantiateFields(UnmarshallingContext context)
+		internal virtual object InstantiateFields(UnmarshallingContext context)
 		{
-			MarshallerFamily.Version(context.HandlerVersion())._object.InstantiateFields(context
-				);
+			return context.CorrectHandlerVersion(_typeHandler).Read(context);
 		}
 
 		public virtual bool IsArray()
@@ -1572,7 +1576,7 @@ namespace Db4objects.Db4o.Internal
 				if (Platform4.IsCollectionTranslator(this.i_config))
 				{
 					a_bytes[0].IncrementOffset(Const4.IntLength);
-					return new ArrayHandler(_container, null, false);
+					return new ArrayHandler(null, false);
 				}
 				IncrementFieldsOffset1(a_bytes[0]);
 				if (i_ancestor != null)
@@ -1610,18 +1614,15 @@ namespace Db4objects.Db4o.Internal
 					// FIXME: [TA] review activation depth 
 					candidates.i_trans.Container().Activate(trans, obj, ActivationDepthProvider().ActivationDepth
 						(2, ActivationMode.Activate));
-					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1325(this, candidates, trans
-						));
+					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1331(candidates, trans));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_1325 : IVisitor4
+		private sealed class _IVisitor4_1331 : IVisitor4
 		{
-			public _IVisitor4_1325(ClassMetadata _enclosing, QCandidates candidates, Transaction
-				 trans)
+			public _IVisitor4_1331(QCandidates candidates, Transaction trans)
 			{
-				this._enclosing = _enclosing;
 				this.candidates = candidates;
 				this.trans = trans;
 			}
@@ -1631,8 +1632,6 @@ namespace Db4objects.Db4o.Internal
 				candidates.AddByIdentity(new QCandidate(candidates, elem, trans.Container().GetID
 					(trans, elem), true));
 			}
-
-			private readonly ClassMetadata _enclosing;
 
 			private readonly QCandidates candidates;
 
@@ -1928,6 +1927,7 @@ namespace Db4objects.Db4o.Internal
 				.Reading);
 		}
 
+		[System.ObsoleteAttribute]
 		internal virtual bool StoreField(IReflectField a_field)
 		{
 			if (a_field.IsStatic())
@@ -2022,7 +2022,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1667
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1676
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2031,9 +2031,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1667 : IFunction4
+		private sealed class _IFunction4_1676 : IFunction4
 		{
-			public _IFunction4_1667(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1676(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2074,12 +2074,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1695(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1704(this));
 		}
 
-		private sealed class _IFunction4_1695 : IFunction4
+		private sealed class _IFunction4_1704 : IFunction4
 		{
-			public _IFunction4_1695(ClassMetadata _enclosing)
+			public _IFunction4_1704(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2122,22 +2122,19 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1725(this));
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1734());
 		}
 
-		private sealed class _IPredicate4_1725 : IPredicate4
+		private sealed class _IPredicate4_1734 : IPredicate4
 		{
-			public _IPredicate4_1725(ClassMetadata _enclosing)
+			public _IPredicate4_1734()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public bool Match(object candidate)
 			{
 				return ((IReflectField)candidate).IsStatic();
 			}
-
-			private readonly ClassMetadata _enclosing;
 		}
 
 		private IReflectField[] ReflectFields()
@@ -2252,9 +2249,10 @@ namespace Db4objects.Db4o.Internal
 			MarshallerFamily.Current()._class.Write(trans, this, writer);
 		}
 
-		public virtual IPreparedComparison PrepareComparison(object source)
+		public virtual IPreparedComparison PrepareComparison(IContext context, object source
+			)
 		{
-			return _typeHandler.PrepareComparison(source);
+			return _typeHandler.PrepareComparison(context, source);
 		}
 
 		public static void DefragObject(DefragmentContextImpl context)
@@ -2326,6 +2324,11 @@ namespace Db4objects.Db4o.Internal
 		public virtual ITypeHandler4 TypeHandler()
 		{
 			return this;
+		}
+
+		public virtual ITypeHandler4 DelegateTypeHandler()
+		{
+			return _typeHandler;
 		}
 
 		public sealed class PreparedComparisonImpl : IPreparedComparison

@@ -20,8 +20,8 @@ namespace Db4objects.Db4o.Replication
 	{
 		/// <summary>the callback method to be implemented to resolve a conflict.</summary>
 		/// <remarks>
-		/// the callback method to be implemented to resolve a conflict. &lt;br&gt;
-		/// &lt;br&gt;
+		/// the callback method to be implemented to resolve a conflict. <br />
+		/// <br />
 		/// </remarks>
 		/// <param name="replicationProcess">
 		/// the

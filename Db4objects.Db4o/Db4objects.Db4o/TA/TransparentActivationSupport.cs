@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.TA
 			TransparentActivationSupport.TADiagnosticProcessor processor = new TransparentActivationSupport.TADiagnosticProcessor
 				(this, container);
 			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_43
-				(this, processor).OnEvent);
+				(processor).OnEvent);
 		}
 
 		private sealed class _IEventListener4_25
@@ -88,10 +88,9 @@ namespace Db4objects.Db4o.TA
 
 		private sealed class _IEventListener4_43
 		{
-			public _IEventListener4_43(TransparentActivationSupport _enclosing, TransparentActivationSupport.TADiagnosticProcessor
-				 processor)
+			public _IEventListener4_43(TransparentActivationSupport.TADiagnosticProcessor processor
+				)
 			{
-				this._enclosing = _enclosing;
 				this.processor = processor;
 			}
 
@@ -100,8 +99,6 @@ namespace Db4objects.Db4o.TA
 				ClassEventArgs cea = (ClassEventArgs)args;
 				processor.OnClassRegistered(cea.ClassMetadata());
 			}
-
-			private readonly TransparentActivationSupport _enclosing;
 
 			private readonly TransparentActivationSupport.TADiagnosticProcessor processor;
 		}

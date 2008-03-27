@@ -8,9 +8,9 @@ namespace Db4objects.Db4o.Foundation
 {
 	public class CompositeIterator4 : IEnumerator
 	{
-		private readonly IEnumerator _iterators;
+		protected readonly IEnumerator _iterators;
 
-		private IEnumerator _currentIterator;
+		protected IEnumerator _currentIterator;
 
 		public CompositeIterator4(IEnumerator[] iterators) : this(new ArrayIterator4(iterators
 			))

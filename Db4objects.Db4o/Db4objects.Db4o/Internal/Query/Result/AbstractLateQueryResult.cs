@@ -70,58 +70,38 @@ namespace Db4objects.Db4o.Internal.Query.Result
 		protected virtual IEnumerable ClassIndexesIterable(ClassMetadataIterator classCollectionIterator
 			)
 		{
-			return new _IEnumerable_61(this, classCollectionIterator);
+			return Iterators.ConcatMap(Iterators.Iterable(classCollectionIterator), new _IFunction4_61
+				(this));
 		}
 
-		private sealed class _IEnumerable_61 : IEnumerable
+		private sealed class _IFunction4_61 : IFunction4
 		{
-			public _IEnumerable_61(AbstractLateQueryResult _enclosing, ClassMetadataIterator 
-				classCollectionIterator)
+			public _IFunction4_61(AbstractLateQueryResult _enclosing)
 			{
 				this._enclosing = _enclosing;
-				this.classCollectionIterator = classCollectionIterator;
 			}
 
-			public IEnumerator GetEnumerator()
+			public object Apply(object current)
 			{
-				return new CompositeIterator4(new _MappingIterator_64(this, classCollectionIterator
-					));
-			}
-
-			private sealed class _MappingIterator_64 : MappingIterator
-			{
-				public _MappingIterator_64(_IEnumerable_61 _enclosing, ClassMetadataIterator baseArg1
-					) : base(baseArg1)
+				ClassMetadata yapClass = (ClassMetadata)current;
+				if (this._enclosing.SkipClass(yapClass))
 				{
-					this._enclosing = _enclosing;
+					return Iterators.Skip;
 				}
-
-				protected override object Map(object current)
-				{
-					ClassMetadata yapClass = (ClassMetadata)current;
-					if (this._enclosing._enclosing.SkipClass(yapClass))
-					{
-						return MappingIterator.Skip;
-					}
-					return this._enclosing._enclosing.ClassIndexIterator(yapClass);
-				}
-
-				private readonly _IEnumerable_61 _enclosing;
+				return this._enclosing.ClassIndexIterable(yapClass);
 			}
 
 			private readonly AbstractLateQueryResult _enclosing;
-
-			private readonly ClassMetadataIterator classCollectionIterator;
 		}
 
 		protected virtual IEnumerable ClassIndexIterable(ClassMetadata clazz)
 		{
-			return new _IEnumerable_79(this, clazz);
+			return new _IEnumerable_73(this, clazz);
 		}
 
-		private sealed class _IEnumerable_79 : IEnumerable
+		private sealed class _IEnumerable_73 : IEnumerable
 		{
-			public _IEnumerable_79(AbstractLateQueryResult _enclosing, ClassMetadata clazz)
+			public _IEnumerable_73(AbstractLateQueryResult _enclosing, ClassMetadata clazz)
 			{
 				this._enclosing = _enclosing;
 				this.clazz = clazz;

@@ -65,26 +65,25 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			ITypeHandler4 customTypeHandler = new _ITypeHandler4_59(this);
+			ITypeHandler4 customTypeHandler = new _ITypeHandler4_59();
 			// TODO Auto-generated method stub
-			// TODO Auto-generated method stub
+			// need to write something, to prevent NPE
 			// TODO Auto-generated method stub
 			// TODO Auto-generated method stub
 			// TODO Auto-generated method stub
 			IReflectClass claxx = ((Config4Impl)config).Reflector().ForClass(typeof(CustomTypeHandlerTestCase.Item
 				));
-			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_91(this, claxx);
+			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_93(claxx);
 			config.RegisterTypeHandler(predicate, customTypeHandler);
 		}
 
 		private sealed class _ITypeHandler4_59 : ITypeHandler4
 		{
-			public _ITypeHandler4_59(CustomTypeHandlerTestCase _enclosing)
+			public _ITypeHandler4_59()
 			{
-				this._enclosing = _enclosing;
 			}
 
-			public IPreparedComparison PrepareComparison(object obj)
+			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
 				CustomTypeHandlerTestCase.prepareComparisonCalled = true;
 				return null;
@@ -92,6 +91,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 			public void Write(IWriteContext context, object obj)
 			{
+				context.WriteInt(0);
 			}
 
 			public object Read(IReadContext context)
@@ -107,16 +107,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public void Defragment(IDefragmentContext context)
 			{
 			}
-
-			private readonly CustomTypeHandlerTestCase _enclosing;
 		}
 
-		private sealed class _ITypeHandlerPredicate_91 : ITypeHandlerPredicate
+		private sealed class _ITypeHandlerPredicate_93 : ITypeHandlerPredicate
 		{
-			public _ITypeHandlerPredicate_91(CustomTypeHandlerTestCase _enclosing, IReflectClass
-				 claxx)
+			public _ITypeHandlerPredicate_93(IReflectClass claxx)
 			{
-				this._enclosing = _enclosing;
 				this.claxx = claxx;
 			}
 
@@ -124,8 +120,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			{
 				return claxx.Equals(classReflector);
 			}
-
-			private readonly CustomTypeHandlerTestCase _enclosing;
 
 			private readonly IReflectClass claxx;
 		}
@@ -140,7 +134,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			ClassMetadata classMetadata = Stream().ClassMetadataForReflectClass(ItemClass());
 			prepareComparisonCalled = false;
-			classMetadata.PrepareComparison(null);
+			classMetadata.PrepareComparison(Stream().Transaction().Context(), null);
 			Assert.IsTrue(prepareComparisonCalled);
 		}
 

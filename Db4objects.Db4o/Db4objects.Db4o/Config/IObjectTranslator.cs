@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="container">the ObjectContainer used</param>
 		/// <param name="applicationObject">the Object to be translated</param>
 		/// <returns>
-		/// return the object to store.&lt;br&gt;It needs to be of the class
+		/// return the object to store.<br />It needs to be of the class
 		/// <see cref="IObjectTranslator.StoredClass">storedClass()</see>
 		/// .
 		/// </returns>

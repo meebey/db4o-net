@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(NetworkSocketTestCase)).Run();
+			new ConsoleTestRunner(typeof(NetworkSocketTestCase)).Run();
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -268,14 +268,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		private void AssertWriteClose(ISocket4 socketToBeClosed, ICodeBlock codeBlock)
 		{
 			socketToBeClosed.Close();
-			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_133(this, codeBlock));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_133(codeBlock));
 		}
 
 		private sealed class _ICodeBlock_133 : ICodeBlock
 		{
-			public _ICodeBlock_133(NetworkSocketTestCase _enclosing, ICodeBlock codeBlock)
+			public _ICodeBlock_133(ICodeBlock codeBlock)
 			{
-				this._enclosing = _enclosing;
 				this.codeBlock = codeBlock;
 			}
 
@@ -290,8 +289,6 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 					codeBlock.Run();
 				}
 			}
-
-			private readonly NetworkSocketTestCase _enclosing;
 
 			private readonly ICodeBlock codeBlock;
 		}

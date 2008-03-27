@@ -8,35 +8,13 @@ namespace Db4oUnit
 {
 	/// <summary>Reflection based db4ounit.Test implementation.</summary>
 	/// <remarks>Reflection based db4ounit.Test implementation.</remarks>
-	public class TestMethod : TestAdapter
+	public class TestMethod : ITest
 	{
-		private sealed class _ILabelProvider_10 : ILabelProvider
-		{
-			public _ILabelProvider_10()
-			{
-			}
-
-			public string GetLabel(Db4oUnit.TestMethod method)
-			{
-				return method.GetSubject().GetType().FullName + "." + method.GetMethod().Name;
-			}
-		}
-
-		public static ILabelProvider DefaultLabelProvider = new _ILabelProvider_10();
-
 		private readonly object _subject;
 
 		private readonly MethodInfo _method;
 
-		private readonly ILabelProvider _labelProvider;
-
-		public TestMethod(object instance, MethodInfo method) : this(instance, method, DefaultLabelProvider
-			)
-		{
-		}
-
-		public TestMethod(object instance, MethodInfo method, ILabelProvider labelProvider
-			)
+		public TestMethod(object instance, MethodInfo method)
 		{
 			if (null == instance)
 			{
@@ -46,13 +24,8 @@ namespace Db4oUnit
 			{
 				throw new ArgumentException("method");
 			}
-			if (null == labelProvider)
-			{
-				throw new ArgumentException("labelProvider");
-			}
 			_subject = instance;
 			_method = method;
-			_labelProvider = labelProvider;
 		}
 
 		public virtual object GetSubject()
@@ -65,9 +38,9 @@ namespace Db4oUnit
 			return _method;
 		}
 
-		public override string GetLabel()
+		public virtual string GetLabel()
 		{
-			return _labelProvider.GetLabel(this);
+			return _subject.GetType().FullName + "." + _method.Name;
 		}
 
 		public override string ToString()
@@ -75,10 +48,28 @@ namespace Db4oUnit
 			return "TestMethod(" + _method + ")";
 		}
 
-		/// <exception cref="Exception"></exception>
-		protected override void RunTest()
+		public virtual void Run()
 		{
-			Invoke();
+			try
+			{
+				SetUp();
+				try
+				{
+					Invoke();
+				}
+				catch (TargetInvocationException x)
+				{
+					throw new TestException(x.InnerException);
+				}
+				catch (Exception x)
+				{
+					throw new TestException(x);
+				}
+			}
+			finally
+			{
+				TearDown();
+			}
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -87,7 +78,7 @@ namespace Db4oUnit
 			_method.Invoke(_subject, new object[0]);
 		}
 
-		protected override void TearDown()
+		protected virtual void TearDown()
 		{
 			if (_subject is ITestLifeCycle)
 			{
@@ -102,7 +93,7 @@ namespace Db4oUnit
 			}
 		}
 
-		protected override void SetUp()
+		protected virtual void SetUp()
 		{
 			if (_subject is ITestLifeCycle)
 			{

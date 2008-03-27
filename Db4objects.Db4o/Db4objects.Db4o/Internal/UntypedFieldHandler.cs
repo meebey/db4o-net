@@ -4,7 +4,6 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Fieldhandlers;
-using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -13,6 +12,8 @@ namespace Db4objects.Db4o.Internal
 {
 	public class UntypedFieldHandler : ClassMetadata, IBuiltinTypeHandler, IFieldHandler
 	{
+		private const int Hashcode = 1003303143;
+
 		public UntypedFieldHandler(ObjectContainerBase container) : base(container, container
 			._handlers.IclassObject)
 		{
@@ -122,19 +123,9 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 typeHandler = context.TypeHandlerForId(typeHandlerId);
 			if (typeHandler != null)
 			{
-				// TODO: correct handler version here.
-				typeHandler.Defragment(context);
+				context.CorrectHandlerVersion(typeHandler).Defragment(context);
 			}
 			context.Seek(linkOffSet);
-		}
-
-		private bool IsArray(ITypeHandler4 handler)
-		{
-			if (handler is ClassMetadata)
-			{
-				return ((ClassMetadata)handler).IsArray();
-			}
-			return handler is ArrayHandler;
 		}
 
 		private ITypeHandler4 ReadTypeHandler(IInternalReadContext context, int payloadOffset
@@ -146,15 +137,23 @@ namespace Db4objects.Db4o.Internal
 			return typeHandler;
 		}
 
-		private void SeekSecondaryOffset(IInternalReadContext context, ITypeHandler4 classMetadata
+		/// <param name="buffer"></param>
+		/// <param name="typeHandler"></param>
+		protected virtual void SeekSecondaryOffset(IReadBuffer buffer, ITypeHandler4 typeHandler
 			)
 		{
-			if (classMetadata is PrimitiveFieldHandler && ((PrimitiveFieldHandler)classMetadata
-				).IsArray())
+			// do nothing, no longer needed in current implementation.
+			if (IsPrimitiveArray(typeHandler))
 			{
 				// unnecessary secondary offset, consistent with old format
-				context.Seek(context.ReadInt());
+				buffer.SeekCurrentInt();
 			}
+		}
+
+		protected virtual bool IsPrimitiveArray(ITypeHandler4 classMetadata)
+		{
+			return classMetadata is PrimitiveFieldHandler && ((PrimitiveFieldHandler)classMetadata
+				).IsArray();
 		}
 
 		public override object Read(IReadContext readContext)
@@ -173,9 +172,20 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			SeekSecondaryOffset(context, typeHandler);
-			object obj = typeHandler.Read(context);
+			object obj = context.ReadAtCurrentSeekPosition(typeHandler);
 			context.Seek(savedOffSet);
 			return obj;
+		}
+
+		public virtual ITypeHandler4 ReadTypeHandlerRestoreOffset(IInternalReadContext context
+			)
+		{
+			int savedOffset = context.Offset();
+			int payloadOffset = context.ReadInt();
+			ITypeHandler4 typeHandler = payloadOffset == 0 ? null : ReadTypeHandler(context, 
+				payloadOffset);
+			context.Seek(savedOffset);
+			return typeHandler;
 		}
 
 		public override void Write(IWriteContext context, object obj)
@@ -196,22 +206,35 @@ namespace Db4objects.Db4o.Internal
 			MarshallingContextState state = marshallingContext.CurrentState();
 			marshallingContext.CreateChildBuffer(false, false);
 			context.WriteInt(id);
-			if (IsArray(typeHandler))
+			if (IsPrimitiveArray(typeHandler))
 			{
 				// TODO: This indirection is unneccessary, but it is required by the 
 				// current old reading format. 
-				// Remove in the next version of UntypedFieldHandler  
+				// Remove in the next version of UntypedFieldHandler
 				marshallingContext.PrepareIndirectionOfSecondWrite();
 			}
 			else
 			{
 				marshallingContext.DoNotIndirectWrites();
 			}
-			typeHandler.Write(context, obj);
+			WriteObject(context, typeHandler, obj);
 			marshallingContext.RestoreState(state);
 		}
 
-		private ITypeHandler4 TypeHandlerForObject(object obj)
+		private void WriteObject(IWriteContext context, ITypeHandler4 typeHandler, object
+			 obj)
+		{
+			if (FieldMetadata.UseDedicatedSlot(context, typeHandler))
+			{
+				context.WriteObject(obj);
+			}
+			else
+			{
+				typeHandler.Write(context, obj);
+			}
+		}
+
+		public virtual ITypeHandler4 TypeHandlerForObject(object obj)
 		{
 			IReflectClass claxx = Reflector().ForObject(obj);
 			if (claxx.IsArray())
@@ -219,6 +242,21 @@ namespace Db4objects.Db4o.Internal
 				return HandlerRegistry().UntypedArrayHandler(claxx);
 			}
 			return Container().TypeHandlerForReflectClass(claxx);
+		}
+
+		public virtual IReflectClass ClassReflector(IReflector reflector)
+		{
+			return base.ClassReflector();
+		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Db4objects.Db4o.Internal.UntypedFieldHandler;
+		}
+
+		public override int GetHashCode()
+		{
+			return Hashcode;
 		}
 	}
 }

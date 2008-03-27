@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 		public virtual OrderItem Item(int i)
 		{
 			Activate(ActivationPurpose.Read);
-			return _items.Get(i);
+			return _items[i];
 		}
 
 		public virtual int Size()

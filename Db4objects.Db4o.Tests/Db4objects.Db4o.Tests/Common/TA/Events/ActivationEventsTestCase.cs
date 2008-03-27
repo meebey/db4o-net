@@ -95,14 +95,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Events
 		private void AddCancelNonActivatableListener()
 		{
 			EventRegistry().Activating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
-				(new _IEventListener4_79(this).OnEvent);
+				(new _IEventListener4_79().OnEvent);
 		}
 
 		private sealed class _IEventListener4_79
 		{
-			public _IEventListener4_79(ActivationEventsTestCase _enclosing)
+			public _IEventListener4_79()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.CancellableObjectEventArgs
@@ -114,21 +113,18 @@ namespace Db4objects.Db4o.Tests.Common.TA.Events
 					((ICancellableEventArgs)args).Cancel();
 				}
 			}
-
-			private readonly ActivationEventsTestCase _enclosing;
 		}
 
 		private void AddCancelAnyListener()
 		{
 			EventRegistry().Activating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
-				(new _IEventListener4_90(this).OnEvent);
+				(new _IEventListener4_90().OnEvent);
 		}
 
 		private sealed class _IEventListener4_90
 		{
-			public _IEventListener4_90(ActivationEventsTestCase _enclosing)
+			public _IEventListener4_90()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.CancellableObjectEventArgs
@@ -136,8 +132,6 @@ namespace Db4objects.Db4o.Tests.Common.TA.Events
 			{
 				((ICancellableEventArgs)args).Cancel();
 			}
-
-			private readonly ActivationEventsTestCase _enclosing;
 		}
 
 		private ActivationEventsTestCase.NonActivatableItem QueryNonActivatableItem()

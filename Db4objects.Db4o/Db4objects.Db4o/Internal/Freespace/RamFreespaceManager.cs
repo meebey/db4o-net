@@ -184,16 +184,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 			Tree.ByRef addressTree = new Tree.ByRef();
 			if (_freeBySize != null)
 			{
-				_freeBySize.Traverse(new _IVisitor4_168(this, addressTree));
+				_freeBySize.Traverse(new _IVisitor4_168(addressTree));
 			}
 			_freeByAddress = addressTree.value;
 		}
 
 		private sealed class _IVisitor4_168 : IVisitor4
 		{
-			public _IVisitor4_168(RamFreespaceManager _enclosing, Tree.ByRef addressTree)
+			public _IVisitor4_168(Tree.ByRef addressTree)
 			{
-				this._enclosing = _enclosing;
 				this.addressTree = addressTree;
 			}
 
@@ -202,8 +201,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 				FreeSlotNode node = ((FreeSlotNode)a_object)._peer;
 				addressTree.value = Tree.Add(addressTree.value, node);
 			}
-
-			private readonly RamFreespaceManager _enclosing;
 
 			private readonly Tree.ByRef addressTree;
 		}
@@ -270,17 +267,16 @@ namespace Db4objects.Db4o.Internal.Freespace
 			StringBuilder sb = new StringBuilder();
 			sb.Append("RAM FreespaceManager\n");
 			sb.Append("Address Index\n");
-			_freeByAddress.Traverse(new _IVisitor4_231(this, sb));
+			_freeByAddress.Traverse(new _IVisitor4_231(sb));
 			sb.Append("Length Index\n");
-			_freeBySize.Traverse(new _IVisitor4_239(this, sb));
+			_freeBySize.Traverse(new _IVisitor4_239(sb));
 			return sb.ToString();
 		}
 
 		private sealed class _IVisitor4_231 : IVisitor4
 		{
-			public _IVisitor4_231(RamFreespaceManager _enclosing, StringBuilder sb)
+			public _IVisitor4_231(StringBuilder sb)
 			{
-				this._enclosing = _enclosing;
 				this.sb = sb;
 			}
 
@@ -289,17 +285,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 				sb.Append(obj);
 				sb.Append("\n");
 			}
-
-			private readonly RamFreespaceManager _enclosing;
 
 			private readonly StringBuilder sb;
 		}
 
 		private sealed class _IVisitor4_239 : IVisitor4
 		{
-			public _IVisitor4_239(RamFreespaceManager _enclosing, StringBuilder sb)
+			public _IVisitor4_239(StringBuilder sb)
 			{
-				this._enclosing = _enclosing;
 				this.sb = sb;
 			}
 
@@ -308,8 +301,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 				sb.Append(obj);
 				sb.Append("\n");
 			}
-
-			private readonly RamFreespaceManager _enclosing;
 
 			private readonly StringBuilder sb;
 		}
@@ -320,14 +311,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			_freeByAddress.Traverse(new _IVisitor4_252(this, visitor));
+			_freeByAddress.Traverse(new _IVisitor4_252(visitor));
 		}
 
 		private sealed class _IVisitor4_252 : IVisitor4
 		{
-			public _IVisitor4_252(RamFreespaceManager _enclosing, IVisitor4 visitor)
+			public _IVisitor4_252(IVisitor4 visitor)
 			{
-				this._enclosing = _enclosing;
 				this.visitor = visitor;
 			}
 
@@ -338,8 +328,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 				int length = fsn._peer._key;
 				visitor.Visit(new Slot(address, length));
 			}
-
-			private readonly RamFreespaceManager _enclosing;
 
 			private readonly IVisitor4 visitor;
 		}

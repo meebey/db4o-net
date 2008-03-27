@@ -737,6 +737,7 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
+		[System.ObsoleteAttribute]
 		public virtual void SwitchToFile(string fileName)
 		{
 			lock (_lock)
@@ -751,6 +752,7 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
+		[System.ObsoleteAttribute]
 		public virtual void SwitchToMainFile()
 		{
 			lock (_lock)
@@ -1050,13 +1052,13 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			lock (_lock)
 			{
-				Cool.LoopWithTimeout(maxTimeSlice, new _IConditionalBlock_856(this));
+				Cool.LoopWithTimeout(maxTimeSlice, new _IConditionalBlock_862(this));
 			}
 		}
 
-		private sealed class _IConditionalBlock_856 : IConditionalBlock
+		private sealed class _IConditionalBlock_862 : IConditionalBlock
 		{
-			public _IConditionalBlock_856(ClientObjectContainer _enclosing)
+			public _IConditionalBlock_862(ClientObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -1082,22 +1084,19 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private IClientSideTask NextClientSideTask()
 		{
-			return (IClientSideTask)_messageQueue.NextMatching(new _IPredicate4_874(this));
+			return (IClientSideTask)_messageQueue.NextMatching(new _IPredicate4_880());
 		}
 
-		private sealed class _IPredicate4_874 : IPredicate4
+		private sealed class _IPredicate4_880 : IPredicate4
 		{
-			public _IPredicate4_874(ClientObjectContainer _enclosing)
+			public _IPredicate4_880()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public bool Match(object message)
 			{
 				return message is IClientSideTask;
 			}
-
-			private readonly ClientObjectContainer _enclosing;
 		}
 	}
 }

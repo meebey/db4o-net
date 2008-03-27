@@ -19,16 +19,17 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 		{
 			return new Type[] { typeof(STOrderingTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.AllTests
 				), typeof(AndJoinOptimizationTestCase), typeof(CollectionIndexedJoinTestCase), typeof(
-				NullIdentityConstraintTestCase), typeof(QueryUnknownClassTestCase), typeof(SortMultipleTestCase
-				), typeof(STBooleanTestCase), typeof(STBooleanWUTestCase), typeof(STByteTestCase
-				), typeof(STByteWUTestCase), typeof(STCharTestCase), typeof(STCharWUTestCase), typeof(
-				STDoubleTestCase), typeof(STDoubleWUTestCase), typeof(STETH1TestCase), typeof(STFloatTestCase
-				), typeof(STFloatWUTestCase), typeof(STIntegerTestCase), typeof(STIntegerWUTestCase
-				), typeof(STLongTestCase), typeof(STLongWUTestCase), typeof(STOrTTestCase), typeof(
-				STOrUTestCase), typeof(STOStringTestCase), typeof(STOIntegerTestCase), typeof(STOIntegerWTTestCase
-				), typeof(STRTH1TestCase), typeof(STSDFT1TestCase), typeof(STShortTestCase), typeof(
-				STShortWUTestCase), typeof(STStringUTestCase), typeof(STRUH1TestCase), typeof(STTH1TestCase
-				), typeof(STUH1TestCase), typeof(UntypedEvaluationTestCase), typeof(JointEqualsIdentityTestCase
+				NullIdentityConstraintTestCase), typeof(OrderFollowedByConstraintTestCase), typeof(
+				QueryUnknownClassTestCase), typeof(SortMultipleTestCase), typeof(STBooleanTestCase
+				), typeof(STBooleanWUTestCase), typeof(STByteTestCase), typeof(STByteWUTestCase)
+				, typeof(STCharTestCase), typeof(STCharWUTestCase), typeof(STDoubleTestCase), typeof(
+				STDoubleWUTestCase), typeof(STETH1TestCase), typeof(STFloatTestCase), typeof(STFloatWUTestCase
+				), typeof(STIntegerTestCase), typeof(STIntegerWUTestCase), typeof(STLongTestCase
+				), typeof(STLongWUTestCase), typeof(STOrTTestCase), typeof(STOrUTestCase), typeof(
+				STOStringTestCase), typeof(STOIntegerTestCase), typeof(STOIntegerWTTestCase), typeof(
+				STRTH1TestCase), typeof(STSDFT1TestCase), typeof(STShortTestCase), typeof(STShortWUTestCase
+				), typeof(STStringUTestCase), typeof(STRUH1TestCase), typeof(STTH1TestCase), typeof(
+				STUH1TestCase), typeof(UntypedEvaluationTestCase), typeof(JointEqualsIdentityTestCase
 				) };
 		}
 

@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 	{
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(Stack4TestCase)).Run();
+			new ConsoleTestRunner(typeof(Stack4TestCase)).Run();
 		}
 
 		public virtual void TestPushPop()
@@ -35,14 +35,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		{
 			Assert.IsTrue(stack.IsEmpty());
 			Assert.IsNull(stack.Peek());
-			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_35(this, stack));
+			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_35(stack));
 		}
 
 		private sealed class _ICodeBlock_35 : ICodeBlock
 		{
-			public _ICodeBlock_35(Stack4TestCase _enclosing, Stack4 stack)
+			public _ICodeBlock_35(Stack4 stack)
 			{
-				this._enclosing = _enclosing;
 				this.stack = stack;
 			}
 
@@ -51,8 +50,6 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			{
 				stack.Pop();
 			}
-
-			private readonly Stack4TestCase _enclosing;
 
 			private readonly Stack4 stack;
 		}

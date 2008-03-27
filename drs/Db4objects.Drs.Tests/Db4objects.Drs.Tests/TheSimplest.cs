@@ -1,23 +1,5 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-This file is part of the db4o open source object database.
-
-db4o is free software; you can redistribute it and/or modify it under
-the terms of version 2 of the GNU General Public License as published
-by the Free Software Foundation and as clarified by db4objects' GPL 
-interpretation policy, available at
-http://www.db4o.com/about/company/legalpolicies/gplinterpretation/
-Alternatively you can write to db4objects, Inc., 1900 S Norfolk Street,
-Suite 350, San Mateo, CA 94403, USA.
-
-db4o is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 namespace Db4objects.Drs.Tests
 {
 	public class TheSimplest : Db4objects.Drs.Tests.DrsTestCase
@@ -34,8 +16,8 @@ namespace Db4objects.Drs.Tests
 
 		private void Replicate3()
 		{
-			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Tests.SPCChild)
-				);
+			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Tests.SPCChild
+				));
 			EnsureNames(A(), "c3");
 			EnsureNames(B(), "c3");
 		}
@@ -91,14 +73,15 @@ namespace Db4objects.Drs.Tests
 		private Db4objects.Drs.Tests.SPCChild GetTheObject(Db4objects.Drs.Tests.IDrsFixture
 			 fixture)
 		{
-			return (Db4objects.Drs.Tests.SPCChild)GetOneInstance(fixture, typeof(Db4objects.Drs.Tests.SPCChild)
-				);
+			return (Db4objects.Drs.Tests.SPCChild)GetOneInstance(fixture, typeof(Db4objects.Drs.Tests.SPCChild
+				));
 		}
 
 		protected override void ReplicateClass(Db4objects.Drs.Inside.ITestableReplicationProviderInside
 			 providerA, Db4objects.Drs.Inside.ITestableReplicationProviderInside providerB, 
 			System.Type clazz)
 		{
+			//System.out.println("ReplicationTestcase.replicateClass");
 			Db4objects.Drs.IReplicationSession replication = Db4objects.Drs.Replication.Begin
 				(providerA, providerB);
 			System.Collections.IEnumerator allObjects = providerA.ObjectsChangedSinceLastReplication
@@ -106,6 +89,7 @@ namespace Db4objects.Drs.Tests
 			while (allObjects.MoveNext())
 			{
 				object obj = allObjects.Current;
+				//System.out.println("obj = " + obj);
 				replication.Replicate(obj);
 			}
 			replication.Commit();

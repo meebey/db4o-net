@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Replication
 		/// <summary>commits the replication task to both involved ObjectContainers.</summary>
 		/// <remarks>
 		/// commits the replication task to both involved ObjectContainers.
-		/// &lt;br&gt;&lt;br&gt;Call this method after replication is completed to
+		/// <br /><br />Call this method after replication is completed to
 		/// write all changes back to the database files. This method
 		/// synchronizes both ObjectContainers by setting the transaction
 		/// serial number
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Replication
 		/// <summary>replicates an object.</summary>
 		/// <remarks>
 		/// replicates an object.
-		/// &lt;br&gt;&lt;br&gt;By default the version number of the object is checked in
+		/// <br /><br />By default the version number of the object is checked in
 		/// both ObjectContainers involved in the replication process. If the
 		/// version number has not changed since the last time the two
 		/// ObjectContainers were replicated
@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Replication
 		/// modifies the replication policy, what to do on a call to
 		/// <see cref="IReplicationProcess.Replicate">IReplicationProcess.Replicate</see>
 		/// .
-		/// &lt;br&gt;&lt;br&gt;If no direction is set, the replication process will be bidirectional by
+		/// <br /><br />If no direction is set, the replication process will be bidirectional by
 		/// default.
 		/// </summary>
 		/// <param name="relicateFrom">the ObjectContainer to replicate from</param>

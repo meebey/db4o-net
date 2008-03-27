@@ -7,7 +7,7 @@ using Db4oUnit.Util;
 
 namespace Db4oUnit
 {
-	public class TestResult : Printable
+	public class TestResult : Printable, ITestListener
 	{
 		private TestFailureCollection _failures = new TestFailureCollection();
 
@@ -15,55 +15,48 @@ namespace Db4oUnit
 
 		private readonly StopWatch _watch = new StopWatch();
 
-		private readonly TextWriter _writer;
-
-		public TestResult(TextWriter writer)
-		{
-			_writer = writer;
-		}
-
-		public TestResult() : this(TestPlatform.GetNullWriter())
+		public TestResult()
 		{
 		}
 
 		public virtual void TestStarted(ITest test)
 		{
 			++_testCount;
-			Print(test.GetLabel());
 		}
 
 		public virtual void TestFailed(ITest test, Exception failure)
 		{
-			PrintFailure(failure);
 			_failures.Add(new TestFailure(test, failure));
 		}
 
-		private void PrintFailure(Exception failure)
+		public virtual int TestCount
 		{
-			if (failure == null)
+			get
 			{
-				Print("\t!");
-			}
-			else
-			{
-				Print("\t! " + failure);
+				return _testCount;
 			}
 		}
 
-		public virtual bool Green()
+		public virtual bool Green
 		{
-			return _failures.Size() == 0;
+			get
+			{
+				return _failures.Size() == 0;
+			}
 		}
 
-		public virtual TestFailureCollection Failures()
+		public virtual TestFailureCollection Failures
 		{
-			return _failures;
+			get
+			{
+				return _failures;
+			}
 		}
 
 		/// <exception cref="IOException"></exception>
 		public override void Print(TextWriter writer)
 		{
-			if (Green())
+			if (Green)
 			{
 				writer.Write("GREEN (" + _testCount + " tests) - " + ElapsedString() + TestPlatform
 					.NewLine);
@@ -79,11 +72,6 @@ namespace Db4oUnit
 			return _watch.ToString();
 		}
 
-		public virtual int Assertions()
-		{
-			return 0;
-		}
-
 		public virtual void RunStarted()
 		{
 			_watch.Start();
@@ -92,19 +80,6 @@ namespace Db4oUnit
 		public virtual void RunFinished()
 		{
 			_watch.Stop();
-		}
-
-		private void Print(string message)
-		{
-			try
-			{
-				_writer.Write(message + TestPlatform.NewLine);
-				_writer.Flush();
-			}
-			catch (IOException x)
-			{
-				TestPlatform.PrintStackTrace(_writer, x);
-			}
 		}
 	}
 }

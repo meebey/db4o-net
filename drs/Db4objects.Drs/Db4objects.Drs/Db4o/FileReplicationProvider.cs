@@ -1,23 +1,5 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-This file is part of the db4o open source object database.
-
-db4o is free software; you can redistribute it and/or modify it under
-the terms of version 2 of the GNU General Public License as published
-by the Free Software Foundation and as clarified by db4objects' GPL 
-interpretation policy, available at
-http://www.db4o.com/about/company/legalpolicies/gplinterpretation/
-Alternatively you can write to db4objects, Inc., 1900 S Norfolk Street,
-Suite 350, San Mateo, CA 94403, USA.
-
-db4o is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 namespace Db4objects.Drs.Db4o
 {
 	internal class FileReplicationProvider : Db4objects.Drs.Db4o.IDb4oReplicationProvider
@@ -46,6 +28,7 @@ namespace Db4objects.Drs.Db4o
 		public FileReplicationProvider(Db4objects.Db4o.IObjectContainer objectContainer, 
 			string name)
 		{
+			// TODO: Add additional query methods (whereModified )
 			Db4objects.Db4o.Config.IConfiguration cfg = objectContainer.Ext().Configure();
 			cfg.ObjectClass(typeof(object)).CascadeOnDelete(false);
 			cfg.Callbacks(false);
@@ -141,7 +124,8 @@ namespace Db4objects.Drs.Db4o
 		{
 			lock (GetMonitor())
 			{
-				_stream.SetByNewReplication(this, obj);
+				_stream.StoreByNewReplication(this, obj);
+				// the ID is an int internally, it can be casted to int.
 				Db4objects.Db4o.Internal.TreeInt node = new Db4objects.Db4o.Internal.TreeInt((int
 					)_stream.GetID(obj));
 				if (_idsReplicatedInThisSession == null)
@@ -213,6 +197,7 @@ namespace Db4objects.Drs.Db4o
 		{
 		}
 
+		//empty in File Provider
 		private void AddReference(Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl newNode
 			)
 		{
@@ -269,16 +254,14 @@ namespace Db4objects.Drs.Db4o
 		{
 			if (_referencesByObject != null)
 			{
-				_referencesByObject.Traverse(new _IVisitor4_283(this, visitor));
+				_referencesByObject.Traverse(new _IVisitor4_265(visitor));
 			}
 		}
 
-		private sealed class _IVisitor4_283 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _IVisitor4_265 : Db4objects.Db4o.Foundation.IVisitor4
 		{
-			public _IVisitor4_283(FileReplicationProvider _enclosing, Db4objects.Db4o.Foundation.IVisitor4
-				 visitor)
+			public _IVisitor4_265(Db4objects.Db4o.Foundation.IVisitor4 visitor)
 			{
-				this._enclosing = _enclosing;
 				this.visitor = visitor;
 			}
 
@@ -288,8 +271,6 @@ namespace Db4objects.Drs.Db4o
 					)obj;
 				visitor.Visit(node);
 			}
-
-			private readonly FileReplicationProvider _enclosing;
 
 			private readonly Db4objects.Db4o.Foundation.IVisitor4 visitor;
 		}
@@ -328,7 +309,7 @@ namespace Db4objects.Drs.Db4o
 		/// <param name="query">the Query to be constrained</param>
 		public virtual void WhereModified(Db4objects.Db4o.Query.IQuery query)
 		{
-			query.Descend(Db4objects.Db4o.Ext.VirtualField.VERSION).Constrain(GetLastReplicationVersion
+			query.Descend(Db4objects.Db4o.Ext.VirtualField.Version).Constrain(GetLastReplicationVersion
 				()).Greater();
 		}
 
@@ -341,12 +322,12 @@ namespace Db4objects.Drs.Db4o
 
 		public virtual void StoreNew(object o)
 		{
-			_stream.Set(o);
+			_stream.Store(o);
 		}
 
 		public virtual void Update(object o)
 		{
-			_stream.Set(o);
+			_stream.Store(o);
 		}
 
 		public virtual string GetName()
@@ -358,6 +339,7 @@ namespace Db4objects.Drs.Db4o
 		{
 		}
 
+		// do nothing
 		public virtual void Commit()
 		{
 			_stream.Commit();

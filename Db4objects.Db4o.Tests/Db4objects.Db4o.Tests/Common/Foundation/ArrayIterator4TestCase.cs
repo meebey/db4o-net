@@ -26,14 +26,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		private void AssertExhausted(ArrayIterator4 i)
 		{
 			Assert.IsFalse(i.MoveNext());
-			Assert.Expect(typeof(IndexOutOfRangeException), new _ICodeBlock_29(this, i));
+			Assert.Expect(typeof(IndexOutOfRangeException), new _ICodeBlock_29(i));
 		}
 
 		private sealed class _ICodeBlock_29 : ICodeBlock
 		{
-			public _ICodeBlock_29(ArrayIterator4TestCase _enclosing, ArrayIterator4 i)
+			public _ICodeBlock_29(ArrayIterator4 i)
 			{
-				this._enclosing = _enclosing;
 				this.i = i;
 			}
 
@@ -42,8 +41,6 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			{
 				Sharpen.Runtime.Out.WriteLine(i.Current);
 			}
-
-			private readonly ArrayIterator4TestCase _enclosing;
 
 			private readonly ArrayIterator4 i;
 		}

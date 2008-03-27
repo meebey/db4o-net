@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 	{
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(TreeNodeIteratorTestCase)).Run();
+			new ConsoleTestRunner(typeof(TreeNodeIteratorTestCase)).Run();
 		}
 
 		private static int[] Values = new int[] { 1, 3, 5, 7, 9, 10, 11, 13, 24, 76 };
@@ -46,14 +46,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		{
 			Tree tree = CreateTree(Values);
 			IEnumerator i = new TreeNodeIterator(tree);
-			tree.Traverse(new _IVisitor4_47(this, i));
+			tree.Traverse(new _IVisitor4_47(i));
 		}
 
 		private sealed class _IVisitor4_47 : IVisitor4
 		{
-			public _IVisitor4_47(TreeNodeIteratorTestCase _enclosing, IEnumerator i)
+			public _IVisitor4_47(IEnumerator i)
 			{
-				this._enclosing = _enclosing;
 				this.i = i;
 			}
 
@@ -62,8 +61,6 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				i.MoveNext();
 				Assert.AreSame(obj, i.Current);
 			}
-
-			private readonly TreeNodeIteratorTestCase _enclosing;
 
 			private readonly IEnumerator i;
 		}

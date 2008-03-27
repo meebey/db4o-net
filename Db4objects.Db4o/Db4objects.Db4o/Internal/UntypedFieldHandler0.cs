@@ -11,7 +11,7 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class UntypedFieldHandler0 : UntypedFieldHandler
+	public class UntypedFieldHandler0 : UntypedFieldHandler2
 	{
 		public UntypedFieldHandler0(ObjectContainerBase container) : base(container)
 		{

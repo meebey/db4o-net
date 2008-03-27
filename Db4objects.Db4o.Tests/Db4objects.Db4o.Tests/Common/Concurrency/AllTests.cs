@@ -6,7 +6,7 @@ using Db4objects.Db4o.Tests.Common.Concurrency;
 
 namespace Db4objects.Db4o.Tests.Common.Concurrency
 {
-	public class AllTests : Db4oConcurrenyTestSuite
+	public class AllTests : Db4oConcurrencyTestSuite
 	{
 		public static void Main(string[] args)
 		{
@@ -24,12 +24,11 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				), typeof(GreaterOrEqualTestCase), typeof(IndexedByIdentityTestCase), typeof(IndexedUpdatesWithNullTestCase
 				), typeof(InternStringsTestCase), typeof(InvalidUUIDTestCase), typeof(IsStoredTestCase
 				), typeof(MessagingTestCase), typeof(MultiDeleteTestCase), typeof(MultiLevelIndexTestCase
-				), typeof(NestedArraysTestCase), typeof(NullWrapperQueriesTestCase), typeof(ObjectSetIDsTestCase
-				), typeof(ParameterizedEvaluationTestCase), typeof(PeekPersistedTestCase), typeof(
-				PersistStaticFieldValuesTestCase), typeof(QueryForUnknownFieldTestCase), typeof(
-				QueryNonExistantTestCase), typeof(ReadObjectNQTestCase), typeof(ReadObjectQBETestCase
-				), typeof(ReadObjectSODATestCase), typeof(RefreshTestCase), typeof(UpdateObjectTestCase
-				) };
+				), typeof(NestedArraysTestCase), typeof(ObjectSetIDsTestCase), typeof(ParameterizedEvaluationTestCase
+				), typeof(PeekPersistedTestCase), typeof(PersistStaticFieldValuesTestCase), typeof(
+				QueryForUnknownFieldTestCase), typeof(QueryNonExistantTestCase), typeof(ReadObjectNQTestCase
+				), typeof(ReadObjectQBETestCase), typeof(ReadObjectSODATestCase), typeof(RefreshTestCase
+				), typeof(UpdateObjectTestCase) };
 		}
 	}
 }

@@ -104,6 +104,7 @@ namespace Db4objects.Db4o.Internal
 			return Config().Reflector().ForName(GetName());
 		}
 
+		[System.ObsoleteAttribute]
 		public virtual void Compare(IObjectAttribute comparator)
 		{
 			_config.Put(QueryAttributeProviderKey, comparator);
@@ -283,6 +284,7 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
+		[System.ObsoleteAttribute]
 		public virtual void ReadAs(object clazz)
 		{
 			Config4Impl configRef = Config();

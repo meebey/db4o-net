@@ -3,7 +3,6 @@
 using System;
 using System.Reflection;
 using Db4objects.Db4o.Internal;
-using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -116,9 +115,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		/// <exception cref="NoSuchMethodException"></exception>
-		/// <exception cref="MemberAccessException"></exception>
-		/// <exception cref="TargetInvocationException"></exception>
+		/// <exception cref="ReflectException"></exception>
 		public static object Invoke(object obj, string methodName, Type signature, object
 			 value)
 		{
@@ -148,6 +145,18 @@ namespace Db4objects.Db4o.Internal
 		public static object GetFieldValue(object obj, string fieldName)
 		{
 			return GetField(obj.GetType(), fieldName).GetValue(obj);
+		}
+
+		public static object NewInstance(object template)
+		{
+			try
+			{
+				return System.Activator.CreateInstance(template.GetType());
+			}
+			catch (Exception e)
+			{
+				throw new ReflectException(e);
+			}
 		}
 	}
 }

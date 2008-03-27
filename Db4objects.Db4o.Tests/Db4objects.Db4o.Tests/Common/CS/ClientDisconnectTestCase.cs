@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				ClientObjectContainer client2 = (ClientObjectContainer)oc2;
 				client1.Socket().Close();
 				Assert.IsFalse(oc1.IsClosed());
-				Assert.Expect(typeof(Db4oException), new _ICodeBlock_27(this, client1));
+				Assert.Expect(typeof(Db4oException), new _ICodeBlock_27(client1));
 				// It's ok for client2 to get something.
 				client2.QueryByExample(null);
 			}
@@ -42,10 +42,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private sealed class _ICodeBlock_27 : ICodeBlock
 		{
-			public _ICodeBlock_27(ClientDisconnectTestCase _enclosing, ClientObjectContainer 
-				client1)
+			public _ICodeBlock_27(ClientObjectContainer client1)
 			{
-				this._enclosing = _enclosing;
 				this.client1 = client1;
 			}
 
@@ -54,8 +52,6 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			{
 				client1.QueryByExample(null);
 			}
-
-			private readonly ClientDisconnectTestCase _enclosing;
 
 			private readonly ClientObjectContainer client1;
 		}

@@ -19,6 +19,10 @@ namespace Db4objects.Db4o.Internal
 
 		int CopyUnindexedID();
 
+		ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler);
+
+		int HandlerVersion();
+
 		void IncrementOffset(int length);
 
 		bool IsLegacyHandlerVersion();

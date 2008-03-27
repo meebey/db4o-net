@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 using Sharpen;
-using Sharpen.Util;
 
 namespace Db4objects.Db4o.Collections
 {
@@ -15,7 +14,7 @@ namespace Db4objects.Db4o.Collections
 	/// Transparent activatable ArrayList implementation.
 	/// Implements List interface using an array to store elements.
 	/// Each ArrayList4 instance has a capacity, which indicates the
-	/// size of the internal array. &lt;br&gt;&lt;br&gt;
+	/// size of the internal array. <br /><br />
 	/// When instantiated as a result of a query, all the internal members
 	/// are NOT activated at all. When internal members are required to
 	/// perform an operation, the instance transparently activates all
@@ -143,7 +142,7 @@ namespace Db4objects.Db4o.Collections
 		{
 			int size = Count;
 			ActivateForWrite();
-			Arrays.Fill(elements, 0, size, DefaultValue());
+			Sharpen.Util.Arrays.Fill(elements, 0, size, DefaultValue());
 			SetSize(0);
 			MarkModified();
 		}
@@ -183,7 +182,7 @@ namespace Db4objects.Db4o.Collections
 		/// </remarks>
 		/// <seealso cref="ArrayList"></seealso>
 		/// <seealso cref="IActivatable">IActivatable</seealso>
-		public virtual E Get(int index)
+		public virtual E This(int index)
 		{
 			CheckIndex(index, 0, Count - 1);
 			return elements[index];
@@ -202,7 +201,7 @@ namespace Db4objects.Db4o.Collections
 		internal virtual E RemoveImpl(int index)
 		{
 			int size = Count;
-			E element = Get(index);
+			E element = this[index];
 			ArrayCopyElements(index + 1, index, size - index - 1);
 			elements[size - 1] = DefaultValue();
 			DecreaseSize(1);
@@ -224,7 +223,7 @@ namespace Db4objects.Db4o.Collections
 				return;
 			}
 			System.Array.Copy(elements, toIndex, elements, fromIndex, size - toIndex);
-			Arrays.Fill(elements, size - count, size, DefaultValue());
+			Sharpen.Util.Arrays.Fill(elements, size - count, size, DefaultValue());
 			DecreaseSize(count);
 			MarkModified();
 		}
@@ -241,7 +240,7 @@ namespace Db4objects.Db4o.Collections
 		/// <seealso cref="IActivatable">IActivatable</seealso>
 		internal virtual E Set(int index, E element)
 		{
-			E oldValue = Get(index);
+			E oldValue = this[index];
 			ActivateForWrite();
 			elements[index] = element;
 			return oldValue;

@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(StringHandlerUpdateTestCase)).Run();
+			new ConsoleTestRunner(typeof(StringHandlerUpdateTestCase)).Run();
 		}
 
 		protected override string TypeName()

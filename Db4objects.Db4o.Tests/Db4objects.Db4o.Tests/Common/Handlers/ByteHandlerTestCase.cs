@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private ByteHandler ByteHandler()
 		{
-			return new ByteHandler(Stream());
+			return new ByteHandler();
 		}
 
 		public virtual void TestReadWrite()

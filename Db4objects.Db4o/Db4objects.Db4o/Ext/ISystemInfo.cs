@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>returns the number of entries in the Freespace Manager.</summary>
 		/// <remarks>
 		/// returns the number of entries in the Freespace Manager.
-		/// &lt;br&gt;&lt;br&gt;A high value for the number of freespace entries
+		/// <br /><br />A high value for the number of freespace entries
 		/// is an indication that the database is fragmented and
 		/// that defragment should be run.
 		/// </remarks>
@@ -19,13 +19,13 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>returns the freespace size in the database in bytes.</summary>
 		/// <remarks>
 		/// returns the freespace size in the database in bytes.
-		/// &lt;br&gt;&lt;br&gt;When db4o stores modified objects, it allocates
+		/// <br /><br />When db4o stores modified objects, it allocates
 		/// a new slot for it. During commit the old slot is freed.
 		/// Free slots are collected in the freespace manager, so
 		/// they can be reused for other objects.
-		/// &lt;br&gt;&lt;br&gt;This method returns a sum of the size of all
+		/// <br /><br />This method returns a sum of the size of all
 		/// free slots in the database file.
-		/// &lt;br&gt;&lt;br&gt;To reclaim freespace run defragment.
+		/// <br /><br />To reclaim freespace run defragment.
 		/// </remarks>
 		/// <returns>the freespace size in the database in bytes.</returns>
 		long FreespaceSize();

@@ -1,10 +1,8 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Assorted;
 
@@ -19,12 +17,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public static void Main(string[] arguments)
 		{
 			new SystemInfoTestCase().RunSolo();
-		}
-
-		/// <exception cref="Exception"></exception>
-		protected override void Db4oTearDownBeforeClean()
-		{
-			Db4oFactory.Configure().Freespace().UseRamSystem();
 		}
 
 		public virtual void TestDefaultFreespaceInfo()

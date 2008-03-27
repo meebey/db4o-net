@@ -57,15 +57,13 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		public virtual IEnumerator IterateIDs()
 		{
-			return new _MappingIterator_46(this, _indexedNode.GetEnumerator());
+			return new _MappingIterator_46(_indexedNode.GetEnumerator());
 		}
 
 		private sealed class _MappingIterator_46 : MappingIterator
 		{
-			public _MappingIterator_46(FieldIndexProcessorResult _enclosing, IEnumerator baseArg1
-				) : base(baseArg1)
+			public _MappingIterator_46(IEnumerator baseArg1) : base(baseArg1)
 			{
-				this._enclosing = _enclosing;
 			}
 
 			protected override object Map(object current)
@@ -73,8 +71,6 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 				FieldIndexKey composite = (FieldIndexKey)current;
 				return composite.ParentID();
 			}
-
-			private readonly FieldIndexProcessorResult _enclosing;
 		}
 	}
 }

@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Marshall;
 
@@ -87,6 +88,16 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool IsLegacyHandlerVersion()
 		{
 			return HandlerVersion() == 0;
+		}
+
+		public virtual BitMap4 ReadBitMap(int bitCount)
+		{
+			return _buffer.ReadBitMap(bitCount);
+		}
+
+		public virtual void SeekCurrentInt()
+		{
+			Seek(ReadInt());
 		}
 	}
 }

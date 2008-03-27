@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Types
 		/// 	</summary>
 		/// <remarks>
 		/// configures the activation depth for objects returned from this collection.
-		/// &lt;br&gt;&lt;br&gt;Specify a value less than zero to use the default activation depth
+		/// <br /><br />Specify a value less than zero to use the default activation depth
 		/// configured for the ObjectContainer or for individual objects.
 		/// </remarks>
 		/// <param name="depth">the desired depth</param>
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Types
 		/// <remarks>
 		/// configures objects are to be deleted from the database file if they are
 		/// removed from this collection.
-		/// &lt;br&gt;&lt;br&gt;Default value: &lt;code&gt;false&lt;/code&gt;
+		/// <br /><br />Default value: <code>false</code>
 		/// </remarks>
 		/// <param name="flag">the desired setting</param>
 		void DeleteRemoved(bool flag);

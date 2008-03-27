@@ -52,12 +52,12 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		internal virtual void Close()
 		{
-			i_lock.Run(new _ISafeClosure4_39(this));
+			i_lock.Run(new _IClosure4_39(this));
 		}
 
-		private sealed class _ISafeClosure4_39 : ISafeClosure4
+		private sealed class _IClosure4_39 : IClosure4
 		{
-			public _ISafeClosure4_39(BlockingByteChannel _enclosing)
+			public _IClosure4_39(BlockingByteChannel _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -106,13 +106,13 @@ namespace Db4objects.Db4o.Foundation.Network
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual int Read()
 		{
-			int ret = (int)i_lock.Run(new _ISafeClosure4_73(this));
+			int ret = (int)i_lock.Run(new _IClosure4_73(this));
 			return ret;
 		}
 
-		private sealed class _ISafeClosure4_73 : ISafeClosure4
+		private sealed class _IClosure4_73 : IClosure4
 		{
-			public _ISafeClosure4_73(BlockingByteChannel _enclosing)
+			public _IClosure4_73(BlockingByteChannel _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -131,14 +131,14 @@ namespace Db4objects.Db4o.Foundation.Network
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual int Read(byte[] bytes, int offset, int length)
 		{
-			int ret = (int)i_lock.Run(new _ISafeClosure4_87(this, length, bytes, offset));
+			int ret = (int)i_lock.Run(new _IClosure4_87(this, length, bytes, offset));
 			return ret;
 		}
 
-		private sealed class _ISafeClosure4_87 : ISafeClosure4
+		private sealed class _IClosure4_87 : IClosure4
 		{
-			public _ISafeClosure4_87(BlockingByteChannel _enclosing, int length, byte[] bytes
-				, int offset)
+			public _IClosure4_87(BlockingByteChannel _enclosing, int length, byte[] bytes, int
+				 offset)
 			{
 				this._enclosing = _enclosing;
 				this.length = length;
@@ -204,13 +204,13 @@ namespace Db4objects.Db4o.Foundation.Network
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
-			i_lock.Run(new _ISafeClosure4_128(this, len, bytes, off));
+			i_lock.Run(new _IClosure4_128(this, len, bytes, off));
 		}
 
-		private sealed class _ISafeClosure4_128 : ISafeClosure4
+		private sealed class _IClosure4_128 : IClosure4
 		{
-			public _ISafeClosure4_128(BlockingByteChannel _enclosing, int len, byte[] bytes, 
-				int off)
+			public _IClosure4_128(BlockingByteChannel _enclosing, int len, byte[] bytes, int 
+				off)
 			{
 				this._enclosing = _enclosing;
 				this.len = len;
@@ -241,12 +241,12 @@ namespace Db4objects.Db4o.Foundation.Network
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Write(int i)
 		{
-			i_lock.Run(new _ISafeClosure4_141(this, i));
+			i_lock.Run(new _IClosure4_141(this, i));
 		}
 
-		private sealed class _ISafeClosure4_141 : ISafeClosure4
+		private sealed class _IClosure4_141 : IClosure4
 		{
-			public _ISafeClosure4_141(BlockingByteChannel _enclosing, int i)
+			public _IClosure4_141(BlockingByteChannel _enclosing, int i)
 			{
 				this._enclosing = _enclosing;
 				this.i = i;

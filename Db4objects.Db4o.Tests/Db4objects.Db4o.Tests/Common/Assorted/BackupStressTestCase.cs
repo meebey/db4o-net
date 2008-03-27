@@ -5,6 +5,7 @@ using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
@@ -58,10 +59,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void SetUp()
 		{
 			DeleteFile(File);
-			Db4oFactory.Configure().ObjectClass(typeof(BackupStressItem)).ObjectField("_iteration"
-				).Indexed(true);
-			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(BackupStressItem
-				)));
 		}
 
 		/// <exception cref="IOException"></exception>
@@ -92,8 +89,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			{
 				Sharpen.Runtime.Out.WriteLine("BackupStressTest is too slow for regression testing on Java JDKs < 1.4"
 					);
-				return;
 			}
+			//            return;
 			BackupStressIteration iteration = new BackupStressIteration();
 			_objectContainer.Store(iteration);
 			_objectContainer.Commit();
@@ -120,14 +117,14 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private Thread StartBackupThread()
 		{
-			Thread thread = new Thread(new _IRunnable_103(this));
+			Thread thread = new Thread(new _IRunnable_102(this));
 			thread.Start();
 			return thread;
 		}
 
-		private sealed class _IRunnable_103 : IRunnable
+		private sealed class _IRunnable_102 : IRunnable
 		{
-			public _IRunnable_103(BackupStressTestCase _enclosing)
+			public _IRunnable_102(BackupStressTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -151,7 +148,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		private void OpenDatabase()
 		{
 			DeleteFile(File);
-			_objectContainer = Db4oFactory.OpenFile(File);
+			_objectContainer = Db4oFactory.OpenFile(Config(), File);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -172,7 +169,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			for (int i = 1; i < _backups; i++)
 			{
 				Stdout("Backup " + i);
-				IObjectContainer container = Db4oFactory.OpenFile(BackupFile(i));
+				IObjectContainer container = Db4oFactory.OpenFile(Config(), BackupFile(i));
 				try
 				{
 					Stdout("Open successful");
@@ -230,6 +227,15 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			{
 				Sharpen.Runtime.Out.WriteLine(@string);
 			}
+		}
+
+		private IConfiguration Config()
+		{
+			IConfiguration config = Db4oFactory.NewConfiguration();
+			config.ObjectClass(typeof(BackupStressItem)).ObjectField("_iteration").Indexed(true
+				);
+			config.ReflectWith(Platform4.ReflectorForType(typeof(BackupStressItem)));
+			return config;
 		}
 	}
 }

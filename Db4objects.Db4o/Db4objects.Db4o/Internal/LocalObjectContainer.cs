@@ -132,7 +132,7 @@ namespace Db4objects.Db4o.Internal
 
 		public BTree CreateBTreeClassIndex(int id)
 		{
-			return new BTree(_transaction, id, new IDHandler(this));
+			return new BTree(_transaction, id, new IDHandler());
 		}
 
 		public AbstractQueryResult NewQueryResult(Transaction trans)
@@ -676,7 +676,7 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_595(this, semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_595(semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
@@ -684,9 +684,8 @@ namespace Db4objects.Db4o.Internal
 
 		private sealed class _IVisitor4_595 : IVisitor4
 		{
-			public _IVisitor4_595(LocalObjectContainer _enclosing, Hashtable4 semaphores)
+			public _IVisitor4_595(Hashtable4 semaphores)
 			{
-				this._enclosing = _enclosing;
 				this.semaphores = semaphores;
 			}
 
@@ -694,8 +693,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				semaphores.Remove(a_object);
 			}
-
-			private readonly LocalObjectContainer _enclosing;
 
 			private readonly Hashtable4 semaphores;
 		}
@@ -932,15 +929,14 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_795(this, ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_795(ids));
 			return ids.AsLong();
 		}
 
 		private sealed class _IVisitor4_795 : IVisitor4
 		{
-			public _IVisitor4_795(LocalObjectContainer _enclosing, IntArrayList ids)
+			public _IVisitor4_795(IntArrayList ids)
 			{
-				this._enclosing = _enclosing;
 				this.ids = ids;
 			}
 
@@ -948,8 +944,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				ids.Add(((int)obj));
 			}
-
-			private readonly LocalObjectContainer _enclosing;
 
 			private readonly IntArrayList ids;
 		}

@@ -4,9 +4,7 @@ using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
@@ -29,24 +27,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				_name = name;
 				_child = child;
 			}
-		}
-
-		private ClassMetadata ClassHandler()
-		{
-			IReflectClass claxx = Reflector().ForClass(typeof(ClassHandlerTestCase.Item));
-			return Stream().Container().ProduceClassMetadata(claxx);
-		}
-
-		public virtual void TestReadWrite()
-		{
-			MockWriteContext writeContext = new MockWriteContext(Db());
-			ClassHandlerTestCase.Item expectedItem = new ClassHandlerTestCase.Item("parent", 
-				new ClassHandlerTestCase.Item("child", null));
-			ClassHandler().Write(writeContext, expectedItem);
-			MockReadContext readContext = new MockReadContext(writeContext);
-			ClassHandlerTestCase.Item readItem = (ClassHandlerTestCase.Item)ClassHandler().Read
-				(readContext);
-			AssertAreEqual(expectedItem, readItem);
 		}
 
 		/// <exception cref="Exception"></exception>

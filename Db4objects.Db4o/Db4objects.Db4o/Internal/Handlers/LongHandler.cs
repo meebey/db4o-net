@@ -16,11 +16,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		private static readonly long i_primitive = System.Convert.ToInt64(0);
 
-		public LongHandler(ObjectContainerBase stream) : base(stream)
-		{
-		}
-
-		public override object Coerce(IReflectClass claxx, object obj)
+		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
+			)
 		{
 			return Coercion4.ToLong(obj);
 		}
@@ -109,14 +106,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			long sourceLong = ((long)source);
-			return new _IPreparedComparison_104(this, sourceLong);
+			return new _IPreparedComparison_100(sourceLong);
 		}
 
-		private sealed class _IPreparedComparison_104 : IPreparedComparison
+		private sealed class _IPreparedComparison_100 : IPreparedComparison
 		{
-			public _IPreparedComparison_104(LongHandler _enclosing, long sourceLong)
+			public _IPreparedComparison_100(long sourceLong)
 			{
-				this._enclosing = _enclosing;
 				this.sourceLong = sourceLong;
 			}
 
@@ -129,8 +125,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				long targetLong = ((long)target);
 				return sourceLong == targetLong ? 0 : (sourceLong < targetLong ? -1 : 1);
 			}
-
-			private readonly LongHandler _enclosing;
 
 			private readonly long sourceLong;
 		}

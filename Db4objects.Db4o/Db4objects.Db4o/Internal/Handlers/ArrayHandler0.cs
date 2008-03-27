@@ -12,13 +12,8 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public class ArrayHandler0 : ArrayHandler
+	public class ArrayHandler0 : ArrayHandler2
 	{
-		public ArrayHandler0(ArrayHandler template, HandlerRegistry registry, int version
-			) : base(template, registry, version)
-		{
-		}
-
 		/// <exception cref="Db4oIOException"></exception>
 		public override void Delete(IDeleteContext context)
 		{
@@ -98,7 +93,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			int elements = ReadElementsDefrag(context);
 			for (int i = 0; i < elements; i++)
 			{
-				_handler.Defragment(context);
+				DelegateTypeHandler().Defragment(context);
 			}
 		}
 	}

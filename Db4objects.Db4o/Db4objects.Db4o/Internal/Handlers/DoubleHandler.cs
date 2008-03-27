@@ -16,11 +16,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		private static readonly double DefaultDoubleValue = System.Convert.ToDouble(0);
 
-		public DoubleHandler(ObjectContainerBase stream) : base(stream)
-		{
-		}
-
-		public override object Coerce(IReflectClass claxx, object obj)
+		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
+			)
 		{
 			return Coercion4.ToDouble(obj);
 		}
@@ -71,14 +68,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			double sourceDouble = ((double)source);
-			return new _IPreparedComparison_64(this, sourceDouble);
+			return new _IPreparedComparison_60(sourceDouble);
 		}
 
-		private sealed class _IPreparedComparison_64 : IPreparedComparison
+		private sealed class _IPreparedComparison_60 : IPreparedComparison
 		{
-			public _IPreparedComparison_64(DoubleHandler _enclosing, double sourceDouble)
+			public _IPreparedComparison_60(double sourceDouble)
 			{
-				this._enclosing = _enclosing;
 				this.sourceDouble = sourceDouble;
 			}
 
@@ -91,8 +87,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				double targetDouble = ((double)target);
 				return sourceDouble == targetDouble ? 0 : (sourceDouble < targetDouble ? -1 : 1);
 			}
-
-			private readonly DoubleHandler _enclosing;
 
 			private readonly double sourceDouble;
 		}

@@ -6,13 +6,13 @@ using Db4objects.Db4o.Ext;
 namespace Db4objects.Db4o.Internal
 {
 	/// <summary>
-	/// db4o-specific exception.&lt;br&gt;
-	/// &lt;br&gt;
+	/// db4o-specific exception.<br />
+	/// <br />
 	/// This exception is thrown when one of the db4o reflection methods fails.
 	/// </summary>
 	/// <remarks>
-	/// db4o-specific exception.&lt;br&gt;
-	/// &lt;br&gt;
+	/// db4o-specific exception.<br />
+	/// <br />
 	/// This exception is thrown when one of the db4o reflection methods fails.
 	/// </remarks>
 	/// <seealso cref="Db4objects.Db4o.Reflect">Db4objects.Db4o.Reflect</seealso>

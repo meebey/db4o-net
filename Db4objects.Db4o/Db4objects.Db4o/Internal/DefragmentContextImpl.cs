@@ -300,7 +300,7 @@ namespace Db4objects.Db4o.Internal
 			return Container().TypeHandlerForId(id);
 		}
 
-		private int HandlerVersion()
+		public int HandlerVersion()
 		{
 			return _handlerVersion;
 		}
@@ -380,6 +380,11 @@ namespace Db4objects.Db4o.Internal
 		{
 			_target.WriteBytes(bytes);
 			_source.IncrementOffset(bytes.Length);
+		}
+
+		public void SeekCurrentInt()
+		{
+			Seek(ReadInt());
 		}
 	}
 }

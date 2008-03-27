@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 					ExpectingVisitor expectingVisitor = BTreeAssert.CreateExpectingVisitor(values[i], 
 						IntArrays4.Occurences(values, values[i]));
 					IBTreeRange range = FieldIndexKeySearch(Trans(), btree, values[i]);
-					BTreeAssert.TraverseKeys(range, new _IVisitor4_63(this, expectingVisitor));
+					BTreeAssert.TraverseKeys(range, new _IVisitor4_63(expectingVisitor));
 					expectingVisitor.AssertExpectations();
 					lastValue = values[i];
 				}
@@ -83,10 +83,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		private sealed class _IVisitor4_63 : IVisitor4
 		{
-			public _IVisitor4_63(FieldIndexTestCase _enclosing, ExpectingVisitor expectingVisitor
-				)
+			public _IVisitor4_63(ExpectingVisitor expectingVisitor)
 			{
-				this._enclosing = _enclosing;
 				this.expectingVisitor = expectingVisitor;
 			}
 
@@ -96,8 +94,6 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 					)obj;
 				expectingVisitor.Visit(fik.Value());
 			}
-
-			private readonly FieldIndexTestCase _enclosing;
 
 			private readonly ExpectingVisitor expectingVisitor;
 		}

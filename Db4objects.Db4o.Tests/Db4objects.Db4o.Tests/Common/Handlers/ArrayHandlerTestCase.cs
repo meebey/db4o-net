@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			ClassMetadata classMetadata = Stream().ProduceClassMetadata(Reflector().ForClass(
 				clazz));
-			return new ArrayHandler(Stream(), classMetadata.TypeHandler(), isPrimitive);
+			return new ArrayHandler(classMetadata.TypeHandler(), isPrimitive);
 		}
 
 		public virtual void TestIntArrayReadWrite()

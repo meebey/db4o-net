@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
@@ -12,9 +13,9 @@ namespace Db4oUnit.Extensions
 	/// 	</remarks>
 	public abstract class Db4oTestSuite : AbstractDb4oTestCase, ITestSuiteBuilder
 	{
-		public virtual TestSuite Build()
+		public virtual IEnumerator GetEnumerator()
 		{
-			return new Db4oTestSuiteBuilder(Fixture(), TestCases()).Build();
+			return new Db4oTestSuiteBuilder(Fixture(), TestCases()).GetEnumerator();
 		}
 
 		protected abstract override Type[] TestCases();

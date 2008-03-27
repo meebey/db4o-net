@@ -3,21 +3,22 @@
 using System.Collections;
 using System.IO;
 using Db4oUnit;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit
 {
-	public class TestFailureCollection : Printable
+	public class TestFailureCollection : Printable, IEnumerable
 	{
-		internal ArrayList _failures = new ArrayList();
+		private readonly Collection4 _failures = new Collection4();
 
-		public virtual IEnumerator Iterator()
+		public virtual IEnumerator GetEnumerator()
 		{
 			return _failures.GetEnumerator();
 		}
 
 		public virtual int Size()
 		{
-			return _failures.Count;
+			return _failures.Size();
 		}
 
 		public virtual void Add(TestFailure failure)
@@ -36,7 +37,7 @@ namespace Db4oUnit
 		private void PrintSummary(TextWriter writer)
 		{
 			int index = 1;
-			IEnumerator e = Iterator();
+			IEnumerator e = GetEnumerator();
 			while (e.MoveNext())
 			{
 				writer.Write(index.ToString());
@@ -51,7 +52,7 @@ namespace Db4oUnit
 		private void PrintDetails(TextWriter writer)
 		{
 			int index = 1;
-			IEnumerator e = Iterator();
+			IEnumerator e = GetEnumerator();
 			while (e.MoveNext())
 			{
 				writer.Write(TestPlatform.NewLine);

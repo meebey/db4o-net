@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 	{
 		public static void Main(string[] args)
 		{
-			new TestRunner(typeof(IntArrayListTestCase)).Run();
+			new ConsoleTestRunner(typeof(IntArrayListTestCase)).Run();
 		}
 
 		public virtual void TestIteratorGoesForwards()

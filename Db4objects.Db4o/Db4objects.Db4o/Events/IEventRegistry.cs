@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Events
 		/// query statistics.
 		/// The query object is available from
 		/// <see cref="QueryEventArgs">QueryEventArgs</see>
-		/// event parameter.&lt;br&gt;
+		/// event parameter.<br />
 		/// </remarks>
 		/// <returns>event</returns>
 		/// <seealso cref="QueryEventArgs">QueryEventArgs</seealso>
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Events
 		/// query statistics.
 		/// The query object is available from
 		/// <see cref="QueryEventArgs">QueryEventArgs</see>
-		/// event parameter.&lt;br&gt;
+		/// event parameter.<br />
 		/// </remarks>
 		/// <returns>event</returns>
 		/// <seealso cref="QueryEventArgs">QueryEventArgs</seealso>
@@ -144,7 +144,7 @@ namespace Db4objects.Db4o.Events
 		/// This event is fired after an object is activated.
 		/// The object can be obtained from the
 		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
-		/// event parameter. &lt;br&gt;&lt;br&gt;
+		/// event parameter. <br /><br />
 		/// The event can be used to trigger some post-activation
 		/// functionality.
 		/// </remarks>
@@ -159,7 +159,7 @@ namespace Db4objects.Db4o.Events
 		/// This event is fired after an object is created (saved for the first time).
 		/// The object can be obtained from the
 		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
-		/// event parameter.&lt;br&gt;&lt;br&gt;
+		/// event parameter.<br /><br />
 		/// The event can be used to trigger some post-creation
 		/// functionality.
 		/// </remarks>
@@ -173,7 +173,7 @@ namespace Db4objects.Db4o.Events
 		/// This event is fired after an object is updated.
 		/// The object can be obtained from the
 		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
-		/// event parameter.&lt;br&gt;&lt;br&gt;
+		/// event parameter.<br /><br />
 		/// The event can be used to trigger some post-update
 		/// functionality.
 		/// </remarks>
@@ -187,7 +187,7 @@ namespace Db4objects.Db4o.Events
 		/// This event is fired after an object is deleted.
 		/// The object can be obtained from the
 		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
-		/// event parameter.&lt;br&gt;&lt;br&gt;
+		/// event parameter.<br /><br />
 		/// The event can be used to trigger some post-deletion
 		/// functionality.
 		/// </remarks>
@@ -201,7 +201,7 @@ namespace Db4objects.Db4o.Events
 		/// This event is fired after an object is deactivated.
 		/// The object can be obtained from the
 		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
-		/// event parameter.&lt;br&gt;&lt;br&gt;
+		/// event parameter.<br /><br />
 		/// The event can be used to trigger some post-deactivation
 		/// functionality.
 		/// </remarks>
@@ -216,7 +216,7 @@ namespace Db4objects.Db4o.Events
 		/// The transaction and a list of the modified objects can
 		/// be obtained from the
 		/// <see cref="CommitEventArgs">CommitEventArgs</see>
-		/// event parameter.&lt;br&gt;&lt;br&gt;
+		/// event parameter.<br /><br />
 		/// Committing event gives a user a chance to interrupt the commit
 		/// and rollback the transaction.
 		/// </remarks>
@@ -231,7 +231,7 @@ namespace Db4objects.Db4o.Events
 		/// The transaction and a list of the modified objects can
 		/// be obtained from the
 		/// <see cref="CommitEventArgs">CommitEventArgs</see>
-		/// event parameter.&lt;br&gt;&lt;br&gt;
+		/// event parameter.<br /><br />
 		/// The event can be used to trigger some post-commit functionality.
 		/// </remarks>
 		/// <returns>event</returns>

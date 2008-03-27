@@ -134,16 +134,14 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		protected virtual void AssertTreeInt(int[] expectedValues, TreeInt treeInt)
 		{
 			ExpectingVisitor visitor = BTreeAssert.CreateExpectingVisitor(expectedValues);
-			treeInt.Traverse(new _IVisitor4_117(this, visitor));
+			treeInt.Traverse(new _IVisitor4_117(visitor));
 			visitor.AssertExpectations();
 		}
 
 		private sealed class _IVisitor4_117 : IVisitor4
 		{
-			public _IVisitor4_117(FieldIndexProcessorTestCaseBase _enclosing, ExpectingVisitor
-				 visitor)
+			public _IVisitor4_117(ExpectingVisitor visitor)
 			{
-				this._enclosing = _enclosing;
 				this.visitor = visitor;
 			}
 
@@ -151,8 +149,6 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			{
 				visitor.Visit(((TreeInt)obj)._key);
 			}
-
-			private readonly FieldIndexProcessorTestCaseBase _enclosing;
 
 			private readonly ExpectingVisitor visitor;
 		}

@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		protected override Type[] TestCases()
 		{
 			Type[] fieldBased = new Type[] { typeof(IndexedNodeTestCase), typeof(FieldIndexTestCase
-				), typeof(FieldIndexProcessorTestCase) };
+				), typeof(FieldIndexProcessorTestCase), typeof(StringFieldIndexTestCase) };
 			Type[] neutral = new Type[] { typeof(DoubleFieldIndexTestCase), typeof(RuntimeFieldIndexTestCase
 				), typeof(SecondLevelIndexTestCase), typeof(StringIndexTestCase), typeof(StringIndexCorruptionTestCase
 				), typeof(StringIndexWithSuperClassTestCase) };

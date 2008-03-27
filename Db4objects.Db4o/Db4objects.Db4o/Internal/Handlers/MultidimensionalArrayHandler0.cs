@@ -10,11 +10,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class MultidimensionalArrayHandler0 : MultidimensionalArrayHandler
 	{
-		public MultidimensionalArrayHandler0(ArrayHandler template, HandlerRegistry registry
-			, int version) : base(template, registry, version)
-		{
-		}
-
 		public override object Read(IReadContext readContext)
 		{
 			IInternalReadContext context = (IInternalReadContext)readContext;

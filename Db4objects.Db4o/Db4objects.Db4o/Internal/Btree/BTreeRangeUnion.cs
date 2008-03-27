@@ -98,42 +98,36 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual IEnumerator Pointers()
 		{
-			return Iterators.Concat(Iterators.Map(_ranges, new _IFunction4_77(this)));
+			return Iterators.Concat(Iterators.Map(_ranges, new _IFunction4_77()));
 		}
 
 		private sealed class _IFunction4_77 : IFunction4
 		{
-			public _IFunction4_77(BTreeRangeUnion _enclosing)
+			public _IFunction4_77()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public object Apply(object range)
 			{
 				return ((IBTreeRange)range).Pointers();
 			}
-
-			private readonly BTreeRangeUnion _enclosing;
 		}
 
 		public virtual IEnumerator Keys()
 		{
-			return Iterators.Concat(Iterators.Map(_ranges, new _IFunction4_85(this)));
+			return Iterators.Concat(Iterators.Map(_ranges, new _IFunction4_85()));
 		}
 
 		private sealed class _IFunction4_85 : IFunction4
 		{
-			public _IFunction4_85(BTreeRangeUnion _enclosing)
+			public _IFunction4_85()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public object Apply(object range)
 			{
 				return ((IBTreeRange)range).Keys();
 			}
-
-			private readonly BTreeRangeUnion _enclosing;
 		}
 
 		public virtual int Size()

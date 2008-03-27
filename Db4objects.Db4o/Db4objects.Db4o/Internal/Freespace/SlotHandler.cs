@@ -4,6 +4,7 @@ using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Freespace
 {
@@ -34,6 +35,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 			writer.WriteInt(slot.Length());
 		}
 
-		public abstract IPreparedComparison PrepareComparison(object arg1);
+		public abstract IPreparedComparison PrepareComparison(IContext arg1, object arg2);
 	}
 }

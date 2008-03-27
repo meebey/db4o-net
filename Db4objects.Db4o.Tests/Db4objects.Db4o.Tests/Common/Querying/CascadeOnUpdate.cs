@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		{
 			Foreach(GetType(), new _IVisitor4_52(this));
 			Reopen();
-			Foreach(GetType(), new _IVisitor4_63(this));
+			Foreach(GetType(), new _IVisitor4_63());
 		}
 
 		private sealed class _IVisitor4_52 : IVisitor4
@@ -85,9 +85,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		private sealed class _IVisitor4_63 : IVisitor4
 		{
-			public _IVisitor4_63(CascadeOnUpdate _enclosing)
+			public _IVisitor4_63()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Visit(object obj)
@@ -97,8 +96,6 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 				Assert.AreEqual("updated", atom.name);
 				Assert.AreNotEqual("updated", atom.child.name);
 			}
-
-			private readonly CascadeOnUpdate _enclosing;
 		}
 	}
 }

@@ -15,13 +15,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <remarks>Shared (java/.net) logic for Date handling.</remarks>
 	public abstract class DateHandlerBase : LongHandler
 	{
-		public DateHandlerBase(ObjectContainerBase container) : base(container)
+		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
+			)
 		{
-		}
-
-		public override object Coerce(IReflectClass claxx, object obj)
-		{
-			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.Instance;
+			return Handlers4.HandlerCanHold(this, reflector, claxx) ? obj : No4.Instance;
 		}
 
 		public abstract object CopyValue(object from, object to);
@@ -35,6 +32,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		protected override Type PrimitiveJavaClass()
 		{
 			return null;
+		}
+
+		protected override Type JavaClass()
+		{
+			return DefaultValue().GetType();
 		}
 
 		/// <exception cref="CorruptionException"></exception>
@@ -57,7 +59,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				a_object = new DateTime(0);
 			}
-			a_bytes.WriteLong(Sharpen.Runtime.ToJavaMilliseconds(((DateTime)a_object)));
+			a_bytes.WriteLong(((DateTime)a_object).Ticks);
 		}
 
 		public static string Now()
@@ -73,21 +75,20 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override void Write(IWriteContext context, object obj)
 		{
-			long milliseconds = Sharpen.Runtime.ToJavaMilliseconds(((DateTime)obj));
+			long milliseconds = ((DateTime)obj).Ticks;
 			base.Write(context, milliseconds);
 		}
 
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
-			long sourceDate = Sharpen.Runtime.ToJavaMilliseconds(((DateTime)source));
-			return new _IPreparedComparison_70(this, sourceDate);
+			long sourceDate = ((DateTime)source).Ticks;
+			return new _IPreparedComparison_70(sourceDate);
 		}
 
 		private sealed class _IPreparedComparison_70 : IPreparedComparison
 		{
-			public _IPreparedComparison_70(DateHandlerBase _enclosing, long sourceDate)
+			public _IPreparedComparison_70(long sourceDate)
 			{
-				this._enclosing = _enclosing;
 				this.sourceDate = sourceDate;
 			}
 
@@ -97,11 +98,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 				{
 					return 1;
 				}
-				long targetDate = Sharpen.Runtime.ToJavaMilliseconds(((DateTime)target));
+				long targetDate = ((DateTime)target).Ticks;
 				return sourceDate == targetDate ? 0 : (sourceDate < targetDate ? -1 : 1);
 			}
-
-			private readonly DateHandlerBase _enclosing;
 
 			private readonly long sourceDate;
 		}

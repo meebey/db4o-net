@@ -4,6 +4,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Types;
 
@@ -68,6 +69,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			else
 			{
+				// TODO: Review this line for NullableArrayHandling 
 				return a_object;
 			}
 			if (i_yapField == null)
@@ -120,11 +122,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return i_yapField != null && Handlers4.HandlesSimple(i_yapField.GetHandler());
 		}
 
-		internal virtual IPreparedComparison PrepareComparison(object obj)
+		internal virtual IPreparedComparison PrepareComparison(IContext context, object obj
+			)
 		{
 			if (i_yapField != null)
 			{
-				return i_yapField.PrepareComparison(obj);
+				return i_yapField.PrepareComparison(context, obj);
 			}
 			if (obj == null)
 			{
@@ -135,7 +138,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			FieldMetadata yf = yc.FieldMetadataForName(i_name);
 			if (yf != null)
 			{
-				return yf.PrepareComparison(obj);
+				return yf.PrepareComparison(context, obj);
 			}
 			return null;
 		}

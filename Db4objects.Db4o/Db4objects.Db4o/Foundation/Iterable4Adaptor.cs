@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Foundation
 			return returnValue;
 		}
 
-		private bool MoveNext()
+		protected virtual bool MoveNext()
 		{
 			if (null == _iterator)
 			{

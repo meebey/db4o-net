@@ -121,22 +121,19 @@ namespace Db4objects.Db4o.Foundation
 		/// <returns>key iterator</returns>
 		public virtual IEnumerator Keys()
 		{
-			return Iterators.Map(Iterator(), new _IFunction4_102(this));
+			return Iterators.Map(Iterator(), new _IFunction4_102());
 		}
 
 		private sealed class _IFunction4_102 : IFunction4
 		{
-			public _IFunction4_102(Hashtable4 _enclosing)
+			public _IFunction4_102()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public object Apply(object current)
 			{
 				return ((IEntry4)current).Key();
 			}
-
-			private readonly Hashtable4 _enclosing;
 		}
 
 		/// <summary>Iterates through all the values.</summary>
@@ -144,22 +141,19 @@ namespace Db4objects.Db4o.Foundation
 		/// <returns>value iterator</returns>
 		public virtual IEnumerator Values()
 		{
-			return Iterators.Map(Iterator(), new _IFunction4_115(this));
+			return Iterators.Map(Iterator(), new _IFunction4_115());
 		}
 
 		private sealed class _IFunction4_115 : IFunction4
 		{
-			public _IFunction4_115(Hashtable4 _enclosing)
+			public _IFunction4_115()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public object Apply(object current)
 			{
 				return ((IEntry4)current).Value();
 			}
-
-			private readonly Hashtable4 _enclosing;
 		}
 
 		public virtual bool ContainsKey(object key)

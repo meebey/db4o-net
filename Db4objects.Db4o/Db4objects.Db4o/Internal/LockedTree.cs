@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Internal
 		public virtual void TraverseMutable(IVisitor4 visitor)
 		{
 			Collection4 currentContent = new Collection4();
-			TraverseLocked(new _IVisitor4_51(this, currentContent));
+			TraverseLocked(new _IVisitor4_51(currentContent));
 			IEnumerator i = currentContent.GetEnumerator();
 			while (i.MoveNext())
 			{
@@ -66,9 +66,8 @@ namespace Db4objects.Db4o.Internal
 
 		private sealed class _IVisitor4_51 : IVisitor4
 		{
-			public _IVisitor4_51(LockedTree _enclosing, Collection4 currentContent)
+			public _IVisitor4_51(Collection4 currentContent)
 			{
-				this._enclosing = _enclosing;
 				this.currentContent = currentContent;
 			}
 
@@ -76,8 +75,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				currentContent.Add(obj);
 			}
-
-			private readonly LockedTree _enclosing;
 
 			private readonly Collection4 currentContent;
 		}

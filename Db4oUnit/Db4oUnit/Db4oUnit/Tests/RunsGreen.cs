@@ -11,7 +11,7 @@ namespace Db4oUnit.Tests
 			return "RunsGreen";
 		}
 
-		public virtual void Run(TestResult result)
+		public virtual void Run()
 		{
 		}
 	}

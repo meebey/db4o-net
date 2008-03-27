@@ -13,14 +13,13 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void RemoveId(int id)
 		{
-			RemoveReference(new _IReferenceSource_16(this, id));
+			RemoveReference(new _IReferenceSource_16(id));
 		}
 
 		private sealed class _IReferenceSource_16 : ReferenceSystemRegistry.IReferenceSource
 		{
-			public _IReferenceSource_16(ReferenceSystemRegistry _enclosing, int id)
+			public _IReferenceSource_16(int id)
 			{
-				this._enclosing = _enclosing;
 				this.id = id;
 			}
 
@@ -29,21 +28,18 @@ namespace Db4objects.Db4o.Internal
 				return referenceSystem.ReferenceForId(id);
 			}
 
-			private readonly ReferenceSystemRegistry _enclosing;
-
 			private readonly int id;
 		}
 
 		public virtual void RemoveObject(object obj)
 		{
-			RemoveReference(new _IReferenceSource_24(this, obj));
+			RemoveReference(new _IReferenceSource_24(obj));
 		}
 
 		private sealed class _IReferenceSource_24 : ReferenceSystemRegistry.IReferenceSource
 		{
-			public _IReferenceSource_24(ReferenceSystemRegistry _enclosing, object obj)
+			public _IReferenceSource_24(object obj)
 			{
-				this._enclosing = _enclosing;
 				this.obj = obj;
 			}
 
@@ -52,22 +48,18 @@ namespace Db4objects.Db4o.Internal
 				return referenceSystem.ReferenceForObject(obj);
 			}
 
-			private readonly ReferenceSystemRegistry _enclosing;
-
 			private readonly object obj;
 		}
 
 		public virtual void RemoveReference(ObjectReference reference)
 		{
-			RemoveReference(new _IReferenceSource_32(this, reference));
+			RemoveReference(new _IReferenceSource_32(reference));
 		}
 
 		private sealed class _IReferenceSource_32 : ReferenceSystemRegistry.IReferenceSource
 		{
-			public _IReferenceSource_32(ReferenceSystemRegistry _enclosing, ObjectReference reference
-				)
+			public _IReferenceSource_32(ObjectReference reference)
 			{
-				this._enclosing = _enclosing;
 				this.reference = reference;
 			}
 
@@ -75,8 +67,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				return reference;
 			}
-
-			private readonly ReferenceSystemRegistry _enclosing;
 
 			private readonly ObjectReference reference;
 		}

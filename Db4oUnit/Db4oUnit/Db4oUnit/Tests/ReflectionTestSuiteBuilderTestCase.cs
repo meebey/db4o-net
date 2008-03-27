@@ -1,8 +1,10 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Tests;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit.Tests
 {
@@ -50,7 +52,7 @@ namespace Db4oUnit.Tests
 			ReflectionTestSuiteBuilder builder = new ReflectionTestSuiteBuilderTestCase.ExcludingReflectionTestSuiteBuilder
 				(new Type[] { typeof(ReflectionTestSuiteBuilderTestCase.Accepted), typeof(ReflectionTestSuiteBuilderTestCase.NotAccepted
 				) });
-			Assert.AreEqual(1, builder.Build().GetTests().Length);
+			Assert.AreEqual(1, Iterators.Size(builder.GetEnumerator()));
 		}
 
 		public class ConstructorThrows : ITestCase
@@ -75,17 +77,14 @@ namespace Db4oUnit.Tests
 		{
 			ReflectionTestSuiteBuilder builder = new ReflectionTestSuiteBuilder(typeof(ReflectionTestSuiteBuilderTestCase.ConstructorThrows
 				));
-			Exception cause = AssertFailingTestCase(typeof(TestException), builder);
-			Assert.AreSame(ReflectionTestSuiteBuilderTestCase.ConstructorThrows.Error, ((TestException
-				)cause).GetReason());
+			Assert.AreEqual(2, Iterators.ToArray(builder.GetEnumerator()).Length);
 		}
 
 		private Exception AssertFailingTestCase(Type expectedError, ReflectionTestSuiteBuilder
 			 builder)
 		{
-			TestSuite suite = builder.Build();
-			Assert.AreEqual(1, suite.GetTests().Length);
-			FailingTest test = (FailingTest)suite.GetTests()[0];
+			IEnumerator tests = builder.GetEnumerator();
+			FailingTest test = (FailingTest)Iterators.Next(tests);
 			Assert.AreSame(expectedError, test.Error().GetType());
 			return test.Error();
 		}

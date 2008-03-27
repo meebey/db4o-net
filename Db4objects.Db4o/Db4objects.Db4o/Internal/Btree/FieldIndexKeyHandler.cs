@@ -4,6 +4,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Btree
 {
@@ -14,9 +15,9 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private readonly IntHandler _parentIdHandler;
 
-		public FieldIndexKeyHandler(ObjectContainerBase stream, IIndexable4 delegate_)
+		public FieldIndexKeyHandler(IIndexable4 delegate_)
 		{
-			_parentIdHandler = new IDHandler(stream);
+			_parentIdHandler = new IDHandler();
 			_valueHandler = delegate_;
 		}
 
@@ -67,23 +68,23 @@ namespace Db4objects.Db4o.Internal.Btree
 			_valueHandler.DefragIndexEntry(context);
 		}
 
-		public virtual IPreparedComparison PrepareComparison(object fieldIndexKey)
+		public virtual IPreparedComparison PrepareComparison(IContext context, object fieldIndexKey
+			)
 		{
 			FieldIndexKey source = (FieldIndexKey)fieldIndexKey;
-			IPreparedComparison preparedValueComparison = _valueHandler.PrepareComparison(source
-				.Value());
+			IPreparedComparison preparedValueComparison = _valueHandler.PrepareComparison(context
+				, source.Value());
 			IPreparedComparison preparedParentIdComparison = _parentIdHandler.NewPrepareCompare
 				(source.ParentID());
-			return new _IPreparedComparison_67(this, preparedValueComparison, preparedParentIdComparison
+			return new _IPreparedComparison_68(preparedValueComparison, preparedParentIdComparison
 				);
 		}
 
-		private sealed class _IPreparedComparison_67 : IPreparedComparison
+		private sealed class _IPreparedComparison_68 : IPreparedComparison
 		{
-			public _IPreparedComparison_67(FieldIndexKeyHandler _enclosing, IPreparedComparison
-				 preparedValueComparison, IPreparedComparison preparedParentIdComparison)
+			public _IPreparedComparison_68(IPreparedComparison preparedValueComparison, IPreparedComparison
+				 preparedParentIdComparison)
 			{
-				this._enclosing = _enclosing;
 				this.preparedValueComparison = preparedValueComparison;
 				this.preparedParentIdComparison = preparedParentIdComparison;
 			}
@@ -105,8 +106,6 @@ namespace Db4objects.Db4o.Internal.Btree
 				// can happen, is expected
 				return preparedParentIdComparison.CompareTo(target.ParentID());
 			}
-
-			private readonly FieldIndexKeyHandler _enclosing;
 
 			private readonly IPreparedComparison preparedValueComparison;
 

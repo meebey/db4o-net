@@ -18,8 +18,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class UUIDFieldMetadata : VirtualFieldMetadata
 	{
-		internal UUIDFieldMetadata(ObjectContainerBase container) : base(Handlers4.LongId
-			, new LongHandler(container))
+		internal UUIDFieldMetadata() : base(Handlers4.LongId, new LongHandler())
 		{
 			SetName(Const4.VirtualFieldPrefix + "uuid");
 		}
@@ -167,22 +166,22 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal override void Instantiate1(Transaction a_trans, ObjectReference a_yapObject
-			, IReadWriteBuffer a_bytes)
+		internal override void Instantiate1(Transaction trans, ObjectReference @ref, IReadWriteBuffer
+			 buffer)
 		{
-			int dbID = a_bytes.ReadInt();
-			ObjectContainerBase stream = a_trans.Container();
+			int dbID = buffer.ReadInt();
+			ObjectContainerBase stream = trans.Container();
 			stream.ShowInternalClasses(true);
 			try
 			{
-				Db4oDatabase db = (Db4oDatabase)stream.GetByID2(a_trans, dbID);
+				Db4oDatabase db = (Db4oDatabase)stream.GetByID2(trans, dbID);
 				if (db != null && db.i_signature == null)
 				{
-					stream.Activate(a_trans, db, new FixedActivationDepth(2));
+					stream.Activate(trans, db, new FixedActivationDepth(2));
 				}
-				VirtualAttributes va = a_yapObject.VirtualAttributes();
+				VirtualAttributes va = @ref.VirtualAttributes();
 				va.i_database = db;
-				va.i_uuid = a_bytes.ReadLong();
+				va.i_uuid = buffer.ReadLong();
 			}
 			finally
 			{

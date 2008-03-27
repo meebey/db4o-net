@@ -1,12 +1,14 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Extensions.Tests;
 using Db4oUnit.Extensions.Util;
 using Db4oUnit.Tests;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
 
 namespace Db4oUnit.Extensions.Tests
@@ -40,8 +42,7 @@ namespace Db4oUnit.Extensions.Tests
 		{
 			MultipleDb4oTestCase.ResetConfigureCalls();
 			FrameworkTestCase.RunTestAndExpect(new Db4oTestSuiteBuilder(new Db4oInMemory(new 
-				IndependentConfigurationSource()), typeof(MultipleDb4oTestCase)).Build(), 2, false
-				);
+				IndependentConfigurationSource()), typeof(MultipleDb4oTestCase)), 2, false);
 			Assert.AreEqual(2, MultipleDb4oTestCase.ConfigureCalls());
 		}
 
@@ -49,25 +50,28 @@ namespace Db4oUnit.Extensions.Tests
 		{
 			IDb4oFixture fixture = new FixtureTestCase.ExcludingInMemoryFixture(this, new IndependentConfigurationSource
 				());
-			TestSuite suite = new Db4oTestSuiteBuilder(fixture, new Type[] { typeof(AcceptedTestCase
-				), typeof(NotAcceptedTestCase) }).Build();
-			Assert.AreEqual(1, suite.GetTests().Length);
-			FrameworkTestCase.RunTestAndExpect(suite, 0);
+			IEnumerator tests = new Db4oTestSuiteBuilder(fixture, new Type[] { typeof(AcceptedTestCase
+				), typeof(NotAcceptedTestCase) }).GetEnumerator();
+			ITest test = NextTest(tests);
+			Assert.IsFalse(tests.MoveNext());
+			FrameworkTestCase.RunTestAndExpect(test, 0);
 		}
 
 		private void AssertSimpleDb4o(IDb4oFixture fixture)
 		{
-			TestSuite suite = new Db4oTestSuiteBuilder(fixture, typeof(SimpleDb4oTestCase)).Build
-				();
-			SimpleDb4oTestCase subject = GetTestSubject(suite);
+			IEnumerator tests = new Db4oTestSuiteBuilder(fixture, typeof(SimpleDb4oTestCase))
+				.GetEnumerator();
+			ITest test = NextTest(tests);
+			SimpleDb4oTestCase subject = (SimpleDb4oTestCase)Db4oTestSuiteBuilder.GetTestSubject
+				(test);
 			subject.ExpectedFixture(fixture);
-			FrameworkTestCase.RunTestAndExpect(suite, 0);
+			FrameworkTestCase.RunTestAndExpect(test, 0);
 			Assert.IsTrue(subject.EverythingCalled());
 		}
 
-		private SimpleDb4oTestCase GetTestSubject(TestSuite suite)
+		private ITest NextTest(IEnumerator tests)
 		{
-			return ((SimpleDb4oTestCase)((TestMethod)suite.GetTests()[0]).GetSubject());
+			return (ITest)Iterators.Next(tests);
 		}
 
 		public virtual void TestInterfaceIsAvailable()

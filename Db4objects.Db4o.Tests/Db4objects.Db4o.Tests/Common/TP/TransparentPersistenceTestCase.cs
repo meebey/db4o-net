@@ -115,17 +115,15 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		{
 			Collection4 updated = new Collection4();
 			EventRegistryFor(container).Updated += new Db4objects.Db4o.Events.ObjectEventHandler
-				(new _IEventListener4_104(this, updated).OnEvent);
+				(new _IEventListener4_104(updated).OnEvent);
 			container.Commit();
 			return updated;
 		}
 
 		private sealed class _IEventListener4_104
 		{
-			public _IEventListener4_104(TransparentPersistenceTestCase _enclosing, Collection4
-				 updated)
+			public _IEventListener4_104(Collection4 updated)
 			{
-				this._enclosing = _enclosing;
 				this.updated = updated;
 			}
 
@@ -134,8 +132,6 @@ namespace Db4objects.Db4o.Tests.Common.TP
 				ObjectEventArgs objectArgs = (ObjectEventArgs)args;
 				updated.Add(objectArgs.Object);
 			}
-
-			private readonly TransparentPersistenceTestCase _enclosing;
 
 			private readonly Collection4 updated;
 		}

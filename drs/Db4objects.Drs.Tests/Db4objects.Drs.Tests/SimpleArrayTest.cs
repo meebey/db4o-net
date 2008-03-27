@@ -1,23 +1,5 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-This file is part of the db4o open source object database.
-
-db4o is free software; you can redistribute it and/or modify it under
-the terms of version 2 of the GNU General Public License as published
-by the Free Software Foundation and as clarified by db4objects' GPL 
-interpretation policy, available at
-http://www.db4o.com/about/company/legalpolicies/gplinterpretation/
-Alternatively you can write to db4objects, Inc., 1900 S Norfolk Street,
-Suite 350, San Mateo, CA 94403, USA.
-
-db4o is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 namespace Db4objects.Drs.Tests
 {
 	public class SimpleArrayTest : Db4objects.Drs.Tests.DrsTestCase
@@ -34,8 +16,8 @@ namespace Db4objects.Drs.Tests
 
 		protected override void Clean()
 		{
-			Delete(new System.Type[] { typeof(Db4objects.Drs.Tests.SimpleArrayHolder), typeof(Db4objects.Drs.Tests.SimpleArrayContent)
-				 });
+			Delete(new System.Type[] { typeof(Db4objects.Drs.Tests.SimpleArrayHolder), typeof(
+				Db4objects.Drs.Tests.SimpleArrayContent) });
 		}
 
 		private void StoreListToProviderA()
@@ -99,8 +81,8 @@ namespace Db4objects.Drs.Tests
 
 		private void ReplicateHolderStep3()
 		{
-			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Tests.SimpleArrayHolder)
-				);
+			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Tests.SimpleArrayHolder
+				));
 			EnsureContent(A(), new string[] { "h3" }, new string[] { "co1", "co2", "co3" });
 			EnsureContent(B(), new string[] { "h3" }, new string[] { "co1", "co2", "co3" });
 		}
@@ -115,14 +97,15 @@ namespace Db4objects.Drs.Tests
 			EnsureInstanceCount(fixture, typeof(Db4objects.Drs.Tests.SimpleArrayContent), contentCount
 				);
 			int i = 0;
-			Db4objects.Db4o.IObjectSet objectSet = fixture.Provider().GetStoredObjects(typeof(Db4objects.Drs.Tests.SimpleArrayHolder)
-				);
+			Db4objects.Db4o.IObjectSet objectSet = fixture.Provider().GetStoredObjects(typeof(
+				Db4objects.Drs.Tests.SimpleArrayHolder));
 			System.Collections.IEnumerator iterator = objectSet.GetEnumerator();
 			while (iterator.MoveNext())
 			{
 				Db4objects.Drs.Tests.SimpleArrayHolder lh = (Db4objects.Drs.Tests.SimpleArrayHolder
 					)iterator.Current;
 				Db4oUnit.Assert.AreEqual(holderNames[i], lh.GetName());
+				//Test.ensure(holderNames[i].equals(lh.getName()));
 				Db4objects.Drs.Tests.SimpleArrayContent[] sacs = lh.GetArr();
 				for (int j = 0; j < contentNames.Length; j++)
 				{
@@ -130,5 +113,6 @@ namespace Db4objects.Drs.Tests
 				}
 			}
 		}
+		//Test.ensure(contentNames[j].equals(sacs[j].getName()));
 	}
 }

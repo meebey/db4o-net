@@ -32,24 +32,21 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (rereadObject)
 			{
-				a_candidates.Traverse(new _IVisitor4_31(this));
+				a_candidates.Traverse(new _IVisitor4_31());
 			}
 			a_candidates.Filter(this);
 		}
 
 		private sealed class _IVisitor4_31 : IVisitor4
 		{
-			public _IVisitor4_31(QConEvaluation _enclosing)
+			public _IVisitor4_31()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Visit(object a_object)
 			{
 				((QCandidate)a_object).UseField(null);
 			}
-
-			private readonly QConEvaluation _enclosing;
 		}
 
 		internal override void Marshall()

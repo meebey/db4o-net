@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private ShortHandler ShortHandler()
 		{
-			return new ShortHandler(Stream());
+			return new ShortHandler();
 		}
 
 		public virtual void TestReadWrite()

@@ -88,6 +88,11 @@ namespace Db4oUnit.Extensions.Fixtures
 			_fixtureConfiguration.Configure(testCaseClass, config);
 		}
 
+		public override string ToString()
+		{
+			return GetLabel();
+		}
+
 		public abstract void Close();
 
 		public abstract void ConfigureAtRuntime(IRuntimeConfigureAction arg1);

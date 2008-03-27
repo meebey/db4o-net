@@ -14,19 +14,20 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class MultidimensionalArrayHandler : ArrayHandler
 	{
-		public MultidimensionalArrayHandler(ObjectContainerBase stream, ITypeHandler4 a_handler
-			, bool a_isPrimitive) : base(stream, a_handler, a_isPrimitive)
+		public MultidimensionalArrayHandler(ITypeHandler4 a_handler, bool a_isPrimitive) : 
+			base(a_handler, a_isPrimitive)
 		{
 		}
 
-		protected MultidimensionalArrayHandler(ArrayHandler template, HandlerRegistry registry
-			, int version) : base(template, registry, version)
+		public MultidimensionalArrayHandler()
 		{
 		}
 
-		public sealed override IEnumerator AllElements(object array)
+		// required for reflection cloning
+		public sealed override IEnumerator AllElements(ObjectContainerBase container, object
+			 array)
 		{
-			return AllElements(ArrayReflector(), array);
+			return AllElements(ArrayReflector(container), array);
 		}
 
 		public static IEnumerator AllElements(IReflectArray reflectArray, object array)
@@ -58,9 +59,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.Yaparrayn;
 		}
 
-		public override int OwnLength(object obj)
+		public virtual int OwnLength(ObjectContainerBase container, object obj)
 		{
-			int[] dim = ArrayReflector().Dimensions(obj);
+			int[] dim = ArrayReflector(container).Dimensions(obj);
 			return Const4.ObjectLength + (Const4.IntLength * (2 + dim.Length));
 		}
 
@@ -93,12 +94,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			ReflectClassByRef classByRef = new ReflectClassByRef();
 			dimensions.value = ReadDimensions(trans, buffer, classByRef);
-			IReflectClass clazz = NewInstanceReflectClass(classByRef);
+			IReflectClass clazz = NewInstanceReflectClass(trans.Reflector(), classByRef);
 			if (clazz == null)
 			{
 				return null;
 			}
-			return ArrayReflector().NewInstance(clazz, dimensions.value);
+			return ArrayReflector(Container(trans)).NewInstance(clazz, dimensions.value);
 		}
 
 		private int[] ReadDimensions(Transaction trans, IReadBuffer buffer, ReflectClassByRef
@@ -121,28 +122,33 @@ namespace Db4objects.Db4o.Internal.Handlers
 				object[] objects = new object[ElementCount(dimensions.value)];
 				for (int i = 0; i < objects.Length; i++)
 				{
-					objects[i] = context.ReadObject(_handler);
+					objects[i] = context.ReadObject(DelegateTypeHandler());
 				}
-				ArrayReflector().Shape(objects, 0, array, dimensions.value, 0);
+				ArrayReflector(Container(context)).Shape(objects, 0, array, dimensions.value, 0);
 			}
 			return array;
 		}
 
 		public override void Write(IWriteContext context, object obj)
 		{
-			int classID = ClassID(obj);
+			int classID = ClassID(Container(context), obj);
 			context.WriteInt(classID);
-			int[] dim = ArrayReflector().Dimensions(obj);
+			int[] dim = ArrayReflector(Container(context)).Dimensions(obj);
 			context.WriteInt(dim.Length);
 			for (int i = 0; i < dim.Length; i++)
 			{
 				context.WriteInt(dim[i]);
 			}
-			IEnumerator objects = AllElements(obj);
+			IEnumerator objects = AllElements(Container(context), obj);
 			while (objects.MoveNext())
 			{
-				context.WriteObject(_handler, objects.Current);
+				context.WriteObject(DelegateTypeHandler(), objects.Current);
 			}
+		}
+
+		public override ITypeHandler4 GenericTemplate()
+		{
+			return new Db4objects.Db4o.Internal.Handlers.MultidimensionalArrayHandler();
 		}
 	}
 }

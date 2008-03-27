@@ -1,8 +1,11 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using System.IO;
 using Db4oUnit;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4objects.Db4o.Tests.Common.Migration;
 
@@ -40,31 +43,51 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			_specificLibraries = specificLibraries;
 		}
 
-		protected override TestSuite FromClass(Type clazz)
+		protected override IEnumerator FromClass(Type clazz)
 		{
 			AssertMigrationTestCase(clazz);
-			TestSuite defaultTestSuite = base.FromClass(clazz);
+			IEnumerator defaultTestSuite = base.FromClass(clazz);
 			try
 			{
-				TestSuite migrationTestSuite = MigrationTestSuite(clazz, Db4oLibraries());
-				return new TestSuite(new ITest[] { migrationTestSuite, defaultTestSuite });
+				IEnumerator migrationTestSuite = MigrationTestSuite(clazz, Db4oLibraries());
+				return Iterators.Concat(migrationTestSuite, defaultTestSuite);
 			}
 			catch (Exception e)
 			{
-				return new TestSuite(new ITest[] { new FailingTest(clazz.FullName, e), defaultTestSuite
-					 });
+				return Iterators.Concat(Iterators.IterateSingle(new FailingTest(clazz.FullName, e
+					)), defaultTestSuite);
 			}
 		}
 
 		/// <exception cref="Exception"></exception>
-		private TestSuite MigrationTestSuite(Type clazz, Db4oLibrary[] libraries)
+		private IEnumerator MigrationTestSuite(Type clazz, Db4oLibrary[] libraries)
 		{
-			ITest[] migrationTests = new ITest[libraries.Length];
-			for (int i = 0; i < libraries.Length; i++)
+			return Iterators.Map(libraries, new _IFunction4_53(this, clazz));
+		}
+
+		private sealed class _IFunction4_53 : IFunction4
+		{
+			public _IFunction4_53(Db4oMigrationSuiteBuilder _enclosing, Type clazz)
 			{
-				migrationTests[i] = MigrationTest(libraries[i], clazz);
+				this._enclosing = _enclosing;
+				this.clazz = clazz;
 			}
-			return new TestSuite(migrationTests);
+
+			public object Apply(object library)
+			{
+				try
+				{
+					return this._enclosing.MigrationTest((Db4oLibrary)library, clazz);
+				}
+				catch (Exception e)
+				{
+					throw new Db4oException(e);
+				}
+			}
+
+			private readonly Db4oMigrationSuiteBuilder _enclosing;
+
+			private readonly Type clazz;
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -115,7 +138,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			}
 		}
 
-		private sealed class Db4oMigrationTest : TestAdapter
+		private sealed class Db4oMigrationTest : ITest
 		{
 			private readonly FormatMigrationTestCaseBase _test;
 
@@ -131,16 +154,26 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				_version = Environment().Version();
 			}
 
-			public override string GetLabel()
+			public string GetLabel()
 			{
 				return "[" + _version + "] " + _test.GetType().FullName;
 			}
 
-			/// <exception cref="Exception"></exception>
-			protected override void RunTest()
+			public void Run()
 			{
-				CreateDatabase();
-				Test();
+				try
+				{
+					CreateDatabase();
+					Test();
+				}
+				catch (TestException e)
+				{
+					throw;
+				}
+				catch (Exception e)
+				{
+					throw new TestException(e);
+				}
 			}
 
 			/// <exception cref="IOException"></exception>

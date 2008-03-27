@@ -17,23 +17,19 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
-			config.Add(new TransparentPersistenceSupport(new _IRollbackStrategy_23(this)));
+			config.Add(new TransparentPersistenceSupport(new _IRollbackStrategy_23()));
 		}
 
 		private sealed class _IRollbackStrategy_23 : IRollbackStrategy
 		{
-			public _IRollbackStrategy_23(DeactivateDeletedObjectOnRollbackStrategyTestCase _enclosing
-				)
+			public _IRollbackStrategy_23()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Rollback(IObjectContainer container, object obj)
 			{
 				container.Ext().Deactivate(obj);
 			}
-
-			private readonly DeactivateDeletedObjectOnRollbackStrategyTestCase _enclosing;
 		}
 
 		/// <exception cref="Exception"></exception>

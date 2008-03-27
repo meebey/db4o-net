@@ -6,7 +6,7 @@ using Db4objects.Db4o.Ext;
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>
-	/// db4o-specific exception.&lt;br&gt;&lt;br&gt;
+	/// db4o-specific exception.<br /><br />
 	/// This exception is thrown when an old file format was detected
 	/// and
 	/// <see cref="IConfiguration.AllowVersionUpdates">IConfiguration.AllowVersionUpdates

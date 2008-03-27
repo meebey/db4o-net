@@ -45,14 +45,13 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		{
 			Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.Filename
 				, SlotDefragmentTestConstants.Backupfilename);
-			Assert.Expect(typeof(IOException), new _ICodeBlock_37(this));
+			Assert.Expect(typeof(IOException), new _ICodeBlock_37());
 		}
 
 		private sealed class _ICodeBlock_37 : ICodeBlock
 		{
-			public _ICodeBlock_37(SlotDefragmentTestCase _enclosing)
+			public _ICodeBlock_37()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			/// <exception cref="Exception"></exception>
@@ -61,8 +60,6 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.Filename
 					, SlotDefragmentTestConstants.Backupfilename);
 			}
-
-			private readonly SlotDefragmentTestCase _enclosing;
 		}
 
 		/// <exception cref="Exception"></exception>

@@ -340,6 +340,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return _container;
 		}
 
+		[System.ObsoleteAttribute]
 		public virtual IObjectContainer OpenClient()
 		{
 			return OpenClient(Db4oFactory.CloneConfiguration());

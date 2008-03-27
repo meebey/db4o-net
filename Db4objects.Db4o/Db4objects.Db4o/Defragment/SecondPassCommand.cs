@@ -41,16 +41,14 @@ namespace Db4objects.Db4o.Defragment
 			{
 				Sharpen.Runtime.Err.WriteLine("MAPPING NOT FOUND: " + id);
 			}
-			DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_35(this, yapClass
+			DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_35(yapClass
 				, classIndexID));
 		}
 
 		private sealed class _ISlotCopyHandler_35 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_35(SecondPassCommand _enclosing, ClassMetadata yapClass, 
-				int classIndexID)
+			public _ISlotCopyHandler_35(ClassMetadata yapClass, int classIndexID)
 			{
-				this._enclosing = _enclosing;
 				this.yapClass = yapClass;
 				this.classIndexID = classIndexID;
 			}
@@ -61,8 +59,6 @@ namespace Db4objects.Db4o.Defragment
 			{
 				yapClass.DefragClass(context, classIndexID);
 			}
-
-			private readonly SecondPassCommand _enclosing;
 
 			private readonly ClassMetadata yapClass;
 
@@ -115,15 +111,13 @@ namespace Db4objects.Db4o.Defragment
 		public void ProcessClassCollection(DefragmentServicesImpl services)
 		{
 			DefragmentContextImpl.ProcessCopy(services, services.SourceClassCollectionID(), new 
-				_ISlotCopyHandler_62(this, services));
+				_ISlotCopyHandler_62(services));
 		}
 
 		private sealed class _ISlotCopyHandler_62 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_62(SecondPassCommand _enclosing, DefragmentServicesImpl 
-				services)
+			public _ISlotCopyHandler_62(DefragmentServicesImpl services)
 			{
-				this._enclosing = _enclosing;
 				this.services = services;
 			}
 
@@ -164,8 +158,6 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return services.Accept(services.ClassMetadataForId(classId));
 			}
-
-			private readonly SecondPassCommand _enclosing;
 
 			private readonly DefragmentServicesImpl services;
 		}

@@ -11,10 +11,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public abstract class NetTypeHandler : PrimitiveHandler, INetType
 	{
-		public NetTypeHandler(ObjectContainerBase stream) : base(stream)
-		{
-		}
-
 		private int i_linkLength;
 
 		public virtual string DotNetClassName()
@@ -67,6 +63,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		protected override Type PrimitiveJavaClass()
 		{
+			if (!NullableArrayHandling.Disabled())
+			{
+				return DefaultValue().GetType();
+			}
 			return null;
 		}
 

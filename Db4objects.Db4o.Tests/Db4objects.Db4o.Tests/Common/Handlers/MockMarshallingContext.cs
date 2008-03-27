@@ -112,5 +112,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			_current.Seek(offset);
 		}
+
+		public virtual void SeekCurrentInt()
+		{
+			Seek(ReadInt());
+		}
 	}
 }

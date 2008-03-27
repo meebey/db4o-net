@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			ByteArrayBuffer buffer = new ByteArrayBuffer(pointer.Length());
 			_writeBuffer.MergeChildren(this, pointer.Address(), WriteBufferOffset());
 			WriteObjectClassID(buffer, ClassMetadata().GetID());
-			buffer.WriteByte(Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion);
+			buffer.WriteByte(HandlerRegistry.HandlerVersion);
 			buffer.WriteInt(FieldCount());
 			buffer.WriteBitMap(_nullBitMap);
 			_writeBuffer.TransferContentTo(buffer);
@@ -284,26 +284,33 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual void WriteObject(ITypeHandler4 handler, object obj)
 		{
 			MarshallingContextState state = CurrentState();
-			if (obj == null)
+			if (FieldMetadata.UseDedicatedSlot(this, handler))
 			{
-				// TODO: This should never happen. All handlers should take care
-				//       of nulls on a higher level, otherwise primitive wrappers
-				//       default to their primitive values.
-				//       Consider to throw an IllegalArgumentException here to
-				//       prevent users from calling with null arguments.
-				WriteNullObject(handler);
+				WriteObject(obj);
 			}
 			else
 			{
-				CreateIndirection(handler);
-				handler.Write(this, obj);
+				if (obj == null)
+				{
+					// TODO: This should never happen. All handlers should take care
+					//       of nulls on a higher level, otherwise primitive wrappers
+					//       default to their primitive values.
+					//       Consider to throw an IllegalArgumentException here to
+					//       prevent users from calling with null arguments.
+					WriteNullObject(handler);
+				}
+				else
+				{
+					CreateIndirectionWithinSlot(handler);
+					handler.Write(this, obj);
+				}
 			}
 			RestoreState(state);
 		}
 
 		private void WriteNullObject(ITypeHandler4 handler)
 		{
-			if (HandlerRegistry().IsVariableLength(handler))
+			if (IsIndirectedWithinSlot(handler))
 			{
 				DoNotIndirectWrites();
 				WriteNullLink();
@@ -350,18 +357,18 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_fieldWriteCount = 0;
 		}
 
-		private Db4objects.Db4o.Internal.HandlerRegistry HandlerRegistry()
+		public virtual void CreateIndirectionWithinSlot(ITypeHandler4 handler)
 		{
-			return Container().Handlers();
-		}
-
-		public virtual void CreateIndirection(ITypeHandler4 handler)
-		{
-			if (HandlerRegistry().IsVariableLength(handler))
+			if (IsIndirectedWithinSlot(handler))
 			{
 				CreateChildBuffer(false, true);
 				DoNotIndirectWrites();
 			}
+		}
+
+		private bool IsIndirectedWithinSlot(ITypeHandler4 handler)
+		{
+			return SlotFormat.Current().IsIndirectedWithinSlot(handler);
 		}
 
 		// FIXME: This method was just temporarily added to fulfill contract of MarshallingInfo
@@ -380,6 +387,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			_currentBuffer = state._buffer;
 			_fieldWriteCount = state._fieldWriteCount;
+		}
+
+		public virtual IReservedBuffer Reserve(int length)
+		{
+			PreWrite();
+			IReservedBuffer reservedBuffer = _currentBuffer.Reserve(length);
+			PostWrite();
+			return reservedBuffer;
 		}
 	}
 }

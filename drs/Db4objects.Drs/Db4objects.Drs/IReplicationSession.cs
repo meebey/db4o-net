@@ -1,29 +1,11 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-This file is part of the db4o open source object database.
-
-db4o is free software; you can redistribute it and/or modify it under
-the terms of version 2 of the GNU General Public License as published
-by the Free Software Foundation and as clarified by db4objects' GPL 
-interpretation policy, available at
-http://www.db4o.com/about/company/legalpolicies/gplinterpretation/
-Alternatively you can write to db4objects, Inc., 1900 S Norfolk Street,
-Suite 350, San Mateo, CA 94403, USA.
-
-db4o is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 namespace Db4objects.Drs
 {
 	/// <summary>Execute a round of replication between two ReplicationProviders.</summary>
 	/// <remarks>
 	/// Execute a round of replication between two ReplicationProviders.
-	/// <p/>
+	/// &lt;p/&gt;
 	/// Sample code of using ReplicationSession:
 	/// <pre>
 	/// ReplicationSession session = Replication.begin(objectContainer1, objectContainer2);
@@ -54,7 +36,7 @@ namespace Db4objects.Drs
 		/// <remarks>
 		/// Closes this session and frees used resources. Sessions that were opened
 		/// during the creation of ReplicationProviders will be closed as well.
-		/// <p/>
+		/// &lt;p/&gt;
 		/// Hibernate Sessions created from Hibernate Configurations will be closed.
 		/// db4o ObjectContainers will remain open.
 		/// </remarks>
@@ -115,7 +97,7 @@ namespace Db4objects.Drs
 		/// <remarks>
 		/// Replicates all deletions between the two providers.
 		/// Cascade delete is disabled, regardless the user's settings.
-		/// <p/>
+		/// &lt;p/&gt;
 		/// If the deletion violates referential integrity, exception will be thrown.
 		/// You can use the dRS replication callback to check whether the object to
 		/// be deleted violates referential integrity. If so, you can stop traversal.
@@ -129,7 +111,7 @@ namespace Db4objects.Drs
 		/// guarantees the changes will not be applied to the underlying databases. The
 		/// state of the objects involved in the replication is undefined.
 		/// Both ReplicationProviders may still contain cached references of touched objects.
-		/// <p/>
+		/// &lt;p/&gt;
 		/// To restart replication, it is recommended to reopen both involved
 		/// ReplicationProviders and to start a new ReplicationSession.
 		/// </remarks>
@@ -139,7 +121,7 @@ namespace Db4objects.Drs
 		/// <remarks>
 		/// Sets the direction of replication. By default, if this method is not called, replication is bidirectional,
 		/// which means the newer copy of the object is copied to the other provider..
-		/// <p/> If you want to force unidirectional replication, call this method before calling
+		/// &lt;p/&gt; If you want to force unidirectional replication, call this method before calling
 		/// <see cref="Db4objects.Drs.IReplicationSession.Replicate">Db4objects.Drs.IReplicationSession.Replicate
 		/// 	</see>
 		/// .

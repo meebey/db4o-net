@@ -9,11 +9,11 @@ namespace Db4objects.Db4o.Ext
 	/// extended functionality for the
 	/// <see cref="IObjectSet">IObjectSet</see>
 	/// interface.
-	/// &lt;br&gt;&lt;br&gt;Every db4o
+	/// <br /><br />Every db4o
 	/// <see cref="IObjectSet">IObjectSet</see>
-	/// always is an ExtObjectSet so a cast is possible.&lt;br&gt;&lt;br&gt;
+	/// always is an ExtObjectSet so a cast is possible.<br /><br />
 	/// <see cref="IObjectSet.Ext">IObjectSet.Ext</see>
-	/// is a convenient method to perform the cast.&lt;br&gt;&lt;br&gt;
+	/// is a convenient method to perform the cast.<br /><br />
 	/// The ObjectSet functionality is split to two interfaces to allow newcomers to
 	/// focus on the essential methods.
 	/// </summary>
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Ext
 		/// 	</summary>
 		/// <remarks>
 		/// returns an array of internal IDs that correspond to the contained objects.
-		/// &lt;br&gt;&lt;br&gt;
+		/// <br /><br />
 		/// </remarks>
 		/// <seealso cref="IExtObjectContainer.GetID">IExtObjectContainer.GetID</seealso>
 		/// <seealso cref="IExtObjectContainer.GetByID">IExtObjectContainer.GetByID</seealso>
@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Ext
 		/// <summary>returns the item at position [index] in this ObjectSet.</summary>
 		/// <remarks>
 		/// returns the item at position [index] in this ObjectSet.
-		/// &lt;br&gt;&lt;br&gt;
+		/// <br /><br />
 		/// The object will be activated.
 		/// </remarks>
 		/// <param name="index">the index position in this ObjectSet.</param>

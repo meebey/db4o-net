@@ -3,7 +3,6 @@
 using System;
 using System.Collections;
 using Db4oUnit;
-using Db4oUnit.Extensions.Foundation;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Common.Foundation;
 
@@ -32,15 +31,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			queue.Add("baz");
 			Assert.AreEqual("foo", iterator.Current, "accessing current element should be harmless"
 				);
-			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_32(this, iterator
-				));
+			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_31(iterator));
 		}
 
-		private sealed class _ICodeBlock_32 : ICodeBlock
+		private sealed class _ICodeBlock_31 : ICodeBlock
 		{
-			public _ICodeBlock_32(NonblockingQueueTestCase _enclosing, IEnumerator iterator)
+			public _ICodeBlock_31(IEnumerator iterator)
 			{
-				this._enclosing = _enclosing;
 				this.iterator = iterator;
 			}
 
@@ -50,8 +47,6 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				iterator.MoveNext();
 			}
 
-			private readonly NonblockingQueueTestCase _enclosing;
-
 			private readonly IEnumerator iterator;
 		}
 
@@ -59,23 +54,20 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		{
 			object[] elements = new object[] { "foo", "bar" };
 			IQueue4 queue = NewQueue(elements);
-			Assert.IsNull(queue.NextMatching(new _IPredicate4_43(this)));
+			Assert.IsNull(queue.NextMatching(new _IPredicate4_42()));
 			AssertNext(elements, queue);
 		}
 
-		private sealed class _IPredicate4_43 : IPredicate4
+		private sealed class _IPredicate4_42 : IPredicate4
 		{
-			public _IPredicate4_43(NonblockingQueueTestCase _enclosing)
+			public _IPredicate4_42()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public bool Match(object candidate)
 			{
 				return false;
 			}
-
-			private readonly NonblockingQueueTestCase _enclosing;
 		}
 
 		public virtual void TestNextMatchingOnEmptyQueue()
@@ -99,17 +91,15 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			, object[] originalElements)
 		{
 			IQueue4 queue = NewQueue(originalElements);
-			Assert.AreEqual(removedElement, queue.NextMatching(new _IPredicate4_74(this, removedElement
+			Assert.AreEqual(removedElement, queue.NextMatching(new _IPredicate4_73(removedElement
 				)));
 			AssertNext(expectedAfterRemoval, queue);
 		}
 
-		private sealed class _IPredicate4_74 : IPredicate4
+		private sealed class _IPredicate4_73 : IPredicate4
 		{
-			public _IPredicate4_74(NonblockingQueueTestCase _enclosing, object removedElement
-				)
+			public _IPredicate4_73(object removedElement)
 			{
-				this._enclosing = _enclosing;
 				this.removedElement = removedElement;
 			}
 
@@ -117,8 +107,6 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			{
 				return removedElement == candidate;
 			}
-
-			private readonly NonblockingQueueTestCase _enclosing;
 
 			private readonly object removedElement;
 		}

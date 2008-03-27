@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4oUnit;
 
 namespace Db4oUnit
@@ -23,16 +24,16 @@ namespace Db4oUnit
 	/// </remarks>
 	public abstract class ReflectionTestSuite : ITestSuiteBuilder
 	{
-		public virtual TestSuite Build()
+		public virtual IEnumerator GetEnumerator()
 		{
-			return new ReflectionTestSuiteBuilder(TestCases()).Build();
+			return new ReflectionTestSuiteBuilder(TestCases()).GetEnumerator();
 		}
 
 		protected abstract Type[] TestCases();
 
 		public virtual int Run()
 		{
-			return new TestRunner(Build()).Run();
+			return new ConsoleTestRunner(GetEnumerator()).Run();
 		}
 	}
 }

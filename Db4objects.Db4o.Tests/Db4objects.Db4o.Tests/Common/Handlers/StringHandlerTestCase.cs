@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private StringHandler StringHandler()
 		{
-			return new StringHandler(Stream());
+			return new StringHandler();
 		}
 
 		public virtual void TestReadWrite()

@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			IMessageSender sender = client.Configure().ClientServer().GetMessageSender();
 			if (IsMTOC())
 			{
-				Assert.Expect(typeof(NotSupportedException), new _ICodeBlock_35(this, sender));
+				Assert.Expect(typeof(NotSupportedException), new _ICodeBlock_35(sender));
 				return;
 			}
 			sender.Send(new PingTestCase.Data());
@@ -50,9 +50,8 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 
 		private sealed class _ICodeBlock_35 : ICodeBlock
 		{
-			public _ICodeBlock_35(PingTestCase _enclosing, IMessageSender sender)
+			public _ICodeBlock_35(IMessageSender sender)
 			{
-				this._enclosing = _enclosing;
 				this.sender = sender;
 			}
 
@@ -61,8 +60,6 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			{
 				sender.Send(new PingTestCase.Data());
 			}
-
-			private readonly PingTestCase _enclosing;
 
 			private readonly IMessageSender sender;
 		}

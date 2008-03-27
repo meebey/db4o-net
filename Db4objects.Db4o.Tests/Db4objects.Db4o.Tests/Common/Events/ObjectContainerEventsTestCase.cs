@@ -3,7 +3,6 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4oUnit.Extensions.Foundation;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
@@ -20,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			LocalObjectContainer session = FileSession();
 			Collection4 actual = new Collection4();
 			EventRegistry().Closing += new Db4objects.Db4o.Events.ObjectContainerEventHandler
-				(new _IEventListener4_21(this, actual).OnEvent);
+				(new _IEventListener4_20(actual).OnEvent);
 			Fixture().Close();
 			if (IsEmbeddedClientServer())
 			{
@@ -33,12 +32,10 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			}
 		}
 
-		private sealed class _IEventListener4_21
+		private sealed class _IEventListener4_20
 		{
-			public _IEventListener4_21(ObjectContainerEventsTestCase _enclosing, Collection4 
-				actual)
+			public _IEventListener4_20(Collection4 actual)
 			{
-				this._enclosing = _enclosing;
 				this.actual = actual;
 			}
 
@@ -47,8 +44,6 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			{
 				actual.Add(((ObjectContainerEventArgs)args).ObjectContainer);
 			}
-
-			private readonly ObjectContainerEventsTestCase _enclosing;
 
 			private readonly Collection4 actual;
 		}

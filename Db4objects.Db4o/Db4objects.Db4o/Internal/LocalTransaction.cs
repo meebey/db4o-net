@@ -76,24 +76,34 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (Container()._lock)
 			{
-				if (DoCommittingCallbacks())
+				DispatchCommittingCallback();
+				if (!DoCommittedCallbacks(dispatcher))
 				{
-					Callbacks().CommitOnStarted(this, CollectCallbackObjectInfos());
+					CommitListeners();
+					CommitImpl();
+					CommitClearAll();
 				}
-				CommitImpl();
-				CallbackObjectInfoCollections committedInfo = CommittedInfoFor(dispatcher);
-				CommitClearAll();
-				if (null != committedInfo)
+				else
 				{
-					dispatcher.DispatchCommitted(committedInfo);
+					CommitListeners();
+					Collection4 deleted = CollectCommittedCallbackDeletedInfo();
+					CommitImpl();
+					CallbackObjectInfoCollections committedInfo = CollectCommittedCallbackInfo(deleted
+						);
+					CommitClearAll();
+					dispatcher.DispatchCommitted(CallbackObjectInfoCollections.Emtpy == committedInfo
+						 ? committedInfo : new CallbackObjectInfoCollections(committedInfo.added, committedInfo
+						.updated, new ObjectInfoCollectionImpl(deleted)));
 				}
 			}
 		}
 
-		private CallbackObjectInfoCollections CommittedInfoFor(ICommittedCallbackDispatcher
-			 dispatcher)
+		private void DispatchCommittingCallback()
 		{
-			return DoCommittedCallbacks(dispatcher) ? CollectCallbackObjectInfos() : null;
+			if (DoCommittingCallbacks())
+			{
+				Callbacks().CommitOnStarted(this, CollectCommittingCallbackInfo());
+			}
 		}
 
 		private bool DoCommittedCallbacks(ICommittedCallbackDispatcher dispatcher)
@@ -134,7 +144,6 @@ namespace Db4objects.Db4o.Internal
 				DTrace.TransCommit.LogInfo("server == " + Container().IsServer() + ", systemtrans == "
 					 + IsSystemTransaction());
 			}
-			Commit2Listeners();
 			Commit3Stream();
 			CommitParticipants();
 			Container().WriteDirty();
@@ -149,7 +158,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void FreeSlotChanges(bool forFreespace)
 		{
-			IVisitor4 visitor = new _IVisitor4_131(this, forFreespace);
+			IVisitor4 visitor = new _IVisitor4_141(this, forFreespace);
 			if (IsSystemTransaction())
 			{
 				_slotChanges.TraverseMutable(visitor);
@@ -162,9 +171,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_131 : IVisitor4
+		private sealed class _IVisitor4_141 : IVisitor4
 		{
-			public _IVisitor4_131(LocalTransaction _enclosing, bool forFreespace)
+			public _IVisitor4_141(LocalTransaction _enclosing, bool forFreespace)
 			{
 				this._enclosing = _enclosing;
 				this.forFreespace = forFreespace;
@@ -180,7 +189,7 @@ namespace Db4objects.Db4o.Internal
 			private readonly bool forFreespace;
 		}
 
-		private void Commit2Listeners()
+		private void CommitListeners()
 		{
 			CommitParentListeners();
 			CommitTransactionListeners();
@@ -190,7 +199,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_systemTransaction != null)
 			{
-				ParentLocalTransaction().Commit2Listeners();
+				ParentLocalTransaction().CommitListeners();
 			}
 		}
 
@@ -266,12 +275,12 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void RollbackSlotChanges()
 		{
-			_slotChanges.TraverseLocked(new _IVisitor4_220(this));
+			_slotChanges.TraverseLocked(new _IVisitor4_230(this));
 		}
 
-		private sealed class _IVisitor4_220 : IVisitor4
+		private sealed class _IVisitor4_230 : IVisitor4
 		{
-			public _IVisitor4_220(LocalTransaction _enclosing)
+			public _IVisitor4_230(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -394,13 +403,13 @@ namespace Db4objects.Db4o.Internal
 		private bool WriteSlots()
 		{
 			BooleanByRef ret = new BooleanByRef();
-			TraverseSlotChanges(new _IVisitor4_334(this, ret));
+			TraverseSlotChanges(new _IVisitor4_344(this, ret));
 			return ret.value;
 		}
 
-		private sealed class _IVisitor4_334 : IVisitor4
+		private sealed class _IVisitor4_344 : IVisitor4
 		{
-			public _IVisitor4_334(LocalTransaction _enclosing, BooleanByRef ret)
+			public _IVisitor4_344(LocalTransaction _enclosing, BooleanByRef ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -564,15 +573,14 @@ namespace Db4objects.Db4o.Internal
 		private int CountSlotChanges()
 		{
 			IntByRef count = new IntByRef();
-			TraverseSlotChanges(new _IVisitor4_482(this, count));
+			TraverseSlotChanges(new _IVisitor4_492(count));
 			return count.value;
 		}
 
-		private sealed class _IVisitor4_482 : IVisitor4
+		private sealed class _IVisitor4_492 : IVisitor4
 		{
-			public _IVisitor4_482(LocalTransaction _enclosing, IntByRef count)
+			public _IVisitor4_492(IntByRef count)
 			{
-				this._enclosing = _enclosing;
 				this.count = count;
 			}
 
@@ -584,8 +592,6 @@ namespace Db4objects.Db4o.Internal
 					count.value++;
 				}
 			}
-
-			private readonly LocalTransaction _enclosing;
 
 			private readonly IntByRef count;
 		}
@@ -621,14 +627,13 @@ namespace Db4objects.Db4o.Internal
 
 		private void AppendSlotChanges(ByteArrayBuffer writer)
 		{
-			TraverseSlotChanges(new _IVisitor4_517(this, writer));
+			TraverseSlotChanges(new _IVisitor4_527(writer));
 		}
 
-		private sealed class _IVisitor4_517 : IVisitor4
+		private sealed class _IVisitor4_527 : IVisitor4
 		{
-			public _IVisitor4_517(LocalTransaction _enclosing, ByteArrayBuffer writer)
+			public _IVisitor4_527(ByteArrayBuffer writer)
 			{
-				this._enclosing = _enclosing;
 				this.writer = writer;
 			}
 
@@ -636,8 +641,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				((SlotChange)obj).Write(writer);
 			}
-
-			private readonly LocalTransaction _enclosing;
 
 			private readonly ByteArrayBuffer writer;
 		}
@@ -769,7 +772,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = _delete;
 				_delete = null;
-				delete.Traverse(new _IVisitor4_641(this));
+				delete.Traverse(new _IVisitor4_651(this));
 			}
 			// if the object has been deleted
 			// We need to hold a hard reference here, otherwise we can get 
@@ -780,9 +783,9 @@ namespace Db4objects.Db4o.Internal
 			_writtenUpdateDeletedMembers = null;
 		}
 
-		private sealed class _IVisitor4_641 : IVisitor4
+		private sealed class _IVisitor4_651 : IVisitor4
 		{
-			public _IVisitor4_641(LocalTransaction _enclosing)
+			public _IVisitor4_651(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -866,7 +869,85 @@ namespace Db4objects.Db4o.Internal
 			return Container().Callbacks();
 		}
 
-		private CallbackObjectInfoCollections CollectCallbackObjectInfos()
+		private Collection4 CollectCommittedCallbackDeletedInfo()
+		{
+			Collection4 deleted = new Collection4();
+			CollectSlotChanges(new _ISlotChangeCollector_737(this, deleted));
+			return deleted;
+		}
+
+		private sealed class _ISlotChangeCollector_737 : ISlotChangeCollector
+		{
+			public _ISlotChangeCollector_737(LocalTransaction _enclosing, Collection4 deleted
+				)
+			{
+				this._enclosing = _enclosing;
+				this.deleted = deleted;
+			}
+
+			public void Deleted(int id)
+			{
+				deleted.Add(this._enclosing.FrozenReferenceFor(id));
+			}
+
+			public void Updated(int id)
+			{
+			}
+
+			public void Added(int id)
+			{
+			}
+
+			private readonly LocalTransaction _enclosing;
+
+			private readonly Collection4 deleted;
+		}
+
+		private CallbackObjectInfoCollections CollectCommittedCallbackInfo(Collection4 deleted
+			)
+		{
+			if (null == _slotChanges)
+			{
+				return CallbackObjectInfoCollections.Emtpy;
+			}
+			Collection4 added = new Collection4();
+			Collection4 updated = new Collection4();
+			CollectSlotChanges(new _ISlotChangeCollector_758(this, added, updated));
+			return NewCallbackObjectInfoCollections(added, updated, deleted);
+		}
+
+		private sealed class _ISlotChangeCollector_758 : ISlotChangeCollector
+		{
+			public _ISlotChangeCollector_758(LocalTransaction _enclosing, Collection4 added, 
+				Collection4 updated)
+			{
+				this._enclosing = _enclosing;
+				this.added = added;
+				this.updated = updated;
+			}
+
+			public void Added(int id)
+			{
+				added.Add(this._enclosing.LazyReferenceFor(id));
+			}
+
+			public void Updated(int id)
+			{
+				updated.Add(this._enclosing.LazyReferenceFor(id));
+			}
+
+			public void Deleted(int id)
+			{
+			}
+
+			private readonly LocalTransaction _enclosing;
+
+			private readonly Collection4 added;
+
+			private readonly Collection4 updated;
+		}
+
+		private CallbackObjectInfoCollections CollectCommittingCallbackInfo()
 		{
 			if (null == _slotChanges)
 			{
@@ -875,51 +956,95 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			_slotChanges.TraverseLocked(new _IVisitor4_732(this, deleted, added, updated));
+			CollectSlotChanges(new _ISlotChangeCollector_781(this, added, updated, deleted));
+			return NewCallbackObjectInfoCollections(added, updated, deleted);
+		}
+
+		private sealed class _ISlotChangeCollector_781 : ISlotChangeCollector
+		{
+			public _ISlotChangeCollector_781(LocalTransaction _enclosing, Collection4 added, 
+				Collection4 updated, Collection4 deleted)
+			{
+				this._enclosing = _enclosing;
+				this.added = added;
+				this.updated = updated;
+				this.deleted = deleted;
+			}
+
+			public void Added(int id)
+			{
+				added.Add(this._enclosing.LazyReferenceFor(id));
+			}
+
+			public void Updated(int id)
+			{
+				updated.Add(this._enclosing.LazyReferenceFor(id));
+			}
+
+			public void Deleted(int id)
+			{
+				deleted.Add(this._enclosing.FrozenReferenceFor(id));
+			}
+
+			private readonly LocalTransaction _enclosing;
+
+			private readonly Collection4 added;
+
+			private readonly Collection4 updated;
+
+			private readonly Collection4 deleted;
+		}
+
+		private CallbackObjectInfoCollections NewCallbackObjectInfoCollections(Collection4
+			 added, Collection4 updated, Collection4 deleted)
+		{
 			return new CallbackObjectInfoCollections(new ObjectInfoCollectionImpl(added), new 
 				ObjectInfoCollectionImpl(updated), new ObjectInfoCollectionImpl(deleted));
 		}
 
-		private sealed class _IVisitor4_732 : IVisitor4
+		private void CollectSlotChanges(ISlotChangeCollector collector)
 		{
-			public _IVisitor4_732(LocalTransaction _enclosing, Collection4 deleted, Collection4
-				 added, Collection4 updated)
+			if (null == _slotChanges)
 			{
-				this._enclosing = _enclosing;
-				this.deleted = deleted;
-				this.added = added;
-				this.updated = updated;
+				return;
+			}
+			_slotChanges.TraverseLocked(new _IVisitor4_811(collector));
+		}
+
+		private sealed class _IVisitor4_811 : IVisitor4
+		{
+			public _IVisitor4_811(ISlotChangeCollector collector)
+			{
+				this.collector = collector;
 			}
 
 			public void Visit(object obj)
 			{
 				SlotChange slotChange = ((SlotChange)obj);
-				LazyObjectReference lazyRef = new LazyObjectReference(this._enclosing, slotChange
-					._key);
+				int id = slotChange._key;
 				if (slotChange.IsDeleted())
 				{
-					deleted.Add(lazyRef);
+					collector.Deleted(id);
 				}
 				else
 				{
 					if (slotChange.IsNew())
 					{
-						added.Add(lazyRef);
+						collector.Added(id);
 					}
 					else
 					{
-						updated.Add(lazyRef);
+						collector.Updated(id);
 					}
 				}
 			}
 
-			private readonly LocalTransaction _enclosing;
+			private readonly ISlotChangeCollector collector;
+		}
 
-			private readonly Collection4 deleted;
-
-			private readonly Collection4 added;
-
-			private readonly Collection4 updated;
+		private IObjectInfo FrozenReferenceFor(int id)
+		{
+			return new FrozenObjectInfo(this, ReferenceForId(id));
 		}
 
 		private void SetAddress(int a_address)
@@ -972,6 +1097,11 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			FreespaceManager().Commit();
+		}
+
+		private LazyObjectReference LazyReferenceFor(int id)
+		{
+			return new LazyObjectReference(this, id);
 		}
 	}
 }

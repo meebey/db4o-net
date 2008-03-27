@@ -11,59 +11,44 @@ using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
 	public class ArrayHandler : IFirstClassHandler, IComparable4, ITypeHandler4, IVariableLengthTypeHandler
+		, IEmbeddedTypeHandler, ICompositeTypeHandler
 	{
-		private sealed class ReflectArrayIterator : IndexedIterator
+		private ITypeHandler4 _handler;
+
+		private bool _usePrimitiveClassReflector;
+
+		public ArrayHandler(ITypeHandler4 handler, bool usePrimitiveClassReflector)
 		{
-			private readonly object _array;
-
-			private readonly IReflectArray _reflectArray;
-
-			public ReflectArrayIterator(IReflectArray reflectArray, object array) : base(reflectArray
-				.GetLength(array))
-			{
-				_reflectArray = reflectArray;
-				_array = array;
-			}
-
-			protected override object Get(int index)
-			{
-				return _reflectArray.Get(_array, index);
-			}
-		}
-
-		public readonly ITypeHandler4 _handler;
-
-		public readonly bool _usePrimitiveClassReflector;
-
-		private readonly ObjectContainerBase _container;
-
-		public ArrayHandler(ObjectContainerBase container, ITypeHandler4 handler, bool usePrimitiveClassReflector
-			)
-		{
-			_container = container;
 			_handler = handler;
 			_usePrimitiveClassReflector = usePrimitiveClassReflector;
 		}
 
-		protected ArrayHandler(ArrayHandler template, HandlerRegistry registry, int version
-			) : this(template.Container(), registry.CorrectHandlerVersion(template._handler, 
+		public ArrayHandler()
+		{
+		}
+
+		protected ArrayHandler(Db4objects.Db4o.Internal.Handlers.ArrayHandler template, HandlerRegistry
+			 registry, int version) : this(registry.CorrectHandlerVersion(template._handler, 
 			version), template._usePrimitiveClassReflector)
 		{
 		}
 
-		protected virtual IReflectArray ArrayReflector()
+		// required for reflection cloning
+		protected virtual IReflectArray ArrayReflector(ObjectContainerBase container)
 		{
-			return Container().Reflector().Array();
+			return container.Reflector().Array();
 		}
 
-		public virtual IEnumerator AllElements(object a_object)
+		public virtual IEnumerator AllElements(ObjectContainerBase container, object a_object
+			)
 		{
-			return AllElements(ArrayReflector(), a_object);
+			return AllElements(ArrayReflector(container), a_object);
 		}
 
 		public static IEnumerator AllElements(IReflectArray reflectArray, object array)
@@ -78,37 +63,39 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return;
 			}
-			IEnumerator all = AllElements(onObject);
+			ObjectContainerBase container = Container(trans);
+			IEnumerator all = AllElements(container, onObject);
 			while (all.MoveNext())
 			{
 				object current = all.Current;
-				IActivationDepth elementDepth = Descend(depth, current);
+				IActivationDepth elementDepth = Descend(container, depth, current);
 				if (elementDepth.RequiresActivation())
 				{
 					if (depth.Mode().IsDeactivate())
 					{
-						Container().StillToDeactivate(trans, current, elementDepth, false);
+						container.StillToDeactivate(trans, current, elementDepth, false);
 					}
 					else
 					{
-						Container().StillToActivate(trans, current, elementDepth);
+						container.StillToActivate(trans, current, elementDepth);
 					}
 				}
 			}
 		}
 
-		public virtual ObjectContainerBase Container()
+		internal virtual ObjectContainerBase Container(Transaction trans)
 		{
-			return _container;
+			return trans.Container();
 		}
 
-		private IActivationDepth Descend(IActivationDepth depth, object obj)
+		private IActivationDepth Descend(ObjectContainerBase container, IActivationDepth 
+			depth, object obj)
 		{
 			if (obj == null)
 			{
 				return new NonDescendingActivationDepth(depth.Mode());
 			}
-			ClassMetadata cm = ClassMetaDataForObject(obj);
+			ClassMetadata cm = ClassMetaDataForObject(container, obj);
 			if (cm.IsPrimitive())
 			{
 				return new NonDescendingActivationDepth(depth.Mode());
@@ -116,22 +103,23 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return depth.Descend(cm);
 		}
 
-		private ClassMetadata ClassMetaDataForObject(object obj)
+		private ClassMetadata ClassMetaDataForObject(ObjectContainerBase container, object
+			 obj)
 		{
-			return Container().ClassMetadataForObject(obj);
+			return container.ClassMetadataForObject(obj);
 		}
 
-		public virtual IReflectClass ClassReflector()
+		private IReflectClass ClassReflector(ObjectContainerBase container)
 		{
 			if (_handler is IBuiltinTypeHandler)
 			{
-				return ((IBuiltinTypeHandler)_handler).ClassReflector();
+				return ((IBuiltinTypeHandler)_handler).ClassReflector(container.Reflector());
 			}
 			if (_handler is ClassMetadata)
 			{
 				return ((ClassMetadata)_handler).ClassReflector();
 			}
-			return Container().Handlers().ClassReflectorForHandler(_handler);
+			return container.Handlers().ClassReflectorForHandler(_handler);
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
@@ -212,19 +200,29 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is ArrayHandler))
+			if (!(obj is Db4objects.Db4o.Internal.Handlers.ArrayHandler))
 			{
 				return false;
 			}
-			if (((ArrayHandler)obj).Identifier() != Identifier())
+			Db4objects.Db4o.Internal.Handlers.ArrayHandler other = (Db4objects.Db4o.Internal.Handlers.ArrayHandler
+				)obj;
+			if (other.Identifier() != Identifier())
 			{
 				return false;
 			}
-			return (_handler.Equals(((ArrayHandler)obj)._handler));
+			if (_handler == null)
+			{
+				return other._handler == null;
+			}
+			return _handler.Equals(other._handler) && _usePrimitiveClassReflector == other._usePrimitiveClassReflector;
 		}
 
 		public override int GetHashCode()
 		{
+			if (_handler == null)
+			{
+				return HashcodeForNull;
+			}
 			int hc = _handler.GetHashCode() >> 7;
 			return _usePrimitiveClassReflector ? hc : -hc;
 		}
@@ -251,9 +249,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.ObjectLength + Const4.IntLength * 2;
 		}
 
-		public virtual IReflectClass PrimitiveClassReflector()
+		public virtual IReflectClass PrimitiveClassReflector(IReflector reflector)
 		{
-			return Handlers4.PrimitiveClassReflector(_handler);
+			return Handlers4.PrimitiveClassReflector(_handler, reflector);
 		}
 
 		protected virtual object ReadCreate(Transaction trans, IReadBuffer buffer, IntByRef
@@ -261,19 +259,20 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			ReflectClassByRef classByRef = new ReflectClassByRef();
 			elements.value = ReadElementsAndClass(trans, buffer, classByRef);
-			IReflectClass clazz = NewInstanceReflectClass(classByRef);
+			IReflectClass clazz = NewInstanceReflectClass(trans.Reflector(), classByRef);
 			if (clazz == null)
 			{
 				return null;
 			}
-			return ArrayReflector().NewInstance(clazz, elements.value);
+			return ArrayReflector(Container(trans)).NewInstance(clazz, elements.value);
 		}
 
-		protected virtual IReflectClass NewInstanceReflectClass(ReflectClassByRef byRef)
+		protected virtual IReflectClass NewInstanceReflectClass(IReflector reflector, ReflectClassByRef
+			 byRef)
 		{
 			if (_usePrimitiveClassReflector)
 			{
-				return PrimitiveClassReflector();
+				return PrimitiveClassReflector(reflector);
 			}
 			return byRef.value;
 		}
@@ -330,7 +329,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			else
 			{
-				clazz.value = ClassReflector();
+				clazz.value = ClassReflector(Container(trans));
 			}
 			if (Debug.ExceedsMaximumArrayEntries(elements, _usePrimitiveClassReflector))
 			{
@@ -350,7 +349,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return orig;
 			}
-			bool primitive = !Deploy.csharp && orig < Const4.Primitive;
+			// TODO: We changed the following line in the NullableArrayHandling 
+			//       refactoring. Behaviour may have to be different for older
+			//       ArrayHandler versions.
+			bool primitive = NullableArrayHandling.UseJavaHandling() && (orig < Const4.Primitive
+				);
 			if (primitive)
 			{
 				orig -= Const4.Primitive;
@@ -373,15 +376,23 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (elements != Const4.IgnoreId)
 			{
 				bool primitive = false;
+				if (NullableArrayHandling.UseJavaHandling())
+				{
+					if (elements < Const4.Primitive)
+					{
+						primitive = true;
+						elements -= Const4.Primitive;
+					}
+				}
 				int classID = -elements;
-				ClassMetadata classMetadata = trans.Container().ClassMetadataForId(classID);
+				ClassMetadata classMetadata = Container(trans).ClassMetadataForId(classID);
 				if (classMetadata != null)
 				{
-					return (primitive ? Handlers4.PrimitiveClassReflector(classMetadata) : classMetadata
-						.ClassReflector());
+					return (primitive ? Handlers4.PrimitiveClassReflector(classMetadata, trans.Reflector
+						()) : classMetadata.ClassReflector());
 				}
 			}
-			return ClassReflector();
+			return ClassReflector(Container(trans));
 		}
 
 		public static IEnumerator Iterator(IReflectClass claxx, object obj)
@@ -391,18 +402,20 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return MultidimensionalArrayHandler.AllElements(reflectArray, obj);
 			}
-			return ArrayHandler.AllElements(reflectArray, obj);
+			return Db4objects.Db4o.Internal.Handlers.ArrayHandler.AllElements(reflectArray, obj
+				);
 		}
 
-		protected int ClassID(object obj)
+		protected int ClassID(ObjectContainerBase container, object obj)
 		{
-			IReflectClass claxx = ComponentType(obj);
-			bool primitive = Deploy.csharp ? false : claxx.IsPrimitive();
+			IReflectClass claxx = ComponentType(container, obj);
+			bool primitive = NullableArrayHandling.UseOldNetHandling() ? false : claxx.IsPrimitive
+				();
 			if (primitive)
 			{
-				claxx = Container().ProduceClassMetadata(claxx).ClassReflector();
+				claxx = container.ProduceClassMetadata(claxx).ClassReflector();
 			}
-			ClassMetadata classMetadata = Container().ProduceClassMetadata(claxx);
+			ClassMetadata classMetadata = container.ProduceClassMetadata(claxx);
 			if (classMetadata == null)
 			{
 				// TODO: This one is a terrible low-frequency blunder !!!
@@ -418,14 +431,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return -classID;
 		}
 
-		private IReflectClass ComponentType(object obj)
+		private IReflectClass ComponentType(ObjectContainerBase container, object obj)
 		{
-			return ArrayReflector().GetComponentType(Reflector().ForObject(obj));
-		}
-
-		private IReflector Reflector()
-		{
-			return Container().Reflector();
+			return ArrayReflector(container).GetComponentType(container.Reflector().ForObject
+				(obj));
 		}
 
 		public virtual void Defragment(IDefragmentContext context)
@@ -447,7 +456,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.Seek(offset);
 		}
 
-		private int PreparePayloadRead(IDefragmentContext context)
+		protected virtual int PreparePayloadRead(IDefragmentContext context)
 		{
 			int newPayLoadOffset = context.ReadInt();
 			context.ReadInt();
@@ -524,7 +533,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 					// byte[] performance optimisation
 					for (int i = 0; i < elements.value; i++)
 					{
-						ArrayReflector().Set(array, i, context.ReadObject(_handler));
+						ArrayReflector(Container(context)).Set(array, i, context.ReadObject(_handler));
 					}
 				}
 			}
@@ -533,9 +542,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void Write(IWriteContext context, object obj)
 		{
-			int classID = ClassID(obj);
+			int classID = ClassID(Container(context), obj);
 			context.WriteInt(classID);
-			int elementCount = ArrayReflector().GetLength(obj);
+			int elementCount = ArrayReflector(Container(context)).GetLength(obj);
 			context.WriteInt(elementCount);
 			if (HandleAsByteArray(obj))
 			{
@@ -546,19 +555,69 @@ namespace Db4objects.Db4o.Internal.Handlers
 				// byte[] performance optimisation
 				for (int i = 0; i < elementCount; i++)
 				{
-					context.WriteObject(_handler, ArrayReflector().Get(obj, i));
+					context.WriteObject(_handler, ArrayReflector(Container(context)).Get(obj, i));
 				}
 			}
 		}
 
-		public virtual IPreparedComparison PrepareComparison(object obj)
+		internal virtual ObjectContainerBase Container(IContext context)
 		{
-			return new PreparedArrayContainsComparison(this, _handler, obj);
+			return context.Transaction().Container();
+		}
+
+		public virtual IPreparedComparison PrepareComparison(IContext context, object obj
+			)
+		{
+			return new PreparedArrayContainsComparison(context, this, _handler, obj);
 		}
 
 		public virtual int LinkLength()
 		{
 			return Const4.IndirectionLength;
+		}
+
+		public virtual ITypeHandler4 GenericTemplate()
+		{
+			return new Db4objects.Db4o.Internal.Handlers.ArrayHandler();
+		}
+
+		public virtual object DeepClone(object context)
+		{
+			TypeHandlerCloneContext typeHandlerCloneContext = (TypeHandlerCloneContext)context;
+			Db4objects.Db4o.Internal.Handlers.ArrayHandler original = (Db4objects.Db4o.Internal.Handlers.ArrayHandler
+				)typeHandlerCloneContext.original;
+			Db4objects.Db4o.Internal.Handlers.ArrayHandler cloned = (Db4objects.Db4o.Internal.Handlers.ArrayHandler
+				)Reflection4.NewInstance(this);
+			cloned._usePrimitiveClassReflector = original._usePrimitiveClassReflector;
+			cloned._handler = typeHandlerCloneContext.CorrectHandlerVersion(original.DelegateTypeHandler
+				());
+			return cloned;
+		}
+
+		public virtual ITypeHandler4 DelegateTypeHandler()
+		{
+			return _handler;
+		}
+
+		private const int HashcodeForNull = 9141078;
+
+		private sealed class ReflectArrayIterator : IndexedIterator
+		{
+			private readonly object _array;
+
+			private readonly IReflectArray _reflectArray;
+
+			public ReflectArrayIterator(IReflectArray reflectArray, object array) : base(reflectArray
+				.GetLength(array))
+			{
+				_reflectArray = reflectArray;
+				_array = array;
+			}
+
+			protected override object Get(int index)
+			{
+				return _reflectArray.Get(_array, index);
+			}
 		}
 	}
 }

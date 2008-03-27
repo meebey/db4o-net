@@ -15,11 +15,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		private static readonly float i_primitive = System.Convert.ToSingle(0);
 
-		public FloatHandler(ObjectContainerBase stream) : base(stream)
-		{
-		}
-
-		public override object Coerce(IReflectClass claxx, object obj)
+		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
+			)
 		{
 			return Coercion4.ToFloat(obj);
 		}
@@ -69,14 +66,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			float sourceFloat = ((float)source);
-			return new _IPreparedComparison_65(this, sourceFloat);
+			return new _IPreparedComparison_58(sourceFloat);
 		}
 
-		private sealed class _IPreparedComparison_65 : IPreparedComparison
+		private sealed class _IPreparedComparison_58 : IPreparedComparison
 		{
-			public _IPreparedComparison_65(FloatHandler _enclosing, float sourceFloat)
+			public _IPreparedComparison_58(float sourceFloat)
 			{
-				this._enclosing = _enclosing;
 				this.sourceFloat = sourceFloat;
 			}
 
@@ -89,8 +85,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				float targetFloat = ((float)target);
 				return sourceFloat == targetFloat ? 0 : (sourceFloat < targetFloat ? -1 : 1);
 			}
-
-			private readonly FloatHandler _enclosing;
 
 			private readonly float sourceFloat;
 		}

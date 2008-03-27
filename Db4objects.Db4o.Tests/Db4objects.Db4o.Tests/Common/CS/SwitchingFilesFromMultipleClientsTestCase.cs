@@ -3,6 +3,7 @@
 using System;
 using Db4oUnit;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Tests.Common.CS;
 
@@ -25,6 +26,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		protected override void Configure(IConfiguration config)
 		{
+			config.ReflectWith(Platform4.ReflectorForType(typeof(SwitchingFilesFromMultipleClientsTestCase.Data
+				)));
 		}
 
 		protected override void RunTest()

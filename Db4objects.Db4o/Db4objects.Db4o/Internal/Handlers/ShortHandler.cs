@@ -17,11 +17,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private static readonly short i_primitive = (short)0;
 
-		public ShortHandler(ObjectContainerBase stream) : base(stream)
-		{
-		}
-
-		public override object Coerce(IReflectClass claxx, object obj)
+		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
+			)
 		{
 			return Coercion4.ToShort(obj);
 		}
@@ -88,14 +85,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			short sourceShort = ((short)source);
-			return new _IPreparedComparison_95(this, sourceShort);
+			return new _IPreparedComparison_91(sourceShort);
 		}
 
-		private sealed class _IPreparedComparison_95 : IPreparedComparison
+		private sealed class _IPreparedComparison_91 : IPreparedComparison
 		{
-			public _IPreparedComparison_95(ShortHandler _enclosing, short sourceShort)
+			public _IPreparedComparison_91(short sourceShort)
 			{
-				this._enclosing = _enclosing;
 				this.sourceShort = sourceShort;
 			}
 
@@ -108,8 +104,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				short targetShort = ((short)target);
 				return sourceShort == targetShort ? 0 : (sourceShort < targetShort ? -1 : 1);
 			}
-
-			private readonly ShortHandler _enclosing;
 
 			private readonly short sourceShort;
 		}

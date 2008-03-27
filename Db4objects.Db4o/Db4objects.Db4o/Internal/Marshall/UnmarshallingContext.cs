@@ -206,27 +206,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _addToIDTree == Const4.Transient;
 		}
 
-		public override object ReadObject(ITypeHandler4 handlerType)
-		{
-			ITypeHandler4 handler = CorrectHandlerVersion(handlerType);
-			if (!IsIndirected(handler))
-			{
-				return handler.Read(this);
-			}
-			int payLoadOffset = ReadInt();
-			ReadInt();
-			// length - never used
-			if (payLoadOffset == 0)
-			{
-				return null;
-			}
-			int savedOffset = Offset();
-			Seek(payLoadOffset);
-			object obj = handler.Read(this);
-			Seek(savedOffset);
-			return obj;
-		}
-
 		public virtual Config4Class ClassConfig()
 		{
 			return ClassMetadata().Config();

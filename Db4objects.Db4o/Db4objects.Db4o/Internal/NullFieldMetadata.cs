@@ -13,7 +13,8 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override IPreparedComparison PrepareComparison(object obj)
+		/// <param name="obj"></param>
+		public virtual IPreparedComparison PrepareComparison(object obj)
 		{
 			return Null.Instance;
 		}

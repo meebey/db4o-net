@@ -34,9 +34,9 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>sets the MessageRecipient to receive Client Server messages.</summary>
 		/// <remarks>
-		/// sets the MessageRecipient to receive Client Server messages. &lt;br&gt;
-		/// &lt;br&gt;
-		/// This setting should be used on the server side.&lt;br&gt;&lt;br&gt;
+		/// sets the MessageRecipient to receive Client Server messages. <br />
+		/// <br />
+		/// This setting should be used on the server side.<br /><br />
 		/// </remarks>
 		/// <param name="messageRecipient">the MessageRecipient to be used</param>
 		void SetMessageRecipient(IMessageRecipient messageRecipient);
@@ -55,10 +55,10 @@ namespace Db4objects.Db4o.Config
 		/// </summary>
 		/// <remarks>
 		/// configures the time a client waits for a message response
-		/// from the server. &lt;br&gt;
-		/// &lt;br&gt;
-		/// Default value: 600000ms (10 minutes)&lt;br&gt;
-		/// &lt;br&gt;
+		/// from the server. <br />
+		/// <br />
+		/// Default value: 600000ms (10 minutes)<br />
+		/// <br />
 		/// It is recommended to use the same values for
 		/// <see cref="IClientServerConfiguration.TimeoutClientSocket">IClientServerConfiguration.TimeoutClientSocket
 		/// 	</see>
@@ -66,32 +66,32 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="IClientServerConfiguration.TimeoutServerSocket">IClientServerConfiguration.TimeoutServerSocket
 		/// 	</see>
 		/// .
-		/// &lt;br&gt;
-		/// This setting can be used on both client and server.&lt;br&gt;&lt;br&gt;
+		/// <br />
+		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="milliseconds">time in milliseconds</param>
 		void TimeoutClientSocket(int milliseconds);
 
 		/// <summary>configures the timeout of the serverside socket.</summary>
 		/// <remarks>
-		/// configures the timeout of the serverside socket. &lt;br&gt;
-		/// &lt;br&gt;
+		/// configures the timeout of the serverside socket. <br />
+		/// <br />
 		/// The serverside handler waits for messages to arrive from the client.
 		/// If no more messages arrive for the duration configured in this
 		/// setting, the client will be disconnected.
-		/// &lt;br&gt;
+		/// <br />
 		/// Clients send PING messages to the server at an interval of
 		/// Math.min(timeoutClientSocket(), timeoutServerSocket()) / 2
 		/// and the server will respond to keep connections alive.
-		/// &lt;br&gt;
+		/// <br />
 		/// Decrease this setting if you want clients to disconnect faster.
-		/// &lt;br&gt;
+		/// <br />
 		/// Increase this setting if you have a large number of clients and long
 		/// running queries and you are getting disconnected clients that you
 		/// would like to wait even longer for a response from the server.
-		/// &lt;br&gt;
-		/// Default value: 600000ms (10 minutes)&lt;br&gt;
-		/// &lt;br&gt;
+		/// <br />
+		/// Default value: 600000ms (10 minutes)<br />
+		/// <br />
 		/// It is recommended to use the same values for
 		/// <see cref="IClientServerConfiguration.TimeoutClientSocket">IClientServerConfiguration.TimeoutClientSocket
 		/// 	</see>
@@ -99,8 +99,8 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="IClientServerConfiguration.TimeoutServerSocket">IClientServerConfiguration.TimeoutServerSocket
 		/// 	</see>
 		/// .
-		/// &lt;br&gt;
-		/// This setting can be used on both client and server.&lt;br&gt;&lt;br&gt;
+		/// <br />
+		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="milliseconds">time in milliseconds</param>
 		void TimeoutServerSocket(int milliseconds);
@@ -112,14 +112,14 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// configures the client messaging system to be single threaded
 		/// or multithreaded.
-		/// &lt;br&gt;&lt;br&gt;Recommended settings:&lt;br&gt;
-		/// - &lt;code&gt;true&lt;/code&gt; for low resource systems.&lt;br&gt;
-		/// - &lt;code&gt;false&lt;/code&gt; for best asynchronous performance and fast
+		/// <br /><br />Recommended settings:<br />
+		/// - <code>true</code> for low resource systems.<br />
+		/// - <code>false</code> for best asynchronous performance and fast
 		/// GUI response.
-		/// &lt;br&gt;&lt;br&gt;Default value:&lt;br&gt;
-		/// - .NET Compactframework: &lt;code&gt;true&lt;/code&gt;&lt;br&gt;
-		/// - all other platforms: &lt;code&gt;false&lt;/code&gt;&lt;br&gt;&lt;br&gt;
-		/// This setting can be used on both client and server.&lt;br&gt;&lt;br&gt;
+		/// <br /><br />Default value:<br />
+		/// - .NET Compactframework: <code>true</code><br />
+		/// - all other platforms: <code>false</code><br /><br />
+		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="flag">the desired setting</param>
 		void SingleThreadedClient(bool flag);
@@ -127,8 +127,8 @@ namespace Db4objects.Db4o.Config
 		/// <summary>Configures to batch messages between client and server.</summary>
 		/// <remarks>
 		/// Configures to batch messages between client and server. By default, batch
-		/// mode is enabled.&lt;br&gt;&lt;br&gt;
-		/// This setting can be used on both client and server.&lt;br&gt;&lt;br&gt;
+		/// mode is enabled.<br /><br />
+		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="flag">false, to turn message batching off.</param>
 		void BatchMessages(bool flag);
@@ -136,9 +136,9 @@ namespace Db4objects.Db4o.Config
 		/// <summary>Configures the maximum memory buffer size for batched message.</summary>
 		/// <remarks>
 		/// Configures the maximum memory buffer size for batched message. If the
-		/// size of batched messages is greater than &lt;code&gt;maxSize&lt;/code&gt;, batched
-		/// messages will be sent to server.&lt;br&gt;&lt;br&gt;
-		/// This setting can be used on both client and server.&lt;br&gt;&lt;br&gt;
+		/// size of batched messages is greater than <code>maxSize</code>, batched
+		/// messages will be sent to server.<br /><br />
+		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <param name="maxSize"></param>
 		void MaxBatchQueueSize(int maxSize);

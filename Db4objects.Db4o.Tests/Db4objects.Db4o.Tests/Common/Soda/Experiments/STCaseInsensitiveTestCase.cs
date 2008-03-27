@@ -31,23 +31,20 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Experiments
 			IQuery q = NewQuery();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Experiments.STCaseInsensitiveTestCase
 				));
-			q.Descend("str").Constrain(new _IEvaluation_30(this));
+			q.Descend("str").Constrain(new _IEvaluation_30());
 			Expect(q, new int[] { 1, 2 });
 		}
 
 		private sealed class _IEvaluation_30 : IEvaluation
 		{
-			public _IEvaluation_30(STCaseInsensitiveTestCase _enclosing)
+			public _IEvaluation_30()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void Evaluate(ICandidate candidate)
 			{
 				candidate.Include(candidate.GetObject().ToString().ToLower().StartsWith("hell"));
 			}
-
-			private readonly STCaseInsensitiveTestCase _enclosing;
 		}
 	}
 }

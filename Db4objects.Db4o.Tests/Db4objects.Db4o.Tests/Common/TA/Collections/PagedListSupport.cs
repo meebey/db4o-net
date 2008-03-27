@@ -16,14 +16,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 		public virtual void Apply(IInternalObjectContainer db)
 		{
 			EventRegistry(db).Updating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
-				(new _IEventListener4_17(this).OnEvent);
+				(new _IEventListener4_17().OnEvent);
 		}
 
 		private sealed class _IEventListener4_17
 		{
-			public _IEventListener4_17(PagedListSupport _enclosing)
+			public _IEventListener4_17()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.CancellableObjectEventArgs
@@ -39,8 +38,6 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 					}
 				}
 			}
-
-			private readonly PagedListSupport _enclosing;
 		}
 
 		private static IEventRegistry EventRegistry(IObjectContainer db)
