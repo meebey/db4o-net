@@ -15,6 +15,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				typeof(ArrayList4TestCase), 
                 typeof(ArrayList4TATestCase), 
                 typeof(GenericDictionaryTestCase),
+
+				typeof(GenericListTypeHandlerTestCase),
             };
 		}
 	}
