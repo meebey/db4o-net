@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				});
 		}
 
-		public void TestUnoptimizableThenByOnOptimizedOrderBy()
+		public void _TestUnoptimizableThenByOnOptimizedOrderBy()
 		{
 			var query = from Person p in Db()
 						orderby p.OptimizableAgeProperty ascending,
