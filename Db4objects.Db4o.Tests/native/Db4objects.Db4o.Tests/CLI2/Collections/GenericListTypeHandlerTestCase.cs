@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 			private static string Decode(byte[] bytes)
 			{
-				return Encoding.UTF8.GetString(bytes);
+				return Encoding.UTF8.GetString(bytes, 0, bytes.Length);
 			}
 
 			private static byte[] ReadByteArray(IReadContext context)
