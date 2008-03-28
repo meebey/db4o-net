@@ -39,6 +39,16 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			}
 		}
 
+		class Container
+		{
+			public Object elements;
+
+			public Container(params object[] values)
+			{
+				elements = new List<object>(values);
+			}
+		}
+
 		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
 		{
 			config.RegisterTypeHandler(new GenericListPredicate(), new GenericListTypeHandler());
@@ -52,6 +62,17 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			Store(new Component<Component<int>>(componentM1));
 
 			Store(new Container<int?>(-1, null, 42));
+
+			Store(new Container("foo", "bar"));
+		}
+
+		public void TestUntypedField()
+		{
+			Container container = RetrieveOnlyInstance<Container>();
+			Assert.IsNotNull(container.elements);
+
+			IList<object> list = (IList<object>) container.elements;
+			Iterator4Assert.AreEqual(new object[] { "foo", "bar" }, list.GetEnumerator());
 		}
 
 		public void _TestListOfNullables()
@@ -96,19 +117,52 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				throw new NotImplementedException();
 			}
 
+			public void Write(IWriteContext context, object obj)
+			{
+				IList list = (IList)obj;
+				WriteClassMetadata(context, list);
+				WriteElementCount(context, list);
+				WriteElements(context, list);
+			}
+
 			public object Read(IReadContext context)
 			{
-				IList list = (IList)Activator.CreateInstance(ReadType(context));
-				ReadElements(context, list, context.ReadLong());
+				IList list = NewList(ReadClassMetadata(context));;
+				ReadElements(context, list, ReadElementCount(context));
 				return list;
 			}
 
-			public void Write(IWriteContext context, object obj)
+			private static long ReadElementCount(IReadContext context)
 			{
-				IList list = (IList) obj;
-				WriteType(context, obj.GetType());
-				WriteElementCount(context, list);
-				WriteElements(context, list);
+				return context.ReadLong();
+			}
+
+			private void WriteClassMetadata(IWriteContext context, IList list)
+			{
+				context.WriteInt(ClassMetadataId(context, list));
+			}
+
+			private int ClassMetadataId(IWriteContext context, IList list)
+			{
+				ObjectContainerBase container = Container(context);
+				return container.ProduceClassMetadata(container.Reflector().ForObject(list)).GetID();
+			}
+
+			private static IList NewList(ClassMetadata metadata)
+			{
+				Type type = NetReflector.ToNative(metadata.ClassReflector());
+				return NewList(type);
+			}
+
+			private static IList NewList(Type type)
+			{
+				return (IList)Activator.CreateInstance(type);
+			}
+
+			private ClassMetadata ReadClassMetadata(IReadContext context)
+			{
+				int classMetadataId = context.ReadInt();
+				return Container(context).ClassMetadataForId(classMetadataId);
 			}
 
 			private void ReadElements(IReadContext context, IList list, long count)
@@ -134,35 +188,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				}
 			}
 
-			private static Type ReadType(IReadContext context)
-			{
-				string typeName = Decode(ReadByteArray(context));
-				return TypeReference.FromString(typeName).Resolve();
-			}
-
-			private static void WriteType(IWriteContext context, Type type)
-			{
-				string typeName = TypeReference.FromType(type).GetUnversionedName();
-				WriteByteArray(context, Encode(typeName));
-			}
-
-			private static string Decode(byte[] bytes)
-			{
-				return Encoding.UTF8.GetString(bytes, 0, bytes.Length);
-			}
-
-			private static byte[] ReadByteArray(IReadContext context)
-			{
-				byte[] bytes = new byte[context.ReadInt()];
-				context.ReadBytes(bytes);
-				return bytes;
-			}
-
-			private static byte[] Encode(string typeName)
-			{
-				return Encoding.UTF8.GetBytes(typeName);
-			}
-
 			private ObjectContainerBase Container(IContext context)
 			{
 				return ContainerBase(context.ObjectContainer());
@@ -180,19 +205,18 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 			private static ITypeHandler4 ElementTypeHandler(ObjectContainerBase container, IList list)
 			{
-				return container.Handlers().TypeHandlerForClass(ElementClass(container, list));
+				IReflectClass elementClass = ElementClass(container, list);
+				if (NetReflector.ToNative(elementClass) == typeof(object))
+				{
+					return container.Handlers().UntypedObjectHandler();
+				}
+				return container.Handlers().TypeHandlerForClass(elementClass);
 			}
 
 			private static IReflectClass ElementClass(ObjectContainerBase container, IList list)
 			{
 				Type elementType = list.GetType().GetGenericArguments()[0];
 				return container.Reflector().ForClass(elementType);
-			}
-
-			private static void WriteByteArray(IWriteContext context, byte[] bytes)
-			{
-				context.WriteInt(bytes.Length);
-				context.WriteBytes(bytes);
 			}
 
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
