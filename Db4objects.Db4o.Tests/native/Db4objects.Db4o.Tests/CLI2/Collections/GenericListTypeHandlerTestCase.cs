@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -83,7 +84,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			Iterator4Assert.AreEqual(new object[] { -1, 42 }, container.elements.GetEnumerator());
 		}
 
-		internal class GenericListTypeHandler : ITypeHandler4, IVariableLengthTypeHandler, IEmbeddedTypeHandler
+		internal class GenericListTypeHandler : ITypeHandler4, IVariableLengthTypeHandler, IEmbeddedTypeHandler, ICascadingTypeHandler
 		{
 			public void Delete(IDeleteContext context)
 			{
@@ -136,7 +137,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			private static Type ReadType(IReadContext context)
 			{
 				string typeName = Decode(ReadByteArray(context));
-
 				return TypeReference.FromString(typeName).Resolve();
 			}
 
@@ -165,16 +165,29 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 			private ObjectContainerBase Container(IContext context)
 			{
-				return ((IInternalObjectContainer)context.ObjectContainer()).Container();
+				return ContainerBase(context.ObjectContainer());
+			}
+
+			private static ObjectContainerBase ContainerBase(IObjectContainer container)
+			{
+				return ((IInternalObjectContainer)container).Container();
 			}
 
 			private ITypeHandler4 ElementTypeHandler(IContext context, IList list)
 			{
-				Type elementType = list.GetType().GetGenericArguments()[0];
+				return ElementTypeHandler(Container(context), list);
+			}
 
-				ObjectContainerBase container = Container(context);
-				return container.Handlers().TypeHandlerForClass(container.Reflector().ForClass(elementType));
-			}  
+			private static ITypeHandler4 ElementTypeHandler(ObjectContainerBase container, IList list)
+			{
+				return container.Handlers().TypeHandlerForClass(ElementClass(container, list));
+			}
+
+			private static IReflectClass ElementClass(ObjectContainerBase container, IList list)
+			{
+				Type elementType = list.GetType().GetGenericArguments()[0];
+				return container.Reflector().ForClass(elementType);
+			}
 
 			private static void WriteByteArray(IWriteContext context, byte[] bytes)
 			{
@@ -185,6 +198,18 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
 				throw new NotImplementedException();
+			}
+
+			public void CascadeActivation(Transaction trans, object obj, IActivationDepth depth)
+			{
+				IList list = (IList) obj;
+				ICascadingTypeHandler elementHandler = trans.Container().ClassMetadataForReflectClass(ElementClass(trans.Container(), list));
+				if (elementHandler == null) return;
+
+				foreach (object element in list)
+				{
+					elementHandler.CascadeActivation(trans, element, depth);
+				}
 			}
 		}
 
