@@ -22,8 +22,7 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public sealed class HandlerRegistry
 	{
-		public const byte HandlerVersion = MarshallingLogicSimplification.enabled ? (byte
-			)3 : (byte)2;
+		public const byte HandlerVersion = 3;
 
 		private readonly ObjectContainerBase _container;
 

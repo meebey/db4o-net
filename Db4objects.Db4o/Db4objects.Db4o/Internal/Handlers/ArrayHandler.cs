@@ -287,7 +287,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual void ReadCandidates(int handlerVersion, ByteArrayBuffer reader, QCandidates
 			 candidates)
 		{
-			reader.Seek(reader.ReadInt());
 			ReadSubCandidates(handlerVersion, reader, candidates);
 		}
 
@@ -458,12 +457,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		protected virtual int PreparePayloadRead(IDefragmentContext context)
 		{
-			int newPayLoadOffset = context.ReadInt();
-			context.ReadInt();
-			// skip length, not needed
-			int linkOffSet = context.Offset();
-			context.Seek(newPayLoadOffset);
-			return linkOffSet;
+			return context.Offset();
 		}
 
 		public virtual void Defrag1(IDefragmentContext context)

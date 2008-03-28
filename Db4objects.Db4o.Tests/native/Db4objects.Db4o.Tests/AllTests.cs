@@ -17,6 +17,7 @@ namespace Db4objects.Db4o.Tests
 //			return new Common.Migration.AllTests().RunSolo();
 //			return new Common.Reflect.Custom.AllTests().RunSolo();
 //			return new AllTests().RunSolo();
+//			return new AllTests().RunClientServer();
 //			return new AllTestsConcurrency().RunConcurrencyAll();
 		    return new AllTests().RunAll();
 #endif
@@ -24,7 +25,7 @@ namespace Db4objects.Db4o.Tests
 		
 		protected override Type[] TestCases()
 		{	
-			//return new Type[] { typeof(CLI2.Collections.GenericListTypeHandlerTestCase) };
+//			return new Type[] { typeof(CLI2.Collections.GenericListTypeHandlerTestCase) };
 			//return new Type[] { typeof(Compact.UnoptimizedLinqTestCase), };
 			return new Type[]
 				{	

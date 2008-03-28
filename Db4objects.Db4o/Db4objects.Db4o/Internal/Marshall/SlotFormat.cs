@@ -15,8 +15,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private static readonly Hashtable4 _versions = new Hashtable4();
 
 		private static readonly Db4objects.Db4o.Internal.Marshall.SlotFormat CurrentSlotFormat
-			 = MarshallingLogicSimplification.enabled ? new SlotFormatCurrent() : (Db4objects.Db4o.Internal.Marshall.SlotFormat
-			)new SlotFormat2();
+			 = new SlotFormatCurrent();
 
 		static SlotFormat()
 		{

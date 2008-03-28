@@ -329,7 +329,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (!(_handler is IFirstClassHandler))
+			if (!(_handler is ICascadingTypeHandler))
 			{
 				return;
 			}
@@ -338,8 +338,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			IFirstClassHandler firstClassHandler = (IFirstClassHandler)_handler;
-			firstClassHandler.CascadeActivation(trans, cascadeTo, depth);
+			ICascadingTypeHandler cascadingHandler = (ICascadingTypeHandler)_handler;
+			cascadingHandler.CascadeActivation(trans, cascadeTo, depth);
 		}
 
 		protected virtual object CascadingTarget(Transaction trans, IActivationDepth depth
@@ -1321,7 +1321,27 @@ namespace Db4objects.Db4o.Internal
 			int handlerVersion = mf.HandlerVersion();
 			context.HandlerVersion(handlerVersion);
 			ITypeHandler4 typeHandler = context.CorrectHandlerVersion(GetHandler());
-			typeHandler.Defragment(context);
+			SlotFormat.ForHandlerVersion(handlerVersion).DoWithSlotIndirection(context, typeHandler
+				, new _IClosure4_1070(typeHandler, context));
+		}
+
+		private sealed class _IClosure4_1070 : IClosure4
+		{
+			public _IClosure4_1070(ITypeHandler4 typeHandler, DefragmentContextImpl context)
+			{
+				this.typeHandler = typeHandler;
+				this.context = context;
+			}
+
+			public object Run()
+			{
+				typeHandler.Defragment(context);
+				return null;
+			}
+
+			private readonly ITypeHandler4 typeHandler;
+
+			private readonly DefragmentContextImpl context;
 		}
 
 		public virtual void CreateIndex()

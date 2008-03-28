@@ -10,12 +10,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		protected override int PreparePayloadRead(IDefragmentContext context)
 		{
-			int newPayLoadOffset = context.ReadInt();
-			context.ReadInt();
-			// skip length, not needed
-			int linkOffSet = context.Offset();
-			context.Seek(newPayLoadOffset);
-			return linkOffSet;
+			return context.Offset();
 		}
 	}
 }

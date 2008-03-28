@@ -2,17 +2,14 @@
 
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public interface IFirstClassHandler
+	public interface IFirstClassHandler : ICascadingTypeHandler
 	{
-		void CascadeActivation(Transaction trans, object obj, IActivationDepth depth);
-
 		/// <exception cref="Db4oIOException"></exception>
 		void ReadCandidates(int handlerVersion, ByteArrayBuffer buffer, QCandidates candidates
 			);

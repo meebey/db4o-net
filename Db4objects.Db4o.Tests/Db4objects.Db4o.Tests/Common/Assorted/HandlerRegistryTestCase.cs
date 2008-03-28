@@ -30,16 +30,14 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestCorrectHandlerVersion()
 		{
 			UntypedFieldHandler untypedFieldHandler = new UntypedFieldHandler(Stream());
-			Type untypedFieldHandler2Class = MarshallingLogicSimplification.enabled ? typeof(
-				UntypedFieldHandler2) : typeof(UntypedFieldHandler);
-			Type arrayHandler2Class = MarshallingLogicSimplification.enabled ? typeof(ArrayHandler2
-				) : typeof(ArrayHandler);
 			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler0), untypedFieldHandler, 
 				-1);
 			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler0), untypedFieldHandler, 
 				0);
-			AssertCorrectedHandlerVersion(untypedFieldHandler2Class, untypedFieldHandler, 1);
-			AssertCorrectedHandlerVersion(untypedFieldHandler2Class, untypedFieldHandler, 2);
+			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler2), untypedFieldHandler, 
+				1);
+			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler2), untypedFieldHandler, 
+				2);
 			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler), untypedFieldHandler, HandlerRegistry
 				.HandlerVersion);
 			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler), untypedFieldHandler, HandlerRegistry
@@ -54,16 +52,16 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				, 0, null);
 			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler0), primitiveFieldHandler
 				, 0);
-			AssertPrimitiveFieldHandlerDelegate(untypedFieldHandler2Class, primitiveFieldHandler
+			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler2), primitiveFieldHandler
 				, 1);
-			AssertPrimitiveFieldHandlerDelegate(untypedFieldHandler2Class, primitiveFieldHandler
+			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler2), primitiveFieldHandler
 				, 2);
 			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler), primitiveFieldHandler
 				, HandlerRegistry.HandlerVersion);
 			ArrayHandler arrayHandler = new ArrayHandler(untypedFieldHandler, false);
 			AssertCorrectedHandlerVersion(typeof(ArrayHandler0), arrayHandler, 0);
-			AssertCorrectedHandlerVersion(arrayHandler2Class, arrayHandler, 1);
-			AssertCorrectedHandlerVersion(arrayHandler2Class, arrayHandler, 2);
+			AssertCorrectedHandlerVersion(typeof(ArrayHandler2), arrayHandler, 1);
+			AssertCorrectedHandlerVersion(typeof(ArrayHandler2), arrayHandler, 2);
 			AssertCorrectedHandlerVersion(typeof(ArrayHandler), arrayHandler, HandlerRegistry
 				.HandlerVersion);
 			ArrayHandler multidimensionalArrayHandler = new MultidimensionalArrayHandler(untypedFieldHandler

@@ -226,10 +226,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private void PreWrite()
 		{
 			_fieldWriteCount++;
-			if (IsSecondWriteToField())
-			{
-				CreateChildBuffer(true, true);
-			}
 		}
 
 		private void PostWrite()

@@ -23,9 +23,9 @@ namespace Db4objects.Db4o.Internal
 			 depth)
 		{
 			ITypeHandler4 typeHandler = TypeHandlerForObject(onObject);
-			if (typeHandler is IFirstClassHandler)
+			if (typeHandler is ICascadingTypeHandler)
 			{
-				((IFirstClassHandler)typeHandler).CascadeActivation(trans, onObject, depth);
+				((ICascadingTypeHandler)typeHandler).CascadeActivation(trans, onObject, depth);
 			}
 		}
 
@@ -123,6 +123,7 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 typeHandler = context.TypeHandlerForId(typeHandlerId);
 			if (typeHandler != null)
 			{
+				SeekSecondaryOffset(context, typeHandler);
 				context.CorrectHandlerVersion(typeHandler).Defragment(context);
 			}
 			context.Seek(linkOffSet);
@@ -142,14 +143,9 @@ namespace Db4objects.Db4o.Internal
 		protected virtual void SeekSecondaryOffset(IReadBuffer buffer, ITypeHandler4 typeHandler
 			)
 		{
-			// do nothing, no longer needed in current implementation.
-			if (IsPrimitiveArray(typeHandler))
-			{
-				// unnecessary secondary offset, consistent with old format
-				buffer.SeekCurrentInt();
-			}
 		}
 
+		// do nothing, no longer needed in current implementation.
 		protected virtual bool IsPrimitiveArray(ITypeHandler4 classMetadata)
 		{
 			return classMetadata is PrimitiveFieldHandler && ((PrimitiveFieldHandler)classMetadata
@@ -206,14 +202,7 @@ namespace Db4objects.Db4o.Internal
 			MarshallingContextState state = marshallingContext.CurrentState();
 			marshallingContext.CreateChildBuffer(false, false);
 			context.WriteInt(id);
-			if (IsPrimitiveArray(typeHandler))
-			{
-				// TODO: This indirection is unneccessary, but it is required by the 
-				// current old reading format. 
-				// Remove in the next version of UntypedFieldHandler
-				marshallingContext.PrepareIndirectionOfSecondWrite();
-			}
-			else
+			if (!IsPrimitiveArray(typeHandler))
 			{
 				marshallingContext.DoNotIndirectWrites();
 			}
