@@ -223,6 +223,9 @@
     <Compile Include="F1\Chapter9\Car.cs" />
     <Compile Include="F1\Chapter9\LinqExample.cs" />
     <Compile Include="F1\Chapter9\Pilot.cs" />
+    <Compile Include="F1\Chapter10\Item.cs" />
+    <Compile Include="F1\Chapter10\BenchmarkExample.cs" />
+    <Compile Include="F1\Chapter10\CrudApplication.cs" />
     <Compile Include="F1\Util.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -245,6 +248,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Db4oBench\Db4oBench-2008.csproj">
+      <Project>{D8AB00B9-7769-4136-98FA-920F89B12653}</Project>
+      <Name>Db4oBench-2008</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o.Linq\Db4objects.Db4o.Linq-2008.csproj">
       <Project>{23531440-0922-43EB-A483-6592FFC2F093}</Project>
       <Name>Db4objects.Db4o.Linq-2008</Name>
