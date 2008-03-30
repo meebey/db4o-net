@@ -80,6 +80,10 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <ProjectReference Include="..\..\Db4oBench\Db4oBench-2005.csproj">
+      <Project>{D8AB00B9-7769-4136-98FA-920F89B12653}</Project>
+      <Name>Db4oBench-2005</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2005.csproj">
       <Project>{4FA6645B-E14B-4F18-A2CC-C1925663EFCE}</Project>
       <Name>Db4objects.Db4o-2005</Name>
@@ -204,6 +208,9 @@
     <Compile Include="F1\Chapter8\SensorReadout.cs" />
     <Compile Include="F1\Chapter8\TemperatureSensorReadout.cs" />
     <Compile Include="F1\Chapter8\TransparentPersistenceExample.cs" />
+    <Compile Include="F1\Chapter10\Item.cs" />
+    <Compile Include="F1\Chapter10\CrudApplication.cs" />
+    <Compile Include="F1\Chapter10\BenchmarkExample.cs" />
     <Compile Include="F1\Util.cs">
       <SubType>Code</SubType>
     </Compile>
