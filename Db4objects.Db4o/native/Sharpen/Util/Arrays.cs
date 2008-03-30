@@ -1,6 +1,8 @@
+using System.Collections.Generic;
+
 namespace Sharpen.Util
 {
-	class Arrays
+	public class Arrays
 	{
 		public static void Fill<T>(T[] array, T value)
 		{	
@@ -16,6 +18,11 @@ namespace Sharpen.Util
             {
                 array[i] = value;
             }
+        }
+
+	public static List<T> AsList<T> (T[] array)
+        {
+            return new List<T>(array); 
         }
     }
 }

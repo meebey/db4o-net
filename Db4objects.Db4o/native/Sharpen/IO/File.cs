@@ -1,6 +1,7 @@
 /* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 
 using System;
+using System.Collections;
 using System.IO;
 
 namespace Sharpen.IO
@@ -122,6 +123,21 @@ namespace Sharpen.IO
 		{
 			new FileInfo(_path).MoveTo(file.GetPath());
 		}
+
+        public File[] ListFiles(IFilenameFilter filter)
+        {
+            String[] ss = List();
+            if (ss == null) return null;
+            ArrayList v = new ArrayList();
+            for (int i = 0; i < ss.Length; i++)
+            {
+                if ((filter == null) || filter.Accept(this, ss[i]))
+                {
+                    v.Add(new File(ss[i], this));
+                }
+            }
+            return (File[])(v.ToArray(typeof(File)));
+        }
 
 		public override string ToString()
 		{
