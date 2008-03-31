@@ -23,6 +23,10 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 		{
 			public T value;
 
+			public Component()
+			{	
+			}
+
 			public Component(T value_)
 			{
 				value = value_;
@@ -31,17 +35,25 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 		class Container<T>
 		{
-			public List<T> elements = new List<T>();
+			public List<T> elements;
+
+			public Container()
+			{	
+			}
 
 			public Container(params T[] values)
 			{
-				elements.AddRange(values);
+				elements = new List<T>(values);
 			}
 		}
 
 		class Container
 		{
 			public Object elements;
+
+			public Container()
+			{	
+			}
 
 			public Container(params object[] values)
 			{
@@ -51,6 +63,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
 		{
+			config.ExceptionsOnNotStorable(true);
 			config.RegisterTypeHandler(new GenericListPredicate(), new GenericListTypeHandler());
 		}
 
@@ -127,7 +140,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 			public object Read(IReadContext context)
 			{
-				IList list = NewList(ReadClassMetadata(context));;
+				IList list = NewList(ReadClassMetadata(context));
 				ReadElements(context, list, ReadElementCount(context));
 				return list;
 			}
@@ -139,7 +152,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 			private void WriteClassMetadata(IWriteContext context, IList list)
 			{
-				context.WriteInt(ClassMetadataId(context, list));
+				int id = ClassMetadataId(context, list);
+				context.WriteInt(id);
 			}
 
 			private int ClassMetadataId(IWriteContext context, IList list)
