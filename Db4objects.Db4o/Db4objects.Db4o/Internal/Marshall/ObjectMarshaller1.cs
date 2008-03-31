@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
@@ -13,14 +14,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void AddFieldIndices(ClassMetadata yc, ObjectHeaderAttributes attributes
 			, StatefulBuffer writer, Slot oldSlot)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_15(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_16(this
 				, writer, yc, oldSlot);
 			TraverseFields(yc, writer, attributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_15 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_16 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_15(ObjectMarshaller1 _enclosing, StatefulBuffer writer
+			public _TraverseFieldCommand_16(ObjectMarshaller1 _enclosing, StatefulBuffer writer
 				, ClassMetadata yc, Slot oldSlot)
 			{
 				this._enclosing = _enclosing;
@@ -55,15 +56,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 attributes, StatefulBuffer writer, string name)
 		{
 			TreeInt[] ret = new TreeInt[] { tree };
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_30(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_31(this
 				, name, ret, writer);
 			TraverseFields(yc, writer, attributes, command);
 			return ret[0];
 		}
 
-		private sealed class _TraverseFieldCommand_30 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_31 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_30(ObjectMarshaller1 _enclosing, string name, TreeInt
+			public _TraverseFieldCommand_31(ObjectMarshaller1 _enclosing, string name, TreeInt
 				[] ret, StatefulBuffer writer)
 			{
 				this._enclosing = _enclosing;
@@ -101,14 +102,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void DeleteMembers(ClassMetadata yc, ObjectHeaderAttributes attributes
 			, StatefulBuffer writer, int type, bool isUpdate)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_48(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_49(this
 				, writer, isUpdate);
 			TraverseFields(yc, writer, attributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_48 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_49 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_48(ObjectMarshaller1 _enclosing, StatefulBuffer writer
+			public _TraverseFieldCommand_49(ObjectMarshaller1 _enclosing, StatefulBuffer writer
 				, bool isUpdate)
 			{
 				this._enclosing = _enclosing;
@@ -139,20 +140,20 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override bool FindOffset(ClassMetadata yc, IFieldListInfo fieldListInfo, ByteArrayBuffer
 			 reader, FieldMetadata field)
 		{
-			bool[] ret = new bool[] { false };
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_62(field
-				, ret, reader);
+			BooleanByRef found = new BooleanByRef(false);
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_63(field
+				, found, reader);
 			TraverseFields(yc, reader, fieldListInfo, command);
-			return ret[0];
+			return found.value;
 		}
 
-		private sealed class _TraverseFieldCommand_62 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_63 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_62(FieldMetadata field, bool[] ret, ByteArrayBuffer 
-				reader)
+			public _TraverseFieldCommand_63(FieldMetadata field, BooleanByRef found, ByteArrayBuffer
+				 reader)
 			{
 				this.field = field;
-				this.ret = ret;
+				this.found = found;
 				this.reader = reader;
 			}
 
@@ -161,7 +162,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				if (curField == field)
 				{
-					ret[0] = !isNull;
+					found.value = !isNull;
 					this.Cancel();
 					return;
 				}
@@ -173,7 +174,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private readonly FieldMetadata field;
 
-			private readonly bool[] ret;
+			private readonly BooleanByRef found;
 
 			private readonly ByteArrayBuffer reader;
 		}
@@ -209,14 +210,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
 			 yo, ObjectHeaderAttributes attributes, ByteArrayBuffer reader)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_99(trans
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_100(trans
 				, reader, yo);
 			TraverseFields(yc, reader, attributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_99 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_100 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_99(Transaction trans, ByteArrayBuffer reader, ObjectReference
+			public _TraverseFieldCommand_100(Transaction trans, ByteArrayBuffer reader, ObjectReference
 				 yo)
 			{
 				this.trans = trans;
@@ -248,14 +249,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void DefragFields(ClassMetadata clazz, ObjectHeader header, DefragmentContextImpl
 			 context)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_114(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_115(this
 				, context);
 			TraverseFields(clazz, null, header._headerAttributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_114 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_115 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_114(ObjectMarshaller1 _enclosing, DefragmentContextImpl
+			public _TraverseFieldCommand_115(ObjectMarshaller1 _enclosing, DefragmentContextImpl
 				 context)
 			{
 				this._enclosing = _enclosing;

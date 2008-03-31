@@ -25,7 +25,7 @@ namespace Db4oUnit
 		}
 		
 		public static void PrintStackTrace(TextWriter writer, Exception e)
-		{
+		{	
 			writer.Write(e);
 		}
 

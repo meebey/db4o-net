@@ -79,6 +79,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			ClassMetadata classMetadata = ClassMetadataForId(id);
 			if (null == classMetadata)
 			{
+				// TODO: throw here
 				return null;
 			}
 			IActivationDepth depth = ActivationDepth().Descend(classMetadata);
