@@ -104,6 +104,11 @@ namespace Db4oTool
 				if (RemainingArguments.Length != 1) return null;
 				return RemainingArguments[0];
 			}
+
+			set
+			{
+				RemainingArguments = new[] { value };
+			}
 		}
 
 		public bool IsValid

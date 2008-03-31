@@ -34,7 +34,7 @@ namespace Db4oTool
 			return 0;
 		}
 
-		private static void Run(ProgramOptions options)
+		public static void Run(ProgramOptions options)
 		{
             foreach (string fileName in options.StatisticsFileNames)
             {
