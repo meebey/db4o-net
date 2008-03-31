@@ -107,7 +107,7 @@ namespace Db4oTool
 
 			set
 			{
-				RemainingArguments = new[] { value };
+				RemainingArguments = new string[] { value };
 			}
 		}
 
