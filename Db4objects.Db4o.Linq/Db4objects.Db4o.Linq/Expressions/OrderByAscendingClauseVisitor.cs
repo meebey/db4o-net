@@ -10,19 +10,19 @@ using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Linq.Expressions
 {
-    internal class OrderByAscendingClauseVisitor : OrderByClauseVisitorBase
-    {
-        protected override void ApplyDirection(IQuery query)
-        {
-            query.OrderAscending();
-        }
+	internal class OrderByAscendingClauseVisitor : OrderByClauseVisitorBase
+	{
+		private static ICachingStrategy<Expression, IQueryBuilderRecord> _cache =
+			new SingleItemCachingStrategy<Expression, IQueryBuilderRecord>(ExpressionEqualityComparer.Instance);
 
-        private static ICachingStrategy<Expression, IQueryBuilderRecord> _cache =
-            new SingleItemCachingStrategy<Expression, IQueryBuilderRecord>(ExpressionEqualityComparer.Instance);
+		protected override ICachingStrategy<Expression, IQueryBuilderRecord> GetCachingStrategy()
+		{
+			return _cache;
+		}
 
-        protected override ICachingStrategy<Expression, IQueryBuilderRecord> GetCachingStrategy()
-        {
-            return _cache;
-        }
-    }
+		protected override void ApplyDirection(IQuery query)
+		{
+			query.OrderAscending();
+		}
+	}
 }

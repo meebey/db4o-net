@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 {
 	internal abstract class OrderByClauseVisitorBase : ExpressionQueryBuilder
 	{
-        protected abstract void ApplyDirection(IQuery query);
+		protected abstract void ApplyDirection(IQuery query);
 
 		protected override void VisitMemberAccess(MemberExpression m)
 		{
