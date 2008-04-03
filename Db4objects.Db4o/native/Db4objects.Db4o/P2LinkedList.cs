@@ -14,8 +14,7 @@ namespace Db4objects.Db4o
 
 		public P1ListElement i_last;
 
-		internal P2LinkedList()
-			: base()
+		public P2LinkedList() : base()
 		{
 		}
 

@@ -40,13 +40,12 @@ namespace Db4objects.Drs.Tests.Regression
         {
             StoreToProviderA();
             ReplicateAllToProviderB();
+			EnsureContent(B().Provider());
         }
 
         private void ReplicateAllToProviderB()
         {
             ReplicateAll(A().Provider(), B().Provider());
-            EnsureContent(A().Provider());
-            EnsureContent(B().Provider());
         }
 
         private void StoreToProviderA()
@@ -54,25 +53,22 @@ namespace Db4objects.Drs.Tests.Regression
             ITestableReplicationProviderInside providerA = A().Provider();
             providerA.StoreNew(Item());
             providerA.Commit();
-            EnsureContent(providerA);
         }
 
         private void EnsureContent(ITestableReplicationProviderInside provider)
         {
-            IObjectSet result = provider.GetStoredObjects(typeof(GenericItem));
-            Assert.AreEqual(1, result.Count);
-            GenericItem item = (GenericItem) result.Next();
-            GenericItem expected = Item();
-            Assert.AreEqual(expected._string, item._string);
-
-            IObjectSet set = provider.GetStoredObjects(typeof(List<string>));
-            Console.WriteLine(set.Size());
-
-            Assert.AreEqual(expected._stringList.Count, item._stringList.Count);
-            for (int i = 0; i < expected._stringList.Count; i++)
-            {
-                Assert.AreEqual(expected._stringList[i], item._stringList[i]);
-            }
+        	GenericItem replicated = QueryItem(provider);
+        	GenericItem expected = Item();
+			Assert.AreNotSame(expected, replicated);
+            Assert.AreEqual(expected._string, replicated._string);
+			Iterator4Assert.AreEqual(expected._stringList.GetEnumerator(), replicated._stringList.GetEnumerator());
         }
+
+    	private static GenericItem QueryItem(ITestableReplicationProviderInside provider)
+    	{
+    		IObjectSet result = provider.GetStoredObjects(typeof(GenericItem));
+    		Assert.AreEqual(1, result.Count);
+    		return (GenericItem) result.Next();
+    	}
     }
 }

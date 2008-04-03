@@ -31,8 +31,7 @@ namespace Sharpen.Util
 
 		public override void Add(object key, object value)
 		{
-			if (ContainsKey(key)) return;
-			base.Add(key, value);
+			this[key] = value;
 		}
 
 		class EqualityComparer : IEqualityComparer

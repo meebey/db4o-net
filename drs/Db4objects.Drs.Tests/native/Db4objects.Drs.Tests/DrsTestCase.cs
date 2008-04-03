@@ -24,17 +24,26 @@ namespace Db4objects.Drs.Tests
 	{
 		public static readonly System.Type[] mappings;
 
-		public static readonly System.Type[] extraMappingsForCleaning = new System.Type[]
-			 { typeof(System.Collections.IDictionary), typeof(System.Collections.IList) };
+		public static readonly System.Type[] extraMappingsForCleaning = new System.Type[] { typeof(System.Collections.IDictionary), typeof(System.Collections.IList) };
 
 		static DrsTestCase()
 		{
-			mappings = new System.Type[] { typeof(Db4objects.Drs.Tests.Replicated), typeof(Db4objects.Drs.Tests.SPCParent)
-				, typeof(Db4objects.Drs.Tests.SPCChild), typeof(Db4objects.Drs.Tests.ListHolder), 
-				typeof(Db4objects.Drs.Tests.ListContent), typeof(Db4objects.Drs.Tests.MapContent), 
-				typeof(Db4objects.Drs.Tests.SimpleArrayContent), typeof(Db4objects.Drs.Tests.SimpleArrayHolder)
-				, typeof(Db4objects.Drs.Tests.R0), typeof(Db4objects.Drs.Tests.Pilot), typeof(Db4objects.Drs.Tests.Car)
-				, typeof(Db4objects.Drs.Tests.Student), typeof(Db4objects.Drs.Tests.Person) };
+			mappings = new System.Type[]
+			{
+				typeof(Db4objects.Drs.Tests.Replicated),
+				typeof(Db4objects.Drs.Tests.SPCParent),
+				typeof(Db4objects.Drs.Tests.SPCChild),
+				typeof(Db4objects.Drs.Tests.ListHolder),
+				typeof(Db4objects.Drs.Tests.ListContent),
+				typeof(Db4objects.Drs.Tests.MapContent), 
+				typeof(Db4objects.Drs.Tests.SimpleArrayContent),
+				typeof(Db4objects.Drs.Tests.SimpleArrayHolder), 
+				typeof(Db4objects.Drs.Tests.R0),
+				typeof(Db4objects.Drs.Tests.Pilot),
+				typeof(Db4objects.Drs.Tests.Car),
+				typeof(Db4objects.Drs.Tests.Student),
+				typeof(Db4objects.Drs.Tests.Person)
+			};
 		}
 
 		private Db4objects.Drs.Tests.IDrsFixture _a;
@@ -126,7 +135,7 @@ namespace Db4objects.Drs.Tests
 			return _b;
 		}
 
-		protected virtual void EnsureOneInstance(Db4objects.Drs.Tests.IDrsFixture fixture, 
+		protected virtual void EnsureOneInstance(Db4objects.Drs.Tests.IDrsFixture fixture,
 			System.Type clazz)
 		{
 			EnsureInstanceCount(fixture, clazz, 1);
@@ -139,7 +148,7 @@ namespace Db4objects.Drs.Tests
 			Db4oUnit.Assert.AreEqual(count, objectSet.Count);
 		}
 
-		protected virtual object GetOneInstance(Db4objects.Drs.Tests.IDrsFixture fixture, 
+		protected virtual object GetOneInstance(Db4objects.Drs.Tests.IDrsFixture fixture,
 			System.Type clazz)
 		{
 			System.Collections.IEnumerator objectSet = fixture.Provider().GetStoredObjects(clazz
@@ -204,7 +213,7 @@ namespace Db4objects.Drs.Tests
 		}
 
 		protected virtual void ReplicateClass(Db4objects.Drs.Inside.ITestableReplicationProviderInside
-			 providerA, Db4objects.Drs.Inside.ITestableReplicationProviderInside providerB, 
+			 providerA, Db4objects.Drs.Inside.ITestableReplicationProviderInside providerB,
 			System.Type clazz)
 		{
 			Db4objects.Drs.IReplicationSession replication = Db4objects.Drs.Replication.Begin

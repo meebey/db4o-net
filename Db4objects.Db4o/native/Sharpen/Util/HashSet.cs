@@ -1,100 +1,96 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 using System;
 using System.Collections;
-using System.Collections.Specialized;
 
 namespace Sharpen.Util
-{
-    
-    public class HashSet : ISet
-    {
-        protected IDictionary _dictionary = null;
+{   
+    public class HashSet : ISet, /* IList required for dRS */ IList
+    {   
         private readonly static object _object = new object();
+
+		// FIXME: dRS doesn't like using a dictionary here
+		private ArrayList _elements = new ArrayList();
 
         public HashSet()
         {
-            _dictionary = new Hashtable();
         }
 
         public HashSet(ICollection initialValues)
-            : this()
         {
-            this.AddAll(initialValues);
+            AddAll(initialValues);
         }
-
 
         public bool Add(object o)
         {
-            if (_dictionary[o] != null)
-                return false;
-            else
-            {
-                _dictionary.Add(o, _object);
-                return true;
-            }
+			if (Contains(o)) return false;
+
+			_elements.Add(o);
+			return true;
         }
 
         public bool AddAll(ICollection c)
         {
             bool changed = false;
-            foreach (object o in c)
-                changed |= this.Add(o);
-            return changed;
+			foreach (object o in c)
+			{
+				changed |= Add(o);
+			}
+        	return changed;
         }
 
         public void Clear()
         {
-            _dictionary.Clear();
+            _elements.Clear();
         }
 
         public bool Contains(object o)
         {
-            return _dictionary[o] != null;
+        	return _elements.Contains(o);
         }
 
         public bool ContainsAll(ICollection c)
         {
             foreach (object o in c)
-            {
-                if (!this.Contains(o))
-                    return false;
+			{
+                if (!Contains(o))
+                {
+                	return false;
+                }
             }
             return true;
         }
 
         public bool IsEmpty
         {
-            get { return _dictionary.Count == 0; }
+            get { return _elements.Count == 0; }
         }
 
         public bool Remove(object o)
         {
-            bool contained = this.Contains(o);
-            if (contained)
-            {
-                _dictionary.Remove(o);
-            }
-            return contained;
+			if (!Contains(o)) return false;
+            
+			_elements.Remove(o);
+        	return true;
         }
 
         public bool RemoveAll(ICollection c)
         {
             bool changed = false;
-            foreach (object o in c)
-                changed |= this.Remove(o);
-            return changed;
+			foreach (object o in c)
+			{
+				changed |= Remove(o);
+			}
+        	return changed;
         }
-
-
 
         public void CopyTo(Array array, int index)
         {
-            _dictionary.Keys.CopyTo(array, index);
+            _elements.CopyTo(array, index);
         }
 
         public int Count
         {
-            get { return _dictionary.Count; }
+            get { return _elements.Count; }
         }
 
         public bool IsSynchronized
@@ -104,13 +100,54 @@ namespace Sharpen.Util
 
         public object SyncRoot
         {
-            get { return _dictionary.SyncRoot; }
+            get { return _elements.SyncRoot; }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return _dictionary.Keys.GetEnumerator();
+            return _elements.GetEnumerator();
         }
 
+    	int IList.Add(object value)
+    	{
+    		((ISet) this).Add(value);
+    		return 0;
+    	}
+
+		void IList.Remove(object value)
+		{
+			((ISet)this).Remove(value);
+		}
+
+    	int IList.IndexOf(object value)
+    	{
+    		throw new NotImplementedException();
+    	}
+
+    	void IList.Insert(int index, object value)
+    	{
+    		throw new NotImplementedException();
+    	}
+
+    	void IList.RemoveAt(int index)
+    	{
+    		throw new NotImplementedException();
+    	}
+
+    	object IList.this[int index]
+    	{
+    		get { throw new NotImplementedException(); }
+    		set { throw new NotImplementedException(); }
+    	}
+
+    	bool IList.IsReadOnly
+    	{
+    		get { return false; }
+    	}
+
+    	bool IList.IsFixedSize
+    	{
+    		get { return false; }
+    	}
     }
 }

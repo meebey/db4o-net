@@ -47,12 +47,19 @@ namespace Db4objects.Drs.Inside
 
 		public static System.Collections.ICollection EmptyCollectionClone(System.Collections.ICollection
 			 original)
-		{
-			if (original is System.Collections.IList)
+		{	
+			if (original is System.Collections.ArrayList)
 			{
 				return new System.Collections.ArrayList(original.Count);
 			}
-			return null;
+			try
+			{
+				return (System.Collections.ICollection) Activator.CreateInstance(original.GetType());
+			}
+			catch (MissingMethodException x)
+			{
+				throw new ArgumentException(string.Format("Parameterless ctor required for type '{0}'", original.GetType()), x);
+			}
 		}
 		
 		public static bool IsValueType(object o)

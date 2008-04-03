@@ -6,5 +6,8 @@ namespace Sharpen.Util
 {
     public interface ISet: ICollection
     {
+    	bool Add(object element);
+    	bool Remove(object element);
+    	bool Contains(object element);
     }
 }
