@@ -1,8 +1,15 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Drs;
+using Db4objects.Drs.Inside;
+
 namespace Db4objects.Drs.Inside
 {
-	public interface IReplicationProviderInside : Db4objects.Drs.IReplicationProvider
+	public interface IReplicationProviderInside : IReplicationProvider
 	{
 		void Activate(object @object);
 
@@ -20,7 +27,7 @@ namespace Db4objects.Drs.Inside
 		/// <remarks>Destroys this provider and frees up resources.</remarks>
 		void Destroy();
 
-		Db4objects.Db4o.IObjectSet GetStoredObjects(System.Type type);
+		IObjectSet GetStoredObjects(Type type);
 
 		/// <summary>Returns the current transaction serial number.</summary>
 		/// <remarks>Returns the current transaction serial number.</remarks>
@@ -33,15 +40,15 @@ namespace Db4objects.Drs.Inside
 
 		string GetName();
 
-		Db4objects.Drs.Inside.IReadonlyReplicationProviderSignature GetSignature();
+		IReadonlyReplicationProviderSignature GetSignature();
 
 		/// <summary>Returns the ReplicationReference of an object</summary>
 		/// <param name="obj">object queried</param>
 		/// <param name="referencingObj"></param>
 		/// <param name="fieldName"></param>
 		/// <returns>null if the object is not owned by this ReplicationProvider.</returns>
-		Db4objects.Drs.Inside.IReplicationReference ProduceReference(object obj, object referencingObj
-			, string fieldName);
+		IReplicationReference ProduceReference(object obj, object referencingObj, string 
+			fieldName);
 
 		/// <summary>Returns the ReplicationReference of an object by specifying the uuid of the object.
 		/// 	</summary>
@@ -50,12 +57,10 @@ namespace Db4objects.Drs.Inside
 		/// <param name="uuid">the uuid of the object</param>
 		/// <param name="hint">the type of the object</param>
 		/// <returns>the ReplicationReference or null if the reference cannot be found</returns>
-		Db4objects.Drs.Inside.IReplicationReference ProduceReferenceByUUID(Db4objects.Db4o.Ext.Db4oUUID
-			 uuid, System.Type hint);
+		IReplicationReference ProduceReferenceByUUID(Db4oUUID uuid, Type hint);
 
-		Db4objects.Drs.Inside.IReplicationReference ReferenceNewObject(object obj, Db4objects.Drs.Inside.IReplicationReference
-			 counterpartReference, Db4objects.Drs.Inside.IReplicationReference referencingObjRef
-			, string fieldName);
+		IReplicationReference ReferenceNewObject(object obj, IReplicationReference counterpartReference
+			, IReplicationReference referencingObjRef, string fieldName);
 
 		/// <summary>Rollbacks all changes done during the replication session  and terminates the Transaction.
 		/// 	</summary>
@@ -67,8 +72,8 @@ namespace Db4objects.Drs.Inside
 
 		/// <summary>Start a Replication Transaction with another ReplicationProvider</summary>
 		/// <param name="peerSignature">the signature of another ReplicationProvider.</param>
-		void StartReplicationTransaction(Db4objects.Drs.Inside.IReadonlyReplicationProviderSignature
-			 peerSignature);
+		void StartReplicationTransaction(IReadonlyReplicationProviderSignature peerSignature
+			);
 
 		/// <summary>Stores the new replicated state of obj.</summary>
 		/// <remarks>
@@ -85,11 +90,10 @@ namespace Db4objects.Drs.Inside
 		/// <remarks>Visits the object of each cached ReplicationReference.</remarks>
 		/// <param name="visitor">implements the visit functions, including copying of object states, and storing of changed objects
 		/// 	</param>
-		void VisitCachedReferences(Db4objects.Db4o.Foundation.IVisitor4 visitor);
+		void VisitCachedReferences(IVisitor4 visitor);
 
-		bool WasModifiedSinceLastReplication(Db4objects.Drs.Inside.IReplicationReference 
-			reference);
+		bool WasModifiedSinceLastReplication(IReplicationReference reference);
 
-		void ReplicateDeletion(Db4objects.Db4o.Ext.Db4oUUID uuid);
+		void ReplicateDeletion(Db4oUUID uuid);
 	}
 }

@@ -1,25 +1,29 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Drs.Inside.Traversal;
+
 namespace Db4objects.Drs.Inside.Traversal
 {
-	public class GenericTraverser : Db4objects.Drs.Inside.Traversal.ITraverser
+	public class GenericTraverser : ITraverser
 	{
-		protected readonly Db4objects.Db4o.Reflect.IReflector _reflector;
+		protected readonly IReflector _reflector;
 
 		protected readonly Db4objects.Drs.Inside.Traversal.ICollectionHandler _collectionHandler;
 
-		protected readonly Db4objects.Db4o.Foundation.IQueue4 _queue = new Db4objects.Db4o.Foundation.NonblockingQueue
-			();
+		protected readonly IQueue4 _queue = new NonblockingQueue();
 
-		public GenericTraverser(Db4objects.Db4o.Reflect.IReflector reflector, Db4objects.Drs.Inside.Traversal.ICollectionHandler
+		public GenericTraverser(IReflector reflector, Db4objects.Drs.Inside.Traversal.ICollectionHandler
 			 collectionHandler)
 		{
 			_reflector = reflector;
 			_collectionHandler = collectionHandler;
 		}
 
-		public virtual void TraverseGraph(object @object, Db4objects.Drs.Inside.Traversal.IVisitor
-			 visitor)
+		public virtual void TraverseGraph(object @object, IVisitor visitor)
 		{
 			QueueUpForTraversing(@object);
 			while (true)
@@ -33,28 +37,25 @@ namespace Db4objects.Drs.Inside.Traversal
 			}
 		}
 
-		protected virtual void TraverseObject(object @object, Db4objects.Drs.Inside.Traversal.IVisitor
-			 visitor)
+		protected virtual void TraverseObject(object @object, IVisitor visitor)
 		{
 			if (!visitor.Visit(@object))
 			{
 				return;
 			}
-			Db4objects.Db4o.Reflect.IReflectClass claxx = _reflector.ForObject(@object);
+			IReflectClass claxx = _reflector.ForObject(@object);
 			TraverseAllFields(@object, claxx);
 		}
 
-		protected virtual void TraverseAllFields(object @object, Db4objects.Db4o.Reflect.IReflectClass
-			 claxx)
+		protected virtual void TraverseAllFields(object @object, IReflectClass claxx)
 		{
 			TraverseFields(@object, claxx);
 			TraverseSuperclass(@object, claxx);
 		}
 
-		private void TraverseSuperclass(object @object, Db4objects.Db4o.Reflect.IReflectClass
-			 claxx)
+		private void TraverseSuperclass(object @object, IReflectClass claxx)
 		{
-			Db4objects.Db4o.Reflect.IReflectClass superclass = claxx.GetSuperclass();
+			IReflectClass superclass = claxx.GetSuperclass();
 			if (superclass == null)
 			{
 				return;
@@ -62,13 +63,12 @@ namespace Db4objects.Drs.Inside.Traversal
 			TraverseAllFields(@object, superclass);
 		}
 
-		private void TraverseFields(object @object, Db4objects.Db4o.Reflect.IReflectClass
-			 claxx)
+		private void TraverseFields(object @object, IReflectClass claxx)
 		{
-			Db4objects.Db4o.Reflect.IReflectField[] fields = claxx.GetDeclaredFields();
+			IReflectField[] fields = claxx.GetDeclaredFields();
 			for (int i = 0; i < fields.Length; i++)
 			{
-				Db4objects.Db4o.Reflect.IReflectField field = fields[i];
+				IReflectField field = fields[i];
 				if (field.IsStatic())
 				{
 					continue;
@@ -86,8 +86,7 @@ namespace Db4objects.Drs.Inside.Traversal
 
 		protected virtual void TraverseCollection(object collection)
 		{
-			System.Collections.IEnumerator elements = _collectionHandler.IteratorFor(collection
-				);
+			IEnumerator elements = _collectionHandler.IteratorFor(collection);
 			//TODO Optimization: visit instead of flattening.
 			while (elements.MoveNext())
 			{
@@ -100,11 +99,9 @@ namespace Db4objects.Drs.Inside.Traversal
 			}
 		}
 
-		protected virtual void TraverseArray(Db4objects.Db4o.Reflect.IReflectClass claxx, 
-			object array)
+		protected virtual void TraverseArray(IReflectClass claxx, object array)
 		{
-			System.Collections.IEnumerator contents = Db4objects.Db4o.Internal.Handlers.ArrayHandler
-				.Iterator(claxx, array);
+			IEnumerator contents = ArrayHandler.Iterator(claxx, array);
 			while (contents.MoveNext())
 			{
 				QueueUpForTraversing(contents.Current);
@@ -117,7 +114,7 @@ namespace Db4objects.Drs.Inside.Traversal
 			{
 				return;
 			}
-			Db4objects.Db4o.Reflect.IReflectClass claxx = _reflector.ForObject(@object);
+			IReflectClass claxx = _reflector.ForObject(@object);
 			if (IsSecondClass(claxx))
 			{
 				return;
@@ -140,7 +137,7 @@ namespace Db4objects.Drs.Inside.Traversal
 			_queue.Add(@object);
 		}
 
-		protected virtual bool IsSecondClass(Db4objects.Db4o.Reflect.IReflectClass claxx)
+		protected virtual bool IsSecondClass(IReflectClass claxx)
 		{
 			//      TODO Optimization: Compute this lazily in ReflectClass;
 			if (claxx.IsSecondClass())

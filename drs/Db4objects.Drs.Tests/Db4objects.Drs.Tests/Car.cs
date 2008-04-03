@@ -1,12 +1,14 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Drs.Tests;
+
 namespace Db4objects.Drs.Tests
 {
 	public class Car
 	{
 		internal string _model;
 
-		internal Db4objects.Drs.Tests.Pilot _pilot;
+		internal Pilot _pilot;
 
 		public Car()
 		{

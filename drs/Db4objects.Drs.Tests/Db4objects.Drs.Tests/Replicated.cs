@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Sharpen;
+
 namespace Db4objects.Drs.Tests
 {
 	public class Replicated
@@ -19,8 +21,8 @@ namespace Db4objects.Drs.Tests
 
 		public override string ToString()
 		{
-			return GetName() + ", hashcode = " + GetHashCode() + ", identity = " + Sharpen.Runtime
-				.IdentityHashCode(this);
+			return GetName() + ", hashcode = " + GetHashCode() + ", identity = " + Runtime.IdentityHashCode
+				(this);
 		}
 
 		public virtual string GetName()

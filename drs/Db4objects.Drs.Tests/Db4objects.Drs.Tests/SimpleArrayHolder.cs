@@ -1,12 +1,15 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Drs.Tests;
+using Sharpen;
+
 namespace Db4objects.Drs.Tests
 {
 	public class SimpleArrayHolder
 	{
 		private string name;
 
-		private Db4objects.Drs.Tests.SimpleArrayContent[] arr;
+		private SimpleArrayContent[] arr;
 
 		public SimpleArrayHolder()
 		{
@@ -17,12 +20,12 @@ namespace Db4objects.Drs.Tests
 			this.name = name;
 		}
 
-		public virtual Db4objects.Drs.Tests.SimpleArrayContent[] GetArr()
+		public virtual SimpleArrayContent[] GetArr()
 		{
 			return arr;
 		}
 
-		public virtual void SetArr(Db4objects.Drs.Tests.SimpleArrayContent[] arr)
+		public virtual void SetArr(SimpleArrayContent[] arr)
 		{
 			this.arr = arr;
 		}
@@ -37,15 +40,15 @@ namespace Db4objects.Drs.Tests
 			this.name = name;
 		}
 
-		public virtual void Add(Db4objects.Drs.Tests.SimpleArrayContent sac)
+		public virtual void Add(SimpleArrayContent sac)
 		{
 			if (arr == null)
 			{
-				arr = new Db4objects.Drs.Tests.SimpleArrayContent[] { sac };
+				arr = new SimpleArrayContent[] { sac };
 				return;
 			}
-			Db4objects.Drs.Tests.SimpleArrayContent[] temp = arr;
-			arr = new Db4objects.Drs.Tests.SimpleArrayContent[temp.Length + 1];
+			SimpleArrayContent[] temp = arr;
+			arr = new SimpleArrayContent[temp.Length + 1];
 			System.Array.Copy(temp, 0, arr, 0, temp.Length);
 			arr[temp.Length] = sac;
 		}

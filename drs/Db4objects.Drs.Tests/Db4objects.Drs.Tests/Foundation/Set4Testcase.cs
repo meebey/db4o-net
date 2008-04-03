@@ -1,33 +1,34 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4oUnit;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Drs.Tests.Foundation;
+
 namespace Db4objects.Drs.Tests.Foundation
 {
-	public class Set4Testcase : Db4oUnit.ITestCase
+	public class Set4Testcase : ITestCase
 	{
 		public virtual void TestSingleElementIteration()
 		{
-			Db4objects.Drs.Tests.Foundation.Set4 set = NewSet("first");
-			Db4oUnit.Assert.AreEqual("first", Db4objects.Db4o.Foundation.Iterators.Next(set.GetEnumerator
-				()));
+			Set4 set = NewSet("first");
+			Assert.AreEqual("first", Iterators.Next(set.GetEnumerator()));
 		}
 
 		public virtual void TestContainsAll()
 		{
-			Db4objects.Drs.Tests.Foundation.Set4 set = NewSet("42");
+			Set4 set = NewSet("42");
 			set.Add("foo");
-			Db4oUnit.Assert.IsTrue(set.ContainsAll(NewSet("42")));
-			Db4oUnit.Assert.IsTrue(set.ContainsAll(NewSet("foo")));
-			Db4oUnit.Assert.IsTrue(set.ContainsAll(set));
-			Db4objects.Drs.Tests.Foundation.Set4 other = new Db4objects.Drs.Tests.Foundation.Set4
-				(set);
+			Assert.IsTrue(set.ContainsAll(NewSet("42")));
+			Assert.IsTrue(set.ContainsAll(NewSet("foo")));
+			Assert.IsTrue(set.ContainsAll(set));
+			Set4 other = new Set4(set);
 			other.Add("bar");
-			Db4oUnit.Assert.IsFalse(set.ContainsAll(other));
+			Assert.IsFalse(set.ContainsAll(other));
 		}
 
-		private Db4objects.Drs.Tests.Foundation.Set4 NewSet(string firstElement)
+		private Set4 NewSet(string firstElement)
 		{
-			Db4objects.Drs.Tests.Foundation.Set4 set = new Db4objects.Drs.Tests.Foundation.Set4
-				();
+			Set4 set = new Set4();
 			set.Add(firstElement);
 			return set;
 		}

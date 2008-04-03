@@ -1,34 +1,41 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using System.Collections;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Drs.Foundation;
+using Db4objects.Drs.Inside;
+using Db4objects.Drs.Inside.Traversal;
+using Db4objects.Drs.Tests;
+using Sharpen;
+using Sharpen.Util;
+
 namespace Db4objects.Drs.Tests
 {
-	public class TransientReplicationProvider : Db4objects.Drs.Inside.ITestableReplicationProvider
-		, Db4objects.Drs.Inside.ITestableReplicationProviderInside
+	public class TransientReplicationProvider : ITestableReplicationProvider, ITestableReplicationProviderInside
 	{
-		private Db4objects.Db4o.Foundation.TimeStampIdGenerator _timeStampIdGenerator = new 
-			Db4objects.Db4o.Foundation.TimeStampIdGenerator();
+		private TimeStampIdGenerator _timeStampIdGenerator = new TimeStampIdGenerator();
 
 		private readonly string _name;
 
-		private readonly Db4objects.Drs.Inside.Traversal.ITraverser _traverser;
+		private readonly ITraverser _traverser;
 
-		private readonly System.Collections.IDictionary _storedObjects = new Sharpen.Util.IdentityHashMap
-			();
+		private readonly IDictionary _storedObjects = new IdentityHashMap();
 
-		private readonly System.Collections.IDictionary _activatedObjects = new Sharpen.Util.IdentityHashMap
-			();
+		private readonly IDictionary _activatedObjects = new IdentityHashMap();
 
-		private readonly System.Collections.IDictionary _referencesByObject = new Sharpen.Util.IdentityHashMap
-			();
+		private readonly IDictionary _referencesByObject = new IdentityHashMap();
 
-		private readonly Db4objects.Drs.Tests.TransientReplicationProvider.MySignature _signature;
+		private readonly TransientReplicationProvider.MySignature _signature;
 
-		private Db4objects.Drs.Inside.IReadonlyReplicationProviderSignature _peerSignature;
+		private IReadonlyReplicationProviderSignature _peerSignature;
 
 		private long _lastReplicationVersion = 0;
 
-		private Db4objects.Db4o.Foundation.Collection4 _uuidsDeletedSinceLastReplication = 
-			new Db4objects.Db4o.Foundation.Collection4();
+		private Collection4 _uuidsDeletedSinceLastReplication = new Collection4();
 
 		public TransientReplicationProvider(byte[] signature) : this(signature, null)
 		{
@@ -36,15 +43,13 @@ namespace Db4objects.Drs.Tests
 
 		public TransientReplicationProvider(byte[] signature, string name)
 		{
-			_signature = new Db4objects.Drs.Tests.TransientReplicationProvider.MySignature(this
-				, signature);
+			_signature = new TransientReplicationProvider.MySignature(this, signature);
 			_name = name;
-			Db4objects.Drs.Inside.ReplicationReflector reflector = Db4objects.Drs.Inside.ReplicationReflector
-				.GetInstance();
-			Db4objects.Drs.Inside.ICollectionHandler _collectionHandler = new Db4objects.Drs.Inside.CollectionHandlerImpl
+			ReplicationReflector reflector = ReplicationReflector.GetInstance();
+			Db4objects.Drs.Inside.ICollectionHandler _collectionHandler = new CollectionHandlerImpl
 				(reflector.Reflector());
-			_traverser = new Db4objects.Drs.Tests.TransientReplicationProvider.MyTraverser(this
-				, reflector.Reflector(), _collectionHandler);
+			_traverser = new TransientReplicationProvider.MyTraverser(this, reflector.Reflector
+				(), _collectionHandler);
 		}
 
 		public override string ToString()
@@ -53,18 +58,16 @@ namespace Db4objects.Drs.Tests
 		}
 
 		// --------------------- Interface ReplicationProvider ---------------------
-		public virtual Db4objects.Db4o.IObjectSet ObjectsChangedSinceLastReplication()
+		public virtual IObjectSet ObjectsChangedSinceLastReplication()
 		{
 			return ObjectsChangedSinceLastReplication(typeof(object));
 		}
 
-		public virtual Db4objects.Db4o.IObjectSet ObjectsChangedSinceLastReplication(System.Type
-			 clazz)
+		public virtual IObjectSet ObjectsChangedSinceLastReplication(Type clazz)
 		{
-			Db4objects.Db4o.Foundation.Collection4 result = new Db4objects.Db4o.Foundation.Collection4
-				();
-			for (System.Collections.IEnumerator iterator = StoredObjectsCollection(clazz).GetEnumerator
-				(); iterator.MoveNext(); )
+			Collection4 result = new Collection4();
+			for (IEnumerator iterator = StoredObjectsCollection(clazz).GetEnumerator(); iterator
+				.MoveNext(); )
 			{
 				object candidate = iterator.Current;
 				if (WasChangedSinceLastReplication(candidate))
@@ -72,7 +75,7 @@ namespace Db4objects.Drs.Tests
 					result.Add(candidate);
 				}
 			}
-			return new Db4objects.Drs.Foundation.ObjectSetCollection4Facade(result);
+			return new ObjectSetCollection4Facade(result);
 		}
 
 		// --------------------- Interface ReplicationProviderInside ---------------------
@@ -117,16 +120,15 @@ namespace Db4objects.Drs.Tests
 			return _name;
 		}
 
-		public virtual Db4objects.Drs.Inside.IReadonlyReplicationProviderSignature GetSignature
-			()
+		public virtual IReadonlyReplicationProviderSignature GetSignature()
 		{
 			return _signature;
 		}
 
-		public virtual Db4objects.Drs.Inside.IReplicationReference ProduceReference(object
-			 obj, object unused, string unused2)
+		public virtual IReplicationReference ProduceReference(object obj, object unused, 
+			string unused2)
 		{
-			Db4objects.Drs.Inside.IReplicationReference cached = GetCachedReference(obj);
+			IReplicationReference cached = GetCachedReference(obj);
 			if (cached != null)
 			{
 				return cached;
@@ -138,8 +140,8 @@ namespace Db4objects.Drs.Tests
 			return CreateReferenceFor(obj);
 		}
 
-		public virtual Db4objects.Drs.Inside.IReplicationReference ProduceReferenceByUUID
-			(Db4objects.Db4o.Ext.Db4oUUID uuid, System.Type hintIgnored)
+		public virtual IReplicationReference ProduceReferenceByUUID(Db4oUUID uuid, Type hintIgnored
+			)
 		{
 			if (uuid == null)
 			{
@@ -153,35 +155,34 @@ namespace Db4objects.Drs.Tests
 			return ProduceReference(@object, null, null);
 		}
 
-		public virtual Db4objects.Drs.Inside.IReplicationReference ReferenceNewObject(object
-			 obj, Db4objects.Drs.Inside.IReplicationReference counterpartReference, Db4objects.Drs.Inside.IReplicationReference
-			 unused, string unused2)
+		public virtual IReplicationReference ReferenceNewObject(object obj, IReplicationReference
+			 counterpartReference, IReplicationReference unused, string unused2)
 		{
 			//System.out.println("referenceNewObject: " + obj + "  UUID: " + counterpartReference.uuid());
-			Db4objects.Db4o.Ext.Db4oUUID uuid = counterpartReference.Uuid();
+			Db4oUUID uuid = counterpartReference.Uuid();
 			long version = counterpartReference.Version();
 			if (GetObject(uuid) != null)
 			{
-				throw new System.Exception("Object exists already.");
+				throw new Exception("Object exists already.");
 			}
-			Db4objects.Drs.Inside.IReplicationReference result = CreateReferenceFor(obj);
+			IReplicationReference result = CreateReferenceFor(obj);
 			Store(obj, uuid, version);
 			return result;
 		}
 
 		public virtual void RollbackReplication()
 		{
-			throw new System.NotSupportedException();
+			throw new NotSupportedException();
 		}
 
-		public virtual void StartReplicationTransaction(Db4objects.Drs.Inside.IReadonlyReplicationProviderSignature
+		public virtual void StartReplicationTransaction(IReadonlyReplicationProviderSignature
 			 peerSignature)
 		{
 			if (_peerSignature != null)
 			{
 				if (!_peerSignature.Equals(peerSignature))
 				{
-					throw new System.ArgumentException("This provider can only replicate with a single peer."
+					throw new ArgumentException("This provider can only replicate with a single peer."
 						);
 				}
 			}
@@ -191,10 +192,10 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void StoreReplica(object obj)
 		{
-			Db4objects.Drs.Inside.IReplicationReference @ref = GetCachedReference(obj);
+			IReplicationReference @ref = GetCachedReference(obj);
 			if (@ref == null)
 			{
-				throw new System.Exception();
+				throw new Exception();
 			}
 			Store(obj, @ref.Uuid(), @ref.Version());
 		}
@@ -209,18 +210,17 @@ namespace Db4objects.Drs.Tests
 			StoreReplica(obj);
 		}
 
-		public virtual void VisitCachedReferences(Db4objects.Db4o.Foundation.IVisitor4 visitor
-			)
+		public virtual void VisitCachedReferences(IVisitor4 visitor)
 		{
-			System.Collections.IEnumerator i = _referencesByObject.Values.GetEnumerator();
+			IEnumerator i = _referencesByObject.Values.GetEnumerator();
 			while (i.MoveNext())
 			{
 				visitor.Visit(i.Current);
 			}
 		}
 
-		public virtual bool WasModifiedSinceLastReplication(Db4objects.Drs.Inside.IReplicationReference
-			 reference)
+		public virtual bool WasModifiedSinceLastReplication(IReplicationReference reference
+			)
 		{
 			return reference.Version() > _lastReplicationVersion;
 		}
@@ -233,34 +233,30 @@ namespace Db4objects.Drs.Tests
 		// do nothing
 		public virtual void Delete(object obj)
 		{
-			Db4objects.Db4o.Ext.Db4oUUID uuid = ProduceReference(obj, null, null).Uuid();
+			Db4oUUID uuid = ProduceReference(obj, null, null).Uuid();
 			_uuidsDeletedSinceLastReplication.Add(uuid);
 			_storedObjects.Remove(obj);
 		}
 
-		public virtual void DeleteAllInstances(System.Type clazz)
+		public virtual void DeleteAllInstances(Type clazz)
 		{
-			System.Collections.IEnumerator iterator = StoredObjectsCollection(clazz).GetEnumerator
-				();
+			IEnumerator iterator = StoredObjectsCollection(clazz).GetEnumerator();
 			while (iterator.MoveNext())
 			{
 				Delete(iterator.Current);
 			}
 		}
 
-		public virtual Db4objects.Db4o.IObjectSet GetStoredObjects(System.Type clazz)
+		public virtual IObjectSet GetStoredObjects(Type clazz)
 		{
-			return new Db4objects.Drs.Foundation.ObjectSetCollection4Facade(StoredObjectsCollection
-				(clazz));
+			return new ObjectSetCollection4Facade(StoredObjectsCollection(clazz));
 		}
 
-		private Db4objects.Db4o.Foundation.Collection4 StoredObjectsCollection(System.Type
-			 clazz)
+		private Collection4 StoredObjectsCollection(Type clazz)
 		{
-			Db4objects.Db4o.Foundation.Collection4 result = new Db4objects.Db4o.Foundation.Collection4
-				();
-			for (System.Collections.IEnumerator iterator = _storedObjects.Keys.GetEnumerator(
-				); iterator.MoveNext(); )
+			Collection4 result = new Collection4();
+			for (IEnumerator iterator = _storedObjects.Keys.GetEnumerator(); iterator.MoveNext
+				(); )
 			{
 				object candidate = iterator.Current;
 				if (clazz.IsAssignableFrom(candidate.GetType()))
@@ -276,7 +272,7 @@ namespace Db4objects.Drs.Tests
 			_traverser.TraverseGraph(o, new _IVisitor_210(this));
 		}
 
-		private sealed class _IVisitor_210 : Db4objects.Drs.Inside.Traversal.IVisitor
+		private sealed class _IVisitor_210 : IVisitor
 		{
 			public _IVisitor_210(TransientReplicationProvider _enclosing)
 			{
@@ -322,38 +318,32 @@ namespace Db4objects.Drs.Tests
 			return false;
 		}
 
-		public virtual System.Collections.IDictionary ActivatedObjects()
+		public virtual IDictionary ActivatedObjects()
 		{
 			return _activatedObjects;
 		}
 
-		private Db4objects.Drs.Inside.IReplicationReference CreateReferenceFor(object obj
-			)
+		private IReplicationReference CreateReferenceFor(object obj)
 		{
-			Db4objects.Drs.Tests.TransientReplicationProvider.MyReplicationReference result = 
-				new Db4objects.Drs.Tests.TransientReplicationProvider.MyReplicationReference(this
-				, obj);
+			TransientReplicationProvider.MyReplicationReference result = new TransientReplicationProvider.MyReplicationReference
+				(this, obj);
 			_referencesByObject.Add(obj, result);
 			return result;
 		}
 
-		private Db4objects.Drs.Inside.IReplicationReference GetCachedReference(object obj
-			)
+		private IReplicationReference GetCachedReference(object obj)
 		{
-			return (Db4objects.Drs.Inside.IReplicationReference)_referencesByObject[obj];
+			return (IReplicationReference)_referencesByObject[obj];
 		}
 
-		private Db4objects.Drs.Tests.TransientReplicationProvider.ObjectInfo GetInfo(object
-			 candidate)
+		private TransientReplicationProvider.ObjectInfo GetInfo(object candidate)
 		{
-			return (Db4objects.Drs.Tests.TransientReplicationProvider.ObjectInfo)_storedObjects
-				[candidate];
+			return (TransientReplicationProvider.ObjectInfo)_storedObjects[candidate];
 		}
 
-		public virtual object GetObject(Db4objects.Db4o.Ext.Db4oUUID uuid)
+		public virtual object GetObject(Db4oUUID uuid)
 		{
-			System.Collections.IEnumerator iter = StoredObjectsCollection(typeof(object)).GetEnumerator
-				();
+			IEnumerator iter = StoredObjectsCollection(typeof(object)).GetEnumerator();
 			while (iter.MoveNext())
 			{
 				object candidate = iter.Current;
@@ -365,7 +355,7 @@ namespace Db4objects.Drs.Tests
 			return null;
 		}
 
-		public virtual Db4objects.Db4o.IObjectSet GetStoredObjects()
+		public virtual IObjectSet GetStoredObjects()
 		{
 			return GetStoredObjects(typeof(object));
 		}
@@ -375,33 +365,31 @@ namespace Db4objects.Drs.Tests
 			return GetInfo(obj) != null;
 		}
 
-		public virtual void ReplicateDeletion(Db4objects.Drs.Inside.IReplicationReference
-			 reference)
+		public virtual void ReplicateDeletion(IReplicationReference reference)
 		{
 			_storedObjects.Remove(reference.Object());
 		}
 
-		private void Store(object obj, Db4objects.Db4o.Ext.Db4oUUID uuid, long version)
+		private void Store(object obj, Db4oUUID uuid, long version)
 		{
 			if (obj == null)
 			{
-				throw new System.Exception();
+				throw new Exception();
 			}
-			_storedObjects.Add(obj, new Db4objects.Drs.Tests.TransientReplicationProvider.ObjectInfo
-				(uuid, version));
+			_storedObjects.Add(obj, new TransientReplicationProvider.ObjectInfo(uuid, version
+				));
 		}
 
 		public virtual void TransientProviderSpecificStore(object obj)
 		{
 			//TODO ak: this implementation of vvv is copied from Hibernate, which works.
 			// However, vvv should be supposed to be replaced by getCurrentVersion(), but that wouldn't work. Find out
-			long vvv = new Db4objects.Db4o.Foundation.TimeStampIdGenerator(_lastReplicationVersion
-				).Generate();
-			Db4objects.Drs.Tests.TransientReplicationProvider.ObjectInfo info = GetInfo(obj);
+			long vvv = new TimeStampIdGenerator(_lastReplicationVersion).Generate();
+			TransientReplicationProvider.ObjectInfo info = GetInfo(obj);
 			if (info == null)
 			{
-				Store(obj, new Db4objects.Db4o.Ext.Db4oUUID(_timeStampIdGenerator.Generate(), _signature
-					.GetSignature()), vvv);
+				Store(obj, new Db4oUUID(_timeStampIdGenerator.Generate(), _signature.GetSignature
+					()), vvv);
 			}
 			else
 			{
@@ -409,10 +397,9 @@ namespace Db4objects.Drs.Tests
 			}
 		}
 
-		public virtual Db4objects.Db4o.IObjectSet UuidsDeletedSinceLastReplication()
+		public virtual IObjectSet UuidsDeletedSinceLastReplication()
 		{
-			return new Db4objects.Drs.Foundation.ObjectSetCollection4Facade(_uuidsDeletedSinceLastReplication
-				);
+			return new ObjectSetCollection4Facade(_uuidsDeletedSinceLastReplication);
 		}
 
 		private bool WasChangedSinceLastReplication(object candidate)
@@ -420,13 +407,12 @@ namespace Db4objects.Drs.Tests
 			return GetInfo(candidate)._version > _lastReplicationVersion;
 		}
 
-		public virtual bool WasDeletedSinceLastReplication(Db4objects.Db4o.Ext.Db4oUUID uuid
-			)
+		public virtual bool WasDeletedSinceLastReplication(Db4oUUID uuid)
 		{
 			return _uuidsDeletedSinceLastReplication.Contains(uuid);
 		}
 
-		public class MySignature : Db4objects.Drs.Inside.IReadonlyReplicationProviderSignature
+		public class MySignature : IReadonlyReplicationProviderSignature
 		{
 			private readonly byte[] _bytes;
 
@@ -436,12 +422,12 @@ namespace Db4objects.Drs.Tests
 			{
 				this._enclosing = _enclosing;
 				this._bytes = signature;
-				this.creatimeTime = Sharpen.Runtime.CurrentTimeMillis();
+				this.creatimeTime = Runtime.CurrentTimeMillis();
 			}
 
 			public virtual long GetId()
 			{
-				throw new System.Exception("Never used?");
+				throw new Exception("Never used?");
 			}
 
 			public virtual byte[] GetSignature()
@@ -457,7 +443,7 @@ namespace Db4objects.Drs.Tests
 			private readonly TransientReplicationProvider _enclosing;
 		}
 
-		private class MyReplicationReference : Db4objects.Drs.Inside.IReplicationReference
+		private class MyReplicationReference : IReplicationReference
 		{
 			private readonly object _object;
 
@@ -473,7 +459,7 @@ namespace Db4objects.Drs.Tests
 				this._enclosing = _enclosing;
 				if (@object == null)
 				{
-					throw new System.ArgumentException();
+					throw new ArgumentException();
 				}
 				this._object = @object;
 			}
@@ -493,7 +479,7 @@ namespace Db4objects.Drs.Tests
 				return this._enclosing.GetInfo(this._object)._version;
 			}
 
-			public virtual Db4objects.Db4o.Ext.Db4oUUID Uuid()
+			public virtual Db4oUUID Uuid()
 			{
 				return this._enclosing.GetInfo(this._object)._uuid;
 			}
@@ -540,31 +526,29 @@ namespace Db4objects.Drs.Tests
 
 		private class ObjectInfo
 		{
-			public readonly Db4objects.Db4o.Ext.Db4oUUID _uuid;
+			public readonly Db4oUUID _uuid;
 
 			public long _version;
 
-			public ObjectInfo(Db4objects.Db4o.Ext.Db4oUUID uuid, long version)
+			public ObjectInfo(Db4oUUID uuid, long version)
 			{
 				_uuid = uuid;
 				_version = version;
 			}
 		}
 
-		public class MyTraverser : Db4objects.Drs.Inside.Traversal.ITraverser
+		public class MyTraverser : ITraverser
 		{
-			internal Db4objects.Drs.Inside.Traversal.ITraverser _delegate;
+			internal ITraverser _delegate;
 
-			public MyTraverser(TransientReplicationProvider _enclosing, Db4objects.Db4o.Reflect.IReflector
-				 reflector, Db4objects.Drs.Inside.ICollectionHandler collectionHandler)
+			public MyTraverser(TransientReplicationProvider _enclosing, IReflector reflector, 
+				Db4objects.Drs.Inside.ICollectionHandler collectionHandler)
 			{
 				this._enclosing = _enclosing;
-				this._delegate = new Db4objects.Drs.Inside.Traversal.GenericTraverser(reflector, 
-					collectionHandler);
+				this._delegate = new GenericTraverser(reflector, collectionHandler);
 			}
 
-			public virtual void TraverseGraph(object @object, Db4objects.Drs.Inside.Traversal.IVisitor
-				 visitor)
+			public virtual void TraverseGraph(object @object, IVisitor visitor)
 			{
 				this._delegate.TraverseGraph(@object, visitor);
 			}
@@ -577,7 +561,7 @@ namespace Db4objects.Drs.Tests
 			private readonly TransientReplicationProvider _enclosing;
 		}
 
-		public virtual void ReplicateDeletion(Db4objects.Db4o.Ext.Db4oUUID uuid)
+		public virtual void ReplicateDeletion(Db4oUUID uuid)
 		{
 			_storedObjects.Remove(GetObject(uuid));
 		}

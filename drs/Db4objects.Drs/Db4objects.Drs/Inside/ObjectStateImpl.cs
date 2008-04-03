@@ -1,8 +1,10 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Drs;
+
 namespace Db4objects.Drs.Inside
 {
-	internal class ObjectStateImpl : Db4objects.Drs.IObjectState
+	internal class ObjectStateImpl : IObjectState
 	{
 		private object _object;
 

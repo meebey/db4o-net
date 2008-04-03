@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
+
 namespace Db4objects.Drs.Inside
 {
 	public interface ISimpleObjectContainer
@@ -8,7 +10,7 @@ namespace Db4objects.Drs.Inside
 
 		void Delete(object obj);
 
-		void DeleteAllInstances(System.Type clazz);
+		void DeleteAllInstances(Type clazz);
 
 		/// <summary>Will cascade to save the whole graph of objects</summary>
 		/// <param name="o"></param>

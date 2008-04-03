@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Drs;
+
 namespace Db4objects.Drs
 {
 	/// <summary>Defines the contract for handling of replication events generated from a replication session.
@@ -17,6 +19,6 @@ namespace Db4objects.Drs
 		/// <summary>invoked when a replication of an object occurs.</summary>
 		/// <remarks>invoked when a replication of an object occurs.</remarks>
 		/// <param name="e"></param>
-		void OnReplicate(Db4objects.Drs.IReplicationEvent e);
+		void OnReplicate(IReplicationEvent e);
 	}
 }

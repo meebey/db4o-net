@@ -1,16 +1,19 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
+using Db4objects.Drs.Db4o;
+
 namespace Db4objects.Drs.Db4o
 {
-	internal class ClientServerReplicationProvider : Db4objects.Drs.Db4o.FileReplicationProvider
+	internal class ClientServerReplicationProvider : FileReplicationProvider
 	{
-		public ClientServerReplicationProvider(Db4objects.Db4o.IObjectContainer objectContainer
-			) : base(objectContainer, "null")
+		public ClientServerReplicationProvider(IObjectContainer objectContainer) : base(objectContainer
+			, "null")
 		{
 		}
 
-		public ClientServerReplicationProvider(Db4objects.Db4o.IObjectContainer objectContainer
-			, string name) : base(objectContainer, name)
+		public ClientServerReplicationProvider(IObjectContainer objectContainer, string name
+			) : base(objectContainer, name)
 		{
 		}
 

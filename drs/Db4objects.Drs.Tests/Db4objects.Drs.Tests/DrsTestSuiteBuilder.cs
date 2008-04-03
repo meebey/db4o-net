@@ -1,51 +1,55 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using Db4oUnit;
+using Db4objects.Drs.Tests;
+
 namespace Db4objects.Drs.Tests
 {
-	public class DrsTestSuiteBuilder : Db4oUnit.ReflectionTestSuiteBuilder
+	public class DrsTestSuiteBuilder : ReflectionTestSuiteBuilder
 	{
-		private Db4objects.Drs.Tests.IDrsFixture _a;
+		private IDrsFixture _a;
 
-		private Db4objects.Drs.Tests.IDrsFixture _b;
+		private IDrsFixture _b;
 
-		public DrsTestSuiteBuilder(Db4objects.Drs.Tests.IDrsFixture a, Db4objects.Drs.Tests.IDrsFixture
-			 b, System.Type clazz) : base(clazz)
+		public DrsTestSuiteBuilder(IDrsFixture a, IDrsFixture b, Type clazz) : base(clazz
+			)
 		{
 			A(a);
 			B(b);
 		}
 
-		public DrsTestSuiteBuilder(Db4objects.Drs.Tests.IDrsFixture a, Db4objects.Drs.Tests.IDrsFixture
-			 b, System.Type[] classes) : base(classes)
+		public DrsTestSuiteBuilder(IDrsFixture a, IDrsFixture b, Type[] classes) : base(classes
+			)
 		{
 			A(a);
 			B(b);
 		}
 
-		private void A(Db4objects.Drs.Tests.IDrsFixture fixture)
+		private void A(IDrsFixture fixture)
 		{
 			if (null == fixture)
 			{
-				throw new System.ArgumentException("fixture");
+				throw new ArgumentException("fixture");
 			}
 			_a = fixture;
 		}
 
-		private void B(Db4objects.Drs.Tests.IDrsFixture fixture)
+		private void B(IDrsFixture fixture)
 		{
 			if (null == fixture)
 			{
-				throw new System.ArgumentException("fixture");
+				throw new ArgumentException("fixture");
 			}
 			_b = fixture;
 		}
 
-		protected override object NewInstance(System.Type clazz)
+		protected override object NewInstance(Type clazz)
 		{
 			object instance = base.NewInstance(clazz);
-			if (instance is Db4objects.Drs.Tests.DrsTestCase)
+			if (instance is DrsTestCase)
 			{
-				Db4objects.Drs.Tests.DrsTestCase testCase = (Db4objects.Drs.Tests.DrsTestCase)instance;
+				DrsTestCase testCase = (DrsTestCase)instance;
 				testCase.A(_a);
 				testCase.B(_b);
 			}

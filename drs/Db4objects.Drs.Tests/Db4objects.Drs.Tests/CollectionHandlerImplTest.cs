@@ -1,57 +1,60 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System.Collections;
+using Db4oUnit;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Drs.Inside;
+using Db4objects.Drs.Tests;
+using Sharpen.Util;
+
 namespace Db4objects.Drs.Tests
 {
-	public class CollectionHandlerImplTest : Db4objects.Drs.Tests.DrsTestCase
+	public class CollectionHandlerImplTest : DrsTestCase
 	{
-		private readonly Db4objects.Db4o.Reflect.IReflector _reflector = Db4objects.Drs.Inside.ReplicationReflector
-			.GetInstance().Reflector();
+		private readonly IReflector _reflector = ReplicationReflector.GetInstance().Reflector
+			();
 
-		private readonly Db4objects.Drs.Inside.CollectionHandlerImpl _collectionHandler = 
-			new Db4objects.Drs.Inside.CollectionHandlerImpl();
+		private readonly CollectionHandlerImpl _collectionHandler = new CollectionHandlerImpl
+			();
 
 		public virtual void TestVector()
 		{
-			System.Collections.ArrayList vector = new System.Collections.ArrayList();
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(vector));
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(_reflector.ForObject(vector))
-				);
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(typeof(System.Collections.ArrayList
-				)));
+			ArrayList vector = new ArrayList();
+			Assert.IsTrue(_collectionHandler.CanHandle(vector));
+			Assert.IsTrue(_collectionHandler.CanHandle(_reflector.ForObject(vector)));
+			Assert.IsTrue(_collectionHandler.CanHandle(typeof(ArrayList)));
 		}
 
 		public virtual void TestList()
 		{
-			System.Collections.IList list = new System.Collections.ArrayList();
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(list));
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(_reflector.ForObject(list)));
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(typeof(System.Collections.IList
-				)));
+			IList list = new ArrayList();
+			Assert.IsTrue(_collectionHandler.CanHandle(list));
+			Assert.IsTrue(_collectionHandler.CanHandle(_reflector.ForObject(list)));
+			Assert.IsTrue(_collectionHandler.CanHandle(typeof(IList)));
 		}
 
 		public virtual void TestSet()
 		{
-			Sharpen.Util.ISet set = new Sharpen.Util.HashSet();
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(set));
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(_reflector.ForObject(set)));
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(typeof(Sharpen.Util.ISet)));
+			ISet set = new HashSet();
+			Assert.IsTrue(_collectionHandler.CanHandle(set));
+			Assert.IsTrue(_collectionHandler.CanHandle(_reflector.ForObject(set)));
+			Assert.IsTrue(_collectionHandler.CanHandle(typeof(ISet)));
 		}
 
 		public virtual void TestMap()
 		{
-			System.Collections.IDictionary map = new System.Collections.Hashtable();
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(map));
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(_reflector.ForObject(map)));
-			Db4oUnit.Assert.IsTrue(_collectionHandler.CanHandle(typeof(System.Collections.IDictionary
-				)));
+			IDictionary map = new Hashtable();
+			Assert.IsTrue(_collectionHandler.CanHandle(map));
+			Assert.IsTrue(_collectionHandler.CanHandle(_reflector.ForObject(map)));
+			Assert.IsTrue(_collectionHandler.CanHandle(typeof(IDictionary)));
 		}
 
 		public virtual void TestString()
 		{
 			string str = "abc";
-			Db4oUnit.Assert.IsTrue(!_collectionHandler.CanHandle(str));
-			Db4oUnit.Assert.IsTrue(!_collectionHandler.CanHandle(_reflector.ForObject(str)));
-			Db4oUnit.Assert.IsTrue(!_collectionHandler.CanHandle(typeof(string)));
+			Assert.IsTrue(!_collectionHandler.CanHandle(str));
+			Assert.IsTrue(!_collectionHandler.CanHandle(_reflector.ForObject(str)));
+			Assert.IsTrue(!_collectionHandler.CanHandle(typeof(string)));
 		}
 	}
 }

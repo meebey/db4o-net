@@ -1,10 +1,12 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Drs.Tests;
+
 namespace Db4objects.Drs.Tests
 {
 	public class SPCParent
 	{
-		private Db4objects.Drs.Tests.SPCChild child;
+		private SPCChild child;
 
 		private string name;
 
@@ -17,18 +19,18 @@ namespace Db4objects.Drs.Tests
 			this.name = name;
 		}
 
-		public SPCParent(Db4objects.Drs.Tests.SPCChild child, string name)
+		public SPCParent(SPCChild child, string name)
 		{
 			this.child = child;
 			this.name = name;
 		}
 
-		public virtual Db4objects.Drs.Tests.SPCChild GetChild()
+		public virtual SPCChild GetChild()
 		{
 			return child;
 		}
 
-		public virtual void SetChild(Db4objects.Drs.Tests.SPCChild child)
+		public virtual void SetChild(SPCChild child)
 		{
 			this.child = child;
 		}

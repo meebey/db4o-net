@@ -1,8 +1,15 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using System.Collections;
+using Db4oUnit;
+using Db4objects.Drs;
+using Db4objects.Drs.Inside;
+using Db4objects.Drs.Tests;
+
 namespace Db4objects.Drs.Tests
 {
-	public class TheSimplest : Db4objects.Drs.Tests.DrsTestCase
+	public class TheSimplest : DrsTestCase
 	{
 		public virtual void Test()
 		{
@@ -16,15 +23,14 @@ namespace Db4objects.Drs.Tests
 
 		private void Replicate3()
 		{
-			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Tests.SPCChild
-				));
+			ReplicateClass(A().Provider(), B().Provider(), typeof(SPCChild));
 			EnsureNames(A(), "c3");
 			EnsureNames(B(), "c3");
 		}
 
 		private void ModifyInA()
 		{
-			Db4objects.Drs.Tests.SPCChild child = GetTheObject(A());
+			SPCChild child = GetTheObject(A());
 			child.SetName("c3");
 			A().Provider().Update(child);
 			A().Provider().Commit();
@@ -40,7 +46,7 @@ namespace Db4objects.Drs.Tests
 
 		private void StoreInA()
 		{
-			Db4objects.Drs.Tests.SPCChild child = new Db4objects.Drs.Tests.SPCChild("c1");
+			SPCChild child = new SPCChild("c1");
 			A().Provider().StoreNew(child);
 			A().Provider().Commit();
 			EnsureNames(A(), "c1");
@@ -55,37 +61,33 @@ namespace Db4objects.Drs.Tests
 
 		private void ModifyInB()
 		{
-			Db4objects.Drs.Tests.SPCChild child = GetTheObject(B());
+			SPCChild child = GetTheObject(B());
 			child.SetName("c2");
 			B().Provider().Update(child);
 			B().Provider().Commit();
 			EnsureNames(B(), "c2");
 		}
 
-		private void EnsureNames(Db4objects.Drs.Tests.IDrsFixture fixture, string childName
-			)
+		private void EnsureNames(IDrsFixture fixture, string childName)
 		{
-			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Tests.SPCChild));
-			Db4objects.Drs.Tests.SPCChild child = GetTheObject(fixture);
-			Db4oUnit.Assert.AreEqual(childName, child.GetName());
+			EnsureOneInstance(fixture, typeof(SPCChild));
+			SPCChild child = GetTheObject(fixture);
+			Assert.AreEqual(childName, child.GetName());
 		}
 
-		private Db4objects.Drs.Tests.SPCChild GetTheObject(Db4objects.Drs.Tests.IDrsFixture
-			 fixture)
+		private SPCChild GetTheObject(IDrsFixture fixture)
 		{
-			return (Db4objects.Drs.Tests.SPCChild)GetOneInstance(fixture, typeof(Db4objects.Drs.Tests.SPCChild
-				));
+			return (SPCChild)GetOneInstance(fixture, typeof(SPCChild));
 		}
 
-		protected override void ReplicateClass(Db4objects.Drs.Inside.ITestableReplicationProviderInside
-			 providerA, Db4objects.Drs.Inside.ITestableReplicationProviderInside providerB, 
-			System.Type clazz)
+		protected override void ReplicateClass(ITestableReplicationProviderInside providerA
+			, ITestableReplicationProviderInside providerB, Type clazz)
 		{
 			//System.out.println("ReplicationTestcase.replicateClass");
-			Db4objects.Drs.IReplicationSession replication = Db4objects.Drs.Replication.Begin
-				(providerA, providerB);
-			System.Collections.IEnumerator allObjects = providerA.ObjectsChangedSinceLastReplication
-				(clazz).GetEnumerator();
+			IReplicationSession replication = Db4objects.Drs.Replication.Begin(providerA, providerB
+				);
+			IEnumerator allObjects = providerA.ObjectsChangedSinceLastReplication(clazz).GetEnumerator
+				();
 			while (allObjects.MoveNext())
 			{
 				object obj = allObjects.Current;

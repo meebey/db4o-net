@@ -1,26 +1,34 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Drs;
+using Db4objects.Drs.Inside;
+using Db4objects.Drs.Inside.Traversal;
+
 namespace Db4objects.Drs.Inside
 {
-	internal class InstanceReplicationPreparer : Db4objects.Drs.Inside.Traversal.IVisitor
+	internal class InstanceReplicationPreparer : IVisitor
 	{
-		private readonly Db4objects.Drs.Inside.IReplicationProviderInside _providerA;
+		private readonly IReplicationProviderInside _providerA;
 
-		private readonly Db4objects.Drs.Inside.IReplicationProviderInside _providerB;
+		private readonly IReplicationProviderInside _providerB;
 
-		private readonly Db4objects.Drs.IReplicationProvider _directionTo;
+		private readonly IReplicationProvider _directionTo;
 
-		private readonly Db4objects.Drs.IReplicationEventListener _listener;
+		private readonly IReplicationEventListener _listener;
 
 		private readonly bool _isReplicatingOnlyDeletions;
 
 		private readonly long _lastReplicationVersion;
 
-		private readonly Db4objects.Db4o.Foundation.Hashtable4 _uuidsProcessedInSession;
+		private readonly Hashtable4 _uuidsProcessedInSession;
 
-		private readonly Db4objects.Drs.Inside.Traversal.ITraverser _traverser;
+		private readonly ITraverser _traverser;
 
-		private readonly Db4objects.Drs.Inside.ReplicationReflector _reflector;
+		private readonly ReplicationReflector _reflector;
 
 		private readonly Db4objects.Drs.Inside.ICollectionHandler _collectionHandler;
 
@@ -32,21 +40,19 @@ namespace Db4objects.Drs.Inside
 		/// Purpose: handle circular references
 		/// TODO Big Refactoring: Evolve this to handle ALL reference logic (!) and remove it from the providers.
 		/// </remarks>
-		private readonly Db4objects.Db4o.Foundation.Hashtable4 _objectsPreparedToReplicate
-			 = new Db4objects.Db4o.Foundation.Hashtable4(10000);
+		private readonly Hashtable4 _objectsPreparedToReplicate = new Hashtable4(10000);
 
 		/// <summary>
 		/// key = object originated from one provider
 		/// value = the counterpart ReplicationReference of the original object
 		/// </summary>
-		private Db4objects.Db4o.Foundation.Hashtable4 _counterpartRefsByOriginal = new Db4objects.Db4o.Foundation.Hashtable4
-			(10000);
+		private Hashtable4 _counterpartRefsByOriginal = new Hashtable4(10000);
 
-		private readonly Db4objects.Drs.Inside.ReplicationEventImpl _event;
+		private readonly ReplicationEventImpl _event;
 
-		private readonly Db4objects.Drs.Inside.ObjectStateImpl _stateInA;
+		private readonly ObjectStateImpl _stateInA;
 
-		private readonly Db4objects.Drs.Inside.ObjectStateImpl _stateInB;
+		private readonly ObjectStateImpl _stateInB;
 
 		private object _obj;
 
@@ -54,14 +60,13 @@ namespace Db4objects.Drs.Inside
 
 		private string _fieldName;
 
-		internal InstanceReplicationPreparer(Db4objects.Drs.Inside.IReplicationProviderInside
-			 providerA, Db4objects.Drs.Inside.IReplicationProviderInside providerB, Db4objects.Drs.IReplicationProvider
-			 directionTo, Db4objects.Drs.IReplicationEventListener listener, bool isReplicatingOnlyDeletions
-			, long lastReplicationVersion, Db4objects.Db4o.Foundation.Hashtable4 uuidsProcessedInSession
-			, Db4objects.Drs.Inside.Traversal.ITraverser traverser, Db4objects.Drs.Inside.ReplicationReflector
-			 reflector, Db4objects.Drs.Inside.ICollectionHandler collectionHandler)
+		internal InstanceReplicationPreparer(IReplicationProviderInside providerA, IReplicationProviderInside
+			 providerB, IReplicationProvider directionTo, IReplicationEventListener listener
+			, bool isReplicatingOnlyDeletions, long lastReplicationVersion, Hashtable4 uuidsProcessedInSession
+			, ITraverser traverser, ReplicationReflector reflector, Db4objects.Drs.Inside.ICollectionHandler
+			 collectionHandler)
 		{
-			_event = new Db4objects.Drs.Inside.ReplicationEventImpl();
+			_event = new ReplicationEventImpl();
 			_stateInA = _event._stateInProviderA;
 			_stateInB = _event._stateInProviderB;
 			_providerA = providerA;
@@ -92,7 +97,7 @@ namespace Db4objects.Drs.Inside
 
 		private bool IsValueType(object o)
 		{
-			return Db4objects.Drs.Inside.ReplicationPlatform.IsValueType(o);
+			return ReplicationPlatform.IsValueType(o);
 		}
 
 		private bool PrepareObjectToBeReplicated(object obj, object referencingObject, string
@@ -102,29 +107,28 @@ namespace Db4objects.Drs.Inside
 			_obj = obj;
 			_referencingObject = referencingObject;
 			_fieldName = fieldName;
-			Db4objects.Drs.Inside.IReplicationReference refA = _providerA.ProduceReference(_obj
-				, _referencingObject, _fieldName);
-			Db4objects.Drs.Inside.IReplicationReference refB = _providerB.ProduceReference(_obj
-				, _referencingObject, _fieldName);
+			IReplicationReference refA = _providerA.ProduceReference(_obj, _referencingObject
+				, _fieldName);
+			IReplicationReference refB = _providerB.ProduceReference(_obj, _referencingObject
+				, _fieldName);
 			if (refA == null && refB == null)
 			{
-				throw new System.Exception(string.Empty + _obj.GetType() + " " + _obj + " must be stored in one of the databases being replicated."
+				throw new Exception(string.Empty + _obj.GetType() + " " + _obj + " must be stored in one of the databases being replicated."
 					);
 			}
 			//FIXME: Use db4o's standard for throwing exceptions.
 			if (refA != null && refB != null)
 			{
-				throw new System.Exception(string.Empty + _obj.GetType() + " " + _obj + " cannot be referenced by both databases being replicated."
+				throw new Exception(string.Empty + _obj.GetType() + " " + _obj + " cannot be referenced by both databases being replicated."
 					);
 			}
 			//FIXME: Use db4o's standard for throwing exceptions.
-			Db4objects.Drs.Inside.IReplicationProviderInside owner = refA == null ? _providerB
-				 : _providerA;
-			Db4objects.Drs.Inside.IReplicationReference ownerRef = refA == null ? refB : refA;
-			Db4objects.Drs.Inside.IReplicationProviderInside other = Other(owner);
-			Db4objects.Db4o.Ext.Db4oUUID uuid = ownerRef.Uuid();
-			Db4objects.Drs.Inside.IReplicationReference otherRef = other.ProduceReferenceByUUID
-				(uuid, _obj.GetType());
+			IReplicationProviderInside owner = refA == null ? _providerB : _providerA;
+			IReplicationReference ownerRef = refA == null ? refB : refA;
+			IReplicationProviderInside other = Other(owner);
+			Db4oUUID uuid = ownerRef.Uuid();
+			IReplicationReference otherRef = other.ProduceReferenceByUUID(uuid, _obj.GetType(
+				));
 			if (refA == null)
 			{
 				refA = otherRef;
@@ -200,12 +204,11 @@ namespace Db4objects.Drs.Inside
 			_providerB.Activate(objectB);
 			_event.ResetAction();
 			_event._isConflict = conflict;
-			_event._creationDate = Db4objects.Db4o.Foundation.TimeStampIdGenerator.IdToMilliseconds
-				(uuid.GetLongPart());
-			_stateInA.SetAll(objectA, false, changedInA, Db4objects.Db4o.Foundation.TimeStampIdGenerator
-				.IdToMilliseconds(ownerRef.Version()));
-			_stateInB.SetAll(objectB, false, changedInB, Db4objects.Db4o.Foundation.TimeStampIdGenerator
-				.IdToMilliseconds(otherRef.Version()));
+			_event._creationDate = TimeStampIdGenerator.IdToMilliseconds(uuid.GetLongPart());
+			_stateInA.SetAll(objectA, false, changedInA, TimeStampIdGenerator.IdToMilliseconds
+				(ownerRef.Version()));
+			_stateInB.SetAll(objectB, false, changedInB, TimeStampIdGenerator.IdToMilliseconds
+				(otherRef.Version()));
 			_listener.OnReplicate(_event);
 			if (conflict)
 			{
@@ -255,8 +258,8 @@ namespace Db4objects.Drs.Inside
 					}
 				}
 			}
-			Db4objects.Drs.Inside.IReplicationProviderInside prevailingPeer = prevailing == objectA
-				 ? _providerA : _providerB;
+			IReplicationProviderInside prevailingPeer = prevailing == objectA ? _providerA : 
+				_providerB;
 			if (_directionTo == prevailingPeer)
 			{
 				return false;
@@ -281,35 +284,34 @@ namespace Db4objects.Drs.Inside
 			return !_event._actionShouldStopTraversal;
 		}
 
-		private void MarkAsNotProcessed(Db4objects.Db4o.Ext.Db4oUUID uuid)
+		private void MarkAsNotProcessed(Db4oUUID uuid)
 		{
 			_uuidsProcessedInSession.Remove(uuid);
 		}
 
-		private void MarkAsProcessed(Db4objects.Db4o.Ext.Db4oUUID uuid)
+		private void MarkAsProcessed(Db4oUUID uuid)
 		{
 			if (_uuidsProcessedInSession.Get(uuid) != null)
 			{
-				throw new System.Exception("illegal state");
+				throw new Exception("illegal state");
 			}
 			_uuidsProcessedInSession.Put(uuid, uuid);
 		}
 
 		//Using this Hashtable4 as a Set.
-		private bool WasProcessed(Db4objects.Db4o.Ext.Db4oUUID uuid)
+		private bool WasProcessed(Db4oUUID uuid)
 		{
 			return _uuidsProcessedInSession.Get(uuid) != null;
 		}
 
-		private Db4objects.Drs.Inside.IReplicationProviderInside Other(Db4objects.Drs.Inside.IReplicationProviderInside
-			 peer)
+		private IReplicationProviderInside Other(IReplicationProviderInside peer)
 		{
 			return peer == _providerA ? _providerB : _providerA;
 		}
 
-		private bool HandleMissingObjectInOther(object obj, Db4objects.Drs.Inside.IReplicationReference
-			 ownerRef, Db4objects.Drs.Inside.IReplicationProviderInside owner, Db4objects.Drs.Inside.IReplicationProviderInside
-			 other, object referencingObject, string fieldName)
+		private bool HandleMissingObjectInOther(object obj, IReplicationReference ownerRef
+			, IReplicationProviderInside owner, IReplicationProviderInside other, object referencingObject
+			, string fieldName)
 		{
 			bool isConflict = false;
 			bool wasModified = owner.WasModifiedSinceLastReplication(ownerRef);
@@ -329,10 +331,9 @@ namespace Db4objects.Drs.Inside
 			}
 			_event.ResetAction();
 			_event._isConflict = isConflict;
-			_event._creationDate = Db4objects.Db4o.Foundation.TimeStampIdGenerator.IdToMilliseconds
-				(ownerRef.Uuid().GetLongPart());
-			long modificationDate = Db4objects.Db4o.Foundation.TimeStampIdGenerator.IdToMilliseconds
-				(ownerRef.Version());
+			_event._creationDate = TimeStampIdGenerator.IdToMilliseconds(ownerRef.Uuid().GetLongPart
+				());
+			long modificationDate = TimeStampIdGenerator.IdToMilliseconds(ownerRef.Version());
 			if (owner == _providerA)
 			{
 				_stateInA.SetAll(obj, false, wasModified, modificationDate);
@@ -380,10 +381,9 @@ namespace Db4objects.Drs.Inside
 				needsToBeActivated, true);
 		}
 
-		private bool HandleNewObject(object obj, Db4objects.Drs.Inside.IReplicationReference
-			 ownerRef, Db4objects.Drs.Inside.IReplicationProviderInside owner, Db4objects.Drs.Inside.IReplicationProviderInside
-			 other, object referencingObject, string fieldName, bool needsToBeActivated, bool
-			 listenerAlreadyNotified)
+		private bool HandleNewObject(object obj, IReplicationReference ownerRef, IReplicationProviderInside
+			 owner, IReplicationProviderInside other, object referencingObject, string fieldName
+			, bool needsToBeActivated, bool listenerAlreadyNotified)
 		{
 			if (_directionTo == owner)
 			{
@@ -397,8 +397,8 @@ namespace Db4objects.Drs.Inside
 			{
 				_event.ResetAction();
 				_event._isConflict = false;
-				_event._creationDate = Db4objects.Db4o.Foundation.TimeStampIdGenerator.IdToMilliseconds
-					(ownerRef.Uuid().GetLongPart());
+				_event._creationDate = TimeStampIdGenerator.IdToMilliseconds(ownerRef.Uuid().GetLongPart
+					());
 				if (owner == _providerA)
 				{
 					_stateInA.SetAll(obj, true, false, -1);
@@ -425,8 +425,8 @@ namespace Db4objects.Drs.Inside
 			object counterpart = EmptyClone(owner, obj);
 			ownerRef.SetCounterpart(counterpart);
 			ownerRef.MarkForReplicating();
-			Db4objects.Drs.Inside.IReplicationReference otherRef = other.ReferenceNewObject(counterpart
-				, ownerRef, GetCounterpartRef(referencingObject), fieldName);
+			IReplicationReference otherRef = other.ReferenceNewObject(counterpart, ownerRef, 
+				GetCounterpartRef(referencingObject), fieldName);
 			PutCounterpartRef(obj, otherRef);
 			if (_event._actionShouldStopTraversal)
 			{
@@ -437,27 +437,26 @@ namespace Db4objects.Drs.Inside
 
 		private void ThrowReplicationConflictException()
 		{
-			throw new Db4objects.Drs.ReplicationConflictException("A replication conflict ocurred and the ReplicationEventListener, if any, did not choose which state should override the other."
+			throw new ReplicationConflictException("A replication conflict ocurred and the ReplicationEventListener, if any, did not choose which state should override the other."
 				);
 		}
 
-		private object EmptyClone(Db4objects.Drs.Inside.IReplicationProviderInside sourceProvider
-			, object obj)
+		private object EmptyClone(IReplicationProviderInside sourceProvider, object obj)
 		{
 			if (obj == null)
 			{
 				return null;
 			}
-			Db4objects.Db4o.Reflect.IReflectClass claxx = ReflectClass(obj);
+			IReflectClass claxx = ReflectClass(obj);
 			//		if (claxx.isSecondClass()) return obj;
 			if (claxx.IsSecondClass())
 			{
-				throw new System.Exception("IllegalState");
+				throw new Exception("IllegalState");
 			}
 			//		if (claxx.isArray()) return arrayClone(obj, claxx, sourceProvider); //Copy arrayClone() from GenericReplicationSession if necessary.
 			if (claxx.IsArray())
 			{
-				throw new System.Exception("IllegalState");
+				throw new Exception("IllegalState");
 			}
 			//Copy arrayClone() from GenericReplicationSession if necessary.
 			if (_collectionHandler.CanHandle(claxx))
@@ -469,36 +468,32 @@ namespace Db4objects.Drs.Inside
 			object result = claxx.NewInstance();
 			if (result == null)
 			{
-				throw new System.Exception("Unable to create a new instance of " + obj.GetType());
+				throw new Exception("Unable to create a new instance of " + obj.GetType());
 			}
 			//FIXME Use db4o's standard for throwing exceptions.
 			return result;
 		}
 
-		private Db4objects.Db4o.Reflect.IReflectClass ReflectClass(object obj)
+		private IReflectClass ReflectClass(object obj)
 		{
 			return _reflector.ForObject(obj);
 		}
 
-		private object CollectionClone(object original, Db4objects.Db4o.Reflect.IReflectClass
-			 claxx)
+		private object CollectionClone(object original, IReflectClass claxx)
 		{
 			return _collectionHandler.EmptyClone(original, claxx);
 		}
 
-		private Db4objects.Drs.Inside.IReplicationReference GetCounterpartRef(object original
-			)
+		private IReplicationReference GetCounterpartRef(object original)
 		{
-			return (Db4objects.Drs.Inside.IReplicationReference)_counterpartRefsByOriginal.Get
-				(original);
+			return (IReplicationReference)_counterpartRefsByOriginal.Get(original);
 		}
 
-		private void PutCounterpartRef(object obj, Db4objects.Drs.Inside.IReplicationReference
-			 otherRef)
+		private void PutCounterpartRef(object obj, IReplicationReference otherRef)
 		{
 			if (_counterpartRefsByOriginal.Get(obj) != null)
 			{
-				throw new System.Exception("illegal state");
+				throw new Exception("illegal state");
 			}
 			_counterpartRefsByOriginal.Put(obj, otherRef);
 		}

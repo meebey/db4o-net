@@ -1,10 +1,12 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Ext;
+
 namespace Db4objects.Drs.Inside
 {
 	public interface IReplicationReference
 	{
-		Db4objects.Db4o.Ext.Db4oUUID Uuid();
+		Db4oUUID Uuid();
 
 		/// <summary>
 		/// IMPORTANT

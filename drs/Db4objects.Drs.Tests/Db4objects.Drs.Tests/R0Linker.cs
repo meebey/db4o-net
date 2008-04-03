@@ -1,26 +1,29 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Drs.Inside;
+using Db4objects.Drs.Tests;
+
 namespace Db4objects.Drs.Tests
 {
 	internal class R0Linker
 	{
-		internal Db4objects.Drs.Tests.R0 r0;
+		internal R0 r0;
 
-		internal Db4objects.Drs.Tests.R1 r1;
+		internal R1 r1;
 
-		internal Db4objects.Drs.Tests.R2 r2;
+		internal R2 r2;
 
-		internal Db4objects.Drs.Tests.R3 r3;
+		internal R3 r3;
 
-		internal Db4objects.Drs.Tests.R4 r4;
+		internal R4 r4;
 
 		internal R0Linker()
 		{
-			r0 = new Db4objects.Drs.Tests.R0();
-			r1 = new Db4objects.Drs.Tests.R1();
-			r2 = new Db4objects.Drs.Tests.R2();
-			r3 = new Db4objects.Drs.Tests.R3();
-			r4 = new Db4objects.Drs.Tests.R4();
+			r0 = new R0();
+			r1 = new R1();
+			r2 = new R2();
+			r3 = new R3();
+			r4 = new R4();
 		}
 
 		internal virtual void SetNames(string name)
@@ -66,8 +69,7 @@ namespace Db4objects.Drs.Tests
 			r4.r3 = r3;
 		}
 
-		public virtual void Store(Db4objects.Drs.Inside.ITestableReplicationProviderInside
-			 provider)
+		public virtual void Store(ITestableReplicationProviderInside provider)
 		{
 			provider.StoreNew(r4);
 			provider.StoreNew(r3);

@@ -1,16 +1,19 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Reflect;
+using Db4objects.Drs.Inside;
+using Db4objects.Drs.Inside.Traversal;
+
 namespace Db4objects.Drs.Inside
 {
-	public interface ICollectionHandler : Db4objects.Drs.Inside.Traversal.ICollectionFlattener
+	public interface ICollectionHandler : ICollectionFlattener
 	{
-		object EmptyClone(object originalCollection, Db4objects.Db4o.Reflect.IReflectClass
-			 originalCollectionClass);
+		object EmptyClone(object originalCollection, IReflectClass originalCollectionClass
+			);
 
-		void CopyState(object original, object dest, Db4objects.Drs.Inside.ICounterpartFinder
-			 finder);
+		void CopyState(object original, object dest, ICounterpartFinder finder);
 
-		object CloneWithCounterparts(object original, Db4objects.Db4o.Reflect.IReflectClass
-			 claxx, Db4objects.Drs.Inside.ICounterpartFinder elementCloner);
+		object CloneWithCounterparts(object original, IReflectClass claxx, ICounterpartFinder
+			 elementCloner);
 	}
 }

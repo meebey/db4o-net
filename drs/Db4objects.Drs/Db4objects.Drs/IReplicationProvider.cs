@@ -1,5 +1,9 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using Db4objects.Db4o;
+using Db4objects.Drs;
+
 namespace Db4objects.Drs
 {
 	/// <summary>Facade for persistence systems that provide replication support.</summary>
@@ -15,8 +19,7 @@ namespace Db4objects.Drs
 	/// <author>Albert Kwan</author>
 	/// <author>Klaus Wuestefeld</author>
 	/// <version>1.2</version>
-	/// <seealso cref="Db4objects.Drs.IReplicationSession">Db4objects.Drs.IReplicationSession
-	/// 	</seealso>
+	/// <seealso cref="IReplicationSession">IReplicationSession</seealso>
 	/// <seealso cref="Db4objects.Drs.Replication">Db4objects.Drs.Replication</seealso>
 	/// <since>dRS 1.0</since>
 	public interface IReplicationProvider
@@ -27,7 +30,7 @@ namespace Db4objects.Drs
 		/// 	</remarks>
 		/// <returns>newly created objects and changed objects since last replication with the opposite provider.
 		/// 	</returns>
-		Db4objects.Db4o.IObjectSet ObjectsChangedSinceLastReplication();
+		IObjectSet ObjectsChangedSinceLastReplication();
 
 		/// <summary>Returns newly created objects and changed objects since last replication with the opposite provider.
 		/// 	</summary>
@@ -36,6 +39,6 @@ namespace Db4objects.Drs
 		/// <param name="clazz">the type of objects interested</param>
 		/// <returns>newly created objects and changed objects of the type specified in the clazz parameter since last replication
 		/// 	</returns>
-		Db4objects.Db4o.IObjectSet ObjectsChangedSinceLastReplication(System.Type clazz);
+		IObjectSet ObjectsChangedSinceLastReplication(Type clazz);
 	}
 }

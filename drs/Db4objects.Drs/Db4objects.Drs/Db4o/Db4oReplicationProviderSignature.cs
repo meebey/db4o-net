@@ -1,14 +1,16 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Ext;
+using Db4objects.Drs.Inside;
+
 namespace Db4objects.Drs.Db4o
 {
 	/// <exclude></exclude>
-	public class Db4oReplicationProviderSignature : Db4objects.Drs.Inside.IReadonlyReplicationProviderSignature
+	public class Db4oReplicationProviderSignature : IReadonlyReplicationProviderSignature
 	{
-		private readonly Db4objects.Db4o.Ext.Db4oDatabase _delegate;
+		private readonly Db4oDatabase _delegate;
 
-		public Db4oReplicationProviderSignature(Db4objects.Db4o.Ext.Db4oDatabase delegate_
-			)
+		public Db4oReplicationProviderSignature(Db4oDatabase delegate_)
 		{
 			_delegate = delegate_;
 		}

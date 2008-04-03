@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Drs.Inside.Traversal;
+
 namespace Db4objects.Drs.Inside.Traversal
 {
 	public interface ITraverser
@@ -14,8 +16,7 @@ namespace Db4objects.Drs.Inside.Traversal
 		/// circular references if necessary. Transient fields are not visited. The
 		/// fields of second class objects such as Strings and Dates are also not visited.
 		/// </remarks>
-		void TraverseGraph(object @object, Db4objects.Drs.Inside.Traversal.IVisitor visitor
-			);
+		void TraverseGraph(object @object, IVisitor visitor);
 
 		/// <summary>Should only be called during a traversal.</summary>
 		/// <remarks>

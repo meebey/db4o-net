@@ -1,5 +1,8 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using Db4objects.Drs;
+
 namespace Db4objects.Drs
 {
 	/// <summary>Execute a round of replication between two ReplicationProviders.</summary>
@@ -40,7 +43,7 @@ namespace Db4objects.Drs
 		/// Hibernate Sessions created from Hibernate Configurations will be closed.
 		/// db4o ObjectContainers will remain open.
 		/// </remarks>
-		/// <exception cref="System.InvalidOperationException">if the session is still active (neither commitReplicationTransaction() nor rollback is called).
+		/// <exception cref="InvalidOperationException">if the session is still active (neither commitReplicationTransaction() nor rollback is called).
 		/// 	</exception>
 		void Close();
 
@@ -65,7 +68,7 @@ namespace Db4objects.Drs
 		/// system passed as a parameter when the replication session was instantiated.
 		/// </remarks>
 		/// <returns>the first persistence system</returns>
-		Db4objects.Drs.IReplicationProvider ProviderA();
+		IReplicationProvider ProviderA();
 
 		/// <summary>
 		/// Returns the ReplicationProvider representing the <b>second</b> persistence
@@ -76,7 +79,7 @@ namespace Db4objects.Drs
 		/// system passed as a parameter when the replication session was instantiated.
 		/// </remarks>
 		/// <returns>the second persistence system</returns>
-		Db4objects.Drs.IReplicationProvider ProviderB();
+		IReplicationProvider ProviderB();
 
 		/// <summary>
 		/// Replicates an individual object and traverses to member objects as long as
@@ -89,8 +92,7 @@ namespace Db4objects.Drs
 		/// were replicated.
 		/// </remarks>
 		/// <param name="obj">the object to be replicated.</param>
-		/// <seealso cref="Db4objects.Drs.IReplicationEventListener">Db4objects.Drs.IReplicationEventListener
-		/// 	</seealso>
+		/// <seealso cref="IReplicationEventListener">IReplicationEventListener</seealso>
 		void Replicate(object obj);
 
 		/// <summary>Replicates all deletions between the two providers.</summary>
@@ -103,7 +105,7 @@ namespace Db4objects.Drs
 		/// be deleted violates referential integrity. If so, you can stop traversal.
 		/// </remarks>
 		/// <param name="extent">the Class that you want to delete</param>
-		void ReplicateDeletions(System.Type extent);
+		void ReplicateDeletions(Type extent);
 
 		/// <summary>Rollbacks all changes done during the replication session.</summary>
 		/// <remarks>
@@ -122,14 +124,12 @@ namespace Db4objects.Drs
 		/// Sets the direction of replication. By default, if this method is not called, replication is bidirectional,
 		/// which means the newer copy of the object is copied to the other provider..
 		/// &lt;p/&gt; If you want to force unidirectional replication, call this method before calling
-		/// <see cref="Db4objects.Drs.IReplicationSession.Replicate">Db4objects.Drs.IReplicationSession.Replicate
-		/// 	</see>
+		/// <see cref="IReplicationSession.Replicate">IReplicationSession.Replicate</see>
 		/// .
 		/// </remarks>
 		/// <param name="from">objects in this provider will not be changed.</param>
 		/// <param name="to">objects will be copied to this provider if copies in "from" is newer
 		/// 	</param>
-		void SetDirection(Db4objects.Drs.IReplicationProvider from, Db4objects.Drs.IReplicationProvider
-			 to);
+		void SetDirection(IReplicationProvider from, IReplicationProvider to);
 	}
 }

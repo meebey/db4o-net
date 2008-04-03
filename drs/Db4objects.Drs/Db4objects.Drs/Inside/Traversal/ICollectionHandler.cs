@@ -1,11 +1,14 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System.Collections;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Drs.Inside.Traversal
 {
 	public interface ICollectionHandler
 	{
-		bool CanHandle(Db4objects.Db4o.Reflect.IReflectClass claxx);
+		bool CanHandle(IReflectClass claxx);
 
-		System.Collections.IEnumerator IteratorFor(object collection);
+		IEnumerator IteratorFor(object collection);
 	}
 }

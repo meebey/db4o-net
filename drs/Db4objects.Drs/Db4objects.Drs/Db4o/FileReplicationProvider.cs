@@ -1,50 +1,60 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using System.Collections;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Replication;
+using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Drs.Db4o;
+using Db4objects.Drs.Inside;
+
 namespace Db4objects.Drs.Db4o
 {
-	internal class FileReplicationProvider : Db4objects.Drs.Db4o.IDb4oReplicationProvider
+	internal class FileReplicationProvider : IDb4oReplicationProvider
 	{
-		private Db4objects.Drs.Inside.IReadonlyReplicationProviderSignature _mySignature;
+		private IReadonlyReplicationProviderSignature _mySignature;
 
-		protected readonly Db4objects.Db4o.Internal.ExternalObjectContainer _stream;
+		protected readonly ExternalObjectContainer _stream;
 
-		private readonly Db4objects.Db4o.Reflect.IReflector _reflector;
+		private readonly IReflector _reflector;
 
-		private Db4objects.Db4o.ReplicationRecord _replicationRecord;
+		private ReplicationRecord _replicationRecord;
 
-		internal Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl _referencesByObject;
+		internal Db4oReplicationReferenceImpl _referencesByObject;
 
-		private Db4objects.Drs.Db4o.Db4oSignatureMap _signatureMap;
+		private Db4oSignatureMap _signatureMap;
 
-		private Db4objects.Db4o.Foundation.Tree _idsReplicatedInThisSession;
+		private Tree _idsReplicatedInThisSession;
 
 		private readonly string _name;
 
-		public FileReplicationProvider(Db4objects.Db4o.IObjectContainer objectContainer) : 
-			this(objectContainer, "null")
+		public FileReplicationProvider(IObjectContainer objectContainer) : this(objectContainer
+			, "null")
 		{
 		}
 
-		public FileReplicationProvider(Db4objects.Db4o.IObjectContainer objectContainer, 
-			string name)
+		public FileReplicationProvider(IObjectContainer objectContainer, string name)
 		{
 			// TODO: Add additional query methods (whereModified )
-			Db4objects.Db4o.Config.IConfiguration cfg = objectContainer.Ext().Configure();
+			IConfiguration cfg = objectContainer.Ext().Configure();
 			cfg.ObjectClass(typeof(object)).CascadeOnDelete(false);
 			cfg.Callbacks(false);
 			_name = name;
-			_stream = (Db4objects.Db4o.Internal.ExternalObjectContainer)objectContainer;
+			_stream = (ExternalObjectContainer)objectContainer;
 			_reflector = _stream.Reflector();
-			_signatureMap = new Db4objects.Drs.Db4o.Db4oSignatureMap(_stream);
+			_signatureMap = new Db4oSignatureMap(_stream);
 		}
 
-		public virtual Db4objects.Drs.Inside.IReadonlyReplicationProviderSignature GetSignature
-			()
+		public virtual IReadonlyReplicationProviderSignature GetSignature()
 		{
 			if (_mySignature == null)
 			{
-				_mySignature = new Db4objects.Drs.Db4o.Db4oReplicationProviderSignature(_stream.Identity
-					());
+				_mySignature = new Db4oReplicationProviderSignature(_stream.Identity());
 			}
 			return _mySignature;
 		}
@@ -54,19 +64,19 @@ namespace Db4objects.Drs.Db4o
 			return _stream.Lock();
 		}
 
-		public virtual void StartReplicationTransaction(Db4objects.Drs.Inside.IReadonlyReplicationProviderSignature
+		public virtual void StartReplicationTransaction(IReadonlyReplicationProviderSignature
 			 peerSignature)
 		{
 			ClearAllReferences();
 			lock (GetMonitor())
 			{
-				Db4objects.Db4o.Internal.Transaction trans = _stream.Transaction();
-				Db4objects.Db4o.Ext.Db4oDatabase myIdentity = _stream.Identity();
+				Transaction trans = _stream.Transaction();
+				Db4oDatabase myIdentity = _stream.Identity();
 				_signatureMap.Put(myIdentity);
-				Db4objects.Db4o.Ext.Db4oDatabase otherIdentity = _signatureMap.Produce(peerSignature
-					.GetSignature(), peerSignature.GetCreated());
-				Db4objects.Db4o.Ext.Db4oDatabase younger = null;
-				Db4objects.Db4o.Ext.Db4oDatabase older = null;
+				Db4oDatabase otherIdentity = _signatureMap.Produce(peerSignature.GetSignature(), 
+					peerSignature.GetCreated());
+				Db4oDatabase younger = null;
+				Db4oDatabase older = null;
 				if (myIdentity.IsOlderThan(otherIdentity))
 				{
 					younger = otherIdentity;
@@ -77,11 +87,11 @@ namespace Db4objects.Drs.Db4o
 					younger = myIdentity;
 					older = otherIdentity;
 				}
-				_replicationRecord = Db4objects.Db4o.ReplicationRecord.QueryForReplicationRecord(
-					_stream, trans, younger, older);
+				_replicationRecord = ReplicationRecord.QueryForReplicationRecord(_stream, trans, 
+					younger, older);
 				if (_replicationRecord == null)
 				{
-					_replicationRecord = new Db4objects.Db4o.ReplicationRecord(younger, older);
+					_replicationRecord = new ReplicationRecord(younger, older);
 					_replicationRecord.Store(_stream);
 				}
 				long localInitialVersion = _stream.Version();
@@ -126,8 +136,7 @@ namespace Db4objects.Drs.Db4o
 			{
 				_stream.StoreByNewReplication(this, obj);
 				// the ID is an int internally, it can be casted to int.
-				Db4objects.Db4o.Internal.TreeInt node = new Db4objects.Db4o.Internal.TreeInt((int
-					)_stream.GetID(obj));
+				TreeInt node = new TreeInt((int)_stream.GetID(obj));
 				if (_idsReplicatedInThisSession == null)
 				{
 					_idsReplicatedInThisSession = node;
@@ -145,13 +154,12 @@ namespace Db4objects.Drs.Db4o
 			{
 				return;
 			}
-			Db4objects.Db4o.Reflect.IReflectClass claxx = _reflector.ForObject(obj);
+			IReflectClass claxx = _reflector.ForObject(obj);
 			int level = claxx.IsCollection() ? 3 : 1;
 			_stream.Activate(obj, level);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Replication.IDb4oReplicationReference ReferenceFor
-			(object obj)
+		public virtual IDb4oReplicationReference ReferenceFor(object obj)
 		{
 			if (_referencesByObject == null)
 			{
@@ -160,8 +168,8 @@ namespace Db4objects.Drs.Db4o
 			return _referencesByObject.Find(obj);
 		}
 
-		public virtual Db4objects.Drs.Inside.IReplicationReference ProduceReference(object
-			 obj, object unused, string unused2)
+		public virtual IReplicationReference ProduceReference(object obj, object unused, 
+			string unused2)
 		{
 			if (obj == null)
 			{
@@ -169,26 +177,25 @@ namespace Db4objects.Drs.Db4o
 			}
 			if (_referencesByObject != null)
 			{
-				Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl existingNode = _referencesByObject
-					.Find(obj);
+				Db4oReplicationReferenceImpl existingNode = _referencesByObject.Find(obj);
 				if (existingNode != null)
 				{
 					return existingNode;
 				}
 			}
 			Refresh(obj);
-			Db4objects.Db4o.Ext.IObjectInfo objectInfo = _stream.GetObjectInfo(obj);
+			IObjectInfo objectInfo = _stream.GetObjectInfo(obj);
 			if (objectInfo == null)
 			{
 				return null;
 			}
-			Db4objects.Db4o.Ext.Db4oUUID uuid = objectInfo.GetUUID();
+			Db4oUUID uuid = objectInfo.GetUUID();
 			if (uuid == null)
 			{
-				throw new System.ArgumentNullException();
+				throw new ArgumentNullException();
 			}
-			Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl newNode = new Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl
-				(objectInfo);
+			Db4oReplicationReferenceImpl newNode = new Db4oReplicationReferenceImpl(objectInfo
+				);
 			AddReference(newNode);
 			return newNode;
 		}
@@ -198,8 +205,7 @@ namespace Db4objects.Drs.Db4o
 		}
 
 		//empty in File Provider
-		private void AddReference(Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl newNode
-			)
+		private void AddReference(Db4oReplicationReferenceImpl newNode)
 		{
 			if (_referencesByObject == null)
 			{
@@ -211,11 +217,11 @@ namespace Db4objects.Drs.Db4o
 			}
 		}
 
-		public virtual Db4objects.Drs.Inside.IReplicationReference ReferenceNewObject(object
-			 obj, Db4objects.Drs.Inside.IReplicationReference counterpartReference, Db4objects.Drs.Inside.IReplicationReference
-			 referencingObjCounterPartRef, string fieldName)
+		public virtual IReplicationReference ReferenceNewObject(object obj, IReplicationReference
+			 counterpartReference, IReplicationReference referencingObjCounterPartRef, string
+			 fieldName)
 		{
-			Db4objects.Db4o.Ext.Db4oUUID uuid = counterpartReference.Uuid();
+			Db4oUUID uuid = counterpartReference.Uuid();
 			if (uuid == null)
 			{
 				return null;
@@ -223,15 +229,15 @@ namespace Db4objects.Drs.Db4o
 			byte[] signature = uuid.GetSignaturePart();
 			long longPart = uuid.GetLongPart();
 			long version = counterpartReference.Version();
-			Db4objects.Db4o.Ext.Db4oDatabase db = _signatureMap.Produce(signature, 0);
-			Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl @ref = new Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl
-				(obj, db, longPart, version);
+			Db4oDatabase db = _signatureMap.Produce(signature, 0);
+			Db4oReplicationReferenceImpl @ref = new Db4oReplicationReferenceImpl(obj, db, longPart
+				, version);
 			AddReference(@ref);
 			return @ref;
 		}
 
-		public virtual Db4objects.Drs.Inside.IReplicationReference ProduceReferenceByUUID
-			(Db4objects.Db4o.Ext.Db4oUUID uuid, System.Type hint)
+		public virtual IReplicationReference ProduceReferenceByUUID(Db4oUUID uuid, Type hint
+			)
 		{
 			if (uuid == null)
 			{
@@ -249,8 +255,7 @@ namespace Db4objects.Drs.Db4o
 			return ProduceReference(obj, null, null);
 		}
 
-		public virtual void VisitCachedReferences(Db4objects.Db4o.Foundation.IVisitor4 visitor
-			)
+		public virtual void VisitCachedReferences(IVisitor4 visitor)
 		{
 			if (_referencesByObject != null)
 			{
@@ -258,21 +263,20 @@ namespace Db4objects.Drs.Db4o
 			}
 		}
 
-		private sealed class _IVisitor4_265 : Db4objects.Db4o.Foundation.IVisitor4
+		private sealed class _IVisitor4_265 : IVisitor4
 		{
-			public _IVisitor4_265(Db4objects.Db4o.Foundation.IVisitor4 visitor)
+			public _IVisitor4_265(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}
 
 			public void Visit(object obj)
 			{
-				Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl node = (Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl
-					)obj;
+				Db4oReplicationReferenceImpl node = (Db4oReplicationReferenceImpl)obj;
 				visitor.Visit(node);
 			}
 
-			private readonly Db4objects.Db4o.Foundation.IVisitor4 visitor;
+			private readonly IVisitor4 visitor;
 		}
 
 		public virtual void ClearAllReferences()
@@ -280,17 +284,16 @@ namespace Db4objects.Drs.Db4o
 			_referencesByObject = null;
 		}
 
-		public virtual Db4objects.Db4o.IObjectSet ObjectsChangedSinceLastReplication()
+		public virtual IObjectSet ObjectsChangedSinceLastReplication()
 		{
-			Db4objects.Db4o.Query.IQuery q = _stream.Query();
+			IQuery q = _stream.Query();
 			WhereModified(q);
 			return q.Execute();
 		}
 
-		public virtual Db4objects.Db4o.IObjectSet ObjectsChangedSinceLastReplication(System.Type
-			 clazz)
+		public virtual IObjectSet ObjectsChangedSinceLastReplication(Type clazz)
 		{
-			Db4objects.Db4o.Query.IQuery q = _stream.Query();
+			IQuery q = _stream.Query();
 			q.Constrain(clazz);
 			WhereModified(q);
 			return q.Execute();
@@ -307,15 +310,15 @@ namespace Db4objects.Drs.Db4o
 		/// ObjectContainer involved in the current replication process.
 		/// </remarks>
 		/// <param name="query">the Query to be constrained</param>
-		public virtual void WhereModified(Db4objects.Db4o.Query.IQuery query)
+		public virtual void WhereModified(IQuery query)
 		{
-			query.Descend(Db4objects.Db4o.Ext.VirtualField.Version).Constrain(GetLastReplicationVersion
-				()).Greater();
+			query.Descend(VirtualField.Version).Constrain(GetLastReplicationVersion()).Greater
+				();
 		}
 
-		public virtual Db4objects.Db4o.IObjectSet GetStoredObjects(System.Type type)
+		public virtual IObjectSet GetStoredObjects(Type type)
 		{
-			Db4objects.Db4o.Query.IQuery query = _stream.Query();
+			IQuery query = _stream.Query();
 			query.Constrain(type);
 			return query.Execute();
 		}
@@ -345,11 +348,11 @@ namespace Db4objects.Drs.Db4o
 			_stream.Commit();
 		}
 
-		public virtual void DeleteAllInstances(System.Type clazz)
+		public virtual void DeleteAllInstances(Type clazz)
 		{
-			Db4objects.Db4o.Query.IQuery q = _stream.Query();
+			IQuery q = _stream.Query();
 			q.Constrain(clazz);
-			System.Collections.IEnumerator objectSet = q.Execute().GetEnumerator();
+			IEnumerator objectSet = q.Execute().GetEnumerator();
 			while (objectSet.MoveNext())
 			{
 				Delete(objectSet.Current);
@@ -361,14 +364,13 @@ namespace Db4objects.Drs.Db4o
 			_stream.Delete(obj);
 		}
 
-		public virtual bool WasModifiedSinceLastReplication(Db4objects.Drs.Inside.IReplicationReference
-			 reference)
+		public virtual bool WasModifiedSinceLastReplication(IReplicationReference reference
+			)
 		{
 			if (_idsReplicatedInThisSession != null)
 			{
 				int id = (int)_stream.GetID(reference.Object());
-				if (_idsReplicatedInThisSession.Find(new Db4objects.Db4o.Internal.TreeInt(id)) !=
-					 null)
+				if (_idsReplicatedInThisSession.Find(new TreeInt(id)) != null)
 				{
 					return false;
 				}
@@ -401,7 +403,7 @@ namespace Db4objects.Drs.Db4o
 			return GetName();
 		}
 
-		public virtual void ReplicateDeletion(Db4objects.Db4o.Ext.Db4oUUID uuid)
+		public virtual void ReplicateDeletion(Db4oUUID uuid)
 		{
 			object obj = _stream.GetByUUID(uuid);
 			if (obj == null)
@@ -411,7 +413,7 @@ namespace Db4objects.Drs.Db4o
 			_stream.Delete(obj);
 		}
 
-		public virtual Db4objects.Db4o.Ext.IExtObjectContainer GetObjectContainer()
+		public virtual IExtObjectContainer GetObjectContainer()
 		{
 			return _stream;
 		}

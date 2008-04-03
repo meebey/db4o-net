@@ -1,5 +1,8 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Reflect;
+
 namespace Db4objects.Drs.Inside
 {
 	public class ReplicationReflector
@@ -7,14 +10,14 @@ namespace Db4objects.Drs.Inside
 		private static Db4objects.Drs.Inside.ReplicationReflector instance = new Db4objects.Drs.Inside.ReplicationReflector
 			();
 
-		private readonly Db4objects.Db4o.Reflect.IReflector _reflector;
+		private readonly IReflector _reflector;
 
-		private readonly Db4objects.Db4o.Reflect.IReflectArray _arrayReflector;
+		private readonly IReflectArray _arrayReflector;
 
 		private ReplicationReflector()
 		{
-			Db4objects.Db4o.Ext.IExtObjectContainer tempOcToGetReflector = Db4objects.Db4o.Ext.ExtDb4oFactory
-				.OpenMemoryFile(new Db4objects.Db4o.Ext.MemoryFile()).Ext();
+			IExtObjectContainer tempOcToGetReflector = ExtDb4oFactory.OpenMemoryFile(new MemoryFile
+				()).Ext();
 			//      FIXME: Find a better way without depending on ExtDb4o.  :P
 			_reflector = tempOcToGetReflector.Reflector();
 			_arrayReflector = _reflector.Array();
@@ -45,13 +48,12 @@ namespace Db4objects.Drs.Inside
 			return result;
 		}
 
-		internal virtual Db4objects.Db4o.Reflect.IReflectClass ForObject(object obj)
+		internal virtual IReflectClass ForObject(object obj)
 		{
 			return _reflector.ForObject(obj);
 		}
 
-		internal virtual Db4objects.Db4o.Reflect.IReflectClass GetComponentType(Db4objects.Db4o.Reflect.IReflectClass
-			 claxx)
+		internal virtual IReflectClass GetComponentType(IReflectClass claxx)
 		{
 			return _arrayReflector.GetComponentType(claxx);
 		}
@@ -61,8 +63,8 @@ namespace Db4objects.Drs.Inside
 			return _arrayReflector.Dimensions(obj);
 		}
 
-		public virtual object NewArrayInstance(Db4objects.Db4o.Reflect.IReflectClass componentType
-			, int[] dimensions)
+		public virtual object NewArrayInstance(IReflectClass componentType, int[] dimensions
+			)
 		{
 			return _arrayReflector.NewInstance(componentType, dimensions);
 		}
@@ -74,7 +76,7 @@ namespace Db4objects.Drs.Inside
 				);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflector Reflector()
+		public virtual IReflector Reflector()
 		{
 			return _reflector;
 		}

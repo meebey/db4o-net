@@ -1,12 +1,15 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System.Collections;
+using Db4objects.Drs.Tests;
+
 namespace Db4objects.Drs.Tests
 {
 	public class ListHolder
 	{
 		private string name;
 
-		private System.Collections.IList list;
+		private IList list;
 
 		public ListHolder()
 		{
@@ -17,7 +20,7 @@ namespace Db4objects.Drs.Tests
 			this.name = name;
 		}
 
-		public virtual void Add(Db4objects.Drs.Tests.ListContent obj)
+		public virtual void Add(ListContent obj)
 		{
 			list.Add(obj);
 		}
@@ -32,12 +35,12 @@ namespace Db4objects.Drs.Tests
 			this.name = name;
 		}
 
-		public virtual System.Collections.IList GetList()
+		public virtual IList GetList()
 		{
 			return list;
 		}
 
-		public virtual void SetList(System.Collections.IList list)
+		public virtual void SetList(IList list)
 		{
 			this.list = list;
 		}

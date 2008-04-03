@@ -1,18 +1,20 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using Db4objects.Drs;
+using Db4objects.Drs.Inside;
+
 namespace Db4objects.Drs.Inside
 {
-	internal sealed class ReplicationEventImpl : Db4objects.Drs.IReplicationEvent
+	internal sealed class ReplicationEventImpl : IReplicationEvent
 	{
-		internal readonly Db4objects.Drs.Inside.ObjectStateImpl _stateInProviderA = new Db4objects.Drs.Inside.ObjectStateImpl
-			();
+		internal readonly ObjectStateImpl _stateInProviderA = new ObjectStateImpl();
 
-		internal readonly Db4objects.Drs.Inside.ObjectStateImpl _stateInProviderB = new Db4objects.Drs.Inside.ObjectStateImpl
-			();
+		internal readonly ObjectStateImpl _stateInProviderB = new ObjectStateImpl();
 
 		internal bool _isConflict;
 
-		internal Db4objects.Drs.IObjectState _actionChosenState;
+		internal IObjectState _actionChosenState;
 
 		internal bool _actionWasChosen;
 
@@ -20,12 +22,12 @@ namespace Db4objects.Drs.Inside
 
 		internal long _creationDate;
 
-		public Db4objects.Drs.IObjectState StateInProviderA()
+		public IObjectState StateInProviderA()
 		{
 			return _stateInProviderA;
 		}
 
-		public Db4objects.Drs.IObjectState StateInProviderB()
+		public IObjectState StateInProviderB()
 		{
 			return _stateInProviderB;
 		}
@@ -40,11 +42,11 @@ namespace Db4objects.Drs.Inside
 			return _isConflict;
 		}
 
-		public void OverrideWith(Db4objects.Drs.IObjectState chosen)
+		public void OverrideWith(IObjectState chosen)
 		{
 			if (_actionWasChosen)
 			{
-				throw new System.Exception();
+				throw new Exception();
 			}
 			//FIXME Use Db4o's standard exception throwing.
 			_actionWasChosen = true;

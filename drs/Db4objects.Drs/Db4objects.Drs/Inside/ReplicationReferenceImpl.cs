@@ -1,14 +1,17 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Ext;
+using Db4objects.Drs.Inside;
+
 namespace Db4objects.Drs.Inside
 {
-	public sealed class ReplicationReferenceImpl : Db4objects.Drs.Inside.IReplicationReference
+	public sealed class ReplicationReferenceImpl : IReplicationReference
 	{
 		private bool _objectIsNew;
 
 		private readonly object _obj;
 
-		private readonly Db4objects.Db4o.Ext.Db4oUUID _uuid;
+		private readonly Db4oUUID _uuid;
 
 		private readonly long _version;
 
@@ -18,8 +21,7 @@ namespace Db4objects.Drs.Inside
 
 		private bool _markedForDeleting;
 
-		public ReplicationReferenceImpl(object obj, Db4objects.Db4o.Ext.Db4oUUID uuid, long
-			 version)
+		public ReplicationReferenceImpl(object obj, Db4oUUID uuid, long version)
 		{
 			this._obj = obj;
 			this._uuid = uuid;
@@ -41,8 +43,7 @@ namespace Db4objects.Drs.Inside
 			{
 				return false;
 			}
-			Db4objects.Drs.Inside.IReplicationReference that = (Db4objects.Drs.Inside.ReplicationReferenceImpl
-				)o;
+			IReplicationReference that = (Db4objects.Drs.Inside.ReplicationReferenceImpl)o;
 			if (_version != that.Version())
 			{
 				return false;
@@ -106,7 +107,7 @@ namespace Db4objects.Drs.Inside
 				+ _markedForDeleting + '}';
 		}
 
-		public Db4objects.Db4o.Ext.Db4oUUID Uuid()
+		public Db4oUUID Uuid()
 		{
 			return _uuid;
 		}

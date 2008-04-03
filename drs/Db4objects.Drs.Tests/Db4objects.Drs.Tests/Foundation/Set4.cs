@@ -1,25 +1,28 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System.Collections;
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Drs.Tests.Foundation
 {
-	public class Set4 : System.Collections.IEnumerable
+	public class Set4 : IEnumerable
 	{
 		public static readonly Db4objects.Drs.Tests.Foundation.Set4 EmptySet = new Db4objects.Drs.Tests.Foundation.Set4
 			(0);
 
-		private readonly Db4objects.Db4o.Foundation.Hashtable4 _table;
+		private readonly Hashtable4 _table;
 
 		public Set4()
 		{
-			_table = new Db4objects.Db4o.Foundation.Hashtable4();
+			_table = new Hashtable4();
 		}
 
 		public Set4(int size)
 		{
-			_table = new Db4objects.Db4o.Foundation.Hashtable4(size);
+			_table = new Hashtable4(size);
 		}
 
-		public Set4(System.Collections.IEnumerable keys) : this()
+		public Set4(IEnumerable keys) : this()
 		{
 			AddAll(keys);
 		}
@@ -29,9 +32,9 @@ namespace Db4objects.Drs.Tests.Foundation
 			_table.Put(element, element);
 		}
 
-		public virtual void AddAll(System.Collections.IEnumerable other)
+		public virtual void AddAll(IEnumerable other)
 		{
-			System.Collections.IEnumerator i = other.GetEnumerator();
+			IEnumerator i = other.GetEnumerator();
 			while (i.MoveNext())
 			{
 				Add(i.Current);
@@ -58,14 +61,14 @@ namespace Db4objects.Drs.Tests.Foundation
 			return _table.ContainsAllKeys(other);
 		}
 
-		public virtual System.Collections.IEnumerator GetEnumerator()
+		public virtual IEnumerator GetEnumerator()
 		{
 			return _table.Keys();
 		}
 
 		public override string ToString()
 		{
-			return Db4objects.Db4o.Foundation.Iterators.Join(GetEnumerator(), "[", "]", ", ");
+			return Iterators.Join(GetEnumerator(), "[", "]", ", ");
 		}
 	}
 }

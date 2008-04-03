@@ -1,5 +1,8 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4oUnit;
+using Db4objects.Drs.Tests;
+
 namespace Db4objects.Drs.Tests
 {
 	/// <summary>
@@ -10,7 +13,7 @@ namespace Db4objects.Drs.Tests
 	/// Design of this case is copied from
 	/// com.db4o.db4ounit.common.types.arrays.ByteArrayTestCase.
 	/// </remarks>
-	public class ByteArrayTest : Db4objects.Drs.Tests.DrsTestCase
+	public class ByteArrayTest : DrsTestCase
 	{
 		internal const int ArrayLength = 5;
 
@@ -32,8 +35,7 @@ namespace Db4objects.Drs.Tests
 
 		private void StoreInA()
 		{
-			Db4objects.Drs.Tests.IIByteArrayHolder byteArrayHolder = new Db4objects.Drs.Tests.ByteArrayHolder
-				(CreateByteArray());
+			IIByteArrayHolder byteArrayHolder = new ByteArrayHolder(CreateByteArray());
 			A().Provider().StoreNew(byteArrayHolder);
 			A().Provider().Commit();
 			EnsureNames(A(), initial);
@@ -48,7 +50,7 @@ namespace Db4objects.Drs.Tests
 
 		private void ModifyInB()
 		{
-			Db4objects.Drs.Tests.IIByteArrayHolder c = GetTheObject(B());
+			IIByteArrayHolder c = GetTheObject(B());
 			c.SetBytes(modInB);
 			B().Provider().Update(c);
 			B().Provider().Commit();
@@ -64,7 +66,7 @@ namespace Db4objects.Drs.Tests
 
 		private void ModifyInA()
 		{
-			Db4objects.Drs.Tests.IIByteArrayHolder c = GetTheObject(A());
+			IIByteArrayHolder c = GetTheObject(A());
 			c.SetBytes(modInA);
 			A().Provider().Update(c);
 			A().Provider().Commit();
@@ -78,18 +80,16 @@ namespace Db4objects.Drs.Tests
 			EnsureNames(B(), modInA);
 		}
 
-		private void EnsureNames(Db4objects.Drs.Tests.IDrsFixture fixture, byte[] bs)
+		private void EnsureNames(IDrsFixture fixture, byte[] bs)
 		{
-			EnsureOneInstance(fixture, typeof(Db4objects.Drs.Tests.IIByteArrayHolder));
-			Db4objects.Drs.Tests.IIByteArrayHolder c = GetTheObject(fixture);
-			Db4oUnit.ArrayAssert.AreEqual(c.GetBytes(), bs);
+			EnsureOneInstance(fixture, typeof(IIByteArrayHolder));
+			IIByteArrayHolder c = GetTheObject(fixture);
+			ArrayAssert.AreEqual(c.GetBytes(), bs);
 		}
 
-		private Db4objects.Drs.Tests.IIByteArrayHolder GetTheObject(Db4objects.Drs.Tests.IDrsFixture
-			 fixture)
+		private IIByteArrayHolder GetTheObject(IDrsFixture fixture)
 		{
-			return (Db4objects.Drs.Tests.IIByteArrayHolder)GetOneInstance(fixture, typeof(Db4objects.Drs.Tests.IIByteArrayHolder
-				));
+			return (IIByteArrayHolder)GetOneInstance(fixture, typeof(IIByteArrayHolder));
 		}
 
 		internal static byte[] CreateByteArray()

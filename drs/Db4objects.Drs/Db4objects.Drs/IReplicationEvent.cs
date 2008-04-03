@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Drs;
+
 namespace Db4objects.Drs
 {
 	/// <summary>Defines an event class for the replication of an entity.</summary>
@@ -20,17 +22,17 @@ namespace Db4objects.Drs
 		/// 	</remarks>
 		/// <param name="chosen">the ObjectState of the prevailing object or null if replication should ignore this object and not traverse to its referenced objects.
 		/// 	</param>
-		void OverrideWith(Db4objects.Drs.IObjectState chosen);
+		void OverrideWith(IObjectState chosen);
 
 		/// <summary>The ObjectState in provider A.</summary>
 		/// <remarks>The ObjectState in provider A.</remarks>
 		/// <returns>ObjectState in provider A</returns>
-		Db4objects.Drs.IObjectState StateInProviderA();
+		IObjectState StateInProviderA();
 
 		/// <summary>The ObjectState in provider B.</summary>
 		/// <remarks>The ObjectState in provider B.</remarks>
 		/// <returns>ObjectState in provider B</returns>
-		Db4objects.Drs.IObjectState StateInProviderB();
+		IObjectState StateInProviderB();
 
 		/// <summary>The time when the object is created in one provider.</summary>
 		/// <remarks>The time when the object is created in one provider.</remarks>

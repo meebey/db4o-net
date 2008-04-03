@@ -1,8 +1,13 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
+using Db4objects.Drs.Db4o;
+using Db4objects.Drs.Tests;
+
 namespace Db4objects.Drs.Tests
 {
-	public class Db4oClientServerDrsFixture : Db4objects.Drs.Tests.Db4oDrsFixture
+	public class Db4oClientServerDrsFixture : Db4oDrsFixture
 	{
 		private static readonly string Host = "localhost";
 
@@ -10,7 +15,7 @@ namespace Db4objects.Drs.Tests
 
 		private static readonly string Password = Username;
 
-		private Db4objects.Db4o.IObjectServer _server;
+		private IObjectServer _server;
 
 		private int _port;
 
@@ -27,12 +32,12 @@ namespace Db4objects.Drs.Tests
 
 		public override void Open()
 		{
-			Db4objects.Db4o.Db4oFactory.Configure().MessageLevel(-1);
-			_server = Db4objects.Db4o.Db4oFactory.OpenServer(testFile.GetPath(), _port);
+			Db4oFactory.Configure().MessageLevel(-1);
+			_server = Db4oFactory.OpenServer(testFile.GetPath(), _port);
 			_server.GrantAccess(Username, Password);
-			_db = (Db4objects.Db4o.Ext.IExtObjectContainer)Db4objects.Db4o.Db4oFactory.OpenClient
-				(Host, _port, Username, Password);
-			_provider = Db4objects.Drs.Db4o.Db4oProviderFactory.NewInstance(_db, _name);
+			_db = (IExtObjectContainer)Db4oFactory.OpenClient(Host, _port, Username, Password
+				);
+			_provider = Db4oProviderFactory.NewInstance(_db, _name);
 		}
 	}
 }

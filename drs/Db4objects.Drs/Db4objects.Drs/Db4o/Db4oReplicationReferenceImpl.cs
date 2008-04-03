@@ -1,10 +1,17 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
+using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Replication;
+using Db4objects.Drs.Inside;
+
 namespace Db4objects.Drs.Db4o
 {
 	/// <exclude></exclude>
-	public class Db4oReplicationReferenceImpl : Db4objects.Db4o.Internal.ObjectReference
-		, Db4objects.Drs.Inside.IReplicationReference, Db4objects.Db4o.Internal.Replication.IDb4oReplicationReference
+	public class Db4oReplicationReferenceImpl : ObjectReference, IReplicationReference
+		, IDb4oReplicationReference
 	{
 		private object _counterPart;
 
@@ -12,11 +19,10 @@ namespace Db4objects.Drs.Db4o
 
 		private bool _markedForDeleting;
 
-		internal Db4oReplicationReferenceImpl(Db4objects.Db4o.Ext.IObjectInfo objectInfo)
+		internal Db4oReplicationReferenceImpl(IObjectInfo objectInfo)
 		{
-			Db4objects.Db4o.Internal.ObjectReference yo = (Db4objects.Db4o.Internal.ObjectReference
-				)objectInfo;
-			Db4objects.Db4o.Internal.Transaction trans = yo.Transaction();
+			ObjectReference yo = (ObjectReference)objectInfo;
+			Transaction trans = yo.Transaction();
 			Db4objects.Db4o.Internal.VirtualAttributes va = yo.VirtualAttributes(trans);
 			if (va != null)
 			{
@@ -33,8 +39,8 @@ namespace Db4objects.Drs.Db4o
 			Ref_init();
 		}
 
-		public Db4oReplicationReferenceImpl(object myObject, Db4objects.Db4o.Ext.Db4oDatabase
-			 db, long longPart, long version)
+		public Db4oReplicationReferenceImpl(object myObject, Db4oDatabase db, long longPart
+			, long version)
 		{
 			SetObject(myObject);
 			Ref_init();
@@ -57,19 +63,19 @@ namespace Db4objects.Drs.Db4o
 			return (Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl)Hc_find(obj);
 		}
 
-		public virtual void Traverse(Db4objects.Db4o.Foundation.IVisitor4 visitor)
+		public virtual void Traverse(IVisitor4 visitor)
 		{
 			Hc_traverse(visitor);
 		}
 
-		public virtual Db4objects.Db4o.Ext.Db4oUUID Uuid()
+		public virtual Db4oUUID Uuid()
 		{
-			Db4objects.Db4o.Ext.Db4oDatabase db = SignaturePart();
+			Db4oDatabase db = SignaturePart();
 			if (db == null)
 			{
 				return null;
 			}
-			return new Db4objects.Db4o.Ext.Db4oUUID(LongPart(), db.GetSignature());
+			return new Db4oUUID(LongPart(), db.GetSignature());
 		}
 
 		public virtual long Version()
@@ -114,15 +120,15 @@ namespace Db4objects.Drs.Db4o
 
 		public virtual void MarkCounterpartAsNew()
 		{
-			throw new System.NotSupportedException("TODO");
+			throw new NotSupportedException("TODO");
 		}
 
 		public virtual bool IsCounterpartNew()
 		{
-			throw new System.NotSupportedException("TODO");
+			throw new NotSupportedException("TODO");
 		}
 
-		public virtual Db4objects.Db4o.Ext.Db4oDatabase SignaturePart()
+		public virtual Db4oDatabase SignaturePart()
 		{
 			return VirtualAttributes().i_database;
 		}
@@ -147,8 +153,7 @@ namespace Db4objects.Drs.Db4o
 			{
 				return false;
 			}
-			Db4objects.Drs.Inside.IReplicationReference that = (Db4objects.Drs.Inside.IReplicationReference
-				)o;
+			IReplicationReference that = (IReplicationReference)o;
 			if (Version() != that.Version())
 			{
 				return false;
