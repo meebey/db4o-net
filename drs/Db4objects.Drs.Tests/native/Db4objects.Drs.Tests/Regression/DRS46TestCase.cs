@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Db4objects.Drs.Inside;
 using Db4objects.Db4o;
@@ -8,32 +9,21 @@ namespace Db4objects.Drs.Tests.Regression
 {
     class DRS46TestCase : Db4objects.Drs.Tests.DrsTestCase
     {
-        public class GenericItem
+        public class Container
         {
-            public string _string;
-            public List<string> _stringList;
+            public string _name;
+            public IEnumerable<string> _items;
 
-            public GenericItem(string str, List<string> stringList)
+            public Container(string name, IEnumerable<string> items)
             {
-                _string = str;
-                _stringList = stringList;
+                _name = name;
+                _items = items;
             }
         }
 
-        GenericItem _item;
-
-        public GenericItem Item()
+		public Container Item()
         {
-            if (_item == null)
-            {
-                List<string> list = new List<string>();
-                for (int i = 0; i < 10; i++)
-                {
-                    list.Add("string " + i);
-                }
-                _item = new GenericItem("Item One", list);
-            }
-            return _item;
+			return new Container("Item One", new List<string>(GenerateStrings(10)));
         }
 
         public void Test()
@@ -57,18 +47,27 @@ namespace Db4objects.Drs.Tests.Regression
 
         private void EnsureContent(ITestableReplicationProviderInside provider)
         {
-        	GenericItem replicated = QueryItem(provider);
-        	GenericItem expected = Item();
+			Container replicated = QueryItem(provider);
+			Container expected = Item();
 			Assert.AreNotSame(expected, replicated);
-            Assert.AreEqual(expected._string, replicated._string);
-			Iterator4Assert.AreEqual(expected._stringList.GetEnumerator(), replicated._stringList.GetEnumerator());
+            Assert.AreEqual(expected._name, replicated._name);
+			Iterator4Assert.AreEqual(expected._items.GetEnumerator(), replicated._items.GetEnumerator());
         }
 
-    	private static GenericItem QueryItem(ITestableReplicationProviderInside provider)
+		private static Container QueryItem(ITestableReplicationProviderInside provider)
     	{
-    		IObjectSet result = provider.GetStoredObjects(typeof(GenericItem));
+			IObjectSet result = provider.GetStoredObjects(typeof(Container));
     		Assert.AreEqual(1, result.Count);
-    		return (GenericItem) result.Next();
+			return (Container)result.Next();
     	}
+
+		private IEnumerable<string> GenerateStrings(int count)
+		{
+			if (count < 0) throw new ArgumentOutOfRangeException("count");
+			for (int i = 0; i < count; i++)
+			{
+				yield  return "string " + i;
+			}
+		}
     }
 }
