@@ -4,6 +4,7 @@ using System.Text;
 using Db4objects.Db4o.Tests.CLI1.Handlers;
 using System.IO;
 using Db4oUnit;
+using Db4objects.Db4o.Tests.CLI2.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
@@ -21,6 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
             list.AddRange(base.TestCases());
 
             Type[] netTypes = new Type[] {
+                typeof(GenericListVersionUpdateTestCase),
                 typeof(DateTimeHandlerUpdateTestCase),
                 typeof(DecimalHandlerUpdateTestCase),
                 typeof(GUIDHandlerUpdateTestCase),

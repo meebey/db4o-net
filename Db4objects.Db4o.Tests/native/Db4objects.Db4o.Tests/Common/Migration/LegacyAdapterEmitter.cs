@@ -31,16 +31,37 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			get
 			{
 				return CommonCode + @"
+namespace Db4objects.Db4o.Config
+{
+   	public interface IConfiguration
+	{
+    }   
+}
+
+namespace Db4objects.Db4o.Query
+{
+    public interface IQuery
+    {
+    }   
+}
+
 namespace Db4objects.Db4o
 {
 	using Db4objects.Db4o.Ext;
-	
+    using Db4objects.Db4o.Config;
+    using Db4objects.Db4o.Query;
+    
 	public class Db4oFactory
 	{
 		public static IObjectContainer OpenFile(string fname)
 		{
 			return new ObjectContainerAdapter(com.db4o.Db4o.OpenFile(fname));
 		}
+
+        public static IConfiguration Configure()
+        {
+            return null;
+        }
 	}
 
 	class ObjectContainerAdapter : IExtObjectContainer
@@ -56,6 +77,11 @@ namespace Db4objects.Db4o
 		{
 			_container.Set(o);
 		}
+		
+        public void Delete(object obj)
+        {
+            _container.Delete(obj);
+        }
 
 		public bool Close()
 		{
@@ -66,7 +92,26 @@ namespace Db4objects.Db4o
 		{
 			return this;
 		}
+
+        public void Commit()
+        {
+            _container.Commit();
+        }
+
+        public IQuery Query()
+        {
+            return new QueryAdapter(_container.Query());
+        }
 	}
+
+    class QueryAdapter : IQuery
+    {
+        private com.db4o.query.Query _query;        
+        public QueryAdapter(com.db4o.query.Query query)
+        {
+            _query = query;
+        }
+    }
 }
 ";
 			}
@@ -140,12 +185,16 @@ namespace Db4objects.Db4o.Ext
 namespace Db4objects.Db4o
 {
 	using Db4objects.Db4o.Ext;
+    using Db4objects.Db4o.Query;
 	
 	public interface IObjectContainer
 	{
+		IQuery Query();
 		void Set(object o);
+		void Delete(object obj);
 		IExtObjectContainer Ext();
 		bool Close();
+        void Commit();
 	}
 }
 
