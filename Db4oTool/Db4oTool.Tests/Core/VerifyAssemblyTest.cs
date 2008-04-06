@@ -14,7 +14,7 @@ namespace Db4oTool.Tests.Core
 			_assemblyPath = assemblyPath;
 		}
 			
-		public string GetLabel()
+		public string Label()
 		{
 			return string.Format("peverify \"{0}\"", Path.GetFileNameWithoutExtension(_assemblyPath));
 		}
