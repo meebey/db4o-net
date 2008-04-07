@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using System;
 using System.Collections.Generic;
 using System.Collections;
 
@@ -73,6 +74,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
             return new List<int>(new int[] { 1, 2, 3 });
         }
 
+        private static IList<int?> nullableIntList1()
+        {
+            return new List<int?>(new int?[] { 1, 2, 3 });
+        }
+
         private static IList<SimpleItem> simpleItemList1()
         {
             return new List<SimpleItem>(new SimpleItem[] { new SimpleItem(100), new SimpleItem(200)});
@@ -95,7 +101,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
         private static IList<string> stringList2()
         {
-            return new List<string>(new string[] {"Foo", "Bar", String.Empty});
+            return new List<string>(new string[] { "Foo", "Bar", String.Empty });
         }
 
         protected override string TypeName()
@@ -105,9 +111,10 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
         protected override object[] CreateValues()
         {
-            return new object[2] {
+            return new object[3] {
                                     new Item<int>( intList1(), intList2(), null),
-                                    new Item<string>(stringList1(), stringList2(), simpleItemList1())
+                                    new Item<string>(stringList1(), stringList2(), simpleItemList1()),
+                                    new Item<int?>( nullableIntList1(), stringList1(), simpleItemList1()),
                         };
         }
 
@@ -130,13 +137,16 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
         {
             AssertItem((Item<int>)values[0], intList1(), intList2(), null);
             AssertItem((Item<string>)values[1], stringList1(), stringList2(), simpleItemList1());
+
+            //TODO: Enable after fixing nullable array handling.
+            //AssertItem((Item<int?>)values[2], nullableIntList1(), stringList1(), simpleItemList1());
         }
 
-        private void AssertItem<T>(Item<T> tba, IList<T> list, IList<T> untypedGenericList, IList<SimpleItem> simpleItemList)
+        private void AssertItem<T, R>(Item<T> tba, IList<T> list, IList<R> untypedGenericList, IList<SimpleItem> simpleItemList)
         {
             Assert.IsNotNull(tba);
             AssertList(list, tba.list);
-            AssertList(untypedGenericList, tba.untypedGenericList as IList<T>);
+            AssertList(untypedGenericList, tba.untypedGenericList as IList<R>);
             AssertList(simpleItemList, tba.simpleItemList);
         }
 
