@@ -10,7 +10,8 @@ namespace Db4objects.Drs.Tests
 			return new Type[]
 			{
 				typeof(StructTestCase),
-				typeof(Regression.DRS46TestCase),
+				typeof(Regression.GenericListTestCase),
+                typeof(Regression.GenericDictionaryTestCase),
 			};
 		}
 	}

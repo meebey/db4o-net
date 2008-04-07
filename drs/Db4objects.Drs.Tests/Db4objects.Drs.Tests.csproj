@@ -53,6 +53,9 @@
     <Compile Include="Db4objects.Drs.Tests\Db4oListTest.cs" />
     <Compile Include="Db4objects.Drs.Tests\Db4oTests.cs" />
     <Compile Include="Db4objects.Drs.Tests\Dotnet\StructTestCase.cs" />
+    <Compile Include="Db4objects.Drs.Tests\DrsFixturePair.cs" />
+    <Compile Include="Db4objects.Drs.Tests\DrsFixtureVariable.cs" />
+    <Compile Include="Db4objects.Drs.Tests\DrsTestCase.cs" />
     <Compile Include="Db4objects.Drs.Tests\DrsTestSuite.cs" />
     <Compile Include="Db4objects.Drs.Tests\DrsTestSuiteBuilder.cs" />
     <Compile Include="Db4objects.Drs.Tests\Foundation\AllTests.cs" />
@@ -88,14 +91,15 @@
     <Compile Include="Db4objects.Drs.Tests\Student.cs" />
     <Compile Include="Db4objects.Drs.Tests\TheSimplest.cs" />
     <Compile Include="Db4objects.Drs.Tests\TransientReplicationProvider.cs" />
-    <Compile Include="native\Db4objects.Drs.Tests\Regression\DRS46TestCase.cs" />
+    <Compile Include="native\Db4objects.Drs.Tests\Regression\GenericCollectionTestCaseBase.cs" />
+    <Compile Include="native\Db4objects.Drs.Tests\Regression\GenericDictionaryTestCase.cs" />
+    <Compile Include="native\Db4objects.Drs.Tests\Regression\GenericListTestCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="native\Db4objects.Drs.Tests\DrsTestCase.cs" />
+    <Compile Include="native\Db4objects.Drs.Tests\Db4oTests.cs" />
     <Compile Include="native\Db4objects.Drs.Tests\Foundation\ObjectSetCollection4FacadeTestCase.cs" />
     <Compile Include="native\Db4objects.Drs.Tests\ListTest.cs" />
     <Compile Include="native\Db4objects.Drs.Tests\Regression\DRS42Test.cs" />
     <Compile Include="native\Db4objects.Drs.Tests\ReplicationProviderTest.cs" />
-    <Compile Include="native\Sharpen.Util\ISet.cs" />
     <Compile Include="native\Sharpen.Util\IdentityHashMap.cs" />
   </ItemGroup>
   <ItemGroup>
