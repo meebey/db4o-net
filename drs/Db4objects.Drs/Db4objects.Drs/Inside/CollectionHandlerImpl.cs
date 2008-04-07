@@ -69,14 +69,19 @@ namespace Db4objects.Drs.Inside
 			{
 				return _mapHandler.IteratorFor(collection);
 			}
-			ICollection subject = (ICollection)collection;
+			IEnumerable subject = (IEnumerable)collection;
+			return Copy(subject).GetEnumerator();
+		}
+
+		private Collection4 Copy(IEnumerable subject)
+		{
 			Collection4 result = new Collection4();
 			IEnumerator it = subject.GetEnumerator();
 			while (it.MoveNext())
 			{
 				result.Add(it.Current);
 			}
-			return result.GetEnumerator();
+			return result;
 		}
 
 		public virtual void CopyState(object original, object destination, ICounterpartFinder

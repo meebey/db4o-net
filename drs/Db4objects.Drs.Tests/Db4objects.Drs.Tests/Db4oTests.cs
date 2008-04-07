@@ -7,14 +7,11 @@ using Db4objects.Drs.Tests.Dotnet;
 
 namespace Db4objects.Drs.Tests
 {
-	public class Db4oTests : DrsTestSuite
+	public partial class Db4oTests : DrsTestSuite
 	{
 		public static int Main(string[] args)
 		{
-			if (true)
-			{
-				return new Db4oTests().RunDb4oDb4o();
-			}
+			//		if (true) return new Db4oTests().runDb4oDb4o();
 			int failureCount = new Db4oTests().Rundb4oCS();
 			//new Db4oTests().runCSdb4o();
 			failureCount = failureCount + new Db4oTests().RunCSCS();
@@ -49,12 +46,8 @@ namespace Db4objects.Drs.Tests
 
 		protected override Type[] SpecificTestCases()
 		{
-			return new Type[] { typeof(StructTestCase) };
-		}
-
-		protected virtual Type[] One()
-		{
-			return new Type[] { typeof(ByteArrayTest) };
+			return Concat(PlatformSpecificTestCases(), new Type[] { typeof(StructTestCase), typeof(
+				DeepListGraphTestCase) });
 		}
 	}
 }

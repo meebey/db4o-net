@@ -9,7 +9,7 @@ namespace Db4objects.Drs.Tests
 {
 	public class SingleTypeCollectionReplicationTest : DrsTestCase
 	{
-		public virtual void _Test()
+		public virtual void Test()
 		{
 			CollectionHolder h1 = new CollectionHolder();
 			h1.map.Add("1", "one");
@@ -21,9 +21,17 @@ namespace Db4objects.Drs.Tests
 				();
 			Assert.IsTrue(it.MoveNext());
 			CollectionHolder replica = (CollectionHolder)it.Current;
+			AssertSameClass(h1.map, replica.map);
 			Assert.AreEqual("one", replica.map["1"]);
+			AssertSameClass(h1.set, replica.set);
 			Assert.IsTrue(replica.set.Contains("two"));
+			AssertSameClass(h1.list, replica.list);
 			Assert.AreEqual("three", replica.list[0]);
+		}
+
+		private void AssertSameClass(object expectedInstance, object actualInstance)
+		{
+			Assert.AreSame(expectedInstance.GetType(), actualInstance.GetType());
 		}
 
 		private void StoreNewAndCommit(ITestableReplicationProviderInside provider, CollectionHolder
