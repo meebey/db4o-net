@@ -1,18 +1,20 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Db4objects.Drs.Inside;
 using Db4oUnit;
+using Db4oUnit.Fixtures;
 
 namespace Db4objects.Drs.Tests.Regression
 {
-    class GenericListTestCase : GenericCollectionTestCaseBase
+	class GenericListTestCase : GenericCollectionTestCaseBase
     {
         public class Container
         {
             public string _name;
-            public IEnumerable<string> _items;
+            public IEnumerable _items;
 
-            public Container(string name, IEnumerable<string> items)
+            public Container(string name, IEnumerable items)
             {
                 _name = name;
                 _items = items;
@@ -21,7 +23,7 @@ namespace Db4objects.Drs.Tests.Regression
 
         public override object CreateItem()
         {
-            return new Container("Item One", new List<string>(GenerateStrings(10)));
+            return new Container("Item One", (IEnumerable) SubjectFixtureProvider.Value());
         }
 
         public override void EnsureContent(ITestableReplicationProviderInside provider)
@@ -31,15 +33,6 @@ namespace Db4objects.Drs.Tests.Regression
             Assert.AreNotSame(expected, replicated);
             Assert.AreEqual(expected._name, replicated._name);
             Iterator4Assert.AreEqual(expected._items.GetEnumerator(), replicated._items.GetEnumerator());
-        }
-
-        private IEnumerable<string> GenerateStrings(int count)
-        {
-            if (count < 0) throw new ArgumentOutOfRangeException("count");
-            for (int i = 0; i < count; i++)
-            {
-                yield return "string " + i;
-            }
         }
     }
 }

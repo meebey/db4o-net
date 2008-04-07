@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Drs.Inside
@@ -28,20 +30,97 @@ namespace Db4objects.Drs.Inside
 	/// converted code.
 	/// </summary>
 	public class ReplicationPlatform
-	{
+	{	
+		interface ICollectionProtocol
+		{
+			void Clear();
+			void Add(object o);
+		}
+
         public static void CopyCollectionState(object original, object destination, Db4objects.Drs.Inside.ICounterpartFinder
 			 counterpartFinder)
 		{
 			System.Collections.IEnumerable originalCollection = (System.Collections.IEnumerable
 				)original;
-			System.Collections.IList destinationCollection = (System.Collections.IList
-				)destination;
+        	ICollectionProtocol destinationCollection = CollectionProtocolFor(destination);
 			destinationCollection.Clear();
 
 			foreach (object element in originalCollection)
 			{
 				object counterpart = counterpartFinder.FindCounterpart(element);
 				destinationCollection.Add(counterpart);
+			}
+		}
+
+		private static ICollectionProtocol CollectionProtocolFor(object destination)
+		{
+			if (destination is IList)
+			{
+				return new ListCollectionProtocol((IList) destination);
+			}
+			Type collectionElementType = CollectionElementTypeFor(destination);
+			if (collectionElementType != null)
+			{
+				Type genericProtocolType = typeof(GenericCollectionProtocol<>).MakeGenericType(collectionElementType);
+				return (ICollectionProtocol) Activator.CreateInstance(genericProtocolType, destination);
+			}
+			throw new ArgumentException("Unknown collection: " + destination);
+		}
+
+		private static Type CollectionElementTypeFor(object destination)
+		{
+			foreach (Type interfaceType in destination.GetType().GetInterfaces())
+			{
+				if (IsGenericCollection(interfaceType))
+				{
+					return interfaceType.GetGenericArguments()[0];
+				}
+			}
+			return null;
+		}
+
+		private static bool IsGenericCollection(Type type)
+		{
+			return type.GetGenericTypeDefinition() == typeof(ICollection<>);
+		}
+
+		private class GenericCollectionProtocol<T> : ICollectionProtocol
+		{
+			private ICollection<T> _collection;
+
+			public GenericCollectionProtocol(ICollection<T> collection)
+			{
+				_collection = collection;
+			}
+
+			public void Clear()
+			{
+				_collection.Clear();
+			}
+
+			public void Add(object o)
+			{
+				_collection.Add((T)o);
+			}
+		}
+
+		private class ListCollectionProtocol : ICollectionProtocol
+		{
+			private readonly IList _list;
+
+			public ListCollectionProtocol(IList list)
+			{
+				_list = list;
+			}
+
+			public void Clear()
+			{
+				_list.Clear();
+			}
+
+			public void Add(object o)
+			{
+				_list.Add(o);
 			}
 		}
 
