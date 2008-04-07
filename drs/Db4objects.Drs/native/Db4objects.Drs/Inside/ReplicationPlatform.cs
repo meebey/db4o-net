@@ -31,7 +31,7 @@ namespace Db4objects.Drs.Inside
 	/// </summary>
 	public class ReplicationPlatform
 	{	
-		interface ICollectionProtocol
+		interface ICollectionInitializer
 		{
 			void Clear();
 			void Add(object o);
@@ -42,7 +42,7 @@ namespace Db4objects.Drs.Inside
 		{
 			System.Collections.IEnumerable originalCollection = (System.Collections.IEnumerable
 				)original;
-        	ICollectionProtocol destinationCollection = CollectionProtocolFor(destination);
+        	ICollectionInitializer destinationCollection = CollectionInitializerFor(destination);
 			destinationCollection.Clear();
 
 			foreach (object element in originalCollection)
@@ -52,7 +52,7 @@ namespace Db4objects.Drs.Inside
 			}
 		}
 
-		private static ICollectionProtocol CollectionProtocolFor(object destination)
+		private static ICollectionInitializer CollectionInitializerFor(object destination)
 		{
 			if (destination is IList)
 			{
@@ -62,7 +62,7 @@ namespace Db4objects.Drs.Inside
 			if (collectionElementType != null)
 			{
 				Type genericProtocolType = typeof(GenericCollectionProtocol<>).MakeGenericType(collectionElementType);
-				return (ICollectionProtocol) Activator.CreateInstance(genericProtocolType, destination);
+				return (ICollectionInitializer) Activator.CreateInstance(genericProtocolType, destination);
 			}
 			throw new ArgumentException("Unknown collection: " + destination);
 		}
@@ -84,7 +84,7 @@ namespace Db4objects.Drs.Inside
 			return type.GetGenericTypeDefinition() == typeof(ICollection<>);
 		}
 
-		private class GenericCollectionProtocol<T> : ICollectionProtocol
+		private class GenericCollectionProtocol<T> : ICollectionInitializer
 		{
 			private ICollection<T> _collection;
 
@@ -104,7 +104,7 @@ namespace Db4objects.Drs.Inside
 			}
 		}
 
-		private class ListCollectionProtocol : ICollectionProtocol
+		private class ListCollectionProtocol : ICollectionInitializer
 		{
 			private readonly IList _list;
 
@@ -124,7 +124,7 @@ namespace Db4objects.Drs.Inside
 			}
 		}
 
-		public static System.Collections.ICollection EmptyCollectionClone(System.Collections.ICollection
+		public static System.Collections.ICollection EmptyCollectionClone(ICollectionSource source, System.Collections.ICollection
 			 original)
 		{	
 			if (original is System.Collections.ArrayList)
