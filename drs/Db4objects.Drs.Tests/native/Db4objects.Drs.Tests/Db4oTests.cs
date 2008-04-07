@@ -5,11 +5,10 @@ namespace Db4objects.Drs.Tests
 {
 	partial class Db4oTests
 	{
-		protected override Type[] SpecificTestCases()
+		private Type[] PlatformSpecificTestCases()
 		{
 			return new Type[]
-			{
-				typeof(StructTestCase),
+			{	
 				typeof(Regression.GenericListTestSuite),
                 typeof(Regression.GenericDictionaryTestCase),
 			};
