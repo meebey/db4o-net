@@ -6,7 +6,7 @@ namespace Db4oUnit.Tests
 {
 	internal class RunsGreen : ITest
 	{
-		public virtual string GetLabel()
+		public virtual string Label()
 		{
 			return "RunsGreen";
 		}

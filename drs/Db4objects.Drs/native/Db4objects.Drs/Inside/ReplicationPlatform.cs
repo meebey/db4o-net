@@ -56,12 +56,12 @@ namespace Db4objects.Drs.Inside
 		{
 			if (destination is IList)
 			{
-				return new ListCollectionProtocol((IList) destination);
+				return new ListInitializer((IList) destination);
 			}
 			Type collectionElementType = CollectionElementTypeFor(destination);
 			if (collectionElementType != null)
 			{
-				Type genericProtocolType = typeof(GenericCollectionProtocol<>).MakeGenericType(collectionElementType);
+				Type genericProtocolType = typeof(GenericCollectionInitializer<>).MakeGenericType(collectionElementType);
 				return (ICollectionInitializer) Activator.CreateInstance(genericProtocolType, destination);
 			}
 			throw new ArgumentException("Unknown collection: " + destination);
@@ -84,11 +84,11 @@ namespace Db4objects.Drs.Inside
 			return type.GetGenericTypeDefinition() == typeof(ICollection<>);
 		}
 
-		private class GenericCollectionProtocol<T> : ICollectionInitializer
+		private class GenericCollectionInitializer<T> : ICollectionInitializer
 		{
 			private ICollection<T> _collection;
 
-			public GenericCollectionProtocol(ICollection<T> collection)
+			public GenericCollectionInitializer(ICollection<T> collection)
 			{
 				_collection = collection;
 			}
@@ -104,11 +104,11 @@ namespace Db4objects.Drs.Inside
 			}
 		}
 
-		private class ListCollectionProtocol : ICollectionInitializer
+		private class ListInitializer : ICollectionInitializer
 		{
 			private readonly IList _list;
 
-			public ListCollectionProtocol(IList list)
+			public ListInitializer(IList list)
 			{
 				_list = list;
 			}

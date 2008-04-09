@@ -49,10 +49,14 @@ namespace Db4objects.Drs.Inside
 			return result.GetEnumerator();
 		}
 
-		public virtual object EmptyClone(object original, IReflectClass originalCollectionClass
-			)
+		public virtual object EmptyClone(ICollectionSource sourceProvider, object original
+			, IReflectClass originalCollectionClass)
 		{
-			return new Hashtable(((IDictionary)original).Count);
+			if (sourceProvider.IsProviderSpecific(original) || original is Hashtable)
+			{
+				return new Hashtable(((IDictionary)original).Count);
+			}
+			return _reflector.ForObject(original).NewInstance();
 		}
 
 		public virtual void CopyState(object original, object destination, ICounterpartFinder
@@ -71,11 +75,11 @@ namespace Db4objects.Drs.Inside
 			}
 		}
 
-		public virtual object CloneWithCounterparts(object originalMap, IReflectClass claxx
-			, ICounterpartFinder elementCloner)
+		public virtual object CloneWithCounterparts(ICollectionSource sourceProvider, object
+			 originalMap, IReflectClass claxx, ICounterpartFinder elementCloner)
 		{
 			IDictionary original = (IDictionary)originalMap;
-			IDictionary result = (IDictionary)EmptyClone(original, claxx);
+			IDictionary result = (IDictionary)EmptyClone(sourceProvider, original, claxx);
 			CopyState(original, result, elementCloner);
 			return result;
 		}

@@ -12,11 +12,11 @@ namespace Db4oUnit.Tests.Fixtures
 {
 	public class FixtureBasedTestSuiteTestCase : ITestCase
 	{
-		internal static ContextVariable RecorderFixture = new ContextVariable();
+		internal static FixtureVariable RecorderFixture = new FixtureVariable("recorder");
 
-		internal static ContextVariable Fixture1 = new ContextVariable();
+		internal static FixtureVariable Fixture1 = new FixtureVariable("f1");
 
-		internal static ContextVariable Fixture2 = new ContextVariable();
+		internal static FixtureVariable Fixture2 = new FixtureVariable("f2");
 
 		public sealed class TestUnit : ITestCase
 		{
@@ -32,19 +32,19 @@ namespace Db4oUnit.Tests.Fixtures
 
 			private void Record(string test)
 			{
-				Recorder().Record(new MethodCall(test, Fixture1.Value(), Fixture2.Value()));
+				Recorder().Record(new MethodCall(test, Fixture1.Value, Fixture2.Value));
 			}
 
 			private MethodCallRecorder Recorder()
 			{
-				return ((MethodCallRecorder)RecorderFixture.Value());
+				return ((MethodCallRecorder)RecorderFixture.Value);
 			}
 		}
 
 		public virtual void Test()
 		{
 			MethodCallRecorder recorder = new MethodCallRecorder();
-			new TestRunner(new _FixtureBasedTestSuite_41(recorder)).Run(new TestResult());
+			Run(new _FixtureBasedTestSuite_41(recorder));
 			//		System.out.println(CodeGenerator.generateMethodCallArray(recorder));
 			recorder.Verify(new MethodCall[] { new MethodCall("testFoo", new object[] { "f11"
 				, "f21" }), new MethodCall("testFoo", new object[] { "f11", "f22" }), new MethodCall
@@ -78,26 +78,36 @@ namespace Db4oUnit.Tests.Fixtures
 			private readonly MethodCallRecorder recorder;
 		}
 
+		private void Run(FixtureBasedTestSuite suite)
+		{
+			TestResult result = new TestResult();
+			new TestRunner(suite).Run(result);
+			if (result.Failures.Size() > 0)
+			{
+				Assert.Fail(Iterators.ToString(result.Failures));
+			}
+		}
+
 		public virtual void TestLabel()
 		{
-			FixtureBasedTestSuite suite = new _FixtureBasedTestSuite_70();
-			IEnumerable labels = Iterators.Map(suite, new _IFunction4_82());
+			FixtureBasedTestSuite suite = new _FixtureBasedTestSuite_79();
+			IEnumerable labels = Iterators.Map(suite, new _IFunction4_91());
 			Iterator4Assert.AreEqual(new object[] { TestLabel("testFoo", 0, 0), TestLabel("testFoo"
 				, 1, 0), TestLabel("testFoo", 0, 1), TestLabel("testFoo", 1, 1), TestLabel("testBar"
 				, 0, 0), TestLabel("testBar", 1, 0), TestLabel("testBar", 0, 1), TestLabel("testBar"
 				, 1, 1) }, labels.GetEnumerator());
 		}
 
-		private sealed class _FixtureBasedTestSuite_70 : FixtureBasedTestSuite
+		private sealed class _FixtureBasedTestSuite_79 : FixtureBasedTestSuite
 		{
-			public _FixtureBasedTestSuite_70()
+			public _FixtureBasedTestSuite_79()
 			{
 			}
 
 			public override IFixtureProvider[] FixtureProviders()
 			{
-				return new IFixtureProvider[] { new SimpleFixtureProvider("f1", FixtureBasedTestSuiteTestCase
-					.Fixture1, new object[] { "f11", "f12" }), new SimpleFixtureProvider("f2", FixtureBasedTestSuiteTestCase
+				return new IFixtureProvider[] { new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.Fixture1, new object[] { "f11", "f12" }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
 					.Fixture2, new object[] { "f21", "f22" }) };
 			}
 
@@ -107,15 +117,15 @@ namespace Db4oUnit.Tests.Fixtures
 			}
 		}
 
-		private sealed class _IFunction4_82 : IFunction4
+		private sealed class _IFunction4_91 : IFunction4
 		{
-			public _IFunction4_82()
+			public _IFunction4_91()
 			{
 			}
 
 			public object Apply(object arg)
 			{
-				return ((ITest)arg).GetLabel();
+				return ((ITest)arg).Label();
 			}
 		}
 

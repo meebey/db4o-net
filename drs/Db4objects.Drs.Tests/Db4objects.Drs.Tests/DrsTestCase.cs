@@ -21,9 +21,9 @@ namespace Db4objects.Drs.Tests
 		static DrsTestCase()
 		{
 			mappings = new Type[] { typeof(Replicated), typeof(SPCParent), typeof(SPCChild), 
-				typeof(ListHolder), typeof(ListContent), typeof(MapContent), typeof(SimpleArrayContent
-				), typeof(SimpleArrayHolder), typeof(R0), typeof(Pilot), typeof(Car), typeof(Student
-				), typeof(Person) };
+				typeof(ListHolder), typeof(ListContent), typeof(CollectionHolder), typeof(MapContent
+				), typeof(SimpleArrayContent), typeof(SimpleArrayHolder), typeof(R0), typeof(Pilot
+				), typeof(Car), typeof(Student), typeof(Person) };
 		}
 
 		private readonly DrsFixturePair _fixtures = DrsFixtureVariable.Value();

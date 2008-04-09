@@ -14,6 +14,7 @@ namespace Db4objects.Drs.Tests
 	{
 		protected sealed override Type[] TestCases()
 		{
+			//		if (true) return new Class[] { SingleTypeCollectionReplicationTest.class };
 			return Concat(Shared(), SpecificTestCases());
 		}
 
@@ -25,8 +26,8 @@ namespace Db4objects.Drs.Tests
 				), typeof(ReplicationProviderTest), typeof(ReplicationAfterDeletionTest), typeof(
 				SimpleArrayTest), typeof(SimpleParentChild), typeof(ByteArrayTest), typeof(ListTest
 				), typeof(Db4oListTest), typeof(R0to4Runner), typeof(ReplicationFeaturesMain), typeof(
-				CollectionHandlerImplTest), typeof(ReplicationTraversalTest), typeof(ArrayReplicationTest
-				), typeof(SingleTypeCollectionReplicationTest), typeof(MixedTypesCollectionReplicationTest
+				CollectionHandlerImplTest), typeof(ReplicationTraversalTest), typeof(MapTest), typeof(
+				ArrayReplicationTest), typeof(SingleTypeCollectionReplicationTest), typeof(MixedTypesCollectionReplicationTest
 				), typeof(DRS42Test) };
 		}
 
@@ -34,8 +35,6 @@ namespace Db4objects.Drs.Tests
 		// Collection
 		// Complex
 		// General
-		//TODO Convert to .NET
-		//MapTest.class,
 		//regression
 		protected virtual Type[] Concat(Type[] x, Type[] y)
 		{

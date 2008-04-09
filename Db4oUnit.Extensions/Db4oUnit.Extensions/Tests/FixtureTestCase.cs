@@ -10,6 +10,7 @@ using Db4oUnit.Extensions.Util;
 using Db4oUnit.Tests;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
+using Sharpen.Lang;
 
 namespace Db4oUnit.Extensions.Tests
 {
@@ -62,11 +63,25 @@ namespace Db4oUnit.Extensions.Tests
 			IEnumerator tests = new Db4oTestSuiteBuilder(fixture, typeof(SimpleDb4oTestCase))
 				.GetEnumerator();
 			ITest test = NextTest(tests);
+			SimpleDb4oTestCase.ExpectedFixtureVariable.With(fixture, new _IRunnable_49(test));
 			SimpleDb4oTestCase subject = (SimpleDb4oTestCase)Db4oTestSuiteBuilder.GetTestSubject
 				(test);
-			subject.ExpectedFixture(fixture);
-			FrameworkTestCase.RunTestAndExpect(test, 0);
 			Assert.IsTrue(subject.EverythingCalled());
+		}
+
+		private sealed class _IRunnable_49 : IRunnable
+		{
+			public _IRunnable_49(ITest test)
+			{
+				this.test = test;
+			}
+
+			public void Run()
+			{
+				FrameworkTestCase.RunTestAndExpect(test, 0);
+			}
+
+			private readonly ITest test;
 		}
 
 		private ITest NextTest(IEnumerator tests)

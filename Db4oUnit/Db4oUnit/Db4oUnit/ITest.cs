@@ -6,6 +6,6 @@ namespace Db4oUnit
 {
 	public interface ITest : IRunnable
 	{
-		string GetLabel();
+		string Label();
 	}
 }

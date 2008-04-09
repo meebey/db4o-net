@@ -32,7 +32,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			return Db4oFactory.OpenFile(config, GetAbsolutePath());
 		}
 
-		public override string GetLabel()
+		public override string Label()
 		{
 			return BuildLabel("SOLO");
 		}

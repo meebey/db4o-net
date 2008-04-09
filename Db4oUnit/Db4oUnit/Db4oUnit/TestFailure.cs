@@ -31,7 +31,7 @@ namespace Db4oUnit
 		/// <exception cref="IOException"></exception>
 		public override void Print(TextWriter writer)
 		{
-			writer.Write(_test.GetLabel());
+			writer.Write(_test.Label());
 			writer.Write(": ");
 			// TODO: don't print the first stack trace elements
 			// which reference db4ounit.Assert methods

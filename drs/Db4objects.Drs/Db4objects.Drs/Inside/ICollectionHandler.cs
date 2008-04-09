@@ -8,12 +8,12 @@ namespace Db4objects.Drs.Inside
 {
 	public interface ICollectionHandler : ICollectionFlattener
 	{
-		object EmptyClone(object originalCollection, IReflectClass originalCollectionClass
-			);
+		object EmptyClone(ICollectionSource sourceProvider, object originalCollection, IReflectClass
+			 originalCollectionClass);
 
 		void CopyState(object original, object dest, ICounterpartFinder finder);
 
-		object CloneWithCounterparts(object original, IReflectClass claxx, ICounterpartFinder
-			 elementCloner);
+		object CloneWithCounterparts(ICollectionSource sourceProvider, object original, IReflectClass
+			 claxx, ICounterpartFinder elementCloner);
 	}
 }

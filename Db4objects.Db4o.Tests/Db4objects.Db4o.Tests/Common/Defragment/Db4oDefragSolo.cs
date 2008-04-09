@@ -63,9 +63,9 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			return base.Accept(clazz) && !typeof(IOptOutDefragSolo).IsAssignableFrom(clazz);
 		}
 
-		public override string GetLabel()
+		public override string Label()
 		{
-			return "Defrag-" + base.GetLabel();
+			return "Defrag-" + base.Label();
 		}
 	}
 }

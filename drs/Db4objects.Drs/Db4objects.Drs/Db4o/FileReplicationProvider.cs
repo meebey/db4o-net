@@ -10,6 +10,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Types;
 using Db4objects.Drs.Db4o;
 using Db4objects.Drs.Inside;
 
@@ -259,13 +260,13 @@ namespace Db4objects.Drs.Db4o
 		{
 			if (_referencesByObject != null)
 			{
-				_referencesByObject.Traverse(new _IVisitor4_265(visitor));
+				_referencesByObject.Traverse(new _IVisitor4_266(visitor));
 			}
 		}
 
-		private sealed class _IVisitor4_265 : IVisitor4
+		private sealed class _IVisitor4_266 : IVisitor4
 		{
-			public _IVisitor4_265(IVisitor4 visitor)
+			public _IVisitor4_266(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}
@@ -416,6 +417,11 @@ namespace Db4objects.Drs.Db4o
 		public virtual IExtObjectContainer GetObjectContainer()
 		{
 			return _stream;
+		}
+
+		public virtual bool IsProviderSpecific(object original)
+		{
+			return original is IDb4oCollection;
 		}
 	}
 }

@@ -47,15 +47,17 @@ namespace Db4objects.Drs.Inside
 			return CanHandle(_reflector.ForClass(c));
 		}
 
-		public virtual object EmptyClone(object originalCollection, IReflectClass originalCollectionClass
-			)
+		public virtual object EmptyClone(ICollectionSource sourceProvider, object originalCollection
+			, IReflectClass originalCollectionClass)
 		{
 			if (_mapHandler.CanHandle(originalCollectionClass))
 			{
-				return _mapHandler.EmptyClone(originalCollection, originalCollectionClass);
+				return _mapHandler.EmptyClone(sourceProvider, originalCollection, originalCollectionClass
+					);
 			}
 			ICollection original = (ICollection)originalCollection;
-			ICollection clone = ReplicationPlatform.EmptyCollectionClone(original);
+			ICollection clone = ReplicationPlatform.EmptyCollectionClone(sourceProvider, original
+				);
 			if (null != clone)
 			{
 				return clone;
@@ -97,16 +99,17 @@ namespace Db4objects.Drs.Inside
 			}
 		}
 
-		public virtual object CloneWithCounterparts(object originalCollection, IReflectClass
-			 claxx, ICounterpartFinder counterpartFinder)
+		public virtual object CloneWithCounterparts(ICollectionSource sourceProvider, object
+			 originalCollection, IReflectClass claxx, ICounterpartFinder counterpartFinder)
 		{
 			if (_mapHandler.CanHandle(claxx))
 			{
-				return _mapHandler.CloneWithCounterparts(originalCollection, claxx, counterpartFinder
-					);
+				return _mapHandler.CloneWithCounterparts(sourceProvider, originalCollection, claxx
+					, counterpartFinder);
 			}
 			ICollection original = (ICollection)originalCollection;
-			ICollection result = (ICollection)EmptyClone(originalCollection, claxx);
+			ICollection result = (ICollection)EmptyClone(sourceProvider, originalCollection, 
+				claxx);
 			CopyState(original, result, counterpartFinder);
 			return result;
 		}

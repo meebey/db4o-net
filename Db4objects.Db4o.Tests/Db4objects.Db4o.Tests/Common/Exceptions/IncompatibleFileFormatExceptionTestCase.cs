@@ -12,7 +12,7 @@ using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class IncompatibleFileFormatExceptionTestCase : IDb4oTestCase
+	public class IncompatibleFileFormatExceptionTestCase : IDb4oTestCase, ITestLifeCycle
 	{
 		/// <exception cref="Exception"></exception>
 		public static void Main(string[] args)

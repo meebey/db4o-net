@@ -6,16 +6,16 @@ using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Foundation
 {
-	/// <summary>A context variable is a value associated to a specific thread and scope.
+	/// <summary>A dynamic variable is a value associated to a specific thread and scope.
 	/// 	</summary>
 	/// <remarks>
-	/// A context variable is a value associated to a specific thread and scope.
+	/// A dynamic variable is a value associated to a specific thread and scope.
 	/// The value is brought into scope with the
-	/// <see cref="Db4objects.Db4o.Foundation.ContextVariable.With">Db4objects.Db4o.Foundation.ContextVariable.With
+	/// <see cref="Db4objects.Db4o.Foundation.DynamicVariable.With">Db4objects.Db4o.Foundation.DynamicVariable.With
 	/// 	</see>
 	/// method.
 	/// </remarks>
-	public class ContextVariable
+	public class DynamicVariable
 	{
 		private class ThreadSlot
 		{
@@ -23,9 +23,9 @@ namespace Db4objects.Db4o.Foundation
 
 			public readonly object value;
 
-			public ContextVariable.ThreadSlot next;
+			public DynamicVariable.ThreadSlot next;
 
-			public ThreadSlot(object value_, ContextVariable.ThreadSlot next_)
+			public ThreadSlot(object value_, DynamicVariable.ThreadSlot next_)
 			{
 				thread = Thread.CurrentThread();
 				value = value_;
@@ -35,39 +35,47 @@ namespace Db4objects.Db4o.Foundation
 
 		private readonly Type _expectedType;
 
-		private ContextVariable.ThreadSlot _values = null;
+		private DynamicVariable.ThreadSlot _values = null;
 
-		public ContextVariable() : this(null)
+		public DynamicVariable() : this(null)
 		{
 		}
 
-		public ContextVariable(Type expectedType)
+		public DynamicVariable(Type expectedType)
 		{
 			_expectedType = expectedType;
 		}
 
-		public virtual object Value()
+		public virtual object Value
 		{
-			Thread current = Thread.CurrentThread();
-			lock (this)
+			get
 			{
-				ContextVariable.ThreadSlot slot = _values;
-				while (null != slot)
+				Thread current = Thread.CurrentThread();
+				lock (this)
 				{
-					if (slot.thread == current)
+					DynamicVariable.ThreadSlot slot = _values;
+					while (null != slot)
 					{
-						return slot.value;
+						if (slot.thread == current)
+						{
+							return slot.value;
+						}
+						slot = slot.next;
 					}
-					slot = slot.next;
 				}
+				return DefaultValue();
 			}
+		}
+
+		protected virtual object DefaultValue()
+		{
 			return null;
 		}
 
 		public virtual object With(object value, IClosure4 block)
 		{
 			Validate(value);
-			ContextVariable.ThreadSlot slot = PushValue(value);
+			DynamicVariable.ThreadSlot slot = PushValue(value);
 			try
 			{
 				return block.Run();
@@ -80,12 +88,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void With(object value, IRunnable block)
 		{
-			With(value, new _IClosure4_62(block));
+			With(value, new _IClosure4_69(block));
 		}
 
-		private sealed class _IClosure4_62 : IClosure4
+		private sealed class _IClosure4_69 : IClosure4
 		{
-			public _IClosure4_62(IRunnable block)
+			public _IClosure4_69(IRunnable block)
 			{
 				this.block = block;
 			}
@@ -113,7 +121,7 @@ namespace Db4objects.Db4o.Foundation
 				 + value + "'");
 		}
 
-		private void PopValue(ContextVariable.ThreadSlot slot)
+		private void PopValue(DynamicVariable.ThreadSlot slot)
 		{
 			lock (this)
 			{
@@ -122,8 +130,8 @@ namespace Db4objects.Db4o.Foundation
 					_values = _values.next;
 					return;
 				}
-				ContextVariable.ThreadSlot previous = _values;
-				ContextVariable.ThreadSlot current = _values.next;
+				DynamicVariable.ThreadSlot previous = _values;
+				DynamicVariable.ThreadSlot current = _values.next;
 				while (current != null)
 				{
 					if (current == slot)
@@ -137,11 +145,11 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		private ContextVariable.ThreadSlot PushValue(object value)
+		private DynamicVariable.ThreadSlot PushValue(object value)
 		{
 			lock (this)
 			{
-				ContextVariable.ThreadSlot slot = new ContextVariable.ThreadSlot(value, _values);
+				DynamicVariable.ThreadSlot slot = new DynamicVariable.ThreadSlot(value, _values);
 				_values = slot;
 				return slot;
 			}

@@ -14,7 +14,7 @@ using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class BackupStressTestCase : IDb4oTestCase
+	public class BackupStressTestCase : IDb4oTestCase, ITestLifeCycle
 	{
 		private static bool verbose = false;
 

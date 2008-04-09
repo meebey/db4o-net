@@ -61,13 +61,9 @@ namespace Db4oUnit.Tests
 			ITest test = new _ITest_54();
 			//$NON-NLS-1$
 			IEnumerable tests = Iterators.Iterable(new object[] { test });
-			try
-			{
-				new ConsoleTestRunner(tests).Run();
-			}
-			catch (AssertionException)
-			{
-			}
+			TestResult result = new TestResult();
+			new TestRunner(tests).Run(result);
+			Assert.AreEqual(1, result.Failures.Size());
 		}
 
 		private sealed class _ITest_54 : ITest
@@ -76,7 +72,7 @@ namespace Db4oUnit.Tests
 			{
 			}
 
-			public string GetLabel()
+			public string Label()
 			{
 				return "Test";
 			}
@@ -86,6 +82,5 @@ namespace Db4oUnit.Tests
 				Assert.AreEqual(0, 1);
 			}
 		}
-		//expected
 	}
 }

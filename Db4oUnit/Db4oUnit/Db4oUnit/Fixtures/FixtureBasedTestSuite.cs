@@ -50,7 +50,7 @@ namespace Db4oUnit.Fixtures
 				public object Apply(object arg)
 				{
 					EnumerateIterator.Tuple tuple = (EnumerateIterator.Tuple)arg;
-					return new FixtureDecorator(provider, tuple.value, tuple.index);
+					return new FixtureDecorator(provider.Variable(), tuple.value, tuple.index);
 				}
 
 				private readonly IFixtureProvider provider;

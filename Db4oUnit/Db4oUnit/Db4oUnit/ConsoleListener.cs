@@ -30,7 +30,7 @@ namespace Db4oUnit
 
 		public virtual void TestStarted(ITest test)
 		{
-			Print(test.GetLabel());
+			Print(test.Label());
 		}
 
 		private void PrintFailure(Exception failure)

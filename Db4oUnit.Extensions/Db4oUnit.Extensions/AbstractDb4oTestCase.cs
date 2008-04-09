@@ -17,18 +17,16 @@ using Db4objects.Db4o.Reflect;
 
 namespace Db4oUnit.Extensions
 {
-	public partial class AbstractDb4oTestCase : IDb4oTestCase
+	public partial class AbstractDb4oTestCase : IDb4oTestCase, ITestLifeCycle
 	{
-		public static readonly ContextVariable FixtureVariable = new ContextVariable();
-
 		private const int DefaultConcurrencyThreadCount = 10;
 
 		[System.NonSerialized]
 		private int _threadCount = DefaultConcurrencyThreadCount;
 
-		public virtual IDb4oFixture Fixture()
+		public static IDb4oFixture Fixture()
 		{
-			return (IDb4oFixture)FixtureVariable.Value();
+			return Db4oFixtureVariable.Fixture();
 		}
 
 		public virtual bool IsClientServer()
@@ -368,12 +366,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_300(oc));
+			Foreach(clazz, new _IVisitor4_298(oc));
 		}
 
-		private sealed class _IVisitor4_300 : IVisitor4
+		private sealed class _IVisitor4_298 : IVisitor4
 		{
-			public _IVisitor4_300(IExtObjectContainer oc)
+			public _IVisitor4_298(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

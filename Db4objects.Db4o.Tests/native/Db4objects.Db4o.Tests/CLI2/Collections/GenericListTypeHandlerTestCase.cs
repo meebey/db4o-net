@@ -134,20 +134,50 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			{
 				IList list = (IList)obj;
 				WriteClassMetadata(context, list);
+
 				WriteElementCount(context, list);
+				BitMap4 nullBitmap = NullBitmapFor(list);
+				WriteBitmap(context, nullBitmap);
 				WriteElements(context, list);
+			}
+
+			private void WriteBitmap(IWriteContext context, BitMap4 bitmap)
+			{	
+//				context.WriteBytes(bitmap.Bytes());
+			}
+
+			private BitMap4 ReadBitMap(int bits, IReadContext context)
+			{
+				return new BitMap4(bits);
+				BitMap4 bitmap = new BitMap4(bits);
+				context.ReadBytes(bitmap.Bytes());
+				return bitmap;
+			}
+
+			private BitMap4 NullBitmapFor(IList list)
+			{
+				BitMap4 bitmap = new BitMap4(list.Count);
+				int bit = 0;
+				foreach (object o in list)
+				{
+					if (o != null) continue;
+					bitmap.SetTrue(bit);
+				}
+				return bitmap;
 			}
 
 			public object Read(IReadContext context)
 			{
 				IList list = NewList(ReadClassMetadata(context));
-				ReadElements(context, list, ReadElementCount(context));
+				int count = ReadElementCount(context);
+				BitMap4 bitmap = ReadBitMap(count, context);
+				ReadElements(context, bitmap, list, count);
 				return list;
 			}
 
-			private static long ReadElementCount(IReadContext context)
+			private static int ReadElementCount(IReadContext context)
 			{
-				return context.ReadLong();
+				return context.ReadInt();
 			}
 
 			private void WriteClassMetadata(IWriteContext context, IList list)
@@ -179,18 +209,31 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				return Container(context).ClassMetadataForId(classMetadataId);
 			}
 
-			private void ReadElements(IReadContext context, IList list, long count)
+			private static object DefaultElementValue(IList list)
 			{
+				return ((IList)Array.CreateInstance(ElementType(list), 1))[0];
+			}
+
+			private void ReadElements(IReadContext context, BitMap4 nullBitmap, IList list, long count)
+			{
+				object defaultValue = DefaultElementValue(list);
 				ITypeHandler4 elementHandler = ElementTypeHandler(context, list);
 				for (int i = 0; i < count; ++i)
 				{
-					list.Add(context.ReadObject(elementHandler));
+					if (nullBitmap.IsTrue(i))
+					{
+						list.Add(defaultValue);
+					}
+					else
+					{
+						list.Add(context.ReadObject(elementHandler));
+					}
 				}
 			}
 
 			private static void WriteElementCount(IWriteContext context, IList list)
 			{
-				context.WriteLong(list.Count);
+				context.WriteInt(list.Count);
 			}
 
 			private void WriteElements(IWriteContext context, IList list)
@@ -198,6 +241,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				ITypeHandler4 elementHandler = ElementTypeHandler(context, list);
 				foreach (object element in list)
 				{
+//					if (element == null) continue;
 					context.WriteObject(elementHandler, element);
 				}
 			}
@@ -229,8 +273,12 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 			private static IReflectClass ElementClass(ObjectContainerBase container, IList list)
 			{
-				Type elementType = list.GetType().GetGenericArguments()[0];
-				return container.Reflector().ForClass(elementType);
+				return container.Reflector().ForClass(ElementType(list));
+			}
+
+			private static Type ElementType(IList list)
+			{
+				return list.GetType().GetGenericArguments()[0];
 			}
 
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
@@ -246,6 +294,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 				foreach (object element in list)
 				{
+					if (element == null) continue;
 					elementHandler.CascadeActivation(trans, element, depth);
 				}
 			}

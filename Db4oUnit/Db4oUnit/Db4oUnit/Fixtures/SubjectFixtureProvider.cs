@@ -10,10 +10,11 @@ namespace Db4oUnit.Fixtures
 	{
 		public static object Value()
 		{
-			return _variable.Value();
+			return _variable.Value;
 		}
 
-		private static readonly ContextVariable _variable = new ContextVariable();
+		private static readonly FixtureVariable _variable = new FixtureVariable("subject"
+			);
 
 		private readonly IEnumerable _values;
 
@@ -27,7 +28,7 @@ namespace Db4oUnit.Fixtures
 			_values = Iterators.Iterable(values);
 		}
 
-		public virtual ContextVariable Variable()
+		public virtual FixtureVariable Variable()
 		{
 			return _variable;
 		}
@@ -35,11 +36,6 @@ namespace Db4oUnit.Fixtures
 		public virtual IEnumerator GetEnumerator()
 		{
 			return _values.GetEnumerator();
-		}
-
-		public virtual string Label()
-		{
-			return "subject";
 		}
 	}
 }

@@ -634,7 +634,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				return container._handlers.ClassMetadataForId(HandlerID());
 			}
-			return (ClassMetadata)handler;
+			if (handler is ClassMetadata)
+			{
+				return (ClassMetadata)handler;
+			}
+			return container.ClassMetadataForReflectClass(_reflectField.GetFieldType());
 		}
 
 		private ITypeHandler4 BaseTypeHandler()
@@ -1111,14 +1115,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_919(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_922(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_919 : IVisitor4
+		private sealed class _IVisitor4_922 : IVisitor4
 		{
-			public _IVisitor4_919(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_922(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;
@@ -1322,12 +1326,12 @@ namespace Db4objects.Db4o.Internal
 			context.HandlerVersion(handlerVersion);
 			ITypeHandler4 typeHandler = context.CorrectHandlerVersion(GetHandler());
 			SlotFormat.ForHandlerVersion(handlerVersion).DoWithSlotIndirection(context, typeHandler
-				, new _IClosure4_1070(typeHandler, context));
+				, new _IClosure4_1073(typeHandler, context));
 		}
 
-		private sealed class _IClosure4_1070 : IClosure4
+		private sealed class _IClosure4_1073 : IClosure4
 		{
-			public _IClosure4_1070(ITypeHandler4 typeHandler, DefragmentContextImpl context)
+			public _IClosure4_1073(ITypeHandler4 typeHandler, DefragmentContextImpl context)
 			{
 				this.typeHandler = typeHandler;
 				this.context = context;

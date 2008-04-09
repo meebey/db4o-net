@@ -38,7 +38,7 @@ namespace Db4oUnit
 			return _method;
 		}
 
-		public virtual string GetLabel()
+		public virtual string Label()
 		{
 			return _subject.GetType().FullName + "." + _method.Name;
 		}

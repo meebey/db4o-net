@@ -90,8 +90,10 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public override string ToString()
 		{
-			return GetLabel();
+			return Label();
 		}
+
+		public abstract string Label();
 
 		public abstract void Close();
 
@@ -102,8 +104,6 @@ namespace Db4oUnit.Extensions.Fixtures
 		public abstract void Defragment();
 
 		public abstract LocalObjectContainer FileSession();
-
-		public abstract string GetLabel();
 
 		public abstract void Open(Type arg1);
 	}

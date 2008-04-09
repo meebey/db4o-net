@@ -2,16 +2,15 @@
 
 using System;
 using Db4oUnit.Extensions;
+using Db4oUnit.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 
 namespace Db4oUnit.Extensions
 {
-	public interface IDb4oFixture
+	public interface IDb4oFixture : ILabeled
 	{
-		string GetLabel();
-
 		/// <exception cref="Exception"></exception>
 		void Open(Type testCaseClass);
 

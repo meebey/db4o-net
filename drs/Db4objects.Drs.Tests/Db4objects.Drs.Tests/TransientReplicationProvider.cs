@@ -565,5 +565,10 @@ namespace Db4objects.Drs.Tests
 		{
 			_storedObjects.Remove(GetObject(uuid));
 		}
+
+		public virtual bool IsProviderSpecific(object original)
+		{
+			return false;
+		}
 	}
 }

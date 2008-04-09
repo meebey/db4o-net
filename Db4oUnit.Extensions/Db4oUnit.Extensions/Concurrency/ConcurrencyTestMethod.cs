@@ -5,6 +5,7 @@ using System.Reflection;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Concurrency;
+using Db4oUnit.Fixtures;
 using Db4objects.Db4o.Ext;
 using Sharpen.Lang;
 
@@ -14,7 +15,7 @@ namespace Db4oUnit.Extensions.Concurrency
 	{
 		private Thread[] threads;
 
-		private Exception[] failures;
+		internal Exception[] failures;
 
 		public ConcurrencyTestMethod(object instance, MethodInfo method) : base(instance, 
 			method)
@@ -24,9 +25,14 @@ namespace Db4oUnit.Extensions.Concurrency
 		/// <exception cref="Exception"></exception>
 		protected override void Invoke()
 		{
-			AbstractDb4oTestCase toTest = (AbstractDb4oTestCase)GetSubject();
+			AbstractDb4oTestCase toTest = Subject();
 			MethodInfo method = GetMethod();
 			InvokeConcurrencyMethod(toTest, method);
+		}
+
+		private AbstractDb4oTestCase Subject()
+		{
+			return (AbstractDb4oTestCase)GetSubject();
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -81,7 +87,7 @@ namespace Db4oUnit.Extensions.Concurrency
 				return;
 			}
 			// pass ExtObjectContainer as a param to check method
-			IExtObjectContainer oc = toTest.Fixture().Db();
+			IExtObjectContainer oc = Fixture().Db();
 			try
 			{
 				checkMethod.Invoke(toTest, new object[] { oc });
@@ -107,7 +113,7 @@ namespace Db4oUnit.Extensions.Concurrency
 			}
 		}
 
-		internal class RunnableTestMethod : IRunnable
+		internal class RunnableTestMethod : Contextful, IRunnable
 		{
 			private AbstractDb4oTestCase toTest;
 
@@ -117,14 +123,11 @@ namespace Db4oUnit.Extensions.Concurrency
 
 			private bool showSeq;
 
-			private readonly IDb4oClientServerFixture fixture;
-
 			internal RunnableTestMethod(ConcurrencyTestMethod _enclosing, AbstractDb4oTestCase
 				 toTest, MethodInfo method, int seq, bool showSeq)
 			{
 				this._enclosing = _enclosing;
 				this.toTest = toTest;
-				this.fixture = this._enclosing.Fixture(toTest);
 				this.method = method;
 				this.seq = seq;
 				this.showSeq = showSeq;
@@ -132,12 +135,12 @@ namespace Db4oUnit.Extensions.Concurrency
 
 			public virtual void Run()
 			{
-				AbstractDb4oTestCase.FixtureVariable.With(this.fixture, new _IRunnable_112(this));
+				this.Run(new _IRunnable_114(this));
 			}
 
-			private sealed class _IRunnable_112 : IRunnable
+			private sealed class _IRunnable_114 : IRunnable
 			{
-				public _IRunnable_112(RunnableTestMethod _enclosing)
+				public _IRunnable_114(RunnableTestMethod _enclosing)
 				{
 					this._enclosing = _enclosing;
 				}
@@ -150,12 +153,12 @@ namespace Db4oUnit.Extensions.Concurrency
 				private readonly RunnableTestMethod _enclosing;
 			}
 
-			private void RunMethod()
+			internal virtual void RunMethod()
 			{
 				IExtObjectContainer oc = null;
 				try
 				{
-					oc = this.fixture.OpenNewClient();
+					oc = this._enclosing.Fixture().OpenNewClient();
 					object[] args;
 					if (this.showSeq)
 					{
@@ -168,7 +171,7 @@ namespace Db4oUnit.Extensions.Concurrency
 						args = new object[1];
 						args[0] = oc;
 					}
-					this.method.Invoke(this.toTest, (object[])args);
+					this.method.Invoke(this.toTest, args);
 				}
 				catch (Exception e)
 				{
@@ -186,9 +189,9 @@ namespace Db4oUnit.Extensions.Concurrency
 			private readonly ConcurrencyTestMethod _enclosing;
 		}
 
-		private IDb4oClientServerFixture Fixture(AbstractDb4oTestCase toTest)
+		internal virtual IDb4oClientServerFixture Fixture()
 		{
-			return ((IDb4oClientServerFixture)toTest.Fixture());
+			return ((IDb4oClientServerFixture)AbstractDb4oTestCase.Fixture());
 		}
 	}
 }

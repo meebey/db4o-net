@@ -9,19 +9,26 @@ namespace Db4objects.Drs.Tests
 	{
 		public string name;
 
-		public IDictionary map = new Hashtable();
+		public IDictionary map;
 
-		public IList list = new ArrayList();
+		public IList list;
 
-		public ISet set = new HashSet();
+		public ISet set;
 
-		public CollectionHolder()
+		public CollectionHolder() : this(new Hashtable(), new HashSet(), new ArrayList())
 		{
 		}
 
-		public CollectionHolder(string name)
+		public CollectionHolder(string name) : this()
 		{
 			this.name = name;
+		}
+
+		public CollectionHolder(IDictionary theMap, ISet theSet, IList theList)
+		{
+			map = theMap;
+			set = theSet;
+			list = theList;
 		}
 
 		public override string ToString()

@@ -12,7 +12,7 @@ using Db4objects.Db4o.Tests.Common.Config;
 
 namespace Db4objects.Db4o.Tests.Common.Config
 {
-	public class GlobalVsNonStaticConfigurationTestCase : IDb4oTestCase
+	public class GlobalVsNonStaticConfigurationTestCase : IDb4oTestCase, ITestLifeCycle
 	{
 		public static void Main(string[] args)
 		{

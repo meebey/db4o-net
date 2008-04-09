@@ -9,11 +9,11 @@ namespace Db4oUnit.Fixtures
 	{
 		private readonly object _fixture;
 
-		private readonly IFixtureProvider _provider;
+		private readonly FixtureVariable _provider;
 
 		private readonly int _fixtureIndex;
 
-		internal FixtureDecorator(IFixtureProvider provider, object fixture, int fixtureIndex
+		internal FixtureDecorator(FixtureVariable provider, object fixture, int fixtureIndex
 			)
 		{
 			_fixture = fixture;
@@ -23,8 +23,12 @@ namespace Db4oUnit.Fixtures
 
 		public ITest Decorate(ITest test)
 		{
-			return new FixtureDecoration(test, _provider.Label() + "[" + _fixtureIndex + "]", 
-				_provider.Variable(), _fixture);
+			string label = _provider.Label + "[" + _fixtureIndex + "]";
+			if (_fixture is ILabeled)
+			{
+				label += ":" + ((ILabeled)_fixture).Label();
+			}
+			return new FixtureDecoration(test, label, _provider, _fixture);
 		}
 	}
 }

@@ -11,13 +11,18 @@ namespace Db4oUnit.Fixtures
 	{
 		private readonly ITest _test;
 
-		private readonly ContextVariable _variable;
+		private readonly FixtureVariable _variable;
 
 		private readonly object _value;
 
 		private readonly string _fixtureLabel;
 
-		public FixtureDecoration(ITest test, string fixtureLabel, ContextVariable fixtureVariable
+		public FixtureDecoration(ITest test, FixtureVariable fixtureVariable, object fixtureValue
+			) : this(test, null, fixtureVariable, fixtureValue)
+		{
+		}
+
+		public FixtureDecoration(ITest test, string fixtureLabel, FixtureVariable fixtureVariable
 			, object fixtureValue)
 		{
 			_test = test;
@@ -26,16 +31,16 @@ namespace Db4oUnit.Fixtures
 			_value = fixtureValue;
 		}
 
-		public string GetLabel()
+		public string Label()
 		{
 			ObjectByRef label = new ObjectByRef();
-			RunDecorated(new _IRunnable_22(this, label));
+			RunDecorated(new _IRunnable_26(this, label));
 			return (string)label.value;
 		}
 
-		private sealed class _IRunnable_22 : IRunnable
+		private sealed class _IRunnable_26 : IRunnable
 		{
-			public _IRunnable_22(FixtureDecoration _enclosing, ObjectByRef label)
+			public _IRunnable_26(FixtureDecoration _enclosing, ObjectByRef label)
 			{
 				this._enclosing = _enclosing;
 				this.label = label;
@@ -44,7 +49,7 @@ namespace Db4oUnit.Fixtures
 			public void Run()
 			{
 				label.value = "(" + this._enclosing.FixtureLabel() + ") " + this._enclosing._test
-					.GetLabel();
+					.Label();
 			}
 
 			private readonly FixtureDecoration _enclosing;

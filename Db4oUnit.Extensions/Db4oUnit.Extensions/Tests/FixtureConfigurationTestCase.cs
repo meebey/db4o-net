@@ -60,7 +60,7 @@ namespace Db4oUnit.Extensions.Tests
 			FixtureConfigurationTestCase.MockFixtureConfiguration configuration = new FixtureConfigurationTestCase.MockFixtureConfiguration
 				();
 			fixture.FixtureConfiguration(configuration);
-			Assert.IsTrue(fixture.GetLabel().EndsWith(" - " + configuration.GetLabel()), "FixtureConfiguration label must be part of Fixture label."
+			Assert.IsTrue(fixture.Label().EndsWith(" - " + configuration.GetLabel()), "FixtureConfiguration label must be part of Fixture label."
 				);
 			new TestRunner(new Db4oTestSuiteBuilder(fixture, new Type[] { typeof(FixtureConfigurationTestCase.TestCase1
 				), typeof(FixtureConfigurationTestCase.TestCase2) })).Run(new TestResult());

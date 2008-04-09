@@ -326,8 +326,8 @@ namespace Db4objects.Drs.Inside
 		private object CollectionClone(object original, IReflectClass claxx, IReplicationProviderInside
 			 sourceProvider)
 		{
-			return _collectionHandler.CloneWithCounterparts(original, claxx, new _ICounterpartFinder_256
-				(this, sourceProvider));
+			return _collectionHandler.CloneWithCounterparts(sourceProvider, original, claxx, 
+				new _ICounterpartFinder_256(this, sourceProvider));
 		}
 
 		private sealed class _ICounterpartFinder_256 : ICounterpartFinder

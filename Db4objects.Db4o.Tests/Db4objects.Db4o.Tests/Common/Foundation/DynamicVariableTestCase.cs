@@ -8,31 +8,31 @@ using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
-	public class ContextVariableTestCase : ITestCase
+	public class DynamicVariableTestCase : ITestCase
 	{
 		public static void Main(string[] args)
 		{
-			new ConsoleTestRunner(typeof(ContextVariableTestCase)).Run();
+			new ConsoleTestRunner(typeof(DynamicVariableTestCase)).Run();
 		}
 
 		public virtual void TestSingleThread()
 		{
-			ContextVariable variable = new ContextVariable();
+			DynamicVariable variable = new DynamicVariable();
 			CheckVariableBehavior(variable);
 		}
 
 		public virtual void TestMultiThread()
 		{
-			ContextVariable variable = new ContextVariable();
+			DynamicVariable variable = new DynamicVariable();
 			Collection4 failures = new Collection4();
 			variable.With("mine", new _IRunnable_23(this, variable, failures));
-			Assert.IsNull(variable.Value());
+			Assert.IsNull(variable.Value);
 			Assert.IsTrue(failures.IsEmpty(), failures.ToString());
 		}
 
 		private sealed class _IRunnable_23 : IRunnable
 		{
-			public _IRunnable_23(ContextVariableTestCase _enclosing, ContextVariable variable
+			public _IRunnable_23(DynamicVariableTestCase _enclosing, DynamicVariable variable
 				, Collection4 failures)
 			{
 				this._enclosing = _enclosing;
@@ -46,14 +46,14 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				this._enclosing.StartAll(threads);
 				for (int i = 0; i < 10; ++i)
 				{
-					Assert.AreEqual("mine", variable.Value());
+					Assert.AreEqual("mine", variable.Value);
 				}
 				this._enclosing.JoinAll(threads);
 			}
 
-			private readonly ContextVariableTestCase _enclosing;
+			private readonly DynamicVariableTestCase _enclosing;
 
-			private readonly ContextVariable variable;
+			private readonly DynamicVariable variable;
 
 			private readonly Collection4 failures;
 		}
@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
-		private Thread[] CreateThreads(ContextVariable variable, Collection4 failures)
+		private Thread[] CreateThreads(DynamicVariable variable, Collection4 failures)
 		{
 			Thread[] threads = new Thread[5];
 			for (int i = 0; i < threads.Length; i++)
@@ -93,7 +93,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private sealed class _IRunnable_56 : IRunnable
 		{
-			public _IRunnable_56(ContextVariableTestCase _enclosing, ContextVariable variable
+			public _IRunnable_56(DynamicVariableTestCase _enclosing, DynamicVariable variable
 				, Collection4 failures)
 			{
 				this._enclosing = _enclosing;
@@ -119,9 +119,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				}
 			}
 
-			private readonly ContextVariableTestCase _enclosing;
+			private readonly DynamicVariableTestCase _enclosing;
 
-			private readonly ContextVariable variable;
+			private readonly DynamicVariable variable;
 
 			private readonly Collection4 failures;
 		}
@@ -129,7 +129,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		public virtual void TestTypeChecking()
 		{
 			IRunnable emptyBlock = new _IRunnable_75();
-			ContextVariable stringVar = new ContextVariable(typeof(string));
+			DynamicVariable stringVar = new DynamicVariable(typeof(string));
 			stringVar.With("foo", emptyBlock);
 			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_83(stringVar, emptyBlock
 				));
@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private sealed class _ICodeBlock_83 : ICodeBlock
 		{
-			public _ICodeBlock_83(ContextVariable stringVar, IRunnable emptyBlock)
+			public _ICodeBlock_83(DynamicVariable stringVar, IRunnable emptyBlock)
 			{
 				this.stringVar = stringVar;
 				this.emptyBlock = emptyBlock;
@@ -160,48 +160,48 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				stringVar.With(true, emptyBlock);
 			}
 
-			private readonly ContextVariable stringVar;
+			private readonly DynamicVariable stringVar;
 
 			private readonly IRunnable emptyBlock;
 		}
 
-		private void CheckVariableBehavior(ContextVariable variable)
+		private void CheckVariableBehavior(DynamicVariable variable)
 		{
-			Assert.IsNull(variable.Value());
+			Assert.IsNull(variable.Value);
 			variable.With("foo", new _IRunnable_93(variable));
-			Assert.IsNull(variable.Value());
+			Assert.IsNull(variable.Value);
 		}
 
 		private sealed class _IRunnable_93 : IRunnable
 		{
-			public _IRunnable_93(ContextVariable variable)
+			public _IRunnable_93(DynamicVariable variable)
 			{
 				this.variable = variable;
 			}
 
 			public void Run()
 			{
-				Assert.AreEqual("foo", variable.Value());
+				Assert.AreEqual("foo", variable.Value);
 				variable.With("bar", new _IRunnable_96(variable));
-				Assert.AreEqual("foo", variable.Value());
+				Assert.AreEqual("foo", variable.Value);
 			}
 
 			private sealed class _IRunnable_96 : IRunnable
 			{
-				public _IRunnable_96(ContextVariable variable)
+				public _IRunnable_96(DynamicVariable variable)
 				{
 					this.variable = variable;
 				}
 
 				public void Run()
 				{
-					Assert.AreEqual("bar", variable.Value());
+					Assert.AreEqual("bar", variable.Value);
 				}
 
-				private readonly ContextVariable variable;
+				private readonly DynamicVariable variable;
 			}
 
-			private readonly ContextVariable variable;
+			private readonly DynamicVariable variable;
 		}
 	}
 }

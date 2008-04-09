@@ -4,24 +4,31 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Tests;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit.Extensions.Tests
 {
 	public class SimpleDb4oTestCase : AbstractDb4oTestCase
 	{
+		public static readonly DynamicVariable ExpectedFixtureVariable = new DynamicVariable
+			();
+
 		public class Data
 		{
 		}
 
 		private bool[] _everythingCalled = new bool[3];
 
-		private IDb4oFixture _expectedFixture;
-
 		protected override void Configure(IConfiguration config)
 		{
-			Assert.AreSame(_expectedFixture, Fixture());
+			Assert.AreSame(ExpectedFixture(), Fixture());
 			Assert.IsTrue(EverythingCalledBefore(0));
 			_everythingCalled[0] = true;
+		}
+
+		private IDb4oFixture ExpectedFixture()
+		{
+			return (IDb4oFixture)ExpectedFixtureVariable.Value;
 		}
 
 		protected override void Store()
@@ -61,11 +68,6 @@ namespace Db4oUnit.Extensions.Tests
 				}
 			}
 			return true;
-		}
-
-		public virtual void ExpectedFixture(IDb4oFixture fixture)
-		{
-			_expectedFixture = fixture;
 		}
 	}
 }

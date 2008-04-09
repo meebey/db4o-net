@@ -154,7 +154,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				_version = Environment().Version();
 			}
 
-			public string GetLabel()
+			public string Label()
 			{
 				return "[" + _version + "] " + _test.GetType().FullName;
 			}

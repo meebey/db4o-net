@@ -15,7 +15,8 @@ namespace Db4oUnit.Tests.Fixtures
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(FixtureBasedTestSuiteTestCase), typeof(Set4TestSuite) };
+			return new Type[] { typeof(FixtureBasedTestSuiteTestCase), typeof(FixtureContextTestCase
+				), typeof(Set4TestSuite) };
 		}
 	}
 }

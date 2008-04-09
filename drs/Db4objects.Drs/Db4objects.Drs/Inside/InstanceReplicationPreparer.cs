@@ -461,7 +461,7 @@ namespace Db4objects.Drs.Inside
 			//Copy arrayClone() from GenericReplicationSession if necessary.
 			if (_collectionHandler.CanHandle(claxx))
 			{
-				return CollectionClone(obj, claxx);
+				return CollectionClone(sourceProvider, obj, claxx);
 			}
 			claxx.SkipConstructor(true, true);
 			// FIXME This is ridiculously slow to do every time. Should ALWAYS be done automatically in the reflector.
@@ -479,9 +479,10 @@ namespace Db4objects.Drs.Inside
 			return _reflector.ForObject(obj);
 		}
 
-		private object CollectionClone(object original, IReflectClass claxx)
+		private object CollectionClone(IReplicationProviderInside sourceProvider, object 
+			original, IReflectClass claxx)
 		{
-			return _collectionHandler.EmptyClone(original, claxx);
+			return _collectionHandler.EmptyClone(sourceProvider, original, claxx);
 		}
 
 		private IReplicationReference GetCounterpartRef(object original)

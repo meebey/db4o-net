@@ -91,7 +91,7 @@ namespace Db4objects.Drs.Tests
 			Assert.AreEqual(holder, holder.list[2]);
 			Assert.IsTrue(holder.set.Remove("two"));
 			Assert.IsTrue(holder.set.Remove(holder));
-			CollectionHolder remaining = (CollectionHolder)holder.set.GetEnumerator().Current;
+			CollectionHolder remaining = NextCollectionHolder(holder.set.GetEnumerator());
 			Assert.AreEqual("h1", remaining.name);
 		}
 

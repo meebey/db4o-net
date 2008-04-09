@@ -105,26 +105,23 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestNewFile()
 		{
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_55(this));
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_55());
 		}
 
 		private sealed class _ICodeBlock_55 : ICodeBlock
 		{
-			public _ICodeBlock_55(DatabaseReadonlyExceptionTestCase _enclosing)
+			public _ICodeBlock_55()
 			{
-				this._enclosing = _enclosing;
 			}
 
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				this._enclosing.Fixture().Close();
-				this._enclosing.Fixture().Clean();
-				this._enclosing.Fixture().Config().ReadOnly(true);
-				this._enclosing.Fixture().Open(this.GetType());
+				AbstractDb4oTestCase.Fixture().Close();
+				AbstractDb4oTestCase.Fixture().Clean();
+				AbstractDb4oTestCase.Fixture().Config().ReadOnly(true);
+				AbstractDb4oTestCase.Fixture().Open(this.GetType());
 			}
-
-			private readonly DatabaseReadonlyExceptionTestCase _enclosing;
 		}
 
 		public virtual void TestReserveStorage()

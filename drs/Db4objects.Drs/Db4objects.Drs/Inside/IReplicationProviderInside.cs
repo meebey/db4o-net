@@ -9,7 +9,7 @@ using Db4objects.Drs.Inside;
 
 namespace Db4objects.Drs.Inside
 {
-	public interface IReplicationProviderInside : IReplicationProvider
+	public interface IReplicationProviderInside : IReplicationProvider, ICollectionSource
 	{
 		void Activate(object @object);
 

@@ -19,7 +19,7 @@ namespace Db4oUnit
 			_error = error;
 		}
 
-		public virtual string GetLabel()
+		public virtual string Label()
 		{
 			return _label;
 		}

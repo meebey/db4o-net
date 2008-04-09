@@ -128,7 +128,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		/// </returns>
 		public override bool Accept(Type clazz)
 		{
-			if (!typeof(AbstractDb4oTestCase).IsAssignableFrom(clazz))
+			if (!typeof(IDb4oTestCase).IsAssignableFrom(clazz))
 			{
 				return false;
 			}
@@ -169,7 +169,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			return (Config4Impl)((Config4Impl)config).DeepClone(this);
 		}
 
-		public override string GetLabel()
+		public override string Label()
 		{
 			return BuildLabel(_label);
 		}

@@ -155,7 +155,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 
 		private IExtObjectContainer OpenNewClient()
 		{
-			return ((IDb4oClientServerFixture)this.Fixture()).OpenNewClient();
+			return ((IDb4oClientServerFixture)Fixture()).OpenNewClient();
 		}
 	}
 }

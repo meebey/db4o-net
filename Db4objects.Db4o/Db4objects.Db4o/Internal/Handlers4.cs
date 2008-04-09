@@ -57,6 +57,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				return true;
 			}
+			if (handler is ICanHoldAnythingHandler)
+			{
+				return true;
+			}
 			ClassMetadata classMetadata = (ClassMetadata)baseTypeHandler;
 			IReflectClass classReflector = classMetadata.ClassReflector();
 			if (classReflector.IsCollection())
@@ -75,7 +79,7 @@ namespace Db4objects.Db4o.Internal
 
 		public static bool HandlesClass(ITypeHandler4 handler)
 		{
-			return BaseTypeHandler(handler) is ClassMetadata;
+			return BaseTypeHandler(handler) is IFirstClassHandler;
 		}
 
 		public static IReflectClass PrimitiveClassReflector(ITypeHandler4 handler, IReflector

@@ -42,7 +42,7 @@ namespace Db4oUnit
 			{
 				writer.Write(index.ToString());
 				writer.Write(") ");
-				writer.Write(((TestFailure)e.Current).GetTest().GetLabel());
+				writer.Write(((TestFailure)e.Current).GetTest().Label());
 				writer.Write(TestPlatform.NewLine);
 				++index;
 			}
