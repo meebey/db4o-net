@@ -204,8 +204,53 @@ class GenericMethods
 	}
 }
 
+// Ensures ta instrumentation plays nice with the 'switch' bytecode
+class SwitchSubject
+{
+	private string _field1;
+	private string _field2;
+
+	public void Update(int index, string value)
+	{
+		switch (index)
+		{
+			case 1:
+				_field1 = value;
+				break;
+			case 2:
+				_field2 = value;
+				break;
+		}
+	}
+
+	public string Get(int index)
+	{
+		switch (index)
+		{
+			case 1: return _field1;
+			case 2: return _field2;
+		}
+		throw new ArgumentException();
+	}
+}
+
 class TAInstrumentationSubject : ITestCase
 {
+	public void TestSwitch()
+	{
+		SwitchSubject subject = new SwitchSubject();
+		MockActivator a = ActivatorFor(subject);
+		subject.Update(1, "foo");
+		Assert.AreEqual(1, a.WriteCount);
+		Assert.AreEqual("foo", subject.Get(1));
+		Assert.AreEqual(1, a.ReadCount);
+
+		subject.Update(2, "bar");
+		Assert.AreEqual(2, a.WriteCount);
+		Assert.AreEqual("bar", subject.Get(2));
+		Assert.AreEqual(2, a.ReadCount);
+	}
+
 	public void TestConstrainedGenericMethod()
 	{
 		Tagged obj = new Tagged("foo, bar");

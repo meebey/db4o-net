@@ -236,21 +236,17 @@ namespace Db4oTool.TA
 	    {
             VariableDefinition oldStackTop = SaveStackTop(cil, instruction);
 
-	        instruction = GetInsertionPoint(instruction);
-            InsertActivateCall(cil, instruction, ActivationPurpose.Write);
-            cil.InsertBefore(instruction, cil.Create(OpCodes.Ldloc, oldStackTop));
-
+	        Instruction insertionPoint = GetInsertionPoint(instruction);
+			InsertActivateCall(cil, insertionPoint, ActivationPurpose.Write);
+			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Ldloc, oldStackTop));
         }
 
 	    private static VariableDefinition SaveStackTop(CilWorker cil, Instruction instruction)
 	    {
             MethodBody methodBody = cil.GetBody();
-            if (methodBody.Variables.Count == 0)
-            {
-                methodBody.InitLocals = true;
-            }
+	    	EnsureInitLocals(methodBody);
 
-            VariableDefinition oldStackTop = new VariableDefinition(Resolve(instruction).FieldType);
+	    	VariableDefinition oldStackTop = new VariableDefinition(Resolve(instruction).FieldType);
             methodBody.Variables.Add(oldStackTop);
 
 	        cil.InsertBefore(GetInsertionPoint(instruction), cil.Create(OpCodes.Stloc, oldStackTop));
@@ -258,7 +254,15 @@ namespace Db4oTool.TA
             return oldStackTop;
 	    }
 
-	    private static FieldReference Resolve(Instruction instruction)
+		private static void EnsureInitLocals(MethodBody methodBody)
+		{
+			if (methodBody.Variables.Count == 0)
+			{
+				methodBody.InitLocals = true;
+			}
+		}
+
+		private static FieldReference Resolve(Instruction instruction)
 	    {
 	        return (FieldReference)instruction.Operand;
 	    }
@@ -285,7 +289,7 @@ namespace Db4oTool.TA
 					previous,
 					newLoadInstruction,
 					activationPurpose);
-				AdjustJumps(cil.GetBody(), previous, newLoadInstruction);
+				ReplaceInstructionReferences(cil.GetBody(), previous, newLoadInstruction);
 			}
 			else
 			{
@@ -296,13 +300,29 @@ namespace Db4oTool.TA
 			}
 		}
 
-		private void AdjustJumps(MethodBody body, Instruction oldTarget, Instruction newTarget)
-		{
+		private void ReplaceInstructionReferences(MethodBody body, Instruction oldTarget, Instruction newTarget)
+		{	
 			foreach (Instruction instr in body.Instructions)
 			{
-				if (instr.Operand == oldTarget)
+				if (instr.OpCode == OpCodes.Switch)
+				{
+					Instruction[] labels = (Instruction[]) instr.Operand;
+					ReplaceAll(labels, oldTarget, newTarget);
+				}
+				else if (instr.Operand == oldTarget)
 				{
 					instr.Operand = newTarget;
+				}
+			}
+		}
+
+		private static void ReplaceAll(Instruction[] labels, Instruction oldTarget, Instruction newTarget)
+		{
+			for (int i=0; i<labels.Length; ++i)
+			{
+				if (labels[i] == oldTarget)
+				{
+					labels[i] = newTarget;
 				}
 			}
 		}
