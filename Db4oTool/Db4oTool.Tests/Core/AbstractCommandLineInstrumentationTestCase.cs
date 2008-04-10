@@ -10,19 +10,7 @@ namespace Db4oTool.Tests.Core
 
 		override protected void InstrumentAssembly(string path)
 		{
-			string[] commandLine = BuildCommandLine(path);
-			ShellUtilities.ProcessOutput output = System.Diagnostics.Debugger.IsAttached
-				? ShellUtilities.shellm(InstrumentationUtilityPath, commandLine)
-				: ShellUtilities.shell(InstrumentationUtilityPath, commandLine);
-			CheckInstrumentationOutput(output);
-		}
-
-		private string[] BuildCommandLine(string path)
-		{
-			string[] cmdLine = CommandLine.Split(' ');
-			cmdLine = ArrayServices.Append(cmdLine, path);
-			//cmdLine = ArrayServices.Append(cmdLine, "-vv");
-			return cmdLine;
+			CheckInstrumentationOutput(InstrumentationServices.InstrumentAssembly(CommandLine, path));
 		}
 
 		protected virtual void CheckInstrumentationOutput(ShellUtilities.ProcessOutput output)
@@ -30,11 +18,6 @@ namespace Db4oTool.Tests.Core
 			if (output.ExitCode == 0) return;
 
 			Assert.Fail(output.ToString());
-		}
-
-		private static string InstrumentationUtilityPath
-		{
-			get { return typeof(InstrumentationPipeline).Module.FullyQualifiedName; }
 		}
 	}
 }

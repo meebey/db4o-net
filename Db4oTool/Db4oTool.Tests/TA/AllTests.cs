@@ -9,6 +9,7 @@ namespace Db4oTool.Tests.TA
 		{
 			return new Type[]
 				{
+					typeof(TABytecodeChangesTestCase),
 					typeof(TAInstrumentationTestCase),
                     typeof(TAInstrumentationAppliedMoreThanOnce),
 					typeof(TANonStorableTypeTestCase),

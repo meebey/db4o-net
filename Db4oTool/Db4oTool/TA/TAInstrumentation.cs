@@ -277,7 +277,39 @@ namespace Db4oTool.TA
 
 		private void InsertActivateCall(CilWorker cil, Instruction insertionPoint, ActivationPurpose activationPurpose)
 		{
-			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Dup));
+			Instruction previous = insertionPoint.Previous;
+			if (previous.OpCode == OpCodes.Ldarg)
+			{
+				Instruction newLoadInstruction = cil.Create(previous.OpCode, (ParameterDefinition)previous.Operand);
+				InsertActivateCall(cil,
+					previous,
+					newLoadInstruction,
+					activationPurpose);
+				AdjustJumps(cil.GetBody(), previous, newLoadInstruction);
+			}
+			else
+			{
+				InsertActivateCall(cil,
+					insertionPoint,
+					cil.Create(OpCodes.Dup),
+					activationPurpose);
+			}
+		}
+
+		private void AdjustJumps(MethodBody body, Instruction oldTarget, Instruction newTarget)
+		{
+			foreach (Instruction instr in body.Instructions)
+			{
+				if (instr.Operand == oldTarget)
+				{
+					instr.Operand = newTarget;
+				}
+			}
+		}
+
+		private void InsertActivateCall(CilWorker cil, Instruction insertionPoint, Instruction loadReferenceInstruction, ActivationPurpose activationPurpose)
+		{
+			cil.InsertBefore(insertionPoint, loadReferenceInstruction);
 			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Ldc_I4, (int)activationPurpose));
 			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Callvirt, ActivateMethodRef()));
 		}

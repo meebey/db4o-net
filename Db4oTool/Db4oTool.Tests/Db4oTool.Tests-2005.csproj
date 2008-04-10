@@ -64,6 +64,7 @@
     <Compile Include="Core\ContextVariableTestCase.cs" />
     <Compile Include="Core\CustomInstrumentationTestCase.cs" />
     <Compile Include="Core\ILPatternTestCase.cs" />
+    <Compile Include="Core\InstrumentationServices.cs" />
     <Compile Include="Core\InstrumentedTestCase.cs" />
     <EmbeddedResource Include="Core\Resources\CustomInstrumentationSubject.cs" />
     <EmbeddedResource Include="Core\Resources\ByAttributeInstrumentationSubject.cs" />
@@ -93,6 +94,8 @@
     <Compile Include="TA\MockActivator.cs" />
     <EmbeddedResource Include="TA\Resources\TAUnsafeInstrumentationSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TAFieldSetterSubject.cs" />
+    <EmbeddedResource Include="TA\Resources\TABytecodeChangesSubject.cs" />
+    <Compile Include="TA\TABytecodeChangesTestCase.cs" />
     <Compile Include="TA\TAInstrumentationAppliedMoreThanOnceCOR-918.cs" />
     <Compile Include="TA\TAInstrumentationTestCase.cs" />
     <Compile Include="TA\TANonStorableTypeTestCase.cs" />
