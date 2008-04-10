@@ -271,7 +271,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 			private interface ICollectionInitializer
 			{
-				void Add(object o);
+                object Collection { set; }
+                void Add(object o);
 				void AddDefaultValue();
 			}
 
@@ -279,20 +280,23 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			{
 				private ICollection<T> _collection;
 
-				public GenericCollectionInitializer(ICollection<T> collection)
-				{
-					_collection = collection;
-				}
-
 				public void Add(object o)
 				{
-					_collection.Add((T)o);
+                    _collection.Add((T)o);
 				}
 
 				public void AddDefaultValue()
 				{
 					_collection.Add(default(T));
 				}
+
+                public object Collection
+                {
+                    set
+                    {
+                        _collection = (ICollection<T>) value;
+                    }
+                }
 			}
 
 			private void ReadElements(IReadContext context, BitMap4 nullBitmap, IList list, long count)
@@ -312,11 +316,14 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				}
 			}
 
-			private static ICollectionInitializer CollectionInitializerFor(IList list)
-			{
-				Type collectionInitializerType = typeof(GenericCollectionInitializer<>).MakeGenericType(ElementType(list));
-				return (ICollectionInitializer) Activator.CreateInstance(collectionInitializerType, list);
-			}
+            private static ICollectionInitializer CollectionInitializerFor(IList list)
+            {
+                Type collectionInitializerType = typeof(GenericCollectionInitializer<>).MakeGenericType(ElementType(list));
+                ICollectionInitializer collectionInitializer = (ICollectionInitializer)Activator.CreateInstance(collectionInitializerType);
+                collectionInitializer.Collection = list;
+
+                return collectionInitializer;
+            }
 
 			private static void WriteElementCount(IWriteContext context, IList list)
 			{
