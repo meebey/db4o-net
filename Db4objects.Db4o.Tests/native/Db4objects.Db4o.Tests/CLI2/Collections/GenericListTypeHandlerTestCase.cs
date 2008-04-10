@@ -63,6 +63,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
 		{
+			config.ObjectClass(typeof(Container<Component<string>>)).CascadeOnDelete(true);
 			config.ExceptionsOnNotStorable(true);
 			config.RegisterTypeHandler(new GenericListPredicate(), new GenericListTypeHandler());
 		}
@@ -73,10 +74,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			Store(new Container<Component<int>>(componentM1, null, new Component<int>(42)));
 			Store(new Container<int>(-1, 42));
 			Store(new Component<Component<int>>(componentM1));
-
 			Store(new Container<int?>(-1, null, 42));
-
 			Store(new Container("foo", "bar"));
+
+			// TestCascadeDelete
+			Store(new Container<Component<string>>(new Component<string>("foo"), new Component<string>("bar")));
 		}
 
 		public void TestUntypedField()
@@ -88,11 +90,26 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			Iterator4Assert.AreEqual(new object[] { "foo", "bar" }, list.GetEnumerator());
 		}
 
-		public void _TestListOfNullables()
+		public void TestListOfNullables()
 		{
 			Container<int?> container = RetrieveOnlyInstance<Container<int?>>();
 			int?[] expected = new int?[] { -1, null, 42};
 			Iterator4Assert.AreEqual(expected.GetEnumerator(), container.elements.GetEnumerator());
+		}
+
+		public void TestSimpleDelete()
+		{
+			DeleteAll(typeof(Container<int>));
+			Reopen();
+			AssertOccurrences(typeof(Container<int>), 0);
+		}
+
+		public void _TestCascadeDelete()
+		{	
+			DeleteAll(typeof(Container<Component<string>>));
+			Reopen();
+			AssertOccurrences(typeof(Container<Component<string>>), 0);
+			AssertOccurrences(typeof(Component<string>), 0);
 		}
 
 		public void TestListOfFirstClassObjects()
@@ -120,12 +137,12 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 		internal class GenericListTypeHandler : ITypeHandler4, IVariableLengthTypeHandler, IEmbeddedTypeHandler, ICascadingTypeHandler
 		{
-			public void Delete(IDeleteContext context)
+			public void Defragment(IDefragmentContext context)
 			{
 				throw new NotImplementedException();
 			}
 
-			public void Defragment(IDefragmentContext context)
+			public void Delete(IDeleteContext context)
 			{
 				throw new NotImplementedException();
 			}
@@ -134,21 +151,48 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			{
 				IList list = (IList)obj;
 				WriteClassMetadata(context, list);
-
 				WriteElementCount(context, list);
+
+				if (IsNullableTypeList(list))
+				{
+					WriteNullableList(context, list);
+				}
+				else
+				{
+					WriteRegularList(context, list);
+				}
+			}
+
+			private void WriteRegularList(IWriteContext context, IList list)
+			{
+				ITypeHandler4 elementHandler = ElementTypeHandler(context, list);
+				foreach (object o in list)
+				{
+					context.WriteObject(elementHandler, o);
+				}
+			}
+
+			private void WriteNullableList(IWriteContext context, IList list)
+			{
 				BitMap4 nullBitmap = NullBitmapFor(list);
 				WriteBitmap(context, nullBitmap);
-				WriteElements(context, list);
+				WriteNullableListElements(context, list);
+			}
+
+			private static bool IsNullableTypeList(IList list)
+			{
+				Type type = ElementType(list);
+				if (!type.IsGenericType) return false;
+				return type.GetGenericTypeDefinition() == typeof(Nullable<>);
 			}
 
 			private void WriteBitmap(IWriteContext context, BitMap4 bitmap)
 			{	
-//				context.WriteBytes(bitmap.Bytes());
+				context.WriteBytes(bitmap.Bytes());
 			}
 
 			private BitMap4 ReadBitMap(int bits, IReadContext context)
 			{
-				return new BitMap4(bits);
 				BitMap4 bitmap = new BitMap4(bits);
 				context.ReadBytes(bitmap.Bytes());
 				return bitmap;
@@ -160,8 +204,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				int bit = 0;
 				foreach (object o in list)
 				{
-					if (o != null) continue;
-					bitmap.SetTrue(bit);
+					bitmap.Set(bit, o == null);
+					++bit;
 				}
 				return bitmap;
 			}
@@ -170,9 +214,25 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			{
 				IList list = NewList(ReadClassMetadata(context));
 				int count = ReadElementCount(context);
-				BitMap4 bitmap = ReadBitMap(count, context);
-				ReadElements(context, bitmap, list, count);
+				if (IsNullableTypeList(list))
+				{
+					BitMap4 bitmap = ReadBitMap(count, context);
+					ReadElements(context, bitmap, list, count);
+				}
+				else
+				{
+					ReadElements(context, list, count);
+				}
 				return list;
+			}
+
+			private void ReadElements(IReadContext context, IList list, int count)
+			{
+				ITypeHandler4 elementHandler = ElementTypeHandler(context, list);
+				for (int i = 0; i < count; ++i)
+				{
+					list.Add(context.ReadObject(elementHandler));
+				}
 			}
 
 			private static int ReadElementCount(IReadContext context)
@@ -209,26 +269,53 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				return Container(context).ClassMetadataForId(classMetadataId);
 			}
 
-			private static object DefaultElementValue(IList list)
+			private interface ICollectionInitializer
 			{
-				return ((IList)Array.CreateInstance(ElementType(list), 1))[0];
+				void Add(object o);
+				void AddDefaultValue();
+			}
+
+			private class GenericCollectionInitializer<T> : ICollectionInitializer
+			{
+				private ICollection<T> _collection;
+
+				public GenericCollectionInitializer(ICollection<T> collection)
+				{
+					_collection = collection;
+				}
+
+				public void Add(object o)
+				{
+					_collection.Add((T)o);
+				}
+
+				public void AddDefaultValue()
+				{
+					_collection.Add(default(T));
+				}
 			}
 
 			private void ReadElements(IReadContext context, BitMap4 nullBitmap, IList list, long count)
 			{
-				object defaultValue = DefaultElementValue(list);
+				ICollectionInitializer initializer = CollectionInitializerFor(list);
 				ITypeHandler4 elementHandler = ElementTypeHandler(context, list);
 				for (int i = 0; i < count; ++i)
 				{
 					if (nullBitmap.IsTrue(i))
 					{
-						list.Add(defaultValue);
+						initializer.AddDefaultValue();
 					}
 					else
 					{
-						list.Add(context.ReadObject(elementHandler));
+						initializer.Add(context.ReadObject(elementHandler));
 					}
 				}
+			}
+
+			private static ICollectionInitializer CollectionInitializerFor(IList list)
+			{
+				Type collectionInitializerType = typeof(GenericCollectionInitializer<>).MakeGenericType(ElementType(list));
+				return (ICollectionInitializer) Activator.CreateInstance(collectionInitializerType, list);
 			}
 
 			private static void WriteElementCount(IWriteContext context, IList list)
@@ -236,12 +323,12 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				context.WriteInt(list.Count);
 			}
 
-			private void WriteElements(IWriteContext context, IList list)
+			private void WriteNullableListElements(IWriteContext context, IList list)
 			{
 				ITypeHandler4 elementHandler = ElementTypeHandler(context, list);
 				foreach (object element in list)
 				{
-//					if (element == null) continue;
+					if (element == null) continue;
 					context.WriteObject(elementHandler, element);
 				}
 			}
