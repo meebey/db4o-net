@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			Iterator4Assert.AreEqual(expected.GetEnumerator(), container.elements.GetEnumerator());
 		}
 
-		public void TestSimpleDelete()
+		public void _TestSimpleDelete()
 		{
 			DeleteAll(typeof(Container<int>));
 			Reopen();
