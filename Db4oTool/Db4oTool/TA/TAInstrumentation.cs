@@ -244,7 +244,7 @@ namespace Db4oTool.TA
 	    private static VariableDefinition SaveStackTop(CilWorker cil, Instruction instruction)
 	    {
             MethodBody methodBody = cil.GetBody();
-	    	EnsureInitLocals(methodBody);
+			methodBody.InitLocals = true;
 
 	    	VariableDefinition oldStackTop = new VariableDefinition(Resolve(instruction).FieldType);
             methodBody.Variables.Add(oldStackTop);
@@ -253,14 +253,6 @@ namespace Db4oTool.TA
 
             return oldStackTop;
 	    }
-
-		private static void EnsureInitLocals(MethodBody methodBody)
-		{
-			if (methodBody.Variables.Count == 0)
-			{
-				methodBody.InitLocals = true;
-			}
-		}
 
 		private static FieldReference Resolve(Instruction instruction)
 	    {
@@ -301,8 +293,14 @@ namespace Db4oTool.TA
 		}
 
 		private void ReplaceInstructionReferences(MethodBody body, Instruction oldTarget, Instruction newTarget)
-		{	
-			foreach (Instruction instr in body.Instructions)
+		{
+			ReplaceInstructionReferences(body.Instructions, oldTarget, newTarget);
+			ReplaceInstructionReferences(body.ExceptionHandlers, oldTarget, newTarget);
+		}
+
+		private static void ReplaceInstructionReferences(InstructionCollection collection, Instruction oldTarget, Instruction newTarget)
+		{
+			foreach (Instruction instr in collection)
 			{
 				if (instr.OpCode == OpCodes.Switch)
 				{
@@ -312,6 +310,25 @@ namespace Db4oTool.TA
 				else if (instr.Operand == oldTarget)
 				{
 					instr.Operand = newTarget;
+				}
+			}
+		}
+
+		private static void ReplaceInstructionReferences(ExceptionHandlerCollection handlers, Instruction oldTarget, Instruction newTarget)
+		{
+			foreach (ExceptionHandler handler in handlers)
+			{
+				if (handler.TryStart == oldTarget)
+				{
+					handler.TryStart = newTarget;
+				}
+				else if (handler.HandlerStart == oldTarget)
+				{
+					handler.HandlerStart = newTarget;
+				}
+				else if (handler.FilterStart == oldTarget)
+				{
+					handler.FilterStart = newTarget;
 				}
 			}
 		}
