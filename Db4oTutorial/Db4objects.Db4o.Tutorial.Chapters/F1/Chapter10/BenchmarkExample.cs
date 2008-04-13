@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter10
 
         public static void Main(String[] args)
         {
-            RunNormal();
+            //RunNormal();
             RunDelayed();
         }
 
@@ -97,10 +97,10 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter10
                     "\r\n" +
                     "Results for SYNC \r\n" +
                     "> operations executed: 40\r\n" +
-                    "> time elapsed: 240 ms\r\n" +
-                    "> operations per millisecond: 0.166666666666666\r\n" +
-                    "> average duration per operation: 6 ms\r\n" +
-                    "SYNC 6000000 ns\r\n" +
+                    "> time elapsed: 80.4 ms\r\n" +
+                    "> operations per millisecond: 0.4975124378109452\r\n" +
+                    "> average duration per operation: 2.01 ms\r\n" +
+                    "SYNC 2010000 ns\r\n" +
                     "\r\n" +
                     "Results for SEEK \r\n" +
                     "> operations executed: 213\r\n" +
