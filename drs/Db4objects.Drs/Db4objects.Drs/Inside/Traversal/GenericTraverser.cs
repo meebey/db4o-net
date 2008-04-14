@@ -65,18 +65,10 @@ namespace Db4objects.Drs.Inside.Traversal
 
 		private void TraverseFields(object @object, IReflectClass claxx)
 		{
-			IReflectField[] fields = claxx.GetDeclaredFields();
-			for (int i = 0; i < fields.Length; i++)
+			IEnumerator fields = FieldIterators.PersistentFields(claxx);
+			while (fields.MoveNext())
 			{
-				IReflectField field = fields[i];
-				if (field.IsStatic())
-				{
-					continue;
-				}
-				if (field.IsTransient())
-				{
-					continue;
-				}
+				IReflectField field = (IReflectField)fields.Current;
 				field.SetAccessible();
 				//TODO Optimize: Change the reflector so I dont have to call setAcessible all the time.
 				object value = field.Get(@object);

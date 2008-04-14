@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal
 		public override void CascadeActivation(Transaction trans, object onObject, IActivationDepth
 			 depth)
 		{
-			ITypeHandler4 typeHandler = TypeHandlerForObject(onObject);
+			ITypeHandler4 typeHandler = TypeHandlerForObject(onObject, true);
 			if (typeHandler is ICascadingTypeHandler)
 			{
 				((ICascadingTypeHandler)typeHandler).CascadeActivation(trans, onObject, depth);
@@ -50,8 +50,13 @@ namespace Db4objects.Db4o.Internal
 			int linkOffset = context.Offset();
 			context.Seek(payLoadOffset);
 			int classMetadataID = context.ReadInt();
-			ITypeHandler4 typeHandler = ((ObjectContainerBase)context.ObjectContainer()).TypeHandlerForId
-				(classMetadataID);
+			ITypeHandler4 typeHandler = ConfiguredHandler(Container().ClassMetadataForId(classMetadataID
+				).ClassReflector());
+			if (typeHandler == null)
+			{
+				typeHandler = ((ObjectContainerBase)context.ObjectContainer()).TypeHandlerForId(classMetadataID
+					);
+			}
 			if (typeHandler != null)
 			{
 				typeHandler.Delete(context);
@@ -225,12 +230,33 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual ITypeHandler4 TypeHandlerForObject(object obj)
 		{
+			return TypeHandlerForObject(obj, false);
+		}
+
+		public virtual ITypeHandler4 TypeHandlerForObject(object obj, bool lookupRegistered
+			)
+		{
 			IReflectClass claxx = Reflector().ForObject(obj);
 			if (claxx.IsArray())
 			{
 				return HandlerRegistry().UntypedArrayHandler(claxx);
 			}
+			if (lookupRegistered)
+			{
+				ITypeHandler4 configuredHandler = ConfiguredHandler(claxx);
+				if (configuredHandler != null)
+				{
+					return configuredHandler;
+				}
+			}
 			return Container().TypeHandlerForReflectClass(claxx);
+		}
+
+		private ITypeHandler4 ConfiguredHandler(IReflectClass claxx)
+		{
+			ITypeHandler4 configuredHandler = Container().ConfigImpl().TypeHandlerForClass(claxx
+				, Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion);
+			return configuredHandler;
 		}
 
 		public virtual IReflectClass ClassReflector(IReflector reflector)

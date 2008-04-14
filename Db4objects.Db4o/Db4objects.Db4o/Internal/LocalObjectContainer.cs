@@ -476,9 +476,15 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		public override StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id, bool lastCommitted
+			)
+		{
+			return (StatefulBuffer)ReadReaderOrWriterByID(a_ta, a_id, false, lastCommitted);
+		}
+
 		public override StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id)
 		{
-			return (StatefulBuffer)ReadReaderOrWriterByID(a_ta, a_id, false);
+			return ReadWriterByID(a_ta, a_id, false);
 		}
 
 		public override StatefulBuffer[] ReadWritersByIDs(Transaction a_ta, int[] ids)
@@ -498,13 +504,25 @@ namespace Db4objects.Db4o.Internal
 			return yapWriters;
 		}
 
+		public override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id, bool lastCommitted
+			)
+		{
+			return ReadReaderOrWriterByID(a_ta, a_id, true, lastCommitted);
+		}
+
 		public override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id)
 		{
-			return ReadReaderOrWriterByID(a_ta, a_id, true);
+			return ReadReaderByID(a_ta, a_id, false);
 		}
 
 		private ByteArrayBuffer ReadReaderOrWriterByID(Transaction a_ta, int a_id, bool useReader
 			)
+		{
+			return ReadReaderOrWriterByID(a_ta, a_id, useReader, false);
+		}
+
+		private ByteArrayBuffer ReadReaderOrWriterByID(Transaction a_ta, int a_id, bool useReader
+			, bool lastCommitted)
 		{
 			if (a_id <= 0)
 			{
@@ -514,7 +532,15 @@ namespace Db4objects.Db4o.Internal
 			{
 				DTrace.ReadId.Log(a_id);
 			}
-			Slot slot = ((LocalTransaction)a_ta).GetCurrentSlotOfID(a_id);
+			Slot slot = null;
+			if (!lastCommitted)
+			{
+				slot = ((LocalTransaction)a_ta).GetCurrentSlotOfID(a_id);
+			}
+			else
+			{
+				slot = ((LocalTransaction)a_ta).GetCommittedSlotOfID(a_id);
+			}
 			if (slot == null)
 			{
 				return null;
@@ -676,15 +702,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_595(semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_613(semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_595 : IVisitor4
+		private sealed class _IVisitor4_613 : IVisitor4
 		{
-			public _IVisitor4_595(Hashtable4 semaphores)
+			public _IVisitor4_613(Hashtable4 semaphores)
 			{
 				this.semaphores = semaphores;
 			}
@@ -929,13 +955,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_795(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_813(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_795 : IVisitor4
+		private sealed class _IVisitor4_813 : IVisitor4
 		{
-			public _IVisitor4_795(IntArrayList ids)
+			public _IVisitor4_813(IntArrayList ids)
 			{
 				this.ids = ids;
 			}

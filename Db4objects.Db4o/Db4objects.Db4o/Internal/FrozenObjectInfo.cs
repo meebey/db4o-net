@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public FrozenObjectInfo(Transaction trans, ObjectReference @ref) : this(@ref, @ref
-			 == null ? null : @ref.VirtualAttributes(trans))
+			 == null ? null : @ref.VirtualAttributes(trans, true))
 		{
 		}
 

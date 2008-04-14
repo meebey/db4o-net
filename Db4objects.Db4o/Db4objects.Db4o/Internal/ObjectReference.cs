@@ -470,7 +470,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public virtual Db4objects.Db4o.Internal.VirtualAttributes VirtualAttributes(Db4objects.Db4o.Internal.Transaction
-			 trans)
+			 trans, bool lastCommitted)
 		{
 			if (trans == null)
 			{
@@ -483,7 +483,7 @@ namespace Db4objects.Db4o.Internal
 					if (_class.HasVirtualAttributes())
 					{
 						_virtualAttributes = new Db4objects.Db4o.Internal.VirtualAttributes();
-						_class.ReadVirtualAttributes(trans, this);
+						_class.ReadVirtualAttributes(trans, this, lastCommitted);
 					}
 				}
 				else
@@ -492,12 +492,18 @@ namespace Db4objects.Db4o.Internal
 					{
 						if (_class.HasVirtualAttributes())
 						{
-							_class.ReadVirtualAttributes(trans, this);
+							_class.ReadVirtualAttributes(trans, this, lastCommitted);
 						}
 					}
 				}
 				return _virtualAttributes;
 			}
+		}
+
+		public virtual Db4objects.Db4o.Internal.VirtualAttributes VirtualAttributes(Db4objects.Db4o.Internal.Transaction
+			 trans)
+		{
+			return VirtualAttributes(trans, true);
 		}
 
 		public virtual void SetVirtualAttributes(Db4objects.Db4o.Internal.VirtualAttributes

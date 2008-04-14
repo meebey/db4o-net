@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Db4objects.Db4o.Foundation;
 using Db4oUnit.Fixtures;
 
 namespace Db4objects.Drs.Tests.Regression
@@ -33,6 +34,15 @@ namespace Db4objects.Drs.Tests.Regression
 			yield return new LinkedList<string>(tenStrings);
 			yield return new LinkedList<string>();
 			yield return new LinkedList<int>(Range(0, 10));
+			yield return new List<Container>(GenerateContainers(tenStrings));
+		}
+
+		private IEnumerable<Container> GenerateContainers(IEnumerable<string> names)
+		{
+			foreach (string name in names)
+			{
+				yield return new Container(name, null);
+			}
 		}
 
 		private static IEnumerable<int> Range(int begin, int end)

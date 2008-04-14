@@ -200,19 +200,10 @@ namespace Db4objects.Drs.Inside
 		private void CopyFieldValuesAcross(object src, object dest, IReflectClass claxx, 
 			IReplicationProviderInside sourceProvider)
 		{
-			IReflectField[] fields;
-			fields = claxx.GetDeclaredFields();
-			for (int i = 0; i < fields.Length; i++)
+			IEnumerator fields = FieldIterators.PersistentFields(claxx);
+			while (fields.MoveNext())
 			{
-				IReflectField field = fields[i];
-				if (field.IsStatic())
-				{
-					continue;
-				}
-				if (field.IsTransient())
-				{
-					continue;
-				}
+				IReflectField field = (IReflectField)fields.Current;
 				field.SetAccessible();
 				//TODO Optimization: Do this in the field constructor;
 				object value = field.Get(src);
@@ -232,12 +223,12 @@ namespace Db4objects.Drs.Inside
 			{
 				return;
 			}
-			sourceProvider.VisitCachedReferences(new _IVisitor4_207(this, sourceProvider));
+			sourceProvider.VisitCachedReferences(new _IVisitor4_203(this, sourceProvider));
 		}
 
-		private sealed class _IVisitor4_207 : IVisitor4
+		private sealed class _IVisitor4_203 : IVisitor4
 		{
-			public _IVisitor4_207(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_203(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 sourceProvider)
 			{
 				this._enclosing = _enclosing;
@@ -327,12 +318,12 @@ namespace Db4objects.Drs.Inside
 			 sourceProvider)
 		{
 			return _collectionHandler.CloneWithCounterparts(sourceProvider, original, claxx, 
-				new _ICounterpartFinder_256(this, sourceProvider));
+				new _ICounterpartFinder_252(this, sourceProvider));
 		}
 
-		private sealed class _ICounterpartFinder_256 : ICounterpartFinder
+		private sealed class _ICounterpartFinder_252 : ICounterpartFinder
 		{
-			public _ICounterpartFinder_256(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _ICounterpartFinder_252(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 sourceProvider)
 			{
 				this._enclosing = _enclosing;
@@ -399,13 +390,13 @@ namespace Db4objects.Drs.Inside
 			{
 				return;
 			}
-			destination.VisitCachedReferences(new _IVisitor4_298(this, destination));
-			source.VisitCachedReferences(new _IVisitor4_304(this, destination));
+			destination.VisitCachedReferences(new _IVisitor4_294(this, destination));
+			source.VisitCachedReferences(new _IVisitor4_300(this, destination));
 		}
 
-		private sealed class _IVisitor4_298 : IVisitor4
+		private sealed class _IVisitor4_294 : IVisitor4
 		{
-			public _IVisitor4_298(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_294(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;
@@ -422,9 +413,9 @@ namespace Db4objects.Drs.Inside
 			private readonly IReplicationProviderInside destination;
 		}
 
-		private sealed class _IVisitor4_304 : IVisitor4
+		private sealed class _IVisitor4_300 : IVisitor4
 		{
-			public _IVisitor4_304(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_300(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;

@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oTool.Tests-2005", "Db4o
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oTool.MSBuild", "Db4oTool\Db4oTool.MSBuild\Db4oTool.MSBuild.csproj", "{03E2AD50-7A21-4D03-8504-3E190AE5361F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Drs", "drs\Db4objects.Drs\Db4objects.Drs.csproj", "{03656518-0F95-4E4C-83C0-BF5EE8B7B472}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{03E2AD50-7A21-4D03-8504-3E190AE5361F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03E2AD50-7A21-4D03-8504-3E190AE5361F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03E2AD50-7A21-4D03-8504-3E190AE5361F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03656518-0F95-4E4C-83C0-BF5EE8B7B472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03656518-0F95-4E4C-83C0-BF5EE8B7B472}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03656518-0F95-4E4C-83C0-BF5EE8B7B472}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03656518-0F95-4E4C-83C0-BF5EE8B7B472}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -277,7 +277,7 @@ namespace Db4objects.Db4o.Internal
 				if (ReflectorForObject(obj) == @ref.ClassMetadata().ClassReflector())
 				{
 					ObjectReference newRef = Bind2(trans, @ref, obj);
-					newRef.VirtualAttributes(trans);
+					newRef.VirtualAttributes(trans, false);
 				}
 				else
 				{
@@ -1716,7 +1716,13 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id);
 
+		public abstract StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id, bool lastCommitted
+			);
+
 		public abstract ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id);
+
+		public abstract ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id, bool lastCommitted
+			);
 
 		public abstract StatefulBuffer[] ReadWritersByIDs(Transaction a_ta, int[] ids);
 

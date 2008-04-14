@@ -1699,15 +1699,21 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal virtual void ReadVirtualAttributes(Transaction a_trans, ObjectReference 
-			a_yapObject)
+		public virtual void ReadVirtualAttributes(Transaction a_trans, ObjectReference a_yapObject
+			, bool lastCommitted)
 		{
 			int id = a_yapObject.GetID();
 			ObjectContainerBase stream = a_trans.Container();
-			ByteArrayBuffer reader = stream.ReadReaderByID(a_trans, id);
+			ByteArrayBuffer reader = stream.ReadReaderByID(a_trans, id, lastCommitted);
 			ObjectHeader oh = new ObjectHeader(stream, this, reader);
 			oh.ObjectMarshaller().ReadVirtualAttributes(a_trans, this, a_yapObject, oh._headerAttributes
 				, reader);
+		}
+
+		internal virtual void ReadVirtualAttributes(Transaction a_trans, ObjectReference 
+			a_yapObject)
+		{
+			ReadVirtualAttributes(a_trans, a_yapObject, false);
 		}
 
 		public virtual GenericReflector Reflector()
@@ -2022,7 +2028,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1676
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1680
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2031,9 +2037,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1676 : IFunction4
+		private sealed class _IFunction4_1680 : IFunction4
 		{
-			public _IFunction4_1676(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1680(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2074,12 +2080,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1704(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1708(this));
 		}
 
-		private sealed class _IFunction4_1704 : IFunction4
+		private sealed class _IFunction4_1708 : IFunction4
 		{
-			public _IFunction4_1704(ClassMetadata _enclosing)
+			public _IFunction4_1708(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2122,12 +2128,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1734());
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1738());
 		}
 
-		private sealed class _IPredicate4_1734 : IPredicate4
+		private sealed class _IPredicate4_1738 : IPredicate4
 		{
-			public _IPredicate4_1734()
+			public _IPredicate4_1738()
 			{
 			}
 

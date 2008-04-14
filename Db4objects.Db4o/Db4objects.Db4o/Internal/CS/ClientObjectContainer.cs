@@ -601,7 +601,14 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public sealed override StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id)
 		{
-			MsgD msg = Msg.ReadObject.GetWriterForInt(a_ta, a_id);
+			return ReadWriterByID(a_ta, a_id, false);
+		}
+
+		public sealed override StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id, 
+			bool lastCommitted)
+		{
+			MsgD msg = Msg.ReadObject.GetWriterForInts(a_ta, new int[] { a_id, lastCommitted ? 
+				1 : 0 });
 			Write(msg);
 			StatefulBuffer bytes = ((MsgObject)ExpectedResponse(Msg.ObjectToClient)).Unmarshall
 				();
@@ -635,10 +642,16 @@ namespace Db4objects.Db4o.Internal.CS
 			return yapWriters;
 		}
 
-		public sealed override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id)
+		public sealed override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id, 
+			bool lastCommitted)
 		{
 			// TODO: read lightweight reader instead
-			return ReadWriterByID(a_ta, a_id);
+			return ReadWriterByID(a_ta, a_id, lastCommitted);
+		}
+
+		public sealed override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id)
+		{
+			return ReadReaderByID(a_ta, a_id, false);
 		}
 
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
@@ -1052,13 +1065,13 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			lock (_lock)
 			{
-				Cool.LoopWithTimeout(maxTimeSlice, new _IConditionalBlock_862(this));
+				Cool.LoopWithTimeout(maxTimeSlice, new _IConditionalBlock_870(this));
 			}
 		}
 
-		private sealed class _IConditionalBlock_862 : IConditionalBlock
+		private sealed class _IConditionalBlock_870 : IConditionalBlock
 		{
-			public _IConditionalBlock_862(ClientObjectContainer _enclosing)
+			public _IConditionalBlock_870(ClientObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -1084,12 +1097,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private IClientSideTask NextClientSideTask()
 		{
-			return (IClientSideTask)_messageQueue.NextMatching(new _IPredicate4_880());
+			return (IClientSideTask)_messageQueue.NextMatching(new _IPredicate4_888());
 		}
 
-		private sealed class _IPredicate4_880 : IPredicate4
+		private sealed class _IPredicate4_888 : IPredicate4
 		{
-			public _IPredicate4_880()
+			public _IPredicate4_888()
 			{
 			}
 

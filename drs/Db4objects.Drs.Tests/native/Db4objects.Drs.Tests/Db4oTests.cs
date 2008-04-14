@@ -9,6 +9,7 @@ namespace Db4objects.Drs.Tests
 		{
 			return new Type[]
 			{	
+				typeof(Regression.DelegateTestCase),
 				typeof(Regression.GenericListTestSuite),
                 typeof(Regression.GenericDictionaryTestCase),
 			};

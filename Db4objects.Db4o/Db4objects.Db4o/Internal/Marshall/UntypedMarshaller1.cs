@@ -27,7 +27,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 			ClassMetadata yc = trans.Container().ClassMetadataForId(yapClassID);
 			if (yc != null)
 			{
-				ret = yc.ReadArrayHandler(trans, _family, reader);
+				ITypeHandler4 configuredHandler = trans.Container().ConfigImpl().TypeHandlerForClass
+					(yc.ClassReflector(), HandlerRegistry.HandlerVersion);
+				if (configuredHandler != null && configuredHandler is IFirstClassHandler)
+				{
+					ret = ((IFirstClassHandler)configuredHandler).ReadArrayHandler(trans, _family, reader
+						);
+				}
+				else
+				{
+					ret = yc.ReadArrayHandler(trans, _family, reader);
+				}
 			}
 			return ret;
 		}

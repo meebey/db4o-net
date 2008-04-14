@@ -17,7 +17,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				try
 				{
-					bytes = Stream().ReadWriterByID(Transaction(), _payLoad.ReadInt());
+					bytes = Stream().ReadWriterByID(Transaction(), _payLoad.ReadInt(), _payLoad.ReadInt
+						() == 1);
 				}
 				catch (Db4oException e)
 				{

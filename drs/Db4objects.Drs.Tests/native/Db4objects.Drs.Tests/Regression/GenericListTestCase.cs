@@ -9,27 +9,23 @@ namespace Db4objects.Drs.Tests.Regression
 {
 	class GenericListTestCase : GenericCollectionTestCaseBase
     {
-        public class Container
-        {
-            public string _name;
-            public IEnumerable _items;
+		public class RootContainer : Container
+		{
+			public RootContainer(string name, IEnumerable items) : base(name, items)
+			{
+			}
+		}
 
-            public Container(string name, IEnumerable items)
-            {
-                _name = name;
-                _items = items;
-            }
-        }
-
-        public override object CreateItem()
+		public override object CreateItem()
         {
-            return new Container("Item One", (IEnumerable) SubjectFixtureProvider.Value());
+            return new RootContainer("ROOT", (IEnumerable) SubjectFixtureProvider.Value());
         }
 
         public override void EnsureContent(ITestableReplicationProviderInside provider)
-        {
-            Container replicated = (Container) QueryItem(provider, typeof(Container));
+        {	
+            Container replicated = (Container) QueryItem(provider, typeof(RootContainer));
             Container expected = (Container) CreateItem();
+			Assert.AreSame(expected.GetType(), replicated.GetType());
             Assert.AreNotSame(expected, replicated);
             Assert.AreEqual(expected._name, replicated._name);
             Iterator4Assert.AreEqual(expected._items.GetEnumerator(), replicated._items.GetEnumerator());
