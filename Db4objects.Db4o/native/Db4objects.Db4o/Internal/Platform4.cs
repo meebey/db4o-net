@@ -578,7 +578,7 @@ namespace Db4objects.Db4o.Internal
 #endif
         }
 
-        internal static bool IsTransient(IReflectClass clazz)
+        public static bool IsTransient(IReflectClass clazz)
         {
             Type type = GetNetType(clazz);
             if (null == type) return false;
