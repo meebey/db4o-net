@@ -24,11 +24,11 @@ namespace Db4objects.Drs.Tests
 		{
 			return new Type[] { typeof(AllTests), typeof(TheSimplest), typeof(ReplicationEventTest
 				), typeof(ReplicationProviderTest), typeof(ReplicationAfterDeletionTest), typeof(
-				SimpleArrayTest), typeof(SimpleParentChild), typeof(ByteArrayTest), typeof(ListTest
-				), typeof(Db4oListTest), typeof(R0to4Runner), typeof(ReplicationFeaturesMain), typeof(
-				CollectionHandlerImplTest), typeof(ReplicationTraversalTest), typeof(MapTest), typeof(
-				ArrayReplicationTest), typeof(SingleTypeCollectionReplicationTest), typeof(MixedTypesCollectionReplicationTest
-				), typeof(DRS42Test) };
+				SimpleArrayTest), typeof(SimpleParentChild), typeof(ByteArrayTest), typeof(ComplexListTestCase
+				), typeof(ListTest), typeof(Db4oListTest), typeof(R0to4Runner), typeof(ReplicationFeaturesMain
+				), typeof(CollectionHandlerImplTest), typeof(ReplicationTraversalTest), typeof(MapTest
+				), typeof(ArrayReplicationTest), typeof(SingleTypeCollectionReplicationTest), typeof(
+				MixedTypesCollectionReplicationTest), typeof(DRS42Test) };
 		}
 
 		// Simple
