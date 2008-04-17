@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oTool.Tests-2008", "Db4o
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Linq.Instrumentation.Tests", "Db4objects.Db4o.Linq.Instrumentation.Tests\Db4objects.Db4o.Linq.Instrumentation.Tests.csproj", "{34A9FF31-90E6-4C19-AD64-3C4512C521FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oBench-2008", "Db4oBench\Db4oBench-2008.csproj", "{D8AB00B9-7769-4136-98FA-920F89B12653}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{34A9FF31-90E6-4C19-AD64-3C4512C521FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34A9FF31-90E6-4C19-AD64-3C4512C521FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34A9FF31-90E6-4C19-AD64-3C4512C521FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8AB00B9-7769-4136-98FA-920F89B12653}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8AB00B9-7769-4136-98FA-920F89B12653}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8AB00B9-7769-4136-98FA-920F89B12653}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8AB00B9-7769-4136-98FA-920F89B12653}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
