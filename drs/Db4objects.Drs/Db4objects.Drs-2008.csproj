@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Db4objects.Db4o, Version=7.3.39.10646, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\Db4objects.Db4o.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -76,12 +80,6 @@
     <Compile Include="native\Db4objects.Drs\Foundation\ObjectSetAbstractFacade.cs" />
     <Compile Include="native\Db4objects.Drs\Foundation\ObjectSetCollection4Facade.cs" />
     <Compile Include="native\Db4objects.Drs\Inside\ReplicationPlatform.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2008.csproj">
-      <Project>{600CD3BF-2ED2-4183-87F7-ADD78A968AE0}</Project>
-      <Name>Db4objects.Db4o-2008</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
