@@ -12,8 +12,6 @@ namespace Db4objects.Drs.Inside
 	{
 		private readonly Db4objects.Drs.Inside.ICollectionHandler _mapHandler;
 
-		private readonly IReflectClass _reflectCollectionClass;
-
 		private readonly IReflector _reflector;
 
 		public CollectionHandlerImpl() : this(ReplicationReflector.GetInstance().Reflector
@@ -25,32 +23,31 @@ namespace Db4objects.Drs.Inside
 		{
 			_mapHandler = new MapHandler(reflector);
 			_reflector = reflector;
-			_reflectCollectionClass = reflector.ForClass(typeof(ICollection));
 		}
 
-		public virtual bool CanHandle(IReflectClass claxx)
+		public virtual bool CanHandleClass(IReflectClass claxx)
 		{
-			if (_mapHandler.CanHandle(claxx))
+			if (_mapHandler.CanHandleClass(claxx))
 			{
 				return true;
 			}
-			return _reflectCollectionClass.IsAssignableFrom(claxx);
+			return ReplicationPlatform.IsBuiltinCollectionClass(_reflector, claxx);
 		}
 
 		public virtual bool CanHandle(object obj)
 		{
-			return CanHandle(_reflector.ForObject(obj));
+			return CanHandleClass(_reflector.ForObject(obj));
 		}
 
-		public virtual bool CanHandle(Type c)
+		public virtual bool CanHandleClass(Type c)
 		{
-			return CanHandle(_reflector.ForClass(c));
+			return CanHandleClass(_reflector.ForClass(c));
 		}
 
 		public virtual object EmptyClone(ICollectionSource sourceProvider, object originalCollection
 			, IReflectClass originalCollectionClass)
 		{
-			if (_mapHandler.CanHandle(originalCollectionClass))
+			if (_mapHandler.CanHandleClass(originalCollectionClass))
 			{
 				return _mapHandler.EmptyClone(sourceProvider, originalCollection, originalCollectionClass
 					);
@@ -67,7 +64,7 @@ namespace Db4objects.Drs.Inside
 
 		public virtual IEnumerator IteratorFor(object collection)
 		{
-			if (_mapHandler.CanHandle(_reflector.ForObject(collection)))
+			if (_mapHandler.CanHandleClass(_reflector.ForObject(collection)))
 			{
 				return _mapHandler.IteratorFor(collection);
 			}
@@ -102,7 +99,7 @@ namespace Db4objects.Drs.Inside
 		public virtual object CloneWithCounterparts(ICollectionSource sourceProvider, object
 			 originalCollection, IReflectClass claxx, ICounterpartFinder counterpartFinder)
 		{
-			if (_mapHandler.CanHandle(claxx))
+			if (_mapHandler.CanHandleClass(claxx))
 			{
 				return _mapHandler.CloneWithCounterparts(sourceProvider, originalCollection, claxx
 					, counterpartFinder);

@@ -76,6 +76,11 @@ namespace Db4objects.Db4o.Reflect.Generic
 			}
 		}
 
+		public GenericReflector(IReflector delegateReflector) : this(null, delegateReflector
+			)
+		{
+		}
+
 		/// <summary>Creates a clone of provided object</summary>
 		/// <param name="obj">object to copy</param>
 		/// <returns>copy of the submitted object</returns>
@@ -340,14 +345,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private IReflectClassPredicate ClassPredicate(Type clazz)
 		{
 			IReflectClass collectionClass = ForClass(clazz);
-			IReflectClassPredicate predicate = new _IReflectClassPredicate_311(collectionClass
+			IReflectClassPredicate predicate = new _IReflectClassPredicate_315(collectionClass
 				);
 			return predicate;
 		}
 
-		private sealed class _IReflectClassPredicate_311 : IReflectClassPredicate
+		private sealed class _IReflectClassPredicate_315 : IReflectClassPredicate
 		{
-			public _IReflectClassPredicate_311(IReflectClass collectionClass)
+			public _IReflectClassPredicate_315(IReflectClass collectionClass)
 			{
 				this.collectionClass = collectionClass;
 			}

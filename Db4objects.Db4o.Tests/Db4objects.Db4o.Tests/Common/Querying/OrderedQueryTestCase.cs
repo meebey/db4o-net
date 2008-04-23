@@ -27,6 +27,16 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			}
 		}
 
+		public class Item2
+		{
+			public string _name;
+
+			public Item2(string name)
+			{
+				_name = name;
+			}
+		}
+
 		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
@@ -47,6 +57,17 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			IQuery query = NewQuery(typeof(OrderedQueryTestCase.Item));
 			query.Descend("value").OrderDescending();
 			AssertQuery(new int[] { 3, 2, 1 }, query.Execute());
+		}
+
+		public virtual void _testCOR1212()
+		{
+			Store(new OrderedQueryTestCase.Item2("Item 2"));
+			IQuery query = NewQuery();
+			query.Constrain(typeof(OrderedQueryTestCase.Item)).Or(query.Constrain(typeof(OrderedQueryTestCase.Item2
+				)));
+			query.Descend("value").OrderAscending();
+			IObjectSet result = query.Execute();
+			AssertQuery(new int[] { 1, 2, 3 }, result);
 		}
 
 		private void AssertQuery(int[] expected, IObjectSet actual)

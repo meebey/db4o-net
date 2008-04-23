@@ -260,13 +260,13 @@ namespace Db4objects.Drs.Db4o
 		{
 			if (_referencesByObject != null)
 			{
-				_referencesByObject.Traverse(new _IVisitor4_266(visitor));
+				_referencesByObject.Traverse(new _IVisitor4_284(visitor));
 			}
 		}
 
-		private sealed class _IVisitor4_266 : IVisitor4
+		private sealed class _IVisitor4_284 : IVisitor4
 		{
-			public _IVisitor4_266(IVisitor4 visitor)
+			public _IVisitor4_284(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}

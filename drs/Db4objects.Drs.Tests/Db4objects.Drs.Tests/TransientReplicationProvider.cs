@@ -269,12 +269,12 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void StoreNew(object o)
 		{
-			_traverser.TraverseGraph(o, new _IVisitor_210(this));
+			_traverser.TraverseGraph(o, new _IVisitor_230(this));
 		}
 
-		private sealed class _IVisitor_210 : IVisitor
+		private sealed class _IVisitor_230 : IVisitor
 		{
-			public _IVisitor_210(TransientReplicationProvider _enclosing)
+			public _IVisitor_230(TransientReplicationProvider _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

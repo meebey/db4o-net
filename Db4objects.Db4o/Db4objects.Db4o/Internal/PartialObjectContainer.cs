@@ -1947,9 +1947,15 @@ namespace Db4objects.Db4o.Internal
 			{
 				_replicationCallState = Const4.New;
 				_handlers._replicationReferenceProvider = referenceProvider;
-				Store2(CheckTransaction(), obj, 1, false);
-				_replicationCallState = Const4.None;
-				_handlers._replicationReferenceProvider = null;
+				try
+				{
+					Store2(CheckTransaction(), obj, 1, false);
+				}
+				finally
+				{
+					_replicationCallState = Const4.None;
+					_handlers._replicationReferenceProvider = null;
+				}
 			}
 		}
 

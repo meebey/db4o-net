@@ -551,9 +551,8 @@ namespace Db4objects.Db4o.Internal
 					configuredReflector = Platform4.CreateReflector(ClassLoader());
 					_config.Put(ConfiguredReflectorKey, configuredReflector);
 				}
-				reflector = new GenericReflector(null, configuredReflector);
+				reflector = new GenericReflector(configuredReflector);
 				_config.Put(ReflectorKey, reflector);
-				configuredReflector.SetParent(reflector);
 			}
 			// TODO: transaction assignment has been moved to YapStreamBase#initialize1().
 			// implement better, more generic solution as described in COR-288

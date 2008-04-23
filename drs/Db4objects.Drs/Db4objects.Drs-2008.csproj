@@ -12,7 +12,7 @@
     <AssemblyName>Db4objects.Drs</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
+  <SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>../../db4objects.snk</AssemblyOriginatorKeyFile></PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>

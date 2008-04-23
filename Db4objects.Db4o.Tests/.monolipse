@@ -17,6 +17,15 @@
       <culture>neutral</culture>
       <token>b03f5f7f11d50a3a</token>
     </monolipse.core.internal.GlobalAssemblyCacheReference-Remembrance>
+    <monolipse.core.internal.AssemblySourceReference-Remembrance>
+      <path>/db4o.net/Db4objects.Db4o.Instrumentation</path>
+    </monolipse.core.internal.AssemblySourceReference-Remembrance>
+    <monolipse.core.internal.AssemblySourceReference-Remembrance>
+      <path>/db4o.net/Db4objects.Db4o.NativeQueries</path>
+    </monolipse.core.internal.AssemblySourceReference-Remembrance>
+    <monolipse.core.internal.LocalAssemblyReference-Remembrance>
+      <path>/db4o.net/Libs/net-2.0/Mono.Cecil.dll</path>
+    </monolipse.core.internal.LocalAssemblyReference-Remembrance>
   </references>
   <outputFolder>/db4o.net/bin</outputFolder>
   <additionalOptions>--main Db4objects.Db4o.Tests.AllTests</additionalOptions>

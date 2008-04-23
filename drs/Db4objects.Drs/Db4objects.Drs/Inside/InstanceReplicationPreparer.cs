@@ -459,7 +459,7 @@ namespace Db4objects.Drs.Inside
 				throw new Exception("IllegalState");
 			}
 			//Copy arrayClone() from GenericReplicationSession if necessary.
-			if (_collectionHandler.CanHandle(claxx))
+			if (_collectionHandler.CanHandleClass(claxx))
 			{
 				return CollectionClone(sourceProvider, obj, claxx);
 			}

@@ -11,12 +11,12 @@ namespace Db4objects.Drs.Inside.Traversal
 	{
 		public static IEnumerator PersistentFields(IReflectClass claxx)
 		{
-			return Iterators.Filter(claxx.GetDeclaredFields(), new _IPredicate4_13());
+			return Iterators.Filter(claxx.GetDeclaredFields(), new _IPredicate4_31());
 		}
 
-		private sealed class _IPredicate4_13 : IPredicate4
+		private sealed class _IPredicate4_31 : IPredicate4
 		{
-			public _IPredicate4_13()
+			public _IPredicate4_31()
 			{
 			}
 

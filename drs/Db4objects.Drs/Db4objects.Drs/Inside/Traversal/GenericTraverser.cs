@@ -12,12 +12,12 @@ namespace Db4objects.Drs.Inside.Traversal
 	{
 		protected readonly IReflector _reflector;
 
-		protected readonly Db4objects.Drs.Inside.Traversal.ICollectionHandler _collectionHandler;
+		protected readonly ICollectionTraverser _collectionHandler;
 
 		protected readonly IQueue4 _queue = new NonblockingQueue();
 
-		public GenericTraverser(IReflector reflector, Db4objects.Drs.Inside.Traversal.ICollectionHandler
-			 collectionHandler)
+		public GenericTraverser(IReflector reflector, ICollectionTraverser collectionHandler
+			)
 		{
 			_reflector = reflector;
 			_collectionHandler = collectionHandler;
@@ -111,7 +111,7 @@ namespace Db4objects.Drs.Inside.Traversal
 			{
 				return;
 			}
-			if (_collectionHandler.CanHandle(claxx))
+			if (_collectionHandler.CanHandleClass(claxx))
 			{
 				TraverseCollection(@object);
 				return;

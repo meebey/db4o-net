@@ -11,13 +11,7 @@ namespace Db4objects.Drs.Tests
 	{
 		public virtual void Test()
 		{
-			//TODO: Fix the following exception and remove the "if" line
-			if (A().GetType().FullName.IndexOf("HsqlMemoryFixture") >= 0 || B().GetType().FullName
-				.IndexOf("HsqlMemoryFixture") >= 0)
-			{
-				return;
-			}
-			Store(A(), CreateList("foo.list"));
+			Store(A(), CreateList());
 			ReplicateAndTest(A(), B());
 			RoundTripTest();
 		}
@@ -30,23 +24,25 @@ namespace Db4objects.Drs.Tests
 
 		private void ChangeInProviderB()
 		{
-			ListHolder listHolder = (ListHolder)GetOneInstance(B(), typeof(ListHolder));
-			Item fooBaby = new Item("foobaby", listHolder);
+			SimpleListHolder SimpleListHolder = (SimpleListHolder)GetOneInstance(B(), typeof(
+				SimpleListHolder));
+			SimpleItem fooBaby = new SimpleItem(SimpleListHolder, "foobaby");
 			B().Provider().StoreNew(fooBaby);
-			listHolder.Add(fooBaby);
-			Item foo = GetItem(listHolder, "foo");
+			SimpleListHolder.Add(fooBaby);
+			SimpleItem foo = GetItem(SimpleListHolder, "foo");
 			foo.SetChild(fooBaby);
 			B().Provider().Update(foo);
-			B().Provider().Update(listHolder);
+			B().Provider().Update(SimpleListHolder);
 		}
 
 		private void ReplicateAndTest(IDrsFixture source, IDrsFixture target)
 		{
 			ReplicateAll(source.Provider(), target.Provider());
-			EnsureContents(target, (ListHolder)GetOneInstance(source, typeof(ListHolder)));
+			EnsureContents(target, (SimpleListHolder)GetOneInstance(source, typeof(SimpleListHolder
+				)));
 		}
 
-		private void Store(IDrsFixture fixture, ListHolder list)
+		private void Store(IDrsFixture fixture, SimpleListHolder list)
 		{
 			ITestableReplicationProviderInside provider = fixture.Provider();
 			provider.StoreNew(list);
@@ -56,10 +52,10 @@ namespace Db4objects.Drs.Tests
 			EnsureContents(fixture, list);
 		}
 
-		private void EnsureContents(IDrsFixture actualFixture, ListHolder expected)
+		private void EnsureContents(IDrsFixture actualFixture, SimpleListHolder expected)
 		{
-			ListHolder actual = (ListHolder)GetOneInstance(actualFixture, typeof(ListHolder));
-			Assert.AreEqual(expected.GetName(), actual.GetName());
+			SimpleListHolder actual = (SimpleListHolder)GetOneInstance(actualFixture, typeof(
+				SimpleListHolder));
 			IList expectedList = expected.GetList();
 			IList actualList = actual.GetList();
 			AssertListWithCycles(expectedList, actualList);
@@ -70,8 +66,8 @@ namespace Db4objects.Drs.Tests
 			Assert.AreEqual(expectedList.Count, actualList.Count);
 			for (int i = 0; i < expectedList.Count; ++i)
 			{
-				Item expected = (Item)expectedList[i];
-				Item actual = (Item)actualList[i];
+				SimpleItem expected = (SimpleItem)expectedList[i];
+				SimpleItem actual = (SimpleItem)actualList[i];
 				AssertItem(expected, actual);
 			}
 			AssertCycle(actualList, "foo", "bar", 1);
@@ -82,37 +78,37 @@ namespace Db4objects.Drs.Tests
 		private void AssertCycle(IList list, string childName, string parentName, int level
 			)
 		{
-			Item foo = GetItem(list, childName);
-			Item bar = GetItem(list, parentName);
+			SimpleItem foo = GetItem(list, childName);
+			SimpleItem bar = GetItem(list, parentName);
 			Assert.IsNotNull(foo);
 			Assert.IsNotNull(bar);
-			Assert.AreSame(foo, bar.Child(level));
-			Assert.AreSame(foo.Parent(), bar.Parent());
+			Assert.AreSame(foo, bar.GetChild(level));
+			Assert.AreSame(foo.GetParent(), bar.GetParent());
 		}
 
-		private void AssertItem(Item expected, Item actual)
+		private void AssertItem(SimpleItem expected, SimpleItem actual)
 		{
 			if (expected == null)
 			{
 				Assert.IsNull(actual);
 				return;
 			}
-			Assert.AreEqual(expected.GetName(), actual.GetName());
-			AssertItem(expected.Child(), actual.Child());
+			Assert.AreEqual(expected.GetValue(), actual.GetValue());
+			AssertItem(expected.GetChild(), actual.GetChild());
 		}
 
-		private Item GetItem(ListHolder holder, string tbf)
+		private SimpleItem GetItem(SimpleListHolder holder, string tbf)
 		{
 			return GetItem(holder.GetList(), tbf);
 		}
 
-		private Item GetItem(IList list, string tbf)
+		private SimpleItem GetItem(IList list, string tbf)
 		{
-			int itemIndex = list.IndexOf(new Item(tbf));
-			return (Item)(itemIndex >= 0 ? list[itemIndex] : null);
+			int itemIndex = list.IndexOf(new SimpleItem(tbf));
+			return (SimpleItem)(itemIndex >= 0 ? list[itemIndex] : null);
 		}
 
-		public virtual ListHolder CreateList(string name)
+		public virtual SimpleListHolder CreateList()
 		{
 			// list : {foo, bar, baz, foobar}
 			//
@@ -122,21 +118,14 @@ namespace Db4objects.Drs.Tests
 			//                  ^
 			//                  |
 			// foobar ----------+
-			ListHolder listHolder = NewList(name);
-			Item foo = new Item("foo", listHolder);
-			Item bar = new Item("bar", foo, listHolder);
+			SimpleListHolder listHolder = new SimpleListHolder();
+			SimpleItem foo = new SimpleItem(listHolder, "foo");
+			SimpleItem bar = new SimpleItem(listHolder, "bar", foo);
 			listHolder.Add(foo);
 			listHolder.Add(bar);
-			listHolder.Add(new Item("baz", bar, listHolder));
-			listHolder.Add(new Item("foobar", foo, listHolder));
+			listHolder.Add(new SimpleItem(listHolder, "baz", bar));
+			listHolder.Add(new SimpleItem(listHolder, "foobar", foo));
 			return listHolder;
-		}
-
-		private ListHolder NewList(string name)
-		{
-			ListHolder holder = new ListHolder(name);
-			holder.SetList(new ArrayList());
-			return holder;
 		}
 	}
 }

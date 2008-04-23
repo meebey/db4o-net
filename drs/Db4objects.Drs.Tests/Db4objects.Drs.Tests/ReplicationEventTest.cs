@@ -117,7 +117,7 @@ namespace Db4objects.Drs.Tests
 			StoreParentAndChildToProviderA();
 			ReplicationEventTest.BooleanClosure invoked = new ReplicationEventTest.BooleanClosure
 				(false);
-			IReplicationEventListener listener = new _IReplicationEventListener_221(invoked);
+			IReplicationEventListener listener = new _IReplicationEventListener_239(invoked);
 			ReplicateAll(A().Provider(), B().Provider(), listener);
 			Assert.IsTrue(invoked.GetValue());
 			EnsureNames(A(), InA, InA);
@@ -125,9 +125,9 @@ namespace Db4objects.Drs.Tests
 			EnsureNotExist(B().Provider(), typeof(SPCChild));
 		}
 
-		private sealed class _IReplicationEventListener_221 : IReplicationEventListener
+		private sealed class _IReplicationEventListener_239 : IReplicationEventListener
 		{
-			public _IReplicationEventListener_221(ReplicationEventTest.BooleanClosure invoked
+			public _IReplicationEventListener_239(ReplicationEventTest.BooleanClosure invoked
 				)
 			{
 				this.invoked = invoked;
@@ -153,16 +153,16 @@ namespace Db4objects.Drs.Tests
 			StoreParentAndChildToProviderA();
 			ReplicateAllToProviderBFirstTime();
 			ModifyInProviderB();
-			IReplicationEventListener listener = new _IReplicationEventListener_252();
+			IReplicationEventListener listener = new _IReplicationEventListener_270();
 			//do nothing
 			ReplicateAll(B().Provider(), A().Provider(), listener);
 			EnsureNames(A(), ModifiedInB, ModifiedInB);
 			EnsureNames(B(), ModifiedInB, ModifiedInB);
 		}
 
-		private sealed class _IReplicationEventListener_252 : IReplicationEventListener
+		private sealed class _IReplicationEventListener_270 : IReplicationEventListener
 		{
-			public _IReplicationEventListener_252()
+			public _IReplicationEventListener_270()
 			{
 			}
 
@@ -178,15 +178,15 @@ namespace Db4objects.Drs.Tests
 			//introduce conflicts
 			ModifyInProviderA();
 			ModifyInProviderB();
-			IReplicationEventListener listener = new _IReplicationEventListener_272();
+			IReplicationEventListener listener = new _IReplicationEventListener_290();
 			ReplicateAll(A().Provider(), B().Provider(), listener);
 			EnsureNames(A(), ModifiedInB, ModifiedInB);
 			EnsureNames(B(), ModifiedInB, ModifiedInB);
 		}
 
-		private sealed class _IReplicationEventListener_272 : IReplicationEventListener
+		private sealed class _IReplicationEventListener_290 : IReplicationEventListener
 		{
-			public _IReplicationEventListener_272()
+			public _IReplicationEventListener_290()
 			{
 			}
 
@@ -205,15 +205,15 @@ namespace Db4objects.Drs.Tests
 			StoreParentAndChildToProviderA();
 			ReplicateAllToProviderBFirstTime();
 			ModifyInProviderB();
-			IReplicationEventListener listener = new _IReplicationEventListener_292();
+			IReplicationEventListener listener = new _IReplicationEventListener_310();
 			ReplicateAll(B().Provider(), A().Provider(), listener);
 			EnsureNames(A(), InA, InA);
 			EnsureNames(B(), InA, InA);
 		}
 
-		private sealed class _IReplicationEventListener_292 : IReplicationEventListener
+		private sealed class _IReplicationEventListener_310 : IReplicationEventListener
 		{
-			public _IReplicationEventListener_292()
+			public _IReplicationEventListener_310()
 			{
 			}
 
@@ -231,15 +231,15 @@ namespace Db4objects.Drs.Tests
 			//introduce conflicts
 			ModifyInProviderA();
 			ModifyInProviderB();
-			IReplicationEventListener listener = new _IReplicationEventListener_313();
+			IReplicationEventListener listener = new _IReplicationEventListener_331();
 			ReplicateAll(A().Provider(), B().Provider(), listener);
 			EnsureNames(A(), ModifiedInA, ModifiedInA);
 			EnsureNames(B(), ModifiedInB, ModifiedInB);
 		}
 
-		private sealed class _IReplicationEventListener_313 : IReplicationEventListener
+		private sealed class _IReplicationEventListener_331 : IReplicationEventListener
 		{
-			public _IReplicationEventListener_313()
+			public _IReplicationEventListener_331()
 			{
 			}
 

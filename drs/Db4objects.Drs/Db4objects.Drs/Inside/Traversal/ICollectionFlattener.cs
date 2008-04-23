@@ -1,13 +1,14 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Drs.Inside.Traversal;
 
 namespace Db4objects.Drs.Inside.Traversal
 {
-	public interface ICollectionFlattener : Db4objects.Drs.Inside.Traversal.ICollectionHandler
+	public interface ICollectionFlattener : ICollectionTraverser
 	{
 		bool CanHandle(object obj);
 
-		bool CanHandle(Type c);
+		bool CanHandleClass(Type c);
 	}
 }

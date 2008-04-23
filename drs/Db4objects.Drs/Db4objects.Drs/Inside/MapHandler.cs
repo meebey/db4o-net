@@ -20,19 +20,19 @@ namespace Db4objects.Drs.Inside
 			_reflectMapClass = reflector.ForClass(typeof(IDictionary));
 		}
 
-		public virtual bool CanHandle(IReflectClass claxx)
+		public virtual bool CanHandleClass(IReflectClass claxx)
 		{
 			return _reflectMapClass.IsAssignableFrom(claxx);
 		}
 
 		public virtual bool CanHandle(object obj)
 		{
-			return CanHandle(_reflector.ForObject(obj));
+			return CanHandleClass(_reflector.ForObject(obj));
 		}
 
-		public virtual bool CanHandle(Type c)
+		public virtual bool CanHandleClass(Type c)
 		{
-			return CanHandle(_reflector.ForClass(c));
+			return CanHandleClass(_reflector.ForClass(c));
 		}
 
 		public virtual IEnumerator IteratorFor(object collection)

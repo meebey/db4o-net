@@ -5,9 +5,9 @@ using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Drs.Inside.Traversal
 {
-	public interface ICollectionHandler
+	public interface ICollectionTraverser
 	{
-		bool CanHandle(IReflectClass claxx);
+		bool CanHandleClass(IReflectClass claxx);
 
 		IEnumerator IteratorFor(object collection);
 	}

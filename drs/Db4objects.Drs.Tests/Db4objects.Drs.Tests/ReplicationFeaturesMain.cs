@@ -221,7 +221,7 @@ namespace Db4objects.Drs.Tests
 			PerformChanges();
 			PrintProvidersContent("after changes");
 			IReplicationSession replication = new GenericReplicationSession(A().Provider(), B
-				().Provider(), new _IReplicationEventListener_174(this));
+				().Provider(), new _IReplicationEventListener_192(this));
 			//Default replication behaviour.
 			if (_direction.Size() == 1)
 			{
@@ -245,9 +245,9 @@ namespace Db4objects.Drs.Tests
 			Clean();
 		}
 
-		private sealed class _IReplicationEventListener_174 : IReplicationEventListener
+		private sealed class _IReplicationEventListener_192 : IReplicationEventListener
 		{
-			public _IReplicationEventListener_174(ReplicationFeaturesMain _enclosing)
+			public _IReplicationEventListener_192(ReplicationFeaturesMain _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

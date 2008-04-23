@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -35,53 +35,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\Db4objects.Db4o.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System"/>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Db4objects.Drs\Db4o\ClientServerReplicationProvider.cs" />
-    <Compile Include="Db4objects.Drs\Db4o\Db4oProviderFactory.cs" />
-    <Compile Include="Db4objects.Drs\Db4o\Db4oReplicationProviderSignature.cs" />
-    <Compile Include="Db4objects.Drs\Db4o\Db4oReplicationReferenceImpl.cs" />
-    <Compile Include="Db4objects.Drs\Db4o\Db4oSignatureMap.cs" />
-    <Compile Include="Db4objects.Drs\Db4o\FileReplicationProvider.cs" />
-    <Compile Include="Db4objects.Drs\Db4o\IDb4oReplicationProvider.cs" />
-    <Compile Include="Db4objects.Drs\IObjectState.cs" />
-    <Compile Include="Db4objects.Drs\IReplicationEvent.cs" />
-    <Compile Include="Db4objects.Drs\IReplicationEventListener.cs" />
-    <Compile Include="Db4objects.Drs\IReplicationProvider.cs" />
-    <Compile Include="Db4objects.Drs\IReplicationSession.cs" />
-    <Compile Include="Db4objects.Drs\Inside\CollectionHandlerImpl.cs" />
-    <Compile Include="Db4objects.Drs\Inside\DefaultReplicationEventListener.cs" />
-    <Compile Include="Db4objects.Drs\Inside\GenericReplicationSession.cs" />
-    <Compile Include="Db4objects.Drs\Inside\ICollectionHandler.cs" />
-    <Compile Include="Db4objects.Drs\Inside\ICollectionSource.cs" />
-    <Compile Include="Db4objects.Drs\Inside\ICounterpartFinder.cs" />
-    <Compile Include="Db4objects.Drs\Inside\IReadonlyReplicationProviderSignature.cs" />
-    <Compile Include="Db4objects.Drs\Inside\IReplicationProviderInside.cs" />
-    <Compile Include="Db4objects.Drs\Inside\IReplicationReference.cs" />
-    <Compile Include="Db4objects.Drs\Inside\ISimpleObjectContainer.cs" />
-    <Compile Include="Db4objects.Drs\Inside\ITestableReplicationProvider.cs" />
-    <Compile Include="Db4objects.Drs\Inside\ITestableReplicationProviderInside.cs" />
-    <Compile Include="Db4objects.Drs\Inside\InstanceReplicationPreparer.cs" />
-    <Compile Include="Db4objects.Drs\Inside\MapHandler.cs" />
-    <Compile Include="Db4objects.Drs\Inside\ObjectStateImpl.cs" />
-    <Compile Include="Db4objects.Drs\Inside\ReplicationEventImpl.cs" />
-    <Compile Include="Db4objects.Drs\Inside\ReplicationReferenceImpl.cs" />
-    <Compile Include="Db4objects.Drs\Inside\ReplicationReflector.cs" />
-    <Compile Include="Db4objects.Drs\Inside\Traversal\FieldIterators.cs" />
-    <Compile Include="Db4objects.Drs\Inside\Traversal\GenericTraverser.cs" />
-    <Compile Include="Db4objects.Drs\Inside\Traversal\ICollectionFlattener.cs" />
-    <Compile Include="Db4objects.Drs\Inside\Traversal\ICollectionHandler.cs" />
-    <Compile Include="Db4objects.Drs\Inside\Traversal\ITraverser.cs" />
-    <Compile Include="Db4objects.Drs\Inside\Traversal\IVisitor.cs" />
-    <Compile Include="Db4objects.Drs\Replication.cs" />
-    <Compile Include="Db4objects.Drs\ReplicationConflictException.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="native\Db4objects.Drs\Foundation\ObjectSetAbstractFacade.cs" />
-    <Compile Include="native\Db4objects.Drs\Foundation\ObjectSetCollection4Facade.cs" />
-    <Compile Include="native\Db4objects.Drs\Inside\ReplicationPlatform.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup><Compile Include="Db4objects.Drs\Db4o\ClientServerReplicationProvider.cs"/><Compile Include="Db4objects.Drs\Db4o\Db4oProviderFactory.cs"/><Compile Include="Db4objects.Drs\Db4o\Db4oReplicationProviderSignature.cs"/><Compile Include="Db4objects.Drs\Db4o\Db4oReplicationReferenceImpl.cs"/><Compile Include="Db4objects.Drs\Db4o\Db4oSignatureMap.cs"/><Compile Include="Db4objects.Drs\Db4o\FileReplicationProvider.cs"/><Compile Include="Db4objects.Drs\Db4o\IDb4oReplicationProvider.cs"/><Compile Include="Db4objects.Drs\IObjectState.cs"/><Compile Include="Db4objects.Drs\IReplicationEvent.cs"/><Compile Include="Db4objects.Drs\IReplicationEventListener.cs"/><Compile Include="Db4objects.Drs\IReplicationProvider.cs"/><Compile Include="Db4objects.Drs\IReplicationSession.cs"/><Compile Include="Db4objects.Drs\Inside\CollectionHandlerImpl.cs"/><Compile Include="Db4objects.Drs\Inside\DefaultReplicationEventListener.cs"/><Compile Include="Db4objects.Drs\Inside\GenericReplicationSession.cs"/><Compile Include="Db4objects.Drs\Inside\ICollectionHandler.cs"/><Compile Include="Db4objects.Drs\Inside\ICollectionSource.cs"/><Compile Include="Db4objects.Drs\Inside\ICounterpartFinder.cs"/><Compile Include="Db4objects.Drs\Inside\IReadonlyReplicationProviderSignature.cs"/><Compile Include="Db4objects.Drs\Inside\IReplicationProviderInside.cs"/><Compile Include="Db4objects.Drs\Inside\IReplicationReference.cs"/><Compile Include="Db4objects.Drs\Inside\ISimpleObjectContainer.cs"/><Compile Include="Db4objects.Drs\Inside\ITestableReplicationProvider.cs"/><Compile Include="Db4objects.Drs\Inside\ITestableReplicationProviderInside.cs"/><Compile Include="Db4objects.Drs\Inside\InstanceReplicationPreparer.cs"/><Compile Include="Db4objects.Drs\Inside\MapHandler.cs"/><Compile Include="Db4objects.Drs\Inside\ObjectStateImpl.cs"/><Compile Include="Db4objects.Drs\Inside\ReplicationEventImpl.cs"/><Compile Include="Db4objects.Drs\Inside\ReplicationReferenceImpl.cs"/><Compile Include="Db4objects.Drs\Inside\ReplicationReflector.cs"/><Compile Include="Db4objects.Drs\Inside\Traversal\FieldIterators.cs"/><Compile Include="Db4objects.Drs\Inside\Traversal\GenericTraverser.cs"/><Compile Include="Db4objects.Drs\Inside\Traversal\ICollectionFlattener.cs"/><Compile Include="Db4objects.Drs\Inside\Traversal\ICollectionTraverser.cs"/><Compile Include="Db4objects.Drs\Inside\Traversal\ITraverser.cs"/><Compile Include="Db4objects.Drs\Inside\Traversal\IVisitor.cs"/><Compile Include="Db4objects.Drs\Replication.cs"/><Compile Include="Db4objects.Drs\ReplicationConflictException.cs"/><Compile Include="Properties\AssemblyInfo.cs"/><Compile Include="native\Db4objects.Drs\Foundation\ObjectSetAbstractFacade.cs"/><Compile Include="native\Db4objects.Drs\Foundation\ObjectSetCollection4Facade.cs"/><Compile Include="native\Db4objects.Drs\Inside\ReplicationPlatform.cs"/></ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets"/>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

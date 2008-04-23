@@ -75,13 +75,7 @@ namespace Db4objects.Drs.Tests
 				}
 				AssertSameClassIfDb4o(h1.list, replica.list);
 				Assert.AreEqual(h1.list.Count, replica.list.Count);
-				Iterator4Assert.AreEqual(Adapt(h1.list.GetEnumerator()), Adapt(replica.list.GetEnumerator
-					()));
-			}
-
-			private IEnumerator Adapt(IEnumerator iterator)
-			{
-				return ReplicationTestPlatform.Adapt(iterator);
+				CollectionAssert.AreEqual(h1.list, replica.list);
 			}
 
 			private CollectionHolder Subject()
