@@ -33,6 +33,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 				case ExpressionType.Multiply:
 				case ExpressionType.MultiplyChecked:
 				case ExpressionType.Divide:
+				case ExpressionType.Power:
 				case ExpressionType.Modulo:
 				case ExpressionType.And:
 				case ExpressionType.AndAlso:
