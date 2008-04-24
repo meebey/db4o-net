@@ -4,7 +4,26 @@
 	{
 		public static void AreEqual<T>(T[] expected, T[] actual)
 		{
-			Iterator4Assert.AreEqual(expected.GetEnumerator(), actual.GetEnumerator());
+			AreEqualImpl(expected, actual);
+		}
+
+		static void AreEqualImpl<T>(T[] expected, T[] actual)
+		{
+			if (expected == actual)
+			{
+				return;
+			}
+			if (expected == null || actual == null)
+			{
+				Assert.AreSame(expected, actual);
+				return;
+			}
+			Assert.AreEqual(expected.Length, actual.Length);
+			Assert.AreSame(expected.GetType(), actual.GetType());
+			for (int i = 0; i < expected.Length; i++)
+			{
+				Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
+			}
 		}
 	}
 }
