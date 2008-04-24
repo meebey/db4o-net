@@ -35,5 +35,10 @@ namespace Db4objects.Db4o.Internal
 	    {
 	        return TypeReference.FromType(type).GetUnversionedName();
 	    }
+
+	    public static bool IsNamedClass(Type type)
+	    {
+	        return true;
+	    }
 	}
 }
