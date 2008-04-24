@@ -22,8 +22,13 @@ namespace Db4oUnit
 			}
 			if (actual.MoveNext())
 			{
-				Assert.Fail("Unexpected element: " + actual.Current);
+				Unexpected(actual.Current);
 			}
+		}
+
+		private static void Unexpected(object element)
+		{
+			Assert.Fail("Unexpected element: " + element);
 		}
 
 		public static void AssertNext(object expected, IEnumerator iterator)
@@ -35,6 +40,26 @@ namespace Db4oUnit
 		public static void AreEqual(object[] expected, IEnumerator iterator)
 		{
 			AreEqual(new ArrayIterator4(expected), iterator);
+		}
+
+		public static void SameContent(object[] expected, IEnumerator actual)
+		{
+			SameContent(new ArrayIterator4(expected), actual);
+		}
+
+		public static void SameContent(IEnumerator expected, IEnumerator actual)
+		{
+			Collection4 allExpected = new Collection4(expected);
+			while (actual.MoveNext())
+			{
+				object current = actual.Current;
+				object removed = allExpected.Remove(current);
+				if (null == removed)
+				{
+					Unexpected(current);
+				}
+			}
+			Assert.IsTrue(allExpected.IsEmpty(), allExpected.ToString());
 		}
 	}
 }

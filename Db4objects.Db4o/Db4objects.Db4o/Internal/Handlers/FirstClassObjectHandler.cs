@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (updateFieldFound.value)
 			{
 				context.Seek(savedOffset);
-				command = new _TraverseFieldCommand_76(context);
+				command = new _TraverseFieldCommand_68(context);
 				TraverseFields(context, command);
 			}
 		}
@@ -85,19 +85,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 					field.Set(context.PersistentObject(), null);
 					return;
 				}
-				bool ok = false;
-				try
-				{
-					field.Instantiate(context);
-					ok = true;
-				}
-				finally
-				{
-					if (!ok)
-					{
-						this.Cancel();
-					}
-				}
+				field.Instantiate(context);
 			}
 
 			private readonly BooleanByRef updateFieldFound;
@@ -105,9 +93,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			private readonly UnmarshallingContext context;
 		}
 
-		private sealed class _TraverseFieldCommand_76 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_68 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_76(UnmarshallingContext context)
+			public _TraverseFieldCommand_68(UnmarshallingContext context)
 			{
 				this.context = context;
 			}
@@ -146,14 +134,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual void Marshall(object obj, MarshallingContext context)
 		{
 			Transaction trans = context.Transaction();
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_116
+			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_108
 				(context, trans, obj);
 			TraverseFields(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_116 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_108 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_116(MarshallingContext context, Transaction trans, object
+			public _TraverseFieldCommand_108(MarshallingContext context, Transaction trans, object
 				 obj)
 			{
 				this.context = context;
@@ -203,7 +191,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			if (source == null)
 			{
-				return new _IPreparedComparison_145();
+				return new _IPreparedComparison_137();
 			}
 			int id = 0;
 			IReflectClass claxx = null;
@@ -228,9 +216,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return new ClassMetadata.PreparedComparisonImpl(id, claxx);
 		}
 
-		private sealed class _IPreparedComparison_145 : IPreparedComparison
+		private sealed class _IPreparedComparison_137 : IPreparedComparison
 		{
-			public _IPreparedComparison_145()
+			public _IPreparedComparison_137()
 			{
 			}
 

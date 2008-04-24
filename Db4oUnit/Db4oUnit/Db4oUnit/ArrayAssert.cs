@@ -4,7 +4,7 @@ using Db4oUnit;
 
 namespace Db4oUnit
 {
-	public class ArrayAssert
+	public partial class ArrayAssert
 	{
 		public static void Contains(long[] array, long expected)
 		{
@@ -40,20 +40,7 @@ namespace Db4oUnit
 
 		public static void AreEqual(object[] expected, object[] actual)
 		{
-			if (expected == actual)
-			{
-				return;
-			}
-			if (expected == null || actual == null)
-			{
-				Assert.AreSame(expected, actual);
-			}
-			Assert.AreEqual(expected.Length, actual.Length);
-			Assert.AreSame(expected.GetType(), actual.GetType());
-			for (int i = 0; i < expected.Length; i++)
-			{
-				Assert.AreEqual(expected[i], actual[i], IndexMessage(i));
-			}
+			AreEqualImpl(expected, actual);
 		}
 
 		public static void AreEqual(int[][] expected, int[][] actual)

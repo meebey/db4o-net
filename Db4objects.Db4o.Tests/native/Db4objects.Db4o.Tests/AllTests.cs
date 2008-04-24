@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests
 		}
 		
 		protected override Type[] TestCases()
-		{	
+		{
 //			return new Type[] { typeof(CLI2.Collections.GenericListTypeHandlerTestCase) };
 			//return new Type[] { typeof(Compact.UnoptimizedLinqTestCase), };
 			return new Type[]

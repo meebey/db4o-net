@@ -14,7 +14,6 @@ namespace Db4objects.Drs.Tests
 	{
 		protected sealed override Type[] TestCases()
 		{
-			//		if (true) return new Class[] { CustomArrayListTestCase.class };
 			return Concat(Shared(), SpecificTestCases());
 		}
 

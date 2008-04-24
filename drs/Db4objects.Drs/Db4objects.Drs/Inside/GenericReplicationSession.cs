@@ -223,12 +223,12 @@ namespace Db4objects.Drs.Inside
 			{
 				return;
 			}
-			sourceProvider.VisitCachedReferences(new _IVisitor4_203(this, sourceProvider));
+			sourceProvider.VisitCachedReferences(new _IVisitor4_202(this, sourceProvider));
 		}
 
-		private sealed class _IVisitor4_203 : IVisitor4
+		private sealed class _IVisitor4_202 : IVisitor4
 		{
-			public _IVisitor4_203(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_202(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 sourceProvider)
 			{
 				this._enclosing = _enclosing;
@@ -318,12 +318,12 @@ namespace Db4objects.Drs.Inside
 			 sourceProvider)
 		{
 			return _collectionHandler.CloneWithCounterparts(sourceProvider, original, claxx, 
-				new _ICounterpartFinder_252(this, sourceProvider));
+				new _ICounterpartFinder_251(this, sourceProvider));
 		}
 
-		private sealed class _ICounterpartFinder_252 : ICounterpartFinder
+		private sealed class _ICounterpartFinder_251 : ICounterpartFinder
 		{
-			public _ICounterpartFinder_252(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _ICounterpartFinder_251(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 sourceProvider)
 			{
 				this._enclosing = _enclosing;
@@ -355,14 +355,26 @@ namespace Db4objects.Drs.Inside
 				{
 					continue;
 				}
-				IReplicationReference replicationReference = sourceProvider.ProduceReference(@object
-					, null, null);
-				if (replicationReference == null)
+				if (IsSecondClass(@object))
 				{
-					throw new Exception(sourceProvider + " cannot find ref for " + @object);
+					objects[i] = @object;
 				}
-				objects[i] = replicationReference.Counterpart();
+				else
+				{
+					IReplicationReference replicationReference = sourceProvider.ProduceReference(@object
+						, null, null);
+					if (replicationReference == null)
+					{
+						throw new Exception(sourceProvider + " cannot find ref for " + @object);
+					}
+					objects[i] = replicationReference.Counterpart();
+				}
 			}
+		}
+
+		private bool IsSecondClass(object @object)
+		{
+			return _reflector.ForObject(@object).IsSecondClass();
 		}
 
 		private void ResetProcessedUuids()
@@ -390,13 +402,13 @@ namespace Db4objects.Drs.Inside
 			{
 				return;
 			}
-			destination.VisitCachedReferences(new _IVisitor4_294(this, destination));
-			source.VisitCachedReferences(new _IVisitor4_300(this, destination));
+			destination.VisitCachedReferences(new _IVisitor4_303(this, destination));
+			source.VisitCachedReferences(new _IVisitor4_309(this, destination));
 		}
 
-		private sealed class _IVisitor4_294 : IVisitor4
+		private sealed class _IVisitor4_303 : IVisitor4
 		{
-			public _IVisitor4_294(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_303(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;
@@ -413,9 +425,9 @@ namespace Db4objects.Drs.Inside
 			private readonly IReplicationProviderInside destination;
 		}
 
-		private sealed class _IVisitor4_300 : IVisitor4
+		private sealed class _IVisitor4_309 : IVisitor4
 		{
-			public _IVisitor4_300(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_309(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;

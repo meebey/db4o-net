@@ -11,10 +11,7 @@ namespace Db4objects.Drs.Tests
 	{
 		public static int Main(string[] args)
 		{
-			if (true)
-			{
-				return new Db4oTests().RunDb4oDb4o();
-			}
+			//		if (true) return new Db4oTests().runDb4oDb4o();
 			int failureCount = new Db4oTests().Rundb4oCS();
 			//new Db4oTests().runCSdb4o();
 			failureCount = failureCount + new Db4oTests().RunCSCS();
@@ -50,8 +47,8 @@ namespace Db4objects.Drs.Tests
 		protected override Type[] SpecificTestCases()
 		{
 			return Concat(PlatformSpecificTestCases(), new Type[] { typeof(ArrayTestSuite), typeof(
-				CustomArrayListTestCase), typeof(StructTestCase), typeof(DeepListGraphTestCase) }
-				);
+				CustomArrayListTestCase), typeof(DateReplicationTestCase), typeof(StructTestCase
+				), typeof(DeepListGraphTestCase), typeof(UntypedFieldTestCase) });
 		}
 	}
 }
