@@ -611,7 +611,7 @@ namespace Db4objects.Db4o.Internal
             return GetNetType(claxx);
         }
 
-		internal static NetTypeHandler[] Types(IReflector reflector)
+		public static NetTypeHandler[] Types(IReflector reflector)
         {
 			return new NetTypeHandler[]
 				{
