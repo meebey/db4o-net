@@ -43,42 +43,6 @@ namespace Db4oUnit
 			AreEqualImpl(expected, actual);
 		}
 
-		public static void AreEqual(int[][] expected, int[][] actual)
-		{
-			if (expected == actual)
-			{
-				return;
-			}
-			if (expected == null || actual == null)
-			{
-				Assert.AreSame(expected, actual);
-			}
-			Assert.AreEqual(expected.Length, actual.Length);
-			Assert.AreSame(expected.GetType(), actual.GetType());
-			for (int i = 0; i < expected.Length; i++)
-			{
-				AreEqual(expected[i], actual[i]);
-			}
-		}
-
-		public static void AreEqual(object[][] expected, object[][] actual)
-		{
-			if (expected == actual)
-			{
-				return;
-			}
-			if (expected == null || actual == null)
-			{
-				Assert.AreSame(expected, actual);
-			}
-			Assert.AreEqual(expected.Length, actual.Length);
-			Assert.AreSame(expected.GetType(), actual.GetType());
-			for (int i = 0; i < expected.Length; i++)
-			{
-				AreEqual(expected[i], actual[i]);
-			}
-		}
-
 		private static string IndexMessage(int i)
 		{
 			return "expected[" + i + "]";

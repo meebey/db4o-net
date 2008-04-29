@@ -219,7 +219,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return claxx;
 			}
-			if (!clazz.IsArray)
+			if (!clazz.IsArray && ReflectPlatform.IsNamedClass(clazz))
 			{
 				claxx = ForName(ReflectPlatform.FullyQualifiedName(clazz));
 				if (claxx != null)

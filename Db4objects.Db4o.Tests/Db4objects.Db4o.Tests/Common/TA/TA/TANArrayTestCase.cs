@@ -42,10 +42,10 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 		protected override void AssertItemValue(object obj)
 		{
 			TANArrayItem item = (TANArrayItem)obj;
-			ArrayAssert.AreEqual(Ints1, item.Value());
-			ArrayAssert.AreEqual(Ints2, (int[][])item.Object());
-			ArrayAssert.AreEqual(List1, item.Lists());
-			ArrayAssert.AreEqual(List2, (LinkedList[][])item.ListsObject());
+			JaggedArrayAssert.AreEqual(Ints1, item.Value());
+			JaggedArrayAssert.AreEqual(Ints2, (int[][])item.Object());
+			JaggedArrayAssert.AreEqual(List1, item.Lists());
+			JaggedArrayAssert.AreEqual(List2, (LinkedList[][])item.ListsObject());
 		}
 
 		/// <exception cref="Exception"></exception>

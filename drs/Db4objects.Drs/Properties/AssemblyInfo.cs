@@ -23,7 +23,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("dRS")]
-[assembly: AssemblyDescription("Db4objects.Drs 7.3.40.10684 (.NET)")]
+[assembly: AssemblyDescription("Db4objects.Drs 7.3.41.10696 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("7.3.40.10684")]
+[assembly: AssemblyVersion("7.3.41.10696")]

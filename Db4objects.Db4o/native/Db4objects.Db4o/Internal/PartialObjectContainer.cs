@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.Internal
 	using Db4objects.Db4o.Internal.Query.Processor;
 	using Db4objects.Db4o.Ext;
 
-	public partial class PartialObjectContainer 
+	public partial class PartialObjectContainer : System.IDisposable
 	{
 		void System.IDisposable.Dispose()
 		{
