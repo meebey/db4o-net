@@ -244,9 +244,14 @@ namespace Db4oUnit.Extensions
 				() : new GlobalConfigurationSource());
 		}
 
-		protected virtual ObjectContainerBase Stream()
+		protected virtual IInternalObjectContainer Stream()
 		{
-			return ((IInternalObjectContainer)Db()).Container();
+			return (IInternalObjectContainer)Db();
+		}
+
+		protected virtual ObjectContainerBase Container()
+		{
+			return Stream().Container();
 		}
 
 		public virtual LocalObjectContainer FileSession()
@@ -273,7 +278,7 @@ namespace Db4oUnit.Extensions
 
 		protected virtual IQuery NewQuery(Transaction transaction)
 		{
-			return Stream().Query(transaction);
+			return Container().Query(transaction);
 		}
 
 		protected virtual IQuery NewQuery()
@@ -311,7 +316,7 @@ namespace Db4oUnit.Extensions
 
 		protected virtual Transaction NewTransaction()
 		{
-			return Stream().NewUserTransaction();
+			return Container().NewUserTransaction();
 		}
 
 		public virtual object RetrieveOnlyInstance(Type clazz)
@@ -366,12 +371,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_298(oc));
+			Foreach(clazz, new _IVisitor4_302(oc));
 		}
 
-		private sealed class _IVisitor4_298 : IVisitor4
+		private sealed class _IVisitor4_302 : IVisitor4
 		{
-			public _IVisitor4_298(IExtObjectContainer oc)
+			public _IVisitor4_302(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

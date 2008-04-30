@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
