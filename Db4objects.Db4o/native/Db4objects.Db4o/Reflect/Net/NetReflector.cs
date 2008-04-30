@@ -10,6 +10,8 @@ namespace Db4objects.Db4o.Reflect.Net
 		protected Db4objects.Db4o.Reflect.IReflector _parent;
 
 		private Db4objects.Db4o.Reflect.IReflectArray _array;
+		
+		private Db4objects.Db4o.Reflect.IReflectorConfiguration _config;
 	    
 		public virtual Db4objects.Db4o.Reflect.IReflectArray Array()
 		{
@@ -41,7 +43,7 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		protected virtual Db4objects.Db4o.Reflect.IReflectClass CreateClass(Type type)
 		{
-			return new Db4objects.Db4o.Reflect.Net.NetClass(_parent, type);
+			return new Db4objects.Db4o.Reflect.Net.NetClass(_parent, type, _config);
 		}
 
 		private static Type GetUnderlyingType(Type type)
@@ -141,6 +143,11 @@ namespace Db4objects.Db4o.Reflect.Net
 		public virtual void SetParent(IReflector reflector)
 		{
 			_parent = reflector;
+		}
+
+        public virtual void Configuration(Db4objects.Db4o.Reflect.IReflectorConfiguration config)
+		{
+			_config = config;
 		}
 	}
 }

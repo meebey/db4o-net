@@ -21,10 +21,13 @@ namespace Db4objects.Db4o.Reflect.Net
 	    
 	    private Db4objects.Db4o.Reflect.IReflectField[] _fields;
 
-	    public NetClass(Db4objects.Db4o.Reflect.IReflector reflector, System.Type clazz)
+		private Db4objects.Db4o.Reflect.IReflectorConfiguration _config;
+
+	    public NetClass(Db4objects.Db4o.Reflect.IReflector reflector, System.Type clazz, Db4objects.Db4o.Reflect.IReflectorConfiguration config)
 		{
 			_reflector = reflector;
 			_type = clazz;
+			_config = config;
 		}
 
 		public virtual Db4objects.Db4o.Reflect.IReflectClass GetComponentType()
