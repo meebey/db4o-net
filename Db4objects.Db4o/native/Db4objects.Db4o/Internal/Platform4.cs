@@ -678,6 +678,38 @@ namespace Db4objects.Db4o.Internal
             // do nothing
         }
 
+        public static object NullValue(Type type) 
+        {
+            if(_nullValues == null) 
+            { 
+                InitNullValues();
+			}
+			
+			return _nullValues.Get(type);                
+		}
+		
+        private static void InitNullValues()
+        {
+    	    _nullValues = new Hashtable4();
+            _nullValues.Put(typeof(int), (int)0);
+            _nullValues.Put(typeof(uint), (uint)0);
+            _nullValues.Put(typeof(byte), (byte)0);
+    	    _nullValues.Put(typeof(short), (short)0);
+    	    _nullValues.Put(typeof(float), (float)0);
+    	    _nullValues.Put(typeof(double), (double)0);
+            _nullValues.Put(typeof(ulong), (ulong)0);
+            _nullValues.Put(typeof(long), (long)0);
+    	    _nullValues.Put(typeof(bool), false);
+            _nullValues.Put(typeof(char), (char)0);
+            _nullValues.Put(typeof(sbyte), (sbyte)0);
+            _nullValues.Put(typeof(decimal), (decimal)0);
+            _nullValues.Put(typeof(ushort), (ushort)0);
+            _nullValues.Put(typeof(DateTime), DateTime.MinValue);
+        	
+        }
+
+        private static Hashtable4 _nullValues;
+		
         public static Type NullableTypeFor(Type primitiveType) 
         {
             if(_primitive2Wrapper == null)
@@ -688,7 +720,8 @@ namespace Db4objects.Db4o.Internal
             return wrapperClazz;
         }
     
-        private static void InitPrimitive2Wrapper(){
+        private static void InitPrimitive2Wrapper()
+        {
     	    _primitive2Wrapper = new Hashtable4();
             _primitive2Wrapper.Put(typeof(int), typeof(int?));
             _primitive2Wrapper.Put(typeof(uint), typeof(uint?));
@@ -702,9 +735,6 @@ namespace Db4objects.Db4o.Internal
             _primitive2Wrapper.Put(typeof(char), typeof(char?));
             _primitive2Wrapper.Put(typeof(sbyte), typeof(sbyte?));
             _primitive2Wrapper.Put(typeof(decimal), typeof(decimal?));
-            _primitive2Wrapper.Put(typeof(sbyte), typeof(sbyte?));
-            _primitive2Wrapper.Put(typeof(uint), typeof(uint?));
-            _primitive2Wrapper.Put(typeof(ulong), typeof(ulong?));
             _primitive2Wrapper.Put(typeof(ushort), typeof(ushort?));
             _primitive2Wrapper.Put(typeof(DateTime), typeof(DateTime?));
         	

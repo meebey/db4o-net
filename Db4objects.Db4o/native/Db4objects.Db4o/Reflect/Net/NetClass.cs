@@ -2,6 +2,7 @@
 using System;
 using System.Reflection;
 using Sharpen.Lang;
+using Db4objects.Db4o.Reflect.Platform;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
@@ -10,6 +11,8 @@ namespace Db4objects.Db4o.Reflect.Net
 	public class NetClass : Db4objects.Db4o.Reflect.IReflectClass
 	{
 		protected readonly Db4objects.Db4o.Reflect.IReflector _reflector;
+		
+		protected readonly Db4objects.Db4o.Reflect.Net.NetReflector _netReflector;
 
 		private readonly System.Type _type;
 
@@ -21,13 +24,11 @@ namespace Db4objects.Db4o.Reflect.Net
 	    
 	    private Db4objects.Db4o.Reflect.IReflectField[] _fields;
 
-		private Db4objects.Db4o.Reflect.IReflectorConfiguration _config;
-
-	    public NetClass(Db4objects.Db4o.Reflect.IReflector reflector, System.Type clazz, Db4objects.Db4o.Reflect.IReflectorConfiguration config)
+	    public NetClass(Db4objects.Db4o.Reflect.IReflector reflector, Db4objects.Db4o.Reflect.Net.NetReflector netReflector, System.Type clazz)
 		{
 			_reflector = reflector;
+			_netReflector = netReflector;
 			_type = clazz;
-			_config = config;
 		}
 
 		public virtual Db4objects.Db4o.Reflect.IReflectClass GetComponentType()
@@ -236,5 +237,17 @@ namespace Db4objects.Db4o.Reflect.Net
 			// handled in GenericClass
 			return null;
 		}
+		
+		public virtual object NullValue() 
+		{
+			return _netReflector.NullValue(this);
+		}
+	
+		public virtual bool CreateConstructor(bool skipConstructor) 
+		{
+			return ConstructorSupport.CreateConstructor(this, _netReflector.Configuration(), skipConstructor);
+		}
+		
+		
 	}
 }

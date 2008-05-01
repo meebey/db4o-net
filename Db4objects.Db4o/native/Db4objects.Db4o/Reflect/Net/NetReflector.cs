@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		protected virtual Db4objects.Db4o.Reflect.IReflectClass CreateClass(Type type)
 		{
-			return new Db4objects.Db4o.Reflect.Net.NetClass(_parent, type, _config);
+			return new Db4objects.Db4o.Reflect.Net.NetClass(_parent, this, type);
 		}
 
 		private static Type GetUnderlyingType(Type type)
@@ -149,5 +149,16 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 			_config = config;
 		}
+		
+        public virtual Db4objects.Db4o.Reflect.IReflectorConfiguration Configuration()
+		{
+			return _config;
+		}
+
+		public virtual object NullValue(IReflectClass clazz) 
+		{
+			return Platform4.NullValue(ToNative(clazz));
+		}
+		
 	}
 }
