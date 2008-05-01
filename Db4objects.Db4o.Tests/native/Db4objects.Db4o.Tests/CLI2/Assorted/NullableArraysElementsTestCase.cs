@@ -65,12 +65,15 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			Assert.IsTrue(testSubject._valueType.Value._nullableBool.Value);
 
 			Assert.IsNotNull(testSubject._elements);
-			for(int i=0; i < testSubject._elements.Length; i += 2)
+			if (!NullableArrayHandling.Disabled())
 			{
-				Assert.IsNull(testSubject._elements[i]);
+			    for (int i = 0; i < testSubject._elements.Length; i += 2)
+			    {
+			        Assert.IsNull(testSubject._elements[i]);
+			    }
 			}
 
-			for (int i = 1; i < testSubject._elements.Length; i += 2)
+		    for (int i = 1; i < testSubject._elements.Length; i += 2)
 			{
 				Assert.IsNotNull(testSubject._elements[i]);
 				Assert.AreEqual(i, testSubject._elements[i]);
