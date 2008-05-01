@@ -67,8 +67,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			Assert.IsNotNull(testSubject._elements);
 			for(int i=0; i < testSubject._elements.Length; i += 2)
 			{
-                //FIXME: Uncomment this when we introduce a bitmap to represent null items in arrays
-				//Assert.IsNull(testSubject._elements[i]);
+				Assert.IsNull(testSubject._elements[i]);
 			}
 
 			for (int i = 1; i < testSubject._elements.Length; i += 2)
