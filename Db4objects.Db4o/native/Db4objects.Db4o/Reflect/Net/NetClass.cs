@@ -36,10 +36,10 @@ namespace Db4objects.Db4o.Reflect.Net
 			return _reflector.ForClass(_type.GetElementType());
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectConstructor[] GetDeclaredConstructors()
+		private IReflectConstructor[] GetDeclaredConstructors()
 		{
 			System.Reflection.ConstructorInfo[] constructors = _type.GetConstructors();
-			Db4objects.Db4o.Reflect.IReflectConstructor[] reflectors = new Db4objects.Db4o.Reflect.IReflectConstructor
+			IReflectConstructor[] reflectors = new IReflectConstructor
 				[constructors.Length];
 			for (int i = 0; i < constructors.Length; i++)
 			{
@@ -247,7 +247,7 @@ namespace Db4objects.Db4o.Reflect.Net
 	
 		public virtual void CreateConstructor(bool skipConstructor) 
 		{
-			ReflectConstructorSpec constructor = ConstructorSupport.CreateConstructor(this, _netReflector.Configuration(), skipConstructor);
+			ReflectConstructorSpec constructor = ConstructorSupport.CreateConstructor(this, _netReflector.Configuration(), GetDeclaredConstructors(), skipConstructor);
 			if(constructor != null)
 			{
 				UseConstructor(constructor);

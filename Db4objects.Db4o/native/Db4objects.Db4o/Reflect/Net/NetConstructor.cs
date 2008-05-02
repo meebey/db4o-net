@@ -3,7 +3,7 @@ namespace Db4objects.Db4o.Reflect.Net
 {
 
 	/// <remarks>Reflection implementation for Constructor to map to .NET reflection.</remarks>
-	public class NetConstructor : Db4objects.Db4o.Reflect.IReflectConstructor
+	public class NetConstructor : Db4objects.Db4o.Reflect.Core.IReflectConstructor
 	{
 		private readonly Db4objects.Db4o.Reflect.IReflector reflector;
 
@@ -14,16 +14,12 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 			this.reflector = reflector;
 			this.constructor = constructor;
+			Db4objects.Db4o.Internal.Platform4.SetAccessible(constructor);
 		}
 
 		public virtual Db4objects.Db4o.Reflect.IReflectClass[] GetParameterTypes()
 		{
 			return Db4objects.Db4o.Reflect.Net.NetReflector.ToMeta(reflector, Sharpen.Runtime.GetParameterTypes(constructor));
-		}
-
-		public virtual void SetAccessible()
-		{
-			Db4objects.Db4o.Internal.Platform4.SetAccessible(constructor);
 		}
 
 		public virtual object NewInstance(object[] parameters)

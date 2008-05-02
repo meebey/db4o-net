@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Reflect.Net
 	/// <summary>Constructs objects by using System.Runtime.Serialization.FormatterServices.GetUninitializedObject
 	/// and bypasses calls to user contructors this way. Not available on CompactFramework
 	/// </summary>
-	public class SerializationConstructor : Db4objects.Db4o.Reflect.IReflectConstructor
+	public class SerializationConstructor : Db4objects.Db4o.Reflect.Core.IReflectConstructor
 	{
         private Type _type;
 
@@ -17,10 +17,6 @@ namespace Db4objects.Db4o.Reflect.Net
 
         public virtual Db4objects.Db4o.Reflect.IReflectClass[] GetParameterTypes() {
             return null;
-        }
-
-        public virtual void SetAccessible() {
-            // do nothing
         }
 
         public virtual object NewInstance(object[] parameters) {
