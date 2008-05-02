@@ -207,7 +207,7 @@ namespace Db4objects.Db4o.Reflect.Net
 				IReflectConstructor constructor = new SerializationConstructor(GetNetType());
 				try
 				{
-					UseConstructor(new ReflectConstructorSpec(constructor, null));
+					UseConstructor(constructor, null);
 					return true;
 				}
 				catch
@@ -224,13 +224,14 @@ namespace Db4objects.Db4o.Reflect.Net
 			return "NetClass(" + _type + ")";
 		}
 
-		private void UseConstructor(
-			ReflectConstructorSpec constructor)
+		private void UseConstructor(IReflectConstructor constructor, object[] args)
 		{
-			if(_constructor == null)
-			{
+				UseConstructor(constructor == null ? null : new ReflectConstructorSpec(constructor, args));
+		}
+
+		private void UseConstructor(ReflectConstructorSpec constructor)
+		{
 				_constructor = constructor;
-			}
 		}
 
 		public virtual object[] ToArray(object obj)
@@ -246,7 +247,11 @@ namespace Db4objects.Db4o.Reflect.Net
 	
 		public virtual void CreateConstructor(bool skipConstructor) 
 		{
-			UseConstructor(ConstructorSupport.CreateConstructor(this, _netReflector.Configuration(), skipConstructor));
+			ReflectConstructorSpec constructor = ConstructorSupport.CreateConstructor(this, _netReflector.Configuration(), skipConstructor);
+			if(constructor != null)
+			{
+				UseConstructor(constructor);
+			}
 		}
 		
 		
