@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 using Sharpen.Lang;
-using Db4objects.Db4o.Reflect.Platform;
+using Db4objects.Db4o.Reflect.Core;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		private readonly System.Type _type;
 
-		private Db4objects.Db4o.Reflect.IReflectConstructor _constructor;
+		private ReflectConstructorSpec _constructor;
 
 		private object[] constructorParams;
 		
@@ -176,7 +176,7 @@ namespace Db4objects.Db4o.Reflect.Net
 					if (CanCreate(_type)) return System.Activator.CreateInstance(_type);
 					return null;
 				}
-				return _constructor.NewInstance(constructorParams);
+				return _constructor.NewInstance();
 			}
 			catch
 			{
@@ -207,7 +207,7 @@ namespace Db4objects.Db4o.Reflect.Net
 				IReflectConstructor constructor = new SerializationConstructor(GetNetType());
 				try
 				{
-					UseConstructor(constructor, null);
+					UseConstructor(new ReflectConstructorSpec(constructor, null));
 					return true;
 				}
 				catch
@@ -215,7 +215,7 @@ namespace Db4objects.Db4o.Reflect.Net
 				}
 			}
 #endif
-			UseConstructor(null, null);
+			UseConstructor(null);
 			return false;
 		}
 
@@ -224,12 +224,13 @@ namespace Db4objects.Db4o.Reflect.Net
 			return "NetClass(" + _type + ")";
 		}
 
-		public virtual void UseConstructor(
-			Db4objects.Db4o.Reflect.IReflectConstructor constructor,
-			object[] _params)
+		private void UseConstructor(
+			ReflectConstructorSpec constructor)
 		{
-			_constructor = constructor;
-			constructorParams = _params;
+			if(_constructor == null)
+			{
+				_constructor = constructor;
+			}
 		}
 
 		public virtual object[] ToArray(object obj)
@@ -243,9 +244,9 @@ namespace Db4objects.Db4o.Reflect.Net
 			return _netReflector.NullValue(this);
 		}
 	
-		public virtual bool CreateConstructor(bool skipConstructor) 
+		public virtual void CreateConstructor(bool skipConstructor) 
 		{
-			return ConstructorSupport.CreateConstructor(this, _netReflector.Configuration(), skipConstructor);
+			UseConstructor(ConstructorSupport.CreateConstructor(this, _netReflector.Configuration(), skipConstructor));
 		}
 		
 		

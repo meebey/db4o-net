@@ -22,11 +22,6 @@ namespace Db4objects.Db4o.Reflect.Net
 			return _array;
 		}
 
-		public virtual bool ConstructorCallsSupported()
-		{
-			return true;
-		}
-
 		public virtual object DeepClone(object obj)
 		{
 			return new NetReflector();
