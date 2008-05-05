@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class LongHandler : PrimitiveHandler
 	{
-		private static readonly long i_primitive = System.Convert.ToInt64(0);
+		private static readonly long Defaultvalue = System.Convert.ToInt64(0);
 
 		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
 			)
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object DefaultValue()
 		{
-			return i_primitive;
+			return Defaultvalue;
 		}
 
 		protected override Type PrimitiveJavaClass()
@@ -35,11 +35,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override int LinkLength()
 		{
 			return Const4.LongLength;
-		}
-
-		public override object PrimitiveNull()
-		{
-			return i_primitive;
 		}
 
 		/// <exception cref="CorruptionException"></exception>
@@ -106,12 +101,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			long sourceLong = ((long)source);
-			return new _IPreparedComparison_100(sourceLong);
+			return new _IPreparedComparison_96(sourceLong);
 		}
 
-		private sealed class _IPreparedComparison_100 : IPreparedComparison
+		private sealed class _IPreparedComparison_96 : IPreparedComparison
 		{
-			public _IPreparedComparison_100(long sourceLong)
+			public _IPreparedComparison_96(long sourceLong)
 			{
 				this.sourceLong = sourceLong;
 			}

@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		/// <exception cref="Exception"></exception>
 		public virtual void TestIntKeys()
 		{
-			BTree btree = BTreeAssert.CreateIntKeyBTree(Stream(), 0, BtreeNodeSize);
+			BTree btree = BTreeAssert.CreateIntKeyBTree(Container(), 0, BtreeNodeSize);
 			for (int i = 0; i < 5; i++)
 			{
 				btree = CycleIntKeys(btree);
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			ExpectKeys(btree, _sortedKeys);
 			int id = btree.GetID();
 			Reopen();
-			btree = BTreeAssert.CreateIntKeyBTree(Stream(), id, BtreeNodeSize);
+			btree = BTreeAssert.CreateIntKeyBTree(Container(), id, BtreeNodeSize);
 			ExpectKeys(btree, _sortedKeys);
 			RemoveKeys(btree);
 			ExpectKeys(btree, _keysOnRemoval);

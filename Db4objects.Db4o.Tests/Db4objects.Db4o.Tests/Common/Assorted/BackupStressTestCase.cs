@@ -89,8 +89,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			{
 				Sharpen.Runtime.Out.WriteLine("BackupStressTest is too slow for regression testing on Java JDKs < 1.4"
 					);
+				return;
 			}
-			//            return;
 			BackupStressIteration iteration = new BackupStressIteration();
 			_objectContainer.Store(iteration);
 			_objectContainer.Commit();

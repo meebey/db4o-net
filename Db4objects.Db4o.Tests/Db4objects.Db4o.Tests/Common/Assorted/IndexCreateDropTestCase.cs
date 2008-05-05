@@ -6,7 +6,6 @@ using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Util;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Assorted;
 
@@ -29,24 +28,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				_date = date_;
 			}
 
-			public IndexCreateDropItem(int int_) : this(int_, int_ == 0 ? null : string.Empty
-				 + int_, int_ == 0 ? NullDate() : new DateTime(int_))
+			public IndexCreateDropItem(int int_, DateTime nullDate) : this(int_, int_ == 0 ? 
+				null : string.Empty + int_, int_ == 0 ? nullDate : new DateTime(int_))
 			{
-			}
-
-			/// <summary>
-			/// java.util.Date gets translated to System.DateTime on .net which is
-			/// a value type thus no null.
-			/// </summary>
-			/// <remarks>
-			/// java.util.Date gets translated to System.DateTime on .net which is
-			/// a value type thus no null.
-			/// We ask the DateHandler the proper 'null' representation for the
-			/// current platform.
-			/// </remarks>
-			private static DateTime NullDate()
-			{
-				return (DateTime)new DateHandler().PrimitiveNull();
 			}
 		}
 
@@ -68,7 +52,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			for (int i = 0; i < Values.Length; i++)
 			{
-				Db().Store(new IndexCreateDropTestCase.IndexCreateDropItem(Values[i]));
+				Db().Store(new IndexCreateDropTestCase.IndexCreateDropItem(Values[i], NullDate())
+					);
 			}
 		}
 
@@ -154,6 +139,21 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		private void AssertQuerySize(int size, IQuery q)
 		{
 			Assert.AreEqual(size, q.Execute().Size());
+		}
+
+		/// <summary>
+		/// java.util.Date gets translated to System.DateTime on .net which is
+		/// a value type thus no null.
+		/// </summary>
+		/// <remarks>
+		/// java.util.Date gets translated to System.DateTime on .net which is
+		/// a value type thus no null.
+		/// We ask the DateHandler the proper 'null' representation for the
+		/// current platform.
+		/// </remarks>
+		private DateTime NullDate()
+		{
+			return (DateTime)Db().Reflector().ForClass(typeof(DateTime)).NullValue();
 		}
 	}
 }

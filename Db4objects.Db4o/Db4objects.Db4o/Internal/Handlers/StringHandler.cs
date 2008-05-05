@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
@@ -20,20 +21,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		private IReflectClass _classReflector;
 
-		public virtual IReflectClass ClassReflector(IReflector reflector)
+		public virtual IReflectClass ClassReflector()
 		{
-			if (_classReflector == null)
-			{
-				_classReflector = reflector.ForClass(typeof(string));
-			}
 			return _classReflector;
 		}
 
 		public virtual void Delete(IDeleteContext context)
 		{
-			context.ReadSlot();
 		}
 
+		// do nothing
 		internal virtual byte GetIdentifier()
 		{
 			return Const4.Yapstring;
@@ -257,12 +254,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			ByteArrayBuffer sourceBuffer = Val(obj, context);
-			return new _IPreparedComparison_228(this, context, sourceBuffer);
+			return new _IPreparedComparison_226(this, context, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_228 : IPreparedComparison
+		private sealed class _IPreparedComparison_226 : IPreparedComparison
 		{
-			public _IPreparedComparison_228(StringHandler _enclosing, IContext context, ByteArrayBuffer
+			public _IPreparedComparison_226(StringHandler _enclosing, IContext context, ByteArrayBuffer
 				 sourceBuffer)
 			{
 				this._enclosing = _enclosing;
@@ -288,6 +285,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual int LinkLength()
 		{
 			return Const4.IndirectionLength;
+		}
+
+		public virtual void RegisterReflector(IReflector reflector)
+		{
+			_classReflector = reflector.ForClass(typeof(string));
 		}
 	}
 }

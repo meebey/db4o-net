@@ -46,11 +46,6 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			throw new NotImplementedException();
 		}
 
-		public virtual IReflectConstructor[] GetDeclaredConstructors()
-		{
-			throw new NotImplementedException();
-		}
-
 		public virtual Db4objects.Db4o.Tests.Common.Reflect.Custom.CustomField CustomField
 			(string name)
 		{
@@ -148,30 +143,19 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			throw new NotImplementedException();
 		}
 
-		public virtual bool SkipConstructor(bool flag, bool testConstructor)
-		{
-			return false;
-		}
-
 		public virtual object[] ToArray(object obj)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual void UseConstructor(IReflectConstructor constructor, object[] @params
-			)
 		{
 			throw new NotImplementedException();
 		}
 
 		public virtual IEnumerator CustomFields()
 		{
-			return Iterators.Filter(_fields, new _IPredicate4_129());
+			return Iterators.Filter(_fields, new _IPredicate4_117());
 		}
 
-		private sealed class _IPredicate4_129 : IPredicate4
+		private sealed class _IPredicate4_117 : IPredicate4
 		{
-			public _IPredicate4_129()
+			public _IPredicate4_117()
 			{
 			}
 
@@ -179,6 +163,15 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			{
 				return candidate is Db4objects.Db4o.Tests.Common.Reflect.Custom.CustomField;
 			}
+		}
+
+		public virtual object NullValue()
+		{
+			return null;
+		}
+
+		public virtual void CreateConstructor()
+		{
 		}
 	}
 }

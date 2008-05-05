@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		internal const int Length = Const4.ShortBytes + Const4.AddedLength;
 
-		private static readonly short i_primitive = (short)0;
+		private static readonly short Defaultvalue = (short)0;
 
 		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
 			)
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object DefaultValue()
 		{
-			return i_primitive;
+			return Defaultvalue;
 		}
 
 		public override int LinkLength()
@@ -36,11 +36,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(short);
-		}
-
-		public override object PrimitiveNull()
-		{
-			return i_primitive;
 		}
 
 		/// <exception cref="CorruptionException"></exception>
@@ -85,12 +80,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			short sourceShort = ((short)source);
-			return new _IPreparedComparison_91(sourceShort);
+			return new _IPreparedComparison_87(sourceShort);
 		}
 
-		private sealed class _IPreparedComparison_91 : IPreparedComparison
+		private sealed class _IPreparedComparison_87 : IPreparedComparison
 		{
-			public _IPreparedComparison_91(short sourceShort)
+			public _IPreparedComparison_87(short sourceShort)
 			{
 				this.sourceShort = sourceShort;
 			}

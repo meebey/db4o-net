@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		/// <exception cref="Exception"></exception>
 		private void CycleIntKeys(int[] values)
 		{
-			BTree btree = BTreeAssert.CreateIntKeyBTree(Stream(), 0, BtreeNodeSize);
+			BTree btree = BTreeAssert.CreateIntKeyBTree(Container(), 0, BtreeNodeSize);
 			for (int i = 0; i < 5; i++)
 			{
 				btree = CycleIntKeys(btree, values);
@@ -45,9 +45,9 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			ExpectKeysSearch(Trans(), btree, values);
 			btree.Commit(Trans());
 			int id = btree.GetID();
-			Stream().Commit(Trans());
+			Container().Commit(Trans());
 			Reopen();
-			btree = BTreeAssert.CreateIntKeyBTree(Stream(), id, BtreeNodeSize);
+			btree = BTreeAssert.CreateIntKeyBTree(Container(), id, BtreeNodeSize);
 			ExpectKeysSearch(Trans(), btree, values);
 			for (int i = 0; i < values.Length; i++)
 			{

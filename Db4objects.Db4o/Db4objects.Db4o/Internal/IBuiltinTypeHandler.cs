@@ -8,6 +8,8 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public interface IBuiltinTypeHandler : ITypeHandler4
 	{
-		IReflectClass ClassReflector(IReflector reflector);
+		void RegisterReflector(IReflector reflector);
+
+		IReflectClass ClassReflector();
 	}
 }

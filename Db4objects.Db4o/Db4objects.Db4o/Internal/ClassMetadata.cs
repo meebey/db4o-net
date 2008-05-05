@@ -10,6 +10,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Classindex;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Diagnostic;
 using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers;
@@ -19,6 +20,7 @@ using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Core;
 using Db4objects.Db4o.Reflect.Generic;
 using Sharpen;
 
@@ -582,20 +584,24 @@ namespace Db4objects.Db4o.Internal
 				SetStateDead();
 				return false;
 			}
-			if (container._handlers.CreateConstructor(claxx, !CallConstructor()))
+			try
 			{
+				claxx.CreateConstructor();
 				return true;
 			}
-			SetStateDead();
-			if (errMessages)
+			catch (ObjectNotStorableException exc)
 			{
-				container.LogMsg(7, name);
+				SetStateDead();
+				if (errMessages)
+				{
+					container.LogMsg(7, name);
+				}
+				if (container.ConfigImpl().ExceptionsOnNotStorable())
+				{
+					throw;
+				}
+				return false;
 			}
-			if (container.ConfigImpl().ExceptionsOnNotStorable())
-			{
-				throw new ObjectNotStorableException(claxx);
-			}
-			return false;
 		}
 
 		private void ClassReflector(IReflectClass claxx)
@@ -649,10 +655,10 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal void Delete(StatefulBuffer a_bytes, object a_object)
+		internal void Delete(StatefulBuffer buffer, object obj)
 		{
-			ObjectHeader oh = new ObjectHeader(_container, this, a_bytes);
-			Delete1(oh._marshallerFamily, oh._headerAttributes, a_bytes, a_object);
+			ObjectHeader oh = new ObjectHeader(_container, this, buffer);
+			Delete1(oh._marshallerFamily, oh._headerAttributes, buffer, obj);
 		}
 
 		private void Delete1(MarshallerFamily mf, ObjectHeaderAttributes attributes, StatefulBuffer
@@ -1097,13 +1103,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_909(name, yf));
+			ForEachFieldMetadata(new _IVisitor4_912(name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_909 : IVisitor4
+		private sealed class _IVisitor4_912 : IVisitor4
 		{
-			public _IVisitor4_909(string name, FieldMetadata[] yf)
+			public _IVisitor4_912(string name, FieldMetadata[] yf)
 			{
 				this.name = name;
 				this.yf = yf;
@@ -1614,14 +1620,14 @@ namespace Db4objects.Db4o.Internal
 					// FIXME: [TA] review activation depth 
 					candidates.i_trans.Container().Activate(trans, obj, ActivationDepthProvider().ActivationDepth
 						(2, ActivationMode.Activate));
-					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1331(candidates, trans));
+					Platform4.ForEachCollectionElement(obj, new _IVisitor4_1334(candidates, trans));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_1331 : IVisitor4
+		private sealed class _IVisitor4_1334 : IVisitor4
 		{
-			public _IVisitor4_1331(QCandidates candidates, Transaction trans)
+			public _IVisitor4_1334(QCandidates candidates, Transaction trans)
 			{
 				this.candidates = candidates;
 				this.trans = trans;
@@ -2028,7 +2034,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1680
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1683
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2037,9 +2043,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1680 : IFunction4
+		private sealed class _IFunction4_1683 : IFunction4
 		{
-			public _IFunction4_1680(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1683(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2080,12 +2086,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1708(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1711(this));
 		}
 
-		private sealed class _IFunction4_1708 : IFunction4
+		private sealed class _IFunction4_1711 : IFunction4
 		{
-			public _IFunction4_1708(ClassMetadata _enclosing)
+			public _IFunction4_1711(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2128,12 +2134,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1738());
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1741());
 		}
 
-		private sealed class _IPredicate4_1738 : IPredicate4
+		private sealed class _IPredicate4_1741 : IPredicate4
 		{
-			public _IPredicate4_1738()
+			public _IPredicate4_1741()
 			{
 			}
 

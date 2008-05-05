@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	public class FloatHandler : IntHandler
 	{
-		private static readonly float i_primitive = System.Convert.ToSingle(0);
+		private static readonly float Defaultvalue = System.Convert.ToSingle(0);
 
 		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
 			)
@@ -23,17 +23,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object DefaultValue()
 		{
-			return i_primitive;
+			return Defaultvalue;
 		}
 
 		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(float);
-		}
-
-		public override object PrimitiveNull()
-		{
-			return i_primitive;
 		}
 
 		/// <exception cref="CorruptionException"></exception>
@@ -66,12 +61,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			float sourceFloat = ((float)source);
-			return new _IPreparedComparison_58(sourceFloat);
+			return new _IPreparedComparison_54(sourceFloat);
 		}
 
-		private sealed class _IPreparedComparison_58 : IPreparedComparison
+		private sealed class _IPreparedComparison_54 : IPreparedComparison
 		{
-			public _IPreparedComparison_58(float sourceFloat)
+			public _IPreparedComparison_54(float sourceFloat)
 			{
 				this.sourceFloat = sourceFloat;
 			}

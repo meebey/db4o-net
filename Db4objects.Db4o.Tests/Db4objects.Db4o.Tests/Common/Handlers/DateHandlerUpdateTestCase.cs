@@ -2,7 +2,7 @@
 
 using System;
 using Db4oUnit;
-using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Sharpen;
@@ -70,7 +70,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private object EmptyValue()
 		{
-			return new DateHandler().PrimitiveNull();
+			return Platform4.ReflectorForType(typeof(DateTime)).ForClass(typeof(DateTime)).NullValue
+				();
 		}
 
 		private void AssertAreEqual(DateTime expected, DateTime actual)

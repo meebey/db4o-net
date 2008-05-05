@@ -4,6 +4,7 @@ using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -18,6 +19,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 		protected IReflectClass _classReflector;
 
 		private IReflectClass _primitiveClassReflector;
+
+		private object _primitiveNull;
 
 		public virtual object Coerce(IReflector reflector, IReflectClass claxx, object obj
 			)
@@ -48,7 +51,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Platform4.NullableTypeFor(PrimitiveJavaClass());
 		}
 
-		public abstract object PrimitiveNull();
+		protected virtual object PrimitiveNull()
+		{
+			if (_primitiveNull == null)
+			{
+				IReflectClass claxx = (_primitiveClassReflector == null ? _classReflector : _primitiveClassReflector
+					);
+				_primitiveNull = claxx.NullValue();
+			}
+			return _primitiveNull;
+		}
 
 		/// <param name="mf"></param>
 		/// <param name="buffer"></param>
@@ -82,24 +94,18 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Read(mf, a_writer, true);
 		}
 
-		public virtual IReflectClass ClassReflector(IReflector reflector)
+		public virtual IReflectClass ClassReflector()
 		{
-			EnsureClassReflectorLoaded(reflector);
 			return _classReflector;
 		}
 
-		public virtual IReflectClass PrimitiveClassReflector(IReflector reflector)
+		public virtual IReflectClass PrimitiveClassReflector()
 		{
-			EnsureClassReflectorLoaded(reflector);
 			return _primitiveClassReflector;
 		}
 
-		private void EnsureClassReflectorLoaded(IReflector reflector)
+		public virtual void RegisterReflector(IReflector reflector)
 		{
-			if (_classReflector != null)
-			{
-				return;
-			}
 			_classReflector = reflector.ForClass(JavaClass());
 			Type clazz = PrimitiveJavaClass();
 			if (clazz != null)

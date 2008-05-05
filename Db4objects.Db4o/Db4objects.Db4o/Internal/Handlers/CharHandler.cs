@@ -12,11 +12,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		internal const int Length = Const4.CharBytes + Const4.AddedLength;
 
-		private static readonly char i_primitive = (char)0;
+		private static readonly char Defaultvalue = (char)0;
 
 		public override object DefaultValue()
 		{
-			return i_primitive;
+			return Defaultvalue;
 		}
 
 		public override int LinkLength()
@@ -27,11 +27,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(char);
-		}
-
-		public override object PrimitiveNull()
-		{
-			return i_primitive;
 		}
 
 		internal override object Read1(ByteArrayBuffer a_bytes)
@@ -69,12 +64,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			char sourceChar = ((char)source);
-			return new _IPreparedComparison_95(sourceChar);
+			return new _IPreparedComparison_91(sourceChar);
 		}
 
-		private sealed class _IPreparedComparison_95 : IPreparedComparison
+		private sealed class _IPreparedComparison_91 : IPreparedComparison
 		{
-			public _IPreparedComparison_95(char sourceChar)
+			public _IPreparedComparison_91(char sourceChar)
 			{
 				this.sourceChar = sourceChar;
 			}

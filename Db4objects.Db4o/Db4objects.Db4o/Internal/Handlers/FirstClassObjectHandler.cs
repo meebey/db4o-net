@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -53,20 +54,20 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			BooleanByRef updateFieldFound = new BooleanByRef();
 			int savedOffset = context.Offset();
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_52
+			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_53
 				(updateFieldFound, context);
 			TraverseFields(context, command);
 			if (updateFieldFound.value)
 			{
 				context.Seek(savedOffset);
-				command = new _TraverseFieldCommand_68(context);
+				command = new _TraverseFieldCommand_69(context);
 				TraverseFields(context, command);
 			}
 		}
 
-		private sealed class _TraverseFieldCommand_52 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_53 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_52(BooleanByRef updateFieldFound, UnmarshallingContext
+			public _TraverseFieldCommand_53(BooleanByRef updateFieldFound, UnmarshallingContext
 				 context)
 			{
 				this.updateFieldFound = updateFieldFound;
@@ -93,9 +94,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			private readonly UnmarshallingContext context;
 		}
 
-		private sealed class _TraverseFieldCommand_68 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_69 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_68(UnmarshallingContext context)
+			public _TraverseFieldCommand_69(UnmarshallingContext context)
 			{
 				this.context = context;
 			}
@@ -134,14 +135,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual void Marshall(object obj, MarshallingContext context)
 		{
 			Transaction trans = context.Transaction();
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_108
+			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_109
 				(context, trans, obj);
 			TraverseFields(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_108 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_109 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_108(MarshallingContext context, Transaction trans, object
+			public _TraverseFieldCommand_109(MarshallingContext context, Transaction trans, object
 				 obj)
 			{
 				this.context = context;
@@ -191,7 +192,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			if (source == null)
 			{
-				return new _IPreparedComparison_137();
+				return new _IPreparedComparison_138();
 			}
 			int id = 0;
 			IReflectClass claxx = null;
@@ -216,9 +217,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return new ClassMetadata.PreparedComparisonImpl(id, claxx);
 		}
 
-		private sealed class _IPreparedComparison_137 : IPreparedComparison
+		private sealed class _IPreparedComparison_138 : IPreparedComparison
 		{
-			public _IPreparedComparison_137()
+			public _IPreparedComparison_138()
 			{
 			}
 

@@ -16,6 +16,7 @@ using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Messaging;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Core;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Typehandlers;
 
@@ -994,7 +995,7 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsBoolean(SingleThreadedClientKey);
 		}
 
-		internal bool TestConstructors()
+		public bool TestConstructors()
 		{
 			return _config.GetAsBoolean(TestConstructorsKey);
 		}

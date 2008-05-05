@@ -334,7 +334,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		private void Store(Transaction trans, FieldIndexItem item)
 		{
-			Stream().Store(trans, item);
+			Container().Store(trans, item);
 		}
 
 		private void FillTransactionWith(Transaction trans, int bar)
@@ -359,7 +359,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 				FieldIndexItem item = (FieldIndexItem)found.Next();
 				if (item.foo == foo)
 				{
-					Stream().Delete(trans, item);
+					Container().Delete(trans, item);
 				}
 			}
 		}

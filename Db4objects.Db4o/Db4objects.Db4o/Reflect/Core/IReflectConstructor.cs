@@ -2,18 +2,16 @@
 
 using Db4objects.Db4o.Reflect;
 
-namespace Db4objects.Db4o.Reflect
+namespace Db4objects.Db4o.Reflect.Core
 {
-	/// <summary>Reflection Constructor representation.</summary>
+	/// <summary>representation for java.lang.reflect.Constructor.</summary>
 	/// <remarks>
-	/// Reflection Constructor representation
-	/// <br/><br/>See documentation for System.Reflection API.
+	/// representation for java.lang.reflect.Constructor.
+	/// <br /><br />See the respective documentation in the JDK API.
 	/// </remarks>
 	/// <seealso cref="IReflector">IReflector</seealso>
 	public interface IReflectConstructor
 	{
-		void SetAccessible();
-
 		IReflectClass[] GetParameterTypes();
 
 		object NewInstance(object[] parameters);

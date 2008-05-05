@@ -30,11 +30,6 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			return _delegate.Array();
 		}
 
-		public virtual bool ConstructorCallsSupported()
-		{
-			return false;
-		}
-
 		public virtual IReflectClass ForClass(Type clazz)
 		{
 			return _delegate.ForClass(clazz);
@@ -127,6 +122,11 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		public virtual IEnumerator CustomClasses()
 		{
 			return _classRepository.Iterator();
+		}
+
+		public virtual void Configuration(IReflectorConfiguration config)
+		{
+			_delegate.Configuration(config);
 		}
 	}
 }

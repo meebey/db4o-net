@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		public virtual void TestGetAll()
 		{
 			AbstractQueryResult queryResult = NewQueryResult();
-			queryResult.LoadFromClassIndexes(Stream().ClassCollection().Iterator());
+			queryResult.LoadFromClassIndexes(Container().ClassCollection().Iterator());
 			int[] ids = IntArrays4.Concat(itemIds, new int[] { idForGetAll });
 			AssertIDs(queryResult, ids, true);
 		}

@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections;
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -159,15 +158,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 		}
 
 		//TODO: will need knowledge for .NET collections here
-		/// <summary>Defines if constructor calls are supported.</summary>
-		/// <remarks>Defines if constructor calls are supported.</remarks>
-		/// <returns>true if constructor calls are supported.</returns>
-		/// <seealso cref="IConfiguration.Callbacks">IConfiguration.Callbacks</seealso>
-		public virtual bool ConstructorCallsSupported()
-		{
-			return _delegate.ConstructorCallsSupported();
-		}
-
 		internal virtual Db4objects.Db4o.Reflect.Generic.GenericClass EnsureDelegate(IReflectClass
 			 clazz)
 		{
@@ -345,14 +335,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private IReflectClassPredicate ClassPredicate(Type clazz)
 		{
 			IReflectClass collectionClass = ForClass(clazz);
-			IReflectClassPredicate predicate = new _IReflectClassPredicate_315(collectionClass
+			IReflectClassPredicate predicate = new _IReflectClassPredicate_306(collectionClass
 				);
 			return predicate;
 		}
 
-		private sealed class _IReflectClassPredicate_315 : IReflectClassPredicate
+		private sealed class _IReflectClassPredicate_306 : IReflectClassPredicate
 		{
-			public _IReflectClassPredicate_315(IReflectClass collectionClass)
+			public _IReflectClassPredicate_306(IReflectClass collectionClass)
 			{
 				this.collectionClass = collectionClass;
 			}
@@ -465,6 +455,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 		public virtual void SetParent(IReflector reflector)
 		{
 		}
+
 		// do nothing, the generic reflector does not have a parant
+		public virtual void Configuration(IReflectorConfiguration config)
+		{
+			if (_delegate != null)
+			{
+				_delegate.Configuration(config);
+			}
+		}
 	}
 }

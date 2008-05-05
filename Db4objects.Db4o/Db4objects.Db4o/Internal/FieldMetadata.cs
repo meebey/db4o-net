@@ -10,6 +10,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -217,7 +218,7 @@ namespace Db4objects.Db4o.Internal
 				// We are using the old array information read from file to wrap.
 				// If a schema evolution changes an array to a different variable,
 				// we are in trouble here.
-				_handler = WrapHandlerToArrays(Container(), _handler);
+				_handler = WrapHandlerToArrays(_handler);
 				if (_handler == null || _reflectField == null)
 				{
 					_state = FieldMetadataState.Unavailable;
@@ -385,7 +386,8 @@ namespace Db4objects.Db4o.Internal
 						{
 							if (_handler is PrimitiveHandler)
 							{
-								if (obj.Equals(((PrimitiveHandler)_handler).PrimitiveNull()))
+								object nullValue = _reflectField.GetFieldType().NullValue();
+								if (obj.Equals(nullValue))
 								{
 									return;
 								}
@@ -436,7 +438,7 @@ namespace Db4objects.Db4o.Internal
 				IReflectArray reflectArray = Reflector().Array();
 				_isNArray = reflectArray.IsNDimensional(clazz);
 				_isPrimitive = reflectArray.GetComponentType(clazz).IsPrimitive();
-				_handler = WrapHandlerToArrays(Container(), _handler);
+				_handler = WrapHandlerToArrays(_handler);
 			}
 			else
 			{
@@ -444,8 +446,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private ITypeHandler4 WrapHandlerToArrays(ObjectContainerBase container, ITypeHandler4
-			 handler)
+		private ITypeHandler4 WrapHandlerToArrays(ITypeHandler4 handler)
 		{
 			if (handler == null)
 			{
@@ -484,7 +485,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (!isEnumClass)
 				{
-					_reflectField.Set(a_onObject, ((PrimitiveHandler)_handler).PrimitiveNull());
+					object nullValue = _reflectField.GetFieldType().NullValue();
+					_reflectField.Set(a_onObject, nullValue);
 				}
 				return;
 			}
@@ -507,28 +509,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			DeleteContextImpl context = new DeleteContextImpl(buffer, mf.HandlerVersion());
 			try
 			{
 				RemoveIndexEntry(mf, buffer);
-				bool dotnetValueType = false;
-				dotnetValueType = Platform4.IsValueType(GetStoredType());
-				if ((_config != null && _config.CascadeOnDelete().DefiniteYes()) || dotnetValueType
-					)
-				{
-					DeleteWithCascadeDepth(context, 1);
-				}
-				else
-				{
-					if (_config != null && _config.CascadeOnDelete().DefiniteNo())
-					{
-						DeleteWithCascadeDepth(context, 0);
-					}
-					else
-					{
-						context.CorrectHandlerVersion(_handler).Delete(context);
-					}
-				}
+				DeleteContextImpl context = new DeleteContextImpl(GetStoredType(), _handler, mf.HandlerVersion
+					(), _config, buffer);
+				context.Delete();
 			}
 			catch (CorruptionException exc)
 			{
@@ -536,26 +522,18 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private void DeleteWithCascadeDepth(DeleteContextImpl context, int depth)
-		{
-			int preservedCascadeDepth = context.CascadeDeleteDepth();
-			context.CascadeDeleteDepth(depth);
-			context.CorrectHandlerVersion(_handler).Delete(context);
-			context.CascadeDeleteDepth(preservedCascadeDepth);
-		}
-
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="Db4oIOException"></exception>
-		private void RemoveIndexEntry(MarshallerFamily mf, StatefulBuffer a_bytes)
+		private void RemoveIndexEntry(MarshallerFamily mf, StatefulBuffer buffer)
 		{
 			if (!HasIndex())
 			{
 				return;
 			}
-			int offset = a_bytes._offset;
-			object obj = ReadIndexEntry(mf, a_bytes);
-			RemoveIndexEntry(a_bytes.GetTransaction(), a_bytes.GetID(), obj);
-			a_bytes._offset = offset;
+			int offset = buffer._offset;
+			object obj = ReadIndexEntry(mf, buffer);
+			RemoveIndexEntry(buffer.GetTransaction(), buffer.GetID(), obj);
+			buffer._offset = offset;
 		}
 
 		public override bool Equals(object obj)
@@ -1039,7 +1017,7 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 handler = DetectHandlerForField();
 			if (handler != null)
 			{
-				handler = WrapHandlerToArrays(Container(), handler);
+				handler = WrapHandlerToArrays(handler);
 				if (handler.Equals(_handler))
 				{
 					return;
@@ -1115,14 +1093,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_922(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_903(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_922 : IVisitor4
+		private sealed class _IVisitor4_903 : IVisitor4
 		{
-			public _IVisitor4_922(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_903(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;
@@ -1326,12 +1304,12 @@ namespace Db4objects.Db4o.Internal
 			context.HandlerVersion(handlerVersion);
 			ITypeHandler4 typeHandler = context.CorrectHandlerVersion(GetHandler());
 			SlotFormat.ForHandlerVersion(handlerVersion).DoWithSlotIndirection(context, typeHandler
-				, new _IClosure4_1073(typeHandler, context));
+				, new _IClosure4_1054(typeHandler, context));
 		}
 
-		private sealed class _IClosure4_1073 : IClosure4
+		private sealed class _IClosure4_1054 : IClosure4
 		{
-			public _IClosure4_1073(ITypeHandler4 typeHandler, DefragmentContextImpl context)
+			public _IClosure4_1054(ITypeHandler4 typeHandler, DefragmentContextImpl context)
 			{
 				this.typeHandler = typeHandler;
 				this.context = context;

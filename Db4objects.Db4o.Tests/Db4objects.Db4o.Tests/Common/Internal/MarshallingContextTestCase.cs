@@ -110,7 +110,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		private ClassMetadata ClassMetadataForObject(object obj)
 		{
-			return Stream().ProduceClassMetadata(Reflector().ForObject(obj));
+			return Container().ProduceClassMetadata(Reflector().ForObject(obj));
 		}
 	}
 }

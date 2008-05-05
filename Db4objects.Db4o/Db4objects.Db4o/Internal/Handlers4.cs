@@ -41,17 +41,15 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 baseTypeHandler = BaseTypeHandler(handler);
 			if (HandlesSimple(baseTypeHandler))
 			{
-				if (!NullableArrayHandling.Disabled())
+				if (NullableArrayHandling.Enabled())
 				{
 					if (baseTypeHandler is PrimitiveHandler)
 					{
-						return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector(reflector
-							)) || claxx.Equals(((PrimitiveHandler)baseTypeHandler).PrimitiveClassReflector(reflector
-							));
+						return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector()) || claxx
+							.Equals(((PrimitiveHandler)baseTypeHandler).PrimitiveClassReflector());
 					}
 				}
-				return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector(reflector
-					));
+				return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector());
 			}
 			if (baseTypeHandler is UntypedFieldHandler)
 			{
@@ -88,7 +86,7 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 baseTypeHandler = BaseTypeHandler(handler);
 			if (baseTypeHandler is PrimitiveHandler)
 			{
-				return ((PrimitiveHandler)baseTypeHandler).PrimitiveClassReflector(reflector);
+				return ((PrimitiveHandler)baseTypeHandler).PrimitiveClassReflector();
 			}
 			return null;
 		}

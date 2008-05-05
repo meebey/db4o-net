@@ -11,10 +11,11 @@ namespace Db4objects.Drs.Tests
 	{
 		public static int Main(string[] args)
 		{
-			//		if (true) return new Db4oTests().runDb4oDb4o();
-			int failureCount = new Db4oTests().Rundb4oCS();
+			//if (true) return new Db4oTests().runDb4oDb4o();
+			int failureCount = new Db4oTests().RunDb4oDb4o();
+			failureCount += new Db4oTests().Rundb4oCS();
 			//new Db4oTests().runCSdb4o();
-			failureCount = failureCount + new Db4oTests().RunCSCS();
+			failureCount += new Db4oTests().RunCSCS();
 			//new Db4oTests().runDb4oDb4o();
 			return failureCount;
 		}

@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			int[] bytes = new int[] { 0, 8, 64, 72 };
 			for (int i = 0; i < blocks.Length; i++)
 			{
-				Assert.AreEqual(bytes[i], Container().BlocksToBytes(blocks[i]));
+				Assert.AreEqual(bytes[i], LocalContainer().BlocksToBytes(blocks[i]));
 			}
 		}
 
@@ -39,11 +39,11 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			int[] blocks = new int[] { 0, 1, 1, 1, 1, 2, 2, 3, 100, 100, 101 };
 			for (int i = 0; i < blocks.Length; i++)
 			{
-				Assert.AreEqual(blocks[i], Container().BytesToBlocks(bytes[i]));
+				Assert.AreEqual(blocks[i], LocalContainer().BytesToBlocks(bytes[i]));
 			}
 		}
 
-		private ObjectContainerBase Container()
+		private ObjectContainerBase LocalContainer()
 		{
 			return Stream().Container();
 		}

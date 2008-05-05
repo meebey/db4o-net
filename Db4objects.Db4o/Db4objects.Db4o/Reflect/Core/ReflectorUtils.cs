@@ -4,7 +4,7 @@ using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 
-namespace Db4objects.Db4o.Reflect
+namespace Db4objects.Db4o.Reflect.Core
 {
 	/// <exclude></exclude>
 	public class ReflectorUtils

@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		private void DeleteItemAndCommit(Transaction trans, string name)
 		{
-			Stream().Delete(trans, QueryItem(trans, name));
+			Container().Delete(trans, QueryItem(trans, name));
 			trans.Commit();
 		}
 

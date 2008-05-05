@@ -25,8 +25,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract override object DefaultValue();
 
-		public abstract override object PrimitiveNull();
-
 		public abstract override object NullRepresentationInUntypedArrays();
 
 		protected override Type PrimitiveJavaClass()
@@ -82,12 +80,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			long sourceDate = ((DateTime)source).Ticks;
-			return new _IPreparedComparison_70(sourceDate);
+			return new _IPreparedComparison_69(sourceDate);
 		}
 
-		private sealed class _IPreparedComparison_70 : IPreparedComparison
+		private sealed class _IPreparedComparison_69 : IPreparedComparison
 		{
-			public _IPreparedComparison_70(long sourceDate)
+			public _IPreparedComparison_69(long sourceDate)
 			{
 				this.sourceDate = sourceDate;
 			}

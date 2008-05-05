@@ -9,6 +9,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Core;
 
 namespace Db4objects.Db4o.Constraints
 {
@@ -41,12 +42,12 @@ namespace Db4objects.Db4o.Constraints
 		public virtual void Apply(IInternalObjectContainer objectContainer)
 		{
 			EventRegistryFactory.ForObjectContainer(objectContainer).Committing += new Db4objects.Db4o.Events.CommitEventHandler
-				(new _IEventListener4_41(this, objectContainer).OnEvent);
+				(new _IEventListener4_42(this, objectContainer).OnEvent);
 		}
 
-		private sealed class _IEventListener4_41
+		private sealed class _IEventListener4_42
 		{
-			public _IEventListener4_41(UniqueFieldValueConstraint _enclosing, IInternalObjectContainer
+			public _IEventListener4_42(UniqueFieldValueConstraint _enclosing, IInternalObjectContainer
 				 objectContainer)
 			{
 				this._enclosing = _enclosing;

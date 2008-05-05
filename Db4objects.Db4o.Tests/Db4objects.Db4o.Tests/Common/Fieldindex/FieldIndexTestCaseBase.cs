@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		private IQuery CreateQuery(Transaction trans)
 		{
-			return Stream().Query(trans);
+			return Container().Query(trans);
 		}
 	}
 }

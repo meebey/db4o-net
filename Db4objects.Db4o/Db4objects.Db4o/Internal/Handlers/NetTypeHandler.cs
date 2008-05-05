@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
@@ -24,8 +25,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return DefaultValue().GetType().FullName;
 		}
 
-		public virtual void Initialize()
+		public override void RegisterReflector(IReflector reflector)
 		{
+			base.RegisterReflector(reflector);
 			byte[] bytes = new byte[65];
 			for (int i = 0; i < bytes.Length; i++)
 			{
@@ -63,16 +65,23 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		protected override Type PrimitiveJavaClass()
 		{
-			if (!NullableArrayHandling.Disabled())
+			if (NullableArrayHandling.Enabled())
 			{
 				return DefaultValue().GetType();
 			}
 			return null;
 		}
 
-		public override object PrimitiveNull()
+		protected override Type JavaClass()
 		{
-			return DefaultValue();
+			if (NullableArrayHandling.Enabled())
+			{
+				return base.JavaClass();
+			}
+			else
+			{
+				return base.JavaClass();
+			}
 		}
 
 		public abstract object Read(byte[] bytes, int offset);

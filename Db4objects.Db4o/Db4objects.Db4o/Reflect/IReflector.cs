@@ -20,6 +20,8 @@ namespace Db4objects.Db4o.Reflect
 	/// </remarks>
 	public interface IReflector : IDeepClone
 	{
+		void Configuration(IReflectorConfiguration config);
+
 		/// <summary>
 		/// returns an ReflectArray object.
 		/// </summary>
@@ -27,15 +29,6 @@ namespace Db4objects.Db4o.Reflect
 		/// returns an ReflectArray object.
 		/// </remarks>
 		IReflectArray Array();
-
-		/// <summary>specifiy whether parameterized Constructors are supported.</summary>
-		/// <remarks>
-		/// specifiy whether parameterized Constructors are supported.
-		/// <br /><br />The support of Constructors is optional. If Constructors
-		/// are not supported, every persistent class needs a public default
-		/// constructor with zero parameters.
-		/// </remarks>
-		bool ConstructorCallsSupported();
 
 		/// <summary>returns an ReflectClass for a Class</summary>
 		IReflectClass ForClass(Type clazz);

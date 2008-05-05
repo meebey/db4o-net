@@ -3,6 +3,7 @@
 using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -25,7 +26,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override void Delete(IDeleteContext context)
 		{
-			base.Delete(context);
 			context.DefragmentRecommended();
 		}
 

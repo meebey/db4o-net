@@ -244,11 +244,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_currentBuffer = childBuffer;
 		}
 
-		private bool IsSecondWriteToField()
-		{
-			return _fieldWriteCount == 2;
-		}
-
 		public virtual void NextField()
 		{
 			_fieldWriteCount = 0;

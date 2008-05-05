@@ -4,6 +4,7 @@ using System.Text;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -57,13 +58,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return StringHandler(context).PrepareComparison(context, obj);
 		}
 
-		public IReflectClass ClassReflector(IReflector reflector)
+		public IReflectClass ClassReflector()
 		{
-			if (_classReflector == null)
-			{
-				_classReflector = reflector.ForClass(typeof(StringBuilder));
-			}
 			return _classReflector;
+		}
+
+		public void RegisterReflector(IReflector reflector)
+		{
+			_classReflector = reflector.ForClass(typeof(StringBuilder));
 		}
 	}
 }

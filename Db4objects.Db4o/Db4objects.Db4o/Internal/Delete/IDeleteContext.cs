@@ -3,12 +3,12 @@
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 
-namespace Db4objects.Db4o.Internal
+namespace Db4objects.Db4o.Internal.Delete
 {
 	/// <exclude></exclude>
 	public interface IDeleteContext : IContext, IReadBuffer
 	{
-		void CascadeDeleteDepth(int depth);
+		bool CascadeDelete();
 
 		int CascadeDeleteDepth();
 

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class IntHandler : PrimitiveHandler
 	{
-		private static readonly int i_primitive = 0;
+		private static readonly int Defaultvalue = 0;
 
 		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
 			)
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object DefaultValue()
 		{
-			return i_primitive;
+			return Defaultvalue;
 		}
 
 		protected override Type PrimitiveJavaClass()
@@ -35,11 +35,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override int LinkLength()
 		{
 			return Const4.IntLength;
-		}
-
-		public override object PrimitiveNull()
-		{
-			return i_primitive;
 		}
 
 		/// <exception cref="CorruptionException"></exception>

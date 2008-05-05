@@ -48,8 +48,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private ArrayHandler ArrayHandler(Type clazz, bool isPrimitive)
 		{
-			ClassMetadata classMetadata = Stream().ProduceClassMetadata(Reflector().ForClass(
-				clazz));
+			ClassMetadata classMetadata = Container().ProduceClassMetadata(Reflector().ForClass
+				(clazz));
 			return new ArrayHandler(classMetadata.TypeHandler(), isPrimitive);
 		}
 

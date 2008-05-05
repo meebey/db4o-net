@@ -50,15 +50,15 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			IFreespaceManager fm = CurrentFreespaceManager();
 			int length = 300;
-			Slot slot = Container().GetSlot(length);
+			Slot slot = LocalContainer().GetSlot(length);
 			ByteArrayBuffer buffer = new ByteArrayBuffer(length);
-			Container().WriteBytes(buffer, slot.Address(), 0);
+			LocalContainer().WriteBytes(buffer, slot.Address(), 0);
 			fm.Free(slot);
 		}
 
 		protected virtual IFreespaceManager CurrentFreespaceManager()
 		{
-			return Container().FreespaceManager();
+			return LocalContainer().FreespaceManager();
 		}
 
 		public class Item
@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			Db().Commit();
 		}
 
-		protected virtual LocalObjectContainer Container()
+		protected virtual LocalObjectContainer LocalContainer()
 		{
 			return Fixture().FileSession();
 		}

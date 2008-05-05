@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void Test()
 		{
 			Hashtable4 ht = new Hashtable4();
-			ObjectContainerBase container = Stream();
+			ObjectContainerBase container = Container();
 			container.ShowInternalClasses(true);
 			IQuery q = Db().Query();
 			q.Constrain(typeof(Db4oDatabase));

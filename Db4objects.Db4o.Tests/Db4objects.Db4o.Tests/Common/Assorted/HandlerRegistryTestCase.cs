@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void TestCorrectHandlerVersion()
 		{
-			UntypedFieldHandler untypedFieldHandler = new UntypedFieldHandler(Stream());
+			UntypedFieldHandler untypedFieldHandler = new UntypedFieldHandler(Container());
 			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler0), untypedFieldHandler, 
 				-1);
 			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler0), untypedFieldHandler, 
@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private ClassMetadata ItemClassMetadata()
 		{
-			return Stream().ClassMetadataForObject(new HandlerRegistryTestCase.Item());
+			return Container().ClassMetadataForObject(new HandlerRegistryTestCase.Item());
 		}
 
 		private void AssertCorrectedHandlerVersion(Type expectedClass, ITypeHandler4 typeHandler
@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private ITypeHandler4 HandlerForClass(Type clazz)
 		{
-			return (ITypeHandler4)Stream().FieldHandlerForClass(ReflectClass(clazz));
+			return (ITypeHandler4)Container().FieldHandlerForClass(ReflectClass(clazz));
 		}
 
 		private HandlerRegistry Handlers()

@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		protected virtual BTree NewBTree()
 		{
-			return BTreeAssert.CreateIntKeyBTree(Stream(), 0, BtreeNodeSize);
+			return BTreeAssert.CreateIntKeyBTree(Container(), 0, BtreeNodeSize);
 		}
 
 		protected virtual IBTreeRange Range(int lower, int upper)

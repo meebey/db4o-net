@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Diagnostic;
@@ -22,7 +21,8 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public sealed class HandlerRegistry
 	{
-		public const byte HandlerVersion = 3;
+		public static readonly byte HandlerVersion = NullableArrayHandling.Enabled() ? (byte
+			)4 : (byte)3;
 
 		private readonly ObjectContainerBase _container;
 
@@ -46,8 +46,6 @@ namespace Db4objects.Db4o.Internal
 		private Hashtable4 _mapReflectorToClassMetadata = NewHashtable();
 
 		private int _highestBuiltinTypeID = Handlers4.AnyArrayNId + 1;
-
-		private const int Primitivecount = 8;
 
 		private readonly VirtualFieldMetadata[] _virtualFields = new VirtualFieldMetadata
 			[2];
@@ -136,15 +134,20 @@ namespace Db4objects.Db4o.Internal
 
 		private void RegisterPlatformTypes()
 		{
-			NetTypeHandler[] handlers = Platform4.Types(Container().Reflector());
+			NetTypeHandler[] handlers = Platform4.Types(_container.Reflector());
 			for (int i = 0; i < handlers.Length; i++)
 			{
-				handlers[i].Initialize();
-				IGenericConverter converter = (handlers[i] is IGenericConverter) ? (IGenericConverter
-					)handlers[i] : null;
-				RegisterBuiltinHandler(handlers[i].GetID(), handlers[i], true, handlers[i].GetName
-					(), converter);
+				RegisterNetTypeHandler(handlers[i]);
 			}
+		}
+
+		public void RegisterNetTypeHandler(NetTypeHandler handler)
+		{
+			handler.RegisterReflector(_reflector);
+			IGenericConverter converter = (handler is IGenericConverter) ? (IGenericConverter
+				)handler : null;
+			RegisterBuiltinHandler(handler.GetID(), handler, true, handler.GetName(), converter
+				);
 		}
 
 		private void RegisterBuiltinHandlers()
@@ -206,6 +209,10 @@ namespace Db4objects.Db4o.Internal
 			ArrayHandler arrayHandler = new ArrayHandler();
 			RegisterHandlerVersion(arrayHandler, 0, new ArrayHandler0());
 			RegisterHandlerVersion(arrayHandler, 2, new ArrayHandler2());
+			if (NullableArrayHandling.Enabled())
+			{
+				RegisterHandlerVersion(arrayHandler, 4, new ArrayHandler3());
+			}
 			MultidimensionalArrayHandler multidimensionalArrayHandler = new MultidimensionalArrayHandler
 				();
 			RegisterHandlerVersion(multidimensionalArrayHandler, 0, new MultidimensionalArrayHandler0
@@ -219,18 +226,22 @@ namespace Db4objects.Db4o.Internal
 		// same handler, but making sure versions get cascaded
 		private void RegisterBuiltinHandler(int id, IBuiltinTypeHandler handler)
 		{
-			RegisterBuiltinHandler(id, handler, true, handler.ClassReflector(_reflector).GetName
-				(), null);
+			RegisterBuiltinHandler(id, handler, true, null, null);
 		}
 
 		private void RegisterBuiltinHandler(int id, IBuiltinTypeHandler typeHandler, bool
 			 registerPrimitiveClass, string primitiveName, IGenericConverter converter)
 		{
+			typeHandler.RegisterReflector(_reflector);
+			if (primitiveName == null)
+			{
+				primitiveName = typeHandler.ClassReflector().GetName();
+			}
 			if (registerPrimitiveClass)
 			{
 				_reflector.RegisterPrimitiveClass(id, primitiveName, converter);
 			}
-			IReflectClass classReflector = typeHandler.ClassReflector(_reflector);
+			IReflectClass classReflector = typeHandler.ClassReflector();
 			PrimitiveFieldHandler classMetadata = new PrimitiveFieldHandler(Container(), typeHandler
 				, id, classReflector);
 			Map(id, classMetadata, typeHandler, typeHandler, classReflector);
@@ -239,7 +250,7 @@ namespace Db4objects.Db4o.Internal
 				if (typeHandler is PrimitiveHandler)
 				{
 					IReflectClass primitiveClassReflector = ((PrimitiveHandler)typeHandler).PrimitiveClassReflector
-						(_reflector);
+						();
 					if (primitiveClassReflector != null)
 					{
 						MapPrimitive(0, classMetadata, typeHandler, typeHandler, primitiveClassReflector);
@@ -294,6 +305,10 @@ namespace Db4objects.Db4o.Internal
 		private void RegisterHandlerVersion(IFieldHandler handler, int version, ITypeHandler4
 			 replacement)
 		{
+			if (replacement is IBuiltinTypeHandler)
+			{
+				((IBuiltinTypeHandler)replacement).RegisterReflector(_reflector);
+			}
 			_handlerVersions.Put(handler, version, replacement);
 		}
 
@@ -314,95 +329,6 @@ namespace Db4objects.Db4o.Internal
 				return Const4.TypeNarray;
 			}
 			return Const4.TypeArray;
-		}
-
-		internal bool CreateConstructor(IReflectClass claxx, bool skipConstructor)
-		{
-			if (claxx == null)
-			{
-				return false;
-			}
-			if (claxx.IsAbstract() || claxx.IsInterface())
-			{
-				return true;
-			}
-			if (!Platform4.CallConstructor())
-			{
-				if (claxx.SkipConstructor(skipConstructor, Container().Config().TestConstructors(
-					)))
-				{
-					return true;
-				}
-			}
-			if (!Container().ConfigImpl().TestConstructors())
-			{
-				return true;
-			}
-			if (claxx.NewInstance() != null)
-			{
-				return true;
-			}
-			if (Reflector().ConstructorCallsSupported())
-			{
-				Tree sortedConstructors = SortConstructorsByParamsCount(claxx);
-				return FindConstructor(claxx, sortedConstructors);
-			}
-			return false;
-		}
-
-		private bool FindConstructor(IReflectClass claxx, Tree sortedConstructors)
-		{
-			if (sortedConstructors == null)
-			{
-				return false;
-			}
-			IEnumerator iter = new TreeNodeIterator(sortedConstructors);
-			while (iter.MoveNext())
-			{
-				object obj = iter.Current;
-				IReflectConstructor constructor = (IReflectConstructor)((TreeIntObject)obj)._object;
-				IReflectClass[] paramTypes = constructor.GetParameterTypes();
-				object[] @params = new object[paramTypes.Length];
-				for (int j = 0; j < @params.Length; j++)
-				{
-					@params[j] = NullValue(paramTypes[j]);
-				}
-				object res = constructor.NewInstance(@params);
-				if (res != null)
-				{
-					claxx.UseConstructor(constructor, @params);
-					return true;
-				}
-			}
-			return false;
-		}
-
-		private object NullValue(IReflectClass clazz)
-		{
-			for (int k = 1; k <= Primitivecount; k++)
-			{
-				PrimitiveHandler handler = (PrimitiveHandler)TypeHandlerForID(k);
-				if (clazz.Equals(handler.PrimitiveClassReflector(_reflector)))
-				{
-					return handler.PrimitiveNull();
-				}
-			}
-			return null;
-		}
-
-		private Tree SortConstructorsByParamsCount(IReflectClass claxx)
-		{
-			IReflectConstructor[] constructors = claxx.GetDeclaredConstructors();
-			Tree sortedConstructors = null;
-			// sort constructors by parameter count
-			for (int i = 0; i < constructors.Length; i++)
-			{
-				constructors[i].SetAccessible();
-				int parameterCount = constructors[i].GetParameterTypes().Length;
-				sortedConstructors = Tree.Add(sortedConstructors, new TreeIntObject(i + constructors
-					.Length * parameterCount, constructors[i]));
-			}
-			return sortedConstructors;
 		}
 
 		public void Decrypt(ByteArrayBuffer reader)

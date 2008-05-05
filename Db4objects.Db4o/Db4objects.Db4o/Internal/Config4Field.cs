@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal
 {
-	internal class Config4Field : Config4Abstract, IObjectField, IDeepClone
+	public class Config4Field : Config4Abstract, IObjectField, IDeepClone
 	{
 		private readonly Config4Class _configClass;
 

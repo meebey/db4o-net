@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal.Handlers;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public class ArrayHandler2 : ArrayHandler
+	public class ArrayHandler2 : ArrayHandler3
 	{
 		protected override int PreparePayloadRead(IDefragmentContext context)
 		{

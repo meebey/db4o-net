@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_classReflector == null)
 			{
-				_classReflector = ((IBuiltinTypeHandler)GetHandler()).ClassReflector(reflector);
+				_classReflector = ((IBuiltinTypeHandler)GetHandler()).ClassReflector();
 			}
 			return _classReflector;
 		}

@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -139,7 +140,11 @@ namespace Db4objects.Db4o.Internal
 		{
 			context.Seek(payloadOffset);
 			ITypeHandler4 typeHandler = Container().TypeHandlerForId(context.ReadInt());
-			// TODO: Correct handler version here?
+			if (NullableArrayHandling.Enabled())
+			{
+				typeHandler = Container().Handlers().CorrectHandlerVersion(typeHandler, context.HandlerVersion
+					());
+			}
 			return typeHandler;
 		}
 
@@ -259,7 +264,7 @@ namespace Db4objects.Db4o.Internal
 			return configuredHandler;
 		}
 
-		public virtual IReflectClass ClassReflector(IReflector reflector)
+		public override IReflectClass ClassReflector()
 		{
 			return base.ClassReflector();
 		}
@@ -273,5 +278,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			return Hashcode;
 		}
+
+		public virtual void RegisterReflector(IReflector reflector)
+		{
+		}
+		// nothing to do
 	}
 }

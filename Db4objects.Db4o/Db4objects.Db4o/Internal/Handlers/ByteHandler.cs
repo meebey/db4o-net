@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		internal const int Length = 1 + Const4.AddedLength;
 
-		private static readonly byte DefaultByteValue = (byte)0;
+		private static readonly byte Defaultvalue = (byte)0;
 
 		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
 			)
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object DefaultValue()
 		{
-			return DefaultByteValue;
+			return Defaultvalue;
 		}
 
 		public override int LinkLength()
@@ -34,11 +34,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(byte);
-		}
-
-		public override object PrimitiveNull()
-		{
-			return DefaultByteValue;
 		}
 
 		internal override object Read1(ByteArrayBuffer a_bytes)
@@ -66,12 +61,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			byte sourceByte = ((byte)source);
-			return new _IPreparedComparison_87(sourceByte);
+			return new _IPreparedComparison_83(sourceByte);
 		}
 
-		private sealed class _IPreparedComparison_87 : IPreparedComparison
+		private sealed class _IPreparedComparison_83 : IPreparedComparison
 		{
-			public _IPreparedComparison_87(byte sourceByte)
+			public _IPreparedComparison_83(byte sourceByte)
 			{
 				this.sourceByte = sourceByte;
 			}

@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Marshall;
 

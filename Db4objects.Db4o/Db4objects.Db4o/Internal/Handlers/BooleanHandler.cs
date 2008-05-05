@@ -19,11 +19,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private const byte Null = (byte)'N';
 
-		private static readonly bool i_primitive = false;
+		private static readonly bool Defaultvalue = false;
 
 		public override object DefaultValue()
 		{
-			return i_primitive;
+			return Defaultvalue;
 		}
 
 		public override int LinkLength()
@@ -34,11 +34,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(bool);
-		}
-
-		public override object PrimitiveNull()
-		{
-			return i_primitive;
 		}
 
 		internal override object Read1(ByteArrayBuffer a_bytes)
@@ -100,12 +95,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			bool sourceBoolean = ((bool)source);
-			return new _IPreparedComparison_116(sourceBoolean);
+			return new _IPreparedComparison_112(sourceBoolean);
 		}
 
-		private sealed class _IPreparedComparison_116 : IPreparedComparison
+		private sealed class _IPreparedComparison_112 : IPreparedComparison
 		{
-			public _IPreparedComparison_116(bool sourceBoolean)
+			public _IPreparedComparison_112(bool sourceBoolean)
 			{
 				this.sourceBoolean = sourceBoolean;
 			}

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class DoubleHandler : LongHandler
 	{
-		private static readonly double DefaultDoubleValue = System.Convert.ToDouble(0);
+		private static readonly double Defaultvalue = System.Convert.ToDouble(0);
 
 		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
 			)
@@ -24,17 +24,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object DefaultValue()
 		{
-			return DefaultDoubleValue;
+			return Defaultvalue;
 		}
 
 		protected override Type PrimitiveJavaClass()
 		{
 			return typeof(double);
-		}
-
-		public override object PrimitiveNull()
-		{
-			return DefaultDoubleValue;
 		}
 
 		/// <exception cref="CorruptionException"></exception>
@@ -68,12 +63,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			double sourceDouble = ((double)source);
-			return new _IPreparedComparison_60(sourceDouble);
+			return new _IPreparedComparison_56(sourceDouble);
 		}
 
-		private sealed class _IPreparedComparison_60 : IPreparedComparison
+		private sealed class _IPreparedComparison_56 : IPreparedComparison
 		{
-			public _IPreparedComparison_60(double sourceDouble)
+			public _IPreparedComparison_56(double sourceDouble)
 			{
 				this.sourceDouble = sourceDouble;
 			}

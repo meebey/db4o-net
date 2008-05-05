@@ -20,7 +20,9 @@ using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Core;
 using Db4objects.Db4o.Reflect.Generic;
+using Db4objects.Db4o.Replication;
 using Db4objects.Db4o.Types;
 using Sharpen;
 
@@ -37,7 +39,7 @@ namespace Db4objects.Db4o.Internal
 	/// </remarks>
 	/// <exclude></exclude>
 	public abstract partial class PartialObjectContainer : ITransientClass, IInternal4
-		, IObjectContainerSpec
+		, IObjectContainerSpec, IInternalObjectContainer
 	{
 		protected ClassMetadataRepository _classCollection;
 
@@ -766,7 +768,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				FieldMetadata[] field = new FieldMetadata[] { null };
-				classMetadata.ForEachFieldMetadata(new _IVisitor4_618(fieldName, field));
+				classMetadata.ForEachFieldMetadata(new _IVisitor4_619(fieldName, field));
 				if (field[0] == null)
 				{
 					return null;
@@ -787,9 +789,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_618 : IVisitor4
+		private sealed class _IVisitor4_619 : IVisitor4
 		{
-			public _IVisitor4_618(string fieldName, FieldMetadata[] field)
+			public _IVisitor4_619(string fieldName, FieldMetadata[] field)
 			{
 				this.fieldName = fieldName;
 				this.field = field;
@@ -1286,6 +1288,7 @@ namespace Db4objects.Db4o.Internal
 			Config4Impl impl = ((Config4Impl)config);
 			impl.Stream(_this);
 			impl.Reflector().SetTransaction(SystemTransaction());
+			impl.Reflector().Configuration(new ReflectorConfigurationImpl(impl));
 			return impl;
 		}
 
@@ -2516,5 +2519,78 @@ namespace Db4objects.Db4o.Internal
 		{
 			return Reflector().ForObject(obj);
 		}
+
+		public abstract void Activate(object arg1, int arg2);
+
+		public abstract void Commit();
+
+		public abstract void Deactivate(object arg1, int arg2);
+
+		public abstract void Delete(object arg1);
+
+		public abstract IExtObjectContainer Ext();
+
+		public abstract IObjectSet Get(object arg1);
+
+		public abstract IQuery Query();
+
+		public abstract IObjectSet Query(Type arg1);
+
+		public abstract IObjectSet Query(Predicate arg1);
+
+		public abstract IObjectSet Query(Predicate arg1, IQueryComparator arg2);
+
+		public abstract IObjectSet QueryByExample(object arg1);
+
+		public abstract void Rollback();
+
+		public abstract void Set(object arg1);
+
+		public abstract void Store(object arg1);
+
+		public abstract void Activate(object arg1);
+
+		public abstract void Backup(string arg1);
+
+		public abstract void Bind(object arg1, long arg2);
+
+		public abstract IDb4oCollections Collections();
+
+		public abstract void Deactivate(object arg1);
+
+		public abstract object Descend(object arg1, string[] arg2);
+
+		public abstract object GetByID(long arg1);
+
+		public abstract object GetByUUID(Db4oUUID arg1);
+
+		public abstract long GetID(object arg1);
+
+		public abstract IObjectInfo GetObjectInfo(object arg1);
+
+		public abstract Db4oDatabase Identity();
+
+		public abstract bool IsActive(object arg1);
+
+		public abstract bool IsCached(long arg1);
+
+		public abstract bool IsStored(object arg1);
+
+		public abstract object PeekPersisted(object arg1, int arg2, bool arg3);
+
+		public abstract void Purge(object arg1);
+
+		public abstract void Refresh(object arg1, int arg2);
+
+		public abstract IReplicationProcess ReplicationBegin(IObjectContainer arg1, IReplicationConflictHandler
+			 arg2);
+
+		public abstract void Set(object arg1, int arg2);
+
+		public abstract void Store(object arg1, int arg2);
+
+		public abstract IStoredClass StoredClass(object arg1);
+
+		public abstract IStoredClass[] StoredClasses();
 	}
 }

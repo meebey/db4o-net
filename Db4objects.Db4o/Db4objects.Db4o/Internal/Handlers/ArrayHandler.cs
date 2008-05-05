@@ -6,6 +6,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -15,6 +16,8 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
+	/// <summary>This is the latest version, the one that should be used.</summary>
+	/// <remarks>This is the latest version, the one that should be used.</remarks>
 	/// <exclude></exclude>
 	public class ArrayHandler : IFirstClassHandler, IComparable4, ITypeHandler4, IVariableLengthTypeHandler
 		, IEmbeddedTypeHandler, ICompositeTypeHandler
@@ -113,7 +116,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			if (_handler is IBuiltinTypeHandler)
 			{
-				return ((IBuiltinTypeHandler)_handler).ClassReflector(container.Reflector());
+				return ((IBuiltinTypeHandler)_handler).ClassReflector();
 			}
 			if (_handler is ClassMetadata)
 			{
@@ -147,25 +150,18 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Delete(IDeleteContext context)
 		{
-			int address = context.ReadInt();
-			context.ReadInt();
-			// length, not needed
-			if (address <= 0)
+			if (context.CascadeDelete() && _handler is ClassMetadata)
 			{
-				return;
-			}
-			int linkOffSet = context.Offset();
-			if (context.CascadeDeleteDepth() > 0 && _handler is ClassMetadata)
-			{
-				context.Seek(address);
-				for (int i = ElementCount(context.Transaction(), context); i > 0; i--)
+				int elementCount = ElementCount(context.Transaction(), context);
+				if (HasNullBitmap())
+				{
+					int nullBitmapLength = context.ReadInt();
+					context.Seek(context.Offset() + nullBitmapLength);
+				}
+				for (int i = elementCount; i > 0; i--)
 				{
 					_handler.Delete(context);
 				}
-			}
-			if (linkOffSet > 0)
-			{
-				context.Seek(linkOffSet);
 			}
 		}
 
@@ -351,8 +347,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			// TODO: We changed the following line in the NullableArrayHandling 
 			//       refactoring. Behaviour may have to be different for older
 			//       ArrayHandler versions.
-			bool primitive = NullableArrayHandling.UseJavaHandling() && (orig < Const4.Primitive
-				);
+			bool primitive = UseJavaHandling() && (orig < Const4.Primitive);
 			if (primitive)
 			{
 				orig -= Const4.Primitive;
@@ -375,7 +370,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (elements != Const4.IgnoreId)
 			{
 				bool primitive = false;
-				if (NullableArrayHandling.UseJavaHandling())
+				if (UseJavaHandling())
 				{
 					if (elements < Const4.Primitive)
 					{
@@ -387,6 +382,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 				ClassMetadata classMetadata = Container(trans).ClassMetadataForId(classID);
 				if (classMetadata != null)
 				{
+					if (ReadingDotNetBeforeVersion4())
+					{
+						primitive = classMetadata.IsValueType();
+					}
 					return (primitive ? Handlers4.PrimitiveClassReflector(classMetadata, trans.Reflector
 						()) : classMetadata.ClassReflector());
 				}
@@ -405,11 +404,25 @@ namespace Db4objects.Db4o.Internal.Handlers
 				);
 		}
 
+		protected virtual bool UseJavaHandling()
+		{
+			if (NullableArrayHandling.Enabled())
+			{
+				return true;
+			}
+			return !Deploy.csharp;
+		}
+
+		protected virtual bool ReadingDotNetBeforeVersion4()
+		{
+			return false;
+		}
+
 		protected int ClassID(ObjectContainerBase container, object obj)
 		{
 			IReflectClass claxx = ComponentType(container, obj);
-			bool primitive = NullableArrayHandling.UseOldNetHandling() ? false : claxx.IsPrimitive
-				();
+			bool primitive = IsPrimitive(claxx);
+			// useOldNetHandling() ? false : claxx.isPrimitive();
 			if (primitive)
 			{
 				claxx = container.ProduceClassMetadata(claxx).ClassReflector();
@@ -428,6 +441,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 				classID -= Const4.Primitive;
 			}
 			return -classID;
+		}
+
+		protected virtual bool IsPrimitive(IReflectClass claxx)
+		{
+			if (NullableArrayHandling.Enabled())
+			{
+				return claxx.IsPrimitive();
+			}
+			return false;
+			return claxx.IsPrimitive();
 		}
 
 		private IReflectClass ComponentType(ObjectContainerBase container, object obj)
@@ -495,9 +518,19 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private void DefragElements(IDefragmentContext context, int elements)
 		{
+			DefragmentNullBitmap(context, elements);
 			for (int i = 0; i < elements; i++)
 			{
 				_handler.Defragment(context);
+			}
+		}
+
+		private void DefragmentNullBitmap(IDefragmentContext context, int elements)
+		{
+			if (HasNullBitmap())
+			{
+				BitMap4 nullBitmap = ReadNullBitmap(context.SourceBuffer(), elements);
+				WriteNullBitmap(context.TargetBuffer(), nullBitmap);
 			}
 		}
 
@@ -525,13 +558,37 @@ namespace Db4objects.Db4o.Internal.Handlers
 				else
 				{
 					// byte[] performance optimisation
-					for (int i = 0; i < elements.value; i++)
+					if (HasNullBitmap())
 					{
-						ArrayReflector(Container(context)).Set(array, i, context.ReadObject(_handler));
+						BitMap4 nullBitMap = ReadNullBitmap(context, elements.value);
+						for (int i = 0; i < elements.value; i++)
+						{
+							object obj = nullBitMap.IsTrue(i) ? null : context.ReadObject(_handler);
+							ArrayReflector(Container(context)).Set(array, i, obj);
+						}
+					}
+					else
+					{
+						for (int i = 0; i < elements.value; i++)
+						{
+							ArrayReflector(Container(context)).Set(array, i, context.ReadObject(_handler));
+						}
 					}
 				}
 			}
 			return array;
+		}
+
+		private BitMap4 ReadNullBitmap(IReadBuffer context, int length)
+		{
+			byte[] bitMapBytes = new byte[context.ReadInt()];
+			context.ReadBytes(bitMapBytes);
+			return new BitMap4(bitMapBytes, 0, length);
+		}
+
+		protected virtual bool HasNullBitmap()
+		{
+			return NullableArrayHandling.Enabled();
 		}
 
 		public virtual void Write(IWriteContext context, object obj)
@@ -547,11 +604,47 @@ namespace Db4objects.Db4o.Internal.Handlers
 			else
 			{
 				// byte[] performance optimisation
-				for (int i = 0; i < elementCount; i++)
+				if (HasNullBitmap())
 				{
-					context.WriteObject(_handler, ArrayReflector(Container(context)).Get(obj, i));
+					BitMap4 nullItems = NullItemsMap(ArrayReflector(Container(context)), obj);
+					WriteNullBitmap(context, nullItems);
+					for (int i = 0; i < elementCount; i++)
+					{
+						if (!nullItems.IsTrue(i))
+						{
+							context.WriteObject(_handler, ArrayReflector(Container(context)).Get(obj, i));
+						}
+					}
+				}
+				else
+				{
+					for (int i = 0; i < elementCount; i++)
+					{
+						context.WriteObject(_handler, ArrayReflector(Container(context)).Get(obj, i));
+					}
 				}
 			}
+		}
+
+		private void WriteNullBitmap(IWriteBuffer context, BitMap4 nullItems)
+		{
+			byte[] nullMapBytes = nullItems.Bytes();
+			context.WriteInt(nullMapBytes.Length);
+			context.WriteBytes(nullMapBytes);
+		}
+
+		private BitMap4 NullItemsMap(IReflectArray reflector, object array)
+		{
+			int arrayLength = reflector.GetLength(array);
+			BitMap4 nullBitMap = new BitMap4(arrayLength);
+			for (int i = 0; i < arrayLength; i++)
+			{
+				if (reflector.Get(array, i) == null)
+				{
+					nullBitMap.Set(i, true);
+				}
+			}
+			return nullBitMap;
 		}
 
 		internal virtual ObjectContainerBase Container(IContext context)

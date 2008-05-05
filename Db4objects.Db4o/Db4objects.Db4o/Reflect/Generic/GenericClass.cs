@@ -112,15 +112,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return null;
 		}
 
-		public virtual IReflectConstructor[] GetDeclaredConstructors()
-		{
-			if (_delegate != null)
-			{
-				return _delegate.GetDeclaredConstructors();
-			}
-			return null;
-		}
-
 		// TODO: consider that classes may have two fields of
 		// the same name after refactoring.
 		public virtual IReflectField GetDeclaredField(string name)
@@ -366,15 +357,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_isSecondClass = true;
 		}
 
-		public virtual bool SkipConstructor(bool flag, bool testConstructor)
-		{
-			if (_delegate != null)
-			{
-				return _delegate.SkipConstructor(flag, testConstructor);
-			}
-			return false;
-		}
-
 		public override string ToString()
 		{
 			return "GenericClass " + _name;
@@ -389,16 +371,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _converter.ToString(obj);
 		}
 
-		public virtual void UseConstructor(IReflectConstructor constructor, object[] @params
-			)
-		{
-			if (_delegate != null)
-			{
-				_delegate.UseConstructor(constructor, @params);
-			}
-		}
-
-		// ignore, we always create a generic object
 		public virtual object[] ToArray(object obj)
 		{
 			if (!IsCollection())
@@ -406,6 +378,23 @@ namespace Db4objects.Db4o.Reflect.Generic
 				return new object[] { obj };
 			}
 			return Platform4.CollectionToArray(_reflector.GetStream(), obj);
+		}
+
+		public virtual void CreateConstructor()
+		{
+			if (_delegate != null)
+			{
+				_delegate.CreateConstructor();
+			}
+		}
+
+		public virtual object NullValue()
+		{
+			if (_delegate == null)
+			{
+				return null;
+			}
+			return _delegate.NullValue();
 		}
 	}
 }

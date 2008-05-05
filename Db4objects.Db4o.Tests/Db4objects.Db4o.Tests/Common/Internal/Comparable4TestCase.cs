@@ -58,8 +58,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			int id2 = StoreItem();
 			int smallerID = Math.Min(id1, id2);
 			int biggerID = Math.Max(id1, id2);
-			ClassMetadata classMetadata = new ClassMetadata(Stream(), Reflector().ForClass(typeof(
-				Comparable4TestCase.Item)));
+			ClassMetadata classMetadata = new ClassMetadata(Container(), Reflector().ForClass
+				(typeof(Comparable4TestCase.Item)));
 			AssertHandlerComparison(classMetadata, smallerID, biggerID);
 		}
 
@@ -102,28 +102,12 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		private object NewInstance(Type clazz)
 		{
 			IReflectClass classReflector = Reflector().ForClass(clazz);
-			IReflectConstructor[] constructors = classReflector.GetDeclaredConstructors();
-			for (int i = 0; i < constructors.Length; i++)
+			object obj = classReflector.NewInstance();
+			if (obj == null)
 			{
-				IReflectClass[] parameterTypes = constructors[i].GetParameterTypes();
-				object[] args = new object[parameterTypes.Length];
-				if (args.Length > 0)
-				{
-					args[0] = Db();
-				}
-				try
-				{
-					object result = constructors[i].NewInstance(args);
-					if (result != null)
-					{
-						return result;
-					}
-				}
-				catch (Exception)
-				{
-				}
+				throw new ArgumentException("No usable constructor for Class " + clazz);
 			}
-			throw new ArgumentException("No usable constructor for Class " + clazz);
+			return obj;
 		}
 	}
 }

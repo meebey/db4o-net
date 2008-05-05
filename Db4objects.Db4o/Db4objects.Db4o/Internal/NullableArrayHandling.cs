@@ -22,5 +22,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			return !enabled;
 		}
+
+		public static bool Enabled()
+		{
+			return enabled;
+		}
 	}
 }

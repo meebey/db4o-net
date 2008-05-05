@@ -2,7 +2,6 @@
 
 using System;
 using Db4oUnit;
-using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Tests.Common.TA.TA;
 
 namespace Db4objects.Db4o.Tests.Common.TA.TA
@@ -34,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 		private object EmptyValue()
 		{
-			return new DateHandler().PrimitiveNull();
+			return Db().Reflector().ForClass(typeof(DateTime)).NullValue();
 		}
 
 		/// <exception cref="Exception"></exception>

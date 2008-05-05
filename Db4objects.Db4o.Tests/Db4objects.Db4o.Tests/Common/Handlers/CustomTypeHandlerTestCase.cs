@@ -7,6 +7,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Handlers;
@@ -65,7 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			ITypeHandler4 customTypeHandler = new _ITypeHandler4_59();
+			ITypeHandler4 customTypeHandler = new _ITypeHandler4_60();
 			// TODO Auto-generated method stub
 			// need to write something, to prevent NPE
 			// TODO Auto-generated method stub
@@ -73,13 +74,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			// TODO Auto-generated method stub
 			IReflectClass claxx = ((Config4Impl)config).Reflector().ForClass(typeof(CustomTypeHandlerTestCase.Item
 				));
-			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_93(claxx);
+			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_94(claxx);
 			config.RegisterTypeHandler(predicate, customTypeHandler);
 		}
 
-		private sealed class _ITypeHandler4_59 : ITypeHandler4
+		private sealed class _ITypeHandler4_60 : ITypeHandler4
 		{
-			public _ITypeHandler4_59()
+			public _ITypeHandler4_60()
 			{
 			}
 
@@ -109,9 +110,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		private sealed class _ITypeHandlerPredicate_93 : ITypeHandlerPredicate
+		private sealed class _ITypeHandlerPredicate_94 : ITypeHandlerPredicate
 		{
-			public _ITypeHandlerPredicate_93(IReflectClass claxx)
+			public _ITypeHandlerPredicate_94(IReflectClass claxx)
 			{
 				this.claxx = claxx;
 			}
