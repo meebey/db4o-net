@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return DateTime.MinValue;
 		}
 
-		public override object PrimitiveNull()
+		protected override object PrimitiveNull()
 		{
 			return DateTime.MinValue;
 		}
