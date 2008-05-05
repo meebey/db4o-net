@@ -463,8 +463,7 @@ namespace Db4objects.Drs.Inside
 			{
 				return CollectionClone(sourceProvider, obj, claxx);
 			}
-			claxx.SkipConstructor(true, true);
-			// FIXME This is ridiculously slow to do every time. Should ALWAYS be done automatically in the reflector.
+			claxx.CreateConstructor();
 			object result = claxx.NewInstance();
 			if (result == null)
 			{

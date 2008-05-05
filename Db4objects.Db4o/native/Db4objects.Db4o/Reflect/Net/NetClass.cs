@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Reflect.Net
 {
 	/// <summary>Reflection implementation for Class to map to .NET reflection.</summary>
 	/// <remarks>Reflection implementation for Class to map to .NET reflection.</remarks>
-	public class NetClass : Db4objects.Db4o.Reflect.IReflectClass
+	public class NetClass : Db4objects.Db4o.Reflect.Core.IConstructorAwareReflectClass
 	{
 		protected readonly Db4objects.Db4o.Reflect.IReflector _reflector;
 		
@@ -245,9 +245,9 @@ namespace Db4objects.Db4o.Reflect.Net
 			return _netReflector.NullValue(this);
 		}
 	
-		public virtual void CreateConstructor(bool skipConstructor) 
+		public virtual void CreateConstructor() 
 		{
-			ReflectConstructorSpec constructor = ConstructorSupport.CreateConstructor(this, _netReflector.Configuration(), GetDeclaredConstructors(), skipConstructor);
+			ReflectConstructorSpec constructor = ConstructorSupport.CreateConstructor(this, _netReflector.Configuration(), GetDeclaredConstructors());
 			if(constructor != null)
 			{
 				UseConstructor(constructor);
