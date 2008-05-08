@@ -463,7 +463,6 @@ namespace Db4objects.Drs.Inside
 			{
 				return CollectionClone(sourceProvider, obj, claxx);
 			}
-			claxx.CreateConstructor();
 			object result = claxx.NewInstance();
 			if (result == null)
 			{

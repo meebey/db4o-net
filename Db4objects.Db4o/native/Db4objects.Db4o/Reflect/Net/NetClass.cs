@@ -219,7 +219,7 @@ namespace Db4objects.Db4o.Reflect.Net
 				}
 			}
 #endif
-			UseConstructor(null);
+			_constructor = null;
 			return false;
 		}
 
@@ -249,7 +249,7 @@ namespace Db4objects.Db4o.Reflect.Net
 				}
 				_canBeInstantiated = TernaryBool.Yes;
 			}
-			catch(ObjectNotStorableException exc) 
+			catch(Db4objects.Db4o.Ext.ObjectNotStorableException exc) 
 			{
 				_canBeInstantiated = TernaryBool.No;
 			}

@@ -21,15 +21,20 @@ namespace Db4objects.Db4o.Internal
 
 		public static object CreateInstance(string typeName)
 		{
-			try
-			{
-				return Activator.CreateInstance(ForName(typeName));	
-			}
-			catch
-			{
-				return null;
-			}
+            return ReflectPlatform.CreateInstance(ForName(typeName));
 		}
+
+        public static object CreateInstance(Type type)
+        {
+            try
+            {
+                return Activator.CreateInstance(type);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
 	    public static string FullyQualifiedName(Type type)
 	    {
