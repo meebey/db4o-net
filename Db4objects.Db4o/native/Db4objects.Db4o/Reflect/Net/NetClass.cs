@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Reflect.Net
 	    
 	    private Db4objects.Db4o.Reflect.IReflectField[] _fields;
 
-		private  TernaryBool _canBeInstantiated = TernaryBool.UNSPECIFIED;
+		private  TernaryBool _canBeInstantiated = TernaryBool.Unspecified;
 
 	    public NetClass(Db4objects.Db4o.Reflect.IReflector reflector, Db4objects.Db4o.Reflect.Net.NetReflector netReflector, System.Type clazz)
 		{
@@ -247,11 +247,11 @@ namespace Db4objects.Db4o.Reflect.Net
 				{
 					_constructor = constructor;
 				}
-				_canBeInstantiated = TernaryBool.YES;
+				_canBeInstantiated = TernaryBool.Yes;
 			}
 			catch(ObjectNotStorableException exc) 
 			{
-				_canBeInstantiated = TernaryBool.NO;
+				_canBeInstantiated = TernaryBool.No;
 			}
 		}
 		
