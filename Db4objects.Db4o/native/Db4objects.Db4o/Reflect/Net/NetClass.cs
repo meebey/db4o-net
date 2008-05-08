@@ -3,6 +3,7 @@ using System;
 using System.Reflection;
 using Sharpen.Lang;
 using Db4objects.Db4o.Reflect.Core;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
@@ -23,6 +24,8 @@ namespace Db4objects.Db4o.Reflect.Net
 	    private string _name;
 	    
 	    private Db4objects.Db4o.Reflect.IReflectField[] _fields;
+
+		private  TernaryBool _canBeInstantiated = TernaryBool.UNSPECIFIED;
 
 	    public NetClass(Db4objects.Db4o.Reflect.IReflector reflector, Db4objects.Db4o.Reflect.Net.NetReflector netReflector, System.Type clazz)
 		{
@@ -169,6 +172,7 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public virtual object NewInstance()
 		{
+			CreateConstructor(false);
 			try
 			{
 				if (_constructor == null)
@@ -226,34 +230,35 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		private void UseConstructor(IReflectConstructor constructor, object[] args)
 		{
-				UseConstructor(constructor == null ? null : new ReflectConstructorSpec(constructor, args));
+				_constructor = (constructor == null ? null : new ReflectConstructorSpec(constructor, args));
 		}
 
-		private void UseConstructor(ReflectConstructorSpec constructor)
-		{
-				_constructor = constructor;
-		}
-
-		public virtual object[] ToArray(object obj)
-		{
-			// handled in GenericClass
-			return null;
-		}
-		
 		public virtual object NullValue() 
 		{
 			return _netReflector.NullValue(this);
 		}
 	
-		public virtual void CreateConstructor() 
+		private void CreateConstructor(bool forceCheck) 
 		{
-			ReflectConstructorSpec constructor = ConstructorSupport.CreateConstructor(this, _netReflector.Configuration(), GetDeclaredConstructors());
-			if(constructor != null)
+			try 
 			{
-				UseConstructor(constructor);
+				ReflectConstructorSpec constructor = ConstructorSupport.CreateConstructor(this, _type, _netReflector.Configuration(), GetDeclaredConstructors());
+				if(constructor != null)
+				{
+					_constructor = constructor;
+				}
+				_canBeInstantiated = TernaryBool.YES;
+			}
+			catch(ObjectNotStorableException exc) 
+			{
+				_canBeInstantiated = TernaryBool.NO;
 			}
 		}
 		
+		public virtual bool EnsureCanBeInstantiated() {
+			CreateConstructor(true);
+			return _canBeInstantiated.DefiniteYes();
+		}
 		
 	}
 }
