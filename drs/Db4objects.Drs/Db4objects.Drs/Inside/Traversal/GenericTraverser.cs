@@ -69,7 +69,6 @@ namespace Db4objects.Drs.Inside.Traversal
 			while (fields.MoveNext())
 			{
 				IReflectField field = (IReflectField)fields.Current;
-				field.SetAccessible();
 				//TODO Optimize: Change the reflector so I dont have to call setAcessible all the time.
 				object value = field.Get(@object);
 				QueueUpForTraversing(value);

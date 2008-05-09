@@ -204,7 +204,6 @@ namespace Db4objects.Drs.Inside
 			while (fields.MoveNext())
 			{
 				IReflectField field = (IReflectField)fields.Current;
-				field.SetAccessible();
 				//TODO Optimization: Do this in the field constructor;
 				object value = field.Get(src);
 				field.Set(dest, FindCounterpart(value, sourceProvider));
