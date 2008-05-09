@@ -60,7 +60,6 @@ namespace Db4oTool.MSBuild.Tests
         {
             IReflectClass clazz = Reflector().ForObject(obj);
             IReflectField field = clazz.GetDeclaredField(fieldName);
-            field.SetAccessible();
             return field.Get(obj);
         }
     }
