@@ -120,12 +120,12 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
         private TestSubject GetTestItem(string name)
         {
-            return Array.Find(
-                        data,
-                        delegate(TestSubject candidate)
-                        {
-                            return candidate._valueType.Value._name == name;
-                        });
+            foreach (TestSubject test in data)
+            {
+                if (test._valueType.Value._name == name) return test;
+            }
+            
+            return default(TestSubject);
         }
 
         private TestSubject QueryByName(string name)
