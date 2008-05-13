@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Db4objects.Db4o.Tests.Util;
@@ -8,8 +9,8 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 {
 	public class Db4oLibrarian
 	{
-		private const double MinimunVersionToTest = 6.0;
-		private Db4oLibraryEnvironmentProvider _provider;
+		private const double MinimumVersionToTest = 6.0;
+		private readonly Db4oLibraryEnvironmentProvider _provider;
 
 		public Db4oLibrarian(Db4oLibraryEnvironmentProvider provider)
 		{
@@ -18,17 +19,17 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		public Db4oLibrary[] Libraries()
 		{
-			ArrayList libraries = new ArrayList();
+            List <Db4oLibrary> libraries = new List<Db4oLibrary>();
 			foreach (string directory in Directory.GetDirectories(LibraryPath()))
 			{
 				// comment out the next line to run against legacy versions
-				if (!IsVersionOrGreater(directory, MinimunVersionToTest)) continue;
+				if (!IsVersionOrGreater(directory, MinimumVersionToTest)) continue;
 
 				string db4oLib = FindLibraryFile(directory);
 				if (null == db4oLib) continue;
 				libraries.Add(ForFile(db4oLib));
 			}
-			return (Db4oLibrary[]) libraries.ToArray(typeof(Db4oLibrary));
+			return libraries.ToArray();
 		}
 
 		private static bool IsVersionOrGreater(string versionName, double minimumVersion)
@@ -48,13 +49,13 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		public static bool IsLegacyVersion(string versionName)
 		{
-			return VersionFromVersionName(versionName) < MinimunVersionToTest;
+			return VersionFromVersionName(versionName) < MinimumVersionToTest;
 		}
 
 		private static double VersionFromVersionName(string versionName)
 		{
 			Version version = new Version(versionName);
-			return version.Major + version.Minor / 10;
+			return version.Major + version.Minor / 10.0;
 		}
 
 		public static string LibraryPath()
@@ -72,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return new Db4oLibrary(db4oLib, EnvironmentFor(db4oLib));
 		}
 
-		private string FindLibraryFile(string directory)
+		private static string FindLibraryFile(string directory)
 		{
 			string[] found = Directory.GetFiles(directory, "*.dll");
 			return found.Length == 1 ? found[0] : null;
