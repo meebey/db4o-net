@@ -12,7 +12,7 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public class FirstClassObjectHandler : ITypeHandler4, ICompositeTypeHandler
+	public class FirstClassObjectHandler : ITypeHandler4, ICompositeTypeHandler, ICollectIdHandler
 	{
 		private const int HashcodeForNull = 72483944;
 
@@ -46,28 +46,27 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Delete(IDeleteContext context)
 		{
-			((ObjectContainerBase)context.ObjectContainer()).DeleteByID(context.Transaction()
-				, context.ReadInt(), context.CascadeDeleteDepth());
+			context.DeleteObject();
 		}
 
 		public void InstantiateFields(UnmarshallingContext context)
 		{
 			BooleanByRef updateFieldFound = new BooleanByRef();
 			int savedOffset = context.Offset();
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_53
+			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_52
 				(updateFieldFound, context);
 			TraverseFields(context, command);
 			if (updateFieldFound.value)
 			{
 				context.Seek(savedOffset);
-				command = new _TraverseFieldCommand_69(context);
+				command = new _TraverseFieldCommand_68(context);
 				TraverseFields(context, command);
 			}
 		}
 
-		private sealed class _TraverseFieldCommand_53 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_52 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_53(BooleanByRef updateFieldFound, UnmarshallingContext
+			public _TraverseFieldCommand_52(BooleanByRef updateFieldFound, UnmarshallingContext
 				 context)
 			{
 				this.updateFieldFound = updateFieldFound;
@@ -94,9 +93,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			private readonly UnmarshallingContext context;
 		}
 
-		private sealed class _TraverseFieldCommand_69 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_68 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_69(UnmarshallingContext context)
+			public _TraverseFieldCommand_68(UnmarshallingContext context)
 			{
 				this.context = context;
 			}
@@ -104,7 +103,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			public override void ProcessField(FieldMetadata field, bool isNull, Db4objects.Db4o.Internal.ClassMetadata
 				 containingClass)
 			{
-				field.AttemptUpdate(context);
+				if (!isNull)
+				{
+					field.AttemptUpdate(context);
+				}
 			}
 
 			private readonly UnmarshallingContext context;
@@ -135,14 +137,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual void Marshall(object obj, MarshallingContext context)
 		{
 			Transaction trans = context.Transaction();
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_109
+			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_110
 				(context, trans, obj);
 			TraverseFields(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_109 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_110 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_109(MarshallingContext context, Transaction trans, object
+			public _TraverseFieldCommand_110(MarshallingContext context, Transaction trans, object
 				 obj)
 			{
 				this.context = context;
@@ -192,7 +194,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			if (source == null)
 			{
-				return new _IPreparedComparison_138();
+				return new _IPreparedComparison_139();
 			}
 			int id = 0;
 			IReflectClass claxx = null;
@@ -217,9 +219,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return new ClassMetadata.PreparedComparisonImpl(id, claxx);
 		}
 
-		private sealed class _IPreparedComparison_138 : IPreparedComparison
+		private sealed class _IPreparedComparison_139 : IPreparedComparison
 		{
-			public _IPreparedComparison_138()
+			public _IPreparedComparison_139()
 			{
 			}
 
@@ -329,6 +331,40 @@ namespace Db4objects.Db4o.Internal.Handlers
 				.original;
 			cloned._classMetadata = original._classMetadata;
 			return cloned;
+		}
+
+		public virtual void CollectIDs(CollectIdContext context)
+		{
+			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_238
+				(context);
+			TraverseFields(context, command);
+		}
+
+		private sealed class _TraverseFieldCommand_238 : FirstClassObjectHandler.TraverseFieldCommand
+		{
+			public _TraverseFieldCommand_238(CollectIdContext context)
+			{
+				this.context = context;
+			}
+
+			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
+				 containingClass)
+			{
+				if (isNull)
+				{
+					return;
+				}
+				if (context.FieldName().Equals(field.GetName()))
+				{
+					field.CollectIDs(context);
+				}
+				else
+				{
+					field.IncrementOffset(context);
+				}
+			}
+
+			private readonly CollectIdContext context;
 		}
 	}
 }

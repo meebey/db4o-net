@@ -4,7 +4,7 @@ using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
@@ -65,9 +65,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.ObjectLength + (Const4.IntLength * (2 + dim.Length));
 		}
 
-		protected override int ReadElementsDefrag(IDefragmentContext context)
+		protected override int ReadElementCountDefrag(IDefragmentContext context)
 		{
-			int numDimensions = base.ReadElementsDefrag(context);
+			int numDimensions = base.ReadElementCountDefrag(context);
 			int[] dimensions = new int[numDimensions];
 			for (int i = 0; i < numDimensions; i++)
 			{
@@ -76,17 +76,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ElementCount(dimensions);
 		}
 
-		public override void ReadSubCandidates(int handlerVersion, ByteArrayBuffer reader
-			, QCandidates candidates)
+		public override void ReadSubCandidates(QueryingReadContext context)
 		{
 			IntArrayByRef dimensions = new IntArrayByRef();
-			object arr = ReadCreate(candidates.i_trans, reader, dimensions);
+			object arr = ReadCreate(context.Transaction(), context, dimensions);
 			if (arr == null)
 			{
 				return;
 			}
-			ReadSubCandidates(handlerVersion, reader, candidates, ElementCount(dimensions.value
-				));
+			ReadSubCandidates(context, ElementCount(dimensions.value));
 		}
 
 		protected virtual object ReadCreate(Transaction trans, IReadBuffer buffer, IntArrayByRef

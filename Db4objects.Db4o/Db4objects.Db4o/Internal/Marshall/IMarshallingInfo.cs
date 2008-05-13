@@ -1,7 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -10,6 +10,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		Db4objects.Db4o.Internal.ClassMetadata ClassMetadata();
 
-		IReadWriteBuffer Buffer();
+		IReadBuffer Buffer();
 	}
 }

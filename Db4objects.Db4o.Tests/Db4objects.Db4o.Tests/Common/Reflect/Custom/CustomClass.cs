@@ -143,19 +143,14 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			throw new NotImplementedException();
 		}
 
-		public virtual object[] ToArray(object obj)
-		{
-			throw new NotImplementedException();
-		}
-
 		public virtual IEnumerator CustomFields()
 		{
-			return Iterators.Filter(_fields, new _IPredicate4_117());
+			return Iterators.Filter(_fields, new _IPredicate4_113());
 		}
 
-		private sealed class _IPredicate4_117 : IPredicate4
+		private sealed class _IPredicate4_113 : IPredicate4
 		{
-			public _IPredicate4_117()
+			public _IPredicate4_113()
 			{
 			}
 
@@ -170,8 +165,9 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			return null;
 		}
 
-		public virtual void CreateConstructor()
+		public virtual bool EnsureCanBeInstantiated()
 		{
+			return true;
 		}
 	}
 }

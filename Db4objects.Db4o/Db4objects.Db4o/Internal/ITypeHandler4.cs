@@ -8,8 +8,13 @@ using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
-	/// <exclude></exclude>
-	public interface ITypeHandler4 : IComparable4, IFieldHandler
+	/// <exclude>
+	/// TODO: Not all TypeHandlers can implement Comparable4.
+	/// Consider to change the hierarchy, not to extend Comparable4
+	/// and to have callers check, if Comparable4 is implemented by
+	/// a TypeHandler.
+	/// </exclude>
+	public interface ITypeHandler4 : IFieldHandler, IComparable4
 	{
 		/// <exception cref="Db4oIOException"></exception>
 		void Delete(IDeleteContext context);

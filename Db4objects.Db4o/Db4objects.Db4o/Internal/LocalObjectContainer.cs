@@ -510,9 +510,9 @@ namespace Db4objects.Db4o.Internal
 			return ReadReaderOrWriterByID(a_ta, a_id, true, lastCommitted);
 		}
 
-		public override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id)
+		public override ByteArrayBuffer ReadReaderByID(Transaction trans, int id)
 		{
-			return ReadReaderByID(a_ta, a_id, false);
+			return ReadReaderByID(trans, id, false);
 		}
 
 		private ByteArrayBuffer ReadReaderOrWriterByID(Transaction a_ta, int a_id, bool useReader

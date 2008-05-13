@@ -122,7 +122,8 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object DeepClone(object param)
 		{
-			return new Db4objects.Db4o.Internal.Config4Class((Config4Impl)param, _config);
+			Config4Impl parentConfig = ((Config4Impl.ConfigDeepCloneContext)param)._cloned;
+			return new Db4objects.Db4o.Internal.Config4Class(parentConfig, _config);
 		}
 
 		public virtual void EnableReplication(bool setting)
@@ -199,8 +200,8 @@ namespace Db4objects.Db4o.Internal
 		internal virtual object Instantiate(ObjectContainerBase a_stream, object a_toTranslate
 			)
 		{
-			return ((IObjectConstructor)_config.Get(TranslatorKey)).OnInstantiate((IInternalObjectContainer
-				)a_stream, a_toTranslate);
+			return ((IObjectConstructor)_config.Get(TranslatorKey)).OnInstantiate(a_stream, a_toTranslate
+				);
 		}
 
 		internal virtual bool Instantiates()

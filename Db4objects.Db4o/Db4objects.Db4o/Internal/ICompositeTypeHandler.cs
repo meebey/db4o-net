@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public interface ICompositeTypeHandler : IDeepClone
+	public interface ICompositeTypeHandler : ITypeHandler4, IDeepClone
 	{
 		ITypeHandler4 GenericTemplate();
 	}

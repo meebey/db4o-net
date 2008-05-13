@@ -6,12 +6,11 @@ using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
-using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <summary>Messages for Client/Server Communication</summary>
-	public abstract class Msg : Sharpen.Lang.ICloneable
+	public abstract class Msg : System.ICloneable
 	{
 		internal static int _messageIdGenerator = 1;
 
@@ -181,15 +180,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public Db4objects.Db4o.Internal.CS.Messages.Msg PublicClone()
 		{
-			try
-			{
-				return (Db4objects.Db4o.Internal.CS.Messages.Msg)MemberwiseClone();
-			}
-			catch (CloneNotSupportedException)
-			{
-				Exceptions4.ShouldNeverHappen();
-				return null;
-			}
+			return (Db4objects.Db4o.Internal.CS.Messages.Msg)MemberwiseClone();
 		}
 
 		public sealed override bool Equals(object obj)
@@ -403,6 +394,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public virtual void LogMsg(int msgCode, string msg)
 		{
 			Stream().LogMsg(msgCode, msg);
+		}
+
+		object System.ICloneable.Clone()
+		{
+			return MemberwiseClone();
 		}
 	}
 }

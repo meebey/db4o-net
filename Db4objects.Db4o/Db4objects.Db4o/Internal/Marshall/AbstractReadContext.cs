@@ -4,6 +4,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -12,8 +13,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		protected IActivationDepth _activationDepth = UnknownActivationDepth.Instance;
 
-		protected AbstractReadContext(Transaction transaction, ByteArrayBuffer buffer) : 
-			base(transaction, buffer)
+		protected AbstractReadContext(Transaction transaction, IReadBuffer buffer) : base
+			(transaction, buffer)
 		{
 		}
 
@@ -30,12 +31,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			ITypeHandler4 handler = CorrectHandlerVersion(handlerType);
 			return SlotFormat.ForHandlerVersion(HandlerVersion()).DoWithSlotIndirection(this, 
-				handler, new _IClosure4_31(this, handler));
+				handler, new _IClosure4_32(this, handler));
 		}
 
-		private sealed class _IClosure4_31 : IClosure4
+		private sealed class _IClosure4_32 : IClosure4
 		{
-			public _IClosure4_31(AbstractReadContext _enclosing, ITypeHandler4 handler)
+			public _IClosure4_32(AbstractReadContext _enclosing, ITypeHandler4 handler)
 			{
 				this._enclosing = _enclosing;
 				this.handler = handler;

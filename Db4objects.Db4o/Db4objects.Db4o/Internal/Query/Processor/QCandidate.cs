@@ -174,12 +174,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								QCandidates candidates = new QCandidates(a_candidates.i_trans, null, qf);
 								candidates.AddConstraint(qcon);
 								qcon.SetCandidates(candidates);
-								if (arrayElementHandler is IFirstClassHandler)
-								{
-									SlotFormat slotFormat = SlotFormat.ForHandlerVersion(_handlerVersion);
-									slotFormat.DoWithSlotIndirection(arrayBytes[0], handler, new _IClosure4_171(this, 
-										arrayElementHandler, arrayBytes, candidates));
-								}
+								ReadArrayCandidates(handler, arrayBytes[0], arrayElementHandler, candidates);
 								arrayBytes[0]._offset = offset;
 								bool isNot = qcon.IsNot();
 								if (isNot)
@@ -189,7 +184,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								candidates.Evaluate();
 								Tree.ByRef pending = new Tree.ByRef();
 								bool[] innerRes = new bool[] { isNot };
-								candidates.Traverse(new _IVisitor4_191(innerRes, isNot, pending));
+								candidates.Traverse(new _IVisitor4_183(innerRes, isNot, pending));
 								// Collect all pending subresults.
 								// We need to change
 								// the
@@ -218,7 +213,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								// them up to our root.
 								if (pending.value != null)
 								{
-									pending.value.Traverse(new _IVisitor4_260(this));
+									pending.value.Traverse(new _IVisitor4_252(this));
 								}
 								if (!innerRes[0])
 								{
@@ -284,36 +279,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _IClosure4_171 : IClosure4
+		private sealed class _IVisitor4_183 : IVisitor4
 		{
-			public _IClosure4_171(QCandidate _enclosing, ITypeHandler4 arrayElementHandler, ByteArrayBuffer
-				[] arrayBytes, QCandidates candidates)
-			{
-				this._enclosing = _enclosing;
-				this.arrayElementHandler = arrayElementHandler;
-				this.arrayBytes = arrayBytes;
-				this.candidates = candidates;
-			}
-
-			public object Run()
-			{
-				((IFirstClassHandler)arrayElementHandler).ReadCandidates(this._enclosing._handlerVersion
-					, arrayBytes[0], candidates);
-				return null;
-			}
-
-			private readonly QCandidate _enclosing;
-
-			private readonly ITypeHandler4 arrayElementHandler;
-
-			private readonly ByteArrayBuffer[] arrayBytes;
-
-			private readonly QCandidates candidates;
-		}
-
-		private sealed class _IVisitor4_191 : IVisitor4
-		{
-			public _IVisitor4_191(bool[] innerRes, bool isNot, Tree.ByRef pending)
+			public _IVisitor4_183(bool[] innerRes, bool isNot, Tree.ByRef pending)
 			{
 				this.innerRes = innerRes;
 				this.isNot = isNot;
@@ -330,13 +298,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (cand._pendingJoins != null)
 				{
-					cand._pendingJoins.Traverse(new _IVisitor4_204(pending));
+					cand._pendingJoins.Traverse(new _IVisitor4_196(pending));
 				}
 			}
 
-			private sealed class _IVisitor4_204 : IVisitor4
+			private sealed class _IVisitor4_196 : IVisitor4
 			{
-				public _IVisitor4_204(Tree.ByRef pending)
+				public _IVisitor4_196(Tree.ByRef pending)
 				{
 					this.pending = pending;
 				}
@@ -369,9 +337,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly Tree.ByRef pending;
 		}
 
-		private sealed class _IVisitor4_260 : IVisitor4
+		private sealed class _IVisitor4_252 : IVisitor4
 		{
-			public _IVisitor4_260(QCandidate _enclosing)
+			public _IVisitor4_252(QCandidate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -382,6 +350,63 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 
 			private readonly QCandidate _enclosing;
+		}
+
+		private void ReadArrayCandidates(ITypeHandler4 fieldHandler, ByteArrayBuffer buffer
+			, ITypeHandler4 arrayElementHandler, QCandidates candidates)
+		{
+			if (!(arrayElementHandler is IFirstClassHandler))
+			{
+				return;
+			}
+			SlotFormat slotFormat = SlotFormat.ForHandlerVersion(_handlerVersion);
+			slotFormat.DoWithSlotIndirection(buffer, fieldHandler, new _IClosure4_336(this, slotFormat
+				, arrayElementHandler, buffer, candidates));
+		}
+
+		private sealed class _IClosure4_336 : IClosure4
+		{
+			public _IClosure4_336(QCandidate _enclosing, SlotFormat slotFormat, ITypeHandler4
+				 arrayElementHandler, ByteArrayBuffer buffer, QCandidates candidates)
+			{
+				this._enclosing = _enclosing;
+				this.slotFormat = slotFormat;
+				this.arrayElementHandler = arrayElementHandler;
+				this.buffer = buffer;
+				this.candidates = candidates;
+			}
+
+			public object Run()
+			{
+				QueryingReadContext context = null;
+				if (slotFormat.HandleAsObject(arrayElementHandler))
+				{
+					int collectionID = buffer.ReadInt();
+					ByteArrayBuffer arrayElementBuffer = this._enclosing.Container().ReadReaderByID(this
+						._enclosing.Transaction(), collectionID);
+					ObjectHeader.ScrollBufferToContent(this._enclosing.Container(), arrayElementBuffer
+						);
+					context = new QueryingReadContext(this._enclosing.Transaction(), candidates, this
+						._enclosing._handlerVersion, arrayElementBuffer, collectionID);
+				}
+				else
+				{
+					context = new QueryingReadContext(this._enclosing.Transaction(), candidates, this
+						._enclosing._handlerVersion, buffer, 0);
+				}
+				((IFirstClassHandler)arrayElementHandler).ReadCandidates(context);
+				return null;
+			}
+
+			private readonly QCandidate _enclosing;
+
+			private readonly SlotFormat slotFormat;
+
+			private readonly ITypeHandler4 arrayElementHandler;
+
+			private readonly ByteArrayBuffer buffer;
+
+			private readonly QCandidates candidates;
 		}
 
 		internal virtual void DoNotInclude()

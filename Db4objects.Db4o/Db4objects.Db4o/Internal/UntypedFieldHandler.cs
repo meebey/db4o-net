@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (typeHandler != null)
 			{
-				typeHandler.Delete(context);
+				context.Delete(typeHandler);
 			}
 			context.Seek(linkOffset);
 		}

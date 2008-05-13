@@ -11,20 +11,19 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <remarks>Wraps the low-level details of reading a Buffer, which in turn is a glorified byte array.
 	/// 	</remarks>
 	/// <exclude></exclude>
-	public class UnmarshallingContext : AbstractReadContext, IFieldListInfo, IMarshallingInfo
+	public class UnmarshallingContext : ObjectHeaderContext, IFieldListInfo, IMarshallingInfo
 	{
 		private readonly ObjectReference _reference;
 
 		private object _object;
 
-		private ObjectHeader _objectHeader;
-
 		private int _addToIDTree;
 
 		private bool _checkIDTree;
 
-		public UnmarshallingContext(Transaction transaction, ByteArrayBuffer buffer, ObjectReference
-			 @ref, int addToIDTree, bool checkIDTree) : base(transaction, buffer)
+		public UnmarshallingContext(Transaction transaction, Db4objects.Db4o.Internal.ByteArrayBuffer
+			 buffer, ObjectReference @ref, int addToIDTree, bool checkIDTree) : base(transaction
+			, buffer, null)
 		{
 			_reference = @ref;
 			_addToIDTree = addToIDTree;
@@ -36,15 +35,20 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 		}
 
+		private Db4objects.Db4o.Internal.ByteArrayBuffer ByteArrayBuffer()
+		{
+			return (Db4objects.Db4o.Internal.ByteArrayBuffer)Buffer();
+		}
+
 		public virtual Db4objects.Db4o.Internal.StatefulBuffer StatefulBuffer()
 		{
-			Db4objects.Db4o.Internal.StatefulBuffer buffer = new Db4objects.Db4o.Internal.StatefulBuffer
-				(_transaction, _buffer.Length());
-			buffer.SetID(ObjectID());
-			buffer.SetInstantiationDepth(ActivationDepth());
-			((ByteArrayBuffer)_buffer).CopyTo(buffer, 0, 0, _buffer.Length());
-			buffer.Seek(_buffer.Offset());
-			return buffer;
+			Db4objects.Db4o.Internal.StatefulBuffer statefulBuffer = new Db4objects.Db4o.Internal.StatefulBuffer
+				(_transaction, ByteArrayBuffer().Length());
+			statefulBuffer.SetID(ObjectID());
+			statefulBuffer.SetInstantiationDepth(ActivationDepth());
+			ByteArrayBuffer().CopyTo(statefulBuffer, 0, 0, ByteArrayBuffer().Length());
+			statefulBuffer.Seek(ByteArrayBuffer().Offset());
+			return statefulBuffer;
 		}
 
 		public virtual int ObjectID()
@@ -69,7 +73,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return _object;
 			}
 			ReadBuffer(ObjectID());
-			if (_buffer == null)
+			if (Buffer() == null)
 			{
 				EndProcessing();
 				return _object;
@@ -134,7 +138,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual object ReadFieldValue(FieldMetadata field)
 		{
 			ReadBuffer(ObjectID());
-			if (_buffer == null)
+			if (Buffer() == null)
 			{
 				return null;
 			}
@@ -154,12 +158,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 field)
 		{
 			return _objectHeader.ObjectMarshaller().FindOffset(classMetadata, _objectHeader._headerAttributes
-				, (ByteArrayBuffer)_buffer, field);
+				, ByteArrayBuffer(), field);
 		}
 
 		private Db4objects.Db4o.Internal.ClassMetadata ReadObjectHeader()
 		{
-			_objectHeader = new ObjectHeader(Container(), _buffer);
+			_objectHeader = new ObjectHeader(Container(), ByteArrayBuffer());
 			Db4objects.Db4o.Internal.ClassMetadata classMetadata = _objectHeader.ClassMetadata
 				();
 			if (classMetadata == null)
@@ -171,9 +175,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private void ReadBuffer(int id)
 		{
-			if (_buffer == null && id > 0)
+			if (Buffer() == null && id > 0)
 			{
-				_buffer = Container().ReadReaderByID(_transaction, id);
+				Buffer(Container().ReadReaderByID(_transaction, id));
 			}
 		}
 
@@ -225,21 +229,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual void PersistentObject(object obj)
 		{
 			_object = obj;
-		}
-
-		public virtual ObjectHeaderAttributes HeaderAttributes()
-		{
-			return _objectHeader._headerAttributes;
-		}
-
-		public virtual bool IsNull(int fieldIndex)
-		{
-			return HeaderAttributes().IsNull(fieldIndex);
-		}
-
-		public override int HandlerVersion()
-		{
-			return _objectHeader.HandlerVersion();
 		}
 	}
 }

@@ -69,10 +69,6 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			Entry(onObject).uid = value;
 		}
 
-		public virtual void SetAccessible()
-		{
-		}
-
 		public override string ToString()
 		{
 			return "CustomUidField()";

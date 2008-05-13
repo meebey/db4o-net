@@ -317,7 +317,7 @@ namespace Db4objects.Db4o.Internal
 
 		public IObjectContainer ObjectContainer()
 		{
-			return (IObjectContainer)Container();
+			return Container();
 		}
 
 		public void HandlerVersion(int version)

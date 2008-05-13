@@ -578,6 +578,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 			}
+			//                                                    idsNew.value = oh.classMetadata().collectFieldIDs(
+			//                                                            oh._marshallerFamily,
+			//                                                            oh._headerAttributes,
+			//                                                            (TreeInt)idsNew.value,
+			//                                                            reader,
+			//                                                            fieldName);
 			Sort(result);
 		}
 
@@ -606,26 +612,26 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						string fieldName = (string)(itPath.Current);
 						if (ids != null)
 						{
-							ids.Traverse(new _IVisitor4_502(this, stream, idsNew, fieldName));
+							ids.Traverse(new _IVisitor4_502(this, stream, fieldName, idsNew));
 						}
 						ids = (TreeInt)idsNew.value;
 					}
 					if (ids != null)
 					{
-						ids.Traverse(new _IVisitor4_522(result));
+						ids.Traverse(new _IVisitor4_529(result));
 					}
 				}
 			}
 
 			private sealed class _IVisitor4_502 : IVisitor4
 			{
-				public _IVisitor4_502(_IVisitor4_491 _enclosing, ObjectContainerBase stream, ObjectByRef
-					 idsNew, string fieldName)
+				public _IVisitor4_502(_IVisitor4_491 _enclosing, ObjectContainerBase stream, string
+					 fieldName, ObjectByRef idsNew)
 				{
 					this._enclosing = _enclosing;
 					this.stream = stream;
-					this.idsNew = idsNew;
 					this.fieldName = fieldName;
+					this.idsNew = idsNew;
 				}
 
 				public void Visit(object treeInt)
@@ -636,8 +642,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					if (reader != null)
 					{
 						ObjectHeader oh = new ObjectHeader(stream, reader);
-						idsNew.value = oh.ClassMetadata().CollectFieldIDs(oh._marshallerFamily, oh._headerAttributes
-							, (TreeInt)idsNew.value, reader, fieldName);
+						CollectIdContext context = new CollectIdContext(this._enclosing._enclosing._trans
+							, oh, reader, fieldName);
+						oh.ClassMetadata().CollectIDs(context);
+						idsNew.value = context.Ids();
 					}
 				}
 
@@ -645,14 +653,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 				private readonly ObjectContainerBase stream;
 
-				private readonly ObjectByRef idsNew;
-
 				private readonly string fieldName;
+
+				private readonly ObjectByRef idsNew;
 			}
 
-			private sealed class _IVisitor4_522 : IVisitor4
+			private sealed class _IVisitor4_529 : IVisitor4
 			{
-				public _IVisitor4_522(IdListQueryResult result)
+				public _IVisitor4_529(IdListQueryResult result)
 				{
 					this.result = result;
 				}
@@ -924,12 +932,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private bool HasOrJoins()
 		{
-			return ForEachConstraintRecursively(new _IFunction4_739());
+			return ForEachConstraintRecursively(new _IFunction4_746());
 		}
 
-		private sealed class _IFunction4_739 : IFunction4
+		private sealed class _IFunction4_746 : IFunction4
 		{
-			public _IFunction4_739()
+			public _IFunction4_746()
 			{
 			}
 
@@ -951,12 +959,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private void RemoveJoins()
 		{
-			ForEachConstraintRecursively(new _IFunction4_755());
+			ForEachConstraintRecursively(new _IFunction4_762());
 		}
 
-		private sealed class _IFunction4_755 : IFunction4
+		private sealed class _IFunction4_762 : IFunction4
 		{
-			public _IFunction4_755()
+			public _IFunction4_762()
 			{
 			}
 

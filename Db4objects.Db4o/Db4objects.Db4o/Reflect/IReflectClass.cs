@@ -52,11 +52,17 @@ namespace Db4objects.Db4o.Reflect
 
 		IReflector Reflector();
 
-		// FIXME: remove. Reintroduced since OM depends on it - refactor OM.
-		object[] ToArray(object obj);
-
 		object NullValue();
 
-		void CreateConstructor();
+		/// <summary>
+		/// Calling this method may change the internal state of the class, even if a usable
+		/// constructor has been found on earlier invocations.
+		/// </summary>
+		/// <remarks>
+		/// Calling this method may change the internal state of the class, even if a usable
+		/// constructor has been found on earlier invocations.
+		/// </remarks>
+		/// <returns>true, if instances of this class can be created, false otherwise</returns>
+		bool EnsureCanBeInstantiated();
 	}
 }

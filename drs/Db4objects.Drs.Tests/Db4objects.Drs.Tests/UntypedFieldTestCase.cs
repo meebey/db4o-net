@@ -19,6 +19,16 @@ namespace Db4objects.Drs.Tests
 			}
 		}
 
+		public sealed class ItemWithCloneable
+		{
+			public ICloneable value;
+
+			public ItemWithCloneable(ICloneable c)
+			{
+				value = c;
+			}
+		}
+
 		public sealed class Data
 		{
 			public int id;
@@ -45,6 +55,16 @@ namespace Db4objects.Drs.Tests
 			AssertUntypedReplication(new object[] { "42" });
 		}
 
+		public virtual void TestUntypedStringJaggedArray()
+		{
+			AssertJaggedArray("42");
+		}
+
+		public virtual void TestUntypedFirstClassJaggedArray()
+		{
+			AssertJaggedArray(new UntypedFieldTestCase.Data(42));
+		}
+
 		public virtual void TestUntypedDate()
 		{
 			AssertUntypedReplication(new DateTime(100, 2, 2));
@@ -63,23 +83,88 @@ namespace Db4objects.Drs.Tests
 				))).id);
 		}
 
+		public virtual void TestArrayAsCloneable()
+		{
+			object[] array = new object[] { "42", new UntypedFieldTestCase.Data(42) };
+			UntypedFieldTestCase.ItemWithCloneable replicated = (UntypedFieldTestCase.ItemWithCloneable
+				)Replicate(new UntypedFieldTestCase.ItemWithCloneable(array));
+			AssertEquals(array, replicated.value);
+		}
+
 		private void AssertUntypedReplication(object data)
 		{
-			UntypedFieldTestCase.Item item = new UntypedFieldTestCase.Item(data);
-			A().Provider().StoreNew(item);
-			A().Provider().Commit();
-			ReplicateAll(A().Provider(), B().Provider());
-			UntypedFieldTestCase.Item replicated = (UntypedFieldTestCase.Item)SingleReplicatedInstance
-				(typeof(UntypedFieldTestCase.Item));
-			object expected = item.untyped;
+			AssertEquals(data, ReplicateItem(data).untyped);
+		}
+
+		private void AssertJaggedArray(object data)
+		{
+			object[] expected = new object[] { new object[] { data } };
+			object[] actual = (object[])ReplicateItem(expected).untyped;
+			Assert.AreEqual(expected.Length, actual.Length);
+			object[] nested = (object[])actual[0];
+			object actualValue = nested[0];
+			Assert.AreEqual(data, actualValue);
+			AssertNotSame(data, actualValue);
+		}
+
+		private void AssertNotSame(object expectedFirstClass, object actual)
+		{
+			if (IsFirstClass(expectedFirstClass.GetType()))
+			{
+				Assert.AreNotSame(expectedFirstClass, actual);
+			}
+		}
+
+		private bool IsFirstClass(Type klass)
+		{
+			if (klass.IsPrimitive)
+			{
+				return false;
+			}
+			if (klass == typeof(string))
+			{
+				return false;
+			}
+			if (klass == typeof(DateTime))
+			{
+				return false;
+			}
+			return true;
+		}
+
+		private void AssertEquals(object expected, object actual)
+		{
 			if (expected is object[])
 			{
-				ArrayAssert.AreEqual((object[])expected, (object[])replicated.untyped);
+				AssertEquals((object[])expected, (object[])actual);
 			}
 			else
 			{
-				Assert.AreEqual(expected, replicated.untyped);
+				Assert.AreEqual(expected, actual);
+				AssertNotSame(expected, actual);
 			}
+		}
+
+		private void AssertEquals(object[] expectedArray, object[] actualArray)
+		{
+			ArrayAssert.AreEqual(expectedArray, actualArray);
+			for (int i = 0; i < expectedArray.Length; ++i)
+			{
+				AssertNotSame(expectedArray[i], actualArray[i]);
+			}
+		}
+
+		private UntypedFieldTestCase.Item ReplicateItem(object data)
+		{
+			return (UntypedFieldTestCase.Item)Replicate(new UntypedFieldTestCase.Item(data));
+		}
+
+		private object Replicate(object item)
+		{
+			A().Provider().StoreNew(item);
+			A().Provider().Commit();
+			ReplicateAll(A().Provider(), B().Provider());
+			return SingleReplicatedInstance(item.GetType());
 		}
 
 		private object SingleReplicatedInstance(Type klass)

@@ -112,5 +112,27 @@ namespace Db4objects.Db4o.Foundation
 				}
 			}
 		}
+
+		public override string ToString()
+		{
+			switch (_value)
+			{
+				case NoId:
+				{
+					return "NO";
+				}
+
+				case YesId:
+				{
+					return "YES";
+				}
+
+				default:
+				{
+					return "UNSPECIFIED";
+					break;
+				}
+			}
+		}
 	}
 }

@@ -166,7 +166,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal override void Instantiate1(Transaction trans, ObjectReference @ref, IReadWriteBuffer
+		internal override void Instantiate1(Transaction trans, ObjectReference @ref, IReadBuffer
 			 buffer)
 		{
 			int dbID = buffer.ReadInt();

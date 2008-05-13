@@ -1,6 +1,8 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Tests.Common.Handlers;
@@ -23,6 +25,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		public virtual object ReadObject(ITypeHandler4 handler)
 		{
 			return handler.Read(this);
+		}
+
+		public virtual BitMap4 ReadBitMap(int bitCount)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

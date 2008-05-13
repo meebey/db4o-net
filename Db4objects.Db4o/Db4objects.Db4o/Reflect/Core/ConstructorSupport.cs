@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
@@ -12,7 +13,8 @@ namespace Db4objects.Db4o.Reflect.Core
 	public class ConstructorSupport
 	{
 		public static ReflectConstructorSpec CreateConstructor(IConstructorAwareReflectClass
-			 claxx, IReflectorConfiguration config, IReflectConstructor[] constructors)
+			 claxx, Type clazz, IReflectorConfiguration config, IReflectConstructor[] constructors
+			)
 		{
 			if (claxx == null)
 			{
@@ -25,7 +27,8 @@ namespace Db4objects.Db4o.Reflect.Core
 			if (!Platform4.CallConstructor())
 			{
 				bool skipConstructor = !config.CallConstructor(claxx);
-				if (claxx.SkipConstructor(skipConstructor, config.TestConstructors()))
+				if (!claxx.IsCollection() && claxx.SkipConstructor(skipConstructor, config.TestConstructors
+					()))
 				{
 					return null;
 				}
@@ -34,7 +37,7 @@ namespace Db4objects.Db4o.Reflect.Core
 			{
 				return null;
 			}
-			if (claxx.NewInstance() != null)
+			if (ReflectPlatform.CreateInstance(clazz) != null)
 			{
 				return null;
 			}

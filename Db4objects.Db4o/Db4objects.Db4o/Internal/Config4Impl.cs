@@ -305,13 +305,15 @@ namespace Db4objects.Db4o.Internal
 		public object DeepClone(object param)
 		{
 			Config4Impl ret = new Config4Impl();
-			ret._config = (KeySpecHashtable4)_config.DeepClone(this);
+			Config4Impl.ConfigDeepCloneContext context = new Config4Impl.ConfigDeepCloneContext
+				(this, ret);
+			ret._config = (KeySpecHashtable4)_config.DeepClone(context);
 			ret._internStrings = _internStrings;
 			ret._messageLevel = _messageLevel;
 			ret._readOnly = _readOnly;
 			if (_registeredTypeHandlers != null)
 			{
-				ret._registeredTypeHandlers = (Collection4)_registeredTypeHandlers.DeepClone(this
+				ret._registeredTypeHandlers = (Collection4)_registeredTypeHandlers.DeepClone(context
 					);
 			}
 			return ret;
@@ -1119,6 +1121,19 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			return null;
+		}
+
+		public class ConfigDeepCloneContext
+		{
+			public readonly Config4Impl _orig;
+
+			public readonly Config4Impl _cloned;
+
+			public ConfigDeepCloneContext(Config4Impl orig, Config4Impl cloned)
+			{
+				_orig = orig;
+				_cloned = cloned;
+			}
 		}
 	}
 }

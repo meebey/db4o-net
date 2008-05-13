@@ -63,7 +63,6 @@ namespace Db4objects.Db4o.Tests.Common.TA
 				{
 					continue;
 				}
-				field.SetAccessible();
 				IReflectClass type = field.GetFieldType();
 				if (type.IsSecondClass())
 				{

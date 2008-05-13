@@ -10,7 +10,6 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Types;
 using Sharpen;
 using Sharpen.IO;
-using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -24,7 +23,7 @@ namespace Db4objects.Db4o.Internal
 	/// </remarks>
 	/// <moveto>com.db4o.internal.blobs</moveto>
 	/// <exclude></exclude>
-	public class BlobImpl : IBlob, Sharpen.Lang.ICloneable, IDb4oTypeImpl
+	public class BlobImpl : IBlob, System.ICloneable, IDb4oTypeImpl
 	{
 		public const int CopybufferLength = 4096;
 
@@ -82,15 +81,8 @@ namespace Db4objects.Db4o.Internal
 		public virtual object CreateDefault(Transaction a_trans)
 		{
 			BlobImpl bi = null;
-			try
-			{
-				bi = (BlobImpl)this.MemberwiseClone();
-				bi.SetTrans(a_trans);
-			}
-			catch (CloneNotSupportedException)
-			{
-				return null;
-			}
+			bi = (BlobImpl)this.MemberwiseClone();
+			bi.SetTrans(a_trans);
 			return bi;
 		}
 
@@ -332,6 +324,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				i_stream.StoreInternal(i_trans, this, false);
 			}
+		}
+
+		object System.ICloneable.Clone()
+		{
+			return MemberwiseClone();
 		}
 	}
 }

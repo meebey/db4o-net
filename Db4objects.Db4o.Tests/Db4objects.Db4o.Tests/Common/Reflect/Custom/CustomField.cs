@@ -97,10 +97,6 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			FieldValues(onObject)[_index] = value;
 		}
 
-		public virtual void SetAccessible()
-		{
-		}
-
 		public virtual void Indexed(bool value)
 		{
 			_indexed = value;

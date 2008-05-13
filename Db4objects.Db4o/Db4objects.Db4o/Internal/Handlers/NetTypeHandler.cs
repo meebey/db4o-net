@@ -78,10 +78,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return base.JavaClass();
 			}
-			else
-			{
-				return base.JavaClass();
-			}
+			return base.JavaClass();
 		}
 
 		public abstract object Read(byte[] bytes, int offset);

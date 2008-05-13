@@ -5,6 +5,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -14,14 +15,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void AddFieldIndices(ClassMetadata yc, ObjectHeaderAttributes attributes
 			, StatefulBuffer writer, Slot oldSlot)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_16(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_17(this
 				, writer, yc, oldSlot);
 			TraverseFields(yc, writer, attributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_16 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_17 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_16(ObjectMarshaller1 _enclosing, StatefulBuffer writer
+			public _TraverseFieldCommand_17(ObjectMarshaller1 _enclosing, StatefulBuffer writer
 				, ClassMetadata yc, Slot oldSlot)
 			{
 				this._enclosing = _enclosing;
@@ -52,64 +53,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 			private readonly Slot oldSlot;
 		}
 
-		public override TreeInt CollectFieldIDs(TreeInt tree, ClassMetadata yc, ObjectHeaderAttributes
-			 attributes, StatefulBuffer writer, string name)
-		{
-			TreeInt[] ret = new TreeInt[] { tree };
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_31(this
-				, name, ret, writer);
-			TraverseFields(yc, writer, attributes, command);
-			return ret[0];
-		}
-
-		private sealed class _TraverseFieldCommand_31 : ObjectMarshaller.TraverseFieldCommand
-		{
-			public _TraverseFieldCommand_31(ObjectMarshaller1 _enclosing, string name, TreeInt
-				[] ret, StatefulBuffer writer)
-			{
-				this._enclosing = _enclosing;
-				this.name = name;
-				this.ret = ret;
-				this.writer = writer;
-			}
-
-			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
-				 containingClass)
-			{
-				if (isNull)
-				{
-					return;
-				}
-				if (name.Equals(field.GetName()))
-				{
-					ret[0] = field.CollectIDs(this._enclosing._family, ret[0], writer);
-				}
-				else
-				{
-					field.IncrementOffset(writer);
-				}
-			}
-
-			private readonly ObjectMarshaller1 _enclosing;
-
-			private readonly string name;
-
-			private readonly TreeInt[] ret;
-
-			private readonly StatefulBuffer writer;
-		}
-
 		public override void DeleteMembers(ClassMetadata yc, ObjectHeaderAttributes attributes
 			, StatefulBuffer writer, int type, bool isUpdate)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_49(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_31(this
 				, writer, isUpdate);
 			TraverseFields(yc, writer, attributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_49 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_31 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_49(ObjectMarshaller1 _enclosing, StatefulBuffer writer
+			public _TraverseFieldCommand_31(ObjectMarshaller1 _enclosing, StatefulBuffer writer
 				, bool isUpdate)
 			{
 				this._enclosing = _enclosing;
@@ -141,15 +95,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 reader, FieldMetadata field)
 		{
 			BooleanByRef found = new BooleanByRef(false);
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_63(field
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_45(field
 				, found, reader);
 			TraverseFields(yc, reader, fieldListInfo, command);
 			return found.value;
 		}
 
-		private sealed class _TraverseFieldCommand_63 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_45 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_63(FieldMetadata field, BooleanByRef found, ByteArrayBuffer
+			public _TraverseFieldCommand_45(FieldMetadata field, BooleanByRef found, ByteArrayBuffer
 				 reader)
 			{
 				this.field = field;
@@ -210,14 +164,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
 			 yo, ObjectHeaderAttributes attributes, ByteArrayBuffer reader)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_100(trans
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_82(trans
 				, reader, yo);
 			TraverseFields(yc, reader, attributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_100 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_82 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_100(Transaction trans, ByteArrayBuffer reader, ObjectReference
+			public _TraverseFieldCommand_82(Transaction trans, ByteArrayBuffer reader, ObjectReference
 				 yo)
 			{
 				this.trans = trans;
@@ -249,21 +203,21 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override void DefragFields(ClassMetadata clazz, ObjectHeader header, DefragmentContextImpl
 			 context)
 		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_115(this
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_97(this
 				, context);
 			TraverseFields(clazz, null, header._headerAttributes, command);
 		}
 
-		private sealed class _TraverseFieldCommand_115 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_97 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_115(ObjectMarshaller1 _enclosing, DefragmentContextImpl
+			public _TraverseFieldCommand_97(ObjectMarshaller1 _enclosing, DefragmentContextImpl
 				 context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
 			}
 
-			public override int FieldCount(ClassMetadata yapClass, ByteArrayBuffer reader)
+			public override int FieldCount(ClassMetadata yapClass, IReadBuffer reader)
 			{
 				return context.ReadInt();
 			}

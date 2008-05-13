@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Diagnostic;
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Diagnostic;
@@ -16,33 +15,26 @@ namespace Db4objects.Db4o.Internal.Delete
 	{
 		private readonly IReflectClass _fieldClass;
 
-		private readonly ITypeHandler4 _fieldHandler;
-
 		private readonly int _handlerVersion;
 
 		private readonly Config4Field _fieldConfig;
 
-		private int _deleteDepth;
-
-		public DeleteContextImpl(IReflectClass fieldClass, ITypeHandler4 fieldHandler, int
-			 handlerVersion, Config4Field fieldConfig, StatefulBuffer buffer) : base(buffer.
-			GetTransaction(), buffer)
+		public DeleteContextImpl(IReflectClass fieldClass, int handlerVersion, Config4Field
+			 fieldConfig, StatefulBuffer buffer) : base(buffer.GetTransaction(), buffer)
 		{
-			_fieldHandler = fieldHandler;
 			_fieldClass = fieldClass;
 			_handlerVersion = handlerVersion;
 			_fieldConfig = fieldConfig;
-			_deleteDepth = ((StatefulBuffer)_buffer).CascadeDeletes();
 		}
 
 		public virtual void CascadeDeleteDepth(int depth)
 		{
-			_deleteDepth = depth;
+			((StatefulBuffer)Buffer()).SetCascadeDeletes(depth);
 		}
 
 		public virtual int CascadeDeleteDepth()
 		{
-			return _deleteDepth;
+			return ((StatefulBuffer)Buffer()).CascadeDeletes();
 		}
 
 		public virtual bool CascadeDelete()
@@ -62,7 +54,7 @@ namespace Db4objects.Db4o.Internal.Delete
 
 		public virtual Slot ReadSlot()
 		{
-			return new Slot(_buffer.ReadInt(), _buffer.ReadInt());
+			return new Slot(Buffer().ReadInt(), Buffer().ReadInt());
 		}
 
 		public override int HandlerVersion()
@@ -70,31 +62,29 @@ namespace Db4objects.Db4o.Internal.Delete
 			return _handlerVersion;
 		}
 
-		public virtual void Delete()
+		public virtual void Delete(ITypeHandler4 handler)
 		{
+			ITypeHandler4 fieldHandler = CorrectHandlerVersion(handler);
 			int preservedCascadeDepth = CascadeDeleteDepth();
 			CascadeDeleteDepth(AdjustedDepth());
-			// correctHandlerVersion(_fieldHandler).delete(DeleteContextImpl.this);
-			SlotFormat.ForHandlerVersion(HandlerVersion()).DoWithSlotIndirection(this, _fieldHandler
-				, new _IClosure4_72(this));
+			if (SlotFormat.ForHandlerVersion(HandlerVersion()).HandleAsObject(fieldHandler))
+			{
+				DeleteObject();
+			}
+			else
+			{
+				fieldHandler.Delete(this);
+			}
 			CascadeDeleteDepth(preservedCascadeDepth);
 		}
 
-		private sealed class _IClosure4_72 : IClosure4
+		public virtual void DeleteObject()
 		{
-			public _IClosure4_72(DeleteContextImpl _enclosing)
+			int id = Buffer().ReadInt();
+			if (CascadeDelete())
 			{
-				this._enclosing = _enclosing;
+				Container().DeleteByID(Transaction(), id, CascadeDeleteDepth());
 			}
-
-			public object Run()
-			{
-				this._enclosing.CorrectHandlerVersion(this._enclosing._fieldHandler).Delete(this.
-					_enclosing);
-				return null;
-			}
-
-			private readonly DeleteContextImpl _enclosing;
 		}
 
 		private int AdjustedDepth()

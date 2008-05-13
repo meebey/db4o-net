@@ -101,5 +101,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			return _handlerVersion;
 		}
+
+		public static void ScrollBufferToContent(LocalObjectContainer container, ByteArrayBuffer
+			 buffer)
+		{
+			new Db4objects.Db4o.Internal.Marshall.ObjectHeader(container, buffer);
+		}
 	}
 }

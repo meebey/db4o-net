@@ -91,7 +91,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			Init(containingClass, field.GetName());
 			_reflectField = field;
-			_reflectField.SetAccessible();
 			_handler = handler;
 			_handlerID = handlerID;
 			// TODO: beautify !!!  possibly pull up isPrimitive to ReflectField
@@ -409,25 +408,26 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="FieldIndexException"></exception>
-		public TreeInt CollectIDs(MarshallerFamily mf, TreeInt tree, StatefulBuffer a_bytes
-			)
+		public void CollectIDs(CollectIdContext context)
 		{
 			if (!Alive())
 			{
-				return tree;
+				return;
 			}
+			// TODO: Consider to use SlotFormat.handleAsObject()
+			// to differentiate whether to call _handler.collectIDs
+			// or context.addId()
 			if (_handler is ClassMetadata)
 			{
-				return (TreeInt)Tree.Add(tree, new TreeInt(a_bytes.ReadInt()));
+				context.AddId();
 			}
 			else
 			{
-				if (_handler is ArrayHandler)
+				if (_handler is ICollectIdHandler)
 				{
-					return ((ArrayHandler)_handler).CollectIDs(mf, tree, a_bytes);
+					((ICollectIdHandler)_handler).CollectIDs(context);
 				}
 			}
-			return tree;
 		}
 
 		internal virtual void Configure(IReflectClass clazz, bool isPrimitive)
@@ -512,14 +512,35 @@ namespace Db4objects.Db4o.Internal
 			try
 			{
 				RemoveIndexEntry(mf, buffer);
-				DeleteContextImpl context = new DeleteContextImpl(GetStoredType(), _handler, mf.HandlerVersion
-					(), _config, buffer);
-				context.Delete();
+				int handlerVersion = mf.HandlerVersion();
+				DeleteContextImpl context = new DeleteContextImpl(GetStoredType(), handlerVersion
+					, _config, buffer);
+				SlotFormat.ForHandlerVersion(handlerVersion).DoWithSlotIndirection(buffer, _handler
+					, new _IClosure4_434(this, context));
 			}
 			catch (CorruptionException exc)
 			{
 				throw new FieldIndexException(exc, this);
 			}
+		}
+
+		private sealed class _IClosure4_434 : IClosure4
+		{
+			public _IClosure4_434(FieldMetadata _enclosing, DeleteContextImpl context)
+			{
+				this._enclosing = _enclosing;
+				this.context = context;
+			}
+
+			public object Run()
+			{
+				context.Delete(this._enclosing._handler);
+				return null;
+			}
+
+			private readonly FieldMetadata _enclosing;
+
+			private readonly DeleteContextImpl context;
 		}
 
 		/// <exception cref="CorruptionException"></exception>
@@ -780,7 +801,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private bool CheckAlive(IReadWriteBuffer buffer)
+		private bool CheckAlive(IReadBuffer buffer)
 		{
 			bool alive = Alive();
 			if (!alive)
@@ -863,7 +884,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			_reflectField.SetAccessible();
 			return FieldHandlerForClass(Container(), _reflectField.GetFieldType());
 		}
 
@@ -1093,14 +1113,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_903(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_910(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_903 : IVisitor4
+		private sealed class _IVisitor4_910 : IVisitor4
 		{
-			public _IVisitor4_903(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_910(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;
@@ -1304,12 +1324,12 @@ namespace Db4objects.Db4o.Internal
 			context.HandlerVersion(handlerVersion);
 			ITypeHandler4 typeHandler = context.CorrectHandlerVersion(GetHandler());
 			SlotFormat.ForHandlerVersion(handlerVersion).DoWithSlotIndirection(context, typeHandler
-				, new _IClosure4_1054(typeHandler, context));
+				, new _IClosure4_1061(typeHandler, context));
 		}
 
-		private sealed class _IClosure4_1054 : IClosure4
+		private sealed class _IClosure4_1061 : IClosure4
 		{
-			public _IClosure4_1054(ITypeHandler4 typeHandler, DefragmentContextImpl context)
+			public _IClosure4_1061(ITypeHandler4 typeHandler, DefragmentContextImpl context)
 			{
 				this.typeHandler = typeHandler;
 				this.context = context;

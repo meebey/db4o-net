@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal
 
 		private TernaryBool CallConstructorSpecialized(IReflectClass clazz)
 		{
-			Config4Class clazzConfig = (Config4Class)_config.ConfigClass(clazz.GetName());
+			Config4Class clazzConfig = _config.ConfigClass(clazz.GetName());
 			if (clazzConfig != null)
 			{
 				TernaryBool res = clazzConfig.CallConstructor();

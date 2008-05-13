@@ -81,11 +81,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 			((GenericObject)onObject).Set(_index, value);
 		}
 
-		public virtual void SetAccessible()
-		{
-		}
-
-		// do nothing
 		internal virtual void SetIndex(int index)
 		{
 			_index = index;

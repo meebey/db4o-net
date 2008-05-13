@@ -52,17 +52,20 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public ObjectReference(int a_id)
+		public ObjectReference(int id)
 		{
 			// redundant hashCode
-			_id = a_id;
+			_id = id;
+			if (DTrace.enabled)
+			{
+				DTrace.ObjectReferenceCreated.Log(id);
+			}
 		}
 
 		public ObjectReference(Db4objects.Db4o.Internal.ClassMetadata classMetadata, int 
-			id)
+			id) : this(id)
 		{
 			_class = classMetadata;
-			_id = id;
 		}
 
 		public virtual void Activate(ActivationPurpose purpose)
@@ -108,14 +111,14 @@ namespace Db4objects.Db4o.Internal
 				_updateListener = NullTransactionListener.Instance;
 				return;
 			}
-			_updateListener = new _ITransactionListener_85(this, transparentPersistence, transaction
+			_updateListener = new _ITransactionListener_88(this, transparentPersistence, transaction
 				);
 			transaction.AddTransactionListener(_updateListener);
 		}
 
-		private sealed class _ITransactionListener_85 : ITransactionListener
+		private sealed class _ITransactionListener_88 : ITransactionListener
 		{
-			public _ITransactionListener_85(ObjectReference _enclosing, TransparentPersistenceSupport
+			public _ITransactionListener_88(ObjectReference _enclosing, TransparentPersistenceSupport
 				 transparentPersistence, Db4objects.Db4o.Internal.Transaction transaction)
 			{
 				this._enclosing = _enclosing;

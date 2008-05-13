@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <remarks>This is the latest version, the one that should be used.</remarks>
 	/// <exclude></exclude>
 	public class ArrayHandler : IFirstClassHandler, IComparable4, ITypeHandler4, IVariableLengthTypeHandler
-		, IEmbeddedTypeHandler, ICompositeTypeHandler
+		, IEmbeddedTypeHandler, ICompositeTypeHandler, ICollectIdHandler
 	{
 		private ITypeHandler4 _handler;
 
@@ -125,26 +125,66 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return container.Handlers().ClassReflectorForHandler(_handler);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
-		public TreeInt CollectIDs(MarshallerFamily mf, TreeInt tree, StatefulBuffer reader
-			)
+		public virtual void CollectIDs(CollectIdContext context)
 		{
-			return mf._array.CollectIDs(this, tree, reader);
+			CollectIDsWith(context, new _IClosure4_106(this, context));
 		}
 
-		public TreeInt CollectIDs1(Transaction trans, TreeInt tree, ByteArrayBuffer reader
-			)
+		private sealed class _IClosure4_106 : IClosure4
 		{
-			if (reader == null)
+			public _IClosure4_106(ArrayHandler _enclosing, CollectIdContext context)
 			{
-				return tree;
+				this._enclosing = _enclosing;
+				this.context = context;
 			}
-			int count = ElementCount(trans, reader);
+
+			public object Run()
+			{
+				if (context.Buffer() == null)
+				{
+					return null;
+				}
+				int elementCount = this._enclosing.ElementCount(context.Transaction(), context);
+				elementCount -= this._enclosing.ReducedCountForNullBitMap(context, elementCount);
+				for (int i = 0; i < elementCount; i++)
+				{
+					context.AddId();
+				}
+				return null;
+			}
+
+			private readonly ArrayHandler _enclosing;
+
+			private readonly CollectIdContext context;
+		}
+
+		private int ReducedCountForNullBitMap(IReadBuffer context, int count)
+		{
+			if (!HasNullBitmap())
+			{
+				return 0;
+			}
+			return ReducedCountForNullBitMap(count, ReadNullBitmap(context, count));
+		}
+
+		private int ReducedCountForNullBitMap(int count, BitMap4 bitMap)
+		{
+			int nullCount = 0;
 			for (int i = 0; i < count; i++)
 			{
-				tree = (TreeInt)Tree.Add(tree, new TreeInt(reader.ReadInt()));
+				if (bitMap.IsTrue(i))
+				{
+					nullCount++;
+				}
 			}
-			return tree;
+			return nullCount;
+		}
+
+		protected virtual void CollectIDsWith(CollectIdContext context, IClosure4 closure
+			)
+		{
+			context.Seek(context.ReadInt());
+			closure.Run();
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
@@ -153,11 +193,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (context.CascadeDelete() && _handler is ClassMetadata)
 			{
 				int elementCount = ElementCount(context.Transaction(), context);
-				if (HasNullBitmap())
-				{
-					int nullBitmapLength = context.ReadInt();
-					context.Seek(context.Offset() + nullBitmapLength);
-				}
+				elementCount -= ReducedCountForNullBitMap(context, elementCount);
 				for (int i = elementCount; i > 0; i--)
 				{
 					_handler.Delete(context);
@@ -170,12 +206,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		//        Apparently it only frees slots.
 		//        For now the code simply returns without freeing.
 		/// <param name="classPrimitive"></param>
-		public void DeletePrimitiveEmbedded(StatefulBuffer a_bytes, PrimitiveFieldHandler
-			 classPrimitive)
+		public void DeletePrimitiveEmbedded(StatefulBuffer buffer, PrimitiveFieldHandler 
+			classPrimitive)
 		{
-			a_bytes.ReadInt();
+			buffer.ReadInt();
 			//int address = a_bytes.readInt();
-			a_bytes.ReadInt();
+			buffer.ReadInt();
 			//int length = a_bytes.readInt();
 			if (true)
 			{
@@ -279,30 +315,27 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return this;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
-		public virtual void ReadCandidates(int handlerVersion, ByteArrayBuffer reader, QCandidates
-			 candidates)
+		public virtual void ReadCandidates(QueryingReadContext context)
 		{
-			ReadSubCandidates(handlerVersion, reader, candidates);
+			ReadSubCandidates(context);
 		}
 
-		public virtual void ReadSubCandidates(int handlerVersion, ByteArrayBuffer reader, 
-			QCandidates candidates)
+		public virtual void ReadSubCandidates(QueryingReadContext context)
 		{
 			IntByRef elements = new IntByRef();
-			object arr = ReadCreate(candidates.i_trans, reader, elements);
+			object arr = ReadCreate(context.Transaction(), context, elements);
 			if (arr == null)
 			{
 				return;
 			}
-			ReadSubCandidates(handlerVersion, reader, candidates, elements.value);
+			int elementCount = elements.value;
+			elementCount -= ReducedCountForNullBitMap(context, elementCount);
+			ReadSubCandidates(context, elementCount);
 		}
 
-		protected virtual void ReadSubCandidates(int handlerVersion, ByteArrayBuffer reader
-			, QCandidates candidates, int count)
+		protected virtual void ReadSubCandidates(QueryingReadContext context, int count)
 		{
-			QueryingReadContext context = new QueryingReadContext(candidates.Transaction(), handlerVersion
-				, reader);
+			QCandidates candidates = context.Candidates();
 			for (int i = 0; i < count; i++)
 			{
 				QCandidate qc = candidates.ReadSubCandidate(context, _handler);
@@ -413,6 +446,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return !Deploy.csharp;
 		}
 
+		/// <summary>FIXME: Strange method name</summary>
 		protected virtual bool ReadingDotNetBeforeVersion4()
 		{
 			return false;
@@ -422,7 +456,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			IReflectClass claxx = ComponentType(container, obj);
 			bool primitive = IsPrimitive(claxx);
-			// useOldNetHandling() ? false : claxx.isPrimitive();
 			if (primitive)
 			{
 				claxx = container.ProduceClassMetadata(claxx).ClassReflector();
@@ -490,51 +523,50 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void Defrag2(IDefragmentContext context)
 		{
-			if (!(_handler is UntypedFieldHandler))
+			if (IsUntypedByteArray(context))
 			{
-				DefragElements(context);
 				return;
 			}
-			ReflectClassByRef clazzRef = new ReflectClassByRef();
-			int offset = context.Offset();
-			int numElements = ReadElementsAndClass(context.Transaction(), context, clazzRef);
-			if (!(context.Transaction().Reflector().ForClass(typeof(byte)).Equals(clazzRef.value
-				)))
+			int elementCount = ReadElementCountDefrag(context);
+			if (HasNullBitmap())
 			{
-				// FIXME behavior should be identical to seek/defrag below - why failure?
-				// defragElements(context, numElements);
-				context.Seek(offset);
-				DefragElements(context);
-				return;
+				BitMap4 bitMap = DefragmentNullBitmap(context, elementCount);
+				elementCount -= ReducedCountForNullBitMap(elementCount, bitMap);
 			}
-			context.IncrementOffset(numElements);
-		}
-
-		private void DefragElements(IDefragmentContext context)
-		{
-			int elements = ReadElementsDefrag(context);
-			DefragElements(context, elements);
-		}
-
-		private void DefragElements(IDefragmentContext context, int elements)
-		{
-			DefragmentNullBitmap(context, elements);
-			for (int i = 0; i < elements; i++)
+			for (int i = 0; i < elementCount; i++)
 			{
 				_handler.Defragment(context);
 			}
 		}
 
-		private void DefragmentNullBitmap(IDefragmentContext context, int elements)
+		private bool IsUntypedByteArray(IDefragmentContext context)
 		{
-			if (HasNullBitmap())
-			{
-				BitMap4 nullBitmap = ReadNullBitmap(context.SourceBuffer(), elements);
-				WriteNullBitmap(context.TargetBuffer(), nullBitmap);
-			}
+			return _handler is UntypedFieldHandler && HandleAsByteArray(context);
 		}
 
-		protected virtual int ReadElementsDefrag(IDefragmentContext context)
+		private bool HandleAsByteArray(IDefragmentContext context)
+		{
+			ReflectClassByRef clazzRef = new ReflectClassByRef();
+			int offset = context.Offset();
+			ReadElementsAndClass(context.Transaction(), context, clazzRef);
+			bool isByteArray = context.Transaction().Reflector().ForClass(typeof(byte)).Equals
+				(clazzRef.value);
+			context.Seek(offset);
+			return isByteArray;
+		}
+
+		private BitMap4 DefragmentNullBitmap(IDefragmentContext context, int elements)
+		{
+			if (!HasNullBitmap())
+			{
+				return null;
+			}
+			BitMap4 nullBitmap = ReadNullBitmap(context.SourceBuffer(), elements);
+			WriteNullBitmap(context.TargetBuffer(), nullBitmap);
+			return nullBitmap;
+		}
+
+		protected virtual int ReadElementCountDefrag(IDefragmentContext context)
 		{
 			int elements = context.SourceBuffer().ReadInt();
 			context.TargetBuffer().WriteInt(MapElementsEntry(context, elements));
@@ -581,9 +613,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private BitMap4 ReadNullBitmap(IReadBuffer context, int length)
 		{
-			byte[] bitMapBytes = new byte[context.ReadInt()];
-			context.ReadBytes(bitMapBytes);
-			return new BitMap4(bitMapBytes, 0, length);
+			return context.ReadBitMap(length);
 		}
 
 		protected virtual bool HasNullBitmap()
@@ -626,11 +656,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		private void WriteNullBitmap(IWriteBuffer context, BitMap4 nullItems)
+		private void WriteNullBitmap(IWriteBuffer context, BitMap4 bitMap)
 		{
-			byte[] nullMapBytes = nullItems.Bytes();
-			context.WriteInt(nullMapBytes.Length);
-			context.WriteBytes(nullMapBytes);
+			context.WriteBytes(bitMap.Bytes());
 		}
 
 		private BitMap4 NullItemsMap(IReflectArray reflector, object array)

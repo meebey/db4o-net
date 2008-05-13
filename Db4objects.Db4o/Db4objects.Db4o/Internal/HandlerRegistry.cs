@@ -211,7 +211,7 @@ namespace Db4objects.Db4o.Internal
 			RegisterHandlerVersion(arrayHandler, 2, new ArrayHandler2());
 			if (NullableArrayHandling.Enabled())
 			{
-				RegisterHandlerVersion(arrayHandler, 4, new ArrayHandler3());
+				RegisterHandlerVersion(arrayHandler, 3, new ArrayHandler3());
 			}
 			MultidimensionalArrayHandler multidimensionalArrayHandler = new MultidimensionalArrayHandler
 				();

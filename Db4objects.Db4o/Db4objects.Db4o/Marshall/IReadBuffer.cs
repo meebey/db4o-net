@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Marshall
 {
 	/// <summary>
@@ -15,6 +17,8 @@ namespace Db4objects.Db4o.Marshall
 		/// <summary>returns the current offset in the buffer</summary>
 		/// <returns>the offset</returns>
 		int Offset();
+
+		BitMap4 ReadBitMap(int bitCount);
 
 		/// <summary>reads a byte from the buffer.</summary>
 		/// <remarks>reads a byte from the buffer.</remarks>

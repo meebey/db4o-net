@@ -195,7 +195,6 @@ namespace Db4objects.Drs.Tests
 				{
 					continue;
 				}
-				field.SetAccessible();
 				field.Set(@object, null);
 			}
 			IReflectClass superclass = claxx.GetSuperclass();

@@ -364,7 +364,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		// FIXME: This method was just temporarily added to fulfill contract of MarshallingInfo
 		//        It will go, the buffer is never needed in new marshalling. 
-		public virtual IReadWriteBuffer Buffer()
+		public virtual IReadBuffer Buffer()
 		{
 			return null;
 		}

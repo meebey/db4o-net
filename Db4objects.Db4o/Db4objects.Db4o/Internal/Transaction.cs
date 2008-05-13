@@ -377,7 +377,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return _objectContainer;
 			}
-			return (IObjectContainer)_container;
+			return _container;
 		}
 
 		public virtual IContext Context()

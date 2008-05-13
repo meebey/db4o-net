@@ -5,6 +5,7 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
@@ -97,6 +98,36 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				)RetrieveOnlyInstance(typeof(ArrayHandlerTestCase.StringArrayHolder));
 			Assert.AreNotSame(expectedItem, readItem);
 			ArrayAssert.AreEqual(expectedItem._strings, readItem._strings);
+		}
+
+		public virtual void TestHandlerVersion()
+		{
+			ArrayHandlerTestCase.IntArrayHolder intArrayHolder = new ArrayHandlerTestCase.IntArrayHolder
+				(new int[0]);
+			Store(intArrayHolder);
+			IReflectClass claxx = Reflector().ForObject(intArrayHolder);
+			ClassMetadata classMetadata = (ClassMetadata)Container().TypeHandlerForReflectClass
+				(claxx);
+			FieldMetadata fieldMetadata = classMetadata.FieldMetadataForName("_ints");
+			ITypeHandler4 arrayHandler = fieldMetadata.GetHandler();
+			Assert.IsInstanceOf(typeof(ArrayHandler), arrayHandler);
+			AssertCorrectedHandlerVersion(arrayHandler, 0, typeof(ArrayHandler0));
+			AssertCorrectedHandlerVersion(arrayHandler, 1, typeof(ArrayHandler2));
+			AssertCorrectedHandlerVersion(arrayHandler, 2, typeof(ArrayHandler2));
+			if (NullableArrayHandling.Enabled())
+			{
+				AssertCorrectedHandlerVersion(arrayHandler, 3, typeof(ArrayHandler3));
+			}
+			AssertCorrectedHandlerVersion(arrayHandler, HandlerRegistry.HandlerVersion, typeof(
+				ArrayHandler));
+		}
+
+		private void AssertCorrectedHandlerVersion(ITypeHandler4 arrayHandler, int version
+			, Type handlerClass)
+		{
+			ITypeHandler4 correctedHandlerVersion = Container().Handlers().CorrectHandlerVersion
+				(arrayHandler, version);
+			Assert.IsInstanceOf(handlerClass, correctedHandlerVersion);
 		}
 	}
 }

@@ -2,6 +2,7 @@
 
 using System.IO;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
@@ -15,6 +16,23 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class ArrayHandler0 : ArrayHandler2
 	{
+		protected override void CollectIDsWith(CollectIdContext context, IClosure4 closure
+			)
+		{
+			int address = context.ReadInt();
+			int length = context.ReadInt();
+			if (address == 0)
+			{
+				return;
+			}
+			IReadBuffer temp = context.Buffer();
+			ByteArrayBuffer indirectedBuffer = context.Container().BufferByAddress(address, length
+				);
+			context.Buffer(indirectedBuffer);
+			closure.Run();
+			context.Buffer(temp);
+		}
+
 		/// <exception cref="Db4oIOException"></exception>
 		public override void Delete(IDeleteContext context)
 		{
@@ -23,11 +41,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
-		public override void ReadCandidates(int handlerVersion, ByteArrayBuffer reader, QCandidates
-			 candidates)
+		public override void ReadCandidates(QueryingReadContext context)
 		{
-			Transaction transaction = candidates.Transaction();
-			ByteArrayBuffer arrayBuffer = reader.ReadEmbeddedObject(transaction);
+			Transaction transaction = context.Transaction();
+			QCandidates candidates = context.Candidates();
+			ByteArrayBuffer arrayBuffer = ((ByteArrayBuffer)context.Buffer()).ReadEmbeddedObject
+				(transaction);
 			int count = ElementCount(transaction, arrayBuffer);
 			for (int i = 0; i < count; i++)
 			{
@@ -49,7 +68,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			// a user handler, it should be implemented by using a Queue
 			// in the UnmarshallingContext.
 			// The buffer has to be set back from the outside!  See below
-			IReadWriteBuffer contextBuffer = context.Buffer(buffer);
+			IReadBuffer contextBuffer = context.Buffer(buffer);
 			object array = base.Read(context);
 			// The context buffer has to be set back.
 			context.Buffer(contextBuffer);
@@ -91,7 +110,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override void Defrag2(IDefragmentContext context)
 		{
-			int elements = ReadElementsDefrag(context);
+			int elements = ReadElementCountDefrag(context);
 			for (int i = 0; i < elements; i++)
 			{
 				DelegateTypeHandler().Defragment(context);

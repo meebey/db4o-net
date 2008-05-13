@@ -4,7 +4,10 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
-	/// <summary>marker interface for variable length TypeHandlers</summary>
+	/// <summary>
+	/// marker interface for TypeHandlers where the slot
+	/// length can change, depending on the object stored
+	/// </summary>
 	/// <exclude></exclude>
 	public interface IVariableLengthTypeHandler : ITypeHandler4
 	{

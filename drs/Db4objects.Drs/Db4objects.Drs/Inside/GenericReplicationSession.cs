@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Drs;
 using Db4objects.Drs.Inside;
@@ -204,7 +205,6 @@ namespace Db4objects.Drs.Inside
 			while (fields.MoveNext())
 			{
 				IReflectField field = (IReflectField)fields.Current;
-				//TODO Optimization: Do this in the field constructor;
 				object value = field.Get(src);
 				field.Set(dest, FindCounterpart(value, sourceProvider));
 			}
@@ -354,26 +354,29 @@ namespace Db4objects.Drs.Inside
 				{
 					continue;
 				}
-				if (IsSecondClass(@object))
+				IReflectClass claxx = _reflector.ForObject(@object);
+				if (claxx.IsSecondClass() || Platform4.IsTransient(claxx))
 				{
 					objects[i] = @object;
 				}
 				else
 				{
-					IReplicationReference replicationReference = sourceProvider.ProduceReference(@object
-						, null, null);
-					if (replicationReference == null)
+					if (claxx.IsArray())
 					{
-						throw new Exception(sourceProvider + " cannot find ref for " + @object);
+						objects[i] = ArrayClone(@object, claxx, sourceProvider);
 					}
-					objects[i] = replicationReference.Counterpart();
+					else
+					{
+						IReplicationReference replicationReference = sourceProvider.ProduceReference(@object
+							, null, null);
+						if (replicationReference == null)
+						{
+							throw new Exception(sourceProvider + " cannot find ref for " + @object);
+						}
+						objects[i] = replicationReference.Counterpart();
+					}
 				}
 			}
-		}
-
-		private bool IsSecondClass(object @object)
-		{
-			return _reflector.ForObject(@object).IsSecondClass();
 		}
 
 		private void ResetProcessedUuids()
@@ -401,13 +404,13 @@ namespace Db4objects.Drs.Inside
 			{
 				return;
 			}
-			destination.VisitCachedReferences(new _IVisitor4_303(this, destination));
-			source.VisitCachedReferences(new _IVisitor4_309(this, destination));
+			destination.VisitCachedReferences(new _IVisitor4_304(this, destination));
+			source.VisitCachedReferences(new _IVisitor4_310(this, destination));
 		}
 
-		private sealed class _IVisitor4_303 : IVisitor4
+		private sealed class _IVisitor4_304 : IVisitor4
 		{
-			public _IVisitor4_303(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_304(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;
@@ -424,9 +427,9 @@ namespace Db4objects.Drs.Inside
 			private readonly IReplicationProviderInside destination;
 		}
 
-		private sealed class _IVisitor4_309 : IVisitor4
+		private sealed class _IVisitor4_310 : IVisitor4
 		{
-			public _IVisitor4_309(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_310(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;

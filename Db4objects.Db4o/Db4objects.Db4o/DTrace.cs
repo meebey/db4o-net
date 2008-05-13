@@ -53,13 +53,15 @@ namespace Db4objects.Db4o
 				//            
 				//            addRangeWithLength(455926,1);
 				//
-				// addRangeWithLength(20161,1);
-				TrackEventsWithoutRange();
-				//            turnAllOffExceptFor(new DTrace[] {YAPMETA_SET_ID});
-				TurnAllOffExceptFor(new Db4objects.Db4o.DTrace[] { PersistentOwnLength });
+				AddRangeWithLength(1647603457, 1);
+				// trackEventsWithoutRange();
+				TurnAllOffExceptFor(new Db4objects.Db4o.DTrace[] { ObjectReferenceCreated });
 			}
 		}
 
+		//            turnAllOffExceptFor(new DTrace[] {
+		//                PERSISTENT_OWN_LENGTH,
+		//                });
 		//            turnAllOffExceptFor(new DTrace[] {
 		//                FREESPACEMANAGER_GET_SLOT,
 		//                FREESPACEMANAGER_RAM_FREE,
@@ -125,6 +127,8 @@ namespace Db4objects.Db4o
 				IoCopy = new Db4objects.Db4o.DTrace(true, true, "io copy", true);
 				JustSet = new Db4objects.Db4o.DTrace(true, true, "just set", true);
 				NewInstance = new Db4objects.Db4o.DTrace(true, true, "newInstance", true);
+				ObjectReferenceCreated = new Db4objects.Db4o.DTrace(true, true, "new ObjectReference"
+					, true);
 				PersistentOwnLength = new Db4objects.Db4o.DTrace(true, true, "Persistent own length"
 					, true);
 				PersistentbaseWrite = new Db4objects.Db4o.DTrace(true, true, "persistentbase write"
@@ -287,6 +291,8 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.DTrace JustSet;
 
 		public static Db4objects.Db4o.DTrace NewInstance;
+
+		public static Db4objects.Db4o.DTrace ObjectReferenceCreated;
 
 		public static Db4objects.Db4o.DTrace PersistentOwnLength;
 

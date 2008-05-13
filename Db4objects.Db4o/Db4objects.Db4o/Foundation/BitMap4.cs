@@ -30,6 +30,11 @@ namespace Db4objects.Db4o.Foundation
 			return (((_bits[ArrayOffset(bit)]) >> (ByteOffset(bit) & 0x1f)) & 1) != 0;
 		}
 
+		public bool IsFalse(int bit)
+		{
+			return !IsTrue(bit);
+		}
+
 		public int MarshalledLength()
 		{
 			return _bits.Length;

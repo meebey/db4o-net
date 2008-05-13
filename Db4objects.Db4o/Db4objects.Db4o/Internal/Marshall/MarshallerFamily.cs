@@ -32,8 +32,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private static int CurrentVersion = MarshallerFamily.FamilyVersion.BtreeFieldIndexes;
 
-		public readonly ArrayMarshaller _array;
-
 		public readonly ClassMarshaller _class;
 
 		public readonly IFieldMarshaller _field;
@@ -55,28 +53,26 @@ namespace Db4objects.Db4o.Internal.Marshall
 		static MarshallerFamily()
 		{
 			allVersions = new MarshallerFamily[HandlerRegistry.HandlerVersion + 1];
-			allVersions[0] = new MarshallerFamily(0, 0, new ArrayMarshaller0(), new ClassMarshaller0
-				(), new FieldMarshaller0(), new ObjectMarshaller0(), new PrimitiveMarshaller0(), 
-				new StringMarshaller0(), new UntypedMarshaller0());
+			allVersions[0] = new MarshallerFamily(0, 0, new ClassMarshaller0(), new FieldMarshaller0
+				(), new ObjectMarshaller0(), new PrimitiveMarshaller0(), new StringMarshaller0()
+				, new UntypedMarshaller0());
 			// LEGACY => before 5.4
-			allVersions[1] = new MarshallerFamily(ClassIndexesToBTrees_5_5.Version, 1, new ArrayMarshaller1
-				(), new ClassMarshaller1(), new FieldMarshaller0(), new ObjectMarshaller1(), new 
-				PrimitiveMarshaller1(), new StringMarshaller1(), new UntypedMarshaller1());
+			allVersions[1] = new MarshallerFamily(ClassIndexesToBTrees_5_5.Version, 1, new ClassMarshaller1
+				(), new FieldMarshaller0(), new ObjectMarshaller1(), new PrimitiveMarshaller1(), 
+				new StringMarshaller1(), new UntypedMarshaller1());
 			for (int i = 2; i < allVersions.Length; i++)
 			{
 				allVersions[i] = LatestFamily(i);
 			}
 		}
 
-		public MarshallerFamily(int converterVersion, int handlerVersion, ArrayMarshaller
-			 arrayMarshaller, ClassMarshaller classMarshaller, IFieldMarshaller fieldMarshaller
-			, ObjectMarshaller objectMarshaller, PrimitiveMarshaller primitiveMarshaller, StringMarshaller
-			 stringMarshaller, UntypedMarshaller untypedMarshaller)
+		public MarshallerFamily(int converterVersion, int handlerVersion, ClassMarshaller
+			 classMarshaller, IFieldMarshaller fieldMarshaller, ObjectMarshaller objectMarshaller
+			, PrimitiveMarshaller primitiveMarshaller, StringMarshaller stringMarshaller, UntypedMarshaller
+			 untypedMarshaller)
 		{
 			_converterVersion = converterVersion;
 			_handlerVersion = handlerVersion;
-			_array = arrayMarshaller;
-			_array._family = this;
 			_class = classMarshaller;
 			_class._family = this;
 			_field = fieldMarshaller;
@@ -91,9 +87,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public static MarshallerFamily LatestFamily(int version)
 		{
-			return new MarshallerFamily(FieldIndexesToBTrees_5_7.Version, version, new ArrayMarshaller1
-				(), new ClassMarshaller2(), new FieldMarshaller1(), new ObjectMarshaller1(), new 
-				PrimitiveMarshaller1(), new StringMarshaller1(), new UntypedMarshaller1());
+			return new MarshallerFamily(FieldIndexesToBTrees_5_7.Version, version, new ClassMarshaller2
+				(), new FieldMarshaller1(), new ObjectMarshaller1(), new PrimitiveMarshaller1(), 
+				new StringMarshaller1(), new UntypedMarshaller1());
 		}
 
 		public static MarshallerFamily Version(int n)

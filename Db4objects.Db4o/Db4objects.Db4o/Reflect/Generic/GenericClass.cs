@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 
@@ -371,21 +370,13 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _converter.ToString(obj);
 		}
 
-		public virtual object[] ToArray(object obj)
-		{
-			if (!IsCollection())
-			{
-				return new object[] { obj };
-			}
-			return Platform4.CollectionToArray(_reflector.GetStream(), obj);
-		}
-
-		public virtual void CreateConstructor()
+		public virtual bool EnsureCanBeInstantiated()
 		{
 			if (_delegate != null)
 			{
-				_delegate.CreateConstructor();
+				return _delegate.EnsureCanBeInstantiated();
 			}
+			return true;
 		}
 
 		public virtual object NullValue()

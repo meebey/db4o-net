@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			// a user handler, it should be implemented by using a Queue
 			// in the UnmarshallingContext.
 			// The buffer has to be set back from the outside!  See below
-			IReadWriteBuffer contextBuffer = context.Buffer(buffer);
+			IReadBuffer contextBuffer = context.Buffer(buffer);
 			object array = base.Read(context);
 			// The context buffer has to be set back.
 			context.Buffer(contextBuffer);

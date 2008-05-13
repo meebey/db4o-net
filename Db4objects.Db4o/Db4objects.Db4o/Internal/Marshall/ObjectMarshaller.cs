@@ -4,6 +4,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -15,8 +16,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			private bool _cancelled = false;
 
-			public virtual int FieldCount(ClassMetadata classMetadata, ByteArrayBuffer reader
-				)
+			public virtual int FieldCount(ClassMetadata classMetadata, IReadBuffer reader)
 			{
 				return classMetadata.ReadFieldCount(reader);
 			}
@@ -63,9 +63,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public abstract void AddFieldIndices(ClassMetadata yc, ObjectHeaderAttributes attributes
 			, StatefulBuffer writer, Slot oldSlot);
-
-		public abstract TreeInt CollectFieldIDs(TreeInt tree, ClassMetadata yc, ObjectHeaderAttributes
-			 attributes, StatefulBuffer reader, string name);
 
 		protected virtual StatefulBuffer CreateWriterForNew(Transaction trans, ObjectReference
 			 yo, int updateDepth, int length)
@@ -140,20 +137,20 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			BooleanByRef updateFieldFound = new BooleanByRef();
 			int savedOffset = context.Offset();
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_160(updateFieldFound
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_155(updateFieldFound
 				, context);
 			TraverseFields(context, command);
 			if (updateFieldFound.value)
 			{
 				context.Seek(savedOffset);
-				command = new _TraverseFieldCommand_184(context);
+				command = new _TraverseFieldCommand_179(context);
 				TraverseFields(context, command);
 			}
 		}
 
-		private sealed class _TraverseFieldCommand_160 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_155 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_160(BooleanByRef updateFieldFound, UnmarshallingContext
+			public _TraverseFieldCommand_155(BooleanByRef updateFieldFound, UnmarshallingContext
 				 context)
 			{
 				this.updateFieldFound = updateFieldFound;
@@ -192,9 +189,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			private readonly UnmarshallingContext context;
 		}
 
-		private sealed class _TraverseFieldCommand_184 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_179 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_184(UnmarshallingContext context)
+			public _TraverseFieldCommand_179(UnmarshallingContext context)
 			{
 				this.context = context;
 			}
@@ -211,14 +208,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual void Marshall(object obj, MarshallingContext context)
 		{
 			Transaction trans = context.Transaction();
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_196(context
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_191(context
 				, trans, obj);
 			TraverseFields(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_196 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_191 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_196(MarshallingContext context, Transaction trans, object
+			public _TraverseFieldCommand_191(MarshallingContext context, Transaction trans, object
 				 obj)
 			{
 				this.context = context;
@@ -229,8 +226,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			private int fieldIndex;
 
-			public override int FieldCount(ClassMetadata classMetadata, ByteArrayBuffer buffer
-				)
+			public override int FieldCount(ClassMetadata classMetadata, IReadBuffer buffer)
 			{
 				int fieldCount = classMetadata.i_fields.Length;
 				context.FieldCount(fieldCount);
