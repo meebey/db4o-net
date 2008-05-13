@@ -1,5 +1,6 @@
 ﻿using System;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
@@ -7,88 +8,103 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 {
 	class NullableArraysElementsTestCase : AbstractDb4oTestCase
 	{
-		protected override void Store()
+        private static readonly Action<string> warning = delegate(String s) { TestPlatform.EmitWarning( s + "NullableArraysElementsTestCase: Remove the if() when COR-1130 get closed");  };
+
+        private readonly TestSubject[] data = new TestSubject[]
+	        {
+	            new TestSubject(CreateNullableIntArray(), 0xDB40, new VTTestSubject(0x04BD, "foo", true)),
+	            new TestSubject(CreateNullableIntArray(), 0xDB40, new VTTestSubject(0x04BD, "bar", false)),
+	            new TestSubject(CreateNullableIntArray(), 42, new VTTestSubject(42, "baz", null)),
+	        };
+			
+        protected override void Store()
 		{
-			Store(new TestSubject<int?>(CreateNullableIntArray(), 0xDB40, new VTTestSubject(0x04BD, "foo", true)));
-			Store(new TestSubject<object>(CreateNullableObjectArray(), 0xDB40, new VTTestSubject(0x04BD, "bar", true)));
-		}
+            foreach (TestSubject testItem in data)
+            {
+                Store(testItem);
+            }
+        }
 
         public void TestArrayType()
         {
-            if (Db4objects.Db4o.Internal.NullableArrayHandling.Disabled())
+            if (NullableArrayHandling.Enabled())
             {
-                return;
+                TestSubject testSubject = QueryByName("foo");
+                Assert.IsInstanceOf(typeof (int?[]), testSubject._elements);
             }
-            TestSubject<int?> testSubject = (TestSubject<int?>)RetrieveOnlyInstance(typeof(TestSubject<int?>));
-            Assert.IsInstanceOf(typeof(int?[]), testSubject._elements);
+            else
+            {
+                warning("TestArrayType");
+            }
         }
 
-        public void TestNullableItemsInUntypeArray()
+        public void TestNullableArray()
         {
-            if (!NullableArrayHandling.Disabled())
+            if (NullableArrayHandling.Enabled())
             {
-                TestSubject<object> testSubject = (TestSubject<object>) RetrieveOnlyInstance(typeof (TestSubject<object>));
-                AssertNullableType(testSubject, "bar");
+                AssertTestSubject("foo");
+                AssertTestSubject("bar");
+                AssertTestSubject("baz");
             }
             else
             {
-                Console.WriteLine("NullableArraysElementsTestCase: Remove the if() as soon as we get Nullable arrays working.");
+                warning("TestNullableItemsInUntypeArray");
             }
         }
 
-		public void TestNullableItemsInTypeArray()
+	    private void AssertTestSubject(string name)
+	    {
+	        AssertNullableType(GetTestItem(name) , QueryByName(name));
+	    }
+
+		private static void AssertNullableType(TestSubject expected, TestSubject actual)
 		{
-			// FIXME: Enable this test when arrays of nullable itens is supported.
-            if (!NullableArrayHandling.Disabled())
+			Assert.IsNotNull(actual);
+
+			Assert.IsTrue(actual._nullableInt.HasValue);
+			Assert.IsFalse(actual._valueType2.HasValue);
+			Assert.IsNotNull(actual._valueType);
+			
+            Assert.AreEqual(
+                expected._valueType.Value._value,
+                actual._valueType.Value._value);
+			
+            Assert.AreEqual(
+                expected._valueType.Value._name,
+                actual._valueType.Value._name);
+
+            Assert.AreEqual(
+                expected._valueType.Value._nullableBool.HasValue, 
+                actual._valueType.Value._nullableBool.HasValue);
+
+            if (expected._valueType.Value._nullableBool.HasValue)
             {
-                TestSubject<int?> testSubject = (TestSubject<int?>) RetrieveOnlyInstance(typeof (TestSubject<int?>));
-                AssertNullableType(testSubject, "foo");
+                Assert.AreEqual(
+                    expected._valueType.Value._nullableBool.Value,
+                    actual._valueType.Value._nullableBool.Value);
             }
-            else
-            {
-                Console.WriteLine("NullableArraysElementsTestCase: Remove the if() as soon as we get Nullable arrays working.");
-            }
-		}
 
-
-		private static void AssertNullableType<T>(TestSubject<T> testSubject, string name)
-		{
-			Assert.IsNotNull(testSubject);
-			Assert.AreEqual(0xDB40, testSubject._value);
-
-			Assert.IsTrue(testSubject._nullableInt.HasValue);
-			Assert.IsFalse(testSubject._valueType2.HasValue);
-			Assert.IsNotNull(testSubject._valueType);
-			Assert.AreEqual(0x04BD, testSubject._valueType.Value._value);
-			Assert.AreEqual(name, testSubject._valueType.Value._name);
-			Assert.IsTrue(testSubject._valueType.Value._nullableBool.HasValue);
-			Assert.IsTrue(testSubject._valueType.Value._nullableBool.Value);
-
-			Assert.IsNotNull(testSubject._elements);
-			if (!NullableArrayHandling.Disabled())
+		    Assert.IsNotNull(actual._elements);
+            Assert.IsNotNull(actual._nullableArray);
+			if (NullableArrayHandling.Enabled())
 			{
-			    for (int i = 0; i < testSubject._elements.Length; i += 2)
+			    for (int i = 0; i < actual._elements.Length; i += 2)
 			    {
-			        Assert.IsNull(testSubject._elements[i]);
+			        Assert.IsNull(actual._elements[i]);
 			    }
 			}
-
-		    for (int i = 1; i < testSubject._elements.Length; i += 2)
+            else
 			{
-				Assert.IsNotNull(testSubject._elements[i]);
-				Assert.AreEqual(i, testSubject._elements[i]);
-			}
-		}
-
-		private static object[] CreateNullableObjectArray()
-		{
-			object[] items = new object[10];
-			for (int i = 1; i < items.Length; i += 2)
-			{
-				items[i] = new Nullable<int>(i);
+                warning("AssertNullableType");
 			}
 
-			return items;
+            int?[] values = (int?[])actual._nullableArray;
+            for (int i = 1; i < actual._elements.Length; i += 2)
+			{
+				Assert.IsNotNull(actual._elements[i]);
+				Assert.AreEqual(i, actual._elements[i]);
+                Assert.AreEqual(i, values[i]);
+			}
 		}
 
 		private static int?[] CreateNullableIntArray()
@@ -101,20 +117,42 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
 			return items;
 		}
+
+        private TestSubject GetTestItem(string name)
+        {
+            return Array.Find(
+                        data,
+                        delegate(TestSubject candidate)
+                        {
+                            return candidate._valueType.Value._name == name;
+                        });
+        }
+
+        private TestSubject QueryByName(string name)
+        {
+            IQuery query = NewQuery(typeof(TestSubject));
+            query.Descend("_valueType").Descend("_name").Constrain(name);
+
+            IObjectSet results = query.Execute();
+            Assert.AreEqual(1, results.Size());
+
+            return (TestSubject)results[0];
+        }
 	}
 
-	class TestSubject<T>
+	class TestSubject
 	{
-		public T[] _elements;
-		public int _value;
+		public int?[] _elements;
 		public int? _nullableInt;
-		public VTTestSubject? _valueType;
+	    public object _nullableArray;
+		
+        public VTTestSubject? _valueType;
 		public VTTestSubject? _valueType2;
 
-		public TestSubject(T[] items, int value, VTTestSubject vtt)
+		public TestSubject(int?[] items, int value, VTTestSubject vtt)
 		{
 			_elements = items;
-			_value = value;
+		    _nullableArray = items;
 			_nullableInt = value;
 			_valueType = vtt;
 			_valueType2 = null;
@@ -127,7 +165,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 		public string _name;
 		public bool? _nullableBool;
 
-		public VTTestSubject(int value, string name, bool aBool)
+		public VTTestSubject(int value, string name, bool? aBool)
 		{
 			_value = value;
 			_name = name;
