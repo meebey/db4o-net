@@ -11,6 +11,8 @@ namespace Sharpen.Lang
 
 		private IRunnable _target;
 
+		private System.Threading.ThreadPriority _priority;
+
 		private string _name;
 
 		private System.Threading.Thread _thread;
@@ -87,13 +89,30 @@ namespace Sharpen.Lang
 				throw new ArgumentOutOfRangeException(message);
 #endif
 			}
-
-			_thread.Priority = (System.Threading.ThreadPriority) (priority / 2);
+			// Set priority immediately on the thread if there already is one, otherwise store
+			// to set it when one is created.
+			if (_thread != null)
+			{
+				_thread.Priority = (System.Threading.ThreadPriority)(priority / 2);
+			}
+			else
+			{
+				_priority = (System.Threading.ThreadPriority)(priority / 2);
+			}
 		}
 
 		public void SetPriority(System.Threading.ThreadPriority priority)
 		{
-			_thread.Priority = priority;
+			// Set priority immediately on the thread if there already is one, otherwise store
+			// to set it when one is created.
+			if (_thread != null)
+			{
+				_thread.Priority = priority;
+			}
+			else
+			{
+				_priority = priority;
+			}
 		}
 
 		public static void Sleep(long milliseconds)
@@ -104,6 +123,11 @@ namespace Sharpen.Lang
 		public void Start()
 		{
 			_thread = new System.Threading.Thread(new System.Threading.ThreadStart(EntryPoint));
+			// Apply priority if previously set
+			if (_priority != null)
+			{
+				_thread.Priority = _priority;
+			}
 			_thread.IsBackground = _isDaemon;
 			if (_name != null)
 			{
@@ -114,6 +138,11 @@ namespace Sharpen.Lang
 
 		public void Join() 
 		{
+			if (_thread == null)
+			{
+				string message = "A thread must be available to join";
+				throw new InvalidOperationException(message);
+			}
 			_thread.Join();
 		}
 		
