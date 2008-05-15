@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return i_linkLength;
 		}
 
-		protected override Type PrimitiveJavaClass()
+		public override Type PrimitiveJavaClass()
 		{
 			if (NullableArrayHandling.Enabled())
 			{

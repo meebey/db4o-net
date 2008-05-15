@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Defaultvalue;
 		}
 
-		protected override Type PrimitiveJavaClass()
+		public override Type PrimitiveJavaClass()
 		{
 			return typeof(float);
 		}

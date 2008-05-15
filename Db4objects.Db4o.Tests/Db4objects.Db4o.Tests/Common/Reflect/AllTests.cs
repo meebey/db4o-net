@@ -10,8 +10,9 @@ namespace Db4objects.Db4o.Tests.Common.Reflect
 	{
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(GenericReflectorStateTest), typeof(ReflectArrayTestCase
-				), typeof(Db4objects.Db4o.Tests.Common.Reflect.Custom.AllTests) };
+			return new Type[] { typeof(GenericReflectorStateTest), typeof(NewInstanceTestCase
+				), typeof(ReflectArrayTestCase), typeof(Db4objects.Db4o.Tests.Common.Reflect.Custom.AllTests
+				) };
 		}
 
 		public static void Main(string[] args)

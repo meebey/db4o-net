@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections;
-using Db4objects.Db4o.Ext;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
@@ -14,32 +14,36 @@ namespace Db4objects.Db4o.Reflect.Core
 	{
 		public static ReflectConstructorSpec CreateConstructor(IConstructorAwareReflectClass
 			 claxx, Type clazz, IReflectorConfiguration config, IReflectConstructor[] constructors
-			)
+			, bool forceTest)
 		{
 			if (claxx == null)
 			{
-				throw new ObjectNotStorableException(claxx);
+				return ReflectConstructorSpec.InvalidConstructor;
 			}
 			if (claxx.IsAbstract() || claxx.IsInterface())
 			{
-				return null;
+				return ReflectConstructorSpec.InvalidConstructor;
 			}
 			if (!Platform4.CallConstructor())
 			{
 				bool skipConstructor = !config.CallConstructor(claxx);
-				if (!claxx.IsCollection() && claxx.SkipConstructor(skipConstructor, config.TestConstructors
-					()))
+				if (!claxx.IsCollection())
 				{
-					return null;
+					IReflectConstructor serializableConstructor = SkipConstructor(claxx, skipConstructor
+						, config.TestConstructors());
+					if (serializableConstructor != null)
+					{
+						return new ReflectConstructorSpec(serializableConstructor, null);
+					}
 				}
 			}
-			if (!config.TestConstructors())
+			if (!forceTest && !config.TestConstructors())
 			{
-				return null;
+				return ReflectConstructorSpec.UnspecifiedConstructor;
 			}
 			if (ReflectPlatform.CreateInstance(clazz) != null)
 			{
-				return null;
+				return new ReflectConstructorSpec(new PlatformReflectConstructor(clazz), null);
 			}
 			Tree sortedConstructors = SortConstructorsByParamsCount(constructors);
 			return FindConstructor(claxx, sortedConstructors);
@@ -50,7 +54,7 @@ namespace Db4objects.Db4o.Reflect.Core
 		{
 			if (sortedConstructors == null)
 			{
-				throw new ObjectNotStorableException(claxx);
+				return ReflectConstructorSpec.InvalidConstructor;
 			}
 			IEnumerator iter = new TreeNodeIterator(sortedConstructors);
 			while (iter.MoveNext())
@@ -69,7 +73,7 @@ namespace Db4objects.Db4o.Reflect.Core
 					return new ReflectConstructorSpec(constructor, @params);
 				}
 			}
-			throw new ObjectNotStorableException(claxx);
+			return ReflectConstructorSpec.InvalidConstructor;
 		}
 
 		private static Tree SortConstructorsByParamsCount(IReflectConstructor[] constructors
@@ -84,6 +88,30 @@ namespace Db4objects.Db4o.Reflect.Core
 					.Length * parameterCount, constructors[i]));
 			}
 			return sortedConstructors;
+		}
+
+		public static IReflectConstructor SkipConstructor(IConstructorAwareReflectClass claxx
+			, bool skipConstructor, bool testConstructor)
+		{
+			if (!skipConstructor)
+			{
+				return null;
+			}
+			IReflectConstructor serializableConstructor = claxx.GetSerializableConstructor();
+			if (serializableConstructor == null)
+			{
+				return null;
+			}
+			if (!testConstructor || Deploy.csharp)
+			{
+				return serializableConstructor;
+			}
+			object obj = serializableConstructor.NewInstance((object[])null);
+			if (obj != null)
+			{
+				return serializableConstructor;
+			}
+			return null;
 		}
 	}
 }

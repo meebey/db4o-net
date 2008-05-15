@@ -11,6 +11,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		protected override bool IsPrimitive(IReflectClass claxx)
 		{
+			// TODO: Check if this is correct. 
+			// In this case we may get the nullable type
+			// associated with this arrayhandler, but
+			// we always want to use the non-nullable
+			// type if we read with the old arrayHandler.
 			return false;
 			return claxx.IsPrimitive();
 		}
@@ -25,13 +30,19 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return false;
 		}
 
-		protected override bool ReadingDotNetBeforeVersion4()
+		protected override IReflectClass ClassReflector(IReflector reflector, ClassMetadata
+			 classMetadata, bool isPrimitive)
 		{
-			if (NullableArrayHandling.Enabled() && Deploy.csharp)
+			if (Deploy.csharp && NullableArrayHandling.Enabled())
 			{
-				return true;
+				IReflectClass primitiveClaxx = Handlers4.PrimitiveClassReflector(classMetadata, reflector
+					);
+				if (primitiveClaxx != null)
+				{
+					return primitiveClaxx;
+				}
 			}
-			return false;
+			return base.ClassReflector(reflector, classMetadata, isPrimitive);
 		}
 	}
 }

@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract override object NullRepresentationInUntypedArrays();
 
-		protected override Type PrimitiveJavaClass()
+		public override Type PrimitiveJavaClass()
 		{
 			return null;
 		}

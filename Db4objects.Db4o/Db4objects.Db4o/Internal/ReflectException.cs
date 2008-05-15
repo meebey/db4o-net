@@ -24,5 +24,11 @@ namespace Db4objects.Db4o.Internal
 		public ReflectException(Exception cause) : base(cause)
 		{
 		}
+
+		/// <summary>Constructor with message</summary>
+		/// <param name="message">detailed explanation</param>
+		public ReflectException(string message) : base(message)
+		{
+		}
 	}
 }

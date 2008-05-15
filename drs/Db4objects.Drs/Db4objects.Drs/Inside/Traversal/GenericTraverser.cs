@@ -2,6 +2,7 @@
 
 using System.Collections;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Drs.Inside.Traversal;
@@ -105,7 +106,7 @@ namespace Db4objects.Drs.Inside.Traversal
 				return;
 			}
 			IReflectClass claxx = _reflector.ForObject(@object);
-			if (IsSecondClass(claxx))
+			if (IsSecondClass(claxx) || Platform4.IsTransient(claxx))
 			{
 				return;
 			}

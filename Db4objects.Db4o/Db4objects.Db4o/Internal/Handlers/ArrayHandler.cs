@@ -415,15 +415,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 				ClassMetadata classMetadata = Container(trans).ClassMetadataForId(classID);
 				if (classMetadata != null)
 				{
-					if (ReadingDotNetBeforeVersion4())
-					{
-						primitive = classMetadata.IsValueType();
-					}
-					return (primitive ? Handlers4.PrimitiveClassReflector(classMetadata, trans.Reflector
-						()) : classMetadata.ClassReflector());
+					return ClassReflector(trans.Reflector(), classMetadata, primitive);
 				}
 			}
 			return ClassReflector(Container(trans));
+		}
+
+		protected virtual IReflectClass ClassReflector(IReflector reflector, ClassMetadata
+			 classMetadata, bool isPrimitive)
+		{
+			return (isPrimitive ? Handlers4.PrimitiveClassReflector(classMetadata, reflector)
+				 : classMetadata.ClassReflector());
 		}
 
 		public static IEnumerator Iterator(IReflectClass claxx, object obj)
@@ -444,12 +446,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return true;
 			}
 			return !Deploy.csharp;
-		}
-
-		/// <summary>FIXME: Strange method name</summary>
-		protected virtual bool ReadingDotNetBeforeVersion4()
-		{
-			return false;
 		}
 
 		protected int ClassID(ObjectContainerBase container, object obj)

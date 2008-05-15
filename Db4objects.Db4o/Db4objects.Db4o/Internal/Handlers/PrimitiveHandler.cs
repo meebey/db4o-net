@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return indexEntry;
 		}
 
-		protected abstract Type PrimitiveJavaClass();
+		public abstract Type PrimitiveJavaClass();
 
 		protected virtual Type JavaClass()
 		{
