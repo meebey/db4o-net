@@ -48,7 +48,14 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 
 		public override void Visit(FieldReferenceExpression node)
 		{
-			_recorder.Add(ctx => ctx.PushQuery(ctx.RootQuery.Descend(node.Field.Name)));
+            Type descendingEnumType = ResolveDescendingEnumType(node);
+            
+            _recorder.Add(
+                ctx => 
+                    {
+                        ctx.PushQuery(ctx.RootQuery.Descend(node.Field.Name));
+                        ctx.PushDescendigFieldEnumType(descendingEnumType);
+                    });
 		}
 
 		public override void Visit(LiteralExpression node)
@@ -90,5 +97,40 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 		{
 			throw new QueryOptimizationException(ExpressionPrinter.ToString(expression));
 		}
+
+        private Type ResolveDescendingEnumType(FieldReferenceExpression node)
+        {
+            TypeDefinition type = ResolveType(node);
+            if (type != null && type.IsEnum)
+            {
+                return Type.GetType((type.FullName + "," + type.Module.Assembly.Name.FullName).Replace('/', '+'));
+            }
+
+            return null;
+        }
+
+        private static TypeDefinition ResolveType(FieldReferenceExpression node)
+        {
+            TypeReference t = node.Field.FieldType;
+            TypeDefinition typeDefinition = Resolve(t.Module, t.FullName);
+            if (typeDefinition != null) return typeDefinition;
+
+            IAssemblyResolver resolver = t.Module.Assembly.Resolver;
+            foreach (AssemblyNameReference assembyReference in t.Module.AssemblyReferences)
+            {
+                foreach (ModuleDefinition module in resolver.Resolve(assembyReference).Modules)
+                {
+                    typeDefinition = Resolve(module, t.FullName);
+                    if (typeDefinition != null) return typeDefinition;
+                }
+            }
+
+            return null;
+        }
+
+        private static TypeDefinition Resolve(ModuleDefinition module, string typeName)
+        {
+            return module.Types[typeName];
+        }
 	}
 }

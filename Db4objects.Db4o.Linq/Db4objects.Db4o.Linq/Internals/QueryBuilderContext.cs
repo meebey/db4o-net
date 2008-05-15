@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-
 using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Linq.Internals
@@ -12,6 +11,7 @@ namespace Db4objects.Db4o.Linq.Internals
 		private IQuery _root;
 		private IQuery _query;
 		private Stack<IConstraint> _constraints = new Stack<IConstraint>();
+        private Type _descendigFieldEnum;
 
 		public IQuery RootQuery
 		{
@@ -34,7 +34,20 @@ namespace Db4objects.Db4o.Linq.Internals
 			_query = query;
 		}
 
-		public void PushConstraint(IConstraint constraint)
+        internal void PushDescendigFieldEnumType(Type descendigFieldEnum)
+        {
+            _descendigFieldEnum = descendigFieldEnum;
+        }
+
+        private Type PopDescendigFieldEnumType()
+        {
+            Type returnType = _descendigFieldEnum;
+            _descendigFieldEnum = null;
+
+            return returnType;
+        }
+
+        public void PushConstraint(IConstraint constraint)
 		{
 			_constraints.Push(constraint);
 		}
@@ -48,5 +61,11 @@ namespace Db4objects.Db4o.Linq.Internals
 		{
 			PushConstraint(constraint(PopConstraint()));
 		}
-	}
+
+        internal object ResolveValue(object value)
+        {
+            Type type = PopDescendigFieldEnumType();            
+            return (type != null) ? Enum.ToObject(type, value) : value;
+        }
+    }
 }

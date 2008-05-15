@@ -195,7 +195,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 		protected override void VisitConstant(ConstantExpression c)
 		{
 			var value = c.Value;
-			Recorder.Add(ctx => ctx.PushConstraint(ctx.CurrentQuery.Constrain(value)));
+			Recorder.Add(ctx => ctx.PushConstraint(ctx.CurrentQuery.Constrain(ctx.ResolveValue(value))));
 		}
 
 		static bool ParameterReferenceOnLeftSide(BinaryExpression b)
