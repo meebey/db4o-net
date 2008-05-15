@@ -11,6 +11,8 @@ namespace Db4objects.Drs.Tests.Regression
 
 			public string Value;
 
+			public Object untyped;
+
 			public Item(string value)
 			{
 				Value = value;
@@ -30,6 +32,7 @@ namespace Db4objects.Drs.Tests.Regression
 		{
 			Item item = new Item("the item");
 			item.Foo += delegate { };
+			item.untyped = new System.Action<string>(Console.WriteLine);
 
 			A().Provider().StoreNew(item);
 			A().Provider().Commit();
@@ -40,6 +43,7 @@ namespace Db4objects.Drs.Tests.Regression
 			Assert.IsNotNull(replicated);
 			Assert.AreEqual(item.Value, replicated.Value);
 			Assert.AreEqual(0, replicated.HandlerCount);
+			Assert.IsNull(item.untyped);
 		
 		}
 	}

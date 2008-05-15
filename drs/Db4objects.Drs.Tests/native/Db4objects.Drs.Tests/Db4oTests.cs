@@ -12,6 +12,7 @@ namespace Db4objects.Drs.Tests
 				typeof(Regression.DelegateTestCase),
 				typeof(Regression.GenericListTestSuite),
                 typeof(Regression.GenericDictionaryTestCase),
+				typeof(GenericEqualityComparerTestCase),
 			};
 		}
 	}
