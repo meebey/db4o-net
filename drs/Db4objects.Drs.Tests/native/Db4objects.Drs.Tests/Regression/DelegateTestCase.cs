@@ -43,7 +43,7 @@ namespace Db4objects.Drs.Tests.Regression
 			Assert.IsNotNull(replicated);
 			Assert.AreEqual(item.Value, replicated.Value);
 			Assert.AreEqual(0, replicated.HandlerCount);
-			Assert.IsNull(item.untyped);
+			Assert.IsNull(replicated.untyped);
 		
 		}
 	}
