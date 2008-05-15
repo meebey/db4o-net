@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 			if (_array == null)
 			{
-				_array = new Db4objects.Db4o.Reflect.Net.NetArray(_parent);
+				_array = new Db4objects.Db4o.Reflect.Net.NetArray(Parent());
 			}
 			return _array;
 		}
@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		protected virtual Db4objects.Db4o.Reflect.IReflectClass CreateClass(Type type)
 		{
-			return new Db4objects.Db4o.Reflect.Net.NetClass(_parent, this, type);
+			return new Db4objects.Db4o.Reflect.Net.NetClass(Parent(), this, type);
 		}
 
 		private static Type GetUnderlyingType(Type type)
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			{
 				return null;
 			}
-			return _parent.ForClass(a_object.GetType());
+			return Parent().ForClass(a_object.GetType());
 		}
 
 		public virtual bool IsCollection(Db4objects.Db4o.Reflect.IReflectClass candidate)
@@ -153,6 +153,16 @@ namespace Db4objects.Db4o.Reflect.Net
 		public virtual object NullValue(IReflectClass clazz) 
 		{
 			return Platform4.NullValue(ToNative(clazz));
+		}
+		
+		private IReflector Parent()
+		{
+			if(_parent == null)
+			{
+				return this;
+			}
+			
+			return _parent;
 		}
 		
 	}

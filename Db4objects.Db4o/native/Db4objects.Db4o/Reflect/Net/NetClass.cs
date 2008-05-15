@@ -25,13 +25,22 @@ namespace Db4objects.Db4o.Reflect.Net
 	    
 	    private Db4objects.Db4o.Reflect.IReflectField[] _fields;
 
-		private  TernaryBool _canBeInstantiated = TernaryBool.Unspecified;
-
 	    public NetClass(Db4objects.Db4o.Reflect.IReflector reflector, Db4objects.Db4o.Reflect.Net.NetReflector netReflector, System.Type clazz)
 		{
+			if(reflector == null)
+			{
+				throw new NullReferenceException();
+			}
+			
+			if(netReflector == null)
+			{
+				throw new NullReferenceException();
+			}
+			
 			_reflector = reflector;
 			_netReflector = netReflector;
 			_type = clazz;
+			_constructor = ReflectConstructorSpec.UnspecifiedConstructor;
 		}
 
 		public virtual Db4objects.Db4o.Reflect.IReflectClass GetComponentType()
@@ -172,20 +181,8 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public virtual object NewInstance()
 		{
-			CreateConstructor();
-			try
-			{
-				if (_constructor == null)
-				{
-					if (CanCreate(_type)) return System.Activator.CreateInstance(_type);
-					return null;
-				}
-				return _constructor.NewInstance();
-			}
-			catch
-			{
-			}
-			return null;
+			CreateConstructor(true);
+			return _constructor.NewInstance();
 		}
 
 		private static bool CanCreate(Type type)
@@ -202,25 +199,13 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 			return _reflector;
 		}
-
-		public virtual bool SkipConstructor(bool flag, bool testConstructor)
+		
+		public virtual IReflectConstructor GetSerializableConstructor()
 		{
 #if !CF
-			if (flag)
-			{
-				IReflectConstructor constructor = new SerializationConstructor(GetNetType());
-				try
-				{
-					UseConstructor(constructor, null);
-					return true;
-				}
-				catch
-				{
-				}
-			}
+			return new SerializationConstructor(GetNetType());
 #endif
-			_constructor = null;
-			return false;
+			return null;
 		}
 
 		public override string ToString()
@@ -228,40 +213,23 @@ namespace Db4objects.Db4o.Reflect.Net
 			return "NetClass(" + _type + ")";
 		}
 
-		private void UseConstructor(IReflectConstructor constructor, object[] args)
-		{
-				_constructor = (constructor == null ? null : new ReflectConstructorSpec(constructor, args));
-		}
-
 		public virtual object NullValue() 
 		{
 			return _netReflector.NullValue(this);
 		}
 	
-		private void CreateConstructor() 
+		private void CreateConstructor(bool forceTest) 
 		{
-			if(!_canBeInstantiated.IsUnspecified()) 
+			if(!_constructor.CanBeInstantiated().IsUnspecified())
 			{
 				return;
 			}
-			try 
-			{
-				ReflectConstructorSpec constructor = ConstructorSupport.CreateConstructor(this, _type, _netReflector.Configuration(), GetDeclaredConstructors());
-				if(constructor != null)
-				{
-					_constructor = constructor;
-				}
-				_canBeInstantiated = TernaryBool.Yes;
-			}
-			catch(Db4objects.Db4o.Ext.ObjectNotStorableException exc) 
-			{
-				_canBeInstantiated = TernaryBool.No;
-			}
+			_constructor = ConstructorSupport.CreateConstructor(this, _type, _netReflector.Configuration(), GetDeclaredConstructors(), forceTest);
 		}
 		
 		public virtual bool EnsureCanBeInstantiated() {
-			CreateConstructor();
-			return _canBeInstantiated.DefiniteYes();
+			CreateConstructor(false);
+			return _constructor.CanBeInstantiated().DefiniteYes();
 		}
 		
 	}
