@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Internal.Events
             }
             catch (System.Exception exception)
             {
-                throw new ReflectException(exception);
+                throw new EventException(exception);
             }
 			return !coea.IsCancelled;
 		}
