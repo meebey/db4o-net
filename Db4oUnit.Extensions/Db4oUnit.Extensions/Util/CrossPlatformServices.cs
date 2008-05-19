@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
 using Sharpen;
 
@@ -30,6 +31,10 @@ namespace Db4oUnit.Extensions.Util
 			if (path == null || path.Length == 0)
 			{
 				path = ".";
+			}
+			else
+			{
+				System.IO.Directory.CreateDirectory(path);
 			}
 			return Path.Combine(path, fileName);
 		}

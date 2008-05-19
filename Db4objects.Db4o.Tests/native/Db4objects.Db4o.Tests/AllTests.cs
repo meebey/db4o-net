@@ -1,6 +1,6 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
-using Db4objects.Db4o.Tests.Common.Reflect.Custom;
+using Db4objects.Db4o.Tests.Common.Events;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests
@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Tests
 		protected override Type[] TestCases()
 		{
 //			return new Type[] { typeof(CLI2.Collections.GenericListTypeHandlerTestCase) };
-			//return new Type[] { typeof(Compact.UnoptimizedLinqTestCase), };
+            //return new Type[] { typeof(DeletionEventExceptionTestCase), };
 			return new Type[]
 				{	
 #if CF_3_5

@@ -61,6 +61,11 @@ namespace Db4objects.Db4o.IO
 			_growBy = 10000;
 		}
 
+		public MemoryIoAdapter(int initialLength) : this()
+		{
+			_bytes = new byte[initialLength];
+		}
+
 		private MemoryIoAdapter(Db4objects.Db4o.IO.MemoryIoAdapter adapter, byte[] bytes)
 		{
 			_bytes = bytes;

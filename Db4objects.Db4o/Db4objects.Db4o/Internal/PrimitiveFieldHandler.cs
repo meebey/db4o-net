@@ -267,5 +267,10 @@ namespace Db4objects.Db4o.Internal
 			return new Db4objects.Db4o.Internal.PrimitiveFieldHandler(original.Container(), delegateTypeHandler
 				, original._id, original.ClassReflector());
 		}
+
+		public override bool IsSecondClass()
+		{
+			return true;
+		}
 	}
 }

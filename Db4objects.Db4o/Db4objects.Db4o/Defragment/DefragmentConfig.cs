@@ -32,6 +32,8 @@ namespace Db4objects.Db4o.Defragment
 
 		private bool _forceBackupDelete = false;
 
+		private bool _readOnly = true;
+
 		private int _objectCommitFrequency;
 
 		/// <summary>Creates a configuration for a defragmentation run.</summary>
@@ -144,6 +146,29 @@ namespace Db4objects.Db4o.Defragment
 		public virtual void ForceBackupDelete(bool forceBackupDelete)
 		{
 			_forceBackupDelete = forceBackupDelete;
+		}
+
+		/// <summary>
+		/// allows turning on and off readonly mode.<br /><br />
+		/// When changed classes are likely to be detected defragment, it may be required
+		/// to open the original database in read/write mode.
+		/// </summary>
+		/// <remarks>
+		/// allows turning on and off readonly mode.<br /><br />
+		/// When changed classes are likely to be detected defragment, it may be required
+		/// to open the original database in read/write mode. <br /><br />
+		/// Readonly mode is the default setting.
+		/// </remarks>
+		/// <param name="flag">false, to turn off readonly mode.</param>
+		public virtual void ReadOnly(bool flag)
+		{
+			_readOnly = flag;
+		}
+
+		/// <returns>true, if the original database file is to be opened in readonly mode.</returns>
+		public virtual bool ReadOnly()
+		{
+			return _readOnly;
 		}
 
 		/// <returns>

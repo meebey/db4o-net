@@ -34,5 +34,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			ArrayHandler0.Defragment(context, this);
 		}
+
+		protected override bool HasNullBitmap()
+		{
+			return false;
+		}
 	}
 }

@@ -140,6 +140,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				DefragmentConfig defragConfig = new DefragmentConfig(testFileName, backupFileName
 					);
 				defragConfig.ForceBackupDelete(true);
+				defragConfig.ReadOnly(!DefragmentInReadWriteMode());
 				Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig);
 			}
 			finally
@@ -156,12 +157,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		// do nothing
 		private void CheckDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_138(this));
+			WithDatabase(testFile, new _IFunction4_139(this));
 		}
 
-		private sealed class _IFunction4_138 : IFunction4
+		private sealed class _IFunction4_139 : IFunction4
 		{
-			public _IFunction4_138(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_139(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -177,12 +178,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void UpdateDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_147(this));
+			WithDatabase(testFile, new _IFunction4_148(this));
 		}
 
-		private sealed class _IFunction4_147 : IFunction4
+		private sealed class _IFunction4_148 : IFunction4
 		{
-			public _IFunction4_147(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_148(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -198,12 +199,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CheckUpdatedDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_157(this));
+			WithDatabase(testFile, new _IFunction4_158(this));
 		}
 
-		private sealed class _IFunction4_157 : IFunction4
+		private sealed class _IFunction4_158 : IFunction4
 		{
-			public _IFunction4_157(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_158(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -285,6 +286,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			)
 		{
 		}
+
 		// Override to check updates also
+		/// <summary>override and return true for database updates that produce changed class metadata
+		/// 	</summary>
+		protected virtual bool DefragmentInReadWriteMode()
+		{
+			return false;
+		}
 	}
 }

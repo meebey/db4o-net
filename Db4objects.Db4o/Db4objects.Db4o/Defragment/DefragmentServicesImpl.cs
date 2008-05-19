@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.Defragment
 			IConfiguration sourceConfig = (IConfiguration)originalConfig.DeepClone(null);
 			sourceConfig.WeakReferences(false);
 			sourceConfig.FlushFileBuffers(false);
-			sourceConfig.ReadOnly(true);
+			sourceConfig.ReadOnly(defragConfig.ReadOnly());
 			_sourceDb = (LocalObjectContainer)Db4oFactory.OpenFile(sourceConfig, defragConfig
 				.TempPath()).Ext();
 			_targetDb = FreshYapFile(defragConfig);
