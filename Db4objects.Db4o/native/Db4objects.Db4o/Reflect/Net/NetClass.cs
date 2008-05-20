@@ -174,11 +174,6 @@ namespace Db4objects.Db4o.Reflect.Net
 			       || _type == typeof(decimal);
 		}
 
-		public virtual bool IsSecondClass()
-		{
-			return IsPrimitive() || _type.IsValueType;
-		}
-
 		public virtual object NewInstance()
 		{
 			CreateConstructor(true);

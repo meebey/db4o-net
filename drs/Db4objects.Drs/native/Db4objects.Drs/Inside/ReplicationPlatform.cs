@@ -163,7 +163,7 @@ namespace Db4objects.Drs.Inside
 			typeof(Stack<>),
 		};
 
-        internal static bool IsBuiltinCollectionClass(IReflector reflector, IReflectClass claxx)
+        internal static bool IsBuiltinCollectionClass(ReplicationReflector reflector, IReflectClass claxx)
         {
             Type type = NetReflector.ToNative(claxx);
 

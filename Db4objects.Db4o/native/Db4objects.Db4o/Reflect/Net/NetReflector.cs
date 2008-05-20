@@ -38,11 +38,19 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		protected virtual Db4objects.Db4o.Reflect.IReflectClass CreateClass(Type type)
 		{
+			if(type == null)
+			{
+				return null;
+			}
 			return new Db4objects.Db4o.Reflect.Net.NetClass(Parent(), this, type);
 		}
 
 		private static Type GetUnderlyingType(Type type)
         {	
+        	if(type == null)
+        	{
+        		return null;
+        	}
             Type underlyingType = Nullable.GetUnderlyingType(type);
             if (underlyingType != null)
             {
