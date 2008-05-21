@@ -12,6 +12,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 				typeof(NullableTypes),
 				typeof(NullableArraysElementsTestCase),
 				typeof(SimpleGenericTypeTestCase),
+				typeof(UntypedDelegateArrayTestCase),
 			};
 		}
 	}
