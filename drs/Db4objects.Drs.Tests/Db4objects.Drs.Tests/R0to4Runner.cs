@@ -33,7 +33,7 @@ namespace Db4objects.Drs.Tests
 			while (rr.MoveNext())
 			{
 				object o = rr.Current;
-				IReflectClass claxx = ReplicationReflector.GetInstance().Reflector().ForObject(o);
+				IReflectClass claxx = ReplicationReflector().ForObject(o);
 				SetFieldsToNull(o, claxx);
 				toDelete.Add(o);
 			}

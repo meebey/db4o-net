@@ -12,9 +12,9 @@ namespace Db4objects.Drs.Inside
 	{
 		private readonly IReflectClass _reflectMapClass;
 
-		private readonly IReflector _reflector;
+		private readonly ReplicationReflector _reflector;
 
-		public MapHandler(IReflector reflector)
+		public MapHandler(ReplicationReflector reflector)
 		{
 			_reflector = reflector;
 			_reflectMapClass = reflector.ForClass(typeof(IDictionary));

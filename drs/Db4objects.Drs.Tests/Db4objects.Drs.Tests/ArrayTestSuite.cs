@@ -7,7 +7,6 @@ using Db4oUnit.Fixtures;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Reflect;
-using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Drs.Tests;
 
 namespace Db4objects.Drs.Tests
@@ -44,12 +43,13 @@ namespace Db4objects.Drs.Tests
 
 			private IReflectClass ReflectClass(object array)
 			{
-				return Reflector().ForObject(array);
+				return GenericReflector().ForObject(array);
 			}
 
-			private GenericReflector Reflector()
+			private Db4objects.Db4o.Reflect.Generic.GenericReflector GenericReflector()
 			{
-				return new GenericReflector(null, Platform4.ReflectorForType(GetType()));
+				return new Db4objects.Db4o.Reflect.Generic.GenericReflector(null, Platform4.ReflectorForType
+					(GetType()));
 			}
 
 			private void ReplicatedAllToB()

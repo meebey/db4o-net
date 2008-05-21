@@ -12,14 +12,9 @@ namespace Db4objects.Drs.Inside
 	{
 		private readonly Db4objects.Drs.Inside.ICollectionHandler _mapHandler;
 
-		private readonly IReflector _reflector;
+		private readonly ReplicationReflector _reflector;
 
-		public CollectionHandlerImpl() : this(ReplicationReflector.GetInstance().Reflector
-			())
-		{
-		}
-
-		public CollectionHandlerImpl(IReflector reflector)
+		public CollectionHandlerImpl(ReplicationReflector reflector)
 		{
 			_mapHandler = new MapHandler(reflector);
 			_reflector = reflector;

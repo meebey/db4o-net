@@ -260,13 +260,13 @@ namespace Db4objects.Drs.Db4o
 		{
 			if (_referencesByObject != null)
 			{
-				_referencesByObject.Traverse(new _IVisitor4_284(visitor));
+				_referencesByObject.Traverse(new _IVisitor4_283(visitor));
 			}
 		}
 
-		private sealed class _IVisitor4_284 : IVisitor4
+		private sealed class _IVisitor4_283 : IVisitor4
 		{
-			public _IVisitor4_284(IVisitor4 visitor)
+			public _IVisitor4_283(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}
@@ -422,6 +422,11 @@ namespace Db4objects.Drs.Db4o
 		public virtual bool IsProviderSpecific(object original)
 		{
 			return original is IDb4oCollection;
+		}
+
+		public virtual void ReplicationReflector(Db4objects.Drs.Inside.ReplicationReflector
+			 replicationReflector)
+		{
 		}
 	}
 }

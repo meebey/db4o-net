@@ -40,5 +40,8 @@ namespace Db4objects.Drs
 		/// <returns>newly created objects and changed objects of the type specified in the clazz parameter since last replication
 		/// 	</returns>
 		IObjectSet ObjectsChangedSinceLastReplication(Type clazz);
+
+		void ReplicationReflector(Db4objects.Drs.Inside.ReplicationReflector replicationReflector
+			);
 	}
 }

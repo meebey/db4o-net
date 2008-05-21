@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Drs;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
@@ -29,11 +30,13 @@ namespace Db4objects.Drs.Tests
 
 		private readonly DrsFixturePair _fixtures = DrsFixtureVariable.Value();
 
+		private Db4objects.Drs.Inside.ReplicationReflector _reflector;
+
 		/// <exception cref="Exception"></exception>
 		public virtual void SetUp()
 		{
 			CleanBoth();
-			Configure();
+			ConfigureBoth();
 			OpenBoth();
 			Store();
 			Reopen();
@@ -65,10 +68,35 @@ namespace Db4objects.Drs.Tests
 		{
 		}
 
-		protected virtual void Configure()
+		private void ConfigureBoth()
 		{
-			Db4oFactory.Configure().GenerateUUIDs(int.MaxValue);
-			Db4oFactory.Configure().GenerateVersionNumbers(int.MaxValue);
+			ConfigureInitial(_fixtures.a);
+			ConfigureInitial(_fixtures.b);
+		}
+
+		private void ConfigureInitial(IDrsFixture fixture)
+		{
+			IConfiguration config = Db4oConfiguration(fixture);
+			if (config == null)
+			{
+				return;
+			}
+			config.GenerateUUIDs(ConfigScope.Globally);
+			config.GenerateVersionNumbers(ConfigScope.Globally);
+			Configure(config);
+		}
+
+		private IConfiguration Db4oConfiguration(IDrsFixture fixture)
+		{
+			if (!(fixture is Db4oDrsFixture))
+			{
+				return null;
+			}
+			return ((Db4oDrsFixture)fixture).Config();
+		}
+
+		protected virtual void Configure(IConfiguration config)
+		{
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -83,6 +111,10 @@ namespace Db4objects.Drs.Tests
 		{
 			A().Open();
 			B().Open();
+			_reflector = new Db4objects.Drs.Inside.ReplicationReflector(A().Provider(), B().Provider
+				());
+			A().Provider().ReplicationReflector(_reflector);
+			B().Provider().ReplicationReflector(_reflector);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -205,6 +237,12 @@ namespace Db4objects.Drs.Tests
 			{
 				throw new Exception(e.ToString());
 			}
+		}
+
+		protected virtual Db4objects.Drs.Inside.ReplicationReflector ReplicationReflector
+			()
+		{
+			return _reflector;
 		}
 	}
 }

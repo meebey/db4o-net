@@ -449,7 +449,7 @@ namespace Db4objects.Drs.Inside
 			}
 			IReflectClass claxx = ReflectClass(obj);
 			//		if (claxx.isSecondClass()) return obj;
-			if (claxx.IsSecondClass())
+			if (_reflector.IsSecondClass(claxx))
 			{
 				throw new Exception("IllegalState");
 			}

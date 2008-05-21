@@ -52,6 +52,9 @@ namespace Db4objects.Drs
 			{
 				listener = new DefaultReplicationEventListener();
 			}
+			ReplicationReflector reflector = new ReplicationReflector(providerA, providerB);
+			providerA.ReplicationReflector(reflector);
+			providerB.ReplicationReflector(reflector);
 			return new GenericReplicationSession(providerA, providerB, listener);
 		}
 

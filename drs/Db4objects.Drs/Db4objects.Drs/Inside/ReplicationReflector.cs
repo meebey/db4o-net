@@ -1,39 +1,38 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Drs;
+using Db4objects.Drs.Db4o;
 
 namespace Db4objects.Drs.Inside
 {
 	public class ReplicationReflector
 	{
-		private static Db4objects.Drs.Inside.ReplicationReflector instance = new Db4objects.Drs.Inside.ReplicationReflector
-			();
+		private IInternalObjectContainer _container;
 
-		private readonly IReflector _reflector;
-
-		private readonly IReflectArray _arrayReflector;
-
-		private ReplicationReflector()
+		public ReplicationReflector(IReplicationProvider providerA, IReplicationProvider 
+			providerB)
 		{
-			IExtObjectContainer tempOcToGetReflector = ExtDb4oFactory.OpenMemoryFile(new MemoryFile
-				()).Ext();
-			//      FIXME: Find a better way without depending on ExtDb4o.  :P
-			_reflector = tempOcToGetReflector.Reflector();
-			_arrayReflector = _reflector.Array();
-			tempOcToGetReflector.Close();
-		}
-
-		public static Db4objects.Drs.Inside.ReplicationReflector GetInstance()
-		{
-			return instance;
+			_container = ContainerFrom(providerA);
+			if (_container == null)
+			{
+				_container = ContainerFrom(providerB);
+			}
+			if (_container == null)
+			{
+				_container = (IInternalObjectContainer)ExtDb4oFactory.OpenMemoryFile(new MemoryFile
+					()).Ext();
+			}
 		}
 
 		public virtual object[] ArrayContents(object array)
 		{
-			int[] dim = _arrayReflector.Dimensions(array);
+			int[] dim = ArrayReflector().Dimensions(array);
 			object[] result = new object[Volume(dim)];
-			_arrayReflector.Flatten(array, dim, 0, result, 0);
+			ArrayReflector().Flatten(array, dim, 0, result, 0);
 			//TODO Optimize add a visit(Visitor) method to ReflectArray or navigate the array to avoid copying all this stuff all the time.
 			return result;
 		}
@@ -48,37 +47,67 @@ namespace Db4objects.Drs.Inside
 			return result;
 		}
 
-		internal virtual IReflectClass ForObject(object obj)
+		public virtual IReflectClass ForObject(object obj)
 		{
-			return _reflector.ForObject(obj);
+			return _container.Reflector().ForObject(obj);
+		}
+
+		public virtual IReflectClass ForClass(Type clazz)
+		{
+			return _container.Reflector().ForClass(clazz);
 		}
 
 		internal virtual IReflectClass GetComponentType(IReflectClass claxx)
 		{
-			return _arrayReflector.GetComponentType(claxx);
+			return ArrayReflector().GetComponentType(claxx);
 		}
 
 		internal virtual int[] ArrayDimensions(object obj)
 		{
-			return _arrayReflector.Dimensions(obj);
+			return ArrayReflector().Dimensions(obj);
 		}
 
 		public virtual object NewArrayInstance(IReflectClass componentType, int[] dimensions
 			)
 		{
-			return _arrayReflector.NewInstance(componentType, dimensions);
+			return ArrayReflector().NewInstance(componentType, dimensions);
 		}
 
 		public virtual int ArrayShape(object[] a_flat, int a_flatElement, object a_shaped
 			, int[] a_dimensions, int a_currentDimension)
 		{
-			return _arrayReflector.Shape(a_flat, a_flatElement, a_shaped, a_dimensions, a_currentDimension
+			return ArrayReflector().Shape(a_flat, a_flatElement, a_shaped, a_dimensions, a_currentDimension
 				);
 		}
 
-		public virtual IReflector Reflector()
+		public virtual bool IsSecondClass(IReflectClass clazz)
 		{
-			return _reflector;
+			ClassMetadata classMetadata = _container.ClassMetadataForReflectClass(clazz);
+			if (classMetadata == null)
+			{
+				return false;
+			}
+			return classMetadata.IsSecondClass();
+		}
+
+		private IInternalObjectContainer ContainerFrom(IReplicationProvider provider)
+		{
+			if (!(provider is IDb4oReplicationProvider))
+			{
+				return null;
+			}
+			IDb4oReplicationProvider db4oProvider = (IDb4oReplicationProvider)provider;
+			IExtObjectContainer container = db4oProvider.GetObjectContainer();
+			if (!(container is IInternalObjectContainer))
+			{
+				return null;
+			}
+			return (IInternalObjectContainer)container;
+		}
+
+		private IReflectArray ArrayReflector()
+		{
+			return _container.Reflector().Array();
 		}
 	}
 }

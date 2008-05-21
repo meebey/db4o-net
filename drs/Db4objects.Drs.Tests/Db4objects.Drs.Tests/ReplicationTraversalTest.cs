@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4objects.Drs;
 using Db4objects.Drs.Inside;
@@ -7,13 +8,21 @@ using Db4objects.Drs.Tests;
 
 namespace Db4objects.Drs.Tests
 {
-	public class ReplicationTraversalTest : DrsTestCase
+	public class ReplicationTraversalTest : ITestLifeCycle
 	{
-		private TransientReplicationProvider _peerA = new TransientReplicationProvider(new 
-			byte[] { 0 });
+		private TransientReplicationProvider _peerA;
 
-		private TransientReplicationProvider _peerB = new TransientReplicationProvider(new 
-			byte[] { 1 });
+		private TransientReplicationProvider _peerB;
+
+		/// <exception cref="Exception"></exception>
+		public virtual void SetUp()
+		{
+			_peerA = new TransientReplicationProvider(new byte[] { 0 }, "A");
+			_peerB = new TransientReplicationProvider(new byte[] { 1 }, "B");
+			ReplicationReflector reflector = new ReplicationReflector(_peerA, _peerB);
+			_peerA.ReplicationReflector(reflector);
+			_peerB.ReplicationReflector(reflector);
+		}
 
 		public virtual void Test()
 		{
@@ -33,6 +42,11 @@ namespace Db4objects.Drs.Tests
 			Assert.IsTrue(_peerA.ActivatedObjects().Contains(obj3));
 			_peerA = null;
 			_peerB = null;
+		}
+
+		/// <exception cref="Exception"></exception>
+		public virtual void TearDown()
+		{
 		}
 	}
 }

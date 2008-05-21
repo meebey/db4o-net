@@ -4,7 +4,10 @@ using Db4objects.Drs.Tests;
 
 namespace Db4objects.Drs.Tests
 {
-	public class DeepListGraphTestCase : DrsTestCase
+	public class SPCChildWithoutDefaultConstructor : SPCChild
 	{
+		public SPCChildWithoutDefaultConstructor(string name) : base(name)
+		{
+		}
 	}
 }

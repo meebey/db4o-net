@@ -5,7 +5,6 @@ using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Reflect;
 using Db4objects.Drs.Foundation;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Inside.Traversal;
@@ -21,7 +20,7 @@ namespace Db4objects.Drs.Tests
 
 		private readonly string _name;
 
-		private readonly ITraverser _traverser;
+		private ITraverser _traverser;
 
 		private readonly IDictionary _storedObjects = new IdentityHashMap();
 
@@ -37,19 +36,10 @@ namespace Db4objects.Drs.Tests
 
 		private Collection4 _uuidsDeletedSinceLastReplication = new Collection4();
 
-		public TransientReplicationProvider(byte[] signature) : this(signature, null)
-		{
-		}
-
 		public TransientReplicationProvider(byte[] signature, string name)
 		{
 			_signature = new TransientReplicationProvider.MySignature(this, signature);
 			_name = name;
-			ReplicationReflector reflector = ReplicationReflector.GetInstance();
-			Db4objects.Drs.Inside.ICollectionHandler _collectionHandler = new CollectionHandlerImpl
-				(reflector.Reflector());
-			_traverser = new TransientReplicationProvider.MyTraverser(this, reflector.Reflector
-				(), _collectionHandler);
 		}
 
 		public override string ToString()
@@ -269,12 +259,12 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void StoreNew(object o)
 		{
-			_traverser.TraverseGraph(o, new _IVisitor_230(this));
+			_traverser.TraverseGraph(o, new _IVisitor_220(this));
 		}
 
-		private sealed class _IVisitor_230 : IVisitor
+		private sealed class _IVisitor_220 : IVisitor
 		{
-			public _IVisitor_230(TransientReplicationProvider _enclosing)
+			public _IVisitor_220(TransientReplicationProvider _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -541,8 +531,8 @@ namespace Db4objects.Drs.Tests
 		{
 			internal ITraverser _delegate;
 
-			public MyTraverser(TransientReplicationProvider _enclosing, IReflector reflector, 
-				Db4objects.Drs.Inside.ICollectionHandler collectionHandler)
+			public MyTraverser(TransientReplicationProvider _enclosing, ReplicationReflector 
+				reflector, Db4objects.Drs.Inside.ICollectionHandler collectionHandler)
 			{
 				this._enclosing = _enclosing;
 				this._delegate = new GenericTraverser(reflector, collectionHandler);
@@ -569,6 +559,15 @@ namespace Db4objects.Drs.Tests
 		public virtual bool IsProviderSpecific(object original)
 		{
 			return false;
+		}
+
+		public virtual void ReplicationReflector(ReplicationReflector replicationReflector
+			)
+		{
+			Db4objects.Drs.Inside.ICollectionHandler _collectionHandler = new CollectionHandlerImpl
+				(replicationReflector);
+			_traverser = new TransientReplicationProvider.MyTraverser(this, replicationReflector
+				, _collectionHandler);
 		}
 	}
 }

@@ -5,19 +5,20 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Drs.Inside;
 using Db4objects.Drs.Inside.Traversal;
 
 namespace Db4objects.Drs.Inside.Traversal
 {
 	public class GenericTraverser : ITraverser
 	{
-		protected readonly IReflector _reflector;
+		protected readonly ReplicationReflector _reflector;
 
 		protected readonly ICollectionTraverser _collectionHandler;
 
 		protected readonly IQueue4 _queue = new NonblockingQueue();
 
-		public GenericTraverser(IReflector reflector, ICollectionTraverser collectionHandler
+		public GenericTraverser(ReplicationReflector reflector, ICollectionTraverser collectionHandler
 			)
 		{
 			_reflector = reflector;
@@ -131,11 +132,11 @@ namespace Db4objects.Drs.Inside.Traversal
 		protected virtual bool IsSecondClass(IReflectClass claxx)
 		{
 			//      TODO Optimization: Compute this lazily in ReflectClass;
-			if (claxx.IsSecondClass())
+			if (_reflector.IsSecondClass(claxx))
 			{
 				return true;
 			}
-			return claxx.IsArray() && claxx.GetComponentType().IsSecondClass();
+			return claxx.IsArray() && _reflector.IsSecondClass(claxx.GetComponentType());
 		}
 
 		public virtual void ExtendTraversalTo(object disconnected)

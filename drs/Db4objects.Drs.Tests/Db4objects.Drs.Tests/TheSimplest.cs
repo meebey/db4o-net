@@ -46,10 +46,16 @@ namespace Db4objects.Drs.Tests
 
 		private void StoreInA()
 		{
-			SPCChild child = new SPCChild("c1");
+			string name = "c1";
+			SPCChild child = CreateChildObject(name);
 			A().Provider().StoreNew(child);
 			A().Provider().Commit();
 			EnsureNames(A(), "c1");
+		}
+
+		protected virtual SPCChild CreateChildObject(string name)
+		{
+			return new SPCChild(name);
 		}
 
 		private void Replicate()

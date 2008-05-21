@@ -44,9 +44,9 @@ namespace Db4objects.Drs.Inside
 			 providerB, IReplicationEventListener listener)
 		{
 			//null means bidirectional replication.
-			_reflector = ReplicationReflector.GetInstance();
-			_collectionHandler = new CollectionHandlerImpl(_reflector.Reflector());
-			_traverser = new GenericTraverser(_reflector.Reflector(), _collectionHandler);
+			_reflector = new ReplicationReflector(providerA, providerB);
+			_collectionHandler = new CollectionHandlerImpl(_reflector);
+			_traverser = new GenericTraverser(_reflector, _collectionHandler);
 			_providerA = (IReplicationProviderInside)providerA;
 			_providerB = (IReplicationProviderInside)providerB;
 			_listener = listener;
@@ -190,7 +190,8 @@ namespace Db4objects.Drs.Inside
 			object result = _reflector.NewArrayInstance(componentType, dimensions);
 			object[] flatContents = _reflector.ArrayContents(original);
 			//TODO Optimize: Copy the structure without flattening. Do this in ReflectArray.
-			if (!(claxx.IsSecondClass() || componentType.IsSecondClass()))
+			if (!(_reflector.IsSecondClass(claxx) || _reflector.IsSecondClass(componentType))
+				)
 			{
 				ReplaceWithCounterparts(flatContents, sourceProvider);
 			}
@@ -294,7 +295,7 @@ namespace Db4objects.Drs.Inside
 				return null;
 			}
 			// TODO: make it a warning
-			if (claxx.IsSecondClass())
+			if (_reflector.IsSecondClass(claxx))
 			{
 				return value;
 			}

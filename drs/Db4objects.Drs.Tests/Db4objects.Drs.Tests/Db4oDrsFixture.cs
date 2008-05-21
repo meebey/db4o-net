@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Drs.Db4o;
 using Db4objects.Drs.Inside;
@@ -20,6 +21,8 @@ namespace Db4objects.Drs.Tests
 		protected ITestableReplicationProviderInside _provider;
 
 		protected readonly File testFile;
+
+		private IConfiguration _config;
 
 		public Db4oDrsFixture(string name)
 		{
@@ -42,6 +45,7 @@ namespace Db4objects.Drs.Tests
 		public virtual void Clean()
 		{
 			testFile.Delete();
+			_config = null;
 		}
 
 		public virtual void Close()
@@ -60,8 +64,17 @@ namespace Db4objects.Drs.Tests
 			//	Comment out because MemoryIoAdapter has problems on .net 
 			//	MemoryIoAdapter memoryIoAdapter = new MemoryIoAdapter();
 			//	Db4o.configure().io(memoryIoAdapter);
-			_db = Db4oFactory.OpenFile(testFile.GetPath()).Ext();
+			_db = Db4oFactory.OpenFile(Config(), testFile.GetPath()).Ext();
 			_provider = Db4oProviderFactory.NewInstance(_db, _name);
+		}
+
+		public virtual IConfiguration Config()
+		{
+			if (_config == null)
+			{
+				_config = Db4oFactory.NewConfiguration();
+			}
+			return _config;
 		}
 	}
 }
