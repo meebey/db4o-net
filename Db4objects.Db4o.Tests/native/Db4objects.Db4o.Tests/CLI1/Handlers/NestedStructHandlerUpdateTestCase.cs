@@ -121,5 +121,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
         {
             return "nestedstruct";
         }
+
+        protected override bool DefragmentInReadWriteMode()
+        {
+            return true;
+        }
+
     }
 }
