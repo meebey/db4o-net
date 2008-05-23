@@ -107,5 +107,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
             //public NestedStruct?[] _nullableNestedStructArray;
         }
+
+        protected override bool DefragmentInReadWriteMode()
+        {
+            return true;
+        }
+
     }
 }
