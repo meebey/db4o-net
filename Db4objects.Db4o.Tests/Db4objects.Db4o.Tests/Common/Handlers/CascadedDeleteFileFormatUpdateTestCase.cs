@@ -2,7 +2,6 @@
 
 using System;
 using Db4oUnit;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.Ext;
@@ -92,11 +91,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			StoreObject(objectContainer, CascadedDeleteFileFormatUpdateTestCase.ParentItem.NewTestInstance
 				());
-		}
-
-		protected override string[] VersionNames()
-		{
-			return new string[] { Sharpen.Runtime.Substring(Db4oFactory.Version(), 5) };
 		}
 	}
 }

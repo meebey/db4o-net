@@ -640,7 +640,6 @@ namespace Db4objects.Db4o.Internal
 			IFreespaceManager newFreespaceManager = AbstractFreespaceManager.CreateNew(this, 
 				ConfigImpl().FreespaceSystem());
 			newFreespaceManager.Start(0);
-			SystemData().FreespaceAddress(0);
 			SystemData().FreespaceSystem(ConfigImpl().FreespaceSystem());
 			_freespaceManager = newFreespaceManager;
 			AbstractFreespaceManager.Migrate(oldFreespaceManager, _freespaceManager);
@@ -702,15 +701,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_613(semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_612(semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_613 : IVisitor4
+		private sealed class _IVisitor4_612 : IVisitor4
 		{
-			public _IVisitor4_613(Hashtable4 semaphores)
+			public _IVisitor4_612(Hashtable4 semaphores)
 			{
 				this.semaphores = semaphores;
 			}
@@ -955,13 +954,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_813(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_812(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_813 : IVisitor4
+		private sealed class _IVisitor4_812 : IVisitor4
 		{
-			public _IVisitor4_813(IntArrayList ids)
+			public _IVisitor4_812(IntArrayList ids)
 			{
 				this.ids = ids;
 			}

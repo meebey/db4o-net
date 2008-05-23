@@ -36,9 +36,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Register(new DateTime(), true);
 			Register("astring", true);
 			Register(new SecondClassTestCase.Item(), false);
-			Register(new int[] { 1 }, true);
-			Register(new DateTime[] { new DateTime() }, true);
-			Register(new SecondClassTestCase.Item[] { new SecondClassTestCase.Item() }, true);
+			Register(new int[] { 1 }, false);
+			Register(new DateTime[] { new DateTime() }, false);
+			Register(new SecondClassTestCase.Item[] { new SecondClassTestCase.Item() }, false
+				);
 			Register(new SecondClassTestCase.CustomFirstClassItem(), false);
 			Register(new SecondClassTestCase.CustomSecondClassItem(), true);
 		}

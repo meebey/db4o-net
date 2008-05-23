@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -29,7 +28,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public virtual BitMap4 ReadBitMap(int bitCount)
 		{
-			throw new NotImplementedException();
+			BitMap4 map = new BitMap4(_current._buffer, _current._offset, bitCount);
+			_current.Seek(_current.Offset() + map.MarshalledLength());
+			return map;
 		}
 	}
 }

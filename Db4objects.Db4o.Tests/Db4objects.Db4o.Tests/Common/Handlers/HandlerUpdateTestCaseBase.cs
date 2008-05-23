@@ -25,11 +25,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return "migrate_" + TypeName() + "_";
 		}
 
-		protected override string[] VersionNames()
-		{
-			return new string[] { Sharpen.Runtime.Substring(Db4oFactory.Version(), 5) };
-		}
-
 		protected override void Store(IExtObjectContainer objectContainer)
 		{
 			HandlerUpdateTestCaseBase.Holder holder = new HandlerUpdateTestCaseBase.Holder();

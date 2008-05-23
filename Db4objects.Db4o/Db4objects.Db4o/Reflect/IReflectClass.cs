@@ -46,8 +46,6 @@ namespace Db4objects.Db4o.Reflect
 
 		bool IsPrimitive();
 
-		bool IsSecondClass();
-
 		object NewInstance();
 
 		IReflector Reflector();

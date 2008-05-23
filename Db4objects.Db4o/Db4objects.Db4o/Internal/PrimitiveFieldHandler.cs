@@ -270,7 +270,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override bool IsSecondClass()
 		{
-			return true;
+			return IsSecondClass(_handler);
 		}
 	}
 }

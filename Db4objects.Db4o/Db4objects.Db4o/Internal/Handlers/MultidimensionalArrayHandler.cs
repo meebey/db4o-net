@@ -4,7 +4,6 @@ using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
@@ -39,11 +38,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return new ArrayIterator4(flat);
 		}
 
-		public sealed override int ElementCount(Transaction trans, IReadBuffer buffer)
-		{
-			return ElementCount(ReadDimensions(trans, buffer, ReflectClassByRef.Ignored));
-		}
-
 		protected static int ElementCount(int[] a_dim)
 		{
 			int elements = a_dim[0];
@@ -57,6 +51,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public sealed override byte Identifier()
 		{
 			return Const4.Yaparrayn;
+		}
+
+		protected override ArrayInfo NewArrayInfo()
+		{
+			return new MultidimensionalArrayInfo();
 		}
 
 		public virtual int OwnLength(ObjectContainerBase container, object obj)
@@ -76,72 +75,98 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return ElementCount(dimensions);
 		}
 
-		public override void ReadSubCandidates(QueryingReadContext context)
-		{
-			IntArrayByRef dimensions = new IntArrayByRef();
-			object arr = ReadCreate(context.Transaction(), context, dimensions);
-			if (arr == null)
-			{
-				return;
-			}
-			ReadSubCandidates(context, ElementCount(dimensions.value));
-		}
-
-		protected virtual object ReadCreate(Transaction trans, IReadBuffer buffer, IntArrayByRef
-			 dimensions)
-		{
-			ReflectClassByRef classByRef = new ReflectClassByRef();
-			dimensions.value = ReadDimensions(trans, buffer, classByRef);
-			IReflectClass clazz = NewInstanceReflectClass(trans.Reflector(), classByRef);
-			if (clazz == null)
-			{
-				return null;
-			}
-			return ArrayReflector(Container(trans)).NewInstance(clazz, dimensions.value);
-		}
-
-		private int[] ReadDimensions(Transaction trans, IReadBuffer buffer, ReflectClassByRef
+		protected override object NewInstance(Transaction trans, ArrayInfo info, IReflectClass
 			 clazz)
 		{
-			int[] dim = new int[ReadElementsAndClass(trans, buffer, clazz)];
+			return ArrayReflector(Container(trans)).NewInstance(clazz, ((MultidimensionalArrayInfo
+				)info).Dimensions());
+		}
+
+		protected override void ReadDimensions(ArrayInfo info, IReadBuffer buffer)
+		{
+			ReadDimensions(info, buffer, buffer.ReadInt());
+		}
+
+		private void ReadDimensions(ArrayInfo info, IReadBuffer buffer, int dimensionCount
+			)
+		{
+			int[] dim = new int[dimensionCount];
 			for (int i = 0; i < dim.Length; i++)
 			{
 				dim[i] = buffer.ReadInt();
 			}
-			return dim;
+			((MultidimensionalArrayInfo)info).Dimensions(dim);
+			info.ElementCount(ElementCount(dim));
 		}
 
-		public override object Read(IReadContext context)
+		protected override void ReadDimensionsOldFormat(IReadBuffer buffer, ArrayInfo info
+			, int classID)
 		{
-			IntArrayByRef dimensions = new IntArrayByRef();
-			object array = ReadCreate(context.Transaction(), context, dimensions);
-			if (array != null)
+			ReadDimensions(info, buffer, classID);
+		}
+
+		protected override void ReadElements(IReadContext context, ArrayInfo info, object
+			 array)
+		{
+			if (array == null)
 			{
-				object[] objects = new object[ElementCount(dimensions.value)];
-				for (int i = 0; i < objects.Length; i++)
-				{
-					objects[i] = context.ReadObject(DelegateTypeHandler());
-				}
-				ArrayReflector(Container(context)).Shape(objects, 0, array, dimensions.value, 0);
+				return;
 			}
-			return array;
+			object[] objects = new object[info.ElementCount()];
+			ReadInto(context, info, objects);
+			ArrayReflector(Container(context)).Shape(objects, 0, array, ((MultidimensionalArrayInfo
+				)info).Dimensions(), 0);
 		}
 
-		public override void Write(IWriteContext context, object obj)
+		protected override void WriteDimensions(IWriteContext context, ArrayInfo info)
 		{
-			int classID = ClassID(Container(context), obj);
-			context.WriteInt(classID);
-			int[] dim = ArrayReflector(Container(context)).Dimensions(obj);
+			int[] dim = ((MultidimensionalArrayInfo)info).Dimensions();
 			context.WriteInt(dim.Length);
 			for (int i = 0; i < dim.Length; i++)
 			{
 				context.WriteInt(dim[i]);
 			}
+		}
+
+		protected override void WriteElements(IWriteContext context, object obj, ArrayInfo
+			 info)
+		{
 			IEnumerator objects = AllElements(Container(context), obj);
-			while (objects.MoveNext())
+			if (HasNullBitmap())
 			{
-				context.WriteObject(DelegateTypeHandler(), objects.Current);
+				BitMap4 nullBitMap = new BitMap4(info.ElementCount());
+				IReservedBuffer nullBitMapBuffer = context.Reserve(nullBitMap.MarshalledLength());
+				int currentElement = 0;
+				while (objects.MoveNext())
+				{
+					object current = objects.Current;
+					if (current == null)
+					{
+						nullBitMap.SetTrue(currentElement);
+					}
+					else
+					{
+						context.WriteObject(DelegateTypeHandler(), current);
+					}
+					currentElement++;
+				}
+				nullBitMapBuffer.WriteBytes(nullBitMap.Bytes());
 			}
+			else
+			{
+				while (objects.MoveNext())
+				{
+					context.WriteObject(DelegateTypeHandler(), objects.Current);
+				}
+			}
+		}
+
+		protected override void AnalyzeDimensions(ObjectContainerBase container, object obj
+			, ArrayInfo info)
+		{
+			int[] dim = ArrayReflector(container).Dimensions(obj);
+			((MultidimensionalArrayInfo)info).Dimensions(dim);
+			info.ElementCount(ElementCount(dim));
 		}
 
 		public override ITypeHandler4 GenericTemplate()

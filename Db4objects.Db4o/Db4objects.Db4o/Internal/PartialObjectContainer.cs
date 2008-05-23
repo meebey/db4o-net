@@ -99,7 +99,7 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			// Collection of all classes
-			// if (i_classCollection == null) the engine is down.
+			// if (_classCollection == null) the engine is down.
 			// the Configuration context for this ObjectContainer
 			// Counts the number of toplevel calls into YapStream
 			// currently used to resolve self-linking concurrency problems
@@ -1140,6 +1140,10 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
+			if (Platform4.IsTransient(claxx))
+			{
+				return null;
+			}
 			ITypeHandler4 typeHandler = _handlers.TypeHandlerForClass(claxx);
 			if (typeHandler != null)
 			{
@@ -1920,8 +1924,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			catch (Db4oException e)
 			{
-				CompleteTopLevelSet(e);
-				return 0;
+				CompleteTopLevelCall();
+				throw;
 			}
 			finally
 			{
@@ -2316,7 +2320,7 @@ namespace Db4objects.Db4o.Internal
 			BeginTopLevelCall();
 		}
 
-		private void CompleteTopLevelCall()
+		public void CompleteTopLevelCall()
 		{
 			if (_stackDepth == 1)
 			{
@@ -2334,12 +2338,6 @@ namespace Db4objects.Db4o.Internal
 		public void CompleteTopLevelSet()
 		{
 			CompleteTopLevelCall();
-		}
-
-		public void CompleteTopLevelSet(Db4oException e)
-		{
-			CompleteTopLevelCall();
-			throw e;
 		}
 
 		private void EndTopLevelCall()

@@ -240,12 +240,20 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected virtual int Db4oMajorVersion()
 		{
-			return System.Convert.ToInt32(Sharpen.Runtime.Substring(_db4oVersion, 0, 1));
+			if (_db4oVersion != null)
+			{
+				return System.Convert.ToInt32(Sharpen.Runtime.Substring(_db4oVersion, 0, 1));
+			}
+			return System.Convert.ToInt32(Sharpen.Runtime.Substring(Db4oFactory.Version(), 5, 
+				6));
 		}
 
 		private byte _db4oHeaderVersion;
 
-		protected abstract string[] VersionNames();
+		protected virtual string[] VersionNames()
+		{
+			return new string[] { Sharpen.Runtime.Substring(Db4oFactory.Version(), 5) };
+		}
 
 		protected abstract string FileNamePrefix();
 

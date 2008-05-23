@@ -2,7 +2,6 @@
 
 using System.IO;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
@@ -10,14 +9,14 @@ using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
 	public class ArrayHandler0 : ArrayHandler2
 	{
-		protected override void CollectIDsWith(CollectIdContext context, IClosure4 closure
-			)
+		protected override void WithContent(BufferContext context, IRunnable runnable)
 		{
 			int address = context.ReadInt();
 			int length = context.ReadInt();
@@ -29,7 +28,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			ByteArrayBuffer indirectedBuffer = context.Container().BufferByAddress(address, length
 				);
 			context.Buffer(indirectedBuffer);
-			closure.Run();
+			runnable.Run();
 			context.Buffer(temp);
 		}
 
@@ -40,6 +39,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.DefragmentRecommended();
 		}
 
+		/// <summary>TODO: Consider to remove, Parent should take care.</summary>
+		/// <remarks>TODO: Consider to remove, Parent should take care.</remarks>
 		/// <exception cref="Db4oIOException"></exception>
 		public override void ReadCandidates(QueryingReadContext context)
 		{
@@ -47,8 +48,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			QCandidates candidates = context.Candidates();
 			ByteArrayBuffer arrayBuffer = ((ByteArrayBuffer)context.Buffer()).ReadEmbeddedObject
 				(transaction);
-			int count = ElementCount(transaction, arrayBuffer);
-			for (int i = 0; i < count; i++)
+			ArrayInfo info = NewArrayInfo();
+			ReadInfo(transaction, arrayBuffer, info);
+			for (int i = 0; i < info.ElementCount(); i++)
 			{
 				candidates.AddByIdentity(new QCandidate(candidates, null, arrayBuffer.ReadInt(), 
 					true));

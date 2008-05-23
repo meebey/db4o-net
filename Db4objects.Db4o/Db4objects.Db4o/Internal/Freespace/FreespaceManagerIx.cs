@@ -46,10 +46,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override void Free(Slot slot)
 		{
-			// Should no longer be used: Should not happen.
-			throw new InvalidOperationException();
 		}
 
+		// Should no longer be used: Should not happen.
 		public override void FreeSelf()
 		{
 		}
@@ -57,7 +56,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 		// do nothing, freespace is dropped.
 		public override Slot GetSlot(int length)
 		{
-			throw new InvalidOperationException();
+			// implementation is no longer present, no freespace returned.
+			return null;
 		}
 
 		public override void MigrateTo(IFreespaceManager fm)

@@ -240,8 +240,12 @@ namespace Db4oUnit.Extensions
 
 		protected virtual IConfigurationSource ConfigSource(bool independentConfig)
 		{
-			return (independentConfig ? (IConfigurationSource)new IndependentConfigurationSource
-				() : new GlobalConfigurationSource());
+			IConfigurationSource configSource = new IndependentConfigurationSource();
+			if (!independentConfig)
+			{
+				configSource = new CachingConfigurationSource(configSource);
+			}
+			return configSource;
 		}
 
 		protected virtual IInternalObjectContainer Stream()
@@ -371,12 +375,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_302(oc));
+			Foreach(clazz, new _IVisitor4_306(oc));
 		}
 
-		private sealed class _IVisitor4_302 : IVisitor4
+		private sealed class _IVisitor4_306 : IVisitor4
 		{
-			public _IVisitor4_302(IExtObjectContainer oc)
+			public _IVisitor4_306(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

@@ -401,7 +401,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 					)i.Current;
 				if (!_stream._handlers.IclassInternal.IsAssignableFrom(clazz))
 				{
-					if (!clazz.IsSecondClass())
+					ClassMetadata clazzMeta = _stream.ClassMetadataForReflectClass(clazz);
+					if (clazzMeta == null || !clazzMeta.IsSecondClass())
 					{
 						if (!clazz.IsArray())
 						{

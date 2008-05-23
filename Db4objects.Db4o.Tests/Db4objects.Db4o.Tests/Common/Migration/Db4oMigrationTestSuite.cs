@@ -44,10 +44,13 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				), typeof(CascadedDeleteFileFormatUpdateTestCase), typeof(CharHandlerUpdateTestCase
 				), typeof(DateHandlerUpdateTestCase), typeof(DoubleHandlerUpdateTestCase), typeof(
 				FloatHandlerUpdateTestCase), typeof(IntHandlerUpdateTestCase), typeof(InterfaceHandlerUpdateTestCase
-				), typeof(IxFreespaceMigrationTestCase), typeof(LongHandlerUpdateTestCase), typeof(
-				MultiDimensionalArrayHandlerUpdateTestCase), typeof(NestedArrayUpdateTestCase), 
-				typeof(ObjectArrayUpdateTestCase), typeof(ShortHandlerUpdateTestCase), typeof(StringHandlerUpdateTestCase
-				) };
+				), typeof(LongHandlerUpdateTestCase), typeof(MultiDimensionalArrayHandlerUpdateTestCase
+				), typeof(NestedArrayUpdateTestCase), typeof(ObjectArrayUpdateTestCase), typeof(
+				ShortHandlerUpdateTestCase), typeof(StringHandlerUpdateTestCase), typeof(IxFreespaceMigrationTestCase
+				), typeof(FreespaceManagerMigrationTestCase) };
 		}
+		// Order to run freespace tests last is
+		// deliberate. Global configuration Db4o.configure()
+		// is changed in the #setUp call and reused.
 	}
 }

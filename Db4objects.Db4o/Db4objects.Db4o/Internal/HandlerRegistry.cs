@@ -217,6 +217,11 @@ namespace Db4objects.Db4o.Internal
 				();
 			RegisterHandlerVersion(multidimensionalArrayHandler, 0, new MultidimensionalArrayHandler0
 				());
+			if (NullableArrayHandling.Enabled())
+			{
+				RegisterHandlerVersion(multidimensionalArrayHandler, 3, new MultidimensionalArrayHandler3
+					());
+			}
 			PrimitiveFieldHandler primitiveFieldHandler = new PrimitiveFieldHandler();
 			RegisterHandlerVersion(primitiveFieldHandler, 0, primitiveFieldHandler);
 			// same handler, but making sure versions get cascaded

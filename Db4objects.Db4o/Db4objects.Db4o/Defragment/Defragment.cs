@@ -118,6 +118,7 @@ namespace Db4objects.Db4o.Defragment
 		/// 	</exception>
 		public static void Defrag(DefragmentConfig config, IDefragmentListener listener)
 		{
+			EnsureFileExists(config.OrigPath());
 			Sharpen.IO.File backupFile = new Sharpen.IO.File(config.BackupPath());
 			if (backupFile.Exists())
 			{
@@ -169,6 +170,17 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		/// <exception cref="IOException"></exception>
+		private static void EnsureFileExists(string origPath)
+		{
+			Sharpen.IO.File file = new Sharpen.IO.File(origPath);
+			if (!file.Exists() || file.Length() == 0)
+			{
+				throw new IOException("Source database file '" + origPath + "' does not exist or is empty."
+					);
+			}
+		}
+
+		/// <exception cref="IOException"></exception>
 		private static void UpgradeFile(DefragmentConfig config)
 		{
 			File4.Copy(config.BackupPath(), config.TempPath());
@@ -187,14 +199,14 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.HasMoreIds())
 			{
 				int origID = unindexedIDs.NextId();
-				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_168(), 
+				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_177(), 
 					true);
 			}
 		}
 
-		private sealed class _ISlotCopyHandler_168 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_177 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_168()
+			public _ISlotCopyHandler_177()
 			{
 			}
 
@@ -307,12 +319,12 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessObjectsForYapClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			context.TraverseAll(curClass, new _IVisitor4_259(command, context, curClass));
+			context.TraverseAll(curClass, new _IVisitor4_268(command, context, curClass));
 		}
 
-		private sealed class _IVisitor4_259 : IVisitor4
+		private sealed class _IVisitor4_268 : IVisitor4
 		{
-			public _IVisitor4_259(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
+			public _IVisitor4_268(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
 				 curClass)
 			{
 				this.command = command;

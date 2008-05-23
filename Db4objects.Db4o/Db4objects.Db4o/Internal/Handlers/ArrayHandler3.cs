@@ -9,14 +9,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	public class ArrayHandler3 : ArrayHandler
 	{
-		protected override bool IsPrimitive(IReflectClass claxx)
+		protected override bool IsPrimitive(IReflector reflector, IReflectClass claxx, ClassMetadata
+			 classMetadata)
 		{
-			// TODO: Check if this is correct. 
-			// In this case we may get the nullable type
-			// associated with this arrayhandler, but
-			// we always want to use the non-nullable
-			// type if we read with the old arrayHandler.
-			return false;
+			return Handlers4.PrimitiveClassReflector(classMetadata, reflector) != null;
 			return claxx.IsPrimitive();
 		}
 

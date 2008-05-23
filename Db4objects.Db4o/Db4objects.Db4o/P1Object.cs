@@ -208,7 +208,8 @@ namespace Db4objects.Db4o
 				}
 				catch (Db4oException e)
 				{
-					stream.CompleteTopLevelSet(e);
+					stream.CompleteTopLevelCall();
+					throw;
 				}
 				finally
 				{

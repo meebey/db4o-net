@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			return new Type[] { typeof(BlockConfigurationFileSizeTestCase), typeof(FileSizeTestCase
 				), typeof(FreespaceManagerDiscardLimitTestCase), typeof(FreespaceManagerReopenTestCase
-				), typeof(FreespaceManagerTestCase), typeof(FreespaceMigrationTestCase) };
+				), typeof(FreespaceManagerTestCase), typeof(FreespaceManagerTypeChangeTestCase) };
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests
 #else
 //			return new Common.Assorted.IndexCreateDropTestCase().RunSolo();
 //			return new Common.Migration.AllTests().RunSolo();
-//			return new Common.Reflect.Custom.AllTests().RunSolo();
+//			return new Common.Refle ct.Custom.AllTests().RunSolo();
 //			return new AllTests().RunSolo();
 //			return new AllTests().RunClientServer();
 //			return new AllTestsConcurrency().RunConcurrencyAll();
@@ -25,6 +25,7 @@ namespace Db4objects.Db4o.Tests
 		
 		protected override Type[] TestCases()
 		{
+//			return new Type[] { typeof(CLI2.Assorted.UntypedDelegateArrayTestCase), };
 //			return new Type[] { typeof(CLI2.Collections.GenericListTypeHandlerTestCase) };
             //return new Type[] { typeof(DeletionEventExceptionTestCase), };
 			return new Type[]

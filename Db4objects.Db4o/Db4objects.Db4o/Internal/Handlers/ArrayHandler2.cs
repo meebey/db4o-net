@@ -8,6 +8,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class ArrayHandler2 : ArrayHandler3
 	{
+		/// <summary>FIXME: We are not changing any behaviour, why do we override?</summary>
 		protected override int PreparePayloadRead(IDefragmentContext context)
 		{
 			return context.Offset();

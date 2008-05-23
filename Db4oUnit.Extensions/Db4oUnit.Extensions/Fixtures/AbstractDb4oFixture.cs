@@ -12,15 +12,13 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public abstract class AbstractDb4oFixture : IDb4oFixture
 	{
-		private readonly IConfigurationSource _configSource;
-
-		private IConfiguration _config;
+		private readonly CachingConfigurationSource _configSource;
 
 		private IFixtureConfiguration _fixtureConfiguration;
 
 		protected AbstractDb4oFixture(IConfigurationSource configSource)
 		{
-			_configSource = configSource;
+			_configSource = new CachingConfigurationSource(configSource);
 		}
 
 		public virtual void FixtureConfiguration(IFixtureConfiguration fc)
@@ -37,11 +35,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public virtual IConfiguration Config()
 		{
-			if (_config == null)
-			{
-				_config = _configSource.Config();
-			}
-			return _config;
+			return _configSource.Config();
 		}
 
 		public virtual void Clean()
@@ -56,7 +50,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		protected virtual void ResetConfig()
 		{
-			_config = null;
+			_configSource.Reset();
 		}
 
 		/// <exception cref="Exception"></exception>

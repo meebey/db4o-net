@@ -309,15 +309,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _isPrimitive;
 		}
 
-		public virtual bool IsSecondClass()
-		{
-			if (IsPrimitive())
-			{
-				return true;
-			}
-			return _isSecondClass;
-		}
-
 		public virtual object NewInstance()
 		{
 			if (_delegate != null)

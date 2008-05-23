@@ -28,6 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		public virtual IReservedBuffer Reserve(int length)
 		{
 			IReservedBuffer reservedBuffer = new _IReservedBuffer_27(this);
+			Seek(Offset() + length);
 			return reservedBuffer;
 		}
 

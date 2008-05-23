@@ -425,9 +425,29 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (_handler is ICollectIdHandler)
 				{
-					((ICollectIdHandler)_handler).CollectIDs(context);
+					SlotFormat.ForHandlerVersion(context.HandlerVersion()).DoWithSlotIndirection(context
+						, _handler, new _IClosure4_366(this, context));
 				}
 			}
+		}
+
+		private sealed class _IClosure4_366 : IClosure4
+		{
+			public _IClosure4_366(FieldMetadata _enclosing, CollectIdContext context)
+			{
+				this._enclosing = _enclosing;
+				this.context = context;
+			}
+
+			public object Run()
+			{
+				((ICollectIdHandler)this._enclosing._handler).CollectIDs(context);
+				return null;
+			}
+
+			private readonly FieldMetadata _enclosing;
+
+			private readonly CollectIdContext context;
 		}
 
 		internal virtual void Configure(IReflectClass clazz, bool isPrimitive)
@@ -516,7 +536,7 @@ namespace Db4objects.Db4o.Internal
 				DeleteContextImpl context = new DeleteContextImpl(GetStoredType(), handlerVersion
 					, _config, buffer);
 				SlotFormat.ForHandlerVersion(handlerVersion).DoWithSlotIndirection(buffer, _handler
-					, new _IClosure4_434(this, context));
+					, new _IClosure4_440(this, context));
 			}
 			catch (CorruptionException exc)
 			{
@@ -524,9 +544,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_434 : IClosure4
+		private sealed class _IClosure4_440 : IClosure4
 		{
-			public _IClosure4_434(FieldMetadata _enclosing, DeleteContextImpl context)
+			public _IClosure4_440(FieldMetadata _enclosing, DeleteContextImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -1113,14 +1133,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_910(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_916(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_910 : IVisitor4
+		private sealed class _IVisitor4_916 : IVisitor4
 		{
-			public _IVisitor4_910(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_916(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;
@@ -1324,12 +1344,12 @@ namespace Db4objects.Db4o.Internal
 			context.HandlerVersion(handlerVersion);
 			ITypeHandler4 typeHandler = context.CorrectHandlerVersion(GetHandler());
 			SlotFormat.ForHandlerVersion(handlerVersion).DoWithSlotIndirection(context, typeHandler
-				, new _IClosure4_1061(typeHandler, context));
+				, new _IClosure4_1067(typeHandler, context));
 		}
 
-		private sealed class _IClosure4_1061 : IClosure4
+		private sealed class _IClosure4_1067 : IClosure4
 		{
-			public _IClosure4_1061(ITypeHandler4 typeHandler, DefragmentContextImpl context)
+			public _IClosure4_1067(ITypeHandler4 typeHandler, DefragmentContextImpl context)
 			{
 				this.typeHandler = typeHandler;
 				this.context = context;

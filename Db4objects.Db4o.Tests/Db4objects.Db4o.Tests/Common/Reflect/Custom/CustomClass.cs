@@ -128,11 +128,6 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 			return false;
 		}
 
-		public virtual bool IsSecondClass()
-		{
-			return false;
-		}
-
 		public virtual object NewInstance()
 		{
 			return new PersistentEntry(_name, null, new object[_fields.Length - 1]);
@@ -145,12 +140,12 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public virtual IEnumerator CustomFields()
 		{
-			return Iterators.Filter(_fields, new _IPredicate4_113());
+			return Iterators.Filter(_fields, new _IPredicate4_109());
 		}
 
-		private sealed class _IPredicate4_113 : IPredicate4
+		private sealed class _IPredicate4_109 : IPredicate4
 		{
-			public _IPredicate4_113()
+			public _IPredicate4_109()
 			{
 			}
 

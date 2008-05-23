@@ -1808,10 +1808,14 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual bool ReadThis()
 		{
-			if (StateUnread())
+			bool stateUnread = StateUnread();
+			if (stateUnread)
 			{
 				SetStateOK();
 				SetStateClean();
+			}
+			if (stateUnread || StateDead())
+			{
 				ForceRead();
 				return true;
 			}
@@ -2051,7 +2055,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1699
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1702
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2060,9 +2064,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1699 : IFunction4
+		private sealed class _IFunction4_1702 : IFunction4
 		{
-			public _IFunction4_1699(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1702(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2103,12 +2107,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1727(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1730(this));
 		}
 
-		private sealed class _IFunction4_1727 : IFunction4
+		private sealed class _IFunction4_1730 : IFunction4
 		{
-			public _IFunction4_1727(ClassMetadata _enclosing)
+			public _IFunction4_1730(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2150,12 +2154,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1756());
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1759());
 		}
 
-		private sealed class _IPredicate4_1756 : IPredicate4
+		private sealed class _IPredicate4_1759 : IPredicate4
 		{
-			public _IPredicate4_1756()
+			public _IPredicate4_1759()
 			{
 			}
 
@@ -2397,9 +2401,14 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		protected virtual bool IsSecondClass(ITypeHandler4 handler)
+		{
+			return Handlers4.BaseTypeHandler(handler) is IEmbeddedTypeHandler;
+		}
+
 		public virtual bool IsSecondClass()
 		{
-			return _typeHandler is IEmbeddedTypeHandler;
+			return IsSecondClass(_typeHandler);
 		}
 	}
 }

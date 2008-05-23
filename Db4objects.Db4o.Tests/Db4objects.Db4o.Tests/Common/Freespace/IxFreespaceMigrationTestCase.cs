@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Query;
@@ -86,11 +85,6 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		protected override string FileNamePrefix()
 		{
 			return "migrate_freespace_ix_";
-		}
-
-		protected override string[] VersionNames()
-		{
-			return new string[] { Sharpen.Runtime.Substring(Db4oFactory.Version(), 5) };
 		}
 	}
 }
