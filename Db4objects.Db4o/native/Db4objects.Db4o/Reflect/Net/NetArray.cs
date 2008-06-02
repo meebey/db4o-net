@@ -8,11 +8,52 @@ namespace Db4objects.Db4o.Reflect.Net
         public NetArray(IReflector reflector) : base(reflector)
         {
         }
-        
+
         private static Type GetNetType(IReflectClass clazz)
 		{
 			return ((NetClass)clazz).GetNetType();
 		}
+
+        public override void Analyze(object obj, ArrayInfo info)
+        {
+            info.Nullable(IsNullableType(obj.GetType()));
+        }
+
+        private bool IsNullableType(Type type)
+        {
+            if (type.IsArray)
+            {
+                return IsNullableType(type.GetElementType());
+            }
+
+            Type underlyingType = Nullable.GetUnderlyingType(type);
+            return underlyingType != null;
+        }
+
+        public override object NewInstance(IReflectClass componentType, ArrayInfo info)
+        {
+            Type type = GetNetType(componentType);
+            if (info.Nullable())
+            {
+                type = NullableType(type);
+            }
+            MultidimensionalArrayInfo multiDimensionalInfo = info as MultidimensionalArrayInfo;
+            if (multiDimensionalInfo == null)
+            {
+                return System.Array.CreateInstance(type, info.ElementCount());
+            }
+            int[] dimensions = multiDimensionalInfo.Dimensions();
+            if (dimensions.Length == 1)
+            {
+                return UnfoldArrayCreation(type, dimensions, 0);
+            }
+            return UnfoldArrayCreation(GetArrayType(type, dimensions.Length - 1), dimensions, 0);
+        }
+
+        private Type NullableType(Type type)
+        {
+            return typeof(Nullable<>).MakeGenericType(new Type[] { type });
+        }
         
         public override object NewInstance(IReflectClass componentType, int[] dimensions)
         {
