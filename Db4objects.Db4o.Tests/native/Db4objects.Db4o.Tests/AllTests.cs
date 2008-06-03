@@ -25,9 +25,9 @@ namespace Db4objects.Db4o.Tests
 		
 		protected override Type[] TestCases()
 		{
-//			return new Type[] { typeof(CLI2.Assorted.UntypedDelegateArrayTestCase), };
-//			return new Type[] { typeof(CLI2.Collections.GenericListTypeHandlerTestCase) };
-            //return new Type[] { typeof(DeletionEventExceptionTestCase), };
+			//return new Type[] { typeof(Db4objects.Db4o.Tests.Common.Migration.AllTests) };
+			//return new Type[] { typeof(CLI2.Collections.GenericListTypeHandlerTestCase) };
+            //return new Type[] { typeof(Db4objects.Db4o.Tests.Jre5.Collections.Typehandler.AllTests),};
 			return new Type[]
 				{	
 #if CF_3_5
@@ -37,6 +37,7 @@ namespace Db4objects.Db4o.Tests
 					typeof(Db4objects.Db4o.Tests.Common.Migration.AllTests),
                     typeof(Db4objects.Db4o.Tests.Common.TA.AllTests),
                     typeof(Db4objects.Db4o.Tests.Common.AllTests),
+					typeof(Db4objects.Db4o.Tests.Jre5.Collections.Typehandler.AllTests),
                     typeof(Db4objects.Db4o.Tests.CLI1.AllTests),
 					typeof(Db4objects.Db4o.Tests.CLI2.AllTests),
                     typeof(Db4objects.Db4o.Tests.SharpenLang.AllTests),
