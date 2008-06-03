@@ -241,8 +241,14 @@ namespace Db4objects.Db4o.IO
 		/// <exception cref="Db4oIOException"></exception>
 		public override void Close()
 		{
-			FlushAllPages();
-			_io.Close();
+			try
+			{
+				FlushAllPages();
+			}
+			finally
+			{
+				_io.Close();
+			}
 		}
 
 		public override IoAdapter DelegatedIoAdapter()
@@ -397,9 +403,17 @@ namespace Db4objects.Db4o.IO
 		/// <exception cref="Db4oIOException"></exception>
 		private void WritePageToDisk(CachedIoAdapter.Page page)
 		{
-			_io.Write(page._buffer, page.Size());
-			_filePointer = page.EndAddress();
-			page._dirty = false;
+			try
+			{
+				_io.Write(page._buffer, page.Size());
+				_filePointer = page.EndAddress();
+				page._dirty = false;
+			}
+			catch (Db4oIOException e)
+			{
+				_readOnly = true;
+				throw;
+			}
 		}
 
 		/// <summary>Moves the pointer to the specified file position</summary>
@@ -428,7 +442,7 @@ namespace Db4objects.Db4o.IO
 
 			internal long _endAddress;
 
-			internal int _bufferSize;
+			internal readonly int _bufferSize;
 
 			internal bool _dirty;
 

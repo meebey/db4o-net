@@ -37,15 +37,15 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public _IReservedBuffer_27(MockWriteContext _enclosing)
 			{
 				this._enclosing = _enclosing;
-				this.reservedBufferOffset = this._enclosing.Offset();
+				this.reservedOffset = this._enclosing.Offset();
 			}
 
-			internal readonly int reservedBufferOffset;
+			private readonly int reservedOffset;
 
 			public void WriteBytes(byte[] bytes)
 			{
 				int currentOffset = this._enclosing.Offset();
-				this._enclosing.Seek(this.reservedBufferOffset);
+				this._enclosing.Seek(this.reservedOffset);
 				this._enclosing.WriteBytes(bytes);
 				this._enclosing.Seek(currentOffset);
 			}

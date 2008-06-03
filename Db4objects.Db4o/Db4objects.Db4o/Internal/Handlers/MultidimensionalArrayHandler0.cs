@@ -10,6 +10,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class MultidimensionalArrayHandler0 : MultidimensionalArrayHandler3
 	{
+		protected override ArrayVersionHelper CreateVersionHelper()
+		{
+			return new ArrayVersionHelper0();
+		}
+
 		public override object Read(IReadContext readContext)
 		{
 			IInternalReadContext context = (IInternalReadContext)readContext;
@@ -33,11 +38,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override void Defragment(IDefragmentContext context)
 		{
 			ArrayHandler0.Defragment(context, this);
-		}
-
-		protected override bool HasNullBitmap()
-		{
-			return false;
 		}
 	}
 }

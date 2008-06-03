@@ -5,11 +5,11 @@ using Db4objects.Db4o.Internal.Handlers;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public class MultidimensionalArrayHandler3 : MultidimensionalArrayHandler
+	public class ArrayVersionHelper0 : ArrayVersionHelper3
 	{
-		protected override ArrayVersionHelper CreateVersionHelper()
+		public override bool IsPreVersion0Format(int elementCount)
 		{
-			return new ArrayVersionHelper3();
+			return elementCount >= 0;
 		}
 	}
 }

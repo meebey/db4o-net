@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 				), typeof(CascadeToArray), typeof(ConjunctiveQbETestCase), typeof(IdListQueryResultTestCase
 				), typeof(IndexedQueriesTestCase), typeof(LazyQueryResultTestCase), typeof(MultiFieldIndexQueryTestCase
 				), typeof(ObjectSetTestCase), typeof(OrderedQueryTestCase), typeof(QueryByExampleTestCase
-				) };
+				), typeof(QueryingVersionFieldTestCase) };
 		}
 	}
 }

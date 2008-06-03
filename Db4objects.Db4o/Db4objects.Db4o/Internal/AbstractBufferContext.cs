@@ -8,13 +8,13 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public abstract class BufferContext : IReadBuffer
+	public abstract class AbstractBufferContext : IBufferContext
 	{
 		private IReadBuffer _buffer;
 
 		protected readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
-		public BufferContext(Db4objects.Db4o.Internal.Transaction transaction, IReadBuffer
+		public AbstractBufferContext(Db4objects.Db4o.Internal.Transaction transaction, IReadBuffer
 			 buffer)
 		{
 			_transaction = transaction;

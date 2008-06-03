@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			}
 		}
 
-		internal const bool Log = false;
+		internal const bool Verbose = false;
 
 		private bool HasLockFileThread()
 		{
@@ -48,7 +48,19 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		}
 
 		/// <exception cref="IOException"></exception>
-		public virtual void Test()
+		public virtual void TestWithCache()
+		{
+			DoTest(true);
+		}
+
+		/// <exception cref="IOException"></exception>
+		public virtual void TestWithoutCache()
+		{
+			DoTest(false);
+		}
+
+		/// <exception cref="IOException"></exception>
+		private void DoTest(bool cached)
 		{
 			if (HasLockFileThread())
 			{
@@ -61,8 +73,10 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			File4.Delete(fileName);
 			System.IO.Directory.CreateDirectory(path);
 			CreateFile(BaseConfig(), fileName);
-			CrashSimulatingIoAdapter adapterFactory = new CrashSimulatingIoAdapter(new RandomAccessFileAdapter
-				());
+			CrashSimulatingIoAdapter crashSimulatingAdapter = new CrashSimulatingIoAdapter(new 
+				RandomAccessFileAdapter());
+			IoAdapter adapterFactory = cached ? (IoAdapter)new CachedIoAdapter(crashSimulatingAdapter
+				) : crashSimulatingAdapter;
 			IConfiguration recordConfig = BaseConfig();
 			recordConfig.Io(adapterFactory);
 			IObjectContainer oc = Db4oFactory.OpenFile(recordConfig, fileName);
@@ -95,8 +109,8 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			}
 			oc.Commit();
 			oc.Close();
-			int count = adapterFactory.batch.WriteVersions(fileName);
-			CheckFiles(fileName, "R", adapterFactory.batch.NumSyncs());
+			int count = crashSimulatingAdapter.batch.WriteVersions(fileName);
+			CheckFiles(fileName, "R", crashSimulatingAdapter.batch.NumSyncs());
 			CheckFiles(fileName, "W", count);
 		}
 

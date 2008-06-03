@@ -9,7 +9,7 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public abstract class AbstractReadContext : BufferContext, IInternalReadContext
+	public abstract class AbstractReadContext : AbstractBufferContext, IInternalReadContext
 	{
 		protected IActivationDepth _activationDepth = UnknownActivationDepth.Instance;
 

@@ -12,6 +12,8 @@ namespace Db4objects.Db4o.Reflect
 	/// <seealso cref="IReflector">IReflector</seealso>
 	public interface IReflectArray
 	{
+		void Analyze(object obj, ArrayInfo info);
+
 		int[] Dimensions(object arr);
 
 		int Flatten(object a_shaped, int[] a_dimensions, int a_currentDimension, object[]
@@ -24,6 +26,8 @@ namespace Db4objects.Db4o.Reflect
 		int GetLength(object array);
 
 		bool IsNDimensional(IReflectClass a_class);
+
+		object NewInstance(IReflectClass componentType, ArrayInfo info);
 
 		object NewInstance(IReflectClass componentType, int length);
 

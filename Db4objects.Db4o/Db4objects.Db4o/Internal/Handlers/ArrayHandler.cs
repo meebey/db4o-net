@@ -27,14 +27,23 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private bool _usePrimitiveClassReflector;
 
-		public ArrayHandler(ITypeHandler4 handler, bool usePrimitiveClassReflector)
+		protected readonly ArrayVersionHelper _versionHelper;
+
+		public ArrayHandler()
+		{
+			_versionHelper = CreateVersionHelper();
+		}
+
+		public ArrayHandler(ITypeHandler4 handler, bool usePrimitiveClassReflector) : this
+			()
 		{
 			_handler = handler;
 			_usePrimitiveClassReflector = usePrimitiveClassReflector;
 		}
 
-		public ArrayHandler()
+		protected virtual ArrayVersionHelper CreateVersionHelper()
 		{
+			return new ArrayVersionHelper();
 		}
 
 		protected ArrayHandler(Db4objects.Db4o.Internal.Handlers.ArrayHandler template, HandlerRegistry
@@ -43,7 +52,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		// required for reflection cloning
 		protected virtual IReflectArray ArrayReflector(ObjectContainerBase container)
 		{
 			return container.Reflector().Array();
@@ -113,7 +121,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return container.ClassMetadataForObject(obj);
 		}
 
-		private IReflectClass ClassReflector(ObjectContainerBase container)
+		protected virtual IReflectClass ClassReflector(ObjectContainerBase container)
 		{
 			if (_handler is IBuiltinTypeHandler)
 			{
@@ -128,12 +136,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void CollectIDs(CollectIdContext context)
 		{
-			ForEachElement(context, new _IRunnable_106(context));
+			ForEachElement(context, new _IRunnable_113(context));
 		}
 
-		private sealed class _IRunnable_106 : IRunnable
+		private sealed class _IRunnable_113 : IRunnable
 		{
-			public _IRunnable_106(CollectIdContext context)
+			public _IRunnable_113(CollectIdContext context)
 			{
 				this.context = context;
 			}
@@ -146,19 +154,22 @@ namespace Db4objects.Db4o.Internal.Handlers
 			private readonly CollectIdContext context;
 		}
 
-		protected virtual void ForEachElement(BufferContext context, IRunnable elementRunnable
-			)
+		protected virtual ArrayInfo ForEachElement(AbstractBufferContext context, IRunnable
+			 elementRunnable)
 		{
-			WithContent(context, new _IRunnable_114(this, context, elementRunnable));
+			ArrayInfo info = NewArrayInfo();
+			WithContent(context, new _IRunnable_122(this, context, info, elementRunnable));
+			return info;
 		}
 
-		private sealed class _IRunnable_114 : IRunnable
+		private sealed class _IRunnable_122 : IRunnable
 		{
-			public _IRunnable_114(ArrayHandler _enclosing, BufferContext context, IRunnable elementRunnable
-				)
+			public _IRunnable_122(ArrayHandler _enclosing, AbstractBufferContext context, ArrayInfo
+				 info, IRunnable elementRunnable)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
+				this.info = info;
 				this.elementRunnable = elementRunnable;
 			}
 
@@ -168,10 +179,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 				{
 					return;
 				}
-				ArrayInfo info = this._enclosing.NewArrayInfo();
+				if (this._enclosing.IsUntypedByteArray(context))
+				{
+					return;
+				}
 				this._enclosing.ReadInfo(context.Transaction(), context, info);
 				int elementCount = info.ElementCount();
-				elementCount -= this._enclosing.ReducedCountForNullBitMap(context, elementCount);
+				elementCount -= this._enclosing.ReducedCountForNullBitMap(info, context);
 				for (int i = 0; i < elementCount; i++)
 				{
 					elementRunnable.Run();
@@ -180,23 +194,27 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 			private readonly ArrayHandler _enclosing;
 
-			private readonly BufferContext context;
+			private readonly AbstractBufferContext context;
+
+			private readonly ArrayInfo info;
 
 			private readonly IRunnable elementRunnable;
 		}
 
-		protected virtual void WithContent(BufferContext context, IRunnable runnable)
+		protected virtual void WithContent(AbstractBufferContext context, IRunnable runnable
+			)
 		{
 			runnable.Run();
 		}
 
-		private int ReducedCountForNullBitMap(IReadBuffer context, int count)
+		private int ReducedCountForNullBitMap(ArrayInfo info, IReadBuffer context)
 		{
-			if (!HasNullBitmap())
+			if (!HasNullBitmap(info))
 			{
 				return 0;
 			}
-			return ReducedCountForNullBitMap(count, ReadNullBitmap(context, count));
+			return ReducedCountForNullBitMap(info.ElementCount(), ReadNullBitmap(context, info
+				.ElementCount()));
 		}
 
 		private int ReducedCountForNullBitMap(int count, BitMap4 bitMap)
@@ -219,12 +237,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return;
 			}
-			ForEachElement((BufferContext)context, new _IRunnable_158(this, context));
+			ForEachElement((AbstractBufferContext)context, new _IRunnable_169(this, context));
 		}
 
-		private sealed class _IRunnable_158 : IRunnable
+		private sealed class _IRunnable_169 : IRunnable
 		{
-			public _IRunnable_158(ArrayHandler _enclosing, IDeleteContext context)
+			public _IRunnable_169(ArrayHandler _enclosing, IDeleteContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -303,17 +321,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.Yaparray;
 		}
 
-		/// <param name="obj"></param>
-		public virtual int OwnLength(object obj)
-		{
-			return OwnLength();
-		}
-
-		private int OwnLength()
-		{
-			return Const4.ObjectLength + Const4.IntLength * 2;
-		}
-
 		public virtual IReflectClass PrimitiveClassReflector(IReflector reflector)
 		{
 			return Handlers4.PrimitiveClassReflector(_handler, reflector);
@@ -328,13 +335,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return null;
 			}
-			return NewInstance(trans, info, clazz);
+			return NewInstance(ArrayReflector(Container(trans)), info, clazz);
 		}
 
-		protected virtual object NewInstance(Transaction trans, ArrayInfo info, IReflectClass
+		protected object NewInstance(IReflectArray arrayReflector, ArrayInfo info, IReflectClass
 			 clazz)
 		{
-			return ArrayReflector(Container(trans)).NewInstance(clazz, info.ElementCount());
+			return arrayReflector.NewInstance(clazz, info);
 		}
 
 		protected IReflectClass NewInstanceReflectClass(IReflector reflector, ArrayInfo info
@@ -356,12 +363,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual void ReadCandidates(QueryingReadContext context)
 		{
 			QCandidates candidates = context.Candidates();
-			ForEachElement(context, new _IRunnable_260(this, candidates, context));
+			ForEachElement(context, new _IRunnable_262(this, candidates, context));
 		}
 
-		private sealed class _IRunnable_260 : IRunnable
+		private sealed class _IRunnable_262 : IRunnable
 		{
-			public _IRunnable_260(ArrayHandler _enclosing, QCandidates candidates, QueryingReadContext
+			public _IRunnable_262(ArrayHandler _enclosing, QCandidates candidates, QueryingReadContext
 				 context)
 			{
 				this._enclosing = _enclosing;
@@ -398,18 +405,20 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		protected void ReadInfo(Transaction trans, IReadBuffer buffer, ArrayInfo info)
+		protected virtual void ReadInfo(Transaction trans, IReadBuffer buffer, ArrayInfo 
+			info)
 		{
 			int classID = buffer.ReadInt();
-			if (NewerArrayFormat(classID))
+			if (!IsPreVersion0Format(classID))
 			{
-				ReflectClassFromElementsEntry(trans, info, classID);
+				_versionHelper.ReadTypeInfo(trans, buffer, info, classID);
+				ReflectClassFromElementsEntry(Container(trans), info, classID);
 				ReadDimensions(info, buffer);
 			}
 			else
 			{
 				info.ReflectClass(ClassReflector(Container(trans)));
-				ReadDimensionsOldFormat(buffer, info, classID);
+				DetectDimensionsPreVersion0Format(buffer, info, classID);
 			}
 			if (Debug.ExceedsMaximumArrayEntries(info.ElementCount(), _usePrimitiveClassReflector
 				))
@@ -418,8 +427,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		protected virtual void ReadDimensionsOldFormat(IReadBuffer buffer, ArrayInfo info
-			, int classID)
+		protected virtual void DetectDimensionsPreVersion0Format(IReadBuffer buffer, ArrayInfo
+			 info, int classID)
 		{
 			info.ElementCount(classID);
 		}
@@ -429,68 +438,22 @@ namespace Db4objects.Db4o.Internal.Handlers
 			info.ElementCount(buffer.ReadInt());
 		}
 
-		private bool NewerArrayFormat(int elements)
+		protected virtual bool IsPreVersion0Format(int elementCount)
 		{
-			return elements < 0;
+			return _versionHelper.IsPreVersion0Format(elementCount);
 		}
 
-		protected int MapElementsEntry(IDefragmentContext context, int orig)
+		private void ReflectClassFromElementsEntry(ObjectContainerBase container, ArrayInfo
+			 info, int classID)
 		{
-			if (orig >= 0 || orig == Const4.IgnoreId)
-			{
-				return orig;
-			}
-			// TODO: We changed the following line in the NullableArrayHandling 
-			//       refactoring. Behaviour may have to be different for older
-			//       ArrayHandler versions.
-			bool primitive = UseJavaHandling() && (orig < Const4.Primitive);
-			if (primitive)
-			{
-				orig -= Const4.Primitive;
-			}
-			int origID = -orig;
-			int mappedID = context.MappedID(origID);
-			int mapped = -mappedID;
-			if (primitive)
-			{
-				mapped += Const4.Primitive;
-			}
-			return mapped;
+			info.ReflectClass(_versionHelper.ReflectClassFromElementsEntry(container, info, classID
+				));
 		}
 
-		private void ReflectClassFromElementsEntry(Transaction trans, ArrayInfo info, int
-			 classID)
+		protected IReflectClass ClassReflector(IReflector reflector, ClassMetadata classMetadata
+			, bool isPrimitive)
 		{
-			// TODO: Here is a low-frequency mistake, extremely unlikely.
-			// If classID == 99999 by accident then we will get ignore.
-			if (classID != Const4.IgnoreId)
-			{
-				info.Primitive(false);
-				if (UseJavaHandling())
-				{
-					if (classID < Const4.Primitive)
-					{
-						info.Primitive(true);
-						classID -= Const4.Primitive;
-					}
-				}
-				classID = -classID;
-				ClassMetadata classMetadata = Container(trans).ClassMetadataForId(classID);
-				if (classMetadata != null)
-				{
-					info.ReflectClass(ClassReflector(trans.Reflector(), classMetadata, info.Primitive
-						()));
-					return;
-				}
-			}
-			info.ReflectClass(ClassReflector(Container(trans)));
-		}
-
-		protected virtual IReflectClass ClassReflector(IReflector reflector, ClassMetadata
-			 classMetadata, bool isPrimitive)
-		{
-			return (isPrimitive ? Handlers4.PrimitiveClassReflector(classMetadata, reflector)
-				 : classMetadata.ClassReflector());
+			return _versionHelper.ClassReflector(reflector, classMetadata, isPrimitive);
 		}
 
 		public static IEnumerator Iterator(IReflectClass claxx, object obj)
@@ -506,64 +469,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		protected virtual bool UseJavaHandling()
 		{
-			if (NullableArrayHandling.Enabled())
-			{
-				return true;
-			}
-			return !Deploy.csharp;
+			return _versionHelper.UseJavaHandling();
 		}
 
-		protected int ClassID(ObjectContainerBase container, object obj)
+		protected virtual int ClassIDFromInfo(ObjectContainerBase container, ArrayInfo info
+			)
 		{
-			IReflectClass claxx = ComponentType(container, obj);
-			ClassMetadata classMetadata = container.ProduceClassMetadata(claxx);
-			bool primitive = IsPrimitive(container.Reflector(), claxx, classMetadata);
-			if (primitive)
-			{
-				claxx = classMetadata.ClassReflector();
-			}
-			classMetadata = container.ProduceClassMetadata(claxx);
-			if (classMetadata == null)
-			{
-				// TODO: This one is a terrible low-frequency blunder !!!
-				// If YapClass-ID == 99999 then we will get IGNORE back.
-				// Discovered on adding the primitives
-				return Const4.IgnoreId;
-			}
-			int classID = classMetadata.GetID();
-			if (primitive)
-			{
-				classID -= Const4.Primitive;
-			}
-			return -classID;
+			return _versionHelper.ClassIDFromInfo(container, info);
 		}
 
-		private int ClassID(ObjectContainerBase container, ArrayInfo info)
+		private int MarshalledClassID(ObjectContainerBase container, ArrayInfo info)
 		{
-			ClassMetadata classMetadata = container.ProduceClassMetadata(info.ReflectClass());
-			if (classMetadata == null)
-			{
-				// TODO: This one is a terrible low-frequency blunder !!!
-				// If YapClass-ID == 99999 then we will get IGNORE back.
-				// Discovered on adding the primitives
-				return Const4.IgnoreId;
-			}
-			int classID = classMetadata.GetID();
-			if (info.Primitive())
-			{
-				classID -= Const4.Primitive;
-			}
-			return -classID;
+			return ClassIdToMarshalledClassId(ClassIDFromInfo(container, info), info.Primitive
+				());
 		}
 
-		protected virtual bool IsPrimitive(IReflector reflector, IReflectClass claxx, ClassMetadata
+		public int ClassIdToMarshalledClassId(int classID, bool primitive)
+		{
+			return _versionHelper.ClassIdToMarshalledClassId(classID, primitive);
+		}
+
+		protected bool IsPrimitive(IReflector reflector, IReflectClass claxx, ClassMetadata
 			 classMetadata)
 		{
-			if (NullableArrayHandling.Disabled())
-			{
-				return false;
-			}
-			return claxx.IsPrimitive();
+			return _versionHelper.IsPrimitive(reflector, claxx, classMetadata);
 		}
 
 		private IReflectClass ComponentType(ObjectContainerBase container, object obj)
@@ -580,38 +509,24 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			else
 			{
-				DefragIDs(context);
+				DefragmentSlot(context);
 			}
 		}
 
-		private void DefragIDs(IDefragmentContext context)
-		{
-			int offset = PreparePayloadRead(context);
-			Defrag1(context);
-			// FIXME: Shouldn't we be beyound the array slot now?
-			context.Seek(offset);
-		}
-
-		protected virtual int PreparePayloadRead(IDefragmentContext context)
-		{
-			return context.Offset();
-		}
-
-		public void Defrag1(IDefragmentContext context)
-		{
-			Defrag2(context);
-		}
-
-		public virtual void Defrag2(IDefragmentContext context)
+		public void DefragmentSlot(IDefragmentContext context)
 		{
 			if (IsUntypedByteArray(context))
 			{
 				return;
 			}
-			int elementCount = ReadElementCountDefrag(context);
-			if (HasNullBitmap())
+			int classIdOffset = context.TargetBuffer().Offset();
+			ArrayInfo info = NewArrayInfo();
+			ReadInfo(context.Transaction(), context, info);
+			DefragmentWriteMappedClassId(context, info, classIdOffset);
+			int elementCount = info.ElementCount();
+			if (HasNullBitmap(info))
 			{
-				BitMap4 bitMap = DefragmentNullBitmap(context, elementCount);
+				BitMap4 bitMap = ReadNullBitmap(context, elementCount);
 				elementCount -= ReducedCountForNullBitMap(elementCount, bitMap);
 			}
 			for (int i = 0; i < elementCount; i++)
@@ -620,12 +535,25 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		private bool IsUntypedByteArray(IDefragmentContext context)
+		private void DefragmentWriteMappedClassId(IDefragmentContext context, ArrayInfo info
+			, int classIdOffset)
+		{
+			ByteArrayBuffer targetBuffer = context.TargetBuffer();
+			int currentOffset = targetBuffer.Offset();
+			targetBuffer.Seek(classIdOffset);
+			int classID = ClassIDFromInfo(Container(context), info);
+			int mappedID = context.MappedID(classID);
+			int marshalledMappedId = ClassIdToMarshalledClassId(mappedID, info.Primitive());
+			targetBuffer.WriteInt(marshalledMappedId);
+			targetBuffer.Seek(currentOffset);
+		}
+
+		private bool IsUntypedByteArray(IBufferContext context)
 		{
 			return _handler is UntypedFieldHandler && HandleAsByteArray(context);
 		}
 
-		private bool HandleAsByteArray(IDefragmentContext context)
+		private bool HandleAsByteArray(IBufferContext context)
 		{
 			int offset = context.Offset();
 			ArrayInfo info = NewArrayInfo();
@@ -634,28 +562,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 				(info.ReflectClass());
 			context.Seek(offset);
 			return isByteArray;
-		}
-
-		private BitMap4 DefragmentNullBitmap(IDefragmentContext context, int elements)
-		{
-			if (!HasNullBitmap())
-			{
-				return null;
-			}
-			BitMap4 nullBitmap = ReadNullBitmap(context.SourceBuffer(), elements);
-			WriteNullBitmap(context.TargetBuffer(), nullBitmap);
-			return nullBitmap;
-		}
-
-		protected virtual int ReadElementCountDefrag(IDefragmentContext context)
-		{
-			int elements = context.SourceBuffer().ReadInt();
-			context.TargetBuffer().WriteInt(MapElementsEntry(context, elements));
-			if (elements < 0)
-			{
-				elements = context.ReadInt();
-			}
-			return elements;
 		}
 
 		public virtual object Read(IReadContext context)
@@ -689,7 +595,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				// byte[] performance optimisation
 				return;
 			}
-			if (HasNullBitmap())
+			if (HasNullBitmap(info))
 			{
 				BitMap4 nullBitMap = ReadNullBitmap(context, info.ElementCount());
 				for (int i = 0; i < info.ElementCount(); i++)
@@ -712,9 +618,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return context.ReadBitMap(length);
 		}
 
-		protected virtual bool HasNullBitmap()
+		protected bool HasNullBitmap(ArrayInfo info)
 		{
-			return NullableArrayHandling.Enabled();
+			return _versionHelper.HasNullBitmap(info);
 		}
 
 		public virtual void Write(IWriteContext context, object obj)
@@ -735,7 +641,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			else
 			{
 				// byte[] performance optimisation
-				if (HasNullBitmap())
+				if (HasNullBitmap(info))
 				{
 					BitMap4 nullItems = NullItemsMap(ArrayReflector(Container(context)), obj);
 					WriteNullBitmap(context, nullItems);
@@ -759,8 +665,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		protected virtual void WriteInfo(IWriteContext context, ArrayInfo info)
 		{
-			context.WriteInt(ClassID(Container(context), info));
+			WriteHeader(context, info);
 			WriteDimensions(context, info);
+		}
+
+		private void WriteHeader(IWriteContext context, ArrayInfo info)
+		{
+			context.WriteInt(MarshalledClassID(Container(context), info));
+			_versionHelper.WriteTypeInfo(context, info);
 		}
 
 		protected virtual void WriteDimensions(IWriteContext context, ArrayInfo info)
@@ -768,9 +680,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.WriteInt(info.ElementCount());
 		}
 
-		protected virtual void Analyze(ObjectContainerBase container, object obj, ArrayInfo
-			 info)
+		protected void Analyze(ObjectContainerBase container, object obj, ArrayInfo info)
 		{
+			// TODO: Move as much analysis as possible to ReflectArray#analyze() 
+			ArrayReflector(container).Analyze(obj, info);
 			IReflectClass claxx = ComponentType(container, obj);
 			ClassMetadata classMetadata = container.ProduceClassMetadata(claxx);
 			bool primitive = IsPrimitive(container.Reflector(), claxx, classMetadata);

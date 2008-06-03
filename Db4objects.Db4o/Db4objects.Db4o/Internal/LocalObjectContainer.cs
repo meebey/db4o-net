@@ -72,13 +72,19 @@ namespace Db4objects.Db4o.Internal
 
 		protected sealed override void Close2()
 		{
-			if (!_config.IsReadOnly())
+			try
 			{
-				FreeInternalResources();
-				CommitTransaction();
-				Shutdown();
+				if (!_config.IsReadOnly())
+				{
+					FreeInternalResources();
+					CommitTransaction();
+					Shutdown();
+				}
 			}
-			ShutdownObjectContainer();
+			finally
+			{
+				ShutdownObjectContainer();
+			}
 		}
 
 		protected abstract void FreeInternalResources();
@@ -227,14 +233,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _IVisitor4_211(this));
+				i_prefetchedIDs.Traverse(new _IVisitor4_215(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _IVisitor4_211 : IVisitor4
+		private sealed class _IVisitor4_215 : IVisitor4
 		{
-			public _IVisitor4_211(LocalObjectContainer _enclosing)
+			public _IVisitor4_215(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -701,15 +707,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_612(semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_616(semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_612 : IVisitor4
+		private sealed class _IVisitor4_616 : IVisitor4
 		{
-			public _IVisitor4_612(Hashtable4 semaphores)
+			public _IVisitor4_616(Hashtable4 semaphores)
 			{
 				this.semaphores = semaphores;
 			}
@@ -954,13 +960,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_812(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_816(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_812 : IVisitor4
+		private sealed class _IVisitor4_816 : IVisitor4
 		{
-			public _IVisitor4_812(IntArrayList ids)
+			public _IVisitor4_816(IntArrayList ids)
 			{
 				this.ids = ids;
 			}

@@ -10,7 +10,8 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 	{
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(CrashSimulatingTestCase) };
+			return new Type[] { typeof(CrashSimulatingTestCase), typeof(ReadCommittedIsolationTestCase
+				) };
 		}
 	}
 }

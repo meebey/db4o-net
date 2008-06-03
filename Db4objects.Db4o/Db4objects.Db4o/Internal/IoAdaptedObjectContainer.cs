@@ -334,16 +334,17 @@ namespace Db4objects.Db4o.Internal
 
 		public override void SyncFiles()
 		{
-			try
+			_file.Sync();
+			if (_timerFile != null)
 			{
-				_file.Sync();
-				if (_timerFile != null)
+				// _timerFile can be set to null here by other thread
+				try
 				{
 					_timerFile.Sync();
 				}
-			}
-			catch (Exception)
-			{
+				catch (Exception)
+				{
+				}
 			}
 		}
 

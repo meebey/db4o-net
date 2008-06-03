@@ -143,5 +143,9 @@ namespace Db4objects.Db4o.Reflect.Core
 			}
 			return a_flatElement;
 		}
+
+		public abstract void Analyze(object arg1, ArrayInfo arg2);
+
+		public abstract object NewInstance(IReflectClass arg1, ArrayInfo arg2);
 	}
 }

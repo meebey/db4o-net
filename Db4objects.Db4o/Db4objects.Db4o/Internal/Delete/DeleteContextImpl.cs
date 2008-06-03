@@ -11,7 +11,7 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal.Delete
 {
 	/// <exclude></exclude>
-	public class DeleteContextImpl : BufferContext, IDeleteContext
+	public class DeleteContextImpl : AbstractBufferContext, IDeleteContext
 	{
 		private readonly IReflectClass _fieldClass;
 

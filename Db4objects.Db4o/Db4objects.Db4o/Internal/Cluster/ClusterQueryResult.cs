@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 					index -= _sizes[i];
 					i++;
 				}
-				return ((ObjectSetFacade)_objectSets[i]).Get(index);
+				return ((ObjectSetFacade)_objectSets[i])[index];
 			}
 		}
 

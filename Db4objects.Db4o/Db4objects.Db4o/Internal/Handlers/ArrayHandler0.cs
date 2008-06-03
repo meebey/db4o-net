@@ -6,7 +6,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Sharpen.Lang;
@@ -16,7 +15,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <exclude></exclude>
 	public class ArrayHandler0 : ArrayHandler2
 	{
-		protected override void WithContent(BufferContext context, IRunnable runnable)
+		protected override ArrayVersionHelper CreateVersionHelper()
+		{
+			return new ArrayVersionHelper0();
+		}
+
+		protected override void WithContent(AbstractBufferContext context, IRunnable runnable
+			)
 		{
 			int address = context.ReadInt();
 			int length = context.ReadInt();
@@ -25,7 +30,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return;
 			}
 			IReadBuffer temp = context.Buffer();
-			ByteArrayBuffer indirectedBuffer = context.Container().BufferByAddress(address, length
+			ByteArrayBuffer indirectedBuffer = Container(context).BufferByAddress(address, length
 				);
 			context.Buffer(indirectedBuffer);
 			runnable.Run();
@@ -37,24 +42,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			context.ReadSlot();
 			context.DefragmentRecommended();
-		}
-
-		/// <summary>TODO: Consider to remove, Parent should take care.</summary>
-		/// <remarks>TODO: Consider to remove, Parent should take care.</remarks>
-		/// <exception cref="Db4oIOException"></exception>
-		public override void ReadCandidates(QueryingReadContext context)
-		{
-			Transaction transaction = context.Transaction();
-			QCandidates candidates = context.Candidates();
-			ByteArrayBuffer arrayBuffer = ((ByteArrayBuffer)context.Buffer()).ReadEmbeddedObject
-				(transaction);
-			ArrayInfo info = NewArrayInfo();
-			ReadInfo(transaction, arrayBuffer, info);
-			for (int i = 0; i < info.ElementCount(); i++)
-			{
-				candidates.AddByIdentity(new QCandidate(candidates, null, arrayBuffer.ReadInt(), 
-					true));
-			}
 		}
 
 		public override object Read(IReadContext readContext)
@@ -99,7 +86,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			DefragmentContextImpl payloadContext = new DefragmentContextImpl(sourceBuffer, (DefragmentContextImpl
 				)context);
-			handler.Defrag1(payloadContext);
+			handler.DefragmentSlot(payloadContext);
 			payloadContext.WriteToTarget(slot.Address());
 			context.TargetBuffer().WriteInt(slot.Address());
 			context.TargetBuffer().WriteInt(length);
@@ -108,15 +95,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override void Defragment(IDefragmentContext context)
 		{
 			Defragment(context, this);
-		}
-
-		public override void Defrag2(IDefragmentContext context)
-		{
-			int elements = ReadElementCountDefrag(context);
-			for (int i = 0; i < elements; i++)
-			{
-				DelegateTypeHandler().Defragment(context);
-			}
 		}
 	}
 }

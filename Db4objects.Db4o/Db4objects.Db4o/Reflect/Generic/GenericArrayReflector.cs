@@ -15,6 +15,11 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_delegate = reflector.GetDelegate().Array();
 		}
 
+		public virtual void Analyze(object obj, ArrayInfo info)
+		{
+			_delegate.Analyze(obj, info);
+		}
+
 		public virtual int[] Dimensions(object arr)
 		{
 			return _delegate.Dimensions(arr);
@@ -62,6 +67,17 @@ namespace Db4objects.Db4o.Reflect.Generic
 				return false;
 			}
 			return _delegate.IsNDimensional(a_class.GetDelegate());
+		}
+
+		public virtual object NewInstance(IReflectClass componentType, ArrayInfo info)
+		{
+			componentType = componentType.GetDelegate();
+			if (componentType is GenericClass)
+			{
+				int length = info.ElementCount();
+				return new GenericArray(((GenericClass)componentType).ArrayClass(), length);
+			}
+			return _delegate.NewInstance(componentType, info);
 		}
 
 		public virtual object NewInstance(IReflectClass componentType, int length)

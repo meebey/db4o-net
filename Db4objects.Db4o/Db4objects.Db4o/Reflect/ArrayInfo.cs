@@ -2,7 +2,7 @@
 
 using Db4objects.Db4o.Reflect;
 
-namespace Db4objects.Db4o.Internal.Handlers
+namespace Db4objects.Db4o.Reflect
 {
 	/// <exclude></exclude>
 	public class ArrayInfo

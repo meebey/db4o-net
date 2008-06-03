@@ -42,10 +42,18 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
-				// breakOnEvent(5);
+				BreakOnEvent(395);
+				//            breakOnEvent(10);
 				// addRange(4874);
 				// addRangeWithEnd(3835808, 3836267);
-				//        	 addRangeWithLength(6539,1);
+				// breakOnEvent(5);
+				//addRangeWithLength(122866, 1);
+				AddRangeWithLength(122405, 1);
+				//addRangeWithLength(139520, 1);
+				// addRangeWithLength(119190, 1);
+				//        	 addRangeWithLength(139520,1);
+				//        	 
+				//        	 addRangeWithLength(122866, 265);
 				//        	addRangeWithLength(17673,1);
 				//            addRangeWithLength(455404,1);
 				//            
@@ -53,20 +61,17 @@ namespace Db4objects.Db4o
 				//            
 				//            addRangeWithLength(455926,1);
 				//
-				AddRangeWithLength(1647603457, 1);
-				// trackEventsWithoutRange();
-				TurnAllOffExceptFor(new Db4objects.Db4o.DTrace[] { ObjectReferenceCreated });
+				//            addRangeWithLength(1647603457,1);
+				TrackEventsWithoutRange();
+				//            turnAllOffExceptFor(new DTrace[] {WRITE_BYTES});
+				//            turnAllOffExceptFor(new DTrace[] {
+				//                PERSISTENT_OWN_LENGTH,
+				//                });
+				TurnAllOffExceptFor(new Db4objects.Db4o.DTrace[] { GetSlot, FileFree, TransCommit
+					 });
 			}
 		}
 
-		//            turnAllOffExceptFor(new DTrace[] {
-		//                PERSISTENT_OWN_LENGTH,
-		//                });
-		//            turnAllOffExceptFor(new DTrace[] {
-		//                FREESPACEMANAGER_GET_SLOT,
-		//                FREESPACEMANAGER_RAM_FREE,
-		//                FREESPACEMANAGER_BTREE_FREE,
-		//                });
 		//          turnAllOffExceptFor(new DTrace[] {BTREE_NODE_COMMIT_OR_ROLLBACK });
 		//            turnAllOffExceptFor(new DTrace[] {BTREE_NODE_REMOVE, BTREE_NODE_COMMIT_OR_ROLLBACK YAPMETA_SET_ID});
 		private static void Init()
@@ -159,7 +164,7 @@ namespace Db4objects.Db4o
 					, true);
 				SlotFreeOnRollbackAddress = new Db4objects.Db4o.DTrace(true, true, "slot free on rollback address"
 					, true);
-				TransCommit = new Db4objects.Db4o.DTrace(false, false, "trans commit", false);
+				TransCommit = new Db4objects.Db4o.DTrace(true, true, "trans commit", true);
 				TransDelete = new Db4objects.Db4o.DTrace(true, true, "trans delete", true);
 				TransDontDelete = new Db4objects.Db4o.DTrace(true, true, "trans dontDelete", true
 					);
@@ -213,6 +218,8 @@ namespace Db4objects.Db4o
 		private static long[] _breakEventNrs;
 
 		private static int _breakEventCount;
+
+		private static bool _breakAfterEvent;
 
 		private static bool _trackEventsWithoutRange;
 
@@ -511,6 +518,17 @@ namespace Db4objects.Db4o
 									break;
 								}
 							}
+							if (_breakAfterEvent)
+							{
+								for (int i = 0; i < _breakEventCount; i++)
+								{
+									if (_breakEventNrs[i] <= _eventNr)
+									{
+										BreakPoint();
+										break;
+									}
+								}
+							}
 						}
 						else
 						{
@@ -629,6 +647,12 @@ namespace Db4objects.Db4o
 				_rangeEnd[_rangeCount] = end;
 				_rangeCount++;
 			}
+		}
+
+		private static void BreakFromEvent(long eventNr)
+		{
+			BreakOnEvent(eventNr);
+			_breakAfterEvent = true;
 		}
 
 		private static void BreakOnEvent(long eventNr)

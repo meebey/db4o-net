@@ -1,8 +1,8 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Reflect;
 
-namespace Db4objects.Db4o.Internal.Handlers
+namespace Db4objects.Db4o.Reflect
 {
 	/// <exclude></exclude>
 	public class MultidimensionalArrayInfo : ArrayInfo

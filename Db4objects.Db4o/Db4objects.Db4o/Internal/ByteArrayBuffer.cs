@@ -5,13 +5,12 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Marshall;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class ByteArrayBuffer : IReadBuffer, IReadWriteBuffer, IWriteBuffer
+	public class ByteArrayBuffer : IReadWriteBuffer
 	{
 		public byte[] _buffer;
 

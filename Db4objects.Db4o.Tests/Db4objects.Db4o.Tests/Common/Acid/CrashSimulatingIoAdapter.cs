@@ -36,6 +36,17 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
+		public override int Read(byte[] bytes, int length)
+		{
+			int readBytes = base.Read(bytes, length);
+			if (readBytes > 0)
+			{
+				curPos += readBytes;
+			}
+			return readBytes;
+		}
+
+		/// <exception cref="Db4oIOException"></exception>
 		public override void Seek(long pos)
 		{
 			curPos = pos;
@@ -47,8 +58,9 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		{
 			base.Write(buffer, length);
 			byte[] copy = new byte[buffer.Length];
-			System.Array.Copy(buffer, 0, copy, 0, buffer.Length);
+			System.Array.Copy(buffer, 0, copy, 0, length);
 			batch.Add(copy, curPos, length);
+			curPos += length;
 		}
 
 		/// <exception cref="Db4oIOException"></exception>

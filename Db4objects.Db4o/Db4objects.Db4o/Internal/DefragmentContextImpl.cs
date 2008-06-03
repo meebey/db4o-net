@@ -6,6 +6,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -385,6 +386,11 @@ namespace Db4objects.Db4o.Internal
 		public void SeekCurrentInt()
 		{
 			Seek(ReadInt());
+		}
+
+		public IReadBuffer Buffer()
+		{
+			return _source;
 		}
 	}
 }

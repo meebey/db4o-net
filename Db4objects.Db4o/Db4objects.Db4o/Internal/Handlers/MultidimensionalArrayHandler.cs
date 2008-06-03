@@ -58,30 +58,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return new MultidimensionalArrayInfo();
 		}
 
-		public virtual int OwnLength(ObjectContainerBase container, object obj)
-		{
-			int[] dim = ArrayReflector(container).Dimensions(obj);
-			return Const4.ObjectLength + (Const4.IntLength * (2 + dim.Length));
-		}
-
-		protected override int ReadElementCountDefrag(IDefragmentContext context)
-		{
-			int numDimensions = base.ReadElementCountDefrag(context);
-			int[] dimensions = new int[numDimensions];
-			for (int i = 0; i < numDimensions; i++)
-			{
-				dimensions[i] = context.ReadInt();
-			}
-			return ElementCount(dimensions);
-		}
-
-		protected override object NewInstance(Transaction trans, ArrayInfo info, IReflectClass
-			 clazz)
-		{
-			return ArrayReflector(Container(trans)).NewInstance(clazz, ((MultidimensionalArrayInfo
-				)info).Dimensions());
-		}
-
 		protected override void ReadDimensions(ArrayInfo info, IReadBuffer buffer)
 		{
 			ReadDimensions(info, buffer, buffer.ReadInt());
@@ -99,8 +75,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			info.ElementCount(ElementCount(dim));
 		}
 
-		protected override void ReadDimensionsOldFormat(IReadBuffer buffer, ArrayInfo info
-			, int classID)
+		protected override void DetectDimensionsPreVersion0Format(IReadBuffer buffer, ArrayInfo
+			 info, int classID)
 		{
 			ReadDimensions(info, buffer, classID);
 		}
@@ -132,7 +108,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			 info)
 		{
 			IEnumerator objects = AllElements(Container(context), obj);
-			if (HasNullBitmap())
+			if (HasNullBitmap(info))
 			{
 				BitMap4 nullBitMap = new BitMap4(info.ElementCount());
 				IReservedBuffer nullBitMapBuffer = context.Reserve(nullBitMap.MarshalledLength());
