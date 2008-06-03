@@ -4,6 +4,7 @@ using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Inside.Traversal;
