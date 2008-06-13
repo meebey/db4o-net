@@ -3,7 +3,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using Db4objects.Db4o.Tests.CLI1;
 
 namespace Db4objects.Db4o.Tests.Util
 {
@@ -93,7 +92,11 @@ namespace Db4objects.Db4o.Tests.Util
 
         public static string BuildTempPath(string fname)
 		{
+#if !CF
+			return Path.Combine(Environment.GetEnvironmentVariable("TEMP"), fname);
+#else
 			return Path.Combine(Path.GetTempPath(), fname);
+#endif
 		}
 
 		public static string CopyTo(string fname, string targetDirectory)
