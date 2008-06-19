@@ -136,7 +136,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			Iterator4Assert.AreEqual(new object[] { -1, 42 }, container.elements.GetEnumerator());
 		}
 
-		internal class GenericListTypeHandler : ITypeHandler4, IVariableLengthTypeHandler, IEmbeddedTypeHandler, ICascadingTypeHandler
+		internal class GenericListTypeHandler : ITypeHandler4, IVariableLengthTypeHandler, IEmbeddedTypeHandler, IFirstClassHandler
 		{
 			public void Defragment(IDefragmentContext context)
 			{
@@ -381,19 +381,26 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				throw new NotImplementedException();
 			}
 
-			public void CascadeActivation(Transaction trans, object obj, IActivationDepth depth)
-			{
-				IList list = (IList) obj;
-				ICascadingTypeHandler elementHandler = trans.Container().ClassMetadataForReflectClass(ElementClass(trans.Container(), list));
-				if (elementHandler == null) return;
+            public void CascadeActivation(ActivationContext4 context)
+            {
+                IEnumerator all = ((IList)context.TargetObject()).GetEnumerator();
+                while (all.MoveNext())
+                {
+                    context.CascadeActivationToChild(all.Current);
+                }
+            }
 
-				foreach (object element in list)
-				{
-					if (element == null) continue;
-					elementHandler.CascadeActivation(trans, element, depth);
-				}
-			}
-		}
+            public ITypeHandler4 ReadCandidateHandler(QueryingReadContext context)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ReadCandidates(QueryingReadContext context)
+            {
+                throw new NotImplementedException();
+            }
+
+        }
 
 		internal class GenericListPredicate : ITypeHandlerPredicate
 		{
