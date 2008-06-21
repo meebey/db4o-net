@@ -245,6 +245,24 @@ class SubjectHoldingArray
 	} 
 }
 
+static class StaticClass
+{
+	private static string _name;
+
+	public static string Name
+	{
+		get
+		{
+			return _name;
+		}
+
+		set
+		{
+			_name = value;
+		}
+	}
+}
+
 class TAInstrumentationSubject : ITestCase
 {
 	public void TestSubjectHoldingArray()
@@ -255,6 +273,13 @@ class TAInstrumentationSubject : ITestCase
 		Assert.AreEqual(1, a.WriteCount);
 		Assert.AreEqual(null, subject.Items);
 		Assert.AreEqual(1, a.ReadCount);
+	}
+
+	public void TestStaticClassIsNotInstrumented()
+	{
+		Assert.IsFalse(
+			typeof(IActivatable).IsAssignableFrom(typeof(StaticClass)),
+			"Static classes should not be instrumented.");
 	}
 
 	public void TestSwitch()

@@ -105,12 +105,18 @@ namespace Db4oTool.TA
 		private bool RequiresTA(TypeDefinition type)
 		{
 			if (type.IsValueType) return false;
+			if (IsStaticClass(type)) return false;
 			if (type.IsInterface) return false;
 			if (type.Name == "<Module>") return false;
 			if (IsDelegate(type)) return false;
 			if (ByAttributeFilter.ContainsCustomAttribute(type, CompilerGeneratedAttribute)) return false;
 			if (!HasSerializableFields(type)) return false;
 			return true;
+		}
+
+		private static bool IsStaticClass(TypeDefinition type)
+		{
+			return type.IsAbstract && type.IsSealed;
 		}
 
 		private bool HasSerializableFields(TypeDefinition type)
