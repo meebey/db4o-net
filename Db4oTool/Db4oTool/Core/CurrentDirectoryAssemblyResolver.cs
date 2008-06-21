@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Reflection;
-using System.IO;
 
 namespace Db4oTool.Core
 {

@@ -125,7 +125,7 @@ namespace Db4oTool
 
 		public ProgramOptions()
 		{
-			this.DontSplitOnCommas = true;
+			DontSplitOnCommas = true;
 		}
 	}
 }

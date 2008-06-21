@@ -15,7 +15,7 @@ namespace Db4oTool.Core{
       
         public void Run(String filename) {
             if (new Sharpen.IO.File(filename).Exists()) {
-                IObjectContainer con1 = null;
+                IObjectContainer con1;
                 try { 
                     con1 = Db4oFactory.OpenFile(filename);
                     PrintHeader("STATISTICS");

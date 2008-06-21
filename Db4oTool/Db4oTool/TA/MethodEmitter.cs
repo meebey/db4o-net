@@ -3,7 +3,6 @@ using System.Reflection;
 using Db4oTool.Core;
 using Mono.Cecil;
 using MethodAttributes=Mono.Cecil.MethodAttributes;
-using MethodImplAttributes=Mono.Cecil.MethodImplAttributes;
 
 namespace Db4oTool.TA
 {

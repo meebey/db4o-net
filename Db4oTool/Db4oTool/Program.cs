@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2006  db4objects Inc.   http://www.db4o.com */
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Db4oTool.Core;
 using Db4oTool.NQ;

@@ -1,6 +1,5 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System.Collections.Generic;
-using Db4oTool.Core;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 

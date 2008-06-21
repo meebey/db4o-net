@@ -1,11 +1,6 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
-using System;
 using System.Diagnostics;
-using Db4objects.Db4o.Instrumentation.Cecil;
-using Db4objects.Db4o.NativeQueries.Instrumentation;
-using Db4oTool.Core;
 using Db4objects.Db4o.NativeQueries.Expr;
-using Db4objects.Db4o.NativeQueries;
 using Mono.Cecil;
 
 namespace Db4oTool.NQ
@@ -46,14 +41,14 @@ namespace Db4oTool.NQ
 			OptimizePredicate(type, match, e);
 		}
 
-		private MethodDefinition GetMatchMethod(TypeDefinition type)
+		private static MethodDefinition GetMatchMethod(TypeDefinition type)
 		{
 			MethodDefinition[] methods = type.Methods.GetMethod("Match");
 			Debug.Assert(1 == methods.Length);
 			return methods[0];
 		}
 
-		private bool IsPredicateClass(TypeReference typeRef)
+		private static bool IsPredicateClass(TypeReference typeRef)
 		{
 			TypeDefinition type = typeRef as TypeDefinition;
 			if (null == type) return false;

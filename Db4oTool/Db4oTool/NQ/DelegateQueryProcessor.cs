@@ -1,9 +1,6 @@
 /* Copyright (C) 2004 - 2006  db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using Cecil.FlowAnalysis.Utilities;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Instrumentation.Api;
 using Db4objects.Db4o.Instrumentation.Cecil;
@@ -14,10 +11,7 @@ using Db4objects.Db4o.Internal.Query;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using TypeAttributes=Mono.Cecil.TypeAttributes;
-
-using Debug = System.Diagnostics.Debug;
 using FieldAttributes=Mono.Cecil.FieldAttributes;
-using ICustomAttributeProvider=Mono.Cecil.ICustomAttributeProvider;
 using MethodAttributes=Mono.Cecil.MethodAttributes;
 using ParameterAttributes=Mono.Cecil.ParameterAttributes;
 
@@ -25,14 +19,14 @@ namespace Db4oTool.NQ
 {
 	class DelegateQueryProcessor
 	{
-		private InstrumentationContext _context;
+		private readonly InstrumentationContext _context;
 
 		private readonly ILPattern _staticFieldPattern = CreateStaticFieldPattern();
 
 		private readonly ILPattern _predicateCreationPattern = ILPattern.Sequence(OpCodes.Newobj, OpCodes.Ldftn);
 
 		private readonly DelegateOptimizer _optimizer;
-	    private CecilReflector _reflector;
+	    private readonly CecilReflector _reflector;
 
 	    public DelegateQueryProcessor(InstrumentationContext context, DelegateOptimizer optimizer)
 		{
@@ -93,26 +87,7 @@ namespace Db4oTool.NQ
 		    //Debug.Write(Formatter.FormatMethodBody(syntheticPredicate.Methods[0]));
 		}
 
-	    private bool CompilerGenerated(ICustomAttributeProvider type)
-	    {
-	        CustomAttribute cga = new CustomAttribute(ImportConstructor(typeof (CompilerGeneratedAttribute), new Type[0]));
-            foreach(CustomAttribute customAttribute in type.CustomAttributes)
-            {
-                if (customAttribute.Constructor.DeclaringType == cga.Constructor.DeclaringType)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-	    }
-
-        private MethodReference ImportConstructor(System.Type type, params Type[] argumentTypes)
-        {
-            return _context.Import(type.GetConstructor(argumentTypes));
-        }
-
-	    private TypeDefinition NewSyntheticPredicateFor(IExpression expression, MethodDefinition predicateMethod, out IDictionary<FieldReference, FieldDefinition> fields)
+		private TypeDefinition NewSyntheticPredicateFor(IExpression expression, IMemberReference predicateMethod, out IDictionary<FieldReference, FieldDefinition> fields)
 	    {
 	        TypeDefinition syntheticPredicate = NewSyntheticPredicateFor(predicateMethod);
 
@@ -206,7 +181,7 @@ namespace Db4oTool.NQ
 
 	    private void AddConstructor(TypeDefinition type, IDictionary<FieldReference, FieldDefinition> fields)
 	    {
-	        MethodAttributes methodAttributes = Mono.Cecil.MethodAttributes.SpecialName | Mono.Cecil.MethodAttributes.RTSpecialName | Mono.Cecil.MethodAttributes.Public;
+	        MethodAttributes methodAttributes = MethodAttributes.SpecialName | Mono.Cecil.MethodAttributes.RTSpecialName | MethodAttributes.Public;
 	        MethodDefinition ctor = new MethodDefinition(MethodDefinition.Ctor, methodAttributes, Import(typeof(void)));
             
             AddMethodParameters(ctor, fields.Values);
@@ -298,9 +273,11 @@ namespace Db4oTool.NQ
 
 		private MethodDefinition CreateDefaultConstructor()
 		{
-			MethodDefinition ctor = new MethodDefinition(MethodDefinition.Ctor,
-				Mono.Cecil.MethodAttributes.SpecialName | Mono.Cecil.MethodAttributes.RTSpecialName | Mono.Cecil.MethodAttributes.Public,
-				Import(typeof(void)));
+			MethodDefinition ctor = new MethodDefinition(
+											MethodDefinition.Ctor,
+											MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.Public,
+											Import(typeof(void)));
+
 			CilWorker worker = ctor.Body.CilWorker;
 			worker.Emit(OpCodes.Ldarg_0);
 			worker.Emit(OpCodes.Call, DefaultObjectConstructor());
@@ -343,11 +320,6 @@ namespace Db4oTool.NQ
 		{
 			return (MethodDefinition) reference;
 		}
-
-        private static TypeDefinition Resolve(TypeReference type)
-        {
-            return (TypeDefinition) type;
-        }
 
 		private static MethodReference GetMethodReferenceFromInlinePredicatePattern(Instruction queryInvocation)
 		{
