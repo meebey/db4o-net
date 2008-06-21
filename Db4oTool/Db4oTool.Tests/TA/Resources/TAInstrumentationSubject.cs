@@ -234,8 +234,29 @@ class SwitchSubject
 	}
 }
 
+class SubjectHoldingArray
+{
+	private Tagged[] _taggedArray;
+
+	public Tagged[] Items
+	{
+		get { return _taggedArray; }
+		set { _taggedArray = value; }
+	} 
+}
+
 class TAInstrumentationSubject : ITestCase
 {
+	public void TestSubjectHoldingArray()
+	{
+		SubjectHoldingArray subject = new SubjectHoldingArray();
+		MockActivator a = ActivatorFor(subject);
+		subject.Items = null;
+		Assert.AreEqual(1, a.WriteCount);
+		Assert.AreEqual(null, subject.Items);
+		Assert.AreEqual(1, a.ReadCount);
+	}
+
 	public void TestSwitch()
 	{
 		SwitchSubject subject = new SwitchSubject();

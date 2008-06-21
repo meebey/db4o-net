@@ -39,13 +39,11 @@ namespace Db4oTool.Core
 
 			GenericParameter parameter = typeRef as GenericParameter;
 			if (parameter != null) return null;
+
+			TypeSpecification typeSpecification = typeRef as TypeSpecification;
+			if (typeSpecification != null) return ResolveTypeReference(typeSpecification.ElementType);
             
-            GenericInstanceType genericType = typeRef as GenericInstanceType;
-            if (genericType != null) return ResolveTypeReference(genericType.ElementType);
-
-            AssemblyNameReference assemblyRef = typeRef.Scope as AssemblyNameReference;
-
-			AssemblyDefinition assembly = ResolveAssembly(assemblyRef);
+			AssemblyDefinition assembly = ResolveAssembly(typeRef.Scope as AssemblyNameReference);
 			if (null == assembly) return null;
 
 			return FindType(assembly, typeRef);
