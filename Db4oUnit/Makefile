@@ -3,4 +3,4 @@ include ../include.mk
 
 TARGET = library
 ASSEMBLY = $(UNIT)
-REFERENCES =
+REFERENCES = -r:$(OUTDIR)/$(CORE)
