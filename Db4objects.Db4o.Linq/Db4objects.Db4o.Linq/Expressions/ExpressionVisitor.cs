@@ -167,7 +167,7 @@ namespace System.Linq.Expressions
 			}
 		}
 
-		protected virtual void VisitExpressionList(ReadOnlyCollection<Expression> list)
+		protected virtual void VisitExpressionList<TExp>(ReadOnlyCollection<TExp> list) where TExp : Expression
 		{
 			VisitList(list, Visit);
 		}
@@ -187,7 +187,7 @@ namespace System.Linq.Expressions
 			VisitElementInitializerList(binding.Initializers);
 		}
 
-		protected virtual void VisitBindingList(ReadOnlyCollection<MemberBinding> list)
+		protected virtual void VisitBindingList<TBinding>(ReadOnlyCollection<TBinding> list) where TBinding : MemberBinding
 		{
 			VisitList(list, VisitBinding);
 		}
