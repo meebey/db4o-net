@@ -7,6 +7,7 @@ using Db4objects.Db4o.Tests.Common.Freespace;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4objects.Db4o.Tests.Common.Migration;
 using Db4objects.Db4o.Tests.Util;
+using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
@@ -40,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		protected virtual Type[] TestCases()
 		{
-			return new Type[] { typeof(BooleanHandlerUpdateTestCase), typeof(ByteHandlerUpdateTestCase
+			Type[] classes = new Type[] { typeof(BooleanHandlerUpdateTestCase), typeof(ByteHandlerUpdateTestCase
 				), typeof(CascadedDeleteFileFormatUpdateTestCase), typeof(CharHandlerUpdateTestCase
 				), typeof(DateHandlerUpdateTestCase), typeof(DoubleHandlerUpdateTestCase), typeof(
 				FloatHandlerUpdateTestCase), typeof(IntHandlerUpdateTestCase), typeof(InterfaceHandlerUpdateTestCase
@@ -48,9 +49,24 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				), typeof(NestedArrayUpdateTestCase), typeof(ObjectArrayUpdateTestCase), typeof(
 				ShortHandlerUpdateTestCase), typeof(StringHandlerUpdateTestCase), typeof(IxFreespaceMigrationTestCase
 				), typeof(FreespaceManagerMigrationTestCase) };
+			// Order to run freespace tests last is
+			// deliberate. Global configuration Db4o.configure()
+			// is changed in the #setUp call and reused.
+			return AddJavaTestCases(classes);
 		}
-		// Order to run freespace tests last is
-		// deliberate. Global configuration Db4o.configure()
-		// is changed in the #setUp call and reused.
+
+		protected virtual Type[] AddJavaTestCases(Type[] classes)
+		{
+			Type[] javaTestCases = null;
+			if (javaTestCases == null)
+			{
+				return classes;
+			}
+			int len = javaTestCases.Length;
+			Type[] allClasses = new Type[classes.Length + len];
+			System.Array.Copy(javaTestCases, 0, allClasses, 0, len);
+			System.Array.Copy(classes, 0, allClasses, len, classes.Length);
+			return allClasses;
+		}
 	}
 }

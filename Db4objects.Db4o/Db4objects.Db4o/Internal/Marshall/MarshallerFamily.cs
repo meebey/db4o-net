@@ -42,8 +42,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public readonly StringMarshaller _string;
 
-		public readonly UntypedMarshaller _untyped;
-
 		private readonly int _converterVersion;
 
 		private readonly int _handlerVersion;
@@ -55,11 +53,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 			allVersions = new MarshallerFamily[HandlerRegistry.HandlerVersion + 1];
 			allVersions[0] = new MarshallerFamily(0, 0, new ClassMarshaller0(), new FieldMarshaller0
 				(), new ObjectMarshaller0(), new PrimitiveMarshaller0(), new StringMarshaller0()
-				, new UntypedMarshaller0());
+				);
 			// LEGACY => before 5.4
 			allVersions[1] = new MarshallerFamily(ClassIndexesToBTrees_5_5.Version, 1, new ClassMarshaller1
 				(), new FieldMarshaller0(), new ObjectMarshaller1(), new PrimitiveMarshaller1(), 
-				new StringMarshaller1(), new UntypedMarshaller1());
+				new StringMarshaller1());
 			for (int i = 2; i < allVersions.Length; i++)
 			{
 				allVersions[i] = LatestFamily(i);
@@ -68,8 +66,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public MarshallerFamily(int converterVersion, int handlerVersion, ClassMarshaller
 			 classMarshaller, IFieldMarshaller fieldMarshaller, ObjectMarshaller objectMarshaller
-			, PrimitiveMarshaller primitiveMarshaller, StringMarshaller stringMarshaller, UntypedMarshaller
-			 untypedMarshaller)
+			, PrimitiveMarshaller primitiveMarshaller, StringMarshaller stringMarshaller)
 		{
 			_converterVersion = converterVersion;
 			_handlerVersion = handlerVersion;
@@ -81,15 +78,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_primitive = primitiveMarshaller;
 			_primitive._family = this;
 			_string = stringMarshaller;
-			_untyped = untypedMarshaller;
-			_untyped._family = this;
 		}
 
 		public static MarshallerFamily LatestFamily(int version)
 		{
 			return new MarshallerFamily(FieldIndexesToBTrees_5_7.Version, version, new ClassMarshaller2
 				(), new FieldMarshaller1(), new ObjectMarshaller1(), new PrimitiveMarshaller1(), 
-				new StringMarshaller1(), new UntypedMarshaller1());
+				new StringMarshaller1());
 		}
 
 		public static MarshallerFamily Version(int n)

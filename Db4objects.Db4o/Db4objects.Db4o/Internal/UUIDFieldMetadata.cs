@@ -290,8 +290,7 @@ namespace Db4objects.Db4o.Internal
 			return hardRef;
 		}
 
-		public override void DefragField(MarshallerFamily mf, DefragmentContextImpl context
-			)
+		public override void DefragField(IDefragmentContext context)
 		{
 			// database id
 			context.CopyID();

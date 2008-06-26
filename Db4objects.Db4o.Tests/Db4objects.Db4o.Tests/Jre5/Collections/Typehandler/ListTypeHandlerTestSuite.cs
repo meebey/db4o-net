@@ -2,9 +2,11 @@
 
 using System;
 using System.Collections;
+using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Fixtures;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Jre5.Collections.Typehandler;
 
@@ -27,95 +29,56 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			return new Type[] { typeof(ListTypeHandlerTestSuite.ListTypeHandlerTestUnit) };
 		}
 
-		public class ListTypeHandlerTestUnit : ListTypeHandlerTestUnitBase
+		public class ListTypeHandlerTestUnit : TypeHandlerUnitTest
 		{
-			public virtual void TestRetrieveInstance()
+			protected override AbstractItemFactory ItemFactory()
 			{
-				Type itemClass = CreateItemFactory().ItemClass();
-				object item = RetrieveOnlyInstance(itemClass);
+				return (AbstractItemFactory)ListTypeHandlerTestVariables.ListImplementation.Value;
+			}
+
+			protected override ITypeHandler4 TypeHandler()
+			{
+				return (ITypeHandler4)ListTypeHandlerTestVariables.ListTypehander.Value;
+			}
+
+			protected override ListTypeHandlerTestElementsSpec ElementsSpec()
+			{
+				return (ListTypeHandlerTestElementsSpec)ListTypeHandlerTestVariables.ElementsSpec
+					.Value;
+			}
+
+			protected override void FillItem(object item)
+			{
+				FillListItem(item);
+			}
+
+			protected override void AssertContent(object item)
+			{
 				AssertListContent(item);
 			}
 
-			/// <exception cref="Exception"></exception>
-			public virtual void TestSuccessfulQuery()
-			{
-				AssertQuery(true, Elements()[0], false);
-			}
-
-			/// <exception cref="Exception"></exception>
-			public virtual void TestFailingQuery()
-			{
-				AssertQuery(false, NotContained(), false);
-			}
-
-			/// <exception cref="Exception"></exception>
-			public virtual void TestSuccessfulContainsQuery()
-			{
-				AssertQuery(true, Elements()[0], true);
-			}
-
-			/// <exception cref="Exception"></exception>
-			public virtual void TestFailingContainsQuery()
-			{
-				AssertQuery(false, NotContained(), true);
-			}
-
-			/// <exception cref="Exception"></exception>
-			public virtual void TestCompareItems()
-			{
-				AssertCompareItems(Elements()[0], true);
-			}
-
-			/// <exception cref="Exception"></exception>
-			public virtual void TestFailingCompareItems()
-			{
-				AssertCompareItems(NotContained(), false);
-			}
-
-			/// <exception cref="Exception"></exception>
-			public virtual void TestDeletion()
-			{
-				AssertFirstClassElementCount(Elements().Length);
-				object item = RetrieveOnlyInstance(CreateItemFactory().ItemClass());
-				Db().Delete(item);
-				Db().Purge();
-				Db4oAssert.PersistedCount(0, CreateItemFactory().ItemClass());
-				AssertFirstClassElementCount(0);
-			}
-
-			private void AssertFirstClassElementCount(int expected)
-			{
-				if (!IsFirstClass(ElementClass()))
-				{
-					return;
-				}
-				Db4oAssert.PersistedCount(expected, ElementClass());
-			}
-
-			private bool IsFirstClass(Type elementClass)
-			{
-				return typeof(ListTypeHandlerTestVariables.FirstClassElement) == elementClass;
-			}
-
-			private void AssertCompareItems(object element, bool successful)
+			protected override void AssertCompareItems(object element, bool successful)
 			{
 				IQuery q = NewQuery();
-				object item = CreateItemFactory().NewItem();
+				object item = ItemFactory().NewItem();
 				IList list = ListFromItem(item);
 				list.Add(element);
 				q.Constrain(item);
 				AssertQueryResult(q, successful);
 			}
 
-			private void AssertQuery(bool successful, object element, bool withContains)
+			public virtual void TestActivation()
 			{
-				IQuery q = NewQuery(CreateItemFactory().ItemClass());
-				IConstraint constraint = q.Descend(ItemFactory.ListFieldName).Constrain(element);
-				if (withContains)
+				object item = RetrieveItemInstance();
+				IList list = ListFromItem(item);
+				object element = list[0];
+				if (Db().IsActive(element))
 				{
-					constraint.Contains();
+					Db().Deactivate(item, int.MaxValue);
+					Assert.IsFalse(Db().IsActive(element));
+					Db().Activate(item, int.MaxValue);
+					Assert.IsTrue(Db().IsActive(element));
 				}
-				AssertQueryResult(q, successful);
 			}
 		}
 	}

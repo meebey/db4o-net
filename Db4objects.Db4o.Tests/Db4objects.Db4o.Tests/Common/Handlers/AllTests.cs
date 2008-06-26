@@ -19,8 +19,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				typeof(ByteHandlerTestCase), typeof(CharHandlerTestCase), typeof(ClassHandlerTestCase
 				), typeof(CustomTypeHandlerTestCase), typeof(DoubleHandlerTestCase), typeof(FloatHandlerTestCase
 				), typeof(IntHandlerTestCase), typeof(LongHandlerTestCase), typeof(MultiDimensionalArrayHandlerTestCase
-				), typeof(SecondClassTestCase), typeof(StringBufferHandlerTestCase), typeof(StringHandlerTestCase
-				), typeof(ShortHandlerTestCase), typeof(UntypedHandlerTestCase) };
+				), typeof(MultidimensionalArrayIterator4TestCase), typeof(SecondClassTestCase), 
+				typeof(StringBufferHandlerTestCase), typeof(StringHandlerTestCase), typeof(ShortHandlerTestCase
+				), typeof(UntypedHandlerTestCase) };
 		}
 	}
 }

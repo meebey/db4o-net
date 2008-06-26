@@ -126,9 +126,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public abstract void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
 			 yo, ObjectHeaderAttributes attributes, ByteArrayBuffer reader);
 
-		public abstract void DefragFields(ClassMetadata yapClass, ObjectHeader header, DefragmentContextImpl
-			 context);
-
 		public abstract void WriteObjectClassID(ByteArrayBuffer reader, int id);
 
 		public abstract void SkipMarshallerInfo(ByteArrayBuffer reader);
@@ -137,20 +134,20 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			BooleanByRef updateFieldFound = new BooleanByRef();
 			int savedOffset = context.Offset();
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_155(updateFieldFound
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_153(updateFieldFound
 				, context);
 			TraverseFields(context, command);
 			if (updateFieldFound.value)
 			{
 				context.Seek(savedOffset);
-				command = new _TraverseFieldCommand_179(context);
+				command = new _TraverseFieldCommand_177(context);
 				TraverseFields(context, command);
 			}
 		}
 
-		private sealed class _TraverseFieldCommand_155 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_153 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_155(BooleanByRef updateFieldFound, UnmarshallingContext
+			public _TraverseFieldCommand_153(BooleanByRef updateFieldFound, UnmarshallingContext
 				 context)
 			{
 				this.updateFieldFound = updateFieldFound;
@@ -189,9 +186,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			private readonly UnmarshallingContext context;
 		}
 
-		private sealed class _TraverseFieldCommand_179 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_177 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_179(UnmarshallingContext context)
+			public _TraverseFieldCommand_177(UnmarshallingContext context)
 			{
 				this.context = context;
 			}
@@ -208,14 +205,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual void Marshall(object obj, MarshallingContext context)
 		{
 			Transaction trans = context.Transaction();
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_191(context
+			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_189(context
 				, trans, obj);
 			TraverseFields(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_191 : ObjectMarshaller.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_189 : ObjectMarshaller.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_191(MarshallingContext context, Transaction trans, object
+			public _TraverseFieldCommand_189(MarshallingContext context, Transaction trans, object
 				 obj)
 			{
 				this.context = context;
@@ -236,7 +233,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
 				 containingClass)
 			{
-				context.NextField();
+				context.BeginSlot();
 				this.fieldIndex++;
 				object child = field.GetOrCreate(trans, obj);
 				if (child == null)

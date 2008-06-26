@@ -11,6 +11,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		protected ObjectHeader _objectHeader;
 
+		private int _currentSlot;
+
 		protected ObjectHeaderContext(Transaction transaction, IReadBuffer buffer, ObjectHeader
 			 objectHeader) : base(transaction, buffer)
 		{
@@ -30,6 +32,43 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public sealed override int HandlerVersion()
 		{
 			return _objectHeader.HandlerVersion();
+		}
+
+		public virtual void BeginSlot()
+		{
+			_currentSlot++;
+		}
+
+		public virtual int CurrentSlot()
+		{
+			return _currentSlot;
+		}
+
+		public virtual ContextState SaveState()
+		{
+			return new ContextState(Offset(), _currentSlot);
+		}
+
+		public virtual void RestoreState(ContextState state)
+		{
+			Seek(state._offset);
+			_currentSlot = state._currentSlot;
+		}
+
+		public virtual object ReadFieldValue(ClassMetadata classMetadata, FieldMetadata field
+			)
+		{
+			if (!SeekToField(classMetadata, field))
+			{
+				return null;
+			}
+			return field.Read(this);
+		}
+
+		public virtual bool SeekToField(ClassMetadata classMetadata, FieldMetadata field)
+		{
+			return _objectHeader.ObjectMarshaller().FindOffset(classMetadata, _objectHeader._headerAttributes
+				, ((ByteArrayBuffer)Buffer()), field);
 		}
 	}
 }

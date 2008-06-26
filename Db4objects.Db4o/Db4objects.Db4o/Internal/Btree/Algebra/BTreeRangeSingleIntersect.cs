@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal.Btree.Algebra;
 namespace Db4objects.Db4o.Internal.Btree.Algebra
 {
 	/// <exclude></exclude>
-	public class BTreeRangeSingleIntersect : BTreeRangeSingleOperation
+	public class BTreeRangeSingleIntersect : Db4objects.Db4o.Internal.Btree.Algebra.BTreeRangeSingleOperation
 	{
 		public BTreeRangeSingleIntersect(BTreeRangeSingle single) : base(single)
 		{

@@ -11,7 +11,7 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Fieldhandlers;
-using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -2195,19 +2195,54 @@ namespace Db4objects.Db4o.Internal
 			return still;
 		}
 
-		public void StillToActivate(Transaction trans, object a_object, IActivationDepth 
-			a_depth)
+		public void StillToActivate(Transaction trans, object obj, IActivationDepth depth
+			)
 		{
 			// TODO: We don't want the simple classes to search the hc_tree
 			// Kick them out here.
 			//		if (a_object != null) {
 			//			Class clazz = a_object.getClass();
 			//			if(! clazz.isPrimitive()){
-			_stillToActivate = StillTo1(trans, _stillToActivate, a_object, a_depth, false);
+			if (ProcessedByImmediateActivation(trans, obj, depth))
+			{
+				return;
+			}
+			_stillToActivate = StillTo1(trans, _stillToActivate, obj, depth, false);
 		}
 
-		//			}
-		//		}
+		private bool ProcessedByImmediateActivation(Transaction trans, object obj, IActivationDepth
+			 depth)
+		{
+			if (!StackIsSmall())
+			{
+				return false;
+			}
+			if (obj == null || !depth.RequiresActivation())
+			{
+				return true;
+			}
+			ObjectReference @ref = trans.ReferenceForObject(obj);
+			if (@ref == null)
+			{
+				return false;
+			}
+			if (HandledInCurrentTopLevelCall(@ref))
+			{
+				return true;
+			}
+			FlagAsHandled(@ref);
+			_stackDepth++;
+			try
+			{
+				@ref.ActivateInternal(trans, obj, depth);
+			}
+			finally
+			{
+				_stackDepth--;
+			}
+			return true;
+		}
+
 		public void StillToDeactivate(Transaction trans, object a_object, IActivationDepth
 			 a_depth, bool a_forceUnknownDeactivate)
 		{
@@ -2516,6 +2551,14 @@ namespace Db4objects.Db4o.Internal
 		internal virtual IReflectClass ReflectorForObject(object obj)
 		{
 			return Reflector().ForObject(obj);
+		}
+
+		public virtual object SyncExec(IClosure4 block)
+		{
+			lock (_lock)
+			{
+				return block.Run();
+			}
 		}
 
 		public abstract void Activate(object arg1, int arg2);

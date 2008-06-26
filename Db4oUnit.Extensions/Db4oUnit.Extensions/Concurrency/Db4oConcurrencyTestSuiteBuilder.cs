@@ -9,7 +9,7 @@ using Db4objects.Db4o.Ext;
 
 namespace Db4oUnit.Extensions.Concurrency
 {
-	public class Db4oConcurrencyTestSuiteBuilder : Db4oTestSuiteBuilder
+	public class Db4oConcurrencyTestSuiteBuilder : Db4oUnit.Extensions.Db4oTestSuiteBuilder
 	{
 		public Db4oConcurrencyTestSuiteBuilder(IDb4oFixture fixture, Type clazz) : base(fixture
 			, clazz)

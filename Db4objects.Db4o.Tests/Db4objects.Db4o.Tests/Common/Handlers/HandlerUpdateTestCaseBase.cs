@@ -37,6 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			)
 		{
 			HandlerUpdateTestCaseBase.Holder holder = RetrieveHolderInstance(objectContainer);
+			objectContainer.Activate(holder, int.MaxValue);
 			AssertValues(holder._values);
 			AssertArrays(holder._arrays);
 		}

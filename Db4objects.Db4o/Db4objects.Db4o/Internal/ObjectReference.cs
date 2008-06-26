@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Internal
 
 		private int _hcSize;
 
-		private int _hcHashcode;
+		public int _hcHashcode;
 
 		private int _lastTopLevelCallId;
 
@@ -737,7 +737,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		private int Hc_getCode(object obj)
+		public static int Hc_getCode(object obj)
 		{
 			int hcode = Runtime.IdentityHashCode(obj);
 			if (hcode < 0)

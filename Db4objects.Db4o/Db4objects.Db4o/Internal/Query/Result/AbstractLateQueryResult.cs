@@ -5,13 +5,12 @@ using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Classindex;
-using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Query.Result
 {
 	/// <exclude></exclude>
-	public abstract class AbstractLateQueryResult : AbstractQueryResult
+	public abstract class AbstractLateQueryResult : Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult
 	{
 		protected IEnumerable _iterable;
 
@@ -19,17 +18,20 @@ namespace Db4objects.Db4o.Internal.Query.Result
 		{
 		}
 
-		public override AbstractQueryResult SupportSize()
+		public override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult SupportSize
+			()
 		{
 			return ToIdTree();
 		}
 
-		public override AbstractQueryResult SupportSort()
+		public override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult SupportSort
+			()
 		{
 			return ToIdList();
 		}
 
-		public override AbstractQueryResult SupportElementAccess()
+		public override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult SupportElementAccess
+			()
 		{
 			return ToIdList();
 		}
@@ -48,7 +50,8 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			return new IntIterator4Adaptor(_iterable);
 		}
 
-		public override AbstractQueryResult ToIdList()
+		public override Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult ToIdList
+			()
 		{
 			return ToIdTree().ToIdList();
 		}

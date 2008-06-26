@@ -5,7 +5,6 @@ using System.Collections;
 using System.Reflection;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Internal;
-using Sharpen.Lang.Reflect;
 
 namespace Db4objects.Db4o.Tests.Common.Soda.Util
 {

@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Internal.Activation
 {
 	/// <summary>Transparent Activation strategy.</summary>
 	/// <remarks>Transparent Activation strategy.</remarks>
-	public class NonDescendingActivationDepth : ActivationDepthImpl
+	public class NonDescendingActivationDepth : Db4objects.Db4o.Internal.Activation.ActivationDepthImpl
 	{
 		public NonDescendingActivationDepth(ActivationMode mode) : base(mode)
 		{

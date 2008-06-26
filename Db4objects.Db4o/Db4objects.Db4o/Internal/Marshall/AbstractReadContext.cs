@@ -9,7 +9,8 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public abstract class AbstractReadContext : AbstractBufferContext, IInternalReadContext
+	public abstract class AbstractReadContext : Db4objects.Db4o.Internal.AbstractBufferContext
+		, IInternalReadContext
 	{
 		protected IActivationDepth _activationDepth = UnknownActivationDepth.Instance;
 
@@ -63,11 +64,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 						(classMetadata));
 				}
 			}
-			if (FieldMetadata.UseDedicatedSlot(this, handler))
+			if (UseDedicatedSlot(handler))
 			{
 				return ReadObject();
 			}
 			return handler.Read(this);
+		}
+
+		public virtual bool UseDedicatedSlot(ITypeHandler4 handler)
+		{
+			return FieldMetadata.UseDedicatedSlot(this, handler);
 		}
 
 		public object ReadObject()

@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Internal.Convert
 	/// <exclude></exclude>
 	public abstract class ConversionStage
 	{
-		public sealed class ClassCollectionAvailableStage : ConversionStage
+		public sealed class ClassCollectionAvailableStage : Db4objects.Db4o.Internal.Convert.ConversionStage
 		{
 			public ClassCollectionAvailableStage(LocalObjectContainer file) : base(file)
 			{
@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal.Convert
 			}
 		}
 
-		public sealed class SystemUpStage : ConversionStage
+		public sealed class SystemUpStage : Db4objects.Db4o.Internal.Convert.ConversionStage
 		{
 			public SystemUpStage(LocalObjectContainer file) : base(file)
 			{

@@ -3,15 +3,15 @@
 using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
-namespace Db4objects.Db4o.Internal.Handlers
+namespace Db4objects.Db4o.Internal.Handlers.Array
 {
 	/// <summary>n-dimensional array</summary>
 	/// <exclude></exclude>
-	public class MultidimensionalArrayHandler : ArrayHandler
+	public class MultidimensionalArrayHandler : Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler
 	{
 		public MultidimensionalArrayHandler(ITypeHandler4 a_handler, bool a_isPrimitive) : 
 			base(a_handler, a_isPrimitive)
@@ -31,11 +31,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public static IEnumerator AllElements(IReflectArray reflectArray, object array)
 		{
-			// TODO: replace array copying code with iteration
-			int[] dim = reflectArray.Dimensions(array);
-			object[] flat = new object[ElementCount(dim)];
-			reflectArray.Flatten(array, dim, 0, flat, 0);
-			return new ArrayIterator4(flat);
+			return new MultidimensionalArrayIterator(reflectArray, (object[])array);
 		}
 
 		protected static int ElementCount(int[] a_dim)
@@ -147,7 +143,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override ITypeHandler4 GenericTemplate()
 		{
-			return new Db4objects.Db4o.Internal.Handlers.MultidimensionalArrayHandler();
+			return new MultidimensionalArrayHandler();
 		}
 	}
 }

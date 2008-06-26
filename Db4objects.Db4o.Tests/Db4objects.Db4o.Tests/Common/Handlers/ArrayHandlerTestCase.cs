@@ -4,7 +4,7 @@ using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Handlers;
 

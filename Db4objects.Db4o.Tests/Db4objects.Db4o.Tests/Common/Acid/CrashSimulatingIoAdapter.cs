@@ -7,7 +7,7 @@ using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.Acid
 {
-	public class CrashSimulatingIoAdapter : VanillaIoAdapter
+	public class CrashSimulatingIoAdapter : Db4objects.Db4o.IO.VanillaIoAdapter
 	{
 		internal CrashSimulatingBatch batch;
 

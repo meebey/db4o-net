@@ -12,10 +12,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// A QQuery is defined by it's constraints.
 	/// </remarks>
 	/// <exclude></exclude>
-	public class QQuery : QQueryBase, IQuery
+	public class QQuery : Db4objects.Db4o.Internal.Query.Processor.QQueryBase, IQuery
 	{
-		public QQuery(Transaction a_trans, Db4objects.Db4o.Internal.Query.Processor.QQuery
-			 a_parent, string a_field) : base(a_trans, a_parent, a_field)
+		public QQuery(Transaction a_trans, QQuery a_parent, string a_field) : base(a_trans
+			, a_parent, a_field)
 		{
 		}
 

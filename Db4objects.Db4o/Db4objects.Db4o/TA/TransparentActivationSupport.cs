@@ -197,7 +197,7 @@ namespace Db4objects.Db4o.TA
 				{
 					return;
 				}
-				if (this.HasOnlyPrimitiveFields(reflectClass))
+				if (this.HasNoActivatingFields(reflectClass))
 				{
 					return;
 				}
@@ -212,13 +212,13 @@ namespace Db4objects.Db4o.TA
 				return this._container.Reflector().ForClass(typeof(IActivatable));
 			}
 
-			private bool HasOnlyPrimitiveFields(IReflectClass clazz)
+			private bool HasNoActivatingFields(IReflectClass clazz)
 			{
 				IReflectClass curClass = clazz;
 				while (curClass != null)
 				{
 					IReflectField[] fields = curClass.GetDeclaredFields();
-					if (!this.HasOnlyPrimitiveFields(fields))
+					if (!this.HasNoActivatingFields(fields))
 					{
 						return false;
 					}
@@ -227,11 +227,11 @@ namespace Db4objects.Db4o.TA
 				return true;
 			}
 
-			private bool HasOnlyPrimitiveFields(IReflectField[] fields)
+			private bool HasNoActivatingFields(IReflectField[] fields)
 			{
 				for (int i = 0; i < fields.Length; i++)
 				{
-					if (!this.IsPrimitive(fields[i]))
+					if (this.IsActivating(fields[i]))
 					{
 						return false;
 					}
@@ -239,9 +239,10 @@ namespace Db4objects.Db4o.TA
 				return true;
 			}
 
-			private bool IsPrimitive(IReflectField field)
+			private bool IsActivating(IReflectField field)
 			{
-				return field.GetFieldType().IsPrimitive();
+				IReflectClass fieldType = field.GetFieldType();
+				return fieldType != null && !fieldType.IsPrimitive();
 			}
 
 			private readonly TransparentActivationSupport _enclosing;

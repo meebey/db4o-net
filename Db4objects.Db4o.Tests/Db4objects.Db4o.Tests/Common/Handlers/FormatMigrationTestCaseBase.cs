@@ -14,7 +14,7 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
-	public abstract class FormatMigrationTestCaseBase : ITestLifeCycle, IOptOutNoFileSystemData
+	public abstract partial class FormatMigrationTestCaseBase : ITestLifeCycle, IOptOutNoFileSystemData
 	{
 		private string _db4oVersion;
 
@@ -25,8 +25,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ConfigureForTest(config);
 		}
 
-		protected static readonly string TempPath = Path.Combine(Path.GetTempPath(), "test/db4oVersions"
-			);
+		protected static readonly string TempPath;
+
+		static FormatMigrationTestCaseBase()
+		{
+			TempPath = Path.Combine(GetTempPath(), "test/db4oVersions");
+		}
 
 		protected virtual string FileName()
 		{
@@ -157,12 +161,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		// do nothing
 		private void CheckDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_139(this));
+			WithDatabase(testFile, new _IFunction4_154(this));
 		}
 
-		private sealed class _IFunction4_139 : IFunction4
+		private sealed class _IFunction4_154 : IFunction4
 		{
-			public _IFunction4_139(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_154(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -178,12 +182,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void UpdateDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_148(this));
+			WithDatabase(testFile, new _IFunction4_163(this));
 		}
 
-		private sealed class _IFunction4_148 : IFunction4
+		private sealed class _IFunction4_163 : IFunction4
 		{
-			public _IFunction4_148(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_163(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -199,12 +203,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CheckUpdatedDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_158(this));
+			WithDatabase(testFile, new _IFunction4_173(this));
 		}
 
-		private sealed class _IFunction4_158 : IFunction4
+		private sealed class _IFunction4_173 : IFunction4
 		{
-			public _IFunction4_158(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_173(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

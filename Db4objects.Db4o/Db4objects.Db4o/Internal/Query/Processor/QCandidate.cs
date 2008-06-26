@@ -6,6 +6,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
@@ -146,17 +147,19 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				ITypeHandler4 handler = _yapField.GetHandler();
 				if (handler != null)
 				{
-					ByteArrayBuffer[] arrayBytes = new ByteArrayBuffer[] { _bytes };
+					QueryingReadContext queryingReadContext = new QueryingReadContext(Transaction(), 
+						MarshallerFamily().HandlerVersion(), _bytes);
 					ITypeHandler4 tempHandler = null;
 					if (handler is IFirstClassHandler)
 					{
-						tempHandler = ((IFirstClassHandler)handler).ReadArrayHandler(Transaction(), MarshallerFamily
-							(), arrayBytes);
+						IFirstClassHandler firstClassHandler = (IFirstClassHandler)queryingReadContext.CorrectHandlerVersion
+							(handler);
+						tempHandler = firstClassHandler.ReadCandidateHandler(queryingReadContext);
 					}
 					if (tempHandler != null)
 					{
 						ITypeHandler4 arrayElementHandler = tempHandler;
-						int offset = arrayBytes[0]._offset;
+						int offset = queryingReadContext.Offset();
 						bool outerRes = true;
 						// The following construct is worse than not ideal.
 						// For each constraint it completely reads the
@@ -174,8 +177,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								QCandidates candidates = new QCandidates(a_candidates.i_trans, null, qf);
 								candidates.AddConstraint(qcon);
 								qcon.SetCandidates(candidates);
-								ReadArrayCandidates(handler, arrayBytes[0], arrayElementHandler, candidates);
-								arrayBytes[0]._offset = offset;
+								ReadArrayCandidates(handler, queryingReadContext.Buffer(), arrayElementHandler, candidates
+									);
+								queryingReadContext.Seek(offset);
 								bool isNot = qcon.IsNot();
 								if (isNot)
 								{
@@ -352,8 +356,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly QCandidate _enclosing;
 		}
 
-		private void ReadArrayCandidates(ITypeHandler4 fieldHandler, ByteArrayBuffer buffer
-			, ITypeHandler4 arrayElementHandler, QCandidates candidates)
+		private void ReadArrayCandidates(ITypeHandler4 fieldHandler, IReadBuffer buffer, 
+			ITypeHandler4 arrayElementHandler, QCandidates candidates)
 		{
 			if (!(arrayElementHandler is IFirstClassHandler))
 			{
@@ -367,7 +371,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		private sealed class _IClosure4_336 : IClosure4
 		{
 			public _IClosure4_336(QCandidate _enclosing, SlotFormat slotFormat, ITypeHandler4
-				 arrayElementHandler, ByteArrayBuffer buffer, QCandidates candidates)
+				 arrayElementHandler, IReadBuffer buffer, QCandidates candidates)
 			{
 				this._enclosing = _enclosing;
 				this.slotFormat = slotFormat;
@@ -404,7 +408,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 			private readonly ITypeHandler4 arrayElementHandler;
 
-			private readonly ByteArrayBuffer buffer;
+			private readonly IReadBuffer buffer;
 
 			private readonly QCandidates candidates;
 		}

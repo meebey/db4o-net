@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Classindex;
 
 namespace Db4objects.Db4o.Internal.Classindex
 {
@@ -10,7 +9,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 	/// client class index. Largly intended to do nothing or
 	/// redirect functionality to the server.
 	/// </remarks>
-	internal sealed class ClassIndexClient : ClassIndex
+	internal sealed class ClassIndexClient : Db4objects.Db4o.Internal.Classindex.ClassIndex
 	{
 		internal ClassIndexClient(ClassMetadata aYapClass) : base(aYapClass)
 		{

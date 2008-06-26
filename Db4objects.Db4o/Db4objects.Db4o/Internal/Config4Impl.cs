@@ -77,8 +77,6 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ExceptionsOnNotStorableKey = new KeySpec(false);
 
-		private static readonly KeySpec FlushFileBuffersKey = new KeySpec(true);
-
 		private static readonly KeySpec FreespaceFillerKey = new KeySpec(null);
 
 		private static readonly KeySpec FreespaceSystemKey = new KeySpec(AbstractFreespaceManager
@@ -399,11 +397,12 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(ExceptionsOnNotStorableKey, flag);
 		}
 
+		[System.ObsoleteAttribute(@"Please use a")]
 		public void FlushFileBuffers(bool flag)
 		{
-			_config.Put(FlushFileBuffersKey, flag);
 		}
 
+		// ignore
 		public IFreespaceConfiguration Freespace()
 		{
 			return this;
@@ -890,11 +889,6 @@ namespace Db4objects.Db4o.Internal
 		public bool ExceptionsOnNotStorable()
 		{
 			return _config.GetAsBoolean(ExceptionsOnNotStorableKey);
-		}
-
-		public bool FlushFileBuffers()
-		{
-			return _config.GetAsBoolean(FlushFileBuffersKey);
 		}
 
 		internal byte FreespaceSystem()

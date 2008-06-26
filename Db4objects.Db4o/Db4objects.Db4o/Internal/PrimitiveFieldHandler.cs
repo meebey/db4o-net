@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Fieldhandlers;
-using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Internal
 			_handler = null;
 		}
 
-		internal override void ActivateFields(Transaction trans, object obj, IActivationDepth
+		public override void ActivateFields(Transaction trans, object obj, IActivationDepth
 			 depth)
 		{
 		}
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// do nothing
-		protected override bool DescendOnCascadingActivation()
+		public override bool DescendOnCascadingActivation()
 		{
 			return false;
 		}
@@ -156,8 +156,7 @@ namespace Db4objects.Db4o.Internal
 			return _handler.PrepareComparison(context, source);
 		}
 
-		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, ByteArrayBuffer[] a_bytes)
+		public override ITypeHandler4 ReadCandidateHandler(QueryingReadContext context)
 		{
 			if (IsArray())
 			{

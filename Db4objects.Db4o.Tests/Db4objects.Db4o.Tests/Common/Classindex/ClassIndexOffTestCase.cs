@@ -13,13 +13,27 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 {
 	public class ClassIndexOffTestCase : AbstractDb4oTestCase, IOptOutCS
 	{
+		internal static string Name = "1";
+
+		public class Holder
+		{
+			public ClassIndexOffTestCase.Item _item;
+
+			public ClassIndexOffTestCase.Item _nullItem;
+
+			public Holder(ClassIndexOffTestCase.Item item)
+			{
+				_item = item;
+			}
+		}
+
 		public class Item
 		{
-			public string name;
+			public string _name;
 
-			public Item(string _name)
+			public Item(string name)
 			{
-				this.name = _name;
+				_name = name;
 			}
 		}
 
@@ -35,21 +49,47 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 			config.ObjectClass(typeof(ClassIndexOffTestCase.Item)).Indexed(false);
 		}
 
-		public virtual void Test()
+		/// <exception cref="Exception"></exception>
+		protected override void Store()
 		{
-			Db().Store(new ClassIndexOffTestCase.Item("1"));
-			IStoredClass yc = Db().StoredClass(typeof(ClassIndexOffTestCase.Item));
-			Assert.IsFalse(yc.HasClassIndex());
-			AssertNoItemFound();
-			Db().Commit();
-			AssertNoItemFound();
+			ClassIndexOffTestCase.Item item = new ClassIndexOffTestCase.Item(Name);
+			Store(new ClassIndexOffTestCase.Holder(item));
 		}
 
-		private void AssertNoItemFound()
+		public virtual void TestNoItemInIndex()
+		{
+			IStoredClass storedClass = Db().StoredClass(typeof(ClassIndexOffTestCase.Item));
+			Assert.IsFalse(storedClass.HasClassIndex());
+			AssertNoItemFoundByQuery();
+			Db().Commit();
+			AssertNoItemFoundByQuery();
+		}
+
+		private void AssertNoItemFoundByQuery()
 		{
 			IQuery q = Db().Query();
 			q.Constrain(typeof(ClassIndexOffTestCase.Item));
 			Assert.AreEqual(0, q.Execute().Size());
+		}
+
+		public virtual void TestRetrievalThroughHolder()
+		{
+			AssertData();
+		}
+
+		private void AssertData()
+		{
+			ClassIndexOffTestCase.Holder holder = (ClassIndexOffTestCase.Holder)RetrieveOnlyInstance
+				(typeof(ClassIndexOffTestCase.Holder));
+			Assert.IsNotNull(holder._item);
+			Assert.AreEqual(Name, holder._item._name);
+		}
+
+		/// <exception cref="Exception"></exception>
+		public virtual void TestDefragment()
+		{
+			Defragment();
+			AssertData();
 		}
 	}
 }

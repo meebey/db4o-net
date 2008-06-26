@@ -1,11 +1,9 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Internal.Query.Processor;
-
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	public class QEContains : QEStringCmp
+	public class QEContains : Db4objects.Db4o.Internal.Query.Processor.QEStringCmp
 	{
 		public QEContains(bool caseSensitive_) : base(caseSensitive_)
 		{

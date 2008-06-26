@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 	/// <see cref="BTreeFreespaceManager">BTreeFreespaceManager</see>
 	/// should be used instead.
 	/// </remarks>
-	public class FreespaceManagerIx : AbstractFreespaceManager
+	public class FreespaceManagerIx : Db4objects.Db4o.Internal.Freespace.AbstractFreespaceManager
 	{
 		public FreespaceManagerIx(LocalObjectContainer file) : base(file)
 		{

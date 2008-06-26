@@ -6,9 +6,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 {
 	public class CandidateFieldRoot : ComparisonOperandRoot
 	{
-		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand.CandidateFieldRoot
-			 Instance = new Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand.CandidateFieldRoot
-			();
+		public static readonly CandidateFieldRoot Instance = new CandidateFieldRoot();
 
 		private CandidateFieldRoot()
 		{

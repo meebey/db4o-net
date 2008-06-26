@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
@@ -20,6 +21,43 @@ namespace Db4objects.Db4o.Internal
 		public override object Read(IReadContext context)
 		{
 			return context.ReadObject();
+		}
+
+		public override ITypeHandler4 ReadCandidateHandler(QueryingReadContext context)
+		{
+			int id = 0;
+			int offset = context.Offset();
+			try
+			{
+				id = context.ReadInt();
+			}
+			catch (Exception)
+			{
+			}
+			context.Seek(offset);
+			if (id != 0)
+			{
+				StatefulBuffer reader = context.Container().ReadWriterByID(context.Transaction(), 
+					id);
+				if (reader != null)
+				{
+					ObjectHeader oh = new ObjectHeader(reader);
+					try
+					{
+						if (oh.ClassMetadata() != null)
+						{
+							context.Buffer(reader);
+							return oh.ClassMetadata().SeekCandidateHandler(context);
+						}
+					}
+					catch (Exception e)
+					{
+					}
+				}
+			}
+			// TODO: Check Exception Types
+			// Errors typically occur, if classes don't match
+			return null;
 		}
 
 		public override ObjectID ReadObjectID(IInternalReadContext context)

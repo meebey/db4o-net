@@ -9,7 +9,8 @@ namespace Db4objects.Db4o.Events
 	/// <remarks>Argument for object related events which can be cancelled.</remarks>
 	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
 	/// <seealso cref="ICancellableEventArgs">ICancellableEventArgs</seealso>
-	public class CancellableObjectEventArgs : ObjectEventArgs, ICancellableEventArgs
+	public class CancellableObjectEventArgs : Db4objects.Db4o.Events.ObjectEventArgs, 
+		ICancellableEventArgs
 	{
 		private bool _cancelled;
 

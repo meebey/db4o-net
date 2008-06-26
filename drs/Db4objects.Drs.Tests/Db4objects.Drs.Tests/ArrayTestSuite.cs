@@ -5,7 +5,7 @@ using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Fixtures;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Drs.Tests;
 

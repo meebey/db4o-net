@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Mapping;
+using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 
@@ -19,20 +20,37 @@ namespace Db4objects.Db4o.Internal
 
 		private IDefragmentServices _services;
 
-		private int _handlerVersion;
+		private readonly ObjectHeader _objectHeader;
+
+		private int _currentSlot;
 
 		public DefragmentContextImpl(ByteArrayBuffer source, Db4objects.Db4o.Internal.DefragmentContextImpl
-			 context) : this(source, context._services)
+			 context) : this(source, context._services, context._objectHeader)
 		{
 		}
 
 		public DefragmentContextImpl(ByteArrayBuffer source, IDefragmentServices services
-			)
+			) : this(source, services, null)
+		{
+		}
+
+		public DefragmentContextImpl(ByteArrayBuffer source, IDefragmentServices services
+			, ObjectHeader header)
 		{
 			_source = source;
 			_services = services;
 			_target = new ByteArrayBuffer(Length());
 			_source.CopyTo(_target, 0, 0, Length());
+			_objectHeader = header;
+		}
+
+		public DefragmentContextImpl(Db4objects.Db4o.Internal.DefragmentContextImpl parentContext
+			, ObjectHeader header)
+		{
+			_source = parentContext._source;
+			_target = parentContext._target;
+			_services = parentContext._services;
+			_objectHeader = header;
 		}
 
 		public int Offset()
@@ -70,6 +88,12 @@ namespace Db4objects.Db4o.Internal
 		private int CopyUnindexedId(bool doRegister)
 		{
 			int orig = _source.ReadInt();
+			// TODO: There is no test case for the zero case
+			if (orig == 0)
+			{
+				_target.WriteInt(0);
+				return 0;
+			}
 			int mapped = -1;
 			try
 			{
@@ -303,7 +327,7 @@ namespace Db4objects.Db4o.Internal
 
 		public int HandlerVersion()
 		{
-			return _handlerVersion;
+			return _objectHeader.HandlerVersion();
 		}
 
 		public bool IsLegacyHandlerVersion()
@@ -319,11 +343,6 @@ namespace Db4objects.Db4o.Internal
 		public IObjectContainer ObjectContainer()
 		{
 			return Container();
-		}
-
-		public void HandlerVersion(int version)
-		{
-			_handlerVersion = version;
 		}
 
 		public ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler)
@@ -391,6 +410,53 @@ namespace Db4objects.Db4o.Internal
 		public IReadBuffer Buffer()
 		{
 			return _source;
+		}
+
+		public void Defragment(ITypeHandler4 handler)
+		{
+			ITypeHandler4 typeHandler = CorrectHandlerVersion(handler);
+			if (FieldMetadata.UseDedicatedSlot(this, typeHandler))
+			{
+				if (HasClassIndex(typeHandler))
+				{
+					CopyID();
+				}
+				else
+				{
+					CopyUnindexedID();
+				}
+				return;
+			}
+			typeHandler.Defragment(this);
+		}
+
+		private bool HasClassIndex(ITypeHandler4 typeHandler)
+		{
+			if (typeHandler is Db4objects.Db4o.Internal.ClassMetadata)
+			{
+				return ((Db4objects.Db4o.Internal.ClassMetadata)typeHandler).HasClassIndex();
+			}
+			return false;
+		}
+
+		public void BeginSlot()
+		{
+			_currentSlot++;
+		}
+
+		public Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
+		{
+			return _objectHeader.ClassMetadata();
+		}
+
+		public int CurrentSlot()
+		{
+			return _currentSlot;
+		}
+
+		public bool IsNull(int fieldIndex)
+		{
+			return _objectHeader._headerAttributes.IsNull(fieldIndex);
 		}
 	}
 }

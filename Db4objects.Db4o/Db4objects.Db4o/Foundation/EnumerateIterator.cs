@@ -5,7 +5,7 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
 {
-	public class EnumerateIterator : MappingIterator
+	public class EnumerateIterator : Db4objects.Db4o.Foundation.MappingIterator
 	{
 		public sealed class Tuple
 		{

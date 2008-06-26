@@ -3,15 +3,16 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
 
 namespace Db4objects.Db4o.Internal.Freespace
 {
 	/// <exclude></exclude>
-	public sealed class FreeSlotNode : TreeInt
+	public sealed class FreeSlotNode : Db4objects.Db4o.Internal.TreeInt
 	{
 		internal static int sizeLimit;
 
-		internal Db4objects.Db4o.Internal.Freespace.FreeSlotNode _peer;
+		internal FreeSlotNode _peer;
 
 		internal FreeSlotNode(int a_key) : base(a_key)
 		{
@@ -19,15 +20,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override object ShallowClone()
 		{
-			Db4objects.Db4o.Internal.Freespace.FreeSlotNode frslot = new Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-				(_key);
+			FreeSlotNode frslot = new FreeSlotNode(_key);
 			frslot._peer = _peer;
 			return base.ShallowCloneInternal(frslot);
 		}
 
 		internal void CreatePeer(int a_key)
 		{
-			_peer = new Db4objects.Db4o.Internal.Freespace.FreeSlotNode(a_key);
+			_peer = new FreeSlotNode(a_key);
 			_peer._peer = this;
 		}
 
@@ -41,8 +41,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return Const4.IntLength * 2;
 		}
 
-		internal static Tree RemoveGreaterOrEqual(Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-			 a_in, TreeIntObject a_finder)
+		internal static Tree RemoveGreaterOrEqual(FreeSlotNode a_in, TreeIntObject a_finder
+			)
 		{
 			if (a_in == null)
 			{
@@ -57,8 +57,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 			if (cmp > 0)
 			{
-				a_in._preceding = RemoveGreaterOrEqual((Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-					)a_in._preceding, a_finder);
+				a_in._preceding = RemoveGreaterOrEqual((FreeSlotNode)a_in._preceding, a_finder);
 				if (a_finder._object != null)
 				{
 					a_in._size--;
@@ -67,8 +66,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 				a_finder._object = a_in;
 				return a_in.Remove();
 			}
-			a_in._subsequent = RemoveGreaterOrEqual((Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-				)a_in._subsequent, a_finder);
+			a_in._subsequent = RemoveGreaterOrEqual((FreeSlotNode)a_in._subsequent, a_finder);
 			if (a_finder._object != null)
 			{
 				a_in._size--;
@@ -82,8 +80,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			int address = buffer.ReadInt();
 			if (size > sizeLimit)
 			{
-				Db4objects.Db4o.Internal.Freespace.FreeSlotNode node = new Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-					(size);
+				FreeSlotNode node = new FreeSlotNode(size);
 				node.CreatePeer(address);
 				if (Deploy.debug && Debug.xbytes)
 				{
@@ -94,8 +91,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return null;
 		}
 
-		private void DebugCheckBuffer(ByteArrayBuffer buffer, Db4objects.Db4o.Internal.Freespace.FreeSlotNode
-			 node)
+		private void DebugCheckBuffer(ByteArrayBuffer buffer, FreeSlotNode node)
 		{
 			if (!(buffer is StatefulBuffer))
 			{

@@ -34,6 +34,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int _fieldWriteCount;
 
+		private int _currentSlot;
+
 		private ByteArrayBuffer _debugPrepend;
 
 		private object _currentMarshalledObject;
@@ -244,8 +246,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_currentBuffer = childBuffer;
 		}
 
-		public virtual void NextField()
+		public virtual void BeginSlot()
 		{
+			_currentSlot++;
 			_fieldWriteCount = 0;
 			_currentBuffer = _writeBuffer;
 		}
@@ -343,11 +346,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_fieldWriteCount = NoIndirection;
 		}
 
-		public virtual void PrepareIndirectionOfSecondWrite()
-		{
-			_fieldWriteCount = 0;
-		}
-
 		public virtual void CreateIndirectionWithinSlot(ITypeHandler4 handler)
 		{
 			if (IsIndirectedWithinSlot(handler))
@@ -386,6 +384,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 			IReservedBuffer reservedBuffer = _currentBuffer.Reserve(length);
 			PostWrite();
 			return reservedBuffer;
+		}
+
+		public virtual int CurrentSlot()
+		{
+			return _currentSlot;
 		}
 	}
 }

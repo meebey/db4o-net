@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Constraints;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Callbacks;
@@ -586,6 +587,11 @@ namespace Db4objects.Db4o.Internal
 		public virtual HandlerRegistry Handlers()
 		{
 			return _server.Handlers();
+		}
+
+		public virtual object SyncExec(IClosure4 block)
+		{
+			return _server.SyncExec(block);
 		}
 	}
 }

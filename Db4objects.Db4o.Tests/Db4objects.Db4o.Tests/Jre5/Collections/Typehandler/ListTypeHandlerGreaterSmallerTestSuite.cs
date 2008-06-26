@@ -32,16 +32,16 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			/// <exception cref="Exception"></exception>
 			public virtual void TestSuccessfulSmallerQuery()
 			{
-				IQuery q = NewQuery(CreateItemFactory().ItemClass());
-				q.Descend(ItemFactory.ListFieldName).Constrain(LargeElement()).Smaller();
+				IQuery q = NewQuery(ItemFactory().ItemClass());
+				q.Descend(AbstractItemFactory.ListFieldName).Constrain(LargeElement()).Smaller();
 				AssertQueryResult(q, true);
 			}
 
 			/// <exception cref="Exception"></exception>
 			public virtual void TestFailingGreaterQuery()
 			{
-				IQuery q = NewQuery(CreateItemFactory().ItemClass());
-				q.Descend(ItemFactory.ListFieldName).Constrain(LargeElement()).Greater();
+				IQuery q = NewQuery(ItemFactory().ItemClass());
+				q.Descend(AbstractItemFactory.ListFieldName).Constrain(LargeElement()).Greater();
 				AssertQueryResult(q, false);
 			}
 		}

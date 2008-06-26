@@ -1,9 +1,10 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
@@ -14,6 +15,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			new MultiDimensionalArrayHandlerTestCase().RunSolo();
 		}
+
+		internal static readonly int[][] ArrayData = new int[][] { new int[] { 1, 2, 3 }, 
+			new int[] { 6, 5, 4 } };
+
+		internal static readonly int[] Data = new int[] { 1, 2, 3, 6, 5, 4 };
 
 		public class Item
 		{
@@ -63,9 +69,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return ArrayHandler(typeof(int), true);
 		}
 
-		//    private ArrayHandler stringArrayHandler(){
-		//        return arrayHandler(String.class, false);
-		//    }
 		private ArrayHandler ArrayHandler(Type clazz, bool isPrimitive)
 		{
 			ITypeHandler4 typeHandler = (ITypeHandler4)Container().FieldHandlerForClass(Reflector
@@ -77,7 +80,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			MockWriteContext writeContext = new MockWriteContext(Db());
 			MultiDimensionalArrayHandlerTestCase.Item expected = new MultiDimensionalArrayHandlerTestCase.Item
-				(new int[][] { new int[] { 1, 2, 3 }, new int[] { 6, 5, 4 } });
+				(ArrayData);
 			IntArrayHandler().Write(writeContext, expected._int);
 			MockReadContext readContext = new MockReadContext(writeContext);
 			int[][] arr = (int[][])IntArrayHandler().Read(readContext);
@@ -92,6 +95,17 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			MultiDimensionalArrayHandlerTestCase.Item storedItem = new MultiDimensionalArrayHandlerTestCase.Item
 				(new int[][] { new int[] { 1, 2, 3 }, new int[] { 6, 5, 4 } });
 			DoTestStoreObject(storedItem);
+		}
+
+		public virtual void TestAllElements()
+		{
+			int pos = 0;
+			IEnumerator allElements = IntArrayHandler().AllElements(Container(), ArrayData);
+			while (allElements.MoveNext())
+			{
+				Assert.AreEqual(Data[pos++], allElements.Current);
+			}
+			Assert.AreEqual(pos, Data.Length);
 		}
 	}
 }

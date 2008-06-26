@@ -4,7 +4,6 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
-using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -189,43 +188,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		protected override bool IsNull(IFieldListInfo fieldList, int fieldIndex)
 		{
 			return false;
-		}
-
-		public override void DefragFields(ClassMetadata clazz, ObjectHeader header, DefragmentContextImpl
-			 context)
-		{
-			// FIXME copied from ObjectMarshaller1
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_96(this
-				, context);
-			TraverseFields(clazz, null, header._headerAttributes, command);
-		}
-
-		private sealed class _TraverseFieldCommand_96 : ObjectMarshaller.TraverseFieldCommand
-		{
-			public _TraverseFieldCommand_96(ObjectMarshaller0 _enclosing, DefragmentContextImpl
-				 context)
-			{
-				this._enclosing = _enclosing;
-				this.context = context;
-			}
-
-			public override int FieldCount(ClassMetadata yapClass, IReadBuffer reader)
-			{
-				return context.ReadInt();
-			}
-
-			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
-				 containingClass)
-			{
-				if (!isNull)
-				{
-					field.DefragField(this._enclosing._family, context);
-				}
-			}
-
-			private readonly ObjectMarshaller0 _enclosing;
-
-			private readonly DefragmentContextImpl context;
 		}
 
 		public override void WriteObjectClassID(ByteArrayBuffer reader, int id)

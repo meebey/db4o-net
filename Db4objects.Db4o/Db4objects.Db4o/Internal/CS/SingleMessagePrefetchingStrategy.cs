@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.CS
 	/// <exclude></exclude>
 	public class SingleMessagePrefetchingStrategy : IPrefetchingStrategy
 	{
-		public static readonly IPrefetchingStrategy Instance = new Db4objects.Db4o.Internal.CS.SingleMessagePrefetchingStrategy
+		public static readonly IPrefetchingStrategy Instance = new SingleMessagePrefetchingStrategy
 			();
 
 		private SingleMessagePrefetchingStrategy()

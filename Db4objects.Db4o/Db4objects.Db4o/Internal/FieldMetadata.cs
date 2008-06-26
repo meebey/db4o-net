@@ -12,6 +12,7 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Slots;
@@ -329,7 +330,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (!(_handler is ICascadingTypeHandler))
+			if (!(_handler is IFirstClassHandler))
 			{
 				return;
 			}
@@ -338,8 +339,9 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			ICascadingTypeHandler cascadingHandler = (ICascadingTypeHandler)_handler;
-			cascadingHandler.CascadeActivation(trans, cascadeTo, depth);
+			IFirstClassHandler cascadingHandler = (IFirstClassHandler)_handler;
+			ActivationContext4 context = new ActivationContext4(trans, cascadeTo, depth);
+			cascadingHandler.CascadeActivation(context);
 		}
 
 		protected virtual object CascadingTarget(Transaction trans, IActivationDepth depth
@@ -426,14 +428,14 @@ namespace Db4objects.Db4o.Internal
 				if (_handler is ICollectIdHandler)
 				{
 					SlotFormat.ForHandlerVersion(context.HandlerVersion()).DoWithSlotIndirection(context
-						, _handler, new _IClosure4_366(this, context));
+						, _handler, new _IClosure4_368(this, context));
 				}
 			}
 		}
 
-		private sealed class _IClosure4_366 : IClosure4
+		private sealed class _IClosure4_368 : IClosure4
 		{
-			public _IClosure4_366(FieldMetadata _enclosing, CollectIdContext context)
+			public _IClosure4_368(FieldMetadata _enclosing, CollectIdContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -536,7 +538,7 @@ namespace Db4objects.Db4o.Internal
 				DeleteContextImpl context = new DeleteContextImpl(GetStoredType(), handlerVersion
 					, _config, buffer);
 				SlotFormat.ForHandlerVersion(handlerVersion).DoWithSlotIndirection(buffer, _handler
-					, new _IClosure4_440(this, context));
+					, new _IClosure4_442(this, context));
 			}
 			catch (CorruptionException exc)
 			{
@@ -544,9 +546,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_440 : IClosure4
+		private sealed class _IClosure4_442 : IClosure4
 		{
-			public _IClosure4_440(FieldMetadata _enclosing, DeleteContextImpl context)
+			public _IClosure4_442(FieldMetadata _enclosing, DeleteContextImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -1133,14 +1135,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_916(this, userVisitor, transaction
+				_index.TraverseKeys(transaction, new _IVisitor4_918(this, userVisitor, transaction
 					));
 			}
 		}
 
-		private sealed class _IVisitor4_916 : IVisitor4
+		private sealed class _IVisitor4_918 : IVisitor4
 		{
-			public _IVisitor4_916(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
+			public _IVisitor4_918(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
 				 transaction)
 			{
 				this._enclosing = _enclosing;
@@ -1337,33 +1339,30 @@ namespace Db4objects.Db4o.Internal
 			_index = null;
 		}
 
-		public virtual void DefragField(MarshallerFamily mf, DefragmentContextImpl context
-			)
+		public virtual void DefragField(IDefragmentContext context)
 		{
-			int handlerVersion = mf.HandlerVersion();
-			context.HandlerVersion(handlerVersion);
 			ITypeHandler4 typeHandler = context.CorrectHandlerVersion(GetHandler());
-			SlotFormat.ForHandlerVersion(handlerVersion).DoWithSlotIndirection(context, typeHandler
-				, new _IClosure4_1067(typeHandler, context));
+			SlotFormat.ForHandlerVersion(context.HandlerVersion()).DoWithSlotIndirection(context
+				, typeHandler, new _IClosure4_1067(context, typeHandler));
 		}
 
 		private sealed class _IClosure4_1067 : IClosure4
 		{
-			public _IClosure4_1067(ITypeHandler4 typeHandler, DefragmentContextImpl context)
+			public _IClosure4_1067(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
-				this.typeHandler = typeHandler;
 				this.context = context;
+				this.typeHandler = typeHandler;
 			}
 
 			public object Run()
 			{
-				typeHandler.Defragment(context);
+				context.Defragment(typeHandler);
 				return null;
 			}
 
-			private readonly ITypeHandler4 typeHandler;
+			private readonly IDefragmentContext context;
 
-			private readonly DefragmentContextImpl context;
+			private readonly ITypeHandler4 typeHandler;
 		}
 
 		public virtual void CreateIndex()

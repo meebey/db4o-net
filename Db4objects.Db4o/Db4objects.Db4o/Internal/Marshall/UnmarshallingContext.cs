@@ -147,18 +147,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return null;
 			}
-			if (!SeekToField(classMetadata, field))
-			{
-				return null;
-			}
-			return field.Read(this);
-		}
-
-		private bool SeekToField(Db4objects.Db4o.Internal.ClassMetadata classMetadata, FieldMetadata
-			 field)
-		{
-			return _objectHeader.ObjectMarshaller().FindOffset(classMetadata, _objectHeader._headerAttributes
-				, ByteArrayBuffer(), field);
+			return ReadFieldValue(classMetadata, field);
 		}
 
 		private Db4objects.Db4o.Internal.ClassMetadata ReadObjectHeader()

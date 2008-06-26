@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Ext
 	/// <seealso cref="IExtObjectContainer.Bind">IExtObjectContainer.Bind</seealso>
 	/// <seealso cref="IExtObjectContainer.GetByID">IExtObjectContainer.GetByID</seealso>
 	[System.Serializable]
-	public class InvalidIDException : Db4oException
+	public class InvalidIDException : Db4objects.Db4o.Ext.Db4oException
 	{
 		/// <summary>Constructor allowing to specify the exception cause</summary>
 		/// <param name="cause">cause exception</param>

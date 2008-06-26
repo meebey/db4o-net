@@ -8,16 +8,23 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class TransactionalReferenceSystem : IReferenceSystem
 	{
-		internal readonly IReferenceSystem _committedReferences = new HashcodeReferenceSystem
-			();
+		private readonly IReferenceSystem _committedReferences;
 
 		private IReferenceSystem _newReferences;
 
 		public TransactionalReferenceSystem()
 		{
 			CreateNewReferences();
+			_committedReferences = NewReferenceSystem();
 		}
 
+		private IReferenceSystem NewReferenceSystem()
+		{
+			return new HashcodeReferenceSystem();
+		}
+
+		// An alternative reference system using a hashtable: 
+		// return new HashtableReferenceSystem();
 		public virtual void AddExistingReference(ObjectReference @ref)
 		{
 			_committedReferences.AddExistingReference(@ref);
@@ -30,13 +37,13 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Commit()
 		{
-			TraveseNewReferences(new _IVisitor4_30(this));
+			TraveseNewReferences(new _IVisitor4_38(this));
 			CreateNewReferences();
 		}
 
-		private sealed class _IVisitor4_30 : IVisitor4
+		private sealed class _IVisitor4_38 : IVisitor4
 		{
-			public _IVisitor4_30(TransactionalReferenceSystem _enclosing)
+			public _IVisitor4_38(TransactionalReferenceSystem _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -61,7 +68,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void CreateNewReferences()
 		{
-			_newReferences = new HashcodeReferenceSystem();
+			_newReferences = NewReferenceSystem();
 		}
 
 		public virtual ObjectReference ReferenceForId(int id)

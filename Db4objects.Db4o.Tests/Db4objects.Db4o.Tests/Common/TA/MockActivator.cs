@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
+using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.Common.TA
 {
@@ -42,11 +43,9 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			return _readCount;
 		}
 
-		public static Db4objects.Db4o.Tests.Common.TA.MockActivator ActivatorFor(IActivatable
-			 obj)
+		public static MockActivator ActivatorFor(IActivatable obj)
 		{
-			Db4objects.Db4o.Tests.Common.TA.MockActivator activator = new Db4objects.Db4o.Tests.Common.TA.MockActivator
-				();
+			MockActivator activator = new MockActivator();
 			obj.Bind(activator);
 			return activator;
 		}

@@ -405,6 +405,10 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void StartCommittedCallbackThread(BlockingQueue committedInfosQueue)
 		{
+			if (IsEmbeddedServer())
+			{
+				return;
+			}
 			_committedCallbacksDispatcher = new CommittedCallbacksDispatcher(this, committedInfosQueue
 				);
 			Thread thread = new Thread(_committedCallbacksDispatcher);

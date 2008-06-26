@@ -7,7 +7,7 @@ using Db4objects.Db4o.Internal.Btree;
 namespace Db4objects.Db4o.Internal.Btree
 {
 	/// <exclude></exclude>
-	public class BTreeAdd : BTreePatch
+	public class BTreeAdd : Db4objects.Db4o.Internal.Btree.BTreePatch
 	{
 		public BTreeAdd(Transaction transaction, object obj) : base(transaction, obj)
 		{
@@ -33,7 +33,8 @@ namespace Db4objects.Db4o.Internal.Btree
 			return this;
 		}
 
-		public override BTreePatch ForTransaction(Transaction trans)
+		public override Db4objects.Db4o.Internal.Btree.BTreePatch ForTransaction(Transaction
+			 trans)
 		{
 			if (_transaction == trans)
 			{

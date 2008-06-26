@@ -4,13 +4,13 @@ using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
-using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Sharpen.Lang;
 
-namespace Db4objects.Db4o.Internal.Handlers
+namespace Db4objects.Db4o.Internal.Handlers.Array
 {
 	/// <exclude></exclude>
 	public class ArrayHandler0 : ArrayHandler2

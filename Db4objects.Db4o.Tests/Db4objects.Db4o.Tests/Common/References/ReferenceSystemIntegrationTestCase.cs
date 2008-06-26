@@ -30,8 +30,14 @@ namespace Db4objects.Db4o.Tests.Common.References
 
 		public virtual void TestHashCodeReferenceSystem()
 		{
-			HashcodeReferenceSystem hashcodeReferenceSystem = new HashcodeReferenceSystem();
-			AssertAllRerefencesAvailableOnNew(hashcodeReferenceSystem);
+			IReferenceSystem referenceSystem = new HashcodeReferenceSystem();
+			AssertAllRerefencesAvailableOnNew(referenceSystem);
+		}
+
+		public virtual void TestHashTableReferenceSystem()
+		{
+			IReferenceSystem referenceSystem = new HashtableReferenceSystem();
+			AssertAllRerefencesAvailableOnNew(referenceSystem);
 		}
 
 		private void AssertAllRerefencesAvailableOnCommit(IReferenceSystem referenceSystem

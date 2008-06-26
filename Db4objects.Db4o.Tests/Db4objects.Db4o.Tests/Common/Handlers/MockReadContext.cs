@@ -8,7 +8,8 @@ using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
-	public class MockReadContext : MockMarshallingContext, IReadContext
+	public class MockReadContext : Db4objects.Db4o.Tests.Common.Handlers.MockMarshallingContext
+		, IReadContext
 	{
 		public MockReadContext(IObjectContainer objectContainer) : base(objectContainer)
 		{

@@ -31,17 +31,18 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			/// <exception cref="Exception"></exception>
 			public virtual void TestSuccessfulEndsWithQuery()
 			{
-				IQuery q = NewQuery(CreateItemFactory().ItemClass());
-				q.Descend(ItemFactory.ListFieldName).Constrain(SuccessfulEndChar()).EndsWith(false
-					);
+				IQuery q = NewQuery(ItemFactory().ItemClass());
+				q.Descend(AbstractItemFactory.ListFieldName).Constrain(SuccessfulEndChar()).EndsWith
+					(false);
 				AssertQueryResult(q, true);
 			}
 
 			/// <exception cref="Exception"></exception>
 			public virtual void TestFailingEndsWithQuery()
 			{
-				IQuery q = NewQuery(CreateItemFactory().ItemClass());
-				q.Descend(ItemFactory.ListFieldName).Constrain(FailingEndChar()).EndsWith(false);
+				IQuery q = NewQuery(ItemFactory().ItemClass());
+				q.Descend(AbstractItemFactory.ListFieldName).Constrain(FailingEndChar()).EndsWith
+					(false);
 				AssertQueryResult(q, false);
 			}
 

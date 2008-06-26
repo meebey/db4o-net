@@ -8,7 +8,7 @@ using Db4objects.Db4o.Internal.Query.Processor;
 namespace Db4objects.Db4o.Internal.Fieldindex
 {
 	/// <exclude></exclude>
-	public class IndexedLeaf : IndexedNodeBase, IIndexedNodeWithRange
+	public class IndexedLeaf : Db4objects.Db4o.Internal.Fieldindex.IndexedNodeBase, IIndexedNodeWithRange
 	{
 		private readonly IBTreeRange _range;
 

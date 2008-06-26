@@ -2,7 +2,6 @@
 
 using System;
 using System.Reflection;
-using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Concurrency;
 using Db4oUnit.Fixtures;
@@ -11,7 +10,7 @@ using Sharpen.Lang;
 
 namespace Db4oUnit.Extensions.Concurrency
 {
-	public class ConcurrencyTestMethod : TestMethod
+	public class ConcurrencyTestMethod : Db4oUnit.TestMethod
 	{
 		private Thread[] threads;
 

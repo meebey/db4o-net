@@ -2,11 +2,11 @@
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
-namespace Db4objects.Db4o.Internal.Handlers
+namespace Db4objects.Db4o.Internal.Handlers.Array
 {
 	/// <exclude></exclude>
 	public class ArrayVersionHelper3 : ArrayVersionHelper

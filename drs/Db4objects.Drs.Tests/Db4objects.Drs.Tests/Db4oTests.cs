@@ -3,6 +3,7 @@
 using System;
 using Db4oUnit;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Db4o;
 using Db4objects.Drs.Tests.Dotnet;
 
 namespace Db4objects.Drs.Tests
@@ -49,8 +50,8 @@ namespace Db4objects.Drs.Tests
 		{
 			return Concat(PlatformSpecificTestCases(), new Type[] { typeof(ArrayTestSuite), typeof(
 				CustomArrayListTestCase), typeof(DateReplicationTestCase), typeof(StructTestCase
-				), typeof(DeepListGraphTestCase), typeof(UntypedFieldTestCase), typeof(TheSimplestWithCallConstructors
-				) });
+				), typeof(DeepListGraphTestCase), typeof(UntypedFieldTestCase), typeof(PartialCollectionReplicationTestCase
+				), typeof(TheSimplestWithCallConstructors) });
 		}
 	}
 }

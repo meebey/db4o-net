@@ -15,8 +15,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		private static readonly Hashtable4 _versions = new Hashtable4();
 
-		private static readonly Db4objects.Db4o.Internal.Marshall.SlotFormat CurrentSlotFormat
-			 = new SlotFormatCurrent();
+		private static readonly SlotFormat CurrentSlotFormat = new SlotFormatCurrent();
 
 		static SlotFormat()
 		{
@@ -29,8 +28,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_versions.Put(HandlerVersion(), this);
 		}
 
-		public static Db4objects.Db4o.Internal.Marshall.SlotFormat ForHandlerVersion(int 
-			handlerVersion)
+		public static SlotFormat ForHandlerVersion(int handlerVersion)
 		{
 			if (handlerVersion == HandlerRegistry.HandlerVersion)
 			{
@@ -40,8 +38,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				throw new ArgumentException();
 			}
-			Db4objects.Db4o.Internal.Marshall.SlotFormat slotFormat = (Db4objects.Db4o.Internal.Marshall.SlotFormat
-				)_versions.Get(handlerVersion);
+			SlotFormat slotFormat = (SlotFormat)_versions.Get(handlerVersion);
 			if (slotFormat != null)
 			{
 				return slotFormat;
@@ -51,12 +48,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is Db4objects.Db4o.Internal.Marshall.SlotFormat))
+			if (!(obj is SlotFormat))
 			{
 				return false;
 			}
-			return HandlerVersion() == ((Db4objects.Db4o.Internal.Marshall.SlotFormat)obj).HandlerVersion
-				();
+			return HandlerVersion() == ((SlotFormat)obj).HandlerVersion();
 		}
 
 		public override int GetHashCode()
@@ -68,7 +64,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public abstract bool IsIndirectedWithinSlot(ITypeHandler4 handler);
 
-		public static Db4objects.Db4o.Internal.Marshall.SlotFormat Current()
+		public static SlotFormat Current()
 		{
 			return CurrentSlotFormat;
 		}

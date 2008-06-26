@@ -7,9 +7,9 @@ using Db4objects.Db4o.Internal.Btree;
 
 namespace Db4objects.Db4o.Internal.Btree
 {
-	public abstract class BTreeUpdate : BTreePatch
+	public abstract class BTreeUpdate : Db4objects.Db4o.Internal.Btree.BTreePatch
 	{
-		protected Db4objects.Db4o.Internal.Btree.BTreeUpdate _next;
+		protected BTreeUpdate _next;
 
 		public BTreeUpdate(Transaction transaction, object obj) : base(transaction, obj)
 		{
@@ -20,7 +20,8 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _next != null;
 		}
 
-		public override BTreePatch ForTransaction(Transaction trans)
+		public override Db4objects.Db4o.Internal.Btree.BTreePatch ForTransaction(Transaction
+			 trans)
 		{
 			if (_transaction == trans)
 			{
@@ -33,8 +34,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _next.ForTransaction(trans);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.BTreeUpdate RemoveFor(Transaction trans
-			)
+		public virtual BTreeUpdate RemoveFor(Transaction trans)
 		{
 			if (_transaction == trans)
 			{
@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _next.RemoveFor(trans);
 		}
 
-		public virtual void Append(Db4objects.Db4o.Internal.Btree.BTreeUpdate patch)
+		public virtual void Append(BTreeUpdate patch)
 		{
 			if (_transaction == patch._transaction)
 			{
@@ -77,8 +77,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public override object Commit(Transaction trans, BTree btree)
 		{
-			Db4objects.Db4o.Internal.Btree.BTreeUpdate patch = (Db4objects.Db4o.Internal.Btree.BTreeUpdate
-				)ForTransaction(trans);
+			BTreeUpdate patch = (BTreeUpdate)ForTransaction(trans);
 			if (patch is BTreeCancelledRemoval)
 			{
 				object obj = patch.GetCommittedObject();
@@ -116,9 +115,9 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private void SetNextIfPatch(object newNext)
 		{
-			if (newNext is Db4objects.Db4o.Internal.Btree.BTreeUpdate)
+			if (newNext is BTreeUpdate)
 			{
-				_next = (Db4objects.Db4o.Internal.Btree.BTreeUpdate)newNext;
+				_next = (BTreeUpdate)newNext;
 			}
 			else
 			{
@@ -147,7 +146,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public override object Key(Transaction trans)
 		{
-			BTreePatch patch = ForTransaction(trans);
+			Db4objects.Db4o.Internal.Btree.BTreePatch patch = ForTransaction(trans);
 			if (patch == null)
 			{
 				return GetObject();
@@ -159,8 +158,8 @@ namespace Db4objects.Db4o.Internal.Btree
 			return patch.GetObject();
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.BTreeUpdate ReplacePatch(BTreePatch
-			 patch, Db4objects.Db4o.Internal.Btree.BTreeUpdate update)
+		public virtual BTreeUpdate ReplacePatch(Db4objects.Db4o.Internal.Btree.BTreePatch
+			 patch, BTreeUpdate update)
 		{
 			if (patch == this)
 			{

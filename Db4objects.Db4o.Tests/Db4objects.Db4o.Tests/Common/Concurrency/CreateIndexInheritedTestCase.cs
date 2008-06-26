@@ -211,7 +211,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			return q.Execute();
 		}
 
-		public class CreateIndexFor : CreateIndexInheritedTestCase
+		public class CreateIndexFor : Db4objects.Db4o.Tests.Common.Concurrency.CreateIndexInheritedTestCase
 		{
 			public string i_name;
 

@@ -20,13 +20,12 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public override void CascadeActivation(Transaction trans, object onObject, IActivationDepth
-			 depth)
+		public override void CascadeActivation(ActivationContext4 context)
 		{
-			ITypeHandler4 typeHandler = TypeHandlerForObject(onObject, true);
-			if (typeHandler is ICascadingTypeHandler)
+			ITypeHandler4 typeHandler = TypeHandlerForObject(context.TargetObject(), true);
+			if (typeHandler is IFirstClassHandler)
 			{
-				((ICascadingTypeHandler)typeHandler).CascadeActivation(trans, onObject, depth);
+				((IFirstClassHandler)typeHandler).CascadeActivation(context);
 			}
 		}
 
@@ -90,10 +89,31 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, ByteArrayBuffer[] a_bytes)
+		public override ITypeHandler4 ReadCandidateHandler(QueryingReadContext context)
 		{
-			return mf._untyped.ReadArrayHandler(a_trans, a_bytes);
+			int payLoadOffSet = context.ReadInt();
+			if (payLoadOffSet == 0)
+			{
+				return null;
+			}
+			ITypeHandler4 ret = null;
+			context.Seek(payLoadOffSet);
+			int yapClassID = context.ReadInt();
+			ClassMetadata yc = context.Container().ClassMetadataForId(yapClassID);
+			if (yc != null)
+			{
+				ITypeHandler4 configuredHandler = context.Container().ConfigImpl().TypeHandlerForClass
+					(yc.ClassReflector(), Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion);
+				if (configuredHandler != null && configuredHandler is IFirstClassHandler)
+				{
+					ret = ((IFirstClassHandler)configuredHandler).ReadCandidateHandler(context);
+				}
+				else
+				{
+					ret = yc.ReadCandidateHandler(context);
+				}
+			}
+			return ret;
 		}
 
 		public override ObjectID ReadObjectID(IInternalReadContext context)
@@ -103,16 +123,21 @@ namespace Db4objects.Db4o.Internal
 			{
 				return ObjectID.IsNull;
 			}
+			int savedOffset = context.Offset();
 			ITypeHandler4 typeHandler = ReadTypeHandler(context, payloadOffset);
 			if (typeHandler == null)
 			{
+				context.Seek(savedOffset);
 				return ObjectID.IsNull;
 			}
 			SeekSecondaryOffset(context, typeHandler);
 			if (typeHandler is IReadsObjectIds)
 			{
-				return ((IReadsObjectIds)typeHandler).ReadObjectID(context);
+				ObjectID readObjectID = ((IReadsObjectIds)typeHandler).ReadObjectID(context);
+				context.Seek(savedOffset);
+				return readObjectID;
 			}
+			context.Seek(savedOffset);
 			return ObjectID.NotPossible;
 		}
 
@@ -123,16 +148,16 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			int linkOffSet = context.Offset();
+			int savedOffSet = context.Offset();
 			context.Seek(payLoadOffSet);
 			int typeHandlerId = context.CopyIDReturnOriginalID();
 			ITypeHandler4 typeHandler = context.TypeHandlerForId(typeHandlerId);
 			if (typeHandler != null)
 			{
 				SeekSecondaryOffset(context, typeHandler);
-				context.CorrectHandlerVersion(typeHandler).Defragment(context);
+				context.Defragment(typeHandler);
 			}
-			context.Seek(linkOffSet);
+			context.Seek(savedOffSet);
 		}
 
 		private ITypeHandler4 ReadTypeHandler(IInternalReadContext context, int payloadOffset

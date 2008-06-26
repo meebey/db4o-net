@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Internal
 			return GetID() == 0;
 		}
 
-		public virtual int LinkLength()
+		public int LinkLength()
 		{
 			return Const4.IdLength;
 		}

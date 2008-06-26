@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal.Btree.Algebra;
 namespace Db4objects.Db4o.Internal.Btree.Algebra
 {
 	/// <exclude></exclude>
-	public class BTreeRangeUnionUnion : BTreeRangeUnionOperation
+	public class BTreeRangeUnionUnion : Db4objects.Db4o.Internal.Btree.Algebra.BTreeRangeUnionOperation
 	{
 		public BTreeRangeUnionUnion(BTreeRangeUnion union) : base(union)
 		{

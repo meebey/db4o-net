@@ -17,7 +17,8 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		{
 			return new Type[] { typeof(ListTypeHandlerCascadedDeleteTestCase), typeof(ListTypeHandlerPersistedCountTestCase
 				), typeof(ListTypeHandlerTestSuite), typeof(ListTypeHandlerGreaterSmallerTestSuite
-				), typeof(ListTypeHandlerStringElementTestSuite) };
+				), typeof(ListTypeHandlerStringElementTestSuite), typeof(NamedArrayListTypeHandlerTestCase
+				) };
 		}
 	}
 }

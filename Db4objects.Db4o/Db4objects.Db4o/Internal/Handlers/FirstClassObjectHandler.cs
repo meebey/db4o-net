@@ -3,9 +3,11 @@
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
@@ -13,6 +15,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
 	public class FirstClassObjectHandler : ITypeHandler4, ICompositeTypeHandler, ICollectIdHandler
+		, IFirstClassHandler
 	{
 		private const int HashcodeForNull = 72483944;
 
@@ -28,19 +31,40 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		// required for reflection cloning
 		public virtual void Defragment(IDefragmentContext context)
 		{
-			if (_classMetadata.HasClassIndex())
+			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_35
+				(context);
+			TraverseFields(context, command);
+			if (ClassMetadata().i_ancestor != null)
 			{
-				context.CopyID();
+				ClassMetadata().i_ancestor.Defragment(context);
 			}
-			else
+		}
+
+		private sealed class _TraverseFieldCommand_35 : FirstClassObjectHandler.TraverseFieldCommand
+		{
+			public _TraverseFieldCommand_35(IDefragmentContext context)
 			{
-				context.CopyUnindexedID();
+				this.context = context;
 			}
-			int restLength = (_classMetadata.LinkLength() - Const4.IntLength);
-			context.IncrementOffset(restLength);
+
+			public override int FieldCount(Db4objects.Db4o.Internal.ClassMetadata classMetadata
+				, ByteArrayBuffer reader)
+			{
+				return context.ReadInt();
+			}
+
+			public override void ProcessField(FieldMetadata field, bool isNull, Db4objects.Db4o.Internal.ClassMetadata
+				 containingClass)
+			{
+				if (!isNull)
+				{
+					field.DefragField(context);
+				}
+			}
+
+			private readonly IDefragmentContext context;
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
@@ -52,21 +76,21 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public void InstantiateFields(UnmarshallingContext context)
 		{
 			BooleanByRef updateFieldFound = new BooleanByRef();
-			int savedOffset = context.Offset();
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_52
+			ContextState savedState = context.SaveState();
+			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_63
 				(updateFieldFound, context);
 			TraverseFields(context, command);
 			if (updateFieldFound.value)
 			{
-				context.Seek(savedOffset);
-				command = new _TraverseFieldCommand_68(context);
+				context.RestoreState(savedState);
+				command = new _TraverseFieldCommand_79(context);
 				TraverseFields(context, command);
 			}
 		}
 
-		private sealed class _TraverseFieldCommand_52 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_63 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_52(BooleanByRef updateFieldFound, UnmarshallingContext
+			public _TraverseFieldCommand_63(BooleanByRef updateFieldFound, UnmarshallingContext
 				 context)
 			{
 				this.updateFieldFound = updateFieldFound;
@@ -93,9 +117,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			private readonly UnmarshallingContext context;
 		}
 
-		private sealed class _TraverseFieldCommand_68 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_79 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_68(UnmarshallingContext context)
+			public _TraverseFieldCommand_79(UnmarshallingContext context)
 			{
 				this.context = context;
 			}
@@ -121,6 +145,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			//        BitMap4 nullBitMap = unmarshallingContext.readBitMap(fieldCount);
 			//        int fieldCount = context.readInt();
 			InstantiateFields(unmarshallingContext);
+			if (ClassMetadata().i_ancestor != null)
+			{
+				ClassMetadata().i_ancestor.Read(context);
+			}
 			return unmarshallingContext.PersistentObject();
 		}
 
@@ -131,29 +159,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 			//        final BitMap4 nullBitMap = new BitMap4(fieldCount);
 			//        ReservedBuffer bitMapBuffer = context.reserve(nullBitMap.marshalledLength());
 			Marshall(obj, (MarshallingContext)context);
+			//        bitMapBuffer.writeBytes(nullBitMap.bytes());
+			if (ClassMetadata().i_ancestor != null)
+			{
+				ClassMetadata().i_ancestor.Write(context, obj);
+			}
 		}
 
-		//        bitMapBuffer.writeBytes(nullBitMap.bytes());
 		public virtual void Marshall(object obj, MarshallingContext context)
 		{
 			Transaction trans = context.Transaction();
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_110
+			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_130
 				(context, trans, obj);
 			TraverseFields(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_110 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_130 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_110(MarshallingContext context, Transaction trans, object
+			public _TraverseFieldCommand_130(MarshallingContext context, Transaction trans, object
 				 obj)
 			{
 				this.context = context;
 				this.trans = trans;
 				this.obj = obj;
-				this.fieldIndex = -1;
 			}
-
-			private int fieldIndex;
 
 			public override int FieldCount(Db4objects.Db4o.Internal.ClassMetadata classMetadata
 				, ByteArrayBuffer buffer)
@@ -166,12 +195,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			public override void ProcessField(FieldMetadata field, bool isNull, Db4objects.Db4o.Internal.ClassMetadata
 				 containingClass)
 			{
-				context.NextField();
-				this.fieldIndex++;
 				object child = field.GetOrCreate(trans, obj);
 				if (child == null)
 				{
-					context.IsNull(this.fieldIndex, true);
+					context.IsNull(context.CurrentSlot(), true);
 					field.AddIndexEntry(trans, context.ObjectID(), null);
 					return;
 				}
@@ -194,7 +221,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			if (source == null)
 			{
-				return new _IPreparedComparison_139();
+				return new _IPreparedComparison_157();
 			}
 			int id = 0;
 			IReflectClass claxx = null;
@@ -219,9 +246,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return new ClassMetadata.PreparedComparisonImpl(id, claxx);
 		}
 
-		private sealed class _IPreparedComparison_139 : IPreparedComparison
+		private sealed class _IPreparedComparison_157 : IPreparedComparison
 		{
-			public _IPreparedComparison_139()
+			public _IPreparedComparison_157()
 			{
 			}
 
@@ -262,25 +289,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 		protected void TraverseFields(IMarshallingInfo context, FirstClassObjectHandler.TraverseFieldCommand
 			 command)
 		{
-			TraverseFields(context.ClassMetadata(), (ByteArrayBuffer)context.Buffer(), context
-				, command);
-		}
-
-		protected void TraverseFields(ClassMetadata classMetadata, ByteArrayBuffer buffer
-			, IFieldListInfo fieldList, FirstClassObjectHandler.TraverseFieldCommand command
-			)
-		{
-			int fieldIndex = 0;
-			while (classMetadata != null && !command.Cancelled())
+			int fieldCount = command.FieldCount(ClassMetadata(), ((ByteArrayBuffer)context.Buffer
+				()));
+			for (int i = 0; i < fieldCount && !command.Cancelled(); i++)
 			{
-				int fieldCount = command.FieldCount(classMetadata, buffer);
-				for (int i = 0; i < fieldCount && !command.Cancelled(); i++)
-				{
-					command.ProcessField(classMetadata.i_fields[i], IsNull(fieldList, fieldIndex), classMetadata
-						);
-					fieldIndex++;
-				}
-				classMetadata = classMetadata.i_ancestor;
+				command.ProcessField(ClassMetadata().i_fields[i], IsNull(context, context.CurrentSlot
+					()), ClassMetadata());
+				context.BeginSlot();
 			}
 		}
 
@@ -292,6 +307,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual ClassMetadata ClassMetadata()
 		{
 			return _classMetadata;
+		}
+
+		public virtual void ClassMetadata(ClassMetadata classMetadata)
+		{
+			_classMetadata = classMetadata;
 		}
 
 		public override bool Equals(object obj)
@@ -335,14 +355,18 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void CollectIDs(CollectIdContext context)
 		{
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_238
+			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_252
 				(context);
 			TraverseFields(context, command);
+			if (ClassMetadata().i_ancestor != null)
+			{
+				ClassMetadata().i_ancestor.CollectIDs(context);
+			}
 		}
 
-		private sealed class _TraverseFieldCommand_238 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_252 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_238(CollectIdContext context)
+			public _TraverseFieldCommand_252(CollectIdContext context)
 			{
 				this.context = context;
 			}
@@ -365,6 +389,68 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 
 			private readonly CollectIdContext context;
+		}
+
+		public virtual void CascadeActivation(ActivationContext4 context)
+		{
+			context.CascadeActivationToTarget(ClassMetadata(), ClassMetadata().DescendOnCascadingActivation
+				());
+		}
+
+		public virtual ITypeHandler4 ReadCandidateHandler(QueryingReadContext context)
+		{
+			if (ClassMetadata().IsArray())
+			{
+				return ClassMetadata();
+			}
+			return null;
+		}
+
+		/// <exception cref="Db4oIOException"></exception>
+		public virtual void ReadCandidates(QueryingReadContext context)
+		{
+			int id = context.CollectionID();
+			if (id == 0)
+			{
+				return;
+			}
+			Transaction transaction = context.Transaction();
+			ObjectContainerBase container = context.Container();
+			object obj = container.GetByID(transaction, id);
+			if (obj == null)
+			{
+				return;
+			}
+			QCandidates candidates = context.Candidates();
+			// FIXME: [TA] review activation depth
+			int depth = ClassMetadata().AdjustDepthToBorders(2);
+			container.Activate(transaction, obj, container.ActivationDepthProvider().ActivationDepth
+				(depth, ActivationMode.Activate));
+			Platform4.ForEachCollectionElement(obj, new _IVisitor4_300(candidates, container, 
+				transaction));
+		}
+
+		private sealed class _IVisitor4_300 : IVisitor4
+		{
+			public _IVisitor4_300(QCandidates candidates, ObjectContainerBase container, Transaction
+				 transaction)
+			{
+				this.candidates = candidates;
+				this.container = container;
+				this.transaction = transaction;
+			}
+
+			public void Visit(object elem)
+			{
+				candidates.AddByIdentity(new QCandidate(candidates, elem, container.GetID(transaction
+					, elem), true));
+			}
+
+			private readonly QCandidates candidates;
+
+			private readonly ObjectContainerBase container;
+
+			private readonly Transaction transaction;
 		}
 	}
 }

@@ -2,11 +2,12 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Slots
 {
 	/// <exclude></exclude>
-	public class ReferencedSlot : TreeInt
+	public class ReferencedSlot : Db4objects.Db4o.Internal.TreeInt
 	{
 		private Db4objects.Db4o.Internal.Slots.Slot _slot;
 
@@ -18,8 +19,7 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		public override object ShallowClone()
 		{
-			Db4objects.Db4o.Internal.Slots.ReferencedSlot rs = new Db4objects.Db4o.Internal.Slots.ReferencedSlot
-				(_key);
+			ReferencedSlot rs = new ReferencedSlot(_key);
 			rs._slot = _slot;
 			rs._references = _references;
 			return base.ShallowCloneInternal(rs);

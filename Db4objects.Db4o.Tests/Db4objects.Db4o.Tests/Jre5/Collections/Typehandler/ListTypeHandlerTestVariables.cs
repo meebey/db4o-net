@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		public static readonly IFixtureProvider ListFixtureProvider = new SimpleFixtureProvider
 			(ListImplementation, new object[] { new ListTypeHandlerTestVariables.ArrayListItemFactory
 			(), new ListTypeHandlerTestVariables.LinkedListItemFactory(), new ListTypeHandlerTestVariables.ListItemFactory
-			() });
+			(), new ListTypeHandlerTestVariables.NamedArrayListItemFactory() });
 
 		public static readonly IFixtureProvider TypehandlerFixtureProvider = new SimpleFixtureProvider
 			(ListTypehander, new object[] { new ListTypeHandler(), new EmbeddedListTypeHandler
@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		public static readonly ListTypeHandlerTestElementsSpec ObjectElementsSpec = new ListTypeHandlerTestElementsSpec
 			(new object[] { new ListTypeHandlerTestVariables.FirstClassElement(0), new ListTypeHandlerTestVariables.FirstClassElement
-			(2) }, new ListTypeHandlerTestVariables.FirstClassElement(2), null);
+			(1) }, new ListTypeHandlerTestVariables.FirstClassElement(2), null);
 
 		private ListTypeHandlerTestVariables()
 		{
@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			}
 		}
 
-		private class ArrayListItemFactory : ItemFactory, ILabeled
+		private class ArrayListItemFactory : AbstractListItemFactory, ILabeled
 		{
 			private class Item
 			{
@@ -93,7 +93,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				return typeof(ListTypeHandlerTestVariables.ArrayListItemFactory.Item);
 			}
 
-			public override Type ListClass()
+			public override Type ContainerClass()
 			{
 				return typeof(ArrayList);
 			}
@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			}
 		}
 
-		private class LinkedListItemFactory : ItemFactory, ILabeled
+		private class LinkedListItemFactory : AbstractListItemFactory, ILabeled
 		{
 			private class Item
 			{
@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				return typeof(ListTypeHandlerTestVariables.LinkedListItemFactory.Item);
 			}
 
-			public override Type ListClass()
+			public override Type ContainerClass()
 			{
 				return typeof(ArrayList);
 			}
@@ -132,7 +132,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			}
 		}
 
-		private class ListItemFactory : ItemFactory, ILabeled
+		private class ListItemFactory : AbstractListItemFactory, ILabeled
 		{
 			private class Item
 			{
@@ -149,7 +149,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				return typeof(ListTypeHandlerTestVariables.ListItemFactory.Item);
 			}
 
-			public override Type ListClass()
+			public override Type ContainerClass()
 			{
 				return typeof(ArrayList);
 			}
@@ -157,6 +157,34 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			public virtual string Label()
 			{
 				return "[Linked]List";
+			}
+		}
+
+		private class NamedArrayListItemFactory : AbstractListItemFactory, ILabeled
+		{
+			private class Item
+			{
+				public IList _list = new NamedArrayList();
+			}
+
+			public override object NewItem()
+			{
+				return new ListTypeHandlerTestVariables.NamedArrayListItemFactory.Item();
+			}
+
+			public override Type ItemClass()
+			{
+				return typeof(ListTypeHandlerTestVariables.NamedArrayListItemFactory.Item);
+			}
+
+			public override Type ContainerClass()
+			{
+				return typeof(NamedArrayList);
+			}
+
+			public virtual string Label()
+			{
+				return "NamedArrayList";
 			}
 		}
 	}

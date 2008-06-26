@@ -10,7 +10,7 @@ using Db4objects.Db4o.Internal.Classindex;
 namespace Db4objects.Db4o.Internal.Classindex
 {
 	/// <exclude></exclude>
-	public class BTreeClassIndexStrategy : AbstractClassIndexStrategy
+	public class BTreeClassIndexStrategy : Db4objects.Db4o.Internal.Classindex.AbstractClassIndexStrategy
 	{
 		private BTree _btreeIndex;
 
@@ -134,12 +134,11 @@ namespace Db4objects.Db4o.Internal.Classindex
 		public static BTree Btree(ClassMetadata clazz)
 		{
 			IClassIndexStrategy index = clazz.Index();
-			if (!(index is Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy))
+			if (!(index is BTreeClassIndexStrategy))
 			{
 				throw new InvalidOperationException();
 			}
-			return ((Db4objects.Db4o.Internal.Classindex.BTreeClassIndexStrategy)index).Btree
-				();
+			return ((BTreeClassIndexStrategy)index).Btree();
 		}
 
 		public static IEnumerator Iterate(ClassMetadata clazz, Transaction trans)

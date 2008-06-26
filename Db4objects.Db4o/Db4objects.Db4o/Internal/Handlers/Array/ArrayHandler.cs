@@ -8,6 +8,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
@@ -15,7 +16,7 @@ using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
 using Sharpen.Lang;
 
-namespace Db4objects.Db4o.Internal.Handlers
+namespace Db4objects.Db4o.Internal.Handlers.Array
 {
 	/// <summary>This is the latest version, the one that should be used.</summary>
 	/// <remarks>This is the latest version, the one that should be used.</remarks>
@@ -46,9 +47,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return new ArrayVersionHelper();
 		}
 
-		protected ArrayHandler(Db4objects.Db4o.Internal.Handlers.ArrayHandler template, HandlerRegistry
-			 registry, int version) : this(registry.CorrectHandlerVersion(template._handler, 
-			version), template._usePrimitiveClassReflector)
+		protected ArrayHandler(Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler template
+			, HandlerRegistry registry, int version) : this(registry.CorrectHandlerVersion(template
+			._handler, version), template._usePrimitiveClassReflector)
 		{
 		}
 
@@ -65,60 +66,26 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public static IEnumerator AllElements(IReflectArray reflectArray, object array)
 		{
-			return new ArrayHandler.ReflectArrayIterator(reflectArray, array);
+			return new ReflectArrayIterator(reflectArray, array);
 		}
 
-		public void CascadeActivation(Transaction trans, object onObject, IActivationDepth
-			 depth)
+		public void CascadeActivation(ActivationContext4 context)
 		{
 			if (!(_handler is ClassMetadata))
 			{
 				return;
 			}
-			ObjectContainerBase container = Container(trans);
-			IEnumerator all = AllElements(container, onObject);
+			ObjectContainerBase container = context.Container();
+			IEnumerator all = AllElements(container, context.TargetObject());
 			while (all.MoveNext())
 			{
-				object current = all.Current;
-				IActivationDepth elementDepth = Descend(container, depth, current);
-				if (elementDepth.RequiresActivation())
-				{
-					if (depth.Mode().IsDeactivate())
-					{
-						container.StillToDeactivate(trans, current, elementDepth, false);
-					}
-					else
-					{
-						container.StillToActivate(trans, current, elementDepth);
-					}
-				}
+				context.CascadeActivationToChild(all.Current);
 			}
 		}
 
 		internal virtual ObjectContainerBase Container(Transaction trans)
 		{
 			return trans.Container();
-		}
-
-		private IActivationDepth Descend(ObjectContainerBase container, IActivationDepth 
-			depth, object obj)
-		{
-			if (obj == null)
-			{
-				return new NonDescendingActivationDepth(depth.Mode());
-			}
-			ClassMetadata cm = ClassMetaDataForObject(container, obj);
-			if (cm == null || cm.IsPrimitive())
-			{
-				return new NonDescendingActivationDepth(depth.Mode());
-			}
-			return depth.Descend(cm);
-		}
-
-		private ClassMetadata ClassMetaDataForObject(ObjectContainerBase container, object
-			 obj)
-		{
-			return container.ClassMetadataForObject(obj);
 		}
 
 		protected virtual IReflectClass ClassReflector(ObjectContainerBase container)
@@ -136,12 +103,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void CollectIDs(CollectIdContext context)
 		{
-			ForEachElement(context, new _IRunnable_113(context));
+			ForEachElement(context, new _IRunnable_86(context));
 		}
 
-		private sealed class _IRunnable_113 : IRunnable
+		private sealed class _IRunnable_86 : IRunnable
 		{
-			public _IRunnable_113(CollectIdContext context)
+			public _IRunnable_86(CollectIdContext context)
 			{
 				this.context = context;
 			}
@@ -158,13 +125,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			 elementRunnable)
 		{
 			ArrayInfo info = NewArrayInfo();
-			WithContent(context, new _IRunnable_122(this, context, info, elementRunnable));
+			WithContent(context, new _IRunnable_95(this, context, info, elementRunnable));
 			return info;
 		}
 
-		private sealed class _IRunnable_122 : IRunnable
+		private sealed class _IRunnable_95 : IRunnable
 		{
-			public _IRunnable_122(ArrayHandler _enclosing, AbstractBufferContext context, ArrayInfo
+			public _IRunnable_95(ArrayHandler _enclosing, AbstractBufferContext context, ArrayInfo
 				 info, IRunnable elementRunnable)
 			{
 				this._enclosing = _enclosing;
@@ -237,12 +204,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return;
 			}
-			ForEachElement((AbstractBufferContext)context, new _IRunnable_169(this, context));
+			ForEachElement((AbstractBufferContext)context, new _IRunnable_142(this, context));
 		}
 
-		private sealed class _IRunnable_169 : IRunnable
+		private sealed class _IRunnable_142 : IRunnable
 		{
-			public _IRunnable_169(ArrayHandler _enclosing, IDeleteContext context)
+			public _IRunnable_142(ArrayHandler _enclosing, IDeleteContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -283,11 +250,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is Db4objects.Db4o.Internal.Handlers.ArrayHandler))
+			if (!(obj is Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler))
 			{
 				return false;
 			}
-			Db4objects.Db4o.Internal.Handlers.ArrayHandler other = (Db4objects.Db4o.Internal.Handlers.ArrayHandler
+			Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler other = (Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler
 				)obj;
 			if (other.Identifier() != Identifier())
 			{
@@ -354,8 +321,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return info.ReflectClass();
 		}
 
-		public virtual ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, ByteArrayBuffer[] a_bytes)
+		public virtual ITypeHandler4 ReadCandidateHandler(QueryingReadContext context)
 		{
 			return this;
 		}
@@ -363,12 +329,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual void ReadCandidates(QueryingReadContext context)
 		{
 			QCandidates candidates = context.Candidates();
-			ForEachElement(context, new _IRunnable_262(this, candidates, context));
+			ForEachElement(context, new _IRunnable_236(this, candidates, context));
 		}
 
-		private sealed class _IRunnable_262 : IRunnable
+		private sealed class _IRunnable_236 : IRunnable
 		{
-			public _IRunnable_262(ArrayHandler _enclosing, QCandidates candidates, QueryingReadContext
+			public _IRunnable_236(ArrayHandler _enclosing, QCandidates candidates, QueryingReadContext
 				 context)
 			{
 				this._enclosing = _enclosing;
@@ -463,8 +429,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return MultidimensionalArrayHandler.AllElements(reflectArray, obj);
 			}
-			return Db4objects.Db4o.Internal.Handlers.ArrayHandler.AllElements(reflectArray, obj
-				);
+			return Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler.AllElements(reflectArray
+				, obj);
 		}
 
 		protected virtual bool UseJavaHandling()
@@ -531,7 +497,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 			for (int i = 0; i < elementCount; i++)
 			{
-				_handler.Defragment(context);
+				context.Defragment(_handler);
 			}
 		}
 
@@ -739,15 +705,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual ITypeHandler4 GenericTemplate()
 		{
-			return new Db4objects.Db4o.Internal.Handlers.ArrayHandler();
+			return new Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler();
 		}
 
 		public virtual object DeepClone(object context)
 		{
 			TypeHandlerCloneContext typeHandlerCloneContext = (TypeHandlerCloneContext)context;
-			Db4objects.Db4o.Internal.Handlers.ArrayHandler original = (Db4objects.Db4o.Internal.Handlers.ArrayHandler
+			Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler original = (Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler
 				)typeHandlerCloneContext.original;
-			Db4objects.Db4o.Internal.Handlers.ArrayHandler cloned = (Db4objects.Db4o.Internal.Handlers.ArrayHandler
+			Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler cloned = (Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler
 				)Reflection4.NewInstance(this);
 			cloned._usePrimitiveClassReflector = original._usePrimitiveClassReflector;
 			cloned._handler = typeHandlerCloneContext.CorrectHandlerVersion(original.DelegateTypeHandler
@@ -761,24 +727,5 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		private const int HashcodeForNull = 9141078;
-
-		private sealed class ReflectArrayIterator : IndexedIterator
-		{
-			private readonly object _array;
-
-			private readonly IReflectArray _reflectArray;
-
-			public ReflectArrayIterator(IReflectArray reflectArray, object array) : base(reflectArray
-				.GetLength(array))
-			{
-				_reflectArray = reflectArray;
-				_array = array;
-			}
-
-			protected override object Get(int index)
-			{
-				return _reflectArray.Get(_array, index);
-			}
-		}
 	}
 }

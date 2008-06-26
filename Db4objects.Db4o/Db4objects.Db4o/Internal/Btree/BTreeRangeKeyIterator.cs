@@ -4,7 +4,7 @@ using Db4objects.Db4o.Internal.Btree;
 
 namespace Db4objects.Db4o.Internal.Btree
 {
-	internal class BTreeRangeKeyIterator : AbstractBTreeRangeIterator
+	internal class BTreeRangeKeyIterator : Db4objects.Db4o.Internal.Btree.AbstractBTreeRangeIterator
 	{
 		public BTreeRangeKeyIterator(BTreeRangeSingle range) : base(range)
 		{

@@ -10,7 +10,7 @@ using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Freespace
 {
-	public class RamFreespaceManager : AbstractFreespaceManager
+	public class RamFreespaceManager : Db4objects.Db4o.Internal.Freespace.AbstractFreespaceManager
 	{
 		private readonly TreeIntObject _finder = new TreeIntObject(0);
 

@@ -8,7 +8,7 @@ using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
-	internal sealed class TranslatedFieldMetadata : FieldMetadata
+	internal sealed class TranslatedFieldMetadata : Db4objects.Db4o.Internal.FieldMetadata
 	{
 		private readonly IObjectTranslator i_translator;
 

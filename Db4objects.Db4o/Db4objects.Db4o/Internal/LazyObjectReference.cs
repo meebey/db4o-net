@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private ObjectReference Reference()
+		public virtual ObjectReference Reference()
 		{
 			HardObjectReference hardRef = _transaction.Container().GetHardObjectReferenceById
 				(_transaction, _id);

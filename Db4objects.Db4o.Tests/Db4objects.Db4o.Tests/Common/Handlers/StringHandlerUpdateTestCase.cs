@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	public class StringHandlerUpdateTestCase : HandlerUpdateTestCaseBase
 	{
-		private static readonly string[] data = new string[] { "one", "aAzZ|!§$%&/()=?ßöäüÄÖÜYZ;:-_+*~#^°'@"
+		private static readonly string[] Data = new string[] { "one", "aAzZ|!§$%&/()=?ßöäüÄÖÜYZ;:-_+*~#^°'@"
 			, string.Empty, null };
 
 		public static void Main(string[] args)
@@ -40,13 +40,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		protected override object[] CreateValues()
 		{
 			StringHandlerUpdateTestCase.Item[] values = new StringHandlerUpdateTestCase.Item[
-				data.Length + 1];
-			for (int i = 0; i < data.Length; i++)
+				Data.Length + 1];
+			for (int i = 0; i < Data.Length; i++)
 			{
 				StringHandlerUpdateTestCase.Item item = new StringHandlerUpdateTestCase.Item();
 				values[i] = item;
-				item._typed = data[i];
-				item._untyped = data[i];
+				item._typed = Data[i];
+				item._untyped = Data[i];
 			}
 			values[values.Length - 1] = new StringHandlerUpdateTestCase.Item();
 			return values;
@@ -64,34 +64,34 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CreateUntypedArray(StringHandlerUpdateTestCase.ItemArrays item)
 		{
-			item._untypedArray = new string[data.Length + 1];
-			for (int i = 0; i < data.Length; i++)
+			item._untypedArray = new string[Data.Length + 1];
+			for (int i = 0; i < Data.Length; i++)
 			{
-				item._untypedArray[i] = data[i];
+				item._untypedArray[i] = Data[i];
 			}
 		}
 
 		private void CreateTypedArray(StringHandlerUpdateTestCase.ItemArrays item)
 		{
-			item._typedArray = new string[data.Length];
-			System.Array.Copy(data, 0, item._typedArray, 0, data.Length);
+			item._typedArray = new string[Data.Length];
+			System.Array.Copy(Data, 0, item._typedArray, 0, Data.Length);
 		}
 
 		private void CreateArrayInObject(StringHandlerUpdateTestCase.ItemArrays item)
 		{
-			string[] arr = new string[data.Length];
-			System.Array.Copy(data, 0, arr, 0, data.Length);
+			string[] arr = new string[Data.Length];
+			System.Array.Copy(Data, 0, arr, 0, Data.Length);
 			item._arrayInObject = arr;
 		}
 
 		protected override void AssertValues(object[] values)
 		{
-			for (int i = 0; i < data.Length; i++)
+			for (int i = 0; i < Data.Length; i++)
 			{
 				StringHandlerUpdateTestCase.Item item = (StringHandlerUpdateTestCase.Item)values[
 					i];
-				AssertAreEqual(data[i], item._typed);
-				AssertAreEqual(data[i], (string)item._untyped);
+				AssertAreEqual(Data[i], item._typed);
+				AssertAreEqual(Data[i], (string)item._untyped);
 			}
 			StringHandlerUpdateTestCase.Item nullItem = (StringHandlerUpdateTestCase.Item)values
 				[values.Length - 1];
@@ -116,9 +116,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		protected virtual void AssertUntypedArray(StringHandlerUpdateTestCase.ItemArrays 
 			item)
 		{
-			for (int i = 0; i < data.Length; i++)
+			for (int i = 0; i < Data.Length; i++)
 			{
-				AssertAreEqual(data[i], (string)item._untypedArray[i]);
+				AssertAreEqual(Data[i], (string)item._untypedArray[i]);
 			}
 			Assert.IsNull(item._untypedArray[item._untypedArray.Length - 1]);
 		}
@@ -130,9 +130,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertData(string[] values)
 		{
-			for (int i = 0; i < data.Length; i++)
+			for (int i = 0; i < Data.Length; i++)
 			{
-				AssertAreEqual(data[i], values[i]);
+				AssertAreEqual(Data[i], values[i]);
 			}
 		}
 

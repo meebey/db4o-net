@@ -3,11 +3,11 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Marshall;
-using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
-	public class MockWriteContext : MockMarshallingContext, IWriteContext
+	public class MockWriteContext : Db4objects.Db4o.Tests.Common.Handlers.MockMarshallingContext
+		, IWriteContext
 	{
 		public MockWriteContext(IObjectContainer objectContainer) : base(objectContainer)
 		{

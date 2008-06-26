@@ -4,7 +4,7 @@ using Db4objects.Db4o.NativeQueries.Expr;
 
 namespace Db4objects.Db4o.NativeQueries.Expr
 {
-	public class AndExpression : BinaryExpression
+	public class AndExpression : Db4objects.Db4o.NativeQueries.Expr.BinaryExpression
 	{
 		public AndExpression(IExpression left, IExpression right) : base(left, right)
 		{

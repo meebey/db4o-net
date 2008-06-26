@@ -11,7 +11,7 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4oUnit.Extensions.Fixtures
 {
-	public abstract class AbstractSoloDb4oFixture : AbstractDb4oFixture
+	public abstract class AbstractSoloDb4oFixture : Db4oUnit.Extensions.Fixtures.AbstractDb4oFixture
 	{
 		private IExtObjectContainer _db;
 

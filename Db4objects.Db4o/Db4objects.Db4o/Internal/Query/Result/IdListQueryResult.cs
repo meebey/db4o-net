@@ -6,14 +6,14 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
 using Db4objects.Db4o.Internal.Query.Processor;
-using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Query.Result
 {
 	/// <exclude></exclude>
-	public class IdListQueryResult : AbstractQueryResult, IVisitor4
+	public class IdListQueryResult : Db4objects.Db4o.Internal.Query.Result.AbstractQueryResult
+		, IVisitor4
 	{
 		private Tree _candidates;
 

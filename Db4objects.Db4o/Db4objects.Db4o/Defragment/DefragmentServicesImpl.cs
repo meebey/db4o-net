@@ -95,6 +95,7 @@ namespace Db4objects.Db4o.Defragment
 			sourceConfig.ReadOnly(defragConfig.ReadOnly());
 			_sourceDb = (LocalObjectContainer)Db4oFactory.OpenFile(sourceConfig, defragConfig
 				.TempPath()).Ext();
+			_sourceDb.ShowInternalClasses(true);
 			_targetDb = FreshYapFile(defragConfig);
 			_mapping = defragConfig.Mapping();
 			_mapping.Open();

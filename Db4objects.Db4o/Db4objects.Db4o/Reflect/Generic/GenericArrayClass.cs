@@ -6,11 +6,11 @@ using Db4objects.Db4o.Reflect.Generic;
 namespace Db4objects.Db4o.Reflect.Generic
 {
 	/// <exclude></exclude>
-	public class GenericArrayClass : GenericClass
+	public class GenericArrayClass : Db4objects.Db4o.Reflect.Generic.GenericClass
 	{
 		public GenericArrayClass(GenericReflector reflector, IReflectClass delegateClass, 
-			string name, GenericClass superclass) : base(reflector, delegateClass, "(GA) " +
-			 name, superclass)
+			string name, Db4objects.Db4o.Reflect.Generic.GenericClass superclass) : base(reflector
+			, delegateClass, "(GA) " + name, superclass)
 		{
 		}
 
@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is Db4objects.Db4o.Reflect.Generic.GenericArrayClass))
+			if (!(obj is GenericArrayClass))
 			{
 				return false;
 			}

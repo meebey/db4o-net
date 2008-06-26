@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.Convert
 	{
 		public const int Version = FieldIndexesToBTrees_5_7.Version;
 
-		private static Db4objects.Db4o.Internal.Convert.Converter _converter;
+		private static Converter _converter;
 
 		private Hashtable4 _conversions;
 
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Internal.Convert
 			}
 			if (_converter == null)
 			{
-				_converter = new Db4objects.Db4o.Internal.Convert.Converter();
+				_converter = new Converter();
 			}
 			return _converter.RunConversions(stage);
 		}

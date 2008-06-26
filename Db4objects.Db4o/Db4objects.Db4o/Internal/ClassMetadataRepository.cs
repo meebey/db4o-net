@@ -21,6 +21,8 @@ namespace Db4objects.Db4o.Internal
 
 		private Hashtable4 _classMetadataByClass;
 
+		private Hashtable4 _classMetadataByName;
+
 		private Hashtable4 _classMetadataByID;
 
 		private int _classMetadataCreationDepth;
@@ -68,15 +70,15 @@ namespace Db4objects.Db4o.Internal
 				ClassMetadata classMetadata = i.CurrentClass();
 				if (!classMetadata.IsInternal())
 				{
-					classMetadata.ForEachFieldMetadata(new _IVisitor4_59(fieldName, visitor, classMetadata
+					classMetadata.ForEachFieldMetadata(new _IVisitor4_60(fieldName, visitor, classMetadata
 						));
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_59 : IVisitor4
+		private sealed class _IVisitor4_60 : IVisitor4
 		{
-			public _IVisitor4_59(string fieldName, IVisitor4 visitor, ClassMetadata classMetadata
+			public _IVisitor4_60(string fieldName, IVisitor4 visitor, ClassMetadata classMetadata
 				)
 			{
 				this.fieldName = fieldName;
@@ -331,12 +333,18 @@ namespace Db4objects.Db4o.Internal
 
 		private ClassMetadata FindInitializedClassByName(string name)
 		{
+			ClassMetadata classMetadata = (ClassMetadata)_classMetadataByName.Get(name);
+			if (classMetadata != null)
+			{
+				return classMetadata;
+			}
 			ClassMetadataIterator i = Iterator();
 			while (i.MoveNext())
 			{
-				ClassMetadata classMetadata = (ClassMetadata)i.Current;
+				classMetadata = (ClassMetadata)i.Current;
 				if (name.Equals(classMetadata.GetName()))
 				{
+					_classMetadataByName.Put(name, classMetadata);
 					return classMetadata;
 				}
 			}
@@ -393,6 +401,7 @@ namespace Db4objects.Db4o.Internal
 				size = 16;
 			}
 			_classMetadataByClass = new Hashtable4(size);
+			_classMetadataByName = new Hashtable4(size);
 			_classMetadataByID = new Hashtable4(size);
 			_creating = new Hashtable4(1);
 		}

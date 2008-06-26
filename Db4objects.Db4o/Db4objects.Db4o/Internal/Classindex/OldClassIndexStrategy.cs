@@ -9,7 +9,8 @@ using Db4objects.Db4o.Internal.Classindex;
 namespace Db4objects.Db4o.Internal.Classindex
 {
 	/// <exclude></exclude>
-	public class OldClassIndexStrategy : AbstractClassIndexStrategy, ITransactionParticipant
+	public class OldClassIndexStrategy : Db4objects.Db4o.Internal.Classindex.AbstractClassIndexStrategy
+		, ITransactionParticipant
 	{
 		private ClassIndex _index;
 

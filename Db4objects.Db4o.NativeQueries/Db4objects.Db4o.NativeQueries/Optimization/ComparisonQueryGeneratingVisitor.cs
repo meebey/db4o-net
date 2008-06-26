@@ -7,7 +7,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
 using Db4objects.Db4o.NativeQueries.Optimization;
-using Sharpen.Lang.Reflect;
 
 namespace Db4objects.Db4o.NativeQueries.Optimization
 {

@@ -10,7 +10,7 @@ using Db4objects.Db4o.Internal.Slots;
 namespace Db4objects.Db4o.Internal.Freespace
 {
 	/// <exclude></exclude>
-	public class BTreeFreespaceManager : AbstractFreespaceManager
+	public class BTreeFreespaceManager : Db4objects.Db4o.Internal.Freespace.AbstractFreespaceManager
 	{
 		private RamFreespaceManager _delegate;
 

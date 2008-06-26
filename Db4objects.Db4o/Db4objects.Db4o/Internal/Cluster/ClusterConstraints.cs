@@ -1,13 +1,13 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal.Cluster;
 using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Internal.Cluster
 {
 	/// <exclude></exclude>
-	public class ClusterConstraints : ClusterConstraint, IConstraints
+	public class ClusterConstraints : Db4objects.Db4o.Internal.Cluster.ClusterConstraint
+		, IConstraints
 	{
 		public ClusterConstraints(Db4objects.Db4o.Cluster.Cluster cluster, IConstraint[] 
 			constraints) : base(cluster, constraints)
@@ -21,7 +21,8 @@ namespace Db4objects.Db4o.Internal.Cluster
 				Collection4 all = new Collection4();
 				for (int i = 0; i < _constraints.Length; i++)
 				{
-					ClusterConstraint c = (ClusterConstraint)_constraints[i];
+					Db4objects.Db4o.Internal.Cluster.ClusterConstraint c = (Db4objects.Db4o.Internal.Cluster.ClusterConstraint
+						)_constraints[i];
 					for (int j = 0; j < c._constraints.Length; j++)
 					{
 						all.Add(c._constraints[j]);

@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Internal.Activation
 {
 	/// <summary>Activates the full object graph.</summary>
 	/// <remarks>Activates the full object graph.</remarks>
-	public class FullActivationDepth : ActivationDepthImpl
+	public class FullActivationDepth : Db4objects.Db4o.Internal.Activation.ActivationDepthImpl
 	{
 		public FullActivationDepth(ActivationMode mode) : base(mode)
 		{

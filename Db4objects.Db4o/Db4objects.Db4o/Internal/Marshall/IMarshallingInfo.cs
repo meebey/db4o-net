@@ -11,5 +11,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 		Db4objects.Db4o.Internal.ClassMetadata ClassMetadata();
 
 		IReadBuffer Buffer();
+
+		int CurrentSlot();
+
+		void BeginSlot();
 	}
 }

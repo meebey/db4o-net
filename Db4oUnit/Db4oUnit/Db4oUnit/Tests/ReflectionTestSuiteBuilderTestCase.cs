@@ -10,7 +10,7 @@ namespace Db4oUnit.Tests
 {
 	public class ReflectionTestSuiteBuilderTestCase : ITestCase
 	{
-		private sealed class ExcludingReflectionTestSuiteBuilder : ReflectionTestSuiteBuilder
+		private sealed class ExcludingReflectionTestSuiteBuilder : Db4oUnit.ReflectionTestSuiteBuilder
 		{
 			public ExcludingReflectionTestSuiteBuilder(Type[] classes) : base(classes)
 			{

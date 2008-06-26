@@ -28,7 +28,6 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			IList list = (IList)obj;
 			WriteElementCount(context, list);
 			WriteElements(context, list);
-			return;
 		}
 
 		public virtual object Read(IReadContext context)
@@ -87,35 +86,24 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		public virtual void Defragment(IDefragmentContext context)
 		{
-		}
-
-		// TODO Auto-generated method stub
-		public void CascadeActivation(Transaction trans, object onObject, IActivationDepth
-			 depth)
-		{
-			ObjectContainerBase container = trans.Container();
-			IList list = (IList)onObject;
-			IEnumerator all = list.GetEnumerator();
-			while (all.MoveNext())
+			ITypeHandler4 handler = ElementTypeHandler(context, null);
+			int elementCount = context.ReadInt();
+			for (int i = 0; i < elementCount; i++)
 			{
-				object current = all.Current;
-				IActivationDepth elementDepth = Descend(container, depth, current);
-				if (elementDepth.RequiresActivation())
-				{
-					if (depth.Mode().IsDeactivate())
-					{
-						container.StillToDeactivate(trans, current, elementDepth, false);
-					}
-					else
-					{
-						container.StillToActivate(trans, current, elementDepth);
-					}
-				}
+				handler.Defragment(context);
 			}
 		}
 
-		public virtual ITypeHandler4 ReadArrayHandler(Transaction a_trans, MarshallerFamily
-			 mf, ByteArrayBuffer[] a_bytes)
+		public void CascadeActivation(ActivationContext4 context)
+		{
+			IEnumerator all = ((IList)context.TargetObject()).GetEnumerator();
+			while (all.MoveNext())
+			{
+				context.CascadeActivationToChild(all.Current);
+			}
+		}
+
+		public virtual ITypeHandler4 ReadCandidateHandler(QueryingReadContext context)
 		{
 			return this;
 		}
@@ -141,21 +129,6 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 					candidates.AddByIdentity(qc);
 				}
 			}
-		}
-
-		private IActivationDepth Descend(ObjectContainerBase container, IActivationDepth 
-			depth, object obj)
-		{
-			if (obj == null)
-			{
-				return new NonDescendingActivationDepth(depth.Mode());
-			}
-			ClassMetadata cm = container.ClassMetadataForObject(obj);
-			if (cm.IsPrimitive())
-			{
-				return new NonDescendingActivationDepth(depth.Mode());
-			}
-			return depth.Descend(cm);
 		}
 	}
 }
