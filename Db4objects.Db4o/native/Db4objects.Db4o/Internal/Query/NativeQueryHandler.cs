@@ -92,6 +92,10 @@ namespace Db4objects.Db4o.Internal.Query
 		    {
                 NativeQueryOptimizerNotLoaded(tie);
 		    }
+			catch(TypeLoadException tle)
+			{
+				NativeQueryOptimizerNotLoaded(tle);
+			}
             catch (System.Exception e)
 			{
 				OnQueryOptimizationFailure(e);
