@@ -7,7 +7,7 @@ using Db4objects.Db4o.Foundation;
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class Hashtable4 : IDeepClone
+	public class Hashtable4 : IDeepClone, IMap4
 	{
 		private const float Fill = 0.5F;
 

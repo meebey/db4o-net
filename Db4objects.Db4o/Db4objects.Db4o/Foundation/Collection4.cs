@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Foundation
 	/// <summary>Fast linked list for all usecases.</summary>
 	/// <remarks>Fast linked list for all usecases.</remarks>
 	/// <exclude></exclude>
-	public class Collection4 : IEnumerable, IDeepClone, IUnversioned
+	public class Collection4 : ISequence4, IEnumerable, IDeepClone, IUnversioned
 	{
 		/// <summary>first element of the linked list</summary>
 		private List4 _first;
@@ -231,6 +231,25 @@ namespace Db4objects.Db4o.Foundation
 		{
 			return _first == null ? Iterators.EmptyIterator : new Collection4Iterator(this, _first
 				);
+		}
+
+		public virtual object Get(int index)
+		{
+			if (index < 0)
+			{
+				throw new ArgumentException();
+			}
+			List4 cur = _first;
+			while (index > 0 && cur != null)
+			{
+				cur = cur._next;
+				index--;
+			}
+			if (cur == null)
+			{
+				throw new ArgumentException();
+			}
+			return cur._element;
 		}
 
 		/// <summary>

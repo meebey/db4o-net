@@ -234,10 +234,11 @@ namespace Db4objects.Db4o.Internal.CS
 			return new ClientTransaction(this, parentTransaction, referenceSystem);
 		}
 
-		public override bool CreateClassMetadata(ClassMetadata a_yapClass, IReflectClass 
-			a_class, ClassMetadata a_superYapClass)
+		public override bool CreateClassMetadata(ClassMetadata clazz, IReflectClass claxx
+			, ClassMetadata superClazz)
 		{
-			Write(Msg.CreateClass.GetWriterForString(SystemTransaction(), a_class.GetName()));
+			Write(Msg.CreateClass.GetWriterForString(SystemTransaction(), Config().ResolveAliasRuntimeName
+				(claxx.GetName())));
 			Msg resp = GetResponse();
 			if (resp == null)
 			{
@@ -246,14 +247,14 @@ namespace Db4objects.Db4o.Internal.CS
 			if (resp.Equals(Msg.Failed))
 			{
 				// if the class can not be created on the server, send class meta to the server.
-				SendClassMeta(a_class);
+				SendClassMeta(claxx);
 				resp = GetResponse();
 			}
 			if (resp.Equals(Msg.Failed))
 			{
 				if (ConfigImpl().ExceptionsOnNotStorable())
 				{
-					throw new ObjectNotStorableException(a_class);
+					throw new ObjectNotStorableException(claxx);
 				}
 				return false;
 			}
@@ -268,14 +269,14 @@ namespace Db4objects.Db4o.Internal.CS
 				return false;
 			}
 			bytes.SetTransaction(SystemTransaction());
-			if (!base.CreateClassMetadata(a_yapClass, a_class, a_superYapClass))
+			if (!base.CreateClassMetadata(clazz, claxx, superClazz))
 			{
 				return false;
 			}
-			a_yapClass.SetID(message.GetId());
-			a_yapClass.ReadName1(SystemTransaction(), bytes);
-			ClassCollection().AddClassMetadata(a_yapClass);
-			ClassCollection().ReadClassMetadata(a_yapClass, a_class);
+			clazz.SetID(message.GetId());
+			clazz.ReadName1(SystemTransaction(), bytes);
+			ClassCollection().AddClassMetadata(clazz);
+			ClassCollection().ReadClassMetadata(clazz, claxx);
 			return true;
 		}
 
@@ -436,21 +437,21 @@ namespace Db4objects.Db4o.Internal.CS
 			return i_socket != null;
 		}
 
-		public override ClassMetadata ClassMetadataForId(int a_id)
+		public override ClassMetadata ClassMetadataForId(int clazzId)
 		{
-			if (a_id == 0)
+			if (clazzId == 0)
 			{
 				return null;
 			}
-			ClassMetadata yc = base.ClassMetadataForId(a_id);
+			ClassMetadata yc = base.ClassMetadataForId(clazzId);
 			if (yc != null)
 			{
 				return yc;
 			}
-			MsgD msg = Msg.ClassNameForId.GetWriterForInt(SystemTransaction(), a_id);
+			MsgD msg = Msg.ClassNameForId.GetWriterForInt(SystemTransaction(), clazzId);
 			Write(msg);
 			MsgD message = (MsgD)ExpectedResponse(Msg.ClassNameForId);
-			string className = message.ReadString();
+			string className = Config().ResolveAliasStoredName(message.ReadString());
 			if (className != null && className.Length > 0)
 			{
 				IReflectClass claxx = Reflector().ForName(className);
@@ -1065,13 +1066,13 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			lock (_lock)
 			{
-				Cool.LoopWithTimeout(maxTimeSlice, new _IConditionalBlock_870(this));
+				Cool.LoopWithTimeout(maxTimeSlice, new _IConditionalBlock_869(this));
 			}
 		}
 
-		private sealed class _IConditionalBlock_870 : IConditionalBlock
+		private sealed class _IConditionalBlock_869 : IConditionalBlock
 		{
-			public _IConditionalBlock_870(ClientObjectContainer _enclosing)
+			public _IConditionalBlock_869(ClientObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -1097,12 +1098,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private IClientSideTask NextClientSideTask()
 		{
-			return (IClientSideTask)_messageQueue.NextMatching(new _IPredicate4_888());
+			return (IClientSideTask)_messageQueue.NextMatching(new _IPredicate4_887());
 		}
 
-		private sealed class _IPredicate4_888 : IPredicate4
+		private sealed class _IPredicate4_887 : IPredicate4
 		{
-			public _IPredicate4_888()
+			public _IPredicate4_887()
 			{
 			}
 

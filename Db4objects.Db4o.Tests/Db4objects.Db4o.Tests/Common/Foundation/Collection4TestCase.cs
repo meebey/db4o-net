@@ -64,6 +64,41 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			AssertCollection(new string[] { "zero", "one", "two" }, c);
 		}
 
+		public virtual void TestGetByIndex()
+		{
+			Collection4 c = new Collection4();
+			c.Add("one");
+			c.Add("two");
+			Assert.AreEqual("one", c.Get(0));
+			Assert.AreEqual("two", c.Get(1));
+			AssertIllegalIndex(c, -1);
+			AssertIllegalIndex(c, 2);
+		}
+
+		private void AssertIllegalIndex(Collection4 c, int index)
+		{
+			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_75(c, index));
+		}
+
+		private sealed class _ICodeBlock_75 : ICodeBlock
+		{
+			public _ICodeBlock_75(Collection4 c, int index)
+			{
+				this.c = c;
+				this.index = index;
+			}
+
+			/// <exception cref="Exception"></exception>
+			public void Run()
+			{
+				c.Get(index);
+			}
+
+			private readonly Collection4 c;
+
+			private readonly int index;
+		}
+
 		public virtual void TestPrepend()
 		{
 			Collection4 c = new Collection4();
@@ -90,12 +125,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			IEnumerator i = c.GetEnumerator();
 			Assert.IsTrue(i.MoveNext());
 			c.Add("3");
-			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_87(i));
+			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_105(i));
 		}
 
-		private sealed class _ICodeBlock_87 : ICodeBlock
+		private sealed class _ICodeBlock_105 : ICodeBlock
 		{
-			public _ICodeBlock_87(IEnumerator i)
+			public _ICodeBlock_105(IEnumerator i)
 			{
 				this.i = i;
 			}
