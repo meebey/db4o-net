@@ -9,7 +9,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Messaging;
+using Db4objects.Db4o.native.Db4objects.Db4o.Config;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
@@ -290,6 +292,9 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 					break;
 				}
 				catch (SocketException se)
+				{
+				}
+				catch(DatabaseClosedException dce)
 				{
 				}
 				catch (Exception e)

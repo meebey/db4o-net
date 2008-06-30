@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests
 		
 		protected override Type[] TestCases()
 		{
-			//return new Type[] { typeof(Db4objects.Db4o.Tests.Common.Migration.AllTests) };
+			//return new Type[] { typeof(CLI1.CrossPlatform.CrossplatformTestCase) };
 			//return new Type[] { typeof(CLI2.Collections.GenericListTypeHandlerTestCase) };
             //return new Type[] { typeof(Db4objects.Db4o.Tests.Jre5.Collections.Typehandler.AllTests),};
 			return new Type[]
