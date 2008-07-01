@@ -391,7 +391,6 @@ public class StartServer implements MessageRecipient  {
 		}
 	}
 
-	@Override
 	public void processMessage(MessageContext con, Object message) {
 		if (message instanceof StopServer) {
 			close();
