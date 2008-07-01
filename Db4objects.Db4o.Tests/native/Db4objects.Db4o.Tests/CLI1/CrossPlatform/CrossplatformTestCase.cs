@@ -374,8 +374,7 @@ public class StartServer implements MessageRecipient  {
 
 			String databaseFile = Path4.combine(Path4.getTempPath(),""CrossPlatformJavaServer.odb""); 
 			try {
-				int iterationsToWait = Boolean.parseBoolean(args[3]) ? 200 : 40;
-				System.out.println(""Iterations to wait: "" + iterationsToWait);
+				int iterationsToWait = args[3] == ""True"" ? 200 : 40;
 				File4.delete(databaseFile);
 
 				db4oServer = Db4o.openServer(databaseFile, Integer.parseInt(args[0]));
