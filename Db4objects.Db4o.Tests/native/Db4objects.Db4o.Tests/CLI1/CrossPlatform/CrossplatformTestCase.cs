@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
@@ -309,8 +310,11 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 			ThreadPool.QueueUserWorkItem(delegate
 			{
 				JavaServices.CompileJavaCode(JavaServerCode.MainClassFile, JavaServerCode.SourceCode);
-				string output = JavaServices.java(JavaServerCode.MainClassName, HOST_PORT.ToString(), USER_NAME, USER_PWD);
-				Assert.AreEqual("", output);
+				string output = JavaServices.java(JavaServerCode.MainClassName, HOST_PORT.ToString(), USER_NAME, USER_PWD, Debugger.IsAttached.ToString());
+				if (output.Length > 0)
+				{
+					Assert.Fail(output);
+				}
 			});
 		}
 
@@ -363,31 +367,36 @@ public class StartServer implements MessageRecipient  {
 
 	public void runServer(String[] args) throws IOException {
 		if (args.length < 3) {
-			System.err.println(""Db4o (java) server usage: StartServer host_port user password"");
+			System.err.println(""Db4o (java) server usage: StartServer host_port user password debugging"");
 		}
-			
 		synchronized (this) {
+			ObjectServer db4oServer	= null;
+
 			String databaseFile = Path4.combine(Path4.getTempPath(),""CrossPlatformJavaServer.odb""); 
-			File4.delete(databaseFile);
-
-			ObjectServer db4oServer = Db4o.openServer(databaseFile, Integer.parseInt(args[0]));
-			db4oServer.grantAccess(args[1], args[2]);
-			
-			db4oServer.ext().configure().clientServer().setMessageRecipient(this);
-
-			Thread.currentThread().setName(this.getClass().getName());
-
 			try {
+				int iterationsToWait = Boolean.parseBoolean(args[3]) ? 200 : 40;
+				System.out.println(""Iterations to wait: "" + iterationsToWait);
+				File4.delete(databaseFile);
+
+				db4oServer = Db4o.openServer(databaseFile, Integer.parseInt(args[0]));
+				db4oServer.grantAccess(args[1], args[2]);
+				
+				db4oServer.ext().configure().clientServer().setMessageRecipient(this);
+
+				Thread.currentThread().setName(this.getClass().getName());
+
 				int count = 0;
-				while(!stop && count < 240) {
+				while(!stop && count < iterationsToWait) {
 					this.wait(500);
 					count++;
 				}
 
 			} catch (Exception e) {
+				System.out.println(e);
 				e.printStackTrace();
 			}
-			db4oServer.close();
+
+			if (db4oServer != null) db4oServer.close();
 		}
 	}
 
