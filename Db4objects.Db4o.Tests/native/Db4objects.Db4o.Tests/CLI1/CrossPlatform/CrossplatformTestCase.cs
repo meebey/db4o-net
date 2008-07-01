@@ -452,7 +452,12 @@ public class ClientCrossPlatform {
 
 	private static String queryPersons(ObjectContainer db, String tbq) {
 		StringBuffer output = new StringBuffer();
-		for (Object person : getPersons(db, tbq)) output.append(person + ""\n"");
+		ObjectSet results = getPersons(db, tbq);
+		while (results.hasNext()) {
+			Person person = (Person) results.next();
+			output.append(person + ""\n"");
+		}
+		
 		return output.toString();
 	}
 
