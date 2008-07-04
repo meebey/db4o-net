@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
@@ -9,11 +9,13 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 
 		private string _name;
 		private int _year;
+		private DateTime _localReleaseDate;
 
-		public Person(string name, int year)
+		public Person(string name, int year, DateTime localReleaseDate)
 		{
 			_name = name;
 			_year = year;
+			_localReleaseDate = localReleaseDate;
 		}
 
 		public string Name
@@ -26,12 +28,20 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 			get { return _year; }
 		}
 
+		public DateTime LocalReleaseDate
+		{
+			get { return _localReleaseDate; }
+		}
+
 		public override bool Equals(object obj)
 		{
-			Person candidate = (Person) obj;
+			Person candidate = obj as Person;
 			if (candidate == null) return false;
+
 			if (candidate.GetType() != GetType()) return false;
 
+			// FIXME: Dates are not working correctly yet.
+			//return _name == candidate.Name && _year == candidate.Year && _localReleaseDate == candidate.LocalReleaseDate;
 			return _name == candidate.Name && _year == candidate.Year;
 		}
 
@@ -45,7 +55,8 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 
 		public override string ToString()
 		{
-			return _name + "/" + _year;
+			//FIXME: Dates not working
+			return _name + "|" + _year; // +"|" + _localReleaseDate;
 		}
 
 		private sealed class SortByYearImpl : IComparer<Person>

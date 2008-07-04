@@ -12,8 +12,11 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] {typeof(CrossplatformTestCase), };
-
+			return new Type[]
+			       	{
+						typeof(DotnetServerCrossplatformTestCase),
+			       		typeof(JavaServerCrossplatformTestCase),
+			       	};
 		}
 	}
 }
