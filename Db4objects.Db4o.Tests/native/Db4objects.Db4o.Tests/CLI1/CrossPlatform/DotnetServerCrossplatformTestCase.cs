@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿/* Copyright (C) 2008   db4objects Inc.   http://www.db4o.com */
+using System.IO;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Messaging;
 
@@ -19,9 +20,6 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 
 		protected override string GetClientAliases()
 		{
-//Db4objects.Db4o.Tests.CLI1.CrossPlatform.UnoptimizideJoeFinder, Db4objects.Db4o.Tests
-//Db4objects.Db4o.Tests.CLI1.CrossPlatform.StopServer, Db4objects.Db4o.Tests
-//Db4objects.Db4o.Tests.CLI1.CrossPlatform.PersonEvaluator, Db4objects.Db4o.Tests
 			return @"
 	config.add(new com.db4o.config.DotnetSupport(true));
 	config.addAlias(new com.db4o.config.TypeAlias(""Db4objects.Db4o.Tests.CLI1.CrossPlatform.Person, Db4objects.Db4o.Tests"", Person.class.getName()));
