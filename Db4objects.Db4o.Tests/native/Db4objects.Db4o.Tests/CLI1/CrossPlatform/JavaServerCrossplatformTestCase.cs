@@ -400,7 +400,7 @@ public class StartServer implements MessageRecipient  {
 	public static class UnoptimizideJoeFinder extends Predicate {
 		public boolean match(Object candidate) {
 			Person tbt = (Person) candidate;
-			return tbt._name.contains(""Joe"");
+			return tbt._name.startsWith(""Joe"");
 		}
 	}
 
