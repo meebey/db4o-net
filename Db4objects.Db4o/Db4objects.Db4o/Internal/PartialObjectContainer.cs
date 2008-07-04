@@ -689,7 +689,7 @@ namespace Db4objects.Db4o.Internal
 			// We have to end processing temporarily here, otherwise the can delete callback
 			// can't do anything at all with this object.
 			@ref.EndProcessing();
-			ActivateForDeletionCallback(trans, yc, obj);
+			ActivateForDeletionCallback(trans, yc, @ref, obj);
 			if (!ObjectCanDelete(trans, yc, obj))
 			{
 				return;
@@ -711,14 +711,16 @@ namespace Db4objects.Db4o.Internal
 			@ref.EndProcessing();
 		}
 
-		private void ActivateForDeletionCallback(Transaction trans, ClassMetadata yc, object
-			 obj)
+		private void ActivateForDeletionCallback(Transaction trans, ClassMetadata classMetadata
+			, ObjectReference @ref, object obj)
 		{
-			if (!IsActive(trans, obj) && (CaresAboutDeleting(yc) || CaresAboutDeleted(yc)))
+			if (!@ref.IsActive() && (CaresAboutDeleting(classMetadata) || CaresAboutDeleted(classMetadata
+				)))
 			{
 				// Activate Objects for Callbacks, because in C/S mode Objects are not activated on the Server
 				// FIXME: [TA] review activation depth
-				Activate(trans, obj, new FixedActivationDepth(1));
+				int depth = classMetadata.AdjustCollectionDepthToBorders(1);
+				Activate(trans, obj, new FixedActivationDepth(depth));
 			}
 		}
 
@@ -768,7 +770,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				FieldMetadata[] field = new FieldMetadata[] { null };
-				classMetadata.ForEachFieldMetadata(new _IVisitor4_619(fieldName, field));
+				classMetadata.ForEachFieldMetadata(new _IVisitor4_620(fieldName, field));
 				if (field[0] == null)
 				{
 					return null;
@@ -789,9 +791,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_619 : IVisitor4
+		private sealed class _IVisitor4_620 : IVisitor4
 		{
-			public _IVisitor4_619(string fieldName, FieldMetadata[] field)
+			public _IVisitor4_620(string fieldName, FieldMetadata[] field)
 			{
 				this.fieldName = fieldName;
 				this.field = field;

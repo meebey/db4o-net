@@ -9,6 +9,7 @@ using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
@@ -38,9 +39,9 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private sealed class _DbSelector_36 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_37 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_36()
+			public _DbSelector_37()
 			{
 			}
 
@@ -50,12 +51,12 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_36
+		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_37
 			();
 
-		private sealed class _DbSelector_42 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_43 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_42()
+			public _DbSelector_43()
 			{
 			}
 
@@ -65,7 +66,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_42
+		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_43
 			();
 
 		private const long ClasscollectionPointerAddress = 2 + 2 * Const4.IntLength;
@@ -91,7 +92,7 @@ namespace Db4objects.Db4o.Defragment
 			Config4Impl originalConfig = (Config4Impl)defragConfig.Db4oConfig();
 			IConfiguration sourceConfig = (IConfiguration)originalConfig.DeepClone(null);
 			sourceConfig.WeakReferences(false);
-			sourceConfig.FlushFileBuffers(false);
+			sourceConfig.Io(new NonFlushingIoAdapter(sourceConfig.Io()));
 			sourceConfig.ReadOnly(defragConfig.ReadOnly());
 			_sourceDb = (LocalObjectContainer)Db4oFactory.OpenFile(sourceConfig, defragConfig
 				.TempPath()).Ext();

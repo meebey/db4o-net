@@ -118,7 +118,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			base.Marshall();
 			if (_claxx != null)
 			{
-				_className = _claxx.GetName();
+				_className = Container().Config().ResolveAliasRuntimeName(_claxx.GetName());
 			}
 		}
 
@@ -139,6 +139,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				base.Unmarshall(a_trans);
 				if (_className != null)
 				{
+					_className = Container().Config().ResolveAliasStoredName(_className);
 					_claxx = a_trans.Reflector().ForName(_className);
 				}
 			}

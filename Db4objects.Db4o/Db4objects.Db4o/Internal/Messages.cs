@@ -119,11 +119,7 @@ namespace Db4objects.Db4o.Internal
 		public static void LogErr(IConfiguration config, int code, string msg, Exception 
 			t)
 		{
-			if (config == null)
-			{
-				config = Db4oFactory.Configure();
-			}
-			TextWriter ps = ((Config4Impl)config).ErrStream();
+			TextWriter ps = ((Config4Impl)SafeConfig(config)).ErrStream();
 			new Message(msg, code, ps);
 			if (t != null)
 			{
@@ -131,6 +127,16 @@ namespace Db4objects.Db4o.Internal
 				Sharpen.Runtime.PrintStackTrace(t, ps);
 				new Message(null, 26, ps, false);
 			}
+		}
+
+		[System.ObsoleteAttribute(@"uses deprecated api")]
+		private static IConfiguration SafeConfig(IConfiguration config)
+		{
+			if (config != null)
+			{
+				return config;
+			}
+			return Db4oFactory.Configure();
 		}
 
 		public static void LogMsg(IConfiguration config, int code, string msg)

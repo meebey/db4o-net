@@ -649,12 +649,10 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		private static void BreakFromEvent(long eventNr)
-		{
-			BreakOnEvent(eventNr);
-			_breakAfterEvent = true;
-		}
-
+		//    private static void breakFromEvent(long eventNr){
+		//        breakOnEvent(eventNr);
+		//        _breakAfterEvent = true;
+		//    }
 		private static void BreakOnEvent(long eventNr)
 		{
 			if (enabled)

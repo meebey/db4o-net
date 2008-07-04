@@ -683,6 +683,14 @@ namespace Db4objects.Db4o.Config
 		/// <exception cref="GlobalOnlyConfigException"></exception>
 		void Io(IoAdapter adapter);
 
+		/// <summary>
+		/// returns the configured
+		/// <see cref="IoAdapter">IoAdapter</see>
+		/// .
+		/// </summary>
+		/// <returns></returns>
+		IoAdapter Io();
+
 		/// <summary>allows to mark fields as transient with custom attributes.</summary>
 		/// <remarks>
 		/// allows to mark fields as transient with custom attributes.

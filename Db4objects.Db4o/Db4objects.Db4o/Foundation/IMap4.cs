@@ -2,6 +2,7 @@
 
 namespace Db4objects.Db4o.Foundation
 {
+	/// <exclude></exclude>
 	public interface IMap4
 	{
 		object Get(object key);

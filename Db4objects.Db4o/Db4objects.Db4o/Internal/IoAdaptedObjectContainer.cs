@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="DatabaseReadOnlyException"></exception>
 		protected sealed override void OpenImpl()
 		{
-			IoAdapter ioAdapter = ConfigImpl().IoAdapter();
+			IoAdapter ioAdapter = ConfigImpl().Io();
 			bool isNew = !ioAdapter.Exists(FileName());
 			if (isNew)
 			{
@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					throw new BackupInProgressException();
 				}
-				_backupFile = ConfigImpl().IoAdapter().Open(path, true, _file.GetLength(), false);
+				_backupFile = ConfigImpl().Io().Open(path, true, _file.GetLength(), false);
 				_backupFile.BlockSize(BlockSize());
 			}
 			long pos = 0;

@@ -107,6 +107,10 @@ namespace Db4objects.Db4o.Internal
 
 		public static IReflectClass BaseType(IReflectClass clazz)
 		{
+			if (clazz == null)
+			{
+				return null;
+			}
 			if (clazz.IsArray())
 			{
 				return BaseType(clazz.GetComponentType());

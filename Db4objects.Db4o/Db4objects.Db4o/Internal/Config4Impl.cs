@@ -458,7 +458,7 @@ namespace Db4objects.Db4o.Internal
 			_internStrings = doIntern;
 		}
 
-		public void Io(Db4objects.Db4o.IO.IoAdapter adapter)
+		public void Io(IoAdapter adapter)
 		{
 			GlobalSettingOnly();
 			_config.Put(IoadapterKey, adapter);
@@ -1021,9 +1021,9 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsBoolean(WeakReferencesKey);
 		}
 
-		internal Db4objects.Db4o.IO.IoAdapter IoAdapter()
+		public IoAdapter Io()
 		{
-			return (Db4objects.Db4o.IO.IoAdapter)_config.Get(IoadapterKey);
+			return (IoAdapter)_config.Get(IoadapterKey);
 		}
 
 		public IQueryConfiguration Queries()

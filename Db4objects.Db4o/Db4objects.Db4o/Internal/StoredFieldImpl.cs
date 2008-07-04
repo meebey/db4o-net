@@ -12,9 +12,10 @@ namespace Db4objects.Db4o.Internal
 	{
 		private readonly Transaction _transaction;
 
-		private readonly FieldMetadata _fieldMetadata;
+		private readonly Db4objects.Db4o.Internal.FieldMetadata _fieldMetadata;
 
-		public StoredFieldImpl(Transaction transaction, FieldMetadata fieldMetadata)
+		public StoredFieldImpl(Transaction transaction, Db4objects.Db4o.Internal.FieldMetadata
+			 fieldMetadata)
 		{
 			_transaction = transaction;
 			_fieldMetadata = fieldMetadata;
@@ -23,6 +24,11 @@ namespace Db4objects.Db4o.Internal
 		public virtual void CreateIndex()
 		{
 			_fieldMetadata.CreateIndex();
+		}
+
+		public virtual Db4objects.Db4o.Internal.FieldMetadata FieldMetadata()
+		{
+			return _fieldMetadata;
 		}
 
 		public virtual object Get(object onObject)

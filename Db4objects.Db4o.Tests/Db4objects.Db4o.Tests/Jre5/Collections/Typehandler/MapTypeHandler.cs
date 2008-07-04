@@ -91,9 +91,15 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		public virtual void Defragment(IDefragmentContext context)
 		{
+			ITypeHandler4 handler = ElementTypeHandler(context, null);
+			int elementCount = context.ReadInt();
+			for (int i = elementCount; i > 0; i--)
+			{
+				context.Defragment(handler);
+				context.Defragment(handler);
+			}
 		}
 
-		// TODO Auto-generated method stub
 		public void CascadeActivation(ActivationContext4 context)
 		{
 			IDictionary map = (IDictionary)context.TargetObject();

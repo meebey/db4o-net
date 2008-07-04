@@ -443,10 +443,7 @@ namespace Db4objects.Db4o.Internal
 			if (depth == Const4.Unspecified)
 			{
 				depth = CheckUpdateDepthUnspecified(trans.Container().ConfigImpl());
-				if (ClassReflector().IsCollection())
-				{
-					depth = AdjustDepthToBorders(depth);
-				}
+				depth = AdjustCollectionDepthToBorders(depth);
 			}
 			if (config == null)
 			{
@@ -459,6 +456,15 @@ namespace Db4objects.Db4o.Internal
 				depth = AdjustDepthToBorders(depth);
 			}
 			return depth - 1;
+		}
+
+		public virtual int AdjustCollectionDepthToBorders(int depth)
+		{
+			if (!ClassReflector().IsCollection())
+			{
+				return depth;
+			}
+			return AdjustDepthToBorders(depth);
 		}
 
 		public virtual int AdjustDepthToBorders(int depth)
@@ -763,7 +769,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (!DispatchingEvents(trans))
 			{
-				return true;
+				return false;
 			}
 			return _eventDispatcher.HasEventRegistered(eventID);
 		}
@@ -1112,13 +1118,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_920(name, yf));
+			ForEachFieldMetadata(new _IVisitor4_925(name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_920 : IVisitor4
+		private sealed class _IVisitor4_925 : IVisitor4
 		{
-			public _IVisitor4_920(string name, FieldMetadata[] yf)
+			public _IVisitor4_925(string name, FieldMetadata[] yf)
 			{
 				this.name = name;
 				this.yf = yf;
@@ -1996,7 +2002,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1664
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1669
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2005,9 +2011,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1664 : IFunction4
+		private sealed class _IFunction4_1669 : IFunction4
 		{
-			public _IFunction4_1664(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1669(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2048,12 +2054,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1692(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1697(this));
 		}
 
-		private sealed class _IFunction4_1692 : IFunction4
+		private sealed class _IFunction4_1697 : IFunction4
 		{
-			public _IFunction4_1692(ClassMetadata _enclosing)
+			public _IFunction4_1697(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2095,12 +2101,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1721());
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1726());
 		}
 
-		private sealed class _IPredicate4_1721 : IPredicate4
+		private sealed class _IPredicate4_1726 : IPredicate4
 		{
-			public _IPredicate4_1721()
+			public _IPredicate4_1726()
 			{
 			}
 
