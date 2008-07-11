@@ -400,7 +400,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
                 throw new NotImplementedException();
             }
 
-        }
+		    public void CollectIDs(QueryingReadContext context)
+		    {
+		        throw new System.NotImplementedException();
+		    }
+		}
 
 		internal class GenericListPredicate : ITypeHandlerPredicate
 		{
