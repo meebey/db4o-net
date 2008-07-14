@@ -91,13 +91,13 @@
     <EmbeddedResource Include="TA\Resources\TAInstrumentationSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TAAssemblyReferenceSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TADoubleInstrumentationSubject.cs" />
-    <Compile Include="TAEnsureDb4oReferenceIsAdded.cs" />
     <Compile Include="TA\AllTests.cs" />
     <Compile Include="TA\MockActivator.cs" />
     <EmbeddedResource Include="TA\Resources\TAUnsafeInstrumentationSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TAFieldSetterSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TABytecodeChangesSubject.cs" />
     <Compile Include="TA\TABytecodeChangesTestCase.cs" />
+    <Compile Include="TA\TAEnsureDb4oReferenceIsAdded.cs" />
     <Compile Include="TA\TAInstrumentationAppliedMoreThanOnceCOR-918.cs" />
     <Compile Include="TA\TAInstrumentationTestCase.cs" />
     <Compile Include="TA\TANonStorableTypeTestCase.cs" />
