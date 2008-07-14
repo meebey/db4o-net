@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal
 			int db4oDatabaseIdentityID = writer.ReadInt();
 			long uuid = writer.ReadLong();
 			writer._offset = offset;
-			LocalObjectContainer yf = (LocalObjectContainer)writer.GetStream();
+			LocalObjectContainer yf = (LocalObjectContainer)writer.Container();
 			if ((uuid == 0 || db4oDatabaseIdentityID == 0) && writer.GetID() > 0 && !isnew)
 			{
 				UUIDFieldMetadata.DatabaseIdentityIDAndUUID identityAndUUID = ReadDatabaseIdentityIDAndUUID
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (db4oDatabaseIdentityID == 0)
 			{
-				db4oDatabaseIdentityID = yf.Identity().GetID(writer.GetTransaction());
+				db4oDatabaseIdentityID = yf.Identity().GetID(writer.Transaction());
 			}
 			if (uuid == 0)
 			{
@@ -108,10 +108,10 @@ namespace Db4objects.Db4o.Internal
 			long longPart = a_bytes.ReadLong();
 			if (longPart > 0)
 			{
-				ObjectContainerBase stream = a_bytes.GetStream();
+				ObjectContainerBase stream = a_bytes.Container();
 				if (stream.MaintainsIndices())
 				{
-					RemoveIndexEntry(a_bytes.GetTransaction(), a_bytes.GetID(), longPart);
+					RemoveIndexEntry(a_bytes.Transaction(), a_bytes.GetID(), longPart);
 				}
 			}
 		}
@@ -166,26 +166,26 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal override void Instantiate1(Transaction trans, ObjectReference @ref, IReadBuffer
-			 buffer)
+		internal override void Instantiate1(ObjectReferenceContext context)
 		{
-			int dbID = buffer.ReadInt();
-			ObjectContainerBase stream = trans.Container();
-			stream.ShowInternalClasses(true);
+			int dbID = context.ReadInt();
+			Transaction trans = context.Transaction();
+			ObjectContainerBase container = trans.Container();
+			container.ShowInternalClasses(true);
 			try
 			{
-				Db4oDatabase db = (Db4oDatabase)stream.GetByID2(trans, dbID);
+				Db4oDatabase db = (Db4oDatabase)container.GetByID2(trans, dbID);
 				if (db != null && db.i_signature == null)
 				{
-					stream.Activate(trans, db, new FixedActivationDepth(2));
+					container.Activate(trans, db, new FixedActivationDepth(2));
 				}
-				VirtualAttributes va = @ref.VirtualAttributes();
+				VirtualAttributes va = context.ObjectReference().VirtualAttributes();
 				va.i_database = db;
-				va.i_uuid = buffer.ReadLong();
+				va.i_uuid = context.ReadLong();
 			}
 			finally
 			{
-				stream.ShowInternalClasses(false);
+				container.ShowInternalClasses(false);
 			}
 		}
 

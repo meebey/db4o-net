@@ -34,13 +34,14 @@ namespace Db4objects.Db4o.Internal
 
 		private int i_length;
 
-		internal Transaction i_trans;
+		internal Db4objects.Db4o.Internal.Transaction i_trans;
 
 		private int i_updateDepth = 1;
 
 		public int _payloadOffset;
 
-		public StatefulBuffer(Transaction a_trans, int a_initialBufferSize)
+		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction a_trans, int a_initialBufferSize
+			)
 		{
 			// carries instantiation depth through the reading process
 			// carries updatedepth depth through the update process
@@ -50,19 +51,19 @@ namespace Db4objects.Db4o.Internal
 			_buffer = new byte[i_length];
 		}
 
-		public StatefulBuffer(Transaction a_trans, int address, int length) : this(a_trans
-			, length)
+		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction a_trans, int address, 
+			int length) : this(a_trans, length)
 		{
 			i_address = address;
 		}
 
-		public StatefulBuffer(Transaction trans, Db4objects.Db4o.Internal.Slots.Slot slot
-			) : this(trans, slot.Address(), slot.Length())
+		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Slots.Slot
+			 slot) : this(trans, slot.Address(), slot.Length())
 		{
 		}
 
-		public StatefulBuffer(Transaction trans, Pointer4 pointer) : this(trans, pointer.
-			_slot)
+		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction trans, Pointer4 pointer
+			) : this(trans, pointer._slot)
 		{
 			i_id = pointer._id;
 		}
@@ -99,12 +100,7 @@ namespace Db4objects.Db4o.Internal
 			return i_length;
 		}
 
-		public ObjectContainerBase GetStream()
-		{
-			return i_trans.Container();
-		}
-
-		public ObjectContainerBase Stream()
+		public ObjectContainerBase Container()
 		{
 			return i_trans.Container();
 		}
@@ -114,7 +110,7 @@ namespace Db4objects.Db4o.Internal
 			return ((LocalTransaction)i_trans).File();
 		}
 
-		public Transaction GetTransaction()
+		public Db4objects.Db4o.Internal.Transaction Transaction()
 		{
 			return i_trans;
 		}
@@ -144,7 +140,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4oIOException"></exception>
 		public void Read()
 		{
-			Stream().ReadBytes(_buffer, i_address, _addressOffset, i_length);
+			Container().ReadBytes(_buffer, i_address, _addressOffset, i_length);
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
@@ -157,7 +153,7 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			Db4objects.Db4o.Internal.StatefulBuffer bytes = null;
-			bytes = Stream().ReadWriterByAddress(i_trans, id, length);
+			bytes = Container().ReadWriterByAddress(i_trans, id, length);
 			if (bytes != null)
 			{
 				bytes.SetID(id);
@@ -212,7 +208,7 @@ namespace Db4objects.Db4o.Internal
 			i_instantionDepth = a_depth;
 		}
 
-		public void SetTransaction(Transaction aTrans)
+		public void SetTransaction(Db4objects.Db4o.Internal.Transaction aTrans)
 		{
 			i_trans = aTrans;
 		}
@@ -300,7 +296,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (alignToBlockSize)
 			{
-				_payloadOffset = Stream().BlockAlignedBytes(_payloadOffset);
+				_payloadOffset = Container().BlockAlignedBytes(_payloadOffset);
 			}
 			WriteInt(_payloadOffset);
 			// TODO: This length is here for historical reasons. 
@@ -334,7 +330,7 @@ namespace Db4objects.Db4o.Internal
 		private void TransferPayLoadAddress(Db4objects.Db4o.Internal.StatefulBuffer toWriter
 			, int offset)
 		{
-			int blockedOffset = offset / Stream().BlockSize();
+			int blockedOffset = offset / Container().BlockSize();
 			toWriter.i_address = i_address + blockedOffset;
 			toWriter.i_id = toWriter.i_address;
 			toWriter._addressOffset = _addressOffset;

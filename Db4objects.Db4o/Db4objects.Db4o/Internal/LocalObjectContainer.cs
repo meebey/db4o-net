@@ -885,10 +885,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (MaintainsIndices())
-			{
-				classMetadata.AddToIndex(this, trans, pointer.Id());
-			}
+			classMetadata.AddToIndex(trans, pointer.Id());
 		}
 
 		// This is a reroute of writeBytes to write the free blocks
@@ -907,8 +904,8 @@ namespace Db4objects.Db4o.Internal
 
 		public void GetSlotForUpdate(StatefulBuffer buffer)
 		{
-			Slot slot = GetSlotForUpdate(buffer.GetTransaction(), buffer.GetID(), buffer.Length
-				());
+			Slot slot = GetSlotForUpdate(buffer.Transaction(), buffer.GetID(), buffer.Length(
+				));
 			buffer.Address(slot.Address());
 		}
 
@@ -960,13 +957,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_816(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_814(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_816 : IVisitor4
+		private sealed class _IVisitor4_814 : IVisitor4
 		{
-			public _IVisitor4_816(IntArrayList ids)
+			public _IVisitor4_814(IntArrayList ids)
 			{
 				this.ids = ids;
 			}

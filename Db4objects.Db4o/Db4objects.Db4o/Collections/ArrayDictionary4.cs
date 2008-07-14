@@ -20,6 +20,7 @@ namespace Db4objects.Db4o.Collections
 	/// </remarks>
 	/// <seealso cref="IDictionary">IDictionary</seealso>
 	/// <seealso cref="IActivatable">IActivatable</seealso>
+	/// <decaf.ignore></decaf.ignore>
 	public partial class ArrayDictionary4<K, V>
 	{
 		private K[] _keys;

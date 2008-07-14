@@ -126,7 +126,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public virtual MsgD GetWriter(StatefulBuffer bytes)
 		{
-			MsgD message = GetWriterForLength(bytes.GetTransaction(), bytes.Length());
+			MsgD message = GetWriterForLength(bytes.Transaction(), bytes.Length());
 			message._payLoad.Append(bytes._buffer);
 			return message;
 		}

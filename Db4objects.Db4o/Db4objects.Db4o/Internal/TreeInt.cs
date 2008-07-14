@@ -154,7 +154,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual QCandidate ToQCandidate(QCandidates candidates)
 		{
-			QCandidate qc = new QCandidate(candidates, null, _key, true);
+			QCandidate qc = new QCandidate(candidates, null, _key);
 			qc._preceding = ToQCandidate((Db4objects.Db4o.Internal.TreeInt)_preceding, candidates
 				);
 			qc._subsequent = ToQCandidate((Db4objects.Db4o.Internal.TreeInt)_subsequent, candidates

@@ -14,7 +14,7 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class PrimitiveFieldHandler : ClassMetadata, IFieldHandler, ICompositeTypeHandler
+	public class PrimitiveFieldHandler : ClassMetadata, IFieldHandler, IVersionedTypeHandler
 	{
 		private const int HashcodeForNull = 283636383;
 
@@ -40,8 +40,7 @@ namespace Db4objects.Db4o.Internal
 
 		// Override
 		// do nothing
-		internal sealed override void AddToIndex(LocalObjectContainer container, Transaction
-			 trans, int id)
+		internal sealed override void AddToIndex(Transaction trans, int id)
 		{
 		}
 
@@ -91,7 +90,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal void Free(StatefulBuffer a_bytes, int a_id)
 		{
-			a_bytes.GetTransaction().SlotFreePointerOnCommit(a_id, a_bytes.Slot());
+			a_bytes.Transaction().SlotFreePointerOnCommit(a_id, a_bytes.Slot());
 		}
 
 		public override bool HasClassIndex()
@@ -227,7 +226,7 @@ namespace Db4objects.Db4o.Internal
 			return _handler;
 		}
 
-		public virtual ITypeHandler4 GenericTemplate()
+		public virtual ITypeHandler4 UnversionedTemplate()
 		{
 			return new Db4objects.Db4o.Internal.PrimitiveFieldHandler(null, null, 0, null);
 		}

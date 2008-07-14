@@ -8,7 +8,7 @@ using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
-	public interface IDefragmentContext : IBufferContext, IMarshallingInfo
+	public interface IDefragmentContext : IBufferContext, IMarshallingInfo, IHandlerVersionContext
 	{
 		ITypeHandler4 TypeHandlerForId(int id);
 
@@ -19,8 +19,6 @@ namespace Db4objects.Db4o.Internal
 		int CopySlotlessID();
 
 		int CopyUnindexedID();
-
-		ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler);
 
 		void Defragment(ITypeHandler4 handler);
 

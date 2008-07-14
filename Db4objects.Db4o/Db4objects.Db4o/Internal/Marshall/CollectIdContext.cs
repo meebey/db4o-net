@@ -8,21 +8,13 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class CollectIdContext : ObjectHeaderContext, IMarshallingInfo
+	public class CollectIdContext : ObjectHeaderContext, IMarshallingInfo, IHandlerVersionContext
 	{
-		private readonly string _fieldName;
-
-		private TreeInt _ids;
+		private readonly IdObjectCollector _collector = new IdObjectCollector();
 
 		public CollectIdContext(Transaction transaction, ObjectHeader oh, IReadBuffer buffer
-			, string fieldName) : base(transaction, buffer, oh)
+			) : base(transaction, buffer, oh)
 		{
-			_fieldName = fieldName;
-		}
-
-		public virtual string FieldName()
-		{
-			return _fieldName;
 		}
 
 		public virtual void AddId()
@@ -32,7 +24,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return;
 			}
-			_ids = (TreeInt)Tree.Add(_ids, new TreeInt(id));
+			AddId(id);
+		}
+
+		private void AddId(int id)
+		{
+			_collector.AddId(id);
 		}
 
 		public virtual Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
@@ -42,7 +39,21 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual Tree Ids()
 		{
-			return _ids;
+			return _collector.Ids();
+		}
+
+		public virtual void ReadID(IReadsObjectIds objectIDHandler)
+		{
+			ObjectID objectID = objectIDHandler.ReadObjectID(this);
+			if (objectID.IsValid())
+			{
+				AddId(objectID._id);
+			}
+		}
+
+		public virtual IdObjectCollector Collector()
+		{
+			return _collector;
 		}
 	}
 }

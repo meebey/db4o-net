@@ -830,16 +830,21 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (clazz.CanUpdateFast())
 			{
-				SlotFreeOnCommit(id, GetCurrentSlotOfID(id));
+				Slot currentSlot = GetCurrentSlotOfID(id);
+				if (currentSlot == null || currentSlot.Address() == 0)
+				{
+					clazz.AddToIndex(this, id);
+				}
+				else
+				{
+					SlotFreeOnCommit(id, currentSlot);
+				}
 				return;
 			}
 			StatefulBuffer objectBytes = Container().ReadWriterByID(this, id);
 			if (objectBytes == null)
 			{
-				if (clazz.HasClassIndex())
-				{
-					DontRemoveFromClassIndex(clazz.GetID(), id);
-				}
+				clazz.AddToIndex(this, id);
 				return;
 			}
 			ObjectHeader oh = new ObjectHeader(Container(), clazz, objectBytes);
@@ -865,13 +870,13 @@ namespace Db4objects.Db4o.Internal
 		private Collection4 CollectCommittedCallbackDeletedInfo()
 		{
 			Collection4 deleted = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_732(this, deleted));
+			CollectSlotChanges(new _ISlotChangeCollector_735(this, deleted));
 			return deleted;
 		}
 
-		private sealed class _ISlotChangeCollector_732 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_735 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_732(LocalTransaction _enclosing, Collection4 deleted
+			public _ISlotChangeCollector_735(LocalTransaction _enclosing, Collection4 deleted
 				)
 			{
 				this._enclosing = _enclosing;
@@ -905,13 +910,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			Collection4 added = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_753(this, added, updated));
+			CollectSlotChanges(new _ISlotChangeCollector_756(this, added, updated));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ISlotChangeCollector_753 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_756 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_753(LocalTransaction _enclosing, Collection4 added, 
+			public _ISlotChangeCollector_756(LocalTransaction _enclosing, Collection4 added, 
 				Collection4 updated)
 			{
 				this._enclosing = _enclosing;
@@ -949,13 +954,13 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_776(this, added, updated, deleted));
+			CollectSlotChanges(new _ISlotChangeCollector_779(this, added, updated, deleted));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ISlotChangeCollector_776 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_779 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_776(LocalTransaction _enclosing, Collection4 added, 
+			public _ISlotChangeCollector_779(LocalTransaction _enclosing, Collection4 added, 
 				Collection4 updated, Collection4 deleted)
 			{
 				this._enclosing = _enclosing;
@@ -1001,12 +1006,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			_slotChanges.TraverseLocked(new _IVisitor4_806(collector));
+			_slotChanges.TraverseLocked(new _IVisitor4_809(collector));
 		}
 
-		private sealed class _IVisitor4_806 : IVisitor4
+		private sealed class _IVisitor4_809 : IVisitor4
 		{
-			public _IVisitor4_806(ISlotChangeCollector collector)
+			public _IVisitor4_809(ISlotChangeCollector collector)
 			{
 				this.collector = collector;
 			}

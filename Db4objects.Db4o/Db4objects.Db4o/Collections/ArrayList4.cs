@@ -22,6 +22,7 @@ namespace Db4objects.Db4o.Collections
 	/// </remarks>
 	/// <seealso cref="ArrayList">ArrayList</seealso>
 	/// <seealso cref="IActivatable">IActivatable</seealso>
+	/// <decaf.ignore></decaf.ignore>
 	public partial class ArrayList4<E>
 	{
 		private E[] elements;

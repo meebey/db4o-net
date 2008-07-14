@@ -578,12 +578,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 			}
-			//                                                    idsNew.value = oh.classMetadata().collectFieldIDs(
-			//                                                            oh._marshallerFamily,
-			//                                                            oh._headerAttributes,
-			//                                                            (TreeInt)idsNew.value,
-			//                                                            reader,
-			//                                                            fieldName);
 			Sort(result);
 		}
 
@@ -618,7 +612,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 					if (ids != null)
 					{
-						ids.Traverse(new _IVisitor4_529(result));
+						ids.Traverse(new _IVisitor4_519(result));
 					}
 				}
 			}
@@ -643,8 +637,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					{
 						ObjectHeader oh = new ObjectHeader(stream, reader);
 						CollectIdContext context = new CollectIdContext(this._enclosing._enclosing._trans
-							, oh, reader, fieldName);
-						oh.ClassMetadata().CollectIDs(context);
+							, oh, reader);
+						oh.ClassMetadata().CollectIDs(context, fieldName);
 						idsNew.value = context.Ids();
 					}
 				}
@@ -658,9 +652,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				private readonly ObjectByRef idsNew;
 			}
 
-			private sealed class _IVisitor4_529 : IVisitor4
+			private sealed class _IVisitor4_519 : IVisitor4
 			{
-				public _IVisitor4_529(IdListQueryResult result)
+				public _IVisitor4_519(IdListQueryResult result)
 				{
 					this.result = result;
 				}
@@ -932,12 +926,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private bool HasOrJoins()
 		{
-			return ForEachConstraintRecursively(new _IFunction4_746());
+			return ForEachConstraintRecursively(new _IFunction4_736());
 		}
 
-		private sealed class _IFunction4_746 : IFunction4
+		private sealed class _IFunction4_736 : IFunction4
 		{
-			public _IFunction4_746()
+			public _IFunction4_736()
 			{
 			}
 
@@ -959,12 +953,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private void RemoveJoins()
 		{
-			ForEachConstraintRecursively(new _IFunction4_762());
+			ForEachConstraintRecursively(new _IFunction4_752());
 		}
 
-		private sealed class _IFunction4_762 : IFunction4
+		private sealed class _IFunction4_752 : IFunction4
 		{
-			public _IFunction4_762()
+			public _IFunction4_752()
 			{
 			}
 

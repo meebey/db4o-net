@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal
 		public override void AddFieldIndex(MarshallerFamily mf, ClassMetadata yapClass, StatefulBuffer
 			 writer, Slot oldSlot)
 		{
-			writer.WriteLong(writer.GetStream().GenerateTimeStampId());
+			writer.WriteLong(writer.Container().GenerateTimeStampId());
 		}
 
 		public override void Delete(MarshallerFamily mf, StatefulBuffer a_bytes, bool isUpdate
@@ -29,10 +29,9 @@ namespace Db4objects.Db4o.Internal
 			a_bytes.IncrementOffset(LinkLength());
 		}
 
-		internal override void Instantiate1(Transaction a_trans, ObjectReference a_yapObject
-			, IReadBuffer a_bytes)
+		internal override void Instantiate1(ObjectReferenceContext context)
 		{
-			a_yapObject.VirtualAttributes().i_version = a_bytes.ReadLong();
+			context.ObjectReference().VirtualAttributes().i_version = context.ReadLong();
 		}
 
 		internal override void Marshall(Transaction trans, ObjectReference @ref, IWriteBuffer

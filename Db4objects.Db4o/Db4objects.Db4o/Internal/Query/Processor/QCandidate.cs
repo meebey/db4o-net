@@ -62,8 +62,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_candidates = qcandidates;
 		}
 
-		public QCandidate(QCandidates candidates, object obj, int id, bool include) : base
-			(id)
+		public QCandidate(QCandidates candidates, object obj, int id) : base(id)
 		{
 			if (DTrace.enabled)
 			{
@@ -72,7 +71,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_candidates = candidates;
 			_order = this;
 			_member = obj;
-			_include = include;
+			_include = true;
 			if (id == 0)
 			{
 				_key = candidates.GenerateCandidateId();
@@ -152,9 +151,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					ITypeHandler4 tempHandler = null;
 					if (handler is IFirstClassHandler)
 					{
-						IFirstClassHandler firstClassHandler = (IFirstClassHandler)queryingReadContext.CorrectHandlerVersion
-							(handler);
-						tempHandler = firstClassHandler.ReadCandidateHandler(queryingReadContext);
+						IFirstClassHandler firstClassHandler = (IFirstClassHandler)Handlers4.CorrectHandlerVersion
+							(queryingReadContext, handler);
+						tempHandler = Handlers4.CorrectHandlerVersion(queryingReadContext, firstClassHandler
+							.ReadCandidateHandler(queryingReadContext));
 					}
 					if (tempHandler != null)
 					{
@@ -188,7 +188,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								candidates.Evaluate();
 								Tree.ByRef pending = new Tree.ByRef();
 								bool[] innerRes = new bool[] { isNot };
-								candidates.Traverse(new _IVisitor4_183(innerRes, isNot, pending));
+								candidates.Traverse(new _IVisitor4_186(innerRes, isNot, pending));
 								// Collect all pending subresults.
 								// We need to change
 								// the
@@ -217,7 +217,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								// them up to our root.
 								if (pending.value != null)
 								{
-									pending.value.Traverse(new _IVisitor4_252(this));
+									pending.value.Traverse(new _IVisitor4_255(this));
 								}
 								if (!innerRes[0])
 								{
@@ -279,13 +279,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 			}
-			AddDependant(a_candidates.AddByIdentity(candidate));
+			AddDependant(a_candidates.Add(candidate));
 			return true;
 		}
 
-		private sealed class _IVisitor4_183 : IVisitor4
+		private sealed class _IVisitor4_186 : IVisitor4
 		{
-			public _IVisitor4_183(bool[] innerRes, bool isNot, Tree.ByRef pending)
+			public _IVisitor4_186(bool[] innerRes, bool isNot, Tree.ByRef pending)
 			{
 				this.innerRes = innerRes;
 				this.isNot = isNot;
@@ -302,13 +302,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (cand._pendingJoins != null)
 				{
-					cand._pendingJoins.Traverse(new _IVisitor4_196(pending));
+					cand._pendingJoins.Traverse(new _IVisitor4_199(pending));
 				}
 			}
 
-			private sealed class _IVisitor4_196 : IVisitor4
+			private sealed class _IVisitor4_199 : IVisitor4
 			{
-				public _IVisitor4_196(Tree.ByRef pending)
+				public _IVisitor4_199(Tree.ByRef pending)
 				{
 					this.pending = pending;
 				}
@@ -341,9 +341,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly Tree.ByRef pending;
 		}
 
-		private sealed class _IVisitor4_252 : IVisitor4
+		private sealed class _IVisitor4_255 : IVisitor4
 		{
-			public _IVisitor4_252(QCandidate _enclosing)
+			public _IVisitor4_255(QCandidate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -364,13 +364,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return;
 			}
 			SlotFormat slotFormat = SlotFormat.ForHandlerVersion(_handlerVersion);
-			slotFormat.DoWithSlotIndirection(buffer, fieldHandler, new _IClosure4_336(this, slotFormat
+			slotFormat.DoWithSlotIndirection(buffer, fieldHandler, new _IClosure4_339(this, slotFormat
 				, arrayElementHandler, buffer, candidates));
 		}
 
-		private sealed class _IClosure4_336 : IClosure4
+		private sealed class _IClosure4_339 : IClosure4
 		{
-			public _IClosure4_336(QCandidate _enclosing, SlotFormat slotFormat, ITypeHandler4
+			public _IClosure4_339(QCandidate _enclosing, SlotFormat slotFormat, ITypeHandler4
 				 arrayElementHandler, IReadBuffer buffer, QCandidates candidates)
 			{
 				this._enclosing = _enclosing;
@@ -385,6 +385,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				QueryingReadContext context = null;
 				if (slotFormat.HandleAsObject(arrayElementHandler))
 				{
+					// TODO: Code is similar to FieldMetadata.collectIDs. Try to refactor to one place.
 					int collectionID = buffer.ReadInt();
 					ByteArrayBuffer arrayElementBuffer = this._enclosing.Container().ReadReaderByID(this
 						._enclosing.Transaction(), collectionID);
@@ -398,8 +399,33 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					context = new QueryingReadContext(this._enclosing.Transaction(), candidates, this
 						._enclosing._handlerVersion, buffer, 0);
 				}
-				((IFirstClassHandler)arrayElementHandler).ReadCandidates(context);
+				((IFirstClassHandler)arrayElementHandler).CollectIDs(context);
+				Tree.Traverse(context.Ids(), new _IVisitor4_357(candidates));
+				IEnumerator i = context.ObjectsWithoutId();
+				while (i.MoveNext())
+				{
+					object obj = i.Current;
+					candidates.Add(new Db4objects.Db4o.Internal.Query.Processor.QCandidate(candidates
+						, obj, 0));
+				}
 				return null;
+			}
+
+			private sealed class _IVisitor4_357 : IVisitor4
+			{
+				public _IVisitor4_357(QCandidates candidates)
+				{
+					this.candidates = candidates;
+				}
+
+				public void Visit(object obj)
+				{
+					TreeInt idNode = (TreeInt)obj;
+					candidates.Add(new Db4objects.Db4o.Internal.Query.Processor.QCandidate(candidates
+						, null, idNode._key));
+				}
+
+				private readonly QCandidates candidates;
 			}
 
 			private readonly QCandidate _enclosing;
@@ -415,7 +441,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual void DoNotInclude()
 		{
-			_include = false;
+			Include(false);
 			if (_dependants != null)
 			{
 				IEnumerator i = new Iterator4Impl(_dependants);
@@ -618,12 +644,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						SetBytes(Container().ReadReaderByID(Transaction(), _key));
 						if (_bytes == null)
 						{
-							_include = false;
+							Include(false);
 						}
 					}
 					else
 					{
-						_include = false;
+						Include(false);
 					}
 				}
 			}
@@ -644,7 +670,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			int offset = CurrentOffSet();
 			QueryingReadContext context = NewQueryingReadContext();
-			ITypeHandler4 handler = context.CorrectHandlerVersion(_yapField.GetHandler());
+			ITypeHandler4 handler = Handlers4.CorrectHandlerVersion(context, _yapField.GetHandler
+				());
 			Db4objects.Db4o.Internal.Query.Processor.QCandidate subCandidate = candidateCollection
 				.ReadSubCandidate(context, handler);
 			Seek(offset);

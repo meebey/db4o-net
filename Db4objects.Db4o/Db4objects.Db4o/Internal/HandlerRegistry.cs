@@ -668,5 +668,35 @@ namespace Db4objects.Db4o.Internal
 			}
 			return 0;
 		}
+
+		public ITypeHandler4 RegisterTypeHandlerVersions(ClassMetadata classMetadata, IReflectClass
+			 claxx)
+		{
+			Config4Impl config = Container().ConfigImpl();
+			ITypeHandler4 typeHandler = config.TypeHandlerForClass(claxx, Db4objects.Db4o.Internal.HandlerRegistry
+				.HandlerVersion);
+			if (typeHandler == null)
+			{
+				return null;
+			}
+			ITypeHandler4 currentVersion = typeHandler;
+			for (int version = Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion - 1; version
+				 >= 0; version--)
+			{
+				ITypeHandler4 previousVersion = config.TypeHandlerForClass(claxx, (byte)version);
+				if (previousVersion == null)
+				{
+					FirstClassObjectHandler firstClassObjectHandler = new FirstClassObjectHandler(classMetadata
+						);
+					previousVersion = CorrectHandlerVersion(firstClassObjectHandler, version);
+				}
+				if (currentVersion.GetType() != previousVersion.GetType())
+				{
+					RegisterHandlerVersion(typeHandler, version, previousVersion);
+					currentVersion = previousVersion;
+				}
+			}
+			return typeHandler;
+		}
 	}
 }

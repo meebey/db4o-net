@@ -4,16 +4,17 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	public interface IIndexableTypeHandler : IIndexable4, ITypeHandler4
 	{
-		object IndexEntryToObject(Transaction trans, object indexEntry);
+		object IndexEntryToObject(IContext context, object indexEntry);
 
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="Db4oIOException"></exception>
-		object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer writer);
+		object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer writer);
 	}
 }

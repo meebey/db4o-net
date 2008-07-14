@@ -102,8 +102,8 @@ namespace Db4objects.Db4o.Internal
 					)context);
 				int clazzId = payloadContext.CopyIDReturnOriginalID();
 				ITypeHandler4 payloadHandler = payloadContext.TypeHandlerForId(clazzId);
-				ITypeHandler4 versionedPayloadHandler = payloadContext.CorrectHandlerVersion(payloadHandler
-					);
+				ITypeHandler4 versionedPayloadHandler = Handlers4.CorrectHandlerVersion(payloadContext
+					, payloadHandler);
 				versionedPayloadHandler.Defragment(payloadContext);
 				payloadContext.WriteToTarget(targetPayloadSlot.Address());
 				return targetPointerSlot.Address();

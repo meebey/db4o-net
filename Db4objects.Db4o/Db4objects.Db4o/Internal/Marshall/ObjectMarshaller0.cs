@@ -154,37 +154,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 		}
 
-		public override void ReadVirtualAttributes(Transaction trans, ClassMetadata yc, ObjectReference
-			 yo, ObjectHeaderAttributes attributes, ByteArrayBuffer reader)
-		{
-			ObjectMarshaller.TraverseFieldCommand command = new _TraverseFieldCommand_81(trans
-				, reader, yo);
-			TraverseFields(yc, reader, attributes, command);
-		}
-
-		private sealed class _TraverseFieldCommand_81 : ObjectMarshaller.TraverseFieldCommand
-		{
-			public _TraverseFieldCommand_81(Transaction trans, ByteArrayBuffer reader, ObjectReference
-				 yo)
-			{
-				this.trans = trans;
-				this.reader = reader;
-				this.yo = yo;
-			}
-
-			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
-				 containingClass)
-			{
-				field.ReadVirtualAttribute(trans, reader, yo);
-			}
-
-			private readonly Transaction trans;
-
-			private readonly ByteArrayBuffer reader;
-
-			private readonly ObjectReference yo;
-		}
-
 		protected override bool IsNull(IFieldListInfo fieldList, int fieldIndex)
 		{
 			return false;

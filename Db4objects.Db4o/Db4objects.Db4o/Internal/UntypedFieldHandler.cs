@@ -165,12 +165,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			context.Seek(payloadOffset);
 			ITypeHandler4 typeHandler = Container().TypeHandlerForId(context.ReadInt());
-			if (NullableArrayHandling.Enabled())
-			{
-				typeHandler = Container().Handlers().CorrectHandlerVersion(typeHandler, context.HandlerVersion
-					());
-			}
-			return typeHandler;
+			return Handlers4.CorrectHandlerVersion(context, typeHandler);
 		}
 
 		/// <param name="buffer"></param>

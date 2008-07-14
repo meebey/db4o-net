@@ -345,11 +345,6 @@ namespace Db4objects.Db4o.Internal
 			return Container();
 		}
 
-		public ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler)
-		{
-			return Container().Handlers().CorrectHandlerVersion(handler, HandlerVersion());
-		}
-
 		public Slot AllocateTargetSlot(int length)
 		{
 			return _services.AllocateTargetSlot(length);
@@ -414,7 +409,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void Defragment(ITypeHandler4 handler)
 		{
-			ITypeHandler4 typeHandler = CorrectHandlerVersion(handler);
+			ITypeHandler4 typeHandler = Handlers4.CorrectHandlerVersion(this, handler);
 			if (FieldMetadata.UseDedicatedSlot(this, typeHandler))
 			{
 				if (HasClassIndex(typeHandler))

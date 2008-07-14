@@ -11,21 +11,19 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <remarks>Wraps the low-level details of reading a Buffer, which in turn is a glorified byte array.
 	/// 	</remarks>
 	/// <exclude></exclude>
-	public class UnmarshallingContext : ObjectHeaderContext, IFieldListInfo, IMarshallingInfo
+	public class UnmarshallingContext : ObjectReferenceContext, IFieldListInfo, IMarshallingInfo
+		, IHandlerVersionContext
 	{
-		private readonly ObjectReference _reference;
-
 		private object _object;
 
 		private int _addToIDTree;
 
 		private bool _checkIDTree;
 
-		public UnmarshallingContext(Transaction transaction, Db4objects.Db4o.Internal.ByteArrayBuffer
-			 buffer, ObjectReference @ref, int addToIDTree, bool checkIDTree) : base(transaction
-			, buffer, null)
+		public UnmarshallingContext(Transaction transaction, ByteArrayBuffer buffer, ObjectReference
+			 @ref, int addToIDTree, bool checkIDTree) : base(transaction, buffer, null, @ref
+			)
 		{
-			_reference = @ref;
 			_addToIDTree = addToIDTree;
 			_checkIDTree = checkIDTree;
 		}
@@ -33,27 +31,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public UnmarshallingContext(Transaction transaction, ObjectReference @ref, int addToIDTree
 			, bool checkIDTree) : this(transaction, null, @ref, addToIDTree, checkIDTree)
 		{
-		}
-
-		private Db4objects.Db4o.Internal.ByteArrayBuffer ByteArrayBuffer()
-		{
-			return (Db4objects.Db4o.Internal.ByteArrayBuffer)Buffer();
-		}
-
-		public virtual Db4objects.Db4o.Internal.StatefulBuffer StatefulBuffer()
-		{
-			Db4objects.Db4o.Internal.StatefulBuffer statefulBuffer = new Db4objects.Db4o.Internal.StatefulBuffer
-				(_transaction, ByteArrayBuffer().Length());
-			statefulBuffer.SetID(ObjectID());
-			statefulBuffer.SetInstantiationDepth(ActivationDepth());
-			ByteArrayBuffer().CopyTo(statefulBuffer, 0, 0, ByteArrayBuffer().Length());
-			statefulBuffer.Seek(ByteArrayBuffer().Offset());
-			return statefulBuffer;
-		}
-
-		public virtual int ObjectID()
-		{
-			return _reference.GetID();
 		}
 
 		public virtual object Read()
@@ -78,7 +55,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				EndProcessing();
 				return _object;
 			}
-			Db4objects.Db4o.Internal.ClassMetadata classMetadata = ReadObjectHeader();
+			ClassMetadata classMetadata = ReadObjectHeader();
 			if (classMetadata == null)
 			{
 				EndProcessing();
@@ -88,7 +65,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			AdjustActivationDepth(doAdjustActivationDepthForPrefetch);
 			if (_checkIDTree)
 			{
-				object objectInCacheFromClassCreation = _transaction.ObjectForIdFromCache(ObjectID
+				object objectInCacheFromClassCreation = Transaction().ObjectForIdFromCache(ObjectID
 					());
 				if (objectInCacheFromClassCreation != null)
 				{
@@ -142,7 +119,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return null;
 			}
-			Db4objects.Db4o.Internal.ClassMetadata classMetadata = ReadObjectHeader();
+			ClassMetadata classMetadata = ReadObjectHeader();
 			if (classMetadata == null)
 			{
 				return null;
@@ -150,11 +127,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return ReadFieldValue(classMetadata, field);
 		}
 
-		private Db4objects.Db4o.Internal.ClassMetadata ReadObjectHeader()
+		private ClassMetadata ReadObjectHeader()
 		{
 			_objectHeader = new ObjectHeader(Container(), ByteArrayBuffer());
-			Db4objects.Db4o.Internal.ClassMetadata classMetadata = _objectHeader.ClassMetadata
-				();
+			ClassMetadata classMetadata = _objectHeader.ClassMetadata();
 			if (classMetadata == null)
 			{
 				return null;
@@ -166,13 +142,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			if (Buffer() == null && id > 0)
 			{
-				Buffer(Container().ReadReaderByID(_transaction, id));
+				Buffer(Container().ReadReaderByID(Transaction(), id));
 			}
-		}
-
-		public virtual Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
-		{
-			return _reference.ClassMetadata();
 		}
 
 		private bool BeginProcessing()
@@ -208,11 +179,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual Config4Class ClassConfig()
 		{
 			return ClassMetadata().Config();
-		}
-
-		public virtual ObjectReference Reference()
-		{
-			return _reference;
 		}
 
 		public virtual void PersistentObject(object obj)

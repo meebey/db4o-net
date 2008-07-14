@@ -10,7 +10,6 @@ using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
@@ -22,7 +21,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 	/// <remarks>This is the latest version, the one that should be used.</remarks>
 	/// <exclude></exclude>
 	public class ArrayHandler : IFirstClassHandler, IComparable4, ITypeHandler4, IVariableLengthTypeHandler
-		, IEmbeddedTypeHandler, ICompositeTypeHandler, ICollectIdHandler
+		, IEmbeddedTypeHandler, IVersionedTypeHandler
 	{
 		private ITypeHandler4 _handler;
 
@@ -101,37 +100,41 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			return container.Handlers().ClassReflectorForHandler(_handler);
 		}
 
-		public virtual void CollectIDs(CollectIdContext context)
+		public virtual void CollectIDs(QueryingReadContext context)
 		{
-			ForEachElement(context, new _IRunnable_86(context));
+			ITypeHandler4 handler = Handlers4.CorrectHandlerVersion(context, _handler);
+			ForEachElement(context, new _IRunnable_86(context, handler));
 		}
 
 		private sealed class _IRunnable_86 : IRunnable
 		{
-			public _IRunnable_86(CollectIdContext context)
+			public _IRunnable_86(QueryingReadContext context, ITypeHandler4 handler)
 			{
 				this.context = context;
+				this.handler = handler;
 			}
 
 			public void Run()
 			{
-				context.AddId();
+				context.ReadId(handler);
 			}
 
-			private readonly CollectIdContext context;
+			private readonly QueryingReadContext context;
+
+			private readonly ITypeHandler4 handler;
 		}
 
 		protected virtual ArrayInfo ForEachElement(AbstractBufferContext context, IRunnable
 			 elementRunnable)
 		{
 			ArrayInfo info = NewArrayInfo();
-			WithContent(context, new _IRunnable_95(this, context, info, elementRunnable));
+			WithContent(context, new _IRunnable_96(this, context, info, elementRunnable));
 			return info;
 		}
 
-		private sealed class _IRunnable_95 : IRunnable
+		private sealed class _IRunnable_96 : IRunnable
 		{
-			public _IRunnable_95(ArrayHandler _enclosing, AbstractBufferContext context, ArrayInfo
+			public _IRunnable_96(ArrayHandler _enclosing, AbstractBufferContext context, ArrayInfo
 				 info, IRunnable elementRunnable)
 			{
 				this._enclosing = _enclosing;
@@ -204,12 +207,12 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			{
 				return;
 			}
-			ForEachElement((AbstractBufferContext)context, new _IRunnable_142(this, context));
+			ForEachElement((AbstractBufferContext)context, new _IRunnable_143(this, context));
 		}
 
-		private sealed class _IRunnable_142 : IRunnable
+		private sealed class _IRunnable_143 : IRunnable
 		{
-			public _IRunnable_142(ArrayHandler _enclosing, IDeleteContext context)
+			public _IRunnable_143(ArrayHandler _enclosing, IDeleteContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -324,51 +327,6 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 		public virtual ITypeHandler4 ReadCandidateHandler(QueryingReadContext context)
 		{
 			return this;
-		}
-
-		public virtual void ReadCandidates(QueryingReadContext context)
-		{
-			QCandidates candidates = context.Candidates();
-			ForEachElement(context, new _IRunnable_236(this, candidates, context));
-		}
-
-		private sealed class _IRunnable_236 : IRunnable
-		{
-			public _IRunnable_236(ArrayHandler _enclosing, QCandidates candidates, QueryingReadContext
-				 context)
-			{
-				this._enclosing = _enclosing;
-				this.candidates = candidates;
-				this.context = context;
-			}
-
-			public void Run()
-			{
-				QCandidate qc = candidates.ReadSubCandidate(context, this._enclosing._handler);
-				if (qc != null)
-				{
-					candidates.AddByIdentity(qc);
-				}
-			}
-
-			private readonly ArrayHandler _enclosing;
-
-			private readonly QCandidates candidates;
-
-			private readonly QueryingReadContext context;
-		}
-
-		protected virtual void ReadSubCandidates(QueryingReadContext context, int count)
-		{
-			QCandidates candidates = context.Candidates();
-			for (int i = 0; i < count; i++)
-			{
-				QCandidate qc = candidates.ReadSubCandidate(context, _handler);
-				if (qc != null)
-				{
-					candidates.AddByIdentity(qc);
-				}
-			}
 		}
 
 		protected virtual void ReadInfo(Transaction trans, IReadBuffer buffer, ArrayInfo 
@@ -703,7 +661,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			return Const4.IndirectionLength;
 		}
 
-		public virtual ITypeHandler4 GenericTemplate()
+		public virtual ITypeHandler4 UnversionedTemplate()
 		{
 			return new Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler();
 		}

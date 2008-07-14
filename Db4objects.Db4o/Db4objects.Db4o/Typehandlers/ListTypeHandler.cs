@@ -10,9 +10,12 @@ using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 
-namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
+namespace Db4objects.Db4o.Typehandlers
 {
-	public class MapTypeHandler : ITypeHandler4, IFirstClassHandler, ICanHoldAnythingHandler
+	/// <summary>TypeHandler for all lists.</summary>
+	/// <remarks>TypeHandler for all lists.</remarks>
+	/// <decaf.ignore></decaf.ignore>
+	public class ListTypeHandler : ITypeHandler4, IFirstClassHandler, ICanHoldAnythingHandler
 		, IVariableLengthTypeHandler
 	{
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj
@@ -24,39 +27,35 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		public virtual void Write(IWriteContext context, object obj)
 		{
-			IDictionary map = (IDictionary)obj;
-			WriteElementCount(context, map);
-			WriteElements(context, map);
+			IList list = (IList)obj;
+			WriteElementCount(context, list);
+			WriteElements(context, list);
 		}
 
 		public virtual object Read(IReadContext context)
 		{
-			IDictionary map = (IDictionary)((UnmarshallingContext)context).PersistentObject();
+			IList list = (IList)((UnmarshallingContext)context).PersistentObject();
 			int elementCount = context.ReadInt();
-			ITypeHandler4 elementHandler = ElementTypeHandler(context, map);
+			ITypeHandler4 elementHandler = ElementTypeHandler(context, list);
 			for (int i = 0; i < elementCount; i++)
 			{
-				object key = context.ReadObject(elementHandler);
-				object value = context.ReadObject(elementHandler);
-				map.Add(key, value);
+				list.Add(context.ReadObject(elementHandler));
 			}
-			return map;
+			return list;
 		}
 
-		private void WriteElementCount(IWriteContext context, IDictionary map)
+		private void WriteElementCount(IWriteContext context, IList list)
 		{
-			context.WriteInt(map.Count);
+			context.WriteInt(list.Count);
 		}
 
-		private void WriteElements(IWriteContext context, IDictionary map)
+		private void WriteElements(IWriteContext context, IList list)
 		{
-			ITypeHandler4 elementHandler = ElementTypeHandler(context, map);
-			IEnumerator elements = map.Keys.GetEnumerator();
+			ITypeHandler4 elementHandler = ElementTypeHandler(context, list);
+			IEnumerator elements = list.GetEnumerator();
 			while (elements.MoveNext())
 			{
-				object key = elements.Current;
-				context.WriteObject(elementHandler, key);
-				context.WriteObject(elementHandler, map[key]);
+				context.WriteObject(elementHandler, elements.Current);
 			}
 		}
 
@@ -65,10 +64,10 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			return ((IInternalObjectContainer)context.ObjectContainer()).Container();
 		}
 
-		private ITypeHandler4 ElementTypeHandler(IContext context, IDictionary map)
+		private ITypeHandler4 ElementTypeHandler(IContext context, IList list)
 		{
-			// TODO: If all elements in the map are of one type,
-			//       it is possible to use a more specific handler
+			// TODO: If all elements in the list are of one type,
+			// it is possible to use a more specific handler
 			return Container(context).Handlers().UntypedObjectHandler();
 		}
 
@@ -84,7 +83,6 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			for (int i = elementCount; i > 0; i--)
 			{
 				handler.Delete(context);
-				handler.Delete(context);
 			}
 		}
 
@@ -92,22 +90,18 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		{
 			ITypeHandler4 handler = ElementTypeHandler(context, null);
 			int elementCount = context.ReadInt();
-			for (int i = elementCount; i > 0; i--)
+			for (int i = 0; i < elementCount; i++)
 			{
-				context.Defragment(handler);
-				context.Defragment(handler);
+				handler.Defragment(context);
 			}
 		}
 
 		public void CascadeActivation(ActivationContext4 context)
 		{
-			IDictionary map = (IDictionary)context.TargetObject();
-			IEnumerator keys = (map).Keys.GetEnumerator();
-			while (keys.MoveNext())
+			IEnumerator all = ((IList)context.TargetObject()).GetEnumerator();
+			while (all.MoveNext())
 			{
-				object key = keys.Current;
-				context.CascadeActivationToChild(key);
-				context.CascadeActivationToChild(map[key]);
+				context.CascadeActivationToChild(all.Current);
 			}
 		}
 
@@ -116,15 +110,18 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			return this;
 		}
 
+		private ITypeHandler4 UntypedObjectHandlerFrom(IContext context)
+		{
+			return context.Transaction().Container().Handlers().UntypedObjectHandler();
+		}
+
 		public virtual void CollectIDs(QueryingReadContext context)
 		{
 			int elementCount = context.ReadInt();
-			ITypeHandler4 elementHandler = context.Container().Handlers().UntypedObjectHandler
-				();
+			ITypeHandler4 elementHandler = UntypedObjectHandlerFrom(context);
 			for (int i = 0; i < elementCount; i++)
 			{
 				context.ReadId(elementHandler);
-				context.SkipId(elementHandler);
 			}
 		}
 	}

@@ -217,7 +217,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <summary>return false if class not completely initialized, otherwise true *</summary>
+		/// <summary>return false if class not completely initialized, otherwise true</summary>
 		internal virtual bool ContinueSet(Db4objects.Db4o.Internal.Transaction trans, int
 			 updateDepth)
 		{
@@ -544,7 +544,7 @@ namespace Db4objects.Db4o.Internal
 				(obj), 0);
 			MarshallingContext context = new MarshallingContext(transaction, this, updatedepth
 				, false);
-			MarshallerFamily.Current()._object.Marshall(obj, context);
+			_class.Write(context, obj);
 			Pointer4 pointer = context.AllocateSlot();
 			ByteArrayBuffer buffer = context.ToWriteBuffer(pointer);
 			container.WriteUpdate(transaction, pointer, ClassMetadata(), buffer);
@@ -571,7 +571,7 @@ namespace Db4objects.Db4o.Internal
 			Id_init();
 		}
 
-		/// <summary>HCTREE ****</summary>
+		/// <summary>HCTREE</summary>
 		public virtual Db4objects.Db4o.Internal.ObjectReference Hc_add(Db4objects.Db4o.Internal.ObjectReference
 			 newRef)
 		{
@@ -848,7 +848,7 @@ namespace Db4objects.Db4o.Internal
 			return _hcPreceding;
 		}
 
-		/// <summary>IDTREE ****</summary>
+		/// <summary>IDTREE</summary>
 		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_add(Db4objects.Db4o.Internal.ObjectReference
 			 newRef)
 		{

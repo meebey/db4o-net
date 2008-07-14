@@ -16,8 +16,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int _handlerVersion;
 
-		public ObjectHeader(ObjectContainerBase stream, IReadWriteBuffer reader) : this(stream
-			, null, reader)
+		public ObjectHeader(ObjectContainerBase container, IReadWriteBuffer reader) : this
+			(container, null, reader)
 		{
 		}
 
@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 		}
 
-		public ObjectHeader(StatefulBuffer writer) : this(writer.GetStream(), writer)
+		public ObjectHeader(StatefulBuffer writer) : this(writer.Container(), writer)
 		{
 		}
 
@@ -102,10 +102,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _handlerVersion;
 		}
 
-		public static void ScrollBufferToContent(LocalObjectContainer container, ByteArrayBuffer
-			 buffer)
+		public static Db4objects.Db4o.Internal.Marshall.ObjectHeader ScrollBufferToContent
+			(LocalObjectContainer container, ByteArrayBuffer buffer)
 		{
-			new Db4objects.Db4o.Internal.Marshall.ObjectHeader(container, buffer);
+			return new Db4objects.Db4o.Internal.Marshall.ObjectHeader(container, buffer);
 		}
 	}
 }

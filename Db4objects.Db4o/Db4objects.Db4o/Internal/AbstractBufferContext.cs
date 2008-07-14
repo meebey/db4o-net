@@ -3,16 +3,17 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public abstract class AbstractBufferContext : IBufferContext
+	public abstract class AbstractBufferContext : IBufferContext, IHandlerVersionContext
 	{
 		private IReadBuffer _buffer;
 
-		protected readonly Db4objects.Db4o.Internal.Transaction _transaction;
+		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
 		public AbstractBufferContext(Db4objects.Db4o.Internal.Transaction transaction, IReadBuffer
 			 buffer)
@@ -76,11 +77,6 @@ namespace Db4objects.Db4o.Internal
 		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
 		{
 			return _transaction;
-		}
-
-		public virtual ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler)
-		{
-			return Container().Handlers().CorrectHandlerVersion(handler, HandlerVersion());
 		}
 
 		public abstract int HandlerVersion();

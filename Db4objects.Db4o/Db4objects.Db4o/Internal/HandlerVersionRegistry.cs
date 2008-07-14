@@ -38,9 +38,9 @@ namespace Db4objects.Db4o.Internal
 			{
 				return CorrectHandlerVersion(originalHandler, version + 1);
 			}
-			if (replacement is ICompositeTypeHandler)
+			if (replacement is IVersionedTypeHandler)
 			{
-				return (ITypeHandler4)((ICompositeTypeHandler)replacement).DeepClone(new TypeHandlerCloneContext
+				return (ITypeHandler4)((IVersionedTypeHandler)replacement).DeepClone(new TypeHandlerCloneContext
 					(_registry, originalHandler, version));
 			}
 			return replacement;
@@ -48,9 +48,9 @@ namespace Db4objects.Db4o.Internal
 
 		private ITypeHandler4 GenericTemplate(ITypeHandler4 handler)
 		{
-			if (handler is ICompositeTypeHandler)
+			if (handler is IVersionedTypeHandler)
 			{
-				return ((ICompositeTypeHandler)handler).GenericTemplate();
+				return ((IVersionedTypeHandler)handler).UnversionedTemplate();
 			}
 			return handler;
 		}

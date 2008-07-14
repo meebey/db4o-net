@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public sealed override MsgD GetWriter(StatefulBuffer buffer)
 		{
-			return GetWriter(buffer.GetTransaction(), buffer.Pointer(), buffer, null);
+			return GetWriter(buffer.Transaction(), buffer.Pointer(), buffer, null);
 		}
 
 		public MsgD GetWriter(Transaction trans, Pointer4 pointer, ClassMetadata classMetadata

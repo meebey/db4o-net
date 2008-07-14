@@ -134,7 +134,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void AddIndexEntry(StatefulBuffer a_bytes, object indexEntry)
 		{
-			AddIndexEntry(a_bytes.GetTransaction(), a_bytes.GetID(), indexEntry);
+			AddIndexEntry(a_bytes.Transaction(), a_bytes.GetID(), indexEntry);
 		}
 
 		public virtual void AddIndexEntry(Transaction trans, int parentID, object indexEntry
@@ -176,7 +176,23 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer writer)
 		{
-			return ((IIndexableTypeHandler)_handler).ReadIndexEntry(mf, writer);
+			IIndexableTypeHandler indexableTypeHandler = (IIndexableTypeHandler)CorrectedHandlerVersion
+				(mf.HandlerVersion());
+			return indexableTypeHandler.ReadIndexEntryFromObjectSlot(mf, writer);
+		}
+
+		private ITypeHandler4 CorrectedHandlerVersion(IHandlerVersionContext context)
+		{
+			return Handlers4.CorrectHandlerVersion(context, _handler);
+		}
+
+		private ITypeHandler4 CorrectedHandlerVersion(int handlerVersion)
+		{
+			if (handlerVersion >= HandlerRegistry.HandlerVersion)
+			{
+				return _handler;
+			}
+			return Container().Handlers().CorrectHandlerVersion(_handler, handlerVersion);
 		}
 
 		public virtual void RemoveIndexEntry(Transaction trans, int parentID, object indexEntry
@@ -339,9 +355,34 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
+			EnsureObjectIsActive(trans, cascadeTo, depth);
 			IFirstClassHandler cascadingHandler = (IFirstClassHandler)_handler;
 			ActivationContext4 context = new ActivationContext4(trans, cascadeTo, depth);
 			cascadingHandler.CascadeActivation(context);
+		}
+
+		private void EnsureObjectIsActive(Transaction trans, object cascadeTo, IActivationDepth
+			 depth)
+		{
+			if (!depth.Mode().IsActivate())
+			{
+				return;
+			}
+			if (_handler is IEmbeddedTypeHandler)
+			{
+				return;
+			}
+			ObjectContainerBase container = trans.Container();
+			ClassMetadata classMetadata = container.ClassMetadataForObject(cascadeTo);
+			if (classMetadata == null || classMetadata.IsPrimitive())
+			{
+				return;
+			}
+			if (container.IsActive(cascadeTo))
+			{
+				return;
+			}
+			container.StillToActivate(trans, cascadeTo, depth.Descend(classMetadata));
 		}
 
 		protected virtual object CascadingTarget(Transaction trans, IActivationDepth depth
@@ -416,40 +457,52 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			// TODO: Consider to use SlotFormat.handleAsObject()
-			// to differentiate whether to call _handler.collectIDs
-			// or context.addId()
-			if (_handler is ClassMetadata)
+			ITypeHandler4 handler = CorrectedHandlerVersion(context);
+			if (!(handler is IFirstClassHandler))
+			{
+				return;
+			}
+			if (handler is ClassMetadata)
 			{
 				context.AddId();
+				return;
 			}
-			else
+			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
+				(), context.HandlerVersion(), context.Buffer(), context.Collector());
+			LocalObjectContainer container = (LocalObjectContainer)context.Container();
+			SlotFormat slotFormat = SlotFormat.ForHandlerVersion(context.HandlerVersion());
+			if (slotFormat.HandleAsObject(handler))
 			{
-				if (_handler is ICollectIdHandler)
-				{
-					SlotFormat.ForHandlerVersion(context.HandlerVersion()).DoWithSlotIndirection(context
-						, _handler, new _IClosure4_368(this, context));
-				}
+				// TODO: Code is similar to QCandidate.readArrayCandidates. Try to refactor to one place.
+				int collectionID = context.ReadInt();
+				ByteArrayBuffer collectionBuffer = container.ReadReaderByID(context.Transaction()
+					, collectionID);
+				ObjectHeader.ScrollBufferToContent(container, collectionBuffer);
+				queryingReadContext = new QueryingReadContext(context.Transaction(), context.HandlerVersion
+					(), collectionBuffer, context.Collector());
 			}
+			QueryingReadContext finalContext = queryingReadContext;
+			slotFormat.DoWithSlotIndirection(finalContext, handler, new _IClosure4_419(handler
+				, finalContext));
 		}
 
-		private sealed class _IClosure4_368 : IClosure4
+		private sealed class _IClosure4_419 : IClosure4
 		{
-			public _IClosure4_368(FieldMetadata _enclosing, CollectIdContext context)
+			public _IClosure4_419(ITypeHandler4 handler, QueryingReadContext finalContext)
 			{
-				this._enclosing = _enclosing;
-				this.context = context;
+				this.handler = handler;
+				this.finalContext = finalContext;
 			}
 
 			public object Run()
 			{
-				((ICollectIdHandler)this._enclosing._handler).CollectIDs(context);
+				((IFirstClassHandler)handler).CollectIDs(finalContext);
 				return null;
 			}
 
-			private readonly FieldMetadata _enclosing;
+			private readonly ITypeHandler4 handler;
 
-			private readonly CollectIdContext context;
+			private readonly QueryingReadContext finalContext;
 		}
 
 		internal virtual void Configure(IReflectClass clazz, bool isPrimitive)
@@ -538,7 +591,7 @@ namespace Db4objects.Db4o.Internal
 				DeleteContextImpl context = new DeleteContextImpl(GetStoredType(), handlerVersion
 					, _config, buffer);
 				SlotFormat.ForHandlerVersion(handlerVersion).DoWithSlotIndirection(buffer, _handler
-					, new _IClosure4_442(this, context));
+					, new _IClosure4_492(this, context));
 			}
 			catch (CorruptionException exc)
 			{
@@ -546,9 +599,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_442 : IClosure4
+		private sealed class _IClosure4_492 : IClosure4
 		{
-			public _IClosure4_442(FieldMetadata _enclosing, DeleteContextImpl context)
+			public _IClosure4_492(FieldMetadata _enclosing, DeleteContextImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -575,7 +628,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			int offset = buffer._offset;
 			object obj = ReadIndexEntry(mf, buffer);
-			RemoveIndexEntry(buffer.GetTransaction(), buffer.GetID(), obj);
+			RemoveIndexEntry(buffer.Transaction(), buffer.GetID(), obj);
 			buffer._offset = offset;
 		}
 
@@ -876,7 +929,11 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_handler is IVariableLengthTypeHandler)
 			{
-				return Const4.IndirectionLength;
+				if (_handler is IEmbeddedTypeHandler)
+				{
+					return Const4.IndirectionLength;
+				}
+				return Const4.IdLength;
 			}
 			// TODO: For custom handlers there will have to be a way 
 			//       to calculate the length in the slot.
@@ -1039,12 +1096,10 @@ namespace Db4objects.Db4o.Internal
 			return context.Read(_handler);
 		}
 
-		/// <param name="trans"></param>
-		/// <param name="@ref"></param>
-		public virtual void ReadVirtualAttribute(Transaction trans, ByteArrayBuffer buffer
-			, ObjectReference @ref)
+		/// <param name="context">TODO</param>
+		public virtual void ReadVirtualAttribute(ObjectReferenceContext context)
 		{
-			IncrementOffset(buffer);
+			IncrementOffset(context);
 		}
 
 		/// <summary>never called but keep for Rickie</summary>
@@ -1135,33 +1190,33 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (stream.Lock())
 			{
-				_index.TraverseKeys(transaction, new _IVisitor4_918(this, userVisitor, transaction
-					));
+				IContext context = transaction.Context();
+				_index.TraverseKeys(transaction, new _IVisitor4_972(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_918 : IVisitor4
+		private sealed class _IVisitor4_972 : IVisitor4
 		{
-			public _IVisitor4_918(FieldMetadata _enclosing, IVisitor4 userVisitor, Transaction
-				 transaction)
+			public _IVisitor4_972(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+				)
 			{
 				this._enclosing = _enclosing;
 				this.userVisitor = userVisitor;
-				this.transaction = transaction;
+				this.context = context;
 			}
 
 			public void Visit(object obj)
 			{
 				FieldIndexKey key = (FieldIndexKey)obj;
 				userVisitor.Visit(((IIndexableTypeHandler)this._enclosing._handler).IndexEntryToObject
-					(transaction, key.Value()));
+					(context, key.Value()));
 			}
 
 			private readonly FieldMetadata _enclosing;
 
 			private readonly IVisitor4 userVisitor;
 
-			private readonly Transaction transaction;
+			private readonly IContext context;
 		}
 
 		private void AssertHasIndex()
@@ -1341,14 +1396,14 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void DefragField(IDefragmentContext context)
 		{
-			ITypeHandler4 typeHandler = context.CorrectHandlerVersion(GetHandler());
+			ITypeHandler4 typeHandler = CorrectedHandlerVersion(context);
 			SlotFormat.ForHandlerVersion(context.HandlerVersion()).DoWithSlotIndirection(context
-				, typeHandler, new _IClosure4_1067(context, typeHandler));
+				, typeHandler, new _IClosure4_1121(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1067 : IClosure4
+		private sealed class _IClosure4_1121 : IClosure4
 		{
-			public _IClosure4_1067(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1121(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

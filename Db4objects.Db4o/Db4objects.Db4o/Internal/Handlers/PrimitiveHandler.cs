@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.Seek(context.Offset() + LinkLength());
 		}
 
-		public virtual object IndexEntryToObject(Transaction trans, object indexEntry)
+		public object IndexEntryToObject(IContext context, object indexEntry)
 		{
 			return indexEntry;
 		}
@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		/// <exception cref="CorruptionException"></exception>
-		public virtual object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer
+		public object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer a_writer
 			)
 		{
 			return Read(mf, a_writer, true);

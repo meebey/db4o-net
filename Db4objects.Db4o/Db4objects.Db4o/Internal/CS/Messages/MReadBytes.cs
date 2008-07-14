@@ -21,8 +21,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public sealed override MsgD GetWriter(StatefulBuffer bytes)
 		{
-			MsgD message = GetWriterForLength(bytes.GetTransaction(), bytes.Length() + Const4
-				.IntLength);
+			MsgD message = GetWriterForLength(bytes.Transaction(), bytes.Length() + Const4.IntLength
+				);
 			message._payLoad.WriteInt(bytes.GetAddress());
 			message._payLoad.Append(bytes._buffer);
 			return message;

@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
+using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
@@ -35,6 +36,18 @@ namespace Db4objects.Db4o.Internal
 		public const int AnyArrayId = 12;
 
 		public const int AnyArrayNId = 13;
+
+		public static ITypeHandler4 CorrectHandlerVersion(IHandlerVersionContext context, 
+			ITypeHandler4 handler)
+		{
+			int version = context.HandlerVersion();
+			if (version >= HandlerRegistry.HandlerVersion)
+			{
+				return handler;
+			}
+			return context.Transaction().Container().Handlers().CorrectHandlerVersion(handler
+				, version);
+		}
 
 		public static bool HandlerCanHold(ITypeHandler4 handler, IReflector reflector, IReflectClass
 			 claxx)

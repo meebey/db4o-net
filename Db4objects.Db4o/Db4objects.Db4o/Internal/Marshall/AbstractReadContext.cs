@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public object ReadObject(ITypeHandler4 handlerType)
 		{
-			ITypeHandler4 handler = CorrectHandlerVersion(handlerType);
+			ITypeHandler4 handler = Handlers4.CorrectHandlerVersion(this, handlerType);
 			return SlotFormat.ForHandlerVersion(HandlerVersion()).DoWithSlotIndirection(this, 
 				handler, new _IClosure4_32(this, handler));
 		}

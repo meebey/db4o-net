@@ -93,12 +93,11 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Instantiate(UnmarshallingContext context)
 		{
-			context.Reference().ProduceVirtualAttributes();
-			Instantiate1(context.Transaction(), context.Reference(), context.Buffer());
+			context.ObjectReference().ProduceVirtualAttributes();
+			Instantiate1(context);
 		}
 
-		internal abstract void Instantiate1(Transaction trans, ObjectReference @ref, IReadBuffer
-			 buffer);
+		internal abstract void Instantiate1(ObjectReferenceContext context);
 
 		public override void LoadHandlerById(ObjectContainerBase container)
 		{
@@ -184,15 +183,14 @@ namespace Db4objects.Db4o.Internal
 
 		internal abstract void MarshallIgnore(IWriteBuffer writer);
 
-		public override void ReadVirtualAttribute(Transaction trans, ByteArrayBuffer buffer
-			, ObjectReference @ref)
+		public override void ReadVirtualAttribute(ObjectReferenceContext context)
 		{
-			if (!trans.SupportsVirtualFields())
+			if (!context.Transaction().SupportsVirtualFields())
 			{
-				IncrementOffset(buffer);
+				IncrementOffset(context);
 				return;
 			}
-			Instantiate1(trans, @ref, buffer);
+			Instantiate1(context);
 		}
 
 		public override bool IsVirtual()

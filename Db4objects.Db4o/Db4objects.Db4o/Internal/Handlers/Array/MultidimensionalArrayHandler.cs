@@ -141,7 +141,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			info.ElementCount(ElementCount(dim));
 		}
 
-		public override ITypeHandler4 GenericTemplate()
+		public override ITypeHandler4 UnversionedTemplate()
 		{
 			return new MultidimensionalArrayHandler();
 		}

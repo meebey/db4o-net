@@ -36,34 +36,35 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.Yapstring;
 		}
 
-		public virtual object IndexEntryToObject(Transaction trans, object indexEntry)
+		public object IndexEntryToObject(IContext context, object indexEntry)
 		{
 			if (indexEntry is Slot)
 			{
 				Slot slot = (Slot)indexEntry;
-				indexEntry = trans.Container().BufferByAddress(slot.Address(), slot.Length());
+				indexEntry = context.Transaction().Container().BufferByAddress(slot.Address(), slot
+					.Length());
 			}
-			return ReadStringNoDebug(trans.Context(), (IReadBuffer)indexEntry);
+			return ReadStringNoDebug(context, (IReadBuffer)indexEntry);
 		}
 
 		/// <summary>This readIndexEntry method reads from the parent slot.</summary>
-		/// <remarks>
-		/// This readIndexEntry method reads from the parent slot.
-		/// TODO: Consider renaming methods in Indexable4 and Typhandler4 to make direction clear.
-		/// </remarks>
-		/// <exception cref="CorruptionException">CorruptionException</exception>
+		/// <remarks>This readIndexEntry method reads from the parent slot.</remarks>
+		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="Db4oIOException"></exception>
-		public virtual object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer
-			)
+		public virtual object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer
+			 buffer)
 		{
-			return mf._string.ReadIndexEntry(a_writer);
+			int payLoadOffSet = buffer.ReadInt();
+			int length = buffer.ReadInt();
+			if (payLoadOffSet == 0)
+			{
+				return null;
+			}
+			return buffer.ReadPayloadWriter(payLoadOffSet, length);
 		}
 
 		/// <summary>This readIndexEntry method reads from the actual index in the file.</summary>
-		/// <remarks>
-		/// This readIndexEntry method reads from the actual index in the file.
-		/// TODO: Consider renaming methods in Indexable4 and Typhandler4 to make direction clear.
-		/// </remarks>
+		/// <remarks>This readIndexEntry method reads from the actual index in the file.</remarks>
 		public virtual object ReadIndexEntry(ByteArrayBuffer reader)
 		{
 			Slot s = new Slot(reader.ReadInt(), reader.ReadInt());
@@ -254,12 +255,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			ByteArrayBuffer sourceBuffer = Val(obj, context);
-			return new _IPreparedComparison_226(this, context, sourceBuffer);
+			return new _IPreparedComparison_228(this, context, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_226 : IPreparedComparison
+		private sealed class _IPreparedComparison_228 : IPreparedComparison
 		{
-			public _IPreparedComparison_226(StringHandler _enclosing, IContext context, ByteArrayBuffer
+			public _IPreparedComparison_228(StringHandler _enclosing, IContext context, ByteArrayBuffer
 				 sourceBuffer)
 			{
 				this._enclosing = _enclosing;

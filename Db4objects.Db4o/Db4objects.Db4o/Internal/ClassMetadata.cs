@@ -73,7 +73,11 @@ namespace Db4objects.Db4o.Internal
 
 		public bool CanUpdateFast()
 		{
-			return _canUpdateFast.BooleanValue(CheckCanUpdateFast());
+			if (_canUpdateFast == TernaryBool.Unspecified)
+			{
+				_canUpdateFast = TernaryBool.ForBoolean(CheckCanUpdateFast());
+			}
+			return _canUpdateFast.BooleanValue(false);
 		}
 
 		private bool CheckCanUpdateFast()
@@ -144,14 +148,15 @@ namespace Db4objects.Db4o.Internal
 
 		public void AddFieldIndices(StatefulBuffer a_writer, Slot oldSlot)
 		{
+			if (!DefaultObjectHandlerIsUsed())
+			{
+				return;
+			}
 			if (HasClassIndex() || HasVirtualAttributes())
 			{
 				ObjectHeader oh = new ObjectHeader(_container, this, a_writer);
-				if (DefaultObjectHandlerIsUsed())
-				{
-					oh._marshallerFamily._object.AddFieldIndices(this, oh._headerAttributes, a_writer
-						, oldSlot);
-				}
+				oh._marshallerFamily._object.AddFieldIndices(this, oh._headerAttributes, a_writer
+					, oldSlot);
 			}
 		}
 
@@ -337,21 +342,20 @@ namespace Db4objects.Db4o.Internal
 			return i_fields != null && i_fields.Length > 0;
 		}
 
-		internal virtual void AddToIndex(LocalObjectContainer a_stream, Transaction a_trans
-			, int a_id)
+		internal virtual void AddToIndex(Transaction trans, int id)
 		{
-			if (a_stream.MaintainsIndices())
+			if (!trans.Container().MaintainsIndices())
 			{
-				AddToIndex1(a_stream, a_trans, a_id);
+				return;
 			}
+			AddToIndex1(trans, id);
 		}
 
-		internal virtual void AddToIndex1(LocalObjectContainer a_stream, Transaction a_trans
-			, int a_id)
+		internal void AddToIndex1(Transaction a_trans, int a_id)
 		{
 			if (i_ancestor != null)
 			{
-				i_ancestor.AddToIndex1(a_stream, a_trans, a_id);
+				i_ancestor.AddToIndex1(a_trans, a_id);
 			}
 			if (HasClassIndex())
 			{
@@ -498,6 +502,10 @@ namespace Db4objects.Db4o.Internal
 		public virtual void CollectConstraints(Transaction a_trans, QConObject a_parent, 
 			object a_object, IVisitor4 a_visitor)
 		{
+			if (!DefaultObjectHandlerIsUsed())
+			{
+				return;
+			}
 			if (i_fields != null)
 			{
 				for (int i = 0; i < i_fields.Length; i++)
@@ -511,11 +519,21 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public void CollectIDs(CollectIdContext context)
+		public void CollectIDs(CollectIdContext context, string fieldName)
 		{
-			if (_typeHandler is ICollectIdHandler)
+			if (!DefaultObjectHandlerIsUsed())
 			{
-				((ICollectIdHandler)_typeHandler).CollectIDs(context);
+				throw new InvalidOperationException();
+			}
+			((FirstClassObjectHandler)CorrectHandlerVersion(context)).CollectIDs(context, fieldName
+				);
+		}
+
+		public virtual void CollectIDs(QueryingReadContext context)
+		{
+			if (_typeHandler is IFirstClassHandler)
+			{
+				((IFirstClassHandler)CorrectHandlerVersion(context)).CollectIDs(context);
 			}
 		}
 
@@ -605,8 +623,8 @@ namespace Db4objects.Db4o.Internal
 				_typeHandler = null;
 				return;
 			}
-			ITypeHandler4 registeredTypeHandler4 = Container().ConfigImpl().TypeHandlerForClass
-				(claxx, HandlerRegistry.HandlerVersion);
+			ITypeHandler4 registeredTypeHandler4 = Container().Handlers().RegisterTypeHandlerVersions
+				(this, claxx);
 			_typeHandler = registeredTypeHandler4 != null ? registeredTypeHandler4 : CreateDefaultTypeHandler
 				();
 			if (_typeHandler is FirstClassObjectHandler)
@@ -664,15 +682,15 @@ namespace Db4objects.Db4o.Internal
 		private void Delete1(MarshallerFamily mf, ObjectHeaderAttributes attributes, StatefulBuffer
 			 a_bytes, object a_object)
 		{
-			RemoveFromIndex(a_bytes.GetTransaction(), a_bytes.GetID());
-			DeleteMembers(mf, attributes, a_bytes, a_bytes.GetTransaction().Container()._handlers
+			RemoveFromIndex(a_bytes.Transaction(), a_bytes.GetID());
+			DeleteMembers(mf, attributes, a_bytes, a_bytes.Transaction().Container()._handlers
 				.ArrayType(a_object), false);
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual void Delete(IDeleteContext context)
 		{
-			_typeHandler.Delete(context);
+			CorrectHandlerVersion(context).Delete(context);
 		}
 
 		internal virtual void DeleteMembers(MarshallerFamily mf, ObjectHeaderAttributes attributes
@@ -700,7 +718,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
-					_typeHandler.Delete(context);
+					CorrectHandlerVersion(context).Delete(context);
 				}
 			}
 			catch (Exception e)
@@ -847,6 +865,10 @@ namespace Db4objects.Db4o.Internal
 		public HandlerVersion FindOffset(ByteArrayBuffer buffer, FieldMetadata field)
 		{
 			if (buffer == null)
+			{
+				return HandlerVersion.Invalid;
+			}
+			if (!DefaultObjectHandlerIsUsed())
 			{
 				return HandlerVersion.Invalid;
 			}
@@ -1064,14 +1086,14 @@ namespace Db4objects.Db4o.Internal
 			return _index.EntryCount(ta);
 		}
 
-		public virtual object IndexEntryToObject(Transaction trans, object indexEntry)
+		public object IndexEntryToObject(IContext context, object indexEntry)
 		{
 			if (indexEntry == null)
 			{
 				return null;
 			}
 			int id = ((int)indexEntry);
-			return Container().GetByID2(trans, id);
+			return Container().GetByID2(context.Transaction(), id);
 		}
 
 		public virtual IReflectClass ClassReflector()
@@ -1118,13 +1140,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			FieldMetadata[] yf = new FieldMetadata[1];
-			ForEachFieldMetadata(new _IVisitor4_925(name, yf));
+			ForEachFieldMetadata(new _IVisitor4_943(name, yf));
 			return yf[0];
 		}
 
-		private sealed class _IVisitor4_925 : IVisitor4
+		private sealed class _IVisitor4_943 : IVisitor4
 		{
-			public _IVisitor4_925(string name, FieldMetadata[] yf)
+			public _IVisitor4_943(string name, FieldMetadata[] yf)
 			{
 				this.name = name;
 				this.yf = yf;
@@ -1261,13 +1283,14 @@ namespace Db4objects.Db4o.Internal
 					return null;
 				}
 				ShareTransaction(obj, context.Transaction());
-				ShareObjectReference(obj, context.Reference());
+				ShareObjectReference(obj, context.ObjectReference());
 				context.SetObjectWeak(obj);
-				context.Transaction().ReferenceSystem().AddExistingReference(context.Reference());
+				context.Transaction().ReferenceSystem().AddExistingReference(context.ObjectReference
+					());
 				ObjectOnInstantiate(context.Transaction(), obj);
 				if (!context.ActivationDepth().RequiresActivation())
 				{
-					context.Reference().SetStateDeactivated();
+					context.ObjectReference().SetStateDeactivated();
 				}
 				else
 				{
@@ -1276,8 +1299,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				if (ActivatingActiveObject(context.ActivationDepth().Mode(), context.Reference())
-					)
+				if (ActivatingActiveObject(context.ActivationDepth().Mode(), context.ObjectReference
+					()))
 				{
 					IActivationDepth child = context.ActivationDepth().Descend(this);
 					if (child.RequiresActivation())
@@ -1320,10 +1343,10 @@ namespace Db4objects.Db4o.Internal
 			object obj = context.PersistentObject();
 			if (!ObjectCanActivate(context.Transaction(), obj))
 			{
-				context.Reference().SetStateDeactivated();
+				context.ObjectReference().SetStateDeactivated();
 				return obj;
 			}
-			context.Reference().SetStateClean();
+			context.ObjectReference().SetStateClean();
 			if (context.ActivationDepth().RequiresActivation())
 			{
 				obj = InstantiateFields(context);
@@ -1377,7 +1400,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private object InstantiateFromConfig(UnmarshallingContext context)
+		private object InstantiateFromConfig(ObjectReferenceContext context)
 		{
 			int offset = context.Offset();
 			// Field length is always 1
@@ -1577,7 +1600,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_typeHandler is IFirstClassHandler)
 			{
-				return ((IFirstClassHandler)_typeHandler).ReadCandidateHandler(context);
+				return ((IFirstClassHandler)CorrectHandlerVersion(context)).ReadCandidateHandler(
+					context);
 			}
 			return null;
 		}
@@ -1605,14 +1629,6 @@ namespace Db4objects.Db4o.Internal
 			return ObjectID.Read(context);
 		}
 
-		public virtual void ReadCandidates(QueryingReadContext context)
-		{
-			if (_typeHandler is IFirstClassHandler)
-			{
-				((IFirstClassHandler)_typeHandler).ReadCandidates(context);
-			}
-		}
-
 		public int ReadFieldCount(IReadBuffer buffer)
 		{
 			int count = buffer.ReadInt();
@@ -1623,13 +1639,13 @@ namespace Db4objects.Db4o.Internal
 			return count;
 		}
 
-		public virtual object ReadIndexEntry(ByteArrayBuffer a_reader)
+		public object ReadIndexEntry(ByteArrayBuffer a_reader)
 		{
 			return a_reader.ReadInt();
 		}
 
 		/// <exception cref="CorruptionException"></exception>
-		public virtual object ReadIndexEntry(MarshallerFamily mf, StatefulBuffer a_writer
+		public object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer a_writer
 			)
 		{
 			return ReadIndexEntry(a_writer);
@@ -1669,21 +1685,21 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual void ReadVirtualAttributes(Transaction a_trans, ObjectReference a_yapObject
+		public virtual void ReadVirtualAttributes(Transaction trans, ObjectReference @ref
 			, bool lastCommitted)
 		{
-			int id = a_yapObject.GetID();
-			ObjectContainerBase stream = a_trans.Container();
-			ByteArrayBuffer reader = stream.ReadReaderByID(a_trans, id, lastCommitted);
-			ObjectHeader oh = new ObjectHeader(stream, this, reader);
-			oh.ObjectMarshaller().ReadVirtualAttributes(a_trans, this, a_yapObject, oh._headerAttributes
-				, reader);
-		}
-
-		internal virtual void ReadVirtualAttributes(Transaction a_trans, ObjectReference 
-			a_yapObject)
-		{
-			ReadVirtualAttributes(a_trans, a_yapObject, false);
+			if (!(_typeHandler is IVirtualAttributeHandler))
+			{
+				return;
+			}
+			int id = @ref.GetID();
+			ObjectContainerBase stream = trans.Container();
+			ByteArrayBuffer buffer = stream.ReadReaderByID(trans, id, lastCommitted);
+			ObjectHeader oh = new ObjectHeader(stream, this, buffer);
+			ObjectReferenceContext context = new ObjectReferenceContext(trans, buffer, oh, @ref
+				);
+			((IVirtualAttributeHandler)CorrectHandlerVersion(context)).ReadVirtualAttributes(
+				context);
 		}
 
 		public virtual GenericReflector Reflector()
@@ -2002,7 +2018,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1669
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1681
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2011,9 +2027,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1669 : IFunction4
+		private sealed class _IFunction4_1681 : IFunction4
 		{
-			public _IFunction4_1669(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1681(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2054,12 +2070,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1697(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1709(this));
 		}
 
-		private sealed class _IFunction4_1697 : IFunction4
+		private sealed class _IFunction4_1709 : IFunction4
 		{
-			public _IFunction4_1697(ClassMetadata _enclosing)
+			public _IFunction4_1709(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2101,12 +2117,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1726());
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1738());
 		}
 
-		private sealed class _IPredicate4_1726 : IPredicate4
+		private sealed class _IPredicate4_1738 : IPredicate4
 		{
-			public _IPredicate4_1726()
+			public _IPredicate4_1738()
 			{
 			}
 
@@ -2243,7 +2259,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Defragment(IDefragmentContext context)
 		{
-			context.CorrectHandlerVersion(_typeHandler).Defragment(context);
+			CorrectHandlerVersion(context).Defragment(context);
 		}
 
 		/// <exception cref="CorruptionException"></exception>
@@ -2292,8 +2308,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object Read(IReadContext context)
 		{
-			UnmarshallingContext unmarshallingContext = (UnmarshallingContext)context;
-			return unmarshallingContext.CorrectHandlerVersion(_typeHandler).Read(context);
+			return CorrectHandlerVersion((IHandlerVersionContext)context).Read(context);
 		}
 
 		public virtual void Write(IWriteContext context, object obj)
@@ -2357,6 +2372,11 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool IsSecondClass()
 		{
 			return IsSecondClass(_typeHandler);
+		}
+
+		private ITypeHandler4 CorrectHandlerVersion(IHandlerVersionContext context)
+		{
+			return Handlers4.CorrectHandlerVersion(context, _typeHandler);
 		}
 	}
 }

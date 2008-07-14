@@ -73,10 +73,22 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				, false);
 			AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler0), multidimensionalArrayHandler
 				, 0);
-			AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler), multidimensionalArrayHandler
-				, 1);
-			AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler), multidimensionalArrayHandler
-				, 2);
+			if (NullableArrayHandling.Enabled())
+			{
+				AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler3), multidimensionalArrayHandler
+					, 1);
+				AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler3), multidimensionalArrayHandler
+					, 2);
+				AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler3), multidimensionalArrayHandler
+					, 3);
+			}
+			else
+			{
+				AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler), multidimensionalArrayHandler
+					, 1);
+				AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler), multidimensionalArrayHandler
+					, 2);
+			}
 			AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler), multidimensionalArrayHandler
 				, HandlerRegistry.HandlerVersion);
 		}

@@ -150,15 +150,6 @@ namespace Db4objects.Db4o.Internal
 			_delete = TreeInt.RemoveLike((TreeInt)_delete, a_id);
 		}
 
-		internal virtual void DontRemoveFromClassIndex(int a_yapClassID, int a_id)
-		{
-			// If objects are deleted and rewritten during a cascade
-			// on delete, we dont want them to be gone.        
-			CheckSynchronization();
-			ClassMetadata yapClass = Container().ClassMetadataForId(a_yapClassID);
-			yapClass.Index().Add(this, a_id);
-		}
-
 		public virtual HardObjectReference GetHardReferenceBySignature(long a_uuid, byte[]
 			 a_signature)
 		{
@@ -382,12 +373,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IContext Context()
 		{
-			return new _IContext_334(this);
+			return new _IContext_326(this);
 		}
 
-		private sealed class _IContext_334 : IContext
+		private sealed class _IContext_326 : IContext
 		{
-			public _IContext_334(Transaction _enclosing)
+			public _IContext_326(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

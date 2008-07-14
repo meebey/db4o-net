@@ -8,7 +8,6 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
@@ -140,44 +139,15 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			return this;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
-		public virtual void ReadCandidates(QueryingReadContext context)
+		public virtual void CollectIDs(QueryingReadContext context)
 		{
-			context.ReadInt();
-			// skip class id
 			int elementCount = context.ReadInt();
 			ITypeHandler4 elementHandler = context.Container().Handlers().UntypedObjectHandler
 				();
-			ReadSubCandidates(context, elementCount, elementHandler);
-		}
-
-		private void ReadSubCandidates(QueryingReadContext context, int count, ITypeHandler4
-			 elementHandler)
-		{
-			QCandidates candidates = context.Candidates();
-			for (int i = 0; i < count; i++)
+			for (int i = 0; i < elementCount; i++)
 			{
-				QCandidate qc = candidates.ReadSubCandidate(context, elementHandler);
-				if (qc != null)
-				{
-					candidates.AddByIdentity(qc);
-				}
+				context.ReadId(elementHandler);
 			}
-		}
-
-		private IActivationDepth Descend(ObjectContainerBase container, IActivationDepth 
-			depth, object obj)
-		{
-			if (obj == null)
-			{
-				return new NonDescendingActivationDepth(depth.Mode());
-			}
-			ClassMetadata cm = container.ClassMetadataForObject(obj);
-			if (cm.IsPrimitive())
-			{
-				return new NonDescendingActivationDepth(depth.Mode());
-			}
-			return depth.Descend(cm);
 		}
 	}
 }

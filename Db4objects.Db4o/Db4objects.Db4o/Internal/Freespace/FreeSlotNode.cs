@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			Transaction trans = ((StatefulBuffer)buffer).GetTransaction();
+			Transaction trans = ((StatefulBuffer)buffer).Transaction();
 			if (!(trans.Container() is IoAdaptedObjectContainer))
 			{
 				return;

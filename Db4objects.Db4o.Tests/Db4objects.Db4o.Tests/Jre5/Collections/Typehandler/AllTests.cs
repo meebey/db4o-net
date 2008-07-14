@@ -10,15 +10,16 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 	{
 		public static void Main(string[] arguments)
 		{
-			new Db4objects.Db4o.Tests.Jre5.Collections.Typehandler.AllTests().RunSolo();
+			new Db4objects.Db4o.Tests.Jre5.Collections.Typehandler.AllTests().RunClientServer
+				();
 		}
 
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(ListTypeHandlerCascadedDeleteTestCase), typeof(ListTypeHandlerPersistedCountTestCase
 				), typeof(ListTypeHandlerTestSuite), typeof(ListTypeHandlerGreaterSmallerTestSuite
-				), typeof(ListTypeHandlerStringElementTestSuite), typeof(NamedArrayListTypeHandlerTestCase
-				) };
+				), typeof(ListTypeHandlerStringElementTestSuite), typeof(MapTypeHandlerTestSuite
+				), typeof(NamedArrayListTypeHandlerTestCase) };
 		}
 	}
 }

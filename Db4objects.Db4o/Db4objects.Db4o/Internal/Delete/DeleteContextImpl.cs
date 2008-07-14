@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Internal.Delete
 		private readonly Config4Field _fieldConfig;
 
 		public DeleteContextImpl(IReflectClass fieldClass, int handlerVersion, Config4Field
-			 fieldConfig, StatefulBuffer buffer) : base(buffer.GetTransaction(), buffer)
+			 fieldConfig, StatefulBuffer buffer) : base(buffer.Transaction(), buffer)
 		{
 			_fieldClass = fieldClass;
 			_handlerVersion = handlerVersion;
@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Internal.Delete
 
 		public virtual void Delete(ITypeHandler4 handler)
 		{
-			ITypeHandler4 fieldHandler = CorrectHandlerVersion(handler);
+			ITypeHandler4 fieldHandler = Handlers4.CorrectHandlerVersion(this, handler);
 			int preservedCascadeDepth = CascadeDeleteDepth();
 			CascadeDeleteDepth(AdjustedDepth());
 			if (SlotFormat.ForHandlerVersion(HandlerVersion()).HandleAsObject(fieldHandler))

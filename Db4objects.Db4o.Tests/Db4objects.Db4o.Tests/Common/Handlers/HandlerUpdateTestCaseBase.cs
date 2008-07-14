@@ -40,6 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			objectContainer.Activate(holder, int.MaxValue);
 			AssertValues(holder._values);
 			AssertArrays(holder._arrays);
+			AssertQueries(objectContainer);
 		}
 
 		private HandlerUpdateTestCaseBase.Holder RetrieveHolderInstance(IExtObjectContainer
@@ -86,6 +87,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected abstract void AssertArrays(object obj);
 
+		protected virtual void AssertQueries(IExtObjectContainer objectContainer)
+		{
+		}
+
+		// override on demand to check queries
 		protected virtual int[] CastToIntArray(object obj)
 		{
 			ObjectByRef byRef = new ObjectByRef(obj);
