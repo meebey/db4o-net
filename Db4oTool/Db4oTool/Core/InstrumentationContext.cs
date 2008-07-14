@@ -111,5 +111,10 @@ namespace Db4oTool.Core
 		{
 			return _configuration.Accept(typedef);
 		}
+
+		public bool IsAssemblySigned()
+		{
+			return _assembly.Name.HasPublicKey;
+		}
 	}
 }

@@ -1,6 +1,5 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
-using Db4oTool.Tests.TA;
 using Db4oUnit;
 
 namespace Db4oTool.Tests
@@ -9,7 +8,6 @@ namespace Db4oTool.Tests
 	{
 		protected override Type[] TestCases()
 		{
-//			return new Type[] { typeof(TABytecodeChangesTestCase),  };
 			return new Type[]
 				{
 					typeof(ProgramOptionsTestCase),

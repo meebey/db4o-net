@@ -71,6 +71,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -99,6 +100,7 @@
     <Compile Include="Core\PreserveDebugInfoTestCase.cs" />
     <Compile Include="Core\ResourceServices.cs" />
     <Compile Include="Core\ShellUtilities.cs" />
+    <Compile Include="Core\SignConfiguration.cs" />
     <Compile Include="Core\SingleResourceTestCase.cs" />
     <Compile Include="Core\VerifyAssemblyTest.cs" />
     <Compile Include="NQ\AllTests.cs" />
@@ -120,9 +122,12 @@
     <EmbeddedResource Include="TA\Resources\TAFieldSetterSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TABytecodeChangesSubject.cs" />
     <Compile Include="TA\TABytecodeChangesTestCase.cs" />
+    <Compile Include="TA\TAEnsureDb4oReferenceIsAdded.cs" />
     <Compile Include="TA\TAInstrumentationAppliedMoreThanOnceCOR-918.cs" />
     <Compile Include="TA\TAInstrumentationTestCase.cs" />
     <Compile Include="TA\TANonStorableTypeTestCase.cs" />
+    <Compile Include="TA\TATestCaseBase.cs" />
+    <Compile Include="TA\TAWarningOnSignedAssemblyInstrumentation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2008.csproj">

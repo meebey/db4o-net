@@ -14,6 +14,11 @@ namespace Db4oTool.Core
 			_context = new InstrumentationContext(configuration);
 		}
 
+		public InstrumentationContext Context
+		{
+			get { return _context; }
+		}
+
 		public void Add(IAssemblyInstrumentation instrumentation)
 		{
 			if (null == instrumentation) throw new ArgumentNullException("instrumentation");

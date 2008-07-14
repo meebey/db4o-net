@@ -13,6 +13,7 @@ namespace Db4oTool.Tests.Core
 	public class CompilationServices
 	{
 		public static readonly ContextVariable<bool> Unsafe = new ContextVariable<bool>(false);
+		public static readonly ContextVariable<SignConfiguration> KeyFile = new ContextVariable<SignConfiguration>(null);
 
 		public static void EmitAssembly(string assemblyFileName, Assembly[] references, params string[] sourceFiles)
 		{
@@ -52,7 +53,14 @@ namespace Db4oTool.Tests.Core
 				// TODO: run test cases in both modes (optimized and debug)
 				parameters.IncludeDebugInformation = true;
 				parameters.OutputAssembly = assemblyFName;
+				
 				if (Unsafe.Value) parameters.CompilerOptions = "/unsafe";
+				if (KeyFile.Value != null)
+				{
+					parameters.CompilerOptions += " /keyfile:" + KeyFile.Value.KeyFile;
+					parameters.CompilerOptions += " /delaysign" + (KeyFile.Value.DelaySign ? '+' : '-');
+				}
+
 				foreach (Assembly reference in references)
 				{
 					parameters.ReferencedAssemblies.Add(reference.ManifestModule.FullyQualifiedName);

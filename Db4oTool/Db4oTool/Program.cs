@@ -69,6 +69,10 @@ namespace Db4oTool
 			if (!options.Fake)
 			{
 				pipeline.Add(new SaveAssemblyInstrumentation());
+				if (pipeline.Context.IsAssemblySigned())
+				{
+					pipeline.Context.TraceWarning("Warning: Assembly {0} has been signed; once instrumented it will fail strong name validation (you will need to sign it again).", pipeline.Context.Assembly.Name.Name);
+				}
 			}
 			pipeline.Run();
 		}

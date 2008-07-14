@@ -75,6 +75,7 @@
     <Compile Include="Core\PreserveDebugInfoTestCase.cs" />
     <Compile Include="Core\ResourceServices.cs" />
     <Compile Include="Core\ShellUtilities.cs" />
+    <Compile Include="Core\SignConfiguration.cs" />
     <Compile Include="Core\SingleResourceTestCase.cs" />
     <Compile Include="Core\VerifyAssemblyTest.cs" />
     <Compile Include="NQ\AllTests.cs" />
@@ -90,6 +91,7 @@
     <EmbeddedResource Include="TA\Resources\TAInstrumentationSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TAAssemblyReferenceSubject.cs" />
     <EmbeddedResource Include="TA\Resources\TADoubleInstrumentationSubject.cs" />
+    <Compile Include="TAEnsureDb4oReferenceIsAdded.cs" />
     <Compile Include="TA\AllTests.cs" />
     <Compile Include="TA\MockActivator.cs" />
     <EmbeddedResource Include="TA\Resources\TAUnsafeInstrumentationSubject.cs" />
@@ -99,6 +101,8 @@
     <Compile Include="TA\TAInstrumentationAppliedMoreThanOnceCOR-918.cs" />
     <Compile Include="TA\TAInstrumentationTestCase.cs" />
     <Compile Include="TA\TANonStorableTypeTestCase.cs" />
+    <Compile Include="TA\TATestCaseBase.cs" />
+    <Compile Include="TA\TAWarningOnSignedAssemblyInstrumentation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2005.csproj">
