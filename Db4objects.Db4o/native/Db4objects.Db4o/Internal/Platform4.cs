@@ -16,6 +16,7 @@ using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Reflect.Net;
+using Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Types;
 using Sharpen.IO;
 using Db4objects.Db4o.Foundation;
@@ -318,6 +319,12 @@ namespace Db4objects.Db4o.Internal
             {
                 Translate(config, "System.Collections.SortedList, mscorlib", new TDictionary());
             }
+
+            new CollectionTypeHandlerRegistry(config, new ListTypeHandler()).RegisterCollections(new Type[]{
+                typeof(System.Collections.ArrayList),
+            });
+
+
         }
 
         public static bool IsCompact()
