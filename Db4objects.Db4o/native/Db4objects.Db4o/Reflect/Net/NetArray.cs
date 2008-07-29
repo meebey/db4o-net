@@ -52,6 +52,10 @@ namespace Db4objects.Db4o.Reflect.Net
 
         private Type NullableType(Type type)
         {
+            if(IsNullableType(type))
+            {
+                return type;
+            }
             return typeof(Nullable<>).MakeGenericType(new Type[] { type });
         }
         
