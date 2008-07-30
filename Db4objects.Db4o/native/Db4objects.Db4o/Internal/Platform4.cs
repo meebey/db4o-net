@@ -320,10 +320,8 @@ namespace Db4objects.Db4o.Internal
                 Translate(config, "System.Collections.SortedList, mscorlib", new TDictionary());
             }
 
-            new CollectionTypeHandlerRegistry(config, new ListTypeHandler()).RegisterCollections(new Type[]{
-                typeof(System.Collections.ArrayList),
-            });
-
+            CollectionTypeHandlerRegistry registry = new CollectionTypeHandlerRegistry(config, new ListTypeHandler());
+            registry.RegisterCollection(typeof(System.Collections.ArrayList));
 
         }
 
