@@ -141,7 +141,12 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public static Type ToNative(IReflectClass reflectClass)
 		{
-			return ((Db4objects.Db4o.Reflect.Net.NetClass)reflectClass.GetDelegate()).GetNetType();
+            NetClass netClass = reflectClass.GetDelegate() as NetClass;
+            if(netClass == null)
+            {
+                return null;
+            }
+			return netClass.GetNetType();
 		}
 
 		public virtual void SetParent(IReflector reflector)

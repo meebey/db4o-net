@@ -351,7 +351,14 @@ namespace Db4objects.Db4o.Internal
             public bool Match(IReflectClass classReflector, int version)
             {
                 Type type = NetReflector.ToNative(classReflector);
-                if (!type.IsGenericType) return false;
+                if(type == null)
+                {
+                    return false;
+                }
+                if (!type.IsGenericType) 
+                {
+                    return false;
+                }
                 return type.GetGenericTypeDefinition() == _genericType;
             }
         }
