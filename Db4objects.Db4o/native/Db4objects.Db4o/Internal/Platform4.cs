@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -323,6 +324,36 @@ namespace Db4objects.Db4o.Internal
             CollectionTypeHandlerRegistry registry = new CollectionTypeHandlerRegistry(config, new ListTypeHandler());
             registry.RegisterCollection(typeof(System.Collections.ArrayList));
 
+            RegisterGenericTypeHandlers(config);
+
+        }
+
+        private static void RegisterGenericTypeHandlers(Config4Impl config)
+        {
+            if (! CollectionTypeHandlerRegistry.Enabled())
+            {
+                return;
+            }
+            GenericTypeHandlerPredicate listPredicate = new GenericTypeHandlerPredicate(typeof(List<>));
+            config.RegisterTypeHandler(listPredicate, new ListTypeHandler());
+            
+        }
+
+        internal class GenericTypeHandlerPredicate : ITypeHandlerPredicate
+        {
+            private Type _genericType;
+
+            internal GenericTypeHandlerPredicate(Type genericType)
+            {
+                _genericType = genericType;
+            }
+
+            public bool Match(IReflectClass classReflector, int version)
+            {
+                Type type = NetReflector.ToNative(classReflector);
+                if (!type.IsGenericType) return false;
+                return type.GetGenericTypeDefinition() == _genericType;
+            }
         }
 
         public static bool IsCompact()
