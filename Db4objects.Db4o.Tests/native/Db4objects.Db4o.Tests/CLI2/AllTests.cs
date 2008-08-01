@@ -11,6 +11,7 @@ namespace Db4objects.Db4o.Tests.CLI2
 			{
 				typeof(Assorted.AllTests),
 				typeof(Collections.AllTests),
+                typeof(Handlers.AllTests),
 				typeof(NativeQueries.Diagnostics.AllTests),
 				typeof(Regression.AllTests),
 				typeof(TA.AllTests),
