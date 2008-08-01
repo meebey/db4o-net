@@ -247,7 +247,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return false;
 			}
-			_yapClass.FindOffset(_bytes, _yapField);
+			_yapClass.SeekToField(Transaction(), _bytes, _yapField);
 			Db4objects.Db4o.Internal.Query.Processor.QCandidate candidate = ReadSubCandidate(
 				a_candidates);
 			if (candidate == null)
@@ -389,17 +389,18 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					int collectionID = buffer.ReadInt();
 					ByteArrayBuffer arrayElementBuffer = this._enclosing.Container().ReadReaderByID(this
 						._enclosing.Transaction(), collectionID);
-					ObjectHeader.ScrollBufferToContent(this._enclosing.Container(), arrayElementBuffer
-						);
+					ObjectHeader objectHeader = ObjectHeader.ScrollBufferToContent(this._enclosing.Container
+						(), arrayElementBuffer);
 					context = new QueryingReadContext(this._enclosing.Transaction(), candidates, this
 						._enclosing._handlerVersion, arrayElementBuffer, collectionID);
+					objectHeader.ClassMetadata().CollectIDs(context);
 				}
 				else
 				{
 					context = new QueryingReadContext(this._enclosing.Transaction(), candidates, this
 						._enclosing._handlerVersion, buffer, 0);
+					((IFirstClassHandler)arrayElementHandler).CollectIDs(context);
 				}
-				((IFirstClassHandler)arrayElementHandler).CollectIDs(context);
 				Tree.Traverse(context.Ids(), new _IVisitor4_357(candidates));
 				IEnumerator i = context.ObjectsWithoutId();
 				while (i.MoveNext())
@@ -781,7 +782,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				FieldNotFound();
 				return;
 			}
-			HandlerVersion handlerVersion = _yapClass.FindOffset(_bytes, _yapField);
+			HandlerVersion handlerVersion = _yapClass.SeekToField(Transaction(), _bytes, _yapField
+				);
 			if (handlerVersion == HandlerVersion.Invalid)
 			{
 				FieldNotFound();

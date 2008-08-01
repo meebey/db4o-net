@@ -6,8 +6,7 @@ using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
-	public class ObjectReferenceContext : ObjectHeaderContext, IFieldListInfo, IMarshallingInfo
-		, IHandlerVersionContext
+	public class ObjectReferenceContext : ObjectHeaderContext
 	{
 		protected readonly Db4objects.Db4o.Internal.ObjectReference _reference;
 
@@ -16,6 +15,21 @@ namespace Db4objects.Db4o.Internal.Marshall
 			, buffer, objectHeader)
 		{
 			_reference = reference;
+		}
+
+		public virtual int ObjectID()
+		{
+			return _reference.GetID();
+		}
+
+		public override Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
+		{
+			return _reference.ClassMetadata();
+		}
+
+		public virtual Db4objects.Db4o.Internal.ObjectReference ObjectReference()
+		{
+			return _reference;
 		}
 
 		protected virtual Db4objects.Db4o.Internal.ByteArrayBuffer ByteArrayBuffer()
@@ -32,21 +46,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			ByteArrayBuffer().CopyTo(statefulBuffer, 0, 0, ByteArrayBuffer().Length());
 			statefulBuffer.Seek(ByteArrayBuffer().Offset());
 			return statefulBuffer;
-		}
-
-		public virtual int ObjectID()
-		{
-			return _reference.GetID();
-		}
-
-		public virtual Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
-		{
-			return _reference.ClassMetadata();
-		}
-
-		public virtual Db4objects.Db4o.Internal.ObjectReference ObjectReference()
-		{
-			return _reference;
 		}
 	}
 }

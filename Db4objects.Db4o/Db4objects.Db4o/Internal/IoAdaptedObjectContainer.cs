@@ -239,7 +239,7 @@ namespace Db4objects.Db4o.Internal
 						{
 							string msg = "XByte corruption adress:" + newAddress + " length:" + length + " starting:"
 								 + i;
-							throw new Exception(msg);
+							throw new Db4oException(msg);
 						}
 					}
 				}

@@ -61,5 +61,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return buffer.Container().ReadWriterByAddress(buffer.Transaction(), buffer.ReadInt
 				(), buffer.ReadInt());
 		}
+
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="Db4oIOException"></exception>
+		public override object ReadIndexEntry(IObjectIdContext context)
+		{
+			return context.Transaction().Container().ReadWriterByAddress(context.Transaction(
+				), context.ReadInt(), context.ReadInt());
+		}
 	}
 }

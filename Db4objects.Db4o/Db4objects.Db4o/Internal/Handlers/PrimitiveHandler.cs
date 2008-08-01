@@ -2,6 +2,7 @@
 
 using System;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
@@ -92,6 +93,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			return Read(mf, a_writer, true);
+		}
+
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="Db4oIOException"></exception>
+		public virtual object ReadIndexEntry(IObjectIdContext context)
+		{
+			return Read(context);
 		}
 
 		public virtual IReflectClass ClassReflector()

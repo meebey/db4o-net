@@ -28,19 +28,16 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			new CustomTypeHandlerTestCase().RunSolo();
 		}
 
-		private static bool prepareComparisonCalled;
-
 		private sealed class CustomItemTypeHandler : ITypeHandler4, IVariableLengthTypeHandler
 		{
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
-				CustomTypeHandlerTestCase.prepareComparisonCalled = true;
-				return new _IPreparedComparison_36();
+				return new _IPreparedComparison_33();
 			}
 
-			private sealed class _IPreparedComparison_36 : IPreparedComparison
+			private sealed class _IPreparedComparison_33 : IPreparedComparison
 			{
-				public _IPreparedComparison_36()
+				public _IPreparedComparison_33()
 				{
 				}
 
@@ -53,7 +50,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public void Write(IWriteContext context, object obj)
 			{
 				CustomTypeHandlerTestCase.Item item = (CustomTypeHandlerTestCase.Item)obj;
-				CustomTypeHandlerTestCase.AssertCurrentSlot(context, item);
 				if (item.numbers == null)
 				{
 					context.WriteInt(-1);
@@ -70,7 +66,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			{
 				CustomTypeHandlerTestCase.Item item = (CustomTypeHandlerTestCase.Item)((UnmarshallingContext
 					)context).PersistentObject();
-				CustomTypeHandlerTestCase.AssertCurrentSlot(context, item);
 				int elementCount = context.ReadInt();
 				if (elementCount == -1)
 				{
@@ -105,13 +100,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
-				CustomTypeHandlerTestCase.prepareComparisonCalled = true;
-				return new _IPreparedComparison_86();
+				return new _IPreparedComparison_78();
 			}
 
-			private sealed class _IPreparedComparison_86 : IPreparedComparison
+			private sealed class _IPreparedComparison_78 : IPreparedComparison
 			{
-				public _IPreparedComparison_86()
+				public _IPreparedComparison_78()
 				{
 				}
 
@@ -123,7 +117,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 			public void Write(IWriteContext context, object obj)
 			{
-				CustomTypeHandlerTestCase.AssertCurrentSlot(context, 0);
 				CustomTypeHandlerTestCase.ItemGrandChild item = (CustomTypeHandlerTestCase.ItemGrandChild
 					)obj;
 				context.WriteInt(item.age);
@@ -132,7 +125,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 			public object Read(IReadContext context)
 			{
-				CustomTypeHandlerTestCase.AssertCurrentSlot(context, 0);
 				CustomTypeHandlerTestCase.ItemGrandChild item = (CustomTypeHandlerTestCase.ItemGrandChild
 					)((UnmarshallingContext)context).PersistentObject();
 				item.age = context.ReadInt();
@@ -277,13 +269,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			GenericReflector reflector = ((Config4Impl)config).Reflector();
 			IReflectClass itemClass = reflector.ForClass(clazz);
-			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_216(itemClass);
+			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_206(itemClass);
 			config.RegisterTypeHandler(predicate, typeHandler);
 		}
 
-		private sealed class _ITypeHandlerPredicate_216 : ITypeHandlerPredicate
+		private sealed class _ITypeHandlerPredicate_206 : ITypeHandlerPredicate
 		{
-			public _ITypeHandlerPredicate_216(IReflectClass itemClass)
+			public _ITypeHandlerPredicate_206(IReflectClass itemClass)
 			{
 				this.itemClass = itemClass;
 			}
@@ -304,14 +296,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Store(StoredItemGrandChild());
 		}
 
-		public virtual void TestConfiguration()
-		{
-			ClassMetadata classMetadata = Stream().ClassMetadataForReflectClass(ItemClass());
-			prepareComparisonCalled = false;
-			classMetadata.PrepareComparison(Stream().Transaction().Context(), null);
-			Assert.IsTrue(prepareComparisonCalled);
-		}
-
 		public virtual void TestRetrieveOnlyInstance()
 		{
 			Assert.AreEqual(StoredItem(), RetrieveItemOfClass(typeof(CustomTypeHandlerTestCase.Item
@@ -324,7 +308,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				)));
 		}
 
-		public virtual void _testGrandChildClass()
+		public virtual void TestGrandChildClass()
 		{
 			Assert.AreEqual(StoredItemGrandChild(), RetrieveItemOfClass(typeof(CustomTypeHandlerTestCase.ItemGrandChild
 				)));
@@ -356,26 +340,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		internal virtual IReflectClass ItemClass()
 		{
 			return Reflector().ForClass(typeof(CustomTypeHandlerTestCase.Item));
-		}
-
-		internal static void AssertCurrentSlot(object context, CustomTypeHandlerTestCase.Item
-			 item)
-		{
-			int expectedSlot = 0;
-			if (item is CustomTypeHandlerTestCase.ItemChild)
-			{
-				expectedSlot = 1;
-			}
-			if (item is CustomTypeHandlerTestCase.ItemGrandChild)
-			{
-				expectedSlot = 1;
-			}
-			AssertCurrentSlot(context, expectedSlot);
-		}
-
-		internal static void AssertCurrentSlot(object context, int expectedSlot)
-		{
-			Assert.AreEqual(expectedSlot, ((IMarshallingInfo)context).CurrentSlot());
 		}
 	}
 }

@@ -11,8 +11,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public virtual bool ProcessAtServer()
 		{
 			AbstractQueryResult queryResult = QueryResult(ReadInt());
-			int id = queryResult.IndexOf(ReadInt());
-			Write(Msg.ObjectsetIndexof.GetWriterForInt(Transaction(), id));
+			lock (StreamLock())
+			{
+				int id = queryResult.IndexOf(ReadInt());
+				Write(Msg.ObjectsetIndexof.GetWriterForInt(Transaction(), id));
+			}
 			return true;
 		}
 	}

@@ -9,7 +9,10 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 	{
 		public bool ProcessAtServer()
 		{
-			Transaction().SystemTransaction().Commit();
+			lock (StreamLock())
+			{
+				Transaction().SystemTransaction().Commit();
+			}
 			return true;
 		}
 	}

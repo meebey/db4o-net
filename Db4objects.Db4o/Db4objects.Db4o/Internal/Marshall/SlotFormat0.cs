@@ -20,5 +20,20 @@ namespace Db4objects.Db4o.Internal.Marshall
 			// return arrayElementHandler instanceof ArrayHandler;
 			return false;
 		}
+
+		public override void WriteObjectClassID(ByteArrayBuffer buffer, int id)
+		{
+			buffer.WriteInt(id);
+		}
+
+		public override void SkipMarshallerInfo(ByteArrayBuffer reader)
+		{
+		}
+
+		public override ObjectHeaderAttributes ReadHeaderAttributes(ByteArrayBuffer reader
+			)
+		{
+			return null;
+		}
 	}
 }

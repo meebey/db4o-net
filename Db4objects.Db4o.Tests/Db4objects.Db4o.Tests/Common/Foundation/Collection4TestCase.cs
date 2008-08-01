@@ -75,14 +75,29 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			AssertIllegalIndex(c, 2);
 		}
 
-		private void AssertIllegalIndex(Collection4 c, int index)
+		public virtual void TestIndexOf()
 		{
-			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_75(c, index));
+			Collection4 c = new Collection4();
+			Assert.AreEqual(-1, c.IndexOf("notInCollection"));
+			c.Add("one");
+			Assert.AreEqual(-1, c.IndexOf("notInCollection"));
+			Assert.AreEqual(0, c.IndexOf("one"));
+			c.Add("two");
+			c.Add("three");
+			Assert.AreEqual(0, c.IndexOf("one"));
+			Assert.AreEqual(1, c.IndexOf("two"));
+			Assert.AreEqual(2, c.IndexOf("three"));
+			Assert.AreEqual(-1, c.IndexOf("notInCollection"));
 		}
 
-		private sealed class _ICodeBlock_75 : ICodeBlock
+		private void AssertIllegalIndex(Collection4 c, int index)
 		{
-			public _ICodeBlock_75(Collection4 c, int index)
+			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_89(c, index));
+		}
+
+		private sealed class _ICodeBlock_89 : ICodeBlock
+		{
+			public _ICodeBlock_89(Collection4 c, int index)
 			{
 				this.c = c;
 				this.index = index;
@@ -125,12 +140,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			IEnumerator i = c.GetEnumerator();
 			Assert.IsTrue(i.MoveNext());
 			c.Add("3");
-			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_105(i));
+			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_119(i));
 		}
 
-		private sealed class _ICodeBlock_105 : ICodeBlock
+		private sealed class _ICodeBlock_119 : ICodeBlock
 		{
-			public _ICodeBlock_105(IEnumerator i)
+			public _ICodeBlock_119(IEnumerator i)
 			{
 				this.i = i;
 			}

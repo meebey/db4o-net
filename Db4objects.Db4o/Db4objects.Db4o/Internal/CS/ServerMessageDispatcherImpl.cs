@@ -152,8 +152,14 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override void Run()
 		{
-			MessageLoop();
-			Close();
+			try
+			{
+				MessageLoop();
+			}
+			finally
+			{
+				Close();
+			}
 		}
 
 		private void MessageLoop()

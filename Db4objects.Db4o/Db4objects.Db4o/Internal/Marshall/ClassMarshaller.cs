@@ -1,8 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
-using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Sharpen;
@@ -35,17 +34,33 @@ namespace Db4objects.Db4o.Internal.Marshall
 			writer.WriteInt(intFormerlyKnownAsMetaClassID);
 			writer.WriteIDOf(trans, clazz.i_ancestor);
 			WriteIndex(trans, clazz, writer);
-			FieldMetadata[] fields = clazz.i_fields;
-			if (fields == null)
+			writer.WriteInt(clazz.DeclaredAspectCount());
+			clazz.ForEachDeclaredAspect(new _IProcedure4_38(this, trans, clazz, writer));
+		}
+
+		private sealed class _IProcedure4_38 : IProcedure4
+		{
+			public _IProcedure4_38(ClassMarshaller _enclosing, Transaction trans, ClassMetadata
+				 clazz, ByteArrayBuffer writer)
 			{
-				writer.WriteInt(0);
-				return;
+				this._enclosing = _enclosing;
+				this.trans = trans;
+				this.clazz = clazz;
+				this.writer = writer;
 			}
-			writer.WriteInt(fields.Length);
-			for (int i = 0; i < fields.Length; i++)
+
+			public void Apply(object arg)
 			{
-				_family._field.Write(trans, clazz, fields[i], writer);
+				this._enclosing._family._field.Write(trans, clazz, (ClassAspect)arg, writer);
 			}
+
+			private readonly ClassMarshaller _enclosing;
+
+			private readonly Transaction trans;
+
+			private readonly ClassMetadata clazz;
+
+			private readonly ByteArrayBuffer writer;
 		}
 
 		protected virtual void WriteIndex(Transaction trans, ClassMetadata clazz, ByteArrayBuffer
@@ -63,7 +78,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return name;
 		}
 
-		public virtual int ReadMetaClassID(ByteArrayBuffer reader)
+		public int ReadMetaClassID(ByteArrayBuffer reader)
 		{
 			return reader.ReadInt();
 		}
@@ -92,51 +107,66 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			clazz.CheckType();
 			ReadIndex(stream, clazz, reader);
-			clazz.i_fields = CreateFields(clazz, reader.ReadInt());
-			ReadFields(stream, reader, clazz.i_fields);
+			clazz._aspects = CreateFields(clazz, reader.ReadInt());
+			ReadFields(stream, reader, clazz._aspects);
 		}
 
 		protected abstract void ReadIndex(ObjectContainerBase stream, ClassMetadata clazz
 			, ByteArrayBuffer reader);
 
-		private FieldMetadata[] CreateFields(ClassMetadata clazz, int fieldCount)
+		private ClassAspect[] CreateFields(ClassMetadata clazz, int fieldCount)
 		{
-			FieldMetadata[] fields = new FieldMetadata[fieldCount];
-			for (int i = 0; i < fields.Length; i++)
+			ClassAspect[] aspects = new ClassAspect[fieldCount];
+			for (int i = 0; i < aspects.Length; i++)
 			{
-				fields[i] = new FieldMetadata(clazz);
-				fields[i].SetArrayPosition(i);
+				aspects[i] = new FieldMetadata(clazz);
+				aspects[i].SetHandle(i);
 			}
-			return fields;
+			return aspects;
 		}
 
-		private void ReadFields(ObjectContainerBase stream, ByteArrayBuffer reader, FieldMetadata
+		private void ReadFields(ObjectContainerBase stream, ByteArrayBuffer reader, ClassAspect
 			[] fields)
 		{
 			for (int i = 0; i < fields.Length; i++)
 			{
-				fields[i] = _family._field.Read(stream, fields[i], reader);
+				fields[i] = _family._field.Read(stream, (FieldMetadata)fields[i], reader);
 			}
 		}
 
 		public virtual int MarshalledLength(ObjectContainerBase stream, ClassMetadata clazz
 			)
 		{
-			int len = stream.StringIO().ShortLength(clazz.NameToWrite()) + Const4.ObjectLength
-				 + (Const4.IntLength * 2) + (Const4.IdLength);
-			len += clazz.Index().OwnLength();
-			if (clazz.i_fields != null)
-			{
-				for (int i = 0; i < clazz.i_fields.Length; i++)
-				{
-					len += _family._field.MarshalledLength(stream, clazz.i_fields[i]);
-				}
-			}
-			return len;
+			IntByRef len = new IntByRef(stream.StringIO().ShortLength(clazz.NameToWrite()) + 
+				Const4.ObjectLength + (Const4.IntLength * 2) + (Const4.IdLength));
+			len.value += clazz.Index().OwnLength();
+			clazz.ForEachDeclaredAspect(new _IProcedure4_118(this, len, stream));
+			return len.value;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
+		private sealed class _IProcedure4_118 : IProcedure4
+		{
+			public _IProcedure4_118(ClassMarshaller _enclosing, IntByRef len, ObjectContainerBase
+				 stream)
+			{
+				this._enclosing = _enclosing;
+				this.len = len;
+				this.stream = stream;
+			}
+
+			public void Apply(object arg)
+			{
+				len.value += this._enclosing._family._field.MarshalledLength(stream, (ClassAspect
+					)arg);
+			}
+
+			private readonly ClassMarshaller _enclosing;
+
+			private readonly IntByRef len;
+
+			private readonly ObjectContainerBase stream;
+		}
+
 		public virtual void Defrag(ClassMetadata classMetadata, LatinStringIO sio, DefragmentContextImpl
 			 context, int classIndexID)
 		{
@@ -149,15 +179,38 @@ namespace Db4objects.Db4o.Internal.Marshall
 			context.WriteInt(IndexIDForWriting(classIndexID));
 			// field length
 			int numFields = context.ReadInt();
-			FieldMetadata[] fields = classMetadata.i_fields;
-			if (numFields > fields.Length)
+			if (numFields > classMetadata.DeclaredAspectCount())
 			{
 				throw new InvalidOperationException();
 			}
-			for (int fieldIdx = 0; fieldIdx < numFields; fieldIdx++)
+			classMetadata.ForEachDeclaredAspect(new _IProcedure4_144(this, classMetadata, sio
+				, context));
+		}
+
+		private sealed class _IProcedure4_144 : IProcedure4
+		{
+			public _IProcedure4_144(ClassMarshaller _enclosing, ClassMetadata classMetadata, 
+				LatinStringIO sio, DefragmentContextImpl context)
 			{
-				_family._field.Defrag(classMetadata, fields[fieldIdx], sio, context);
+				this._enclosing = _enclosing;
+				this.classMetadata = classMetadata;
+				this.sio = sio;
+				this.context = context;
 			}
+
+			public void Apply(object arg)
+			{
+				ClassAspect aspect = (ClassAspect)arg;
+				this._enclosing._family._field.Defrag(classMetadata, aspect, sio, context);
+			}
+
+			private readonly ClassMarshaller _enclosing;
+
+			private readonly ClassMetadata classMetadata;
+
+			private readonly LatinStringIO sio;
+
+			private readonly DefragmentContextImpl context;
 		}
 	}
 }

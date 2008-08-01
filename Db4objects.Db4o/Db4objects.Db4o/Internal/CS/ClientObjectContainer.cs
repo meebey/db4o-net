@@ -414,7 +414,7 @@ namespace Db4objects.Db4o.Internal.CS
 				}
 				msg = Msg.Error;
 			}
-			if (msg == Msg.Error)
+			if (msg is MError)
 			{
 				OnMsgError();
 			}
@@ -971,37 +971,43 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public void WriteBatchedMessages()
 		{
-			if (_batchedMessages.IsEmpty())
+			lock (Lock())
 			{
-				return;
-			}
-			Msg msg;
-			MsgD multibytes = Msg.WriteBatchedMessages.GetWriterForLength(Transaction(), _batchedQueueLength
-				);
-			multibytes.WriteInt(_batchedMessages.Size());
-			IEnumerator iter = _batchedMessages.GetEnumerator();
-			while (iter.MoveNext())
-			{
-				msg = (Msg)iter.Current;
-				if (msg == null)
+				if (_batchedMessages.IsEmpty())
 				{
-					multibytes.WriteInt(0);
+					return;
 				}
-				else
+				Msg msg;
+				MsgD multibytes = Msg.WriteBatchedMessages.GetWriterForLength(Transaction(), _batchedQueueLength
+					);
+				multibytes.WriteInt(_batchedMessages.Size());
+				IEnumerator iter = _batchedMessages.GetEnumerator();
+				while (iter.MoveNext())
 				{
-					multibytes.WriteInt(msg.PayLoad().Length());
-					multibytes.PayLoad().Append(msg.PayLoad()._buffer);
+					msg = (Msg)iter.Current;
+					if (msg == null)
+					{
+						multibytes.WriteInt(0);
+					}
+					else
+					{
+						multibytes.WriteInt(msg.PayLoad().Length());
+						multibytes.PayLoad().Append(msg.PayLoad()._buffer);
+					}
 				}
+				WriteMessageToSocket(multibytes);
+				ClearBatchedObjects();
 			}
-			WriteMessageToSocket(multibytes);
-			ClearBatchedObjects();
 		}
 
 		public void AddToBatch(Msg msg)
 		{
-			_batchedMessages.Add(msg);
-			// the first INT_LENGTH is for buffer.length, and then buffer content.
-			_batchedQueueLength += Const4.IntLength + msg.PayLoad().Length();
+			lock (Lock())
+			{
+				_batchedMessages.Add(msg);
+				// the first INT_LENGTH is for buffer.length, and then buffer content.
+				_batchedQueueLength += Const4.IntLength + msg.PayLoad().Length();
+			}
 		}
 
 		private void ClearBatchedObjects()
@@ -1066,13 +1072,13 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			lock (_lock)
 			{
-				Cool.LoopWithTimeout(maxTimeSlice, new _IConditionalBlock_869(this));
+				Cool.LoopWithTimeout(maxTimeSlice, new _IConditionalBlock_873(this));
 			}
 		}
 
-		private sealed class _IConditionalBlock_869 : IConditionalBlock
+		private sealed class _IConditionalBlock_873 : IConditionalBlock
 		{
-			public _IConditionalBlock_869(ClientObjectContainer _enclosing)
+			public _IConditionalBlock_873(ClientObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -1098,12 +1104,12 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private IClientSideTask NextClientSideTask()
 		{
-			return (IClientSideTask)_messageQueue.NextMatching(new _IPredicate4_887());
+			return (IClientSideTask)_messageQueue.NextMatching(new _IPredicate4_891());
 		}
 
-		private sealed class _IPredicate4_887 : IPredicate4
+		private sealed class _IPredicate4_891 : IPredicate4
 		{
-			public _IPredicate4_887()
+			public _IPredicate4_891()
 			{
 			}
 

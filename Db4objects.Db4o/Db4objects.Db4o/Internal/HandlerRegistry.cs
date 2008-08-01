@@ -6,9 +6,11 @@ using Db4objects.Db4o.Internal.Diagnostic;
 using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
+using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -517,7 +519,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			ITypeHandler4 configuredHandler = Container().ConfigImpl().TypeHandlerForClass(clazz
 				, Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion);
-			if (configuredHandler != null)
+			if (configuredHandler != null && SlotFormat.IsEmbedded(configuredHandler))
 			{
 				MapFieldHandler(clazz, configuredHandler);
 				return configuredHandler;
@@ -669,32 +671,13 @@ namespace Db4objects.Db4o.Internal
 			return 0;
 		}
 
-		public ITypeHandler4 RegisterTypeHandlerVersions(ClassMetadata classMetadata, IReflectClass
-			 claxx)
+		public ITypeHandler4 ConfiguredTypeHandler(IReflectClass claxx)
 		{
-			Config4Impl config = Container().ConfigImpl();
-			ITypeHandler4 typeHandler = config.TypeHandlerForClass(claxx, Db4objects.Db4o.Internal.HandlerRegistry
-				.HandlerVersion);
-			if (typeHandler == null)
+			ITypeHandler4 typeHandler = Container().ConfigImpl().TypeHandlerForClass(claxx, HandlerVersion
+				);
+			if (typeHandler != null && typeHandler is IEmbeddedTypeHandler)
 			{
-				return null;
-			}
-			ITypeHandler4 currentVersion = typeHandler;
-			for (int version = Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion - 1; version
-				 >= 0; version--)
-			{
-				ITypeHandler4 previousVersion = config.TypeHandlerForClass(claxx, (byte)version);
-				if (previousVersion == null)
-				{
-					FirstClassObjectHandler firstClassObjectHandler = new FirstClassObjectHandler(classMetadata
-						);
-					previousVersion = CorrectHandlerVersion(firstClassObjectHandler, version);
-				}
-				if (currentVersion.GetType() != previousVersion.GetType())
-				{
-					RegisterHandlerVersion(typeHandler, version, previousVersion);
-					currentVersion = previousVersion;
-				}
+				_mapReflectorToTypeHandler.Put(claxx, typeHandler);
 			}
 			return typeHandler;
 		}

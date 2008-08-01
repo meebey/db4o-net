@@ -350,7 +350,6 @@ namespace Db4objects.Db4o.Defragment
 			_targetDb.SystemData().ClassCollectionID(newClassCollectionID);
 		}
 
-		/// <exception cref="IOException"></exception>
 		public virtual ByteArrayBuffer SourceBufferByID(int sourceID)
 		{
 			return BufferByID(Sourcedb, sourceID);
@@ -411,19 +410,29 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return cachedHasFieldIndex.DefiniteYes();
 			}
-			bool hasFieldIndex = false;
-			IEnumerator fieldIter = clazz.Fields();
-			while (fieldIter.MoveNext())
+			BooleanByRef hasFieldIndex = new BooleanByRef(false);
+			clazz.ForEachDeclaredField(new _IProcedure4_318(hasFieldIndex));
+			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex.value));
+			return hasFieldIndex.value;
+		}
+
+		private sealed class _IProcedure4_318 : IProcedure4
+		{
+			public _IProcedure4_318(BooleanByRef hasFieldIndex)
 			{
-				FieldMetadata curField = (FieldMetadata)fieldIter.Current;
+				this.hasFieldIndex = hasFieldIndex;
+			}
+
+			public void Apply(object arg)
+			{
+				FieldMetadata curField = (FieldMetadata)arg;
 				if (curField.HasIndex() && (curField.GetHandler() is StringHandler))
 				{
-					hasFieldIndex = true;
-					break;
+					hasFieldIndex.value = true;
 				}
 			}
-			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex));
-			return hasFieldIndex;
+
+			private readonly BooleanByRef hasFieldIndex;
 		}
 
 		public virtual int BlockSize()

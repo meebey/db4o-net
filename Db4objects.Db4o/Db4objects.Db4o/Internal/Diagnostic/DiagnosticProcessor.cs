@@ -32,12 +32,12 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 			_listeners.Add(listener);
 		}
 
-		public virtual void CheckClassHasFields(ClassMetadata yc)
+		public virtual void CheckClassHasFields(ClassMetadata classMetadata)
 		{
-			FieldMetadata[] fields = yc.i_fields;
-			if (fields != null && fields.Length == 0)
+			if ((!classMetadata.AspectsAreNull()) && classMetadata.DeclaredAspectCount() == 0
+				)
 			{
-				string name = yc.GetName();
+				string name = classMetadata.GetName();
 				string[] ignoredPackages = new string[] { "java.util." };
 				for (int i = 0; i < ignoredPackages.Length; i++)
 				{
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 						return;
 					}
 				}
-				if (IsDb4oClass(yc))
+				if (IsDb4oClass(classMetadata))
 				{
 					return;
 				}

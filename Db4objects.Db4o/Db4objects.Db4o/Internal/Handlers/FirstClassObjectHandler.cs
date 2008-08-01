@@ -8,14 +8,14 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public class FirstClassObjectHandler : ITypeHandler4, IVersionedTypeHandler, IFirstClassHandler
-		, IVirtualAttributeHandler
+	public class FirstClassObjectHandler : IFieldAwareTypeHandler
 	{
 		private const int HashcodeForNull = 72483944;
 
@@ -33,34 +33,30 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void Defragment(IDefragmentContext context)
 		{
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_33
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_34
 				(context);
-			TraverseDeclaredFields(context, command);
-			if (ClassMetadata().i_ancestor != null)
-			{
-				ClassMetadata().i_ancestor.Defragment(context);
-			}
+			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_33 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseAspectCommand_34 : FirstClassObjectHandler.TraverseAspectCommand
 		{
-			public _TraverseFieldCommand_33(IDefragmentContext context)
+			public _TraverseAspectCommand_34(IDefragmentContext context)
 			{
 				this.context = context;
 			}
 
-			public override int FieldCount(Db4objects.Db4o.Internal.ClassMetadata classMetadata
+			public override int AspectCount(Db4objects.Db4o.Internal.ClassMetadata classMetadata
 				, ByteArrayBuffer reader)
 			{
 				return context.ReadInt();
 			}
 
-			public override void ProcessField(FieldMetadata field, bool isNull, Db4objects.Db4o.Internal.ClassMetadata
-				 containingClass)
+			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				, Db4objects.Db4o.Internal.ClassMetadata containingClass)
 			{
 				if (!isNull)
 				{
-					field.DefragField(context);
+					aspect.DefragAspect(context);
 				}
 			}
 
@@ -73,63 +69,71 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.DeleteObject();
 		}
 
-		public void InstantiateFields(UnmarshallingContext context)
+		public void InstantiateAspects(UnmarshallingContext context)
 		{
 			BooleanByRef updateFieldFound = new BooleanByRef();
 			ContextState savedState = context.SaveState();
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_61
-				(updateFieldFound, context);
-			TraverseDeclaredFields(context, command);
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_57
+				(context, updateFieldFound);
+			TraverseAllAspects(context, command);
 			if (updateFieldFound.value)
 			{
 				context.RestoreState(savedState);
-				command = new _TraverseFieldCommand_77(context);
-				TraverseDeclaredFields(context, command);
+				command = new _TraverseFieldCommand_80(context);
+				TraverseAllAspects(context, command);
 			}
 		}
 
-		private sealed class _TraverseFieldCommand_61 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseAspectCommand_57 : FirstClassObjectHandler.TraverseAspectCommand
 		{
-			public _TraverseFieldCommand_61(BooleanByRef updateFieldFound, UnmarshallingContext
-				 context)
+			public _TraverseAspectCommand_57(UnmarshallingContext context, BooleanByRef updateFieldFound
+				)
 			{
-				this.updateFieldFound = updateFieldFound;
 				this.context = context;
+				this.updateFieldFound = updateFieldFound;
 			}
 
-			public override void ProcessField(FieldMetadata field, bool isNull, Db4objects.Db4o.Internal.ClassMetadata
-				 containingClass)
+			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				, Db4objects.Db4o.Internal.ClassMetadata containingClass)
 			{
-				if (field.Updating())
+				if (!aspect.Enabled(context))
 				{
-					updateFieldFound.value = true;
-				}
-				if (isNull)
-				{
-					field.Set(context.PersistentObject(), null);
 					return;
 				}
-				field.Instantiate(context);
+				if (aspect is FieldMetadata)
+				{
+					FieldMetadata field = (FieldMetadata)aspect;
+					if (field.Updating())
+					{
+						updateFieldFound.value = true;
+					}
+					if (isNull)
+					{
+						field.Set(context.PersistentObject(), null);
+						return;
+					}
+				}
+				aspect.Instantiate(context);
 			}
 
-			private readonly BooleanByRef updateFieldFound;
-
 			private readonly UnmarshallingContext context;
+
+			private readonly BooleanByRef updateFieldFound;
 		}
 
-		private sealed class _TraverseFieldCommand_77 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_80 : FirstClassObjectHandler.TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_77(UnmarshallingContext context)
+			public _TraverseFieldCommand_80(UnmarshallingContext context)
 			{
 				this.context = context;
 			}
 
-			public override void ProcessField(FieldMetadata field, bool isNull, Db4objects.Db4o.Internal.ClassMetadata
-				 containingClass)
+			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				, Db4objects.Db4o.Internal.ClassMetadata containingClass)
 			{
 				if (!isNull)
 				{
-					field.AttemptUpdate(context);
+					((FieldMetadata)aspect).AttemptUpdate(context);
 				}
 			}
 
@@ -144,11 +148,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			//        and null Bitmap.        
 			//        BitMap4 nullBitMap = unmarshallingContext.readBitMap(fieldCount);
 			//        int fieldCount = context.readInt();
-			InstantiateFields(unmarshallingContext);
-			if (ClassMetadata().i_ancestor != null)
-			{
-				ClassMetadata().i_ancestor.Read(context);
-			}
+			InstantiateAspects(unmarshallingContext);
 			return unmarshallingContext.PersistentObject();
 		}
 
@@ -158,62 +158,67 @@ namespace Db4objects.Db4o.Internal.Handlers
 			//        context.writeInt(fieldCount);
 			//        final BitMap4 nullBitMap = new BitMap4(fieldCount);
 			//        ReservedBuffer bitMapBuffer = context.reserve(nullBitMap.marshalledLength());
-			Marshall(obj, (MarshallingContext)context);
-			//        bitMapBuffer.writeBytes(nullBitMap.bytes());
-			if (ClassMetadata().i_ancestor != null)
-			{
-				ClassMetadata().i_ancestor.Write(context, obj);
-			}
+			MarshallAspects(obj, (MarshallingContext)context);
 		}
 
-		public virtual void Marshall(object obj, MarshallingContext context)
+		//        bitMapBuffer.writeBytes(nullBitMap.bytes());
+		public virtual void MarshallAspects(object obj, MarshallingContext context)
 		{
 			Transaction trans = context.Transaction();
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_128
-				(context, trans, obj);
-			TraverseDeclaredFields(context, command);
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_123
+				(context, obj, trans);
+			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_128 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseAspectCommand_123 : FirstClassObjectHandler.TraverseAspectCommand
 		{
-			public _TraverseFieldCommand_128(MarshallingContext context, Transaction trans, object
-				 obj)
+			public _TraverseAspectCommand_123(MarshallingContext context, object obj, Transaction
+				 trans)
 			{
 				this.context = context;
-				this.trans = trans;
 				this.obj = obj;
+				this.trans = trans;
 			}
 
-			public override int FieldCount(Db4objects.Db4o.Internal.ClassMetadata classMetadata
+			public override int AspectCount(Db4objects.Db4o.Internal.ClassMetadata classMetadata
 				, ByteArrayBuffer buffer)
 			{
-				int fieldCount = classMetadata.i_fields.Length;
+				int fieldCount = classMetadata._aspects.Length;
 				context.FieldCount(fieldCount);
 				return fieldCount;
 			}
 
-			public override void ProcessField(FieldMetadata field, bool isNull, Db4objects.Db4o.Internal.ClassMetadata
-				 containingClass)
+			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				, Db4objects.Db4o.Internal.ClassMetadata containingClass)
 			{
-				object child = field.GetOrCreate(trans, obj);
-				if (child == null)
+				if (!aspect.Enabled(context))
 				{
-					context.IsNull(context.CurrentSlot(), true);
-					field.AddIndexEntry(trans, context.ObjectID(), null);
 					return;
 				}
-				if (child is IDb4oTypeImpl)
+				object marshalledObject = obj;
+				if (aspect is FieldMetadata)
 				{
-					child = ((IDb4oTypeImpl)child).StoredTo(trans);
+					FieldMetadata field = (FieldMetadata)aspect;
+					marshalledObject = field.GetOrCreate(trans, obj);
+					if (marshalledObject == null)
+					{
+						context.IsNull(currentSlot, true);
+						field.AddIndexEntry(trans, context.ObjectID(), null);
+						return;
+					}
+					if (marshalledObject is IDb4oTypeImpl)
+					{
+						marshalledObject = ((IDb4oTypeImpl)marshalledObject).StoredTo(trans);
+					}
 				}
-				field.Marshall(context, child);
+				aspect.Marshall(context, marshalledObject);
 			}
 
 			private readonly MarshallingContext context;
 
-			private readonly Transaction trans;
-
 			private readonly object obj;
+
+			private readonly Transaction trans;
 		}
 
 		public virtual IPreparedComparison PrepareComparison(IContext context, object source
@@ -221,7 +226,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			if (source == null)
 			{
-				return new _IPreparedComparison_155();
+				return new _IPreparedComparison_157();
 			}
 			int id = 0;
 			IReflectClass claxx = null;
@@ -246,9 +251,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return new ClassMetadata.PreparedComparisonImpl(id, claxx);
 		}
 
-		private sealed class _IPreparedComparison_155 : IPreparedComparison
+		private sealed class _IPreparedComparison_157 : IPreparedComparison
 		{
-			public _IPreparedComparison_155()
+			public _IPreparedComparison_157()
 			{
 			}
 
@@ -262,14 +267,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		protected abstract class TraverseFieldCommand
+		public abstract class TraverseAspectCommand
 		{
 			private bool _cancelled = false;
 
-			public virtual int FieldCount(ClassMetadata classMetadata, ByteArrayBuffer reader
+			public virtual int AspectCount(ClassMetadata classMetadata, ByteArrayBuffer reader
 				)
 			{
-				return classMetadata.ReadFieldCount(reader);
+				return classMetadata.ReadAspectCount(reader);
 			}
 
 			public virtual bool Cancelled()
@@ -282,37 +287,48 @@ namespace Db4objects.Db4o.Internal.Handlers
 				_cancelled = true;
 			}
 
-			public abstract void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
-				 containingClass);
+			public virtual bool Accept(ClassAspect aspect)
+			{
+				return true;
+			}
+
+			public abstract void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				, ClassMetadata containingClass);
 		}
 
-		protected void TraverseAllFields(IMarshallingInfo context, FirstClassObjectHandler.TraverseFieldCommand
-			 command)
+		public abstract class TraverseFieldCommand : FirstClassObjectHandler.TraverseAspectCommand
 		{
-			ClassMetadata classMetadata = ClassMetadata();
-			while (classMetadata != null)
+			public override bool Accept(ClassAspect aspect)
 			{
-				TraverseDeclaredFields(context, classMetadata, command);
-				classMetadata = classMetadata.i_ancestor;
+				return aspect is FieldMetadata;
 			}
 		}
 
-		protected void TraverseDeclaredFields(IMarshallingInfo context, FirstClassObjectHandler.TraverseFieldCommand
+		protected void TraverseAllAspects(IMarshallingInfo context, FirstClassObjectHandler.TraverseAspectCommand
 			 command)
 		{
-			TraverseDeclaredFields(context, ClassMetadata(), command);
-		}
-
-		private void TraverseDeclaredFields(IMarshallingInfo context, ClassMetadata classMetadata
-			, FirstClassObjectHandler.TraverseFieldCommand command)
-		{
-			int fieldCount = command.FieldCount(classMetadata, ((ByteArrayBuffer)context.Buffer
-				()));
-			for (int i = 0; i < fieldCount && !command.Cancelled(); i++)
+			int currentSlot = 0;
+			ClassMetadata classMetadata = ClassMetadata();
+			while (classMetadata != null)
 			{
-				command.ProcessField(classMetadata.i_fields[i], IsNull(context, context.CurrentSlot
-					()), classMetadata);
-				context.BeginSlot();
+				int fieldCount = command.AspectCount(classMetadata, ((ByteArrayBuffer)context.Buffer
+					()));
+				context.AspectCount(fieldCount);
+				for (int i = 0; i < fieldCount && !command.Cancelled(); i++)
+				{
+					if (command.Accept(classMetadata._aspects[i]))
+					{
+						command.ProcessAspect(classMetadata._aspects[i], currentSlot, IsNull(context, currentSlot
+							), classMetadata);
+					}
+					context.BeginSlot();
+					currentSlot++;
+				}
+				if (command.Cancelled())
+				{
+					return;
+				}
+				classMetadata = classMetadata.i_ancestor;
 			}
 		}
 
@@ -383,37 +399,33 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void CollectIDs(CollectIdContext context, string fieldName)
 		{
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_270
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_286
 				(fieldName, context);
-			TraverseDeclaredFields(context, command);
-			if (ClassMetadata().i_ancestor != null)
-			{
-				ClassMetadata().i_ancestor.CollectIDs(context, fieldName);
-			}
+			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_270 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseAspectCommand_286 : FirstClassObjectHandler.TraverseAspectCommand
 		{
-			public _TraverseFieldCommand_270(string fieldName, CollectIdContext context)
+			public _TraverseAspectCommand_286(string fieldName, CollectIdContext context)
 			{
 				this.fieldName = fieldName;
 				this.context = context;
 			}
 
-			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
-				 containingClass)
+			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				, ClassMetadata containingClass)
 			{
 				if (isNull)
 				{
 					return;
 				}
-				if (fieldName.Equals(field.GetName()))
+				if (fieldName.Equals(aspect.GetName()))
 				{
-					field.CollectIDs(context);
+					aspect.CollectIDs(context);
 				}
 				else
 				{
-					field.IncrementOffset(context);
+					aspect.IncrementOffset(context);
 				}
 			}
 
@@ -456,12 +468,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			int depth = ClassMetadata().AdjustDepthToBorders(2);
 			container.Activate(transaction, obj, container.ActivationDepthProvider().ActivationDepth
 				(depth, ActivationMode.Activate));
-			Platform4.ForEachCollectionElement(obj, new _IVisitor4_316(context));
+			Platform4.ForEachCollectionElement(obj, new _IVisitor4_329(context));
 		}
 
-		private sealed class _IVisitor4_316 : IVisitor4
+		private sealed class _IVisitor4_329 : IVisitor4
 		{
-			public _IVisitor4_316(QueryingReadContext context)
+			public _IVisitor4_329(QueryingReadContext context)
 			{
 				this.context = context;
 			}
@@ -476,28 +488,145 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void ReadVirtualAttributes(ObjectReferenceContext context)
 		{
-			FirstClassObjectHandler.TraverseFieldCommand command = new _TraverseFieldCommand_325
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_338
 				(context);
-			TraverseAllFields(context, command);
+			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseFieldCommand_325 : FirstClassObjectHandler.TraverseFieldCommand
+		private sealed class _TraverseAspectCommand_338 : FirstClassObjectHandler.TraverseAspectCommand
 		{
-			public _TraverseFieldCommand_325(ObjectReferenceContext context)
+			public _TraverseAspectCommand_338(ObjectReferenceContext context)
 			{
 				this.context = context;
 			}
 
-			public override void ProcessField(FieldMetadata field, bool isNull, ClassMetadata
-				 containingClass)
+			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				, ClassMetadata containingClass)
 			{
 				if (!isNull)
 				{
-					field.ReadVirtualAttribute(context);
+					if (aspect is VirtualFieldMetadata)
+					{
+						((VirtualFieldMetadata)aspect).ReadVirtualAttribute(context);
+					}
+					else
+					{
+						aspect.IncrementOffset(context);
+					}
 				}
 			}
 
 			private readonly ObjectReferenceContext context;
+		}
+
+		public virtual void AddFieldIndices(ObjectIdContextImpl context, Slot oldSlot)
+		{
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseFieldCommand_353
+				(context, oldSlot);
+			TraverseAllAspects(context, command);
+		}
+
+		private sealed class _TraverseFieldCommand_353 : FirstClassObjectHandler.TraverseFieldCommand
+		{
+			public _TraverseFieldCommand_353(ObjectIdContextImpl context, Slot oldSlot)
+			{
+				this.context = context;
+				this.oldSlot = oldSlot;
+			}
+
+			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				, ClassMetadata containingClass)
+			{
+				FieldMetadata field = (FieldMetadata)aspect;
+				if (isNull)
+				{
+					field.AddIndexEntry(context.Transaction(), context.Id(), null);
+				}
+				else
+				{
+					field.AddFieldIndex(context, oldSlot);
+				}
+			}
+
+			private readonly ObjectIdContextImpl context;
+
+			private readonly Slot oldSlot;
+		}
+
+		public virtual void DeleteMembers(DeleteContextImpl context, bool isUpdate)
+		{
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_367
+				(context, isUpdate);
+			TraverseAllAspects(context, command);
+		}
+
+		private sealed class _TraverseAspectCommand_367 : FirstClassObjectHandler.TraverseAspectCommand
+		{
+			public _TraverseAspectCommand_367(DeleteContextImpl context, bool isUpdate)
+			{
+				this.context = context;
+				this.isUpdate = isUpdate;
+			}
+
+			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				, ClassMetadata containingClass)
+			{
+				if (isNull)
+				{
+					if (aspect is FieldMetadata)
+					{
+						FieldMetadata field = (FieldMetadata)aspect;
+						field.RemoveIndexEntry(context.Transaction(), context.Id(), null);
+					}
+					return;
+				}
+				aspect.Delete(context, isUpdate);
+			}
+
+			private readonly DeleteContextImpl context;
+
+			private readonly bool isUpdate;
+		}
+
+		public virtual bool SeekToField(ObjectHeaderContext context, FieldMetadata field)
+		{
+			BooleanByRef found = new BooleanByRef(false);
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_384
+				(field, found, context);
+			TraverseAllAspects(context, command);
+			return found.value;
+		}
+
+		private sealed class _TraverseAspectCommand_384 : FirstClassObjectHandler.TraverseAspectCommand
+		{
+			public _TraverseAspectCommand_384(FieldMetadata field, BooleanByRef found, ObjectHeaderContext
+				 context)
+			{
+				this.field = field;
+				this.found = found;
+				this.context = context;
+			}
+
+			public override void ProcessAspect(ClassAspect curField, int currentSlot, bool isNull
+				, ClassMetadata containingClass)
+			{
+				if (curField == field)
+				{
+					found.value = !isNull;
+					this.Cancel();
+					return;
+				}
+				if (!isNull)
+				{
+					curField.IncrementOffset(context);
+				}
+			}
+
+			private readonly FieldMetadata field;
+
+			private readonly BooleanByRef found;
+
+			private readonly ObjectHeaderContext context;
 		}
 	}
 }

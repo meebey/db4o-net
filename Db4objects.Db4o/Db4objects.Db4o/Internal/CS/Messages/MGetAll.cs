@@ -12,23 +12,23 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public bool ProcessAtServer()
 		{
 			QueryEvaluationMode evaluationMode = QueryEvaluationMode.FromInt(ReadInt());
-			WriteQueryResult(GetAll(evaluationMode), evaluationMode);
+			lock (StreamLock())
+			{
+				WriteQueryResult(GetAll(evaluationMode), evaluationMode);
+			}
 			return true;
 		}
 
 		private AbstractQueryResult GetAll(QueryEvaluationMode mode)
 		{
-			lock (StreamLock())
+			try
 			{
-				try
-				{
-					return File().GetAll(Transaction(), mode);
-				}
-				catch (Exception e)
-				{
-				}
-				return NewQueryResult(mode);
+				return File().GetAll(Transaction(), mode);
 			}
+			catch (Exception e)
+			{
+			}
+			return NewQueryResult(mode);
 		}
 	}
 }

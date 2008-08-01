@@ -16,5 +16,9 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="CorruptionException"></exception>
 		/// <exception cref="Db4oIOException"></exception>
 		object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer writer);
+
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="Db4oIOException"></exception>
+		object ReadIndexEntry(IObjectIdContext context);
 	}
 }

@@ -22,7 +22,6 @@ namespace Db4objects.Db4o.Internal.Mapping
 		/// <exception cref="IOException"></exception>
 		ByteArrayBuffer TargetBufferByAddress(int address, int length);
 
-		/// <exception cref="IOException"></exception>
 		ByteArrayBuffer SourceBufferByID(int sourceID);
 
 		Slot AllocateTargetSlot(int targetLength);

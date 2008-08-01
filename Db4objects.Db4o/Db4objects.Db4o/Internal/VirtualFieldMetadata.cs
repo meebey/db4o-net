@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Replication;
@@ -29,8 +30,8 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="FieldIndexException"></exception>
-		public abstract override void AddFieldIndex(MarshallerFamily mf, ClassMetadata yapClass
-			, StatefulBuffer a_writer, Slot oldSlot);
+		public abstract override void AddFieldIndex(ObjectIdContextImpl context, Slot oldSlot
+			);
 
 		public override bool Alive()
 		{
@@ -40,6 +41,11 @@ namespace Db4objects.Db4o.Internal
 		internal override bool CanAddToQuery(string fieldName)
 		{
 			return fieldName.Equals(GetName());
+		}
+
+		public override bool CanBeDisabled()
+		{
+			return false;
 		}
 
 		public override bool CanUseNullBitmap()
@@ -64,14 +70,13 @@ namespace Db4objects.Db4o.Internal
 		// QBE constraint collection call
 		// There isn't anything useful to do here, since virtual fields
 		// are not on the actual object.
-		internal override void Deactivate(Transaction a_trans, object a_onObject, IActivationDepth
+		public override void Deactivate(Transaction a_trans, object a_onObject, IActivationDepth
 			 a_depth)
 		{
 		}
 
 		// do nothing
-		public abstract override void Delete(MarshallerFamily mf, StatefulBuffer a_bytes, 
-			bool isUpdate);
+		public abstract override void Delete(DeleteContextImpl context, bool isUpdate);
 
 		public override object GetOrCreate(Transaction a_trans, object a_OnObject)
 		{
@@ -183,7 +188,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal abstract void MarshallIgnore(IWriteBuffer writer);
 
-		public override void ReadVirtualAttribute(ObjectReferenceContext context)
+		public virtual void ReadVirtualAttribute(ObjectReferenceContext context)
 		{
 			if (!context.Transaction().SupportsVirtualFields())
 			{

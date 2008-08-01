@@ -8,14 +8,14 @@ using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
-	internal sealed class TranslatedFieldMetadata : Db4objects.Db4o.Internal.FieldMetadata
+	internal sealed class TranslatedAspect : Db4objects.Db4o.Internal.FieldMetadata
 	{
-		private readonly IObjectTranslator i_translator;
+		private readonly IObjectTranslator _translator;
 
-		internal TranslatedFieldMetadata(ClassMetadata containingClass, IObjectTranslator
-			 translator) : base(containingClass, translator)
+		internal TranslatedAspect(ClassMetadata containingClass, IObjectTranslator translator
+			) : base(containingClass, translator)
 		{
-			i_translator = translator;
+			_translator = translator;
 			ObjectContainerBase stream = containingClass.Container();
 			Configure(stream.Reflector().ForClass(TranslatorStoredClass(translator)), false);
 		}
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		internal override void Deactivate(Transaction trans, object onObject, IActivationDepth
+		public override void Deactivate(Transaction trans, object onObject, IActivationDepth
 			 depth)
 		{
 			if (depth.RequiresActivation())
@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			try
 			{
-				return i_translator.OnStore(a_trans.ObjectContainer(), a_OnObject);
+				return _translator.OnStore(a_trans.ObjectContainer(), a_OnObject);
 			}
 			catch (ReflectException e)
 			{
@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			try
 			{
-				i_translator.OnActivate(trans.ObjectContainer(), a_onObject, toSet);
+				_translator.OnActivate(trans.ObjectContainer(), a_onObject, toSet);
 			}
 			catch (Exception e)
 			{
@@ -92,6 +92,30 @@ namespace Db4objects.Db4o.Internal
 		protected override IIndexable4 IndexHandler(ObjectContainerBase stream)
 		{
 			return (IIndexable4)_handler;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj == this)
+			{
+				return true;
+			}
+			if (obj == null || obj.GetType() != GetType())
+			{
+				return false;
+			}
+			TranslatedAspect other = (TranslatedAspect)obj;
+			return _translator.Equals(other._translator);
+		}
+
+		public override int GetHashCode()
+		{
+			return _translator.GetHashCode();
+		}
+
+		public override Db4objects.Db4o.Internal.Marshall.AspectType AspectType()
+		{
+			return Db4objects.Db4o.Internal.Marshall.AspectType.Translator;
 		}
 	}
 }

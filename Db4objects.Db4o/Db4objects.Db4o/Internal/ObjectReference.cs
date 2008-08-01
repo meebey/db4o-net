@@ -1099,8 +1099,12 @@ namespace Db4objects.Db4o.Internal
 					catch (Exception)
 					{
 					}
-					IReflectClass claxx = ClassMetadata().Reflector().ForObject(obj);
-					str += "\n" + claxx.GetName() + "\n" + objToString;
+					if (ClassMetadata() != null)
+					{
+						IReflectClass claxx = ClassMetadata().Reflector().ForObject(obj);
+						str += "\n" + claxx.GetName();
+					}
+					str += "\n" + objToString;
 				}
 				return str;
 			}

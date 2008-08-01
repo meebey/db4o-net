@@ -14,7 +14,11 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			AbstractQueryResult queryResult = QueryResult(ReadInt());
 			try
 			{
-				int id = queryResult.GetId(ReadInt());
+				int id = 0;
+				lock (StreamLock())
+				{
+					id = queryResult.GetId(ReadInt());
+				}
 				Write(Msg.ObjectsetGetId.GetWriterForInt(Transaction(), id));
 			}
 			catch (IndexOutOfRangeException e)

@@ -12,7 +12,7 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class QueryingReadContext : AbstractReadContext, IHandlerVersionContext
+	public class QueryingReadContext : AbstractReadContext, IHandlerVersionContext, IAspectVersionContext
 	{
 		private readonly QCandidates _candidates;
 
@@ -21,6 +21,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private readonly int _handlerVersion;
 
 		private IdObjectCollector _collector;
+
+		private int _aspectCount;
 
 		private QueryingReadContext(Transaction transaction, QCandidates candidates, int 
 			handlerVersion, IReadBuffer buffer, int collectionID, IdObjectCollector collector
@@ -45,8 +47,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public QueryingReadContext(Transaction transaction, int handlerVersion, IReadBuffer
-			 buffer, IdObjectCollector collector) : this(transaction, null, handlerVersion, 
-			buffer, 0, collector)
+			 buffer, int collectionID, IdObjectCollector collector) : this(transaction, null
+			, handlerVersion, buffer, collectionID, collector)
 		{
 		}
 
@@ -136,6 +138,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual IEnumerator ObjectsWithoutId()
 		{
 			return _collector.Objects();
+		}
+
+		public virtual int AspectCount()
+		{
+			return _aspectCount;
+		}
+
+		public virtual void AspectCount(int count)
+		{
+			_aspectCount = count;
 		}
 	}
 }

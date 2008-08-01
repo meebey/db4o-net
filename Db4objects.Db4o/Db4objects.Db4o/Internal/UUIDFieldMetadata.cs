@@ -8,6 +8,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
@@ -24,30 +25,30 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="FieldIndexException"></exception>
-		public override void AddFieldIndex(MarshallerFamily mf, ClassMetadata yapClass, StatefulBuffer
-			 writer, Slot oldSlot)
+		public override void AddFieldIndex(ObjectIdContextImpl context, Slot oldSlot)
 		{
 			bool isnew = (oldSlot == null);
-			int offset = writer._offset;
-			int db4oDatabaseIdentityID = writer.ReadInt();
-			long uuid = writer.ReadLong();
-			writer._offset = offset;
-			LocalObjectContainer yf = (LocalObjectContainer)writer.Container();
-			if ((uuid == 0 || db4oDatabaseIdentityID == 0) && writer.GetID() > 0 && !isnew)
+			int offset = context.Offset();
+			int db4oDatabaseIdentityID = context.ReadInt();
+			long uuid = context.ReadLong();
+			context.Seek(offset);
+			LocalObjectContainer yf = (LocalObjectContainer)context.Transaction().Container();
+			if ((uuid == 0 || db4oDatabaseIdentityID == 0) && context.Id() > 0 && !isnew)
 			{
 				UUIDFieldMetadata.DatabaseIdentityIDAndUUID identityAndUUID = ReadDatabaseIdentityIDAndUUID
-					(yf, yapClass, oldSlot, false);
+					(yf, context.ClassMetadata(), oldSlot, false);
 				db4oDatabaseIdentityID = identityAndUUID.databaseIdentityID;
 				uuid = identityAndUUID.uuid;
 			}
 			if (db4oDatabaseIdentityID == 0)
 			{
-				db4oDatabaseIdentityID = yf.Identity().GetID(writer.Transaction());
+				db4oDatabaseIdentityID = yf.Identity().GetID(context.Transaction());
 			}
 			if (uuid == 0)
 			{
 				uuid = yf.GenerateTimeStampId();
 			}
+			StatefulBuffer writer = (StatefulBuffer)context.Buffer();
 			writer.WriteInt(db4oDatabaseIdentityID);
 			writer.WriteLong(uuid);
 			if (isnew)
@@ -71,24 +72,25 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4oIOException"></exception>
 		private UUIDFieldMetadata.DatabaseIdentityIDAndUUID ReadDatabaseIdentityIDAndUUID
-			(ObjectContainerBase stream, ClassMetadata classMetadata, Slot oldSlot, bool checkClass
-			)
+			(ObjectContainerBase container, ClassMetadata classMetadata, Slot oldSlot, bool 
+			checkClass)
 		{
 			if (DTrace.enabled)
 			{
 				DTrace.RereadOldUuid.LogLength(oldSlot.Address(), oldSlot.Length());
 			}
-			ByteArrayBuffer reader = stream.BufferByAddress(oldSlot.Address(), oldSlot.Length
+			ByteArrayBuffer reader = container.BufferByAddress(oldSlot.Address(), oldSlot.Length
 				());
 			if (checkClass)
 			{
-				ClassMetadata realClass = ClassMetadata.ReadClass(stream, reader);
+				ClassMetadata realClass = ClassMetadata.ReadClass(container, reader);
 				if (realClass != classMetadata)
 				{
 					return null;
 				}
 			}
-			if (classMetadata.FindOffset(reader, this) == HandlerVersion.Invalid)
+			if (classMetadata.SeekToField(container.Transaction(), reader, this) == HandlerVersion
+				.Invalid)
 			{
 				return null;
 			}
@@ -96,22 +98,20 @@ namespace Db4objects.Db4o.Internal
 				());
 		}
 
-		public override void Delete(MarshallerFamily mf, StatefulBuffer a_bytes, bool isUpdate
-			)
+		public override void Delete(DeleteContextImpl context, bool isUpdate)
 		{
 			if (isUpdate)
 			{
-				a_bytes.IncrementOffset(LinkLength());
+				context.Seek(context.Offset() + LinkLength());
 				return;
 			}
-			a_bytes.IncrementOffset(Const4.IntLength);
-			long longPart = a_bytes.ReadLong();
+			context.Seek(context.Offset() + Const4.IntLength);
+			long longPart = context.ReadLong();
 			if (longPart > 0)
 			{
-				ObjectContainerBase stream = a_bytes.Container();
-				if (stream.MaintainsIndices())
+				if (context.Container().MaintainsIndices())
 				{
-					RemoveIndexEntry(a_bytes.Transaction(), a_bytes.GetID(), longPart);
+					RemoveIndexEntry(context.Transaction(), context.Id(), longPart);
 				}
 			}
 		}
@@ -189,7 +189,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		protected override int LinkLength()
+		public override int LinkLength()
 		{
 			return Const4.LongLength + Const4.IdLength;
 		}
@@ -290,7 +290,7 @@ namespace Db4objects.Db4o.Internal
 			return hardRef;
 		}
 
-		public override void DefragField(IDefragmentContext context)
+		public override void DefragAspect(IDefragmentContext context)
 		{
 			// database id
 			context.CopyID();

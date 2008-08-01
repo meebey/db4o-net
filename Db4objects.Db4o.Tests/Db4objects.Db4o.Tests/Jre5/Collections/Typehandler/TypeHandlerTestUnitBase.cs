@@ -47,6 +47,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			Store(item);
 		}
 
+		protected virtual int ExpectedElementCount()
+		{
+			return Elements().Length + 1;
+		}
+
 		protected virtual object[] Elements()
 		{
 			return ElementsSpec()._elements;
@@ -153,7 +158,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		{
 			IList list = ListFromItem(item);
 			Assert.AreEqual(ItemFactory().ContainerClass(), list.GetType());
-			Assert.AreEqual(Elements().Length + 1, list.Count);
+			Assert.AreEqual(ExpectedElementCount(), list.Count);
 			for (int eltIdx = 0; eltIdx < Elements().Length; eltIdx++)
 			{
 				Assert.AreEqual(Elements()[eltIdx], list[eltIdx]);

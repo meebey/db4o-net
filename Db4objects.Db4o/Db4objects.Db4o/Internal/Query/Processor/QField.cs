@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public int i_yapClassID;
 
-		public int i_index;
+		public int _fieldHandle;
 
 		public QField()
 		{
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			i_name = name;
 			i_yapField = a_yapField;
 			i_yapClassID = a_yapClassID;
-			i_index = a_index;
+			_fieldHandle = a_index;
 			if (i_yapField != null)
 			{
 				if (!i_yapField.Alive())
@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			if (i_yapClassID != 0)
 			{
 				ClassMetadata yc = a_trans.Container().ClassMetadataForId(i_yapClassID);
-				i_yapField = yc.i_fields[i_index];
+				i_yapField = (FieldMetadata)yc._aspects[_fieldHandle];
 			}
 		}
 

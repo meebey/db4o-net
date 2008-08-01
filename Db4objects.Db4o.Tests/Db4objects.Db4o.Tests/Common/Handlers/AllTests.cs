@@ -18,10 +18,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return new Type[] { typeof(ArrayHandlerTestCase), typeof(BooleanHandlerTestCase), 
 				typeof(ByteHandlerTestCase), typeof(CharHandlerTestCase), typeof(ClassHandlerTestCase
 				), typeof(CustomTypeHandlerTestCase), typeof(DoubleHandlerTestCase), typeof(FloatHandlerTestCase
-				), typeof(IntHandlerTestCase), typeof(LongHandlerTestCase), typeof(MultiDimensionalArrayHandlerTestCase
-				), typeof(MultidimensionalArrayIterator4TestCase), typeof(SecondClassTestCase), 
-				typeof(StringBufferHandlerTestCase), typeof(StringHandlerTestCase), typeof(ShortHandlerTestCase
-				), typeof(UntypedHandlerTestCase) };
+				), typeof(IgnoreFieldsTypeHandlerTestCase), typeof(IntHandlerTestCase), typeof(LongHandlerTestCase
+				), typeof(MultiDimensionalArrayHandlerTestCase), typeof(MultidimensionalArrayIterator4TestCase
+				), typeof(SecondClassTestCase), typeof(StringBufferHandlerTestCase), typeof(StringHandlerTestCase
+				), typeof(ShortHandlerTestCase), typeof(UntypedHandlerTestCase) };
 		}
 	}
 }

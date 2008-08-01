@@ -173,12 +173,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				return;
 			}
 			AssertQueries(objectContainer, typeof(ArrayList));
-			AssertQueries(objectContainer, typeof(ArrayListUpdateTestCase.ArrayListExtensionWithField
-				));
-			AssertQueries(objectContainer, typeof(ArrayListUpdateTestCase.ArrayListExtensionWithoutField
-				));
 		}
 
+		//        assertQueries(objectContainer, ArrayListExtensionWithField.class);
+		//        assertQueries(objectContainer, ArrayListExtensionWithoutField.class);
 		private void AssertQueries(IExtObjectContainer objectContainer, Type clazz)
 		{
 			AssertQuery(objectContainer, clazz, "_typed");

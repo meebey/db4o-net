@@ -13,10 +13,14 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			int queryResultID = ReadInt();
 			int fetchSize = ReadInt();
-			IIntIterator4 idIterator = Stub(queryResultID).IdIterator();
-			MsgD message = IdList.GetWriterForLength(Transaction(), BufferLength(fetchSize));
-			StatefulBuffer writer = message.PayLoad();
-			writer.WriteIDs(idIterator, fetchSize);
+			MsgD message = null;
+			lock (StreamLock())
+			{
+				IIntIterator4 idIterator = Stub(queryResultID).IdIterator();
+				message = IdList.GetWriterForLength(Transaction(), BufferLength(fetchSize));
+				StatefulBuffer writer = message.PayLoad();
+				writer.WriteIDs(idIterator, fetchSize);
+			}
 			Write(message);
 			return true;
 		}

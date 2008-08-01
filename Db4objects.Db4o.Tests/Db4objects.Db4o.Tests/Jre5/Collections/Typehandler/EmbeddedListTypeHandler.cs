@@ -105,8 +105,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				return;
 			}
 			ITypeHandler4 handler = ElementTypeHandler(context, null);
-			context.ReadInt();
-			// class ID
+			SkipClass(context);
 			int elementCount = context.ReadInt();
 			for (int i = elementCount; i > 0; i--)
 			{
@@ -114,6 +113,12 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			}
 		}
 
+		private void SkipClass(IReadBuffer context)
+		{
+			context.ReadInt();
+		}
+
+		// class ID
 		public virtual void Defragment(IDefragmentContext context)
 		{
 			context.CopyID();
@@ -141,6 +146,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		public virtual void CollectIDs(QueryingReadContext context)
 		{
+			SkipClass(context);
 			int elementCount = context.ReadInt();
 			ITypeHandler4 elementHandler = context.Container().Handlers().UntypedObjectHandler
 				();

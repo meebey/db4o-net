@@ -63,6 +63,20 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return buffer.ReadPayloadWriter(payLoadOffSet, length);
 		}
 
+		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="Db4oIOException"></exception>
+		public virtual object ReadIndexEntry(IObjectIdContext context)
+		{
+			int payLoadOffSet = context.ReadInt();
+			int length = context.ReadInt();
+			if (payLoadOffSet == 0)
+			{
+				return null;
+			}
+			return ((StatefulBuffer)context.Buffer()).ReadPayloadWriter(payLoadOffSet, length
+				);
+		}
+
 		/// <summary>This readIndexEntry method reads from the actual index in the file.</summary>
 		/// <remarks>This readIndexEntry method reads from the actual index in the file.</remarks>
 		public virtual object ReadIndexEntry(ByteArrayBuffer reader)
@@ -255,12 +269,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			ByteArrayBuffer sourceBuffer = Val(obj, context);
-			return new _IPreparedComparison_228(this, context, sourceBuffer);
+			return new _IPreparedComparison_237(this, context, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_228 : IPreparedComparison
+		private sealed class _IPreparedComparison_237 : IPreparedComparison
 		{
-			public _IPreparedComparison_228(StringHandler _enclosing, IContext context, ByteArrayBuffer
+			public _IPreparedComparison_237(StringHandler _enclosing, IContext context, ByteArrayBuffer
 				 sourceBuffer)
 			{
 				this._enclosing = _enclosing;

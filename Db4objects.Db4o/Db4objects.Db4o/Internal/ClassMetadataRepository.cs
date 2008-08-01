@@ -70,15 +70,15 @@ namespace Db4objects.Db4o.Internal
 				ClassMetadata classMetadata = i.CurrentClass();
 				if (!classMetadata.IsInternal())
 				{
-					classMetadata.ForEachFieldMetadata(new _IVisitor4_60(fieldName, visitor, classMetadata
-						));
+					classMetadata.ForEachField(new _IProcedure4_60(fieldName, visitor, classMetadata)
+						);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_60 : IVisitor4
+		private sealed class _IProcedure4_60 : IProcedure4
 		{
-			public _IVisitor4_60(string fieldName, IVisitor4 visitor, ClassMetadata classMetadata
+			public _IProcedure4_60(string fieldName, IVisitor4 visitor, ClassMetadata classMetadata
 				)
 			{
 				this.fieldName = fieldName;
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Internal
 				this.classMetadata = classMetadata;
 			}
 
-			public void Visit(object obj)
+			public void Apply(object obj)
 			{
 				FieldMetadata field = (FieldMetadata)obj;
 				if (field.CanAddToQuery(fieldName))
@@ -287,7 +287,7 @@ namespace Db4objects.Db4o.Internal
 				_classMetadataByID.Put(id, classMetadata);
 				addMembers = true;
 			}
-			if (addMembers || classMetadata.i_fields == null)
+			if (addMembers || classMetadata.AspectsAreNull())
 			{
 				_classInits.Process(classMetadata);
 			}

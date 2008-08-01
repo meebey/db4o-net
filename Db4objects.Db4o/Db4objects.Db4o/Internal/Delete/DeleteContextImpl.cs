@@ -11,30 +11,39 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal.Delete
 {
 	/// <exclude></exclude>
-	public class DeleteContextImpl : AbstractBufferContext, IDeleteContext
+	public class DeleteContextImpl : ObjectHeaderContext, IDeleteContext, IObjectIdContext
 	{
 		private readonly IReflectClass _fieldClass;
 
-		private readonly int _handlerVersion;
-
 		private readonly Config4Field _fieldConfig;
 
-		public DeleteContextImpl(IReflectClass fieldClass, int handlerVersion, Config4Field
-			 fieldConfig, StatefulBuffer buffer) : base(buffer.Transaction(), buffer)
+		public DeleteContextImpl(Db4objects.Db4o.Internal.StatefulBuffer buffer, ObjectHeader
+			 objectHeader, IReflectClass fieldClass, Config4Field fieldConfig) : base(buffer
+			.Transaction(), buffer, objectHeader)
 		{
 			_fieldClass = fieldClass;
-			_handlerVersion = handlerVersion;
 			_fieldConfig = fieldConfig;
+		}
+
+		public DeleteContextImpl(Db4objects.Db4o.Internal.Delete.DeleteContextImpl parentContext
+			, IReflectClass fieldClass, Config4Field fieldConfig) : this(parentContext.StatefulBuffer
+			(), parentContext._objectHeader, fieldClass, fieldConfig)
+		{
 		}
 
 		public virtual void CascadeDeleteDepth(int depth)
 		{
-			((StatefulBuffer)Buffer()).SetCascadeDeletes(depth);
+			StatefulBuffer().SetCascadeDeletes(depth);
+		}
+
+		private Db4objects.Db4o.Internal.StatefulBuffer StatefulBuffer()
+		{
+			return ((Db4objects.Db4o.Internal.StatefulBuffer)Buffer());
 		}
 
 		public virtual int CascadeDeleteDepth()
 		{
-			return ((StatefulBuffer)Buffer()).CascadeDeletes();
+			return StatefulBuffer().CascadeDeletes();
 		}
 
 		public virtual bool CascadeDelete()
@@ -57,17 +66,12 @@ namespace Db4objects.Db4o.Internal.Delete
 			return new Slot(Buffer().ReadInt(), Buffer().ReadInt());
 		}
 
-		public override int HandlerVersion()
-		{
-			return _handlerVersion;
-		}
-
 		public virtual void Delete(ITypeHandler4 handler)
 		{
 			ITypeHandler4 fieldHandler = Handlers4.CorrectHandlerVersion(this, handler);
 			int preservedCascadeDepth = CascadeDeleteDepth();
 			CascadeDeleteDepth(AdjustedDepth());
-			if (SlotFormat.ForHandlerVersion(HandlerVersion()).HandleAsObject(fieldHandler))
+			if (SlotFormat().HandleAsObject(fieldHandler))
 			{
 				DeleteObject();
 			}
@@ -106,6 +110,11 @@ namespace Db4objects.Db4o.Internal.Delete
 				return 0;
 			}
 			return CascadeDeleteDepth();
+		}
+
+		public virtual int Id()
+		{
+			return StatefulBuffer().GetID();
 		}
 	}
 }

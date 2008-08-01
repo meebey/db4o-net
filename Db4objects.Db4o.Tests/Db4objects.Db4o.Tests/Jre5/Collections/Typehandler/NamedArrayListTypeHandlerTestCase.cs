@@ -6,6 +6,7 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Jre5.Collections.Typehandler;
 using Db4objects.Db4o.Typehandlers;
@@ -28,8 +29,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(ArrayList))
-				, new ListTypeHandler());
+			if (!NullableArrayHandling.Enabled())
+			{
+				config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(ArrayList))
+					, new ListTypeHandler());
+			}
 		}
 
 		private NamedArrayList CreateNamedArrayList()

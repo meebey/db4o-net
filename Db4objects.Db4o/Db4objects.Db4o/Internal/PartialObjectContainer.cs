@@ -283,7 +283,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
-					throw new Exception(Db4objects.Db4o.Internal.Messages.Get(57));
+					throw new Db4oException(Db4objects.Db4o.Internal.Messages.Get(57));
 				}
 			}
 		}
@@ -769,14 +769,15 @@ namespace Db4objects.Db4o.Internal
 					return null;
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
-				FieldMetadata[] field = new FieldMetadata[] { null };
-				classMetadata.ForEachFieldMetadata(new _IVisitor4_620(fieldName, field));
-				if (field[0] == null)
+				ByReference foundField = new ByReference();
+				classMetadata.ForEachField(new _IProcedure4_621(fieldName, foundField));
+				FieldMetadata field = (FieldMetadata)foundField.value;
+				if (field == null)
 				{
 					return null;
 				}
-				object child = @ref.IsActive() ? field[0].Get(trans, obj) : DescendMarshallingContext
-					(trans, @ref).ReadFieldValue(field[0]);
+				object child = @ref.IsActive() ? field.Get(trans, obj) : DescendMarshallingContext
+					(trans, @ref).ReadFieldValue(field);
 				if (path.Length == 1)
 				{
 					return child;
@@ -791,26 +792,26 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_620 : IVisitor4
+		private sealed class _IProcedure4_621 : IProcedure4
 		{
-			public _IVisitor4_620(string fieldName, FieldMetadata[] field)
+			public _IProcedure4_621(string fieldName, ByReference foundField)
 			{
 				this.fieldName = fieldName;
-				this.field = field;
+				this.foundField = foundField;
 			}
 
-			public void Visit(object yf)
+			public void Apply(object arg)
 			{
-				FieldMetadata yapField = (FieldMetadata)yf;
-				if (yapField.CanAddToQuery(fieldName))
+				FieldMetadata fieldMetadata = (FieldMetadata)arg;
+				if (fieldMetadata.CanAddToQuery(fieldName))
 				{
-					field[0] = yapField;
+					foundField.value = fieldMetadata;
 				}
 			}
 
 			private readonly string fieldName;
 
-			private readonly FieldMetadata[] field;
+			private readonly ByReference foundField;
 		}
 
 		private UnmarshallingContext DescendMarshallingContext(Transaction trans, ObjectReference
@@ -892,7 +893,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				ShutdownObjectContainer();
 			}
-			throw new Exception(Db4objects.Db4o.Internal.Messages.Get(msgID));
+			throw new Db4oException(Db4objects.Db4o.Internal.Messages.Get(msgID));
 		}
 
 		private bool ConfiguredForAutomaticShutDown()
@@ -964,6 +965,10 @@ namespace Db4objects.Db4o.Internal
 				catch (Db4oException e)
 				{
 					CompleteTopLevelCall(new InvalidIDException(e));
+				}
+				catch (IndexOutOfRangeException aiobe)
+				{
+					CompleteTopLevelCall(new InvalidIDException(aiobe));
 				}
 				finally
 				{
@@ -2033,6 +2038,11 @@ namespace Db4objects.Db4o.Internal
 			if (@ref == null)
 			{
 				ClassMetadata classMetadata = analyzer.ClassMetadata();
+				if (classMetadata.IsSecondClass())
+				{
+					analyzer.NotStorable();
+					return 0;
+				}
 				if (!ObjectCanNew(trans, classMetadata, obj))
 				{
 					return 0;

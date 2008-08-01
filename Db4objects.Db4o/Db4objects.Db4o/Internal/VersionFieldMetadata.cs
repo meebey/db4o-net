@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
@@ -17,16 +18,16 @@ namespace Db4objects.Db4o.Internal
 			SetName(VirtualField.Version);
 		}
 
-		public override void AddFieldIndex(MarshallerFamily mf, ClassMetadata yapClass, StatefulBuffer
-			 writer, Slot oldSlot)
+		/// <exception cref="FieldIndexException"></exception>
+		public override void AddFieldIndex(ObjectIdContextImpl context, Slot oldSlot)
 		{
-			writer.WriteLong(writer.Container().GenerateTimeStampId());
+			StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
+			buffer.WriteLong(context.Transaction().Container().GenerateTimeStampId());
 		}
 
-		public override void Delete(MarshallerFamily mf, StatefulBuffer a_bytes, bool isUpdate
-			)
+		public override void Delete(DeleteContextImpl context, bool isUpdate)
 		{
-			a_bytes.IncrementOffset(LinkLength());
+			context.Seek(context.Offset() + LinkLength());
 		}
 
 		internal override void Instantiate1(ObjectReferenceContext context)
@@ -52,7 +53,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		protected override int LinkLength()
+		public override int LinkLength()
 		{
 			return Const4.LongLength;
 		}

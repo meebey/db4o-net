@@ -32,10 +32,10 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			if (true)
 			{
 				// run against specific libraries + the current one
-				return new string[] { WorkspaceServices.WorkspacePath("db4o.archives/java1.2/db4o-7.2.31.10304-java1.2.jar"
-					) };
+				string netPath = "db4o.archives/net-2.0/7.2/Db4objects.Db4o.dll";
+				string javaPath = "db4o.archives/java1.2/db4o-7.2.31.10304-java1.2.jar";
+				return new string[] { WorkspaceServices.WorkspacePath(javaPath) };
 			}
-			// WorkspaceServices.workspacePath("db4o.archives/java1.2/db4o-3.0.jar"),
 			return Db4oMigrationSuiteBuilder.Current;
 		}
 

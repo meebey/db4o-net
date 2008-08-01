@@ -53,8 +53,6 @@ namespace Db4objects.Db4o.Defragment
 				this.classIndexID = classIndexID;
 			}
 
-			/// <exception cref="CorruptionException"></exception>
-			/// <exception cref="IOException"></exception>
 			public void ProcessCopy(DefragmentContextImpl context)
 			{
 				yapClass.DefragClass(context, classIndexID);

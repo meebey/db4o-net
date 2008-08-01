@@ -127,6 +127,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void TransferContentTo(ByteArrayBuffer buffer, int length)
 		{
+			if (_delegate == null)
+			{
+				return;
+			}
 			System.Array.Copy(_delegate._buffer, 0, buffer._buffer, buffer._offset, length);
 			buffer._offset += length;
 		}
@@ -206,14 +210,14 @@ namespace Db4objects.Db4o.Internal
 		public virtual IReservedBuffer Reserve(int length)
 		{
 			PrepareWrite(length);
-			IReservedBuffer reservedBuffer = new _IReservedBuffer_175(this);
+			IReservedBuffer reservedBuffer = new _IReservedBuffer_178(this);
 			_delegate.Seek(_delegate.Offset() + length);
 			return reservedBuffer;
 		}
 
-		private sealed class _IReservedBuffer_175 : IReservedBuffer
+		private sealed class _IReservedBuffer_178 : IReservedBuffer
 		{
-			public _IReservedBuffer_175(MarshallingBuffer _enclosing)
+			public _IReservedBuffer_178(MarshallingBuffer _enclosing)
 			{
 				this._enclosing = _enclosing;
 				this.reservedOffset = this._enclosing._delegate.Offset();
@@ -343,6 +347,10 @@ namespace Db4objects.Db4o.Internal
 
 		private void BlockAlign(int length)
 		{
+			if (_delegate == null)
+			{
+				return;
+			}
 			if (length > _delegate.Length())
 			{
 				int sizeNeeded = length - _delegate.Offset();

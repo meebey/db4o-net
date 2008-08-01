@@ -1,7 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Marshall;
@@ -16,10 +14,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return !field.IsVirtual();
 		}
 
-		public override void Write(Transaction trans, ClassMetadata clazz, FieldMetadata 
-			field, ByteArrayBuffer writer)
+		public override void Write(Transaction trans, ClassMetadata clazz, ClassAspect aspect
+			, ByteArrayBuffer writer)
 		{
-			base.Write(trans, clazz, field, writer);
+			base.Write(trans, clazz, aspect, writer);
+			if (!(aspect is FieldMetadata))
+			{
+				return;
+			}
+			FieldMetadata field = (FieldMetadata)aspect;
 			if (!HasBTreeIndex(field))
 			{
 				return;
@@ -27,10 +30,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			writer.WriteIDOf(trans, field.GetIndex(trans));
 		}
 
-		public override RawFieldSpec ReadSpec(ObjectContainerBase stream, ByteArrayBuffer
-			 reader)
+		protected override RawFieldSpec ReadSpec(AspectType aspectType, ObjectContainerBase
+			 stream, ByteArrayBuffer reader)
 		{
-			RawFieldSpec spec = base.ReadSpec(stream, reader);
+			RawFieldSpec spec = base.ReadSpec(aspectType, stream, reader);
 			if (spec == null)
 			{
 				return null;
@@ -59,10 +62,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return actualField;
 		}
 
-		public override int MarshalledLength(ObjectContainerBase stream, FieldMetadata field
+		public override int MarshalledLength(ObjectContainerBase stream, ClassAspect aspect
 			)
 		{
-			int len = base.MarshalledLength(stream, field);
+			int len = base.MarshalledLength(stream, aspect);
+			if (!(aspect is FieldMetadata))
+			{
+				return len;
+			}
+			FieldMetadata field = (FieldMetadata)aspect;
 			if (!HasBTreeIndex(field))
 			{
 				return len;
@@ -71,19 +79,22 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return len + BtreeId;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
-		public override void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO
+		public override void Defrag(ClassMetadata classMetadata, ClassAspect aspect, LatinStringIO
 			 sio, DefragmentContextImpl context)
 		{
-			base.Defrag(yapClass, yapField, sio, context);
-			if (yapField.IsVirtual())
+			base.Defrag(classMetadata, aspect, sio, context);
+			if (!(aspect is FieldMetadata))
 			{
 				return;
 			}
-			if (yapField.HasIndex())
+			FieldMetadata field = (FieldMetadata)aspect;
+			if (field.IsVirtual())
 			{
-				BTree index = yapField.GetIndex(context.SystemTrans());
+				return;
+			}
+			if (field.HasIndex())
+			{
+				BTree index = field.GetIndex(context.SystemTrans());
 				int targetIndexID = context.CopyID();
 				if (targetIndexID != 0)
 				{

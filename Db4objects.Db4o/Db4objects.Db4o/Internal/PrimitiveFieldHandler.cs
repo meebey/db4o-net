@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal
 		public PrimitiveFieldHandler(ObjectContainerBase container, ITypeHandler4 handler
 			, int handlerID, IReflectClass classReflector) : base(container, classReflector)
 		{
-			i_fields = FieldMetadata.EmptyArray;
+			_aspects = FieldMetadata.EmptyArray;
 			_handler = handler;
 			_id = handlerID;
 		}
@@ -71,8 +71,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal override void DeleteMembers(MarshallerFamily mf, ObjectHeaderAttributes 
-			attributes, StatefulBuffer a_bytes, int a_type, bool isUpdate)
+		internal virtual void DeleteMembers(MarshallerFamily mf, ObjectHeaderAttributes attributes
+			, StatefulBuffer a_bytes, int a_type, bool isUpdate)
 		{
 			if (a_type == Const4.TypeArray)
 			{
@@ -84,6 +84,24 @@ namespace Db4objects.Db4o.Internal
 				{
 					new MultidimensionalArrayHandler(this, true).DeletePrimitiveEmbedded(a_bytes, this
 						);
+				}
+			}
+		}
+
+		internal override void DeleteMembers(DeleteContextImpl context, int a_type, bool 
+			isUpdate)
+		{
+			if (a_type == Const4.TypeArray)
+			{
+				new ArrayHandler(this, true).DeletePrimitiveEmbedded((StatefulBuffer)context.Buffer
+					(), this);
+			}
+			else
+			{
+				if (a_type == Const4.TypeNarray)
+				{
+					new MultidimensionalArrayHandler(this, true).DeletePrimitiveEmbedded((StatefulBuffer
+						)context.Buffer(), this);
 				}
 			}
 		}

@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			// will trigger calling this constructor with a source db yap class and a target db stream,
 			// thus _yapClass==null. There may be a better solution, since this call is just meant to
 			// skip the object header.
-			_headerAttributes = ReadAttributes(_marshallerFamily, reader);
+			_headerAttributes = SlotFormat().ReadHeaderAttributes((ByteArrayBuffer)reader);
 		}
 
 		public static Db4objects.Db4o.Internal.Marshall.ObjectHeader Defrag(DefragmentContextImpl
@@ -52,15 +52,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 			Db4objects.Db4o.Internal.Marshall.ObjectHeader header = new Db4objects.Db4o.Internal.Marshall.ObjectHeader
 				(context.Services().SystemTrans().Container(), null, source);
 			int newID = context.Mapping().MappedID(header.ClassMetadata().GetID());
-			header._marshallerFamily._object.WriteObjectClassID(target, newID);
-			header._marshallerFamily._object.SkipMarshallerInfo(target);
-			ReadAttributes(header._marshallerFamily, target);
+			Db4objects.Db4o.Internal.Marshall.SlotFormat slotFormat = header.SlotFormat();
+			slotFormat.WriteObjectClassID(target, newID);
+			slotFormat.SkipMarshallerInfo(target);
+			slotFormat.ReadHeaderAttributes(target);
 			return header;
 		}
 
-		public Db4objects.Db4o.Internal.Marshall.ObjectMarshaller ObjectMarshaller()
+		private Db4objects.Db4o.Internal.Marshall.SlotFormat SlotFormat()
 		{
-			return _marshallerFamily._object;
+			return Db4objects.Db4o.Internal.Marshall.SlotFormat.ForHandlerVersion(HandlerVersion
+				());
 		}
 
 		private MarshallerFamily ReadMarshallerFamily(IReadWriteBuffer reader, int classID
@@ -74,12 +76,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			MarshallerFamily marshallerFamily = MarshallerFamily.Version(_handlerVersion);
 			return marshallerFamily;
-		}
-
-		private static ObjectHeaderAttributes ReadAttributes(MarshallerFamily marshallerFamily
-			, IReadWriteBuffer reader)
-		{
-			return marshallerFamily._object.ReadHeaderAttributes((ByteArrayBuffer)reader);
 		}
 
 		private bool MarshallerAware(int id)

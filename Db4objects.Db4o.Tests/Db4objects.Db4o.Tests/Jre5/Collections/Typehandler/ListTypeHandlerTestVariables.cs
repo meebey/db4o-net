@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using Db4oUnit.Fixtures;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Jre5.Collections.Typehandler;
 using Db4objects.Db4o.Typehandlers;
 
@@ -24,9 +25,10 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			(), new ListTypeHandlerTestVariables.LinkedListItemFactory(), new ListTypeHandlerTestVariables.ListItemFactory
 			(), new ListTypeHandlerTestVariables.NamedArrayListItemFactory() });
 
-		public static readonly IFixtureProvider TypehandlerFixtureProvider = new SimpleFixtureProvider
-			(ListTypehander, new object[] { new ListTypeHandler(), new EmbeddedListTypeHandler
-			() });
+		public static readonly IFixtureProvider TypehandlerFixtureProvider = NullableArrayHandling
+			.Enabled() ? new SimpleFixtureProvider(ListTypehander, new object[] { null }) : 
+			new SimpleFixtureProvider(ListTypehander, new object[] { new ListTypeHandler(), 
+			new EmbeddedListTypeHandler() });
 
 		public static readonly ListTypeHandlerTestElementsSpec StringElementsSpec = new ListTypeHandlerTestElementsSpec
 			(new object[] { "zero", "one" }, "two", "zzz");

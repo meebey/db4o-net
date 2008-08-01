@@ -336,6 +336,22 @@ namespace Db4objects.Db4o.Foundation
 			return _size;
 		}
 
+		public virtual int IndexOf(object obj)
+		{
+			int index = 0;
+			List4 current = _first;
+			while (current != null)
+			{
+				if (current.Holds(obj))
+				{
+					return index;
+				}
+				index++;
+				current = current._next;
+			}
+			return -1;
+		}
+
 		public bool IsEmpty()
 		{
 			return _size == 0;

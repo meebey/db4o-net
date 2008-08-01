@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly ObjectHeader _objectHeader;
 
-		private int _currentSlot;
+		private int _aspectCount;
 
 		public DefragmentContextImpl(ByteArrayBuffer source, Db4objects.Db4o.Internal.DefragmentContextImpl
 			 context) : this(source, context._services, context._objectHeader)
@@ -227,16 +227,12 @@ namespace Db4objects.Db4o.Internal
 			return _services;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
 		public static void ProcessCopy(IDefragmentServices services, int sourceID, ISlotCopyHandler
 			 command)
 		{
 			ProcessCopy(services, sourceID, command, false);
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
 		public static void ProcessCopy(IDefragmentServices context, int sourceID, ISlotCopyHandler
 			 command, bool registerAddressMapping)
 		{
@@ -244,8 +240,6 @@ namespace Db4objects.Db4o.Internal
 			ProcessCopy(context, sourceID, command, registerAddressMapping, sourceReader);
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
 		public static void ProcessCopy(IDefragmentServices services, int sourceID, ISlotCopyHandler
 			 command, bool registerAddressMapping, ByteArrayBuffer sourceReader)
 		{
@@ -436,22 +430,33 @@ namespace Db4objects.Db4o.Internal
 
 		public void BeginSlot()
 		{
-			_currentSlot++;
 		}
 
+		// do nothing
 		public Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
 		{
 			return _objectHeader.ClassMetadata();
 		}
 
-		public int CurrentSlot()
-		{
-			return _currentSlot;
-		}
-
 		public bool IsNull(int fieldIndex)
 		{
 			return _objectHeader._headerAttributes.IsNull(fieldIndex);
+		}
+
+		public int AspectCount()
+		{
+			return _aspectCount;
+		}
+
+		public void AspectCount(int count)
+		{
+			_aspectCount = count;
+		}
+
+		public Db4objects.Db4o.Internal.Marshall.SlotFormat SlotFormat()
+		{
+			return Db4objects.Db4o.Internal.Marshall.SlotFormat.ForHandlerVersion(HandlerVersion
+				());
 		}
 	}
 }

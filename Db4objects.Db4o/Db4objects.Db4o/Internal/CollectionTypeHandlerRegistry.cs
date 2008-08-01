@@ -2,7 +2,6 @@
 
 using System;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
@@ -10,8 +9,6 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class CollectionTypeHandlerRegistry
 	{
-		private const int InstalledFromVersion = 4;
-
 		private readonly Config4Impl _config;
 
 		private readonly ITypeHandler4 _listTypeHandler;
@@ -28,43 +25,29 @@ namespace Db4objects.Db4o.Internal
 			return NullableArrayHandling.Enabled();
 		}
 
-		public virtual void RegisterLists(Type[] classes)
+		public virtual void RegisterCollection(Type clazz)
 		{
 			if (!Enabled())
 			{
 				return;
 			}
-			for (int i = 0; i < classes.Length; i++)
-			{
-				RegisterListTypeHandler(classes[i]);
-			}
+			RegisterListTypeHandlerFor(clazz);
 		}
 
-		private void RegisterListTypeHandler(Type clazz)
+		public virtual void IgnoreFieldsOn(Type clazz)
 		{
-			IReflectClass claxx = _config.Reflector().ForClass(clazz);
-			_config.RegisterTypeHandler(new _ITypeHandlerPredicate_43(claxx), _listTypeHandler
+			if (!Enabled())
+			{
+				return;
+			}
+			_config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(clazz), new IgnoreFieldsTypeHandler
+				());
+		}
+
+		private void RegisterListTypeHandlerFor(Type clazz)
+		{
+			_config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(clazz), _listTypeHandler
 				);
-		}
-
-		private sealed class _ITypeHandlerPredicate_43 : ITypeHandlerPredicate
-		{
-			public _ITypeHandlerPredicate_43(IReflectClass claxx)
-			{
-				this.claxx = claxx;
-			}
-
-			public bool Match(IReflectClass classReflector, int version)
-			{
-				if (version < Db4objects.Db4o.Internal.CollectionTypeHandlerRegistry.InstalledFromVersion
-					)
-				{
-					return false;
-				}
-				return claxx.Equals(classReflector);
-			}
-
-			private readonly IReflectClass claxx;
 		}
 	}
 }

@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override void CascadeActivation(ActivationContext4 context)
 		{
-			ITypeHandler4 typeHandler = TypeHandlerForObject(context.TargetObject(), true);
+			ITypeHandler4 typeHandler = TypeHandlerForObject(context.TargetObject());
 			if (typeHandler is IFirstClassHandler)
 			{
 				((IFirstClassHandler)typeHandler).CascadeActivation(context);
@@ -96,24 +96,15 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			ITypeHandler4 ret = null;
 			context.Seek(payLoadOffSet);
-			int yapClassID = context.ReadInt();
-			ClassMetadata yc = context.Container().ClassMetadataForId(yapClassID);
-			if (yc != null)
+			int classMetadataID = context.ReadInt();
+			ClassMetadata classMetadata = context.Container().ClassMetadataForId(classMetadataID
+				);
+			if (classMetadata == null)
 			{
-				ITypeHandler4 configuredHandler = context.Container().ConfigImpl().TypeHandlerForClass
-					(yc.ClassReflector(), Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion);
-				if (configuredHandler != null && configuredHandler is IFirstClassHandler)
-				{
-					ret = ((IFirstClassHandler)configuredHandler).ReadCandidateHandler(context);
-				}
-				else
-				{
-					ret = yc.ReadCandidateHandler(context);
-				}
+				return null;
 			}
-			return ret;
+			return classMetadata.ReadCandidateHandler(context);
 		}
 
 		public override ObjectID ReadObjectID(IInternalReadContext context)
@@ -255,24 +246,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual ITypeHandler4 TypeHandlerForObject(object obj)
 		{
-			return TypeHandlerForObject(obj, false);
-		}
-
-		public virtual ITypeHandler4 TypeHandlerForObject(object obj, bool lookupRegistered
-			)
-		{
 			IReflectClass claxx = Reflector().ForObject(obj);
 			if (claxx.IsArray())
 			{
 				return HandlerRegistry().UntypedArrayHandler(claxx);
-			}
-			if (lookupRegistered)
-			{
-				ITypeHandler4 configuredHandler = ConfiguredHandler(claxx);
-				if (configuredHandler != null)
-				{
-					return configuredHandler;
-				}
 			}
 			return Container().TypeHandlerForReflectClass(claxx);
 		}

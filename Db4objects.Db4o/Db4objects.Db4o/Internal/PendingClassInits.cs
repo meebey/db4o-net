@@ -53,9 +53,9 @@ namespace Db4objects.Db4o.Internal
 		{
 			while (_members.HasNext())
 			{
-				ClassMetadata yc = (ClassMetadata)_members.Next();
-				yc.AddMembers(Stream());
-				_statics.Add(yc);
+				ClassMetadata classMetadata = (ClassMetadata)_members.Next();
+				classMetadata.AddMembers(Stream());
+				_statics.Add(classMetadata);
 			}
 		}
 

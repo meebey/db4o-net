@@ -135,7 +135,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public virtual IReflector Reflector()
 		{
-			throw new NotImplementedException();
+			return _repository._reflector;
 		}
 
 		public virtual IEnumerator CustomFields()

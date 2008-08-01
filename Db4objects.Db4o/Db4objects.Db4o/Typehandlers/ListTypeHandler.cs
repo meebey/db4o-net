@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Typehandlers
 {
 	/// <summary>TypeHandler for all lists.</summary>
 	/// <remarks>TypeHandler for all lists.</remarks>
-	/// <decaf.ignore></decaf.ignore>
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class ListTypeHandler : ITypeHandler4, IFirstClassHandler, ICanHoldAnythingHandler
 		, IVariableLengthTypeHandler
 	{

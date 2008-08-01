@@ -11,8 +11,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <remarks>Wraps the low-level details of reading a Buffer, which in turn is a glorified byte array.
 	/// 	</remarks>
 	/// <exclude></exclude>
-	public class UnmarshallingContext : ObjectReferenceContext, IFieldListInfo, IMarshallingInfo
-		, IHandlerVersionContext
+	public class UnmarshallingContext : ObjectReferenceContext, IHandlerVersionContext
 	{
 		private object _object;
 

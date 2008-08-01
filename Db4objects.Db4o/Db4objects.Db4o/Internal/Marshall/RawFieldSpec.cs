@@ -1,11 +1,14 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	public class RawFieldSpec
 	{
+		private readonly AspectType _type;
+
 		private readonly string _name;
 
 		private readonly int _handlerID;
@@ -20,8 +23,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int _indexID;
 
-		public RawFieldSpec(string name, int handlerID, byte attribs)
+		public RawFieldSpec(AspectType aspectType, string name, int handlerID, byte attribs
+			)
 		{
+			_type = aspectType;
 			_name = name;
 			_handlerID = handlerID;
 			BitMap4 bitmap = new BitMap4(attribs);
@@ -32,8 +37,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_indexID = 0;
 		}
 
-		public RawFieldSpec(string name)
+		public RawFieldSpec(AspectType aspectType, string name)
 		{
+			_type = aspectType;
 			_name = name;
 			_handlerID = 0;
 			_isPrimitive = false;
@@ -86,6 +92,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public override string ToString()
 		{
 			return "RawFieldSpec(" + Name() + ")";
+		}
+
+		public virtual bool IsFieldMetadata()
+		{
+			return _type.IsFieldMetadata();
 		}
 	}
 }

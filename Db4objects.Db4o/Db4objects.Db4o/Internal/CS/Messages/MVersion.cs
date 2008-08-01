@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		{
 			long ver = 0;
 			ObjectContainerBase stream = Stream();
-			lock (stream)
+			lock (StreamLock())
 			{
 				ver = stream.CurrentVersion();
 			}

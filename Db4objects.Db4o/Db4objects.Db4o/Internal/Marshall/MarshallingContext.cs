@@ -34,13 +34,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int _fieldWriteCount;
 
-		private int _currentSlot;
-
 		private ByteArrayBuffer _debugPrepend;
 
 		private object _currentMarshalledObject;
 
 		private object _currentIndexEntry;
+
+		private int _aspectCount;
 
 		public MarshallingContext(Db4objects.Db4o.Internal.Transaction trans, ObjectReference
 			 @ref, int updateDepth, bool isNew)
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int FieldCount()
 		{
-			return ClassMetadata().FieldCount();
+			return ClassMetadata().AspectCount();
 		}
 
 		public virtual Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
@@ -248,7 +248,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual void BeginSlot()
 		{
-			_currentSlot++;
 			_fieldWriteCount = 0;
 			_currentBuffer = _writeBuffer;
 		}
@@ -350,9 +349,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			if (IsIndirectedWithinSlot(handler))
 			{
-				CreateChildBuffer(false, true);
-				DoNotIndirectWrites();
+				CreateIndirectionWithinSlot();
 			}
+		}
+
+		public virtual void CreateIndirectionWithinSlot()
+		{
+			CreateChildBuffer(false, true);
+			DoNotIndirectWrites();
 		}
 
 		private bool IsIndirectedWithinSlot(ITypeHandler4 handler)
@@ -386,9 +390,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return reservedBuffer;
 		}
 
-		public virtual int CurrentSlot()
+		public virtual int AspectCount()
 		{
-			return _currentSlot;
+			return _aspectCount;
+		}
+
+		public virtual void AspectCount(int count)
+		{
+			_aspectCount = count;
 		}
 	}
 }

@@ -95,5 +95,11 @@ namespace Db4objects.Db4o.Internal
 		{
 			Seek(ReadInt());
 		}
+
+		public virtual Db4objects.Db4o.Internal.Marshall.SlotFormat SlotFormat()
+		{
+			return Db4objects.Db4o.Internal.Marshall.SlotFormat.ForHandlerVersion(HandlerVersion
+				());
+		}
 	}
 }

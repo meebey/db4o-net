@@ -1,7 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 
@@ -10,7 +8,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public interface IFieldMarshaller
 	{
-		void Write(Transaction trans, ClassMetadata clazz, FieldMetadata field, ByteArrayBuffer
+		void Write(Transaction trans, ClassMetadata clazz, ClassAspect aspect, ByteArrayBuffer
 			 writer);
 
 		RawFieldSpec ReadSpec(ObjectContainerBase stream, ByteArrayBuffer reader);
@@ -18,11 +16,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 		FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, ByteArrayBuffer
 			 reader);
 
-		int MarshalledLength(ObjectContainerBase stream, FieldMetadata field);
+		int MarshalledLength(ObjectContainerBase stream, ClassAspect aspect);
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
-		void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO sio, DefragmentContextImpl
+		void Defrag(ClassMetadata classMetadata, ClassAspect aspect, LatinStringIO sio, DefragmentContextImpl
 			 context);
 	}
 }

@@ -2,9 +2,7 @@
 
 using System;
 using System.Collections;
-using System.IO;
 using System.Text;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
@@ -226,12 +224,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return;
 			}
-			_nodes.Traverse(new _IVisitor4_207(systemTransaction));
+			_nodes.Traverse(new _IVisitor4_205(systemTransaction));
 		}
 
-		private sealed class _IVisitor4_207 : IVisitor4
+		private sealed class _IVisitor4_205 : IVisitor4
 		{
-			public _IVisitor4_207(Transaction systemTransaction)
+			public _IVisitor4_205(Transaction systemTransaction)
 			{
 				this.systemTransaction = systemTransaction;
 			}
@@ -262,12 +260,12 @@ namespace Db4objects.Db4o.Internal.Btree
 				_root.HoldChildrenAsIDs();
 				AddNode(_root);
 			}
-			temp.Traverse(new _IVisitor4_231());
+			temp.Traverse(new _IVisitor4_229());
 		}
 
-		private sealed class _IVisitor4_231 : IVisitor4
+		private sealed class _IVisitor4_229 : IVisitor4
 		{
-			public _IVisitor4_231()
+			public _IVisitor4_229()
 			{
 			}
 
@@ -281,12 +279,12 @@ namespace Db4objects.Db4o.Internal.Btree
 		private void ProcessAllNodes()
 		{
 			_processing = new NonblockingQueue();
-			_nodes.Traverse(new _IVisitor4_241(this));
+			_nodes.Traverse(new _IVisitor4_239(this));
 		}
 
-		private sealed class _IVisitor4_241 : IVisitor4
+		private sealed class _IVisitor4_239 : IVisitor4
 		{
-			public _IVisitor4_241(BTree _enclosing)
+			public _IVisitor4_239(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -479,41 +477,20 @@ namespace Db4objects.Db4o.Internal.Btree
 			BTreeNode.DefragIndex(context, _keyHandler);
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
 		public virtual void DefragBTree(IDefragmentServices services)
 		{
-			DefragmentContextImpl.ProcessCopy(services, GetID(), new _ISlotCopyHandler_400(this
+			DefragmentContextImpl.ProcessCopy(services, GetID(), new _ISlotCopyHandler_398(this
 				));
-			CorruptionException[] corruptx = new CorruptionException[] { null };
-			IOException[] iox = new IOException[] { null };
-			try
-			{
-				services.TraverseAllIndexSlots(this, new _IVisitor4_408(this, services, corruptx, 
-					iox));
-			}
-			catch (Exception e)
-			{
-				if (corruptx[0] != null)
-				{
-					throw corruptx[0];
-				}
-				if (iox[0] != null)
-				{
-					throw iox[0];
-				}
-				throw;
-			}
+			services.TraverseAllIndexSlots(this, new _IVisitor4_403(this, services));
 		}
 
-		private sealed class _ISlotCopyHandler_400 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_398 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_400(BTree _enclosing)
+			public _ISlotCopyHandler_398(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="CorruptionException"></exception>
 			public void ProcessCopy(DefragmentContextImpl context)
 			{
 				this._enclosing.DefragIndex(context);
@@ -522,39 +499,23 @@ namespace Db4objects.Db4o.Internal.Btree
 			private readonly BTree _enclosing;
 		}
 
-		private sealed class _IVisitor4_408 : IVisitor4
+		private sealed class _IVisitor4_403 : IVisitor4
 		{
-			public _IVisitor4_408(BTree _enclosing, IDefragmentServices services, CorruptionException
-				[] corruptx, IOException[] iox)
+			public _IVisitor4_403(BTree _enclosing, IDefragmentServices services)
 			{
 				this._enclosing = _enclosing;
 				this.services = services;
-				this.corruptx = corruptx;
-				this.iox = iox;
 			}
 
 			public void Visit(object obj)
 			{
 				int id = ((int)obj);
-				try
-				{
-					DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_412(this));
-				}
-				catch (CorruptionException e)
-				{
-					corruptx[0] = e;
-					throw new Exception();
-				}
-				catch (IOException e)
-				{
-					iox[0] = e;
-					throw new Exception();
-				}
+				DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_406(this));
 			}
 
-			private sealed class _ISlotCopyHandler_412 : ISlotCopyHandler
+			private sealed class _ISlotCopyHandler_406 : ISlotCopyHandler
 			{
-				public _ISlotCopyHandler_412(_IVisitor4_408 _enclosing)
+				public _ISlotCopyHandler_406(_IVisitor4_403 _enclosing)
 				{
 					this._enclosing = _enclosing;
 				}
@@ -564,16 +525,12 @@ namespace Db4objects.Db4o.Internal.Btree
 					this._enclosing._enclosing.DefragIndexNode(context);
 				}
 
-				private readonly _IVisitor4_408 _enclosing;
+				private readonly _IVisitor4_403 _enclosing;
 			}
 
 			private readonly BTree _enclosing;
 
 			private readonly IDefragmentServices services;
-
-			private readonly CorruptionException[] corruptx;
-
-			private readonly IOException[] iox;
 		}
 
 		public virtual int CompareKeys(IContext context, object key1, object key2)
@@ -610,13 +567,13 @@ namespace Db4objects.Db4o.Internal.Btree
 		public virtual IEnumerator AllNodeIds(Transaction systemTrans)
 		{
 			Collection4 allNodeIDs = new Collection4();
-			TraverseAllNodes(systemTrans, new _IVisitor4_463(allNodeIDs));
+			TraverseAllNodes(systemTrans, new _IVisitor4_441(allNodeIDs));
 			return allNodeIDs.GetEnumerator();
 		}
 
-		private sealed class _IVisitor4_463 : IVisitor4
+		private sealed class _IVisitor4_441 : IVisitor4
 		{
-			public _IVisitor4_463(Collection4 allNodeIDs)
+			public _IVisitor4_441(Collection4 allNodeIDs)
 			{
 				this.allNodeIDs = allNodeIDs;
 			}
@@ -640,12 +597,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return;
 			}
-			_nodes.Traverse(new _IVisitor4_479(visitor));
+			_nodes.Traverse(new _IVisitor4_457(visitor));
 		}
 
-		private sealed class _IVisitor4_479 : IVisitor4
+		private sealed class _IVisitor4_457 : IVisitor4
 		{
-			public _IVisitor4_479(IVisitor4 visitor)
+			public _IVisitor4_457(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}
@@ -664,13 +621,13 @@ namespace Db4objects.Db4o.Internal.Btree
 			sb.Append("BTree ");
 			sb.Append(GetID());
 			sb.Append(" Active Nodes: \n");
-			TraverseAllNodes(new _IVisitor4_491(sb));
+			TraverseAllNodes(new _IVisitor4_469(sb));
 			return sb.ToString();
 		}
 
-		private sealed class _IVisitor4_491 : IVisitor4
+		private sealed class _IVisitor4_469 : IVisitor4
 		{
-			public _IVisitor4_491(StringBuilder sb)
+			public _IVisitor4_469(StringBuilder sb)
 			{
 				this.sb = sb;
 			}

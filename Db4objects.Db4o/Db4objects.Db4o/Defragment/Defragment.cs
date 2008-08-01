@@ -191,26 +191,23 @@ namespace Db4objects.Db4o.Defragment
 			db.Close();
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
 		private static void DefragUnindexed(DefragmentServicesImpl services)
 		{
 			IdSource unindexedIDs = services.UnindexedIDs();
 			while (unindexedIDs.HasMoreIds())
 			{
 				int origID = unindexedIDs.NextId();
-				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_177(), 
+				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_176(), 
 					true);
 			}
 		}
 
-		private sealed class _ISlotCopyHandler_177 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_176 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_177()
+			public _ISlotCopyHandler_176()
 			{
 			}
 
-			/// <exception cref="CorruptionException"></exception>
 			public void ProcessCopy(DefragmentContextImpl context)
 			{
 				ClassMetadata.DefragObject(context);
@@ -319,12 +316,12 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessObjectsForYapClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			context.TraverseAll(curClass, new _IVisitor4_268(command, context, curClass));
+			context.TraverseAll(curClass, new _IVisitor4_265(command, context, curClass));
 		}
 
-		private sealed class _IVisitor4_268 : IVisitor4
+		private sealed class _IVisitor4_265 : IVisitor4
 		{
-			public _IVisitor4_268(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
+			public _IVisitor4_265(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
 				 curClass)
 			{
 				this.command = command;

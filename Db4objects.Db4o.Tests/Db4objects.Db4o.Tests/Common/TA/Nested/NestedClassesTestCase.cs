@@ -7,6 +7,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.TA;
 using Db4objects.Db4o.Tests.Common.TA.Nested;
+using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Nested
 {
@@ -46,6 +47,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nested
 		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
+			string property = Runtime.GetProperty("java.version");
+			if (property != null && property.StartsWith("1.3"))
+			{
+				Sharpen.Runtime.Err.WriteLine("IGNORED: " + GetType() + " will fail when run against JDK1.3/JDK1.4"
+					);
+				return;
+			}
 			IObjectSet query = Db().Query(typeof(OuterClass.InnerClass));
 			while (query.HasNext())
 			{

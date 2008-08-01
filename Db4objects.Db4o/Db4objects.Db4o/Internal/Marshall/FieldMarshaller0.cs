@@ -1,7 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
@@ -11,42 +9,50 @@ using Db4objects.Db4o.Internal.Marshall;
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class FieldMarshaller0 : IFieldMarshaller
+	public class FieldMarshaller0 : AbstractFieldMarshaller
 	{
-		public virtual int MarshalledLength(ObjectContainerBase stream, FieldMetadata field
+		public override int MarshalledLength(ObjectContainerBase stream, ClassAspect aspect
 			)
 		{
-			int len = stream.StringIO().ShortLength(field.GetName());
-			if (field.NeedsArrayAndPrimitiveInfo())
+			int len = stream.StringIO().ShortLength(aspect.GetName());
+			if (aspect is FieldMetadata)
 			{
-				len += 1;
-			}
-			if (field.NeedsHandlerId())
-			{
-				len += Const4.IdLength;
+				FieldMetadata field = (FieldMetadata)aspect;
+				if (field.NeedsArrayAndPrimitiveInfo())
+				{
+					len += 1;
+				}
+				if (field.NeedsHandlerId())
+				{
+					len += Const4.IdLength;
+				}
 			}
 			return len;
 		}
 
-		public virtual RawFieldSpec ReadSpec(ObjectContainerBase stream, ByteArrayBuffer 
-			reader)
+		protected override RawFieldSpec ReadSpec(AspectType aspectType, ObjectContainerBase
+			 stream, ByteArrayBuffer reader)
 		{
 			string name = StringHandler.ReadStringNoDebug(stream.Transaction().Context(), reader
 				);
+			if (!aspectType.IsFieldMetadata())
+			{
+				return new RawFieldSpec(aspectType, name);
+			}
 			if (name.IndexOf(Const4.VirtualFieldPrefix) == 0)
 			{
 				if (stream._handlers.VirtualFieldByName(name) != null)
 				{
-					return new RawFieldSpec(name);
+					return new RawFieldSpec(aspectType, name);
 				}
 			}
 			int handlerID = reader.ReadInt();
 			byte attribs = reader.ReadByte();
-			return new RawFieldSpec(name, handlerID, attribs);
+			return new RawFieldSpec(aspectType, name, handlerID, attribs);
 		}
 
-		public FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, ByteArrayBuffer
-			 reader)
+		public sealed override FieldMetadata Read(ObjectContainerBase stream, FieldMetadata
+			 field, ByteArrayBuffer reader)
 		{
 			RawFieldSpec spec = ReadSpec(stream, reader);
 			return FromSpec(spec, stream, field);
@@ -60,6 +66,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return field;
 			}
 			string name = spec.Name();
+			if (!spec.IsFieldMetadata())
+			{
+				field.Init(field.ContainingClass(), name);
+				return field;
+			}
 			if (spec.IsVirtual())
 			{
 				return stream._handlers.VirtualFieldByName(name);
@@ -71,11 +82,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return field;
 		}
 
-		public virtual void Write(Transaction trans, ClassMetadata clazz, FieldMetadata field
+		public override void Write(Transaction trans, ClassMetadata clazz, ClassAspect aspect
 			, ByteArrayBuffer writer)
 		{
+			writer.WriteShortString(trans, aspect.GetName());
+			if (!(aspect is FieldMetadata))
+			{
+				return;
+			}
+			FieldMetadata field = (FieldMetadata)aspect;
 			field.Alive();
-			writer.WriteShortString(trans, field.GetName());
 			if (field.IsVirtual())
 			{
 				return;
@@ -98,13 +114,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			writer.WriteByte(bitmap.GetByte(0));
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
-		public virtual void Defrag(ClassMetadata yapClass, FieldMetadata yapField, LatinStringIO
+		public override void Defrag(ClassMetadata classMetadata, ClassAspect aspect, LatinStringIO
 			 sio, DefragmentContextImpl context)
 		{
 			context.IncrementStringOffset(sio);
-			if (yapField.IsVirtual())
+			if (!(aspect is FieldMetadata))
+			{
+				return;
+			}
+			if (((FieldMetadata)aspect).IsVirtual())
 			{
 				return;
 			}

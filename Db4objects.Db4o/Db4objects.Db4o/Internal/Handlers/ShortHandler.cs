@@ -80,12 +80,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			short sourceShort = ((short)source);
-			return new _IPreparedComparison_87(sourceShort);
+			return new _IPreparedComparison_86(sourceShort);
 		}
 
-		private sealed class _IPreparedComparison_87 : IPreparedComparison
+		private sealed class _IPreparedComparison_86 : IPreparedComparison
 		{
-			public _IPreparedComparison_87(short sourceShort)
+			public _IPreparedComparison_86(short sourceShort)
 			{
 				this.sourceShort = sourceShort;
 			}

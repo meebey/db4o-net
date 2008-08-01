@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
@@ -30,18 +29,30 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			Store(new ClassMetadataTestCase.SubClazz());
 		}
 
-		public virtual void TestFieldIterator()
+		public virtual void TestForEachField()
 		{
 			Collection4 expectedNames = new Collection4(new ArrayIterator4(new string[] { "_id"
 				, "_name", "_age" }));
-			IEnumerator fieldIter = ClassMetadataFor(typeof(ClassMetadataTestCase.SubClazz)).
-				Fields();
-			while (fieldIter.MoveNext())
+			ClassMetadata classMetadata = ClassMetadataFor(typeof(ClassMetadataTestCase.SubClazz
+				));
+			classMetadata.ForEachField(new _IProcedure4_29(expectedNames));
+			Assert.IsTrue(expectedNames.IsEmpty());
+		}
+
+		private sealed class _IProcedure4_29 : IProcedure4
+		{
+			public _IProcedure4_29(Collection4 expectedNames)
 			{
-				FieldMetadata curField = (FieldMetadata)fieldIter.Current;
+				this.expectedNames = expectedNames;
+			}
+
+			public void Apply(object arg)
+			{
+				FieldMetadata curField = (FieldMetadata)arg;
 				Assert.IsNotNull(expectedNames.Remove(curField.GetName()));
 			}
-			Assert.IsTrue(expectedNames.IsEmpty());
+
+			private readonly Collection4 expectedNames;
 		}
 	}
 }

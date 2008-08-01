@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return handler is IVariableLengthTypeHandler;
 		}
 
-		public virtual bool IsEmbedded(ITypeHandler4 handler)
+		public static bool IsEmbedded(ITypeHandler4 handler)
 		{
 			return handler is IEmbeddedTypeHandler;
 		}
@@ -86,6 +86,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return closure.Run();
 			}
+			return DoWithSlotIndirection(buffer, closure);
+		}
+
+		public virtual object DoWithSlotIndirection(IReadBuffer buffer, IClosure4 closure
+			)
+		{
 			int payLoadOffset = buffer.ReadInt();
 			buffer.ReadInt();
 			// length, not used
@@ -111,6 +117,22 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return false;
 			}
 			return true;
+		}
+
+		public virtual void WriteObjectClassID(ByteArrayBuffer buffer, int id)
+		{
+			buffer.WriteInt(-id);
+		}
+
+		public virtual void SkipMarshallerInfo(ByteArrayBuffer reader)
+		{
+			reader.IncrementOffset(1);
+		}
+
+		public virtual ObjectHeaderAttributes ReadHeaderAttributes(ByteArrayBuffer reader
+			)
+		{
+			return new ObjectHeaderAttributes(reader);
 		}
 	}
 }

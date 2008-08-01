@@ -63,12 +63,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			double sourceDouble = ((double)source);
-			return new _IPreparedComparison_56(sourceDouble);
+			return new _IPreparedComparison_55(sourceDouble);
 		}
 
-		private sealed class _IPreparedComparison_56 : IPreparedComparison
+		private sealed class _IPreparedComparison_55 : IPreparedComparison
 		{
-			public _IPreparedComparison_56(double sourceDouble)
+			public _IPreparedComparison_55(double sourceDouble)
 			{
 				this.sourceDouble = sourceDouble;
 			}

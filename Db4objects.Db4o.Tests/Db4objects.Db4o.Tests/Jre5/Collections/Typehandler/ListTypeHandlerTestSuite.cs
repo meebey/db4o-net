@@ -71,6 +71,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			{
 				object item = RetrieveItemInstance();
 				IList list = ListFromItem(item);
+				Assert.AreEqual(ExpectedElementCount(), list.Count);
 				object element = list[0];
 				if (Db().IsActive(element))
 				{

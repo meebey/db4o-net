@@ -37,10 +37,13 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		private void AddCommittedInfoMsg(CallbackObjectInfoCollections committedInfo, LocalTransaction
 			 serverTransaction)
 		{
-			Msg.CommittedInfo.SetTransaction(serverTransaction);
-			MCommittedInfo message = Msg.CommittedInfo.Encode(committedInfo);
-			message.SetMessageDispatcher(ServerMessageDispatcher());
-			ServerMessageDispatcher().Server().AddCommittedInfoMsg(message);
+			lock (StreamLock())
+			{
+				Msg.CommittedInfo.SetTransaction(serverTransaction);
+				MCommittedInfo message = Msg.CommittedInfo.Encode(committedInfo);
+				message.SetMessageDispatcher(ServerMessageDispatcher());
+				ServerMessageDispatcher().Server().AddCommittedInfoMsg(message);
+			}
 		}
 	}
 }

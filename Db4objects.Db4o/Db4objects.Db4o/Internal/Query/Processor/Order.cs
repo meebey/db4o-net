@@ -1,6 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.Query.Processor;
 
@@ -74,8 +74,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_minors.Size() != other.Size())
 			{
-				throw new Exception("Unexpected exception: this..size()=" + i_minors.Size() + ", other.size()="
-					 + other.Size());
+				throw new Db4oException("Unexpected exception: this..size()=" + i_minors.Size() +
+					 ", other.size()=" + other.Size());
 			}
 			int result = 0;
 			for (int i = 0; i < i_minors.Size(); i++)

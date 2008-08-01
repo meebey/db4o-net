@@ -17,7 +17,10 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			try
 			{
 				Unmarshall(_payLoad._offset);
-				WriteQueryResult(Execute(), _evaluationMode);
+				lock (StreamLock())
+				{
+					WriteQueryResult(Execute(), _evaluationMode);
+				}
 			}
 			catch (Db4oException e)
 			{

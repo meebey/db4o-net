@@ -9,8 +9,13 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 	{
 		public virtual bool ProcessAtServer()
 		{
-			AbstractQueryResult queryResult = QueryResult(ReadInt());
-			Write(Msg.ObjectsetSize.GetWriterForInt(Transaction(), queryResult.Size()));
+			MsgD writer = null;
+			lock (StreamLock())
+			{
+				AbstractQueryResult queryResult = QueryResult(ReadInt());
+				writer = Msg.ObjectsetSize.GetWriterForInt(Transaction(), queryResult.Size());
+			}
+			Write(writer);
 			return true;
 		}
 	}

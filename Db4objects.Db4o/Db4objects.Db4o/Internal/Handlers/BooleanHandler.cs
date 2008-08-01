@@ -95,12 +95,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			bool sourceBoolean = ((bool)source);
-			return new _IPreparedComparison_112(sourceBoolean);
+			return new _IPreparedComparison_111(sourceBoolean);
 		}
 
-		private sealed class _IPreparedComparison_112 : IPreparedComparison
+		private sealed class _IPreparedComparison_111 : IPreparedComparison
 		{
-			public _IPreparedComparison_112(bool sourceBoolean)
+			public _IPreparedComparison_111(bool sourceBoolean)
 			{
 				this.sourceBoolean = sourceBoolean;
 			}

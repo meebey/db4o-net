@@ -25,5 +25,7 @@ namespace Db4objects.Db4o.Internal.Delete
 		void DefragmentRecommended();
 
 		Slot ReadSlot();
+
+		int Id();
 	}
 }

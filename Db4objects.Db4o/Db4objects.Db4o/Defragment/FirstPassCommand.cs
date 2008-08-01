@@ -42,18 +42,34 @@ namespace Db4objects.Db4o.Defragment
 			return _ids != null && _ids.Size() == IdBatchSize;
 		}
 
-		public void ProcessClass(DefragmentServicesImpl context, ClassMetadata yapClass, 
-			int id, int classIndexID)
+		public void ProcessClass(DefragmentServicesImpl context, ClassMetadata classMetadata
+			, int id, int classIndexID)
 		{
 			Process(context, id, true);
-			for (int fieldIdx = 0; fieldIdx < yapClass.i_fields.Length; fieldIdx++)
+			classMetadata.ForEachField(new _IProcedure4_36(this, context));
+		}
+
+		private sealed class _IProcedure4_36 : IProcedure4
+		{
+			public _IProcedure4_36(FirstPassCommand _enclosing, DefragmentServicesImpl context
+				)
 			{
-				FieldMetadata field = yapClass.i_fields[fieldIdx];
+				this._enclosing = _enclosing;
+				this.context = context;
+			}
+
+			public void Apply(object arg)
+			{
+				FieldMetadata field = (FieldMetadata)arg;
 				if (!field.IsVirtual() && field.HasIndex())
 				{
-					ProcessBTree(context, field.GetIndex(context.SystemTrans()));
+					this._enclosing.ProcessBTree(context, field.GetIndex(context.SystemTrans()));
 				}
 			}
+
+			private readonly FirstPassCommand _enclosing;
+
+			private readonly DefragmentServicesImpl context;
 		}
 
 		public void ProcessObjectSlot(DefragmentServicesImpl context, ClassMetadata yapClass
@@ -71,12 +87,12 @@ namespace Db4objects.Db4o.Defragment
 		public void ProcessBTree(DefragmentServicesImpl context, BTree btree)
 		{
 			Process(context, btree.GetID(), false);
-			context.TraverseAllIndexSlots(btree, new _IVisitor4_54(this, context));
+			context.TraverseAllIndexSlots(btree, new _IVisitor4_56(this, context));
 		}
 
-		private sealed class _IVisitor4_54 : IVisitor4
+		private sealed class _IVisitor4_56 : IVisitor4
 		{
-			public _IVisitor4_54(FirstPassCommand _enclosing, DefragmentServicesImpl context)
+			public _IVisitor4_56(FirstPassCommand _enclosing, DefragmentServicesImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;

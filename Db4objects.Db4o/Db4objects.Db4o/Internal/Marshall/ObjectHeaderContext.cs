@@ -7,13 +7,13 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public abstract class ObjectHeaderContext : AbstractReadContext
+	public class ObjectHeaderContext : AbstractReadContext, IMarshallingInfo, IHandlerVersionContext
 	{
 		protected ObjectHeader _objectHeader;
 
-		private int _currentSlot;
+		private int _aspectCount;
 
-		protected ObjectHeaderContext(Transaction transaction, IReadBuffer buffer, ObjectHeader
+		public ObjectHeaderContext(Transaction transaction, IReadBuffer buffer, ObjectHeader
 			 objectHeader) : base(transaction, buffer)
 		{
 			_objectHeader = objectHeader;
@@ -36,39 +36,42 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual void BeginSlot()
 		{
-			_currentSlot++;
 		}
 
-		public virtual int CurrentSlot()
-		{
-			return _currentSlot;
-		}
-
+		// do nothing
 		public virtual ContextState SaveState()
 		{
-			return new ContextState(Offset(), _currentSlot);
+			return new ContextState(Offset());
 		}
 
 		public virtual void RestoreState(ContextState state)
 		{
 			Seek(state._offset);
-			_currentSlot = state._currentSlot;
 		}
 
-		public virtual object ReadFieldValue(ClassMetadata classMetadata, FieldMetadata field
-			)
+		public virtual object ReadFieldValue(Db4objects.Db4o.Internal.ClassMetadata classMetadata
+			, FieldMetadata field)
 		{
-			if (!SeekToField(classMetadata, field))
+			if (!classMetadata.SeekToField(this, field))
 			{
 				return null;
 			}
 			return field.Read(this);
 		}
 
-		public virtual bool SeekToField(ClassMetadata classMetadata, FieldMetadata field)
+		public virtual Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
 		{
-			return _objectHeader.ObjectMarshaller().FindOffset(classMetadata, _objectHeader._headerAttributes
-				, ((ByteArrayBuffer)Buffer()), field);
+			return _objectHeader.ClassMetadata();
+		}
+
+		public virtual int AspectCount()
+		{
+			return _aspectCount;
+		}
+
+		public virtual void AspectCount(int count)
+		{
+			_aspectCount = count;
 		}
 	}
 }

@@ -8,5 +8,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	public interface IHandlerVersionContext : IContext
 	{
 		int HandlerVersion();
+
+		Db4objects.Db4o.Internal.Marshall.SlotFormat SlotFormat();
 	}
 }
