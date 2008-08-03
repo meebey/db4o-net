@@ -408,7 +408,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 		internal class GenericListPredicate : ITypeHandlerPredicate
 		{
-			public bool Match(IReflectClass classReflector, int version)
+			public bool Match(IReflectClass classReflector)
 			{
 				Type type = NetReflector.ToNative(classReflector);
 				if (!type.IsGenericType) return false;
