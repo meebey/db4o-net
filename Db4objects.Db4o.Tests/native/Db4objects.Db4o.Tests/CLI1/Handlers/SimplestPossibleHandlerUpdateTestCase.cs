@@ -1,3 +1,4 @@
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;
 
@@ -22,7 +23,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             return DATA;
         }
 
-        protected override void AssertValues(object[] values)
+        protected override void AssertValues(IExtObjectContainer objectContainer, object[] values)
         {
             Item[] actual = (Item[]) values;
             Assert.AreEqual(DATA.Length, values.Length);
@@ -65,7 +66,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             return null;
         }
 
-        protected override void AssertArrays(object obj)
+        protected override void AssertArrays(IExtObjectContainer objectContainer, object obj)
         {
         }
 

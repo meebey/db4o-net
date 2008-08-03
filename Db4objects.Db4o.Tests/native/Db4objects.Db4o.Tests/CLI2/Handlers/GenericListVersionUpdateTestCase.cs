@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections;
-
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;
 
@@ -137,7 +137,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
             return new ItemArray(intList, simpleItemList, simpleItemList, intList);
         }
 
-        protected override void AssertValues(object[] values)
+        protected override void AssertValues(IExtObjectContainer objectContainer, object[] values)
         {
             AssertItem((Item<int>)values[0], intList1(), intList2(), null);
             AssertItem((Item<string>)values[1], stringList1(), stringList2(), simpleItemList1());
@@ -167,7 +167,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
             }
         }
 
-        protected override void AssertArrays(object obj)
+        protected override void AssertArrays(IExtObjectContainer objectContainer, object obj)
         {
             ItemArray itemArray = obj as ItemArray;
             Assert.IsNotNull(itemArray);

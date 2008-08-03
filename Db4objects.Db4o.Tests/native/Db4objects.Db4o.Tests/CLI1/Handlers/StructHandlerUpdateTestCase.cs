@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;
 
@@ -64,7 +65,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             new Foo("MaxValue", int.MaxValue),
         };
 
-        protected override void AssertArrays(object obj)
+        protected override void AssertArrays(IExtObjectContainer objectContainer, object obj)
         {
             ItemArrays itemArrays = (ItemArrays)obj;
             Foo[] fooArray = (Foo[])itemArrays._aArrayInObject;
@@ -83,7 +84,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             //Assert.IsNull(itemArrays._nullableFooArray[data.Length]);
         }
 
-        protected override void AssertValues(object[] values)
+        protected override void AssertValues(IExtObjectContainer objectContainer, object[] values)
         {
             for (int i = 0; i < data.Length; i++)
             {

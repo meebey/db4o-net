@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;
 
@@ -36,7 +37,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             new Guid("9d33da58-44ae-44c3-b719-4c006be0cb44"),
         };
 
-        protected override void AssertArrays(object obj)
+        protected override void AssertArrays(IExtObjectContainer objectContainer, object obj)
         {
             ItemArrays itemArrays = (ItemArrays)obj;
             Guid[] GuidArray = (Guid[])itemArrays._arrayInObject;
@@ -56,7 +57,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             //Assert.IsNull(itemArrays._nullableGuidArray[data.Length]);
         }
 
-        protected override void AssertValues(object[] values)
+        protected override void AssertValues(IExtObjectContainer objectContainer, object[] values)
         {
             for (int i = 0; i < data.Length; i++)
             {

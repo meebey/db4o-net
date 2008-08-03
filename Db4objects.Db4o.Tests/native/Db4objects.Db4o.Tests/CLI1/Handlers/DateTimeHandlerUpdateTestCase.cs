@@ -1,4 +1,5 @@
 using System;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;
 
@@ -31,7 +32,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             new DateTime(DateTime.MaxValue.Ticks - 1), new DateTime(DateTime.MaxValue.Ticks),
         };
 
-        protected override void AssertArrays(object obj)
+        protected override void AssertArrays(IExtObjectContainer objectContainer, object obj)
         {
             ItemArrays itemArrays = (ItemArrays)obj;
             DateTime[] dateTimeArray = (DateTime[])itemArrays._arrayInObject;
@@ -51,7 +52,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             //Assert.IsNull(itemArrays._nullableDateTimeArray[data.Length]);
         }
 
-        protected override void AssertValues(object[] values)
+        protected override void AssertValues(IExtObjectContainer objectContainer, object[] values)
         {
             for (int i = 0; i < data.Length; i++)
             {
