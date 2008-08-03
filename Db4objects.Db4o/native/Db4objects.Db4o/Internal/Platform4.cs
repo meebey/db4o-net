@@ -321,7 +321,8 @@ namespace Db4objects.Db4o.Internal
                 Translate(config, "System.Collections.SortedList, mscorlib", new TDictionary());
             }
 
-            CollectionTypeHandlerRegistry registry = new CollectionTypeHandlerRegistry(config, new ListTypeHandler());
+            CollectionTypeHandlerRegistry registry = new CollectionTypeHandlerRegistry(config);
+            registry.ListTypeHandler(new ListTypeHandler());
             registry.RegisterCollection(typeof(System.Collections.ArrayList));
 
             RegisterGenericTypeHandlers(config);
