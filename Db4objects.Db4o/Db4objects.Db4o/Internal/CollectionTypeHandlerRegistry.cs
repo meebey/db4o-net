@@ -11,13 +11,23 @@ namespace Db4objects.Db4o.Internal
 	{
 		private readonly Config4Impl _config;
 
-		private readonly ITypeHandler4 _listTypeHandler;
+		private ITypeHandler4 _listTypeHandler;
 
-		public CollectionTypeHandlerRegistry(Config4Impl config, ITypeHandler4 listTypeHandler
-			)
+		private ITypeHandler4 _mapTypeHandler;
+
+		public CollectionTypeHandlerRegistry(Config4Impl config)
 		{
 			_config = config;
+		}
+
+		public virtual void ListTypeHandler(ITypeHandler4 listTypeHandler)
+		{
 			_listTypeHandler = listTypeHandler;
+		}
+
+		public virtual void MapTypeHandler(ITypeHandler4 mapTypehandler)
+		{
+			_mapTypeHandler = mapTypehandler;
 		}
 
 		public static bool Enabled()
@@ -34,6 +44,15 @@ namespace Db4objects.Db4o.Internal
 			RegisterListTypeHandlerFor(clazz);
 		}
 
+		public virtual void RegisterMap(Type clazz)
+		{
+			if (!Enabled())
+			{
+				return;
+			}
+			RegisterMapTypeHandlerFor(clazz);
+		}
+
 		public virtual void IgnoreFieldsOn(Type clazz)
 		{
 			if (!Enabled())
@@ -46,7 +65,17 @@ namespace Db4objects.Db4o.Internal
 
 		private void RegisterListTypeHandlerFor(Type clazz)
 		{
-			_config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(clazz), _listTypeHandler
+			RegisterTypeHandlerFor(_listTypeHandler, clazz);
+		}
+
+		private void RegisterMapTypeHandlerFor(Type clazz)
+		{
+			RegisterTypeHandlerFor(_mapTypeHandler, clazz);
+		}
+
+		private void RegisterTypeHandlerFor(ITypeHandler4 typeHandler, Type clazz)
+		{
+			_config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(clazz), typeHandler
 				);
 		}
 	}

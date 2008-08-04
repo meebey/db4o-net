@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
@@ -29,6 +30,16 @@ namespace Db4objects.Db4o.Foundation
 			public virtual bool IsEmpty()
 			{
 				return _sequence.IsEmpty();
+			}
+
+			public virtual IEnumerator GetEnumerator()
+			{
+				return _sequence.GetEnumerator();
+			}
+
+			public virtual object Get(int index)
+			{
+				return _sequence.Get(index);
 			}
 		}
 	}

@@ -6,27 +6,26 @@ namespace Db4objects.Db4o.Typehandlers
 {
 	/// <summary>
 	/// Predicate to be able to select if a specific TypeHandler is
-	/// applicable for a specific Type and version.
+	/// applicable for a specific Type.
 	/// </summary>
 	/// <remarks>
 	/// Predicate to be able to select if a specific TypeHandler is
-	/// applicable for a specific Type and version.
+	/// applicable for a specific Type.
 	/// </remarks>
 	public interface ITypeHandlerPredicate
 	{
 		/// <summary>
 		/// return true if a TypeHandler is to be used for a specific
-		/// Type and version
+		/// Type
 		/// </summary>
 		/// <param name="classReflector">
 		/// the Type passed by db4o that is to
 		/// be tested by this predicate.
 		/// </param>
-		/// <param name="version">the version</param>
 		/// <returns>
 		/// true if the TypeHandler is to be used for a specific
-		/// Type and version.
+		/// Type.
 		/// </returns>
-		bool Match(IReflectClass classReflector, int version);
+		bool Match(IReflectClass classReflector);
 	}
 }

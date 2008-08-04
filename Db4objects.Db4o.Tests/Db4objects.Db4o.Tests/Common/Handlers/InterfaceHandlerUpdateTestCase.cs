@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
@@ -73,7 +74,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return InterfaceHandlerUpdateTestCase.ItemContainer.CreateNew();
 		}
 
-		protected override void AssertArrays(object obj)
+		protected override void AssertArrays(IExtObjectContainer objectContainer, object 
+			obj)
 		{
 			if (Db4oMajorVersion() == 4)
 			{
@@ -91,7 +93,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			AssertItemInterfaceArray(name, (object[])itemContainer._object);
 		}
 
-		protected override void AssertValues(object[] values)
+		protected override void AssertValues(IExtObjectContainer objectContainer, object[]
+			 values)
 		{
 			if (Db4oMajorVersion() == 4)
 			{

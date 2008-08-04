@@ -2,6 +2,7 @@
 
 using Db4oUnit;
 using Db4oUnit.Util;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Common.Handlers;
 
@@ -91,7 +92,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return item;
 		}
 
-		protected override void AssertArrays(object obj)
+		protected override void AssertArrays(IExtObjectContainer objectContainer, object 
+			obj)
 		{
 			if (MultiDimensionalArraysCantBeStored())
 			{
@@ -163,7 +165,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return null;
 		}
 
-		protected override void AssertValues(object[] values)
+		protected override void AssertValues(IExtObjectContainer objectContainer, object[]
+			 values)
 		{
 		}
 

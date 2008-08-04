@@ -38,8 +38,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			HandlerUpdateTestCaseBase.Holder holder = RetrieveHolderInstance(objectContainer);
 			objectContainer.Activate(holder, int.MaxValue);
-			AssertValues(holder._values);
-			AssertArrays(holder._arrays);
+			AssertValues(objectContainer, holder._values);
+			AssertArrays(objectContainer, holder._arrays);
 			AssertQueries(objectContainer);
 		}
 
@@ -83,9 +83,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected abstract object CreateArrays();
 
-		protected abstract void AssertValues(object[] values);
+		protected abstract void AssertValues(IExtObjectContainer objectContainer, object[]
+			 values);
 
-		protected abstract void AssertArrays(object obj);
+		protected abstract void AssertArrays(IExtObjectContainer objectContainer, object 
+			obj);
 
 		protected virtual void AssertQueries(IExtObjectContainer objectContainer)
 		{

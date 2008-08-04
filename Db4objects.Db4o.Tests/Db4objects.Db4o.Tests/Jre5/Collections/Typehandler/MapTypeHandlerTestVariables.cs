@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using Db4oUnit.Fixtures;
 using Db4objects.Db4o.Tests.Jre5.Collections.Typehandler;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 {

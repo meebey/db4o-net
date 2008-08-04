@@ -108,9 +108,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			item._typed = (ArrayList)CreateFilledList(clazz);
 			item._untyped = CreateFilledList(clazz);
 			item._interface = CreateFilledList(clazz);
-			item._emptyTyped = (ArrayList)CreateList(typeof(ArrayList));
-			item._emptyUntyped = CreateList(typeof(ArrayList));
-			item._emptyInterface = CreateList(typeof(ArrayList));
+			item._emptyTyped = (ArrayList)CreateList(clazz);
+			item._emptyUntyped = CreateList(clazz);
+			item._emptyInterface = CreateList(clazz);
 		}
 
 		private IList CreateFilledList(Type clazz)
@@ -153,7 +153,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return null;
 		}
 
-		protected override void AssertValues(object[] values)
+		protected override void AssertValues(IExtObjectContainer objectContainer, object[]
+			 values)
 		{
 			if (TestNotCompatibleToOldVersion())
 			{
@@ -173,10 +174,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				return;
 			}
 			AssertQueries(objectContainer, typeof(ArrayList));
+			AssertQueries(objectContainer, typeof(ArrayListUpdateTestCase.ArrayListExtensionWithField
+				));
+			AssertQueries(objectContainer, typeof(ArrayListUpdateTestCase.ArrayListExtensionWithoutField
+				));
 		}
 
-		//        assertQueries(objectContainer, ArrayListExtensionWithField.class);
-		//        assertQueries(objectContainer, ArrayListExtensionWithoutField.class);
 		private void AssertQueries(IExtObjectContainer objectContainer, Type clazz)
 		{
 			AssertQuery(objectContainer, clazz, "_typed");
@@ -236,7 +239,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		protected override void AssertArrays(object obj)
+		protected override void AssertArrays(IExtObjectContainer objectContainer, object 
+			obj)
 		{
 		}
 

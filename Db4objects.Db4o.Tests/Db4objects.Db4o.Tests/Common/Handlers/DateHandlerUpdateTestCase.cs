@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Tests.Common.Handlers;
@@ -36,7 +37,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			new ConsoleTestRunner(typeof(DateHandlerUpdateTestCase)).Run();
 		}
 
-		protected override void AssertArrays(object obj)
+		protected override void AssertArrays(IExtObjectContainer objectContainer, object 
+			obj)
 		{
 			DateHandlerUpdateTestCase.ItemArrays itemArrays = (DateHandlerUpdateTestCase.ItemArrays
 				)obj;
@@ -54,7 +56,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Assert.AreEqual(EmptyValue(), dateArray[data.Length]);
 		}
 
-		protected override void AssertValues(object[] values)
+		protected override void AssertValues(IExtObjectContainer objectContainer, object[]
+			 values)
 		{
 			for (int i = 0; i < data.Length; i++)
 			{

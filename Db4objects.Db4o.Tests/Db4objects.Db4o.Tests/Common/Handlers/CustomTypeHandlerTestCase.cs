@@ -280,7 +280,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				this.itemClass = itemClass;
 			}
 
-			public bool Match(IReflectClass classReflector, int version)
+			public bool Match(IReflectClass classReflector)
 			{
 				return itemClass.Equals(classReflector);
 			}

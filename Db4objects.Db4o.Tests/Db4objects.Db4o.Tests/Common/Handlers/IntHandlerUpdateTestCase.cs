@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Sharpen;
 
@@ -104,7 +105,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			item._wrapperArrayInObject = arr;
 		}
 
-		protected override void AssertValues(object[] values)
+		protected override void AssertValues(IExtObjectContainer objectContainer, object[]
+			 values)
 		{
 			for (int i = 0; i < data.Length; i++)
 			{
@@ -119,7 +121,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Assert.IsNull(nullItem._untyped);
 		}
 
-		protected override void AssertArrays(object obj)
+		protected override void AssertArrays(IExtObjectContainer objectContainer, object 
+			obj)
 		{
 			IntHandlerUpdateTestCase.ItemArrays item = (IntHandlerUpdateTestCase.ItemArrays)obj;
 			AssertTypedPrimitiveArray(item);

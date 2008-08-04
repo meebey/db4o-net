@@ -2,6 +2,7 @@
 
 using System.Text;
 using Db4oUnit;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
@@ -36,7 +37,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			new ConsoleTestRunner(typeof(StringBufferHandlerUpdateTestCase)).Run();
 		}
 
-		protected override void AssertArrays(object obj)
+		protected override void AssertArrays(IExtObjectContainer objectContainer, object 
+			obj)
 		{
 			StringBufferHandlerUpdateTestCase.ItemArrays item = (StringBufferHandlerUpdateTestCase.ItemArrays
 				)obj;
@@ -74,7 +76,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		protected override void AssertValues(object[] values)
+		protected override void AssertValues(IExtObjectContainer objectContainer, object[]
+			 values)
 		{
 			for (int i = 0; i < data.Length; i++)
 			{

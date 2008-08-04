@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4objects.Db4o.Tests.Util;
 using Sharpen;
@@ -38,7 +39,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			new ConsoleTestRunner(typeof(BooleanHandlerUpdateTestCase)).Run();
 		}
 
-		protected override void AssertArrays(object obj)
+		protected override void AssertArrays(IExtObjectContainer objectContainer, object 
+			obj)
 		{
 			BooleanHandlerUpdateTestCase.ItemArrays itemArrays = (BooleanHandlerUpdateTestCase.ItemArrays
 				)obj;
@@ -75,7 +77,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		// FIXME: Arrays should also get a null Bitmap to fix.
 		// Assert.isNull(wrapperArray[wrapperArray.length - 1]);
-		protected override void AssertValues(object[] values)
+		protected override void AssertValues(IExtObjectContainer objectContainer, object[]
+			 values)
 		{
 			for (int i = 0; i < data.Length; i++)
 			{

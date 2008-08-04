@@ -1109,7 +1109,7 @@ namespace Db4objects.Db4o.Internal
 			while (i.MoveNext())
 			{
 				TypeHandlerPredicatePair pair = (TypeHandlerPredicatePair)i.Current;
-				if (pair._predicate.Match(classReflector, handlerVersion))
+				if (pair._predicate.Match(classReflector))
 				{
 					return pair._typeHandler;
 				}

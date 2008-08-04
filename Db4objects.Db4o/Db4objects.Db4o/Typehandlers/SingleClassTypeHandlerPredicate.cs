@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Typehandlers
 			_class = clazz;
 		}
 
-		public bool Match(IReflectClass classReflector, int version)
+		public bool Match(IReflectClass classReflector)
 		{
 			IReflectClass reflectClass = classReflector.Reflector().ForClass(_class);
 			return classReflector == reflectClass;

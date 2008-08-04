@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
@@ -56,7 +57,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return item;
 		}
 
-		protected override void AssertArrays(object obj)
+		protected override void AssertArrays(IExtObjectContainer objectContainer, object 
+			obj)
 		{
 			NestedArrayUpdateTestCase.ItemArrays item = (NestedArrayUpdateTestCase.ItemArrays
 				)obj;
@@ -134,7 +136,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return null;
 		}
 
-		protected override void AssertValues(object[] values)
+		protected override void AssertValues(IExtObjectContainer objectContainer, object[]
+			 values)
 		{
 		}
 
