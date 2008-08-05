@@ -23,14 +23,16 @@ namespace Db4objects.Db4o.Internal
                 return;
             }
 
+
             RegisterCollection(typeof(System.Collections.ArrayList));
+            RegisterGenericTypeHandlers();
 
         }
 
-        private static void RegisterGenericTypeHandlers(Config4Impl config)
+        private void RegisterGenericTypeHandlers()
         {
-            config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(List<>)), new ListTypeHandler());
-            config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Dictionary<,>)), new MapTypeHandler());
+            _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(List<>)), new ListTypeHandler());
+            _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Dictionary<,>)), new MapTypeHandler());
 
         }
 

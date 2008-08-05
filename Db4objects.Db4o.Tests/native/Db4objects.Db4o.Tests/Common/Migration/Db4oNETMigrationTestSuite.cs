@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
             list.AddRange(base.TestCases());
 
             Type[] netTypes = new Type[] {
-                //typeof(SimplestPossibleHandlerUpdateTestCase),
+                typeof(SimplestPossibleHandlerUpdateTestCase),
                 typeof(GenericListVersionUpdateTestCase),
                 typeof(GenericDictionaryVersionUpdateTestCase),
                 typeof(DateTimeHandlerUpdateTestCase),
