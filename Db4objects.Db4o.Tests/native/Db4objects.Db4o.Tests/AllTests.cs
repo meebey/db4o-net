@@ -1,6 +1,7 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
 using Db4objects.Db4o.Tests.Common.Events;
+using Db4objects.Db4o.Tests.Common.Migration;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests
@@ -34,14 +35,18 @@ namespace Db4objects.Db4o.Tests
 					typeof(Compact.AllTests),
 #endif
 //					typeof(Db4objects.Db4o.Tests.CLI2.TA.NullableTypeActivationTestCase),
-					typeof(Db4objects.Db4o.Tests.Common.Migration.AllTests),
+
+                    // typeof(Db4oMigrationTestSuite)
+                     // typeof(Db4oNETMigrationTestSuite)
+
+                    typeof(Db4objects.Db4o.Tests.Common.Migration.AllTests),
                     typeof(Db4objects.Db4o.Tests.Common.TA.AllTests),
                     typeof(Db4objects.Db4o.Tests.Common.AllTests),
-					typeof(Db4objects.Db4o.Tests.Jre5.Collections.Typehandler.AllTests),
+                    typeof(Db4objects.Db4o.Tests.Jre5.Collections.Typehandler.AllTests),
                     typeof(Db4objects.Db4o.Tests.CLI1.AllTests),
-					typeof(Db4objects.Db4o.Tests.CLI2.AllTests),
+                    typeof(Db4objects.Db4o.Tests.CLI2.AllTests),
                     typeof(Db4objects.Db4o.Tests.SharpenLang.AllTests),
-					typeof(AllTestsConcurrency),
+                    typeof(AllTestsConcurrency),
 				};
 		}
 	}

@@ -321,47 +321,8 @@ namespace Db4objects.Db4o.Internal
                 Translate(config, "System.Collections.SortedList, mscorlib", new TDictionary());
             }
 
-            CollectionTypeHandlerRegistry registry = new CollectionTypeHandlerRegistry(config);
-            registry.ListTypeHandler(new ListTypeHandler());
-            registry.RegisterCollection(typeof(System.Collections.ArrayList));
+            new TypeHandlerConfigurationDotNet(config).Apply();
 
-            RegisterGenericTypeHandlers(config);
-
-        }
-
-        private static void RegisterGenericTypeHandlers(Config4Impl config)
-        {
-            if (! CollectionTypeHandlerRegistry.Enabled())
-            {
-                return;
-            }
-            GenericTypeHandlerPredicate listPredicate = new GenericTypeHandlerPredicate(typeof(List<>));
-            config.RegisterTypeHandler(listPredicate, new ListTypeHandler());
-            
-        }
-
-        internal class GenericTypeHandlerPredicate : ITypeHandlerPredicate
-        {
-            private Type _genericType;
-
-            internal GenericTypeHandlerPredicate(Type genericType)
-            {
-                _genericType = genericType;
-            }
-
-            public bool Match(IReflectClass classReflector)
-            {
-                Type type = NetReflector.ToNative(classReflector);
-                if(type == null)
-                {
-                    return false;
-                }
-                if (!type.IsGenericType) 
-                {
-                    return false;
-                }
-                return type.GetGenericTypeDefinition() == _genericType;
-            }
         }
 
         public static bool IsCompact()

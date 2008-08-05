@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		public virtual void TestMigration()
 		{
-			if (CollectionTypeHandlerRegistry.Enabled())
+			if (TypeHandlerConfiguration.Enabled())
 			{
 				// Then we always have a list Typehandler installed.
 				// This test no longer makes sense.

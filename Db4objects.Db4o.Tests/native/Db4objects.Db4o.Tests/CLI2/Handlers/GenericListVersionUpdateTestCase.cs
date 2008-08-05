@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;
 
@@ -139,19 +141,44 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
         protected override void AssertValues(IExtObjectContainer objectContainer, object[] values)
         {
-            AssertItem((Item<int>)values[0], intList1(), intList2(), null);
-            AssertItem((Item<string>)values[1], stringList1(), stringList2(), simpleItemList1());
+            AssertItem(objectContainer, (Item<int>)values[0], intList1(), intList2(), null);
+            AssertItem(objectContainer, (Item<string>)values[1], stringList1(), stringList2(), simpleItemList1());
 
             //TODO: Enable after fixing nullable array handling.
             //AssertItem((Item<int?>)values[2], nullableIntList1(), stringList1(), simpleItemList1());
         }
 
-        private void AssertItem<T, R>(Item<T> tba, IList<T> list, IList<R> untypedGenericList, IList<SimpleItem> simpleItemList)
+        private void AssertItem<T, R>(IExtObjectContainer objectContainer, Item<T> tba, IList<T> list, IList<R> untypedGenericList, IList<SimpleItem> simpleItemList)
         {
             Assert.IsNotNull(tba);
             AssertList(list, tba.list);
+            AssertQuery(objectContainer, tba, tba.list, "list");
             AssertList(untypedGenericList, tba.untypedGenericList as IList<R>);
             AssertList(simpleItemList, tba.simpleItemList);
+        }
+
+        private void AssertQuery<T>(IExtObjectContainer objectContainer, Item<T> item, IList<T> list, string fieldName)
+        {
+            if (!TypeHandlerConfiguration.Enabled())
+            {
+                return;
+            }
+            if(Db4oHandlerVersion() < 4)
+            {
+                return;
+            }
+            if(list.Count < 1)
+            {
+                return;
+            }
+            IQuery query = objectContainer.Query();
+            query.Constrain(typeof (Item<T>));
+            object constraint = list[0];
+            query.Descend(fieldName).Constrain(constraint);
+            IObjectSet objectSet = query.Execute();
+            Assert.AreEqual(1, objectSet.Size());
+            Item<T> queriedItem = (Item<T>)objectSet.Next();
+            Assert.AreSame(item, queriedItem);
         }
 
         private void AssertList<T, S>(IList<T> expected, IList<S> actual)
@@ -197,5 +224,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
                 AssertList(expected[i], actual[i]);
             }
         }
+
+
     }
 }

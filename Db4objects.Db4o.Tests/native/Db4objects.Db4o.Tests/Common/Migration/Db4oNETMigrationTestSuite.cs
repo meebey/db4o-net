@@ -24,6 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
             Type[] netTypes = new Type[] {
                 //typeof(SimplestPossibleHandlerUpdateTestCase),
                 typeof(GenericListVersionUpdateTestCase),
+                typeof(GenericDictionaryVersionUpdateTestCase),
                 typeof(DateTimeHandlerUpdateTestCase),
                 typeof(DecimalHandlerUpdateTestCase),
                 typeof(GUIDHandlerUpdateTestCase),
