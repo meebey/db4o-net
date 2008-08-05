@@ -26,7 +26,12 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		public IQueryBuilderRecord Process(Expression expression)
 		{
-			return ProcessExpression(SubtreeEvaluator.Evaluate(expression));
+			return ProcessExpression(SubtreeEvaluator.Evaluate(Normalize(expression)));
+		}
+
+		private Expression Normalize(Expression expression)
+		{
+			return new ExpressionTreeNormalizer().Normalize(expression);
 		}
 
 		private bool IsRecorderCached(Expression expression, out IQueryBuilderRecord record)
@@ -64,14 +69,14 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		protected static bool IsParameterReference(Expression expression)
 		{
-			UnaryExpression unary = expression as UnaryExpression;
+			var unary = expression as UnaryExpression;
 			if (unary != null) return IsParameterReference(unary.Operand);
 
-			MemberExpression me = expression as MemberExpression;
+			var me = expression as MemberExpression;
 			if (me != null) return IsParameter(me.Expression);
 
-			MethodCallExpression call = expression as MethodCallExpression;
-			if (call != null) return IsParameter(call.Object);
+			var call = expression as MethodCallExpression;
+			if (call != null && call.Object != null) return IsParameter(call.Object);
 
 			return false;
 		}

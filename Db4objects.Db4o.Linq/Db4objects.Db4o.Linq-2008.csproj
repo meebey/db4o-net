@@ -59,6 +59,7 @@
     <Compile Include="Db4objects.Db4o.Linq\CodeAnalysis\QueryExpressionFinder.cs"/>
     <Compile Include="Db4objects.Db4o.Linq\CodeAnalysis\MethodAnalyser.cs"/>
     <Compile Include="Db4objects.Db4o.Linq\CodeAnalysis\MetadataResolver.cs"/>
+    <Compile Include="Db4objects.Db4o.Linq\Expressions\ExpressionTreeNormalizer.cs"/>
     <Compile Include="Db4objects.Db4o.Linq\Expressions\OrderByAscendingClauseVisitor.cs"/>
     <Compile Include="Db4objects.Db4o.Linq\Expressions\OrderByDescendingClauseVisitor.cs"/>
     <Compile Include="Db4objects.Db4o.Linq\Internals\EnumerableExtensions.cs"/>
