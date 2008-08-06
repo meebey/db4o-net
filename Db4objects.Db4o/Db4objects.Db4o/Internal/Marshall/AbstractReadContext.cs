@@ -5,6 +5,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -31,13 +32,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public object ReadObject(ITypeHandler4 handlerType)
 		{
 			ITypeHandler4 handler = Handlers4.CorrectHandlerVersion(this, handlerType);
-			return SlotFormat().DoWithSlotIndirection(this, handler, new _IClosure4_32(this, 
+			return SlotFormat().DoWithSlotIndirection(this, handler, new _IClosure4_33(this, 
 				handler));
 		}
 
-		private sealed class _IClosure4_32 : IClosure4
+		private sealed class _IClosure4_33 : IClosure4
 		{
-			public _IClosure4_32(AbstractReadContext _enclosing, ITypeHandler4 handler)
+			public _IClosure4_33(AbstractReadContext _enclosing, ITypeHandler4 handler)
 			{
 				this._enclosing = _enclosing;
 				this.handler = handler;

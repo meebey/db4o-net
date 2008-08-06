@@ -6,6 +6,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -61,13 +62,13 @@ namespace Db4objects.Db4o.Internal
 
 		public override void DefragAspect(IDefragmentContext context)
 		{
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_53(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_54(this, context
 				));
 		}
 
-		private sealed class _IClosure4_53 : IClosure4
+		private sealed class _IClosure4_54 : IClosure4
 		{
-			public _IClosure4_53(TypeHandlerAspect _enclosing, IDefragmentContext context)
+			public _IClosure4_54(TypeHandlerAspect _enclosing, IDefragmentContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -107,13 +108,13 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			object oldObject = context.PersistentObject();
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_80(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_81(this, context
 				, oldObject));
 		}
 
-		private sealed class _IClosure4_80 : IClosure4
+		private sealed class _IClosure4_81 : IClosure4
 		{
-			public _IClosure4_80(TypeHandlerAspect _enclosing, UnmarshallingContext context, 
+			public _IClosure4_81(TypeHandlerAspect _enclosing, UnmarshallingContext context, 
 				object oldObject)
 			{
 				this._enclosing = _enclosing;
@@ -140,13 +141,13 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Delete(DeleteContextImpl context, bool isUpdate)
 		{
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_92(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_93(this, context
 				));
 		}
 
-		private sealed class _IClosure4_92 : IClosure4
+		private sealed class _IClosure4_93 : IClosure4
 		{
-			public _IClosure4_92(TypeHandlerAspect _enclosing, DeleteContextImpl context)
+			public _IClosure4_93(TypeHandlerAspect _enclosing, DeleteContextImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;

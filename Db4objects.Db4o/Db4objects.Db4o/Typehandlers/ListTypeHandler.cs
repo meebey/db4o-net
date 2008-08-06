@@ -9,11 +9,11 @@ using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Typehandlers
 {
-	/// <summary>TypeHandler for all lists.</summary>
-	/// <remarks>TypeHandler for all lists.</remarks>
+	/// <summary>TypeHandler for classes that implement java.util.List.<br /><br /></summary>
 	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class ListTypeHandler : ITypeHandler4, IFirstClassHandler, ICanHoldAnythingHandler
 		, IVariableLengthTypeHandler

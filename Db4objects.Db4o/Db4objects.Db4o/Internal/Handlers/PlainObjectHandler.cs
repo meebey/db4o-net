@@ -11,6 +11,8 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
+	/// <summary>Tyehandler for naked plain objects (java.lang.Object).</summary>
+	/// <remarks>Tyehandler for naked plain objects (java.lang.Object).</remarks>
 	public class PlainObjectHandler : ITypeHandler4, IReadsObjectIds, IEmbeddedTypeHandler
 	{
 		public virtual void Defragment(IDefragmentContext context)

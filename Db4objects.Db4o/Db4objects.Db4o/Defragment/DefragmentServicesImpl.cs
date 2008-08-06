@@ -17,6 +17,7 @@ using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Typehandlers;
 using Sharpen.IO;
 
 namespace Db4objects.Db4o.Defragment
@@ -39,9 +40,9 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private sealed class _DbSelector_37 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_38 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_37()
+			public _DbSelector_38()
 			{
 			}
 
@@ -51,12 +52,12 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_37
+		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_38
 			();
 
-		private sealed class _DbSelector_43 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_44 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_43()
+			public _DbSelector_44()
 			{
 			}
 
@@ -66,7 +67,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_43
+		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_44
 			();
 
 		private const long ClasscollectionPointerAddress = 2 + 2 * Const4.IntLength;
@@ -411,14 +412,14 @@ namespace Db4objects.Db4o.Defragment
 				return cachedHasFieldIndex.DefiniteYes();
 			}
 			BooleanByRef hasFieldIndex = new BooleanByRef(false);
-			clazz.ForEachDeclaredField(new _IProcedure4_318(hasFieldIndex));
+			clazz.ForEachDeclaredField(new _IProcedure4_319(hasFieldIndex));
 			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex.value));
 			return hasFieldIndex.value;
 		}
 
-		private sealed class _IProcedure4_318 : IProcedure4
+		private sealed class _IProcedure4_319 : IProcedure4
 		{
-			public _IProcedure4_318(BooleanByRef hasFieldIndex)
+			public _IProcedure4_319(BooleanByRef hasFieldIndex)
 			{
 				this.hasFieldIndex = hasFieldIndex;
 			}

@@ -3,6 +3,7 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
@@ -27,14 +28,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public virtual IReservedBuffer Reserve(int length)
 		{
-			IReservedBuffer reservedBuffer = new _IReservedBuffer_27(this);
+			IReservedBuffer reservedBuffer = new _IReservedBuffer_28(this);
 			Seek(Offset() + length);
 			return reservedBuffer;
 		}
 
-		private sealed class _IReservedBuffer_27 : IReservedBuffer
+		private sealed class _IReservedBuffer_28 : IReservedBuffer
 		{
-			public _IReservedBuffer_27(MockWriteContext _enclosing)
+			public _IReservedBuffer_28(MockWriteContext _enclosing)
 			{
 				this._enclosing = _enclosing;
 				this.reservedOffset = this._enclosing.Offset();

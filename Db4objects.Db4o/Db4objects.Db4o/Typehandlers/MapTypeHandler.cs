@@ -9,9 +9,12 @@ using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Typehandlers
 {
+	/// <summary>Typehandler for classes that implement java.util.Map.</summary>
+	/// <remarks>Typehandler for classes that implement java.util.Map.</remarks>
 	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class MapTypeHandler : ITypeHandler4, IFirstClassHandler, ICanHoldAnythingHandler
 		, IVariableLengthTypeHandler

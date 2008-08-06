@@ -7,6 +7,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Handlers;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {

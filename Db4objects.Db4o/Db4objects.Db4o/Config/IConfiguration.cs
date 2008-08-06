@@ -7,7 +7,6 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
 

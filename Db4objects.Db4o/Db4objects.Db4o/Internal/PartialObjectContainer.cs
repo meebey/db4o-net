@@ -23,6 +23,7 @@ using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Core;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Replication;
+using Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Types;
 using Sharpen;
 
@@ -770,7 +771,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				ByReference foundField = new ByReference();
-				classMetadata.ForEachField(new _IProcedure4_621(fieldName, foundField));
+				classMetadata.ForEachField(new _IProcedure4_622(fieldName, foundField));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
 				{
@@ -792,9 +793,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IProcedure4_621 : IProcedure4
+		private sealed class _IProcedure4_622 : IProcedure4
 		{
-			public _IProcedure4_621(string fieldName, ByReference foundField)
+			public _IProcedure4_622(string fieldName, ByReference foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;
