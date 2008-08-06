@@ -7,25 +7,27 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class CollectionTypeHandlerRegistry
+	public abstract class TypeHandlerConfiguration
 	{
-		private readonly Config4Impl _config;
+		protected readonly Config4Impl _config;
 
 		private ITypeHandler4 _listTypeHandler;
 
 		private ITypeHandler4 _mapTypeHandler;
 
-		public CollectionTypeHandlerRegistry(Config4Impl config)
+		public abstract void Apply();
+
+		public TypeHandlerConfiguration(Config4Impl config)
 		{
 			_config = config;
 		}
 
-		public virtual void ListTypeHandler(ITypeHandler4 listTypeHandler)
+		protected virtual void ListTypeHandler(ITypeHandler4 listTypeHandler)
 		{
 			_listTypeHandler = listTypeHandler;
 		}
 
-		public virtual void MapTypeHandler(ITypeHandler4 mapTypehandler)
+		protected virtual void MapTypeHandler(ITypeHandler4 mapTypehandler)
 		{
 			_mapTypeHandler = mapTypehandler;
 		}
@@ -35,30 +37,18 @@ namespace Db4objects.Db4o.Internal
 			return NullableArrayHandling.Enabled();
 		}
 
-		public virtual void RegisterCollection(Type clazz)
+		protected virtual void RegisterCollection(Type clazz)
 		{
-			if (!Enabled())
-			{
-				return;
-			}
 			RegisterListTypeHandlerFor(clazz);
 		}
 
-		public virtual void RegisterMap(Type clazz)
+		protected virtual void RegisterMap(Type clazz)
 		{
-			if (!Enabled())
-			{
-				return;
-			}
 			RegisterMapTypeHandlerFor(clazz);
 		}
 
-		public virtual void IgnoreFieldsOn(Type clazz)
+		protected virtual void IgnoreFieldsOn(Type clazz)
 		{
-			if (!Enabled())
-			{
-				return;
-			}
 			_config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(clazz), new IgnoreFieldsTypeHandler
 				());
 		}

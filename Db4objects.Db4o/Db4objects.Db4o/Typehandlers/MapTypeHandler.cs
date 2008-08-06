@@ -12,6 +12,7 @@ using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Typehandlers
 {
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class MapTypeHandler : ITypeHandler4, IFirstClassHandler, ICanHoldAnythingHandler
 		, IVariableLengthTypeHandler
 	{

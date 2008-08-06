@@ -616,16 +616,27 @@ namespace Db4objects.Db4o.Internal
 
 		public void WriteAllClasses()
 		{
+			Collection4 deadClasses = new Collection4();
 			IStoredClass[] storedClasses = StoredClasses();
 			for (int i = 0; i < storedClasses.Length; i++)
 			{
 				ClassMetadata clazz = (ClassMetadata)storedClasses[i];
 				clazz.SetStateDirty();
+				if (clazz.StateDead())
+				{
+					deadClasses.Add(clazz);
+					clazz.SetStateOK();
+				}
 			}
 			for (int i = 0; i < storedClasses.Length; i++)
 			{
 				ClassMetadata clazz = (ClassMetadata)storedClasses[i];
 				clazz.Write(_systemTransaction);
+			}
+			IEnumerator it = deadClasses.GetEnumerator();
+			while (it.MoveNext())
+			{
+				((ClassMetadata)it.Current).SetStateDead();
 			}
 		}
 

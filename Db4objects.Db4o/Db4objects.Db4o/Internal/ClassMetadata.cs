@@ -1936,7 +1936,7 @@ namespace Db4objects.Db4o.Internal
 			BitTrue(Const4.Continue);
 		}
 
-		private void SetStateOK()
+		internal void SetStateOK()
 		{
 			BitFalse(Const4.Dead);
 			BitFalse(Const4.Continue);
