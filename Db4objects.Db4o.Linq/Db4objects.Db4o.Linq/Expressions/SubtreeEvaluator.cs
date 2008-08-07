@@ -37,7 +37,13 @@ namespace Db4objects.Db4o.Linq.Expressions
 			if (expression.NodeType == ExpressionType.Constant) return expression;
 
 			var evaluator = Expression.Lambda(expression).Compile();
-			return Expression.Constant(evaluator.DynamicInvoke(null), expression.Type);
+			return Expression.Constant(
+#if !CF_3_5
+				evaluator.DynamicInvoke(null),
+#else
+				evaluator.Method.Invoke(evaluator.Target, new object[0]),
+#endif
+				expression.Type);
 		}
 
 		class Nominator : ExpressionTransformer

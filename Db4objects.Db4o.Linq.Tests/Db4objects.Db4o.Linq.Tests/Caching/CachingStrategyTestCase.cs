@@ -37,9 +37,9 @@ namespace Db4objects.Db4o.Linq.Tests.Caching
 
 		public void TestNullStrategy()
 		{
-			var strategy = new NullCachingStrategy();
-			strategy.Add("foo", 42);
-			strategy.Add("bar", 7);
+			var strategy = new NullCachingStrategy<string, string>();
+			strategy.Add("foo", "42");
+			strategy.Add("bar", "7");
 
 			Assert.AreEqual(null, strategy.Get("foo"));
 			Assert.AreEqual(null, strategy.Get("bar"));

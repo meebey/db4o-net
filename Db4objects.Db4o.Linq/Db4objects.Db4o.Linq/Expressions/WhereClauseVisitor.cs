@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 				ProcessStringMethod(m);
 				return;
 			}
-			
+
 			if (IsIListMethod(m.Method))
 			{
 				ProcessIListMethod(m);

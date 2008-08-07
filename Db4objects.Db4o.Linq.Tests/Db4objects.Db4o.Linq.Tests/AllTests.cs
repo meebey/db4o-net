@@ -10,7 +10,8 @@ namespace Db4objects.Db4o.Linq.Tests
 	{
 		public static int Main(string[] args)
 		{
-			return new AllTests().RunSolo();
+			var res = new AllTests().RunSolo();
+			return res;
 		}
 
 		protected override Type[] TestCases()

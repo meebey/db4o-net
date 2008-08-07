@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 
 		private static string GetFullName(Type type)
 		{
-			if (type.IsNested) return type.FullName.Replace('+', '/');
+			if (type.DeclaringType != null) return type.FullName.Replace('+', '/');
 			return type.FullName;
 		}
 

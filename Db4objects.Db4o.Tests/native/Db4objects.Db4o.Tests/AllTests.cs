@@ -31,9 +31,6 @@ namespace Db4objects.Db4o.Tests
             //return new Type[] { typeof(Db4objects.Db4o.Tests.Jre5.Collections.Typehandler.AllTests),};
 			return new Type[]
 				{	
-#if CF_3_5
-					typeof(Compact.AllTests),
-#endif
 //					typeof(Db4objects.Db4o.Tests.CLI2.TA.NullableTypeActivationTestCase),
 
                     // typeof(Db4oMigrationTestSuite)

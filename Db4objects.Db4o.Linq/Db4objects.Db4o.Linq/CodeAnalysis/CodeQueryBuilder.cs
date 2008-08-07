@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2007 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.IO;
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Linq;
@@ -49,9 +50,9 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 		public override void Visit(FieldReferenceExpression node)
 		{
             Type descendingEnumType = ResolveDescendingEnumType(node);
-            
+
             _recorder.Add(
-                ctx => 
+                ctx =>
                     {
                         ctx.PushQuery(ctx.RootQuery.Descend(node.Field.Name));
                         ctx.PushDescendigFieldEnumType(descendingEnumType);
@@ -115,7 +116,7 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
             TypeDefinition typeDefinition = Resolve(t.Module, t.FullName);
             if (typeDefinition != null) return typeDefinition;
 
-            IAssemblyResolver resolver = t.Module.Assembly.Resolver;
+            IAssemblyResolver resolver = GetResolver(t);
             foreach (AssemblyNameReference assembyReference in t.Module.AssemblyReferences)
             {
                 foreach (ModuleDefinition module in resolver.Resolve(assembyReference).Modules)
@@ -132,5 +133,14 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
         {
             return module.Types[typeName];
         }
+
+		private static IAssemblyResolver GetResolver(TypeReference type)
+		{
+#if !CF_3_5
+			return type.Module.Assembly.Resolver;
+#else
+			return CompactAssemblyResolver.Instance;
+#endif
+		}
 	}
 }

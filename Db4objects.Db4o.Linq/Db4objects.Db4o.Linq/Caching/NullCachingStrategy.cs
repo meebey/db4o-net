@@ -2,15 +2,17 @@
 
 namespace Db4objects.Db4o.Linq.Caching
 {
-	public class NullCachingStrategy : ICachingStrategy<object, object>
+	public class NullCachingStrategy<TKey, TValue> : ICachingStrategy<TKey, TValue>
+		where TKey : class
+		where TValue : class
 	{
-		public void Add(object key, object value)
+		public void Add(TKey key, TValue value)
 		{
 		}
 
-		public object Get(object key)
+		public TValue Get(TKey key)
 		{
-			return null;
+			return default(TValue);
 		}
 	}
 }
