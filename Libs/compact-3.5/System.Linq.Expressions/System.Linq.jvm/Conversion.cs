@@ -7,7 +7,7 @@ namespace System.Linq.jvm
 {
 	internal class Conversion
 	{
-		internal static object ConvertPrimitiveUnChecked (Type from, Type to, object value) 
+		internal static object ConvertPrimitiveUnChecked (Type from, Type to, object value)
 		{
 			unchecked {
 				switch (Type.GetTypeCode (from)) {
@@ -38,10 +38,10 @@ namespace System.Linq.jvm
 				default:
 					throw new NotImplementedException ();
 				}
-			}	
+			}
 		}
 
-		static object ConvertByte (byte b, Type to) 
+		static object ConvertByte (byte b, Type to)
 		{
 			unchecked {
 				switch (Type.GetTypeCode (to)) {

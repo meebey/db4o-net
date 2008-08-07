@@ -578,12 +578,12 @@ namespace System.Linq
 		public static TSource First<TSource> (this IEnumerable<TSource> source)
 		{
 			Check.Source (source);
-			
+
 			var list = source as IList<TSource>;
 			if (list != null) {
 				if (list.Count != 0)
 					return list [0];
-				
+
 				throw new InvalidOperationException ();
 			} else {
 				using (var enumerator = source.GetEnumerator ()) {
@@ -591,7 +591,7 @@ namespace System.Linq
 						return enumerator.Current;
 				}
 			}
-			
+
 			throw new InvalidOperationException ();
 		}
 

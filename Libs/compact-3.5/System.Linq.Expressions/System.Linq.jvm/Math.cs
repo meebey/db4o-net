@@ -20,13 +20,13 @@ namespace System.Linq.jvm
                 {
                     throw new NotImplementedException(
                         string.Format(
-                        "Expression with Node type {0} for type {1}", 
-                        t.FullName, 
+                        "Expression with Node type {0} for type {1}",
+                        t.FullName,
                         tc));
-                    
+
                 }
-                return EvaluateNullable(a, b, Type.GetTypeCode(t.GetGenericArguments()[0]), et); 
-            }    
+                return EvaluateNullable(a, b, Type.GetTypeCode(t.GetGenericArguments()[0]), et);
+            }
             return Evaluate(a, b, tc, et);
         }
 
@@ -187,7 +187,7 @@ namespace System.Linq.jvm
             }
             throw new NotImplementedException(
                 string.Format("Expression with Node type {0} for type {1}", et, tc));
-        }    
+        }
 
         public static object NegeteChecked(object a, TypeCode tc)
         {
@@ -239,14 +239,14 @@ namespace System.Linq.jvm
 				if (fromType.IsNullable ())
 					throw new InvalidOperationException ("Nullable object must have a value");
 			}
-			
+
             if (IsType(toType, a)){
                 return a;
             }
-     
+
 			if (Expression.IsPrimitiveConversion(fromType, toType))
 				return Convert.ChangeType (a, toType, CultureInfo.CurrentCulture);
-			
+
 			throw new NotImplementedException (
 							string.Format ("No Convert defined for type {0} ", toType));
         }
@@ -256,13 +256,13 @@ namespace System.Linq.jvm
 			if (toType.IsNullable () && toType.GetNotNullableType () == fromType)
 				return a == null ? a : CreateInstance (toType, a);
 
-			if (a == null) { 
+			if (a == null) {
 				if (!toType.IsValueType)
 					return a;
 				if (fromType.IsNullable ())
 					throw new InvalidOperationException ("Nullable object must have a value");
 			}
-								
+
 			if (IsType (toType, a)) {
 				return a;
 			}
@@ -272,13 +272,13 @@ namespace System.Linq.jvm
 
 			throw new NotImplementedException (
 							string.Format ("No Convert defined for type {0} ", toType));
-		}		
+		}
 
         public static bool IsType(Type t, Object o)
         {
             return t.IsInstanceOfType(o);
 
-        }        
+        }
 
         public static object Negete(object a, TypeCode tc)
         {
@@ -375,7 +375,7 @@ namespace System.Linq.jvm
                     return a / b;
                 case ExpressionType.Modulo:
                     return a % b;
-                
+
             }
             throw new NotImplementedException(
                 string.Format("Expression with Node type {0}", et));
@@ -407,7 +407,7 @@ namespace System.Linq.jvm
 
             throw new NotImplementedException(
                 string.Format("Expression with Node type {0}", et));
-            
+
         }
 
         private static Int32 Evaluate(Int16 a, Int16 b, ExpressionType et)
@@ -438,7 +438,7 @@ namespace System.Linq.jvm
                     return a | b;
             }
             throw new NotImplementedException(
-                        string.Format("Expression with Node type {0}", et));  
+                        string.Format("Expression with Node type {0}", et));
         }
 
         private static Int32 Evaluate(Int32 a, Int32 b, ExpressionType et)

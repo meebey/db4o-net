@@ -310,7 +310,7 @@ namespace System.Linq.jvm {
 				Push (arguments [i]);
 				return;
 			}
-			
+
 			throw new ArgumentException ();
 		}
 

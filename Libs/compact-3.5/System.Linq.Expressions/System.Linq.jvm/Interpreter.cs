@@ -17,7 +17,7 @@ namespace System.Linq.jvm
         {
         }
 
-        private static readonly Type VOID_SUBSTITUTE = 
+        private static readonly Type VOID_SUBSTITUTE =
             typeof(InternalVoidSubstitute);
 
         LambdaExpression _expression;
@@ -33,9 +33,9 @@ namespace System.Linq.jvm
 
         private static void InitDelegateMap()
         {
-            MethodInfo[] mia = 
+            MethodInfo[] mia =
                 typeof(Interpreter).GetMethods(
-                BindingFlags.Instance | 
+                BindingFlags.Instance |
                 BindingFlags.Public);
             _delegateMap = new MethodInfo[MapSize];
             foreach (MethodInfo m in mia)
@@ -63,7 +63,7 @@ namespace System.Linq.jvm
             Type[] arr = ExtractGenerecParameters();
             MethodInfo mi = _delegateMap[arr.Length - 1];
             MethodInfo mgi = mi.MakeGenericMethod(arr);
-            return (Delegate)mgi.Invoke(this, new object[0]);    
+            return (Delegate)mgi.Invoke(this, new object[0]);
         }
 
         public void Validate()
@@ -111,14 +111,14 @@ namespace System.Linq.jvm
         {
             Run(new object[0]);
         }
-        
+
         public Delegate GetDelegate<T, TResult>()
         {
             if (typeof(TResult) == VOID_SUBSTITUTE)
             {
                 return new Action<T>(this.ActionAccessor<T>);
             }
-            return new Func<T, TResult>(this.FuncAccessor<T, TResult>);           
+            return new Func<T, TResult>(this.FuncAccessor<T, TResult>);
         }
 
         public TResult FuncAccessor<T, TResult>(T arg)
@@ -188,9 +188,9 @@ namespace System.Linq.jvm
             Run(new object[] { arg1, arg2, arg3, arg4 });
         }
 
-        
-    }    
-   
 
-    
+    }
+
+
+
 }
