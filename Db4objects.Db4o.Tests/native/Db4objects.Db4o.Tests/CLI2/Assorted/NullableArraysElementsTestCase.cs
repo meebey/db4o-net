@@ -27,29 +27,15 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
         public void TestArrayType()
         {
-            if (NullableArrayHandling.Enabled())
-            {
-                TestSubject testSubject = QueryByName("foo");
-                Assert.IsInstanceOf(typeof (int?[]), testSubject._elements);
-            }
-            else
-            {
-                warning("TestArrayType");
-            }
+            TestSubject testSubject = QueryByName("foo");
+            Assert.IsInstanceOf(typeof (int?[]), testSubject._elements);
         }
 
         public void TestNullableArray()
         {
-            if (NullableArrayHandling.Enabled())
-            {
-                AssertTestSubject("foo");
-                AssertTestSubject("bar");
-                AssertTestSubject("baz");
-            }
-            else
-            {
-                warning("TestNullableItemsInUntypeArray");
-            }
+            AssertTestSubject("foo");
+            AssertTestSubject("bar");
+            AssertTestSubject("baz");
         }
 
 	    private void AssertTestSubject(string name)
@@ -86,17 +72,10 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
 		    Assert.IsNotNull(actual._elements);
             Assert.IsNotNull(actual._nullableArray);
-			if (NullableArrayHandling.Enabled())
+            for (int i = 0; i < actual._elements.Length; i += 2)
 			{
-			    for (int i = 0; i < actual._elements.Length; i += 2)
-			    {
-			        Assert.IsNull(actual._elements[i]);
-			    }
-			}
-            else
-			{
-                warning("AssertNullableType");
-			}
+			    Assert.IsNull(actual._elements[i]);
+            }
 
             int?[] values = (int?[])actual._nullableArray;
             for (int i = 1; i < actual._elements.Length; i += 2)

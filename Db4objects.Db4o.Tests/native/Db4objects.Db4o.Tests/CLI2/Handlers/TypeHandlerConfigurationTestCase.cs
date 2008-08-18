@@ -41,10 +41,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
         public virtual void Test()
         {
-            if (NullableArrayHandling.Disabled())
-            {
-                return;
-            }
             // AssertSingleNullTypeHandlerAspect(typeof(ArrayList));
             AssertSingleTypeHandlerAspect(typeof (ArrayList), typeof (ListTypeHandler));
             AssertSingleTypeHandlerAspect(typeof(List<object>), typeof(ListTypeHandler));

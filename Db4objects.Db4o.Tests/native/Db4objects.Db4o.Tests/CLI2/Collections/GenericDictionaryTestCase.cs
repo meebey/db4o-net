@@ -244,11 +244,20 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				return false;
 			}
 
+            if(_name == null)
+            {
+                return other._name == null;
+            }
+
 			return _name.Equals(other._name);
 		}
 
 		public override int GetHashCode()
 		{
+            if(_name == null)
+            {
+                return 0;
+            }
 			return _name.GetHashCode();
 		}
 
@@ -274,6 +283,10 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 		public override int GetHashCode()
 		{
+            if(_name == null)
+            {
+                return 0;
+            }
 			return _name.GetHashCode();
 		}
 
@@ -290,6 +303,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			{
 				return false;
 			}
+
+            if(_name == null)
+            {
+                return other._name == null;
+            }
 
 			return _name.Equals(other._name);
 		}
@@ -315,27 +333,36 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			return _name;
 		}
 
-		//public override bool Equals(object obj)
-		//{
-		//    if (obj == null)
-		//    {
-		//        return false;
-		//    }
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
 
-		//    DItem3 other = obj as DItem3;
+            DItem3 other = obj as DItem3;
 
-		//    if (other == null)
-		//    {
-		//        return false;
-		//    }
+            if (other == null)
+            {
+                return false;
+            }
 
-		//    return _name.Equals(other._name);
-		//}
+            if(_name == null)
+            {
+                return other._name == null;
+            }
 
-		//public override int GetHashCode()
-		//{
-		//    return _name.GetHashCode();
-		//}
+            return _name.Equals(other._name);
+        }
+
+        public override int GetHashCode()
+        {
+            if(_name == null)
+            {
+                return 0;
+            }
+            return _name.GetHashCode();
+        }
 	}
 
     public interface Named

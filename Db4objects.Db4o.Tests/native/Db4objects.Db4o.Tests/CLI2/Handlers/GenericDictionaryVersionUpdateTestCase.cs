@@ -168,10 +168,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
         private void AssertQuery<T>(IExtObjectContainer objectContainer, Item<T,T> item, IDictionary<T,T> dictionary, string fieldName)
         {
-            if (!TypeHandlerConfiguration.Enabled())
-            {
-                return;
-            }
             if (Db4oHandlerVersion() < 4)
             {
                 return;

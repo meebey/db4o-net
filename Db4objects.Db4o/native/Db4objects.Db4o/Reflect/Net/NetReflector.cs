@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		public virtual Db4objects.Db4o.Reflect.IReflectClass ForClass(System.Type forType)
 		{
             System.Type underlyingType = GetUnderlyingType(forType);
-            if (underlyingType.IsPrimitive && ! Db4objects.Db4o.Internal.NullableArrayHandling.UseOldNetHandling())
+            if (underlyingType.IsPrimitive)
             {
                 return CreateClass(forType);
             }

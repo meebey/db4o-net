@@ -18,15 +18,8 @@ namespace Db4objects.Db4o.Internal
 
         public override void Apply()
         {
-            if(! Enabled())
-            {
-                return;
-            }
-
-
             RegisterCollection(typeof(System.Collections.ArrayList));
             RegisterGenericTypeHandlers();
-
         }
 
         private void RegisterGenericTypeHandlers()
