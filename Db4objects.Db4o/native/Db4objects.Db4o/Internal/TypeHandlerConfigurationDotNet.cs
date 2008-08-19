@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal
         {
             _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(List<>)), new ListTypeHandler());
             _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Dictionary<,>)), new MapTypeHandler());
-
+			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(LinkedList<>)), new LinkedListTypeHandler());
         }
 
         internal class GenericTypeHandlerPredicate : ITypeHandlerPredicate
