@@ -21,6 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Db4objects.Db4o.Foundation.Collections;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Net;
 
@@ -31,19 +32,11 @@ namespace Db4objects.Drs.Inside
 	/// converted code.
 	/// </summary>
 	public class ReplicationPlatform
-	{	
-		interface ICollectionInitializer
+	{
+		public static void CopyCollectionState(object original, object destination, ICounterpartFinder counterpartFinder)
 		{
-			void Clear();
-			void Add(object o);
-		}
-
-        public static void CopyCollectionState(object original, object destination, Db4objects.Drs.Inside.ICounterpartFinder
-			 counterpartFinder)
-		{
-			System.Collections.IEnumerable originalCollection = (System.Collections.IEnumerable
-				)original;
-        	ICollectionInitializer destinationCollection = CollectionInitializerFor(destination);
+			IEnumerable originalCollection = (IEnumerable) original;
+			ICollectionInitializer destinationCollection = CollectionInitializer.For(destination);
 			destinationCollection.Clear();
 
 			foreach (object element in originalCollection)
@@ -53,119 +46,46 @@ namespace Db4objects.Drs.Inside
 			}
 		}
 
-		private static ICollectionInitializer CollectionInitializerFor(object destination)
+		public static ICollection EmptyCollectionClone(ICollectionSource source, ICollection original)
 		{
-			if (destination is IList)
+			if (original is ArrayList)
 			{
-				return new ListInitializer((IList) destination);
-			}
-			Type collectionElementType = CollectionElementTypeFor(destination);
-			if (collectionElementType != null)
-			{
-				Type genericProtocolType = typeof(GenericCollectionInitializer<>).MakeGenericType(collectionElementType);
-				return (ICollectionInitializer) Activator.CreateInstance(genericProtocolType, destination);
-			}
-			throw new ArgumentException("Unknown collection: " + destination);
-		}
-
-		private static Type CollectionElementTypeFor(object destination)
-		{
-			foreach (Type interfaceType in destination.GetType().GetInterfaces())
-			{
-				if (IsGenericCollection(interfaceType))
-				{
-					return interfaceType.GetGenericArguments()[0];
-				}
-			}
-			return null;
-		}
-
-		private static bool IsGenericCollection(Type type)
-		{
-			return type.GetGenericTypeDefinition() == typeof(ICollection<>);
-		}
-
-		private class GenericCollectionInitializer<T> : ICollectionInitializer
-		{
-			private ICollection<T> _collection;
-
-			public GenericCollectionInitializer(ICollection<T> collection)
-			{
-				_collection = collection;
-			}
-
-			public void Clear()
-			{
-				_collection.Clear();
-			}
-
-			public void Add(object o)
-			{
-				_collection.Add((T)o);
-			}
-		}
-
-		private class ListInitializer : ICollectionInitializer
-		{
-			private readonly IList _list;
-
-			public ListInitializer(IList list)
-			{
-				_list = list;
-			}
-
-			public void Clear()
-			{
-				_list.Clear();
-			}
-
-			public void Add(object o)
-			{
-				_list.Add(o);
-			}
-		}
-
-		public static System.Collections.ICollection EmptyCollectionClone(ICollectionSource source, System.Collections.ICollection
-			 original)
-		{	
-			if (original is System.Collections.ArrayList)
-			{
-				return new System.Collections.ArrayList(original.Count);
+				return new ArrayList(original.Count);
 			}
 			try
 			{
-				return (System.Collections.ICollection) Activator.CreateInstance(original.GetType());
+				return (ICollection) Activator.CreateInstance(original.GetType());
 			}
 			catch (MissingMethodException x)
 			{
 				throw new ArgumentException(string.Format("Parameterless ctor required for type '{0}'", original.GetType()), x);
 			}
 		}
-		
+
 		public static bool IsValueType(object o)
 		{
 			if (null == o) return false;
 			return o.GetType().IsValueType;
 		}
 
-		static readonly Type[] _nonGeneric = new Type[] 
-        {
-            typeof(ArrayList),
-            typeof(SortedList),
-            typeof(Queue),
-            typeof(Stack),
-        };
+		private static readonly Type[] _nonGeneric = new Type[]
+		                                             	{
+		                                             		typeof (ArrayList),
+		                                             		typeof (SortedList),
+		                                             		typeof (Queue),
+		                                             		typeof (Stack),
+		                                             	};
 
-		static readonly Type[] _generic = new Type[] 
+		private static readonly Type[] _generic = new Type[]
+		                                          	{
+		                                          		typeof (List<>),
+		                                          		typeof (LinkedList<>),
+		                                          		typeof (Stack<>),
+		                                          	};
+
+		internal static bool IsBuiltinCollectionClass(ReplicationReflector reflector, IReflectClass claxx)
 		{
-			typeof(List<>),
-			typeof(LinkedList<>),
-			typeof(Stack<>),
-		};
-
-        internal static bool IsBuiltinCollectionClass(ReplicationReflector reflector, IReflectClass claxx)
-        {
-            Type type = NetReflector.ToNative(claxx);
+			Type type = NetReflector.ToNative(claxx);
 
 			if (Contains(_nonGeneric, type)) return true;
 
@@ -174,12 +94,11 @@ namespace Db4objects.Drs.Inside
 			if (Contains(_generic, type.GetGenericTypeDefinition())) return true;
 
 			return false;
-        }
+		}
 
 		private static bool Contains(Type[] array, Type type)
 		{
-			return ((IList)array).Contains(type);
+			return ((IList) array).Contains(type);
 		}
-    }
+	}
 }
-
