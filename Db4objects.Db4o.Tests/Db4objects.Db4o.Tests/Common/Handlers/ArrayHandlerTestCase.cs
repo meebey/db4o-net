@@ -115,10 +115,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			AssertCorrectedHandlerVersion(arrayHandler, 0, typeof(ArrayHandler0));
 			AssertCorrectedHandlerVersion(arrayHandler, 1, typeof(ArrayHandler2));
 			AssertCorrectedHandlerVersion(arrayHandler, 2, typeof(ArrayHandler2));
-			if (NullableArrayHandling.Enabled())
-			{
-				AssertCorrectedHandlerVersion(arrayHandler, 3, typeof(ArrayHandler3));
-			}
+			AssertCorrectedHandlerVersion(arrayHandler, 3, typeof(ArrayHandler3));
 			AssertCorrectedHandlerVersion(arrayHandler, HandlerRegistry.HandlerVersion, typeof(
 				ArrayHandler));
 		}

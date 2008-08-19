@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -109,6 +110,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private IActivationDepthProvider ActivationDepthProvider()
 		{
 			return Container().ActivationDepthProvider();
+		}
+
+		public virtual object ReadActivatedObject(ITypeHandler4 handler)
+		{
+			IActivationDepth tempDepth = ActivationDepth();
+			ActivationDepthProvider().ActivationDepth(int.MaxValue, ActivationMode.Activate);
+			object obj = ReadObject(handler);
+			Container().Activate(Transaction(), obj, ActivationDepth());
+			ActivationDepth(tempDepth);
+			return obj;
 		}
 
 		public virtual object ReadFieldValue(FieldMetadata field)

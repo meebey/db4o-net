@@ -45,10 +45,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		protected virtual Type JavaClass()
 		{
-			if (NullableArrayHandling.Disabled())
-			{
-				return DefaultValue().GetType();
-			}
 			return Platform4.NullableTypeFor(PrimitiveJavaClass());
 		}
 

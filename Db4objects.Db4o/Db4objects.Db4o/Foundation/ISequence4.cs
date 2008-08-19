@@ -12,5 +12,11 @@ namespace Db4objects.Db4o.Foundation
 		bool IsEmpty();
 
 		object Get(int index);
+
+		int Size();
+
+		void Clear();
+
+		object Remove(object obj);
 	}
 }

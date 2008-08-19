@@ -56,13 +56,10 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 baseTypeHandler = BaseTypeHandler(handler);
 			if (HandlesSimple(baseTypeHandler))
 			{
-				if (NullableArrayHandling.Enabled())
+				if (baseTypeHandler is PrimitiveHandler)
 				{
-					if (baseTypeHandler is PrimitiveHandler)
-					{
-						return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector()) || claxx
-							.Equals(((PrimitiveHandler)baseTypeHandler).PrimitiveClassReflector());
-					}
+					return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector()) || claxx
+						.Equals(((PrimitiveHandler)baseTypeHandler).PrimitiveClassReflector());
 				}
 				return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector());
 			}

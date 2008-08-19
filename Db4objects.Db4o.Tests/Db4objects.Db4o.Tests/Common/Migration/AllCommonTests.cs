@@ -16,8 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(Db4oMigrationTestSuite), typeof(FieldsToTypeHandlerMigrationTestCase
-				), typeof(ListTypeHandlerMigrationSimulationTestCase), typeof(TranslatorToTypehandlerMigrationTestCase
-				) };
+				), typeof(TranslatorToTypehandlerMigrationTestCase) };
 		}
 	}
 }

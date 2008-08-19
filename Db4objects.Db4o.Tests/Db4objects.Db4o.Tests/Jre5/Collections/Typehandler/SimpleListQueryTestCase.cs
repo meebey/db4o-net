@@ -6,10 +6,8 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Jre5.Collections.Typehandler;
-using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 {
@@ -53,11 +51,6 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			if (!NullableArrayHandling.Enabled())
-			{
-				config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(ArrayList))
-					, new ListTypeHandler());
-			}
 			config.ObjectClass(typeof(SimpleListQueryTestCase.Item)).CascadeOnDelete(true);
 		}
 

@@ -65,19 +65,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override Type PrimitiveJavaClass()
 		{
-			if (NullableArrayHandling.Enabled())
-			{
-				return DefaultValue().GetType();
-			}
-			return null;
+			return DefaultValue().GetType();
 		}
 
 		protected override Type JavaClass()
 		{
-			if (NullableArrayHandling.Enabled())
-			{
-				return base.JavaClass();
-			}
 			return base.JavaClass();
 		}
 

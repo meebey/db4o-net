@@ -61,8 +61,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 				ClassMetadata classMetadata = (ClassMetadata)handler;
 				if (classMetadata.IsValueType())
 				{
-					return classMetadata.ReadValueType(Transaction(), ReadInt(), ActivationDepth().Descend
-						(classMetadata));
+					return classMetadata.ReadAndActivate(Transaction(), ReadInt(), ActivationDepth().
+						Descend(classMetadata));
 				}
 			}
 			if (UseDedicatedSlot(handler))

@@ -35,12 +35,13 @@ namespace Db4objects.Db4o.Typehandlers
 
 		public virtual object Read(IReadContext context)
 		{
-			IDictionary map = (IDictionary)((UnmarshallingContext)context).PersistentObject();
+			UnmarshallingContext unmarshallingContext = (UnmarshallingContext)context;
+			IDictionary map = (IDictionary)unmarshallingContext.PersistentObject();
 			int elementCount = context.ReadInt();
 			ITypeHandler4 elementHandler = ElementTypeHandler(context, map);
 			for (int i = 0; i < elementCount; i++)
 			{
-				object key = context.ReadObject(elementHandler);
+				object key = unmarshallingContext.ReadActivatedObject(elementHandler);
 				object value = context.ReadObject(elementHandler);
 				map.Add(key, value);
 			}

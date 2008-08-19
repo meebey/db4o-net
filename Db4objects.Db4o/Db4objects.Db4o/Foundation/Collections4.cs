@@ -41,6 +41,21 @@ namespace Db4objects.Db4o.Foundation
 			{
 				return _sequence.Get(index);
 			}
+
+			public virtual int Size()
+			{
+				return _sequence.Size();
+			}
+
+			public virtual void Clear()
+			{
+				_sequence.Clear();
+			}
+
+			public virtual object Remove(object obj)
+			{
+				return _sequence.Remove(obj);
+			}
 		}
 	}
 }

@@ -32,11 +32,6 @@ namespace Db4objects.Db4o.Internal
 			_mapTypeHandler = mapTypehandler;
 		}
 
-		public static bool Enabled()
-		{
-			return NullableArrayHandling.Enabled();
-		}
-
 		protected virtual void RegisterCollection(Type clazz)
 		{
 			RegisterListTypeHandlerFor(clazz);

@@ -10,6 +10,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	{
 		public bool caseSensitive;
 
+		/// <summary>for C/S messaging only</summary>
+		public QEStringCmp()
+		{
+		}
+
 		public QEStringCmp(bool caseSensitive_)
 		{
 			caseSensitive = caseSensitive_;

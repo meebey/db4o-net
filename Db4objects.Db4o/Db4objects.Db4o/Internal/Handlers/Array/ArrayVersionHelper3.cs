@@ -37,14 +37,11 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 		public override IReflectClass ClassReflector(IReflector reflector, ClassMetadata 
 			classMetadata, bool isPrimitive)
 		{
-			if (Deploy.csharp && NullableArrayHandling.Enabled())
+			IReflectClass primitiveClaxx = Handlers4.PrimitiveClassReflector(classMetadata, reflector
+				);
+			if (primitiveClaxx != null)
 			{
-				IReflectClass primitiveClaxx = Handlers4.PrimitiveClassReflector(classMetadata, reflector
-					);
-				if (primitiveClaxx != null)
-				{
-					return primitiveClaxx;
-				}
+				return primitiveClaxx;
 			}
 			return base.ClassReflector(reflector, classMetadata, isPrimitive);
 		}

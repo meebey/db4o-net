@@ -24,8 +24,7 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public sealed class HandlerRegistry
 	{
-		public static readonly byte HandlerVersion = NullableArrayHandling.Enabled() ? (byte
-			)4 : (byte)3;
+		public const byte HandlerVersion = (byte)4;
 
 		private readonly ObjectContainerBase _container;
 
@@ -212,19 +211,13 @@ namespace Db4objects.Db4o.Internal
 			ArrayHandler arrayHandler = new ArrayHandler();
 			RegisterHandlerVersion(arrayHandler, 0, new ArrayHandler0());
 			RegisterHandlerVersion(arrayHandler, 2, new ArrayHandler2());
-			if (NullableArrayHandling.Enabled())
-			{
-				RegisterHandlerVersion(arrayHandler, 3, new ArrayHandler3());
-			}
+			RegisterHandlerVersion(arrayHandler, 3, new ArrayHandler3());
 			MultidimensionalArrayHandler multidimensionalArrayHandler = new MultidimensionalArrayHandler
 				();
 			RegisterHandlerVersion(multidimensionalArrayHandler, 0, new MultidimensionalArrayHandler0
 				());
-			if (NullableArrayHandling.Enabled())
-			{
-				RegisterHandlerVersion(multidimensionalArrayHandler, 3, new MultidimensionalArrayHandler3
-					());
-			}
+			RegisterHandlerVersion(multidimensionalArrayHandler, 3, new MultidimensionalArrayHandler3
+				());
 			PrimitiveFieldHandler primitiveFieldHandler = new PrimitiveFieldHandler();
 			RegisterHandlerVersion(primitiveFieldHandler, 0, primitiveFieldHandler);
 			// same handler, but making sure versions get cascaded
@@ -253,16 +246,13 @@ namespace Db4objects.Db4o.Internal
 			PrimitiveFieldHandler classMetadata = new PrimitiveFieldHandler(Container(), typeHandler
 				, id, classReflector);
 			Map(id, classMetadata, typeHandler, typeHandler, classReflector);
-			if (NullableArrayHandling.UseJavaHandling())
+			if (typeHandler is PrimitiveHandler)
 			{
-				if (typeHandler is PrimitiveHandler)
+				IReflectClass primitiveClassReflector = ((PrimitiveHandler)typeHandler).PrimitiveClassReflector
+					();
+				if (primitiveClassReflector != null)
 				{
-					IReflectClass primitiveClassReflector = ((PrimitiveHandler)typeHandler).PrimitiveClassReflector
-						();
-					if (primitiveClassReflector != null)
-					{
-						MapPrimitive(0, classMetadata, typeHandler, typeHandler, primitiveClassReflector);
-					}
+					MapPrimitive(0, classMetadata, typeHandler, typeHandler, primitiveClassReflector);
 				}
 			}
 		}
