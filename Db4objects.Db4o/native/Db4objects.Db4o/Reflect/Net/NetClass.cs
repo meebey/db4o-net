@@ -224,7 +224,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		
 		public virtual bool EnsureCanBeInstantiated() {
 			CreateConstructor(false);
-			return _constructor.CanBeInstantiated().DefiniteYes();
+			return !_constructor.CanBeInstantiated().DefiniteNo();
 		}
 		
 	}
