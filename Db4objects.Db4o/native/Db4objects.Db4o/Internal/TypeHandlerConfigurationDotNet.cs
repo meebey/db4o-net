@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Net;
@@ -12,7 +12,6 @@ namespace Db4objects.Db4o.Internal
         {
             ListTypeHandler(new ListTypeHandler());
             MapTypeHandler(new MapTypeHandler());
-
         }
 
 
@@ -24,10 +23,11 @@ namespace Db4objects.Db4o.Internal
 
         private void RegisterGenericTypeHandlers()
         {
-            _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(List<>)), new ListTypeHandler());
-            _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Dictionary<,>)), new MapTypeHandler());
-			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(LinkedList<>)), new LinkedListTypeHandler());
-        }
+			GenericCollectionTypeHandler collectionHandler = new GenericCollectionTypeHandler();
+			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(List<>)), collectionHandler);
+			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(LinkedList<>)), collectionHandler);
+			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Dictionary<,>)), new MapTypeHandler());
+		}
 
         internal class GenericTypeHandlerPredicate : ITypeHandlerPredicate
         {

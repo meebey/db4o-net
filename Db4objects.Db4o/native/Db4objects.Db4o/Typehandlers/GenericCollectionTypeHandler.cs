@@ -13,7 +13,7 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Typehandlers
 {
 	/// <summary>TypeHandler for LinkedList class.<br /><br /></summary>
-	public class LinkedListTypeHandler : IFirstClassHandler, ICanHoldAnythingHandler, IVariableLengthTypeHandler
+	public class GenericCollectionTypeHandler : IFirstClassHandler, ICanHoldAnythingHandler, IVariableLengthTypeHandler
 	{
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj)
 		{
@@ -29,8 +29,9 @@ namespace Db4objects.Db4o.Typehandlers
 
 		public virtual object Read(IReadContext context)
 		{
-			object linkedList = ((UnmarshallingContext)context).PersistentObject();
-			ICollectionInitializer initializer = CollectionInitializer.For(linkedList);
+			object collection = ((UnmarshallingContext)context).PersistentObject();
+			ICollectionInitializer initializer = CollectionInitializer.For(collection);
+			//initializer.Clear();
 
 			int elementCount = context.ReadInt();
 			ITypeHandler4 elementHandler = ElementTypeHandler(context);
@@ -40,7 +41,7 @@ namespace Db4objects.Db4o.Typehandlers
 				initializer.Add(context.ReadObject(elementHandler));
 			}
 
-			return linkedList;
+			return collection;
 		}
 
 		private static void WriteElementCount(IWriteBuffer context, ICollection collection)
@@ -92,10 +93,10 @@ namespace Db4objects.Db4o.Typehandlers
 
 		public void CascadeActivation(ActivationContext4 context)
 		{
-			IEnumerator all = ((ICollection)context.TargetObject()).GetEnumerator();
-			while (all.MoveNext())
+			ICollection collection = ((ICollection)context.TargetObject());
+			foreach(object item in collection)
 			{
-				context.CascadeActivationToChild(all.Current);
+				context.CascadeActivationToChild(item);
 			}
 		}
 
