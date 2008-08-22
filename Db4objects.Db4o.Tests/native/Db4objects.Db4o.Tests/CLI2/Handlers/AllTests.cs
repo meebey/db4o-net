@@ -7,7 +7,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
     {
         protected override Type[] TestCases()
         {
-            return new Type[] { typeof(TypeHandlerConfigurationTestCase), };
+            return new Type[] 
+			{ 
+				typeof(TypeHandlerConfigurationTestCase), 
+				typeof(GenericCollectionTypeHandlerTestSuite),
+			};
         }
     }
 }
