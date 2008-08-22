@@ -35,9 +35,9 @@ namespace Db4objects.Db4o.Foundation.Collections
 	{
 		public static ICollectionInitializer For(object destination)
 		{
-			if (destination is IList)
+			if (IsNonGenericList(destination))
 			{
-				return new ListInitializer((IList)destination);
+			    return new ListInitializer((IList)destination);
 			}
 			
 			Type collectionElementType = CollectionElementTypeFor(destination);
@@ -49,7 +49,12 @@ namespace Db4objects.Db4o.Foundation.Collections
 		    throw new ArgumentException("Unknown collection: " + destination);
 		}
 
-	    private static ICollectionInitializer InstantiateInitializer(object destination, Type genericProtocolType)
+		private static bool IsNonGenericList(object destination)
+		{
+			return !destination.GetType().IsGenericType && destination is IList;
+		}
+
+		private static ICollectionInitializer InstantiateInitializer(object destination, Type genericProtocolType)
 	    {
 #if !CF
             return (ICollectionInitializer) Activator.CreateInstance(genericProtocolType, destination);

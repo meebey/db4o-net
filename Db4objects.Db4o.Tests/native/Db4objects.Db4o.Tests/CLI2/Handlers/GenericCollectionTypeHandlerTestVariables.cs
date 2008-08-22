@@ -13,7 +13,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
 		public static readonly IFixtureProvider CollectionFixtureProvider = new SimpleFixtureProvider(
 				CollectionImplementation,
-				new object[] { new LinkedListItemFactory(), });
+				new object[]
+					{
+						new LinkedListItemFactory(),
+						new ListItemFactory()
+					});
 
 		public static readonly FixtureVariable ElementSpec = new FixtureVariable("elements");
 
@@ -24,10 +28,9 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 					new GenericCollectionTestElementSpec<string>(new string[] { "zero", "one" }, "two", "zzz"),
 					new GenericCollectionTestElementSpec<int>(new int[] { 0, 1 }, 2, int.MaxValue),
 					new GenericCollectionTestElementSpec<int?>(new int?[] { 0, null }, 2, int.MaxValue),
-					new GenericCollectionTestElementSpec<FirstClassElement>(new FirstClassElement[] { new FirstClassElement(0), new FirstClassElement(1) }, new FirstClassElement(2), null),
+					//new GenericCollectionTestElementSpec<FirstClassElement>(new FirstClassElement[] { new FirstClassElement(0), new FirstClassElement(1) }, new FirstClassElement(2), null),
 				}
 			);
-
 
 		public class FirstClassElement
 		{
@@ -60,6 +63,29 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 			public override string ToString()
 			{
 				return "FCE#" + _id;
+			}
+		}
+
+		private class ListItemFactory : GenericCollectionTestFactory
+		{
+			public override object NewItem<T>()
+			{
+				return new Item<T>();
+			}
+
+			public override Type ContainerType()
+			{
+				return typeof(List<>);
+			}
+
+			public override string Label()
+			{
+				return "List<>";
+			}
+
+			private class Item<T>
+			{
+				public List<T> _coll = new List<T>();
 			}
 		}
 
