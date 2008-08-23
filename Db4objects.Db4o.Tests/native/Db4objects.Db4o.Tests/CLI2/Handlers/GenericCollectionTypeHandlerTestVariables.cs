@@ -16,7 +16,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 				new object[]
 					{
 						new LinkedListItemFactory(),
-						new ListItemFactory()
+						new ListItemFactory(),
+                        new UntypedLinkedListItemFactory(),
 					});
 
 		public static readonly FixtureVariable ElementSpec = new FixtureVariable("elements");
@@ -111,5 +112,28 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 				public LinkedList<T> _coll = new LinkedList<T>();
 			}
 		}
-	}
+
+        private class UntypedLinkedListItemFactory : GenericCollectionTestFactory
+        {
+            public override object NewItem<T>()
+            {
+                return new Item<T>();
+            }
+
+            public override Type ContainerType()
+            {
+                return typeof(LinkedList<>);
+            }
+
+            public override string Label()
+            {
+                return "LinkedList<>(object)";
+            }
+
+            private class Item<T>
+            {
+                public object _coll = new LinkedList<T>();
+            }
+        }
+    }
 }
