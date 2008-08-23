@@ -176,7 +176,7 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public virtual object NewInstance()
 		{
-			CreateConstructor(true);
+			CreateConstructor();
 			return _constructor.NewInstance();
 		}
 
@@ -213,17 +213,17 @@ namespace Db4objects.Db4o.Reflect.Net
 			return _netReflector.NullValue(this);
 		}
 	
-		private void CreateConstructor(bool forceTest) 
+		private void CreateConstructor() 
 		{
 			if(!_constructor.CanBeInstantiated().IsUnspecified())
 			{
 				return;
 			}
-			_constructor = ConstructorSupport.CreateConstructor(this, _type, _netReflector.Configuration(), GetDeclaredConstructors(), forceTest);
+			_constructor = ConstructorSupport.CreateConstructor(this, _type, _netReflector.Configuration(), GetDeclaredConstructors());
 		}
 		
 		public virtual bool EnsureCanBeInstantiated() {
-			CreateConstructor(true);
+			CreateConstructor();
 			return _constructor.CanBeInstantiated().DefiniteYes();
 		}
 		
