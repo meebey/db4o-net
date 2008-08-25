@@ -1,9 +1,8 @@
-﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+﻿/* Copyright (C) 2008   db4objects Inc.   http://www.db4o.com */
+
 using System;
 using System.Collections.Generic;
-using System.Collections;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;

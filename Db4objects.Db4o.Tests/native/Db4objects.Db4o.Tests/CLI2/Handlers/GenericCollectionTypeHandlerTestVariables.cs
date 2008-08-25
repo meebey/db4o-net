@@ -20,16 +20,19 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
                         new UntypedLinkedListItemFactory(),
 					});
 
-		public static readonly FixtureVariable ElementSpec = new FixtureVariable("elements");
+		public static readonly GenericCollectionTestElementSpec<string> StringElementSpec = new GenericCollectionTestElementSpec<string>(new string[] { "zero", "one" }, "two", "zzz");
+		public static readonly GenericCollectionTestElementSpec<int> IntElementSpec = new GenericCollectionTestElementSpec<int>(new int[] { 0, 1 }, 2, int.MaxValue);
+		public static readonly GenericCollectionTestElementSpec<int?> NullableIntElementSpec = new GenericCollectionTestElementSpec<int?>(new int?[] { 0, null }, 2, int.MaxValue);
 
+		public static readonly FixtureVariable ElementSpec = new FixtureVariable("elements");
 		public static readonly IFixtureProvider ElementsFixtureProvider = new SimpleFixtureProvider(
 				ElementSpec,
 				new object[]
 				{
-					new GenericCollectionTestElementSpec<string>(new string[] { "zero", "one" }, "two", "zzz"),
-					new GenericCollectionTestElementSpec<int>(new int[] { 0, 1 }, 2, int.MaxValue),
-					new GenericCollectionTestElementSpec<int?>(new int?[] { 0, null }, 2, int.MaxValue),
-					//new GenericCollectionTestElementSpec<FirstClassElement>(new FirstClassElement[] { new FirstClassElement(0), new FirstClassElement(1) }, new FirstClassElement(2), null),
+					StringElementSpec,
+					IntElementSpec,
+					NullableIntElementSpec,
+					new GenericCollectionTestElementSpec<FirstClassElement>(new FirstClassElement[] { new FirstClassElement(0), new FirstClassElement(1) }, new FirstClassElement(2), null),
 				}
 			);
 
