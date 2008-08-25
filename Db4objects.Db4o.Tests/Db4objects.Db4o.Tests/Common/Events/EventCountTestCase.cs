@@ -5,21 +5,26 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Common.Events;
 
 namespace Db4objects.Db4o.Tests.Common.Events
 {
 	public class EventCountTestCase : AbstractDb4oTestCase
 	{
-		private int _activated;
+		private const int MaxChecks = 10;
 
-		private int _updated;
+		private const long WaitTime = 10;
 
-		private int _deleted;
+		private IntByRef _activated = new IntByRef(0);
 
-		private int _created;
+		private IntByRef _updated = new IntByRef(0);
 
-		private int _committed;
+		private IntByRef _deleted = new IntByRef(0);
+
+		private IntByRef _created = new IntByRef(0);
+
+		private IntByRef _committed = new IntByRef(0);
 
 		/// <param name="args"></param>
 		public static void Main(string[] args)
@@ -28,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestEventRegistryStress()
+		public virtual void TestEventRegistryCounts()
 		{
 			RegisterEventHandlers();
 			for (int i = 0; i < 1000; i++)
@@ -36,15 +41,13 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				EventCountTestCase.Item item = new EventCountTestCase.Item(i);
 				Db().Store(item);
 				Assert.IsTrue(Db().IsStored(item));
-				if ((i % 100) == 9)
+				if (((i + 1) % 100) == 0)
 				{
 					Db().Commit();
 				}
 			}
-			Assert.AreEqual(1000, _created, "The counted number of created objects is not correct"
-				);
-			Assert.AreEqual(10, _committed, "The counted number of committed objects is not correct"
-				);
+			AssertCount(_created, 1000, "created");
+			AssertCount(_committed, 10, "commit");
 			ReopenAndRegister();
 			IObjectSet items = NewQuery(typeof(EventCountTestCase.Item)).Execute();
 			Assert.AreEqual(1000, items.Size(), "Wrong number of objects retrieved");
@@ -54,10 +57,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				item._value++;
 				Store(item);
 			}
-			Assert.AreEqual(1000, _activated, "The counted number of activated objects is not correct"
-				);
-			Assert.AreEqual(1000, _updated, "The counted number of updated objects is not correct"
-				);
+			AssertCount(_activated, 1000, "activated");
+			AssertCount(_updated, 1000, "updated");
 			items.Reset();
 			while (items.HasNext())
 			{
@@ -65,8 +66,24 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				Db().Delete(item);
 				Assert.IsFalse(Db().IsStored(item));
 			}
-			Assert.AreEqual(1000, _deleted, "The counted number of deleted objects is not correct"
-				);
+			AssertCount(_deleted, 1000, "deleted");
+		}
+
+		/// <exception cref="Exception"></exception>
+		private void AssertCount(IntByRef @ref, int expected, string name)
+		{
+			for (int checkCount = 0; checkCount < MaxChecks; checkCount++)
+			{
+				lock (@ref)
+				{
+					if (@ref.value == expected)
+					{
+						break;
+					}
+					Sharpen.Runtime.Wait(@ref, WaitTime);
+				}
+			}
+			Assert.AreEqual(expected, @ref.value, "Incorrect count for " + name);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -88,88 +105,89 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(Db());
 			IEventRegistry deletionEventRegistry = EventRegistryFactory.ForObjectContainer(deletionEventSource
 				);
+			// No dedicated IncrementListener class due to sharpen event semantics
 			deletionEventRegistry.Deleted += new Db4objects.Db4o.Events.ObjectEventHandler(new 
-				_IEventListener4_87(this).OnEvent);
-			eventRegistry.Activated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_93
+				_IEventListener4_104(this).OnEvent);
+			eventRegistry.Activated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_109
 				(this).OnEvent);
-			eventRegistry.Committed += new Db4objects.Db4o.Events.CommitEventHandler(new _IEventListener4_99
+			eventRegistry.Committed += new Db4objects.Db4o.Events.CommitEventHandler(new _IEventListener4_114
 				(this).OnEvent);
-			eventRegistry.Created += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_105
+			eventRegistry.Created += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_119
 				(this).OnEvent);
-			eventRegistry.Updated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_111
+			eventRegistry.Updated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_124
 				(this).OnEvent);
 		}
 
-		private sealed class _IEventListener4_87
+		private sealed class _IEventListener4_104
 		{
-			public _IEventListener4_87(EventCountTestCase _enclosing)
+			public _IEventListener4_104(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
 			{
-				this._enclosing._deleted++;
+				EventCountTestCase.Increment(this._enclosing._deleted);
 			}
 
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_93
+		private sealed class _IEventListener4_109
 		{
-			public _IEventListener4_93(EventCountTestCase _enclosing)
+			public _IEventListener4_109(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
 			{
-				this._enclosing._activated++;
+				EventCountTestCase.Increment(this._enclosing._activated);
 			}
 
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_99
+		private sealed class _IEventListener4_114
 		{
-			public _IEventListener4_99(EventCountTestCase _enclosing)
+			public _IEventListener4_114(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.CommitEventArgs args)
 			{
-				this._enclosing._committed++;
+				EventCountTestCase.Increment(this._enclosing._committed);
 			}
 
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_105
+		private sealed class _IEventListener4_119
 		{
-			public _IEventListener4_105(EventCountTestCase _enclosing)
+			public _IEventListener4_119(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
 			{
-				this._enclosing._created++;
+				EventCountTestCase.Increment(this._enclosing._created);
 			}
 
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_111
+		private sealed class _IEventListener4_124
 		{
-			public _IEventListener4_111(EventCountTestCase _enclosing)
+			public _IEventListener4_124(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
 			{
-				this._enclosing._updated++;
+				EventCountTestCase.Increment(this._enclosing._updated);
 			}
 
 			private readonly EventCountTestCase _enclosing;
@@ -183,6 +201,15 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			}
 
 			public int _value;
+		}
+
+		internal static void Increment(IntByRef @ref)
+		{
+			lock (@ref)
+			{
+				@ref.value++;
+				Sharpen.Runtime.NotifyAll(@ref);
+			}
 		}
 	}
 }

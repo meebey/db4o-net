@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Reflect.Core
 	{
 		public static ReflectConstructorSpec CreateConstructor(IConstructorAwareReflectClass
 			 claxx, Type clazz, IReflectorConfiguration config, IReflectConstructor[] constructors
-			, bool forceTest)
+			)
 		{
 			if (claxx == null)
 			{
@@ -37,9 +37,9 @@ namespace Db4objects.Db4o.Reflect.Core
 					}
 				}
 			}
-			if (!forceTest && !config.TestConstructors())
+			if (!config.TestConstructors())
 			{
-				return ReflectConstructorSpec.UnspecifiedConstructor;
+				return new ReflectConstructorSpec(new PlatformReflectConstructor(clazz), null);
 			}
 			if (ReflectPlatform.CreateInstance(clazz) != null)
 			{

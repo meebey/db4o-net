@@ -775,7 +775,6 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
-			// public DeleteContextImpl(StatefulBuffer buffer, ObjectHeader objectHeader, ReflectClass fieldClass, Config4Field fieldConfig, int handlerVersion){
 			int preserveCascade = context.CascadeDeleteDepth();
 			try
 			{
@@ -1156,13 +1155,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			ByReference byReference = new ByReference();
-			ForEachField(new _IProcedure4_911(name, byReference));
+			ForEachField(new _IProcedure4_908(name, byReference));
 			return (FieldMetadata)byReference.value;
 		}
 
-		private sealed class _IProcedure4_911 : IProcedure4
+		private sealed class _IProcedure4_908 : IProcedure4
 		{
-			public _IProcedure4_911(string name, ByReference byReference)
+			public _IProcedure4_908(string name, ByReference byReference)
 			{
 				this.name = name;
 				this.byReference = byReference;
@@ -1837,13 +1836,13 @@ namespace Db4objects.Db4o.Internal
 				CreateConstructor(_container, i_name);
 				BitFalse(Const4.CheckedChanges);
 				CheckChanges();
-				ForEachDeclaredField(new _IProcedure4_1477());
+				ForEachDeclaredField(new _IProcedure4_1474());
 			}
 		}
 
-		private sealed class _IProcedure4_1477 : IProcedure4
+		private sealed class _IProcedure4_1474 : IProcedure4
 		{
-			public _IProcedure4_1477()
+			public _IProcedure4_1474()
 			{
 			}
 
@@ -1876,13 +1875,13 @@ namespace Db4objects.Db4o.Internal
 					return false;
 				}
 			}
-			ForEachDeclaredField(new _IProcedure4_1502(oldName, newName, renamed));
+			ForEachDeclaredField(new _IProcedure4_1499(oldName, newName, renamed));
 			return renamed.value;
 		}
 
-		private sealed class _IProcedure4_1502 : IProcedure4
+		private sealed class _IProcedure4_1499 : IProcedure4
 		{
-			public _IProcedure4_1502(string oldName, string newName, BooleanByRef renamed)
+			public _IProcedure4_1499(string oldName, string newName, BooleanByRef renamed)
 			{
 				this.oldName = oldName;
 				this.newName = newName;
@@ -2003,16 +2002,16 @@ namespace Db4objects.Db4o.Internal
 				Db4objects.Db4o.Internal.ClassMetadata classMetadata = _container.ClassMetadataForReflectClass
 					(ReflectorUtils.ReflectClassFor(Reflector(), clazz));
 				ByReference foundField = new ByReference();
-				ForEachField(new _IProcedure4_1598(this, foundField, name, classMetadata));
+				ForEachField(new _IProcedure4_1595(this, foundField, name, classMetadata));
 				// FIXME: The == comparison in the following line could be wrong. 
 				//TODO: implement field creation
 				return (IStoredField)foundField.value;
 			}
 		}
 
-		private sealed class _IProcedure4_1598 : IProcedure4
+		private sealed class _IProcedure4_1595 : IProcedure4
 		{
-			public _IProcedure4_1598(ClassMetadata _enclosing, ByReference foundField, string
+			public _IProcedure4_1595(ClassMetadata _enclosing, ByReference foundField, string
 				 name, Db4objects.Db4o.Internal.ClassMetadata classMetadata)
 			{
 				this._enclosing = _enclosing;
@@ -2094,7 +2093,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1661
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1658
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2103,9 +2102,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1661 : IFunction4
+		private sealed class _IFunction4_1658 : IFunction4
 		{
-			public _IFunction4_1661(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1658(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2146,12 +2145,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1689(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1686(this));
 		}
 
-		private sealed class _IFunction4_1689 : IFunction4
+		private sealed class _IFunction4_1686 : IFunction4
 		{
-			public _IFunction4_1689(ClassMetadata _enclosing)
+			public _IFunction4_1686(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2193,12 +2192,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1718());
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1715());
 		}
 
-		private sealed class _IPredicate4_1718 : IPredicate4
+		private sealed class _IPredicate4_1715 : IPredicate4
 		{
-			public _IPredicate4_1718()
+			public _IPredicate4_1715()
 			{
 			}
 

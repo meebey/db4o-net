@@ -35,6 +35,7 @@ namespace Db4objects.Db4o.Typehandlers
 		public virtual object Read(IReadContext context)
 		{
 			IList list = (IList)((UnmarshallingContext)context).PersistentObject();
+			list.Clear();
 			int elementCount = context.ReadInt();
 			ITypeHandler4 elementHandler = ElementTypeHandler(context, list);
 			for (int i = 0; i < elementCount; i++)

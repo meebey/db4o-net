@@ -43,7 +43,10 @@ namespace Db4objects.Db4o.Typehandlers
 			{
 				object key = unmarshallingContext.ReadActivatedObject(elementHandler);
 				object value = context.ReadObject(elementHandler);
-				map.Add(key, value);
+				if (key != null && value != null)
+				{
+					map.Add(key, value);
+				}
 			}
 			return map;
 		}

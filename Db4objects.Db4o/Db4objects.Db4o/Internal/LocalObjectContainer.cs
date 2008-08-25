@@ -175,6 +175,7 @@ namespace Db4objects.Db4o.Internal
 				reader.SetCascadeDeletes(a_cascade);
 				reader.SlotDelete();
 				ClassMetadata yc = yo.ClassMetadata();
+				// FIXME: What if obj is null here ?
 				yc.Delete(reader, obj);
 				// The following will not work with this approach.
 				// Free blocks are identified in the Transaction by their ID.
@@ -233,14 +234,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _IVisitor4_215(this));
+				i_prefetchedIDs.Traverse(new _IVisitor4_218(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _IVisitor4_215 : IVisitor4
+		private sealed class _IVisitor4_218 : IVisitor4
 		{
-			public _IVisitor4_215(LocalObjectContainer _enclosing)
+			public _IVisitor4_218(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -707,15 +708,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_616(semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_619(semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_616 : IVisitor4
+		private sealed class _IVisitor4_619 : IVisitor4
 		{
-			public _IVisitor4_616(Hashtable4 semaphores)
+			public _IVisitor4_619(Hashtable4 semaphores)
 			{
 				this.semaphores = semaphores;
 			}
@@ -957,13 +958,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_814(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_817(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_814 : IVisitor4
+		private sealed class _IVisitor4_817 : IVisitor4
 		{
-			public _IVisitor4_814(IntArrayList ids)
+			public _IVisitor4_817(IntArrayList ids)
 			{
 				this.ids = ids;
 			}

@@ -966,7 +966,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private int AdjustUpdateDepth(object obj, int updateDepth)
+		private int AdjustUpdateDepthForCascade(object obj, int updateDepth)
 		{
 			int minimumUpdateDepth = 1;
 			if (_containingClass.IsCollection(obj))
@@ -994,7 +994,7 @@ namespace Db4objects.Db4o.Internal
 			int updateDepth = context.UpdateDepth();
 			if (obj != null && CascadeOnUpdate(context.ClassConfiguration()))
 			{
-				context.UpdateDepth(AdjustUpdateDepth(obj, updateDepth));
+				context.UpdateDepth(AdjustUpdateDepthForCascade(obj, updateDepth));
 			}
 			if (UseDedicatedSlot(context, _handler))
 			{
