@@ -29,24 +29,83 @@ namespace Db4objects.Db4o.Foundation.Collections
 	{
 		void Clear();
 		void Add(object o);
+		void FinishAdding();
 	}
 
 	public sealed class CollectionInitializer
 	{
+		private static Dictionary<Type, Type> initializerByType = new Dictionary<Type, Type>();
+
+		static CollectionInitializer()
+		{
+			initializerByType[typeof (ICollection<>)] = typeof (CollectionInitializerImpl<>);
+			initializerByType[typeof(Stack<>)] = typeof(StackInitializer<>);
+			initializerByType[typeof(Queue<>)] = typeof(QueueInitializer<>);
+		}
+
 		public static ICollectionInitializer For(object destination)
 		{
 			if (IsNonGenericList(destination))
 			{
 			    return new ListInitializer((IList)destination);
 			}
-			
-			Type collectionElementType = CollectionElementTypeFor(destination);
-			if (collectionElementType != null)
+
+			return InitializerFor(destination);
+		}
+
+		private static ICollectionInitializer InitializerFor(object destination)
+		{
+			Type destinationType = destination.GetType();
+			if (!destinationType.IsGenericType)
 			{
-			    Type genericProtocolType = typeof(CollectionInitializerImpl<>).MakeGenericType(collectionElementType);
-			    return InstantiateInitializer(destination, genericProtocolType);
+				throw new ArgumentException("Unknown collection: " + destination);
 			}
-		    throw new ArgumentException("Unknown collection: " + destination);
+
+			Type containerType = GenericContainerTypeFor(destination);
+			if (containerType != null)
+			{
+				return GetInitializer(destination, initializerByType[containerType]);
+			}
+
+			throw new ArgumentException("Unknown collection: " + destination);
+		}
+
+		private static Type GenericContainerTypeFor(object destination)
+		{
+			Type containerType = destination.GetType().GetGenericTypeDefinition();
+			while (containerType != null && !initializerByType.ContainsKey(containerType))
+			{
+				foreach (Type interfaceType in containerType.GetInterfaces())
+				{
+					if (!interfaceType.IsGenericType)
+					{
+						continue;
+					}
+
+					Type genericInterfaceType = interfaceType.GetGenericTypeDefinition();
+					if (initializerByType.ContainsKey(genericInterfaceType))
+					{
+						return genericInterfaceType;
+					}
+				}
+
+				containerType = containerType.BaseType;
+			}
+
+			return containerType;
+		}
+
+		private static ICollectionInitializer GetInitializer(object destination, Type initializerType)
+		{
+			ICollectionInitializer initializer = null;
+			Type containedElementType = ContainerElementTypeFor(destination);
+			if (containedElementType != null)
+			{
+				Type genericProtocolType = initializerType.MakeGenericType(containedElementType);
+				initializer = InstantiateInitializer(destination, genericProtocolType);
+				
+			}
+			return initializer;
 		}
 
 		private static bool IsNonGenericList(object destination)
@@ -64,22 +123,24 @@ namespace Db4objects.Db4o.Foundation.Collections
 #endif
 	    }
 
-	    private static Type CollectionElementTypeFor(object destination)
+	    private static Type ContainerElementTypeFor(object destination)
 		{
-			foreach (Type interfaceType in destination.GetType().GetInterfaces())
-			{
-				if (IsGenericCollection(interfaceType))
-				{
-					return interfaceType.GetGenericArguments()[0];
-				}
-			}
-			return null;
+	    	Type containerType = destination.GetType();
+	    	return containerType.GetGenericArguments()[0];
+			//foreach (Type interfaceType in destination.GetType().GetInterfaces())
+			//{
+			//    if (IsGenericContainer(interfaceType, containerType))
+			//    {
+			//        return interfaceType.GetGenericArguments()[0];
+			//    }
+			//}
+			//return null;
 		}
 
-		private static bool IsGenericCollection(Type type)
-		{
-			return type.IsGenericType &&  type.GetGenericTypeDefinition() == typeof(ICollection<>);
-		}
+		//private static bool IsGenericContainer(Type type, Type containerType)
+		//{
+		//    return type.IsGenericType &&  type.GetGenericTypeDefinition() == containerType;
+		//}
 
 		private sealed class ListInitializer : ICollectionInitializer
 		{
@@ -98,6 +159,10 @@ namespace Db4objects.Db4o.Foundation.Collections
 			public void Add(object o)
 			{
 				_list.Add(o);
+			}
+
+			public void FinishAdding()
+			{
 			}
 		}
 
@@ -118,6 +183,67 @@ namespace Db4objects.Db4o.Foundation.Collections
 			public void Add(object o)
 			{
 				_collection.Add((T)o);
+			}
+
+			public void FinishAdding()
+			{
+			}
+		}
+
+		private sealed class StackInitializer<T> : ICollectionInitializer
+		{
+			private readonly Stack<T> _stack;
+			private readonly Stack<T> _tempStack;
+
+			public StackInitializer(Stack<T> stack)
+			{
+				_stack= stack;
+				_tempStack = new Stack<T>();
+			}
+
+			public void Clear()
+			{
+				_tempStack.Clear();
+				_stack.Clear();
+			}
+
+			public void Add(object o)
+			{
+				_tempStack.Push((T) o);
+			}
+
+			public void FinishAdding()
+			{
+				foreach(T item in _tempStack)
+				{
+					_stack.Push(item);
+				}
+
+				_tempStack.Clear();
+			}
+		}
+
+		private sealed class QueueInitializer<T> : ICollectionInitializer
+		{
+			private readonly Queue<T> _queue;
+
+			public QueueInitializer(Queue<T> queue)
+			{
+				_queue = queue;
+			}
+
+			public void Clear()
+			{
+				_queue.Clear();
+			}
+
+			public void Add(object o)
+			{
+				_queue.Enqueue((T) o);
+			}
+
+			public void FinishAdding()
+			{
 			}
 		}
 	}

@@ -24,6 +24,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Foundation.Collections
 				initializer.Add(item);
 			}
 
+			initializer.FinishAdding();
+
 			Iterator4Assert.AreEqual(Values, ((IEnumerable) list).GetEnumerator());
 		}
 

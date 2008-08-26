@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Typehandlers
 		{
 			object collection = ((UnmarshallingContext)context).PersistentObject();
 			ICollectionInitializer initializer = CollectionInitializer.For(collection);
-			//initializer.Clear();
+			initializer.Clear();
 
 			int elementCount = context.ReadInt();
 			ITypeHandler4 elementHandler = ElementTypeHandler(context);
@@ -40,6 +40,8 @@ namespace Db4objects.Db4o.Typehandlers
 			{
 				initializer.Add(context.ReadObject(elementHandler));
 			}
+
+			initializer.FinishAdding();
 
 			return collection;
 		}

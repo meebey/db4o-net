@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Db4objects.Db4o.Foundation.Collections;
 using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI2.Handlers
@@ -9,8 +10,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 	{
 		public void AssertCollection(object item)
 		{
-			System.Collections.IEnumerable actual = CollectionFor(item);
-			System.Collections.IEnumerable expected = ElementSpec<T>()._elements;
+			IEnumerable actual = CollectionFor(item);
+			IEnumerable expected = ElementSpec<T>()._elements;
 
 			Iterator4Assert.AreEqual(expected.GetEnumerator(), actual.GetEnumerator());
 		}
@@ -18,9 +19,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 		public object NewItem(object element)
 		{
 			object item = NewItem();
-			ICollection<T> coll = CollectionFor(item);
 
-			coll.Add((T)element);
+			ICollectionInitializer initializer = CollectionInitializer.For(CollectionFor(item));
+
+			initializer.Add(element);
+			initializer.FinishAdding();
 
 			return item;
 		}
@@ -72,17 +75,20 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 			}
 		}
 
-		private static void Fill(ICollection<T> collection, IEnumerable<T> elements)
+		private static void Fill(ICollection collection, IEnumerable<T> elements)
 		{
+			ICollectionInitializer initializer = CollectionInitializer.For(collection);
 			foreach (T item in elements)
 			{
-				collection.Add(item);
+				initializer.Add(item);
 			}
+
+			initializer.FinishAdding();
 		}
 
-		private static ICollection<T> CollectionFor(object item)
+		private static ICollection CollectionFor(object item)
 		{
-			return (ICollection<T>)item.GetType().GetField(GenericCollectionTestFactory.FieldName).GetValue(item);
+			return (ICollection)item.GetType().GetField(GenericCollectionTestFactory.FieldName).GetValue(item);
 		}
 
 		private static GenericCollectionTestFactory ItemFactory()
@@ -111,7 +117,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 		}
 
 		object LargeElement { get; }
-		System.Collections.IEnumerable Elements { get; }
+		IEnumerable Elements { get; }
 		object NotContained { get; }
 	}
 }

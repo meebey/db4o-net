@@ -99,6 +99,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 				Assert.IsFalse(Db().IsActive(element));
 				Db().Activate(item, int.MaxValue);
 				Assert.IsTrue(Db().IsActive(element));
+				
+				Assert.AreEqual(Count(_helper.Elements), coll.Count);
 			}
 		}
 	}
