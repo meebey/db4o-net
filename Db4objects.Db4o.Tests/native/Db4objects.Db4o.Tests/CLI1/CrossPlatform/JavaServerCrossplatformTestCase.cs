@@ -156,27 +156,18 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 		{
 			DeleteAll();
 
-			int deletedCount = 0;
 			int createdCount = 0;
-
-			RegisterEvents(
-				delegate { createdCount++; },
-				delegate { deletedCount++; });
+			RegisterEvents(delegate { createdCount++; } );
 
 			AddPersons(persons);
-			DeleteAll();
-
 			Assert.AreEqual(persons.Length, createdCount);
-			//Assert.AreEqual(persons.Length, _deletedCount);
-			TestPlatform.EmitWarning("Delete events still not working.");
 		}
 
-		private void RegisterEvents(ObjectEventHandler createdHandler, ObjectEventHandler deletedHandler)
+		private void RegisterEvents(ObjectEventHandler createdHandler)
 		{
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(_client);
 
 			eventRegistry.Created += createdHandler;
-			eventRegistry.Deleted += deletedHandler;
 		}
 
 		private void AssertSort()
