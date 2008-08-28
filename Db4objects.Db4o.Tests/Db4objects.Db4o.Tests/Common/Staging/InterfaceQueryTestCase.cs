@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			query.Constrain(typeof(InterfaceQueryTestCase.DataA)).And(query.Descend(FieldA).Constrain
 				(10).Not()).Or(query.Constrain(typeof(InterfaceQueryTestCase.DataB)).And(query.Descend
 				(FieldA).Constrain(10).Not()));
-			Assert.AreEqual(2, query.Execute().Size());
+			Assert.AreEqual(2, query.Execute().Count);
 		}
 
 		public virtual void TestExplicitNotQuery2()
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			query.Constrain(typeof(InterfaceQueryTestCase.DataA)).Or(query.Constrain(typeof(InterfaceQueryTestCase.DataB
 				)));
 			query.Descend(FieldA).Constrain(10).Not();
-			Assert.AreEqual(2, query.Execute().Size());
+			Assert.AreEqual(2, query.Execute().Count);
 		}
 
 		public virtual void TestQueryAll()
@@ -179,7 +179,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		{
 			IQuery query = NewQuery(typeof(InterfaceQueryTestCase.IIData));
 			constrainer.Constrain(query);
-			Assert.AreEqual(expected, query.Execute().Size());
+			Assert.AreEqual(expected, query.Execute().Count);
 		}
 
 		public interface IQueryConstrainer

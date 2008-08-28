@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		{
 			IObjectContainer db = OpenDatabase();
 			IObjectSet result = db.Query(typeof(TranslatedDefragTestCase.Translated));
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			TranslatedDefragTestCase.Translated trans = (TranslatedDefragTestCase.Translated)
 				result.Next();
 			Assert.AreEqual(TranslatedName, trans._name);

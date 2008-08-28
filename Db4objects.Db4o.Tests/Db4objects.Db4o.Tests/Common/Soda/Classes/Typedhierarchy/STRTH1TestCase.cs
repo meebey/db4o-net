@@ -192,7 +192,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 			Fixture().Reopen(GetType());
 			oc = Fixture().Db();
 			os = oc.QueryByExample(null);
-			Assert.AreEqual(0, os.Size());
+			Assert.AreEqual(0, os.Count);
 		}
 
 		public static void Main(string[] arguments)

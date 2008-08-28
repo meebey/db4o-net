@@ -35,12 +35,12 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void Conc(IExtObjectContainer oc)
 		{
 			IObjectSet os = oc.Query(typeof(InvalidUUIDTestCase));
-			if (os.Size() == 0)
+			if (os.Count == 0)
 			{
 				// already deleted by other threads
 				return;
 			}
-			Assert.AreEqual(1, os.Size());
+			Assert.AreEqual(1, os.Count);
 			InvalidUUIDTestCase iu = (InvalidUUIDTestCase)os.Next();
 			Db4oUUID myUuid = oc.GetObjectInfo(iu).GetUUID();
 			Assert.IsNotNull(myUuid);

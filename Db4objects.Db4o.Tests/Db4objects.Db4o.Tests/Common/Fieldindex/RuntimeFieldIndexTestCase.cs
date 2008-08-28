@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			IQuery query = NewQuery(typeof(RuntimeFieldIndexTestCase.Data));
 			query.Descend(Fieldname).Constrain(2);
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			field.CreateIndex();
 		}
 		// ensure that second call is ignored

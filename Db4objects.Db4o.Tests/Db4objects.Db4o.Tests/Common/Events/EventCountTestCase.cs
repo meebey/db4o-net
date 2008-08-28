@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			AssertCount(_committed, 10, "commit");
 			ReopenAndRegister();
 			IObjectSet items = NewQuery(typeof(EventCountTestCase.Item)).Execute();
-			Assert.AreEqual(1000, items.Size(), "Wrong number of objects retrieved");
+			Assert.AreEqual(1000, items.Count, "Wrong number of objects retrieved");
 			while (items.HasNext())
 			{
 				EventCountTestCase.Item item = (EventCountTestCase.Item)items.Next();

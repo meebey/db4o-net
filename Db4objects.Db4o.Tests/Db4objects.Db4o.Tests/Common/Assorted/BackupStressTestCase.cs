@@ -184,7 +184,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 						q.Constrain(typeof(BackupStressItem));
 						q.Descend("_iteration").Constrain(iteration.GetCount());
 						IObjectSet items = q.Execute();
-						Assert.AreEqual(Objects, items.Size());
+						Assert.AreEqual(Objects, items.Count);
 						while (items.HasNext())
 						{
 							BackupStressItem item = (BackupStressItem)items.Next();

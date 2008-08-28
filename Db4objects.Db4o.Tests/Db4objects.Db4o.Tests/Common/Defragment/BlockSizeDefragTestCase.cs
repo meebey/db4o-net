@@ -132,7 +132,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		private void AssertResult(IObjectContainer db, Type clazz)
 		{
 			IObjectSet result = db.Query(clazz);
-			Assert.AreEqual(NumItemsPerClass, result.Size());
+			Assert.AreEqual(NumItemsPerClass, result.Count);
 			while (result.HasNext())
 			{
 				Assert.IsInstanceOf(clazz, result.Next());

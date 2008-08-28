@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			IQuery query = NewQuery(typeof(AndJoinOptimizationTestCase.Data));
 			query.Descend("_id").Constrain(1).And(query.Descend("_name").Constrain("a"));
 			AssertJoins(query);
-			Assert.AreEqual(1, query.Execute().Size());
+			Assert.AreEqual(1, query.Execute().Count);
 			AssertNoJoins(query);
 		}
 
@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			IQuery query = NewQuery(typeof(AndJoinOptimizationTestCase.Data));
 			query.Descend("_id").Constrain(1).Or(query.Descend("_name").Constrain("a"));
 			AssertJoins(query);
-			Assert.AreEqual(3, query.Execute().Size());
+			Assert.AreEqual(3, query.Execute().Count);
 			AssertJoins(query);
 		}
 

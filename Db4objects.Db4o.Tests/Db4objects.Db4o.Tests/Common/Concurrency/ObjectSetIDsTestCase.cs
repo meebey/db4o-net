@@ -31,8 +31,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IQuery q = oc.Query();
 			q.Constrain(this.GetType());
 			IObjectSet res = q.Execute();
-			Assert.AreEqual(Count, res.Size());
-			long[] ids1 = new long[res.Size()];
+			Assert.AreEqual(Count, res.Count);
+			long[] ids1 = new long[res.Count];
 			int i = 0;
 			while (res.HasNext())
 			{

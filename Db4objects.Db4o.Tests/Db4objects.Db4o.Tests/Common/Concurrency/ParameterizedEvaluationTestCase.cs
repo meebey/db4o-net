@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc(IExtObjectContainer oc)
 		{
-			Assert.AreEqual(2, QueryContains(oc, "un").Size());
+			Assert.AreEqual(2, QueryContains(oc, "un").Count);
 		}
 
 		private IObjectSet QueryContains(IExtObjectContainer oc, string str)

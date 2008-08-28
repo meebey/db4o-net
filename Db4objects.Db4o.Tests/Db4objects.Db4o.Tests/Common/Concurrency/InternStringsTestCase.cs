@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			query.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.InternStringsTestCase
 				));
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(2, result.Size());
+			Assert.AreEqual(2, result.Count);
 			Db4objects.Db4o.Tests.Common.Concurrency.InternStringsTestCase first = (Db4objects.Db4o.Tests.Common.Concurrency.InternStringsTestCase
 				)result.Next();
 			Db4objects.Db4o.Tests.Common.Concurrency.InternStringsTestCase second = (Db4objects.Db4o.Tests.Common.Concurrency.InternStringsTestCase

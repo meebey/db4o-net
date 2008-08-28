@@ -54,12 +54,12 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			q.Constrain(typeof(MultiDeleteTestCase));
 			q.Descend("name").Constrain("killmefirst");
 			IObjectSet objectSet = q.Execute();
-			if (objectSet.Size() == 0)
+			if (objectSet.Count == 0)
 			{
 				// already deleted by other threads
 				return;
 			}
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 			Thread.Sleep(1000);
 			if (!objectSet.HasNext())
 			{

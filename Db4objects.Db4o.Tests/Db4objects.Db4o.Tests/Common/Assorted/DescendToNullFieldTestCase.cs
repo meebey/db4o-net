@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			IQuery query = NewQuery(typeof(DescendToNullFieldTestCase.ParentItem));
 			query.Descend(name).Descend("_name").Constrain(name);
 			IObjectSet objectSet = query.Execute();
-			Assert.AreEqual(Count, objectSet.Size());
+			Assert.AreEqual(Count, objectSet.Count);
 			while (objectSet.HasNext())
 			{
 				DescendToNullFieldTestCase.ParentItem parentItem = (DescendToNullFieldTestCase.ParentItem

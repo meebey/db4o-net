@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			int mid = ThreadCount() / 2;
 			SimpleObject example = new SimpleObject(testString + mid, mid);
 			IObjectSet result = oc.QueryByExample(example);
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			Assert.AreEqual(example, result.Next());
 		}
 
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		{
 			SimpleObject example = new SimpleObject(testString + seq, seq);
 			IObjectSet result = oc.QueryByExample(example);
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			Assert.AreEqual(example, result.Next());
 		}
 	}

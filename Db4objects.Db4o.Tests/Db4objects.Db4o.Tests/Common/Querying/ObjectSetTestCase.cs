@@ -57,10 +57,10 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		public virtual void TestAccessOrder()
 		{
 			IObjectSet result = NewQuery(typeof(ObjectSetTestCase.Item)).Execute();
-			for (int i = 0; i < result.Size(); ++i)
+			for (int i = 0; i < result.Count; ++i)
 			{
 				Assert.IsTrue(result.HasNext());
-				Assert.AreSame(result.Ext().Get(i), result.Next());
+				Assert.AreSame(result.Ext()[i], result.Next());
 			}
 			Assert.IsFalse(result.HasNext());
 		}

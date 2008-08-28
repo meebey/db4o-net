@@ -77,16 +77,19 @@ namespace Db4objects.Db4o.Internal
 			ActivationPurpose purpose)
 		{
 			ObjectContainerBase container = transaction.Container();
-			lock (container.Lock())
+			if (ActivationPurpose.Write == purpose)
 			{
-				if (ActivationPurpose.Write == purpose)
+				lock (container.Lock())
 				{
 					EnlistForUpdate(transaction);
 				}
-				if (IsActive())
-				{
-					return;
-				}
+			}
+			if (IsActive())
+			{
+				return;
+			}
+			lock (container.Lock())
+			{
 				TransparentActivationDepthProvider provider = (TransparentActivationDepthProvider
 					)container.ActivationDepthProvider();
 				Activate(transaction, GetObject(), new DescendingActivationDepth(provider, ActivationMode
@@ -111,14 +114,14 @@ namespace Db4objects.Db4o.Internal
 				_updateListener = NullTransactionListener.Instance;
 				return;
 			}
-			_updateListener = new _ITransactionListener_88(this, transparentPersistence, transaction
+			_updateListener = new _ITransactionListener_91(this, transparentPersistence, transaction
 				);
 			transaction.AddTransactionListener(_updateListener);
 		}
 
-		private sealed class _ITransactionListener_88 : ITransactionListener
+		private sealed class _ITransactionListener_91 : ITransactionListener
 		{
-			public _ITransactionListener_88(ObjectReference _enclosing, TransparentPersistenceSupport
+			public _ITransactionListener_91(ObjectReference _enclosing, TransparentPersistenceSupport
 				 transparentPersistence, Db4objects.Db4o.Internal.Transaction transaction)
 			{
 				this._enclosing = _enclosing;
@@ -217,7 +220,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <summary>return false if class not completely initialized, otherwise true</summary>
+		/// <summary>return false if class not completely initialized, otherwise true *</summary>
 		internal virtual bool ContinueSet(Db4objects.Db4o.Internal.Transaction trans, int
 			 updateDepth)
 		{
@@ -571,7 +574,7 @@ namespace Db4objects.Db4o.Internal
 			Id_init();
 		}
 
-		/// <summary>HCTREE</summary>
+		/// <summary>HCTREE ****</summary>
 		public virtual Db4objects.Db4o.Internal.ObjectReference Hc_add(Db4objects.Db4o.Internal.ObjectReference
 			 newRef)
 		{
@@ -848,7 +851,7 @@ namespace Db4objects.Db4o.Internal
 			return _hcPreceding;
 		}
 
-		/// <summary>IDTREE</summary>
+		/// <summary>IDTREE ****</summary>
 		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_add(Db4objects.Db4o.Internal.ObjectReference
 			 newRef)
 		{

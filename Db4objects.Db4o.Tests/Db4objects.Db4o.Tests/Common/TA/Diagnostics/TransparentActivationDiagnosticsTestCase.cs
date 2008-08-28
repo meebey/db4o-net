@@ -14,6 +14,7 @@ using Db4objects.Db4o.Tests.Common.TA.Diagnostics;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Diagnostics
 {
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class TransparentActivationDiagnosticsTestCase : TransparentActivationTestCaseBase
 		, IOptOutCS, IOptOutDefragSolo
 	{
@@ -71,12 +72,12 @@ namespace Db4objects.Db4o.Tests.Common.TA.Diagnostics
 
 		public TransparentActivationDiagnosticsTestCase()
 		{
-			_checker = new _IDiagnosticListener_58(this);
+			_checker = new _IDiagnosticListener_61(this);
 		}
 
-		private sealed class _IDiagnosticListener_58 : IDiagnosticListener
+		private sealed class _IDiagnosticListener_61 : IDiagnosticListener
 		{
-			public _IDiagnosticListener_58(TransparentActivationDiagnosticsTestCase _enclosing
+			public _IDiagnosticListener_61(TransparentActivationDiagnosticsTestCase _enclosing
 				)
 			{
 				this._enclosing = _enclosing;

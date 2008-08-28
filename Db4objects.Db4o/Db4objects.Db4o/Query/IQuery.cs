@@ -121,12 +121,12 @@ namespace Db4objects.Db4o.Query
 		IObjectSet Execute();
 
 		/// <summary>
-		/// adds an ascending ordering criteria to this node of the
-		/// query graph.
+		/// adds an ascending ordering criteria to this node of
+		/// the query graph.
 		/// </summary>
 		/// <remarks>
-		/// adds an ascending ordering criteria to this node of the
-		/// query graph.
+		/// adds an ascending ordering criteria to this node of
+		/// the query graph.
 		/// <p>
 		/// If multiple ordering criteria are applied, the chronological
 		/// order of method calls is relevant: criteria created by 'earlier' calls are

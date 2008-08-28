@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void CheckSetRollback(IExtObjectContainer oc)
 		{
-			Assert.AreEqual(ThreadCount() / 2 * 1000, oc.Query(typeof(SimpleObject)).Size());
+			Assert.AreEqual(ThreadCount() / 2 * 1000, oc.Query(typeof(SimpleObject)).Count);
 		}
 	}
 }

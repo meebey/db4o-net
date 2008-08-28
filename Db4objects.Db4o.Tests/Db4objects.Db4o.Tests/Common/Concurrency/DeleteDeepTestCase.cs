@@ -52,12 +52,12 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			q.Constrain(typeof(DeleteDeepTestCase));
 			q.Descend("name").Constrain("root");
 			IObjectSet os = q.Execute();
-			if (os.Size() == 0)
+			if (os.Count == 0)
 			{
 				// already deleted
 				return;
 			}
-			Assert.AreEqual(1, os.Size());
+			Assert.AreEqual(1, os.Count);
 			if (!os.HasNext())
 			{
 				return;

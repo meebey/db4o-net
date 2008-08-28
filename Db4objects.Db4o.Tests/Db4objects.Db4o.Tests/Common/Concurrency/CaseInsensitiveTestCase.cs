@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.CaseInsensitiveTestCase
 				));
 			q.Constrain(new CaseInsensitiveTestCase.CaseInsensitiveEvaluation("helloworld"));
-			Assert.AreEqual(1, q.Execute().Size());
+			Assert.AreEqual(1, q.Execute().Count);
 		}
 
 		[System.Serializable]

@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			IQuery query = NewQuery(typeof(QueryUnknownClassTestCase.Data));
 			query.Descend("_id").Constrain(42);
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(0, result.Size());
+			Assert.AreEqual(0, result.Count);
 		}
 
 		public virtual void TestQueryUnknownClassInUnknownCollection()
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			IQuery query = NewQuery(typeof(QueryUnknownClassTestCase.DataHolder));
 			query.Descend("_data").Descend("_id").Constrain(42);
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(0, result.Size());
+			Assert.AreEqual(0, result.Count);
 		}
 
 		public virtual void _testQueryUnknownClassInCollection()
@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			IQuery query = NewQuery(typeof(QueryUnknownClassTestCase.DataHolder));
 			query.Descend("_data").Descend("_id").Constrain(42);
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(0, result.Size());
+			Assert.AreEqual(0, result.Count);
 		}
 
 		public virtual void _testQueryUnknownClassInCollectionConjunction()
@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			query.Descend("_data").Descend("_id").Constrain(42).And(query.Descend("_data").Descend
 				("_uid").Constrain(42));
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(0, result.Size());
+			Assert.AreEqual(0, result.Count);
 		}
 
 		public virtual void TestQueryUnknownClassInCollectionDisjunction()
@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			query.Descend("_data").Descend("_id").Constrain(42).Or(query.Descend("_data").Descend
 				("_uid").Constrain(42));
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 		}
 	}
 }

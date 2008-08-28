@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Interfaces
 		public virtual void Test()
 		{
 			IQuery q = NewQuery(typeof(IThreeSomeInterface));
-			Assert.AreEqual(2, q.Execute().Size());
+			Assert.AreEqual(2, q.Execute().Count);
 		}
 	}
 }

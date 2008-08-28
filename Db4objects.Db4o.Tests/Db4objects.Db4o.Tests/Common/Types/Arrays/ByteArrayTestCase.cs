@@ -98,7 +98,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		{
 			IQuery query = NewQuery(clazz);
 			IObjectSet os = query.Execute();
-			Assert.AreEqual(Instances, os.Size());
+			Assert.AreEqual(Instances, os.Count);
 			while (os.HasNext())
 			{
 				Assert.AreEqual(ArrayLength, ((ByteArrayTestCase.IIByteArrayHolder)os.Next()).GetBytes

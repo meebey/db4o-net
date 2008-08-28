@@ -43,7 +43,7 @@ namespace Db4oUnit.Extensions.Tests
 			Assert.IsTrue(EverythingCalledBefore(2));
 			_everythingCalled[2] = true;
 			Assert.AreEqual(1, Fixture().Db().QueryByExample(typeof(SimpleDb4oTestCase.Data))
-				.Size());
+				.Count);
 		}
 
 		public virtual bool EverythingCalled()

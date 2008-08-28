@@ -5,6 +5,7 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.Common.TA
 {
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class AllTests : Db4oTestSuite
 	{
 		protected override Type[] TestCases()

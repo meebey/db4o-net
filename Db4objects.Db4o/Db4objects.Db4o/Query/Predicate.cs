@@ -10,18 +10,16 @@ namespace Db4objects.Db4o.Query
 	/// <summary>Base class for native queries.</summary>
 	/// <remarks>
 	/// Base class for native queries.
-	/// <br /><br />Native Queries allow typesafe, compile-time checked and refactorable
-	/// querying, following object-oriented principles. Native Queries expressions
-	/// are written as if one or more lines of code would be run against all
-	/// instances of a class. A Native Query expression should return true to mark
-	/// specific instances as part of the result set.
-	/// db4o will  attempt to optimize native query expressions and execute them
+	/// <br /><br />Native Queries provide the ability to run one or more lines
+	/// of code against all instances of a class. Native query expressions should
+	/// return true to mark specific instances as part of the result set.
+	/// db4o will  attempt to optimize native query expressions and run them
 	/// against indexes and without instantiating actual objects, where this is
 	/// possible.<br /><br />
-	/// The syntax of the enclosing object for the native query expression varies,
-	/// depending on the language version used. Here are some examples,
-	/// how a simple native query will look like in some of the programming languages
-	/// and dialects that db4o supports:<br /><br />
+	/// The syntax of the enclosing object for the native query expression varies
+	/// slightly, depending on the language version used. Here are some examples,
+	/// how a simple native query will look like in some of the programming languages and
+	/// dialects that db4o supports:<br /><br />
 	/// <code>
 	/// <b>// C# .NET 2.0</b><br />
 	/// IList &lt;Cat&gt; cats = db.Query &lt;Cat&gt; (delegate(Cat cat) {<br />
@@ -70,9 +68,9 @@ namespace Db4objects.Db4o.Query
 	/// - use the delegate notation for .NET 2.0.<br />
 	/// - extend the Predicate class for all other language dialects<br /><br />
 	/// A class that extends Predicate is required to
-	/// implement the #match() method, following the native query
+	/// implement the #match() / #Match() method, following the native query
 	/// conventions:<br />
-	/// - The name of the method is "#match()" (Java).<br />
+	/// - The name of the method is "#match()" (Java) / "#Match()" (.NET).<br />
 	/// - The method must be public public.<br />
 	/// - The method returns a boolean.<br />
 	/// - The method takes one parameter.<br />
@@ -85,7 +83,9 @@ namespace Db4objects.Db4o.Query
 	[System.Serializable]
 	public abstract class Predicate
 	{
-		internal static readonly Type ObjectClass = typeof(object);
+		/// <summary>public for implementation reasons, please ignore.</summary>
+		/// <remarks>public for implementation reasons, please ignore.</remarks>
+		public static readonly string PredicatemethodName = "match";
 
 		private Type _extentType;
 
@@ -101,33 +101,26 @@ namespace Db4objects.Db4o.Query
 			_extentType = extentType;
 		}
 
-		// IMPORTANT: must have package visibility because it is used as
-		// internal on the .net side
-		internal virtual MethodInfo GetFilterMethod()
+		public virtual MethodInfo GetFilterMethod()
 		{
 			if (cachedFilterMethod != null)
 			{
 				return cachedFilterMethod;
 			}
 			MethodInfo[] methods = GetType().GetMethods();
-			MethodInfo untypedMethod = null;
 			for (int methodIdx = 0; methodIdx < methods.Length; methodIdx++)
 			{
 				MethodInfo method = methods[methodIdx];
-				if (PredicatePlatform.IsFilterMethod(method))
+				if ((method.Name.Equals(PredicatePlatform.PredicatemethodName)) && Sharpen.Runtime.GetParameterTypes
+					(method).Length == 1)
 				{
-					if (!ObjectClass.Equals(Sharpen.Runtime.GetParameterTypes(method)[0]))
+					string targetName = Sharpen.Runtime.GetParameterTypes(method)[0].FullName;
+					if (!"java.lang.Object".Equals(targetName))
 					{
 						cachedFilterMethod = method;
 						return method;
 					}
-					untypedMethod = method;
 				}
-			}
-			if (untypedMethod != null)
-			{
-				cachedFilterMethod = untypedMethod;
-				return untypedMethod;
 			}
 			throw new ArgumentException("Invalid predicate.");
 		}
@@ -136,8 +129,16 @@ namespace Db4objects.Db4o.Query
 		/// <remarks>public for implementation reasons, please ignore.</remarks>
 		public virtual Type ExtentType()
 		{
-			return (_extentType != null ? _extentType : Sharpen.Runtime.GetParameterTypes(GetFilterMethod
-				())[0]);
+			if (_extentType == null)
+			{
+				_extentType = FilterParameterType();
+			}
+			return _extentType;
+		}
+
+		private Type FilterParameterType()
+		{
+			return (Type)Sharpen.Runtime.GetParameterTypes(GetFilterMethod())[0];
 		}
 
 		/// <summary>public for implementation reasons, please ignore.</summary>
@@ -151,11 +152,9 @@ namespace Db4objects.Db4o.Query
 				object ret = filterMethod.Invoke(this, new object[] { candidate });
 				return ((bool)ret);
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				// FIXME: Exceptions should be logged for app developers,
-				// but we can't print them out here.
-				// e.printStackTrace();
+				Sharpen.Runtime.PrintStackTrace(e);
 				return false;
 			}
 		}

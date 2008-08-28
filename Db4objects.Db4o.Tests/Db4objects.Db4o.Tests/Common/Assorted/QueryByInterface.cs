@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			q.Constrain(typeof(QueryByInterface.ICar));
 			q.Descend("name").Constrain("F450");
 			IObjectSet result = q.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			QueryByInterface.Ferrari car = (QueryByInterface.Ferrari)result.Next();
 			Assert.AreEqual("F450", car.name);
 		}

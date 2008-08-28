@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			IQuery q = NewQuery(typeof(LongLinkedListTestCase.LinkedList));
 			q.Descend("_depth").Constrain(0);
 			IObjectSet objectSet = q.Execute();
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 			LongLinkedListTestCase.LinkedList head = (LongLinkedListTestCase.LinkedList)objectSet
 				.Next();
 			Db().Activate(head, int.MaxValue);

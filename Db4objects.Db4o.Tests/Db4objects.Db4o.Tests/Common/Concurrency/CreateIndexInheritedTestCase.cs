@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IQuery q = oc.Query();
 			q.Constrain(typeof(CreateIndexInheritedTestCase.CreateIndexFor));
 			q.Descend("i_int").Constrain(0);
-			int zeroSize = q.Execute().Size();
+			int zeroSize = q.Execute().Count;
 			Assert.AreEqual(expectedZeroSize, zeroSize);
 			q = oc.Query();
 			q.Constrain(typeof(CreateIndexInheritedTestCase.CreateIndexFor));
@@ -153,7 +153,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		private void TExpectInts(IQuery q, int[] ints, int zeroSize)
 		{
 			IObjectSet res = q.Execute();
-			Assert.AreEqual(ints.Length + zeroSize, res.Size());
+			Assert.AreEqual(ints.Length + zeroSize, res.Count);
 			while (res.HasNext())
 			{
 				CreateIndexInheritedTestCase.CreateIndexFor ci = (CreateIndexInheritedTestCase.CreateIndexFor
@@ -181,7 +181,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		private void TQueryB(IExtObjectContainer oc)
 		{
 			IObjectSet res = Query(oc, "b");
-			Assert.AreEqual(1, res.Size());
+			Assert.AreEqual(1, res.Count);
 			CreateIndexInheritedTestCase.CreateIndexFor ci = (CreateIndexInheritedTestCase.CreateIndexFor
 				)res.Next();
 			Assert.AreEqual("b", ci.i_name);
@@ -195,9 +195,9 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			ci.i_name = "j";
 			oc.Store(ci);
 			res = Query(oc, "b");
-			Assert.AreEqual(0, res.Size());
+			Assert.AreEqual(0, res.Count);
 			res = Query(oc, "j");
-			Assert.AreEqual(1, res.Size());
+			Assert.AreEqual(1, res.Count);
 			ci.i_name = "b";
 			oc.Store(ci);
 			TQueryB(oc);

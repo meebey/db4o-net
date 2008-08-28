@@ -7,6 +7,7 @@ using Db4objects.Db4o.Tests.Jre5.Collections;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections
 {
+	/// <decaf.ignore></decaf.ignore>
 	public class Order : ActivatableImpl
 	{
 		private ArrayList4<OrderItem> _items;

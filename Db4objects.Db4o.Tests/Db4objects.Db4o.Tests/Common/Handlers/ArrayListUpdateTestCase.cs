@@ -11,6 +11,7 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class ArrayListUpdateTestCase : HandlerUpdateTestCaseBase
 	{
 		private static readonly object[] Data = new object[] { "one", "aAzZ|!§$%&/()=?ßöäüÄÖÜYZ;:-_+*~#^°'@"
@@ -50,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public IList _emptyInterface;
 		}
 
-		/// <summary>Todo: add as type to Item</summary>
+		/// <summary>Todo: add as type to Item *</summary>
 		[System.Serializable]
 		public class ArrayListExtensionWithField : ArrayList
 		{
@@ -74,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		/// <summary>Todo: add as type to Item</summary>
+		/// <summary>Todo: add as type to Item *</summary>
 		[System.Serializable]
 		public class ArrayListExtensionWithoutField : ArrayList
 		{
@@ -195,7 +196,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			q.Descend("_listClassName").Constrain(clazz.FullName);
 			q.Descend(fieldName).Constrain("one");
 			IObjectSet objectSet = q.Execute();
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 			ArrayListUpdateTestCase.Item item = (ArrayListUpdateTestCase.Item)objectSet.Next(
 				);
 			AssertItem(item, clazz);

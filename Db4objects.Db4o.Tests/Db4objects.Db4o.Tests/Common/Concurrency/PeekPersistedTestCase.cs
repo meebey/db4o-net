@@ -49,8 +49,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		private void Peek(IExtObjectContainer oc, PeekPersistedTestCase original, int depth
 			)
 		{
-			PeekPersistedTestCase peeked = (PeekPersistedTestCase)oc.PeekPersisted(original, 
-				depth, true);
+			PeekPersistedTestCase peeked = (PeekPersistedTestCase)((PeekPersistedTestCase)oc.
+				PeekPersisted(original, depth, true));
 			for (int i = 0; i <= depth; i++)
 			{
 				Assert.IsNotNull(peeked);

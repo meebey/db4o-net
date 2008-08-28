@@ -331,7 +331,7 @@ namespace Db4oUnit.Extensions
 		public static object RetrieveOnlyInstance(IExtObjectContainer oc, Type clazz)
 		{
 			IObjectSet result = NewQuery(oc, clazz).Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			return result.Next();
 		}
 
@@ -343,7 +343,7 @@ namespace Db4oUnit.Extensions
 		protected virtual int CountOccurences(IExtObjectContainer oc, Type clazz)
 		{
 			IObjectSet result = NewQuery(oc, clazz).Execute();
-			return result.Size();
+			return result.Count;
 		}
 
 		protected virtual void AssertOccurrences(Type clazz, int expected)

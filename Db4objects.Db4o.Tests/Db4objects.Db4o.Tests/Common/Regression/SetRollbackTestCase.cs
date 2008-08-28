@@ -33,8 +33,8 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 				}
 				oc1.Commit();
 				oc2.Rollback();
-				Assert.AreEqual(1000, oc1.Query(typeof(SimpleObject)).Size());
-				Assert.AreEqual(1000, oc2.Query(typeof(SimpleObject)).Size());
+				Assert.AreEqual(1000, oc1.Query(typeof(SimpleObject)).Count);
+				Assert.AreEqual(1000, oc2.Query(typeof(SimpleObject)).Count);
 			}
 			finally
 			{

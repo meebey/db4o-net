@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			query.Descend("_s").Constrain(testString + mid).And(query.Descend("_i").Constrain
 				(mid));
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			SimpleObject expected = new SimpleObject(testString + mid, mid);
 			Assert.AreEqual(expected, result.Next());
 		}
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			query.Descend("_s").Constrain(testString + seq).And(query.Descend("_i").Constrain
 				(seq));
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			SimpleObject expected = new SimpleObject(testString + seq, seq);
 			Assert.AreEqual(expected, result.Next());
 		}

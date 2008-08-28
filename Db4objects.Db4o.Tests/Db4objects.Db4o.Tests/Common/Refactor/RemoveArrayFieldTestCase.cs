@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 			IQuery query = NewQuery(typeof(RemoveArrayFieldTestCase.DataAfter));
 			query.Descend("name").Constrain("a");
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			RemoveArrayFieldTestCase.DataAfter data = (RemoveArrayFieldTestCase.DataAfter)result
 				.Next();
 			Assert.AreEqual(dataA.name, data.name);

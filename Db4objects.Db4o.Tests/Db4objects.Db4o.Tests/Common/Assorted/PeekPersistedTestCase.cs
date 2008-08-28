@@ -63,8 +63,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void Peek(PeekPersistedTestCase.Item original, int depth)
 		{
-			PeekPersistedTestCase.Item peeked = (PeekPersistedTestCase.Item)Db().PeekPersisted
-				(original, depth, true);
+			PeekPersistedTestCase.Item peeked = (PeekPersistedTestCase.Item)((PeekPersistedTestCase.Item
+				)Db().PeekPersisted(original, depth, true));
 			for (int i = 0; i <= depth; i++)
 			{
 				Assert.IsNotNull(peeked, "Failed to peek at child " + i + " at depth " + depth);

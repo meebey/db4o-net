@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Joins.Typed
 			IQuery query = NewQuery(typeof(JointEqualsIdentityTestCase.TestSubject));
 			IConstraint constraint = query.Descend("_name").Constrain("B").Equal();
 			constraint.And(query.Descend("_child").Constrain(child).Identity());
-			Assert.AreEqual(1, query.Execute().Size());
+			Assert.AreEqual(1, query.Execute().Count);
 		}
 
 		private JointEqualsIdentityTestCase.TestSubject RetrieveChild()

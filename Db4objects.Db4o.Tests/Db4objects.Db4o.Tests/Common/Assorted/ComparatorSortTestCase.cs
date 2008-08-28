@@ -11,11 +11,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 {
 	public class ComparatorSortTestCase : AbstractDb4oTestCase
 	{
-		public static void Main(string[] args)
-		{
-			new ComparatorSortTestCase().RunAll();
-		}
-
 		[System.Serializable]
 		public class AscendingIdComparator : IQueryComparator
 		{
@@ -66,7 +61,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		[System.Serializable]
 		public class SmallerThanThreePredicate : Predicate
 		{
-			// FIXME: #COR-736 The test fails if we use Object as the parameter type.
 			public virtual bool Match(ComparatorSortTestCase.Item candidate)
 			{
 				return candidate._id < 3;
@@ -207,7 +201,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void AssertIdOrder(IObjectSet result, int[] ids)
 		{
-			Assert.AreEqual(ids.Length, result.Size());
+			Assert.AreEqual(ids.Length, result.Count);
 			for (int idx = 0; idx < ids.Length; idx++)
 			{
 				Assert.AreEqual(ids[idx], ((ComparatorSortTestCase.Item)result.Next())._id);

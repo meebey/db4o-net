@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			q.Constrain(typeof(MultiLevelIndexTestCase));
 			q.Descend("_child").Descend("_i").Constrain(-102);
 			IObjectSet objectSet = q.Execute();
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 			MultiLevelIndexTestCase mli = (MultiLevelIndexTestCase)objectSet.Next();
 			Assert.AreEqual(102, mli._i);
 		}
@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			q.Constrain(typeof(MultiLevelIndexTestCase));
 			q.Descend("_child").Descend("_i").Constrain(seq - 102);
 			IObjectSet objectSet = q.Execute();
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 			MultiLevelIndexTestCase mli = (MultiLevelIndexTestCase)objectSet.Next();
 			Assert.AreEqual(102 - seq, mli._i);
 			mli._child._i = -(seq + 201);
@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			q.Constrain(typeof(MultiLevelIndexTestCase));
 			q.Descend("_child").Descend("_i").Constrain(-200).Smaller();
 			IObjectSet objectSet = q.Execute();
-			Assert.AreEqual(ThreadCount(), objectSet.Size());
+			Assert.AreEqual(ThreadCount(), objectSet.Count);
 		}
 	}
 }

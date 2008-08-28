@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			IQuery query = NewQuery(typeof(StringIndexWithSuperClassTestCase.Item));
 			query.Descend(FieldName).Constrain(FieldValue);
-			Assert.AreEqual(1, query.Execute().Size());
+			Assert.AreEqual(1, query.Execute().Count);
 		}
 	}
 }

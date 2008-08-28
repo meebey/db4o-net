@@ -110,8 +110,8 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 		private void AssertQueryResult(int expectedCount, COR57TestCase.Base expectedTemplate
 			, IObjectSet result)
 		{
-			Assert.AreEqual(expectedCount, result.Size(), SimpleName(expectedTemplate.GetType
-				()));
+			Assert.AreEqual(expectedCount, result.Count, SimpleName(expectedTemplate.GetType(
+				)));
 			while (result.HasNext())
 			{
 				COR57TestCase.Base actual = (COR57TestCase.Base)result.Next();

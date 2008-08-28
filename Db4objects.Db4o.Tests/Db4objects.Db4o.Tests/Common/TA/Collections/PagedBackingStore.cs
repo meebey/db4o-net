@@ -7,8 +7,7 @@ using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Collections
 {
-	/// <summary>Shared implementation for a paged collection.</summary>
-	/// <remarks>Shared implementation for a paged collection.</remarks>
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class PagedBackingStore : ActivatableImpl
 	{
 		public const int InitialPageCount = 16;

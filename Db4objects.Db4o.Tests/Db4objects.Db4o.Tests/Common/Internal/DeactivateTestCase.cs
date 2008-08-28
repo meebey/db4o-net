@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			IQuery query = NewQuery();
 			query.Descend("_name").Constrain("foo");
 			IObjectSet results = query.Execute();
-			Assert.AreEqual(1, results.Size());
+			Assert.AreEqual(1, results.Count);
 			DeactivateTestCase.Item item1 = (DeactivateTestCase.Item)results.Next();
 			DeactivateTestCase.Item item2 = item1._child;
 			Assert.IsTrue(Db().IsActive(item1));

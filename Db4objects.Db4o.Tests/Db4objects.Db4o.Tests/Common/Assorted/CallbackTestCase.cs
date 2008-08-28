@@ -3,7 +3,6 @@
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
@@ -16,32 +15,26 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			new CallbackTestCase().RunAll();
 		}
 
-		public virtual void Test()
+		public virtual void TestBaseClass()
 		{
-			CallbackTestCase.Item item = new CallbackTestCase.Item();
+			RunTest(new CallbackTestCase.Item());
+		}
+
+		public virtual void TestDerived()
+		{
+			RunTest(new CallbackTestCase.DerivedItem());
+		}
+
+		private void RunTest(CallbackTestCase.Item item)
+		{
 			Store(item);
 			Db().Commit();
 			Assert.IsTrue(item.IsStored());
 			Assert.IsTrue(Db().Ext().IsStored(item));
-			IObjectSet result = RetrieveItems();
-			Assert.AreEqual(1, result.Size());
-			CallbackTestCase.Item retrievedItem = (CallbackTestCase.Item)result.Next();
-			retrievedItem.Save();
-			result = RetrieveItems();
-			Assert.AreEqual(1, result.Size());
-		}
-
-		internal virtual IObjectSet RetrieveItems()
-		{
-			IQuery q = NewQuery();
-			q.Constrain(typeof(CallbackTestCase.Item));
-			return q.Execute();
 		}
 
 		public class Item
 		{
-			public string test;
-
 			[System.NonSerialized]
 			public IObjectContainer _objectContainer;
 
@@ -54,12 +47,10 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			{
 				return _objectContainer.Ext().IsStored(this);
 			}
+		}
 
-			public virtual void Save()
-			{
-				_objectContainer.Store(this);
-				_objectContainer.Commit();
-			}
+		public class DerivedItem : CallbackTestCase.Item
+		{
 		}
 	}
 }

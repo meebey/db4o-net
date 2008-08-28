@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			IQuery q = NewQuery(typeof(IndexedBlockSizeQueryTestCase.Item));
 			q.Descend("_name").Constrain("one");
-			Assert.AreEqual(1, q.Execute().Size());
+			Assert.AreEqual(1, q.Execute().Count);
 		}
 	}
 }

@@ -429,7 +429,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			IQuery query = client.Query();
 			query.Constrain(typeof(EmbeddedClientObjectContainerTestCase.Item));
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(count, result.Size());
+			Assert.AreEqual(count, result.Count);
 		}
 
 		protected virtual EmbeddedClientObjectContainerTestCase.Item StoreItemToClient1AndCommit

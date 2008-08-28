@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			right.Or(query.Descend(Idfieldname).Constrain(-1));
 			left.Or(right);
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(3, result.Size());
+			Assert.AreEqual(3, result.Count);
 		}
 
 		public virtual void AssertIndexedOr(int[] values, int expectedResultCount, int rootIdx
@@ -112,7 +112,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 				}
 			}
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(expectedResultCount, result.Size());
+			Assert.AreEqual(expectedResultCount, result.Count);
 		}
 
 		private class TestConfig : PermutingTestConfig

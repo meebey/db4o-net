@@ -38,12 +38,12 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.QueryForUnknownFieldTestCase
 				));
 			q.Descend("_name").Constrain("name");
-			Assert.AreEqual(1, q.Execute().Size());
+			Assert.AreEqual(1, q.Execute().Count);
 			q = oc.Query();
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.QueryForUnknownFieldTestCase
 				));
 			q.Descend("name").Constrain("name");
-			Assert.AreEqual(0, q.Execute().Size());
+			Assert.AreEqual(0, q.Execute().Count);
 		}
 	}
 }

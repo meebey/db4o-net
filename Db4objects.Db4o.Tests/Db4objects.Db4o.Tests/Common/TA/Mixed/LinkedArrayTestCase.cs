@@ -87,7 +87,8 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			LinkedArrays linkedArrays = Root();
 			for (int depth = 0; depth < TestedDepth; depth++)
 			{
-				LinkedArrays peeked = (LinkedArrays)Db().PeekPersisted(linkedArrays, depth, true);
+				LinkedArrays peeked = (LinkedArrays)((LinkedArrays)Db().PeekPersisted(linkedArrays
+					, depth, true));
 				peeked.AssertActivationDepth(depth, false);
 			}
 		}

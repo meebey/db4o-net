@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			q.Constrain(typeof(DifferentAccessPathsTestCase));
 			q.Descend("foo").Constrain("hi");
 			IObjectSet os = q.Execute();
-			Assert.AreEqual(1, os.Size());
+			Assert.AreEqual(1, os.Count);
 			DifferentAccessPathsTestCase dap = (DifferentAccessPathsTestCase)os.Next();
 			return dap;
 		}

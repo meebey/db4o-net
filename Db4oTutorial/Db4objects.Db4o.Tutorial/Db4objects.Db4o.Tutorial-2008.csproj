@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5A2D7BEE-8E16-4E97-99EB-D2815F653131}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -150,11 +150,6 @@
     <Compile Include="OutputViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="TutorialOutlineView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -180,10 +175,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OutputViewControl.resx">
       <DependentUpon>OutputViewControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="TutorialOutlineViewControl.resx">
       <DependentUpon>TutorialOutlineViewControl.cs</DependentUpon>

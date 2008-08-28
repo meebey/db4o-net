@@ -34,14 +34,14 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 			IObjectSet set = query.Execute();
 			if (results == null || results.Length == 0)
 			{
-				if (set.Size() > 0)
+				if (set.Count > 0)
 				{
 					Assert.Fail("No content expected.");
 				}
 				return;
 			}
 			int j = 0;
-			Assert.AreEqual(results.Length, set.Size());
+			Assert.AreEqual(results.Length, set.Count);
 			while (set.HasNext())
 			{
 				object obj = set.Next();

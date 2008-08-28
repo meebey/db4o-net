@@ -159,7 +159,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 		private void AssertSortOrder(IQuery query, int[] expectedIndexes)
 		{
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(expectedIndexes.Length, result.Size());
+			Assert.AreEqual(expectedIndexes.Length, result.Count);
 			for (int i = 0; i < expectedIndexes.Length; i++)
 			{
 				Assert.AreEqual(TestData[expectedIndexes[i]], result.Next());

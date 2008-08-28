@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -23,7 +24,8 @@ namespace Db4objects.Db4o
 	/// when they are actually being used by the application.
 	/// </remarks>
 	/// <seealso cref="IExtObjectSet">for extended functionality.</seealso>
-	public interface IObjectSet : System.Collections.IList
+	/// <decaf.ignore.implements.jdk11></decaf.ignore.implements.jdk11>
+	public interface IObjectSet : IList
 	{
 		/// <summary>returns an ObjectSet with extended functionality.</summary>
 		/// <remarks>
@@ -66,10 +68,5 @@ namespace Db4objects.Db4o
 		/// <br /><br />A subsequent call to <code>next()</code> will return the first element.
 		/// </remarks>
 		void Reset();
-
-		/// <summary>returns the number of elements in the <code>ObjectSet</code>.</summary>
-		/// <remarks>returns the number of elements in the <code>ObjectSet</code>.</remarks>
-		/// <returns>the number of elements in the <code>ObjectSet</code>.</returns>
-		int Size();
 	}
 }

@@ -6,6 +6,7 @@ using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 {
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	internal class UnitOfWork : ActivatableImpl
 	{
 		internal DateTime _started;

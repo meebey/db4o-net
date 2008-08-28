@@ -138,7 +138,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void AssertQuerySize(int size, IQuery q)
 		{
-			Assert.AreEqual(size, q.Execute().Size());
+			Assert.AreEqual(size, q.Execute().Count);
 		}
 
 		/// <summary>

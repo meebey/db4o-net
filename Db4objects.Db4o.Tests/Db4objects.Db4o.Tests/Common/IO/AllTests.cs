@@ -1,23 +1,24 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o.Tests.Common.IO;
+using Db4objects.Db4o.Tests.Common.Util;
 
 namespace Db4objects.Db4o.Tests.Common.IO
 {
-	public class AllTests : ITestSuiteBuilder
+	public class AllTests : ReflectionTestSuite
 	{
-		public virtual IEnumerator GetEnumerator()
+		protected override Type[] TestCases()
 		{
-			return new ReflectionTestSuiteBuilder(new Type[] { typeof(IoAdapterTest) }).GetEnumerator
-				();
+			Type[] commonCases = new Type[] { typeof(IoAdapterTest) };
+			return Db4oUnitTestUtil.MergeClasses(commonCases, StackTraceBasedCases());
 		}
 
-		public static void Main(string[] args)
+		/// <decaf.replaceFirst>return new Class[0];</decaf.replaceFirst>
+		private Type[] StackTraceBasedCases()
 		{
-			new ConsoleTestRunner(typeof(Db4objects.Db4o.Tests.Common.IO.AllTests)).Run();
+			return new Type[0];
 		}
 	}
 }

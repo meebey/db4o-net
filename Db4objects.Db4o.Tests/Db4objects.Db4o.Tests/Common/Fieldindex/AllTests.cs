@@ -3,7 +3,7 @@
 using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Tests.Common.Fieldindex;
-using Sharpen;
+using Db4objects.Db4o.Tests.Common.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
@@ -21,10 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			Type[] neutral = new Type[] { typeof(DoubleFieldIndexTestCase), typeof(RuntimeFieldIndexTestCase
 				), typeof(SecondLevelIndexTestCase), typeof(StringIndexTestCase), typeof(StringIndexCorruptionTestCase
 				), typeof(StringIndexWithSuperClassTestCase) };
-			Type[] tests = new Type[fieldBased.Length + neutral.Length];
-			System.Array.Copy(neutral, 0, tests, 0, neutral.Length);
-			System.Array.Copy(fieldBased, 0, tests, neutral.Length, fieldBased.Length);
-			return tests;
+			return Db4oUnitTestUtil.MergeClasses(neutral, fieldBased);
 		}
 	}
 }

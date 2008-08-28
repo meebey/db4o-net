@@ -80,7 +80,9 @@ namespace Db4objects.Db4o.Internal.Cluster
 
 		public virtual IQuery SortBy(IQueryComparator comparator)
 		{
+			// FIXME
 			throw new NotSupportedException();
 		}
+		// FIXME
 	}
 }

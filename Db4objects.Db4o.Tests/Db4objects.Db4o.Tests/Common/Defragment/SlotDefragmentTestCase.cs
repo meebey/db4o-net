@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			query.Descend(SlotDefragmentFixture.TypedobjectFieldname).Descend(SlotDefragmentFixture
 				.PrimitiveFieldname).Constrain(SlotDefragmentFixture.Value);
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			db.Close();
 		}
 

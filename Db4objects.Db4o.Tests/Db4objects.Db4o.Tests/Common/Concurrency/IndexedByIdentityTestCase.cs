@@ -48,13 +48,13 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				q.Constrain(typeof(Atom));
 				q.Descend("name").Constrain("ibi" + i);
 				IObjectSet objectSet = q.Execute();
-				Assert.AreEqual(1, objectSet.Size());
+				Assert.AreEqual(1, objectSet.Count);
 				Atom child = (Atom)objectSet.Next();
 				q = oc.Query();
 				q.Constrain(typeof(IndexedByIdentityTestCase));
 				q.Descend("atom").Constrain(child).Identity();
 				objectSet = q.Execute();
-				Assert.AreEqual(1, objectSet.Size());
+				Assert.AreEqual(1, objectSet.Count);
 				IndexedByIdentityTestCase ibi = (IndexedByIdentityTestCase)objectSet.Next();
 				Assert.AreSame(child, ibi.atom);
 			}
@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IQuery q = oc.Query();
 			q.Constrain(typeof(IndexedByIdentityTestCase));
 			IObjectSet os = q.Execute();
-			Assert.AreEqual(Count, os.Size());
+			Assert.AreEqual(Count, os.Count);
 			while (os.HasNext())
 			{
 				IndexedByIdentityTestCase idi = (IndexedByIdentityTestCase)os.Next();
@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IQuery q = oc.Query();
 			q.Constrain(typeof(IndexedByIdentityTestCase));
 			IObjectSet os = q.Execute();
-			Assert.AreEqual(Count, os.Size());
+			Assert.AreEqual(Count, os.Count);
 			string expected = null;
 			while (os.HasNext())
 			{

@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			{
 				db2.Store(new GlobalVsNonStaticConfigurationTestCase.Data(2));
 				Assert.AreEqual(1, db2.Query(typeof(GlobalVsNonStaticConfigurationTestCase.Data))
-					.Size());
+					.Count);
 			}
 			finally
 			{
@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			db.Close();
 			db = Db4oFactory.OpenFile(Filename);
 			Assert.AreEqual(1, db.Query(typeof(GlobalVsNonStaticConfigurationTestCase.Data)).
-				Size());
+				Count);
 			db.Close();
 		}
 

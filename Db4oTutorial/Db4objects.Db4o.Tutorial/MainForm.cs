@@ -1,21 +1,23 @@
 using System;
 using System.IO;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI;
+using Db4objects.Db4o.Tutorial.F1;
 
 namespace Db4objects.Db4o.Tutorial
 {
 	/// <summary>
 	/// Description of MainForm.
 	/// </summary>
-	public class MainForm : Form
+	public class MainForm : System.Windows.Forms.Form
 	{
-		readonly DockPanel _dockPanel;
-		readonly OutputView _outputView;
-		readonly TutorialOutlineView _outlineView;
-		readonly WebBrowserView _webBrowserView;
-		readonly ExampleRunner _exampleRunner;
+		DockPanel _dockPanel;
+		OutputView _outputView;
+		TutorialOutlineView _outlineView;
+		WebBrowserView _webBrowserView;
+		ExampleRunner _exampleRunner;
 		
 		public MainForm()
 		{
@@ -27,7 +29,7 @@ namespace Db4objects.Db4o.Tutorial
 			_dockPanel = new DockPanel();
 			_dockPanel.Dock = DockStyle.Fill;
 			
-			Controls.Add(_dockPanel);
+			this.Controls.Add(_dockPanel);
 			
 			_outlineView = new TutorialOutlineView(this);
 			_outputView = new OutputView(this);
@@ -57,12 +59,7 @@ namespace Db4objects.Db4o.Tutorial
 		{
 			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "docs/");
 		}
-
-		public string CombineTutorialPath(string path)
-		{
-			return Path.Combine(GetTutorialBasePath(), path);
-		}
-
+		
 		public void ResetDatabase()
 		{
 			_outputView.WriteLine("[FULL RESET]");
@@ -133,19 +130,14 @@ namespace Db4objects.Db4o.Tutorial
 		/// not be able to load this method if it was changed manually.
 		/// </summary>
 		private void InitializeComponent() {
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-			this.SuspendLayout();
 			// 
 			// MainForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(792, 566);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "MainForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "db4o tutorial";
-			this.ResumeLayout(false);
-
 		}
 		#endregion
 		
@@ -156,5 +148,6 @@ namespace Db4objects.Db4o.Tutorial
 			_webBrowserView.Show(_dockPanel);
 			
 		}
+		
 	}
 }

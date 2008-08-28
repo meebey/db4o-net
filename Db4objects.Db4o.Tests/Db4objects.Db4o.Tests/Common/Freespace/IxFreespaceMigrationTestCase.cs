@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			IQuery q = objectContainer.Query();
 			q.Constrain(typeof(IxFreespaceMigrationTestCase.Item));
-			Assert.AreEqual(i, q.Execute().Size());
+			Assert.AreEqual(i, q.Execute().Count);
 		}
 
 		public class Item

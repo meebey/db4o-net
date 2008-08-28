@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		private double[] ToDoubleArray(IObjectSet set)
 		{
-			double[] array = new double[set.Size()];
+			double[] array = new double[set.Count];
 			for (int i = 0; i < array.Length; i++)
 			{
 				array[i] = ((DoubleFieldIndexTestCase.Item)set.Next()).value;

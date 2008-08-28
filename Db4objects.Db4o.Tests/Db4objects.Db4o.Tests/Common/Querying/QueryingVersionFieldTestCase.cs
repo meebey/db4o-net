@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			q.Descend(VirtualField.Version).Constrain(updatedTransactionVersionNumber).Smaller
 				().Equal();
 			IObjectSet objectSet = q.Execute();
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 			QueryingVersionFieldTestCase.Item item = (QueryingVersionFieldTestCase.Item)objectSet
 				.Next();
 			Assert.AreEqual("modified2", item.name);
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			IQuery q = NewQuery(typeof(QueryingVersionFieldTestCase.Item));
 			q.Descend("name").Constrain(name);
 			IObjectSet objectSet = q.Execute();
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 			return (QueryingVersionFieldTestCase.Item)objectSet.Next();
 		}
 

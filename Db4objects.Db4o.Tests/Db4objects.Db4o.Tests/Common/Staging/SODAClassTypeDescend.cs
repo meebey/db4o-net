@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			IQuery query = NewQuery();
 			query.Descend("_val").Constrain(typeof(SODAClassTypeDescend.DataA));
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			Assert.IsInstanceOf(typeof(SODAClassTypeDescend.DataB), result.Next());
 		}
 	}

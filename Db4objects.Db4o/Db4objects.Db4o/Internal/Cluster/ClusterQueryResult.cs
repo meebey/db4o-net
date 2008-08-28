@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal.Cluster
 			for (int i = 0; i < queries.Length; i++)
 			{
 				_objectSets[i] = queries[i].Execute();
-				_sizes[i] = _objectSets[i].Size();
+				_sizes[i] = _objectSets[i].Count;
 				size += _sizes[i];
 			}
 			_size = size;

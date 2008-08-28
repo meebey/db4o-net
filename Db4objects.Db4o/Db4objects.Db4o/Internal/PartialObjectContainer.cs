@@ -1818,7 +1818,7 @@ namespace Db4objects.Db4o.Internal
 			while (i.MoveNext())
 			{
 				Rename ren = (Rename)i.Current;
-				if (QueryByExample(SystemTransaction(), ren).Size() == 0)
+				if (QueryByExample(SystemTransaction(), ren).Count == 0)
 				{
 					bool renamed = false;
 					bool isField = ren.rClass.Length > 0;

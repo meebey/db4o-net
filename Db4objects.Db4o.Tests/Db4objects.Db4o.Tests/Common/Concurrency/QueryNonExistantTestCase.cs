@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IQuery q = oc.Query();
 			q.Constrain(new Db4objects.Db4o.Tests.Common.Concurrency.QueryNonExistantTestCase
 				(true));
-			Assert.AreEqual(0, q.Execute().Size());
+			Assert.AreEqual(0, q.Execute().Count);
 		}
 
 		public class QueryNonExistant1

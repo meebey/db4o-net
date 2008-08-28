@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				IQuery query = oc.Query();
 				query.Constrain(clazz);
 				IObjectSet os = query.Execute();
-				Assert.AreEqual(Instances, os.Size());
+				Assert.AreEqual(Instances, os.Count);
 				while (os.HasNext())
 				{
 					Assert.AreEqual(ArrayLength, ((IIByteArrayHolder)os.Next()).GetBytes().Length);

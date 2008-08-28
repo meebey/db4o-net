@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 		{
 			IQuery q = Db().Query();
 			q.Constrain(typeof(ClassIndexOffTestCase.Item));
-			Assert.AreEqual(0, q.Execute().Size());
+			Assert.AreEqual(0, q.Execute().Count);
 		}
 
 		public virtual void TestRetrievalThroughHolder()

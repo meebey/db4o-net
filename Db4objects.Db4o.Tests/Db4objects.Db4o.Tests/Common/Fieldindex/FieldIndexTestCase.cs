@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			{
 				IQuery q = CreateQuery(Foos[i]);
 				IObjectSet objectSet = q.Execute();
-				Assert.AreEqual(1, objectSet.Size());
+				Assert.AreEqual(1, objectSet.Count);
 				FieldIndexItem fii = (FieldIndexItem)objectSet.Next();
 				Assert.AreEqual(Foos[i], fii.foo);
 			}

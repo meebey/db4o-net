@@ -11,7 +11,7 @@ namespace Db4oUnit.Extensions
 	{
 		public static void PersistedCount(int expected, Type extent)
 		{
-			Assert.AreEqual(expected, Db().Query(extent).Size());
+			Assert.AreEqual(expected, Db().Query(extent).Count);
 		}
 
 		private static IExtObjectContainer Db()

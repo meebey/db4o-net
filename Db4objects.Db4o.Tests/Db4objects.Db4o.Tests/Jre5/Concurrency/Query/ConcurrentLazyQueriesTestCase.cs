@@ -12,6 +12,7 @@ using Db4objects.Db4o.Tests.Jre5.Concurrency.Query;
 
 namespace Db4objects.Db4o.Tests.Jre5.Concurrency.Query
 {
+	/// <decaf.ignore></decaf.ignore>
 	public class ConcurrentLazyQueriesTestCase : Db4oClientServerTestCase
 	{
 		private const int ItemCount = 100;

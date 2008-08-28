@@ -11,6 +11,7 @@ using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class Db4oMigrationTestSuite : ITestSuiteBuilder
 	{
 		public static void Main(string[] args)

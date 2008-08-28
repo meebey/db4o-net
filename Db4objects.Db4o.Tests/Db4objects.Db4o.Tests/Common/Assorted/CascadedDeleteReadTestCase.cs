@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			IQuery q = Db().Query();
 			q.Constrain(typeof(CascadedDeleteReadTestCase.Item));
 			IObjectSet objectSet = q.Execute();
-			Assert.AreEqual(count, objectSet.Size());
+			Assert.AreEqual(count, objectSet.Count);
 		}
 	}
 }

@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 			IQuery query = NewQuery(typeof(MaximumActivationDepthTestCase.Data));
 			query.Descend("_id").Constrain(0);
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			MaximumActivationDepthTestCase.Data data = (MaximumActivationDepthTestCase.Data)result
 				.Next();
 			Assert.IsNotNull(data._prev);

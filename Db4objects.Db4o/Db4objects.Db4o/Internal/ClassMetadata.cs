@@ -2277,7 +2277,7 @@ namespace Db4objects.Db4o.Internal
 			q.Constrain(Const4.ClassStaticclass);
 			q.Descend("name").Constrain(i_name);
 			IObjectSet os = q.Execute();
-			return os.Size() > 0 ? (StaticClass)os.Next() : null;
+			return os.Count > 0 ? (StaticClass)os.Next() : null;
 		}
 
 		public override string ToString()

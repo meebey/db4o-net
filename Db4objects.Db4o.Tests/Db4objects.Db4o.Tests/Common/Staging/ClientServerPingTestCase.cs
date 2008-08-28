@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 				Store(item);
 			}
 			Assert.AreEqual(ItemCount, Db().QueryByExample(typeof(ClientServerPingTestCase.Item
-				)).Size());
+				)).Count);
 			pingThread.Close();
 		}
 

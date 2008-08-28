@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			int mid = ThreadCount() / 2;
 			SimpleObject expected = new SimpleObject(testString + mid, mid);
 			IObjectSet result = oc.Query(new ReadObjectNQTestCase.MyPredicate(expected));
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			Assert.AreEqual(expected, result.Next());
 		}
 
@@ -44,16 +44,16 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		{
 			SimpleObject expected = new SimpleObject(testString + seq, seq);
 			IObjectSet result = oc.Query(new ReadObjectNQTestCase.MyPredicate(expected));
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			Assert.AreEqual(expected, result.Next());
 		}
 
 		[System.Serializable]
 		public class MyPredicate : Predicate
 		{
-			public SimpleObject expected;
+			internal SimpleObject expected;
 
-			public MyPredicate(SimpleObject o)
+			internal MyPredicate(SimpleObject o)
 			{
 				this.expected = o;
 			}

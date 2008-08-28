@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 
 		private void AssertOrdered(IObjectSet result)
 		{
-			Assert.AreEqual(Ids.Length, result.Size());
+			Assert.AreEqual(Ids.Length, result.Count);
 			int previousId = 0;
 			while (result.HasNext())
 			{

@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Collections
 		/// </remarks>
 		/// <seealso cref="IDictionary"></seealso>
 		/// <seealso cref="IActivatable">IActivatable</seealso>
-		internal virtual int Size
+		public virtual int Count
 		{
 			get
 			{

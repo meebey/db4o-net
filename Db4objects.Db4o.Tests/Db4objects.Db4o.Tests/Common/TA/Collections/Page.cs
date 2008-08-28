@@ -5,6 +5,7 @@ using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Collections
 {
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class Page : ActivatableImpl
 	{
 		public const int Pagesize = 100;

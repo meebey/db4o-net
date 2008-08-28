@@ -19,7 +19,7 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-	/// <exclude></exclude>
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class TranslatorToTypehandlerMigrationTestCase : ITestLifeCycle
 	{
 		public class Item
@@ -239,7 +239,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			{
 				IObjectSet objectSet = db.Query(typeof(TranslatorToTypehandlerMigrationTestCase.Item
 					));
-				Assert.AreEqual(1, objectSet.Size());
+				Assert.AreEqual(1, objectSet.Count);
 				TranslatorToTypehandlerMigrationTestCase.Item item = (TranslatorToTypehandlerMigrationTestCase.Item
 					)objectSet.Next();
 				return item;

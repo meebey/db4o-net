@@ -9,19 +9,18 @@ using Db4objects.Db4o.Tests.Common.TA.Collections;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Collections
 {
-	/// <summary>Configures the support for paged collections.</summary>
-	/// <remarks>Configures the support for paged collections.</remarks>
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class PagedListSupport : IConfigurationItem
 	{
 		public virtual void Apply(IInternalObjectContainer db)
 		{
 			EventRegistry(db).Updating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
-				(new _IEventListener4_17().OnEvent);
+				(new _IEventListener4_20().OnEvent);
 		}
 
-		private sealed class _IEventListener4_17
+		private sealed class _IEventListener4_20
 		{
-			public _IEventListener4_17()
+			public _IEventListener4_20()
 			{
 			}
 

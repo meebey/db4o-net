@@ -109,7 +109,7 @@ namespace Db4objects.Db4o.Internal.Btree
 					s.MoveForward();
 				}
 				PrepareInsert(s.Cursor());
-				_keys[s.Cursor()] = NewAddPatch(trans, obj);
+				_keys[s.Cursor()] = ApplyNewAddPatch(trans, obj);
 			}
 			else
 			{
@@ -146,7 +146,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _count >= _btree.NodeSize();
 		}
 
-		private BTreeAdd NewAddPatch(Transaction trans, object obj)
+		private BTreeAdd ApplyNewAddPatch(Transaction trans, object obj)
 		{
 			SizeIncrement(trans);
 			return new BTreeAdd(trans, obj);
@@ -709,27 +709,31 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		internal void MarkAsCached(int height)
 		{
-			_cached = true;
-			_btree.AddNode(this);
-			if (_isLeaf || (_children == null))
-			{
-				return;
-			}
-			height--;
-			if (height < 1)
-			{
-				HoldChildrenAsIDs();
-				return;
-			}
-			for (int i = 0; i < _count; i++)
-			{
-				if (_children[i] is Db4objects.Db4o.Internal.Btree.BTreeNode)
-				{
-					((Db4objects.Db4o.Internal.Btree.BTreeNode)_children[i]).MarkAsCached(height);
-				}
-			}
+			throw new NotImplementedException();
 		}
 
+		// FIXME: Caching doesn't work as expected. Disabled.
+		//        Reimplement with LRU cache for all nodes,
+		//        independant of _root.
+		//        _cached = true;
+		//        _btree.addNode(this);
+		//        
+		//        if( _isLeaf || (_children == null)){
+		//            return;
+		//        }
+		//        
+		//        height --;
+		//        
+		//        if(height < 1){
+		//            holdChildrenAsIDs();
+		//            return;
+		//        }
+		//        
+		//        for (int i = 0; i < _count; i++) {
+		//            if(_children[i] instanceof BTreeNode){
+		//                ((BTreeNode)_children[i]).markAsCached(height);
+		//            }
+		//        }
 		public override int OwnLength()
 		{
 			return SlotLeadingLength + (_count * EntryLength()) + Const4.BracketsBytes;
@@ -823,7 +827,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			// no patch, no problem, can remove
 			if (patch == null)
 			{
-				_keys[index] = NewRemovePatch(trans, obj);
+				_keys[index] = ApplyNewRemovePatch(trans, obj);
 				KeyChanged(trans, index);
 				return;
 			}
@@ -849,7 +853,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				// transaction, we need one for this transaction also.
 				if (!patch.IsAdd())
 				{
-					((BTreeUpdate)patch).Append(NewRemovePatch(trans, obj));
+					((BTreeUpdate)patch).Append(ApplyNewRemovePatch(trans, obj));
 					return;
 				}
 			}
@@ -898,11 +902,6 @@ namespace Db4objects.Db4o.Internal.Btree
 		private int LastIndex()
 		{
 			return _count - 1;
-		}
-
-		private BTreeRemove NewRemovePatch(Transaction trans, object obj)
-		{
-			return ApplyNewRemovePatch(trans, obj);
 		}
 
 		private BTreeRemove ApplyNewRemovePatch(Transaction trans, object key)

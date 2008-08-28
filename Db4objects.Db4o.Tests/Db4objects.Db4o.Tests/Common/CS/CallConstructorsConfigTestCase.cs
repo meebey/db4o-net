@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 			public void Run(IObjectContainer client)
 			{
-				Assert.AreEqual(1, client.Query(typeof(StandaloneCSTestCaseBase.Item)).Size());
+				Assert.AreEqual(1, client.Query(typeof(StandaloneCSTestCaseBase.Item)).Count);
 			}
 		}
 

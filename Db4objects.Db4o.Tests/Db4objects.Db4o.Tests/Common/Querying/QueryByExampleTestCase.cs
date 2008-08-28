@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			q.Constrain(itemOne);
 			IObjectSet objectSet = q.Execute();
 			// Expect to get the sample 
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 			QueryByExampleTestCase.Item retrievedItem = (QueryByExampleTestCase.Item)objectSet
 				.Next();
 			Assert.AreSame(itemOne, retrievedItem);
@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			q.Constrain(itemOne).ByExample();
 			IObjectSet objectSet = q.Execute();
 			// Expect to get the other 
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 			QueryByExampleTestCase.Item retrievedItem = (QueryByExampleTestCase.Item)objectSet
 				.Next();
 			Assert.AreSame(itemTwo, retrievedItem);
@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			IQuery q = Db().Query();
 			q.Constrain(list).ByExample();
 			IObjectSet result = q.Execute();
-			Assert.AreEqual(Count, result.Size());
+			Assert.AreEqual(Count, result.Count);
 		}
 
 		public virtual void TestByIdentity()
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			IQuery q = Db().Query();
 			q.Constrain(typeof(QueryByExampleTestCase.LinkedList));
 			IObjectSet result = q.Execute();
-			Assert.AreEqual(Count, result.Size());
+			Assert.AreEqual(Count, result.Count);
 			while (result.HasNext())
 			{
 				Db().Delete(result.Next());
@@ -94,14 +94,14 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			q = Db().Query();
 			q.Constrain(typeof(QueryByExampleTestCase.LinkedList));
 			result = q.Execute();
-			Assert.AreEqual(0, result.Size());
+			Assert.AreEqual(0, result.Count);
 			QueryByExampleTestCase.LinkedList newList = QueryByExampleTestCase.LinkedList.NewLongCircularList
 				();
 			Db().Store(newList);
 			q = Db().Query();
 			q.Constrain(newList);
 			result = q.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 		}
 
 		public virtual void TestClassConstraint()
@@ -109,11 +109,11 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			IQuery q = Db().Query();
 			q.Constrain(typeof(QueryByExampleTestCase.LinkedList));
 			IObjectSet result = q.Execute();
-			Assert.AreEqual(Count, result.Size());
+			Assert.AreEqual(Count, result.Count);
 			q = Db().Query();
 			q.Constrain(typeof(QueryByExampleTestCase.LinkedList)).ByExample();
 			result = q.Execute();
-			Assert.AreEqual(Count, result.Size());
+			Assert.AreEqual(Count, result.Count);
 		}
 
 		public class LinkedList

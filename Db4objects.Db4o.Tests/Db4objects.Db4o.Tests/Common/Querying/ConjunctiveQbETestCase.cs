@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public virtual void TestAndedQbE()
 		{
-			Assert.AreEqual(1, new ConjunctiveQbETestCase.Sub1(false).Query(Db()).Size());
+			Assert.AreEqual(1, new ConjunctiveQbETestCase.Sub1(false).Query(Db()).Count);
 		}
 	}
 }

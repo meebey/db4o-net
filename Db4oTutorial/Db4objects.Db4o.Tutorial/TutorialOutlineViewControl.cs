@@ -7,6 +7,8 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 
+using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -17,9 +19,8 @@ namespace Db4objects.Db4o.Tutorial
 	/// </summary>
 	public class TutorialOutlineViewControl : System.Windows.Forms.UserControl
 	{
-		private TreeView _tree;
-		private PictureBox _logo;
-
+		private System.Windows.Forms.TreeView _tree;
+		private System.Windows.Forms.PictureBox _logo;
 		public TutorialOutlineViewControl()
 		{
 			//
@@ -40,11 +41,6 @@ namespace Db4objects.Db4o.Tutorial
 			{
 				return _tree;
 			}
-		}
-
-		public void SetLogo(string path)
-		{
-			_logo.Image = Image.FromFile(path);
 		}
 		
 		#region Windows Forms Designer generated code

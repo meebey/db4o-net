@@ -76,12 +76,12 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void ConcDelete(IExtObjectContainer oc, int seq)
 		{
 			IObjectSet os = oc.Query(typeof(CascadeToVectorTestCase));
-			if (os.Size() == 0)
+			if (os.Count == 0)
 			{
 				// already deleted
 				return;
 			}
-			Assert.AreEqual(1, os.Size());
+			Assert.AreEqual(1, os.Count);
 			CascadeToVectorTestCase ctv = (CascadeToVectorTestCase)os.Next();
 			// wait for other threads
 			Thread.Sleep(500);

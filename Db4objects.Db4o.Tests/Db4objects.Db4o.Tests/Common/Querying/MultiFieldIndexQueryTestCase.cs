@@ -132,7 +132,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 				);
 			cAaron.Or(cBill);
 			IObjectSet results = qAuthors.Execute();
-			Assert.AreEqual(4, results.Size());
+			Assert.AreEqual(4, results.Count);
 			while (results.HasNext())
 			{
 				MultiFieldIndexQueryTestCase.Person person = (MultiFieldIndexQueryTestCase.Person

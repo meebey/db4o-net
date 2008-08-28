@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			IQuery q = NewQuery(typeof(PlainObjectTestCase.Item));
 			q.Constrain(new _IEvaluation_65(plainObject));
 			IObjectSet objectSet = q.Execute();
-			Assert.AreEqual(2, objectSet.Size());
+			Assert.AreEqual(2, objectSet.Count);
 		}
 
 		private sealed class _IEvaluation_65 : IEvaluation
@@ -98,7 +98,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			IQuery q = NewQuery(typeof(PlainObjectTestCase.Item));
 			q.Descend("_plainObject").Constrain(plainObject).Identity();
 			IObjectSet objectSet = q.Execute();
-			Assert.AreEqual(2, objectSet.Size());
+			Assert.AreEqual(2, objectSet.Count);
 		}
 
 		private PlainObjectTestCase.Item RetrieveItem(string name)
@@ -106,7 +106,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			IQuery query = NewQuery(typeof(PlainObjectTestCase.Item));
 			query.Descend("_name").Constrain(name);
 			IObjectSet objectSet = query.Execute();
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 			return (PlainObjectTestCase.Item)objectSet.Next();
 		}
 	}

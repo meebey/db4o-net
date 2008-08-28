@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void ConcDelete(IExtObjectContainer oc)
 		{
 			IObjectSet os = oc.Query(typeof(CascadeDeleteFalseTestCase.Item));
-			if (os.Size() == 0)
+			if (os.Count == 0)
 			{
 				// the object has been deleted
 				return;

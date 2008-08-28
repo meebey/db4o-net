@@ -5,6 +5,7 @@ using Db4objects.Db4o.Tests.Common.TA.Hierarchy;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 {
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	internal class PrioritizedProject : Project
 	{
 		private int _priority;

@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			IQuery query = BaseQuery(pattern, modifier);
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 		}
 
 		private IQuery BaseQuery(string pattern, NoTestConstructorsQEStringCmpTestCase.IConstraintModifier

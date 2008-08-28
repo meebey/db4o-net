@@ -14,12 +14,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// <exclude></exclude>
 	public class QQuery : Db4objects.Db4o.Internal.Query.Processor.QQueryBase, IQuery
 	{
-		public QQuery(Transaction a_trans, QQuery a_parent, string a_field) : base(a_trans
-			, a_parent, a_field)
+		public QQuery()
 		{
 		}
 
-		public QQuery() : base()
+		public QQuery(Transaction a_trans, QQuery a_parent, string a_field) : base(a_trans
+			, a_parent, a_field)
 		{
 		}
 		// C/S only

@@ -4,6 +4,7 @@ using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Events;
 
@@ -37,13 +38,20 @@ namespace Db4objects.Db4o.Events
 			}
 			if (callbacks is NullCallbacks)
 			{
-				EventRegistryImpl impl = new EventRegistryImpl(container);
+				EventRegistryImpl impl = NewEventRegistryFor(container);
 				container.Callbacks(impl);
 				return impl;
 			}
 			// TODO: create a MulticastingCallbacks and register both
 			// the current one and the new one
 			throw new ArgumentException();
+		}
+
+		private static EventRegistryImpl NewEventRegistryFor(IInternalObjectContainer container
+			)
+		{
+			return (container is ClientObjectContainer) ? new ClientEventRegistryImpl(container
+				) : new EventRegistryImpl(container);
 		}
 	}
 }

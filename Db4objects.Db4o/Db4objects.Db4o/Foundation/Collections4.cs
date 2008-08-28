@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Foundation
 
 			public virtual void Add(object element)
 			{
-				throw new InvalidOperationException();
+				throw new NotSupportedException();
 			}
 
 			public virtual bool IsEmpty()
@@ -49,12 +49,17 @@ namespace Db4objects.Db4o.Foundation
 
 			public virtual void Clear()
 			{
-				_sequence.Clear();
+				throw new NotSupportedException();
 			}
 
 			public virtual object Remove(object obj)
 			{
-				return _sequence.Remove(obj);
+				throw new NotSupportedException();
+			}
+
+			public virtual bool Contains(object obj)
+			{
+				return _sequence.Contains(obj);
 			}
 		}
 	}

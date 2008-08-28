@@ -18,5 +18,7 @@ namespace Db4objects.Db4o.Foundation
 		void Clear();
 
 		object Remove(object obj);
+
+		bool Contains(object obj);
 	}
 }

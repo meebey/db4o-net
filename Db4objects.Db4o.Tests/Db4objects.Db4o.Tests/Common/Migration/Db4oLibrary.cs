@@ -4,6 +4,7 @@ using Db4objects.Db4o.Tests.Common.Migration;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
+	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class Db4oLibrary
 	{
 		public readonly string path;

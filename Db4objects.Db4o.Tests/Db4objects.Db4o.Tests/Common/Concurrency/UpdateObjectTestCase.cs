@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IQuery query = oc.Query();
 			query.Descend("_s").Constrain(testString + Count / 2);
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			SimpleObject o = (SimpleObject)result.Next();
 			o.SetI(Count + seq);
 			oc.Store(o);
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			IQuery query = oc.Query();
 			query.Descend("_s").Constrain(testString + Count / 2);
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			SimpleObject o = (SimpleObject)result.Next();
 			int i = o.GetI();
 			Assert.IsTrue(Count <= i && i < Count + ThreadCount());
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			query.Descend("_s").Constrain(testString + seq).And(query.Descend("_i").Constrain
 				(seq));
 			IObjectSet result = query.Execute();
-			Assert.AreEqual(1, result.Size());
+			Assert.AreEqual(1, result.Count);
 			SimpleObject o = (SimpleObject)result.Next();
 			o.SetI(seq + Count);
 			oc.Store(o);
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		public virtual void CheckUpdateDifferentObject(IExtObjectContainer oc)
 		{
 			IObjectSet result = oc.Query(typeof(SimpleObject));
-			Assert.AreEqual(Count, result.Size());
+			Assert.AreEqual(Count, result.Count);
 			while (result.HasNext())
 			{
 				SimpleObject o = (SimpleObject)result.Next();

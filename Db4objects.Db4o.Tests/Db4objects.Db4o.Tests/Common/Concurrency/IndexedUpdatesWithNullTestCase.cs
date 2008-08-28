@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				));
 			q.Descend("str").Constrain(null);
 			IObjectSet objectSet = q.Execute();
-			Assert.AreEqual(4, objectSet.Size());
+			Assert.AreEqual(4, objectSet.Count);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -73,12 +73,12 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				));
 			q.Descend("str").Constrain(null);
 			IObjectSet objectSet = q.Execute();
-			if (objectSet.Size() == 0)
+			if (objectSet.Count == 0)
 			{
 				// already set by other threads
 				return;
 			}
-			Assert.AreEqual(4, objectSet.Size());
+			Assert.AreEqual(4, objectSet.Count);
 			// wait for other threads
 			Thread.Sleep(500);
 			while (objectSet.HasNext())
@@ -98,13 +98,13 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				));
 			q1.Descend("str").Constrain(null);
 			IObjectSet objectSet1 = q1.Execute();
-			Assert.AreEqual(0, objectSet1.Size());
+			Assert.AreEqual(0, objectSet1.Count);
 			IQuery q2 = oc.Query();
 			q2.Constrain(typeof(Db4objects.Db4o.Tests.Common.Concurrency.IndexedUpdatesWithNullTestCase
 				));
 			q2.Descend("str").Constrain("hi");
 			IObjectSet objectSet2 = q2.Execute();
-			Assert.AreEqual(4, objectSet2.Size());
+			Assert.AreEqual(4, objectSet2.Count);
 		}
 	}
 }

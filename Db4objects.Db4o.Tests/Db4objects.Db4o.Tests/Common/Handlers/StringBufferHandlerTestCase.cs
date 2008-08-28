@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Db().Delete(item);
 			IQuery query = NewQuery();
 			query.Constrain(typeof(StringBufferHandlerTestCase.Item));
-			Assert.AreEqual(0, query.Execute().Size());
+			Assert.AreEqual(0, query.Execute().Count);
 		}
 
 		public virtual void TestPrepareComparison()

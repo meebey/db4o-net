@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			IQuery query = NewQuery(typeof(Item));
 			query.Descend("name").Constrain("foo.tbd");
 			IObjectSet set = query.Execute();
-			Assert.AreEqual(1, set.Size());
+			Assert.AreEqual(1, set.Count);
 			return (Item)set.Next();
 		}
 

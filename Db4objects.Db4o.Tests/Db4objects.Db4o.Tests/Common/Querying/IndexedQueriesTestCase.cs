@@ -100,7 +100,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		{
 			IQuery q = NewQuery();
 			q.Descend("_int").Constrain(0);
-			int zeroSize = q.Execute().Size();
+			int zeroSize = q.Execute().Count;
 			Assert.AreEqual(expectedZeroSize, zeroSize);
 			q = NewQuery();
 			q.Descend("_int").Constrain(4).Greater().Equal();
@@ -155,7 +155,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		private void AssertIntsFound(int[] ints, int zeroSize, IQuery q)
 		{
 			IObjectSet res = q.Execute();
-			Assert.AreEqual((ints.Length + zeroSize), res.Size());
+			Assert.AreEqual((ints.Length + zeroSize), res.Count);
 			while (res.HasNext())
 			{
 				IndexedQueriesTestCase.IndexedQueriesItem ci = (IndexedQueriesTestCase.IndexedQueriesItem
@@ -183,7 +183,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		private void AssertQuery(int count, string @string)
 		{
 			IObjectSet res = QueryForName(@string);
-			Assert.AreEqual(count, res.Size());
+			Assert.AreEqual(count, res.Count);
 			IndexedQueriesTestCase.IndexedQueriesItem item = (IndexedQueriesTestCase.IndexedQueriesItem
 				)res.Next();
 			Assert.AreEqual("b", item._name);
@@ -192,7 +192,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		private void AssertNullNameCount(int count)
 		{
 			IObjectSet res = QueryForName(null);
-			Assert.AreEqual(count, res.Size());
+			Assert.AreEqual(count, res.Count);
 			while (res.HasNext())
 			{
 				IndexedQueriesTestCase.IndexedQueriesItem ci = (IndexedQueriesTestCase.IndexedQueriesItem
@@ -209,9 +209,9 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			ci._name = "j";
 			Db().Store(ci);
 			res = QueryForName("b");
-			Assert.AreEqual(0, res.Size());
+			Assert.AreEqual(0, res.Count);
 			res = QueryForName("j");
-			Assert.AreEqual(1, res.Size());
+			Assert.AreEqual(1, res.Count);
 			ci._name = "b";
 			Db().Store(ci);
 			AssertQuery(1, "b");

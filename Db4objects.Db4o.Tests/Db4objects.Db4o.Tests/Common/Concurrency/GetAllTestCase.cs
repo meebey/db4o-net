@@ -22,12 +22,12 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc(IExtObjectContainer oc)
 		{
-			Assert.AreEqual(2, oc.QueryByExample(null).Size());
+			Assert.AreEqual(2, oc.QueryByExample(null).Count);
 		}
 
 		public virtual void ConcSODA(IExtObjectContainer oc)
 		{
-			Assert.AreEqual(2, oc.Query().Execute().Size());
+			Assert.AreEqual(2, oc.Query().Execute().Count);
 		}
 	}
 }

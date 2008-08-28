@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Config
 		/// will require the query
 		/// processor to create a snapshot or to evaluate the query fully. An example of such
 		/// a call is
-		/// <see cref="IObjectSet.Size">IObjectSet.Size</see>
+		/// <see cref="IObjectSet.Count">IObjectSet.Count</see>
 		/// .
 		/// <br /><br />
 		/// The default query evaluation mode is <b>Immediate</b> mode.

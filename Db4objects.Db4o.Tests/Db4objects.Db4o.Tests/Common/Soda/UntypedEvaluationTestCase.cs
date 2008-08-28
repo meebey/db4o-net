@@ -48,21 +48,21 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 		public virtual void TestUntypedRaw()
 		{
 			IQuery query = NewQuery(Extent);
-			Assert.AreEqual(1, query.Execute().Size());
+			Assert.AreEqual(1, query.Execute().Count);
 		}
 
 		public virtual void TestUntypedEvaluationNone()
 		{
 			IQuery query = NewQuery(Extent);
 			query.Constrain(new UntypedEvaluationTestCase.UntypedEvaluation(false));
-			Assert.AreEqual(0, query.Execute().Size());
+			Assert.AreEqual(0, query.Execute().Count);
 		}
 
 		public virtual void TestUntypedEvaluationAll()
 		{
 			IQuery query = NewQuery(Extent);
 			query.Constrain(new UntypedEvaluationTestCase.UntypedEvaluation(true));
-			Assert.AreEqual(1, query.Execute().Size());
+			Assert.AreEqual(1, query.Execute().Count);
 		}
 	}
 }

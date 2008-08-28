@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 		{
 			IQuery query = NewQuery(typeof(NullIdentityConstraintTestCase.Data));
 			query.Descend("_prev").Constrain(null).Identity();
-			Assert.AreEqual(1, query.Execute().Size());
+			Assert.AreEqual(1, query.Execute().Count);
 		}
 	}
 }
