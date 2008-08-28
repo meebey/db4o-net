@@ -79,13 +79,13 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 		protected static void AssertEmptyQueryResult(IQuery q)
 		{
 			IObjectSet set = q.Execute();
-			Assert.AreEqual(0, set.Size());
+			Assert.AreEqual(0, set.Count);
 		}
 
 		protected void AssertSuccessfulQueryResult(IQuery q)
 		{
 			IObjectSet set = q.Execute();
-			Assert.AreEqual(1, set.Size());
+			Assert.AreEqual(1, set.Count);
 
 			_helper.AssertCollection(set.Next());
 		}

@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Internal.Query
 
 		public void Sort(Db4objects.Db4o.Query.IQueryComparator cmp)
 		{
-			throw new NotImplementedException();
+			_delegate.Sort(cmp);
 		}
 
 		public long[] GetIDs() 
@@ -39,6 +39,27 @@ namespace Db4objects.Db4o.Internal.Query
 		public IExtObjectSet Ext() 
 		{
 			return this;
+		}
+
+		public bool MoveNext()
+		{
+			return Enumerator().MoveNext();
+		}
+
+		private IEnumerator _enumerator;
+
+		private IEnumerator Enumerator()
+		{
+			if (null == _enumerator)
+			{
+				_enumerator = GetEnumerator();
+			}
+			return _enumerator;
+		}
+
+		public object Current
+		{
+			get { return Enumerator().Current; }
 		}
 
 		public bool HasNext() 

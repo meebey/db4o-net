@@ -169,7 +169,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 			query.Descend("typedInterface").Constrain(FirstElementOf(expected.typedInterface));
 
 			IObjectSet objectSet = query.Execute();
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 
 			Item<T> actual = (Item<T>) objectSet[0];
 			Assert.AreSame(expected, actual);

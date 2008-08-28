@@ -184,7 +184,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
             object constraint = enumerator.Current;
             query.Descend(fieldName).Constrain(constraint);
             IObjectSet objectSet = query.Execute();
-            Assert.AreEqual(1, objectSet.Size());
+            Assert.AreEqual(1, objectSet.Count);
             Item<T,T> queriedItem = (Item<T,T>)objectSet.Next();
             Assert.AreSame(item, queriedItem);
         }

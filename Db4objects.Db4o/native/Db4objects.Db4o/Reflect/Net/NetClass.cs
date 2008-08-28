@@ -50,9 +50,6 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		private IReflectConstructor[] GetDeclaredConstructors()
 		{
-			if(!_netReflector.Configuration().TestConstructors()) {
-				return null;
-			}
 			System.Reflection.ConstructorInfo[] constructors = _type.GetConstructors();
 			IReflectConstructor[] reflectors = new IReflectConstructor
 				[constructors.Length];

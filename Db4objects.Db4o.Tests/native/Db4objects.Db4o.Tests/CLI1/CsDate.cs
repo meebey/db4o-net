@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.CLI1
         {
             IQuery q = NewQuery(typeof(Item));
             IObjectSet os = q.Execute();
-            Assert.AreEqual(1, os.Size());
+            Assert.AreEqual(1, os.Count);
         }
 
         public void TestQueryByExample()
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.CLI1
             GetOne(template);
 
             template.dateTime = new DateTime(100);
-            Assert.AreEqual(0, Db().Get(template).Size());
+            Assert.AreEqual(0, Db().Get(template).Count);
         }
 
         private void GetOne(object template)
@@ -71,31 +71,31 @@ namespace Db4objects.Db4o.Tests.CLI1
 
             IQuery q = NewQuery(typeof(Item));
             q.Descend("dateTime").Constrain(before).Smaller();
-            Assert.AreEqual(0, q.Execute().Size());
+            Assert.AreEqual(0, q.Execute().Count);
 
             q = NewQuery(typeof(Item));
             q.Descend("dateTime").Constrain(after).Greater();
-            Assert.AreEqual(0, q.Execute().Size());
+            Assert.AreEqual(0, q.Execute().Count);
 
             q = NewQuery(typeof(Item));
             q.Descend("dateTime").Constrain(before).Greater();
-            Assert.AreEqual(1, q.Execute().Size());
+            Assert.AreEqual(1, q.Execute().Count);
 
             q = NewQuery(typeof(Item));
             q.Descend("dateTime").Constrain(after).Smaller();
-            Assert.AreEqual(1, q.Execute().Size());
+            Assert.AreEqual(1, q.Execute().Count);
 
             q = NewQuery(typeof(Item));
             q.Descend("flag").Constrain(true);
             q.Descend("dateTime").Constrain(before).Greater();
             q.Descend("dateTime").Constrain(after).Smaller();
-            Assert.AreEqual(1, q.Execute().Size());
+            Assert.AreEqual(1, q.Execute().Count);
 
             q = NewQuery(typeof(Item));
             q.Descend("flag").Constrain(false);
             q.Descend("dateTime").Constrain(before).Greater();
             q.Descend("dateTime").Constrain(after).Smaller();
-            Assert.AreEqual(0, q.Execute().Size());
+            Assert.AreEqual(0, q.Execute().Count);
         }
     }
 }

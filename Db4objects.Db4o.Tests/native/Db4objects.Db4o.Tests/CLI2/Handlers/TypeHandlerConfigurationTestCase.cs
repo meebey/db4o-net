@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
+﻿/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
 using System.Collections;
@@ -8,7 +8,10 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4objects.Db4o.Typehandlers;
+
+using Sharpen.Util;
 
 namespace Db4objects.Db4o.Tests.CLI2.Handlers
 {
@@ -38,9 +41,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
         public virtual void Test()
         {
+            
             // AssertSingleNullTypeHandlerAspect(typeof(ArrayList));
             AssertSingleTypeHandlerAspect(typeof (ArrayList), typeof (ListTypeHandler));
-            AssertSingleTypeHandlerAspect(typeof(List<object>), typeof(GenericCollectionTypeHandler));
+            AssertSingleTypeHandlerAspect(typeof(List<object>), typeof(ListTypeHandler));
+            
         }
 
         private void AssertSingleNullTypeHandlerAspect(Type storedClass)

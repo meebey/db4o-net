@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Collections
         {
             CheckObjectType(value);
             Add((E) value);
-            return Size - 1;
+            return Count - 1;
         }
 
         public bool Contains(object value)
@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Collections
 
         public void Add(E item)
         {
-            Add(Size, item);
+            Add(Count, item);
         }
 
         public bool Contains(E item)
@@ -98,20 +98,15 @@ namespace Db4objects.Db4o.Collections
             return true;
         }
 
-        public void CopyTo(Array array, int index)
-        {
+		public void CopyTo(Array array, int index)
+		{
 			if (null == array) throw new ArgumentNullException();
 			if (array.Rank != 1) throw new ArgumentException();
 
 			Array.Copy(GetElements(), 0, array, index, listSize);
-        }
+		}
 
-        public int Count
-        {
-            get { return Size; }
-        }
-
-        public object SyncRoot
+    	public object SyncRoot
         {
             get { throw new NotSupportedException(); }
         }

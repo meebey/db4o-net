@@ -5,6 +5,7 @@ using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -25,6 +26,10 @@ namespace Db4objects.Db4o.Internal
             Close();
         }
 
+		public IObjectSet Query(Db4objects.Db4o.Query.Predicate match, IQueryComparator comparator)
+		{
+			return GetNativeQueryHandler().Execute(Query(), match, comparator);
+		}
 
         public IObjectSet Query(Db4objects.Db4o.Query.Predicate match, System.Collections.IComparer comparer)
         {

@@ -1,6 +1,7 @@
-/* Copyright (C) 2008   db4objects Inc.   http://www.db4o.com */
+﻿using System;
 using System.Collections.Generic;
-using Db4objects.Db4o.native.Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Net;
 using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
@@ -11,6 +12,7 @@ namespace Db4objects.Db4o.Internal
         {
             ListTypeHandler(new ListTypeHandler());
             MapTypeHandler(new MapTypeHandler());
+
         }
 
         public override void Apply()
@@ -21,10 +23,33 @@ namespace Db4objects.Db4o.Internal
 
         private void RegisterGenericTypeHandlers()
         {
-			GenericCollectionTypeHandler collectionHandler = new GenericCollectionTypeHandler();
-			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(List<>)), collectionHandler);
-			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(LinkedList<>)), collectionHandler);
-			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Dictionary<,>)), new MapTypeHandler());
-		}
+            _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(List<>)), new ListTypeHandler());
+            _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Dictionary<,>)), new MapTypeHandler());
+
+        }
+
+        internal class GenericTypeHandlerPredicate : ITypeHandlerPredicate
+        {
+            private Type _genericType;
+
+            internal GenericTypeHandlerPredicate(Type genericType)
+            {
+                _genericType = genericType;
+            }
+
+            public bool Match(IReflectClass classReflector)
+            {
+                Type type = NetReflector.ToNative(classReflector);
+                if (type == null)
+                {
+                    return false;
+                }
+                if (!type.IsGenericType)
+                {
+                    return false;
+                }
+                return type.GetGenericTypeDefinition() == _genericType;
+            }
+        }
     }
 }

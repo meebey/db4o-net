@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
 		private static void EnsureGenericItem<T>(T expectedValue, IObjectSet os)
 		{
-			Assert.AreEqual(1, os.Size());
+			Assert.AreEqual(1, os.Count);
 
 			SimpleGenericType<T> item = (SimpleGenericType<T>)os.Next();
 			Assert.AreEqual(expectedValue, item.value);

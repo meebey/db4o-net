@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 
 			IObjectSet objectSet = q.Execute();
 
-			Assert.AreEqual(1, objectSet.Size());
+			Assert.AreEqual(1, objectSet.Count);
 			CsStructs csStructs = (CsStructs)objectSet.Next();
 
 			Assert.AreEqual(GUID, csStructs.guid.ToString());

@@ -7,12 +7,7 @@ using Db4objects.Db4o.TA;
 namespace Db4objects.Db4o.Collections
 {
 	public partial class ArrayDictionary4<K, V> : IDictionary<K, V>, IActivatable
-	{
-		public int Count
-		{
-			get { return Size;  }
-		}
-
+	{	
 		public bool IsReadOnly
 		{
 			get { return false;  }

@@ -101,7 +101,7 @@ public class InnerAuthorNamePredicate : Predicate
 			try
 			{
 				IObjectSet os = Db().Query(predicate);
-				Assert.AreEqual(1, os.Size());
+				Assert.AreEqual(1, os.Count);
 				Assert.AreEqual(expectedId, ((Author)os.Next()).Id);
 			}
 			finally

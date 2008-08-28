@@ -1,8 +1,9 @@
-﻿/* Copyright (C) 2008   db4objects Inc.   http://www.db4o.com */
-
+﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;
@@ -171,7 +172,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
             object constraint = list[0];
             query.Descend(fieldName).Constrain(constraint);
             IObjectSet objectSet = query.Execute();
-            Assert.AreEqual(1, objectSet.Size());
+            Assert.AreEqual(1, objectSet.Count);
             Item<T> queriedItem = (Item<T>)objectSet.Next();
             Assert.AreSame(item, queriedItem);
         }

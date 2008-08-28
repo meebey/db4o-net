@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 
         protected void AssertAliasedData(IObjectSet os, params string[] expectedNames)
         {
-            Assert.AreEqual(expectedNames.Length, os.Size());
+            Assert.AreEqual(expectedNames.Length, os.Count);
             foreach (string name in expectedNames)
             {
                 AssertContains(os, CreateAliasedData(name));

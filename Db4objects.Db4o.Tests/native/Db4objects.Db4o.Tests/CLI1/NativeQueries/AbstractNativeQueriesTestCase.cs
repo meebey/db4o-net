@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 		{
 			IObjectSet os = QueryFromPredicate(predicate).Execute();
 			string actualString = ToString(os);
-			Assert.AreEqual(expected.Length, os.Size(), "Expected: " + ToString(expected) + ", Actual: " + actualString);
+			Assert.AreEqual(expected.Length, os.Count, "Expected: " + ToString(expected) + ", Actual: " + actualString);
 
 			foreach (object item in expected)
 			{

@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 		private void CheckQueryById(int id)
 		{
 			IObjectSet os = QueryById(id);
-			Assert.AreEqual(1, os.Size());
+			Assert.AreEqual(1, os.Count);
 			Assert.AreEqual(id, ((Item)os.Next()).Id);
 		}
 

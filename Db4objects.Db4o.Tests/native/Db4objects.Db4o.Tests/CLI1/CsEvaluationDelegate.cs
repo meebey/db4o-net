@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.CLI1
             cq1 = cq1.Descend("child");
             cq1.Constrain(evaluation);
             IObjectSet os = q1.Execute();
-            Assert.AreEqual(1, os.Size());
+            Assert.AreEqual(1, os.Count);
             CsEvaluationDelegate se = (CsEvaluationDelegate)os.Next();
             Assert.AreEqual("two", se.name);
         }

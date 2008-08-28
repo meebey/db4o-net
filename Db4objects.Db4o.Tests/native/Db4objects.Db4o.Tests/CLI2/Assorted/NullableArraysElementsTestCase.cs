@@ -27,15 +27,15 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
         public void TestArrayType()
         {
-            TestSubject testSubject = QueryByName("foo");
-            Assert.IsInstanceOf(typeof (int?[]), testSubject._elements);
+           TestSubject testSubject = QueryByName("foo");
+           Assert.IsInstanceOf(typeof (int?[]), testSubject._elements);
         }
 
         public void TestNullableArray()
         {
-            AssertTestSubject("foo");
-            AssertTestSubject("bar");
-            AssertTestSubject("baz");
+			AssertTestSubject("foo");
+			AssertTestSubject("bar");
+			AssertTestSubject("baz");
         }
 
 	    private void AssertTestSubject(string name)
@@ -72,11 +72,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
 		    Assert.IsNotNull(actual._elements);
             Assert.IsNotNull(actual._nullableArray);
-            for (int i = 0; i < actual._elements.Length; i += 2)
+			for (int i = 0; i < actual._elements.Length; i += 2)
 			{
-			    Assert.IsNull(actual._elements[i]);
-            }
-
+				Assert.IsNull(actual._elements[i]);
+			}
+		
             int?[] values = (int?[])actual._nullableArray;
             for (int i = 1; i < actual._elements.Length; i += 2)
 			{
@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
             query.Descend("_valueType").Descend("_name").Constrain(name);
 
             IObjectSet results = query.Execute();
-            Assert.AreEqual(1, results.Size());
+            Assert.AreEqual(1, results.Count);
 
             return (TestSubject)results[0];
         }

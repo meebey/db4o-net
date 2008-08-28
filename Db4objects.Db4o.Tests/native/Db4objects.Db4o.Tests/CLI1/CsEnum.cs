@@ -82,12 +82,12 @@ namespace Db4objects.Db4o.Tests.CLI1
 		private void TstQBE(int expectedCount, CsEnumState value)
 		{
 			IObjectSet os = Db().Get(new CsEnum(value));
-			Assert.AreEqual(expectedCount, os.Size());
+			Assert.AreEqual(expectedCount, os.Count);
 		}
 
 		private void EnsureObjectSet(IObjectSet os, params CsEnumState[] expected)
 		{
-			Assert.AreEqual(expected.Length, os.Size());
+			Assert.AreEqual(expected.Length, os.Count);
 			ArrayList l = new ArrayList();
 			while (os.HasNext())
 			{
@@ -107,7 +107,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 			q.Descend("_state").Constrain(template);
 
 			IObjectSet os = q.Execute();
-			Assert.AreEqual(1, os.Size());
+			Assert.AreEqual(1, os.Count);
 			Assert.AreEqual(template, ((CsEnum)os.Next()).State);
 		}
 	}

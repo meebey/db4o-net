@@ -126,8 +126,8 @@ public class Tester
 	{
 		using (IObjectContainer container = Db4oFactory.OpenFile(fname))
 		{
-			container.Set(new SimpleGenericType<int>(42));
-			container.Set(new SimpleGenericType<SimpleGenericType<int>>(new SimpleGenericType<int>(13)));
+			container.Store(new SimpleGenericType<int>(42));
+			container.Store(new SimpleGenericType<SimpleGenericType<int>>(new SimpleGenericType<int>(13)));
 		}
 	}
 	
@@ -136,10 +136,10 @@ public class Tester
 		using (IObjectContainer container = Db4oFactory.OpenFile(fname))
 		{
 			IObjectSet os = container.Get(typeof(SimpleGenericType<int>));
-			AssertEquals(2, os.Size());
+			AssertEquals(2, os.Count);
 			
 			os = container.Get(typeof(SimpleGenericType<SimpleGenericType<int>>));
-			AssertEquals(1, os.Size());
+			AssertEquals(1, os.Count);
 		}
 	}
 	

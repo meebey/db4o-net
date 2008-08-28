@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			query.Constrain(typeof(NullableContainer));
 
 			IObjectSet os = query.Execute();
-			Assert.AreEqual(2, os.Size());
+			Assert.AreEqual(2, os.Count);
 
 			bool foundInt = false;
 			bool foundDate = false;
@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
 		private static void CheckDateValueQueryResult(IObjectSet os)
 		{
-			Assert.AreEqual(1, os.Size());
+			Assert.AreEqual(1, os.Count);
 			NullableContainer found = (NullableContainer)os.Next();
 			Assert.AreEqual(TheDate, found.dateValue.Value);
 			EnsureIsNull(found.intValue);
@@ -102,7 +102,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
 		private static void CheckIntValueQueryResult(IObjectSet os)
 		{
-			Assert.AreEqual(1, os.Size());
+			Assert.AreEqual(1, os.Count);
 			NullableContainer found = (NullableContainer)os.Next();
 			Assert.AreEqual(42, found.intValue.Value);
 			EnsureIsNull(found.dateValue);
