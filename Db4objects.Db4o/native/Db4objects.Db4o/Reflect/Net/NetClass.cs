@@ -105,8 +105,8 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 			try
 			{
-                System.Reflection.MethodInfo method = Sharpen.Runtime.GetMethod(_type, methodName, Db4objects.Db4o.Reflect.Net.NetReflector
-					.ToNative(paramClasses));
+				Type[] parameterTypes = Db4objects.Db4o.Reflect.Net.NetReflector.ToNative(paramClasses);
+				System.Reflection.MethodInfo method = GetMethod(_type, methodName, parameterTypes);
 				if (method == null)
 				{
 					return null;
@@ -117,6 +117,16 @@ namespace Db4objects.Db4o.Reflect.Net
 			{
 				return null;
 			}
+		}
+
+		private static MethodInfo GetMethod(Type type, string methodName, Type[] parameterTypes)
+		{
+			MethodInfo found = Sharpen.Runtime.GetDeclaredMethod(type, methodName, parameterTypes);
+			if (found != null) return found;
+
+			Type baseType = type.BaseType;
+			if (null == baseType) return null;
+			return GetMethod(baseType, methodName, parameterTypes);
 		}
 
 		public virtual string GetName()
