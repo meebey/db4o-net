@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests
 //			return new Common.Assorted.IndexCreateDropTestCase().RunSolo();
 //			return new Common.Migration.AllTests().RunSolo();
 //			return new Common.Refle ct.Custom.AllTests().RunSolo();
-			return new AllTests().RunSolo();
+//			return new AllTests().RunSolo();
 //			return new AllTests().RunClientServer();
 //			return new AllTestsConcurrency().RunConcurrencyAll();
 		    return new AllTests().RunAll();
