@@ -189,7 +189,7 @@ namespace System.Linq.jvm
                 string.Format("Expression with Node type {0} for type {1}", et, tc));
         }
 
-        public static object NegeteChecked(object a, TypeCode tc)
+        public static object NegateChecked(object a, TypeCode tc)
         {
             switch (tc)
             {
@@ -230,8 +230,9 @@ namespace System.Linq.jvm
 
         public static object ConvertToTypeChecked(object a, Type fromType, Type toType)
         {
-			if (toType.IsNullable () && toType.GetNotNullableType () == fromType)
-				return a == null ? a : CreateInstance (toType, a);
+			if (toType.IsNullable ())
+				return a == null ? a : CreateInstance (toType,
+					ConvertToTypeChecked (a, fromType.GetNotNullableType (), toType.GetNotNullableType ()));
 
 			if (a == null) {
 				if (!toType.IsValueType)
@@ -253,8 +254,9 @@ namespace System.Linq.jvm
 
 		public static object ConvertToTypeUnchecked (object a, Type fromType, Type toType)
 		{
-			if (toType.IsNullable () && toType.GetNotNullableType () == fromType)
-				return a == null ? a : CreateInstance (toType, a);
+			if (toType.IsNullable ())
+				return a == null ? a : CreateInstance (toType,
+					ConvertToTypeUnchecked (a, fromType.GetNotNullableType (), toType.GetNotNullableType ()));
 
 			if (a == null) {
 				if (!toType.IsValueType)
@@ -280,7 +282,7 @@ namespace System.Linq.jvm
 
         }
 
-        public static object Negete(object a, TypeCode tc)
+        public static object Negate(object a, TypeCode tc)
         {
             switch (tc)
             {
