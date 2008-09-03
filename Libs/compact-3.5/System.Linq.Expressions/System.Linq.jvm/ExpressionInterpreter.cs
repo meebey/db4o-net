@@ -77,9 +77,17 @@ namespace System.Linq.jvm {
 
 			left = Pop ();
 
-			if (left == null || InvokeTrueOperator (binary, left)) {
-				Visit (binary.Right);
-				right = Pop ();
+			if (InvokeFalseOperator (binary, left)) {
+				Push (left);
+				return;
+			}
+
+			Visit (binary.Right);
+			right = Pop ();
+
+			if (binary.IsLiftedToNull && right == null) {
+				Push (null);
+				return;
 			}
 
 			Push (InvokeMethod (binary.Method, null, new [] { left, right }));
@@ -129,9 +137,17 @@ namespace System.Linq.jvm {
 			Visit (binary.Left);
 			left = Pop ();
 
-			if (left == null || InvokeFalseOperator (binary, left)) {
-				Visit (binary.Right);
-				right = Pop ();
+			if (InvokeTrueOperator (binary, left)) {
+				Push (left);
+				return;
+			}
+
+			Visit (binary.Right);
+			right = Pop ();
+
+			if (binary.IsLiftedToNull && right == null) {
+				Push (null);
+				return;
 			}
 
 			Push (InvokeMethod (binary.Method, null, new [] { left, right }));
