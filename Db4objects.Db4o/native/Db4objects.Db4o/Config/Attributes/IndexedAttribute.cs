@@ -10,11 +10,8 @@ namespace Db4objects.Db4o.Config.Attributes
 	{
 		void IDb4oAttribute.Apply(object subject, ConfigurationIntrospector introspector)
 		{
-			FieldInfo field = subject as FieldInfo;
-			if (null == field)
-				return;
-
-			introspector.IConfiguration.ObjectClass(field.DeclaringType.FullName).ObjectField(field.Name).Indexed(true);
+			FieldInfo field = (FieldInfo)subject;
+			introspector.ClassConfiguration.ObjectField(field.Name).Indexed(true);
 		}
 	}
 }

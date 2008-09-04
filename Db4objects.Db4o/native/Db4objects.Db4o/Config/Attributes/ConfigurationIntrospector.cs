@@ -9,34 +9,40 @@ namespace Db4objects.Db4o.Config.Attributes
 {
 	class ConfigurationIntrospector
 	{
-		Type _type;
-		Config4Class _classConfig;
-		IConfiguration _config;
+		private readonly Type _type;
+		private Config4Class _classConfig;
+		private readonly IConfiguration _config;
+
+		public ConfigurationIntrospector(Type type, Config4Class classConfig, IConfiguration config)
+		{
+			if (null == type) throw new ArgumentNullException("type");
+			if (null == config) throw new ArgumentNullException("config");
+			_type = type;
+			_classConfig = classConfig;
+			_config = config;
+		}
 
 		public Type Type
 		{
 			get { return _type; }
-			set { _type = value; }
 		}
 
 		public Config4Class ClassConfiguration
 		{
-			get { return _classConfig; }
-			set { _classConfig = value; }
+			get
+			{
+				if (null == _classConfig)
+				{
+					_classConfig = (Config4Class)_config.ObjectClass(_type);
+				}
+				return _classConfig;
+			}
 		}
 
 		public IConfiguration IConfiguration
 		{
 			get { return _config; }
-			set { _config = value; }
 		}		
-
-		public ConfigurationIntrospector(Type type, Config4Class classConfig, IConfiguration config)
-		{
-			_type = type;
-			_classConfig = classConfig;
-			_config = config;
-		}
 
 		public void Apply()
 		{
