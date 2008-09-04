@@ -314,6 +314,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				)));
 		}
 
+		public virtual void TestStoredFields()
+		{
+			IStoredClass storedClass = Db().StoredClass(typeof(CustomTypeHandlerTestCase.Item
+				));
+			IStoredField[] storedFields = storedClass.GetStoredFields();
+			Assert.AreEqual(0, storedFields.Length);
+		}
+
 		private CustomTypeHandlerTestCase.Item RetrieveItemOfClass(Type class1)
 		{
 			IQuery q = NewQuery(class1);

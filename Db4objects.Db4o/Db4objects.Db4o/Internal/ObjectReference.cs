@@ -220,7 +220,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <summary>return false if class not completely initialized, otherwise true *</summary>
+		/// <summary>return false if class not completely initialized, otherwise true</summary>
 		internal virtual bool ContinueSet(Db4objects.Db4o.Internal.Transaction trans, int
 			 updateDepth)
 		{
@@ -535,7 +535,8 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			object obj = GetObject();
-			if (!ObjectCanUpdate(transaction, obj) || !IsActive() || obj == null)
+			if (!ObjectCanUpdate(transaction, obj) || !IsActive() || obj == null || !ClassMetadata
+				().IsModified(obj))
 			{
 				EndProcessing();
 				return;
@@ -574,7 +575,7 @@ namespace Db4objects.Db4o.Internal
 			Id_init();
 		}
 
-		/// <summary>HCTREE ****</summary>
+		/// <summary>HCTREE</summary>
 		public virtual Db4objects.Db4o.Internal.ObjectReference Hc_add(Db4objects.Db4o.Internal.ObjectReference
 			 newRef)
 		{
@@ -851,7 +852,7 @@ namespace Db4objects.Db4o.Internal
 			return _hcPreceding;
 		}
 
-		/// <summary>IDTREE ****</summary>
+		/// <summary>IDTREE</summary>
 		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_add(Db4objects.Db4o.Internal.ObjectReference
 			 newRef)
 		{

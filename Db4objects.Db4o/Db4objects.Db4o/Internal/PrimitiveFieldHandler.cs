@@ -131,7 +131,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override object InstantiateTransient(UnmarshallingContext context)
 		{
-			return _handler.Read(context);
+			return CorrectHandlerVersion(context).Read(context);
 		}
 
 		internal override object InstantiateFields(UnmarshallingContext context)
@@ -216,7 +216,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Defragment(IDefragmentContext context)
 		{
-			_handler.Defragment(context);
+			CorrectHandlerVersion(context).Defragment(context);
 		}
 
 		public override object WrapWithTransactionContext(Transaction transaction, object
@@ -227,7 +227,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override object Read(IReadContext context)
 		{
-			return _handler.Read(context);
+			return CorrectHandlerVersion(context).Read(context);
 		}
 
 		public override void Write(IWriteContext context, object obj)
@@ -288,6 +288,11 @@ namespace Db4objects.Db4o.Internal
 		public override bool IsSecondClass()
 		{
 			return IsSecondClass(_handler);
+		}
+
+		private ITypeHandler4 CorrectHandlerVersion(IContext context)
+		{
+			return Handlers4.CorrectHandlerVersion((IHandlerVersionContext)context, _handler);
 		}
 	}
 }

@@ -8,9 +8,9 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
-using Db4objects.Db4o.Tests.Common.Internal;
+using Db4objects.Db4o.Tests.Common.Ext;
 
-namespace Db4objects.Db4o.Tests.Common.Internal
+namespace Db4objects.Db4o.Tests.Common.Ext
 {
 	public class StoredClassTestCase : AbstractDb4oTestCase
 	{

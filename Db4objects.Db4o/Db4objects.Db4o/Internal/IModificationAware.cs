@@ -1,10 +1,10 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-namespace Db4objects.Db4o.Internal.CS.Messages
+namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public interface IClientSideTask
+	public interface IModificationAware
 	{
-		bool RunOnClient();
+		bool IsModified(object obj);
 	}
 }

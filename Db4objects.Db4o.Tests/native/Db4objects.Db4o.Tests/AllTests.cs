@@ -1,7 +1,6 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
-using Db4objects.Db4o.Tests.Common.Events;
-using Db4objects.Db4o.Tests.Common.Migration;
+using Db4objects.Db4o.Tests.Common.TA.Mixed;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests
@@ -26,7 +25,8 @@ namespace Db4objects.Db4o.Tests
 		
 		protected override Type[] TestCases()
 		{
-			//return new Type[] { typeof(CLI1.CrossPlatform.CrossplatformTestCase) };
+			//return new Type[] { typeof(MixedArrayTestCase) };
+
 			//return new Type[] { typeof(CLI2.Collections.GenericListTypeHandlerTestCase) };
             //return new Type[] { typeof(Db4objects.Db4o.Tests.Jre5.Collections.Typehandler.AllTests),};
 			return new Type[]

@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.Ext
 {
@@ -66,15 +65,5 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>checks if the client is currently connected to a server.</remarks>
 		/// <returns>true if the client is alive.</returns>
 		bool IsAlive();
-
-		/// <summary>
-		/// Dispatches any pending messages to
-		/// the currently configured
-		/// <see cref="IMessageRecipient">IMessageRecipient</see>
-		/// .
-		/// </summary>
-		/// <param name="maxTimeSlice">how long before the method returns leaving messages on the queue for later dispatching
-		/// 	</param>
-		void DispatchPendingMessages(long maxTimeSlice);
 	}
 }

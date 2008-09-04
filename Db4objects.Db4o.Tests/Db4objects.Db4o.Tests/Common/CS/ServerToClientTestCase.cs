@@ -1,11 +1,11 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Messaging;
 using Db4objects.Db4o.Tests.Common.CS;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
@@ -30,57 +30,14 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			void Wait(IObjectContainer client1, IObjectContainer client2);
 		}
 
-		public virtual void TestDispatchPendingMessages()
-		{
-			AssertReplyBehavior(new _IClientWaitLogic_30());
-		}
-
-		private sealed class _IClientWaitLogic_30 : ServerToClientTestCase.IClientWaitLogic
-		{
-			public _IClientWaitLogic_30()
-			{
-			}
-
-			public void Wait(IObjectContainer client1, IObjectContainer client2)
-			{
-				int timeout = 2000;
-				Cool.LoopWithTimeout(timeout, new _IConditionalBlock_33(client1, timeout, client2
-					));
-			}
-
-			private sealed class _IConditionalBlock_33 : IConditionalBlock
-			{
-				public _IConditionalBlock_33(IObjectContainer client1, int timeout, IObjectContainer
-					 client2)
-				{
-					this.client1 = client1;
-					this.timeout = timeout;
-					this.client2 = client2;
-				}
-
-				public bool Run()
-				{
-					((IExtClient)client1).DispatchPendingMessages(timeout);
-					((IExtClient)client2).DispatchPendingMessages(timeout);
-					return true;
-				}
-
-				private readonly IObjectContainer client1;
-
-				private readonly int timeout;
-
-				private readonly IObjectContainer client2;
-			}
-		}
-
 		public virtual void TestInterleavedCommits()
 		{
-			AssertReplyBehavior(new _IClientWaitLogic_46());
+			AssertReplyBehavior(new _IClientWaitLogic_32());
 		}
 
-		private sealed class _IClientWaitLogic_46 : ServerToClientTestCase.IClientWaitLogic
+		private sealed class _IClientWaitLogic_32 : ServerToClientTestCase.IClientWaitLogic
 		{
-			public _IClientWaitLogic_46()
+			public _IClientWaitLogic_32()
 			{
 			}
 
@@ -114,6 +71,15 @@ namespace Db4objects.Db4o.Tests.Common.CS
 						IMessageSender sender2 = MessageSender(client2);
 						SendEvenOddMessages(sender1, sender2);
 						clientWaitLogic.Wait(client1, client2);
+						try
+						{
+							// Give the message processor thread time to dispatch the message.
+							Thread.Sleep(100);
+						}
+						catch (Exception e)
+						{
+							Sharpen.Runtime.PrintStackTrace(e);
+						}
 						Assert.AreEqual("[reply: 0, reply: 2, reply: 4, reply: 6, reply: 8]", collector1.
 							messages.ToString());
 						Assert.AreEqual("[reply: 1, reply: 3, reply: 5, reply: 7, reply: 9]", collector2.

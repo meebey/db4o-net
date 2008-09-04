@@ -18,12 +18,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			return new Type[] { typeof(CallConstructorsConfigTestCase), typeof(ClientDisconnectTestCase
 				), typeof(ClientTimeOutTestCase), typeof(ClientTransactionHandleTestCase), typeof(
 				ClientTransactionPoolTestCase), typeof(CloseServerBeforeClientTestCase), typeof(
-				DeleteReaddTestCase), typeof(DispatchPendingMessagesTestCase), typeof(IsAliveTestCase
-				), typeof(NoTestConstructorsQEStringCmpTestCase), typeof(ObjectServerTestCase), 
-				typeof(PrimitiveMessageTestCase), typeof(SendMessageToClientTestCase), typeof(ServerClosedTestCase
-				), typeof(ServerPortUsedTestCase), typeof(ServerRevokeAccessTestCase), typeof(ServerTimeoutTestCase
-				), typeof(ServerToClientTestCase), typeof(SetSemaphoreTestCase), typeof(SwitchingFilesFromClientTestCase
-				), typeof(SwitchingFilesFromMultipleClientsTestCase) };
+				DeleteReaddTestCase), typeof(IsAliveTestCase), typeof(NoTestConstructorsQEStringCmpTestCase
+				), typeof(ObjectServerTestCase), typeof(PrimitiveMessageTestCase), typeof(SendMessageToClientTestCase
+				), typeof(ServerClosedTestCase), typeof(ServerPortUsedTestCase), typeof(ServerRevokeAccessTestCase
+				), typeof(ServerTimeoutTestCase), typeof(ServerToClientTestCase), typeof(SetSemaphoreTestCase
+				), typeof(SwitchingFilesFromClientTestCase), typeof(SwitchingFilesFromMultipleClientsTestCase
+				) };
 		}
 	}
 }

@@ -53,8 +53,8 @@ namespace Db4oUnit
 			while (actual.MoveNext())
 			{
 				object current = actual.Current;
-				object removed = allExpected.Remove(current);
-				if (null == removed)
+				bool removed = allExpected.Remove(current);
+				if (!removed)
 				{
 					Unexpected(current);
 				}

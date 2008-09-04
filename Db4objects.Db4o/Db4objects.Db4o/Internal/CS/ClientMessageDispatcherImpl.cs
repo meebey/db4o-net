@@ -12,20 +12,23 @@ namespace Db4objects.Db4o.Internal.CS
 {
 	internal class ClientMessageDispatcherImpl : Thread, IClientMessageDispatcher
 	{
-		private ClientObjectContainer i_stream;
+		private ClientObjectContainer _container;
 
-		private ISocket4 i_socket;
+		private ISocket4 _socket;
 
-		private readonly BlockingQueue _messageQueue;
+		private readonly BlockingQueue _synchronousMessageQueue;
+
+		private readonly BlockingQueue _asynchronousMessageQueue;
 
 		private bool _isClosed;
 
 		internal ClientMessageDispatcherImpl(ClientObjectContainer client, ISocket4 a_socket
-			, BlockingQueue messageQueue_)
+			, BlockingQueue synchronousMessageQueue, BlockingQueue asynchronousMessageQueue)
 		{
-			i_stream = client;
-			_messageQueue = messageQueue_;
-			i_socket = a_socket;
+			_container = client;
+			_synchronousMessageQueue = synchronousMessageQueue;
+			_asynchronousMessageQueue = asynchronousMessageQueue;
+			_socket = a_socket;
 		}
 
 		public virtual bool IsMessageDispatcherAlive()
@@ -45,17 +48,18 @@ namespace Db4objects.Db4o.Internal.CS
 					return true;
 				}
 				_isClosed = true;
-				if (i_socket != null)
+				if (_socket != null)
 				{
 					try
 					{
-						i_socket.Close();
+						_socket.Close();
 					}
 					catch (Db4oIOException)
 					{
 					}
 				}
-				_messageQueue.Stop();
+				_synchronousMessageQueue.Stop();
+				_asynchronousMessageQueue.Stop();
 				return true;
 			}
 		}
@@ -73,7 +77,7 @@ namespace Db4objects.Db4o.Internal.CS
 				Msg message = null;
 				try
 				{
-					message = Msg.ReadMessage(this, Transaction(), i_socket);
+					message = Msg.ReadMessage(this, Transaction(), _socket);
 				}
 				catch (Db4oIOException exc)
 				{
@@ -87,15 +91,14 @@ namespace Db4objects.Db4o.Internal.CS
 				{
 					continue;
 				}
-				// TODO are there possibly messages that have to be processed *and* passed on?
 				if (IsClientSideMessage(message))
 				{
-					if (((IClientSideMessage)message).ProcessAtClient())
-					{
-						continue;
-					}
+					_asynchronousMessageQueue.Add(message);
 				}
-				_messageQueue.Add(message);
+				else
+				{
+					_synchronousMessageQueue.Add(message);
+				}
 			}
 		}
 
@@ -106,13 +109,13 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public virtual bool Write(Msg msg)
 		{
-			i_stream.Write(msg);
+			_container.Write(msg);
 			return true;
 		}
 
 		public virtual void SetDispatcherName(string name)
 		{
-			SetName("db4o client side message dispather for " + name);
+			SetName("db4o client side message dispatcher for " + name);
 		}
 
 		public virtual void StartDispatcher()
@@ -122,7 +125,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private Db4objects.Db4o.Internal.Transaction Transaction()
 		{
-			return i_stream.Transaction();
+			return _container.Transaction();
 		}
 	}
 }

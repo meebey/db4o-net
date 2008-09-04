@@ -18,8 +18,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			return new Type[] { typeof(Comparable4TestCase), typeof(DeactivateTestCase), typeof(
 				EmbeddedClientObjectContainerTestCase), typeof(InternalObjectContainerAPITestCase
 				), typeof(MarshallingBufferTestCase), typeof(MarshallingContextTestCase), typeof(
-				PartialObjectContainerTestCase), typeof(SerializerTestCase), typeof(StoredClassTestCase
-				), typeof(TransactionTestCase) };
+				PartialObjectContainerTestCase), typeof(SerializerTestCase), typeof(TransactionTestCase
+				) };
 		}
 	}
 }

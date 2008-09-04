@@ -161,8 +161,8 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			while (iter.MoveNext())
 			{
 				IEntry4 entry = (IEntry4)iter.Current;
-				object removed = expected.Remove(entry.Key());
-				Assert.IsNotNull(removed);
+				bool removedOK = expected.Remove(entry.Key());
+				Assert.IsTrue(removedOK);
 			}
 			Assert.IsTrue(expected.IsEmpty(), expected.ToString());
 		}

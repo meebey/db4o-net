@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public interface ISequence4 : IEnumerable
 	{
-		void Add(object element);
+		bool Add(object element);
 
 		bool IsEmpty();
 
@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Foundation
 
 		void Clear();
 
-		object Remove(object obj);
+		bool Remove(object obj);
 
 		bool Contains(object obj);
 	}

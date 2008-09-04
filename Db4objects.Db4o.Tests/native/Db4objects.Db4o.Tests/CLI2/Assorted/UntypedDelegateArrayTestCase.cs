@@ -13,18 +13,19 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			public Action<string>[] typedArray;
 			public object[] untypedArray;
 
-			public Item(System.Action<string> action)
+			public Item(Action<string> action)
 			{
 				typed = action;
 				untyped = action;
-				typedArray = new System.Action<string>[] {action};
+				typedArray = new Action<string>[1] {action};
 				untypedArray = new object[] {action};
 			}
 		}
 
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(Config.IConfiguration config)
 		{
 			config.ExceptionsOnNotStorable(true);
+			config.CallConstructors(true);
 		}
 
 		protected override void Store()
@@ -38,7 +39,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			Assert.IsNull(item.typed);
 			Assert.IsNull(item.untyped);
 			ArrayAssert.AreEqual(new object[1], item.untypedArray);
-			Assert.IsNull(item.typedArray);
+			ArrayAssert.AreEqual(new Action<string>[1], item.typedArray);
 		}
 
 		private static void StringAction(string s)

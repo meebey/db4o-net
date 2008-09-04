@@ -171,7 +171,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			{
 				CrashSimulatingTestCase.CrashData current = (CrashSimulatingTestCase.CrashData)actual
 					.Next();
-				if (null == expected.Remove(current._name))
+				if (!expected.Remove(current._name))
 				{
 					return false;
 				}

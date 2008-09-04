@@ -111,18 +111,23 @@ namespace Db4objects.Db4o.Query
 			for (int methodIdx = 0; methodIdx < methods.Length; methodIdx++)
 			{
 				MethodInfo method = methods[methodIdx];
-				if ((method.Name.Equals(PredicatePlatform.PredicatemethodName)) && Sharpen.Runtime.GetParameterTypes
-					(method).Length == 1)
+				if ((!method.Name.Equals(PredicatePlatform.PredicatemethodName)) || Sharpen.Runtime.GetParameterTypes
+					(method).Length != 1)
 				{
-					string targetName = Sharpen.Runtime.GetParameterTypes(method)[0].FullName;
-					if (!"java.lang.Object".Equals(targetName))
-					{
-						cachedFilterMethod = method;
-						return method;
-					}
+					continue;
+				}
+				cachedFilterMethod = method;
+				string targetName = Sharpen.Runtime.GetParameterTypes(method)[0].FullName;
+				if (!"java.lang.Object".Equals(targetName))
+				{
+					break;
 				}
 			}
-			throw new ArgumentException("Invalid predicate.");
+			if (cachedFilterMethod == null)
+			{
+				throw new ArgumentException("Invalid predicate.");
+			}
+			return cachedFilterMethod;
 		}
 
 		/// <summary>public for implementation reasons, please ignore.</summary>
@@ -152,9 +157,10 @@ namespace Db4objects.Db4o.Query
 				object ret = filterMethod.Invoke(this, new object[] { candidate });
 				return ((bool)ret);
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
-				Sharpen.Runtime.PrintStackTrace(e);
+				// TODO: log this exception somewhere?
+				//			e.printStackTrace();
 				return false;
 			}
 		}

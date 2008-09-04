@@ -15,14 +15,38 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			new CallbackTestCase().RunAll();
 		}
 
-		public virtual void TestBaseClass()
+		public virtual void TestPublicCallback()
 		{
-			RunTest(new CallbackTestCase.Item());
+			RunTest(new CallbackTestCase.PublicCallback());
 		}
 
-		public virtual void TestDerived()
+		/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
+		public virtual void TestPrivateCallback()
 		{
-			RunTest(new CallbackTestCase.DerivedItem());
+			RunTest(new CallbackTestCase.PrivateCallback());
+		}
+
+		/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
+		public virtual void TestPackageCallback()
+		{
+			RunTest(new CallbackTestCase.PackageCallback());
+		}
+
+		public virtual void TestInheritedPublicCallback()
+		{
+			RunTest(new CallbackTestCase.InheritedPublicCallback());
+		}
+
+		/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
+		public virtual void TestInheritedPrivateCallback()
+		{
+			RunTest(new CallbackTestCase.InheritedPrivateCallback());
+		}
+
+		/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
+		public virtual void TestInheritedPackageCallback()
+		{
+			RunTest(new CallbackTestCase.InheritedPackageCallback());
 		}
 
 		private void RunTest(CallbackTestCase.Item item)
@@ -38,18 +62,45 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			[System.NonSerialized]
 			public IObjectContainer _objectContainer;
 
-			public virtual void ObjectOnNew(IObjectContainer container)
-			{
-				_objectContainer = container;
-			}
-
 			public virtual bool IsStored()
 			{
 				return _objectContainer.Ext().IsStored(this);
 			}
 		}
 
-		public class DerivedItem : CallbackTestCase.Item
+		public class PackageCallback : CallbackTestCase.Item
+		{
+			internal virtual void ObjectOnNew(IObjectContainer container)
+			{
+				_objectContainer = container;
+			}
+		}
+
+		public class InheritedPackageCallback : CallbackTestCase.PackageCallback
+		{
+		}
+
+		public class PrivateCallback : CallbackTestCase.Item
+		{
+			private void ObjectOnNew(IObjectContainer container)
+			{
+				_objectContainer = container;
+			}
+		}
+
+		public class InheritedPrivateCallback : CallbackTestCase.PrivateCallback
+		{
+		}
+
+		public class PublicCallback : CallbackTestCase.Item
+		{
+			public virtual void ObjectOnNew(IObjectContainer container)
+			{
+				_objectContainer = container;
+			}
+		}
+
+		public class InheritedPublicCallback : CallbackTestCase.PublicCallback
 		{
 		}
 	}

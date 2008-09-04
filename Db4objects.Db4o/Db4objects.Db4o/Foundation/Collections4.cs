@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Foundation
 				_sequence = sequence;
 			}
 
-			public virtual void Add(object element)
+			public virtual bool Add(object element)
 			{
 				throw new NotSupportedException();
 			}
@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Foundation
 				throw new NotSupportedException();
 			}
 
-			public virtual object Remove(object obj)
+			public virtual bool Remove(object obj)
 			{
 				throw new NotSupportedException();
 			}

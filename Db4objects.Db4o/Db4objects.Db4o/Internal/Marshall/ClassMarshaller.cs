@@ -177,22 +177,25 @@ namespace Db4objects.Db4o.Internal.Marshall
 			// ancestor ID
 			context.CopyID();
 			context.WriteInt(IndexIDForWriting(classIndexID));
-			// field length
-			int numFields = context.ReadInt();
-			if (numFields > classMetadata.DeclaredAspectCount())
+			int aspectCount = context.ReadInt();
+			if (aspectCount > classMetadata.DeclaredAspectCount())
 			{
 				throw new InvalidOperationException();
 			}
-			classMetadata.ForEachDeclaredAspect(new _IProcedure4_144(this, classMetadata, sio
-				, context));
+			IntByRef processedAspectCount = new IntByRef(0);
+			classMetadata.ForEachDeclaredAspect(new _IProcedure4_146(this, processedAspectCount
+				, aspectCount, classMetadata, sio, context));
 		}
 
-		private sealed class _IProcedure4_144 : IProcedure4
+		private sealed class _IProcedure4_146 : IProcedure4
 		{
-			public _IProcedure4_144(ClassMarshaller _enclosing, ClassMetadata classMetadata, 
-				LatinStringIO sio, DefragmentContextImpl context)
+			public _IProcedure4_146(ClassMarshaller _enclosing, IntByRef processedAspectCount
+				, int aspectCount, ClassMetadata classMetadata, LatinStringIO sio, DefragmentContextImpl
+				 context)
 			{
 				this._enclosing = _enclosing;
+				this.processedAspectCount = processedAspectCount;
+				this.aspectCount = aspectCount;
 				this.classMetadata = classMetadata;
 				this.sio = sio;
 				this.context = context;
@@ -200,11 +203,20 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 			public void Apply(object arg)
 			{
+				if (processedAspectCount.value >= aspectCount)
+				{
+					return;
+				}
 				ClassAspect aspect = (ClassAspect)arg;
 				this._enclosing._family._field.Defrag(classMetadata, aspect, sio, context);
+				processedAspectCount.value++;
 			}
 
 			private readonly ClassMarshaller _enclosing;
+
+			private readonly IntByRef processedAspectCount;
+
+			private readonly int aspectCount;
 
 			private readonly ClassMetadata classMetadata;
 

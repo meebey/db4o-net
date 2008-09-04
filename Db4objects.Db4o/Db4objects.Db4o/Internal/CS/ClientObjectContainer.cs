@@ -31,13 +31,17 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private ISocket4 i_socket;
 
-		private BlockingQueue _messageQueue = new BlockingQueue();
+		private BlockingQueue _synchronousMessageQueue = new BlockingQueue();
+
+		private BlockingQueue _asynchronousMessageQueue = new BlockingQueue();
 
 		private readonly string _password;
 
 		internal int[] _prefetchedIDs;
 
 		internal IClientMessageDispatcher _messageDispatcher;
+
+		internal ClientAsynchronousMessageProcessor _asynchronousMessageProcessor;
 
 		internal int remainingIDs;
 
@@ -108,7 +112,14 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void StartDispatcherThread(ISocket4 socket, string user)
 		{
-			_messageDispatcher = new ClientMessageDispatcherImpl(this, socket, _messageQueue);
+			if (!_singleThreaded)
+			{
+				_asynchronousMessageProcessor = new ClientAsynchronousMessageProcessor(_asynchronousMessageQueue
+					);
+				_asynchronousMessageProcessor.StartProcessing();
+			}
+			_messageDispatcher = new ClientMessageDispatcherImpl(this, socket, _synchronousMessageQueue
+				, _asynchronousMessageQueue);
 			_messageDispatcher.SetDispatcherName(user);
 			_messageDispatcher.StartDispatcher();
 		}
@@ -183,6 +194,17 @@ namespace Db4objects.Db4o.Internal.CS
 				if (!_singleThreaded)
 				{
 					_messageDispatcher.Close();
+				}
+			}
+			catch (Exception e)
+			{
+				Exceptions4.CatchAllExceptDb4oException(e);
+			}
+			try
+			{
+				if (!_singleThreaded)
+				{
+					_asynchronousMessageProcessor.StopProcessing();
 				}
 			}
 			catch (Exception e)
@@ -364,9 +386,9 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				Msg msg = _singleThreaded ? GetResponseSingleThreaded() : GetResponseMultiThreaded
 					();
-				if (IsClientSideTask(msg))
+				if (IsClientSideMessage(msg))
 				{
-					if (((IClientSideTask)msg).RunOnClient())
+					if (((IClientSideMessage)msg).ProcessAtClient())
 					{
 						continue;
 					}
@@ -382,7 +404,7 @@ namespace Db4objects.Db4o.Internal.CS
 				try
 				{
 					Msg message = Msg.ReadMessage(this, _transaction, i_socket);
-					if (message is IClientSideMessage)
+					if (IsClientSideMessage(message))
 					{
 						if (((IClientSideMessage)message).ProcessAtClient())
 						{
@@ -404,7 +426,7 @@ namespace Db4objects.Db4o.Internal.CS
 			Msg msg;
 			try
 			{
-				msg = (Msg)_messageQueue.Next();
+				msg = (Msg)_synchronousMessageQueue.Next();
 			}
 			catch (BlockingQueueStoppedException e)
 			{
@@ -421,9 +443,9 @@ namespace Db4objects.Db4o.Internal.CS
 			return msg;
 		}
 
-		private bool IsClientSideTask(Msg message)
+		private bool IsClientSideMessage(Msg message)
 		{
-			return message is IClientSideTask;
+			return message is IClientSideMessage;
 		}
 
 		private void OnMsgError()
@@ -1032,7 +1054,8 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			StopHeartBeat();
 			CloseMessageDispatcher();
-			_messageQueue.Stop();
+			_synchronousMessageQueue.Stop();
+			_asynchronousMessageQueue.Stop();
 		}
 
 		public virtual void SetDispatcherName(string name)
@@ -1066,57 +1089,6 @@ namespace Db4objects.Db4o.Internal.CS
 			msg.Write(i_socket);
 			MsgD response = (MsgD)ExpectedResponse(Msg.ClassId);
 			return response.ReadInt();
-		}
-
-		public virtual void DispatchPendingMessages(long maxTimeSlice)
-		{
-			lock (_lock)
-			{
-				Cool.LoopWithTimeout(maxTimeSlice, new _IConditionalBlock_873(this));
-			}
-		}
-
-		private sealed class _IConditionalBlock_873 : IConditionalBlock
-		{
-			public _IConditionalBlock_873(ClientObjectContainer _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public bool Run()
-			{
-				return this._enclosing.DispatchPendingMessage();
-			}
-
-			private readonly ClientObjectContainer _enclosing;
-		}
-
-		private bool DispatchPendingMessage()
-		{
-			IClientSideTask task = NextClientSideTask();
-			if (null == task)
-			{
-				return false;
-			}
-			task.RunOnClient();
-			return true;
-		}
-
-		private IClientSideTask NextClientSideTask()
-		{
-			return (IClientSideTask)_messageQueue.NextMatching(new _IPredicate4_891());
-		}
-
-		private sealed class _IPredicate4_891 : IPredicate4
-		{
-			public _IPredicate4_891()
-			{
-			}
-
-			public bool Match(object message)
-			{
-				return message is IClientSideTask;
-			}
 		}
 	}
 }

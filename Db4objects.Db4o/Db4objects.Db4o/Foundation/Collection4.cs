@@ -54,10 +54,11 @@ namespace Db4objects.Db4o.Foundation
 		/// <summary>Adds an element to the end of this collection.</summary>
 		/// <remarks>Adds an element to the end of this collection.</remarks>
 		/// <param name="element"></param>
-		public void Add(object element)
+		public bool Add(object element)
 		{
 			DoAdd(element);
 			Changed();
+			return true;
 		}
 
 		public void Prepend(object element)
@@ -287,7 +288,7 @@ namespace Db4objects.Db4o.Foundation
 		/// removes an object from the Collection equals() comparison returns the
 		/// removed object or null, if none found
 		/// </summary>
-		public virtual object Remove(object a_object)
+		public virtual bool Remove(object a_object)
 		{
 			List4 previous = null;
 			List4 current = _first;
@@ -298,12 +299,12 @@ namespace Db4objects.Db4o.Foundation
 					_size--;
 					AdjustOnRemoval(previous, current);
 					Changed();
-					return current._element;
+					return true;
 				}
 				previous = current;
 				current = current._next;
 			}
-			return null;
+			return false;
 		}
 
 		public virtual void Replace(object oldObject, object newObject)

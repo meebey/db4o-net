@@ -8,14 +8,14 @@ using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MUserMessage : MsgObject, IServerSideMessage, IClientSideTask
+	public sealed class MUserMessage : MsgObject, IServerSideMessage, IClientSideMessage
 	{
 		public bool ProcessAtServer()
 		{
 			return ProcessUserMessage();
 		}
 
-		public bool RunOnClient()
+		public bool ProcessAtClient()
 		{
 			return ProcessUserMessage();
 		}

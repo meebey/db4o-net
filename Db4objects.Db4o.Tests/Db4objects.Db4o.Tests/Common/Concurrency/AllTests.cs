@@ -15,20 +15,44 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(ArrayNOrderTestCase), typeof(ByteArrayTestCase), typeof(
-				CascadeDeleteDeletedTestCase), typeof(CascadeDeleteFalseTestCase), typeof(CascadeOnActivateTestCase
-				), typeof(CascadeOnUpdateTestCase), typeof(CascadeOnUpdate2TestCase), typeof(CascadeToVectorTestCase
-				), typeof(CaseInsensitiveTestCase), typeof(Circular1TestCase), typeof(ClientDisconnectTestCase
-				), typeof(CreateIndexInheritedTestCase), typeof(DeepSetTestCase), typeof(DeleteDeepTestCase
-				), typeof(DifferentAccessPathsTestCase), typeof(ExtMethodsTestCase), typeof(GetAllTestCase
-				), typeof(GreaterOrEqualTestCase), typeof(IndexedByIdentityTestCase), typeof(IndexedUpdatesWithNullTestCase
-				), typeof(InternStringsTestCase), typeof(InvalidUUIDTestCase), typeof(IsStoredTestCase
-				), typeof(MessagingTestCase), typeof(MultiDeleteTestCase), typeof(MultiLevelIndexTestCase
-				), typeof(NestedArraysTestCase), typeof(ObjectSetIDsTestCase), typeof(ParameterizedEvaluationTestCase
-				), typeof(PeekPersistedTestCase), typeof(PersistStaticFieldValuesTestCase), typeof(
-				QueryForUnknownFieldTestCase), typeof(QueryNonExistantTestCase), typeof(ReadObjectNQTestCase
-				), typeof(ReadObjectQBETestCase), typeof(ReadObjectSODATestCase), typeof(RefreshTestCase
-				), typeof(UpdateObjectTestCase) };
+			return new Type[] { typeof(ReadObjectNQTestCase) };
 		}
+		//				ArrayNOrderTestCase.class, 
+		//				ByteArrayTestCase.class,
+		//				CascadeDeleteDeletedTestCase.class,
+		//				CascadeDeleteFalseTestCase.class,
+		//				CascadeOnActivateTestCase.class,
+		//				CascadeOnUpdateTestCase.class,
+		//				CascadeOnUpdate2TestCase.class,
+		//				CascadeToVectorTestCase.class,
+		//				CaseInsensitiveTestCase.class,
+		//				Circular1TestCase.class,
+		//				ClientDisconnectTestCase.class,
+		//				CreateIndexInheritedTestCase.class,
+		//				DeepSetTestCase.class,
+		//				DeleteDeepTestCase.class,
+		//				DifferentAccessPathsTestCase.class,
+		//				ExtMethodsTestCase.class,
+		//				GetAllTestCase.class,
+		//				GreaterOrEqualTestCase.class,
+		//				IndexedByIdentityTestCase.class,
+		//				IndexedUpdatesWithNullTestCase.class,
+		//				InternStringsTestCase.class,
+		//				InvalidUUIDTestCase.class,
+		//				IsStoredTestCase.class,
+		//				MessagingTestCase.class,
+		//				MultiDeleteTestCase.class,
+		//				MultiLevelIndexTestCase.class,
+		//				NestedArraysTestCase.class,
+		//				ObjectSetIDsTestCase.class,
+		//				ParameterizedEvaluationTestCase.class,
+		//				PeekPersistedTestCase.class,
+		//				PersistStaticFieldValuesTestCase.class,
+		//				QueryForUnknownFieldTestCase.class,
+		//				QueryNonExistantTestCase.class,
+		//				ReadObjectQBETestCase.class,
+		//				ReadObjectSODATestCase.class,
+		//				RefreshTestCase.class,
+		//				UpdateObjectTestCase.class,
 	}
 }

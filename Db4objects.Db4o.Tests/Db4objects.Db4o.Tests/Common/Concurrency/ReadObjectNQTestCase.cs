@@ -51,9 +51,9 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		[System.Serializable]
 		public class MyPredicate : Predicate
 		{
-			internal SimpleObject expected;
+			public SimpleObject expected;
 
-			internal MyPredicate(SimpleObject o)
+			public MyPredicate(SimpleObject o)
 			{
 				this.expected = o;
 			}
