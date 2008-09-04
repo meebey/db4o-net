@@ -24,17 +24,25 @@ namespace Db4objects.Db4o.Internal
         private void RegisterGenericTypeHandlers()
         {
             _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(List<>)), new ListTypeHandler());
-            _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Dictionary<,>)), new MapTypeHandler());
+
+			System.Type[] dictionaryTypes = new Type[] {
+				typeof(Dictionary<,>),
+				typeof(SortedList<,>),
+#if !CF
+				typeof(SortedDictionary<,>),
+#endif
+			};
+            _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(dictionaryTypes), new MapTypeHandler());
 
         }
 
         internal class GenericTypeHandlerPredicate : ITypeHandlerPredicate
         {
-            private Type _genericType;
+            private readonly Type[] _genericTypes;
 
-            internal GenericTypeHandlerPredicate(Type genericType)
+            internal GenericTypeHandlerPredicate(params Type[] genericType)
             {
-                _genericType = genericType;
+                _genericTypes = genericType;
             }
 
             public bool Match(IReflectClass classReflector)
@@ -48,7 +56,7 @@ namespace Db4objects.Db4o.Internal
                 {
                     return false;
                 }
-                return type.GetGenericTypeDefinition() == _genericType;
+            	return ((IList<Type>) _genericTypes).Contains(type.GetGenericTypeDefinition());
             }
         }
     }

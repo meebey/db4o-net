@@ -110,9 +110,13 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
         public void CreateDicts()
         {
             nDict1 = new Dictionary<DItem1, string>();
-            nDict2 = new Dictionary<DItem2, string>();
+            nDict2 = new SortedList<DItem2, string>();
             gDict1 = new Dictionary<DItem1, string>();
-            gDict2 = new Dictionary<DItem2, string>();
+#if CF
+			gDict2 = new Dictionary<DItem2, string>();
+#else
+            gDict2 = new SortedDictionary<DItem2, string>();
+#endif
 
             nDict1.Add(new DItem1("n11"), "n11");
             nDict1.Add(new DItem1("n12"), "n12");
@@ -217,7 +221,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 		}
 	}
 
-    public class DItem1 : Named
+    public class DItem1 : Named, IComparable<DItem1>
     {
         string _name;
 
@@ -230,7 +234,12 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
             _name = name;
         }
 
-		public override bool Equals(object obj)
+    	public int CompareTo(DItem1 other)
+    	{
+    		return _name.CompareTo(other._name);
+    	}
+
+    	public override bool Equals(object obj)
 		{
 			if (obj == null)
 			{
@@ -259,7 +268,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
     }
 
-    public class DItem2 :Named
+    public class DItem2 :Named, IComparable<DItem2>
     {
         string _name;
 
@@ -275,6 +284,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 		public override int GetHashCode()
 		{
 			return _name.GetHashCode();
+		}
+
+		public int CompareTo(DItem2 other)
+		{
+			return _name.CompareTo(other._name);
 		}
 
 		public override bool Equals(object obj)
