@@ -20,6 +20,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
 			RegisterHandlerFor(config, typeof(List<int>), collectionHandler);
 			RegisterHandlerFor(config, typeof(LinkedList<int>), collectionHandler);
+			RegisterHandlerFor(config, typeof(Stack<int>), collectionHandler);
+			RegisterHandlerFor(config, typeof(Queue<int>), collectionHandler);
 
 			_helper = NewCollectionHelper();
 			config.ObjectClass(_helper.ItemType).CascadeOnDelete(true);
@@ -32,7 +34,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
 			if (handler == null)
 			{
-				config.RegisterTypeHandler(new GenericTypeHandlerPredicate(type), collectionHandler);
+				config.RegisterTypeHandler(new GenericTypeHandlerPredicate(type.GetGenericTypeDefinition()), collectionHandler);
 				return;
 			}
 

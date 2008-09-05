@@ -23,7 +23,11 @@ namespace Db4objects.Db4o.Internal
 
         private void RegisterGenericTypeHandlers()
         {
-            _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(List<>)), new ListTypeHandler());
+			GenericCollectionTypeHandler collectionHandler = new GenericCollectionTypeHandler();
+			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(List<>)), collectionHandler);
+			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(LinkedList<>)), collectionHandler);
+			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Stack<>)), collectionHandler);
+			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Queue<>)), collectionHandler);
 
 			System.Type[] dictionaryTypes = new Type[] {
 				typeof(Dictionary<,>),

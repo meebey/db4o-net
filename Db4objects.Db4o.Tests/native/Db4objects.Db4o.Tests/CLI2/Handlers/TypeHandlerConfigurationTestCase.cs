@@ -8,10 +8,7 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4objects.Db4o.Typehandlers;
-
-using Sharpen.Util;
 
 namespace Db4objects.Db4o.Tests.CLI2.Handlers
 {
@@ -43,15 +40,15 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
         {
             
             // AssertSingleNullTypeHandlerAspect(typeof(ArrayList));
-            AssertSingleTypeHandlerAspect(typeof (ArrayList), typeof (ListTypeHandler));
-            AssertSingleTypeHandlerAspect(typeof(List<object>), typeof(ListTypeHandler));
+			AssertSingleTypeHandlerAspect(typeof(ArrayList), typeof(ListTypeHandler));
+			AssertSingleTypeHandlerAspect(typeof(List<object>), typeof(GenericCollectionTypeHandler));
             
         }
 
-        private void AssertSingleNullTypeHandlerAspect(Type storedClass)
-        {
-            AssertSingleTypeHandlerAspect(storedClass, typeof(IgnoreFieldsTypeHandler));
-        }
+		//private void AssertSingleNullTypeHandlerAspect(Type storedClass)
+		//{
+		//    AssertSingleTypeHandlerAspect(storedClass, typeof(IgnoreFieldsTypeHandler));
+		//}
 
         private void AssertSingleTypeHandlerAspect(Type storedClass, Type typeHandlerClass
             )
