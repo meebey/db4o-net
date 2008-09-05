@@ -3,7 +3,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
+#if CF
 using System.Reflection;
+#endif
 
 namespace Db4objects.Db4o.Foundation.Collections
 {
@@ -16,7 +19,7 @@ namespace Db4objects.Db4o.Foundation.Collections
 
 	public sealed class CollectionInitializer
 	{
-		private static Dictionary<Type, Type> initializerByType = new Dictionary<Type, Type>();
+		private static readonly Dictionary<Type, Type> initializerByType = new Dictionary<Type, Type>();
 
 		static CollectionInitializer()
 		{
