@@ -23,8 +23,10 @@ namespace Db4objects.Db4o.Typehandlers
 		public virtual void Write(IWriteContext context, object obj)
 		{
 			ICollection collection = (ICollection)obj;
+			ITypeHandler4 elementHandler = DetectElementTypeHandler(Container(context), collection);
+			WriteElementTypeHandlerId(context, elementHandler);
 			WriteElementCount(context, collection);
-			WriteElements(context, collection);
+			WriteElements(context, collection, elementHandler);
 		}
 
 		public virtual object Read(IReadContext context)
@@ -33,9 +35,9 @@ namespace Db4objects.Db4o.Typehandlers
 			ICollectionInitializer initializer = CollectionInitializer.For(collection);
 			initializer.Clear();
 
-			int elementCount = context.ReadInt();
-			ITypeHandler4 elementHandler = ElementTypeHandler(context);
+			ITypeHandler4 elementHandler = ReadElementTypeHandler(context, context);
 
+			int elementCount = context.ReadInt();
 			for (int i = 0; i < elementCount; i++)
 			{
 				initializer.Add(context.ReadObject(elementHandler));
@@ -46,14 +48,18 @@ namespace Db4objects.Db4o.Typehandlers
 			return collection;
 		}
 
+		private static void WriteElementTypeHandlerId(IWriteBuffer context, ITypeHandler4 elementHandler)
+		{
+			context.WriteInt(0);
+		}
+
 		private static void WriteElementCount(IWriteBuffer context, ICollection collection)
 		{
 			context.WriteInt(collection.Count);
 		}
 
-		private static void WriteElements(IWriteContext context, IEnumerable collection)
+		private static void WriteElements(IWriteContext context, IEnumerable collection, ITypeHandler4 elementHandler)
 		{
-			ITypeHandler4 elementHandler = ElementTypeHandler(context);
 			IEnumerator elements = collection.GetEnumerator();
 			while (elements.MoveNext())
 			{
@@ -66,16 +72,22 @@ namespace Db4objects.Db4o.Typehandlers
 			return ((IInternalObjectContainer)context.ObjectContainer()).Container();
 		}
 
-		private static ITypeHandler4 ElementTypeHandler(IContext context)
+		private static ITypeHandler4 ReadElementTypeHandler(IReadBuffer buffer, IContext context)
 		{
+			buffer.ReadInt();
 			return Container(context).Handlers().UntypedObjectHandler();
+		}
+
+		private static ITypeHandler4 DetectElementTypeHandler(IInternalObjectContainer container, ICollection collection)
+		{
+			return container.Handlers().UntypedObjectHandler();
 		}
 
 		public virtual void Delete(IDeleteContext context)
 		{
 			if (!context.CascadeDelete()) return;
 
-			ITypeHandler4 handler = ElementTypeHandler(context);
+			ITypeHandler4 handler = ReadElementTypeHandler(context, context);
 			int elementCount = context.ReadInt();
 			for (int i = elementCount; i > 0; i--)
 			{
@@ -85,7 +97,7 @@ namespace Db4objects.Db4o.Typehandlers
 
 		public virtual void Defragment(IDefragmentContext context)
 		{
-			ITypeHandler4 handler = ElementTypeHandler(context);
+			ITypeHandler4 handler = ReadElementTypeHandler(context, context);
 			int elementCount = context.ReadInt();
 			for (int i = 0; i < elementCount; i++)
 			{
@@ -114,6 +126,7 @@ namespace Db4objects.Db4o.Typehandlers
 
 		public virtual void CollectIDs(QueryingReadContext context)
 		{
+			//TODO: We MUST read element typehandler id here!!
 			int elementCount = context.ReadInt();
 			ITypeHandler4 elementHandler = UntypedObjectHandlerFrom(context);
 			for (int i = 0; i < elementCount; i++)
