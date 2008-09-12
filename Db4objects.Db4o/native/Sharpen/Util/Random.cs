@@ -6,7 +6,7 @@ namespace Sharpen.Util
 {
 	public class Random 
 	{
-		System.Random _random = new System.Random();
+		readonly System.Random _random = new System.Random();
 
 		public Random() 
 		{
@@ -15,6 +15,16 @@ namespace Sharpen.Util
 		public long NextLong() 
 		{
 			return _random.Next();
+		}
+		
+		public int NextInt()
+		{
+			return _random.Next(int.MinValue, int.MaxValue);
+		}
+
+		public object NextInt(int ceiling)
+		{
+			return _random.Next(ceiling);
 		}
 	}
 }
