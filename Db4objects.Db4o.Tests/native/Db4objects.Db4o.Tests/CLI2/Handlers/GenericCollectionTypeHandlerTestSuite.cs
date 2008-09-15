@@ -31,6 +31,14 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
 	class GenericCollectionTypeHandlerTestUnit : GenericCollectionTypeHandlerTestUnitBase
 	{
+		public void TestDefrag()
+		{
+			Defragment();
+
+			Object item = RetrieveOnlyInstance(_helper.ItemType);
+			_helper.AssertCollection(item);
+		}
+
 		public void TestRetrieve()
 		{
 			object item = RetrieveOnlyInstance(_helper.ItemType);
