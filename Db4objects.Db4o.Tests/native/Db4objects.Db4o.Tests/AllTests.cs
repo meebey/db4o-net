@@ -26,6 +26,9 @@ namespace Db4objects.Db4o.Tests
 		{
 			return new Type[]
 				{	
+#if CF_3_5
+					typeof(Db4objects.Db4o.Linq.Tests.AllTests),
+#endif
                     typeof(Db4objects.Db4o.Tests.Common.Migration.AllTests),
                     typeof(Db4objects.Db4o.Tests.Common.TA.AllTests),
                     typeof(Db4objects.Db4o.Tests.Common.AllTests),
