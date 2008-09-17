@@ -126,9 +126,8 @@ namespace Db4objects.Db4o.Typehandlers
 
 		public virtual void CollectIDs(QueryingReadContext context)
 		{
-			//TODO: We MUST read element typehandler id here!!
+			ITypeHandler4 elementHandler = ReadElementTypeHandler(context, context);
 			int elementCount = context.ReadInt();
-			ITypeHandler4 elementHandler = UntypedObjectHandlerFrom(context);
 			for (int i = 0; i < elementCount; i++)
 			{
 				context.ReadId(elementHandler);
