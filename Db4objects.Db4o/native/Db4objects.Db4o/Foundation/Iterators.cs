@@ -42,5 +42,16 @@ namespace Db4objects.Db4o.Foundation
 				yield return new Tuple<A, B>(a, bsEnumerator.Current);
 			}
 		}
+
+		public static IEnumerable Unique(IEnumerable enumerable)
+		{
+			Hashtable seen = new Hashtable();
+			foreach (object item in enumerable)
+			{
+				if (seen.ContainsKey(item)) continue;
+				seen.Add(item, item);
+				yield return item;
+			}
+		}
 	}
 }

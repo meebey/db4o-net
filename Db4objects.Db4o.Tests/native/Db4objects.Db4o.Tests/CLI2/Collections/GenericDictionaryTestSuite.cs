@@ -33,9 +33,14 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				Type keyType = (Type) Iterators.Next(tupleEnumerator);
 				Type valueType = (Type)Iterators.Next(tupleEnumerator);
 				IDictionary dictionary = (IDictionary)Activator.CreateInstance(dictionaryType.MakeGenericType(keyType, valueType));
-				Populate(dictionary, ValuesOf(keyType), ValuesOf(valueType));
+				Populate(dictionary, UniqueValuesOf(keyType), ValuesOf(valueType));
 				yield return dictionary;
 			}
+		}
+
+		private IEnumerable UniqueValuesOf(Type keyType)
+		{
+			return Iterators.Unique(ValuesOf(keyType));
 		}
 
 		private IEnumerable ValuesOf(Type type)
