@@ -38,6 +38,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				AssertMapContent(item);
 			}
 
+			protected override void AssertPlainContent(object item)
+			{
+				AssertPlainMapContent((IDictionary)item);
+			}
+
 			protected override AbstractItemFactory ItemFactory()
 			{
 				return (AbstractItemFactory)MapTypeHandlerTestVariables.MapImplementation.Value;
@@ -61,72 +66,6 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				map.Add(element, Values()[0]);
 				q.Constrain(item);
 				AssertQueryResult(q, successful);
-			}
-
-			//TODO: remove when COR-1311 solved 
-			/// <exception cref="Exception"></exception>
-			public override void TestSuccessfulQuery()
-			{
-				if (Elements()[0] is ListTypeHandlerTestVariables.FirstClassElement)
-				{
-					return;
-				}
-				base.TestSuccessfulQuery();
-			}
-
-			//TODO: remove when COR-1311 solved 
-			/// <exception cref="Exception"></exception>
-			public override void TestFailingQuery()
-			{
-				if (Elements()[0] is ListTypeHandlerTestVariables.FirstClassElement)
-				{
-					return;
-				}
-				base.TestFailingQuery();
-			}
-
-			//TODO: remove when COR-1311 solved 
-			/// <exception cref="Exception"></exception>
-			public override void TestFailingContainsQuery()
-			{
-				if (Elements()[0] is ListTypeHandlerTestVariables.FirstClassElement)
-				{
-					return;
-				}
-				base.TestFailingContainsQuery();
-			}
-
-			//TODO: remove when COR-1311 solved 
-			/// <exception cref="Exception"></exception>
-			public override void TestFailingCompareItems()
-			{
-				if (Elements()[0] is ListTypeHandlerTestVariables.FirstClassElement)
-				{
-					return;
-				}
-				base.TestFailingCompareItems();
-			}
-
-			//TODO: remove when COR-1311 solved 
-			/// <exception cref="Exception"></exception>
-			public override void TestCompareItems()
-			{
-				if (Elements()[0] is ListTypeHandlerTestVariables.FirstClassElement)
-				{
-					return;
-				}
-				base.TestCompareItems();
-			}
-
-			//TODO: remove when COR-1311 solved 
-			/// <exception cref="Exception"></exception>
-			public override void TestSuccessfulContainsQuery()
-			{
-				if (Elements()[0] is ListTypeHandlerTestVariables.FirstClassElement)
-				{
-					return;
-				}
-				base.TestSuccessfulContainsQuery();
 			}
 		}
 	}

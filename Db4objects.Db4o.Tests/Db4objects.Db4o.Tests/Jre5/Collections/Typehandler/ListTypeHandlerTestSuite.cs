@@ -58,6 +58,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				AssertListContent(item);
 			}
 
+			protected override void AssertPlainContent(object item)
+			{
+				AssertPlainListContent((IList)item);
+			}
+
 			protected override void AssertCompareItems(object element, bool successful)
 			{
 				IQuery q = NewQuery();

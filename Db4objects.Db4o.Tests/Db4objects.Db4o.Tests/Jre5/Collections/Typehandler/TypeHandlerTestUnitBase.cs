@@ -24,6 +24,8 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		protected abstract void AssertContent(object item);
 
+		protected abstract void AssertPlainContent(object coll);
+
 		protected abstract ListTypeHandlerTestElementsSpec ElementsSpec();
 
 		/// <exception cref="Exception"></exception>
@@ -156,7 +158,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		protected virtual void AssertListContent(object item)
 		{
-			IList list = ListFromItem(item);
+			AssertPlainContent(ListFromItem(item));
+		}
+
+		protected virtual void AssertPlainListContent(IList list)
+		{
 			Assert.AreEqual(ItemFactory().ContainerClass(), list.GetType());
 			Assert.AreEqual(ExpectedElementCount(), list.Count);
 			for (int eltIdx = 0; eltIdx < Elements().Length; eltIdx++)
@@ -168,7 +174,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		protected virtual void AssertMapContent(object item)
 		{
-			IDictionary map = MapFromItem(item);
+			AssertPlainMapContent(MapFromItem(item));
+		}
+
+		protected virtual void AssertPlainMapContent(IDictionary map)
+		{
 			Assert.AreEqual(ItemFactory().ContainerClass(), map.GetType());
 			Assert.AreEqual(Elements().Length, map.Count);
 			for (int eltIdx = 0; eltIdx < Elements().Length; eltIdx++)

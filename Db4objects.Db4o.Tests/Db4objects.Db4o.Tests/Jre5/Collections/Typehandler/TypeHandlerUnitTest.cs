@@ -1,7 +1,9 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Jre5.Collections.Typehandler;
 
@@ -35,6 +37,14 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			Type itemClass = ItemFactory().ItemClass();
 			object item = RetrieveOnlyInstance(itemClass);
 			return item;
+		}
+
+		/// <exception cref="Exception"></exception>
+		public virtual void TestDefragRetrieveInstance()
+		{
+			Defragment();
+			object item = RetrieveItemInstance();
+			AssertContent(item);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -82,6 +92,25 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			Db().Purge();
 			Db4oAssert.PersistedCount(0, ItemFactory().ItemClass());
 			AssertFirstClassElementCount(0);
+		}
+
+		public virtual void TestJoin()
+		{
+			IQuery q = NewQuery(ItemFactory().ItemClass());
+			q.Descend(ItemFactory().FieldName()).Constrain(Elements()[0]).And(q.Descend(ItemFactory
+				().FieldName()).Constrain(Elements()[1]));
+			AssertQueryResult(q, true);
+		}
+
+		// TODO
+		public virtual void _testSubQuery()
+		{
+			IQuery q = NewQuery(ItemFactory().ItemClass());
+			IQuery qq = q.Descend(ItemFactory().FieldName());
+			IConstraint constraint = qq.Constrain(Elements()[0]);
+			IObjectSet set = qq.Execute();
+			Assert.AreEqual(1, set.Count);
+			AssertPlainContent(set.Next());
 		}
 
 		protected virtual void AssertFirstClassElementCount(int expected)

@@ -29,20 +29,24 @@ namespace Db4objects.Db4o.Typehandlers
 		public virtual void Write(IWriteContext context, object obj)
 		{
 			IDictionary map = (IDictionary)obj;
+			KeyValueHandlerPair handlers = DetectKeyValueTypeHandlers(Container(context), map
+				);
+			WriteTypeHandlerIds(context, handlers);
 			WriteElementCount(context, map);
-			WriteElements(context, map);
+			WriteElements(context, map, handlers);
 		}
 
 		public virtual object Read(IReadContext context)
 		{
 			UnmarshallingContext unmarshallingContext = (UnmarshallingContext)context;
 			IDictionary map = (IDictionary)unmarshallingContext.PersistentObject();
+			map.Clear();
+			KeyValueHandlerPair handlers = ReadKeyValueTypeHandlers(context, context);
 			int elementCount = context.ReadInt();
-			ITypeHandler4 elementHandler = ElementTypeHandler(context, map);
 			for (int i = 0; i < elementCount; i++)
 			{
-				object key = unmarshallingContext.ReadActivatedObject(elementHandler);
-				object value = context.ReadObject(elementHandler);
+				object key = unmarshallingContext.ReadActivatedObject(handlers._keyHandler);
+				object value = context.ReadObject(handlers._valueHandler);
 				if (key != null && value != null)
 				{
 					map.Add(key, value);
@@ -56,28 +60,21 @@ namespace Db4objects.Db4o.Typehandlers
 			context.WriteInt(map.Count);
 		}
 
-		private void WriteElements(IWriteContext context, IDictionary map)
+		private void WriteElements(IWriteContext context, IDictionary map, KeyValueHandlerPair
+			 handlers)
 		{
-			ITypeHandler4 elementHandler = ElementTypeHandler(context, map);
 			IEnumerator elements = map.Keys.GetEnumerator();
 			while (elements.MoveNext())
 			{
 				object key = elements.Current;
-				context.WriteObject(elementHandler, key);
-				context.WriteObject(elementHandler, map[key]);
+				context.WriteObject(handlers._keyHandler, key);
+				context.WriteObject(handlers._valueHandler, map[key]);
 			}
 		}
 
 		private ObjectContainerBase Container(IContext context)
 		{
 			return ((IInternalObjectContainer)context.ObjectContainer()).Container();
-		}
-
-		private ITypeHandler4 ElementTypeHandler(IContext context, IDictionary map)
-		{
-			// TODO: If all elements in the map are of one type,
-			//       it is possible to use a more specific handler
-			return Container(context).Handlers().UntypedObjectHandler();
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
@@ -87,23 +84,23 @@ namespace Db4objects.Db4o.Typehandlers
 			{
 				return;
 			}
-			ITypeHandler4 handler = ElementTypeHandler(context, null);
+			KeyValueHandlerPair handlers = ReadKeyValueTypeHandlers(context, context);
 			int elementCount = context.ReadInt();
 			for (int i = elementCount; i > 0; i--)
 			{
-				handler.Delete(context);
-				handler.Delete(context);
+				handlers._keyHandler.Delete(context);
+				handlers._valueHandler.Delete(context);
 			}
 		}
 
 		public virtual void Defragment(IDefragmentContext context)
 		{
-			ITypeHandler4 handler = ElementTypeHandler(context, null);
+			KeyValueHandlerPair handlers = ReadKeyValueTypeHandlers(context, context);
 			int elementCount = context.ReadInt();
 			for (int i = elementCount; i > 0; i--)
 			{
-				context.Defragment(handler);
-				context.Defragment(handler);
+				context.Defragment(handlers._keyHandler);
+				context.Defragment(handlers._valueHandler);
 			}
 		}
 
@@ -126,14 +123,37 @@ namespace Db4objects.Db4o.Typehandlers
 
 		public virtual void CollectIDs(QueryingReadContext context)
 		{
+			KeyValueHandlerPair handlers = ReadKeyValueTypeHandlers(context, context);
 			int elementCount = context.ReadInt();
-			ITypeHandler4 elementHandler = context.Container().Handlers().UntypedObjectHandler
-				();
 			for (int i = 0; i < elementCount; i++)
 			{
-				context.ReadId(elementHandler);
-				context.SkipId(elementHandler);
+				context.ReadId(handlers._keyHandler);
+				context.SkipId(handlers._valueHandler);
 			}
+		}
+
+		private void WriteTypeHandlerIds(IWriteContext context, KeyValueHandlerPair handlers
+			)
+		{
+			context.WriteInt(0);
+			context.WriteInt(0);
+		}
+
+		private KeyValueHandlerPair ReadKeyValueTypeHandlers(IReadBuffer buffer, IContext
+			 context)
+		{
+			buffer.ReadInt();
+			buffer.ReadInt();
+			ITypeHandler4 untypedHandler = Container(context).Handlers().UntypedObjectHandler
+				();
+			return new KeyValueHandlerPair(untypedHandler, untypedHandler);
+		}
+
+		private KeyValueHandlerPair DetectKeyValueTypeHandlers(IInternalObjectContainer container
+			, IDictionary map)
+		{
+			ITypeHandler4 untypedHandler = container.Handlers().UntypedObjectHandler();
+			return new KeyValueHandlerPair(untypedHandler, untypedHandler);
 		}
 	}
 }

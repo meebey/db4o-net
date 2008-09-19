@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
         {
             
             // AssertSingleNullTypeHandlerAspect(typeof(ArrayList));
-			AssertSingleTypeHandlerAspect(typeof(ArrayList), typeof(ListTypeHandler));
+			AssertSingleTypeHandlerAspect(typeof(ArrayList), typeof(CollectionTypeHandler));
 			AssertSingleTypeHandlerAspect(typeof(List<object>), typeof(GenericCollectionTypeHandler));
             
         }

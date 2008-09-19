@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		protected override void Configure(IConfiguration config)
 		{
 			config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(ArrayList))
-				, new ListTypeHandler());
+				, new CollectionTypeHandler());
 		}
 
 		public virtual void TestTypedItem()

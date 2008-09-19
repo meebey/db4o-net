@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal
     {
         public TypeHandlerConfigurationDotNet(Config4Impl config) : base(config)
         {
-            ListTypeHandler(new ListTypeHandler());
+            ListTypeHandler(new CollectionTypeHandler());
             MapTypeHandler(new MapTypeHandler());
 
         }

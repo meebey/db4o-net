@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				(true);
 			config.ObjectClass(typeof(ArrayList)).CascadeOnDelete(true);
 			config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(ArrayList))
-				, new ListTypeHandler());
+				, new CollectionTypeHandler());
 		}
 
 		/// <exception cref="Exception"></exception>
