@@ -10,9 +10,12 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 	{
 		public void AssertCollection(object item)
 		{
-			IEnumerable actual = CollectionFor(item);
-			IEnumerable expected = ElementSpec<T>()._elements;
+			AssertPlainContent(CollectionFor(item));
+		}
 
+		public void AssertPlainContent(IEnumerable actual)
+		{
+			IEnumerable expected = ElementSpec<T>()._elements;
 			Iterator4Assert.AreEqual(expected.GetEnumerator(), actual.GetEnumerator());
 		}
 
@@ -107,6 +110,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 	internal interface ICollectionHelper
 	{
 		void AssertCollection(object item);
+		void AssertPlainContent(IEnumerable enumerable);
 
 		object NewItem();
 		object NewItem(object element);

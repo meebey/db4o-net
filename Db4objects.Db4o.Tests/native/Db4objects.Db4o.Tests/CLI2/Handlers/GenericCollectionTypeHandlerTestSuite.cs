@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2008   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Collections;
+using Db4objects.Db4o.Query;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
@@ -31,6 +32,17 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
 	class GenericCollectionTypeHandlerTestUnit : GenericCollectionTypeHandlerTestUnitBase
 	{
+		public void _testSubQuery()
+		{
+			IQuery q = NewQuery(_helper.ItemType);
+			IQuery qq = q.Descend(GenericCollectionTestFactory.FieldName);
+			IConstraint constraint = qq.Constrain(FirstElement(_helper.Elements));
+			IObjectSet set = qq.Execute();
+			Assert.AreEqual(1, set.Count);
+
+			_helper.AssertPlainContent((IEnumerable) set[0]);
+		}
+
 		public void TestDefrag()
 		{
 			Defragment();
