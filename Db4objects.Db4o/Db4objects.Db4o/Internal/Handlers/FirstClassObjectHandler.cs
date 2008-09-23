@@ -453,6 +453,73 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// <exception cref="Db4oIOException"></exception>
 		public virtual void CollectIDs(QueryingReadContext context)
 		{
+			if (CollectIDsByTypehandlerAspect(context))
+			{
+				return;
+			}
+			CollectIDsByInstantiatingCollection(context);
+		}
+
+		/// <exception cref="Db4oIOException"></exception>
+		private bool CollectIDsByTypehandlerAspect(QueryingReadContext context)
+		{
+			BooleanByRef aspectFound = new BooleanByRef(false);
+			CollectIdContext subContext = CollectIdContext.ForID(context.Transaction(), context
+				.Collector(), context.CollectionID());
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_324
+				(this, aspectFound, subContext);
+			TraverseAllAspects(subContext, command);
+			return aspectFound.value;
+		}
+
+		private sealed class _TraverseAspectCommand_324 : FirstClassObjectHandler.TraverseAspectCommand
+		{
+			public _TraverseAspectCommand_324(FirstClassObjectHandler _enclosing, BooleanByRef
+				 aspectFound, CollectIdContext subContext)
+			{
+				this._enclosing = _enclosing;
+				this.aspectFound = aspectFound;
+				this.subContext = subContext;
+			}
+
+			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				, ClassMetadata containingClass)
+			{
+				if (isNull)
+				{
+					return;
+				}
+				if (this._enclosing.IsCollectIdTypehandlerAspect(aspect))
+				{
+					aspectFound.value = true;
+					aspect.CollectIDs(subContext);
+				}
+				else
+				{
+					aspect.IncrementOffset(subContext);
+				}
+			}
+
+			private readonly FirstClassObjectHandler _enclosing;
+
+			private readonly BooleanByRef aspectFound;
+
+			private readonly CollectIdContext subContext;
+		}
+
+		private bool IsCollectIdTypehandlerAspect(ClassAspect aspect)
+		{
+			if (!(aspect is TypeHandlerAspect))
+			{
+				return false;
+			}
+			ITypeHandler4 typehandler = ((TypeHandlerAspect)aspect)._typeHandler;
+			return typehandler is IFirstClassHandler;
+		}
+
+		/// <exception cref="Db4oIOException"></exception>
+		private void CollectIDsByInstantiatingCollection(QueryingReadContext context)
+		{
 			int id = context.CollectionID();
 			if (id == 0)
 			{
@@ -469,12 +536,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			int depth = ClassMetadata().AdjustDepthToBorders(2);
 			container.Activate(transaction, obj, container.ActivationDepthProvider().ActivationDepth
 				(depth, ActivationMode.Activate));
-			Platform4.ForEachCollectionElement(obj, new _IVisitor4_330(context));
+			Platform4.ForEachCollectionElement(obj, new _IVisitor4_365(context));
 		}
 
-		private sealed class _IVisitor4_330 : IVisitor4
+		private sealed class _IVisitor4_365 : IVisitor4
 		{
-			public _IVisitor4_330(QueryingReadContext context)
+			public _IVisitor4_365(QueryingReadContext context)
 			{
 				this.context = context;
 			}
@@ -489,14 +556,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void ReadVirtualAttributes(ObjectReferenceContext context)
 		{
-			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_339
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_373
 				(context);
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_339 : FirstClassObjectHandler.TraverseAspectCommand
+		private sealed class _TraverseAspectCommand_373 : FirstClassObjectHandler.TraverseAspectCommand
 		{
-			public _TraverseAspectCommand_339(ObjectReferenceContext context)
+			public _TraverseAspectCommand_373(ObjectReferenceContext context)
 			{
 				this.context = context;
 			}
@@ -522,14 +589,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void AddFieldIndices(ObjectIdContextImpl context, Slot oldSlot)
 		{
-			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_354
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_388
 				(context, oldSlot);
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_354 : FirstClassObjectHandler.TraverseAspectCommand
+		private sealed class _TraverseAspectCommand_388 : FirstClassObjectHandler.TraverseAspectCommand
 		{
-			public _TraverseAspectCommand_354(ObjectIdContextImpl context, Slot oldSlot)
+			public _TraverseAspectCommand_388(ObjectIdContextImpl context, Slot oldSlot)
 			{
 				this.context = context;
 				this.oldSlot = oldSlot;
@@ -563,14 +630,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void DeleteMembers(DeleteContextImpl context, bool isUpdate)
 		{
-			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_372
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_406
 				(context, isUpdate);
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_372 : FirstClassObjectHandler.TraverseAspectCommand
+		private sealed class _TraverseAspectCommand_406 : FirstClassObjectHandler.TraverseAspectCommand
 		{
-			public _TraverseAspectCommand_372(DeleteContextImpl context, bool isUpdate)
+			public _TraverseAspectCommand_406(DeleteContextImpl context, bool isUpdate)
 			{
 				this.context = context;
 				this.isUpdate = isUpdate;
@@ -599,15 +666,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual bool SeekToField(ObjectHeaderContext context, FieldMetadata field)
 		{
 			BooleanByRef found = new BooleanByRef(false);
-			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_389
+			FirstClassObjectHandler.TraverseAspectCommand command = new _TraverseAspectCommand_423
 				(field, found, context);
 			TraverseAllAspects(context, command);
 			return found.value;
 		}
 
-		private sealed class _TraverseAspectCommand_389 : FirstClassObjectHandler.TraverseAspectCommand
+		private sealed class _TraverseAspectCommand_423 : FirstClassObjectHandler.TraverseAspectCommand
 		{
-			public _TraverseAspectCommand_389(FieldMetadata field, BooleanByRef found, ObjectHeaderContext
+			public _TraverseAspectCommand_423(FieldMetadata field, BooleanByRef found, ObjectHeaderContext
 				 context)
 			{
 				this.field = field;

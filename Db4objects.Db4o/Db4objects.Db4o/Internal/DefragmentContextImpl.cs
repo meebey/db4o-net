@@ -4,6 +4,7 @@ using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
@@ -196,11 +197,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void IncrementStringOffset(LatinStringIO sio, ByteArrayBuffer buffer)
 		{
-			int length = buffer.ReadInt();
-			if (length > 0)
-			{
-				sio.Read(buffer, length);
-			}
+			sio.ReadLengthAndString(buffer);
 		}
 
 		public ByteArrayBuffer SourceBuffer()

@@ -4,7 +4,6 @@ using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Events;
 
@@ -50,8 +49,12 @@ namespace Db4objects.Db4o.Events
 		private static EventRegistryImpl NewEventRegistryFor(IInternalObjectContainer container
 			)
 		{
-			return (container is ClientObjectContainer) ? new ClientEventRegistryImpl(container
-				) : new EventRegistryImpl(container);
+			if (container is PartialObjectContainer && ((PartialObjectContainer)container).IsClient
+				())
+			{
+				return new ClientEventRegistryImpl(container);
+			}
+			return new EventRegistryImpl(container);
 		}
 	}
 }

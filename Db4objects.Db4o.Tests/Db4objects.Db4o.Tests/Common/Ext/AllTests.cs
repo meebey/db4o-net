@@ -10,13 +10,13 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Ext.AllTests().RunSolo();
+			new Db4objects.Db4o.Tests.Common.Ext.AllTests().RunAll();
 		}
 
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(Db4oDatabaseTestCase), typeof(RefreshTestCase), typeof(
-				StoredClassTestCase) };
+				StoredClassTestCase), typeof(StoredClassInstanceCountTestCase) };
 		}
 	}
 }

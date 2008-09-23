@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall

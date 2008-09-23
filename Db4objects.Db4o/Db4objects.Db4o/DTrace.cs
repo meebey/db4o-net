@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Slots;
 using Sharpen.IO;

@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Foundation
 	/// <summary>Iterator primitives (concat, map, reduce, filter, etc...).</summary>
 	/// <remarks>Iterator primitives (concat, map, reduce, filter, etc...).</remarks>
 	/// <exclude></exclude>
-	public class Iterators
+	public partial class Iterators
 	{
 		/// <summary>
 		/// Constant indicating that the current element in a
@@ -20,9 +20,9 @@ namespace Db4objects.Db4o.Foundation
 		/// </summary>
 		public static readonly object Skip = new object();
 
-		private sealed class _IEnumerator_18 : IEnumerator
+		private sealed class _IEnumerator_20 : IEnumerator
 		{
-			public _IEnumerator_18()
+			public _IEnumerator_20()
 			{
 			}
 
@@ -45,11 +45,11 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		public static readonly IEnumerator EmptyIterator = new _IEnumerator_18();
+		public static readonly IEnumerator EmptyIterator = new _IEnumerator_20();
 
-		private sealed class _IEnumerable_32 : IEnumerable
+		private sealed class _IEnumerable_34 : IEnumerable
 		{
-			public _IEnumerable_32()
+			public _IEnumerable_34()
 			{
 			}
 
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		public static readonly IEnumerable EmptyIterable = new _IEnumerable_32();
+		public static readonly IEnumerable EmptyIterable = new _IEnumerable_34();
 
 		internal static readonly object NoElement = new object();
 
@@ -71,12 +71,12 @@ namespace Db4objects.Db4o.Foundation
 		/// <param name="iterable">the iterable to be enumerated</param>
 		public static IEnumerable Enumerate(IEnumerable iterable)
 		{
-			return new _IEnumerable_46(iterable);
+			return new _IEnumerable_48(iterable);
 		}
 
-		private sealed class _IEnumerable_46 : IEnumerable
+		private sealed class _IEnumerable_48 : IEnumerable
 		{
-			public _IEnumerable_46(IEnumerable iterable)
+			public _IEnumerable_48(IEnumerable iterable)
 			{
 				this.iterable = iterable;
 			}
@@ -148,6 +148,29 @@ namespace Db4objects.Db4o.Foundation
 			return Filter(new ArrayIterator4(array), predicate);
 		}
 
+		public static IEnumerable Filter(IEnumerable source, IPredicate4 predicate)
+		{
+			return new _IEnumerable_103(source, predicate);
+		}
+
+		private sealed class _IEnumerable_103 : IEnumerable
+		{
+			public _IEnumerable_103(IEnumerable source, IPredicate4 predicate)
+			{
+				this.source = source;
+				this.predicate = predicate;
+			}
+
+			public IEnumerator GetEnumerator()
+			{
+				return Iterators.Filter(source.GetEnumerator(), predicate);
+			}
+
+			private readonly IEnumerable source;
+
+			private readonly IPredicate4 predicate;
+		}
+
 		public static IEnumerator Filter(IEnumerator iterator, IPredicate4 predicate)
 		{
 			return new FilteredIterator(iterator, predicate);
@@ -155,12 +178,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerable Cons(object element)
 		{
-			return new _IEnumerable_105(element);
+			return new _IEnumerable_115(element);
 		}
 
-		private sealed class _IEnumerable_105 : IEnumerable
+		private sealed class _IEnumerable_115 : IEnumerable
 		{
-			public _IEnumerable_105(object element)
+			public _IEnumerable_115(object element)
 			{
 				this.element = element;
 			}
@@ -217,6 +240,11 @@ namespace Db4objects.Db4o.Foundation
 			return Join(i, "[", "]", ", ");
 		}
 
+		public static string Join(IEnumerable i, string separator)
+		{
+			return Join(i.GetEnumerator(), separator);
+		}
+
 		public static string Join(IEnumerator i, string separator)
 		{
 			return Join(i, string.Empty, string.Empty, separator);
@@ -242,12 +270,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static object[] ToArray(IEnumerator tests)
 		{
-			return ToArray(tests, new _IArrayFactory_167());
+			return ToArray(tests, new _IArrayFactory_181());
 		}
 
-		private sealed class _IArrayFactory_167 : IArrayFactory
+		private sealed class _IArrayFactory_181 : IArrayFactory
 		{
-			public _IArrayFactory_167()
+			public _IArrayFactory_181()
 			{
 			}
 
@@ -280,12 +308,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerable Map(IEnumerable iterable, IFunction4 function)
 		{
-			return new _IEnumerable_191(iterable, function);
+			return new _IEnumerable_205(iterable, function);
 		}
 
-		private sealed class _IEnumerable_191 : IEnumerable
+		private sealed class _IEnumerable_205 : IEnumerable
 		{
-			public _IEnumerable_191(IEnumerable iterable, IFunction4 function)
+			public _IEnumerable_205(IEnumerable iterable, IFunction4 function)
 			{
 				this.iterable = iterable;
 				this.function = function;
@@ -303,13 +331,13 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerable CrossProduct(IEnumerable iterables)
 		{
-			return CrossProduct((IEnumerable[])ToArray(iterables.GetEnumerator(), new _IArrayFactory_199
+			return CrossProduct((IEnumerable[])ToArray(iterables.GetEnumerator(), new _IArrayFactory_213
 				()));
 		}
 
-		private sealed class _IArrayFactory_199 : IArrayFactory
+		private sealed class _IArrayFactory_213 : IArrayFactory
 		{
-			public _IArrayFactory_199()
+			public _IArrayFactory_213()
 			{
 			}
 
@@ -329,14 +357,14 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (level == iterables.Length - 1)
 			{
-				return Map(iterables[level], new _IFunction4_214(row));
+				return Map(iterables[level], new _IFunction4_228(row));
 			}
-			return ConcatMap(iterables[level], new _IFunction4_222(iterables, level, row));
+			return ConcatMap(iterables[level], new _IFunction4_236(iterables, level, row));
 		}
 
-		private sealed class _IFunction4_214 : IFunction4
+		private sealed class _IFunction4_228 : IFunction4
 		{
-			public _IFunction4_214(IEnumerable row)
+			public _IFunction4_228(IEnumerable row)
 			{
 				this.row = row;
 			}
@@ -349,9 +377,9 @@ namespace Db4objects.Db4o.Foundation
 			private readonly IEnumerable row;
 		}
 
-		private sealed class _IFunction4_222 : IFunction4
+		private sealed class _IFunction4_236 : IFunction4
 		{
-			public _IFunction4_222(IEnumerable[] iterables, int level, IEnumerable row)
+			public _IFunction4_236(IEnumerable[] iterables, int level, IEnumerable row)
 			{
 				this.iterables = iterables;
 				this.level = level;
@@ -372,12 +400,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerable Iterable(object[] objects)
 		{
-			return new _IEnumerable_230(objects);
+			return new _IEnumerable_244(objects);
 		}
 
-		private sealed class _IEnumerable_230 : IEnumerable
+		private sealed class _IEnumerable_244 : IEnumerable
 		{
-			public _IEnumerable_230(object[] objects)
+			public _IEnumerable_244(object[] objects)
 			{
 				this.objects = objects;
 			}
@@ -397,12 +425,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerable Iterable(IEnumerator iterator)
 		{
-			return new _IEnumerable_242(iterator);
+			return new _IEnumerable_256(iterator);
 		}
 
-		private sealed class _IEnumerable_242 : IEnumerable
+		private sealed class _IEnumerable_256 : IEnumerable
 		{
-			public _IEnumerable_242(IEnumerator iterator)
+			public _IEnumerable_256(IEnumerator iterator)
 			{
 				this.iterator = iterator;
 			}

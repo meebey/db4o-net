@@ -433,11 +433,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (!Alive())
 			{
+				IncrementOffset(context.Buffer());
 				return;
 			}
 			ITypeHandler4 handler = Handlers4.CorrectHandlerVersion(context, _handler);
 			if (!(handler is IFirstClassHandler))
 			{
+				IncrementOffset(context.Buffer());
 				return;
 			}
 			if (handler is ClassMetadata)
@@ -461,13 +463,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_399
+			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_401
 				(handler, queryingReadContext));
 		}
 
-		private sealed class _IClosure4_399 : IClosure4
+		private sealed class _IClosure4_401 : IClosure4
 		{
-			public _IClosure4_399(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+			public _IClosure4_401(ITypeHandler4 handler, QueryingReadContext queryingReadContext
 				)
 			{
 				this.handler = handler;
@@ -565,7 +567,7 @@ namespace Db4objects.Db4o.Internal
 				StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 				DeleteContextImpl childContext = new DeleteContextImpl(context, GetStoredType(), 
 					_config);
-				context.SlotFormat().DoWithSlotIndirection(buffer, _handler, new _IClosure4_468(this
+				context.SlotFormat().DoWithSlotIndirection(buffer, _handler, new _IClosure4_470(this
 					, childContext));
 			}
 			catch (CorruptionException exc)
@@ -574,9 +576,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_468 : IClosure4
+		private sealed class _IClosure4_470 : IClosure4
 		{
-			public _IClosure4_468(FieldMetadata _enclosing, DeleteContextImpl childContext)
+			public _IClosure4_470(FieldMetadata _enclosing, DeleteContextImpl childContext)
 			{
 				this._enclosing = _enclosing;
 				this.childContext = childContext;
@@ -848,12 +850,17 @@ namespace Db4objects.Db4o.Internal
 
 		private bool CheckAlive(IAspectVersionContext context)
 		{
+			return CheckAlive(context, true);
+		}
+
+		private bool CheckAlive(IAspectVersionContext context, bool doIncrement)
+		{
 			if (!CheckEnabled(context))
 			{
 				return false;
 			}
 			bool alive = Alive();
-			if (!alive)
+			if (!alive && doIncrement)
 			{
 				IncrementOffset((IReadBuffer)context);
 			}
@@ -1063,8 +1070,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object Read(IInternalReadContext context)
 		{
-			if (!CheckAlive((IAspectVersionContext)context))
+			bool alive = CheckAlive((IAspectVersionContext)context, false);
+			if (!alive && !Updating())
 			{
+				IncrementOffset(context);
 				return null;
 			}
 			return context.Read(_handler);
@@ -1154,13 +1163,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_939(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_947(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_939 : IVisitor4
+		private sealed class _IVisitor4_947 : IVisitor4
 		{
-			public _IVisitor4_939(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_947(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1377,13 +1386,13 @@ namespace Db4objects.Db4o.Internal
 		public override void DefragAspect(IDefragmentContext context)
 		{
 			ITypeHandler4 typeHandler = Handlers4.CorrectHandlerVersion(context, _handler);
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1100
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1108
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1100 : IClosure4
+		private sealed class _IClosure4_1108 : IClosure4
 		{
-			public _IClosure4_1100(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1108(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

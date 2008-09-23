@@ -301,14 +301,14 @@ namespace Db4objects.Db4o.Defragment
 
 		private static bool ParentHasIndex(ClassMetadata curClass)
 		{
-			ClassMetadata parentClass = curClass.i_ancestor;
+			ClassMetadata parentClass = curClass.GetAncestor();
 			while (parentClass != null)
 			{
 				if (parentClass.HasClassIndex())
 				{
 					return true;
 				}
-				parentClass = parentClass.i_ancestor;
+				parentClass = parentClass.GetAncestor();
 			}
 			return false;
 		}

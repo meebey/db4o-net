@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Types;
 using Sharpen;

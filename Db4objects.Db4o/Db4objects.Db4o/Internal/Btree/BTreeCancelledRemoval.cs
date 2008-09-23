@@ -40,9 +40,15 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _newKey;
 		}
 
-		protected override void AdjustSizeOnRemovalByOtherTransaction(BTree btree)
+		protected override void AdjustSizeOnRemovalByOtherTransaction(BTree btree, BTreeNode
+			 node)
 		{
 		}
+
 		// The other transaction reduces the size, this entry ignores.
+		protected override int SizeDiff()
+		{
+			return 1;
+		}
 	}
 }

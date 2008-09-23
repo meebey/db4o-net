@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Diagnostic;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
@@ -105,7 +106,8 @@ namespace Db4objects.Db4o.Internal
 			// for TransportObjectContainer
 			// see comment in classReflectorForHandler
 			_handlerVersions = new HandlerVersionRegistry(this);
-			_stringIO = LatinStringIO.ForEncoding(stringEncoding);
+			_stringIO = BuiltInStringEncoding.StringIoForEncoding(stringEncoding, container.ConfigImpl
+				().StringEncoding());
 			_container = container;
 			container._handlers = this;
 			_reflector = reflector;

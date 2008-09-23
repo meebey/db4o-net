@@ -23,9 +23,8 @@ namespace Db4oUnit.Fixtures
 			_values = values;
 		}
 
-		public SubjectFixtureProvider(object[] values)
+		public SubjectFixtureProvider(object[] values) : this(Iterators.Iterable(values))
 		{
-			_values = Iterators.Iterable(values);
 		}
 
 		public virtual FixtureVariable Variable()

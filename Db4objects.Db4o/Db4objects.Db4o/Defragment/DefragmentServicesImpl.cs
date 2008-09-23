@@ -13,6 +13,7 @@ using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Marshall;
@@ -40,9 +41,9 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private sealed class _DbSelector_38 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_39 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_38()
+			public _DbSelector_39()
 			{
 			}
 
@@ -52,12 +53,12 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_38
+		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_39
 			();
 
-		private sealed class _DbSelector_44 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_45 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_44()
+			public _DbSelector_45()
 			{
 			}
 
@@ -67,7 +68,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_44
+		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_45
 			();
 
 		private const long ClasscollectionPointerAddress = 2 + 2 * Const4.IntLength;
@@ -412,14 +413,19 @@ namespace Db4objects.Db4o.Defragment
 				return cachedHasFieldIndex.DefiniteYes();
 			}
 			BooleanByRef hasFieldIndex = new BooleanByRef(false);
-			clazz.ForEachDeclaredField(new _IProcedure4_319(hasFieldIndex));
+			ClassMetadata curClazz = clazz;
+			while (!hasFieldIndex.value && curClazz != null)
+			{
+				curClazz.ForEachDeclaredField(new _IProcedure4_322(hasFieldIndex));
+				curClazz = curClazz.GetAncestor();
+			}
 			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex.value));
 			return hasFieldIndex.value;
 		}
 
-		private sealed class _IProcedure4_319 : IProcedure4
+		private sealed class _IProcedure4_322 : IProcedure4
 		{
-			public _IProcedure4_319(BooleanByRef hasFieldIndex)
+			public _IProcedure4_322(BooleanByRef hasFieldIndex)
 			{
 				this.hasFieldIndex = hasFieldIndex;
 			}

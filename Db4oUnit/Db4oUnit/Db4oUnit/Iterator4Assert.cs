@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o.Foundation;
@@ -8,6 +9,11 @@ namespace Db4oUnit
 {
 	public class Iterator4Assert
 	{
+		public static void AreEqual(IEnumerable expected, IEnumerable actual)
+		{
+			AreEqual(expected.GetEnumerator(), actual.GetEnumerator());
+		}
+
 		public static void AreEqual(IEnumerator expected, IEnumerator actual)
 		{
 			if (null == expected)
@@ -60,6 +66,26 @@ namespace Db4oUnit
 				}
 			}
 			Assert.IsTrue(allExpected.IsEmpty(), allExpected.ToString());
+		}
+
+		public static void AreInstanceOf(Type expectedType, IEnumerable values)
+		{
+			for (IEnumerator i = values.GetEnumerator(); i.MoveNext(); )
+			{
+				Assert.IsInstanceOf(expectedType, i.Current);
+			}
+		}
+
+		public static void All(IEnumerable values, IPredicate4 condition)
+		{
+			IEnumerator iterator = values.GetEnumerator();
+			while (iterator.MoveNext())
+			{
+				if (!condition.Match(iterator.Current))
+				{
+					Assert.Fail("Condition does not hold for for value '" + iterator.Current + "'.");
+				}
+			}
 		}
 	}
 }

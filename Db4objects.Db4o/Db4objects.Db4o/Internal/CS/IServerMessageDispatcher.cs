@@ -43,5 +43,7 @@ namespace Db4objects.Db4o.Internal.CS
 		bool Write(Msg msg);
 
 		CallbackObjectInfoCollections CommittedInfo();
+
+		Db4objects.Db4o.Internal.CS.ClassInfoHelper ClassInfoHelper();
 	}
 }

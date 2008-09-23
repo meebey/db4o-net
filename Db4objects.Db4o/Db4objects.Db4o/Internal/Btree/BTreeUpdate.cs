@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		protected abstract void Committed(BTree btree);
 
-		public override object Commit(Transaction trans, BTree btree)
+		public override object Commit(Transaction trans, BTree btree, BTreeNode node)
 		{
 			BTreeUpdate patch = (BTreeUpdate)ForTransaction(trans);
 			if (patch is BTreeCancelledRemoval)
@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				if (patch is BTreeRemove)
 				{
-					RemovedBy(trans, btree);
+					RemovedBy(trans, btree, node);
 					patch.Committed(btree);
 					return No4.Instance;
 				}
@@ -174,18 +174,31 @@ namespace Db4objects.Db4o.Internal.Btree
 			return this;
 		}
 
-		public virtual void RemovedBy(Transaction trans, BTree btree)
+		public virtual void RemovedBy(Transaction trans, BTree btree, BTreeNode node)
 		{
 			if (trans != _transaction)
 			{
-				AdjustSizeOnRemovalByOtherTransaction(btree);
+				AdjustSizeOnRemovalByOtherTransaction(btree, node);
 			}
 			if (HasNext())
 			{
-				_next.RemovedBy(trans, btree);
+				_next.RemovedBy(trans, btree, node);
 			}
 		}
 
-		protected abstract void AdjustSizeOnRemovalByOtherTransaction(BTree btree);
+		protected abstract void AdjustSizeOnRemovalByOtherTransaction(BTree btree, BTreeNode
+			 node);
+
+		public override int SizeDiff(Transaction trans)
+		{
+			BTreeUpdate patchForTransaction = (BTreeUpdate)ForTransaction(trans);
+			if (patchForTransaction == null)
+			{
+				return 1;
+			}
+			return patchForTransaction.SizeDiff();
+		}
+
+		protected abstract int SizeDiff();
 	}
 }

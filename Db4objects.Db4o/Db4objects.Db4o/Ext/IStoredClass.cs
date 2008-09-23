@@ -59,5 +59,18 @@ namespace Db4objects.Db4o.Ext
 		/// <see cref="IStoredField">IStoredField</see>
 		/// </returns>
 		IStoredField StoredField(string name, object type);
+
+		/// <summary>
+		/// Returns the number of instances of this class that have been persisted to the
+		/// database, as seen by the transaction (container) that produces this StoredClass
+		/// instance.
+		/// </summary>
+		/// <remarks>
+		/// Returns the number of instances of this class that have been persisted to the
+		/// database, as seen by the transaction (container) that produces this StoredClass
+		/// instance.
+		/// </remarks>
+		/// <returns>The number of instances</returns>
+		int InstanceCount();
 	}
 }

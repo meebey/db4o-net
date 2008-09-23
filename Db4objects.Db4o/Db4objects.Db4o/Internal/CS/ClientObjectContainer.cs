@@ -13,6 +13,7 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
 using Db4objects.Db4o.Internal.Convert;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.Slots;
@@ -65,12 +66,19 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private readonly ClientHeartbeat _heartbeat;
 
+		private readonly ClassInfoHelper _classInfoHelper = new ClassInfoHelper();
+
+		static ClientObjectContainer()
+		{
+		}
+
 		public ClientObjectContainer(IConfiguration config, ISocket4 socket, string user, 
 			string password, bool login) : base(config, null)
 		{
 			// null denotes password not necessary
 			// initial value of _batchedQueueLength is YapConst.INT_LENGTH, which is
 			// used for to write the number of messages.
+			// Db4o.registerClientConstructor(new ClientConstructor());
 			_userName = user;
 			_password = password;
 			_login = login;
@@ -304,7 +312,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void SendClassMeta(IReflectClass reflectClass)
 		{
-			ClassInfo classMeta = _classMetaHelper.GetClassMeta(reflectClass);
+			ClassInfo classMeta = _classInfoHelper.GetClassMeta(reflectClass);
 			Write(Msg.ClassMeta.GetWriter(Serializer.Marshall(SystemTransaction(), classMeta)
 				));
 		}
@@ -1088,6 +1096,14 @@ namespace Db4objects.Db4o.Internal.CS
 				);
 			msg.Write(i_socket);
 			MsgD response = (MsgD)ExpectedResponse(Msg.ClassId);
+			return response.ReadInt();
+		}
+
+		public override int InstanceCount(ClassMetadata clazz, Transaction trans)
+		{
+			MsgD msg = Msg.InstanceCount.GetWriterForInt(trans, clazz.GetID());
+			Write(msg);
+			MsgD response = (MsgD)ExpectedResponse(Msg.InstanceCount);
 			return response.ReadInt();
 		}
 	}

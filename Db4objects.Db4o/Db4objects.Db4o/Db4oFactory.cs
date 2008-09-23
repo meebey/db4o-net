@@ -4,9 +4,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o
@@ -269,12 +267,8 @@ namespace Db4objects.Db4o
 		public static IObjectContainer OpenClient(IConfiguration config, string hostName, 
 			int port, string user, string password, INativeSocketFactory socketFactory)
 		{
-			if (user == null || password == null)
-			{
-				throw new InvalidPasswordException();
-			}
-			NetworkSocket networkSocket = new NetworkSocket(socketFactory, hostName, port);
-			return new ClientObjectContainer(config, networkSocket, user, password, true);
+			return ((Config4Impl)config).ClientServerFactory().OpenClient(config, hostName, port
+				, user, password, socketFactory);
 		}
 
 		/// <summary>
@@ -619,16 +613,8 @@ namespace Db4objects.Db4o
 		public static IObjectServer OpenServer(IConfiguration config, string databaseFileName
 			, int port, INativeSocketFactory socketFactory)
 		{
-			LocalObjectContainer stream = (LocalObjectContainer)OpenFile(config, databaseFileName
-				);
-			if (stream == null)
-			{
-				return null;
-			}
-			lock (stream.Lock())
-			{
-				return new ObjectServerImpl(stream, port, socketFactory);
-			}
+			return ((Config4Impl)config).ClientServerFactory().OpenServer(config, databaseFileName
+				, port, socketFactory);
 		}
 
 		internal static IReflector Reflector()

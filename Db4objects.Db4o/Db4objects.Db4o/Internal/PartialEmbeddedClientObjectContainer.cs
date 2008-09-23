@@ -593,5 +593,11 @@ namespace Db4objects.Db4o.Internal
 		{
 			return _server.SyncExec(block);
 		}
+
+		public virtual int InstanceCount(ClassMetadata clazz, Db4objects.Db4o.Internal.Transaction
+			 trans)
+		{
+			return _server.InstanceCount(clazz, trans);
+		}
 	}
 }

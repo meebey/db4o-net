@@ -33,6 +33,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				return originalHandler;
 			}
+			if (originalHandler == null)
+			{
+				return null;
+			}
+			// HandlerVersionKey with null key will throw NPE.
 			ITypeHandler4 replacement = (ITypeHandler4)_versions.Get(new HandlerVersionRegistry.HandlerVersionKey
 				(this, GenericTemplate(originalHandler), version));
 			if (replacement == null)

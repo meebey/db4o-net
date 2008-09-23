@@ -4,12 +4,13 @@ using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude>TODO: Split into separate enums with defined range and values.</exclude>
-	public sealed class Const4
+	public sealed partial class Const4
 	{
 		public const byte Yapfileversion = 4;
 
@@ -64,6 +65,8 @@ namespace Db4objects.Db4o.Internal
 		public const byte Header = (byte)'H';
 
 		public const byte IntegerArray = (byte)'I';
+
+		public const byte BtreeList = (byte)'L';
 
 		public const int IdentifierLength = (Deploy.debug && Deploy.identifiers) ? 1 : 0;
 
@@ -126,10 +129,6 @@ namespace Db4objects.Db4o.Internal
 		public const int AddMembersToIdTreeOnly = 0;
 
 		public const int AddToIdTree = 1;
-
-		public const byte Iso8859 = (byte)1;
-
-		public const byte Unicode = (byte)2;
 
 		public const int LockTimeInterval = 1000;
 
@@ -196,8 +195,6 @@ namespace Db4objects.Db4o.Internal
 			 };
 
 		public static readonly string VirtualFieldPrefix = "v4o";
-
-		public const int MaxStackDepth = 20;
 		// make sure we don't fall over the -1 cliff
 		// TODO: Is this the right place for the knowledge, that an indirection
 		//       within a slot is an address and a length?
@@ -212,7 +209,6 @@ namespace Db4objects.Db4o.Internal
 		// Use if > NONE: normal messages
 		// if > STATE: state messages
 		// if > ACTIVATION: activation messages
-		// String Encoding
 		// Timings
 		// 10 minutes until clients are disconnected, (5 minutes until they get pinged) 
 		// TODO: Consider to make configurable

@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			_object = obj;
 		}
 
-		public abstract object Commit(Transaction trans, BTree btree);
+		public abstract object Commit(Transaction trans, BTree btree, BTreeNode node);
 
 		public abstract Db4objects.Db4o.Internal.Btree.BTreePatch ForTransaction(Transaction
 			 trans);
@@ -54,5 +54,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			return _object.ToString();
 		}
+
+		public abstract int SizeDiff(Transaction trans);
 	}
 }

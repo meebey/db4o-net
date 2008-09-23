@@ -396,16 +396,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			public object Apply(object current)
 			{
 				int id = ((int)current);
-				StatefulBuffer reader = this._enclosing.Stream().ReadWriterByID(this._enclosing.i_trans
-					, id);
-				if (reader == null)
+				CollectIdContext context = CollectIdContext.ForID(this._enclosing.i_trans, id);
+				if (context == null)
 				{
 					return Iterators.Skip;
 				}
-				ObjectHeader oh = new ObjectHeader(this._enclosing.Stream(), reader);
-				CollectIdContext context = new CollectIdContext(this._enclosing.i_trans, oh, reader
-					);
-				oh.ClassMetadata().CollectIDs(context, fieldName);
+				context.ClassMetadata().CollectIDs(context, fieldName);
 				return new TreeKeyIterator(context.Ids());
 			}
 
@@ -476,13 +472,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal bool IsEmpty()
 		{
 			bool[] ret = new bool[] { true };
-			Traverse(new _IVisitor4_381(ret));
+			Traverse(new _IVisitor4_377(ret));
 			return ret[0];
 		}
 
-		private sealed class _IVisitor4_381 : IVisitor4
+		private sealed class _IVisitor4_377 : IVisitor4
 		{
-			public _IVisitor4_381(bool[] ret)
+			public _IVisitor4_377(bool[] ret)
 			{
 				this.ret = ret;
 			}
@@ -503,14 +499,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			if (i_root != null)
 			{
 				i_root.Traverse(a_host);
-				i_root = i_root.Filter(new _IPredicate4_394());
+				i_root = i_root.Filter(new _IPredicate4_390());
 			}
 			return i_root != null;
 		}
 
-		private sealed class _IPredicate4_394 : IPredicate4
+		private sealed class _IPredicate4_390 : IPredicate4
 		{
-			public _IPredicate4_394()
+			public _IPredicate4_390()
 			{
 			}
 
@@ -556,7 +552,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			QCandidates.TreeIntBuilder result = new QCandidates.TreeIntBuilder();
 			IClassIndexStrategy index = i_yapClass.Index();
-			index.TraverseAll(i_trans, new _IVisitor4_432(this, result));
+			index.TraverseAll(i_trans, new _IVisitor4_428(this, result));
 			i_root = result.tree;
 			DiagnosticProcessor dp = i_trans.Container()._handlers._diagnosticProcessor;
 			if (dp.Enabled())
@@ -566,9 +562,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_loadedFromClassIndex = true;
 		}
 
-		private sealed class _IVisitor4_432 : IVisitor4
+		private sealed class _IVisitor4_428 : IVisitor4
 		{
-			public _IVisitor4_432(QCandidates _enclosing, QCandidates.TreeIntBuilder result)
+			public _IVisitor4_428(QCandidates _enclosing, QCandidates.TreeIntBuilder result)
 			{
 				this._enclosing = _enclosing;
 				this.result = result;
@@ -661,13 +657,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
-			i_root.Traverse(new _IVisitor4_516(sb));
+			i_root.Traverse(new _IVisitor4_512(sb));
 			return sb.ToString();
 		}
 
-		private sealed class _IVisitor4_516 : IVisitor4
+		private sealed class _IVisitor4_512 : IVisitor4
 		{
-			public _IVisitor4_516(StringBuilder sb)
+			public _IVisitor4_512(StringBuilder sb)
 			{
 				this.sb = sb;
 			}

@@ -3,8 +3,8 @@
 using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Marshall;
-using Sharpen;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
@@ -35,12 +35,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			writer.WriteIDOf(trans, clazz.i_ancestor);
 			WriteIndex(trans, clazz, writer);
 			writer.WriteInt(clazz.DeclaredAspectCount());
-			clazz.ForEachDeclaredAspect(new _IProcedure4_38(this, trans, clazz, writer));
+			clazz.ForEachDeclaredAspect(new _IProcedure4_39(this, trans, clazz, writer));
 		}
 
-		private sealed class _IProcedure4_38 : IProcedure4
+		private sealed class _IProcedure4_39 : IProcedure4
 		{
-			public _IProcedure4_38(ClassMarshaller _enclosing, Transaction trans, ClassMetadata
+			public _IProcedure4_39(ClassMarshaller _enclosing, Transaction trans, ClassMetadata
 				 clazz, ByteArrayBuffer writer)
 			{
 				this._enclosing = _enclosing;
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		protected abstract int IndexIDForWriting(int indexID);
 
-		public virtual byte[] ReadName(Transaction trans, ByteArrayBuffer reader)
+		public byte[] ReadName(Transaction trans, ByteArrayBuffer reader)
 		{
 			byte[] name = ReadName(trans.Container().StringIO(), reader);
 			return name;
@@ -85,12 +85,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private byte[] ReadName(LatinStringIO sio, ByteArrayBuffer reader)
 		{
-			int len = reader.ReadInt();
-			len = len * sio.BytesPerChar();
-			byte[] nameBytes = new byte[len];
-			System.Array.Copy(reader._buffer, reader._offset, nameBytes, 0, len);
+			byte[] nameBytes = sio.Bytes(reader);
+			reader.IncrementOffset(nameBytes.Length);
 			nameBytes = Platform4.UpdateClassName(nameBytes);
-			reader.IncrementOffset(len);
 			return nameBytes;
 		}
 
@@ -140,13 +137,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 			IntByRef len = new IntByRef(stream.StringIO().ShortLength(clazz.NameToWrite()) + 
 				Const4.ObjectLength + (Const4.IntLength * 2) + (Const4.IdLength));
 			len.value += clazz.Index().OwnLength();
-			clazz.ForEachDeclaredAspect(new _IProcedure4_118(this, len, stream));
+			clazz.ForEachDeclaredAspect(new _IProcedure4_116(this, len, stream));
 			return len.value;
 		}
 
-		private sealed class _IProcedure4_118 : IProcedure4
+		private sealed class _IProcedure4_116 : IProcedure4
 		{
-			public _IProcedure4_118(ClassMarshaller _enclosing, IntByRef len, ObjectContainerBase
+			public _IProcedure4_116(ClassMarshaller _enclosing, IntByRef len, ObjectContainerBase
 				 stream)
 			{
 				this._enclosing = _enclosing;
@@ -183,13 +180,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 				throw new InvalidOperationException();
 			}
 			IntByRef processedAspectCount = new IntByRef(0);
-			classMetadata.ForEachDeclaredAspect(new _IProcedure4_146(this, processedAspectCount
+			classMetadata.ForEachDeclaredAspect(new _IProcedure4_144(this, processedAspectCount
 				, aspectCount, classMetadata, sio, context));
 		}
 
-		private sealed class _IProcedure4_146 : IProcedure4
+		private sealed class _IProcedure4_144 : IProcedure4
 		{
-			public _IProcedure4_146(ClassMarshaller _enclosing, IntByRef processedAspectCount
+			public _IProcedure4_144(ClassMarshaller _enclosing, IntByRef processedAspectCount
 				, int aspectCount, ClassMetadata classMetadata, LatinStringIO sio, DefragmentContextImpl
 				 context)
 			{

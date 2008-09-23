@@ -5,13 +5,15 @@ using System.Collections;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Config.Encoding;
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
-using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Internal.CS.Config;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Messaging;
@@ -58,6 +60,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
+		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(DefaultClientServerFactory
+			());
+
 		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
 
 		private static readonly KeySpec DetectSchemaChangesKey = new KeySpec(true);
@@ -69,7 +74,14 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec DiscardFreespaceKey = new KeySpec(0);
 
-		private static readonly KeySpec EncodingKey = new KeySpec(Const4.Unicode);
+		private static readonly IStringEncoding DefaultStringEncoding = StringEncodings.Unicode
+			();
+
+		private static readonly KeySpec StringEncodingKey = new KeySpec(DefaultStringEncoding
+			);
+
+		private static readonly KeySpec EncodingKey = new KeySpec(BuiltInStringEncoding.EncodingByteForEncoding
+			(DefaultStringEncoding));
 
 		private static readonly KeySpec EncryptKey = new KeySpec(false);
 
@@ -168,6 +180,22 @@ namespace Db4objects.Db4o.Internal
 		public int ActivationDepth()
 		{
 			return _config.GetAsInt(ActivationDepthKey);
+		}
+
+		private static IClientServerFactory DefaultClientServerFactory()
+		{
+			try
+			{
+				// FIXME: won't work, because we need the assembly name for .NET
+				// return (ClientServerFactory) Class.forName("com.db4o.internal.cs.config.ClientServerFactoryImpl").newInstance();
+				// FIXME: circular cs dependancy. Improve.
+				return new ClientServerFactoryImpl();
+			}
+			catch (Exception)
+			{
+				// can happen if CS lib is not present
+				return null;
+			}
 		}
 
 		public void ActivationDepth(int depth)
@@ -659,6 +687,17 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(SingleThreadedClientKey, flag);
 		}
 
+		public IStringEncoding StringEncoding()
+		{
+			return (IStringEncoding)_config.Get(StringEncodingKey);
+		}
+
+		public void StringEncoding(IStringEncoding encoding)
+		{
+			_config.Put(StringEncodingKey, encoding);
+			_config.Put(EncodingKey, BuiltInStringEncoding.EncodingByteForEncoding(encoding));
+		}
+
 		public void TestConstructors(bool flag)
 		{
 			_config.Put(TestConstructorsKey, flag);
@@ -674,11 +713,12 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(TimeoutServerSocketKey, milliseconds);
 		}
 
+		[System.ObsoleteAttribute]
 		public void Unicode(bool unicodeOn)
 		{
-			_config.Put(EncodingKey, (unicodeOn ? Const4.Unicode : Const4.Iso8859));
 		}
 
+		// do nothing
 		public void UpdateDepth(int depth)
 		{
 			Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor dp = DiagnosticProcessor(
@@ -1128,6 +1168,16 @@ namespace Db4objects.Db4o.Internal
 				_orig = orig;
 				_cloned = cloned;
 			}
+		}
+
+		public void Factory(IClientServerFactory factory)
+		{
+			_config.Put(ClientServerFactoryKey, factory);
+		}
+
+		public IClientServerFactory ClientServerFactory()
+		{
+			return (IClientServerFactory)_config.Get(ClientServerFactoryKey);
 		}
 	}
 }

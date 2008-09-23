@@ -16,8 +16,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(COR775TestCase), typeof(BlockSizeDefragTestCase), typeof(
-				SlotDefragmentTestCase), typeof(StoredClassFilterTestCase), typeof(TranslatedDefragTestCase
-				) };
+				DefragInheritedFieldIndexTestCase), typeof(SlotDefragmentTestCase), typeof(StoredClassFilterTestCase
+				), typeof(TranslatedDefragTestCase) };
 		}
 	}
 }

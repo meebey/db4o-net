@@ -47,6 +47,9 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private readonly bool _isEmbeddedServer;
 
+		private readonly Db4objects.Db4o.Internal.CS.ClassInfoHelper _classInfoHelper = new 
+			Db4objects.Db4o.Internal.CS.ClassInfoHelper();
+
 		public ObjectServerImpl(LocalObjectContainer container, int port, INativeSocketFactory
 			 socketFactory) : this(container, (port < 0 ? 0 : port), port == 0, socketFactory
 			)
@@ -522,6 +525,11 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				return _dispatchers.Size();
 			}
+		}
+
+		public virtual Db4objects.Db4o.Internal.CS.ClassInfoHelper ClassInfoHelper()
+		{
+			return _classInfoHelper;
 		}
 	}
 }

@@ -162,6 +162,8 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public static readonly MsgBlob DeleteBlobFile = new MDeleteBlobFile();
 
+		public static readonly MInstanceCount InstanceCount = new MInstanceCount();
+
 		internal Msg()
 		{
 			_msgID = _messageIdGenerator++;

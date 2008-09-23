@@ -8,8 +8,8 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
-using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.Callbacks;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
@@ -43,8 +43,6 @@ namespace Db4objects.Db4o.Internal
 		, IObjectContainerSpec, IInternalObjectContainer
 	{
 		protected ClassMetadataRepository _classCollection;
-
-		protected ClassInfoHelper _classMetaHelper = new ClassInfoHelper();
 
 		protected Config4Impl _config;
 
@@ -500,9 +498,10 @@ namespace Db4objects.Db4o.Internal
 		public abstract AbstractQueryResult NewQueryResult(Transaction trans, QueryEvaluationMode
 			 mode);
 
-		protected virtual void CreateStringIO(byte encoding)
+		protected void CreateStringIO(byte encoding)
 		{
-			StringIO(LatinStringIO.ForEncoding(encoding));
+			StringIO(BuiltInStringEncoding.StringIoForEncoding(encoding, ConfigImpl().StringEncoding
+				()));
 		}
 
 		protected void InitializeTransactions()
@@ -771,7 +770,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				ByReference foundField = new ByReference();
-				classMetadata.ForEachField(new _IProcedure4_622(fieldName, foundField));
+				classMetadata.ForEachField(new _IProcedure4_620(fieldName, foundField));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
 				{
@@ -793,9 +792,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IProcedure4_622 : IProcedure4
+		private sealed class _IProcedure4_620 : IProcedure4
 		{
-			public _IProcedure4_622(string fieldName, ByReference foundField)
+			public _IProcedure4_620(string fieldName, ByReference foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;
@@ -2502,11 +2501,6 @@ namespace Db4objects.Db4o.Internal
 			return _classCollection;
 		}
 
-		public virtual ClassInfoHelper GetClassMetaHelper()
-		{
-			return _classMetaHelper;
-		}
-
 		public abstract long[] GetIDsForClass(Transaction trans, ClassMetadata clazz);
 
 		public abstract IQueryResult ClassOnlyQuery(Transaction trans, ClassMetadata clazz
@@ -2646,5 +2640,7 @@ namespace Db4objects.Db4o.Internal
 		public abstract IStoredClass StoredClass(object arg1);
 
 		public abstract IStoredClass[] StoredClasses();
+
+		public abstract int InstanceCount(ClassMetadata arg1, Transaction arg2);
 	}
 }

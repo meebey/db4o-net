@@ -4,6 +4,7 @@ using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -101,12 +102,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			long sourceLong = ((long)source);
-			return new _IPreparedComparison_96(sourceLong);
+			return new _IPreparedComparison_97(sourceLong);
 		}
 
-		private sealed class _IPreparedComparison_96 : IPreparedComparison
+		private sealed class _IPreparedComparison_97 : IPreparedComparison
 		{
-			public _IPreparedComparison_96(long sourceLong)
+			public _IPreparedComparison_97(long sourceLong)
 			{
 				this.sourceLong = sourceLong;
 			}

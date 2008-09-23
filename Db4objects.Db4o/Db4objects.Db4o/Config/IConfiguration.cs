@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Config.Encoding;
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
@@ -939,6 +940,28 @@ namespace Db4objects.Db4o.Config
 		/// <seealso cref="IConfiguration.MessageLevel">IConfiguration.MessageLevel</seealso>
 		void SetOut(TextWriter outStream);
 
+		/// <summary>configures the string encoding to be used.</summary>
+		/// <remarks>
+		/// configures the string encoding to be used.
+		/// <br /><br />The string encoding can not be changed in the lifetime of a
+		/// database file. To set up the database with the correct string encoding,
+		/// this configuration needs to be set correctly <b>before</b> a database
+		/// file is created with the first call to
+		/// <see cref="Db4oFactory.OpenFile">Db4oFactory.OpenFile</see>
+		/// or
+		/// <see cref="Db4oFactory.OpenServer">Db4oFactory.OpenServer</see>
+		/// .
+		/// <br /><br />For subsequent open calls, db4o remembers built-in
+		/// string encodings. If a custom encoding is used (an encoding that is
+		/// not supplied from within the db4o library), the correct encoding
+		/// needs to be configured correctly again for all subsequent calls
+		/// that open database files.
+		/// <br /><br />Example:<br />
+		/// <code>config.stringEncoding(StringEncodings.utf8()));</code>
+		/// </remarks>
+		/// <seealso cref="StringEncodings">StringEncodings</seealso>
+		void StringEncoding(IStringEncoding encoding);
+
 		/// <summary>
 		/// tuning feature: configures whether db4o should try to instantiate one instance
 		/// of each persistent class on system startup.
@@ -975,6 +998,7 @@ namespace Db4objects.Db4o.Config
 		/// <code>true</code> for turning Unicode support on, <code>false</code> for turning
 		/// Unicode support off.
 		/// </param>
+		[System.ObsoleteAttribute(@"use")]
 		void Unicode(bool flag);
 
 		/// <summary>specifies the global updateDepth.</summary>

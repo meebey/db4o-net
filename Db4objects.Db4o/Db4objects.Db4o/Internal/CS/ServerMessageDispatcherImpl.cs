@@ -333,5 +333,10 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			return Server().CaresAboutCommitted();
 		}
+
+		public Db4objects.Db4o.Internal.CS.ClassInfoHelper ClassInfoHelper()
+		{
+			return Server().ClassInfoHelper();
+		}
 	}
 }

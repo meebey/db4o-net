@@ -1008,6 +1008,14 @@ namespace Db4objects.Db4o.Internal
 		public override void OnCommittedListener()
 		{
 		}
+
 		// do nothing
+		public override int InstanceCount(ClassMetadata clazz, Transaction trans)
+		{
+			lock (Lock())
+			{
+				return clazz.IndexEntryCount(trans);
+			}
+		}
 	}
 }

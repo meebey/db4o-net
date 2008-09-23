@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o.Foundation;
@@ -13,6 +14,30 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		public static void Main(string[] args)
 		{
 			new ConsoleTestRunner(typeof(IteratorsTestCase)).Run();
+		}
+
+		public virtual void TestIterateSingle()
+		{
+			IEnumerator i = Iterators.IterateSingle("foo");
+			Assert.IsTrue(i.MoveNext());
+			Assert.AreEqual("foo", i.Current);
+			Assert.IsFalse(i.MoveNext());
+			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_23(i));
+		}
+
+		private sealed class _ICodeBlock_23 : ICodeBlock
+		{
+			public _ICodeBlock_23(IEnumerator i)
+			{
+				this.i = i;
+			}
+
+			public void Run()
+			{
+				Assert.IsNotNull(i.Current);
+			}
+
+			private readonly IEnumerator i;
 		}
 
 		public virtual void TestEnumerate()
@@ -37,12 +62,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			string[] expected = new string[] { "[1, 3, 5]", "[1, 3, 6]", "[1, 4, 5]", "[1, 4, 6]"
 				, "[2, 3, 5]", "[2, 3, 6]", "[2, 4, 5]", "[2, 4, 6]" };
 			IEnumerator iterator = Iterators.CrossProduct(source).GetEnumerator();
-			Iterator4Assert.AreEqual(expected, Iterators.Map(iterator, new _IFunction4_49()));
+			Iterator4Assert.AreEqual(expected, Iterators.Map(iterator, new _IFunction4_61()));
 		}
 
-		private sealed class _IFunction4_49 : IFunction4
+		private sealed class _IFunction4_61 : IFunction4
 		{
-			public _IFunction4_49()
+			public _IFunction4_61()
 			{
 			}
 
@@ -74,16 +99,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		public virtual void TestFilter()
 		{
 			AssertFilter(new string[] { "bar", "baz" }, new string[] { "foo", "bar", "baz", "zong"
-				 }, new _IPredicate4_90());
-			AssertFilter(new string[] { "foo", "bar" }, new string[] { "foo", "bar" }, new _IPredicate4_98
+				 }, new _IPredicate4_102());
+			AssertFilter(new string[] { "foo", "bar" }, new string[] { "foo", "bar" }, new _IPredicate4_110
 				());
-			AssertFilter(new string[0], new string[] { "foo", "bar" }, new _IPredicate4_107()
+			AssertFilter(new string[0], new string[] { "foo", "bar" }, new _IPredicate4_119()
 				);
 		}
 
-		private sealed class _IPredicate4_90 : IPredicate4
+		private sealed class _IPredicate4_102 : IPredicate4
 		{
-			public _IPredicate4_90()
+			public _IPredicate4_102()
 			{
 			}
 
@@ -93,9 +118,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
-		private sealed class _IPredicate4_98 : IPredicate4
+		private sealed class _IPredicate4_110 : IPredicate4
 		{
-			public _IPredicate4_98()
+			public _IPredicate4_110()
 			{
 			}
 
@@ -105,9 +130,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
-		private sealed class _IPredicate4_107 : IPredicate4
+		private sealed class _IPredicate4_119 : IPredicate4
 		{
-			public _IPredicate4_107()
+			public _IPredicate4_119()
 			{
 			}
 
@@ -126,7 +151,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		{
 			int[] array = new int[] { 1, 2, 3 };
 			Collection4 args = new Collection4();
-			IEnumerator iterator = Iterators.Map(IntArrays4.NewIterator(array), new _IFunction4_123
+			IEnumerator iterator = Iterators.Map(IntArrays4.NewIterator(array), new _IFunction4_135
 				(args));
 			Assert.IsNotNull(iterator);
 			Assert.AreEqual(0, args.Size());
@@ -138,9 +163,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
-		private sealed class _IFunction4_123 : IFunction4
+		private sealed class _IFunction4_135 : IFunction4
 		{
-			public _IFunction4_123(Collection4 args)
+			public _IFunction4_135(Collection4 args)
 			{
 				this.args = args;
 			}

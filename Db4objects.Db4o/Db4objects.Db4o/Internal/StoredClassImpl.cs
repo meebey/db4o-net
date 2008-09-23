@@ -96,5 +96,10 @@ namespace Db4objects.Db4o.Internal
 			return _classMetadata.Equals(((Db4objects.Db4o.Internal.StoredClassImpl)obj)._classMetadata
 				);
 		}
+
+		public virtual int InstanceCount()
+		{
+			return _classMetadata.InstanceCount(_transaction);
+		}
 	}
 }

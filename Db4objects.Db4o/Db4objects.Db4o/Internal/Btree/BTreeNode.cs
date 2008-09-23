@@ -169,7 +169,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private void SizeIncrement(Transaction trans)
 		{
-			_btree.SizeChanged(trans, 1);
+			_btree.SizeChanged(trans, this, 1);
 		}
 
 		private bool WasRemoved(Transaction trans, Searcher s)
@@ -339,7 +339,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return ((Db4objects.Db4o.Internal.Btree.BTreeNode)_children[index]).CanWrite();
 		}
 
-		internal void Commit(Transaction trans)
+		public void Commit(Transaction trans)
 		{
 			CommitOrRollback(trans, true);
 		}
@@ -372,7 +372,8 @@ namespace Db4objects.Db4o.Internal.Btree
 				BTreePatch patch = KeyPatch(i);
 				if (patch != null)
 				{
-					key = isCommit ? patch.Commit(trans, _btree) : patch.Rollback(trans, _btree);
+					key = isCommit ? patch.Commit(trans, _btree, this) : patch.Rollback(trans, _btree
+						);
 				}
 				if (key != No4.Instance)
 				{
@@ -450,6 +451,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			PointNextTo(trans, _previousID);
 			base.Free(trans);
 			_btree.RemoveNode(this);
+			_btree.NotifyDeleted(trans, this);
 		}
 
 		internal void HoldChildrenAsIDs()
@@ -611,7 +613,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return No4.Instance;
 			}
-			return Key(trans, index);
+			return InternalKey(trans, index);
 		}
 
 		public override byte GetIdentifier()
@@ -662,17 +664,22 @@ namespace Db4objects.Db4o.Internal.Btree
 			return obj;
 		}
 
+		public object Key(Transaction trans, int index)
+		{
+			return Key(trans, PrepareRead(trans), index);
+		}
+
 		internal object Key(Transaction trans, ByteArrayBuffer reader, int index)
 		{
 			if (CanWrite())
 			{
-				return Key(trans, index);
+				return InternalKey(trans, index);
 			}
 			SeekKey(reader, index);
 			return KeyHandler().ReadIndexEntry(reader);
 		}
 
-		internal object Key(Transaction trans, int index)
+		private object InternalKey(Transaction trans, int index)
 		{
 			BTreePatch patch = KeyPatch(index);
 			if (patch == null)
@@ -896,7 +903,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private void SizeDecrement(Transaction trans)
 		{
-			_btree.SizeChanged(trans, -1);
+			_btree.SizeChanged(trans, this, -1);
 		}
 
 		private int LastIndex()
@@ -1003,6 +1010,7 @@ namespace Db4objects.Db4o.Internal.Btree
 					res.Child(i).SetParentID(trans, splitID);
 				}
 			}
+			_btree.NotifySplit(trans, this, res);
 			return res;
 		}
 
@@ -1107,7 +1115,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return new BTreePointer(trans, reader, this, index);
 		}
 
-		internal void Purge()
+		public void Purge()
 		{
 			if (_dead)
 			{
@@ -1197,7 +1205,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				for (int i = 0; i < _count; i++)
 				{
-					object obj = Key(trans, i);
+					object obj = InternalKey(trans, i);
 					if (obj != No4.Instance)
 					{
 						count++;
@@ -1337,6 +1345,29 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				Child(reader, childIdx).TraverseAllNodes(trans, command);
 			}
+		}
+
+		public int Size(Transaction trans)
+		{
+			PrepareRead(trans);
+			if (!CanWrite())
+			{
+				return _count;
+			}
+			int size = 0;
+			for (int i = 0; i < _count; i++)
+			{
+				BTreePatch keyPatch = KeyPatch(i);
+				if (keyPatch != null)
+				{
+					size += keyPatch.SizeDiff(trans);
+				}
+				else
+				{
+					size++;
+				}
+			}
+			return size;
 		}
 	}
 }

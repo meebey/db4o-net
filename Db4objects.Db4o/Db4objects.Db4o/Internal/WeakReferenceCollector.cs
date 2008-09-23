@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Sharpen.Lang;
@@ -49,8 +50,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				PollReferenceQueue();
 			}
+			catch (DatabaseClosedException)
+			{
+			}
 			catch (Exception e)
 			{
+				// can happen, no stack trace
 				// don't bring down the thread
 				Sharpen.Runtime.PrintStackTrace(e);
 			}

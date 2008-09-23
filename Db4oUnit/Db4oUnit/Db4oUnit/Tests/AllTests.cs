@@ -13,7 +13,8 @@ namespace Db4oUnit.Tests
 			return new Type[] { typeof(AssertTestCase), typeof(CompositeTestListenerTestCase)
 				, typeof(FrameworkTestCase), typeof(ReflectionTestSuiteBuilderTestCase), typeof(
 				ReinstantiatePerMethodTest), typeof(TestLifeCycleTestCase), typeof(TestRunnerTestCase
-				), typeof(Db4oUnit.Tests.Fixtures.AllTests) };
+				), typeof(Db4oUnit.Tests.Data.AllTests), typeof(Db4oUnit.Tests.Fixtures.AllTests
+				) };
 		}
 
 		public static void Main(string[] args)

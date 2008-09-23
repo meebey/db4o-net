@@ -150,5 +150,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			_aspectCount = count;
 		}
+
+		public virtual IdObjectCollector Collector()
+		{
+			return _collector;
+		}
 	}
 }

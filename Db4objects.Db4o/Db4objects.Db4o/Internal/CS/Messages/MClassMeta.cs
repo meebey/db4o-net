@@ -19,8 +19,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				lock (StreamLock())
 				{
 					ClassInfo classMeta = (ClassInfo)ReadObjectFromPayLoad();
-					GenericClass genericClass = stream.GetClassMetaHelper().ClassMetaToGenericClass(Stream
-						().Reflector(), classMeta);
+					ClassInfoHelper classInfoHelper = ServerMessageDispatcher().ClassInfoHelper();
+					GenericClass genericClass = classInfoHelper.ClassMetaToGenericClass(Stream().Reflector
+						(), classMeta);
 					if (genericClass != null)
 					{
 						Transaction trans = stream.SystemTransaction();

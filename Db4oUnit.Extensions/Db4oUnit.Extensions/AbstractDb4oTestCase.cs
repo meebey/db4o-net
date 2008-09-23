@@ -148,6 +148,17 @@ namespace Db4oUnit.Extensions
 				), ClientServerSuite(independentConfig) })).Run();
 		}
 
+		public virtual int RunSoloAndEmbeddedClientServer()
+		{
+			return RunSoloAndEmbeddedClientServer(true);
+		}
+
+		private int RunSoloAndEmbeddedClientServer(bool independentConfig)
+		{
+			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(independentConfig
+				), EmbeddedClientServerSuite(independentConfig) })).Run();
+		}
+
 		public virtual int RunSolo()
 		{
 			return RunSolo(true);
@@ -375,12 +386,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_306(oc));
+			Foreach(clazz, new _IVisitor4_317(oc));
 		}
 
-		private sealed class _IVisitor4_306 : IVisitor4
+		private sealed class _IVisitor4_317 : IVisitor4
 		{
-			public _IVisitor4_306(IExtObjectContainer oc)
+			public _IVisitor4_317(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

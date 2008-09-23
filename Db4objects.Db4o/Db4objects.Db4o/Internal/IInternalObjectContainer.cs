@@ -35,5 +35,8 @@ namespace Db4objects.Db4o.Internal
 		Config4Impl ConfigImpl();
 
 		object SyncExec(IClosure4 block);
+
+		int InstanceCount(ClassMetadata clazz, Db4objects.Db4o.Internal.Transaction trans
+			);
 	}
 }

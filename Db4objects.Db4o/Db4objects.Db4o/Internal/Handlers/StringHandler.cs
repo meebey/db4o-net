@@ -6,6 +6,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
+using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
@@ -121,15 +122,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public void WriteShort(Transaction trans, string str, ByteArrayBuffer buffer)
 		{
-			if (str == null)
-			{
-				buffer.WriteInt(0);
-			}
-			else
-			{
-				buffer.WriteInt(str.Length);
-				trans.Container().Handlers().StringIO().Write(buffer, str);
-			}
+			trans.Container().Handlers().StringIO().WriteLengthAndString(buffer, str);
 		}
 
 		internal virtual ByteArrayBuffer Val(object obj, IContext context)
@@ -208,8 +201,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		protected static void InternalWrite(IInternalObjectContainer objectContainer, IWriteBuffer
 			 buffer, string str)
 		{
-			buffer.WriteInt(str.Length);
-			StringIo(objectContainer).Write(buffer, str);
+			StringIo(objectContainer).WriteLengthAndString(buffer, str);
 		}
 
 		public static ByteArrayBuffer WriteToBuffer(IInternalObjectContainer container, string
@@ -238,12 +230,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public static string ReadStringNoDebug(IContext context, IReadBuffer buffer)
 		{
-			int length = buffer.ReadInt();
-			if (length > 0)
-			{
-				return Intern(context, StringIo(context).Read(buffer, length));
-			}
-			return string.Empty;
+			return Intern(context, StringIo(context).ReadLengthAndString(buffer));
 		}
 
 		protected static string Intern(IContext context, string str)
@@ -269,12 +256,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			ByteArrayBuffer sourceBuffer = Val(obj, context);
-			return new _IPreparedComparison_237(this, context, sourceBuffer);
+			return new _IPreparedComparison_227(this, context, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_237 : IPreparedComparison
+		private sealed class _IPreparedComparison_227 : IPreparedComparison
 		{
-			public _IPreparedComparison_237(StringHandler _enclosing, IContext context, ByteArrayBuffer
+			public _IPreparedComparison_227(StringHandler _enclosing, IContext context, ByteArrayBuffer
 				 sourceBuffer)
 			{
 				this._enclosing = _enclosing;

@@ -33,10 +33,16 @@ namespace Db4objects.Db4o.Internal.Btree
 			return No4.Instance;
 		}
 
-		protected override void AdjustSizeOnRemovalByOtherTransaction(BTree btree)
+		protected override void AdjustSizeOnRemovalByOtherTransaction(BTree btree, BTreeNode
+			 node)
 		{
 			// The size was reduced for this entry, let's change back.
-			btree.SizeChanged(_transaction, +1);
+			btree.SizeChanged(_transaction, node, +1);
+		}
+
+		protected override int SizeDiff()
+		{
+			return 0;
 		}
 	}
 }

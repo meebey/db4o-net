@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return "(+) " + base.ToString();
 		}
 
-		public override object Commit(Transaction trans, BTree btree)
+		public override object Commit(Transaction trans, BTree btree, BTreeNode node)
 		{
 			if (_transaction == trans)
 			{
@@ -64,6 +64,11 @@ namespace Db4objects.Db4o.Internal.Btree
 		public override bool IsAdd()
 		{
 			return true;
+		}
+
+		public override int SizeDiff(Transaction trans)
+		{
+			return _transaction == trans ? 1 : 0;
 		}
 	}
 }

@@ -3,8 +3,11 @@
 using System;
 using System.Collections;
 using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Tests.Common.Btree;
 
 namespace Db4objects.Db4o.Tests.Common.Btree
@@ -54,6 +57,74 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			BTreeNode node = Node(3);
 			BTreePointer lastPointer = node.LastPointer(Trans());
 			AssertPointerKey(4, lastPointer);
+		}
+
+		public virtual void TestTransactionalSize()
+		{
+			BTreeNode node = Node(3);
+			AssertTransactionalSize(node);
+			int id = node.GetID();
+			BTreeNode readNode = new BTreeNode(id, _btree);
+			AssertTransactionalSize(readNode);
+		}
+
+		private void AssertTransactionalSize(BTreeNode node)
+		{
+			Transaction otherTrans = NewTransaction();
+			int originalSize = node.Size(Trans());
+			Assert.IsGreater(0, originalSize);
+			for (int i = originalSize - 1; i > 0; i--)
+			{
+				object key = node.Key(Trans(), i);
+				node.Remove(Trans(), PrepareComparison(key), key, i);
+			}
+			Assert.AreEqual(1, node.Size(Trans()));
+			Assert.AreEqual(originalSize, node.Size(otherTrans));
+			node.Commit(Trans());
+			Assert.AreEqual(1, node.Size(otherTrans));
+			object newKey = node.Key(Trans(), 0);
+			node.Add(Trans(), PrepareComparison(newKey), newKey);
+			Assert.AreEqual(2, node.Size(Trans()));
+			Assert.AreEqual(1, node.Size(otherTrans));
+			node.Commit(Trans());
+			Assert.AreEqual(2, node.Size(Trans()));
+			Assert.AreEqual(2, node.Size(otherTrans));
+			node.Remove(Trans(), PrepareComparison(newKey), newKey, 1);
+			Assert.AreEqual(1, node.Size(Trans()));
+			Assert.AreEqual(2, node.Size(otherTrans));
+			node.Add(Trans(), PrepareComparison(newKey), newKey);
+			Assert.AreEqual(2, node.Size(Trans()));
+			Assert.AreEqual(2, node.Size(otherTrans));
+		}
+
+		private IPreparedComparison PrepareComparison(object key)
+		{
+			return _btree.KeyHandler().PrepareComparison(Context(), key);
+		}
+
+		private IContext Context()
+		{
+			return new _IContext_96(this);
+		}
+
+		private sealed class _IContext_96 : IContext
+		{
+			public _IContext_96(BTreeNodeTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public Transaction Transaction()
+			{
+				return this._enclosing.Trans();
+			}
+
+			public IObjectContainer ObjectContainer()
+			{
+				return this._enclosing.Db();
+			}
+
+			private readonly BTreeNodeTestCase _enclosing;
 		}
 	}
 }

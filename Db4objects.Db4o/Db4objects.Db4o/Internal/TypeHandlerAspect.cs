@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
@@ -57,18 +56,46 @@ namespace Db4objects.Db4o.Internal
 
 		public override void CollectIDs(CollectIdContext context)
 		{
-			throw new NotImplementedException();
-		}
-
-		public override void DefragAspect(IDefragmentContext context)
-		{
+			if (!(_typeHandler is IFirstClassHandler))
+			{
+				IncrementOffset(context);
+				return;
+			}
 			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_54(this, context
 				));
 		}
 
 		private sealed class _IClosure4_54 : IClosure4
 		{
-			public _IClosure4_54(TypeHandlerAspect _enclosing, IDefragmentContext context)
+			public _IClosure4_54(TypeHandlerAspect _enclosing, CollectIdContext context)
+			{
+				this._enclosing = _enclosing;
+				this.context = context;
+			}
+
+			public object Run()
+			{
+				QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
+					(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
+				((IFirstClassHandler)this._enclosing._typeHandler).CollectIDs(queryingReadContext
+					);
+				return null;
+			}
+
+			private readonly TypeHandlerAspect _enclosing;
+
+			private readonly CollectIdContext context;
+		}
+
+		public override void DefragAspect(IDefragmentContext context)
+		{
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_64(this, context
+				));
+		}
+
+		private sealed class _IClosure4_64 : IClosure4
+		{
+			public _IClosure4_64(TypeHandlerAspect _enclosing, IDefragmentContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -108,13 +135,13 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			object oldObject = context.PersistentObject();
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_81(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_91(this, context
 				, oldObject));
 		}
 
-		private sealed class _IClosure4_81 : IClosure4
+		private sealed class _IClosure4_91 : IClosure4
 		{
-			public _IClosure4_81(TypeHandlerAspect _enclosing, UnmarshallingContext context, 
+			public _IClosure4_91(TypeHandlerAspect _enclosing, UnmarshallingContext context, 
 				object oldObject)
 			{
 				this._enclosing = _enclosing;
@@ -141,13 +168,13 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Delete(DeleteContextImpl context, bool isUpdate)
 		{
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_93(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_103(this, context
 				));
 		}
 
-		private sealed class _IClosure4_93 : IClosure4
+		private sealed class _IClosure4_103 : IClosure4
 		{
-			public _IClosure4_93(TypeHandlerAspect _enclosing, DeleteContextImpl context)
+			public _IClosure4_103(TypeHandlerAspect _enclosing, DeleteContextImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
