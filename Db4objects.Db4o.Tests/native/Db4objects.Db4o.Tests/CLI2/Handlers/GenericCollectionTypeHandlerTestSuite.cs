@@ -43,17 +43,17 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 			_helper.AssertPlainContent((IEnumerable) set[0]);
 		}
 
+		public void TestRetrieve()
+		{
+			object item = RetrieveOnlyInstance(_helper.ItemType);
+			_helper.AssertCollection(item);
+		}
+
 		public void TestDefrag()
 		{
 			Defragment();
 
 			Object item = RetrieveOnlyInstance(_helper.ItemType);
-			_helper.AssertCollection(item);
-		}
-
-		public void TestRetrieve()
-		{
-			object item = RetrieveOnlyInstance(_helper.ItemType);
 			_helper.AssertCollection(item);
 		}
 

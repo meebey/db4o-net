@@ -25,6 +25,9 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 		public static readonly GenericCollectionTestElementSpec<string> StringElementSpec = new GenericCollectionTestElementSpec<string>(new string[] { "zero", "one" }, "two", "zzz");
 		public static readonly GenericCollectionTestElementSpec<int> IntElementSpec = new GenericCollectionTestElementSpec<int>(new int[] { 0, 1 }, 2, int.MaxValue);
 		public static readonly GenericCollectionTestElementSpec<int?> NullableIntElementSpec = new GenericCollectionTestElementSpec<int?>(new int?[] { 0, null }, 2, int.MaxValue);
+		public static readonly GenericCollectionTestElementSpec<ValueTypeTest> ValueTypeElementSpec = new GenericCollectionTestElementSpec<ValueTypeTest>(new ValueTypeTest[] { 0, 1}, 2, int.MaxValue);
+		public static readonly GenericCollectionTestElementSpec<object> ObjectTypeElementSpec = new GenericCollectionTestElementSpec<object>(new object[] { 0, 1 }, 2, int.MaxValue);
+		public static readonly GenericCollectionTestElementSpec<int[]> IntArrayTypeElementSpec = new GenericCollectionTestElementSpec<int[]>(new int[][] { new int[] {0}, new int[] {1} }, new int[] {2}, new int[] {int.MaxValue});
 
 		public static readonly FixtureVariable ElementSpec = new FixtureVariable("elements");
 		public static readonly IFixtureProvider ElementsFixtureProvider = new SimpleFixtureProvider(
@@ -33,10 +36,33 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 				{
 					StringElementSpec,
 					IntElementSpec,
-					NullableIntElementSpec,
+					NullableIntElementSpec,    
+					//IntArrayTypeElementSpec, // fails: old / new
+					ValueTypeElementSpec,  
+					ObjectTypeElementSpec,
 					new GenericCollectionTestElementSpec<FirstClassElement>(new FirstClassElement[] { new FirstClassElement(0), new FirstClassElement(1) }, new FirstClassElement(2), null),
 				}
 			);
+
+		public struct ValueTypeTest
+		{
+			public readonly int _id;
+
+			public ValueTypeTest(int id)
+			{
+				_id = id;
+			}
+
+			public static implicit operator ValueTypeTest(int id)
+			{
+				return new ValueTypeTest(id);
+			}
+	
+			public override string ToString()
+			{
+				return _id.ToString();
+			}
+		}
 
 		public class FirstClassElement
 		{
