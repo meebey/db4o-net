@@ -6,8 +6,8 @@ namespace Db4oTool.Core
 {
 	public class InstrumentationPipeline
 	{
-		InstrumentationContext _context;
-		List<IAssemblyInstrumentation> _instrumentations = new List<IAssemblyInstrumentation>();
+		readonly InstrumentationContext _context;
+		readonly List<IAssemblyInstrumentation> _instrumentations = new List<IAssemblyInstrumentation>();
 		
 		public InstrumentationPipeline(Configuration configuration)
 		{

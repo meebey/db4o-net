@@ -10,36 +10,24 @@ namespace Db4oTool.Core
 	{
 		private AssemblyDefinition _assembly;
 		private Configuration _configuration;
+		private string _alternateAssemblyLocation;
 
         public InstrumentationContext(Configuration configuration, AssemblyDefinition assembly)
         {
-            _configuration = configuration;
-            SetupAssembly(assembly);
-
-        }
-
-        public InstrumentationContext(Configuration configuration)
-		{
-			_configuration = configuration;
-			SetupAssembly(LoadAssembly());
+			Init(configuration, assembly);
 		}
 
-        private AssemblyDefinition LoadAssembly()
+		public InstrumentationContext(Configuration configuration)
 		{
-			return AssemblyFactory.GetAssembly(_configuration.AssemblyLocation);
-        }
+			Init(configuration, LoadAssembly(configuration));
+		}
 
-        private void SetupAssembly(AssemblyDefinition assembly)
-        {
-            _assembly = assembly;
-            if (PreserveDebugInfo())
-            {
-                _assembly.MainModule.LoadSymbols();
-            }
-            _assembly.MainModule.FullLoad(); // resolves all references
-        }
+		public string AlternateAssemblyLocation
+		{
+			get { return _alternateAssemblyLocation; }
+		}
 
-        public Configuration Configuration
+		public Configuration Configuration
 		{
 			get { return _configuration; }
 		}
@@ -115,6 +103,34 @@ namespace Db4oTool.Core
 		public bool IsAssemblySigned()
 		{
 			return _assembly.Name.HasPublicKey;
+		}
+
+		private void Init(Configuration configuration, AssemblyDefinition assembly)
+		{
+			_configuration = configuration;
+
+			ConfigureCompactFrameworkAssemblyPath(assembly);
+			SetupAssembly(assembly);
+		}
+
+		private void ConfigureCompactFrameworkAssemblyPath(AssemblyDefinition assembly)
+		{
+			_alternateAssemblyLocation = CompactFrameworkServices.FolderFor(assembly);
+		}
+
+		private static AssemblyDefinition LoadAssembly(Configuration configuration)
+		{
+			return AssemblyFactory.GetAssembly(configuration.AssemblyLocation);
+		}
+
+		private void SetupAssembly(AssemblyDefinition assembly)
+		{
+			_assembly = assembly;
+			if (PreserveDebugInfo())
+			{
+				_assembly.MainModule.LoadSymbols();
+			}
+			_assembly.MainModule.FullLoad(); // resolves all references
 		}
 	}
 }

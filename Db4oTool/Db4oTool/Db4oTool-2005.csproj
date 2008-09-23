@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -54,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Core\AbstractAssemblyInstrumentation.cs"/>
     <Compile Include="Core\ByAttributeFilter.cs"/>
+    <Compile Include="Core\CompactFrameworkServices.cs"/>
     <Compile Include="Core\Configuration.cs"/>
     <Compile Include="Core\ByNameFilter.cs"/>
     <Compile Include="Core\CurrentDirectoryAssemblyResolver.cs"/>

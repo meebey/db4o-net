@@ -14,6 +14,7 @@ namespace Db4oTool.Tests.Core
 	{
 		public static readonly ContextVariable<bool> Unsafe = new ContextVariable<bool>(false);
 		public static readonly ContextVariable<SignConfiguration> KeyFile = new ContextVariable<SignConfiguration>(null);
+		public static readonly ContextVariable<string> ExtraParameters = new ContextVariable<string>("");
 
 		public static void EmitAssembly(string assemblyFileName, Assembly[] references, params string[] sourceFiles)
 		{
@@ -60,6 +61,8 @@ namespace Db4oTool.Tests.Core
 					parameters.CompilerOptions += " /keyfile:" + KeyFile.Value.KeyFile;
 					parameters.CompilerOptions += " /delaysign" + (KeyFile.Value.DelaySign ? '+' : '-');
 				}
+
+				parameters.CompilerOptions += " " + ExtraParameters.Value;
 
 				foreach (Assembly reference in references)
 				{

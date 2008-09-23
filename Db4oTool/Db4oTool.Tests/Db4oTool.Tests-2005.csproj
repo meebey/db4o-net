@@ -19,6 +19,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -72,8 +73,10 @@
     <EmbeddedResource Include="Core\Resources\ByNameInstrumentationSubject.cs" />
     <EmbeddedResource Include="Core\Resources\ByNotAttributeInstrumentationSubject.cs" />
     <EmbeddedResource Include="Core\Resources\PreserveDebugInfoSubject.cs" />
+    <Compile Include="Core\InstrumentingCFAssemblyTestCase.cs" />
     <Compile Include="Core\PreserveDebugInfoTestCase.cs" />
     <Compile Include="Core\ResourceServices.cs" />
+    <EmbeddedResource Include="Core\Resources\CFInstrumentationSubject.cs" />
     <Compile Include="Core\ShellUtilities.cs" />
     <Compile Include="Core\SignConfiguration.cs" />
     <Compile Include="Core\SingleResourceTestCase.cs" />

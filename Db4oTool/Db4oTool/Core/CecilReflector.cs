@@ -1,4 +1,5 @@
 using System;
+using Db4objects.Db4o.Foundation;
 using Mono.Cecil;
 
 namespace Db4oTool.Core
@@ -6,12 +7,19 @@ namespace Db4oTool.Core
 	public class CecilReflector
 	{
 		private readonly InstrumentationContext _context;
-		private readonly RelativeAssemblyResolver _resolver;
+		private readonly IAssemblyResolver _resolver;
 
 		public CecilReflector(InstrumentationContext context)
 		{
 			_context = context;
 			_resolver = new RelativeAssemblyResolver(_context);
+
+			if (_context.AlternateAssemblyLocation != null)
+			{
+				_resolver = new CompositeAssemblyResolver(
+										new RelativeAssemblyResolver(_context.AlternateAssemblyLocation),
+										_resolver);
+			}
 		}
 
 		public bool Implements(TypeDefinition type, Type interfaceType)
@@ -73,6 +81,43 @@ namespace Db4oTool.Core
 				if (typeRef.FullName == fullName) return true;
 			}
 			return false;
+		}
+	}
+
+	internal class CompositeAssemblyResolver : IAssemblyResolver
+	{
+		private readonly IAssemblyResolver[] _resolvers;
+
+		public CompositeAssemblyResolver(params IAssemblyResolver[] resolvers)
+		{
+			_resolvers = resolvers;
+		}
+
+		public AssemblyDefinition Resolve(string fullName)
+		{
+			return InternalResolve(delegate(IAssemblyResolver resolver)
+			                       	{
+			                       		return resolver.Resolve(fullName);
+			                       	});
+		}
+
+		public AssemblyDefinition Resolve(AssemblyNameReference name)
+		{
+			return InternalResolve(delegate(IAssemblyResolver resolver)
+									{
+										return resolver.Resolve(name);
+									});
+		}
+
+		private AssemblyDefinition InternalResolve(Function<IAssemblyResolver, AssemblyDefinition> @delegate)
+		{
+			foreach (IAssemblyResolver resolver in _resolvers)
+			{
+				AssemblyDefinition assemblyDefinition = @delegate(resolver);
+				if (assemblyDefinition != null) return assemblyDefinition;
+			}
+
+			return null;
 		}
 	}
 }

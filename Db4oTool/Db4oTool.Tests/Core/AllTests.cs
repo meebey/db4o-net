@@ -17,6 +17,7 @@ namespace Db4oTool.Tests.Core
 					typeof(Core.ILPatternTestCase),
 					typeof(Core.CustomInstrumentationTestCase),
 					typeof(Core.PreserveDebugInfoTestCase),
+					typeof(Core.InstrumentingCFAssemblyTestCase),
 				};
 		}
 	}
