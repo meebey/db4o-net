@@ -9,8 +9,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Tests.Common.Btree;
-using Db4objects.Db4o.Tests.Common.Foundation;
 using Db4objects.Db4o.Tests.Common.Querying;
 
 namespace Db4objects.Db4o.Tests.Common.Querying

@@ -5,7 +5,6 @@ using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
-using Db4objects.Db4o.Tests.Common.Btree;
 
 namespace Db4objects.Db4o.Tests.Common.Btree
 {

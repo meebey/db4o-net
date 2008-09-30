@@ -3,7 +3,6 @@
 using System.IO;
 using System.Text;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Slots;
@@ -370,15 +369,6 @@ namespace Db4objects.Db4o
 			if (enabled)
 			{
 				Log(Unused);
-			}
-		}
-
-		public virtual void LogStack(string msg)
-		{
-			if (enabled)
-			{
-				Log(msg);
-				Log(Platform4.StackTrace());
 			}
 		}
 

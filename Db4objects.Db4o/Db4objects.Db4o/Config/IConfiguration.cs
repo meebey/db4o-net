@@ -879,7 +879,7 @@ namespace Db4objects.Db4o.Config
 		/// continually allocate space.
 		/// <br /><br />The allocation of a fixed number of bytes at one time
 		/// makes it more likely that the database will be stored in one
-		/// chunk on the mass storage. Less read/write head movevement can result
+		/// chunk on the mass storage. Less read/write head movement can result
 		/// in improved performance.<br /><br />
 		/// <b>Note:</b><br /> Allocated space will be lost on abnormal termination
 		/// of the database engine (hardware crash, VM crash). A Defragment run

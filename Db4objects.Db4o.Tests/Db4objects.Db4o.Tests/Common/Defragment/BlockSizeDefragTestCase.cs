@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private void CreateDatabase(string fileName, int blockSize)
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(Config(blockSize), fileName);
+			IObjectContainer db = Db4oEmbedded.OpenFile(Config(blockSize), fileName);
 			Collection4 removed = new Collection4();
 			for (int idx = 0; idx < NumItemsPerClass; idx++)
 			{
@@ -123,7 +123,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private void AssertCanRead(string fileName, int blockSize)
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(Config(blockSize), fileName);
+			IObjectContainer db = Db4oEmbedded.OpenFile(Config(blockSize), fileName);
 			AssertResult(db, typeof(BlockSizeDefragTestCase.ItemA));
 			AssertResult(db, typeof(BlockSizeDefragTestCase.ItemB));
 			db.Close();
@@ -141,7 +141,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private IConfiguration Config(int blockSize)
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
+			IConfiguration config = Db4oEmbedded.NewConfiguration();
 			config.BlockSize(blockSize);
 			config.ReflectWith(Platform4.ReflectorForType(typeof(BlockSizeDefragTestCase.ItemA
 				)));

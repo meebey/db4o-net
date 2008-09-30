@@ -61,8 +61,6 @@ namespace Db4objects.Db4o.Internal
 
 		private SharedIndexedFields _indexes;
 
-		internal Db4objects.Db4o.Internal.Replication.MigrationConnection i_migration;
-
 		internal IDb4oReplicationReferenceProvider _replicationReferenceProvider;
 
 		public readonly DiagnosticProcessor _diagnosticProcessor;
@@ -591,18 +589,6 @@ namespace Db4objects.Db4o.Internal
 		public bool IsSystemHandler(int id)
 		{
 			return id <= _highestBuiltinTypeID;
-		}
-
-		public void MigrationConnection(Db4objects.Db4o.Internal.Replication.MigrationConnection
-			 mgc)
-		{
-			i_migration = mgc;
-		}
-
-		public Db4objects.Db4o.Internal.Replication.MigrationConnection MigrationConnection
-			()
-		{
-			return i_migration;
 		}
 
 		public VirtualFieldMetadata VirtualFieldByName(string name)

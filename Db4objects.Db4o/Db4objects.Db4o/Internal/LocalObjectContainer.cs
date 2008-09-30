@@ -41,8 +41,8 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Internal.SystemData _systemData;
 
-		internal LocalObjectContainer(IConfiguration config, ObjectContainerBase parentContainer
-			) : base(config, parentContainer)
+		internal LocalObjectContainer(IConfiguration config, Db4objects.Db4o.Internal.ObjectContainerBase
+			 parentContainer) : base(config, parentContainer)
 		{
 		}
 

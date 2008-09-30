@@ -101,12 +101,12 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private IObjectContainer OpenDatabase()
 		{
-			return Db4oFactory.OpenFile(Config(true), Filename);
+			return Db4oEmbedded.OpenFile(Config(true), Filename);
 		}
 
 		private IConfiguration Config(bool registerTranslator)
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
+			IConfiguration config = Db4oEmbedded.NewConfiguration();
 			config.ReflectWith(Platform4.ReflectorForType(typeof(TranslatedDefragTestCase.Translated
 				)));
 			if (registerTranslator)

@@ -325,26 +325,6 @@ namespace Db4objects.Db4o.Ext
 		/// <returns>Object the ObjectContainer lock object</returns>
 		object Lock();
 
-		/// <summary>aids migration of objects between ObjectContainers.</summary>
-		/// <remarks>
-		/// aids migration of objects between ObjectContainers.
-		/// <br /><br />When objects are migrated from one ObjectContainer to another, it is
-		/// desirable to preserve virtual object attributes such as the object version number
-		/// or the UUID. Use this method to signal to an ObjectContainer that it should read
-		/// existing version numbers and UUIDs from another ObjectContainer. This method should
-		/// also be used during the
-		/// <see cref="com.db4o.tools.Defragment">Defragment</see>
-		/// operation. It is included in the default
-		/// implementation supplied in Defragment.java/Defragment.cs.<br /><br />
-		/// </remarks>
-		/// <param name="objectContainer">
-		/// the
-		/// <see cref="IObjectContainer">IObjectContainer</see>
-		/// objects are to be migrated
-		/// from or <code>null</code> to denote that migration is completed.
-		/// </param>
-		void MigrateFrom(IObjectContainer objectContainer);
-
 		/// <summary>
 		/// returns a transient copy of a persistent object with all members set
 		/// to the values that are currently stored to the database.

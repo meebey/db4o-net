@@ -12,7 +12,6 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
-using Db4objects.Db4o.Internal.CS.Config;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Handlers;
@@ -26,8 +25,8 @@ namespace Db4objects.Db4o.Internal
 {
 	/// <summary>Configuration template for creating new db4o files</summary>
 	/// <exclude></exclude>
-	public sealed class Config4Impl : IConfiguration, IDeepClone, IMessageSender, IFreespaceConfiguration
-		, IQueryConfiguration, IClientServerConfiguration
+	public sealed partial class Config4Impl : IConfiguration, IDeepClone, IMessageSender
+		, IFreespaceConfiguration, IQueryConfiguration, IClientServerConfiguration
 	{
 		private KeySpecHashtable4 _config = new KeySpecHashtable4(50);
 
@@ -60,7 +59,20 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
-		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(DefaultClientServerFactory
+		private sealed class _IDeferred_66 : KeySpec.IDeferred
+		{
+			public _IDeferred_66()
+			{
+			}
+
+			//  TODO: consider setting default to 8, it's more efficient with freespace.
+			public object Evaluate()
+			{
+				return Config4Impl.DefaultClientServerFactory();
+			}
+		}
+
+		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_66
 			());
 
 		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
@@ -168,7 +180,6 @@ namespace Db4objects.Db4o.Internal
 
 		private Collection4 _registeredTypeHandlers;
 
-		//  TODO: consider setting default to 8, it's more efficient with freespace.
 		// for playing with different strategies of prefetching
 		// object
 		//	private final static KeySpec IOADAPTER_KEY=new KeySpec(new RandomAccessFileAdapter());
@@ -182,22 +193,8 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsInt(ActivationDepthKey);
 		}
 
-		private static IClientServerFactory DefaultClientServerFactory()
-		{
-			try
-			{
-				// FIXME: won't work, because we need the assembly name for .NET
-				// return (ClientServerFactory) Class.forName("com.db4o.internal.cs.config.ClientServerFactoryImpl").newInstance();
-				// FIXME: circular cs dependancy. Improve.
-				return new ClientServerFactoryImpl();
-			}
-			catch (Exception)
-			{
-				// can happen if CS lib is not present
-				return null;
-			}
-		}
-
+		// FIXME: circular cs dependancy. Improve.
+		// FIXME: won't work, because we need the assembly name for .NET
 		public void ActivationDepth(int depth)
 		{
 			_config.Put(ActivationDepthKey, depth);
@@ -552,7 +549,7 @@ namespace Db4objects.Db4o.Internal
 			return (TextWriter)_config.Get(OutstreamKey);
 		}
 
-		internal TextWriter OutStream()
+		public TextWriter OutStream()
 		{
 			TextWriter outStream = OutStreamOrNull();
 			return outStream == null ? Sharpen.Runtime.Out : outStream;
@@ -833,7 +830,7 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsBoolean(AllowVersionUpdatesKey);
 		}
 
-		internal bool AutomaticShutDown()
+		public bool AutomaticShutDown()
 		{
 			return _config.GetAsBoolean(AutomaticShutdownKey);
 		}
@@ -853,17 +850,17 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsInt(BtreeCacheHeightKey);
 		}
 
-		internal string BlobPath()
+		public string BlobPath()
 		{
 			return _config.GetAsString(BlobPathKey);
 		}
 
-		internal bool Callbacks()
+		public bool Callbacks()
 		{
 			return _config.GetAsBoolean(CallbacksKey);
 		}
 
-		internal TernaryBool CallConstructors()
+		public TernaryBool CallConstructors()
 		{
 			return _config.GetAsTernaryBool(CallConstructorsKey);
 		}
@@ -878,12 +875,12 @@ namespace Db4objects.Db4o.Internal
 			return _config.Get(ClassloaderKey);
 		}
 
-		internal bool DetectSchemaChanges()
+		public bool DetectSchemaChanges()
 		{
 			return _config.GetAsBoolean(DetectSchemaChangesKey);
 		}
 
-		internal bool CommitRecoveryDisabled()
+		public bool CommitRecoveryDisabled()
 		{
 			return _config.GetAsBoolean(DisableCommitRecoveryKey);
 		}
@@ -961,12 +958,12 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsBoolean(IsServerKey);
 		}
 
-		internal bool LockFile()
+		public bool LockFile()
 		{
 			return _config.GetAsBoolean(LockFileKey);
 		}
 
-		internal int MessageLevel()
+		public int MessageLevel()
 		{
 			return _messageLevel;
 		}
@@ -1021,7 +1018,7 @@ namespace Db4objects.Db4o.Internal
 			return (Collection4)_config.Get(RenameKey);
 		}
 
-		internal int ReservedStorageSpace()
+		public int ReservedStorageSpace()
 		{
 			return _config.GetAsInt(ReservedStorageSpaceKey);
 		}
@@ -1046,17 +1043,17 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsInt(TimeoutServerSocketKey);
 		}
 
-		internal int UpdateDepth()
+		public int UpdateDepth()
 		{
 			return _config.GetAsInt(UpdateDepthKey);
 		}
 
-		internal int WeakReferenceCollectionInterval()
+		public int WeakReferenceCollectionInterval()
 		{
 			return _config.GetAsInt(WeakReferenceCollectionIntervalKey);
 		}
 
-		internal bool WeakReferences()
+		public bool WeakReferences()
 		{
 			return _config.GetAsBoolean(WeakReferencesKey);
 		}

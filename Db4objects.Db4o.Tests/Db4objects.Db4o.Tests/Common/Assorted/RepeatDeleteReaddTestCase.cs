@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void CreateDatabase(string fileName)
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(Config(), fileName);
+			IObjectContainer db = Db4oEmbedded.OpenFile(Config(), fileName);
 			Collection4 removed = new Collection4();
 			for (int idx = 0; idx < NumItemsPerClass; idx++)
 			{
@@ -114,7 +114,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void AssertCanRead(string fileName)
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(Config(), fileName);
+			IObjectContainer db = Db4oEmbedded.OpenFile(Config(), fileName);
 			AssertResults(db);
 			db.Close();
 		}
@@ -137,7 +137,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private IConfiguration Config()
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
+			IConfiguration config = Db4oEmbedded.NewConfiguration();
 			config.ReflectWith(Platform4.ReflectorForType(typeof(RepeatDeleteReaddTestCase.ItemA
 				)));
 			return config;

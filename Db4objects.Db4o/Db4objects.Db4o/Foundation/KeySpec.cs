@@ -1,11 +1,18 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
 	public class KeySpec
 	{
-		private readonly object _defaultValue;
+		public interface IDeferred
+		{
+			object Evaluate();
+		}
+
+		private object _defaultValue;
 
 		public KeySpec(byte defaultValue)
 		{
@@ -29,6 +36,10 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual object DefaultValue()
 		{
+			if (_defaultValue is KeySpec.IDeferred)
+			{
+				_defaultValue = ((KeySpec.IDeferred)_defaultValue).Evaluate();
+			}
 			return _defaultValue;
 		}
 	}

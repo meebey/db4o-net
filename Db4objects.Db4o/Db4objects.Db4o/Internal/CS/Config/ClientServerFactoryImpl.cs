@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Internal.CS.Config
 		public virtual IObjectServer OpenServer(IConfiguration config, string databaseFileName
 			, int port, INativeSocketFactory socketFactory)
 		{
-			LocalObjectContainer container = (LocalObjectContainer)Db4oFactory.OpenFile(config
+			LocalObjectContainer container = (LocalObjectContainer)Db4oEmbedded.OpenFile(config
 				, databaseFileName);
 			if (container == null)
 			{

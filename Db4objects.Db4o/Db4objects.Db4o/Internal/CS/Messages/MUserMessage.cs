@@ -22,6 +22,14 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		private class MessageContextImpl : IMessageContext
 		{
+			public virtual IMessageSender Sender
+			{
+				get
+				{
+					return new _IMessageSender_22(this);
+				}
+			}
+
 			private sealed class _IMessageSender_22 : IMessageSender
 			{
 				public _IMessageSender_22(MessageContextImpl _enclosing)
@@ -36,14 +44,6 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 				}
 
 				private readonly MessageContextImpl _enclosing;
-			}
-
-			public virtual IMessageSender Sender
-			{
-				get
-				{
-					return new _IMessageSender_22(this);
-				}
 			}
 
 			public virtual IObjectContainer Container

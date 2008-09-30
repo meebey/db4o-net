@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
@@ -9,9 +10,7 @@ using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Fieldindex;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Tests.Common.Btree;
 using Db4objects.Db4o.Tests.Common.Fieldindex;
-using Db4objects.Db4o.Tests.Common.Foundation;
 
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {

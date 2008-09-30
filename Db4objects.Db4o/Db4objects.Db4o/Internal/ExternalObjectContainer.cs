@@ -13,10 +13,10 @@ using Db4objects.Db4o.Types;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public abstract class ExternalObjectContainer : ObjectContainerBase
+	public abstract class ExternalObjectContainer : Db4objects.Db4o.Internal.ObjectContainerBase
 	{
-		public ExternalObjectContainer(IConfiguration config, ObjectContainerBase parentContainer
-			) : base(config, parentContainer)
+		public ExternalObjectContainer(IConfiguration config, Db4objects.Db4o.Internal.ObjectContainerBase
+			 parentContainer) : base(config, parentContainer)
 		{
 		}
 

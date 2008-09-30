@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private IConfiguration MultithreadedClientConfig()
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
+			IConfiguration config = Db4oEmbedded.NewConfiguration();
 			config.ClientServer().SingleThreadedClient(false);
 			return config;
 		}
@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		protected virtual IConfiguration MemoryIoConfiguration()
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
+			IConfiguration config = Db4oEmbedded.NewConfiguration();
 			config.Io(new MemoryIoAdapter());
 			return config;
 		}

@@ -2,9 +2,9 @@
 
 using System.Collections;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Tests.Common.Btree;
 using Db4objects.Db4o.Tests.Common.Foundation;
 using Sharpen;
 

@@ -78,11 +78,10 @@ namespace Db4objects.Db4o
 		/// </summary>
 		/// <returns>a fresh, independent configuration with all options set to their default values
 		/// 	</returns>
+		[System.ObsoleteAttribute(@"Use")]
 		public static IConfiguration NewConfiguration()
 		{
-			Config4Impl config = new Config4Impl();
-			Platform4.GetDefaultConfiguration(config);
-			return config;
+			return Db4oEmbedded.NewConfiguration();
 		}
 
 		/// <summary>
@@ -182,7 +181,7 @@ namespace Db4objects.Db4o
 		/// a custom
 		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
-		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
+		/// <see cref="Db4oEmbedded.NewConfiguration">Db4oEmbedded.NewConfiguration</see>
 		/// </param>
 		/// <param name="hostName">the host name</param>
 		/// <param name="port">the port the server is using</param>
@@ -239,7 +238,7 @@ namespace Db4objects.Db4o
 		/// a custom
 		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
-		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
+		/// <see cref="Db4oEmbedded.NewConfiguration">Db4oEmbedded.NewConfiguration</see>
 		/// </param>
 		/// <param name="hostName">the host name</param>
 		/// <param name="port">the port the server is using</param>
@@ -332,7 +331,7 @@ namespace Db4objects.Db4o
 		/// </exception>
 		public static IObjectContainer OpenFile(string databaseFileName)
 		{
-			return OpenFile(CloneConfiguration(), databaseFileName);
+			return Db4oEmbedded.OpenFile(CloneConfiguration(), databaseFileName);
 		}
 
 		/// <summary>
@@ -402,7 +401,7 @@ namespace Db4objects.Db4o
 		public static IObjectContainer OpenFile(IConfiguration config, string databaseFileName
 			)
 		{
-			return ObjectContainerFactory.OpenObjectContainer(config, databaseFileName);
+			return Db4oEmbedded.OpenFile(config, databaseFileName);
 		}
 
 		/// <exception cref="Db4oIOException"></exception>
@@ -498,7 +497,7 @@ namespace Db4objects.Db4o
 		/// a custom
 		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
-		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
+		/// <see cref="Db4oEmbedded.NewConfiguration">Db4oEmbedded.NewConfiguration</see>
 		/// </param>
 		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
 		/// <param name="port">
@@ -562,7 +561,7 @@ namespace Db4objects.Db4o
 		/// a custom
 		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
-		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
+		/// <see cref="Db4oEmbedded.NewConfiguration">Db4oEmbedded.NewConfiguration</see>
 		/// </param>
 		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
 		/// <param name="port">

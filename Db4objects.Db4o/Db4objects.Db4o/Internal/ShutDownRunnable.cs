@@ -13,12 +13,12 @@ namespace Db4objects.Db4o.Internal
 
 		public volatile bool dontRemove = false;
 
-		public virtual void Ensure(PartialObjectContainer container)
+		public virtual void Ensure(ObjectContainerBase container)
 		{
 			_containers.Ensure(container);
 		}
 
-		public virtual void Remove(PartialObjectContainer container)
+		public virtual void Remove(ObjectContainerBase container)
 		{
 			_containers.Remove(container);
 		}

@@ -288,7 +288,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			{
 				_typeHandler.Reset();
 			}
-			IConfiguration configuration = Db4oFactory.NewConfiguration();
+			IConfiguration configuration = Db4oEmbedded.NewConfiguration();
 			if (_translator != null)
 			{
 				configuration.ObjectClass(typeof(TranslatorToTypehandlerMigrationTestCase.Item)).
@@ -299,7 +299,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				configuration.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(TranslatorToTypehandlerMigrationTestCase.Item
 					)), _typeHandler);
 			}
-			IObjectContainer db = Db4oFactory.OpenFile(configuration, _fileName);
+			IObjectContainer db = Db4oEmbedded.OpenFile(configuration, _fileName);
 			return db;
 		}
 

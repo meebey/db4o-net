@@ -3,8 +3,8 @@
 using System;
 using System.Collections;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Tests.Common.Foundation;
 
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
@@ -16,12 +16,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Iterable4Adaptor adaptor = NewAdaptor(new int[] {  });
 			Assert.IsFalse(adaptor.HasNext());
 			Assert.IsFalse(adaptor.HasNext());
-			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_20(adaptor));
+			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_21(adaptor));
 		}
 
-		private sealed class _ICodeBlock_20 : ICodeBlock
+		private sealed class _ICodeBlock_21 : ICodeBlock
 		{
-			public _ICodeBlock_20(Iterable4Adaptor adaptor)
+			public _ICodeBlock_21(Iterable4Adaptor adaptor)
 			{
 				this.adaptor = adaptor;
 			}

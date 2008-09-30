@@ -19,7 +19,8 @@ using Db4objects.Db4o.Types;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public abstract class PartialEmbeddedClientObjectContainer : ITransientClass, IObjectContainerSpec
+	public partial class EmbeddedClientObjectContainer : IInternalObjectContainer, ITransientClass
+		, IObjectContainerSpec
 	{
 		protected readonly LocalObjectContainer _server;
 
@@ -27,17 +28,17 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _closed = false;
 
-		public PartialEmbeddedClientObjectContainer(LocalObjectContainer server, Db4objects.Db4o.Internal.Transaction
+		public EmbeddedClientObjectContainer(LocalObjectContainer server, Db4objects.Db4o.Internal.Transaction
 			 trans)
 		{
 			_server = server;
 			_transaction = trans;
-			_transaction.SetOutSideRepresentation(Cast(this));
+			_transaction.SetOutSideRepresentation(this);
 		}
 
-		public PartialEmbeddedClientObjectContainer(LocalObjectContainer server) : this(server
-			, server.NewTransaction(server.SystemTransaction(), server.CreateReferenceSystem
-			()))
+		public EmbeddedClientObjectContainer(LocalObjectContainer server) : this(server, 
+			server.NewTransaction(server.SystemTransaction(), server.CreateReferenceSystem()
+			))
 		{
 		}
 
@@ -198,12 +199,6 @@ namespace Db4objects.Db4o.Internal
 		public virtual object Lock()
 		{
 			return _server.Lock();
-		}
-
-		/// <param name="objectContainer"></param>
-		public virtual void MigrateFrom(IObjectContainer objectContainer)
-		{
-			throw new NotSupportedException();
 		}
 
 		public virtual object PeekPersisted(object @object, int depth, bool committed)
@@ -374,7 +369,7 @@ namespace Db4objects.Db4o.Internal
 						Commit();
 					}
 				}
-				_server.Callbacks().CloseOnStarted(Cast(this));
+				_server.Callbacks().CloseOnStarted(this);
 				_transaction.Close(false);
 				_closed = true;
 				return true;
@@ -562,12 +557,6 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// do nothing
-		private static IObjectContainer Cast(Db4objects.Db4o.Internal.PartialEmbeddedClientObjectContainer
-			 container)
-		{
-			return (IObjectContainer)container;
-		}
-
 		public virtual ClassMetadata ClassMetadataForReflectClass(IReflectClass reflectClass
 			)
 		{

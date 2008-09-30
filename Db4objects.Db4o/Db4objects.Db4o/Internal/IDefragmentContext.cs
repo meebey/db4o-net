@@ -2,6 +2,7 @@
 
 using System.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
@@ -49,5 +50,7 @@ namespace Db4objects.Db4o.Internal
 		ByteArrayBuffer SourceBufferById(int sourceId);
 
 		void TargetWriteBytes(int address, ByteArrayBuffer buffer);
+
+		IDefragmentServices Services();
 	}
 }

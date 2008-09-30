@@ -126,53 +126,19 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			HandlerRegistry handlers = stream._handlers;
 			bool migrating = false;
-			if (stream._replicationCallState != Const4.None)
+			if (stream._replicationCallState == Const4.New)
 			{
-				if (stream._replicationCallState == Const4.Old)
+				IDb4oReplicationReferenceProvider provider = handlers._replicationReferenceProvider;
+				object parentObject = @ref.GetObject();
+				IDb4oReplicationReference replicationReference = provider.ReferenceFor(parentObject
+					);
+				if (replicationReference != null)
 				{
-					// old replication code 
 					migrating = true;
-					if (@ref.VirtualAttributes() == null)
-					{
-						object obj = @ref.GetObject();
-						ObjectReference migratingRef = null;
-						MigrationConnection mgc = handlers.i_migration;
-						if (mgc != null)
-						{
-							migratingRef = mgc.ReferenceFor(obj);
-							if (migratingRef == null)
-							{
-								ObjectContainerBase peer = mgc.Peer(stream);
-								migratingRef = peer.Transaction().ReferenceForObject(obj);
-							}
-						}
-						if (migratingRef != null)
-						{
-							VirtualAttributes migrateAttributes = migratingRef.VirtualAttributes();
-							if (migrateAttributes != null && migrateAttributes.i_database != null)
-							{
-								migrating = true;
-								@ref.SetVirtualAttributes((VirtualAttributes)migrateAttributes.ShallowClone());
-								migrateAttributes.i_database.Bind(trans);
-							}
-						}
-					}
-				}
-				else
-				{
-					// new dRS replication
-					IDb4oReplicationReferenceProvider provider = handlers._replicationReferenceProvider;
-					object parentObject = @ref.GetObject();
-					IDb4oReplicationReference replicationReference = provider.ReferenceFor(parentObject
-						);
-					if (replicationReference != null)
-					{
-						migrating = true;
-						VirtualAttributes va = @ref.ProduceVirtualAttributes();
-						va.i_version = replicationReference.Version();
-						va.i_uuid = replicationReference.LongPart();
-						va.i_database = replicationReference.SignaturePart();
-					}
+					VirtualAttributes va = @ref.ProduceVirtualAttributes();
+					va.i_version = replicationReference.Version();
+					va.i_uuid = replicationReference.LongPart();
+					va.i_database = replicationReference.SignaturePart();
 				}
 			}
 			if (@ref.VirtualAttributes() == null)

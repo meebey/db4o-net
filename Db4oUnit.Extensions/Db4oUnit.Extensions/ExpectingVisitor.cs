@@ -1,10 +1,11 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
 using Sharpen;
 
-namespace Db4objects.Db4o.Tests.Common.Btree
+namespace Db4oUnit.Extensions
 {
 	public class ExpectingVisitor : IVisitor4
 	{
@@ -128,6 +129,36 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			{
 				Assert.AreSame(Found, _expected[i]);
 			}
+		}
+
+		public static Db4oUnit.Extensions.ExpectingVisitor CreateExpectingVisitor(int value
+			, int count)
+		{
+			int[] values = new int[count];
+			for (int i = 0; i < values.Length; i++)
+			{
+				values[i] = value;
+			}
+			return new Db4oUnit.Extensions.ExpectingVisitor(IntArrays4.ToObjectArray(values));
+		}
+
+		public static Db4oUnit.Extensions.ExpectingVisitor CreateExpectingVisitor(int[] keys
+			)
+		{
+			return new Db4oUnit.Extensions.ExpectingVisitor(IntArrays4.ToObjectArray(keys));
+		}
+
+		public static Db4oUnit.Extensions.ExpectingVisitor CreateSortedExpectingVisitor(int
+			[] keys)
+		{
+			return new Db4oUnit.Extensions.ExpectingVisitor(IntArrays4.ToObjectArray(keys), true
+				, false);
+		}
+
+		public static Db4oUnit.Extensions.ExpectingVisitor CreateExpectingVisitor(int expectedID
+			)
+		{
+			return CreateExpectingVisitor(expectedID, 1);
 		}
 	}
 }

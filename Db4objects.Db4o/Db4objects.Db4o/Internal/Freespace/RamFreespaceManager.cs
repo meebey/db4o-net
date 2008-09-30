@@ -267,42 +267,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 			StringBuilder sb = new StringBuilder();
 			sb.Append("RAM FreespaceManager\n");
 			sb.Append("Address Index\n");
-			_freeByAddress.Traverse(new _IVisitor4_231(sb));
+			_freeByAddress.Traverse(new RamFreespaceManager.ToStringVisitor(sb));
 			sb.Append("Length Index\n");
-			_freeBySize.Traverse(new _IVisitor4_239(sb));
+			_freeBySize.Traverse(new RamFreespaceManager.ToStringVisitor(sb));
 			return sb.ToString();
-		}
-
-		private sealed class _IVisitor4_231 : IVisitor4
-		{
-			public _IVisitor4_231(StringBuilder sb)
-			{
-				this.sb = sb;
-			}
-
-			public void Visit(object obj)
-			{
-				sb.Append(obj);
-				sb.Append("\n");
-			}
-
-			private readonly StringBuilder sb;
-		}
-
-		private sealed class _IVisitor4_239 : IVisitor4
-		{
-			public _IVisitor4_239(StringBuilder sb)
-			{
-				this.sb = sb;
-			}
-
-			public void Visit(object obj)
-			{
-				sb.Append(obj);
-				sb.Append("\n");
-			}
-
-			private readonly StringBuilder sb;
 		}
 
 		public override void Traverse(IVisitor4 visitor)
@@ -311,12 +279,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			_freeByAddress.Traverse(new _IVisitor4_252(visitor));
+			_freeByAddress.Traverse(new _IVisitor4_241(visitor));
 		}
 
-		private sealed class _IVisitor4_252 : IVisitor4
+		private sealed class _IVisitor4_241 : IVisitor4
 		{
-			public _IVisitor4_252(IVisitor4 visitor)
+			public _IVisitor4_241(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}
@@ -346,6 +314,22 @@ namespace Db4objects.Db4o.Internal.Freespace
 			buffer.WriteEncrypt();
 			Transaction().FlushFile();
 			Transaction().WritePointer(pointer);
+		}
+
+		internal sealed class ToStringVisitor : IVisitor4
+		{
+			private readonly StringBuilder _sb;
+
+			internal ToStringVisitor(StringBuilder sb)
+			{
+				_sb = sb;
+			}
+
+			public void Visit(object obj)
+			{
+				_sb.Append(obj);
+				_sb.Append("\n");
+			}
 		}
 	}
 }

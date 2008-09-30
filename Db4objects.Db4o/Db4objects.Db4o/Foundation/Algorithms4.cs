@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
@@ -7,62 +8,150 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class Algorithms4
 	{
-		private class Range
-		{
-			internal int _from;
-
-			internal int _to;
-
-			public Range(int from, int to)
-			{
-				_from = from;
-				_to = to;
-			}
-		}
-
 		public static void Qsort(IQuickSortable4 sortable)
 		{
-			Stack4 stack = new Stack4();
-			AddRange(stack, 0, sortable.Size() - 1);
-			Qsort(sortable, stack);
+			Qsort(sortable, 0, sortable.Size());
 		}
 
-		private static void Qsort(IQuickSortable4 sortable, Stack4 stack)
+		public static void Qsort(IQuickSortable4 sortable, int start, int end)
 		{
-			while (!stack.IsEmpty())
+			int length = end - start;
+			if (length < 7)
 			{
-				Algorithms4.Range range = (Algorithms4.Range)stack.Peek();
-				stack.Pop();
-				int from = range._from;
-				int to = range._to;
-				int pivot = to;
-				int left = from;
-				int right = to;
-				while (left < right)
-				{
-					while (left < right && sortable.Compare(left, pivot) < 0)
-					{
-						left++;
-					}
-					while (left < right && sortable.Compare(right, pivot) >= 0)
-					{
-						right--;
-					}
-					Swap(sortable, left, right);
-				}
-				Swap(sortable, to, right);
-				AddRange(stack, from, right - 1);
-				AddRange(stack, right + 1, to);
-			}
-		}
-
-		private static void AddRange(Stack4 stack, int from, int to)
-		{
-			if (to - from < 1)
-			{
+				InsertionSort(sortable, start, end);
 				return;
 			}
-			stack.Push(new Algorithms4.Range(from, to));
+			int middle = start + length / 2;
+			if (length > 7)
+			{
+				int bottom = start;
+				int top = end - 1;
+				if (length > 40)
+				{
+					length /= 8;
+					bottom = MiddleValueIndex(sortable, bottom, bottom + length, bottom + (2 * length
+						));
+					middle = MiddleValueIndex(sortable, middle - length, middle, middle + length);
+					top = MiddleValueIndex(sortable, top - (2 * length), top - length, top);
+				}
+				middle = MiddleValueIndex(sortable, bottom, middle, top);
+			}
+			int a;
+			int b;
+			int c;
+			int d;
+			a = b = start;
+			c = d = end - 1;
+			while (true)
+			{
+				while (b <= c && sortable.Compare(b, middle) <= 0)
+				{
+					if (sortable.Compare(b, middle) == 0)
+					{
+						middle = NewPartionIndex(middle, a, b);
+						Swap(sortable, a++, b);
+					}
+					b++;
+				}
+				while (c >= b && sortable.Compare(c, middle) >= 0)
+				{
+					if (sortable.Compare(c, middle) == 0)
+					{
+						middle = NewPartionIndex(middle, c, d);
+						Swap(sortable, c, d--);
+					}
+					c--;
+				}
+				if (b > c)
+				{
+					break;
+				}
+				middle = NewPartionIndex(middle, b, c);
+				Swap(sortable, b++, c--);
+			}
+			length = Math.Min(a - start, b - a);
+			Swap(sortable, start, b - length, length);
+			length = Math.Min(d - c, end - 1 - d);
+			Swap(sortable, b, end - length, length);
+			length = b - a;
+			if (length > 0)
+			{
+				Qsort(sortable, start, start + length);
+			}
+			length = d - c;
+			if (length > 0)
+			{
+				Qsort(sortable, end - length, end);
+			}
+		}
+
+		private static void InsertionSort(IQuickSortable4 sortable, int start, int end)
+		{
+			for (int i = start + 1; i < end; i++)
+			{
+				for (int j = i; j > start && sortable.Compare(j - 1, j) > 0; j--)
+				{
+					Swap(sortable, j - 1, j);
+				}
+			}
+		}
+
+		private static int NewPartionIndex(int oldPartionIndex, int leftSwapIndex, int rightSwapIndex
+			)
+		{
+			if (leftSwapIndex == oldPartionIndex)
+			{
+				return rightSwapIndex;
+			}
+			else
+			{
+				if (rightSwapIndex == oldPartionIndex)
+				{
+					return leftSwapIndex;
+				}
+			}
+			return oldPartionIndex;
+		}
+
+		private static int MiddleValueIndex(IQuickSortable4 sortable, int a, int b, int c
+			)
+		{
+			if (sortable.Compare(a, b) < 0)
+			{
+				if (sortable.Compare(b, c) < 0)
+				{
+					return b;
+				}
+				else
+				{
+					if (sortable.Compare(a, c) < 0)
+					{
+						return c;
+					}
+					else
+					{
+						return a;
+					}
+				}
+			}
+			else
+			{
+				if (sortable.Compare(b, c) > 0)
+				{
+					return b;
+				}
+				else
+				{
+					if (sortable.Compare(a, c) > 0)
+					{
+						return c;
+					}
+					else
+					{
+						return a;
+					}
+				}
+			}
 		}
 
 		private static void Swap(IQuickSortable4 sortable, int left, int right)
@@ -72,6 +161,14 @@ namespace Db4objects.Db4o.Foundation
 				return;
 			}
 			sortable.Swap(left, right);
+		}
+
+		private static void Swap(IQuickSortable4 sortable, int from, int to, int length)
+		{
+			while (length-- > 0)
+			{
+				Swap(sortable, from++, to++);
+			}
 		}
 	}
 }

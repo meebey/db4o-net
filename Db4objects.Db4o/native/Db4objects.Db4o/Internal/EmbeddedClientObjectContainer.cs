@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2007  db4objects Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
 using Db4objects.Db4o.Internal.Query;
@@ -9,27 +9,13 @@ using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Internal
 {
-	/// <exclude></exclude>
-	public class EmbeddedClientObjectContainer : PartialEmbeddedClientObjectContainer
-		, IInternalObjectContainer
-	{
-		public EmbeddedClientObjectContainer(LocalObjectContainer server) : base(server)
-		{
-		}
-
-		public EmbeddedClientObjectContainer(LocalObjectContainer server, Transaction trans
-			) : base(server, trans)
-		{
-		}
+    /// <exclude></exclude>
+    public partial class EmbeddedClientObjectContainer
+    {
         void System.IDisposable.Dispose()
         {
             Close();
         }
-
-		public IObjectSet Query(Db4objects.Db4o.Query.Predicate match, IQueryComparator comparator)
-		{
-			return GetNativeQueryHandler().Execute(Query(), match, comparator);
-		}
 
         public IObjectSet Query(Db4objects.Db4o.Query.Predicate match, System.Collections.IComparer comparer)
         {

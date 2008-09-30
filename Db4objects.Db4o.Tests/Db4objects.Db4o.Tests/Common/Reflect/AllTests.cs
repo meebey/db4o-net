@@ -3,6 +3,7 @@
 using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Tests.Common.Reflect;
+using Db4objects.Db4o.Tests.Common.Reflect.Generic;
 
 namespace Db4objects.Db4o.Tests.Common.Reflect
 {
@@ -12,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect
 		{
 			return new Type[] { typeof(GenericReflectorStateTest), typeof(NoTestConstructorsTestCase
 				), typeof(ReflectArrayTestCase), typeof(Db4objects.Db4o.Tests.Common.Reflect.Custom.AllTests
-				) };
+				), typeof(GenericObjectsTest) };
 		}
 
 		public static void Main(string[] args)

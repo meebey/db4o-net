@@ -1,17 +1,17 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Tests.Common.Foundation;
 
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
 	/// <exclude></exclude>
 	public class SortedCollection4TestCase : ITestCase
 	{
-		private sealed class _IComparison4_14 : IComparison4
+		private sealed class _IComparison4_15 : IComparison4
 		{
-			public _IComparison4_14()
+			public _IComparison4_15()
 			{
 			}
 
@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
-		internal static readonly IComparison4 IntegerComparison = new _IComparison4_14();
+		internal static readonly IComparison4 IntegerComparison = new _IComparison4_15();
 
 		public virtual void TestAddAllAndToArray()
 		{

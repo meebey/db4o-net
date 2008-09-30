@@ -2,7 +2,7 @@
 
 using Db4objects.Db4o.Internal.Slots;
 
-namespace Db4objects.Db4o.Tests.Common.Btree
+namespace Db4oUnit.Extensions
 {
 	/// <exclude></exclude>
 	public interface ISlotListener

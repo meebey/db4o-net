@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Events
 		private static EventRegistryImpl NewEventRegistryFor(IInternalObjectContainer container
 			)
 		{
-			if (container is PartialObjectContainer && ((PartialObjectContainer)container).IsClient
+			if (container is ObjectContainerBase && ((ObjectContainerBase)container).IsClient
 				())
 			{
 				return new ClientEventRegistryImpl(container);

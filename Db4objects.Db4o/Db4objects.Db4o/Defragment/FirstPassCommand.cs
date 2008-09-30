@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Defragment
 	/// to target pointer address.
 	/// </remarks>
 	/// <exclude></exclude>
-	internal sealed class FirstPassCommand : IPassCommand
+	public sealed class FirstPassCommand : IPassCommand
 	{
 		private const int IdBatchSize = 4096;
 
@@ -46,12 +46,12 @@ namespace Db4objects.Db4o.Defragment
 			, int id, int classIndexID)
 		{
 			Process(context, id, true);
-			classMetadata.ForEachField(new _IProcedure4_36(this, context));
+			classMetadata.ForEachField(new _IProcedure4_37(this, context));
 		}
 
-		private sealed class _IProcedure4_36 : IProcedure4
+		private sealed class _IProcedure4_37 : IProcedure4
 		{
-			public _IProcedure4_36(FirstPassCommand _enclosing, DefragmentServicesImpl context
+			public _IProcedure4_37(FirstPassCommand _enclosing, DefragmentServicesImpl context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -87,12 +87,12 @@ namespace Db4objects.Db4o.Defragment
 		public void ProcessBTree(DefragmentServicesImpl context, BTree btree)
 		{
 			Process(context, btree.GetID(), false);
-			context.TraverseAllIndexSlots(btree, new _IVisitor4_56(this, context));
+			context.TraverseAllIndexSlots(btree, new _IVisitor4_57(this, context));
 		}
 
-		private sealed class _IVisitor4_56 : IVisitor4
+		private sealed class _IVisitor4_57 : IVisitor4
 		{
-			public _IVisitor4_56(FirstPassCommand _enclosing, DefragmentServicesImpl context)
+			public _IVisitor4_57(FirstPassCommand _enclosing, DefragmentServicesImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;

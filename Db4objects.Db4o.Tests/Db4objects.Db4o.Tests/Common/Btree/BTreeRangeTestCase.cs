@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Tests.Common.Btree;
 

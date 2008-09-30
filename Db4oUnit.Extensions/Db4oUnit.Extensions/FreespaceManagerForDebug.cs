@@ -1,12 +1,12 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
-using Db4objects.Db4o.Tests.Common.Btree;
 
-namespace Db4objects.Db4o.Tests.Common.Btree
+namespace Db4oUnit.Extensions
 {
 	public class FreespaceManagerForDebug : AbstractFreespaceManager
 	{

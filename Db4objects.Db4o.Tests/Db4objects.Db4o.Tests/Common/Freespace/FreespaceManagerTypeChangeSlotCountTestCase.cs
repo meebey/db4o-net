@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private void Open()
 		{
-			_container = (LocalObjectContainer)Db4oFactory.OpenFile(_currentConfig, _fileName
+			_container = (LocalObjectContainer)Db4oEmbedded.OpenFile(_currentConfig, _fileName
 				);
 		}
 
@@ -103,7 +103,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private void ConfigureBTreeManager()
 		{
-			_currentConfig = Db4oFactory.NewConfiguration();
+			_currentConfig = Db4oEmbedded.NewConfiguration();
 			_currentConfig.Freespace().UseBTreeSystem();
 		}
 
@@ -117,7 +117,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private void ConfigureRamManager()
 		{
-			_currentConfig = Db4oFactory.NewConfiguration();
+			_currentConfig = Db4oEmbedded.NewConfiguration();
 			_currentConfig.Freespace().UseRamSystem();
 		}
 

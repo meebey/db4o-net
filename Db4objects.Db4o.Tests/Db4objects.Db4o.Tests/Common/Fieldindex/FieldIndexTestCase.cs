@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -9,9 +10,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Tests.Common.Btree;
 using Db4objects.Db4o.Tests.Common.Fieldindex;
-using Db4objects.Db4o.Tests.Common.Foundation;
 
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
@@ -71,8 +70,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			{
 				if (values[i] != lastValue)
 				{
-					ExpectingVisitor expectingVisitor = BTreeAssert.CreateExpectingVisitor(values[i], 
-						IntArrays4.Occurences(values, values[i]));
+					ExpectingVisitor expectingVisitor = ExpectingVisitor.CreateExpectingVisitor(values
+						[i], IntArrays4.Occurences(values, values[i]));
 					IBTreeRange range = FieldIndexKeySearch(Trans(), btree, values[i]);
 					BTreeAssert.TraverseKeys(range, new _IVisitor4_63(expectingVisitor));
 					expectingVisitor.AssertExpectations();

@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
@@ -11,9 +12,7 @@ using Db4objects.Db4o.Internal.Classindex;
 using Db4objects.Db4o.Internal.Fieldindex;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Tests.Common.Btree;
 using Db4objects.Db4o.Tests.Common.Fieldindex;
-using Db4objects.Db4o.Tests.Common.Foundation;
 
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
@@ -133,7 +132,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		protected virtual void AssertTreeInt(int[] expectedValues, TreeInt treeInt)
 		{
-			ExpectingVisitor visitor = BTreeAssert.CreateExpectingVisitor(expectedValues);
+			ExpectingVisitor visitor = ExpectingVisitor.CreateExpectingVisitor(expectedValues
+				);
 			treeInt.Traverse(new _IVisitor4_117(visitor));
 			visitor.AssertExpectations();
 		}

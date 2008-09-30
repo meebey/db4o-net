@@ -6,7 +6,6 @@ using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Tests.Common.Btree;
-using Db4objects.Db4o.Tests.Common.Foundation;
 
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
@@ -66,8 +65,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			{
 				if (keys[i] != lastValue)
 				{
-					ExpectingVisitor expectingVisitor = BTreeAssert.CreateExpectingVisitor(keys[i], IntArrays4
-						.Occurences(keys, keys[i]));
+					ExpectingVisitor expectingVisitor = ExpectingVisitor.CreateExpectingVisitor(keys[
+						i], IntArrays4.Occurences(keys, keys[i]));
 					IBTreeRange range = btree.Search(trans, keys[i]);
 					BTreeAssert.TraverseKeys(range, expectingVisitor);
 					expectingVisitor.AssertExpectations();

@@ -4,7 +4,7 @@ using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Sharpen;
 
-namespace Db4objects.Db4o.Tests.Common.Foundation
+namespace Db4oUnit.Extensions
 {
 	public class IntArrays4
 	{

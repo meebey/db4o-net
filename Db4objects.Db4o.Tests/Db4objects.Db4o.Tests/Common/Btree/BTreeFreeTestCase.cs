@@ -1,10 +1,9 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.Collections;
+using System;
 using Db4oUnit;
-using Db4objects.Db4o.Foundation;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Tests.Common.Btree;
 
 namespace Db4objects.Db4o.Tests.Common.Btree
@@ -18,49 +17,29 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			new BTreeFreeTestCase().RunSolo();
 		}
 
+		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
 			Add(Values);
-			IEnumerator allSlotIDs = _btree.AllNodeIds(SystemTrans());
-			Collection4 allSlots = new Collection4();
-			while (allSlotIDs.MoveNext())
-			{
-				int slotID = ((int)allSlotIDs.Current);
-				Slot slot = GetSlotForID(slotID);
-				allSlots.Add(slot);
-			}
-			Slot bTreeSlot = GetSlotForID(_btree.GetID());
-			allSlots.Add(bTreeSlot);
-			LocalObjectContainer container = (LocalObjectContainer)Stream();
-			Collection4 freedSlots = new Collection4();
-			container.InstallDebugFreespaceManager(new FreespaceManagerForDebug(container, new 
-				_ISlotListener_43(freedSlots, container)));
-			_btree.Free(SystemTrans());
-			SystemTrans().Commit();
-			Assert.IsTrue(freedSlots.ContainsAll(allSlots.GetEnumerator()));
+			BTreeAssert.AssertAllSlotsFreed(FileTransaction(), _btree, new _ICodeBlock_21(this
+				));
 		}
 
-		private sealed class _ISlotListener_43 : ISlotListener
+		private sealed class _ICodeBlock_21 : ICodeBlock
 		{
-			public _ISlotListener_43(Collection4 freedSlots, LocalObjectContainer container)
+			public _ICodeBlock_21(BTreeFreeTestCase _enclosing)
 			{
-				this.freedSlots = freedSlots;
-				this.container = container;
+				this._enclosing = _enclosing;
 			}
 
-			public void OnFree(Slot slot)
+			/// <exception cref="Exception"></exception>
+			public void Run()
 			{
-				freedSlots.Add(container.ToNonBlockedLength(slot));
+				this._enclosing._btree.Free(this._enclosing.SystemTrans());
+				this._enclosing.SystemTrans().Commit();
 			}
 
-			private readonly Collection4 freedSlots;
-
-			private readonly LocalObjectContainer container;
-		}
-
-		private Slot GetSlotForID(int slotID)
-		{
-			return FileTransaction().GetCurrentSlotOfID(slotID);
+			private readonly BTreeFreeTestCase _enclosing;
 		}
 
 		private LocalTransaction FileTransaction()

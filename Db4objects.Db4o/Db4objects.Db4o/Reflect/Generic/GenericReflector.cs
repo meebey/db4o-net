@@ -182,7 +182,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 		{
 			Db4objects.Db4o.Reflect.Generic.GenericClass ret;
 			string name = clazz.GetName();
-			if (name.Equals(typeof(GenericArray).FullName))
+			if (name.Equals(ReflectPlatform.FullyQualifiedName(typeof(GenericArray))))
 			{
 				// special case, comparing name because can't compare class == class directly with ReflectClass
 				ret = new GenericArrayClass(this, clazz, name, null);

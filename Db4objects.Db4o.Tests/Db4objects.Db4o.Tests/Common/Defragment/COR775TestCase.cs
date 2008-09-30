@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		private IObjectContainer OpenDB()
 		{
 			IConfiguration db4oConfig = GetConfiguration();
-			IObjectContainer testDB = Db4oFactory.OpenFile(db4oConfig, Original);
+			IObjectContainer testDB = Db4oEmbedded.OpenFile(db4oConfig, Original);
 			return testDB;
 		}
 
@@ -98,7 +98,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		{
 			if (db4oConfig == null)
 			{
-				db4oConfig = Db4oFactory.NewConfiguration();
+				db4oConfig = Db4oEmbedded.NewConfiguration();
 				db4oConfig.ActivationDepth(int.MaxValue);
 				db4oConfig.CallConstructors(true);
 				IoAdapter ioAdapter = new COR775TestCase.MockIOAdapter(new RandomAccessFileAdapter

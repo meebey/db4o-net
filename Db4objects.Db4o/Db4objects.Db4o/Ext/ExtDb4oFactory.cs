@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Ext
 		/// <seealso cref="MemoryFile">MemoryFile</seealso>
 		public static IObjectContainer OpenMemoryFile(MemoryFile memoryFile)
 		{
-			return OpenMemoryFile1(Db4oFactory.NewConfiguration(), memoryFile);
+			return OpenMemoryFile1(Db4oEmbedded.NewConfiguration(), memoryFile);
 		}
 
 		/// <summary>

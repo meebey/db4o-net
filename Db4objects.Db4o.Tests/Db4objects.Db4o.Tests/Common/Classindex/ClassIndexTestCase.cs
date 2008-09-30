@@ -4,7 +4,6 @@ using System;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Internal.Classindex;
-using Db4objects.Db4o.Tests.Common.Btree;
 using Db4objects.Db4o.Tests.Common.Classindex;
 
 namespace Db4objects.Db4o.Tests.Common.Classindex

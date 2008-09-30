@@ -156,9 +156,6 @@ namespace Db4objects.Db4o.Internal
 
 		public static readonly Type ClassObjectcontainer = typeof(IObjectContainer);
 
-		public static readonly Type ClassReplicationrecord = new ReplicationRecord().GetType
-			();
-
 		public static readonly Type ClassStaticfield = new StaticField().GetType();
 
 		public static readonly Type ClassStaticclass = new StaticClass().GetType();

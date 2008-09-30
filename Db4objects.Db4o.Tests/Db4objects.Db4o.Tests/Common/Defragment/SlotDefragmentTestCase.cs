@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			SlotDefragmentFixture.ForceIndex();
 			Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.Filename
 				, SlotDefragmentTestConstants.Backupfilename);
-			IObjectContainer db = Db4oFactory.OpenFile(Db4oFactory.NewConfiguration(), SlotDefragmentTestConstants
+			IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), SlotDefragmentTestConstants
 				.Filename);
 			IQuery query = db.Query();
 			query.Constrain(typeof(SlotDefragmentFixture.Data));

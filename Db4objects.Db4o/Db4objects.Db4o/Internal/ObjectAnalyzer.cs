@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	internal class ObjectAnalyzer
 	{
-		private readonly PartialObjectContainer _container;
+		private readonly ObjectContainerBase _container;
 
 		private readonly object _obj;
 
@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _notStorable;
 
-		internal ObjectAnalyzer(PartialObjectContainer container, object obj)
+		internal ObjectAnalyzer(ObjectContainerBase container, object obj)
 		{
 			_container = container;
 			_obj = obj;

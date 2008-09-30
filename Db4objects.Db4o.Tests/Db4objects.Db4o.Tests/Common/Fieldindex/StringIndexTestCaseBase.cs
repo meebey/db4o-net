@@ -9,7 +9,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Tests.Common.Btree;
 using Db4objects.Db4o.Tests.Common.Fieldindex;
 using Sharpen;
 
@@ -66,12 +65,12 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			}
 			IoAdaptedObjectContainer file = ((IoAdaptedObjectContainer)Db());
 			IFreespaceManager fm = file.FreespaceManager();
-			fm.Traverse(new _IVisitor4_61(file));
+			fm.Traverse(new _IVisitor4_60(file));
 		}
 
-		private sealed class _IVisitor4_61 : IVisitor4
+		private sealed class _IVisitor4_60 : IVisitor4
 		{
-			public _IVisitor4_61(IoAdaptedObjectContainer file)
+			public _IVisitor4_60(IoAdaptedObjectContainer file)
 			{
 				this.file = file;
 			}

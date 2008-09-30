@@ -16,6 +16,14 @@ namespace Db4oUnit.Fixtures
 			_delegate = delegate_;
 		}
 
+		public virtual object Current
+		{
+			get
+			{
+				return Run(new _IClosure4_17(this));
+			}
+		}
+
 		private sealed class _IClosure4_17 : IClosure4
 		{
 			public _IClosure4_17(ContextfulIterator _enclosing)
@@ -29,14 +37,6 @@ namespace Db4oUnit.Fixtures
 			}
 
 			private readonly ContextfulIterator _enclosing;
-		}
-
-		public virtual object Current
-		{
-			get
-			{
-				return Run(new _IClosure4_17(this));
-			}
 		}
 
 		public virtual bool MoveNext()

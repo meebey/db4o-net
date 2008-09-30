@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal
             return className.StartsWith("Db4objects.Db4o");
         }
 
-        internal static void AddShutDownHook(PartialObjectContainer container)
+        internal static void AddShutDownHook(ObjectContainerBase container)
         {
             lock (_lock)
             {
@@ -485,7 +485,7 @@ namespace Db4objects.Db4o.Internal
                 3);
         }
 
-        internal static void RemoveShutDownHook(PartialObjectContainer container)
+        internal static void RemoveShutDownHook(ObjectContainerBase container)
         {
             lock (_lock)
             {

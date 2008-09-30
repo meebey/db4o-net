@@ -3,9 +3,9 @@
 using System;
 using System.Collections;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Tests.Common.Btree;
-using Db4objects.Db4o.Tests.Common.Foundation;
 
 namespace Db4objects.Db4o.Tests.Common.Btree
 {

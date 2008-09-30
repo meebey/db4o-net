@@ -20,5 +20,7 @@ namespace Db4objects.Db4o.Foundation
 		bool Remove(object obj);
 
 		bool Contains(object obj);
+
+		object[] ToArray();
 	}
 }

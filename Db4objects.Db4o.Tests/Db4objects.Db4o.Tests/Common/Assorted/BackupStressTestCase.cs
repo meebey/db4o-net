@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		private void OpenDatabase()
 		{
 			DeleteFile(File);
-			_objectContainer = Db4oFactory.OpenFile(Config(), File);
+			_objectContainer = Db4oEmbedded.OpenFile(Config(), File);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -169,7 +169,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			for (int i = 1; i < _backups; i++)
 			{
 				Stdout("Backup " + i);
-				IObjectContainer container = Db4oFactory.OpenFile(Config(), BackupFile(i));
+				IObjectContainer container = Db4oEmbedded.OpenFile(Config(), BackupFile(i));
 				try
 				{
 					Stdout("Open successful");
@@ -231,7 +231,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private IConfiguration Config()
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
+			IConfiguration config = Db4oEmbedded.NewConfiguration();
 			config.ObjectClass(typeof(BackupStressItem)).ObjectField("_iteration").Indexed(true
 				);
 			config.ReflectWith(Platform4.ReflectorForType(typeof(BackupStressItem)));

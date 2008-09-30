@@ -106,7 +106,7 @@ namespace Db4objects.Db4o.Bench.Crud
 
 		private IObjectContainer Open(IConfiguration config)
 		{
-			return Db4oFactory.OpenFile(config, DatabaseFile);
+			return Db4oEmbedded.OpenFile(config, DatabaseFile);
 		}
 
 		public static string LogFileName(int itemCount)

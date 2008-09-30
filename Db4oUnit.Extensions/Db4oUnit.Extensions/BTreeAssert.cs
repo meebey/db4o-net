@@ -1,38 +1,19 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Tests.Common.Btree;
-using Db4objects.Db4o.Tests.Common.Foundation;
+using Db4objects.Db4o.Internal.Slots;
 
-namespace Db4objects.Db4o.Tests.Common.Btree
+namespace Db4oUnit.Extensions
 {
 	public class BTreeAssert
 	{
-		public static ExpectingVisitor CreateExpectingVisitor(int value, int count)
-		{
-			int[] values = new int[count];
-			for (int i = 0; i < values.Length; i++)
-			{
-				values[i] = value;
-			}
-			return new ExpectingVisitor(IntArrays4.ToObjectArray(values));
-		}
-
-		public static ExpectingVisitor CreateExpectingVisitor(int[] keys)
-		{
-			return new ExpectingVisitor(IntArrays4.ToObjectArray(keys));
-		}
-
-		private static ExpectingVisitor CreateSortedExpectingVisitor(int[] keys)
-		{
-			return new ExpectingVisitor(IntArrays4.ToObjectArray(keys), true, false);
-		}
-
 		public static void TraverseKeys(IBTreeRange result, IVisitor4 visitor)
 		{
 			IEnumerator i = result.Keys();
@@ -44,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public static void AssertKeys(Transaction transaction, BTree btree, int[] keys)
 		{
-			ExpectingVisitor visitor = CreateExpectingVisitor(keys);
+			ExpectingVisitor visitor = ExpectingVisitor.CreateExpectingVisitor(keys);
 			btree.TraverseKeys(transaction, visitor);
 			visitor.AssertExpectations();
 		}
@@ -59,12 +40,12 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		public static void DumpKeys(Transaction trans, BTree tree)
 		{
-			tree.TraverseKeys(trans, new _IVisitor4_51());
+			tree.TraverseKeys(trans, new _IVisitor4_35());
 		}
 
-		private sealed class _IVisitor4_51 : IVisitor4
+		private sealed class _IVisitor4_35 : IVisitor4
 		{
-			public _IVisitor4_51()
+			public _IVisitor4_35()
 			{
 			}
 
@@ -72,11 +53,6 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			{
 				Sharpen.Runtime.Out.WriteLine(obj);
 			}
-		}
-
-		public static ExpectingVisitor CreateExpectingVisitor(int expectedID)
-		{
-			return CreateExpectingVisitor(expectedID, 1);
 		}
 
 		public static int FillSize(BTree btree)
@@ -92,7 +68,8 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public static void AssertRange(int[] expectedKeys, IBTreeRange range)
 		{
 			Assert.IsNotNull(range);
-			ExpectingVisitor visitor = CreateSortedExpectingVisitor(expectedKeys);
+			ExpectingVisitor visitor = ExpectingVisitor.CreateSortedExpectingVisitor(expectedKeys
+				);
 			TraverseKeys(range, visitor);
 			visitor.AssertExpectations();
 		}
@@ -123,6 +100,46 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			expectingVisitor = new ExpectingVisitor(new object[] { element });
 			btree.TraverseKeys(trans, expectingVisitor);
 			expectingVisitor.AssertExpectations();
+		}
+
+		/// <exception cref="Exception"></exception>
+		public static void AssertAllSlotsFreed(LocalTransaction trans, BTree bTree, ICodeBlock
+			 block)
+		{
+			IEnumerator allSlotIDs = bTree.AllNodeIds(trans.SystemTransaction());
+			Collection4 allSlots = new Collection4();
+			while (allSlotIDs.MoveNext())
+			{
+				int slotID = ((int)allSlotIDs.Current);
+				Slot slot = trans.GetCurrentSlotOfID(slotID);
+				allSlots.Add(slot);
+			}
+			Slot bTreeSlot = trans.GetCurrentSlotOfID(bTree.GetID());
+			allSlots.Add(bTreeSlot);
+			LocalObjectContainer container = (LocalObjectContainer)trans.Container();
+			Collection4 freedSlots = new Collection4();
+			container.InstallDebugFreespaceManager(new FreespaceManagerForDebug(container, new 
+				_ISlotListener_99(freedSlots, container)));
+			block.Run();
+			Assert.IsTrue(freedSlots.ContainsAll(allSlots.GetEnumerator()));
+		}
+
+		private sealed class _ISlotListener_99 : ISlotListener
+		{
+			public _ISlotListener_99(Collection4 freedSlots, LocalObjectContainer container)
+			{
+				this.freedSlots = freedSlots;
+				this.container = container;
+			}
+
+			public void OnFree(Slot slot)
+			{
+				freedSlots.Add(container.ToNonBlockedLength(slot));
+			}
+
+			private readonly Collection4 freedSlots;
+
+			private readonly LocalObjectContainer container;
 		}
 	}
 }
