@@ -655,15 +655,6 @@ namespace Db4objects.Db4o.Internal
 		                                        	typeof(String),
 		                                        };
 
-        public static String StackTrace()
-        {
-#if CF_1_0 || CF
-            throw new NotImplementedException();
-#else
-            return Environment.StackTrace;
-#endif
-        }
-
         public static DateTime Now()
         {
             return DateTime.Now;
