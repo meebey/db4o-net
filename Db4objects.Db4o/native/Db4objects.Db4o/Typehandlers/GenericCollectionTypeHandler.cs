@@ -152,7 +152,7 @@ namespace Db4objects.Db4o.Typehandlers
 			return elementHandler ?? UntypedObjectHandlerFrom(context);
 		}
 
-		private static ITypeHandler4 DetectElementTypeHandler(PartialObjectContainer container, ICollection collection)
+		private static ITypeHandler4 DetectElementTypeHandler(ObjectContainerBase container, ICollection collection)
 		{
 			Type elementType = ElementTypeOf(collection);
 			if (IsNullableInstance(elementType))
@@ -164,7 +164,7 @@ namespace Db4objects.Db4o.Typehandlers
 			return elementHandler ?? container.Handlers().UntypedObjectHandler();
 		}
 
-		private static IReflectClass ReflectClassFor(PartialObjectContainer container, Type elementType)
+		private static IReflectClass ReflectClassFor(ObjectContainerBase container, Type elementType)
 		{
 			return container.Reflector().ForClass(elementType);
 		}
