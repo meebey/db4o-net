@@ -22,12 +22,12 @@ namespace Db4objects.Db4o.Tests.Util
 #endif
 		}
 
-        public static string Db4ojarPath()
+        public static string Db4oCoreJarPath()
         {
-            return Db4ojarPath("");
+            return Db4oJarPath("-core");
         }
 
-		public static string Db4ojarPath(string extension)
+		public static string Db4oJarPath(string extension)
 		{
 			string db4oVersion = string.Format("{0}.{1}.{2}.{3}", Db4oVersion.Major, Db4oVersion.Minor,
                 Db4oVersion.Iteration, Db4oVersion.Revision);
@@ -62,11 +62,11 @@ namespace Db4objects.Db4o.Tests.Util
 #if CF 
             return null;
 #else
-		    Assert.IsTrue(File.Exists(JavaServices.Db4ojarPath()), string.Format("'{0}' not found. Make sure the jar was built before running this test.", JavaServices.Db4ojarPath()));
-            Assert.IsTrue(File.Exists(JavaServices.Db4ojarPath("-optional")), string.Format("'{0}' not found. Make sure the jar was built before running this test.", JavaServices.Db4ojarPath("-optional")));
+            Assert.IsTrue(File.Exists(JavaServices.Db4oCoreJarPath()), string.Format("'{0}' not found. Make sure the jar was built before running this test.", JavaServices.Db4oCoreJarPath()));
+            Assert.IsTrue(File.Exists(JavaServices.Db4oJarPath("-optional")), string.Format("'{0}' not found. Make sure the jar was built before running this test.", JavaServices.Db4oJarPath("-optional")));
             return IOServices.Exec(WorkspaceServices.JavacPath(),
                     "-classpath",
-                    IOServices.JoinQuotedArgs(Path.PathSeparator, JavaServices.Db4ojarPath(), JavaServices.Db4ojarPath("-optional")),
+                    IOServices.JoinQuotedArgs(Path.PathSeparator, JavaServices.Db4oCoreJarPath(), JavaServices.Db4oJarPath("-optional")),
                     srcFile);
 #endif
 		}
@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Tests.Util
 #else
             return IOServices.Exec(WorkspaceServices.JavaPath(),
                     "-cp",
-                    IOServices.JoinQuotedArgs(Path.PathSeparator, JavaServices.JavaTempPath, Db4ojarPath(), JavaServices.Db4ojarPath("-optional")),
+                    IOServices.JoinQuotedArgs(Path.PathSeparator, JavaServices.JavaTempPath, Db4oCoreJarPath(), JavaServices.Db4oJarPath("-optional")),
                     className,
                     IOServices.JoinQuotedArgs(args));
 #endif
