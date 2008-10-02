@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E9588FE7-C19D-445E-BB53-AE539EA4F0E6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Db4objects.Db4o.Optional</RootNamespace>
+    <AssemblyName>Db4objects.Db4o.Optional</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Db4objects.Db4o.Optional.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Db4objects.Db4o.Optional.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Cecil.FlowAnalysis, Version=0.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\net-2.0\Cecil.FlowAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\net-2.0\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Db4objects.Db4o.Optional\Cluster\Cluster.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\IO\CachedIoAdapter.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\IO\DebugIoAdapter.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\IO\IoAdapter.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\IO\IoAdapterWindow.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\IO\MemoryIoAdapter.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\IO\NonFlushingIoAdapter.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\IO\RandomAccessFileAdapter.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\IO\VanillaIoAdapter.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Internal\Cluster\ClusterConstraint.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Internal\Cluster\ClusterConstraints.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Internal\Cluster\ClusterQuery.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Internal\Cluster\ClusterQueryResult.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Reflect\Self\ClassInfo.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Reflect\Self\FieldInfo.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Reflect\Self\ISelfReflectable.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfArray.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfClass.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfField.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfMethod.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfReflectionRegistry.cs" />
+    <Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfReflector.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Db4objects.Db4o.Instrumentation\Db4objects.Db4o.Instrumentation-2008.csproj">
+      <Project>{FFA59708-14D1-4C22-B9A4-1A389EE796D5}</Project>
+      <Name>Db4objects.Db4o.Instrumentation-2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-2008.csproj">
+      <Project>{600CD3BF-2ED2-4183-87F7-ADD78A968AE0}</Project>
+      <Name>Db4objects.Db4o-2008</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -2,18 +2,58 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Tests-CF-2005", "Db4objects.Db4o.Tests\Db4objects.Db4o.Tests-CF-2005.csproj", "{713EC765-667E-41B8-883C-0AEECC94090F}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o-CF-2005", "Db4objects.Db4o\Db4objects.Db4o-CF-2005.csproj", "{95FD1C64-F1A3-4C8A-B170-D518E899B2FE}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oUnit-CF-2005", "Db4oUnit\Db4oUnit-CF-2005.csproj", "{7C7F460A-A3A0-40D5-872C-B7BA617F9BA7}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oUnit.Extensions-CF-2005", "Db4oUnit.Extensions\Db4oUnit.Extensions-CF-2005.csproj", "{6C7B5203-2178-4BFC-B8AB-D387D7C28A65}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Instrumentation-CF-2005", "Db4objects.Db4o.Instrumentation\Db4objects.Db4o.Instrumentation-CF-2005.csproj", "{F266671C-596C-486B-B9E2-CE456FBC40D7}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.NativeQueries-CF-2005", "Db4objects.Db4o.NativeQueries\Db4objects.Db4o.NativeQueries-CF-2005.csproj", "{84DA1E13-9FBB-4A5D-B657-04973B40B48C}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oBench-CF-2005", "Db4oBench\Db4oBench-CF-2005.csproj", "{9FE5FFBF-3E68-4D4A-B6BE-E0A18FFF0776}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.CS-CF-2005", "Db4objects.Db4o.CS\Db4objects.Db4o.CS-CF-2005.csproj", "{9FC0C583-B662-450C-BD1A-786DE923245C}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Optional-CF-2005", "Db4objects.Db4o.Optional\Db4objects.Db4o.Optional-CF-2005.csproj", "{F7B14A6E-F38D-4132-84EF-E2E1FA4B7627}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +91,14 @@ Global
 		{9FE5FFBF-3E68-4D4A-B6BE-E0A18FFF0776}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FE5FFBF-3E68-4D4A-B6BE-E0A18FFF0776}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FE5FFBF-3E68-4D4A-B6BE-E0A18FFF0776}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FC0C583-B662-450C-BD1A-786DE923245C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FC0C583-B662-450C-BD1A-786DE923245C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FC0C583-B662-450C-BD1A-786DE923245C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FC0C583-B662-450C-BD1A-786DE923245C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7B14A6E-F38D-4132-84EF-E2E1FA4B7627}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7B14A6E-F38D-4132-84EF-E2E1FA4B7627}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7B14A6E-F38D-4132-84EF-E2E1FA4B7627}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7B14A6E-F38D-4132-84EF-E2E1FA4B7627}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
