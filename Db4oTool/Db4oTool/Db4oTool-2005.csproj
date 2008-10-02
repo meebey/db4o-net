@@ -77,7 +77,6 @@
     <Compile Include="Program.cs"/>
     <Compile Include="ProgramOptions.cs"/>
     <Compile Include="Properties\AssemblyInfo.cs"/>
-    <Compile Include="Core\Statistics.cs"/>
     <Compile Include="TA\ActivateMethodEmitter.cs"/>
     <Compile Include="TA\BindMethodEmitter.cs"/>
     <Compile Include="TA\MethodEmitter.cs"/>
@@ -93,6 +92,10 @@
     <ProjectReference Include="..\..\Db4objects.Db4o.NativeQueries\Db4objects.Db4o.NativeQueries-2005.csproj">
       <Project>{B681E4AD-036E-4431-AF5C-C75E8578C063}</Project>
       <Name>Db4objects.Db4o.NativeQueries-2005</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Db4objects.Db4o.Optional\Db4objects.Db4o.Optional-2005.csproj">
+      <Project>{BB607235-9240-455B-A8F2-2D2299F1448C}</Project>
+      <Name>Db4objects.Db4o.Optional-2005</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2005.csproj">
       <Project>{4FA6645B-E14B-4F18-A2CC-C1925663EFCE}</Project>

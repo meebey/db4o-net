@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{667C616E-FEA2-4D5E-93F0-9D18D17275FA}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -26,9 +26,9 @@
     <NativePlatformName>Pocket PC 2003</NativePlatformName>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    
-    
-  <SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile></PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -57,14 +57,34 @@
     <DocumentationFile>bin\Release\Db4objects.Db4o.Optional.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mscorlib"/>
-    <Reference Include="System"/>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
   </ItemGroup>
-  <ItemGroup><Compile Include="Db4objects.Db4o.Optional\Cluster\Cluster.cs"/><Compile Include="Db4objects.Db4o.Optional\IO\CachedIoAdapter.cs"/><Compile Include="Db4objects.Db4o.Optional\IO\DebugIoAdapter.cs"/><Compile Include="Db4objects.Db4o.Optional\IO\IoAdapter.cs"/><Compile Include="Db4objects.Db4o.Optional\IO\IoAdapterWindow.cs"/><Compile Include="Db4objects.Db4o.Optional\IO\MemoryIoAdapter.cs"/><Compile Include="Db4objects.Db4o.Optional\IO\NonFlushingIoAdapter.cs"/><Compile Include="Db4objects.Db4o.Optional\IO\RandomAccessFileAdapter.cs"/><Compile Include="Db4objects.Db4o.Optional\IO\VanillaIoAdapter.cs"/><Compile Include="Db4objects.Db4o.Optional\Internal\Cluster\ClusterConstraint.cs"/><Compile Include="Db4objects.Db4o.Optional\Internal\Cluster\ClusterConstraints.cs"/><Compile Include="Db4objects.Db4o.Optional\Internal\Cluster\ClusterQuery.cs"/><Compile Include="Db4objects.Db4o.Optional\Internal\Cluster\ClusterQueryResult.cs"/><Compile Include="Db4objects.Db4o.Optional\Reflect\Self\ClassInfo.cs"/><Compile Include="Db4objects.Db4o.Optional\Reflect\Self\FieldInfo.cs"/><Compile Include="Db4objects.Db4o.Optional\Reflect\Self\ISelfReflectable.cs"/><Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfArray.cs"/><Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfClass.cs"/><Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfField.cs"/><Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfMethod.cs"/><Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfReflectionRegistry.cs"/><Compile Include="Db4objects.Db4o.Optional\Reflect\Self\SelfReflector.cs"/><Compile Include="Properties\AssemblyInfo.cs"/></ItemGroup>
+  <ItemGroup>
+    <Compile Include="Db4objects.Db4o\Cluster\Cluster.cs" />
+    <Compile Include="Db4objects.Db4o\IO\DebugIoAdapter.cs" />
+    <Compile Include="Db4objects.Db4o\Internal\Cluster\ClusterConstraint.cs" />
+    <Compile Include="Db4objects.Db4o\Internal\Cluster\ClusterConstraints.cs" />
+    <Compile Include="Db4objects.Db4o\Internal\Cluster\ClusterQuery.cs" />
+    <Compile Include="Db4objects.Db4o\Internal\Cluster\ClusterQueryResult.cs" />
+    <Compile Include="Db4objects.Db4o\Reflect\Self\ClassInfo.cs" />
+    <Compile Include="Db4objects.Db4o\Reflect\Self\FieldInfo.cs" />
+    <Compile Include="Db4objects.Db4o\Reflect\Self\ISelfReflectable.cs" />
+    <Compile Include="Db4objects.Db4o\Reflect\Self\SelfArray.cs" />
+    <Compile Include="Db4objects.Db4o\Reflect\Self\SelfClass.cs" />
+    <Compile Include="Db4objects.Db4o\Reflect\Self\SelfField.cs" />
+    <Compile Include="Db4objects.Db4o\Reflect\Self\SelfMethod.cs" />
+    <Compile Include="Db4objects.Db4o\Reflect\Self\SelfReflectionRegistry.cs" />
+    <Compile Include="Db4objects.Db4o\Reflect\Self\SelfReflector.cs" />
+    <Compile Include="Db4objects.Db4o\Tools\Logger.cs" />
+    <Compile Include="Db4objects.Db4o\Tools\Statistics.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="native\Db4objects.Db4o\Config\JavaSupport.cs" />
+  </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
-        <HostingProcess disable="1"/>
+        <HostingProcess disable="1" />
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
@@ -76,10 +96,14 @@
   </Target>
   -->
   <ItemGroup>
+    <ProjectReference Include="..\Db4objects.Db4o.CS\Db4objects.Db4o.CS-CF-2008.csproj">
+      <Project>{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}</Project>
+      <Name>Db4objects.Db4o.CS-CF-2008</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-CF-2008.csproj">
       <Project>{95FD1C64-F1A3-4C8A-B170-D518E899B2FE}</Project>
       <Name>Db4objects.Db4o-CF-2008</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Condition="'$(TargetFrameworkVersion)' == 'v3.5'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets"/>
+  <Import Condition="'$(TargetFrameworkVersion)' == 'v3.5'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
 </Project>

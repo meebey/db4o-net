@@ -4,9 +4,9 @@ using System;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
 using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Reflect.Self;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Config
