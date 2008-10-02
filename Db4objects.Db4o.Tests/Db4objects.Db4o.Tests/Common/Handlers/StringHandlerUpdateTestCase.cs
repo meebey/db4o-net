@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	public class StringHandlerUpdateTestCase : HandlerUpdateTestCaseBase
 	{
-		private static readonly string[] Data = new string[] { "one", "aAzZ|!§$%&/()=?ßöäüÄÖÜYZ;:-_+*~#^°'@"
+		private static readonly string[] Data = new string[] { "one", "aAzZ|!Â§$%&/()=?ÃŸÃ¶Ã¤Ã¼Ã„Ã–ÃœYZ;:-_+*~#^Â°'@"
 			, string.Empty, null };
 
 		public static void Main(string[] args)

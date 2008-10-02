@@ -92,19 +92,19 @@ namespace Db4objects.Db4o.Config
 	/// <code>
 	/// <b>// Creating an Alias for a single class</b><br/>
 	/// Db4oFactory.Configure().AddAlias(<br/>
-	///   new TypeAlias("Tutorial.F1.Pilot", "Tutorial.F1.Driver"));<br/>
+	/// Â Â new TypeAlias("Tutorial.F1.Pilot", "Tutorial.F1.Driver"));<br/>
 	/// <br/><br/>
 	/// <b>// Accessing a Java package from a .NET assembly</b><br/>
 	/// Db4o.configure().addAlias(<br/>
-	///   new WildcardAlias(<br/>
-	///     "com.f1.*",<br/>
-	///     "Tutorial.F1.*, Tutorial"));<br/>
+	/// Â Â new WildcardAlias(<br/>
+	/// Â Â Â Â "com.f1.*",<br/>
+	/// Â Â Â Â "Tutorial.F1.*, Tutorial"));<br/>
 	/// <br/><br/>
 	/// <b>// Using a different local .NET assembly</b><br/>
 	/// Db4o.configure().addAlias(<br/>
-	///   new WildcardAlias(<br/>
-	///     "Tutorial.F1.*, Tutorial",<br/>
-	///     "Tutorial.F1.*, RaceClient"));<br/>
+	/// Â Â new WildcardAlias(<br/>
+	/// Â Â Â Â "Tutorial.F1.*, Tutorial",<br/>
+	/// Â Â Â Â "Tutorial.F1.*, RaceClient"));<br/>
 	/// </code>
 	/// <br/><br/>Aliases that translate the persistent name of a class to
 	/// a name that already exists as a persistent name in the database

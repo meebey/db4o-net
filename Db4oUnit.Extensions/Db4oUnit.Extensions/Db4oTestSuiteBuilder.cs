@@ -39,12 +39,12 @@ namespace Db4oUnit.Extensions
 		protected override ITest CreateTest(object instance, MethodInfo method)
 		{
 			ITest test = base.CreateTest(instance, method);
-			return new _TestDecorationAdapter_39(test, test);
+			return new _TestDecorationAdapter_38(test, test);
 		}
 
-		private sealed class _TestDecorationAdapter_39 : TestDecorationAdapter
+		private sealed class _TestDecorationAdapter_38 : TestDecorationAdapter
 		{
-			public _TestDecorationAdapter_39(ITest test, ITest baseArg1) : base(baseArg1)
+			public _TestDecorationAdapter_38(ITest test, ITest baseArg1) : base(baseArg1)
 			{
 				this.test = test;
 			}

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class ArrayListUpdateTestCase : HandlerUpdateTestCaseBase
 	{
-		private static readonly object[] Data = new object[] { "one", "aAzZ|!§$%&/()=?ßöäüÄÖÜYZ;:-_+*~#^°'@"
+		private static readonly object[] Data = new object[] { "one", "aAzZ|!Â§$%&/()=?ÃŸÃ¶Ã¤Ã¼Ã„Ã–ÃœYZ;:-_+*~#^Â°'@"
 			, string.Empty, CreateNestedList(10), null };
 
 		private static IList CreateNestedList(int depth)
@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public IList _emptyInterface;
 		}
 
-		/// <summary>Todo: add as type to Item</summary>
+		/// <summary>Todo: add as type to Item *</summary>
 		[System.Serializable]
 		public class ArrayListExtensionWithField : ArrayList
 		{
@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		/// <summary>Todo: add as type to Item</summary>
+		/// <summary>Todo: add as type to Item *</summary>
 		[System.Serializable]
 		public class ArrayListExtensionWithoutField : ArrayList
 		{
