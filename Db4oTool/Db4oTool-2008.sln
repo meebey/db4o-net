@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o-2008", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oTool.MSBuild.Tests.Project-2008", "Db4oTool.MSBuild.Tests\Db4oTool.MSBuild.Tests.Project\Db4oTool.MSBuild.Tests.Project-2008.csproj", "{D073735B-C148-46A8-A6F6-A26AA5C78C0F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.CS-2008", "..\Db4objects.Db4o.CS\Db4objects.Db4o.CS-2008.csproj", "{9FA8178A-3E77-42C5-A252-6690EA9BA257}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Optional-2008", "..\Db4objects.Db4o.Optional\Db4objects.Db4o.Optional-2008.csproj", "{E9588FE7-C19D-445E-BB53-AE539EA4F0E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +71,14 @@ Global
 		{D073735B-C148-46A8-A6F6-A26AA5C78C0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D073735B-C148-46A8-A6F6-A26AA5C78C0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D073735B-C148-46A8-A6F6-A26AA5C78C0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FA8178A-3E77-42C5-A252-6690EA9BA257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FA8178A-3E77-42C5-A252-6690EA9BA257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FA8178A-3E77-42C5-A252-6690EA9BA257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FA8178A-3E77-42C5-A252-6690EA9BA257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9588FE7-C19D-445E-BB53-AE539EA4F0E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9588FE7-C19D-445E-BB53-AE539EA4F0E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9588FE7-C19D-445E-BB53-AE539EA4F0E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9588FE7-C19D-445E-BB53-AE539EA4F0E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
