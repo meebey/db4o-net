@@ -233,13 +233,13 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			{
 				_typeHandler.Reset();
 			}
-			IConfiguration configuration = Db4oEmbedded.NewConfiguration();
+			IConfiguration configuration = Db4oFactory.NewConfiguration();
 			if (_typeHandler != null)
 			{
 				configuration.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(FieldsToTypeHandlerMigrationTestCase.Item
 					)), _typeHandler);
 			}
-			IObjectContainer db = Db4oEmbedded.OpenFile(configuration, _fileName);
+			IObjectContainer db = Db4oFactory.OpenFile(configuration, _fileName);
 			return db;
 		}
 

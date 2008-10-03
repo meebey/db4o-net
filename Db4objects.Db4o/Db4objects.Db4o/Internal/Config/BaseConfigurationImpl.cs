@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System.IO;
-using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Config.Encoding;
 using Db4objects.Db4o.Diagnostic;
@@ -9,7 +8,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
 
-namespace Db4objects.Db4o.Internal.CS.Config
+namespace Db4objects.Db4o.Internal.Config
 {
 	public class BaseConfigurationImpl : IBaseConfiguration
 	{
@@ -158,28 +157,18 @@ namespace Db4objects.Db4o.Internal.CS.Config
 			}
 		}
 
-		public virtual bool ReadOnly
-		{
-			set
-			{
-				bool flag = value;
-				_config.ReadOnly(flag);
-			}
-		}
-
 		public virtual void ReflectWith(IReflector reflector)
 		{
 			_config.ReflectWith(reflector);
 		}
 
-		public virtual void RefreshClasses()
+		public virtual TextWriter OutStream
 		{
-			_config.RefreshClasses();
-		}
-
-		public virtual void OutStream(TextWriter outStream)
-		{
-			_config.SetOut(outStream);
+			set
+			{
+				TextWriter outStream = value;
+				_config.SetOut(outStream);
+			}
 		}
 
 		public virtual IStringEncoding StringEncoding

@@ -96,7 +96,7 @@ namespace Db4objects.Db4o.Defragment
 			sourceConfig.WeakReferences(false);
 			sourceConfig.Io(new NonFlushingIoAdapter(sourceConfig.Io()));
 			sourceConfig.ReadOnly(defragConfig.ReadOnly());
-			_sourceDb = (LocalObjectContainer)Db4oEmbedded.OpenFile(sourceConfig, defragConfig
+			_sourceDb = (LocalObjectContainer)Db4oFactory.OpenFile(sourceConfig, defragConfig
 				.TempPath()).Ext();
 			_sourceDb.ShowInternalClasses(true);
 			_targetDb = FreshYapFile(defragConfig);
@@ -108,14 +108,14 @@ namespace Db4objects.Db4o.Defragment
 		internal static LocalObjectContainer FreshYapFile(string fileName, int blockSize)
 		{
 			File4.Delete(fileName);
-			return (LocalObjectContainer)Db4oEmbedded.OpenFile(DefragmentConfig.VanillaDb4oConfig
+			return (LocalObjectContainer)Db4oFactory.OpenFile(DefragmentConfig.VanillaDb4oConfig
 				(blockSize), fileName).Ext();
 		}
 
 		internal static LocalObjectContainer FreshYapFile(DefragmentConfig config)
 		{
 			File4.Delete(config.OrigPath());
-			return (LocalObjectContainer)Db4oEmbedded.OpenFile(config.ClonedDb4oConfig(), config
+			return (LocalObjectContainer)Db4oFactory.OpenFile(config.ClonedDb4oConfig(), config
 				.OrigPath()).Ext();
 		}
 

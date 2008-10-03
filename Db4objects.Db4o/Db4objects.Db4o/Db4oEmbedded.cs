@@ -5,23 +5,23 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Config;
 
 namespace Db4objects.Db4o
 {
+	/// <since>7.5</since>
 	public class Db4oEmbedded
 	{
 		/// <summary>
 		/// Creates a fresh
-		/// <see cref="IConfiguration">IConfiguration</see>
+		/// <see cref="IEmbeddedConfiguration">IEmbeddedConfiguration</see>
 		/// instance.
 		/// </summary>
 		/// <returns>a fresh, independent configuration with all options set to their default values
 		/// 	</returns>
-		public static IConfiguration NewConfiguration()
+		public static IEmbeddedConfiguration NewConfiguration()
 		{
-			Config4Impl config = new Config4Impl();
-			Platform4.GetDefaultConfiguration(config);
-			return config;
+			return new EmbeddedConfigurationImpl(Db4oFactory.NewConfiguration());
 		}
 
 		/// <summary>
@@ -76,14 +76,15 @@ namespace Db4objects.Db4o
 		/// </exception>
 		/// <exception cref="DatabaseReadOnlyException">database was configured as read-only.
 		/// 	</exception>
-		public static IObjectContainer OpenFile(IConfiguration config, string databaseFileName
+		public static IObjectContainer OpenFile(IEmbeddedConfiguration config, string databaseFileName
 			)
 		{
 			if (null == config)
 			{
 				throw new ArgumentNullException();
 			}
-			return ObjectContainerFactory.OpenObjectContainer(config, databaseFileName);
+			return ObjectContainerFactory.OpenObjectContainer(((ILegacyConfigurationProvider)
+				config).Legacy(), databaseFileName);
 		}
 	}
 }

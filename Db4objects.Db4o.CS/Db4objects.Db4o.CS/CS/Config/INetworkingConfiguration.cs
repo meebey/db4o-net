@@ -1,19 +1,12 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.CS.Config;
-using Db4objects.Db4o.Config;
 
 namespace Db4objects.Db4o.CS.Config
 {
+	/// <since>7.5</since>
 	public interface INetworkingConfiguration
 	{
-		/// <summary>sets the ClientServerFactory  to open C/S servers and clients</summary>
-		/// <param name="factory">the factory to be used</param>
-		IClientServerFactory Factory
-		{
-			set;
-		}
-
 		/// <summary>
 		/// configures the time a client waits for a message response
 		/// from the server.

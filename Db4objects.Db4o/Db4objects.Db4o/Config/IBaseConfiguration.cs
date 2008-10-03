@@ -2,7 +2,6 @@
 
 using System.IO;
 using Db4objects.Db4o;
-using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Config.Encoding;
 using Db4objects.Db4o.Diagnostic;
@@ -10,8 +9,9 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
 
-namespace Db4objects.Db4o.CS.Config
+namespace Db4objects.Db4o.Config
 {
+	/// <since>7.5</since>
 	public interface IBaseConfiguration
 	{
 		/// <summary>sets the activation depth to the specified value.</summary>
@@ -359,30 +359,6 @@ namespace Db4objects.Db4o.CS.Config
 			get;
 		}
 
-		/// <summary>turns readOnly mode on and off.</summary>
-		/// <remarks>
-		/// turns readOnly mode on and off.
-		/// <br /><br />This method configures the mode in which subsequent calls to
-		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
-		/// will open files.
-		/// <br /><br />Readonly mode allows to open an unlimited number of reading
-		/// processes on one database file. It is also convenient
-		/// for deploying db4o database files on CD-ROM.<br /><br />
-		/// In client-server environment this setting should be used on the server side
-		/// in embedded mode and ONLY on client side in networked mode.<br /><br />
-		/// </remarks>
-		/// <param name="flag">
-		/// <code>true</code> for configuring readOnly mode for subsequent
-		/// calls to
-		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
-		/// .
-		/// TODO: this is rather embedded + client than base?
-		/// </param>
-		bool ReadOnly
-		{
-			set;
-		}
-
 		/// <summary>configures the use of a specially designed reflection implementation.</summary>
 		/// <remarks>
 		/// configures the use of a specially designed reflection implementation.
@@ -392,25 +368,10 @@ namespace Db4objects.Db4o.CS.Config
 		/// to supply all the functionality of the interfaces in the com.db4o.reflect
 		/// package. This method can be used to install a custom reflection
 		/// implementation.<br /><br />
-		/// In client-server environment this setting should be used on the server side
-		/// (reflector class must be available)<br /><br />
+		/// In client-server environment this setting should be used on both the client and
+		/// the server side (reflector class must be available)<br /><br />
 		/// </remarks>
 		void ReflectWith(IReflector reflector);
-
-		/// <summary>forces analysis of all Classes during a running session.</summary>
-		/// <remarks>
-		/// forces analysis of all Classes during a running session.
-		/// <br /><br />
-		/// This method may be useful in combination with a modified ClassLoader and
-		/// allows exchanging classes during a running db4o session.<br /><br />
-		/// Calling this method on the global Configuration context will refresh
-		/// the classes in all db4o sessions in the running VM. Calling this method
-		/// in an ObjectContainer Configuration context, only the classes of the
-		/// respective ObjectContainer will be refreshed.<br /><br />
-		/// </remarks>
-		/// <seealso cref="#setClassLoader">TODO: this does not really seem to be a configuration setting at all
-		/// 	</seealso>
-		void RefreshClasses();
 
 		/// <summary>
 		/// Assigns a
@@ -428,9 +389,11 @@ namespace Db4objects.Db4o.CS.Config
 		/// is used.<br /><br />
 		/// </summary>
 		/// <param name="outStream">the new <code>PrintStream</code> for messages.</param>
-		/// <seealso cref="IBaseConfiguration.MessageLevel">TODO: this is deprecated in Config4Impl?!?
-		/// 	</seealso>
-		void OutStream(TextWriter outStream);
+		/// <seealso cref="IBaseConfiguration.MessageLevel">IBaseConfiguration.MessageLevel</seealso>
+		TextWriter OutStream
+		{
+			set;
+		}
 
 		/// <summary>configures the string encoding to be used.</summary>
 		/// <remarks>

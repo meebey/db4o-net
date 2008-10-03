@@ -187,7 +187,7 @@ namespace Db4objects.Db4o.Defragment
 			IConfiguration db4oConfig = (IConfiguration)((Config4Impl)config.Db4oConfig()).DeepClone
 				(null);
 			db4oConfig.AllowVersionUpdates(true);
-			IObjectContainer db = Db4oEmbedded.OpenFile(db4oConfig, config.TempPath());
+			IObjectContainer db = Db4oFactory.OpenFile(db4oConfig, config.TempPath());
 			db.Close();
 		}
 
@@ -217,7 +217,7 @@ namespace Db4objects.Db4o.Defragment
 		private static void SetIdentity(DefragmentConfig config, int targetIdentityID, int
 			 targetUuidIndexID)
 		{
-			LocalObjectContainer targetDB = (LocalObjectContainer)Db4oEmbedded.OpenFile(config
+			LocalObjectContainer targetDB = (LocalObjectContainer)Db4oFactory.OpenFile(config
 				.ClonedDb4oConfig(), config.OrigPath());
 			try
 			{

@@ -45,11 +45,11 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		public virtual void TestOpenWithNonStaticConfiguration()
 		{
-			IConfiguration config1 = Db4oEmbedded.NewConfiguration();
+			IConfiguration config1 = Db4oFactory.NewConfiguration();
 			config1.ReadOnly(true);
 			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_43(config1));
 			config1.ReadOnly(false);
-			IObjectContainer db1 = Db4oEmbedded.OpenFile(config1, Filename);
+			IObjectContainer db1 = Db4oFactory.OpenFile(config1, Filename);
 			config1.ReadOnly(true);
 			try
 			{
@@ -59,8 +59,8 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			{
 				db1.Close();
 			}
-			IConfiguration config2 = Db4oEmbedded.NewConfiguration();
-			IObjectContainer db2 = Db4oEmbedded.OpenFile(config2, Filename);
+			IConfiguration config2 = Db4oFactory.NewConfiguration();
+			IObjectContainer db2 = Db4oFactory.OpenFile(config2, Filename);
 			try
 			{
 				db2.Store(new GlobalVsNonStaticConfigurationTestCase.Data(2));
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				Db4oEmbedded.OpenFile(config1, GlobalVsNonStaticConfigurationTestCase.Filename);
+				Db4oFactory.OpenFile(config1, GlobalVsNonStaticConfigurationTestCase.Filename);
 			}
 
 			private readonly IConfiguration config1;
@@ -134,11 +134,11 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		public virtual void TestIndependentObjectConfigs()
 		{
-			IConfiguration config = Db4oEmbedded.NewConfiguration();
+			IConfiguration config = Db4oFactory.NewConfiguration();
 			IObjectClass objectConfig = config.ObjectClass(typeof(GlobalVsNonStaticConfigurationTestCase.Data
 				));
 			objectConfig.Translate(new TNull());
-			IConfiguration otherConfig = Db4oEmbedded.NewConfiguration();
+			IConfiguration otherConfig = Db4oFactory.NewConfiguration();
 			Assert.AreNotSame(config, otherConfig);
 			Config4Class otherObjectConfig = (Config4Class)otherConfig.ObjectClass(typeof(GlobalVsNonStaticConfigurationTestCase.Data
 				));

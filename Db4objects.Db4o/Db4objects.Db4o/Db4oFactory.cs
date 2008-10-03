@@ -81,7 +81,9 @@ namespace Db4objects.Db4o
 		[System.ObsoleteAttribute(@"Use")]
 		public static IConfiguration NewConfiguration()
 		{
-			return Db4oEmbedded.NewConfiguration();
+			Config4Impl config = new Config4Impl();
+			Platform4.GetDefaultConfiguration(config);
+			return config;
 		}
 
 		/// <summary>
@@ -331,7 +333,7 @@ namespace Db4objects.Db4o
 		/// </exception>
 		public static IObjectContainer OpenFile(string databaseFileName)
 		{
-			return Db4oEmbedded.OpenFile(CloneConfiguration(), databaseFileName);
+			return Db4oFactory.OpenFile(CloneConfiguration(), databaseFileName);
 		}
 
 		/// <summary>
@@ -401,7 +403,7 @@ namespace Db4objects.Db4o
 		public static IObjectContainer OpenFile(IConfiguration config, string databaseFileName
 			)
 		{
-			return Db4oEmbedded.OpenFile(config, databaseFileName);
+			return ObjectContainerFactory.OpenObjectContainer(config, databaseFileName);
 		}
 
 		/// <exception cref="Db4oIOException"></exception>

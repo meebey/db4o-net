@@ -43,14 +43,14 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		public virtual void Test()
 		{
-			IConfiguration configuration = Db4oEmbedded.NewConfiguration();
+			IConfiguration configuration = Db4oFactory.NewConfiguration();
 			ConfigurationItemTestCase.ConfigurationItemStub item = new ConfigurationItemTestCase.ConfigurationItemStub
 				();
 			configuration.Add(item);
 			Assert.AreSame(configuration, item.PreparedConfiguration());
 			Assert.IsNull(item.AppliedContainer());
 			File4.Delete(DatabaseFile());
-			IObjectContainer container = Db4oEmbedded.OpenFile(configuration, DatabaseFile());
+			IObjectContainer container = Db4oFactory.OpenFile(configuration, DatabaseFile());
 			container.Close();
 			Assert.AreSame(container, item.AppliedContainer());
 		}

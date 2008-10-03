@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		public static IConfiguration Db4oConfig()
 		{
-			IConfiguration db4oConfig = Db4oEmbedded.NewConfiguration();
+			IConfiguration db4oConfig = Db4oFactory.NewConfiguration();
 			db4oConfig.ReflectWith(Platform4.ReflectorForType(typeof(SlotDefragmentFixture.Data
 				)));
 			return db4oConfig;
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		public static void CreateFile(string fileName)
 		{
-			IObjectContainer db = Db4oEmbedded.OpenFile(Db4oConfig(), fileName);
+			IObjectContainer db = Db4oFactory.OpenFile(Db4oConfig(), fileName);
 			SlotDefragmentFixture.Data data = null;
 			for (int value = Value - 1; value <= Value + 1; value++)
 			{
@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				).Indexed(true);
 			config.ObjectClass(typeof(SlotDefragmentFixture.Data)).ObjectField(TypedobjectFieldname
 				).Indexed(true);
-			IObjectContainer db = Db4oEmbedded.OpenFile(config, SlotDefragmentTestConstants.Filename
+			IObjectContainer db = Db4oFactory.OpenFile(config, SlotDefragmentTestConstants.Filename
 				);
 			Assert.IsTrue(db.Ext().StoredClass(typeof(SlotDefragmentFixture.Data)).StoredField
 				(PrimitiveFieldname, typeof(int)).HasIndex());
@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				Filename, SlotDefragmentTestConstants.Backupfilename);
 			defragConfig.Db4oConfig(Db4oConfig());
 			Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig);
-			IObjectContainer db = Db4oEmbedded.OpenFile(Db4oConfig(), SlotDefragmentTestConstants
+			IObjectContainer db = Db4oFactory.OpenFile(Db4oConfig(), SlotDefragmentTestConstants
 				.Filename);
 			IQuery query = db.Query();
 			query.Constrain(typeof(SlotDefragmentFixture.Data));
@@ -107,7 +107,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		public static void AssertDataClassKnown(bool expected)
 		{
-			IObjectContainer db = Db4oEmbedded.OpenFile(Db4oConfig(), SlotDefragmentTestConstants
+			IObjectContainer db = Db4oFactory.OpenFile(Db4oConfig(), SlotDefragmentTestConstants
 				.Filename);
 			try
 			{

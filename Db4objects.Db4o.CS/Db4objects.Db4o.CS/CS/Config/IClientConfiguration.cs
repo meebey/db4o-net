@@ -1,11 +1,13 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.CS.Config;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.CS.Config
 {
-	public interface IClientConfiguration : INetworkingConfigurationProvider
+	/// <since>7.5</since>
+	public interface IClientConfiguration : INetworkingConfigurationProvider, IBaseConfigurationProvider
 	{
 		/// <summary>
 		/// Sets the number of IDs to be pre-allocated in the database for new

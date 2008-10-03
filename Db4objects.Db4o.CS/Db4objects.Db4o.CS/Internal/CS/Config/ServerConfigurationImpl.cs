@@ -2,8 +2,9 @@
 
 using System;
 using Db4objects.Db4o.CS.Config;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.CS.Config;
+using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.Internal.CS.Config
@@ -29,7 +30,7 @@ namespace Db4objects.Db4o.Internal.CS.Config
 		{
 			get
 			{
-				return new LocalConfigurationImpl(Config());
+				return new LocalConfigurationImpl(Legacy());
 			}
 		}
 
@@ -37,7 +38,7 @@ namespace Db4objects.Db4o.Internal.CS.Config
 		{
 			get
 			{
-				return new BaseConfigurationImpl(Config());
+				return new BaseConfigurationImpl(Legacy());
 			}
 		}
 	}

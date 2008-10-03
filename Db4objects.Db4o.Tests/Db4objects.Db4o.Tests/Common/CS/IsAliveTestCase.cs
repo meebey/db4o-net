@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private IConfiguration Config()
 		{
-			return Db4oEmbedded.NewConfiguration();
+			return Db4oFactory.NewConfiguration();
 		}
 
 		private IObjectServer OpenServer()

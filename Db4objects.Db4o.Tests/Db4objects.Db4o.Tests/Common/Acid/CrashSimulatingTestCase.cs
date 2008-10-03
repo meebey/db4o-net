@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				) : crashSimulatingAdapter;
 			IConfiguration recordConfig = BaseConfig();
 			recordConfig.Io(adapterFactory);
-			IObjectContainer oc = Db4oEmbedded.OpenFile(recordConfig, fileName);
+			IObjectContainer oc = Db4oFactory.OpenFile(recordConfig, fileName);
 			IObjectSet objectSet = oc.QueryByExample(new CrashSimulatingTestCase.CrashData(null
 				, "three"));
 			oc.Delete(objectSet.Next());
@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 
 		private IConfiguration BaseConfig()
 		{
-			IConfiguration config = Db4oEmbedded.NewConfiguration();
+			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.ObjectClass(typeof(CrashSimulatingTestCase.CrashData)).ObjectField("_name"
 				).Indexed(true);
 			config.ReflectWith(Platform4.ReflectorForType(typeof(CrashSimulatingTestCase)));
@@ -129,7 +129,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			for (int i = 1; i <= count; i++)
 			{
 				string versionedFileName = fileName + infix + i;
-				IObjectContainer oc = Db4oEmbedded.OpenFile(BaseConfig(), versionedFileName);
+				IObjectContainer oc = Db4oFactory.OpenFile(BaseConfig(), versionedFileName);
 				try
 				{
 					if (!StateBeforeCommit(oc))
@@ -182,7 +182,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		/// <exception cref="IOException"></exception>
 		private void CreateFile(IConfiguration config, string fileName)
 		{
-			IObjectContainer oc = Db4oEmbedded.OpenFile(config, fileName);
+			IObjectContainer oc = Db4oFactory.OpenFile(config, fileName);
 			try
 			{
 				Populate(oc);

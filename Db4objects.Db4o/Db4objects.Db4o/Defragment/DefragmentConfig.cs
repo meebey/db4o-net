@@ -255,7 +255,7 @@ namespace Db4objects.Db4o.Defragment
 
 		public static IConfiguration VanillaDb4oConfig(int blockSize)
 		{
-			IConfiguration config = Db4oEmbedded.NewConfiguration();
+			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.WeakReferences(false);
 			config.BlockSize(blockSize);
 			return config;

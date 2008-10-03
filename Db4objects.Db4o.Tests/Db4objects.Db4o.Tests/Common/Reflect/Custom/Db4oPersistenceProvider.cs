@@ -210,7 +210,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		private IConfiguration DataConfiguration(CustomReflector reflector)
 		{
-			IConfiguration config = Db4oEmbedded.NewConfiguration();
+			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.ReflectWith(reflector);
 			ConfigureCustomClasses(config, reflector);
 			return config;
@@ -261,7 +261,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		private IConfiguration MetaConfiguration()
 		{
-			IConfiguration config = Db4oEmbedded.NewConfiguration();
+			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.ExceptionsOnNotStorable(true);
 			// the following line is only necessary for the tests to run
 			// in OSGi environment
@@ -296,12 +296,12 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		private IObjectContainer OpenData(CustomReflector reflector, string fname)
 		{
-			return Db4oEmbedded.OpenFile(DataConfiguration(reflector), fname);
+			return Db4oFactory.OpenFile(DataConfiguration(reflector), fname);
 		}
 
 		private IObjectContainer OpenMetadata(string fname)
 		{
-			return Db4oEmbedded.OpenFile(MetaConfiguration(), MetadataFile(fname));
+			return Db4oFactory.OpenFile(MetaConfiguration(), MetadataFile(fname));
 		}
 
 		public virtual void Purge(string url)

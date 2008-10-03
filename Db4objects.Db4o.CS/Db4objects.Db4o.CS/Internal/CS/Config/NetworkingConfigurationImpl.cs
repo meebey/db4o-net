@@ -2,7 +2,6 @@
 
 using System;
 using Db4objects.Db4o.CS.Config;
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal.CS.Config
@@ -19,15 +18,6 @@ namespace Db4objects.Db4o.Internal.CS.Config
 		public virtual Config4Impl Config()
 		{
 			return _config;
-		}
-
-		public virtual IClientServerFactory Factory
-		{
-			set
-			{
-				IClientServerFactory clientServerFactory = value;
-				_config.Factory(clientServerFactory);
-			}
 		}
 
 		public virtual bool BatchMessages

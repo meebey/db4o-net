@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 
 		private void RenameClass(string targetName)
 		{
-			IConfiguration config = Db4oEmbedded.NewConfiguration();
+			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.ObjectClass(typeof(AccessOldFieldVersionsTestCase.OriginalData)).Rename(targetName
 				);
 			WithDatabase(config, new _IDatabaseAction_57());
@@ -109,13 +109,13 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 
 		private void WithDatabase(AccessOldFieldVersionsTestCase.IDatabaseAction action)
 		{
-			WithDatabase(Db4oEmbedded.NewConfiguration(), action);
+			WithDatabase(Db4oFactory.NewConfiguration(), action);
 		}
 
 		private void WithDatabase(IConfiguration config, AccessOldFieldVersionsTestCase.IDatabaseAction
 			 action)
 		{
-			IObjectContainer db = Db4oEmbedded.OpenFile(config, DatabasePath);
+			IObjectContainer db = Db4oFactory.OpenFile(config, DatabasePath);
 			try
 			{
 				action.RunWith(db);

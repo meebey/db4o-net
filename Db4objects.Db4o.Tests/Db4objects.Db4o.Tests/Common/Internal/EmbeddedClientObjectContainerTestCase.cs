@@ -456,12 +456,12 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		public virtual void SetUp()
 		{
 			File4.Delete(Filename);
-			IConfiguration config = Db4oEmbedded.NewConfiguration();
+			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.ObjectClass(typeof(EmbeddedClientObjectContainerTestCase.Item)).GenerateUUIDs
 				(true);
 			// ExtObjectServer server = Db4o.openServer(config, FILENAME, 0);
 			// EmbeddedClientObjectContainer container = server.openClient();
-			_server = (LocalObjectContainer)Db4oEmbedded.OpenFile(config, Filename);
+			_server = (LocalObjectContainer)Db4oFactory.OpenFile(config, Filename);
 			_client1 = new EmbeddedClientObjectContainer(_server);
 			_client2 = new EmbeddedClientObjectContainer(_server);
 		}

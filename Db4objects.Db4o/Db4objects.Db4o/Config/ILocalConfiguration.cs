@@ -2,12 +2,14 @@
 
 using System;
 using System.IO;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 
-namespace Db4objects.Db4o.CS.Config
+namespace Db4objects.Db4o.Config
 {
+	/// <since>7.5</since>
 	public interface ILocalConfiguration
 	{
 		/// <summary>adds a new Alias for a class, namespace or package.</summary>
@@ -261,6 +263,30 @@ namespace Db4objects.Db4o.CS.Config
 		/// <param name="path">the path to be used</param>
 		/// <exception cref="IOException"></exception>
 		string BlobPath
+		{
+			set;
+		}
+
+		/// <summary>turns readOnly mode on and off.</summary>
+		/// <remarks>
+		/// turns readOnly mode on and off.
+		/// <br /><br />This method configures the mode in which subsequent calls to
+		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// will open files.
+		/// <br /><br />Readonly mode allows to open an unlimited number of reading
+		/// processes on one database file. It is also convenient
+		/// for deploying db4o database files on CD-ROM.<br /><br />
+		/// In client-server environment this setting should be used on the server side
+		/// in embedded mode and ONLY on client side in networked mode.<br /><br />
+		/// </remarks>
+		/// <param name="flag">
+		/// <code>true</code> for configuring readOnly mode for subsequent
+		/// calls to
+		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// .
+		/// TODO: this is rather embedded + client than base?
+		/// </param>
+		bool ReadOnly
 		{
 			set;
 		}

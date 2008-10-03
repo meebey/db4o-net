@@ -10,11 +10,13 @@ using Db4objects.Db4o.Internal.CS;
 namespace Db4objects.Db4o.Internal.CS.Config
 {
 	/// <exclude></exclude>
+	[System.ObsoleteAttribute(@"Use Db4oClientServer")]
 	public class ClientServerFactoryImpl : IClientServerFactory
 	{
 		/// <exception cref="Db4oIOException"></exception>
 		/// <exception cref="OldFormatException"></exception>
 		/// <exception cref="InvalidPasswordException"></exception>
+		[System.ObsoleteAttribute(@"Use")]
 		public virtual IObjectContainer OpenClient(IConfiguration config, string hostName
 			, int port, string user, string password, INativeSocketFactory socketFactory)
 		{
@@ -31,10 +33,11 @@ namespace Db4objects.Db4o.Internal.CS.Config
 		/// <exception cref="OldFormatException"></exception>
 		/// <exception cref="DatabaseFileLockedException"></exception>
 		/// <exception cref="DatabaseReadOnlyException"></exception>
+		[System.ObsoleteAttribute(@"Use")]
 		public virtual IObjectServer OpenServer(IConfiguration config, string databaseFileName
 			, int port, INativeSocketFactory socketFactory)
 		{
-			LocalObjectContainer container = (LocalObjectContainer)Db4oEmbedded.OpenFile(config
+			LocalObjectContainer container = (LocalObjectContainer)Db4oFactory.OpenFile(config
 				, databaseFileName);
 			if (container == null)
 			{

@@ -15,9 +15,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 	{
 		public virtual void TestPool()
 		{
-			IConfiguration config = Db4oEmbedded.NewConfiguration();
+			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.Io(new MemoryIoAdapter());
-			LocalObjectContainer db = (LocalObjectContainer)Db4oEmbedded.OpenFile(config, SwitchingFilesFromClientUtil
+			LocalObjectContainer db = (LocalObjectContainer)Db4oFactory.OpenFile(config, SwitchingFilesFromClientUtil
 				.MainfileName);
 			ClientTransactionPool pool = new ClientTransactionPool(db);
 			try

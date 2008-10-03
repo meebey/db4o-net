@@ -2,7 +2,9 @@
 
 using System;
 using Db4objects.Db4o.CS.Config;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.Internal.CS.Config
@@ -40,6 +42,14 @@ namespace Db4objects.Db4o.Internal.CS.Config
 				int prefetchObjectCount = value;
 				// TODO Auto-generated method stub
 				throw new NotImplementedException();
+			}
+		}
+
+		public virtual IBaseConfiguration Base
+		{
+			get
+			{
+				return new BaseConfigurationImpl(Legacy());
 			}
 		}
 	}

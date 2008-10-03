@@ -85,7 +85,7 @@ namespace Db4objects.Db4o
 		/// a custom
 		/// <see cref="IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
-		/// <see cref="Db4oEmbedded.NewConfiguration">Db4oEmbedded.NewConfiguration</see>
+		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
 		/// </param>
 		/// <returns>
 		/// an open

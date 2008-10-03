@@ -3,10 +3,12 @@
 using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS.Config;
+using Db4objects.Db4o.Internal.Config;
 
 namespace Db4objects.Db4o.Internal.CS.Config
 {
 	public class NetworkingConfigurationProviderImpl : INetworkingConfigurationProvider
+		, ILegacyConfigurationProvider
 	{
 		private readonly NetworkingConfigurationImpl _networking;
 
@@ -23,7 +25,7 @@ namespace Db4objects.Db4o.Internal.CS.Config
 			}
 		}
 
-		protected virtual Config4Impl Config()
+		public virtual Config4Impl Legacy()
 		{
 			return _networking.Config();
 		}

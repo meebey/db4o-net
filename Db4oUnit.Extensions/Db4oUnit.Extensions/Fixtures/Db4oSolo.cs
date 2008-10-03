@@ -29,7 +29,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		protected override IObjectContainer CreateDatabase(IConfiguration config)
 		{
-			return Db4oEmbedded.OpenFile(config, GetAbsolutePath());
+			return Db4oFactory.OpenFile(config, GetAbsolutePath());
 		}
 
 		public override string Label()

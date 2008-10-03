@@ -8,6 +8,7 @@ using Db4objects.Db4o.Internal.CS.Config;
 
 namespace Db4objects.Db4o.CS
 {
+	/// <since>7.5</since>
 	public class Db4oClientServer
 	{
 		public static IServerConfiguration NewServerConfiguration()
@@ -43,7 +44,7 @@ namespace Db4objects.Db4o.CS
 
 		private static Config4Impl NewLegacyConfig()
 		{
-			return (Config4Impl)Db4oEmbedded.NewConfiguration();
+			return (Config4Impl)Db4oFactory.NewConfiguration();
 		}
 	}
 }

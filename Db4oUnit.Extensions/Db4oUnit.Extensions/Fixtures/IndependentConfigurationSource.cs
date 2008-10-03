@@ -10,7 +10,7 @@ namespace Db4oUnit.Extensions.Fixtures
 	{
 		public virtual IConfiguration Config()
 		{
-			return Db4oEmbedded.NewConfiguration();
+			return Db4oFactory.NewConfiguration();
 		}
 	}
 }
