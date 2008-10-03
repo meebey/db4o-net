@@ -1,8 +1,5 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
-using Db4objects.Db4o.Tests.CLI2.Handlers;
-using Db4objects.Db4o.Tests.Common.Events;
-using Db4objects.Db4o.Tests.Common.Migration;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests
