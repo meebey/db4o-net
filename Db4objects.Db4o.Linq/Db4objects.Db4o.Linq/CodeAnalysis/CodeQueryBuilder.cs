@@ -101,46 +101,25 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 
         private Type ResolveDescendingEnumType(FieldReferenceExpression node)
         {
-            TypeDefinition type = ResolveType(node);
-            if (type != null && type.IsEnum)
-            {
-                return Type.GetType((type.FullName + "," + type.Module.Assembly.Name.FullName).Replace('/', '+'));
-            }
+			var type = ResolveType(node.Field.FieldType);
+			if (type == null) return null;
+			if (!type.IsEnum) return null;
 
-            return null;
+			return type;
         }
 
-        private static TypeDefinition ResolveType(FieldReferenceExpression node)
-        {
-            TypeReference t = node.Field.FieldType;
-            TypeDefinition typeDefinition = Resolve(t.Module, t.FullName);
-            if (typeDefinition != null) return typeDefinition;
-
-            IAssemblyResolver resolver = GetResolver(t);
-            foreach (AssemblyNameReference assembyReference in t.Module.AssemblyReferences)
-            {
-                foreach (ModuleDefinition module in resolver.Resolve(assembyReference).Modules)
-                {
-                    typeDefinition = Resolve(module, t.FullName);
-                    if (typeDefinition != null) return typeDefinition;
-                }
-            }
-
-            return null;
-        }
-
-        private static TypeDefinition Resolve(ModuleDefinition module, string typeName)
-        {
-            return module.Types[typeName];
-        }
-
-		private static IAssemblyResolver GetResolver(TypeReference type)
+		private static Type ResolveType(TypeReference type)
 		{
-#if !CF_3_5
-			return type.Module.Assembly.Resolver;
-#else
-			return CompactAssemblyResolver.Instance;
-#endif
+			var assemblyName = type.Module.Assembly.Name.FullName;
+			var assembly = System.Reflection.Assembly.Load(assemblyName);
+			if (assembly == null) return null;
+
+			return assembly.GetType(NormalizeTypeName(type));
+		}
+
+		private static string NormalizeTypeName(TypeReference type)
+		{
+			return type.FullName.Replace('/', '+');
 		}
 	}
 }
