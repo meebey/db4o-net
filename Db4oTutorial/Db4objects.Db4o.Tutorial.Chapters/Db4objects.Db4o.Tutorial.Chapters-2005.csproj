@@ -195,9 +195,6 @@
     <Compile Include="F1\Chapter6\LocalizedItemList.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="F1\Chapter6\TranslatorExample.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="F1\Chapter7\Car.cs" />
     <Compile Include="F1\Chapter7\Pilot.cs" />
     <Compile Include="F1\Chapter7\PressureSensorReadout.cs" />

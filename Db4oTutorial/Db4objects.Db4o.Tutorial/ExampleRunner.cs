@@ -14,6 +14,7 @@
         /// </summary>
         /// <returns>true if the method was executed, false otherwise</returns>
         delegate bool Executor(MethodInfo method);
+
         
         Executor[] _executors = new Executor[] {
             new Executor(PlainExecutor),
@@ -21,10 +22,21 @@
             new Executor(LocalServerExecutor),
             new Executor(RemoteServerExecutor)
         };
-        
+
+        readonly static string YapFileName = Path.Combine(
+                               Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                               "formula1.yap");
+
+        readonly static int ServerPort = 0xdb40;
+
+        readonly static string ServerUser = "user";
+
+        readonly static string ServerPassword = "password";
+
+		
         public void Reset()
         {
-            File.Delete(Util.YapFileName);
+            File.Delete(YapFileName);
         }
         
         public void Run(string typeName, string method, TextWriter console)
@@ -69,7 +81,7 @@
                 return false;
             }       
             
-            IObjectContainer container = Db4oFactory.OpenFile(Util.YapFileName);
+            IObjectContainer container = Db4oFactory.OpenFile(YapFileName);
             try
             {
                 method.Invoke(null, new object[] { container });
@@ -88,7 +100,7 @@
                 return false;
             }
             
-            IObjectServer server = Db4oFactory.OpenServer(Util.YapFileName, 0);
+            IObjectServer server = Db4oFactory.OpenServer(YapFileName, 0);
             try
             {                
                 method.Invoke(null, new object[] { server });
@@ -107,11 +119,11 @@
                 return false;
             }
             
-            IObjectServer server = Db4oFactory.OpenServer(Util.YapFileName, Util.ServerPort);
+            IObjectServer server = Db4oFactory.OpenServer(YapFileName, ServerPort);
             try
             {   
-                server.GrantAccess(Util.ServerUser, Util.ServerPassword);
-                method.Invoke(null, new object[] { Util.ServerPort, Util.ServerUser, Util.ServerPassword });                
+                server.GrantAccess(ServerUser, ServerPassword);
+                method.Invoke(null, new object[] { ServerPort, ServerUser, ServerPassword });                
             }
             finally
             {

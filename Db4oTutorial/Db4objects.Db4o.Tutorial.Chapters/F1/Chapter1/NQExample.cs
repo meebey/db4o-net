@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+
 using Db4objects.Db4o;
 using Db4objects.Db4o.Query;
 
@@ -7,9 +10,13 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter1
 {
 	public class NQExample : Util
 	{
+        readonly static string YapFileName = Path.Combine(
+                               Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                               "formula1.yap");  
+		
 		public static void Main(string[] args)
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
+			IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
 			try
 			{
 				StorePilots(db);

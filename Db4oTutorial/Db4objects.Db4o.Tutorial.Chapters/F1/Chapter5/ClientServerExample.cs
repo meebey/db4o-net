@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Db4objects.Db4o;
 
@@ -5,12 +6,22 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
 {
     public class ClientServerExample : Util
     {
+        readonly static string YapFileName = Path.Combine(
+                               Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                               "formula1.yap");
+
+        readonly static int ServerPort = 0xdb40;
+
+        readonly static string ServerUser = "user";
+
+        readonly static string ServerPassword = "password";
+
         public static void Main(string[] args)
         {
-            File.Delete(Util.YapFileName);
+            File.Delete(YapFileName);
             AccessLocalServer();
-            File.Delete(Util.YapFileName);
-            IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
+            File.Delete(YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
             try
             {
                 SetFirstCar(db);
@@ -22,7 +33,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             }
             
             ConfigureDb4o();
-            IObjectServer server = Db4oFactory.OpenServer(Util.YapFileName, 0);
+            IObjectServer server = Db4oFactory.OpenServer(YapFileName, 0);
             try
             {
                 QueryLocalServer(server);
@@ -35,7 +46,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
             }
             
             AccessRemoteServer();
-            server = Db4oFactory.OpenServer(Util.YapFileName, ServerPort);
+            server = Db4oFactory.OpenServer(YapFileName, ServerPort);
             server.GrantAccess(ServerUser, ServerPassword);
             try
             {
@@ -67,7 +78,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
     
         public static void AccessLocalServer()
         {
-            IObjectServer server = Db4oFactory.OpenServer(Util.YapFileName, 0);
+            IObjectServer server = Db4oFactory.OpenServer(YapFileName, 0);
             try
             {
                 IObjectContainer client = server.OpenClient();
@@ -130,7 +141,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
     
         public static void AccessRemoteServer()
         {
-            IObjectServer server = Db4oFactory.OpenServer(Util.YapFileName, ServerPort);
+            IObjectServer server = Db4oFactory.OpenServer(YapFileName, ServerPort);
             server.GrantAccess(ServerUser, ServerPassword);
             try
             {

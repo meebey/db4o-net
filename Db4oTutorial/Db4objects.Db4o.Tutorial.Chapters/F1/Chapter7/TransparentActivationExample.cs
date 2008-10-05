@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.TA;
 using Db4objects.Db4o.Tutorial.F1;
 
@@ -8,12 +9,14 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
 {
     public class TransparentActivationExample : Util
     {
+        readonly static string YapFileName = Path.Combine(
+                               Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                               "formula1.yap");  
+		
         public static void Main(String[] args)
         {
             File.Delete(YapFileName);
             IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
-            try
-            {
                 StoreCarAndSnapshots(db);
                 db.Close();
 
@@ -21,24 +24,9 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
                 RetrieveSnapshotsSequentially(db);
                 db.Close();
 
-                ConfigureTransparentActivation();
-                db = Db4oFactory.OpenFile(YapFileName);
-                RetrieveSnapshotsSequentially(db);
-                db.Close();
+                RetrieveSnapshotsSequentiallyTA();
 
-                db = Db4oFactory.OpenFile(YapFileName);
-                DemonstrateTransparentActivation(db);
-                db.Close();
-            }
-            finally
-            {
-                db.Close();
-            }
-        }
-
-        public static void ConfigureTransparentActivation()
-        {
-            Db4oFactory.Configure().Add(new TransparentActivationSupport());
+                DemonstrateTransparentActivation();
         }
 
         public static void SetCascadeOnUpdate()
@@ -70,8 +58,27 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
             }
         }
 
-        public static void DemonstrateTransparentActivation(IObjectContainer db)
+        public static void RetrieveSnapshotsSequentiallyTA()
         {
+            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.Add(new TransparentActivationSupport());
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            IObjectSet result = db.QueryByExample(typeof(Car));
+            Car car = (Car)result.Next();
+            SensorReadout readout = car.History;
+            while (readout != null)
+            {
+                Console.WriteLine(readout);
+                readout = readout.Next;
+            }
+            db.Close();
+        }
+
+        public static void DemonstrateTransparentActivation()
+        {
+            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.Add(new TransparentActivationSupport());
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
             IObjectSet result = db.QueryByExample(typeof (Car));
             Car car = (Car) result.Next();
 
@@ -83,6 +90,8 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
 
             Console.WriteLine("Accessing PilotWithoutActivation property after the car is activated");
             Console.WriteLine(car.PilotWithoutActivation);
+
+            db.Close();
         }
     }
 }

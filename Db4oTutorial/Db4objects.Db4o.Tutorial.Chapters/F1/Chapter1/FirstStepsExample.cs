@@ -7,13 +7,17 @@ using Db4objects.Db4o.Tutorial;
 namespace Db4objects.Db4o.Tutorial.F1.Chapter1
 {
 	public class FirstStepsExample : Util
-	{    
+	{
+        readonly static string YapFileName = Path.Combine(
+                               Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                               "formula1.yap");  
+		
 		public static void Main(string[] args)
 		{
-			File.Delete(Util.YapFileName);
+			File.Delete(YapFileName);
 			AccessDb4o();
-			File.Delete(Util.YapFileName);
-			IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
+			File.Delete(YapFileName);
+			IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
 			try
 			{
 				StoreFirstPilot(db);
@@ -33,7 +37,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter1
         
 		public static void AccessDb4o()
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
+			IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
 			try
 			{
 				// do something with db4o

@@ -6,16 +6,7 @@ namespace Db4objects.Db4o.Tutorial.F1
 {
 	public class Util
 	{
-		public readonly static string YapFileName = Path.Combine(  
-                               Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),   
-                               "formula1.yap");  
 		
-		public readonly static int ServerPort = 0xdb40;
-		
-		public readonly static string ServerUser = "user";
-		
-		public readonly static string ServerPassword = "password";
-
 		public static void ListResult(IObjectSet result)
 		{
 			Console.WriteLine(result.Count);

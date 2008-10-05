@@ -6,19 +6,22 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
 {
     public class TransactionExample : Util
     {
+        readonly static string YapFileName = Path.Combine(
+                               Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                               "formula1.yap");  
         public static void Main(string[] args)
         {
-            File.Delete(Util.YapFileName);
-            IObjectContainer db=Db4oFactory.OpenFile(Util.YapFileName);
+            File.Delete(YapFileName);
+            IObjectContainer db=Db4oFactory.OpenFile(YapFileName);
             try
             {
                 StoreCarCommit(db);
                 db.Close();
-                db = Db4oFactory.OpenFile(Util.YapFileName);
+                db = Db4oFactory.OpenFile(YapFileName);
                 ListAllCars(db);
                 StoreCarRollback(db);
                 db.Close();
-                db = Db4oFactory.OpenFile(Util.YapFileName);
+                db = Db4oFactory.OpenFile(YapFileName);
                 ListAllCars(db);
                 CarSnapshotRollback(db);
                 CarSnapshotRollbackRefresh(db);

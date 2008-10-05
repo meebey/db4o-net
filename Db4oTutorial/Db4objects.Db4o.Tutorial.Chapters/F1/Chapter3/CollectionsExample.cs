@@ -3,18 +3,21 @@ using System.Collections;
 using System.IO;
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 {	
 	public class CollectionsExample : Util
 	{
+        readonly static string YapFileName = Path.Combine(
+                               Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                               "formula1.yap");  
+		
 		public static void Main(string[] args)
 		{
-			File.Delete(Util.YapFileName);            
-			IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
-			try
-			{
+			File.Delete(YapFileName);            
+			IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
 				StoreFirstCar(db);
 				StoreSecondCar(db);
 				RetrieveAllSensorReadout(db);
@@ -25,20 +28,11 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 				RetrieveSensorReadoutQuery(db);
 				RetrieveCarQuery(db);
 				db.Close();
-				UpdateCarPart1();
-				db = Db4oFactory.OpenFile(Util.YapFileName);
-				UpdateCarPart2(db);
-				UpdateCollection(db);
-				db.Close();
-				DeleteAllPart1();
-				db=Db4oFactory.OpenFile(Util.YapFileName);
-				DeleteAllPart2(db);
+				UpdateCar();
+				UpdateCollection();
+				DeleteAll();
 				RetrieveAllSensorReadout(db);
-			}
-			finally
-			{
-				db.Close();
-			}
+			
 		}
         
 		public static void StoreFirstCar(IObjectContainer db)
@@ -155,22 +149,24 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 			ListResult(results);
 		}
 
-		public static void UpdateCarPart1()
+		public static void UpdateCar()
 		{
-			Db4oFactory.Configure().ObjectClass(typeof(Car)).CascadeOnUpdate(true);
-		}
-        
-		public static void UpdateCarPart2(IObjectContainer db)
-		{
+            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
 			IObjectSet result = db.QueryByExample(new Car("BMW", null));
 			Car car = (Car)result.Next();
 			car.Snapshot();
 			db.Store(car);
 			RetrieveAllSensorReadout(db);
+            db.Close();
 		}
         
-		public static void UpdateCollection(IObjectContainer db)
+		public static void UpdateCollection()
 		{
+            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
 			IQuery query = db.Query();
 			query.Constrain(typeof(Car));
 			IObjectSet result = query.Descend("_history").Execute();
@@ -186,15 +182,15 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 					Console.WriteLine(readout);
 				}
 			}
+            db.Close();
 		}
         
-		public static void DeleteAllPart1()
+		public static void DeleteAll()
 		{
-			Db4oFactory.Configure().ObjectClass(typeof(Car)).CascadeOnDelete(true);
-		}
+            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.ObjectClass(typeof(Car)).CascadeOnDelete(true);
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
 
-		public static void DeleteAllPart2(IObjectContainer db)
-		{
 			IObjectSet result = db.QueryByExample(new Car(null, null));
 			foreach (object car in result)
 			{
@@ -205,6 +201,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter3
 			{
 				db.Delete(readout);
 			}
+            db.Close();
 		}
 	}
 }
