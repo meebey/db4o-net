@@ -38,9 +38,9 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         
         public static void TakeManySnapshots()
         {
-            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            IConfiguration config = Db4oFactory.NewConfiguration();
             config.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
             IObjectSet result = db.QueryByExample(typeof(Car));
             Car car = (Car)result.Next();
             for (int i=0; i<5; i++)
@@ -75,10 +75,10 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter5
         
         public static void RetrieveSnapshotsSequentiallyCascade()
         {
-            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            IConfiguration config = Db4oFactory.NewConfiguration();
             config.ObjectClass(typeof(TemperatureSensorReadout))
                 .CascadeOnActivate(true);
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
         
             IObjectSet result = db.QueryByExample(typeof(Car));
             Car car = (Car)result.Next();

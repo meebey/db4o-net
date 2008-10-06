@@ -24,9 +24,9 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter8
 
         public static void StoreCarAndSnapshots()
         {
-            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            IConfiguration config = Db4oFactory.NewConfiguration();
             config.Add(new TransparentPersistenceSupport());
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
             Car car = new Car("Ferrari");
             for (int i = 0; i < 3; i++)
             {
@@ -38,9 +38,9 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter8
 
         public static void ModifySnapshotHistory()
         {
-            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            IConfiguration config = Db4oFactory.NewConfiguration();
             config.Add(new TransparentPersistenceSupport());
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
             System.Console.WriteLine("Read all sensors and modify the description:");
             IObjectSet result = db.QueryByExample(typeof(Car));
             Car car = (Car)result.Next();
@@ -57,9 +57,9 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter8
 
         public static void ReadSnapshotHistory()
         {
-            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            IConfiguration config = Db4oFactory.NewConfiguration();
             config.Add(new TransparentPersistenceSupport());
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
             System.Console.WriteLine("Read all modified sensors:");
             IObjectSet result = db.QueryByExample(typeof(Car));
             Car car = (Car)result.Next();

@@ -60,9 +60,9 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
 
         public static void RetrieveSnapshotsSequentiallyTA()
         {
-            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            IConfiguration config = Db4oFactory.NewConfiguration();
             config.Add(new TransparentActivationSupport());
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
             IObjectSet result = db.QueryByExample(typeof(Car));
             Car car = (Car)result.Next();
             SensorReadout readout = car.History;
@@ -76,9 +76,9 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter7
 
         public static void DemonstrateTransparentActivation()
         {
-            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            IConfiguration config = Db4oFactory.NewConfiguration();
             config.Add(new TransparentActivationSupport());
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
             IObjectSet result = db.QueryByExample(typeof (Car));
             Car car = (Car) result.Next();
 

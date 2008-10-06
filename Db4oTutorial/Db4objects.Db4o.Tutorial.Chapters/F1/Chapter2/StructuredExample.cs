@@ -182,9 +182,9 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
 
         public static void UpdatePilotSeparateSessionsImprovedPart1()
         {
-            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            IConfiguration config = Db4oFactory.NewConfiguration();
             config.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
             IObjectSet result = db.QueryByExample(new Car("Ferrari"));
             Car found = (Car)result.Next();
             found.Pilot.AddPoints(1);
@@ -209,9 +209,9 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
 
         public static void DeleteDeep()
         {
-            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            IConfiguration config = Db4oFactory.NewConfiguration();
             config.ObjectClass(typeof(Car)).CascadeOnDelete(true);
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
             IObjectSet result = db.QueryByExample(new Car("BMW"));
             Car found = (Car)result.Next();
             db.Delete(found);
@@ -222,9 +222,9 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter2
 
         public static void DeleteDeepRevisited()
         {
-            IConfiguration config = Db4oEmbedded.NewConfiguration();
+            IConfiguration config = Db4oFactory.NewConfiguration();
             config.ObjectClass(typeof(Car)).CascadeOnDelete(true);
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
             IObjectSet result = db.QueryByExample(new Pilot("Michael Schumacher", 0));
             Pilot pilot = (Pilot)result.Next();
             Car car1 = new Car("Ferrari");
