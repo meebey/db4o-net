@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter9
 	{
 		public static void Main(string[] args)
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(Util.YapFileName);
+			IObjectContainer db = Db4oFactory.OpenFile("formula1.yap");
 			try
 			{
 				StoreObjects(db);
