@@ -9,10 +9,10 @@
 
 using System;
 using System.Collections;
-using System.IO;
-using System.Xml;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
+using System.Xml;
 using WeifenLuo.WinFormsUI;
 
 namespace Db4objects.Db4o.Tutorial
@@ -22,115 +22,141 @@ namespace Db4objects.Db4o.Tutorial
 	/// </summary>
 	public class TutorialOutlineView : DockContent
 	{
-		MainForm _main;
-		TreeView _tree;
-		
+		private readonly MainForm _main;
+		private readonly TreeView _tree;
+		private readonly TutorialOutlineViewControl _outline;
+
 		public TutorialOutlineView(MainForm main)
 		{
 			_main = main;
-			
-			this.Text = "Tutorial Outline";
-			this.DockableAreas = (DockAreas.Float |
-			                      DockAreas.DockLeft |
-			                      DockAreas.DockRight);
-			
-			this.ClientSize = new System.Drawing.Size(295, 347);
-			this.DockPadding.Bottom = 2;
-			this.DockPadding.Top = 2;
-			this.ShowHint = DockState.DockLeft;
-			this.CloseButton = false;
-			
-			TutorialOutlineViewControl control = new TutorialOutlineViewControl();			
-			control.Dock = DockStyle.Fill;			
-			_tree = control.TreeView;	
-			_tree.AfterSelect += new TreeViewEventHandler(_tree_AfterSelect);
-			this.Controls.Add(control);
+
+			Text = "Tutorial Outline";
+			DockableAreas = (DockAreas.Float |
+			                 DockAreas.DockLeft |
+			                 DockAreas.DockRight);
+
+			ClientSize = new Size(295, 347);
+			DockPadding.Bottom = 2;
+			DockPadding.Top = 2;
+			ShowHint = DockState.DockLeft;
+			CloseButton = false;
+
+			_outline = new TutorialOutlineViewControl();
+
+			_outline.Dock = DockStyle.Fill;
+			_tree = _outline.TreeView;
+			_tree.AfterSelect += _tree_AfterSelect;
+			Controls.Add(_outline);
 		}
-		
+
 		private void _tree_AfterSelect(object sender, TreeViewEventArgs args)
 		{
-			_main.NavigateTutorial((string)args.Node.Tag);
+			_main.NavigateTutorial((string) args.Node.Tag);
 		}
-		
-		override protected void OnLoad(EventArgs e)
+
+		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
-			
+
 			LoadTutorialOutline();
 		}
-		
-		delegate void LoadFirstTopicFunction();
-		
-		void LoadTutorialOutline()
-		{			
+
+		private delegate void LoadFirstTopicFunction();
+
+		private void LoadTutorialOutline()
+		{
 			TreeNode current = new TreeNode();
 			TreeNode root = current;
-			TreeNode currentParent = null;			
-			Stack nodes = new Stack();			
+			TreeNode currentParent = null;
+			Stack nodes = new Stack();
 
 			string path = _main.GetTutorialFilePath("outline.html");
 			if (!File.Exists(path))
 			{
 				return;
 			}
-			
+
 			XmlTextReader reader = new XmlTextReader(path);
 			while (reader.Read())
 			{
-				string name = reader.Name;				
+				string name = reader.Name;
 				switch (name)
 				{
+					case "body":
+						if (reader.IsStartElement())
+						{
+							SetLogo(ReadLogoPath(reader));
+						}
+						break;
+
 					case "li":
-						{	
-							reader.ReadStartElement("li");							
-							
-							string href = reader.GetAttribute("href");
-							
-							reader.ReadStartElement("a");
-							string description = reader.ReadString();
-							
-							current = new TreeNode(description);
-							current.Tag = href;
-							
-							currentParent.Nodes.Add(current);
-							
-							reader.ReadEndElement();
-							reader.ReadEndElement();
-							
-							break;
-						}
-						
+					{
+						reader.ReadStartElement("li");
+
+						string href = reader.GetAttribute("href");
+
+						reader.ReadStartElement("a");
+						string description = reader.ReadString();
+
+						current = new TreeNode(description);
+						current.Tag = href;
+
+						currentParent.Nodes.Add(current);
+
+						reader.ReadEndElement();
+						reader.ReadEndElement();
+
+						break;
+					}
+
 					case "ul":
-						{	
-							if (reader.IsStartElement())
-							{
-								nodes.Push(currentParent);
-								currentParent = current;
-							}
-							else
-							{
-								currentParent = (TreeNode)nodes.Pop();
-							}
-							break;
+					{
+						if (reader.IsStartElement())
+						{
+							nodes.Push(currentParent);
+							currentParent = current;
 						}
+						else
+						{
+							currentParent = (TreeNode) nodes.Pop();
+						}
+						break;
+					}
 				}
 			}
-			
+
 			foreach (TreeNode node in root.Nodes)
 			{
 				_tree.Nodes.Add(node);
 			}
 			_tree.ExpandAll();
-			
+
 			BeginInvoke(new LoadFirstTopicFunction(LoadFirstTopic));
 		}
-		
-		void LoadFirstTopic()
+
+		private void SetLogo(string path)
+		{
+			_outline.SetLogo(_main.CombineTutorialPath(path));
+		}
+
+		private string ReadLogoPath(XmlTextReader reader)
+		{
+			reader.ReadStartElement("body");
+			reader.ReadStartElement("a");
+			
+			string imgSource = reader.GetAttribute("src");
+			reader.ReadStartElement("img");
+
+			return imgSource;
+
+		}
+
+		private void LoadFirstTopic()
 		{
 			_tree.SelectedNode = _tree.Nodes[0];
 		}
-		
-		string LoadFile(string fname)
+
+		private string LoadFile(string fname)
 		{
 			using (TextReader reader = File.OpenText(fname))
 			{
