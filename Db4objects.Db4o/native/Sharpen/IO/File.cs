@@ -47,10 +47,20 @@ namespace Sharpen.IO
 
 		public bool Exists()
 		{
-			return System.IO.File.Exists(_path) || Directory.Exists(_path);
+#if CF
+            string path = RemoveTrailingSlash(_path);
+#else
+            string path = _path;
+#endif
+            return System.IO.File.Exists(path) || Directory.Exists(path);
 		}
 
-		public string GetCanonicalPath()
+	    private static string RemoveTrailingSlash(string path)
+	    {
+	        return (path.EndsWith("\\") || path.EndsWith("/")) ? path.Remove(path.Length - 1, 1) : path;
+	    }
+
+	    public string GetCanonicalPath()
 		{
 			return Path.GetFullPath(_path);
 		}
@@ -79,7 +89,7 @@ namespace Sharpen.IO
 		public bool IsDirectory()
 		{
 #if CF
-			return System.IO.Directory.Exists(_path);
+			return Exists();
 #else
 			return (System.IO.File.GetAttributes(_path) & FileAttributes.Directory) != 0;
 #endif
