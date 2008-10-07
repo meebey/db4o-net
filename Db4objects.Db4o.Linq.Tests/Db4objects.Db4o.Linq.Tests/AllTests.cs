@@ -1,7 +1,6 @@
 ﻿/* Copyright (C) 2007 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Linq.Tests
@@ -32,6 +31,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				typeof(StringMethodTestCase),
 				typeof(VisualBasicTestCase),
 				typeof(WhereTestCase),
+				typeof(QueryTranslationPerformanceTestCase),
 			};
 		}
 	}

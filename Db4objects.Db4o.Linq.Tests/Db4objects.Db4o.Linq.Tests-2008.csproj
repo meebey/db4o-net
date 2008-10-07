@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{22AB6F58-39BF-4580-821B-5900E31AC33A}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -38,6 +38,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +55,7 @@
     </Compile>
     <Compile Include="Db4objects.Db4o.Linq.Tests\ComposedQueryTestCase.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\EnumComparisonTestCase.cs" />
+    <Compile Include="Db4objects.Db4o.Linq.Tests\QueryTranslationPerformanceTestCase.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\VisualBasicTestCase.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\Expressions\ExpressionEqualityComparerTestCase.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\Queries\QueryExtensions.cs" />
