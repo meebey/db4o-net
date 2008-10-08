@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6C7B5203-2178-4BFC-B8AB-D387D7C28A65}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -24,7 +24,9 @@
     <NativePlatformName>Pocket PC 2003</NativePlatformName>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-  <SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile></PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -37,6 +39,7 @@
     <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -49,8 +52,66 @@
     <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
   </PropertyGroup>
-  <ItemGroup><Compile Include="Db4oUnit.Extensions\AbstractDb4oTestCase.cs"/><Compile Include="Db4oUnit.Extensions\BTreeAssert.cs"/><Compile Include="Db4oUnit.Extensions\Concurrency\ConcurrencyConventions.cs"/><Compile Include="Db4oUnit.Extensions\Concurrency\ConcurrencyTestMethod.cs"/><Compile Include="Db4oUnit.Extensions\Concurrency\Db4oConcurrencyTestSuiteBuilder.cs"/><Compile Include="Db4oUnit.Extensions\ContainerServices.cs"/><Compile Include="Db4oUnit.Extensions\Db4oAssert.cs"/><Compile Include="Db4oUnit.Extensions\Db4oClientServerTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Db4oConcurrencyTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Db4oConcurrencyTestSuite.cs"/><Compile Include="Db4oUnit.Extensions\Db4oFixtureVariable.cs"/><Compile Include="Db4oUnit.Extensions\Db4oTestSuite.cs"/><Compile Include="Db4oUnit.Extensions\Db4oTestSuiteBuilder.cs"/><Compile Include="Db4oUnit.Extensions\ExpectingVisitor.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\AbstractDb4oFixture.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\AbstractFileBasedDb4oFixture.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\AbstractSoloDb4oFixture.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\CachingConfigurationSource.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\Db4oClientServer.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\Db4oFixtureProvider.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\Db4oInMemory.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\Db4oSolo.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\IConfigurationSource.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutAllButNetworkingCS.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutCS.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutDefragSolo.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutFromTestFixture.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutNetworkingCS.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutNoFileSystemData.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutSolo.cs"/><Compile Include="Db4oUnit.Extensions\Fixtures\IndependentConfigurationSource.cs"/><Compile Include="Db4oUnit.Extensions\FreespaceManagerForDebug.cs"/><Compile Include="Db4oUnit.Extensions\IContainerBlock.cs"/><Compile Include="Db4oUnit.Extensions\IDb4oClientServerFixture.cs"/><Compile Include="Db4oUnit.Extensions\IDb4oFixture.cs"/><Compile Include="Db4oUnit.Extensions\IDb4oTestCase.cs"/><Compile Include="Db4oUnit.Extensions\IFixtureConfiguration.cs"/><Compile Include="Db4oUnit.Extensions\IOptOutAndroid.cs"/><Compile Include="Db4oUnit.Extensions\IOptOutTA.cs"/><Compile Include="Db4oUnit.Extensions\IRuntimeConfigureAction.cs"/><Compile Include="Db4oUnit.Extensions\ISlotListener.cs"/><Compile Include="Db4oUnit.Extensions\IntArrays4.cs"/><Compile Include="Db4oUnit.Extensions\TAFixtureConfiguration.cs"/><Compile Include="Db4oUnit.Extensions\Tests\AcceptedTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Tests\AllTests.cs"/><Compile Include="Db4oUnit.Extensions\Tests\DynamicFixtureTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Tests\FixtureConfigurationTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Tests\FixtureTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Tests\MultipleDb4oTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Tests\NotAcceptedTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Tests\SimpleDb4oTestCase.cs"/><Compile Include="Db4oUnit.Extensions\Util\CrossPlatformServices.cs"/><Compile Include="Db4oUnit.Extensions\Util\IOUtil.cs"/><Compile Include="Properties\AssemblyInfo.cs"/><Compile Include="native\Db4oUnit.Extensions\AbstractDb4oTestCase.cs"/><Compile Include="native\Db4oUnit.Extensions\Db4oUnitPlatform.cs"/></ItemGroup>
+  <ItemGroup>
+    <Compile Include="Db4oUnit.Extensions\AbstractDb4oTestCase.cs" />
+    <Compile Include="Db4oUnit.Extensions\BTreeAssert.cs" />
+    <Compile Include="Db4oUnit.Extensions\Concurrency\ConcurrencyConventions.cs" />
+    <Compile Include="Db4oUnit.Extensions\Concurrency\ConcurrencyTestMethod.cs" />
+    <Compile Include="Db4oUnit.Extensions\Concurrency\Db4oConcurrencyTestSuiteBuilder.cs" />
+    <Compile Include="Db4oUnit.Extensions\ContainerServices.cs" />
+    <Compile Include="Db4oUnit.Extensions\Db4oAssert.cs" />
+    <Compile Include="Db4oUnit.Extensions\Db4oClientServerTestCase.cs" />
+    <Compile Include="Db4oUnit.Extensions\Db4oConcurrencyTestCase.cs" />
+    <Compile Include="Db4oUnit.Extensions\Db4oConcurrencyTestSuite.cs" />
+    <Compile Include="Db4oUnit.Extensions\Db4oFixtureVariable.cs" />
+    <Compile Include="Db4oUnit.Extensions\Db4oTestSuite.cs" />
+    <Compile Include="Db4oUnit.Extensions\Db4oTestSuiteBuilder.cs" />
+    <Compile Include="Db4oUnit.Extensions\ExpectingVisitor.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\AbstractDb4oFixture.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\AbstractFileBasedDb4oFixture.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\AbstractSoloDb4oFixture.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\CachingConfigurationSource.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\Db4oClientServer.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\Db4oFixtureProvider.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\Db4oInMemory.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\Db4oSolo.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\IConfigurationSource.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutAllButNetworkingCS.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutCS.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutDefragSolo.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutFromTestFixture.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutNetworkingCS.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutNoFileSystemData.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutSolo.cs" />
+    <Compile Include="Db4oUnit.Extensions\Fixtures\IndependentConfigurationSource.cs" />
+    <Compile Include="Db4oUnit.Extensions\FreespaceManagerForDebug.cs" />
+    <Compile Include="Db4oUnit.Extensions\IContainerBlock.cs" />
+    <Compile Include="Db4oUnit.Extensions\IDb4oClientServerFixture.cs" />
+    <Compile Include="Db4oUnit.Extensions\IDb4oFixture.cs" />
+    <Compile Include="Db4oUnit.Extensions\IDb4oTestCase.cs" />
+    <Compile Include="Db4oUnit.Extensions\IFixtureConfiguration.cs" />
+    <Compile Include="Db4oUnit.Extensions\IOptOutAndroid.cs" />
+    <Compile Include="Db4oUnit.Extensions\IOptOutTA.cs" />
+    <Compile Include="Db4oUnit.Extensions\IRuntimeConfigureAction.cs" />
+    <Compile Include="Db4oUnit.Extensions\ISlotListener.cs" />
+    <Compile Include="Db4oUnit.Extensions\IntArrays4.cs" />
+    <Compile Include="Db4oUnit.Extensions\TAFixtureConfiguration.cs" />
+    <Compile Include="Db4oUnit.Extensions\Tests\AcceptedTestCase.cs" />
+    <Compile Include="Db4oUnit.Extensions\Tests\AllTests.cs" />
+    <Compile Include="Db4oUnit.Extensions\Tests\DynamicFixtureTestCase.cs" />
+    <Compile Include="Db4oUnit.Extensions\Tests\FixtureConfigurationTestCase.cs" />
+    <Compile Include="Db4oUnit.Extensions\Tests\FixtureTestCase.cs" />
+    <Compile Include="Db4oUnit.Extensions\Tests\MultipleDb4oTestCase.cs" />
+    <Compile Include="Db4oUnit.Extensions\Tests\NotAcceptedTestCase.cs" />
+    <Compile Include="Db4oUnit.Extensions\Tests\SimpleDb4oTestCase.cs" />
+    <Compile Include="Db4oUnit.Extensions\Util\CrossPlatformServices.cs" />
+    <Compile Include="Db4oUnit.Extensions\Util\IOUtil.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="native\Db4oUnit.Extensions\AbstractDb4oTestCase.cs" />
+    <Compile Include="native\Db4oUnit.Extensions\Db4oUnitPlatform.cs" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-CF-2008.csproj">
       <Project>{95FD1C64-F1A3-4C8A-B170-D518E899B2FE}</Project>
@@ -71,13 +132,10 @@
       <HintPath>C:\Program Files (x86)\Microsoft.NET\SDK\CompactFramework\v3.5\WindowsCE\System.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\"/>
-  </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
-        <HostingProcess disable="1"/>
+        <HostingProcess disable="1" />
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
@@ -88,5 +146,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets"/>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
 </Project>

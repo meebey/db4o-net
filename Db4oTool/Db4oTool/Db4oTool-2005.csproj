@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -10,9 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Db4oTool</RootNamespace>
     <AssemblyName>Db4oTool</AssemblyName>
-    
-    
-  <SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>../../db4objects.snk</AssemblyOriginatorKeyFile></PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../../db4objects.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
+    <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Cecil.FlowAnalysis, Version=0.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
@@ -48,41 +50,41 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libs\net-2.0\Mono.GetOptions.dll</HintPath>
     </Reference>
-    <Reference Include="System"/>
-    <Reference Include="System.Data"/>
-    <Reference Include="System.Xml"/>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\AbstractAssemblyInstrumentation.cs"/>
-    <Compile Include="Core\ByAttributeFilter.cs"/>
-    <Compile Include="Core\CompactFrameworkServices.cs"/>
-    <Compile Include="Core\Configuration.cs"/>
-    <Compile Include="Core\ByNameFilter.cs"/>
-    <Compile Include="Core\CurrentDirectoryAssemblyResolver.cs"/>
-    <Compile Include="Core\DirectoryAssemblyResolver.cs"/>
-    <Compile Include="Core\IAssemblyInstrumentation.cs"/>
-    <Compile Include="Core\ILPattern.cs"/>
-    <Compile Include="Core\InstrumentationContext.cs"/>
-    <Compile Include="Core\InstrumentationPipeline.cs"/>
-    <Compile Include="Core\ITypeFilter.cs"/>
-    <Compile Include="Core\NotFilter.cs"/>
-    <Compile Include="Core\SaveAssemblyInstrumentation.cs"/>
-    <Compile Include="Factory.cs"/>
-    <Compile Include="NQ\AbstractOptimizer.cs"/>
-    <Compile Include="NQ\CFNQEnabler.cs"/>
-    <Compile Include="NQ\DelegateQueryProcessor.cs"/>
-    <Compile Include="NQ\DelegateOptimizer.cs"/>
-    <Compile Include="NQ\PredicateOptimizer.cs"/>
-    <Compile Include="NQ\QueryInvocationProcessor.cs"/>
-    <Compile Include="Program.cs"/>
-    <Compile Include="ProgramOptions.cs"/>
-    <Compile Include="Properties\AssemblyInfo.cs"/>
-    <Compile Include="TA\ActivateMethodEmitter.cs"/>
-    <Compile Include="TA\BindMethodEmitter.cs"/>
-    <Compile Include="TA\MethodEmitter.cs"/>
-    <Compile Include="Core\RelativeAssemblyResolver.cs"/>
-    <Compile Include="Core\CecilReflector.cs"/>
-    <Compile Include="TA\TAInstrumentation.cs"/>
+    <Compile Include="Core\AbstractAssemblyInstrumentation.cs" />
+    <Compile Include="Core\ByAttributeFilter.cs" />
+    <Compile Include="Core\CompactFrameworkServices.cs" />
+    <Compile Include="Core\Configuration.cs" />
+    <Compile Include="Core\ByNameFilter.cs" />
+    <Compile Include="Core\CurrentDirectoryAssemblyResolver.cs" />
+    <Compile Include="Core\DirectoryAssemblyResolver.cs" />
+    <Compile Include="Core\IAssemblyInstrumentation.cs" />
+    <Compile Include="Core\ILPattern.cs" />
+    <Compile Include="Core\InstrumentationContext.cs" />
+    <Compile Include="Core\InstrumentationPipeline.cs" />
+    <Compile Include="Core\ITypeFilter.cs" />
+    <Compile Include="Core\NotFilter.cs" />
+    <Compile Include="Core\SaveAssemblyInstrumentation.cs" />
+    <Compile Include="Factory.cs" />
+    <Compile Include="NQ\AbstractOptimizer.cs" />
+    <Compile Include="NQ\CFNQEnabler.cs" />
+    <Compile Include="NQ\DelegateQueryProcessor.cs" />
+    <Compile Include="NQ\DelegateOptimizer.cs" />
+    <Compile Include="NQ\PredicateOptimizer.cs" />
+    <Compile Include="NQ\QueryInvocationProcessor.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="ProgramOptions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TA\ActivateMethodEmitter.cs" />
+    <Compile Include="TA\BindMethodEmitter.cs" />
+    <Compile Include="TA\MethodEmitter.cs" />
+    <Compile Include="Core\RelativeAssemblyResolver.cs" />
+    <Compile Include="Core\CecilReflector.cs" />
+    <Compile Include="TA\TAInstrumentation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Db4objects.Db4o.Instrumentation\Db4objects.Db4o.Instrumentation-2005.csproj">
@@ -102,7 +104,7 @@
       <Name>Db4objects.Db4o-2005</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets"/>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
