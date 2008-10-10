@@ -7,6 +7,12 @@ namespace Db4oTool.Tests.NQ
 {
 	public class PredicateBuildTimeOptimizationTestCase : SingleResourceTestCase
 	{
+		// FIXME: make it work in release mode too
+		protected override bool AcceptsReleaseMode
+		{
+			get { return false; }
+		}
+
 		protected override string ResourceName
 		{
 			get { return "PredicateSubject"; }

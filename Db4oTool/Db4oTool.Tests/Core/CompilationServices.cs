@@ -12,6 +12,7 @@ namespace Db4oTool.Tests.Core
 	/// </summary>
 	public class CompilationServices
 	{
+		public static readonly ContextVariable<bool> Debug = new ContextVariable<bool>(true);
 		public static readonly ContextVariable<bool> Unsafe = new ContextVariable<bool>(false);
 		public static readonly ContextVariable<SignConfiguration> KeyFile = new ContextVariable<SignConfiguration>(null);
 		public static readonly ContextVariable<string> ExtraParameters = new ContextVariable<string>("");
@@ -52,7 +53,7 @@ namespace Db4oTool.Tests.Core
 			{
 				CompilerParameters parameters = CreateDefaultCompilerParameters();
 				// TODO: run test cases in both modes (optimized and debug)
-				parameters.IncludeDebugInformation = true;
+				parameters.IncludeDebugInformation = Debug.Value;
 				parameters.OutputAssembly = assemblyFName;
 				
 				if (Unsafe.Value) parameters.CompilerOptions = "/unsafe";
@@ -90,7 +91,7 @@ namespace Db4oTool.Tests.Core
 
         public static string EmitAssemblyFromResource(string resourceName, params Assembly[] references)
         {
-            string assemblyFileName = Path.Combine(ShellUtilities.GetTempPath(), resourceName + ".dll");
+            string assemblyFileName = Path.Combine(ShellUtilities.GetTempPath(), resourceName + (Debug.Value ? ".Debug.dll" : ".dll"));
             string sourceFileName = Path.Combine(ShellUtilities.GetTempPath(), resourceName);
             File.WriteAllText(sourceFileName, ResourceServices.GetResourceAsString(resourceName));
             DeleteAssemblyAndPdb(assemblyFileName);

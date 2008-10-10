@@ -2,6 +2,11 @@ namespace Db4oTool.Tests.Core
 {
 	class PreserveDebugInfoTestCase : SingleResourceTestCase
 	{
+		protected override bool AcceptsReleaseMode
+		{
+			get { return false; }
+		}
+
 		protected override string ResourceName
 		{
 			get { return "PreserveDebugInfoSubject"; }

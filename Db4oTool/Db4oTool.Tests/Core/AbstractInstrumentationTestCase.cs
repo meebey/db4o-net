@@ -111,32 +111,81 @@ namespace Db4oTool.Tests.Core
 
         private IEnumerable<ITest> ProduceTestCases()
         {
-            Assembly[] references = Dependencies;
-            foreach (string resource in Resources)
-            {
-                string assemblyPath = EmitAssemblyFromResource(resource, references);
-                Assert.IsTrue(File.Exists(assemblyPath));
+			Assert.IsTrue(AcceptsDebugMode || AcceptsReleaseMode);
 
-            	InstrumentAssembly(assemblyPath);
+			if (AcceptsDebugMode)
+        		foreach (ITest test in ProduceTestCases(true))
+        			yield return test;
 
-                Type type = GetTestCaseType(assemblyPath, resource);
-                IEnumerable suite = type.IsSubclassOf(typeof(InstrumentedTestCase))
-                                    ? new InstrumentationTestSuiteBuilder(this, type)
-                                    : new ReflectionTestSuiteBuilder(type);
+			if (AcceptsReleaseMode)
+				foreach (ITest test in ProduceTestCases(false))
+					yield return test;
+        }
 
-                foreach (Object test in suite)
-                {
-                	yield return (ITest)test;
-                }
+		protected virtual bool AcceptsDebugMode
+		{
+			get { return true; }
+		}
+
+		protected virtual bool AcceptsReleaseMode
+		{
+			get { return true; }
+		}
+
+		private IEnumerable<ITest> ProduceTestCases(bool debugInfo)
+		{
+			Assembly[] references = Dependencies;
+			foreach (string resource in Resources)
+			{
+				Exception error;
+				string assemblyPath = EmitAndInstrumentAssemblyFromResource(resource, references, debugInfo, out error);
+				if (null != error)
+				{
+					yield return new FailingTest(resource, error);
+					continue;
+				}
+
+				Type type = GetTestCaseType(assemblyPath, resource);
+				IEnumerable suite = type.IsSubclassOf(typeof(InstrumentedTestCase))
+				                    	? new InstrumentationTestSuiteBuilder(this, type)
+				                    	: new ReflectionTestSuiteBuilder(type);
+
+				foreach (Object test in suite)
+				{
+					yield return (ITest)test;
+				}
 
 				if (ShouldVerify(resource))
 				{
 					yield return new VerifyAssemblyTest(assemblyPath);
 				}
 
-                references = ArrayServices.Append(references, type.Assembly);
-            }
-        }
+				references = ArrayServices.Append(references, type.Assembly);
+			}
+		}
+
+		private string EmitAndInstrumentAssemblyFromResource(string resource, Assembly[] references, bool debugInfo, out Exception error)
+		{
+			string assemblyPath = null;
+			try
+			{
+				CompilationServices.Debug.Using(debugInfo, delegate
+               	{
+               		assemblyPath = EmitAssemblyFromResource(resource, references);
+//               		Console.WriteLine("Assembly emitted to: {0}", assemblyPath);
+               		Assert.IsTrue(File.Exists(assemblyPath));
+
+               		InstrumentAssembly(assemblyPath);
+               		
+               	});
+				error = null;
+			}
+			catch (Exception x)
+			{
+				error = x;
+			}
+			return assemblyPath;
+		}
 
 		protected virtual bool ShouldVerify(string resource)
 		{

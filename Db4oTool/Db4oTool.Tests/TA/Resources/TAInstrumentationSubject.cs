@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Db4objects.Db4o.Activation;
@@ -263,8 +264,67 @@ static class StaticClass
 	}
 }
 
+class TryFinallyProtocol
+{
+	private List<string> _calls = new List<string>();
+
+	public string[] Calls
+	{
+		get { return _calls.ToArray(); }
+	}
+
+	public void BeforeTry()
+	{
+		_calls.Add("BeforeTry");
+	}
+
+	public void Try()
+	{
+		_calls.Add("Try");
+	}
+
+	public void Finally()
+	{
+		_calls.Add("Finally");
+	}
+}
+
+class TryFinallySubject
+{
+	private TryFinallyProtocol _protocol;
+
+	public TryFinallySubject(TryFinallyProtocol protocol)
+	{
+		_protocol = protocol;
+	}
+
+	public string ToString(object obj)
+	{
+		string result = "";
+		_protocol.BeforeTry();
+		try
+		{
+			result = obj.ToString();
+			_protocol.Try();
+		}
+		finally
+		{
+			_protocol.Finally();
+		}
+		return result;
+	}
+}
+
 class TAInstrumentationSubject : ITestCase
 {
+	public void TestTryFinally()
+	{
+		TryFinallyProtocol protocol = new TryFinallyProtocol();
+		TryFinallySubject subject = new TryFinallySubject(protocol);
+		Assert.AreEqual("foo", subject.ToString("foo"));
+		ArrayAssert.AreEqual(new string[] { "BeforeTry", "Try", "Finally" }, protocol.Calls);
+	}
+
 	public void TestSubjectHoldingArray()
 	{
 		SubjectHoldingArray subject = new SubjectHoldingArray();

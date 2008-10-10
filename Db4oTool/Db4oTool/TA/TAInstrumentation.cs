@@ -200,10 +200,11 @@ namespace Db4oTool.TA
 
 		private void InstrumentFieldAccesses(MethodDefinition method)
 		{
-			CilWorker cil = method.Body.CilWorker;
+//			CilWorker cil = method.Body.CilWorker;
+			MethodEditor editor = new MethodEditor(method);
 			foreach (Instruction instruction in FieldAccesses(method.Body))
 			{
-				ProcessFieldAccess(cil, instruction);
+				ProcessFieldAccess(editor, instruction);
 			}
 		}
 
@@ -226,7 +227,7 @@ namespace Db4oTool.TA
 			return IsActivatableField((FieldReference) instruction.Operand);
 		}
 
-		private void ProcessFieldAccess(CilWorker cil, Instruction instruction)
+		private void ProcessFieldAccess(MethodEditor cil, Instruction instruction)
 		{
             if (IsFieldGetter(instruction))
             {
@@ -238,7 +239,7 @@ namespace Db4oTool.TA
             }
 		}
 
-	    private void ProcessFieldSetter(Instruction instruction, CilWorker cil)
+	    private void ProcessFieldSetter(Instruction instruction, MethodEditor cil)
 	    {
             VariableDefinition oldStackTop = SaveStackTop(cil, instruction);
 
@@ -247,14 +248,10 @@ namespace Db4oTool.TA
 			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Ldloc, oldStackTop));
         }
 
-	    private static VariableDefinition SaveStackTop(CilWorker cil, Instruction instruction)
+	    private static VariableDefinition SaveStackTop(MethodEditor cil, Instruction instruction)
 	    {
-            MethodBody methodBody = cil.GetBody();
-			methodBody.InitLocals = true;
-
-	    	VariableDefinition oldStackTop = new VariableDefinition(Resolve(instruction).FieldType);
-            methodBody.Variables.Add(oldStackTop);
-
+	    	VariableDefinition oldStackTop = cil.AddVariable(Resolve(instruction).FieldType);
+	    	
 	        cil.InsertBefore(GetInsertionPoint(instruction), cil.Create(OpCodes.Stloc, oldStackTop));
 
             return oldStackTop;
@@ -270,14 +267,14 @@ namespace Db4oTool.TA
 	        return instruction.OpCode == OpCodes.Ldfld || instruction.OpCode == OpCodes.Ldflda;
 	    }
 
-	    private void ProcessFieldGetter(Instruction instruction, CilWorker cil)
+	    private void ProcessFieldGetter(Instruction instruction, MethodEditor cil)
 	    {
 	        Instruction insertionPoint = GetInsertionPoint(instruction);
 
 	    	InsertActivateCall(cil, insertionPoint, ActivationPurpose.Read);
 	    }
 
-		private void InsertActivateCall(CilWorker cil, Instruction insertionPoint, ActivationPurpose activationPurpose)
+		private void InsertActivateCall(MethodEditor cil, Instruction insertionPoint, ActivationPurpose activationPurpose)
 		{
 			Instruction previous = insertionPoint.Previous;
 			if (previous.OpCode == OpCodes.Ldarg)
@@ -287,7 +284,6 @@ namespace Db4oTool.TA
 					previous,
 					newLoadInstruction,
 					activationPurpose);
-				ReplaceInstructionReferences(cil.GetBody(), previous, newLoadInstruction);
 			}
 			else
 			{
@@ -298,59 +294,7 @@ namespace Db4oTool.TA
 			}
 		}
 
-		private void ReplaceInstructionReferences(MethodBody body, Instruction oldTarget, Instruction newTarget)
-		{
-			ReplaceInstructionReferences(body.Instructions, oldTarget, newTarget);
-			ReplaceInstructionReferences(body.ExceptionHandlers, oldTarget, newTarget);
-		}
-
-		private static void ReplaceInstructionReferences(InstructionCollection collection, Instruction oldTarget, Instruction newTarget)
-		{
-			foreach (Instruction instr in collection)
-			{
-				if (instr.OpCode == OpCodes.Switch)
-				{
-					Instruction[] labels = (Instruction[]) instr.Operand;
-					ReplaceAll(labels, oldTarget, newTarget);
-				}
-				else if (instr.Operand == oldTarget)
-				{
-					instr.Operand = newTarget;
-				}
-			}
-		}
-
-		private static void ReplaceInstructionReferences(ExceptionHandlerCollection handlers, Instruction oldTarget, Instruction newTarget)
-		{
-			foreach (ExceptionHandler handler in handlers)
-			{
-				if (handler.TryStart == oldTarget)
-				{
-					handler.TryStart = newTarget;
-				}
-				else if (handler.HandlerStart == oldTarget)
-				{
-					handler.HandlerStart = newTarget;
-				}
-				else if (handler.FilterStart == oldTarget)
-				{
-					handler.FilterStart = newTarget;
-				}
-			}
-		}
-
-		private static void ReplaceAll(Instruction[] labels, Instruction oldTarget, Instruction newTarget)
-		{
-			for (int i=0; i<labels.Length; ++i)
-			{
-				if (labels[i] == oldTarget)
-				{
-					labels[i] = newTarget;
-				}
-			}
-		}
-
-		private void InsertActivateCall(CilWorker cil, Instruction insertionPoint, Instruction loadReferenceInstruction, ActivationPurpose activationPurpose)
+		private void InsertActivateCall(MethodEditor cil, Instruction insertionPoint, Instruction loadReferenceInstruction, ActivationPurpose activationPurpose)
 		{
 			cil.InsertBefore(insertionPoint, loadReferenceInstruction);
 			cil.InsertBefore(insertionPoint, cil.Create(OpCodes.Ldc_I4, (int)activationPurpose));
