@@ -60,11 +60,11 @@ namespace Db4oTool.Core
 				{
 					handler.TryStart = newTarget;
 				}
-				else if (handler.HandlerStart == oldTarget)
+				if (handler.HandlerStart == oldTarget)
 				{
 					handler.HandlerStart = newTarget;
 				}
-				else if (handler.FilterStart == oldTarget)
+				if (handler.FilterStart == oldTarget)
 				{
 					handler.FilterStart = newTarget;
 				}

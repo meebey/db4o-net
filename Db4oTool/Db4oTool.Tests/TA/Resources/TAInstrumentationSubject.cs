@@ -264,65 +264,138 @@ static class StaticClass
 	}
 }
 
-class TryFinallyProtocol
+class Activity
 {
-	private List<string> _calls = new List<string>();
+	private List<string> _checkpoints = new List<string>();
 
-	public string[] Calls
+	public string[] Checkpoints
 	{
-		get { return _calls.ToArray(); }
+		get { return _checkpoints.ToArray(); }
 	}
 
-	public void BeforeTry()
+	public void Checkpoint(string label)
 	{
-		_calls.Add("BeforeTry");
-	}
-
-	public void Try()
-	{
-		_calls.Add("Try");
-	}
-
-	public void Finally()
-	{
-		_calls.Add("Finally");
+		_checkpoints.Add(label);
 	}
 }
 
 class TryFinallySubject
 {
-	private TryFinallyProtocol _protocol;
+	private Activity _activity;
 
-	public TryFinallySubject(TryFinallyProtocol protocol)
+	public TryFinallySubject(Activity activity)
 	{
-		_protocol = protocol;
+		_activity = activity;
 	}
 
-	public string ToString(object obj)
+	public string TryFinally(object obj)
 	{
 		string result = "";
-		_protocol.BeforeTry();
+		_activity.Checkpoint("BeforeTry");
 		try
 		{
 			result = obj.ToString();
-			_protocol.Try();
+			_activity.Checkpoint("Try");
 		}
 		finally
 		{
-			_protocol.Finally();
+			_activity.Checkpoint("Finally");
+		}
+		return result;
+	}
+
+	public object TryCatch(object obj)
+	{
+		object result = null;
+		_activity.Checkpoint("BeforeTry");
+		try
+		{
+			result = obj.ToString();
+			_activity.Checkpoint("Try");
+		}
+		catch (Exception x)
+		{
+			_activity.Checkpoint("Catch");
+			result = x;
+		}
+		finally
+		{
+			_activity.Checkpoint("Finally");
 		}
 		return result;
 	}
 }
 
+class GotoSubject
+{
+	private Activity _activity;
+
+	public GotoSubject(Activity activity)
+	{
+		_activity = activity;
+	}
+
+	public void Run(int count)
+	{
+		_activity.Checkpoint("before");
+	search:
+		_activity.Checkpoint("search");
+		for (int i=0; ; ++i)
+		{
+			if (i < count)
+			{
+				if (count > 1)
+				{
+					--count;
+					goto search;
+				}
+				else
+					break;
+			}
+		}
+	}
+}
+
 class TAInstrumentationSubject : ITestCase
 {
+	public void TestGoto()
+	{
+		Activity activity = new Activity();
+		GotoSubject subject = new GotoSubject(activity);
+		MockActivator a = ActivatorFor(subject);
+		subject.Run(2);
+		ArrayAssert.AreEqual(new string[] { "before", "search", "search" }, activity.Checkpoints);
+		Assert.AreEqual(3, a.ReadCount);
+	}
+
 	public void TestTryFinally()
 	{
-		TryFinallyProtocol protocol = new TryFinallyProtocol();
-		TryFinallySubject subject = new TryFinallySubject(protocol);
-		Assert.AreEqual("foo", subject.ToString("foo"));
-		ArrayAssert.AreEqual(new string[] { "BeforeTry", "Try", "Finally" }, protocol.Calls);
+		Activity activity = new Activity();
+		TryFinallySubject subject = new TryFinallySubject(activity);
+		MockActivator a = ActivatorFor(subject);
+		Assert.AreEqual("foo", subject.TryFinally("foo"));
+		ArrayAssert.AreEqual(new string[] { "BeforeTry", "Try", "Finally" }, activity.Checkpoints);
+		Assert.AreEqual(3, a.ReadCount);
+	}
+
+	public void TestTryCatchWithoutException()
+	{
+		Activity activity = new Activity();
+		TryFinallySubject subject = new TryFinallySubject(activity);
+		MockActivator a = ActivatorFor(subject);
+		Assert.AreEqual("foo", subject.TryCatch("foo"));
+		ArrayAssert.AreEqual(new string[] { "BeforeTry", "Try", "Finally" }, activity.Checkpoints);
+		Assert.AreEqual(3, a.ReadCount);
+	}
+
+	public void TestTryCatchWithException()
+	{
+		Activity activity = new Activity();
+		TryFinallySubject subject = new TryFinallySubject(activity);
+		MockActivator a = ActivatorFor(subject);
+		Assert.IsInstanceOf(typeof(NullReferenceException), subject.TryCatch(null));
+		ArrayAssert.AreEqual(new string[] { "BeforeTry", "Catch", "Finally" }, activity.Checkpoints);
+		Assert.AreEqual(3, a.ReadCount);
 	}
 
 	public void TestSubjectHoldingArray()
