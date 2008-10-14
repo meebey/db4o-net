@@ -29,10 +29,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Db4objects.Db4o, Version=6.4.0.7737, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Db4objects.Db4o.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -41,9 +37,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Db4objects.Drs\Db4objects.Drs.csproj">
+    <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2005.csproj">
+      <Project>{4FA6645B-E14B-4F18-A2CC-C1925663EFCE}</Project>
+      <Name>Db4objects.Db4o-2005</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Db4objects.Drs\Db4objects.Drs-2005.csproj">
       <Project>{03656518-0F95-4E4C-83C0-BF5EE8B7B472}</Project>
-      <Name>Db4objects.Drs</Name>
+      <Name>Db4objects.Drs-2005</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
