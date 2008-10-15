@@ -9,23 +9,13 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal.Config
 {
-	public class LocalConfigurationImpl : ILocalConfiguration
+	public class FileConfigurationImpl : IFileConfiguration
 	{
 		private readonly Config4Impl _config;
 
-		public LocalConfigurationImpl(Config4Impl config)
+		public FileConfigurationImpl(Config4Impl config)
 		{
 			_config = config;
-		}
-
-		public virtual void AddAlias(IAlias alias)
-		{
-			_config.AddAlias(alias);
-		}
-
-		public virtual void RemoveAlias(IAlias alias)
-		{
-			_config.RemoveAlias(alias);
 		}
 
 		public virtual int BlockSize

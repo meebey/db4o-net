@@ -10,11 +10,11 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Config
 {
-	public class BaseConfigurationImpl : IBaseConfiguration
+	public class CommonConfigurationImpl : ICommonConfiguration
 	{
 		private readonly Config4Impl _config;
 
-		public BaseConfigurationImpl(Config4Impl config)
+		public CommonConfigurationImpl(Config4Impl config)
 		{
 			_config = config;
 		}
@@ -35,6 +35,16 @@ namespace Db4objects.Db4o.Internal.Config
 		public virtual void Add(IConfigurationItem configurationItem)
 		{
 			_config.Add(configurationItem);
+		}
+
+		public virtual void AddAlias(IAlias alias)
+		{
+			_config.AddAlias(alias);
+		}
+
+		public virtual void RemoveAlias(IAlias alias)
+		{
+			_config.RemoveAlias(alias);
 		}
 
 		public virtual bool AllowVersionUpdates

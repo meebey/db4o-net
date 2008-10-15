@@ -6,9 +6,11 @@ using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.CS.Config
 {
+	/// <summary>Configuration interface for db4o servers.</summary>
+	/// <remarks>Configuration interface for db4o servers.</remarks>
 	/// <since>7.5</since>
-	public interface IServerConfiguration : ILocalConfigurationProvider, INetworkingConfigurationProvider
-		, IBaseConfigurationProvider
+	public interface IServerConfiguration : IFileConfigurationProvider, INetworkingConfigurationProvider
+		, ICommonConfigurationProvider
 	{
 		/// <summary>sets the MessageRecipient to receive Client Server messages.</summary>
 		/// <remarks>

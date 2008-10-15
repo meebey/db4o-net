@@ -78,9 +78,9 @@ namespace Db4objects.Db4o
 		/// </summary>
 		/// <returns>a fresh, independent configuration with all options set to their default values
 		/// 	</returns>
-		[System.ObsoleteAttribute(@"Use")]
 		public static IConfiguration NewConfiguration()
 		{
+			// deprecated Use {@link Db4oEmbedded#newConfiguration()} instead
 			Config4Impl config = new Config4Impl();
 			Platform4.GetDefaultConfiguration(config);
 			return config;
@@ -151,6 +151,7 @@ namespace Db4objects.Db4o
 		/// password supplied for the connection is
 		/// invalid.
 		/// </exception>
+		[System.ObsoleteAttribute(@"Use")]
 		public static IObjectContainer OpenClient(string hostName, int port, string user, 
 			string password)
 		{
@@ -403,6 +404,7 @@ namespace Db4objects.Db4o
 		public static IObjectContainer OpenFile(IConfiguration config, string databaseFileName
 			)
 		{
+			// @deprecated Use {@link Db4oEmbedded#openFile(Configuration,String)} instead
 			return ObjectContainerFactory.OpenObjectContainer(config, databaseFileName);
 		}
 
@@ -479,6 +481,7 @@ namespace Db4objects.Db4o
 		/// </exception>
 		/// <exception cref="DatabaseReadOnlyException">database was configured as read-only.
 		/// 	</exception>
+		[System.ObsoleteAttribute(@"Use")]
 		public static IObjectServer OpenServer(string databaseFileName, int port)
 		{
 			return OpenServer(CloneConfiguration(), databaseFileName, port);

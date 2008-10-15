@@ -588,5 +588,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			return _server.InstanceCount(clazz, trans);
 		}
+
+		public virtual bool IsClient()
+		{
+			return true;
+		}
 	}
 }

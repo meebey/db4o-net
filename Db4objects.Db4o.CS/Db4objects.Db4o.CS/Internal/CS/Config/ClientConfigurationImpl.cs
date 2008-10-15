@@ -45,11 +45,11 @@ namespace Db4objects.Db4o.Internal.CS.Config
 			}
 		}
 
-		public virtual IBaseConfiguration Base
+		public virtual ICommonConfiguration Common
 		{
 			get
 			{
-				return new BaseConfigurationImpl(Legacy());
+				return new CommonConfigurationImpl(Legacy());
 			}
 		}
 	}

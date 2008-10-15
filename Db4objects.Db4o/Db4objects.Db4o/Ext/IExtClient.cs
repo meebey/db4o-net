@@ -46,6 +46,8 @@ namespace Db4objects.Db4o.Ext
 		/// are discarded during the switching process.<br /><br />
 		/// </remarks>
 		/// <param name="fileName">the fully qualified path of the requested database file.</param>
+		[System.ObsoleteAttribute(@"Switching to database files from clients is insecure because it  allows free access to any file on the server. It is no longer recommended to be used. Please open multiple servers instead, one server for each database file."
+			)]
 		void SwitchToFile(string fileName);
 
 		/// <summary>
@@ -59,6 +61,8 @@ namespace Db4objects.Db4o.Ext
 		/// All persistent references to objects that are currently in memory
 		/// are discarded during the switching process.<br /><br />
 		/// </remarks>
+		[System.ObsoleteAttribute(@"Switching database files from clients is insecure because it  allows free access to any file on the server. It is no longer recommended to be used. Please open multiple servers instead, one server for each database file."
+			)]
 		void SwitchToMainFile();
 
 		/// <summary>checks if the client is currently connected to a server.</summary>

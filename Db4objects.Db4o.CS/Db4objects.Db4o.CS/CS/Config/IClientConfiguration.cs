@@ -6,8 +6,10 @@ using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.CS.Config
 {
+	/// <summary>Configuration interface for db4o clients.</summary>
+	/// <remarks>Configuration interface for db4o clients.</remarks>
 	/// <since>7.5</since>
-	public interface IClientConfiguration : INetworkingConfigurationProvider, IBaseConfigurationProvider
+	public interface IClientConfiguration : INetworkingConfigurationProvider, ICommonConfigurationProvider
 	{
 		/// <summary>
 		/// Sets the number of IDs to be pre-allocated in the database for new

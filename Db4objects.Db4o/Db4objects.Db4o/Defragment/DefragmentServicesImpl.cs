@@ -314,6 +314,32 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
+		public virtual void RegisterBTreeIDs(BTree btree, IDMappingCollector collector)
+		{
+			collector.CreateIDMapping(this, btree.GetID(), false);
+			TraverseAllIndexSlots(btree, new _IVisitor4_236(this, collector));
+		}
+
+		private sealed class _IVisitor4_236 : IVisitor4
+		{
+			public _IVisitor4_236(DefragmentServicesImpl _enclosing, IDMappingCollector collector
+				)
+			{
+				this._enclosing = _enclosing;
+				this.collector = collector;
+			}
+
+			public void Visit(object obj)
+			{
+				int id = ((int)obj);
+				collector.CreateIDMapping(this._enclosing, id, false);
+			}
+
+			private readonly DefragmentServicesImpl _enclosing;
+
+			private readonly IDMappingCollector collector;
+		}
+
 		public virtual int DatabaseIdentityID(DefragmentServicesImpl.DbSelector selector)
 		{
 			LocalObjectContainer db = selector.Db(this);
@@ -416,16 +442,16 @@ namespace Db4objects.Db4o.Defragment
 			ClassMetadata curClazz = clazz;
 			while (!hasFieldIndex.value && curClazz != null)
 			{
-				curClazz.ForEachDeclaredField(new _IProcedure4_322(hasFieldIndex));
+				curClazz.ForEachDeclaredField(new _IProcedure4_332(hasFieldIndex));
 				curClazz = curClazz.GetAncestor();
 			}
 			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex.value));
 			return hasFieldIndex.value;
 		}
 
-		private sealed class _IProcedure4_322 : IProcedure4
+		private sealed class _IProcedure4_332 : IProcedure4
 		{
-			public _IProcedure4_322(BooleanByRef hasFieldIndex)
+			public _IProcedure4_332(BooleanByRef hasFieldIndex)
 			{
 				this.hasFieldIndex = hasFieldIndex;
 			}

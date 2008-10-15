@@ -850,17 +850,12 @@ namespace Db4objects.Db4o.Internal
 
 		private bool CheckAlive(IAspectVersionContext context)
 		{
-			return CheckAlive(context, true);
-		}
-
-		private bool CheckAlive(IAspectVersionContext context, bool doIncrement)
-		{
 			if (!CheckEnabled(context))
 			{
 				return false;
 			}
 			bool alive = Alive();
-			if (!alive && doIncrement)
+			if (!alive)
 			{
 				IncrementOffset((IReadBuffer)context);
 			}
@@ -1070,13 +1065,25 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object Read(IInternalReadContext context)
 		{
-			bool alive = CheckAlive((IAspectVersionContext)context, false);
-			if (!alive && !Updating())
+			if (!CanReadFromSlot((IAspectVersionContext)context))
 			{
 				IncrementOffset(context);
 				return null;
 			}
 			return context.Read(_handler);
+		}
+
+		private bool CanReadFromSlot(IAspectVersionContext context)
+		{
+			if (!Enabled(context))
+			{
+				return false;
+			}
+			if (Alive())
+			{
+				return true;
+			}
+			return _state != FieldMetadataState.NotLoaded;
 		}
 
 		/// <summary>never called but keep for Rickie</summary>
@@ -1163,13 +1170,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_947(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_951(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_947 : IVisitor4
+		private sealed class _IVisitor4_951 : IVisitor4
 		{
-			public _IVisitor4_947(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_951(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1386,13 +1393,13 @@ namespace Db4objects.Db4o.Internal
 		public override void DefragAspect(IDefragmentContext context)
 		{
 			ITypeHandler4 typeHandler = Handlers4.CorrectHandlerVersion(context, _handler);
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1108
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1112
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1108 : IClosure4
+		private sealed class _IClosure4_1112 : IClosure4
 		{
-			public _IClosure4_1108(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1112(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

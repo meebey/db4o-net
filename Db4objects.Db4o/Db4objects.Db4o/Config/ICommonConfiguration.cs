@@ -11,9 +11,83 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Config
 {
+	/// <summary>
+	/// Common configuration methods, applicable for
+	/// embedded, client and server use of db4o.<br /><br />
+	/// In Client/Server use it is good practice to configure the
+	/// client and the server in exactly the same way.
+	/// </summary>
+	/// <remarks>
+	/// Common configuration methods, applicable for
+	/// embedded, client and server use of db4o.<br /><br />
+	/// In Client/Server use it is good practice to configure the
+	/// client and the server in exactly the same way.
+	/// </remarks>
 	/// <since>7.5</since>
-	public interface IBaseConfiguration
+	public interface ICommonConfiguration
 	{
+		/// <summary>adds a new Alias for a class, namespace or package.</summary>
+		/// <remarks>
+		/// adds a new Alias for a class, namespace or package.
+		/// <br /><br />Aliases can be used to persist classes in the running
+		/// application to different persistent classes in a database file
+		/// or on a db4o server.
+		/// <br /><br />Two simple Alias implementations are supplied along with
+		/// db4o:<br />
+		/// -
+		/// <see cref="TypeAlias">TypeAlias</see>
+		/// provides an #equals() resolver to match
+		/// names directly.<br />
+		/// -
+		/// <see cref="WildcardAlias">WildcardAlias</see>
+		/// allows simple pattern matching
+		/// with one single '*' wildcard character.<br />
+		/// <br />
+		/// It is possible to create
+		/// own complex
+		/// <see cref="IAlias">IAlias</see>
+		/// constructs by creating own resolvers
+		/// that implement the
+		/// <see cref="IAlias">IAlias</see>
+		/// interface.
+		/// <br /><br />
+		/// Examples of concrete usecases:
+		/// <br /><br />
+		/// <code>
+		/// <b>// Creating an Alias for a single class</b><br />
+		/// Db4o.configure().addAlias(<br />
+		/// &#160;&#160;new TypeAlias("com.f1.Pilot", "com.f1.Driver"));<br />
+		/// <br /><br />
+		/// <b>// Accessing a .NET assembly from a Java package</b><br />
+		/// Db4o.configure().addAlias(<br />
+		/// &#160;&#160;new WildcardAlias(<br />
+		/// &#160;&#160;&#160;&#160;"Tutorial.F1.*, Tutorial",<br />
+		/// &#160;&#160;&#160;&#160;"com.f1.*"));<br />
+		/// <br /><br />
+		/// <b>// Mapping a Java package onto another</b><br />
+		/// Db4o.configure().addAlias(<br />
+		/// &#160;&#160;new WildcardAlias(<br />
+		/// &#160;&#160;&#160;&#160;"com.f1.*",<br />
+		/// &#160;&#160;&#160;&#160;"com.f1.client*"));<br /></code>
+		/// <br /><br />Aliases that translate the persistent name of a class to
+		/// a name that already exists as a persistent name in the database
+		/// (or on the server) are not permitted and will throw an exception
+		/// when the database file is opened.
+		/// <br /><br />Aliases should be configured before opening a database file
+		/// or connecting to a server.<br /><br />
+		/// In client/server environment this setting should be used on the client
+		/// and on the server side.
+		/// </remarks>
+		void AddAlias(IAlias alias);
+
+		/// <summary>
+		/// Removes an alias previously added with
+		/// <see cref="IConfiguration.AddAlias">IConfiguration.AddAlias</see>
+		/// .
+		/// </summary>
+		/// <param name="alias">the alias to remove</param>
+		void RemoveAlias(IAlias alias);
+
 		/// <summary>sets the activation depth to the specified value.</summary>
 		/// <remarks>
 		/// sets the activation depth to the specified value.
@@ -293,7 +367,8 @@ namespace Db4objects.Db4o.Config
 		/// detailed information).<br /><br />
 		/// </remarks>
 		/// <param name="level">integer from 0 to 3</param>
-		/// <seealso cref="#setOut">TODO: replace int with enumeration</seealso>
+		/// <seealso cref="ICommonConfiguration.OutStream">TODO: replace int with enumeration
+		/// 	</seealso>
 		int MessageLevel
 		{
 			set;
@@ -344,7 +419,7 @@ namespace Db4objects.Db4o.Config
 		/// boolean true if Native Queries will be optimized
 		/// dynamically.
 		/// </returns>
-		/// <seealso cref="IBaseConfiguration.OptimizeNativeQueries">IBaseConfiguration.OptimizeNativeQueries
+		/// <seealso cref="ICommonConfiguration.OptimizeNativeQueries">ICommonConfiguration.OptimizeNativeQueries
 		/// 	</seealso>
 		bool OptimizeNativeQueries
 		{
@@ -381,7 +456,7 @@ namespace Db4objects.Db4o.Config
 		/// to understand, how db4o works. The message level can be raised with
 		/// <see cref="IConfiguration.MessageLevel">IConfiguration.MessageLevel</see>
 		/// to produce more detailed messages.
-		/// <br /><br />Use <code>setOut(System.out)</code> to print messages to the
+		/// <br /><br />Use <code>outStream(System.out)</code> to print messages to the
 		/// console.<br /><br />
 		/// In client-server environment this setting should be used on the same side
 		/// where
@@ -389,7 +464,8 @@ namespace Db4objects.Db4o.Config
 		/// is used.<br /><br />
 		/// </summary>
 		/// <param name="outStream">the new <code>PrintStream</code> for messages.</param>
-		/// <seealso cref="IBaseConfiguration.MessageLevel">IBaseConfiguration.MessageLevel</seealso>
+		/// <seealso cref="ICommonConfiguration.MessageLevel">ICommonConfiguration.MessageLevel
+		/// 	</seealso>
 		TextWriter OutStream
 		{
 			set;

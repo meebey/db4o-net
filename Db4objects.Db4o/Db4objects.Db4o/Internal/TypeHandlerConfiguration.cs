@@ -50,15 +50,16 @@ namespace Db4objects.Db4o.Internal
 
 		private void RegisterListTypeHandlerFor(Type clazz)
 		{
-			RegisterTypeHandlerFor(_listTypeHandler, clazz);
+			RegisterTypeHandlerFor(clazz, _listTypeHandler);
 		}
 
 		private void RegisterMapTypeHandlerFor(Type clazz)
 		{
-			RegisterTypeHandlerFor(_mapTypeHandler, clazz);
+			RegisterTypeHandlerFor(clazz, _mapTypeHandler);
 		}
 
-		private void RegisterTypeHandlerFor(ITypeHandler4 typeHandler, Type clazz)
+		protected virtual void RegisterTypeHandlerFor(Type clazz, ITypeHandler4 typeHandler
+			)
 		{
 			_config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(clazz), typeHandler
 				);

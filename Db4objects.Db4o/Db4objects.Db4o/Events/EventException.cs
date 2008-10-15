@@ -8,14 +8,14 @@ namespace Db4objects.Db4o.Events
 	/// <summary>
 	/// db4o-specific exception.<br /><br />
 	/// Exception thrown during event dispatching if a client
-	/// provided event handler throws.&lt;br/&gt;&lt;br/&gt;
+	/// provided event handler throws.<br/><br/>
 	/// The exception threw by the client can be retrieved by
 	/// calling EventException#getCause().
 	/// </summary>
 	/// <remarks>
 	/// db4o-specific exception.<br /><br />
 	/// Exception thrown during event dispatching if a client
-	/// provided event handler throws.&lt;br/&gt;&lt;br/&gt;
+	/// provided event handler throws.<br/><br/>
 	/// The exception threw by the client can be retrieved by
 	/// calling EventException#getCause().
 	/// </remarks>

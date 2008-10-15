@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Activation
 	/// by Transparent Activation, when a request is received to
 	/// activate the host object.
 	/// </summary>
-	/// <seealso>&lt;a href="http://developer.db4o.com/resources/view.aspx/reference/Object_Lifecycle/Activation/Transparent_Activation_Framework"&gt;Transparent Activation framework.</a>
+	/// <seealso><a href="http://developer.db4o.com/resources/view.aspx/reference/Object_Lifecycle/Activation/Transparent_Activation_Framework">Transparent Activation framework.</a>
 	/// 	</seealso>
 	public interface IActivator
 	{

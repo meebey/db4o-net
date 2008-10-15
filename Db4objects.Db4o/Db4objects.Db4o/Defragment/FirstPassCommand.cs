@@ -1,12 +1,10 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
-using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Defragment
 {
@@ -23,35 +21,18 @@ namespace Db4objects.Db4o.Defragment
 	/// <exclude></exclude>
 	public sealed class FirstPassCommand : IPassCommand
 	{
-		private const int IdBatchSize = 4096;
-
-		private TreeInt _ids;
-
-		internal void Process(DefragmentServicesImpl context, int objectID, bool isClassID
-			)
-		{
-			if (BatchFull())
-			{
-				Flush(context);
-			}
-			_ids = TreeInt.Add(_ids, (isClassID ? -objectID : objectID));
-		}
-
-		private bool BatchFull()
-		{
-			return _ids != null && _ids.Size() == IdBatchSize;
-		}
+		private IDMappingCollector _collector = new IDMappingCollector();
 
 		public void ProcessClass(DefragmentServicesImpl context, ClassMetadata classMetadata
 			, int id, int classIndexID)
 		{
-			Process(context, id, true);
-			classMetadata.ForEachField(new _IProcedure4_37(this, context));
+			_collector.CreateIDMapping(context, id, true);
+			classMetadata.ForEachField(new _IProcedure4_23(this, context));
 		}
 
-		private sealed class _IProcedure4_37 : IProcedure4
+		private sealed class _IProcedure4_23 : IProcedure4
 		{
-			public _IProcedure4_37(FirstPassCommand _enclosing, DefragmentServicesImpl context
+			public _IProcedure4_23(FirstPassCommand _enclosing, DefragmentServicesImpl context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -75,72 +56,23 @@ namespace Db4objects.Db4o.Defragment
 		public void ProcessObjectSlot(DefragmentServicesImpl context, ClassMetadata yapClass
 			, int sourceID)
 		{
-			Process(context, sourceID, false);
+			_collector.CreateIDMapping(context, sourceID, false);
 		}
 
 		/// <exception cref="CorruptionException"></exception>
 		public void ProcessClassCollection(DefragmentServicesImpl context)
 		{
-			Process(context, context.SourceClassCollectionID(), false);
+			_collector.CreateIDMapping(context, context.SourceClassCollectionID(), false);
 		}
 
 		public void ProcessBTree(DefragmentServicesImpl context, BTree btree)
 		{
-			Process(context, btree.GetID(), false);
-			context.TraverseAllIndexSlots(btree, new _IVisitor4_57(this, context));
-		}
-
-		private sealed class _IVisitor4_57 : IVisitor4
-		{
-			public _IVisitor4_57(FirstPassCommand _enclosing, DefragmentServicesImpl context)
-			{
-				this._enclosing = _enclosing;
-				this.context = context;
-			}
-
-			public void Visit(object obj)
-			{
-				int id = ((int)obj);
-				this._enclosing.Process(context, id, false);
-			}
-
-			private readonly FirstPassCommand _enclosing;
-
-			private readonly DefragmentServicesImpl context;
+			context.RegisterBTreeIDs(btree, _collector);
 		}
 
 		public void Flush(DefragmentServicesImpl context)
 		{
-			if (_ids == null)
-			{
-				return;
-			}
-			int blockSize = context.BlockSize();
-			bool overlapping = (Const4.PointerLength % blockSize > 0);
-			int blocksPerPointer = Const4.PointerLength / blockSize;
-			if (overlapping)
-			{
-				blocksPerPointer++;
-			}
-			int bytesPerPointer = blocksPerPointer * blockSize;
-			int batchSize = _ids.Size() * bytesPerPointer;
-			Slot pointerSlot = context.AllocateTargetSlot(batchSize);
-			int pointerAddress = pointerSlot.Address();
-			IEnumerator idIter = new TreeKeyIterator(_ids);
-			while (idIter.MoveNext())
-			{
-				int objectID = ((int)idIter.Current);
-				bool isClassID = false;
-				if (objectID < 0)
-				{
-					objectID = -objectID;
-					isClassID = true;
-				}
-				// seen object ids don't come by here anymore - any other candidates?
-				context.MapIDs(objectID, pointerAddress, isClassID);
-				pointerAddress += blocksPerPointer;
-			}
-			_ids = null;
+			_collector.Flush(context);
 		}
 	}
 }

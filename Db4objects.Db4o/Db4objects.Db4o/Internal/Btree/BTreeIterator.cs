@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual void Reset()
 		{
+			throw new NotSupportedException();
 		}
-		// TODO Auto-generated method stub
 	}
 }

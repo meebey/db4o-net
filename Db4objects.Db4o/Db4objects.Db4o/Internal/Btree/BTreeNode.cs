@@ -699,7 +699,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return null;
 		}
 
-		private BTreePatch KeyPatch(Transaction trans, int index)
+		internal BTreePatch KeyPatch(Transaction trans, int index)
 		{
 			object obj = _keys[index];
 			if (obj is BTreePatch)
@@ -822,8 +822,38 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		public void Remove(Transaction trans, IPreparedComparison preparedComparison, object
-			 obj, int index)
+		public void Remove(Transaction trans, int index)
+		{
+			if (!_isLeaf)
+			{
+				throw new InvalidOperationException();
+			}
+			PrepareWrite(trans);
+			object obj = null;
+			BTreePatch patch = KeyPatch(index);
+			if (patch == null)
+			{
+				obj = _keys[index];
+			}
+			else
+			{
+				BTreePatch transPatch = patch.ForTransaction(trans);
+				if (transPatch != null)
+				{
+					obj = transPatch.GetObject();
+				}
+				else
+				{
+					// There could be more than one patch with different object
+					// identities. We have no means to determine a "best" object 
+					// so we just take any one. Could be problematic.
+					obj = patch.GetObject();
+				}
+			}
+			Remove(trans, obj, index);
+		}
+
+		public bool Remove(Transaction trans, object obj, int index)
 		{
 			if (!_isLeaf)
 			{
@@ -836,7 +866,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				_keys[index] = ApplyNewRemovePatch(trans, obj);
 				KeyChanged(trans, index);
-				return;
+				return true;
 			}
 			BTreePatch transPatch = patch.ForTransaction(trans);
 			if (transPatch != null)
@@ -844,14 +874,14 @@ namespace Db4objects.Db4o.Internal.Btree
 				if (transPatch.IsAdd())
 				{
 					CancelAdding(trans, index);
-					return;
+					return true;
 				}
 				if (transPatch.IsCancelledRemoval())
 				{
 					BTreeRemove removePatch = ApplyNewRemovePatch(trans, transPatch.GetObject());
 					_keys[index] = ((BTreeUpdate)patch).ReplacePatch(transPatch, removePatch);
 					KeyChanged(trans, index);
-					return;
+					return true;
 				}
 			}
 			else
@@ -861,8 +891,18 @@ namespace Db4objects.Db4o.Internal.Btree
 				if (!patch.IsAdd())
 				{
 					((BTreeUpdate)patch).Append(ApplyNewRemovePatch(trans, obj));
-					return;
+					return true;
 				}
+			}
+			return false;
+		}
+
+		public void Remove(Transaction trans, IPreparedComparison preparedComparison, object
+			 obj, int index)
+		{
+			if (Remove(trans, obj, index))
+			{
+				return;
 			}
 			// now we try if removal is OK for the next element in this node
 			if (index != LastIndex())

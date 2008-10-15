@@ -26,19 +26,19 @@ namespace Db4objects.Db4o.Internal.CS.Config
 			}
 		}
 
-		public virtual ILocalConfiguration Local
+		public virtual IFileConfiguration File
 		{
 			get
 			{
-				return new LocalConfigurationImpl(Legacy());
+				return new FileConfigurationImpl(Legacy());
 			}
 		}
 
-		public virtual IBaseConfiguration Base
+		public virtual ICommonConfiguration Common
 		{
 			get
 			{
-				return new BaseConfigurationImpl(Legacy());
+				return new CommonConfigurationImpl(Legacy());
 			}
 		}
 	}

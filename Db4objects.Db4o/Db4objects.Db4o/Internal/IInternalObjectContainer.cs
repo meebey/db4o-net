@@ -38,5 +38,7 @@ namespace Db4objects.Db4o.Internal
 
 		int InstanceCount(ClassMetadata clazz, Db4objects.Db4o.Internal.Transaction trans
 			);
+
+		bool IsClient();
 	}
 }

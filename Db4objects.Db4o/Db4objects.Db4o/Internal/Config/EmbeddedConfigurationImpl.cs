@@ -15,19 +15,19 @@ namespace Db4objects.Db4o.Internal.Config
 			_legacy = (Config4Impl)legacy;
 		}
 
-		public virtual ILocalConfiguration Local
+		public virtual IFileConfiguration File
 		{
 			get
 			{
-				return new LocalConfigurationImpl(_legacy);
+				return new FileConfigurationImpl(_legacy);
 			}
 		}
 
-		public virtual IBaseConfiguration Base
+		public virtual ICommonConfiguration Common
 		{
 			get
 			{
-				return new BaseConfigurationImpl(_legacy);
+				return new CommonConfigurationImpl(_legacy);
 			}
 		}
 

@@ -1370,13 +1370,13 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <summary>
-		/// overridden in YapClient
-		/// This method will make it easier to refactor than
+		/// overridden in ClientObjectContainer
+		/// The method allows checking whether will make it easier to refactor than
 		/// an "instanceof YapClient" check.
 		/// </summary>
 		/// <remarks>
-		/// overridden in YapClient
-		/// This method will make it easier to refactor than
+		/// overridden in ClientObjectContainer
+		/// The method allows checking whether will make it easier to refactor than
 		/// an "instanceof YapClient" check.
 		/// </remarks>
 		public virtual bool IsClient()
