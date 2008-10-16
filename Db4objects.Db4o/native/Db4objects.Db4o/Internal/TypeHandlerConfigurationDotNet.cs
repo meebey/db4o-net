@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Db4objects.Db4o.Internal.Collections;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Net;
 using Db4objects.Db4o.Typehandlers;
@@ -12,22 +13,27 @@ namespace Db4objects.Db4o.Internal
         {
             ListTypeHandler(new CollectionTypeHandler());
             MapTypeHandler(new MapTypeHandler());
-
         }
 
         public override void Apply()
         {
             RegisterCollection(typeof(System.Collections.ArrayList));
             RegisterGenericTypeHandlers();
+			RegisterBigSetTypeHandler();
         }
 
-        private void RegisterGenericTypeHandlers()
+    	private void RegisterBigSetTypeHandler()
+    	{
+    		RegisterGenericTypeHandler(typeof(BigSet<>), new BigSetTypeHandler());
+    	}
+
+    	private void RegisterGenericTypeHandlers()
         {
 			GenericCollectionTypeHandler collectionHandler = new GenericCollectionTypeHandler();
-			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(List<>)), collectionHandler);
-			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(LinkedList<>)), collectionHandler);
-			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Stack<>)), collectionHandler);
-			_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(typeof(Queue<>)), collectionHandler);
+        	RegisterGenericTypeHandler(typeof(List<>), collectionHandler);
+			RegisterGenericTypeHandler(typeof(LinkedList<>), collectionHandler);
+			RegisterGenericTypeHandler(typeof(Stack<>), collectionHandler);
+			RegisterGenericTypeHandler(typeof(Queue<>), collectionHandler);
 
 			System.Type[] dictionaryTypes = new Type[] {
 				typeof(Dictionary<,>),
@@ -40,7 +46,12 @@ namespace Db4objects.Db4o.Internal
 
         }
 
-        internal class GenericTypeHandlerPredicate : ITypeHandlerPredicate
+    	private void RegisterGenericTypeHandler(Type genericTypeDefinition, ITypeHandler4 handler)
+    	{
+    		_config.RegisterTypeHandler(new GenericTypeHandlerPredicate(genericTypeDefinition), handler);
+    	}
+
+    	internal class GenericTypeHandlerPredicate : ITypeHandlerPredicate
         {
             private readonly Type[] _genericTypes;
 

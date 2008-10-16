@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Db4objects.Db4o.Collections;
 
 namespace Db4objects.Db4o.Internal.Collections
 {
@@ -45,6 +46,35 @@ namespace Db4objects.Db4o.Internal.Collections
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return ((IEnumerable<E>)this).GetEnumerator();
+		}
+
+		#endregion
+
+		#region Implementation of ISet<E>
+
+		bool ISet<E>.RemoveAll(IEnumerable<E> es)
+		{
+			bool result = false;
+			foreach (E e in es)
+			{
+				if (Remove(e))
+				{
+					result = true;
+				}
+			}
+			return result;
+		}
+
+		bool ISet<E>.ContainsAll(IEnumerable<E> es)
+		{
+			foreach (E e in es)
+			{
+				if (!Contains(e))
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 
 		#endregion
