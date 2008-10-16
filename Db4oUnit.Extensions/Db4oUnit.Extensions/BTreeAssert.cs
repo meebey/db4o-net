@@ -77,15 +77,7 @@ namespace Db4oUnit.Extensions
 		public static BTree CreateIntKeyBTree(ObjectContainerBase stream, int id, int nodeSize
 			)
 		{
-			return new BTree(stream.SystemTransaction(), id, new IntHandler(), nodeSize, stream
-				.ConfigImpl().BTreeCacheHeight());
-		}
-
-		public static BTree CreateIntKeyBTree(ObjectContainerBase stream, int id, int treeCacheHeight
-			, int nodeSize)
-		{
-			return new BTree(stream.SystemTransaction(), id, new IntHandler(), nodeSize, treeCacheHeight
-				);
+			return new BTree(stream.SystemTransaction(), id, new IntHandler(), nodeSize);
 		}
 
 		public static void AssertSingleElement(Transaction trans, BTree btree, object element
@@ -119,14 +111,14 @@ namespace Db4oUnit.Extensions
 			LocalObjectContainer container = (LocalObjectContainer)trans.Container();
 			Collection4 freedSlots = new Collection4();
 			container.InstallDebugFreespaceManager(new FreespaceManagerForDebug(container, new 
-				_ISlotListener_99(freedSlots, container)));
+				_ISlotListener_95(freedSlots, container)));
 			block.Run();
 			Assert.IsTrue(freedSlots.ContainsAll(allSlots.GetEnumerator()));
 		}
 
-		private sealed class _ISlotListener_99 : ISlotListener
+		private sealed class _ISlotListener_95 : ISlotListener
 		{
-			public _ISlotListener_99(Collection4 freedSlots, LocalObjectContainer container)
+			public _ISlotListener_95(Collection4 freedSlots, LocalObjectContainer container)
 			{
 				this.freedSlots = freedSlots;
 				this.container = container;

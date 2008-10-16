@@ -134,13 +134,13 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			ExpectingVisitor visitor = ExpectingVisitor.CreateExpectingVisitor(expectedValues
 				);
-			treeInt.Traverse(new _IVisitor4_117(visitor));
+			treeInt.Traverse(new _IVisitor4_116(visitor));
 			visitor.AssertExpectations();
 		}
 
-		private sealed class _IVisitor4_117 : IVisitor4
+		private sealed class _IVisitor4_116 : IVisitor4
 		{
-			public _IVisitor4_117(ExpectingVisitor visitor)
+			public _IVisitor4_116(ExpectingVisitor visitor)
 			{
 				this.visitor = visitor;
 			}

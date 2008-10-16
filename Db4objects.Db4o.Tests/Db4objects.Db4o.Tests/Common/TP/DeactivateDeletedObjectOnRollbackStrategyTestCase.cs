@@ -17,12 +17,12 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
-			config.Add(new TransparentPersistenceSupport(new _IRollbackStrategy_23()));
+			config.Add(new TransparentPersistenceSupport(new _IRollbackStrategy_21()));
 		}
 
-		private sealed class _IRollbackStrategy_23 : IRollbackStrategy
+		private sealed class _IRollbackStrategy_21 : IRollbackStrategy
 		{
-			public _IRollbackStrategy_23()
+			public _IRollbackStrategy_21()
 			{
 			}
 

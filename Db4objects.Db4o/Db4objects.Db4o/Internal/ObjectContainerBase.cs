@@ -1862,11 +1862,11 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="DatabaseReadOnlyException"></exception>
-		public void Store(Transaction trans, object obj, int depth)
+		public int Store(Transaction trans, object obj, int depth)
 		{
 			lock (_lock)
 			{
-				StoreInternal(trans, obj, depth, true);
+				return StoreInternal(trans, obj, depth, true);
 			}
 		}
 

@@ -21,12 +21,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			{
 				return;
 			}
-			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_20(this));
+			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_17(this));
 		}
 
-		private sealed class _ICodeBlock_20 : ICodeBlock
+		private sealed class _ICodeBlock_17 : ICodeBlock
 		{
-			public _ICodeBlock_20(DeleteEventOnClient _enclosing)
+			public _ICodeBlock_17(DeleteEventOnClient _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -35,12 +35,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			public void Run()
 			{
 				this._enclosing.EventRegistry().Deleting += new Db4objects.Db4o.Events.CancellableObjectEventHandler
-					(new _IEventListener4_22().OnEvent);
+					(new _IEventListener4_19().OnEvent);
 			}
 
-			private sealed class _IEventListener4_22
+			private sealed class _IEventListener4_19
 			{
-				public _IEventListener4_22()
+				public _IEventListener4_19()
 				{
 				}
 
@@ -59,12 +59,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			{
 				return;
 			}
-			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_33(this));
+			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_30(this));
 		}
 
-		private sealed class _ICodeBlock_33 : ICodeBlock
+		private sealed class _ICodeBlock_30 : ICodeBlock
 		{
-			public _ICodeBlock_33(DeleteEventOnClient _enclosing)
+			public _ICodeBlock_30(DeleteEventOnClient _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -73,12 +73,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			public void Run()
 			{
 				this._enclosing.EventRegistry().Deleted += new Db4objects.Db4o.Events.ObjectEventHandler
-					(new _IEventListener4_35().OnEvent);
+					(new _IEventListener4_32().OnEvent);
 			}
 
-			private sealed class _IEventListener4_35
+			private sealed class _IEventListener4_32
 			{
-				public _IEventListener4_35()
+				public _IEventListener4_32()
 				{
 				}
 

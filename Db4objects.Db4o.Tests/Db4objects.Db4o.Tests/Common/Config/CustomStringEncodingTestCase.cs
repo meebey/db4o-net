@@ -13,12 +13,12 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			config.StringEncoding(new _IStringEncoding_13());
+			config.StringEncoding(new _IStringEncoding_12());
 		}
 
-		private sealed class _IStringEncoding_13 : IStringEncoding
+		private sealed class _IStringEncoding_12 : IStringEncoding
 		{
-			public _IStringEncoding_13()
+			public _IStringEncoding_12()
 			{
 			}
 

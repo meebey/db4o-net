@@ -23,12 +23,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		protected override void ConfigureForTest(IConfiguration config)
 		{
 			ConfigureForStore(config);
-			config.Diagnostic().AddListener(new _IDiagnosticListener_27(this));
+			config.Diagnostic().AddListener(new _IDiagnosticListener_24(this));
 		}
 
-		private sealed class _IDiagnosticListener_27 : IDiagnosticListener
+		private sealed class _IDiagnosticListener_24 : IDiagnosticListener
 		{
-			public _IDiagnosticListener_27(CascadedDeleteFileFormatUpdateTestCase _enclosing)
+			public _IDiagnosticListener_24(CascadedDeleteFileFormatUpdateTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

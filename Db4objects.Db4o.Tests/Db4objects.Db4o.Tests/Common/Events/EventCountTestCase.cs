@@ -107,20 +107,20 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				);
 			// No dedicated IncrementListener class due to sharpen event semantics
 			deletionEventRegistry.Deleted += new Db4objects.Db4o.Events.ObjectEventHandler(new 
-				_IEventListener4_104(this).OnEvent);
-			eventRegistry.Activated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_109
+				_IEventListener4_98(this).OnEvent);
+			eventRegistry.Activated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_103
 				(this).OnEvent);
-			eventRegistry.Committed += new Db4objects.Db4o.Events.CommitEventHandler(new _IEventListener4_114
+			eventRegistry.Committed += new Db4objects.Db4o.Events.CommitEventHandler(new _IEventListener4_108
 				(this).OnEvent);
-			eventRegistry.Created += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_119
+			eventRegistry.Created += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_113
 				(this).OnEvent);
-			eventRegistry.Updated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_124
+			eventRegistry.Updated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_118
 				(this).OnEvent);
 		}
 
-		private sealed class _IEventListener4_104
+		private sealed class _IEventListener4_98
 		{
-			public _IEventListener4_104(EventCountTestCase _enclosing)
+			public _IEventListener4_98(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -133,9 +133,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_109
+		private sealed class _IEventListener4_103
 		{
-			public _IEventListener4_109(EventCountTestCase _enclosing)
+			public _IEventListener4_103(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -148,9 +148,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_114
+		private sealed class _IEventListener4_108
 		{
-			public _IEventListener4_114(EventCountTestCase _enclosing)
+			public _IEventListener4_108(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -163,9 +163,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_119
+		private sealed class _IEventListener4_113
 		{
-			public _IEventListener4_119(EventCountTestCase _enclosing)
+			public _IEventListener4_113(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -178,9 +178,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_124
+		private sealed class _IEventListener4_118
 		{
-			public _IEventListener4_124(EventCountTestCase _enclosing)
+			public _IEventListener4_118(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

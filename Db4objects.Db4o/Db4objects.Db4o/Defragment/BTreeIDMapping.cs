@@ -49,12 +49,10 @@ namespace Db4objects.Db4o.Defragment
 		/// </remarks>
 		/// <param name="fileName">The location where the BTree file should be created.</param>
 		/// <param name="nodeSize">The size of a BTree node</param>
-		/// <param name="cacheHeight">The height of the BTree node cache</param>
 		/// <param name="commitFrequency">The number of inserts after which a commit should be issued (&lt;=0: never commit)
 		/// 	</param>
-		public BTreeIDMapping(string fileName, int nodeSize, int cacheHeight, int commitFrequency
-			) : this(fileName, new BTreeIDMapping.BTreeSpec(nodeSize, cacheHeight), commitFrequency
-			)
+		public BTreeIDMapping(string fileName, int nodeSize, int commitFrequency) : this(
+			fileName, new BTreeIDMapping.BTreeSpec(nodeSize), commitFrequency)
 		{
 		}
 
@@ -125,7 +123,7 @@ namespace Db4objects.Db4o.Defragment
 			_mappingDb = DefragmentServicesImpl.FreshYapFile(_fileName, 1);
 			IIndexable4 handler = new MappedIDPairHandler();
 			_idTree = (_treeSpec == null ? new BTree(Trans(), 0, handler) : new BTree(Trans()
-				, 0, handler, _treeSpec.NodeSize(), _treeSpec.CacheHeight()));
+				, 0, handler, _treeSpec.NodeSize()));
 		}
 
 		public override void Close()
@@ -142,22 +140,14 @@ namespace Db4objects.Db4o.Defragment
 		{
 			private int _nodeSize;
 
-			private int _cacheHeight;
-
-			public BTreeSpec(int nodeSize, int cacheHeight)
+			public BTreeSpec(int nodeSize)
 			{
 				_nodeSize = nodeSize;
-				_cacheHeight = cacheHeight;
 			}
 
 			public virtual int NodeSize()
 			{
 				return _nodeSize;
-			}
-
-			public virtual int CacheHeight()
-			{
-				return _cacheHeight;
 			}
 		}
 	}

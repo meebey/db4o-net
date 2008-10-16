@@ -45,8 +45,6 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec BtreeNodeSizeKey = new KeySpec(119);
 
-		private static readonly KeySpec BtreeCacheHeightKey = new KeySpec(1);
-
 		private static readonly KeySpec CallbacksKey = new KeySpec(true);
 
 		private static readonly KeySpec CallConstructorsKey = new KeySpec(TernaryBool.Unspecified
@@ -59,9 +57,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
-		private sealed class _IDeferred_66 : KeySpec.IDeferred
+		private sealed class _IDeferred_64 : KeySpec.IDeferred
 		{
-			public _IDeferred_66()
+			public _IDeferred_64()
 			{
 			}
 
@@ -72,7 +70,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_66
+		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_64
 			());
 
 		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
@@ -194,7 +192,6 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// FIXME: circular cs dependancy. Improve.
-		// FIXME: won't work, because we need the assembly name for .NET
 		public void ActivationDepth(int depth)
 		{
 			_config.Put(ActivationDepthKey, depth);
@@ -283,7 +280,6 @@ namespace Db4objects.Db4o.Internal
 
 		public void BTreeCacheHeight(int height)
 		{
-			_config.Put(BtreeCacheHeightKey, height);
 		}
 
 		public void Callbacks(bool turnOn)
@@ -843,11 +839,6 @@ namespace Db4objects.Db4o.Internal
 		public int BTreeNodeSize()
 		{
 			return _config.GetAsInt(BtreeNodeSizeKey);
-		}
-
-		public int BTreeCacheHeight()
-		{
-			return _config.GetAsInt(BtreeCacheHeightKey);
 		}
 
 		public string BlobPath()

@@ -15,6 +15,7 @@ namespace Db4objects.Db4o.Tests
 //			return new AllTests().RunSolo();
 //			return new AllTests().RunClientServer();
 //			return new AllTestsConcurrency().RunConcurrencyAll();
+//			return new Jre12.Collections.BigSetTestCase().RunAll();
 		    return new AllTests().RunAll();
 #endif
 		}

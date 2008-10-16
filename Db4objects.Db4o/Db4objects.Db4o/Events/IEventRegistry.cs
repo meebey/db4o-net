@@ -120,6 +120,9 @@ namespace Db4objects.Db4o.Events
 		/// <see cref="CancellableObjectEventArgs">CancellableObjectEventArgs</see>
 		/// event parameter. The action can be cancelled using
 		/// <see cref="CancellableObjectEventArgs.Cancel">CancellableObjectEventArgs.Cancel</see>
+		/// <br /><br />
+		/// Note, that this event is not available in networked client/server
+		/// mode and will throw an exception when attached to a client ObjectContainer.
 		/// </remarks>
 		/// <returns>event</returns>
 		/// <seealso cref="CancellableObjectEventArgs">CancellableObjectEventArgs</seealso>
@@ -189,7 +192,9 @@ namespace Db4objects.Db4o.Events
 		/// <see cref="ObjectEventArgs">ObjectEventArgs</see>
 		/// event parameter.<br /><br />
 		/// The event can be used to trigger some post-deletion
-		/// functionality.
+		/// functionality.<br /><br />
+		/// Note, that this event is not available in networked client/server
+		/// mode and will throw an exception when attached to a client ObjectContainer.
 		/// </remarks>
 		/// <returns>event</returns>
 		/// <seealso cref="ObjectEventArgs">ObjectEventArgs</seealso>

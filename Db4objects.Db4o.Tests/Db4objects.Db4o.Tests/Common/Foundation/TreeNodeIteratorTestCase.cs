@@ -46,12 +46,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		{
 			Tree tree = CreateTree(Values);
 			IEnumerator i = new TreeNodeIterator(tree);
-			tree.Traverse(new _IVisitor4_47(i));
+			tree.Traverse(new _IVisitor4_42(i));
 		}
 
-		private sealed class _IVisitor4_47 : IVisitor4
+		private sealed class _IVisitor4_42 : IVisitor4
 		{
-			public _IVisitor4_47(IEnumerator i)
+			public _IVisitor4_42(IEnumerator i)
 			{
 				this.i = i;
 			}

@@ -32,12 +32,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public virtual void TestInterleavedCommits()
 		{
-			AssertReplyBehavior(new _IClientWaitLogic_32());
+			AssertReplyBehavior(new _IClientWaitLogic_30());
 		}
 
-		private sealed class _IClientWaitLogic_32 : ServerToClientTestCase.IClientWaitLogic
+		private sealed class _IClientWaitLogic_30 : ServerToClientTestCase.IClientWaitLogic
 		{
-			public _IClientWaitLogic_32()
+			public _IClientWaitLogic_30()
 			{
 			}
 

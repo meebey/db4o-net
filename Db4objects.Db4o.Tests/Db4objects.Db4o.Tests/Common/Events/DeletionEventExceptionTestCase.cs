@@ -24,11 +24,11 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		public virtual void TestDeletionEvents()
 		{
 			ServerEventRegistry().Deleting += new Db4objects.Db4o.Events.CancellableObjectEventHandler
-				(new _IEventListener4_26().OnEvent);
+				(new _IEventListener4_22().OnEvent);
 			object item = RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item));
 			if (IsMTOC())
 			{
-				Assert.Expect(typeof(EventException), new _ICodeBlock_33(this, item));
+				Assert.Expect(typeof(EventException), new _ICodeBlock_29(this, item));
 			}
 			else
 			{
@@ -37,9 +37,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			Db().Commit();
 		}
 
-		private sealed class _IEventListener4_26
+		private sealed class _IEventListener4_22
 		{
-			public _IEventListener4_26()
+			public _IEventListener4_22()
 			{
 			}
 
@@ -50,9 +50,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			}
 		}
 
-		private sealed class _ICodeBlock_33 : ICodeBlock
+		private sealed class _ICodeBlock_29 : ICodeBlock
 		{
-			public _ICodeBlock_33(DeletionEventExceptionTestCase _enclosing, object item)
+			public _ICodeBlock_29(DeletionEventExceptionTestCase _enclosing, object item)
 			{
 				this._enclosing = _enclosing;
 				this.item = item;

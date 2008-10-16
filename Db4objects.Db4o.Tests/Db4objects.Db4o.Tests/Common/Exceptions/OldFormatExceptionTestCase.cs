@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				)));
 			Db4oFactory.Configure().AllowVersionUpdates(false);
 			string oldDatabaseFilePath = OldDatabaseFilePath();
-			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_44(oldDatabaseFilePath)
+			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_43(oldDatabaseFilePath)
 				);
 			Db4oFactory.Configure().AllowVersionUpdates(true);
 			IObjectContainer container = null;
@@ -58,9 +58,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
-		private sealed class _ICodeBlock_44 : ICodeBlock
+		private sealed class _ICodeBlock_43 : ICodeBlock
 		{
-			public _ICodeBlock_44(string oldDatabaseFilePath)
+			public _ICodeBlock_43(string oldDatabaseFilePath)
 			{
 				this.oldDatabaseFilePath = oldDatabaseFilePath;
 			}

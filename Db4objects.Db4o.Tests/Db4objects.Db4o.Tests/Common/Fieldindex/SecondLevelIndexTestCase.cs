@@ -65,12 +65,12 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		/// <exception cref="Exception"></exception>
 		protected override void Db4oTearDownBeforeClean()
 		{
-			Fixture().ConfigureAtRuntime(new _IRuntimeConfigureAction_56());
+			Fixture().ConfigureAtRuntime(new _IRuntimeConfigureAction_54());
 		}
 
-		private sealed class _IRuntimeConfigureAction_56 : IRuntimeConfigureAction
+		private sealed class _IRuntimeConfigureAction_54 : IRuntimeConfigureAction
 		{
-			public _IRuntimeConfigureAction_56()
+			public _IRuntimeConfigureAction_54()
 			{
 			}
 

@@ -33,12 +33,12 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 			Db4oFactory.Configure().AllowVersionUpdates(false);
 			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(COR234TestCase
 				)));
-			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_37(this));
+			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_34(this));
 		}
 
-		private sealed class _ICodeBlock_37 : ICodeBlock
+		private sealed class _ICodeBlock_34 : ICodeBlock
 		{
-			public _ICodeBlock_37(COR234TestCase _enclosing)
+			public _ICodeBlock_34(COR234TestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
