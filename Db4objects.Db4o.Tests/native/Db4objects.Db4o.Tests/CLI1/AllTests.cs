@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(CsDelegate),
 					typeof(CsDisposableTestCase),
 					typeof(CsEnum),
-					typeof(CsEvaluationDelegate),
+					// typeof(CsEvaluationDelegate),  moved to Staging because it fails
 					typeof(CsMarshalByRef),
 					typeof(CsType),
 					typeof(CsStructs),

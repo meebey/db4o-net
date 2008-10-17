@@ -28,6 +28,10 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Tests.NativeQueries.Diagnostics;
 
+public class Item {
+
+}
+
 public class TestNQOptimizerLoadFailure : MarshalByRefObject, INQTestRunner
 {
     public bool Run()
@@ -39,7 +43,7 @@ public class TestNQOptimizerLoadFailure : MarshalByRefObject, INQTestRunner
 		string databaseFile = Path.GetTempFileName();
         using(IObjectContainer db = Db4oFactory.OpenFile(databaseFile))
         {
-            db.Set(new Object());
+            db.Set(new Item());
             db.Query<Object>(delegate { return true; });
         }
 

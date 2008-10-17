@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
@@ -154,7 +155,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
             AssertItem(objectContainer, (Item<string, string>)values[1], stringDictionary1(), stringDictionary2(), simpleItemDictionary1());
 
             //TODO: Enable after fixing nullable array handling.
-            //AssertItem((Item<int?, int?>)values[2], nullableIntDictionary1(), stringDictionary1(), simpleItemDictionary1());
+            // AssertItem(objectContainer, (Item<int?, int?>)values[2], nullableIntDictionary1(), stringDictionary1(), simpleItemDictionary1());
         }
 
         private void AssertItem<T, R>(IExtObjectContainer objectContainer, Item<T,T> tba, IDictionary<T,T> dictionary, IDictionary<R,R> untypedGenericList, IDictionary<SimpleItem, SimpleItem> simpleItemDictionary)
@@ -237,6 +238,21 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
             }
         }
 
+        protected override void ConfigureForTest(IConfiguration config)
+        {
+            if(Db4oMajorVersion() > 7)
+            {
+                return;
+            }
+            if(Db4oMajorVersion() == 7)
+            {
+                if(Db4oMinorVersion() > 5)
+                {
+                    return;
+                }
+            }
+            config.ExceptionsOnNotStorable(false);
+        }
 
     }
 }
