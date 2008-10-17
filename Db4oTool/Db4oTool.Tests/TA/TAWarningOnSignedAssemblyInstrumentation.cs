@@ -107,7 +107,7 @@ namespace Db4oTool.Tests.TA
 			return "\"" + path + "\"";
 		}
 
-		private const string ResourceName = "TADoubleInstrumentationSubject";
+		private const string ResourceName = "TASignedAssemblySubject";
 	}
 
 	internal class TraceListener : System.Diagnostics.TraceListener

@@ -2,8 +2,8 @@ class InstrumentedType
 {
     public void InstrumentedMethod()
     {   
-        System.Console.WriteLine(value);
+//        System.Console.WriteLine(value);
     }
 
-    private int value = 10;
+//    private int value = 10;
 }

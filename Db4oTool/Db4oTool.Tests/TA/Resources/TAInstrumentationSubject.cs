@@ -356,8 +356,38 @@ class GotoSubject
 	}
 }
 
+class ActivatableInheritedFromNonActivatable : NonActivatableBaseClass
+{
+	override public string ToString()
+	{
+		return base.ToString();
+	}
+
+	override public bool Equals(object o)
+	{
+		NonActivatableBaseClass other = o as NonActivatableBaseClass;
+		return name == other.name;
+	}
+}
+
 class TAInstrumentationSubject : ITestCase
 {
+	public void _TestActivatableInheritedFromNonActivatableCallingSuper()
+	{
+		ActivatableInheritedFromNonActivatable subject = new ActivatableInheritedFromNonActivatable();
+		MockActivator a = ActivatorFor(subject);
+		subject.ToString();
+		Assert.AreEqual(1, a.ReadCount);
+	}
+
+	public void _TestActivatableInheritedFromNonActivatableAccessingSuperField()
+	{
+		ActivatableInheritedFromNonActivatable subject = new ActivatableInheritedFromNonActivatable();
+		MockActivator a = ActivatorFor(subject);
+		Assert.IsTrue(subject.Equals(subject));
+		Assert.AreEqual(2, a.ReadCount);
+	}
+
 	public void TestGoto()
 	{
 		Activity activity = new Activity();

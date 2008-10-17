@@ -28,10 +28,10 @@ namespace Db4oTool.Tests.TA
 	{
 		protected override Type[] TestCases()
 		{
-			//return new Type[]
-			//        {
-			//            typeof(TAWarningOnSignedAssemblyInstrumentation),
-			//        };
+//			return new Type[]
+//			        {
+//			            typeof(TAInstrumentationTestCase),
+//			        };
 
 			return new Type[]
 				{

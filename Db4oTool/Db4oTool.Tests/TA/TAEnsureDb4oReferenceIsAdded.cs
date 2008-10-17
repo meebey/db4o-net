@@ -28,7 +28,7 @@ namespace Db4oTool.Tests.TA
 	{
 		public void Test()
 		{
-			AssemblyDefinition assembly = GenerateAssembly("TADoubleInstrumentationSubject");
+			AssemblyDefinition assembly = GenerateAssembly("Db4oReferenceSubject");
 
 			Assert.IsFalse(FindDb4oReference(assembly), "Db4o is already referenced");
 

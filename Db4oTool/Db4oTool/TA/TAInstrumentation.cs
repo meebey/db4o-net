@@ -110,7 +110,7 @@ namespace Db4oTool.TA
 			if (type.Name == "<Module>") return false;
 			if (IsDelegate(type)) return false;
 			if (ByAttributeFilter.ContainsCustomAttribute(type, CompilerGeneratedAttribute)) return false;
-			if (!HasSerializableFields(type)) return false;
+			if (!HasSerializableFields(type) && type.BaseType.FullName == "System.Object") return false;
 			return true;
 		}
 
@@ -122,13 +122,8 @@ namespace Db4oTool.TA
 		private bool HasSerializableFields(TypeDefinition type)
 		{
 			foreach (FieldDefinition field in type.Fields)
-			{
 				if (IsSerializable(field))
-				{
 					return true;
-				}
-			}
-
 			return false;
 		}
 
@@ -325,19 +320,17 @@ namespace Db4oTool.TA
 
 		private bool IsActivatableField(FieldReference field)
 		{
-			if (field.Name.Contains("$")) return false;
+			if (DeclaredInNonActivatableType(field))
+				return false;
 
-			TypeDefinition declaringType = ResolveTypeReference(field.DeclaringType);
-			if (declaringType == null) return false;
+			return IsActivatableFieldType(field.FieldType);
+		}
 
-            if (IsTransient(declaringType, field)) return false;
-			if (!Accept(declaringType)) return false;
+		private bool IsActivatableFieldType(TypeReference fieldTypeRef)
+		{
+			if (IsPointer(fieldTypeRef)) return false;
 
-			if (!ImplementsActivatable(declaringType)) return false;
-
-			if (IsPointer(field.FieldType)) return false;
-
-			TypeDefinition fieldType = ResolveTypeReference(field.FieldType);
+			TypeDefinition fieldType = ResolveTypeReference(fieldTypeRef);
 			if (null == fieldType)
 			{	
 				// we dont know the field type but it doesn't hurt
@@ -346,6 +339,18 @@ namespace Db4oTool.TA
 				return true;
 			}
 			return !IsDelegate(fieldType);
+		}
+
+		private bool DeclaredInNonActivatableType(FieldReference field)
+		{
+			TypeDefinition declaringType = ResolveTypeReference(field.DeclaringType);
+			if (declaringType == null) return true;
+
+			if (IsTransient(declaringType, field)) return true;
+			if (!Accept(declaringType)) return true;
+
+			if (!ImplementsActivatable(declaringType)) return true;
+			return false;
 		}
 
 		private static bool IsPointer(TypeReference type)
