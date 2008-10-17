@@ -186,7 +186,7 @@ namespace Db4oTool.TA
 
 			if (!HasFieldAccesses(method)) return;
 			
-			method.Body.Modify();
+			method.Body.Simplify();
 
 			InstrumentFieldAccesses(method);
 
