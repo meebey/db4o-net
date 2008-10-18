@@ -47,12 +47,19 @@ public class DelegateSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 	}
 
 	public void TestInlineStaticDelegate()
-	{	
-		IList<Item> items = _container.Query<Item>(delegate(Item candidate)
+	{
+		IList<Item> items = null;
+		try
 		{
-			return candidate.Name == "foo";
-		});
-		CheckResult(items);
+			items = _container.Query<Item>(delegate(Item candidate)
+			{
+				return candidate.Name == "foo";
+			});
+		}
+		finally
+		{
+			CheckResult(items);
+		}
 	}
 
 	public void TestInlineClosureDelegate()
