@@ -3,6 +3,7 @@
 #if CF
 
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
 
@@ -122,6 +123,8 @@ namespace Db4objects.Db4o.Tests
             WindowWriter writer = new WindowWriter();
             Db4oUnit.TestPlatform.Out = writer;
             Db4oUnit.TestPlatform.Error = writer;
+//        	Trace.Listeners.Add(new TextWriterTraceListener(writer));
+        	Trace.Listeners.Add(new TextWriterTraceListener("db4ounit-trace.txt"));
         }
 
         static void CheckStatus(Object state)
