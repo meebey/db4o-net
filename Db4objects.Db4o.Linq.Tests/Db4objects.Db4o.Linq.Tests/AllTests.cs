@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				typeof(CodeAnalysis.AllTests),
 				typeof(Expressions.AllTests),
 				typeof(Queries.AllTests),
-                typeof(EnumComparisonTestCase),
+				typeof(EnumComparisonTestCase),
 				typeof(CollectionContainsTestCase),
 				typeof(ComposedQueryTestCase),
 				typeof(CountTestCase),
@@ -32,6 +32,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				typeof(VisualBasicTestCase),
 				typeof(WhereTestCase),
 				typeof(QueryTranslationPerformanceTestCase),
+				typeof(GenericQueryTestCase),
 			};
 		}
 	}
