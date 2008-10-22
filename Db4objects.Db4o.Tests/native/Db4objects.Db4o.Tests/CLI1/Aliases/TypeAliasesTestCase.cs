@@ -16,6 +16,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 
 			Reopen();
 			Fixture().ConfigureAtRuntime(new AddAliasAction());
+            Reopen();
 			AssertAliasedData(Db());
 		}
 
