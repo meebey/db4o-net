@@ -3,6 +3,7 @@
 using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Tests.Common.CS;
+using Db4objects.Db4o.Tests.Common.Util;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
@@ -15,15 +16,22 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(CallConstructorsConfigTestCase), typeof(ClientDisconnectTestCase
-				), typeof(ClientTimeOutTestCase), typeof(ClientTransactionHandleTestCase), typeof(
-				ClientTransactionPoolTestCase), typeof(CloseServerBeforeClientTestCase), typeof(
-				DeleteReaddTestCase), typeof(IsAliveTestCase), typeof(NoTestConstructorsQEStringCmpTestCase
+			Type[] commonCases = new Type[] { typeof(CallConstructorsConfigTestCase), typeof(
+				ClientDisconnectTestCase), typeof(ClientTimeOutTestCase), typeof(ClientTransactionHandleTestCase
+				), typeof(ClientTransactionPoolTestCase), typeof(CloseServerBeforeClientTestCase
+				), typeof(DeleteReaddTestCase), typeof(IsAliveTestCase), typeof(NoTestConstructorsQEStringCmpTestCase
 				), typeof(ObjectServerTestCase), typeof(PrimitiveMessageTestCase), typeof(SendMessageToClientTestCase
 				), typeof(ServerClosedTestCase), typeof(ServerPortUsedTestCase), typeof(ServerRevokeAccessTestCase
 				), typeof(ServerTimeoutTestCase), typeof(ServerToClientTestCase), typeof(SetSemaphoreTestCase
 				), typeof(SwitchingFilesFromClientTestCase), typeof(SwitchingFilesFromMultipleClientsTestCase
 				) };
+			return Db4oUnitTestUtil.MergeClasses(commonCases, NonDecafTestCases());
+		}
+
+		/// <decaf.replaceFirst>return new Class[0];</decaf.replaceFirst>
+		private Type[] NonDecafTestCases()
+		{
+			return new Type[0];
 		}
 	}
 }

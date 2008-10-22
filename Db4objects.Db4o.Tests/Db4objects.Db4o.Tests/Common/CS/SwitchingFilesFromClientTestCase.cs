@@ -7,6 +7,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 {
 	public class SwitchingFilesFromClientTestCase : ClientServerTestCaseBase
 	{
+		[System.ObsoleteAttribute(@"using deprecated api")]
 		public virtual void TestSwitch()
 		{
 			if (IsMTOC())

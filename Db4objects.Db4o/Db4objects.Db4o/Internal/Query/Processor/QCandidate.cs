@@ -699,7 +699,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			Read();
 			ObjectContainerBase container = Transaction().Container();
-			_member = container.GetByID(Transaction(), _key);
+			_member = container.TryGetByID(Transaction(), _key);
 			if (_member != null && (a_activate || _member is ICompare))
 			{
 				container.Activate(Transaction(), _member);

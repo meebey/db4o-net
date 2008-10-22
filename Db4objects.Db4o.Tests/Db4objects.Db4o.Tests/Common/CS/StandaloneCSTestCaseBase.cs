@@ -20,7 +20,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			// TODO fix db4ounit call logic - this should actually be run in C/S mode
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="Exception">Exception</exception>
+		[System.ObsoleteAttribute(@"using deprecated api")]
 		public virtual void Test()
 		{
 			IConfiguration config = Db4oFactory.Configure();
@@ -47,6 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			ContainerServices.WithContainer(OpenClient(), block);
 		}
 
+		[System.ObsoleteAttribute(@"using deprecated api")]
 		protected virtual ClientObjectContainer OpenClient()
 		{
 			return (ClientObjectContainer)Db4oFactory.OpenClient("localhost", _port, "db4o", 

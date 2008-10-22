@@ -932,6 +932,24 @@ namespace Db4objects.Db4o.Internal
 		public abstract AbstractQueryResult QueryAllObjects(Transaction ta);
 
 		/// <exception cref="DatabaseClosedException"></exception>
+		public object TryGetByID(Transaction ta, long id)
+		{
+			try
+			{
+				return GetByID(ta, id);
+			}
+			catch (InvalidSlotException)
+			{
+			}
+			catch (InvalidIDException)
+			{
+			}
+			// can happen return null
+			// can happen return null
+			return null;
+		}
+
+		/// <exception cref="DatabaseClosedException"></exception>
 		/// <exception cref="InvalidIDException"></exception>
 		public object GetByID(Transaction ta, long id)
 		{
@@ -960,6 +978,10 @@ namespace Db4objects.Db4o.Internal
 				}
 				finally
 				{
+					// Never shut down for getById()
+					// There may be OutOfMemoryErrors or similar
+					// The user may want to catch and continue working.
+					_topLevelCallCompleted = true;
 					EndTopLevelCall();
 				}
 				// only to make the compiler happy
@@ -1232,7 +1254,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return classMetadata;
 			}
-			return _classCollection.GetClassMetadata(id);
+			return _classCollection.ClassMetadataForId(id);
 		}
 
 		public virtual HandlerRegistry Handlers()
@@ -1727,7 +1749,7 @@ namespace Db4objects.Db4o.Internal
 			return ActivationDepthProvider().ActivationDepth(depth, ActivationMode.Refresh);
 		}
 
-		internal void RefreshClasses()
+		public void RefreshClasses()
 		{
 			lock (_lock)
 			{

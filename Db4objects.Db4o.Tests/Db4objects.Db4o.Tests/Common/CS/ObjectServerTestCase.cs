@@ -18,7 +18,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void SetUp()
 		{
 			fileName = Path.GetTempFileName();
-			server = Db4oFactory.OpenServer(fileName, -1).Ext();
+			server = Db4oFactory.OpenServer(Db4oFactory.NewConfiguration(), fileName, -1).Ext
+				();
 			server.GrantAccess(Credentials(), Credentials());
 		}
 
@@ -32,11 +33,11 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void TestClientCount()
 		{
 			AssertClientCount(0);
-			IObjectContainer client1 = Db4oFactory.OpenClient("localhost", Port(), Credentials
-				(), Credentials());
+			IObjectContainer client1 = Db4oFactory.OpenClient(Db4oFactory.NewConfiguration(), 
+				"localhost", Port(), Credentials(), Credentials());
 			AssertClientCount(1);
-			IObjectContainer client2 = Db4oFactory.OpenClient("localhost", Port(), Credentials
-				(), Credentials());
+			IObjectContainer client2 = Db4oFactory.OpenClient(Db4oFactory.NewConfiguration(), 
+				"localhost", Port(), Credentials(), Credentials());
 			AssertClientCount(2);
 			client1.Close();
 			client2.Close();

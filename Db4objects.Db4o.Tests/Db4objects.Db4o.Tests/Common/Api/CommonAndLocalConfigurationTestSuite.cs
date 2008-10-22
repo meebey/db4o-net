@@ -165,7 +165,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			/// <exception cref="Exception"></exception>
 			public virtual void Test()
 			{
-				if (Subject() is IClientConfiguration)
+				if (CommonAndLocalConfigurationTestSuite.Subject() is IClientConfiguration)
 				{
 					return;
 				}

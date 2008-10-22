@@ -51,6 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			public string bar;
 		}
 
+		/// <exception cref="Exception"></exception>
 		protected override void Store()
 		{
 			AddACAlias();
@@ -115,16 +116,19 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AddAlias("A", "B");
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void AddACAlias()
 		{
 			AddAlias("A", "C");
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void AddAlias(string storedLetter, string runtimeLetter)
 		{
 			RemoveAlias();
 			alias = CreateAlias(storedLetter, runtimeLetter);
 			Fixture().ConfigureAtRuntime(new _IRuntimeConfigureAction_104(this));
+			Reopen();
 		}
 
 		private sealed class _IRuntimeConfigureAction_104 : IRuntimeConfigureAction
@@ -142,18 +146,20 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			private readonly AliasesTestCase _enclosing;
 		}
 
+		/// <exception cref="Exception"></exception>
 		private void RemoveAlias()
 		{
 			if (alias != null)
 			{
-				Fixture().ConfigureAtRuntime(new _IRuntimeConfigureAction_113(this));
+				Fixture().ConfigureAtRuntime(new _IRuntimeConfigureAction_114(this));
 				alias = null;
 			}
+			Reopen();
 		}
 
-		private sealed class _IRuntimeConfigureAction_113 : IRuntimeConfigureAction
+		private sealed class _IRuntimeConfigureAction_114 : IRuntimeConfigureAction
 		{
-			public _IRuntimeConfigureAction_113(AliasesTestCase _enclosing)
+			public _IRuntimeConfigureAction_114(AliasesTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

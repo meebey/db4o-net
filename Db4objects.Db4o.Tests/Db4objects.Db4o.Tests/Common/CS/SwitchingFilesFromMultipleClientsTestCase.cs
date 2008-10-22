@@ -30,6 +30,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				)));
 		}
 
+		[System.ObsoleteAttribute(@"using deprecated api")]
 		protected override void RunTest()
 		{
 			_counter = 0;

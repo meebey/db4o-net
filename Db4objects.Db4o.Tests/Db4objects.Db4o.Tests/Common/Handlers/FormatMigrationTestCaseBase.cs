@@ -135,8 +135,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		/// <exception cref="IOException"></exception>
 		private void RunDefrag(string testFileName)
 		{
-			Db4oFactory.Configure().AllowVersionUpdates(true);
-			IObjectContainer oc = Db4oFactory.OpenFile(testFileName);
+			IConfiguration config = Db4oFactory.NewConfiguration();
+			config.AllowVersionUpdates(true);
+			ConfigureForTest(config);
+			IObjectContainer oc = Db4oFactory.OpenFile(config, testFileName);
 			oc.Close();
 			string backupFileName = Path.GetTempFileName();
 			try
@@ -144,6 +146,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				DefragmentConfig defragConfig = new DefragmentConfig(testFileName, backupFileName
 					);
 				defragConfig.ForceBackupDelete(true);
+				ConfigureForTest(defragConfig.Db4oConfig());
 				defragConfig.ReadOnly(!DefragmentInReadWriteMode());
 				Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig);
 			}
@@ -161,12 +164,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		// do nothing
 		private void CheckDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_154(this));
+			WithDatabase(testFile, new _IFunction4_157(this));
 		}
 
-		private sealed class _IFunction4_154 : IFunction4
+		private sealed class _IFunction4_157 : IFunction4
 		{
-			public _IFunction4_154(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_157(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -182,12 +185,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void UpdateDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_163(this));
+			WithDatabase(testFile, new _IFunction4_166(this));
 		}
 
-		private sealed class _IFunction4_163 : IFunction4
+		private sealed class _IFunction4_166 : IFunction4
 		{
-			public _IFunction4_163(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_166(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -203,12 +206,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CheckUpdatedDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_173(this));
+			WithDatabase(testFile, new _IFunction4_176(this));
 		}
 
-		private sealed class _IFunction4_173 : IFunction4
+		private sealed class _IFunction4_176 : IFunction4
 		{
-			public _IFunction4_173(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_176(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -240,6 +243,16 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		private void InvestigateFileHeaderVersion(string testFile)
 		{
 			_db4oHeaderVersion = VersionServices.FileHeaderVersion(testFile);
+		}
+
+		protected virtual int Db4oMinorVersion()
+		{
+			if (_db4oVersion != null)
+			{
+				return System.Convert.ToInt32(Sharpen.Runtime.Substring(_db4oVersion, 2, 3));
+			}
+			return System.Convert.ToInt32(Sharpen.Runtime.Substring(Db4oFactory.Version(), 7, 
+				8));
 		}
 
 		protected virtual int Db4oMajorVersion()

@@ -31,7 +31,8 @@ namespace Db4objects.Db4o.Internal.Activation
 		{
 			if (null == metadata)
 			{
-				throw new ArgumentNullException();
+				return new Db4objects.Db4o.Internal.Activation.LegacyActivationDepth(_depth - 1, 
+					_mode);
 			}
 			return new Db4objects.Db4o.Internal.Activation.LegacyActivationDepth(DescendDepth
 				(metadata), _mode);

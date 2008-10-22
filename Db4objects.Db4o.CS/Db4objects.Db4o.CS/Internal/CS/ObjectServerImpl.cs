@@ -68,6 +68,7 @@ namespace Db4objects.Db4o.Internal.CS
 			_name = "db4o ServerSocket FILE: " + container.ToString() + "  PORT:" + _port;
 			_container.SetServer(true);
 			ConfigureObjectServer();
+			_container.ClassCollection().CheckAllClassChanges();
 			bool ok = false;
 			try
 			{

@@ -11,6 +11,7 @@ using Db4objects.Db4o.Tests.Common.Migration;
 
 namespace Db4objects.Db4o.Tests.Common.Defragment
 {
+	/// <summary>test case for COR-785</summary>
 	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class LegacyDatabaseDefragTestCase : ITestCase
 	{

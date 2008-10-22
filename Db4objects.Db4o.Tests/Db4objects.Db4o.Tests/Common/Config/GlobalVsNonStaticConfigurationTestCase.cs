@@ -105,10 +105,11 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			private readonly IObjectContainer db1;
 		}
 
+		[System.ObsoleteAttribute(@"using deprecated api")]
 		public virtual void TestOpenWithStaticConfiguration()
 		{
 			Db4oFactory.Configure().ReadOnly(true);
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_73());
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_76());
 			Db4oFactory.Configure().ReadOnly(false);
 			IObjectContainer db = Db4oFactory.OpenFile(Filename);
 			db.Store(new GlobalVsNonStaticConfigurationTestCase.Data(1));
@@ -119,9 +120,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			db.Close();
 		}
 
-		private sealed class _ICodeBlock_73 : ICodeBlock
+		private sealed class _ICodeBlock_76 : ICodeBlock
 		{
-			public _ICodeBlock_73()
+			public _ICodeBlock_76()
 			{
 			}
 

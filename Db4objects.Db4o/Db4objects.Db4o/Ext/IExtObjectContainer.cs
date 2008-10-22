@@ -178,6 +178,10 @@ namespace Db4objects.Db4o.Ext
 		/// .
 		/// Objects will not be activated by this method. They will be returned in the
 		/// activation state they are currently in, in the local cache.<br /><br />
+		/// Passing invalid id values to this method may result in all kinds of
+		/// exceptions being thrown. OutOfMemoryError and arithmetic exceptions
+		/// may occur. If an application is known to use invalid IDs, it is
+		/// recommended to call this method within a catch-all block.
 		/// </remarks>
 		/// <param name="Id">the internal ID</param>
 		/// <returns>
@@ -187,8 +191,10 @@ namespace Db4objects.Db4o.Ext
 		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
 		/// <exception cref="DatabaseClosedException">db4o database file was closed or failed to open.
 		/// 	</exception>
-		/// <exception cref="InvalidIDException">when the provided id is outside the scope of the
-		/// 	</exception>
+		/// <exception cref="InvalidIDException">
+		/// when the provided id is outside the scope of the
+		/// file length.
+		/// </exception>
 		object GetByID(long Id);
 
 		/// <summary>

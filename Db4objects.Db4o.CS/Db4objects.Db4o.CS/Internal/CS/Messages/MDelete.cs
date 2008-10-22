@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			ObjectContainerBase stream = Stream();
 			lock (StreamLock())
 			{
-				object obj = stream.GetByID(Transaction(), bytes.ReadInt());
+				object obj = stream.TryGetByID(Transaction(), bytes.ReadInt());
 				bool userCall = bytes.ReadInt() == 1;
 				if (obj != null)
 				{

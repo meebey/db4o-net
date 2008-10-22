@@ -18,6 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		private static int StoredItems = 1000;
 
 		/// <exception cref="Exception"></exception>
+		[System.ObsoleteAttribute(@"using deprecated api")]
 		public virtual void SetUp()
 		{
 			memoryFile = new MemoryFile();

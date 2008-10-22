@@ -239,5 +239,25 @@ namespace Db4objects.Db4o.Config
 		{
 			set;
 		}
+
+		/// <summary>
+		/// turns recovery mode on and off.<br /><br />
+		/// Recovery mode can be used to try to retrieve as much as possible
+		/// out of an already corrupted database.
+		/// </summary>
+		/// <remarks>
+		/// turns recovery mode on and off.<br /><br />
+		/// Recovery mode can be used to try to retrieve as much as possible
+		/// out of an already corrupted database. In recovery mode internal
+		/// checks are more relaxed. Null or invalid objects may be returned
+		/// instead of throwing exceptions.<br /><br />
+		/// Use this method with care as a last resort to get data out of a
+		/// corrupted database.
+		/// </remarks>
+		/// <param name="flag"><code>true</code> to turn recover mode on.</param>
+		bool RecoveryMode
+		{
+			set;
+		}
 	}
 }

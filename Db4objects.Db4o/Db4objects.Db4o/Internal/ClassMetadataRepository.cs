@@ -296,7 +296,7 @@ namespace Db4objects.Db4o.Internal
 			return classMetadata;
 		}
 
-		internal ClassMetadata GetClassMetadata(int id)
+		internal ClassMetadata ClassMetadataForId(int id)
 		{
 			return ReadClassMetadata((ClassMetadata)_classMetadataByID.Get(id), null);
 		}
@@ -542,6 +542,16 @@ namespace Db4objects.Db4o.Internal
 			_classMetadataCreationDepth--;
 			InitClassMetadataOnUp();
 			return classMetadata;
+		}
+
+		public void CheckAllClassChanges()
+		{
+			IEnumerator i = _classMetadataByID.Keys();
+			while (i.MoveNext())
+			{
+				int classMetadataID = ((int)i.Current);
+				ClassMetadataForId(classMetadataID);
+			}
 		}
 
 		public void RefreshClasses()

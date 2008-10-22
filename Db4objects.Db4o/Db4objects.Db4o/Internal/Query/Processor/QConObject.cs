@@ -406,7 +406,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (i_objectID > 0)
 				{
-					object obj = trans.Container().GetByID(trans, i_objectID);
+					object obj = trans.Container().TryGetByID(trans, i_objectID);
 					if (obj != null)
 					{
 						i_object = obj;

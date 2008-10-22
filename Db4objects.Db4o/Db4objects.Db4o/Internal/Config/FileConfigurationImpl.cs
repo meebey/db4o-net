@@ -119,5 +119,14 @@ namespace Db4objects.Db4o.Internal.Config
 				_config.ReadOnly(flag);
 			}
 		}
+
+		public virtual bool RecoveryMode
+		{
+			set
+			{
+				bool flag = value;
+				_config.RecoveryMode(flag);
+			}
+		}
 	}
 }

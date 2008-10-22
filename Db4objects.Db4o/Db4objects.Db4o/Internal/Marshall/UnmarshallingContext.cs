@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
@@ -58,6 +59,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			ClassMetadata classMetadata = ReadObjectHeader();
 			if (classMetadata == null)
 			{
+				InvalidSlot();
 				EndProcessing();
 				return _object;
 			}
@@ -84,6 +86,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			EndProcessing();
 			return _object;
+		}
+
+		private void InvalidSlot()
+		{
+			if (Container().Config().RecoveryMode())
+			{
+				return;
+			}
+			throw new InvalidSlotException("id: " + ObjectID());
 		}
 
 		private void AdjustActivationDepth(bool doAdjustActivationDepthForPrefetch)

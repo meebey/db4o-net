@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Internal
 					, "% connected to server.", "The directory % can neither be found nor created.", 
 					"This blob was never stored.", "Blob file % not available.", "Failure finding blob filename."
 					, "File does not exist %.", "Failed to connect to server.", "No blob data stored."
-					, "Uncaught Exception. db4o engine closed.", "Add constructor that won't throw exceptions, configure constructor calls, or provide a translator to class % and make sure the class is deployed to the server with the same package/namespace + assembly name."
+					, "Uncaught Exception. db4o engine closed.", "Add constructor that won't throw exceptions, configure constructor calls, configure exceptionsOnNotStorable(false) or provide a translator to class % and make sure the class is deployed to the server with the same package/namespace + assembly name."
 					, "This method can only be called before opening the database file.", "AccessibleObject#setAccessible() is not available. Private fields can not be stored."
 					, "ObjectTranslator could not be installed: %.", "Not implemented", "% closed by ShutdownHook."
 					, "This constraint is not persistent. It has no database identity.", "Add at least one ObjectContainer to the Cluster"

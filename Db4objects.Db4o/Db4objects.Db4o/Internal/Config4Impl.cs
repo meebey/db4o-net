@@ -52,14 +52,16 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ConfigurationItemsKey = new KeySpec(null);
 
+		private static readonly KeySpec ConfiguredReflectorKey = new KeySpec(null);
+
 		private static readonly KeySpec ClassActivationDepthConfigurableKey = new KeySpec
 			(true);
 
 		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
-		private sealed class _IDeferred_64 : KeySpec.IDeferred
+		private sealed class _IDeferred_66 : KeySpec.IDeferred
 		{
-			public _IDeferred_64()
+			public _IDeferred_66()
 			{
 			}
 
@@ -70,7 +72,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_64
+		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_66
 			());
 
 		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
@@ -97,7 +99,7 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ExceptionalClassesKey = new KeySpec(null);
 
-		private static readonly KeySpec ExceptionsOnNotStorableKey = new KeySpec(false);
+		private static readonly KeySpec ExceptionsOnNotStorableKey = new KeySpec(true);
 
 		private static readonly KeySpec FreespaceFillerKey = new KeySpec(null);
 
@@ -134,7 +136,7 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ReadAsKey = new KeySpec(new Hashtable4(16));
 
-		private static readonly KeySpec ConfiguredReflectorKey = new KeySpec(null);
+		private static readonly KeySpec RecoveryModeKey = new KeySpec(false);
 
 		private static readonly KeySpec ReflectorKey = new KeySpec(null);
 
@@ -1002,6 +1004,16 @@ namespace Db4objects.Db4o.Internal
 		public bool IsReadOnly()
 		{
 			return _readOnly;
+		}
+
+		public void RecoveryMode(bool flag)
+		{
+			_config.Put(RecoveryModeKey, flag);
+		}
+
+		public bool RecoveryMode()
+		{
+			return _config.GetAsBoolean(RecoveryModeKey);
 		}
 
 		internal Collection4 Rename()

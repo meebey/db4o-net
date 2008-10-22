@@ -217,8 +217,12 @@ namespace Db4objects.Db4o.Defragment
 		private static void SetIdentity(DefragmentConfig config, int targetIdentityID, int
 			 targetUuidIndexID)
 		{
-			LocalObjectContainer targetDB = (LocalObjectContainer)Db4oFactory.OpenFile(config
-				.ClonedDb4oConfig(), config.OrigPath());
+			IConfiguration db4oConfig = config.ClonedDb4oConfig();
+			// required because reading of old identity fails
+			// and we don't want to see an invalid ID exception
+			db4oConfig.RecoveryMode(true);
+			LocalObjectContainer targetDB = (LocalObjectContainer)Db4oFactory.OpenFile(db4oConfig
+				, config.OrigPath());
 			try
 			{
 				Db4oDatabase identity = (Db4oDatabase)targetDB.GetByID(targetIdentityID);
@@ -316,12 +320,12 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessObjectsForYapClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			context.TraverseAll(curClass, new _IVisitor4_265(command, context, curClass));
+			context.TraverseAll(curClass, new _IVisitor4_269(command, context, curClass));
 		}
 
-		private sealed class _IVisitor4_265 : IVisitor4
+		private sealed class _IVisitor4_269 : IVisitor4
 		{
-			public _IVisitor4_265(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
+			public _IVisitor4_269(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
 				 curClass)
 			{
 				this.command = command;

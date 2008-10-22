@@ -41,7 +41,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				Db4oFactory.OpenServer(ServerPortUsedTestCase.DatabaseFile, port);
+				Db4oFactory.OpenServer(Db4oFactory.NewConfiguration(), ServerPortUsedTestCase.DatabaseFile
+					, port);
 			}
 
 			private readonly int port;
