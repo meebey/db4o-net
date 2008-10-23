@@ -11,7 +11,7 @@ using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.Common.TA
 {
-	public class TransparentActivationSupportTestCase : TransparentActivationTestCaseBase
+	public partial class TransparentActivationSupportTestCase : TransparentActivationTestCaseBase
 	{
 		public static void Main(string[] args)
 		{
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 				().ActivationDepthProvider());
 		}
 
-		public sealed class Item : ActivatableImpl
+		public sealed partial class Item : ActivatableImpl
 		{
 			public void Update()
 			{
@@ -54,14 +54,14 @@ namespace Db4objects.Db4o.Tests.Common.TA
 		{
 			Collection4 updated = new Collection4();
 			EventRegistryFor(container).Updated += new Db4objects.Db4o.Events.ObjectEventHandler
-				(new _IEventListener4_41(updated).OnEvent);
+				(new _IEventListener4_54(updated).OnEvent);
 			container.Commit();
 			return updated;
 		}
 
-		private sealed class _IEventListener4_41
+		private sealed class _IEventListener4_54
 		{
-			public _IEventListener4_41(Collection4 updated)
+			public _IEventListener4_54(Collection4 updated)
 			{
 				this.updated = updated;
 			}

@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.TA.Nested;
 namespace Db4objects.Db4o.Tests.Common.TA.Nested
 {
 	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
-	public class OuterClass : ActivatableImpl
+	public partial class OuterClass : ActivatableImpl
 	{
 		public int _foo;
 
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nested
 		}
 
 		/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
-		public class InnerClass : ActivatableImpl
+		public partial class InnerClass : ActivatableImpl
 		{
 			public virtual OuterClass GetOuterObject()
 			{
