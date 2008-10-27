@@ -32,7 +32,9 @@ namespace Db4objects.Db4o.Linq.Tests
 				typeof(VisualBasicTestCase),
 				typeof(WhereTestCase),
 				typeof(QueryTranslationPerformanceTestCase),
+#if !CF
 				typeof(GenericQueryTestCase),
+#endif
 			};
 		}
 	}

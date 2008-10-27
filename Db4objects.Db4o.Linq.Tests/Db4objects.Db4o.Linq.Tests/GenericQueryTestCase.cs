@@ -10,6 +10,8 @@ using Db4objects.Db4o.Linq;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
+#if !CF // csc fails to find S.R.FieldInfo.GetFieldFromHandle
+
 namespace Db4objects.Db4o.Linq.Tests
 {
 	public class GenericQueryTestCase : AbstractDb4oLinqTestCase
@@ -72,3 +74,5 @@ namespace Db4objects.Db4o.Linq.Tests
 		}
 	}
 }
+
+#endif
