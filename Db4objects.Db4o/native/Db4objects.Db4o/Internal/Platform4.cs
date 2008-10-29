@@ -272,16 +272,6 @@ namespace Db4objects.Db4o.Internal
             return date.ToString(fmt);
         }
 
-        public static Object GetClassForType(Object obj)
-        {
-            Type t = obj as Type;
-            if (t != null)
-            {
-                return t;
-            }
-            return obj;
-        }
-
         internal static IEnumerator GetCollectionEnumerator(object obj, bool allowArray)
         {
 			IEnumerable enumerable = obj as IEnumerable;
