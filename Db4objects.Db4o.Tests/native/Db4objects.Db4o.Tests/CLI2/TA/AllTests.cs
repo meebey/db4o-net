@@ -10,9 +10,7 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		{
 			return new Type[]
 				{
-                #if !CF
                     typeof(NullableTypeActivationTestCase),
-                #endif
                     typeof(ValueTypeActivationTestCase),
 				};
 		}
