@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Internal.Query
         private void Marshal()
         {
             _delegateType = _content.GetType();
-#if !CF
+#if !CF_2_0
             _target = _content.Target;
             _method = _content.Method.Name;
             _type = _content.Method.DeclaringType;
@@ -49,12 +49,12 @@ namespace Db4objects.Db4o.Internal.Query
 
         private Delegate Unmarshal()
         {
-#if CF
+#if CF_2_0
             throw new NotSupportedException();
 #else
             return (null == _target)
-                       ? System.Delegate.CreateDelegate(_delegateType, _type, _method)
-                       : System.Delegate.CreateDelegate(_delegateType, _target, _method);
+                       ? System.Delegate.CreateDelegate(_delegateType, _type, _type.GetMethod(_method))
+                       : System.Delegate.CreateDelegate(_delegateType, _target, _target.GetType().GetMethod(_method));
 #endif
         }
     }
@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Internal.Query
 		
         public void Evaluate(ICandidate candidate)
         {
-            // use starting _ for PascalCase conversion purposes
+			// use starting _ for PascalCase conversion purposes
             EvaluationDelegate _evaluation = GetEvaluationDelegate();
             _evaluation(candidate);
         }

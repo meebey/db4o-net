@@ -208,6 +208,11 @@ namespace Db4objects.Db4o.Internal.Query
 
 	class GenericPredicateEvaluation<T> : DelegateEnvelope, Db4objects.Db4o.Query.IEvaluation
 	{
+		public GenericPredicateEvaluation()
+		{
+			// for db4o c/s when CallConstructors == true
+		}
+
 		public GenericPredicateEvaluation(System.Predicate<T> predicate)
 			: base(predicate)
 		{
