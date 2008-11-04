@@ -10,7 +10,7 @@ namespace Db4oUnit.Data
 		{
 			if (IsNullable(type))
 			{
-				return Iterators.Cons(Generators.ArbitraryValuesOf(type.GetGenericArguments()[0]), null);
+				return Iterators.Append(Generators.ArbitraryValuesOf(type.GetGenericArguments()[0]), null);
 			}
 			return null;
 		}
