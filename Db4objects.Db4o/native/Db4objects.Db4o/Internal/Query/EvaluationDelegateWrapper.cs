@@ -52,9 +52,12 @@ namespace Db4objects.Db4o.Internal.Query
 #if CF_2_0
             throw new NotSupportedException();
 #else
-            return (null == _target)
-                       ? System.Delegate.CreateDelegate(_delegateType, _type, _type.GetMethod(_method))
-                       : System.Delegate.CreateDelegate(_delegateType, _target, _target.GetType().GetMethod(_method));
+			if (null == _target)
+			{
+				return System.Delegate.CreateDelegate(_delegateType, null, _type.GetMethod(_method,  BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public));
+			}
+				
+			return System.Delegate.CreateDelegate(_delegateType, _target, _target.GetType().GetMethod(_method, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public));
 #endif
         }
     }
