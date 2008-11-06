@@ -30,8 +30,16 @@ namespace Db4objects.Db4o.Internal.Handlers
                 }
             }
             System.Collections.IEnumerator j = new Iterator4Impl(remove);
-            while(j.MoveNext() && (!objectContainer.IsClosed())){
-                objectContainer.Purge(j.Current);
+            while (j.MoveNext())
+            {
+                lock (objectContainer.Lock())
+                {
+                    if (objectContainer.IsClosed())
+                    {
+                        return;
+                    }
+                    objectContainer.Purge(j.Current);
+                }
             }
         }
     }
