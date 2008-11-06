@@ -1,8 +1,8 @@
+//#define USE_FAST_REFLECTOR
 /* Copyright (C) 2004 - 2007 db4objects Inc.   http://www.db4o.com */
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -14,14 +14,13 @@ using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Reflect;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Reflect.Net;
-using Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Types;
 using Sharpen.IO;
-using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -79,7 +78,7 @@ namespace Db4objects.Db4o.Internal
                 {
                     shutDownStreams = new ArrayList();
 #if !CF
-					EventHandler handler = new EventHandler(OnShutDown);
+					EventHandler handler = OnShutDown;
 					AppDomain.CurrentDomain.ProcessExit += handler;
 					AppDomain.CurrentDomain.DomainUnload += handler;
 #endif
@@ -110,13 +109,21 @@ namespace Db4objects.Db4o.Internal
 
         internal static IReflector CreateReflector(Object config)
         {
-            return new NetReflector();
-        }
+#if USE_FAST_REFLECTOR && !CF
+			return new FastNetReflector();
+#else
+			return new NetReflector();
+#endif
+		}
 
         public static IReflector ReflectorForType(Type typeInstance)
-        {
-            return new NetReflector();
-        }
+		{
+#if USE_FAST_REFLECTOR && !CF
+			return new FastNetReflector();
+#else
+			return new NetReflector();
+#endif
+		}
 
         internal static Object CreateReferenceQueue()
         {
@@ -703,7 +710,7 @@ namespace Db4objects.Db4o.Internal
                 InitPrimitive2Wrapper();
             Type wrapperClazz = (Type)_primitive2Wrapper.Get(primitiveType);
             if(wrapperClazz==null)        
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             return wrapperClazz;
         }
     

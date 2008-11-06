@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		private Db4objects.Db4o.Reflect.IReflectArray _array;
 		
 		private Db4objects.Db4o.Reflect.IReflectorConfiguration _config;
-	    
+
 		public virtual Db4objects.Db4o.Reflect.IReflectArray Array()
 		{
 			if (_array == null)
@@ -169,7 +169,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			return Platform4.NullValue(ToNative(clazz));
 		}
 		
-		private IReflector Parent()
+		protected IReflector Parent()
 		{
 			if(_parent == null)
 			{
