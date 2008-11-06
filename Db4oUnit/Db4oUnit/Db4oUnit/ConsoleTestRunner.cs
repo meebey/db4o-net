@@ -58,7 +58,7 @@ namespace Db4oUnit
 			new TestRunner(_suite).Run(new CompositeTestListener(new ConsoleListener(writer), 
 				result));
 			ReportResult(result, writer);
-			return result.Failures.Size();
+			return result.Failures.Size;
 		}
 
 		private void Report(Exception x)

@@ -41,6 +41,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		[System.NonSerialized]
 		internal Db4objects.Db4o.Internal.Transaction i_trans;
 
+		[System.NonSerialized]
+		private bool _processedByIndex;
+
 		public QCon()
 		{
 		}
@@ -63,6 +66,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			// the parent of this constraint or null, if this is a root
 			// prevents circular calls on removal
 			// our transaction to get a stream object anywhere
+			// whether or not this constraint was used to get the initial set
+			// in the FieldIndexProcessor
 			// C/S only
 			i_id = idGenerator.Next();
 			i_trans = a_trans;
@@ -124,7 +129,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			Db4objects.Db4o.Internal.Query.Processor.QCon qcon = this;
 			ClassMetadata yc = GetYapClass();
 			bool[] foundField = new bool[] { false };
-			ForEachChildField(a_field, new _IVisitor4_112(foundField, query));
+			ForEachChildField(a_field, new _IVisitor4_116(foundField, query));
 			if (foundField[0])
 			{
 				return true;
@@ -134,7 +139,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				int[] count = new int[] { 0 };
 				FieldMetadata[] yfs = new FieldMetadata[] { null };
-				i_trans.Container().ClassCollection().AttachQueryNode(a_field, new _IVisitor4_130
+				i_trans.Container().ClassCollection().AttachQueryNode(a_field, new _IVisitor4_134
 					(yfs, count));
 				if (count[0] == 0)
 				{
@@ -172,9 +177,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _IVisitor4_112 : IVisitor4
+		private sealed class _IVisitor4_116 : IVisitor4
 		{
-			public _IVisitor4_112(bool[] foundField, QQuery query)
+			public _IVisitor4_116(bool[] foundField, QQuery query)
 			{
 				this.foundField = foundField;
 				this.query = query;
@@ -191,9 +196,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly QQuery query;
 		}
 
-		private sealed class _IVisitor4_130 : IVisitor4
+		private sealed class _IVisitor4_134 : IVisitor4
 		{
-			public _IVisitor4_130(FieldMetadata[] yfs, int[] count)
+			public _IVisitor4_134(FieldMetadata[] yfs, int[] count)
 			{
 				this.yfs = yfs;
 				this.count = count;
@@ -753,7 +758,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		/// <param name="obj"></param>
 		/// <param name="removeExisting"></param>
 		internal virtual Db4objects.Db4o.Internal.Query.Processor.QCon ShareParent(object
-			 obj, bool[] removeExisting)
+			 obj, BooleanByRef removeExisting)
 		{
 			// virtual
 			return null;
@@ -761,8 +766,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		/// <param name="claxx"></param>
 		/// <param name="removeExisting"></param>
-		internal virtual QConClass ShareParentForClass(IReflectClass claxx, bool[] removeExisting
-			)
+		internal virtual QConClass ShareParentForClass(IReflectClass claxx, BooleanByRef 
+			removeExisting)
 		{
 			// virtual
 			return null;
@@ -905,6 +910,34 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		protected virtual bool HasOrdering()
 		{
 			return i_orderID != 0;
+		}
+
+		public virtual void SetProcessedByIndex()
+		{
+			InternalSetProcessedByIndex();
+		}
+
+		protected virtual void InternalSetProcessedByIndex()
+		{
+			_processedByIndex = true;
+			if (i_joins != null)
+			{
+				IEnumerator i = i_joins.GetEnumerator();
+				while (i.MoveNext())
+				{
+					((QConJoin)i.Current).SetProcessedByIndex();
+				}
+			}
+		}
+
+		public virtual bool ProcessedByIndex()
+		{
+			return _processedByIndex;
+		}
+
+		public virtual int ChildrenCount()
+		{
+			return List4.Size(_children);
 		}
 	}
 }

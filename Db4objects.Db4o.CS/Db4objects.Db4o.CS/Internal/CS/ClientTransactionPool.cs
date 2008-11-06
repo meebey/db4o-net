@@ -88,6 +88,11 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
+		public virtual int OpenTransactionCount()
+		{
+			return IsClosed() ? 0 : _transaction2Container.Size();
+		}
+
 		public virtual int OpenFileCount()
 		{
 			return IsClosed() ? 0 : _fileName2Container.Size();

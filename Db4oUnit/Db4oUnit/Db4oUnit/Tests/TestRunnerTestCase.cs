@@ -63,7 +63,7 @@ namespace Db4oUnit.Tests
 			IEnumerable tests = Iterators.Iterable(new object[] { test });
 			TestResult result = new TestResult();
 			new TestRunner(tests).Run(result);
-			Assert.AreEqual(1, result.Failures.Size());
+			Assert.AreEqual(1, result.Failures.Size);
 		}
 
 		private sealed class _ITest_54 : ITest

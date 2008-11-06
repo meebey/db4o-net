@@ -14,52 +14,29 @@ namespace Db4oUnit.Fixtures
 	/// </summary>
 	public abstract class FixtureBasedTestSuite : ITestSuiteBuilder
 	{
+		private static readonly int[] AllCombinations = null;
+
 		public abstract Type[] TestUnits();
 
 		public abstract IFixtureProvider[] FixtureProviders();
 
+		public virtual int[] CombinationToRun()
+		{
+			return AllCombinations;
+		}
+
 		public virtual IEnumerator GetEnumerator()
 		{
 			IFixtureProvider[] providers = FixtureProviders();
-			IEnumerable decorators = Iterators.Map(Iterators.Iterable(providers), new _IFunction4_24
-				());
+			IEnumerable decorators = FixtureDecoratorsFor(providers);
 			IEnumerable testsXdecorators = Iterators.CrossProduct(new IEnumerable[] { Tests()
 				, Iterators.CrossProduct(decorators) });
-			return Iterators.Map(testsXdecorators, new _IFunction4_39(this)).GetEnumerator();
+			return Iterators.Map(testsXdecorators, new _IFunction4_35(this)).GetEnumerator();
 		}
 
-		private sealed class _IFunction4_24 : IFunction4
+		private sealed class _IFunction4_35 : IFunction4
 		{
-			public _IFunction4_24()
-			{
-			}
-
-			public object Apply(object arg)
-			{
-				IFixtureProvider provider = (IFixtureProvider)arg;
-				return Iterators.Map(Iterators.Enumerate(provider), new _IFunction4_27(provider));
-			}
-
-			private sealed class _IFunction4_27 : IFunction4
-			{
-				public _IFunction4_27(IFixtureProvider provider)
-				{
-					this.provider = provider;
-				}
-
-				public object Apply(object arg)
-				{
-					EnumerateIterator.Tuple tuple = (EnumerateIterator.Tuple)arg;
-					return new FixtureDecorator(provider.Variable(), tuple.value, tuple.index);
-				}
-
-				private readonly IFixtureProvider provider;
-			}
-		}
-
-		private sealed class _IFunction4_39 : IFunction4
-		{
-			public _IFunction4_39(FixtureBasedTestSuite _enclosing)
+			public _IFunction4_35(FixtureBasedTestSuite _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -73,6 +50,101 @@ namespace Db4oUnit.Fixtures
 			}
 
 			private readonly FixtureBasedTestSuite _enclosing;
+		}
+
+		private IEnumerable FixtureDecoratorsFor(IFixtureProvider[] providers)
+		{
+			int[] combination = CombinationToRun();
+			return combination == AllCombinations ? AllFixtureDecoratorsFor(providers) : CombinationFixtureDecoratorsFor
+				(providers, combination);
+		}
+
+		private IEnumerable CombinationFixtureDecoratorsFor(IFixtureProvider[] providers, 
+			int[] combination)
+		{
+			Assert.AreEqual(providers.Length, combination.Length, "Number of indexes in combinationToRun should match number of providers"
+				);
+			IEnumerable decorators = Iterators.Map(Iterators.Enumerate(Iterators.Iterable(providers
+				)), new _IFunction4_54(combination));
+			return decorators;
+		}
+
+		private sealed class _IFunction4_54 : IFunction4
+		{
+			public _IFunction4_54(int[] combination)
+			{
+				this.combination = combination;
+			}
+
+			public object Apply(object arg)
+			{
+				EnumerateIterator.Tuple providerTuple = (EnumerateIterator.Tuple)arg;
+				IFixtureProvider provider = (IFixtureProvider)providerTuple.value;
+				int wantedIndex = combination[providerTuple.index];
+				return Iterators.Map(Iterators.Enumerate(provider), new _IFunction4_59(wantedIndex
+					, provider));
+			}
+
+			private sealed class _IFunction4_59 : IFunction4
+			{
+				public _IFunction4_59(int wantedIndex, IFixtureProvider provider)
+				{
+					this.wantedIndex = wantedIndex;
+					this.provider = provider;
+				}
+
+				public object Apply(object arg)
+				{
+					EnumerateIterator.Tuple tuple = (EnumerateIterator.Tuple)arg;
+					if (tuple.index != wantedIndex)
+					{
+						return Iterators.Skip;
+					}
+					return new FixtureDecorator(provider.Variable(), tuple.value, tuple.index);
+				}
+
+				private readonly int wantedIndex;
+
+				private readonly IFixtureProvider provider;
+			}
+
+			private readonly int[] combination;
+		}
+
+		private IEnumerable AllFixtureDecoratorsFor(IFixtureProvider[] providers)
+		{
+			IEnumerable decorators = Iterators.Map(Iterators.Iterable(providers), new _IFunction4_74
+				());
+			return decorators;
+		}
+
+		private sealed class _IFunction4_74 : IFunction4
+		{
+			public _IFunction4_74()
+			{
+			}
+
+			public object Apply(object arg)
+			{
+				IFixtureProvider provider = (IFixtureProvider)arg;
+				return Iterators.Map(Iterators.Enumerate(provider), new _IFunction4_77(provider));
+			}
+
+			private sealed class _IFunction4_77 : IFunction4
+			{
+				public _IFunction4_77(IFixtureProvider provider)
+				{
+					this.provider = provider;
+				}
+
+				public object Apply(object arg)
+				{
+					EnumerateIterator.Tuple tuple = (EnumerateIterator.Tuple)arg;
+					return new FixtureDecorator(provider.Variable(), tuple.value, tuple.index);
+				}
+
+				private readonly IFixtureProvider provider;
+			}
 		}
 
 		private IEnumerable Tests()

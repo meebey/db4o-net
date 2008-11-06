@@ -58,8 +58,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return !HasChildren();
 		}
 
-		internal override QConClass ShareParentForClass(IReflectClass a_class, bool[] removeExisting
-			)
+		internal override QConClass ShareParentForClass(IReflectClass a_class, BooleanByRef
+			 removeExisting)
 		{
 			if (i_parent == null)
 			{
@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return newConstraint;
 		}
 
-		internal override QCon ShareParent(object a_object, bool[] removeExisting)
+		internal override QCon ShareParent(object a_object, BooleanByRef removeExisting)
 		{
 			if (i_parent == null)
 			{
@@ -102,8 +102,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		// so the parents are reachable.
 		// If we find a "real" constraint, we throw the QPath
 		// out and replace it with the other constraint. 
-		private void Morph(bool[] removeExisting, QCon newConstraint, IReflectClass claxx
-			)
+		private void Morph(BooleanByRef removeExisting, QCon newConstraint, IReflectClass
+			 claxx)
 		{
 			bool mayMorph = true;
 			if (claxx != null)
@@ -142,7 +142,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 				i_parent.ExchangeConstraint(this, newConstraint);
-				removeExisting[0] = true;
+				removeExisting.value = true;
 			}
 			else
 			{
@@ -158,6 +158,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public override string ToString()
 		{
 			return "QConPath " + base.ToString();
+		}
+
+		public override void SetProcessedByIndex()
+		{
+			if (ChildrenCount() <= 1)
+			{
+				InternalSetProcessedByIndex();
+			}
 		}
 	}
 }

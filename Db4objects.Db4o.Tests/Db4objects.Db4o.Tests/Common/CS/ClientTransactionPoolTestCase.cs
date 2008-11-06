@@ -22,21 +22,25 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			ClientTransactionPool pool = new ClientTransactionPool(db);
 			try
 			{
+				Assert.AreEqual(0, pool.OpenTransactionCount());
 				Assert.AreEqual(1, pool.OpenFileCount());
 				Transaction trans1 = pool.Acquire(SwitchingFilesFromClientUtil.MainfileName);
 				Assert.AreEqual(db, trans1.Container());
+				Assert.AreEqual(1, pool.OpenTransactionCount());
 				Assert.AreEqual(1, pool.OpenFileCount());
 				Transaction trans2 = pool.Acquire(SwitchingFilesFromClientUtil.FilenameA);
 				Assert.AreNotEqual(db, trans2.Container());
+				Assert.AreEqual(2, pool.OpenTransactionCount());
 				Assert.AreEqual(2, pool.OpenFileCount());
 				Transaction trans3 = pool.Acquire(SwitchingFilesFromClientUtil.FilenameA);
 				Assert.AreEqual(trans2.Container(), trans3.Container());
+				Assert.AreEqual(3, pool.OpenTransactionCount());
 				Assert.AreEqual(2, pool.OpenFileCount());
 				pool.Release(trans3, true);
+				Assert.AreEqual(2, pool.OpenTransactionCount());
 				Assert.AreEqual(2, pool.OpenFileCount());
 				pool.Release(trans2, true);
-				Assert.AreEqual(1, pool.OpenFileCount());
-				pool.Release(trans1, true);
+				Assert.AreEqual(1, pool.OpenTransactionCount());
 				Assert.AreEqual(1, pool.OpenFileCount());
 			}
 			finally

@@ -44,6 +44,7 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			if ((!_transactionPool.IsClosed()) && (_mainTransaction != null))
 			{
+				_transactionPool.Release(_mainTransaction, _rollbackOnClose);
 				_mainTransaction.Close(_rollbackOnClose);
 			}
 		}

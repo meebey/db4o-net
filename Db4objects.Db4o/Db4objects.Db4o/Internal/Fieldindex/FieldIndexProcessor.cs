@@ -29,6 +29,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 				{
 					return FieldIndexProcessorResult.NoIndexFound;
 				}
+				resolved.MarkAsBestIndex();
 				return new FieldIndexProcessorResult(resolved);
 			}
 			return FieldIndexProcessorResult.FoundIndexButNoMatch;

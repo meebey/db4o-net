@@ -96,7 +96,8 @@ namespace Db4oUnit
 				}
 				catch (Exception e)
 				{
-					return Iterators.Cons(new FailingTest(clazz.FullName, e)).GetEnumerator();
+					return Iterators.SingletonIterable(new FailingTest(clazz.FullName, e)).GetEnumerator
+						();
 				}
 			}
 
@@ -118,7 +119,7 @@ namespace Db4oUnit
 			}
 			if (typeof(ITest).IsAssignableFrom(clazz))
 			{
-				return Iterators.IterateSingle(NewInstance(clazz));
+				return Iterators.SingletonIterator(NewInstance(clazz));
 			}
 			ValidateTestClass(clazz);
 			return FromMethods(clazz);

@@ -347,7 +347,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_children = null;
 		}
 
-		internal override QCon ShareParent(object a_object, bool[] removeExisting)
+		internal override QCon ShareParent(object a_object, BooleanByRef removeExisting)
 		{
 			if (i_parent == null)
 			{
@@ -361,8 +361,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return i_parent.AddSharedConstraint(i_field, obj);
 		}
 
-		internal override QConClass ShareParentForClass(IReflectClass a_class, bool[] removeExisting
-			)
+		internal override QConClass ShareParentForClass(IReflectClass a_class, BooleanByRef
+			 removeExisting)
 		{
 			if (i_parent == null)
 			{

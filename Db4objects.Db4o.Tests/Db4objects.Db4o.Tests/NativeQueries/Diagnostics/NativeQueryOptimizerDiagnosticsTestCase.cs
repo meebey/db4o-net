@@ -15,8 +15,7 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 	{
 		private bool _failed = false;
 
-		private object _reason = null;
-
+		//	private Object _reason = null;
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(NativeQueryOptimizerDiagnosticsTestCase.Subject)).ObjectField
@@ -36,7 +35,7 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 			{
 				if (d.GetType() == typeof(NativeQueryNotOptimized))
 				{
-					this._enclosing._reason = ((NativeQueryNotOptimized)d).Reason();
+					//							_reason = ((NativeQueryNotOptimized) d).reason();
 					this._enclosing._failed = true;
 				}
 			}
@@ -53,6 +52,7 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 		public virtual void TestNativeQueryNotOptimized()
 		{
 			IObjectSet items = Db().Query(new _Predicate_41());
+			Assert.IsNotNull(items);
 			Assert.IsTrue(_failed);
 		}
 

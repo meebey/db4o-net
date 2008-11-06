@@ -16,7 +16,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public virtual IEnumerator GetEnumerator()
 		{
-			return Iterators.IterateSingle(Variable().Value);
+			return Iterators.SingletonIterator(Variable().Value);
 		}
 	}
 }

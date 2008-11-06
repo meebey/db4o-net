@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		public virtual void TestIterateSingle()
 		{
-			IEnumerator i = Iterators.IterateSingle("foo");
+			IEnumerator i = Iterators.SingletonIterator("foo");
 			Assert.IsTrue(i.MoveNext());
 			Assert.AreEqual("foo", i.Current);
 			Assert.IsFalse(i.MoveNext());

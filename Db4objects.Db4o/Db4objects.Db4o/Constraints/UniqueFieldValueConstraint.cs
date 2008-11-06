@@ -63,9 +63,11 @@ namespace Db4objects.Db4o.Constraints
 				{
 					IObjectInfo info = (IObjectInfo)i.Current;
 					int id = (int)info.GetInternalID();
-					// TODO: check if the object is of the appropriate
-					// type before going further?
 					HardObjectReference @ref = HardObjectReference.PeekPersisted(trans, id, 1);
+					if (!this.ReflectClass().IsInstance(@ref._object))
+					{
+						continue;
+					}
 					object fieldValue = this.FieldMetadata().GetOn(trans, @ref._object);
 					if (fieldValue == null)
 					{

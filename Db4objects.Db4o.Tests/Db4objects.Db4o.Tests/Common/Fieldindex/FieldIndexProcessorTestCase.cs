@@ -140,6 +140,16 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			AssertExpectedFoos(typeof(ComplexFieldIndexItem), new int[] { 4, 9 }, query);
 		}
 
+		public virtual void TestThreeOrs()
+		{
+			IQuery query = CreateItemQuery();
+			IConstraint c1 = query.Descend("foo").Constrain(3);
+			IConstraint c2 = query.Descend("foo").Constrain(4);
+			IConstraint c3 = query.Descend("foo").Constrain(7);
+			c1.Or(c2).Or(c3);
+			AssertExpectedFoos(typeof(FieldIndexItem), new int[] { 3, 4, 7 }, query);
+		}
+
 		public virtual void _testOrOnDifferentFields()
 		{
 			IQuery query = CreateComplexItemQuery();

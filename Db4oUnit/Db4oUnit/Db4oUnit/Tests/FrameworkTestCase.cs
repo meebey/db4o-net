@@ -15,15 +15,15 @@ namespace Db4oUnit.Tests
 		public virtual void TestRunsGreen()
 		{
 			TestResult result = new TestResult();
-			new TestRunner(Iterators.Cons(new RunsGreen())).Run(result);
-			Assert.IsTrue(result.Failures.Size() == 0, "not green");
+			new TestRunner(Iterators.SingletonIterable(new RunsGreen())).Run(result);
+			Assert.IsTrue(result.Failures.Size == 0, "not green");
 		}
 
 		public virtual void TestRunsRed()
 		{
 			TestResult result = new TestResult();
-			new TestRunner(Iterators.Cons(new RunsRed(Exception))).Run(result);
-			Assert.IsTrue(result.Failures.Size() == 1, "not red");
+			new TestRunner(Iterators.SingletonIterable(new RunsRed(Exception))).Run(result);
+			Assert.IsTrue(result.Failures.Size == 1, "not red");
 		}
 
 		public static void RunTestAndExpect(ITest test, int expFailures)
@@ -34,7 +34,7 @@ namespace Db4oUnit.Tests
 		public static void RunTestAndExpect(ITest test, int expFailures, bool checkException
 			)
 		{
-			RunTestAndExpect(Iterators.Cons(test), expFailures, checkException);
+			RunTestAndExpect(Iterators.SingletonIterable(test), expFailures, checkException);
 		}
 
 		public static void RunTestAndExpect(IEnumerable tests, int expFailures, bool checkException
@@ -42,7 +42,7 @@ namespace Db4oUnit.Tests
 		{
 			TestResult result = new TestResult();
 			new TestRunner(tests).Run(result);
-			if (expFailures != result.Failures.Size())
+			if (expFailures != result.Failures.Size)
 			{
 				Assert.Fail(result.Failures.ToString());
 			}
@@ -51,7 +51,7 @@ namespace Db4oUnit.Tests
 				for (IEnumerator iter = result.Failures.GetEnumerator(); iter.MoveNext(); )
 				{
 					TestFailure failure = (TestFailure)iter.Current;
-					Assert.AreEqual(Exception, failure.GetFailure());
+					Assert.AreEqual(Exception, failure.Reason);
 				}
 			}
 		}

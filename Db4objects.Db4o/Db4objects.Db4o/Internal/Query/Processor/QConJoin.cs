@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			a_secondResult)
 		{
 			bool res = i_evaluator.Not(i_and ? ((a_pending._result + a_secondResult) > 0) : (
-				a_pending._result + a_secondResult) > -4);
+				a_pending._result + a_secondResult) > QPending.False);
 			if (HasJoins())
 			{
 				IEnumerator i = IterateJoins();
@@ -126,6 +126,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public virtual bool IsOr()
 		{
 			return !i_and;
+		}
+
+		public override void SetProcessedByIndex()
+		{
+			if (ProcessedByIndex())
+			{
+				return;
+			}
+			base.SetProcessedByIndex();
+			i_constraint1.SetProcessedByIndex();
+			i_constraint2.SetProcessedByIndex();
 		}
 	}
 }

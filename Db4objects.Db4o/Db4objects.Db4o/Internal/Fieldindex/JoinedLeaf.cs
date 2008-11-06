@@ -9,7 +9,7 @@ using Db4objects.Db4o.Internal.Query.Processor;
 
 namespace Db4objects.Db4o.Internal.Fieldindex
 {
-	public class JoinedLeaf : IIndexedNodeWithRange
+	public abstract class JoinedLeaf : IIndexedNodeWithRange
 	{
 		private readonly QCon _constraint;
 
@@ -67,6 +67,12 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 		public virtual int ResultSize()
 		{
 			return _range.Size();
+		}
+
+		public virtual void MarkAsBestIndex()
+		{
+			_leaf1.MarkAsBestIndex();
+			_constraint.SetProcessedByIndex();
 		}
 	}
 }

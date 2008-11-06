@@ -55,8 +55,8 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			}
 			catch (Exception e)
 			{
-				return Iterators.Concat(Iterators.IterateSingle(new FailingTest(clazz.FullName, e
-					)), defaultTestSuite);
+				return Iterators.Concat(Iterators.SingletonIterator(new FailingTest(clazz.FullName
+					, e)), defaultTestSuite);
 			}
 		}
 

@@ -59,5 +59,10 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 		{
 			return _range;
 		}
+
+		public override void MarkAsBestIndex()
+		{
+			_constraint.SetProcessedByIndex();
+		}
 	}
 }

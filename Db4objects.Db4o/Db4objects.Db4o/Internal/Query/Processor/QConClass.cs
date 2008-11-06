@@ -157,5 +157,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 			}
 		}
+
+		public override void SetProcessedByIndex()
+		{
+		}
+		// do nothing, QConClass needs to stay in the evaluation graph.
 	}
 }

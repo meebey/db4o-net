@@ -585,11 +585,12 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="ObjectNotStorableException">ObjectNotStorableException</see>
 		/// if an object can not be stored.
 		/// <br /><br />
-		/// The default for this setting is <b>false</b>.<br /><br />
+		/// The default for this setting is <b>true</b>.<br /><br />
 		/// In client/server environment this setting should be used on both
 		/// client and server.<br /><br />
 		/// </remarks>
-		/// <param name="flag">true to throw Exceptions if objects can not be stored.</param>
+		/// <param name="flag">false to not throw Exceptions if objects can not be stored (fail silently).
+		/// 	</param>
 		void ExceptionsOnNotStorable(bool flag);
 
 		/// <summary>configuration setting to turn file buffer flushing off.</summary>

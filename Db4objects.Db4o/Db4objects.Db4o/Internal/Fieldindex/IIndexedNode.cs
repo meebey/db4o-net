@@ -19,5 +19,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		//FIXME: do we need this?
 		TreeInt ToTreeInt();
+
+		void MarkAsBestIndex();
 	}
 }

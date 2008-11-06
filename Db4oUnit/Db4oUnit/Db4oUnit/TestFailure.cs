@@ -8,30 +8,36 @@ namespace Db4oUnit
 {
 	public class TestFailure : Printable
 	{
-		internal ITest _test;
+		private readonly string _testLabel;
 
-		internal Exception _failure;
+		private readonly Exception _failure;
 
-		public TestFailure(ITest test, Exception failure)
+		public TestFailure(string test, Exception failure)
 		{
-			_test = test;
+			_testLabel = test;
 			_failure = failure;
 		}
 
-		public virtual ITest GetTest()
+		public virtual string TestLabel
 		{
-			return _test;
+			get
+			{
+				return _testLabel;
+			}
 		}
 
-		public virtual Exception GetFailure()
+		public virtual Exception Reason
 		{
-			return _failure;
+			get
+			{
+				return _failure;
+			}
 		}
 
 		/// <exception cref="IOException"></exception>
 		public override void Print(TextWriter writer)
 		{
-			writer.Write(_test.Label());
+			writer.Write(_testLabel);
 			writer.Write(": ");
 			// TODO: don't print the first stack trace elements
 			// which reference db4ounit.Assert methods

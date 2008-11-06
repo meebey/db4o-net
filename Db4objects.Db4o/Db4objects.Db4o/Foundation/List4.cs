@@ -39,5 +39,17 @@ namespace Db4objects.Db4o.Foundation
 			}
 			return obj.Equals(_element);
 		}
+
+		public static int Size(Db4objects.Db4o.Foundation.List4 list)
+		{
+			int counter = 0;
+			Db4objects.Db4o.Foundation.List4 nextList = list;
+			while (nextList != null)
+			{
+				counter++;
+				nextList = nextList._next;
+			}
+			return counter;
+		}
 	}
 }

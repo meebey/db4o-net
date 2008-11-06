@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 {
 	public abstract class IndexedNodeBase : IIndexedNode
 	{
-		private readonly QConObject _constraint;
+		protected readonly QConObject _constraint;
 
 		public IndexedNodeBase(QConObject qcon)
 		{
@@ -84,6 +84,8 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 		}
 
 		public abstract IEnumerator GetEnumerator();
+
+		public abstract void MarkAsBestIndex();
 
 		public abstract int ResultSize();
 	}

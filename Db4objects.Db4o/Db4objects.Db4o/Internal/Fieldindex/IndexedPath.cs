@@ -63,5 +63,11 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 		{
 			throw new NotSupportedException();
 		}
+
+		public override void MarkAsBestIndex()
+		{
+			_constraint.SetProcessedByIndex();
+			_next.MarkAsBestIndex();
+		}
 	}
 }

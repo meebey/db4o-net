@@ -78,11 +78,97 @@ namespace Db4oUnit.Tests.Fixtures
 			private readonly MethodCallRecorder recorder;
 		}
 
+		public virtual void TestCombinationToRun()
+		{
+			MethodCallRecorder recorder = new MethodCallRecorder();
+			Run(new _FixtureBasedTestSuite_74(recorder));
+			//		System.out.println(CodeGenerator.generateMethodCallArray(recorder));
+			recorder.Verify(new MethodCall[] { new MethodCall("testFoo", new object[] { "f11"
+				, "f22" }), new MethodCall("testBar", new object[] { "f11", "f22" }) });
+		}
+
+		private sealed class _FixtureBasedTestSuite_74 : FixtureBasedTestSuite
+		{
+			public _FixtureBasedTestSuite_74(MethodCallRecorder recorder)
+			{
+				this.recorder = recorder;
+			}
+
+			public override IFixtureProvider[] FixtureProviders()
+			{
+				return new IFixtureProvider[] { new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.RecorderFixture, new object[] { recorder }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.Fixture1, new object[] { "f11", "f12" }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.Fixture2, new object[] { "f21", "f22" }) };
+			}
+
+			public override Type[] TestUnits()
+			{
+				return new Type[] { typeof(FixtureBasedTestSuiteTestCase.TestUnit) };
+			}
+
+			public override int[] CombinationToRun()
+			{
+				return new int[] { 0, 0, 1 };
+			}
+
+			private readonly MethodCallRecorder recorder;
+		}
+
+		public virtual void TestInvalidCombinationToRun()
+		{
+			Assert.Expect(typeof(AssertionException), new _ICodeBlock_103(this));
+		}
+
+		private sealed class _ICodeBlock_103 : ICodeBlock
+		{
+			public _ICodeBlock_103(FixtureBasedTestSuiteTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				this._enclosing.RunInvalidCombination();
+			}
+
+			private readonly FixtureBasedTestSuiteTestCase _enclosing;
+		}
+
+		private void RunInvalidCombination()
+		{
+			Run(new _FixtureBasedTestSuite_111());
+		}
+
+		private sealed class _FixtureBasedTestSuite_111 : FixtureBasedTestSuite
+		{
+			public _FixtureBasedTestSuite_111()
+			{
+			}
+
+			public override IFixtureProvider[] FixtureProviders()
+			{
+				return new IFixtureProvider[] { new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.Fixture1, new object[] { "f11", "f12" }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.Fixture2, new object[] { "f21", "f22" }) };
+			}
+
+			public override Type[] TestUnits()
+			{
+				return new Type[] { typeof(FixtureBasedTestSuiteTestCase.TestUnit) };
+			}
+
+			public override int[] CombinationToRun()
+			{
+				return new int[] { 0 };
+			}
+		}
+
 		private void Run(FixtureBasedTestSuite suite)
 		{
 			TestResult result = new TestResult();
 			new TestRunner(suite).Run(result);
-			if (result.Failures.Size() > 0)
+			if (result.Failures.Size > 0)
 			{
 				Assert.Fail(Iterators.ToString(result.Failures));
 			}
@@ -90,17 +176,17 @@ namespace Db4oUnit.Tests.Fixtures
 
 		public virtual void TestLabel()
 		{
-			FixtureBasedTestSuite suite = new _FixtureBasedTestSuite_79();
-			IEnumerable labels = Iterators.Map(suite, new _IFunction4_91());
+			FixtureBasedTestSuite suite = new _FixtureBasedTestSuite_138();
+			IEnumerable labels = Iterators.Map(suite, new _IFunction4_150());
 			Iterator4Assert.AreEqual(new object[] { TestLabel("testFoo", 0, 0), TestLabel("testFoo"
 				, 1, 0), TestLabel("testFoo", 0, 1), TestLabel("testFoo", 1, 1), TestLabel("testBar"
 				, 0, 0), TestLabel("testBar", 1, 0), TestLabel("testBar", 0, 1), TestLabel("testBar"
 				, 1, 1) }, labels.GetEnumerator());
 		}
 
-		private sealed class _FixtureBasedTestSuite_79 : FixtureBasedTestSuite
+		private sealed class _FixtureBasedTestSuite_138 : FixtureBasedTestSuite
 		{
-			public _FixtureBasedTestSuite_79()
+			public _FixtureBasedTestSuite_138()
 			{
 			}
 
@@ -117,9 +203,9 @@ namespace Db4oUnit.Tests.Fixtures
 			}
 		}
 
-		private sealed class _IFunction4_91 : IFunction4
+		private sealed class _IFunction4_150 : IFunction4
 		{
-			public _IFunction4_91()
+			public _IFunction4_150()
 			{
 			}
 

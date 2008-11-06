@@ -16,9 +16,12 @@ namespace Db4oUnit
 			return _failures.GetEnumerator();
 		}
 
-		public virtual int Size()
+		public virtual int Size
 		{
-			return _failures.Size();
+			get
+			{
+				return _failures.Size();
+			}
 		}
 
 		public virtual void Add(TestFailure failure)
@@ -42,7 +45,7 @@ namespace Db4oUnit
 			{
 				writer.Write(index.ToString());
 				writer.Write(") ");
-				writer.Write(((TestFailure)e.Current).GetTest().Label());
+				writer.Write(((TestFailure)e.Current).TestLabel);
 				writer.Write(TestPlatform.NewLine);
 				++index;
 			}

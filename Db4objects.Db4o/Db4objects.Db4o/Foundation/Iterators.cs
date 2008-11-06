@@ -176,7 +176,7 @@ namespace Db4objects.Db4o.Foundation
 			return new FilteredIterator(iterator, predicate);
 		}
 
-		public static IEnumerable Cons(object element)
+		public static IEnumerable SingletonIterable(object element)
 		{
 			return new _IEnumerable_115(element);
 		}
@@ -190,15 +190,15 @@ namespace Db4objects.Db4o.Foundation
 
 			public IEnumerator GetEnumerator()
 			{
-				return Iterators.IterateSingle(element);
+				return Iterators.SingletonIterator(element);
 			}
 
 			private readonly object element;
 		}
 
-		public static IEnumerable Cons(IEnumerable front, object last)
+		public static IEnumerable Append(IEnumerable front, object last)
 		{
-			return Concat(Iterable(new object[] { front, Cons(last) }));
+			return Concat(Iterable(new object[] { front, SingletonIterable(last) }));
 		}
 
 		public static IEnumerator Iterate(object[] array)
@@ -371,7 +371,7 @@ namespace Db4objects.Db4o.Foundation
 
 			public object Apply(object arg)
 			{
-				return Iterators.Cons(row, arg);
+				return Iterators.Append(row, arg);
 			}
 
 			private readonly IEnumerable row;
@@ -388,7 +388,7 @@ namespace Db4objects.Db4o.Foundation
 
 			public object Apply(object arg)
 			{
-				return Iterators.CrossProduct(iterables, level + 1, Iterators.Cons(row, arg));
+				return Iterators.CrossProduct(iterables, level + 1, Iterators.Append(row, arg));
 			}
 
 			private readonly IEnumerable[] iterables;
@@ -418,7 +418,7 @@ namespace Db4objects.Db4o.Foundation
 			private readonly object[] objects;
 		}
 
-		public static IEnumerator IterateSingle(object element)
+		public static IEnumerator SingletonIterator(object element)
 		{
 			return new SingleValueIterator(element);
 		}
