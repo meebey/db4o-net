@@ -4,49 +4,48 @@ using System.Reflection;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
-	public class NetField : Db4objects.Db4o.Reflect.IReflectField
+	public class NetField : IReflectField
 	{
-		private readonly Db4objects.Db4o.Reflect.IReflector reflector;
+		private readonly IReflector _reflector;
 
-		protected readonly System.Reflection.FieldInfo field;
+		protected readonly FieldInfo _field;
 
         private static IList _transientMarkers;
 
-		public NetField(Db4objects.Db4o.Reflect.IReflector reflector, System.Reflection.FieldInfo field
-			)
+		public NetField(IReflector reflector, FieldInfo field)
 		{
-			this.reflector = reflector;
-			this.field = field;
+			_reflector = reflector;
+			_field = field;
 		}
 
         public override string ToString()
         {
-            return string.Format("NetField({0})", field);
+            return string.Format("NetField({0})", _field);
         }
 
 		public virtual string GetName()
 		{
-			return field.Name;
+			return _field.Name;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass GetFieldType()
+		public virtual IReflectClass GetFieldType()
 		{
-			return reflector.ForClass(field.FieldType);
+			return _reflector.ForClass(_field.FieldType);
 		}
 
 		public virtual bool IsPublic()
 		{
-			return field.IsPublic;
+			return _field.IsPublic;
 		}
 
 		public virtual bool IsStatic()
 		{
-			return field.IsStatic;
+			return _field.IsStatic;
 		}
 
 		public virtual bool IsTransient()
 		{
-            return IsTransient(field);
+            return IsTransient(_field);
 		}
 
 		public virtual void SetAccessible()
@@ -57,7 +56,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 			try
 			{
-				return field.GetValue(onObject);
+				return _field.GetValue(onObject);
 			}
 			catch
 			{
@@ -69,7 +68,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 			try
 			{
-				field.SetValue(onObject, attribute);
+				_field.SetValue(onObject, attribute);
 			}
 			catch
 			{
@@ -81,7 +80,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			return orig;
 		}
 		
-		public Db4objects.Db4o.Reflect.IReflectClass IndexType()
+		public IReflectClass IndexType()
 		{
 			return GetFieldType();
 		}

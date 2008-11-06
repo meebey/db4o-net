@@ -3,38 +3,35 @@ using System;
 using System.Reflection;
 using Sharpen.Lang;
 using Db4objects.Db4o.Reflect.Core;
-using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
 	/// <summary>Reflection implementation for Class to map to .NET reflection.</summary>
 	/// <remarks>Reflection implementation for Class to map to .NET reflection.</remarks>
-	public class NetClass : Db4objects.Db4o.Reflect.Core.IConstructorAwareReflectClass
+	public class NetClass : IConstructorAwareReflectClass
 	{
-		protected readonly Db4objects.Db4o.Reflect.IReflector _reflector;
+		protected readonly IReflector _reflector;
 		
-		protected readonly Db4objects.Db4o.Reflect.Net.NetReflector _netReflector;
+		protected readonly NetReflector _netReflector;
 
-		private readonly System.Type _type;
+		private readonly Type _type;
 
 		private ReflectConstructorSpec _constructor;
 
-		private object[] constructorParams;
-		
-	    private string _name;
+		private string _name;
 	    
-	    private Db4objects.Db4o.Reflect.IReflectField[] _fields;
+	    private IReflectField[] _fields;
 
-	    public NetClass(Db4objects.Db4o.Reflect.IReflector reflector, Db4objects.Db4o.Reflect.Net.NetReflector netReflector, System.Type clazz)
+	    public NetClass(IReflector reflector, NetReflector netReflector, Type clazz)
 		{
 			if(reflector == null)
 			{
-				throw new NullReferenceException();
+				throw new ArgumentNullException("reflector");
 			}
 			
 			if(netReflector == null)
 			{
-				throw new NullReferenceException();
+				throw new ArgumentNullException("netReflector");
 			}
 			
 			_reflector = reflector;
@@ -43,7 +40,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			_constructor = ReflectConstructorSpec.UnspecifiedConstructor;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass GetComponentType()
+		public virtual IReflectClass GetComponentType()
 		{
 			return _reflector.ForClass(_type.GetElementType());
 		}
@@ -55,12 +52,12 @@ namespace Db4objects.Db4o.Reflect.Net
 				[constructors.Length];
 			for (int i = 0; i < constructors.Length; i++)
 			{
-				reflectors[i] = new Db4objects.Db4o.Reflect.Net.NetConstructor(_reflector, constructors[i]);
+				reflectors[i] = new NetConstructor(_reflector, constructors[i]);
 			}
 			return reflectors;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectField GetDeclaredField(string name)
+		public virtual IReflectField GetDeclaredField(string name)
 		{
 			foreach (IReflectField field in GetDeclaredFields())
 			{
@@ -69,7 +66,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			return null;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectField[] GetDeclaredFields()
+		public virtual IReflectField[] GetDeclaredFields()
 		{
 			if (_fields == null)
 			{
@@ -78,10 +75,10 @@ namespace Db4objects.Db4o.Reflect.Net
 			return _fields;
 		}
 		
-		private Db4objects.Db4o.Reflect.IReflectField[] CreateDeclaredFieldsArray()
+		private IReflectField[] CreateDeclaredFieldsArray()
 		{	
 			System.Reflection.FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(_type);
-			Db4objects.Db4o.Reflect.IReflectField[] reflectors = new Db4objects.Db4o.Reflect.IReflectField[fields.Length];
+			Db4objects.Db4o.Reflect.IReflectField[] reflectors = new IReflectField[fields.Length];
 			for (int i = 0; i < reflectors.Length; i++)
 			{
 				reflectors[i] = CreateField(fields[i]);
@@ -91,27 +88,25 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		protected virtual IReflectField CreateField(FieldInfo field)
 		{
-			return new Db4objects.Db4o.Reflect.Net.NetField(_reflector, field);
+			return new NetField(_reflector, field);
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass GetDelegate()
+		public virtual IReflectClass GetDelegate()
 		{
 			return this;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectMethod GetMethod(
-			string methodName,
-			Db4objects.Db4o.Reflect.IReflectClass[] paramClasses)
+		public virtual IReflectMethod GetMethod(string methodName, IReflectClass[] paramClasses)
 		{
 			try
 			{
-				Type[] parameterTypes = Db4objects.Db4o.Reflect.Net.NetReflector.ToNative(paramClasses);
+				Type[] parameterTypes = NetReflector.ToNative(paramClasses);
 				System.Reflection.MethodInfo method = GetMethod(_type, methodName, parameterTypes);
 				if (method == null)
 				{
 					return null;
 				}
-				return new Db4objects.Db4o.Reflect.Net.NetMethod(_reflector, method);
+				return new NetMethod(_reflector, method);
 			}
 			catch
 			{
@@ -138,7 +133,7 @@ namespace Db4objects.Db4o.Reflect.Net
             return _name;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass GetSuperclass()
+		public virtual IReflectClass GetSuperclass()
 		{
 			return _reflector.ForClass(_type.BaseType);
 		}
@@ -153,13 +148,13 @@ namespace Db4objects.Db4o.Reflect.Net
 			return _type.IsArray;
 		}
 
-		public virtual bool IsAssignableFrom(Db4objects.Db4o.Reflect.IReflectClass type)
+		public virtual bool IsAssignableFrom(IReflectClass type)
 		{
-			if (!(type is Db4objects.Db4o.Reflect.Net.NetClass))
+			if (!(type is NetClass))
 			{
 				return false;
 			}
-			return _type.IsAssignableFrom(((Db4objects.Db4o.Reflect.Net.NetClass)type).GetNetType());
+			return _type.IsAssignableFrom(((NetClass)type).GetNetType());
 		}
 
 		public virtual bool IsInstance(object obj)
@@ -180,7 +175,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		public virtual bool IsPrimitive()
 		{
 			return _type.IsPrimitive
-			       || _type == typeof(System.DateTime)
+			       || _type == typeof(DateTime)
 			       || _type == typeof(decimal);
 		}
 
@@ -190,17 +185,12 @@ namespace Db4objects.Db4o.Reflect.Net
 			return _constructor.NewInstance();
 		}
 
-		private static bool CanCreate(Type type)
-		{
-			return !type.IsAbstract;
-		}
-
-		public virtual System.Type GetNetType()
+		public virtual Type GetNetType()
 		{
 			return _type;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflector Reflector()
+		public virtual IReflector Reflector()
 		{
 			return _reflector;
 		}
@@ -209,8 +199,9 @@ namespace Db4objects.Db4o.Reflect.Net
 		{
 #if !CF
 			return new SerializationConstructor(GetNetType());
-#endif
+#else
 			return null;
+#endif
 		}
 
 		public override string ToString()
