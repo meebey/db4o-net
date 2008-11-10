@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using Db4objects.Db4o.Config;
 
@@ -8,15 +9,15 @@ namespace Db4objects.Db4o.Internal
 	{
 		private static IClientServerFactory DefaultClientServerFactory()
 		{
-			AssemblyName csAssemblyName = NewAssemblyName(typeof(Config4Impl).Assembly, "Db4objects.Db4o.CS");
-			return (IClientServerFactory) Activator.CreateInstance(Assembly.Load(csAssemblyName).GetType("Db4objects.Db4o.Internal.CS.Config.ClientServerFactoryImpl"));
+			Assembly csAssembly = Assembly.Load(ClientServerAssemblyName());
+			return (IClientServerFactory) Activator.CreateInstance(csAssembly.GetType("Db4objects.Db4o.Internal.CS.Config.ClientServerFactoryImpl"));
 		}
 
-		private static AssemblyName NewAssemblyName(Assembly template, string newName)
+		private static string ClientServerAssemblyName()
 		{
-			AssemblyName name = template.GetName(true);
-			name.Name = newName;
-			return name;
+			Assembly db4oAssembly = typeof(IObjectContainer).Assembly;
+			string db4oAssemblySimpleName = db4oAssembly.GetName().Name;
+			return db4oAssembly.FullName.Replace(db4oAssemblySimpleName, "Db4objects.Db4o.CS");
 		}
 	}
 }
