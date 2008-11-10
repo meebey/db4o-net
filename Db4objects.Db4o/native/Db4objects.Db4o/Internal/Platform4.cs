@@ -1,8 +1,8 @@
-//#define USE_FAST_REFLECTOR
 /* Copyright (C) 2004 - 2007 db4objects Inc.   http://www.db4o.com */
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -14,7 +14,6 @@ using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Internal.Query.Processor;
-using Db4objects.Db4o.Internal.Reflect;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
@@ -37,9 +36,9 @@ namespace Db4objects.Db4o.Internal
                 };
 
 
-        private static ArrayList shutDownStreams;
+        private static List<ObjectContainerBase> _containersToBeShutdown;
 
-		private static object _lock = new object();
+		private static readonly object _shutdownStreamsLock = new object();
 
         private static readonly byte[][] oldAssemblies;
 
@@ -72,18 +71,17 @@ namespace Db4objects.Db4o.Internal
 
         internal static void AddShutDownHook(ObjectContainerBase container)
         {
-            lock (_lock)
+            lock (_shutdownStreamsLock)
             {
-                if (shutDownStreams == null)
+                if (_containersToBeShutdown == null)
                 {
-                    shutDownStreams = new ArrayList();
+					_containersToBeShutdown = new List<ObjectContainerBase>();
 #if !CF
-					EventHandler handler = OnShutDown;
-					AppDomain.CurrentDomain.ProcessExit += handler;
-					AppDomain.CurrentDomain.DomainUnload += handler;
+                	AppDomain.CurrentDomain.ProcessExit += OnShutDown;
+					AppDomain.CurrentDomain.DomainUnload += OnShutDown;
 #endif
                 }
-                shutDownStreams.Add(container);
+                _containersToBeShutdown.Add(container);
             }
         }
 
@@ -484,11 +482,11 @@ namespace Db4objects.Db4o.Internal
 
         internal static void RemoveShutDownHook(ObjectContainerBase container)
         {
-            lock (_lock)
+            lock (_shutdownStreamsLock)
             {
-                if (shutDownStreams != null)
+                if (_containersToBeShutdown != null)
                 {
-                    shutDownStreams.Remove(container);
+                    _containersToBeShutdown.Remove(container);
                 }
             }
         }
@@ -500,9 +498,9 @@ namespace Db4objects.Db4o.Internal
 
         private static void OnShutDown(object sender, EventArgs args)
         {
-			lock (_lock)
+			lock (_shutdownStreamsLock)
 			{
-				foreach (ObjectContainerBase container in shutDownStreams.ToArray())
+				foreach (ObjectContainerBase container in _containersToBeShutdown.ToArray())
 				{
 					container.ShutdownHook(); // this will remove the stream for the list
 				}				

@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Internal.Reflect
 
 		public override object Get(object onObject)
 		{
-			if (null == _getter) _getter = NewGetFieldEmitter();
+			if (null == _getter) _getter = AccessorFactory.GetterFor(_field);
 			try
 			{
 				return _getter(onObject);
@@ -61,21 +61,9 @@ namespace Db4objects.Db4o.Internal.Reflect
 			}
 		}
 
-		private Getter NewGetFieldEmitter()
-		{
-			try
-			{
-				return new GetFieldEmitter(_field).Emit();
-			}
-			catch
-			{
-				return delegate { return null; };
-			}
-		}
-
 		public override void Set(object onObject, object attribute)
 		{
-			if (null == _setter) _setter = NewFieldSetterEmitter();
+			if (null == _setter) _setter = AccessorFactory.SetterFor(_field);
 			try
 			{
 				_setter(onObject, attribute);
@@ -87,18 +75,6 @@ namespace Db4objects.Db4o.Internal.Reflect
 			}
 			catch
 			{
-			}
-		}
-
-		private Setter NewFieldSetterEmitter()
-		{
-			try
-			{
-				return new SetFieldEmitter(_field).Emit();
-			}
-			catch
-			{
-				return delegate { };
 			}
 		}
 	}

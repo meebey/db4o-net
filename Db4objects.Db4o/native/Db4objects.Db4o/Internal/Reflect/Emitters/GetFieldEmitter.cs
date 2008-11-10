@@ -10,8 +10,6 @@ using System.Runtime.CompilerServices;
 namespace Db4objects.Db4o.Internal.Reflect.Emitters
 {
 #if !CF
-	delegate object Getter(object o);
-
 	class GetFieldEmitter : Emitter
 	{
 		public GetFieldEmitter(FieldInfo field) : base(field, typeof(object), new Type[] { typeof(object) })

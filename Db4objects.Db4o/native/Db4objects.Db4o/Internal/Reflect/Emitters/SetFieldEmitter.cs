@@ -9,8 +9,6 @@ using System.Reflection.Emit;
 namespace Db4objects.Db4o.Internal.Reflect.Emitters
 {
 #if !CF
-	internal delegate void Setter(object o, object value);
-
 	class SetFieldEmitter : Emitter
 	{
 		public SetFieldEmitter(FieldInfo field) : base(field, typeof(void), new Type[] { typeof(object), typeof(object) })
