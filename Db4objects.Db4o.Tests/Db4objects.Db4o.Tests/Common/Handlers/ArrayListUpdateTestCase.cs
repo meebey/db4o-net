@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public IList _emptyInterface;
 		}
 
-		/// <summary>Todo: add as type to Item</summary>
+		/// <summary>Todo: add as type to Item *</summary>
 		[System.Serializable]
 		public class ArrayListExtensionWithField : ArrayList
 		{
@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		/// <summary>Todo: add as type to Item</summary>
+		/// <summary>Todo: add as type to Item *</summary>
 		[System.Serializable]
 		public class ArrayListExtensionWithoutField : ArrayList
 		{

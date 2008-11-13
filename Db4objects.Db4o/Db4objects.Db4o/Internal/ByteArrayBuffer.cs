@@ -26,6 +26,11 @@ namespace Db4objects.Db4o.Internal
 			_buffer = new byte[a_length];
 		}
 
+		public ByteArrayBuffer(byte[] buffer)
+		{
+			_buffer = buffer;
+		}
+
 		public virtual void Seek(int offset)
 		{
 			_offset = offset;

@@ -617,10 +617,10 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override void ReadBytes(byte[] a_bytes, int a_address, int a_length)
 		{
-			MsgD msg = Msg.ReadBytes.GetWriterForInts(_transaction, new int[] { a_address, a_length
+			MsgD msg = Msg.ReadSlot.GetWriterForInts(_transaction, new int[] { a_address, a_length
 				 });
 			Write(msg);
-			ByteArrayBuffer reader = ExpectedByteResponse(Msg.ReadBytes);
+			ByteArrayBuffer reader = ExpectedByteResponse(Msg.ReadSlot);
 			System.Array.Copy(reader._buffer, 0, a_bytes, 0, a_length);
 		}
 
@@ -676,8 +676,10 @@ namespace Db4objects.Db4o.Internal.CS
 		public sealed override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id, 
 			bool lastCommitted)
 		{
-			// TODO: read lightweight reader instead
-			return ReadWriterByID(a_ta, a_id, lastCommitted);
+			MsgD msg = Msg.ReadReaderById.GetWriterForInts(a_ta, new int[] { a_id, lastCommitted
+				 ? 1 : 0 });
+			Write(msg);
+			return ((MReadBytes)ExpectedResponse(Msg.ReadBytes)).Unmarshall();
 		}
 
 		public sealed override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id)

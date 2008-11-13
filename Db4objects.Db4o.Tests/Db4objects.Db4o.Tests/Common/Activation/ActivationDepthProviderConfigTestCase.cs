@@ -73,9 +73,9 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 			}
 			ResetProvider();
 			QueryItem();
-			AssertProviderCalled(new MethodCall[] { new MethodCall("activationDepthFor", ItemRootMetadata
-				(), ActivationMode.Prefetch), new MethodCall("activationDepthFor", ItemRootMetadata
-				(), ActivationMode.Activate) });
+			AssertProviderCalled(new MethodCall[] { new MethodCall("activationDepthFor", new 
+				object[] { ItemRootMetadata(), ActivationMode.Prefetch }), new MethodCall("activationDepthFor"
+				, new object[] { ItemRootMetadata(), ActivationMode.Activate }) });
 		}
 
 		public virtual void TestSoloActivationDepthFor()
@@ -115,8 +115,8 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 
 		private void AssertProviderCalled(string methodName, object arg1, object arg2)
 		{
-			_dummyProvider.Verify(new MethodCall[] { new MethodCall(methodName, arg1, arg2) }
-				);
+			_dummyProvider.Verify(new MethodCall[] { new MethodCall(methodName, new object[] 
+				{ arg1, arg2 }) });
 		}
 
 		private void ResetProvider()

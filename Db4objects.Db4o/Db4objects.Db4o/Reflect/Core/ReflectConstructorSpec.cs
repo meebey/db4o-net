@@ -22,6 +22,7 @@ namespace Db4objects.Db4o.Reflect.Core
 
 		public ReflectConstructorSpec(IReflectConstructor constructor, object[] args)
 		{
+			// TODO: consider producing the array of default arguments every time
 			_constructor = constructor;
 			_args = args;
 			_canBeInstantiated = TernaryBool.Yes;

@@ -5,14 +5,14 @@ namespace Db4objects.Db4o
 	/// <exclude></exclude>
 	public class Db4oVersion
 	{
-		public static readonly string Name = "7.7.68.12021";
+		public static readonly string Name = "7.7.69.12076";
 
 		public const int Major = 7;
 
 		public const int Minor = 7;
 
-		public const int Iteration = 68;
+		public const int Iteration = 69;
 
-		public const int Revision = 12021;
+		public const int Revision = 12076;
 	}
 }

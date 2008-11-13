@@ -12,11 +12,6 @@ namespace Db4oUnit.Fixtures
 
 		private readonly object[] _values;
 
-		public SimpleFixtureProvider(FixtureVariable variable, object value) : this(variable
-			, new object[] { value })
-		{
-		}
-
 		public SimpleFixtureProvider(FixtureVariable variable, object[] values)
 		{
 			_variable = variable;

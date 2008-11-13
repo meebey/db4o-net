@@ -21,9 +21,11 @@ namespace Db4oUnit.Tests
 			MethodCallRecorder recorder = new MethodCallRecorder();
 			ITestListener listener = new _ITestListener_23(recorder);
 			new TestRunner(tests).Run(listener);
-			recorder.Verify(new MethodCall[] { new MethodCall("runStarted"), new MethodCall("testStarted"
-				, greenTest), new MethodCall("testStarted", redTest), new MethodCall("testFailed"
-				, redTest, FailureException), new MethodCall("runFinished") });
+			recorder.Verify(new MethodCall[] { new MethodCall("runStarted", new object[] {  }
+				), new MethodCall("testStarted", new RunsGreen[] { greenTest }), new MethodCall(
+				"testStarted", new RunsRed[] { redTest }), new MethodCall("testFailed", new object
+				[] { redTest, FailureException }), new MethodCall("runFinished", new object[] { 
+				 }) });
 		}
 
 		private sealed class _ITestListener_23 : ITestListener
@@ -35,22 +37,22 @@ namespace Db4oUnit.Tests
 
 			public void TestStarted(ITest test)
 			{
-				recorder.Record(new MethodCall("testStarted", test));
+				recorder.Record(new MethodCall("testStarted", new ITest[] { test }));
 			}
 
 			public void TestFailed(ITest test, Exception failure)
 			{
-				recorder.Record(new MethodCall("testFailed", test, failure));
+				recorder.Record(new MethodCall("testFailed", new object[] { test, failure }));
 			}
 
 			public void RunStarted()
 			{
-				recorder.Record(new MethodCall("runStarted"));
+				recorder.Record(new MethodCall("runStarted", new object[] {  }));
 			}
 
 			public void RunFinished()
 			{
-				recorder.Record(new MethodCall("runFinished"));
+				recorder.Record(new MethodCall("runFinished", new object[] {  }));
 			}
 
 			private readonly MethodCallRecorder recorder;

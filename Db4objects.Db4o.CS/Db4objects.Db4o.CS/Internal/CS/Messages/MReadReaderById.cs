@@ -8,18 +8,18 @@ using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MReadObject : MsgD, IServerSideMessage
+	public class MReadReaderById : MsgD, IServerSideMessage
 	{
 		public bool ProcessAtServer()
 		{
-			StatefulBuffer bytes = null;
+			ByteArrayBuffer bytes = null;
 			// readWriterByID may fail in certain cases, for instance if
 			// and object was deleted by another client
 			lock (StreamLock())
 			{
 				try
 				{
-					bytes = Stream().ReadWriterByID(Transaction(), _payLoad.ReadInt(), _payLoad.ReadInt
+					bytes = Stream().ReadReaderByID(Transaction(), _payLoad.ReadInt(), _payLoad.ReadInt
 						() == 1);
 				}
 				catch (Db4oException e)
@@ -35,9 +35,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			}
 			if (bytes == null)
 			{
-				bytes = new StatefulBuffer(Transaction(), 0, 0);
+				bytes = new ByteArrayBuffer(0);
 			}
-			Write(Msg.ObjectToClient.GetWriter(bytes));
+			Write(Msg.ReadBytes.GetWriter(Transaction(), bytes));
 			return true;
 		}
 	}

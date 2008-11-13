@@ -16,10 +16,10 @@ namespace Db4oUnit.Tests.Fixtures
 
 		public override IFixtureProvider[] FixtureProviders()
 		{
-			return new IFixtureProvider[] { new SubjectFixtureProvider(new object[] { new _IDeferred4_17
-				(), new _IDeferred4_22() }), new MultiValueFixtureProvider(new object[][] { new 
-				object[] {  }, new object[] { "foo", "bar", "baz" }, new object[] { "foo" }, new 
-				object[] { 42, -1 } }) };
+			return new IFixtureProvider[] { new SubjectFixtureProvider(new IDeferred4[] { new 
+				_IDeferred4_17(), new _IDeferred4_21() }), new MultiValueFixtureProvider(new object
+				[][] { new object[] {  }, new object[] { "foo", "bar", "baz" }, new object[] { "foo"
+				 }, new object[] { 42, -1 } }) };
 		}
 
 		private sealed class _IDeferred4_17 : IDeferred4
@@ -34,9 +34,9 @@ namespace Db4oUnit.Tests.Fixtures
 			}
 		}
 
-		private sealed class _IDeferred4_22 : IDeferred4
+		private sealed class _IDeferred4_21 : IDeferred4
 		{
-			public _IDeferred4_22()
+			public _IDeferred4_21()
 			{
 			}
 

@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerator Concat(IEnumerator[] array)
 		{
-			return Concat(Iterate(array));
+			return Concat(Iterate((object[])array));
 		}
 
 		public static IEnumerator Concat(IEnumerator iterators)

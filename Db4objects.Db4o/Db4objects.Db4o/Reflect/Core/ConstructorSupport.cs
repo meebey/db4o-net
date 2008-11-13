@@ -59,21 +59,27 @@ namespace Db4objects.Db4o.Reflect.Core
 			IEnumerator iter = new TreeNodeIterator(sortedConstructors);
 			while (iter.MoveNext())
 			{
-				object obj = iter.Current;
-				IReflectConstructor constructor = (IReflectConstructor)((TreeIntObject)obj)._object;
-				IReflectClass[] paramTypes = constructor.GetParameterTypes();
-				object[] @params = new object[paramTypes.Length];
-				for (int j = 0; j < @params.Length; j++)
-				{
-					@params[j] = paramTypes[j].NullValue();
-				}
-				object res = constructor.NewInstance(@params);
+				object current = iter.Current;
+				IReflectConstructor constructor = (IReflectConstructor)((TreeIntObject)current)._object;
+				object[] args = NullArgumentsFor(constructor);
+				object res = constructor.NewInstance(args);
 				if (res != null)
 				{
-					return new ReflectConstructorSpec(constructor, @params);
+					return new ReflectConstructorSpec(constructor, args);
 				}
 			}
 			return ReflectConstructorSpec.InvalidConstructor;
+		}
+
+		private static object[] NullArgumentsFor(IReflectConstructor constructor)
+		{
+			IReflectClass[] paramTypes = constructor.GetParameterTypes();
+			object[] @params = new object[paramTypes.Length];
+			for (int j = 0; j < @params.Length; j++)
+			{
+				@params[j] = paramTypes[j].NullValue();
+			}
+			return @params;
 		}
 
 		private static Tree SortConstructorsByParamsCount(IReflectConstructor[] constructors

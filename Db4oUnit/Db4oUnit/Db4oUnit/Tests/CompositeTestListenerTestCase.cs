@@ -72,17 +72,17 @@ namespace Db4oUnit.Tests
 
 		private MethodCall Call(string method, object arg0, Exception arg1)
 		{
-			return new MethodCall(method, arg0, arg1);
+			return new MethodCall(method, new object[] { arg0, arg1 });
 		}
 
 		private MethodCall Call(string method, object arg)
 		{
-			return new MethodCall(method, arg);
+			return new MethodCall(method, new object[] { arg });
 		}
 
 		private MethodCall Call(string method)
 		{
-			return new MethodCall(method);
+			return new MethodCall(method, new object[] {  });
 		}
 	}
 }

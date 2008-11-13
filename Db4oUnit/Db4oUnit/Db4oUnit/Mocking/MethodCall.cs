@@ -31,24 +31,10 @@ namespace Db4oUnit.Mocking
 
 		public readonly object[] args;
 
-		public MethodCall(string methodName) : this(methodName, new object[0])
-		{
-		}
-
 		public MethodCall(string methodName, object[] args)
 		{
 			this.methodName = methodName;
 			this.args = args;
-		}
-
-		public MethodCall(string methodName, object singleArg) : this(methodName, new object
-			[] { singleArg })
-		{
-		}
-
-		public MethodCall(string methodName, object arg1, object arg2) : this(methodName, 
-			new object[] { arg1, arg2 })
-		{
 		}
 
 		public override string ToString()

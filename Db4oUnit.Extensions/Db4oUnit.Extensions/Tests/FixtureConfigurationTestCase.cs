@@ -16,7 +16,7 @@ namespace Db4oUnit.Extensions.Tests
 		{
 			public void Configure(Type clazz, IConfiguration config)
 			{
-				Record(new MethodCall("configure", clazz, config));
+				Record(new MethodCall("configure", new object[] { clazz, config }));
 			}
 
 			public string GetLabel()
@@ -64,11 +64,13 @@ namespace Db4oUnit.Extensions.Tests
 				);
 			new TestRunner(new Db4oTestSuiteBuilder(fixture, new Type[] { typeof(FixtureConfigurationTestCase.TestCase1
 				), typeof(FixtureConfigurationTestCase.TestCase2) })).Run(new TestResult());
-			configuration.Verify(new MethodCall[] { new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase1
-				), MethodCall.IgnoredArgument), new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase1
-				), MethodCall.IgnoredArgument), new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase2
-				), MethodCall.IgnoredArgument), new MethodCall("configure", typeof(FixtureConfigurationTestCase.TestCase2
-				), MethodCall.IgnoredArgument) });
+			configuration.Verify(new MethodCall[] { new MethodCall("configure", new object[] 
+				{ typeof(FixtureConfigurationTestCase.TestCase1), MethodCall.IgnoredArgument }), 
+				new MethodCall("configure", new object[] { typeof(FixtureConfigurationTestCase.TestCase1
+				), MethodCall.IgnoredArgument }), new MethodCall("configure", new object[] { typeof(
+				FixtureConfigurationTestCase.TestCase2), MethodCall.IgnoredArgument }), new MethodCall
+				("configure", new object[] { typeof(FixtureConfigurationTestCase.TestCase2), MethodCall
+				.IgnoredArgument }) });
 		}
 	}
 }

@@ -28,8 +28,8 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			Change(item2);
 			_mock.Verify(new MethodCall[0]);
 			Db().Rollback();
-			_mock.Verify(new MethodCall[] { new MethodCall("rollback", Db(), item2), new MethodCall
-				("rollback", Db(), item1) });
+			_mock.Verify(new MethodCall[] { new MethodCall("rollback", new object[] { Db(), item2
+				 }), new MethodCall("rollback", new object[] { Db(), item1 }) });
 		}
 
 		private void Change(Item item)

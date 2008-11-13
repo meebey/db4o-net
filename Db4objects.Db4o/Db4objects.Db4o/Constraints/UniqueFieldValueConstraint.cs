@@ -61,14 +61,12 @@ namespace Db4objects.Db4o.Constraints
 				IEnumerator i = col.GetEnumerator();
 				while (i.MoveNext())
 				{
-					IObjectInfo info = (IObjectInfo)i.Current;
-					int id = (int)info.GetInternalID();
-					HardObjectReference @ref = HardObjectReference.PeekPersisted(trans, id, 1);
-					if (!this.ReflectClass().IsInstance(@ref._object))
+					object obj = this.ObjectFor(trans, (IObjectInfo)i.Current);
+					if (!this.ReflectClass().IsInstance(obj))
 					{
 						continue;
 					}
-					object fieldValue = this.FieldMetadata().GetOn(trans, @ref._object);
+					object fieldValue = this.FieldMetadata().GetOn(trans, obj);
 					if (fieldValue == null)
 					{
 						continue;
@@ -119,6 +117,13 @@ namespace Db4objects.Db4o.Constraints
 				Transaction trans = (Transaction)commitEventArgs.Transaction();
 				this.EnsureSingleOccurence(trans, commitEventArgs.Added);
 				this.EnsureSingleOccurence(trans, commitEventArgs.Updated);
+			}
+
+			private object ObjectFor(Transaction trans, IObjectInfo info)
+			{
+				int id = (int)info.GetInternalID();
+				HardObjectReference @ref = HardObjectReference.PeekPersisted(trans, id, 1);
+				return @ref._object;
 			}
 
 			private readonly UniqueFieldValueConstraint _enclosing;

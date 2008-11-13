@@ -26,13 +26,14 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 		public virtual IActivationDepth ActivationDepthFor(ClassMetadata classMetadata, ActivationMode
 			 mode)
 		{
-			Record(new MethodCall("activationDepthFor", classMetadata, mode));
+			Record(new MethodCall("activationDepthFor", new object[] { classMetadata, mode })
+				);
 			return _delegate.ActivationDepthFor(classMetadata, mode);
 		}
 
 		public virtual IActivationDepth ActivationDepth(int depth, ActivationMode mode)
 		{
-			Record(new MethodCall("activationDepth", depth, mode));
+			Record(new MethodCall("activationDepth", new object[] { depth, mode }));
 			return _delegate.ActivationDepth(depth, mode);
 		}
 	}

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		internal static int _messageIdGenerator = 1;
 
 		private static Db4objects.Db4o.Internal.CS.Messages.Msg[] _messages = new Db4objects.Db4o.Internal.CS.Messages.Msg
-			[70];
+			[75];
 
 		internal int _msgID;
 
@@ -121,10 +121,14 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public static readonly MReadBytes ReadBytes = new MReadBytes();
 
+		public static readonly MReadSlot ReadSlot = new MReadSlot();
+
 		public static readonly MReadMultipleObjects ReadMultipleObjects = new MReadMultipleObjects
 			();
 
 		public static readonly MReadObject ReadObject = new MReadObject();
+
+		public static readonly MReadReaderById ReadReaderById = new MReadReaderById();
 
 		public static readonly MReleaseSemaphore ReleaseSemaphore = new MReleaseSemaphore
 			();

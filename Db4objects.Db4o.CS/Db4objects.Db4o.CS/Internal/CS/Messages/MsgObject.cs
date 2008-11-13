@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				return null;
 			}
-			// does this happen ?
+			// does this happen ? Yes it does. Confirmed.
 			_id = _payLoad.ReadInt();
 			_address = _payLoad.ReadInt();
 			_payLoad.RemoveFirstBytes(LengthForFirst + addLengthBeforeFirst);

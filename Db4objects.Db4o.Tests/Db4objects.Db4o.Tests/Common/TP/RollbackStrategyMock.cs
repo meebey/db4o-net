@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 
 		public virtual void Rollback(IObjectContainer container, object obj)
 		{
-			_recorder.Record(new MethodCall("rollback", container, obj));
+			_recorder.Record(new MethodCall("rollback", new object[] { container, obj }));
 		}
 
 		public virtual void Verify(MethodCall[] expectedCalls)
