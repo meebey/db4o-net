@@ -1,10 +1,9 @@
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
-    class SimplestPossibleHandlerUpdateTestCase : HandlerUpdateTestCaseBase
+    class SimplestPossibleHandlerUpdateTestCase : LenientHandlerUpdateTestCaseBase
     {
         private readonly Item[] DATA = new Item[]
                 {

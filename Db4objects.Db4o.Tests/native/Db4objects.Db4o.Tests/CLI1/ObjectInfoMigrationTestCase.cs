@@ -279,6 +279,7 @@ namespace Db4objects.Db4o.Tests.CLI1
         private IConfiguration GetConfiguration()
         {
             IConfiguration configuration = Db4oFactory.NewConfiguration();
+			configuration.ExceptionsOnNotStorable(false);
             configuration.AllowVersionUpdates(true);
             configuration.AddAlias(new WildcardAlias("*GenerateDb4o52File", "*" + GetType().Assembly.GetName().Name));
             IObjectClass itemConfig = configuration.ObjectClass(typeof(Db4o52Regression.Item));
