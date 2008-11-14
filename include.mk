@@ -8,6 +8,8 @@ WORKDIR = .
 RESPONSE_FILE = $(WORKDIR)/sources
 
 CORE = Db4objects.Db4o.dll
+CS = Db4objects.Db4o.CS.dll
+OPTIONAL = Db4objects.Db4o.Optional.dll
 TESTS = Db4objects.Db4o.Tests.exe
 UNIT = Db4oUnit.dll
 UNIT_EXT = Db4oUnit.Extensions.dll

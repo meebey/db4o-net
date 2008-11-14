@@ -1,6 +1,8 @@
 
 MAKE = make
 CORE = Db4objects.Db4o
+CS = Db4objects.Db4o.CS
+OPTIONAL = Db4objects.Db4o.Optional
 TESTS = Db4objects.Db4o.Tests
 UNIT = Db4oUnit
 UNIT_EXT = Db4oUnit.Extensions
@@ -22,7 +24,7 @@ prebuild:
 	[ -d $(OUTDIR) ] || mkdir $(OUTDIR)
 	cp $(LIBS)/*.dll $(OUTDIR)
 
-build: core nq linq tool tests
+build: core cs optional nq linq tool tests
 
 postbuild:
 
@@ -58,6 +60,12 @@ linq:
 
 core:
 	cd $(CORE) ; $(MAKE)
+
+cs:
+	cd $(CS) ; $(MAKE)
+
+optional:
+	cd $(OPTIONAL) ; $(MAKE)
 
 clean:
 	rm -rf $(OUTDIR)
